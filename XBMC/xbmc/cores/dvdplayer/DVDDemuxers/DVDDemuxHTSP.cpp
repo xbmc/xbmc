@@ -306,3 +306,8 @@ std::string CDVDDemuxHTSP::GetFileName()
     return "";
 }
 
+void CDVDDemuxHTSP::Abort()
+{
+  if(m_Input)
+    return m_Input->Abort();
+}

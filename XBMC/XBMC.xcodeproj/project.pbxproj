@@ -41,7 +41,6 @@
 		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
 		43248C510FBE224C00B88866 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		43248C520FBE224E00B88866 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
-		6E32A0AD0E353A37008872A4 /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E32A0AC0E353A37008872A4 /* FileMMS.cpp */; };
 		6E97BDBE0DA2B5D8003A2A89 /* GUIInfoColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */; };
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
@@ -1649,7 +1648,6 @@
 		F5A1CB630F6B06CF00A96ABD /* rtmppacket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE62C0E176F75009FBE3C /* rtmppacket.cpp */; };
 		F5A1CB640F6B06CF00A96ABD /* DVDInputStreamRTMP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 815EE6330E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp */; };
 		F5A1CB650F6B06CF00A96ABD /* GUIListGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88E384620E20D6EF0028AFC0 /* GUIListGroup.cpp */; };
-		F5A1CB660F6B06CF00A96ABD /* FileMMS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E32A0AC0E353A37008872A4 /* FileMMS.cpp */; };
 		F5A1CB670F6B06CF00A96ABD /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5A1CB680F6B06CF00A96ABD /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
 		F5A1CB690F6B06CF00A96ABD /* ArabicShaping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */; };
@@ -1798,7 +1796,6 @@
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
-		6E32A0AC0E353A37008872A4 /* FileMMS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileMMS.cpp; sourceTree = "<group>"; };
 		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
 		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
@@ -3001,7 +2998,6 @@
 		E38E1AFF0D25F9FB00618676 /* ConnectionManagerSCPD.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ConnectionManagerSCPD.xml; sourceTree = "<group>"; };
 		E38E1B000D25F9FB00618676 /* PltMediaController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaController.cpp; sourceTree = "<group>"; };
 		E38E1B010D25F9FB00618676 /* PltMediaController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaController.h; sourceTree = "<group>"; };
-		E38E1B020D25F9FB00618676 /* PltMediaControllerListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaControllerListener.h; sourceTree = "<group>"; };
 		E38E1B030D25F9FB00618676 /* PltMediaRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaRenderer.cpp; sourceTree = "<group>"; };
 		E38E1B040D25F9FB00618676 /* PltMediaRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaRenderer.h; sourceTree = "<group>"; };
 		E38E1B050D25F9FB00618676 /* PltMediaRendererSCPDs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaRendererSCPDs.cpp; sourceTree = "<group>"; };
@@ -5263,7 +5259,6 @@
 				81F064110E9B608800C203A6 /* FileXBMSP.cpp */,
 				81F064120E9B608800C203A6 /* FileXBMSP.h */,
 				E4E91BB70E7F7338001F0546 /* NptXbmcFile.cpp */,
-				6E32A0AC0E353A37008872A4 /* FileMMS.cpp */,
 				889B4D8C0E0EF86C00FAD25E /* RSSDirectory.cpp */,
 				889B4D8D0E0EF86C00FAD25E /* RSSDirectory.h */,
 				88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */,
@@ -5921,7 +5916,6 @@
 				E38E1AFF0D25F9FB00618676 /* ConnectionManagerSCPD.xml */,
 				E38E1B000D25F9FB00618676 /* PltMediaController.cpp */,
 				E38E1B010D25F9FB00618676 /* PltMediaController.h */,
-				E38E1B020D25F9FB00618676 /* PltMediaControllerListener.h */,
 				E38E1B030D25F9FB00618676 /* PltMediaRenderer.cpp */,
 				E38E1B040D25F9FB00618676 /* PltMediaRenderer.h */,
 				E38E1B050D25F9FB00618676 /* PltMediaRendererSCPDs.cpp */,
@@ -7750,7 +7744,6 @@
 				815EE62F0E176F75009FBE3C /* rtmppacket.cpp in Sources */,
 				815EE6350E17F1DC009FBE3C /* DVDInputStreamRTMP.cpp in Sources */,
 				88E384640E20D6EF0028AFC0 /* GUIListGroup.cpp in Sources */,
-				6E32A0AD0E353A37008872A4 /* FileMMS.cpp in Sources */,
 				F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */,
 				F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */,
 				F5F8E1F00E42807A00A8E96F /* ArabicShaping.cpp in Sources */,
@@ -8587,7 +8580,6 @@
 				F5A1CB630F6B06CF00A96ABD /* rtmppacket.cpp in Sources */,
 				F5A1CB640F6B06CF00A96ABD /* DVDInputStreamRTMP.cpp in Sources */,
 				F5A1CB650F6B06CF00A96ABD /* GUIListGroup.cpp in Sources */,
-				F5A1CB660F6B06CF00A96ABD /* FileMMS.cpp in Sources */,
 				F5A1CB670F6B06CF00A96ABD /* VGMCodec.cpp in Sources */,
 				F5A1CB680F6B06CF00A96ABD /* md5.cpp in Sources */,
 				F5A1CB690F6B06CF00A96ABD /* ArabicShaping.cpp in Sources */,

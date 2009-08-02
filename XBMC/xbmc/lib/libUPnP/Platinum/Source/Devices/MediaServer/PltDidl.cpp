@@ -303,18 +303,18 @@ PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)
     PLT_MediaObject*    object = NULL;
     NPT_XmlNode*        node = NULL;
     NPT_XmlElementNode* didl = NULL;
+	NPT_XmlParser		parser;
 
-    NPT_LOG_FINE("Parsing Didl...");
-
-    NPT_XmlParser parser;
-    if (NPT_FAILED(parser.Parse(xml, node)) || !node || !node->AsElementNode()) {
+	NPT_CHECK_LABEL_SEVERE(parser.Parse(xml, node), cleanup);
+    if (!node || !node->AsElementNode()) {
+		NPT_LOG_SEVERE("Invalid node type");
         goto cleanup;
     }
 
     didl = node->AsElementNode();
 
-    NPT_LOG_FINE("Processing Didl xml...");
-    if (didl->GetTag().Compare("DIDL-Lite", true)) {
+	if (didl->GetTag().Compare("DIDL-Lite", true)) {
+		NPT_LOG_SEVERE("Invalid node tag");
         goto cleanup;
     }
 
@@ -327,17 +327,17 @@ PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)
         NPT_XmlElementNode* child = (*children)->AsElementNode();
         if (!child) continue;
 
+		object = NULL;
         if (child->GetTag().Compare("Container", true) == 0) {
             object = new PLT_MediaContainer();
         } else if (child->GetTag().Compare("item", true) == 0) {
             object = new PLT_MediaItem();
-        } else {
+		} else {
+			NPT_LOG_SEVERE("Invalid node tag");
             goto cleanup;
         }
 
-        if (NPT_FAILED(object->FromDidl(child))) {
-            goto cleanup;
-        }
+        NPT_CHECK_LABEL_SEVERE(object->FromDidl(child), cleanup);
         objects->Add(object);
     }
 

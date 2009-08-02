@@ -7861,6 +7861,79 @@ $as_echo "$as_me: error: $missing_library" >&2;}
 fi
  # check for cximage
 
+{ $as_echo "$as_me:$LINENO: checking for main in -lmms" >&5
+$as_echo_n "checking for main in -lmms... " >&6; }
+if test "${ac_cv_lib_mms_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmms  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_mms_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mms_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_mms_main" >&5
+$as_echo "$ac_cv_lib_mms_main" >&6; }
+if test "x$ac_cv_lib_mms_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMMS 1
+_ACEOF
+
+  LIBS="-lmms $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
 
 { $as_echo "$as_me:$LINENO: checking for main in -lXt" >&5
 $as_echo_n "checking for main in -lXt... " >&6; }
@@ -7927,6 +8000,79 @@ if test "x$ac_cv_lib_Xt_main" = x""yes; then
 _ACEOF
 
   LIBS="-lXt $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lXtst" >&5
+$as_echo_n "checking for main in -lXtst... " >&6; }
+if test "${ac_cv_lib_Xtst_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lXtst  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_Xtst_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_Xtst_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_Xtst_main" >&5
+$as_echo "$ac_cv_lib_Xtst_main" >&6; }
+if test "x$ac_cv_lib_Xtst_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBXTST 1
+_ACEOF
+
+  LIBS="-lXtst $LIBS"
 
 else
   { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
@@ -19625,7 +19771,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/Codecs/libdvd/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile tools/EventClients/Clients/OSXRemote/Makefile"
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/Codecs/libdvd/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/FLACCodec/Makefile xbmc/cores/paplayer/ModuleCodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile tools/EventClients/Clients/OSXRemote/Makefile"
 
 
 # Function to run the configure scripts in our submodules
@@ -20320,6 +20466,7 @@ do
     "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
     "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
     "xbmc/cores/paplayer/ADPCMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ADPCMCodec/Makefile" ;;
+    "xbmc/cores/paplayer/FLACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/FLACCodec/Makefile" ;;
     "xbmc/cores/paplayer/ModuleCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/Makefile" ;;
     "xbmc/cores/paplayer/GYMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/GYMCodec/Makefile" ;;
     "xbmc/cores/paplayer/MP3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MP3Codec/Makefile" ;;
@@ -21058,8 +21205,8 @@ fi
 
 
 if [ $USE_EXTERNAL_LIBFLAC != "1" ]; then
-    if [ -d xbmc/cores/paplayer/flac-1.2.1 ]; then
-        pushd xbmc/cores/paplayer/flac-1.2.1
+    if [ -d xbmc/cores/paplayer/FLACCodec/flac-1.2.1 ]; then
+        pushd xbmc/cores/paplayer/FLACCodec/flac-1.2.1
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -21069,8 +21216,7 @@ if [ $USE_EXTERNAL_LIBFLAC != "1" ]; then
       --disable-xmms-plugin \
       --disable-cpplibs \
       CC="$CC" \
-      CXX="$CXX" && \
-    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+      CXX="$CXX"
   else
     ./configure -C \
       --with-pic \
@@ -21078,26 +21224,25 @@ if [ $USE_EXTERNAL_LIBFLAC != "1" ]; then
       --disable-xmms-plugin \
       --disable-cpplibs \
       CC="$CC" \
-      CXX="$CXX" && \
-    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+      CXX="$CXX"
   fi
 
         if [ $? -ne 0 ]; then
             popd
-            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 failed to configure" >&5
-$as_echo "$as_me: error: Submodule xbmc/cores/paplayer/flac-1.2.1 failed to configure" >&2;}
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/FLACCodec/flac-1.2.1 failed to configure" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/paplayer/FLACCodec/flac-1.2.1 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
         else
             popd
         fi
     else
-        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 doesn't exist" >&5
-$as_echo "$as_me: error: Submodule xbmc/cores/paplayer/flac-1.2.1 doesn't exist" >&2;}
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/FLACCodec/flac-1.2.1 doesn't exist" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/paplayer/FLACCodec/flac-1.2.1 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
     fi
 else
-    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/flac-1.2.1." >&5
-$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/flac-1.2.1." >&6;}
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/FLACCodec/flac-1.2.1." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/FLACCodec/flac-1.2.1." >&6;}
 fi
 
 

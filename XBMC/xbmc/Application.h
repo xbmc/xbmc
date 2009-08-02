@@ -40,7 +40,9 @@ class CFileItemList;
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
+#ifndef _WIN32PC
 #include "DetectDVDType.h"
+#endif
 #include "Autorun.h"
 #include "utils/Splash.h"
 #include "utils/Stopwatch.h"
@@ -212,7 +214,9 @@ public:
   CGUIWindowPointer m_guiPointer;
 
   MEDIA_DETECT::CAutorun m_Autorun;
+#ifndef _WIN32PC
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
+#endif
   CDelayController m_ctrDpad;
   CSNTPClient *m_psntpClient;
   CWebServer* m_pWebServer;

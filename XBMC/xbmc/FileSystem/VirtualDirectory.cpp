@@ -27,7 +27,6 @@
 #include "Profile.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
-#include "DetectDVDType.h"
 #include "../MediaManager.h"
 #ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
 #include "linux/LinuxFileSystem.h"
@@ -236,18 +235,13 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
     CMediaSource& share = shares[i];
     if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
-#ifdef _WIN32PC
-      if(CWIN32Util::IsAudioCD(share.strPath))
+      if(g_mediaManager.IsAudio(share.strPath))
       {
         share.strStatus = "Audio-CD";
         share.strPath = "cdda://local/";
       }
       else
-        share.strStatus = CWIN32Util::GetDiskLabel(share.strPath);
-#else
-      share.strStatus = MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
-      share.strPath = MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
-#endif
+        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
     }
   }
 }

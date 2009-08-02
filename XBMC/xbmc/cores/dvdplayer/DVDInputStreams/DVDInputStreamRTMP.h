@@ -21,7 +21,7 @@
  */
 
 #include "DVDInputStream.h"
-#include "rtmp.h"
+#include "lib/libRTMP/rtmp.h"
 
 class CDVDInputStreamRTMP : public CDVDInputStream
 {
@@ -32,6 +32,7 @@ public:
   virtual void    Close();
   virtual int     Read(BYTE* buf, int buf_size);
   virtual __int64 Seek(__int64 offset, int whence);
+  bool            SeekTime(int iTimeInMsec);
   virtual bool Pause(double dTime);
   virtual bool    IsEOF();
   virtual __int64 GetLength();

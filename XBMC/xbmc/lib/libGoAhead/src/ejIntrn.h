@@ -180,7 +180,7 @@ typedef struct ej {
 	int			tid;							/* Current token id */
 	int			eid;							/* Halloc handle */
 	int			flags;							/* Flags */
-	int			userHandle;						/* User defined handle */
+	void*			userHandle;						/* User defined handle */
 } ej_t;
 
 /******************************** Prototypes **********************************/
@@ -196,8 +196,8 @@ extern void		*ejGetGlobalFunction(int eid, char_t *name);
 extern int 		ejSetGlobalFunctionDirect(sym_fd_t functions, char_t *name, 
 					int (*fn)(int eid, void *handle, int argc, char_t **argv));
 extern void 	ejError(ej_t* ep, char_t* fmt, ...);
-extern void		ejSetUserHandle(int eid, int handle);
-extern int		ejGetUserHandle(int eid);
+extern void		ejSetUserHandle(int eid, void* handle);
+extern void*		ejGetUserHandle(int eid);
 extern int		ejGetLineNumber(int eid);
 extern char_t	*ejGetResult(int eid);
 extern void		ejSetLocalVar(int eid, char_t *var, char_t *value);

@@ -40,17 +40,19 @@ public:
 
   virtual bool    NextStream()                     { return m_startup; }
 
+  virtual void    Abort();
 
   bool            NextChannel();
   bool            PrevChannel();
   bool            SelectChannel(unsigned int channel) { return false; }
-  int             GetTotalTime() { return 0; }
-  int             GetStartTime() { return 0; }
   bool            UpdateItem(CFileItem& item);
 
   bool            CanRecord()         { return false; }
   bool            IsRecording()       { return false; }
   bool            Record(bool bOnOff) { return false; }
+
+  int             GetTotalTime();
+  int             GetStartTime();
 
   htsmsg_t* ReadStream();
 

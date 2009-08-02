@@ -145,6 +145,7 @@ namespace EVENTCLIENT
       m_lastSeq = 0;
       m_iRemotePort = 0;
       m_bMouseMoved = false;
+      m_bSequenceError = false;
       RefreshSettings();
     }
 
@@ -245,6 +246,7 @@ namespace EVENTCLIENT
     unsigned int      m_iMouseX;
     unsigned int      m_iMouseY;
     bool              m_bMouseMoved;
+    bool              m_bSequenceError;
 
     SOCKETS::CAddress m_remoteAddr;
 

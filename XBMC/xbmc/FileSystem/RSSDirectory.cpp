@@ -24,6 +24,7 @@
 #include "RssFeed.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "FileCurl.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -39,20 +40,15 @@ CRSSDirectory::~CRSSDirectory()
 
 bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
-  CStdString strURL = strPath;
-  CStdString newURL;
-
-  // Remove the rss:// prefix and replace it with http://
-
-  strURL.Delete(0,3);
-  newURL = "http";
-  newURL = newURL + strURL;
-
-  // Remove the last slash
-  CUtil::RemoveSlashAtEnd(newURL);
+  CStdString path(strPath);
+  CUtil::RemoveSlashAtEnd(path);
+  
+  CURL url(path);
+  url.SetProtocol("http");
+  url.GetURL(path);
 
   CRssFeed feed;
-  feed.Init(newURL);
+  feed.Init(path);
   feed.ReadFeed();
 
   feed.GetItemList(items);
@@ -61,4 +57,3 @@ bool CRSSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
   return true;
 }
-

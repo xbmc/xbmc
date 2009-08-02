@@ -36,7 +36,7 @@ public:
   void Dispose();
   void Reset();
   void Flush();
-  void Abort(){}
+  void Abort();
   void SetSpeed(int iSpeed){};
 
   std::string   GetFileName();

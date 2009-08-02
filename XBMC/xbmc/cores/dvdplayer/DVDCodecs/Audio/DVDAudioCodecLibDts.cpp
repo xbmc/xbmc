@@ -318,7 +318,8 @@ int CDVDAudioCodecLibDts::Decode(BYTE* pData, int iSize)
 
   m_dll.dts_frame(m_pState, frame, &flags, &level, bias);
 
-  //m_dll.dts_dynrng(m_pState, NULL, NULL);
+  if (!g_advancedSettings.m_audioApplyDrc)
+    m_dll.dts_dynrng(m_pState, NULL, NULL);
 
   int blocks = m_dll.dts_blocks_num(m_pState);
   for (int i = 0; i < blocks; i++)

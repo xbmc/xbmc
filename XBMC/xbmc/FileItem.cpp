@@ -1235,9 +1235,17 @@ void CFileItem::CleanString()
 {
   if (IsTV())
     return;
+
+  bool bIsFolder = m_bIsFolder;
+
+  // make sure we don't append the extension to stacked dvd folders
+  if (HasProperty("isstacked") && IsDVDFile(false, true))
+    bIsFolder = true;
+
   CStdString strLabel = GetLabel();
-  CUtil::CleanString(strLabel, m_bIsFolder);
-  SetLabel(strLabel);
+  CStdString strTitle, strTitleAndYear, strYear;
+  CUtil::CleanString(strLabel, strTitle, strTitleAndYear, strYear, bIsFolder);
+  SetLabel(strTitleAndYear);
 }
 
 void CFileItem::SetLabel(const CStdString &strLabel)
@@ -2142,8 +2150,6 @@ void CFileItemList::Stack()
   if (IsVirtualDirectoryRoot() || IsTV())
     return;
 
-  SetProperty("isstacked", "1");
-
   // items needs to be sorted for stuff below to work properly
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
@@ -2250,6 +2256,9 @@ void CFileItemList::Stack()
   while (i < Size())
   {
     CFileItemPtr item = Get(i);
+
+    // set property
+    item->SetProperty("isstacked", "1");
 
     // skip folders, nfo files, playlists, dvd images
     if (item->m_bIsFolder

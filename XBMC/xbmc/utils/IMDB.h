@@ -78,7 +78,6 @@ public:
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
-  void GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear);
 
   static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
 
@@ -101,7 +100,6 @@ protected:
   IMDB_EPISODELIST  m_episode;
   LOOKUP_STATE      m_state;
   int               m_found;
-  bool              m_retry;
   SScraperInfo      m_info;
 };
 

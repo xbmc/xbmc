@@ -250,7 +250,7 @@ void CHTSPDirectorySession::Process()
   while(!m_bStop)
   {
     if((msg = m_session.ReadMessage()) == NULL)
-      continue;
+      break;
 
     uint32_t seq;
     if(htsmsg_get_u32(msg, "seq", &seq) == 0)

@@ -120,6 +120,7 @@ bool DPMSSupport::DisablePowerSaving()
 #define INT64 __X11_SPECIFIC_INT64
 #include <X11/Xlib.h>
 #include <X11/extensions/dpms.h>
+#include <X11/extensions/XTest.h>
 #undef INT64
 #undef BOOL
 
@@ -184,6 +185,12 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   XFlush(dpy);
   XMapWindow(dpy, m_surface->GetWindow());
   XFlush(dpy);
+  // Send fake key event (shift) to make sure the screen
+  // unblanks on keypresses other than keyboard.
+  XTestFakeKeyEvent(dpy, 62, 1, 0);
+  XTestFakeKeyEvent(dpy, 62, 0, 0);
+  XFlush(dpy);
+
   return true;
 }
 

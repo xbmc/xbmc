@@ -496,7 +496,9 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
     action = new PLT_Action(action_desc);
 
     // read all the arguments if any
-    for (NPT_List<NPT_XmlNode*>::Iterator args = soap_action->GetChildren().GetFirstItem(); args; args++) {
+    for (NPT_List<NPT_XmlNode*>::Iterator args = soap_action->GetChildren().GetFirstItem(); 
+		 args; 
+		 args++) {
         NPT_XmlElementNode* child = (*args)->AsElementNode();
         if (!child) continue;
 
@@ -506,9 +508,13 @@ PLT_DeviceHost::ProcessHttpPostRequest(NPT_HttpRequest&              request,
             name = "ObjectID";
         }
 
-        action->SetArgumentValue(
+        res = action->SetArgumentValue(
             name,
             child->GetText()?*child->GetText():"");
+		if (NPT_FAILED(res)) {
+			action->SetError(701, "Invalid Name");
+			goto error;
+		}
     }
 
     if (NPT_FAILED(action->VerifyArguments(true))) {

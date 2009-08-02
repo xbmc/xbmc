@@ -54,7 +54,9 @@ public:
   int type;
 };
 
-class CDVDInputStreamNavigator : public CDVDInputStream
+class CDVDInputStreamNavigator 
+  : public CDVDInputStream
+  , public CDVDInputStream::IDisplayTime
 {
 public:
   CDVDInputStreamNavigator(IDVDPlayer* player);
