@@ -1459,6 +1459,7 @@ NPT_Result
 CUPnPRenderer::SetupServices(PLT_DeviceData& data)
 {
     NPT_CHECK(PLT_MediaRenderer::SetupServices(data));
+
     // update what we can play
     PLT_Service* service = NULL;
     NPT_CHECK_FATAL(FindServiceByType("urn:schemas-upnp-org:service:ConnectionManager:1", service));

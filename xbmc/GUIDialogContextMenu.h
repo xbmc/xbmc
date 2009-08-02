@@ -147,13 +147,17 @@ public:
   int GetButton();
   void OffsetPosition(float offsetX, float offsetY);
 
+  //! Positions the current context menu in the middle of the focused control. If it can not
+  //! find it then it positions the context menu in the middle of the screen
+  void PositionAtCurrentFocus();
+
   static bool SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY);
   static void SwitchMedia(const CStdString& strType, const CStdString& strPath);
 
   static void GetContextButtons(const CStdString &type, const CFileItemPtr item, CContextButtons &buttons);
   static bool OnContextButton(const CStdString &type, const CFileItemPtr item, CONTEXT_BUTTON button);
 
-  static int ShowAndGetChoice(const std::vector<CStdString> &choices, const CPoint &point);
+  static int ShowAndGetChoice(const std::vector<CStdString> &choices, const CPoint *point = NULL);
 
   static CMediaSource *GetShare(const CStdString &type, const CFileItem *item);
   float GetWidth();

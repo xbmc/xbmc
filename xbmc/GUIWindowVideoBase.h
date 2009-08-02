@@ -45,6 +45,11 @@ public:
   static void MarkWatched(const CFileItemPtr &pItem);
   static void UpdateVideoTitle(const CFileItem* pItem);
 
+  //! Shows the resume menu following the 'resumeautomatically' guisettig (also checks if there is a bookmark on the file)
+  //! It changes item.m_lStartOffset if resuming otherwise does nothing to item
+  //! If the user cancels the operation on the menu "false" is returned
+  static bool OnResumeShowMenu(CFileItem &item);
+
 private:
   bool IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel);
 protected:

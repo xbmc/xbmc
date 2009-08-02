@@ -74,15 +74,9 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
               CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              /*CMediaSource share;
-              CStdString strLabel;
-              share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              if(CWIN32Util::IsAudioCD(share.strPath))
-                share.strStatus = "Audio-CD";
-              share.strName.Format("%s (%s)", g_localizeStrings.Get(446), share.strPath);
-              share.m_ignore = true;
-              share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-              g_mediaManager.AddAutoSource(share);*/
+              CStdString strDevice;
+              strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              g_application.getApplicationMessenger().OpticalMount(strDevice);
             }
             else
             {
@@ -106,10 +100,9 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
               CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              /*CMediaSource share;
-              share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              share.strName.Format("%s (%s)", g_localizeStrings.Get(446), share.strPath);
-              g_mediaManager.RemoveAutoSource(share);*/
+              CStdString strDevice;
+              strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              g_application.getApplicationMessenger().OpticalUnMount(strDevice);
             }
             else
             {

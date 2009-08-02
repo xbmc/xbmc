@@ -248,6 +248,7 @@
 #endif
 
 #include "lib/libcdio/logging.h"
+#include "MediaManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -1990,9 +1991,11 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
+#ifndef _WIN32PC
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
+#endif
 
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
@@ -2015,8 +2018,10 @@ void CApplication::StopServices()
 {
   m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
+#ifndef _WIN32PC
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
+#endif
 }
 
 void CApplication::DelayLoadSkin()
@@ -2880,6 +2885,13 @@ bool CApplication::OnAction(CAction &action)
     else
       PowerButtonDown = false;
   }
+  // reload keymaps
+  if (action.wID == ACTION_RELOAD_KEYMAPS)
+  {
+    CButtonTranslator::GetInstance().Clear();
+    CButtonTranslator::GetInstance().Load();
+  }
+
   // show info : Shows the current video or song information
   if (action.wID == ACTION_SHOW_INFO)
   {
@@ -3086,39 +3098,41 @@ bool CApplication::OnAction(CAction &action)
   // Check for global volume control
   if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
   {
-    // increase or decrease the volume
-    int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
-
-    // calculate speed so that a full press will equal 1 second from min to max
-    float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
-    if( action.fRepeat )
-      speed *= action.fRepeat;
-    else
-      speed /= 50; //50 fps
-    if (g_stSettings.m_bMute)
+    if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      // only unmute if volume is to be increased, otherwise leave muted
-      if (action.wID == ACTION_VOLUME_DOWN)
+      // increase or decrease the volume
+      int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
+
+      // calculate speed so that a full press will equal 1 second from min to max
+      float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
+      if( action.fRepeat )
+        speed *= action.fRepeat;
+      else
+        speed /= 50; //50 fps
+      if (g_stSettings.m_bMute)
+      {
+        // only unmute if volume is to be increased, otherwise leave muted
+        if (action.wID == ACTION_VOLUME_DOWN)
+          return true;
+        Mute();
         return true;
-      Mute();
-      return true;
-    }
-    if (action.wID == ACTION_VOLUME_UP)
-    {
-      volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
-    }
-    else
-    {
-      volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
-    }
+      }
+      if (action.wID == ACTION_VOLUME_UP)
+      {
+        volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+      }
+      else
+      {
+        volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+      }
 
-    SetHardwareVolume(volume);
-#ifndef HAS_SDL_AUDIO
-    g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
-#else
-    g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
-#endif
-
+      SetHardwareVolume(volume);
+  #ifndef HAS_SDL_AUDIO
+      g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+  #else
+      g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+  #endif
+    }
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
     m_guiDialogVolumeBar.OnAction(action);
@@ -5276,7 +5290,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings

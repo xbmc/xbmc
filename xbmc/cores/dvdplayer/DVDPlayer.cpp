@@ -940,8 +940,8 @@ void CDVDPlayer::Process()
             }
           }
         }
-        
-        // if playing a main title DVD/ISO rip, there is no menu structure so 
+
+        // if playing a main title DVD/ISO rip, there is no menu structure so
         // dvdnav will tell us it's done by setting EOF on the stream.
         if (pStream->IsEOF())
           break;
@@ -1737,7 +1737,7 @@ void CDVDPlayer::HandleMessages()
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL))
       {
         CPlayerSeek m_pause(this);
-        
+
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input)
         {
@@ -1861,6 +1861,11 @@ bool CDVDPlayer::HasAudio() const
   return (m_CurrentAudio.id >= 0);
 }
 
+bool CDVDPlayer::IsPassthrough() const
+{
+  return m_dvdPlayerAudio.IsPassthrough();
+}
+
 bool CDVDPlayer::CanSeek()
 {
   return GetTotalTime() > 0;
@@ -1969,7 +1974,7 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
                          , dDelay
                          , dDiff
-                         , strEDL.c_str()                         
+                         , strEDL.c_str()
                          , (int)(CThread::GetRelativeUsage()*100)
                          , (int)(m_dvdPlayerAudio.GetRelativeUsage()*100)
                          , (int)(m_dvdPlayerVideo.GetRelativeUsage()*100));
@@ -3016,6 +3021,13 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   {
     // override from input stream if needed
 
+    CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
+    if (pDisplayTime)
+    {
+      m_State.time       = pDisplayTime->GetTime();
+      m_State.time_total = pDisplayTime->GetTotalTime();
+    }
+
     if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
       if(m_dvd.state == DVDSTATE_STILL)
@@ -3023,11 +3035,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
         m_State.time       = GetTickCount() - m_dvd.iDVDStillStartTime;
         m_State.time_total = m_dvd.iDVDStillTime;
       }
-      else
-      {
-        m_State.time       = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime();
-        m_State.time_total = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime();
-      }
+
       if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(m_State.player_state))
         m_State.player_state = "";
     }

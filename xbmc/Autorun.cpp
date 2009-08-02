@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "Autorun.h"
 #include "Application.h"
-#include "DetectDVDType.h"
 #include "Util.h"
 #include "GUIPassword.h"
 #include "PlayListPlayer.h"
@@ -34,6 +33,7 @@
 #include "Settings.h"
 #include "PlayList.h"
 #include "GUIWindowManager.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -54,7 +54,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying )
   if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || m_gWindowManager.HasModalDialog())) || m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return ;
 
-  CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+  CCdInfo* pInfo = g_mediaManager.GetCdInfo();
 
   if ( pInfo == NULL )
     return ;
@@ -326,6 +326,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 
 void CAutorun::HandleAutorun()
 {
+#ifndef _WIN32PC
   if (!m_bEnable)
   {
     CDetectDVDMedia::m_evAutorun.Reset();
@@ -337,6 +338,7 @@ void CAutorun::HandleAutorun()
     ExecuteAutorun();
     CDetectDVDMedia::m_evAutorun.Reset();
   }
+#endif
 }
 
 void CAutorun::Enable()

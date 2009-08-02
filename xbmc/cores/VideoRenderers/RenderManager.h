@@ -33,11 +33,11 @@
 #include "utils/Thread.h"
 #include "settings/VideoSettings.h"
 
-class CXBoxRenderManager
+class CXBMCRenderManager
 {
 public:
-  CXBoxRenderManager();
-  ~CXBoxRenderManager();
+  CXBMCRenderManager();
+  ~CXBMCRenderManager();
 
   // Functions called from the GUI
   void GetVideoRect(RECT &rs, RECT &rd) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->GetVideoRect(rs, rd); };
@@ -147,6 +147,6 @@ protected:
   CEvent     m_presentevent;
 };
 
-extern CXBoxRenderManager g_renderManager;
+extern CXBMCRenderManager g_renderManager;
 
 

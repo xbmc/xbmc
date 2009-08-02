@@ -215,6 +215,12 @@ std::vector<double> CPullupCorrection::BuildPattern(int patternlength)
 #define MAXERR 0.01
 inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
 {
+  if (fabs(diff1) < MAXERR && fabs(diff2) < MAXERR)
+    return true; //very close to 0.0
+  
+  if (diff2 == 0.0)
+    return false; //don't want to divide by 0
+  
   return fabs(1.0 - (diff1 / diff2)) <= MAXERR;
 }
 #undef MAXERR

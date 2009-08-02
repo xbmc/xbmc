@@ -36,6 +36,9 @@
 #ifdef ENABLE_DVDINPUTSTREAM_STACK
 #include "DVDInputStreamStack.h"
 #endif
+#ifdef HAS_FILESYSTEM_MMS
+#include "DVDInputStreamMMS.h"
+#endif
 #include "FileItem.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
@@ -73,6 +76,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 #ifdef HAS_FILESYSTEM_HTSP
   else if(file.substr(0, 7) == "htsp://")
     return new CDVDInputStreamHTSP();
+#endif
+#ifdef HAS_FILESYSTEM_MMS
+  else if(file.substr(0,6) == "mms://" || file.substr(0,7) == "mmsh://")
+    return new CDVDInputStreamMMS();
 #endif
 
   //else if (item.IsShoutCast())

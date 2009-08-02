@@ -1,0 +1,17 @@
+prepare-ChangeLog.pl
+Makefile
+Makefile.in
+aclocal.m4
+config.h
+config.h.in
+config.log
+configure
+semantic.cache
+config.status
+libtool
+stamp-h
+stamp-h.in
+autom4te.cache
+stamp-h1
+libmms.spec
+autom4te.cache

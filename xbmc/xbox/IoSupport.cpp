@@ -60,8 +60,8 @@
 #include <IOKit/storage/IOStorageDeviceCharacteristics.h>
 #endif
 #include "../FileSystem/cdioSupport.h"
-#include "../DetectDVDType.h"
-#include "FileSystem/iso9660.h"
+#include "../FileSystem/iso9660.h"
+#include "../MediaManager.h"
 #ifdef _LINUX
 #include "XHandle.h"
 #endif
@@ -324,7 +324,7 @@ HRESULT CIoSupport::CloseTray()
 DWORD CIoSupport::GetTrayState()
 {
 #if defined(_LINUX) || defined(_WIN32PC)
-  return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
+  return g_mediaManager.GetDriveStatus();
 #else
   return DRIVE_NOT_READY;
 #endif

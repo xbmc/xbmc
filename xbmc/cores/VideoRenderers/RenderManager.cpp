@@ -52,7 +52,7 @@
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
 
-CXBoxRenderManager g_renderManager;
+CXBMCRenderManager g_renderManager;
 
 
 #define MAXPRESENTDELAY 0.500
@@ -100,7 +100,7 @@ private:
   DWORD             m_count;
 };
 
-CXBoxRenderManager::CXBoxRenderManager()
+CXBMCRenderManager::CXBMCRenderManager()
 {
   m_pRenderer = NULL;
   m_bPauseDrawing = false;
@@ -113,19 +113,19 @@ CXBoxRenderManager::CXBoxRenderManager()
   m_presentmethod = VS_INTERLACEMETHOD_NONE;
 }
 
-CXBoxRenderManager::~CXBoxRenderManager()
+CXBMCRenderManager::~CXBMCRenderManager()
 {
   delete m_pRenderer;
   m_pRenderer = NULL;
 }
 
 /* These is based on QueryPerformanceCounter */
-double CXBoxRenderManager::GetPresentTime()
+double CXBMCRenderManager::GetPresentTime()
 {
   return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
 }
 
-void CXBoxRenderManager::WaitPresentTime(double presenttime)
+void CXBMCRenderManager::WaitPresentTime(double presenttime)
 {
   int fps = g_VideoReferenceClock.GetRefreshRate();
   if(fps <= 0)
@@ -143,16 +143,11 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
   double target    = 0.5;
   double error     = ( clock - presenttime ) / frametime - target;
 
-  // a full frametime off doesn't matter
-  while(error >   1.0) error -= 1.0;
-  while(error < - 1.0) error += 1.0;
-
   m_presenterr   = error;
 
-  // if error is way of, don't use it
-  if(error > target
-  || error < target - 1.0)
-    return;
+  // correct error so it targets the closest vblank
+  while(error >   target) error -= 1.0;
+  while(error < - target) error += 1.0;
 
   // scale the error used for correction, 
   // based on how much buffer we have on
@@ -171,7 +166,7 @@ void CXBoxRenderManager::WaitPresentTime(double presenttime)
   //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
 }
 
-CStdString CXBoxRenderManager::GetVSyncState()
+CStdString CXBMCRenderManager::GetVSyncState()
 {
   CStdString state;
   state.Format("sync:%+3d%% error:%2d%%"
@@ -180,7 +175,7 @@ CStdString CXBoxRenderManager::GetVSyncState()
   return state;
 }
 
-bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   /* all frames before this should be rendered */
   WaitPresentTime(m_presenttime);
@@ -209,14 +204,14 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
   return result;
 }
 
-bool CXBoxRenderManager::IsConfigured()
+bool CXBMCRenderManager::IsConfigured()
 {
   if (!m_pRenderer)
     return false;
   return m_pRenderer->IsConfigured();
 }
 
-void CXBoxRenderManager::Update(bool bPauseDrawing)
+void CXBMCRenderManager::Update(bool bPauseDrawing)
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -227,7 +222,7 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
   }
 }
 
-void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   CSharedLock lock(m_sharedSection);
   if (!m_pRenderer)
@@ -242,7 +237,7 @@ void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 #endif
 }
 
-unsigned int CXBoxRenderManager::PreInit()
+unsigned int CXBMCRenderManager::PreInit()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -297,7 +292,7 @@ unsigned int CXBoxRenderManager::PreInit()
   return m_pRenderer->PreInit();
 }
 
-void CXBoxRenderManager::UnInit()
+void CXBMCRenderManager::UnInit()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -309,21 +304,21 @@ void CXBoxRenderManager::UnInit()
     m_pRenderer->UnInit();
 }
 
-void CXBoxRenderManager::SetupScreenshot()
+void CXBMCRenderManager::SetupScreenshot()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->SetupScreenshot();
 }
 
-void CXBoxRenderManager::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
+void CXBMCRenderManager::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
 }
 
-void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
     timestamp =  GetPresentTime() + MAXPRESENTDELAY;
@@ -376,7 +371,7 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   m_presentevent.WaitMSec(1); // we give the application thread 1ms to present
 }
 
-float CXBoxRenderManager::GetMaximumFPS()
+float CXBMCRenderManager::GetMaximumFPS()
 {
   float fps;
 
@@ -403,7 +398,7 @@ float CXBoxRenderManager::GetMaximumFPS()
   return fps;
 }
 
-bool CXBoxRenderManager::SupportsBrightness()
+bool CXBMCRenderManager::SupportsBrightness()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -411,7 +406,7 @@ bool CXBoxRenderManager::SupportsBrightness()
   return false;
 }
 
-bool CXBoxRenderManager::SupportsContrast()
+bool CXBMCRenderManager::SupportsContrast()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -419,7 +414,7 @@ bool CXBoxRenderManager::SupportsContrast()
   return false;
 }
 
-bool CXBoxRenderManager::SupportsGamma()
+bool CXBMCRenderManager::SupportsGamma()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -427,7 +422,7 @@ bool CXBoxRenderManager::SupportsGamma()
   return false;
 }
 
-void CXBoxRenderManager::Present()
+void CXBMCRenderManager::Present()
 {
   CSharedLock lock(m_sharedSection);
 
@@ -470,7 +465,7 @@ void CXBoxRenderManager::Present()
 }
 
 /* simple present method */
-void CXBoxRenderManager::PresentSingle()
+void CXBMCRenderManager::PresentSingle()
 {
   CSingleLock lock(g_graphicsContext);
 
@@ -483,7 +478,7 @@ void CXBoxRenderManager::PresentSingle()
 
 /* new simpler method of handling interlaced material, *
  * we just render the two fields right after eachother */
-void CXBoxRenderManager::PresentBob()
+void CXBMCRenderManager::PresentBob()
 {
   CSingleLock lock(g_graphicsContext);
 
@@ -509,7 +504,7 @@ void CXBoxRenderManager::PresentBob()
 #endif
 }
 
-void CXBoxRenderManager::PresentBlend()
+void CXBMCRenderManager::PresentBlend()
 {
   CSingleLock lock(g_graphicsContext);
 
@@ -531,7 +526,7 @@ void CXBoxRenderManager::PresentBlend()
 
 /* renders the two fields as one, but doing fieldbased *
  * scaling then reinterlaceing resulting image         */
-void CXBoxRenderManager::PresentWeave()
+void CXBMCRenderManager::PresentWeave()
 {
   CSingleLock lock(g_graphicsContext);
 
@@ -557,7 +552,7 @@ void CXBoxRenderManager::PresentWeave()
 #endif
 }
 
-void CXBoxRenderManager::Recover()
+void CXBMCRenderManager::Recover()
 {
 #ifdef HAVE_LIBVDPAU
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);

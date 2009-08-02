@@ -42,7 +42,9 @@ GUIFontManager::GUIFontManager(void)
 }
 
 GUIFontManager::~GUIFontManager(void)
-{}
+{
+  Clear();
+}
 
 CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes)
 {

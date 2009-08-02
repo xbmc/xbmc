@@ -23,8 +23,8 @@
 #include "FileCDDA.h"
 #include <sys/stat.h>
 #include "Util.h"
-#include "DetectDVDType.h"
 #include "URL.h"
+#include "MediaManager.h"
 
 using namespace MEDIA_DETECT;
 using namespace XFILE;
@@ -45,14 +45,17 @@ CFileCDDA::~CFileCDDA(void)
 
 bool CFileCDDA::Open(const CURL& url)
 {
-  if (!CDetectDVDMedia::IsDiscInDrive() || !IsValidFile(url))
+  CStdString strURL;
+  url.GetURLWithoutFilename(strURL);
+
+  if (!g_mediaManager.IsDiscInDrive(strURL) || !IsValidFile(url))
     return false;
 
   // Open the dvd drive
 #ifdef _LINUX
-  m_pCdIo = m_cdio->cdio_open(m_cdio->GetDeviceFileName(), DRIVER_UNKNOWN);
+  m_pCdIo = m_cdio->cdio_open(g_mediaManager.TranslateDevicePath(strURL), DRIVER_UNKNOWN);
 #elif defined(_WIN32PC)
-  m_pCdIo = m_cdio->cdio_open_win32(m_cdio->GetDeviceFileName());
+  m_pCdIo = m_cdio->cdio_open_win32(g_mediaManager.TranslateDevicePath(strURL, true));
 #else
   m_pCdIo = m_cdio->cdio_open_win32("D:");
 #endif
@@ -110,7 +113,7 @@ int CFileCDDA::Stat(const CURL& url, struct __stat64* buffer)
 
 unsigned int CFileCDDA::Read(void* lpBuf, __int64 uiBufSize)
 {
-  if (!m_pCdIo || !CDetectDVDMedia::IsDiscInDrive())
+  if (!m_pCdIo || !g_mediaManager.IsDiscInDrive())
     return 0;
 
   int iSectorCount = (int)uiBufSize / CDIO_CD_FRAMESIZE_RAW;

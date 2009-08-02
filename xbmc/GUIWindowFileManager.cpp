@@ -48,6 +48,7 @@
 #include "Favourites.h"
 #include "PlayList.h"
 #include "utils/AsyncFileCopy.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -305,7 +306,7 @@ void CGUIWindowFileManager::OnSort(int iList)
           pItem->SetFileSizeLabel();
         }
       }
-      else if (pItem->IsDVD() && CDetectDVDMedia::IsDiscInDrive())
+      else if (pItem->IsDVD() && g_mediaManager.IsDiscInDrive())
       {
         ULARGE_INTEGER ulBytesTotal;
         if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), NULL, &ulBytesTotal, NULL))
@@ -612,9 +613,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 {
   if ( iDriveType == CMediaSource::SOURCE_TYPE_DVD )
   {
-    CDetectDVDMedia::WaitMediaReady();
-
-    if ( !CDetectDVDMedia::IsDiscInDrive() )
+    if ( !g_mediaManager.IsDiscInDrive() )
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       int iList = GetFocusedList();

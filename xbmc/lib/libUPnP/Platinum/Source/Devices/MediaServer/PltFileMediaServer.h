@@ -135,6 +135,7 @@ protected:
     NPT_HttpUrl                    m_FileBaseUri;
     NPT_HttpUrl                    m_AlbumArtBaseUri;
     NPT_List<PLT_MetadataHandler*> m_MetadataHandlers;
+    bool                           m_FilterUnknownOut;
 };
 
 #endif /* _PLT_FILE_MEDIA_SERVER_H_ */

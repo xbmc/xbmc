@@ -369,7 +369,7 @@ htsp_tcp_read(socket_t fd, void *buf, size_t len)
 int
 htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
 {
-  int x, tot = 0;
+  int x, tot = 0, val, err;
   fd_set fd_read;
   struct timeval tv;
 
@@ -388,17 +388,23 @@ htsp_tcp_read_timeout(socket_t fd, char *buf, size_t len, int timeout)
     if(x == 0)
       return ETIMEDOUT;
 
-    x = recv(fd, buf + tot, len - tot, MSG_PEEK);
-    if(x == 0)
-      continue;
-    else if(x == -1)
-      return WSAGetLastError();
+    val = 1;
+    ioctlsocket(fd, FIONBIO, &val);
 
-    x = recv(fd, buf + tot, len - tot, 0);
+    x   = recv(fd, buf + tot, len - tot, 0);
+    err = WSAGetLastError();
+
+    val = 0;
+    ioctlsocket(fd, FIONBIO, &val);
+
     if(x == 0)
       return ECONNRESET;
     else if(x == -1)
-      return WSAGetLastError();
+    {
+      if(err == EAGAIN)
+        continue;
+      return err;
+    }
 
     tot += x;
   }

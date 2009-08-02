@@ -149,6 +149,7 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_ac3Gain = 12.0f;
+  g_advancedSettings.m_audioApplyDrc = true;      
 
   g_advancedSettings.m_karaokeSyncDelayCDG = 0.0f;
   g_advancedSettings.m_karaokeSyncDelayLRC = 0.0f;
@@ -226,8 +227,10 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "special://temp/";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
-  g_advancedSettings.m_videoCleanRegExps.push_back("(\\[.*\\])");
+  g_advancedSettings.m_videoCleanDateTimeRegExp = "(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-][^0-9]|$)";
+
+  g_advancedSettings.m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  g_advancedSettings.m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("-trailer");
   g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
@@ -287,6 +290,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
   g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
   g_advancedSettings.m_bVideoLibraryExportAutoThumbs = false;
+  g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -1150,6 +1154,7 @@ void CSettings::LoadAdvancedSettings()
       GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromScanRegExps);
 
     XMLUtils::GetString(pElement, "audiohost", g_advancedSettings.m_audioHost);
+    XMLUtils::GetBoolean(pElement, "applydrc", g_advancedSettings.m_audioApplyDrc);        
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -1218,8 +1223,9 @@ void CSettings::LoadAdvancedSettings()
 
     pVideoExcludes = pElement->FirstChildElement("cleanstrings");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanStringRegExps);
 
+    XMLUtils::GetString(pElement,"cleandatetime", g_advancedSettings.m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"postprocessing",g_advancedSettings.m_videoPPFFmpegType);
   }
 
@@ -1247,6 +1253,10 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", g_advancedSettings.m_bVideoLibraryExportAutoThumbs);
+    
+    TiXmlElement* pMyMovies = pElement->FirstChildElement("mymovies");
+    if (pMyMovies)
+      XMLUtils::GetBoolean(pMyMovies, "categoriestogenres", g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres);
   }
   // Backward-compatibility of ExternalPlayer config
   pElement = pRootElement->FirstChildElement("externalplayer");
@@ -1879,7 +1889,9 @@ bool CSettings::LoadProfile(int index)
     }
 
     // to set labels - shares are reloaded
+#ifndef _WIN32PC
     CDetectDVDMedia::UpdateState();
+#endif
     // init windows
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);
     m_gWindowManager.SendMessage(msg);
@@ -2038,8 +2050,8 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
     profile.setProgramsLocked(bHas);
 
-    LockType iLockMode=LOCK_MODE_EVERYONE;
-    int lockMode;
+    LockType iLockMode;
+    int lockMode = (int)LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",lockMode);
     iLockMode = (LockType)lockMode;
 
@@ -2452,7 +2464,7 @@ void CSettings::Clear()
   m_videoSources.clear();
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
-  g_advancedSettings.m_videoCleanRegExps.clear();
+  g_advancedSettings.m_videoCleanStringRegExps.clear();
   g_advancedSettings.m_moviesExcludeFromScanRegExps.clear();
   g_advancedSettings.m_tvshowExcludeFromScanRegExps.clear();
   g_advancedSettings.m_videoExcludeFromListingRegExps.clear();

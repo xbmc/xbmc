@@ -40,7 +40,6 @@
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
-#include "DetectDVDType.h"
 #include "Autorun.h"
 #include "FileSystem/HDDirectory.h"
 #include "FileSystem/StackDirectory.h"
@@ -105,6 +104,7 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "Crc32.h"
+#include "utils/RssReader.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -207,6 +207,8 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
 
   if (url.GetProtocol() == "rss")
   {
+    url.SetProtocol("http");
+    url.GetURL(path);
     CRssFeed feed;
     feed.Init(path);
     feed.ReadFeed();
@@ -277,7 +279,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 {
   const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
 
-  CStdString strFileNameTemp = strFileName;
+  CStdString strTitleAndYear = strFileName;
   CStdString strFileNameLower = strFileName;
   strFileNameLower.MakeLower();
 
@@ -323,9 +325,9 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         // The extension will then be added back on at the end - there is no reason
         // to clean it off here. It will be cleaned off during the display routine, if
         // the settings to hide extensions are turned on.
-        CStdString strFileNoExt = strFileNameTemp;
+        CStdString strFileNoExt = strTitleAndYear;
         RemoveExtension(strFileNoExt);
-        CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
+        CStdString strFileExt = strTitleAndYear.Right(strTitleAndYear.length() - strFileNoExt.length());
         CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
         strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
 
@@ -349,7 +351,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         strFileTitle += reg.GetMatch(3);
 
         // everything after the regexp match
-        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
+        strFileTitle += strTitleAndYear.Mid(iFoundToken + iRegLength);
 
         return true;
       }
@@ -396,41 +398,48 @@ void CUtil::RemoveExtension(CStdString& strFileName)
   }
 }
 
-void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
+void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bIsFolder /* = false */)
 {
+
+  strTitleAndYear = strFileName;
 
   if (strFileName.Equals(".."))
    return;
 
-  const CStdStringArray &regexps = g_advancedSettings.m_videoCleanRegExps;
+  const CStdStringArray &regexps = g_advancedSettings.m_videoCleanStringRegExps;
 
   CRegExp reTags, reYear;
-  CStdString strYear, strExtension;
-  CStdString strFileNameTemp = strFileName;
+  CStdString strExtension;
 
   if (!bIsFolder)
   {
-    GetExtension(strFileNameTemp, strExtension);
-    RemoveExtension(strFileNameTemp);
+    GetExtension(strTitleAndYear, strExtension);
+    RemoveExtension(strTitleAndYear);
   }
 
-  reYear.RegComp("(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
-  if (reYear.RegFind(strFileNameTemp.c_str()) >= 0)
+  if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
-    strFileNameTemp = reYear.GetReplaceString("\\1");
-    strYear = reYear.GetReplaceString("\\2");
+    CLog::Log(LOGERROR, "%s: Invalid datetime clean RegExp:'%s'", __FUNCTION__, g_advancedSettings.m_videoCleanDateTimeRegExp.c_str());
+  }
+  else
+  {
+    if (reYear.RegFind(strTitleAndYear.c_str()) >= 0)
+    {
+      strTitleAndYear = reYear.GetReplaceString("\\1");
+      strYear = reYear.GetReplaceString("\\2");
+    }
   }
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     if (!reTags.RegComp(regexps[i].c_str()))
     { // invalid regexp - complain in logs
-      CLog::Log(LOGERROR, "%s: Invalid clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
+      CLog::Log(LOGERROR, "%s: Invalid string clean RegExp:'%s'", __FUNCTION__, regexps[i].c_str());
       continue;
     }
     int j=0;
     if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
-      strFileNameTemp = strFileNameTemp.Mid(0, j);
+      strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
   // final cleanup - special characters used instead of spaces:
@@ -440,31 +449,31 @@ void CUtil::CleanString(CStdString& strFileName, bool bIsFolder /* = false */)
   // "Dr..StrangeLove" - hopefully no one would have anything like this.
   {
     bool initialDots = true;
-    bool alreadyContainsSpace = (strFileNameTemp.Find(' ') >= 0);
+    bool alreadyContainsSpace = (strTitleAndYear.Find(' ') >= 0);
 
-    for (int i = 0; i < (int)strFileNameTemp.size(); i++)
+    for (int i = 0; i < (int)strTitleAndYear.size(); i++)
     {
-      char c = strFileNameTemp.GetAt(i);
+      char c = strTitleAndYear.GetAt(i);
 
       if (c != '.')
         initialDots = false;
 
       if ((c == '_') || ((!alreadyContainsSpace) && !initialDots && (c == '.')))
       {
-        strFileNameTemp.SetAt(i, ' ');
+        strTitleAndYear.SetAt(i, ' ');
       }
     }
   }
 
-  strFileName = strFileNameTemp.Trim();
+  strTitle = strTitleAndYear.Trim();
 
   // append year
   if (!strYear.IsEmpty())
-    strFileName = strFileName + " (" + strYear + ")";
+    strTitleAndYear = strTitle + " (" + strYear + ")";
 
   // restore extension if needed
   if (!g_guiSettings.GetBool("filelists.hideextensions") && !bIsFolder)
-    strFileName += strExtension;
+    strTitleAndYear += strExtension;
 
 }
 
@@ -1207,7 +1216,7 @@ void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strPr
 
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
-  if ( !CDetectDVDMedia::IsDiscInDrive() )
+  if ( !g_mediaManager.IsDiscInDrive() )
   {
     strIcon = "DefaultDVDEmpty.png";
     return ;
@@ -1215,7 +1224,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
   if ( IsDVD(strPath) )
   {
-    CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     //  xbox DVD
     if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
     {
@@ -1228,7 +1237,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
   if ( IsISO9660(strPath) )
   {
-    CCdInfo* pInfo = CDetectDVDMedia::GetCdInfo();
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";
@@ -1844,7 +1853,7 @@ void CUtil::PlayDVD()
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
   CFileItem item("dvd://1", false);
-  item.SetLabel(CDetectDVDMedia::GetDVDLabel());
+  item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
 }
 
@@ -2336,8 +2345,10 @@ const BUILT_IN commands[] = {
   { "SlideShow",                  true,   "Run a slideshow from the specified directory" },
   { "RecursiveSlideShow",         true,   "Run a slideshow from the specified directory, including all subdirs" },
   { "ReloadSkin",                 false,  "Reload XBMC's skin" },
+  { "RefreshRSS",                 false,  "Reload RSS feeds from RSSFeeds.xml"},
   { "PlayerControl",              true,   "Control the music or video player" },
   { "Playlist.PlayOffset",        true,   "Start playing from a particular offset in the playlist" },
+  { "Playlist.Clear",             false,  "Clear the current playlist" },
   { "EjectTray",                  false,  "Close or open the DVD tray" },
   { "AlarmClock",                 true,   "Prompt for a length of time and start an alarm clock" },
   { "CancelAlarm",                true,   "Cancels an alarm" },
@@ -2717,9 +2728,27 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // set fullscreen or windowed
     if (params2.size() >= 2 && params2[1] == "1")
       g_stSettings.m_bStartVideoWindowed = true;
-    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
-      item.m_lStartOffset = STARTOFFSET_RESUME;
 
+    // ask if we need to check guisettings to resume
+    bool askToResume = true;
+    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
+    {
+      // force the item to resume (if applicable) (see CApplication::PlayMedia)
+      item.m_lStartOffset = STARTOFFSET_RESUME;
+      askToResume = false;
+    }
+
+    if ((params2.size() == 2 && params2[1].Equals("noresume")) || (params2.size() == 3 && params2[2].Equals("noresume")))
+    {
+      // force the item to start at the beginning (m_lStartOffset is initialized to 0)
+      askToResume = false;
+    }
+
+    if ( askToResume == true )
+    {
+      if ( CGUIWindowVideoBase::OnResumeShowMenu(item) == false )
+        return false;
+    }
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
@@ -2798,6 +2827,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     //  Reload the skin
     g_application.ReloadSkin();
+  }
+  else if (execute.Equals("refreshrss"))
+  {
+    g_rssManager.Stop();
+    g_settings.LoadRSSFeeds();
+    g_rssManager.Start();
   }
   else if (execute.Equals("playercontrol"))
   {
@@ -3008,6 +3043,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // get current playlist
     int pos = atol(parameter.c_str());
     g_playlistPlayer.PlayNext(pos);
+  }
+  else if (execute.Equals("playlist.clear"))
+  {
+    g_playlistPlayer.Clear();
   }
   else if (execute.Equals("ejecttray"))
   {
