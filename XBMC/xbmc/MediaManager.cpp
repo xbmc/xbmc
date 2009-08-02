@@ -45,6 +45,7 @@ class CMediaManager g_mediaManager;
 
 CMediaManager::CMediaManager()
 {
+  m_bhasoptical = false;
 }
 
 bool CMediaManager::LoadSources()
@@ -286,6 +287,9 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
 
 CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool bReturnAsDevice)
 {
+  if(!m_bhasoptical)
+    return "";
+
   CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
@@ -295,7 +299,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
 #ifdef _WIN32PC
   if(bReturnAsDevice == false)
     strDevice.Replace("\\\\.\\","");
-  else if(strDevice[1]==':')
+  else if(!strDevice.empty() && strDevice[1]==':')
     strDevice.Format("\\\\.\\%c:", strDevice[0]);
 
   CUtil::RemoveSlashAtEnd(strDevice);
@@ -305,6 +309,9 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
 
 bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 {
+  if(!m_bhasoptical)
+    return false;
+
 #ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
   if(GetDriveStatus(devicePath) == DRIVE_CLOSED_MEDIA_PRESENT)
@@ -319,6 +326,9 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
+  if(!m_bhasoptical)
+    return false;
+
 #ifdef _WIN32PC
   CCdInfo* pCdInfo = GetCdInfo(devicePath);
   if(pCdInfo != NULL && pCdInfo->IsAudio(1))
@@ -337,6 +347,9 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
 
 DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
+  if(!m_bhasoptical)
+    return DRIVE_NOT_READY;
+
 #ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
@@ -366,6 +379,9 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 
 CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
 {
+  if(!m_bhasoptical)
+    return NULL;
+
 #ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
   CCdInfo* pCdInfo=NULL;
@@ -388,6 +404,9 @@ CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
 
 bool CMediaManager::RemoveCdInfo(const CStdString& devicePath)
 {
+  if(!m_bhasoptical)
+    return false;
+
   CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath, true);
 
@@ -406,6 +425,9 @@ bool CMediaManager::RemoveCdInfo(const CStdString& devicePath)
 
 CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
 {
+  if(!m_bhasoptical)
+    return "";
+
 #ifdef _WIN32PC
   CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = TranslateDevicePath(devicePath);
@@ -418,4 +440,10 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
 #else
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
+}
+
+void CMediaManager::SetHasOpticalDrive(bool bstatus)
+{
+  CSingleLock waitLock(m_muAutoSource);
+  m_bhasoptical = bstatus;
 }
