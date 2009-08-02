@@ -149,4 +149,43 @@
 		<nine>9</nine>
 		<zero>0</zero>
 	</remote>
+
+	<remote device="anysee">
+		<pause>pause</pause>
+		<stop>stop</stop>
+		<forward>f1</forward>
+		<reverse>f2</reverse>
+		<left>left</left>
+		<right>right</right>
+		<up>chan-up</up>
+		<down>chan-down</down>
+		<select>ok</select>
+		<back>exit</back>
+		<menu>menu</menu>
+		<title>play</title>
+		<info>info</info>
+		<skipplus>jump-fwd</skipplus>
+		<skipminus>jump-back</skipminus>
+		<display>size</display>
+		<start>star</start>
+		<record>rec</record>
+		<volumeplus></volumeplus>
+		<volumeminus></volumeminus>
+		<mute>mute</mute>
+		<power>power</power>
+		<one>1</one>
+		<two>2</two>
+		<three>3</three>
+		<four>4</four>
+		<five>5</five>
+		<six>6</six>
+		<seven>7</seven>
+		<eight>8</eight>
+		<nine>9</nine>
+		<zero>0</zero>
+		<mytv>red</mytv>
+		<mymusic>green</mymusic>
+		<mypictures>yellow</mypictures>
+		<myvideo>blue</myvideo>
+	</remote>
 </lircmap>
