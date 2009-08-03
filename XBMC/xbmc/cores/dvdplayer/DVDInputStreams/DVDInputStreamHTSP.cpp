@@ -155,8 +155,9 @@ bool CDVDInputStreamHTSP::NextChannel()
     return false;
 
   SChannels::iterator start = m_channels.find(m_channel);
-  const_circular_iter<SChannels> it(m_channels, m_channels.find(m_channel));
-
+  const_circular_iter<SChannels::iterator> it(m_channels.begin()
+                                            , m_channels.end()
+                                            , m_channels.find(m_channel));
   while(++it != start)
   {
     if(m_tag == 0 || it->second.MemberOf(m_tag))
@@ -172,8 +173,9 @@ bool CDVDInputStreamHTSP::PrevChannel()
     return false;
 
   SChannels::iterator start = m_channels.find(m_channel);
-  const_circular_iter<SChannels> it(m_channels, m_channels.find(m_channel));
-
+  const_circular_iter<SChannels::iterator> it(m_channels.begin()
+                                            , m_channels.end()
+                                            , m_channels.find(m_channel));
   while(--it != start)
   {
     if(m_tag == 0 || it->second.MemberOf(m_tag))

@@ -28,7 +28,11 @@
 #define DEFAULT_THUMB_SIZE  256
 #else  // MID
 #define DEFAULT_SKIN        "PM3.HD"
+#ifdef __APPLE__
+#define DEFAULT_VSYNC       VSYNC_ALWAYS
+#else
 #define DEFAULT_VSYNC       VSYNC_DRIVER
+#endif
 #define DEFAULT_THUMB_SIZE  512
 #endif // MID
 
@@ -71,6 +75,19 @@
    makes sense to leave all the profile settings in a user writeable location
    like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
+
+struct TVShowRegexp
+{
+  bool byDate;
+  CStdString regexp;
+  TVShowRegexp(bool d, const CStdString& r)
+  {
+    byDate = d;
+    regexp = r;
+  }
+};
+
+typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
 class CSkinString
 {
@@ -170,12 +187,13 @@ public:
     int m_musicResample;
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
+    int m_videoIgnoreAtEnd;
     CStdString m_audioHost;
-    
+
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
     float m_videoPlayCountMinimumPercent;
-        
+
     float m_slideshowBlackBarCompensation;
     float m_slideshowZoomAmount;
     float m_slideshowPanAmount;
@@ -210,7 +228,7 @@ public:
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
-    CStdStringArray m_tvshowStackRegExps;
+    SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
     CStdString m_tvshowMultiPartStackRegExp;
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
@@ -268,6 +286,7 @@ public:
     bool m_fullScreen;
     bool m_startFullScreen;
 #endif
+    bool m_alwaysOnTop;  /* makes xbmc to run always on top .. win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;
     bool m_GLRectangleHack;
@@ -444,6 +463,7 @@ public:
 
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
+  void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 

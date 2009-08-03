@@ -419,15 +419,15 @@ namespace VIDEO
       if (info2.strContent.Equals("None")) // skip
         continue;
 
-    if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
-    {
-      CScraperParser parser;
-      if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
+      if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
       {
-        info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
-        info2.settings.SaveFromDefault();
+        CScraperParser parser;
+        if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
+        {
+          info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
+          info2.settings.SaveFromDefault();
+        }
       }
-    }
 
       // we might override scraper
       if (info2.strContent == info.strContent)
@@ -793,7 +793,7 @@ namespace VIDEO
     }
 
     // enumerate
-    CStdStringArray expression = g_advancedSettings.m_tvshowStackRegExps;
+    SETTINGS_TVSHOWLIST expression = g_advancedSettings.m_tvshowStackRegExps;
     CStdStringArray regexps = g_advancedSettings.m_tvshowExcludeFromScanRegExps;
 
     for (int i=0;i<items.Size();++i)
@@ -814,80 +814,159 @@ namespace VIDEO
       bool bMatched=false;
       for (unsigned int j=0;j<expression.size();++j)
       {
+        if (expression[j].byDate)
+        {
+          bMatched = ProcessItemByDate(items[i],episodeList,expression[j].regexp);
+        }
+        else
+        {
+          bMatched = ProcessItemNormal(items[i],episodeList,expression[j].regexp);
+        }
         if (bMatched)
           break;
-
-        CRegExp reg;
-        if (!reg.RegComp(expression[j]))
-          break;
-
-        CStdString strLabel=items[i]->m_strPath;
-        strLabel.MakeLower();
-//        CLog::Log(LOGDEBUG,"running expression %s on label %s",expression[j].c_str(),strLabel.c_str());
-        int regexppos, regexp2pos;
-
-        SEpisode myEpisode;
-        myEpisode.strPath = items[i]->m_strPath;
-
-        if ((regexppos = reg.RegFind(strLabel.c_str())) > -1)
-        {
-          char* season = reg.GetReplaceString("\\1");
-          char* episode = reg.GetReplaceString("\\2");
-
-          if (season && episode)
-          {
-            CLog::Log(LOGDEBUG,"found match %s (s%se%s) [%s]",strLabel.c_str(),season,episode,expression[j].c_str());
-            myEpisode.iSeason = atoi(season);
-            myEpisode.iEpisode = atoi(episode);
-            episodeList.push_back(myEpisode);
-            bMatched = true;
-            free(season);
-            free(episode);
-
-            // check the remainder of the string for any further episodes.
-            CRegExp reg2;
-            if (!reg2.RegComp(g_advancedSettings.m_tvshowMultiPartStackRegExp))
-              break;
-
-            char *remainder = reg.GetReplaceString("\\3");
-            int offset = 0;
-
-            // we want "long circuit" OR below so that both offsets are evaluated
-            while (((regexp2pos = reg2.RegFind(remainder + offset)) > -1) | ((regexppos = reg.RegFind(remainder + offset)) > -1))
-            {
-              if (((regexppos <= regexp2pos) && regexppos != -1) ||
-                 (regexppos >= 0 && regexp2pos == -1))
-              {
-                season = reg.GetReplaceString("\\1");
-                episode = reg.GetReplaceString("\\2");
-                myEpisode.iSeason = atoi(season);
-                myEpisode.iEpisode = atoi(episode);
-                free(season);
-                free(episode);
-                CLog::Log(LOGDEBUG, "adding new season %u, multipart episode %u", myEpisode.iSeason, myEpisode.iEpisode);
-                episodeList.push_back(myEpisode);
-                free(remainder);
-                remainder = reg.GetReplaceString("\\3");
-                offset = 0;
-              }
-              else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
-                       (regexp2pos >= 0 && regexppos == -1))
-              {
-                episode = reg2.GetReplaceString("\\1");
-                myEpisode.iEpisode = atoi(episode);
-                free(episode);
-                CLog::Log(LOGDEBUG, "adding multipart episode %u", myEpisode.iEpisode);
-                episodeList.push_back(myEpisode);
-                offset += regexp2pos + reg2.GetFindLen();
-              }
-            }
-            free(remainder);
-          }
-        }
       }
+
       if (!bMatched)
         CLog::Log(LOGDEBUG,"could not enumerate file %s",items[i]->m_strPath.c_str());
+
     }
+  }
+
+  bool CVideoInfoScanner::ProcessItemNormal(CFileItemPtr item, EPISODES &episodeList, CStdString regexp)
+  {
+    CRegExp reg;
+    if (!reg.RegComp(regexp))
+      return false;
+
+    CStdString strLabel=item->m_strPath;
+    strLabel.MakeLower();
+//    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
+    int regexppos, regexp2pos;
+
+    if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
+      return false;
+
+    char* season = reg.GetReplaceString("\\1");
+    char* episode = reg.GetReplaceString("\\2");
+
+    if (!season || !episode)
+    {
+      free(season);
+      free(episode);
+      return false;
+    }
+
+    CLog::Log(LOGDEBUG,"found episode based match %s (s%se%s) [%s]",strLabel.c_str(),season,episode,regexp.c_str());
+    SEpisode myEpisode;
+    myEpisode.strPath = item->m_strPath;
+    myEpisode.iSeason = atoi(season);
+    myEpisode.iEpisode = atoi(episode);
+    myEpisode.cDate.SetValid(false);
+    episodeList.push_back(myEpisode);
+    free(season);
+    free(episode);
+
+    // check the remainder of the string for any further episodes.
+    CRegExp reg2;
+    if (!reg2.RegComp(g_advancedSettings.m_tvshowMultiPartStackRegExp))
+      return true;
+
+    char *remainder = reg.GetReplaceString("\\3");
+    int offset = 0;
+
+    // we want "long circuit" OR below so that both offsets are evaluated
+    while (((regexp2pos = reg2.RegFind(remainder + offset)) > -1) | ((regexppos = reg.RegFind(remainder + offset)) > -1))
+    {
+      if (((regexppos <= regexp2pos) && regexppos != -1) ||
+         (regexppos >= 0 && regexp2pos == -1))
+      {
+        season = reg.GetReplaceString("\\1");
+        episode = reg.GetReplaceString("\\2");
+        myEpisode.iSeason = atoi(season);
+        myEpisode.iEpisode = atoi(episode);
+        myEpisode.cDate.SetValid(FALSE);
+        free(season);
+        free(episode);
+        CLog::Log(LOGDEBUG, "adding new season %u, multipart episode %u", myEpisode.iSeason, myEpisode.iEpisode);
+        episodeList.push_back(myEpisode);
+        free(remainder);
+        remainder = reg.GetReplaceString("\\3");
+        offset = 0;
+      }
+      else if (((regexp2pos < regexppos) && regexp2pos != -1) ||
+               (regexp2pos >= 0 && regexppos == -1))
+      {
+        episode = reg2.GetReplaceString("\\1");
+        myEpisode.iEpisode = atoi(episode);
+        free(episode);
+        CLog::Log(LOGDEBUG, "adding multipart episode %u", myEpisode.iEpisode);
+        episodeList.push_back(myEpisode);
+        offset += regexp2pos + reg2.GetFindLen();
+      }
+    }
+    free(remainder);
+    return true;
+  }
+
+  bool CVideoInfoScanner::ProcessItemByDate(CFileItemPtr item, EPISODES &episodeList, CStdString regexp)
+  {
+    CRegExp reg;
+    if (!reg.RegComp(regexp))
+      return false;
+
+    CStdString strLabel=item->m_strPath;
+    strLabel.MakeLower();
+//    CLog::Log(LOGDEBUG,"running expression %s on label %s",regexp.c_str(),strLabel.c_str());
+    int regexppos;
+
+    if ((regexppos = reg.RegFind(strLabel.c_str())) < 0)
+      return false;
+
+    bool bMatched = false;
+
+    char* param1 = reg.GetReplaceString("\\1");
+    char* param2 = reg.GetReplaceString("\\2");
+    char* param3 = reg.GetReplaceString("\\3");
+    if (param1 && param2 && param3)
+    {
+      // regular expression by date
+      int len1 = strlen( param1 );
+      int len2 = strlen( param2 );
+      int len3 = strlen( param3 );
+      char* day;
+      char* month;
+      char* year;
+      if (len1==4 && len2==2 && len3==2)
+      {
+        // yyyy mm dd format
+        bMatched = true;
+        year = param1;
+        month = param2;
+        day = param3;
+      }
+      else if (len1==2 && len2==2 && len3==4)
+      {
+        // mm dd yyyy format
+        bMatched = true;
+        year = param3;
+        month = param1;
+        day = param2;
+      }
+      if (bMatched)
+      {
+        CLog::Log(LOGDEBUG,"found date based match %s (Y%sm=%sd=%s) [%s]", strLabel.c_str(),year,month,day,regexp.c_str());
+        SEpisode myEpisode;
+        myEpisode.strPath = item->m_strPath;
+        myEpisode.iSeason = -1;
+        myEpisode.iEpisode = -1;
+        myEpisode.cDate.SetDate(atoi(year),atoi(month),atoi(day));
+        episodeList.push_back(myEpisode);
+      }
+    }
+    free(param1);
+    free(param2);
+    free(param3);
+    return bMatched;
   }
 
   long CVideoInfoScanner::AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir, CGUIDialogProgress* pDialog /* == NULL */)
@@ -1065,16 +1144,32 @@ namespace VIDEO
       std::pair<int,int> key;
       key.first = file->iSeason;
       key.second = file->iEpisode;
-      IMDB_EPISODELIST::iterator guide = episodes.find(key);
-      if (guide != episodes.end())
+      bool bFound = false;
+      IMDB_EPISODELIST::iterator guide = episodes.begin();;
+      
+      for (; guide != episodes.end(); ++guide )
       {
-        if (!m_IMDB.GetEpisodeDetails(guide->second,episodeDetails,pDlgProgress))
+        if (file->cDate.IsValid() && guide->cDate.IsValid() && file->cDate==guide->cDate)
+        {
+          bFound = true;
+          break;
+        }
+        if ((file->iEpisode!=-1) && (file->iSeason!=-1) && (key==guide->key))
+        {
+          bFound = true;
+          break;
+        }
+      }
+
+      if (bFound)
+      {
+        if (!m_IMDB.GetEpisodeDetails(guide->cScraperUrl,episodeDetails,pDlgProgress))
         {
           m_database.Close();
           return false;
         }
-        episodeDetails.m_iSeason = guide->first.first;
-        episodeDetails.m_iEpisode = guide->first.second;
+        episodeDetails.m_iSeason = guide->key.first;
+        episodeDetails.m_iEpisode = guide->key.second;
         if (m_pObserver)
         {
           CStdString strTitle;
@@ -1232,8 +1327,6 @@ namespace VIDEO
   {
     // Create a hash based on the filenames, filesize and filedate.  Also count the number of files
     if (0 == items.Size()) return 0;
-    unsigned char md5hash[16];
-    char md5HexString[33];
     XBMC::MD5 md5state;
     int count = 0;
     for (int i = 0; i < items.Size(); ++i)
@@ -1246,9 +1339,7 @@ namespace VIDEO
       if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
-    md5state.getDigest(md5hash);
-    XKGeneral::BytesToHexStr(md5hash, 16, md5HexString);
-    hash = md5HexString;
+    md5state.getDigest(hash);
     return count;
   }
 

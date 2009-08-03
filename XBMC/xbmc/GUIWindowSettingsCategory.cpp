@@ -85,6 +85,7 @@
 #include "FileItem.h"
 #include "GUIToggleButtonControl.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "File.h"
 
 #include "Zeroconf.h"
 #include "PowerManager.h"
@@ -891,6 +892,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("weather.plugin"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin", false));
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1287,6 +1293,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
       pControl->SetLabel2(g_weatherManager.GetAreaCity(pSetting->GetData()));
     }
+    else if (strSetting.Equals("weather.plugin"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+      g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
+    }
     else if (strSetting.Equals("system.leddisableonplayback"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(GetSetting(strSetting)->GetID());
@@ -1456,6 +1467,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
         ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
       g_weatherManager.ResetTimer();
     }
+  }
+
+  if (strSetting.Equals("weather.plugin"))
+  {
+    g_weatherManager.ResetTimer();
   }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
@@ -3244,8 +3260,9 @@ void CGUIWindowSettingsCategory::FillInVSyncs(CSetting *pSetting)
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-
+#ifndef __APPLE__
   pControl->AddLabel(g_localizeStrings.Get(13101) , VSYNC_DRIVER);
+#endif
   pControl->AddLabel(g_localizeStrings.Get(13106) , VSYNC_DISABLED);
   pControl->AddLabel(g_localizeStrings.Get(13107) , VSYNC_VIDEO);
   pControl->AddLabel(g_localizeStrings.Get(13108) , VSYNC_ALWAYS);
@@ -3839,6 +3856,39 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
     ++iter;
   }
 #endif
+}
+
+void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
+{
+  int j=0;
+  int k=0;
+  pControl->Clear();
+  // add our disable option
+  pControl->AddLabel("weather.com", j++);
+
+  CFileItemList items;
+  if (CDirectory::GetDirectory("special://home/plugins/weather/", items, "/", false))
+  {
+    for (int i=0; i<items.Size(); ++i)
+    {    
+      // create the full path to the plugin
+      CStdString plugin;
+      CStdString pluginPath = items[i]->m_strPath;
+      // remove slash at end so we can use the plugins folder as plugin name
+      CUtil::RemoveSlashAtEnd(pluginPath);
+      // add default.py to our plugin path to create the full path
+      CUtil::AddFileToFolder(pluginPath, "default.py", plugin);
+      if (XFILE::CFile::Exists(plugin))
+      {
+        // is this the users choice
+        if (CUtil::GetFileName(pluginPath).Equals(strSelected))
+          k = j;
+        // we want to use the plugins folder as name
+        pControl->AddLabel(CUtil::GetFileName(pluginPath), j++);
+      }
+    }
+  }
+  pControl->SetValue(k);
 }
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)

@@ -284,6 +284,22 @@ bool CGUISpinControl::OnMessage(CGUIMessage& message)
         MoveDown();
       return true;
 
+    case GUI_MSG_MOVE_OFFSET:
+      {
+        int count = (int)message.GetParam1();
+        while (count < 0)
+        {
+          MoveUp();
+          count++;
+        }
+        while (count > 0)
+        {
+          MoveDown();
+          count--;
+        }
+        return true;
+      }
+
     }
   }
   return false;
@@ -895,8 +911,8 @@ bool CGUISpinControl::IsFocusedOnUp() const
 void CGUISpinControl::ChangePage(int amount)
 {
   m_currentItem += amount * m_itemsPerPage;
-  if (m_currentItem >= m_numItems)
-    m_currentItem = m_numItems - 1;
+  if (m_currentItem > m_numItems - m_itemsPerPage)
+    m_currentItem = m_numItems - m_itemsPerPage;
   if (m_currentItem < 0)
     m_currentItem = 0;
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_currentItem);

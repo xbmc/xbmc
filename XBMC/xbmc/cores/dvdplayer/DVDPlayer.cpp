@@ -369,13 +369,13 @@ bool CDVDPlayer::CloseFile()
   m_Edl.Reset();
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
-#if defined(_LINUX) && defined(HAS_VIDEO_PLAYBACK)
-  g_renderManager.OnClose();
+#if defined(HAS_VIDEO_PLAYBACK)
+  g_renderManager.UnInit();
+#endif
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU)
     CloseVideoStream(!m_bAbortRequest);
 #endif //HAVE_LIBVDPAU
-#endif
   return true;
 }
 

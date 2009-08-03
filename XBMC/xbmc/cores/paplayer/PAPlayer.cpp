@@ -70,7 +70,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) : IPlayer(callback)
     m_channelCount[i]   = 0;
     m_sampleRate[i]     = 0;
     m_bitsPerSample[i]  = 0;
-    
+
     m_pAudioDecoder[i] = NULL;
     m_pcmBuffer[i] = NULL;
     m_bufferPos[i] = 0;
@@ -295,6 +295,8 @@ bool PAPlayer::CloseFileInternal(bool bAudioDevice /*= true*/)
 
   if(bAudioDevice)
     g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
+  else
+    FlushStreams();
 
   return true;
 }
@@ -442,8 +444,6 @@ void PAPlayer::Process()
   if (m_startEvent.WaitMSec(100))
   {
     m_startEvent.Reset();
-
-    m_callback.OnPlayBackStarted();
 
     do
     {
@@ -725,7 +725,16 @@ bool PAPlayer::ProcessPAP()
         retVal = RET_SUCCESS;
 
       if (retVal == RET_SLEEP && retVal2 == RET_SLEEP)
-        Sleep(1);
+      {
+        float maximumSleepTime = m_pAudioDecoder[m_currentStream]->GetCacheTime();
+        
+        if (m_pAudioDecoder[1 - m_currentStream])
+          maximumSleepTime = std::min(maximumSleepTime, m_pAudioDecoder[1 - m_currentStream]->GetCacheTime());
+
+        int sleep = std::max((int)((maximumSleepTime / 2.0f) * 1000.0f), 1);
+
+        Sleep(std::min(sleep, 15));
+      }
     }
     else
       Sleep(100);

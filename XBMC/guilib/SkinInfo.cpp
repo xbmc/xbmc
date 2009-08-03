@@ -31,7 +31,7 @@
 using namespace std;
 using namespace XFILE;
 
-#define SKIN_MIN_VERSION 2.0
+#define SKIN_MIN_VERSION 2.1
 
 CSkinInfo g_SkinInfo; // global
 

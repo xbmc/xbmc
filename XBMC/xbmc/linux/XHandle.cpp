@@ -188,8 +188,9 @@ BOOL WINAPI DuplicateHandle(
   SDL_LockMutex(hSourceHandle->m_internalLock);
   hSourceHandle->m_nRefCount++;
   SDL_UnlockMutex(hSourceHandle->m_internalLock);
-  
-  *lpTargetHandle = hSourceHandle;
+
+  if(lpTargetHandle)
+    *lpTargetHandle = hSourceHandle;
   
   return TRUE;
 }

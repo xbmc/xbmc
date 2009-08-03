@@ -26,6 +26,7 @@
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
 #include "Util.h"
+#include "lib/libPython/XBPython.h"
 
 #define CONTROL_BTNREFRESH             2
 #define CONTROL_SELECTLOCATION         3
@@ -51,6 +52,8 @@
 #define MAX_LOCATION                   3
 #define LOCALIZED_TOKEN_FIRSTID      370
 #define LOCALIZED_TOKEN_LASTID       395
+
+DWORD timeToCallPlugin = 1000;
 /*
 FIXME'S
 >strings are not centered
@@ -93,6 +96,10 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_SELECTLOCATION)
       {
+        // stop the plugin timer here, so the user has a full second
+        if (m_pluginTimer.IsRunning())
+          m_pluginTimer.Stop();
+
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SELECTLOCATION);
         m_gWindowManager.SendMessage(msg);
         m_iCurWeather = msg.GetParam1();
@@ -120,6 +127,10 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       UpdateLocations();
       SetProperties();
+      if (m_gWindowManager.GetActiveWindow() == WINDOW_WEATHER)
+        m_pluginTimer.StartZero();
+      else
+        CallPlugin();
     }
     break;
   }
@@ -227,6 +238,13 @@ void CGUIWindowWeather::Render()
   // update our controls
   UpdateButtons();
 
+  // call weather plugin
+  if (m_pluginTimer.IsRunning() && m_pluginTimer.GetElapsedMilliseconds() > timeToCallPlugin)
+  {
+    m_pluginTimer.Stop();
+    CallPlugin();
+  }
+
   CGUIWindow::Render();
 }
 
@@ -275,5 +293,41 @@ void CGUIWindowWeather::SetProperties()
     fanartcode = CUtil::GetFileName(g_weatherManager.m_dfForcast[i].m_szIcon);
     CUtil::RemoveExtension(fanartcode);
     SetProperty(day + "FanartCode", fanartcode);
+  }
+}
+
+void CGUIWindowWeather::CallPlugin()
+{
+  if (!g_guiSettings.GetString("weather.plugin", false).empty() && !g_guiSettings.GetString("weather.plugin", false).Equals(g_localizeStrings.Get(23001)))
+  {
+    // create the full path to the plugin
+    CStdString plugin = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin", false) + "/default.py";
+
+    // initialize our sys.argv variables
+    unsigned int argc = 2;
+    char ** argv = new char*[argc];
+    argv[0] = (char*)plugin.c_str();
+
+    // if plugin is running we wait for another timeout only when in weather window
+    if (m_gWindowManager.GetActiveWindow() == WINDOW_WEATHER)
+    {
+      int id = g_pythonParser.getScriptId(argv[0]);
+      if (id != -1 && g_pythonParser.isRunning(id))
+      {
+        m_pluginTimer.StartZero();
+        return;
+      }
+    }
+
+    // get the current locations area code
+    CStdString strSetting;
+    strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
+    const CStdString &areacode = g_weatherManager.GetAreaCode(g_guiSettings.GetString(strSetting)).c_str();
+    argv[1] = (char*)areacode.c_str();
+
+    // call our plugin, passing the areacode
+    g_pythonParser.evalFile(argv[0], argc, (const char**)argv);
+
+    CLog::Log(LOGDEBUG, "%s - Weather plugin called: %s (%s)", __FUNCTION__, argv[0], argv[1]);
   }
 }

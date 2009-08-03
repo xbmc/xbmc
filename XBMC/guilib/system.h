@@ -133,6 +133,9 @@
 #ifndef __APPLE__
 #define HAS_LIRC
 #endif
+#ifdef __APPLE__
+#define HAS_SPC_CODEC
+#endif
 #define HAS_AC3_CODEC
 #define HAS_DTS_CODEC
 #define HAS_CDDA_RIPPER
@@ -140,7 +143,7 @@
 #define HAS_FILESYSTEM_DAAP
 #define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
-#define HAS_PERFORMANCE_SAMPLE
+#undef HAS_PERFORMANCE_SAMPLE
 #define HAS_LINUX_NETWORK
 
 #include <unistd.h>

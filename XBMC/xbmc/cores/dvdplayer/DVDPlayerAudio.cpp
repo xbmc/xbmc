@@ -173,6 +173,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
 
   m_synctype = SYNC_DISCON;
   m_setsynctype = g_guiSettings.GetInt("videoplayer.synctype");
+  m_prevsynctype = -1;
   m_resampler.SetQuality(g_guiSettings.GetInt("videoplayer.resamplequality"));
 
   m_error = 0;
@@ -552,6 +553,14 @@ void CDVDPlayerAudio::Process()
       if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
         m_synctype = SYNC_DISCON;
 
+      if (m_synctype != m_prevsynctype)
+      {
+        char *synctypes[] = {(char*)"clock feedback", (char*)"skip/duplicate", (char*)"resample", (char*)"invalid"};
+        int synctype = (m_synctype >= 0 && m_synctype <= 2) ? m_synctype : 3;
+        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
+        m_prevsynctype = m_synctype;
+      }
+      
       // add any packets play
       packetadded = OutputPacket(audioframe);
     }

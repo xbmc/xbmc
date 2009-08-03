@@ -48,6 +48,7 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual DWORD GetChunkLen();
   virtual FLOAT GetDelay();
+  virtual FLOAT GetCacheTime();
   CALSADirectSound();
   virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CALSADirectSound();
@@ -83,6 +84,8 @@ private:
   bool m_bIsAllocated;
   bool m_bCanPause;
 
+  unsigned int m_uiBytesPerSecond;
+  unsigned int m_uiBufferSize;
   unsigned int m_uiSamplesPerSec;
   unsigned int m_uiBitsPerSample;
   unsigned int m_uiChannels;

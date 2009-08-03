@@ -238,8 +238,7 @@ bool CGUITextBox::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl)
       { // update our page
-        ResetAutoScrolling();
-        ScrollToOffset(message.GetParam1());
+        Scroll(message.GetParam1());
         return true;
       }
     }
@@ -272,6 +271,16 @@ void CGUITextBox::SetInfo(const CGUIInfoLabel &infoLabel)
   m_info = infoLabel;
 }
 
+void CGUITextBox::Scroll(unsigned int offset)
+{
+  ResetAutoScrolling();
+  if (m_lines.size() <= m_itemsPerPage)
+    return; // no need to scroll
+  if (offset > m_lines.size() - m_itemsPerPage)
+    offset = m_lines.size() - m_itemsPerPage; // on last page
+  ScrollToOffset(offset);
+}
+
 void CGUITextBox::ScrollToOffset(int offset, bool autoScroll)
 {
   m_scrollOffset = m_offset * m_itemHeight;
@@ -301,4 +310,33 @@ void CGUITextBox::ResetAutoScrolling()
   m_autoScrollDelayTime = 0;
   if (m_autoScrollRepeatAnim)
     m_autoScrollRepeatAnim->ResetAnimation();
+}
+
+unsigned int CGUITextBox::GetRows() const
+{
+  return m_lines.size();
+}
+
+int CGUITextBox::GetCurrentPage() const
+{
+  if (m_offset + m_itemsPerPage >= GetRows())  // last page
+    return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+  return m_offset / m_itemsPerPage + 1;
+}
+
+CStdString CGUITextBox::GetLabel(int info) const
+{
+  CStdString label;
+  switch (info)
+  {
+  case CONTAINER_NUM_PAGES:
+    label.Format("%u", (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage);
+    break;
+  case CONTAINER_CURRENT_PAGE:
+    label.Format("%u", GetCurrentPage());
+    break;
+  default:
+    break;
+  }
+  return label;
 }

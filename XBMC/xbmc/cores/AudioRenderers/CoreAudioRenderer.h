@@ -109,6 +109,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual HRESULT Deinitialize();
     virtual DWORD AddPackets(const void* data, DWORD len);
     virtual DWORD GetSpace();
+    virtual FLOAT GetCacheTime();
     virtual HRESULT Pause();
     virtual HRESULT Stop();
     virtual HRESULT Resume();

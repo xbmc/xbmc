@@ -45,9 +45,9 @@ bool CGLSLVertexShader::Compile()
 
   Free();
 
-  if(!GLEW_ARB_shading_language_100)
+  if(!GLEW_VERSION_2_0)
   {
-    CLog::Log(LOGERROR, "GL: GLSL shaders not supported");
+    CLog::Log(LOGERROR, "GL: GLSL vertex shaders not supported");
     return false;
   }
   
@@ -88,6 +88,9 @@ bool CGLSLVertexShader::Compile()
 
 void CGLSLVertexShader::Free()
 {
+  if(!GLEW_VERSION_2_0)
+    return;
+
   if (m_vertexShader)
     glDeleteShader(m_vertexShader);
   m_vertexShader = 0;
@@ -151,6 +154,12 @@ void CARBVertexShader::Free()
 //////////////////////////////////////////////////////////////////////
 bool CGLSLPixelShader::Compile()
 {
+  if(!GLEW_VERSION_2_0)
+  {
+    CLog::Log(LOGERROR, "GL: GLSL pixel shaders not supported");
+    return false;
+  }
+
   GLint params[4];
 
   Free();
@@ -198,6 +207,9 @@ bool CGLSLPixelShader::Compile()
 
 void CGLSLPixelShader::Free()
 {
+  if(!GLEW_VERSION_2_0)
+    return;
+
   if (m_pixelShader)
     glDeleteShader(m_pixelShader);
   m_pixelShader = 0;
@@ -261,6 +273,9 @@ void CARBPixelShader::Free()
 //////////////////////////////////////////////////////////////////////
 void CGLSLShaderProgram::Free()
 {
+  if(!GLEW_VERSION_2_0)
+    return;
+
   m_pVP->Free();
   VerifyGLState();
   m_pFP->Free();
@@ -276,18 +291,18 @@ void CGLSLShaderProgram::Free()
 
 bool CGLSLShaderProgram::CompileAndLink()
 {
-  GLint params[4];
-
-  // free resources
-  Free();
-  
   // check that we support shaders
-  if(!GLEW_ARB_shading_language_100)
+  if(!GLEW_VERSION_2_0)
   {
     CLog::Log(LOGERROR, "GL: GLSL shaders not supported");
     return false;
   }
   
+  GLint params[4];
+
+  // free resources
+  Free();
+
   // compiled vertex shader
   if (!m_pVP->Compile())
   {
@@ -361,6 +376,9 @@ bool CGLSLShaderProgram::CompileAndLink()
 
 bool CGLSLShaderProgram::Enable()
 {
+  if(!GLEW_VERSION_2_0)
+    return false;
+
   if (OK())
   {
     glUseProgram(m_shaderProgram);
@@ -381,6 +399,9 @@ bool CGLSLShaderProgram::Enable()
 
 void CGLSLShaderProgram::Disable()
 {
+  if(!GLEW_VERSION_2_0)
+    return;
+
   if (OK())
   {
     glUseProgram(0);

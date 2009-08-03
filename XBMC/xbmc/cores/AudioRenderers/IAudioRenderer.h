@@ -42,6 +42,7 @@ public:
   virtual void UnRegisterAudioCallback() = 0;
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
   virtual FLOAT GetDelay() = 0;
+  virtual FLOAT GetCacheTime() = 0;
 
   virtual DWORD AddPackets(const void* data, DWORD len) = 0;
   virtual bool IsResampling() { return false;};

@@ -66,7 +66,9 @@ bool CFrameBufferObject::Initialize()
 
   Cleanup();
 
+#ifndef HAS_SDL_GLES1
   glGenFramebuffersEXT(1, &m_fbo);
+#endif
   VerifyGLState();
 
   if (!m_fbo)
@@ -81,8 +83,10 @@ void CFrameBufferObject::Cleanup()
   if (!IsValid())
     return;
 
+#ifndef HAS_SDL_GLES1
   if (m_fbo)
     glDeleteFramebuffersEXT(1, &m_fbo);
+#endif
 
   if (m_texid)
     glDeleteTextures(1, &m_texid);
@@ -126,6 +130,7 @@ bool CFrameBufferObject::BindToTexture(GLenum target, GLuint texid)
     return false;
 
   m_bound = false;
+#ifndef HAS_SDL_GLES1
   glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_fbo);
   glBindTexture(target, texid);
   glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, target, texid, 0);
@@ -137,6 +142,7 @@ bool CFrameBufferObject::BindToTexture(GLenum target, GLuint texid)
     VerifyGLState();
     return false;
   }
+#endif
   m_bound = true;
   return true;
 }

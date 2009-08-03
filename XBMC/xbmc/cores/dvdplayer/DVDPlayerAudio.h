@@ -178,6 +178,7 @@ protected:
   //SYNC_DISCON, SYNC_SKIPDUP, SYNC_RESAMPLE
   int    m_synctype;
   int    m_setsynctype;
+  int    m_prevsynctype; //so we can print to the log
 
   double m_error;    //last average error
 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper name="fdb.pl" content="movies" thumb="fdbpl.png" language="pl">
+<scraper framework="1.0" date="2009-05-22" name="fdb.pl" content="movies" thumb="fdbpl.png" language="pl">
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.\1/title/tt\2/&lt;/url&gt;&lt;id&gt;tt\2&lt;/id&gt;"  dest="3">
 			<expression clear="yes" noclean="1">(imdb.com/)Title\?([0-9]*)</expression>

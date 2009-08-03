@@ -2,6 +2,7 @@ INCLUDES=-I. -I.. -I../../guilib -I../linux -I../utils -I../FileSystem -I../lib/
 
 .SUFFIXES : .m .mm
 
+# do not include eprintf.cpp as make links to libgcc.a where as xcode does not.
 SRCS = \
 	SDLMain.mm \
 	XBMCHelper.m \

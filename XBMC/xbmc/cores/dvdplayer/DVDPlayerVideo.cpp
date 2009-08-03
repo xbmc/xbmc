@@ -119,7 +119,7 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
   m_fForcedAspectRatio = 0;
   m_iNrOfPicturesNotToSkip = 0;
   InitializeCriticalSection(&m_critCodecSection);
-  m_messageQueue.SetMaxDataSize(20 * 256 * 1024);
+  m_messageQueue.SetMaxDataSize(40 * 256 * 1024);
   g_dvdPerformanceCounter.EnableVideoQueue(&m_messageQueue);
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
@@ -135,15 +135,6 @@ CDVDPlayerVideo::~CDVDPlayerVideo()
   StopThread();
   g_dvdPerformanceCounter.DisableVideoQueue();
   DeleteCriticalSection(&m_critCodecSection);
-
-#ifdef HAS_VIDEO_PLAYBACK
-  if(m_output.inited)
-  {
-    CLog::Log(LOGNOTICE, "%s - uninitting video device", __FUNCTION__);
-    g_renderManager.UnInit();
-  }
-#endif
-
   g_VideoReferenceClock.StopThread();
 }
 
@@ -774,7 +765,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 {
 #ifdef HAS_VIDEO_PLAYBACK
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
-  if (m_output.width != pPicture->iWidth
+  if (!g_renderManager.IsConfigured()
+   || m_output.width != pPicture->iWidth
    || m_output.height != pPicture->iHeight
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight

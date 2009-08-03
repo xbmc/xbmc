@@ -1291,7 +1291,9 @@ void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslatef(-(viewport[0] + w + offset.x), +(viewport[1] + h + offset.y), 0);
+#ifndef HAS_SDL_GLES1
   gluLookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
+#endif
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glFrustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
@@ -1444,6 +1446,11 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
 void CGraphicContext::DeleteThreadContext() {
 #ifdef HAS_SDL_OPENGL
   CSingleLock aLock(m_surfaceLock);
+  // FIXME?: DeleteThreadContext get called from different threads and
+  // produces an acces_violation from time to time when doing the find
+  // on an empty m_surfaces
+  if(m_surfaces.empty())
+    return;
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
   iter = m_surfaces.find(tid);

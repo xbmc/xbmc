@@ -898,8 +898,8 @@ void CLinuxRendererGL::LoadTextures(int source)
                      (g_stSettings.m_currentVideoSettings.m_InterlaceMethod==VS_INTERLACEMETHOD_AUTO)) && (m_renderQuality != RQ_MULTIPASS);
   }
 
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
 
   if (imaging==-1)
   {
@@ -1483,6 +1483,7 @@ void CLinuxRendererGL::LoadShaders(int renderMethod)
 
 void CLinuxRendererGL::UnInit()
 {
+  CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
   if (m_pBuffer)
@@ -1496,14 +1497,7 @@ void CLinuxRendererGL::UnInit()
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
-}
 
-
-// called from GUI thread after playback has finished to release GL resources
-void CLinuxRendererGL::OnClose()
-{
-  CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
-  CSingleLock lock(g_graphicsContext);
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU)
     g_VDPAU->ReleasePixmap();
@@ -1519,6 +1513,7 @@ void CLinuxRendererGL::OnClose()
   m_fbo.Cleanup();
   m_bValidated = false;
   m_bImageReady = false;
+  m_bConfigured = false;
 }
 
 void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
@@ -1781,8 +1776,8 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
 
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
 
   // Y
   glActiveTextureARB(GL_TEXTURE0);
@@ -1934,8 +1929,8 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   static GLfloat brightness = 0;
   static GLfloat contrast   = 0;
 
-  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0)/100.0;
-  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0;
+  brightness =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Brightness - 50.0f)/100.0f;
+  contrast =  ((GLfloat)g_stSettings.m_currentVideoSettings.m_Contrast)/50.0f;
 
   // Y
   glEnable(m_textureTarget);

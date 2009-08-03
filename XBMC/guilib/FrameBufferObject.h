@@ -90,7 +90,9 @@ public:
   {
     if (IsValid() && IsBound())
     {
+#ifndef HAS_SDL_GLES1
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, m_fbo);
+#endif
       return true;
     }
     return false;
@@ -99,8 +101,10 @@ public:
   // Finish rendering to FBO
   void EndRender()
   {
+#ifndef HAS_SDL_GLES1
     if (IsValid())
       glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+#endif
   }
 
 private:

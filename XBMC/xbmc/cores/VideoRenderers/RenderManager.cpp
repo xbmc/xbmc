@@ -156,6 +156,13 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
   return result;
 }
 
+bool CXBoxRenderManager::IsConfigured()
+{
+  if (!m_pRenderer)
+    return false;
+  return m_pRenderer->IsConfigured();
+}
+
 void CXBoxRenderManager::Update(bool bPauseDrawing)
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
@@ -232,14 +239,11 @@ void CXBoxRenderManager::UnInit()
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
   m_bIsStarted = false;
+
+  // free renderer resources.
+  // TODO: we may also want to release the renderer here.
   if (m_pRenderer)
-  {
     m_pRenderer->UnInit();
-#ifndef _LINUX
-    delete m_pRenderer;
-    m_pRenderer = NULL;
-#endif
-  }
 }
 
 void CXBoxRenderManager::SetupScreenshot()
@@ -292,7 +296,7 @@ float CXBoxRenderManager::GetMaximumFPS()
 {
   float fps;
 
-  if (g_videoConfig.GetVSyncMode() == VSYNC_ALWAYS || g_videoConfig.GetVSyncMode() == VSYNC_VIDEO) 
+  if (g_videoConfig.GetVSyncMode() != VSYNC_DISABLED)
   {
     fps = g_VideoReferenceClock.GetRefreshRate();
     if (fps <= 0) fps = g_graphicsContext.GetFPS();

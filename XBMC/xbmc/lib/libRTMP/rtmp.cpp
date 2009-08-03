@@ -689,7 +689,10 @@ bool CRTMP::ReadPacket(RTMPPacket &packet)
     packet.m_hasAbsTimestamp = true;
 
   if (nSize < RTMP_LARGE_HEADER_SIZE) // using values from the last message of this channel
+  {
+    packet.FreePacketHeader();
     packet = m_vecChannelsIn[packet.m_nChannel];
+  }
   
   nSize--;
 

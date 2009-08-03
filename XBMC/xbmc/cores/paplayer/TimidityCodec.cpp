@@ -104,13 +104,10 @@ bool TimidityCodec::Init(const CStdString &strFile, unsigned int filecache)
   if ( m_mid )
     m_dll.FreeMID( m_mid );
 
-  CStdString strFileToLoad;
-  strFileToLoad = "filereader://"+strFile;
-
-  m_mid = m_dll.LoadMID(strFileToLoad.c_str());
+  m_mid = m_dll.LoadMID(strFile.c_str());
   if (!m_mid)
   {
-    CLog::Log(LOGERROR,"TimidityCodec: error opening file %s!",strFile.c_str());
+    CLog::Log(LOGERROR,"TimidityCodec: error opening file %s: %s",strFile.c_str(), m_dll.ErrorMsg());
     return false;
   }
 

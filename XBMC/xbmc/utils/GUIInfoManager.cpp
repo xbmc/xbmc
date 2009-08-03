@@ -64,6 +64,7 @@
 #include "LabelFormatter.h"
 
 #include "GUILabelControl.h"  // for CInfoLabel
+#include "GUITextBox.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 #include "SkinInfo.h"
@@ -2381,8 +2382,13 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
       if (window)
         control = window->GetControl(window->GetViewContainerID());
     }
-    if (control && control->IsContainer())
-      return ((CGUIBaseContainer *)control)->GetLabel(info.m_info);
+    if (control)
+    {
+      if (control->IsContainer())
+        return ((CGUIBaseContainer *)control)->GetLabel(info.m_info);
+      else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
+        return ((CGUITextBox *)control)->GetLabel(info.m_info);
+    }
   }
   else if (info.m_info == SYSTEM_GET_CORE_USAGE)
   {
@@ -3443,12 +3449,14 @@ void CGUIInfoManager::Clear()
 void CGUIInfoManager::UpdateFPS()
 {
   m_frameCounter++;
-  float fTimeSpan = (float)(timeGetTime() - m_lastFPSTime);
+  unsigned int curTime = timeGetTime();
+
+  float fTimeSpan = (float)(curTime - m_lastFPSTime);
   if (fTimeSpan >= 1000.0f)
   {
     fTimeSpan /= 1000.0f;
     m_fps = m_frameCounter / fTimeSpan;
-    m_lastFPSTime = timeGetTime();
+    m_lastFPSTime = curTime;
     m_frameCounter = 0;
   }
 }

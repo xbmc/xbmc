@@ -52,7 +52,6 @@ bool CPlayListDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &i
     strDir += "\\playlists";
     dirLoader.GetDirectory(strDir, tmpitems);
 
-
     // for each playlist found
     for (int i = 0; i < (int)tmpitems.size(); ++i)
     {
@@ -76,14 +75,6 @@ bool CPlayListDirectory::GetDirectory(const CStdString& strPath, VECFILEITEMS &i
         }
         delete pPlayList;
       }
-
-      //  create an entry....
-      pItem = new CFileItem(strPlayListName);
-      pItem->m_strPath = strPlayList;
-      pItem->m_bIsFolder = true;
-      pItem->m_bIsShareOrDrive = false;
-
-      items.push_back(pItem);
     }
     CUtil::SetThumbs(items);
     CUtil::FillInDefaultIcons(items);

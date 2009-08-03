@@ -29,16 +29,25 @@ namespace HTSP
 
 template<typename T>
 class const_circular_iter 
-  : public std::iterator<std::bidirectional_iterator_tag, typename T::value_type>
+  : public std::iterator< typename std::iterator_traits<T>::iterator_category
+                        , typename std::iterator_traits<T>::value_type
+                        , typename std::iterator_traits<T>::difference_type
+                        , typename std::iterator_traits<T>::pointer
+                        , typename std::iterator_traits<T>::reference>
 {
   protected:
-    typename T::iterator   begin;
-    typename T::iterator   end;
-    typename T::iterator   iter;
+    T begin;
+    T end;
+    T iter;
   public:
-    const_circular_iter(T& t) : iter(t.begin()), begin(t.begin()), end(t.end()) {};
-    const_circular_iter(T& t, typename T::iterator c) :begin(t.begin()), end(t.end()), iter(c) {};
-    const_circular_iter(typename T::iterator b, typename T::iterator e) : begin(b), end(e), iter(b) {};
+    typedef typename std::iterator_traits<T>::value_type      value_type;
+    typedef typename std::iterator_traits<T>::difference_type difference_type;
+    typedef typename std::iterator_traits<T>::pointer         pointer;
+    typedef typename std::iterator_traits<T>::reference       reference;
+
+    const_circular_iter(const const_circular_iter& src)     : begin(src.begin), end(src.end), iter(src.iter) {};
+    const_circular_iter(const T& b, const T& e)             : begin(b), end(e), iter(b) {};
+    const_circular_iter(const T& b, const T& e, const T& c) : begin(b), end(e), iter(c) {};
     const_circular_iter<T>& operator++()
     {
       if(begin == end)
@@ -59,14 +68,13 @@ class const_circular_iter
       return(*this);
     }
 
-    const typename T::value_type& operator*() const { return (*iter); }
-    const typename T::value_type* operator->() const { return &(*iter); }
-    bool operator==(const const_circular_iter<T>&            rhs) const { return (iter == rhs.iter); }
-    bool operator==(const typename T::iterator&              rhs) const { return (iter == rhs); }
-    bool operator!=(const const_circular_iter<T>&            rhs) const { return ! operator==(rhs); }
-    bool operator!=(const typename T::iterator&              rhs) const { return ! operator==(rhs); }
+    const reference operator*()  const { return (*iter);  }
+    const pointer   operator->() const { return &(*iter); }
+    bool operator==(const const_circular_iter<T>&  rhs) const { return (iter == rhs.iter); }
+    bool operator==(const T&                       rhs) const { return (iter == rhs); }
+    bool operator!=(const const_circular_iter<T>&  rhs) const { return ! operator==(rhs); }
+    bool operator!=(const T&                       rhs) const { return ! operator==(rhs); }
 };
-
 
 struct STag
 {
