@@ -143,7 +143,12 @@
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowSettingsProfile.h"
-#include "GUIWindowTestPattern.h"
+#ifdef HAS_SDL_OPENGL
+#include "GUIWindowTestPatternGL.h"
+#endif
+#ifdef HAS_DX
+#include "GUIWindowTestPatternDX.h"
+#endif
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
@@ -1328,7 +1333,12 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
-  m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
+#ifdef HAS_SDL_OPENGL
+  m_gWindowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
+#endif
+#ifdef HAS_DX
+  m_gWindowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
+#endif
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20

@@ -204,6 +204,8 @@ SRCS=Application.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
      ScriptSettings.cpp \
+     PictureGL.cpp \
+     GUIWindowTestPatternGL.cpp
 
 LIB=xbmc.a
 
