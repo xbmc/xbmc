@@ -60,9 +60,7 @@ public:
   virtual const std::string GetConnectionString()=0;
   virtual PVR_ERROR GetDriveSpace(long long *total, long long *used)=0;
 
-  virtual PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start = NULL, time_t end = NULL)=0;
-  virtual PVR_ERROR GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result)=0;
-  virtual PVR_ERROR GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)=0;
+  virtual PVR_ERROR GetEPGForChannel(unsigned int number, cPVREpg *epg, time_t start = NULL, time_t end = NULL)=0;
 
   virtual int GetNumChannels()=0;
   virtual PVR_ERROR GetChannelList(cPVRChannels &channels, bool radio)=0;

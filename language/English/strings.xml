@@ -1578,6 +1578,7 @@
   <string id="18029">Unknown Channel %u</string>
   <string id="18030">PVR information</string>
   <string id="18031">PVR service</string>
+  <string id="18032">Loading EPG from clients</string>
 
   <string id="18048">Edit Channel Settings</string>
   <string id="18049">New Channel</string>

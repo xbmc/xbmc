@@ -85,6 +85,7 @@ bool CPVRClient::Init()
 
   /* Write XBMC PVR specific Add-on function addresses to callback table */
   m_callbacks->PVR.EventCallback          = PVREventCallback;
+  m_callbacks->PVR.TransferEpgEntry       = PVRTransferEpgEntry;
   m_callbacks->PVR.TransferChannelEntry   = PVRTransferChannelEntry;
   m_callbacks->PVR.TransferTimerEntry     = PVRTransferTimerEntry;
   m_callbacks->PVR.TransferRecordingEntry = PVRTransferRecordingEntry;
@@ -276,27 +277,48 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
  * EPG PVR Functions
  */
 
-PVR_ERROR CPVRClient::GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start, time_t end)
+PVR_ERROR CPVRClient::GetEPGForChannel(unsigned int number, cPVREpg *epg, time_t start, time_t end)
 {
   CSingleLock lock(m_critSection);
 
-  return m_pClient->GetEPGForChannel(number, epg, start, end);
+  PVR_ERROR ret = PVR_ERROR_UNKOWN;
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      const PVRHANDLE handle = (cPVREpg*) epg;
+      ret = m_pClient->RequestEPGForChannel(handle, number, start, end);
+      if (ret != PVR_ERROR_NO_ERROR)
+        throw ret;
+
+      return PVR_ERROR_NO_ERROR;
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetEPGForChannel occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+    catch (PVR_ERROR ret)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after GetEPGForChannel", m_strName.c_str(), m_hostName.c_str(), ret);
+    }
+  }
+  return ret;
 }
 
-PVR_ERROR CPVRClient::GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result)
+void CPVRClient::PVRTransferEpgEntry(void *userData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
 {
-  CSingleLock lock(m_critSection);
+  CPVRClient* client = (CPVRClient*) userData;
+  if (client == NULL || handle == NULL || epgentry == NULL)
+  {
+    CLog::Log(LOGERROR, "PVR: PVRTransferEpgEntry is called with NULL-Pointer!!!");
+    return;
+  }
 
-  return m_pClient->GetEPGNowInfo(number, *result);
+  cPVREpg *xbmcEpg = (cPVREpg*) handle;
+  cPVREpg::Add(epgentry, xbmcEpg);
+  return;
 }
-
-PVR_ERROR CPVRClient::GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result)
-{
-  CSingleLock lock(m_critSection);
-
-  return m_pClient->GetEPGNextInfo(number, *result);
-}
-
 
 /**********************************************************
  * Channels PVR Functions
@@ -704,6 +726,7 @@ void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordingi
   recordinginfo.RecordingTime().GetAsTime(tag.starttime);
   return;
 }
+
 
 /**********************************************************
  * Timers PVR Functions

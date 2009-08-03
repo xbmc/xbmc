@@ -338,6 +338,8 @@ void cPVRTimerInfoTag::Reset()
   m_Priority      = -1;
   m_Lifetime      = -1;
 
+  m_EpgInfo       = NULL;
+
   m_strFileNameAndPath = "";
 }
 
@@ -468,6 +470,19 @@ void cPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
   
   return;
 }
+
+void cPVRTimerInfoTag::SetEpg(const CTVEPGInfoTag *tag)
+{
+  if (m_EpgInfo != tag)
+  {
+    if (tag)
+      CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to epg event %s", Title().c_str(), tag->Title().c_str());
+    else
+      CLog::Log(LOGINFO, "cPVRTimerInfoTag: timer %s set to no epg event", Title().c_str());
+    m_EpgInfo = tag;
+  }
+}
+
 
 // --- cPVRTimers ---------------------------------------------------------------
 

@@ -342,14 +342,14 @@ PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used)
 /************************************************************/
 /** EPG handling */
 
-PVR_ERROR PVRClientVDR::GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start, time_t end)
+PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE handle, time_t start, time_t end)
 {
 
   vector<string> lines;
   int            code;
   char           buffer[1024];
   int            found;
-  TVEPGData      broadcast;
+  PVR_PROGINFO   broadcast;
 
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
@@ -470,7 +470,7 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(unsigned int number, EPG_DATA &epg, tim
     found = str_result.find("e", 0);
     if (found == 0)
     {
-      epg.push_back(broadcast);
+      PVR_transfer_epg_entry(handle, &broadcast);
 
       broadcast.m_strTitle = "";
       broadcast.m_strPlotOutline = "";
@@ -480,258 +480,6 @@ PVR_ERROR PVRClientVDR::GetEPGForChannel(unsigned int number, EPG_DATA &epg, tim
       broadcast.m_strGenre = "";
       broadcast.m_GenreType = NULL;
       broadcast.m_GenreSubType = NULL;
-    }
-  }
-
-  pthread_mutex_unlock(&m_critSection);
-
-  return PVR_ERROR_NO_ERROR;
-}
-
-PVR_ERROR PVRClientVDR::GetEPGNowInfo(unsigned int number, PVR_PROGINFO &result)
-{
-
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-  int            found;
-
-  if (!m_transceiver->IsOpen())
-    return PVR_ERROR_SERVER_ERROR;
-
-  pthread_mutex_lock(&m_critSection);
-
-  sprintf(buffer, "LSTE %d NOW", number);
-  while (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    if (code != 451)
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_SERVER_ERROR;
-    }
-    Sleep(750);
-  }
-
-  for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
-  {
-    string& data(*it);
-    CStdString str_result = data;
-
-    if (m_bCharsetConv)
-      XBMC_unknown_to_utf8(str_result);
-
-    /** Get Channelname **/
-    found = str_result.find("C", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      result.m_strChannel = str_result.c_str();
-      continue;
-    }
-
-    /** Get Title **/
-    found = str_result.find("T", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      result.m_strTitle = str_result.c_str();
-      continue;
-    }
-
-    /** Get short description **/
-    found = str_result.find("S", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      result.m_strPlotOutline = str_result.c_str();
-      continue;
-    }
-
-    /** Get description **/
-    found = str_result.find("D", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      int pos = 0;
-
-      while (1)
-      {
-        pos = str_result.find("|", pos);
-
-        if (pos < 0)
-          break;
-
-        str_result.replace(pos, 1, 1, '\n');
-      }
-
-      result.m_strPlot = str_result.c_str();
-      continue;
-    }
-
-    /** Get Genre **/
-    found = str_result.find("G", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      result.m_GenreType = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      result.m_GenreSubType = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      result.m_strGenre = str_result.c_str();
-      continue;
-    }
-
-    /** Get ID, date and length**/
-    found = str_result.find("E ", 0);
-    if (found == 0)
-    {
-      time_t rec_time;
-      int duration;
-      str_result.erase(0, 2);
-//                broadcast.m_bouquetNum = atol(str_result.c_str());
-
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-
-      rec_time = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      duration = atol(str_result.c_str());
-
-      result.m_startTime = CDateTime((time_t)rec_time);
-      result.m_endTime = CDateTime((time_t)rec_time + duration);
-      result.m_duration = CDateTimeSpan(0, 0, duration / 60, duration % 60);
-      continue;
-    }
-  }
-
-  pthread_mutex_unlock(&m_critSection);
-
-  return PVR_ERROR_NO_ERROR;
-}
-
-PVR_ERROR PVRClientVDR::GetEPGNextInfo(unsigned int number, PVR_PROGINFO &result)
-{
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-  int            found;
-
-  if (!m_transceiver->IsOpen())
-    return PVR_ERROR_SERVER_ERROR;
-
-  pthread_mutex_lock(&m_critSection);
-
-  sprintf(buffer, "LSTE %d NEXT", number);
-  while (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    if (code != 451)
-    {
-      pthread_mutex_unlock(&m_critSection);
-      return PVR_ERROR_SERVER_ERROR;
-    }
-    Sleep(750);
-  }
-
-  for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
-  {
-    string& data(*it);
-    CStdString str_result = data;
-
-    if (m_bCharsetConv)
-      XBMC_unknown_to_utf8(str_result);
-
-    /** Get Channelname **/
-    found = str_result.find("C", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      result.m_strChannel = str_result.c_str();
-      continue;
-    }
-
-    /** Get Title **/
-    found = str_result.find("T", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      result.m_strTitle = str_result.c_str();
-      continue;
-    }
-
-    /** Get short description **/
-    found = str_result.find("S", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      result.m_strPlotOutline = str_result.c_str();
-      continue;
-    }
-
-    /** Get description **/
-    found = str_result.find("D", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-
-      int pos = 0;
-
-      while (1)
-      {
-        pos = str_result.find("|", pos);
-
-        if (pos < 0)
-          break;
-
-        str_result.replace(pos, 1, 1, '\n');
-      }
-
-      result.m_strPlot = str_result.c_str();
-      continue;
-    }
-
-    /** Get Genre **/
-    found = str_result.find("G", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      result.m_GenreType = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      result.m_GenreSubType = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      result.m_strGenre = str_result.c_str();
-      continue;
-    }
-
-    /** Get ID, date and length**/
-    found = str_result.find("E ", 0);
-    if (found == 0)
-    {
-      time_t rec_time;
-      int duration;
-      str_result.erase(0, 2);
-//                broadcast.m_bouquetNum = atol(str_result.c_str());
-
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-
-      rec_time = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      duration = atol(str_result.c_str());
-
-      result.m_startTime = CDateTime((time_t)rec_time);
-      result.m_endTime = CDateTime((time_t)rec_time + duration);
-      result.m_duration = CDateTimeSpan(0, 0, duration / 60, duration % 60);
-      continue;
     }
   }
 

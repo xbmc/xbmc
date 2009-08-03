@@ -1233,7 +1233,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     return strLabel;
     break;
 
-  case CONTAINER_FOLDERPATH: 
+  case CONTAINER_FOLDERPATH:
   case CONTAINER_FOLDERNAME:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -1801,12 +1801,12 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = CPVRManager::GetInstance()->IsRecording();
   else if (condition == PVR_HAS_TIMER)
     bReturn = CPVRManager::GetInstance()->HasTimer();
-  else if (condition == PVR_HAS_EPG)
-    bReturn = CPVRManager::GetInstance()->SupportEPG();
-  else if (condition == PVR_HAS_TXT)
-    bReturn = CPVRManager::GetInstance()->SupportTeletext();
-  else if (condition == PVR_HAS_DIRECTOR)
-    bReturn = CPVRManager::GetInstance()->SupportDirector();
+//  else if (condition == PVR_HAS_EPG)
+//    bReturn = CPVRManager::GetInstance()->SupportEPG();
+//  else if (condition == PVR_HAS_TXT)
+//    bReturn = CPVRManager::GetInstance()->SupportTeletext();
+//  else if (condition == PVR_HAS_DIRECTOR)
+//    bReturn = CPVRManager::GetInstance()->SupportDirector();
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
@@ -2222,7 +2222,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         bReturn = g_cpuInfo.HasCoreId(info.GetData1());
         break;
       case SYSTEM_SETTING:
-        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") ) 
+        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
           bReturn = g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
       case CONTAINER_ON_NEXT:
@@ -3383,7 +3383,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
               ret   = 0;
   char        scale = 0;
   FILE        *p    = NULL;
-  
+
   if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
     return CTemperature();
 
@@ -4402,7 +4402,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   else if (condition == LIBRARY_HAS_VIDEO)
   {
     return (GetLibraryBool(LIBRARY_HAS_MOVIES) ||
-            GetLibraryBool(LIBRARY_HAS_TVSHOWS) || 
+            GetLibraryBool(LIBRARY_HAS_TVSHOWS) ||
             GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
   }
   return false;

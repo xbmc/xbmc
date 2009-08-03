@@ -37,7 +37,7 @@ typedef std::map< long, IPVRClient* >::iterator CLIENTMAPITR;
 
 class CPVRManager : IPVRClientCallback
                   , public ADDON::IAddonCallback
-                  , private CThread 
+                  , private CThread
 {
 public:
   CPVRManager();
@@ -58,7 +58,7 @@ public:
   static bool IsInstantiated() { return m_instance != NULL; }
 
   static CPVRManager* GetInstance();
-  unsigned long GetFirstClientID() { return m_currentClientID; }
+  unsigned long GetFirstClientID();
   static CLIENTMAP* Clients() { return &m_clients; }
   CTVDatabase *GetTVDatabase() { return &m_database; }
 
@@ -67,17 +67,7 @@ public:
   bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
 
-  /* Feature flags */
-  bool SupportEPG();
-  bool SupportRecording();
-  bool SupportRadio();
-  bool SupportTimers();
-  bool SupportChannelSettings();
-  bool SupportTeletext();
-  bool SupportDirector();
-  
   bool HaveClients() { return !m_clients.empty(); }
-  bool IsSynchronized() { return m_synchronized; }
 
   /* Event handling */
   void	      OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
@@ -87,13 +77,6 @@ public:
   bool        IsRecording(unsigned int channel, bool radio = false);
   static bool IsPlayingTV();
   static bool IsPlayingRadio();
-
-  bool GetEPGInfo(unsigned int number, CFileItem& now, CFileItem& next, bool radio = false);
-  int GetEPGAll(CFileItemList* results, bool radio = false);
-  int GetEPGNow(CFileItemList* results, bool radio = false);
-  int GetEPGNext(CFileItemList* results, bool radio = false);
-  int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
-
 
   int GetGroupList(CFileItemList* results);
   void AddGroup(const CStdString &newname);
@@ -137,10 +120,10 @@ public:
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthRecordedStream(void);
   bool RecordChannel(unsigned int channel, bool bOnOff, bool radio = false);
-  
+
   bool TeletextPagePresent(const CFileItem &item, int Page, int subPage);
   bool GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf);
-  
+
   void                SetCurrentPlayingProgram(CFileItem& item);
   void                SyncInfo(); // synchronize InfoManager related stuff
 
@@ -153,11 +136,6 @@ private:
   DWORD                 m_infoToggleStart;
   unsigned int          m_infoToggleCurrent;
   CTVDatabase           m_database;
-
-  IPVRClient*           m_client;       // pointer to enabled client interface
-  PVR_SERVERPROPS       m_clientProps;  // store the properties of each client locally
-  unsigned long         m_currentClientID;
-  bool                  m_synchronized;
 
   static bool         m_isRecording;
   static bool         m_hasRecordings;
@@ -190,8 +168,9 @@ private:
   DWORD               m_scanStart;
 
   void                GetChannels();
-  
+
   static CFileItem   *m_currentPlayingChannel;
+  static CFileItem   *m_currentPlayingRecording;
   int                 m_PreviousChannel[2];
   int                 m_PreviousChannelIndex;
   DWORD               m_LastChannelChanged;

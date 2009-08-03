@@ -151,7 +151,6 @@ CFileItem::CFileItem(const CTVEPGInfoTag& programme)
   m_bIsFolder = false;
   *GetTVEPGInfoTag() = programme;
   SetLabel(programme.m_strTitle);
-  m_strLabel2 = programme.m_strExtra;
   SetThumbnailImage(programme.m_IconPath);
   //FillInDefaultIcon();
   //SetVideoThumb();

@@ -22,6 +22,8 @@
 
 #include "VideoInfoTag.h"
 #include "DateTime.h"
+#include "utils/Thread.h"
+#include "../addons/include/xbmc_pvr_types.h"
 
 #define EVCONTENTMASK_MOVIEDRAMA               0x10
 #define EVCONTENTMASK_NEWSCURRENTAFFAIRS       0x20
@@ -36,137 +38,17 @@
 #define EVCONTENTMASK_SPECIAL                  0xB0
 #define EVCONTENTMASK_USERDEFINED              0xF0
 
-/* Enums from mythTV & libcmyth source code */
-
-enum RecordingType
-{
-  kNotRecording = 0,
-  kSingleRecord = 1,
-  kTimeslotRecord,
-  kChannelRecord,
-  kAllRecord,
-  kWeekslotRecord,
-  kFindOneRecord,
-  kOverrideRecord,
-  kDontRecord,
-  kFindDailyRecord,
-  kFindWeeklyRecord
-};
-
-enum RecordingDupInType
-{
-  kDupsInRecorded     = 0x01,
-  kDupsInOldRecorded  = 0x02,
-  kDupsInAll          = 0x0F,
-  kDupsNewEpi         = 0x10,
-  kDupsExRepeats      = 0x20,
-  kDupsExGeneric      = 0x40,
-  kDupsFirstNew       = 0x80
-};
-
-enum RecordingDupMethodType
-{
-  kDupCheckNone     = 0x01,
-  kDupCheckSub      = 0x02,
-  kDupCheckDesc     = 0x04,
-  kDupCheckSubDesc  = 0x06,
-  kDupCheckSubThenDesc = 0x08
-};
-
-enum RecSearchType
-{
-  kNoSearch = 0,
-  kPowerSearch,
-  kTitleSearch,
-  kKeywordSearch,
-  kPeopleSearch,
-  kManualSearch
-};
-
-enum RecStatus
-{
-  rsDeleted = -5,
-  rsStopped = -4,
-  rsRecorded = -3,
-  rsRecording = -2,
-  rsWillRecord = -1,
-  rsUnknown = 0,
-  rsDontRecord = 1,
-  rsPrevRecording = 2,
-  rsCurrentRecording = 3,
-  rsEarlierRecording = 4,
-  rsTooManyRecordings = 5,
-  rsCancelled = 6,
-  rsConflict = 7,
-  rsLaterShowing = 8,
-  rsRepeat = 9,
-  rsLowDiskspace = 11,
-  rsTunerBusy = 12
-};
-
-enum CommFlagStatus
-{
-  COMM_FLAG_NOT_FLAGGED = 0,
-  COMM_FLAG_DONE        = 1,
-  COMM_FLAG_PROCESSING  = 2,
-  COMM_FLAG_COMMFREE    = 3
-};
-
-enum TranscodingStatus
-{
-  TRANSCODING_NOT_TRANSCODED = 0,
-  TRANSCODING_COMPLETE       = 1,
-  TRANSCODING_RUNNING        = 2
-};
-
-enum AvailableStatus
-{
-  asAvailable = 0,
-  asNotYetAvailable,
-  asPendingDelete,
-  asFileNotFound,
-  asZeroByte,
-  asDeleted
-};
-
-enum AudioProps_t
-{
-  AUD_UNKNOWN       = 0x00,
-  AUD_STEREO        = 0x01,
-  AUD_MONO          = 0x02,
-  AUD_SURROUND      = 0x04,
-  AUD_DOLBY         = 0x08,
-  AUD_HARDHEAR      = 0x10,
-  AUD_VISUALIMPAIR  = 0x20
-}; typedef std::vector< AudioProps_t > AudioProps;
-
-enum VideoProps_t
-{
-  VID_UNKNOWN       = 0x00,
-  VID_HDTV          = 0x01,
-  VID_WIDESCREEN    = 0x02,
-  VID_AVC           = 0x04
-}; typedef std::vector< VideoProps_t > VideoProps;
-
-enum SubtitleTypes_t
-{
-  SUB_UNKNOWN       = 0x00,
-  SUB_HARDHEAR      = 0x01,
-  SUB_NORMAL        = 0x02,
-  SUB_ONSCREEN      = 0x04,
-  SUB_SIGNED        = 0x08
-}; typedef std::vector< SubtitleTypes_t > SubtitleTypes;
+class cPVREpg;
+class cPVRChannelInfoTag;
 
 class CTVEPGInfoTag : public CVideoInfoTag
 {
+  friend class cPVREpg;
+private:
+  cPVREpg *Epg;     // The Schedule this event belongs to
+  const cPVRChannelInfoTag *m_Channel;
+
 public:
-  CTVEPGInfoTag(long uniqueBroadcastID);
-  CTVEPGInfoTag() { Reset(); };
-
-  void Reset();
-  const long GetDbID() const { return m_uniqueBroadcastID; };
-
-  int           m_idEPG;
   int           m_idChannel;
   CStdString    m_strSource;
   CStdString    m_strBouquet;
@@ -175,22 +57,13 @@ public:
   int           m_channelNum;
   CStdString    m_IconPath;
 
-  CStdString    m_strExtra;
-
   CStdString    m_strFileNameAndPath;
-
-  CStdString    m_seriesID;
-  CStdString    m_episodeID;
 
   CDateTime     m_startTime;
   CDateTime     m_endTime;
   CDateTimeSpan m_duration;
   CDateTime     m_firstAired;
   bool          m_repeat;
-
-  VideoProps    m_videoProps;
-  AudioProps    m_audioProps;
-  SubtitleTypes m_subTypes;
 
   bool          m_isRadio;
   bool          m_commFree;
@@ -199,14 +72,101 @@ public:
   int           m_GenreType;
   int           m_GenreSubType;
 
-  RecStatus         m_recStatus;
-  CommFlagStatus    m_commFlagStatus;
-  TranscodingStatus m_transCodeStatus;
-  AvailableStatus   m_availableStatus;
-
 private:
   long m_uniqueBroadcastID; // db's unique identifier for this tag
 
+public:
+  CTVEPGInfoTag(long uniqueBroadcastID);
+  CTVEPGInfoTag() { Reset(); };
+  void Reset();
+
+  CDateTime Start(void) const { return m_startTime; }
+  void SetStart(CDateTime Start) { m_startTime = Start; }
+  CDateTime End(void) const { return m_endTime; }
+  void SetEnd(CDateTime Stop) { m_endTime = Stop; }
+  CStdString Title(void) const { return m_strTitle; }
+  void SetTitle(CStdString name) { m_strTitle = name; }
+  CStdString PlotOutline(void) const { return m_strPlotOutline; }
+  void SetPlotOutline(CStdString PlotOutline) { m_strPlotOutline = PlotOutline; }
+  CStdString Plot(void) const { return m_strPlot; }
+  void SetPlot(CStdString Plot) { m_strPlot = Plot; }
+  int GenreType(void) const { return m_GenreType; }
+  void SetGenreType(int GenreType) { m_GenreType = GenreType; }
+  int GenreSubType(void) const { return m_GenreSubType; }
+  void SetGenreSubType(int GenreSubType) { m_GenreSubType = GenreSubType; }
+  CStdString Genre(void) const { return m_strGenre; }
+  void SetGenre(CStdString Genre) { m_strGenre = Genre; }
+  CDateTimeSpan Duration(void) const { return m_duration; }
+  void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
+  long ChannelID(void) const { return m_idChannel; }
+  void SetChannelID(int ChannelID) { m_idChannel = ChannelID; }
+  void SetChannel(const cPVRChannelInfoTag *Channel) { m_Channel = Channel; }
+  bool HasTimer() const;
 };
 
-typedef std::vector<CTVEPGInfoTag> VECPROGRAMMES;
+
+class cPVREpg
+{
+  friend class cPVREpgs;
+
+private:
+  long m_channelID;
+  const cPVRChannelInfoTag *m_Channel;
+  std::vector<CTVEPGInfoTag> tags;
+
+public:
+  cPVREpg(long ChannelID);
+  long ChannelID(void) const { return m_channelID; }
+  CTVEPGInfoTag *AddInfoTag(CTVEPGInfoTag *Tag);
+  void DelInfoTag(CTVEPGInfoTag *tag);
+  void Cleanup(CDateTime Time);
+  void Cleanup(void);
+  const std::vector<CTVEPGInfoTag> *InfoTags(void) const { return &tags; }
+  const CTVEPGInfoTag *GetInfoTagNow(void) const;
+  const CTVEPGInfoTag *GetInfoTagNext(void) const;
+  const CTVEPGInfoTag *GetInfoTag(long uniqueID, CDateTime StartTime) const;
+  const CTVEPGInfoTag *GetInfoTagAround(CDateTime Time) const;
+  static bool Add(const PVR_PROGINFO *data, cPVREpg *Epg);
+};
+
+
+class cPVREpgsLock 
+{
+private:
+  int m_locked;
+  bool m_WriteLock;
+public:
+  cPVREpgsLock(bool WriteLock = false);
+  ~cPVREpgsLock();
+  bool Locked(void);
+};
+
+
+class cPVREpgs : public std::vector<cPVREpg>
+               , private CThread 
+{
+  friend class cPVREpg;
+  friend class cPVREpgsLock;
+
+private:
+  CRITICAL_SECTION m_critSection;
+  static DWORD m_lastCleanup;
+  static cPVREpgs m_epgs;
+  int m_locked;
+  virtual void Process();
+
+public:
+  static const cPVREpgs *EPGs(cPVREpgsLock &PVREpgsLock);
+  static void Cleanup(void);
+  static bool ClearAll(void);
+  static bool Load();
+  static bool Update(bool Wait = false);
+  static int GetEPGAll(CFileItemList* results, bool radio = false);
+  static int GetEPGChannel(unsigned int number, CFileItemList* results, bool radio = false);
+  static int GetEPGNow(CFileItemList* results, bool radio = false);
+  static int GetEPGNext(CFileItemList* results, bool radio = false);
+  cPVREpg *AddEPG(long ChannelID);
+  const cPVREpg *GetEPG(long ChannelID) const;
+  const cPVREpg *GetEPG(const cPVRChannelInfoTag *Channel, bool AddIfMissing = false) const;
+  void Add(cPVREpg *entry);
+};

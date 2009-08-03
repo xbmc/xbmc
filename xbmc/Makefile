@@ -211,6 +211,7 @@ SRCS=Application.cpp \
      GUIDialogTVChannels.cpp \
      GUIDialogTVGroupManager.cpp \
      GUIDialogTVTeletext.cpp \
+     GUIDialogEpgScan.cpp \
      PVRManager.cpp \
      TVDatabase.cpp \
      ScriptSettings.cpp \

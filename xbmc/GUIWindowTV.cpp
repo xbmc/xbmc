@@ -165,13 +165,6 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       CGUIDialogOK::ShowAndGetInput(18100,0,18091,18092);
       return true;
     }
-
-    if (!CPVRManager::GetInstance()->IsSynchronized())
-    {
-      m_gWindowManager.PreviousWindow();
-      CGUIDialogOK::ShowAndGetInput(18100,18133,0,330);
-      return true;
-    }
   }
   else if (iMessage == GUI_MSG_WINDOW_DEINIT)
   {
@@ -890,14 +883,11 @@ void CGUIWindowTV::GetContextButtons(int itemNumber, CContextButtons &buttons)
 
         if (m_vecItems->Size() > 1 && !m_bShowHiddenChannels)
           buttons.Add(CONTEXT_BUTTON_MOVE, 116);          /* MOVE CHANNEL */
-        
+
         if ((m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV && PVRChannelsTV.GetNumHiddenChannels() > 0) ||
             (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO && PVRChannelsRadio.GetNumHiddenChannels() > 0) ||
             m_bShowHiddenChannels)
           buttons.Add(CONTEXT_BUTTON_SHOW_HIDDEN, m_bShowHiddenChannels ? 18194 : 18195);  /* SHOW HIDDEN CHANNELS */
-
-//        if (CPVRManager::GetInstance()->SupportChannelSettings())
-//          buttons.Add(CONTEXT_BUTTON_EDIT, 18048);        /* EDIT CHANNEL */
 
         CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
       }
@@ -1125,12 +1115,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   }
   else if (button == CONTEXT_BUTTON_EDIT)
   {
-    if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO ||
-        m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
-    {
-      CGUIDialogOK::ShowAndGetInput(18100,0,18059,0);
-    }
-    else if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
+    if (m_iCurrSubTVWindow == TV_WINDOW_TIMERS)
     {
       CFileItem fileitem(*pItem);
 
@@ -1249,7 +1234,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         pDialog->DoModal();
 
         if (!pDialog->IsConfirmed()) return false;
-        
+
         if (cPVRRecordings::DeleteRecording(*pItem))
         {
           PVRRecordings.Update(true);
@@ -1394,24 +1379,25 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
   }
   else if (item->IsTVChannel())
   {
-    CTVEPGInfoTag epgnow(NULL);
-    CFileItem *itemNow  = new CFileItem(epgnow);
-    CFileItem *itemNext = new CFileItem();
+    cPVREpgsLock EpgsLock;
+    cPVREpgs *s = (cPVREpgs *)cPVREpgs::EPGs(EpgsLock);
+    if (s)
+    {
+      const CTVEPGInfoTag *epgnow = s->GetEPG(item->GetTVChannelInfoTag(), true)->GetInfoTagNow();
+      CFileItem *itemNow  = new CFileItem(epgnow);
 
-    if (!CPVRManager::GetInstance()->GetEPGInfo(item->GetTVChannelInfoTag()->m_iChannelNum, *itemNow, *itemNext, item->GetTVChannelInfoTag()->m_radio))
-      return;
+      /* Load programme info dialog */
+      CGUIDialogTVEPGProgInfo* pDlgInfo = (CGUIDialogTVEPGProgInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
 
-    /* Load programme info dialog */
-    CGUIDialogTVEPGProgInfo* pDlgInfo = (CGUIDialogTVEPGProgInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);
+      if (!pDlgInfo)
+        return;
 
-    if (!pDlgInfo)
-      return;
+      /* inform dialog about the file item */
+      pDlgInfo->SetProgInfo(itemNow);
 
-    /* inform dialog about the file item */
-    pDlgInfo->SetProgInfo(itemNow);
-
-    /* Open dialog window */
-    pDlgInfo->DoModal();
+      /* Open dialog window */
+      pDlgInfo->DoModal();
+    }
   }
   else
   {
@@ -1542,7 +1528,7 @@ void CGUIWindowTV::UpdateGuide()
 
     strLabel.Format("%s: %s", g_localizeStrings.Get(18050), strChannel.c_str());
 
-    if (CPVRManager::GetInstance()->GetEPGChannel(current_channel, m_vecItems, RadioPlaying) > 0)
+    if (cPVREpgs::GetEPGChannel(current_channel, m_vecItems, RadioPlaying) > 0)
     {
       CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_GUIDE_CHANNEL, 0, 0, m_vecItems);
       g_graphicsContext.SendMessage(msg);
@@ -1561,7 +1547,7 @@ void CGUIWindowTV::UpdateGuide()
 
     strLabel.Format("%s: %s", g_localizeStrings.Get(18050), g_localizeStrings.Get(18101));
 
-    if (CPVRManager::GetInstance()->GetEPGNow(m_vecItems, RadioPlaying) > 0)
+    if (cPVREpgs::GetEPGNow(m_vecItems, RadioPlaying) > 0)
     {
       CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_GUIDE_NOW_NEXT, 0, 0, m_vecItems);
       g_graphicsContext.SendMessage(msg);
@@ -1580,7 +1566,7 @@ void CGUIWindowTV::UpdateGuide()
 
     strLabel.Format("%s: %s", g_localizeStrings.Get(18050), g_localizeStrings.Get(18102));
 
-    if (CPVRManager::GetInstance()->GetEPGNext(m_vecItems, RadioPlaying) > 0)
+    if (cPVREpgs::GetEPGNext(m_vecItems, RadioPlaying) > 0)
     {
       CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_GUIDE_NOW_NEXT, 0, 0, m_vecItems);
       g_graphicsContext.SendMessage(msg);
@@ -1599,7 +1585,7 @@ void CGUIWindowTV::UpdateGuide()
 
     strLabel.Format("%s: %s", g_localizeStrings.Get(18050), g_localizeStrings.Get(18103));
 
-    if (CPVRManager::GetInstance()->GetEPGAll(m_vecItems, RadioPlaying) > 0)
+    if (cPVREpgs::GetEPGAll(m_vecItems, RadioPlaying) > 0)
     {
       time_t time_start;
       time_t time_end;
@@ -1636,7 +1622,7 @@ void CGUIWindowTV::UpdateChannelsTV()
   SET_CONTROL_HIDDEN(CONTROL_LIST_CHANNELS_TV);
 
   m_vecItems->Clear();
-  
+
   int channels;
   if (!m_bShowHiddenChannels)
     channels = PVRChannelsTV.GetChannels(m_vecItems, m_iCurrentTVGroup);
@@ -1659,14 +1645,6 @@ void CGUIWindowTV::UpdateChannelsTV()
     m_iCurrentTVGroup = CPVRManager::GetInstance()->GetNextGroupID(m_iCurrentTVGroup);
     UpdateChannelsTV();
     return;
-  }
-  else if (CPVRManager::GetInstance()->SupportChannelSettings())
-  {
-    /* Add blank item in list to add new channel */
-    CFileItem *item = new CFileItem();
-    item->m_strPath = g_localizeStrings.Get(18061); /* "Add channel..." */
-    CFileItemPtr addchannel(item);
-    m_vecItems->Add(addchannel);
   }
 
   /* Set Selected item inside list */
@@ -1714,14 +1692,6 @@ void CGUIWindowTV::UpdateChannelsRadio()
     m_iCurrentRadioGroup = CPVRManager::GetInstance()->GetNextGroupID(m_iCurrentRadioGroup);
     UpdateChannelsRadio();
     return;
-  }
-  else if (CPVRManager::GetInstance()->SupportChannelSettings())
-  {
-    /* Add blank item in list to add new channel */
-    CFileItem *item = new CFileItem();
-    item->m_strPath = g_localizeStrings.Get(18061); /* "Add channel..." */
-    CFileItemPtr addchannel(item);
-    m_vecItems->Add(addchannel);
   }
 
   /* Set Selected item inside list */

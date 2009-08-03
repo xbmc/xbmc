@@ -50,9 +50,7 @@ public:
   virtual PVR_ERROR GetDriveSpace(long long *total, long long *used);
 
   /* TV Guide */
-  virtual PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start, time_t end);
-  virtual PVR_ERROR GetEPGNowInfo(unsigned int number, CTVEPGInfoTag *result);
-  virtual PVR_ERROR GetEPGNextInfo(unsigned int number, CTVEPGInfoTag *result);
+  virtual PVR_ERROR GetEPGForChannel(unsigned int number, cPVREpg *epg, time_t start, time_t end);
 
   /* Channels */
   virtual int GetNumChannels();
@@ -106,6 +104,7 @@ protected:
 private:
   void WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
   void WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag);
+  static void PVRTransferEpgEntry(void *userData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry);
   static void PVRTransferChannelEntry(void *userData, const PVRHANDLE handle, const PVR_CHANNEL *channel);
   static void PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, const PVR_TIMERINFO *timer);
   static void PVRTransferRecordingEntry(void *userData, const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);

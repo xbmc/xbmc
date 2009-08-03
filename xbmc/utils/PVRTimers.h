@@ -53,6 +53,8 @@ private:
   CDateTime       m_FirstDay;             /// If it is a repeating timer the first date it starts
   int             m_Weekdays;             /// Bit based store of weekdays to repeat
   CStdString      m_strFileNameAndPath;   /// Filename is only for reference
+  
+  const CTVEPGInfoTag *m_EpgInfo;
 
   void DisplayError(PVR_ERROR err) const;
 
@@ -104,6 +106,8 @@ public:
   void SetSummary(CStdString Summary) { m_Summary = Summary; }
   CStdString Path(void) const { return m_strFileNameAndPath; }
   void SetPath(CStdString path) { m_strFileNameAndPath = path; }
+  const CTVEPGInfoTag *Epg() const { return m_EpgInfo;}
+  void SetEpg(const CTVEPGInfoTag *tag);
 
   bool Add() const;
   bool Delete(bool force = false) const;

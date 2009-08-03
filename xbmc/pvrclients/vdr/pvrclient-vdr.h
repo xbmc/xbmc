@@ -62,9 +62,7 @@ public:
   PVR_ERROR GetClientTime(time_t *time, int *diff_from_gmt);
 
   /* EPG handling */
-  PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start = NULL, time_t end = NULL);
-  PVR_ERROR GetEPGNowInfo(unsigned int number, PVR_PROGINFO &result);
-  PVR_ERROR GetEPGNextInfo(unsigned int number, PVR_PROGINFO &result);
+  PVR_ERROR RequestEPGForChannel(unsigned int number, PVRHANDLE handle, time_t start = NULL, time_t end = NULL);
 
   /* Channel handling */
   int GetNumChannels(void);
