@@ -33,11 +33,6 @@
 #include "../xbmc/FileSystem/Directory.h"
 #include "../xbmc/FileSystem/SpecialProtocol.h"
 
-#ifdef HAS_SDL
-#define MAX_PICTURE_WIDTH  4096
-#define MAX_PICTURE_HEIGHT 4096
-#endif
-
 using namespace std;
 
 extern "C" void dllprintf( const char *format, ... );
@@ -49,82 +44,18 @@ CGUITextureManager g_TextureManager;
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-CBaseTexture::CBaseTexture(XBMC::SurfacePtr surface, bool load, bool freeSurface)
+CBaseTexture::CBaseTexture()
 {
   m_loadedToGPU = false;
   id = 0;
   m_pixels = NULL;
+  m_pTexture = NULL;
 }
 
 CBaseTexture::~CBaseTexture()
 {
 
 }
-
-void CBaseTexture::Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface) 
-{
-  LOCK_SURFACE(surface);
-  Update(surface->w, surface->h, surface->pitch, (unsigned char *)surface->pixels, loadToGPU);
-  UNLOCK_SURFACE(surface);
-
-  if (freeSurface)
-    SDL_FreeSurface(surface);
-}
-
-void CBaseTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) 
-{
-  int tpitch;
-
-  if (m_pixels)
-    delete [] m_pixels;
-
-  imageWidth = w;
-  imageHeight = h;
-
-  if (!m_bRequiresPower2Textures)
-  {
-    textureWidth = imageWidth;
-    textureHeight = imageHeight;
-  }
-  else
-  {
-    textureWidth = PadPow2(imageWidth);
-    textureHeight = PadPow2(imageHeight);
-  }
-
-  // Resize texture to POT
-  const unsigned char *src = pixels;
-  tpitch = min(pitch,textureWidth*4);
-  m_pixels = new unsigned char[textureWidth * textureHeight * 4];
-  unsigned char* resized = m_pixels;
-
-  for (int y = 0; y < h; y++)
-  {
-    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
-    src += pitch;
-
-    // repeat last column to simulate clamp_to_edge
-    for(int i = tpitch; i < textureWidth*4; i+=4)
-      memcpy(resized+i, src-4, 4);
-
-    resized += (textureWidth * 4);
-  }
-
-  // repeat last row to simulate clamp_to_edge
-  for(int y = h; y < textureHeight; y++) 
-  {
-    memcpy(resized, src - tpitch, tpitch);
-
-    // repeat last column to simulate clamp_to_edge
-    for(int i = tpitch; i < textureWidth*4; i+=4) 
-      memcpy(resized+i, src-4, 4);
-
-    resized += (textureWidth * 4);
-  }
-  if (loadToGPU)
-    LoadToGPU();
-}
-
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
@@ -461,41 +392,38 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
         int w = iWidth;
         int h = iHeight;
 
-        pTexture = CREATE_TEXTURE(SDL_HWSURFACE, w, h, 32, RMASK, GMASK, BMASK, AMASK);
-        if (pTexture)
+        CTexture *glTexture = new CTexture();
 
+        if (glTexture)
         {
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
 
-          if (LOCK_TEXTURE(pTexture) != -1)          
+          COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
+          // set the alpha values to fully opaque
+          for (int i = 0; i < iPaletteSize; i++)
+            palette[i].x = 0xff;
+          // and set the transparent colour
+          if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
+            palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
+
+          BYTE* pDest = (BYTE *)malloc(w * h * 4);
+
+          for (int y = 0; y < pImage->Height; y++)
           {
-            COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
-            // set the alpha values to fully opaque
-            for (int i = 0; i < iPaletteSize; i++)
-              palette[i].x = 0xff;
-            // and set the transparent colour
-            if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
-              palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
-
-            for (int y = 0; y < pImage->Height; y++)
+            BYTE *dest = pDest + (y * w * 4);
+            BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
+            for (int x = 0; x < pImage->Width; x++)
             {
-
-              BYTE *dest = (BYTE *)pTexture->pixels + (y * w * 4);
-              BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
-              for (int x = 0; x < pImage->Width; x++)
-              {
-                COLOR col = palette[*source++];
-                *dest++ = col.b;
-                *dest++ = col.g;
-                *dest++ = col.r;
-                *dest++ = col.x;
-              }
+              COLOR col = palette[*source++];
+              *dest++ = col.b;
+              *dest++ = col.g;
+              *dest++ = col.r;
+              *dest++ = col.x;
             }
-            UNLOCK_TEXTURE(pTexture);
-            CTexture *glTexture = new CTexture(pTexture, false);
-            pMap->Add(glTexture, pImage->Delay);
-            DELETE_TEXTURE(pTexture);
           }
+          glTexture->Update(w, h, w * 4, pDest, false);
+          pMap->Add(glTexture, pImage->Delay);
+          free(pDest);
         }
       } // of for (int iImage=0; iImage < iImages; iImage++)
     }
@@ -513,6 +441,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     return 1;
   } // of if (strPath.Right(4).ToLower()==".gif")
 
+  CTexture *renderTexture;
   if (bundle >= 0)
   {
     if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &info, &pTexture, &pPal)))  
@@ -520,6 +449,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
       return 0;
     }
+    renderTexture = new CTexture(pTexture, false);
+    DELETE_TEXTURE(pTexture);
   }
   else
   {
@@ -528,39 +459,16 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     CStdString texturePath;
     g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
 
-    CPicture pic;
-    XBMC::SurfacePtr original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT);
-    if (!original)
-    {
-      CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-      return 0;
-    }
-    // make sure the texture format is correct
-    XBMC::PixelFormat format;
-    format.palette = 0; format.colorkey = 0; format.alpha = 0;
-    format.BitsPerPixel = 32; format.BytesPerPixel = 4;
-    format.Amask = AMASK; format.Ashift = PIXEL_ASHIFT;
-    format.Rmask = RMASK; format.Rshift = PIXEL_RSHIFT;
-    format.Gmask = GMASK; format.Gshift = PIXEL_GSHIFT;
-    format.Bmask = BMASK; format.Bshift = PIXEL_BSHIFT;
-    pTexture = SDL_ConvertSurface(original, &format, SDL_SWSURFACE);
-
-    DELETE_SURFACE(original);
-    if (!pTexture)
-    {
-      CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
-      return 0;
-    }
-    info.Width = pTexture->w;
-    info.Height = pTexture->h;
+    renderTexture = new CTexture();
+    renderTexture->Load(texturePath);
+    
+    info.Width = renderTexture->imageWidth;
+    info.Height = renderTexture->imageHeight;
   }
 
   CTextureMap* pMap = new CTextureMap(strTextureName, info.Width, info.Height, 0);
-  CTexture *glTexture = new CTexture(pTexture, false);
-  pMap->Add(glTexture, 100);
+  pMap->Add(renderTexture, 100);
   m_vecTextures.push_back(pMap);
-
-  DELETE_TEXTURE(pTexture);
 
 #ifdef _DEBUG_TEXTURES
   LARGE_INTEGER end, freq;

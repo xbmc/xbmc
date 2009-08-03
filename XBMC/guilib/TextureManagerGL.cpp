@@ -33,10 +33,10 @@
 #include "../xbmc/FileSystem/Directory.h"
 #include "../xbmc/FileSystem/SpecialProtocol.h"
 
-#ifdef HAS_SDL
+#ifdef HAS_SDL_OPENGL
+
 #define MAX_PICTURE_WIDTH  2048
 #define MAX_PICTURE_HEIGHT 2048
-#endif
 
 using namespace std;
 
@@ -57,8 +57,14 @@ DWORD PadPow2(DWORD x)
 /************************************************************************/
 /*    CSDLTexture                                                       */
 /************************************************************************/
+CGLTexture::CGLTexture()
+: CBaseTexture()
+{
+
+}
+
 CGLTexture::CGLTexture(XBMC::SurfacePtr surface, bool load, bool freeSurface) 
-: CBaseTexture(surface, load, freeSurface)
+: CBaseTexture()
 {
   int vmaj, vmin;
 
@@ -88,6 +94,104 @@ CGLTexture::~CGLTexture()
 
   id = 0;
 }
+
+bool CGLTexture::Load(const CStdString& texturePath)
+{
+  CPicture pic;
+  XBMC::TexturePtr original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT);
+  if (!original)
+  {
+    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
+    return 0;
+  }
+  // make sure the texture format is correct
+  SDL_PixelFormat format;
+  format.palette = 0; format.colorkey = 0; format.alpha = 0;
+  format.BitsPerPixel = 32; format.BytesPerPixel = 4;
+  format.Amask = AMASK; format.Ashift = PIXEL_ASHIFT;
+  format.Rmask = RMASK; format.Rshift = PIXEL_RSHIFT;
+  format.Gmask = GMASK; format.Gshift = PIXEL_GSHIFT;
+  format.Bmask = BMASK; format.Bshift = PIXEL_BSHIFT;
+
+  XBMC::TexturePtr pTexture = SDL_ConvertSurface(original, &format, SDL_SWSURFACE);
+
+  DELETE_TEXTURE(original);
+  if (!pTexture)
+  {
+    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
+    return 0;
+  }
+
+  Update(pTexture, false, false);
+  DELETE_TEXTURE(pTexture);
+
+  return true;
+}
+
+void CGLTexture::Update(XBMC::TexturePtr surface, bool loadToGPU, bool freeSurface)
+{
+  SDL_LockSurface(surface);
+  Update(surface->w, surface->h, surface->pitch, (unsigned char *)surface->pixels, loadToGPU);
+  SDL_UnlockSurface(surface);
+
+  if (freeSurface)
+    DELETE_TEXTURE(surface);
+}
+
+void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) 
+{
+  int tpitch;
+
+  if (m_pixels)
+    delete [] m_pixels;
+
+  imageWidth = w;
+  imageHeight = h;
+
+  if (!m_bRequiresPower2Textures)
+  {
+    textureWidth = imageWidth;
+    textureHeight = imageHeight;
+  }
+  else
+  {
+    textureWidth = PadPow2(imageWidth);
+    textureHeight = PadPow2(imageHeight);
+  }
+
+  // Resize texture to POT
+  const unsigned char *src = pixels;
+  tpitch = min(pitch,textureWidth*4);
+  m_pixels = new unsigned char[textureWidth * textureHeight * 4];
+  unsigned char* resized = m_pixels;
+
+  for (int y = 0; y < h; y++)
+  {
+    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
+    src += pitch;
+
+    // repeat last column to simulate clamp_to_edge
+    for(int i = tpitch; i < textureWidth*4; i+=4)
+      memcpy(resized+i, src-4, 4);
+
+    resized += (textureWidth * 4);
+  }
+
+  // repeat last row to simulate clamp_to_edge
+  for(int y = h; y < textureHeight; y++) 
+  {
+    memcpy(resized, src - tpitch, tpitch);
+
+    // repeat last column to simulate clamp_to_edge
+    for(int i = tpitch; i < textureWidth*4; i+=4) 
+      memcpy(resized+i, src-4, 4);
+
+    resized += (textureWidth * 4);
+  }
+  if (loadToGPU)
+    LoadToGPU();
+}
+
 
 void CGLTexture::LoadToGPU()
 {
@@ -138,3 +242,5 @@ void CGLTexture::LoadToGPU()
 
   m_loadedToGPU = true;           
 }
+
+#endif // HAS_SDL_OPENGL

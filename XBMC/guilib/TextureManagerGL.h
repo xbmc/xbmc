@@ -39,10 +39,13 @@
 class CGLTexture : public CBaseTexture
 {
 public:
-
-  CGLTexture(XBMC::SurfacePtr surface, bool loadToGPU = true, bool freeSurface = false);  
+  CGLTexture();
+  CGLTexture(XBMC::TexturePtr surface, bool loadToGPU = true, bool freeSurface = false);  
   virtual ~CGLTexture();
 
+  virtual bool Load(const CStdString& texturePath);
+  virtual void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
+  virtual void Update(XBMC::TexturePtr surface, bool loadToGPU, bool freeSurface);
   virtual void LoadToGPU();
 };
 

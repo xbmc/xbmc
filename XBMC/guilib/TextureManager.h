@@ -41,13 +41,14 @@ class CBaseTexture
 {
 
 public:
-  
-  CBaseTexture(XBMC::SurfacePtr surface, bool loadToGPU = true, bool freeSurface = false);
+  CBaseTexture();
+  CBaseTexture(XBMC::TexturePtr surface, bool loadToGPU = true, bool freeSurface = false);
   virtual ~CBaseTexture();
 
+  virtual bool Load(const CStdString& texturePath) = 0;
   virtual void LoadToGPU() = 0;
-  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU); 
-  void Update(XBMC::SurfacePtr surface, bool loadToGPU, bool freeSurface);
+  virtual void Update(XBMC::TexturePtr surface, bool loadToGPU, bool freeSurface) = 0;
+  virtual void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) = 0; 
 
   int imageWidth;
   int imageHeight;
@@ -57,6 +58,7 @@ public:
   unsigned char* m_pixels;
   bool m_loadedToGPU;
   bool m_bRequiresPower2Textures;
+  XBMC::TexturePtr m_pTexture;
 };
 
 /************************************************************************/
@@ -163,6 +165,9 @@ extern CGUITextureManager g_TextureManager;
 #ifdef HAS_SDL_OPENGL
 #include "TextureManagerGL.h"
 #define CTexture CGLTexture
+#elif defined(HAS_DX)
+#include "TextureManagerDX.h"
+#define CTexture CDXTexture
 #endif
 
 /*!
