@@ -191,6 +191,7 @@
 #include "GUIDialogButtonMenu.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogMusicScan.h"
+#include "GUIDialogEpgScan.h"
 #include "GUIDialogPlayerControls.h"
 #include "GUIDialogSongInfo.h"
 #include "GUIDialogSmartPlaylistEditor.h"
@@ -1462,6 +1463,7 @@ HRESULT CApplication::Initialize()
 #ifdef HAS_LINUX_NETWORK
   m_gWindowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
+  m_gWindowManager.Add(new CGUIDialogEpgScan);      // window id = 146
 
   m_gWindowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
@@ -3975,6 +3977,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_VIDEO_OVERLAY);
     m_gWindowManager.Delete(WINDOW_SCRIPTS_INFO);
     m_gWindowManager.Delete(WINDOW_SLIDESHOW);
+    m_gWindowManager.Delete(WINDOW_DIALOG_EPG_SCAN);
 
     m_gWindowManager.Delete(WINDOW_HOME);
     m_gWindowManager.Delete(WINDOW_PROGRAMS);
@@ -3990,7 +3993,7 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Remove(WINDOW_SETTINGS_MYVIDEOS);
     m_gWindowManager.Remove(WINDOW_SETTINGS_NETWORK);
     m_gWindowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
-	m_gWindowManager.Remove(WINDOW_SETTINGS_MYTV);
+    m_gWindowManager.Remove(WINDOW_SETTINGS_MYTV);
     m_gWindowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
 
     m_gWindowManager.Remove(WINDOW_DIALOG_SEEK_BAR);

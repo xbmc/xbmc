@@ -32,34 +32,12 @@
 //#define __declspec(x)
 #include <string.h>
 #include <time.h>
-#include "utils/PVREpg.h"
 #include "xbmc_addon_types.h"
+#include "DateTime.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-
-typedef struct
-{
-  unsigned int  m_uniqueID;
-  
-  CStdString    m_strTitle;
-  CStdString    m_strPlotOutline;
-  CStdString    m_strPlot;
-
-  CDateTime     m_startTime;
-  CDateTime     m_endTime;
-  CDateTimeSpan m_duration;
- 
-  CStdString    m_strGenre;
-  int           m_GenreType;
-  int           m_GenreSubType;
-
-} TVEPGData;
-
-typedef std::vector<TVEPGData> EPG_DATA;
-
 
   typedef void*         PVRHANDLE;
 
@@ -159,7 +137,7 @@ typedef std::vector<TVEPGData> EPG_DATA;
   * EPG Programme Definition
   * Used to signify an individual broadcast, whether it is also a recording, timer etc.
   */
-//  typedef struct PVR_PROGINFO {
+  typedef struct PVR_PROGINFO {
 //    int           uid; // unique identifier, if supported will be used for
 //    int           channum;
 //    int           bouquet;
@@ -174,9 +152,21 @@ typedef std::vector<TVEPGData> EPG_DATA;
 //    int           recording;
 //    int           rec_status;
 //    int           event_flags;
-//  } PVR_PROGINFO;
 
-  typedef CTVEPGInfoTag         PVR_PROGINFO;
+    unsigned int  m_uniqueID;
+    
+    CStdString    m_strTitle;
+    CStdString    m_strPlotOutline;
+    CStdString    m_strPlot;
+
+    CDateTime     m_startTime;
+    CDateTime     m_endTime;
+    CDateTimeSpan m_duration;
+   
+    CStdString    m_strGenre;
+    int           m_GenreType;
+    int           m_GenreSubType;
+  } PVR_PROGINFO;
 
   /**
    * TV Timer Definition
@@ -226,9 +216,7 @@ typedef std::vector<TVEPGData> EPG_DATA;
     PVR_ERROR (__cdecl* GetDriveSpace)(long long *total, long long *used);
 
     /** PVR EPG Functions **/
-    PVR_ERROR (__cdecl* GetEPGForChannel)(unsigned int number, EPG_DATA &epg, time_t start, time_t end);
-    PVR_ERROR (__cdecl* GetEPGNowInfo)(unsigned int number, PVR_PROGINFO &result);
-    PVR_ERROR (__cdecl* GetEPGNextInfo)(unsigned int number, PVR_PROGINFO &result);
+    PVR_ERROR (__cdecl* RequestEPGForChannel)(PVRHANDLE handle, unsigned int number, time_t start, time_t end);
   
     /** PVR Bouquets Functions **/
     int (__cdecl* GetNumBouquets)();

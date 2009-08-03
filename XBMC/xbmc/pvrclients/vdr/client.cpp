@@ -250,19 +250,9 @@ extern "C" int GetNumBouquets()
   return 0;
 }
 
-extern "C" PVR_ERROR GetEPGForChannel(unsigned int number, EPG_DATA &epg, time_t start, time_t end)
+extern "C" PVR_ERROR RequestEPGForChannel(PVRHANDLE handle, unsigned int number, time_t start, time_t end)
 {
-  return g_client->GetEPGForChannel(number, epg, start, end);
-}
-
-extern "C" PVR_ERROR GetEPGNowInfo(unsigned int number, PVR_PROGINFO &result)
-{
-  return g_client->GetEPGNowInfo(number, result);
-}
-
-extern "C" PVR_ERROR GetEPGNextInfo(unsigned int number, PVR_PROGINFO &result)
-{
-  return g_client->GetEPGNextInfo(number, result);
+  return g_client->RequestEPGForChannel(number, handle, start, end);
 }
 
 extern "C" int GetNumChannels()

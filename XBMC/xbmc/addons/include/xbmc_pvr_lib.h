@@ -31,6 +31,7 @@ extern "C" {
 
 void PVR_register_me(ADDON_HANDLE hdl);
 void PVR_event_callback(const PVR_EVENT event, const char* msg);
+void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry);
 void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan);
 void PVR_transfer_timer_entry(const PVRHANDLE handle, const PVR_TIMERINFO *timer);
 void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINFO *recording);

@@ -57,6 +57,14 @@ void PVR_event_callback(const PVR_EVENT event, const char* msg)
   m_pvr_cb->PVR.EventCallback(m_pvr_cb->userData, event, msg);
 }
 
+void PVR_transfer_epg_entry(const PVRHANDLE handle, const PVR_PROGINFO *epgentry)
+{
+  if (m_pvr_cb == NULL)
+    return;
+
+  m_pvr_cb->PVR.TransferEpgEntry(m_pvr_cb->userData, handle, epgentry);
+}
+
 void PVR_transfer_channel_entry(const PVRHANDLE handle, const PVR_CHANNEL *chan)
 {
   if (m_pvr_cb == NULL)

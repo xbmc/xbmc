@@ -189,7 +189,7 @@ typedef struct
 //
 //} TVEPGData;
 //
-//typedef std::vector<TVEPGData> EPG_DATA;
+typedef std::vector<PVR_PROGINFO> EPG_DATA;
 
 typedef struct
 {
@@ -200,22 +200,16 @@ typedef struct
 
 typedef std::vector<TVGroupData> CHANNELGROUPS_DATA;
 
+class cPVREpg;
 
 class cPVRChannelInfoTag : public CVideoInfoTag
 {
+  friend class cPVREpgs;
+
+private:
+  mutable const cPVREpg *m_Epg;
+
 public:
-  cPVRChannelInfoTag();
-  void Reset();
-
-  bool GetEPGNowInfo(CTVEPGInfoTag *result);
-  bool GetEPGNextInfo(CTVEPGInfoTag *result);
-  bool GetEPGLastEntry(CTVEPGInfoTag *result);
-  void CleanupEPG();
-  int GetDuration() const;
-
-  bool operator ==(const cPVRChannelInfoTag &right) const;
-  bool operator !=(const cPVRChannelInfoTag &right) const;
-
   int                 m_iIdChannel;           /// Database number
   int                 m_iChannelNum;          /// Channel number for channels on XBMC
   int                 m_iGroupID;             /// Channel group identfier
@@ -236,16 +230,19 @@ public:
   CDateTime           m_endTime;              /// End time
   CDateTimeSpan       m_duration;             /// Duration
 
-  EPG_DATA            m_EPG;                  /// EPG Data for Channel
-  TVChannelSettings   m_Settings;             /// Channel settings must be received manually
-
-
   long                m_iIdUnique;            /// Unique Id for this channel
   int                 m_clientID;             /// Id of client channel come from
   int                 m_iClientNum;           /// Channel number on client
 
   CStdString          m_strStreamURL;         /// URL of the stream, if empty use Client to read stream
   CStdString          m_strFileNameAndPath;   /// Filename for PVRManager to open and read stream
+
+public:
+  cPVRChannelInfoTag();
+  void Reset();
+
+  bool operator ==(const cPVRChannelInfoTag &right) const;
+  bool operator !=(const cPVRChannelInfoTag &right) const;
 
   CStdString Name(void) const { return m_strChannel; }
   void SetName(CStdString name) { m_strChannel = name; }
@@ -266,6 +263,7 @@ public:
   CStdString Icon(void) const { return m_IconPath; }
   void SetIcon(CStdString icon) { m_IconPath = icon; }
   bool IsHidden(void) const { return m_hide; }
+  int GetDuration() const;
 };
 
 typedef std::vector<cPVRChannelInfoTag> VECCHANNELS;

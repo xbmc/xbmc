@@ -639,7 +639,6 @@ bool CDateTime::ToFileTime(const time_t& time, FILETIME& fileTime) const
 
   fileTime.dwLowDateTime  = (DWORD)(ll & 0xFFFFFFFF);
   fileTime.dwHighDateTime = (DWORD)(ll >> 32);
-
   return true;
 }
 
