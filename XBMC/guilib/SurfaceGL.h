@@ -72,6 +72,10 @@ public:
   Display* GetDisplay() {return s_dpy;}
 #endif
 
+#ifdef __APPLE__
+  void* GetContext() { return m_glContext; }
+#endif
+
   virtual void Flip();
   virtual bool MakeCurrent();
   virtual void ReleaseContext();

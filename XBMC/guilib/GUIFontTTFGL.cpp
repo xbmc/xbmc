@@ -72,7 +72,7 @@ void CGUIFontTTFGL::Begin()
     if (!m_bTextureLoaded)
     {
       // Have OpenGL generate a texture object handle for us
-      glGenTextures(1, &m_nTexture);
+      glGenTextures(1, (GLuint*) &m_nTexture);
 
       // Bind the texture object
       glBindTexture(GL_TEXTURE_2D, m_nTexture);
@@ -213,7 +213,7 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
   if (m_bTextureLoaded)
   {
     if (glIsTexture(m_nTexture))
-      glDeleteTextures(1, &m_nTexture);
+      glDeleteTextures(1, (GLuint*) &m_nTexture);
     m_bTextureLoaded = false;
   }
 }

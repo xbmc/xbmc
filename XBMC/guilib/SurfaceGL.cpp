@@ -332,8 +332,8 @@ CSurfaceGL::CSurfaceGL(int width, int height, bool doublebuffer, CSurface* share
 
     // If we're coming from or going to fullscreen do NOT share.
     if (g_graphicsContext.getScreenSurface() != 0 &&
-      (fullscreen == false && g_graphicsContext.getScreenSurface()->m_bFullscreen == true ||
-      fullscreen == true  && g_graphicsContext.getScreenSurface()->m_bFullscreen == false))
+      (fullscreen == false && g_graphicsContext.getScreenSurface()->IsFullscreen() == true ||
+      fullscreen == true  && g_graphicsContext.getScreenSurface()->IsFullscreen() == false))
     {
       shared =0;
     }
@@ -373,7 +373,7 @@ CSurfaceGL::CSurfaceGL(int width, int height, bool doublebuffer, CSurface* share
   else
   {
     // Take the shared context.
-    m_glContext = shared->m_glContext;
+    m_glContext = ((CSurfaceGL*) shared)->GetContext();
     MakeCurrent();
     m_bOK = true;
   }
@@ -895,6 +895,7 @@ bool CSurfaceGL::glxIsSupported(const char* extension)
 
 void* CSurfaceGL::GetRenderWindow()
 {
+#ifdef _WIN32
   SDL_SysWMinfo sysInfo;
   SDL_VERSION(&sysInfo.version);
 
@@ -904,6 +905,7 @@ void* CSurfaceGL::GetRenderWindow()
     if(hwnd != NULL)
       return hwnd;
   }
+#endif
 
   return NULL;
 }

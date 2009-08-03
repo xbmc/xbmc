@@ -83,7 +83,7 @@ CGLTexture::~CGLTexture()
 {
   g_graphicsContext.BeginPaint();
   if (glIsTexture(id)) {
-    glDeleteTextures(1, &((GLuint)id));
+    glDeleteTextures(1, (GLuint*) &id);
   }
   g_graphicsContext.EndPaint();
 
@@ -204,7 +204,7 @@ void CGLTexture::LoadToGPU()
   if (!m_loadedToGPU) {
     // Have OpenGL generate a texture object handle for us
     // this happens only one time - the first time the texture is loaded
-    glGenTextures(1, &id);
+    glGenTextures(1, (GLuint*) &id);
   }
 
   // Bind the texture object
