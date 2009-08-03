@@ -138,6 +138,9 @@
 /* Define to 1 if you have the <libavutil/avutil.h> header file. */
 #undef HAVE_LIBAVUTIL_AVUTIL_H
 
+/* Define to 1 if you have the <libboblight/libboblight.h> header file. */
+#undef HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
+
 /* Define to 1 if you have the `bz2' library (-lbz2). */
 #undef HAVE_LIBBZ2
 
