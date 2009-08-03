@@ -24,6 +24,8 @@
 #include "stdafx.h"
 #include "GUIWindowTestPatternGL.h"
 
+#ifdef HAS_SDL_OPENGL
+
 CGUIWindowTestPatternGL::CGUIWindowTestPatternGL(void) : CGUIWindowTestPattern()
 {
 }
@@ -197,4 +199,6 @@ void CGUIWindowTestPatternGL::EndRender()
 {
   glEnable(GL_TEXTURE_2D);
 }
+
+#endif
  

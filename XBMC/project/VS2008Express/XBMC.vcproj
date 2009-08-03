@@ -2501,6 +2501,22 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIWindowTestPatternDX.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowTestPatternDX.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowTestPatternGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowTestPatternGL.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\PluginSettings.cpp"
 					>
 				</File>
@@ -3347,13 +3363,6 @@
 				<File
 					RelativePath="..\..\xbmc\PictureGL.cpp"
 					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\xbmc\PictureGL.h"
