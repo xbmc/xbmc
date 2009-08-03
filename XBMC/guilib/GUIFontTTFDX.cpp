@@ -40,6 +40,13 @@ using namespace std;
 
 #ifdef HAS_DX
 
+struct CUSTOMVERTEX 
+{
+  FLOAT x, y, z;
+  DWORD color;
+  FLOAT tu, tv;   // Texture coordinates
+};
+
 
 CGUIFontTTFDX::CGUIFontTTFDX(const CStdString& strFileName)
 : CGUIFontTTFBase(strFileName)
@@ -62,8 +69,22 @@ float CGUIFontTTFDX::TruncToPixel(float x)
   return (float)MathUtils::truncate_int(x) - 0.5f; 
 }
 
+void CGUIFontTTFDX::RenderInternal(SVertex* v)
+{
+  CUSTOMVERTEX verts[4] =  {
+  { v[0].x, v[0].y, v[0].z, m_dwColor, v[0].u, v[0].v},
+  { v[1].x, v[1].y, v[1].z, m_dwColor, v[1].u, v[1].v},
+  { v[2].x, v[2].y, v[2].z, m_dwColor, v[2].u, v[2].v},
+  { v[3].x, v[3].y, v[3].z, m_dwColor, v[3].u, v[3].v}
+  };
+
+  m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+}
+
 void CGUIFontTTFDX::Begin()
 {
+   m_pD3DDevice = g_graphicsContext.Get3DDevice();
+
   if (m_dwNestedBeginCount == 0)
   {
     // just have to blit from our texture.
@@ -94,11 +115,14 @@ void CGUIFontTTFDX::Begin()
     m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
   }
   // Keep track of the nested begin/end calls.
+  m_vertex_count = 0;
   m_dwNestedBeginCount++;
 }
 
 void CGUIFontTTFDX::End()
 {
+  m_pD3DDevice = g_graphicsContext.Get3DDevice();
+
   if (m_dwNestedBeginCount == 0)
     return;
 
@@ -111,6 +135,8 @@ void CGUIFontTTFDX::End()
 
 XBMC::TexturePtr CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
+  m_pD3DDevice = g_graphicsContext.Get3DDevice();
+
   LPDIRECT3DTEXTURE9 newTexture;
   if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
   {

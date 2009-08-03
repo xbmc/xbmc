@@ -148,6 +148,7 @@ CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
   m_textureHeight = m_textureWidth = 0;
   m_textureScaleX = m_textureScaleY = 0.0;
   m_ellipsesWidth = m_height = 0.0f;
+  m_dwColor = 0;
 }
 
 CGUIFontTTFBase::~CGUIFontTTFBase(void)
@@ -663,31 +664,6 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   float tt = texture.y1 * m_textureScaleY;
   float tb = texture.y2 * m_textureScaleY;
 
-  /*
-#if !defined(HAS_SDL)
-struct CUSTOMVERTEX {
-      FLOAT x, y, z;
-      DWORD color;
-      FLOAT tu, tv;   // Texture coordinates
-  };
-
-  struct SVertex
-  {
-  float u, v;
-  unsigned char r, g, b, a;    
-  float x, y, z;
-  };
-
-  CUSTOMVERTEX verts[4] =  {
-    { x[0], y1, z1, dwColor, tl, tt},
-    { x[1], y2, z2, dwColor, tr, tt},
-    { x[2], y3, z3, dwColor, tr, tb},
-    { x[3], y4, z4, dwColor, tl, tb}
-  };
-
-  m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-  */
-
   // grow the vertex buffer if required
   if(m_vertex_count >= m_vertex_size)
   {
@@ -695,6 +671,7 @@ struct CUSTOMVERTEX {
     m_vertex       = (SVertex*)realloc(m_vertex, m_vertex_size * sizeof(SVertex));
   }
 
+  m_dwColor = dwColor;
   SVertex* v = m_vertex + m_vertex_count;
 
   for(int i = 0; i < 4; i++)
@@ -728,6 +705,8 @@ struct CUSTOMVERTEX {
   v[3].x = x[3];
   v[3].y = y4;
   v[3].z = z4;
+
+  RenderInternal(v);
 
   m_vertex_count+=4;
 }

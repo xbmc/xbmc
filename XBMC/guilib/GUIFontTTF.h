@@ -62,6 +62,15 @@ DWORD PadPow2(DWORD x);
  \ingroup textures
  \brief
  */
+
+typedef struct _SVertex
+{
+  float u, v;
+  unsigned char r, g, b, a;    
+  float x, y, z;
+} SVertex;
+
+
 class CGUIFontTTFBase
 {
   friend class CGUIFont;
@@ -122,6 +131,7 @@ protected:
   virtual XBMC::TexturePtr ReallocTexture(unsigned int& newHeight) = 0;
   virtual bool CopyCharToTexture(void* pGlyph, void* pCharacter) = 0;
   virtual void DeleteHardwareTexture() = 0;
+  virtual void RenderInternal(SVertex* v) = 0;
 
   // modifying glyphs
   void EmboldenGlyph(FT_GlyphSlot slot);
@@ -133,6 +143,8 @@ protected:
   unsigned int m_textureHeight;      // heigth of our texture
   int m_posX;                        // current position in the texture
   int m_posY;
+
+  DWORD m_dwColor;
 
   Character *m_char;                 // our characters
   Character *m_charquick[256*4];     // ascii chars (4 styles) here
@@ -151,13 +163,6 @@ protected:
 
   float m_originX;
   float m_originY;
-
-  struct SVertex
-  {
-    float u, v;
-    unsigned char r, g, b, a;    
-    float x, y, z;
-  };
 
   bool m_bTextureLoaded;
   unsigned int m_nTexture;

@@ -52,6 +52,7 @@ protected:
   virtual XBMC::TexturePtr ReallocTexture(unsigned int& newHeight);
   virtual bool CopyCharToTexture(void* pGlyph, void* pCharacter);
   virtual void DeleteHardwareTexture();
+  virtual void RenderInternal(SVertex* v) {}
   
 };
 
