@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "Picture.h"
-#include "TextureManagerGL.h"
+#include "TextureManager.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
@@ -30,17 +30,18 @@
 
 using namespace XFILE;
 
-CPicture::CPicture(void)
+CPictureBase::CPictureBase(void)
 {
   ZeroMemory(&m_info, sizeof(ImageInfo));
 }
 
-CPicture::~CPicture(void)
+CPictureBase::~CPictureBase(void)
 {
 
 }
 
-XBMC::TexturePtr CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
+/*
+XBMC::TexturePtr CPictureBase::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
 {
   if (!m_dll.Load()) return NULL;
 
@@ -103,8 +104,9 @@ XBMC::TexturePtr CPicture::Load(const CStdString& strFileName, int iMaxWidth, in
   m_dll.ReleaseImage(&m_info);
   return pTexture;
 }
+*/
 
-bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
+bool CPictureBase::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
 {
   // don't create the thumb if it already exists
   if (checkExistence && CFile::Exists(strThumbFileName))
@@ -132,7 +134,7 @@ bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString
   return true;
 }
 
-bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName)
+bool CPictureBase::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName)
 {
   CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str());
 
@@ -149,7 +151,7 @@ bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& de
 #endif
 }
 
-bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
+bool CPictureBase::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
   if (!m_dll.Load()) return false;
@@ -161,7 +163,7 @@ bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, cons
   return true;
 }
 
-void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail)
+void CPictureBase::CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail)
 { // we want to mold the thumbs together into one single one
   if (!m_dll.Load()) return;
   CStdString strThumbnails[4];
@@ -184,13 +186,13 @@ void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &
   }
 }
 
-bool CPicture::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName)
+bool CPictureBase::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName)
 {
   if (!pBuffer || !m_dll.Load()) return false;
   return m_dll.CreateThumbnailFromSurface(pBuffer, width, height, stride, strThumbFileName.c_str());
 }
 
-int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror)
+int CPictureBase::ConvertFile(const CStdString &srcFile, const CStdString &destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror)
 {
   if (!m_dll.Load()) return false;
   int ret;
@@ -204,7 +206,8 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
 }
 
 // caches a skin image as a thumbnail image
-bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
+/*
+bool CPictureBase::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
 {
   int iImages = g_TextureManager.Load(srcFile);
   if (iImages > 0)
@@ -223,7 +226,7 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
     if (texture)
     {
       bool success(false);
-      CPicture pic;
+      CPictureBase pic;
       if (!linear)
       { // damn, have to copy it to a linear texture first :(
         return CreateThumbnailFromSwizzledTexture(texture, width, height, destFile);
@@ -247,8 +250,10 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   }
   return false;
 }
+*/
 
-bool CPicture::CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb)
+/*
+bool CPictureBase::CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb)
 {
 #ifndef HAS_SDL
   LPDIRECT3DTEXTURE9 linTexture = NULL;
@@ -270,8 +275,9 @@ bool CPicture::CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int
   }
 #else
 #ifdef __GNUC__
-// FIXME: CPicture::CreateThumbnailFromSwizzledTexture not implemented
+// FIXME: CPictureBase::CreateThumbnailFromSwizzledTexture not implemented
 #endif
 #endif
   return false;
 }
+*/
