@@ -34,7 +34,7 @@ void CGUITextureD3D::Begin()
 {
   LPDIRECT3DDEVICE9 p3DDevice = g_graphicsContext.Get3DDevice();
   // Set state to render the image
-  p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame] );
+  p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame]->m_pTexture );
   p3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
   p3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
   p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
@@ -47,7 +47,7 @@ void CGUITextureD3D::Begin()
   p3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
   if (m_diffuse.size())
   {
-    p3DDevice->SetTexture( 1, m_diffuse.m_textures[0] );
+    p3DDevice->SetTexture( 1, m_diffuse.m_textures[0]->m_pTexture );
     p3DDevice->SetSamplerState( 1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetSamplerState( 1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
