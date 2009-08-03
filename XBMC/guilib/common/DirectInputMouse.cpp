@@ -70,11 +70,15 @@ bool CDirectInputMouse::Update(MouseState &state)
     state.dy = (char)mouseState.lY;
     state.dz = (char)mouseState.lZ;
     POINT point;
+#if 0    // TODO:DIRECTX
     if (!g_xbmcPC->GetCursorPos(point))
     { // outside our client rect
       state.active = false;
       return false;
     }
+#else
+    return false;
+#endif
     bMouseMoved = (state.x != (float)point.x || state.y != (float)point.y);
     state.x = point.x;
     state.y = point.y;
