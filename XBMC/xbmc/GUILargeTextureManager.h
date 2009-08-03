@@ -23,7 +23,7 @@
 
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
-#include "TextureManagerGL.h"
+#include "TextureManager.h"
 
 #include <assert.h>
 
