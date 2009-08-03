@@ -81,35 +81,27 @@ namespace XBMC
   typedef SDL_PixelFormat PixelFormat;
 };
 
-#define CREATE_TEXTURE(flags, width, height, depth, Rmask, Gmask, Bmask, Amask) \
-  SDL_CreateRGBSurface(flags, width, height, depth, Rmask, Gmask, Bmask, Amask)
-
 #define DELETE_TEXTURE(texture) SDL_FreeSurface(texture)
 #define DELETE_SURFACE(surface) SDL_FreeSurface(surface)
-
-#define LOCK_SURFACE(texture) SDL_LockSurface(texture)
-#define UNLOCK_SURFACE(texture) SDL_UnlockSurface(texture)
-
-#define LOCK_TEXTURE(texture) SDL_LockSurface(texture)
-#define UNLOCK_TEXTURE(texture) SDL_UnlockSurface(texture)
 
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES
 #endif
 
 #include <GL/glew.h>
+#endif // HAS_SDL_OPENGL
 
-#elif defined (HAS_DX)
+#ifdef HAS_DX
+
 namespace XBMC
 {
   typedef LPDIRECT3DDEVICE9  DevicePtr;
-  typedef LPDIRECT3DSURFACE9 SurfacePtr;
   typedef LPDIRECT3DTEXTURE9 TexturePtr;
+  typedef LPDIRECT3DSURFACE9 SurfacePtr;
   typedef LPDIRECT3DPALETTE8 PalettePtr;
 };
 
-#define LOCK_TEXTURE(texture)
-#define UNLOCK_TEXTURE(texture)
+#define DELETE_TEXTURE(texture) texture->Release()
 
 typedef uint32_t	Uint32;
 
