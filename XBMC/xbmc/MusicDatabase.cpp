@@ -3443,7 +3443,6 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
                                 "group by song.idPath", idArtist, idArtist);
 
     // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0)
