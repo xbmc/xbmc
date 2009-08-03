@@ -204,6 +204,7 @@ SRCS=Application.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
      ScriptSettings.cpp \
+     Boblight.cpp \
 
 LIB=xbmc.a
 
