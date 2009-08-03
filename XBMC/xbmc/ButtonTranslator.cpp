@@ -245,6 +245,14 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 #endif
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+// TODO:DIRECTX This needs to be de-SDL'd throughout for the case where
+//              we have the event server but no SDL
+#ifndef HAS_SDL_JOYSTICK
+#define SDL_HAT_UP    0x1
+#define SDL_HAT_RIGHT 0x2
+#define SDL_HAT_DOWN  0x4
+#define SDL_HAT_LEFT  0x8
+#endif
 void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
 {
   string joyname = "_xbmc_"; // default global map name
