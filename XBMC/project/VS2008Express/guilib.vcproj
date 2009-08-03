@@ -1275,21 +1275,6 @@
 				<File
 					RelativePath="..\..\guilib\GraphicContext.h"
 					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\guilib\GraphicContextFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\GraphicContextFactory.h"
-					>
 				</File>
 				<File
 					RelativePath="..\..\guilib\GUIFontTTF.cpp"
