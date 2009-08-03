@@ -69,6 +69,11 @@ void CGraphicContextDX::SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice)
   m_pd3dDevice = p3dDevice; 
 }
 
+void CGraphicContextDX::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
+{
+  m_pd3dParams = p3dParams;
+}
+
 CRect CGraphicContextDX::GetRenderViewPort()
 {
   D3DVIEWPORT9 viewport;

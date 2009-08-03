@@ -69,7 +69,7 @@ public:
 
   void SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
-  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams){};
+  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
   int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
 
 protected:
