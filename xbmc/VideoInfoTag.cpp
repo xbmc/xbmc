@@ -601,7 +601,7 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   }
   // genres
   node = movie->FirstChild("Genres");
-  const TiXmlNode *genre = node->FirstChildElement("Genre");
+  const TiXmlNode *genre = node ? node->FirstChildElement("Genre") : NULL;
   while (genre)
   {
     if (genre && genre->FirstChild())
@@ -618,7 +618,7 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   if (g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres)
   {
     node = movie->FirstChild("Categories");
-    const TiXmlNode *category = node->FirstChildElement("Category");
+    const TiXmlNode *category = node ? node->FirstChildElement("Category") : NULL;
     while (category)
     {
       if (category && category->FirstChild())
@@ -650,7 +650,7 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   // persons
   int personType = -1;
   node = movie->FirstChild("Persons");
-  const TiXmlElement *element = node->FirstChildElement("Person");
+  const TiXmlElement *element = node ? node->FirstChildElement("Person") : NULL;
   while (element)
   {
     element->Attribute("Type", &personType);
