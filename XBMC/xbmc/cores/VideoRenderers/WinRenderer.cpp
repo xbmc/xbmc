@@ -1196,7 +1196,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
 
 }
 
-void CWinRenderer::CreateThumbnail(LPDIRECT3DSURFACE9 surface, unsigned int width, unsigned int height)
+void CWinRenderer::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
 {
   CSingleLock lock(g_graphicsContext);
 
