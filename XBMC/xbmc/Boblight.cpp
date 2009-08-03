@@ -23,4 +23,39 @@
 
 #ifdef HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
 
-#endif
+#define BOBLIGHT_DLOPEN
+#include <libboblight/libboblight.h>
+
+#include "Util.h"
+
+using namespace std;
+
+CBoblight::CBoblight()
+{
+  //boblight_loadlibrary returns NULL when the function pointers can be loaded
+  //returns dlerror() otherwise
+  char* liberror = boblight_loadlibrary(NULL);
+  if (liberror) m_liberror = liberror;
+  
+  m_isenabled = false;
+  
+  Create();
+}
+
+void CBoblight::Process()
+{
+  //have to sort this out, can't log from constructor
+  Sleep(1000);
+  CLog::Log(LOGDEBUG, "CBoblight: starting");
+  
+  if (!m_liberror.empty())
+  {
+    CLog::Log(LOGDEBUG, "CBoblight: %s", m_liberror.c_str());
+    return;
+  }
+}
+
+#endif //HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
+
+CBoblight g_boblight; //might make this a member of application
+

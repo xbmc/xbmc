@@ -21,15 +21,41 @@
  *
  */
 
+#error unsupported branch!
+
 #ifdef HAVE_CONFIG_H
   #include "config.h"
 #endif
 
 #ifdef HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
 
-#error you're trying to compile an unsupported branch, what did you expect?
+#include <string>
 
 #include "stdafx.h"
 #include "Thread.h"
+
+class CBoblight : public CThread
+{
+  public:
+    CBoblight();
+    bool IsEnabled() { return m_isenabled; }
+    
+  private:
+    void Process();
+    
+    std::string m_liberror;
+    bool        m_isenabled;
+};
+
+extern CBoblight g_boblight;
+
+#else
+
+//for when we compile without boblight support
+class CBoblight
+{
+  public:
+    bool IsEnabled() { return false; }
+};
 
 #endif
