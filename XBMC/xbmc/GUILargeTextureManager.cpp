@@ -99,7 +99,9 @@ void CGUILargeTextureManager::Process()
       texture = NULL;
     }
     if (m_queued.size() == 0)
-    { // hang around for a while as there may well be more images on the way (saves reloading the thread)
+    { // no more images in the queue, but we want to hang around for a while to save us reloading the thread.
+      // given that we have no more images, we reset the list event first to ensure we wait the full time period.
+      m_listEvent.Reset(); 
       lock.Leave();
       m_listEvent.WaitMSec(5000);
       lock.Enter();
