@@ -4547,7 +4547,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
 
     XFILE::CFile file;
 
-    if ( !file.Open( inputFile, TRUE ) )
+    if ( !file.Open( inputFile ) )
     {
       CLog::Log( LOGERROR, "Cannot open karaoke import file %s", inputFile.c_str() );
       return;
