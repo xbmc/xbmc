@@ -47,19 +47,19 @@ CGUIFontTTFDX::CGUIFontTTFDX(const CStdString& strFileName)
  
 }
 
+CGUIFontTTFDX::~CGUIFontTTFDX(void)
+{
+  
+}
+
 float CGUIFontTTFDX::RoundToPixel(float x) 
 { 
-  return MathUtils::round_int(x) - 0.5f; 
+  return (float)MathUtils::round_int(x) - 0.5f; 
 }
 
 float CGUIFontTTFDX::TruncToPixel(float x) 
 { 
-  return MathUtils::truncate_int(x) - 0.5f; 
-}
-
-CGUIFontTTFDX::~CGUIFontTTFDX(void)
-{
-  
+  return (float)MathUtils::truncate_int(x) - 0.5f; 
 }
 
 void CGUIFontTTFDX::Begin()
@@ -109,14 +109,75 @@ void CGUIFontTTFDX::End()
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 }
 
-void CGUIFontTTFDX::ReleaseCharactersTexture()
+XBMC::TexturePtr CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
-  if (m_bTextureLoaded)
+  LPDIRECT3DTEXTURE9 newTexture;
+  if (D3D_OK != D3DXCreateTexture(m_pD3DDevice, m_textureWidth, newHeight, 1, 0, D3DFMT_LIN_A8, D3DPOOL_MANAGED, &newTexture))
   {
-    if (glIsTexture(m_nTexture))
-      glDeleteTextures(1, &m_nTexture);
-    m_bTextureLoaded = false;
+    CLog::Log(LOGDEBUG, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
+    return NULL;
   }
+  // correct texture sizes
+  D3DSURFACE_DESC desc;
+  newTexture->GetLevelDesc(0, &desc);
+  m_textureHeight = desc.Height;
+  m_textureWidth = desc.Width;
+
+  // clear texture, doesn't cost much
+  D3DLOCKED_RECT rect;
+  newTexture->LockRect(0, &rect, NULL, 0);
+  memset(rect.pBits, 0, rect.Pitch * m_textureHeight);
+  newTexture->UnlockRect(0);
+
+  if (m_texture)
+  { // copy across from our current one using gpu
+    LPDIRECT3DSURFACE9 pTarget, pSource;
+    newTexture->GetSurfaceLevel(0, &pTarget);
+    m_texture->GetSurfaceLevel(0, &pSource);
+
+    // TODO:DIRECTX - this is probably really slow, but UpdateSurface() doesn't like rendering from non-system textures
+    D3DXLoadSurfaceFromSurface(pTarget, NULL, NULL, pSource, NULL, NULL, D3DX_FILTER_NONE, 0);
+
+    SAFE_RELEASE(pTarget);
+    SAFE_RELEASE(pSource);
+    SAFE_RELEASE(m_texture);
+  }
+
+  return newTexture;
 }
+
+bool CGUIFontTTFDX::CopyCharToTexture(void* pGlyph, void* pCharacter)
+{
+  FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)pGlyph;
+  FT_Bitmap bitmap = bitGlyph->bitmap;
+
+  Character *ch = (Character *)pCharacter;
+
+  // render this onto our normal texture using gpu
+  LPDIRECT3DSURFACE9 target;
+  m_texture->GetSurfaceLevel(0, &target);
+
+  RECT sourcerect = { 0, 0, bitmap.width, bitmap.rows };
+  RECT targetrect;
+  targetrect.top = m_posY + ch->offsetY;
+  targetrect.left = m_posX + bitGlyph->left;
+  targetrect.bottom = targetrect.top + bitmap.rows;
+  targetrect.right = targetrect.left + bitmap.width;
+
+  D3DXLoadSurfaceFromMemory( target, NULL, &targetrect,
+    bitmap.buffer, D3DFMT_LIN_A8, bitmap.pitch, NULL, &sourcerect,
+    D3DX_FILTER_NONE, 0x00000000);
+
+  SAFE_RELEASE(target);
+
+  return TRUE;
+}
+
+
+void CGUIFontTTFDX::DeleteHardwareTexture()
+{
+  
+}
+
 
 #endif

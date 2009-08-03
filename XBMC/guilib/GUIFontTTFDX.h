@@ -47,9 +47,12 @@ public:
 
   virtual void Begin();
   virtual void End();
-  
+
 protected:
-  virtual void ReleaseCharactersTexture();
+  virtual XBMC::TexturePtr ReallocTexture(unsigned int& newHeight);
+  virtual bool CopyCharToTexture(void* pGlyph, void* pCharacter);
+  virtual void DeleteHardwareTexture();
+
   LPDIRECT3DDEVICE9 m_pD3DDevice;
 };
 

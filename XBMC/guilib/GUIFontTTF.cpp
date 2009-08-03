@@ -43,6 +43,8 @@
 
 using namespace std;
 
+
+
 // our free type library (debug)
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #pragma comment (lib,"../../guilib/freetype2/freetype221_D.lib")
@@ -51,17 +53,14 @@ using namespace std;
 #endif
 
 
-
-DWORD PadPow2(DWORD x);
-
 #define CHARS_PER_TEXTURE_LINE 20 // number of characters to cache per texture line
 #define CHAR_CHUNK    64      // 64 chars allocated at a time (1024 bytes)
 
-int CGUIFontTTF::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
+int CGUIFontTTFBase::justification_word_weight = 6;   // weight of word spacing over letter spacing when justifying.
                                                   // A larger number means more of the "dead space" is placed between
                                                   // words rather than between letters.
 
-unsigned int CGUIFontTTF::max_texture_size = 2048;         // max texture size - 2048 for GMA965
+unsigned int CGUIFontTTFBase::max_texture_size = 2048;         // max texture size - 2048 for GMA965
 
 class CFreeTypeLibrary
 {
@@ -177,7 +176,7 @@ void CGUIFontTTFBase::ClearCharacterCache()
     DELETE_TEXTURE(m_texture);
   }
 
-  ReleaseCharactersTexture();
+  DeleteHardwareTexture();
 
   m_texture = NULL;
   if (m_char)
@@ -218,11 +217,6 @@ void CGUIFontTTFBase::Clear()
 
 bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float aspect, float lineSpacing)
 {
-#ifndef HAS_SDL
-  // create our character texture + font shader
-  m_pD3DDevice = g_graphicsContext.Get3DDevice();
-#endif
-
   // we now know that this object is unique - only the GUIFont objects are non-unique, so no need
   // for reference tracking these fonts
   m_face = g_freeTypeLibrary.GetFont(strFilename, height, aspect);
@@ -258,11 +252,8 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   m_height = height;
 
   if (m_texture)
-#ifndef HAS_SDL
-    m_texture->Release();
-#else
-    SDL_FreeSurface(m_texture);
-#endif
+    DELETE_TEXTURE(m_texture);
+
   m_texture = NULL;
   if (m_char)
     delete[] m_char;
@@ -275,9 +266,9 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
 
   m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
-#ifdef HAS_SDL_OPENGL
+
   m_textureWidth = PadPow2(m_textureWidth);
-#endif
+
   if (m_textureWidth > max_texture_size) m_textureWidth = max_texture_size;
 
   // set the posX and posY so that our texture will be created on first character write.
@@ -562,7 +553,7 @@ bool CGUIFontTTFBase::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
     if(m_posY + m_cellHeight >= m_textureHeight)
     {
       // create the new larger texture
-      unsigned newHeight = m_posY + m_cellHeight;
+      unsigned int newHeight = m_posY + m_cellHeight;
       // check for max height (can't be more than max_texture_size texels
       if (newHeight > max_texture_size)
       {
@@ -571,38 +562,12 @@ bool CGUIFontTTFBase::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
         return false;
       }
 
-      newHeight = PadPow2(newHeight);
-      SDL_Surface* newTexture = CREATE_TEXTURE(SDL_SWSURFACE, m_textureWidth, newHeight, 8,
-          0, 0, 0, 0xff);
-
-#ifdef __APPLE__
-      // Because of an SDL bug (?), bpp gets set to 4 even though we asked for 1, in fullscreen mode.
-      // To be completely honest, we probably shouldn't even be using an SDL surface in OpenGL mode, since
-      // we only use it to store the image before copying it (no blitting!) to an OpenGL texture.
-      //
-      if (newTexture->pitch != m_textureWidth)
-        newTexture->pitch = m_textureWidth;
-#endif
-      if (!newTexture || newTexture->pixels == NULL)
+      XBMC::TexturePtr newTexture = NULL;
+      newTexture = ReallocTexture(newHeight);
+      if(newTexture == NULL)
       {
-        CLog::Log(LOGERROR, "GUIFontTTF::CacheCharacter: Error creating new cache texture for size %f", m_height);
         FT_Done_Glyph(glyph);
         return false;
-      }
-      m_textureHeight = newTexture->h;
-      m_textureWidth = newTexture->w;
-
-      if (m_texture)
-      {
-        unsigned char* src = (unsigned char*) m_texture->pixels;
-        unsigned char* dst = (unsigned char*) newTexture->pixels;
-        for (int y = 0; y < m_texture->h; y++)
-        {
-          memcpy(dst, src, m_texture->pitch);
-          src += m_texture->pitch;
-          dst += newTexture->pitch;
-        }
-        DELETE_TEXTURE(m_texture);
       }
 
       m_texture = newTexture;
@@ -622,32 +587,11 @@ bool CGUIFontTTFBase::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
   {
-    LOCK_TEXTURE(m_texture);
-
-    unsigned char* source = (unsigned char*) bitmap.buffer;
-    unsigned char* target = (unsigned char*) m_texture->pixels + (m_posY + ch->offsetY) * m_texture->pitch + m_posX + bitGlyph->left;
-    for (int y = 0; y < bitmap.rows; y++)
-    {
-      memcpy(target, source, bitmap.width);
-      source += bitmap.width;
-      target += m_texture->pitch;
-    }
-    // THE SOURCE VALUES ARE THE SAME IN BOTH SITUATIONS.
-
-    // Since we have a new texture, we need to delete the old one
-    // the Begin(); End(); stuff is handled by whoever called us
-    if (m_bTextureLoaded)
-    {
-      g_graphicsContext.BeginPaint();  //FIXME
-      ReleaseCharactersTexture();
-      g_graphicsContext.EndPaint();
-      m_bTextureLoaded = false;
-    }
-    UNLOCK_TEXTURE(m_texture);
+    CopyCharToTexture((void *)bitGlyph, (void *)ch);
   }
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
   m_numChars++;
-  
+
   m_textureScaleX = 1.0f / m_textureWidth;
   m_textureScaleY = 1.0f / m_textureHeight;
 
@@ -691,10 +635,10 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     // altering the width of thin characters substantially.  This only really works for positive
     // coordinates (due to the direction of truncation for negatives) but this is the only case that
     // really interests us anyway.
-    float rx0 = RoundToPixel(x[0]);
-    float rx3 = RoundToPixel(x[3]);
-    x[1] = TruncToPixel(x[1]);
-    x[2] = TruncToPixel(x[2]);
+    float rx0 = (float)RoundToPixel(x[0]);
+    float rx3 = (float)RoundToPixel(x[3]);
+    x[1] = (float)TruncToPixel(x[1]);
+    x[2] = (float)TruncToPixel(x[2]);
     if (rx0 > x[0])
       x[1] += 1;
     if (rx3 > x[3])
@@ -703,15 +647,15 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     x[3] = rx3;
   }
 
-  float y1 = RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-  float y2 = RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  float y3 = RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  float y4 = RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  float y1 = (float)RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  float y2 = (float)RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  float y3 = (float)RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  float y4 = (float)RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
 
-  float z1 = RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-  float z2 = RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  float z3 = RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  float z4 = RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
+  float z1 = (float)RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  float z2 = (float)RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  float z3 = (float)RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  float z4 = (float)RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
   // tex coords converted to 0..1 range
   float tl = texture.x1 * m_textureScaleX;

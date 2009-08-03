@@ -57,12 +57,12 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 
 float CGUIFontTTFGL::RoundToPixel(float x) 
 { 
-  return MathUtils::round_int(x); 
+  return (float)MathUtils::round_int(x); 
 }
 
 float CGUIFontTTFGL::TruncToPixel(float x) 
 { 
-  return MathUtils::truncate_int(x); 
+  return (float)MathUtils::truncate_int(x); 
 }
 
 void CGUIFontTTFGL::Begin()
@@ -133,7 +133,82 @@ void CGUIFontTTFGL::End()
   glPopClientAttrib();
 }
 
-void CGUIFontTTFGL::ReleaseCharactersTexture()
+XBMC::TexturePtr CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
+{
+  newHeight = PadPow2(newHeight);
+  SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_textureWidth, newHeight, 8,
+          0, 0, 0, 0xff);
+
+#ifdef __APPLE__
+  // Because of an SDL bug (?), bpp gets set to 4 even though we asked for 1, in fullscreen mode.
+  // To be completely honest, we probably shouldn't even be using an SDL surface in OpenGL mode, since
+  // we only use it to store the image before copying it (no blitting!) to an OpenGL texture.
+  //
+  if (newTexture->pitch != m_textureWidth)
+    newTexture->pitch = m_textureWidth;
+#endif
+
+  if (!newTexture || newTexture->pixels == NULL)
+  {
+    CLog::Log(LOGERROR, "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size %f", m_height);
+    return NULL;
+  }
+  m_textureHeight = newTexture->h;
+  m_textureWidth = newTexture->w;
+
+  if (m_texture)
+  {
+    unsigned char* src = (unsigned char*) m_texture->pixels;
+    unsigned char* dst = (unsigned char*) newTexture->pixels;
+    for (int y = 0; y < m_texture->h; y++)
+    {
+      memcpy(dst, src, m_texture->pitch);
+      src += m_texture->pitch;
+      dst += newTexture->pitch;
+    }
+    DELETE_TEXTURE(m_texture);
+  }
+
+  return newTexture;
+}
+
+bool CGUIFontTTFGL::CopyCharToTexture(void* pGlyph, void* pCharacter)
+{
+  SDL_LockSurface(m_texture);
+
+  FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)pGlyph;
+  FT_Bitmap bitmap = bitGlyph->bitmap;
+
+  Character *ch = (Character *)pCharacter;
+
+  unsigned char* source = (unsigned char*) bitmap.buffer;
+  unsigned char* target = (unsigned char*) m_texture->pixels + (m_posY + ch->offsetY) * m_texture->pitch + m_posX + bitGlyph->left;
+
+  for (int y = 0; y < bitmap.rows; y++)
+  {
+    memcpy(target, source, bitmap.width);
+    source += bitmap.width;
+    target += m_texture->pitch;
+  }
+  // THE SOURCE VALUES ARE THE SAME IN BOTH SITUATIONS.
+
+  // Since we have a new texture, we need to delete the old one
+  // the Begin(); End(); stuff is handled by whoever called us
+  if (m_bTextureLoaded)
+  {
+    g_graphicsContext.BeginPaint();  //FIXME
+    DeleteHardwareTexture();
+    g_graphicsContext.EndPaint();
+    m_bTextureLoaded = false;
+  }
+
+  SDL_LockSurface(m_texture);
+
+  return TRUE;
+}
+
+
+void CGUIFontTTFGL::DeleteHardwareTexture()
 {
   if (m_bTextureLoaded)
   {

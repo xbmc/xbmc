@@ -37,7 +37,7 @@ typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 
-
+DWORD PadPow2(DWORD x);
 
 #ifdef _LINUX
 #define max(a,b) ((a)>(b)?(a):(b))
@@ -119,7 +119,9 @@ protected:
   void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
   void ClearCharacterCache();
 
-  virtual void ReleaseCharactersTexture() = 0;
+  virtual XBMC::TexturePtr ReallocTexture(unsigned int& newHeight) = 0;
+  virtual bool CopyCharToTexture(void* pGlyph, void* pCharacter) = 0;
+  virtual void DeleteHardwareTexture() = 0;
 
   // modifying glyphs
   void EmboldenGlyph(FT_GlyphSlot slot);
