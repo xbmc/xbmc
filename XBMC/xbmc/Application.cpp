@@ -125,6 +125,7 @@
 #include "utils/DbusServer.h"
 #endif
 
+#include "Boblight.h"
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -2492,10 +2493,21 @@ void CApplication::Render()
     lastFrameTime = timeGetTime();
   }
   g_graphicsContext.Lock();
+#ifdef HAVE_BOBLIGHT
+  if (m_bPresentFrame)
+    g_boblight.GrabImage();
+#endif
+  
   RenderNoPresent();
+  
   g_graphicsContext.Flip();
   g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();
+
+#ifdef HAVE_BOBLIGHT
+  if (m_bPresentFrame)
+    g_boblight.Send();
+#endif
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);

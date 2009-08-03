@@ -21,8 +21,6 @@
  *
  */
 
-#error unsupported branch!
-
 #ifdef HAVE_CONFIG_H
   #include "config.h"
 #endif
@@ -40,23 +38,27 @@ class CBoblight : public CThread
   public:
     CBoblight();
     bool IsEnabled();
+    void GrabImage();
+    void Send();
     
   private:
     void Process();
     
-    std::string m_liberror;
-    bool        m_isenabled;
-    bool        m_hasinput;
-    int         m_priority;
+    std::string      m_liberror;
+    bool             m_isenabled;
+    bool             m_hasinput;
+    int              m_priority;
     
     CEvent           m_inputevent;
     CCriticalSection m_critsection;
     
-    void*       m_boblight;
+    SDL_Surface*     m_texture;
     
-    bool        Setup();
-    void        Cleanup();
-    void        Run();
+    void*            m_boblight;
+    
+    bool             Setup();
+    void             Cleanup();
+    void             Run();
 };
 
 extern CBoblight g_boblight;

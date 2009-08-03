@@ -27,6 +27,7 @@
 #include <libboblight/libboblight.h>
 
 #include "Util.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 #define SECTIMEOUT 5
 
@@ -44,6 +45,8 @@ CBoblight::CBoblight()
   m_boblight = NULL;
   m_priority = 255;
   
+  m_texture = SDL_CreateRGBSurface(SDL_SWSURFACE, 64, 64, 32, RMASK, GMASK, BMASK, AMASK);
+  
   Create();
 }
 
@@ -51,6 +54,23 @@ bool CBoblight::IsEnabled()
 {
   CSingleLock lock(m_critsection);
   return m_isenabled;
+}
+
+void CBoblight::GrabImage()
+{
+  CSingleLock lock(m_critsection);
+  
+  if (!m_isenabled)
+    return;
+  
+  m_hasinput = true;
+  
+  g_renderManager.CreateThumbnail(m_texture, 64, 64);
+}
+
+void CBoblight::Send()
+{
+  m_inputevent.Set();
 }
 
 void CBoblight::Process()
@@ -91,6 +111,12 @@ bool CBoblight::Setup()
   
   CLog::Log(LOGDEBUG, "CBoblight: Connected");
   
+  boblight_setscanrange(m_boblight, 64, 64);
+  boblight_setvalue(m_boblight, -1, 10);
+  boblight_setsaturation(m_boblight, -1, 3);
+  boblight_setspeed(m_boblight, -1, 5);
+  boblight_setthreshold(m_boblight, -1, 20);
+  
   CSingleLock lock(m_critsection);
   m_isenabled = true;
   
@@ -113,15 +139,37 @@ void CBoblight::Run()
 {
   while(!m_bStop)
   {
-    CSingleLock lock(m_critsection);
     if (m_hasinput)
     {
-      //do stuff
+      CSingleLock lock(m_critsection);
+      if (m_priority == 255)
+      {
+        boblight_setpriority(m_boblight, 128);
+        m_priority = 128;
+      }
+      
+      for (int y = 0; y < 64; y++)
+      {
+        for (int x = 0; x < 64; x++)
+        {
+          int rgb[3];
+          
+          rgb[0] = *((unsigned char*)m_texture->pixels + (m_texture->pitch * y) + (m_texture->format->BytesPerPixel * x) + 2);
+          rgb[1] = *((unsigned char*)m_texture->pixels + (m_texture->pitch * y) + (m_texture->format->BytesPerPixel * x) + 1);
+          rgb[2] = *((unsigned char*)m_texture->pixels + (m_texture->pitch * y) + (m_texture->format->BytesPerPixel * x) + 0);
+          
+          boblight_addpixelxy(m_boblight, x, y, rgb);
+        }
+      }
+      
+      if (!boblight_sendrgb(m_boblight))
+      {
+        CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
+        return;
+      }        
     }
     else
     {
-      lock.Leave();
-      
       if (m_priority != 255)
       {
         boblight_setpriority(m_boblight, 255);
@@ -135,6 +183,7 @@ void CBoblight::Run()
     }
     
     m_inputevent.WaitMSec(SECTIMEOUT * 1000);
+    m_inputevent.Reset();
   }
 }
 
