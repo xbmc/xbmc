@@ -47,8 +47,6 @@ class CBoblight : public CThread
     bool        m_isenabled;
 };
 
-extern CBoblight g_boblight;
-
 #else
 
 //for when we compile without boblight support
@@ -59,3 +57,5 @@ class CBoblight
 };
 
 #endif
+
+extern CBoblight g_boblight;
