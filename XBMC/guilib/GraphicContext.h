@@ -46,7 +46,7 @@
 #include "gui3d.h"
 #include "StdString.h"
 #include "common/Mouse.h"
-#include "GraphicContextFactory.h"
+//#include "GraphicContextFactory.h"
 
 namespace Surface { class CSurface; }
 
@@ -130,11 +130,11 @@ struct RESOLUTION_INFO
  \ingroup graphics
  \brief
  */
-class CGraphicContext : public CCriticalSection
+class CGraphicContextBase : public CCriticalSection
 {
 public:
-  CGraphicContext(void);
-  virtual ~CGraphicContext(void);
+  CGraphicContextBase(void);
+  virtual ~CGraphicContextBase(void);
 
   // get rendering API specific strings info
   std::string  GetRenderVendor();
@@ -289,7 +289,6 @@ protected:
   int s_RenderMajVer;
   int s_RenderMinVer;
 
-private:
   void UpdateFinalTransform(const TransformMatrix &matrix);
   RESOLUTION m_windowResolution;
   float m_guiScaleX;
@@ -301,7 +300,16 @@ private:
   std::stack<TransformMatrix> m_groupTransform;
 };
 
-#define g_graphicsContext CGraphicContextFactory::GetGraphicContext()
+//#define g_graphicsContext CGraphicContextFactory::GetGraphicContext()
+
+
+#ifdef HAS_SDL_OPENGL
+#include "GraphicContextGL.h"
+#define CGraphicContext CGraphicContextGL
+#elif defined(HAS_DX)
+#include "GraphicContextDX.h"
+#define CGraphicContext CGraphicContextDX
+#endif
 
 /*!
  \ingroup graphics

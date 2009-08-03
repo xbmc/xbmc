@@ -61,6 +61,8 @@ using namespace std;
 
 extern bool g_fullScreen;
 
+CGraphicContextGL g_graphicsContext;
+
 CGraphicContextGL::CGraphicContextGL(void)
 {
   m_maxTextureSize = 2048;

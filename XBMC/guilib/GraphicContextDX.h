@@ -37,7 +37,7 @@
  \ingroup graphics
  \brief
  */
-class CGraphicContextDX : public CGraphicContext
+class CGraphicContextDX : public CGraphicContextBase
 {
 public:
   CGraphicContextDX(void);
@@ -69,7 +69,7 @@ public:
 
   void SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice);
   //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
-  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
+  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams){};
   int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
 
 protected:
@@ -78,15 +78,14 @@ protected:
   virtual void SetRendrViewPort(CRect& viewPort);
   virtual void UpdateCameraPosition(const CPoint &camera);
 
-  // Update specific resolution.
-  // this is rendering specific implementation
-  virtual void UpdateRenderingScreenResolution(RESOLUTION& newRes, RESOLUTION& lastRes, bool forceClear = false);
 private:
   LPDIRECT3DDEVICE9 m_pd3dDevice;
   D3DPRESENT_PARAMETERS* m_pd3dParams;
   std::stack<D3DVIEWPORT9*> m_viewStack;
   DWORD m_stateBlock;
 };
+
+extern CGraphicContextDX g_graphicsContext;
 
 /*!
  \ingroup graphics

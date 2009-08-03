@@ -45,6 +45,8 @@ using namespace Surface;
 
 extern bool g_fullScreen;
 
+CGraphicContextDX g_graphicsContext;
+
 CGraphicContextDX::CGraphicContextDX(void)
 {
   m_maxTextureSize = 2048;
@@ -60,6 +62,11 @@ void CGraphicContextDX::GetRenderVersion(int& maj, int& min)
   // not yet implemented
   maj = s_RenderMajVer = 0;
   min = s_RenderMinVer = 0;  
+}
+
+void CGraphicContextDX::SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice) 
+{ 
+  m_pd3dDevice = p3dDevice; 
 }
 
 CRect CGraphicContextDX::GetRenderViewPort()

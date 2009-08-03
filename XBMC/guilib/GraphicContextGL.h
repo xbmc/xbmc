@@ -37,7 +37,7 @@
  \ingroup graphics
  \brief
  */
-class CGraphicContextGL : public CGraphicContext
+class CGraphicContextGL : public CGraphicContextBase
 {
 public:
   CGraphicContextGL(void);
@@ -73,6 +73,8 @@ protected:
   virtual void SetRendrViewPort(CRect& viewPort);
   virtual void UpdateCameraPosition(const CPoint &camera);
 };
+
+extern CGraphicContextGL g_graphicsContext;
 
 #endif
 
