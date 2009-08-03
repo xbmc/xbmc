@@ -64,8 +64,8 @@ public:
   void Render(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, bool solid = false);
   void RenderScrolling(float x, float y, float angle, DWORD color, DWORD shadowColor, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo);
   void RenderOutline(float x, float y, DWORD color, DWORD outlineColor, DWORD outlineWidth, DWORD alignment, float maxWidth);
-  void GetTextExtent(float &width, float &height);
-  float GetTextWidth();
+  void GetTextExtent(float &width, float &height) const;
+  float GetTextWidth() const { return m_textWidth; };
   float GetTextWidth(const CStdStringW &text) const;
   bool Update(const CStdString &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
   void SetText(const CStdStringW &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
@@ -88,7 +88,8 @@ protected:
   void WrapText(const std::vector<DWORD> &text, float maxWidth);
   void BidiTransform(std::vector<CGUIString> &lines, bool forceLTRReadingOrder);
   CStdStringW BidiFlip(const CStdStringW &text, bool forceLTRReadingOrder);
-
+  void CalcTextExtent();
+  
   // our text to render
   std::vector<DWORD> m_colors;
   std::vector<CGUIString> m_lines;
@@ -102,6 +103,8 @@ protected:
   DWORD m_textColor;
 
   CStdString m_lastText;
+  float m_textWidth;
+  float m_textHeight;
 private:
   inline bool IsSpace(DWORD letter) const XBMC_FORCE_INLINE
   {
