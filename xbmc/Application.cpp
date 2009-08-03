@@ -1593,7 +1593,7 @@ void CApplication::StartFtpServer()
 
       // check file size and presence
       CFile xml;
-      if (xml.Open(xmlpath+"FileZilla Server.xml",true) && xml.GetLength() > 0)
+      if (xml.Open(xmlpath+"FileZilla Server.xml") && xml.GetLength() > 0)
       {
         m_pFileZilla = new CXBFileZilla(_P(xmlpath));
         m_pFileZilla->Start(false);

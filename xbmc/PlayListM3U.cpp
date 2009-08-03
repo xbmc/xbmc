@@ -71,7 +71,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
   CUtil::GetParentPath(strFileName, m_strBasePath);
 
   CFile file;
-  if (!file.Open(strFileName, false) )
+  if (!file.Open(strFileName) )
   {
     file.Close();
     return false;

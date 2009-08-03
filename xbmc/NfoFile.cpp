@@ -270,7 +270,7 @@ HRESULT CNfoFile::Load(const CStdString& strFile)
 {
   Close();
   XFILE::CFile file;
-  if (file.Open(strFile, true))
+  if (file.Open(strFile))
   {
     m_size = (int)file.GetLength();
     try
