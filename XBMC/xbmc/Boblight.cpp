@@ -21,12 +21,14 @@
 
 #include "Boblight.h"
 
-#ifdef HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
+#ifdef HAVE_BOBLIGHT
 
 #define BOBLIGHT_DLOPEN
 #include <libboblight/libboblight.h>
 
 #include "Util.h"
+
+#define SECTIMEOUT 5
 
 using namespace std;
 
@@ -38,8 +40,17 @@ CBoblight::CBoblight()
   if (liberror) m_liberror = liberror;
   
   m_isenabled = false;
+  m_hasinput = false;
+  m_boblight = NULL;
+  m_priority = 255;
   
   Create();
+}
+
+bool CBoblight::IsEnabled()
+{
+  CSingleLock lock(m_critsection);
+  return m_isenabled;
 }
 
 void CBoblight::Process()
@@ -53,9 +64,81 @@ void CBoblight::Process()
     CLog::Log(LOGDEBUG, "CBoblight: %s", m_liberror.c_str());
     return;
   }
+  
+  while(!m_bStop)
+  {
+    if (!Setup())
+    {
+      Cleanup();
+      Sleep(SECTIMEOUT * 1000);
+      continue;
+    }
+    
+    Run();
+    Cleanup();
+  }
 }
 
-#endif //HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
+bool CBoblight::Setup()
+{
+  m_boblight = boblight_init();
+  
+  if (!boblight_connect(m_boblight, NULL, -1, SECTIMEOUT * 1000000))
+  {
+    CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
+    return false;
+  }
+  
+  CLog::Log(LOGDEBUG, "CBoblight: Connected");
+  
+  CSingleLock lock(m_critsection);
+  m_isenabled = true;
+  
+  return true;
+}
+
+void CBoblight::Cleanup()
+{
+  if (m_boblight)
+  {
+    boblight_destroy(m_boblight);
+    m_boblight = NULL;
+  }
+  
+  CSingleLock lock(m_critsection);
+  m_isenabled = false;
+}
+
+void CBoblight::Run()
+{
+  while(!m_bStop)
+  {
+    CSingleLock lock(m_critsection);
+    if (m_hasinput)
+    {
+      //do stuff
+    }
+    else
+    {
+      lock.Leave();
+      
+      if (m_priority != 255)
+      {
+        boblight_setpriority(m_boblight, 255);
+        m_priority = 255;
+      }
+      if (!boblight_ping(m_boblight))
+      {
+        CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
+        return;
+      }
+    }
+    
+    m_inputevent.WaitMSec(SECTIMEOUT * 1000);
+  }
+}
+
 
 CBoblight g_boblight; //might make this a member of application
 
+#endif //HAVE_BOBLIGHT

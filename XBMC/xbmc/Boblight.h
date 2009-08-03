@@ -28,6 +28,7 @@
 #endif
 
 #ifdef HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
+#define HAVE_BOBLIGHT
 
 #include <string>
 
@@ -38,24 +39,26 @@ class CBoblight : public CThread
 {
   public:
     CBoblight();
-    bool IsEnabled() { return m_isenabled; }
+    bool IsEnabled();
     
   private:
     void Process();
     
     std::string m_liberror;
     bool        m_isenabled;
+    bool        m_hasinput;
+    int         m_priority;
+    
+    CEvent           m_inputevent;
+    CCriticalSection m_critsection;
+    
+    void*       m_boblight;
+    
+    bool        Setup();
+    void        Cleanup();
+    void        Run();
 };
-
-#else
-
-//for when we compile without boblight support
-class CBoblight
-{
-  public:
-    bool IsEnabled() { return false; }
-};
-
-#endif
 
 extern CBoblight g_boblight;
+
+#endif //HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
