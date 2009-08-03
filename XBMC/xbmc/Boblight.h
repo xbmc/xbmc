@@ -26,7 +26,8 @@
 #endif
 
 #ifdef HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
-#error test
+
+#error you're trying to compile an unsupported branch, what did you expect?
 
 #include "stdafx.h"
 #include "Thread.h"
