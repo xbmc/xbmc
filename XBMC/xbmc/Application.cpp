@@ -447,7 +447,7 @@ void CApplication::InitBasicD3D()
   }
 
   // Transfer the resolution information to our graphics context
-#ifndef HAS_SDL
+#ifdef HAS_DX
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
 #endif
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
