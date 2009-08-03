@@ -60,7 +60,7 @@ public:
   CSurfaceGL& operator =(const CSurface &base);
 
   CSurfaceGL(int width, int height, bool doublebuffer, CSurface* shared,
-    CSurface* associatedWindow, XBMC::SurfacePtr parent=0, bool fullscreen=false,
+    CSurface* associatedWindow, XBMC::TexturePtr parent=0, bool fullscreen=false,
            bool offscreen=false, bool pbuffer=false, int antialias=0);
 
 #ifdef HAS_GLX
@@ -83,7 +83,7 @@ public:
   bool glxIsSupported(const char* extension);
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
-  XBMC::SurfacePtr SDL() {return m_Surface;}
+  XBMC::TexturePtr SDL() {return m_Surface;}
 
  protected:
   static bool b_glewInit;

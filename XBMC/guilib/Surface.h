@@ -55,7 +55,7 @@ class CSurface
 public:
   CSurface(CSurface* src);
   CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-    CSurface* associatedWindow, XBMC::SurfacePtr parent=0, bool fullscreen=false,
+    CSurface* associatedWindow, XBMC::TexturePtr parent=0, bool fullscreen=false,
            bool offscreen=false, bool pbuffer=false, int antialias=0);
 
   virtual ~CSurface(void);
@@ -111,7 +111,7 @@ public:
   ONTOP m_iOnTop;
 #endif
 
-  XBMC::SurfacePtr m_Surface;
+  XBMC::TexturePtr m_Surface;
 };
 
 }

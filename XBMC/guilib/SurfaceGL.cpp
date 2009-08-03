@@ -31,6 +31,8 @@
 #include <string>
 #include "Settings.h"
 
+#ifdef HAS_SDL_OPENGL
+
 #ifdef _WIN32
 #include "VideoReferenceClock.h"
 #endif
@@ -905,3 +907,5 @@ void* CSurfaceGL::GetRenderWindow()
 
   return NULL;
 }
+
+#endif // HAS_SDL_OPENGL

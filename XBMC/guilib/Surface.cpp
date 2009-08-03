@@ -39,7 +39,7 @@ CSurface::CSurface(CSurface* src)
 }
 
 CSurface::CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-                   CSurface* window, XBMC::SurfacePtr parent, bool fullscreen,
+                   CSurface* window, XBMC::TexturePtr parent, bool fullscreen,
                    bool pixmap, bool pbuffer, int antialias)
 {
   CLog::Log(LOGDEBUG, "Constructing surface %dx%d, shared=%p, fullscreen=%d\n", width, height, (void *)shared, fullscreen);
