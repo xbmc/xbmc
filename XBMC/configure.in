@@ -336,8 +336,8 @@ if test "$host_vendor" = "apple" ; then
   LDFLAGS="$LDFLAGS -L/opt/local/lib/samba3"
 elif test "$host_cpu" = "arm" ; then
 # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
-  CFLAGS="$CFLAGS -march=armv7-a -mtune=cortex-a8 -mfpu=neon"
-  CXXFLAGS="$CXXFLAGS -march=armv7-a -mtune=cortex-a8 -mfpu=neon"
+  CFLAGS="$CFLAGS -Wa,-march=armv7a -mcpu=cortex-a8  -mtune=cortex-a8 -mfpu=neon -mno-apcs-stack-check -mvectorize-with-neon-quad -mfloat-abi=softfp"
+  CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mcpu=cortex-a8  -mtune=cortex-a8 -mfpu=neon -mno-apcs-stack-check -mvectorize-with-neon-quad -mfloat-abi=softfp"
 fi
 
 # Add top source directory for all builds so we can use config.h

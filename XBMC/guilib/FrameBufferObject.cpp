@@ -44,17 +44,17 @@ CFrameBufferObject::CFrameBufferObject()
 
 bool CFrameBufferObject::IsSupported()
 {
-#ifndef HAS_SDL_GLES2
-#ifdef HAS_SDL_GLES1    // GLES1
+#ifdef HAS_SDL_GLES2    // GLES2 - no need to check, its true
+  m_supported = true;
+#else
+#ifdef HAS_SDL_GLES1    // GLES1 - extension so do a check
   if (GL_OES_framebuffer_object)
-#else                   // GL
+#else                   // GL    - extension so do a check
   if (glewIsSupported("GL_EXT_framebuffer_object"))
 #endif
     m_supported = true;
   else
     m_supported = false;
-#else                   // GLES2
-  m_supported = true;
 #endif
   return m_supported;
 }

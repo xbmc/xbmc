@@ -228,15 +228,24 @@ To create the XBMC executable manually perform these two steps:
 It is assumed you have a beagleboard with all the neccessary hardware installed
 (including keyboard, mouse, and ethernet adapter)
 It is also assumed that you have it setup with either Angstrom or Ubuntu.
-If using Ubuntu, it is much easier to install the required packages onto the board,
-however, Ubuntu is resource intensive so it is recommended to use Angstrom.
-The downside with Angstrom is there is no easy way to get the packages installed.
 
 	-----------------------------------------------------------------------------
 	6.1 Obtaining the Packages:
 	-----------------------------------------------------------------------------
 
-	To get round this, first make sure you have done section 4. then do the following:
+	For Ubuntu: See README.linux for list of packages to install.
+	The known packages not to work are: libsdl-stretch-dev libfaac-dev
+
+
+	For Angstrom:
+		# opkg update
+		# opkg install subversion make g++ gcc gawk pmount libtool automake gperf unzip bison libsdl-1.2-dev libsdl-image-1.2-dev libsdl-gfx-dev libsdl-mixer-1.2-dev libfribidi-dev liblzo-dev libfreetype-dev libsqlite3-dev libasound2 python-sqlite3 libcurl4 xineramaproto-dev libxinerama-dev libxrandr-dev libxrender-dev libmad-dev libogg-dev libvorbis-dev libmysqlclient-dev libpcre-dev libdbus-glib-1-dev hal-dev libjasper-dev libfontconfig-dev boost-dev libfaac-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libsamplerate0-dev
+	Unfortunately this will only install the packages that are available through opkg. There will be further packages that need to be installed.
+	Either use the method mentioned below, or selectively find and install packages, mentioned at the bottom of this README.
+
+
+	Alternatively, do the following:
+	First make sure you have done section 4. then do the following:
 		> cd xbmc_on_arm/arm-scripts/
 		> ./create-pkgsfile.sh
 
@@ -246,8 +255,8 @@ The downside with Angstrom is there is no easy way to get the packages installed
 	6.2 Installing the Files:
 	-----------------------------------------------------------------------------
 
-	Transfer the two files, pkgs.tar.bz2 and xbmc.tar.bz2 to the beagleboard. Do the following to extract them:
-
+	Transfer the file(s), armel-pkgs.tar.bz2 (if using alternative method mentioned above) and xbmc.tar.bz2 to the beagleboard.
+	Do the following to extract them:
 		# tar xjf armel-pkgs.tar.bz2 -C /
 		# tar xjf xbmc.tar.bz2 -C /usr/
 

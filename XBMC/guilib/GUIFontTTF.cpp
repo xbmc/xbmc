@@ -892,7 +892,9 @@ void CGUIFontTTF::End()
   glDrawArrays(GL_QUADS, 0, m_vertex_count);
   glPopClientAttrib();
 #else
+
   // TODO: GLES1 version
+
 #endif
 #endif  //GLES2
   

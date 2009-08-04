@@ -23,7 +23,7 @@
 #include "include.h"
 #include "Settings.h"
 #include "XBVideoConfig.h"
-#ifdef HAS_GLX
+#if defined(HAS_GLX) || defined(HAS_EGL)
 #include "Surface.h"
 using namespace Surface;
 #include <X11/extensions/Xinerama.h>
@@ -118,7 +118,7 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
     else
       res.fRefreshRate = (float)(devmode.dmDisplayFrequency);
 
-#elif defined(HAS_GLX)
+#elif defined(HAS_GLX) || defined(HAS_EGL)
   Display * pRootDisplay = XOpenDisplay(NULL);
   if (pRootDisplay == NULL)
   {
@@ -168,10 +168,12 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
   res.fRefreshRate = 0.0f;
 #endif
   
-// ---- TEMPORARY HACK TO GET OUTPUT ON ARM  
 #elif defined(_ARMEL)
-  res.iWidth = 1024;
-  res.iHeight = 768;
+  // This is to be run only when NOT using OpenGL|ES (EGL)
+  // i.e software rendering as no detection of res available
+  // manually set desired res here...
+  res.iWidth = 1280;
+  res.iHeight = 720;
 #ifdef HAS_XRANDR
   XOutput output = g_xrandr.GetCurrentOutput();
   XMode   mode   = g_xrandr.GetCurrentMode(output.name);

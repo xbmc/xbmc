@@ -790,6 +790,7 @@ void CGLTexture::LoadToGPU()
     }
   }
 #endif
+
   VerifyGLState();
 
   g_graphicsContext.EndPaint();

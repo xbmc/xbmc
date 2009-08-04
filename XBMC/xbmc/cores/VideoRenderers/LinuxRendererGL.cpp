@@ -1546,25 +1546,37 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
 
   //See RGB renderer for comment on this
 #define CHROMAOFFSET_HORIZ 0.25f
+  
+#if defined(HAS_SDL_GLES1)
+  
+  //TODO: GLES1.x version
+  
+#elif defined(HAS_SDL_GLES2)
+  
+  //TODO: GLES2.0 version
+  
+#else
 
   // Y
   glActiveTextureARB(GL_TEXTURE0);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[0].id);
-
+  
   // U
   glActiveTextureARB(GL_TEXTURE1);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[1].id);
-
+  
   // V
   glActiveTextureARB(GL_TEXTURE2);
   glEnable(m_textureTarget);
   glBindTexture(m_textureTarget, planes[2].id);
-
+  
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
-
+  
+#endif
+  
   if (m_reloadShaders)
   {
     m_reloadShaders = 0;
@@ -1620,8 +1632,6 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
 
   glEnd();
   
-#endif
-  
   VerifyGLState();
 
   m_pYUVShader->Disable();
@@ -1636,11 +1646,11 @@ void CLinuxRendererGL::RenderSinglePass(DWORD flags, int index)
   glActiveTextureARB(GL_TEXTURE0);
   glDisable(m_textureTarget);
 
-#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_MODELVIEW);
-#endif
 
   VerifyGLState();
+
+#endif
 }
 
 void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
@@ -1958,6 +1968,9 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
 
   glBegin(GL_QUADS);
 
+  glTexCoord2f(planes[0].rect.x1, planes[0].rect.y1);
+  glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+
   glTexCoord2f(planes[0].rect.x2, planes[0].rect.y1);
   glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
 
@@ -1968,13 +1981,13 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
   glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
 
   glEnd();
-
-#endif
   
   VerifyGLState();
 
   glDisable(m_textureTarget);
   VerifyGLState();
+
+#endif
 }
 
 void CLinuxRendererGL::CreateThumbnail(SDL_Surface* surface, unsigned int width, unsigned int height)
