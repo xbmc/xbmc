@@ -23,11 +23,22 @@
 
 class CDVDInputStream;
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #ifndef _LINUX
 enum CodecID;
 #else
 extern "C" {
-#include "../../ffmpeg/avcodec.h"
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #elif (defined HAVE_FFMPEG_AVCODEC_H)
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "avcodec.h"
+#endif
 }
 #endif
 enum AVDiscard;
@@ -63,6 +74,7 @@ public:
     iId = 0;
     iPhysicalId = 0;
     codec = (CodecID)0; // CODEC_ID_NONE
+    codec_fourcc = 0;
     type = STREAM_NONE;
     source = STREAM_SOURCE_NONE;
     iDuration = 0;
@@ -88,6 +100,7 @@ public:
   int iId;         // most of the time starting from 0
   int iPhysicalId; // id
   CodecID codec;
+  unsigned int codec_fourcc; // if available
   StreamType type;
   int source;
 
@@ -283,4 +296,8 @@ public:
    */
   CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
 
+  /*
+   * return a user-presentable codec name of the given stream
+   */
+  virtual void GetStreamCodecName(int iStreamId, CStdString &strName) {};
 };

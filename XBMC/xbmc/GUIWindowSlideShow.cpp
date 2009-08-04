@@ -134,6 +134,7 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
 {
   m_pBackgroundLoader = NULL;
   m_slides = new CFileItemList;
+  m_Resolution = INVALID;
   Reset();
 }
 

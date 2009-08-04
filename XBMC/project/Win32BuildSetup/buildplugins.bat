@@ -6,7 +6,7 @@ rem http://xbmc.org
 rem Script by chadoe
 rem This plugin builds all plugins in the optinal directory provided and copy the builds to BUILD_WIN32 for further packaging
 
-SET PLUGIN_PATH=%1
+SET PLUGIN_PATH="%1"
 SET CUR_PATH=%CD%
 ECHO ------------------------------------------------------------
 ECHO Compiling plugins...

@@ -27,6 +27,7 @@
 #include "utils/Network.h"
 #include "Iphlpapi.h"
 #include "stopwatch.h"
+#include "utils/CriticalSection.h"
 
 class CNetworkWin32;
 
@@ -84,6 +85,7 @@ private:
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;
    CStopWatch m_netrefreshTimer;
+   CCriticalSection m_critSection;
 };
 
 #endif

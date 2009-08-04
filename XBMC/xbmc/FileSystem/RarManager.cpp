@@ -458,13 +458,3 @@ __int64 CRarManager::CheckFreeSpace(const CStdString& strDrive)
 
   return 0;
 }
-
-bool CRarManager::HasMultipleEntries(const CStdString& strPath)
-{
-#ifdef HAS_RAR
-  return urarlib_hasmultiple(strPath.c_str());
-#else
-  return false;
-#endif
-}
-

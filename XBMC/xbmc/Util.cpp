@@ -2390,6 +2390,7 @@ const BUILT_IN commands[] = {
   { "Container.SortDirection",    false,  "Toggle the sort direction" },
   { "Control.Move",               true,   "Tells the specified control to 'move' to another entry specified by offset" },
   { "Control.SetFocus",           true,   "Change current focus to a different control id" },
+  { "Control.Message",            true,   "Send a given message to a control within a given window" },
   { "SendClick",                  true,   "Send a click message from the given control to the given window" },
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
@@ -3403,6 +3404,26 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_gWindowManager.GetActiveWindow(), 0, 0);
     g_graphicsContext.SendMessage(message);
+  }
+  else if (execute.Equals("control.message"))
+  {
+    CStdStringArray params;
+    StringUtils::SplitString(parameter, ",", params);
+    if (params.size() >= 2)
+    {
+      int controlID = atoi(params[0].c_str());
+      int windowID = (params.size() == 3) ? g_buttonTranslator.TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
+      if (params[1] == "moveup")
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
+      else if (params[1] == "movedown")
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
+      else if (params[1] == "pageup")
+        g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
+      else if (params[1] == "pagedown")
+        g_graphicsContext.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
+      else if (params[1] == "click")
+        g_graphicsContext.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
+    }
   }
   else if (execute.Equals("sendclick"))
   {

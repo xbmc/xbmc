@@ -3,10 +3,17 @@ CFLAGS += -I../include -D_LINUX -fPIC
 CXXFLAGS += -I../include -D_LINUX -fPIC
 DIRS= ..
 
+# Don't use includes from internal library
+ifeq (@USE_EXTERNAL_LIBMPCDEC@,1)
+CFLAGS := $(filter-out -I../include,$(CFLAGS))
+CXXFLAGS := $(filter-out -I../include,$(CXXFLAGS))
+endif
+
 ARCH=@ARCH@
 SYSDIR=../../../../../system/players/paplayer
 SO=libmpcdec-$(ARCH).so
 SLIB=$(SYSDIR)/$(SO)
+STATICLIB=libmpcdec-$(ARCH).a
 
 .PHONY: compile
 
@@ -18,16 +25,24 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
+ifneq (@USE_EXTERNAL_LIBMPCDEC@,1)
 	$(CC) -shared -o $@ -Wl,--whole-archive ../src/.libs/libmpcdec.a \
 		-Wl,--no-whole-archive ../src/xbmc_interface.o \
 		`cat ../../../DllLoader/exports/wrapper.def` \
 		../../../DllLoader/exports/wrapper.o
-
+else
+	$(CC) -shared -o $@ -lmpcdec ../src/xbmc_interface.o \
+		`cat ../../../DllLoader/exports/wrapper.def` \
+		../../../DllLoader/exports/wrapper.o
+# TODO: Having xbmc_interface here and linking at the end seems more like a
+# hack. There has to be a better way to do this.
+	$(AR) rcs $(STATICLIB) ../src/xbmc_interface.o
+endif
 endif
 
 include ../../../../../Makefile.include
 
 ../src/.libs/libmpcdec.a: compile
+ifneq (@USE_EXTERNAL_LIBMAD@,1)
 	$(MAKE) -C ..
-
-
+endif

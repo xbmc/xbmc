@@ -107,7 +107,9 @@ CXBoxRenderManager::CXBoxRenderManager()
 
   m_presentfield = FS_NONE;
   m_presenttime = 0;
+  m_presentstep = 0;
   m_rendermethod = 0;
+  m_presentmethod = VS_INTERLACEMETHOD_NONE;
 }
 
 CXBoxRenderManager::~CXBoxRenderManager()
@@ -177,9 +179,14 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
 void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   CSharedLock lock(m_sharedSection);
+  if (!m_pRenderer)
+    return;
 
-#ifdef HAS_SDL_OPENGL  
-  if (m_pRenderer)
+#ifdef HAS_SDL_OPENGL
+  if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
+   || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
+    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
+  else
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
 #endif
 }
@@ -283,6 +290,31 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     m_presenttime  = timestamp;
     m_presentfield = sync;
+    m_presentstep  = 0;
+    m_presentmethod = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+
+    /* select render method for auto */
+    if(m_presentmethod == VS_INTERLACEMETHOD_AUTO)
+    {
+      if(m_presentfield == FS_NONE)
+        m_presentmethod = VS_INTERLACEMETHOD_NONE;
+      else
+        m_presentmethod = VS_INTERLACEMETHOD_RENDER_BOB;
+    }
+
+    /* default to odd field if we want to deinterlace and don't know better */
+    if(m_presentfield == FS_NONE && m_presentmethod != VS_INTERLACEMETHOD_NONE)
+      m_presentfield = FS_ODD;
+
+    /* invert present field if we have one of those methods */
+    if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED 
+     || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+    {
+      if( m_presentfield == FS_EVEN )
+        m_presentfield = FS_ODD;
+      else
+        m_presentfield = FS_EVEN;
+    }
 
     m_pRenderer->FlipPage(source);
   }
@@ -350,10 +382,7 @@ void CXBoxRenderManager::Present()
 #ifdef HAVE_LIBVDPAU
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
-  {
-    m_presentevent.Set();
     WaitPresentTime(m_presenttime);
-  }
 #endif
 
   if (!m_pRenderer)
@@ -361,43 +390,14 @@ void CXBoxRenderManager::Present()
     CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
     return;
   }
-  
-  EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
-  /* check for forced fields */
-  if( mInt == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE )
-  {
-    /* this is uggly to do on each frame, should only need be done once */
-    int mResolution = g_graphicsContext.GetVideoResolution();
-#if defined (HAS_SDL)
-    if (1)
-#else
-    if( m_rendermethod == RENDER_HQ_RGB_SHADER 
-     || m_rendermethod == RENDER_HQ_RGB_SHADERV2 )
-#endif
-      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
-    else if( mResolution == HDTV_480p_16x9 
-          || mResolution == HDTV_480p_4x3 
-          || mResolution == HDTV_720p 
-          || mResolution == HDTV_1080i )
-      mInt = VS_INTERLACEMETHOD_RENDER_BLEND;
-    else
-      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
-  }
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
-  {
-    /* all methods should default to odd if nothing is specified */
-    if( m_presentfield == FS_EVEN )
-      m_presentfield = FS_ODD;
-    else
-      m_presentfield = FS_EVEN;
-  }
-
-  if( mInt == VS_INTERLACEMETHOD_RENDER_BOB || mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+  if     ( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB
+        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
     PresentBob();
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
+  else if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
+        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
     PresentWeave();
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_BLEND )
+  else if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BLEND )
     PresentBlend();
   else
     PresentSingle();
@@ -405,11 +405,13 @@ void CXBoxRenderManager::Present()
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
   {
+    /* we are not done until present step has reverted to 0 */
+    if(m_presentstep == 0)
+      m_presentevent.Set();
 #ifdef HAVE_LIBVDPAU
     if (!g_VDPAU)
 #endif
     {
-      m_presentevent.Set();
       WaitPresentTime(m_presenttime);
     }
   }
@@ -433,37 +435,23 @@ void CXBoxRenderManager::PresentBob()
 {
   CSingleLock lock(g_graphicsContext);
 
-  if( m_presentfield == FS_EVEN )
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOUNLOCK , 255);
-  else
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOUNLOCK, 255);
-
-#ifndef HAS_SDL
-  if( m_presenttime )
+  if(m_presentstep == 0)
   {
-    D3DDevice::Present( NULL, NULL, NULL, NULL );
+    if( m_presentfield == FS_EVEN)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    else
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+    m_presentstep = 1;
+    g_application.NewFrame();
   }
   else
   {
-    /* if no present time, assume we are in a hurry */
-    /* try to present first field directly          */
-    DWORD interval;
-    D3DDevice::GetRenderState(D3DRS_PRESENTATIONINTERVAL, &interval);
-    D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, D3DPRESENT_INTERVAL_IMMEDIATE);
-    D3DDevice::Present( NULL, NULL, NULL, NULL );
-    D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
+    if( m_presentfield == FS_ODD)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    else
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+    m_presentstep = 0;
   }
-#elif defined (HAS_SDL_OPENGL)
-
-  return; // hack for now untill bob rendering is corrected.
-
-#endif
-
-  /* render second field */
-  if( m_presentfield == FS_EVEN )
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOLOCK, 255);
-  else
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
 #ifndef HAS_SDL
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif

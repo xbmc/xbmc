@@ -85,12 +85,6 @@ public:
   unsigned int PreInit();
   void UnInit();
 
-  inline void DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->DrawAlpha(x0, y0, w, h, src, srca, stride);
-  }
   inline void Reset()
   {
     CSharedLock lock(m_sharedSection);
@@ -145,6 +139,8 @@ protected:
 
   double     m_presenttime;
   EFIELDSYNC m_presentfield;
+  EINTERLACEMETHOD m_presentmethod;
+  int        m_presentstep;
   CEvent     m_presentevent;
 
 };

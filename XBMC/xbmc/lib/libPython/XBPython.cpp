@@ -28,7 +28,22 @@
 
 // python.h should always be included first before any other includes
 #include "stdafx.h"
-#include "Python/Include/Python.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_PYTHON)
+  #if (defined HAVE_LIBPYTHON2_6)
+    #include <python2.6/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_5)
+    #include <python2.5/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_4)
+    #include <python2.4/Python.h>
+  #else
+    #error "Could not determine version of Python to use."
+  #endif
+#else
+  #include "Python/Include/Python.h"
+#endif
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "GUIPassword.h"
 
@@ -54,11 +69,23 @@ XBPython g_pythonParser;
 #elif defined(_ARMEL)
 #define PYTHON_DLL "special://xbmc/system/python/python24-arm.so"
 #elif defined(__x86_64__)
+#if (defined HAVE_LIBPYTHON2_6)
+#define PYTHON_DLL "special://xbmc/system/python/python26-x86_64-linux.so"
+#elif (defined HAVE_LIBPYTHON2_5)
+#define PYTHON_DLL "special://xbmc/system/python/python25-x86_64-linux.so"
+#else
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
-#else /* !__x86_64__ */
-#define PYTHON_DLL "special://xbmc/system/python/python24-i486-linux.so"
-#endif /* __x86_64__ */
 #endif
+#else /* !__x86_64__ */
+#if (defined HAVE_LIBPYTHON2_6)
+#define PYTHON_DLL "special://xbmc/system/python/python26-i486-linux.so"
+#elif (defined HAVE_LIBPYTHON2_5)
+#define PYTHON_DLL "special://xbmc/system/python/python25-i486-linux.so"
+#else
+#define PYTHON_DLL "special://xbmc/system/python/python24-i486-linux.so"
+#endif
+#endif /* __x86_64__ */
+#endif /* _LINUX */
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
 extern "C" BOOL __stdcall dllFreeLibrary(HINSTANCE hLibModule);
@@ -295,6 +322,7 @@ void XBPython::Initialize()
       }
 #endif        
 
+#if (!defined USE_EXTERNAL_PYTHON)
 #ifdef _LINUX
       // Required for python to find optimized code (pyo) files
       setenv("PYTHONOPTIMIZE", "1", 1);
@@ -304,12 +332,25 @@ void XBPython::Initialize()
       setenv("PYTHONPATH", _P("special://xbmc/system/python/Lib").c_str(), 1);
 #else
       setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
-#endif
+#endif /* __APPLE__ */
       //setenv("PYTHONDEBUG", "1", 1);
       //setenv("PYTHONINSPECT", "1", 1);
       //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1);
-#endif
+      CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
+#endif /* _LINUX */
+#else
+      /* PYTHONOPTIMIZE is set off intentionally when using external Python.
+         Reason for this is because we cannot be sure what version of Python
+         was used to compile the various Python object files (i.e. .pyo,
+         .pyc, etc.). */
+      //setenv("PYTHONOPTIMIZE", "1", 1);
+      //setenv("PYTHONDEBUG", "1", 1);
+      //setenv("PYTHONINSPECT", "1", 1);
+      //setenv("PYTHONVERBOSE", "1", 1);
+      setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
+      CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
+#endif /* USE_EXTERNAL_PYTHON */
 
       Py_Initialize();
       PyEval_InitThreads();

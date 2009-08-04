@@ -555,7 +555,7 @@ void CDVDPlayerAudio::Process()
 
       if (m_synctype != m_prevsynctype)
       {
-        char *synctypes[] = {(char*)"clock feedback", (char*)"skip/duplicate", (char*)"resample", (char*)"invalid"};
+        const char *synctypes[] = {"clock feedback", "skip/duplicate", "resample", "invalid"};
         int synctype = (m_synctype >= 0 && m_synctype <= 2) ? m_synctype : 3;
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
         m_prevsynctype = m_synctype;
@@ -633,7 +633,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
       if(m_speed == DVD_PLAYSPEED_NORMAL)
         CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: Discontinuty - was:%f, should be:%f, error:%f", clock, clock+m_error, m_error);
     }
-    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0)
+    else if (m_synctype == SYNC_SKIPDUP && m_skipdupcount == 0 && fabs(m_error) > DVD_MSEC_TO_TIME(10))
     {
       //check how many packets to skip/duplicate
       m_skipdupcount = (int)(m_error / duration);

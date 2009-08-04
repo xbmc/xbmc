@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Translator: Kristján Bjarni Guðmundsson-->
-<!--Date of translation: 02/04/2009-->
-<!--Based on english strings version 18906-->
+<!--Date of translation: 14/06/2009-->
+<!--Based on english strings version 21055-->
 <!--$Revision$-->
 <strings>
   <string id="0">Forrit</string>
@@ -162,7 +161,7 @@
   <string id="224">Hraði</string>
   <string id="225">Breytingarhraði</string>
   <string id="226">Prufumynstur...</string>
-  <string id="227">Sæjka upplýsingar um geisladiska á internetið</string>
+  <string id="227">Sækja upplýsingar um geisladiska á internetið</string>
   <string id="228">Endurraða spilunarlista í byrjun</string>
   <string id="229">Hvíldartími harðdisks</string>
   <string id="230">Síur</string>
@@ -717,6 +716,7 @@
   <string id="1046">Aðgangsstaðir</string>
   <string id="1047">Annað...</string>
   <string id="1048">Notandanafn netþjóns</string>
+  <string id="1049">Skriftu stillingar</string>
 
   <string id="1200">SMB biðlari</string>
   <string id="1202">Vinnuhópur</string>
@@ -788,8 +788,13 @@
   <string id="1415">Úði</string>
   <string id="1416">Þoka</string>
   <string id="1417">Haglél</string>
+  <string id="1418">Þrumuveður</string>
+  <string id="1419">Þrumuskúrir</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
+
+  <string id="1450">Virkja lágt orkustig ef aðgerðalaus</string>
+  <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Tímalengd</string>
 
@@ -1194,6 +1199,18 @@
   <string id="13421">VDPAU</string>
   <string id="13420">Ýta út</string>
 
+  <string id="13500">A/V samstillingaraðferð</string>
+  <string id="13501">Hljóðklukka</string>
+  <string id="13502">Myndklukka (Sleppa/Afrita hljóð)</string>
+  <string id="13503">Myndklukka (Endurblanda hljóð)</string>
+  <string id="13504">Hámark endurblöndunar (%)</string>
+  <string id="13505">Endurblöndunargæði</string>
+  <string id="13506">Lágt</string>
+  <string id="13507">Meðal</string>
+  <string id="13508">Hátt</string>
+  <string id="13509">Mjög hátt</string>
+  <string id="13510">Samstilla spilun við skjá</string>
+
   <string id="13600">Apple fjarstýring</string>
   <string id="13601">Hamur</string>
   <string id="13602">Alltaf keyrandi</string>
@@ -1202,6 +1219,7 @@
   <string id="13610">Óvirkt</string>
   <string id="13611">Venjulegt</string>
   <string id="13612">Altæk fjarstýring</string>
+  <string id="13613">Fjölfjarstýring (Harmony)</string>
   
   <string id="13620">Villa í Apple fjarstýringu</string>
   <string id="13621">Ekki er hægt að virkja stuðning við Apple fjarstýringu.</string>
@@ -1377,6 +1395,11 @@
   <string id="15214">Nota fína Hljóð/Mynd samstillingu</string>
   <string id="15215">Fela skráarnöfn í smámynda sjónarhorni</string>
   <string id="15216">Spila í partýham</string>
+  <string id="15217">Senda lög á Libre.fm</string>
+  <string id="15218">Libre.fm notandanafn</string>
+  <string id="15219">Libre.fm lykilorð</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
 
   <string id="15250">Senda Last.fm útvarp til Last.fm</string>
   <string id="15251">Tengist við Last.fm...</string>
@@ -1711,8 +1734,8 @@
 
   <string id="20300">Mappa vefþjóns (HTTP)</string>
   <string id="20301">Mappa vefþjóns (HTTPS)</string>
-  <string id="20302"/>
-  <string id="20303"/>
+  <string id="20302">Get ekki skrifað í möppu:</string>
+  <string id="20303">Viltu sleppa og halda áfram?</string>
   <string id="20304"/>
   <string id="20305"/>
 
@@ -2058,6 +2081,9 @@
   <string id="22041">hvítt/rautt</string>
   <string id="22042">hvítt/blátt</string>
   <string id="22043">svart/hvítt</string>
+
+  <string id="23000">Veður viðbót</string>
+  <string id="23001">- Stillingar viðbótar</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Safnhamur</string>

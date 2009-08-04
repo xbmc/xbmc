@@ -639,6 +639,23 @@ ac_includes_default="\
 ac_header_list=
 ac_func_list=
 ac_subst_vars='LTLIBOBJS
+USE_PYTHON2_4
+USE_PYTHON2_5
+USE_PYTHON2_6
+USE_EXTERNAL_PYTHON
+USE_EXTERNAL_LIBWAVPACK
+USE_EXTERNAL_LIBFLAC
+USE_EXTERNAL_LIBMPCDEC
+USE_EXTERNAL_LIBOGG
+USE_EXTERNAL_LIBVORBIS
+USE_EXTERNAL_LIBASS
+USE_EXTERNAL_LIBMPEG2
+USE_EXTERNAL_LIBFAAD
+USE_EXTERNAL_LIBDTS
+USE_EXTERNAL_LIBA52
+USE_EXTERNAL_LIBMAD
+USE_EXTERNAL_FFMPEG
+USE_EXTERNAL_LIBRARIES
 BUILD_DVDCSS
 SDL_DEFINES
 DEBUG_FLAGS
@@ -652,9 +669,11 @@ HAVE_UNZIP
 HAVE_GPERF
 HAVE_CMAKE
 HAVE_GAWK
+HAVE_ZIP
+CPP
 EGREP
 GREP
-CPP
+CXXCPP
 MACOSX_DEPLOYMENT_TARGET
 SET_MAKE
 LN_S
@@ -735,6 +754,20 @@ enable_faac
 enable_dvdcss
 enable_mid
 enable_avahi
+enable_external_libraries
+enable_external_ffmpeg
+enable_external_libmad
+enable_external_liba52
+enable_external_libdts
+enable_external_libfaad
+enable_external_libmpeg2
+enable_external_libass
+enable_external_libvorbis
+enable_external_libogg
+enable_external_libmpcdec
+enable_external_libflac
+enable_external_libwavpack
+enable_external_python
 '
       ac_precious_vars='build_alias
 host_alias
@@ -747,6 +780,7 @@ CPPFLAGS
 CCC
 CC
 CFLAGS
+CXXCPP
 CPP'
 
 
@@ -1392,6 +1426,48 @@ Optional Features:
   --enable-mid            enable MID support (default is no)
   --disable-avahi         disable Avahi support (default is enabled if
                           libavahi-common and libavahi-client is found)
+  --enable-external-libraries
+                          enable use of all supported external libraries
+                          (default is no) 'Linux only'
+  --enable-external-ffmpeg
+                          enable use of external ffmpeg libraries (default is
+                          no) 'Linux only'
+  --enable-external-libmad
+                          enable use of external libmad library (default is
+                          no) 'Linux only'
+  --enable-external-liba52
+                          enable use of external liba52 library (default is
+                          no) 'Linux only'
+  --enable-external-libdts
+                          enable use of external libdts library (default is
+                          no) 'Linux only'
+  --enable-external-libfaad
+                          enable use of external libfaad library (default is
+                          no) 'Linux only'
+  --enable-external-libmpeg2
+                          enable use of external libmpeg2 library (default is
+                          no) 'Linux only'
+  --enable-external-libass
+                          enable use of external libass library (default is
+                          no) 'Linux only'
+  --enable-external-libvorbis
+                          enable use of external libvorbis library (default is
+                          no) 'Linux only'
+  --enable-external-libogg
+                          enable use of external libogg library (default is
+                          no) 'Linux only'
+  --enable-external-libmpcdec
+                          enable use of external libmpcdec library (default is
+                          no) 'Linux only'
+  --enable-external-libflac
+                          enable use of external libflac library (default is
+                          no) 'Linux only'
+  --enable-external-libwavpack
+                          enable use of external libwavpack library (default
+                          is no) 'Linux only'
+  --enable-external-python
+                          enable use of external python library (default is
+                          no) 'Linux only'
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1403,6 +1479,7 @@ Some influential environment variables:
               you have headers in a nonstandard directory <include dir>
   CC          C compiler command
   CFLAGS      C compiler flags
+  CXXCPP      C++ preprocessor
   CPP         C preprocessor
 
 Use these variables to override the choices made by `configure' or to help
@@ -1860,6 +1937,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 ac_config_headers="$ac_config_headers config.h"
 
 
+
+
 # Ensure config.guess and config.sub exist and is executable
 # Also install latest version of these files if available
 { $as_echo "$as_me:$LINENO: Ensuring config.guess and config.sub exist and is executable" >&5
@@ -1992,10 +2071,10 @@ case $host_os in *\ *) host_os=`echo "$host_os" | sed 's/ /-/g'`;; esac
 
 
 
-# message strings
+# General message strings
 configure_debug="ERROR: this is a configure debug statement"
-
 missing_library="Could not find a required library. Please see the README for your platform."
+missing_headers="Could not find some required headers. Please see the README for your platform."
 missing_program="Could not find a required program. Please see the README for your platform."
 xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
@@ -2009,6 +2088,37 @@ avahi_not_found="== Could not find libavahi-common or libavahi-client. Avahi sup
 avahi_disabled="== Avahi support disabled. =="
 vdpau_not_found="== Could not find libvdpau. VDPAU support disabled. =="
 vdpau_disabled="== VDPAU support manually disabled. =="
+
+# External library message strings
+external_libraries_enabled="== Use of all supported external libraries enabled. =="
+external_libraries_disabled="== Use of all supported external libraries disabled. =="
+external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
+external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
+external_libmad_enabled="== Use of external libmad enabled. =="
+external_libmad_disabled="== Use of external libmad disabled. =="
+external_liba52_enabled="== Use of external liba52 enabled. =="
+external_liba52_disabled="== Use of external liba52 disabled. =="
+external_libdts_enabled="== Use of external libdts enabled. =="
+external_libdts_disabled="== Use of external libdts disabled. =="
+external_libfaad_enabled="== Use of external libfaad enabled. =="
+external_libfaad_disabled="== Use of external libfaad disabled. =="
+external_libmpeg2_enabled="== Use of external libmpeg2 enabled. =="
+external_libmpeg2_disabled="== Use of external libmpeg2 disabled. =="
+external_libass_enabled="== Use of external libass enabled. =="
+external_libass_disabled="== Use of external libass disabled. =="
+external_libvorbis_enabled="== Use of external libvorbis enabled. =="
+external_libvorbis_disabled="== Use of external libvorbis disabled. =="
+external_libogg_enabled="== Use of external libogg enabled. =="
+external_libogg_disabled="== Use of external libogg disabled. =="
+external_libmpcdec_enabled="== Use of external libmpcdec enabled. =="
+external_libmpcdec_disabled="== Use of external libmpcdec disabled. =="
+external_libflac_enabled="== Use of external libflac enabled. =="
+external_libflac_disabled="== Use of external libflac disabled. =="
+external_libwavpack_enabled="== Use of external libwavpack enabled. =="
+external_libwavpack_disabled="== Use of external libwavpack disabled. =="
+external_python_enabled="== Use of external python enabled. =="
+external_python_disabled="== Use of external python disabled. =="
+ffmpeg_vdpau_not_supported="== External ffmpeg doesn't support VDPAU. VDPAU support disabled. =="
 
 case $host in
     i*86*-linux-gnu*)
@@ -2207,6 +2317,121 @@ else
   use_avahi=yes
 fi
 
+
+### External libraries options
+# Check whether --enable-external-libraries was given.
+if test "${enable_external_libraries+set}" = set; then
+  enableval=$enable_external_libraries; use_external_libraries=$enableval
+else
+  use_external_libraries=no
+fi
+
+
+# Check whether --enable-external-ffmpeg was given.
+if test "${enable_external_ffmpeg+set}" = set; then
+  enableval=$enable_external_ffmpeg; use_external_ffmpeg=$enableval
+else
+  use_external_ffmpeg=no
+fi
+
+
+# Check whether --enable-external-libmad was given.
+if test "${enable_external_libmad+set}" = set; then
+  enableval=$enable_external_libmad; use_external_libmad=$enableval
+else
+  use_external_libmad=no
+fi
+
+
+# Check whether --enable-external-liba52 was given.
+if test "${enable_external_liba52+set}" = set; then
+  enableval=$enable_external_liba52; use_external_liba52=$enableval
+else
+  use_external_liba52=no
+fi
+
+
+# Check whether --enable-external-libdts was given.
+if test "${enable_external_libdts+set}" = set; then
+  enableval=$enable_external_libdts; use_external_libdts=$enableval
+else
+  use_external_libdts=no
+fi
+
+
+# Check whether --enable-external-libfaad was given.
+if test "${enable_external_libfaad+set}" = set; then
+  enableval=$enable_external_libfaad; use_external_libfaad=$enableval
+else
+  use_external_libfaad=no
+fi
+
+
+# Check whether --enable-external-libmpeg2 was given.
+if test "${enable_external_libmpeg2+set}" = set; then
+  enableval=$enable_external_libmpeg2; use_external_libmpeg2=$enableval
+else
+  use_external_libmpeg2=no
+fi
+
+
+# Check whether --enable-external-libass was given.
+if test "${enable_external_libass+set}" = set; then
+  enableval=$enable_external_libass; use_external_libass=$enableval
+else
+  use_external_libass=no
+fi
+
+
+# Check whether --enable-external-libvorbis was given.
+if test "${enable_external_libvorbis+set}" = set; then
+  enableval=$enable_external_libvorbis; use_external_libvorbis=$enableval
+else
+  use_external_libvorbis=no
+fi
+
+
+# Check whether --enable-external-libogg was given.
+if test "${enable_external_libogg+set}" = set; then
+  enableval=$enable_external_libogg; use_external_libogg=$enableval
+else
+  use_external_libogg=no
+fi
+
+
+# Check whether --enable-external-libmpcdec was given.
+if test "${enable_external_libmpcdec+set}" = set; then
+  enableval=$enable_external_libmpcdec; use_external_libmpcdec=$enableval
+else
+  use_external_libmpcdec=no
+fi
+
+
+# Check whether --enable-external-libflac was given.
+if test "${enable_external_libflac+set}" = set; then
+  enableval=$enable_external_libflac; use_external_libflac=$enableval
+else
+  use_external_libflac=no
+fi
+
+
+# Check whether --enable-external-libwavpack was given.
+if test "${enable_external_libwavpack+set}" = set; then
+  enableval=$enable_external_libwavpack; use_external_libwavpack=$enableval
+else
+  use_external_libwavpack=no
+fi
+
+
+# Check whether --enable-external-python was given.
+if test "${enable_external_python+set}" = set; then
+  enableval=$enable_external_python; use_external_python=$enableval
+else
+  use_external_python=no
+fi
+
+
+### End of external library options
 
 # PCRE is a requirement
 use_pcre="yes"
@@ -3652,30 +3877,33 @@ elif test "$host_cpu" = "arm" ; then
   CXXFLAGS="$CXXFLAGS -march=armv7-a -mtune=cortex-a8 -mfpu=neon"
 fi
 
-# Checks for boost headers using g++ instead of gcc
-oldCC="$CC"
-CC="$CXX"
+# Add top source directory for all builds so we can use config.h
+INCLUDES="$INCLUDES -I\$(abs_top_srcdir)"
 
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-{ $as_echo "$as_me:$LINENO: checking how to run the C preprocessor" >&5
-$as_echo_n "checking how to run the C preprocessor... " >&6; }
-# On Suns, sometimes $CPP names a directory.
-if test -n "$CPP" && test -d "$CPP"; then
-  CPP=
-fi
-if test -z "$CPP"; then
-  if test "${ac_cv_prog_CPP+set}" = set; then
+# Checks for boost headers using CXX instead of CC
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+{ $as_echo "$as_me:$LINENO: checking how to run the C++ preprocessor" >&5
+$as_echo_n "checking how to run the C++ preprocessor... " >&6; }
+if test -z "$CXXCPP"; then
+  if test "${ac_cv_prog_CXXCPP+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
-      # Double quotes because CPP needs to be expanded
-    for CPP in "$CC -E" "$CC -E -traditional-cpp" "/lib/cpp"
+      # Double quotes because CXXCPP needs to be expanded
+    for CXXCPP in "$CXX -E" "/lib/cpp"
     do
       ac_preproc_ok=false
-for ac_c_preproc_warn_flag in '' yes
+for ac_cxx_preproc_warn_flag in '' yes
 do
   # Use a header file that comes with gcc, so configuring glibc
   # with a fresh cross-compiler works.
@@ -3710,7 +3938,7 @@ $as_echo "$ac_try_echo") >&5
   cat conftest.err >&5
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        }; then
   :
@@ -3748,7 +3976,7 @@ $as_echo "$ac_try_echo") >&5
   cat conftest.err >&5
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        }; then
   # Broken: success on invalid input.
@@ -3772,17 +4000,17 @@ if $ac_preproc_ok; then
 fi
 
     done
-    ac_cv_prog_CPP=$CPP
+    ac_cv_prog_CXXCPP=$CXXCPP
 
 fi
-  CPP=$ac_cv_prog_CPP
+  CXXCPP=$ac_cv_prog_CXXCPP
 else
-  ac_cv_prog_CPP=$CPP
+  ac_cv_prog_CXXCPP=$CXXCPP
 fi
-{ $as_echo "$as_me:$LINENO: result: $CPP" >&5
-$as_echo "$CPP" >&6; }
+{ $as_echo "$as_me:$LINENO: result: $CXXCPP" >&5
+$as_echo "$CXXCPP" >&6; }
 ac_preproc_ok=false
-for ac_c_preproc_warn_flag in '' yes
+for ac_cxx_preproc_warn_flag in '' yes
 do
   # Use a header file that comes with gcc, so configuring glibc
   # with a fresh cross-compiler works.
@@ -3817,7 +4045,7 @@ $as_echo "$ac_try_echo") >&5
   cat conftest.err >&5
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        }; then
   :
@@ -3855,7 +4083,7 @@ $as_echo "$ac_try_echo") >&5
   cat conftest.err >&5
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        }; then
   # Broken: success on invalid input.
@@ -3879,18 +4107,18 @@ if $ac_preproc_ok; then
 else
   { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-{ { $as_echo "$as_me:$LINENO: error: C preprocessor \"$CPP\" fails sanity check
+{ { $as_echo "$as_me:$LINENO: error: C++ preprocessor \"$CXXCPP\" fails sanity check
 See \`config.log' for more details." >&5
-$as_echo "$as_me: error: C preprocessor \"$CPP\" fails sanity check
+$as_echo "$as_me: error: C++ preprocessor \"$CXXCPP\" fails sanity check
 See \`config.log' for more details." >&2;}
    { (exit 1); exit 1; }; }; }
 fi
 
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
 { $as_echo "$as_me:$LINENO: checking for grep that handles long lines and -e" >&5
@@ -4066,7 +4294,7 @@ $as_echo "$ac_try_echo") >&5
   cat conftest.err >&5
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
+	 test -z "$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
   ac_cv_header_stdc=yes
@@ -4249,7 +4477,7 @@ $as_echo "$ac_try_echo") >&5
   cat conftest.err >&5
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
+	 test -z "$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
   eval "$as_ac_Header=yes"
@@ -4314,7 +4542,7 @@ $as_echo "$ac_try_echo") >&5
   cat conftest.err >&5
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
+	 test -z "$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        } && test -s conftest.$ac_objext; then
   ac_header_compiler=yes
@@ -4354,7 +4582,7 @@ $as_echo "$ac_try_echo") >&5
   cat conftest.err >&5
   $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); } >/dev/null && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test -z "$ac_cxx_preproc_warn_flag$ac_cxx_werror_flag" ||
 	 test ! -s conftest.err
        }; then
   ac_header_preproc=yes
@@ -4370,7 +4598,7 @@ rm -f conftest.err conftest.$ac_ext
 $as_echo "$ac_header_preproc" >&6; }
 
 # So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+case $ac_header_compiler:$ac_header_preproc:$ac_cxx_preproc_warn_flag in
   yes:no: )
     { $as_echo "$as_me:$LINENO: WARNING: boost/shared_ptr.hpp: accepted by the compiler, rejected by the preprocessor!" >&5
 $as_echo "$as_me: WARNING: boost/shared_ptr.hpp: accepted by the compiler, rejected by the preprocessor!" >&2;}
@@ -4419,7 +4647,12 @@ $as_echo "$as_me: error: $missing_library" >&2;}
 fi
 
 
-CC="$oldCC"
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 
 # Checks for platforms libraries.
 if test "$host_cpu" != "arm" ; then
@@ -4427,6 +4660,7 @@ if test "$host_cpu" != "arm" ; then
 if test "$use_gl" = "yes"; then
   if test "$host_vendor" = "apple" ; then
     # linking to OpenGL.framework instead of libGL, libGLU
+
 
 { $as_echo "$as_me:$LINENO: checking for main in -lGLEW" >&5
 $as_echo_n "checking for main in -lGLEW... " >&6; }
@@ -5169,6 +5403,243 @@ fi
 fi
 
 # platform independent libraries
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+{ $as_echo "$as_me:$LINENO: checking how to run the C preprocessor" >&5
+$as_echo_n "checking how to run the C preprocessor... " >&6; }
+# On Suns, sometimes $CPP names a directory.
+if test -n "$CPP" && test -d "$CPP"; then
+  CPP=
+fi
+if test -z "$CPP"; then
+  if test "${ac_cv_prog_CPP+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+      # Double quotes because CPP needs to be expanded
+    for CPP in "$CC -E" "$CC -E -traditional-cpp" "/lib/cpp"
+    do
+      ac_preproc_ok=false
+for ac_c_preproc_warn_flag in '' yes
+do
+  # Use a header file that comes with gcc, so configuring glibc
+  # with a fresh cross-compiler works.
+  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+  # <limits.h> exists even on freestanding compilers.
+  # On the NeXT, cc -E runs the code through the compiler's parser,
+  # not just through cpp. "Syntax error" is here to catch this case.
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+		     Syntax error
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  :
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  # Broken: fails on valid input.
+continue
+fi
+
+rm -f conftest.err conftest.$ac_ext
+
+  # OK, works on sane cases.  Now check whether nonexistent headers
+  # can be detected and how.
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <ac_nonexistent.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  # Broken: success on invalid input.
+continue
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  # Passes both tests.
+ac_preproc_ok=:
+break
+fi
+
+rm -f conftest.err conftest.$ac_ext
+
+done
+# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
+rm -f conftest.err conftest.$ac_ext
+if $ac_preproc_ok; then
+  break
+fi
+
+    done
+    ac_cv_prog_CPP=$CPP
+
+fi
+  CPP=$ac_cv_prog_CPP
+else
+  ac_cv_prog_CPP=$CPP
+fi
+{ $as_echo "$as_me:$LINENO: result: $CPP" >&5
+$as_echo "$CPP" >&6; }
+ac_preproc_ok=false
+for ac_c_preproc_warn_flag in '' yes
+do
+  # Use a header file that comes with gcc, so configuring glibc
+  # with a fresh cross-compiler works.
+  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+  # <limits.h> exists even on freestanding compilers.
+  # On the NeXT, cc -E runs the code through the compiler's parser,
+  # not just through cpp. "Syntax error" is here to catch this case.
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+		     Syntax error
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  :
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  # Broken: fails on valid input.
+continue
+fi
+
+rm -f conftest.err conftest.$ac_ext
+
+  # OK, works on sane cases.  Now check whether nonexistent headers
+  # can be detected and how.
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <ac_nonexistent.h>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  # Broken: success on invalid input.
+continue
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  # Passes both tests.
+ac_preproc_ok=:
+break
+fi
+
+rm -f conftest.err conftest.$ac_ext
+
+done
+# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
+rm -f conftest.err conftest.$ac_ext
+if $ac_preproc_ok; then
+  :
+else
+  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: C preprocessor \"$CPP\" fails sanity check
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: C preprocessor \"$CPP\" fails sanity check
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }; }
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
 if test "${ac_cv_header_mad_h+set}" = set; then
   { $as_echo "$as_me:$LINENO: checking for mad.h" >&5
 $as_echo_n "checking for mad.h... " >&6; }
@@ -5804,6 +6275,152 @@ if test "x$ac_cv_lib_vorbis_main" = x""yes; then
 _ACEOF
 
   LIBS="-lvorbis $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lvorbisenc" >&5
+$as_echo_n "checking for main in -lvorbisenc... " >&6; }
+if test "${ac_cv_lib_vorbisenc_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lvorbisenc  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_vorbisenc_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_vorbisenc_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_vorbisenc_main" >&5
+$as_echo "$ac_cv_lib_vorbisenc_main" >&6; }
+if test "x$ac_cv_lib_vorbisenc_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBVORBISENC 1
+_ACEOF
+
+  LIBS="-lvorbisenc $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lvorbisfile" >&5
+$as_echo_n "checking for main in -lvorbisfile... " >&6; }
+if test "${ac_cv_lib_vorbisfile_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lvorbisfile  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_vorbisfile_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_vorbisfile_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_vorbisfile_main" >&5
+$as_echo "$ac_cv_lib_vorbisfile_main" >&6; }
+if test "x$ac_cv_lib_vorbisfile_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBVORBISFILE 1
+_ACEOF
+
+  LIBS="-lvorbisfile $LIBS"
 
 else
   { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
@@ -6613,9 +7230,9 @@ $as_echo "$as_me: error: $missing_library" >&2;}
 fi
 
 
-{ $as_echo "$as_me:$LINENO: checking for main in -llzo2" >&5
-$as_echo_n "checking for main in -llzo2... " >&6; }
-if test "${ac_cv_lib_lzo2_main+set}" = set; then
+{ $as_echo "$as_me:$LINENO: checking for __lzo_init_v2 in -llzo2" >&5
+$as_echo_n "checking for __lzo_init_v2 in -llzo2... " >&6; }
+if test "${ac_cv_lib_lzo2___lzo_init_v2+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -6627,11 +7244,17 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
-
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char __lzo_init_v2 ();
 int
 main ()
 {
-return main ();
+return __lzo_init_v2 ();
   ;
   return 0;
 }
@@ -6657,12 +7280,12 @@ $as_echo "$ac_try_echo") >&5
 	 test "$cross_compiling" = yes ||
 	 $as_test_x conftest$ac_exeext
        }; then
-  ac_cv_lib_lzo2_main=yes
+  ac_cv_lib_lzo2___lzo_init_v2=yes
 else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_lzo2_main=no
+	ac_cv_lib_lzo2___lzo_init_v2=no
 fi
 
 rm -rf conftest.dSYM
@@ -6670,9 +7293,9 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo2_main" >&5
-$as_echo "$ac_cv_lib_lzo2_main" >&6; }
-if test "x$ac_cv_lib_lzo2_main" = x""yes; then
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo2___lzo_init_v2" >&5
+$as_echo "$ac_cv_lib_lzo2___lzo_init_v2" >&6; }
+if test "x$ac_cv_lib_lzo2___lzo_init_v2" = x""yes; then
   cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBLZO2 1
 _ACEOF
@@ -6681,9 +7304,9 @@ _ACEOF
 
 else
 
-{ $as_echo "$as_me:$LINENO: checking for main in -llzo" >&5
-$as_echo_n "checking for main in -llzo... " >&6; }
-if test "${ac_cv_lib_lzo_main+set}" = set; then
+{ $as_echo "$as_me:$LINENO: checking for __lzo_init2 in -llzo" >&5
+$as_echo_n "checking for __lzo_init2 in -llzo... " >&6; }
+if test "${ac_cv_lib_lzo___lzo_init2+set}" = set; then
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -6695,11 +7318,17 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 
-
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char __lzo_init2 ();
 int
 main ()
 {
-return main ();
+return __lzo_init2 ();
   ;
   return 0;
 }
@@ -6725,12 +7354,12 @@ $as_echo "$ac_try_echo") >&5
 	 test "$cross_compiling" = yes ||
 	 $as_test_x conftest$ac_exeext
        }; then
-  ac_cv_lib_lzo_main=yes
+  ac_cv_lib_lzo___lzo_init2=yes
 else
   $as_echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-	ac_cv_lib_lzo_main=no
+	ac_cv_lib_lzo___lzo_init2=no
 fi
 
 rm -rf conftest.dSYM
@@ -6738,9 +7367,9 @@ rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
       conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo_main" >&5
-$as_echo "$ac_cv_lib_lzo_main" >&6; }
-if test "x$ac_cv_lib_lzo_main" = x""yes; then
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_lzo___lzo_init2" >&5
+$as_echo "$ac_cv_lib_lzo___lzo_init2" >&6; }
+if test "x$ac_cv_lib_lzo___lzo_init2" = x""yes; then
   cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBLZO 1
 _ACEOF
@@ -6902,8 +7531,6 @@ $as_echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
-# platform dependent libraries
-if test "$host_vendor" = "apple" ; then
 
 { $as_echo "$as_me:$LINENO: checking for main in -lz" >&5
 $as_echo_n "checking for main in -lz... " >&6; }
@@ -6977,6 +7604,8 @@ $as_echo "$as_me: error: $missing_library" >&2;}
    { (exit 1); exit 1; }; }
 fi
 
+# platform dependent libraries
+if test "$host_vendor" = "apple" ; then
 
 { $as_echo "$as_me:$LINENO: checking for main in -liconv" >&5
 $as_echo_n "checking for main in -liconv... " >&6; }
@@ -8541,6 +9170,2716 @@ $as_echo "$xrandr_disabled" >&6; }
   fi
 fi
 
+### External libraries checks
+if test "$use_external_libraries" = "yes"; then
+  { $as_echo "$as_me:$LINENO: $external_libraries_enabled" >&5
+$as_echo "$as_me: $external_libraries_enabled" >&6;}
+  USE_EXTERNAL_LIBRARIES=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBRARIES 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libraries_disabled" >&5
+$as_echo "$as_me: $external_libraries_disabled" >&6;}
+  USE_EXTERNAL_LIBRARIES=0
+fi
+
+# External FFmpeg
+if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lavcodec" >&5
+$as_echo_n "checking for main in -lavcodec... " >&6; }
+if test "${ac_cv_lib_avcodec_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavcodec  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_avcodec_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_avcodec_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_avcodec_main" >&5
+$as_echo "$ac_cv_lib_avcodec_main" >&6; }
+if test "x$ac_cv_lib_avcodec_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBAVCODEC 1
+_ACEOF
+
+  LIBS="-lavcodec $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lavformat" >&5
+$as_echo_n "checking for main in -lavformat... " >&6; }
+if test "${ac_cv_lib_avformat_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavformat  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_avformat_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_avformat_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_avformat_main" >&5
+$as_echo "$ac_cv_lib_avformat_main" >&6; }
+if test "x$ac_cv_lib_avformat_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBAVFORMAT 1
+_ACEOF
+
+  LIBS="-lavformat $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lavutil" >&5
+$as_echo_n "checking for main in -lavutil... " >&6; }
+if test "${ac_cv_lib_avutil_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavutil  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_avutil_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_avutil_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_avutil_main" >&5
+$as_echo "$ac_cv_lib_avutil_main" >&6; }
+if test "x$ac_cv_lib_avutil_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBAVUTIL 1
+_ACEOF
+
+  LIBS="-lavutil $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lpostproc" >&5
+$as_echo_n "checking for main in -lpostproc... " >&6; }
+if test "${ac_cv_lib_postproc_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpostproc  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_postproc_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_postproc_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_postproc_main" >&5
+$as_echo "$ac_cv_lib_postproc_main" >&6; }
+if test "x$ac_cv_lib_postproc_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPOSTPROC 1
+_ACEOF
+
+  LIBS="-lpostproc $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lswscale" >&5
+$as_echo_n "checking for main in -lswscale... " >&6; }
+if test "${ac_cv_lib_swscale_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lswscale  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_swscale_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_swscale_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_swscale_main" >&5
+$as_echo "$ac_cv_lib_swscale_main" >&6; }
+if test "x$ac_cv_lib_swscale_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBSWSCALE 1
+_ACEOF
+
+  LIBS="-lswscale $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  # Possible places the ffmpeg headers may be
+
+
+
+
+
+for ac_header in libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h
+do
+as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  { $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  $as_echo_n "(cached) " >&6
+fi
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+else
+  # Is the header compilable?
+{ $as_echo "$as_me:$LINENO: checking $ac_header usability" >&5
+$as_echo_n "checking $ac_header usability... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+$as_echo "$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ $as_echo "$as_me:$LINENO: checking $ac_header presence" >&5
+$as_echo_n "checking $ac_header presence... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <$ac_header>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+$as_echo "$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ---------------------------- ##
+## Report this to bugs@xbmc.org ##
+## ---------------------------- ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  $as_echo_n "(cached) " >&6
+else
+  eval "$as_ac_Header=\$ac_header_preproc"
+fi
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+
+fi
+as_val=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+   if test "x$as_val" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+else
+
+
+
+
+
+for ac_header in ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h
+do
+as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  { $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  $as_echo_n "(cached) " >&6
+fi
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+else
+  # Is the header compilable?
+{ $as_echo "$as_me:$LINENO: checking $ac_header usability" >&5
+$as_echo_n "checking $ac_header usability... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+$as_echo "$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ $as_echo "$as_me:$LINENO: checking $ac_header presence" >&5
+$as_echo_n "checking $ac_header presence... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <$ac_header>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+$as_echo "$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ---------------------------- ##
+## Report this to bugs@xbmc.org ##
+## ---------------------------- ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  $as_echo_n "(cached) " >&6
+else
+  eval "$as_ac_Header=\$ac_header_preproc"
+fi
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+
+fi
+as_val=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+   if test "x$as_val" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_headers" >&5
+$as_echo "$as_me: error: $missing_headers" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+done
+
+fi
+
+done
+
+
+  # We'll support the use of rgb2rgb.h if it exists.
+
+for ac_header in libswscale/rgb2rgb.h
+do
+as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  { $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  $as_echo_n "(cached) " >&6
+fi
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+else
+  # Is the header compilable?
+{ $as_echo "$as_me:$LINENO: checking $ac_header usability" >&5
+$as_echo_n "checking $ac_header usability... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+$as_echo "$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ $as_echo "$as_me:$LINENO: checking $ac_header presence" >&5
+$as_echo_n "checking $ac_header presence... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <$ac_header>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+$as_echo "$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ---------------------------- ##
+## Report this to bugs@xbmc.org ##
+## ---------------------------- ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  $as_echo_n "(cached) " >&6
+else
+  eval "$as_ac_Header=\$ac_header_preproc"
+fi
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+
+fi
+as_val=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+   if test "x$as_val" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+
+for ac_header in ffmpeg/rgb2rgb.h
+do
+as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  { $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  $as_echo_n "(cached) " >&6
+fi
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+else
+  # Is the header compilable?
+{ $as_echo "$as_me:$LINENO: checking $ac_header usability" >&5
+$as_echo_n "checking $ac_header usability... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+#include <$ac_header>
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_header_compiler=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_header_compiler=no
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_compiler" >&5
+$as_echo "$ac_header_compiler" >&6; }
+
+# Is the header present?
+{ $as_echo "$as_me:$LINENO: checking $ac_header presence" >&5
+$as_echo_n "checking $ac_header presence... " >&6; }
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <$ac_header>
+_ACEOF
+if { (ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } >/dev/null && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then
+  ac_header_preproc=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+  ac_header_preproc=no
+fi
+
+rm -f conftest.err conftest.$ac_ext
+{ $as_echo "$as_me:$LINENO: result: $ac_header_preproc" >&5
+$as_echo "$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in
+  yes:no: )
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: $ac_header: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the compiler's result" >&2;}
+    ac_header_preproc=yes
+    ;;
+  no:yes:* )
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: $ac_header: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: $ac_header:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: $ac_header: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: $ac_header:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: proceeding with the preprocessor's result" >&5
+$as_echo "$as_me: WARNING: $ac_header: proceeding with the preprocessor's result" >&2;}
+    { $as_echo "$as_me:$LINENO: WARNING: $ac_header: in the future, the compiler will take precedence" >&5
+$as_echo "$as_me: WARNING: $ac_header: in the future, the compiler will take precedence" >&2;}
+    ( cat <<\_ASBOX
+## ---------------------------- ##
+## Report this to bugs@xbmc.org ##
+## ---------------------------- ##
+_ASBOX
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+{ $as_echo "$as_me:$LINENO: checking for $ac_header" >&5
+$as_echo_n "checking for $ac_header... " >&6; }
+if { as_var=$as_ac_Header; eval "test \"\${$as_var+set}\" = set"; }; then
+  $as_echo_n "(cached) " >&6
+else
+  eval "$as_ac_Header=\$ac_header_preproc"
+fi
+ac_res=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+	       { $as_echo "$as_me:$LINENO: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+
+fi
+as_val=`eval 'as_val=${'$as_ac_Header'}
+		 $as_echo "$as_val"'`
+   if test "x$as_val" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+
+  { $as_echo "$as_me:$LINENO: $external_ffmpeg_enabled" >&5
+$as_echo "$as_me: $external_ffmpeg_enabled" >&6;}
+  USE_EXTERNAL_FFMPEG=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_FFMPEG 1
+_ACEOF
+
+
+  # Disable vdpau support if external libavcodec doesn't have it
+
+{ $as_echo "$as_me:$LINENO: checking for ff_vdpau_vc1_decode_picture in -lavcodec" >&5
+$as_echo_n "checking for ff_vdpau_vc1_decode_picture in -lavcodec... " >&6; }
+if test "${ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavcodec  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char ff_vdpau_vc1_decode_picture ();
+int
+main ()
+{
+return ff_vdpau_vc1_decode_picture ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture" >&5
+$as_echo "$ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture" >&6; }
+if test "x$ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBAVCODEC 1
+_ACEOF
+
+  LIBS="-lavcodec $LIBS"
+
+else
+  use_vdpau=no;{ $as_echo "$as_me:$LINENO: result: $ffmpeg_vdpau_not_supported" >&5
+$as_echo "$ffmpeg_vdpau_not_supported" >&6; }
+fi
+
+else
+  { $as_echo "$as_me:$LINENO: $external_ffmpeg_disabled" >&5
+$as_echo "$as_me: $external_ffmpeg_disabled" >&6;}
+  USE_EXTERNAL_FFMPEG=0
+fi
+
+# External libmad
+if test "$use_external_libraries" = "yes" || test "$use_external_libmad" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lmad" >&5
+$as_echo_n "checking for main in -lmad... " >&6; }
+if test "${ac_cv_lib_mad_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmad  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_mad_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mad_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_mad_main" >&5
+$as_echo "$ac_cv_lib_mad_main" >&6; }
+if test "x$ac_cv_lib_mad_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMAD 1
+_ACEOF
+
+  LIBS="-lmad $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_libmad_enabled" >&5
+$as_echo "$as_me: $external_libmad_enabled" >&6;}
+  USE_EXTERNAL_LIBMAD=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBMAD 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libmad_disabled" >&5
+$as_echo "$as_me: $external_libmad_disabled" >&6;}
+  USE_EXTERNAL_LIBMAD=0
+fi
+
+# External liba52
+if test "$use_external_libraries" = "yes" || test "$use_external_liba52" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -la52" >&5
+$as_echo_n "checking for main in -la52... " >&6; }
+if test "${ac_cv_lib_a52_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-la52  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_a52_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_a52_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_a52_main" >&5
+$as_echo "$ac_cv_lib_a52_main" >&6; }
+if test "x$ac_cv_lib_a52_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBA52 1
+_ACEOF
+
+  LIBS="-la52 $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_liba52_enabled" >&5
+$as_echo "$as_me: $external_liba52_enabled" >&6;}
+  USE_EXTERNAL_LIBA52=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBA52 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_liba52_disabled" >&5
+$as_echo "$as_me: $external_liba52_disabled" >&6;}
+  USE_EXTERNAL_LIBA52=0
+fi
+
+# External libdts
+if test "$use_external_libraries" = "yes" || test "$use_external_libdts" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -ldts" >&5
+$as_echo_n "checking for main in -ldts... " >&6; }
+if test "${ac_cv_lib_dts_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-ldts  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_dts_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_dts_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_dts_main" >&5
+$as_echo "$ac_cv_lib_dts_main" >&6; }
+if test "x$ac_cv_lib_dts_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBDTS 1
+_ACEOF
+
+  LIBS="-ldts $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_libdts_enabled" >&5
+$as_echo "$as_me: $external_libdts_enabled" >&6;}
+  USE_EXTERNAL_LIBDTS=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBDTS 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libdts_disabled" >&5
+$as_echo "$as_me: $external_libdts_disabled" >&6;}
+  USE_EXTERNAL_LIBDTS=0
+fi
+
+# External libfaad
+if test "$use_external_libraries" = "yes" || test "$use_external_libfaad" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lfaad" >&5
+$as_echo_n "checking for main in -lfaad... " >&6; }
+if test "${ac_cv_lib_faad_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lfaad  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_faad_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_faad_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_faad_main" >&5
+$as_echo "$ac_cv_lib_faad_main" >&6; }
+if test "x$ac_cv_lib_faad_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBFAAD 1
+_ACEOF
+
+  LIBS="-lfaad $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+  # mp4ff is not included in Gentoo packages, which is why external libfaad
+  # support has to be explicitely enabled
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lmp4ff" >&5
+$as_echo_n "checking for main in -lmp4ff... " >&6; }
+if test "${ac_cv_lib_mp4ff_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmp4ff  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_mp4ff_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mp4ff_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_mp4ff_main" >&5
+$as_echo "$ac_cv_lib_mp4ff_main" >&6; }
+if test "x$ac_cv_lib_mp4ff_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMP4FF 1
+_ACEOF
+
+  LIBS="-lmp4ff $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  # Test for the NeAACDecInitDRM function in libfaad as well
+  { $as_echo "$as_me:$LINENO: checking for NeAACDecInitDRM in -lfaad" >&5
+$as_echo_n "checking for NeAACDecInitDRM in -lfaad... " >&6; }
+if test "${ac_cv_lib_faad_NeAACDecInitDRM+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lfaad  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char NeAACDecInitDRM ();
+int
+main ()
+{
+return NeAACDecInitDRM ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_faad_NeAACDecInitDRM=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_faad_NeAACDecInitDRM=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_faad_NeAACDecInitDRM" >&5
+$as_echo "$ac_cv_lib_faad_NeAACDecInitDRM" >&6; }
+if test "x$ac_cv_lib_faad_NeAACDecInitDRM" = x""yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBFAAD_NEAACDECINITDRM 1
+_ACEOF
+
+fi
+
+
+  ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+  { $as_echo "$as_me:$LINENO: checking whether we have the Debian or Ubuntu < 2.7 FAAD ABI" >&5
+$as_echo_n "checking whether we have the Debian or Ubuntu < 2.7 FAAD ABI... " >&6; }
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+#include <neaacdec.h>
+int
+main ()
+{
+char* x = NeAACDecGetErrorMessage(0)
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBFAAD_DEBIAN_ABI 1
+_ACEOF
+
+      { $as_echo "$as_me:$LINENO: result: yes" >&5
+$as_echo "yes" >&6; }
+
+
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+  { $as_echo "$as_me:$LINENO: $external_libfaad_enabled" >&5
+$as_echo "$as_me: $external_libfaad_enabled" >&6;}
+  USE_EXTERNAL_LIBFAAD=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBFAAD 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libfaad_disabled" >&5
+$as_echo "$as_me: $external_libfaad_disabled" >&6;}
+  USE_EXTERNAL_LIBFAAD=0
+fi
+
+# External libmpeg2
+if test "$use_external_libraries" = "yes" || test "$use_external_libmpeg2" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lmpeg2" >&5
+$as_echo_n "checking for main in -lmpeg2... " >&6; }
+if test "${ac_cv_lib_mpeg2_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmpeg2  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_mpeg2_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mpeg2_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_mpeg2_main" >&5
+$as_echo "$ac_cv_lib_mpeg2_main" >&6; }
+if test "x$ac_cv_lib_mpeg2_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMPEG2 1
+_ACEOF
+
+  LIBS="-lmpeg2 $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lmpeg2convert" >&5
+$as_echo_n "checking for main in -lmpeg2convert... " >&6; }
+if test "${ac_cv_lib_mpeg2convert_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmpeg2convert  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_mpeg2convert_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mpeg2convert_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_mpeg2convert_main" >&5
+$as_echo "$ac_cv_lib_mpeg2convert_main" >&6; }
+if test "x$ac_cv_lib_mpeg2convert_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMPEG2CONVERT 1
+_ACEOF
+
+  LIBS="-lmpeg2convert $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_libmpeg2_enabled" >&5
+$as_echo "$as_me: $external_libmpeg2_enabled" >&6;}
+  USE_EXTERNAL_LIBMPEG2=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBMPEG2 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libmpeg2_disabled" >&5
+$as_echo "$as_me: $external_libmpeg2_disabled" >&6;}
+  USE_EXTERNAL_LIBMPEG2=0
+fi
+
+# External libass
+if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lass" >&5
+$as_echo_n "checking for main in -lass... " >&6; }
+if test "${ac_cv_lib_ass_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lass  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_ass_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_ass_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_ass_main" >&5
+$as_echo "$ac_cv_lib_ass_main" >&6; }
+if test "x$ac_cv_lib_ass_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBASS 1
+_ACEOF
+
+  LIBS="-lass $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_libass_enabled" >&5
+$as_echo "$as_me: $external_libass_enabled" >&6;}
+  USE_EXTERNAL_LIBASS=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBASS 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libass_disabled" >&5
+$as_echo "$as_me: $external_libass_disabled" >&6;}
+  USE_EXTERNAL_LIBASS=0
+fi
+
+# External libvorbis
+if test "$use_external_libraries" = "yes" || test "$use_external_libvorbis" = "yes"; then
+  { $as_echo "$as_me:$LINENO: $external_libvorbis_enabled" >&5
+$as_echo "$as_me: $external_libvorbis_enabled" >&6;}
+  USE_EXTERNAL_LIBVORBIS=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBVORBIS 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libvorbis_disabled" >&5
+$as_echo "$as_me: $external_libvorbis_disabled" >&6;}
+  USE_EXTERNAL_LIBVORBIS=0
+fi
+
+# External libogg
+if test "$use_external_libraries" = "yes" || test "$use_external_libogg" = "yes"; then
+  { $as_echo "$as_me:$LINENO: $external_libogg_enabled" >&5
+$as_echo "$as_me: $external_libogg_enabled" >&6;}
+  USE_EXTERNAL_LIBOGG=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBOGG 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libogg_disabled" >&5
+$as_echo "$as_me: $external_libogg_disabled" >&6;}
+  USE_EXTERNAL_LIBOGG=0
+fi
+
+# External libmpcdec
+if test "$use_external_libraries" = "yes" || test "$use_external_libmpcdec" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lmpcdec" >&5
+$as_echo_n "checking for main in -lmpcdec... " >&6; }
+if test "${ac_cv_lib_mpcdec_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmpcdec  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_mpcdec_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_mpcdec_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_mpcdec_main" >&5
+$as_echo "$ac_cv_lib_mpcdec_main" >&6; }
+if test "x$ac_cv_lib_mpcdec_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMPCDEC 1
+_ACEOF
+
+  LIBS="-lmpcdec $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_libmpcdec_enabled" >&5
+$as_echo "$as_me: $external_libmpcdec_enabled" >&6;}
+  USE_EXTERNAL_LIBMPCDEC=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBMPCDEC 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libmpcdec_disabled" >&5
+$as_echo "$as_me: $external_libmpcdec_disabled" >&6;}
+  USE_EXTERNAL_LIBMPCDEC=0
+fi
+
+# External libflac
+if test "$use_external_libraries" = "yes" || test "$use_external_libflac" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lFLAC" >&5
+$as_echo_n "checking for main in -lFLAC... " >&6; }
+if test "${ac_cv_lib_FLAC_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lFLAC  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_FLAC_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_FLAC_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_FLAC_main" >&5
+$as_echo "$ac_cv_lib_FLAC_main" >&6; }
+if test "x$ac_cv_lib_FLAC_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBFLAC 1
+_ACEOF
+
+  LIBS="-lFLAC $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_libflac_enabled" >&5
+$as_echo "$as_me: $external_libflac_enabled" >&6;}
+  USE_EXTERNAL_LIBFLAC=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBFLAC 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libflac_disabled" >&5
+$as_echo "$as_me: $external_libflac_disabled" >&6;}
+  USE_EXTERNAL_LIBFLAC=0
+fi
+
+# External libwavpack
+if test "$use_external_libraries" = "yes" || test "$use_external_libwavpack" = "yes"; then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lwavpack" >&5
+$as_echo_n "checking for main in -lwavpack... " >&6; }
+if test "${ac_cv_lib_wavpack_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lwavpack  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_wavpack_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_wavpack_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_wavpack_main" >&5
+$as_echo "$ac_cv_lib_wavpack_main" >&6; }
+if test "x$ac_cv_lib_wavpack_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBWAVPACK 1
+_ACEOF
+
+  LIBS="-lwavpack $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_libwavpack_enabled" >&5
+$as_echo "$as_me: $external_libwavpack_enabled" >&6;}
+  USE_EXTERNAL_LIBWAVPACK=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_LIBWAVPACK 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_libwavpack_disabled" >&5
+$as_echo "$as_me: $external_libwavpack_disabled" >&6;}
+  USE_EXTERNAL_LIBWAVPACK=0
+fi
+
+# External Python
+if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes" || \
+  $(test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple"); then
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lpython2.6" >&5
+$as_echo_n "checking for main in -lpython2.6... " >&6; }
+if test "${ac_cv_lib_python2_6_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.6  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_6_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_6_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_6_main" >&5
+$as_echo "$ac_cv_lib_python2_6_main" >&6; }
+if test "x$ac_cv_lib_python2_6_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPYTHON2_6 1
+_ACEOF
+
+  LIBS="-lpython2.6 $LIBS"
+
+else
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lpython2.5" >&5
+$as_echo_n "checking for main in -lpython2.5... " >&6; }
+if test "${ac_cv_lib_python2_5_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.5  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_5_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_5_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_5_main" >&5
+$as_echo "$ac_cv_lib_python2_5_main" >&6; }
+if test "x$ac_cv_lib_python2_5_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPYTHON2_5 1
+_ACEOF
+
+  LIBS="-lpython2.5 $LIBS"
+
+else
+
+{ $as_echo "$as_me:$LINENO: checking for main in -lpython2.4" >&5
+$as_echo_n "checking for main in -lpython2.4... " >&6; }
+if test "${ac_cv_lib_python2_4_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.4  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_4_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_4_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_4_main" >&5
+$as_echo "$ac_cv_lib_python2_4_main" >&6; }
+if test "x$ac_cv_lib_python2_4_main" = x""yes; then
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBPYTHON2_4 1
+_ACEOF
+
+  LIBS="-lpython2.4 $LIBS"
+
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+fi
+
+fi
+
+
+  # Test again, but this time just set some variables we need in Makefiles
+  { $as_echo "$as_me:$LINENO: checking for main in -lpython2.6" >&5
+$as_echo_n "checking for main in -lpython2.6... " >&6; }
+if test "${ac_cv_lib_python2_6_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.6  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_6_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_6_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_6_main" >&5
+$as_echo "$ac_cv_lib_python2_6_main" >&6; }
+if test "x$ac_cv_lib_python2_6_main" = x""yes; then
+  USE_PYTHON2_6=1
+else
+  { $as_echo "$as_me:$LINENO: checking for main in -lpython2.5" >&5
+$as_echo_n "checking for main in -lpython2.5... " >&6; }
+if test "${ac_cv_lib_python2_5_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.5  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_5_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_5_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_5_main" >&5
+$as_echo "$ac_cv_lib_python2_5_main" >&6; }
+if test "x$ac_cv_lib_python2_5_main" = x""yes; then
+  USE_PYTHON2_5=1
+else
+  { $as_echo "$as_me:$LINENO: checking for main in -lpython2.4" >&5
+$as_echo_n "checking for main in -lpython2.4... " >&6; }
+if test "${ac_cv_lib_python2_4_main+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lpython2.4  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+
+int
+main ()
+{
+return main ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 $as_test_x conftest$ac_exeext
+       }; then
+  ac_cv_lib_python2_4_main=yes
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_cv_lib_python2_4_main=no
+fi
+
+rm -rf conftest.dSYM
+rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
+      conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_4_main" >&5
+$as_echo "$ac_cv_lib_python2_4_main" >&6; }
+if test "x$ac_cv_lib_python2_4_main" = x""yes; then
+  USE_PYTHON2_4=1
+else
+  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
+$as_echo "$as_me: error: $missing_library" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
+fi
+
+fi
+
+
+  { $as_echo "$as_me:$LINENO: $external_python_enabled" >&5
+$as_echo "$as_me: $external_python_enabled" >&6;}
+  test "$USE_PYTHON2_6" && { $as_echo "$as_me:$LINENO: Using Python 2.6" >&5
+$as_echo "$as_me: Using Python 2.6" >&6;}
+  test "$USE_PYTHON2_5" && { $as_echo "$as_me:$LINENO: Using Python 2.5" >&5
+$as_echo "$as_me: Using Python 2.5" >&6;}
+  test "$USE_PYTHON2_4" && { $as_echo "$as_me:$LINENO: Using Python 2.4" >&5
+$as_echo "$as_me: Using Python 2.4" >&6;}
+  USE_EXTERNAL_PYTHON=1
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_EXTERNAL_PYTHON 1
+_ACEOF
+
+else
+  { $as_echo "$as_me:$LINENO: $external_python_disabled" >&5
+$as_echo "$as_me: $external_python_disabled" >&6;}
+  USE_EXTERNAL_PYTHON=0
+
+  # We'll need zip in this case.
+  # Extract the first word of "zip", so it can be a program name with args.
+set dummy zip; ac_word=$2
+{ $as_echo "$as_me:$LINENO: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if test "${ac_cv_prog_HAVE_ZIP+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$HAVE_ZIP"; then
+  ac_cv_prog_HAVE_ZIP="$HAVE_ZIP" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_HAVE_ZIP=""yes""
+    $as_echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_HAVE_ZIP" && ac_cv_prog_HAVE_ZIP=""no""
+fi
+fi
+HAVE_ZIP=$ac_cv_prog_HAVE_ZIP
+if test -n "$HAVE_ZIP"; then
+  { $as_echo "$as_me:$LINENO: result: $HAVE_ZIP" >&5
+$as_echo "$HAVE_ZIP" >&6; }
+else
+  { $as_echo "$as_me:$LINENO: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  if test "$HAVE_ZIP" = "no" ; then
+    { { $as_echo "$as_me:$LINENO: error: $missing_program" >&5
+$as_echo "$as_me: error: $missing_program" >&2;}
+   { (exit 1); exit 1; }; }
+  fi
+fi
+
 # VDPAU
 if test "$host_vendor" = "apple" ; then
   use_vdpau="no"
@@ -8699,81 +12038,9 @@ $as_echo "$as_me: $vdpau_disabled" >&6;}
 fi
 
 # Python
-if (test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple") || test "$host_cpu" = "arm" ; then
-
-{ $as_echo "$as_me:$LINENO: checking for main in -lpython2.4" >&5
-$as_echo_n "checking for main in -lpython2.4... " >&6; }
-if test "${ac_cv_lib_python2_4_main+set}" = set; then
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpython2.4  $LIBS"
-cat >conftest.$ac_ext <<_ACEOF
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-rm -f conftest.$ac_objext conftest$ac_exeext
-if { (ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
-$as_echo "$ac_try_echo") >&5
-  (eval "$ac_link") 2>conftest.er1
-  ac_status=$?
-  grep -v '^ *+' conftest.er1 >conftest.err
-  rm -f conftest.er1
-  cat conftest.err >&5
-  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
-  (exit $ac_status); } && {
-	 test -z "$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 $as_test_x conftest$ac_exeext
-       }; then
-  ac_cv_lib_python2_4_main=yes
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_cv_lib_python2_4_main=no
-fi
-
-rm -rf conftest.dSYM
-rm -f core conftest.err conftest.$ac_objext conftest_ipa8_conftest.oo \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:$LINENO: result: $ac_cv_lib_python2_4_main" >&5
-$as_echo "$ac_cv_lib_python2_4_main" >&6; }
-if test "x$ac_cv_lib_python2_4_main" = x""yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPYTHON2_4 1
-_ACEOF
-
-  LIBS="-lpython2.4 $LIBS"
-
-else
-  { { $as_echo "$as_me:$LINENO: error: $missing_library" >&5
-$as_echo "$as_me: error: $missing_library" >&2;}
-   { (exit 1); exit 1; }; }
-fi
-
-fi
+#if (test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple") || test "$host_cpu" = "arm" ; then
+#  AC_CHECK_LIB([python2.4], [main],, AC_MSG_ERROR($missing_library) )
+#fi
 
 # platform specific bin utilities
 if test "$host_vendor" != "apple" ; then
@@ -15769,6 +19036,726 @@ fi
 done
 
 
+# Check for various sizes
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ $as_echo "$as_me:$LINENO: checking size of int" >&5
+$as_echo_n "checking size of int... " >&6; }
+if test "${ac_cv_sizeof_int+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  if test "$cross_compiling" = yes; then
+  # Depending upon the size, compute the lo and hi bounds.
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (int))) >= 0)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_lo=0 ac_mid=0
+  while :; do
+    cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (int))) <= $ac_mid)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_hi=$ac_mid; break
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_lo=`expr $ac_mid + 1`
+			if test $ac_lo -le $ac_mid; then
+			  ac_lo= ac_hi=
+			  break
+			fi
+			ac_mid=`expr 2 '*' $ac_mid + 1`
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  done
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (int))) < 0)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_hi=-1 ac_mid=-1
+  while :; do
+    cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (int))) >= $ac_mid)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_lo=$ac_mid; break
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_hi=`expr '(' $ac_mid ')' - 1`
+			if test $ac_mid -le $ac_hi; then
+			  ac_lo= ac_hi=
+			  break
+			fi
+			ac_mid=`expr 2 '*' $ac_mid`
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  done
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_lo= ac_hi=
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+# Binary search between lo and hi bounds.
+while test "x$ac_lo" != "x$ac_hi"; do
+  ac_mid=`expr '(' $ac_hi - $ac_lo ')' / 2 + $ac_lo`
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (int))) <= $ac_mid)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_hi=$ac_mid
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_lo=`expr '(' $ac_mid ')' + 1`
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+case $ac_lo in
+?*) ac_cv_sizeof_int=$ac_lo;;
+'') if test "$ac_cv_type_int" = yes; then
+     { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: cannot compute sizeof (int)
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: cannot compute sizeof (int)
+See \`config.log' for more details." >&2;}
+   { (exit 77); exit 77; }; }; }
+   else
+     ac_cv_sizeof_int=0
+   fi ;;
+esac
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+static long int longval () { return (long int) (sizeof (int)); }
+static unsigned long int ulongval () { return (long int) (sizeof (int)); }
+#include <stdio.h>
+#include <stdlib.h>
+int
+main ()
+{
+
+  FILE *f = fopen ("conftest.val", "w");
+  if (! f)
+    return 1;
+  if (((long int) (sizeof (int))) < 0)
+    {
+      long int i = longval ();
+      if (i != ((long int) (sizeof (int))))
+	return 1;
+      fprintf (f, "%ld", i);
+    }
+  else
+    {
+      unsigned long int i = ulongval ();
+      if (i != ((long int) (sizeof (int))))
+	return 1;
+      fprintf (f, "%lu", i);
+    }
+  /* Do not output a trailing newline, as this causes \r\n confusion
+     on some platforms.  */
+  return ferror (f) || fclose (f) != 0;
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_sizeof_int=`cat conftest.val`
+else
+  $as_echo "$as_me: program exited with status $ac_status" >&5
+$as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+( exit $ac_status )
+if test "$ac_cv_type_int" = yes; then
+     { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: cannot compute sizeof (int)
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: cannot compute sizeof (int)
+See \`config.log' for more details." >&2;}
+   { (exit 77); exit 77; }; }; }
+   else
+     ac_cv_sizeof_int=0
+   fi
+fi
+rm -rf conftest.dSYM
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+rm -f conftest.val
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_sizeof_int" >&5
+$as_echo "$ac_cv_sizeof_int" >&6; }
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define SIZEOF_INT $ac_cv_sizeof_int
+_ACEOF
+
+
+# The cast to long int works around a bug in the HP C Compiler
+# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
+# This bug is HP SR number 8606223364.
+{ $as_echo "$as_me:$LINENO: checking size of size_t" >&5
+$as_echo_n "checking size of size_t... " >&6; }
+if test "${ac_cv_sizeof_size_t+set}" = set; then
+  $as_echo_n "(cached) " >&6
+else
+  if test "$cross_compiling" = yes; then
+  # Depending upon the size, compute the lo and hi bounds.
+cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (size_t))) >= 0)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_lo=0 ac_mid=0
+  while :; do
+    cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (size_t))) <= $ac_mid)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_hi=$ac_mid; break
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_lo=`expr $ac_mid + 1`
+			if test $ac_lo -le $ac_mid; then
+			  ac_lo= ac_hi=
+			  break
+			fi
+			ac_mid=`expr 2 '*' $ac_mid + 1`
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  done
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (size_t))) < 0)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_hi=-1 ac_mid=-1
+  while :; do
+    cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (size_t))) >= $ac_mid)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_lo=$ac_mid; break
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_hi=`expr '(' $ac_mid ')' - 1`
+			if test $ac_mid -le $ac_hi; then
+			  ac_lo= ac_hi=
+			  break
+			fi
+			ac_mid=`expr 2 '*' $ac_mid`
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  done
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_lo= ac_hi=
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+# Binary search between lo and hi bounds.
+while test "x$ac_lo" != "x$ac_hi"; do
+  ac_mid=`expr '(' $ac_hi - $ac_lo ')' / 2 + $ac_lo`
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+static int test_array [1 - 2 * !(((long int) (sizeof (size_t))) <= $ac_mid)];
+test_array [0] = 0
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (ac_try="$ac_compile"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_compile") 2>conftest.er1
+  ac_status=$?
+  grep -v '^ *+' conftest.er1 >conftest.err
+  rm -f conftest.er1
+  cat conftest.err >&5
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && {
+	 test -z "$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest.$ac_objext; then
+  ac_hi=$ac_mid
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_lo=`expr '(' $ac_mid ')' + 1`
+fi
+
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+case $ac_lo in
+?*) ac_cv_sizeof_size_t=$ac_lo;;
+'') if test "$ac_cv_type_size_t" = yes; then
+     { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: cannot compute sizeof (size_t)
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: cannot compute sizeof (size_t)
+See \`config.log' for more details." >&2;}
+   { (exit 77); exit 77; }; }; }
+   else
+     ac_cv_sizeof_size_t=0
+   fi ;;
+esac
+else
+  cat >conftest.$ac_ext <<_ACEOF
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+static long int longval () { return (long int) (sizeof (size_t)); }
+static unsigned long int ulongval () { return (long int) (sizeof (size_t)); }
+#include <stdio.h>
+#include <stdlib.h>
+int
+main ()
+{
+
+  FILE *f = fopen ("conftest.val", "w");
+  if (! f)
+    return 1;
+  if (((long int) (sizeof (size_t))) < 0)
+    {
+      long int i = longval ();
+      if (i != ((long int) (sizeof (size_t))))
+	return 1;
+      fprintf (f, "%ld", i);
+    }
+  else
+    {
+      unsigned long int i = ulongval ();
+      if (i != ((long int) (sizeof (size_t))))
+	return 1;
+      fprintf (f, "%lu", i);
+    }
+  /* Do not output a trailing newline, as this causes \r\n confusion
+     on some platforms.  */
+  return ferror (f) || fclose (f) != 0;
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest$ac_exeext
+if { (ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
+$as_echo "$ac_try_echo") >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_sizeof_size_t=`cat conftest.val`
+else
+  $as_echo "$as_me: program exited with status $ac_status" >&5
+$as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+( exit $ac_status )
+if test "$ac_cv_type_size_t" = yes; then
+     { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+{ { $as_echo "$as_me:$LINENO: error: cannot compute sizeof (size_t)
+See \`config.log' for more details." >&5
+$as_echo "$as_me: error: cannot compute sizeof (size_t)
+See \`config.log' for more details." >&2;}
+   { (exit 77); exit 77; }; }; }
+   else
+     ac_cv_sizeof_size_t=0
+   fi
+fi
+rm -rf conftest.dSYM
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+rm -f conftest.val
+fi
+{ $as_echo "$as_me:$LINENO: result: $ac_cv_sizeof_size_t" >&5
+$as_echo "$ac_cv_sizeof_size_t" >&6; }
+
+
+
+cat >>confdefs.h <<_ACEOF
+#define SIZEOF_SIZE_T $ac_cv_sizeof_size_t
+_ACEOF
+
+
+
 dashes="------------------------"
 final_message="\n  XBMC Configuration:"
 final_message="\n$dashes$final_message\n$dashes"
@@ -15899,12 +19886,14 @@ if test "$use_dvdcss" = "yes"; then
 $as_echo "$as_me: $dvdcss_enabled" >&6;}
   final_message="$final_message\n  DVDCSS:\tYes"
   BUILD_DVDCSS=1
+  SKIP_CONFIG_DVDCSS=0
   DVDREAD_CFLAGS="-D_XBMC -DHAVE_DVDCSS_DVDCSS_H"
 else
   { $as_echo "$as_me:$LINENO: $dvdcss_disabled" >&5
 $as_echo "$as_me: $dvdcss_disabled" >&6;}
   final_message="$final_message\n  DVDCSS:\tNo"
   BUILD_DVDCSS=0
+  SKIP_CONFIG_DVDCSS=1
   DVDREAD_CFLAGS="-D_XBMC -UHAVE_DVDCSS_DVDCSS_H"
 fi
 if test "$use_avahi" = "yes"; then
@@ -15966,75 +19955,150 @@ elif test -x "/usr/bin/svnversion" ; then
   SDL_DEFINES="$SDL_DEFINES -D'SVN_REV=\"$(svnversion -n .)\"'"
 fi
 
-
-
-
-
-
-
-
-ac_config_files="$ac_config_files Makefile Makefile.include guilib/common/Makefile xbmc/DllPaths_generated.h xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/Codecs/libdvd/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile tools/EventClients/Clients/OSXRemote/Makefile"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# We need this whole block so we could have optional support of libdvdcss.
-if [ $BUILD_DVDCSS == 1 ]; then
-    if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ]; then
-    pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
-
-    if test "$host_vendor" = "apple" ; then
-      ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
-        --disable-doc \
-        --enable-static \
-        --with-pic
-    else
-      ./configure \
-        --disable-doc \
-        --enable-static \
-        --with-pic
-    fi
-    if [ $? -ne 0 ]; then
-        popd
-        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss failed to configure" >&5
-$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss failed to configure" >&2;}
-   { (exit 1); exit 1; }; }
-    else
-        popd
-    fi;
-    else
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss doesn't exist" >&5
-$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss doesn't exist" >&2;}
-   { (exit 1); exit 1; }; }
-    fi;
+### External libraries messages
+if test "$use_external_libraries" = "yes"; then
+  final_message="$final_message\n  External Libraries:\tYes"
+else
+  final_message="$final_message\n  External Libraries:\tNo"
+  if test "$use_external_ffmpeg" = "yes"; then
+    final_message="$final_message\n  External FFmpeg:\tYes"
+  else
+    final_message="$final_message\n  External FFmpeg:\tNo"
+  fi
+  if test "$use_external_libmad" = "yes"; then
+    final_message="$final_message\n  External libmad:\tYes"
+  else
+    final_message="$final_message\n  External libmad:\tNo"
+  fi
+  if test "$use_external_liba52" = "yes"; then
+    final_message="$final_message\n  External liba52:\tYes"
+  else
+    final_message="$final_message\n  External liba52:\tNo"
+  fi
+  if test "$use_external_libdts" = "yes"; then
+    final_message="$final_message\n  External libdts:\tYes"
+  else
+    final_message="$final_message\n  External libdts:\tNo"
+  fi
+  if test "$use_external_libfaad" = "yes"; then
+    final_message="$final_message\n  External libfaad:\tYes"
+  else
+    final_message="$final_message\n  External libfaad:\tNo"
+  fi
+  if test "$use_external_libmpeg2" = "yes"; then
+    final_message="$final_message\n  External libmpeg2:\tYes"
+  else
+    final_message="$final_message\n  External libmpeg2:\tNo"
+  fi
+  if test "$use_external_libass" = "yes"; then
+    final_message="$final_message\n  External libass:\tYes"
+  else
+    final_message="$final_message\n  External libass:\tNo"
+  fi
+  if test "$use_external_libvorbis" = "yes"; then
+    final_message="$final_message\n  External libvorbis:\tYes"
+  else
+    final_message="$final_message\n  External libvorbis:\tNo"
+  fi
+  if test "$use_external_libogg" = "yes"; then
+    final_message="$final_message\n  External libogg:\tYes"
+  else
+    final_message="$final_message\n  External libogg:\tNo"
+  fi
+  if test "$use_external_libmpcdec" = "yes"; then
+    final_message="$final_message\n  External libmpcdec:\tYes"
+  else
+    final_message="$final_message\n  External libmpcdec:\tNo"
+  fi
+  if test "$use_external_libflac" = "yes"; then
+    final_message="$final_message\n  External libflac:\tYes"
+  else
+    final_message="$final_message\n  External libflac:\tNo"
+  fi
+  if test "$use_external_libwavpack" = "yes"; then
+    final_message="$final_message\n  External libwavpack:\tYes"
+  else
+    final_message="$final_message\n  External libwavpack:\tNo"
+  fi
+  if test "$use_external_python" = "yes"; then
+    final_message="$final_message\n  External Python:\tYes"
+  else
+    final_message="$final_message\n  External Python:\tNo"
+  fi
 fi
 
 
 
-# In place for testing platform builds of new libdvdnav
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ac_config_files="$ac_config_files Makefile Makefile.include xbmc/cores/dvdplayer/Codecs/Makefile xbmc/cores/dvdplayer/Codecs/libdvd/Makefile xbmc/cores/AudioRenderers/Makefile xbmc/cores/paplayer/Makefile xbmc/cores/paplayer/MACDll/Makefile xbmc/cores/paplayer/timidity/Makefile xbmc/cores/paplayer/AACCodec/Makefile xbmc/cores/paplayer/AC3Codec/Makefile xbmc/cores/paplayer/ADPCMCodec/Makefile xbmc/cores/paplayer/ModuleCodec/Makefile xbmc/cores/paplayer/GYMCodec/Makefile xbmc/cores/paplayer/MP3Codec/Makefile xbmc/cores/paplayer/MPCCodec/xbmc/Makefile xbmc/cores/paplayer/NSFCodec/Makefile xbmc/cores/paplayer/SIDCodec/Makefile xbmc/cores/paplayer/vgmstream/Makefile xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile xbmc/cores/paplayer/vorbisfile/Makefile xbmc/cores/paplayer/WavPackCodec/Makefile xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile guilib/common/Makefile xbmc/lib/libass/xbmc/Makefile xbmc/lib/libXBMS/Makefile xbmc/lib/libRTV/Makefile xbmc/lib/libexif/Makefile xbmc/lib/libXDAAP/Makefile xbmc/lib/libhdhomerun/Makefile xbmc/lib/libGoAhead/Makefile xbmc/lib/libshout/Makefile xbmc/lib/libid3tag/Makefile xbmc/lib/cximage-6.0/Makefile xbmc/lib/libPython/linux/Makefile xbmc/lib/libUPnP/Makefile xbmc/DllPaths_generated.h xbmc/linux/Makefile xbmc/screensavers/Makefile xbmc/screensavers/rsxs-0.9/xbmc/Makefile xbmc/visualizations/XBMCProjectM/Makefile xbmc/visualizations/Goom/Makefile xbmc/visualizations/OpenGLSpectrum/Makefile xbmc/visualizations/WaveForm/Makefile xbmc/visualizations/iTunes/Makefile tools/Linux/xbmc.sh tools/XBMCTex/Makefile tools/EventClients/Clients/OSXRemote/Makefile"
+
+
+# Function to run the configure scripts in our submodules
+# Consists of three paramaters, the path to the submodule, the configure command
+# with appropriate arguments, and a third parameter set to 1 if we are to skip
+# running the script, anything else if not.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16673,18 +20737,16 @@ do
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "Makefile.include") CONFIG_FILES="$CONFIG_FILES Makefile.include" ;;
-    "guilib/common/Makefile") CONFIG_FILES="$CONFIG_FILES guilib/common/Makefile" ;;
-    "xbmc/DllPaths_generated.h") CONFIG_FILES="$CONFIG_FILES xbmc/DllPaths_generated.h" ;;
     "xbmc/cores/dvdplayer/Codecs/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/Makefile" ;;
     "xbmc/cores/dvdplayer/Codecs/libdvd/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/dvdplayer/Codecs/libdvd/Makefile" ;;
     "xbmc/cores/AudioRenderers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/AudioRenderers/Makefile" ;;
     "xbmc/cores/paplayer/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/Makefile" ;;
-    "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
     "xbmc/cores/paplayer/MACDll/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MACDll/Makefile" ;;
     "xbmc/cores/paplayer/timidity/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/timidity/Makefile" ;;
+    "xbmc/cores/paplayer/AACCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AACCodec/Makefile" ;;
     "xbmc/cores/paplayer/AC3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/AC3Codec/Makefile" ;;
     "xbmc/cores/paplayer/ADPCMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ADPCMCodec/Makefile" ;;
-    "xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/vc6/dumb/Makefile" ;;
+    "xbmc/cores/paplayer/ModuleCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/ModuleCodec/Makefile" ;;
     "xbmc/cores/paplayer/GYMCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/GYMCodec/Makefile" ;;
     "xbmc/cores/paplayer/MP3Codec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MP3Codec/Makefile" ;;
     "xbmc/cores/paplayer/MPCCodec/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/MPCCodec/xbmc/Makefile" ;;
@@ -16695,7 +20757,7 @@ do
     "xbmc/cores/paplayer/vorbisfile/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/vorbisfile/Makefile" ;;
     "xbmc/cores/paplayer/WavPackCodec/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/WavPackCodec/Makefile" ;;
     "xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile" ;;
-    "xbmc/lib/cximage-6.0/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile" ;;
+    "guilib/common/Makefile") CONFIG_FILES="$CONFIG_FILES guilib/common/Makefile" ;;
     "xbmc/lib/libass/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libass/xbmc/Makefile" ;;
     "xbmc/lib/libXBMS/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libXBMS/Makefile" ;;
     "xbmc/lib/libRTV/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libRTV/Makefile" ;;
@@ -16705,8 +20767,10 @@ do
     "xbmc/lib/libGoAhead/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libGoAhead/Makefile" ;;
     "xbmc/lib/libshout/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libshout/Makefile" ;;
     "xbmc/lib/libid3tag/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libid3tag/Makefile" ;;
+    "xbmc/lib/cximage-6.0/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/cximage-6.0/Makefile" ;;
     "xbmc/lib/libPython/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libPython/linux/Makefile" ;;
     "xbmc/lib/libUPnP/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/lib/libUPnP/Makefile" ;;
+    "xbmc/DllPaths_generated.h") CONFIG_FILES="$CONFIG_FILES xbmc/DllPaths_generated.h" ;;
     "xbmc/linux/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/linux/Makefile" ;;
     "xbmc/screensavers/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/Makefile" ;;
     "xbmc/screensavers/rsxs-0.9/xbmc/Makefile") CONFIG_FILES="$CONFIG_FILES xbmc/screensavers/rsxs-0.9/xbmc/Makefile" ;;
@@ -17336,8 +21400,9 @@ $as_echo "$as_me: error: write failure creating $CONFIG_STATUS" >&2;}
    { (exit 1); exit 1; }; }
 
 
-if [ -d xbmc/lib/libPython/Python ]; then
-  pushd xbmc/lib/libPython/Python
+if [ $USE_EXTERNAL_PYTHON != "1" ]; then
+    if [ -d xbmc/lib/libPython/Python ]; then
+        pushd xbmc/lib/libPython/Python
 
   if test "$host_vendor" = "apple" ; then
     ./configure \
@@ -17369,23 +21434,28 @@ if [ -d xbmc/lib/libPython/Python ]; then
     cp pyconfig.h Include
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/lib/libPython/Python failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libPython/Python doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/lib/libPython/Python doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/libPython/Python." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/lib/libPython/Python." >&6;}
+fi
 
 
-if [ -d xbmc/cores/paplayer/MPCCodec ]; then
-  pushd xbmc/cores/paplayer/MPCCodec
+if [ $USE_EXTERNAL_LIBMPCDEC != "1" ]; then
+    if [ -d xbmc/cores/paplayer/MPCCodec ]; then
+        pushd xbmc/cores/paplayer/MPCCodec
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17394,23 +21464,28 @@ if [ -d xbmc/cores/paplayer/MPCCodec ]; then
     ./configure
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/paplayer/MPCCodec failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/MPCCodec doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/paplayer/MPCCodec doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/MPCCodec." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/MPCCodec." >&6;}
+fi
 
 
-if [ -d xbmc/cores/paplayer/flac-1.2.1 ]; then
-  pushd xbmc/cores/paplayer/flac-1.2.1
+if [ $USE_EXTERNAL_LIBFLAC != "1" ]; then
+    if [ -d xbmc/cores/paplayer/flac-1.2.1 ]; then
+        pushd xbmc/cores/paplayer/flac-1.2.1
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17433,23 +21508,28 @@ if [ -d xbmc/cores/paplayer/flac-1.2.1 ]; then
     sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/paplayer/flac-1.2.1 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/flac-1.2.1 doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/paplayer/flac-1.2.1 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/flac-1.2.1." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/flac-1.2.1." >&6;}
+fi
 
 
-if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
-  pushd xbmc/cores/paplayer/vorbisfile/libvorbis
+if [ $USE_EXTERNAL_LIBVORBIS != "1" ]; then
+    if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
+        pushd xbmc/cores/paplayer/vorbisfile/libvorbis
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17458,23 +21538,28 @@ if [ -d xbmc/cores/paplayer/vorbisfile/libvorbis ]; then
     ./configure --with-pic
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/paplayer/vorbisfile/libvorbis doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile/libvorbis." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile/libvorbis." >&6;}
+fi
 
 
-if [ -d xbmc/cores/paplayer/vorbisfile/ogg ]; then
-  pushd xbmc/cores/paplayer/vorbisfile/ogg
+if [ $USE_EXTERNAL_LIBOGG != "1" ]; then
+    if [ -d xbmc/cores/paplayer/vorbisfile/ogg ]; then
+        pushd xbmc/cores/paplayer/vorbisfile/ogg
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17483,23 +21568,28 @@ if [ -d xbmc/cores/paplayer/vorbisfile/ogg ]; then
     ./configure --with-pic
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/paplayer/vorbisfile/ogg doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile/ogg." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/paplayer/vorbisfile/ogg." >&6;}
+fi
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/ffmpeg
+if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/ffmpeg
 
   if test "$host_vendor" = "apple" ; then
     ./configure \
@@ -17520,7 +21610,8 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --enable-gpl \
       --enable-swscale \
       --enable-protocol=http \
-      --enable-pthreads &&
+      --enable-pthreads \
+      --cc="$CC" &&
     sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
     sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak &&
     sed -i "" -e "s#libswscale_VERSION_MAJOR=0#libswscale_VERSION_MAJOR=0.7.1#" config.mak &&
@@ -17570,27 +21661,34 @@ if [ -d xbmc/cores/dvdplayer/Codecs/ffmpeg ]; then
       --enable-gpl \
       --enable-swscale \
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
+      `if test "$use_external_libfaad" = "yes"; then echo --enable-libfaad; fi` \
       --enable-protocol=http \
-      --enable-pthreads
+      --enable-pthreads \
+      --cc="$CC"
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/ffmpeg doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/ffmpeg." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/ffmpeg." >&6;}
+fi
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/libdts ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/libdts
+if [ $USE_EXTERNAL_LIBDTS != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libdts ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libdts
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17609,29 +21707,71 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libdts ]; then
       CFLAGS="-fPIC"
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdts doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdts." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdts." >&6;}
+fi
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
+if [ $SKIP_CONFIG_DVDCSS != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
+
+  if test "$host_vendor" = "apple" ; then
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
+    CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
+      --disable-doc \
+      --enable-static \
+      --with-pic
+  else
+    ./configure \
+      --disable-doc \
+      --enable-static \
+      --with-pic
+  fi
+
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss failed to configure" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss failed to configure" >&2;}
+   { (exit 1); exit 1; }; }
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss doesn't exist" >&5
+$as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss doesn't exist" >&2;}
+   { (exit 1); exit 1; }; }
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss." >&6;}
+fi
+
+
+if [ 0 != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread
 
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
       --extra-cflags="$DVDREAD_CFLAGS -D__DARWIN__ -fPIC -DPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -I`pwd`/../libdvdcss/src" \
       --enable-static \
-      --disable-shared &&
+      --disable-shared \
+      --cc="$CC" &&
     make dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
@@ -17639,30 +21779,36 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread ]; then
     ./configure2 \
       --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../libdvdcss/src" \
       --enable-static \
-      --disable-shared &&
+      --disable-shared \
+      --cc="$CC" &&
     make dvdread-config &&
     mkdir -p `pwd`/../includes/dvdread
     cp `pwd`/../libdvdread/src/*.h `pwd`/../includes/dvdread
   fi
 
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdread." >&6;}
+fi
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
+if [ 0 != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav
 
   if test "$host_vendor" = "apple" ; then
     ./configure2 MACOSX_DEPLOYMENT_TARGET=10.4 \
@@ -17670,33 +21816,40 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav ]; then
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --enable-static \
-      --disable-shared
+      --disable-shared \
+      --cc="$CC"
   else
     ./configure2 \
       --extra-cflags="$DVDREAD_CFLAGS -fPIC -DPIC -I`pwd`/../includes" \
       --extra-ldflags="-L`pwd`/../libdvdread/obj" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --enable-static \
-      --disable-shared
+      --disable-shared \
+      --cc="$CC"
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libdvd/libdvdnav." >&6;}
+fi
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/libfaad2
+if [ $USE_EXTERNAL_LIBFAAD != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libfaad2
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-O3 -fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17710,23 +21863,28 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libfaad2 ]; then
       CFLAGS="-O3"
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libfaad2 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libfaad2." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libfaad2." >&6;}
+fi
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/liba52 ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/liba52
+if [ $USE_EXTERNAL_LIBA52 != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/liba52 ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/liba52
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17750,23 +21908,28 @@ if [ -d xbmc/cores/dvdplayer/Codecs/liba52 ]; then
       CFLAGS=-fPIC
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/liba52 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/liba52." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/liba52." >&6;}
+fi
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/libmpeg2
+if [ $USE_EXTERNAL_LIBMPEG2 != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libmpeg2
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17787,23 +21950,28 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libmpeg2 ]; then
       --without-x
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmpeg2 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libmpeg2." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libmpeg2." >&6;}
+fi
 
 
-if [ -d xbmc/cores/dvdplayer/Codecs/libmad ]; then
-  pushd xbmc/cores/dvdplayer/Codecs/libmad
+if [ $USE_EXTERNAL_LIBMAD != "1" ]; then
+    if [ -d xbmc/cores/dvdplayer/Codecs/libmad ]; then
+        pushd xbmc/cores/dvdplayer/Codecs/libmad
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17814,50 +21982,57 @@ if [ -d xbmc/cores/dvdplayer/Codecs/libmad ]; then
       --with-pic
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/cores/dvdplayer/Codecs/libmad doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libmad." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/cores/dvdplayer/Codecs/libmad." >&6;}
+fi
 
 
-if [ -d xbmc/lib/cximage-6.0/zlib ]; then
-  pushd xbmc/lib/cximage-6.0/zlib
+if [ 0 != "1" ]; then
+    if [ -d xbmc/lib/cximage-6.0/zlib ]; then
+        pushd xbmc/lib/cximage-6.0/zlib
 
   if test "$host_vendor" = "apple" ; then
     export MACOSX_DEPLOYMENT_TARGET=10.4
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure
-  else
-    CFLAGS=-fPIC \
-    ./configure
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/lib/cximage-6.0/zlib failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/cximage-6.0/zlib doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/lib/cximage-6.0/zlib doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/cximage-6.0/zlib." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/lib/cximage-6.0/zlib." >&6;}
+fi
 
 
-if [ -d xbmc/lib/libass ]; then
-  pushd xbmc/lib/libass
+if [ $USE_EXTERNAL_LIBASS != "1" ]; then
+    if [ -d xbmc/lib/libass ]; then
+        pushd xbmc/lib/libass
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
@@ -17867,23 +22042,28 @@ if [ -d xbmc/lib/libass ]; then
     ./configure
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/lib/libass failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libass doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/lib/libass doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/libass." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/lib/libass." >&6;}
+fi
 
 
-if [ -d xbmc/lib/libid3tag/libid3tag ]; then
-  pushd xbmc/lib/libid3tag/libid3tag
+if [ 0 != "1" ]; then
+    if [ -d xbmc/lib/libid3tag/libid3tag ]; then
+        pushd xbmc/lib/libid3tag/libid3tag
 
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common" \
@@ -17900,23 +22080,28 @@ if [ -d xbmc/lib/libid3tag/libid3tag ]; then
       --with-pic
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/lib/libid3tag/libid3tag failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/lib/libid3tag/libid3tag doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/lib/libid3tag/libid3tag." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/lib/libid3tag/libid3tag." >&6;}
+fi
 
 
-if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
-  pushd xbmc/visualizations/XBMCProjectM/libprojectM
+if [ 0 != "1" ]; then
+    if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
+        pushd xbmc/visualizations/XBMCProjectM/libprojectM
 
   if test "$host_vendor" = "apple" ; then
     rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_C_FLAGS:STRING="-fno-common" -D CMAKE_CXX_FLAGS:STRING="-fno-common" -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
@@ -17924,23 +22109,28 @@ if [ -d xbmc/visualizations/XBMCProjectM/libprojectM ]; then
     rm -f CMakeCache.txt && CC="" CXX=""  cmake -D CMAKE_BUILD_TYPE:STRING=RelWithDebInfo -D USE_FTGL:BOOL=OFF .
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/visualizations/XBMCProjectM/libprojectM doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/visualizations/XBMCProjectM/libprojectM." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/visualizations/XBMCProjectM/libprojectM." >&6;}
+fi
 
 
-if [ -d xbmc/visualizations/Goom/goom2k4-0 ]; then
-  pushd xbmc/visualizations/Goom/goom2k4-0
+if [ 0 != "1" ]; then
+    if [ -d xbmc/visualizations/Goom/goom2k4-0 ]; then
+        pushd xbmc/visualizations/Goom/goom2k4-0
 
   if test "$host_vendor" = "apple" ; then
     ./configure \
@@ -17958,23 +22148,28 @@ if [ -d xbmc/visualizations/Goom/goom2k4-0 ]; then
 
   fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/visualizations/Goom/goom2k4-0 failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/visualizations/Goom/goom2k4-0 doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/visualizations/Goom/goom2k4-0." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/visualizations/Goom/goom2k4-0." >&6;}
+fi
 
 
-if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
-  pushd xbmc/screensavers/rsxs-0.9/
+if [ 0 != "1" ]; then
+    if [ -d xbmc/screensavers/rsxs-0.9/ ]; then
+        pushd xbmc/screensavers/rsxs-0.9/
 
 # TEMPORARY: Cannot have screensavers if building for ARM as it requires OpenGL
 if test "$host_cpu" != "arm" ; then
@@ -18012,19 +22207,23 @@ if test "$host_cpu" != "arm" ; then
   fi
 fi
 
-  if [ $? -ne 0 ]; then
-    popd
-    { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&5
+        if [ $? -ne 0 ]; then
+            popd
+            { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&5
 $as_echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ failed to configure" >&2;}
    { (exit 1); exit 1; }; }
-  else
-    popd
-  fi;
-else
-  { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&5
+        else
+            popd
+        fi
+    else
+        { { $as_echo "$as_me:$LINENO: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&5
 $as_echo "$as_me: error: Submodule xbmc/screensavers/rsxs-0.9/ doesn't exist" >&2;}
    { (exit 1); exit 1; }; }
-fi;
+    fi
+else
+    { $as_echo "$as_me:$LINENO: Skipping configuration of submodule xbmc/screensavers/rsxs-0.9/." >&5
+$as_echo "$as_me: Skipping configuration of submodule xbmc/screensavers/rsxs-0.9/." >&6;}
+fi
 
 
 # configure is writing to config.log, and then calls config.status.

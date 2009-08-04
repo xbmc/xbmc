@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<scraper name="filmweb.pl" content="movies" thumb="filmweb.jpg" language="pl">
+<scraper framework="1.0" date="2009-06-05" name="filmweb.pl" content="movies" thumb="filmweb.jpg" language="pl">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Wysoka jakosc okladki&quot; type=&quot;bool&quot; id=&quot;poster&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -65,7 +65,7 @@
 				<expression>wiat: ([0-9]*)</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;studio&gt;\1\2&lt;/studio&gt;" dest="5+">
-				<expression noclean="1">dyst.:[^&gt;]+&gt;([^&lt;]+)&lt;/a&gt;|dyst.:[^[A-Z]+([^&lt;]+[a-z])</expression>
+				<expression noclean="1">dyst.:[^=]+[^&gt;]+&gt;([^&lt;]+)&lt;/a&gt;|dyst.:[^[A-Z]+([^&lt;]+[a-z])</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
 				<expression>recezje-header&quot;[^&lt;]+[^&quot;]+&gt;([^&lt;]+)&lt;/</expression>

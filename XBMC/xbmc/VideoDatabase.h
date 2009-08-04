@@ -57,12 +57,14 @@ namespace VIDEO
 
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()
-#define VIDEODB_MAX_COLUMNS 21 // leave room for the fileid
+#define VIDEODB_MAX_COLUMNS 21 
+#define VIDEODB_DETAILS_FILEID               VIDEODB_MAX_COLUMNS + 1
 #define VIDEODB_DETAILS_FILE                 VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_PATH                 VIDEODB_MAX_COLUMNS + 3
 #define VIDEODB_DETAILS_PLAYCOUNT            VIDEODB_MAX_COLUMNS + 4
 #define VIDEODB_DETAILS_LASTPLAYED           VIDEODB_MAX_COLUMNS + 5
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME  VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_EPISODE_STUDIO       VIDEODB_MAX_COLUMNS + 7
 
 #define VIDEODB_DETAILS_TVSHOW_PATH          VIDEODB_MAX_COLUMNS + 1
 #define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES  VIDEODB_MAX_COLUMNS + 2
@@ -301,6 +303,7 @@ public:
   {
   public:
     CStdString path;
+    CStdString genre;
     int numEpisodes;
     int numWatched;
   };
@@ -331,6 +334,7 @@ public:
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);
   bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lEpisodeId = -1);
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long idMVideo=-1);
+  bool GetStreamDetailsForFileId(CStreamDetails& details, long lFileId) const;
 
   long GetPathId(const CStdString& strPath);
   long GetTvShowId(const CStdString& strPath);
@@ -342,6 +346,8 @@ public:
   long SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
   long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow, long lEpisodeId=-1);
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
+  void SetStreamDetailsForFile(const CStreamDetails& details, const CStdString &strFileNameAndPath);
+  void SetStreamDetailsForFileId(const CStreamDetails& details, long lFileId);
 
   void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false);
   void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, bool bKeepThumb = false);
@@ -452,6 +458,7 @@ public:
   bool ExportSkipEntry(const CStdString &nfoFile);
   void ImportFromXML(const CStdString &xmlFile);
   void DumpToDummyFiles(const CStdString &path);
+  CStdString GetCachedThumb(const CFileItem& item) const;
 
   // smart playlists and main retrieval work in these functions
   bool GetMoviesByWhere(const CStdString& strBaseDir, const CStdString &where, CFileItemList& items);
@@ -503,6 +510,7 @@ protected:
   void AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, std::vector<long>& vecDirectors, std::vector<long>& vecGenres, std::vector<long>& vecStudios);
 
   int GetPlayCount(long id);
+  void DeleteStreamDetails(long lFileId);
   CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, long id);
   CVideoInfoTag GetDetailsForMovie(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForTvShow(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);

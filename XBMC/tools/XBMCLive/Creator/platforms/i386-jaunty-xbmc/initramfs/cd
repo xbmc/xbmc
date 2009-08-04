@@ -175,4 +175,34 @@ mountroot ()
     #mount --bind /squashmnt1 "${rootmnt}/.ro1"
     #mount --bind /squashmnt2 "${rootmnt}/.ro2"
     #mount --bind /persistmnt "${rootmnt}/.rw"
+
+    if [ -f $BOOTMEDIAMNTPOINT/config/fstab ]; then
+        cp $BOOTMEDIAMNTPOINT/config/fstab ${rootmnt}/etc/fstab
+#	rm $BOOTMEDIAMNTPOINT/config/fstab
+    fi
+    if [ -f $BOOTMEDIAMNTPOINT/config/shadow ]; then
+        cp $BOOTMEDIAMNTPOINT/config/shadow ${rootmnt}/etc
+#	rm $BOOTMEDIAMNTPOINT/config/fstab
+	chmod 640 ${rootmnt}/etc/shadow
+    fi
+
+    if [ -f $BOOTMEDIAMNTPOINT/config/rc.local ]; then
+        cp $BOOTMEDIAMNTPOINT/config/rc.local ${rootmnt}/etc
+    fi
+
+    if [ -f $BOOTMEDIAMNTPOINT/config/xorg.conf ]; then
+	cp $BOOTMEDIAMNTPOINT/config/xorg.conf ${rootmnt}/etc/X11
+    fi
+
+    if [ -f $BOOTMEDIAMNTPOINT/config/lircd.conf ]; then
+        cp $BOOTMEDIAMNTPOINT/config/lircd.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f $BOOTMEDIAMNTPOINT/config/hardware.conf ]; then
+        cp $BOOTMEDIAMNTPOINT/config/hardware.conf ${rootmnt}/etc/lirc
+    fi
+
+    if [ -f $BOOTMEDIAMNTPOINT/config/interfaces ]; then
+	cp $BOOTMEDIAMNTPOINT/config/interfaces ${rootmnt}/etc/network
+    fi
 }

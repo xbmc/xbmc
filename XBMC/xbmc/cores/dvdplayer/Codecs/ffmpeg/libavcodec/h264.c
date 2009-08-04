@@ -5483,9 +5483,7 @@ static int decode_mb_cabac(H264Context *h) {
 
     mb_xy = h->mb_xy = s->mb_x + s->mb_y*s->mb_stride;
 
-#ifdef _XBOX
     s->dsp.clear_blocks(h->mb); //needed for cabac patch
-#endif
 
     tprintf(s->avctx, "pic:%d mb:%d/%d\n", h->frame_num, s->mb_x, s->mb_y);
     if( h->slice_type_nos != FF_I_TYPE ) {

@@ -55,8 +55,10 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
-	xbmc/cores/dvdplayer/Codecs/libdvd \
-	xbmc/lib/libass/xbmc \
+        xbmc/cores/dvdplayer/Codecs/libdvd
+ifneq (@USE_EXTERNAL_LIBASS@,1)
+  DVDPCODECS_DIRS+=xbmc/lib/libass/xbmc
+endif
 
 PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/AC3Codec \
@@ -68,7 +70,7 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/WavPackCodec \
 	xbmc/cores/paplayer/GYMCodec \
 	xbmc/cores/paplayer/YMCodec/StSoundLibrary \
-	xbmc/cores/paplayer/ModuleCodec/vc6/dumb \
+	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/MPCCodec/xbmc \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
@@ -96,8 +98,12 @@ VIS_DIRS=\
 PM3_MEDIA=skin/Project\ Mayhem\ III/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
+SKIN_DIRS=\
+	$(PM3_MEDIA)\
+	$(PM3HD_MEDIA)
+
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
-	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS)
+	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(SKIN_DIRS)
 
 LIBS=@LIBS@
 CFLAGS=@CFLAGS@
@@ -107,17 +113,17 @@ INCLUDES=@INCLUDES@
 
 CLEAN_FILES=xbmc.bin xbmc-xrandr
 
-all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Textures.xpr
+all : externals xbmc.bin xbmc-xrandr skins
 
 include Makefile.include
 
-.PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
+.PHONY : dllloader exports visualizations screensavers eventclients papcodecs \
+	dvdpcodecs imagelib codecs externals force skins
 
-$(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
-	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
-
-$(PM3HD_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3HD_MEDIA)/*.png $(PM3HD_MEDIA)/*/*.png
-	 tools/XBMCTex/XBMCTex -input \"$(PM3HD_MEDIA)\" -output \"$(PM3HD_MEDIA)/Textures.xpr\"
+# skin textures
+skins: tools/XBMCTex/XBMCTex force
+	 $(MAKE) -C $(PM3_MEDIA)
+	 $(MAKE) -C $(PM3HD_MEDIA)
 
 guilib/guilib.a: force
 	$(MAKE) -C guilib
@@ -245,7 +251,9 @@ python: dllloader
 dvdpcodecs: dllloader
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs
 	$(MAKE) -C xbmc/cores/dvdplayer/Codecs/libdvd
+ifneq (@USE_EXTERNAL_LIBASS@,1)
 	$(MAKE) -C xbmc/lib/libass/xbmc
+endif
 eventclients:
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C tools/EventClients/Clients/OSXRemote
@@ -262,7 +270,9 @@ papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
+ifneq (@USE_EXTERNAL_LIBFLAC@,1)
 	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
+endif
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 	$(MAKE) -C xbmc/cores/paplayer/timidity
@@ -271,13 +281,15 @@ papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
 	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
+	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
+ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
+endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
 ifneq ($(ARCH), powerpc-osx)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
 endif
 ifneq ($(ARCH), x86_64-linux)
-	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
@@ -290,7 +302,7 @@ libs: libhdhomerun libid3tag imagelib libexif python
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
-	codecs libs python visualizations screensavers \
+	codecs libs python visualizations screensavers eventclients skins \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
@@ -370,6 +382,11 @@ endif
 #	LIBS += -lpython2.4
 #endif
 
+# If using external libmpcdec
+ifeq (@USE_EXTERNAL_LIBMPCDEC@,1)
+	OBJSXBMC += xbmc/cores/paplayer/MPCCodec/xbmc/libmpcdec-@ARCH@.a
+endif
+
 xbmc.bin: $(OBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
@@ -395,51 +412,46 @@ else
 endif
 
 install-bin: xbmc.bin # developement convenience target
-	sudo cp -f xbmc.bin $(prefix)/share/xbmc
+	sudo install -D xbmc.bin $(prefix)/share/xbmc
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
 else
 install: install-datas install-web
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
-	@cp -f xbmc.bin $(prefix)/share/xbmc/xbmc.bin
-	@mkdir -p $(prefix)/bin
-	@cp tools/Linux/xbmc.sh $(prefix)/bin/xbmc
-	@cp tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
-	@cp tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
-	@mkdir -p $(prefix)/share/xsessions
-	@cp tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
-	@chmod 755 $(prefix)/bin/xbmc
-	@chmod 755 $(prefix)/bin/xbmc-standalone
+	@install -D xbmc.bin $(prefix)/share/xbmc/xbmc.bin
+	@install -D xbmc-xrandr $(prefix)/share/xbmc/xbmc-xrandr
+	@install -D tools/Linux/xbmc.sh $(prefix)/bin/xbmc
+	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
+	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
+	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
 	@echo "Copying support and legal files,,,"
-	@cp README.linux LICENSE.GPL *.txt xbmc-xrandr $(prefix)/share/xbmc/
+	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
+		install -D -m 0644 "$$FILE" $(prefix)/share/xbmc/; done
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 
 install-datas:
-	@echo "Creating target directories in $(prefix)/share/xbmc"
-	@find language media screensavers scripts skin sounds userdata visualisations system -type d -not -iregex ".*svn.*" -exec mkdir -p $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media screensavers scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*win32\.vis|.*osx\.vis" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Arch dependent files
-	@find system -regextype posix-extended -type f -not -iregex ".*svn.*" -iregex ".*@ARCH@.*" -exec cp "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Skins
-	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec cp '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
+	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
 
 install-livedatas:
 	@echo "Install Live CD datas in $(prefix) ..."
-	@mkdir -p $(prefix)/bin 
-	@cp tools/XBMCLive/diskmounter $(prefix)/bin
-	@cp tools/XBMCLive/installXBMC.py $(prefix)/bin
-	@cp tools/XBMCLive/runXBMC.sh $(prefix)/bin
-	@cp tools/XBMCLive/setAlsaVolumes.py $(prefix)/bin
+	@install -D tools/XBMCLive/diskmounter $(prefix)/bin
+	@install -D tools/XBMCLive/installXBMC.py $(prefix)/bin
+	@install -D tools/XBMCLive/runXBMC.sh $(prefix)/bin
+	@install -D tools/XBMCLive/setAlsaVolumes.py $(prefix)/bin
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
 	@unzip -oq web/Project_Mayhem_III_webserver_v1.0.zip \
-		-d $(prefix)/share/xbmc/web
+		-d $(prefix)/share/xbmc/web -x "*/Thumbs.db"
 
 uninstall:
 	@echo "Removing XBMC..."

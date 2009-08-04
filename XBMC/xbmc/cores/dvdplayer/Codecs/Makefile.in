@@ -1,4 +1,3 @@
-
 CC=@CC@
 CXX=@CXX@
 SHELL=/bin/bash
@@ -7,24 +6,50 @@ ARCH=@ARCH@
 SYSDIR=../../../../system/players/dvdplayer
 WRAPPER=../../DllLoader/exports/wrapper.o
 WRAPPER_OSX=../../../../tools/Mach5/wrapper.rb
-DIRS=	ffmpeg \
-	libdts \
-	libfaad2 \
-	libmad \
-	liba52 \
-	libmpeg2 \
+DIRS=
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  DIRS+=ffmpeg
+endif
+ifneq (@USE_EXTERNAL_LIBMAD@,1)
+  DIRS+=libmad
+endif
+ifneq (@USE_EXTERNAL_LIBA52@,1)
+  DIRS+=liba52
+endif
+ifneq (@USE_EXTERNAL_LIBDTS@,1)
+  DIRS+=libdts
+endif
+ifneq (@USE_EXTERNAL_LIBFAAD@,1)
+  DIRS+=libfaad2
+endif
+ifneq (@USE_EXTERNAL_LIBMPEG2@,1)
+  DIRS+=libmpeg2
+endif
 
-LIBS=	avutil-49-$(ARCH).so \
+LIBS=
+ifneq (@USE_EXTERNAL_FFMPEG@,1)
+  LIBS+=avutil-49-$(ARCH).so \
 	avcodec-52-$(ARCH).so \
 	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
-	swscale-0.6.1-$(ARCH).so \
-	libdts-$(ARCH).so \
-	libfaad-$(ARCH).so \
-	libmad-$(ARCH).so \
-	liba52-$(ARCH).so \
-	libao-$(ARCH).so \
-	libmpeg2-$(ARCH).so \
+	swscale-0.6.1-$(ARCH).so
+endif
+ifneq (@USE_EXTERNAL_LIBMAD@,1)
+  LIBS+=libmad-$(ARCH).so
+endif
+ifneq (@USE_EXTERNAL_LIBA52@,1)
+  LIBS+=liba52-$(ARCH).so \
+	libao-$(ARCH).so
+endif
+ifneq (@USE_EXTERNAL_LIBDTS@,1)
+  LIBS+=libdts-$(ARCH).so
+endif
+ifneq (@USE_EXTERNAL_LIBFAAD@,1)
+  LIBS+=libfaad-$(ARCH).so
+endif
+ifneq (@USE_EXTERNAL_LIBMPEG2@,1)
+  LIBS+=libmpeg2-$(ARCH).so
+endif
 
 
 
@@ -232,4 +257,3 @@ clean:
 distclean:
 	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
 	for i in $(DIRS); do $(MAKE) -C "$$i" distclean; done
-
