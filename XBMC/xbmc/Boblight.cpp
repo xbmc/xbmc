@@ -168,6 +168,7 @@ void CBoblight::Run()
           boblight_addpixelxy(m_boblight, x, y, rgb);
         }
       }
+      lock.Leave();
       
       //if it fails we have a problem, probably because boblightd died
       if (!boblight_sendrgb(m_boblight))
@@ -175,7 +176,6 @@ void CBoblight::Run()
         CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
         return;
       }
-      lock.Leave();
     }
     else
     {
