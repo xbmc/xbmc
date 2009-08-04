@@ -2496,6 +2496,8 @@ void CApplication::Render()
 #ifdef HAVE_BOBLIGHT
   if (m_bPresentFrame)
     g_boblight.GrabImage();
+  else
+    g_boblight.Disable();
 #endif
   
   RenderNoPresent();

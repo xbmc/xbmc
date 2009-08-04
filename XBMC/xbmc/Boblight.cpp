@@ -75,6 +75,13 @@ void CBoblight::Send()
   m_inputevent.Set();
 }
 
+void CBoblight::Disable()
+{
+  CSingleLock lock(m_critsection);
+  m_hasinput = false;
+  m_inputevent.Set();
+}
+
 void CBoblight::Process()
 {
   //have to sort this out, can't log from constructor

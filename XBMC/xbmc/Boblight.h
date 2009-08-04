@@ -40,6 +40,7 @@ class CBoblight : public CThread
     bool IsEnabled();
     void GrabImage();
     void Send();
+    void Disable();
     
   private:
     void Process();
