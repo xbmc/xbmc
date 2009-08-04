@@ -26,6 +26,7 @@
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogMusicScan.h"
 #include "common/Keyboard.h"
+#include "common/Mouse.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -143,6 +144,8 @@ bool CPowerManager::Reboot()
 void CPowerManager::Resume()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
+
+  g_Mouse.Acquire();
 
   // restart lirc
 #ifdef HAS_LIRC
