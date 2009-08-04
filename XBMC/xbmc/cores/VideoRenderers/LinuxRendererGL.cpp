@@ -354,7 +354,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
       m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
     }
     else
-#endif  // GLES: Textures must be Power-of-2
+#endif  // GLES: No support for texture rectangles
       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
      // create the yuv textures    
@@ -717,6 +717,7 @@ void CLinuxRendererGL::LoadTextures(int source)
       VerifyGLState();
       imaging++;
     }
+#endif
 
     // Load RGB image
     if (deinterlacing)
@@ -736,6 +737,7 @@ void CLinuxRendererGL::LoadTextures(int source)
                , m_iSourceWidth, m_rgbBuffer );
     }
 
+#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
     if (imaging==2)
     {
       imaging--;
@@ -747,15 +749,12 @@ void CLinuxRendererGL::LoadTextures(int source)
       glPixelTransferf(GL_BLUE_BIAS, 0.0);
       VerifyGLState();
     }
-#else
-  // TODO: GLES1 and GLES2 versions
 #endif
   }
   else
   {
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
-#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
     if (deinterlacing)
     {
       // Load Y fields
@@ -774,9 +773,6 @@ void CLinuxRendererGL::LoadTextures(int source)
                , im->width, im->height
                , im->stride[0], im->plane[0] );
     }
-#else   
-    // TODO: need to do stride thing for GLES2 - GLES1 should never reach here as only doing software rendering?
-#endif
   }
 
   VerifyGLState();
@@ -785,7 +781,6 @@ void CLinuxRendererGL::LoadTextures(int source)
   {
     glPixelStorei(GL_UNPACK_ALIGNMENT,1);
 
-#if !defined(HAS_SDL_GLES2) && !defined(HAS_SDL_GLES1)
     if (deinterlacing)
     {
       // Load Even U & V Fields
@@ -875,9 +870,6 @@ void CLinuxRendererGL::LoadTextures(int source)
         p.rect.x2 /= p.texwidth;
       }
     }
-#else   
-    // TODO: need to do stride thing for GLES2 - GLES1 should never reach here as only doing software rendering?
-#endif
   }
 
   glDisable(m_textureTarget);
@@ -1749,9 +1741,7 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glLoadIdentity();
-#endif
   VerifyGLState();
-#ifndef HAS_SDL_GLES2
   gluOrtho2D(0, im.width, 0, imgheight);
 #endif
   glViewport(0, 0, im.width, imgheight);
@@ -1835,9 +1825,11 @@ void CLinuxRendererGL::RenderMultiPass(DWORD flags, int index)
     m_fbo.SetFiltering(GL_TEXTURE_2D, GL_LINEAR);
 
   VerifyGLState();
-#ifndef HAS_SDL_GLES2
+
   // TODO - recalculate based source rectangle so crop works
   //        but to do so we need the source texture size of the framebuffer
+
+#ifndef HAS_SDL_GLES2
   glBegin(GL_QUADS);
 
   glMultiTexCoord2fARB(GL_TEXTURE0, 0, 0);
@@ -1951,7 +1943,7 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
   glEnable(m_textureTarget);
   glActiveTextureARB(GL_TEXTURE0);
   glBindTexture(m_textureTarget, planes[0].id);
-  
+
 #if defined(HAS_SDL_GLES1)
 
   // TODO: GLES1.x version
@@ -1961,12 +1953,10 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
   // TODO: GLES2.0 version
   
 #else
-  
+
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   glBegin(GL_QUADS);
-  glTexCoord2f(planes[0].rect.x1, planes[0].rect.y1);
-  glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
 
   glTexCoord2f(planes[0].rect.x2, planes[0].rect.y1);
   glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
@@ -1979,11 +1969,12 @@ void CLinuxRendererGL::RenderSoftware(DWORD flags, int index)
 
   glEnd();
 
+#endif
+  
   VerifyGLState();
 
   glDisable(m_textureTarget);
   VerifyGLState();
-#endif
 }
 
 void CLinuxRendererGL::CreateThumbnail(SDL_Surface* surface, unsigned int width, unsigned int height)
@@ -2189,10 +2180,12 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
         glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       }
 
+#ifndef HAS_SDL_GLES2
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
       glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+#endif
       VerifyGLState();
     }
   }
@@ -2210,20 +2203,26 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
     for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
     {
       glBindTexture(m_textureTarget, fields[f][0].id);
+#ifndef HAS_SDL_GLES2
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
       glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+#endif
       VerifyGLState();
 
       if (!(m_renderMethod & RENDER_SW))
       {
         glBindTexture(m_textureTarget, fields[f][1].id);
+#ifndef HAS_SDL_GLES2
         glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
         glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+#endif
         VerifyGLState();
 
         glBindTexture(m_textureTarget, fields[f][2].id);
+#ifndef HAS_SDL_GLES2
         glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, method);
         glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, method);
+#endif
         VerifyGLState();
       }
     }
