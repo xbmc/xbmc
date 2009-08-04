@@ -18,6 +18,7 @@ $PACKAGES_ADDR/f/fribidi
 $PACKAGES_ADDR/m/mysql-dfsg-5.0
 $PACKAGES_ADDR/p/pcre3
 $PACKAGES_ADDR/l/lzo2
+$PACKAGES_ADDR/l/lzo2
 $PACKAGES_ADDR/libs/libsdl1.2
 $PACKAGES_ADDR/libs/libsdl1.2
 $PACKAGES_ADDR/libs/libsdl1.2
@@ -85,6 +86,7 @@ libfribidi-dev_0.10.9-1_armel.deb
 libmysqlclient15-dev_5.0.51a-24+lenny1_armel.deb
 libpcre3-dev_7.6-2.1_armel.deb
 liblzo2-dev_2.03-1_armel.deb
+liblzo2-2_2.03-1_armel.deb
 libsdl1.2-dev_1.2.13-2_armel.deb
 libsdl1.2debian_1.2.13-2_armel.deb
 libsdl1.2debian-all_1.2.13-2_armel.deb
