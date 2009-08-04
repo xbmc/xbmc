@@ -161,8 +161,10 @@ void CBoblight::Run()
       //a priority of 255 means we're an inactive boblightd client
       if (m_priority == 255)
       {
+        lock.Leave();
         boblight_setpriority(m_boblight, 128);
         m_priority = 128;
+        lock.Enter();
       }
       
       for (int y = 0; y < 64; y++)
