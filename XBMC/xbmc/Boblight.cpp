@@ -78,8 +78,11 @@ void CBoblight::Send()
 void CBoblight::Disable()
 {
   CSingleLock lock(m_critsection);
-  m_hasinput = false;
-  m_inputevent.Set();
+  if (m_hasinput)
+  {
+    m_hasinput = false;
+    m_inputevent.Set();
+  }
 }
 
 void CBoblight::Process()
