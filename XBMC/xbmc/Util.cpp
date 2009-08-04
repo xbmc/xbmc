@@ -279,7 +279,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 {
   const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
 
-  CStdString strTitleAndYear = strFileName;
+  CStdString strFileNameTemp = strFileName;
   CStdString strFileNameLower = strFileName;
   strFileNameLower.MakeLower();
 
@@ -325,9 +325,9 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         // The extension will then be added back on at the end - there is no reason
         // to clean it off here. It will be cleaned off during the display routine, if
         // the settings to hide extensions are turned on.
-        CStdString strFileNoExt = strTitleAndYear;
+        CStdString strFileNoExt = strFileNameTemp;
         RemoveExtension(strFileNoExt);
-        CStdString strFileExt = strTitleAndYear.Right(strTitleAndYear.length() - strFileNoExt.length());
+        CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
         CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
         strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
 
@@ -351,7 +351,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         strFileTitle += reg.GetMatch(3);
 
         // everything after the regexp match
-        strFileTitle += strTitleAndYear.Mid(iFoundToken + iRegLength);
+        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
 
         return true;
       }
