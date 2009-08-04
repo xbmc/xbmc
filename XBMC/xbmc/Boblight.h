@@ -44,21 +44,21 @@ class CBoblight : public CThread
   private:
     void Process();
     
-    std::string      m_liberror;
-    bool             m_isenabled;
-    bool             m_hasinput;
-    int              m_priority;
+    std::string      m_liberror;    //where we store the error from boblight_loadlibrary()
+    bool             m_isenabled;   //if we have a connection to boblightd
+    bool             m_hasinput;    //if application is providing us with input
+    int              m_priority;    //priority of us as a client of boblightd
     
-    CEvent           m_inputevent;
-    CCriticalSection m_critsection;
+    CEvent           m_inputevent;  //set when we receive input and we need to send it to boblightd
+    CCriticalSection m_critsection; //lock for the sdl surface
     
-    SDL_Surface*     m_texture;
+    SDL_Surface*     m_texture;     //where we store the thumbnail
     
-    void*            m_boblight;
+    void*            m_boblight;    //handle from boblight_init()
     
-    bool             Setup();
-    void             Cleanup();
-    void             Run();
+    bool             Setup();       //sets up a connection to boblightd
+    void             Cleanup();     //cleans up connection to boblightd
+    void             Run();         //waits for input, on a timeout calls boblight_ping to check if boblight is still alive
 };
 
 extern CBoblight g_boblight;

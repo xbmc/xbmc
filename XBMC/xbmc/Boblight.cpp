@@ -65,11 +65,13 @@ void CBoblight::GrabImage()
   
   m_hasinput = true;
   
+  //get a thumbnail of 64x64 pixels
   g_renderManager.CreateThumbnail(m_texture, 64, 64);
 }
 
 void CBoblight::Send()
 {
+  //tell boblight thread to send input to boblightd
   m_inputevent.Set();
 }
 
@@ -79,12 +81,14 @@ void CBoblight::Process()
   Sleep(1000);
   CLog::Log(LOGDEBUG, "CBoblight: starting");
   
+  //this means boblight_loadlibrary had an error
   if (!m_liberror.empty())
   {
     CLog::Log(LOGDEBUG, "CBoblight: %s", m_liberror.c_str());
     return;
   }
   
+  //keep trying to connect to boblightd, useful in case it restarts
   while(!m_bStop)
   {
     if (!Setup())
@@ -111,6 +115,7 @@ bool CBoblight::Setup()
   
   CLog::Log(LOGDEBUG, "CBoblight: Connected");
   
+  //these will be made into gui options
   boblight_setscanrange(m_boblight, 64, 64);
   boblight_setvalue(m_boblight, -1, 10);
   boblight_setsaturation(m_boblight, -1, 3);
@@ -139,9 +144,11 @@ void CBoblight::Run()
 {
   while(!m_bStop)
   {
+    CSingleLock lock(m_critsection);
+    //if we have input, run it through boblight_addpixelxy() and call boblight_sendrgb()
     if (m_hasinput)
     {
-      CSingleLock lock(m_critsection);
+      //a priority of 255 means we're an inactive boblightd client
       if (m_priority == 255)
       {
         boblight_setpriority(m_boblight, 128);
@@ -162,19 +169,24 @@ void CBoblight::Run()
         }
       }
       
+      //if it fails we have a problem, probably because boblightd died
       if (!boblight_sendrgb(m_boblight))
       {
         CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
         return;
-      }        
+      }
+      lock.Leave();
     }
     else
     {
+      lock.Leave();
+      //set our priority to 255 which means we're inactive
       if (m_priority != 255)
       {
         boblight_setpriority(m_boblight, 255);
         m_priority = 255;
       }
+      //check if the daemon is still alive
       if (!boblight_ping(m_boblight))
       {
         CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
@@ -182,6 +194,7 @@ void CBoblight::Run()
       }
     }
     
+    //wait for input from application thread
     m_inputevent.WaitMSec(SECTIMEOUT * 1000);
     m_inputevent.Reset();
   }
