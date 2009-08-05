@@ -1753,6 +1753,8 @@
 		F5ACB5380FC3DF3D00AAA056 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */; };
 		F5ACB5390FC3DF3D00AAA056 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
+		F5D8D2AA1029256D004A11AB /* GUIControlProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */; };
+		F5D8D2AB1029256D004A11AB /* GUIControlProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */; };
 		F5EA021C0F6DA7E8005C2EC5 /* PowerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */; };
 		F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
 		F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
@@ -3704,6 +3706,8 @@
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowKaraokeLyrics.cpp; path = karaoke/GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
 		F5D879D10EF4BE53007C68A9 /* Cdg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cdg.cpp; path = karaoke/Cdg.cpp; sourceTree = "<group>"; };
 		F5D879D30EF4BE53007C68A9 /* Cdg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Cdg.h; path = karaoke/Cdg.h; sourceTree = "<group>"; };
+		F5D8D2A81029256D004A11AB /* GUIControlProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlProfiler.h; sourceTree = "<group>"; };
+		F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlProfiler.cpp; sourceTree = "<group>"; };
 		F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerManager.cpp; path = xbmc/PowerManager.cpp; sourceTree = SOURCE_ROOT; };
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerManager.h; path = xbmc/PowerManager.h; sourceTree = SOURCE_ROOT; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CocoaPowerSyscall.cpp; path = xbmc/osx/CocoaPowerSyscall.cpp; sourceTree = SOURCE_ROOT; };
@@ -4017,6 +4021,8 @@
 				E38E13DB0D25F9F900618676 /* GUIControlGroup.h */,
 				E38E13DC0D25F9F900618676 /* GUIControlGroupList.cpp */,
 				E38E13DD0D25F9F900618676 /* GUIControlGroupList.h */,
+				F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */,
+				F5D8D2A81029256D004A11AB /* GUIControlProfiler.h */,
 				E38E13DE0D25F9F900618676 /* GUIDialog.cpp */,
 				E38E13DF0D25F9F900618676 /* GUIDialog.h */,
 				E38E13E00D25F9F900618676 /* GUIEditControl.cpp */,
@@ -7833,6 +7839,7 @@
 				7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */,
 				7CDAEA8C1001EBA70040B25F /* PltConstants.cpp in Sources */,
 				7CDAEA8D1001EBA70040B25F /* PltIconsData.cpp in Sources */,
+				F5D8D2AA1029256D004A11AB /* GUIControlProfiler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8669,6 +8676,7 @@
 				7CDAEA7E1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */,
 				7CDAEA8E1001EBA70040B25F /* PltConstants.cpp in Sources */,
 				7CDAEA8F1001EBA70040B25F /* PltIconsData.cpp in Sources */,
+				F5D8D2AB1029256D004A11AB /* GUIControlProfiler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
