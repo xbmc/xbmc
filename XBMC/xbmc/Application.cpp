@@ -981,6 +981,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1093,6 +1094,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1189,6 +1191,7 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
