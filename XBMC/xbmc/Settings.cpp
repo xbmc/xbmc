@@ -335,6 +335,8 @@ void CSettings::Initialize()
   // default for windows is not always on top
   g_advancedSettings.m_alwaysOnTop = false;
 #endif
+
+  g_advancedSettings.m_bgInfoLoaderMaxThreads = 5;
 }
 
 CSettings::~CSettings(void)
@@ -1552,6 +1554,9 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
 
   XMLUtils::GetBoolean(pRootElement, "alwaysontop", g_advancedSettings.m_alwaysOnTop);
+
+  XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", g_advancedSettings.m_bgInfoLoaderMaxThreads);
+  g_advancedSettings.m_bgInfoLoaderMaxThreads = std::max(1, g_advancedSettings.m_bgInfoLoaderMaxThreads);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
