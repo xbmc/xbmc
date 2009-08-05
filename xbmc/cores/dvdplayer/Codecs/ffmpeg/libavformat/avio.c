@@ -149,6 +149,20 @@ int url_read(URLContext *h, unsigned char *buf, int size)
     return ret;
 }
 
+int url_read_complete(URLContext *h, unsigned char *buf, int size)
+{
+    int ret, len;
+
+    len = 0;
+    while (len < size) {
+        ret = url_read(h, buf+len, size-len);
+        if (ret < 1)
+            return ret;
+        len += ret;
+    }
+    return len;
+}
+
 int url_write(URLContext *h, unsigned char *buf, int size)
 {
     int ret;
@@ -204,6 +218,13 @@ int64_t url_filesize(URLContext *h)
         url_seek(h, pos, SEEK_SET);
     }
     return size;
+}
+
+int url_get_file_handle(URLContext *h)
+{
+    if (!h->prot->url_get_file_handle)
+        return -1;
+    return h->prot->url_get_file_handle(h);
 }
 
 int url_get_max_packet_size(URLContext *h)

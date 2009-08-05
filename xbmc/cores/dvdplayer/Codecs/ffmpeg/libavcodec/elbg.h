@@ -21,7 +21,7 @@
 #ifndef AVCODEC_ELBG_H
 #define AVCODEC_ELBG_H
 
-#include "libavutil/random.h"
+#include "libavutil/lfg.h"
 
 /**
  * Implementation of the Enhanced LBG Algorithm
@@ -35,11 +35,11 @@
  * @param numCB Number of points in the codebook.
  * @param num_steps The maximum number of steps. One step is already a good compromise between time and quality.
  * @param closest_cb Return the closest codebook to each point. Must be allocated.
- * @param rand_state A random number generator state. Should be already initialised by av_random_init.
+ * @param rand_state A random number generator state. Should be already initialized by av_lfg_init().
  */
 void ff_do_elbg(int *points, int dim, int numpoints, int *codebook,
                 int numCB, int num_steps, int *closest_cb,
-                AVRandomState *rand_state);
+                AVLFG *rand_state);
 
 /**
  * Initialize the **codebook vector for the elbg algorithm. If you have already
@@ -50,6 +50,6 @@ void ff_do_elbg(int *points, int dim, int numpoints, int *codebook,
  */
 void ff_init_elbg(int *points, int dim, int numpoints, int *codebook,
                   int numCB, int num_steps, int *closest_cb,
-                  AVRandomState *rand_state);
+                  AVLFG *rand_state);
 
 #endif /* AVCODEC_ELBG_H */

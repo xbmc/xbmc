@@ -29,7 +29,7 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "dsputil.h"
 #include "aandcttab.h"
 #include "mpeg12.h"
@@ -38,8 +38,9 @@
 typedef struct TqiContext {
     MpegEncContext s;
     AVFrame frame;
-    uint8_t *bitstream_buf;
+    void *bitstream_buf;
     unsigned int bitstream_buf_size;
+    DECLARE_ALIGNED_16(DCTELEM, block[6][64]);
 } TqiContext;
 
 static av_cold int tqi_decode_init(AVCodecContext *avctx)
@@ -101,12 +102,13 @@ static void tqi_calculate_qtable(MpegEncContext *s, int quant)
 
 static int tqi_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            const uint8_t *buf, int buf_size)
+                            AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     const uint8_t *buf_end = buf+buf_size;
     TqiContext *t = avctx->priv_data;
     MpegEncContext *s = &t->s;
-    DECLARE_ALIGNED_16(DCTELEM, block[6][64]);
 
     s->width  = AV_RL16(&buf[0]);
     s->height = AV_RL16(&buf[2]);
@@ -124,18 +126,18 @@ static int tqi_decode_frame(AVCodecContext *avctx,
         return -1;
     }
 
-    t->bitstream_buf = av_fast_realloc(t->bitstream_buf, &t->bitstream_buf_size, (buf_end-buf) + FF_INPUT_BUFFER_PADDING_SIZE);
+    av_fast_malloc(&t->bitstream_buf, &t->bitstream_buf_size, (buf_end-buf) + FF_INPUT_BUFFER_PADDING_SIZE);
     if (!t->bitstream_buf)
-        return -1;
-    s->dsp.bswap_buf((uint32_t*)t->bitstream_buf, (const uint32_t*)buf, (buf_end-buf)/4);
+        return AVERROR(ENOMEM);
+    s->dsp.bswap_buf(t->bitstream_buf, (const uint32_t*)buf, (buf_end-buf)/4);
     init_get_bits(&s->gb, t->bitstream_buf, 8*(buf_end-buf));
 
     s->last_dc[0] = s->last_dc[1] = s->last_dc[2] = 0;
     for (s->mb_y=0; s->mb_y<(avctx->height+15)/16; s->mb_y++)
     for (s->mb_x=0; s->mb_x<(avctx->width+15)/16; s->mb_x++)
     {
-        tqi_decode_mb(s, block);
-        tqi_idct_put(t, block);
+        tqi_decode_mb(s, t->block);
+        tqi_idct_put(t, t->block);
     }
 
     *data_size = sizeof(AVFrame);

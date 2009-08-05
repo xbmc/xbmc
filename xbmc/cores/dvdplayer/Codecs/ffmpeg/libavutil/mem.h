@@ -28,20 +28,35 @@
 
 #include "common.h"
 
+#if defined(__ICC) || defined(__SUNPRO_C)
+    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
+    #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
+#elif defined(__GNUC__)
+    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
+    #define DECLARE_ASM_CONST(n,t,v)    static const t v attribute_used __attribute__ ((aligned (n)))
+#elif defined(_MSC_VER)
+    #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
+    #define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
+#else
+    #define DECLARE_ALIGNED(n,t,v)      t v
+    #define DECLARE_ASM_CONST(n,t,v)    static const t v
+#endif
+
+
 #if AV_GCC_VERSION_AT_LEAST(3,1)
     #define av_malloc_attrib __attribute__((__malloc__))
 #else
     #define av_malloc_attrib
 #endif
 
-#if (!defined(__ICC) || __ICC > 1100) && AV_GCC_VERSION_AT_LEAST(4,3)
+#if (!defined(__ICC) || __ICC > 1110) && AV_GCC_VERSION_AT_LEAST(4,3)
     #define av_alloc_size(n) __attribute__((alloc_size(n)))
 #else
     #define av_alloc_size(n)
 #endif
 
 /**
- * Allocates a block of \p size bytes with alignment suitable for all
+ * Allocates a block of size bytes with alignment suitable for all
  * memory accesses (including vectors if available on the CPU).
  * @param size Size in bytes for the memory block to be allocated.
  * @return Pointer to the allocated block, NULL if the block cannot
@@ -52,8 +67,8 @@ void *av_malloc(unsigned int size) av_malloc_attrib av_alloc_size(1);
 
 /**
  * Allocates or reallocates a block of memory.
- * If \p ptr is NULL and \p size > 0, allocates a new block. If \p
- * size is zero, frees the memory block pointed to by \p ptr.
+ * If ptr is NULL and size > 0, allocates a new block. If \p
+ * size is zero, frees the memory block pointed to by ptr.
  * @param size Size in bytes for the memory block to be allocated or
  * reallocated.
  * @param ptr Pointer to a memory block already allocated with
@@ -75,7 +90,7 @@ void *av_realloc(void *ptr, unsigned int size) av_alloc_size(2);
 void av_free(void *ptr);
 
 /**
- * Allocates a block of \p size bytes with alignment suitable for all
+ * Allocates a block of size bytes with alignment suitable for all
  * memory accesses (including vectors if available on the CPU) and
  * zeroes all the bytes of the block.
  * @param size Size in bytes for the memory block to be allocated.
@@ -85,10 +100,10 @@ void av_free(void *ptr);
 void *av_mallocz(unsigned int size) av_malloc_attrib av_alloc_size(1);
 
 /**
- * Duplicates the string \p s.
+ * Duplicates the string s.
  * @param s string to be duplicated
  * @return Pointer to a newly allocated string containing a
- * copy of \p s or NULL if the string cannot be allocated.
+ * copy of s or NULL if the string cannot be allocated.
  */
 char *av_strdup(const char *s) av_malloc_attrib;
 

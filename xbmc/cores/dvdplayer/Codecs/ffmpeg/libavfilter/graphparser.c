@@ -26,6 +26,9 @@
 #include "graphparser.h"
 #include "avfilter.h"
 #include "avfiltergraph.h"
+#include "parseutils.h"
+
+#define WHITESPACES " \n\t"
 
 static int link_filter(AVFilterContext *src, int srcpad,
                        AVFilterContext *dst, int dstpad,
@@ -41,54 +44,6 @@ static int link_filter(AVFilterContext *src, int srcpad,
     return 0;
 }
 
-static int consume_whitespace(const char *buf)
-{
-    return strspn(buf, " \n\t");
-}
-
-/**
- * Consumes a string from *buf.
- * @return a copy of the consumed string, which should be free'd after use
- */
-static char *consume_string(const char **buf)
-{
-    char *out = av_malloc(strlen(*buf) + 1);
-    char *ret = out;
-
-    *buf += consume_whitespace(*buf);
-
-    do{
-        char c = *(*buf)++;
-        switch (c) {
-        case '\\':
-            *out++ = *(*buf)++;
-            break;
-        case '\'':
-            while(**buf && **buf != '\'')
-                *out++ = *(*buf)++;
-            if(**buf) (*buf)++;
-            break;
-        case 0:
-        case ']':
-        case '[':
-        case '=':
-        case ',':
-        case ';':
-        case ' ':
-        case '\n':
-            *out++ = 0;
-            break;
-        default:
-            *out++ = c;
-        }
-    } while(out[-1]);
-
-    (*buf)--;
-    *buf += consume_whitespace(*buf);
-
-    return ret;
-}
-
 /**
  * Parse "[linkname]"
  * @param name a pointer (that need to be free'd after use) to the name between
@@ -100,7 +55,7 @@ static char *parse_link_name(const char **buf, AVClass *log_ctx)
     char *name;
     (*buf)++;
 
-    name = consume_string(buf);
+    name = av_get_token(buf, "]");
 
     if(!name[0]) {
         av_log(log_ctx, AV_LOG_ERROR,
@@ -165,12 +120,12 @@ static AVFilterContext *parse_filter(const char **buf, AVFilterGraph *graph,
                                      int index, AVClass *log_ctx)
 {
     char *opts = NULL;
-    char *name = consume_string(buf);
+    char *name = av_get_token(buf, "=,[");
     AVFilterContext *ret;
 
     if(**buf == '=') {
         (*buf)++;
-        opts = consume_string(buf);
+        opts = av_get_token(buf, "[],\n");
     }
 
     ret = create_filter(graph, index, name, opts, log_ctx);
@@ -283,7 +238,7 @@ static int parse_inputs(const char **buf, AVFilterInOut **curr_inputs,
 
         insert_inout(curr_inputs, match);
 
-        *buf += consume_whitespace(*buf);
+        *buf += strspn(*buf, WHITESPACES);
         pad++;
     }
 
@@ -322,7 +277,7 @@ static int parse_outputs(const char **buf, AVFilterInOut **curr_inputs,
             input->name = name;
             insert_inout(open_outputs, input);
         }
-        *buf += consume_whitespace(*buf);
+        *buf += strspn(*buf, WHITESPACES);
         pad++;
     }
 
@@ -340,7 +295,7 @@ int avfilter_graph_parse(AVFilterGraph *graph, const char *filters,
 
     do {
         AVFilterContext *filter;
-        filters += consume_whitespace(filters);
+        filters += strspn(filters, WHITESPACES);
 
         if(parse_inputs(&filters, &curr_inputs, &open_outputs, log_ctx) < 0)
             goto fail;
@@ -364,7 +319,7 @@ int avfilter_graph_parse(AVFilterGraph *graph, const char *filters,
                          log_ctx) < 0)
             goto fail;
 
-        filters += consume_whitespace(filters);
+        filters += strspn(filters, WHITESPACES);
         chr = *filters++;
 
         if(chr == ';' && curr_inputs) {

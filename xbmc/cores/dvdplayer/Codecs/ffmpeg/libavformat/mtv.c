@@ -129,11 +129,9 @@ static int mtv_read_packet(AVFormatContext *s, AVPacket *pkt)
     MTVDemuxContext *mtv = s->priv_data;
     ByteIOContext *pb = s->pb;
     int ret;
-#ifndef WORDS_BIGENDIAN
+#if !HAVE_BIGENDIAN
     int i;
 #endif
-
-    ret = 0;
 
     if((url_ftell(pb) - s->data_offset + mtv->img_segment_size) % mtv->full_segment_size)
     {
@@ -152,7 +150,7 @@ static int mtv_read_packet(AVFormatContext *s, AVPacket *pkt)
         if(ret != mtv->img_segment_size)
             return AVERROR(EIO);
 
-#ifndef WORDS_BIGENDIAN
+#if !HAVE_BIGENDIAN
 
         /* pkt->data is GGGRRRR BBBBBGGG
          * and we need RRRRRGGG GGGBBBBB

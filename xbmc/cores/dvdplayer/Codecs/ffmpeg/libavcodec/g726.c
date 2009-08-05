@@ -23,7 +23,8 @@
  */
 #include <limits.h>
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
+#include "put_bits.h"
 
 /**
  * G.726 11bit float.
@@ -363,8 +364,10 @@ static int g726_encode_frame(AVCodecContext *avctx,
 
 static int g726_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
-                             const uint8_t *buf, int buf_size)
+                             AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     G726Context *c = avctx->priv_data;
     short *samples = data;
     GetBitContext gb;

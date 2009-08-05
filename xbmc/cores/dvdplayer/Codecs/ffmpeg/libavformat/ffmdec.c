@@ -66,19 +66,38 @@ static int ffm_is_avail_data(AVFormatContext *s, int size)
     if (size <= len)
         return 1;
     pos = url_ftell(s->pb);
+    if (!ffm->write_index) {
+        if (pos == ffm->file_size)
+            return AVERROR_EOF;
+        avail_size = ffm->file_size - pos;
+    } else {
     if (pos == ffm->write_index) {
         /* exactly at the end of stream */
-        return 0;
+        return AVERROR(EAGAIN);
     } else if (pos < ffm->write_index) {
         avail_size = ffm->write_index - pos;
     } else {
         avail_size = (ffm->file_size - pos) + (ffm->write_index - FFM_PACKET_SIZE);
     }
+    }
     avail_size = (avail_size / ffm->packet_size) * (ffm->packet_size - FFM_HEADER_SIZE) + len;
     if (size <= avail_size)
         return 1;
     else
-        return 0;
+        return AVERROR(EAGAIN);
+}
+
+static int ffm_resync(AVFormatContext *s, int state)
+{
+    av_log(s, AV_LOG_ERROR, "resyncing\n");
+    while (state != PACKET_ID) {
+        if (url_feof(s->pb)) {
+            av_log(s, AV_LOG_ERROR, "cannot find FFM syncword\n");
+            return -1;
+        }
+        state = (state << 8) | get_byte(s->pb);
+    }
+    return 0;
 }
 
 /* first is true if we read the frame header */
@@ -87,7 +106,7 @@ static int ffm_read_data(AVFormatContext *s,
 {
     FFMContext *ffm = s->priv_data;
     ByteIOContext *pb = s->pb;
-    int len, fill_size, size1, frame_offset;
+    int len, fill_size, size1, frame_offset, id;
 
     size1 = size;
     while (size > 0) {
@@ -101,7 +120,10 @@ static int ffm_read_data(AVFormatContext *s,
             if (url_ftell(pb) == ffm->file_size)
                 url_fseek(pb, ffm->packet_size, SEEK_SET);
     retry_read:
-            get_be16(pb); /* PACKET_ID */
+            id = get_be16(pb); /* PACKET_ID */
+            if (id != PACKET_ID)
+                if (ffm_resync(s, id) < 0)
+                    return -1;
             fill_size = get_be16(pb);
             ffm->dts = get_be64(pb);
             frame_offset = get_be16(pb);
@@ -143,17 +165,16 @@ static int ffm_read_data(AVFormatContext *s,
 
 //#define DEBUG_SEEK
 
-/* pos is between 0 and file_size - FFM_PACKET_SIZE. It is translated
-   by the write position inside this function */
+/* ensure that acutal seeking happens between FFM_PACKET_SIZE
+   and file_size - FFM_PACKET_SIZE */
 static void ffm_seek1(AVFormatContext *s, int64_t pos1)
 {
     FFMContext *ffm = s->priv_data;
     ByteIOContext *pb = s->pb;
     int64_t pos;
 
-    pos = pos1 + ffm->write_index;
-    if (pos >= ffm->file_size)
-        pos -= (ffm->file_size - FFM_PACKET_SIZE);
+    pos = FFMIN(pos1, ffm->file_size - FFM_PACKET_SIZE);
+    pos = FFMAX(pos, FFM_PACKET_SIZE);
 #ifdef DEBUG_SEEK
     av_log(s, AV_LOG_DEBUG, "seek to %"PRIx64" -> %"PRIx64"\n", pos1, pos);
 #endif
@@ -169,7 +190,7 @@ static int64_t get_dts(AVFormatContext *s, int64_t pos)
     url_fskip(pb, 4);
     dts = get_be64(pb);
 #ifdef DEBUG_SEEK
-    av_log(s, AV_LOG_DEBUG, "pts=%0.6f\n", pts / 1000000.0);
+    av_log(s, AV_LOG_DEBUG, "dts=%0.6f\n", dts / 1000000.0);
 #endif
     return dts;
 }
@@ -251,7 +272,8 @@ static int ffm_read_header(AVFormatContext *s, AVFormatParameters *ap)
     /* get also filesize */
     if (!url_is_streamed(pb)) {
         ffm->file_size = url_fsize(pb);
-        adjust_write_index(s);
+        if (ffm->write_index)
+            adjust_write_index(s);
     } else {
         ffm->file_size = (UINT64_C(1) << 63) - 1;
     }
@@ -265,7 +287,6 @@ static int ffm_read_header(AVFormatContext *s, AVFormatParameters *ap)
         st = av_new_stream(s, 0);
         if (!st)
             goto fail;
-        s->streams[i] = st;
 
         av_set_pts_info(st, 64, 1, 1000000);
 
@@ -360,24 +381,21 @@ static int ffm_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     int size;
     FFMContext *ffm = s->priv_data;
-    int duration;
-
-    if (url_fsize(s->pb) == FFM_PACKET_SIZE)
-        return -1;
+    int duration, ret;
 
     switch(ffm->read_state) {
     case READ_HEADER:
-        if (!ffm_is_avail_data(s, FRAME_HEADER_SIZE+4)) {
-            return AVERROR(EAGAIN);
-        }
+        if ((ret = ffm_is_avail_data(s, FRAME_HEADER_SIZE+4)) < 0)
+            return ret;
+
         dprintf(s, "pos=%08"PRIx64" spos=%"PRIx64", write_index=%"PRIx64" size=%"PRIx64"\n",
                url_ftell(s->pb), s->pb->pos, ffm->write_index, ffm->file_size);
         if (ffm_read_data(s, ffm->header, FRAME_HEADER_SIZE, 1) !=
             FRAME_HEADER_SIZE)
-            return AVERROR(EAGAIN);
+            return -1;
         if (ffm->header[1] & FLAG_DTS)
             if (ffm_read_data(s, ffm->header+16, 4, 1) != 4)
-                return AVERROR(EAGAIN);
+                return -1;
 #if 0
         av_hexdump_log(s, AV_LOG_DEBUG, ffm->header, FRAME_HEADER_SIZE);
 #endif
@@ -385,9 +403,8 @@ static int ffm_read_packet(AVFormatContext *s, AVPacket *pkt)
         /* fall thru */
     case READ_DATA:
         size = AV_RB24(ffm->header + 2);
-        if (!ffm_is_avail_data(s, size)) {
-            return AVERROR(EAGAIN);
-        }
+        if ((ret = ffm_is_avail_data(s, size)) < 0)
+            return ret;
 
         duration = AV_RB24(ffm->header + 5);
 
@@ -397,7 +414,7 @@ static int ffm_read_packet(AVFormatContext *s, AVPacket *pkt)
             av_log(s, AV_LOG_ERROR, "invalid stream index %d\n", pkt->stream_index);
             av_free_packet(pkt);
             ffm->read_state = READ_HEADER;
-            return AVERROR(EAGAIN);
+            return -1;
         }
         pkt->pos = url_ftell(s->pb);
         if (ffm->header[1] & FLAG_KEY_FRAME)
@@ -407,7 +424,7 @@ static int ffm_read_packet(AVFormatContext *s, AVPacket *pkt)
         if (ffm_read_data(s, pkt->data, size, 0) != size) {
             /* bad case: desynchronized packet. we cancel all the packet loading */
             av_free_packet(pkt);
-            return AVERROR(EAGAIN);
+            return -1;
         }
         pkt->pts = AV_RB64(ffm->header+8);
         if (ffm->header[1] & FLAG_DTS)
@@ -435,8 +452,8 @@ static int ffm_seek(AVFormatContext *s, int stream_index, int64_t wanted_pts, in
 #endif
     /* find the position using linear interpolation (better than
        dichotomy in typical cases) */
-    pos_min = 0;
-    pos_max = ffm->file_size - 2 * FFM_PACKET_SIZE;
+    pos_min = FFM_PACKET_SIZE;
+    pos_max = ffm->file_size - FFM_PACKET_SIZE;
     while (pos_min <= pos_max) {
         pts_min = get_dts(s, pos_min);
         pts_max = get_dts(s, pos_max);
@@ -459,8 +476,7 @@ static int ffm_seek(AVFormatContext *s, int stream_index, int64_t wanted_pts, in
         }
     }
     pos = (flags & AVSEEK_FLAG_BACKWARD) ? pos_min : pos_max;
-    if (pos > 0)
-        pos -= FFM_PACKET_SIZE;
+
  found:
     ffm_seek1(s, pos);
 

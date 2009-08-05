@@ -59,7 +59,7 @@ static void add_frame_default(AVFrame *f, const uint8_t *src,
     }
 }
 
-#ifndef WORDS_BIGENDIAN
+#if !HAVE_BIGENDIAN
 #define copy_frame_16 copy_frame_default
 #define copy_frame_32 copy_frame_default
 #define add_frame_16 add_frame_default
@@ -135,7 +135,9 @@ static void add_frame_32(AVFrame *f, const uint8_t *src,
 #endif
 
 static int decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                        const uint8_t *buf, int buf_size) {
+                        AVPacket *avpkt) {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     CamStudioContext *c = avctx->priv_data;
     AVFrame *picture = data;
 
