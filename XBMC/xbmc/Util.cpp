@@ -410,12 +410,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
 
   CRegExp reTags, reYear;
   CStdString strExtension;
-
-  if (!bIsFolder)
-  {
-    GetExtension(strTitleAndYear, strExtension);
-    RemoveExtension(strTitleAndYear);
-  }
+  GetExtension(strFileName, strExtension);
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
@@ -465,6 +460,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
+  RemoveExtension(strTitleAndYear);
   strTitle = strTitleAndYear.Trim();
 
   // append year
@@ -625,9 +621,6 @@ const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* =
 
   CUtil::RemoveSlashAtEnd(movieName);
   movieName = CUtil::GetFileName(movieName);
-
-  if (!pItem->m_bIsFolder)
-    CUtil::RemoveExtension(movieName);
 
   return movieName;
 }
