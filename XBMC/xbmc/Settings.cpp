@@ -227,12 +227,13 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   g_advancedSettings.m_videoCleanRegExps.push_back("(\\[.*\\])");
 
-  g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("[-\\._ ](sample|trailer)[-\\._ ]");
-  g_advancedSettings.m_tvshowExcludeFromScanRegExps.push_back("[-\\._ ]sample[-\\._ ]");
+  g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("-trailer");
+  g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
+  g_advancedSettings.m_tvshowExcludeFromScanRegExps.push_back("[-._ ]sample[-._ ]");
 
-  g_advancedSettings.m_videoStackRegExps.push_back("()[ _.-]*?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*?([0-9a-d]+).*(\\....?.?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[ _.-]*?(?:cd|dvd|p(?:ar)t|dis[ck])[ _.-]*?([0-9a-d]+)(.*\\....?.?)$");
   g_advancedSettings.m_videoStackRegExps.push_back("()[ ._-]*?([a-c0-3]+)(\\....?.?)$");
-  g_advancedSettings.m_videoStackRegExps.push_back("()[ ._-]+(0?[a-c1-3])[ ._-]+.*?(\\....?.?)$");
+  g_advancedSettings.m_videoStackRegExps.push_back("()[ ._-]+(0?[a-c1-3])[ ._-]+(.*?\\....?.?)$");
 
   // foo_[s01]_[e01]
   g_advancedSettings.m_tvshowStackRegExps.push_back(TVShowRegexp(false,"\\[[Ss]([0-9]+)\\]_\\[[Ee]([0-9]+)\\]?([^\\\\/]*)$"));
@@ -1107,6 +1108,13 @@ void CSettings::LoadAdvancedSettings()
   // succeeded - tell the user it worked
   CLog::Log(LOGNOTICE, "Loaded advancedsettings.xml from %s", advancedSettingsXML.c_str());
 
+  // Dump contents of AS.xml to debug log
+  TiXmlPrinter printer;
+  printer.SetLineBreak("\n");
+  printer.SetIndent("  ");
+  advancedXML.Accept(&printer);
+  CLog::Log(LOGDEBUG, "Contents of %s are...\n%s", advancedSettingsXML.c_str(), printer.CStr());
+
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
   {
@@ -1203,7 +1211,7 @@ void CSettings::LoadAdvancedSettings()
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_tvshowExcludeFromScanRegExps);
 
-    pVideoExcludes = pElement->FirstChildElement("cleanfilenames");
+    pVideoExcludes = pElement->FirstChildElement("cleanstrings");
     if (pVideoExcludes)
       GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);
 
@@ -1239,20 +1247,7 @@ void CSettings::LoadAdvancedSettings()
   pElement = pRootElement->FirstChildElement("externalplayer");
   if (pElement)
   {
-    TiXmlElement* player = new TiXmlElement(*pElement);
-    player->SetValue("player");
-    player->SetAttribute("name", "ExternalPlayer");
-    player->SetAttribute("type", "ExternalPlayer");
-    player->SetAttribute("audio", "true");
-    player->SetAttribute("video", "true");
- 
-    TiXmlElement* players = new TiXmlElement("players");
-    players->LinkEndChild(player);
-
-    TiXmlElement playercorefactory("playercorefactory");
-    playercorefactory.LinkEndChild(players);
-
-    CPlayerCoreFactory::LoadConfiguration(&playercorefactory, false);
+    CLog::Log(LOGWARNING, "External player configuration has been removed from advancedsettings.xml.  It can now be configed in userdata/playercorefactory.xml");
   }
   pElement = pRootElement->FirstChildElement("slideshow");
   if (pElement)
@@ -1599,16 +1594,17 @@ void CSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLI
 
 bool CSettings::LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear)
 {
+  CLog::Log(LOGNOTICE, "Loading player core factory settings from %s.", fileStr.c_str());
   if (!CFile::Exists(fileStr))
   { // tell the user it doesn't exist
-    CLog::Log(LOGNOTICE, "No playercorefactory.xml to load (%s)", fileStr.c_str());
+    CLog::Log(LOGNOTICE, "%s does not exist. Skipping.", fileStr.c_str());
     return false;
   }
 
   TiXmlDocument playerCoreFactoryXML;
   if (!playerCoreFactoryXML.LoadFile(fileStr))
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", fileStr.c_str(), playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading %s, Line %d (%s)", fileStr.c_str(), playerCoreFactoryXML.ErrorRow(), playerCoreFactoryXML.ErrorDesc());
     return false;
   }
 
@@ -1854,7 +1850,7 @@ bool CSettings::LoadProfile(int index)
     CStdString strLanguagePath;
     strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
 
-    g_buttonTranslator.Load();
+    CButtonTranslator::GetInstance().Load();
     g_localizeStrings.Load(strLanguagePath);
 
     g_infoManager.ResetCache();

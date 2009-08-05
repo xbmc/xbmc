@@ -207,14 +207,14 @@ bool CDVDClock::SetMaxSpeedAdjust(double speed)
   return m_speedadjust;
 }
 
-void CDVDClock::UpdateFramerate(double fps)
+bool CDVDClock::UpdateFramerate(double fps)
 {
   //sent with fps of 0 means we are not playing video
   if(fps == 0.0)
   {
     CSingleLock lock(m_speedsection);
     m_speedadjust = false;
-    return;
+    return false;
   }
 
   //check if the videoreferenceclock is running, will return -1 if not
@@ -239,6 +239,9 @@ void CDVDClock::UpdateFramerate(double fps)
     lock.Leave();
 
     g_VideoReferenceClock.SetSpeed(speed);
+    
+    return true;
   }
 
+  return false;
 }

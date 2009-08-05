@@ -75,7 +75,7 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
 	xbmc/cores/paplayer/MP3Codec \
-	xbmc/cores/paplayer/flac-1.2.1/ \
+	xbmc/cores/paplayer/flac-1.2.1 \
 	xbmc/cores/paplayer/MACDll \
 	xbmc/cores/paplayer/vorbisfile
 
@@ -99,7 +99,7 @@ PM3_MEDIA=skin/Project\ Mayhem\ III/media
 PM3HD_MEDIA=skin/PM3.HD/media
 
 SKIN_DIRS=\
-	$(PM3_MEDIA)\
+	$(PM3_MEDIA) \
 	$(PM3HD_MEDIA)
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
@@ -112,6 +112,8 @@ LDFLAGS=@LDFLAGS@
 INCLUDES=@INCLUDES@
 
 CLEAN_FILES=xbmc.bin xbmc-xrandr
+
+DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh
 
 all : externals xbmc.bin xbmc-xrandr skins
 
@@ -444,9 +446,9 @@ install-datas:
 install-livedatas:
 	@echo "Install Live CD datas in $(prefix) ..."
 	@install -D tools/XBMCLive/diskmounter $(prefix)/bin
-	@install -D tools/XBMCLive/installXBMC.py $(prefix)/bin
-	@install -D tools/XBMCLive/runXBMC.sh $(prefix)/bin
-	@install -D tools/XBMCLive/setAlsaVolumes.py $(prefix)/bin
+	@install -D tools/XBMCLive/installXBMC $(prefix)/bin
+	@install -D tools/XBMCLive/runXBMC $(prefix)/bin
+	@install -D tools/XBMCLive/setAlsaVolumes $(prefix)/bin
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web

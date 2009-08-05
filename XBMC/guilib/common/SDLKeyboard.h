@@ -13,6 +13,7 @@ public:
 
   void Initialize(HWND hwnd);
   void Reset();
+  void ResetState();
   void Update(SDL_Event& event);
   bool GetShift() { return m_bShift;};
   bool GetCtrl() { return m_bCtrl;};

@@ -426,16 +426,6 @@ bool CPulseAudioDirectSound::Stop()
   return true;
 }
 
-long CPulseAudioDirectSound::GetMinimumVolume() const
-{
-  return -6000;
-}
-
-long CPulseAudioDirectSound::GetMaximumVolume() const
-{
-  return 0;
-}
-
 long CPulseAudioDirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
@@ -447,7 +437,7 @@ void CPulseAudioDirectSound::Mute(bool bMute)
     return;
 
   if (bMute)
-    SetCurrentVolume(GetMinimumVolume());
+    SetCurrentVolume(VOLUME_MINIMUM);
   else
     SetCurrentVolume(m_nCurrentVolume);
 }

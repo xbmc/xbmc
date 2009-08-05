@@ -227,7 +227,9 @@ class NPT_Thread : public NPT_ThreadInterface
     virtual void Run() {}
 
     // NPT_Interruptible methods
-    virtual NPT_Result Interrupt() { return m_Delegate->Interrupt(); }
+    virtual NPT_Result Interrupt() { 
+        return m_Delegate->Interrupt(); 
+    }
 
  private:
     // members

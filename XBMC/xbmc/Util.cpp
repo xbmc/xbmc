@@ -715,9 +715,6 @@ void CUtil::GetHomePath(CStdString& strPath)
   }
   else
   {
-#ifdef _DEBUG
-    printf("The XBMC_HOME environment variable is not set.\n");
-#endif
 #ifdef __APPLE__
     int      result = -1;
     char     given_path[2*MAXPATHLEN];
@@ -1868,7 +1865,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 void CUtil::InitGamma()
 {
 #ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->GetGammaRamp(&oldramp);
+  g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampBlue);
 #endif
@@ -1877,7 +1874,7 @@ void CUtil::RestoreBrightnessContrastGamma()
 {
   g_graphicsContext.Lock();
 #ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(GAMMA_RAMP_FLAG, &oldramp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
 #endif
@@ -1928,7 +1925,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
   // set ramp next v sync
   g_graphicsContext.Lock();
 #ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
+  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(rampRed, rampGreen, rampBlue);
 #endif
@@ -1967,7 +1964,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   if (bOn)
   {
 #ifndef HAS_SDL
-    g_graphicsContext.Get3DDevice()->GetGammaRamp(&flashramp);
+    g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &flashramp);
 #elif defined(HAS_SDL_2D)
     SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
 #endif
@@ -1975,7 +1972,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   }
   else
 #ifndef HAS_SDL
-    g_graphicsContext.Get3DDevice()->SetGammaRamp(bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
+    g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
 #elif defined(HAS_SDL_2D)
     SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
 #endif
@@ -1985,7 +1982,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
 void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 {
 #ifndef HAS_SDL
-    LPDIRECT3DSURFACE8 lpSurface = NULL;
+    LPDIRECT3DSURFACE9 lpSurface = NULL;
 
     g_graphicsContext.Lock();
     if (g_application.IsPlayingVideo())
@@ -2004,7 +2001,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     }
     // now take screenshot
     g_application.RenderNoPresent();
-    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
     {
       if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
       {
@@ -2214,55 +2211,42 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // Function to create all directories at once instead
   // of calling CreateDirectory for every subdir.
   // Creates the directory and subdirectories if needed.
-  vector<string> strArray;
-  CURL url(strPath);
-  string path = url.GetFileName().c_str();
-  int iSize = path.size();
-  char cSep = CUtil::GetDirectorySeperator(strPath);
-  if (path.at(iSize - 1) == cSep) path.erase(iSize - 1, iSize - 1); // remove slash at end
-  CStdString strTemp;
 
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
-
-  // split strPath up into an array
-  // music\album\ will result in
-  // music
-  // music\album
-  //
-
-  int i = 0;
-  CFileItem item(strPath,true);
-  if (item.IsHD())
+  
+  // we currently only allow HD and smb paths
+  if (!CUtil::IsHD(strPath) && !CUtil::IsSmb(strPath))
   {
-    // remove the root drive from the filename
-    if (CUtil::IsDOSPath(item.m_strPath))
-      i = 2;
-  }
-  else if (!item.IsSmb())
-  {
-    CLog::Log(LOGERROR,"CUtil::CreateDirectoryEx called with an unsupported path: %s",strPath.c_str());
+    CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
   }
-
-  int s = i;
-  while (i < iSize)
-  {
-    i = path.find(cSep, i + 1);
-    if (i < 0) i = iSize; // get remaining chars
-    strArray.push_back(path.substr(s, i - s));
+  
+  CURL url(strPath);
+  // silly CStdString can't take a char in the constructor
+  CStdString sep(1, url.GetDirectorySeparator());
+  
+  // split the filename portion of the URL up into separate dirs
+  CStdStringArray dirs;
+  StringUtils::SplitString(url.GetFileName(), sep, dirs);
+  
+  // we start with the root path
+  CStdString dir;
+  url.GetURLWithoutFilename(dir);
+  unsigned int i = 0;
+  if (dir.IsEmpty())
+  { // local directory - start with the first dirs member so that
+    // we ensure CUtil::AddFileToFolder() below has something to work with
+    dir = dirs[i++] + sep;
   }
-
-  // create the directories
-  url.GetURLWithoutFilename(strTemp);
-  for (unsigned int i = 0; i < strArray.size(); i++)
+  // and append the rest of the directories successively, creating each dir
+  // as we go
+  for (; i < dirs.size(); i++)
   {
-    CStdString strTemp1;
-    CUtil::AddFileToFolder(strTemp,strArray[i],strTemp1);
-    CDirectory::Create(strTemp1);
+    dir = CUtil::AddFileToFolder(dir, dirs[i]);
+    CDirectory::Create(dir);
   }
-  strArray.clear();
-
+  
   // was the final destination directory successfully created ?
   if (!CDirectory::Exists(strPath)) return false;
   return true;
@@ -2286,6 +2270,8 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
     result.Replace('<', '_');
     result.Replace('>', '_');
     result.Replace('|', '_');
+    result.TrimRight(".");
+    result.TrimRight(" ");
   }
   return result;
 }
@@ -2302,13 +2288,8 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
 
 void CUtil::AddDirectorySeperator(CStdString& strPath)
 {
-  strPath += GetDirectorySeperator(strPath);
-}
-
-char CUtil::GetDirectorySeperator(const CStdString &strFilename)
-{
-  CURL url(strFilename);
-  return url.GetDirectorySeparator();
+  CURL url(strPath);
+  strPath += url.GetDirectorySeparator();
 }
 
 bool CUtil::IsUsingTTFSubtitles()
@@ -2566,7 +2547,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     // confirm the window destination is actually a number
     // before switching
-    int iWindow = g_buttonTranslator.TranslateWindowString(strWindow.c_str());
+    int iWindow = CButtonTranslator::TranslateWindowString(strWindow.c_str());
     if (iWindow != WINDOW_INVALID)
     {
       // disable the screensaver
@@ -2726,8 +2707,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_application.WakeUpScreenSaverAndDPMS();
 
     // set fullscreen or windowed
-    if (params2.size() == 2 && params2[1] == "1")
+    if (params2.size() >= 2 && params2[1] == "1")
       g_stSettings.m_bStartVideoWindowed = true;
+    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
+      item.m_lStartOffset = STARTOFFSET_RESUME;
 
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
@@ -3024,6 +3007,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if( execute.Equals("alarmclock") )
   {
+    bool bSilent = false;
     float fSecs = -1.f;
     CStdString strCommand;
     CStdString strName;
@@ -3043,8 +3027,23 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         szParam = reg.GetReplaceString("\\4");
         if (szParam)
         {
-          if (strlen(szParam))
-            fSecs = static_cast<float>(atoi(szParam)*60);
+          vector<CStdString> arSplit;
+          StringUtils::SplitString(szParam, ",", arSplit);
+
+          if (arSplit.size() == 2)
+          {
+            if (strlen(arSplit[0]))
+              fSecs = static_cast<float>(atoi(arSplit[0])*60);
+
+            if (arSplit[1].Equals("true"))
+              bSilent = true;
+          }
+          else
+          {
+            if (strlen(szParam))
+              fSecs = static_cast<float>(atoi(szParam)*60);
+          }
+
           free(szParam);
         }
         szParam = reg.GetReplaceString("\\1");
@@ -3072,7 +3071,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if( g_alarmClock.isRunning() )
       g_alarmClock.stop(strName);
 
-    g_alarmClock.start(strName,fSecs,strCommand);
+    g_alarmClock.start(strName,fSecs,strCommand,bSilent);
   }
   else if (execute.Equals("notification"))
   {
@@ -3266,7 +3265,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else
     {
-      DWORD id = g_buttonTranslator.TranslateWindowString(arSplit[0]);
+      DWORD id = CButtonTranslator::TranslateWindowString(arSplit[0]);
       CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
       if (window && window->IsDialog())
         ((CGUIDialog *)window)->Close(bForce);
@@ -3412,11 +3411,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (params.size() >= 2)
     {
       int controlID = atoi(params[0].c_str());
-      int windowID = (params.size() == 3) ? g_buttonTranslator.TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
+      int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
       if (params[1] == "moveup")
         g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
       else if (params[1] == "movedown")
-        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
+        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, (DWORD)-1);
       else if (params[1] == "pageup")
         g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
       else if (params[1] == "pagedown")
@@ -3432,7 +3431,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (params.size() == 2)
     {
       // have a window - convert it
-      int windowID = g_buttonTranslator.TranslateWindowString(params[0].c_str());
+      int windowID = CButtonTranslator::TranslateWindowString(params[0].c_str());
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
       g_graphicsContext.SendMessage(message);
     }
@@ -3450,14 +3449,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       // try translating the action from our ButtonTranslator
       WORD actionID;
-      if (g_buttonTranslator.TranslateActionString(params[0].c_str(), actionID))
+      if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
       {
         CAction action;
         action.wID = actionID;
         action.fAmount1 = 1.0f;
         if (params.size() == 2)
         { // have a window - convert it and send to it.
-          int windowID = g_buttonTranslator.TranslateWindowString(params[1].c_str());
+          int windowID = CButtonTranslator::TranslateWindowString(params[1].c_str());
           CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
           if (window)
             window->OnAction(action);
@@ -4585,8 +4584,17 @@ void CUtil::ClearFileItemCache()
   }
 }
 
-#ifdef _LINUX
+void CUtil::InitRandomSeed()
+{
+  // Init random seed 
+  LARGE_INTEGER now; 
+  QueryPerformanceCounter(&now); 
+  unsigned int seed = (now.u.LowPart);
+//  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
+  srand(seed);
+}
 
+#ifdef _LINUX
 bool CUtil::RunCommandLine(const CStdString& cmdLine, bool waitExit)
 {
   CStdStringArray args;

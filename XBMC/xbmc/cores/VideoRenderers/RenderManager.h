@@ -25,12 +25,13 @@
 #include "LinuxRendererGL.h"
 #elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
-#elif defined (WIN32)
-#include "WinRenderManager.h"
+#elif defined(WIN32)
+#include "WinRenderer.h"
 #endif
 
 #include "utils/SharedSection.h"
 #include "utils/Thread.h"
+#include "settings/VideoSettings.h"
 
 class CXBoxRenderManager
 {
@@ -46,11 +47,7 @@ public:
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
-#ifndef HAS_SDL
-  void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
-#else
-  void CreateThumbnail(SDL_Surface *surface, unsigned int width, unsigned int height);
-#endif
+  void CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height);
 
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
@@ -110,12 +107,16 @@ public:
   double GetPresentTime();
   void  WaitPresentTime(double presenttime);
 
+  CStdString GetVSyncState();
+
 #ifdef HAS_SDL_OPENGL
   CLinuxRendererGL *m_pRenderer;
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
-#else
+#elif defined(HAS_XBOX_D3D)
   CXBoxRenderer *m_pRenderer;
+#else
+  CWinRenderer *m_pRenderer;
 #endif
 
   void Present();
@@ -138,11 +139,12 @@ protected:
   int m_rendermethod;
 
   double     m_presenttime;
+  double     m_presentcorr;
+  double     m_presenterr;
   EFIELDSYNC m_presentfield;
   EINTERLACEMETHOD m_presentmethod;
   int        m_presentstep;
   CEvent     m_presentevent;
-
 };
 
 extern CXBoxRenderManager g_renderManager;

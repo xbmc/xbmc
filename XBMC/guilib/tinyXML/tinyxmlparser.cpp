@@ -26,6 +26,7 @@ distribution.
 #include <stddef.h>
 
 #include "tinyxml.h"
+#include "CharsetConverter.h"
 
 //#define DEBUG_PARSER
 #if defined( DEBUG_PARSER )
@@ -648,13 +649,9 @@ void TiXmlBase::ConvertToUtf8(TiXmlDocument* document, TIXML_STRING* text)
   char* output = new char[olen]; 
   char* obuf = output;
   size_t ilen = text->size() + 1;
-#ifdef _LINUX
-  char* ibuf = (char*) text->c_str();
-#else
   const char* ibuf = (const char*) text->c_str();
-#endif
   
-  if (iconv(document->iconvContext, &ibuf, &ilen, &obuf, &olen) == (size_t) -1)
+  if (iconv_const(document->iconvContext, &ibuf, &ilen, &obuf, &olen) == (size_t) -1)
   {
     delete [] output;
     return;

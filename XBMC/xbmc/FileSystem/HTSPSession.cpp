@@ -25,8 +25,13 @@
 #include "VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#ifdef _MSC_VER
+#include <winsock2.h>
+#define SHUT_RDWR SD_BOTH
+#else
 #include <netinet/in.h>
 #include <netinet/tcp.h>
+#endif
 
 extern "C" {
 #include "lib/libhts/net.h"
@@ -197,7 +202,7 @@ bool CHTSPSession::SendMessage(htsmsg_t* m)
   }
   htsmsg_destroy(m);
 
-  if(send(m_fd, buf, len, 0) < 0)
+  if(send(m_fd, (char*)buf, len, 0) < 0)
   {
     free(buf);
     return false;
@@ -379,7 +384,7 @@ void CHTSPSession::ParseChannelUpdate(htsmsg_t* msg, SChannels &channels)
     {
       if(f->hmf_type != HMF_S64)
         continue;
-      channel.tags.push_back(f->hmf_s64);
+      channel.tags.push_back((int)f->hmf_s64);
     }
   }
 
@@ -432,7 +437,7 @@ void CHTSPSession::ParseTagUpdate(htsmsg_t* msg, STags &tags)
     {
       if(f->hmf_type != HMF_S64)
         continue;
-      tag.channels.push_back(f->hmf_s64);
+      tag.channels.push_back((int)f->hmf_s64);
     }
   }
 
@@ -482,5 +487,25 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   item.SetThumbnailImage(channel.icon);
   item.SetContentType("video/X-htsp");
   item.SetCachedVideoThumb();
+  return true;
+}
+
+bool CHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
+{
+  if(htsmsg_get_u32(msg, "packets", &queue.packets)
+  || htsmsg_get_u32(msg, "bytes",   &queue.bytes)
+  || htsmsg_get_u32(msg, "Bdrops",  &queue.bdrops)
+  || htsmsg_get_u32(msg, "Pdrops",  &queue.bdrops)
+  || htsmsg_get_u32(msg, "Pdrops",  &queue.bdrops))
+  {
+    CLog::Log(LOGERROR, "CHTSPSession::ParseQueueStatus - malformed message received");
+    htsmsg_print(msg);
+    return false;
+  }
+
+  /* delay isn't always transmitted */
+  if(htsmsg_get_u32(msg, "delay", &queue.delay))
+    queue.delay = 0;
+
   return true;
 }

@@ -20,10 +20,11 @@
  */
 
 #include "include.h"
+#ifdef HAS_SDL_OPENGL
 #include "../xbmc/Settings.h"
 #include "Shader.h"
 
-#if defined(HAS_SDL_OPENGL) && !defined(HAS_SDL_GLES1)
+#ifndef HAS_SDL_GLES1
 
 #define LOG_SIZE 1024
 
@@ -492,5 +493,5 @@ void CARBShaderProgram::Disable()
   }
 }
 #endif
-
+#endif
 #endif

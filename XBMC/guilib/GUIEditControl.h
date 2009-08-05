@@ -66,7 +66,15 @@ public:
 
   virtual CStdString GetLabel2() const;
 
+  unsigned int GetCursorPosition() const;
+  void SetCursorPosition(unsigned int iPosition);
+
   void SetInputType(INPUT_TYPE type, int heading);
+  
+  void SetTextChangeActions(const std::vector<CGUIActionDescriptor>& textChangeActions) { m_textChangeActions = textChangeActions; };
+  
+  bool HasTextChangeActions() { return m_textChangeActions.size() > 0; };
+  
 protected:
   virtual void RenderText();
   CStdStringW GetDisplayedText() const;
@@ -86,5 +94,7 @@ protected:
 
   int m_inputHeading;
   INPUT_TYPE m_inputType;
+  
+  std::vector<CGUIActionDescriptor> m_textChangeActions;  
 };
 #endif

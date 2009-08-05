@@ -168,7 +168,8 @@ NPT_FormatString(char* /*str*/, NPT_Size /*size*/, const char* /*format*/, ...)
 /*----------------------------------------------------------------------
 |   NPT_NibbleToHex
 +---------------------------------------------------------------------*/
-static char NPT_NibbleToHex(unsigned int nibble, bool uppercase = true)
+char 
+NPT_NibbleToHex(unsigned int nibble, bool uppercase /* = true */)
 {
     NPT_ASSERT(nibble < 16);
     if (uppercase) {
@@ -182,7 +183,8 @@ static char NPT_NibbleToHex(unsigned int nibble, bool uppercase = true)
 /*----------------------------------------------------------------------
 |   NPT_HexToNibble
 +---------------------------------------------------------------------*/
-static int NPT_HexToNibble(char hex)
+int 
+NPT_HexToNibble(char hex)
 {
     if (hex >= 'a' && hex <= 'f') {
         return ((hex - 'a') + 10);
@@ -279,7 +281,7 @@ NPT_ParseFloat(const char* str, float& result, bool relaxed)
     }
 
     // check for sign
-    bool  negative = false;
+    bool negative = false;
     if (*str == '-') {
         // negative number
         negative = true; 
@@ -417,10 +419,10 @@ NPT_ParseInteger64(const char* str, NPT_Int64& result, bool relaxed, NPT_Cardina
 }
 
 /*----------------------------------------------------------------------
-|    NPT_ParseInteger64U
+|    NPT_ParseInteger64
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_ParseInteger64U(const char* str, NPT_UInt64& result, bool relaxed, NPT_Cardinal* chars_used)
+NPT_ParseInteger64(const char* str, NPT_UInt64& result, bool relaxed, NPT_Cardinal* chars_used)
 {
     // safe default value
     result = 0;
@@ -492,17 +494,53 @@ NPT_ParseInteger32(const char* str, NPT_Int32& value, bool relaxed, NPT_Cardinal
 }
 
 /*----------------------------------------------------------------------
-|     NPT_ParseInteger32U
+|     NPT_ParseInteger32
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_ParseInteger32U(const char* str, NPT_UInt32& value, bool relaxed, NPT_Cardinal* chars_used)
+NPT_ParseInteger32(const char* str, NPT_UInt32& value, bool relaxed, NPT_Cardinal* chars_used)
 {
     NPT_UInt64 value_64;
-    NPT_Result result = NPT_ParseInteger64U(str, value_64, relaxed, chars_used);
+    NPT_Result result = NPT_ParseInteger64(str, value_64, relaxed, chars_used);
     value = 0;
     if (NPT_SUCCEEDED(result)) {
         if (value_64 > (NPT_UInt64)NPT_UINT32_MAX) return NPT_ERROR_OVERFLOW;
         value = (NPT_UInt32)value_64;
+    }
+    return result;
+}
+
+/*----------------------------------------------------------------------
+|    NPT_ParseInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseInteger(const char* str, long& value, bool relaxed, NPT_Cardinal* chars_used)
+{
+    NPT_Int64 value_64;
+    NPT_Result result = NPT_ParseInteger64(str, value_64, relaxed, chars_used);
+    value = 0;
+    if (NPT_SUCCEEDED(result)) {
+        if (value_64 < NPT_LONG_MIN || value_64 > NPT_LONG_MAX) {
+            return NPT_ERROR_OVERFLOW;
+        }
+        value = (long)value_64;
+    }
+    return result;
+}
+
+/*----------------------------------------------------------------------
+|    NPT_ParseInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseInteger(const char* str, unsigned long& value, bool relaxed, NPT_Cardinal* chars_used)
+{
+    NPT_UInt64 value_64;
+    NPT_Result result = NPT_ParseInteger64(str, value_64, relaxed, chars_used);
+    value = 0;
+    if (NPT_SUCCEEDED(result)) {
+        if (value_64 > NPT_ULONG_MAX) {
+            return NPT_ERROR_OVERFLOW;
+        }
+        value = (unsigned long)value_64;
     }
     return result;
 }
@@ -525,6 +563,23 @@ NPT_ParseInteger(const char* str, int& value, bool relaxed, NPT_Cardinal* chars_
     return result;
 }
 
+/*----------------------------------------------------------------------
+|    NPT_ParseInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_ParseInteger(const char* str, unsigned int& value, bool relaxed, NPT_Cardinal* chars_used)
+{
+    NPT_UInt64 value_64;
+    NPT_Result result = NPT_ParseInteger64(str, value_64, relaxed, chars_used);
+    value = 0;
+    if (NPT_SUCCEEDED(result)) {
+        if (value_64 > NPT_UINT_MAX) {
+            return NPT_ERROR_OVERFLOW;
+        }
+        value = (unsigned int)value_64;
+    }
+    return result;
+}
 
 #if !defined(NPT_CONFIG_HAVE_STRCPY)
 /*----------------------------------------------------------------------

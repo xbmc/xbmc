@@ -111,7 +111,7 @@ CMediaCrawler::FormatObjectId(const NPT_String& server_uuid, const NPT_String& s
 +---------------------------------------------------------------------*/
 NPT_Result
 CMediaCrawler::OnBrowse(PLT_ActionReference&          action, 
-                        const NPT_HttpRequestContext& context)
+                        const PLT_HttpRequestContext& context)
 {
     NPT_Result res;
 
@@ -502,7 +502,7 @@ CMediaCrawler::ProcessFileRequest(NPT_HttpRequest&              request,
     NPT_LOG_FINE("CMediaCrawler::ProcessFileRequest Received Request:");
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
-    if (request.GetMethod().Compare("GET") && request.GetMethod().Compare("HEAD")) {
+    if (request.GetMethod().Compare("GET", true) && request.GetMethod().Compare("HEAD", true)) {
         response.SetStatus(500, "Internal Server Error");
         return NPT_SUCCESS;
     }

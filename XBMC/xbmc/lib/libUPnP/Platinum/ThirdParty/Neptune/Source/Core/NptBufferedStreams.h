@@ -65,8 +65,11 @@ public:
                                 NPT_Size  buffer_size,
                                 NPT_Size* chars_read = NULL,
                                 bool      break_on_cr = false);
-    virtual NPT_Result SetBufferSize(NPT_Size size);
-
+    virtual NPT_Result SetBufferSize(NPT_Size size, bool force = false);
+    virtual NPT_Result Peek(void*     buffer, 
+                            NPT_Size  bytes_to_read, 
+                            NPT_Size* bytes_read);
+                              
     // NPT_InputStream methods
     NPT_Result Read(void*     buffer, 
                     NPT_Size  bytes_to_read, 

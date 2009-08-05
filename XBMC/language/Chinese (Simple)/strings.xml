@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 06/16/2009-->
+<!--Date of translation: 07/06/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21081 -->
+<!--Based on english strings version 21415 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -435,7 +435,7 @@
   <string id="513">主界面</string>
   <string id="514">设置界面</string>
   <string id="515">风格</string>
-  <string id="516">透通式文件管理</string>
+  <string id="516">将压缩存储的文档作为单个文件处理</string>
   <string id="517">最近播放的专辑</string>
   <string id="518">运行</string>
   <string id="519">运行方式</string>
@@ -987,7 +987,7 @@
   <string id="13106">停用</string>
   <string id="13107">只在视频播放时开启</string>
   <string id="13108">总是开启</string>
-  <string id="13109">测试此分辨率</string>
+  <string id="13109">测试 &amp; 应用分辨率</string>
   <string id="13110">保存此分辨率?</string>
   <string id="13111">是否保存此分辨率?</string>
 
@@ -1965,6 +1965,12 @@
   <string id="21440">Home文件夹</string>
   <string id="21441">观看次数</string>
   <string id="21442">插曲标题</string>
+  <string id="21443">视频分辨率</string>
+  <string id="21444">音频声道数</string>
+  <string id="21445">视频编码</string>
+  <string id="21446">音频编码</string>
+  <string id="21447">对白语言</string>
+  <string id="21448">字幕语言</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>
@@ -2095,4 +2101,23 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
+  <string id="33001">预告片质量Trailer quality</string>
+  <string id="33002">媒体流</string>
+  <string id="33003">下载</string>
+  <string id="33004">下载 &amp; 播放</string>
+  <string id="33005">下载 &amp; 保存</string>
+  <string id="33006">今天</string>
+  <string id="33007">明天</string>
+  <string id="33008">保存</string>
+  <string id="33009">拷贝</string>
+  <string id="33010">设置下载目录</string>
+  <string id="30011">搜索持续时间</string>
+  <string id="33012">短</string>
+  <string id="33013">长</string>
+  <string id="33014">用DVD player代替常规播放器</string>
+  <string id="33015">播放视频前揭示是否先下载</string>
+  <string id="33016">片断</string>
+  <string id="33017">重启以启用插件</string>
+  <string id="33018">片断</string>
 </strings>

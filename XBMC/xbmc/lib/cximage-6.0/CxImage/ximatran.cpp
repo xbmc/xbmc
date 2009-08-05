@@ -1111,7 +1111,7 @@ bool CxImage::Resample(long newx, long newy, int mode, CxImage* iDst)
 					naTemp = naCarry;
 					naCarry = naAccu;
 					naAccu = naTemp;
-					memset(naCarry, 0, sizeof(int) * 3);    // need only to set first pixel zero
+					memset(naCarry, 0, sizeof(long) * 3);    // need only to set first pixel zero
 					pDest = newImage.info.pImage + (++v * newImage.info.dwEffWidth);
 					fEndY += yScale;
 				}

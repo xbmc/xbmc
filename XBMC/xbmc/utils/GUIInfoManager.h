@@ -246,6 +246,7 @@ class CDateTime;
 #define VIDEOPLAYER_VIDEO_RESOLUTION  287
 #define VIDEOPLAYER_AUDIO_CODEC       288
 #define VIDEOPLAYER_AUDIO_CHANNELS    289
+#define VIDEOPLAYER_VIDEO_ASPECT      290
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -627,8 +628,6 @@ protected:
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
-  CStdString VideoWidthToResolutionDescription(int iWidth) const;
-  CStdString VideoAspectToAspectDescription(float fAspect) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.

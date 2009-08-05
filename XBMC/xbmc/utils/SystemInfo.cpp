@@ -194,7 +194,11 @@ CStdString CSysInfo::GetMACAddress()
 
 CStdString CSysInfo::GetVideoEncoder()
 {
+#ifdef HAS_SDL_OPENGL
   return "GPU: " + g_graphicsContext.getScreenSurface()->GetGLRenderer();
+#else // TODO:DIRECTX
+  return "GPU: DIRECTX";
+#endif
 }
 
 CStdString CSysInfo::GetXBVerInfo()
@@ -562,9 +566,11 @@ CStdString CSysInfo::GetLinuxDistro()
   {
     char buffer[256];
     memset(buffer, 0, sizeof(buffer)*sizeof(char));
-    fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe);
+    if (fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe) == 1)
+      result = buffer;
+    else
+      CLog::Log(LOGWARNING, "Unable to determine Linux distribution");
     pclose(pipe);
-    result = buffer;
   }
   
   return result.Trim();
@@ -581,9 +587,11 @@ CStdString CSysInfo::GetUnameVersion()
   {
     char buffer[256];
     memset(buffer, 0, sizeof(buffer)*sizeof(char));
-    fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe);
+    if (fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe) == 1)
+      result = buffer;
+    else
+      CLog::Log(LOGWARNING, "Unable to determine Uname version");
     pclose(pipe);
-    result = buffer;
   }
   
   return result.Trim();

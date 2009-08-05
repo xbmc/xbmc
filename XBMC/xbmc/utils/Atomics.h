@@ -29,6 +29,8 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 #endif
 long AtomicIncrement(volatile long* pAddr);
 long AtomicDecrement(volatile long* pAddr);
+long AtomicAdd(volatile long* pAddr, long amount);
+long AtomicSubtract(volatile long* pAddr, long amount);
 
 class CAtomicSpinLock
 {

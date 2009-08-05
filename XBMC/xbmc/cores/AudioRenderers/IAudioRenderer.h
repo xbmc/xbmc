@@ -53,8 +53,6 @@ public:
   virtual bool Resume() = 0;
   virtual unsigned int GetChunkLen() = 0;
 
-  virtual long GetMinimumVolume() const = 0;
-  virtual long GetMaximumVolume() const = 0;
   virtual long GetCurrentVolume() const = 0;
   virtual void Mute(bool bMute) = 0;
   virtual bool SetCurrentVolume(long nVolume) = 0;

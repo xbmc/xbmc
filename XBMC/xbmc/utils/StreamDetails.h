@@ -90,6 +90,9 @@ public:
   ~CStreamDetails() { Reset(); };
   CStreamDetails& operator=(const CStreamDetails &that);
 
+  static CStdString VideoWidthToResolutionDescription(int iWidth);
+  static CStdString VideoAspectToAspectDescription(float fAspect);
+  
   const bool HasItems(void) const { return m_vecItems.size() > 0; };
   const int GetStreamCount(CStreamDetail::StreamType type) const;
   const int GetVideoStreamCount(void) const;
@@ -128,5 +131,6 @@ private:
 class IStreamDetailsObserver
 {
 public:
+  virtual ~IStreamDetailsObserver() {}
   virtual void OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId) = 0;
 };

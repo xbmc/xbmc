@@ -448,10 +448,6 @@ void CExternalPlayer::Seek(bool bPlus, bool bLargeStep)
 {
 }
 
-void CExternalPlayer::ToggleFrameDrop()
-{
-}
-
 void CExternalPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   strAudioInfo = "CExternalPlayer:GetAudioInfo";

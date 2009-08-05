@@ -62,6 +62,7 @@ public:
   int	GetPythonScriptId(int scriptPosition);
   int   evalFile(const char *);
   int   evalFile(const char *, const unsigned int, const char **);
+  int   evalString(const char *, const unsigned int argc = 0, const char ** argv = NULL);
 
   bool	isRunning(int scriptId);
   bool  isStopping(int scriptId);

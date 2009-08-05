@@ -42,8 +42,6 @@ extern HWND g_hWnd;
 using namespace std;
 using namespace MEDIA_DETECT;
 
-DWORD CWIN32Util::dwDriveMask = 0;
-
 CWIN32Util::CWIN32Util(void)
 {
 }
@@ -284,30 +282,6 @@ char CWIN32Util::FirstDriveFromMask (ULONG unitmask)
     }
     return (i + 'A');
 }
-
-
-// Workaround to get the added and removed drives
-// Seems to be that the lParam in SDL is empty
-// MS way: http://msdn.microsoft.com/en-us/library/aa363215(VS.85).aspx
-
-void CWIN32Util::UpdateDriveMask()
-{
-  dwDriveMask = GetLogicalDrives();
-}
-
-CStdString CWIN32Util::GetChangedDrive()
-{
-  CStdString strDrive;
-  DWORD dwDriveMask2 = GetLogicalDrives();
-  DWORD dwDriveMaskResult = dwDriveMask ^ dwDriveMask2;
-  if(dwDriveMaskResult == 0)
-    return "";
-  dwDriveMask = dwDriveMask2;
-  strDrive.Format("%c:",FirstDriveFromMask(dwDriveMaskResult));
-  return strDrive;
-}
-
-// End Workaround
 
 bool CWIN32Util::PowerManagement(PowerState State)
 {
@@ -755,6 +729,7 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   SetThreadExecutionState( sSysParam.dwEsFlags );
 }
 
+#ifdef HAS_SDL_OPENGL
 void CWIN32Util::CheckGLVersion()
 {
   if(CWIN32Util::HasGLDefaultDrivers())
@@ -793,6 +768,7 @@ bool CWIN32Util::HasReqGLVersion()
   else
     return false;
 }
+#endif
 
 BOOL CWIN32Util::IsCurrentUserLocalAdministrator()
 {

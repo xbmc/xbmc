@@ -20,7 +20,7 @@ XMMS_DIRS = plugin_common plugin_xmms
 endif
 
 if FLaC__WITH_CPPLIBS
-CPPLIBS_DIRS = libFLAC++ test_libFLAC++
+CPPLIBS_DIRS = libFLAC++
 endif
 
 SUBDIRS = \

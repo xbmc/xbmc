@@ -33,58 +33,62 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
     Reset();
 
   XMLUtils::GetString(artist,"name",strArtist);
-  const TiXmlNode* node = artist->FirstChild("genre");
+  const TiXmlElement* node = artist->FirstChildElement("genre");
   while (node)
   {
     if (node->FirstChild())
     {
       CStdString strTemp = node->FirstChild()->Value();
-      if (strGenre.IsEmpty())
+      const char* clear=node->Attribute("clear");
+      if (strGenre.IsEmpty() || (clear && stricmp(clear,"true")==0))
         strGenre = strTemp;
       else
         strGenre += g_advancedSettings.m_musicItemSeparator+strTemp;
     }
-    node = node->NextSibling("genre");
+    node = node->NextSiblingElement("genre");
   }
-  node = artist->FirstChild("style");
+  node = artist->FirstChildElement("style");
   while (node)
   {
     if (node->FirstChild())
     {
       CStdString strTemp = node->FirstChild()->Value();
-      if (strStyles.IsEmpty())
+      const char* clear=node->Attribute("clear");
+      if (strStyles.IsEmpty() || (clear && stricmp(clear,"true")==0))
         strStyles = strTemp;
       else
         strStyles += g_advancedSettings.m_musicItemSeparator+strTemp;
     }
-    node = node->NextSibling("style");
+    node = node->NextSiblingElement("style");
   }
-  node = artist->FirstChild("mood");
+  node = artist->FirstChildElement("mood");
   while (node)
   {
     if (node->FirstChild())
     {
       CStdString strTemp = node->FirstChild()->Value();
-      if (strMoods.IsEmpty())
+      const char* clear=node->Attribute("clear");
+      if (strMoods.IsEmpty() || (clear && stricmp(clear,"true")==0))
         strMoods = strTemp;
       else
         strMoods += g_advancedSettings.m_musicItemSeparator+strTemp;
     }
-    node = node->NextSibling("mood");
+    node = node->NextSiblingElement("mood");
   }
 
-  node = artist->FirstChild("yearsactive");
+  node = artist->FirstChildElement("yearsactive");
   while (node)
   {
     if (node->FirstChild())
     {
       CStdString strTemp = node->FirstChild()->Value();
-      if (strYearsActive.IsEmpty())
+      const char* clear=node->Attribute("clear");
+      if (strYearsActive.IsEmpty() || (clear && stricmp(clear,"true")==0))
         strYearsActive = strTemp;
       else
         strYearsActive += g_advancedSettings.m_musicItemSeparator+strTemp;
     }
-    node = node->NextSibling("yearsactive");
+    node = node->NextSiblingElement("yearsactive");
   }
 
   XMLUtils::GetString(artist,"born",strBorn);
@@ -113,7 +117,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
         thumbURL.ParseElement(artist->FirstChildElement("thumb"));
     }
   }
-  node = artist->FirstChild("album");
+  node = artist->FirstChildElement("album");
   while (node)
   {
     const TiXmlNode* title = node->FirstChild("title");
@@ -126,7 +130,7 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
         strYear = year->FirstChild()->Value();
       discography.push_back(make_pair(strTitle,strYear));
     }
-    node = node->NextSibling("album");
+    node = node->NextSiblingElement("album");
   }
   
   // fanart

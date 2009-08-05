@@ -15,6 +15,12 @@
 #import <unistd.h>
 
 #import "CocoaInterface.h"
+//hack around problem with xbmc's typedef int BOOL
+// and obj-c's typedef unsigned char BOOL
+#define BOOL XBMC_BOOL 
+#import "PlatformDefs.h"
+#undef BOOL
+#import "DetectDVDMedia.h"
 
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
  but the method still is there and works. To avoid warnings, we declare
@@ -240,6 +246,16 @@ static void setupWindowMenu(void)
       name:NSWorkspaceWillSleepNotification
       object:nil];
       
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+      selector:@selector(deviceDidMount:)
+      name:NSWorkspaceDidMountNotification
+      object:nil];
+
+    [[[NSWorkspace sharedWorkspace] notificationCenter] addObserver:self
+      selector:@selector(deviceDidUnMount:)
+      name:NSWorkspaceDidUnmountNotification
+      object:nil];
+		
     [[NSNotificationCenter defaultCenter] addObserver:self
       selector:@selector(windowDidMove:)
       name:NSWindowDidMoveNotification
@@ -276,10 +292,43 @@ static void setupWindowMenu(void)
 {
 }
 
+- (void) deviceDidMount:(NSNotification *) note 
+{
+  // calling into c++ code, need to use autorelease pools
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
+  //NSLog(@"Device did mount: %@", devicePath);
+  
+  // check for physical DVD with VIDEO_TS structure
+  NSFileManager *fileManager = [NSFileManager defaultManager];
+  NSString *video_tsFolder = [devicePath stringByAppendingString:@"/VIDEO_TS"];
+  // Check if the mounted volume is a DVD
+  NSArray *contents = [fileManager directoryContentsAtPath:video_tsFolder];
+  if (contents != nil)
+  {
+    const CStdString strDrive = [devicePath cString];
+    // TODO: might need to translate devicePath into what CDetectDVDMedia::AddMedia wants
+    //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strDrive);
+  }
+  [pool release];
+}
+
+- (void) deviceDidUnMount:(NSNotification *) note 
+{
+  // calling into c++ code, need to use autorelease pools
+  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+  NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
+  //NSLog(@"Device did unmount: %@", devicePath);
+  const CStdString strDrive = [devicePath cString];
+  //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strDrive);
+  [pool release];
+}
+
 - (void) windowDidMove:(NSNotification*) note
 {
   Cocoa_CVDisplayLinkUpdate();
 }
+
 @end
 
 #ifdef main

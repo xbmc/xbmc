@@ -20,10 +20,10 @@
  */
 
 #include "include.h"
+#ifdef HAS_SDL_OPENGL
 #include "../xbmc/Settings.h"
 #include "FrameBufferObject.h"
 
-#ifdef HAS_SDL_OPENGL
 #ifdef HAS_SDL_GLES1
 // TODO: Add extension support for FBO - only needed for GLES1
 #endif

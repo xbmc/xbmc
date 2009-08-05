@@ -43,7 +43,7 @@ public:
   virtual AVCodec *avcodec_find_decoder(enum CodecID id)=0;
   virtual int avcodec_close_dont_call(AVCodecContext *avctx)=0;
   virtual AVFrame *avcodec_alloc_frame(void)=0;
-  virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, int pix_fmt, int width, int height)=0;
+  virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, PixelFormat pix_fmt, int width, int height)=0;
   virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size)=0;
   virtual int avcodec_decode_audio2(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, uint8_t *buf, int buf_size)=0;
   virtual int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, const uint8_t *buf, int buf_size)=0;
@@ -101,7 +101,7 @@ public:
     return ::avcodec_close(avctx); 
   }
   virtual AVFrame *avcodec_alloc_frame() { return ::avcodec_alloc_frame(); }
-  virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, int pix_fmt, int width, int height) { return ::avpicture_fill(picture, ptr, pix_fmt, width, height); }
+  virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, PixelFormat pix_fmt, int width, int height) { return ::avpicture_fill(picture, ptr, pix_fmt, width, height); }
   virtual int avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, uint8_t *buf, int buf_size) { return ::avcodec_decode_video(avctx, picture, got_picture_ptr, buf, buf_size); }
   virtual int avcodec_decode_audio2(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, uint8_t *buf, int buf_size) { return ::avcodec_decode_audio2(avctx, samples, frame_size_ptr, buf, buf_size); }
   virtual int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, const uint8_t *buf, int buf_size) { return ::avcodec_decode_subtitle(avctx, sub, got_sub_ptr, buf, buf_size); } 
@@ -176,7 +176,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
   DEFINE_METHOD1(int, avcodec_close_dont_call, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
-  DEFINE_METHOD5(int, avpicture_fill, (AVPicture *p1, uint8_t *p2, int p3, int p4, int p5))
+  DEFINE_METHOD5(int, avpicture_fill, (AVPicture *p1, uint8_t *p2, PixelFormat p3, int p4, int p5))
   DEFINE_METHOD3(int, avpicture_get_size, (PixelFormat p1, int p2, int p3))
   DEFINE_METHOD4(void, avcodec_string, (char *p1, int p2, AVCodecContext *p3, int p4))
   DEFINE_METHOD1(void, avcodec_get_context_defaults, (AVCodecContext *p1))

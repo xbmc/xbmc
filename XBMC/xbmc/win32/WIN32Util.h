@@ -42,8 +42,6 @@ public:
   static CStdString GetLocalPath(const CStdString &strPath);
   static char FirstDriveFromMask (ULONG unitmask);
   static int GetDriveStatus(const CStdString &strPath);
-  static void UpdateDriveMask();
-  static CStdString GetChangedDrive();
   static bool PowerManagement(PowerState State);
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
   static std::vector<CStdString> GetDiskUsage();
@@ -56,9 +54,11 @@ public:
   static HRESULT EjectTray(const char cDriveLetter='\0');
   static HRESULT CloseTray(const char cDriveLetter='\0');
   static bool EjectDrive(const char cDriveLetter='\0');
+#ifdef HAS_SDL_OPENGL
   static void CheckGLVersion();
   static bool HasGLDefaultDrivers();
   static bool HasReqGLVersion();
+#endif
   static BOOL IsCurrentUserLocalAdministrator();
   
   class SystemParams
@@ -75,7 +75,6 @@ public:
   };
 
 private:
-  static DWORD dwDriveMask;
 #if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
 #endif

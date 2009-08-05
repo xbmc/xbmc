@@ -8,6 +8,7 @@ SRCS=GUIDialogKaraokeSongSelector.cpp \
 	karaokelyricstext.cpp \
 	karaokelyricstextkar.cpp \
 	karaokelyricstextlrc.cpp \
+	karaokelyricstextustar.cpp \
 	Cdg.cpp \
 	GUIWindowKaraokeLyrics.cpp \
 	karaokewindowbackground.cpp \

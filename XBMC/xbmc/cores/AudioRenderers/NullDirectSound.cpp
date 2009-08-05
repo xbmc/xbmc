@@ -99,18 +99,6 @@ bool CNullDirectSound::Stop()
 }
 
 //***********************************************************************************************
-long CNullDirectSound::GetMinimumVolume() const
-{
-  return -60;
-}
-
-//***********************************************************************************************
-long CNullDirectSound::GetMaximumVolume() const
-{
-  return 60;
-}
-
-//***********************************************************************************************
 long CNullDirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;

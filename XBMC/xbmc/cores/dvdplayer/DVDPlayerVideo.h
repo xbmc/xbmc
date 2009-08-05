@@ -27,6 +27,7 @@
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "DVDClock.h"
 #include "DVDOverlayContainer.h"
+#include "DVDTSCorrection.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -67,9 +68,6 @@ public:
   void EnableSubtitle(bool bEnable)                 { m_bRenderSubs = bEnable; }
   bool IsSubtitleEnabled()                          { return m_bRenderSubs; }
 
-  void EnableFrameDrop(bool bEnabled)               { m_bDropFrames = bEnabled; }
-  bool IsFrameDropEnabled()                         { return m_bDropFrames; }
-
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -93,6 +91,7 @@ public:
   bool InitializedOutputDevice();
 
   double GetCurrentPts()                           { return m_iCurrentPts; }
+  int    GetPullupCorrection()                     { return m_pullupCorrection.GetPatternLength(); }
 
   double GetOutputDelay(); /* returns the expected delay, from that a packet is put in queue */
   std::string GetPlayerInfo();
@@ -129,7 +128,6 @@ protected:
   double m_FlipTimeStamp; // time stamp of last flippage. used to play at a forced framerate
 
   int m_iDroppedFrames;
-  bool m_bDropFrames;
 
   float m_fFrameRate;
 
@@ -174,5 +172,7 @@ protected:
   DVDVideoPicture* m_pTempOverlayPicture;
 
   CRITICAL_SECTION m_critCodecSection;
+  
+  CPullupCorrection m_pullupCorrection;
 };
 

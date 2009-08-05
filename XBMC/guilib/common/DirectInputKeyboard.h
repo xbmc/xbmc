@@ -33,6 +33,7 @@ public:
   void Initialize(HWND hWnd);
   void Acquire();
   void Update();
+  void Reset();
   bool GetShift() { return m_bShift;};
   bool GetCtrl() { return m_bCtrl;};
   bool GetAlt() { return m_bAlt;};
@@ -40,6 +41,9 @@ public:
   char GetAscii() { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode()
   WCHAR GetUnicode() { return GetAscii();}; // FIXME HELPME is there any unicode feature available?
   BYTE GetKey() { return m_VKey;};
+  bool KeyHeld();
+
+  void ResetState() {}; // for API compatibility with SDL keyboard
 
 private:
   inline bool KeyDown(unsigned char key) const { return (m_keystate[key] & 0x80) ? true : false; };

@@ -114,8 +114,6 @@ class CCoreAudioRenderer : public IAudioRenderer
     virtual bool Stop();
     virtual bool Resume();
     
-    virtual long GetMinimumVolume() const;
-    virtual long GetMaximumVolume() const;
     virtual long GetCurrentVolume() const;
     virtual void Mute(bool bMute);
     virtual bool SetCurrentVolume(long nVolume);
@@ -130,9 +128,9 @@ class CCoreAudioRenderer : public IAudioRenderer
     OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
     static OSStatus DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
-    bool InitializeEncoded(AudioDeviceID outputDevice);
+    bool InitializeEncoded(AudioDeviceID outputDevice, UInt32 sampleRate);
     bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample);
-    bool InitializePCMEncoded();
+    bool InitializePCMEncoded(UInt32 sampleRate);
 
     bool m_Pause;
     bool m_Initialized; // Prevent multiple init/deinit
@@ -159,6 +157,7 @@ class CCoreAudioRenderer : public IAudioRenderer
     
     // Thread synchronization
     MPEventID m_RunoutEvent;
+    long m_DoRunout;
   };
 
 #endif 

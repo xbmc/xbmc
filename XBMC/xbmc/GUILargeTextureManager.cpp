@@ -49,6 +49,7 @@ CGUILargeTextureManager::~CGUILargeTextureManager()
 // Once there's nothing queued or allocated, end the thread.
 void CGUILargeTextureManager::Process()
 {
+  SetName("CGUILargeTextureManager");
   // lock item list
   CSingleLock lock(m_listSection);
   m_running = true;
@@ -61,7 +62,7 @@ void CGUILargeTextureManager::Process()
     CStdString path = image->GetPath();
     lock.Leave();
     // load the image using our image lib
-    SDL_Surface * texture = NULL;
+    XBMC::TexturePtr texture = NULL;
     CPicture pic;
     CFileItem file(path, false);
     if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
@@ -90,7 +91,11 @@ void CGUILargeTextureManager::Process()
     }
     else
     { // no need for the texture any more
+#ifdef HAS_SDL
       SDL_FreeSurface(texture);
+#else
+      texture->Release();
+#endif
       texture = NULL;
     }
     if (m_queued.size() == 0)
@@ -120,7 +125,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientation, bool firstRequest)
+bool CGUILargeTextureManager::GetImage(const CStdString &path, CTexture &texture, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -132,7 +137,8 @@ CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientat
       if (firstRequest)
         image->AddRef();
       orientation = image->GetOrientation();
-      return image->GetTexture();
+      texture = image->GetTexture();
+      return texture.size() > 0;
     }
   }
   lock.Leave();
@@ -140,7 +146,7 @@ CTexture CGUILargeTextureManager::GetImage(const CStdString &path, int &orientat
   if (firstRequest)
     QueueImage(path);
 
-  return CTexture();
+  return true;
 }
 
 void CGUILargeTextureManager::ReleaseImage(const CStdString &path, bool immediately)

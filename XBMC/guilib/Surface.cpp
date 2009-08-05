@@ -69,14 +69,16 @@ int         CSurface::s_glMinVer = 0;
 
 #include "GraphicContext.h"
 
+#ifdef HAS_SDL_OPENGL
 #ifdef _WIN32
 static BOOL (APIENTRY *_wglSwapIntervalEXT)(GLint) = 0;
 static int (APIENTRY *_wglGetSwapIntervalEXT)() = 0;
-#elif defined(HAS_SDL_OPENGL) && !defined(__APPLE__)
+#elif !defined(__APPLE__)
 static int (*_glXGetVideoSyncSGI)(unsigned int*) = 0;
 static int (*_glXWaitVideoSyncSGI)(int, int, unsigned int*) = 0;
 static int (*_glXSwapIntervalSGI)(int) = 0;
 static int (*_glXSwapIntervalMESA)(int) = 0;
+#endif
 #endif
 
 #ifdef HAS_SDL
@@ -564,8 +566,10 @@ CSurface::~CSurface()
 #endif
      )
   {
+#ifdef HAS_SDL // TODO:DIRECTX
     CLog::Log(LOGINFO, "Freeing surface");
     SDL_FreeSurface(m_SDLSurface);
+#endif
   }
 
 #ifdef __APPLE__
@@ -850,7 +854,7 @@ void CSurface::Flip()
     Cocoa_GL_SwapBuffers(m_glContext);
 #elif defined(HAS_SDL_OPENGL)
     SDL_GL_SwapBuffers();
-#else
+#elif defined(HAS_SDL) // TODO:DIRECTX
     SDL_Flip(m_SDLSurface);
 #endif
 
@@ -920,10 +924,12 @@ bool CSurface::MakeCurrent()
 #endif
 
 #ifdef _WIN32
+#ifdef HAS_SDL // TODO:DIRECTX
   if(wglGetCurrentContext() == m_glContext)
     return true;
   else
     return (wglMakeCurrent(m_glDC, m_glContext) == TRUE);
+#endif
 #endif
   return false;
   
@@ -961,8 +967,10 @@ void CSurface::ReleaseContext()
 #ifdef _WIN32
   if (IsShared())
     m_pShared->ReleaseContext();
+#ifdef HAS_SDL // TODO:DIRECTX
   else if (m_glContext)
     wglMakeCurrent(NULL, NULL);
+#endif
 #endif
 }
 
@@ -993,6 +1001,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
   }
 #endif
 #ifdef _WIN32
+#ifdef HAS_SDL // TODO:DIRECTX
   SDL_SysWMinfo sysInfo;
   SDL_VERSION(&sysInfo.version);
   if (SDL_GetWMInfo(&sysInfo))
@@ -1067,6 +1076,7 @@ bool CSurface::ResizeSurface(int newWidth, int newHeight)
 
     return true;
   }
+#endif
 #endif
   return false;
 }
@@ -1144,6 +1154,7 @@ void CSurface::NotifyAppFocusChange(bool bGaining)
   {
     CLog::Log(LOGDEBUG, "NotifyAppFocusChange: bGaining=%d, m_bCoverScreen=%d", bGaining, m_bCoversScreen);
 
+#ifdef HAS_SDL // TODO:DIRECTX
     SDL_SysWMinfo sysInfo;
     SDL_VERSION(&sysInfo.version);
 
@@ -1196,6 +1207,7 @@ void CSurface::NotifyAppFocusChange(bool bGaining)
         LockSetForegroundWindow(LSFW_UNLOCK);
       }
     }
+#endif
   }
 #endif
 }

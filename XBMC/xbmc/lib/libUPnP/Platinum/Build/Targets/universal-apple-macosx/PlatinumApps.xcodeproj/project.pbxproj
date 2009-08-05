@@ -16,6 +16,7 @@
 				E426A6D40D75087D00A85AE5 /* PBXTargetDependency */,
 				E426A6D20D75087B00A85AE5 /* PBXTargetDependency */,
 				E426A6D00D75087900A85AE5 /* PBXTargetDependency */,
+				E46271240F81F7B7007FE869 /* PBXTargetDependency */,
 			);
 			name = Apps;
 			productName = Apps;
@@ -61,188 +62,16 @@
 		E426A70C0D75093300A85AE5 /* LightSampleTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6C70D75082600A85AE5 /* LightSampleTest.cpp */; };
 		E426A71B0D75094900A85AE5 /* MediaRendererTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6CB0D75082600A85AE5 /* MediaRendererTest.cpp */; };
 		E426A7290D75096100A85AE5 /* SsdpTest1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E426A6CD0D75082600A85AE5 /* SsdpTest1.cpp */; };
-		E47126720EE39A5B0024CDEF /* NptResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E47126710EE39A5B0024CDEF /* NptResults.cpp */; };
-		E4E0CB070E764D9800C96184 /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA860E764D9800C96184 /* Neptune.cpp */; };
-		E4E0CB080E764D9800C96184 /* Neptune.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA870E764D9800C96184 /* Neptune.h */; };
-		E4E0CB090E764D9800C96184 /* NptArray.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA880E764D9800C96184 /* NptArray.h */; };
-		E4E0CB0A0E764D9800C96184 /* NptBase64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA890E764D9800C96184 /* NptBase64.cpp */; };
-		E4E0CB0B0E764D9800C96184 /* NptBase64.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA8A0E764D9800C96184 /* NptBase64.h */; };
-		E4E0CB0C0E764D9800C96184 /* NptBufferedStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA8B0E764D9800C96184 /* NptBufferedStreams.cpp */; };
-		E4E0CB0D0E764D9800C96184 /* NptBufferedStreams.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA8C0E764D9800C96184 /* NptBufferedStreams.h */; };
-		E4E0CB0E0E764D9800C96184 /* NptCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA8D0E764D9800C96184 /* NptCommon.cpp */; };
-		E4E0CB0F0E764D9800C96184 /* NptCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA8E0E764D9800C96184 /* NptCommon.h */; };
-		E4E0CB100E764D9800C96184 /* NptConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA8F0E764D9800C96184 /* NptConfig.h */; };
-		E4E0CB110E764D9800C96184 /* NptConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA900E764D9800C96184 /* NptConsole.cpp */; };
-		E4E0CB120E764D9800C96184 /* NptConsole.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA910E764D9800C96184 /* NptConsole.h */; };
-		E4E0CB130E764D9800C96184 /* NptConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA920E764D9800C96184 /* NptConstants.h */; };
-		E4E0CB140E764D9800C96184 /* NptDataBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA930E764D9800C96184 /* NptDataBuffer.cpp */; };
-		E4E0CB150E764D9800C96184 /* NptDataBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA940E764D9800C96184 /* NptDataBuffer.h */; };
-		E4E0CB160E764D9800C96184 /* NptDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA950E764D9800C96184 /* NptDebug.cpp */; };
-		E4E0CB170E764D9800C96184 /* NptDebug.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA960E764D9800C96184 /* NptDebug.h */; };
-		E4E0CB180E764D9800C96184 /* NptDefs.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA970E764D9800C96184 /* NptDefs.h */; };
-		E4E0CB190E764D9800C96184 /* NptDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA980E764D9800C96184 /* NptDirectory.cpp */; };
-		E4E0CB1A0E764D9800C96184 /* NptDirectory.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA990E764D9800C96184 /* NptDirectory.h */; };
-		E4E0CB1B0E764D9800C96184 /* NptDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA9A0E764D9800C96184 /* NptDynamicLibraries.cpp */; };
-		E4E0CB1C0E764D9800C96184 /* NptDynamicLibraries.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA9B0E764D9800C96184 /* NptDynamicLibraries.h */; };
-		E4E0CB1D0E764D9800C96184 /* NptFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA9C0E764D9800C96184 /* NptFile.cpp */; };
-		E4E0CB1E0E764D9800C96184 /* NptFile.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA9D0E764D9800C96184 /* NptFile.h */; };
-		E4E0CB1F0E764D9800C96184 /* NptHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CA9E0E764D9800C96184 /* NptHttp.cpp */; };
-		E4E0CB200E764D9800C96184 /* NptHttp.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CA9F0E764D9800C96184 /* NptHttp.h */; };
-		E4E0CB210E764D9800C96184 /* NptInterfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAA00E764D9800C96184 /* NptInterfaces.h */; };
-		E4E0CB220E764D9800C96184 /* NptList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAA10E764D9800C96184 /* NptList.cpp */; };
-		E4E0CB230E764D9800C96184 /* NptList.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAA20E764D9800C96184 /* NptList.h */; };
-		E4E0CB240E764D9800C96184 /* NptLogging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAA30E764D9800C96184 /* NptLogging.cpp */; };
-		E4E0CB250E764D9800C96184 /* NptLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAA40E764D9800C96184 /* NptLogging.h */; };
-		E4E0CB260E764D9800C96184 /* NptMap.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAA50E764D9800C96184 /* NptMap.h */; };
-		E4E0CB270E764D9800C96184 /* NptMessaging.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAA60E764D9800C96184 /* NptMessaging.cpp */; };
-		E4E0CB280E764D9800C96184 /* NptMessaging.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAA70E764D9800C96184 /* NptMessaging.h */; };
-		E4E0CB290E764D9800C96184 /* NptNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAA80E764D9800C96184 /* NptNetwork.cpp */; };
-		E4E0CB2A0E764D9800C96184 /* NptNetwork.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAA90E764D9800C96184 /* NptNetwork.h */; };
-		E4E0CB2B0E764D9800C96184 /* NptQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAAA0E764D9800C96184 /* NptQueue.cpp */; };
-		E4E0CB2C0E764D9800C96184 /* NptQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAAB0E764D9800C96184 /* NptQueue.h */; };
-		E4E0CB2D0E764D9800C96184 /* NptReferences.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAAC0E764D9800C96184 /* NptReferences.h */; };
-		E4E0CB2E0E764D9800C96184 /* NptResults.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAAD0E764D9800C96184 /* NptResults.h */; };
-		E4E0CB2F0E764D9800C96184 /* NptRingBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAAE0E764D9800C96184 /* NptRingBuffer.cpp */; };
-		E4E0CB300E764D9800C96184 /* NptRingBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAAF0E764D9800C96184 /* NptRingBuffer.h */; };
-		E4E0CB310E764D9800C96184 /* NptSelectableMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAB00E764D9800C96184 /* NptSelectableMessageQueue.h */; };
-		E4E0CB320E764D9800C96184 /* NptSerialPort.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAB10E764D9800C96184 /* NptSerialPort.h */; };
-		E4E0CB330E764D9800C96184 /* NptSimpleMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAB20E764D9800C96184 /* NptSimpleMessageQueue.cpp */; };
-		E4E0CB340E764D9800C96184 /* NptSimpleMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAB30E764D9800C96184 /* NptSimpleMessageQueue.h */; };
-		E4E0CB350E764D9800C96184 /* NptSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAB40E764D9800C96184 /* NptSockets.cpp */; };
-		E4E0CB360E764D9800C96184 /* NptSockets.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAB50E764D9800C96184 /* NptSockets.h */; };
-		E4E0CB370E764D9800C96184 /* NptStack.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAB60E764D9800C96184 /* NptStack.h */; };
-		E4E0CB380E764D9800C96184 /* NptStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAB70E764D9800C96184 /* NptStreams.cpp */; };
-		E4E0CB390E764D9800C96184 /* NptStreams.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAB80E764D9800C96184 /* NptStreams.h */; };
-		E4E0CB3A0E764D9800C96184 /* NptStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAB90E764D9800C96184 /* NptStrings.cpp */; };
-		E4E0CB3B0E764D9800C96184 /* NptStrings.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CABA0E764D9800C96184 /* NptStrings.h */; };
-		E4E0CB3C0E764D9800C96184 /* NptSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CABB0E764D9800C96184 /* NptSystem.cpp */; };
-		E4E0CB3D0E764D9800C96184 /* NptSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CABC0E764D9800C96184 /* NptSystem.h */; };
-		E4E0CB3E0E764D9800C96184 /* NptThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CABD0E764D9800C96184 /* NptThreads.cpp */; };
-		E4E0CB3F0E764D9800C96184 /* NptThreads.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CABE0E764D9800C96184 /* NptThreads.h */; };
-		E4E0CB400E764D9800C96184 /* NptTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CABF0E764D9800C96184 /* NptTime.cpp */; };
-		E4E0CB410E764D9800C96184 /* NptTime.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAC00E764D9800C96184 /* NptTime.h */; };
-		E4E0CB420E764D9800C96184 /* NptTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAC10E764D9800C96184 /* NptTypes.h */; };
-		E4E0CB430E764D9800C96184 /* NptUri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAC20E764D9800C96184 /* NptUri.cpp */; };
-		E4E0CB440E764D9800C96184 /* NptUri.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAC30E764D9800C96184 /* NptUri.h */; };
-		E4E0CB450E764D9800C96184 /* NptUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAC40E764D9800C96184 /* NptUtils.cpp */; };
-		E4E0CB460E764D9800C96184 /* NptUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAC50E764D9800C96184 /* NptUtils.h */; };
-		E4E0CB470E764D9800C96184 /* NptVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAC60E764D9800C96184 /* NptVersion.h */; };
-		E4E0CB480E764D9800C96184 /* NptXml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAC70E764D9800C96184 /* NptXml.cpp */; };
-		E4E0CB490E764D9800C96184 /* NptXml.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CAC80E764D9800C96184 /* NptXml.h */; };
-		E4E0CB4A0E764D9800C96184 /* NptZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAC90E764D9800C96184 /* NptZip.cpp */; };
-		E4E0CB4B0E764D9800C96184 /* NptZip.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CACA0E764D9800C96184 /* NptZip.h */; };
-		E4E0CB4C0E764D9800C96184 /* NptBsdNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CACD0E764D9800C96184 /* NptBsdNetwork.cpp */; };
-		E4E0CB4D0E764D9800C96184 /* NptBsdSockets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CACE0E764D9800C96184 /* NptBsdSockets.cpp */; };
-		E4E0CB540E764D9800C96184 /* NptPosixDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAD70E764D9800C96184 /* NptPosixDirectory.cpp */; };
-		E4E0CB550E764D9800C96184 /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAD80E764D9800C96184 /* NptPosixDynamicLibraries.cpp */; };
-		E4E0CB560E764D9800C96184 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAD90E764D9800C96184 /* NptPosixFile.cpp */; };
-		E4E0CB570E764D9800C96184 /* NptPosixNetwork.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CADA0E764D9800C96184 /* NptPosixNetwork.cpp */; };
-		E4E0CB580E764D9800C96184 /* NptPosixQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CADB0E764D9800C96184 /* NptPosixQueue.cpp */; };
-		E4E0CB590E764D9800C96184 /* NptPosixSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CADC0E764D9800C96184 /* NptPosixSystem.cpp */; };
-		E4E0CB5A0E764D9800C96184 /* NptPosixThreads.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CADD0E764D9800C96184 /* NptPosixThreads.cpp */; };
-		E4E0CB5B0E764D9800C96184 /* NptSelectableMessageQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CADE0E764D9800C96184 /* NptSelectableMessageQueue.cpp */; };
-		E4E0CB630E764D9800C96184 /* NptStdcConsole.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAE90E764D9800C96184 /* NptStdcConsole.cpp */; };
-		E4E0CB640E764D9800C96184 /* NptStdcDebug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAEA0E764D9800C96184 /* NptStdcDebug.cpp */; };
-		E4E0CB650E764D9800C96184 /* NptStdcEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAEB0E764D9800C96184 /* NptStdcEnvironment.cpp */; };
-		E4E0CB660E764D9800C96184 /* NptStdcFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CAEC0E764D9800C96184 /* NptStdcFile.cpp */; };
-		E4E0CBDE0E764DC700C96184 /* Platinum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB7F0E764DC700C96184 /* Platinum.cpp */; };
-		E4E0CBDF0E764DC700C96184 /* Platinum.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB800E764DC700C96184 /* Platinum.h */; };
-		E4E0CBE00E764DC700C96184 /* PltAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB810E764DC700C96184 /* PltAction.cpp */; };
-		E4E0CBE10E764DC700C96184 /* PltAction.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB820E764DC700C96184 /* PltAction.h */; };
-		E4E0CBE20E764DC700C96184 /* PltArgument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB830E764DC700C96184 /* PltArgument.cpp */; };
-		E4E0CBE30E764DC700C96184 /* PltArgument.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB840E764DC700C96184 /* PltArgument.h */; };
-		E4E0CBE40E764DC700C96184 /* PltCtrlPoint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB850E764DC700C96184 /* PltCtrlPoint.cpp */; };
-		E4E0CBE50E764DC700C96184 /* PltCtrlPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB860E764DC700C96184 /* PltCtrlPoint.h */; };
-		E4E0CBE60E764DC700C96184 /* PltCtrlPointTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB870E764DC700C96184 /* PltCtrlPointTask.cpp */; };
-		E4E0CBE70E764DC700C96184 /* PltCtrlPointTask.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB880E764DC700C96184 /* PltCtrlPointTask.h */; };
-		E4E0CBE80E764DC700C96184 /* PltDatagramStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB890E764DC700C96184 /* PltDatagramStream.cpp */; };
-		E4E0CBE90E764DC700C96184 /* PltDatagramStream.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB8A0E764DC700C96184 /* PltDatagramStream.h */; };
-		E4E0CBEA0E764DC700C96184 /* PltDeviceData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB8B0E764DC700C96184 /* PltDeviceData.cpp */; };
-		E4E0CBEB0E764DC700C96184 /* PltDeviceData.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB8C0E764DC700C96184 /* PltDeviceData.h */; };
-		E4E0CBEC0E764DC700C96184 /* PltDeviceHost.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB8D0E764DC700C96184 /* PltDeviceHost.cpp */; };
-		E4E0CBED0E764DC700C96184 /* PltDeviceHost.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB8E0E764DC700C96184 /* PltDeviceHost.h */; };
-		E4E0CBEE0E764DC700C96184 /* PltDownloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB8F0E764DC700C96184 /* PltDownloader.cpp */; };
-		E4E0CBEF0E764DC700C96184 /* PltDownloader.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB900E764DC700C96184 /* PltDownloader.h */; };
-		E4E0CBF00E764DC700C96184 /* PltEvent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB910E764DC700C96184 /* PltEvent.cpp */; };
-		E4E0CBF10E764DC700C96184 /* PltEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB920E764DC700C96184 /* PltEvent.h */; };
-		E4E0CBF20E764DC700C96184 /* PltHttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB930E764DC700C96184 /* PltHttp.cpp */; };
-		E4E0CBF30E764DC700C96184 /* PltHttp.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB940E764DC700C96184 /* PltHttp.h */; };
-		E4E0CBF40E764DC700C96184 /* PltHttpClientTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB950E764DC700C96184 /* PltHttpClientTask.cpp */; };
-		E4E0CBF50E764DC700C96184 /* PltHttpClientTask.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB960E764DC700C96184 /* PltHttpClientTask.h */; };
-		E4E0CBF60E764DC700C96184 /* PltHttpServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB970E764DC700C96184 /* PltHttpServer.cpp */; };
-		E4E0CBF70E764DC700C96184 /* PltHttpServer.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB980E764DC700C96184 /* PltHttpServer.h */; };
-		E4E0CBF80E764DC700C96184 /* PltHttpServerListener.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB990E764DC700C96184 /* PltHttpServerListener.h */; };
-		E4E0CBF90E764DC700C96184 /* PltHttpServerTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB9A0E764DC700C96184 /* PltHttpServerTask.cpp */; };
-		E4E0CBFA0E764DC700C96184 /* PltHttpServerTask.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB9B0E764DC700C96184 /* PltHttpServerTask.h */; };
-		E4E0CBFB0E764DC700C96184 /* PltLeaks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB9C0E764DC700C96184 /* PltLeaks.cpp */; };
-		E4E0CBFC0E764DC700C96184 /* PltLeaks.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB9D0E764DC700C96184 /* PltLeaks.h */; };
-		E4E0CBFD0E764DC700C96184 /* PltLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CB9E0E764DC700C96184 /* PltLog.cpp */; };
-		E4E0CBFE0E764DC700C96184 /* PltLog.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CB9F0E764DC700C96184 /* PltLog.h */; };
-		E4E0CBFF0E764DC700C96184 /* PltMetadataHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBA00E764DC700C96184 /* PltMetadataHandler.cpp */; };
-		E4E0CC000E764DC700C96184 /* PltMetadataHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBA10E764DC700C96184 /* PltMetadataHandler.h */; };
-		E4E0CC010E764DC700C96184 /* PltRingBufferStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBA20E764DC700C96184 /* PltRingBufferStream.cpp */; };
-		E4E0CC020E764DC700C96184 /* PltRingBufferStream.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBA30E764DC700C96184 /* PltRingBufferStream.h */; };
-		E4E0CC030E764DC700C96184 /* PltService.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBA40E764DC700C96184 /* PltService.cpp */; };
-		E4E0CC040E764DC700C96184 /* PltService.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBA50E764DC700C96184 /* PltService.h */; };
-		E4E0CC050E764DC700C96184 /* PltSsdp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBA60E764DC700C96184 /* PltSsdp.cpp */; };
-		E4E0CC060E764DC700C96184 /* PltSsdp.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBA70E764DC700C96184 /* PltSsdp.h */; };
-		E4E0CC070E764DC700C96184 /* PltSsdpListener.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBA80E764DC700C96184 /* PltSsdpListener.h */; };
-		E4E0CC080E764DC700C96184 /* PltStateVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBA90E764DC700C96184 /* PltStateVariable.cpp */; };
-		E4E0CC090E764DC700C96184 /* PltStateVariable.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBAA0E764DC700C96184 /* PltStateVariable.h */; };
-		E4E0CC0A0E764DC700C96184 /* PltStreamPump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBAB0E764DC700C96184 /* PltStreamPump.cpp */; };
-		E4E0CC0B0E764DC700C96184 /* PltStreamPump.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBAC0E764DC700C96184 /* PltStreamPump.h */; };
-		E4E0CC0C0E764DC700C96184 /* PltTaskManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBAD0E764DC700C96184 /* PltTaskManager.cpp */; };
-		E4E0CC0D0E764DC700C96184 /* PltTaskManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBAE0E764DC700C96184 /* PltTaskManager.h */; };
-		E4E0CC0E0E764DC700C96184 /* PltThreadTask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBAF0E764DC700C96184 /* PltThreadTask.cpp */; };
-		E4E0CC0F0E764DC700C96184 /* PltThreadTask.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBB00E764DC700C96184 /* PltThreadTask.h */; };
-		E4E0CC100E764DC700C96184 /* PltUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBB10E764DC700C96184 /* PltUPnP.cpp */; };
-		E4E0CC110E764DC700C96184 /* PltUPnP.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBB20E764DC700C96184 /* PltUPnP.h */; };
-		E4E0CC120E764DC700C96184 /* PltUPnPHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBB30E764DC700C96184 /* PltUPnPHelper.h */; };
-		E4E0CC130E764DC700C96184 /* PltVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBB40E764DC700C96184 /* PltVersion.h */; };
-		E4E0CC140E764DC700C96184 /* PltXmlHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBB50E764DC700C96184 /* PltXmlHelper.h */; };
-		E4E0CC170E764DC700C96184 /* PltMediaConnect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBBA0E764DC700C96184 /* PltMediaConnect.cpp */; };
-		E4E0CC180E764DC700C96184 /* PltMediaConnect.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBBB0E764DC700C96184 /* PltMediaConnect.h */; };
-		E4E0CC190E764DC700C96184 /* PltMediaConnectSCPDs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBBC0E764DC700C96184 /* PltMediaConnectSCPDs.cpp */; };
-		E4E0CC1A0E764DC700C96184 /* PltMediaController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBC10E764DC700C96184 /* PltMediaController.cpp */; };
-		E4E0CC1B0E764DC700C96184 /* PltMediaController.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBC20E764DC700C96184 /* PltMediaController.h */; };
-		E4E0CC1C0E764DC700C96184 /* PltMediaControllerListener.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBC30E764DC700C96184 /* PltMediaControllerListener.h */; };
-		E4E0CC1D0E764DC700C96184 /* PltMediaRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBC40E764DC700C96184 /* PltMediaRenderer.cpp */; };
-		E4E0CC1E0E764DC700C96184 /* PltMediaRenderer.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBC50E764DC700C96184 /* PltMediaRenderer.h */; };
-		E4E0CC1F0E764DC700C96184 /* PltMediaRendererSCPDs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBC60E764DC700C96184 /* PltMediaRendererSCPDs.cpp */; };
-		E4E0CC200E764DC700C96184 /* PltDidl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBCC0E764DC700C96184 /* PltDidl.cpp */; };
-		E4E0CC210E764DC700C96184 /* PltDidl.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBCD0E764DC700C96184 /* PltDidl.h */; };
-		E4E0CC220E764DC700C96184 /* PltFileMediaServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBCE0E764DC700C96184 /* PltFileMediaServer.cpp */; };
-		E4E0CC230E764DC700C96184 /* PltFileMediaServer.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBCF0E764DC700C96184 /* PltFileMediaServer.h */; };
-		E4E0CC240E764DC700C96184 /* PltMediaBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBD00E764DC700C96184 /* PltMediaBrowser.cpp */; };
-		E4E0CC250E764DC700C96184 /* PltMediaBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBD10E764DC700C96184 /* PltMediaBrowser.h */; };
-		E4E0CC260E764DC700C96184 /* PltMediaBrowserListener.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBD20E764DC700C96184 /* PltMediaBrowserListener.h */; };
-		E4E0CC270E764DC700C96184 /* PltMediaCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBD30E764DC700C96184 /* PltMediaCache.cpp */; };
-		E4E0CC280E764DC700C96184 /* PltMediaCache.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBD40E764DC700C96184 /* PltMediaCache.h */; };
-		E4E0CC290E764DC700C96184 /* PltMediaItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBD50E764DC700C96184 /* PltMediaItem.cpp */; };
-		E4E0CC2A0E764DC700C96184 /* PltMediaItem.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBD60E764DC700C96184 /* PltMediaItem.h */; };
-		E4E0CC2B0E764DC700C96184 /* PltMediaPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBD70E764DC700C96184 /* PltMediaPlaylist.cpp */; };
-		E4E0CC2C0E764DC700C96184 /* PltMediaPlaylist.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBD80E764DC700C96184 /* PltMediaPlaylist.h */; };
-		E4E0CC2D0E764DC700C96184 /* PltMediaServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBD90E764DC700C96184 /* PltMediaServer.cpp */; };
-		E4E0CC2E0E764DC700C96184 /* PltMediaServer.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBDA0E764DC700C96184 /* PltMediaServer.h */; };
-		E4E0CC2F0E764DC700C96184 /* PltMediaServerSCPDs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBDB0E764DC700C96184 /* PltMediaServerSCPDs.cpp */; };
-		E4E0CC300E764DC700C96184 /* PltSyncMediaBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E0CBDC0E764DC700C96184 /* PltSyncMediaBrowser.cpp */; };
-		E4E0CC310E764DC700C96184 /* PltSyncMediaBrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = E4E0CBDD0E764DC700C96184 /* PltSyncMediaBrowser.h */; };
-		E4E0CC490E764EBF00C96184 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA810E764D7800C96184 /* libNeptune.a */; };
-		E4E0CC4A0E764EBF00C96184 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA790E764D4D00C96184 /* libPlatinum.a */; };
-		E4E0CC4C0E764ED500C96184 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA810E764D7800C96184 /* libNeptune.a */; };
-		E4E0CC4D0E764ED500C96184 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA790E764D4D00C96184 /* libPlatinum.a */; };
-		E4E0CC4E0E764EFE00C96184 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA810E764D7800C96184 /* libNeptune.a */; };
-		E4E0CC4F0E764EFE00C96184 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA790E764D4D00C96184 /* libPlatinum.a */; };
-		E4E0CC500E764F0A00C96184 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA810E764D7800C96184 /* libNeptune.a */; };
-		E4E0CC510E764F0A00C96184 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA790E764D4D00C96184 /* libPlatinum.a */; };
-		E4E0CC520E764F1600C96184 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA810E764D7800C96184 /* libNeptune.a */; };
-		E4E0CC530E764F1600C96184 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA790E764D4D00C96184 /* libPlatinum.a */; };
-		E4E0CC540E764F2000C96184 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA810E764D7800C96184 /* libNeptune.a */; };
-		E4E0CC550E764F2000C96184 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA790E764D4D00C96184 /* libPlatinum.a */; };
-		E4E0CC560E764F2800C96184 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA810E764D7800C96184 /* libNeptune.a */; };
-		E4E0CC570E764F2800C96184 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA790E764D4D00C96184 /* libPlatinum.a */; };
-		E4E0CC580E764F3000C96184 /* libNeptune.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA810E764D7800C96184 /* libNeptune.a */; };
-		E4E0CC590E764F3000C96184 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E0CA790E764D4D00C96184 /* libPlatinum.a */; };
+		E46270FC0F81F63C007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E46270FD0F81F63F007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E46270FE0F81F642007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E46270FF0F81F645007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E46271000F81F648007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E46271010F81F64B007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E46271020F81F64E007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E46271030F81F652007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E46271040F81F655007FE869 /* libPlatinum.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4626F210F81F3C8007FE869 /* libPlatinum.a */; };
+		E4E85D800F1DC5D600FBA740 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E85D7F0F1DC5D600FBA740 /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -316,117 +145,96 @@
 			remoteGlobalIDString = E426A71E0D75095200A85AE5;
 			remoteInfo = SsdpTest;
 		};
-		E4E0CC690E76502600C96184 /* PBXContainerItemProxy */ = {
+		E42D3AC70FDC87320045379C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA780E764D4D00C96184;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3ABD0FDC87130045379C /* MediaCrawler */;
+			remoteInfo = MediaCrawler;
+		};
+		E42D3AFE0FDC88180045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3AD30FDC87DB0045379C /* MediaConnect */;
+			remoteInfo = MediaConnect;
+		};
+		E42D3B000FDC88180045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3ADD0FDC87F50045379C /* MicroMediaController */;
+			remoteInfo = MicroMediaController;
+		};
+		E42D3B020FDC88180045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3AE70FDC880D0045379C /* FrameStreamer */;
+			remoteInfo = FrameStreamer;
+		};
+		E42D3B2F0FDC89900045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3B1B0FDC895A0045379C /* FileMediaServerTest */;
+			remoteInfo = FileMediaServerTest;
+		};
+		E42D3B310FDC89900045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3B260FDC89720045379C /* HttpTest */;
+			remoteInfo = HttpTest;
+		};
+		E42D3B810FDC8A3F0045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3B390FDC89B70045379C /* LightSampleTest */;
+			remoteInfo = LightSampleTest;
+		};
+		E42D3B830FDC8A3F0045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3B450FDC89CD0045379C /* MediaRendererTest */;
+			remoteInfo = MediaRendererTest;
+		};
+		E42D3B850FDC8A3F0045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3B500FDC89E10045379C /* SimpleTest */;
+			remoteInfo = SimpleTest;
+		};
+		E42D3B870FDC8A3F0045379C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E42D3B5C0FDC89FC0045379C /* SsdpTest */;
+			remoteInfo = SsdpTest;
+		};
+		E4626F200F81F3C8007FE869 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC046055464E500DB518D;
 			remoteInfo = Platinum;
 		};
-		E4E0CC6B0E76502600C96184 /* PBXContainerItemProxy */ = {
+		E46271230F81F7B7007FE869 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = E4E0CA800E764D7800C96184;
-			remoteInfo = Neptune;
+			remoteGlobalIDString = E4E85D700F1DC5A900FBA740;
+			remoteInfo = FrameStreamer;
 		};
-		E4E0CC720E76505B00C96184 /* PBXContainerItemProxy */ = {
+		E4BBFA450FC533810036443D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA780E764D4D00C96184;
-			remoteInfo = Platinum;
-		};
-		E4E0CC740E76505B00C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA800E764D7800C96184;
-			remoteInfo = Neptune;
-		};
-		E4E0CC760E76506300C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA780E764D4D00C96184;
-			remoteInfo = Platinum;
-		};
-		E4E0CC780E76506300C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA800E764D7800C96184;
-			remoteInfo = Neptune;
-		};
-		E4E0CC7A0E76506A00C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA780E764D4D00C96184;
-			remoteInfo = Platinum;
-		};
-		E4E0CC7C0E76506A00C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA800E764D7800C96184;
-			remoteInfo = Neptune;
-		};
-		E4E0CC7E0E76507300C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA780E764D4D00C96184;
-			remoteInfo = Platinum;
-		};
-		E4E0CC800E76507300C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA800E764D7800C96184;
-			remoteInfo = Neptune;
-		};
-		E4E0CC820E76507900C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA780E764D4D00C96184;
-			remoteInfo = Platinum;
-		};
-		E4E0CC840E76507900C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA800E764D7800C96184;
-			remoteInfo = Neptune;
-		};
-		E4E0CC860E76508000C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA780E764D4D00C96184;
-			remoteInfo = Platinum;
-		};
-		E4E0CC880E76508000C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA800E764D7800C96184;
-			remoteInfo = Neptune;
-		};
-		E4E0CC8A0E76508600C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA780E764D4D00C96184;
-			remoteInfo = Platinum;
-		};
-		E4E0CC8C0E76508600C96184 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E426A6050D74F4C400A85AE5 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E4E0CA800E764D7800C96184;
-			remoteInfo = Neptune;
+			containerPortal = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E46272730F820394007FE869;
+			remoteInfo = PlatinumiPhone;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -454,174 +262,9 @@
 		E426A7BA0D750FD800A85AE5 /* LightSampleTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LightSampleTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E426A7BC0D750FD800A85AE5 /* MediaRendererTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MediaRendererTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E426A7BE0D750FD800A85AE5 /* SsdpTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SsdpTest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E47126710EE39A5B0024CDEF /* NptResults.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptResults.cpp; sourceTree = "<group>"; };
-		E4E0CA790E764D4D00C96184 /* libPlatinum.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPlatinum.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E4E0CA810E764D7800C96184 /* libNeptune.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNeptune.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		E4E0CA860E764D9800C96184 /* Neptune.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Neptune.cpp; sourceTree = "<group>"; };
-		E4E0CA870E764D9800C96184 /* Neptune.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Neptune.h; sourceTree = "<group>"; };
-		E4E0CA880E764D9800C96184 /* NptArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptArray.h; sourceTree = "<group>"; };
-		E4E0CA890E764D9800C96184 /* NptBase64.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptBase64.cpp; sourceTree = "<group>"; };
-		E4E0CA8A0E764D9800C96184 /* NptBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptBase64.h; sourceTree = "<group>"; };
-		E4E0CA8B0E764D9800C96184 /* NptBufferedStreams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptBufferedStreams.cpp; sourceTree = "<group>"; };
-		E4E0CA8C0E764D9800C96184 /* NptBufferedStreams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptBufferedStreams.h; sourceTree = "<group>"; };
-		E4E0CA8D0E764D9800C96184 /* NptCommon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptCommon.cpp; sourceTree = "<group>"; };
-		E4E0CA8E0E764D9800C96184 /* NptCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptCommon.h; sourceTree = "<group>"; };
-		E4E0CA8F0E764D9800C96184 /* NptConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptConfig.h; sourceTree = "<group>"; };
-		E4E0CA900E764D9800C96184 /* NptConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptConsole.cpp; sourceTree = "<group>"; };
-		E4E0CA910E764D9800C96184 /* NptConsole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptConsole.h; sourceTree = "<group>"; };
-		E4E0CA920E764D9800C96184 /* NptConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptConstants.h; sourceTree = "<group>"; };
-		E4E0CA930E764D9800C96184 /* NptDataBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptDataBuffer.cpp; sourceTree = "<group>"; };
-		E4E0CA940E764D9800C96184 /* NptDataBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDataBuffer.h; sourceTree = "<group>"; };
-		E4E0CA950E764D9800C96184 /* NptDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptDebug.cpp; sourceTree = "<group>"; };
-		E4E0CA960E764D9800C96184 /* NptDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDebug.h; sourceTree = "<group>"; };
-		E4E0CA970E764D9800C96184 /* NptDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDefs.h; sourceTree = "<group>"; };
-		E4E0CA980E764D9800C96184 /* NptDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptDirectory.cpp; sourceTree = "<group>"; };
-		E4E0CA990E764D9800C96184 /* NptDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDirectory.h; sourceTree = "<group>"; };
-		E4E0CA9A0E764D9800C96184 /* NptDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptDynamicLibraries.cpp; sourceTree = "<group>"; };
-		E4E0CA9B0E764D9800C96184 /* NptDynamicLibraries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptDynamicLibraries.h; sourceTree = "<group>"; };
-		E4E0CA9C0E764D9800C96184 /* NptFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptFile.cpp; sourceTree = "<group>"; };
-		E4E0CA9D0E764D9800C96184 /* NptFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptFile.h; sourceTree = "<group>"; };
-		E4E0CA9E0E764D9800C96184 /* NptHttp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptHttp.cpp; sourceTree = "<group>"; };
-		E4E0CA9F0E764D9800C96184 /* NptHttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptHttp.h; sourceTree = "<group>"; };
-		E4E0CAA00E764D9800C96184 /* NptInterfaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptInterfaces.h; sourceTree = "<group>"; };
-		E4E0CAA10E764D9800C96184 /* NptList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptList.cpp; sourceTree = "<group>"; };
-		E4E0CAA20E764D9800C96184 /* NptList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptList.h; sourceTree = "<group>"; };
-		E4E0CAA30E764D9800C96184 /* NptLogging.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptLogging.cpp; sourceTree = "<group>"; };
-		E4E0CAA40E764D9800C96184 /* NptLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptLogging.h; sourceTree = "<group>"; };
-		E4E0CAA50E764D9800C96184 /* NptMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptMap.h; sourceTree = "<group>"; };
-		E4E0CAA60E764D9800C96184 /* NptMessaging.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptMessaging.cpp; sourceTree = "<group>"; };
-		E4E0CAA70E764D9800C96184 /* NptMessaging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptMessaging.h; sourceTree = "<group>"; };
-		E4E0CAA80E764D9800C96184 /* NptNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptNetwork.cpp; sourceTree = "<group>"; };
-		E4E0CAA90E764D9800C96184 /* NptNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptNetwork.h; sourceTree = "<group>"; };
-		E4E0CAAA0E764D9800C96184 /* NptQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptQueue.cpp; sourceTree = "<group>"; };
-		E4E0CAAB0E764D9800C96184 /* NptQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptQueue.h; sourceTree = "<group>"; };
-		E4E0CAAC0E764D9800C96184 /* NptReferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptReferences.h; sourceTree = "<group>"; };
-		E4E0CAAD0E764D9800C96184 /* NptResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptResults.h; sourceTree = "<group>"; };
-		E4E0CAAE0E764D9800C96184 /* NptRingBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptRingBuffer.cpp; sourceTree = "<group>"; };
-		E4E0CAAF0E764D9800C96184 /* NptRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptRingBuffer.h; sourceTree = "<group>"; };
-		E4E0CAB00E764D9800C96184 /* NptSelectableMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptSelectableMessageQueue.h; sourceTree = "<group>"; };
-		E4E0CAB10E764D9800C96184 /* NptSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptSerialPort.h; sourceTree = "<group>"; };
-		E4E0CAB20E764D9800C96184 /* NptSimpleMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptSimpleMessageQueue.cpp; sourceTree = "<group>"; };
-		E4E0CAB30E764D9800C96184 /* NptSimpleMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptSimpleMessageQueue.h; sourceTree = "<group>"; };
-		E4E0CAB40E764D9800C96184 /* NptSockets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptSockets.cpp; sourceTree = "<group>"; };
-		E4E0CAB50E764D9800C96184 /* NptSockets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptSockets.h; sourceTree = "<group>"; };
-		E4E0CAB60E764D9800C96184 /* NptStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptStack.h; sourceTree = "<group>"; };
-		E4E0CAB70E764D9800C96184 /* NptStreams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStreams.cpp; sourceTree = "<group>"; };
-		E4E0CAB80E764D9800C96184 /* NptStreams.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptStreams.h; sourceTree = "<group>"; };
-		E4E0CAB90E764D9800C96184 /* NptStrings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStrings.cpp; sourceTree = "<group>"; };
-		E4E0CABA0E764D9800C96184 /* NptStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptStrings.h; sourceTree = "<group>"; };
-		E4E0CABB0E764D9800C96184 /* NptSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptSystem.cpp; sourceTree = "<group>"; };
-		E4E0CABC0E764D9800C96184 /* NptSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptSystem.h; sourceTree = "<group>"; };
-		E4E0CABD0E764D9800C96184 /* NptThreads.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptThreads.cpp; sourceTree = "<group>"; };
-		E4E0CABE0E764D9800C96184 /* NptThreads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptThreads.h; sourceTree = "<group>"; };
-		E4E0CABF0E764D9800C96184 /* NptTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptTime.cpp; sourceTree = "<group>"; };
-		E4E0CAC00E764D9800C96184 /* NptTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptTime.h; sourceTree = "<group>"; };
-		E4E0CAC10E764D9800C96184 /* NptTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptTypes.h; sourceTree = "<group>"; };
-		E4E0CAC20E764D9800C96184 /* NptUri.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptUri.cpp; sourceTree = "<group>"; };
-		E4E0CAC30E764D9800C96184 /* NptUri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptUri.h; sourceTree = "<group>"; };
-		E4E0CAC40E764D9800C96184 /* NptUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptUtils.cpp; sourceTree = "<group>"; };
-		E4E0CAC50E764D9800C96184 /* NptUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptUtils.h; sourceTree = "<group>"; };
-		E4E0CAC60E764D9800C96184 /* NptVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptVersion.h; sourceTree = "<group>"; };
-		E4E0CAC70E764D9800C96184 /* NptXml.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptXml.cpp; sourceTree = "<group>"; };
-		E4E0CAC80E764D9800C96184 /* NptXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptXml.h; sourceTree = "<group>"; };
-		E4E0CAC90E764D9800C96184 /* NptZip.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptZip.cpp; sourceTree = "<group>"; };
-		E4E0CACA0E764D9800C96184 /* NptZip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NptZip.h; sourceTree = "<group>"; };
-		E4E0CACD0E764D9800C96184 /* NptBsdNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptBsdNetwork.cpp; sourceTree = "<group>"; };
-		E4E0CACE0E764D9800C96184 /* NptBsdSockets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptBsdSockets.cpp; sourceTree = "<group>"; };
-		E4E0CAD70E764D9800C96184 /* NptPosixDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixDirectory.cpp; sourceTree = "<group>"; };
-		E4E0CAD80E764D9800C96184 /* NptPosixDynamicLibraries.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixDynamicLibraries.cpp; sourceTree = "<group>"; };
-		E4E0CAD90E764D9800C96184 /* NptPosixFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixFile.cpp; sourceTree = "<group>"; };
-		E4E0CADA0E764D9800C96184 /* NptPosixNetwork.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixNetwork.cpp; sourceTree = "<group>"; };
-		E4E0CADB0E764D9800C96184 /* NptPosixQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixQueue.cpp; sourceTree = "<group>"; };
-		E4E0CADC0E764D9800C96184 /* NptPosixSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixSystem.cpp; sourceTree = "<group>"; };
-		E4E0CADD0E764D9800C96184 /* NptPosixThreads.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptPosixThreads.cpp; sourceTree = "<group>"; };
-		E4E0CADE0E764D9800C96184 /* NptSelectableMessageQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptSelectableMessageQueue.cpp; sourceTree = "<group>"; };
-		E4E0CAE90E764D9800C96184 /* NptStdcConsole.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcConsole.cpp; sourceTree = "<group>"; };
-		E4E0CAEA0E764D9800C96184 /* NptStdcDebug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcDebug.cpp; sourceTree = "<group>"; };
-		E4E0CAEB0E764D9800C96184 /* NptStdcEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcEnvironment.cpp; sourceTree = "<group>"; };
-		E4E0CAEC0E764D9800C96184 /* NptStdcFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NptStdcFile.cpp; sourceTree = "<group>"; };
-		E4E0CB7F0E764DC700C96184 /* Platinum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Platinum.cpp; sourceTree = "<group>"; };
-		E4E0CB800E764DC700C96184 /* Platinum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platinum.h; sourceTree = "<group>"; };
-		E4E0CB810E764DC700C96184 /* PltAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltAction.cpp; sourceTree = "<group>"; };
-		E4E0CB820E764DC700C96184 /* PltAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltAction.h; sourceTree = "<group>"; };
-		E4E0CB830E764DC700C96184 /* PltArgument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltArgument.cpp; sourceTree = "<group>"; };
-		E4E0CB840E764DC700C96184 /* PltArgument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltArgument.h; sourceTree = "<group>"; };
-		E4E0CB850E764DC700C96184 /* PltCtrlPoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltCtrlPoint.cpp; sourceTree = "<group>"; };
-		E4E0CB860E764DC700C96184 /* PltCtrlPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltCtrlPoint.h; sourceTree = "<group>"; };
-		E4E0CB870E764DC700C96184 /* PltCtrlPointTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltCtrlPointTask.cpp; sourceTree = "<group>"; };
-		E4E0CB880E764DC700C96184 /* PltCtrlPointTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltCtrlPointTask.h; sourceTree = "<group>"; };
-		E4E0CB890E764DC700C96184 /* PltDatagramStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltDatagramStream.cpp; sourceTree = "<group>"; };
-		E4E0CB8A0E764DC700C96184 /* PltDatagramStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDatagramStream.h; sourceTree = "<group>"; };
-		E4E0CB8B0E764DC700C96184 /* PltDeviceData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltDeviceData.cpp; sourceTree = "<group>"; };
-		E4E0CB8C0E764DC700C96184 /* PltDeviceData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDeviceData.h; sourceTree = "<group>"; };
-		E4E0CB8D0E764DC700C96184 /* PltDeviceHost.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltDeviceHost.cpp; sourceTree = "<group>"; };
-		E4E0CB8E0E764DC700C96184 /* PltDeviceHost.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDeviceHost.h; sourceTree = "<group>"; };
-		E4E0CB8F0E764DC700C96184 /* PltDownloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltDownloader.cpp; sourceTree = "<group>"; };
-		E4E0CB900E764DC700C96184 /* PltDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDownloader.h; sourceTree = "<group>"; };
-		E4E0CB910E764DC700C96184 /* PltEvent.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltEvent.cpp; sourceTree = "<group>"; };
-		E4E0CB920E764DC700C96184 /* PltEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltEvent.h; sourceTree = "<group>"; };
-		E4E0CB930E764DC700C96184 /* PltHttp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltHttp.cpp; sourceTree = "<group>"; };
-		E4E0CB940E764DC700C96184 /* PltHttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttp.h; sourceTree = "<group>"; };
-		E4E0CB950E764DC700C96184 /* PltHttpClientTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltHttpClientTask.cpp; sourceTree = "<group>"; };
-		E4E0CB960E764DC700C96184 /* PltHttpClientTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttpClientTask.h; sourceTree = "<group>"; };
-		E4E0CB970E764DC700C96184 /* PltHttpServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltHttpServer.cpp; sourceTree = "<group>"; };
-		E4E0CB980E764DC700C96184 /* PltHttpServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttpServer.h; sourceTree = "<group>"; };
-		E4E0CB990E764DC700C96184 /* PltHttpServerListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttpServerListener.h; sourceTree = "<group>"; };
-		E4E0CB9A0E764DC700C96184 /* PltHttpServerTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltHttpServerTask.cpp; sourceTree = "<group>"; };
-		E4E0CB9B0E764DC700C96184 /* PltHttpServerTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltHttpServerTask.h; sourceTree = "<group>"; };
-		E4E0CB9C0E764DC700C96184 /* PltLeaks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltLeaks.cpp; sourceTree = "<group>"; };
-		E4E0CB9D0E764DC700C96184 /* PltLeaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltLeaks.h; sourceTree = "<group>"; };
-		E4E0CB9E0E764DC700C96184 /* PltLog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltLog.cpp; sourceTree = "<group>"; };
-		E4E0CB9F0E764DC700C96184 /* PltLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltLog.h; sourceTree = "<group>"; };
-		E4E0CBA00E764DC700C96184 /* PltMetadataHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMetadataHandler.cpp; sourceTree = "<group>"; };
-		E4E0CBA10E764DC700C96184 /* PltMetadataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMetadataHandler.h; sourceTree = "<group>"; };
-		E4E0CBA20E764DC700C96184 /* PltRingBufferStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltRingBufferStream.cpp; sourceTree = "<group>"; };
-		E4E0CBA30E764DC700C96184 /* PltRingBufferStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltRingBufferStream.h; sourceTree = "<group>"; };
-		E4E0CBA40E764DC700C96184 /* PltService.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltService.cpp; sourceTree = "<group>"; };
-		E4E0CBA50E764DC700C96184 /* PltService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltService.h; sourceTree = "<group>"; };
-		E4E0CBA60E764DC700C96184 /* PltSsdp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltSsdp.cpp; sourceTree = "<group>"; };
-		E4E0CBA70E764DC700C96184 /* PltSsdp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltSsdp.h; sourceTree = "<group>"; };
-		E4E0CBA80E764DC700C96184 /* PltSsdpListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltSsdpListener.h; sourceTree = "<group>"; };
-		E4E0CBA90E764DC700C96184 /* PltStateVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltStateVariable.cpp; sourceTree = "<group>"; };
-		E4E0CBAA0E764DC700C96184 /* PltStateVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltStateVariable.h; sourceTree = "<group>"; };
-		E4E0CBAB0E764DC700C96184 /* PltStreamPump.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltStreamPump.cpp; sourceTree = "<group>"; };
-		E4E0CBAC0E764DC700C96184 /* PltStreamPump.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltStreamPump.h; sourceTree = "<group>"; };
-		E4E0CBAD0E764DC700C96184 /* PltTaskManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltTaskManager.cpp; sourceTree = "<group>"; };
-		E4E0CBAE0E764DC700C96184 /* PltTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltTaskManager.h; sourceTree = "<group>"; };
-		E4E0CBAF0E764DC700C96184 /* PltThreadTask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltThreadTask.cpp; sourceTree = "<group>"; };
-		E4E0CBB00E764DC700C96184 /* PltThreadTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltThreadTask.h; sourceTree = "<group>"; };
-		E4E0CBB10E764DC700C96184 /* PltUPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltUPnP.cpp; sourceTree = "<group>"; };
-		E4E0CBB20E764DC700C96184 /* PltUPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltUPnP.h; sourceTree = "<group>"; };
-		E4E0CBB30E764DC700C96184 /* PltUPnPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltUPnPHelper.h; sourceTree = "<group>"; };
-		E4E0CBB40E764DC700C96184 /* PltVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltVersion.h; sourceTree = "<group>"; };
-		E4E0CBB50E764DC700C96184 /* PltXmlHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltXmlHelper.h; sourceTree = "<group>"; };
-		E4E0CBBA0E764DC700C96184 /* PltMediaConnect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaConnect.cpp; sourceTree = "<group>"; };
-		E4E0CBBB0E764DC700C96184 /* PltMediaConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaConnect.h; sourceTree = "<group>"; };
-		E4E0CBBC0E764DC700C96184 /* PltMediaConnectSCPDs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaConnectSCPDs.cpp; sourceTree = "<group>"; };
-		E4E0CBC10E764DC700C96184 /* PltMediaController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaController.cpp; sourceTree = "<group>"; };
-		E4E0CBC20E764DC700C96184 /* PltMediaController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaController.h; sourceTree = "<group>"; };
-		E4E0CBC30E764DC700C96184 /* PltMediaControllerListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaControllerListener.h; sourceTree = "<group>"; };
-		E4E0CBC40E764DC700C96184 /* PltMediaRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaRenderer.cpp; sourceTree = "<group>"; };
-		E4E0CBC50E764DC700C96184 /* PltMediaRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaRenderer.h; sourceTree = "<group>"; };
-		E4E0CBC60E764DC700C96184 /* PltMediaRendererSCPDs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaRendererSCPDs.cpp; sourceTree = "<group>"; };
-		E4E0CBCC0E764DC700C96184 /* PltDidl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltDidl.cpp; sourceTree = "<group>"; };
-		E4E0CBCD0E764DC700C96184 /* PltDidl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltDidl.h; sourceTree = "<group>"; };
-		E4E0CBCE0E764DC700C96184 /* PltFileMediaServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltFileMediaServer.cpp; sourceTree = "<group>"; };
-		E4E0CBCF0E764DC700C96184 /* PltFileMediaServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltFileMediaServer.h; sourceTree = "<group>"; };
-		E4E0CBD00E764DC700C96184 /* PltMediaBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaBrowser.cpp; sourceTree = "<group>"; };
-		E4E0CBD10E764DC700C96184 /* PltMediaBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaBrowser.h; sourceTree = "<group>"; };
-		E4E0CBD20E764DC700C96184 /* PltMediaBrowserListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaBrowserListener.h; sourceTree = "<group>"; };
-		E4E0CBD30E764DC700C96184 /* PltMediaCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaCache.cpp; sourceTree = "<group>"; };
-		E4E0CBD40E764DC700C96184 /* PltMediaCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaCache.h; sourceTree = "<group>"; };
-		E4E0CBD50E764DC700C96184 /* PltMediaItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaItem.cpp; sourceTree = "<group>"; };
-		E4E0CBD60E764DC700C96184 /* PltMediaItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaItem.h; sourceTree = "<group>"; };
-		E4E0CBD70E764DC700C96184 /* PltMediaPlaylist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaPlaylist.cpp; sourceTree = "<group>"; };
-		E4E0CBD80E764DC700C96184 /* PltMediaPlaylist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaPlaylist.h; sourceTree = "<group>"; };
-		E4E0CBD90E764DC700C96184 /* PltMediaServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaServer.cpp; sourceTree = "<group>"; };
-		E4E0CBDA0E764DC700C96184 /* PltMediaServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaServer.h; sourceTree = "<group>"; };
-		E4E0CBDB0E764DC700C96184 /* PltMediaServerSCPDs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaServerSCPDs.cpp; sourceTree = "<group>"; };
-		E4E0CBDC0E764DC700C96184 /* PltSyncMediaBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltSyncMediaBrowser.cpp; sourceTree = "<group>"; };
-		E4E0CBDD0E764DC700C96184 /* PltSyncMediaBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltSyncMediaBrowser.h; sourceTree = "<group>"; };
+		E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Platinum.xcodeproj; sourceTree = "<group>"; };
+		E4E85D7D0F1DC5A900FBA740 /* FrameStreamer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FrameStreamer; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4E85D7F0F1DC5D600FBA740 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../../Source/Apps/FrameStreamer/main.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -629,8 +272,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CC490E764EBF00C96184 /* libNeptune.a in Frameworks */,
-				E4E0CC4A0E764EBF00C96184 /* libPlatinum.a in Frameworks */,
+				E46270FC0F81F63C007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,8 +280,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CC4C0E764ED500C96184 /* libNeptune.a in Frameworks */,
-				E4E0CC4D0E764ED500C96184 /* libPlatinum.a in Frameworks */,
+				E46270FD0F81F63F007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,8 +288,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CC4E0E764EFE00C96184 /* libNeptune.a in Frameworks */,
-				E4E0CC4F0E764EFE00C96184 /* libPlatinum.a in Frameworks */,
+				E46270FE0F81F642007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,8 +296,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CC500E764F0A00C96184 /* libNeptune.a in Frameworks */,
-				E4E0CC510E764F0A00C96184 /* libPlatinum.a in Frameworks */,
+				E46270FF0F81F645007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -665,8 +304,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CC520E764F1600C96184 /* libNeptune.a in Frameworks */,
-				E4E0CC530E764F1600C96184 /* libPlatinum.a in Frameworks */,
+				E46271000F81F648007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -674,8 +312,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CC540E764F2000C96184 /* libNeptune.a in Frameworks */,
-				E4E0CC550E764F2000C96184 /* libPlatinum.a in Frameworks */,
+				E46271010F81F64B007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,8 +320,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CC560E764F2800C96184 /* libNeptune.a in Frameworks */,
-				E4E0CC570E764F2800C96184 /* libPlatinum.a in Frameworks */,
+				E46271020F81F64E007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -692,22 +328,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CC580E764F3000C96184 /* libNeptune.a in Frameworks */,
-				E4E0CC590E764F3000C96184 /* libPlatinum.a in Frameworks */,
+				E46271030F81F652007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E4E0CA770E764D4D00C96184 /* Frameworks */ = {
+		E4E85D770F1DC5A900FBA740 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4E0CA7F0E764D7800C96184 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				E46271040F81F655007FE869 /* libPlatinum.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -717,7 +346,7 @@
 		E426A6030D74F4C400A85AE5 = {
 			isa = PBXGroup;
 			children = (
-				E4E0CA730E764CE100C96184 /* Libs */,
+				E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */,
 				E426A60E0D74F4CB00A85AE5 /* Apps */,
 				E426A6100D74F4D900A85AE5 /* Products */,
 				E426A60F0D74F4D200A85AE5 /* Tests */,
@@ -727,6 +356,7 @@
 		E426A60E0D74F4CB00A85AE5 /* Apps */ = {
 			isa = PBXGroup;
 			children = (
+				E4E85D6F0F1DC59F00FBA740 /* FrameStreamer */,
 				E426A6790D75067100A85AE5 /* MediaConnect */,
 				E426A67B0D75067100A85AE5 /* MediaCrawler */,
 				E426A6800D75067100A85AE5 /* MicroMediaController */,
@@ -757,8 +387,7 @@
 				E426A7BA0D750FD800A85AE5 /* LightSampleTest */,
 				E426A7BC0D750FD800A85AE5 /* MediaRendererTest */,
 				E426A7BE0D750FD800A85AE5 /* SsdpTest */,
-				E4E0CA790E764D4D00C96184 /* libPlatinum.a */,
-				E4E0CA810E764D7800C96184 /* libNeptune.a */,
+				E4E85D7D0F1DC5A900FBA740 /* FrameStreamer */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -842,381 +471,34 @@
 			path = ../../../Source/Tests/Ssdp;
 			sourceTree = SOURCE_ROOT;
 		};
-		E4E0CA730E764CE100C96184 /* Libs */ = {
+		E4626F120F81F3C7007FE869 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E4E0CB7D0E764DAE00C96184 /* Platinum */,
-				E4E0CA740E764CE900C96184 /* Neptune */,
+				E4626F210F81F3C8007FE869 /* libPlatinum.a */,
+				E4BBFA460FC533810036443D /* libPlatinumiPhone.a */,
+				E42D3AC80FDC87320045379C /* MediaCrawler */,
+				E42D3AFF0FDC88180045379C /* MediaConnect */,
+				E42D3B010FDC88180045379C /* MicroMediaController */,
+				E42D3B030FDC88180045379C /* FrameStreamer */,
+				E42D3B300FDC89900045379C /* FileMediaServerTest */,
+				E42D3B320FDC89900045379C /* HttpTest */,
+				E42D3B820FDC8A3F0045379C /* LightSampleTest */,
+				E42D3B840FDC8A3F0045379C /* MediaRendererTest */,
+				E42D3B860FDC8A3F0045379C /* SimpleTest */,
+				E42D3B880FDC8A3F0045379C /* SsdpTest */,
 			);
-			name = Libs;
+			name = Products;
 			sourceTree = "<group>";
 		};
-		E4E0CA740E764CE900C96184 /* Neptune */ = {
+		E4E85D6F0F1DC59F00FBA740 /* FrameStreamer */ = {
 			isa = PBXGroup;
 			children = (
-				E4E0CA850E764D9800C96184 /* Core */,
-				E4E0CACB0E764D9800C96184 /* System */,
+				E4E85D7F0F1DC5D600FBA740 /* main.cpp */,
 			);
-			name = Neptune;
-			sourceTree = "<group>";
-		};
-		E4E0CA850E764D9800C96184 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				E47126710EE39A5B0024CDEF /* NptResults.cpp */,
-				E4E0CA860E764D9800C96184 /* Neptune.cpp */,
-				E4E0CA870E764D9800C96184 /* Neptune.h */,
-				E4E0CA880E764D9800C96184 /* NptArray.h */,
-				E4E0CA890E764D9800C96184 /* NptBase64.cpp */,
-				E4E0CA8A0E764D9800C96184 /* NptBase64.h */,
-				E4E0CA8B0E764D9800C96184 /* NptBufferedStreams.cpp */,
-				E4E0CA8C0E764D9800C96184 /* NptBufferedStreams.h */,
-				E4E0CA8D0E764D9800C96184 /* NptCommon.cpp */,
-				E4E0CA8E0E764D9800C96184 /* NptCommon.h */,
-				E4E0CA8F0E764D9800C96184 /* NptConfig.h */,
-				E4E0CA900E764D9800C96184 /* NptConsole.cpp */,
-				E4E0CA910E764D9800C96184 /* NptConsole.h */,
-				E4E0CA920E764D9800C96184 /* NptConstants.h */,
-				E4E0CA930E764D9800C96184 /* NptDataBuffer.cpp */,
-				E4E0CA940E764D9800C96184 /* NptDataBuffer.h */,
-				E4E0CA950E764D9800C96184 /* NptDebug.cpp */,
-				E4E0CA960E764D9800C96184 /* NptDebug.h */,
-				E4E0CA970E764D9800C96184 /* NptDefs.h */,
-				E4E0CA980E764D9800C96184 /* NptDirectory.cpp */,
-				E4E0CA990E764D9800C96184 /* NptDirectory.h */,
-				E4E0CA9A0E764D9800C96184 /* NptDynamicLibraries.cpp */,
-				E4E0CA9B0E764D9800C96184 /* NptDynamicLibraries.h */,
-				E4E0CA9C0E764D9800C96184 /* NptFile.cpp */,
-				E4E0CA9D0E764D9800C96184 /* NptFile.h */,
-				E4E0CA9E0E764D9800C96184 /* NptHttp.cpp */,
-				E4E0CA9F0E764D9800C96184 /* NptHttp.h */,
-				E4E0CAA00E764D9800C96184 /* NptInterfaces.h */,
-				E4E0CAA10E764D9800C96184 /* NptList.cpp */,
-				E4E0CAA20E764D9800C96184 /* NptList.h */,
-				E4E0CAA30E764D9800C96184 /* NptLogging.cpp */,
-				E4E0CAA40E764D9800C96184 /* NptLogging.h */,
-				E4E0CAA50E764D9800C96184 /* NptMap.h */,
-				E4E0CAA60E764D9800C96184 /* NptMessaging.cpp */,
-				E4E0CAA70E764D9800C96184 /* NptMessaging.h */,
-				E4E0CAA80E764D9800C96184 /* NptNetwork.cpp */,
-				E4E0CAA90E764D9800C96184 /* NptNetwork.h */,
-				E4E0CAAA0E764D9800C96184 /* NptQueue.cpp */,
-				E4E0CAAB0E764D9800C96184 /* NptQueue.h */,
-				E4E0CAAC0E764D9800C96184 /* NptReferences.h */,
-				E4E0CAAD0E764D9800C96184 /* NptResults.h */,
-				E4E0CAAE0E764D9800C96184 /* NptRingBuffer.cpp */,
-				E4E0CAAF0E764D9800C96184 /* NptRingBuffer.h */,
-				E4E0CAB00E764D9800C96184 /* NptSelectableMessageQueue.h */,
-				E4E0CAB10E764D9800C96184 /* NptSerialPort.h */,
-				E4E0CAB20E764D9800C96184 /* NptSimpleMessageQueue.cpp */,
-				E4E0CAB30E764D9800C96184 /* NptSimpleMessageQueue.h */,
-				E4E0CAB40E764D9800C96184 /* NptSockets.cpp */,
-				E4E0CAB50E764D9800C96184 /* NptSockets.h */,
-				E4E0CAB60E764D9800C96184 /* NptStack.h */,
-				E4E0CAB70E764D9800C96184 /* NptStreams.cpp */,
-				E4E0CAB80E764D9800C96184 /* NptStreams.h */,
-				E4E0CAB90E764D9800C96184 /* NptStrings.cpp */,
-				E4E0CABA0E764D9800C96184 /* NptStrings.h */,
-				E4E0CABB0E764D9800C96184 /* NptSystem.cpp */,
-				E4E0CABC0E764D9800C96184 /* NptSystem.h */,
-				E4E0CABD0E764D9800C96184 /* NptThreads.cpp */,
-				E4E0CABE0E764D9800C96184 /* NptThreads.h */,
-				E4E0CABF0E764D9800C96184 /* NptTime.cpp */,
-				E4E0CAC00E764D9800C96184 /* NptTime.h */,
-				E4E0CAC10E764D9800C96184 /* NptTypes.h */,
-				E4E0CAC20E764D9800C96184 /* NptUri.cpp */,
-				E4E0CAC30E764D9800C96184 /* NptUri.h */,
-				E4E0CAC40E764D9800C96184 /* NptUtils.cpp */,
-				E4E0CAC50E764D9800C96184 /* NptUtils.h */,
-				E4E0CAC60E764D9800C96184 /* NptVersion.h */,
-				E4E0CAC70E764D9800C96184 /* NptXml.cpp */,
-				E4E0CAC80E764D9800C96184 /* NptXml.h */,
-				E4E0CAC90E764D9800C96184 /* NptZip.cpp */,
-				E4E0CACA0E764D9800C96184 /* NptZip.h */,
-			);
-			name = Core;
-			path = ../../../ThirdParty/Neptune/Source/Core;
-			sourceTree = SOURCE_ROOT;
-		};
-		E4E0CACB0E764D9800C96184 /* System */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CACC0E764D9800C96184 /* Bsd */,
-				E4E0CAD60E764D9800C96184 /* Posix */,
-				E4E0CAE80E764D9800C96184 /* StdC */,
-			);
-			name = System;
-			path = ../../../ThirdParty/Neptune/Source/System;
-			sourceTree = SOURCE_ROOT;
-		};
-		E4E0CACC0E764D9800C96184 /* Bsd */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CACD0E764D9800C96184 /* NptBsdNetwork.cpp */,
-				E4E0CACE0E764D9800C96184 /* NptBsdSockets.cpp */,
-			);
-			path = Bsd;
-			sourceTree = "<group>";
-		};
-		E4E0CAD60E764D9800C96184 /* Posix */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CAD70E764D9800C96184 /* NptPosixDirectory.cpp */,
-				E4E0CAD80E764D9800C96184 /* NptPosixDynamicLibraries.cpp */,
-				E4E0CAD90E764D9800C96184 /* NptPosixFile.cpp */,
-				E4E0CADA0E764D9800C96184 /* NptPosixNetwork.cpp */,
-				E4E0CADB0E764D9800C96184 /* NptPosixQueue.cpp */,
-				E4E0CADC0E764D9800C96184 /* NptPosixSystem.cpp */,
-				E4E0CADD0E764D9800C96184 /* NptPosixThreads.cpp */,
-				E4E0CADE0E764D9800C96184 /* NptSelectableMessageQueue.cpp */,
-			);
-			path = Posix;
-			sourceTree = "<group>";
-		};
-		E4E0CAE80E764D9800C96184 /* StdC */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CAE90E764D9800C96184 /* NptStdcConsole.cpp */,
-				E4E0CAEA0E764D9800C96184 /* NptStdcDebug.cpp */,
-				E4E0CAEB0E764D9800C96184 /* NptStdcEnvironment.cpp */,
-				E4E0CAEC0E764D9800C96184 /* NptStdcFile.cpp */,
-			);
-			path = StdC;
-			sourceTree = "<group>";
-		};
-		E4E0CB7D0E764DAE00C96184 /* Platinum */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CB7E0E764DC700C96184 /* Core */,
-				E4E0CBB60E764DC700C96184 /* Devices */,
-			);
-			name = Platinum;
-			sourceTree = "<group>";
-		};
-		E4E0CB7E0E764DC700C96184 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CB7F0E764DC700C96184 /* Platinum.cpp */,
-				E4E0CB800E764DC700C96184 /* Platinum.h */,
-				E4E0CB810E764DC700C96184 /* PltAction.cpp */,
-				E4E0CB820E764DC700C96184 /* PltAction.h */,
-				E4E0CB830E764DC700C96184 /* PltArgument.cpp */,
-				E4E0CB840E764DC700C96184 /* PltArgument.h */,
-				E4E0CB850E764DC700C96184 /* PltCtrlPoint.cpp */,
-				E4E0CB860E764DC700C96184 /* PltCtrlPoint.h */,
-				E4E0CB870E764DC700C96184 /* PltCtrlPointTask.cpp */,
-				E4E0CB880E764DC700C96184 /* PltCtrlPointTask.h */,
-				E4E0CB890E764DC700C96184 /* PltDatagramStream.cpp */,
-				E4E0CB8A0E764DC700C96184 /* PltDatagramStream.h */,
-				E4E0CB8B0E764DC700C96184 /* PltDeviceData.cpp */,
-				E4E0CB8C0E764DC700C96184 /* PltDeviceData.h */,
-				E4E0CB8D0E764DC700C96184 /* PltDeviceHost.cpp */,
-				E4E0CB8E0E764DC700C96184 /* PltDeviceHost.h */,
-				E4E0CB8F0E764DC700C96184 /* PltDownloader.cpp */,
-				E4E0CB900E764DC700C96184 /* PltDownloader.h */,
-				E4E0CB910E764DC700C96184 /* PltEvent.cpp */,
-				E4E0CB920E764DC700C96184 /* PltEvent.h */,
-				E4E0CB930E764DC700C96184 /* PltHttp.cpp */,
-				E4E0CB940E764DC700C96184 /* PltHttp.h */,
-				E4E0CB950E764DC700C96184 /* PltHttpClientTask.cpp */,
-				E4E0CB960E764DC700C96184 /* PltHttpClientTask.h */,
-				E4E0CB970E764DC700C96184 /* PltHttpServer.cpp */,
-				E4E0CB980E764DC700C96184 /* PltHttpServer.h */,
-				E4E0CB990E764DC700C96184 /* PltHttpServerListener.h */,
-				E4E0CB9A0E764DC700C96184 /* PltHttpServerTask.cpp */,
-				E4E0CB9B0E764DC700C96184 /* PltHttpServerTask.h */,
-				E4E0CB9C0E764DC700C96184 /* PltLeaks.cpp */,
-				E4E0CB9D0E764DC700C96184 /* PltLeaks.h */,
-				E4E0CB9E0E764DC700C96184 /* PltLog.cpp */,
-				E4E0CB9F0E764DC700C96184 /* PltLog.h */,
-				E4E0CBA00E764DC700C96184 /* PltMetadataHandler.cpp */,
-				E4E0CBA10E764DC700C96184 /* PltMetadataHandler.h */,
-				E4E0CBA20E764DC700C96184 /* PltRingBufferStream.cpp */,
-				E4E0CBA30E764DC700C96184 /* PltRingBufferStream.h */,
-				E4E0CBA40E764DC700C96184 /* PltService.cpp */,
-				E4E0CBA50E764DC700C96184 /* PltService.h */,
-				E4E0CBA60E764DC700C96184 /* PltSsdp.cpp */,
-				E4E0CBA70E764DC700C96184 /* PltSsdp.h */,
-				E4E0CBA80E764DC700C96184 /* PltSsdpListener.h */,
-				E4E0CBA90E764DC700C96184 /* PltStateVariable.cpp */,
-				E4E0CBAA0E764DC700C96184 /* PltStateVariable.h */,
-				E4E0CBAB0E764DC700C96184 /* PltStreamPump.cpp */,
-				E4E0CBAC0E764DC700C96184 /* PltStreamPump.h */,
-				E4E0CBAD0E764DC700C96184 /* PltTaskManager.cpp */,
-				E4E0CBAE0E764DC700C96184 /* PltTaskManager.h */,
-				E4E0CBAF0E764DC700C96184 /* PltThreadTask.cpp */,
-				E4E0CBB00E764DC700C96184 /* PltThreadTask.h */,
-				E4E0CBB10E764DC700C96184 /* PltUPnP.cpp */,
-				E4E0CBB20E764DC700C96184 /* PltUPnP.h */,
-				E4E0CBB30E764DC700C96184 /* PltUPnPHelper.h */,
-				E4E0CBB40E764DC700C96184 /* PltVersion.h */,
-				E4E0CBB50E764DC700C96184 /* PltXmlHelper.h */,
-			);
-			name = Core;
-			path = ../../../Source/Core;
-			sourceTree = SOURCE_ROOT;
-		};
-		E4E0CBB60E764DC700C96184 /* Devices */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CBB70E764DC700C96184 /* MediaConnect */,
-				E4E0CBBE0E764DC700C96184 /* MediaRenderer */,
-				E4E0CBC80E764DC700C96184 /* MediaServer */,
-			);
-			name = Devices;
-			path = ../../../Source/Devices;
-			sourceTree = SOURCE_ROOT;
-		};
-		E4E0CBB70E764DC700C96184 /* MediaConnect */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CBBA0E764DC700C96184 /* PltMediaConnect.cpp */,
-				E4E0CBBB0E764DC700C96184 /* PltMediaConnect.h */,
-				E4E0CBBC0E764DC700C96184 /* PltMediaConnectSCPDs.cpp */,
-			);
-			path = MediaConnect;
-			sourceTree = "<group>";
-		};
-		E4E0CBBE0E764DC700C96184 /* MediaRenderer */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CBC10E764DC700C96184 /* PltMediaController.cpp */,
-				E4E0CBC20E764DC700C96184 /* PltMediaController.h */,
-				E4E0CBC30E764DC700C96184 /* PltMediaControllerListener.h */,
-				E4E0CBC40E764DC700C96184 /* PltMediaRenderer.cpp */,
-				E4E0CBC50E764DC700C96184 /* PltMediaRenderer.h */,
-				E4E0CBC60E764DC700C96184 /* PltMediaRendererSCPDs.cpp */,
-			);
-			path = MediaRenderer;
-			sourceTree = "<group>";
-		};
-		E4E0CBC80E764DC700C96184 /* MediaServer */ = {
-			isa = PBXGroup;
-			children = (
-				E4E0CBCC0E764DC700C96184 /* PltDidl.cpp */,
-				E4E0CBCD0E764DC700C96184 /* PltDidl.h */,
-				E4E0CBCE0E764DC700C96184 /* PltFileMediaServer.cpp */,
-				E4E0CBCF0E764DC700C96184 /* PltFileMediaServer.h */,
-				E4E0CBD00E764DC700C96184 /* PltMediaBrowser.cpp */,
-				E4E0CBD10E764DC700C96184 /* PltMediaBrowser.h */,
-				E4E0CBD20E764DC700C96184 /* PltMediaBrowserListener.h */,
-				E4E0CBD30E764DC700C96184 /* PltMediaCache.cpp */,
-				E4E0CBD40E764DC700C96184 /* PltMediaCache.h */,
-				E4E0CBD50E764DC700C96184 /* PltMediaItem.cpp */,
-				E4E0CBD60E764DC700C96184 /* PltMediaItem.h */,
-				E4E0CBD70E764DC700C96184 /* PltMediaPlaylist.cpp */,
-				E4E0CBD80E764DC700C96184 /* PltMediaPlaylist.h */,
-				E4E0CBD90E764DC700C96184 /* PltMediaServer.cpp */,
-				E4E0CBDA0E764DC700C96184 /* PltMediaServer.h */,
-				E4E0CBDB0E764DC700C96184 /* PltMediaServerSCPDs.cpp */,
-				E4E0CBDC0E764DC700C96184 /* PltSyncMediaBrowser.cpp */,
-				E4E0CBDD0E764DC700C96184 /* PltSyncMediaBrowser.h */,
-			);
-			path = MediaServer;
+			name = FrameStreamer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
-
-/* Begin PBXHeadersBuildPhase section */
-		E4E0CA750E764D4D00C96184 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E4E0CBDF0E764DC700C96184 /* Platinum.h in Headers */,
-				E4E0CBE10E764DC700C96184 /* PltAction.h in Headers */,
-				E4E0CBE30E764DC700C96184 /* PltArgument.h in Headers */,
-				E4E0CBE50E764DC700C96184 /* PltCtrlPoint.h in Headers */,
-				E4E0CBE70E764DC700C96184 /* PltCtrlPointTask.h in Headers */,
-				E4E0CBE90E764DC700C96184 /* PltDatagramStream.h in Headers */,
-				E4E0CBEB0E764DC700C96184 /* PltDeviceData.h in Headers */,
-				E4E0CBED0E764DC700C96184 /* PltDeviceHost.h in Headers */,
-				E4E0CBEF0E764DC700C96184 /* PltDownloader.h in Headers */,
-				E4E0CBF10E764DC700C96184 /* PltEvent.h in Headers */,
-				E4E0CBF30E764DC700C96184 /* PltHttp.h in Headers */,
-				E4E0CBF50E764DC700C96184 /* PltHttpClientTask.h in Headers */,
-				E4E0CBF70E764DC700C96184 /* PltHttpServer.h in Headers */,
-				E4E0CBF80E764DC700C96184 /* PltHttpServerListener.h in Headers */,
-				E4E0CBFA0E764DC700C96184 /* PltHttpServerTask.h in Headers */,
-				E4E0CBFC0E764DC700C96184 /* PltLeaks.h in Headers */,
-				E4E0CBFE0E764DC700C96184 /* PltLog.h in Headers */,
-				E4E0CC000E764DC700C96184 /* PltMetadataHandler.h in Headers */,
-				E4E0CC020E764DC700C96184 /* PltRingBufferStream.h in Headers */,
-				E4E0CC040E764DC700C96184 /* PltService.h in Headers */,
-				E4E0CC060E764DC700C96184 /* PltSsdp.h in Headers */,
-				E4E0CC070E764DC700C96184 /* PltSsdpListener.h in Headers */,
-				E4E0CC090E764DC700C96184 /* PltStateVariable.h in Headers */,
-				E4E0CC0B0E764DC700C96184 /* PltStreamPump.h in Headers */,
-				E4E0CC0D0E764DC700C96184 /* PltTaskManager.h in Headers */,
-				E4E0CC0F0E764DC700C96184 /* PltThreadTask.h in Headers */,
-				E4E0CC110E764DC700C96184 /* PltUPnP.h in Headers */,
-				E4E0CC120E764DC700C96184 /* PltUPnPHelper.h in Headers */,
-				E4E0CC130E764DC700C96184 /* PltVersion.h in Headers */,
-				E4E0CC140E764DC700C96184 /* PltXmlHelper.h in Headers */,
-				E4E0CC180E764DC700C96184 /* PltMediaConnect.h in Headers */,
-				E4E0CC1B0E764DC700C96184 /* PltMediaController.h in Headers */,
-				E4E0CC1C0E764DC700C96184 /* PltMediaControllerListener.h in Headers */,
-				E4E0CC1E0E764DC700C96184 /* PltMediaRenderer.h in Headers */,
-				E4E0CC210E764DC700C96184 /* PltDidl.h in Headers */,
-				E4E0CC230E764DC700C96184 /* PltFileMediaServer.h in Headers */,
-				E4E0CC250E764DC700C96184 /* PltMediaBrowser.h in Headers */,
-				E4E0CC260E764DC700C96184 /* PltMediaBrowserListener.h in Headers */,
-				E4E0CC280E764DC700C96184 /* PltMediaCache.h in Headers */,
-				E4E0CC2A0E764DC700C96184 /* PltMediaItem.h in Headers */,
-				E4E0CC2C0E764DC700C96184 /* PltMediaPlaylist.h in Headers */,
-				E4E0CC2E0E764DC700C96184 /* PltMediaServer.h in Headers */,
-				E4E0CC310E764DC700C96184 /* PltSyncMediaBrowser.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4E0CA7D0E764D7800C96184 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E4E0CB080E764D9800C96184 /* Neptune.h in Headers */,
-				E4E0CB090E764D9800C96184 /* NptArray.h in Headers */,
-				E4E0CB0B0E764D9800C96184 /* NptBase64.h in Headers */,
-				E4E0CB0D0E764D9800C96184 /* NptBufferedStreams.h in Headers */,
-				E4E0CB0F0E764D9800C96184 /* NptCommon.h in Headers */,
-				E4E0CB100E764D9800C96184 /* NptConfig.h in Headers */,
-				E4E0CB120E764D9800C96184 /* NptConsole.h in Headers */,
-				E4E0CB130E764D9800C96184 /* NptConstants.h in Headers */,
-				E4E0CB150E764D9800C96184 /* NptDataBuffer.h in Headers */,
-				E4E0CB170E764D9800C96184 /* NptDebug.h in Headers */,
-				E4E0CB180E764D9800C96184 /* NptDefs.h in Headers */,
-				E4E0CB1A0E764D9800C96184 /* NptDirectory.h in Headers */,
-				E4E0CB1C0E764D9800C96184 /* NptDynamicLibraries.h in Headers */,
-				E4E0CB1E0E764D9800C96184 /* NptFile.h in Headers */,
-				E4E0CB200E764D9800C96184 /* NptHttp.h in Headers */,
-				E4E0CB210E764D9800C96184 /* NptInterfaces.h in Headers */,
-				E4E0CB230E764D9800C96184 /* NptList.h in Headers */,
-				E4E0CB250E764D9800C96184 /* NptLogging.h in Headers */,
-				E4E0CB260E764D9800C96184 /* NptMap.h in Headers */,
-				E4E0CB280E764D9800C96184 /* NptMessaging.h in Headers */,
-				E4E0CB2A0E764D9800C96184 /* NptNetwork.h in Headers */,
-				E4E0CB2C0E764D9800C96184 /* NptQueue.h in Headers */,
-				E4E0CB2D0E764D9800C96184 /* NptReferences.h in Headers */,
-				E4E0CB2E0E764D9800C96184 /* NptResults.h in Headers */,
-				E4E0CB300E764D9800C96184 /* NptRingBuffer.h in Headers */,
-				E4E0CB310E764D9800C96184 /* NptSelectableMessageQueue.h in Headers */,
-				E4E0CB320E764D9800C96184 /* NptSerialPort.h in Headers */,
-				E4E0CB340E764D9800C96184 /* NptSimpleMessageQueue.h in Headers */,
-				E4E0CB360E764D9800C96184 /* NptSockets.h in Headers */,
-				E4E0CB370E764D9800C96184 /* NptStack.h in Headers */,
-				E4E0CB390E764D9800C96184 /* NptStreams.h in Headers */,
-				E4E0CB3B0E764D9800C96184 /* NptStrings.h in Headers */,
-				E4E0CB3D0E764D9800C96184 /* NptSystem.h in Headers */,
-				E4E0CB3F0E764D9800C96184 /* NptThreads.h in Headers */,
-				E4E0CB410E764D9800C96184 /* NptTime.h in Headers */,
-				E4E0CB420E764D9800C96184 /* NptTypes.h in Headers */,
-				E4E0CB440E764D9800C96184 /* NptUri.h in Headers */,
-				E4E0CB460E764D9800C96184 /* NptUtils.h in Headers */,
-				E4E0CB470E764D9800C96184 /* NptVersion.h in Headers */,
-				E4E0CB490E764D9800C96184 /* NptXml.h in Headers */,
-				E4E0CB4B0E764D9800C96184 /* NptZip.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		E426A6860D75068800A85AE5 /* MediaConnect */ = {
@@ -1229,8 +511,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E4E0CC6A0E76502600C96184 /* PBXTargetDependency */,
-				E4E0CC6C0E76502600C96184 /* PBXTargetDependency */,
 			);
 			name = MediaConnect;
 			productName = MediaConnect;
@@ -1247,8 +527,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E4E0CC730E76505B00C96184 /* PBXTargetDependency */,
-				E4E0CC750E76505B00C96184 /* PBXTargetDependency */,
 			);
 			name = MediaCrawler;
 			productName = MediaConnect;
@@ -1265,8 +543,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E4E0CC770E76506300C96184 /* PBXTargetDependency */,
-				E4E0CC790E76506300C96184 /* PBXTargetDependency */,
 			);
 			name = MicroMediaController;
 			productName = MediaConnect;
@@ -1283,8 +559,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E4E0CC7B0E76506A00C96184 /* PBXTargetDependency */,
-				E4E0CC7D0E76506A00C96184 /* PBXTargetDependency */,
 			);
 			name = FileMediaServerTest;
 			productName = MediaConnect;
@@ -1301,8 +575,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E4E0CC7F0E76507300C96184 /* PBXTargetDependency */,
-				E4E0CC810E76507300C96184 /* PBXTargetDependency */,
 			);
 			name = HttpTest;
 			productName = MediaConnect;
@@ -1319,8 +591,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E4E0CC830E76507900C96184 /* PBXTargetDependency */,
-				E4E0CC850E76507900C96184 /* PBXTargetDependency */,
 			);
 			name = LightSampleTest;
 			productName = MediaConnect;
@@ -1337,8 +607,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				E4E0CC870E76508000C96184 /* PBXTargetDependency */,
-				E4E0CC890E76508000C96184 /* PBXTargetDependency */,
 			);
 			name = MediaRendererTest;
 			productName = MediaConnect;
@@ -1355,47 +623,27 @@
 			buildRules = (
 			);
 			dependencies = (
-				E4E0CC8B0E76508600C96184 /* PBXTargetDependency */,
-				E4E0CC8D0E76508600C96184 /* PBXTargetDependency */,
 			);
 			name = SsdpTest;
 			productName = MediaConnect;
 			productReference = E426A7BE0D750FD800A85AE5 /* SsdpTest */;
 			productType = "com.apple.product-type.tool";
 		};
-		E4E0CA780E764D4D00C96184 /* Platinum */ = {
+		E4E85D700F1DC5A900FBA740 /* FrameStreamer */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E4E0CA7C0E764D6C00C96184 /* Build configuration list for PBXNativeTarget "Platinum" */;
+			buildConfigurationList = E4E85D7A0F1DC5A900FBA740 /* Build configuration list for PBXNativeTarget "FrameStreamer" */;
 			buildPhases = (
-				E4E0CA750E764D4D00C96184 /* Headers */,
-				E4E0CA760E764D4D00C96184 /* Sources */,
-				E4E0CA770E764D4D00C96184 /* Frameworks */,
+				E4E85D750F1DC5A900FBA740 /* Sources */,
+				E4E85D770F1DC5A900FBA740 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Platinum;
-			productName = Platinum;
-			productReference = E4E0CA790E764D4D00C96184 /* libPlatinum.a */;
-			productType = "com.apple.product-type.library.static";
-		};
-		E4E0CA800E764D7800C96184 /* Neptune */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E4E0CA840E764D9600C96184 /* Build configuration list for PBXNativeTarget "Neptune" */;
-			buildPhases = (
-				E4E0CA7D0E764D7800C96184 /* Headers */,
-				E4E0CA7E0E764D7800C96184 /* Sources */,
-				E4E0CA7F0E764D7800C96184 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Neptune;
-			productName = Neptune;
-			productReference = E4E0CA810E764D7800C96184 /* libNeptune.a */;
-			productType = "com.apple.product-type.library.static";
+			name = FrameStreamer;
+			productName = MediaConnect;
+			productReference = E4E85D7D0F1DC5A900FBA740 /* FrameStreamer */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -1407,6 +655,12 @@
 			hasScannedForEncodings = 0;
 			mainGroup = E426A6030D74F4C400A85AE5;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E4626F120F81F3C7007FE869 /* Products */;
+					ProjectRef = E4626F110F81F3C7007FE869 /* Platinum.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E426A6E80D7508D000A85AE5 /* All */,
@@ -1420,11 +674,107 @@
 				E426A7000D75092100A85AE5 /* LightSampleTest */,
 				E426A70F0D75093C00A85AE5 /* MediaRendererTest */,
 				E426A71E0D75095200A85AE5 /* SsdpTest */,
-				E4E0CA780E764D4D00C96184 /* Platinum */,
-				E4E0CA800E764D7800C96184 /* Neptune */,
+				E4E85D700F1DC5A900FBA740 /* FrameStreamer */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E42D3AC80FDC87320045379C /* MediaCrawler */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = MediaCrawler;
+			path = build/Debug/MediaCrawler;
+			remoteRef = E42D3AC70FDC87320045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3AFF0FDC88180045379C /* MediaConnect */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = MediaConnect;
+			path = build/Release/MediaConnect;
+			remoteRef = E42D3AFE0FDC88180045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3B010FDC88180045379C /* MicroMediaController */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = MicroMediaController;
+			path = build/Release/MicroMediaController;
+			remoteRef = E42D3B000FDC88180045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3B030FDC88180045379C /* FrameStreamer */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = FrameStreamer;
+			path = build/Release/FrameStreamer;
+			remoteRef = E42D3B020FDC88180045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3B300FDC89900045379C /* FileMediaServerTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = FileMediaServerTest;
+			path = build/Release/FileMediaServerTest;
+			remoteRef = E42D3B2F0FDC89900045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3B320FDC89900045379C /* HttpTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = HttpTest;
+			path = build/Release/HttpTest;
+			remoteRef = E42D3B310FDC89900045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3B820FDC8A3F0045379C /* LightSampleTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = LightSampleTest;
+			path = build/Release/LightSampleTest;
+			remoteRef = E42D3B810FDC8A3F0045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3B840FDC8A3F0045379C /* MediaRendererTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = MediaRendererTest;
+			path = build/Release/MediaRendererTest;
+			remoteRef = E42D3B830FDC8A3F0045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3B860FDC8A3F0045379C /* SimpleTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = SimpleTest;
+			path = build/Release/SimpleTest;
+			remoteRef = E42D3B850FDC8A3F0045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E42D3B880FDC8A3F0045379C /* SsdpTest */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			name = SsdpTest;
+			path = build/Release/SsdpTest;
+			remoteRef = E42D3B870FDC8A3F0045379C /* PBXContainerItemProxy */;
+			sourceTree = "<group>";
+		};
+		E4626F210F81F3C8007FE869 /* libPlatinum.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libPlatinum.a;
+			remoteRef = E4626F200F81F3C8007FE869 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		E4BBFA460FC533810036443D /* libPlatinumiPhone.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libPlatinumiPhone.a;
+			remoteRef = E4BBFA450FC533810036443D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E426A6840D75068800A85AE5 /* Sources */ = {
@@ -1494,99 +844,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E4E0CA760E764D4D00C96184 /* Sources */ = {
+		E4E85D750F1DC5A900FBA740 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4E0CBDE0E764DC700C96184 /* Platinum.cpp in Sources */,
-				E4E0CBE00E764DC700C96184 /* PltAction.cpp in Sources */,
-				E4E0CBE20E764DC700C96184 /* PltArgument.cpp in Sources */,
-				E4E0CBE40E764DC700C96184 /* PltCtrlPoint.cpp in Sources */,
-				E4E0CBE60E764DC700C96184 /* PltCtrlPointTask.cpp in Sources */,
-				E4E0CBE80E764DC700C96184 /* PltDatagramStream.cpp in Sources */,
-				E4E0CBEA0E764DC700C96184 /* PltDeviceData.cpp in Sources */,
-				E4E0CBEC0E764DC700C96184 /* PltDeviceHost.cpp in Sources */,
-				E4E0CBEE0E764DC700C96184 /* PltDownloader.cpp in Sources */,
-				E4E0CBF00E764DC700C96184 /* PltEvent.cpp in Sources */,
-				E4E0CBF20E764DC700C96184 /* PltHttp.cpp in Sources */,
-				E4E0CBF40E764DC700C96184 /* PltHttpClientTask.cpp in Sources */,
-				E4E0CBF60E764DC700C96184 /* PltHttpServer.cpp in Sources */,
-				E4E0CBF90E764DC700C96184 /* PltHttpServerTask.cpp in Sources */,
-				E4E0CBFB0E764DC700C96184 /* PltLeaks.cpp in Sources */,
-				E4E0CBFD0E764DC700C96184 /* PltLog.cpp in Sources */,
-				E4E0CBFF0E764DC700C96184 /* PltMetadataHandler.cpp in Sources */,
-				E4E0CC010E764DC700C96184 /* PltRingBufferStream.cpp in Sources */,
-				E4E0CC030E764DC700C96184 /* PltService.cpp in Sources */,
-				E4E0CC050E764DC700C96184 /* PltSsdp.cpp in Sources */,
-				E4E0CC080E764DC700C96184 /* PltStateVariable.cpp in Sources */,
-				E4E0CC0A0E764DC700C96184 /* PltStreamPump.cpp in Sources */,
-				E4E0CC0C0E764DC700C96184 /* PltTaskManager.cpp in Sources */,
-				E4E0CC0E0E764DC700C96184 /* PltThreadTask.cpp in Sources */,
-				E4E0CC100E764DC700C96184 /* PltUPnP.cpp in Sources */,
-				E4E0CC170E764DC700C96184 /* PltMediaConnect.cpp in Sources */,
-				E4E0CC190E764DC700C96184 /* PltMediaConnectSCPDs.cpp in Sources */,
-				E4E0CC1A0E764DC700C96184 /* PltMediaController.cpp in Sources */,
-				E4E0CC1D0E764DC700C96184 /* PltMediaRenderer.cpp in Sources */,
-				E4E0CC1F0E764DC700C96184 /* PltMediaRendererSCPDs.cpp in Sources */,
-				E4E0CC200E764DC700C96184 /* PltDidl.cpp in Sources */,
-				E4E0CC220E764DC700C96184 /* PltFileMediaServer.cpp in Sources */,
-				E4E0CC240E764DC700C96184 /* PltMediaBrowser.cpp in Sources */,
-				E4E0CC270E764DC700C96184 /* PltMediaCache.cpp in Sources */,
-				E4E0CC290E764DC700C96184 /* PltMediaItem.cpp in Sources */,
-				E4E0CC2B0E764DC700C96184 /* PltMediaPlaylist.cpp in Sources */,
-				E4E0CC2D0E764DC700C96184 /* PltMediaServer.cpp in Sources */,
-				E4E0CC2F0E764DC700C96184 /* PltMediaServerSCPDs.cpp in Sources */,
-				E4E0CC300E764DC700C96184 /* PltSyncMediaBrowser.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E4E0CA7E0E764D7800C96184 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				E4E0CB070E764D9800C96184 /* Neptune.cpp in Sources */,
-				E4E0CB0A0E764D9800C96184 /* NptBase64.cpp in Sources */,
-				E4E0CB0C0E764D9800C96184 /* NptBufferedStreams.cpp in Sources */,
-				E4E0CB0E0E764D9800C96184 /* NptCommon.cpp in Sources */,
-				E4E0CB110E764D9800C96184 /* NptConsole.cpp in Sources */,
-				E4E0CB140E764D9800C96184 /* NptDataBuffer.cpp in Sources */,
-				E4E0CB160E764D9800C96184 /* NptDebug.cpp in Sources */,
-				E4E0CB190E764D9800C96184 /* NptDirectory.cpp in Sources */,
-				E4E0CB1B0E764D9800C96184 /* NptDynamicLibraries.cpp in Sources */,
-				E4E0CB1D0E764D9800C96184 /* NptFile.cpp in Sources */,
-				E4E0CB1F0E764D9800C96184 /* NptHttp.cpp in Sources */,
-				E4E0CB220E764D9800C96184 /* NptList.cpp in Sources */,
-				E4E0CB240E764D9800C96184 /* NptLogging.cpp in Sources */,
-				E4E0CB270E764D9800C96184 /* NptMessaging.cpp in Sources */,
-				E4E0CB290E764D9800C96184 /* NptNetwork.cpp in Sources */,
-				E4E0CB2B0E764D9800C96184 /* NptQueue.cpp in Sources */,
-				E4E0CB2F0E764D9800C96184 /* NptRingBuffer.cpp in Sources */,
-				E4E0CB330E764D9800C96184 /* NptSimpleMessageQueue.cpp in Sources */,
-				E4E0CB350E764D9800C96184 /* NptSockets.cpp in Sources */,
-				E4E0CB380E764D9800C96184 /* NptStreams.cpp in Sources */,
-				E4E0CB3A0E764D9800C96184 /* NptStrings.cpp in Sources */,
-				E4E0CB3C0E764D9800C96184 /* NptSystem.cpp in Sources */,
-				E4E0CB3E0E764D9800C96184 /* NptThreads.cpp in Sources */,
-				E4E0CB400E764D9800C96184 /* NptTime.cpp in Sources */,
-				E4E0CB430E764D9800C96184 /* NptUri.cpp in Sources */,
-				E4E0CB450E764D9800C96184 /* NptUtils.cpp in Sources */,
-				E4E0CB480E764D9800C96184 /* NptXml.cpp in Sources */,
-				E4E0CB4A0E764D9800C96184 /* NptZip.cpp in Sources */,
-				E4E0CB4C0E764D9800C96184 /* NptBsdNetwork.cpp in Sources */,
-				E4E0CB4D0E764D9800C96184 /* NptBsdSockets.cpp in Sources */,
-				E4E0CB540E764D9800C96184 /* NptPosixDirectory.cpp in Sources */,
-				E4E0CB550E764D9800C96184 /* NptPosixDynamicLibraries.cpp in Sources */,
-				E4E0CB560E764D9800C96184 /* NptPosixFile.cpp in Sources */,
-				E4E0CB570E764D9800C96184 /* NptPosixNetwork.cpp in Sources */,
-				E4E0CB580E764D9800C96184 /* NptPosixQueue.cpp in Sources */,
-				E4E0CB590E764D9800C96184 /* NptPosixSystem.cpp in Sources */,
-				E4E0CB5A0E764D9800C96184 /* NptPosixThreads.cpp in Sources */,
-				E4E0CB5B0E764D9800C96184 /* NptSelectableMessageQueue.cpp in Sources */,
-				E4E0CB630E764D9800C96184 /* NptStdcConsole.cpp in Sources */,
-				E4E0CB640E764D9800C96184 /* NptStdcDebug.cpp in Sources */,
-				E4E0CB650E764D9800C96184 /* NptStdcEnvironment.cpp in Sources */,
-				E4E0CB660E764D9800C96184 /* NptStdcFile.cpp in Sources */,
-				E47126720EE39A5B0024CDEF /* NptResults.cpp in Sources */,
+				E4E85D800F1DC5D600FBA740 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1643,85 +905,10 @@
 			target = E426A71E0D75095200A85AE5 /* SsdpTest */;
 			targetProxy = E426A72A0D75096400A85AE5 /* PBXContainerItemProxy */;
 		};
-		E4E0CC6A0E76502600C96184 /* PBXTargetDependency */ = {
+		E46271240F81F7B7007FE869 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E4E0CA780E764D4D00C96184 /* Platinum */;
-			targetProxy = E4E0CC690E76502600C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC6C0E76502600C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA800E764D7800C96184 /* Neptune */;
-			targetProxy = E4E0CC6B0E76502600C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC730E76505B00C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA780E764D4D00C96184 /* Platinum */;
-			targetProxy = E4E0CC720E76505B00C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC750E76505B00C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA800E764D7800C96184 /* Neptune */;
-			targetProxy = E4E0CC740E76505B00C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC770E76506300C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA780E764D4D00C96184 /* Platinum */;
-			targetProxy = E4E0CC760E76506300C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC790E76506300C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA800E764D7800C96184 /* Neptune */;
-			targetProxy = E4E0CC780E76506300C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC7B0E76506A00C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA780E764D4D00C96184 /* Platinum */;
-			targetProxy = E4E0CC7A0E76506A00C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC7D0E76506A00C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA800E764D7800C96184 /* Neptune */;
-			targetProxy = E4E0CC7C0E76506A00C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC7F0E76507300C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA780E764D4D00C96184 /* Platinum */;
-			targetProxy = E4E0CC7E0E76507300C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC810E76507300C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA800E764D7800C96184 /* Neptune */;
-			targetProxy = E4E0CC800E76507300C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC830E76507900C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA780E764D4D00C96184 /* Platinum */;
-			targetProxy = E4E0CC820E76507900C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC850E76507900C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA800E764D7800C96184 /* Neptune */;
-			targetProxy = E4E0CC840E76507900C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC870E76508000C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA780E764D4D00C96184 /* Platinum */;
-			targetProxy = E4E0CC860E76508000C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC890E76508000C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA800E764D7800C96184 /* Neptune */;
-			targetProxy = E4E0CC880E76508000C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC8B0E76508600C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA780E764D4D00C96184 /* Platinum */;
-			targetProxy = E4E0CC8A0E76508600C96184 /* PBXContainerItemProxy */;
-		};
-		E4E0CC8D0E76508600C96184 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E4E0CA800E764D7800C96184 /* Neptune */;
-			targetProxy = E4E0CC8C0E76508600C96184 /* PBXContainerItemProxy */;
+			target = E4E85D700F1DC5A900FBA740 /* FrameStreamer */;
+			targetProxy = E46271230F81F7B7007FE869 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1734,6 +921,7 @@
 					ppc,
 				);
 				COPY_PHASE_STRIP = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = NPT_DEBUG;
 				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
@@ -2156,64 +1344,46 @@
 			};
 			name = Release;
 		};
-		E4E0CA7A0E764D4E00C96184 /* Debug */ = {
+		E4E85D7B0F1DC5A900FBA740 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/build/Debug\"";
 				PREBINDING = NO;
-				PRODUCT_NAME = Platinum;
+				PRODUCT_NAME = FrameStreamer;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer $(SRCROOT)/../../../Source/Devices/FrameStreamer";
+				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
-		E4E0CA7B0E764D4E00C96184 /* Release */ = {
+		E4E85D7C0F1DC5A900FBA740 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
-				PRODUCT_NAME = Platinum;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		E4E0CA820E764D7800C96184 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = NPT_CONFIG_ENABLE_LOGGING;
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "$(HOME)/bin";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/build/Debug\"";
 				PREBINDING = NO;
-				PRODUCT_NAME = Neptune;
-			};
-			name = Debug;
-		};
-		E4E0CA830E764D7800C96184 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_MODEL_TUNING = G5;
-				INSTALL_PATH = /usr/local/lib;
-				PREBINDING = NO;
-				PRODUCT_NAME = Neptune;
+				PRODUCT_NAME = FrameStreamer;
+				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../ThirdParty/Neptune/Source/Core $(SRCROOT)/../../../Source/Core $(SRCROOT)/../../../Source/Devices/MediaConnect $(SRCROOT)/../../../Source/Devices/MediaServer $(SRCROOT)/../../../Source/Devices/MediaRenderer $(SRCROOT)/../../../Source/Devices/FrameStreamer";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2329,20 +1499,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E4E0CA7C0E764D6C00C96184 /* Build configuration list for PBXNativeTarget "Platinum" */ = {
+		E4E85D7A0F1DC5A900FBA740 /* Build configuration list for PBXNativeTarget "FrameStreamer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E4E0CA7A0E764D4E00C96184 /* Debug */,
-				E4E0CA7B0E764D4E00C96184 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		E4E0CA840E764D9600C96184 /* Build configuration list for PBXNativeTarget "Neptune" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E4E0CA820E764D7800C96184 /* Debug */,
-				E4E0CA830E764D7800C96184 /* Release */,
+				E4E85D7B0F1DC5A900FBA740 /* Debug */,
+				E4E85D7C0F1DC5A900FBA740 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

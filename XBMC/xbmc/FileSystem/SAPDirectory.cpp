@@ -18,10 +18,20 @@
 */
 
 #include "stdafx.h"
+#include "GUIWindowManager.h"
+#include <string.h>
 #include "SAPDirectory.h"
 #include "Util.h"
 #include "FileItem.h"
+#ifdef __APPLE__
+#include "OSXGNUReplacements.h" // strnlen
+#endif
+#ifdef _MSC_VER
 #include <Ws2tcpip.h>
+#else
+#include <sys/socket.h>
+#define SD_BOTH SHUT_RDWR
+#endif
 #include <vector>
 
 using namespace std;
@@ -53,8 +63,7 @@ namespace SDP
     if(len < 4)
       return -1;
 
-    memset(h, 0, sizeof(sap_desc));
-
+    h->clear();
     h->version    = (data[0] >> 5) & 0x7;
     h->addrtype   = (data[0] >> 4) & 0x1;
     h->msgtype    = (data[0] >> 2) & 0x1;
@@ -101,7 +110,9 @@ namespace SDP
     }
 
     /* read payload type */
+    //no strnlen on non linux/win32 platforms, use handcrafted version
     int payload_size = strnlen(data, len);
+
     if (payload_size == len)
       return -1;
     h->payload_type.assign(data, payload_size);
@@ -319,6 +330,9 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
     {
       if(header.msgtype == 1)
       {
+        CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+        message.SetStringParam("sap://");
+        m_gWindowManager.SendThreadMessage(message);
         m_sessions.erase(it);
         return true;
       }
@@ -335,7 +349,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   sdp_desc_origin origin;
   if(parse_sdp_origin(desc.origin.c_str(), &origin) < 0)
   {
-    CLog::Log(LOGERROR, "%s - failed to parse origin '%'", __FUNCTION__, desc.origin.c_str());
+    CLog::Log(LOGERROR, "%s - failed to parse origin '%s'", __FUNCTION__, desc.origin.c_str());
     return false;
   }
 
@@ -343,7 +357,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   CStdString path, user;
   user = origin.username;
   CUtil::URLEncode(user);
-  path.Format("sap://%s@%s/%s/%s/0x%x.sdp", user, origin.address, origin.nettype, origin.addrtype, origin.sessionid);
+  path.Format("sap://%s/%s/0x%x.sdp", header.origin.c_str(), desc.origin.c_str(), header.msgid);
   CSession session;
   session.path           = path;
   session.origin         = header.origin;
@@ -353,6 +367,11 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   session.payload.assign(data, len);
   session.timeout = GetTickCount() + 60*60*1000;
   m_sessions.push_back(session);
+  
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+  message.SetStringParam("sap://");
+  m_gWindowManager.SendThreadMessage(message);
+  
   return true;
 }
 
@@ -364,8 +383,12 @@ void CSAPSessions::Process()
   if(m_socket == INVALID_SOCKET)
     return;
 
+#ifdef _MSC_VER
   unsigned long nonblocking = 1;
   ioctlsocket(m_socket, FIONBIO, &nonblocking);
+#else
+  fcntl(m_socket, F_SETFL, fcntl(m_socket, F_GETFL) | O_NONBLOCK);
+#endif
 
   const char one = 1;
   setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
@@ -373,33 +396,34 @@ void CSAPSessions::Process()
   /* bind to SAP port */
   struct sockaddr_in addr;
   addr.sin_family           = AF_INET;
-  addr.sin_addr.S_un.S_addr = INADDR_ANY;
+  addr.sin_addr.s_addr      = INADDR_ANY;
   addr.sin_port             = htons(SAP_PORT);
   if(bind(m_socket, (const sockaddr*)&addr, sizeof(addr)) == SOCKET_ERROR) {
+    CLog::Log(LOGERROR, "CSAPSessions::Process - failed to bind to SAP port");
     closesocket(m_socket);
     m_socket = INVALID_SOCKET;
     return;
   }
 
   /* subscribe to all SAP multicast addresses */
-  mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_GLOBAL_ADDRESS);
-  mreq.imr_interface.S_un.S_addr = INADDR_ANY;
+  mreq.imr_multiaddr.s_addr = inet_addr(SAP_V4_GLOBAL_ADDRESS);
+  mreq.imr_interface.s_addr = INADDR_ANY;
   setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
-  mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_ORG_ADDRESS);
-  mreq.imr_interface.S_un.S_addr = INADDR_ANY;
+  mreq.imr_multiaddr.s_addr = inet_addr(SAP_V4_ORG_ADDRESS);
+  mreq.imr_interface.s_addr = INADDR_ANY;
   setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
-  mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_LOCAL_ADDRESS);
-  mreq.imr_interface.S_un.S_addr = INADDR_ANY;
+  mreq.imr_multiaddr.s_addr = inet_addr(SAP_V4_LOCAL_ADDRESS);
+  mreq.imr_interface.s_addr = INADDR_ANY;
   setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
-  mreq.imr_multiaddr.S_un.S_addr = inet_addr(SAP_V4_LINK_ADDRESS);
-  mreq.imr_interface.S_un.S_addr = INADDR_ANY;
+  mreq.imr_multiaddr.s_addr = inet_addr(SAP_V4_LINK_ADDRESS);
+  mreq.imr_interface.s_addr = INADDR_ANY;
   setsockopt(m_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char*)&mreq, sizeof(mreq));
 
   /* start listening for announces */
-  struct fd_set  readfds, expfds;
+  fd_set         readfds, expfds;
   struct timeval timeout;
   int count;
 
@@ -415,7 +439,7 @@ void CSAPSessions::Process()
     FD_SET(m_socket, &readfds);
     FD_SET(m_socket, &expfds);
 
-    count = select(0, &readfds, NULL, &expfds, &timeout);
+    count = select((int)m_socket+1, &readfds, NULL, &expfds, &timeout);
     if(count == SOCKET_ERROR) {
       CLog::Log(LOGERROR, "%s - select returned error", __FUNCTION__);
       break;
@@ -468,13 +492,13 @@ namespace DIRECTORY
 
       if(it->payload_type != "application/sdp")
       {
-        CLog::Log(LOGDEBUG, "%s - unknown sdp payload type [%s]", __FUNCTION__, it->payload_type);
+        CLog::Log(LOGDEBUG, "%s - unknown sdp payload type [%s]", __FUNCTION__, it->payload_type.c_str());
         continue;
       }
       struct sdp_desc desc;
       if(parse_sdp(it->payload.c_str(), &desc) <= 0)
       {
-        CLog::Log(LOGDEBUG, "%s - invalid sdp payload [ --->\n%s\n<--- ]", __FUNCTION__, it->payload);
+        CLog::Log(LOGDEBUG, "%s - invalid sdp payload [ --->\n%s\n<--- ]", __FUNCTION__, it->payload.c_str());
         continue;
       }
 

@@ -19,6 +19,8 @@
 class FooServerMessageHandler
 {
 public:
+    NPT_IMPLEMENT_DYNAMIC_CAST(FooServerMessageHandler)
+    
     // destructor
     virtual ~FooServerMessageHandler() {}
     
@@ -29,6 +31,7 @@ public:
     virtual void OnBarCmd3(NPT_MessageReceiver* /*receiver*/, 
                            int /*info1*/, int /*info2*/, int /*info3*/) {}
 };
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(FooServerMessageHandler)
 
 /*----------------------------------------------------------------------
 |       FooServerMessage
@@ -42,8 +45,7 @@ public:
     }
     virtual NPT_Result Deliver(FooServerMessageHandler* handler) = 0;
     virtual NPT_Result Dispatch(NPT_MessageHandler* handler) {
-        FooServerMessageHandler* specific = 
-            dynamic_cast<FooServerMessageHandler*>(handler);
+        FooServerMessageHandler* specific = NPT_DYNAMIC_CAST(FooServerMessageHandler, handler);
         if (specific) {
             return Deliver(specific);
         } else {
@@ -133,6 +135,8 @@ NPT_Message::Type FooServerBarCmd4Message::MessageType = "FooServerBarCmd4 Messa
 class FooClientMessageHandler
 {
 public:
+    NPT_IMPLEMENT_DYNAMIC_CAST(FooClientMessageHandler)
+
     // destructor
     virtual ~FooClientMessageHandler() {}
     
@@ -140,6 +144,7 @@ public:
     virtual void OnBarNotification1(int /*info*/) {}
     virtual void OnBarNotification2(int /*info1*/, int /*info2*/) {}
 };
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(FooClientMessageHandler)
 
 /*----------------------------------------------------------------------
 |       FooClientMessage
@@ -153,8 +158,7 @@ public:
     }
     virtual NPT_Result Deliver(FooClientMessageHandler* handler) = 0;
     virtual NPT_Result Dispatch(NPT_MessageHandler* handler) {
-        FooClientMessageHandler* specific =
-            dynamic_cast<FooClientMessageHandler*>(handler);
+        FooClientMessageHandler* specific = NPT_DYNAMIC_CAST(FooClientMessageHandler, handler);
         if (specific) {
             return Deliver(specific);
         } else {

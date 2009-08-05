@@ -54,7 +54,7 @@ public:
   void SetAltLabel(const std::string& label);
   virtual CStdString GetLabel() const;
   void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
-  void SetAltClickActions(const std::vector<CStdString> &clickActions);
+  void SetAltClickActions(const std::vector<CGUIActionDescriptor> &clickActions);
 
 protected:
   virtual void UpdateColors();

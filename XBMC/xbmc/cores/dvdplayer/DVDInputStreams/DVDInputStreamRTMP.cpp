@@ -34,24 +34,43 @@
   #include <netinet/in.h>
 #endif
 
-#include "utils/HTTP.h"
 #include "Application.h"
 
 using namespace XFILE;
 
 CDVDInputStreamRTMP::CDVDInputStreamRTMP() : CDVDInputStream(DVDSTREAM_TYPE_RTMP)
 {
+  m_rtmp = NULL;
+  m_rtmp = new RTMP_LIB::CRTMP;
   m_eof = true;
+  m_bPaused = false;
   m_prevTagSize = 0;
   m_bSentHeader = false;
   m_leftOver = NULL;
   m_leftOverSize = 0;
   m_leftOverConsumed = 0;
+  m_sStreamPlaying = NULL;
 }
 
 CDVDInputStreamRTMP::~CDVDInputStreamRTMP()
 {
+  if (m_sStreamPlaying)
+  {
+    free(m_sStreamPlaying);
+    m_sStreamPlaying = NULL;
+  }
+
   Close();
+
+  CSingleLock lock(m_RTMPSection);
+  if (m_rtmp)
+  {
+    CLog::Log(LOGNOTICE,"Deleted CRTMP");
+    delete m_rtmp;
+    m_rtmp = NULL;
+  }
+
+  m_bPaused = false;
 }
 
 bool CDVDInputStreamRTMP::IsEOF()
@@ -61,16 +80,27 @@ bool CDVDInputStreamRTMP::IsEOF()
 
 bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
 {
+  if (m_sStreamPlaying)
+  {
+    free(m_sStreamPlaying);
+    m_sStreamPlaying = NULL;
+  }
+
   if (!CDVDInputStream::Open(strFile, "video/x-flv")) return false;
 
-  m_rtmp.SetPlayer(m_item.GetProperty("SWFPlayer"));
-  m_rtmp.SetPageUrl(m_item.GetProperty("PageURL"));
-  m_rtmp.SetPlayPath(m_item.GetProperty("PlayPath"));
-  m_rtmp.SetBufferMS(20000);
+  CSingleLock lock(m_RTMPSection);
+  if (!m_rtmp) return false;
 
-  if (!m_rtmp.Connect(strFile))
+  m_rtmp->SetPlayer(m_item.GetProperty("SWFPlayer"));
+  m_rtmp->SetPageUrl(m_item.GetProperty("PageURL"));
+  m_rtmp->SetPlayPath(m_item.GetProperty("PlayPath"));
+  m_rtmp->SetBufferMS(20000);
+
+  if (!m_rtmp->Connect(strFile))
     return false;
 
+  m_sStreamPlaying = (char*)calloc(strlen(strFile)+1,sizeof(char));
+  strncpy(m_sStreamPlaying,strFile,strlen(strFile));
   m_eof = false;
   return true;
 }
@@ -78,8 +108,9 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
 // close file and reset everyting
 void CDVDInputStreamRTMP::Close()
 {
+  CSingleLock lock(m_RTMPSection);
   CDVDInputStream::Close();
-  m_rtmp.Close();
+  if (m_rtmp) m_rtmp->Close();
   m_eof = true;
 }
 
@@ -109,7 +140,9 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
   }
 
   RTMP_LIB::RTMPPacket packet;
-  while (buf_size > nRead && m_rtmp.GetNextMediaPacket(packet))
+
+  CSingleLock lock(m_RTMPSection);
+  while (buf_size > nRead && m_rtmp && m_rtmp->GetNextMediaPacket(packet))
   {
 
     if (!m_bSentHeader)
@@ -203,7 +236,7 @@ int CDVDInputStreamRTMP::Read(BYTE* buf, int buf_size)
   }
 
 
-  if (m_rtmp.IsConnected())
+  if (m_rtmp && m_rtmp->IsConnected())
     return nRead;
 
   return -1;
@@ -225,5 +258,31 @@ __int64 CDVDInputStreamRTMP::GetLength()
 bool CDVDInputStreamRTMP::NextStream()
 {
   return false;
+}
+
+bool CDVDInputStreamRTMP::Pause(double dTime)
+{
+  if (m_bPaused)
+  {
+    CSingleLock lock(m_RTMPSection);
+    /*m_rtmp = new RTMP_LIB::CRTMP;
+    m_rtmp->Connect(m_sStreamPlaying, dTime);
+    m_bPaused = false;
+    CLog::Log(LOGNOTICE,"Created new CRTMP - %s : %f ms", m_sStreamPlaying, dTime);*/
+    m_bPaused = false;
+    m_rtmp->SendPause(m_bPaused, dTime);
+  }
+  else
+  {
+    CSingleLock lock(m_RTMPSection);
+    /*Close();
+    delete m_rtmp;
+    m_bPaused = true;
+    CLog::Log(LOGNOTICE,"Deleted CRTMP");*/
+    m_bPaused = true;
+    m_rtmp->SendPause(m_bPaused, dTime);
+  }
+
+  return true;
 }
 

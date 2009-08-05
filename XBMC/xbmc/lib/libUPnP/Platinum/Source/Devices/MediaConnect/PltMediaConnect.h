@@ -72,7 +72,8 @@ public:
                      const char*  friendly_name,
                      bool         show_ip = false,
                      const char*  udn = NULL,
-                     unsigned int port = 0);
+                     NPT_UInt16   port = 0,
+                     bool         port_rebind = false);
 
     NPT_Result Authorize(PLT_MediaConnectInfo* info, bool state);
     NPT_Result Validate(PLT_MediaConnectInfo* info, bool state);
@@ -84,10 +85,13 @@ protected:
     // PLT_DeviceHost methods
     virtual NPT_Result SetupServices(PLT_DeviceData& data);
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const NPT_HttpRequestContext& context);
+                                const PLT_HttpRequestContext& context);
     virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
                                              const NPT_HttpRequestContext& context,
                                              NPT_HttpResponse&             response);
+
+    // PLT_FileMediaServer methods
+    virtual NPT_Result GetFilePath(const char* object_id, NPT_String& filepath);
 
     // X_MS_MediaReceiverRegistrar
     virtual NPT_Result OnIsAuthorized(PLT_ActionReference&  action, 

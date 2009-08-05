@@ -78,11 +78,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void FreeResources();
-#ifndef HAS_SDL
-  void OnLoadPic(int iPic, int iSlideNumber, LPDIRECT3DTEXTURE8 pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
-#else
-  void OnLoadPic(int iPic, int iSlideNumber, SDL_Surface* pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
-#endif
+  void OnLoadPic(int iPic, int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();

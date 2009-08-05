@@ -310,7 +310,6 @@ public:
 #endif
   
   static void AddDirectorySeperator(CStdString& strPath);
-  static char GetDirectorySeperator(const CStdString& strFile);
 
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
@@ -346,6 +345,8 @@ public:
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
+  
+  static void InitRandomSeed();
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.

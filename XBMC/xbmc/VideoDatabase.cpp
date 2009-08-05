@@ -3636,7 +3636,7 @@ void CVideoDatabase::MarkAsWatched(const CFileItem &item)
 {
   // first grab the video's id
   CStdString path = item.m_strPath;
-  if (item.IsVideoDb())
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   long id = GetFileId(path);
   if (id < 0)
@@ -4928,7 +4928,7 @@ bool CVideoDatabase::GetEpisodesNav(const CStdString& strBaseDir, CFileItemList&
   else if (idYear !=-1)
     where=FormatSQL("where idShow=%u and premiered like '%%%u%%'",idShow,idYear);
   else if (idActor != -1)
-    where = FormatSQL("actorlinktvshow on actorlinktvshow.idshow = episodeview.idshow where episodeview.idShow=%u and actorlinktvshow.idactor=%u",idShow,idActor);
+    where = FormatSQL("join actorlinktvshow on actorlinktvshow.idshow = episodeview.idshow where episodeview.idShow=%u and actorlinktvshow.idactor=%u",idShow,idActor);
 
   if (idSeason != -1)
   {

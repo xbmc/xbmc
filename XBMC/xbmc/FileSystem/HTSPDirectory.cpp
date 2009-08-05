@@ -139,13 +139,19 @@ void CHTSPDirectorySession::Release(CHTSPDirectorySession* &session)
 void CHTSPDirectorySession::CheckIdle(DWORD idle)
 {
   CSingleLock lock(g_section);
-  SSessions::iterator it2 = remove_if(g_sessions.begin(), g_sessions.end(), STimedOut(idle));
-  for(SSessions::iterator it = it2; it != g_sessions.end(); it++)
+  STimedOut timeout(idle);
+
+  for(SSessions::iterator it = g_sessions.begin(); it != g_sessions.end();)
   {
-    CLog::Log(LOGINFO, "CheckIdle - Closing session to htsp://%s:%i", it->hostname.c_str(), it->port);
-    delete it->session;
+    if(timeout(*it))
+    {
+      CLog::Log(LOGINFO, "CheckIdle - Closing session to htsp://%s:%i", it->hostname.c_str(), it->port);
+      delete it->session;
+      it = g_sessions.erase(it);
+    }
+    else
+      it++;
   }
-  g_sessions.erase(it2, g_sessions.end());
 }
 
 bool CHTSPDirectorySession::Open(const CURL& url)
