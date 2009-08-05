@@ -339,7 +339,7 @@ static int mxf_read_packet(AVFormatContext *s, AVPacket *pkt)
         skip:
             url_fskip(s->pb, klv.length);
     }
-    return AVERROR(EIO);
+    return AVERROR_EOF;
 }
 
 static int mxf_read_primer_pack(MXFContext *mxf)
@@ -364,6 +364,8 @@ static int mxf_read_primer_pack(MXFContext *mxf)
 
 static int mxf_add_metadata_set(MXFContext *mxf, void *metadata_set)
 {
+    if (mxf->metadata_sets_count+1 >= UINT_MAX / sizeof(*mxf->metadata_sets))
+        return AVERROR(ENOMEM);
     mxf->metadata_sets = av_realloc(mxf->metadata_sets, (mxf->metadata_sets_count + 1) * sizeof(*mxf->metadata_sets));
     if (!mxf->metadata_sets)
         return -1;
@@ -941,6 +943,10 @@ static int mxf_read_close(AVFormatContext *s)
     int i;
 
     av_freep(&mxf->packages_refs);
+
+    for (i = 0; i < s->nb_streams; i++)
+        s->streams[i]->priv_data = NULL;
+
     for (i = 0; i < mxf->metadata_sets_count; i++) {
         switch (mxf->metadata_sets[i]->type) {
         case MultipleDescriptor:
@@ -952,9 +958,6 @@ static int mxf_read_close(AVFormatContext *s)
         case SourcePackage:
         case MaterialPackage:
             av_freep(&((MXFPackage *)mxf->metadata_sets[i])->tracks_refs);
-            break;
-        case Track:
-            mxf->metadata_sets[i] = NULL; /* will be freed later */
             break;
         default:
             break;

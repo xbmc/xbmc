@@ -23,7 +23,7 @@
 //#define DEBUG
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "dnxhddata.h"
 #include "dsputil.h"
 
@@ -278,8 +278,10 @@ static int dnxhd_decode_macroblocks(DNXHDContext *ctx, const uint8_t *buf, int b
 }
 
 static int dnxhd_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                              const uint8_t *buf, int buf_size)
+                              AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     DNXHDContext *ctx = avctx->priv_data;
     AVFrame *picture = data;
     int first_field = 1;

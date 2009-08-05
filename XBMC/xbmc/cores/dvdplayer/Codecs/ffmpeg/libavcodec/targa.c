@@ -91,8 +91,10 @@ static void targa_decode_rle(AVCodecContext *avctx, TargaContext *s, const uint8
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        const uint8_t *buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     TargaContext * const s = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame * const p= (AVFrame*)&s->picture;
@@ -197,7 +199,7 @@ static int decode_frame(AVCodecContext *avctx,
             targa_decode_rle(avctx, s, buf, dst, avctx->width, avctx->height, stride, bpp);
         else{
             for(y = 0; y < s->height; y++){
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
                 if((s->bpp + 1) >> 3 == 2){
                     uint16_t *dst16 = (uint16_t*)dst;
                     for(x = 0; x < s->width; x++)
@@ -227,7 +229,6 @@ static av_cold int targa_init(AVCodecContext *avctx){
 
     avcodec_get_frame_defaults((AVFrame*)&s->picture);
     avctx->coded_frame= (AVFrame*)&s->picture;
-    s->picture.data[0] = NULL;
 
     return 0;
 }
@@ -250,7 +251,7 @@ AVCodec targa_decoder = {
     NULL,
     targa_end,
     decode_frame,
-    0,
+    CODEC_CAP_DR1,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("Truevision Targa image"),
 };

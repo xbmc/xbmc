@@ -14,20 +14,20 @@ FFmpeg can be hooked up with a number of external libraries to add support
 for more formats. None of them are used by default, their use has to be
 explicitly requested by passing the appropriate flags to @file{./configure}.
 
-@section AMR
+@section OpenCORE AMR
 
-AMR comes in two different flavors, wideband and narrowband. FFmpeg can make
-use of the AMR wideband (floating-point mode) and the AMR narrowband
-(floating-point mode) reference decoders and encoders.
+FFmpeg can make use of the OpenCORE libraries for AMR-NB
+decoding/encoding and AMR-WB decoding.
 
-Go to @url{http://www.penguin.cz/~utx/amr} and follow the instructions for
-installing the libraries. Then pass @code{--enable-libamr-nb} and/or
-@code{--enable-libamr-wb} to configure to enable the libraries.
+Go to @url{http://sourceforge.net/projects/opencore-amr/} and follow the instructions for
+installing the libraries. Then pass @code{--enable-libopencore-amrnb} and/or
+@code{--enable-libopencore-amrwb} to configure to enable the libraries.
 
-Note that libamr is copyrighted without any sort of license grant. This means
-that you can use it if you legally obtained it but you are not allowed to
-redistribute it in any way. @strong{Any FFmpeg binaries with libamr support
-you create are non-free and unredistributable!}
+Note that OpenCORE is under the Apache License 2.0 (see
+@url{http://www.apache.org/licenses/LICENSE-2.0} for details), which is
+incompatible with the LGPL version 2.1 and GPL version 2. You have to
+upgrade FFmpeg's license to LGPL version 3 (or if you have enabled
+GPL components, GPL version 3) to use it.
 
 
 @chapter Supported File Formats and Codecs
@@ -43,6 +43,7 @@ library:
 @item Name @tab Encoding @tab Decoding @tab Comments
 @item 4xm                       @tab   @tab X
     @tab 4X Technologies format, used in some games.
+@item 8088flex TMV              @tab   @tab X
 @item Audio IFF (AIFF)          @tab X @tab X
 @item American Laser Games MM   @tab   @tab X
     @tab Multimedia format used in games like Mad Dog McCree.
@@ -129,6 +130,8 @@ library:
     @tab SMPTE 386M, D-10/IMX Mapping.
 @item NC camera feed            @tab   @tab X
     @tab NC (AVIP NC4600) camera streams
+@item NTT TwinVQ (VQF)          @tab   @tab X
+    @tab Nippon Telegraph and Telephone Corporation TwinVQ.
 @item Nullsoft Streaming Video  @tab   @tab X
 @item NuppelVideo               @tab   @tab X
 @item NUT                       @tab X @tab X
@@ -136,6 +139,7 @@ library:
 @item Ogg                       @tab X @tab X
 @item TechnoTrend PVA           @tab   @tab X
     @tab Used by TechnoTrend DVB PCI boards.
+@item QCP                       @tab   @tab X
 @item raw ADTS (AAC)            @tab X @tab X
 @item raw AC-3                  @tab X @tab X
 @item raw Chinese AVS video     @tab   @tab X
@@ -160,6 +164,7 @@ library:
 @item raw video                 @tab X @tab X
 @item raw id RoQ                @tab X @tab
 @item raw Shorten               @tab   @tab X
+@item raw TrueHD                @tab X @tab X
 @item raw VC-1                  @tab   @tab X
 @item raw PCM A-law             @tab X @tab X
 @item raw PCM mu-law            @tab X @tab X
@@ -190,6 +195,7 @@ library:
 @item RL2                       @tab   @tab X
     @tab Audio and video format used in some games by Entertainment Software Partners.
 @item RPL/ARMovie               @tab   @tab X
+@item RTMP                      @tab   @tab X
 @item RTP                       @tab   @tab X
 @item RTSP                      @tab   @tab X
 @item SDP                       @tab   @tab X
@@ -204,6 +210,7 @@ library:
 @item Sony OpenMG (OMA)         @tab   @tab X
     @tab Audio format used in Sony Sonic Stage and Sony Vegas.
 @item Sony PlayStation STR      @tab   @tab X
+@item SoX native format         @tab X @tab X
 @item SUN AU format             @tab X @tab X
 @item THP                       @tab   @tab X
     @tab Used on the Nintendo GameCube.
@@ -237,6 +244,8 @@ following image formats are supported:
     @tab Only uncompressed GIFs are generated.
 @item BMP          @tab X @tab X
     @tab Microsoft BMP image
+@item DPX          @tab   @tab X
+    @tab Digital Picture Exchange
 @item JPEG         @tab X @tab X
     @tab Progressive JPEG is not supported.
 @item JPEG 2000    @tab   @tab E
@@ -248,7 +257,7 @@ following image formats are supported:
     @tab PAM is a PNM extension with alpha support.
 @item PBM          @tab X @tab X
     @tab Portable BitMap image
-@item PCX          @tab   @tab X
+@item PCX          @tab X @tab X
     @tab PC Paintbrush
 @item PGM          @tab X @tab X
     @tab Portable GrayMap image
@@ -280,6 +289,7 @@ following image formats are supported:
 @item Name @tab Encoding @tab Decoding @tab Comments
 @item 4X Movie               @tab     @tab  X
     @tab Used in certain computer games.
+@item 8088flex TMV           @tab     @tab  X
 @item 8SVX exponential       @tab     @tab  X
 @item 8SVX fibonacci         @tab     @tab  X
 @item American Laser Games MM  @tab    @tab X
@@ -332,6 +342,7 @@ following image formats are supported:
     @tab Codec originally used in Feeble Files game.
 @item Electronic Arts CMV video  @tab     @tab  X
     @tab Used in NHL 95 game.
+@item Electronic Arts Madcow video  @tab     @tab  X
 @item Electronic Arts TGV video  @tab     @tab  X
 @item Electronic Arts TGQ video  @tab     @tab  X
 @item Electronic Arts TQI video  @tab     @tab  X
@@ -437,6 +448,7 @@ following image formats are supported:
     @tab encoding supported through external library libtheora
 @item Tiertex Limited SEQ video  @tab     @tab  X
     @tab Codec used in DOS CD-ROM FlashBack game.
+@item V210 Quicktime Uncompressed 4:2:2 10-bit     @tab  X  @tab  X
 @item VMware Screen Codec / VMware Video  @tab     @tab  X
     @tab Codec used in videos captured by VMware.
 @item Westwood Studios VQA (Vector Quantized Animation) video  @tab     @tab  X
@@ -511,9 +523,9 @@ following image formats are supported:
     @tab Used in Westwood Studios games like Command and Conquer.
 @item ADPCM Yamaha           @tab  X  @tab  X
 @item AMR-NB                 @tab  E  @tab  E
-    @tab supported through external library libamrnb
-@item AMR-WB                 @tab  E  @tab  E
-    @tab supported through external library libamrwb
+    @tab supported through external library libopencore-amrnb
+@item AMR-WB                 @tab     @tab  E
+    @tab decoding supported through external library libopencore-amrwb
 @item Apple lossless audio   @tab  X  @tab  X
     @tab QuickTime fourcc 'alac'
 @item Atrac 3                @tab     @tab  X
@@ -530,6 +542,7 @@ following image formats are supported:
     @tab Used in Sierra Online game audio files.
 @item DPCM Sol               @tab     @tab  X
 @item DPCM Xan               @tab     @tab  X
+    @tab Used in Origin's Wing Commander IV AVI files.
 @item DSP Group TrueSpeech   @tab     @tab  X
 @item DV audio               @tab     @tab  X
 @item Enhanced AC-3          @tab     @tab  X
@@ -542,8 +555,8 @@ following image formats are supported:
 @item IMC (Intel Music Coder)  @tab     @tab  X
 @item MACE (Macintosh Audio Compression/Expansion) 3:1  @tab     @tab  X
 @item MACE (Macintosh Audio Compression/Expansion) 6:1  @tab     @tab  X
-@item MLP(Meridian Lossless Packing)/TrueHD  @tab     @tab  X
-    @tab Used in DVD-Audio and Blu-Ray discs.
+@item MLP (Meridian Lossless Packing)  @tab     @tab  X
+    @tab Used in DVD-Audio discs.
 @item Monkey's Audio         @tab     @tab  X
     @tab Only versions 3.97-3.99 are supported.
 @item MP1 (MPEG audio layer 1)  @tab     @tab IX
@@ -596,13 +609,14 @@ following image formats are supported:
 @item Speex                  @tab     @tab  E
     @tab supported through external library libspeex
 @item True Audio (TTA)       @tab     @tab  X
+@item TrueHD                 @tab     @tab  X
+    @tab Used in HD-DVD and Blu-Ray discs.
 @item Vorbis                 @tab  E  @tab  X
     @ A native but very primitive encoder exists.
 @item WavPack                @tab     @tab  X
 @item Westwood Audio (SND1)  @tab     @tab  X
 @item Windows Media Audio 1  @tab  X  @tab  X
 @item Windows Media Audio 2  @tab  X  @tab  X
-    @tab Used in Origin's Wing Commander IV AVI files.
 @end multitable
 
 @code{X} means that encoding (resp. decoding) is supported.
@@ -614,19 +628,19 @@ performance on systems without hardware floating point support).
 
 @section Subtitle Formats
 
-@multitable @columnfractions .4 .1 .1 .1 .1 .1
+@multitable @columnfractions .4 .1 .1 .1 .1
 @item Name @tab Muxing @tab Demuxing @tab Encoding @tab Decoding
 @item SSA/ASS      @tab X @tab X
 @item DVB          @tab X @tab X @tab X @tab X
 @item DVD          @tab X @tab X @tab X @tab X
-@item XSUB         @tab   @tab   @tab   @tab X
+@item XSUB         @tab   @tab   @tab X @tab X
 @end multitable
 
 @code{X} means that the feature is supported.
 
 @section Network Protocols
 
-@multitable @columnfractions .4 .1 .1 .1 .1 .1
+@multitable @columnfractions .4 .1
 @item Name         @tab Support
 @item file         @tab X
 @item Gopher       @tab X
@@ -638,6 +652,26 @@ performance on systems without hardware floating point support).
 @end multitable
 
 @code{X} means that the protocol is supported.
+
+
+@section Input/Output Devices
+
+@multitable @columnfractions .4 .1 .1
+@item Name              @tab Input  @tab Output
+@item ALSA              @tab X      @tab X
+@item BEOS audio        @tab X      @tab X
+@item BKTR              @tab X      @tab
+@item DV1394            @tab X      @tab
+@item JACK              @tab X      @tab
+@item LIBDC1394         @tab X      @tab
+@item OSS               @tab X      @tab X
+@item Video4Linux       @tab X      @tab
+@item Video4Linux2      @tab X      @tab
+@item VfW capture       @tab X      @tab
+@item X11 grabbing      @tab X      @tab
+@end multitable
+
+@code{X} means that input/output is supported.
 
 
 @chapter Platform Specific information
@@ -672,7 +706,7 @@ are listed below:
 @item mingw-runtime 3.15
 @end itemize
 
-You will also need to pass @code{-fno-common} to the compiler to work around
+FFmpeg automatically passes @code{-fno-common} to the compiler to work around
 a GCC bug (see @url{http://gcc.gnu.org/bugzilla/show_bug.cgi?id=37216}).
 
 Within the MSYS shell, configure and make with:
@@ -690,10 +724,6 @@ to @file{/usr/local}. You may specify another install path using the
 Notes:
 
 @itemize
-
-@item In order to compile vhooks, you must have a POSIX-compliant libdl in
-your MinGW system. Get dlfcn-win32 from
-@url{http://code.google.com/p/dlfcn-win32}.
 
 @item In order to compile FFplay, you must have the MinGW development library
 of SDL. Get it from @url{http://www.libsdl.org}.
@@ -733,7 +763,7 @@ Application Wizard, uncheck the "Precompiled headers" option.
 @item Write the source code for your application, or, for testing, just
 copy the code from an existing sample application into the source file
 that MSVC++ has already created for you. For example, you can copy
-@file{output_example.c} from the FFmpeg distribution.
+@file{libavformat/output-example.c} from the FFmpeg distribution.
 
 @item Open the "Project / Properties" dialog box. In the "Configuration"
 combo box, select "All Configurations" so that the changes you make will
@@ -856,7 +886,12 @@ or leverage the implementation in MinGW (as explained below).
 Just install your Cygwin with all the "Base" packages, plus the
 following "Devel" ones:
 @example
-binutils, gcc-core, make, subversion, mingw-runtime, diffutils
+binutils, gcc-core, make, subversion, mingw-runtime
+@end example
+
+And the following "Utils" one:
+@example
+diffutils
 @end example
 
 The experimental gcc4 package is still buggy, hence please
@@ -937,412 +972,5 @@ BeOS support is broken in mysterious ways.
 
 For information about compiling FFmpeg on OS/2 see
 @url{http://www.edm2.com/index.php/FFmpeg}.
-
-@chapter Developers Guide
-
-@section API
-@itemize @bullet
-@item libavcodec is the library containing the codecs (both encoding and
-decoding). Look at @file{libavcodec/apiexample.c} to see how to use it.
-
-@item libavformat is the library containing the file format handling (mux and
-demux code for several formats). Look at @file{ffplay.c} to use it in a
-player. See @file{output_example.c} to use it to generate audio or video
-streams.
-
-@end itemize
-
-@section Integrating libavcodec or libavformat in your program
-
-You can integrate all the source code of the libraries to link them
-statically to avoid any version problem. All you need is to provide a
-'config.mak' and a 'config.h' in the parent directory. See the defines
-generated by ./configure to understand what is needed.
-
-You can use libavcodec or libavformat in your commercial program, but
-@emph{any patch you make must be published}. The best way to proceed is
-to send your patches to the FFmpeg mailing list.
-
-@node Coding Rules
-@section Coding Rules
-
-FFmpeg is programmed in the ISO C90 language with a few additional
-features from ISO C99, namely:
-@itemize @bullet
-@item
-the @samp{inline} keyword;
-@item
-@samp{//} comments;
-@item
-designated struct initializers (@samp{struct s x = @{ .i = 17 @};})
-@item
-compound literals (@samp{x = (struct s) @{ 17, 23 @};})
-@end itemize
-
-These features are supported by all compilers we care about, so we will not
-accept patches to remove their use unless they absolutely do not impair
-clarity and performance.
-
-All code must compile with GCC 2.95 and GCC 3.3. Currently, FFmpeg also
-compiles with several other compilers, such as the Compaq ccc compiler
-or Sun Studio 9, and we would like to keep it that way unless it would
-be exceedingly involved. To ensure compatibility, please do not use any
-additional C99 features or GCC extensions. Especially watch out for:
-@itemize @bullet
-@item
-mixing statements and declarations;
-@item
-@samp{long long} (use @samp{int64_t} instead);
-@item
-@samp{__attribute__} not protected by @samp{#ifdef __GNUC__} or similar;
-@item
-GCC statement expressions (@samp{(x = (@{ int y = 4; y; @})}).
-@end itemize
-
-Indent size is 4.
-The presentation is the one specified by 'indent -i4 -kr -nut'.
-The TAB character is forbidden outside of Makefiles as is any
-form of trailing whitespace. Commits containing either will be
-rejected by the Subversion repository.
-
-The main priority in FFmpeg is simplicity and small code size in order to
-minimize the bug count.
-
-Comments: Use the JavaDoc/Doxygen
-format (see examples below) so that code documentation
-can be generated automatically. All nontrivial functions should have a comment
-above them explaining what the function does, even if it is just one sentence.
-All structures and their member variables should be documented, too.
-@example
-/**
- * @@file mpeg.c
- * MPEG codec.
- * @@author ...
- */
-
-/**
- * Summary sentence.
- * more text ...
- * ...
- */
-typedef struct Foobar@{
-    int var1; /**< var1 description */
-    int var2; ///< var2 description
-    /** var3 description */
-    int var3;
-@} Foobar;
-
-/**
- * Summary sentence.
- * more text ...
- * ...
- * @@param my_parameter description of my_parameter
- * @@return return value description
- */
-int myfunc(int my_parameter)
-...
-@end example
-
-fprintf and printf are forbidden in libavformat and libavcodec,
-please use av_log() instead.
-
-Casts should be used only when necessary. Unneeded parentheses
-should also be avoided if they don't make the code easier to understand.
-
-@section Development Policy
-
-@enumerate
-@item
-   Contributions should be licensed under the LGPL 2.1, including an
-   "or any later version" clause, or the MIT license.  GPL 2 including
-   an "or any later version" clause is also acceptable, but LGPL is
-   preferred.
-@item
-   You must not commit code which breaks FFmpeg! (Meaning unfinished but
-   enabled code which breaks compilation or compiles but does not work or
-   breaks the regression tests)
-   You can commit unfinished stuff (for testing etc), but it must be disabled
-   (#ifdef etc) by default so it does not interfere with other developers'
-   work.
-@item
-   You do not have to over-test things. If it works for you, and you think it
-   should work for others, then commit. If your code has problems
-   (portability, triggers compiler bugs, unusual environment etc) they will be
-   reported and eventually fixed.
-@item
-   Do not commit unrelated changes together, split them into self-contained
-   pieces. Also do not forget that if part B depends on part A, but A does not
-   depend on B, then A can and should be committed first and separate from B.
-   Keeping changes well split into self-contained parts makes reviewing and
-   understanding them on the commit log mailing list easier. This also helps
-   in case of debugging later on.
-   Also if you have doubts about splitting or not splitting, do not hesitate to
-   ask/discuss it on the developer mailing list.
-@item
-   Do not change behavior of the program (renaming options etc) without
-   first discussing it on the ffmpeg-devel mailing list. Do not remove
-   functionality from the code. Just improve!
-
-   Note: Redundant code can be removed.
-@item
-   Do not commit changes to the build system (Makefiles, configure script)
-   which change behavior, defaults etc, without asking first. The same
-   applies to compiler warning fixes, trivial looking fixes and to code
-   maintained by other developers. We usually have a reason for doing things
-   the way we do. Send your changes as patches to the ffmpeg-devel mailing
-   list, and if the code maintainers say OK, you may commit. This does not
-   apply to files you wrote and/or maintain.
-@item
-   We refuse source indentation and other cosmetic changes if they are mixed
-   with functional changes, such commits will be rejected and removed. Every
-   developer has his own indentation style, you should not change it. Of course
-   if you (re)write something, you can use your own style, even though we would
-   prefer if the indentation throughout FFmpeg was consistent (Many projects
-   force a given indentation style - we do not.). If you really need to make
-   indentation changes (try to avoid this), separate them strictly from real
-   changes.
-
-   NOTE: If you had to put if()@{ .. @} over a large (> 5 lines) chunk of code,
-   then either do NOT change the indentation of the inner part within (do not
-   move it to the right)! or do so in a separate commit
-@item
-   Always fill out the commit log message. Describe in a few lines what you
-   changed and why. You can refer to mailing list postings if you fix a
-   particular bug. Comments such as "fixed!" or "Changed it." are unacceptable.
-@item
-   If you apply a patch by someone else, include the name and email address in
-   the log message. Since the ffmpeg-cvslog mailing list is publicly
-   archived you should add some SPAM protection to the email address. Send an
-   answer to ffmpeg-devel (or wherever you got the patch from) saying that
-   you applied the patch.
-@item
-   When applying patches that have been discussed (at length) on the mailing
-   list, reference the thread in the log message.
-@item
-    Do NOT commit to code actively maintained by others without permission.
-    Send a patch to ffmpeg-devel instead. If no one answers within a reasonable
-    timeframe (12h for build failures and security fixes, 3 days small changes,
-    1 week for big patches) then commit your patch if you think it is OK.
-    Also note, the maintainer can simply ask for more time to review!
-@item
-    Subscribe to the ffmpeg-cvslog mailing list. The diffs of all commits
-    are sent there and reviewed by all the other developers. Bugs and possible
-    improvements or general questions regarding commits are discussed there. We
-    expect you to react if problems with your code are uncovered.
-@item
-    Update the documentation if you change behavior or add features. If you are
-    unsure how best to do this, send a patch to ffmpeg-devel, the documentation
-    maintainer(s) will review and commit your stuff.
-@item
-    Try to keep important discussions and requests (also) on the public
-    developer mailing list, so that all developers can benefit from them.
-@item
-    Never write to unallocated memory, never write over the end of arrays,
-    always check values read from some untrusted source before using them
-    as array index or other risky things.
-@item
-    Remember to check if you need to bump versions for the specific libav
-    parts (libavutil, libavcodec, libavformat) you are changing. You need
-    to change the version integer.
-    Incrementing the first component means no backward compatibility to
-    previous versions (e.g. removal of a function from the public API).
-    Incrementing the second component means backward compatible change
-    (e.g. addition of a function to the public API or extension of an
-    existing data structure).
-    Incrementing the third component means a noteworthy binary compatible
-    change (e.g. encoder bug fix that matters for the decoder).
-@item
-    Compiler warnings indicate potential bugs or code with bad style. If a type of
-    warning always points to correct and clean code, that warning should
-    be disabled, not the code changed.
-    Thus the remaining warnings can either be bugs or correct code.
-    If it is a bug, the bug has to be fixed. If it is not, the code should
-    be changed to not generate a warning unless that causes a slowdown
-    or obfuscates the code.
-@item
-    If you add a new file, give it a proper license header. Do not copy and
-    paste it from a random place, use an existing file as template.
-@end enumerate
-
-We think our rules are not too hard. If you have comments, contact us.
-
-Note, these rules are mostly borrowed from the MPlayer project.
-
-@section Submitting patches
-
-First, (@pxref{Coding Rules}) above if you did not yet.
-
-When you submit your patch, try to send a unified diff (diff '-up'
-option). We cannot read other diffs :-)
-
-Also please do not submit a patch which contains several unrelated changes.
-Split it into separate, self-contained pieces. This does not mean splitting
-file by file. Instead, make the patch as small as possible while still
-keeping it as a logical unit that contains an individual change, even
-if it spans multiple files. This makes reviewing your patches much easier
-for us and greatly increases your chances of getting your patch applied.
-
-Run the regression tests before submitting a patch so that you can
-verify that there are no big problems.
-
-Patches should be posted as base64 encoded attachments (or any other
-encoding which ensures that the patch will not be trashed during
-transmission) to the ffmpeg-devel mailing list, see
-@url{http://lists.mplayerhq.hu/mailman/listinfo/ffmpeg-devel}
-
-It also helps quite a bit if you tell us what the patch does (for example
-'replaces lrint by lrintf'), and why (for example '*BSD isn't C99 compliant
-and has no lrint()')
-
-Also please if you send several patches, send each patch as a separate mail,
-do not attach several unrelated patches to the same mail.
-
-@section New codecs or formats checklist
-
-@enumerate
-@item
-    Did you use av_cold for codec initialization and close functions?
-@item
-    Did you add a long_name under NULL_IF_CONFIG_SMALL to the AVCodec or
-    AVInputFormat/AVOutputFormat struct?
-@item
-    Did you bump the minor version number in @file{avcodec.h} or
-    @file{avformat.h}?
-@item
-    Did you register it in @file{allcodecs.c} or @file{allformats.c}?
-@item
-    Did you add the CodecID to @file{avcodec.h}?
-@item
-    If it has a fourcc, did you add it to @file{libavformat/riff.c},
-    even if it is only a decoder?
-@item
-    Did you add a rule to compile the appropriate files in the Makefile?
-    Remember to do this even if you're just adding a format to a file that is
-    already being compiled by some other rule, like a raw demuxer.
-@item
-    Did you add an entry to the table of supported formats or codecs in the
-    documentation?
-@item
-    Did you add an entry in the Changelog?
-@item
-    If it depends on a parser or a library, did you add that dependency in
-    configure?
-@item
-    Did you "svn add" the appropriate files before commiting?
-@end enumerate
-
-@section patch submission checklist
-
-@enumerate
-@item
-    Do the regression tests pass with the patch applied?
-@item
-    Does @code{make checkheaders} pass with the patch applied?
-@item
-    Is the patch a unified diff?
-@item
-    Is the patch against latest FFmpeg SVN?
-@item
-    Are you subscribed to ffmpeg-dev?
-    (the list is subscribers only due to spam)
-@item
-    Have you checked that the changes are minimal, so that the same cannot be
-    achieved with a smaller patch and/or simpler final code?
-@item
-    If the change is to speed critical code, did you benchmark it?
-@item
-    If you did any benchmarks, did you provide them in the mail?
-@item
-    Have you checked that the patch does not introduce buffer overflows or
-    other security issues?
-@item
-    Did you test your decoder or demuxer against damaged data? If no, see
-    tools/trasher and the noise bitstream filter. Your decoder or demuxer
-    should not crash or end in a (near) infinite loop when fed damaged data.
-@item
-    Is the patch created from the root of the source tree, so it can be
-    applied with @code{patch -p0}?
-@item
-    Does the patch not mix functional and cosmetic changes?
-@item
-    Did you add tabs or trailing whitespace to the code? Both are forbidden.
-@item
-    Is the patch attached to the email you send?
-@item
-    Is the mime type of the patch correct? It should be text/x-diff or
-    text/x-patch or at least text/plain and not application/octet-stream.
-@item
-    If the patch fixes a bug, did you provide a verbose analysis of the bug?
-@item
-    If the patch fixes a bug, did you provide enough information, including
-    a sample, so the bug can be reproduced and the fix can be verified?
-    Note please do not attach samples >100k to mails but rather provide a
-    URL, you can upload to ftp://upload.ffmpeg.org
-@item
-    Did you provide a verbose summary about what the patch does change?
-@item
-    Did you provide a verbose explanation why it changes things like it does?
-@item
-    Did you provide a verbose summary of the user visible advantages and
-    disadvantages if the patch is applied?
-@item
-    Did you provide an example so we can verify the new feature added by the
-    patch easily?
-@item
-    If you added a new file, did you insert a license header? It should be
-    taken from FFmpeg, not randomly copied and pasted from somewhere else.
-@item
-    You should maintain alphabetical order in alphabetically ordered lists as
-    long as doing so does not break API/ABI compatibility.
-@item
-    Lines with similar content should be aligned vertically when doing so
-    improves readability.
-@item
-    Did you provide a suggestion for a clear commit log message?
-@end enumerate
-
-@section Patch review process
-
-All patches posted to ffmpeg-devel will be reviewed, unless they contain a
-clear note that the patch is not for SVN.
-Reviews and comments will be posted as replies to the patch on the
-mailing list. The patch submitter then has to take care of every comment,
-that can be by resubmitting a changed patch or by discussion. Resubmitted
-patches will themselves be reviewed like any other patch. If at some point
-a patch passes review with no comments then it is approved, that can for
-simple and small patches happen immediately while large patches will generally
-have to be changed and reviewed many times before they are approved.
-After a patch is approved it will be committed to the repository.
-
-We will review all submitted patches, but sometimes we are quite busy so
-especially for large patches this can take several weeks.
-
-When resubmitting patches, please do not make any significant changes
-not related to the comments received during review. Such patches will
-be rejected. Instead, submit  significant changes or new features as
-separate patches.
-
-@section Regression tests
-
-Before submitting a patch (or committing to the repository), you should at least
-test that you did not break anything.
-
-The regression tests build a synthetic video stream and a synthetic
-audio stream. These are then encoded and decoded with all codecs or
-formats. The CRC (or MD5) of each generated file is recorded in a
-result file. A 'diff' is launched to compare the reference results and
-the result file.
-
-The regression tests then go on to test the FFserver code with a
-limited set of streams. It is important that this step runs correctly
-as well.
-
-Run 'make test' to test all the codecs and formats.
-
-Run 'make fulltest' to test all the codecs, formats and FFserver.
-
-[Of course, some patches may change the results of the regression tests. In
-this case, the reference results of the regression tests shall be modified
-accordingly].
 
 @bye

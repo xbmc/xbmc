@@ -25,10 +25,25 @@
 #include <stdlib.h>
 #include "libavutil/avstring.h"
 #include "libavutil/bswap.h"
-#include "libavcodec/bitstream.h"
+#include "libavcodec/get_bits.h"
 #include "libavcodec/bytestream.h"
 #include "avformat.h"
 #include "oggdec.h"
+
+/**
+ * VorbisComment metadata conversion mapping.
+ * from Ogg Vorbis I format specification: comment field and header specification
+ * http://xiph.org/vorbis/doc/v-comment.html
+ */
+const AVMetadataConv ff_vorbiscomment_metadata_conv[] = {
+    { "ARTIST"     , "author" },
+    { "TITLE"      , "title"  },
+    { "ALBUM"      , "album"  },
+    { "DATE"       , "year"   },
+    { "TRACKNUMBER", "track"  },
+    { "GENRE"      , "genre"  },
+    { 0 }
+};
 
 int
 vorbis_comment(AVFormatContext * as, uint8_t *buf, int size)

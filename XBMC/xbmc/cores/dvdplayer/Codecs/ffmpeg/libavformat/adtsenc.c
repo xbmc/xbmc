@@ -20,8 +20,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/bitstream.h"
-#include "libavcodec/internal.h"
+#include "libavcodec/get_bits.h"
+#include "libavcodec/put_bits.h"
+#include "libavcodec/avcodec.h"
+#include "libavcodec/mpeg4audio.h"
 #include "avformat.h"
 
 #define ADTS_HEADER_SIZE 7
@@ -31,18 +33,21 @@ typedef struct {
     int objecttype;
     int sample_rate_index;
     int channel_conf;
+    int pce_size;
+    uint8_t pce_data[MAX_PCE_SIZE];
 } ADTSContext;
 
 static int decode_extradata(AVFormatContext *s, ADTSContext *adts, uint8_t *buf, int size)
 {
     GetBitContext gb;
+    PutBitContext pb;
 
     init_get_bits(&gb, buf, size * 8);
     adts->objecttype = get_bits(&gb, 5) - 1;
     adts->sample_rate_index = get_bits(&gb, 4);
     adts->channel_conf = get_bits(&gb, 4);
 
-    if (adts->objecttype > 3) {
+    if (adts->objecttype > 3U) {
         av_log(s, AV_LOG_ERROR, "MPEG-4 AOT %d is not allowed in ADTS\n", adts->objecttype+1);
         return -1;
     }
@@ -50,9 +55,24 @@ static int decode_extradata(AVFormatContext *s, ADTSContext *adts, uint8_t *buf,
         av_log(s, AV_LOG_ERROR, "Escape sample rate index illegal in ADTS\n");
         return -1;
     }
-    if (adts->channel_conf == 0) {
-        ff_log_missing_feature(s, "PCE based channel configuration", 0);
+    if (get_bits(&gb, 1)) {
+        av_log(s, AV_LOG_ERROR, "960/120 MDCT window is not allowed in ADTS\n");
         return -1;
+    }
+    if (get_bits(&gb, 1)) {
+        av_log(s, AV_LOG_ERROR, "Scalable configurations are not allowed in ADTS\n");
+        return -1;
+    }
+    if (get_bits(&gb, 1)) {
+        av_log_missing_feature(s, "Signaled SBR or PS", 0);
+        return -1;
+    }
+    if (!adts->channel_conf) {
+        init_put_bits(&pb, adts->pce_data, MAX_PCE_SIZE);
+
+        put_bits(&pb, 3, 5); //ID_PCE
+        adts->pce_size = (ff_copy_pce_data(&pb, &gb) + 3) / 8;
+        flush_put_bits(&pb);
     }
 
     adts->write_adts = 1;
@@ -95,12 +115,16 @@ static int adts_write_frame_header(AVFormatContext *s, int size)
     /* adts_variable_header */
     put_bits(&pb, 1, 0);        /* copyright_identification_bit */
     put_bits(&pb, 1, 0);        /* copyright_identification_start */
-    put_bits(&pb, 13, ADTS_HEADER_SIZE + size); /* aac_frame_length */
+    put_bits(&pb, 13, ADTS_HEADER_SIZE + size + ctx->pce_size); /* aac_frame_length */
     put_bits(&pb, 11, 0x7ff);   /* adts_buffer_fullness */
     put_bits(&pb, 2, 0);        /* number_of_raw_data_blocks_in_frame */
 
     flush_put_bits(&pb);
     put_buffer(s->pb, buf, ADTS_HEADER_SIZE);
+    if (ctx->pce_size) {
+        put_buffer(s->pb, ctx->pce_data, ctx->pce_size);
+        ctx->pce_size = 0;
+    }
 
     return 0;
 }
@@ -124,7 +148,7 @@ AVOutputFormat adts_muxer = {
     "adts",
     NULL_IF_CONFIG_SMALL("ADTS AAC"),
     "audio/aac",
-    "aac",
+    "aac,adts",
     sizeof(ADTSContext),
     CODEC_ID_AAC,
     CODEC_ID_NONE,

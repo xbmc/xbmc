@@ -539,6 +539,21 @@ typedef struct H264Context{
     SEI_PicStructType sei_pic_struct;
 
     /**
+     * Complement sei_pic_struct
+     * SEI_PIC_STRUCT_TOP_BOTTOM and SEI_PIC_STRUCT_BOTTOM_TOP indicate interlaced frames.
+     * However, soft telecined frames may have these values.
+     * This is used in an attempt to flag soft telecine progressive.
+     */
+    int prev_interlaced_frame;
+
+    /**
+     * Bit set of clock types for fields/frames in picture timing SEI message.
+     * For each found ct_type, appropriate bit is set (e.g., bit 1 for
+     * interlaced).
+     */
+    int sei_ct_type;
+
+    /**
      * dpb_output_delay in picture timing SEI message, see H.264 C.2.2
      */
     int sei_dpb_output_delay;
@@ -596,5 +611,10 @@ const uint8_t *ff_h264_decode_nal(H264Context *h, const uint8_t *src, int *dst_l
  * @return the length of the trailing, or 0 if damaged
  */
 int ff_h264_decode_rbsp_trailing(H264Context *h, const uint8_t *src);
+
+/**
+ * frees any data that may have been allocated in the H264 context like SPS, PPS etc.
+ */
+av_cold void ff_h264_free_context(H264Context *h);
 
 #endif /* AVCODEC_H264_H */

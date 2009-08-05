@@ -34,7 +34,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "avcodec.h"
 #include "dsputil.h"
@@ -55,7 +54,19 @@ static av_cold int msrle_decode_init(AVCodecContext *avctx)
 
     s->avctx = avctx;
 
-    avctx->pix_fmt = PIX_FMT_PAL8;
+    switch (avctx->bits_per_coded_sample) {
+    case 4:
+    case 8:
+        avctx->pix_fmt = PIX_FMT_PAL8;
+        break;
+    case 24:
+        avctx->pix_fmt = PIX_FMT_BGR24;
+        break;
+    default:
+        av_log(avctx, AV_LOG_ERROR, "unsupported bits per sample\n");
+        return -1;
+    }
+
     s->frame.data[0] = NULL;
 
     return 0;
@@ -63,9 +74,12 @@ static av_cold int msrle_decode_init(AVCodecContext *avctx)
 
 static int msrle_decode_frame(AVCodecContext *avctx,
                               void *data, int *data_size,
-                              const uint8_t *buf, int buf_size)
+                              AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     MsrleContext *s = avctx->priv_data;
+    int istride = FFALIGN(avctx->width*avctx->bits_per_coded_sample, 32) / 8;
 
     s->buf = buf;
     s->size = buf_size;
@@ -77,14 +91,39 @@ static int msrle_decode_frame(AVCodecContext *avctx,
         return -1;
     }
 
-    /* make the palette available */
-    memcpy(s->frame.data[1], s->avctx->palctrl->palette, AVPALETTE_SIZE);
-    if (s->avctx->palctrl->palette_changed) {
-        s->frame.palette_has_changed = 1;
-        s->avctx->palctrl->palette_changed = 0;
+    if (s->avctx->palctrl) {
+        /* make the palette available */
+        memcpy(s->frame.data[1], s->avctx->palctrl->palette, AVPALETTE_SIZE);
+        if (s->avctx->palctrl->palette_changed) {
+            s->frame.palette_has_changed = 1;
+            s->avctx->palctrl->palette_changed = 0;
+        }
     }
 
-    ff_msrle_decode(avctx, (AVPicture*)&s->frame, avctx->bits_per_coded_sample, buf, buf_size);
+    /* FIXME how to correctly detect RLE ??? */
+    if (avctx->height * istride == avpkt->size) { /* assume uncompressed */
+        int linesize = avctx->width * avctx->bits_per_coded_sample / 8;
+        uint8_t *ptr = s->frame.data[0];
+        uint8_t *buf = avpkt->data + (avctx->height-1)*istride;
+        int i, j;
+
+        for (i = 0; i < avctx->height; i++) {
+            if (avctx->bits_per_coded_sample == 4) {
+                for (j = 0; j < avctx->width - 1; j += 2) {
+                    ptr[j+0] = buf[j>>1] >> 4;
+                    ptr[j+1] = buf[j>>1] & 0xF;
+                }
+                if (avctx->width & 1)
+                    ptr[j+0] = buf[j>>1] >> 4;
+            } else {
+                memcpy(ptr, buf, linesize);
+            }
+            buf -= istride;
+            ptr += s->frame.linesize[0];
+        }
+    } else {
+        ff_msrle_decode(avctx, (AVPicture*)&s->frame, avctx->bits_per_coded_sample, buf, buf_size);
+    }
 
     *data_size = sizeof(AVFrame);
     *(AVFrame*)data = s->frame;

@@ -27,7 +27,7 @@ unsigned avfilter_version(void) {
 }
 
 /** list of registered filters */
-struct FilterList
+static struct FilterList
 {
     AVFilter *filter;
     struct FilterList *next;
@@ -221,6 +221,7 @@ void avfilter_start_frame(AVFilterLink *link, AVFilterPicRef *picref)
         link->cur_pic = avfilter_default_get_video_buffer(link, dst->min_perms);
         link->srcpic = picref;
         link->cur_pic->pts = link->srcpic->pts;
+        link->cur_pic->pixel_aspect = link->srcpic->pixel_aspect;
     }
     else
         link->cur_pic = picref;

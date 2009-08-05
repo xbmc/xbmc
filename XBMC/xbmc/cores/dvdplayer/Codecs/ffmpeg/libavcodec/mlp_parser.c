@@ -27,7 +27,7 @@
 #include <stdint.h>
 
 #include "libavutil/crc.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "parser.h"
 #include "mlp_parser.h"
 #include "mlp.h"
@@ -287,7 +287,7 @@ lost_sync:
 }
 
 AVCodecParser mlp_parser = {
-    { CODEC_ID_MLP },
+    { CODEC_ID_MLP, CODEC_ID_TRUEHD },
     sizeof(MLPParseContext),
     mlp_init,
     mlp_parse,

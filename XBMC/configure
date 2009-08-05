@@ -21314,7 +21314,6 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
     ./configure \
       --extra-cflags="-w -D_DARWIN_C_SOURCE -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
       --disable-static \
-      --disable-vhook \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
@@ -21327,7 +21326,6 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
-      --enable-swscale \
       --enable-protocol=http \
       --enable-pthreads \
       --cc="$CC" &&
@@ -21341,7 +21339,6 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --extra-cflags="-D_XBOX" \
       --disable-static \
       --disable-altivec \
-      --disable-vhook \
       --disable-ipv6 \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
@@ -21354,7 +21351,6 @@ if [ $USE_EXTERNAL_FFMPEG != "1" ]; then
       --enable-shared \
       --enable-postproc \
       --enable-gpl \
-      --enable-swscale \
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
       `if test "$use_external_libfaad" = "yes"; then echo --enable-libfaad; fi` \
       --enable-protocol=http \

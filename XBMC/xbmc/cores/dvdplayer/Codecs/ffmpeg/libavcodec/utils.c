@@ -65,6 +65,8 @@ const uint8_t ff_reverse[256]={
 };
 
 static int volatile entangled_thread_counter=0;
+int (*ff_lockmgr_cb)(void **mutex, enum AVLockOp op);
+static void *codec_mutex;
 
 void *av_fast_realloc(void *ptr, unsigned int *size, unsigned int min_size)
 {
@@ -78,6 +80,17 @@ void *av_fast_realloc(void *ptr, unsigned int *size, unsigned int min_size)
         *size= 0;
 
     return ptr;
+}
+
+void av_fast_malloc(void *ptr, unsigned int *size, unsigned int min_size)
+{
+    void **p = ptr;
+    if (min_size < *size)
+        return;
+    *size= FFMAX(17*min_size/16 + 32, min_size);
+    av_free(*p);
+    *p = av_malloc(*size);
+    if (!*p) *size = 0;
 }
 
 /* encoder management */
@@ -123,8 +136,6 @@ typedef struct InternalBuffer{
 
 #define INTERNAL_BUFFER_SIZE 32
 
-#define ALIGN(x, a) (((x)+(a)-1)&~((a)-1))
-
 void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
     int w_align= 1;
     int h_align= 1;
@@ -144,6 +155,8 @@ void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
     case PIX_FMT_YUVA420P:
         w_align= 16; //FIXME check for non mpeg style codecs and use less alignment
         h_align= 16;
+        if(s->codec_id == CODEC_ID_MPEG2VIDEO)
+            h_align= 32; // interlaced is rounded up to 2 MBs
         break;
     case PIX_FMT_YUV411P:
     case PIX_FMT_UYYVYY411:
@@ -180,14 +193,14 @@ void avcodec_align_dimensions(AVCodecContext *s, int *width, int *height){
         break;
     }
 
-    *width = ALIGN(*width , w_align);
-    *height= ALIGN(*height, h_align);
+    *width = FFALIGN(*width , w_align);
+    *height= FFALIGN(*height, h_align);
     if(s->codec_id == CODEC_ID_H264)
         *height+=2; // some of the optimized chroma MC reads one line too much
 }
 
 int avcodec_check_dimensions(void *av_log_ctx, unsigned int w, unsigned int h){
-    if((int)w>0 && (int)h>0 && (w+128)*(uint64_t)(h+128) < INT_MAX/4)
+    if((int)w>0 && (int)h>0 && (w+128)*(uint64_t)(h+128) < INT_MAX/8)
         return 0;
 
     av_log(av_log_ctx, AV_LOG_ERROR, "picture size invalid (%ux%u)\n", w, h);
@@ -242,6 +255,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
         int h_chroma_shift, v_chroma_shift;
         int size[4] = {0};
         int tmpsize;
+        int unaligned;
         AVPicture picture;
         int stride_align[4];
 
@@ -254,21 +268,28 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
             h+= EDGE_WIDTH*2;
         }
 
-        ff_fill_linesize(&picture, s->pix_fmt, w);
+        do {
+            // NOTE: do not align linesizes individually, this breaks e.g. assumptions
+            // that linesize[0] == 2*linesize[1] in the MPEG-encoder for 4:2:2
+            ff_fill_linesize(&picture, s->pix_fmt, w);
+            // increase alignment of w for next try (rhs gives the lowest bit set in w)
+            w += w & ~(w-1);
 
-        for (i=0; i<4; i++){
+            unaligned = 0;
+            for (i=0; i<4; i++){
 //STRIDE_ALIGN is 8 for SSE* but this does not work for SVQ1 chroma planes
 //we could change STRIDE_ALIGN to 16 for x86/sse but it would increase the
 //picture size unneccessarily in some cases. The solution here is not
 //pretty and better ideas are welcome!
 #if HAVE_MMX
-            if(s->codec_id == CODEC_ID_SVQ1)
-                stride_align[i]= 16;
-            else
+                if(s->codec_id == CODEC_ID_SVQ1)
+                    stride_align[i]= 16;
+                else
 #endif
-            stride_align[i] = STRIDE_ALIGN;
-            picture.linesize[i] = ALIGN(picture.linesize[i], stride_align[i]);
-        }
+                stride_align[i] = STRIDE_ALIGN;
+                unaligned |= picture.linesize[i] % stride_align[i];
+            }
+        } while (unaligned);
 
         tmpsize = ff_fill_pointer(&picture, NULL, s->pix_fmt, h);
         if (tmpsize < 0)
@@ -296,7 +317,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
             if((s->flags&CODEC_FLAG_EMU_EDGE) || !size[2])
                 buf->data[i] = buf->base[i];
             else
-                buf->data[i] = buf->base[i] + ALIGN((buf->linesize[i]*EDGE_WIDTH>>v_shift) + (EDGE_WIDTH>>h_shift), stride_align[i]);
+                buf->data[i] = buf->base[i] + FFALIGN((buf->linesize[i]*EDGE_WIDTH>>v_shift) + (EDGE_WIDTH>>h_shift), stride_align[i]);
         }
         if(size[1] && !size[2])
             ff_set_systematic_pal((uint32_t*)buf->data[1], s->pix_fmt);
@@ -420,6 +441,12 @@ int attribute_align_arg avcodec_open(AVCodecContext *avctx, AVCodec *codec)
 {
     int ret= -1;
 
+    /* If there is a user-supplied mutex locking routine, call it. */
+    if (ff_lockmgr_cb) {
+        if ((*ff_lockmgr_cb)(&codec_mutex, AV_LOCK_OBTAIN))
+            return -1;
+    }
+
     entangled_thread_counter++;
     if(entangled_thread_counter != 1){
         av_log(avctx, AV_LOG_ERROR, "insufficient thread locking around avcodec_open/close()\n");
@@ -464,6 +491,11 @@ int attribute_align_arg avcodec_open(AVCodecContext *avctx, AVCodec *codec)
     ret=0;
 end:
     entangled_thread_counter--;
+
+    /* Release any user-supplied mutex. */
+    if (ff_lockmgr_cb) {
+        (*ff_lockmgr_cb)(&codec_mutex, AV_LOCK_RELEASE);
+    }
     return ret;
 }
 
@@ -516,18 +548,34 @@ int avcodec_encode_subtitle(AVCodecContext *avctx, uint8_t *buf, int buf_size,
     return ret;
 }
 
+#if LIBAVCODEC_VERSION_MAJOR < 53
 int attribute_align_arg avcodec_decode_video(AVCodecContext *avctx, AVFrame *picture,
                          int *got_picture_ptr,
                          const uint8_t *buf, int buf_size)
+{
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
+    avpkt.data = buf;
+    avpkt.size = buf_size;
+    // HACK for CorePNG to decode as normal PNG by default
+    avpkt.flags = AV_PKT_FLAG_KEY;
+
+    return avcodec_decode_video2(avctx, picture, got_picture_ptr, &avpkt);
+}
+#endif
+
+int attribute_align_arg avcodec_decode_video2(AVCodecContext *avctx, AVFrame *picture,
+                         int *got_picture_ptr,
+                         AVPacket *avpkt)
 {
     int ret;
 
     *got_picture_ptr= 0;
     if((avctx->coded_width||avctx->coded_height) && avcodec_check_dimensions(avctx,avctx->coded_width,avctx->coded_height))
         return -1;
-    if((avctx->codec->capabilities & CODEC_CAP_DELAY) || buf_size){
+    if((avctx->codec->capabilities & CODEC_CAP_DELAY) || avpkt->size){
         ret = avctx->codec->decode(avctx, picture, got_picture_ptr,
-                                buf, buf_size);
+                                avpkt);
 
         emms_c(); //needed to avoid an emms_c() call before every return;
 
@@ -539,13 +587,27 @@ int attribute_align_arg avcodec_decode_video(AVCodecContext *avctx, AVFrame *pic
     return ret;
 }
 
+#if LIBAVCODEC_VERSION_MAJOR < 53
 int attribute_align_arg avcodec_decode_audio2(AVCodecContext *avctx, int16_t *samples,
                          int *frame_size_ptr,
                          const uint8_t *buf, int buf_size)
 {
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
+    avpkt.data = buf;
+    avpkt.size = buf_size;
+
+    return avcodec_decode_audio3(avctx, samples, frame_size_ptr, &avpkt);
+}
+#endif
+
+int attribute_align_arg avcodec_decode_audio3(AVCodecContext *avctx, int16_t *samples,
+                         int *frame_size_ptr,
+                         AVPacket *avpkt)
+{
     int ret;
 
-    if((avctx->codec->capabilities & CODEC_CAP_DELAY) || buf_size){
+    if((avctx->codec->capabilities & CODEC_CAP_DELAY) || avpkt->size){
         //FIXME remove the check below _after_ ensuring that all audio check that the available space is enough
         if(*frame_size_ptr < AVCODEC_MAX_AUDIO_FRAME_SIZE){
             av_log(avctx, AV_LOG_ERROR, "buffer smaller than AVCODEC_MAX_AUDIO_FRAME_SIZE\n");
@@ -557,8 +619,7 @@ int attribute_align_arg avcodec_decode_audio2(AVCodecContext *avctx, int16_t *sa
             return -1;
         }
 
-        ret = avctx->codec->decode(avctx, samples, frame_size_ptr,
-                                buf, buf_size);
+        ret = avctx->codec->decode(avctx, samples, frame_size_ptr, avpkt);
         avctx->frame_number++;
     }else{
         ret= 0;
@@ -567,15 +628,28 @@ int attribute_align_arg avcodec_decode_audio2(AVCodecContext *avctx, int16_t *sa
     return ret;
 }
 
+#if LIBAVCODEC_VERSION_MAJOR < 53
 int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtitle *sub,
                             int *got_sub_ptr,
                             const uint8_t *buf, int buf_size)
 {
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
+    avpkt.data = buf;
+    avpkt.size = buf_size;
+
+    return avcodec_decode_subtitle2(avctx, sub, got_sub_ptr, &avpkt);
+}
+#endif
+
+int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub,
+                            int *got_sub_ptr,
+                            AVPacket *avpkt)
+{
     int ret;
 
     *got_sub_ptr = 0;
-    ret = avctx->codec->decode(avctx, sub, got_sub_ptr,
-                               buf, buf_size);
+    ret = avctx->codec->decode(avctx, sub, got_sub_ptr, avpkt);
     if (*got_sub_ptr)
         avctx->frame_number++;
     return ret;
@@ -583,6 +657,12 @@ int avcodec_decode_subtitle(AVCodecContext *avctx, AVSubtitle *sub,
 
 int avcodec_close(AVCodecContext *avctx)
 {
+    /* If there is a user-supplied mutex locking routine, call it. */
+    if (ff_lockmgr_cb) {
+        if ((*ff_lockmgr_cb)(&codec_mutex, AV_LOCK_OBTAIN))
+            return -1;
+    }
+
     entangled_thread_counter++;
     if(entangled_thread_counter != 1){
         av_log(avctx, AV_LOG_ERROR, "insufficient thread locking around avcodec_open/close()\n");
@@ -598,6 +678,11 @@ int avcodec_close(AVCodecContext *avctx)
     av_freep(&avctx->priv_data);
     avctx->codec = NULL;
     entangled_thread_counter--;
+
+    /* Release any user-supplied mutex. */
+    if (ff_lockmgr_cb) {
+        (*ff_lockmgr_cb)(&codec_mutex, AV_LOCK_RELEASE);
+    }
     return 0;
 }
 
@@ -924,6 +1009,7 @@ int av_get_bits_per_sample_format(enum SampleFormat sample_fmt) {
 
 #if !HAVE_THREADS
 int avcodec_thread_init(AVCodecContext *s, int thread_count){
+    s->thread_count = thread_count;
     return -1;
 }
 #endif
@@ -1001,6 +1087,7 @@ static const VideoFrameSizeAbbr video_frame_size_abbrs[] = {
     { "qcif",      176, 144 },
     { "cif",       352, 288 },
     { "4cif",      704, 576 },
+    { "16cif",    1408,1152 },
     { "qqvga",     160, 120 },
     { "qvga",      320, 240 },
     { "vga",       640, 480 },
@@ -1104,19 +1191,19 @@ int av_parse_video_frame_rate(AVRational *frame_rate, const char *arg)
         return 0;
 }
 
-void ff_log_missing_feature(void *avc, const char *feature, int want_sample)
+void av_log_missing_feature(void *avc, const char *feature, int want_sample)
 {
     av_log(avc, AV_LOG_WARNING, "%s not implemented. Update your FFmpeg "
             "version to the newest one from SVN. If the problem still "
             "occurs, it means that your file has a feature which has not "
             "been implemented.", feature);
     if(want_sample)
-        ff_log_ask_for_sample(avc, NULL);
+        av_log_ask_for_sample(avc, NULL);
     else
         av_log(avc, AV_LOG_WARNING, "\n");
 }
 
-void ff_log_ask_for_sample(void *avc, const char *msg)
+void av_log_ask_for_sample(void *avc, const char *msg)
 {
     if (msg)
         av_log(avc, AV_LOG_WARNING, "%s ", msg);
@@ -1151,4 +1238,20 @@ AVHWAccel *ff_find_hwaccel(enum CodecID codec_id, enum PixelFormat pix_fmt)
             return hwaccel;
     }
     return NULL;
+}
+
+int av_lockmgr_register(int (*cb)(void **mutex, enum AVLockOp op))
+{
+    if (ff_lockmgr_cb) {
+        if (ff_lockmgr_cb(&codec_mutex, AV_LOCK_DESTROY))
+            return -1;
+    }
+
+    ff_lockmgr_cb = cb;
+
+    if (ff_lockmgr_cb) {
+        if (ff_lockmgr_cb(&codec_mutex, AV_LOCK_CREATE))
+            return -1;
+    }
+    return 0;
 }

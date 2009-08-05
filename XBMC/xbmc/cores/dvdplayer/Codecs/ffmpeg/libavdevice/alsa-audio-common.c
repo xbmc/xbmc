@@ -43,9 +43,9 @@ static av_cold snd_pcm_format_t codec_id_to_pcm_format(int codec_id)
     }
 }
 
-av_cold int ff_alsa_open(AVFormatContext *ctx, int mode,
+av_cold int ff_alsa_open(AVFormatContext *ctx, snd_pcm_stream_t mode,
                          unsigned int *sample_rate,
-                         int channels, int *codec_id)
+                         int channels, enum CodecID *codec_id)
 {
     AlsaData *s = ctx->priv_data;
     const char *audio_device;
@@ -68,7 +68,7 @@ av_cold int ff_alsa_open(AVFormatContext *ctx, int mode,
     s->frame_size = av_get_bits_per_sample(*codec_id) / 8 * channels;
 
     if (ctx->flags & AVFMT_FLAG_NONBLOCK) {
-        flags = O_NONBLOCK;
+        flags = SND_PCM_NONBLOCK;
     }
     res = snd_pcm_open(&h, audio_device, mode, flags);
     if (res < 0) {

@@ -25,7 +25,6 @@
  */
 
 #include "iirfilter.h"
-#include <complex.h>
 #include <math.h>
 
 /**
@@ -48,15 +47,15 @@ typedef struct FFIIRFilterState{
 /// maximum supported filter order
 #define MAXORDER 30
 
-struct FFIIRFilterCoeffs* ff_iir_filter_init_coeffs(enum IIRFilterType filt_type,
+av_cold struct FFIIRFilterCoeffs* ff_iir_filter_init_coeffs(enum IIRFilterType filt_type,
                                                     enum IIRFilterMode filt_mode,
                                                     int order, float cutoff_ratio,
                                                     float stopband, float ripple)
 {
-    int i, j, size;
+    int i, j;
     FFIIRFilterCoeffs *c;
     double wa;
-    complex p[MAXORDER + 1];
+    double p[MAXORDER + 1][2];
 
     if(filt_type != FF_FILTER_TYPE_BUTTERWORTH || filt_mode != FF_FILTER_MODE_LOWPASS)
         return NULL;
@@ -74,30 +73,46 @@ struct FFIIRFilterCoeffs* ff_iir_filter_init_coeffs(enum IIRFilterType filt_type
     for(i = 1; i < (order >> 1) + 1; i++)
         c->cx[i] = c->cx[i - 1] * (order - i + 1LL) / i;
 
-    p[0] = 1.0;
+    p[0][0] = 1.0;
+    p[0][1] = 0.0;
     for(i = 1; i <= order; i++)
-        p[i] = 0.0;
+        p[i][0] = p[i][1] = 0.0;
     for(i = 0; i < order; i++){
-        complex zp;
+        double zp[2];
         double th = (i + (order >> 1) + 0.5) * M_PI / order;
-        zp = cexp(I*th) * wa;
-        zp = (zp + 2.0) / (zp - 2.0);
+        double a_re, a_im, c_re, c_im;
+        zp[0] = cos(th) * wa;
+        zp[1] = sin(th) * wa;
+        a_re = zp[0] + 2.0;
+        c_re = zp[0] - 2.0;
+        a_im =
+        c_im = zp[1];
+        zp[0] = (a_re * c_re + a_im * c_im) / (c_re * c_re + c_im * c_im);
+        zp[1] = (a_im * c_re - a_re * c_im) / (c_re * c_re + c_im * c_im);
 
         for(j = order; j >= 1; j--)
-            p[j] = zp*p[j] + p[j - 1];
-        p[0] *= zp;
+        {
+            a_re = p[j][0];
+            a_im = p[j][1];
+            p[j][0] = a_re*zp[0] - a_im*zp[1] + p[j-1][0];
+            p[j][1] = a_re*zp[1] + a_im*zp[0] + p[j-1][1];
+        }
+        a_re    = p[0][0]*zp[0] - p[0][1]*zp[1];
+        p[0][1] = p[0][0]*zp[1] + p[0][1]*zp[0];
+        p[0][0] = a_re;
     }
-    c->gain = creal(p[order]);
+    c->gain = p[order][0];
     for(i = 0; i < order; i++){
-        c->gain += creal(p[i]);
-        c->cy[i] = creal(-p[i] / p[order]);
+        c->gain += p[i][0];
+        c->cy[i] = (-p[i][0] * p[order][0] + -p[i][1] * p[order][1]) /
+                   (p[order][0] * p[order][0] + p[order][1] * p[order][1]);
     }
     c->gain /= 1 << order;
 
     return c;
 }
 
-struct FFIIRFilterState* ff_iir_filter_init_state(int order)
+av_cold struct FFIIRFilterState* ff_iir_filter_init_state(int order)
 {
     FFIIRFilterState* s = av_mallocz(sizeof(FFIIRFilterState) + sizeof(s->x[0]) * (order - 1));
     return s;
@@ -148,12 +163,12 @@ void ff_iir_filter(const struct FFIIRFilterCoeffs *c, struct FFIIRFilterState *s
     }
 }
 
-void ff_iir_filter_free_state(struct FFIIRFilterState *state)
+av_cold void ff_iir_filter_free_state(struct FFIIRFilterState *state)
 {
     av_free(state);
 }
 
-void ff_iir_filter_free_coeffs(struct FFIIRFilterCoeffs *coeffs)
+av_cold void ff_iir_filter_free_coeffs(struct FFIIRFilterCoeffs *coeffs)
 {
     if(coeffs){
         av_free(coeffs->cx);
@@ -162,3 +177,39 @@ void ff_iir_filter_free_coeffs(struct FFIIRFilterCoeffs *coeffs)
     av_free(coeffs);
 }
 
+#ifdef TEST
+#define FILT_ORDER 4
+#define SIZE 1024
+int main(void)
+{
+    struct FFIIRFilterCoeffs *fcoeffs = NULL;
+    struct FFIIRFilterState  *fstate  = NULL;
+    float cutoff_coeff = 0.4;
+    int16_t x[SIZE], y[SIZE];
+    int i;
+    FILE* fd;
+
+    fcoeffs = ff_iir_filter_init_coeffs(FF_FILTER_TYPE_BUTTERWORTH,
+                                        FF_FILTER_MODE_LOWPASS, FILT_ORDER,
+                                        cutoff_coeff, 0.0, 0.0);
+    fstate  = ff_iir_filter_init_state(FILT_ORDER);
+
+    for (i = 0; i < SIZE; i++) {
+        x[i] = lrint(0.75 * INT16_MAX * sin(0.5*M_PI*i*i/SIZE));
+    }
+
+    ff_iir_filter(fcoeffs, fstate, SIZE, x, 1, y, 1);
+
+    fd = fopen("in.bin", "w");
+    fwrite(x, sizeof(x[0]), SIZE, fd);
+    fclose(fd);
+
+    fd = fopen("out.bin", "w");
+    fwrite(y, sizeof(y[0]), SIZE, fd);
+    fclose(fd);
+
+    ff_iir_filter_free_coeffs(fcoeffs);
+    ff_iir_filter_free_state(fstate);
+    return 0;
+}
+#endif /* TEST */

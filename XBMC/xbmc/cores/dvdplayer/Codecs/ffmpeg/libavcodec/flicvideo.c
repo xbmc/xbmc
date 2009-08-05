@@ -38,7 +38,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "libavutil/intreadwrite.h"
 #include "avcodec.h"
@@ -586,7 +585,7 @@ static int flic_decode_frame_15_16BPP(AVCodecContext *avctx,
                  * during decompression. So if it is required (i.e., this is not a LE target, we do
                  * a second pass over the line here, swapping the bytes.
                  */
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
                 pixel_ptr = y_ptr;
                 pixel_countdown = s->avctx->width;
                 while (pixel_countdown > 0) {
@@ -701,8 +700,10 @@ static int flic_decode_frame_24BPP(AVCodecContext *avctx,
 
 static int flic_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
-                             const uint8_t *buf, int buf_size)
+                             AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     if (avctx->pix_fmt == PIX_FMT_PAL8) {
       return flic_decode_frame_8BPP(avctx, data, data_size,
                                     buf, buf_size);

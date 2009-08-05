@@ -23,13 +23,12 @@
 #include "libavutil/avstring.h"
 #include "avformat.h"
 #include <unistd.h>
+#include <strings.h>
 #include "network.h"
 #include "os_support.h"
 
 /* XXX: POST protocol is not completely implemented because ffmpeg uses
    only a subset of it. */
-
-//#define DEBUG
 
 /* used for protocol handling */
 #define BUFFER_SIZE 1024
@@ -41,6 +40,7 @@ typedef struct {
     unsigned char buffer[BUFFER_SIZE], *buf_ptr, *buf_end;
     int line_count;
     int http_code;
+    int64_t chunksize;      /**< Used if "Transfer-Encoding: chunked" otherwise -1. */
     int64_t off, filesize;
     char location[URL_SIZE];
 } HTTPContext;
@@ -126,6 +126,7 @@ static int http_open(URLContext *h, const char *uri, int flags)
     }
     h->priv_data = s;
     s->filesize = -1;
+    s->chunksize = -1;
     s->off = 0;
     av_strlcpy(s->location, uri, URL_SIZE);
 
@@ -151,6 +152,30 @@ static int http_getc(HTTPContext *s)
     return *s->buf_ptr++;
 }
 
+static int http_get_line(HTTPContext *s, char *line, int line_size)
+{
+    int ch;
+    char *q;
+
+    q = line;
+    for(;;) {
+        ch = http_getc(s);
+        if (ch < 0)
+            return AVERROR(EIO);
+        if (ch == '\n') {
+            /* process line */
+            if (q > line && q[-1] == '\r')
+                q--;
+            *q = '\0';
+
+            return 0;
+        } else {
+            if ((q - line) < line_size - 1)
+                *q++ = ch;
+        }
+    }
+}
+
 static int process_line(URLContext *h, char *line, int line_count,
                         int *new_location)
 {
@@ -168,9 +193,9 @@ static int process_line(URLContext *h, char *line, int line_count,
         while (isspace(*p))
             p++;
         s->http_code = strtol(p, NULL, 10);
-#ifdef DEBUG
-        printf("http_code=%d\n", s->http_code);
-#endif
+
+        dprintf(NULL, "http_code=%d\n", s->http_code);
+
         /* error codes are 4xx and 5xx */
         if (s->http_code >= 400 && s->http_code < 600)
             return -1;
@@ -200,6 +225,9 @@ static int process_line(URLContext *h, char *line, int line_count,
                     s->filesize = atoll(slash+1);
             }
             h->is_streamed = 0; /* we _can_ in fact seek */
+        } else if (!strcmp (tag, "Transfer-Encoding") && !strncasecmp(p, "chunked", 7)) {
+            s->filesize = -1;
+            s->chunksize = 0;
         }
     }
     return 1;
@@ -209,10 +237,10 @@ static int http_connect(URLContext *h, const char *path, const char *hoststr,
                         const char *auth, int *new_location)
 {
     HTTPContext *s = h->priv_data;
-    int post, err, ch;
-    char line[1024], *q;
+    int post, err;
+    char line[1024];
     char *auth_b64;
-    int auth_b64_len = strlen(auth)* 4 / 3 + 12;
+    int auth_b64_len = (strlen(auth) + 2) / 3 * 4 + 1;
     int64_t off = s->off;
 
 
@@ -251,30 +279,18 @@ static int http_connect(URLContext *h, const char *path, const char *hoststr,
     }
 
     /* wait for header */
-    q = line;
     for(;;) {
-        ch = http_getc(s);
-        if (ch < 0)
+        if (http_get_line(s, line, sizeof(line)) < 0)
             return AVERROR(EIO);
-        if (ch == '\n') {
-            /* process line */
-            if (q > line && q[-1] == '\r')
-                q--;
-            *q = '\0';
-#ifdef DEBUG
-            printf("header='%s'\n", line);
-#endif
-            err = process_line(h, line, s->line_count, new_location);
-            if (err < 0)
-                return err;
-            if (err == 0)
-                break;
-            s->line_count++;
-            q = line;
-        } else {
-            if ((q - line) < sizeof(line) - 1)
-                *q++ = ch;
-        }
+
+        dprintf(NULL, "header='%s'\n", line);
+
+        err = process_line(h, line, s->line_count, new_location);
+        if (err < 0)
+            return err;
+        if (err == 0)
+            break;
+        s->line_count++;
     }
 
     return (off == s->off) ? 0 : -1;
@@ -286,6 +302,27 @@ static int http_read(URLContext *h, uint8_t *buf, int size)
     HTTPContext *s = h->priv_data;
     int len;
 
+    if (s->chunksize >= 0) {
+        if (!s->chunksize) {
+            char line[32];
+
+            for(;;) {
+                do {
+                    if (http_get_line(s, line, sizeof(line)) < 0)
+                        return AVERROR(EIO);
+                } while (!*line);    /* skip CR LF from last chunk */
+
+                s->chunksize = strtoll(line, NULL, 16);
+
+                dprintf(NULL, "Chunked encoding data size: %"PRId64"'\n", s->chunksize);
+
+                if (!s->chunksize)
+                    return 0;
+                break;
+            }
+        }
+        size = FFMIN(size, s->chunksize);
+    }
     /* read bytes from input buffer first */
     len = s->buf_end - s->buf_ptr;
     if (len > 0) {
@@ -296,8 +333,11 @@ static int http_read(URLContext *h, uint8_t *buf, int size)
     } else {
         len = url_read(s->hd, buf, size);
     }
-    if (len > 0)
+    if (len > 0) {
         s->off += len;
+        if (s->chunksize > 0)
+            s->chunksize -= len;
+    }
     return len;
 }
 
@@ -345,6 +385,13 @@ static int64_t http_seek(URLContext *h, int64_t off, int whence)
     return off;
 }
 
+static int
+http_get_file_handle(URLContext *h)
+{
+    HTTPContext *s = h->priv_data;
+    return url_get_file_handle(s->hd);
+}
+
 URLProtocol http_protocol = {
     "http",
     http_open,
@@ -352,4 +399,5 @@ URLProtocol http_protocol = {
     http_write,
     http_seek,
     http_close,
+    .url_get_file_handle = http_get_file_handle,
 };

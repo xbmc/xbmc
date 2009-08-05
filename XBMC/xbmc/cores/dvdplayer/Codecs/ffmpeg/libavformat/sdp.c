@@ -116,9 +116,15 @@ static char *extradata2psets(AVCodecContext *c)
     r = ff_avc_find_startcode(c->extradata, c->extradata + c->extradata_size);
     while (r < c->extradata + c->extradata_size) {
         const uint8_t *r1;
+        uint8_t nal_type;
 
         while (!*(r++));
+        nal_type = *r & 0x1f;
         r1 = ff_avc_find_startcode(r, c->extradata + c->extradata_size);
+        if (nal_type != 7 && nal_type != 8) { /* Only output SPS and PPS */
+            r = r1;
+            continue;
+        }
         if (p != (psets + strlen(pset_string))) {
             *p = ',';
             p++;
@@ -171,6 +177,10 @@ static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c,
                                      payload_type,
                                      payload_type, config ? config : "");
             break;
+        case CODEC_ID_H263:
+        case CODEC_ID_H263P:
+            av_strlcatf(buff, size, "a=rtpmap:%d H263-2000/90000\r\n", payload_type);
+            break;
         case CODEC_ID_MPEG4:
             if (c->extradata_size) {
                 config = extradata2config(c);
@@ -217,6 +227,18 @@ static char *sdp_write_media_attributes(char *buff, int size, AVCodecContext *c,
                 av_strlcatf(buff, size, "a=rtpmap:%d PCMA/%d/%d\r\n",
                                          payload_type,
                                          c->sample_rate, c->channels);
+            break;
+        case CODEC_ID_AMR_NB:
+            av_strlcatf(buff, size, "a=rtpmap:%d AMR/%d/%d\r\n"
+                                    "a=fmtp:%d octet-align=1\r\n",
+                                     payload_type, c->sample_rate, c->channels,
+                                     payload_type);
+            break;
+        case CODEC_ID_AMR_WB:
+            av_strlcatf(buff, size, "a=rtpmap:%d AMR-WB/%d/%d\r\n"
+                                    "a=fmtp:%d octet-align=1\r\n",
+                                     payload_type, c->sample_rate, c->channels,
+                                     payload_type);
             break;
         default:
             /* Nothing special to do here... */

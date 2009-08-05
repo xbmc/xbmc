@@ -55,7 +55,6 @@
  */
 
 #include <string.h>
-#include <unistd.h>
 
 #include "roqvideo.h"
 #include "bytestream.h"
@@ -796,7 +795,7 @@ static void generate_codebook(RoqContext *enc, RoqTempdata *tempdata,
 {
     int i, j, k;
     int c_size = size*size/4;
-    int *buf = points;
+    int *buf;
     int *codebook = av_malloc(6*c_size*cbsize*sizeof(int));
     int *closest_cb;
 
@@ -929,7 +928,7 @@ static int roq_encode_init(AVCodecContext *avctx)
 {
     RoqContext *enc = avctx->priv_data;
 
-    av_random_init(&enc->randctx, 1);
+    av_lfg_init(&enc->randctx, 1);
 
     enc->framesSinceKeyframe = 0;
     if ((avctx->width & 0xf) || (avctx->height & 0xf)) {

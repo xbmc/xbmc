@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/bitstream.h"
+#include "libavcodec/get_bits.h"
 #include "avformat.h"
 #include "mpegts.h"
 
@@ -39,6 +39,35 @@ static uint64_t ntp_time(void)
   return (av_gettime() / 1000) * 1000 + NTP_OFFSET_US;
 }
 
+static int is_supported(enum CodecID id)
+{
+    switch(id) {
+    case CODEC_ID_H263:
+    case CODEC_ID_H263P:
+    case CODEC_ID_H264:
+    case CODEC_ID_MPEG1VIDEO:
+    case CODEC_ID_MPEG2VIDEO:
+    case CODEC_ID_MPEG4:
+    case CODEC_ID_AAC:
+    case CODEC_ID_MP2:
+    case CODEC_ID_MP3:
+    case CODEC_ID_PCM_ALAW:
+    case CODEC_ID_PCM_MULAW:
+    case CODEC_ID_PCM_S8:
+    case CODEC_ID_PCM_S16BE:
+    case CODEC_ID_PCM_S16LE:
+    case CODEC_ID_PCM_U16BE:
+    case CODEC_ID_PCM_U16LE:
+    case CODEC_ID_PCM_U8:
+    case CODEC_ID_MPEG2TS:
+    case CODEC_ID_AMR_NB:
+    case CODEC_ID_AMR_WB:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 static int rtp_write_header(AVFormatContext *s1)
 {
     RTPMuxContext *s = s1->priv_data;
@@ -48,6 +77,11 @@ static int rtp_write_header(AVFormatContext *s1)
     if (s1->nb_streams != 1)
         return -1;
     st = s1->streams[0];
+    if (!is_supported(st->codec->codec_id)) {
+        av_log(s1, AV_LOG_ERROR, "Unsupported codec %x\n", st->codec->codec_id);
+
+        return -1;
+    }
 
     payload_type = ff_rtp_get_payload_type(st->codec);
     if (payload_type < 0)
@@ -102,6 +136,23 @@ static int rtp_write_header(AVFormatContext *s1)
         s->max_payload_size = n * TS_PACKET_SIZE;
         s->buf_ptr = s->buf;
         break;
+    case CODEC_ID_AMR_NB:
+    case CODEC_ID_AMR_WB:
+        if (!s->max_frames_per_packet)
+            s->max_frames_per_packet = 12;
+        if (st->codec->codec_id == CODEC_ID_AMR_NB)
+            n = 31;
+        else
+            n = 61;
+        /* max_header_toc_size + the largest AMR payload must fit */
+        if (1 + s->max_frames_per_packet + n > s->max_payload_size) {
+            av_log(s1, AV_LOG_ERROR, "RTP max payload size too small for AMR\n");
+            return -1;
+        }
+        if (st->codec->channels != 1) {
+            av_log(s1, AV_LOG_ERROR, "Only mono is supported\n");
+            return -1;
+        }
     case CODEC_ID_AAC:
         s->num_frames = 0;
     default:
@@ -334,11 +385,19 @@ static int rtp_write_packet(AVFormatContext *s1, AVPacket *pkt)
     case CODEC_ID_AAC:
         ff_rtp_send_aac(s1, buf1, size);
         break;
+    case CODEC_ID_AMR_NB:
+    case CODEC_ID_AMR_WB:
+        ff_rtp_send_amr(s1, buf1, size);
+        break;
     case CODEC_ID_MPEG2TS:
         rtp_send_mpegts_raw(s1, buf1, size);
         break;
     case CODEC_ID_H264:
         ff_rtp_send_h264(s1, buf1, size);
+        break;
+    case CODEC_ID_H263:
+    case CODEC_ID_H263P:
+        ff_rtp_send_h263(s1, buf1, size);
         break;
     default:
         /* better than nothing : send the codec raw data */
