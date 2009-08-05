@@ -44,6 +44,9 @@ case "$1" in
 		fi
 	done
 
+	# Add xbmc to the sudoers file
+	echo "xbmc ALL=NOPASSWD: /bin/mount, /bin/umount, /sbin/reboot, /sbin/shutdown" >> /etc/sudoers
+
 	# Our set of PolicyKit actions
 
 	# This is a list of actions that the 'xbmc' user should be allowed to
