@@ -778,6 +778,27 @@ void CGUIWindowSettingsCategory::CreateSettings()
 
       pControl->SetValue(pSettingInt->GetData());
     }
+#if defined(_LINUX) && !defined(__APPLE__)
+    else if (strSetting.Equals("system.powerbuttonaction"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      
+      pControl->AddLabel(g_localizeStrings.Get(231), POWERSTATE_NONE);
+      pControl->AddLabel(g_localizeStrings.Get(12020), POWERSTATE_ASK);
+
+      if (g_powerManager.CanPowerdown())
+        pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
+
+      if (g_powerManager.CanHibernate())
+        pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
+
+      if (g_powerManager.CanSuspend())
+        pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
+
+      pControl->SetValue(pSettingInt->GetData());
+    }
+#endif
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

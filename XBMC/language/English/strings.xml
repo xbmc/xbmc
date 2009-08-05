@@ -979,6 +979,7 @@
   <string id="13012">Exit</string>
   <string id="13013">Reboot</string>
   <string id="13014">Minimize</string>
+  <string id="13015">Power button action</string>
 
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>
