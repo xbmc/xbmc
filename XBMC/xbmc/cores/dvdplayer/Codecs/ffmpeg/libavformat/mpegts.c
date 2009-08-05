@@ -506,6 +506,11 @@ static const StreamType ISO_types[] = {
 static const StreamType HDMV_types[] = {
     { 0x81, CODEC_TYPE_AUDIO, CODEC_ID_AC3 },
     { 0x82, CODEC_TYPE_AUDIO, CODEC_ID_DTS },
+    { 0x83, CODEC_TYPE_AUDIO,  CODEC_ID_TRUEHD },
+    { 0x84, CODEC_TYPE_AUDIO,    CODEC_ID_EAC3 },
+    { 0x85, CODEC_TYPE_AUDIO,     CODEC_ID_DTS }, /* DTS HD */
+    { 0x86, CODEC_TYPE_AUDIO,     CODEC_ID_DTS }, /* DTS HD MASTER*/
+    { 0x90, CODEC_TYPE_SUBTITLE, CODEC_ID_NONE },
     { 0 },
 };
 
@@ -519,6 +524,10 @@ static const StreamType MISC_types[] = {
 static const StreamType REGD_types[] = {
     { MKTAG('d','r','a','c'), CODEC_TYPE_VIDEO, CODEC_ID_DIRAC },
     { MKTAG('A','C','-','3'), CODEC_TYPE_AUDIO,   CODEC_ID_AC3 },
+    { MKTAG('D','T','S','1'), CODEC_TYPE_AUDIO,   CODEC_ID_DTS },
+    { MKTAG('D','T','S','2'), CODEC_TYPE_AUDIO,   CODEC_ID_DTS },
+    { MKTAG('D','T','S','3'), CODEC_TYPE_AUDIO,   CODEC_ID_DTS },
+    { MKTAG('V','C','-','1'), CODEC_TYPE_VIDEO,   CODEC_ID_VC1 },
     { 0 },
 };
 
@@ -528,6 +537,7 @@ static const StreamType DESC_types[] = {
     { 0x7a, CODEC_TYPE_AUDIO,            CODEC_ID_EAC3 }, /* E-AC-3 descriptor */
     { 0x7b, CODEC_TYPE_AUDIO,             CODEC_ID_DTS },
     { 0x59, CODEC_TYPE_SUBTITLE, CODEC_ID_DVB_SUBTITLE }, /* subtitling descriptor */
+    { 0x56, CODEC_TYPE_DATA,             CODEC_ID_NONE }, /* VBI descriptor */
     { 0 },
 };
 
