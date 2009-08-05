@@ -1302,6 +1302,44 @@ static int parse_pcr(int64_t *ppcr_high, int *ppcr_low,
     return 0;
 }
 
+static int parse_timestamp(int64_t *ts, const uint8_t *buf)
+{
+    int afc, flags;
+    const uint8_t *p;
+
+    if(!(buf[1] & 0x40)) /* must be a start packet */
+        return -1;
+
+    afc = (buf[3] >> 4) & 3;
+    p = buf + 4;
+    if (afc == 0 || afc == 2) /* invalid or only adaption field */
+        return -1;
+    if (afc == 3)
+        p += p[0] + 1;
+    if (p >= buf + TS_PACKET_SIZE)
+        return -1;
+
+    if (p[0] != 0x00 || p[1] != 0x00 || p[2] != 0x01)  /* packet_start_code_prefix */
+        return -1;
+
+    flags = p[3] | 0x100; /* stream type */
+    if (!((flags >= 0x1c0 && flags <= 0x1df) ||
+          (flags >= 0x1e0 && flags <= 0x1ef) ||
+          (flags == 0x1bd) || (flags == 0x1fd)))
+        return -1;
+
+    flags = p[7];
+    if ((flags & 0xc0) == 0x80) {
+        *ts = get_pts(p+9);
+        return 0;
+    } else if ((flags & 0xc0) == 0xc0) {
+        *ts = get_pts(p+9+5);
+        return 0;
+    }
+    return -1;
+}
+
+
 static int mpegts_read_header(AVFormatContext *s,
                               AVFormatParameters *ap)
 {
@@ -1509,59 +1547,36 @@ static int64_t mpegts_get_pcr(AVFormatContext *s, int stream_index,
     int64_t pos, timestamp;
     uint8_t buf[TS_PACKET_SIZE];
     int pcr_l, pcr_pid = ((PESContext*)s->streams[stream_index]->priv_data)->pcr_pid;
-    const int find_next= 1;
+    int pid = ((PESContext*)s->streams[stream_index]->priv_data)->pid;
     pos = ((*ppos  + ts->raw_packet_size - 1 - ts->pos47) / ts->raw_packet_size) * ts->raw_packet_size + ts->pos47;
-    if (find_next) {
-        for(;;) {
-            url_fseek(s->pb, pos, SEEK_SET);
+    while(pos < pos_limit) {
+        if (url_fseek(s->pb, pos, SEEK_SET) < 0)
+            return AV_NOPTS_VALUE;
             if (get_buffer(s->pb, buf, TS_PACKET_SIZE) != TS_PACKET_SIZE)
                 return AV_NOPTS_VALUE;
+        if (buf[0] != 0x47) {
+            url_fseek(s->pb, -TS_PACKET_SIZE, SEEK_CUR);
+            if (mpegts_resync(s->pb) < 0)
+                return AV_NOPTS_VALUE;
+            pos = url_ftell(s->pb);
+            continue;
+            }
             if ((pcr_pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pcr_pid) &&
                 parse_pcr(&timestamp, &pcr_l, buf) == 0) {
-                break;
-            }
-            pos += ts->raw_packet_size;
-        }
-    } else {
-        for(;;) {
-            pos -= ts->raw_packet_size;
-            if (pos < 0)
-                return AV_NOPTS_VALUE;
-            url_fseek(s->pb, pos, SEEK_SET);
-            if (get_buffer(s->pb, buf, TS_PACKET_SIZE) != TS_PACKET_SIZE)
-                return AV_NOPTS_VALUE;
-            if ((pcr_pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pcr_pid) &&
-                parse_pcr(&timestamp, &pcr_l, buf) == 0) {
-                break;
-            }
-        }
+            *ppos = pos;
+            return timestamp;
     }
-    *ppos = pos;
 
+        if ((pid < 0 || (AV_RB16(buf + 1) & 0x1fff) == pid) &&
+            parse_timestamp(&timestamp, buf) == 0) {
+    *ppos = pos;
     return timestamp;
 }
 
-static int read_seek(AVFormatContext *s, int stream_index, int64_t target_ts, int flags){
-    MpegTSContext *ts = s->priv_data;
-    uint8_t buf[TS_PACKET_SIZE];
-    int64_t pos;
-
-    if(av_seek_frame_binary(s, stream_index, target_ts, flags) < 0)
-        return -1;
-
-    pos= url_ftell(s->pb);
-
-    for(;;) {
-        url_fseek(s->pb, pos, SEEK_SET);
-        if (get_buffer(s->pb, buf, TS_PACKET_SIZE) != TS_PACKET_SIZE)
-            return -1;
-//        pid = AV_RB16(buf + 1) & 0x1fff;
-        if(buf[1] & 0x40) break;
         pos += ts->raw_packet_size;
     }
-    url_fseek(s->pb, pos, SEEK_SET);
 
-    return 0;
+    return AV_NOPTS_VALUE;
 }
 
 /**************************************************************/
@@ -1625,7 +1640,7 @@ AVInputFormat mpegts_demuxer = {
     mpegts_read_header,
     mpegts_read_packet,
     mpegts_read_close,
-    read_seek,
+    NULL,
     mpegts_get_pcr,
     .flags = AVFMT_SHOW_IDS|AVFMT_TS_DISCONT,
 };
@@ -1638,7 +1653,7 @@ AVInputFormat mpegtsraw_demuxer = {
     mpegts_read_header,
     mpegts_raw_read_packet,
     mpegts_read_close,
-    read_seek,
+    NULL,
     mpegts_get_pcr,
     .flags = AVFMT_SHOW_IDS|AVFMT_TS_DISCONT,
 };
