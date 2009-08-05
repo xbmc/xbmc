@@ -335,3 +335,9 @@ unsigned char CGUIImage::GetFadeLevel(unsigned int time) const
   const float alpha = 0.7f;
   return (unsigned char)(255.0f * (1 - pow(1-alpha, amount))/alpha);
 }
+
+CStdString CGUIImage::GetDescription(void) const
+{
+  return GetFileName();
+}
+
