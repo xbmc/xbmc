@@ -314,6 +314,7 @@ public:
 
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;
+    int m_bgInfoLoaderMaxThreads;
   };
 
   struct stSettings
