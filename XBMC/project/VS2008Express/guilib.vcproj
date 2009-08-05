@@ -382,6 +382,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\GUIControlProfiler.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\GUIDialog.cpp"
 				>
 			</File>
@@ -789,6 +793,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIControlGroupList.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUIControlProfiler.h"
 				>
 			</File>
 			<File

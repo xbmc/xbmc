@@ -36,6 +36,7 @@
 #include "GUILabelControl.h"  // needed for CInfoLabel
 #include "GUIImage.h"
 #endif
+#include "GUIControlProfiler.h"
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
 #include "utils/GUIInfoManager.h"
@@ -2521,18 +2522,19 @@ void CApplication::RenderMemoryStatus()
     CStdString info;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
+    CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
 #ifdef __APPLE__
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
+    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
+              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
 #elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s.", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str());
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
-              g_infoManager.GetFPS(), strCores.c_str(), dCPU);
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
     static int yShift = 20;
@@ -3036,6 +3038,12 @@ bool CApplication::OnAction(CAction &action)
   {
     if (!m_pPlayer->CanSeek()) return false;
     m_guiDialogSeekBar.OnAction(action);
+    return true;
+  }
+  if (action.wID == ACTION_GUIPROFILE_BEGIN)
+  {
+    CGUIControlProfiler::Instance().SetOutputFile(_P("special://home/guiprofiler.xml"));
+    CGUIControlProfiler::Instance().Start();
     return true;
   }
   return false;

@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GUIControlGroupList.h"
 #include "utils/GUIInfoManager.h"
+#include "GUIControlProfiler.h"
 
 #define TIME_TO_SCROLL 200;
 
@@ -63,7 +64,12 @@ void CGUIControlGroupList::Render()
   // first we update visibility of all our items, to ensure our size and
   // alignment computations are correct.
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-    (*it)->UpdateVisibility();
+  {
+    CGUIControl *control = *it;
+    GUIPROFILER_VISIBILITY_BEGIN(control);
+    control->UpdateVisibility();
+    GUIPROFILER_VISIBILITY_END(control);
+  }
 
   ValidateOffset();
   if (m_pageControl)
