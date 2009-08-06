@@ -32,6 +32,7 @@
 #include "utils/SharedSection.h"
 #include "utils/Thread.h"
 #include "settings/VideoSettings.h"
+#include "OverlayRenderer.h"
 
 class CXBMCRenderManager
 {
@@ -81,6 +82,18 @@ public:
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
+
+  void AddOverlay(CDVDOverlay* o)
+  {
+    CSharedLock lock(m_sharedSection);
+    m_overlays.AddOverlay(o);
+  }
+
+  void AddCleanup(OVERLAY::COverlay* o)
+  {
+    CSharedLock lock(m_sharedSection);
+    m_overlays.AddCleanup(o);
+  }
 
   inline void Reset()
   {
@@ -145,6 +158,9 @@ protected:
   EINTERLACEMETHOD m_presentmethod;
   int        m_presentstep;
   CEvent     m_presentevent;
+
+
+  OVERLAY::CRenderer m_overlays;
 };
 
 extern CXBMCRenderManager g_renderManager;

@@ -194,7 +194,22 @@ void CDVDOverlayContainer::UpdateOverlayInfo(CDVDInputStreamNavigator* pStream, 
       // make sure its a forced (menu) overlay
       // set menu spu color and alpha data if there is a valid menu overlay
       if (pOverlaySpu->bForced && pStream->GetCurrentGroupId() == pOverlaySpu->iGroupId)
-        pStream->GetCurrentButtonInfo(pOverlaySpu, pSpu, iAction);
+      {
+        if(pOverlaySpu->Acquire()->Release() > 1)
+        {
+          pOverlaySpu = new CDVDOverlaySpu(*pOverlaySpu);
+          (*it)->Release();
+          (*it) = pOverlaySpu;
+        }
+
+        if(pStream->GetCurrentButtonInfo(pOverlaySpu, pSpu, iAction))
+        {
+          if(pOverlaySpu->m_overlay)
+            pOverlaySpu->m_overlay->Release();
+          pOverlaySpu->m_overlay = NULL;
+        }
+
+      }
     }
   }
   LeaveCriticalSection(&m_critSection);
