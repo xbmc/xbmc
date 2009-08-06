@@ -110,7 +110,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
     }
     else if (m_streaminfo.codec == CODEC_ID_DVD_SUBTITLE)
     {
-      CSPUInfo* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
+      CDVDOverlaySpu* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
       if (pSPUInfo)
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessSubData: Got complete SPU packet");

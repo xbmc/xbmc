@@ -28,7 +28,6 @@ class CDVDOverlaySpu : public CDVDOverlay
 public:
   CDVDOverlaySpu() : CDVDOverlay(DVDOVERLAY_TYPE_SPU)
   {
-    pData = NULL;
     pTFData = 0;
     pBFData = 0;
     x = 0;
@@ -44,14 +43,14 @@ public:
     bHasColor = false;
     bHasAlpha = false;
 
+    memset(result, 0, sizeof(result));
     memset(alpha, 0, sizeof(alpha));
     memset(color, 0, sizeof(color));
     memset(stats, 0, sizeof(stats));
     memset(highlight_alpha, 0, sizeof(highlight_alpha));
     memset(highlight_color, 0, sizeof(highlight_color));
   }
-
-  BYTE* pData; // rle data
+  BYTE result[2*65536 + 20]; // rle data
   int pTFData; // pointer to top field picture data (needs rle parsing)
   int pBFData; // pointer to bottom field picture data (needs rle parsing)
   int x;
