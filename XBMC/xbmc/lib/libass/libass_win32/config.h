@@ -13,7 +13,7 @@
 #undef HAVE_ENCA_H
 
 /* found fontconfig via pkg-config */
-#undef HAVE_FONTCONFIG
+#define CONFIG_FONTCONFIG
 
 /* found freetype2 via pkg-config */
 #undef HAVE_FREETYPE

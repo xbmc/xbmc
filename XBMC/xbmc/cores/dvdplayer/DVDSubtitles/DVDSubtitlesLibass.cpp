@@ -69,7 +69,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   m_dll.ass_set_font_scale(m_renderer, 1);
   // libass uses fontconfig (system lib) which is not wrapped
   //  so translate the path before calling into libass
-  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "");
+  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "", 1, NULL, 0);
 }
 
 

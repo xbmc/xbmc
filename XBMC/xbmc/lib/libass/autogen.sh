@@ -1,4 +1,5 @@
 #!/bin/sh
-
-aclocal && glibtoolize -c -f && autoheader && automake -a -c -f && autoconf
-
+echo Running autoreconf
+autoreconf --install
+echo Running configure...
+./configure $@

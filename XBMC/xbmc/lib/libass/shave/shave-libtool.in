@@ -1,0 +1,109 @@
+#!/bin/sh
+#
+# Copyright (c) 2009, Damien Lespiau <damien.lespiau@gmail.com>
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following
+# conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+# FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+
+# we need sed
+SED=@SED@
+if test -z "$SED" ; then
+SED=sed
+fi
+
+lt_unmangle ()
+{
+   last_result=`echo $1 | $SED -e 's#.libs/##' -e 's#[0-9a-zA-Z_\-\.]*_la-##'`
+}
+
+# the real libtool to use
+LIBTOOL="$1"
+shift
+
+# if 1, don't print anything, the underlaying wrapper will do it
+pass_though=0
+
+# scan the arguments, keep the right ones for libtool, and discover the mode
+preserved_args=
+
+# have we seen the --tag option of libtool in the command line ?
+tag_seen=0
+
+while test "$#" -gt 0; do
+    opt="$1"
+    shift
+
+    case $opt in
+    --mode=*)
+        mode=`echo $opt | $SED -e 's/[-_a-zA-Z0-9]*=//'`
+        preserved_args="$preserved_args $opt"
+        ;;
+    -o)
+        lt_output="$1"
+        preserved_args="$preserved_args $opt"
+	;;
+    --tag=*)
+        tag_seen=1
+        preserved_args="$preserved_args $opt"
+	;;
+    *)
+        preserved_args="$preserved_args $opt"
+        ;;
+      esac
+done
+
+case "$mode" in
+compile)
+    # shave will be called and print the actual CC/CXX/LINK line
+    preserved_args="$preserved_args --shave-mode=$mode"
+    pass_though=1
+    ;;
+link)
+    preserved_args="$preserved_args --shave-mode=$mode"
+    Q="  LINK  "
+    ;;
+*)
+    # let's u
+    # echo "*** libtool: Unimplemented mode: $mode, fill a bug report"
+    ;;
+esac
+
+lt_unmangle "$lt_output"
+output=$last_result
+
+# automake does not add a --tag switch to its libtool invocation when
+# assembling a .s file and rely on libtool to infer the right action based
+# on the compiler name. As shave is using CC to hook a wrapper, libtool gets
+# confused. Let's detect these cases and add a --tag=CC option.
+tag=""
+if test $tag_seen -eq 0 -a x"$mode" = xcompile; then
+    tag="--tag=CC"
+fi
+
+if test -z $V; then
+    if test $pass_though -eq 0; then
+        echo "$Q$output"
+    fi
+    $LIBTOOL --silent $tag $preserved_args
+else
+    echo $LIBTOOL $tag $preserved_args
+    $LIBTOOL $tag $preserved_args
+fi
