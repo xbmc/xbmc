@@ -35,6 +35,8 @@ public:
     y = 0;
     width = 0;
     height = 0;
+    source_width  = 0;
+    source_height = 0;
   }
 
   ~CDVDOverlayImage()
@@ -53,4 +55,6 @@ public:
   int    y;
   int    width;
   int    height;
+  int    source_width;
+  int    source_height;
 };
