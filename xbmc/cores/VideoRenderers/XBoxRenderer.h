@@ -72,7 +72,6 @@ typedef struct YV12Image
 #define RENDER_FLAG_FIELDMASK   0x03
 
 #define RENDER_FLAG_NOOSD       0x04 /* don't draw any osd */
-#define RENDER_FLAG_NOOSDALPHA  0x08 /* don't allow alpha when osd is drawn */
 
 /* these two flags will be used if we need to render same image twice (bob deinterlacing) */
 #define RENDER_FLAG_NOLOCK      0x10   /* don't attempt to lock texture before rendering */
