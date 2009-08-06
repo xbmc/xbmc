@@ -945,13 +945,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glEnable(GL_BLEND);
   glFlush();
 
-  if (g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() && !(flags & RENDER_FLAG_NOOSD))
-  {
-    if (g_application.NeedRenderFullScreen())
-      g_application.RenderFullScreen();
-    g_application.RenderMemoryStatus();
-  }
-
   g_graphicsContext.EndPaint();
 }
 
