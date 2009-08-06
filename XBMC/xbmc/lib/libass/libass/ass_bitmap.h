@@ -32,9 +32,9 @@ ass_synth_priv_t* ass_synth_init(void);
 void ass_synth_done(ass_synth_priv_t* priv);
 
 typedef struct bitmap_s {
-	int left, top;
-	int w, h; // width, height
-	unsigned char* buffer; // w x h buffer
+    int left, top;
+    int w, h; // width, height
+    unsigned char* buffer; // w x h buffer
 } bitmap_t;
 
 /**

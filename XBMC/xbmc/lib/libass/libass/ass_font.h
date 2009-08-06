@@ -30,22 +30,22 @@
 #include "ass_types.h"
 
 typedef struct ass_font_desc_s {
-	char* family;
-	unsigned bold;
-	unsigned italic;
+    char* family;
+    unsigned bold;
+    unsigned italic;
 } ass_font_desc_t;
 
 #define ASS_FONT_MAX_FACES 10
 
 typedef struct ass_font_s {
-	ass_font_desc_t desc;
-	ass_library_t* library;
-	FT_Library ftlibrary;
-	FT_Face faces[ASS_FONT_MAX_FACES];
-	int n_faces;
-	double scale_x, scale_y; // current transform
-	FT_Vector v; // current shift
-	double size;
+    ass_font_desc_t desc;
+    ass_library_t* library;
+    FT_Library ftlibrary;
+    FT_Face faces[ASS_FONT_MAX_FACES];
+    int n_faces;
+    double scale_x, scale_y; // current transform
+    FT_Vector v; // current shift
+    double size;
 } ass_font_t;
 
 ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_priv, ass_font_desc_t* desc);
