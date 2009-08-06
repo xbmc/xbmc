@@ -50,8 +50,8 @@ void ass_configure_fonts(ass_renderer_t* priv);
 ass_library_t* ass_init(void);
 
 typedef struct {
-	ass_image_t* imgs;
-	int changed;
+    ass_image_t* imgs;
+    int changed;
 } mp_eosd_images_t;
 
 extern int ass_force_reload;

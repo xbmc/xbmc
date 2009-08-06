@@ -37,20 +37,20 @@ typedef struct ass_renderer_s ass_renderer_t;
 
 /// a linked list of images produced by ass renderer
 typedef struct ass_image_s {
-	int w, h; // bitmap width/height
-	int stride; // bitmap stride
-	unsigned char* bitmap; // 1bpp stride*h alpha buffer
-	uint32_t color; // RGBA
-	int dst_x, dst_y; // bitmap placement inside the video frame
+    int w, h; // bitmap width/height
+    int stride; // bitmap stride
+    unsigned char* bitmap; // 1bpp stride*h alpha buffer
+    uint32_t color; // RGBA
+    int dst_x, dst_y; // bitmap placement inside the video frame
 
-	struct ass_image_s* next; // linked list
+    struct ass_image_s* next; // linked list
 } ass_image_t;
 
 /// Hinting type
 typedef enum {ASS_HINTING_NONE = 0,
-	      ASS_HINTING_LIGHT,
-	      ASS_HINTING_NORMAL,
-	      ASS_HINTING_NATIVE
+          ASS_HINTING_LIGHT,
+          ASS_HINTING_NORMAL,
+          ASS_HINTING_NATIVE
 } ass_hinting_t;
 
 /**
