@@ -28,14 +28,14 @@
 #include "SingleLock.h"
 #include "../Util.h"
 #include "../../guilib/LocalizeStrings.h"
+#include "GUISettings.h"
+#include "PowerManager.h"
 
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL/SDL.h>
 #include <SDL/SDL_version.h>
 #include "../../guilib/common/SDLJoystick.h"
 #endif
-
-//#define HAL_HANDLEMOUNT
 
 bool CHalManager::NewMessage;
 DBusError CHalManager::m_Error;
@@ -77,7 +77,23 @@ void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const cha
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Condition %s | %s", udi, condition_name, condition_details);
   if (!strcmp(condition_name, "ButtonPressed") && !strcmp(condition_details, "power"))
   {
-    CUtil::ExecBuiltIn("XBMC.ActivateWindow(ShutdownMenu)");
+    switch (g_guiSettings.GetInt("system.powerbuttonaction"))
+    {
+      case POWERSTATE_ASK:
+        CUtil::ExecBuiltIn("XBMC.ActivateWindow(ShutdownMenu)");
+        break;
+      case POWERSTATE_SHUTDOWN:
+        g_powerManager.Powerdown();
+        break;
+      case POWERSTATE_SUSPEND:
+        g_powerManager.Suspend();
+        break;
+      case POWERSTATE_HIBERNATE:
+        g_powerManager.Hibernate();
+        break;
+      default:
+        ;
+    }
     return;
   }
   NewMessage = true;
@@ -664,7 +680,7 @@ bool CHalManager::UnMount(CStorageDevice volume)
 
 bool CHalManager::Mount(CStorageDevice *volume, CStdString mountpath)
 {
-  CLog::Log(LOGNOTICE, "HAL: Mounting %s (%s) at %s", volume->UDI.c_str(), volume->toString().c_str(), mountpath.c_str());
+  CLog::Log(LOGNOTICE, "HAL: Mounting %s (%s) at %s with umask=%u", volume->UDI.c_str(), volume->toString().c_str(), mountpath.c_str(), umask (0));
   DBusMessage* msg;
   DBusMessageIter args;
   DBusError error;
@@ -683,14 +699,24 @@ bool CHalManager::Mount(CStorageDevice *volume, CStdString mountpath)
       CLog::Log(LOGERROR, "DBus: Failed to append arguments");
     DBusMessageIter sub;
     dbus_message_iter_open_container(&args, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING_AS_STRING, &sub);
+    
+    CStdString temporaryString;
+    temporaryString.Format("uid=%u", getuid());
+    s = temporaryString.c_str();
+    dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+
     s = "sync";
     dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
-    s = "ro"; //Mount readonly as we dont have an eject yet
+
+    int mask = umask (0);
+    temporaryString.Format("umask=%#o", mask);
+    s = temporaryString.c_str();
     dbus_message_iter_append_basic(&sub, DBUS_TYPE_STRING, &s);
+
     dbus_message_iter_close_container(&args, &sub);
 
     if (msg == NULL)
-        CLog::Log(LOGERROR, "DBus: Create PowerManagement Message failed");
+        CLog::Log(LOGERROR, "DBus: Create Mount Message failed");
     else
     {
       DBusMessage *reply;

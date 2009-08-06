@@ -26,6 +26,7 @@
 class CDVDInputStreamHTSP
   : public CDVDInputStream
   , public CDVDInputStream::IChannel
+  , public CDVDInputStream::IDisplayTime
 {
 public:
   CDVDInputStreamHTSP();
@@ -40,10 +41,14 @@ public:
 
   virtual bool    NextStream()                     { return m_startup; }
 
+  virtual void    Abort();
 
   bool            NextChannel();
   bool            PrevChannel();
   bool            UpdateItem(CFileItem& item);
+
+  int             GetTotalTime();
+  int             GetTime();
 
   htsmsg_t* ReadStream();
 

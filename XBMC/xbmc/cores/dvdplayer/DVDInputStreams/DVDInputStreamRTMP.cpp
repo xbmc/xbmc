@@ -94,6 +94,8 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
   m_rtmp->SetPlayer(m_item.GetProperty("SWFPlayer"));
   m_rtmp->SetPageUrl(m_item.GetProperty("PageURL"));
   m_rtmp->SetPlayPath(m_item.GetProperty("PlayPath"));
+  if (!m_item.GetProperty("IsLive").compare("true"))
+    m_rtmp->SetLive();
   m_rtmp->SetBufferMS(20000);
 
   if (!m_rtmp->Connect(strFile))
@@ -246,6 +248,17 @@ __int64 CDVDInputStreamRTMP::Seek(__int64 offset, int whence)
 {
   if(whence == SEEK_POSSIBLE)
     return 0;
+  else
+    return -1;
+}
+
+bool CDVDInputStreamRTMP::SeekTime(int iTimeInMsec)
+{
+  CLog::Log(LOGNOTICE,"RTMP Seek to %i requested",iTimeInMsec);
+  if (m_rtmp->Seek((double)iTimeInMsec))
+  {
+    return iTimeInMsec;
+  }
   else
     return -1;
 }

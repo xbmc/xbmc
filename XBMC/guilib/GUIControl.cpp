@@ -25,6 +25,7 @@
 #include "utils/GUIInfoManager.h"
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
+#include "GUIControlProfiler.h"
 
 using namespace std;
 
@@ -139,7 +140,11 @@ void CGUIControl::DoRender(DWORD currentTime)
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
   if (IsVisible())
+  {
+    GUIPROFILER_RENDER_BEGIN(this);
     Render();
+    GUIPROFILER_RENDER_END(this);
+  }
   if (m_hasCamera)
     g_graphicsContext.RestoreCameraPosition();
   g_graphicsContext.RemoveTransform();
@@ -544,6 +549,9 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_dwParentID, item);
   m_allowHiddenFocus.Update(m_dwParentID, item);
   UpdateColors();
+  // and finally, update our control information (if not pushed)
+  if (!m_pushedUpdates)
+    UpdateInfo(item);
 }
 
 void CGUIControl::UpdateColors()

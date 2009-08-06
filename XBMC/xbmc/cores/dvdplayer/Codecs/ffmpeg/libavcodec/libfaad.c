@@ -149,8 +149,10 @@ static av_cold int faac_init_mp4(AVCodecContext *avctx)
 
 static int faac_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
-                             uint8_t *buf, int buf_size)
+                             AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     FAACContext *s = avctx->priv_data;
 #ifndef FAAD2_VERSION
     unsigned long bytesconsumed;
@@ -318,20 +320,14 @@ static av_cold int faac_decode_init(AVCodecContext *avctx)
     return 0;
 }
 
-#define AAC_CODEC(id, name, long_name_) \
-AVCodec name ## _decoder = {    \
-    #name,                      \
-    CODEC_TYPE_AUDIO,           \
-    id,                         \
-    sizeof(FAACContext),        \
-    faac_decode_init,           \
-    NULL,                       \
-    faac_decode_end,            \
-    faac_decode_frame,          \
-    .long_name = NULL_IF_CONFIG_SMALL(long_name_), \
-}
-
-// FIXME - raw AAC files - maybe just one entry will be enough
-AAC_CODEC(CODEC_ID_AAC, libfaad, "libfaad AAC (Advanced Audio Codec)");
-
-#undef AAC_CODEC
+AVCodec libfaad_decoder = {
+    "libfaad",
+    CODEC_TYPE_AUDIO,
+    CODEC_ID_AAC,
+    sizeof(FAACContext),
+    faac_decode_init,
+    NULL,
+    faac_decode_end,
+    faac_decode_frame,
+    .long_name = NULL_IF_CONFIG_SMALL("libfaad AAC (Advanced Audio Codec)"),
+};

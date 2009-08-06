@@ -25,7 +25,7 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "dsputil.h"
 
 /*
@@ -358,7 +358,6 @@ static av_cold int decode_init(AVCodecContext * avctx)
         for(i=1;i<16;i++) {
             const HuffTable *h = &mpa_huff_tables[i];
             int xsize, x, y;
-            unsigned int n;
             uint8_t  tmp_bits [512];
             uint16_t tmp_codes[512];
 
@@ -366,7 +365,6 @@ static av_cold int decode_init(AVCodecContext * avctx)
             memset(tmp_codes, 0, sizeof(tmp_codes));
 
             xsize = h->xsize;
-            n = xsize * xsize;
 
             j = 0;
             for(x=0;x<xsize;x++) {
@@ -754,11 +752,7 @@ static inline int round_sample(int *sum)
     int sum1;
     sum1 = (*sum) >> OUT_SHIFT;
     *sum &= (1<<OUT_SHIFT)-1;
-    if (sum1 < OUT_MIN)
-        sum1 = OUT_MIN;
-    else if (sum1 > OUT_MAX)
-        sum1 = OUT_MAX;
-    return sum1;
+    return av_clip(sum1, OUT_MIN, OUT_MAX);
 }
 
 /* signed 16x16 -> 32 multiply add accumulate */
@@ -776,11 +770,7 @@ static inline int round_sample(int64_t *sum)
     int sum1;
     sum1 = (int)((*sum) >> OUT_SHIFT);
     *sum &= (1<<OUT_SHIFT)-1;
-    if (sum1 < OUT_MIN)
-        sum1 = OUT_MIN;
-    else if (sum1 > OUT_MAX)
-        sum1 = OUT_MAX;
-    return sum1;
+    return av_clip(sum1, OUT_MIN, OUT_MAX);
 }
 
 #   define MULS(ra, rb) MUL64(ra, rb)
@@ -790,14 +780,14 @@ static inline int round_sample(int64_t *sum)
 
 #define SUM8(op, sum, w, p)               \
 {                                         \
-    op(sum, (w)[0 * 64], p[0 * 64]);      \
-    op(sum, (w)[1 * 64], p[1 * 64]);      \
-    op(sum, (w)[2 * 64], p[2 * 64]);      \
-    op(sum, (w)[3 * 64], p[3 * 64]);      \
-    op(sum, (w)[4 * 64], p[4 * 64]);      \
-    op(sum, (w)[5 * 64], p[5 * 64]);      \
-    op(sum, (w)[6 * 64], p[6 * 64]);      \
-    op(sum, (w)[7 * 64], p[7 * 64]);      \
+    op(sum, (w)[0 * 64], (p)[0 * 64]);    \
+    op(sum, (w)[1 * 64], (p)[1 * 64]);    \
+    op(sum, (w)[2 * 64], (p)[2 * 64]);    \
+    op(sum, (w)[3 * 64], (p)[3 * 64]);    \
+    op(sum, (w)[4 * 64], (p)[4 * 64]);    \
+    op(sum, (w)[5 * 64], (p)[5 * 64]);    \
+    op(sum, (w)[6 * 64], (p)[6 * 64]);    \
+    op(sum, (w)[7 * 64], (p)[7 * 64]);    \
 }
 
 #define SUM8P2(sum1, op1, sum2, op2, w1, w2, p) \
@@ -856,31 +846,31 @@ void ff_mpa_synth_filter(MPA_INT *synth_buf_ptr, int *synth_buf_offset,
                          OUT_INT *samples, int incr,
                          int32_t sb_samples[SBLIMIT])
 {
-    int32_t tmp[32];
     register MPA_INT *synth_buf;
     register const MPA_INT *w, *w2, *p;
-    int j, offset, v;
+    int j, offset;
     OUT_INT *samples2;
 #if FRAC_BITS <= 15
+    int32_t tmp[32];
     int sum, sum2;
 #else
     int64_t sum, sum2;
 #endif
 
-    dct32(tmp, sb_samples);
-
     offset = *synth_buf_offset;
     synth_buf = synth_buf_ptr + offset;
 
-    for(j=0;j<32;j++) {
-        v = tmp[j];
 #if FRAC_BITS <= 15
+    dct32(tmp, sb_samples);
+    for(j=0;j<32;j++) {
         /* NOTE: can cause a loss in precision if very high amplitude
            sound */
-        v = av_clip_int16(v);
-#endif
-        synth_buf[j] = v;
+        synth_buf[j] = av_clip_int16(tmp[j]);
     }
+#else
+    dct32(synth_buf, sb_samples);
+#endif
+
     /* copy to avoid wrap */
     memcpy(synth_buf + 512, synth_buf, 32 * sizeof(MPA_INT));
 
@@ -2258,23 +2248,22 @@ static int mp_decode_frame(MPADecodeContext *s,
 
 static int decode_frame(AVCodecContext * avctx,
                         void *data, int *data_size,
-                        const uint8_t * buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     MPADecodeContext *s = avctx->priv_data;
     uint32_t header;
     int out_size;
     OUT_INT *out_samples = data;
 
-retry:
     if(buf_size < HEADER_SIZE)
         return -1;
 
     header = AV_RB32(buf);
     if(ff_mpa_check_header(header) < 0){
-        buf++;
-//        buf_size--;
-        av_log(avctx, AV_LOG_ERROR, "Header missing skipping one byte.\n");
-        goto retry;
+        av_log(avctx, AV_LOG_ERROR, "Header missing\n");
+        return -1;
     }
 
     if (ff_mpegaudio_decode_header((MPADecodeHeader *)s, header) == 1) {
@@ -2315,8 +2304,10 @@ static void flush(AVCodecContext *avctx){
 #if CONFIG_MP3ADU_DECODER
 static int decode_frame_adu(AVCodecContext * avctx,
                         void *data, int *data_size,
-                        const uint8_t * buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     MPADecodeContext *s = avctx->priv_data;
     uint32_t header;
     int len, out_size;
@@ -2459,8 +2450,10 @@ static av_cold int decode_close_mp3on4(AVCodecContext * avctx)
 
 static int decode_frame_mp3on4(AVCodecContext * avctx,
                         void *data, int *data_size,
-                        const uint8_t * buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     MP3On4DecodeContext *s = avctx->priv_data;
     MPADecodeContext *m;
     int fsize, len = buf_size, out_size = 0;

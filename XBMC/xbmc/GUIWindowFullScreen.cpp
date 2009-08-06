@@ -717,7 +717,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
     }
-    CStdString strDispTime = "??:??";
+    CStdString strDispTime = "hh:mm";
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
     for (int count = 0; count < m_timeCodePosition; count++)
@@ -727,7 +727,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       else
         strDispTime[count] = (char)m_timeCodeStamp[count] + 48;
     }
-    strDispTime += "/" + g_infoManager.GetVideoLabel(257) + " [" + g_infoManager.GetVideoLabel(254) + "]"; // duration [ time ]
+    strDispTime += "/" + g_infoManager.GetLabel(PLAYER_DURATION) + " [" + g_infoManager.GetLabel(PLAYER_TIME) + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
     OnMessage(msg);
   }
@@ -863,12 +863,12 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
   slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
   if (data && g_application.m_pPlayer)
   {
-    if (*(DWORD *)data == ACTION_AUDIO_DELAY)
+    if (*(WORD *)data == ACTION_AUDIO_DELAY)
     {
       g_stSettings.m_currentVideoSettings.m_AudioDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     }
-    else if (*(DWORD *)data == ACTION_SUBTITLE_DELAY)
+    else if (*(WORD *)data == ACTION_SUBTITLE_DELAY)
     {
       g_stSettings.m_currentVideoSettings.m_SubtitleDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);

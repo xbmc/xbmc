@@ -27,7 +27,7 @@
 #include <string.h>
 
 #include "libavutil/common.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "cabac.h"
 
 static const uint8_t lps_range[64][4]= {
@@ -179,9 +179,9 @@ void ff_init_cabac_states(CABACContext *c){
 }
 
 #ifdef TEST
-#undef random
 #define SIZE 10240
 
+#include "libavutil/lfg.h"
 #include "avcodec.h"
 #include "cabac.h"
 
@@ -191,12 +191,14 @@ int main(void){
     uint8_t r[9*SIZE];
     int i;
     uint8_t state[10]= {0};
+    AVLFG prng;
 
+    av_lfg_init(&prng, 1);
     ff_init_cabac_encoder(&c, b, SIZE);
     ff_init_cabac_states(&c);
 
     for(i=0; i<SIZE; i++){
-        r[i]= random()%7;
+        r[i] = av_lfg_get(&prng) % 7;
     }
 
     for(i=0; i<SIZE; i++){

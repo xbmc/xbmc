@@ -135,7 +135,7 @@ BOOL   SystemTimeToFileTime(const SYSTEMTIME* lpSystemTime,  LPFILETIME lpFileTi
   if (IsLeapYear(lpSystemTime->wYear) && (sysTime.tm_yday > 58))
     sysTime.tm_yday++;
 
-  time_t t = mktime(&sysTime);
+  time_t t = timegm(&sysTime);
 
   LARGE_INTEGER result;
   result.QuadPart = (long long) t * 10000000 + (long long) lpSystemTime->wMilliseconds * 10000;
@@ -179,7 +179,7 @@ BOOL   FileTimeToSystemTime( const FILETIME* lpFileTime, LPSYSTEMTIME lpSystemTi
   time_t ft = fileTime.QuadPart;
 
   struct tm tm_ft;
-  localtime_r(&ft,&tm_ft);
+  gmtime_r(&ft,&tm_ft);
 
   lpSystemTime->wYear = tm_ft.tm_year + 1900;
   lpSystemTime->wMonth = tm_ft.tm_mon + 1;

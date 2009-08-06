@@ -37,8 +37,6 @@ typedef struct YV12Image
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
-
-  unsigned flipindex; /* used to decide if this has been uploaded */
 } YV12Image;
 
 #define AUTOSOURCE -1
@@ -63,7 +61,6 @@ enum EFIELDSYNC
   FS_NONE,
   FS_ODD,
   FS_EVEN,
-  FS_BOTH
 };
 
 struct YUVRANGE
@@ -165,17 +162,16 @@ protected:
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
-  virtual void LoadShaders(int renderMethod=FIELD_FULL);
+  virtual void LoadShaders(int field=FIELD_FULL);
   void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
 
   // renderers
-  //void RenderLowMem(DWORD flags);     // low mem renderer
-  void RenderMultiPass(DWORD flags, int renderBuffer);  // multi pass glsl renderer
-  void RenderSinglePass(DWORD flags, int renderBuffer); // single pass glsl renderer
-  void RenderSoftware(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
-  void RenderVDPAU(DWORD flags, int renderBuffer);      // render using vdpau hardware
+  void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
+  void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
+  void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
+  void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
 
@@ -208,11 +204,10 @@ protected:
   bool m_isSoftwareUpscaling;
 
   // Raw data used by renderer
-  YV12Image m_image[NUM_BUFFERS];
   int m_currentField;
   int m_reloadShaders;
 
-  typedef struct
+  struct YUVPLANE
   {
     GLuint id;
     CRect  rect;
@@ -224,41 +219,41 @@ protected:
     unsigned texheight;
 
     unsigned flipindex;
-  } YUVPLANE;
+  };
 
   typedef YUVPLANE           YUVPLANES[MAX_PLANES];
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
-  typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
+
+  struct YUVBUFFER
+  {
+    YUVFIELDS fields;
+    YV12Image image;
+    unsigned  flipindex; /* used to decide if this has been uploaded */
+  };
+
+  typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_YUVTexture;
+  YUVBUFFERS m_buffers;
 
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
-  //BaseYUV2RGBGLSLShader     *m_pYUVShaderGLSL;
-  //BaseYUV2RGBARBShader      *m_pYUVShaderARB;
   CShaderProgram        *m_pYUVShader;
   BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
-
-//  /*
-  GLint m_brightness;
-  GLint m_contrast;
-  GLint m_shaderField;
-//  */
 
   // clear colour for "black" bars
   float m_clearColour;
 
   // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil   m_dllAvUtil;
-  DllAvCodec  m_dllAvCodec;
-  DllSwScale  m_dllSwScale;
-  BYTE	     *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  int	      m_rgbBufferSize;
+  DllAvUtil    m_dllAvUtil;
+  DllAvCodec   m_dllAvCodec;
+  DllSwScale   m_dllSwScale;
+  BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
+  unsigned int m_rgbBufferSize;
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
@@ -266,7 +261,7 @@ protected:
 
 
 inline int NP2( unsigned x ) {
-#if defined(_LINUX) && !defined(__POWERPC__) && !defined(_ARMEL)
+#if defined(_LINUX) && !defined(__POWERPC__) && !defined(__PPC__) && !defined(_ARMEL)
   // If there are any issues compiling this, just append a ' && 0'
   // to the above to make it '#if defined(_LINUX) && 0'
 

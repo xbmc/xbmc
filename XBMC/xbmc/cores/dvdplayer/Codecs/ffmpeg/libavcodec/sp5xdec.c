@@ -32,13 +32,16 @@
 
 static int sp5x_decode_frame(AVCodecContext *avctx,
                               void *data, int *data_size,
-                              const uint8_t *buf, int buf_size)
+                              AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
+    AVPacket avpkt_recoded;
 #if 0
     MJpegDecodeContext *s = avctx->priv_data;
 #endif
     const int qscale = 5;
-    const uint8_t *buf_ptr, *buf_end;
+    const uint8_t *buf_ptr;
     uint8_t *recoded;
     int i = 0, j = 0;
 
@@ -46,7 +49,6 @@ static int sp5x_decode_frame(AVCodecContext *avctx,
         return -1;
 
     buf_ptr = buf;
-    buf_end = buf + buf_size;
 
 #if 1
     recoded = av_mallocz(buf_size + 1024);
@@ -89,7 +91,10 @@ static int sp5x_decode_frame(AVCodecContext *avctx,
     recoded[j++] = 0xD9;
 
     avctx->flags &= ~CODEC_FLAG_EMU_EDGE;
-    i = ff_mjpeg_decode_frame(avctx, data, data_size, recoded, j);
+    av_init_packet(&avpkt_recoded);
+    avpkt_recoded.data = recoded;
+    avpkt_recoded.size = j;
+    i = ff_mjpeg_decode_frame(avctx, data, data_size, &avpkt_recoded);
 
     av_free(recoded);
 
@@ -211,5 +216,6 @@ AVCodec amv_decoder = {
     NULL,
     ff_mjpeg_decode_end,
     sp5x_decode_frame,
+    CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("AMV Video"),
 };

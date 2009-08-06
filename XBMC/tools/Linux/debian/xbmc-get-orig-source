@@ -6,7 +6,7 @@
 # Common variables used to ease maintenance of this script
 XBMC_TARBALL=""
 XBMC_TARBALL_CHECKSUM=""
-SVN_REVISION="21475"
+SVN_REVISION="21743"
 XBMC_VERSION="9.04.1+svn$SVN_REVISION"
 
 USAGE="\n\

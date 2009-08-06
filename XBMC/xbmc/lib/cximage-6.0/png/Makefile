@@ -1,17 +1,9 @@
-CC=gcc
-CFLAGS+=-O2 -fPIC -D_LINUX
-
+CFLAGS+=-fPIC
 ifeq ($(findstring osx,$(ARCH)), osx)
-	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	CFLAGS+=-fno-common
 endif
-
+LIB=png.a
 OBJS=png.o pngerror.o pngget.o pngmem.o pngpread.o pngread.o pngrio.o pngrtran.o pngrutil.o pngset.o pngtrans.o pngvcrd.o pngwio.o pngwrite.o pngwtran.o pngwutil.o
 
-%o : %c
-	$(CC) $(CFLAGS) -c -o $@ $< 
+include ../../../../Makefile.include
 
-png.a: $(OBJS)
-	$(AR) rc $@ $(OBJS)
-
-clean:
-	$(RM) $(OBJS) png.a

@@ -157,7 +157,7 @@ static inline void h264_idct8_1d(int16_t *block)
 static void ff_h264_idct8_add_mmx(uint8_t *dst, int16_t *block, int stride)
 {
     int i;
-    int16_t __attribute__ ((aligned(8))) b2[64];
+    DECLARE_ALIGNED_8(int16_t, b2[64]);
 
     block[0] += 32;
 
@@ -1497,8 +1497,8 @@ static av_noinline void OPNAME ## h264_qpel16_h_lowpass_l2_ ## MMX(uint8_t *dst,
         "movdqa %6, %%xmm14         \n\t"\
         "movdqa %7, %%xmm13         \n\t"\
         "1:                         \n\t"\
-        "lddqu    3(%0), %%xmm1     \n\t"\
-        "lddqu   -5(%0), %%xmm7     \n\t"\
+        "lddqu    6(%0), %%xmm1     \n\t"\
+        "lddqu   -2(%0), %%xmm7     \n\t"\
         "movdqa  %%xmm1, %%xmm0     \n\t"\
         "punpckhbw %%xmm15, %%xmm1  \n\t"\
         "punpcklbw %%xmm15, %%xmm0  \n\t"\
@@ -1509,20 +1509,20 @@ static av_noinline void OPNAME ## h264_qpel16_h_lowpass_l2_ ## MMX(uint8_t *dst,
         "movdqa  %%xmm0, %%xmm8     \n\t"\
         "movdqa  %%xmm1, %%xmm4     \n\t"\
         "movdqa  %%xmm0, %%xmm9     \n\t"\
-        "movdqa  %%xmm1, %%xmm5     \n\t"\
-        "movdqa  %%xmm0, %%xmm10    \n\t"\
-        "palignr $6, %%xmm0, %%xmm5 \n\t"\
-        "palignr $6, %%xmm7, %%xmm10\n\t"\
-        "palignr $8, %%xmm0, %%xmm4 \n\t"\
-        "palignr $8, %%xmm7, %%xmm9 \n\t"\
-        "palignr $10,%%xmm0, %%xmm3 \n\t"\
-        "palignr $10,%%xmm7, %%xmm8 \n\t"\
-        "paddw   %%xmm1, %%xmm5     \n\t"\
-        "paddw   %%xmm0, %%xmm10    \n\t"\
-        "palignr $12,%%xmm0, %%xmm2 \n\t"\
-        "palignr $12,%%xmm7, %%xmm6 \n\t"\
-        "palignr $14,%%xmm0, %%xmm1 \n\t"\
-        "palignr $14,%%xmm7, %%xmm0 \n\t"\
+        "movdqa  %%xmm0, %%xmm12    \n\t"\
+        "movdqa  %%xmm1, %%xmm11    \n\t"\
+        "palignr $10,%%xmm0, %%xmm11\n\t"\
+        "palignr $10,%%xmm7, %%xmm12\n\t"\
+        "palignr $2, %%xmm0, %%xmm4 \n\t"\
+        "palignr $2, %%xmm7, %%xmm9 \n\t"\
+        "palignr $4, %%xmm0, %%xmm3 \n\t"\
+        "palignr $4, %%xmm7, %%xmm8 \n\t"\
+        "palignr $6, %%xmm0, %%xmm2 \n\t"\
+        "palignr $6, %%xmm7, %%xmm6 \n\t"\
+        "paddw   %%xmm0 ,%%xmm11    \n\t"\
+        "palignr $8, %%xmm0, %%xmm1 \n\t"\
+        "palignr $8, %%xmm7, %%xmm0 \n\t"\
+        "paddw   %%xmm12,%%xmm7     \n\t"\
         "paddw   %%xmm3, %%xmm2     \n\t"\
         "paddw   %%xmm8, %%xmm6     \n\t"\
         "paddw   %%xmm4, %%xmm1     \n\t"\
@@ -1531,13 +1531,13 @@ static av_noinline void OPNAME ## h264_qpel16_h_lowpass_l2_ ## MMX(uint8_t *dst,
         "psllw   $2,     %%xmm6     \n\t"\
         "psubw   %%xmm1, %%xmm2     \n\t"\
         "psubw   %%xmm0, %%xmm6     \n\t"\
-        "paddw   %%xmm13,%%xmm5     \n\t"\
-        "paddw   %%xmm13,%%xmm10    \n\t"\
+        "paddw   %%xmm13,%%xmm11    \n\t"\
+        "paddw   %%xmm13,%%xmm7     \n\t"\
         "pmullw  %%xmm14,%%xmm2     \n\t"\
         "pmullw  %%xmm14,%%xmm6     \n\t"\
         "lddqu   (%2),   %%xmm3     \n\t"\
-        "paddw   %%xmm5, %%xmm2     \n\t"\
-        "paddw   %%xmm10,%%xmm6     \n\t"\
+        "paddw   %%xmm11,%%xmm2     \n\t"\
+        "paddw   %%xmm7, %%xmm6     \n\t"\
         "psraw   $5,     %%xmm2     \n\t"\
         "psraw   $5,     %%xmm6     \n\t"\
         "packuswb %%xmm2,%%xmm6     \n\t"\
@@ -1577,7 +1577,7 @@ static av_noinline void OPNAME ## h264_qpel8_h_lowpass_l2_ ## MMX(uint8_t *dst, 
     );\
     do{\
     __asm__ volatile(\
-        "lddqu   -5(%0), %%xmm1     \n\t"\
+        "lddqu   -2(%0), %%xmm1     \n\t"\
         "movdqa  %%xmm1, %%xmm0     \n\t"\
         "punpckhbw %%xmm7, %%xmm1   \n\t"\
         "punpcklbw %%xmm7, %%xmm0   \n\t"\
@@ -1585,20 +1585,20 @@ static av_noinline void OPNAME ## h264_qpel8_h_lowpass_l2_ ## MMX(uint8_t *dst, 
         "movdqa  %%xmm1, %%xmm3     \n\t"\
         "movdqa  %%xmm1, %%xmm4     \n\t"\
         "movdqa  %%xmm1, %%xmm5     \n\t"\
-        "palignr $6, %%xmm0, %%xmm5 \n\t"\
-        "palignr $8, %%xmm0, %%xmm4 \n\t"\
-        "palignr $10,%%xmm0, %%xmm3 \n\t"\
-        "paddw   %%xmm1, %%xmm5     \n\t"\
-        "palignr $12,%%xmm0, %%xmm2 \n\t"\
-        "palignr $14,%%xmm0, %%xmm1 \n\t"\
+        "palignr $2, %%xmm0, %%xmm4 \n\t"\
+        "palignr $4, %%xmm0, %%xmm3 \n\t"\
+        "palignr $6, %%xmm0, %%xmm2 \n\t"\
+        "palignr $8, %%xmm0, %%xmm1 \n\t"\
+        "palignr $10,%%xmm0, %%xmm5 \n\t"\
+        "paddw   %%xmm5, %%xmm0     \n\t"\
         "paddw   %%xmm3, %%xmm2     \n\t"\
         "paddw   %%xmm4, %%xmm1     \n\t"\
         "psllw   $2,     %%xmm2     \n\t"\
         "movq    (%2),   %%xmm3     \n\t"\
         "psubw   %%xmm1, %%xmm2     \n\t"\
-        "paddw   %5,     %%xmm5     \n\t"\
+        "paddw   %5,     %%xmm0     \n\t"\
         "pmullw  %%xmm6, %%xmm2     \n\t"\
-        "paddw   %%xmm5, %%xmm2     \n\t"\
+        "paddw   %%xmm0, %%xmm2     \n\t"\
         "psraw   $5,     %%xmm2     \n\t"\
         "packuswb %%xmm2, %%xmm2    \n\t"\
         "pavgb   %%xmm3, %%xmm2     \n\t"\
@@ -1621,7 +1621,7 @@ static av_noinline void OPNAME ## h264_qpel8_h_lowpass_ ## MMX(uint8_t *dst, uin
         "pxor %%xmm7, %%xmm7        \n\t"\
         "movdqa %5, %%xmm6          \n\t"\
         "1:                         \n\t"\
-        "lddqu   -5(%0), %%xmm1     \n\t"\
+        "lddqu   -2(%0), %%xmm1     \n\t"\
         "movdqa  %%xmm1, %%xmm0     \n\t"\
         "punpckhbw %%xmm7, %%xmm1   \n\t"\
         "punpcklbw %%xmm7, %%xmm0   \n\t"\
@@ -1629,19 +1629,19 @@ static av_noinline void OPNAME ## h264_qpel8_h_lowpass_ ## MMX(uint8_t *dst, uin
         "movdqa  %%xmm1, %%xmm3     \n\t"\
         "movdqa  %%xmm1, %%xmm4     \n\t"\
         "movdqa  %%xmm1, %%xmm5     \n\t"\
-        "palignr $6, %%xmm0, %%xmm5 \n\t"\
-        "palignr $8, %%xmm0, %%xmm4 \n\t"\
-        "palignr $10,%%xmm0, %%xmm3 \n\t"\
-        "paddw   %%xmm1, %%xmm5     \n\t"\
-        "palignr $12,%%xmm0, %%xmm2 \n\t"\
-        "palignr $14,%%xmm0, %%xmm1 \n\t"\
+        "palignr $2, %%xmm0, %%xmm4 \n\t"\
+        "palignr $4, %%xmm0, %%xmm3 \n\t"\
+        "palignr $6, %%xmm0, %%xmm2 \n\t"\
+        "palignr $8, %%xmm0, %%xmm1 \n\t"\
+        "palignr $10,%%xmm0, %%xmm5 \n\t"\
+        "paddw   %%xmm5, %%xmm0     \n\t"\
         "paddw   %%xmm3, %%xmm2     \n\t"\
         "paddw   %%xmm4, %%xmm1     \n\t"\
         "psllw   $2,     %%xmm2     \n\t"\
         "psubw   %%xmm1, %%xmm2     \n\t"\
-        "paddw   %6,     %%xmm5     \n\t"\
+        "paddw   %6,     %%xmm0     \n\t"\
         "pmullw  %%xmm6, %%xmm2     \n\t"\
-        "paddw   %%xmm5, %%xmm2     \n\t"\
+        "paddw   %%xmm0, %%xmm2     \n\t"\
         "psraw   $5,     %%xmm2     \n\t"\
         "packuswb %%xmm2, %%xmm2    \n\t"\
         OP(%%xmm2, (%1), %%xmm4, q)\
@@ -2101,7 +2101,7 @@ static void put_h264_chroma_mc8_mmx_rnd(uint8_t *dst/*align 8*/, uint8_t *src/*a
 {
     put_h264_chroma_generic_mc8_mmx(dst, src, stride, h, x, y, h264_rnd_reg);
 }
-static void put_h264_chroma_mc8_mmx_nornd(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
+static void put_vc1_chroma_mc8_mmx_nornd(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
 {
     put_h264_chroma_generic_mc8_mmx(dst, src, stride, h, x, y, h264_rnd_reg+2);
 }
@@ -2128,6 +2128,10 @@ static void put_h264_chroma_mc4_mmx(uint8_t *dst/*align 8*/, uint8_t *src/*align
 static void avg_h264_chroma_mc8_mmx2_rnd(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
 {
     avg_h264_chroma_generic_mc8_mmx2(dst, src, stride, h, x, y, h264_rnd_reg);
+}
+static void avg_vc1_chroma_mc8_mmx2_nornd(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
+{
+    avg_h264_chroma_generic_mc8_mmx2(dst, src, stride, h, x, y, h264_rnd_reg+2);
 }
 static void avg_h264_chroma_mc4_mmx2(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
 {
@@ -2173,7 +2177,7 @@ static void put_h264_chroma_mc8_ssse3_rnd(uint8_t *dst/*align 8*/, uint8_t *src/
 {
     put_h264_chroma_mc8_ssse3(dst, src, stride, h, x, y, 1);
 }
-static void put_h264_chroma_mc8_ssse3_nornd(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
+static void put_vc1_chroma_mc8_ssse3_nornd(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
 {
     put_h264_chroma_mc8_ssse3(dst, src, stride, h, x, y, 0);
 }
@@ -2190,6 +2194,10 @@ static void put_h264_chroma_mc8_ssse3_nornd(uint8_t *dst/*align 8*/, uint8_t *sr
 static void avg_h264_chroma_mc8_ssse3_rnd(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
 {
     avg_h264_chroma_mc8_ssse3(dst, src, stride, h, x, y, 1);
+}
+static void avg_vc1_chroma_mc8_ssse3_nornd(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, int h, int x, int y)
+{
+    avg_h264_chroma_mc8_ssse3(dst, src, stride, h, x, y, 0);
 }
 #undef AVG_OP
 #undef H264_CHROMA_MC8_TMPL

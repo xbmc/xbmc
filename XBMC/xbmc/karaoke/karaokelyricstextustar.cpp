@@ -37,7 +37,7 @@ std::vector< CStdString > CKaraokeLyricsTextUStar::readFile(const CStdString & l
 
   XFILE::CFile file;
 
-  if ( !file.Open( lyricsFile, TRUE ) )
+  if ( !file.Open( lyricsFile ) )
     return std::vector< CStdString >();
 
   unsigned int lyricSize = (unsigned int) file.GetLength();

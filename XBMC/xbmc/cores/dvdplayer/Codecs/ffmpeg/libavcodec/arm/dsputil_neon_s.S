@@ -38,13 +38,13 @@
         pld             [r1, r2]
         pld             [r1, r2, lsl #1]
 .if \avg
-        vld1.64         {d16,d17}, [ip], r2
+        vld1.64         {d16,d17}, [ip,:128], r2
         vrhadd.u8       q0,  q0,  q8
-        vld1.64         {d18,d19}, [ip], r2
+        vld1.64         {d18,d19}, [ip,:128], r2
         vrhadd.u8       q1,  q1,  q9
-        vld1.64         {d20,d21}, [ip], r2
+        vld1.64         {d20,d21}, [ip,:128], r2
         vrhadd.u8       q2,  q2,  q10
-        vld1.64         {d22,d23}, [ip], r2
+        vld1.64         {d22,d23}, [ip,:128], r2
         vrhadd.u8       q3,  q3,  q11
 .endif
         subs            r3,  r3,  #4
@@ -73,35 +73,29 @@
         .endm
 
         .macro pixels16_y2 vhadd=vrhadd.u8
-        push            {lr}
-        add             ip,  r1,  r2
-        lsl             lr,  r2,  #1
-        vld1.64         {d0, d1},  [r1], lr
-        vld1.64         {d2, d3},  [ip], lr
+        vld1.64         {d0, d1},  [r1], r2
+        vld1.64         {d2, d3},  [r1], r2
 1:      subs            r3,  r3,  #2
         \vhadd          q2,  q0,  q1
-        vld1.64         {d0, d1},  [r1],      lr
+        vld1.64         {d0, d1},  [r1], r2
         \vhadd          q3,  q0,  q1
-        vld1.64         {d2, d3},  [ip],      lr
+        vld1.64         {d2, d3},  [r1], r2
         pld             [r1]
-        pld             [ip]
+        pld             [r1, r2]
         vst1.64         {d4, d5},  [r0,:128], r2
         vst1.64         {d6, d7},  [r0,:128], r2
         bne             1b
-        pop             {pc}
+        bx              lr
         .endm
 
         .macro pixels16_xy2 vshrn=vrshrn.u16 no_rnd=0
-        push            {lr}
-        lsl             lr,  r2,  #1
-        add             ip,  r1,  r2
-        vld1.64         {d0-d2},   [r1], lr
-        vld1.64         {d4-d6},   [ip], lr
+        vld1.64         {d0-d2},   [r1], r2
+        vld1.64         {d4-d6},   [r1], r2
 .if \no_rnd
         vmov.i16        q13, #1
 .endif
         pld             [r1]
-        pld             [ip]
+        pld             [r1, r2]
         vext.8          q1,  q0,  q1,  #1
         vext.8          q3,  q2,  q3,  #1
         vaddl.u8        q8,  d0,  d2
@@ -109,7 +103,7 @@
         vaddl.u8        q9,  d4,  d6
         vaddl.u8        q11, d5,  d7
 1:      subs            r3,  r3,  #2
-        vld1.64         {d0-d2},   [r1], lr
+        vld1.64         {d0-d2},   [r1], r2
         vadd.u16        q12, q8,  q9
         pld             [r1]
 .if \no_rnd
@@ -123,11 +117,11 @@
 .endif
         \vshrn          d29, q1,  #2
         vaddl.u8        q8,  d0,  d30
-        vld1.64         {d2-d4},   [ip], lr
+        vld1.64         {d2-d4},   [r1], r2
         vaddl.u8        q10, d1,  d31
         vst1.64         {d28,d29}, [r0,:128], r2
         vadd.u16        q12, q8,  q9
-        pld             [ip]
+        pld             [r1, r2]
 .if \no_rnd
         vadd.u16        q12, q12, q13
 .endif
@@ -142,7 +136,7 @@
         vaddl.u8        q11, d3,  d5
         vst1.64         {d30,d31}, [r0,:128], r2
         bgt             1b
-        pop             {pc}
+        bx              lr
         .endm
 
         .macro pixels8
@@ -180,41 +174,35 @@
         .endm
 
         .macro pixels8_y2 vhadd=vrhadd.u8
-        push            {lr}
-        add             ip,  r1,  r2
-        lsl             lr,  r2,  #1
-        vld1.64         {d0},      [r1], lr
-        vld1.64         {d1},      [ip], lr
+        vld1.64         {d0},      [r1], r2
+        vld1.64         {d1},      [r1], r2
 1:      subs            r3,  r3,  #2
         \vhadd          d4,  d0,  d1
-        vld1.64         {d0},      [r1],     lr
+        vld1.64         {d0},      [r1], r2
         \vhadd          d5,  d0,  d1
-        vld1.64         {d1},      [ip],     lr
+        vld1.64         {d1},      [r1], r2
         pld             [r1]
-        pld             [ip]
+        pld             [r1, r2]
         vst1.64         {d4},      [r0,:64], r2
         vst1.64         {d5},      [r0,:64], r2
         bne             1b
-        pop             {pc}
+        bx              lr
         .endm
 
         .macro pixels8_xy2 vshrn=vrshrn.u16 no_rnd=0
-        push            {lr}
-        lsl             lr,  r2,  #1
-        add             ip,  r1,  r2
-        vld1.64         {d0, d1},  [r1], lr
-        vld1.64         {d2, d3},  [ip], lr
+        vld1.64         {d0, d1},  [r1], r2
+        vld1.64         {d2, d3},  [r1], r2
 .if \no_rnd
         vmov.i16        q11, #1
 .endif
         pld             [r1]
-        pld             [ip]
+        pld             [r1, r2]
         vext.8          d4,  d0,  d1,  #1
         vext.8          d6,  d2,  d3,  #1
         vaddl.u8        q8,  d0,  d4
         vaddl.u8        q9,  d2,  d6
 1:      subs            r3,  r3,  #2
-        vld1.64         {d0, d1},  [r1], lr
+        vld1.64         {d0, d1},  [r1], r2
         pld             [r1]
         vadd.u16        q10, q8,  q9
         vext.8          d4,  d0,  d1,  #1
@@ -223,9 +211,9 @@
 .endif
         vaddl.u8        q8,  d0,  d4
         \vshrn          d5,  q10, #2
-        vld1.64         {d2, d3},  [ip], lr
+        vld1.64         {d2, d3},  [r1], r2
         vadd.u16        q10, q8,  q9
-        pld             [ip]
+        pld             [r1, r2]
 .if \no_rnd
         vadd.u16        q10, q10, q11
 .endif
@@ -235,7 +223,7 @@
         vaddl.u8        q9,  d2,  d6
         vst1.64         {d7},      [r0,:64], r2
         bgt             1b
-        pop             {pc}
+        bx              lr
         .endm
 
         .macro pixfunc pfx name suf rnd_op args:vararg
@@ -272,6 +260,112 @@ function ff_put_h264_qpel8_mc00_neon, export=1
         pixfunc2 put_ pixels8_x2,   _no_rnd, vhadd.u8
         pixfunc2 put_ pixels8_y2,   _no_rnd, vhadd.u8
         pixfunc2 put_ pixels8_xy2,  _no_rnd, vshrn.u16, 1
+
+function ff_put_pixels_clamped_neon, export=1
+        vld1.64         {d16-d19}, [r0,:128]!
+        vqmovun.s16     d0, q8
+        vld1.64         {d20-d23}, [r0,:128]!
+        vqmovun.s16     d1, q9
+        vld1.64         {d24-d27}, [r0,:128]!
+        vqmovun.s16     d2, q10
+        vld1.64         {d28-d31}, [r0,:128]!
+        vqmovun.s16     d3, q11
+        vst1.64         {d0},      [r1,:64], r2
+        vqmovun.s16     d4, q12
+        vst1.64         {d1},      [r1,:64], r2
+        vqmovun.s16     d5, q13
+        vst1.64         {d2},      [r1,:64], r2
+        vqmovun.s16     d6, q14
+        vst1.64         {d3},      [r1,:64], r2
+        vqmovun.s16     d7, q15
+        vst1.64         {d4},      [r1,:64], r2
+        vst1.64         {d5},      [r1,:64], r2
+        vst1.64         {d6},      [r1,:64], r2
+        vst1.64         {d7},      [r1,:64], r2
+        bx              lr
+        .endfunc
+
+function ff_put_signed_pixels_clamped_neon, export=1
+        vmov.u8         d31, #128
+        vld1.64         {d16-d17}, [r0,:128]!
+        vqmovn.s16      d0, q8
+        vld1.64         {d18-d19}, [r0,:128]!
+        vqmovn.s16      d1, q9
+        vld1.64         {d16-d17}, [r0,:128]!
+        vqmovn.s16      d2, q8
+        vld1.64         {d18-d19}, [r0,:128]!
+        vadd.u8         d0, d0, d31
+        vld1.64         {d20-d21}, [r0,:128]!
+        vadd.u8         d1, d1, d31
+        vld1.64         {d22-d23}, [r0,:128]!
+        vadd.u8         d2, d2, d31
+        vst1.64         {d0},      [r1,:64], r2
+        vqmovn.s16      d3, q9
+        vst1.64         {d1},      [r1,:64], r2
+        vqmovn.s16      d4, q10
+        vst1.64         {d2},      [r1,:64], r2
+        vqmovn.s16      d5, q11
+        vld1.64         {d24-d25}, [r0,:128]!
+        vadd.u8         d3, d3, d31
+        vld1.64         {d26-d27}, [r0,:128]!
+        vadd.u8         d4, d4, d31
+        vadd.u8         d5, d5, d31
+        vst1.64         {d3},      [r1,:64], r2
+        vqmovn.s16      d6, q12
+        vst1.64         {d4},      [r1,:64], r2
+        vqmovn.s16      d7, q13
+        vst1.64         {d5},      [r1,:64], r2
+        vadd.u8         d6, d6, d31
+        vadd.u8         d7, d7, d31
+        vst1.64         {d6},      [r1,:64], r2
+        vst1.64         {d7},      [r1,:64], r2
+        bx              lr
+        .endfunc
+
+function ff_add_pixels_clamped_neon, export=1
+        mov             r3, r1
+        vld1.64         {d16},   [r1,:64], r2
+        vld1.64         {d0-d1}, [r0,:128]!
+        vaddw.u8        q0, q0, d16
+        vld1.64         {d17},   [r1,:64], r2
+        vld1.64         {d2-d3}, [r0,:128]!
+        vqmovun.s16     d0, q0
+        vld1.64         {d18},   [r1,:64], r2
+        vaddw.u8        q1, q1, d17
+        vld1.64         {d4-d5}, [r0,:128]!
+        vaddw.u8        q2, q2, d18
+        vst1.64         {d0},    [r3,:64], r2
+        vqmovun.s16     d2, q1
+        vld1.64         {d19},   [r1,:64], r2
+        vld1.64         {d6-d7}, [r0,:128]!
+        vaddw.u8        q3, q3, d19
+        vqmovun.s16     d4, q2
+        vst1.64         {d2},    [r3,:64], r2
+        vld1.64         {d16},   [r1,:64], r2
+        vqmovun.s16     d6, q3
+        vld1.64         {d0-d1}, [r0,:128]!
+        vaddw.u8        q0, q0, d16
+        vst1.64         {d4},    [r3,:64], r2
+        vld1.64         {d17},   [r1,:64], r2
+        vld1.64         {d2-d3}, [r0,:128]!
+        vaddw.u8        q1, q1, d17
+        vst1.64         {d6},    [r3,:64], r2
+        vqmovun.s16     d0, q0
+        vld1.64         {d18},   [r1,:64], r2
+        vld1.64         {d4-d5}, [r0,:128]!
+        vaddw.u8        q2, q2, d18
+        vst1.64         {d0},    [r3,:64], r2
+        vqmovun.s16     d2, q1
+        vld1.64         {d19},   [r1,:64], r2
+        vqmovun.s16     d4, q2
+        vld1.64         {d6-d7}, [r0,:128]!
+        vaddw.u8        q3, q3, d19
+        vst1.64         {d2},    [r3,:64], r2
+        vqmovun.s16     d6, q3
+        vst1.64         {d4},    [r3,:64], r2
+        vst1.64         {d6},    [r3,:64], r2
+        bx              lr
+        .endfunc
 
 function ff_float_to_int16_neon, export=1
         subs            r2,  r2,  #8
@@ -651,9 +745,11 @@ function ff_vector_fmul_neon, export=1
         .endfunc
 
 function ff_vector_fmul_window_neon, export=1
-        vld1.32         {d16[],d17[]}, [sp,:32]
+VFP     vdup.32         q8,  d0[0]
+NOVFP   vld1.32         {d16[],d17[]}, [sp,:32]
         push            {r4,r5,lr}
-        ldr             lr,  [sp, #16]
+VFP     ldr             lr,  [sp, #12]
+NOVFP   ldr             lr,  [sp, #16]
         sub             r2,  r2,  #8
         sub             r5,  lr,  #2
         add             r2,  r2,  r5, lsl #2

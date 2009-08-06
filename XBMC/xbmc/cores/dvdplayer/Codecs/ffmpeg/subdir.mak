@@ -5,7 +5,7 @@ include $(SUBDIR)../common.mak
 LIBVERSION := $(lib$(NAME)_VERSION)
 LIBMAJOR   := $(lib$(NAME)_VERSION_MAJOR)
 
-ifeq ($(BUILD_STATIC),yes)
+ifeq ($(CONFIG_STATIC),yes)
 all: $(SUBDIR)$(LIBNAME)
 
 install-libs: install-lib$(NAME)-static
@@ -18,8 +18,33 @@ endif
 
 INCINSTDIR := $(INCDIR)/lib$(NAME)
 
+THIS_LIB := $(SUBDIR)$($(CONFIG_SHARED:yes=S)LIBNAME)
+
 define RULES
-ifdef BUILD_SHARED
+$(SUBDIR)%$(EXESUF): $(SUBDIR)%.o
+	$(LD) $(FFLDFLAGS) -o $$@ $$^ -l$(FULLNAME) $(FFEXTRALIBS) $$(ELIBS)
+
+$(SUBDIR)%-test.o: $(SUBDIR)%.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DTEST -c -o $$@ $$^
+
+$(SUBDIR)%-test.o: $(SUBDIR)%-test.c
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DTEST -c -o $$@ $$^
+
+$(SUBDIR)x86/%.o: $(SUBDIR)x86/%.asm
+	$(YASM) $(YASMFLAGS) -I $$(<D)/ -o $$@ $$<
+
+$(SUBDIR)x86/%.d: $(SUBDIR)x86/%.asm
+	$(YASM) $(YASMFLAGS) -I $$(<D)/ -M -o $$(@:%.d=%.o) $$< > $$@
+
+clean::
+	rm -f $(addprefix $(SUBDIR),*-example$(EXESUF) *-test$(EXESUF) $(CLEANFILES) $(CLEANSUFFIXES) $(LIBSUFFIXES)) \
+	    $(addprefix $(SUBDIR), $(foreach suffix,$(CLEANSUFFIXES),$(addsuffix /$(suffix),$(DIRS))))
+
+distclean:: clean
+	rm -f  $(addprefix $(SUBDIR),$(DISTCLEANSUFFIXES)) \
+            $(addprefix $(SUBDIR), $(foreach suffix,$(DISTCLEANSUFFIXES),$(addsuffix /$(suffix),$(DIRS))))
+
+ifdef CONFIG_SHARED
 all: $(SUBDIR)$(SLIBNAME)
 
 install-libs: install-lib$(NAME)-shared
@@ -29,7 +54,7 @@ $(SUBDIR)$(SLIBNAME): $(SUBDIR)$(SLIBNAME_WITH_MAJOR)
 
 $(SUBDIR)$(SLIBNAME_WITH_MAJOR): $(OBJS)
 	$(SLIB_CREATE_DEF_CMD)
-	$(CC) $(SHFLAGS) $(FFLDFLAGS) -o $$@ $$(filter-out $(DEP_LIBS),$$^) $(FFEXTRALIBS) $(EXTRAOBJS)
+	$(LD) $(SHFLAGS) $(FFLDFLAGS) -o $$@ $$(filter %.o,$$^) $(FFEXTRALIBS) $(EXTRAOBJS)
 	$(SLIB_EXTRA_CMD)
 
 ifdef SUBDIR
@@ -39,7 +64,7 @@ endif
 
 install-lib$(NAME)-shared: $(SUBDIR)$(SLIBNAME)
 	install -d "$(SHLIBDIR)"
-	install -m 755 $(SUBDIR)$(SLIBNAME) "$(SHLIBDIR)/$(SLIBNAME_WITH_VERSION)"
+	install -m 755 $$< "$(SHLIBDIR)/$(SLIBNAME_WITH_VERSION)"
 	$(STRIP) "$(SHLIBDIR)/$(SLIBNAME_WITH_VERSION)"
 	cd "$(SHLIBDIR)" && \
 		$(LN_S) $(SLIBNAME_WITH_VERSION) $(SLIBNAME_WITH_MAJOR)
@@ -49,7 +74,7 @@ install-lib$(NAME)-shared: $(SUBDIR)$(SLIBNAME)
 
 install-lib$(NAME)-static: $(SUBDIR)$(LIBNAME)
 	install -d "$(LIBDIR)"
-	install -m 644 $(SUBDIR)$(LIBNAME) "$(LIBDIR)"
+	install -m 644 $$< "$(LIBDIR)"
 	$(LIB_INSTALL_EXTRA_CMD)
 
 install-headers::
@@ -72,3 +97,8 @@ uninstall-headers::
 endef
 
 $(eval $(RULES))
+
+$(EXAMPLES) $(TESTPROGS): $(THIS_LIB) $(DEP_LIBS)
+
+examples: $(EXAMPLES)
+testprogs: $(TESTPROGS)

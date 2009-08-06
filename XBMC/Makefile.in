@@ -75,7 +75,7 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
 	xbmc/cores/paplayer/MP3Codec \
-	xbmc/cores/paplayer/flac-1.2.1 \
+	xbmc/cores/paplayer/FLACCodec \
 	xbmc/cores/paplayer/MACDll \
 	xbmc/cores/paplayer/vorbisfile
 
@@ -223,10 +223,8 @@ xbmc/xbox/xbox.a: force
 	$(MAKE) -C xbmc/xbox
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
-#xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a: force
-#xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a: force
-#xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a: force
-#	$(MAKE) -C xbmc/lib/libSDL-OSX
+xbmc/cores/paplayer/MPCCodec/xbmc/libmpcdec-@ARCH@.a: force
+	$(MAKE) -C xbmc/cores/paplayer/MPCCodec/xbmc
 
 exports:
 	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
@@ -239,7 +237,9 @@ ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/visualizations/Goom
+endif
 endif
 screensavers: exports
 ifneq ($(ARCH), arm)
@@ -272,9 +272,7 @@ papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AACCodec
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
-ifneq (@USE_EXTERNAL_LIBFLAC@,1)
-	$(MAKE) -C xbmc/cores/paplayer/flac-1.2.1
-endif
+	$(MAKE) -C xbmc/cores/paplayer/FLACCodec
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 	$(MAKE) -C xbmc/cores/paplayer/timidity
@@ -288,10 +286,10 @@ ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec
 endif
 	$(MAKE) -C xbmc/cores/paplayer/YMCodec/StSoundLibrary	
-ifneq ($(ARCH), powerpc-osx)
+ifeq ($(findstring powerpc,$(ARCH)),)
 	$(MAKE) -C xbmc/cores/paplayer/MACDll
 endif
-ifneq ($(ARCH), x86_64-linux)
+ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
 ifneq ($(ARCH), arm)
 	$(MAKE) -C xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU
 endif
@@ -378,11 +376,6 @@ ifeq ($(ARCH), powerpc64-linux)
 	#OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
 	LIBS += -lpython2.4
 endif
-
-# TODO: XBPythonDLLFuncs.S not implemented on ARM, use system version instead
-#ifeq ($(ARCH), arm)
-#	LIBS += -lpython2.4
-#endif
 
 # If using external libmpcdec
 ifeq (@USE_EXTERNAL_LIBMPCDEC@,1)

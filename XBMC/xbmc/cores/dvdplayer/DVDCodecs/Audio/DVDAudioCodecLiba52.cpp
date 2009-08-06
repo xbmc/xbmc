@@ -307,7 +307,8 @@ int CDVDAudioCodecLiba52::Decode(BYTE* pData, int iSize)
 
   m_dll.a52_frame(m_pState, frame, &flags, &level, bias);
 
-  //m_dll.a52_dynrng(m_pState, NULL, NULL);
+  if (!g_advancedSettings.m_audioApplyDrc)
+    m_dll.a52_dynrng(m_pState, NULL, NULL);
 
   for (int i = 0; i < 6; i++)
   {

@@ -564,9 +564,8 @@ CStdString CSysInfo::GetLinuxDistro()
   FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; /usr/bin/lsb_release -d | cut -f2", "r");
   if (pipe)
   {
-    char buffer[256];
-    memset(buffer, 0, sizeof(buffer)*sizeof(char));
-    if (fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe) == 1)
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
       result = buffer;
     else
       CLog::Log(LOGWARNING, "Unable to determine Linux distribution");
@@ -585,9 +584,8 @@ CStdString CSysInfo::GetUnameVersion()
   FILE* pipe = popen("uname -rs", "r");
   if (pipe)
   {
-    char buffer[256];
-    memset(buffer, 0, sizeof(buffer)*sizeof(char));
-    if (fread(buffer, sizeof(buffer)*sizeof(char), 1, pipe) == 1)
+    char buffer[256] = {'\0'};
+    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
       result = buffer;
     else
       CLog::Log(LOGWARNING, "Unable to determine Uname version");

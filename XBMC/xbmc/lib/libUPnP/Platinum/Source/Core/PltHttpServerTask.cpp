@@ -105,7 +105,7 @@ PLT_HttpServerSocketTask::DoRun()
         res = Write(response, keep_alive, headers_only);
 
         // on write error, don't keep connection alive
-        if (NPT_SUCCEEDED(res)) keep_alive = false;
+        if (NPT_FAILED(res)) keep_alive = false;
 
 cleanup:
         // cleanup

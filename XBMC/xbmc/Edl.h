@@ -41,39 +41,42 @@ public:
 
   struct Cut
   {
-    __int64 start;
-    __int64 end;
+    __int64 start; // ms
+    __int64 end;   // ms
     Action action;
   };
 
-  bool ReadnCacheAny(const CStdString& strMovie);
-  bool ReadEdl(const CStdString& strMovie);
-  bool ReadComskip(const CStdString& strMovie);
-  bool ReadVideoRedo(const CStdString& strMovie);
-  bool ReadBeyondTV(const CStdString& strMovie);
-  void Reset();
-
-  bool AddCut(const Cut& NewCut);
-  bool AddSceneMarker(const __int64 sceneMarker);
-
-  bool CacheEdl();
+  bool ReadFiles(const CStdString& strMovie);
+  void Clear();
 
   bool HasCut();
   bool HasSceneMarker();
   char GetEdlStatus();
   __int64 GetTotalCutTime();
-  __int64 RemoveCutTime(__int64 iTime);
-  __int64 RestoreCutTime(__int64 iTime);
+  __int64 RemoveCutTime(__int64 iSeek);
+  __int64 RestoreCutTime(__int64 iClock);
 
-  bool InCut(__int64 iAbsSeek, Cut *pCurCut = NULL);
+  bool InCut(__int64 iSeek, Cut *pCut = NULL);
 
-  bool SeekScene(bool bPlus, const __int64 clock, __int64 *iScenemarker);
+  bool GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneMarker);
 
 protected:
 private:
-  __int64 m_iTotalCutTime; // msec
+  __int64 m_iTotalCutTime; // ms
   std::vector<Cut> m_vecCuts;
   std::vector<__int64> m_vecSceneMarkers;
+
+  bool ReadEdl(const CStdString& strMovie);
+  bool ReadComskip(const CStdString& strMovie);
+  bool ReadVideoReDo(const CStdString& strMovie);
+  bool ReadBeyondTV(const CStdString& strMovie);
+
+  bool AddCut(const Cut& NewCut);
+  bool AddSceneMarker(const __int64 sceneMarker);
+
+  bool WriteMPlayerEdl();
+
+  static CStdString MillisecondsToTimeString(const int iMilliseconds);
 };
 
-#endif // CEDL_H
+#endif

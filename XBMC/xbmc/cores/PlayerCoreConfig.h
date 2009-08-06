@@ -53,6 +53,7 @@ public:
     {
       m_config = NULL;
     }
+    CLog::Log(LOGDEBUG, "CPlayerCoreConfig::<ctor>: created player %s for core %d", m_name.c_str(), m_eCore);
   }
 
   virtual ~CPlayerCoreConfig()

@@ -20,19 +20,25 @@
 
 #include "config.h"
 
+#ifdef __ELF__
+#   define ELF
+#else
+#   define ELF @
+#endif
+
         .macro require8, val=1
-        .eabi_attribute 24, \val
+ELF     .eabi_attribute 24, \val
         .endm
 
         .macro preserve8, val=1
-        .eabi_attribute 25, \val
+ELF     .eabi_attribute 25, \val
         .endm
 
         .macro function name, export=0
 .if \export
         .global \name
 .endif
-        .type   \name, %function
+ELF     .type   \name, %function
         .func   \name
 \name:
         .endm
@@ -45,3 +51,12 @@
         ldr             \rd, =\val
 #endif
         .endm
+
+#if HAVE_VFP_ARGS
+        .eabi_attribute 28, 1
+#   define VFP
+#   define NOVFP @
+#else
+#   define VFP   @
+#   define NOVFP
+#endif

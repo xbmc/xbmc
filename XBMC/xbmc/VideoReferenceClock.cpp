@@ -959,7 +959,7 @@ int CVideoReferenceClock::GetRefreshRate()
 
 #define MAXDELAY 1200
 
-//this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBoxRenderManager::WaitPresentTime
+//this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBMCRenderManager::WaitPresentTime
 //it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
 int64_t CVideoReferenceClock::Wait(int64_t Target)
 {

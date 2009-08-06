@@ -21,10 +21,10 @@
 
 #include "stdafx.h"
 #include "CDDADirectory.h"
-#include "DetectDVDType.h"
 #include "MusicDatabase.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "MediaManager.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -43,11 +43,11 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 {
   // Reads the tracks from an audio cd
 
-  if (!CDetectDVDMedia::IsDiscInDrive())
+  if (!g_mediaManager.IsDiscInDrive(strPath))
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
+  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo(strPath);
   if (pCdInfo == NULL)
     return false;
 

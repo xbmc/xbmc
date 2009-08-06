@@ -50,6 +50,7 @@
 #elif defined __APPLE__
 #include "CocoaInterface.h"
 #endif
+#include "MediaManager.h"
 
 using namespace std;
 
@@ -531,6 +532,31 @@ case TMSG_POWERDOWN:
     case TMSG_GUI_WIN_MANAGER_RENDER:
       m_gWindowManager.Render_Internal();
       break;
+
+    case TMSG_OPTICAL_MOUNT:
+      {
+        CMediaSource share;
+        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+        share.strPath = pMsg->strParam;
+        if(g_mediaManager.IsAudio(share.strPath))
+          share.strStatus = "Audio-CD";
+        else if(share.strStatus == "")
+          share.strStatus = g_localizeStrings.Get(446);
+        share.strName = share.strPath;
+        share.m_ignore = true;
+        share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
+        g_mediaManager.AddAutoSource(share, true);
+      }
+      break; 
+
+    case TMSG_OPTICAL_UNMOUNT:
+      {
+        CMediaSource share;
+        share.strPath = pMsg->strParam;
+        share.strName = share.strPath;
+        g_mediaManager.RemoveAutoSource(share);
+      }
+      break; 
   }
 }
 
@@ -793,3 +819,17 @@ void CApplicationMessenger::Render()
   ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_RENDER};
   SendMessage(tMsg, true);
 }
+
+void CApplicationMessenger::OpticalMount(CStdString device) 
+{ 
+  ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT}; 
+  tMsg.strParam = device; 
+  SendMessage(tMsg, false); 
+} 
+ 
+void CApplicationMessenger::OpticalUnMount(CStdString device) 
+{ 
+  ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT}; 
+  tMsg.strParam = device; 
+  SendMessage(tMsg, false); 
+} 

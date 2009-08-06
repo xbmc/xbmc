@@ -326,12 +326,16 @@ void CGUISettings::Initialize()
   AddCategory(4, "system", 13281);
   // advanced only configuration
   AddBool(1, "system.debuglogging", 20191, false);
-  AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddSeparator(2, "system.sep1");
+  AddInt(3, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(4, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
   else
-    AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(4, "system.shutdownstate", 13008, POWERSTATE_QUIT, 0, 1, 5, SPIN_CONTROL_TEXT);
+#if defined(_LINUX) && !defined(__APPLE__)
+  AddInt(5, "system.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
+#endif
 
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
@@ -616,7 +620,9 @@ void CGUISettings::Initialize()
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
   AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
-  AddBool(13, "lookandfeel.enablemouse", 21369, true);
+  AddString(13, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(14, "lookandfeel.sep3");
+  AddBool(15, "lookandfeel.enablemouse", 21369, true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);

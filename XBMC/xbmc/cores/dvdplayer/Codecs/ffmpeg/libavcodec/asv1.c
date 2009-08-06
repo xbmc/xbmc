@@ -25,7 +25,8 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
+#include "put_bits.h"
 #include "dsputil.h"
 #include "mpeg12data.h"
 
@@ -119,21 +120,21 @@ static av_cold void init_vlcs(ASV1Context *a){
     if (!done) {
         done = 1;
 
-        init_vlc(&ccp_vlc, VLC_BITS, 17,
+        INIT_VLC_STATIC(&ccp_vlc, VLC_BITS, 17,
                  &ccp_tab[0][1], 2, 1,
-                 &ccp_tab[0][0], 2, 1, 1);
-        init_vlc(&dc_ccp_vlc, VLC_BITS, 8,
+                 &ccp_tab[0][0], 2, 1, 64);
+        INIT_VLC_STATIC(&dc_ccp_vlc, VLC_BITS, 8,
                  &dc_ccp_tab[0][1], 2, 1,
-                 &dc_ccp_tab[0][0], 2, 1, 1);
-        init_vlc(&ac_ccp_vlc, VLC_BITS, 16,
+                 &dc_ccp_tab[0][0], 2, 1, 64);
+        INIT_VLC_STATIC(&ac_ccp_vlc, VLC_BITS, 16,
                  &ac_ccp_tab[0][1], 2, 1,
-                 &ac_ccp_tab[0][0], 2, 1, 1);
-        init_vlc(&level_vlc,  VLC_BITS, 7,
+                 &ac_ccp_tab[0][0], 2, 1, 64);
+        INIT_VLC_STATIC(&level_vlc,  VLC_BITS, 7,
                  &level_tab[0][1], 2, 1,
-                 &level_tab[0][0], 2, 1, 1);
-        init_vlc(&asv2_level_vlc, ASV2_LEVEL_VLC_BITS, 63,
+                 &level_tab[0][0], 2, 1, 64);
+        INIT_VLC_STATIC(&asv2_level_vlc, ASV2_LEVEL_VLC_BITS, 63,
                  &asv2_level_tab[0][1], 2, 1,
-                 &asv2_level_tab[0][0], 2, 1, 1);
+                 &asv2_level_tab[0][0], 2, 1, 1024);
     }
 }
 
@@ -387,8 +388,10 @@ static inline void dct_get(ASV1Context *a, int mb_x, int mb_y){
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        const uint8_t *buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     ASV1Context * const a = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame * const p= (AVFrame*)&a->picture;
@@ -405,7 +408,9 @@ static int decode_frame(AVCodecContext *avctx,
     p->pict_type= FF_I_TYPE;
     p->key_frame= 1;
 
-    a->bitstream_buffer= av_fast_realloc(a->bitstream_buffer, &a->bitstream_buffer_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    av_fast_malloc(&a->bitstream_buffer, &a->bitstream_buffer_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!a->bitstream_buffer)
+        return AVERROR(ENOMEM);
 
     if(avctx->codec_id == CODEC_ID_ASV1)
         a->dsp.bswap_buf((uint32_t*)a->bitstream_buffer, (const uint32_t*)buf, buf_size/4);

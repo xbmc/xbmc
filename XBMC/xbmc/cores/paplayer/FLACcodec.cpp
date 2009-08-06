@@ -257,15 +257,29 @@ FLAC__StreamDecoderWriteStatus FLACCodec::DecoderWriteCallback(const FLAC__Strea
 
   const int bytes_per_sample = frame->header.bits_per_sample/8;
   BYTE* outptr = pThis->m_pBuffer+pThis->m_BufferSize;
+  FLAC__int16* outptr16 = (FLAC__int16 *) outptr;
+  FLAC__int32* outptr32 = (FLAC__int32 *) outptr;
 
   unsigned int current_sample = 0;
   for(current_sample = 0; current_sample < frame->header.blocksize; current_sample++)
   {
     for(unsigned int channel = 0; channel < frame->header.channels; channel++)
     {
-      int sample = buffer[channel][current_sample];
-      memcpy(outptr,&sample,bytes_per_sample);
-      outptr += bytes_per_sample;
+      switch(bytes_per_sample)
+      {
+        case 2:
+          outptr16[current_sample*frame->header.channels + channel] = (FLAC__int16) buffer[channel][current_sample];
+          break;
+        case 3:
+          outptr[2] = (buffer[channel][current_sample] >> 16) & 0xff;
+          outptr[1] = (buffer[channel][current_sample] >> 8 ) & 0xff;
+          outptr[0] = (buffer[channel][current_sample] >> 0 ) & 0xff;
+          outptr += bytes_per_sample;
+          break;
+        default:
+          outptr32[current_sample*frame->header.channels + channel] = buffer[channel][current_sample];
+          break;        
+      }
     }
   }
 

@@ -41,6 +41,8 @@ private:
   void Initialize(TiXmlElement* pRule);
   PLAYERCOREID GetPlayerCore();
 
+  CStdString m_name;
+
   int m_tAudio;
   int m_tVideo;
   int m_tInternetStream;

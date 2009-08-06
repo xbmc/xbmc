@@ -105,8 +105,8 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   }
   // Standard members setup
   Transparent = -1;
-  BytesPerRow = Width = iWidth;
-  Height = iHeight;
+  BytesPerRow = Width = PadPow2(iWidth);
+  Height = PadPow2(iHeight);
   BPP = iBPP;
   // Animation Extra members setup:
   xPos = yPos = Delay = Transparency = 0;

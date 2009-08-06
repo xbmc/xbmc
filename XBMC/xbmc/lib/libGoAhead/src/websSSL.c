@@ -74,7 +74,7 @@ static RSA		*websSSLTempRSACallback(SSL *s, int is_export, int keylength);
 
 static int		websSSLReadEvent (webs_t wp);
 static int		websSSLAccept(int sid, char *ipaddr, int port, int listenSid);
-static void		websSSLSocketEvent(int sid, int mask, int data);
+static void		websSSLSocketEvent(int sid, int mask, void* data);
 
 /*********************************** Locals ***********************************/
 
@@ -259,7 +259,7 @@ int websSSLAccept(int sid, char *ipaddr, int port, int listenSid)
 /*
  *	Arrange for websSocketEvent to be called when read data is available
  */
-	socketCreateHandler(sid, SOCKET_READABLE, websSSLSocketEvent, (int) wp);
+	socketCreateHandler(sid, SOCKET_READABLE, websSSLSocketEvent, wp);
 
 /*
  *	Arrange for a timeout to kill hung requests
@@ -273,10 +273,10 @@ int websSSLAccept(int sid, char *ipaddr, int port, int listenSid)
 /*
  *	The webs socket handler.  Called in response to I/O. We just pass control
  *	to the relevant read or write handler. A pointer to the webs structure
- *	is passed as an (int) in iwp.
+ *	is passed as an (void*) in iwp.
  */
 
-static void websSSLSocketEvent(int sid, int mask, int iwp)
+static void websSSLSocketEvent(int sid, int mask, void* iwp)
 {
 	webs_t	wp;
 

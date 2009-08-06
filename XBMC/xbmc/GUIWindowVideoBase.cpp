@@ -54,6 +54,7 @@
 #include "PlayList.h"
 
 #include "SkinInfo.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -183,8 +184,10 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (m_vecItems->IsPlugin() || m_vecItems->IsMythTV())
+          if (m_vecItems->IsPlugin())
             info.strContent = "plugin";
+          else if(m_vecItems->IsTV())
+            info.strContent = "livetv";
           else
           {
             if (item->IsVideoDb()       &&
@@ -311,7 +314,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const SScraperInfo& info)
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
   }
   bool modified = ShowIMDB(&item, info);
-  if (modified && !info.strContent.Equals("plugin") &&
+  if (modified && !info.strContent.Equals("plugin") && !info.strContent.Equals("livetv") &&
      (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_FILES ||
       m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
   {
@@ -425,21 +428,22 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       m_database.GetMusicVideoInfo(item->m_strPath, movieDetails);
     }
   }
-  if (info.strContent.Equals("plugin"))
+  if (info.strContent.Equals("plugin")
+   || info.strContent.Equals("livetv"))
   {
     if (!item->HasVideoInfoTag())
       return false;
     movieDetails = *item->GetVideoInfoTag();
+    movieDetails.m_strIMDBNumber = "xx" + info.strContent; // disable refresh+get thumb button
 
     bHasInfo = true;
   }
+
   m_database.Close();
   if (bHasInfo)
   {
     if (info.strContent.IsEmpty()) // disable refresh button
       movieDetails.m_strIMDBNumber = "xx"+movieDetails.m_strIMDBNumber;
-    if (info.strContent.Equals("plugin")) // disable refresh+get thumb button
-      movieDetails.m_strIMDBNumber = "xxplugin";
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item);
     pDlgInfo->DoModal();
@@ -515,7 +519,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       if (info.strContent.Equals("tvshows") && !item->m_bIsFolder)
         hasDetails = true;
 
-      if (!hasDetails && scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress))
+      int returncode=0;
+      if (!hasDetails && (returncode=scanner.m_IMDB.FindMovie(movieName, movielist, pDlgProgress)) > 0)
       {
         pDlgProgress->Close();
         if (movielist.size() > 0)
@@ -541,6 +546,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
             return listNeedsUpdating; // user backed out
           }
         }
+      }
+      if (returncode == -1)
+      {
+        pDlgProgress->Close();
+        return false;
       }
     }
     // 4c. Check if url is still empty - occurs if user has selected to do a manual
@@ -708,8 +718,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
 {
-  CDetectDVDMedia::WaitMediaReady();
-  CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
+  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
   if (!CFile::Exists(strFileName))
@@ -921,22 +930,22 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem)
   CGUIMediaWindow::OnClick(iItem);
 }
 
-void CGUIWindowVideoBase::OnResumeItem(int iItem)
+
+bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
 {
-  if (iItem < 0 || iItem >= m_vecItems->Size()) return;
-  CFileItemPtr item = m_vecItems->Get(iItem);
   // we always resume the movie if the user doesn't want us to ask
   bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
-  if (!item->m_bIsFolder && !resumeItem)
+
+  if (!item.m_bIsFolder && !resumeItem)
   {
     // check to see whether we have a resume offset available
     CVideoDatabase db;
     if (db.Open())
     {
       CBookmark bookmark;
-      CStdString itemPath(item->m_strPath);
-      if (item->IsVideoDb())
-        itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+      CStdString itemPath(item.m_strPath);
+      if (item.IsVideoDb())
+        itemPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
       if (db.GetResumeBookMark(itemPath, bookmark) )
       { // prompt user whether they wish to resume
         vector<CStdString> choices;
@@ -945,17 +954,28 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
         resumeString.Format(g_localizeStrings.Get(12022).c_str(), time.c_str());
         choices.push_back(resumeString);
         choices.push_back(g_localizeStrings.Get(12021)); // start from the beginning
-        int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, GetContextPosition());
+        int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (!retVal)
-          return; // don't do anything
+          return false; // don't do anything
         resumeItem = (retVal == 1);
       }
       db.Close();
     }
   }
   if (resumeItem)
-    item->m_lStartOffset = STARTOFFSET_RESUME;
-  CGUIMediaWindow::OnClick(iItem);
+    item.m_lStartOffset = STARTOFFSET_RESUME;
+  
+  return true;
+}
+
+void CGUIWindowVideoBase::OnResumeItem(int iItem)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size()) return;
+  CFileItemPtr item = m_vecItems->Get(iItem);
+  
+  // Show menu asking the user
+  if ( OnResumeShowMenu(*item) )
+    CGUIMediaWindow::OnClick(iItem);
 }
 
 void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
@@ -1138,13 +1158,8 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_INFO:
     {
       SScraperInfo info;
-      if (m_vecItems->IsPlugin() || m_vecItems->IsMythTV())
-        info.strContent = "plugin";
-      else
-      {
-        VIDEO::SScanSettings settings;
-        GetScraperForItem(item.get(), info, settings);
-      }
+      VIDEO::SScanSettings settings;
+      GetScraperForItem(item.get(), info, settings);
 
       OnInfo(item.get(),info);
       return true;
@@ -1829,6 +1844,17 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
 {
   if (!item)
     return 0;
+
+  if (m_vecItems->IsPlugin())
+  {
+    info.strContent = "plugin";
+    return 0;
+  }
+  else if(m_vecItems->IsTV())
+  {
+    info.strContent = "livetv";
+    return 0;
+  }
 
   int found = 0;
   if (item->HasVideoInfoTag())  // files view shouldn't need this check I think?

@@ -24,349 +24,511 @@
 #include "include.h"
 #include "Util.h"
 #include "FileSystem/File.h"
-#include "Application.h"
 
 using namespace std;
 
-#ifndef WSAEVENT  //Needed for XBMC_PC somehow.
-#define WSAEVENT                HANDLE
-#endif
-
-#define CACHED_EDL_FILENAME "special://temp/xbmc.edl"
-
-#define COMSKIPSTR "FILE PROCESSING COMPLETE"
-#define VRSTR "<Version>2"
-#define VRCUT "<Cut>"
-#define VRSCENE "<SceneMarker "
-#define BTVSTR "<cutlist>"
-#define BTVCUT "<Region><start"
-#define BTVSTREND "</cutlist>"
+#define MPLAYER_EDL_FILENAME "special://temp/xbmc.edl"
+#define COMSKIP_HEADER "FILE PROCESSING COMPLETE"
+#define VIDEOREDO_HEADER "<Version>2"
+#define VIDEOREDO_TAG_CUT "<Cut>"
+#define VIDEOREDO_TAG_SCENE "<SceneMarker "
 
 using namespace XFILE;
 
 CEdl::CEdl()
 {
-  Reset();
+  Clear();
 }
 
 CEdl::~CEdl()
 {
-  Reset();
+  Clear();
 }
 
-void CEdl::Reset()
+void CEdl::Clear()
 {
-  if (CFile::Exists(CACHED_EDL_FILENAME))
-    CFile::Delete(CACHED_EDL_FILENAME);
+  if (CFile::Exists(MPLAYER_EDL_FILENAME))
+    CFile::Delete(MPLAYER_EDL_FILENAME);
 
   m_vecCuts.clear();
   m_vecSceneMarkers.clear();
-  m_iTotalCutTime=0;
+  m_iTotalCutTime = 0;
 }
 
-
-bool CEdl::ReadnCacheAny(const CStdString& strMovie)
+bool CEdl::ReadFiles(const CStdString& strMovie)
 {
-  // Try to read any available format until a valid edl is read
-  Reset();
+  CLog::Log(LOGDEBUG, "%s - checking for any edit decision list (EDL) files for: %s", __FUNCTION__, strMovie.c_str());
 
-  ReadVideoRedo(strMovie);
-  if (!HasCut() && !HasSceneMarker())
-    ReadEdl(strMovie);
+  /*
+   * Read any available format until a valid EDL related file is found.
+   * 
+   * TODO: Surely there's a better way to do this bFound shenanigans.
+   */
+  bool bFound = false;
 
-  if (!HasCut() && !HasSceneMarker())
-    ReadComskip(strMovie);
+  if (!bFound)
+    bFound = ReadVideoReDo(strMovie);
 
-  if (!HasCut() && !HasSceneMarker())
-    ReadBeyondTV(strMovie);
+  if (!bFound)
+    bFound = ReadEdl(strMovie);
 
-  if (HasCut() || HasSceneMarker())
-    CacheEdl();
+  if (!bFound)
+    bFound = ReadComskip(strMovie);
 
-  return HasCut() || HasSceneMarker();
+  if (!bFound)
+    bFound = ReadBeyondTV(strMovie);
+
+  if (bFound)
+    WriteMPlayerEdl();
+
+  return bFound;
 }
 
 bool CEdl::ReadEdl(const CStdString& strMovie)
 {
-  Cut tmpCut;
-  CFile CutFile;
-  double dCutStart, dCutEnd;
-  bool tmpValid=false;
+  Clear();
 
-  Reset();
   CStdString edlFilename;
   CUtil::ReplaceExtension(strMovie, ".edl", edlFilename);
-  if ( CFile::Exists(edlFilename) && CutFile.Open(edlFilename) )
-  {
-    tmpValid=true;
-    char szBuffer[1024];
-    while (tmpValid && CutFile.ReadString(szBuffer, 1023))
-    {
-      if( sscanf( szBuffer, "%lf %lf %i", &dCutStart, &dCutEnd, (int*) &tmpCut.action ) == 3)
-      {
-        tmpCut.start=(__int64)(dCutStart*1000);
-        tmpCut.end=(__int64)(dCutEnd*1000);
-        if ( tmpCut.action==CUT || tmpCut.action==MUTE )
-          tmpValid=AddCut(tmpCut);
-        else if ( tmpCut.action==SCENE )
-          tmpValid=AddSceneMarker(tmpCut.end);
-        else
-          tmpValid=false;
-      }
-      else
-        tmpValid=false;
-    }
-    CutFile.Close();
-  }
-  if (tmpValid && (HasCut() || HasSceneMarker()))
-    CLog::Log(LOGDEBUG, "CEdl: Read Edl.");
-  else
-    Reset();
+  if (!CFile::Exists(edlFilename))
+    return false;
 
-  return tmpValid;
+  CFile edlFile;
+  if (!edlFile.Open(edlFilename))
+  {
+    CLog::Log(LOGERROR, "%s - Could not open EDL file: %s", __FUNCTION__, edlFilename.c_str());
+    return false;
+  }
+
+  bool bValid = true;
+  char szBuffer[1024];
+  int iLine = 0;
+  while (bValid && edlFile.ReadString(szBuffer, 1023))
+  {
+    iLine++;
+
+    double dStart, dEnd;
+    int iAction;
+    if (sscanf(szBuffer, "%lf %lf %i", &dStart, &dEnd, &iAction) == 3)
+    {
+      if (dStart == dEnd) // Ignore zero length cuts in generated EDL files
+        continue;
+
+      Cut cut;
+      cut.start = (int)dStart * 1000; // ms to s
+      cut.end = (int)dEnd * 1000; // ms to s
+
+      switch (iAction)
+      {
+      case 0:
+        cut.action = CUT;
+        bValid = AddCut(cut);
+        break;
+      case 1:
+        cut.action = MUTE;
+        bValid = AddCut(cut);
+        break;
+      case 2:
+        bValid = AddSceneMarker(cut.end);
+        break;
+      default:
+        bValid = false;
+        continue;
+      }
+    }
+    else
+      bValid = false;
+  }
+  edlFile.Close();
+
+  if (!bValid)
+  {
+    CLog::Log(LOGERROR, "%s - Invalid EDL file: %s. Error in line %i. Clearing any valid cuts or scenes found.",
+              __FUNCTION__, edlFilename.c_str(), iLine);
+    Clear();
+    return false;
+  }
+  else if (HasCut() || HasSceneMarker())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in EDL file: %s", __FUNCTION__, m_vecCuts.size(),
+              m_vecSceneMarkers.size(), edlFilename.c_str());
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - No cuts or scene markers found in EDL file: %s", __FUNCTION__, edlFilename.c_str());
+    return false;
+  }
 }
 
 bool CEdl::ReadComskip(const CStdString& strMovie)
 {
-  Cut tmpCut;
-  CFile CutFile;
-  int iFramerate;
-  int iFrames;
-  double dStartframe;
-  double dEndframe;
-  bool tmpValid=false;
+  Clear();
 
-  Reset();
   CStdString comskipFilename;
   CUtil::ReplaceExtension(strMovie, ".txt", comskipFilename);
+  if (!CFile::Exists(comskipFilename))
+    return false;
 
-  if ( CFile::Exists(comskipFilename) && CutFile.Open(comskipFilename) )
+  CFile comskipFile;
+  if (!comskipFile.Open(comskipFilename))
   {
-    tmpValid=true;
-    char szBuffer[1024];
-    if (CutFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer,COMSKIPSTR, strlen(COMSKIPSTR))==0))
-    {
-      if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFramerate) == 2)
-      {
-        iFramerate=iFramerate/100;
-        CutFile.ReadString(szBuffer, 1023); // read away -------------
-        while (tmpValid && CutFile.ReadString(szBuffer, 1023))
-        {
-          if (sscanf(szBuffer, "%lf %lf", &dStartframe, &dEndframe) == 2)
-          {
-            tmpCut.start=(__int64)(dStartframe/iFramerate*1000);
-            tmpCut.end=(__int64)(dEndframe/iFramerate*1000);
-            tmpCut.action=CUT;
-            tmpValid=AddCut(tmpCut);
-          }
-          else
-            tmpValid=false;
-        }
-      }
-      else
-        tmpValid=false;
-    }
-    CutFile.Close();
+    CLog::Log(LOGERROR, "%s - Could not open Comskip file: %s", __FUNCTION__, comskipFilename.c_str());
+    return false;
   }
-  if (tmpValid && HasCut())
+  
+  char szBuffer[1024];
+  if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0)) // Line 1.
   {
-    CLog::Log(LOGDEBUG, "CEdl: Read ComSkip.");
+    CLog::Log(LOGERROR, "%s - Invalid Comskip file: %s. Error reading line 1 - expected '%s' at start.",
+              __FUNCTION__, comskipFilename.c_str(), COMSKIP_HEADER);
+    comskipFile.Close();
+    return false;
+  }
+  
+  int iFrames;
+  int iFrameRate;
+  if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFrameRate) != 2)
+  {
+    /*
+     * Not all generated Comskip files have the frame rate information.
+     */
+    CLog::Log(LOGERROR, "%s - Frame rate not found on line 1 in Comskip file.",
+              __FUNCTION__);
+    comskipFile.Close();
+    return false;
+  }
+
+  float fFrameRate = iFrameRate / 100; // Reduce by factor of 100 to get fps.
+
+  comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
+
+  bool bValid = true;
+  int iLine = 2;
+  while (bValid && comskipFile.ReadString(szBuffer, 1023)) // Line 3 and onwards.
+  {
+    iLine++;
+    double dStartFrame, dEndFrame;
+    if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
+    {
+      Cut cut;
+      cut.start = (__int64)(dStartFrame / fFrameRate * 1000);
+      cut.end = (__int64)(dEndFrame / fFrameRate * 1000);
+      cut.action = CUT;
+      bValid = AddCut(cut);
+    }
+    else
+      bValid = false;
+  }
+  comskipFile.Close();
+
+  if (!bValid)
+  {
+    CLog::Log(LOGERROR, "%s - Invalid Comskip file: %s. Error on line %i. Clearing any valid commercial breaks found.",
+              __FUNCTION__, comskipFilename.c_str(), iLine);
+    Clear();
+    return false;
+  }
+  else if (HasCut())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %i commercial breaks from Comskip file: %s", __FUNCTION__, m_vecCuts.size(),
+              comskipFilename.c_str());
+    return true;
   }
   else
-    Reset();
-
-  return tmpValid;
+  {
+    CLog::Log(LOGDEBUG, "%s - No commercial breaks found in Comskip file: %s", __FUNCTION__, comskipFilename.c_str());
+    return false;
+  }
 }
 
-bool CEdl::ReadVideoRedo(const CStdString& strMovie)
+bool CEdl::ReadVideoReDo(const CStdString& strMovie)
 {
-  Cut tmpCut;
-  CFile CutFile;
-  int iScene;
-  double dStartframe;
-  double dEndframe;
-  bool tmpValid=false;
+  /*
+   * VideoReDo file is strange. Tags are XML like, but it isn't an XML file.
+   *
+   * http://www.videoredo.com/
+   */
 
-  Reset();
-  CStdString videoRedoFilename;
-  CUtil::ReplaceExtension(strMovie, ".VPrj", videoRedoFilename);
+  Clear();
+  CStdString videoReDoFilename;
+  CUtil::ReplaceExtension(strMovie, ".Vprj", videoReDoFilename);
+  if (!CFile::Exists(videoReDoFilename))
+    return false;
 
-  if (CFile::Exists(videoRedoFilename) && CutFile.Open(videoRedoFilename))
+  CFile videoReDoFile;
+  if (!videoReDoFile.Open(videoReDoFilename))
   {
-    tmpValid=true;
-    char szBuffer[1024];
-    if (CutFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer,VRSTR,strlen(VRSTR))==0))
-    {
-      CutFile.ReadString(szBuffer, 1023); // read away Filename
-      while (tmpValid && CutFile.ReadString(szBuffer, 1023))
-      {
-        if(strncmp(szBuffer,VRCUT,strlen(VRCUT))==0)
-        {
-          if (sscanf( szBuffer+strlen(VRCUT), "%lf:%lf", &dStartframe, &dEndframe ) == 2)
-          {
-            tmpCut.start=(__int64)(dStartframe/10000);
-            tmpCut.end=(__int64)(dEndframe/10000);
-            tmpCut.action=CUT;
-            tmpValid=AddCut(tmpCut);
-          }
-        }
-        else
-        {
-          if (strncmp(szBuffer,VRSCENE,strlen(VRSCENE))==0)
-          {
-            if (sscanf(szBuffer+strlen(VRSCENE), " %i>%lf",&iScene, &dStartframe)==2)
-              tmpValid=AddSceneMarker(tmpCut.end);
-            else
-              tmpValid=false;
-          }
-        }
-        // Ignore other tags.
-      }
-    }
-    CutFile.Close();
+    CLog::Log(LOGERROR, "%s - Could not open VideoReDo file: %s", __FUNCTION__, videoReDoFilename.c_str());
+    return false;
   }
 
-  if (tmpValid && (HasCut() || HasSceneMarker()))
-    CLog::Log(LOGDEBUG, "CEdl: Read VidoRedo.");
+  char szBuffer[1024];
+  if (videoReDoFile.ReadString(szBuffer, 1023) && strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
+  {
+    CLog::Log(LOGERROR, "%s - Invalid VideoReDo file: %s. Error reading line 1 - expected %s. Only version 2 files are supported.",
+              __FUNCTION__, videoReDoFilename.c_str(), VIDEOREDO_HEADER);
+    videoReDoFile.Close();
+    return false;
+  }
+
+  int iLine = 1;
+  bool bValid = true;
+  while (bValid && videoReDoFile.ReadString(szBuffer, 1023))
+  {
+    iLine++;
+    if (strncmp(szBuffer, VIDEOREDO_TAG_CUT, strlen(VIDEOREDO_TAG_CUT)) == 0) // Found the <Cut> tag
+    {
+      /*
+       * double is used as 32 bit float would overflow.
+       */
+      double dStart, dEnd;
+      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_CUT), "%lf:%lf", &dStart, &dEnd) == 2)
+      {
+        /*
+         *  Times need adjusting by 1/10,000 to get ms.
+         */
+        Cut cut;
+        cut.start = (__int64)(dStart / 10000);
+        cut.end = (__int64)(dEnd / 10000);
+        cut.action = CUT;
+        bValid = AddCut(cut);
+      }
+      else
+        bValid = false;
+    }
+    else if (strncmp(szBuffer, VIDEOREDO_TAG_SCENE, strlen(VIDEOREDO_TAG_SCENE)) == 0) // Found the <SceneMarker > tag
+    {
+      int iScene;
+      double dSceneMarker;
+      if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
+        bValid = AddSceneMarker(dSceneMarker / 10000); // Times need adjusting by 1/10,000 to get ms.
+      else
+        bValid = false;
+    }
+    /*
+     * Ignore any other tags.
+     */
+  }
+  videoReDoFile.Close();
+
+  if (!bValid)
+  {
+    CLog::Log(LOGERROR, "%s - Invalid VideoReDo file: %s. Error in line %i. Clearing any valid cuts or scenes found.",
+              __FUNCTION__, videoReDoFilename.c_str(), iLine);
+    Clear();
+    return false;
+  }
+  else if (HasCut() || HasSceneMarker())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in VideoReDo file: %s", __FUNCTION__,
+              m_vecCuts.size(), m_vecSceneMarkers.size(), videoReDoFilename.c_str());
+    return true;
+  }
   else
-    Reset();
-  return tmpValid;
+  {
+    CLog::Log(LOGDEBUG, "%s - No cuts or scene markers found in VideoReDo file: %s", __FUNCTION__,
+              videoReDoFilename.c_str());
+    return false;
+  }
 }
 
 bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
-  Reset();
-  CStdString beyondTVFilename=strMovie+".chapters.xml";
+  Clear();
 
+  CStdString beyondTVFilename = strMovie + ".chapters.xml";
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
-  CFileStream file;
-  if (!file.Open(beyondTVFilename))
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(beyondTVFilename))
   {
-    CLog::Log(LOGDEBUG, "%s failed to read file %s", __FUNCTION__, beyondTVFilename.c_str());
+    CLog::Log(LOGERROR, "%s - Could not load Beyond TV file: %s. %s", __FUNCTION__, beyondTVFilename.c_str(),
+              xmlDoc.ErrorDesc());
     return false;
   }
-
-  TiXmlDocument xmlDoc;
-  file >> xmlDoc;
 
   if (xmlDoc.Error())
   {
-    CLog::Log(LOGERROR, "Unable to parse chapters.xml file: %s", xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s - Could not parse Beyond TV file: %s. %s", __FUNCTION__, beyondTVFilename.c_str(),
+              xmlDoc.ErrorDesc());
     return false;
   }
 
-  TiXmlElement *root = xmlDoc.RootElement();
-  if (!root || strcmp(root->Value(), "cutlist"))
+  TiXmlElement *pRoot = xmlDoc.RootElement();
+  if (!pRoot || strcmp(pRoot->Value(), "cutlist"))
   {
-    CLog::Log(LOGERROR, "Unable to parse chapters.xml file: %s", xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "%s - Invalid Beyond TV file: %s. Expected root node to be <cutlist>", __FUNCTION__,
+              beyondTVFilename.c_str());
     return false;
   }
-  TiXmlElement *Region = root->FirstChildElement("Region");
-  while (Region)
+
+  bool bValid = true;
+  TiXmlElement *pRegion = pRoot->FirstChildElement("Region");
+  while (bValid && pRegion)
   {
-    TiXmlElement *Start = Region->FirstChildElement("start");
-    TiXmlElement *End = Region->FirstChildElement("end");
-    if ( Start && End && Start->FirstChild() && End->FirstChild() )
+    TiXmlElement *pStart = pRegion->FirstChildElement("start");
+    TiXmlElement *pEnd = pRegion->FirstChildElement("end");
+    if (pStart && pEnd && pStart->FirstChild() && pEnd->FirstChild())
     {
-      double dStartframe=atof(Start->FirstChild()->Value());
-      double dEndframe=atof(End->FirstChild()->Value());
+      /*
+       * Need to divide the start and end times by a factor of 10,000 to get msec.
+       * E.g. <start comment="00:02:44.9980867">1649980867</start>
+       *
+       * Use atof so doesn't overflow 32 bit float or integer / long.
+       * E.g. <end comment="0:26:49.0000009">16090090000</end>
+       *
+       * Don't use atoll even though it is more correct as it isn't natively supported by
+       * Visual Studio.
+       *
+       * GetText() returns 0 if there were any problems and will subsequently be rejected in AddCut().
+       */
       Cut cut;
-      cut.start=(__int64)(dStartframe/10000);
-      cut.end=(__int64)(dEndframe/10000);
-      cut.action=CUT;
-      AddCut(cut); // just ignore it if it fails
+      cut.start = (__int64)(atof(pStart->GetText()) / 10000);
+      cut.end = (__int64)(atof(pEnd->GetText()) / 10000);
+      cut.action = CUT;
+      bValid = AddCut(cut);
     }
-    Region = Region->NextSiblingElement("Region");
-  }
+    else
+      bValid = false;
 
-  if (HasCut())
+    pRegion = pRegion->NextSiblingElement("Region");
+  }
+  if (!bValid)
   {
-    CLog::Log(LOGDEBUG, "CEdl: Read BeyondTV.");
+    CLog::Log(LOGERROR, "%s - Invalid Beyond TV file: %s. Clearing any valid commercial breaks found.", __FUNCTION__,
+              beyondTVFilename.c_str());
+    Clear();
+    return false;
+  }
+  else if (HasCut())
+  {
+    CLog::Log(LOGDEBUG, "%s - Read %i commercial breaks from Beyond TV file: %s", __FUNCTION__, m_vecCuts.size(),
+              beyondTVFilename.c_str());
     return true;
   }
-  CLog::Log(LOGDEBUG, "CEdl: Failed to get cutpoints in BeyondTV file.");
-  return false;
-}
-
-
-
-bool CEdl::AddCut(const Cut& NewCut)
-{
-  vector<Cut>::iterator vitr;
-
-  if (NewCut.start >= NewCut.end)
-    return false;
-
-  if (NewCut.start < 0)
-    return false;
-
-  if (InCut(NewCut.start) || InCut(NewCut.end))
-      return false;
-
-  for(int i = 0; i < (int)m_vecCuts.size(); i++ )
-  {
-    if ( NewCut.start < m_vecCuts[i].start && NewCut.end > m_vecCuts[i].end)
-      return false;
-  }
-
-  // Insert cutpoint in list.
-  if (m_vecCuts.empty() || m_vecCuts.back().start < NewCut.start)
-    m_vecCuts.push_back(NewCut);
   else
   {
-    for (vitr=m_vecCuts.begin(); vitr != m_vecCuts.end(); ++vitr)
+    CLog::Log(LOGDEBUG, "%s - No commercial breaks found in Beyond TV file: %s", __FUNCTION__,
+              beyondTVFilename.c_str());
+    return false;
+  }
+}
+
+bool CEdl::AddCut(const Cut& cut)
+{
+  if (cut.action != CUT && cut.action != MUTE)
+  {
+    CLog::Log(LOGERROR, "%s - Not a CUT or MUTE! [%s - %s], %d",
+              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
+    return false;
+  }
+
+  if (cut.start < 0)
+  {
+    CLog::Log(LOGERROR, "%s - Before start! [%s - %s], %d", __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
+              MillisecondsToTimeString(cut.end).c_str(), cut.action);
+    return false;
+  }
+  
+  if (cut.start >= cut.end)
+  {
+    CLog::Log(LOGERROR, "%s - Times are around the wrong way or the same! [%s - %s], %d",
+              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
+    return false;
+  }
+
+  if (InCut(cut.start) || InCut(cut.end))
+  {
+    CLog::Log(LOGERROR, "%s - Start or end is in an existing cut! [%s - %s], %d",
+              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
+    return false;
+  }
+
+  for (int i = 0; i < (int)m_vecCuts.size(); i++)
+  {
+    if (cut.start < m_vecCuts[i].start && cut.end > m_vecCuts[i].end)
     {
-      if (vitr->start > NewCut.start)
+      CLog::Log(LOGERROR, "%s - Cut surrounds an existing cut! [%s - %s], %d",
+                __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+                cut.action);
+      return false;
+    }
+  }
+
+  /*
+   * Insert cut in the list in the right position (ALL algorithms assume cuts are in ascending order)
+   */
+  if (m_vecCuts.empty() || cut.start > m_vecCuts.back().start)
+  {
+    CLog::Log(LOGDEBUG, "%s - Pushing new cut to back [%s - %s], %d", __FUNCTION__,
+              MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
+    m_vecCuts.push_back(cut);
+  }
+  else
+  {
+    vector<Cut>::iterator pCurrentCut;
+    for (pCurrentCut = m_vecCuts.begin(); pCurrentCut != m_vecCuts.end(); pCurrentCut++)
+    {
+      if (cut.start < pCurrentCut->start)
       {
-        m_vecCuts.insert(vitr, NewCut);
+        CLog::Log(LOGDEBUG, "%s - Inserting new cut [%s - %s], %d", __FUNCTION__,
+                  MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+                  cut.action);
+        m_vecCuts.insert(pCurrentCut, cut);
         break;
       }
     }
   }
-  if (NewCut.action == CUT)
-    m_iTotalCutTime+=NewCut.end-NewCut.start;
+
+  if (cut.action == CUT)
+    m_iTotalCutTime += cut.end - cut.start;
 
   return true;
 }
 
-bool CEdl::AddSceneMarker(const __int64 sceneMarker)
+bool CEdl::AddSceneMarker(const __int64 iSceneMarker)
 {
-  Cut TmpCut;
+  Cut cut;
 
+  if (InCut(iSceneMarker, &cut) && cut.action == CUT) // Only works for current cuts.
+    return false;
 
-  if (InCut(sceneMarker, &TmpCut) && TmpCut.action == CUT)// this only works for current cutpoints, no for cutpoints added later.
-      return false;
-  m_vecSceneMarkers.push_back(sceneMarker); // Unsorted
+  CLog::Log(LOGDEBUG, "%s - Inserting new scene marker: %s", __FUNCTION__, MillisecondsToTimeString(iSceneMarker).c_str());
+  m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
 
   return true;
 }
 
-bool CEdl::CacheEdl()
+bool CEdl::WriteMPlayerEdl()
 {
-  CFile cacheFile;
-  if (cacheFile.OpenForWrite(CACHED_EDL_FILENAME, true))
+  if (!HasCut())
+    return false;
+
+  CFile mplayerEdlFile;
+  if (!mplayerEdlFile.OpenForWrite(MPLAYER_EDL_FILENAME, true))
   {
-    CStdString write;
-    for(int i = 0; i < (int)m_vecCuts.size(); i++ )
-    {
-      if ((m_vecCuts[i].action==CUT) || (m_vecCuts[i].action==MUTE))
-      {
-        write.AppendFormat("%.2f\t%.2f\t%i\n",((double)m_vecCuts[i].start)/1000, ((double)m_vecCuts[i].end)/1000, m_vecCuts[i].action);
-      }
-    }
-    cacheFile.Write(write.c_str(), write.size());
-    cacheFile.Close();
-    CLog::Log(LOGDEBUG, "CEdl: EDL Cached.");
-    return true;
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "CEdl: Error writing EDL to cache.");
-    Reset();
+    CLog::Log(LOGERROR, "%s - Error opening MPlayer EDL file for writing: %s", __FUNCTION__, MPLAYER_EDL_FILENAME);
     return false;
   }
+
+  CStdString strBuffer;
+  for (int i = 0; i < (int)m_vecCuts.size(); i++)
+  {
+    strBuffer.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
+                           m_vecCuts[i].action);
+  }
+  mplayerEdlFile.Write(strBuffer.c_str(), strBuffer.size());
+  mplayerEdlFile.Close();
+
+  CLog::Log(LOGDEBUG, "%s - MPlayer EDL file written to: %s", __FUNCTION__, MPLAYER_EDL_FILENAME);
+
+  return true;
 }
 
 bool CEdl::HasCut()
@@ -376,38 +538,41 @@ bool CEdl::HasCut()
 
 __int64 CEdl::GetTotalCutTime()
 {
-  if (!HasCut())
-    return 0;
-  else
-    return m_iTotalCutTime; //msec.
+  return m_iTotalCutTime; // ms
 }
 
-__int64 CEdl::RemoveCutTime(__int64 iTime)
+__int64 CEdl::RemoveCutTime(__int64 iSeek)
 {
-  __int64 iCutTime=0;
-
   if (!HasCut())
-    return iTime;
-  for(int i = 0; i < (int)m_vecCuts.size(); i++ )
-  {
-    if (m_vecCuts[i].action==CUT && m_vecCuts[i].end <= iTime)
-      iCutTime += m_vecCuts[i].end - m_vecCuts[i].start;
-  }
+    return iSeek;
 
-  return iTime-iCutTime;
+  __int64 iCutTime = 0;
+  for (int i = 0; i < (int)m_vecCuts.size(); i++)
+  {
+    if (m_vecCuts[i].action == CUT)
+    {
+      if (iSeek >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end) // Inside cut
+        iCutTime += iSeek - m_vecCuts[i].start - 1; // Decrease cut length by 1ms to jump over end boundary.
+      else if (iSeek >= m_vecCuts[i].start) // Cut has already been passed over.
+        iCutTime += m_vecCuts[i].end - m_vecCuts[i].start;
+    }
+  }
+  return iSeek - iCutTime;
 }
 
-__int64 CEdl::RestoreCutTime(__int64 iTime)
+__int64 CEdl::RestoreCutTime(__int64 iClock)
 {
   if (!HasCut())
-    return iTime;
-  for(int i = 0; i < (int)m_vecCuts.size(); i++ )
+    return iClock;
+
+  __int64 iSeek = iClock;
+  for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].action==CUT && m_vecCuts[i].start <= iTime)
-      iTime += m_vecCuts[i].end - m_vecCuts[i].start;
+    if (m_vecCuts[i].action == CUT && iSeek >= m_vecCuts[i].start)
+      iSeek += m_vecCuts[i].end - m_vecCuts[i].start;
   }
 
-  return iTime;
+  return iSeek;
 }
 
 bool CEdl::HasSceneMarker()
@@ -417,79 +582,87 @@ bool CEdl::HasSceneMarker()
 
 char CEdl::GetEdlStatus()
 {
-  char cEdlStatus='n';
+  char cEdlStatus = 'n';
 
   if (HasCut() && HasSceneMarker())
-    cEdlStatus='b';
+    cEdlStatus = 'b';
   else if (HasCut())
-    cEdlStatus='e';
+    cEdlStatus = 'e';
   else if (HasSceneMarker())
-    cEdlStatus='s';
+    cEdlStatus = 's';
 
   return cEdlStatus;
 }
 
-bool CEdl::InCut(__int64 iAbsSeek, Cut *pCurCut)
+bool CEdl::InCut(const __int64 iSeek, Cut *pCut)
 {
-  for(int i = 0; i < (int)m_vecCuts.size(); i++ )
+  for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    if (m_vecCuts[i].start <= iAbsSeek && m_vecCuts[i].end >= iAbsSeek)
+    if (iSeek < m_vecCuts[i].start) // Early exit if not even up to the cut start time.
+      return false;
+
+    if (iSeek >= m_vecCuts[i].start && iSeek <= m_vecCuts[i].end) // Inside cut.
     {
-      if (pCurCut)
-        *pCurCut=m_vecCuts[i];
+      if (pCut)
+        *pCut = m_vecCuts[i];
       return true;
     }
-    else
-    {
-      if (m_vecCuts[i].start > iAbsSeek)
-        return false;
-    }
   }
+
   return false;
 }
 
-bool CEdl::SeekScene(bool bPlus, const __int64 clock, __int64 *iScenemarker)
+bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneMarker)
 {
-  if (!HasCut())
+  if (!HasSceneMarker())
     return false;
 
-  // Need absolute time.
-  __int64 iCurSeek=RestoreCutTime(clock);
-  __int64 iNextScene=-1;
-  __int64 iDiff;
-  Cut TmpCut;
+  __int64 iSeek = RestoreCutTime(iClock);
 
-  if (bPlus)
+  __int64 iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
+  bool bFound = false;
+
+  if (bPlus) // Find closest scene forwards
   {
-    iDiff=(__int64)99999999999999LL;
-    for(int i = 0; i < (int)m_vecSceneMarkers.size(); i++ )
+    for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
-      if ( (m_vecSceneMarkers[i] > iCurSeek) && ((m_vecSceneMarkers[i]-iCurSeek) < iDiff))
+      if ((m_vecSceneMarkers[i] > iSeek) && ((m_vecSceneMarkers[i] - iSeek) < iDiff))
       {
-        iDiff=m_vecSceneMarkers[i]-iCurSeek;
-        iNextScene=m_vecSceneMarkers[i];
+        iDiff = m_vecSceneMarkers[i] - iSeek;
+        *iSceneMarker = m_vecSceneMarkers[i];
+        bFound = true;
       }
     }
   }
-  else
+  else // Find closest scene backwards
   {
-    iCurSeek = (iCurSeek>5000) ? iCurSeek-5000 : 0; // Jump over nearby scene to avoid getting stuck.
-    iDiff=(__int64)99999999999999LL;
-    for(int i = 0; i < (int)m_vecSceneMarkers.size(); i++ )
+    for (int i = 0; i < (int)m_vecSceneMarkers.size(); i++)
     {
-      if ((m_vecSceneMarkers[i] < iCurSeek) && ((iCurSeek-m_vecSceneMarkers[i]) < iDiff))
+      if ((m_vecSceneMarkers[i] < iSeek) && ((iSeek - m_vecSceneMarkers[i]) < iDiff))
       {
-        iDiff=iCurSeek-m_vecSceneMarkers[i];
-        iNextScene=m_vecSceneMarkers[i];
+        iDiff = iSeek - m_vecSceneMarkers[i];
+        *iSceneMarker = m_vecSceneMarkers[i];
+        bFound = true;
       }
     }
   }
 
-  // extra check for incutpoint, we cannot filter this out reliable earlier.
-  if (InCut(iNextScene, &TmpCut) && TmpCut.action == CUT)
-    return false;
+  /*
+   * If the scene marker is in a cut then return the end of the cut. Can't guarantee that this is
+   * picked up when scene markers are added.
+   */
+  Cut cut;
+  if (bFound && InCut(*iSceneMarker, &cut) && cut.action == CUT)
+    *iSceneMarker = cut.end;
 
-  *iScenemarker=iNextScene;
-
-  return (iNextScene != -1);
+  return bFound;
 }
+
+CStdString CEdl::MillisecondsToTimeString(const int iMilliseconds)
+{
+  CStdString strTimeString = "";
+  StringUtils::SecondsToTimeString(iMilliseconds / 1000, strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  strTimeString.AppendFormat(".%03i", iMilliseconds % 1000);
+  return strTimeString;
+}
+

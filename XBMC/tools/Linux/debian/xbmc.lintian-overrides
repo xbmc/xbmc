@@ -1,0 +1,3 @@
+# XBMC is a recursive acronym for "XBMC Media Center", hence why it appears
+# at the start of the package description.
+xbmc: description-starts-with-package-name

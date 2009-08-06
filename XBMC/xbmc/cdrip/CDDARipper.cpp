@@ -27,7 +27,6 @@
 #include "EncoderWav.h"
 #include "EncoderVorbis.h"
 #include "FileSystem/CDDADirectory.h"
-#include "DetectDVDType.h"
 #include "MusicInfoTagLoaderFactory.h"
 #include "utils/LabelFormatter.h"
 #include "MusicInfoTag.h"
@@ -38,6 +37,7 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -290,7 +290,7 @@ bool CCDDARipper::RipCD()
   bool bIsFATX = !ripPath.IsSmb();
 
   // return here if cd is not a CDDA disc
-  MEDIA_DETECT::CCdInfo* pInfo = MEDIA_DETECT::CDetectDVDMedia::GetCdInfo();
+  MEDIA_DETECT::CCdInfo* pInfo = g_mediaManager.GetCdInfo();
   if (pInfo == NULL && !pInfo->IsAudio(1))
   {
     CLog::Log(LOGDEBUG, "cddaripper: CD is not an audio cd");

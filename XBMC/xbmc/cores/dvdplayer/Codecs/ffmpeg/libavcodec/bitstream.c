@@ -28,7 +28,8 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
+#include "put_bits.h"
 
 const uint8_t ff_log2_run[32]={
  0, 0, 0, 0, 1, 1, 1, 1,
@@ -37,6 +38,7 @@ const uint8_t ff_log2_run[32]={
  8, 9,10,11,12,13,14,15
 };
 
+#if LIBAVCODEC_VERSION_MAJOR < 53
 /**
  * Same as av_mallocz_static(), but does a realloc.
  *
@@ -53,6 +55,7 @@ static void *ff_realloc_static(void *ptr, unsigned int size)
 {
     return av_realloc(ptr, size);
 }
+#endif
 
 void align_put_bits(PutBitContext *s)
 {
@@ -63,19 +66,18 @@ void align_put_bits(PutBitContext *s)
 #endif
 }
 
-void ff_put_string(PutBitContext * pbc, const char *s, int put_zero)
+void ff_put_string(PutBitContext * pbc, const char *s, int terminate_string)
 {
     while(*s){
         put_bits(pbc, 8, *s);
         s++;
     }
-    if(put_zero)
+    if(terminate_string)
         put_bits(pbc, 8, 0);
 }
 
 void ff_copy_bits(PutBitContext *pb, const uint8_t *src, int length)
 {
-    const uint16_t *srcw= (const uint16_t*)src;
     int words= length>>4;
     int bits= length&15;
     int i;
@@ -83,16 +85,16 @@ void ff_copy_bits(PutBitContext *pb, const uint8_t *src, int length)
     if(length==0) return;
 
     if(CONFIG_SMALL || words < 16 || put_bits_count(pb)&7){
-        for(i=0; i<words; i++) put_bits(pb, 16, be2me_16(srcw[i]));
+        for(i=0; i<words; i++) put_bits(pb, 16, AV_RB16(src + 2*i));
     }else{
         for(i=0; put_bits_count(pb)&31; i++)
             put_bits(pb, 8, src[i]);
         flush_put_bits(pb);
-        memcpy(pbBufPtr(pb), src+i, 2*words-i);
+        memcpy(put_bits_ptr(pb), src+i, 2*words-i);
         skip_put_bytes(pb, 2*words-i);
     }
 
-    put_bits(pb, bits, be2me_16(srcw[words])>>(16-bits));
+    put_bits(pb, bits, AV_RB16(src + 2*words)>>(16-bits));
 }
 
 /* VLC decoding */

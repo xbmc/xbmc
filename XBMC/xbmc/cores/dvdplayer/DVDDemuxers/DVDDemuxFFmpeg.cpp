@@ -35,6 +35,10 @@
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
+#ifdef HAS_FILESYSTEM_MMS
+#include "DVDInputStreams/DVDInputStreamMMS.h"
+#endif
+#include "DVDInputStreams/DVDInputStreamRTMP.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
@@ -449,6 +453,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   UpdateCurrentPTS();
 
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS)) // HACK: until we figure out how to detect which mms streams are active
+    return true;
+
   // add the ffmpeg streams to our own stream array
   if (m_pFormatContext->nb_programs)
   {
@@ -665,7 +672,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       else
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() returned invalid packet and eof reached");
 
-      av_free_packet(&pkt);
+      m_dllAvCodec.av_free_packet(&pkt);
     }
     else
     {
@@ -759,7 +766,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
         pPacket->iStreamId = pkt.stream_index; // XXX just for now
       }
-      av_free_packet(&pkt);
+      m_dllAvCodec.av_free_packet(&pkt);
     }
   }
   Unlock();
@@ -817,6 +824,26 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
 
     if(startpts)
       *startpts = DVD_NOPTS_VALUE;
+    return true;
+  }
+ 
+#ifdef HAS_FILESYSTEM_MMS 
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS))
+  {
+    if (!((CDVDInputStreamMMS*)m_pInput)->SeekTime(time))
+      return false;
+
+    Flush();
+    return true;
+  }
+#endif
+
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_RTMP))
+  {
+    if (!((CDVDInputStreamRTMP*)m_pInput)->SeekTime(time))
+      return false;
+
+    Flush();
     return true;
   }
 

@@ -77,10 +77,13 @@ void CAudioContext::SetActiveDevice(int iDevice)
 #ifdef _WIN32PC
   if(m_iDevice == iDevice && g_guiSettings.GetString("audiooutput.audiodevice").Equals(m_strDevice))
   {
-    DSCAPS devCaps = {0};
-    devCaps.dwSize = sizeof(devCaps);
-    if (SUCCEEDED(m_pDirectSoundDevice->GetCaps(&devCaps))) // Make sure the DirectSound interface is still valid.
-      return;
+    if (iDevice != NONE && m_pDirectSoundDevice)
+    {
+      DSCAPS devCaps = {0};
+      devCaps.dwSize = sizeof(devCaps);
+      if (SUCCEEDED(m_pDirectSoundDevice->GetCaps(&devCaps))) // Make sure the DirectSound interface is still valid.
+        return;
+    }
   }
 
 #else

@@ -46,7 +46,6 @@ public:
 #endif
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap)=0;
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb)=0;
-  virtual int av_dup_packet(AVPacket *pkt)=0;
   virtual int av_open_input_stream(AVFormatContext **ic_ptr, ByteIOContext *pb, const char *filename, AVInputFormat *fmt, AVFormatParameters *ap)=0;
   virtual int init_put_byte(ByteIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque, 
                             int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
@@ -55,7 +54,6 @@ public:
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened)=0;
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max)=0;
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output)=0;
-  virtual void av_destruct_packet_nofree(AVPacket *pkt)=0;
   virtual int url_fdopen(ByteIOContext **s, URLContext *h)=0;
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags)=0;
   virtual int url_fclose(ByteIOContext *s)=0;
@@ -88,7 +86,6 @@ public:
   virtual int av_find_stream_info(AVFormatContext *ic) { return ::av_find_stream_info(ic); }
   virtual int av_open_input_file(AVFormatContext **ic_ptr, const char *filename, AVInputFormat *fmt, int buf_size, AVFormatParameters *ap) { return ::av_open_input_file(ic_ptr, filename, fmt, buf_size, ap); }
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb) { ::url_set_interrupt_cb(interrupt_cb); }
-  virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
   virtual int av_open_input_stream(AVFormatContext **ic_ptr, ByteIOContext *pb, const char *filename, AVInputFormat *fmt, AVFormatParameters *ap) { return ::av_open_input_stream(ic_ptr, pb, filename, fmt, ap); }
   virtual int init_put_byte(ByteIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque, 
                             int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
@@ -97,7 +94,6 @@ public:
   virtual AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened) {return ::av_probe_input_format(pd, is_opened); }
   virtual AVInputFormat *av_probe_input_format2(AVProbeData *pd, int is_opened, int *score_max) {*score_max = 100; return ::av_probe_input_format(pd, is_opened); } // Use av_probe_input_format, this is not exported by ffmpeg's headers
   virtual void dump_format(AVFormatContext *ic, int index, const char *url, int is_output) { ::dump_format(ic, index, url, is_output); }
-  virtual void av_destruct_packet_nofree(AVPacket *pkt) { ::av_destruct_packet_nofree(pkt); }
   virtual int url_fdopen(ByteIOContext **s, URLContext *h) { return ::url_fdopen(s, h); }
   virtual int url_fopen(ByteIOContext **s, const char *filename, int flags) { return ::url_fopen(s, filename, flags); }
   virtual int url_fclose(ByteIOContext *s) { return ::url_fclose(s); }
@@ -151,13 +147,11 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD3(int, get_partial_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
 #endif
   DEFINE_METHOD1(void, url_set_interrupt_cb, (URLInterruptCB *p1))
-  DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
   DEFINE_METHOD8(int, init_put_byte, (ByteIOContext *p1, unsigned char *p2, int p3, int p4, void *p5, 
                   int (*p6)(void *opaque, uint8_t *buf, int buf_size),
                   int (*p7)(void *opaque, uint8_t *buf, int buf_size),
                   offset_t (*p8)(void *opaque, offset_t offset, int whence)))
   DEFINE_METHOD4(void, dump_format, (AVFormatContext *p1, int p2, const char *p3, int p4))
-  DEFINE_METHOD1(void, av_destruct_packet_nofree, (AVPacket *p1))
   DEFINE_METHOD2(int, url_fdopen, (ByteIOContext **p1, URLContext *p2))
   DEFINE_METHOD3(int, url_fopen, (ByteIOContext **p1, const char *p2, int p3))
   DEFINE_METHOD1(int, url_fclose, (ByteIOContext *p1))
@@ -175,13 +169,11 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
     RESOLVE_METHOD(av_open_input_file)
     RESOLVE_METHOD(url_set_interrupt_cb)
-    RESOLVE_METHOD(av_dup_packet)
     RESOLVE_METHOD(av_open_input_stream)
     RESOLVE_METHOD(init_put_byte)
     RESOLVE_METHOD(av_probe_input_format)
     RESOLVE_METHOD(av_probe_input_format2)
     RESOLVE_METHOD(dump_format)
-    RESOLVE_METHOD(av_destruct_packet_nofree)
     RESOLVE_METHOD(url_fdopen)
     RESOLVE_METHOD(url_fopen)
     RESOLVE_METHOD(url_fclose)

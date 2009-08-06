@@ -269,6 +269,27 @@ CDateTime CDateTime::GetCurrentDateTime()
   return CDateTime(time);
 }
 
+CDateTime CDateTime::GetUTCDateTime()
+{
+  TIME_ZONE_INFORMATION tz;
+
+  CDateTime time(GetCurrentDateTime());
+  switch(GetTimeZoneInformation(&tz))
+  {
+    case TIME_ZONE_ID_DAYLIGHT:
+        time += CDateTimeSpan(0, 0, tz.Bias + tz.DaylightBias, 0);
+        break;
+    case TIME_ZONE_ID_STANDARD:
+        time += CDateTimeSpan(0, 0, tz.Bias + tz.StandardBias, 0);
+        break;
+    case TIME_ZONE_ID_UNKNOWN:
+        time += CDateTimeSpan(0, 0, tz.Bias, 0);
+        break;
+  }
+
+  return time;
+}
+
 const CDateTime& CDateTime::operator =(const SYSTEMTIME& right)
 {
   m_state = ToFileTime(right, m_time) ? valid : invalid;
@@ -776,12 +797,12 @@ void CDateTime::GetAsSystemTime(SYSTEMTIME& time) const
   FileTimeToSystemTime(&m_time, &time);
 }
 
+#define UNIX_BASE_TIME 116444736000000000LL /* nanoseconds since epoch */
 void CDateTime::GetAsTime(time_t& time) const
 {
-  ULARGE_INTEGER filetime;
-  ToULargeInt(filetime);
-
-  time=(time_t)(filetime.QuadPart-0x19DB1DED53E8000LL)/10000000UL;
+  LONGLONG ll;
+  ll = ((LONGLONG)m_time.dwHighDateTime << 32) + m_time.dwLowDateTime;
+  time=(time_t)((ll - UNIX_BASE_TIME) / 10000000);
 }
 
 void CDateTime::GetAsTm(tm& time) const
@@ -822,7 +843,7 @@ CStdString CDateTime::GetAsDBDateTime() const
   GetAsSystemTime(st);
 
   CStdString date;
-  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMilliseconds, st.wSecond);
+  date.Format("%04i-%02i-%02i %02i:%02i:%02i", st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
 
   return date;
 }

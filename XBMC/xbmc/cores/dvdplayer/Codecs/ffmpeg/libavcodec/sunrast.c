@@ -43,7 +43,8 @@ static av_cold int sunrast_init(AVCodecContext *avctx) {
 }
 
 static int sunrast_decode_frame(AVCodecContext *avctx, void *data,
-                                int *data_size, const uint8_t *buf, int buf_size) {
+                                int *data_size, AVPacket *avpkt) {
+    const uint8_t *buf = avpkt->data;
     SUNRASTContext * const s = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame * const p = &s->picture;
@@ -191,7 +192,7 @@ AVCodec sunrast_decoder = {
     NULL,
     sunrast_end,
     sunrast_decode_frame,
-    0,
+    CODEC_CAP_DR1,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("Sun Rasterfile image"),
 };

@@ -23,11 +23,9 @@
 #include "WINMessageHandler.h"
 #include "WIN32Util.h"
 #include <dbt.h>
-#include "GUIWindowManager.h"
-#include "Settings.h"
 #include "VideoReferenceClock.h"
 #include "Application.h"
-//#include "DetectDVDMedia.h"
+#include "MediaManager.h"
 
 extern HWND g_hWnd;
 WNDPROC g_lpOriginalWndProc=NULL;
@@ -76,27 +74,19 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
               CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              CStdString strPath;
-              strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strPath);
+              CStdString strDevice;
+              strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              g_application.getApplicationMessenger().OpticalMount(strDevice);
             }
             else
             {
               // USB drive inserted
               CMediaSource share;
-              CStdString strDrive;
-              strDrive.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              share.strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
-              share.strPath = strDrive;
+              share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              share.strName.Format("%s (%s)", g_localizeStrings.Get(437), share.strPath);
               share.m_ignore = true;
               share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-              g_settings.AddShare("files",share);
-              g_settings.AddShare("video",share);
-              g_settings.AddShare("pictures",share);
-              g_settings.AddShare("music",share);
-              g_settings.AddShare("programs",share);
-              CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-              m_gWindowManager.SendThreadMessage( msg );
+              g_mediaManager.AddAutoSource(share);
             }
          }
          break;
@@ -110,24 +100,17 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
             if (lpdbv -> dbcv_flags & DBTF_MEDIA)
             {
               CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              CStdString strPath;
-              strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strPath);
+              CStdString strDevice;
+              strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              g_application.getApplicationMessenger().OpticalUnMount(strDevice);
             }
             else
             {
               // USB drive was removed
-              CStdString strDrive;
-              CStdString strName;
-              strDrive.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
-              strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
-              g_settings.DeleteSource("files",strName,strDrive);
-              g_settings.DeleteSource("video",strName,strDrive);
-              g_settings.DeleteSource("pictures",strName,strDrive);
-              g_settings.DeleteSource("music",strName,strDrive);
-              g_settings.DeleteSource("programs",strName,strDrive);
-              CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-              m_gWindowManager.SendThreadMessage( msg );
+              CMediaSource share;
+              share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+              share.strName.Format("%s (%s)", g_localizeStrings.Get(437), share.strPath);
+              g_mediaManager.RemoveAutoSource(share);
             }
          }
          break;
@@ -165,8 +148,7 @@ LRESULT CALLBACK WndProc (HWND hWnd, UINT Message, WPARAM wParam, LPARAM lParam)
 
   // disable windows autoplay
   if(g_uQueryCancelAutoPlay != 0 && Message == g_uQueryCancelAutoPlay)
-    return 1;
-
+    return S_FALSE;
 
   return CallWindowProc(g_lpOriginalWndProc, hWnd, Message, wParam, lParam);
 }

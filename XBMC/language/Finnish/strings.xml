@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 29/6/2009  -->
-<!--Finnish strings based on English strings revision 21246 -->
+<!--Date of translation: 24/7/2009  -->
+<!--Finnish strings based on English strings revision 21769 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -234,7 +234,7 @@
   <string id="298">Kirjanmerkit</string>
   <string id="303">Tekstityksen viive</string>
   <string id="304">Kieli</string>
-  <string id="305">Tekstitys</string>
+  <string id="305">Käytössä</string>
   <string id="306">Lomittamaton</string>
   <string id="307">Automaattinen jälkikäsittely</string>
   <string id="308">Vertikaalinen päästösuodatus</string>
@@ -266,7 +266,7 @@
   <string id="334">Järjestele tietokanta...</string>
   <string id="335">Aloita</string>
   <string id="336">Kuvataajuuden muunto</string>
-  <string id="337">Audiolähtö</string>
+  <string id="337">Äänilähtö</string>
   <string id="338">Analoginen</string>
   <string id="339">Digitaalinen</string>
   <string id="340">Eri esittäjiä</string>
@@ -332,8 +332,8 @@
   <string id="404">Tuuli</string>
   <string id="405">Kastepiste</string>
   <string id="406">Kosteus</string>
-  <string id="407">Suunta:</string>
-  <string id="408">Nopeus:</string>
+  <string id="407">Suunta</string>
+  <string id="408">Nopeus</string>
   <string id="409">Oletukset</string>
 
   <string id="410">Yhdistetään sääpalveluun</string>
@@ -393,8 +393,8 @@
   <string id="465">Kontrasti</string>
   <string id="466">Gamma</string>
   <string id="467">Tyyppi</string>
-  <string id="468">Siirrä kuvaruutunäytön sijaintia pystysuunnassa</string>
-  <string id="469">Kuvaruutunäytön sijainti</string>
+  <string id="468">Siirrä kuvaruutuvalikon sijaintia pystysuunnassa</string>
+  <string id="469">Kuvaruutuvalikon sijainti</string>
   <string id="470">Tekijät</string>
   <string id="471">Mod-piiri</string>
   <string id="474">Ei käytössä</string>
@@ -513,7 +513,7 @@
   <string id="596">Toisto: Kappale</string>
   <string id="597">Toisto: Kaikki</string>
 
-  <string id="600">Siirrä CD-levy kiintolevylle</string>
+  <string id="600">Siirrä ääni-CD-levy kiintolevylle</string>
   <string id="601">Keskimääräinen</string>
   <string id="602">Normaali</string>
   <string id="603">Erittäin korkea</string>
@@ -979,7 +979,7 @@
   <string id="13022">Turvaton laitteen poisto</string>
   <string id="13023">Laitteen poisto onnistui</string>
   <string id="13024">Peliohjain liitetty</string>
-  <string id="13025">Peliohjain poistettu</string>
+  <string id="13025">Peliohjain irroitettu</string>
 
   <string id="13100">Näytön välkynnän poisto</string>
   <string id="13101">Ajuri valitsee (vaatii uudelleenkäynnistyksen)</string> 
@@ -1226,7 +1226,7 @@
   <string id="13621">Apple kauko-ohjaus voidaan ottaa käyttöön.</string>
 
   <string id="14000">Yhdistä osat</string>
-  <string id="14001">Ei yhdistetä</string>
+  <string id="14001">Ei yhdistetä osia</string>
   <string id="14003">Ladataan soittolistatiedostoa...</string>
   <string id="14004">Ladataan ohjelmaluetteloa..</string>
   <string id="14005">Tulkitaan ohjelmaluetteloa...</string>
@@ -1242,7 +1242,7 @@
   <string id="14015">Ei tiedostoja vähintään yhdellä pienoiskuvakkeella</string>
   <string id="14016">Vähintään yksi tiedosto ja pienoiskuvake</string>
   <string id="14017">Pienoiskuvakkeiden osuus (%)</string>
-  <string id="14018">Selausasetukset</string>
+  <string id="14018">Näyttöasetukset</string>
   <string id="14019">Sijainti 1</string>
   <string id="14020">Sijainti 2</string>
   <string id="14021">Sijainti 3</string>
@@ -1417,7 +1417,7 @@
   <string id="15262">Suosituimmat %name%:n albumit</string>
   <string id="15263">Suosituimmat %name%:n kappaleet</string>
   <string id="15264">Suosituimmat %name%:n tunnisteet</string>
-  <string id="15265">Suurimmat %name% fanit</string>
+  <string id="15265">Suurimmat %name%:n fanit</string>
   <string id="15266">Kuuntele %name% fanien Last.fm radiota</string>
   <string id="15267">Kuuntele %name%:n samankaltaisten esittäjien last.fm radiota</string>
   <string id="15268">Käyttäjän %name% suosituimmat esittäjät</string>
@@ -1737,7 +1737,7 @@
   <string id="20301">Web-palvelimen hakemisto (HTTPS)</string>
   <string id="20302">Kansioon kirjoitus epäonnistui:</string>
   <string id="20303">Ohitetaanko ja jatketaanko suoritusta?</string>
-  <string id="20304"></string>
+  <string id="20304">RSS-syöte</string>
   <string id="20305"></string>
 
   <string id="20306">Ei voida tunnistaa</string>
@@ -1966,6 +1966,12 @@
   <string id="21440">Kotikansio</string>
   <string id="21441">Katselumäärä</string>
   <string id="21442">Jakson nimi</string>
+  <string id="21443">Videoresoluutio</string>
+  <string id="21444">Äänikanavat</string>
+  <string id="21445">Video koodekki</string>
+  <string id="21446">Ääni koodekki</string>
+  <string id="21447">Äänen kieli</string>
+  <string id="21448">Tekstityskieli</string>
 
   <string id="21800">Tiedostonimi</string>
   <string id="21801">Tiedoston sijainti</string>
@@ -2090,6 +2096,7 @@
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code --> 
   <string id="29800">Kirjasto-tila</string> 
   <string id="29801">QWERTY-näppäimistö</string>
+  <string id="29802">Läpisyötetty ääni käytössä</string>
 
   <string id="29999">Näytön välkynnän poisto</string>
 
@@ -2098,7 +2105,7 @@
   <!-- strings 32000 thru 32999 reserved for scripts -->
   <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
   <string id="33001">Esittelyn kuvanlaatu</string>
-  <string id="33002">Stream</string>
+  <string id="33002">Katso</string>
   <string id="33003">Lataa</string>
   <string id="33004">Lataa ja toista</string>
   <string id="33005">Lataa ja tallenna</string>

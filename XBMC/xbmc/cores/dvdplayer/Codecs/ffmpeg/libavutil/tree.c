@@ -144,7 +144,9 @@ void av_tree_enumerate(AVTreeNode *t, void *opaque, int (*f)(void *opaque, void 
 #endif
 
 #ifdef TEST
-#undef random
+
+#include "lfg.h"
+
 static int check(AVTreeNode *t){
     if(t){
         int left= check(t->child[0]);
@@ -165,23 +167,27 @@ static void print(AVTreeNode *t, int depth){
     int i;
     for(i=0; i<depth*4; i++) av_log(NULL, AV_LOG_ERROR, " ");
     if(t){
-        av_log(NULL, AV_LOG_ERROR, "Node %p %2d %4d\n", t, t->state, t->elem);
+        av_log(NULL, AV_LOG_ERROR, "Node %p %2d %p\n", t, t->state, t->elem);
         print(t->child[0], depth+1);
         print(t->child[1], depth+1);
     }else
         av_log(NULL, AV_LOG_ERROR, "NULL\n");
 }
 
-int cmp(const void *a, const void *b){
-    return a-b;
+static int cmp(void *a, const void *b){
+    return (uint8_t*)a-(const uint8_t*)b;
 }
 
 int main(void){
-    int i,k;
+    int i;
+    void *k;
     AVTreeNode *root= NULL, *node=NULL;
+    AVLFG prng;
+
+    av_lfg_init(&prng, 1);
 
     for(i=0; i<10000; i++){
-        int j= (random()%86294);
+        int j = av_lfg_get(&prng) % 86294;
         if(check(root) > 999){
             av_log(NULL, AV_LOG_ERROR, "FATAL error %d\n", i);
         print(root, 0);
@@ -192,7 +198,7 @@ int main(void){
             node= av_mallocz(av_tree_node_size);
         av_tree_insert(&root, (void*)(j+1), cmp, &node);
 
-        j= (random()%86294);
+        j = av_lfg_get(&prng) % 86294;
         {
             AVTreeNode *node2=NULL;
             av_log(NULL, AV_LOG_ERROR, "removing %4d\n", j);

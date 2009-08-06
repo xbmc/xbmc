@@ -117,7 +117,6 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void 
     AVFrame * const p = &c->pic;
     uint8_t *src, *prev;
     uint32_t *palptr;
-    int zret = Z_OK;
     int len = 0;
     int keyframe, chpal;
     int fl;
@@ -226,7 +225,7 @@ static int encode_frame(AVCodecContext *avctx, uint8_t *buf, int buf_size, void 
     c->zstream.next_out = c->comp_buf;
     c->zstream.avail_out = c->comp_size;
     c->zstream.total_out = 0;
-    if((zret = deflate(&c->zstream, Z_SYNC_FLUSH)) != Z_OK){
+    if(deflate(&c->zstream, Z_SYNC_FLUSH) != Z_OK){
         av_log(avctx, AV_LOG_ERROR, "Error compressing data\n");
         return -1;
     }
@@ -251,7 +250,6 @@ static av_cold int encode_init(AVCodecContext *avctx)
 
     c->avctx = avctx;
 
-    c->pic.data[0] = NULL;
     c->curfrm = 0;
     c->keyint = avctx->keyint_min;
     c->range = 8;
@@ -286,7 +284,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
         av_log(avctx, AV_LOG_ERROR, "Can't allocate compression buffer.\n");
         return -1;
     }
-    c->pstride = (avctx->width + 15) & ~15;
+    c->pstride = FFALIGN(avctx->width, 16);
     if ((c->prev = av_malloc(c->pstride * avctx->height)) == NULL) {
         av_log(avctx, AV_LOG_ERROR, "Can't allocate picture.\n");
         return -1;

@@ -23,6 +23,7 @@
 #define AVFORMAT_ID3V2_H
 
 #include <stdint.h>
+#include "avformat.h"
 
 #define ID3v2_HEADER_SIZE 10
 
@@ -38,5 +39,16 @@ int ff_id3v2_match(const uint8_t *buf);
  * already detected ID3v2 tag
  */
 int ff_id3v2_tag_len(const uint8_t *buf);
+
+/**
+ * ID3v2 parser
+ * Handles ID3v2.2, 2.3 and 2.4.
+ */
+void ff_id3v2_parse(AVFormatContext *s, int len, uint8_t version, uint8_t flags);
+
+/**
+ * Read an ID3v2 tag
+ */
+void ff_id3v2_read(AVFormatContext *s);
 
 #endif /* AVFORMAT_ID3V2_H */

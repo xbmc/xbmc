@@ -26,7 +26,7 @@
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#ifdef __ppc__ // PowerPC
+#if defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long cas(volatile long *pAddr, long expectedVal, long swapVal)
 {
@@ -98,7 +98,7 @@ long cas(volatile long* pAddr,long expectedVal, long swapVal)
 // 64-bit atomic compare-and-swap
 // Returns previous value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#ifdef __ppc__ // PowerPC
+#if defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 // Not available
 
@@ -159,7 +159,7 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
 // 32-bit atomic increment
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#ifdef __ppc__ // PowerPC
+#if defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long AtomicIncrement(volatile long* pAddr)
 {
@@ -222,7 +222,7 @@ long AtomicIncrement(volatile long* pAddr)
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
 
-#ifdef __ppc__ // PowerPC
+#if defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long AtomicAdd(volatile long* pAddr, long amount)
 {
@@ -283,7 +283,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
 // 32-bit atomic decrement
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#ifdef __ppc__ // PowerPC
+#if defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long AtomicDecrement(volatile long* pAddr)
 {
@@ -348,7 +348,7 @@ long AtomicDecrement(volatile long* pAddr)
 // 32-bit atomic subtract
 // Returns new value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#ifdef __ppc__ // PowerPC
+#if defined(__ppc__) || defined(__powerpc__) // PowerPC
 
 long AtomicSubtract(volatile long* pAddr, long amount)
 {
