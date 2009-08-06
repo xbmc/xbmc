@@ -2256,6 +2256,10 @@ void CApplication::RenderNoPresent()
     else
       g_renderManager.RenderUpdate(true, 0, 255);
 
+    if (NeedRenderFullScreen())
+      RenderFullScreen();
+    RenderMemoryStatus();
+
     ResetScreenSaver();
     g_infoManager.ResetCache();
     return;
