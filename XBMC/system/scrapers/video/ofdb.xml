@@ -153,7 +153,7 @@
 			</RegExp>
 
 			<!--URL to MoviePosterDB -->
-			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?title=\2&lt;/url&gt;" dest="5+">
+			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;amp;query=\2&lt;/url&gt;" dest="5+">
   				<expression>(imdb.com/)Title\?([0-9]+)</expression> 
 			</RegExp>
 	

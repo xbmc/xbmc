@@ -82,7 +82,7 @@
 			<RegExp conditional="impawards" input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMPALink&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDB&quot;&gt;http://www.movieposterdb.com/browse/search?title=\1&lt;/url&gt;" dest="5+">
+			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDB&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;amp;query=\1&lt;/url&gt;" dest="5+">
 				<expression>/title/tt([t0-9]*)/faq</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetIMDBPoster&quot;&gt;http://$INFO[url]/title/\1/posters&lt;/url&gt;" dest="5+">
