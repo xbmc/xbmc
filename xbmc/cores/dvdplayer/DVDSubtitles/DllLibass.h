@@ -49,7 +49,7 @@ public:
   virtual ass_track_t* ass_new_track(ass_library_t*)=0;
   virtual ass_track_t* ass_read_file(ass_library_t* library, char* fname, char* codepage)=0;
   virtual void ass_free_track(ass_track_t* track)=0;
-  virtual int  ass_set_fonts(ass_renderer_t* priv, const char* default_font, const char* default_family)=0;
+  virtual void ass_set_fonts(ass_renderer_t *priv, const char *default_font, const char *default_family, int fc, const char *config, int update) = 0;
   virtual void ass_set_style_overrides(ass_library_t* priv, char** list)=0;
   virtual void ass_library_done(ass_library_t* library)=0;
   virtual void ass_renderer_done(ass_renderer_t* renderer)=0;
@@ -87,8 +87,8 @@ public:
         { return ::ass_read_file(library, fname, codepage); }
     virtual void ass_free_track(ass_track_t* track)
         { return ::ass_free_track(track); }
-    virtual int  ass_set_fonts(ass_renderer_t* priv, const char* default_font, const char* default_family)
-        { return ::ass_set_fonts(priv, default_font, default_family); }
+    virtual void ass_set_fonts(ass_renderer_t *priv, const char *default_font, const char *default_family, int fc, const char *config, int update)
+        { return ::ass_set_fonts(priv, default_font, default_family, fc, config, update); }
     virtual void ass_set_style_overrides(ass_library_t* priv, char** list)
         { return ::ass_set_style_overrides(priv, list); }
     virtual void ass_library_done(ass_library_t* library)
@@ -126,7 +126,7 @@ class DllLibass : public DllDynamic, DllLibassInterface
   DEFINE_METHOD1(ass_track_t *, ass_new_track, (ass_library_t * p1))
   DEFINE_METHOD3(ass_track_t *, ass_read_file, (ass_library_t * p1, char * p2, char * p3))
   DEFINE_METHOD1(void, ass_free_track, (ass_track_t * p1))
-  DEFINE_METHOD3(int,  ass_set_fonts, (ass_renderer_t * p1, const char * p2, const char * p3))
+  DEFINE_METHOD6(void, ass_set_fonts, (ass_renderer_t* p1, const char* p2, const char* p3, int p4, const char* p5, int p6))
   DEFINE_METHOD2(void, ass_set_style_overrides, (ass_library_t* p1, char** p2))
   DEFINE_METHOD1(void, ass_library_done, (ass_library_t* p1))
   DEFINE_METHOD1(void, ass_renderer_done, (ass_renderer_t* p1))
