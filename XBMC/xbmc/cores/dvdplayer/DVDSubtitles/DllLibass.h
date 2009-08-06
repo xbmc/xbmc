@@ -55,6 +55,9 @@ public:
   virtual void ass_renderer_done(ass_renderer_t* renderer)=0;
   virtual void ass_process_chunk(ass_track_t* track, char *data, int size, long long timecode, long long duration)=0;
   virtual void ass_process_codec_private(ass_track_t* track, char *data, int size)=0;
+  virtual void ass_set_message_cb(ass_library_t *priv
+                                , void (*msg_cb)(int level, const char *fmt, va_list args, void *data)
+                                , void *data)=0;
 };
 
 #if (defined USE_EXTERNAL_LIBASS)
@@ -99,6 +102,10 @@ public:
         { return ::ass_process_chunk(track, data, size, timecode, duration); }
     virtual void ass_process_codec_private(ass_track_t* track, char *data, int size)
         { return ::ass_process_codec_private(track, data, size); }
+    virtual void ass_set_message_cb(ass_library_t *priv
+                                   , void (*msg_cb)(int level, const char *fmt, va_list args, void *data)
+                                   , void *data)
+        { return ::ass_set_message_cb(priv, msg_cb, data); }
 
     // DLL faking.
     virtual bool ResolveExports() { return true; }
@@ -132,6 +139,7 @@ class DllLibass : public DllDynamic, DllLibassInterface
   DEFINE_METHOD1(void, ass_renderer_done, (ass_renderer_t* p1))
   DEFINE_METHOD5(void, ass_process_chunk, (ass_track_t* p1, char* p2, int p3, long long p4, long long p5))
   DEFINE_METHOD3(void, ass_process_codec_private, (ass_track_t* p1, char* p2, int p3))
+  DEFINE_METHOD3(void, ass_set_message_cb, (ass_library_t* p1, void (*p2)(int level, const char *fmt, va_list args, void *data), void* p3))
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(ass_set_extract_fonts)
     RESOLVE_METHOD(ass_set_fonts_dir)
@@ -151,6 +159,7 @@ class DllLibass : public DllDynamic, DllLibassInterface
     RESOLVE_METHOD(ass_renderer_done)
     RESOLVE_METHOD(ass_process_chunk)
     RESOLVE_METHOD(ass_process_codec_private)
+    RESOLVE_METHOD(ass_set_message_cb)
   END_METHOD_RESOLVE()
 };
 
