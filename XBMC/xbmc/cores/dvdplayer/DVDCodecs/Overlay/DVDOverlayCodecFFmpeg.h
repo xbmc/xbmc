@@ -46,6 +46,9 @@ private:
   AVSubtitle      m_Subtitle;
   int             m_SubtitleIndex;
 
+  int             m_width;
+  int             m_height;
+
   DllAvCodec      m_dllAvCodec;
   DllAvUtil       m_dllAvUtil;
 
