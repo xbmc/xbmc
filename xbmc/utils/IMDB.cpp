@@ -61,9 +61,11 @@ bool CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& moviel
 
   CScraperUrl scrURL;
 
-  CStdString movieTitle = strMovie;
-  CStdString movieYear;
-  GetCleanNameAndYear(movieTitle, movieYear);
+  CStdString strName = strMovie;
+  CStdString movieTitle, movieTitleAndYear, movieYear;
+  CUtil::CleanString(strName, movieTitle, movieTitleAndYear, movieYear, true);
+
+  movieTitle.ToLower();
 
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
     __FUNCTION__, movieTitle.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strLanguage.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
@@ -438,35 +440,6 @@ void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, con
     CUtil::URLEncode(m_parser.m_param[0]);
   }
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
-}
-
-// TODO: Make this user-configurable?
-void CIMDB::GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear)
-{
-#define SEP " _\\.\\(\\)\\[\\]\\-"
-  CRegExp reYear;
-  reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
-
-  strMovieName.ToLower();
-
-  if (reYear.RegFind(strMovieName.c_str()) >= 0)
-  {
-    char *pMovie = reYear.GetReplaceString("\\1");
-    char *pYear = reYear.GetReplaceString("\\2");
-
-    if(pMovie)
-    {
-      strMovieName = pMovie;
-      free(pMovie);
-    }
-    if(pYear)
-    {
-      strYear = pYear;
-      free(pYear);
-    }
-  }
-  // get clean string
-  CUtil::CleanString(strMovieName,true);
 }
 
 // threaded functions

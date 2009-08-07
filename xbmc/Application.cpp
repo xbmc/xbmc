@@ -1512,7 +1512,7 @@ void CApplication::StartFtpServer()
 
       // check file size and presence
       CFile xml;
-      if (xml.Open(xmlpath+"FileZilla Server.xml",true) && xml.GetLength() > 0)
+      if (xml.Open(xmlpath+"FileZilla Server.xml") && xml.GetLength() > 0)
       {
         m_pFileZilla = new CXBFileZilla(_P(xmlpath));
         m_pFileZilla->Start(false);
@@ -2574,6 +2574,13 @@ bool CApplication::OnAction(CAction &action)
     else
       PowerButtonDown = false;
   }
+  // reload keymaps
+  if (action.wID == ACTION_RELOAD_KEYMAPS)
+  {
+    CButtonTranslator::GetInstance().Clear();
+    CButtonTranslator::GetInstance().Load();
+  }
+
   // show info : Shows the current video or song information
   if (action.wID == ACTION_SHOW_INFO)
   {

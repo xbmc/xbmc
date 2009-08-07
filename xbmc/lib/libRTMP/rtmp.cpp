@@ -433,6 +433,11 @@ bool CRTMP::SendPause(bool DoPause, double dTime)
   return SendRTMP(packet);
 }
 
+bool CRTMP::Seek(double dTime)
+{
+  return SendSeek(dTime);
+}
+
 bool CRTMP::SendSeek(double dTime)
 {
   RTMPPacket packet;
@@ -672,7 +677,8 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     CLog::Log(LOGDEBUG,"%s, onStatus: %s", __FUNCTION__, code.c_str() );
     if (code == "NetStream.Failed"
     ||  code == "NetStream.Play.Failed"
-    ||  code == "NetStream.Play.Stop")
+    ||  code == "NetStream.Play.Stop"
+    ||  code == "NetStream.Play.StreamNotFound")
       Close();
   }
   else

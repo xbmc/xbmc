@@ -177,8 +177,7 @@ public:
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
     int m_videoIgnoreAtEnd;
-    bool m_videoApplyAC3Drc;
-    bool m_videoApplyDTSDrc;
+    bool m_audioApplyDrc;
 
     CStdString m_videoDefaultPlayer;
 
@@ -207,7 +206,8 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
-    CStdStringArray m_videoCleanRegExps;
+    CStdString m_videoCleanDateTimeRegExp;
+    CStdStringArray m_videoCleanStringRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_moviesExcludeFromScanRegExps;
     CStdStringArray m_tvshowExcludeFromScanRegExps;
@@ -254,6 +254,7 @@ public:
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
+    bool m_bVideoLibraryMyMoviesCategoriesToGenres;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
@@ -280,6 +281,7 @@ public:
     bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
     
     bool m_bPythonVerbose;
+    int m_bgInfoLoaderMaxThreads;
   };
   struct stSettings
   {
@@ -422,6 +424,7 @@ public:
 
   bool SaveSources();
 
+  void LoadRSSFeeds();
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
@@ -458,8 +461,6 @@ protected:
   void LoadAdvancedSettings();
 
   void LoadUserFolderLayout();
-
-  void LoadRSSFeeds();
 
   bool SaveAvpackXML() const;
   bool SaveNewAvpackXML() const;

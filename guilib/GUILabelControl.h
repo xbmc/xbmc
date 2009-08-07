@@ -78,6 +78,7 @@ public:
   virtual CGUILabelControl *Clone() const { return new CGUILabelControl(*this); };
 
   virtual void Render();
+  virtual void UpdateInfo(const CGUIListItem *item = NULL);
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
   virtual CStdString GetDescription() const;

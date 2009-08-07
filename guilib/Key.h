@@ -268,6 +268,7 @@
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
 #define ACTION_SCAN_ITEM              201 // scan item
 #define ACTION_TOGGLE_DIGITAL_ANALOG  202 // switch digital <-> analog
+#define ACTION_RELOAD_KEYMAPS         203 // reloads CButtonTranslator's keymaps
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999

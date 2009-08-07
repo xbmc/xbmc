@@ -188,6 +188,9 @@ htsmsg_t* CHTSPSession::ReadMessage(int timeout)
   }
 
   l   = ntohl(l);
+  if(l == 0)
+    return htsmsg_create_map();
+
   buf = malloc(l);
 
   x = htsp_tcp_read(m_fd, buf, l);

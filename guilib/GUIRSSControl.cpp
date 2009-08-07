@@ -92,20 +92,25 @@ void CGUIRSSControl::Render()
   {
     CSingleLock lock(m_criticalSection);
     // Create RSS background/worker thread if needed
-    if (m_pReader == NULL && !g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
+    if (m_pReader == NULL)
     {
-      if (m_strRSSTags != "")
+      if (g_rssManager.GetReader(GetID(), GetParentID(), this, m_pReader))
+        m_scrollInfo.characterPos = m_pReader->m_SavedScrollPos; 
+      else 
       {
-        CStdStringArray vecSplitTags;
+        if (m_strRSSTags != "")
+        {
+          CStdStringArray vecSplitTags;
 
-        StringUtils::SplitString(m_strRSSTags, ",", vecSplitTags);
+          StringUtils::SplitString(m_strRSSTags, ",", vecSplitTags);
 
-        for (unsigned int i = 0;i < vecSplitTags.size();i++)
-          m_pReader->AddTag(vecSplitTags[i]);
+          for (unsigned int i = 0;i < vecSplitTags.size();i++)
+            m_pReader->AddTag(vecSplitTags[i]);
+        }
+        // use half the width of the control as spacing between feeds, and double this between feed sets
+        float spaceWidth = (m_label.font) ? m_label.font->GetCharWidth(L' ') : 15;
+        m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int)(0.5f*GetWidth() / spaceWidth) + 1);
       }
-      // use half the width of the control as spacing between feeds, and double this between feed sets
-      float spaceWidth = (m_label.font) ? m_label.font->GetCharWidth(L' ') : 15;
-      m_pReader->Create(this, m_vecUrls, m_vecIntervals, (int)(0.5f*GetWidth() / spaceWidth) + 1);
     }
 
     if (m_label.font)
@@ -118,7 +123,10 @@ void CGUIRSSControl::Render()
     }
 
     if (m_pReader)
+    {
       m_pReader->CheckForUpdates();
+      m_pReader->m_SavedScrollPos = m_scrollInfo.characterPos;
+    }
   }
   CGUIControl::Render();
 }

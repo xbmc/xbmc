@@ -23,6 +23,7 @@
 #include "DVDDemuxFFmpeg.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
+#include "DVDInputStreams/DVDInputStreamRTMP.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
@@ -628,7 +629,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       else
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() returned invalid packet and eof reached");
 
-      av_free_packet(&pkt);
+      m_dllAvCodec.av_free_packet(&pkt);
     }
     else
     {
@@ -722,7 +723,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
         pPacket->iStreamId = pkt.stream_index; // XXX just for now
       }
-      av_free_packet(&pkt);
+      m_dllAvCodec.av_free_packet(&pkt);
     }
   }
   Unlock();
@@ -783,7 +784,16 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return true;
   }
 
-  if(!m_pInput->Seek(0, SEEK_POSSIBLE) 
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_RTMP))
+  {
+    if (!((CDVDInputStreamRTMP*)m_pInput)->SeekTime(time))
+      return false;
+
+    Flush();
+    return true;
+  }
+
+  if(!m_pInput->Seek(0, SEEK_POSSIBLE)
   && !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
     CLog::Log(LOGDEBUG, "%s - input stream reports it is not seekable", __FUNCTION__);

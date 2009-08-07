@@ -123,6 +123,8 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_ac3Gain = 12.0f;
+  g_advancedSettings.m_audioApplyDrc = true;      
+
   g_advancedSettings.m_audioDefaultPlayer = "paplayer";
   g_advancedSettings.m_audioPlayCountMinimumPercent = 90.0f;
 
@@ -146,8 +148,6 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoIgnoreAtStart = 15;
   g_advancedSettings.m_videoIgnoreAtEnd = 5; 
   g_advancedSettings.m_videoPlayCountMinimumPercent = 90.0f;
-  g_advancedSettings.m_videoApplyAC3Drc = true;
-  g_advancedSettings.m_videoApplyDTSDrc = true;
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
@@ -184,8 +184,10 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "Z:\\";
   g_advancedSettings.m_displayRemoteCodes = false;
   
-  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
-  g_advancedSettings.m_videoCleanRegExps.push_back("(\\[.*\\])");
+  g_advancedSettings.m_videoCleanDateTimeRegExp = "(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-][^0-9]|$)";
+
+  g_advancedSettings.m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  g_advancedSettings.m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("-trailer");
   g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
@@ -245,6 +247,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
   g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
   g_advancedSettings.m_bVideoLibraryExportAutoThumbs = false;
+  g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -270,6 +273,8 @@ void CSettings::Initialize()
   g_advancedSettings.m_bNavVKeyboard = false;
 
   g_advancedSettings.m_bPythonVerbose = false;
+
+  g_advancedSettings.m_bgInfoLoaderMaxThreads = 5;
 }
 
 CSettings::~CSettings(void)
@@ -1084,6 +1089,7 @@ void CSettings::LoadAdvancedSettings()
     if (pAudioExcludes)
       GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromScanRegExps);
 
+    XMLUtils::GetBoolean(pElement, "applydrc", g_advancedSettings.m_audioApplyDrc);        
   }
 
   pElement = pRootElement->FirstChildElement("video");
@@ -1096,8 +1102,6 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
     XMLUtils::GetInt(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
     XMLUtils::GetInt(pElement, "ignoreatend", g_advancedSettings.m_videoIgnoreAtEnd, 0, 900);
-    XMLUtils::GetBoolean(pElement, "applyac3drc", g_advancedSettings.m_videoApplyAC3Drc);
-    XMLUtils::GetBoolean(pElement, "applydtsdrc", g_advancedSettings.m_videoApplyDTSDrc);
 
     XMLUtils::GetInt(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
     XMLUtils::GetInt(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
@@ -1128,8 +1132,9 @@ void CSettings::LoadAdvancedSettings()
 
     pVideoExcludes = pElement->FirstChildElement("cleanfilenames");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);            
-  
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanStringRegExps);
+
+    XMLUtils::GetString(pElement,"cleandatetime", g_advancedSettings.m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"postprocessing",g_advancedSettings.m_videoPPFFmpegType);
   }
 
@@ -1157,6 +1162,10 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", g_advancedSettings.m_bVideoLibraryExportAutoThumbs);
+    
+    TiXmlElement* pMyMovies = pElement->FirstChildElement("mymovies");
+    if (pMyMovies)
+      XMLUtils::GetBoolean(pMyMovies, "categoriestogenres", g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres);
   }
 
   pElement = pRootElement->FirstChildElement("slideshow");
@@ -1446,6 +1455,9 @@ void CSettings::LoadAdvancedSettings()
       element = element->NextSiblingElement("entry");
     }
   }
+
+  XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", g_advancedSettings.m_bgInfoLoaderMaxThreads);
+  g_advancedSettings.m_bgInfoLoaderMaxThreads = std::max(1, g_advancedSettings.m_bgInfoLoaderMaxThreads);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
@@ -2522,7 +2534,7 @@ void CSettings::Clear()
   m_videoSources.clear();
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
-  g_advancedSettings.m_videoCleanRegExps.clear();
+  g_advancedSettings.m_videoCleanStringRegExps.clear();
   g_advancedSettings.m_moviesExcludeFromScanRegExps.clear();
   g_advancedSettings.m_tvshowExcludeFromScanRegExps.clear();
   g_advancedSettings.m_videoExcludeFromListingRegExps.clear();

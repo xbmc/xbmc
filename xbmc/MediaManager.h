@@ -21,6 +21,7 @@
  */
 
 #include "Settings.h" // for VECSOURCES
+#include "URL.h"
 
 class CNetworkLocation
 {

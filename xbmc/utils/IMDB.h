@@ -78,7 +78,6 @@ public:
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
-  void GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear);
 
   static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
 

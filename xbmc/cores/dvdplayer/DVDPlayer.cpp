@@ -2915,6 +2915,13 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       m_State.recording = static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
     }
 
+    CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
+    if (pDisplayTime)
+    {
+      m_State.time       = pDisplayTime->GetTime();
+      m_State.time_total = pDisplayTime->GetTotalTime();
+    }
+
     if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
     {
       if(m_dvd.state == DVDSTATE_STILL) 
@@ -2922,11 +2929,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
         m_State.time       = GetTickCount() - m_dvd.iDVDStillStartTime;
         m_State.time_total = m_dvd.iDVDStillTime;
       }
-      else
-      {
-        m_State.time       = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTime();
-        m_State.time_total = ((CDVDInputStreamNavigator*)m_pInputStream)->GetTotalTime();
-      }
+
       if(!((CDVDInputStreamNavigator*)m_pInputStream)->GetNavigatorState(m_State.player_state))
         m_State.player_state = "";
     }
