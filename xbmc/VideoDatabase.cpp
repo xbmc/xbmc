@@ -3405,10 +3405,13 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     if (iVersion < 28)
     {
+// Commented out since it somehow fails on Xbox
+/*
       m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
         "strVideoCodec text, fVideoAspect real, iVideoWidth integer, iVideoHeight integer, "
         "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text)");
       m_pDS->exec("CREATE INDEX ix_streamdetails ON streamdetails (idFile)");
+*/
     }
     if (iVersion < 29)
     {
@@ -6247,10 +6250,6 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
 
     CLog::Log(LOGDEBUG, "%s Cleaning files table", __FUNCTION__);
     sql = "delete from files where idFile in " + filesToDelete;
-    m_pDS->exec(sql.c_str());
-
-    CLog::Log(LOGDEBUG, "%s Cleaning streamdetails table", __FUNCTION__);
-    sql = "delete from streamdetails where idFile in " + filesToDelete;
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning bookmark table", __FUNCTION__);
