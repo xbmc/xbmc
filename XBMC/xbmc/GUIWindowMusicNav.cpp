@@ -393,7 +393,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
         node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
         node == NODE_TYPE_ALBUM_TOP100 || 
-        node == NODE_TYPE_ALBUM_COMPILATIONS)
+        node == NODE_TYPE_ALBUM_COMPILATIONS ||
+        node == NODE_TYPE_YEAR_ALBUM)
       items.SetContent("albums");
     else if (node == NODE_TYPE_ARTIST)
       items.SetContent("artists");
