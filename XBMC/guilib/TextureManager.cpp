@@ -749,9 +749,12 @@ void CGLTexture::LoadToGPU()
   glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
                GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-#else
+#else   // GLES version
+      textureWidth = maxSize;
     }
   }
+
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, textureWidth, textureHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
 #endif
 
   VerifyGLState();

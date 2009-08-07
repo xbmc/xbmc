@@ -1174,7 +1174,6 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
-#ifndef HAS_SDL_GLES2
     if (field & (FIELD_ODD|FIELD_EVEN))
     {
       if (m_renderQuality == RQ_SINGLEPASS)
@@ -1196,7 +1195,6 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
       CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB Progressive Shader");
     }
-#endif  // HAS_SDL_GLES2
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
     {
@@ -1733,14 +1731,13 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 #endif
   VerifyGLState();
 
-#ifndef HAS_SDL_GLES2
   if (!m_pYUVShader->Enable())
   {
     CLog::Log(LOGERROR, "GL: Error enabling YUV shader");
   }
 
   // 1st Pass to video frame size
-
+#ifndef HAS_SDL_GLES2
   glBegin(GL_QUADS);
 
   glMultiTexCoord2fARB(GL_TEXTURE0, 0              , 0);
@@ -1765,9 +1762,11 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 
   glEnd();
   VerifyGLState();
+#endif
 
   m_pYUVShader->Disable();
 
+#ifndef HAS_SDL_GLES2
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix(); // pop modelview
   glMatrixMode(GL_PROJECTION);

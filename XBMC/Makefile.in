@@ -427,6 +427,7 @@ install: install-datas install-web
 	@echo "You can run XBMC with the command 'xbmc'"
 endif
 
+ifneq ($(ARCH), arm)
 install-datas:
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
@@ -435,6 +436,16 @@ install-datas:
 	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
+else	# Cant use -regextype for arm
+install-datas:
+	@echo "Copying system files to $(prefix)/share/xbmc"
+	@# Arch independent files
+	@find language media scripts sounds userdata visualisations system -type f -not -iregex ".*\(svn.*\|\.so\|\.dll\|\.pyd\|python/.*\.zlib\|\.vis\)" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@# Arch dependent files
+	@find system screensavers visualisations -type f -not -iregex ".*\(svn.*\|win32\.vis\|osx\.vis\)" -iregex ".*\(@ARCH@.*\|\.vis\|\.xbs\)" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@# Skins
+	@find skin -type f -not -iregex ".*\(svn.*\|\.png\|\.gif\)" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
+endif
 
 install-livedatas:
 	@echo "Install Live CD datas in $(prefix) ..."

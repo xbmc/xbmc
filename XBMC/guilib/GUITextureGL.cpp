@@ -49,11 +49,11 @@ void CGUITexture::Begin()
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
   
-#if defined(HAS_SDL_GLES1)      // GLES1.x version
+#if defined(HAS_SDL_GLES1)
   
   // TODO: GLES1.x version!!!
   
-#elif defined(HAS_SDL_GLES2)    // GLES 2.0 version
+#elif defined(HAS_SDL_GLES2)
   
   // TODO: GLES2.0 version!!!
   

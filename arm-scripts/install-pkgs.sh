@@ -75,26 +75,8 @@ $PACKAGES_ADDR/libs/libsamplerate
 $PACKAGES_ADDR/libs/libsamplerate
 $PACKAGES_ADDR/p/python2.4
 $PACKAGES_ADDR/p/python2.4
-$PACKAGES_ADDR/f/ffmpeg-debian
-$PACKAGES_ADDR/f/ffmpeg-debian
-$PACKAGES_ADDR/f/ffmpeg-debian
-$PACKAGES_ADDR/f/ffmpeg-debian
-$PACKAGES_ADDR/f/ffmpeg-debian
-$PACKAGES_ADDR/f/ffmpeg-debian
-$PACKAGES_ADDR/f/faad2
-$PACKAGES_ADDR/libg/libgsm
-$PACKAGES_ADDR/libt/libtheora
-$PACKAGES_ADDR/libv/libvorbis
-$PACKAGES_ADDR/f/freetype
-$PACKAGES_ADDR/libd/libdc1394-22
-$PACKAGES_ADDR/libr/libraw1394
-$PACKAGES_ADDR/
-$PACKAGES_ADDR/
-$PACKAGES_ADDR/
-$PACKAGES_ADDR/
-$PACKAGES_ADDR/
-$PACKAGES_ADDR/
-$PACKAGES_ADDR/
+$PACKAGES_ADDR/libm/libmms
+$PACKAGES_ADDR/libm/libmms
 )
 
 # This is the list of package names.
@@ -163,19 +145,8 @@ libsamplerate0_0.1.4-1_armel.deb
 libsamplerate0-dev_0.1.4-1_armel.deb
 python2.4_2.4.6-1_armel.deb
 python2.4-dev_2.4.6-1_armel.deb
-ffmpeg_0.svn20080206-17+lenny1_armel.deb
-libavcodec51_0.svn20080206-17+lenny1_armel.deb
-libavdevice52_0.svn20080206-17+lenny1_armel.deb
-libavformat52_0.svn20080206-17+lenny1_armel.deb
-libavutil49_0.svn20080206-17+lenny1_armel.deb
-libswscale0_0.svn20080206-17+lenny1_armel.deb
-libfaad0_2.6.1-3.1_armel.deb
-libgsm1_1.0.12-1_armel.deb
-libtheora0_1.0~beta3-1_armel.deb
-libvorbisenc2_1.2.0.dfsg-3.1_armel.deb
-libfreetype6_2.3.7-2+lenny1_armel.deb
-libdc1394-22_2.0.2-1_armel.deb
-libraw1394-8_1.3.0-4_armel.deb
+libmms-dev_0.4-2_armel.deb
+libmms0_0.4-2_armel.deb
 )
 
 echo "#### Beginning Downloads ####"
