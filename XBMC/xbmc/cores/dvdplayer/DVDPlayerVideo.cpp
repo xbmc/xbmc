@@ -729,9 +729,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     }
   }
 
-  if(render == OVERLAY_BUF)
+  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
   {
-    if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+    if(render == OVERLAY_BUF)
     {
       // rendering spu overlay types directly on video memory costs a lot of processing power.
       // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
@@ -749,15 +749,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
         m_pTempOverlayPicture = CDVDCodecUtils::AllocatePicture(pSource->iWidth, pSource->iHeight);
       if(!m_pTempOverlayPicture)
         return;
-    }
-    else
-      render = OVERLAY_VID;
-  }
 
-  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
-  {
-    if(render == OVERLAY_BUF)
-      CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
+      CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);        
+    }
     else
       CDVDCodecUtils::CopyPicture(pDest, pSource);
   }
@@ -798,8 +792,11 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
 
   m_pOverlayContainer->Unlock();
 
-  if(render == OVERLAY_BUF)
-    CDVDCodecUtils::CopyPicture(pDest, m_pTempOverlayPicture);
+  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+  {
+    if(render == OVERLAY_BUF)
+      CDVDCodecUtils::CopyPicture(pDest, m_pTempOverlayPicture);
+  }
 }
 #endif
 
