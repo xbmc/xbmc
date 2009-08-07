@@ -332,6 +332,9 @@ COverlayTextureGL::~COverlayTextureGL()
 
 void COverlayTextureGL::Render(SRenderState& state)
 {
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);
+
   glBindTexture(GL_TEXTURE_2D, m_texture);
 #if USE_PREMULTIPLIED_ALPHA
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -343,9 +346,6 @@ void COverlayTextureGL::Render(SRenderState& state)
 
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   VerifyGLState();
-
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_BLEND);
 
   DRAWRECT rd;
   if(m_pos == POSITION_RELATIVE)
