@@ -885,8 +885,12 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
-  CStdString strSkinBase = "special://xbmc/skin/";
+  CStdString strSkinBase = "special://home/skin/";
   CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
+  if (!CFile::Exists(strSkinPath)) {
+    strSkinBase = "special://xbmc/skin/";
+    strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
+  }
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
   {
