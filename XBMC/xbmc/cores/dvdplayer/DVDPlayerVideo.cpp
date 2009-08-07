@@ -754,10 +754,13 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
       render = OVERLAY_VID;
   }
 
-  if(render == OVERLAY_BUF)
-    CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
-  else
-    CDVDCodecUtils::CopyPicture(pDest, pSource);
+  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+  {
+    if(render == OVERLAY_BUF)
+      CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
+    else
+      CDVDCodecUtils::CopyPicture(pDest, pSource);
+  }
 
   m_pOverlayContainer->Lock();
 
