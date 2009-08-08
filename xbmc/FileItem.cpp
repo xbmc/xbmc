@@ -1526,6 +1526,12 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_VIDEO_TITLE:
     FillSortFields(SSortFileItem::ByMovieTitle);
     break;
+  case SORT_METHOD_VIDEO_SORT_TITLE:
+    FillSortFields(SSortFileItem::ByMovieSortTitle);
+    break;
+  case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
+    FillSortFields(SSortFileItem::ByMovieSortTitleNoThe);
+    break;
   case SORT_METHOD_YEAR:
     FillSortFields(SSortFileItem::ByYear);
     break;

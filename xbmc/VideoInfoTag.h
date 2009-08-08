@@ -56,6 +56,7 @@ public:
   CStdString m_strPlot;
   CScraperUrl m_strPictureURL;
   CStdString m_strTitle;
+  CStdString m_strSortTitle;
   CStdString m_strVotes;
   CStdString m_strArtist;
   std::vector< SActorInfo > m_cast;
