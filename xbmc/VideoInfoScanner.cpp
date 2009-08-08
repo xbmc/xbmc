@@ -369,15 +369,7 @@ namespace VIDEO
 
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
-    CStdString strMovieName;
     m_IMDB.SetScraperInfo(info);
-
-    if (bDirNames && info.strContent.Equals("movies"))
-    {
-      strMovieName = items.m_strPath;
-      CUtil::RemoveSlashAtEnd(strMovieName);
-      strMovieName = CUtil::GetFileName(strMovieName);
-    }
 
     if (pDlgProgress)
     {
@@ -512,32 +504,12 @@ namespace VIDEO
           }
           continue;
         }
-        else
-        {
-          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
-          strMovieName = CUtil::GetFileName(pItem->m_strPath);
-          CUtil::AddSlashAtEnd(pItem->m_strPath);
-        }
       }
 
       if (!pItem->m_bIsFolder || info2.strContent.Equals("tvshows"))
       {
         if ((pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList()) || info2.strContent.Equals("tvshows") )
         {
-          if (!bDirNames && !info2.strContent.Equals("tvshows"))
-          {
-            if (pItem->IsLabelPreformated())
-              strMovieName = pItem->GetLabel();
-            else
-            {
-              if (pItem->IsStack())
-                strMovieName = pItem->GetLabel();
-              else
-                strMovieName = CUtil::GetFileName(pItem->m_strPath);
-              CUtil::RemoveExtension(strMovieName);
-            }
-          }
-
           if (pDlgProgress)
           {
             int iString=198;
@@ -600,18 +572,10 @@ namespace VIDEO
             continue;
           }
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-          {
-            if (m_pObserver)
-            {
-              CStdString strPath = pItem->m_strPath;
-              if (pItem->IsStack())
-              {
-                CStackDirectory dir;
-                strPath = dir.GetStackedTitlePath(pItem->m_strPath);
-              }
-            }
             pURL = &scrUrl;
-          }
+
+          // Get the correct movie title 
+          CStdString strMovieName = pItem->GetMovieName(bDirNames);
 
           IMDB_MOVIELIST movielist;
           int returncode=0;
