@@ -44,7 +44,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 31
+#define VIDEO_DATABASE_VERSION 32
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -3513,8 +3513,8 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec(showview.c_str());
       // and fill the new playcount fields
       CStdString sql;
-      sql = FormatSQL("update files set playCount = (select movie.c%02d from movie where movie.idFile = files.idFile) "
-                      "where exists (select movie.c%02d from movie where movie.idFile = files.idFile)", VIDEODB_ID_PLAYCOUNT, VIDEODB_ID_PLAYCOUNT);
+      sql = FormatSQL("update files set playCount = (select movie.c10 from movie where movie.idFile = files.idFile) " // NOTE: c10 was the old playcount field which is now reused
+                      "where exists (select movie.c10 from movie where movie.idFile = files.idFile)");
       m_pDS->exec(sql.c_str());
       sql = FormatSQL("update files set playCount = (select episode.c%02d from episode where episode.idFile = files.idFile) "
         "where exists (select episode.c%02d from episode where episode.idFile = files.idFile)", VIDEODB_ID_EPISODE_PLAYCOUNT, VIDEODB_ID_EPISODE_PLAYCOUNT);
@@ -3523,7 +3523,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         "where exists (select musicvideo.c%02d from musicvideo where musicvideo.idFile = files.idFile)", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
       m_pDS->exec(sql.c_str());
       // and clear out the old fields
-      sql = FormatSQL("update movie set c%02d=NULL", VIDEODB_ID_PLAYCOUNT);
+      sql = FormatSQL("update movie set c10=NULL"); // NOTE: c10 was the old playcount field which has now been reused
       m_pDS->exec(sql.c_str());
       sql = FormatSQL("update episode set c%02d=NULL", VIDEODB_ID_EPISODE_PLAYCOUNT);
       m_pDS->exec(sql.c_str());
@@ -3611,6 +3611,12 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
           m_pDS->next();
         }
       }
+    }
+    if (iVersion < 32)
+    {
+      CStdString sql;
+      sql = FormatSQL("UPDATE movie SET c%02d=NULL", VIDEODB_ID_SORTTITLE);
+      m_pDS->exec(sql.c_str());
     }
   }
   catch (...)
