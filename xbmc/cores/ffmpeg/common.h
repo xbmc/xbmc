@@ -35,9 +35,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef HAVE_AV_CONFIG_H
-#include "config.h"
-#endif
 #define AV_GCC_VERSION_AT_LEAST(x,y) (defined(__GNUC__) && (__GNUC__ > x || __GNUC__ == x && __GNUC_MINOR__ >= y))
 
 #ifndef av_always_inline
@@ -73,7 +70,7 @@
 #endif
 
 #ifndef av_cold
-#if (!defined(__ICC) || __ICC > 1110) && AV_GCC_VERSION_AT_LEAST(4,3)
+#if (!defined(__ICC) || __ICC > 1100) && AV_GCC_VERSION_AT_LEAST(4,3)
 #    define av_cold __attribute__((cold))
 #else
 #    define av_cold
@@ -81,7 +78,7 @@
 #endif
 
 #ifndef av_flatten
-#if (!defined(__ICC) || __ICC > 1110) && AV_GCC_VERSION_AT_LEAST(4,1)
+#if AV_GCC_VERSION_AT_LEAST(4,1)
 #    define av_flatten __attribute__((flatten))
 #else
 #    define av_flatten
@@ -126,7 +123,6 @@
 
 #define FFSWAP(type,a,b) do{type SWAP_tmp= b; b= a; a= SWAP_tmp;}while(0)
 #define FF_ARRAY_ELEMS(a) (sizeof(a) / sizeof((a)[0]))
-#define FFALIGN(x, a) (((x)+(a)-1)&~((a)-1))
 
 /* misc math functions */
 extern const uint8_t ff_log2_tab[256];
@@ -279,6 +275,7 @@ static inline av_const float av_clipf(float a, float amin, float amax)
 #include "mem.h"
 
 #ifdef HAVE_AV_CONFIG_H
+#    include "config.h"
 #    include "internal.h"
 #endif /* HAVE_AV_CONFIG_H */
 
