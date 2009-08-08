@@ -425,6 +425,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
+  RemoveExtension(strTitleAndYear);
+
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     if (!reTags.RegComp(regexps[i].c_str()))
@@ -460,7 +462,6 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
-  RemoveExtension(strTitleAndYear);
   strTitle = strTitleAndYear.Trim();
 
   // append year
