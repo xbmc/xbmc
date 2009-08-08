@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<scraper framework="1.0" date="2009-06-05" name="filmweb.pl" content="movies" thumb="filmweb.jpg" language="pl">
+<scraper framework="1.0" date="2009-08-08" name="filmweb.pl" content="movies" thumb="filmweb.jpg" language="pl">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Wysoka jakosc okladki&quot; type=&quot;bool&quot; id=&quot;poster&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -143,9 +143,9 @@
 	</FilmwebToWikipedia>
 	<WikipediaToIMDB dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-<!--			<RegExp input="$$1" output="&lt;mpaa&gt;IMDb.id = \1&lt;/mpaa&gt;" dest="2+">-->
-<!--				<expression>/title/([t0-9]*)</expression>-->
-<!--			</RegExp>-->
+			<!--			<RegExp input="$$1" output="&lt;mpaa&gt;IMDb.id = \1&lt;/mpaa&gt;" dest="2+">-->
+				<!--				<expression>/title/([t0-9]*)</expression>-->
+				<!--			</RegExp>-->
 			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="2+">
 				<expression>/title/([t0-9]*)</expression>
 			</RegExp>
@@ -183,7 +183,7 @@
 		</RegExp>
 	</Opisy>
 	<Plakaty dest="5">
-		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb&gt;http://gfx.filmweb.pl/po\1&lt;/thumb&gt;" dest="8+">
 				<expression noclean="1" repeat="yes">href=&quot;http://gfx.filmweb.pl/po(.[^&quot;]*)</expression>
 			</RegExp>            
