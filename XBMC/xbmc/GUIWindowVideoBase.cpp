@@ -491,8 +491,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
   if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
     scanner.m_IMDB.SetScraperInfo(info);
 
-  // Get the correct movie title to search for
-  CStdString movieName = CUtil::GetMovieName(item, settings.parent_name);
+  // Get the correct movie title
+  CStdString movieName = item->GetMovieName(settings.parent_name);
 
   // 3. Run a loop so that if we Refresh we re-run this block
   bool listNeedsUpdating(false);

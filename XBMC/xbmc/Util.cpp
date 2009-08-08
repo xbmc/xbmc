@@ -598,34 +598,6 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
-const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* = false */)
-{
-  CStdString movieName;
-  CStdString strArchivePath;
-  movieName = pItem->m_strPath;
-
-  if (pItem->IsMultiPath())
-    movieName = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
-
-  if (IsStack(movieName))
-    movieName = CStackDirectory::GetStackedTitlePath(movieName);
-
-  if ((!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath)) && bUseFolderNames)
-  {
-    GetParentPath(pItem->m_strPath, movieName);
-    if (IsInArchive(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
-    {
-      GetParentPath(movieName, strArchivePath);
-      movieName = strArchivePath;
-    }
-  }
-
-  CUtil::RemoveSlashAtEnd(movieName);
-  movieName = CUtil::GetFileName(movieName);
-
-  return movieName;
-}
-
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
 {
   //Make sure you have a full path in the filename, otherwise adds the base path before.

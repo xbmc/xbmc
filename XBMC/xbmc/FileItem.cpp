@@ -2509,6 +2509,36 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
   return folderThumb;
 }
 
+CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
+{
+  if (IsLabelPreformated())
+    return GetLabel();
+  
+  CStdString strMovieName = m_strPath;
+
+  if (IsMultiPath())
+    strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
+
+  if (CUtil::IsStack(strMovieName))
+    strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
+
+  if ((!m_bIsFolder || IsDVDFile(false, true) || CUtil::IsInArchive(m_strPath)) && bUseFolderNames)
+  {
+    CUtil::GetParentPath(m_strPath, strMovieName);
+    if (CUtil::IsInArchive(m_strPath) || strMovieName.Find( "VIDEO_TS" ) != -1)
+    {
+      CStdString strArchivePath;
+      CUtil::GetParentPath(strMovieName, strArchivePath);
+      strMovieName = strArchivePath;
+    }
+  }
+
+  CUtil::RemoveSlashAtEnd(strMovieName);
+  strMovieName = CUtil::GetFileName(strMovieName);
+
+  return strMovieName;
+}
+
 void CFileItem::SetVideoThumb()
 {
   if (HasThumbnail()) return;
