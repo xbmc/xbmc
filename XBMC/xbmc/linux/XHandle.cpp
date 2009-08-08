@@ -50,7 +50,7 @@ CXHandle::CXHandle(const CXHandle &src)
   if (src.m_hSem)
     m_hSem = SDL_CreateSemaphore(SDL_SemValue(src.m_hSem));
 
-  if (m_hThread)
+  if (m_threadValid)
   {
     CLog::Log(LOGERROR, "%s - thread handle copied instead of passed!", __FUNCTION__);
   }
@@ -100,9 +100,8 @@ CXHandle::~CXHandle()
     SDL_DestroyCond(m_hCond);
   }
 
-  if (m_hThread) {
-    //SDL_WaitThread should only be called once (here, when destructing) since it will destroy the thread object.
-    SDL_WaitThread(m_hThread,NULL);
+  if (m_threadValid) {
+    pthread_join(m_hThread, NULL);
   }
 
   if ( fd != 0 ) {
@@ -116,7 +115,7 @@ void CXHandle::Init()
   fd=0;
   m_hSem=NULL;
   m_hMutex=NULL;
-  m_hThread=NULL;
+  m_threadValid=false;
   m_hCond=NULL;
   m_type = HND_NULL;
   RecursionCount=0;

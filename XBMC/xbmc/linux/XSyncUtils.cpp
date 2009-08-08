@@ -58,7 +58,7 @@ bool InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner) {
   hMutex->ChangeType(CXHandle::HND_MUTEX);
 
   if (bInitialOwner) {
-    hMutex->OwningThread  = SDL_ThreadID();
+    hMutex->OwningThread  = pthread_self();
     hMutex->RecursionCount  = 1;
   }
 
@@ -93,7 +93,7 @@ bool WINAPI ReleaseMutex( HANDLE hMutex ) {
   BOOL bOk = false;
 
   SDL_mutexP(hMutex->m_hMutex);
-  if (hMutex->OwningThread == SDL_ThreadID() && hMutex->RecursionCount > 0) {
+  if (hMutex->OwningThread == pthread_self() && hMutex->RecursionCount > 0) {
     bOk = true;
     if (--hMutex->RecursionCount == 0) {
       hMutex->OwningThread = 0;
@@ -245,7 +245,7 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
     case CXHandle::HND_MUTEX:
 
       SDL_mutexP(hHandle->m_hMutex);
-      if (hHandle->OwningThread == SDL_ThreadID() &&
+      if (hHandle->OwningThread == pthread_self() &&
         hHandle->RecursionCount > 0) {
         hHandle->RecursionCount++;
         dwRet = WAIT_OBJECT_0;
@@ -258,7 +258,7 @@ DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds ) {
 
       if (dwRet == WAIT_OBJECT_0)
       {
-        hHandle->OwningThread = SDL_ThreadID();
+        hHandle->OwningThread = pthread_self();
         hHandle->RecursionCount = 1;
       }
 
