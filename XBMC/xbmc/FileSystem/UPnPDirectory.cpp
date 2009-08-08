@@ -214,7 +214,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         }
 #endif
         // bring up dialog if object is not cached
-        if (!upnp->m_MediaBrowser->IsCached(uuid, object_id)) {
+        if (!upnp->m_MediaBrowser->IsCached(uuid, object_id) && m_allowPrompting) {
             dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
             if (dlgProgress) {
                 dlgProgress->ShowProgressBar(false);
