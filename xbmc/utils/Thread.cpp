@@ -28,6 +28,7 @@
 typedef unsigned (WINAPI *PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 #else
 #include "PlatformInclude.h"
+#include "XHandle.h"
 #include <signal.h>
 typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 #endif
@@ -124,7 +125,7 @@ __thread CThread* pLocalThread = NULL;
 #endif
 void CThread::term_handler (int signum)
 {
-  CLog::Log(LOGERROR,"thread 0x%x (%d) got signal %d. calling OnException and terminating thread abnormally.", SDL_ThreadID(), SDL_ThreadID(), signum);
+  CLog::Log(LOGERROR,"thread 0x%lx (%lu) got signal %d. calling OnException and terminating thread abnormally.", pthread_self(), pthread_self(), signum);
   if (LOCAL_THREAD)
   {
     LOCAL_THREAD->m_bStop = TRUE;
@@ -271,6 +272,11 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
 
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
 
+#ifdef _LINUX
+  if (m_ThreadHandle && m_ThreadHandle->m_threadValid && m_bAutoDelete)
+    // FIXME: WinAPI can truncate 64bit pthread ids
+    pthread_detach(m_ThreadHandle->m_hThread);
+#endif
 }
 
 bool CThread::IsAutoDelete() const
@@ -290,9 +296,15 @@ void CThread::StopThread()
   }
 }
 
-DWORD CThread::ThreadId() const
+uintptr_t CThread::ThreadId() const
 {
-  return (DWORD)m_ThreadId;
+#ifndef _LINUX
+  return m_ThreadId;
+#else
+  if (m_ThreadHandle)
+    return (uintptr_t)m_ThreadHandle->m_hThread;
+#endif
+  return 0;
 }
 
 
@@ -354,15 +366,19 @@ bool CThread::WaitForThreadExit(DWORD dwMilliseconds)
   int caller = GetThreadPriority(GetCurrentThread());
   if(caller > callee)
     SetThreadPriority(m_ThreadHandle, caller);
-#endif
 
   if (::WaitForSingleObject(m_ThreadHandle, dwMilliseconds) != WAIT_TIMEOUT)
     return true;
 
-#ifndef _LINUX
   // restore thread priority if thread hasn't exited
   if(caller > callee)
     SetThreadPriority(m_ThreadHandle, callee);
+#else
+  if (!(m_ThreadHandle->m_threadValid) || pthread_join(m_ThreadHandle->m_hThread, NULL) == 0)
+  {
+    m_ThreadHandle->m_threadValid = false;
+    return true;
+  }
 #endif
 
   return false;

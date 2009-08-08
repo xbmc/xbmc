@@ -800,7 +800,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
     {
       CSingleLock aLock(m_surfaceLock);
-      m_surfaces[SDL_ThreadID()] = m_screenSurface;
+      m_surfaces[GetCurrentThreadId()] = m_screenSurface;
     }
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -1356,13 +1356,13 @@ bool CGraphicContext::ValidateSurface(CSurface* dest)
 {
   CSingleLock aLock(m_surfaceLock);
   map<Uint32, CSurface*>::iterator iter;
-  Uint32 tid = SDL_ThreadID();
+  uintptr_t tid = GetCurrentThreadId();
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end()) {
 #if defined(HAS_GLX) || defined(__APPLE__) || defined(_WIN32PC)
     if (dest==NULL)
     {
-      CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %u", tid);
+      CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %lu", (unsigned long)tid);
       CSurface* surface = new CSurface(m_screenSurface);
       if (!surface->MakeCurrent())
       {
@@ -1446,7 +1446,7 @@ void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
   }
   Lock();
   map<Uint32, CSurface*>::iterator iter;
-  Uint32 tid = SDL_ThreadID();
+  uintptr_t tid = GetCurrentThreadId();
   CSingleLock aLock(m_surfaceLock);
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end())
@@ -1469,7 +1469,7 @@ void CGraphicContext::DeleteThreadContext() {
   if(m_surfaces.empty())
     return;
   map<Uint32, CSurface*>::iterator iter;
-  Uint32 tid = SDL_ThreadID();
+  uintptr_t tid = GetCurrentThreadId();
   iter = m_surfaces.find(tid);
   if (iter!=m_surfaces.end())
     m_surfaces.erase(iter);
@@ -1491,7 +1491,7 @@ void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
   }
   Lock();
   map<Uint32, CSurface*>::iterator iter;
-  Uint32 tid = SDL_ThreadID();
+  uintptr_t tid = GetCurrentThreadId();
   CSingleLock aLock(m_surfaceLock);
   iter = m_surfaces.find(tid);
   if (iter==m_surfaces.end())

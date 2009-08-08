@@ -22,7 +22,6 @@
  *
  */
 
-#include <SDL/SDL_thread.h>
 #include "../utils/LCD.h"
 
 #define MAX_ROWS 20
