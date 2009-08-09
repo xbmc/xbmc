@@ -58,7 +58,8 @@ enum
 {
   PES_ID_EXT_DIRAC_0             = 0x60,
   PES_ID_EXT_DIRAC_15            = 0x6f,
-  PES_ID_EXT_AC3                 = 0x71
+  PES_ID_EXT_AC3                 = 0x71,
+  PES_ID_EXT_HDMV_AC3_TRUE_HD    = 0x76
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,6 +82,7 @@ class CPESParser : public IPacketFilter
 public:
   CPESParser(CElementaryStream* pStream, PayloadList* pPayloadList);
   virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual bool ProbeFormat(unsigned char* pData, unsigned int len) = 0;
 protected:
   virtual bool Parse(unsigned char* pHeader, unsigned int headerLen, unsigned char* pData, unsigned int dataLen);
   void SetTimeStamps(CParserPayload* pPayload, uint64_t pts, uint64_t dts);
@@ -96,9 +98,16 @@ protected:
   unsigned int m_MaxPayloadLen;
   PayloadList* m_pPayloadList;
 
-  bool m_FormatDetected;
+  bool m_NeedProbe;
 };
 
+class CPESParserStandard : public CPESParser
+{
+public:
+  CPESParserStandard(CElementaryStream* pStream, PayloadList* pPayloadList);
+protected:
+  virtual bool ProbeFormat(unsigned char* pData, unsigned int len);
+};
 
 class CPESParserLPCM : public CPESParser
 {
@@ -107,7 +116,7 @@ public:
   virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
 protected:
   virtual bool Parse(unsigned char* pHeader, unsigned int headerLen, unsigned char* pData, unsigned int dataLen);
-  bool DetectFormat(unsigned char* pData, unsigned int len);
+  virtual bool ProbeFormat(unsigned char* pData, unsigned int len);
   int32_t m_Channels;
   int32_t m_BitDepth;
   int32_t m_SampleRate;

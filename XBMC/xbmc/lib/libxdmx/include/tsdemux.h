@@ -70,6 +70,8 @@ enum
   ES_STREAM_TYPE_AUDIO_EAC3               = 0x87,
   ES_STREAM_TYPE_AUDIO_DTS                = 0x8a,
   ES_STREAM_TYPE_AUDIO_HDMV_PGS           = 0x90, // Blu-Ray PGS Subpicture
+  ES_STREAM_TYPE_AUDIO_EAC3_SECONDARY     = 0xa1,
+  ES_STREAM_TYPE_AUDIO_DTS_SECONDARY      = 0xa2,
   ES_STREAM_TYPE_VIDEO_DIRAC              = 0xd1,
   ES_STREAM_TYPE_VIDEO_VC1                = 0xea,
 };

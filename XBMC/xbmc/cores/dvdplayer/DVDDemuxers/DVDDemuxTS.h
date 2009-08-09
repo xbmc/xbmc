@@ -62,11 +62,12 @@ public:
   void GetStreamCodecName(int iStreamId, CStdString &strName);
 protected:
   void AddStream(CElementaryStream* pStream);
-
+  DemuxPacket* GetNextPacket();
   CXdmxInputStream* m_pInput;
   ITransportStreamDemux* m_pInnerDemux;
   CTSProgram* m_pProgram;
   std::vector<CDemuxStream*> m_StreamList;
+  std::deque<DemuxPacket*> m_PacketQueue;
 
   // Debug
   std::map<unsigned short, unsigned __int64> m_StreamCounterList;

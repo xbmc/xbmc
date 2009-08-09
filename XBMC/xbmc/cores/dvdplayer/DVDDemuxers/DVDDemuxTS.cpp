@@ -171,11 +171,11 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
     break;
   case ES_PRIVATE_TYPE_LPCM:
     dmxStream.a = new CDemuxStreamAudio();
-    dmxStream.a->iBitRate = pStream->GetProperty(XDMX_PROP_TAG_BITRATE).int32Val;//576000;
-    dmxStream.a->iBlockAlign = pStream->GetProperty(XDMX_PROP_TAG_FRAME_SIZE).int32Val;//12;
-    dmxStream.a->iChannels = pStream->GetProperty(XDMX_PROP_TAG_CHANNELS).int32Val;//6;
-    dmxStream.a->iSampleRate = pStream->GetProperty(XDMX_PROP_TAG_SAMPLE_RATE).int32Val;//48000;
-    dmxStream.a->iBitsPerSample = pStream->GetProperty(XDMX_PROP_TAG_BIT_DEPTH).int32Val;//16;
+    dmxStream.a->iBitRate = pStream->GetProperty(XDMX_PROP_TAG_BITRATE).int32Val;
+    dmxStream.a->iBlockAlign = pStream->GetProperty(XDMX_PROP_TAG_FRAME_SIZE).int32Val;
+    dmxStream.a->iChannels = pStream->GetProperty(XDMX_PROP_TAG_CHANNELS).int32Val;
+    dmxStream.a->iSampleRate = pStream->GetProperty(XDMX_PROP_TAG_SAMPLE_RATE).int32Val;
+    dmxStream.a->iBitsPerSample = pStream->GetProperty(XDMX_PROP_TAG_BIT_DEPTH).int32Val;
     switch(dmxStream.a->iBitsPerSample)
     {
     case 16:
@@ -201,6 +201,26 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
     pStream->SetProperty('xbid', dmxStream.g->iId);
 
     CLog::Log(LOGDEBUG, "%s: Added stream. Index: %d, Id: %d, Type: %s", __FUNCTION__, dmxStream.g->iId, dmxStream.g->iPhysicalId, pTypeName);
+
+    if (dmxStream.v->codec == CODEC_ID_VC1)
+    {
+      for(;;)
+      {
+        DemuxPacket* pDmx = GetNextPacket();
+        if (!pDmx)
+          break;
+
+        if (pDmx->iStreamId == dmxStream.g->iId)
+        {
+          dmxStream.v->ExtraSize = 36;
+          dmxStream.v->ExtraData = malloc(dmxStream.v->ExtraSize + 8);
+          memcpy(dmxStream.v->ExtraData, pDmx->pData, dmxStream.v->ExtraSize);
+          memset((char*)dmxStream.v->ExtraData + dmxStream.v->ExtraSize, 0, 8);
+          m_PacketQueue.push_back(pDmx);
+          break;
+        }
+      }
+    }
   }
 }
 
@@ -226,6 +246,18 @@ void CDVDDemuxTS::Flush()
 
 DemuxPacket* CDVDDemuxTS::Read()
 {
+  if (m_PacketQueue.size())
+  {
+    DemuxPacket* pDmx = m_PacketQueue.front();
+    m_PacketQueue.pop_front();
+    return pDmx;
+  }
+
+  return GetNextPacket();
+}
+
+DemuxPacket* CDVDDemuxTS::GetNextPacket()
+{
   CParserPayload* pPayload = NULL;
   for (;;)
   {
@@ -233,6 +265,7 @@ DemuxPacket* CDVDDemuxTS::Read()
     if (!pPayload)
       return NULL;
 
+    // TODO: Find a cleaner/safer way to do this
     if (!pPayload->GetStream()->IsValueEmpty(pPayload->GetStream()->GetProperty('xbid')))
       break;
   }
@@ -247,6 +280,16 @@ DemuxPacket* CDVDDemuxTS::Read()
   pDmx->iStreamId = pPayload->GetStream()->GetProperty('xbid').int32Val;
 
   m_StreamCounterList[pPayload->GetStream()->GetId()] += pDmx->iSize;
+
+  //static std::fstream outFile;
+
+  //if (pPayload->GetStream()->GetElementType() == ES_STREAM_TYPE_VIDEO_VC1)
+  //{
+  //  if (!outFile.is_open())
+  //    outFile.open("raw.vc1", std::ios::out | std::ios::binary);
+
+  //  outFile.write((const char*)pDmx->pData, pDmx->iSize);
+  //}
   return pDmx;
 }
 

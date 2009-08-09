@@ -54,31 +54,30 @@ protected:
 
 bool CTableFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
 {
-  // TODO: Handle packet data before new payload
-  unsigned char pointer = pData[0];
-  if (pointer)
-  {
-    pData += (pointer + 1);
-    len -= (pointer + 1);
-  }
-  else
-  {
-    pData++;
-    len--;
-  }
-
-  unsigned int dataLen = len;
   if (newPayloadUnit)
   {
+    // TODO: Handle packet data before new payload
+    unsigned char pointer = pData[0];
+    if (pointer)
+    {
+      pData += (pointer + 1);
+      len -= (pointer + 1);
+    }
+    else
+    {
+      pData++;
+      len--;
+    }
+
     // Peek at the section header to get the size
     unsigned short sectionLen = ((pData[1] & 0x0F) << 8) | pData[2] + 3; // Include header in total size
     m_Accum.StartPayload(sectionLen);
     if (sectionLen < len)
-      dataLen = sectionLen;
+      len = sectionLen;
   }
 
   // Add the data to the payload accumulator
-  bool complete = m_Accum.AddData(pData, &dataLen);
+  bool complete = m_Accum.AddData(pData, &len);
 
   if (complete) // Payload Unit is complete
   {
@@ -198,6 +197,8 @@ const char* CTSDescriptor::GetName()
 
 void CTSDescriptor::SetData(unsigned char* pData, unsigned int len)
 {
+  if (!pData)
+    return;
   if (m_pRawData)
     delete[] m_pRawData;
   m_pRawData = new unsigned char[len];
@@ -327,7 +328,7 @@ CElementaryStreamFilter::CElementaryStreamFilter(CElementaryStream* pStream, Pay
   m_pStream(pStream),
   m_BytesIn(0)
 {
-  m_pParser = new CPESParser(pStream, pPayloadList);
+  m_pParser = new CPESParserStandard(pStream, pPayloadList);
 }
 
   CElementaryStreamFilter::CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList, IPacketFilter* pInnerFilter) :
@@ -336,7 +337,7 @@ CElementaryStreamFilter::CElementaryStreamFilter(CElementaryStream* pStream, Pay
   m_pParser(pInnerFilter)
 {
   if (!pInnerFilter)
-    m_pParser = new CPESParser(pStream, pPayloadList);
+    m_pParser = new CPESParserStandard(pStream, pPayloadList);
 }
 
 bool CElementaryStreamFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
@@ -489,6 +490,7 @@ void CTSProgramMapFilter::ParseStream(CSimpleBitstreamReader& reader)
     pTypeName = "VC1 Video";
     break;
   case ES_STREAM_TYPE_AUDIO_AC3:
+  case ES_STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
     pTypeName = "AC3 Audio";
     break;
   case ES_STREAM_TYPE_AUDIO_DTS:
@@ -500,10 +502,12 @@ void CTSProgramMapFilter::ParseStream(CSimpleBitstreamReader& reader)
   case ES_STREAM_TYPE_PRIVATE_SECTION:
     pTypeName = "Private Section";
     // TODO: This should use a TableFilter
+    delete pStream;
     return;
   case ES_STREAM_TYPE_PRIVATE_DATA:
     pTypeName = "Private Data";
     // TODO: This should use a private stream filter
+    delete pStream;
     return;
   case ES_STREAM_TYPE_USER_PRIVATE:
     {
@@ -527,8 +531,13 @@ void CTSProgramMapFilter::ParseStream(CSimpleBitstreamReader& reader)
         pTypeName = "AC3 Audio";
         break;
       }
+      delete pStream;
       return;
     }
+  default:
+    XDMX_LOG_INFO("%s:   Found Stream. PID: %lu (0x%04x), TypeName: %s, Type: %lu (0x%02x), InfoLen: %lu (0x%04x).", __TS_MODULE__, pid, pid, pTypeName, streamType, streamType, infoLen, infoLen);
+    delete pStream;
+    return;
   }
   // TODO: Transfer descriptors to stream?
   if (pStream)

@@ -12,7 +12,7 @@ CPESParser::CPESParser(CElementaryStream* pStream, PayloadList* pPayloadList) :
   m_BytesOut(0),
   m_MaxPayloadLen(0),
   m_pPayloadList(pPayloadList),
-  m_FormatDetected(false)
+  m_NeedProbe(true)
 {
 
 }
@@ -51,6 +51,9 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
       XDMX_LOG_DEBUG("%s: New Payload. Len: %lu (0x%04x).", __PES_MODULE__, packetLen - m_HeaderLen - 3, packetLen - m_HeaderLen - 3);
       m_Accum.StartPayload(packetLen - m_HeaderLen + 6); // Exclude Header
     }
+
+    if (m_NeedProbe)
+      ProbeFormat(pData, len);
   }
   //else if (!m_BytesIn) // This is the first packet added
   //  return true; // Wait for a new payload
@@ -268,6 +271,20 @@ bool CPESParser::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
+CPESParserStandard::CPESParserStandard(CElementaryStream* pStream, PayloadList* pPayloadList) :
+  CPESParser(pStream, pPayloadList)
+{
+
+}
+
+bool CPESParserStandard::ProbeFormat(unsigned char* pData, unsigned int len)
+{
+  m_NeedProbe = false;
+  return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
 CPESParserLPCM::CPESParserLPCM(CElementaryStream* pStream, PayloadList* pPayloadList) :
   CPESParser(pStream, pPayloadList),
   m_Channels(0),
@@ -289,7 +306,7 @@ bool CPESParserLPCM::Add(unsigned char* pData, unsigned int len, bool newPayload
     len -= m_HeaderLen;
 
     if (!m_Channels) // Pull stream format from packet header
-      DetectFormat(pData, len);
+      ProbeFormat(pData, len);
     // Skip LPCM header
     pData += 4;
     len -= 4;
@@ -304,7 +321,7 @@ bool CPESParserLPCM::Parse(unsigned char* pHeader, unsigned int headerLen, unsig
 }
 
 
-bool CPESParserLPCM::DetectFormat(unsigned char* pData, unsigned int len)
+bool CPESParserLPCM::ProbeFormat(unsigned char* pData, unsigned int len)
 {
   // LPCM Block Header
   // 8 : Frame Size
