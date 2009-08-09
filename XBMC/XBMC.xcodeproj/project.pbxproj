@@ -80,6 +80,11 @@
 		81F064100E9B5FE400C203A6 /* libxbms-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81F0640F0E9B5FE400C203A6 /* libxbms-x86-osx.a */; };
 		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
+		835FA93F0FCF6081006767CE /* DSPFilterAC3Encoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 835FA9350FCF6081006767CE /* DSPFilterAC3Encoder.cpp */; };
+		835FA9400FCF6081006767CE /* DSPFilterInterleaving.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 835FA9370FCF6081006767CE /* DSPFilterInterleaving.cpp */; };
+		835FA9410FCF6081006767CE /* DSPFilterLPCM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 835FA9390FCF6081006767CE /* DSPFilterLPCM.cpp */; };
+		835FA9420FCF6081006767CE /* DSPFilterMatrixMixer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 835FA93B0FCF6081006767CE /* DSPFilterMatrixMixer.cpp */; };
+		835FA9430FCF6081006767CE /* DSPFilterResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 835FA93D0FCF6081006767CE /* DSPFilterResampler.cpp */; };
 		83A72B910FBC8DB000171871 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
 		83A72B940FBC8DFF00171871 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
@@ -1862,6 +1867,16 @@
 		81F064120E9B608800C203A6 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
 		81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
 		81F064250E9BB99800C203A6 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
+		835FA9350FCF6081006767CE /* DSPFilterAC3Encoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DSPFilterAC3Encoder.cpp; path = masteraudio/Filters/DSPFilterAC3Encoder.cpp; sourceTree = "<group>"; };
+		835FA9360FCF6081006767CE /* DSPFilterAC3Encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DSPFilterAC3Encoder.h; path = masteraudio/Filters/DSPFilterAC3Encoder.h; sourceTree = "<group>"; };
+		835FA9370FCF6081006767CE /* DSPFilterInterleaving.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DSPFilterInterleaving.cpp; path = masteraudio/Filters/DSPFilterInterleaving.cpp; sourceTree = "<group>"; };
+		835FA9380FCF6081006767CE /* DSPFilterInterleaving.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DSPFilterInterleaving.h; path = masteraudio/Filters/DSPFilterInterleaving.h; sourceTree = "<group>"; };
+		835FA9390FCF6081006767CE /* DSPFilterLPCM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DSPFilterLPCM.cpp; path = masteraudio/Filters/DSPFilterLPCM.cpp; sourceTree = "<group>"; };
+		835FA93A0FCF6081006767CE /* DSPFilterLPCM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DSPFilterLPCM.h; path = masteraudio/Filters/DSPFilterLPCM.h; sourceTree = "<group>"; };
+		835FA93B0FCF6081006767CE /* DSPFilterMatrixMixer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DSPFilterMatrixMixer.cpp; path = masteraudio/Filters/DSPFilterMatrixMixer.cpp; sourceTree = "<group>"; };
+		835FA93C0FCF6081006767CE /* DSPFilterMatrixMixer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DSPFilterMatrixMixer.h; path = masteraudio/Filters/DSPFilterMatrixMixer.h; sourceTree = "<group>"; };
+		835FA93D0FCF6081006767CE /* DSPFilterResampler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DSPFilterResampler.cpp; path = masteraudio/Filters/DSPFilterResampler.cpp; sourceTree = "<group>"; };
+		835FA93E0FCF6081006767CE /* DSPFilterResampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DSPFilterResampler.h; path = masteraudio/Filters/DSPFilterResampler.h; sourceTree = "<group>"; };
 		83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
 		83A72B8F0FBC8DB000171871 /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83A72B900FBC8DB000171871 /* IAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAudioRenderer.h; path = AudioRenderers/IAudioRenderer.h; sourceTree = "<group>"; };
@@ -3948,6 +3963,78 @@
 			path = libcmyth;
 			sourceTree = "<group>";
 		};
+<<<<<<< .mine
+		83A72DF70FBE7C8A00171871 /* masteraudio */ = {
+			isa = PBXGroup;
+			children = (
+				83AE5F8B0FC658F40004D908 /* DSPChain.cpp */,
+				83AE5F8C0FC658F40004D908 /* DSPChain.h */,
+				83A72E030FBE7DF000171871 /* Util */,
+				83A72E020FBE7DE000171871 /* RendererAdapters */,
+				83A72E010FBE7DD600171871 /* DSPFilters */,
+				83A72E000FBE7DCF00171871 /* Clients */,
+				83A72DFA0FBE7DCA00171871 /* AudioManager.cpp */,
+				83A72DFB0FBE7DCA00171871 /* AudioManager.h */,
+				83A72DFC0FBE7DCA00171871 /* MasterAudioCore.cpp */,
+				83A72DFD0FBE7DCA00171871 /* MasterAudioCore.h */,
+			);
+			name = masteraudio;
+			sourceTree = "<group>";
+		};
+		83A72E000FBE7DCF00171871 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				83A72E170FBE804900171871 /* PassthroughAudioClient.cpp */,
+				83A72E180FBE804900171871 /* PassthroughAudioClient.h */,
+				83A72E190FBE804900171871 /* PCMAudioClient.cpp */,
+				83A72E1A0FBE804900171871 /* PCMAudioClient.h */,
+				83A72E140FBE7F5F00171871 /* AudioManagerClient.cpp */,
+				83A72E150FBE7F5F00171871 /* AudioManagerClient.h */,
+			);
+			name = Clients;
+			sourceTree = "<group>";
+		};
+		83A72E010FBE7DD600171871 /* DSPFilters */ = {
+			isa = PBXGroup;
+			children = (
+				835FA9350FCF6081006767CE /* DSPFilterAC3Encoder.cpp */,
+				835FA9360FCF6081006767CE /* DSPFilterAC3Encoder.h */,
+				835FA9370FCF6081006767CE /* DSPFilterInterleaving.cpp */,
+				835FA9380FCF6081006767CE /* DSPFilterInterleaving.h */,
+				835FA9390FCF6081006767CE /* DSPFilterLPCM.cpp */,
+				835FA93A0FCF6081006767CE /* DSPFilterLPCM.h */,
+				835FA93B0FCF6081006767CE /* DSPFilterMatrixMixer.cpp */,
+				835FA93C0FCF6081006767CE /* DSPFilterMatrixMixer.h */,
+				835FA93D0FCF6081006767CE /* DSPFilterResampler.cpp */,
+				835FA93E0FCF6081006767CE /* DSPFilterResampler.h */,
+				83AE5F880FC658E00004D908 /* DSPFilter.cpp */,
+				83AE5F890FC658E00004D908 /* DSPFilter.h */,
+			);
+			name = DSPFilters;
+			sourceTree = "<group>";
+		};
+		83A72E020FBE7DE000171871 /* RendererAdapters */ = {
+			isa = PBXGroup;
+			children = (
+				83A72E0A0FBE7EEE00171871 /* DirectSoundAdapter.cpp */,
+				83A72E0B0FBE7EEE00171871 /* DirectSoundAdapter.h */,
+			);
+			name = RendererAdapters;
+			sourceTree = "<group>";
+		};
+		83A72E030FBE7DF000171871 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				83A72E040FBE7E1100171871 /* SimpleBuffer.cpp */,
+				83A72E050FBE7E1100171871 /* SimpleBuffer.h */,
+				83A72E060FBE7E1100171871 /* WaveFileRenderer.cpp */,
+				83A72E070FBE7E1100171871 /* WaveFileRenderer.h */,
+			);
+			name = Util;
+			sourceTree = "<group>";
+		};
+=======
+>>>>>>> .r21131
 		C6859E96029091FE04C91782 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
@@ -7840,6 +7927,11 @@
 				F54878770FE0614F00E506FD /* ScriptSettings.cpp in Sources */,
 				F548787A0FE0619800E506FD /* PythonSettings.cpp in Sources */,
 				F5487B4C0FE6F02700E506FD /* StreamDetails.cpp in Sources */,
+				835FA93F0FCF6081006767CE /* DSPFilterAC3Encoder.cpp in Sources */,
+				835FA9400FCF6081006767CE /* DSPFilterInterleaving.cpp in Sources */,
+				835FA9410FCF6081006767CE /* DSPFilterLPCM.cpp in Sources */,
+				835FA9420FCF6081006767CE /* DSPFilterMatrixMixer.cpp in Sources */,
+				835FA9430FCF6081006767CE /* DSPFilterResampler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
