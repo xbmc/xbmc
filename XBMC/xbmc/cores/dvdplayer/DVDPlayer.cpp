@@ -1431,7 +1431,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
      * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
      * to accurate seeking significantly slows done the apparent speed of seeking.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)cut.end, false, false, true));
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)cut.end, false, false, true, false));
     /*
      * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
@@ -1623,14 +1623,15 @@ void CDVDPlayer::HandleMessages()
         CDVDMsgPlayerSeek &msg(*((CDVDMsgPlayerSeek*)pMsg));
         double start = DVD_NOPTS_VALUE;
 
-        CLog::Log(LOGDEBUG, "demuxer seek to: %d", msg.GetTime());
-        if (m_pDemuxer && m_pDemuxer->SeekTime(msg.GetTime(), msg.GetBackward(), &start))
+        int time = msg.GetRestore() ? (int)m_Edl.RestoreCutTime(msg.GetTime()) : msg.GetTime();
+        CLog::Log(LOGDEBUG, "demuxer seek to: %d", time);
+        if (m_pDemuxer && m_pDemuxer->SeekTime(time, msg.GetBackward(), &start))
         {
-          CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", msg.GetTime());
+          CLog::Log(LOGDEBUG, "demuxer seek to: %d, success", time);
           if(m_pSubtitleDemuxer)
           {
-            if(!m_pSubtitleDemuxer->SeekTime(msg.GetTime(), msg.GetBackward()))
-              CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", msg.GetTime());
+            if(!m_pSubtitleDemuxer->SeekTime(time, msg.GetBackward()))
+              CLog::Log(LOGDEBUG, "failed to seek subtitle demuxer: %d, success", time);
           }
           FlushBuffers(!msg.GetFlush());
           if(msg.GetAccurate())
@@ -1953,7 +1954,11 @@ bool CDVDPlayer::SeekScene(bool bPlus)
   __int64 iScenemarker;
   if (m_Edl.GetNextSceneMarker(bPlus, clock, &iScenemarker))
   {
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, false, true));
+    /*
+     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
+     * to accurate seeking significantly slows done the apparent speed of seeking.
+     */
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, false, true, false)); 
     SyncronizeDemuxer(100);
     return true;
   }
