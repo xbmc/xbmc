@@ -1441,16 +1441,20 @@ void CDVDPlayer::CheckAutoSceneSkip()
               __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
               CEdl::MillisecondsToTimeString(cut.end).c_str(), CEdl::MillisecondsToTimeString(clock).c_str());
     /*
+     * Seeking either goes to the start or the end of the cut depending on the play direction.
+     */
+    __int64 seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
+    /*
      * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
      * to accurate seeking significantly slows done the apparent speed of seeking.
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)cut.end, false, false, true, false));
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, GetPlaySpeed() < 0, false, true, false));
     /*
      * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
      * cut. The cut automatic skip marker is reset every 500ms allowing another attempt at the seek.
      */
-    m_EdlAutoSkipMarkers.cut = cut.end;
+    m_EdlAutoSkipMarkers.cut = GetPlaySpeed() >= 0 ? cut.end : cut.start;
   }
 
   /*
