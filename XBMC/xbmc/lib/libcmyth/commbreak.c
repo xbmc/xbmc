@@ -68,8 +68,8 @@ cmyth_commbreak_destroy(cmyth_commbreak_t b)
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s {\n", __FUNCTION__);
 	if (!b) {
 		cmyth_dbg(CMYTH_DBG_DEBUG, "%s }!a\n", __FUNCTION__);
-                return;
-        }
+		return;
+	}
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 }
 
@@ -239,7 +239,7 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 
 	return total;
 
-    fail:
+	fail:
 	cmyth_dbg(CMYTH_DBG_ERROR, "%s: %s() failed (%d)\n",
 		__FUNCTION__, failed, *err);
 	return total;
@@ -249,10 +249,10 @@ cmyth_commbreaklist_t
 cmyth_mysql_get_commbreaklist(cmyth_database_t db, cmyth_conn_t conn, cmyth_proginfo_t prog)
 {
 	cmyth_commbreaklist_t breaklist = cmyth_commbreaklist_create();
-        char start_ts_dt[CMYTH_TIMESTAMP_LEN + 1];
+	char start_ts_dt[CMYTH_TIMESTAMP_LEN + 1];
 	int r;
 
-        cmyth_timestamp_to_display_string(start_ts_dt, prog->proginfo_rec_start_ts, 0);
+	cmyth_timestamp_to_display_string(start_ts_dt, prog->proginfo_rec_start_ts, 0);
 	pthread_mutex_lock(&mutex);
 	if ((r=cmyth_mysql_get_commbreak_list(db, prog->proginfo_chanId, start_ts_dt, breaklist)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
