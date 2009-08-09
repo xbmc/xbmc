@@ -731,7 +731,7 @@
               <description>Quit Button</description>
               <label> $LOCALIZE[31007] </label>
               <onclick>Plex.Shutdown()</onclick>
-              <visible>!Skin.HasSetting(ShowSleep) & !Skin.HasSetting(ShowShutDown)</visible>
+              <visible>Skin.HasSetting(ShowSleep) | Skin.HasSetting(ShowShutDown)</visible>
             </item>
 
             <item id="2">
