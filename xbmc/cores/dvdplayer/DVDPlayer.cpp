@@ -369,6 +369,7 @@ bool CDVDPlayer::CloseFile()
   StopThread();
 
   m_Edl.Clear();
+  m_EdlAutoSkipMarkers.Clear();
 
   CLog::Log(LOGNOTICE, "DVDPlayer: finished waiting");
 #if defined(HAS_VIDEO_PLAYBACK)
@@ -451,6 +452,7 @@ bool CDVDPlayer::OpenInputStream()
 
     // look for any edl files
     m_Edl.Clear();
+    m_EdlAutoSkipMarkers.Clear();
     if (g_guiSettings.GetBool("videoplayer.editdecision") && !m_item.IsInternetStream())
       m_Edl.ReadFiles(m_filename);
   }
@@ -1013,6 +1015,9 @@ void CDVDPlayer::Process()
 
     // process the packet
     ProcessPacket(pStream, pPacket);
+
+    // check if in a cut that should be automatically skipped
+    CheckAutoSceneSkip();
   }
 }
 
@@ -1115,7 +1120,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckPlayerInit(m_CurrentVideo, DVDPLAYER_VIDEO))
     drop = true;
 
-  if (CheckSceneSkip(m_CurrentAudio))
+  if (CheckSceneSkip(m_CurrentVideo))
     drop = true;
 
   m_dvdPlayerVideo.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
@@ -1145,7 +1150,7 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckPlayerInit(m_CurrentSubtitle, DVDPLAYER_SUBTITLE))
     drop = true;
 
-  if (CheckSceneSkip(m_CurrentAudio))
+  if (CheckSceneSkip(m_CurrentSubtitle))
     drop = true;
 
   m_dvdPlayerSubtitle.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
@@ -1372,24 +1377,73 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
 
 bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
 {
-  CEdl::Cut cut;
-
   if(!m_Edl.HasCut())
     return false;
 
   if(current.dts == DVD_NOPTS_VALUE)
     return false;
 
-  if (m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut) && cut.action == CEdl::CUT)
-  {
-    // check if both streams are in cut position, if they are do the seek
-    if (m_CurrentAudio.id >= 0 && m_CurrentAudio.dts != DVD_NOPTS_VALUE && m_CurrentAudio.dts > DVD_MSEC_TO_TIME(cut.start)
-    &&  m_CurrentVideo.id >= 0 && m_CurrentVideo.dts != DVD_NOPTS_VALUE && m_CurrentVideo.dts > DVD_MSEC_TO_TIME(cut.start))
-      m_messenger.Put(new CDVDMsgPlayerSeek(cut.end+1, false, false, true)); // seek past cutpoint
+  CEdl::Cut cut;
+  if (!m_Edl.InCut(DVD_TIME_TO_MSEC(current.dts), &cut))
+    return false;
 
+  /*
+   * It's more efficient to drop packets than to seek if the cut is shorter than 10 seconds, but
+   * only do this if the cut is short otherwise the clock never reaches the point where it should do
+   * a full seek on Windows (instead it clears the audio queue and gets into a loop of starting and
+   * stopping caching).
+   */
+  else if(cut.action == CEdl::CUT
+  &&      cut.end - cut.start < 10*1000) // 10 seconds in ms
     return true;
+  else
+    return false;
+}
+
+void CDVDPlayer::CheckAutoSceneSkip()
+{
+  if(!m_Edl.HasCut())
+    return;
+
+  if(m_CurrentAudio.dts == DVD_NOPTS_VALUE
+  || m_CurrentVideo.dts == DVD_NOPTS_VALUE)
+    return;
+
+  const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
+
+  CEdl::Cut cut;
+  if(!m_Edl.InCut(clock, &cut))
+    return;
+
+  /*
+   * TODO: 10 second cutoff between seeking and dropping packets seems a bit arbitrary. Is there
+   * some reason that length of time seems to work well? Perhaps that's about the length of time
+   * that is already cached.
+   */
+  if(cut.action == CEdl::CUT
+  && cut.end - cut.start > 10*1000 // More efficient to drop packets than to seek if cut shorter than 10 seconds
+  && !(cut.end == m_EdlAutoSkipMarkers.cut || cut.start == m_EdlAutoSkipMarkers.cut)) // To prevent looping if same cut again
+  {
+    CLog::Log(LOGDEBUG, "%s - Clock in EDL cut [%s - %s]: %s. Automatically skipping over.",
+              __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(),
+              CEdl::MillisecondsToTimeString(cut.end).c_str(), CEdl::MillisecondsToTimeString(clock).c_str());
+    /*
+     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
+     * to accurate seeking significantly slows done the apparent speed of seeking.
+     */
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)cut.end, false, false, true));
+    /*
+     * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
+     * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
+     * cut. The cut automatic skip marker is reset every 500ms allowing another attempt at the seek.
+     */
+    m_EdlAutoSkipMarkers.cut = cut.end;
   }
-  return false;
+
+  /*
+   * Reset the EDL automatic skip cut marker every 500 ms.
+   */
+  m_EdlAutoSkipMarkers.ResetCutMarker(500); // in msec
 }
 
 

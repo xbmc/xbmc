@@ -60,6 +60,8 @@ public:
 
   bool GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneMarker);
 
+  static CStdString MillisecondsToTimeString(const int iMilliseconds);
+
 protected:
 private:
   __int64 m_iTotalCutTime; // ms
@@ -75,8 +77,6 @@ private:
   bool AddSceneMarker(const __int64 sceneMarker);
 
   bool WriteMPlayerEdl();
-
-  static CStdString MillisecondsToTimeString(const int iMilliseconds);
 };
 
 #endif
