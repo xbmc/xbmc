@@ -46,7 +46,6 @@ public:
 
   virtual void Render();
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
-  virtual void UpdateInfo(const CGUIListItem *item = NULL);
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage &message);
   virtual void AllocResources();

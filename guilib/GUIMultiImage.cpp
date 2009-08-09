@@ -77,17 +77,7 @@ void CGUIMultiImage::UpdateVisibility(const CGUIListItem *item)
   }
 
   // we are either delayed or visible, so we can allocate our resources
-  if (!m_directoryLoaded)
-  {
-    LoadDirectory();
-    m_image.SetFileName(m_files.size() ? m_files[0] : "");
-  }
-  if (!m_bAllocated)
-    AllocResources();
-}
 
-void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
-{
   // check for conditional information before we
   // alloc as this can free our resources
   if (!m_texturePath.IsConstant())
@@ -95,11 +85,15 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
     CStdString texturePath(m_texturePath.GetLabel(m_dwParentID));
     if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
-      // a new path - set our current path and tell ourselves to load our directory
       m_currentPath = texturePath;
-      m_directoryLoaded = false;
+      LoadDirectory();
+      m_image.SetFileName(m_files.size() ? m_files[0] : "");
     }
   }
+
+  // and allocate our resources
+  if (!m_bAllocated)
+    AllocResources();
 }
 
 void CGUIMultiImage::Render()

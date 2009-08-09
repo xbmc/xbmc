@@ -237,7 +237,7 @@ void CGUILabelControl::UpdateColors()
   CGUIControl::UpdateColors();
 }
 
-void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
+void CGUILabelControl::Render()
 {
   CStdString label(m_infoLabel.GetLabel(m_dwParentID));
 
@@ -266,10 +266,7 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
   { // reset the scrolling as we have a new label
     m_ScrollInfo.Reset();
   }
-}
 
-void CGUILabelControl::Render()
-{
   // check for scrolling
   bool bNormalDraw = true;
   if (m_ScrollInsteadOfTruncate && m_width > 0 && !IsDisabled())
