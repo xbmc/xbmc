@@ -1416,6 +1416,19 @@ void CDVDPlayer::CheckAutoSceneSkip()
     return;
 
   /*
+   * HACK: If there was a start time specified, only seek past cuts if the current clock time is
+   * greater than 5 seconds. There is some sort of race condition between the setting of the demuxer
+   * start time and the clock being updated to reflect that playback time. If this check is not
+   * performed the start time will be overwritten if there is a cut near the start of the file.
+   *
+   * 5 seconds should be a reasonable timeout for checking as start times aren't recorded for less
+   * than that amount of time.
+   */
+  if(m_PlayerOptions.starttime > 0
+     && clock < 5*1000) // 5 seconds in msec
+    return;
+
+  /*
    * TODO: 10 second cutoff between seeking and dropping packets seems a bit arbitrary. Is there
    * some reason that length of time seems to work well? Perhaps that's about the length of time
    * that is already cached.
