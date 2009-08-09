@@ -84,14 +84,14 @@ private:
   CGUIControlProfiler(const CGUIControlProfiler &that);
   CGUIControlProfiler &operator=(const CGUIControlProfiler &that);
 
+  CGUIControlProfilerItem m_ItemHead;
+  CGUIControlProfilerItem *m_pLastItem;
+  CGUIControlProfilerItem *FindOrAddControl(CGUIControl *pControl);
+
   static bool m_bIsRunning;
   CStdString m_strOutputFile;
   int m_iMaxFrameCount;
   int m_iFrameCount;
-  CGUIControlProfilerItem m_ItemHead;
-  CGUIControlProfilerItem *m_pLastItem;
-
-  CGUIControlProfilerItem *FindOrAddControl(CGUIControl *pControl);
 };
 
 #define GUIPROFILER_VISIBILITY_BEGIN(x) { if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().BeginVisibility(x); }
