@@ -86,8 +86,7 @@
 			<Tool
 				Name="VCMIDLTool"/>
 			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine="&quot;C:\Program Files\Microsoft Xbox SDK\Xbox\Bin\xbcp.exe&quot; /y &quot;$(TargetPath)&quot; xE:\xbmc\system\"/>
+				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
