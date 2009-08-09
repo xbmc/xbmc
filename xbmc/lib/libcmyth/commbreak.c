@@ -101,6 +101,8 @@ cmyth_get_commbreaklist(cmyth_conn_t conn, cmyth_proginfo_t prog)
 	int err;
 	int count;
 	char *buf;
+	int r;
+
 	cmyth_commbreaklist_t breaklist = cmyth_commbreaklist_create();
 
 	buf = alloca(len);
@@ -126,7 +128,6 @@ cmyth_get_commbreaklist(cmyth_conn_t conn, cmyth_proginfo_t prog)
 		goto out;
 	}
 
-	int r;
 	if ((r = cmyth_rcv_commbreaklist(conn, &err, breaklist, count)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			"%s: cmyth_rcv_string() failed (%d)\n",
