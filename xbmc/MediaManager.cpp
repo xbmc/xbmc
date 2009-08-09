@@ -314,7 +314,10 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
     return false;
 
   CSingleLock waitLock(m_muAutoSource);
-  if(GetDriveStatus(devicePath) == DRIVE_CLOSED_MEDIA_PRESENT)
+  CStdString strDevice = TranslateDevicePath(devicePath, true);
+  std::map<CStdString,CCdInfo*>::iterator it;
+  it = m_mapCdInfo.find(strDevice);
+  if(it != m_mapCdInfo.end())
     return true;
   else
     return false;
