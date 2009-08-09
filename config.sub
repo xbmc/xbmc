@@ -1,10 +1,10 @@
 #! /bin/sh
 # Configuration validation subroutine script.
 #   Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
-#   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
+#   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #   Free Software Foundation, Inc.
 
-timestamp='2009-04-17'
+timestamp='2009-06-11'
 
 # This file is (in principle) common to ALL GNU software.
 # The presence of a machine in this file suggests that SOME GNU software
@@ -152,6 +152,9 @@ case $os in
 	-apple | -axis | -knuth | -cray)
 		os=
 		basic_machine=$1
+		;;
+        -bluegene*)
+	        os=-cnk
 		;;
 	-sim | -cisco | -oki | -wec | -winbond)
 		os=
@@ -466,6 +469,10 @@ case $basic_machine in
 	blackfin-*)
 		basic_machine=bfin-`echo $basic_machine | sed 's/^[^-]*-//'`
 		os=-linux
+		;;
+	bluegene*)
+		basic_machine=powerpc-ibm
+		os=-cnk
 		;;
 	c90)
 		basic_machine=c90-cray
@@ -1260,7 +1267,7 @@ case $os in
 	# Each alternative MUST END IN A *, to match a version number.
 	# -sysv* is not here because it comes later, after sysvr4.
 	-gnu* | -bsd* | -mach* | -minix* | -genix* | -ultrix* | -irix* \
-	      | -*vms* | -sco* | -esix* | -isc* | -aix* | -sunos | -sunos[34]*\
+	      | -*vms* | -sco* | -esix* | -isc* | -aix* | -cnk* | -sunos | -sunos[34]*\
 	      | -hpux* | -unos* | -osf* | -luna* | -dgux* | -solaris* | -sym* \
 	      | -kopensolaris* \
 	      | -amigaos* | -amigados* | -msdos* | -newsos* | -unicos* | -aof* \
@@ -1613,7 +1620,7 @@ case $basic_machine in
 			-sunos*)
 				vendor=sun
 				;;
-			-aix*)
+			-cnk*|-aix*)
 				vendor=ibm
 				;;
 			-beos*)
