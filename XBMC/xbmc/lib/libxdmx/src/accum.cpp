@@ -35,17 +35,12 @@ void CPayloadAccumulator::StartPayloadUnbounded()
   m_DataLen = 0;
   m_PayloadLen = 0;
   m_Unbounded = true;
-xdmx_aligned_free(m_pData);
-m_BufferLen = 131072;
-m_pData = (unsigned char*)xdmx_aligned_malloc(m_BufferLen, 16);
-  //if (m_BufferLen < 65535)
-  //{
-  //  xdmx_aligned_free(m_pData);
-  //  //delete[] m_pData;
-  //  m_pData = (unsigned char*)xdmx_aligned_malloc(65535, 16);
-  //  //m_pData = new unsigned char[65535];
-  //  m_BufferLen = 65535;
-  //}
+  if (m_BufferLen < 65535)
+  {
+    xdmx_aligned_free(m_pData);
+    m_pData = (unsigned char*)xdmx_aligned_malloc(65535, 16);
+    m_BufferLen = 65535;
+  }
 }
 
 bool CPayloadAccumulator::AddData(unsigned char* pData, unsigned int* bytes)

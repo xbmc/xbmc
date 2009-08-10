@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 
 #include "DVDDemuxTS.h"
@@ -212,10 +211,22 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
 
         if (pDmx->iStreamId == dmxStream.g->iId)
         {
+          // Parse sequence header
+          // TODO: Is this the best place for this?
+          // TODO: Find sequence header start code: 0x00 0x00 0x01 0x0F
+          unsigned char* pHeader = (unsigned char*)dmxStream.v->ExtraData + 4;
+          if ((pHeader[0] >> 6) == 0x3) // Advanced Profile
+          {
+            dmxStream.v->iWidth = (((pHeader[2] << 4) | (pHeader[3] >> 4)) + 1) << 1;
+            dmxStream.v->iHeight = ((((pHeader[3] & 0x0F) << 8) | pHeader[4]) + 1) << 1;
+          }
+
+          // Copy ExtraData
           dmxStream.v->ExtraSize = 36;
           dmxStream.v->ExtraData = malloc(dmxStream.v->ExtraSize + 8);
           memcpy(dmxStream.v->ExtraData, pDmx->pData, dmxStream.v->ExtraSize);
           memset((char*)dmxStream.v->ExtraData + dmxStream.v->ExtraSize, 0, 8);
+
           m_PacketQueue.push_back(pDmx);
           break;
         }
@@ -281,15 +292,6 @@ DemuxPacket* CDVDDemuxTS::GetNextPacket()
 
   m_StreamCounterList[pPayload->GetStream()->GetId()] += pDmx->iSize;
 
-  //static std::fstream outFile;
-
-  //if (pPayload->GetStream()->GetElementType() == ES_STREAM_TYPE_VIDEO_VC1)
-  //{
-  //  if (!outFile.is_open())
-  //    outFile.open("raw.vc1", std::ios::out | std::ios::binary);
-
-  //  outFile.write((const char*)pDmx->pData, pDmx->iSize);
-  //}
   return pDmx;
 }
 
