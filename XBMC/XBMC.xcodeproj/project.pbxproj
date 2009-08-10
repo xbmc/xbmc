@@ -87,6 +87,12 @@
 		81F064100E9B5FE400C203A6 /* libxbms-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 81F0640F0E9B5FE400C203A6 /* libxbms-x86-osx.a */; };
 		81F064130E9B608800C203A6 /* FileXBMSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064110E9B608800C203A6 /* FileXBMSP.cpp */; };
 		81F064260E9BB99800C203A6 /* XBMSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */; };
+		8309C214102F722C00E0A87D /* accum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8309C20B102F722C00E0A87D /* accum.cpp */; };
+		8309C215102F722C00E0A87D /* bitstream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8309C20D102F722C00E0A87D /* bitstream.cpp */; };
+		8309C216102F722C00E0A87D /* pesparse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8309C210102F722C00E0A87D /* pesparse.cpp */; };
+		8309C217102F722C00E0A87D /* tsdemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8309C212102F722C00E0A87D /* tsdemux.cpp */; };
+		8309C218102F722C00E0A87D /* xdmx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8309C213102F722C00E0A87D /* xdmx.cpp */; };
+		8309C226102F75E800E0A87D /* DVDDemuxTS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8309C224102F75E800E0A87D /* DVDDemuxTS.cpp */; };
 		83A72B910FBC8DB000171871 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
 		83A72B940FBC8DFF00171871 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		83A72B970FBC8E3B00171871 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; settings = {COMPILER_FLAGS = "-O0"; }; };
@@ -1864,6 +1870,19 @@
 		81F064120E9B608800C203A6 /* FileXBMSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileXBMSP.h; sourceTree = "<group>"; };
 		81F064240E9BB99800C203A6 /* XBMSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMSDirectory.cpp; sourceTree = "<group>"; };
 		81F064250E9BB99800C203A6 /* XBMSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMSDirectory.h; sourceTree = "<group>"; };
+		8309C208102F722C00E0A87D /* tsdemux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsdemux.h; sourceTree = "<group>"; };
+		8309C209102F722C00E0A87D /* xdmx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xdmx.h; sourceTree = "<group>"; };
+		8309C20B102F722C00E0A87D /* accum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = accum.cpp; sourceTree = "<group>"; };
+		8309C20C102F722C00E0A87D /* accum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = accum.h; sourceTree = "<group>"; };
+		8309C20D102F722C00E0A87D /* bitstream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bitstream.cpp; sourceTree = "<group>"; };
+		8309C20E102F722C00E0A87D /* bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bitstream.h; sourceTree = "<group>"; };
+		8309C20F102F722C00E0A87D /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		8309C210102F722C00E0A87D /* pesparse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pesparse.cpp; sourceTree = "<group>"; };
+		8309C211102F722C00E0A87D /* pesparse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pesparse.h; sourceTree = "<group>"; };
+		8309C212102F722C00E0A87D /* tsdemux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tsdemux.cpp; sourceTree = "<group>"; };
+		8309C213102F722C00E0A87D /* xdmx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xdmx.cpp; sourceTree = "<group>"; };
+		8309C224102F75E800E0A87D /* DVDDemuxTS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxTS.cpp; sourceTree = "<group>"; };
+		8309C225102F75E800E0A87D /* DVDDemuxTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxTS.h; sourceTree = "<group>"; };
 		83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CoreAudioRenderer.cpp; path = AudioRenderers/CoreAudioRenderer.cpp; sourceTree = "<group>"; };
 		83A72B8F0FBC8DB000171871 /* CoreAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CoreAudioRenderer.h; path = AudioRenderers/CoreAudioRenderer.h; sourceTree = "<group>"; };
 		83A72B900FBC8DB000171871 /* IAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAudioRenderer.h; path = AudioRenderers/IAudioRenderer.h; sourceTree = "<group>"; };
@@ -3847,6 +3866,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				8309C206102F720E00E0A87D /* xdmx */,
 				E38E13890D25F9F900618676 /* guilib */,
 				E38E14610D25F9F900618676 /* xbmc */,
 			);
@@ -3940,6 +3960,42 @@
 				810C9F870D67BDE20095F5DD /* timestamp.c */,
 			);
 			path = libcmyth;
+			sourceTree = "<group>";
+		};
+		8309C206102F720E00E0A87D /* xdmx */ = {
+			isa = PBXGroup;
+			children = (
+				8309C207102F722C00E0A87D /* include */,
+				8309C20A102F722C00E0A87D /* src */,
+			);
+			name = xdmx;
+			sourceTree = "<group>";
+		};
+		8309C207102F722C00E0A87D /* include */ = {
+			isa = PBXGroup;
+			children = (
+				8309C208102F722C00E0A87D /* tsdemux.h */,
+				8309C209102F722C00E0A87D /* xdmx.h */,
+			);
+			name = include;
+			path = xbmc/lib/libxdmx/include;
+			sourceTree = "<group>";
+		};
+		8309C20A102F722C00E0A87D /* src */ = {
+			isa = PBXGroup;
+			children = (
+				8309C20B102F722C00E0A87D /* accum.cpp */,
+				8309C20C102F722C00E0A87D /* accum.h */,
+				8309C20D102F722C00E0A87D /* bitstream.cpp */,
+				8309C20E102F722C00E0A87D /* bitstream.h */,
+				8309C20F102F722C00E0A87D /* common.h */,
+				8309C210102F722C00E0A87D /* pesparse.cpp */,
+				8309C211102F722C00E0A87D /* pesparse.h */,
+				8309C212102F722C00E0A87D /* tsdemux.cpp */,
+				8309C213102F722C00E0A87D /* xdmx.cpp */,
+			);
+			name = src;
+			path = xbmc/lib/libxdmx/src;
 			sourceTree = "<group>";
 		};
 		C6859E96029091FE04C91782 /* Documentation */ = {
@@ -4984,6 +5040,8 @@
 		E38E15480D25F9F900618676 /* DVDDemuxers */ = {
 			isa = PBXGroup;
 			children = (
+				8309C224102F75E800E0A87D /* DVDDemuxTS.cpp */,
+				8309C225102F75E800E0A87D /* DVDDemuxTS.h */,
 				E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */,
 				E38E25BF0D263DC100618676 /* DVDFactoryDemuxer.cpp */,
 				E38E25C20D263DE200618676 /* DVDDemuxFFmpeg.cpp */,
@@ -7833,6 +7891,12 @@
 				7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */,
 				7CDAEA8C1001EBA70040B25F /* PltConstants.cpp in Sources */,
 				7CDAEA8D1001EBA70040B25F /* PltIconsData.cpp in Sources */,
+				8309C214102F722C00E0A87D /* accum.cpp in Sources */,
+				8309C215102F722C00E0A87D /* bitstream.cpp in Sources */,
+				8309C216102F722C00E0A87D /* pesparse.cpp in Sources */,
+				8309C217102F722C00E0A87D /* tsdemux.cpp in Sources */,
+				8309C218102F722C00E0A87D /* xdmx.cpp in Sources */,
+				8309C226102F75E800E0A87D /* DVDDemuxTS.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
