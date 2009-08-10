@@ -93,7 +93,7 @@ static uint32_t build_rgba(int a, int r, int g, int b)
 #define clamp(x) (x) > 255.0 ? 255 : ((x) < 0.0 ? 0 : (int)(x+0.5f))
 static uint32_t build_rgba(int yuv[3], int alpha)
 {
-  int    a = alpha + (alpha << 4) & 0xff;
+  int    a = alpha + ( (alpha << 4) & 0xff );
   double r = 1.164 * (yuv[0] - 16)                          + 1.596 * (yuv[2] - 128);
   double g = 1.164 * (yuv[0] - 16) - 0.391 * (yuv[1] - 128) - 0.813 * (yuv[2] - 128);
   double b = 1.164 * (yuv[0] - 16) + 2.018 * (yuv[1] - 128);
