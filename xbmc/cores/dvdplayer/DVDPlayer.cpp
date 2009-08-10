@@ -1878,7 +1878,7 @@ void CDVDPlayer::ToggleFrameDrop()
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("D( %s ) P( %s )", m_State.demux_audio.c_str()
+  strAudioInfo.Format("%s %s", m_State.demux_audio.c_str()
                              , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
