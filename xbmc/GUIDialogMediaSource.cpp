@@ -373,7 +373,8 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   }
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
-    m_paths->Get(item)->m_strPath = path;
+    if (item < m_paths->Size()) // if the skin does funky things, m_paths may have been cleared
+      m_paths->Get(item)->m_strPath = path;
     if (!m_bNameChanged || m_name.IsEmpty())
     {
       CURL url(path);
@@ -434,7 +435,7 @@ void CGUIDialogMediaSource::OnOK()
         if (!item.HasThumbnail())
           item.SetUserProgramThumb();
       }
-      if (item.HasThumbnail())
+      if (item.HasThumbnail() && m_paths->Size())
       {
         CFileItem item2(share.strPath,true);
         XFILE::CFile::Cache(item.GetThumbnailImage(),item2.GetCachedProgramThumb());
@@ -457,6 +458,9 @@ void CGUIDialogMediaSource::OnCancel()
 
 void CGUIDialogMediaSource::UpdateButtons()
 {
+  if (!m_paths->Size()) // sanity
+    return;
+  
   CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->m_strPath.IsEmpty() && !m_name.IsEmpty());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_REMOVE, m_paths->Size() > 1);
   // name
