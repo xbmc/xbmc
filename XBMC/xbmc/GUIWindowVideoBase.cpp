@@ -879,6 +879,10 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
 int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 {
+  // do not resume livetv
+  if (item->IsTV())
+    return 0;
+
   m_database.Open();
   long startoffset = 0;
 
@@ -936,7 +940,7 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
   // we always resume the movie if the user doesn't want us to ask
   bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
 
-  if (!item.m_bIsFolder && !resumeItem)
+  if (!item.m_bIsFolder && !item.IsTV() && !resumeItem)
   {
     // check to see whether we have a resume offset available
     CVideoDatabase db;
