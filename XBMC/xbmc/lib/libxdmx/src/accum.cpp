@@ -7,14 +7,15 @@ CPayloadAccumulator::CPayloadAccumulator() :
   m_DataLen(0),
   m_PayloadLen(0),
   m_BufferLen(0),
-  m_Unbounded(false)
+  m_Unbounded(false),
+  m_MaxLen(0)
 {
   
 }
 
 CPayloadAccumulator::~CPayloadAccumulator()
 {
-  xdmx_aligned_free(m_pData);
+  FreeBuffer(m_pData);
 }
 
 void CPayloadAccumulator::StartPayload(unsigned int len)
@@ -24,8 +25,8 @@ void CPayloadAccumulator::StartPayload(unsigned int len)
   m_Unbounded = false;
   if (m_BufferLen < m_PayloadLen)
   {
-    xdmx_aligned_free(m_pData);
-    m_pData = (unsigned char*)xdmx_aligned_malloc(m_PayloadLen, 16);
+    FreeBuffer(m_pData);
+    m_pData = CreateBuffer(m_PayloadLen);
     m_BufferLen = m_PayloadLen;
   }
 }
@@ -37,8 +38,8 @@ void CPayloadAccumulator::StartPayloadUnbounded()
   m_Unbounded = true;
   if (m_BufferLen < 65535)
   {
-    xdmx_aligned_free(m_pData);
-    m_pData = (unsigned char*)xdmx_aligned_malloc(65535, 16);
+    FreeBuffer(m_pData);
+    m_pData = CreateBuffer(65535);
     m_BufferLen = 65535;
   }
 }
@@ -52,9 +53,9 @@ bool CPayloadAccumulator::AddData(unsigned char* pData, unsigned int* bytes)
     if (m_DataLen + inLen > m_BufferLen)
     {
       unsigned int newLen = 2 * m_BufferLen;
-      unsigned char* pNewBuffer = (unsigned char*)xdmx_aligned_malloc(newLen, 16);
+      unsigned char* pNewBuffer = CreateBuffer(newLen);
       memcpy(pNewBuffer, m_pData, m_DataLen);
-      xdmx_aligned_free(m_pData);
+      FreeBuffer(m_pData);
       m_pData = pNewBuffer;
       m_BufferLen = newLen;
     }
@@ -106,11 +107,24 @@ unsigned char* CPayloadAccumulator::Detach(bool release /*= false*/)
 {
   Reset();
   unsigned char* pData = m_pData;
-  m_pData = (unsigned char*)xdmx_aligned_malloc(m_BufferLen, 16);
+  m_pData = CreateBuffer(m_BufferLen);
   if (release)
   {
-    xdmx_aligned_free(pData);
+    FreeBuffer(pData);
     return NULL;
   }
   return pData;
+}
+
+unsigned char* CPayloadAccumulator::CreateBuffer(unsigned int len)
+{
+  unsigned char* pData = (unsigned char*)xdmx_aligned_malloc(len, 16);
+  if (len > m_MaxLen)
+    m_MaxLen = len;
+  return pData;
+}
+
+void CPayloadAccumulator::FreeBuffer(unsigned char* pBuf)
+{
+  xdmx_aligned_free(pBuf);
 }

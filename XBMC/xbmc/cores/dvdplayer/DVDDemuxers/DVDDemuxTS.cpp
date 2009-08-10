@@ -211,6 +211,12 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
 
         if (pDmx->iStreamId == dmxStream.g->iId)
         {
+          // Copy ExtraData
+          dmxStream.v->ExtraSize = 36;
+          dmxStream.v->ExtraData = malloc(dmxStream.v->ExtraSize + 8);
+          memcpy(dmxStream.v->ExtraData, pDmx->pData, dmxStream.v->ExtraSize);
+          memset((char*)dmxStream.v->ExtraData + dmxStream.v->ExtraSize, 0, 8);
+
           // Parse sequence header
           // TODO: Is this the best place for this?
           // TODO: Find sequence header start code: 0x00 0x00 0x01 0x0F
@@ -220,12 +226,6 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
             dmxStream.v->iWidth = (((pHeader[2] << 4) | (pHeader[3] >> 4)) + 1) << 1;
             dmxStream.v->iHeight = ((((pHeader[3] & 0x0F) << 8) | pHeader[4]) + 1) << 1;
           }
-
-          // Copy ExtraData
-          dmxStream.v->ExtraSize = 36;
-          dmxStream.v->ExtraData = malloc(dmxStream.v->ExtraSize + 8);
-          memcpy(dmxStream.v->ExtraData, pDmx->pData, dmxStream.v->ExtraSize);
-          memset((char*)dmxStream.v->ExtraData + dmxStream.v->ExtraSize, 0, 8);
 
           m_PacketQueue.push_back(pDmx);
           break;
@@ -279,6 +279,8 @@ DemuxPacket* CDVDDemuxTS::GetNextPacket()
     // TODO: Find a cleaner/safer way to do this
     if (!pPayload->GetStream()->IsValueEmpty(pPayload->GetStream()->GetProperty('xbid')))
       break;
+
+    delete pPayload; // This data is unknown to us, but still must be released
   }
 
   DemuxPacket* pDmx = new DemuxPacket;
@@ -292,6 +294,7 @@ DemuxPacket* CDVDDemuxTS::GetNextPacket()
 
   m_StreamCounterList[pPayload->GetStream()->GetId()] += pDmx->iSize;
 
+  delete pPayload;
   return pDmx;
 }
 

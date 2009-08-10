@@ -16,11 +16,15 @@ public:
   bool IsUnbounded();
   unsigned char* Detach(bool release = false);
 protected:
+  unsigned char* CreateBuffer(unsigned int len);
+  void FreeBuffer(unsigned char* pBuf);
   unsigned char* m_pData;
   unsigned int m_DataLen;
   unsigned int m_PayloadLen;
   unsigned int m_BufferLen;
   bool m_Unbounded;
+
+  unsigned int m_MaxLen;
 };
 
 #endif // ACCUM_H_

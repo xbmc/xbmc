@@ -172,13 +172,13 @@ CParserPayload::CParserPayload(CElementaryStream* pStream, unsigned char* pData,
 
 CParserPayload::~CParserPayload()
 {
-  delete[] m_pData;
+  xdmx_aligned_free(m_pData);
 }
 
 void CParserPayload::Attach(unsigned char* pData, unsigned int size)
 {
   if (m_pData)
-    delete m_pData;
+    xdmx_aligned_free(m_pData);
   m_pData = pData;
   m_Size = size;
 }
