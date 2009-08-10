@@ -44,10 +44,8 @@
 #include "FileItem.h"
 #include "Settings.h"
 
-#ifndef _LINUX
-#include "lib/libsmb/xbLibSmb.h"
-#else
-#include "../lib/libsmb/libsmbclient.h"
+#ifndef _WIN32PC
+#include <libsmbclient.h>
 #endif
 
 #ifdef __APPLE__

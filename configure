@@ -6234,6 +6234,7 @@ else
   as_fn_error "$missing_library" "$LINENO" 5
 fi
 
+else
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lsmbclient" >&5
 $as_echo_n "checking for main in -lsmbclient... " >&6; }
 if test "${ac_cv_lib_smbclient_main+set}" = set; then :
@@ -6275,7 +6276,6 @@ else
   as_fn_error "$missing_library" "$LINENO" 5
 fi
 
-else
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lSDL" >&5
 $as_echo_n "checking for main in -lSDL... " >&6; }
 if test "${ac_cv_lib_SDL_main+set}" = set; then :
