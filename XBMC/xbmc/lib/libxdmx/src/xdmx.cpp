@@ -79,6 +79,7 @@ CElementaryStream::CElementaryStream(unsigned int id, unsigned char elementType)
 
 CElementaryStream::~CElementaryStream()
 {
+
 }
 
 void CElementaryStream::SetId(unsigned int id)

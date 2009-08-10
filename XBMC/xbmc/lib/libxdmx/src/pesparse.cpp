@@ -17,6 +17,11 @@ CPESParser::CPESParser(CElementaryStream* pStream, PayloadList* pPayloadList) :
 
 }
 
+CPESParser::~CPESParser()
+{
+
+}
+
 bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
 {
   if (newPayloadUnit)
@@ -25,7 +30,7 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
     if (m_Accum.IsUnbounded() && m_Accum.GetLen()) 
     {
         XDMX_LOG_DEBUG("%s: Completing unbounded payload. Len: %lu (0x%04x). Total Bytes in: %lu (0x%04x)", __PES_MODULE__, m_Accum.GetLen(), m_Accum.GetLen(), (unsigned int)m_BytesIn, (unsigned int)m_BytesIn);
-        Parse(m_Header, m_HeaderOffset, m_Accum.Detach(), m_Accum.GetLen());
+        CompletePayload();
     }
 
     // Peek at the packet header to get the size
@@ -85,8 +90,7 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
   {
     XDMX_LOG_DEBUG("%s: Completing Payload. Len: %lu (0x%04x). Total Bytes in: %lu (0x%04x)", __PES_MODULE__, m_Accum.GetLen(), m_Accum.GetLen(), (unsigned int)m_BytesIn, (unsigned int)m_BytesIn);
     // Pass on to the derived class' handler method
-    Parse(m_Header, m_HeaderOffset, m_Accum.Detach(), m_Accum.GetLen());
-    m_Accum.Reset();
+    CompletePayload();
   }
   return true;
 }
@@ -105,8 +109,6 @@ bool CPESParser::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned 
 {
   if (!m_pPayloadList)
     return false; // Nothing to do with it anyway
-
-  CParserPayload* pPayload = new CParserPayload(m_pStream, pData, dataLen);
 
   // Parse the header
   unsigned char extStreamId = 0;
@@ -256,6 +258,8 @@ bool CPESParser::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned 
     }
   }
 
+  CParserPayload* pPayload = new CParserPayload(m_pStream, pData, dataLen);
+
   if (!dts)
     dts = pts;
   SetTimeStamps(pPayload, pts, dts);
@@ -267,6 +271,13 @@ bool CPESParser::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned 
   m_pPayloadList->push_back(pPayload);
   
   return true;
+}
+
+bool CPESParser::CompletePayload()
+{
+  bool consumed = Parse(m_Header, m_HeaderOffset, m_Accum.GetData(), m_Accum.GetLen());
+  m_Accum.Detach(!consumed); // If data was not consumed, it must be freed
+  return consumed;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////

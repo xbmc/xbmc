@@ -9,6 +9,7 @@
 
 #define __TS_MODULE__ "Xdmx Transport Stream Demux"
 
+#define TS_MAX_PIDS 0x2000
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CTSFilter : public IPacketFilter
@@ -107,20 +108,27 @@ class CTSFilterRegistry
 {
 public:
   CTSFilterRegistry();
+  virtual ~CTSFilterRegistry();
   bool RegisterFilter(unsigned short pid, CTSFilter* pFilter, bool replace = false);
-  void UnRegisterFilter(unsigned short pid, bool dispose = false);
+  void UnregisterFilter(unsigned short pid, bool dispose = false);
+  void UnregisterAll(bool dispose = false);
   CTSFilter* GetFilter(unsigned short pid);
   bool RegisterClock(unsigned short pid, CProgramClock* pClock); // TODO: Find a better home for the clocks
-  void UnRegisterClock(unsigned short pid);
+  void UnregisterClock(unsigned short pid);
   CProgramClock* GetClock(unsigned short pid);
 protected:
-  CTSFilter* m_Filters[0x2000]; // Use instead of map to improve lookup speed
+  CTSFilter* m_Filters[TS_MAX_PIDS]; // Use instead of map to improve lookup speed
   std::map<unsigned short, CProgramClock*> m_Clocks;
 };
 
 CTSFilterRegistry::CTSFilterRegistry()
 {
-  memset(m_Filters, 0, sizeof(CTSFilter*) * 0x2000);
+  memset(m_Filters, 0, sizeof(CTSFilter*) * TS_MAX_PIDS);
+}
+
+CTSFilterRegistry::~CTSFilterRegistry()
+{
+  UnregisterAll(true); // Clean-Up any leftover items
 }
 
 bool CTSFilterRegistry::RegisterFilter(unsigned short pid, CTSFilter* pFilter, bool replace/* = false*/)
@@ -134,7 +142,7 @@ bool CTSFilterRegistry::RegisterFilter(unsigned short pid, CTSFilter* pFilter, b
   return true;
 }
 
-void CTSFilterRegistry::UnRegisterFilter(unsigned short pid, bool dispose/* = false*/)
+void CTSFilterRegistry::UnregisterFilter(unsigned short pid, bool dispose/* = false*/)
 {
   if (dispose)
   {
@@ -144,8 +152,28 @@ void CTSFilterRegistry::UnRegisterFilter(unsigned short pid, bool dispose/* = fa
   m_Filters[pid] = NULL;
 }
 
+void CTSFilterRegistry::UnregisterAll(bool dispose /*= false*/)
+{
+  // Clean-up filters
+  if (dispose)
+  {
+    for (int f = 0; f < TS_MAX_PIDS; f++)
+    {
+      if (m_Filters[f])
+        delete m_Filters[f];
+    }
+  }
+  memset(m_Filters, 0, sizeof(CTSFilter*) * TS_MAX_PIDS);
+
+  // Clean-up clocks (All are statically defined in Program objects)
+  m_Clocks.clear();
+}
+
 CTSFilter* CTSFilterRegistry::GetFilter(unsigned short pid)
 {
+  if (pid & 0xE000) // > TS_MAX_PIDS
+    return NULL;
+
   return m_Filters[pid];
 }
 
@@ -155,7 +183,7 @@ bool CTSFilterRegistry::RegisterClock(unsigned short pid, CProgramClock* pClock)
   return true;
 }
 
-void CTSFilterRegistry::UnRegisterClock(unsigned short pid)
+void CTSFilterRegistry::UnregisterClock(unsigned short pid)
 {
   m_Clocks.erase(pid);
 }
@@ -182,7 +210,7 @@ CTSDescriptor::CTSDescriptor(unsigned char tag, const char* pName) :
 
 CTSDescriptor::~CTSDescriptor()
 {
-
+  delete[] m_pRawData;
 }
 
 unsigned char CTSDescriptor::GetTag()
@@ -257,6 +285,21 @@ void CProgramClock::AddReference(uint64_t position, uint64_t base, unsigned int 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+CTSProgram::CTSProgram()
+{
+
+}
+
+CTSProgram::~CTSProgram()
+{
+  // Clean-up contained streams
+  while (m_StreamList.size())
+  {
+    delete m_StreamList.back();
+    m_StreamList.pop_back();
+  }
+}
+
 void CTSProgram::AddStream(CElementaryStream* pStream)
 {
   m_StreamList.push_back(pStream);
@@ -272,26 +315,26 @@ CElementaryStream* CTSProgram::GetStream(unsigned int index)
   return m_StreamList[index];
 }
 
-void CTSProgram::AddStreamDescriptor(unsigned int streamIndex, CTSDescriptor* pDesc)
-{
-  (*(m_StreamDescriptorList[streamIndex]))[pDesc->GetTag()] = pDesc;
-}
-
-CTSDescriptor* CTSProgram::GetStreamDescriptor(unsigned int streamIndex, unsigned char tag)
-{
-  TSDescriptorList* pList = m_StreamDescriptorList[streamIndex];
-  TSDescriptorIterator iter = pList->find(tag);
-  if (iter != pList->end())
-    return iter->second;
-  return NULL;
-}
-
 CProgramClock* CTSProgram::GetClock()
 {
   return &m_Clock;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+CTransportStream::CTransportStream()
+{
+
+}
+
+CTransportStream::~CTransportStream()
+{
+  // Clean-up contained programs
+  while (m_ProgramList.size())
+  {
+    delete m_ProgramList.back();
+    m_ProgramList.pop_back();
+  }
+}
 
 void CTransportStream::AddProgram(CTSProgram* pProgram)
 {
@@ -315,6 +358,7 @@ class CElementaryStreamFilter : public CTSFilter
 public:
   CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList);
   CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList, IPacketFilter* pInnerFilter);
+  virtual ~CElementaryStreamFilter();
   bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
   CElementaryStream* GetStream();
   uint64_t GetBytesIn();
@@ -338,6 +382,11 @@ CElementaryStreamFilter::CElementaryStreamFilter(CElementaryStream* pStream, Pay
 {
   if (!pInnerFilter)
     m_pParser = new CPESParserStandard(pStream, pPayloadList);
+}
+
+CElementaryStreamFilter::~CElementaryStreamFilter()
+{
+  delete m_pParser;
 }
 
 bool CElementaryStreamFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
@@ -368,15 +417,14 @@ protected:
   void ParseStream(CSimpleBitstreamReader& reader);
   unsigned int ParseStreamDescriptor(CSimpleBitstreamReader& reader, CTSDescriptor** ppDesc);
   CTSProgram* m_pProgram;
-  unsigned char m_Version;
+  unsigned short m_Version;
   CTSFilterRegistry* m_pRegistry;
-  std::list<CElementaryStreamFilter*> m_StreamFilterList;
   PayloadList* m_pPayloadList;
 };
 
 CTSProgramMapFilter::CTSProgramMapFilter(CTSProgram* pProgram, CTSFilterRegistry* pRegistry, PayloadList* pPayloadList) :
   m_pProgram(pProgram),
-  m_Version(0),
+  m_Version(0x100),
   m_pRegistry(pRegistry),
   m_pPayloadList(pPayloadList)
 {
@@ -404,7 +452,7 @@ bool CTSProgramMapFilter::ParseSection(unsigned char* pData, unsigned int len)
   unsigned short program = reader.ReadShort(16);
   reader.UpdatePosition(2); // Reserved
   unsigned char version = reader.ReadChar(5);
-  if (m_pProgram->GetStreamCount() > 0 && version == m_Version)
+  if (version == m_Version)
     return true; // This version of the table has already been parsed
   bool current = reader.ReadBit(); // Current/Next Indicator
   if (!current)
@@ -502,13 +550,13 @@ void CTSProgramMapFilter::ParseStream(CSimpleBitstreamReader& reader)
   case ES_STREAM_TYPE_PRIVATE_SECTION:
     pTypeName = "Private Section";
     // TODO: This should use a TableFilter
-    delete pStream;
-    return;
+    streamType = 0;
+    break;
   case ES_STREAM_TYPE_PRIVATE_DATA:
     pTypeName = "Private Data";
     // TODO: This should use a private stream filter
-    delete pStream;
-    return;
+    streamType = 0;
+    break;
   case ES_STREAM_TYPE_USER_PRIVATE:
     {
       TSDescriptorIterator iter = descList.find(TS_DESC_REGISTRATION); // Get stream registration decriptor
@@ -531,16 +579,16 @@ void CTSProgramMapFilter::ParseStream(CSimpleBitstreamReader& reader)
         pTypeName = "AC3 Audio";
         break;
       }
-      delete pStream;
-      return;
+      streamType = 0;
+      break;
     }
   default:
     XDMX_LOG_INFO("%s:   Found Stream. PID: %lu (0x%04x), TypeName: %s, Type: %lu (0x%02x), InfoLen: %lu (0x%04x).", __TS_MODULE__, pid, pid, pTypeName, streamType, streamType, infoLen, infoLen);
-    delete pStream;
-    return;
+    streamType = 0;
+    break;
   }
   // TODO: Transfer descriptors to stream?
-  if (pStream)
+  if (streamType)
   {
     XDMX_LOG_INFO("%s:   Found Stream. PID: %lu (0x%04x), TypeName: %s, Type: %lu (0x%02x), InfoLen: %lu (0x%04x).", __TS_MODULE__, pid, pid, pTypeName, streamType, streamType, infoLen, infoLen);
     
@@ -550,8 +598,15 @@ void CTSProgramMapFilter::ParseStream(CSimpleBitstreamReader& reader)
     // Create and register a filter to handle the Stream
     CElementaryStreamFilter* pFilter = new CElementaryStreamFilter(pStream, m_pPayloadList, pCustomFilter);
     m_pRegistry->RegisterFilter(pid, pFilter);
-    m_StreamFilterList.push_back(pFilter);
   }
+  else
+  {
+    // No need for this stream. We do not know what it is.
+    delete pStream;
+  }
+  // Clean-up the descriptors
+  for (TSDescriptorList::iterator iter = descList.begin(); iter != descList.end(); iter++)
+    delete iter->second;
 }
 
 unsigned int CTSProgramMapFilter::ParseStreamDescriptor(CSimpleBitstreamReader& reader, CTSDescriptor** ppDesc)
@@ -602,20 +657,18 @@ class CTSProgramAssociationFilter : public CTableFilter
 public:
   CTSProgramAssociationFilter(CTransportStream* pTransportStream, CTSFilterRegistry* pRegistry, PayloadList* pPayloadList);
   virtual ~CTSProgramAssociationFilter();
-  unsigned short GetProgramCount();
   virtual bool ParseSection(unsigned char* pData, unsigned int len);
 protected:
   CTransportStream* m_pTransportStream;
   CTSFilterRegistry* m_pRegistry;
-  std::vector<CTSProgramMapFilter*> m_PMTFilterList;
-  unsigned char m_Version;
+  unsigned short m_Version;
   PayloadList* m_pPayloadList;
 };
 
 CTSProgramAssociationFilter::CTSProgramAssociationFilter(CTransportStream* pTransportStream, CTSFilterRegistry* pRegistry, PayloadList* pPayloadList) :
   m_pTransportStream(pTransportStream),
   m_pRegistry(pRegistry),
-  m_Version(0),
+  m_Version(0x100),
   m_pPayloadList(pPayloadList)
 {
 
@@ -624,11 +677,6 @@ CTSProgramAssociationFilter::CTSProgramAssociationFilter(CTransportStream* pTran
 CTSProgramAssociationFilter::~CTSProgramAssociationFilter()
 {
 
-}
-
-unsigned short CTSProgramAssociationFilter::GetProgramCount()
-{
-  return m_PMTFilterList.size();
 }
 
 bool CTSProgramAssociationFilter::ParseSection(unsigned char* pData, unsigned int len)
@@ -642,7 +690,7 @@ bool CTSProgramAssociationFilter::ParseSection(unsigned char* pData, unsigned in
   reader.ReadShort(16); // Transport Stream Id
   reader.UpdatePosition(2);
   unsigned char version = reader.ReadChar(5);
-  if (m_PMTFilterList.size() > 0 && m_Version == version) // This version has already been processed.
+  if (m_Version == version) // This version has already been processed.
     return true;
   bool current = reader.ReadBit(); // Current/Next Indicator
   unsigned char sectionId = reader.ReadChar(8); // Section Id
@@ -659,9 +707,8 @@ bool CTSProgramAssociationFilter::ParseSection(unsigned char* pData, unsigned in
       CTSProgram* pProgram = new CTSProgram();
       m_pTransportStream->AddProgram(pProgram);
 
-      // Create and register a filter for the Program
+      // Create and register a mapping filter for the Program
       CTSProgramMapFilter* pFilter = new CTSProgramMapFilter(pProgram, m_pRegistry, m_pPayloadList);
-      m_PMTFilterList.push_back(pFilter);
       m_pRegistry->RegisterFilter(pid, pFilter);
       
       XDMX_LOG_INFO("%s: Found Program %lu (0x%04x). PID: %lu (0x%04x).", __TS_MODULE__, program, program, pid, pid);
@@ -683,6 +730,7 @@ public:
   virtual ~CTransportStreamDemux();
   
   bool Open(IXdmxInputStream* pInput);
+  void Close();
   virtual CParserPayload* GetPayload();
   CTransportStream* GetTransportStream();
   CElementaryStream* GetStreamById(unsigned short id);
@@ -695,8 +743,8 @@ protected:
 
   // System Layer Information
   CTSFilterRegistry m_FilterRegistry;
-  CTSProgramAssociationFilter m_PATFilter;
-  CTransportStream m_TransportStream;
+  CTSProgramAssociationFilter* m_pPATFilter;
+  CTransportStream* m_pTransportStream;
   PayloadList m_PayloadList;
 
   // Input Configuration
@@ -719,7 +767,8 @@ protected:
 };
 
 CTransportStreamDemux::CTransportStreamDemux(TSTransportType type /*= TS_TYPE_UNKNOWN*/) :
-  m_PATFilter(&m_TransportStream, &m_FilterRegistry, &m_PayloadList),
+  m_pTransportStream(NULL),
+  m_pPATFilter(NULL),
   m_StreamType(type),
   m_PacketSize(188),
   m_pInput(NULL),
@@ -735,7 +784,7 @@ CTransportStreamDemux::CTransportStreamDemux(TSTransportType type /*= TS_TYPE_UN
 
 CTransportStreamDemux::~CTransportStreamDemux()
 {
-  delete[] m_pCache;
+  Close();
 }
 
 bool CTransportStreamDemux::FillCache(unsigned int offset /*= 0*/)
@@ -775,24 +824,61 @@ bool CTransportStreamDemux::Open(IXdmxInputStream* pInput)
   if (!FillCache()) // TODO: Should we wait to fill the cache?
     return false;
 
+  // Create stream hierarchy root object
+  m_pTransportStream = new CTransportStream();
+
   // Register known PID filters
-  m_FilterRegistry.RegisterFilter(0x000, &m_PATFilter);
+  m_pPATFilter = new CTSProgramAssociationFilter(m_pTransportStream, &m_FilterRegistry, &m_PayloadList);
+  m_FilterRegistry.RegisterFilter(0x000, m_pPATFilter);
 
   // Read in the Program Association Table. We cannot parse anything without it.
-  while (m_PATFilter.GetProgramCount() == 0)
+  while (m_pTransportStream->GetProgramCount() == 0)
   {
     if (!ProcessNext())
       return false;
   }
 
   // Read packets until each PMT has been received
-  while (m_TransportStream.GetProgram(m_TransportStream.GetProgramCount() - 1)->GetStreamCount() == 0) // TODO: Find a better way to decide when we have enough information
+  // TODO: Find a better way to decide when we have enough information
+  while (m_pTransportStream->GetProgram(m_pTransportStream->GetProgramCount() - 1)->GetStreamCount() == 0) 
   {
     if (!ProcessNext())
       return false;
   }
 
-  return ProbeStreams(m_TransportStream.GetProgramCount() - 1);
+  // Try to probe streams for format information
+  return ProbeStreams(m_pTransportStream->GetProgramCount() - 1);
+}
+
+void CTransportStreamDemux::Close()
+{
+  // Reset members
+  m_StreamType = TS_TYPE_UNKNOWN;
+  m_PacketSize = 188;
+  m_pInput = NULL; // TODO: Is this cleaned-up by the caller?
+  m_MaxCacheSize = 0;
+  m_CacheSize = 0;
+  m_CacheOffset = 0;
+  m_PacketCount = 0;
+  m_HDMVArrivalTime = 0;
+
+  // Clean-up input cache
+  delete[] m_pCache;
+  m_pCache = NULL;
+
+  // Clean-up any remaining payload data
+  while (m_PayloadList.size())
+  {
+    delete m_PayloadList.front();
+    m_PayloadList.pop_front();
+  }
+
+  // Reset the filter registry
+  m_FilterRegistry.UnregisterAll(true);
+
+  // Clean-Up stream hierarchy
+  delete m_pTransportStream;
+  m_pTransportStream = NULL;
 }
 
 CParserPayload* CTransportStreamDemux::GetPayload()
@@ -966,7 +1052,7 @@ unsigned char* CTransportStreamDemux::ReadPacketSync(unsigned int* syncBytes)
 
 CTransportStream* CTransportStreamDemux::GetTransportStream()
 {
-  return &m_TransportStream;
+  return m_pTransportStream;
 }
 
 CElementaryStream* CTransportStreamDemux::GetStreamById(unsigned short id)
@@ -981,7 +1067,7 @@ bool CTransportStreamDemux::ProbeStreams(unsigned int program)
 {
   // Read packets until a payload has been received by each stream, this will allow 
   // each parser to probe for stream parameters
-  CTSProgram* pProgram = m_TransportStream.GetProgram(program);
+  CTSProgram* pProgram = m_pTransportStream->GetProgram(program);
   unsigned int streamsToProbe = pProgram->GetStreamCount();
   CElementaryStream** pStreams = new CElementaryStream*[streamsToProbe];
   for (unsigned int s = 0; s < streamsToProbe; s++)

@@ -67,10 +67,10 @@ enum
 class IPacketFilter
 {
 public:
+  virtual ~IPacketFilter() {}
   virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit) = 0;
 protected:
   IPacketFilter() {}
-  virtual ~IPacketFilter() {}
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,10 +81,12 @@ class CPESParser : public IPacketFilter
 {
 public:
   CPESParser(CElementaryStream* pStream, PayloadList* pPayloadList);
+  virtual ~CPESParser();
   virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
   virtual bool ProbeFormat(unsigned char* pData, unsigned int len) = 0;
 protected:
   virtual bool Parse(unsigned char* pHeader, unsigned int headerLen, unsigned char* pData, unsigned int dataLen);
+  bool CompletePayload();
   void SetTimeStamps(CParserPayload* pPayload, uint64_t pts, uint64_t dts);
 
   CElementaryStream* m_pStream;
@@ -104,6 +106,7 @@ protected:
 class CPESParserStandard : public CPESParser
 {
 public:
+  virtual ~CPESParserStandard() {}
   CPESParserStandard(CElementaryStream* pStream, PayloadList* pPayloadList);
 protected:
   virtual bool ProbeFormat(unsigned char* pData, unsigned int len);
@@ -112,6 +115,7 @@ protected:
 class CPESParserLPCM : public CPESParser
 {
 public:
+  virtual ~CPESParserLPCM() {}
   CPESParserLPCM(CElementaryStream* pStream, PayloadList* pPayloadList);
   virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
 protected:

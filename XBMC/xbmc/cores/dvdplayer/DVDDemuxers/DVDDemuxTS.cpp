@@ -237,7 +237,12 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
 
 void CDVDDemuxTS::Dispose()
 {
-  
+  if (m_pInnerDemux)
+  {
+    m_pInnerDemux->Close();
+    delete m_pInnerDemux;
+  }
+  m_pInnerDemux = NULL;
 }
 
 void CDVDDemuxTS::Reset()
@@ -289,7 +294,7 @@ DemuxPacket* CDVDDemuxTS::GetNextPacket()
   pDmx->pts = pPayload->GetPts() * DVD_TIME_BASE;
   pDmx->dts = pPayload->GetDts() * DVD_TIME_BASE;
   pDmx->iGroupId = 0;
-  pDmx->duration = 0; // Unknown
+  pDmx->duration = 0; // Unknown as of yet
   pDmx->iStreamId = pPayload->GetStream()->GetProperty('xbid').int32Val;
 
   m_StreamCounterList[pPayload->GetStream()->GetId()] += pDmx->iSize;

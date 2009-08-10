@@ -142,15 +142,14 @@ protected:
 class CTSProgram
 {
 public:
+  CTSProgram();
+  virtual ~CTSProgram();
   void AddStream(CElementaryStream* pStream);
   unsigned int GetStreamCount();
   CElementaryStream* GetStream(unsigned int index);
-  void AddStreamDescriptor(unsigned int streamIndex, CTSDescriptor* pDesc);
-  CTSDescriptor* GetStreamDescriptor(unsigned int streamIndex, unsigned char tag);
   CProgramClock* GetClock();
 protected:
   std::vector<CElementaryStream*> m_StreamList;
-  std::vector<TSDescriptorList*> m_StreamDescriptorList;
   CProgramClock m_Clock;
 };
 
@@ -159,6 +158,8 @@ protected:
 class CTransportStream
 {
 public:
+  CTransportStream();
+  virtual ~CTransportStream();
   void AddProgram(CTSProgram* pProgram);
   unsigned int GetProgramCount();
   CTSProgram* GetProgram(unsigned int index);
@@ -173,6 +174,7 @@ class ITransportStreamDemux
 public:
   virtual ~ITransportStreamDemux() {}
   virtual bool Open(IXdmxInputStream* pInput) = 0;
+  virtual void Close() = 0;
   // Retrieve the next Elementary Stream Payload
   virtual CParserPayload* GetPayload() = 0;
   // Program Stream Information
