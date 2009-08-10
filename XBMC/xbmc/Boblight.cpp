@@ -148,6 +148,7 @@ void CBoblight::Cleanup()
   
   CSingleLock lock(m_critsection);
   m_isenabled = false;
+  m_priority = 255;
 }
 
 void CBoblight::Run()
