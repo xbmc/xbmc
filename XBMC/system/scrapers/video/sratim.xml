@@ -75,7 +75,7 @@
 			<RegExp input="$$1" output="&lt;url function=&quot;GetIMDBDetails&quot;&gt;http://www.imdb.com/title/\1/&lt;/url&gt;" dest="5+">
 				<expression trim="1" repeat="no">http://www\.imdb\.com/title/(tt\d+?)'</expression>
 			</RegExp>
-                        <RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
+                        <RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
 				<expression trim="1" repeat="no">http://www\.imdb\.com/title/(tt\d+?)'</expression>
                         </RegExp>
 			<RegExp conditional="imdbrank" input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
@@ -112,17 +112,4 @@
                         <expression noclean="1"></expression>
                 </RegExp>
         </GetTrailer>
-        <GetTMDBId dest="5">
-                <RegExp conditional="fanart" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
-                        <expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-                </RegExp>
-        </GetTMDBId>
-        <GetTMDBFanart dest="5">
-                <RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="2">
-                                <expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
-                        </RegExp>
-                        <expression noclean="1">(.+)</expression>
-                </RegExp>
-        </GetTMDBFanart>
 </scraper>

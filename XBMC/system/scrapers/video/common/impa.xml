@@ -1,0 +1,24 @@
+<scraperfunctions>
+	<GetIMPALink dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAThumbs&quot;&gt;http://\1impawards.com/\2&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression noclean="1,2">http://([^&quot;]*)impawards.com/([^&quot;]*)&quot;&gt;</expression>
+		</RegExp>
+	</GetIMPALink>
+	<GetIMPAThumbs dest="6">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="6">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetIMPAThumbs&quot;&gt;http://www.impawards.com/\1&lt;/url&gt;" dest="4">
+				<expression noclean="1">&lt;meta http-equiv=&quot;REFRESH&quot; content=&quot;0;URL=[^/]*/([^&quot;]*)&quot;&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="4+">
+				<expression noclean="1">value=&quot;/([^&quot;]*)/[^&quot;]*\.html&quot;&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\2&lt;/thumb&gt;" dest="4+">
+				<expression noclean="1">&lt;img (SRC|src)=&quot;posters/([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="4+">
+				<expression repeat="yes" noclean="1">thumbs/imp_([^&gt;]*ver[^&gt;]*.jpg)&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetIMPAThumbs>
+</scraperfunctions>

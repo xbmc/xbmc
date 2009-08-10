@@ -72,6 +72,8 @@ private:
   const char* m_date;
   const char* m_SearchStringEncoding;
 
+  CStdString m_strFile;
+
   CScraperSettings* m_settings;
 };
 
