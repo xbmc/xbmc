@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-07-28" name="allmusic &amp; merlin.pl &amp; lastfm.pl" content="albums" thumb="allmusic.gif">
+<scraper framework="1.1" date="2009-08-11" name="allmusic &amp; merlin.pl &amp; lastfm.pl" content="albums" thumb="allmusic.gif">
+	<include>common/htbackdrops.xml</include>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="\1" dest="3">
 			<expression>(http://www.allmusic.com/cg/.*)</expression>
@@ -186,10 +187,10 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;http://image.allmusic.com/00/amg/pic200/dr\1\200/\1\2\3\4/\1\2\3\4\5.jpg&lt;/thumb&gt;" dest="7+">
 				<expression noclean="1" repeat="yes">&quot;([A-Z^])([0-9^])([0-9^])([0-9^])([^&quot;]*)&quot;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="8">
@@ -240,20 +241,4 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDiscography>
-	<GetFanart dest="5">
-		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart url=&quot;http://www.htbackdrops.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;data/thumbnails/\2&quot;&gt;data/media/\2&lt;/thumb&gt;" dest="13">
-				<expression noclean="1" repeat="yes">mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetFanart>
-	<GetThumbs dest="5">
-		<RegExp input="$$13" output="&lt;details&gt;\1$$7&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://www.htbackdrops.com/data/thumbnails/\2&quot;&gt;http://www.htbackdrops.com/data/media/\2&lt;/thumb&gt;" dest="13">
-				<expression noclean="1" repeat="yes">mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetThumbs>
 </scraper>
