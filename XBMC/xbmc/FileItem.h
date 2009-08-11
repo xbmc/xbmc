@@ -131,7 +131,7 @@ public:
   bool IsMythTV() const;
   bool IsHDHomeRun() const;
   bool IsVTP() const;
-  bool IsTV() const;
+  bool IsLiveTV() const;
 
   void RemoveExtension();
   void CleanString();

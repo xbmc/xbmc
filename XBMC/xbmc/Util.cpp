@@ -1028,13 +1028,17 @@ bool CUtil::IsHTSP(const CStdString& strFile)
   return strFile.Left(5).Equals("htsp:");
 }
 
-bool CUtil::IsTV(const CStdString& strFile)
+bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile)
-      || IsTuxBox(strFile)
-      || IsVTP(strFile)
-      || IsHDHomeRun(strFile)
-      || IsHTSP(strFile);
+  CURL url(strFile);
+
+  if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
+    return true;
+
+  if (IsMythTV(strFile) && url.GetFileName().Left(9) == "channels/")
+    return true;
+
+  return false;
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)

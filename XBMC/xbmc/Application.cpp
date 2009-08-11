@@ -4681,8 +4681,8 @@ void CApplication::SaveFileState()
 
 void CApplication::UpdateFileState()
 {
-  // No resume for tv related items
-  if (m_progressTrackingItem->IsTV())
+  // No resume for livetv
+  if (m_progressTrackingItem->IsLiveTV())
     return;
 
   // Did the file change?

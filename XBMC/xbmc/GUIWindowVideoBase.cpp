@@ -186,7 +186,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           CFileItemPtr item = m_vecItems->Get(iItem);
           if (m_vecItems->IsPlugin())
             info.strContent = "plugin";
-          else if(m_vecItems->IsTV())
+          else if(m_vecItems->IsLiveTV())
             info.strContent = "livetv";
           else
           {
@@ -880,7 +880,7 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 {
   // do not resume livetv
-  if (item->IsTV())
+  if (item->IsLiveTV())
     return 0;
 
   m_database.Open();
@@ -940,7 +940,7 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
   // we always resume the movie if the user doesn't want us to ask
   bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
 
-  if (!item.m_bIsFolder && !item.IsTV() && !resumeItem)
+  if (!item.m_bIsFolder && !item.IsLiveTV() && !resumeItem)
   {
     // check to see whether we have a resume offset available
     CVideoDatabase db;
@@ -1854,7 +1854,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, SScraperInfo &info, 
     info.strContent = "plugin";
     return 0;
   }
-  else if(m_vecItems->IsTV())
+  else if(m_vecItems->IsLiveTV())
   {
     info.strContent = "livetv";
     return 0;
