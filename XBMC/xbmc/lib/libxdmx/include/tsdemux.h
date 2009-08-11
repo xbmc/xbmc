@@ -63,7 +63,7 @@ enum
   ES_STREAM_TYPE_USER_PRIVATE             = 0x80, // LPCM if Stream Registration Descriptor Format == "HDMV"
   ES_STREAM_TYPE_AUDIO_AC3                = 0x81,
   ES_STREAM_TYPE_AUDIO_HDMV_DTS           = 0x82,
-  ES_STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD   = 0x83,
+  ES_STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD   = 0x83, // True-HD with AC3 core (BluRay Only)
   ES_STREAM_TYPE_AUDIO_HDMV_AC3_PLUS      = 0x84,
   ES_STREAM_TYPE_AUDIO_HDMV_DTS_HD        = 0x85,
   ES_STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER = 0x86,

@@ -157,6 +157,11 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
     dmxStream.a->codec = CODEC_ID_AC3;
     pTypeName = "AC3 Audio";
     break;
+  case ES_STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
+    dmxStream.a = new CDemuxStreamAudio();
+    dmxStream.a->codec = CODEC_ID_MLP;
+    pTypeName = "TrueHD Audio";
+    break;
   case ES_STREAM_TYPE_AUDIO_DTS:
     dmxStream.a = new CDemuxStreamAudio();
     dmxStream.a->codec = CODEC_ID_DTS;
@@ -225,7 +230,15 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
             dmxStream.v->iWidth = (((pHeader[2] << 4) | (pHeader[3] >> 4)) + 1) << 1;
             dmxStream.v->iHeight = ((((pHeader[3] & 0x0F) << 8) | pHeader[4]) + 1) << 1;
           }
-
+          // For Simple or Main Profile, a VC-1_SPMP_PESPacket_PayloadFormatHeader shall be present at the beginning of every AU,
+          // and shall always begin with start code 0x0000010f or 0x0000010d
+          // If 0x0000010f then:
+          // struct formatHeader {
+          //   unsigned short frame_width;
+          //   unsigned short frame_height;
+          //   STRUCT_SEQUENCE_HEADER_C seq_header; // 32-bits
+          //   unsigned int start_code; // 0x0000010d
+          // If 0x0000010d then no data
           m_PacketQueue.push_back(pDmx);
           break;
         }

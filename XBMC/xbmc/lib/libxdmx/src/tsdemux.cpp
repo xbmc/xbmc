@@ -622,6 +622,16 @@ unsigned int CTSProgramMapFilter::ParseStreamDescriptor(CSimpleBitstreamReader& 
   switch (tag)
   {
   case TS_DESC_REGISTRATION: // Registration Descriptor
+    // TODO: Parse sub-descriptors
+    // struct subDesc{
+    //  unsigned char tag;
+    //  ...
+    // };
+    // VC-1 sub-descriptors:
+    // 0x01 - Profile Level (+ 8 bits)
+    // 0x02 - Alignment (+ 8 bits)
+    // 0x03 - Buffer Size (+ 4 bits + 16 bits)
+    // 0xff - NULL
     formatId[0] = reader.ReadChar(8);
     formatId[1] = reader.ReadChar(8);
     formatId[2] = reader.ReadChar(8);

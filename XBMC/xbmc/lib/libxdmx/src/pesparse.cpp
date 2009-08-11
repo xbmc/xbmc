@@ -97,7 +97,7 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
 
 void CPESParser::SetTimeStamps(CParserPayload* pPayload, uint64_t pts, uint64_t dts)
 {
-  // Scale timestamps to 27 MHz Clock
+  // Scale timestamps to 90 KHz Clock
   pPayload->SetPts((double)pts/90000.0);
   if (dts == 0)
     dts = pts;
@@ -204,10 +204,10 @@ bool CPESParser::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned 
   {
     // Extended Flags
     bool private_data_flag = (pHeader[0] & 0x80) == 0x80;
-    bool pack_header_flag = (pHeader[0] & 0x80) == 0x40;
-    bool seq_counter_flag = (pHeader[0] & 0x80) == 0x20;
-    bool pstd_buffer_flag = (pHeader[0] & 0x80) == 0x10;
-    bool pes_ext_flag_2 = (pHeader[0] & 0x80) == 0x01;
+    bool pack_header_flag = (pHeader[0] & 0x40) == 0x40;
+    bool seq_counter_flag = (pHeader[0] & 0x20) == 0x20;
+    bool pstd_buffer_flag = (pHeader[0] & 0x10) == 0x10;
+    bool pes_ext_flag_2 = (pHeader[0] & 0x01) == 0x01;
     pHeader += 1;
     headerLen -= 1;
 
@@ -247,21 +247,31 @@ bool CPESParser::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned 
 
     if (pes_ext_flag_2)
     {
-      //unsigned char extensionLen = pHeader[0] & 0x7f; // Extension Field Length
-      bool id_ext_flag = ((pHeader[0] & 0x80) != 0x80);
+      unsigned char extensionLen = pHeader[0] & 0x7f; // Extension Field Length
+      bool id_ext_flag = ((pHeader[0] & 0x60) != 0x60);
       if (streamId == PES_ID_EXTENDED && id_ext_flag) // Extended Stream Id
       {
-        extStreamId = pHeader[0] & 0x7f;
+        // The extended id serves many purposes. It's meaning depends on the stream type
+        // For True-HD and DTS-HD streams, it indicates the sub-stream
+        extStreamId = pHeader[1] & 0x7f;
       }
-      pHeader += 2;
-      headerLen -= 2;
+      pHeader += (extensionLen + 1);
+      headerLen -= (extensionLen + 1);
     }
+  }
+
+  if (m_pStream->GetElementType() == 0x83)
+  {
+    // Only pass-on those packets belonging to the active sub-stream
+    // TODO: How do we decide which substream to keep
+    // TODO: This is a hack and needs to be put in the correct place
+    // Really should expose both the HD stream and the core separately
+    if (extStreamId != PES_ID_EXT_HDMV_DTS_HD_TRUE_HD)
+      return false;
   }
 
   CParserPayload* pPayload = new CParserPayload(m_pStream, pData, dataLen);
 
-  if (!dts)
-    dts = pts;
   SetTimeStamps(pPayload, pts, dts);
 
   m_BytesOut += pPayload->GetSize();

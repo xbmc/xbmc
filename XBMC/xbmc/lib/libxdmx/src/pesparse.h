@@ -59,7 +59,8 @@ enum
   PES_ID_EXT_DIRAC_0             = 0x60,
   PES_ID_EXT_DIRAC_15            = 0x6f,
   PES_ID_EXT_AC3                 = 0x71,
-  PES_ID_EXT_HDMV_AC3_TRUE_HD    = 0x76
+  PES_ID_EXT_HDMV_DTS_HD_TRUE_HD = 0x72,
+  PES_ID_EXT_HDMV_AC3_CORE       = 0x76
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
