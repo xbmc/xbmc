@@ -74,7 +74,7 @@ public:
   // release the singleton; (save to call multiple times)
   static void   ReleaseInstance();
   // returns false if ReleaseInstance() was called befores
-  static bool   IsInstantiated() { return  GetInstance() != 0; }
+  static bool   IsInstantiated() { return  smp_instance != 0; }
   
 protected:
   //methods to implement for concrete implementations

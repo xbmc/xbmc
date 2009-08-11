@@ -1864,8 +1864,11 @@ void CApplication::StartZeroconf()
 void CApplication::StopZeroconf()
 {
 #ifdef HAS_ZEROCONF
-  CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
-  CZeroconf::GetInstance()->Stop();
+  if(CZeroconf::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
+    CZeroconf::GetInstance()->Stop();
+  }
 #endif
 }
 
