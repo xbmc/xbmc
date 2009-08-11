@@ -77,7 +77,7 @@
 				<expression>&lt;LocalTitle&gt;([^&lt;]*)&lt;/LocalTitle&gt;</expression>
 			</RegExp>
 			<!--SortTitle-->
-			<RegExp input="$$1" output="&lt;sorttitle&gt;\1&lt;/sorttitle&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;sorttitle&gt;\1&lt;/sorttitle&gt;" dest="5+">
 				<expression>&lt;SortTitle&gt;([^&lt;]*)&lt;/SortTitle&gt;</expression>
 			</RegExp>
 			<!--Year-->
