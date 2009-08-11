@@ -26,17 +26,17 @@
 			<expression clear="yes" noclean="1">(themoviedb.org/movie/)([0-9]*)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt\2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="3+">
-                	<expression>(imdb.com/title/tt)([0-9]*)</expression>
+			<expression>(imdb.com/title/tt)([0-9]*)</expression>
 		</RegExp>
 		<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt\2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="3+">
-                	<expression>(imdb.com/)Title\?([0-9]+)</expression>
+			<expression>(imdb.com/)Title\?([0-9]+)</expression>
 		</RegExp>
 	</NfoUrl>
 	<GetTMDBId dest="3">
 		<RegExp input="$$1" output="&lt;url cache=&quot;tmdb-\1.xml&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;" dest="3+">
-                        <expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-                </RegExp>
-        </GetTMDBId>
+			<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
+		</RegExp>
+	</GetTMDBId>
 	<GetSearchResults dest="8">
 		<RegExp input="$$3" output="&lt;results&gt;\1&lt;/result&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;id&gt;\2&lt;/id&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url cache=&quot;tmdb-\2.xml&quot; &gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/entity&gt;" dest="3">
@@ -77,17 +77,17 @@
 			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
 				<expression repeat="yes">&lt;person job=&quot;actor&quot;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;role&gt;([^&lt;]*)&lt;/role&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt; cache=&quot;tmdb-$$3.xml&quot; function=&quot;GetTMDBThumbs&quot;&gt;$$2&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url cache=&quot;tmdb-$$2.xml&quot; function=&quot;GetTMDBThumbs&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			
+
 			<RegExp conditional="fanart" input="$$1" output="&lt;url cache=&quot;tmdb-$$2.xml&quot; function=&quot;GetTMDBFanart&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp conditional="trailer" input="$$6" output="&lt;url function=&quot;GetDTrailerLink&quot;&gt;http://en.dtrailer.com/movies/search/\1&lt;/url&gt;" dest="5+">
 				<RegExp input="$$4" output="\1-" dest="6">
 					<RegExp input="$$1" output="\1" dest="4">
-					  <expression>&lt;title&gt;([^&lt;]*)&lt;/title&gt;</expression>
+						<expression>&lt;title&gt;([^&lt;]*)&lt;/title&gt;</expression>
 					</RegExp>
 					<expression repeat="yes">([a-zA-Z0-9]+)</expression>
 				</RegExp>
