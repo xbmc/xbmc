@@ -46,7 +46,7 @@ CXdmxInputStream::CXdmxInputStream(CDVDInputStream* pInputStream) :
 
 CXdmxInputStream::~CXdmxInputStream()
 {
-  
+
 }
 
 unsigned int CXdmxInputStream::Read(unsigned char* buf, unsigned int len)
@@ -96,8 +96,7 @@ CDVDDemuxTS::CDVDDemuxTS() :
 
 CDVDDemuxTS::~CDVDDemuxTS()
 {
-  delete m_pInput;
-  delete m_pInnerDemux;
+  Dispose();
 }
 
 bool CDVDDemuxTS::Open(CDVDInputStream* pInput, TSTransportType type)
@@ -241,8 +240,10 @@ void CDVDDemuxTS::Dispose()
   {
     m_pInnerDemux->Close();
     delete m_pInnerDemux;
+    m_pInnerDemux = NULL;
   }
-  m_pInnerDemux = NULL;
+  delete m_pInput;
+  m_pInput = NULL;
 }
 
 void CDVDDemuxTS::Reset()

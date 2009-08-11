@@ -1,4 +1,5 @@
 
+#include <windows.h>
 #include "xdmx.h"
 #include "tsdemux.h"
 #include <iostream>
@@ -98,11 +99,13 @@ CFileStream* m_pInput;
 int main() 
 {
   m_pInput = new CFileStream();
-  if (!m_pInput->Open("Z:\\video\\HD Movies\\Casino Royale (BluRay).m2ts"))
+//  if (!m_pInput->Open("Z:\\video\\HD Movies\\Casino Royale (BluRay).m2ts")) // H264
+  if (!m_pInput->Open("Z:\\video\\HD Movies\\V For Vendetta (BluRay).m2ts")) // VC1
   {
     return 1;
   }
-  m_pDemux = CreateTSDemux();
+  m_pDemux = CreateTSDemux(TS_TYPE_M2TS);
+
   if (!m_pDemux->Open(dynamic_cast<IXdmxInputStream*>(m_pInput)))
   {
     return 2;
@@ -132,9 +135,10 @@ int main()
     }
     dmx.dts -= m_StartTime;
     dmx.pts -= m_StartTime;
-    printf("*** Got One *** stream: %d, size: %lu, pts: %0.06f, dts: %0.06f\n", dmx.iStreamId, dmx.iSize, dmx.pts, dmx.dts);
+    //printf("*** Got One *** stream: %d, size: %lu, pts: %0.06f, dts: %0.06f\n", dmx.iStreamId, dmx.iSize, dmx.pts, dmx.dts);
     delete pPayload;
-    delete[] dmx.pData;
+    _aligned_free(dmx.pData);
+    Sleep(5);
   }
 
 	return 0;

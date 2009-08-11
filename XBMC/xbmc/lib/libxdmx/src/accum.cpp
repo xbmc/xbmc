@@ -107,6 +107,8 @@ unsigned char* CPayloadAccumulator::Detach(bool release /*= false*/)
 {
   Reset();
   unsigned char* pData = m_pData;
+  if (m_BufferLen > 65535)
+    m_BufferLen = 65535;
   m_pData = CreateBuffer(m_BufferLen);
   if (release)
   {
