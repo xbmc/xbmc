@@ -44,7 +44,7 @@ bool DllLibCurlGlobal::Load()
     return false;
   }
 
-  if (global_init(CURL_GLOBAL_WIN32))
+  if (global_init(CURL_GLOBAL_ALL))
   {
     DllDynamic::Unload();
     CLog::Log(LOGERROR, "Error inializing libcurl");
