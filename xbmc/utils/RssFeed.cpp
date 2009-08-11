@@ -124,24 +124,24 @@ bool CRssFeed::ReadFeed()
     for (item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement())
     {
       if (strcmp(item_child->Value(), "title") == 0)
-	  {
+      {
         if (item_child->GetText())
           item->SetLabel(item_child->GetText());
       }
       else if (strcmp(item_child->Value(), "pubDate") == 0)
-	  {
+      {
         CDateTime pubDate(ParseDate(item_child->GetText()));
         item->m_dateTime = pubDate;
       }
       else if (strcmp(item_child->Value(), "link") == 0)
-	  {
+      {
         if (item_child->GetText())
-		{
+        {
           string strLink = item_child->GetText();
 
           string strPrefix = strLink.substr(0, strLink.find_first_of(":"));
           if (strPrefix == "rss")
-		  {
+          {
             // If this is an rss item, we treat it as another level in the directory
             item->m_bIsFolder = true;
             item->m_strPath = strLink;
@@ -151,13 +151,13 @@ bool CRssFeed::ReadFeed()
         }
       }
       else if(strcmp(item_child->Value(), "enclosure") == 0)
-	  {
+      {
         const char * url = item_child->Attribute("url");
         if (url && item->m_strPath.IsEmpty() && IsPathToMedia(url))
           item->m_strPath = url;
         const char * content_type = item_child->Attribute("type");
         if (content_type)
-		{
+        {
           item->SetContentType(content_type);
           CStdString strContentType(content_type);
           if (url && item->m_strPath.IsEmpty() &&
@@ -171,14 +171,14 @@ bool CRssFeed::ReadFeed()
           item->m_dwSize = _atoi64(len);
       }
       else if(strcmp(item_child->Value(), "media:content") == 0)
-	  {
+      {
         const char * url = item_child->Attribute("url");
         if (url && item->m_strPath == "" && IsPathToMedia(url))
           item->m_strPath = url;
 
         const char * content_type = item_child->Attribute("type");
         if (content_type)
-		{
+        {
           item->SetContentType(content_type);
           CStdString strContentType(content_type);
           if (url && item->m_strPath.IsEmpty() &&
@@ -198,9 +198,9 @@ bool CRssFeed::ReadFeed()
         }
       }
       else if(strcmp(item_child->Value(), "guid") == 0)
-	  {
+      {
         if (item->m_strPath.IsEmpty() && IsPathToMedia(item_child->Value()))
-		{
+        {
           if(item_child->GetText())
             item->m_strPath = item_child->GetText();
         }
@@ -208,7 +208,7 @@ bool CRssFeed::ReadFeed()
       else if(strcmp(item_child->Value(), "media:thumbnail") == 0 && IsPathToThumbnail(item_child->GetText()))
         item->SetThumbnailImage(item_child->GetText());
       else if(strcmp(item_child->Value(), "media:thumbnail") == 0)
-	  {
+      {
         const char * url = item_child->Attribute("url");
         if(url && IsPathToThumbnail(url))
           item->SetThumbnailImage(url);
@@ -216,15 +216,15 @@ bool CRssFeed::ReadFeed()
       else if(strcmp(item_child->Value(), "itunes:image") == 0 && IsPathToThumbnail(item_child->GetText()))
         item->SetThumbnailImage(item_child->GetText());
       else if(strcmp(item_child->Value(), "itunes:image") == 0)
-	  {
+      {
         const char * url = item_child->Attribute("href");
         if(url && IsPathToThumbnail(url))
           item->SetThumbnailImage(url);
       }
       else if(strcmp(item_child->Value(), "description") == 0)
-	  {
+      {
         if(item_child->GetText())
-		{
+        {
           CStdString description = item_child->GetText();
           while (description.Find("<") != -1)
           {
@@ -241,35 +241,35 @@ bool CRssFeed::ReadFeed()
         }
       }
       else if(strcmp(item_child->Value(), "itunes:summary") == 0)
-	  {
+      {
         if(item_child->GetText())
-		{
+        {
           CStdString description = item_child->GetText();
           item->SetProperty("description", description);
           item->SetLabel2(description);
         }
       }
       else if(strcmp(item_child->Value(), "itunes:subtitle") == 0)
-	  {
+      {
         if(item_child->GetText())
-		{
+        {
           CStdString description = item_child->GetText();
           item->SetProperty("description", description);
           item->SetLabel2(description);
         }
       }
       else if(strcmp(item_child->Value(), "itunes:author") == 0)
-	  {
+      {
         if(item_child->GetText())
           item->SetProperty("author", item_child->GetText());
       }
       else if(strcmp(item_child->Value(), "itunes:duration") == 0)
-	  {
+      {
         if(item_child->GetText())
           item->SetProperty("duration", item_child->GetText());
       }
       else if(strcmp(item_child->Value(), "itunes:keywords") == 0)
-	  {
+      {
         if(item_child->GetText())
           item->SetProperty("keywords", item_child->GetText());
       }
