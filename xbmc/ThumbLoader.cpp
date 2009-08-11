@@ -89,7 +89,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   if (!g_guiSettings.GetBool("myvideos.autothumb"))
     return false;
 
-  if (CUtil::IsTV(strPath)
+  if (CUtil::IsLiveTV(strPath)
   ||  CUtil::IsUPnP(strPath)
   ||  CUtil::IsDAAP(strPath))
     return false;

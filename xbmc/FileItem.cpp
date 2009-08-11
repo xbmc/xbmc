@@ -799,9 +799,9 @@ bool CFileItem::IsVTP() const
   return CUtil::IsVTP(m_strPath);
 }
 
-bool CFileItem::IsTV() const
+bool CFileItem::IsLiveTV() const
 {
-  return CUtil::IsTV(m_strPath);
+  return CUtil::IsLiveTV(m_strPath);
 }
 
 bool CFileItem::IsHD() const
@@ -1003,7 +1003,7 @@ void CFileItem::RemoveExtension()
 
 void CFileItem::CleanString()
 {
-  if (IsTV())
+  if (IsLiveTV())
     return;
 
   bool bIsFolder = m_bIsFolder;
@@ -1917,7 +1917,7 @@ void CFileItemList::Stack()
   CSingleLock lock(m_lock);
 
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsTV())
+  if (IsVirtualDirectoryRoot() || IsLiveTV())
     return;
 
   // items needs to be sorted for stuff below to work properly
@@ -2446,7 +2446,7 @@ CStdString CFileItem::GetUserVideoThumb() const
   || IsInternetStream()
   || CUtil::IsUPnP(m_strPath)
   || IsParentFolder()
-  || IsTV())
+  || IsLiveTV())
     return "";
 
 
@@ -2610,7 +2610,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   // no local fanart available for these
   if (IsInternetStream()
   || CUtil::IsUPnP(strFile)
-  || IsTV() 
+  || IsLiveTV() 
   || IsPlugin() 
   || CUtil::IsFTP(strFile))
     return "";
@@ -3000,7 +3000,7 @@ CStdString CFileItem::FindTrailer() const
   }
 
   // no local trailer available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsLiveTV() || IsPlugin())
     return strTrailer;
 
   CStdString strDir;
