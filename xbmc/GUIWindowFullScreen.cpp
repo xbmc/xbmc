@@ -551,6 +551,14 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
       pOSD->DoModal();
     }
   }
+  if (g_Mouse.GetWheel())
+  { // Mouse wheel
+    int wheel = abs(g_Mouse.GetWheel());
+    CAction action;
+    action.fAmount1 = 0.5f * (float)wheel;
+    action.wID = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    return g_application.OnAction(action);
+  }
   return true;
 }
 
