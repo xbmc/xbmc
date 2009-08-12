@@ -545,7 +545,7 @@ case TMSG_POWERDOWN:
         share.strName = share.strPath;
         share.m_ignore = true;
         share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-        g_mediaManager.AddAutoSource(share, true);
+        g_mediaManager.AddAutoSource(share, (bool)pMsg->dwParam1);
       }
       break; 
 
@@ -820,16 +820,17 @@ void CApplicationMessenger::Render()
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::OpticalMount(CStdString device) 
+void CApplicationMessenger::OpticalMount(CStdString device, bool bautorun) 
 { 
-  ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT}; 
-  tMsg.strParam = device; 
-  SendMessage(tMsg, false); 
+  ThreadMessage tMsg = {TMSG_OPTICAL_MOUNT};
+  tMsg.strParam = device;
+  tMsg.dwParam1 = (DWORD)bautorun;
+  SendMessage(tMsg, false);
 } 
  
 void CApplicationMessenger::OpticalUnMount(CStdString device) 
 { 
-  ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT}; 
-  tMsg.strParam = device; 
-  SendMessage(tMsg, false); 
+  ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT};
+  tMsg.strParam = device;
+  SendMessage(tMsg, false);
 } 

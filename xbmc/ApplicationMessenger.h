@@ -132,7 +132,7 @@ public:
   void Render(); // will call m_gWindowManager.Render on the rendering thread
   void ActivateWindow(int windowID, const CStdString &path, bool swappingWindows);
 
-  void OpticalMount(CStdString device); 
+  void OpticalMount(CStdString device, bool bautorun=false); 
  	void OpticalUnMount(CStdString device);
 
 private:
