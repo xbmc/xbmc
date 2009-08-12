@@ -105,6 +105,7 @@ public:
   virtual unsigned int Read(unsigned char* buf, unsigned int buf_size) = 0;
   virtual int64_t Seek(int64_t offset, int whence) = 0;
   virtual int64_t GetLength() = 0;
+  virtual int64_t GetPosition() = 0;
   virtual bool IsEOF() = 0;
 protected:
   IXdmxInputStream() {}

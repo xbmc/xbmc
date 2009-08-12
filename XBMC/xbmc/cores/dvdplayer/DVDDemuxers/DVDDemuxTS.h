@@ -33,11 +33,13 @@ public:
   virtual unsigned int Read(unsigned char* buf, unsigned int len);
   virtual __int64 Seek(__int64 offset, int whence);
   virtual __int64 GetLength();
+  virtual int64_t GetPosition();
   virtual bool IsEOF();
   bool Open(const char* pFilePath);
   CDVDInputStream* GetInnerStream();
 protected:
   CDVDInputStream* m_pInputStream;
+  __int64 m_Position;
 };
 
 class CDVDDemuxTS : public CDVDDemux

@@ -39,7 +39,8 @@ int XdmxLogFunc(const char* format, ...)
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 CXdmxInputStream::CXdmxInputStream(CDVDInputStream* pInputStream) :
-  m_pInputStream(pInputStream)
+  m_pInputStream(pInputStream),
+  m_Position(0)
 {
 
 }
@@ -52,14 +53,21 @@ CXdmxInputStream::~CXdmxInputStream()
 unsigned int CXdmxInputStream::Read(unsigned char* buf, unsigned int len)
 {
   if (m_pInputStream)
-    return m_pInputStream->Read(buf, len);
+  {
+    int ret = m_pInputStream->Read(buf, len);
+    m_Position += ret;
+    return ret;
+  }
   return 0;
 }
 
 __int64 CXdmxInputStream::Seek(__int64 offset, int whence)
 {
   if (m_pInputStream)
-    return m_pInputStream->Seek(offset, whence);
+  {
+    m_Position = m_pInputStream->Seek(offset, whence);
+    return m_Position;
+  }
   return 0;
 }
 
@@ -68,6 +76,11 @@ __int64 CXdmxInputStream::GetLength()
   if (m_pInputStream)
     return m_pInputStream->GetLength();
   return 0;
+}
+
+int64_t CXdmxInputStream::GetPosition()
+{
+  return m_Position;
 }
 
 bool CXdmxInputStream::IsEOF()
@@ -159,7 +172,8 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
     break;
   case ES_STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
     dmxStream.a = new CDemuxStreamAudio();
-    dmxStream.a->codec = CODEC_ID_MLP;
+//    dmxStream.a->codec = CODEC_ID_MLP;
+    dmxStream.a->codec = CODEC_ID_AC3; // Demux currently strips out core AC3 stream
     pTypeName = "TrueHD Audio";
     break;
   case ES_STREAM_TYPE_AUDIO_DTS:
@@ -167,7 +181,17 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
     dmxStream.a->codec = CODEC_ID_DTS;
     pTypeName = "DTS Audio";
     break;
-  case ES_STREAM_TYPE_AUDIO_MPEG2_AAC:
+ case ES_STREAM_TYPE_AUDIO_HDMV_DTS_HD:
+    dmxStream.a = new CDemuxStreamAudio();
+    dmxStream.a->codec = CODEC_ID_DTS; // Demux currently strips out core DTS stream
+    pTypeName = "DTS-HD Audio";
+    break;
+ case ES_STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER:
+    dmxStream.a = new CDemuxStreamAudio();
+    dmxStream.a->codec = CODEC_ID_DTS; // Demux currently strips out core DTS stream
+    pTypeName = "DTS-HD Master Audio";
+    break;
+ case ES_STREAM_TYPE_AUDIO_MPEG2_AAC:
     dmxStream.a = new CDemuxStreamAudio();
     dmxStream.a->codec = CODEC_ID_AAC;
     pTypeName = "AAC (MPEG-2 Part 7 Audio)";
@@ -222,7 +246,7 @@ void CDVDDemuxTS::AddStream(CElementaryStream* pStream)
           memset((char*)dmxStream.v->ExtraData + dmxStream.v->ExtraSize, 0, 8);
 
           // Parse sequence header
-          // TODO: Is this the best place for this?
+          // TODO: Is this the best place for this? No.
           // TODO: Find sequence header start code: 0x00 0x00 0x01 0x0F
           unsigned char* pHeader = (unsigned char*)dmxStream.v->ExtraData + 4;
           if ((pHeader[0] >> 6) == 0x3) // Advanced Profile
@@ -319,7 +343,15 @@ DemuxPacket* CDVDDemuxTS::GetNextPacket()
 
 bool CDVDDemuxTS::SeekTime(int time, bool backwards /*= false*/, double* startpts /*= NULL*/)
 {
-  return false;
+  if (!m_pInnerDemux)
+    return false;
+
+  // 'time' is in ms, startpts is in secs
+  double actual = m_pInnerDemux->SeekTime((double)time/1000.0 ) * DVD_TIME_BASE;
+  if (startpts)
+    *startpts = actual;
+
+  return true;
 }
 
 void CDVDDemuxTS::SetSpeed(int iSpeed)
@@ -329,7 +361,9 @@ void CDVDDemuxTS::SetSpeed(int iSpeed)
 
 int CDVDDemuxTS::GetStreamLength()
 {
-  return 0;
+  if (!m_pInnerDemux)
+    return 0;
+  return m_pInnerDemux->GetTotalTime() * 1000;
 }
 
 CDemuxStream* CDVDDemuxTS::GetStream(int iStreamId)

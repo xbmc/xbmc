@@ -254,6 +254,7 @@ CProgramClock::CProgramClock() :
   m_DeltaPos(0),
   m_Delta(0),
   m_LastBitrate(0),
+  m_FirstReference(0),
   m_Valid(false)
 {
   
@@ -279,8 +280,23 @@ void CProgramClock::AddReference(uint64_t position, uint64_t base, unsigned int 
     m_LastBitrate = 0;
     m_Valid = true;
     m_LastReferencePos = position;
-    m_LastReference = base * 300 + extension;
+    m_FirstReference = m_LastReference = base * 300 + extension;
   }
+}
+
+uint64_t CProgramClock::GetFirstReference()
+{
+  return m_FirstReference;
+}
+
+double CProgramClock::GetElapsedTime()
+{
+  return (double)(m_LastReference - m_FirstReference) / (double)m_SysClockFreq;
+}
+
+bool CProgramClock::IsValid()
+{
+  return m_Valid;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -452,7 +468,7 @@ bool CTSProgramMapFilter::ParseSection(unsigned char* pData, unsigned int len)
   unsigned short program = reader.ReadShort(16);
   reader.UpdatePosition(2); // Reserved
   unsigned char version = reader.ReadChar(5);
-  if (version == m_Version)
+  if (version == m_Version) // (m_Version != 0x100) // Some muxers increment the version of the PMT each time, even if there are no changes
     return true; // This version of the table has already been parsed
   bool current = reader.ReadBit(); // Current/Next Indicator
   if (!current)
@@ -538,11 +554,19 @@ void CTSProgramMapFilter::ParseStream(CSimpleBitstreamReader& reader)
     pTypeName = "VC1 Video";
     break;
   case ES_STREAM_TYPE_AUDIO_AC3:
-  case ES_STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
     pTypeName = "AC3 Audio";
+    break;
+  case ES_STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD:
+    pTypeName = "True-HD Audio";
     break;
   case ES_STREAM_TYPE_AUDIO_DTS:
     pTypeName = "DTS Audio";
+    break;
+  case ES_STREAM_TYPE_AUDIO_HDMV_DTS_HD:
+    pTypeName = "DTS-HD Audio";
+    break;
+  case ES_STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER:
+    pTypeName = "DTS-HD Master Audio";
     break;
   case ES_STREAM_TYPE_AUDIO_MPEG2_AAC:
     pTypeName = "AAC (MPEG-2 Part 7 Audio)";
@@ -741,15 +765,21 @@ public:
   
   bool Open(IXdmxInputStream* pInput);
   void Close();
-  virtual CParserPayload* GetPayload();
+  CParserPayload* GetPayload();
   CTransportStream* GetTransportStream();
   CElementaryStream* GetStreamById(unsigned short id);
+  double GetTotalTime();
+  double SeekTime(double time);
 protected:
+  void ProbeDuration();
   bool FillCache(unsigned int offset = 0);
   bool ProcessNext();
   unsigned char* ReadPacketSync(unsigned int* syncBytes); // Read a single packet from the input stream. Sync if necessary.
   bool ProcessNextPacket();
   bool ProbeStreams(unsigned int program);
+  void FlushPayloads();
+  void FlushStreams();
+
 
   // System Layer Information
   CTSFilterRegistry m_FilterRegistry;
@@ -760,6 +790,7 @@ protected:
   // Input Configuration
   int m_StreamType;
   unsigned int m_PacketSize;
+  int m_SyncOffset;
   IXdmxInputStream* m_pInput;
 
   // Input Caching
@@ -774,6 +805,7 @@ protected:
 
   // Timing
   unsigned int m_HDMVArrivalTime;
+  double m_Duration; // Seconds
 };
 
 CTransportStreamDemux::CTransportStreamDemux(TSTransportType type /*= TS_TYPE_UNKNOWN*/) :
@@ -781,6 +813,7 @@ CTransportStreamDemux::CTransportStreamDemux(TSTransportType type /*= TS_TYPE_UN
   m_pPATFilter(NULL),
   m_StreamType(type),
   m_PacketSize(188),
+  m_SyncOffset(0),
   m_pInput(NULL),
   m_pCache(0),
   m_MaxCacheSize(0),
@@ -814,21 +847,27 @@ bool CTransportStreamDemux::Open(IXdmxInputStream* pInput)
   {
   case TS_TYPE_M2TS:
     m_PacketSize = 192;
+    m_SyncOffset = 4;
     break;
   case TS_TYPE_DVB:
     m_PacketSize = 204;
+    m_SyncOffset = 0;
     break;
   case TS_TYPE_ATSC:
     m_PacketSize = 208;
+    m_SyncOffset = 0;
     break;
   case TS_TYPE_UNKNOWN: // TODO: See if we can probe to determine the likely format
   case TS_TYPE_STD:
   default:
     m_PacketSize = 188;
+    m_SyncOffset = 0;
     break;
   }
 
   m_pInput = pInput;
+  ProbeDuration();
+
   m_MaxCacheSize = m_PacketSize * 188; // TODO: Optimize
   m_pCache = new unsigned char[m_MaxCacheSize];
   if (!FillCache()) // TODO: Should we wait to fill the cache?
@@ -860,11 +899,98 @@ bool CTransportStreamDemux::Open(IXdmxInputStream* pInput)
   return ProbeStreams(m_pTransportStream->GetProgramCount() - 1);
 }
 
+void CTransportStreamDemux::ProbeDuration()
+{
+  // TODO: Should we make use of the M2TS arrival time values?
+
+  // Store current file position to return to after probe
+  uint64_t lastPos = m_pInput->GetPosition();
+
+  // Go to the beginning of the input
+  if (m_pInput->Seek(0, SEEK_SET) != 0)
+    return; // No way to tell the length of the stream if we can't seek
+
+  unsigned char buf[TS_MAX_PACKET_LEN];
+  uint64_t startTime = 0;
+  uint64_t endTime = 0;
+
+  // Find the first and last PCR from the same PID and calculate the time difference
+  for (;;)
+  {
+    int i = 0;
+    unsigned short pid = 0;
+
+    for (;;)
+    {
+      // TODO: Reading 1 byte at a time is going to get awfully slow...
+      for (i = m_pInput->Read(buf, m_SyncOffset + 1); (i > 0) && (buf[m_SyncOffset] != TS_SYNC_WORD); i = m_pInput->Read(buf + m_SyncOffset, 1))
+        ; // Sync the stream
+
+      if (i == 0)
+        break; // End of Stream
+      
+      if (m_pInput->Read(buf + m_SyncOffset + 1, m_PacketSize - (m_SyncOffset + 1)) < (m_PacketSize - (m_SyncOffset + 1)))
+        break; // End of Stream
+
+      // Check for PCR
+      if ((buf[m_SyncOffset + 3] & 0x20) && // Adaptation field present
+          (buf[m_SyncOffset + 4]) &&        // length > 0
+          (buf[m_SyncOffset + 5] & 0x10))   // has PCR
+      {
+        startTime = ((uint64_t)buf[m_SyncOffset + 6] << 25) | ((uint32_t)buf[m_SyncOffset + 7] << 17) | ((uint32_t)buf[m_SyncOffset + 8] << 9) | ((uint32_t)buf[m_SyncOffset + 9] << 1) | ((uint32_t)buf[m_SyncOffset + 10] >> 7);
+        startTime *= 300;
+        startTime += (((unsigned short)buf[m_SyncOffset + 10] & 0x1) << 8) | buf[m_SyncOffset + 11];
+        pid = (((unsigned short)buf[m_SyncOffset + 1] & 0x1f) << 8) + buf[m_SyncOffset + 2];
+        break;
+      }
+    }
+    if (!startTime)
+      break;
+
+    for (i = m_PacketSize; i < m_pInput->GetLength(); i += m_PacketSize)
+    {
+      m_pInput->Seek(0 - i, SEEK_END);
+      if (m_pInput->Read(buf, m_PacketSize) != m_PacketSize)
+        break;
+
+      if (buf[m_SyncOffset] != TS_SYNC_WORD)
+      {
+        // Need sync first
+        i -= (m_PacketSize - 1);
+        continue;
+      }
+
+      // Check for PCR
+      if ((buf[m_SyncOffset + 3] & 0x20) && // Adaptation field present
+          (buf[m_SyncOffset + 4]) &&        // length > 0
+          (buf[m_SyncOffset + 5] & 0x10))   // has PCR
+      {
+        if (pid == ((((unsigned short)buf[m_SyncOffset + 1] & 0x1f) << 8) + buf[m_SyncOffset + 2]))
+        {
+          endTime = ((uint64_t)buf[m_SyncOffset + 6] << 25) | ((uint32_t)buf[m_SyncOffset + 7] << 17) | ((uint32_t)buf[m_SyncOffset + 8] << 9) | ((uint32_t)buf[m_SyncOffset + 9] << 1) | ((uint32_t)buf[m_SyncOffset + 10] >> 7);
+          endTime *= 300;
+          endTime += (((unsigned short)buf[m_SyncOffset + 10] & 0x1) << 8) | buf[m_SyncOffset + 11];
+          break;
+        }
+      }
+    }
+    if (!endTime)
+      break;
+
+    m_Duration = (double)(endTime - startTime)/ 27000000.0;
+    break;
+  }
+
+  // Return to the previous position before leaving
+  m_pInput->Seek(lastPos, SEEK_SET);
+}
+
 void CTransportStreamDemux::Close()
 {
   // Reset members
   m_StreamType = TS_TYPE_UNKNOWN;
   m_PacketSize = 188;
+  m_SyncOffset = 0;
   m_pInput = NULL; // TODO: Is this cleaned-up by the caller?
   m_MaxCacheSize = 0;
   m_CacheSize = 0;
@@ -877,11 +1003,7 @@ void CTransportStreamDemux::Close()
   m_pCache = NULL;
 
   // Clean-up any remaining payload data
-  while (m_PayloadList.size())
-  {
-    delete m_PayloadList.front();
-    m_PayloadList.pop_front();
-  }
+  FlushPayloads();
 
   // Reset the filter registry
   m_FilterRegistry.UnregisterAll(true);
@@ -903,6 +1025,27 @@ CParserPayload* CTransportStreamDemux::GetPayload()
     }
   } while (ProcessNext());
   return NULL;
+}
+
+void CTransportStreamDemux::FlushPayloads()
+{
+  while (m_PayloadList.size())
+  {
+    delete m_PayloadList.front();
+    m_PayloadList.pop_front();
+  }
+}
+
+void CTransportStreamDemux::FlushStreams()
+{
+  for (unsigned int p = 0; p < m_pTransportStream->GetProgramCount(); p++)
+  {
+    CTSProgram* pProgram = m_pTransportStream->GetProgram(p);
+    for (unsigned int s = 0; s < pProgram->GetStreamCount(); s++)
+    {
+      // TODO: Find a clean way to flush the stream filters
+    }
+  }
 }
 
 bool CTransportStreamDemux::ProcessNext()
@@ -1030,11 +1173,6 @@ bool CTransportStreamDemux::ProcessNext()
 
 unsigned char* CTransportStreamDemux::ReadPacketSync(unsigned int* syncBytes)
 {
-  // M2TS streams will have a 4-byte time code before the TS packet
-  unsigned int syncOffset = 0;
-  if (m_StreamType == TS_TYPE_M2TS)
-    syncOffset = 4;
-
   // if necessary, sync the stream
   unsigned int bytesToSync = 0;
   do
@@ -1042,7 +1180,7 @@ unsigned char* CTransportStreamDemux::ReadPacketSync(unsigned int* syncBytes)
     // Look for the syncword in the cache 
     for (unsigned char* pByte = m_pCache + m_CacheOffset; (m_CacheSize - m_CacheOffset) >= m_PacketSize; m_CacheOffset++)
     {
-      if (pByte[syncOffset] == TS_SYNC_WORD)
+      if (pByte[m_SyncOffset] == TS_SYNC_WORD)
       {
         // Found it!
         m_CacheOffset += m_PacketSize;
@@ -1071,6 +1209,81 @@ CElementaryStream* CTransportStreamDemux::GetStreamById(unsigned short id)
   if (!pFilter)
     return NULL;
   return pFilter->GetStream();
+}
+
+double CTransportStreamDemux::GetTotalTime()
+{
+  return m_Duration;
+}
+
+double CTransportStreamDemux::SeekTime(double time)
+{
+  // TODO: Make use of the M2TS timestamps
+  CProgramClock* pClock = m_pTransportStream->GetProgram(m_pTransportStream->GetProgramCount()-1)->GetClock(); // TODO: Which clock should be used for reference?
+  double deltaTime = time - pClock->GetElapsedTime();
+  double avgBytesPerSec = (double)m_pInput->GetLength() / m_Duration;
+  
+  // Do a rough seek to get us close...
+  int64_t deltaBytes = (int64_t)(deltaTime * avgBytesPerSec);
+  deltaBytes -= (deltaBytes % m_PacketSize);
+  m_pInput->Seek(deltaBytes, SEEK_CUR);
+
+  double actualTime = 0.0;
+  double error = 0.0;
+  unsigned char buf[TS_MAX_PACKET_LEN];
+  int i = 0;
+  unsigned short pid = 0;
+  uint64_t lastPcr = 0;
+  // Find the next PCR in the stream
+  for (int loop = 0; loop < 10; loop++) // Try a max of 10 times
+  {
+    for (i = m_pInput->Read(buf, m_SyncOffset + 1); (i > 0) && (buf[m_SyncOffset] != TS_SYNC_WORD); i = m_pInput->Read(buf + m_SyncOffset, 1))
+      ; // Sync the stream
+
+    if (i == 0)
+    {
+      actualTime = m_Duration;
+      break;
+    }
+    
+    if (m_pInput->Read(buf + m_SyncOffset + 1, m_PacketSize - (m_SyncOffset + 1)) < (m_PacketSize - (m_SyncOffset + 1)))
+    {
+      actualTime = m_Duration;
+      break;
+    }
+
+    // Check for PCR
+    if ((buf[m_SyncOffset + 3] & 0x20) && // Adaptation field present
+        (buf[m_SyncOffset + 4]) &&        // length > 0
+        (buf[m_SyncOffset + 5] & 0x10))   // has PCR
+    {
+      uint64_t pcr = ((uint64_t)buf[m_SyncOffset + 6] << 25) | ((uint32_t)buf[m_SyncOffset + 7] << 17) | ((uint32_t)buf[m_SyncOffset + 8] << 9) | ((uint32_t)buf[m_SyncOffset + 9] << 1) | ((uint32_t)buf[m_SyncOffset + 10] >> 7);
+      pcr *= 300;
+      pcr += (((unsigned short)buf[m_SyncOffset + 10] & 0x1) << 8) | buf[m_SyncOffset + 11];
+      pid = (((unsigned short)buf[m_SyncOffset + 1] & 0x1f) << 8) + buf[m_SyncOffset + 2];
+      actualTime = (double)(pcr - pClock->GetFirstReference()) / 27000000.0;
+      error = actualTime - time;
+      if (error <= 0.5 && error >= -0.5)
+        break; // Accept +- .5 seconds
+
+      if (pcr == lastPcr)
+        break; // We're stuck. Give up.
+
+      // Go half the distance to the goal...
+      deltaBytes = (int64_t)((0.0 - error) * avgBytesPerSec) / 2;
+      deltaBytes -= (deltaBytes % m_PacketSize);
+      m_pInput->Seek(deltaBytes, SEEK_CUR);
+
+      lastPcr = pcr;
+    }
+  }
+
+  FlushPayloads(); // These are invalid now
+  FillCache(); // Re-fill the input cache
+
+  // TODO: Notify clocks of discontinuity
+
+  return actualTime;
 }
 
 bool CTransportStreamDemux::ProbeStreams(unsigned int program)

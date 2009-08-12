@@ -127,12 +127,16 @@ class CProgramClock
 public:
   CProgramClock();
   void AddReference(uint64_t position, uint64_t base, unsigned int extension); 
+  uint64_t GetFirstReference();
+  double GetElapsedTime();
+  bool IsValid();
 protected:
   uint64_t m_LastReferencePos; // i''
   uint64_t m_LastReference; // PCR(i'')
   uint64_t m_DeltaPos; // i' - i''
   uint64_t m_Delta; // PCR(i') - PCR(i'')
   uint64_t m_LastBitrate; // Technically valid for any i where i'' - deltaPos < i <= i''
+  uint64_t m_FirstReference;
   bool m_Valid;
   static const uint64_t m_SysClockFreq;
 };
@@ -180,6 +184,9 @@ public:
   // Program Stream Information
   virtual CTransportStream* GetTransportStream() = 0;
   virtual CElementaryStream* GetStreamById(unsigned short id) = 0;
+  virtual double GetTotalTime() = 0;
+  virtual double SeekTime(double time) = 0;
+
 protected:
   ITransportStreamDemux() {}
 };

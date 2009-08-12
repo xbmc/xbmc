@@ -260,13 +260,16 @@ bool CPESParser::Parse(unsigned char* pHeader, unsigned int headerLen, unsigned 
     }
   }
 
-  if (m_pStream->GetElementType() == 0x83)
+  if (m_pStream->GetElementType() == 0x83 ||
+      m_pStream->GetElementType() == 0x85 ||
+      m_pStream->GetElementType() == 0x86)
   {
     // Only pass-on those packets belonging to the active sub-stream
     // TODO: How do we decide which substream to keep
     // TODO: This is a hack and needs to be put in the correct place
     // Really should expose both the HD stream and the core separately
-    if (extStreamId != PES_ID_EXT_HDMV_DTS_HD_TRUE_HD)
+    // For now, always strip out AC3/DTS core and provide that to caller
+    if (extStreamId == 0x72)
       return false;
   }
 
