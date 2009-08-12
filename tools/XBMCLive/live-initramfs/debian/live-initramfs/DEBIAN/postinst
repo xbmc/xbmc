@@ -1,0 +1,30 @@
+#!/bin/sh
+
+case "$(ls -l /boot/vmlinu* | wc -l)" in
+	1)
+		# We only have one kernel installed, so we can use "-u"
+		# which will use dpkg-trigger inside update-initramfs
+		INITRAMFS_ARGS="-u"
+		;;
+
+	*)
+		INITRAMFS_ARGS="-u -k all"
+		;;
+esac
+
+if [ -x /usr/sbin/update-initramfs ] && [ "${1}" != "triggered" ] && \
+	dpkg --compare-versions "${DPKG_RUNNING_VERSION}" ge "1.14.18"
+then
+	# this activates the trigger, if triggers are working
+	update-initramfs ${INITRAMFS_ARGS}
+else
+	# force it to actually happen
+	DPKG_MAINTSCRIPT_PACKAGE="" update-initramfs ${INITRAMFS_ARGS}
+fi
+
+# Automatically added by dh_installinit
+if [ -x "/etc/init.d/live-initramfs" ]; then
+	update-rc.d live-initramfs start 89 0 6 . >/dev/null || exit $?
+fi
+# End automatically added section
+

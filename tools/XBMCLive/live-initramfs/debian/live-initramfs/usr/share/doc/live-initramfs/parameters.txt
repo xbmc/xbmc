@@ -1,0 +1,73 @@
+Boot Parameters for Debian Live
+-------------------------------
+
+Updated for live-initramfs 1.156.1-1 on 2009-02-08.
+
+These options (can be combined) work from the bootloader prompt:
+
+live access=ACCESS
+live console=TTY,SPEED
+live debug
+live fetch=URL
+live hostname=HOSTNAME
+live username=USER
+live userfullname=USERFULLNAME
+live integrity-check
+live ip=[CLIENT_IP]:[SERVER_IP]:[GATEWAY_IP]:[NETMASK]:[HOSTNAME]:[DEVICE]:[AUTOCONF]  [,[CLIENT_IP]:[SERVER_IP]:[GATEWAY_IP]:[NETMASK]:[HOSTNAME]:[DEVICE]:[AUTOCONF]]*
+live ip[=frommedia]
+live {keyb|kbd-chooser/method}=KEYBOARD
+live {klayout|console-setup/layoutcode}=LAYOUT
+live {kvariant|console-setup/variantcode}=VARIANT
+live {kmodel|console-setup/modelcode}=CODE
+live koptions=OPTIONS
+live live-getty
+live {live-media|bootfrom}=DEVICE
+live {live-media-encryption|encryption}=TYPE
+live live-media-offset=BYTES
+live live-media-path=PATH
+live live-media-timeout=SECONDS
+live {locale|debian-installer/locale}=LOCALE
+live module=NAME
+live netboot[=nfs|cifs]
+live nfsopts=
+live noautologin
+live noxautologin
+live nofastboot
+live nopersistent
+live nosudo
+live swapon
+live nouser
+live noxautoconfig
+live persistent[=nofiles]
+live persistent-path=PATH
+live {preseed/file|file}=FILE
+live package/question=VALUE
+live quickreboot
+live showmounts
+live timezone=TIMEZONE
+live todisk=DEVICE
+live toram
+live union=aufs|unionfs
+live utc=yes|no
+live xdebconf
+live xvideomode=RESOLUTION
+
+Values for the vga kernel parameter:
+
+Colours   640x400 640x480 800x600 1024x768 1152x864 1280x1024 1600x1200
+--------+--------------------------------------------------------------
+ 4 bits |    ?       ?     0x302      ?        ?        ?         ?
+ 8 bits |  0x300   0x301   0x303    0x305    0x161    0x307     0x31C
+15 bits |    ?     0x310   0x313    0x316    0x162    0x319     0x31D
+16 bits |    ?     0x311   0x314    0x317    0x163    0x31A     0x31E
+24 bits |    ?     0x312   0x315    0x318      ?      0x31B     0x31F
+32 bits |    ?       ?       ?        ?      0x164      ?
+
+Colours   640x400 640x480 800x600 1024x768 1152x864 1280x1024 1600x1200
+--------+--------------------------------------------------------------
+ 4 bits |    ?       ?      770       ?        ?        ?         ?
+ 8 bits |   768     769     771      773      353      775       796
+15 bits |    ?      784     787      790      354      793       797
+16 bits |    ?      758     788      791      355      794       798
+24 bits |    ?      786     789      792       ?       795       799
+32 bits |    ?       ?       ?        ?       356       ?

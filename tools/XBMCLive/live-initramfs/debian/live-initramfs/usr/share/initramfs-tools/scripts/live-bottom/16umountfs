@@ -1,0 +1,38 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+. /live.vars
+
+. /scripts/live-functions
+
+log_begin_msg "Disabling umountfs for live specific filesystems"
+
+# live-initramfs script
+
+if [ -e /root/etc/init.d/umountfs ]
+then
+	sed -i	-e 's#pioodl $TMPFS_MTPTS)#pioodl $TMPFS_MTPTS | sed -e "s@\\ @\\n@" | grep -v ^/live)#' \
+		-e 's#pioodl $REG_MTPTS)#pioodl $REG_MTPTS | sed -e "s@\\ @\\n@" | grep -v ^/live | grep -v ^/filesystem) /#' \
+	/root/etc/init.d/umountfs
+fi
+
+log_end_msg

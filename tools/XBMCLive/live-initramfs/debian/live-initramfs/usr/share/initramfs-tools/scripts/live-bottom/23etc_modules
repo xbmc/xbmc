@@ -1,0 +1,36 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+. /scripts/live-functions
+
+log_begin_msg "Preconfiguring /etc/modules"
+
+# live-initramfs script
+
+# load the right modules
+case "${DPKG_ARCH}" in
+	powerpc|ppc64)
+		echo snd_powermac >> /root/etc/modules
+		;;
+esac
+
+log_end_msg
