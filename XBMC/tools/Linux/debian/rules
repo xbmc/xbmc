@@ -20,6 +20,11 @@ ifeq (,$(findstring Version,$(SVNVERSION)))
   XBMC_CONFIG_OPTIONS += SVN_REV="$(SVNVERSION)"
 endif
 
+# Override default CFLAGS and CXXFLAGS defined by dpkg-buildpackage.
+# Allow for flags to be defined using DEB_* environment variables.
+CFLAGS=$(DEB_CFLAGS)
+CXXFLAGS=$(DEB_CXXFLAGS)
+
 %:
 	dh $@
 
