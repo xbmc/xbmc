@@ -1022,31 +1022,29 @@ namespace VIDEO
       }
     }
 
-    if (bApplyToDir && !strThumb.IsEmpty())
-    {
-      CStdString strCheck=pItem->m_strPath;
-      CStdString strDirectory;
-      if (pItem->IsStack())
-        strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
+    CStdString strCheck=pItem->m_strPath;
+    CStdString strDirectory;
+    if (pItem->IsStack())
+      strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
 
-      CUtil::GetDirectory(strCheck,strDirectory);
-      if (CUtil::IsInRAR(strCheck))
-      {
-        CStdString strPath=strDirectory;
-        CUtil::GetParentPath(strPath,strDirectory);
-      }
-      if (pItem->IsStack())
-      {
-        strCheck = strDirectory;
-        CUtil::RemoveSlashAtEnd(strCheck);
-        if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
-          CUtil::GetDirectory(strCheck,strDirectory);
-      }
-      ApplyIMDBThumbToFolder(strDirectory,strThumb);
+    CUtil::GetDirectory(strCheck,strDirectory);
+    if (CUtil::IsInRAR(strCheck))
+    {
+      CStdString strPath=strDirectory;
+      CUtil::GetParentPath(strPath,strDirectory);
     }
+    if (pItem->IsStack())
+    {
+      strCheck = strDirectory;
+      CUtil::RemoveSlashAtEnd(strCheck);
+      if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
+        CUtil::GetDirectory(strCheck,strDirectory);
+    }
+    if (bApplyToDir && !strThumb.IsEmpty())
+      ApplyIMDBThumbToFolder(strDirectory,strThumb);
 
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast);
+      FetchActorThumbs(movieDetails.m_cast,strDirectory);
     m_database.Close();
     return lResult;
   }
@@ -1373,15 +1371,27 @@ namespace VIDEO
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(const vector<SActorInfo>& actors)
+  void CVideoInfoScanner::FetchActorThumbs(const vector<SActorInfo>& actors, const CStdString& strPath)
   {
     for (unsigned int i=0;i<actors.size();++i)
     {
       CFileItem item;
       item.SetLabel(actors[i].strName);
       CStdString strThumb = item.GetCachedActorThumb();
-      if (!CFile::Exists(strThumb) && !actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
-        CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
+      if (!CFile::Exists(strThumb))
+      {
+        CStdString thumbFile = actors[i].strName;
+        thumbFile.Replace(" ","_");
+        thumbFile += ".tbn";
+        CStdString strLocal = CUtil::AddFileToFolder(CUtil::AddFileToFolder(strPath,".actors"),thumbFile);
+        if (CFile::Exists(strLocal))
+        {
+          CPicture pic;
+          pic.DoCreateThumbnail(strLocal,strThumb);
+        }
+        else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
+          CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
+      }
     }
   }
 
