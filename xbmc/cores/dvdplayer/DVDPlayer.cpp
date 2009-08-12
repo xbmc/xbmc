@@ -1878,14 +1878,14 @@ void CDVDPlayer::ToggleFrameDrop()
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("%s %s", m_State.demux_audio.c_str()
+  strAudioInfo.Format("D( %s ) P( %s )", m_State.demux_audio.c_str()
                              , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
-  strVideoInfo.Format("%s %s", m_State.demux_video.c_str()
+  strVideoInfo.Format("D( %s ) P( %s )", m_State.demux_video.c_str()
                              , m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
