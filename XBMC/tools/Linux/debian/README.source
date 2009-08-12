@@ -1,0 +1,12 @@
+The following is done to the upstream tarball or SVN checkout when creating
+the orig tarball used in creating XBMC packages for Debian.
+
+- libdvdcss is removed from xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss.
+- The empty directories xbmc/cores/dvdplayer/Codecs/libDVDCSS and
+  xbmc/cores/dvdplayer/Codecs/libdvdnav are removed.
+
+Also, the upstream source version is appended with '~debN' where 'N' is some
+integer. This is done to mark that the XBMC source in Debian is modified from
+upstream. Note that we do not use '~dfsgN' or something similar since there
+is currently code in XBMC that does not meet the guidelines of the open source
+definition.
