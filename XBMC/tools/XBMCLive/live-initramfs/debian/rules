@@ -1,0 +1,55 @@
+#!/usr/bin/make -f
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+
+	$(MAKE) -C manpages clean
+
+	dh_clean
+
+build: build-stamp
+build-stamp:
+	dh_testdir
+
+	$(MAKE) -C manpages
+
+	touch build-stamp
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	# Installing package
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/live-initramfs
+
+	# Removing double files
+	rm -f debian/live-initramfs/usr/share/doc/live-initramfs/COPYING
+	rm -f debian/live-initramfs/usr/share/doc/live-initramfs/ChangeLog
+	mv debian/live-initramfs/usr/share/doc/live-initramfs/ChangeLog.casper debian/live-initramfs/usr/share/doc/live-initramfs/changelog.casper
+
+	# Installing bug control
+	install -D -m 0755 debian/bug/live-initramfs.script debian/live-initramfs/usr/share/bug/live-initramfs
+
+binary: binary-indep
+
+binary-arch:
+
+binary-indep: install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs docs/ChangeLog
+	dh_installdocs
+	dh_install
+	dh_installinit --no-restart-on-upgrade --no-start -- start 89 0 6 .
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+.PHONY: clean build install binary binary-arch binary-indep

@@ -1,0 +1,181 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+if [ -n "${NOACCESSIBILITY}" ]
+then
+	exit 0
+fi
+
+. /scripts/live-functions
+
+if [ -z "${USERNAME}" ]
+then
+	echo "No default user for accessibility options."
+	exit 0
+fi
+
+log_begin_msg "Configuring accessibility options"
+
+# live-initramfs script
+
+gconf_version=$(chroot /root /usr/bin/dpkg-query -W --showformat='${Version}' gconf2 2>/dev/null) || gconf_version=""
+
+gct ()
+{
+	if [ "${gconf_version}" ]
+	then
+		chroot /root sudo -u "${USERNAME}" gconftool-2 "${@}"
+	fi
+}
+
+laptop_detect ()
+{
+	if chroot /root /usr/sbin/laptop-detect
+	then
+		echo "orca.settings.orcaModifierKeys = orca.settings.LAPTOP_MODIFIER_KEYS" >> /root/home/$USERNAME/.orca/user-settings.py
+		echo "orca.settings.keyboardLayout = orca.settings.GENERAL_KEYBOARD_LAYOUT_LAPTOP" >> /root/home/$USERNAME/.orca/user-settings.py
+	fi
+}
+
+remove_applet ()
+{
+	# Code to remove an applet from the default panel setup
+	# This is rather hacky, but I can't think of a one or two line regular
+	# expression to do this any more efficiently. Patches welcome. In
+	# addition, setting these via gconf also doesn't work for some reason.
+
+	local line_no prior_line next_line
+
+	line_no="$(grep -n "<string>$1</string>" /root/usr/share/gconf/defaults/05_panel-default-setup.entries | cut -f 1 -d :)"
+	prior_line="$((line_no-1))"
+	next_line="$((line_no+1))"
+
+	sed -i -n "${prior_line},${next_line}!p" /root/usr/share/gconf/defaults/05_panel-default-setup.entries
+
+	chroot /root update-gconf-defaults
+}
+
+case ${ACCESS} in
+	access=v1)
+		# Lesser Visual Impairment
+		gct -s -t string /desktop/gnome/interface/gtk_theme HighContrastLargePrint
+		gct -s -t string /desktop/gnome/interface/icon_theme HighContrast
+		gct -s -t string /desktop/gnome/interface/monospace_font_name "monospace 18"
+		gct -s -t string /desktop/gnome/interface/font_name "sans 18"
+		gct -s -t string /apps/metacity/general/theme Atlanta
+		gct -s -t string /desktop/gnome/background/picture_filename ""
+		gct -s -t string /desktop/gnome/background/picture_options none
+		gct -s -t string /desktop/gnome/background/primary_color \#666666
+		gct -s -t string /desktop/gnome/background/secondary_color \#7F7F7F
+		gct -s -t string /desktop/gnome/background/color_shading_type solid
+		gct -s -t int /desktop/gnome/peripherals/mouse/cursor_size 48
+		gct -s -t string /desktop/gnome/peripherals/mouse/cursor_theme whiteglass
+		;;
+
+	access=v2)
+		# Moderate Visual Impairment
+		gct -s -t bool /desktop/gnome/interface/accessibility true
+		gct -s -t bool /desktop/gnome/applications/at/visual/startup true
+		gct -s -t string /desktop/gnome/applications/at/visual/exec orca
+		gct -s -t bool /apps/gksu/disable-grab true
+		gct -s -t string /desktop/gnome/applications/window_manager/default /usr/bin/metacity
+
+		if [ -x /root/usr/bin/orca ]
+		then
+			mkdir -p /root/home/${USERNAME}/.orca
+			echo "import orca.settings" >> /root/home/${USERNAME}/.orca/user-settings.py
+			echo "orca.settings.enableSpeech = False" >> /root/home/${USERNAME}/.orca/user-settings.py
+			echo "orca.settings.enableMagnifier = True" >> /root/home/${USERNAME}/.orca/user-settings.py
+			laptop_detect
+			chroot /root chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.orca
+		fi
+		;;
+
+	access=v3)
+		# Blindness
+		# Disabled for now, until we know eSpeak works.
+		#gct -s -t bool /desktop/gnome/sound/enable_esd false
+		gct -s -t bool /desktop/gnome/interface/accessibility true
+		gct -s -t bool /desktop/gnome/applications/at/visual/startup true
+		gct -s -t string /desktop/gnome/applications/at/visual/exec orca
+		gct -s -t bool /apps/gksu/disable-grab true
+		gct -s -t string /desktop/gnome/applications/window_manager/default /usr/bin/metacity
+
+		remove_applet fast_user_switch
+		;;
+
+	braille=ask)
+		# Braille
+		gct -s -t bool /desktop/gnome/interface/accessibility true
+		gct -s -t bool /desktop/gnome/applications/at/visual/startup true
+		gct -s -t string /desktop/gnome/applications/at/visual/exec orca
+		gct -s -t bool /apps/gksu/disable-grab true
+		gct -s -t string /desktop/gnome/applications/window_manager/default /usr/bin/metacity
+
+		if [ -x /root/usr/bin/orca ]
+		then
+			mkdir -p /root/home/${USERNAME}/.orca
+			echo "import orca.settings" >> /root/home/${USERNAME}/.orca/user-settings.py
+			echo "orca.settings.enableSpeech = False" >> /root/home/${USERNAME}/.orca/user-settings.py
+			echo "orca.settings.enableBraille = True" >> /root/home/${USERNAME}/.orca/user-settings.py
+			laptop_detect
+			chroot /root chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.orca
+		fi
+
+		remove_applet fast_user_switch
+		;;
+
+	access=m1)
+		# Minor Motor Difficulties
+		gct -s -t bool /desktop/gnome/accessibility/keyboard/enable true
+		gct -s -t bool /desktop/gnome/accessibility/keyboard/mousekeys_enable true
+		gct -s -t bool /desktop/gnome/accessibility/keyboard/stickykeys_enable true
+		gct -s -t bool /desktop/gnome/accessibility/keyboard/stickykeys_modifier_beep true
+		gct -s -t bool /desktop/accessibility/gnome/keyboard/stickykeys_two_key_off false
+		gct -s -t bool /desktop/gnome/peripherals/keyboard/repeat true
+		gct -s -t int /desktop/gnome/peripherals/keyboard/delay 700
+		gct -s -t int /desktop/gnome/peripherals/keyboard/rate 10
+		gct -s -t bool /apps/gksu/disable-grab true
+
+		if [ -e /root/etc/xdg/xfce4/mcs_settings/keyboard.xml ]
+		then
+			sed -i 's/0/1/' /root/etc/xdg/xfce4/mcs_settings/keyboard.xml
+		fi
+		;;
+
+	access=m2)
+		# Motor Difficulties - pointing devices
+		gct -s -t bool /desktop/gnome/accessibility/keyboard/enable true
+		gct -s -t bool /desktop/gnome/interface/accessibility true
+		gct -s -t bool /desktop/gnome/accessibility/keyboard/stickykeys_enable true
+		gct -s -t bool /desktop/gnome/accessibility/keyboard/stickykeys_modifier_beep false
+		gct -s -t bool /desktop/accessibility/gnome/keyboard/stickykeys_two_key_off false
+		gct -s -t list --list-type=string /desktop/gnome/accessibility/startup/exec_ats [onboard]
+
+		if [ -e /root/etc/xdg/xfce4/mcs_settings/keyboard.xml ]
+		then
+			sed -i '/Sticky/ s/0/1/' /root/etc/xdg/xfce4/mcs_settings/keyboard.xml
+		fi
+		;;
+esac
+
+log_end_msg

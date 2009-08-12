@@ -1,0 +1,16 @@
+Main Authors:
+
+  * Daniel Baumann <daniel@debian.org>
+
+Main Contributors:
+
+  * Chris Lamb <chris@chris-lamb.co.uk>
+  * Marco Amadori <marco.amadori@gmail.com>
+
+Original Authors:
+
+  live-initramfs is a fork of casper <http://packages.ubuntu.com/casper/>.
+  casper was originally written by Tollef Fog Heen <tfheen@canonical.com>
+  and Matt Zimmerman <mdz@canonical.com>.
+
+  See the casper changelog for casper contributors.

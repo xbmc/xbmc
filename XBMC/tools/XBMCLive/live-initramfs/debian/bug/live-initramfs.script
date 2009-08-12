@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Checking depends
+dpkg -l busybox file initramfs-tools sudo udev user-setup
+
+# Checking recommends
+dpkg -l eject uuid-runtime wget
+
+# Checking suggests
+dpkg -l loop-aes-utils curlftpfs genext2fs httpfs2 squashfs-tools mtd-tools
+
+# Checking other packages
+dpkg -l cryptsetup splashy usplash

@@ -1,0 +1,25 @@
+Package: live-initramfs
+Version: 1.157.3-1
+Architecture: all
+Maintainer: Debian Live <debian-live@lists.debian.org>
+Installed-Size: 452
+Depends: busybox, file, initramfs-tools, sudo, udev, user-setup
+Recommends: cryptsetup, eject, uuid-runtime, wget
+Suggests: loop-aes-utils, curlftpfs, genext2fs (>= 1.4.1), httpfs2, squashfs-tools, mtd-tools
+Section: misc
+Priority: optional
+Homepage: http://debian-live.alioth.debian.org/
+Description: Debian Live initramfs hook
+ live-initramfs is a hook for the initramfs-tools, used to generate a initramfs
+ capable to boot live systems, such as those created by live-helper. This
+ includes the Debian Live isos, netboot tarballs, and usb stick images.
+ .
+ At boot time it will look for a (read-only) media containing a "/live"
+ directory where a root filesystems (often a compressed filesystem image like
+ squashfs) is stored. If found, it will create a writable environment, using
+ aufs or unionfs, for Debian like systems to boot from.
+ .
+ You probably do not want to install this package onto a non-live system,
+ although it will do no harm.
+ .
+ live-initramfs is a fork of casper <http://packages.ubuntu.com/casper/>.

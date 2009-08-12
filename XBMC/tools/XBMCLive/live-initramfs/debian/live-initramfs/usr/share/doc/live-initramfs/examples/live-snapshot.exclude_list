@@ -1,0 +1,17 @@
+# /etc/live-snapshot.exclude_list example
+#
+# If this file is present in the proper path, each uncommented not empty line
+# will be excluded in the target snapshot when live-snapshot is run.
+#
+# The syntax for the line is just a full file or directory pathname.
+
+# Each line is treated like a plain match string for "grep -F -v",
+# so be careful: e.g. "/tmp" will exclude also "/var/tmp" !
+
+# Exclude some standard temporary paths
+/tmp
+/var/log
+/var/cache
+
+# Firefox profiles are not always useful to remember
+/root/.mozilla

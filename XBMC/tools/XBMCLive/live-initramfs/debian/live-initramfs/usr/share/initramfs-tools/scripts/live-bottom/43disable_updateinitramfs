@@ -1,0 +1,41 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+. /scripts/live-functions
+
+log_begin_msg "Disabling update-initramfs"
+
+# live-initramfs script
+
+chroot /root dpkg-divert --add --rename --quiet \
+	/usr/sbin/update-initramfs
+
+cat > /root/usr/sbin/update-initramfs <<EOF
+#!/bin/sh
+
+echo "update-initramfs is disabled since running on a live CD"
+exit 0
+EOF
+
+chmod 0755 /root/usr/sbin/update-initramfs
+
+log_end_msg

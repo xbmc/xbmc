@@ -1,0 +1,39 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+if [ -n "${NOAPTCDROM}" ]
+then
+	exit 0
+fi
+
+. /scripts/live-functions
+
+log_begin_msg "Adding APT-CDROM source"
+
+# live-initramfs script
+
+if [ -d /root/cdrom ]
+then
+	chroot /root apt-cdrom -m add
+fi
+
+log_end_msg
