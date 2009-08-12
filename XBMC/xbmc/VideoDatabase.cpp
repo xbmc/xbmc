@@ -6728,6 +6728,8 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(strFanart)))
             if (!CFile::Cache(item.GetCachedFanart(),strFanart))
               CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), strFanart.c_str());
+
+          ExportActorThumbs(movie);
         }
       }
 
@@ -6894,6 +6896,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (!CFile::Cache(item.GetCachedFanart(),item.GetFolderThumb("fanart.jpg")))
               CLog::Log(LOGERROR, "%s: TVShow fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), item.GetFolderThumb("fanart.jpg").c_str());
 
+          ExportActorThumbs(tvshow);
 
           // now get all available seasons from this show
           sql = FormatSQL("select distinct(c%02d) from episodeview where idShow=%i", VIDEODB_ID_EPISODE_SEASON, tvshow.m_iDbId);
@@ -7008,6 +7011,8 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
               if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
                 CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
+
+            ExportActorThumbs(episode);
           }
         }
         pDS->next();
@@ -7056,6 +7061,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
   if (progress)
     progress->Close();
+}
+
+void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag)
+{
+  CStdString strDir = CUtil::AddFileToFolder(tag.m_strPath,".actors");
+  for (CVideoInfoTag::iCast iter = tag.m_cast.begin();iter != tag.m_cast.end();++iter)
+  {
+    CFileItem item;
+    item.SetLabel(iter->strName);
+    CStdString strThumb = item.GetCachedActorThumb();
+    if (CFile::Exists(strThumb))
+    {
+      CDirectory::Create(strDir);
+      CStdString thumbFile = iter->strName;
+      thumbFile.Replace(" ","_");
+      thumbFile += ".tbn";
+      if (!CFile::Cache(strThumb,CUtil::AddFileToFolder(strDir,thumbFile)))
+        CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')", 
+                  __FUNCTION__, strThumb.c_str(), CUtil::AddFileToFolder(strDir,thumbFile).c_str());
+    }
+  }
 }
 
 CStdString CVideoDatabase::GetCachedThumb(const CFileItem& item) const
