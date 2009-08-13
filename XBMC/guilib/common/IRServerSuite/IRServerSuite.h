@@ -36,7 +36,7 @@ public:
   WORD GetButton();
   bool IsHolding();
   bool IsInitialized() {return m_bInitialized;}
-  bool IsInUse() {return true;}
+  bool IsInUse() {return false;}
 
 protected:
   virtual void Process();
