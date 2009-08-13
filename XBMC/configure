@@ -7403,6 +7403,56 @@ else
 fi
 
 
+  # Determine whether AVPacket and relevant functions are defined in libavformat
+  # or libavcodec
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for av_free_packet in -lavcodec" >&5
+$as_echo_n "checking for av_free_packet in -lavcodec... " >&6; }
+if test "${ac_cv_lib_avcodec_av_free_packet+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lavcodec  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char av_free_packet ();
+int
+main ()
+{
+return av_free_packet ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_avcodec_av_free_packet=yes
+else
+  ac_cv_lib_avcodec_av_free_packet=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avcodec_av_free_packet" >&5
+$as_echo "$ac_cv_lib_avcodec_av_free_packet" >&6; }
+if test "x$ac_cv_lib_avcodec_av_free_packet" = x""yes; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: == AVPacket and relevant functions defined in libavcodec. ==" >&5
+$as_echo "$as_me: == AVPacket and relevant functions defined in libavcodec. ==" >&6;}
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: == AVPacket and relevant functions defined in libavformat. ==" >&5
+$as_echo "$as_me: == AVPacket and relevant functions defined in libavformat. ==" >&6;}
+
+$as_echo "#define AVPACKET_IN_AVFORMAT 1" >>confdefs.h
+
+fi
+
+
   # Possible places the ffmpeg headers may be
   for ac_header in libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h
 do :
@@ -7974,6 +8024,44 @@ fi
 
 # External libass
 if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"; then
+  # We need libass >= 0.9.7.
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for ass_set_message_cb in -lass" >&5
+$as_echo_n "checking for ass_set_message_cb in -lass... " >&6; }
+if test "${ac_cv_lib_ass_ass_set_message_cb+set}" = set; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lass  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char ass_set_message_cb ();
+int
+main ()
+{
+return ass_set_message_cb ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_ass_ass_set_message_cb=yes
+else
+  ac_cv_lib_ass_ass_set_message_cb=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ass_ass_set_message_cb" >&5
+$as_echo "$ac_cv_lib_ass_ass_set_message_cb" >&6; }
+if test "x$ac_cv_lib_ass_ass_set_message_cb" = x""yes; then :
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lass" >&5
 $as_echo_n "checking for main in -lass... " >&6; }
 if test "${ac_cv_lib_ass_main+set}" = set; then :
@@ -8011,16 +8099,19 @@ _ACEOF
 
   LIBS="-lass $LIBS"
 
-else
-  as_fn_error "$missing_library" "$LINENO" 5
 fi
 
-
-  { $as_echo "$as_me:${as_lineno-$LINENO}: $external_libass_enabled" >&5
+   { $as_echo "$as_me:${as_lineno-$LINENO}: $external_libass_enabled" >&5
 $as_echo "$as_me: $external_libass_enabled" >&6;}
-  USE_EXTERNAL_LIBASS=1
+   USE_EXTERNAL_LIBASS=1
 
 $as_echo "#define USE_EXTERNAL_LIBASS 1" >>confdefs.h
+
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: == Need libass >= 0.9.7. Disabling external libass. ==" >&5
+$as_echo "$as_me: WARNING: == Need libass >= 0.9.7. Disabling external libass. ==" >&2;}
+   USE_EXTERNAL_LIBASS=0
+fi
 
 else
   { $as_echo "$as_me:${as_lineno-$LINENO}: $external_libass_disabled" >&5

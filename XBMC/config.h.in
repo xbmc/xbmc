@@ -2,6 +2,9 @@
 
 #pragma once
 
+/* Whether AVPacket is in libavformat. */
+#undef AVPACKET_IN_AVFORMAT
+
 /* Define to 1 if the `closedir' function returns void instead of `int'. */
 #undef CLOSEDIR_VOID
 
