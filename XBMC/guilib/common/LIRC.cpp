@@ -108,61 +108,64 @@ void CRemoteControl::Initialize()
   strcpy(addr.sun_path, m_deviceName.c_str());
 
   // Open the socket from which we will receive the remote commands
-  m_fd = socket(AF_UNIX, SOCK_STREAM,0);
-  if (m_fd == -1)
+  if ((m_fd = socket(AF_UNIX, SOCK_STREAM, 0)) != -1)
   {
+    // Connect to the socket
+    if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) != -1)
+    {
+      int opts;
+      m_bLogConnectFailure = true;
+      if ((opts = fcntl(m_fd,F_GETFL)) != -1)
+      {
+        // Set the socket to non-blocking
+        opts = (opts | O_NONBLOCK);
+        if (fcntl(m_fd,F_SETFL,opts) != -1)
+        {
+          if ((m_file = fdopen(m_fd, "r")) != NULL)
+          {
+            // Setup inotify so we can disconnect if lircd is restarted
+            if ((m_inotify_fd = inotify_init()) >= 0)
+            {
+              // Set the fd non-blocking
+              if ((opts = fcntl(m_inotify_fd, F_GETFL)) != -1)
+              {
+                opts |= O_NONBLOCK;
+                if (fcntl(m_inotify_fd, F_SETFL, opts) != -1)
+                {
+                  // Set an inotify watch on the lirc device
+                  if ((m_inotify_wd = inotify_add_watch(m_inotify_fd, m_deviceName.c_str(), IN_DELETE_SELF)) != -1)
+                  {
+                    m_bInitialized = true;
+                    CLog::Log(LOGINFO, "LIRC %s: sucessfully started on: %s", __FUNCTION__, addr.sun_path);
+                  }
+                  else
+                    CLog::Log(LOGDEBUG, "LIRC: Failed to initialize Inotify. LIRC device will not be monitored.");
+                }
+              }
+            }
+          }
+          else
+            CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
+        }
+        else
+          CLog::Log(LOGERROR, "LIRC %s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
+      }
+      else
+        CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
+    }
+    else
+    {
+      if (m_bLogConnectFailure)
+      {
+        CLog::Log(LOGINFO, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
+        m_bLogConnectFailure = false;
+      }
+    }
+  }
+  else
     CLog::Log(LOGINFO, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
-    return;
-  }
-
-  // Connect to the socket
-  if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
-  {
-    if (m_bLogConnectFailure)
-    {
-      CLog::Log(LOGINFO, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
-      m_bLogConnectFailure = false;
-    }
-    return;
-  }
-  
-  m_bLogConnectFailure = true;
-
-  // Set the socket to non-blocking
-  int opts = fcntl(m_fd,F_GETFL);
-  if (opts == -1)
-  {
-    CLog::Log(LOGERROR, "LIRC %s: fcntl(F_GETFL) failed: %s", __FUNCTION__, strerror(errno));
-    return;
-  }
-
-  opts = (opts | O_NONBLOCK);
-  if (fcntl(m_fd,F_SETFL,opts) == -1)
-  {
-    CLog::Log(LOGERROR, "LIRC %s: fcntl(F_SETFL) failed: %s", __FUNCTION__, strerror(errno));
-    return;
-  }
-
-  m_file = fdopen(m_fd, "r");
-  if (m_file == NULL)
-  {
-    CLog::Log(LOGERROR, "LIRC %s: fdopen failed: %s", __FUNCTION__, strerror(errno));
-    return;
-  }
-
-  // Setup inotify so we can disconnect if lircd is restarted
-  if ((m_inotify_fd = inotify_init1(IN_NONBLOCK)) >= 0)
-  {
-    if ((m_inotify_wd = inotify_add_watch(m_inotify_fd, m_deviceName.c_str(), IN_DELETE_SELF)) < 0)
-    {
-      close(m_inotify_fd);
-      m_inotify_fd = -1;
-      CLog::Log(LOGDEBUG, "LIRC: Failed to initialize Inotify. LIRC device will not be monitored.");
-    }
-  }
-
-  CLog::Log(LOGINFO, "LIRC %s: sucessfully started on: %s", __FUNCTION__, addr.sun_path);
-  m_bInitialized = true;
+  if (!m_bInitialized)
+    Disconnect();
 }
 
 bool CRemoteControl::CheckDevice() {
