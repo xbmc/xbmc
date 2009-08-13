@@ -2,11 +2,14 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/inotify.h>
+#include <limits.h>
 #include <unistd.h>
 #include "LIRC.h"
 #include "ButtonTranslator.h"
 #include "log.h"
 #include "Settings.h"
+#include "FileSystem/File.h"
 
 #define LIRC_DEVICE "/dev/lircd"
 
@@ -18,7 +21,15 @@ CRemoteControl::CRemoteControl()
   m_file = NULL;
   m_bInitialized = false;
   m_skipHold = false;
+  m_button = 0;
+  m_isHolding = false;
   m_used = true;
+  m_deviceName = LIRC_DEVICE;
+  m_inotify_fd = -1;
+  m_inotify_wd = -1;
+  m_bLogConnectFailure = true;
+  m_lastInitAttempt = -5000;
+  m_initRetryPeriod = 5000;
   CLog::Log(LOGINFO, "LIRC %s: started ", __FUNCTION__);
   Reset();
 }
@@ -47,13 +58,18 @@ void CRemoteControl::Disconnect()
   if (!m_used)
     return;
 
-  if (m_fd)
+  if (m_fd != -1) 
   {
-    if (m_bInitialized)
-    {
-      m_bInitialized = false;
-      closesocket(m_fd);
+    m_bInitialized = false;
+    fclose(m_file);
+    m_fd = -1;
+    m_file = NULL;
+    if (m_inotify_wd >= 0) {
+      inotify_rm_watch(m_inotify_fd, m_inotify_wd);
+      m_inotify_wd = -1;
     }
+    if (m_inotify_fd >= 0)
+      close(m_inotify_fd);
   }
 }
 
@@ -68,14 +84,28 @@ void CRemoteControl::setDeviceName(const CStdString& value)
 void CRemoteControl::Initialize()
 {
   struct sockaddr_un addr;
-  if (!m_used)
+  int now = timeGetTime();
+
+  if (!m_used || now < m_lastInitAttempt + m_initRetryPeriod)
     return;
+  m_lastInitAttempt = now;
+
+  if (!XFILE::CFile::Exists(m_deviceName)) {
+    m_initRetryPeriod *= 2;
+    if (m_initRetryPeriod > 60000)
+    {
+      m_used = false;
+      CLog::Log(LOGDEBUG, "LIRC device %s does not exist. Giving up.", m_deviceName.c_str());
+    }
+    else
+      CLog::Log(LOGDEBUG, "LIRC device %s does not exist. Retry in %ds.", m_deviceName.c_str(), m_initRetryPeriod/1000);
+    return;
+  }
+
+  m_initRetryPeriod = 5000;
 
   addr.sun_family = AF_UNIX;
-  if (m_deviceName.length()>0)
-    strcpy(addr.sun_path, m_deviceName.c_str());
-  else
-    strcpy(addr.sun_path, LIRC_DEVICE);
+  strcpy(addr.sun_path, m_deviceName.c_str());
 
   // Open the socket from which we will receive the remote commands
   m_fd = socket(AF_UNIX, SOCK_STREAM,0);
@@ -88,9 +118,15 @@ void CRemoteControl::Initialize()
   // Connect to the socket
   if (connect(m_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1)
   {
-    CLog::Log(LOGINFO, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
+    if (m_bLogConnectFailure)
+    {
+      CLog::Log(LOGINFO, "LIRC %s: connect failed: %s", __FUNCTION__, strerror(errno));
+      m_bLogConnectFailure = false;
+    }
     return;
   }
+  
+  m_bLogConnectFailure = true;
 
   // Set the socket to non-blocking
   int opts = fcntl(m_fd,F_GETFL);
@@ -114,13 +150,45 @@ void CRemoteControl::Initialize()
     return;
   }
 
+  // Setup inotify so we can disconnect if lircd is restarted
+  if ((m_inotify_fd = inotify_init1(IN_NONBLOCK)) >= 0)
+  {
+    if ((m_inotify_wd = inotify_add_watch(m_inotify_fd, m_deviceName.c_str(), IN_DELETE_SELF)) < 0)
+    {
+      close(m_inotify_fd);
+      m_inotify_fd = -1;
+      CLog::Log(LOGDEBUG, "LIRC: Failed to initialize Inotify. LIRC device will not be monitored.");
+    }
+  }
+
   CLog::Log(LOGINFO, "LIRC %s: sucessfully started on: %s", __FUNCTION__, addr.sun_path);
   m_bInitialized = true;
+}
+
+bool CRemoteControl::CheckDevice() {
+  if (m_inotify_fd < 0 || m_inotify_wd < 0)
+    return true; // inotify wasn't setup for some reason, assume all is well
+  int bufsize = sizeof(struct inotify_event) + PATH_MAX;
+  char buf[bufsize];
+  int ret = read(m_inotify_fd, buf, bufsize);
+  for (int i = 0; i + (int)sizeof(struct inotify_event) <= ret;) {
+    struct inotify_event* e = (struct inotify_event*)(buf+i);
+    if (e->mask & IN_DELETE_SELF) {
+      CLog::Log(LOGDEBUG, "LIRC device removed, disconnecting...");
+      Disconnect();
+      return false;
+    }
+    i += sizeof(struct inotify_event)+e->len;
+  }
+  return true;
 }
 
 void CRemoteControl::Update()
 {
   if (!m_bInitialized || !m_used )
+    return;
+
+  if (!CheckDevice())
     return;
 
   Uint32 now = SDL_GetTicks();
@@ -154,7 +222,7 @@ void CRemoteControl::Update()
 
     if (strcmp(repeatStr, "00") == 0)
     {
-      CLog::Log(LOGDEBUG, "%s - NEW at %d:%s (%s)", __FUNCTION__, now, m_buf, buttonName);
+      CLog::Log(LOGDEBUG, "LIRC: %s - NEW at %d:%s (%s)", __FUNCTION__, now, m_buf, buttonName);
       m_firstClickTime = now;
       m_isHolding = false;
       m_skipHold = true;
@@ -170,6 +238,8 @@ void CRemoteControl::Update()
       m_button = 0;
     }
   }
+  if (feof(m_file) != 0)
+    Disconnect();
   m_skipHold = false;
 }
 

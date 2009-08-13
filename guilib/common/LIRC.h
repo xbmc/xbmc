@@ -17,9 +17,15 @@ public:
   bool IsHolding();
   void setDeviceName(const CStdString& value);
   void setUsed(bool value);
+  bool IsInUse() const { return m_used; }
+  bool IsInitialized() const { return m_bInitialized; }
 
 private:
   int   m_fd;
+  int   m_inotify_fd;
+  int   m_inotify_wd;
+  int   m_lastInitAttempt;
+  int   m_initRetryPeriod;
   FILE* m_file;
   bool  m_isHolding;
   WORD  m_button;
@@ -27,8 +33,10 @@ private:
   bool  m_bInitialized;
   bool  m_skipHold;
   bool  m_used;
+  bool  m_bLogConnectFailure;
   Uint32 m_firstClickTime;
   CStdString m_deviceName;
+  bool CheckDevice();
 };
 
 extern CRemoteControl g_RemoteControl;

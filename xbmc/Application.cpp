@@ -5425,6 +5425,10 @@ void CApplication::ProcessSlow()
     m_gWindowManager.SendThreadMessage(msg);
   }
 #endif
+#ifdef HAS_LIRC
+  if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())
+    g_RemoteControl.Initialize();
+#endif
 }
 
 // Global Idle Time in Seconds
