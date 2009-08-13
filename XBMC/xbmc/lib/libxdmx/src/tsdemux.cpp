@@ -48,6 +48,7 @@ class CTableFilter : public CTSFilter
 {
 public:
   virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual void Flush();
 protected:
   virtual bool ParseSection(unsigned char* pData, unsigned int len) = 0;
   CPayloadAccumulator m_Accum;
@@ -88,18 +89,29 @@ bool CTableFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUn
   return true;
 }
 
+void CTableFilter::Flush()
+{
+
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CPCRFilter : public CTSFilter
 {
 public:
   virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual void Flush();
 protected:
 };
 
 bool CPCRFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
 {
   return false;
+}
+
+void CPCRFilter::Flush()
+{
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,6 +128,8 @@ public:
   bool RegisterClock(unsigned short pid, CProgramClock* pClock); // TODO: Find a better home for the clocks
   void UnregisterClock(unsigned short pid);
   CProgramClock* GetClock(unsigned short pid);
+
+  void FlushStreamFilters(); // TODO: This needs to go...
 protected:
   CTSFilter* m_Filters[TS_MAX_PIDS]; // Use instead of map to improve lookup speed
   std::map<unsigned short, CProgramClock*> m_Clocks;
@@ -196,6 +210,17 @@ CProgramClock* CTSFilterRegistry::GetClock(unsigned short pid)
   return NULL;
 }
 
+void CTSFilterRegistry::FlushStreamFilters()
+{
+  // Currently, Flush does nothing for table or PCR filters
+  for (int f = 0; f < TS_MAX_PIDS; f++)
+  {
+    if (m_Filters[f])
+    {
+      m_Filters[f]->Flush();
+    }
+  }
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -375,7 +400,8 @@ public:
   CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList);
   CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList, IPacketFilter* pInnerFilter);
   virtual ~CElementaryStreamFilter();
-  bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual void Flush();
   CElementaryStream* GetStream();
   uint64_t GetBytesIn();
 protected:
@@ -409,6 +435,11 @@ bool CElementaryStreamFilter::Add(unsigned char* pData, unsigned int len, bool n
 {
   m_BytesIn += len;
   return m_pParser->Add(pData, len, newPayloadUnit);
+}
+
+void CElementaryStreamFilter::Flush()
+{
+  m_pParser->Flush();
 }
 
 CElementaryStream* CElementaryStreamFilter::GetStream()
@@ -1282,6 +1313,8 @@ double CTransportStreamDemux::SeekTime(double time)
   FillCache(); // Re-fill the input cache
 
   // TODO: Notify clocks of discontinuity
+  // TODO: Flush PES filters
+  m_FilterRegistry.FlushStreamFilters();
 
   return actualTime;
 }

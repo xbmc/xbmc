@@ -60,8 +60,8 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
     if (m_NeedProbe)
       ProbeFormat(pData, len);
   }
-  //else if (!m_BytesIn) // This is the first packet added
-  //  return true; // Wait for a new payload
+  else if (!m_HeaderLen) // This is the first packet added
+    return true; // Wait for a new payload
 
   if (m_HeaderOffset < m_HeaderLen) // Still need some header data
   {
@@ -93,6 +93,13 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
     CompletePayload();
   }
   return true;
+}
+
+void CPESParser::Flush()
+{
+  m_Accum.Reset();
+  m_HeaderLen = 0;
+  m_HeaderOffset = 0;
 }
 
 void CPESParser::SetTimeStamps(CParserPayload* pPayload, uint64_t pts, uint64_t dts)
