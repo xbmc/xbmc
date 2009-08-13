@@ -213,6 +213,7 @@ public:
     int m_songInfoDuration;
     int m_busyDialogDelay;
     int m_logLevel;
+    int m_logLevelHint;
     CStdString m_cddbAddress;
 #ifdef HAS_HAL
     bool m_useHalMount;
