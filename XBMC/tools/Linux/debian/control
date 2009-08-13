@@ -16,10 +16,10 @@ Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
  libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev, libhal-storage-dev,
  libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
  libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
- libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
- libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
- python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
- zlib1g-dev, libmms-dev, libsmbclient-dev,
+ libswscale-dev, liba52-dev, libdts-dev, libmpeg2-4-dev, libass-dev,
+ libmpcdec-dev, libflac-dev, libwavpack-dev, python-dev, gawk, gperf,
+ nasm [!amd64], libcwiid1-dev, libbluetooth-dev, zlib1g-dev, libmms-dev,
+ libsmbclient-dev, libfaad-dev,
 Standards-Version: 3.8.2
 Homepage: http://xbmc.org/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/xbmc.git
