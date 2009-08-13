@@ -1453,7 +1453,76 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
 
 void CLinuxRendererGL::AutoCrop(bool bCrop)
 {
-  // FIXME: no cropping for now
+  YV12Image &im = m_buffers[m_iYV12RenderBuffer].image;
+  if (bCrop)
+  {
+    // apply auto-crop filter - only luminance needed, and we run vertically down 'n'
+    // runs down the image.
+    int min_detect = 8;                                // reasonable amount (what mplayer uses)
+    int detect = (min_detect + 16)*im.width;     // luminance should have minimum 16
+    // Crop top
+    BYTE *s = im.plane[0];
+    int total;
+    g_stSettings.m_currentVideoSettings.m_CropTop = m_iSourceHeight/2;
+    for (unsigned int y = 0; y < im.height/2; y++)
+    {
+      total = 0;
+      for (unsigned int x = 0; x < im.width; x++)
+        total += s[x];
+      s += im.stride[0];
+      if (total > detect)
+      {
+        g_stSettings.m_currentVideoSettings.m_CropTop = y;
+        break;
+      }
+    }
+    // Crop bottom
+    s = im.plane[0] + (im.height-1)*im.stride[0];
+    g_stSettings.m_currentVideoSettings.m_CropBottom = im.height/2;
+    for (unsigned int y = (int)im.height; y > im.height/2; y--)
+    {
+      total = 0;
+      for (unsigned int x = 0; x < im.width; x++)
+        total += s[x];
+      s -= im.stride[0];
+      if (total > detect)
+      {
+        g_stSettings.m_currentVideoSettings.m_CropBottom = im.height - y;
+        break;
+      }
+    }
+    // Crop left
+    s = im.plane[0];
+    g_stSettings.m_currentVideoSettings.m_CropLeft = im.width/2;
+    for (unsigned int x = 0; x < im.width/2; x++)
+    {
+      total = 0;
+      for (unsigned int y = 0; y < im.height; y++)
+        total += s[y * im.stride[0]];
+      s++;
+      if (total > detect)
+      {
+        g_stSettings.m_currentVideoSettings.m_CropLeft = x;
+        break;
+      }
+    }
+    // Crop right
+    s = im.plane[0] + (im.width-1);
+    g_stSettings.m_currentVideoSettings.m_CropRight= im.width/2;
+    for (unsigned int x = (int)im.width-1; x > im.width/2; x--)
+    {
+      total = 0;
+      for (unsigned int y = 0; y < im.height; y++)
+        total += s[y * im.stride[0]];
+      s--;
+      if (total > detect)
+      {
+        g_stSettings.m_currentVideoSettings.m_CropRight = im.width - x;
+        break;
+      }
+    }
+  }
+  else
   { // reset to defaults
     g_stSettings.m_currentVideoSettings.m_CropLeft = 0;
     g_stSettings.m_currentVideoSettings.m_CropRight = 0;
