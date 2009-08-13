@@ -35,6 +35,8 @@ public:
   void Update();
   WORD GetButton();
   bool IsHolding();
+  bool IsInitialized() {return m_bInitialized;}
+  bool IsInUse() {return true;}
 
 protected:
   virtual void Process();
