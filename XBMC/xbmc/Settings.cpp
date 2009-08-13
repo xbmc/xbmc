@@ -212,9 +212,11 @@ void CSettings::Initialize()
   g_advancedSettings.m_songInfoDuration = 10;
   g_advancedSettings.m_busyDialogDelay = 2000;
 #ifdef _DEBUG
-  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
 #else
-  g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
 #ifdef HAS_HAL
@@ -1302,14 +1304,18 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
     XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
 
-  if (XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
+  pElement = pRootElement->FirstChildElement("loglevel");
+  if (pElement)
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
+    XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
     CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("system.debuglogging");
     if (setting)
     {
-      setting->SetData(g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_FREEMEM);
-      setting->SetAdvanced();
+      const char* hide;
+      setting->SetData(g_advancedSettings.m_logLevelHint >= LOG_LEVEL_DEBUG_FREEMEM);
+      if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
+        setting->SetAdvanced();
     }
   }
   XMLUtils::GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress);

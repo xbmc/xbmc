@@ -1578,15 +1578,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("system.debuglogging"))
   {
-    if (g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+    if (g_guiSettings.GetBool("system.debuglogging"))
     {
-      g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
-      CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
+      int level = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+      g_advancedSettings.m_logLevel = level;
+      CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
     }
-    else if (!g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
+    else
     {
-      CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting");
-      g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG; // = LOG_LEVEL_NORMAL
+      int level = std::min(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
+      CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
+      g_advancedSettings.m_logLevel = level;
     }
   }
   /*else if (strSetting.Equals("musicfiles.repeat"))
