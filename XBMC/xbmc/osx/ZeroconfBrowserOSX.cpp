@@ -134,7 +134,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
                 s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
       p_this->addDiscoveredService(browser, flags, s);
     }
-    if(! (flags & kCFNetServiceFlagMoreComing))
+    if(! (flags & kCFNetServiceFlagMoreComing) )
     {
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
       message.SetStringParam("zeroconf://");
@@ -167,15 +167,11 @@ addDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroc
       break;
   }
   if(serviceIt == services.end())
-  {
     services.push_back(std::make_pair(fcr_service, 1));
-  } else
-  {
+  else
     ++serviceIt->second;
-  }
 }
 
-/// removes the service from list of found services
 void CZeroconfBrowserOSX::
 removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZeroconfBrowser::ZeroconfService const& fcr_service)
 {
@@ -186,20 +182,21 @@ removeDiscoveredService(CFNetServiceBrowserRef browser, CFOptionFlags flags, CZe
   std::vector<std::pair<ZeroconfService, unsigned int> >& services = browserIt->second;
   std::vector<std::pair<ZeroconfService, unsigned int> >::iterator serviceIt = services.begin();
   for( ; serviceIt != services.end(); ++serviceIt)
-  {
     if(serviceIt->first == fcr_service)
-    {
       break;
-    }
-  }
-  assert(serviceIt != services.end());
-  //decrease refCount
-  --serviceIt->second;
-  if(!serviceIt->second)
+  if(serviceIt != services.end())
   {
-    //eventually remove the service
-    services.erase(serviceIt);
-  }  
+    //decrease refCount
+    --serviceIt->second;
+    if(!serviceIt->second)
+    {
+      //eventually remove the service
+      services.erase(serviceIt);
+    }
+  } else
+  {
+    //looks like we missed the announce, no problem though..
+  }
 }
 
 
