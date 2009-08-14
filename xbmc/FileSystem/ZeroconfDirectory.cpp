@@ -32,16 +32,7 @@ using namespace DIRECTORY;
 
 CZeroconfDirectory::CZeroconfDirectory()
 {
-  static bool initialized_browser = false;
-  if(!initialized_browser)
-  {
-    CZeroconfBrowser* browser = CZeroconfBrowser::GetInstance();
-    browser->AddServiceType("_smb._tcp.");
-//     browser->AddServiceType("_ftp._tcp.");
-    browser->AddServiceType("_htsp._tcp.");
-    browser->Start();
-    initialized_browser = true;
-  }
+  CZeroconfBrowser::GetInstance()->Start();
 }
 
 CZeroconfDirectory::~CZeroconfDirectory()

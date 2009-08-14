@@ -53,6 +53,10 @@ CZeroconfBrowser* CZeroconfBrowser::smp_instance = 0;
 
 CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started(false)
 {
+  AddServiceType("_smb._tcp.");
+  AddServiceType("_ftp._tcp.");
+  AddServiceType("_htsp._tcp.");
+  AddServiceType("_daap._tcp.");
 }
 
 CZeroconfBrowser::~CZeroconfBrowser()
