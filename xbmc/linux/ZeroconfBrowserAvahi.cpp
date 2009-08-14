@@ -115,7 +115,7 @@ bool CZeroconfBrowserAvahi::doAddServiceType ( const CStdString& fcr_service_typ
   //if the client is running, we directly create a browser for the service here
   if ( mp_client  && avahi_client_get_state ( mp_client ) ==  AVAHI_CLIENT_S_RUNNING )
   {
-    AvahiServiceBrowser* browser = createServiceBrowser ( fcr_service_type );
+    AvahiServiceBrowser* browser = createServiceBrowser ( fcr_service_type, mp_client, this);
     if ( !browser )
     {
       m_browsers.erase ( it );
@@ -220,21 +220,28 @@ void CZeroconfBrowserAvahi::clientCallback ( AvahiClient* fp_client, AvahiClient
         for ( tBrowserMap::iterator it = p_instance->m_browsers.begin(); it != p_instance->m_browsers.end(); ++it )
         {
           assert ( !it->second );
-          it->second = p_instance->createServiceBrowser ( it->first );
+          it->second = createServiceBrowser ( it->first, fp_client, fp_data );
         }
         break;
       }
     case AVAHI_CLIENT_FAILURE:
+    {
       CLog::Log ( LOGINFO, "CZeroconfBrowserAvahi::clientCallback: client failure. avahi-daemon stopped? Recreating client..." );
       //We were forced to disconnect from server. now free and recreate the client object
       avahi_client_free ( fp_client );
       p_instance->mp_client = 0;
       //freeing the client also frees all groups and browsers, pointers are undefined afterwards, so fix that now
-      for ( tBrowserMap::iterator it = p_instance->m_browsers.begin(); it != p_instance->m_browsers.end(); ++it )
+      for ( tBrowserMap::iterator it = p_instance->m_browsers.begin(); it != p_instance->m_browsers.end(); ++it ){
         it->second = ( AvahiServiceBrowser* ) 0;
+      }
+      //clean the list of discovered services and update gui (if someone is interested)
+      p_instance->m_discovered_services.clear();
+      CGUIMessage message ( GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH );
+      message.SetStringParam ( "zeroconf://" );
+      m_gWindowManager.SendThreadMessage ( message );
       p_instance->createClient();
       break;
-
+    }
     case AVAHI_CLIENT_S_COLLISION:
     case AVAHI_CLIENT_S_REGISTERING:
       //HERE WE SHOULD REMOVE ALL OF OUR SERVICES AND "RESCHEDULE" them for later addition
@@ -352,14 +359,15 @@ bool CZeroconfBrowserAvahi::createClient()
   return true;
 }
 
-AvahiServiceBrowser* CZeroconfBrowserAvahi::createServiceBrowser ( const CStdString& fcr_service_type )
+AvahiServiceBrowser* CZeroconfBrowserAvahi::createServiceBrowser ( const CStdString& fcr_service_type, AvahiClient* fp_client, void* fp_userdata)
 {
-  AvahiServiceBrowser* ret = avahi_service_browser_new ( mp_client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, fcr_service_type.c_str(),
-                             NULL, ( AvahiLookupFlags ) 0, browseCallback, this );
+  assert(fp_client);
+  AvahiServiceBrowser* ret = avahi_service_browser_new ( fp_client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, fcr_service_type.c_str(),
+                                                         NULL, ( AvahiLookupFlags ) 0, browseCallback, fp_userdata );
   if ( !ret )
   {
-    CLog::Log ( LOGERROR, "CZeroconfBrowserAvahi::doAddServiceType Failed to create service (%s) browser: %s",
-                avahi_strerror ( avahi_client_errno ( mp_client ) ), fcr_service_type.c_str() );
+    CLog::Log ( LOGERROR, "CZeroconfBrowserAvahi::createServiceBrowser Failed to create service (%s) browser: %s",
+                avahi_strerror ( avahi_client_errno ( fp_client ) ), fcr_service_type.c_str() );
   }
   return ret;
 }

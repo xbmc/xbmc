@@ -79,7 +79,7 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
     static void shutdownCallback(AvahiTimeout *fp_e, void *fp_data);
     //helpers
     bool createClient();
-    AvahiServiceBrowser* createServiceBrowser(const CStdString& fcr_service_type);
+    static AvahiServiceBrowser* createServiceBrowser(const CStdString& fcr_service_type, AvahiClient* fp_client, void* fp_userdata);
 
     //shared variables between avahi thread and interface
     AvahiClient* mp_client;
