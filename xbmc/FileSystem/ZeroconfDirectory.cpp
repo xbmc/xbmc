@@ -82,13 +82,18 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
     {
       CStdString path = CStdString("zeroconf://" + CZeroconfBrowser::ZeroconfService::toPath(*it));
       CFileItemPtr item(new CFileItem(path, true));
-      CStdString protocol = GetHumanReadableProtocol(it->GetType());
-      item->SetLabel(it->GetName() + " (" + protocol  + ")");
-      item->SetLabelPreformated(true);
-      item->FillInDefaultIcon();
-      //TODO: we're setting an empty fanart_image here so not all services get hammered
-      item->SetProperty("fanart_image", "");
-      items.Add(item);
+      CStdString protocol;
+      //only use discovered services we can connect to through directory
+      if(GetXBMCProtocol(it->GetType(), protocol))
+      {
+        protocol = GetHumanReadableProtocol(it->GetType());
+        item->SetLabel(it->GetName() + " (" + protocol  + ")");
+        item->SetLabelPreformated(true);
+        item->FillInDefaultIcon();
+        //TODO: we're setting an empty fanart_image here so not all services get hammered
+        item->SetProperty("fanart_image", "");
+        items.Add(item);
+      }
     }
     return true;
   } else
