@@ -143,9 +143,7 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
 #ifdef __APPLE__
       smp_instance = new CZeroconfBrowserOSX;
 #elif defined(_LINUX)
-      //sorry, not here yet
-      smp_instance = new CZeroconfBrowserDummy;
-      //smp_instance  = new CZeroconfBrowserAvahi;
+      smp_instance  = new CZeroconfBrowserAvahi;
 #endif
 #endif
     }

@@ -37,7 +37,7 @@ CZeroconfDirectory::CZeroconfDirectory()
   {
     CZeroconfBrowser* browser = CZeroconfBrowser::GetInstance();
     browser->AddServiceType("_smb._tcp.");
-    browser->AddServiceType("_ftp._tcp.");
+//     browser->AddServiceType("_ftp._tcp.");
     browser->AddServiceType("_htsp._tcp.");
     browser->Start();
     initialized_browser = true;
