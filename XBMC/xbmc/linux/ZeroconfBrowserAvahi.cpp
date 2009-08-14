@@ -143,7 +143,10 @@ bool CZeroconfBrowserAvahi::doRemoveServiceType ( const CStdString& fcr_service_
   else
   {
     if ( it->second )
+    {
       avahi_service_browser_free ( it->second );
+      m_all_for_now_browsers.erase ( it->second );
+    }
     m_browsers.erase ( it );
     //remove this serviceType from the list of discovered services
     for ( tDiscoveredServices::iterator it = m_discovered_services.begin(); it != m_discovered_services.end(); ++it )
@@ -272,8 +275,9 @@ void CZeroconfBrowserAvahi::browseCallback (
         info.interface = interface;
         info.protocol = protocol;
         p_instance->m_discovered_services.insert ( std::make_pair ( service, info ) );
-        //currently we're updating on all messages, as AVAHI_BROWSER_ALL_FOR_NOW isn't sent if only a single service appears or is removed
-        update_gui = true;
+        //if this browser already sent the all for now message, we need to update the gui now
+        if( p_instance->m_all_for_now_browsers.find(browser) != p_instance->m_all_for_now_browsers.end() )
+          update_gui = true;
         break;
       }
     case AVAHI_BROWSER_REMOVE:
@@ -287,15 +291,20 @@ void CZeroconfBrowserAvahi::browseCallback (
         service.domain = domain;
         p_instance->m_discovered_services.erase ( service );
         CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::browseCallback REMOVE: service '%s' of type '%s' in domain '%s'\n", name, type, domain );
-        //currently we're updating on all messages, as AVAHI_BROWSER_ALL_FOR_NOW isn't sent if only a single service appears or is removed
-        update_gui = true;
+        //if this browser already sent the all for now message, we need to update the gui now
+        if( p_instance->m_all_for_now_browsers.find(browser) != p_instance->m_all_for_now_browsers.end() )
+          update_gui = true;
         break;
       }
     case AVAHI_BROWSER_CACHE_EXHAUSTED:
       //do we need that?
       break;
     case AVAHI_BROWSER_ALL_FOR_NOW:
-      CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::browseCallback all for now" );
+      CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::browseCallback all for now (service = %s)", type);
+      //if this browser already sent the all for now message, we need to update the gui now
+      bool success = p_instance->m_all_for_now_browsers.insert(browser).second;
+      if(!success)
+        CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::browseCallback AVAHI_BROWSER_ALL_FOR_NOW sent twice?!");
       update_gui = true;
       break;
   }
