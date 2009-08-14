@@ -48,8 +48,6 @@ private:
   virtual bool doResolveService(CZeroconfBrowser::ZeroconfService& fr_service, double f_timeout);
   ///@}
 
-  bool syncResolve(CZeroconfBrowser::ZeroconfService& fr_service, double f_timeout);
-
   /// browser callback
   static void BrowserCallback(CFNetServiceBrowserRef browser, CFOptionFlags flags, CFTypeRef domainOrService, CFStreamError *error, void *info);
   /// resolve callback
@@ -63,7 +61,7 @@ private:
   //CF runloop ref; we're using main-threads runloop
   CFRunLoopRef m_runloop;
   
-  //shared variables (with gua)
+  //shared variables (with guard)
   //TODO: split the guard for discovered, resolved access?
   CCriticalSection m_data_guard;
   // tBrowserMap maps service types the corresponding browser
