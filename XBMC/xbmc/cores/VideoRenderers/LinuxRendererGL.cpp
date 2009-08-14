@@ -284,6 +284,8 @@ void CLinuxRendererGL::ManageDisplay()
   float fOffsetX1 = (float)rv.left;
   float fOffsetY1 = (float)rv.top;
 
+  AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
+
   // source rect
   rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
   rs.top = g_stSettings.m_currentVideoSettings.m_CropTop;
@@ -1453,83 +1455,160 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
 
 void CLinuxRendererGL::AutoCrop(bool bCrop)
 {
-  YV12Image &im = m_buffers[m_iYV12RenderBuffer].image;
+  RECT crop;
+
+  if(!m_bValidated) return;
+
   if (bCrop)
   {
-    // apply auto-crop filter - only luminance needed, and we run vertically down 'n'
-    // runs down the image.
-    int min_detect = 8;                                // reasonable amount (what mplayer uses)
-    int detect = (min_detect + 16)*im.width;     // luminance should have minimum 16
+    YV12Image &im = m_buffers[m_iYV12RenderBuffer].image;
+    crop.left   = g_stSettings.m_currentVideoSettings.m_CropLeft;
+    crop.right  = g_stSettings.m_currentVideoSettings.m_CropRight;
+    crop.top    = g_stSettings.m_currentVideoSettings.m_CropTop;
+    crop.bottom = g_stSettings.m_currentVideoSettings.m_CropBottom;
+
+    int black  = 16; // what is black in the image
+    int level  = 8;  // how high above this should we detect
+    int multi  = 4;  // what multiple of last line should failing line be to accept
+    BYTE *s;
+    int last, detect, black2;
+
+    // top and bottom levels
+    black2 = black * im.width;
+    detect = level * im.width + black2;
+
     // Crop top
-    BYTE *s = im.plane[0];
-    int total;
-    g_stSettings.m_currentVideoSettings.m_CropTop = m_iSourceHeight/2;
+    s      = im.plane[0];
+    last   = black2;
     for (unsigned int y = 0; y < im.height/2; y++)
     {
-      total = 0;
+      int total = 0;
       for (unsigned int x = 0; x < im.width; x++)
         total += s[x];
       s += im.stride[0];
+
       if (total > detect)
       {
-        g_stSettings.m_currentVideoSettings.m_CropTop = y;
+        if (total - black2 > (last - black2) * multi)
+          crop.top = y;
         break;
       }
+      last = total;
     }
+
     // Crop bottom
-    s = im.plane[0] + (im.height-1)*im.stride[0];
-    g_stSettings.m_currentVideoSettings.m_CropBottom = im.height/2;
+    s    = im.plane[0] + (im.height-1)*im.stride[0];
+    last = black2;
     for (unsigned int y = (int)im.height; y > im.height/2; y--)
     {
-      total = 0;
+      int total = 0;
       for (unsigned int x = 0; x < im.width; x++)
         total += s[x];
       s -= im.stride[0];
+
       if (total > detect)
       {
-        g_stSettings.m_currentVideoSettings.m_CropBottom = im.height - y;
+        if (total - black2 > (last - black2) * multi)
+          crop.bottom = im.height - y;
         break;
       }
+      last = total;
     }
+
+    // left and right levels
+    black2 = black * im.height;
+    detect = level * im.height + black2;
+
+
     // Crop left
-    s = im.plane[0];
-    g_stSettings.m_currentVideoSettings.m_CropLeft = im.width/2;
+    s    = im.plane[0];
+    last = black2;
     for (unsigned int x = 0; x < im.width/2; x++)
     {
-      total = 0;
+      int total = 0;
       for (unsigned int y = 0; y < im.height; y++)
         total += s[y * im.stride[0]];
       s++;
       if (total > detect)
       {
-        g_stSettings.m_currentVideoSettings.m_CropLeft = x;
+        if (total - black2 > (last - black2) * multi)
+          crop.left = x;
         break;
       }
+      last = total;
     }
+
     // Crop right
-    s = im.plane[0] + (im.width-1);
-    g_stSettings.m_currentVideoSettings.m_CropRight= im.width/2;
+    s    = im.plane[0] + (im.width-1);
+    last = black2;
     for (unsigned int x = (int)im.width-1; x > im.width/2; x--)
     {
-      total = 0;
+      int total = 0;
       for (unsigned int y = 0; y < im.height; y++)
         total += s[y * im.stride[0]];
       s--;
+
       if (total > detect)
       {
-        g_stSettings.m_currentVideoSettings.m_CropRight = im.width - x;
+        if (total - black2 > (last - black2) * multi)
+          crop.right = im.width - x;
         break;
       }
+      last = total;
     }
+
+    // We always crop equally on each side to get zoom
+    // effect intead of moving the image. Aslong as the
+    // max crop isn't much larger than the min crop
+    // use that.
+    int min, max;
+
+    min = std::min(crop.left, crop.right);
+    max = std::max(crop.left, crop.right);
+    if(10 * (max - min) / im.width < 1)
+      crop.left = crop.right = max;
+    else
+      crop.left = crop.right = min;
+
+    min = std::min(crop.top, crop.bottom);
+    max = std::max(crop.top, crop.bottom);
+    if(10 * (max - min) / im.height < 1)
+      crop.top = crop.bottom = max;
+    else
+      crop.top = crop.bottom = min;
   }
   else
   { // reset to defaults
-    g_stSettings.m_currentVideoSettings.m_CropLeft = 0;
-    g_stSettings.m_currentVideoSettings.m_CropRight = 0;
-    g_stSettings.m_currentVideoSettings.m_CropTop = 0;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = 0;
+    crop.left   = 0;
+    crop.right  = 0;
+    crop.top    = 0;
+    crop.bottom = 0;
   }
-  SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+
+  m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1;
+  m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1;
+  m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1;
+  m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1;
+
+  crop.left   = MathUtils::round_int(m_crop.x1);
+  crop.right  = MathUtils::round_int(m_crop.x2);
+  crop.top    = MathUtils::round_int(m_crop.y1);
+  crop.bottom = MathUtils::round_int(m_crop.y2);
+
+  //compare with hysteresis
+# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
+  if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
+  {
+    g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
+    g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
+    g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
+    g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
+    SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+  }
+# undef HYST
 }
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
