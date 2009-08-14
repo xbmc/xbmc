@@ -85,6 +85,9 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
       CStdString protocol = GetHumanReadableProtocol(it->GetType());
       item->SetLabel(it->GetName() + " (" + protocol  + ")");
       item->SetLabelPreformated(true);
+      item->FillInDefaultIcon();
+      //TODO: we're setting an empty fanart_image here so not all services get hammered
+      item->SetProperty("fanart_image", "");
       items.Add(item);
     }
     return true;
