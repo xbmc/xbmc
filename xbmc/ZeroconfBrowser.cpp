@@ -201,7 +201,6 @@ void CZeroconfBrowser::ZeroconfService::SetIP(const CStdString& fcr_ip)
 
 void CZeroconfBrowser::ZeroconfService::SetPort(int f_port)
 {
-  assert(f_port > 0);
   m_port = f_port;
 }
 
