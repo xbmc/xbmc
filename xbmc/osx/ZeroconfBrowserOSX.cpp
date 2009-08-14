@@ -52,41 +52,44 @@ namespace
   
   //helper to get (first) IP and port from a resolved service
   //returns true on success, false on if none was found
-  bool CopyFirstIPv4Address(CFNetServiceRef service, CStdString& fr_address, int& fr_port)
+  bool CopyFirstIPv4Address(CFNetServiceRef serviceRef, CStdString& fr_address, int& fr_port)
   {
-    struct sockaddr * socketAddress = NULL;
-    CFArrayRef addresses;
+    CFIndex idx;
+    struct sockaddr_in address;
     char buffer[256];
-    int count;
-    Boolean result = false;
+    CFArrayRef addressResults = CFNetServiceGetAddressing( (CFNetServiceRef)serviceRef );
     
-    assert(service       != NULL);
-    
-    addresses = CFNetServiceGetAddressing(service);
-    
-    assert(addresses != NULL);
-    assert(CFArrayGetCount(addresses) > 0);
-    
-    /* Search for the first IPv4 address in the array. */
-    for (count = 0; count < CFArrayGetCount(addresses); count++) 
+    if ( addressResults != NULL )
     {
+      CFIndex numAddressResults = CFArrayGetCount( addressResults );
+      CFDataRef sockAddrRef = NULL;
+      struct sockaddr sockHdr;
       
-      socketAddress = (struct sockaddr *)CFDataGetBytePtr((const CFDataRef)CFArrayGetValueAtIndex(addresses, count));
-      
-      /* Only continue if this is an IPv4 address. */
-      if (socketAddress && socketAddress->sa_family == AF_INET)
+      for ( idx = 0; idx < numAddressResults; idx++ )
       {
-        
-        if (inet_ntop(AF_INET, &((struct sockaddr_in *)socketAddress)->sin_addr, buffer, sizeof(buffer)))
+        sockAddrRef = (CFDataRef)CFArrayGetValueAtIndex( addressResults, idx );
+        if ( sockAddrRef != NULL )
         {
-          fr_address = buffer;
-          fr_port = ((struct sockaddr_in *)socketAddress)->sin_port;
-          result = true;
+          CFDataGetBytes( sockAddrRef, CFRangeMake(0, sizeof(sockHdr)), (UInt8*)&sockHdr );
+          switch ( sockHdr.sa_family )
+          {
+            case AF_INET:
+              CFDataGetBytes( sockAddrRef, CFRangeMake(0, sizeof(address)), (UInt8*)&address );
+              if ( inet_ntop(sockHdr.sa_family, &address.sin_addr, buffer, sizeof(buffer)) != NULL )
+              {
+                fr_address = buffer;
+                fr_port = ntohs(address.sin_port);
+                return true;
+              }
+              break;
+            case AF_INET6:
+            default:
+              break;
+          }
         }
-        break;
       }
     }
-    return result;
+    return false;
   }
 }
 
