@@ -102,8 +102,10 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
     CStdString decoded = path;
     CUtil::UrlDecode(decoded);
     CZeroconfBrowser::ZeroconfService zeroconf_service = CZeroconfBrowser::ZeroconfService::fromPath(decoded);
-    if(!CZeroconfBrowser::GetInstance()->ResolveService(zeroconf_service))
+    if(!CZeroconfBrowser::GetInstance()->ResolveService(zeroconf_service)){
+      CLog::Log(LOGINFO, "CZeroconfDirectory::GetDirectory service ( %s ) could not be resolved in time", zeroconf_service.GetName().c_str());
       return false;
+    }
     else
     {
       assert(!zeroconf_service.GetIP().empty());
@@ -121,7 +123,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
       service.SetProtocol(protocol);
       CStdString resolved_path;
       service.GetURL(resolved_path);
-      return CDirectory::GetDirectory(resolved_path, items);
+      return CDirectory::GetDirectory(resolved_path, items, "", true, true);
     }
   }
 }
