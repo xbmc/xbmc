@@ -88,6 +88,10 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
     typedef std::map<CStdString, AvahiServiceBrowser*> tBrowserMap;
     tBrowserMap m_browsers;
 
+    // if a browser is in this set, it already sent an ALL_FOR_NOW message
+    // (needed to bundle GUI_MSG_UPDATE_PATH messages
+    std::set<AvahiServiceBrowser*> m_all_for_now_browsers;
+
     //this information is needed for avahi to resolve a service,
     //so unfortunately we'll only be able to resolve services already discovered
     struct AvahiSpecificInfos
