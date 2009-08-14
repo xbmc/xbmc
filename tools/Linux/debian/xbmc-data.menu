@@ -1,2 +1,2 @@
-?package(xbmc-common):needs="X11" section="Applications/Video" \
+?package(xbmc-data):needs="X11" section="Applications/Video" \
   title="xbmc" command="/usr/bin/xbmc"
