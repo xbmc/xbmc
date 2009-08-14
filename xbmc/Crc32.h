@@ -23,20 +23,18 @@
 class Crc32
 {
 public:
-  /* Our constructor and destructor */
   Crc32();
-  ~Crc32();
-
-  /* Public methods */
-  void Compute(const void* buffer, unsigned int count);
+  void Reset();
+  void Compute(const char* buffer, size_t count);
   void Compute(const CStdString& strValue);
   void ComputeFromLowerCase(const CStdString& strValue);
 
-  operator unsigned __int32 () const
+  operator uint32_t () const
   {
     return m_crc;
   }
 
 private:
-  unsigned __int32 m_crc;
+  uint32_t m_crc;
 };
+
