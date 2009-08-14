@@ -21,8 +21,6 @@
 #pragma once
 #include "IDirectory.h"
 
-class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
-
 namespace DIRECTORY
 {
 
