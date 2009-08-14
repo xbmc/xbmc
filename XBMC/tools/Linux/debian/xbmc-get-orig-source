@@ -39,8 +39,8 @@ make_current_tarball() {
 
     # Take out the .svn directories
     echo "Removing .svn directories"
-    for TMP in `find xbmc-$XBMC_VERSION -type d -name .svn`; do
-        rm -rf $TMP
+    find xbmc-$XBMC_VERSION -type d -name .svn | while read TMP; do
+        rm -rf "$TMP"
     done
 
     # Remove libdvdcss
