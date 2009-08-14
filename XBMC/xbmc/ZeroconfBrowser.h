@@ -82,18 +82,6 @@ public:
   // stops browsing
   void Stop();
   
-  /// methods for browsing and getting results of it
-  ///@{
-  /// adds a service type for browsing
-  /// @param fcr_service_type the service type as string, e.g. _smb._tcp.
-  /// @return false if it was already there
-  bool AddServiceType(const CStdString& fcr_service_type);
-
-  /// remove the specified service from discovery
-  /// @param fcr_service_type the service type as string, e.g. _smb._tcp.
-  /// @return if it was not found
-  bool RemoveServiceType(const CStdString& fcr_service_type);
-
   ///returns the list of found services
   /// if this is updated, the following message with "zeroconf://" as path is sent:
   /// CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
@@ -133,6 +121,18 @@ protected:
   virtual ~CZeroconfBrowser();
 
 private:
+  /// methods for browsing and getting results of it
+  ///@{
+  /// adds a service type for browsing
+  /// @param fcr_service_type the service type as string, e.g. _smb._tcp.
+  /// @return false if it was already there
+  bool AddServiceType(const CStdString& fcr_service_type);
+
+  /// remove the specified service from discovery
+  /// @param fcr_service_type the service type as string, e.g. _smb._tcp.
+  /// @return if it was not found
+  bool RemoveServiceType(const CStdString& fcr_service_type);
+
   struct ServiceInfo
   {
     CStdString type;
