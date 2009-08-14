@@ -87,8 +87,8 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
     {
       CStdString path = CStdString("zeroconf://" + CZeroconfBrowser::ZeroconfService::toPath(*it));
       CFileItemPtr item(new CFileItem(path, true));
-      CStdString protocol = GetHumanReadableProtocol(it->type);
-      item->SetLabel(it->name + "(" + protocol  + ")");
+      CStdString protocol = GetHumanReadableProtocol(it->GetType());
+      item->SetLabel(it->GetName() + "(" + protocol  + ")");
       item->SetLabelPreformated(true);
       items.Add(item);
     }
@@ -103,14 +103,14 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
       return false;
     else
     {
-      assert(!zeroconf_service.ip.empty());
+      assert(!zeroconf_service.GetIP().empty());
       CURL service;
-      service.SetPort(zeroconf_service.port);
-      service.SetHostName(zeroconf_service.ip);
+      service.SetPort(zeroconf_service.GetPort());
+      service.SetHostName(zeroconf_service.GetIP());
       //do protocol conversion (_smb._tcp -> smb)
       //ToDo: try automatic conversion -> remove leading '_' and '._tcp'?
       CStdString protocol;
-      if(!GetXBMCProtocol(zeroconf_service.type, protocol))
+      if(!GetXBMCProtocol(zeroconf_service.GetType(), protocol))
       {
         CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory Unknown service type: %s.", service.GetProtocol().c_str());
         return false;

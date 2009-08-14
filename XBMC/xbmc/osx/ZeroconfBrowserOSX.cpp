@@ -118,19 +118,20 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
     //get our instance
     CZeroconfBrowserOSX* p_this = reinterpret_cast<CZeroconfBrowserOSX*>(info);
     //store the service
-    ZeroconfService s;
-    s.name = CFStringToCStdString(CFNetServiceGetName(service));
-    s.type = CFStringToCStdString(CFNetServiceGetType(service));
-    s.domain = CFStringToCStdString(CFNetServiceGetDomain(service));
+    ZeroconfService s(
+                      CFStringToCStdString(CFNetServiceGetName(service)),
+                      CFStringToCStdString(CFNetServiceGetType(service)),
+                      CFStringToCStdString(CFNetServiceGetDomain(service))
+                      );
     if (flags & kCFNetServiceFlagRemove)
     {
       CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback service named: %s, type: %s, domain: %s disappeared", 
-                s.name.c_str(), s.type.c_str(), s.domain.c_str());
+                s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
       p_this->removeDiscoveredService(browser, flags, s);      
     } else
     {
       CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback found service named: %s, type: %s, domain: %s", 
-                s.name.c_str(), s.type.c_str(), s.domain.c_str());
+                s.GetName().c_str(), s.GetType().c_str(), s.GetDomain().c_str());
       p_this->addDiscoveredService(browser, flags, s);
     }
     if(! (flags & kCFNetServiceFlagMoreComing))
@@ -287,21 +288,24 @@ bool CZeroconfBrowserOSX::doResolveService(CZeroconfBrowser::ZeroconfService& fr
 {
   bool ret = false;
   CFStringRef type = CFStringCreateWithCString (NULL,
-                                                fr_service.type.c_str(),
+                                                fr_service.GetType().c_str(),
                                                 kCFStringEncodingUTF8
                                                 );
   CFStringRef name = CFStringCreateWithCString (NULL,
-                                                fr_service.name.c_str(),
+                                                fr_service.GetName().c_str(),
                                                 kCFStringEncodingUTF8
                                                 );
   CFStringRef domain = CFStringCreateWithCString (NULL,
-                                                  fr_service.domain.c_str(),
+                                                  fr_service.GetDomain().c_str(),
                                                   kCFStringEncodingUTF8
                                                   );
   CFNetServiceRef service = CFNetServiceCreate (NULL, domain, type, name, 0);
   if(CFNetServiceResolveWithTimeout (service, f_timeout, NULL) )
   {
-    ret = CopyFirstIPv4Address(service, fr_service.ip, fr_service.port);
+    CStdString ip; int port;
+    ret = CopyFirstIPv4Address(service, ip, port);
+    fr_service.SetIP(ip);
+    fr_service.SetPort(port);
   }
   CFRelease(type);
   CFRelease(name);
