@@ -80,13 +80,20 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
     std::vector<CZeroconfBrowser::ZeroconfService> found_services = CZeroconfBrowser::GetInstance()->GetFoundServices();
     for(std::vector<CZeroconfBrowser::ZeroconfService>::iterator it = found_services.begin(); it != found_services.end(); ++it)
     {
-      CStdString path = CStdString("zeroconf://" + CZeroconfBrowser::ZeroconfService::toPath(*it));
-      CFileItemPtr item(new CFileItem(path, true));
-      CStdString protocol;
       //only use discovered services we can connect to through directory
-      if(GetXBMCProtocol(it->GetType(), protocol))
+      CStdString tmp;
+      if(GetXBMCProtocol(it->GetType(), tmp))
       {
-        protocol = GetHumanReadableProtocol(it->GetType());
+        CFileItemPtr item(new CFileItem("", true));
+        CURL url;
+        url.SetProtocol("zeroconf");
+        CStdString service_path = CZeroconfBrowser::ZeroconfService::toPath(*it);
+        CUtil::URLEncode(service_path);
+        url.SetFileName(service_path);
+        url.GetURL(item->m_strPath);
+
+        //now do the formatting
+        CStdString protocol = GetHumanReadableProtocol(it->GetType());
         item->SetLabel(it->GetName() + " (" + protocol  + ")");
         item->SetLabelPreformated(true);
         item->FillInDefaultIcon();
