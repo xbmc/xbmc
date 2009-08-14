@@ -148,20 +148,18 @@ private:
   static long sm_singleton_guard;
   static CZeroconfBrowser* smp_instance;
 };
+#include <iostream>
 
+//debugging helper
+inline std::ostream& operator<<(std::ostream& o, const CZeroconfBrowser::ZeroconfService& service){
+  o << "(" << service.GetName() << "|" << service.GetType() << "|" << service.GetDomain() << ")";
+  return o;
+}
 
 //inline methods
-
 inline bool operator<(CZeroconfBrowser::ZeroconfService const& fcr_lhs, CZeroconfBrowser::ZeroconfService const& fcr_rhs)
 {
-  if(fcr_lhs.GetName() < fcr_rhs.GetName() )
-    return true;
-  else if(fcr_lhs.GetType() < fcr_rhs.GetType() )
-    return true;
-  else if(fcr_lhs.GetDomain() < fcr_rhs.GetDomain() )
-    return true;
-  else
-    return false;
+  return (fcr_lhs.GetName() +  fcr_lhs.GetType() + fcr_lhs.GetDomain() < fcr_rhs.GetName() + fcr_rhs.GetType() + fcr_rhs.GetDomain());
 }
 
 inline bool operator==(CZeroconfBrowser::ZeroconfService const& fcr_lhs, CZeroconfBrowser::ZeroconfService const& fcr_rhs)
