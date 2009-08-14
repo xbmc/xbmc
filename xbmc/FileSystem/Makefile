@@ -85,6 +85,7 @@ SRCS=ASAPFileDirectory.cpp \
      VTPSession.cpp \
      VTPFile.cpp \
      XBMSDirectory.cpp \
+     ZeroconfDirectory.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp
 

@@ -103,6 +103,7 @@
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
 #include "Zeroconf.h"
+#include "ZeroconfBrowser.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
@@ -4020,7 +4021,14 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stop sap announcement listener");
     g_sapsessions.StopThread();
 #endif
-
+#ifdef HAS_ZEROCONF
+    if(CZeroconfBrowser::IsInstantiated())
+    {
+      CLog::Log(LOGNOTICE, "stop zeroconf browser");
+      CZeroconfBrowser::GetInstance()->Stop();
+      CZeroconfBrowser::ReleaseInstance();
+    }
+#endif
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");

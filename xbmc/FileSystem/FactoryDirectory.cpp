@@ -82,6 +82,9 @@
 #include "FileItem.h"
 #include "URL.h"
 #include "RSSDirectory.h"
+#ifdef HAS_ZEROCONF
+#include "ZeroconfDirectory.h"
+#endif
 
 using namespace DIRECTORY;
 
@@ -164,6 +167,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_FILESYSTEM_HTSP
     if (strProtocol == "htsp") return new CHTSPDirectory();
+#endif
+#ifdef HAS_ZEROCONF
+    if (strProtocol == "zeroconf") return new CZeroconfDirectory();
 #endif
   }
 

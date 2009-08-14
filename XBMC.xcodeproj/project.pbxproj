@@ -841,6 +841,12 @@
 		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
 		E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
 		E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
+		E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */; };
+		E49ACD8D100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */; };
+		E49ACD9F10074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */; };
+		E49ACDA010074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */; };
+		E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */; };
+		E49ACDD610074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */; };
 		E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
 		E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
@@ -3585,6 +3591,12 @@
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
 		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = /opt/local/lib/mysql5/mysql/libmysqlclient.dylib; sourceTree = "<absolute>"; };
+		E49ACD8A100745C400A86ECD /* ZeroconfDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfDirectory.h; sourceTree = "<group>"; };
+		E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfDirectory.cpp; sourceTree = "<group>"; };
+		E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfBrowserOSX.cpp; sourceTree = "<group>"; };
+		E49ACD9E10074A4000A86ECD /* ZeroconfBrowserOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfBrowserOSX.h; sourceTree = "<group>"; };
+		E49ACDD310074F9200A86ECD /* ZeroconfBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfBrowser.h; sourceTree = "<group>"; };
+		E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfBrowser.cpp; sourceTree = "<group>"; };
 		E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPDirectory.cpp; sourceTree = "<group>"; };
 		E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPDirectory.h; sourceTree = "<group>"; };
 		E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPFile.cpp; sourceTree = "<group>"; };
@@ -3977,6 +3989,8 @@
 				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
 				F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */,
 				F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */,
+				E49ACD9E10074A4000A86ECD /* ZeroconfBrowserOSX.h */,
+				E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */,
 				E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */,
 				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */,
 				F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */,
@@ -4639,6 +4653,8 @@
 				E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */,
 				E46F7C280F77217400C25D29 /* Zeroconf.cpp */,
 				E46F7C290F77217400C25D29 /* Zeroconf.h */,
+				E49ACDD310074F9200A86ECD /* ZeroconfBrowser.h */,
+				E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */,
 			);
 			path = xbmc;
 			sourceTree = "<group>";
@@ -5434,6 +5450,8 @@
 				E38E178D0D25F9FA00618676 /* VirtualDirectory.h */,
 				E38E178E0D25F9FA00618676 /* VirtualPathDirectory.cpp */,
 				E38E178F0D25F9FA00618676 /* VirtualPathDirectory.h */,
+				E49ACD8A100745C400A86ECD /* ZeroconfDirectory.h */,
+				E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */,
 				E38E17920D25F9FA00618676 /* zconf.h */,
 				E38E17930D25F9FA00618676 /* ZipDirectory.cpp */,
 				E38E17940D25F9FA00618676 /* ZipDirectory.h */,
@@ -7854,6 +7872,9 @@
 				F5D8D2AA1029256D004A11AB /* GUIControlProfiler.cpp in Sources */,
 				F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */,
 				F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */,
+				E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */,
+				E49ACD9F10074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */,
+				E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8693,6 +8714,9 @@
 				F5D8D2AB1029256D004A11AB /* GUIControlProfiler.cpp in Sources */,
 				F5D8D734102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */,
 				F5D8D735102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */,
+				E49ACD8D100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */,
+				E49ACDA010074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */,
+				E49ACDD610074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
