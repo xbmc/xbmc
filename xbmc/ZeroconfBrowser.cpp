@@ -22,6 +22,7 @@
 #include "../guilib/system.h" //HAS_ZEROCONF define
 #include "ZeroconfBrowser.h"
 #include "Settings.h"
+#include <stdexcept>
 
 #ifdef _LINUX
 #ifndef __APPLE__
@@ -159,3 +160,61 @@ void CZeroconfBrowser::ReleaseInstance()
   smp_instance = 0;
 }
 
+
+CZeroconfBrowser::ZeroconfService::ZeroconfService():m_port(0){}
+
+CZeroconfBrowser::ZeroconfService::ZeroconfService(const CStdString& fcr_name, const CStdString& fcr_type, const CStdString& fcr_domain):
+  m_name(fcr_name),
+  m_domain(fcr_domain)
+{
+  SetType(fcr_type);
+}
+void CZeroconfBrowser::ZeroconfService::SetName(const CStdString& fcr_name)
+{
+  m_name = fcr_name;
+}
+
+void CZeroconfBrowser::ZeroconfService::SetType(const CStdString& fcr_type)
+{
+  if(fcr_type.empty())
+    throw std::runtime_error("CZeroconfBrowser::ZeroconfService::SetType invalid type: "+ fcr_type);
+  //make sure there's a "." as last char (differs for avahi and osx implementation of browsers)
+  if(fcr_type[fcr_type.length() - 1] != '.')
+    m_type = fcr_type + ".";
+  else
+    m_type = fcr_type;
+}
+
+void CZeroconfBrowser::ZeroconfService::SetDomain(const CStdString& fcr_domain)
+{
+  m_domain = fcr_domain;
+}
+
+void CZeroconfBrowser::ZeroconfService::SetIP(const CStdString& fcr_ip)
+{
+  m_ip = fcr_ip;
+}
+
+void CZeroconfBrowser::ZeroconfService::SetPort(int f_port)
+{
+  assert(f_port > 0);
+  m_port = f_port;
+}
+
+CStdString CZeroconfBrowser::ZeroconfService::toPath(const ZeroconfService& fcr_service)
+{
+  return CStdString(fcr_service.m_type + "@" + fcr_service.m_domain + "@" + fcr_service.m_name);
+}
+
+CZeroconfBrowser::ZeroconfService CZeroconfBrowser::ZeroconfService::fromPath(const CStdString& fcr_string)
+{
+  assert(!fcr_string.empty());
+  int pos1 = fcr_string.Find('@'); //first @
+  int pos2 = fcr_string.Find('@', pos1+1); //second
+  assert(pos1 != -1 && pos2 != -1);
+  return ZeroconfService(
+    fcr_string.substr(pos2 + 1, fcr_string.length()), //name
+    fcr_string.substr(0, pos1), //type
+    fcr_string.substr(pos1 + 1, pos2-(pos1+1)) //domain
+    );
+}

@@ -150,7 +150,7 @@ bool CZeroconfBrowserAvahi::doRemoveServiceType ( const CStdString& fcr_service_
     m_browsers.erase ( it );
     //remove this serviceType from the list of discovered services
     for ( tDiscoveredServices::iterator it = m_discovered_services.begin(); it != m_discovered_services.end(); ++it )
-      if ( it->first.type == fcr_service_type )
+      if ( it->first.GetType() == fcr_service_type )
         m_discovered_services.erase ( it++ );
   }
   return true;
@@ -182,10 +182,10 @@ bool CZeroconfBrowserAvahi::doResolveService ( CZeroconfBrowser::ZeroconfService
     m_resolving_service = fr_service;
     m_resolved_event.Reset();
     if ( !avahi_service_resolver_new ( mp_client, it->second.interface, it->second.protocol,
-      it->first.name.c_str(), it->first.type.c_str(), it->first.domain.c_str(),
+      it->first.GetName().c_str(), it->first.GetType().c_str(), it->first.GetDomain().c_str(),
                                        AVAHI_PROTO_UNSPEC, AvahiLookupFlags ( 0 ), resolveCallback, this ) )
     {
-      CLog::Log ( LOGERROR, "CZeroconfBrowserAvahi::doResolveService Failed to resolve service '%s': %s\n", it->first.name.c_str(),
+      CLog::Log ( LOGERROR, "CZeroconfBrowserAvahi::doResolveService Failed to resolve service '%s': %s\n", it->first.GetName().c_str(),
                   avahi_strerror ( avahi_client_errno ( mp_client ) ) );
       return false;
     }
@@ -196,7 +196,7 @@ bool CZeroconfBrowserAvahi::doResolveService ( CZeroconfBrowser::ZeroconfService
   {
     ScopedEventLoopBlock lock ( mp_poll );
     fr_service = m_resolving_service;
-    return (!fr_service.ip.empty());
+    return (!fr_service.GetIP().empty());
   }
 }
 
@@ -265,12 +265,7 @@ void CZeroconfBrowserAvahi::browseCallback (
       {
         CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::browseCallback NEW: service '%s' of type '%s' in domain '%s'\n", name, type, domain );
         //store the service
-        ZeroconfService service;
-        service.name = name;
-        service.type = type;
-        //HACK!
-        service.type += ".";
-        service.domain = domain;
+        ZeroconfService service(name, type, domain);
         AvahiSpecificInfos info;
         info.interface = interface;
         info.protocol = protocol;
@@ -283,12 +278,7 @@ void CZeroconfBrowserAvahi::browseCallback (
     case AVAHI_BROWSER_REMOVE:
       {
         //remove the service
-        ZeroconfService service;
-        service.name = name;
-        service.type = type;
-        //HACK!
-        service.type += ".";
-        service.domain = domain;
+        ZeroconfService service(name, type, domain);
         p_instance->m_discovered_services.erase ( service );
         CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::browseCallback REMOVE: service '%s' of type '%s' in domain '%s'\n", name, type, domain );
         //if this browser already sent the all for now message, we need to update the gui now
@@ -336,8 +326,8 @@ void CZeroconfBrowserAvahi::resolveCallback(
       CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::resolveCallback resolved service '%s' of type '%s' in domain '%s':\n", name, type, domain );
 
       avahi_address_snprint ( a, sizeof ( a ), address );
-      p_instance->m_resolving_service.ip = a;
-      p_instance->m_resolving_service.port = port;
+      p_instance->m_resolving_service.SetIP(a);
+      p_instance->m_resolving_service.SetPort(port);
       break;
     }
   }

@@ -33,50 +33,47 @@ class CCriticalSection;
 class CZeroconfBrowser
 {
 public:
-  struct ZeroconfService
+  class ZeroconfService
   {
-    //3 entries below identify a service
-    CStdString name;
-    CStdString type;
-    CStdString domain;
-    
-    //2 entries below store 1 ip:port pair for this service
-    CStdString ip;
-    int        port;
-    
-    static CStdString toPath(const ZeroconfService& fcr_service)
-    {
-      return CStdString(fcr_service.type + "@" + fcr_service.domain + "@" + fcr_service.name);
-    }
-    static ZeroconfService fromPath(const CStdString& fcr_string)
-    {
-      assert(!fcr_string.empty());
-      int pos1 = fcr_string.Find('@'); //first @
-      int pos2 = fcr_string.Find('@', pos1+1); //second
-      assert(pos1 != -1 && pos2 != -1);
-      ZeroconfService service;
-      service.type = fcr_string.substr(0, pos1);
-      service.domain = fcr_string.substr(pos1 + 1, pos2-(pos1+1));
-      service.name = fcr_string.substr(pos2 + 1, fcr_string.length());
-      return service;
-    }
-    //2 services are considered the same if name, type and domain matches
-    friend bool operator==(ZeroconfService const& fcr_lhs, ZeroconfService const& fcr_rhs)
-    {
-      return (fcr_lhs.name == fcr_rhs.name && fcr_lhs.type == fcr_rhs.type && fcr_lhs.domain == fcr_rhs.domain);
-    }
-    //provide sorting
-    friend bool operator<(ZeroconfService const& fcr_lhs, ZeroconfService const& fcr_rhs)
-    {
-      if(fcr_lhs.name < fcr_rhs.name)
-        return true;
-      else if(fcr_lhs.type < fcr_rhs.type)
-        return true;
-      else if(fcr_lhs.domain < fcr_rhs.domain)
-        return true;
-      else
-        return false;
-    }
+    public:
+      ZeroconfService();
+      ZeroconfService(const CStdString& fcr_name, const CStdString& fcr_type, const CStdString& fcr_domain);
+
+      /// easy conversion to string and back (used in czeronfdiretory to store this service)
+      ///@{
+      static CStdString toPath(const ZeroconfService& fcr_service);
+      static ZeroconfService fromPath(const CStdString& fcr_string);
+      ///@}
+
+      /// general access methods
+      ///@{
+      void SetName(const CStdString& fcr_name);
+      const CStdString& GetName() const {return m_name;}
+
+      void SetType(const CStdString& fcr_type);
+      const CStdString& GetType() const {return m_type;}
+
+      void SetDomain(const CStdString& fcr_domain);
+      const CStdString& GetDomain() const {return m_domain;}
+      ///@}
+
+      /// access methods needed during resolve
+      ///@{
+      void SetIP(const CStdString& fcr_ip);
+      const CStdString& GetIP() const {return m_ip;}
+
+      void SetPort(int f_port);
+      int GetPort() const {return m_port;}
+      ///@}
+    private:
+      //3 entries below identify a service
+      CStdString m_name;
+      CStdString m_type;
+      CStdString m_domain;
+
+      //2 entries below store 1 ip:port pair for this service
+      CStdString m_ip;
+      int        m_port;
   };
 
   // starts browsing
@@ -151,3 +148,23 @@ private:
   static long sm_singleton_guard;
   static CZeroconfBrowser* smp_instance;
 };
+
+
+//inline methods
+
+inline bool operator<(CZeroconfBrowser::ZeroconfService const& fcr_lhs, CZeroconfBrowser::ZeroconfService const& fcr_rhs)
+{
+  if(fcr_lhs.GetName() < fcr_rhs.GetName() )
+    return true;
+  else if(fcr_lhs.GetType() < fcr_rhs.GetType() )
+    return true;
+  else if(fcr_lhs.GetDomain() < fcr_rhs.GetDomain() )
+    return true;
+  else
+    return false;
+}
+
+inline bool operator==(CZeroconfBrowser::ZeroconfService const& fcr_lhs, CZeroconfBrowser::ZeroconfService const& fcr_rhs)
+{
+  return (fcr_lhs.GetName() == fcr_rhs.GetName() && fcr_lhs.GetType() == fcr_rhs.GetType() && fcr_lhs.GetDomain() == fcr_rhs.GetDomain() );
+}
