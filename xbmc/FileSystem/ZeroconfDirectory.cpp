@@ -49,6 +49,8 @@ namespace
       return "FTP";
     else if(fcr_service_type == "_htsp._tcp.")
       return "HTS";
+    else if(fcr_service_type == "_daap._tcp.")
+      return "iTunes Music Sharing";
     //fallback, just return the received type
     return fcr_service_type;
   }
@@ -60,6 +62,8 @@ namespace
       fr_protocol = "ftp";
     else if(fcr_service_type == "_htsp._tcp.")
       fr_protocol = "htsp";
+    else if(fcr_service_type == "_daap._tcp.")
+      fr_protocol = "daap";
     else
       return false;
     return true;
@@ -79,7 +83,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
       CStdString path = CStdString("zeroconf://" + CZeroconfBrowser::ZeroconfService::toPath(*it));
       CFileItemPtr item(new CFileItem(path, true));
       CStdString protocol = GetHumanReadableProtocol(it->GetType());
-      item->SetLabel(it->GetName() + "(" + protocol  + ")");
+      item->SetLabel(it->GetName() + " (" + protocol  + ")");
       item->SetLabelPreformated(true);
       items.Add(item);
     }
@@ -103,7 +107,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
       CStdString protocol;
       if(!GetXBMCProtocol(zeroconf_service.GetType(), protocol))
       {
-        CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory Unknown service type: %s.", service.GetProtocol().c_str());
+        CLog::Log(LOGERROR, "CZeroconfDirectory::GetDirectory Unknown service type (%s), skipping; ", zeroconf_service.GetType().c_str());
         return false;
       }
       service.SetProtocol(protocol);
