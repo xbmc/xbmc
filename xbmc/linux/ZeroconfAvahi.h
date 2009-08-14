@@ -86,7 +86,7 @@ private:
   //this holds all published and unpublished services including info on howto create them
   tServiceMap m_services;
 
-  //3 variables below are needed for workaround of avahi bug (see destructor for details)
+  //2 variables below are needed for workaround of avahi bug (see destructor for details)
   bool m_shutdown;
   pthread_t m_thread_id;
 };
