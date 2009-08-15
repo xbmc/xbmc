@@ -2387,25 +2387,37 @@ static int screenSaverFadeAmount = 0;
 
 void CApplication::RenderScreenSaver()
 {
+  bool draw = false;
+  float amount = 0.0f;
+  if (m_screenSaverMode == "Dim")
+    amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
+  else if (m_screenSaverMode == "Black")
+    amount = 1.0f; // fully fade
   // special case for dim screensaver
-  if (m_bScreenSave)
+  if (amount > 0.f)
   {
-    float amount = 0.0f;
-    if (m_screenSaverMode == "Dim")
-      amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
-    else if (m_screenSaverMode == "Black")
-      amount = 1.0f; // fully fade
-    if (amount > 0.0f)
-    { // render a black quad at suitable transparency
+    if (m_bScreenSave)
+    {
+      draw = true;
       if (screenSaverFadeAmount < 100)
-        screenSaverFadeAmount += 2;  // around a second to fade
-
-      DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-      CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
+      {
+        screenSaverFadeAmount = std::min(100, screenSaverFadeAmount + 2);  // around a second to fade
+      }
+    }
+    else
+    {
+      if (screenSaverFadeAmount > 0)
+      {
+        draw = true;
+        screenSaverFadeAmount = std::max(0, screenSaverFadeAmount - 4);  // around a half second to unfade
+      }
     }
   }
-  else
-    screenSaverFadeAmount = 0;
+  if (draw)
+  {
+    DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
+    CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
+  }
 }
 
 bool CApplication::WaitFrame(DWORD timeout)
