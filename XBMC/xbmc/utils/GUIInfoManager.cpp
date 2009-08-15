@@ -2022,19 +2022,26 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       case STRING_IS_EMPTY:
         // note: Get*Image() falls back to Get*Label(), so this should cover all of them
         if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-          bReturn = GetItemImage((CFileItem *)item, info.GetData1()).IsEmpty();
+          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).IsEmpty();
         else
           bReturn = GetImage(info.GetData1(), dwContextWindow).IsEmpty();
         break;
       case STRING_COMPARE:
-          bReturn = GetLabel(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+        else
+          bReturn = GetImage(info.GetData1(), dwContextWindow).Equals(m_stringParameters[info.GetData2()]);
         break;
       case STRING_STR:
           {
             CStdString compare = m_stringParameters[info.GetData2()];
             // our compare string is already in lowercase, so lower case our label as well
             // as CStdString::Find() is case sensitive
-            CStdString label = GetLabel(info.GetData1()).ToLower();
+            CStdString label;
+            if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+              label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
+            else
+              label = GetImage(info.GetData1(), dwContextWindow).ToLower();
             if (compare.Right(5).Equals(",left"))
               bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
             else if (compare.Right(6).Equals(",right"))
