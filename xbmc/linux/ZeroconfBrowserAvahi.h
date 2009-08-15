@@ -20,6 +20,8 @@
  *
  */
 
+#ifdef HAS_AVAHI
+
 #include <memory>
 #include <map>
 
@@ -108,3 +110,5 @@ class CZeroconfBrowserAvahi : public CZeroconfBrowser
     bool m_shutdown;
     pthread_t m_thread_id;
 };
+
+#endif //HAS_AVAHI
