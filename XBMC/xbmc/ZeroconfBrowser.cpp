@@ -42,9 +42,10 @@
 //should be optimized away
 class CZeroconfBrowserDummy : public CZeroconfBrowser
 {
-  virtual bool doAddServiceType(const CStdString& fcr_service_type){return false;}
-  virtual bool doRemoveServiceType(const CStdString& fcr_service_type){return false;}
-  virtual std::vector<std::pair<CStdString, CURL> > doGetFoundServices() {return std::vector<std::pair<CStdString, CURL> >();}
+  virtual bool doAddServiceType(const CStdString&){return false;}
+  virtual bool doRemoveServiceType(const CStdString&){return false;}
+  virtual std::vector<ZeroconfService> doGetFoundServices(){return std::vector<ZeroconfService>();}
+  virtual bool doResolveService(ZeroconfService&, double){return false;}
 };
 #endif
 
