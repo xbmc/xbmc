@@ -3,6 +3,7 @@ INCLUDES=-I. -I../ -I../../../ -I../../ffmpeg -I../../../linux -I../../../../gui
 SRCS=	DVDFactorySubtitle.cpp \
 	DVDSubtitleLineCollection.cpp \
 	DVDSubtitleParserSubrip.cpp \
+	DVDSubtitleParserVplayer.cpp \
 	DVDSubtitleStream.cpp \
 	DVDSubtitleParserMicroDVD.cpp \
 	DVDSubtitleParserMPL2.cpp \
