@@ -75,12 +75,8 @@ public:
 
   bool operator!=(const CVideoSettings &right) const;
 
-  bool m_NoCache;
-  bool m_NonInterleaved;
-  bool m_bForceIndex;
   EINTERLACEMETHOD m_InterlaceMethod;
   ESCALINGMETHOD   m_ScalingMethod;
-  float m_FilmGrain;
   int m_ViewMode;   // current view mode
   float m_CustomZoomAmount; // custom setting zoom amount
   float m_CustomPixelRatio; // custom setting pixel ratio
