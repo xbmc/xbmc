@@ -127,10 +127,11 @@ bool CBoblight::Setup()
   
   //these will be made into gui options
   boblight_setscanrange(m_boblight, 64, 64);
-  boblight_setvalue(m_boblight, -1, 10);
-  boblight_setsaturation(m_boblight, -1, 3);
-  boblight_setspeed(m_boblight, -1, 5);
-  boblight_setthreshold(m_boblight, -1, 20);
+  boblight_setoption(m_boblight, -1, "interpolation 1");
+  boblight_setoption(m_boblight, -1, "value 10.0");
+  boblight_setoption(m_boblight, -1, "saturation 3.0");
+  boblight_setoption(m_boblight, -1, "speed 5.0");
+  boblight_setoption(m_boblight, -1, "threshold 20");
   
   CSingleLock lock(m_critsection);
   m_isenabled = true;
