@@ -88,7 +88,7 @@
 		</RegExp>
 	</GetArtistSearchResults>
 
-	<GetArtistDetails dest="3" clearbuffers="no">
+	<GetArtistDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
 				<expression noclean="1">&quot;name&quot;: &quot;([^&quot;]*)</expression>
