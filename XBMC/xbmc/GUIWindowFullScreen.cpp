@@ -766,7 +766,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
-  //if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subsLayout)
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
       CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible())
   {
