@@ -61,7 +61,8 @@ void CRemoteControl::Disconnect()
   if (m_fd != -1) 
   {
     m_bInitialized = false;
-    fclose(m_file);
+    if (m_file != NULL)
+      fclose(m_file);
     m_fd = -1;
     m_file = NULL;
     if (m_inotify_wd >= 0) {
