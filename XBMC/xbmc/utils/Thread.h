@@ -57,7 +57,7 @@ public:
   CThread(IRunnable* pRunnable);
   virtual ~CThread();
   void Create(bool bAutoDelete = false, unsigned stacksize = 0);
-  DWORD ThreadId() const;
+  uintptr_t ThreadId() const;
   bool WaitForThreadExit(DWORD dwMilliseconds);
   DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
   DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds);
@@ -89,7 +89,8 @@ protected:
 private:
   bool m_bAutoDelete;
   HANDLE m_StopEvent;
-  unsigned m_ThreadId;
+  unsigned m_ThreadId; // This value is unreliable on platforms using pthreads
+                       // Use m_ThreadHandle->m_hThread instead
   IRunnable* m_pRunnable;
 
   unsigned __int64 m_iLastUsage;

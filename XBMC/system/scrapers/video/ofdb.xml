@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<scraper framework="1.1" date="2009-07-28" name="OFDb" content="movies" thumb="ofdb.png" language="de">
+<scraper framework="1.1" date="2009-08-10" name="OFDb" content="movies" thumb="ofdb.png" language="de">
+	<include>common/tmdb.xml</include>
+	<include>common/movieposterdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -148,12 +150,12 @@
 			</RegExp>
 
 			<!--URL to Fanart-->
-			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt\2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt\2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
 				<expression>(imdb.com/)Title\?([0-9]+)</expression>
 			</RegExp>
 
 			<!--URL to MoviePosterDB -->
-			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?title=\2&lt;/url&gt;" dest="5+">
+			<RegExp conditional="movieposterdb" input="$$1" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;amp;query=\2&lt;/url&gt;" dest="5+">
   				<expression>(imdb.com/)Title\?([0-9]+)</expression> 
 			</RegExp>
 	
@@ -247,22 +249,6 @@
                 </RegExp>
         </GetTrailer>
 
-	<!--  MoviePosterDB-->
-        <GetMoviePosterDBLink dest="6">
-         	<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetMoviePosterDB&quot;&gt;\1&lt;/url&gt;&lt;/details&gt;" dest="6">
-			<expression>(http://www.movieposterdb.com/movie/[^&quot;]*)&quot;</expression>
-		</RegExp>
-        </GetMoviePosterDBLink>
-
-	<GetMoviePosterDB dest="5">
-		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5"> 
-			<RegExp input="$$1" output="&lt;thumb&gt;\1l_\2&lt;/thumb&gt;" dest="6">
-				<expression repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)[a-z]_(.*?)&quot;</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetMoviePosterDB>
-
 	<!-- Ofdb Poster --> 
 	<GetOfdbThumb dest="5">
 		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
@@ -272,20 +258,4 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetOfdbThumb>
-
-	<!-- Fanart -->
-	<GetTMDBId dest="5">
-                <RegExp conditional="fanart" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
-                        <expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-                </RegExp>
-        </GetTMDBId>
-
-        <GetTMDBFanart dest="5">
-                <RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="2">
-                                <expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
-                        </RegExp>
-                        <expression noclean="1">(.+)</expression>
-                </RegExp>
-        </GetTMDBFanart>
 </scraper>

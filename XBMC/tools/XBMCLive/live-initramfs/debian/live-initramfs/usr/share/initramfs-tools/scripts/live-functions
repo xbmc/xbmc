@@ -1,0 +1,113 @@
+
+. /scripts/functions
+. /live.vars
+
+log_wait_msg ()
+{
+	# Print a message and wait for enter
+	if [ -x /sbin/usplash_write ]
+	then
+		/sbin/usplash_write "INPUTENTER ${@}"
+		read nunya < /dev/.initramfs/usplash_outfifo
+	else if [ -x /sbin/splashy_update ] ; then
+		/sbin/splashy_update "getstring ${@}" | read nunya
+	fi ; fi
+
+	_log_msg "Waiting: ${@} ... \n"
+}
+
+really_export ()
+{
+	STRING="${1}"
+	VALUE="$(eval echo -n \${$STRING})"
+
+	if [ -f /live.vars ] && grep -sq "export ${STRING}" /live.vars
+	then
+		sed -i -e 's/\('${STRING}'=\).*$/\1'${VALUE}'/' /live.vars
+	else
+		echo "export ${STRING}=\"${VALUE}\"" >> /live.vars
+	fi
+
+	eval export "${STRING}"="${VALUE}"
+}
+
+lang2locale() {
+	langpart="${1%%_*}"
+	if [ "$1" != "C" ]; then
+		# Match the language code with 3rd field in languagelist
+		line=$(grep -v "^#" /root/usr/share/live-initramfs/languagelist | cut -f3,4,5 -d\; | grep -v ';C$' | grep "^$langpart;")
+		if [ -n "$line" ]; then
+			if [ "$(echo "$line" | grep -c '')" -gt 1 ]; then
+				# More than one match; try matching the
+				# country as well.
+				countrypart="${1#*_}"
+				if [ "$countrypart" = "$1" ]; then
+					countryline="$(echo "$line" | head -n1)"
+					echo "${countryline##*;}"
+					return
+				fi
+				countrypart="${countrypart%%[@.]*}"
+				countryline="$(echo "$line" | grep ";$countrypart;" | head -n1 || true)"
+				if [ "$countryline" ]; then
+					echo "${countryline##*;}"
+					return
+				fi
+			fi
+			echo "${line##*;}"
+		fi
+	else
+		echo "C"
+	fi
+}
+
+# Override maybe_break from scripts/functions
+maybe_break()
+{
+	if [ "${break}" = "$1" ]; then
+		# Call original panic
+		. /scripts/functions
+		panic "Spawning shell within the initramfs"
+	fi
+}
+
+# Override panic from scripts/functions
+panic() {
+
+	DEB_1="\033[1;31m .''\`.  \033[0m"
+	DEB_2="\033[1;31m: :'  : \033[0m"
+	DEB_3="\033[1;31m\`. \`'\`  \033[0m"
+	DEB_4="\033[1;31m  \`-    \033[0m"
+
+	LIVELOG="\033[1;37m/live.log\033[0m"
+	DEBUG="\033[1;37mdebug\033[0m"
+
+	# Reset redirections to avoid buffering
+	exec 1>&6 6>&-
+	exec 2>&7 7>&-
+	kill ${tailpid}
+
+	printf "\n\n"
+	printf "     ${DEB_1}\n"
+	printf "     ${DEB_2}  \033[1;37mBOOT FAILED!\033[0m\n"
+	printf "     ${DEB_3}\n"
+	printf "     ${DEB_4}  This Debian Live image failed to boot.\n\n"
+
+	printf "  Please file a bug against the 'live-initramfs' package or email the Debian\n"
+	printf "  Live mailing list at <debian-live@lists.debian.org>, making sure to note the\n"
+	printf "  exact version, name and distribution of the image you were attempting to boot.\n\n"
+
+	printf "  The file ${LIVELOG} contains some debugging information but booting with the\n"
+	printf "  ${DEBUG} command-line parameter will greatly increase its verbosity which is\n"
+	printf "  extremely useful when diagnosing issues.\n\n"
+
+	if [ -n "${panic}" ]; then
+		printf "  live-initramfs will now restart your system. "
+	else
+		printf "  live-initramfs will now start a shell. "
+	fi
+	printf "The error message was:\n\n    "
+
+	# Call original panic
+	. /scripts/functions
+	panic "$@"
+}

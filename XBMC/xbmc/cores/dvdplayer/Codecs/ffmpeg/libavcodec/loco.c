@@ -25,7 +25,7 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "golomb.h"
 #include "mathops.h"
 
@@ -158,8 +158,10 @@ static int loco_decode_plane(LOCOContext *l, uint8_t *data, int width, int heigh
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        const uint8_t *buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     LOCOContext * const l = avctx->priv_data;
     AVFrame * const p= (AVFrame*)&l->pic;
     int decoded;

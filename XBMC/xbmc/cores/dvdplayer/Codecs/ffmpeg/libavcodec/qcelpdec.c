@@ -31,12 +31,14 @@
 
 #include "avcodec.h"
 #include "internal.h"
-#include "bitstream.h"
+#include "get_bits.h"
 
 #include "qcelpdata.h"
 
 #include "celp_math.h"
 #include "celp_filters.h"
+#include "acelp_vectors.h"
+#include "lsp.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -73,24 +75,6 @@ typedef struct
     uint16_t first16bits;
     uint8_t  warned_buf_mismatch_bitrate;
 } QCELPContext;
-
-/**
- * Reconstructs LPC coefficients from the line spectral pair frequencies.
- *
- * TIA/EIA/IS-733 2.4.3.3.5
- */
-void ff_qcelp_lspf2lpc(const float *lspf, float *lpc);
-
-static void weighted_vector_sumf(float *out, const float *in_a,
-                                 const float *in_b, float weight_coeff_a,
-                                 float weight_coeff_b, int length)
-{
-    int i;
-
-    for(i=0; i<length; i++)
-        out[i] = weight_coeff_a * in_a[i]
-               + weight_coeff_b * in_b[i];
-}
 
 /**
  * Initialize the speech codec according to the specification.
@@ -174,7 +158,7 @@ static int decode_lspf(QCELPContext *q, float *lspf)
             lspf[i-1] = FFMIN(lspf[i-1], (lspf[i] - QCELP_LSP_SPREAD_FACTOR));
 
         // Low-pass filter the LSP frequencies.
-        weighted_vector_sumf(lspf, lspf, q->prev_lspf, smooth, 1.0-smooth, 10);
+        ff_weighted_vector_sumf(lspf, lspf, q->prev_lspf, smooth, 1.0-smooth, 10);
     }else
     {
         q->octave_count = 0;
@@ -259,7 +243,7 @@ static void decode_gain_and_index(QCELPContext  *q,
             gain[2] =     gain[1];
             gain[1] = 0.6*gain[0] + 0.4*gain[1];
         }
-    }else
+    }else if (q->bitrate != SILENCE)
     {
         if(q->bitrate == RATE_OCTAVE)
         {
@@ -422,17 +406,38 @@ static void compute_svector(QCELPContext *q, const float *gain,
 }
 
 /**
- * Apply generic gain control.
+ * Compute the gain control
  *
- * @param v_out output vector
  * @param v_in gain-controlled vector
  * @param v_ref vector to control gain of
+ *
+ * @return gain control
  *
  * FIXME: If v_ref is a zero vector, it energy is zero
  *        and the behavior of the gain control is
  *        undefined in the specs.
  *
  * TIA/EIA/IS-733 2.4.8.3-2/3/4/5, 2.4.8.6
+ */
+static float compute_gain_ctrl(const float *v_ref, const float *v_in, const int len)
+{
+    float scalefactor = ff_dot_productf(v_in, v_in, len);
+
+    if(scalefactor)
+        scalefactor = sqrt(ff_dot_productf(v_ref, v_ref, len) / scalefactor);
+    else
+        av_log_missing_feature(NULL, "Zero energy for gain control", 1);
+    return scalefactor;
+}
+
+/**
+ * Apply generic gain control.
+ *
+ * @param v_out output vector
+ * @param v_in gain-controlled vector
+ * @param v_ref vector to control gain of
+ *
+ * TIA/EIA/IS-733 2.4.8.3, 2.4.8.6
  */
 static void apply_gain_ctrl(float *v_out, const float *v_ref,
                             const float *v_in)
@@ -442,12 +447,7 @@ static void apply_gain_ctrl(float *v_out, const float *v_ref,
 
     for(i=0, j=0; i<4; i++)
     {
-        scalefactor = ff_dot_productf(v_in + j, v_in + j, 40);
-        if(scalefactor)
-            scalefactor = sqrt(ff_dot_productf(v_ref + j, v_ref + j, 40)
-                        / scalefactor);
-        else
-            ff_log_missing_feature(NULL, "Zero energy for gain control", 1);
+        scalefactor = compute_gain_ctrl(v_ref + j, v_in + j, 40);
         for(len=j+40; j<len; j++)
             v_out[j] = scalefactor * v_in[j];
     }
@@ -585,6 +585,36 @@ static void apply_pitch_filters(QCELPContext *q, float *cdn_vector)
 }
 
 /**
+ * Reconstructs LPC coefficients from the line spectral pair frequencies
+ * and performs bandwidth expansion.
+ *
+ * @param lspf line spectral pair frequencies
+ * @param lpc linear predictive coding coefficients
+ *
+ * @note: bandwidth_expansion_coeff could be precalculated into a table
+ *        but it seems to be slower on x86
+ *
+ * TIA/EIA/IS-733 2.4.3.3.5
+ */
+static void lspf2lpc(const float *lspf, float *lpc)
+{
+    double lsp[10];
+    double bandwidth_expansion_coeff = QCELP_BANDWIDTH_EXPANSION_COEFF;
+    int   i;
+
+    for (i=0; i<10; i++)
+        lsp[i] = cos(M_PI * lspf[i]);
+
+    ff_acelp_lspd2lpc(lsp, lpc);
+
+    for (i=0; i<10; i++)
+    {
+        lpc[i] *= bandwidth_expansion_coeff;
+        bandwidth_expansion_coeff *= QCELP_BANDWIDTH_EXPANSION_COEFF;
+    }
+}
+
+/**
  * Interpolates LSP frequencies and computes LPC coefficients
  * for a given bitrate & pitch subframe.
  *
@@ -610,14 +640,14 @@ void interpolate_lpc(QCELPContext *q, const float *curr_lspf, float *lpc,
 
     if(weight != 1.0)
     {
-        weighted_vector_sumf(interpolated_lspf, curr_lspf, q->prev_lspf,
-                             weight, 1.0 - weight, 10);
-        ff_qcelp_lspf2lpc(interpolated_lspf, lpc);
+        ff_weighted_vector_sumf(interpolated_lspf, curr_lspf, q->prev_lspf,
+                                weight, 1.0 - weight, 10);
+        lspf2lpc(interpolated_lspf, lpc);
     }else if(q->bitrate >= RATE_QUARTER ||
              (q->bitrate == I_F_Q && !subframe_num))
-        ff_qcelp_lspf2lpc(curr_lspf, lpc);
+        lspf2lpc(curr_lspf, lpc);
     else if(q->bitrate == SILENCE && !subframe_num)
-        ff_qcelp_lspf2lpc(q->prev_lspf, lpc);
+        lspf2lpc(q->prev_lspf, lpc);
 }
 
 static qcelp_packet_rate buf_size2bitrate(const int buf_size)
@@ -680,7 +710,7 @@ static qcelp_packet_rate determine_bitrate(AVCodecContext *avctx, const int buf_
     if(bitrate == SILENCE)
     {
         //FIXME: Remove experimental warning when tested with samples.
-        ff_log_ask_for_sample(avctx, "'Blank frame handling is experimental.");
+        av_log_ask_for_sample(avctx, "'Blank frame handling is experimental.");
     }
     return bitrate;
 }
@@ -693,8 +723,10 @@ static void warn_insufficient_frame_quality(AVCodecContext *avctx,
 }
 
 static int qcelp_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                              const uint8_t *buf, int buf_size)
+                              AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     QCELPContext *q = avctx->priv_data;
     float *outbuffer = data;
     int   i;

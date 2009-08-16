@@ -22,11 +22,11 @@
 #include "stdafx.h"
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 using namespace std;
 
 #define ITEMS_PER_THREAD 5
-#define MAX_THREAD_COUNT 5
 
 CBackgroundInfoLoader::CBackgroundInfoLoader(int nThreads)
 {
@@ -128,8 +128,8 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (nThreads == -1)
     nThreads = (m_vecItems.size() / (ITEMS_PER_THREAD+1)) + 1;
 
-  if (nThreads > MAX_THREAD_COUNT)
-    nThreads = MAX_THREAD_COUNT;
+  if (nThreads > g_advancedSettings.m_bgInfoLoaderMaxThreads)
+    nThreads = g_advancedSettings.m_bgInfoLoaderMaxThreads;
 
   m_nActiveThreads = nThreads;
   for (int i=0; i < nThreads; i++)

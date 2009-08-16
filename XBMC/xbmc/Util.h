@@ -34,6 +34,12 @@
 #include "MediaSource.h"
 #include "StringUtils.h"
 
+// Useful pixel colour manipulation macros
+#define GET_A(color)            ((color & AMASK) >> PIXEL_ASHIFT)
+#define GET_R(color)            ((color & RMASK) >> PIXEL_RSHIFT)
+#define GET_G(color)            ((color & GMASK) >> PIXEL_GSHIFT)
+#define GET_B(color)            ((color & BMASK) >> PIXEL_BSHIFT)
+
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0
 #define LEGAL_WIN32_COMPAT    1
@@ -205,7 +211,6 @@ public:
   static void GetBuiltInHelp(CStdString &help);
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
-  static const CStdString  GetMovieName(CFileItem* pItem, bool bUseFolderNames = false);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
@@ -235,7 +240,7 @@ public:
   static bool IsVTP(const CStdString& strFile);
   static bool IsPVR(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
-  static bool IsTV(const CStdString& strFile);
+  static bool IsLiveTV(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);

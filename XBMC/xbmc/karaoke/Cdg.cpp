@@ -414,7 +414,7 @@ void CCdgLoader::OnStartup()
     m_CdgFileState = FILE_ERR_NOT_FOUND;
     return ;
   }
-  if (!m_File.Open(m_strFileName, TRUE))
+  if (!m_File.Open(m_strFileName))
   {
     m_CdgFileState = FILE_ERR_OPENING;
     return ;

@@ -838,9 +838,15 @@
 		E46465170E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465150E7E4D20003CB291 /* NptPosixDynamicLibraries.cpp */; };
 		E46465180E7E4D20003CB291 /* NptPosixFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46465160E7E4D20003CB291 /* NptPosixFile.cpp */; };
 		E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
-		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */; };
+		E46F7C2D0F77219700C25D29 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
 		E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
 		E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */; };
+		E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */; };
+		E49ACD8D100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */; };
+		E49ACD9F10074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */; };
+		E49ACDA010074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */; };
+		E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */; };
+		E49ACDD610074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */; };
 		E4DC97540FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
 		E4DC97550FFE5BA8008E0C07 /* SAPFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */; };
 		E4DC97560FFE5BA8008E0C07 /* SAPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */; };
@@ -1738,7 +1744,7 @@
 		F5A1CC0C0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC0B0F6B20D600A96ABD /* libGoAhead-powerpc-osx.a */; };
 		F5A1CC0E0F6B214800A96ABD /* libSDL-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC0D0F6B214800A96ABD /* libSDL-powerpc-osx.a */; };
 		F5A1CC140F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A1CC130F6B216400A96ABD /* libSDL_mixer-powerpc-osx.a */; };
-		F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */; };
+		F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
 		F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
 		F5A2BD600F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
 		F5A2BD610F7AE6CB0006ABA0 /* libsmbclient.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3D547950D723EFD00F36320 /* libsmbclient.dylib */; };
@@ -1753,6 +1759,12 @@
 		F5ACB5380FC3DF3D00AAA056 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */; };
 		F5ACB5390FC3DF3D00AAA056 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */; };
 		F5AD1EA80F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */; };
+		F5D8D2AA1029256D004A11AB /* GUIControlProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */; };
+		F5D8D2AB1029256D004A11AB /* GUIControlProfiler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */; };
+		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
+		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
+		F5D8D734102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
+		F5D8D735102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5EA021C0F6DA7E8005C2EC5 /* PowerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */; };
 		F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
 		F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
@@ -3577,8 +3589,14 @@
 		E46F7C280F77217400C25D29 /* Zeroconf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Zeroconf.cpp; sourceTree = "<group>"; };
 		E46F7C290F77217400C25D29 /* Zeroconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zeroconf.h; sourceTree = "<group>"; };
 		E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfOSX.h; sourceTree = "<group>"; };
-		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZeroconfOSX.mm; sourceTree = "<group>"; };
+		E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfOSX.cpp; sourceTree = "<group>"; };
 		E4907BF70FDAC38B00E2F075 /* libmysqlclient.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmysqlclient.dylib; path = /opt/local/lib/mysql5/mysql/libmysqlclient.dylib; sourceTree = "<absolute>"; };
+		E49ACD8A100745C400A86ECD /* ZeroconfDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfDirectory.h; sourceTree = "<group>"; };
+		E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfDirectory.cpp; sourceTree = "<group>"; };
+		E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfBrowserOSX.cpp; sourceTree = "<group>"; };
+		E49ACD9E10074A4000A86ECD /* ZeroconfBrowserOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfBrowserOSX.h; sourceTree = "<group>"; };
+		E49ACDD310074F9200A86ECD /* ZeroconfBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZeroconfBrowser.h; sourceTree = "<group>"; };
+		E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ZeroconfBrowser.cpp; sourceTree = "<group>"; };
 		E4DC97500FFE5BA8008E0C07 /* SAPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPDirectory.cpp; sourceTree = "<group>"; };
 		E4DC97510FFE5BA8008E0C07 /* SAPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAPDirectory.h; sourceTree = "<group>"; };
 		E4DC97520FFE5BA8008E0C07 /* SAPFile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SAPFile.cpp; sourceTree = "<group>"; };
@@ -3704,6 +3722,12 @@
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowKaraokeLyrics.cpp; path = karaoke/GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
 		F5D879D10EF4BE53007C68A9 /* Cdg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cdg.cpp; path = karaoke/Cdg.cpp; sourceTree = "<group>"; };
 		F5D879D30EF4BE53007C68A9 /* Cdg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Cdg.h; path = karaoke/Cdg.h; sourceTree = "<group>"; };
+		F5D8D2A81029256D004A11AB /* GUIControlProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlProfiler.h; sourceTree = "<group>"; };
+		F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlProfiler.cpp; sourceTree = "<group>"; };
+		F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererGL.h; sourceTree = "<group>"; };
+		F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererGL.cpp; sourceTree = "<group>"; };
+		F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRenderer.h; sourceTree = "<group>"; };
+		F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRenderer.cpp; sourceTree = "<group>"; };
 		F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerManager.cpp; path = xbmc/PowerManager.cpp; sourceTree = SOURCE_ROOT; };
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerManager.h; path = xbmc/PowerManager.h; sourceTree = SOURCE_ROOT; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CocoaPowerSyscall.cpp; path = xbmc/osx/CocoaPowerSyscall.cpp; sourceTree = SOURCE_ROOT; };
@@ -3965,8 +3989,10 @@
 				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
 				F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */,
 				F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */,
+				E49ACD9E10074A4000A86ECD /* ZeroconfBrowserOSX.h */,
+				E49ACD9D10074A4000A86ECD /* ZeroconfBrowserOSX.cpp */,
 				E46F7C2B0F77219700C25D29 /* ZeroconfOSX.h */,
-				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.mm */,
+				E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */,
 				F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */,
 			);
 			path = osx;
@@ -4017,6 +4043,8 @@
 				E38E13DB0D25F9F900618676 /* GUIControlGroup.h */,
 				E38E13DC0D25F9F900618676 /* GUIControlGroupList.cpp */,
 				E38E13DD0D25F9F900618676 /* GUIControlGroupList.h */,
+				F5D8D2A91029256D004A11AB /* GUIControlProfiler.cpp */,
+				F5D8D2A81029256D004A11AB /* GUIControlProfiler.h */,
 				E38E13DE0D25F9F900618676 /* GUIDialog.cpp */,
 				E38E13DF0D25F9F900618676 /* GUIDialog.h */,
 				E38E13E00D25F9F900618676 /* GUIEditControl.cpp */,
@@ -4625,6 +4653,8 @@
 				E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */,
 				E46F7C280F77217400C25D29 /* Zeroconf.cpp */,
 				E46F7C290F77217400C25D29 /* Zeroconf.h */,
+				E49ACDD310074F9200A86ECD /* ZeroconfBrowser.h */,
+				E49ACDD410074F9200A86ECD /* ZeroconfBrowser.cpp */,
 			);
 			path = xbmc;
 			sourceTree = "<group>";
@@ -5222,6 +5252,10 @@
 				E38E165C0D25F9FA00618676 /* LinuxRenderer.h */,
 				E38E165F0D25F9FA00618676 /* LinuxRendererGL.cpp */,
 				E38E16600D25F9FA00618676 /* LinuxRendererGL.h */,
+				F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */,
+				F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */,
+				F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */,
+				F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */,
 				E38E16640D25F9FA00618676 /* PixelShaderRenderer.h */,
 				E38E16650D25F9FA00618676 /* RenderManager.cpp */,
 				E38E16660D25F9FA00618676 /* RenderManager.h */,
@@ -5416,6 +5450,8 @@
 				E38E178D0D25F9FA00618676 /* VirtualDirectory.h */,
 				E38E178E0D25F9FA00618676 /* VirtualPathDirectory.cpp */,
 				E38E178F0D25F9FA00618676 /* VirtualPathDirectory.h */,
+				E49ACD8A100745C400A86ECD /* ZeroconfDirectory.h */,
+				E49ACD8B100745C400A86ECD /* ZeroconfDirectory.cpp */,
 				E38E17920D25F9FA00618676 /* zconf.h */,
 				E38E17930D25F9FA00618676 /* ZipDirectory.cpp */,
 				E38E17940D25F9FA00618676 /* ZipDirectory.h */,
@@ -7806,7 +7842,7 @@
 				F5EA04800F72F188005C2EC5 /* SDLMain.mm in Sources */,
 				F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */,
 				E46F7C2A0F77217400C25D29 /* Zeroconf.cpp in Sources */,
-				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.mm in Sources */,
+				E46F7C2D0F77219700C25D29 /* ZeroconfOSX.cpp in Sources */,
 				83E0B2490F7C95FF0091643F /* Atomics.cpp in Sources */,
 				E43196170FB2382E0030E150 /* HTSPDirectory.cpp in Sources */,
 				E43196180FB2382E0030E150 /* HTSPSession.cpp in Sources */,
@@ -7833,6 +7869,12 @@
 				7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */,
 				7CDAEA8C1001EBA70040B25F /* PltConstants.cpp in Sources */,
 				7CDAEA8D1001EBA70040B25F /* PltIconsData.cpp in Sources */,
+				F5D8D2AA1029256D004A11AB /* GUIControlProfiler.cpp in Sources */,
+				F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */,
+				F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */,
+				E49ACD8C100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */,
+				E49ACD9F10074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */,
+				E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8641,7 +8683,7 @@
 				F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */,
 				F5EA04290F72EB88005C2EC5 /* SDLMain.mm in Sources */,
 				F5EA05C10F733812005C2EC5 /* CocoaInterface.mm in Sources */,
-				F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.mm in Sources */,
+				F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.cpp in Sources */,
 				F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */,
 				83E0B24A0F7C95FF0091643F /* Atomics.cpp in Sources */,
 				E43196190FB2382E0030E150 /* HTSPDirectory.cpp in Sources */,
@@ -8669,6 +8711,12 @@
 				7CDAEA7E1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */,
 				7CDAEA8E1001EBA70040B25F /* PltConstants.cpp in Sources */,
 				7CDAEA8F1001EBA70040B25F /* PltIconsData.cpp in Sources */,
+				F5D8D2AB1029256D004A11AB /* GUIControlProfiler.cpp in Sources */,
+				F5D8D734102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */,
+				F5D8D735102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */,
+				E49ACD8D100745C400A86ECD /* ZeroconfDirectory.cpp in Sources */,
+				E49ACDA010074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */,
+				E49ACDD610074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -389,11 +389,16 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(strDirectory);
-    if (node == NODE_TYPE_ALBUM)
+    if (node == NODE_TYPE_ALBUM ||
+        node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
+        node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
+        node == NODE_TYPE_ALBUM_TOP100 || 
+        node == NODE_TYPE_ALBUM_COMPILATIONS ||
+        node == NODE_TYPE_YEAR_ALBUM)
       items.SetContent("albums");
     else if (node == NODE_TYPE_ARTIST)
       items.SetContent("artists");
-    else if (node == NODE_TYPE_SONG)
+    else if (node == NODE_TYPE_SONG || node == NODE_TYPE_SONG_TOP100)
       items.SetContent("songs");
     else if (node == NODE_TYPE_GENRE)
       items.SetContent("genres");

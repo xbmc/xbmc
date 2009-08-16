@@ -57,11 +57,8 @@ void CGUIImage::UpdateVisibility(const CGUIListItem *item)
 {
   CGUIControl::UpdateVisibility(item);
 
-  // check for conditional information before we free and
-  // alloc as this does free and allocation as well
-  if (!m_pushedUpdates)
-    UpdateInfo(item);
-
+  // now that we've checked for conditional info, we can
+  // check for allocation
   AllocateOnDemand();
 }
 
@@ -338,3 +335,9 @@ unsigned char CGUIImage::GetFadeLevel(unsigned int time) const
   const float alpha = 0.7f;
   return (unsigned char)(255.0f * (1 - pow(1-alpha, amount))/alpha);
 }
+
+CStdString CGUIImage::GetDescription(void) const
+{
+  return GetFileName();
+}
+

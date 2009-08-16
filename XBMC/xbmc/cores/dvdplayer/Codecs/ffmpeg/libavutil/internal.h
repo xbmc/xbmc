@@ -40,7 +40,7 @@
 #include "timer.h"
 
 #ifndef attribute_align_arg
-#if (!defined(__ICC) || __ICC > 1100) && AV_GCC_VERSION_AT_LEAST(4,2)
+#if (!defined(__ICC) || __ICC > 1110) && AV_GCC_VERSION_AT_LEAST(4,2)
 #    define attribute_align_arg __attribute__((force_align_arg_pointer))
 #else
 #    define attribute_align_arg
@@ -99,6 +99,9 @@
 #    define offsetof(T,F) ((unsigned int)((char *)&((T *)0)->F))
 #endif
 
+/* Use to export labels from asm. */
+#define LABEL_MANGLE(a) EXTERN_PREFIX #a
+
 // Use rip-relative addressing if compiling PIC code on x86-64.
 #if ARCH_X86_64 && defined(PIC)
 #    define LOCAL_MANGLE(a) #a "(%%rip)"
@@ -134,7 +137,7 @@ extern const uint32_t ff_inverse[256];
             );\
         ret;\
     })
-#elif HAVE_ARMV6
+#elif HAVE_ARMV6 && HAVE_INLINE_ASM
 static inline av_const int FASTDIV(int a, int b)
 {
     int r, t;
@@ -145,7 +148,7 @@ static inline av_const int FASTDIV(int a, int b)
                      : "=&r"(r), "=&r"(t) : "r"(a), "r"(b), "r"(ff_inverse));
     return r;
 }
-#elif ARCH_ARM
+#elif ARCH_ARM && HAVE_INLINE_ASM
 static inline av_const int FASTDIV(int a, int b)
 {
     int r, t;
@@ -224,11 +227,11 @@ if((y)<(x)){\
 #undef  time
 #define time time_is_forbidden_due_to_security_issues
 #undef  rand
-#define rand rand_is_forbidden_due_to_state_trashing_use_av_random
+#define rand rand_is_forbidden_due_to_state_trashing_use_av_lfg_get
 #undef  srand
-#define srand srand_is_forbidden_due_to_state_trashing_use_av_random_init
+#define srand srand_is_forbidden_due_to_state_trashing_use_av_lfg_init
 #undef  random
-#define random random_is_forbidden_due_to_state_trashing_use_av_random
+#define random random_is_forbidden_due_to_state_trashing_use_av_lfg_get
 #undef  sprintf
 #define sprintf sprintf_is_forbidden_due_to_security_issues_use_snprintf
 #undef  strcat
@@ -255,29 +258,19 @@ if((y)<(x)){\
     }\
 }
 
-#if defined(__ICC) || defined(__SUNPRO_C)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n)))
-    #define DECLARE_ASM_CONST(n,t,v)    const t __attribute__ ((aligned (n))) v
-#elif defined(__GNUC__)
-    #define DECLARE_ALIGNED(n,t,v)      t v __attribute__ ((aligned (n), visibility("hidden"))) 
-    #define DECLARE_ASM_CONST(n,t,v)    static const t v attribute_used __attribute__ ((aligned (n)))
-#elif defined(_MSC_VER)
-    #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
-    #define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
-#elif HAVE_INLINE_ASM
-    #error The asm code needs alignment, but we do not know how to do it for this compiler.
-#else
-    #define DECLARE_ALIGNED(n,t,v)      t v
-    #define DECLARE_ASM_CONST(n,t,v)    static const t v
-#endif
-
-
 #if !HAVE_LLRINT
 static av_always_inline av_const long long llrint(double x)
 {
     return rint(x);
 }
 #endif /* HAVE_LLRINT */
+
+#if !HAVE_LOG2
+static av_always_inline av_const double log2(double x)
+{
+    return log(x) * 1.44269504088896340736;
+}
+#endif /* HAVE_LOG2 */
 
 #if !HAVE_LRINT
 static av_always_inline av_const long int lrint(double x)

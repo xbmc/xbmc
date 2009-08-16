@@ -1,5 +1,6 @@
 #pragma once
 
+#include "cores/VideoRenderers/OverlayRenderer.h"
 #include <assert.h>
 #include <vector>
 
@@ -26,11 +27,29 @@ public:
 
     m_references = 1;
     iGroupId = 0;
+    m_overlay = NULL;
+  }
+
+  CDVDOverlay(const CDVDOverlay& src)
+  {
+    m_type        = src.m_type;
+    iPTSStartTime = src.iPTSStartTime;
+    iPTSStopTime  = src.iPTSStopTime;
+    bForced       = src.bForced;
+    replace       = src.replace;
+    iGroupId      = src.iGroupId;
+    if(src.m_overlay)
+      m_overlay   = src.m_overlay->Acquire();
+    else
+      m_overlay   = NULL;
+    m_references  = 1;
   }
 
   virtual ~CDVDOverlay()
   {
     assert(m_references == 0);
+    if(m_overlay)
+      m_overlay->Release();
   }
 
   /**
@@ -59,7 +78,7 @@ public:
   bool bForced; // display, no matter what
   bool replace; // replace by next nomatter what stoptime it has
   int iGroupId;
-
+  OVERLAY::COverlay* m_overlay;
 protected:
   DVDOverlayType m_type;
 

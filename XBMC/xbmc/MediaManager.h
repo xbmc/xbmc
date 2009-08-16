@@ -61,12 +61,14 @@ public:
   CCdInfo* GetCdInfo(const CStdString& devicePath="");
   bool RemoveCdInfo(const CStdString& devicePath="");
   CStdString GetDiskLabel(const CStdString& devicePath="");
+  void SetHasOpticalDrive(bool bstatus);
 
 protected:
   std::vector<CNetworkLocation> m_locations;
 
   CCriticalSection m_muAutoSource;
   std::map<CStdString,CCdInfo*> m_mapCdInfo;
+  bool m_bhasoptical;
 
 };
 

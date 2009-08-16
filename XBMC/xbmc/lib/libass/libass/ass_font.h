@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -29,31 +27,40 @@
 #include "ass.h"
 #include "ass_types.h"
 
-typedef struct ass_font_desc_s {
-	char* family;
-	unsigned bold;
-	unsigned italic;
+#define ASS_FONT_MAX_FACES 10
+#define DECO_UNDERLINE 1
+#define DECO_STRIKETHROUGH 2
+
+typedef struct {
+    char *family;
+    unsigned bold;
+    unsigned italic;
+    int treat_family_as_pattern;
 } ass_font_desc_t;
 
-#define ASS_FONT_MAX_FACES 10
-
-typedef struct ass_font_s {
-	ass_font_desc_t desc;
-	ass_library_t* library;
-	FT_Library ftlibrary;
-	FT_Face faces[ASS_FONT_MAX_FACES];
-	int n_faces;
-	double scale_x, scale_y; // current transform
-	FT_Vector v; // current shift
-	double size;
+typedef struct {
+    ass_font_desc_t desc;
+    ass_library_t *library;
+    FT_Library ftlibrary;
+    FT_Face faces[ASS_FONT_MAX_FACES];
+    int n_faces;
+    double scale_x, scale_y;    // current transform
+    FT_Vector v;                // current shift
+    double size;
 } ass_font_t;
 
-ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_priv, ass_font_desc_t* desc);
-void ass_font_set_transform(ass_font_t* font, double scale_x, double scale_y, FT_Vector* v);
-void ass_font_set_size(ass_font_t* font, double size);
-void ass_font_get_asc_desc(ass_font_t* font, uint32_t ch, int* asc, int* desc);
-FT_Glyph ass_font_get_glyph(void* fontconfig_priv, ass_font_t* font, uint32_t ch, ass_hinting_t hinting);
-FT_Vector ass_font_get_kerning(ass_font_t* font, uint32_t c1, uint32_t c2);
-void ass_font_free(ass_font_t* font);
+// FIXME: passing the hashmap via a void pointer is very ugly.
+ass_font_t *ass_font_new(void *font_cache, ass_library_t *library,
+                         FT_Library ftlibrary, void *fc_priv,
+                         ass_font_desc_t *desc);
+void ass_font_set_transform(ass_font_t *font, double scale_x,
+                            double scale_y, FT_Vector *v);
+void ass_font_set_size(ass_font_t *font, double size);
+void ass_font_get_asc_desc(ass_font_t *font, uint32_t ch, int *asc,
+                           int *desc);
+FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ass_font_t *font,
+                            uint32_t ch, ass_hinting_t hinting, int flags);
+FT_Vector ass_font_get_kerning(ass_font_t *font, uint32_t c1, uint32_t c2);
+void ass_font_free(ass_font_t *font);
 
-#endif /* LIBASS_FONT_H */
+#endif                          /* LIBASS_FONT_H */

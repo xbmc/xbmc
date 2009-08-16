@@ -131,9 +131,6 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
 
 void CGUITextBox::Render()
 {
-  if (!m_pushedUpdates)
-    UpdateInfo();
-
   // update our auto-scrolling as necessary
   if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
   {

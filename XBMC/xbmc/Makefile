@@ -203,6 +203,7 @@ SRCS=Application.cpp \
      GUIDialogFullScreenInfo.cpp \
      PowerManager.cpp \
      Zeroconf.cpp \
+     ZeroconfBrowser.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
      GUIDialogTVEPGProgInfo.cpp \

@@ -779,6 +779,27 @@ void CGUIWindowSettingsCategory::CreateSettings()
 
       pControl->SetValue(pSettingInt->GetData());
     }
+#if defined(_LINUX) && !defined(__APPLE__)
+    else if (strSetting.Equals("system.powerbuttonaction"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      
+      pControl->AddLabel(g_localizeStrings.Get(231), POWERSTATE_NONE);
+      pControl->AddLabel(g_localizeStrings.Get(12020), POWERSTATE_ASK);
+
+      if (g_powerManager.CanPowerdown())
+        pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
+
+      if (g_powerManager.CanHibernate())
+        pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
+
+      if (g_powerManager.CanSuspend())
+        pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
+
+      pControl->SetValue(pSettingInt->GetData());
+    }
+#endif
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1598,15 +1619,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("system.debuglogging"))
   {
-    if (g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+    if (g_guiSettings.GetBool("system.debuglogging"))
     {
-      g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
-      CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
+      int level = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+      g_advancedSettings.m_logLevel = level;
+      CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
     }
-    else if (!g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
+    else
     {
-      CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting");
-      g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG; // = LOG_LEVEL_NORMAL
+      int level = std::min(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
+      CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
+      g_advancedSettings.m_logLevel = level;
     }
   }
   /*else if (strSetting.Equals("musicfiles.repeat"))
@@ -2262,6 +2285,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     const CStdString& strRegion=pControl->GetCurrentLabel();
     g_langInfo.SetCurrentRegion(strRegion);
     g_guiSettings.SetString("locale.country", strRegion);
+    g_weatherManager.ResetTimer(); // need to reset our weather, as temperatures need re-translating.
   }
 #ifdef HAS_TIME_SERVER
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))

@@ -13,7 +13,8 @@ SVNVERSION ?= $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/.*svn\([[:
 # List of options to pass to configure. Can be overridden.
 XBMC_CONFIG_OPTIONS ?= --host=$(DEB_HOST_GNU_TYPE) \
 	--build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --disable-ccache \
-	--disable-dvdcss --enable-external-libraries --enable-avahi
+	--disable-dvdcss --enable-external-libraries --enable-avahi \
+	CFLAGS="$(DEB_CFLAGS)" CXXFLAGS="$(DEB_CXXFLAGS)"
 
 # Add the SVN revision if it exists in the changelog
 ifeq (,$(findstring Version,$(SVNVERSION)))
@@ -65,21 +66,21 @@ override_dh_install:
 
 override_dh_link:
 	dh_link
-	install -D "debian/xbmc-common/usr/share/xbmc/xbmc.bin" \
-		"debian/xbmc-common/usr/lib/xbmc/xbmc.bin"
-	dh_link -pxbmc-common "usr/lib/xbmc/xbmc.bin" \
+	install -D "debian/xbmc-data/usr/share/xbmc/xbmc.bin" \
+		"debian/xbmc-bin/usr/lib/xbmc/xbmc.bin"
+	dh_link -pxbmc-data "usr/lib/xbmc/xbmc.bin" \
 		"usr/share/xbmc/xbmc.bin"
-	install -D "debian/xbmc-common/usr/share/xbmc/xbmc-xrandr" \
-		"debian/xbmc-common/usr/lib/xbmc/xbmc-xrandr"
-	dh_link -pxbmc-common "usr/lib/xbmc/xbmc-xrandr" \
+	install -D "debian/xbmc-data/usr/share/xbmc/xbmc-xrandr" \
+		"debian/xbmc-bin/usr/lib/xbmc/xbmc-xrandr"
+	dh_link -pxbmc-data "usr/lib/xbmc/xbmc-xrandr" \
 		"usr/share/xbmc/xbmc-xrandr"
-	find "debian/xbmc-common/usr/share/xbmc" -regextype posix-extended \
+	find "debian/xbmc-data/usr/share/xbmc" -regextype posix-extended \
 		-type f -iregex ".*\.so|.*\.vis|.*\.xbs" | while read FILE; do \
-		NEW_LOCATION="$$(echo $$FILE | sed -e 's|/usr/share|/usr/lib|')"; \
-		LINK_TARGET="$$(echo "$$NEW_LOCATION" | sed -e 's|debian/xbmc-common/||')"; \
-		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-common/||')"; \
+		NEW_LOCATION="$$(echo $$FILE | sed -e 's|/xbmc-data/usr/share|/xbmc-bin/usr/lib|')"; \
+		LINK_TARGET="$$(echo "$$NEW_LOCATION" | sed -e 's|debian/xbmc-bin/||')"; \
+		LINK_DESTINATION="$$(echo "$$FILE" | sed -e 's|debian/xbmc-data/||')"; \
 		install -D "$$FILE" "$$NEW_LOCATION"; \
-		dh_link -pxbmc-common "$$LINK_TARGET" "$$LINK_DESTINATION"; \
+		dh_link -pxbmc-data "$$LINK_TARGET" "$$LINK_DESTINATION"; \
 		done
 
 override_dh_strip:

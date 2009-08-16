@@ -63,11 +63,8 @@ enum PixelFormat {
     PIX_FMT_BGR24,     ///< packed RGB 8:8:8, 24bpp, BGRBGR...
     PIX_FMT_YUV422P,   ///< planar YUV 4:2:2, 16bpp, (1 Cr & Cb sample per 2x1 Y samples)
     PIX_FMT_YUV444P,   ///< planar YUV 4:4:4, 24bpp, (1 Cr & Cb sample per 1x1 Y samples)
-    PIX_FMT_RGB32,     ///< packed RGB 8:8:8, 32bpp, (msb)8A 8R 8G 8B(lsb), in CPU endianness
     PIX_FMT_YUV410P,   ///< planar YUV 4:1:0,  9bpp, (1 Cr & Cb sample per 4x4 Y samples)
     PIX_FMT_YUV411P,   ///< planar YUV 4:1:1, 12bpp, (1 Cr & Cb sample per 4x1 Y samples)
-    PIX_FMT_RGB565,    ///< packed RGB 5:6:5, 16bpp, (msb)   5R 6G 5B(lsb), in CPU endianness
-    PIX_FMT_RGB555,    ///< packed RGB 5:5:5, 16bpp, (msb)1A 5R 5G 5B(lsb), in CPU endianness, most significant bit to 0
     PIX_FMT_GRAY8,     ///<        Y        ,  8bpp
     PIX_FMT_MONOWHITE, ///<        Y        ,  1bpp, 0 is white, 1 is black
     PIX_FMT_MONOBLACK, ///<        Y        ,  1bpp, 0 is black, 1 is white
@@ -79,9 +76,6 @@ enum PixelFormat {
     PIX_FMT_XVMC_MPEG2_IDCT,
     PIX_FMT_UYVY422,   ///< packed YUV 4:2:2, 16bpp, Cb Y0 Cr Y1
     PIX_FMT_UYYVYY411, ///< packed YUV 4:1:1, 12bpp, Cb Y0 Y1 Cr Y2 Y3
-    PIX_FMT_BGR32,     ///< packed RGB 8:8:8, 32bpp, (msb)8A 8B 8G 8R(lsb), in CPU endianness
-    PIX_FMT_BGR565,    ///< packed RGB 5:6:5, 16bpp, (msb)   5B 6G 5R(lsb), in CPU endianness
-    PIX_FMT_BGR555,    ///< packed RGB 5:5:5, 16bpp, (msb)1A 5B 5G 5R(lsb), in CPU endianness, most significant bit to 1
     PIX_FMT_BGR8,      ///< packed RGB 3:3:2,  8bpp, (msb)2B 3G 3R(lsb)
     PIX_FMT_BGR4,      ///< packed RGB 1:2:1,  4bpp, (msb)1B 2G 1R(lsb)
     PIX_FMT_BGR4_BYTE, ///< packed RGB 1:2:1,  8bpp, (msb)1B 2G 1R(lsb)
@@ -91,8 +85,10 @@ enum PixelFormat {
     PIX_FMT_NV12,      ///< planar YUV 4:2:0, 12bpp, 1 plane for Y and 1 for UV
     PIX_FMT_NV21,      ///< as above, but U and V bytes are swapped
 
-    PIX_FMT_RGB32_1,   ///< packed RGB 8:8:8, 32bpp, (msb)8R 8G 8B 8A(lsb), in CPU endianness
-    PIX_FMT_BGR32_1,   ///< packed RGB 8:8:8, 32bpp, (msb)8B 8G 8R 8A(lsb), in CPU endianness
+    PIX_FMT_ARGB,      ///< packed ARGB 8:8:8:8, 32bpp, ARGBARGB...
+    PIX_FMT_RGBA,      ///< packed RGBA 8:8:8:8, 32bpp, RGBARGBA...
+    PIX_FMT_ABGR,      ///< packed ABGR 8:8:8:8, 32bpp, ABGRABGR...
+    PIX_FMT_BGRA,      ///< packed BGRA 8:8:8:8, 32bpp, BGRABGRA...
 
     PIX_FMT_GRAY16BE,  ///<        Y        , 16bpp, big-endian
     PIX_FMT_GRAY16LE,  ///<        Y        , 16bpp, little-endian
@@ -106,32 +102,50 @@ enum PixelFormat {
     PIX_FMT_VDPAU_VC1, ///< VC-1 HW decoding with VDPAU, data[0] contains a vdpau_render_state struct which contains the bitstream of the slices as well as various fields extracted from headers
     PIX_FMT_RGB48BE,   ///< packed RGB 16:16:16, 48bpp, 16R, 16G, 16B, big-endian
     PIX_FMT_RGB48LE,   ///< packed RGB 16:16:16, 48bpp, 16R, 16G, 16B, little-endian
-    PIX_FMT_VAAPI_MOCO, ///< HW acceleration through VA API at motion compensation entry-point, Picture.data[0] contains a vaapi_render_state struct which contains macroblocks as well as various fields extracted from headers
-    PIX_FMT_VAAPI_IDCT, ///< HW acceleration through VA API at IDCT entry-point, Picture.data[0] contains a vaapi_render_state struct which contains fields extracted from headers
-    PIX_FMT_VAAPI_VLD,  ///< HW decoding through VA API, Picture.data[0] contains a vaapi_render_state struct which contains the bitstream of the slices as well as various fields extracted from headers
+
+    PIX_FMT_RGB565BE,  ///< packed RGB 5:6:5, 16bpp, (msb)   5R 6G 5B(lsb), big-endian
+    PIX_FMT_RGB565LE,  ///< packed RGB 5:6:5, 16bpp, (msb)   5R 6G 5B(lsb), little-endian
+    PIX_FMT_RGB555BE,  ///< packed RGB 5:5:5, 16bpp, (msb)1A 5R 5G 5B(lsb), big-endian, most significant bit to 0
+    PIX_FMT_RGB555LE,  ///< packed RGB 5:5:5, 16bpp, (msb)1A 5R 5G 5B(lsb), little-endian, most significant bit to 0
+
+    PIX_FMT_BGR565BE,  ///< packed BGR 5:6:5, 16bpp, (msb)   5B 6G 5R(lsb), big-endian
+    PIX_FMT_BGR565LE,  ///< packed BGR 5:6:5, 16bpp, (msb)   5B 6G 5R(lsb), little-endian
+    PIX_FMT_BGR555BE,  ///< packed BGR 5:5:5, 16bpp, (msb)1A 5B 5G 5R(lsb), big-endian, most significant bit to 1
+    PIX_FMT_BGR555LE,  ///< packed BGR 5:5:5, 16bpp, (msb)1A 5B 5G 5R(lsb), little-endian, most significant bit to 1
+
+    PIX_FMT_VAAPI_MOCO, ///< HW acceleration through VA API at motion compensation entry-point, Picture.data[3] contains a vaapi_render_state struct which contains macroblocks as well as various fields extracted from headers
+    PIX_FMT_VAAPI_IDCT, ///< HW acceleration through VA API at IDCT entry-point, Picture.data[3] contains a vaapi_render_state struct which contains fields extracted from headers
+    PIX_FMT_VAAPI_VLD,  ///< HW decoding through VA API, Picture.data[3] contains a vaapi_render_state struct which contains the bitstream of the slices as well as various fields extracted from headers
+
+    PIX_FMT_YUV420PLE,  ///< planar YUV 4:2:0, 24bpp, (1 Cr & Cb sample per 2x2 Y samples), little-endian
+    PIX_FMT_YUV420PBE,  ///< planar YUV 4:2:0, 24bpp, (1 Cr & Cb sample per 2x2 Y samples), big-endian
+    PIX_FMT_YUV422PLE,  ///< planar YUV 4:2:2, 32bpp, (1 Cr & Cb sample per 2x1 Y samples), little-endian
+    PIX_FMT_YUV422PBE,  ///< planar YUV 4:2:2, 32bpp, (1 Cr & Cb sample per 2x1 Y samples), big-endian
+    PIX_FMT_YUV444PLE,  ///< planar YUV 4:4:4, 48bpp, (1 Cr & Cb sample per 1x1 Y samples), little-endian
+    PIX_FMT_YUV444PBE,  ///< planar YUV 4:4:4, 48bpp, (1 Cr & Cb sample per 1x1 Y samples), big-endian
     PIX_FMT_NB,        ///< number of pixel formats, DO NOT USE THIS if you want to link with shared libav* because the number of formats might differ between versions
 };
 
-#ifdef WORDS_BIGENDIAN
-#define PIX_FMT_RGBA PIX_FMT_RGB32_1
-#define PIX_FMT_BGRA PIX_FMT_BGR32_1
-#define PIX_FMT_ARGB PIX_FMT_RGB32
-#define PIX_FMT_ABGR PIX_FMT_BGR32
-#define PIX_FMT_GRAY16 PIX_FMT_GRAY16BE
-#define PIX_FMT_RGB48 PIX_FMT_RGB48BE
+#if HAVE_BIGENDIAN
+#   define PIX_FMT_NE(be, le) PIX_FMT_##be
 #else
-#define PIX_FMT_RGBA PIX_FMT_BGR32
-#define PIX_FMT_BGRA PIX_FMT_RGB32
-#define PIX_FMT_ARGB PIX_FMT_BGR32_1
-#define PIX_FMT_ABGR PIX_FMT_RGB32_1
-#define PIX_FMT_GRAY16 PIX_FMT_GRAY16LE
-#define PIX_FMT_RGB48 PIX_FMT_RGB48LE
+#   define PIX_FMT_NE(be, le) PIX_FMT_##le
 #endif
 
-#if LIBAVUTIL_VERSION_INT < (50<<16)
-#define PIX_FMT_UYVY411 PIX_FMT_UYYVYY411
-#define PIX_FMT_RGBA32  PIX_FMT_RGB32
-#define PIX_FMT_YUV422  PIX_FMT_YUYV422
-#endif
+#define PIX_FMT_RGB32   PIX_FMT_NE(ARGB, BGRA)
+#define PIX_FMT_RGB32_1 PIX_FMT_NE(RGBA, ABGR)
+#define PIX_FMT_BGR32   PIX_FMT_NE(ABGR, RGBA)
+#define PIX_FMT_BGR32_1 PIX_FMT_NE(BGRA, ARGB)
+
+#define PIX_FMT_GRAY16 PIX_FMT_NE(GRAY16BE, GRAY16LE)
+#define PIX_FMT_RGB48  PIX_FMT_NE(RGB48BE,  RGB48LE)
+#define PIX_FMT_RGB565 PIX_FMT_NE(RGB565BE, RGB565LE)
+#define PIX_FMT_RGB555 PIX_FMT_NE(RGB555BE, RGB555LE)
+#define PIX_FMT_BGR565 PIX_FMT_NE(BGR565BE, BGR565LE)
+#define PIX_FMT_BGR555 PIX_FMT_NE(BGR555BE, BGR555LE)
+
+#define PIX_FMT_YUV420P16 PIX_FMT_NE(YUV420PBE, YUV420PLE)
+#define PIX_FMT_YUV422P16 PIX_FMT_NE(YUV422PBE, YUV422PLE)
+#define PIX_FMT_YUV444P16 PIX_FMT_NE(YUV444PBE, YUV444PLE)
 
 #endif /* AVUTIL_PIXFMT_H */

@@ -87,11 +87,20 @@ static int swf_read_packet(AVFormatContext *s, AVPacket *pkt)
     int tag, len, i, frame, v;
 
     for(;;) {
+        uint64_t pos = url_ftell(pb);
         tag = get_swf_tag(pb, &len);
         if (tag < 0)
             return AVERROR(EIO);
-        if (tag == TAG_VIDEOSTREAM && !vst) {
+        if (tag == TAG_VIDEOSTREAM) {
             int ch_id = get_le16(pb);
+            len -= 2;
+
+            for (i=0; i<s->nb_streams; i++) {
+                st = s->streams[i];
+                if (st->codec->codec_type == CODEC_TYPE_VIDEO && st->id == ch_id)
+                    goto skip;
+            }
+
             get_le16(pb);
             get_le16(pb);
             get_le16(pb);
@@ -101,23 +110,29 @@ static int swf_read_packet(AVFormatContext *s, AVPacket *pkt)
             if (!vst)
                 return -1;
             vst->codec->codec_type = CODEC_TYPE_VIDEO;
-            vst->codec->codec_id = codec_get_id(swf_codec_tags, get_byte(pb));
-            av_set_pts_info(vst, 64, 256, swf->frame_rate);
+            vst->codec->codec_id = ff_codec_get_id(swf_codec_tags, get_byte(pb));
+            av_set_pts_info(vst, 16, 256, swf->frame_rate);
             vst->codec->time_base = (AVRational){ 256, swf->frame_rate };
-            len -= 10;
-        } else if ((tag == TAG_STREAMHEAD || tag == TAG_STREAMHEAD2) && !ast) {
+            len -= 8;
+        } else if (tag == TAG_STREAMHEAD || tag == TAG_STREAMHEAD2) {
             /* streaming found */
             int sample_rate_code;
+
+            for (i=0; i<s->nb_streams; i++) {
+                st = s->streams[i];
+                if (st->codec->codec_type == CODEC_TYPE_AUDIO && st->id == -1)
+                    goto skip;
+            }
+
             get_byte(pb);
             v = get_byte(pb);
             swf->samples_per_frame = get_le16(pb);
             ast = av_new_stream(s, -1); /* -1 to avoid clash with video stream ch_id */
             if (!ast)
                 return -1;
-            swf->audio_stream_index = ast->index;
             ast->codec->channels = 1 + (v&1);
             ast->codec->codec_type = CODEC_TYPE_AUDIO;
-            ast->codec->codec_id = codec_get_id(swf_audio_codec_tags, (v>>4) & 15);
+            ast->codec->codec_id = ff_codec_get_id(swf_audio_codec_tags, (v>>4) & 15);
             ast->need_parsing = AVSTREAM_PARSE_FULL;
             sample_rate_code= (v>>2) & 3;
             if (!sample_rate_code)
@@ -133,25 +148,31 @@ static int swf_read_packet(AVFormatContext *s, AVPacket *pkt)
                 if (st->codec->codec_type == CODEC_TYPE_VIDEO && st->id == ch_id) {
                     frame = get_le16(pb);
                     av_get_packet(pb, pkt, len-2);
+                    pkt->pos = pos;
                     pkt->pts = frame;
                     pkt->stream_index = st->index;
                     return pkt->size;
                 }
             }
         } else if (tag == TAG_STREAMBLOCK) {
-            st = s->streams[swf->audio_stream_index];
+            for (i = 0; i < s->nb_streams; i++) {
+                st = s->streams[i];
+                if (st->codec->codec_type == CODEC_TYPE_AUDIO && st->id == -1) {
             if (st->codec->codec_id == CODEC_ID_MP3) {
                 url_fskip(pb, 4);
                 av_get_packet(pb, pkt, len-4);
             } else { // ADPCM, PCM
                 av_get_packet(pb, pkt, len);
             }
+            pkt->pos = pos;
             pkt->stream_index = st->index;
             return pkt->size;
+                }
+            }
         } else if (tag == TAG_JPEG2) {
             for (i=0; i<s->nb_streams; i++) {
                 st = s->streams[i];
-                if (st->id == -2)
+                if (st->codec->codec_id == CODEC_ID_MJPEG && st->id == -2)
                     break;
             }
             if (i == s->nb_streams) {
@@ -176,9 +197,11 @@ static int swf_read_packet(AVFormatContext *s, AVPacket *pkt)
             } else {
                 get_buffer(pb, pkt->data + 4, pkt->size - 4);
             }
+            pkt->pos = pos;
             pkt->stream_index = st->index;
             return pkt->size;
         }
+    skip:
         url_fskip(pb, len);
     }
     return 0;

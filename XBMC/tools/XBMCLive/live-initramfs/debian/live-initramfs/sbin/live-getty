@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -e
+
+AUTOLOGIN="1"
+
+for ARGUMENT in "${@}"
+do
+	if [ "${ARGUMENT}" = "-l" ] || [ "${ARGUMENT}" = "-n" ]
+	then
+		AUTOLOGIN="0"
+	fi
+done
+
+if [ "${AUTOLOGIN}" = "1" ]
+then
+	exec /sbin/getty -n -l /sbin/live-login ${*}
+else
+	exec /sbin/getty ${*}
+fi

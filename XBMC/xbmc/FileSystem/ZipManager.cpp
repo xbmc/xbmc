@@ -89,9 +89,9 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   }
 
   SZipEntry ze;
-  char hdr[4];
-  mFile.Read(hdr,4);
-  if( SDL_SwapLE32(*((unsigned int*)hdr)) != ZIP_LOCAL_HEADER )
+  unsigned int hdr;
+  mFile.Read(&hdr, 4);
+  if( SDL_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
   {
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
     mFile.Close();

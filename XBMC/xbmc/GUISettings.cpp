@@ -272,7 +272,7 @@ void CGUISettings::Initialize()
   AddInt(6, "musicplayer.replaygainnogainpreamp", 642, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
   AddBool(7, "musicplayer.replaygainavoidclipping", 643, false);
   AddSeparator(8, "musicplayer.sep2");
-  AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 10, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
+  AddInt(9, "musicplayer.crossfade", 13314, 0, 0, 1, 15, SPIN_CONTROL_INT_PLUS, MASK_SECS, TEXT_OFF);
   AddBool(10, "musicplayer.crossfadealbumtracks", 13400, true);
   AddSeparator(11, "musicplayer.sep3");
   AddString(0, "musicplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
@@ -329,12 +329,16 @@ void CGUISettings::Initialize()
   AddCategory(4, "system", 13281);
   // advanced only configuration
   AddBool(1, "system.debuglogging", 20191, false);
-  AddInt(2, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
+  AddSeparator(2, "system.sep1");
+  AddInt(3, "system.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   // In standalone mode we default to another.
   if (g_application.IsStandAlone())
-    AddInt(3, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(4, "system.shutdownstate", 13008, 0, 1, 1, 5, SPIN_CONTROL_TEXT);
   else
-    AddInt(3, "system.shutdownstate", 13008, 0, 0, 1, 5, SPIN_CONTROL_TEXT);
+    AddInt(4, "system.shutdownstate", 13008, POWERSTATE_QUIT, 0, 1, 5, SPIN_CONTROL_TEXT);
+#if defined(_LINUX) && !defined(__APPLE__)
+  AddInt(5, "system.powerbuttonaction", 13015, POWERSTATE_NONE, 0, 1, 5, SPIN_CONTROL_TEXT);
+#endif
 
 #ifdef HAS_LCD
   AddCategory(4, "lcd", 448);
@@ -1049,10 +1053,10 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     LoadFromXML(pRootElement, it, hideSettings);
   }
   // setup logging...
-  if (GetBool("system.debuglogging") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+  if (GetBool("system.debuglogging"))
   {
-    g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
-    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
+    g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+    CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting (%d)", g_advancedSettings.m_logLevel);
   }
   // Get hardware based stuff...
   CLog::Log(LOGNOTICE, "Getting hardware information now...");

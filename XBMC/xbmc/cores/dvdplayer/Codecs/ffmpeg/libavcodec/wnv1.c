@@ -25,7 +25,7 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 
 
 typedef struct WNV1Context{
@@ -58,8 +58,10 @@ static inline int wnv1_get_code(WNV1Context *w, int base_value)
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        const uint8_t *buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     WNV1Context * const l = avctx->priv_data;
     AVFrame * const p= (AVFrame*)&l->pic;
     unsigned char *Y,*U,*V;
@@ -127,15 +129,16 @@ static int decode_frame(AVCodecContext *avctx,
 
 static av_cold int decode_init(AVCodecContext *avctx){
     WNV1Context * const l = avctx->priv_data;
+    static VLC_TYPE code_table[1 << CODE_VLC_BITS][2];
 
     l->avctx = avctx;
     avctx->pix_fmt = PIX_FMT_YUV422P;
 
-    if(!code_vlc.table){
-        init_vlc(&code_vlc, CODE_VLC_BITS, 16,
-                    &code_tab[0][1], 4, 2,
-                    &code_tab[0][0], 4, 2, 1);
-    }
+    code_vlc.table = code_table;
+    code_vlc.table_allocated = 1 << CODE_VLC_BITS;
+    init_vlc(&code_vlc, CODE_VLC_BITS, 16,
+             &code_tab[0][1], 4, 2,
+             &code_tab[0][0], 4, 2, INIT_VLC_USE_NEW_STATIC);
 
     return 0;
 }

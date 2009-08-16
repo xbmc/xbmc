@@ -176,7 +176,6 @@ unsigned char tab_r[256*256];
 unsigned char tab_g[256*256];
 unsigned char tab_b[256*256];
 
-int teta = 0;
 int h_cos [360];
 int h_sin [360];
 
@@ -197,8 +196,8 @@ static int ipol(uint8_t *src, int x, int y){
 
 static void gen_image(int num, int w, int h)
 {
-  const int c = h_cos [teta];
-  const int s = h_sin [teta];
+  const int c = h_cos [num % 360];
+  const int s = h_sin [num % 360];
 
   const int xi = -(w/2) * c;
   const int yi =  (w/2) * s;
@@ -234,7 +233,6 @@ static void gen_image(int num, int w, int h)
 #endif
     }
   }
-  teta = (teta+1) % 360;
 }
 
 #define W 256

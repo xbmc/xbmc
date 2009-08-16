@@ -235,6 +235,8 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   else
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
 #endif
+
+  m_overlays.Render();
 }
 
 unsigned int CXBMCRenderManager::PreInit()
@@ -297,6 +299,8 @@ void CXBMCRenderManager::UnInit()
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
   m_bIsStarted = false;
+
+  m_overlays.Flush();
 
   // free renderer resources.
   // TODO: we may also want to release the renderer here.
@@ -363,6 +367,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
         m_presentfield = FS_EVEN;
     }
 
+    m_overlays.Flip();
     m_pRenderer->FlipPage(source);
   }
 
@@ -448,6 +453,8 @@ void CXBMCRenderManager::Present()
     PresentBlend();
   else
     PresentSingle();
+
+  m_overlays.Render();
 
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())

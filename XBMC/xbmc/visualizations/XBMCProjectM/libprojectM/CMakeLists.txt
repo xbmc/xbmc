@@ -1,5 +1,7 @@
 PROJECT(projectM)
 
+cmake_minimum_required(VERSION 2.6)
+
 OPTION (USE_DEVIL "Use devIL for image loading rather than the builtin SOIL library" OFF)
 
 OPTION (USE_FBO "Use Framebuffer Objects for increased rendering quality.  Disable this for OpenGL ES 1.x or if you are experiencing problems on older or poorly supported hardware." ON)

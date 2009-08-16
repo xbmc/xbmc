@@ -24,12 +24,12 @@
 			<expression noclean="1"></expression>
 		</RegExp>		
 	</GetAlbumSearchResults>
- 	<GetAlbumDetails dest="3">
-		 <RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+	<GetAlbumDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
 				<expression noclean="1"><![CDATA[<h1>(.[^<]*)</h1>]]></expression>
 			</RegExp>
-		<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5+">
 				<expression noclean="1"><![CDATA[</span><a.[^>]*>(.[^<]*)</a>]]></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="5+">

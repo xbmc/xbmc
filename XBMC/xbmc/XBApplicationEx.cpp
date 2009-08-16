@@ -1,18 +1,25 @@
-//-----------------------------------------------------------------------------
-// File: XBApplicationEx.cpp
-//
-// Desc: Application class for the XBox samples.
-//
-// Hist: 11.01.00 - New for November XDK release
-//       12.15.00 - Changes for December XDK release
-//       12.19.01 - Changes for March XDK release
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
+/*
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
 
 #include "stdafx.h"
 #include "XBApplicationEx.h"
-#include "XBVideoConfig.h"
 #include "Settings.h"
 #include "Application.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -22,72 +29,20 @@
 #endif
 #include "GUIFontManager.h"
 
-
-//-----------------------------------------------------------------------------
-// Global access to common members
-//-----------------------------------------------------------------------------
-CXBApplicationEx* g_pXBApp = NULL;
-#ifndef HAS_SDL
-static LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
-#endif
-
-// Deadzone for the gamepad inputs
-const SHORT XINPUT_DEADZONE = (SHORT)( 0.24f * FLOAT(0x7FFF) );
-
-
-
-
-//-----------------------------------------------------------------------------
-// Name: CXBApplication()
-// Desc: Constructor
-//-----------------------------------------------------------------------------
+/* CXBApplicationEx() constructor */
 CXBApplicationEx::CXBApplicationEx()
 {
-  // Initialize member variables
-  g_pXBApp = this;
-
-#ifndef HAS_SDL
-  // Direct3D variables
-  m_pD3D = NULL;
-  m_pd3dDevice = NULL;
-  //    m_pDepthBuffer    = NULL;
-  m_pBackBuffer = NULL;
-#endif
-
   // Variables to perform app timing
-  m_bPaused = FALSE;
-  m_fTime = 0.0f;
-  m_fElapsedTime = 0.0f;
-  m_fAppTime = 0.0f;
-  m_fElapsedAppTime = 0.0f;
-  m_strFrameRate[0] = L'\0';
   m_bStop = false;
   m_AppActive = true;
   m_AppFocused = true;
-
-#ifndef HAS_SDL
-  // Set up the presentation parameters for a double-buffered, 640x480,
-  // 32-bit display using depth-stencil. Override these parameters in
-  // your derived class as your app requires.
-  ZeroMemory( &m_d3dpp, sizeof(m_d3dpp) );
-  m_d3dpp.BackBufferWidth = 720;
-  m_d3dpp.BackBufferHeight = 576;
-  m_d3dpp.BackBufferFormat = D3DFMT_LIN_A8R8G8B8;
-  m_d3dpp.BackBufferCount = 1;
-  m_d3dpp.EnableAutoDepthStencil = FALSE;
-  m_d3dpp.AutoDepthStencilFormat = D3DFMT_LIN_D16;
-  m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-  m_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-#endif
 }
 
+/* CXBApplicationEx() destructor */
+CXBApplicationEx::~CXBApplicationEx()
+{}
 
-
-
-//-----------------------------------------------------------------------------
-// Name: Create()
-// Desc: Create the app
-//-----------------------------------------------------------------------------
+/* Create the app */
 HRESULT CXBApplicationEx::Create(HWND hWnd)
 {
   HRESULT hr;
@@ -102,51 +57,18 @@ HRESULT CXBApplicationEx::Create(HWND hWnd)
   return S_OK;
 }
 
-
-
-
-//-----------------------------------------------------------------------------
-// Name: Destroy()
-// Desc: Cleanup objects
-//-----------------------------------------------------------------------------
+/* Destroy the app */
 VOID CXBApplicationEx::Destroy()
 {
   CLog::Log(LOGNOTICE, "destroy");
   // Perform app-specific cleanup
   Cleanup();
-
-#ifndef HAS_SDL
-  // Release display objects
-  SAFE_RELEASE( m_pd3dDevice );
-  SAFE_RELEASE( m_pD3D );
-#endif
 }
 
-
-
-
-//-----------------------------------------------------------------------------
-// Name: Run()
-// Desc:
-//-----------------------------------------------------------------------------
+/* Function that runs the application */
 INT CXBApplicationEx::Run()
 {
   CLog::Log(LOGNOTICE, "Running the application..." );
-
-  // Get the frequency of the timer
-  LARGE_INTEGER qwTicksPerSec;
-  QueryPerformanceFrequency( &qwTicksPerSec );
-  FLOAT fSecsPerTick = 1.0f / (FLOAT)qwTicksPerSec.QuadPart;
-
-  // Save the start time
-  LARGE_INTEGER qwTime, qwLastTime, qwElapsedTime;
-  QueryPerformanceCounter( &qwTime );
-  qwLastTime.QuadPart = qwTime.QuadPart;
-
-  LARGE_INTEGER qwAppTime, qwElapsedAppTime;
-  qwAppTime.QuadPart = 0;
-  qwElapsedTime.QuadPart = 0;
-  qwElapsedAppTime.QuadPart = 0;
 
   BYTE processExceptionCount = 0;
   BYTE frameMoveExceptionCount = 0;
@@ -156,39 +78,12 @@ INT CXBApplicationEx::Run()
   const BYTE MAX_EXCEPTION_COUNT = 10;
 #endif
 
-  // Run the game loop, animating and rendering frames
+  // Run xbmc
   while (!m_bStop)
   {
 #ifdef HAS_PERFORMANCE_SAMPLE
     CPerformanceSample sampleLoop("XBApplicationEx-loop");
 #endif
-
-    //-----------------------------------------
-    // Perform app timing
-    //-----------------------------------------
-
-    // Check Start button
-#ifdef HAS_GAMEPAD
-    if ( m_DefaultGamepad.wPressedButtons & XINPUT_GAMEPAD_START )
-#endif
-      m_bPaused = !m_bPaused;
-
-    // Get the current time (keep in LARGE_INTEGER format for precision)
-    QueryPerformanceCounter( &qwTime );
-    qwElapsedTime.QuadPart = qwTime.QuadPart - qwLastTime.QuadPart;
-    qwLastTime.QuadPart = qwTime.QuadPart;
-    if ( m_bPaused )
-      qwElapsedAppTime.QuadPart = 0;
-    else
-      qwElapsedAppTime.QuadPart = qwElapsedTime.QuadPart;
-    qwAppTime.QuadPart += qwElapsedAppTime.QuadPart;
-
-    // Store the current time values as floating point
-    m_fTime = fSecsPerTick * ((FLOAT)(qwTime.QuadPart));
-    m_fElapsedTime = fSecsPerTick * ((FLOAT)(qwElapsedTime.QuadPart));
-    m_fAppTime = fSecsPerTick * ((FLOAT)(qwAppTime.QuadPart));
-    m_fElapsedAppTime = fSecsPerTick * ((FLOAT)(qwElapsedAppTime.QuadPart));
-
     //-----------------------------------------
     // Animate and render a frame
     //-----------------------------------------
@@ -265,61 +160,19 @@ INT CXBApplicationEx::Run()
     }
 #endif
 
-  }
+  } // while (!m_bStop)
   Destroy();
 
   CLog::Log(LOGNOTICE, "application stopped..." );
   return 0;
 }
 
-
-
-
-inline float DeadZone(float &f)
-{
-  if (f > g_advancedSettings.m_controllerDeadzone)
-    return (f - g_advancedSettings.m_controllerDeadzone)/(1.0f - g_advancedSettings.m_controllerDeadzone);
-  else if (f < -g_advancedSettings.m_controllerDeadzone)
-    return (f + g_advancedSettings.m_controllerDeadzone)/(1.0f - g_advancedSettings.m_controllerDeadzone);
-  else
-    return 0.0f;
-}
-
-#ifdef HAS_GAMEPAD
-inline float MaxTrigger(XBGAMEPAD &gamepad)
-{
-  float max = fabs(gamepad.fX1);
-  if (fabs(gamepad.fX2) > max) max = fabs(gamepad.fX2);
-  if (fabs(gamepad.fY1) > max) max = fabs(gamepad.fY1);
-  if (fabs(gamepad.fY2) > max) max = fabs(gamepad.fY2);
-  return max;
-}
-#endif
+/* Function for handling input */
 void CXBApplicationEx::ReadInput()
 {
   MEASURE_FUNCTION;
 
-  //-----------------------------------------
-  // Handle input
-  //-----------------------------------------
-
-  // Read the input from the IR remote
-#ifdef HAS_IR_REMOTE
-  XBInput_GetInput( m_IR_Remote );
-  ZeroMemory( &m_DefaultIR_Remote, sizeof(m_DefaultIR_Remote) );
-
-  for ( DWORD i = 0; i < 4; i++ )
-  {
-    if ( m_IR_Remote[i].hDevice)
-    {
-      m_DefaultIR_Remote.wButtons = m_IR_Remote[i].wButtons;
-    }
-  }
-#endif
-
 #ifdef HAS_SDL
-  //SDL_PumpEvents();
-
 #ifndef __APPLE__
   static RESOLUTION windowres = WINDOW;
 #endif
@@ -398,58 +251,15 @@ void CXBApplicationEx::ReadInput()
 
   // Read the input from the mouse
   g_Mouse.Update();
-#endif
+#endif // HAS_SDL
 
 #ifdef HAS_LIRC
+  // Read the input from a remote
   g_RemoteControl.Update();
-#endif
-
-#ifdef HAS_GAMEPAD
-  // Read the input for all connected gampads
-  XBInput_GetInput( m_Gamepad );
-
-  // Lump inputs of all connected gamepads into one common structure.
-  // This is done so apps that need only one gamepad can function with
-  // any gamepad.
-  ZeroMemory( &m_DefaultGamepad, sizeof(m_DefaultGamepad) );
-
-  float maxTrigger = 0.0f;
-  for ( DWORD i = 0; i < 4; i++ )
-  {
-    if ( m_Gamepad[i].hDevice )
-    {
-      if (maxTrigger < MaxTrigger(m_Gamepad[i]))
-      {
-        maxTrigger = MaxTrigger(m_Gamepad[i]);
-        m_DefaultGamepad.fX1 = m_Gamepad[i].fX1;
-        m_DefaultGamepad.fY1 = m_Gamepad[i].fY1;
-        m_DefaultGamepad.fX2 = m_Gamepad[i].fX2;
-        m_DefaultGamepad.fY2 = m_Gamepad[i].fY2;
-      }
-      m_DefaultGamepad.wButtons |= m_Gamepad[i].wButtons;
-      m_DefaultGamepad.wPressedButtons |= m_Gamepad[i].wPressedButtons;
-      m_DefaultGamepad.wLastButtons |= m_Gamepad[i].wLastButtons;
-
-      for ( DWORD b = 0; b < 8; b++ )
-      {
-        m_DefaultGamepad.bAnalogButtons[b] |= m_Gamepad[i].bAnalogButtons[b];
-        m_DefaultGamepad.bPressedAnalogButtons[b] |= m_Gamepad[i].bPressedAnalogButtons[b];
-        m_DefaultGamepad.bLastAnalogButtons[b] |= m_Gamepad[i].bLastAnalogButtons[b];
-      }
-    }
-  }
-
-  // Secure the deadzones of the analog sticks
-  m_DefaultGamepad.fX1 = DeadZone(m_DefaultGamepad.fX1);
-  m_DefaultGamepad.fY1 = DeadZone(m_DefaultGamepad.fY1);
-  m_DefaultGamepad.fX2 = DeadZone(m_DefaultGamepad.fX2);
-  m_DefaultGamepad.fY2 = DeadZone(m_DefaultGamepad.fY2);
 #endif
 }
 
-void CXBApplicationEx::Process()
-{}
-
+/* Functions to handle shortcuts. All depend on SDL */
 #ifdef HAS_SDL
 bool CXBApplicationEx::ProcessOSShortcuts(SDL_Event& event)
 {
@@ -553,4 +363,4 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
   }
   return false;
 }
-#endif
+#endif // HAS_SDL
