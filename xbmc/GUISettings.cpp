@@ -468,6 +468,7 @@ void CGUISettings::Initialize()
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
   AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
 #endif
+  AddFloat(9, "videoplayer.aspecterror", 33072, 0.0f, 3.0f, 1.0, 20.0f);
 
   AddSeparator(10, "videoplayer.sep2");
   AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
