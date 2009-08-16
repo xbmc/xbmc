@@ -524,7 +524,7 @@ PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
     return PVR_ERROR_SERVER_ERROR;
 
   pthread_mutex_lock(&m_critSection);
-  
+
   while (!m_transceiver->SendCommand("LSTC", code, lines))
   {
     if (code != 451)
@@ -545,6 +545,10 @@ PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
 
     cChannel channel;
     channel.Parse(str_result.c_str());
+
+    /* Ignore channels without streams */
+    if (m_bNoBadChannels && channel.Vpid() == 0 && channel.Apid(0) == 0 && channel.Dpid(0) == 0)
+      continue;
 
     PVR_CHANNEL tag;
     tag.uid = channel.Sid();
@@ -2074,7 +2078,7 @@ bool PVRClientVDR::GetChannel(unsigned int number, PVR_CHANNEL &channeldata)
   tag.multifeed = false;
   tag.stream_url = "";
 
-  return true;  
+  return true;
 }
 */
 
@@ -2163,7 +2167,7 @@ PVR_ERROR PVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
       tag.title           = recording.FileName();
       tag.subtitle        = recording.ShortText();
       tag.description     = recording.Description();
-      
+
       PVR_transfer_recording_entry(handle, &tag);
     }
   }
@@ -2171,7 +2175,7 @@ PVR_ERROR PVRClientVDR::RequestRecordingsList(PVRHANDLE handle)
 
   return PVR_ERROR_NO_ERROR;
 }
-    
+
 PVR_ERROR PVRClientVDR::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
 {
   vector<string> lines;
@@ -2332,7 +2336,7 @@ PVR_ERROR PVRClientVDR::RequestTimerList(PVRHANDLE handle)
     tag.lifetime = timer.Lifetime();
     tag.repeat = timer.WeekDays() == 0 ? false : true;
     tag.repeatflags = timer.WeekDays();
-    
+
     PVR_transfer_timer_entry(handle, &tag);
   }
 
@@ -2943,7 +2947,7 @@ bool PVRClientVDR::TeletextPagePresent(unsigned int channel, unsigned int Page, 
     if (code == 250 && data == "PAGEPRESENT")
       return true;
   }
-  
+
   return false;
 }
 
@@ -2965,7 +2969,7 @@ bool PVRClientVDR::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned in
 
   vector<string>::iterator it = lines.begin();
   string& data(*it);
-  
+
   for (int i = 0; i < 40*24+12; i++)
   {
     buf[i] = atol(data.c_str());

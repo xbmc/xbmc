@@ -31,7 +31,7 @@ ADDON_STATUS curStatus  = STATUS_UNKNOWN;
 int g_clientID          = -1;
 
 /* User adjustable settings are saved here.
- * Default values are defined inside client.h 
+ * Default values are defined inside client.h
  * and exported to the other source files.
  */
 std::string m_sHostname = DEFAULT_HOST;
@@ -40,6 +40,7 @@ bool m_bOnlyFTA         = DEFAULT_FTA_ONLY;
 bool m_bRadioEnabled    = DEFAULT_RADIO;
 bool m_bCharsetConv     = DEFAULT_CHARCONV;
 int m_iConnectTimeout   = DEFAULT_TIMEOUT;
+bool m_bNoBadChannels   = DEFAULT_BADCHANNELS;
 
 
 //-- Create -------------------------------------------------------------------
@@ -110,6 +111,14 @@ extern "C" ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID)
     /* If setting is unknown fallback to defaults */
     XBMC_log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
     m_iConnectTimeout = DEFAULT_TIMEOUT;
+  }
+
+  /* Read setting "ignorechannels" from settings.xml */
+  if (!XBMC_get_setting("ignorechannels", &m_bNoBadChannels))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC_log(LOG_ERROR, "Couldn't get 'ignorechannels' setting, falling back to 'true' as default");
+    m_bNoBadChannels = DEFAULT_BADCHANNELS;
   }
 
   /* Create connection to streamdev-server */
@@ -200,6 +209,11 @@ extern "C" ADDON_STATUS SetSetting(const char *settingName, const void *settingV
   {
     XBMC_log(LOG_INFO, "Changed Setting 'timeout' from %u to %u", m_iConnectTimeout, *(int*) settingValue);
     m_iConnectTimeout = *(int*) settingValue;
+  }
+  else if (str == "ignorechannels")
+  {
+    XBMC_log(LOG_INFO, "Changed Setting 'ignorechannels' from %u to %u", m_bNoBadChannels, *(bool*) settingValue);
+    m_bNoBadChannels = *(bool*) settingValue;
   }
 
   return STATUS_OK;

@@ -34,6 +34,7 @@
 
 typedef std::map< long, IPVRClient* >           CLIENTMAP;
 typedef std::map< long, IPVRClient* >::iterator CLIENTMAPITR;
+typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
 
 class CPVRManager : IPVRClientCallback
                   , public ADDON::IAddonCallback
@@ -132,7 +133,7 @@ protected:
 private:
   static CPVRManager   *m_instance;
   static CLIENTMAP      m_clients; // pointer to each enabled client's interface
-  std::map< long, PVR_SERVERPROPS > m_clientsProps; // store the properties of each client locally
+  CLIENTPROPS           m_clientsProps; // store the properties of each client locally
   DWORD                 m_infoToggleStart;
   unsigned int          m_infoToggleCurrent;
   CTVDatabase           m_database;
@@ -159,15 +160,12 @@ private:
 
   int                 m_CurrentChannelID;
   int                 m_CurrentGroupID;
-  unsigned int        m_HiddenChannels;
 
   CHANNELGROUPS_DATA  m_channel_group;
 
   CRITICAL_SECTION    m_critSection;
 
   DWORD               m_scanStart;
-
-  void                GetChannels();
 
   static CFileItem   *m_currentPlayingChannel;
   static CFileItem   *m_currentPlayingRecording;

@@ -7,4 +7,5 @@
     <string id="30003">Zeige Radiokanäle</string>
     <string id="30004">Textkonvertierung (UTF-8)</string>
     <string id="30005">Verbindungszeitüberlauf (s)</string>
+    <string id="30006">Ignoriere Känale ohne VPID und APID</string>
 </strings>

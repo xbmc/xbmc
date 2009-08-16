@@ -41,17 +41,13 @@ public:
 
   /* Database Channel handling */
   long AddDBChannel(const cPVRChannelInfoTag &info);
-  long AddChannel(DWORD clientID, const cPVRChannelInfoTag &info);
   bool RemoveAllChannels(DWORD clientID);
-  bool RemoveChannel(DWORD clientID, const cPVRChannelInfoTag &info);
+  bool RemoveDBChannel(const cPVRChannelInfoTag &info);
   long UpdateDBChannel(const cPVRChannelInfoTag &info);
-  long UpdateChannel(DWORD clientID, const cPVRChannelInfoTag &info);
   int  GetDBNumChannels(bool radio);
-  int  GetNumChannels(DWORD clientID);
   int  GetNumHiddenChannels(DWORD clientID);
   bool HasChannel(DWORD clientID, const cPVRChannelInfoTag &info);
   bool GetDBChannelList(cPVRChannels &results, bool radio);
-  bool GetChannelList(DWORD clientID, cPVRChannels &results, bool radio);
   bool GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings);
   bool SetChannelSettings(DWORD clientID, unsigned int channelID, const CVideoSettings &settings);
 

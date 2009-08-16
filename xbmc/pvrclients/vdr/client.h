@@ -34,6 +34,7 @@
 #define DEFAULT_RADIO       true
 #define DEFAULT_CHARCONV    false
 #define DEFAULT_TIMEOUT     3
+#define DEFAULT_BADCHANNELS true
 
 #ifdef __cplusplus
 extern "C" {
@@ -46,6 +47,7 @@ extern bool         m_bOnlyFTA;
 extern bool         m_bRadioEnabled;
 extern bool         m_bCharsetConv;
 extern int          m_iConnectTimeout;
+extern bool         m_bNoBadChannels;
 extern int          g_clientID;
 
 #ifdef __cplusplus
