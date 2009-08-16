@@ -36,6 +36,7 @@
 #include "GUILabelControl.h"  // needed for CInfoLabel
 #include "GUIImage.h"
 #endif
+#include "GUIControlProfiler.h"
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
 #include "utils/GUIInfoManager.h"
@@ -103,6 +104,7 @@
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
 #include "Zeroconf.h"
+#include "ZeroconfBrowser.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
@@ -894,8 +896,12 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
-  CStdString strSkinBase = "special://xbmc/skin/";
+  CStdString strSkinBase = "special://home/skin/";
   CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
+  if (!CFile::Exists(strSkinPath)) {
+    strSkinBase = "special://xbmc/skin/";
+    strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
+  }
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
   {
@@ -1009,6 +1015,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/addons/plugins/pictures");
     CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1140,6 +1147,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/addons/plugins/pictures");
     CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1255,6 +1263,7 @@ CProfile* CApplication::InitDirectoriesWin32()
     CDirectory::Create("special://home/addons/plugins/pictures");
     CDirectory::Create("special://home/addons/plugins/weather");
     CDirectory::Create("special://home/addons/dsp-audio");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1687,7 +1696,7 @@ void CApplication::StartFtpServer()
 
       // check file size and presence
       CFile xml;
-      if (xml.Open(xmlpath+"FileZilla Server.xml",true) && xml.GetLength() > 0)
+      if (xml.Open(xmlpath+"FileZilla Server.xml") && xml.GetLength() > 0)
       {
         m_pFileZilla = new CXBFileZilla(_P(xmlpath));
         m_pFileZilla->Start(false);
@@ -1950,8 +1959,11 @@ void CApplication::StartZeroconf()
 void CApplication::StopZeroconf()
 {
 #ifdef HAS_ZEROCONF
-  CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
-  CZeroconf::GetInstance()->Stop();
+  if(CZeroconf::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
+    CZeroconf::GetInstance()->Stop();
+  }
 #endif
 }
 
@@ -2361,6 +2373,10 @@ void CApplication::RenderNoPresent()
     else
       g_renderManager.RenderUpdate(true, 0, 255);
 
+    if (NeedRenderFullScreen())
+      RenderFullScreen();
+    RenderMemoryStatus();
+
     ResetScreenSaver();
     g_infoManager.ResetCache();
     return;
@@ -2480,25 +2496,37 @@ static int screenSaverFadeAmount = 0;
 
 void CApplication::RenderScreenSaver()
 {
+  bool draw = false;
+  float amount = 0.0f;
+  if (m_screenSaverMode == "Dim")
+    amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
+  else if (m_screenSaverMode == "Black")
+    amount = 1.0f; // fully fade
   // special case for dim screensaver
-  if (m_bScreenSave)
+  if (amount > 0.f)
   {
-    float amount = 0.0f;
-    if (m_screenSaverMode == "Dim")
-      amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
-    else if (m_screenSaverMode == "Black")
-      amount = 1.0f; // fully fade
-    if (amount > 0.0f)
-    { // render a black quad at suitable transparency
+    if (m_bScreenSave)
+    {
+      draw = true;
       if (screenSaverFadeAmount < 100)
-        screenSaverFadeAmount += 2;  // around a second to fade
-
-      DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-      CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
+      {
+        screenSaverFadeAmount = std::min(100, screenSaverFadeAmount + 2);  // around a second to fade
+      }
+    }
+    else
+    {
+      if (screenSaverFadeAmount > 0)
+      {
+        draw = true;
+        screenSaverFadeAmount = std::max(0, screenSaverFadeAmount - 4);  // around a half second to unfade
+      }
     }
   }
-  else
-    screenSaverFadeAmount = 0;
+  if (draw)
+  {
+    DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
+    CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
+  }
 }
 
 bool CApplication::WaitFrame(DWORD timeout)
@@ -2630,18 +2658,19 @@ void CApplication::RenderMemoryStatus()
     CStdString info;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
+    CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
 #ifdef __APPLE__
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
+    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
+              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
 #elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s.", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str());
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
-              g_infoManager.GetFPS(), strCores.c_str(), dCPU);
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
     static int yShift = 20;
@@ -3145,6 +3174,12 @@ bool CApplication::OnAction(CAction &action)
   {
     if (!m_pPlayer->CanSeek()) return false;
     m_guiDialogSeekBar.OnAction(action);
+    return true;
+  }
+  if (action.wID == ACTION_GUIPROFILE_BEGIN)
+  {
+    CGUIControlProfiler::Instance().SetOutputFile(_P("special://home/guiprofiler.xml"));
+    CGUIControlProfiler::Instance().Start();
     return true;
   }
   return false;
@@ -4122,7 +4157,14 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stop sap announcement listener");
     g_sapsessions.StopThread();
 #endif
-
+#ifdef HAS_ZEROCONF
+    if(CZeroconfBrowser::IsInstantiated())
+    {
+      CLog::Log(LOGNOTICE, "stop zeroconf browser");
+      CZeroconfBrowser::GetInstance()->Stop();
+      CZeroconfBrowser::ReleaseInstance();
+    }
+#endif
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
@@ -4786,6 +4828,10 @@ void CApplication::SaveFileState()
 
 void CApplication::UpdateFileState()
 {
+  // No resume for livetv
+  if (m_progressTrackingItem->IsLiveTV())
+    return;
+
   // Did the file change?
   if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
   {
@@ -5522,6 +5568,10 @@ void CApplication::ProcessSlow()
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
     m_gWindowManager.SendThreadMessage(msg);
   }
+#endif
+#ifdef HAS_LIRC
+  if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())
+    g_RemoteControl.Initialize();
 #endif
 }
 

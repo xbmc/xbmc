@@ -46,7 +46,7 @@
 
 const char **opt_names;
 static int opt_name_count;
-AVCodecContext *avctx_opts[CODEC_TYPE_NB];
+AVCodecContext *avcodec_opts[CODEC_TYPE_NB];
 AVFormatContext *avformat_opts;
 struct SwsContext *sws_opts;
 
@@ -125,11 +125,19 @@ void parse_options(int argc, char **argv, const OptionDef *options,
         opt = argv[optindex++];
 
         if (handleoptions && opt[0] == '-' && opt[1] != '\0') {
+            int bool_val = 1;
             if (opt[1] == '-' && opt[2] == '\0') {
                 handleoptions = 0;
                 continue;
             }
             po= find_option(options, opt + 1);
+            if (!po->name && opt[1] == 'n' && opt[2] == 'o') {
+                /* handle 'no' bool option */
+                po = find_option(options, opt + 3);
+                if (!(po->name && (po->flags & OPT_BOOL)))
+                    goto unknown_opt;
+                bool_val = 0;
+            }
             if (!po->name)
                 po= find_option(options, "default");
             if (!po->name) {
@@ -150,7 +158,7 @@ unknown_opt:
                 str = av_strdup(arg);
                 *po->u.str_arg = str;
             } else if (po->flags & OPT_BOOL) {
-                *po->u.int_arg = 1;
+                *po->u.int_arg = bool_val;
             } else if (po->flags & OPT_INT) {
                 *po->u.int_arg = parse_number_or_die(opt+1, arg, OPT_INT64, INT_MIN, INT_MAX);
             } else if (po->flags & OPT_INT64) {
@@ -179,9 +187,9 @@ int opt_default(const char *opt, const char *arg){
     int opt_types[]={AV_OPT_FLAG_VIDEO_PARAM, AV_OPT_FLAG_AUDIO_PARAM, 0, AV_OPT_FLAG_SUBTITLE_PARAM, 0};
 
     for(type=0; type<CODEC_TYPE_NB && ret>= 0; type++){
-        const AVOption *o2 = av_find_opt(avctx_opts[0], opt, NULL, opt_types[type], opt_types[type]);
+        const AVOption *o2 = av_find_opt(avcodec_opts[0], opt, NULL, opt_types[type], opt_types[type]);
         if(o2)
-            ret = av_set_string3(avctx_opts[type], opt, arg, 1, &o);
+            ret = av_set_string3(avcodec_opts[type], opt, arg, 1, &o);
     }
     if(!o)
         ret = av_set_string3(avformat_opts, opt, arg, 1, &o);
@@ -189,11 +197,11 @@ int opt_default(const char *opt, const char *arg){
         ret = av_set_string3(sws_opts, opt, arg, 1, &o);
     if(!o){
         if(opt[0] == 'a')
-            ret = av_set_string3(avctx_opts[CODEC_TYPE_AUDIO], opt+1, arg, 1, &o);
+            ret = av_set_string3(avcodec_opts[CODEC_TYPE_AUDIO], opt+1, arg, 1, &o);
         else if(opt[0] == 'v')
-            ret = av_set_string3(avctx_opts[CODEC_TYPE_VIDEO], opt+1, arg, 1, &o);
+            ret = av_set_string3(avcodec_opts[CODEC_TYPE_VIDEO], opt+1, arg, 1, &o);
         else if(opt[0] == 's')
-            ret = av_set_string3(avctx_opts[CODEC_TYPE_SUBTITLE], opt+1, arg, 1, &o);
+            ret = av_set_string3(avcodec_opts[CODEC_TYPE_SUBTITLE], opt+1, arg, 1, &o);
     }
     if (o && ret < 0) {
         fprintf(stderr, "Invalid value '%s' for option '%s'\n", arg, opt);
@@ -202,14 +210,49 @@ int opt_default(const char *opt, const char *arg){
     if(!o)
         return -1;
 
-//    av_log(NULL, AV_LOG_ERROR, "%s:%s: %f 0x%0X\n", opt, arg, av_get_double(avctx_opts, opt, NULL), (int)av_get_int(avctx_opts, opt, NULL));
+//    av_log(NULL, AV_LOG_ERROR, "%s:%s: %f 0x%0X\n", opt, arg, av_get_double(avcodec_opts, opt, NULL), (int)av_get_int(avcodec_opts, opt, NULL));
 
-    //FIXME we should always use avctx_opts, ... for storing options so there will not be any need to keep track of what i set over this
+    //FIXME we should always use avcodec_opts, ... for storing options so there will not be any need to keep track of what i set over this
     opt_names= av_realloc(opt_names, sizeof(void*)*(opt_name_count+1));
     opt_names[opt_name_count++]= o->name;
 
-    if(avctx_opts[0]->debug || avformat_opts->debug)
+    if(avcodec_opts[0]->debug || avformat_opts->debug)
         av_log_set_level(AV_LOG_DEBUG);
+    return 0;
+}
+
+int opt_loglevel(const char *opt, const char *arg)
+{
+    const struct { const char *name; int level; } log_levels[] = {
+        { "quiet"  , AV_LOG_QUIET   },
+        { "panic"  , AV_LOG_PANIC   },
+        { "fatal"  , AV_LOG_FATAL   },
+        { "error"  , AV_LOG_ERROR   },
+        { "warning", AV_LOG_WARNING },
+        { "info"   , AV_LOG_INFO    },
+        { "verbose", AV_LOG_VERBOSE },
+        { "debug"  , AV_LOG_DEBUG   },
+    };
+    char *tail;
+    int level;
+    int i;
+
+    for (i = 0; i < FF_ARRAY_ELEMS(log_levels); i++) {
+        if (!strcmp(log_levels[i].name, arg)) {
+            av_log_set_level(log_levels[i].level);
+            return 0;
+        }
+    }
+
+    level = strtol(arg, &tail, 10);
+    if (*tail) {
+        fprintf(stderr, "Invalid loglevel \"%s\". "
+                        "Possible levels are numbers or:\n", arg);
+        for (i = 0; i < FF_ARRAY_ELEMS(log_levels); i++)
+            fprintf(stderr, "\"%s\"\n", log_levels[i].name);
+        exit(1);
+    }
+    av_log_set_level(level);
     return 0;
 }
 
@@ -280,9 +323,7 @@ static void print_all_lib_versions(FILE* outstream, int indent)
 #if CONFIG_AVFILTER
     PRINT_LIB_VERSION(outstream, avfilter, AVFILTER, indent);
 #endif
-#if CONFIG_SWSCALE
     PRINT_LIB_VERSION(outstream, swscale,  SWSCALE,  indent);
-#endif
 #if CONFIG_POSTPROC
     PRINT_LIB_VERSION(outstream, postproc, POSTPROC, indent);
 #endif
@@ -309,14 +350,26 @@ void show_version(void) {
 
 void show_license(void)
 {
-#if CONFIG_NONFREE
     printf(
+#if CONFIG_NONFREE
     "This version of %s has nonfree parts compiled in.\n"
     "Therefore it is not legally redistributable.\n",
     program_name
-    );
+#elif CONFIG_GPLV3
+    "%s is free software; you can redistribute it and/or modify\n"
+    "it under the terms of the GNU General Public License as published by\n"
+    "the Free Software Foundation; either version 3 of the License, or\n"
+    "(at your option) any later version.\n"
+    "\n"
+    "%s is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License\n"
+    "along with %s.  If not, see <http://www.gnu.org/licenses/>.\n",
+    program_name, program_name, program_name
 #elif CONFIG_GPL
-    printf(
     "%s is free software; you can redistribute it and/or modify\n"
     "it under the terms of the GNU General Public License as published by\n"
     "the Free Software Foundation; either version 2 of the License, or\n"
@@ -331,9 +384,21 @@ void show_license(void)
     "along with %s; if not, write to the Free Software\n"
     "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\n",
     program_name, program_name, program_name
-    );
+#elif CONFIG_LGPLV3
+    "%s is free software; you can redistribute it and/or modify\n"
+    "it under the terms of the GNU Lesser General Public License as published by\n"
+    "the Free Software Foundation; either version 3 of the License, or\n"
+    "(at your option) any later version.\n"
+    "\n"
+    "%s is distributed in the hope that it will be useful,\n"
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+    "GNU Lesser General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU Lesser General Public License\n"
+    "along with %s.  If not, see <http://www.gnu.org/licenses/>.\n",
+    program_name, program_name, program_name
 #else
-    printf(
     "%s is free software; you can redistribute it and/or\n"
     "modify it under the terms of the GNU Lesser General Public\n"
     "License as published by the Free Software Foundation; either\n"
@@ -348,8 +413,8 @@ void show_license(void)
     "License along with %s; if not, write to the Free Software\n"
     "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA\n",
     program_name, program_name, program_name
-    );
 #endif
+    );
 }
 
 void show_formats(void)
@@ -473,4 +538,15 @@ void show_formats(void)
 "even though both encoding and decoding are supported. For example, the h263\n"
 "decoder corresponds to the h263 and h263p encoders, for file formats it is even\n"
 "worse.\n");
+}
+
+int read_yesno(void)
+{
+    int c = getchar();
+    int yesno = (toupper(c) == 'Y');
+
+    while (c != '\n' && c != EOF)
+        c = getchar();
+
+    return yesno;
 }

@@ -101,7 +101,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_YEAR = 7,
   VIDEODB_ID_THUMBURL = 8,
   VIDEODB_ID_IDENT = 9,
-  VIDEODB_ID_PLAYCOUNT = 10, // unused - feel free to repurpose
+  VIDEODB_ID_SORTTITLE = 10,
   VIDEODB_ID_RUNTIME = 11,
   VIDEODB_ID_MPAA = 12,
   VIDEODB_ID_TOP250 = 13,
@@ -131,7 +131,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iYear) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_xml) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strIMDBNumber) },
-  { VIDEODB_TYPE_COUNT, my_offsetof(CVideoInfoTag,m_playCount) }, // unused
+  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strSortTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strRuntime) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strMPAARating) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iTop250) },
@@ -460,6 +460,7 @@ public:
   long AddFile(const CStdString& strFileName);
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   bool ExportSkipEntry(const CStdString &nfoFile);
+  void ExportActorThumbs(const CVideoInfoTag& tag);
   void ImportFromXML(const CStdString &xmlFile);
   void DumpToDummyFiles(const CStdString &path);
   CStdString GetCachedThumb(const CFileItem& item) const;

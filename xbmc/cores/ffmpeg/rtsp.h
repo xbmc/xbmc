@@ -18,8 +18,8 @@
  * License along with FFmpeg; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-#ifndef FFMPEG_RTSP_H
-#define FFMPEG_RTSP_H
+#ifndef AVFORMAT_RTSP_H
+#define AVFORMAT_RTSP_H
 
 #include <stdint.h>
 #include "avformat.h"
@@ -27,9 +27,9 @@
 #include "rtpdec.h"
 #include "network.h"
 
-    /**
+/**
  * Network layer over which RTP/etc packet data will be transported.
-     */
+ */
 enum RTSPLowerTransport {
     RTSP_LOWER_TRANSPORT_UDP = 0,           /**< UDP/unicast */
     RTSP_LOWER_TRANSPORT_TCP = 1,           /**< TCP; interleaved in RTSP */
@@ -115,7 +115,7 @@ typedef struct RTSPMessageHeader {
      * to a SETUP RTSP command by the client */
     RTSPTransportField transports[RTSP_MAX_TRANSPORTS];
 
-    int seq; /**< sequence number */
+    int seq;                         /**< sequence number */
 
     /** the "Session:" field. This value is initially set by the server and
      * should be re-transmitted by the client in every RTSP command. */
@@ -132,6 +132,19 @@ typedef struct RTSPMessageHeader {
      * (RealServer compatible)" or "RealServer Version v.e.r.sion (platform)",
      * where platform is the output of $uname -msr | sed 's/ /-/g'. */
     char server[64];
+
+    /** The "timeout" comes as part of the server response to the "SETUP"
+     * command, in the "Session: <xyz>[;timeout=<value>]" line. It is the
+     * time, in seconds, that the server will go without traffic over the
+     * RTSP/TCP connection before it closes the connection. To prevent
+     * this, sent dummy requests (e.g. OPTIONS) with intervals smaller
+     * than this value. */
+    int timeout;
+
+    /** The "Notice" or "X-Notice" field value. See
+     * http://tools.ietf.org/html/draft-stiemerling-rtsp-announce-00
+     * for a complete list of supported values. */
+    int notice;
 } RTSPMessageHeader;
 
 /**
@@ -143,6 +156,7 @@ enum RTSPClientState {
     RTSP_STATE_IDLE,    /**< not initialized */
     RTSP_STATE_PLAYING, /**< initialized and receiving data */
     RTSP_STATE_PAUSED,  /**< initialized, but not receiving data */
+    RTSP_STATE_SEEKING, /**< initialized, requesting a seek */
 };
 
 /**
@@ -158,6 +172,8 @@ enum RTSPServerType {
 
 /**
  * Private data for the RTSP demuxer.
+ *
+ * @todo Use ByteIOContext instead of URLContext
  */
 typedef struct RTSPState {
     URLContext *rtsp_hd; /* RTSP TCP connexion handle */
@@ -189,6 +205,16 @@ typedef struct RTSPState {
     /** copy of RTSPMessageHeader->session_id, i.e. the server-provided session
      * identifier that the client should re-transmit in each RTSP command */
     char session_id[512];
+
+    /** copy of RTSPMessageHeader->timeout, i.e. the time (in seconds) that
+     * the server will go without traffic on the RTSP/TCP line before it
+     * closes the connection. */
+    int timeout;
+
+    /** timestamp of the last RTSP command that we sent to the RTSP server.
+     * This is used to calculate when to send dummy commands to keep the
+     * connection alive, in conjunction with timeout. */
+    int64_t last_cmd_time;
 
     /** the negotiated data/packet transport protocol; e.g. RTP or RDT */
     enum RTSPTransport transport;
@@ -222,6 +248,16 @@ typedef struct RTSPState {
      * this is used to send the same "Unsubscribe:" if stream setup changed,
      * before sending a new "Subscribe:" command. */
     char last_subscription[1024];
+    //@}
+
+    /** The following are used for RTP/ASF streams */
+    //@{
+    /** ASF demuxer context for the embedded ASF stream from WMS servers */
+    AVFormatContext *asf_ctx;
+
+    /** cache for position of the asf demuxer, since we load a new
+     * data packet in the bytecontext for each incoming RTSP packet. */
+    uint64_t asf_pb_pos;
     //@}
 } RTSPState;
 
@@ -279,4 +315,4 @@ extern int rtsp_rtp_port_max;
 int rtsp_pause(AVFormatContext *s);
 int rtsp_resume(AVFormatContext *s);
 
-#endif /* FFMPEG_RTSP_H */
+#endif /* AVFORMAT_RTSP_H */

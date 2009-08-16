@@ -90,11 +90,16 @@ static int ogg_build_flac_headers(AVCodecContext *avctx,
     enum FLACExtradataFormat format;
     uint8_t *streaminfo;
     uint8_t *p;
+
     if (!ff_flac_is_extradata_valid(avctx, &format, &streaminfo))
         return -1;
+
+    // first packet: STREAMINFO
     oggstream->header_len[0] = 51;
     oggstream->header[0] = av_mallocz(51); // per ogg flac specs
     p = oggstream->header[0];
+    if (!p)
+        return AVERROR_NOMEM;
     bytestream_put_byte(&p, 0x7F);
     bytestream_put_buffer(&p, "FLAC", 4);
     bytestream_put_byte(&p, 1); // major version
@@ -104,14 +109,19 @@ static int ogg_build_flac_headers(AVCodecContext *avctx,
     bytestream_put_byte(&p, 0x00); // streaminfo
     bytestream_put_be24(&p, 34);
     bytestream_put_buffer(&p, streaminfo, FLAC_STREAMINFO_SIZE);
+
+    // second packet: VorbisComment
     oggstream->header_len[1] = 1+3+4+strlen(vendor)+4;
     oggstream->header[1] = av_mallocz(oggstream->header_len[1]);
     p = oggstream->header[1];
+    if (!p)
+        return AVERROR_NOMEM;
     bytestream_put_byte(&p, 0x84); // last metadata block and vorbis comment
     bytestream_put_be24(&p, oggstream->header_len[1] - 4);
     bytestream_put_le32(&p, strlen(vendor));
     bytestream_put_buffer(&p, vendor, strlen(vendor));
     bytestream_put_le32(&p, 0); // user comment list length
+
     return 0;
 }
 
@@ -139,10 +149,12 @@ static int ogg_write_header(AVFormatContext *s)
         oggstream = av_mallocz(sizeof(*oggstream));
         st->priv_data = oggstream;
         if (st->codec->codec_id == CODEC_ID_FLAC) {
-            if (ogg_build_flac_headers(st->codec,
-                                       oggstream, st->codec->flags & CODEC_FLAG_BITEXACT) < 0) {
-                av_log(s, AV_LOG_ERROR, "Extradata corrupted\n");
+            int err = ogg_build_flac_headers(st->codec, oggstream,
+                                             st->codec->flags & CODEC_FLAG_BITEXACT);
+            if (err) {
+                av_log(s, AV_LOG_ERROR, "Error writing FLAC headers\n");
                 av_freep(&st->priv_data);
+                return err;
             }
         } else {
             if (ff_split_xiph_headers(st->codec->extradata, st->codec->extradata_size,

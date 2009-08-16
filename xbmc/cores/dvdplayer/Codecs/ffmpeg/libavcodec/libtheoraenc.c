@@ -47,7 +47,7 @@ typedef struct TheoraContext{
 */
 static int concatenate_packet(unsigned int* offset, AVCodecContext* avc_context, const ogg_packet* packet)
 {
-    char* message = NULL;
+    const char* message = NULL;
     uint8_t* newdata = NULL;
     int newsize = avc_context->extradata_size + 2 + packet->bytes;
 
@@ -87,12 +87,12 @@ static av_cold int encode_init(AVCodecContext* avc_context)
 
     /* Set up the theora_info struct */
     theora_info_init( &t_info );
-    t_info.width = avc_context->width;
-    t_info.height = avc_context->height;
+    t_info.width = FFALIGN(avc_context->width, 16);
+    t_info.height = FFALIGN(avc_context->height, 16);
     t_info.frame_width = avc_context->width;
     t_info.frame_height = avc_context->height;
     t_info.offset_x = 0;
-    t_info.offset_y = 0;
+    t_info.offset_y = avc_context->height & 0xf;
     /* Swap numerator and denominator as time_base in AVCodecContext gives the
      * time period between frames, but theora_info needs the framerate.  */
     t_info.fps_numerator = avc_context->time_base.den;
@@ -150,15 +150,17 @@ static av_cold int encode_init(AVCodecContext* avc_context)
     if (concatenate_packet( &offset, avc_context, &o_packet ) != 0) {
         return -1;
     }
+    /* Clear up theora_comment struct before we reset the packet */
+    theora_comment_clear( &t_comment );
+    /* And despite documentation to the contrary, theora_comment_clear
+     * does not release the packet */
+    ogg_packet_clear(&o_packet);
 
     /* Tables */
     theora_encode_tables( &(h->t_state), &o_packet );
     if (concatenate_packet( &offset, avc_context, &o_packet ) != 0) {
         return -1;
     }
-
-    /* Clear up theora_comment struct */
-    theora_comment_clear( &t_comment );
 
     /* Set up the output AVFrame */
     avc_context->coded_frame= avcodec_alloc_frame();
@@ -186,8 +188,8 @@ static int encode_frame(
         return -1;
     }
 
-    t_yuv_buffer.y_width = avc_context->width;
-    t_yuv_buffer.y_height = avc_context->height;
+    t_yuv_buffer.y_width = FFALIGN(avc_context->width, 16);
+    t_yuv_buffer.y_height = FFALIGN(avc_context->height, 16);
     t_yuv_buffer.y_stride = frame->linesize[0];
     t_yuv_buffer.uv_width = t_yuv_buffer.y_width / 2;
     t_yuv_buffer.uv_height = t_yuv_buffer.y_height / 2;
@@ -249,6 +251,10 @@ static av_cold int encode_close(AVCodecContext* avc_context)
 
     result = theora_encode_packetout( &(h->t_state), 1, &o_packet );
     theora_clear( &(h->t_state) );
+    av_freep(&avc_context->coded_frame);
+    av_freep(&avc_context->extradata);
+    avc_context->extradata_size = 0;
+
     switch (result) {
         case 0:/* No packet is ready */
         case -1:/* Encoding finished */

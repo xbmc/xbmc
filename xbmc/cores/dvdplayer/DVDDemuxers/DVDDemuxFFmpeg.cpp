@@ -672,7 +672,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       else
         CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::Read() returned invalid packet and eof reached");
 
-      av_free_packet(&pkt);
+      m_dllAvCodec.av_free_packet(&pkt);
     }
     else
     {
@@ -766,7 +766,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
         pPacket->iStreamId = pkt.stream_index; // XXX just for now
       }
-      av_free_packet(&pkt);
+      m_dllAvCodec.av_free_packet(&pkt);
     }
   }
   Unlock();

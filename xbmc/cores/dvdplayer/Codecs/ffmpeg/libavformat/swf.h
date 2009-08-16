@@ -65,7 +65,6 @@
 #include <assert.h>
 
 typedef struct {
-    int audio_stream_index;
     int64_t duration_pos;
     int64_t tag_pos;
     int64_t vframes_pos;
@@ -75,7 +74,7 @@ typedef struct {
     int video_frame_number;
     int frame_rate;
     int tag;
-    AVFifoBuffer audio_fifo;
+    AVFifoBuffer *audio_fifo;
     AVCodecContext *audio_enc, *video_enc;
 } SWFContext;
 

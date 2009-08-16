@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-06-05" name="fdb.pl" content="movies" thumb="fdbpl.png" language="pl">
+<scraper framework="1.1" date="2009-08-08" name="fdb.pl" content="movies" thumb="fdbpl.png" language="pl">
+	<include>common/tmdb.xml</include>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.\1/title/tt\2/&lt;/url&gt;&lt;id&gt;tt\2&lt;/id&gt;"  dest="3">
 			<expression clear="yes" noclean="1">(imdb.com/)Title\?([0-9]*)</expression>
@@ -62,7 +63,7 @@
 			<RegExp input="$$2" output="&lt;url function=&quot;Getfdblink&quot;&gt;http://fdb.pl/katalog?catalog[query]=$$6&amp;amp;catalog[year_from]=$$7&amp;amp;catalog[order]=votes&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=$$2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=$$2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -73,18 +74,18 @@
 			<RegExp input="$$1" output="\1" dest="4">
 				<expression noclean="1">class=&quot;results&quot;([^~]*)class=&quot;clear&quot;</expression>
 			</RegExp>
-            <RegExp input="$$4" output="\1" dest="6">
-                <expression clear="yes" noclean="1,2">a href=&quot;([^&gt;]+)&quot;&gt;([^&lt;]+)[^(]+\(([0-9]+)</expression>
-            </RegExp>
-            <RegExp input="$$6" output="&lt;url function=&quot;GetDetailsfdb&quot;&gt;$$6&lt;/url&gt;" dest="2">
-                <expression></expression>
-            </RegExp>
-            <RegExp input="$$6" output="&lt;url function=&quot;GetPlotfdb&quot;&gt;$$6/opisy&lt;/url&gt;" dest="2+">
-                <expression></expression>
-            </RegExp>
-            <RegExp input="$$6" output="&lt;url function=&quot;GetPosterfdb&quot;&gt;$$6/plakaty&lt;/url&gt;" dest="2+">
-                <expression></expression>
-            </RegExp>
+			<RegExp input="$$4" output="\1" dest="6">
+				<expression clear="yes" noclean="1,2">a href=&quot;([^&gt;]+)&quot;&gt;([^&lt;]+)[^(]+\(([0-9]+)</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;url function=&quot;GetDetailsfdb&quot;&gt;$$6&lt;/url&gt;" dest="2">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;url function=&quot;GetPlotfdb&quot;&gt;$$6/opisy&lt;/url&gt;" dest="2+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;url function=&quot;GetPosterfdb&quot;&gt;$$6/plakaty&lt;/url&gt;" dest="2+">
+				<expression></expression>
+			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</Getfdblink>
@@ -156,7 +157,7 @@
 		</RegExp>
 	</GetPlotfdb>
 	<GetPosterfdb dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="2+">
 				<expression noclean="1">&quot;gfx-poster&quot; src=&quot;([^&quot;]+)/</expression>
 			</RegExp>
@@ -166,17 +167,4 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetPosterfdb>
-    <GetTMDBId dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-		</RegExp>
-	</GetTMDBId>
-    <GetTMDBFanart dest="5">
-        <RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-	    <RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="2">
-                <expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
-            </RegExp>
-            <expression noclean="1">(.+)</expression>
-        </RegExp>
-    </GetTMDBFanart>
 </scraper>

@@ -25,7 +25,7 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h" // for ff_reverse
+#include "get_bits.h" // for ff_reverse
 #include "bytestream.h"
 
 #define MAX_CHANNELS 64
@@ -214,7 +214,7 @@ static int pcm_encode_frame(AVCodecContext *avctx,
             *dst++ = v - 128;
         }
         break;
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
     case CODEC_ID_PCM_F64LE:
         ENCODE(int64_t, le64, samples, dst, n, 0, 0)
         break;
@@ -244,7 +244,7 @@ static int pcm_encode_frame(AVCodecContext *avctx,
     case CODEC_ID_PCM_F32LE:
     case CODEC_ID_PCM_S32LE:
     case CODEC_ID_PCM_S16LE:
-#endif /* WORDS_BIGENDIAN */
+#endif /* HAVE_BIGENDIAN */
     case CODEC_ID_PCM_U8:
         memcpy(dst, samples, n*sample_size);
         dst += n*sample_size;
@@ -323,8 +323,10 @@ static av_cold int pcm_decode_init(AVCodecContext * avctx)
 
 static int pcm_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            const uint8_t *buf, int buf_size)
+                            AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     PCMDecode *s = avctx->priv_data;
     int sample_size, c, n;
     short *samples;
@@ -359,8 +361,11 @@ static int pcm_decode_frame(AVCodecContext *avctx,
     n = avctx->channels * sample_size;
 
     if(n && buf_size % n){
-        av_log(avctx, AV_LOG_ERROR, "invalid PCM packet\n");
-        return -1;
+        if (buf_size < n) {
+            av_log(avctx, AV_LOG_ERROR, "invalid PCM packet\n");
+            return -1;
+        }else
+            buf_size -= buf_size % n;
     }
 
     buf_size= FFMIN(buf_size, *data_size/2);
@@ -417,7 +422,7 @@ static int pcm_decode_frame(AVCodecContext *avctx,
         }
         samples= (short*)dstu8;
         break;
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
     case CODEC_ID_PCM_F64LE:
         DECODE(int64_t, le64, src, samples, n, 0, 0)
         break;
@@ -447,7 +452,7 @@ static int pcm_decode_frame(AVCodecContext *avctx,
     case CODEC_ID_PCM_F32LE:
     case CODEC_ID_PCM_S32LE:
     case CODEC_ID_PCM_S16LE:
-#endif /* WORDS_BIGENDIAN */
+#endif /* HAVE_BIGENDIAN */
     case CODEC_ID_PCM_U8:
         memcpy(samples, src, n*sample_size);
         src += n*sample_size;

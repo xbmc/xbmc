@@ -22,11 +22,12 @@
 
 #include "libavutil/crc.h"
 #include "libavcodec/ac3_parser.h"
-#include "libavcodec/bitstream.h"
+#include "libavcodec/get_bits.h"
 #include "libavcodec/bytestream.h"
 #include "avformat.h"
 #include "raw.h"
 #include "id3v2.h"
+#include "id3v1.h"
 
 /* simple formats */
 
@@ -84,6 +85,9 @@ static int raw_read_header(AVFormatContext *s, AVFormatParameters *ap)
             st->codec->sample_rate = ap->sample_rate;
             if(ap->channels) st->codec->channels = ap->channels;
             else             st->codec->channels = 1;
+            st->codec->bits_per_coded_sample = av_get_bits_per_sample(st->codec->codec_id);
+            assert(st->codec->bits_per_coded_sample > 0);
+            st->codec->block_align = st->codec->bits_per_coded_sample*st->codec->channels/8;
             av_set_pts_info(st, 64, 1, st->codec->sample_rate);
             break;
         case CODEC_TYPE_VIDEO:
@@ -104,13 +108,14 @@ static int raw_read_header(AVFormatContext *s, AVFormatParameters *ap)
 }
 
 #define RAW_PACKET_SIZE 1024
+#define RAW_SAMPLES     1024
 
 static int raw_read_packet(AVFormatContext *s, AVPacket *pkt)
 {
     int ret, size, bps;
     //    AVStream *st = s->streams[0];
 
-    size= RAW_PACKET_SIZE;
+    size= RAW_SAMPLES*s->streams[0]->codec->block_align;
 
     ret= av_get_packet(s->pb, pkt, size);
 
@@ -232,6 +237,7 @@ int pcm_read_seek(AVFormatContext *s,
 
     if (block_align <= 0 || byte_rate <= 0)
         return -1;
+    if (timestamp < 0) timestamp = 0;
 
     /* compute the position by aligning it to block_align */
     pos = av_rescale_rnd(timestamp * byte_rate,
@@ -323,7 +329,9 @@ static int mpegvideo_probe(AVProbeData *p)
         return AVPROBE_SCORE_MAX/2+1; // +1 for .mpg
     return 0;
 }
+#endif
 
+#if CONFIG_CAVSVIDEO_DEMUXER
 #define CAVS_SEQ_START_CODE       0x000001b0
 #define CAVS_PIC_I_START_CODE     0x000001b3
 #define CAVS_UNDEF_START_CODE     0x000001b4
@@ -620,6 +628,26 @@ static int adts_aac_probe(AVProbeData *p)
     else if(max_frames>=1) return 1;
     else                   return 0;
 }
+
+static int adts_aac_read_header(AVFormatContext *s,
+                                AVFormatParameters *ap)
+{
+    AVStream *st;
+
+    st = av_new_stream(s, 0);
+    if (!st)
+        return AVERROR(ENOMEM);
+
+    st->codec->codec_type = CODEC_TYPE_AUDIO;
+    st->codec->codec_id = s->iformat->value;
+    st->need_parsing = AVSTREAM_PARSE_FULL;
+
+    ff_id3v1_read(s);
+    ff_id3v2_read(s);
+
+    return 0;
+}
+
 #endif
 
 /* Note: Do not forget to add new entries to the Makefile as well. */
@@ -630,7 +658,7 @@ AVInputFormat aac_demuxer = {
     NULL_IF_CONFIG_SMALL("raw ADTS AAC"),
     0,
     adts_aac_probe,
-    audio_read_header,
+    adts_aac_read_header,
     ff_raw_read_partial_packet,
     .flags= AVFMT_GENERIC_INDEX,
     .extensions = "aac",
@@ -968,6 +996,50 @@ AVInputFormat mlp_demuxer = {
 };
 #endif
 
+#if CONFIG_MLP_MUXER
+AVOutputFormat mlp_muxer = {
+    "mlp",
+    NULL_IF_CONFIG_SMALL("raw MLP"),
+    NULL,
+    "mlp",
+    0,
+    CODEC_ID_MLP,
+    CODEC_ID_NONE,
+    NULL,
+    raw_write_packet,
+    .flags= AVFMT_NOTIMESTAMPS,
+};
+#endif
+
+#if CONFIG_TRUEHD_DEMUXER
+AVInputFormat truehd_demuxer = {
+    "truehd",
+    NULL_IF_CONFIG_SMALL("raw TrueHD"),
+    0,
+    NULL,
+    audio_read_header,
+    ff_raw_read_partial_packet,
+    .flags= AVFMT_GENERIC_INDEX,
+    .extensions = "thd",
+    .value = CODEC_ID_TRUEHD,
+};
+#endif
+
+#if CONFIG_TRUEHD_MUXER
+AVOutputFormat truehd_muxer = {
+    "truehd",
+    NULL_IF_CONFIG_SMALL("raw TrueHD"),
+    NULL,
+    "thd",
+    0,
+    CODEC_ID_TRUEHD,
+    CODEC_ID_NONE,
+    NULL,
+    raw_write_packet,
+    .flags= AVFMT_NOTIMESTAMPS,
+};
+#endif
+
 #if CONFIG_MPEG1VIDEO_MUXER
 AVOutputFormat mpeg1video_muxer = {
     "mpeg1video",
@@ -1031,7 +1103,7 @@ AVOutputFormat null_muxer = {
     NULL,
     NULL,
     0,
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
     CODEC_ID_PCM_S16BE,
 #else
     CODEC_ID_PCM_S16LE,
@@ -1160,7 +1232,7 @@ AVOutputFormat pcm_ ## name ## _muxer = {\
 #define PCMDEF(name, long_name, ext, codec)
 #endif
 
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
 #define BE_DEF(s) s
 #define LE_DEF(s) NULL
 #else

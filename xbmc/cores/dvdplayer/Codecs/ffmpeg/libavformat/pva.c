@@ -55,7 +55,7 @@ static int pva_read_header(AVFormatContext *s, AVFormatParameters *ap) {
         return AVERROR(ENOMEM);
     st->codec->codec_type = CODEC_TYPE_AUDIO;
     st->codec->codec_id   = CODEC_ID_MP2;
-    st->need_parsing      = AVSTREAM_PARSE_HEADERS;
+    st->need_parsing      = AVSTREAM_PARSE_FULL;
     av_set_pts_info(st, 33, 1, 90000);
     av_add_index_entry(st, 0, 0, 0, 0, AVINDEX_KEYFRAME);
 
@@ -176,7 +176,7 @@ static int64_t pva_read_timestamp(struct AVFormatContext *s, int stream_index,
     ByteIOContext *pb = s->pb;
     PVAContext *pvactx = s->priv_data;
     int length, streamid;
-    int64_t res;
+    int64_t res = AV_NOPTS_VALUE;
 
     pos_limit = FFMIN(*pos+PVA_MAX_PAYLOAD_LENGTH*8, (uint64_t)*pos+pos_limit);
 

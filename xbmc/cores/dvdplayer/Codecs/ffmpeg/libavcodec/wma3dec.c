@@ -26,7 +26,8 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "put_bits.h"
+#include "get_bits.h"
 #include "wma3.h"
 #undef NDEBUG
 #include <assert.h>
@@ -313,7 +314,7 @@ static av_cold int wma3_decode_init(AVCodecContext *avctx)
 
     /** init MDCT, FIXME: only init needed sizes */
     for(i = 0; i < BLOCK_NB_SIZES; i++)
-        ff_mdct_init(&s->mdct_ctx[i], BLOCK_MIN_BITS+1+i, 1);
+        ff_mdct_init(&s->mdct_ctx[i], BLOCK_MIN_BITS+1+i, 1,1.0);
 
     /** init MDCT windows: simple sinus window */
     for(i=0 ; i<BLOCK_NB_SIZES ; i++) {

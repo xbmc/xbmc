@@ -77,21 +77,30 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
         {
           overlay->iGroupId = pPacket->iGroupId;
 
-          if(pts == DVD_NOPTS_VALUE)
-          {
-            if(overlay->iPTSStartTime == 0 && overlay->iPTSStopTime == 0)
-              CLog::Log(LOGWARNING, "%s - unable to find timestamp for overlay", __FUNCTION__);
-          }
+          // we assume pts is better than what
+          // decoder gives us, only take duration
+          // from decoder if available
+          if(overlay->iPTSStopTime > overlay->iPTSStartTime)
+            duration = overlay->iPTSStopTime - overlay->iPTSStartTime;
+          else if(pPacket->duration != DVD_NOPTS_VALUE)
+            duration = pPacket->duration;
+          else
+            duration = 0.0;
+
+          if     (pPacket->pts != DVD_NOPTS_VALUE)
+            pts = pPacket->pts;
+          else if(pPacket->dts != DVD_NOPTS_VALUE)
+            pts = pPacket->dts;
+          else
+            pts = overlay->iPTSStartTime;
+
+          overlay->iPTSStartTime = pts;
+          if(duration)
+            overlay->iPTSStopTime = pts + duration;
           else
           {
-            // we assume pts is better than what
-            // decoder gives us, only take duration
-            // from decoder if available
-            overlay->iPTSStopTime -= overlay->iPTSStartTime;
-            overlay->iPTSStartTime = pts;
-            if(overlay->iPTSStopTime == 0.0)
-              overlay->iPTSStopTime = duration;
-            overlay->iPTSStopTime += overlay->iPTSStartTime;
+            overlay->iPTSStopTime = 0;
+            overlay->replace = true;
           }
 
           m_pOverlayContainer->Add(overlay);
@@ -101,7 +110,7 @@ void CDVDPlayerSubtitle::SendMessage(CDVDMsg* pMsg)
     }
     else if (m_streaminfo.codec == CODEC_ID_DVD_SUBTITLE)
     {
-      CSPUInfo* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
+      CDVDOverlaySpu* pSPUInfo = m_dvdspus.AddData(pPacket->pData, pPacket->iSize, pPacket->pts);
       if (pSPUInfo)
       {
         CLog::Log(LOGDEBUG, "CDVDPlayer::ProcessSubData: Got complete SPU packet");

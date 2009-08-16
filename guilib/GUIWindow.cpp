@@ -26,6 +26,7 @@
 #include "Settings.h"
 #include "GUIControlFactory.h"
 #include "GUIControlGroup.h"
+#include "GUIControlProfiler.h"
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
 #include "GUIEditControl.h"
 #endif
@@ -334,10 +335,13 @@ void CGUIWindow::Render()
     CGUIControl *pControl = *i;
     if (pControl)
     {
+      GUIPROFILER_VISIBILITY_BEGIN(pControl);
       pControl->UpdateVisibility();
+      GUIPROFILER_VISIBILITY_END(pControl);
       pControl->DoRender(currentTime);
     }
   }
+  if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
   m_hasRendered = true;
 }
 

@@ -77,7 +77,7 @@ int mm_support(void)
         if (std_caps & (1<<23))
             rval |= FF_MM_MMX;
         if (std_caps & (1<<25))
-            rval |= FF_MM_MMXEXT
+            rval |= FF_MM_MMX2
 #if HAVE_SSE
                   | FF_MM_SSE;
         if (std_caps & (1<<26))
@@ -85,7 +85,11 @@ int mm_support(void)
         if (ecx & 1)
             rval |= FF_MM_SSE3;
         if (ecx & 0x00000200 )
-            rval |= FF_MM_SSSE3
+            rval |= FF_MM_SSSE3;
+        if (ecx & 0x00080000 )
+            rval |= FF_MM_SSE4;
+        if (ecx & 0x00100000 )
+            rval |= FF_MM_SSE42;
 #endif
                   ;
     }
@@ -101,17 +105,19 @@ int mm_support(void)
         if (ext_caps & (1<<23))
             rval |= FF_MM_MMX;
         if (ext_caps & (1<<22))
-            rval |= FF_MM_MMXEXT;
+            rval |= FF_MM_MMX2;
     }
 
 #if 0
-    av_log(NULL, AV_LOG_DEBUG, "%s%s%s%s%s%s%s%s\n",
+    av_log(NULL, AV_LOG_DEBUG, "%s%s%s%s%s%s%s%s%s%s\n",
         (rval&FF_MM_MMX) ? "MMX ":"",
-        (rval&FF_MM_MMXEXT) ? "MMX2 ":"",
+        (rval&FF_MM_MMX2) ? "MMX2 ":"",
         (rval&FF_MM_SSE) ? "SSE ":"",
         (rval&FF_MM_SSE2) ? "SSE2 ":"",
         (rval&FF_MM_SSE3) ? "SSE3 ":"",
         (rval&FF_MM_SSSE3) ? "SSSE3 ":"",
+        (rval&FF_MM_SSE4) ? "SSE4.1 ":"",
+        (rval&FF_MM_SSE42) ? "SSE4.2 ":"",
         (rval&FF_MM_3DNOW) ? "3DNow ":"",
         (rval&FF_MM_3DNOWEXT) ? "3DNowExt ":"");
 #endif

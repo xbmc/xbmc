@@ -1,94 +1,48 @@
-// XBApplicationEx.h: interface for the CXBApplicationEx class.
-//
-//////////////////////////////////////////////////////////////////////
+/*
+ *      Copyright (C) 2005-2009 Team XBMC
+ *      http://www.xbmc.org
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License along
+ *  with this program; if not, write to the Free Software Foundation, Inc.,
+ *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
 
-#if !defined(AFX_XBAPPLICATIONEX_H__B5474945_70C7_4084_B345_0F1874AC77BA__INCLUDED_)
-#define AFX_XBAPPLICATIONEX_H__B5474945_70C7_4084_B345_0F1874AC77BA__INCLUDED_
+#ifndef XBAPPLICATIONEX_H
+#define XBAPPLICATIONEX_H
 
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
-#ifdef HAS_GAMEPAD
-#include "XBInput.h"
-#include "XBInputEx.h"
-#endif
 #include "IWindowManagerCallback.h"
 #include "common/Mouse.h"
-#if defined(HAS_SDL)
-#ifdef HAS_SDL_JOYSTICK
+#include "common/Keyboard.h"
+#if defined (HAS_SDL) && defined (HAS_SDL_JOYSTICK)
 #include "common/SDLJoystick.h"
 #endif
-#endif
-#include "common/Keyboard.h"
 #ifdef HAS_IRSERVERSUITE
 #include "common/IRServerSuite/IRServerSuite.h"
 #elif defined(HAS_LIRC)
 #include "common/LIRC.h"
 #endif
 
-//-----------------------------------------------------------------------------
-// Global access to common members
-//-----------------------------------------------------------------------------
-//extern LPDIRECT3DDEVICE8 g_pd3dDevice;
-
-
-
-
-//-----------------------------------------------------------------------------
-// Error codes
-//-----------------------------------------------------------------------------
-#define XBAPPERR_MEDIANOTFOUND       0x82000003
-
-
-
-
-//-----------------------------------------------------------------------------
-// Name: class CXBApplicationEx
-// Desc: A base class for creating sample Xbox applications. To create a simple
-//       Xbox application, simply derive this class and override the following
-//       functions:
-//          Initialize()          - To initialize the device-dependant objects
-//          FrameMove()           - To animate the scene
-//          Render()              - To render the scene
-//-----------------------------------------------------------------------------
 class CXBApplicationEx : public IWindowManagerCallback
 {
 public:
-  D3DPRESENT_PARAMETERS m_d3dpp;
+  CXBApplicationEx();
+  ~CXBApplicationEx();
 
-  // Main objects used for creating and rendering the 3D scene
-#ifndef HAS_SDL
-  LPDIRECT3D9 m_pD3D;              // The D3D enumerator object
-  LPDIRECT3DDEVICE9 m_pd3dDevice;        // The D3D rendering device
-  LPDIRECT3DSURFACE9 m_pBackBuffer;       // The back buffer
-  //LPDIRECT3DSURFACE9    m_pDepthBuffer;      // The depth buffer
-#endif
-
-  // Variables for timing
-  FLOAT m_fTime;             // Current absolute time in seconds
-  FLOAT m_fElapsedTime;      // Elapsed absolute time since last frame
-  FLOAT m_fAppTime;          // Current app time in seconds
-  FLOAT m_fElapsedAppTime;   // Elapsed app time since last frame
-  BOOL m_bPaused;           // Whether app time is paused by user
-  WCHAR m_strFrameRate[20];  // Frame rate written to a CStdString
-  HANDLE m_hFrameCounter;     // Handle to frame rate perf counter
+// Variables for timing
   bool m_bStop;
   bool m_AppActive;
   bool m_AppFocused;
-#ifdef HAS_GAMEPAD
-  // Members to init the XINPUT devices.
-  XDEVICE_PREALLOC_TYPE* m_InputDeviceTypes;
-  DWORD m_dwNumInputDeviceTypes;
-  XBGAMEPAD* m_Gamepad;
-  XBGAMEPAD m_DefaultGamepad;
-#endif
-#ifdef HAS_IR_REMOTE
-  // XBMP 6.0 - START
-  XBIR_REMOTE m_IR_Remote[4];
-  XBIR_REMOTE m_DefaultIR_Remote;
-  // XBMP 6.0 - END
-#endif
 
   // Overridable functions for the 3D scene created by the app
   virtual HRESULT Initialize() { return S_OK; }
@@ -101,14 +55,12 @@ public:
   bool ProcessOSXShortcuts(SDL_Event &event);
 #endif
 
-public:
   // Functions to create, run, and clean up the application
   virtual HRESULT Create(HWND hWnd);
   INT Run();
   VOID Destroy();
-  virtual void Process();
-  // Internal constructor
-  CXBApplicationEx();
+
+private:
 };
 
-#endif // !defined(AFX_XBAPPLICATIONEX_H__B5474945_70C7_4084_B345_0F1874AC77BA__INCLUDED_)
+#endif /* XBAPPLICATIONEX_H */

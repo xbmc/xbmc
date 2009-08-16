@@ -39,7 +39,6 @@ static const AVOption options[] = {{NULL}};
 static const AVClass audioresample_context_class = { "ReSampleContext", context_to_name, options };
 
 struct ReSampleContext {
-    const AVClass *av_class;
     struct AVResampleContext *resample_context;
     short *temp[2];
     int temp_len;
@@ -213,7 +212,7 @@ ReSampleContext *av_audio_resample_init(int output_channels, int input_channels,
     s->resample_context= av_resample_init(output_rate, input_rate,
                          filter_length, log2_phase_count, linear, cutoff);
 
-    s->av_class= &audioresample_context_class;
+    *(const AVClass**)s->resample_context = &audioresample_context_class;
 
     return s;
 }
@@ -258,7 +257,7 @@ int audio_resample(ReSampleContext *s, short *output, short *input, int nb_sampl
             s->buffer_size[0] = input_size;
             s->buffer[0] = av_malloc(s->buffer_size[0]);
             if (!s->buffer[0]) {
-                av_log(s, AV_LOG_ERROR, "Could not allocate buffer\n");
+                av_log(s->resample_context, AV_LOG_ERROR, "Could not allocate buffer\n");
                 return 0;
             }
         }
@@ -267,7 +266,7 @@ int audio_resample(ReSampleContext *s, short *output, short *input, int nb_sampl
 
         if (av_audio_convert(s->convert_ctx[0], obuf, ostride,
                              ibuf, istride, nb_samples*s->input_channels) < 0) {
-            av_log(s, AV_LOG_ERROR, "Audio sample format conversion failed\n");
+            av_log(s->resample_context, AV_LOG_ERROR, "Audio sample format conversion failed\n");
             return 0;
         }
 
@@ -284,7 +283,7 @@ int audio_resample(ReSampleContext *s, short *output, short *input, int nb_sampl
             s->buffer_size[1] = lenout;
             s->buffer[1] = av_malloc(s->buffer_size[1]);
             if (!s->buffer[1]) {
-                av_log(s, AV_LOG_ERROR, "Could not allocate buffer\n");
+                av_log(s->resample_context, AV_LOG_ERROR, "Could not allocate buffer\n");
                 return 0;
             }
         }
@@ -349,7 +348,7 @@ int audio_resample(ReSampleContext *s, short *output, short *input, int nb_sampl
 
         if (av_audio_convert(s->convert_ctx[1], obuf, ostride,
                              ibuf, istride, nb_samples1*s->output_channels) < 0) {
-            av_log(s, AV_LOG_ERROR, "Audio sample format convertion failed\n");
+            av_log(s->resample_context, AV_LOG_ERROR, "Audio sample format convertion failed\n");
             return 0;
         }
     }

@@ -131,7 +131,8 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
       CDVDCodecOptions dvdOptions;
 
 #ifdef HAVE_LIBVDPAU
-      if (hint.height >= 720) {
+      if (hint.height >= 720)
+      {
         CLog::Log(LOGNOTICE,"Trying VDPAU-MPEG from FFMPEG");
         if( (pCodec = OpenCodec(new CDVDVideoCodecFFmpeg(), hint, dvdOptions)) ) return pCodec;
       }

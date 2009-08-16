@@ -74,6 +74,7 @@ SRCS=ActionManager.cpp \
      GUITextLayout.cpp \
      GUIMultiSelectText.cpp \
      GUIInfoColor.cpp \
+     GUIControlProfiler.cpp \
 
 LIB=guilib.a
 

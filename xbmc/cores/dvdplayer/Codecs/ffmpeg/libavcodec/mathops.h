@@ -24,22 +24,16 @@
 
 #include "libavutil/common.h"
 
-#if   ARCH_X86
-
-#include "x86/mathops.h"
-
-#elif ARCH_ARM
-
-#include "arm/mathops.h"
-
-#elif ARCH_PPC
-
-#include "ppc/mathops.h"
-
+#if   ARCH_ARM
+#   include "arm/mathops.h"
 #elif ARCH_BFIN
-
-#include "bfin/mathops.h"
-
+#   include "bfin/mathops.h"
+#elif ARCH_MIPS
+#   include "mips/mathops.h"
+#elif ARCH_PPC
+#   include "ppc/mathops.h"
+#elif ARCH_X86
+#   include "x86/mathops.h"
 #endif
 
 /* generic implementation */
@@ -110,6 +104,13 @@ static inline av_const int mid_pred(int a, int b, int c)
     }
     return b;
 #endif
+}
+#endif
+
+#ifndef sign_extend
+static inline av_const int sign_extend(int val, unsigned bits)
+{
+    return (val << (INT_BIT - bits)) >> (INT_BIT - bits);
 }
 #endif
 

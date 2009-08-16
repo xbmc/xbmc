@@ -26,6 +26,15 @@
 
 using namespace std;
 
+static void libass_log(int level, const char *fmt, va_list args, void *data)
+{
+  if(level >= 5)
+    return;
+  CStdString log;
+  log.FormatV(fmt, args);
+  CLog::Log(LOGDEBUG, "CDVDSubtitlesLibass: [ass] %s", log.c_str());
+}
+
 CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 {
 
@@ -46,6 +55,8 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   m_library  = m_dll.ass_library_init();
   if(!m_library)
     return;
+
+  m_dll.ass_set_message_cb(m_library, libass_log, this);
 
   CLog::Log(LOGINFO, "CDVDSubtitlesLibass: Initializing ASS library font settings");
   // libass uses fontconfig (system lib) which is not wrapped
@@ -69,7 +80,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   m_dll.ass_set_font_scale(m_renderer, 1);
   // libass uses fontconfig (system lib) which is not wrapped
   //  so translate the path before calling into libass
-  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "");
+  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "", 1, NULL, 0);
 }
 
 

@@ -2277,6 +2277,22 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\RenderManager.cpp"
 					>
 				</File>

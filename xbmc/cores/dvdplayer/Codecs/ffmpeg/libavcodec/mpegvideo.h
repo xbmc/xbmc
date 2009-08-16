@@ -29,7 +29,8 @@
 #define AVCODEC_MPEGVIDEO_H
 
 #include "dsputil.h"
-#include "bitstream.h"
+#include "get_bits.h"
+#include "put_bits.h"
 #include "ratecontrol.h"
 #include "parser.h"
 #include "mpeg12data.h"
@@ -115,6 +116,7 @@ typedef struct Picture{
     int field_poc[2];           ///< h264 top/bottom POC
     int poc;                    ///< h264 frame POC
     int frame_num;              ///< h264 frame_num (raw frame_num from slice header)
+    int mmco_reset;             ///< h264 MMCO_RESET set this 1. Reordering code must not mix pictures before and after MMCO_RESET.
     int pic_id;                 /**< h264 pic_num (short -> no wrap version of pic_num,
                                      pic_num & max_pic_num; long -> long_pic_num) */
     int long_ref;               ///< 1->long term reference 0->short term reference
@@ -311,6 +313,7 @@ typedef struct MpegEncContext {
     int *lambda_table;
     int adaptive_quant;         ///< use adaptive quantization
     int dquant;                 ///< qscale difference to prev qscale
+    int closed_gop;             ///< MPEG1/2 GOP is closed
     int pict_type;              ///< FF_I_TYPE, FF_P_TYPE, FF_B_TYPE, ...
     int last_pict_type; //FIXME removes
     int last_non_b_pict_type;   ///< used for mpeg4 gmc b-frames & ratecontrol
@@ -519,6 +522,7 @@ typedef struct MpegEncContext {
     int sprite_brightness_change;
     int num_sprite_warping_points;
     int real_sprite_warping_points;
+    uint16_t sprite_traj[4][2];      ///< sprite trajectory points
     int sprite_offset[2][2];         ///< sprite offset[isChroma][isMVY]
     int sprite_delta[2][2];          ///< sprite_delta [isY][isMVY]
     int sprite_shift[2];             ///< sprite shift [isChroma]
@@ -708,6 +712,12 @@ void ff_convert_matrix(DSPContext *dsp, int (*qmat)[64], uint16_t (*qmat16)[2][6
 void ff_init_block_index(MpegEncContext *s);
 void ff_copy_picture(Picture *dst, Picture *src);
 
+/**
+ * allocates a Picture
+ * The pixels are allocated/set by calling get_buffer() if shared=0
+ */
+int ff_alloc_picture(MpegEncContext *s, Picture *pic, int shared);
+
 extern const enum PixelFormat ff_pixfmt_list_420[];
 extern const enum PixelFormat ff_hwaccel_pixfmt_list_420[];
 
@@ -769,7 +779,7 @@ void mpeg1_encode_mb(MpegEncContext *s,
 void ff_mpeg1_encode_init(MpegEncContext *s);
 void ff_mpeg1_encode_slice_header(MpegEncContext *s);
 void ff_mpeg1_clean_buffers(MpegEncContext *s);
-int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size);
+int ff_mpeg1_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size, AVCodecParserContext *s);
 
 extern const uint8_t ff_mpeg4_y_dc_scale_table[32];
 extern const uint8_t ff_mpeg4_c_dc_scale_table[32];
@@ -794,7 +804,7 @@ int ff_h261_get_picture_format(int width, int height);
 int ff_h263_decode_init(AVCodecContext *avctx);
 int ff_h263_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
-                             const uint8_t *buf, int buf_size);
+                             AVPacket *avpkt);
 int ff_h263_decode_end(AVCodecContext *avctx);
 void h263_encode_mb(MpegEncContext *s,
                     DCTELEM block[6][64],

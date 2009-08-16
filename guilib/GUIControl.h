@@ -204,6 +204,7 @@ public:
   virtual bool GetCondition(int condition, int data) const { return false; };
 
   void SetParentControl(CGUIControl *control) { m_parentControl = control; };
+  CGUIControl *GetParentControl(void) const { return m_parentControl; };
   virtual void SaveStates(std::vector<CControlState> &states);
 
   enum GUICONTROLTYPES {

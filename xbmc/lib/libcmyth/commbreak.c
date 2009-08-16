@@ -68,8 +68,8 @@ cmyth_commbreak_destroy(cmyth_commbreak_t b)
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s {\n", __FUNCTION__);
 	if (!b) {
 		cmyth_dbg(CMYTH_DBG_DEBUG, "%s }!a\n", __FUNCTION__);
-                return;
-        }
+		return;
+	}
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 }
 
@@ -92,6 +92,52 @@ cmyth_commbreak_create(void)
 
 	cmyth_dbg(CMYTH_DBG_DEBUG, "%s }\n", __FUNCTION__);
 	return ret;
+}
+
+cmyth_commbreaklist_t
+cmyth_get_commbreaklist(cmyth_conn_t conn, cmyth_proginfo_t prog)
+{
+	unsigned int len = CMYTH_UTC_LEN + CMYTH_LONGLONG_LEN + 19;
+	int err;
+	int count;
+	char *buf;
+	int r;
+
+	cmyth_commbreaklist_t breaklist = cmyth_commbreaklist_create();
+
+	buf = alloca(len);
+	if (!buf) {
+		return breaklist;
+	}
+
+	sprintf(buf,"%s %ld %i", "QUERY_COMMBREAK", prog->proginfo_chanId, 
+	        cmyth_timestamp_to_unixtime(prog->proginfo_rec_start_ts));
+	pthread_mutex_lock(&mutex);
+	if ((err = cmyth_send_message(conn, buf)) < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			"%s: cmyth_send_message() failed (%d)\n",
+			__FUNCTION__, err);
+		goto out;
+	}
+
+	count = cmyth_rcv_length(conn);
+	if (count < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			"%s: cmyth_rcv_length() failed (%d)\n",
+			__FUNCTION__, count);
+		goto out;
+	}
+
+	if ((r = cmyth_rcv_commbreaklist(conn, &err, breaklist, count)) < 0) {
+		cmyth_dbg(CMYTH_DBG_ERROR,
+			"%s: cmyth_rcv_string() failed (%d)\n",
+			__FUNCTION__, r);
+		goto out;
+	}
+
+	out:
+	pthread_mutex_unlock(&mutex);
+	return breaklist;
 }
 
 int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err, 
@@ -122,13 +168,16 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 		goto fail;
 	}
 
-	/*
-	 * Uneven row counts don't make sense!
-	 */
-	if ((rows % 2) != 0) {
-		*err = EINVAL;
+	if (rows < 0) {
+		cmyth_dbg(CMYTH_DBG_DEBUG, "%s: no commercial breaks found.\n",
+			__FUNCTION__);
 		return 0;
 	} else {
+		/*
+		 * Don't check for an uneven row count. mythcommflag can mark the start of the last 
+		 * commercial break, but then not mark the end before it reaches the end of the file.
+		 * For this case the last commercial break is ignored.
+		 */
 		breaklist->commbreak_count = rows / 2;
 	}
 
@@ -157,29 +206,26 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 			 * Do a little sanity-checking.
 			 */
 			if (j == 0 && type != CMYTH_COMMBREAK_START) {
+				cmyth_dbg(CMYTH_DBG_ERROR,
+					"%s: type was not CMYTH_COMMBREAK_START\n",
+					__FUNCTION__);
 				return 0;
 			} else if (j == 1 && type != CMYTH_COMMBREAK_END) {
+				cmyth_dbg(CMYTH_DBG_ERROR,
+					"%s: type was not CMYTH_COMMBREAK_END\n",
+					__FUNCTION__);
 				return 0;
 			}
 
+			/*
+			 * Only marks are returned, not the offsets. Marks are encoded in long_long.
+			 */
 			if (j == 0) {
-				consumed = cmyth_rcv_long_long(conn, err, &commbreak->start_offset, count);
+				consumed = cmyth_rcv_long_long(conn, err, &commbreak->start_mark, count);
 			} else {
-				consumed = cmyth_rcv_long_long(conn, err, &commbreak->end_offset, count);
-			}	
-			count -= consumed;
-			total += consumed;
-			if (*err) {
-				failed = "cmyth_rcv_long";
-				goto fail;
+				consumed = cmyth_rcv_long_long(conn, err, &commbreak->end_mark, count);
 			}
 
-			if (j == 0) {
-				consumed = cmyth_rcv_long(conn, err, &commbreak->start_mark, count);
-			} else {
-				consumed = cmyth_rcv_long(conn, err, &commbreak->end_mark, count);
-			}
-				
 			count -= consumed;
 			total += consumed;
 			if (*err) {
@@ -194,57 +240,20 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 
 	return total;
 
-    fail:
+	fail:
 	cmyth_dbg(CMYTH_DBG_ERROR, "%s: %s() failed (%d)\n",
 		__FUNCTION__, failed, *err);
 	return total;
 }
 
-/*
-	unsigned int len = CMYTH_TIMESTAMP_LEN + CMYTH_LONGLONG_LEN + 18;
-	int err;
-	int count;
-	char *buf;
-
-        cmyth_datetime_to_string(start_ts_dt, prog->proginfo_start_ts, 0);
-	buf = alloca(len);
-	if (!buf) {
-		return breaklist;
-	}
-	sprintf(buf,"%s %ld %s","QUERY_COMMBREAK",prog->proginfo_chanId,
-		start_ts_dt);
-	pthread_mutex_lock(&mutex);
-	if ((err = cmyth_send_message(conn,buf)) < 0) {
-		cmyth_dbg(CMYTH_DBG_ERROR,
-			"%s: cmyth_send_message() failed (%d)\n",
-			__FUNCTION__, err);
-		goto out;
-	}
-	count = cmyth_rcv_length(conn);
-	if (count < 0) {
-		cmyth_dbg(CMYTH_DBG_ERROR,
-			"%s: cmyth_rcv_length() failed (%d)\n",
-			__FUNCTION__, count);
-		goto out;
-	}
-
-	int r;
-	if ((r=cmyth_rcv_commbreaklist(conn, &err, breaklist, count)) < 0) {
-		cmyth_dbg(CMYTH_DBG_ERROR,
-			"%s: cmyth_rcv_string() failed (%d)\n",
-			__FUNCTION__, r);
-		goto out;
-	}
-*/
-
 cmyth_commbreaklist_t
-cmyth_get_commbreaklist(cmyth_database_t db, cmyth_conn_t conn, cmyth_proginfo_t prog)
+cmyth_mysql_get_commbreaklist(cmyth_database_t db, cmyth_conn_t conn, cmyth_proginfo_t prog)
 {
 	cmyth_commbreaklist_t breaklist = cmyth_commbreaklist_create();
-        char start_ts_dt[CMYTH_TIMESTAMP_LEN + 1];
+	char start_ts_dt[CMYTH_TIMESTAMP_LEN + 1];
 	int r;
 
-        cmyth_timestamp_to_display_string(start_ts_dt, prog->proginfo_rec_start_ts, 0);
+	cmyth_timestamp_to_display_string(start_ts_dt, prog->proginfo_rec_start_ts, 0);
 	pthread_mutex_lock(&mutex);
 	if ((r=cmyth_mysql_get_commbreak_list(db, prog->proginfo_chanId, start_ts_dt, breaklist)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,

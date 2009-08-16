@@ -245,6 +245,7 @@ protected:
 
   void SyncronizePlayers(DWORD sources, double pts = DVD_NOPTS_VALUE);
   void SyncronizeDemuxer(DWORD timeout);
+  void CheckAutoSceneSkip();
   void CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket);
   bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
@@ -367,6 +368,36 @@ protected:
   CRITICAL_SECTION m_critStreamSection; // need to have this lock when switching streams (audio / video)
 
   CEdl m_Edl;
+
+  struct SEdlAutoSkipMarkers {
+
+    void Clear()
+    {
+      cut = -1;
+      reset = 0;
+    }
+
+    void ResetCutMarker(double timeout)
+    {
+      if(reset != 0
+      && reset + DVD_MSEC_TO_TIME(timeout) > CDVDClock::GetAbsoluteClock())
+        return;
+
+      /*
+       * Reset the automatic EDL skip marker for a cut so automatic seeking can happen again if,
+       * for example, the initial automatic skip ended up back in the cut due to seeking
+       * inaccuracies.
+       */
+      cut = -1;
+
+      reset = CDVDClock::GetAbsoluteClock();
+    }
+
+    int cut;              // last automatically skipped EDL cut seek position
+    double reset;         // last actual reset time
+    // TODO: Add automatic commercial break skip markers.
+
+  } m_EdlAutoSkipMarkers;
 
   CPlayerOptions m_PlayerOptions;
 };

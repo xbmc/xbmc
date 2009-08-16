@@ -28,7 +28,7 @@ endif
 
 LIBS=
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
-  LIBS+=avutil-49-$(ARCH).so \
+  LIBS+=avutil-50-$(ARCH).so \
 	avcodec-52-$(ARCH).so \
 	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
@@ -69,7 +69,7 @@ ifeq ($(ARCH), powerpc-osx)
 BUNDLE1_O = -lbundle1.o
 endif
 
-$(SYSDIR)/avutil-49-$(ARCH).so: ffmpeg/libavutil/libavutil.dylib
+$(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.dylib
 	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
 		ffmpeg/libavutil/*.o
 	$(WRAPPER_OSX) $@;mv output.so $@
@@ -90,7 +90,7 @@ $(SYSDIR)/avformat-52-$(ARCH).so: ffmpeg/libavformat/libavformat.dylib
 
 $(SYSDIR)/swscale-0.6.1-$(ARCH).so: ffmpeg/libswscale/libswscale.dylib
 	$(CC) -bundle -flat_namespace -undefined suppress -read_only_relocs suppress -o $@ \
-		ffmpeg/libswscale/*.o
+		ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o
 	$(WRAPPER_OSX) $@;mv output.so $@
 	chmod +x $@
 
@@ -164,7 +164,7 @@ libmpeg2:
 
 else
 
-$(SYSDIR)/avutil-49-$(ARCH).so: ffmpeg/libavutil/libavutil.so
+$(SYSDIR)/avutil-50-$(ARCH).so: ffmpeg/libavutil/libavutil.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavutil/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
@@ -177,7 +177,7 @@ $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libswscale/*.o \
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
 $(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.so

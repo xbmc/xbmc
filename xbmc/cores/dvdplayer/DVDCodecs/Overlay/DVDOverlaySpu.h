@@ -28,7 +28,6 @@ class CDVDOverlaySpu : public CDVDOverlay
 public:
   CDVDOverlaySpu() : CDVDOverlay(DVDOVERLAY_TYPE_SPU)
   {
-    pData = NULL;
     pTFData = 0;
     pBFData = 0;
     x = 0;
@@ -44,22 +43,45 @@ public:
     bHasColor = false;
     bHasAlpha = false;
 
+    memset(result, 0, sizeof(result));
     memset(alpha, 0, sizeof(alpha));
     memset(color, 0, sizeof(color));
-    memset(stats, 0, sizeof(stats));
     memset(highlight_alpha, 0, sizeof(highlight_alpha));
     memset(highlight_color, 0, sizeof(highlight_color));
   }
 
-  BYTE* pData; // rle data
+  CDVDOverlaySpu(const CDVDOverlaySpu& src)
+    : CDVDOverlay(src)
+  {
+    pTFData = src.pTFData;
+    pBFData = src.pBFData;
+    x       = src.x;
+    y       = src.y;
+    width   = src.width;
+    height  = src.height;
+
+    crop_i_x_end   = src.crop_i_x_end;
+    crop_i_y_end   = src.crop_i_y_end;
+    crop_i_x_start = src.crop_i_x_start;
+    crop_i_y_start = src.crop_i_y_start;
+
+    bHasColor = src.bHasColor;
+    bHasAlpha = src.bHasAlpha;
+
+    memcpy(result         , src.result         , sizeof(result));
+    memcpy(alpha          , src.alpha          , sizeof(alpha));
+    memcpy(color          , src.color          , sizeof(color));
+    memcpy(highlight_alpha, src.highlight_alpha, sizeof(highlight_alpha));
+    memcpy(highlight_color, src.highlight_alpha, sizeof(highlight_color));
+  }
+
+  BYTE result[2*65536 + 20]; // rle data
   int pTFData; // pointer to top field picture data (needs rle parsing)
   int pBFData; // pointer to bottom field picture data (needs rle parsing)
   int x;
   int y;
   int width;
   int height;
-
-  int stats[4]; // nr of pixels for each color found in the overlay.
 
   // the four contrasts, [0] = background
   int alpha[4];
@@ -80,13 +102,4 @@ public:
   // should be used on the highlighted areas
   int highlight_color[4][3];
   int highlight_alpha[4];
-
-  bool CanDisplayWithAlphas(int a[4])
-  {
-    return(
-      a[0] * stats[0] > 0 ||
-      a[1] * stats[1] > 0 ||
-      a[2] * stats[2] > 0 ||
-      a[3] * stats[3] > 0);
-  }
 };

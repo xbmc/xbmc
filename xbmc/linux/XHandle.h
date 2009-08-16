@@ -26,7 +26,7 @@
 
 #include "../../guilib/StdString.h"
 #include <SDL/SDL_mutex.h>
-#include <SDL/SDL_thread.h>
+#include <pthread.h>
 
 #include "PlatformDefs.h"
 #include "StringUtils.h"
@@ -48,8 +48,9 @@ public:
   void ChangeType(HandleType newType);
 
   SDL_sem    *m_hSem;
-  SDL_Thread  *m_hThread;
-  SDL_cond    *m_hCond;
+  pthread_t  m_hThread;
+  bool       m_threadValid;
+  SDL_cond   *m_hCond;
   std::list<CXHandle*> m_hParents;
 
 #ifdef __APPLE__
@@ -60,11 +61,11 @@ public:
 #endif
 
   // simulate mutex and critical section
-  SDL_mutex  *m_hMutex;
-  int      RecursionCount;  // for mutex - for compatibility with WIN32 critical section
-  DWORD    OwningThread;
-  int      fd;
-  bool     m_bManualEvent;
+  SDL_mutex *m_hMutex;
+  int       RecursionCount;  // for mutex - for compatibility with WIN32 critical section
+  pthread_t OwningThread;
+  int       fd;
+  bool      m_bManualEvent;
   time_t    m_tmCreation;
   CStdStringArray  m_FindFileResults;
   int              m_nFindFileIterator;

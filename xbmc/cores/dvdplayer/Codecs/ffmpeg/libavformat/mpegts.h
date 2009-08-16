@@ -39,11 +39,6 @@
 #define PMT_TID   0x02
 #define SDT_TID   0x42
 
-/* descriptor ids */
-#define VBI_SUBT_DESCID             0x56
-#define DVB_SUBT_DESCID             0x59
-#define ATSC_CAPTION_SERVICE_DESCID 0x86
-
 #define STREAM_TYPE_VIDEO_MPEG1     0x01
 #define STREAM_TYPE_VIDEO_MPEG2     0x02
 #define STREAM_TYPE_AUDIO_MPEG1     0x03
@@ -58,14 +53,6 @@
 
 #define STREAM_TYPE_AUDIO_AC3       0x81
 #define STREAM_TYPE_AUDIO_DTS       0x8a
-#define STREAM_TYPE_AUDIO_HDMV_DTS  0x82
-#define STREAM_TYPE_AUDIO_HDMV_AC3_TRUE_HD   0x83
-#define STREAM_TYPE_AUDIO_HDMV_AC3_PLUS      0x84
-#define STREAM_TYPE_AUDIO_HDMV_DTS_HD        0x85
-#define STREAM_TYPE_AUDIO_HDMV_DTS_HD_MASTER 0x86
-
-#define STREAM_TYPE_SUBTITLE_DVB    0x100
-#define STREAM_TYPE_SUBTITLE_VBI    0x101
 
 typedef struct MpegTSContext MpegTSContext;
 

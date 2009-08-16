@@ -53,9 +53,10 @@
 
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "bytestream.h"
 #include "unary.h"
+#include "mathops.h"
 
 #define ALAC_EXTRADATA_SIZE 36
 #define MAX_CHANNELS 2
@@ -229,11 +230,6 @@ static void bastardized_rice_decompress(ALACContext *alac,
     }
 }
 
-static inline int32_t extend_sign32(int32_t val, int bits)
-{
-    return (val << (32 - bits)) >> (32 - bits);
-}
-
 static inline int sign_only(int v)
 {
     return v ? FFSIGN(v) : 0;
@@ -273,7 +269,7 @@ static void predictor_decompress_fir_adapt(int32_t *error_buffer,
             prev_value = buffer_out[i];
             error_value = error_buffer[i+1];
             buffer_out[i+1] =
-                extend_sign32((prev_value + error_value), readsamplesize);
+                sign_extend((prev_value + error_value), readsamplesize);
         }
         return;
     }
@@ -284,7 +280,7 @@ static void predictor_decompress_fir_adapt(int32_t *error_buffer,
             int32_t val;
 
             val = buffer_out[i] + error_buffer[i+1];
-            val = extend_sign32(val, readsamplesize);
+            val = sign_extend(val, readsamplesize);
             buffer_out[i+1] = val;
         }
 
@@ -319,7 +315,7 @@ static void predictor_decompress_fir_adapt(int32_t *error_buffer,
             outval = (1 << (predictor_quantitization-1)) + sum;
             outval = outval >> predictor_quantitization;
             outval = outval + buffer_out[0] + error_val;
-            outval = extend_sign32(outval, readsamplesize);
+            outval = sign_extend(outval, readsamplesize);
 
             buffer_out[predictor_coef_num+1] = outval;
 
@@ -404,8 +400,10 @@ static void reconstruct_stereo_16(int32_t *buffer[MAX_CHANNELS],
 
 static int alac_decode_frame(AVCodecContext *avctx,
                              void *outbuffer, int *outputsize,
-                             const uint8_t *inbuffer, int input_buffer_size)
+                             AVPacket *avpkt)
 {
+    const uint8_t *inbuffer = avpkt->data;
+    int input_buffer_size = avpkt->size;
     ALACContext *alac = avctx->priv_data;
 
     int channels;
@@ -544,8 +542,7 @@ static int alac_decode_frame(AVCodecContext *avctx,
             for (chan = 0; chan < channels; chan++) {
                 int32_t audiobits;
 
-                audiobits = get_bits_long(&alac->gb, alac->setinfo_sample_size);
-                audiobits = extend_sign32(audiobits, alac->setinfo_sample_size);
+                audiobits = get_sbits_long(&alac->gb, alac->setinfo_sample_size);
 
                 alac->outputsamples_buffer[chan][i] = audiobits;
             }

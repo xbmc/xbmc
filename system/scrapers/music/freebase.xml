@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-07-28" name="Freebase" content="albums" thumb="freebase.png">
-        <NfoUrl dest="3">
-                <RegExp input="$$1" output="&lt;url&gt;http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22name%22:null,%22genre%22:[],%22album%22:[{%22id%22:%22/\2%22,%22/common/topic/article%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22/common/topic/image%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22label%22:[],%22engineer%22:[],%22producer%22:[],%22release_type%22:null,%22artist%22:null,%22name%22:null,%22release_date%22:null,%22track%22:[{%22name%22:null,%22length%22:null,%22index%22:null,%22sort%22:%22index%22,%22optional%22:true}],%22sort%22:%22release_date%22}]}}&lt;/url&gt;" dest="3+">
-                        <expression>(http://www.freebase.com/view/)(.*)</expression>
-                </RegExp>
-        </NfoUrl>
+<scraper framework="1.1" date="2009-08-11" name="Freebase" content="albums" thumb="freebase.png">
+	<include>common/htbackdrops.xml</include>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22name%22:null,%22genre%22:[],%22album%22:[{%22id%22:%22/\2%22,%22/common/topic/article%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22/common/topic/image%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22label%22:[],%22engineer%22:[],%22producer%22:[],%22release_type%22:null,%22artist%22:null,%22name%22:null,%22release_date%22:null,%22track%22:[{%22name%22:null,%22length%22:null,%22index%22:null,%22sort%22:%22index%22,%22optional%22:true}],%22sort%22:%22release_date%22}]}}&lt;/url&gt;" dest="3+">
+			<expression>(http://www.freebase.com/view/)(.*)</expression>
+		</RegExp>
+	</NfoUrl>
 
 	<CreateAlbumSearchUrl dest="3">
 		<RegExp input="$$1" output="http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22name~=%22:%22$$2%22,%22album%22:[{%22guid%22:null,%22artist%22:null,%22name%22:null,%22name~=%22:%22\1%22}]}}" dest="3">
@@ -53,24 +54,24 @@
 			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\3&lt;/title&gt;&lt;duration&gt;\2&lt;/duration&gt;&lt;/track&gt;" dest="5+">
 				<expression repeat="yes">&quot;index&quot;: ([0-9]+).*?&quot;length&quot;: ([0-9]+).*?&quot;name&quot;: &quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
-                        <RegExp input="$$1" output="&lt;thumb&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/thumb&gt;" dest="5+">
-                                <expression noclean="1">image&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
-                        </RegExp>
-                        <RegExp input="$$1" output="&lt;url function=&quot;GetAlbumReview&quot;&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/url&gt;" dest="5+">
-                                <expression noclean="1">article&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
-                        </RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">image&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetAlbumReview&quot;&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1">article&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
+			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetAlbumDetails>
 
-        <GetAlbumReview dest="5">
-                <RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
-                                <expression noclean="1">&lt;p&gt;([^&lt;]*)</expression>
-                        </RegExp>
-                        <expression noclean="1"></expression>
-                </RegExp>
-        </GetAlbumReview>
+	<GetAlbumReview dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
+				<expression noclean="1">&lt;p&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetAlbumReview>
 
 	<CreateArtistSearchUrl dest="3">
 		<RegExp input="$$1" output="http://api.freebase.com/api/service/mqlread?query={%22query%22:[{%22type%22:%22/music/artist%22,%22guid%22:null,%22name~=%22:%22\1%22,%22name%22:null}]}" dest="3">
@@ -87,17 +88,17 @@
 		</RegExp>
 	</GetArtistSearchResults>
 
-	<GetArtistDetails dest="3" clearbuffers="no">
+	<GetArtistDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
 				<expression noclean="1">&quot;name&quot;: &quot;([^&quot;]*)</expression>
 			</RegExp>
-                        <RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="5+">
 				<expression noclean="1">&quot;active_start&quot;: &quot;([^&quot;]*)</expression>
-                        </RegExp>
-                        <RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="5+">
+			</RegExp>
+			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="5+">
 				<expression noclean="1">&quot;active_end&quot;: &quot;([^&quot;]*)</expression>
-                        </RegExp>
+			</RegExp>
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression trim="1">&quot;genre&quot;: (.*?)\]</expression>
 			</RegExp>
@@ -110,47 +111,28 @@
 			<RegExp input="$$6" output="&lt;album&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/album&gt;" dest="5+">
 				<expression noclean="1" repeat="yes">&quot;([^&quot;]*)&quot;</expression>
 			</RegExp>
-                        <RegExp input="$$1" output="&lt;thumb&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/thumb&gt;" dest="7+">
-                                <expression noclean="1">image&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
-                        </RegExp>
-                        <RegExp input="$$2" output="&lt;url function=&quot;GetThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
-                                <expression/>
-                        </RegExp>
-                        <RegExp input="$$2" output="&lt;url function=&quot;GetFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
-                                <expression/>
-                        </RegExp>
-                        <RegExp input="$$1" output="&lt;url function=&quot;GetBiography&quot;&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/url&gt;" dest="5+">
-                                <expression noclean="1">article&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
-                        </RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/thumb&gt;" dest="7+">
+				<expression noclean="1">image&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetBiography&quot;&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1">article&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
+			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetArtistDetails>
 
-        <GetBiography dest="5">
-                <RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
-                                <expression noclean="1">&lt;p&gt;([^&lt;]*)</expression>
-                        </RegExp>
-                        <expression noclean="1"></expression>
-                </RegExp>
-        </GetBiography>
-
-        <GetFanart dest="5">
-                <RegExp input="$$13" output="&lt;details&gt;&lt;fanart url=&quot;http://www.htbackdrops.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;thumb preview=&quot;data/thumbnails/\2&quot;&gt;data/media/\2&lt;/thumb&gt;" dest="13">
-                                <expression noclean="1" repeat="yes">mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
-                        </RegExp>
-                        <expression noclean="1"/>
-                </RegExp>
-        </GetFanart>
-
-        <GetThumbs dest="5">
-                <RegExp input="$$13" output="&lt;details&gt;\1$$7&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;thumb preview=&quot;http://www.htbackdrops.com/data/thumbnails/\2&quot;&gt;http://www.htbackdrops.com/data/media/\2&lt;/thumb&gt;" dest="13">
-                                <expression noclean="1" repeat="yes">mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
-                        </RegExp>
-                        <expression noclean="1"/>
-                </RegExp>
-        </GetThumbs>
-
+	<GetBiography dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
+				<expression noclean="1">&lt;p&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetBiography>
 </scraper>

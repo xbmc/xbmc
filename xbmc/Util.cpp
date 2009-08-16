@@ -279,7 +279,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
 {
   const CStdStringArray &regexps = g_advancedSettings.m_videoStackRegExps;
 
-  CStdString strTitleAndYear = strFileName;
+  CStdString strFileNameTemp = strFileName;
   CStdString strFileNameLower = strFileName;
   strFileNameLower.MakeLower();
 
@@ -325,9 +325,9 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         // The extension will then be added back on at the end - there is no reason
         // to clean it off here. It will be cleaned off during the display routine, if
         // the settings to hide extensions are turned on.
-        CStdString strFileNoExt = strTitleAndYear;
+        CStdString strFileNoExt = strFileNameTemp;
         RemoveExtension(strFileNoExt);
-        CStdString strFileExt = strTitleAndYear.Right(strTitleAndYear.length() - strFileNoExt.length());
+        CStdString strFileExt = strFileNameTemp.Right(strFileNameTemp.length() - strFileNoExt.length());
         CStdString strFileRight = strFileNoExt.Mid(iFoundToken + iRegLength);
         strFileTitle = strFileName.Left(iFoundToken) + strFileRight + strFileExt;
 
@@ -351,7 +351,7 @@ bool CUtil::GetVolumeFromFileName(const CStdString& strFileName, CStdString& str
         strFileTitle += reg.GetMatch(3);
 
         // everything after the regexp match
-        strFileTitle += strTitleAndYear.Mid(iFoundToken + iRegLength);
+        strFileTitle += strFileNameTemp.Mid(iFoundToken + iRegLength);
 
         return true;
       }
@@ -410,12 +410,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
 
   CRegExp reTags, reYear;
   CStdString strExtension;
-
-  if (!bIsFolder)
-  {
-    GetExtension(strTitleAndYear, strExtension);
-    RemoveExtension(strTitleAndYear);
-  }
+  GetExtension(strFileName, strExtension);
 
   if (!reYear.RegComp(g_advancedSettings.m_videoCleanDateTimeRegExp))
   {
@@ -429,6 +424,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
       strYear = reYear.GetReplaceString("\\2");
     }
   }
+
+  RemoveExtension(strTitleAndYear);
 
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
@@ -599,37 +596,6 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   url.SetFileName(strFile);
   url.GetURL(strParent);
   return true;
-}
-
-const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* = false */)
-{
-  CStdString movieName;
-  CStdString strArchivePath;
-  movieName = pItem->m_strPath;
-
-  if (pItem->IsMultiPath())
-    movieName = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
-
-  if (IsStack(movieName))
-    movieName = CStackDirectory::GetStackedTitlePath(movieName);
-
-  if ((!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath)) && bUseFolderNames)
-  {
-    GetParentPath(pItem->m_strPath, movieName);
-    if (IsInArchive(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
-    {
-      GetParentPath(movieName, strArchivePath);
-      movieName = strArchivePath;
-    }
-  }
-
-  CUtil::RemoveSlashAtEnd(movieName);
-  movieName = CUtil::GetFileName(movieName);
-
-  if (!pItem->m_bIsFolder)
-    CUtil::RemoveExtension(movieName);
-
-  return movieName;
 }
 
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
@@ -1067,14 +1033,17 @@ bool CUtil::IsHTSP(const CStdString& strFile)
   return strFile.Left(5).Equals("htsp:");
 }
 
-bool CUtil::IsTV(const CStdString& strFile)
+bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile)
-      || IsTuxBox(strFile)
-      || IsVTP(strFile)
-      || IsHDHomeRun(strFile)
-      || IsHTSP(strFile)
-      || IsPVR(strFile);
+  CURL url(strFile);
+
+  if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile) || IsPVR(strFile))
+    return true;
+
+  if (IsMythTV(strFile) && url.GetFileName().Left(9) == "channels/")
+    return true;
+
+  return false;
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)

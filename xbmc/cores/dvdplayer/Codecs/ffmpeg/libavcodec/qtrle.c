@@ -34,7 +34,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 #include "libavutil/intreadwrite.h"
 #include "avcodec.h"
@@ -424,8 +423,10 @@ static av_cold int qtrle_decode_init(AVCodecContext *avctx)
 
 static int qtrle_decode_frame(AVCodecContext *avctx,
                               void *data, int *data_size,
-                              const uint8_t *buf, int buf_size)
+                              AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     QtrleContext *s = avctx->priv_data;
     int header, start_line;
     int stream_ptr, height, row_ptr;

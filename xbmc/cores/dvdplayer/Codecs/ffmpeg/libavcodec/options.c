@@ -111,7 +111,9 @@ static const AVOption options[]={
 {"cutoff", "set cutoff bandwidth", OFFSET(cutoff), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, A|E},
 {"frame_size", NULL, OFFSET(frame_size), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, A|E},
 {"frame_number", NULL, OFFSET(frame_number), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX},
+#if LIBAVCODEC_VERSION_MAJOR < 53
 {"real_pict_num", NULL, OFFSET(real_pict_num), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX},
+#endif
 {"delay", NULL, OFFSET(delay), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX},
 {"qcomp", "video quantizer scale compression (VBR)", OFFSET(qcompress), FF_OPT_TYPE_FLOAT, 0.5, -FLT_MAX, FLT_MAX, V|E},
 {"qblur", "video quantizer scale blur (VBR)", OFFSET(qblur), FF_OPT_TYPE_FLOAT, 0.5, 0, FLT_MAX, V|E},
@@ -123,7 +125,7 @@ static const AVOption options[]={
 {"rc_strategy", "ratecontrol method", OFFSET(rc_strategy), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|E},
 {"b_strategy", "strategy to choose between I/P/B-frames", OFFSET(b_frame_strategy), FF_OPT_TYPE_INT, 0, INT_MIN, INT_MAX, V|E},
 {"hurry_up", NULL, OFFSET(hurry_up), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|D},
-{"ps", "rtp payload size in bits", OFFSET(rtp_payload_size), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|E},
+{"ps", "rtp payload size in bytes", OFFSET(rtp_payload_size), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX, V|E},
 {"mv_bits", NULL, OFFSET(mv_bits), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX},
 {"header_bits", NULL, OFFSET(header_bits), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX},
 {"i_tex_bits", NULL, OFFSET(i_tex_bits), FF_OPT_TYPE_INT, DEFAULT, INT_MIN, INT_MAX},
@@ -382,7 +384,7 @@ static const AVOption options[]={
 {"prediction_order_method", "search method for selecting prediction order", OFFSET(prediction_order_method), FF_OPT_TYPE_INT, -1, INT_MIN, INT_MAX, A|E},
 {"min_partition_order", NULL, OFFSET(min_partition_order), FF_OPT_TYPE_INT, -1, INT_MIN, INT_MAX, A|E},
 {"max_partition_order", NULL, OFFSET(max_partition_order), FF_OPT_TYPE_INT, -1, INT_MIN, INT_MAX, A|E},
-{"timecode_frame_start", "GOP timecode frame start number, in non drop frame format", OFFSET(timecode_frame_start), FF_OPT_TYPE_INT, 0, 0, INT_MAX, V|E},
+{"timecode_frame_start", "GOP timecode frame start number, in non drop frame format", OFFSET(timecode_frame_start), FF_OPT_TYPE_INT64, 0, 0, INT64_MAX, V|E},
 {"drop_frame_timecode", NULL, 0, FF_OPT_TYPE_CONST, CODEC_FLAG2_DROP_FRAME_TIMECODE, INT_MIN, INT_MAX, V|E, "flags2"},
 {"non_linear_q", "use non linear quantizer", 0, FF_OPT_TYPE_CONST, CODEC_FLAG2_NON_LINEAR_QUANT, INT_MIN, INT_MAX, V|E, "flags2"},
 {"request_channels", "set desired number of audio channels", OFFSET(request_channels), FF_OPT_TYPE_INT, DEFAULT, 0, INT_MAX, A|D},
@@ -394,6 +396,11 @@ static const AVOption options[]={
 {"rc_max_vbv_use", NULL, OFFSET(rc_max_available_vbv_use), FF_OPT_TYPE_FLOAT, 1.0/3, 0.0, FLT_MAX, V|E},
 {"rc_min_vbv_use", NULL, OFFSET(rc_min_vbv_overflow_use),  FF_OPT_TYPE_FLOAT, 3,     0.0, FLT_MAX, V|E},
 {"ticks_per_frame", NULL, OFFSET(ticks_per_frame), FF_OPT_TYPE_INT, 1, 1, INT_MAX, A|V|E|D},
+{"color_primaries", NULL, OFFSET(color_primaries), FF_OPT_TYPE_INT, AVCOL_PRI_UNSPECIFIED, 1, AVCOL_PRI_NB-1, V|E|D},
+{"color_trc", NULL, OFFSET(color_trc), FF_OPT_TYPE_INT, AVCOL_TRC_UNSPECIFIED, 1, AVCOL_TRC_NB-1, V|E|D},
+{"colorspace", NULL, OFFSET(colorspace), FF_OPT_TYPE_INT, AVCOL_SPC_UNSPECIFIED, 1, AVCOL_SPC_NB-1, V|E|D},
+{"color_range", NULL, OFFSET(color_range), FF_OPT_TYPE_INT, AVCOL_RANGE_UNSPECIFIED, 0, AVCOL_RANGE_NB-1, V|E|D},
+{"chroma_sample_location", NULL, OFFSET(chroma_sample_location), FF_OPT_TYPE_INT, AVCHROMA_LOC_UNSPECIFIED, 0, AVCHROMA_LOC_NB-1, V|E|D},
 {NULL},
 };
 

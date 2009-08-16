@@ -26,7 +26,7 @@
 
 #include "vp56data.h"
 #include "dsputil.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "bytestream.h"
 
 
@@ -50,6 +50,7 @@ typedef struct {
     int high;
     int bits;
     const uint8_t *buffer;
+    const uint8_t *end;
     unsigned long code_word;
 } VP56RangeCoder;
 
@@ -172,7 +173,7 @@ void vp56_init(AVCodecContext *avctx, int flip, int has_alpha);
 int vp56_free(AVCodecContext *avctx);
 void vp56_init_dequant(VP56Context *s, int quantizer);
 int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                      const uint8_t *buf, int buf_size);
+                      AVPacket *avpkt);
 
 
 /**
@@ -185,6 +186,7 @@ static inline void vp56_init_range_decoder(VP56RangeCoder *c,
     c->high = 255;
     c->bits = 8;
     c->buffer = buf;
+    c->end = buf + buf_size;
     c->code_word = bytestream_get_be16(&c->buffer);
 }
 
@@ -205,7 +207,7 @@ static inline int vp56_rac_get_prob(VP56RangeCoder *c, uint8_t prob)
     while (c->high < 128) {
         c->high <<= 1;
         c->code_word <<= 1;
-        if (--c->bits == 0) {
+        if (--c->bits == 0 && c->buffer < c->end) {
             c->bits = 8;
             c->code_word |= *c->buffer++;
         }
@@ -228,7 +230,7 @@ static inline int vp56_rac_get(VP56RangeCoder *c)
 
     /* normalize */
     c->code_word <<= 1;
-    if (--c->bits == 0) {
+    if (--c->bits == 0 && c->buffer < c->end) {
         c->bits = 8;
         c->code_word |= *c->buffer++;
     }

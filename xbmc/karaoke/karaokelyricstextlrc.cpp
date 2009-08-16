@@ -44,7 +44,7 @@ bool CKaraokeLyricsTextLRC::Load()
   // Clear the lyrics array
   clearLyrics();
 
-  if ( !file.Open( m_lyricsFile, TRUE ) )
+  if ( !file.Open( m_lyricsFile ) )
     return false;
 
   unsigned int lyricSize = (unsigned int) file.GetLength();

@@ -3443,7 +3443,6 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
                                 "group by song.idPath", idArtist, idArtist);
 
     // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0)
@@ -4548,7 +4547,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
 
     XFILE::CFile file;
 
-    if ( !file.Open( inputFile, TRUE ) )
+    if ( !file.Open( inputFile ) )
     {
       CLog::Log( LOGERROR, "Cannot open karaoke import file %s", inputFile.c_str() );
       return;
