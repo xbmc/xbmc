@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -36,7 +36,6 @@
 
 /* GUI Messages includes */
 #include "GUIDialogOK.h"
-#include "GUIDialogYesNo.h"
 
 
 using namespace std;
@@ -44,13 +43,13 @@ using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace ADDON;
 
-std::map< long, IPVRClient* > CPVRManager::m_clients;
-CPVRManager* CPVRManager::m_instance    = NULL;
-CFileItem* CPVRManager::m_currentPlayingChannel = NULL;
+CLIENTMAP CPVRManager::m_clients;
+CPVRManager* CPVRManager::m_instance              = NULL;
+CFileItem* CPVRManager::m_currentPlayingChannel   = NULL;
 CFileItem* CPVRManager::m_currentPlayingRecording = NULL;
-bool CPVRManager::m_hasRecordings       = false;
-bool CPVRManager::m_isRecording         = false;
-bool CPVRManager::m_hasTimers           = false;
+bool CPVRManager::m_hasRecordings                 = false;
+bool CPVRManager::m_isRecording                   = false;
+bool CPVRManager::m_hasTimers                     = false;
 
 
 /************************************************************/
@@ -58,18 +57,6 @@ bool CPVRManager::m_hasTimers           = false;
 
 CPVRManager::CPVRManager()
 {
-  /* Initialize Member variables */
-  m_HiddenChannels          = 0;
-  m_CurrentGroupID          = -1;
-  m_currentPlayingChannel   = NULL;
-  m_currentPlayingRecording = NULL;
-
-  m_PreviousChannel[0]    = 1;
-  m_PreviousChannel[1]    = 1;
-  m_PreviousChannelIndex  = 0;
-  m_LastChannelChanged    = timeGetTime();
-  m_LastChannel           = 0;
-
   InitializeCriticalSection(&m_critSection);
   CLog::Log(LOGDEBUG,"PVR: created");
 }
@@ -92,9 +79,17 @@ void CPVRManager::Start()
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager starting");
 
-  /* Reset System Info swap counters */
-  m_infoToggleStart = NULL;
-  m_infoToggleCurrent = 0;
+  /* Reset Member variables and System Info swap counters */
+  m_CurrentGroupID          = -1;
+  m_currentPlayingChannel   = NULL;
+  m_currentPlayingRecording = NULL;
+  m_PreviousChannel[0]      = 1;
+  m_PreviousChannel[1]      = 1;
+  m_PreviousChannelIndex    = 0;
+  m_LastChannelChanged      = timeGetTime();
+  m_LastChannel             = 0;
+  m_infoToggleStart         = NULL;
+  m_infoToggleCurrent       = 0;
 
   /* Discover, load and create chosen Client add-on's. */
   g_addonmanager.RegisterAddonCallback(ADDON_PVRDLL, this);
@@ -103,15 +98,6 @@ void CPVRManager::Start()
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
     return;
   }
-
-
-  CDateTime test = (time_t)1249297200;
-  time_t test2;
-  time_t test3;
-  test.GetAsTime(test2);
-  CDateTime::GetUTCDateTime().GetAsTime(test3);
-
-  fprintf(stderr, "<< 1249297200 - %i - %s - %s - %i\n", test2, test.GetAsLocalizedDateTime().c_str(), CDateTime::GetUTCDateTime().GetAsLocalizedDateTime().c_str(), test3);
 
   /* Get TV Channels from Backends */
   PVRChannelsTV.Load(false);
@@ -128,19 +114,10 @@ void CPVRManager::Start()
   /* Get Epg's from Backend */
   cPVREpgs::Load();
 
-
-
-  m_database.Open();
-
-  /* Get Channelgroups */
-  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
-
-  SyncInfo();
-  m_database.Close();
-
-//  Create();
-//  SetName("PVRManager Updater");
-//  SetPriority(-15);
+  /* Create the supervisor thread to do all background activities */
+  Create();
+  SetName("XBMC PVR Supervisor");
+  SetPriority(-15);
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
   return;
@@ -156,20 +133,15 @@ void CPVRManager::Stop()
     delete m_clients[i];
   }
   m_clients.clear();
-
-  m_HiddenChannels        = 0;
-  m_CurrentGroupID        = -1;
-  m_infoToggleStart       = NULL;
-  m_infoToggleCurrent     = 0;
+  m_clientsProps.clear();
 
   return;
 }
 
 bool CPVRManager::LoadClients()
 {
-  VECADDONS *addons;
-  // call update
-  addons = g_addonmanager.GetAddonsFromType(ADDON_PVRDLL);
+  /* Get all PVR Add on's */
+  VECADDONS *addons = g_addonmanager.GetAddonsFromType(ADDON_PVRDLL);
 
   /* Make sure addon's are loaded */
   if (addons == NULL || addons->empty())
@@ -199,8 +171,7 @@ bool CPVRManager::LoadClients()
     /* Load the Client library's and inside them into Client list if
      * success. Client initialization is also performed during loading.
      */
-    IPVRClient *client;
-    client = factory.LoadPVRClient(clientAddon, clientID, this);
+    IPVRClient *client = factory.LoadPVRClient(clientAddon, clientID, this);
     if (client)
     {
       m_clients.insert(std::make_pair(client->GetID(), client));
@@ -244,101 +215,12 @@ void CPVRManager::GetClientProperties(long clientID)
 
 void CPVRManager::Process()
 {
-//  //GetChannels();
-//
-//  /* create EPG data structures */
-//  if (m_clientProps.SupportEPG)
-//  {
-//    time_t start;
-//    time_t end;
-//    CDateTime::GetCurrentDateTime().GetAsTime(start);
-//    CDateTime::GetCurrentDateTime().GetAsTime(end);
-//    start -= g_guiSettings.GetInt("pvrmenu.lingertime")*60;
-//    end   += g_guiSettings.GetInt("pvrmenu.daystodisplay")*24*60*60;
-//
-//    for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-//    {
-//      EnterCriticalSection(&m_critSection);
-////      m_client->GetEPGForChannel(PVRChannelsTV[i].m_iClientNum, PVRChannelsTV[i].m_EPG, start, end);
-//      LeaveCriticalSection(&m_critSection);
-//    }
-//
-//    for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-//    {
-//      EnterCriticalSection(&m_critSection);
-////      m_client->GetEPGForChannel(PVRChannelsRadio[i].m_iClientNum, PVRChannelsRadio[i].m_EPG, start, end);
-//      LeaveCriticalSection(&m_critSection);
-//    }
-//  }
-//
-//  CDateTime lastTVUpdate    = NULL;//CDateTime::GetCurrentDateTime();
-//  CDateTime lastRadioUpdate = CDateTime::GetCurrentDateTime();
-//  CDateTime lastScan        = CDateTime::GetCurrentDateTime();
-//
 //  while (!m_bStop)
 //  {
-//    if (m_clientProps.SupportEPG)
-//    {
-//      if (lastTVUpdate+CDateTimeSpan(0, g_guiSettings.GetInt("pvrepg.epgupdate") / 60, g_guiSettings.GetInt("pvrepg.epgupdate") % 60, 0) < CDateTime::GetCurrentDateTime())
-//      {
-//        lastTVUpdate = CDateTime::GetCurrentDateTime();
+//    DWORD Now = timeGetTime();
+//    static DWORD lastTime = 0;
 //
-//        if (PVRChannelsTV.size() > 0)
-//        {
-//          time_t end;
-//          CDateTime::GetCurrentDateTime().GetAsTime(end);
-//		  end += (time_t)g_guiSettings.GetInt("pvrmenu.daystodisplay")*24*60*60;
 //
-//          for (unsigned int i = 0; i < PVRChannelsTV.size(); ++i)
-//          {
-//		    CTVEPGInfoTag epgentry;
-//			time_t lastEntry = NULL;
-//
-//			PVRChannelsTV[i].GetEPGLastEntry(&epgentry);
-//			if (epgentry.m_endTime.IsValid())
-//			{
-//			  epgentry.m_endTime.GetAsTime(lastEntry);
-//              PVRChannelsTV[i].CleanupEPG();
-//			}
-//		    EnterCriticalSection(&m_critSection);
-////		    m_client->GetEPGForChannel(PVRChannelsTV[i].m_iClientNum, PVRChannelsTV[i].m_EPG, lastEntry, end);
-//		    LeaveCriticalSection(&m_critSection);
-//          }
-//        }
-//      }
-//      if (m_clientProps.SupportRadio)
-//      {
-//        if (lastRadioUpdate+CDateTimeSpan(0, g_guiSettings.GetInt("pvrepg.epgupdate") / 60, g_guiSettings.GetInt("pvrepg.epgupdate") % 60+5, 0) < CDateTime::GetCurrentDateTime())
-//        {
-//          lastRadioUpdate = CDateTime::GetCurrentDateTime();
-//
-//          if (PVRChannelsRadio.size() > 0)
-//          {
-//            time_t end;
-//            CDateTime::GetCurrentDateTime().GetAsTime(end);
-//		    end += (time_t)g_guiSettings.GetInt("pvrmenu.daystodisplay")*24*60*60;
-//
-//            for (unsigned int i = 0; i < PVRChannelsRadio.size(); ++i)
-//            {
-//		      CTVEPGInfoTag epgentry;
-//			  time_t lastEntry = NULL;
-//
-//			  PVRChannelsRadio[i].GetEPGLastEntry(&epgentry);
-//			  if (epgentry.m_endTime.IsValid())
-//			  {
-//			    epgentry.m_endTime.GetAsTime(lastEntry);
-//                PVRChannelsRadio[i].CleanupEPG();
-//			  }
-//		      EnterCriticalSection(&m_critSection);
-////		      m_client->GetEPGForChannel(PVRChannelsRadio[i].m_iClientNum, PVRChannelsRadio[i].m_EPG, lastEntry, end);
-//		      LeaveCriticalSection(&m_critSection);
-//            }
-//		  }
-//		}
-//	  }
-//	}
-//    /* Wait 30 seconds until start next change check */
-//    Sleep(30000);
 //  }
 }
 
@@ -536,7 +418,6 @@ void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEve
     case PVR_EVENT_CHANNELS_CHANGE:
 	  {
         CLog::Log(LOGDEBUG, "%s - PVR: client_%ld channel list changed", __FUNCTION__, clientID);
-	    GetChannels();
         SyncInfo();
 
         CGUIWindowTV *pTVWin = (CGUIWindowTV *)m_gWindowManager.GetWindow(WINDOW_TV);
@@ -685,60 +566,60 @@ bool CPVRManager::RenameGroup(unsigned int GroupId, const CStdString &newname)
 bool CPVRManager::DeleteGroup(unsigned int GroupId)
 {
   EnterCriticalSection(&m_critSection);
-  m_database.Open();
-
-  m_database.DeleteGroup(GetFirstClientID(), GroupId);
-
-  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-  {
-    if (PVRChannelsTV[i].m_iGroupID == GroupId)
-    {
-      PVRChannelsTV[i].m_iGroupID = 0;
-      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[i]);
-    }
-  }
-  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-  {
-    if (PVRChannelsRadio[i].m_iGroupID == GroupId)
-    {
-      PVRChannelsRadio[i].m_iGroupID = 0;
-      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[i]);
-    }
-  }
-  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
-  m_database.Close();
+//  m_database.Open();
+//
+//  m_database.DeleteGroup(GetFirstClientID(), GroupId);
+//
+//  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
+//  {
+//    if (PVRChannelsTV[i].m_iGroupID == GroupId)
+//    {
+//      PVRChannelsTV[i].m_iGroupID = 0;
+//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[i]);
+//    }
+//  }
+//  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
+//  {
+//    if (PVRChannelsRadio[i].m_iGroupID == GroupId)
+//    {
+//      PVRChannelsRadio[i].m_iGroupID = 0;
+//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[i]);
+//    }
+//  }
+//  m_database.GetGroupList(GetFirstClientID(), &m_channel_group);
+//  m_database.Close();
   LeaveCriticalSection(&m_critSection);
   return true;
 }
 
 bool CPVRManager::ChannelToGroup(unsigned int number, unsigned int GroupId, bool radio)
 {
-  if (!radio)
-  {
-    if (((int) number <= PVRChannelsTV.size()+1) && (number != 0))
-    {
-      EnterCriticalSection(&m_critSection);
-      m_database.Open();
-      PVRChannelsTV[number-1].m_iGroupID = GroupId;
-      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[number-1]);
-      m_database.Close();
-      LeaveCriticalSection(&m_critSection);
-      return true;
-    }
-  }
-  else
-  {
-    if (((int) number <= PVRChannelsRadio.size()+1) && (number != 0))
-    {
-      EnterCriticalSection(&m_critSection);
-      m_database.Open();
-      PVRChannelsRadio[number-1].m_iGroupID = GroupId;
-      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[number-1]);
-      m_database.Close();
-      LeaveCriticalSection(&m_critSection);
-      return true;
-    }
-  }
+//  if (!radio)
+//  {
+//    if (((int) number <= PVRChannelsTV.size()+1) && (number != 0))
+//    {
+//      EnterCriticalSection(&m_critSection);
+//      m_database.Open();
+//      PVRChannelsTV[number-1].m_iGroupID = GroupId;
+//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[number-1]);
+//      m_database.Close();
+//      LeaveCriticalSection(&m_critSection);
+//      return true;
+//    }
+//  }
+//  else
+//  {
+//    if (((int) number <= PVRChannelsRadio.size()+1) && (number != 0))
+//    {
+//      EnterCriticalSection(&m_critSection);
+//      m_database.Open();
+//      PVRChannelsRadio[number-1].m_iGroupID = GroupId;
+//      m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[number-1]);
+//      m_database.Close();
+//      LeaveCriticalSection(&m_critSection);
+//      return true;
+//    }
+//  }
   return false;
 }
 
@@ -1013,6 +894,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 
   delete m_currentPlayingChannel;
   m_currentPlayingChannel = new CFileItem(channels->at(iChannel-1));
+  m_scanStart = timeGetTime();
   SetCurrentPlayingProgram(*m_currentPlayingChannel);
 
   LeaveCriticalSection(&m_critSection);
@@ -1044,6 +926,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
 
       if (m_clients[channels->at(currentTVChannel-1).m_clientID]->SwitchChannel(channels->at(currentTVChannel-1).m_iClientNum))
       {
+        m_scanStart = timeGetTime();
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(channels->at(currentTVChannel-1));
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
@@ -1083,6 +966,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
 
       if (m_clients[channels->at(currentTVChannel-1).m_clientID]->SwitchChannel(channels->at(currentTVChannel-1).m_iClientNum))
       {
+        m_scanStart = timeGetTime();
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(channels->at(currentTVChannel-1));
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
@@ -1344,110 +1228,6 @@ bool CPVRManager::RecordChannel(unsigned int channel, bool bOnOff, bool radio)
 
 /************************************************************/
 /** Internal handling **/
-
-void CPVRManager::GetChannels()
-{
-  cPVRChannels PVRChannelsTV_tmp;
-  cPVRChannels PVRChannelsRadio_tmp;
-
-  EnterCriticalSection(&m_critSection);
-  m_database.Open();
-
-//  m_client->GetChannelList(PVRChannelsTV_tmp, false);
-//  m_client->GetChannelList(PVRChannelsRadio_tmp, true);
-
-  /*
-   * First whe look for moved channels on backend (other backend number)
-   * and delete no more present channels inside database.
-   * Problem:
-   * If a channel on client is renamed, it is deleted from Database
-   * and later added as new channel and loose his Group Information
-   */
-  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-  {
-    bool found = false;
-
-    for (unsigned int j = 0; j < PVRChannelsTV_tmp.size(); j++)
-    {
-	  if (PVRChannelsTV[i].m_strChannel == PVRChannelsTV_tmp[j].m_strChannel)
-	  {
-	    if (PVRChannelsTV[i].m_iClientNum != PVRChannelsTV_tmp[j].m_iClientNum)
-		{
-		  PVRChannelsTV[i].m_iClientNum = PVRChannelsTV_tmp[j].m_iClientNum;
-		  m_database.UpdateChannel(GetFirstClientID(), PVRChannelsTV[i]);
-		  CLog::Log(LOGINFO,"PVRManager: Updated TV channel %s", PVRChannelsTV[i].m_strChannel.c_str());
-		}
-
-	    found = true;
-		PVRChannelsTV_tmp.erase(PVRChannelsTV_tmp.begin()+j);
-		break;
-	  }
-	}
-
-	if (!found)
-	{
-	  CLog::Log(LOGINFO,"PVRManager: Removing TV channel %s (no more present)", PVRChannelsTV[i].m_strChannel.c_str());
-      m_database.RemoveChannel(GetFirstClientID(), PVRChannelsTV[i]);
-	  PVRChannelsTV.erase(PVRChannelsTV.begin()+i);
-	  i--;
-	}
-  }
-
-  for (unsigned int i = 0; i < PVRChannelsRadio.size(); i++)
-  {
-    bool found = false;
-
-    for (unsigned int j = 0; j < PVRChannelsRadio_tmp.size(); j++)
-    {
-	  if (PVRChannelsRadio[i].m_strChannel == PVRChannelsRadio_tmp[j].m_strChannel)
-	  {
-	    if (PVRChannelsRadio[i].m_iClientNum != PVRChannelsRadio_tmp[j].m_iClientNum)
-		{
-		  PVRChannelsRadio[i].m_iClientNum = PVRChannelsRadio_tmp[j].m_iClientNum;
-		  m_database.UpdateChannel(GetFirstClientID(), PVRChannelsRadio[i]);
-		  CLog::Log(LOGINFO,"PVRManager: Updated Radio channel %s", PVRChannelsRadio[i].m_strChannel.c_str());
-		}
-
-	    found = true;
-		PVRChannelsRadio_tmp.erase(PVRChannelsRadio_tmp.begin()+j);
-		break;
-	  }
-	}
-
-	if (!found)
-	{
-	  CLog::Log(LOGINFO,"PVRManager: Removing Radio channel %s (no more present)", PVRChannelsRadio[i].m_strChannel.c_str());
-      m_database.RemoveChannel(GetFirstClientID(), PVRChannelsRadio[i]);
-	  PVRChannelsRadio.erase(PVRChannelsRadio.begin()+i);
-	  i--;
-	}
-  }
-
-  /*
-   * Now whe add new channels to frontend
-   * All entries now present in the temp lists, are new entries
-   */
-  for (unsigned int i = 0; i < PVRChannelsTV_tmp.size(); i++)
-  {
-    PVRChannelsTV_tmp[i].m_strStatus = "livetv";
-    PVRChannelsTV_tmp[i].m_iIdChannel = m_database.AddChannel(GetFirstClientID(), PVRChannelsTV_tmp[i]);
-	PVRChannelsTV.push_back(PVRChannelsTV_tmp[i]);
-	CLog::Log(LOGINFO,"PVRManager: Added TV channel %s", PVRChannelsTV_tmp[i].m_strChannel.c_str());
-  }
-
-  for (unsigned int i = 0; i < PVRChannelsRadio_tmp.size(); i++)
-  {
-    PVRChannelsRadio_tmp[i].m_strStatus = "livetv";
-    PVRChannelsRadio_tmp[i].m_iIdChannel = m_database.AddChannel(GetFirstClientID(), PVRChannelsRadio_tmp[i]);
-	PVRChannelsRadio.push_back(PVRChannelsRadio_tmp[i]);
-	CLog::Log(LOGINFO,"PVRManager: Added Radio channel %s", PVRChannelsRadio_tmp[i].m_strChannel.c_str());
-  }
-
-
-  m_database.Close();
-  LeaveCriticalSection(&m_critSection);
-  return;
-}
 
 void CPVRManager::SyncInfo()
 {

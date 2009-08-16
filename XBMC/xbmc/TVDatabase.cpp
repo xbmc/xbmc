@@ -56,9 +56,10 @@ bool CTVDatabase::CreateTables()
     m_pDS->exec("CREATE TABLE LastChannel (idClient integer, idChannel integer primary key, Number integer, Name text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Channels table");
-    m_pDS->exec("CREATE TABLE Channels (idClient integer, idChannel integer primary key, Name text, "
-                "ClientNumber integer, XBMCNumber integer, IconPath text, GroupID integer,"
-                "encrypted bool, radio bool, hide bool, strFileNameAndPath text)\n");
+    m_pDS->exec("CREATE TABLE Channels (idClient integer, idChannel integer primary key,"
+                "XBMCNumber integer, Name text, ClientName text, ClientNumber integer,"
+                "UniqueId integer, IconPath text, GroupID integer, encrypted bool,"
+                "radio bool, hide bool, strFileNameAndPath text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating GuideData table");
     m_pDS->exec("CREATE TABLE GuideData (idClient integer, idBouquet integer, idChannel integer, strChannel text, "
@@ -218,43 +219,12 @@ long CTVDatabase::AddDBChannel(const cPVRChannelInfoTag &info)
 
     if (channelId < 0)
     {
-      CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, Name, ClientNumber, XBMCNumber, "
-                                 "GroupID, IconPath, encrypted, radio, hide, strFileNameAndPath) "
-                                 "values ('%i', NULL, '%s', '%i', '%i', '%i', '%s', '%i', '%i', '%i', '%s')\n",
-                                 info.ClientID(), info.Name().c_str(), info.ClientNumber(), info.Number(), info.m_iGroupID,
-                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
-
-      m_pDS->exec(SQL.c_str());
-      channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-    }
-
-    return channelId;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, info.m_strChannel.c_str());
-  }
-
-  return -1;
-}
-
-long CTVDatabase::AddChannel(DWORD clientID, const cPVRChannelInfoTag &info)
-{
-  try
-  {
-    if (clientID < 0) return -1;
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-
-    long channelId = info.m_iIdChannel;
-
-    if (channelId < 0)
-    {
-      CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, Name, ClientNumber, XBMCNumber, "
-                                 "GroupID, IconPath, encrypted, radio, hide, strFileNameAndPath) "
-                                 "values ('%i', NULL, '%s', '%i', '%i', '%i', '%s', '%i', '%i', '%i', '%s')\n",
-                                 clientID, info.m_strChannel.c_str(), info.m_iClientNum, info.m_iChannelNum, info.m_iGroupID,
-                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
+      CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, XBMCNumber, Name, ClientName,"
+                                 "ClientNumber, UniqueId, IconPath, GroupID, encrypted, radio, hide, strFileNameAndPath) "
+                                 "values ('%i', NULL, '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s')\n",
+                                 info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
+                                 info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
+                                 info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
@@ -290,21 +260,22 @@ bool CTVDatabase::RemoveAllChannels(DWORD clientID)
   }
 }
 
-bool CTVDatabase::RemoveChannel(DWORD clientID, const cPVRChannelInfoTag &info)
+bool CTVDatabase::RemoveDBChannel(const cPVRChannelInfoTag &info)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    long channelId = info.m_iIdChannel;
+    long channelId = info.ChannelID();
+    long clientId = info.ClientID();
 
-    if (channelId < 0)   // no match found, update required
+    if (channelId < 0 || clientId < 0)   // no match found, update required
     {
       return false;
     }
 
-    CStdString strSQL=FormatSQL("delete from Channels WHERE Channels.idChannel = '%u' AND Channels.idClient = '%u'", channelId, clientID);
+    CStdString strSQL=FormatSQL("delete from Channels WHERE Channels.idChannel = '%u' AND Channels.idClient = '%u'", channelId, clientId);
 
     m_pDS->exec(strSQL.c_str());
     return true;
@@ -339,11 +310,13 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
     {
       m_pDS->close();
       // update the item
-      CStdString SQL = FormatSQL("update Channels set idClient=%i,Name='%s', idChannel=%i, ClientNumber=%i, XBMCNumber=%i,GroupID=%i,"
-                                 "IconPath='%s',encrypted=%i,radio=%i,hide=%i,strFileNameAndPath='%s' where idChannel=%i",
-                                 info.ClientID(), info.m_strChannel.c_str(), channelId, info.m_iClientNum, info.m_iChannelNum, info.m_iGroupID,
-                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str(),
-                                 channelId);
+      SQL = FormatSQL("update Channels set idClient=%i,XBMCNumber=%i,Name='%s',ClientName='%s',"
+                      "ClientNumber=%i,UniqueId=%i,IconPath='%s',GroupID=%i,encrypted=%i,radio=%i,"
+                      "hide=%i,strFileNameAndPath='%s' where idChannel=%i",
+                      info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
+                      info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
+                      info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str(),
+                      channelId);
 
       m_pDS->exec(SQL.c_str());
       return channelId;
@@ -351,64 +324,12 @@ long CTVDatabase::UpdateDBChannel(const cPVRChannelInfoTag &info)
     else   // add the items
     {
       m_pDS->close();
-      CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, Name, ClientNumber, XBMCNumber, "
-                                 "GroupID, IconPath, encrypted, radio, hide, strFileNameAndPath) "
-                                 "values ('%i', NULL, '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%s')\n",
-                                 info.ClientID(), info.m_strChannel.c_str(), info.m_iClientNum, info.m_iChannelNum, info.m_iGroupID,
-                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
-
-      m_pDS->exec(SQL.c_str());
-      channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
-      return channelId;
-    }
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, info.m_strChannel.c_str());
-    return false;
-  }
-}
-
-long CTVDatabase::UpdateChannel(DWORD clientID, const cPVRChannelInfoTag &info)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return -1;
-    if (NULL == m_pDS.get()) return -1;
-
-    long channelId = info.m_iIdChannel;
-
-    if (channelId < 0)   // no match found, update required
-    {
-      return false;
-    }
-
-    CStdString SQL;
-
-    SQL=FormatSQL("select * from Channels WHERE Channels.idChannel = '%u' AND Channels.idClient = '%u'", channelId, clientID);
-    m_pDS->query(SQL.c_str());
-
-    if (m_pDS->num_rows() > 0)
-    {
-      m_pDS->close();
-      // update the item
-      CStdString SQL = FormatSQL("update Channels set idClient=%i,Name='%s', idChannel=%i, ClientNumber=%i, XBMCNumber=%i,GroupID=%i,"
-                                 "IconPath='%s',encrypted=%i,radio=%i,hide=%i,strFileNameAndPath='%s' where idChannel=%i",
-                                 clientID, info.m_strChannel.c_str(), channelId, info.m_iClientNum, info.m_iChannelNum, info.m_iGroupID,
-                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str(),
-                                 channelId);
-
-      m_pDS->exec(SQL.c_str());
-      return channelId;
-    }
-    else   // add the items
-    {
-      m_pDS->close();
-      CStdString SQL = FormatSQL("insert into Channels (idClient, idChannel, Name, ClientNumber, XBMCNumber, "
-                                 "GroupID, IconPath, encrypted, radio, hide, strFileNameAndPath) "
-                                 "values ('%i', NULL, '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%s')\n",
-                                 clientID, info.m_strChannel.c_str(), info.m_iClientNum, info.m_iChannelNum, info.m_iGroupID,
-                                 info.m_IconPath.c_str(), info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
+      SQL = FormatSQL("insert into Channels (idClient, idChannel, XBMCNumber, Name, ClientName,"
+                      "ClientNumber, UniqueId, IconPath, GroupID, encrypted, radio, hide, strFileNameAndPath) "
+                      "values ('%i', NULL, '%i', '%s', '%s', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%s')\n",
+                      info.ClientID(), info.Number(), info.Name().c_str(), info.ClientName().c_str(),
+                      info.ClientNumber(), info.UniqueID(), info.m_IconPath.c_str(), info.m_iGroupID,
+                      info.m_encrypted, info.m_radio, info.m_hide, info.m_strFileNameAndPath.c_str());
 
       m_pDS->exec(SQL.c_str());
       channelId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
@@ -448,30 +369,6 @@ bool CTVDatabase::HasChannel(DWORD clientID, const cPVRChannelInfoTag &info)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
     return false;
-  }
-}
-
-int CTVDatabase::GetNumChannels(DWORD clientID)
-{
-  try
-  {
-    if (NULL == m_pDB.get()) return 0;
-    if (NULL == m_pDS.get()) return 0;
-
-    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.idClient=%u", clientID);
-
-    m_pDS->query(SQL.c_str());
-
-    int num = m_pDS->num_rows();
-
-    m_pDS->close();
-
-    return num;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-    return 0;
   }
 }
 
@@ -540,63 +437,18 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
 
       broadcast.m_clientID            = m_pDS->fv("idClient").get_asInteger();
       broadcast.m_iIdChannel          = m_pDS->fv("idChannel").get_asInteger();
-      broadcast.m_IconPath            = m_pDS->fv("IconPath").get_asString();
       broadcast.m_iChannelNum         = m_pDS->fv("XBMCNumber").get_asInteger();
-      broadcast.m_iClientNum          = m_pDS->fv("ClientNumber").get_asInteger();
       broadcast.m_strChannel          = m_pDS->fv("Name").get_asString();
-      broadcast.m_strFileNameAndPath  = m_pDS->fv("strFileNameAndPath").get_asString();
+      broadcast.m_strClientName       = m_pDS->fv("ClientName").get_asString();
+      broadcast.m_iClientNum          = m_pDS->fv("ClientNumber").get_asInteger();
+      broadcast.m_iIdUnique           = m_pDS->fv("UniqueId").get_asInteger();
+      broadcast.m_IconPath            = m_pDS->fv("IconPath").get_asString();
+      broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInteger();
       broadcast.m_encrypted           = m_pDS->fv("encrypted").get_asBool();
-      broadcast.m_bTeletext           = true;
       broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
       broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
-      broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInteger();
-
-      results.push_back(broadcast);
-      m_pDS->next();
-    }
-
-    m_pDS->close();
-
-    return true;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
-    return false;
-  }
-
-  return false;
-}
-
-bool CTVDatabase::GetChannelList(DWORD clientID, cPVRChannels& results, bool radio)
-{
-  results.erase(results.begin(), results.end());
-
-  try
-  {
-    if (NULL == m_pDB.get()) return false;
-    if (NULL == m_pDS.get()) return false;
-
-    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.idClient=%u AND Channels.radio=%u ORDER BY Channels.XBMCNumber", clientID, radio);
-
-    m_pDS->query(SQL.c_str());
-
-    while (!m_pDS->eof())
-    {
-      cPVRChannelInfoTag broadcast;
-
-      broadcast.m_clientID            = clientID;
-      broadcast.m_iIdChannel          = m_pDS->fv("idChannel").get_asInteger();
-      broadcast.m_IconPath            = m_pDS->fv("IconPath").get_asString();
-      broadcast.m_iChannelNum         = m_pDS->fv("XBMCNumber").get_asInteger();
-      broadcast.m_iClientNum          = m_pDS->fv("ClientNumber").get_asInteger();
-      broadcast.m_strChannel          = m_pDS->fv("Name").get_asString();
       broadcast.m_strFileNameAndPath  = m_pDS->fv("strFileNameAndPath").get_asString();
-      broadcast.m_encrypted           = m_pDS->fv("encrypted").get_asBool();
       broadcast.m_bTeletext           = true;
-      broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
-      broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
-      broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInteger();
 
       results.push_back(broadcast);
       m_pDS->next();

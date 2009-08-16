@@ -7,4 +7,5 @@
     <string id="30003">Include Radio</string>
     <string id="30004">Character Set Conversion</string>
     <string id="30005">Connect timeout (s)</string>
+    <string id="30006">Ignore Channels without VPID and APID</string>
 </strings>

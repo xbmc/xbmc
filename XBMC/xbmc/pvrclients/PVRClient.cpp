@@ -113,7 +113,7 @@ bool CPVRClient::Init()
     /* Delete is performed by the calling class */
     new CAddonStatusHandler(this, status, "", false);
   }
-  
+
   return m_ReadyToUse;
 }
 
@@ -323,7 +323,7 @@ void CPVRClient::PVRTransferEpgEntry(void *userData, const PVRHANDLE handle, con
 /**********************************************************
  * Channels PVR Functions
  */
- 
+
 int CPVRClient::GetNumChannels()
 {
   CSingleLock lock(m_critSection);
@@ -388,7 +388,9 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   tag.m_iClientNum          = channel->number;
   tag.m_iGroupID            = 0;
   tag.m_clientID            = client->m_clientID;
+  tag.m_iIdUnique           = channel->uid;
   tag.m_strChannel          = channel->name;
+  tag.m_strClientName       = channel->name;
   //= channel->callsign;
   tag.m_IconPath            = channel->iconpath;
   tag.m_encrypted           = channel->encrypted;
@@ -397,7 +399,7 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   tag.m_hide                = channel->hide;
   tag.m_isRecording         = channel->recording;
   tag.m_strFileNameAndPath  = channel->stream_url;
-    
+
   xbmcChannels->push_back(tag);
   return;
 }
@@ -790,7 +792,7 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
 
   cPVRTimers *xbmcTimers     = (cPVRTimers*) handle;
   cPVRChannelInfoTag *channel  = cPVRChannels::GetByClientFromAll(timer->channelNum, client->m_clientID);
-  
+
   if (channel == NULL)
   {
     CLog::Log(LOGERROR, "PVR: PVRTransferTimerEntry is called with not present channel");
@@ -938,7 +940,7 @@ PVR_ERROR CPVRClient::RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString 
     {
       PVR_TIMERINFO tag;
       WriteClientTimerInfo(timerinfo, tag);
-      
+
       ret = m_pClient->RenameTimer(tag, newname.c_str());
       if (ret != PVR_ERROR_NO_ERROR)
         throw ret;

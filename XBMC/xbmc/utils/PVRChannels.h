@@ -215,6 +215,7 @@ public:
   int                 m_iGroupID;             /// Channel group identfier
 
   CStdString          m_strChannel;           /// Channel name
+  CStdString          m_strClientName;
 
   CStdString          m_IconPath;             /// Path to the logo image
 
@@ -246,6 +247,8 @@ public:
 
   CStdString Name(void) const { return m_strChannel; }
   void SetName(CStdString name) { m_strChannel = name; }
+  CStdString ClientName(void) const { return m_strClientName; }
+  void SetClientName(CStdString name) { m_strClientName = name; }
   int Number(void) const { return m_iChannelNum; }
   void SetNumber(int Number) { m_iChannelNum = Number; }
   int ClientNumber(void) const { return m_iClientNum; }
@@ -268,7 +271,7 @@ public:
 
 typedef std::vector<cPVRChannelInfoTag> VECCHANNELS;
 
-class cPVRChannels : public std::vector<cPVRChannelInfoTag> 
+class cPVRChannels : public std::vector<cPVRChannelInfoTag>
 {
 private:
   bool m_bRadio;
@@ -293,7 +296,7 @@ public:
   CStdString GetChannelIcon(int Number);
   void SetChannelIcon(int Number, CStdString Icon);
   void Clear();
-  
+
   static int GetNumChannelsFromAll();
   static cPVRChannelInfoTag *GetByClientFromAll(int Number, int ClientID);
   static cPVRChannelInfoTag *GetByChannelIDFromAll(long ChannelID);

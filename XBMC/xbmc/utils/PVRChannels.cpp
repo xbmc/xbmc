@@ -81,6 +81,7 @@ void cPVRChannelInfoTag::Reset()
   m_iClientNum            = -1;
   m_iGroupID              = 0;
   m_strChannel            = "";
+  m_strClientName         = "";
   m_IconPath              = "";
   m_radio                 = false;
   m_encrypted             = false;
@@ -126,7 +127,7 @@ bool cPVRChannels::Load(bool radio)
   CPVRManager *manager  = CPVRManager::GetInstance();
   CTVDatabase *database = manager->GetTVDatabase();
   CLIENTMAP   *clients  = manager->Clients();
-  
+
   Clear();
 
   database->Open();
@@ -151,12 +152,12 @@ bool cPVRChannels::Load(bool radio)
       }
       itr++;
     }
-    
+
     ReNumberAndCheck();
 
     for (unsigned int i = 0; i < size(); i++)
       at(i).SetChannelID(database->AddDBChannel(at(i)));
-    
+
     database->Compress(true);
     database->Close();
   }
@@ -168,10 +169,88 @@ bool cPVRChannels::Update()
 {
   CPVRManager *manager  = CPVRManager::GetInstance();
   CTVDatabase *database = manager->GetTVDatabase();
+  CLIENTMAP   *clients  = manager->Clients();
+  cPVRChannels PVRChannels_tmp;
+
   database->Open();
-  
 
+  CLIENTMAPITR itr = clients->begin();
+  while (itr != clients->end())
+  {
+    IPVRClient* client = (*itr).second;
+    if (client->GetNumChannels() > 0)
+    {
+      client->GetChannelList(PVRChannels_tmp, m_bRadio);
+    }
+    itr++;
+  }
 
+  PVRChannels_tmp.ReNumberAndCheck();
+
+  /*
+   * First whe look for moved channels on backend (other backend number)
+   * and delete no more present channels inside database.
+   * Problem:
+   * If a channel on client is renamed, it is deleted from Database
+   * and later added as new channel and loose his Group Information
+   */
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    bool found = false;
+    bool changed = false;
+
+    for (unsigned int j = 0; j < PVRChannels_tmp.size(); j++)
+    {
+      if (at(i).UniqueID() == PVRChannels_tmp[j].UniqueID() &&
+          at(i).ClientID() == PVRChannels_tmp[j].ClientID())
+      {
+        if (at(i).ClientNumber() != PVRChannels_tmp[j].ClientNumber())
+        {
+          at(i).SetClientNumber(PVRChannels_tmp[j].ClientNumber());
+          changed = true;
+        }
+
+        if (at(i).ClientName() != PVRChannels_tmp[j].ClientName())
+        {
+          at(i).SetClientName(PVRChannels_tmp[j].ClientName());
+          at(i).SetName(PVRChannels_tmp[j].ClientName());
+          changed = true;
+        }
+
+        found = true;
+        PVRChannels_tmp.erase(PVRChannels_tmp.begin()+j);
+        break;
+      }
+    }
+
+    if (changed)
+    {
+      database->UpdateDBChannel(at(i));
+      CLog::Log(LOGINFO,"PVRManager: Updated %s channel %s", m_bRadio?"Radio":"TV", at(i).Name().c_str());
+      fprintf(stderr,"PVRManager: Updated %s channel %s\n", m_bRadio?"Radio":"TV", at(i).Name().c_str());
+    }
+
+    if (!found)
+    {
+      CLog::Log(LOGINFO,"PVRManager: Removing %s channel %s (no more present)", m_bRadio?"Radio":"TV", at(i).Name().c_str());
+      fprintf(stderr,"PVRManager: Removing %s channel %s (no more present)\n", m_bRadio?"Radio":"TV", at(i).Name().c_str());
+      database->RemoveDBChannel(at(i));
+      erase(begin()+i);
+      i--;
+    }
+  }
+
+  /*
+   * Now whe add new channels to frontend
+   * All entries now present in the temp lists, are new entries
+   */
+  for (unsigned int i = 0; i < PVRChannels_tmp.size(); i++)
+  {
+    PVRChannels_tmp[i].m_iIdChannel = database->AddDBChannel(PVRChannels_tmp[i]);
+    push_back(PVRChannels_tmp[i]);
+    CLog::Log(LOGINFO,"PVRManager: Added %s channel %s", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].Name().c_str());
+    fprintf(stderr,"PVRManager: Added %s channel %s\n", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].Name().c_str());
+  }
 
   database->Close();
 
@@ -180,9 +259,9 @@ bool cPVRChannels::Update()
   {
     if (at(i).IsHidden())
       m_iHiddenChannels++;
-      
-    
-    
+
+
+
   }
 
   return false;
@@ -204,7 +283,7 @@ void cPVRChannels::ReNumberAndCheck(void)
 
     if (at(i).UniqueID() <= 0)
       CLog::Log(LOGNOTICE, "cPVRChannels: Channel '%s' from client '%i' have no unique ID. Contact PVR Client developer.", at(i).Name().c_str(), at(i).ClientID());
-      
+
     if (at(i).Name().IsEmpty())
     {
       CStdString name;
@@ -370,7 +449,7 @@ void cPVRChannels::HideChannel(unsigned int number)
 //      LeaveCriticalSection(&m_critSection);
 //      MoveChannel(number, PVRChannelsTV.size(), false);
 //    }
-}  
+}
 
 cPVRChannelInfoTag *cPVRChannels::GetByNumber(int Number)
 {
@@ -515,4 +594,4 @@ cPVRChannelInfoTag *cPVRChannels::GetByUniqueIDFromAll(long UniqueID)
   return NULL;
 }
 
-  
+
