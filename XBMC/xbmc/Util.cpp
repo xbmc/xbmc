@@ -634,12 +634,6 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
       iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
       strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
-
-    // This routine is only called from the playlist loaders,
-    // where the filepath is in UTF-8 anyway, so we don't need
-    // to do checking for FatX characters.
-    //if (g_guiSettings.GetBool("servers.ftpautofatx") && (CUtil::IsHD(strFilename)))
-    //  CUtil::GetFatXQualifiedPath(strFilename);
   }
   else //Base is remote
   {
@@ -1559,58 +1553,6 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
       }
   }
   return bFoundSubs;
-}
-
-void CUtil::PrepareSubtitleFonts()
-{
-  CStdString strFontPath = "special://xbmc/system/players/mplayer/font";
-
-  if( IsUsingTTFSubtitles()
-    || g_guiSettings.GetInt("subtitles.height") == 0
-    || g_guiSettings.GetString("subtitles.font").size() == 0)
-  {
-    /* delete all files in the font dir, so mplayer doesn't try to load them */
-
-    CStdString strSearchMask = strFontPath + "\\*.*";
-    WIN32_FIND_DATA wfd;
-    CAutoPtrFind hFind ( FindFirstFile(_P(strSearchMask).c_str(), &wfd));
-    if (hFind.isValid())
-    {
-      do
-      {
-        if(wfd.cFileName[0] == 0) continue;
-        if( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-          CFile::Delete(CUtil::AddFileToFolder(strFontPath, wfd.cFileName));
-      }
-      while (FindNextFile((HANDLE)hFind, &wfd));
-    }
-  }
-  else
-  {
-    CStdString strPath;
-    strPath.Format("%s\\%s\\%i",
-                  strFontPath.c_str(),
-                  g_guiSettings.GetString("Subtitles.Font").c_str(),
-                  g_guiSettings.GetInt("Subtitles.Height"));
-
-    CStdString strSearchMask = strPath + "\\*.*";
-    WIN32_FIND_DATA wfd;
-    CAutoPtrFind hFind ( FindFirstFile(_P(strSearchMask).c_str(), &wfd));
-    if (hFind.isValid())
-    {
-      do
-      {
-        if (wfd.cFileName[0] == 0) continue;
-        if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-        {
-          CStdString strSource = CUtil::AddFileToFolder(strPath, wfd.cFileName);
-          CStdString strDest = CUtil::AddFileToFolder(strFontPath, wfd.cFileName);
-          CFile::Cache(strSource, strDest);
-        }
-      }
-      while (FindNextFile((HANDLE)hFind, &wfd));
-    }
-  }
 }
 
 __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)

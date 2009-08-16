@@ -1054,11 +1054,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("myprograms.ntscmode"))
-    { // set visibility based on our other setting...
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myprograms.gameautoregion"));
-    }
     else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.enableshutdown") || strSetting.Equals("masterlock.automastermode"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1142,7 +1137,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("harddisk.remoteplayspindown") != SPIN_DOWN_NONE);
     }
-    else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword") || strSetting.Equals("servers.ftpautofatx"))
+    else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("servers.ftpserver"));
@@ -2742,35 +2737,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
     }
     pControl->SetValue(pSettingInt->GetData());
   }
-#ifdef _XBOX
-  else
-  {
-    if (g_guiSettings.GetString("subtitles.font").size())
-    {
-      //find font sizes...
-      CFileItemList items;
-      CStdString strPath = "special://xbmc/system/players/mplayer/font/";
-      strPath += g_guiSettings.GetString("subtitles.font");
-      strPath += "/";
-      CDirectory::GetDirectory(strPath, items);
-      int iCurrentSize = 0;
-      int iSize = 0;
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        CFileItemPtr pItem = items[i];
-        if (pItem->m_bIsFolder)
-        {
-          if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
-          int iSizeTmp = atoi(pItem->GetLabel().c_str());
-          if (iSizeTmp == pSettingInt->GetData())
-            iCurrentSize = iSize;
-          pControl->AddLabel(pItem->GetLabel(), iSize++);
-        }
-      }
-      pControl->SetValue(iCurrentSize);
-    }
-  }
-#endif
 }
 
 void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
@@ -2781,25 +2747,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   pControl->Clear();
   int iCurrentFont = 0;
   int iFont = 0;
-
-#ifdef _XBOX
-  // Find mplayer fonts...
-  {
-    CFileItemList items;
-    CDirectory::GetDirectory("special://xbmc/system/players/mplayer/font/", items);
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      CFileItemPtr pItem = items[i];
-      if (pItem->m_bIsFolder)
-      {
-        if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
-        if (strcmpi(pItem->GetLabel().c_str(), pSettingString->GetData().c_str()) == 0)
-          iCurrentFont = iFont;
-        pControl->AddLabel(pItem->GetLabel(), iFont++);
-      }
-    }
-  }
-#endif
 
   // find TTF fonts
   {
@@ -3268,7 +3215,6 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
     {
       if (playbackSetting)
       {
-        //  TODO: localize 2.0
         if (g_videoConfig.Has1080i() || g_videoConfig.Has720p())
           pControl->AddLabel(g_localizeStrings.Get(20049) , res); // Best Available
         else if (g_videoConfig.HasWidescreen())
