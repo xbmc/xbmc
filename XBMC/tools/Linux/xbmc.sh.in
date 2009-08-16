@@ -1,4 +1,50 @@
-#!/bin/sh
+#!/bin/bash
+
+function print_crash_report()
+{
+  FILE="xbmc_crashlog-`date +%Y%m%d_%H%M%S`.log"
+  CORE=`ls -d core* | head -n1`
+  echo "############## XBMC CRASH LOG ###############" >> $FILE
+  echo >> $FILE
+  echo "################ SYSTEM INFO ################" >> $FILE
+  echo -n " Date: " >> $FILE
+  date >> $FILE
+  echo " XBMC Options: $*" >> $FILE
+  echo -n " Arch: " >> $FILE
+  uname -m >> $FILE
+  echo -n " Kernel: " >> $FILE
+  uname -rvs >> $FILE
+  echo -n " Release: " >> $FILE
+  if which lsb_release &> /dev/null; then
+    echo >> $FILE
+    lsb_release -a 2> /dev/null | sed -e 's/^/    /' >> $FILE
+  else
+    echo "lsb_release not available" >> $FILE
+  fi
+  echo "############## END SYSTEM INFO ##############" >> $FILE
+  echo >> $FILE
+  echo "############### STACK TRACE #################" >> $FILE
+  gdb @prefix@/share/xbmc/xbmc.bin --core=$CORE --batch -ex "thread apply all bt" 2> /dev/null >> $FILE
+  rm -f $CORE
+  echo "############# END STACK TRACE ###############" >> $FILE
+  echo >> $FILE
+  echo "################# LOG FILE ##################" >> $FILE
+  echo >> $FILE
+  if [[ -f ~/.xbmc/temp/xbmc.log ]]
+  then
+    cat ~/.xbmc/temp/xbmc.log >> $FILE
+    echo >> $FILE
+  else
+    echo "Logfile not found in the usual place." >> $FILE
+    echo "Please attach it seperately." >> $FILE
+    echo "Use pastebin.com or similar for forums or IRC." >> $FILE
+  fi
+  echo >> $FILE
+  echo "############### END LOG FILE ################" >> $FILE
+  echo >> $FILE
+  echo "############ END XBMC CRASH LOG #############" >> $FILE
+  echo "Crash report available at $PWD/$FILE"
+}
 
 # Set XBMC_HOME if xbmc.bin is a symlink
 if [ -L @prefix@/share/xbmc/xbmc.bin ]; then
@@ -9,9 +55,19 @@ python @prefix@/share/xbmc/FEH.py "$@"
 if [ $? -ne 0 ]; then
   exit
 fi
-@prefix@/share/xbmc/xbmc.bin "$@"
-while [ $? -eq 65 ]
+LOOP=1
+ulimit -c unlimited
+while (( $LOOP ))
 do
+  LOOP=0
   @prefix@/share/xbmc/xbmc.bin "$@"
+  RET=$?
+  if (( $RET == 65 ))
+  then
+    LOOP=1
+  elif (( ($RET >= 131 && $RET <= 136) || $RET == 139 ))
+  then
+    print_crash_report
+  fi
 done
 
