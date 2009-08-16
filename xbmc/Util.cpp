@@ -1355,6 +1355,14 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   // checking if any of the common subdirs exist ..
   CLog::Log(LOGDEBUG,"%s: Checking for common subirs...", __FUNCTION__);
 
+  vector<CStdString> token;
+  Tokenize(strPath,token,"/\\");
+  if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+  {
+    CStdString strPath2;
+    GetParentPath(strPath,strPath2);
+    strLookInPaths.push_back(strPath2);
+  } 
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
