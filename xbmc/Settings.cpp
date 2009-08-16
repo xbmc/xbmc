@@ -1312,7 +1312,6 @@ void CSettings::LoadAdvancedSettings()
     if (setting)
     {
       const char* hide;
-      setting->SetData(g_advancedSettings.m_logLevelHint >= LOG_LEVEL_DEBUG_FREEMEM);
       if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
         setting->SetAdvanced();
     }
