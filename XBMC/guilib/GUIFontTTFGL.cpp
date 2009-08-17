@@ -41,7 +41,7 @@
 
 using namespace std;
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 
 CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
@@ -67,6 +67,7 @@ float CGUIFontTTFGL::TruncToPixel(float x)
 
 void CGUIFontTTFGL::Begin()
 {
+  /* elis
   if (m_dwNestedBeginCount == 0)
   {
     if (!m_bTextureLoaded)
@@ -83,8 +84,8 @@ void CGUIFontTTFGL::Begin()
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
       // Set the texture image -- THIS WORKS, so the pixels must be wrong.
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->w, m_texture->h, 0,
-                   GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->pixels);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->Width, m_texture->Height, 0,
+                   GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->m_pixels);
 
       VerifyGLState();
       m_bTextureLoaded = true;
@@ -111,6 +112,7 @@ void CGUIFontTTFGL::Begin()
   }
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
+  */
 }
 
 void CGUIFontTTFGL::End()
@@ -133,8 +135,9 @@ void CGUIFontTTFGL::End()
   glPopClientAttrib();
 }
 
-XBMC::TexturePtr CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
+CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
+  /* elis
   newHeight = PadPow2(newHeight);
   SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_textureWidth, newHeight, 8,
           0, 0, 0, 0xff);
@@ -170,10 +173,13 @@ XBMC::TexturePtr CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   }
 
   return newTexture;
+  */
+  return NULL; // elis remove
 }
 
 bool CGUIFontTTFGL::CopyCharToTexture(void* pGlyph, void* pCharacter)
 {
+  /* elis
   SDL_LockSurface(m_texture);
 
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)pGlyph;
@@ -202,7 +208,8 @@ bool CGUIFontTTFGL::CopyCharToTexture(void* pGlyph, void* pCharacter)
     m_bTextureLoaded = false;
   }
 
-  SDL_LockSurface(m_texture);
+  SDL_UnlockSurface(m_texture);
+  */
 
   return TRUE;
 }

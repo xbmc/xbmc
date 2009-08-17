@@ -28,6 +28,8 @@
  *
  */
 
+#include "TextureManager.h"
+
 // forward definition
 struct FT_FaceRec_;
 struct FT_LibraryRec_;
@@ -128,7 +130,7 @@ protected:
   void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
   void ClearCharacterCache();
 
-  virtual XBMC::TexturePtr ReallocTexture(unsigned int& newHeight) = 0;
+  virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
   virtual bool CopyCharToTexture(void* pGlyph, void* pCharacter) = 0;
   virtual void DeleteHardwareTexture() = 0;
   virtual void RenderInternal(SVertex* v) = 0;
@@ -137,7 +139,7 @@ protected:
   void EmboldenGlyph(FT_GlyphSlot slot);
   void ObliqueGlyph(FT_GlyphSlot slot);
 
-  XBMC::TexturePtr m_texture;        // texture that holds our rendered characters (8bit alpha only)
+  CBaseTexture* m_texture;        // texture that holds our rendered characters (8bit alpha only)
 
   unsigned int m_textureWidth;       // width of our texture
   unsigned int m_textureHeight;      // heigth of our texture
@@ -183,7 +185,7 @@ private:
   int m_referenceCount;
 };
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #include "GUIFontTTFGL.h"
 #define CGUIFontTTF CGUIFontTTFGL
 #elif defined(HAS_DX)

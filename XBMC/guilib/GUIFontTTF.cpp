@@ -174,7 +174,7 @@ void CGUIFontTTFBase::ClearCharacterCache()
 {
   if (m_texture)
   {
-    DELETE_TEXTURE(m_texture);
+    delete(m_texture);
   }
 
   DeleteHardwareTexture();
@@ -194,7 +194,7 @@ void CGUIFontTTFBase::ClearCharacterCache()
 void CGUIFontTTFBase::Clear()
 {
   if (m_texture)
-    DELETE_TEXTURE(m_texture);
+    delete(m_texture);
 
   m_texture = NULL;
   if (m_char)
@@ -253,7 +253,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   m_height = height;
 
   if (m_texture)
-    DELETE_TEXTURE(m_texture);
+    delete(m_texture);
 
   m_texture = NULL;
   if (m_char)
@@ -563,14 +563,13 @@ bool CGUIFontTTFBase::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
         return false;
       }
 
-      XBMC::TexturePtr newTexture = NULL;
+      CBaseTexture* newTexture = NULL;
       newTexture = ReallocTexture(newHeight);
       if(newTexture == NULL)
       {
         FT_Done_Glyph(glyph);
         return false;
       }
-
       m_texture = newTexture;
     }
   }
