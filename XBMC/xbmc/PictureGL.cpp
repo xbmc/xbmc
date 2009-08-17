@@ -28,7 +28,7 @@
 #include "FileSystem/FileCurl.h"
 #include "Util.h"
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 using namespace XFILE;
 
@@ -43,7 +43,7 @@ CPictureGL::~CPictureGL(void)
 
 }
 
-XBMC::TexturePtr CPictureGL::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
+CBaseTexture* CPictureGL::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
 {
   if (!m_dll.Load()) return NULL;
 
@@ -53,41 +53,45 @@ XBMC::TexturePtr CPictureGL::Load(const CStdString& strFileName, int iMaxWidth, 
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-  XBMC::TexturePtr pTexture = NULL;
-  pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
+  CBaseTexture* pTexture = NULL;
+  //pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
+  pTexture = new CGLTexture();
+  pTexture->Allocate(m_info.width, m_info.height, 32);
 
   if (pTexture)
   {
-    if (SDL_LockSurface(pTexture) == 0)
+    //if (SDL_LockSurface(pTexture) == 0)
+    //{
+    DWORD destPitch = pTexture->GetPitch();
+    DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
+    BYTE *pixels = (BYTE *)pTexture->GetPixels();
+    for (unsigned int y = 0; y < m_info.height; y++)
     {
-      DWORD destPitch = pTexture->pitch;
-      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
-      BYTE *pixels = (BYTE *)pTexture->pixels;
-      for (unsigned int y = 0; y < m_info.height; y++)
+      BYTE *dst = pixels + y * destPitch;
+      BYTE *src = m_info.texture + (m_info.height - 1 - y) * srcPitch;
+      BYTE *alpha = m_info.alpha + (m_info.height - 1 - y) * m_info.width;
+      for (unsigned int x = 0; x < m_info.width; x++)
       {
-        BYTE *dst = pixels + y * destPitch;
-        BYTE *src = m_info.texture + (m_info.height - 1 - y) * srcPitch;
-        BYTE *alpha = m_info.alpha + (m_info.height - 1 - y) * m_info.width;
-        for (unsigned int x = 0; x < m_info.width; x++)
-        {
-          *dst++ = *src++;
-          *dst++ = *src++;
-          *dst++ = *src++;
-          *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
-        }
+        *dst++ = *src++;
+        *dst++ = *src++;
+        *dst++ = *src++;
+        *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
       }
-      SDL_UnlockSurface(pTexture);
+      //}
+      //SDL_UnlockSurface(pTexture);
     }
   }
   else
     CLog::Log(LOGERROR, "%s - failed to create texture while loading image %s", __FUNCTION__, strFileName.c_str());
   m_dll.ReleaseImage(&m_info);
+  
   return pTexture;
 }
 
 // caches a skin image as a thumbnail image
 bool CPictureGL::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
 {
+  /* elis
   int iImages = g_TextureManager.Load(srcFile);
   if (iImages > 0)
   {
@@ -113,10 +117,11 @@ bool CPictureGL::CacheSkinImage(const CStdString &srcFile, const CStdString &des
       return success;
     }
   }
+  */
   return false;
 }
 
-bool CPictureGL::CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb)
+bool CPictureGL::CreateThumbnailFromSwizzledTexture(CBaseTexture* &texture, int width, int height, const CStdString &thumb)
 {
 #ifdef __GNUC__
 // FIXME: CPictureGL::CreateThumbnailFromSwizzledTexture not implemented

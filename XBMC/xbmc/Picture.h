@@ -20,17 +20,18 @@
  *
  */
 #include "DllImageLib.h"
+#include "TextureManager.h"
 
 class CPictureBase
 {
 public:
   CPictureBase(void);
   virtual ~CPictureBase(void);
-  virtual XBMC::TexturePtr Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128) = 0;
+  virtual CBaseTexture* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128) = 0;
 
   bool CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
-  virtual bool CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb) = 0;
+  virtual bool CreateThumbnailFromSwizzledTexture(CBaseTexture* &texture, int width, int height, const CStdString &thumb) = 0;
   int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror=false);
 
   ImageInfo GetInfo() const { return m_info; };
@@ -51,7 +52,7 @@ protected:
   DllImageLib m_dll;
   ImageInfo m_info;
 private:
-#ifndef HAS_SDL
+#ifdef HAS_DX
   struct VERTEX
   {
     D3DXVECTOR4 p;
@@ -62,7 +63,7 @@ private:
 #endif
 };
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #include "PictureGL.h"
 #define CPicture CPictureGL
 #elif defined(HAS_DX)

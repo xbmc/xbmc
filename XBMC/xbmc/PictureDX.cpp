@@ -43,7 +43,7 @@ CPictureDX::~CPictureDX(void)
 
 }
 
-XBMC::TexturePtr CPictureDX::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
+CBaseTexture* CPictureDX::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
 {
   if (!m_dll.Load()) return NULL;
 
@@ -53,14 +53,15 @@ XBMC::TexturePtr CPictureDX::Load(const CStdString& strFileName, int iMaxWidth, 
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-  XBMC::TexturePtr pTexture = NULL;
+  CBaseTexture* pTexture = new CTexture();
+  pTexture->Allocate(m_info.width, m_info.height, 32);
 
-  g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture, NULL);
+  //g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture, NULL);
 
   if (pTexture)
   {
     D3DLOCKED_RECT lr;
-    if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
+    if ( D3D_OK == pTexture->GetTextureObject()->LockRect( 0, &lr, NULL, 0 ))
     {
       DWORD destPitch = lr.Pitch;
       // CxImage aligns rows to 4 byte boundaries
@@ -80,7 +81,7 @@ XBMC::TexturePtr CPictureDX::Load(const CStdString& strFileName, int iMaxWidth, 
           *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
         }
       }
-      pTexture->UnlockRect( 0 );
+      pTexture->GetTextureObject()->UnlockRect( 0 );
     }
   }
   else
@@ -99,20 +100,20 @@ bool CPictureDX::CacheSkinImage(const CStdString &srcFile, const CStdString &des
     bool linear = false;
     CTextureArray baseTexture = g_TextureManager.GetTexture(srcFile);
     CBaseTexture* texture = baseTexture.m_textures[0];
-    if (texture && texture->m_pTexture)
+    if (texture && texture->GetTextureObject())
     {
       bool success(false);
       CPicture pic;
       if (!linear)
       { // damn, have to copy it to a linear texture first :(
-        return CreateThumbnailFromSwizzledTexture(texture->m_pTexture, width, height, destFile);
+        return CreateThumbnailFromSwizzledTexture(texture, width, height, destFile);
       }
       else
       {
         D3DLOCKED_RECT lr;
-        texture->m_pTexture->LockRect(0, &lr, NULL, 0);
+        texture->GetTextureObject()->LockRect(0, &lr, NULL, 0);
         success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, destFile);
-        texture->m_pTexture->UnlockRect(0);
+        texture->GetTextureObject()->UnlockRect(0);
       }
       g_TextureManager.ReleaseTexture(srcFile);
       return success;
@@ -121,14 +122,14 @@ bool CPictureDX::CacheSkinImage(const CStdString &srcFile, const CStdString &des
   return false;
 }
 
-bool CPictureDX::CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb)
+bool CPictureDX::CreateThumbnailFromSwizzledTexture(CBaseTexture* &texture, int width, int height, const CStdString &thumb)
 {
   LPDIRECT3DTEXTURE9 linTexture = NULL;
   if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &linTexture))
   {
     LPDIRECT3DSURFACE9 source;
     LPDIRECT3DSURFACE9 dest;
-    texture->GetSurfaceLevel(0, &source);
+    texture->GetTextureObject()->GetSurfaceLevel(0, &source);
     linTexture->GetSurfaceLevel(0, &dest);
     D3DXLoadSurfaceFromSurface(dest, NULL, NULL, source, NULL, NULL, D3DX_FILTER_NONE, 0);
     D3DLOCKED_RECT lr;

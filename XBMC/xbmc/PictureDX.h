@@ -21,6 +21,7 @@
  */
 #include "DllImageLib.h"
 #include "Picture.h"
+#include "TextureManager.h"
 
 #ifdef HAS_DX
 
@@ -29,8 +30,8 @@ class CPictureDX : public CPictureBase
 public:
   CPictureDX(void);
   virtual ~CPictureDX(void);
-  virtual XBMC::TexturePtr Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
-  bool CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb);
+  virtual CBaseTexture* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
+  bool CreateThumbnailFromSwizzledTexture(CBaseTexture* &texture, int width, int height, const CStdString &thumb);
 
   // caches a skin image as a thumbnail image
   virtual bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
