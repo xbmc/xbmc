@@ -382,6 +382,95 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Debug (OpenGL)|Win32"
+			OutputDirectory="XBMC\$(ConfigurationName)"
+			IntermediateDirectory="XBMC\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;HAS_WGL"
+				MinimalRebuild="true"
+				ExceptionHandling="0"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="2"
+				ProgramDataBaseFileName="$(IntDir)\XBMC.pdb"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
+				AdditionalDependencies="D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				OutputFile="$(OutDir)\XBMC.exe"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories=""
+				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
+				ModuleDefinitionFile=""
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
+				SubSystem="2"
+				LargeAddressAware="2"
+				EntryPointSymbol=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -954,6 +1043,14 @@
 								</FileConfiguration>
 								<FileConfiguration
 									Name="Release (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										UsePrecompiledHeader="0"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug (OpenGL)|Win32"
 									>
 									<Tool
 										Name="VCCLCompilerTool"
@@ -1887,6 +1984,14 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
+							Name="Debug (OpenGL)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
 							Name="Debug|Win32"
 							>
 							<Tool
@@ -1974,6 +2079,14 @@
 								/>
 							</FileConfiguration>
 							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Debug|Win32"
 								>
 								<Tool
@@ -2019,6 +2132,14 @@
 							</FileConfiguration>
 							<FileConfiguration
 								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -2078,6 +2199,14 @@
 								/>
 							</FileConfiguration>
 							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Debug|Win32"
 								>
 								<Tool
@@ -2130,6 +2259,14 @@
 								/>
 							</FileConfiguration>
 							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Debug|Win32"
 								>
 								<Tool
@@ -2175,6 +2312,14 @@
 							</FileConfiguration>
 							<FileConfiguration
 								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -2398,6 +2543,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\Application.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\ApplicationRenderer.cpp"
 				>
 			</File>
@@ -2445,6 +2594,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -2460,6 +2617,14 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\XBVideoConfig.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\XBVideoConfig.h"
+				>
 			</File>
 			<Filter
 				Name="Settings"
@@ -3272,6 +3437,14 @@
 						/>
 					</FileConfiguration>
 					<FileConfiguration
+						Name="Debug (OpenGL)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
 						Name="Debug|Win32"
 						>
 						<Tool
@@ -3334,38 +3507,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\PartyModeManager.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Picture.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Picture.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureDX.cpp"
-					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureDX.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureGL.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureGL.h"
 					>
 				</File>
 				<File
@@ -3534,10 +3675,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\XBAudioConfig.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\XBVideoConfig.cpp"
 					>
 				</File>
 				<File
@@ -4783,6 +4920,14 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
+							Name="Debug (OpenGL)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
 							Name="Debug|Win32"
 							>
 							<Tool
@@ -4860,6 +5005,14 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -4947,6 +5100,14 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
+							Name="Debug (OpenGL)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
 							Name="Debug|Win32"
 							>
 							<Tool
@@ -5027,6 +5188,14 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
+							Name="Debug (OpenGL)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
 							Name="Debug|Win32"
 							>
 							<Tool
@@ -5100,6 +5269,14 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -5212,6 +5389,14 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -5357,16 +5542,152 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="WinSystems"
+				>
+				<Filter
+					Name="Keyboard"
+					>
+					<File
+						RelativePath="..\..\xbmc\KeyboardStat.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\KeyboardStat.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\XBMC_keyboard.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Window"
+					>
+					<File
+						RelativePath="..\..\xbmc\WinSystem.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinSystem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinSystemWin32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinSystemWin32.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Mouse"
+					>
+				</Filter>
+				<Filter
+					Name="Events"
+					>
+					<File
+						RelativePath="..\..\xbmc\WinEvents.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinEventsWin32.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinEventsWin32.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="RenderSystems"
+				>
+				<File
+					RelativePath="..\..\xbmc\RenderSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\RenderSystem.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\RenderSystemDX.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\RenderSystemDX.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\RenderSystemGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\RenderSystemGL.h"
+					>
+				</File>
+				<Filter
+					Name="GLContext"
+					>
+					<File
+						RelativePath="..\..\xbmc\GLContext.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\GLContextWGL.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\GLContextWGL.h"
+						>
+					</File>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="Picture"
+				>
+				<File
+					RelativePath="..\..\xbmc\Picture.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Picture.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PictureDX.cpp"
+					>
+					<FileConfiguration
+						Name="Debug (SDL)|Win32"
+						ExcludedFromBuild="true"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PictureDX.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PictureGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\PictureGL.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			>
 			<File
 				RelativePath="..\..\xbmc\utils\AlarmClock.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\Application.h"
 				>
 			</File>
 			<File
@@ -5951,10 +6272,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\XBTimeZone.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\XBVideoConfig.h"
 				>
 			</File>
 			<File

@@ -188,7 +188,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils"
+				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -287,6 +287,79 @@
 				AdditionalLibraryDirectories=""
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug (OpenGL)|Win32"
+			OutputDirectory="guilib\$(ConfigurationName)"
+			IntermediateDirectory="guilib\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;HAS_WGL"
+				StringPooling="false"
+				MinimalRebuild="true"
+				ExceptionHandling="0"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				EnableEnhancedInstructionSet="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="include.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\guilib.lib"
+				AdditionalLibraryDirectories=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -573,6 +646,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -642,6 +723,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1049,6 +1138,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -1098,6 +1195,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1157,6 +1262,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -1178,38 +1291,6 @@
 			Name="common"
 			>
 			<File
-				RelativePath="..\..\guilib\common\DirectInput.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\DirectInput.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\DirectInputKeyboard.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\DirectInputKeyboard.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\DirectInputMouse.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\DirectInputMouse.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\Keyboard.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\Keyboard.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\common\Mouse.cpp"
 				>
 			</File>
@@ -1223,14 +1304,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\common\SDLJoystick.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\SDLKeyboard.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\SDLKeyboard.h"
 				>
 			</File>
 			<File
@@ -1293,11 +1366,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\guilib\RenderWindow.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\RenderWindow.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\guilib\Surface.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\guilib\Surface.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\Texture.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\guilib\Texture.h"
 					>
 				</File>
 				<File
@@ -1353,19 +1442,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\guilib\TextureManagerDX.cpp"
+					RelativePath="..\..\guilib\TextureDX.cpp"
 					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\guilib\TextureManagerDX.h"
+					RelativePath="..\..\guilib\TextureDX.h"
 					>
 				</File>
 			</Filter>
@@ -1419,11 +1500,11 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\guilib\TextureManagerGL.cpp"
+					RelativePath="..\..\guilib\TextureGL.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\guilib\TextureManagerGL.h"
+					RelativePath="..\..\guilib\TextureGL.h"
 					>
 				</File>
 			</Filter>
