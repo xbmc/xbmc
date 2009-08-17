@@ -2080,6 +2080,7 @@
   <string id="22018">Live channels</string>
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
+  <string id="22021">Allowed error in aspect ratio (%)</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
@@ -2171,5 +2172,4 @@
   <string id="33069">Backgrounds</string>
   <string id="33070">Custom background</string>
   <string id="33071">Custom backgrounds</string>
-  <string id="33072">Allowed error in aspect ratio (%)</string>
 </strings>
