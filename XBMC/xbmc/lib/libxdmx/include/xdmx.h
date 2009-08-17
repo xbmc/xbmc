@@ -1,6 +1,8 @@
 #ifndef LIBXDMX_H_
 #define LIBXDMX_H_
 
+#pragma once
+
 #include <string>
 
 #if defined(WIN32)
