@@ -56,7 +56,7 @@ private:
   int m_DefaultAmount[MAX_AXES];
   int m_AxisId;
   int m_ButtonId;
-  Uint8 m_HatState;
+  unsigned char m_HatState;
  	int m_HatId; 
   int m_JoyId;
   int m_NumAxes;

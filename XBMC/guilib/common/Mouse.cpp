@@ -22,11 +22,7 @@
 #include "include.h"
 #include "Mouse.h"
 
-#if defined (HAS_SDL)
 #include "SDLMouse.h"
-#else
-#include "DirectInputMouse.h"
-#endif
 
 #include "../Key.h"
 #include "../GraphicContext.h"
@@ -59,11 +55,7 @@ void CMouse::Initialize(void *appData)
     return; // nothing to do
 
   // create the mouse device
-#if defined (HAS_SDL)
   m_mouseDevice = new CSDLMouse();
-#else
-  m_mouseDevice = new CDirectInputMouse();
-#endif
 
   if (m_mouseDevice)
     m_mouseDevice->Initialize(appData);

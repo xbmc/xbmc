@@ -129,7 +129,7 @@ void CJoystick::Update()
     int numax = SDL_JoystickNumAxes(joy);
     numax = (numax>MAX_AXES)?MAX_AXES:numax;
     int axisval;
-    Uint8 hatval;
+    unsigned char hatval;
 
     // get button states first, they take priority over axis
     for (int b = 0 ; b<numb ; b++)

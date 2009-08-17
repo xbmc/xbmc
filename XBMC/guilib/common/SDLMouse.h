@@ -5,7 +5,6 @@
 #include "../Geometry.h"
 #include "Mouse.h"
 
-#ifdef HAS_SDL
 
 #define MOUSE_DOUBLE_CLICK_LENGTH 500L
 #define MOUSE_ACTIVE_LENGTH   5000L
@@ -30,9 +29,8 @@ public:
   virtual bool Update(MouseState &state);
 
 private:
-  SDL_Cursor *m_visibleCursor;
-  SDL_Cursor *m_hiddenCursor;
+  //SDL_Cursor *m_visibleCursor;
+  //SDL_Cursor *m_hiddenCursor;
 };
-#endif
 
 #endif
