@@ -44,21 +44,6 @@ CGUITextureManager g_TextureManager;
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-CBaseTexture::CBaseTexture()
-{
-  m_loadedToGPU = false;
-  id = 0;
-  m_pixels = NULL;
-  m_pTexture = NULL;
-}
-
-CBaseTexture::~CBaseTexture()
-{
-
-}
-/************************************************************************/
-/*                                                                      */
-/************************************************************************/
 CTextureArray::CTextureArray(int width, int height, int loops,  bool texCoordsArePixels)
 {
   m_width = width;
@@ -105,8 +90,8 @@ void CTextureArray::Add(CBaseTexture *texture, int delay)
   m_textures.push_back(texture);
   m_delays.push_back(delay ? delay * 2 : 100);
 
-  m_texWidth = texture->textureWidth;
-  m_texHeight = texture->textureHeight;
+  m_texWidth = texture->GetWidth();
+  m_texHeight = texture->GetHeight();
   m_texCoordsArePixels = false;
 }
 
@@ -222,7 +207,7 @@ void CTextureMap::Add(CBaseTexture* texture, int delay)
   m_texture.Add(texture, delay);
 
   if (texture)
-    m_memUsage += sizeof(CBaseTexture) + (texture->textureWidth * texture->textureHeight * 4); 
+    m_memUsage += sizeof(CTexture) + (texture->GetWidth() * texture->GetHeight() * 4); 
 }
 
 /************************************************************************/
@@ -334,7 +319,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   //Lock here, we will do stuff that could break rendering
   CSingleLock lock(g_graphicsContext);
 
-  XBMC::TexturePtr pTexture;
+  CBaseTexture* pTexture = NULL;
   XBMC::PalettePtr pPal = NULL;
 
 #ifdef _DEBUG
@@ -342,30 +327,28 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   QueryPerformanceCounter(&start);
 #endif
 
-  D3DXIMAGE_INFO info;
-
   if (strPath.Right(4).ToLower() == ".gif")
   {
     CTextureMap* pMap;
 
     if (bundle >= 0)
     {
-      XBMC::TexturePtr *pTextures;
+      CBaseTexture *pTextures;
       int nLoops = 0;
       int* Delay;
-      int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &info, &pTextures, &pPal, nLoops, &Delay);
+      int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &pTextures, &pPal, nLoops, &Delay);
       if (!nImages)
       {
         CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
         return 0;
       }
 
-      pMap = new CTextureMap(strTextureName, info.Width, info.Height, nLoops);
+      pMap = new CTextureMap(strTextureName, pTextures->GetWidth(), pTextures->GetHeight(), nLoops);
       for (int iImage = 0; iImage < nImages; ++iImage)
       {
-        CTexture *newTexture = new CTexture(pTextures[iImage], false);
-        pMap->Add(newTexture, Delay[iImage]);
-        DELETE_TEXTURE(pTextures[iImage]);
+        //CBaseTexture *newTexture = new CTexture(pTextures[iImage]);
+        pMap->Add(&pTextures[iImage], Delay[iImage]);
+        //delete &pTextures[iImage];
       }
 
       delete [] pTextures;
@@ -396,6 +379,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
         if (glTexture)
         {
+          glTexture->Allocate(w, h, 32);
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
 
           COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
@@ -421,7 +405,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
               *dest++ = col.x;
             }
           }
-          glTexture->Update(w, h, w * 4, pDest, false);
+          glTexture->LoadFromMemory(h, w * 4, 32, pDest);
           pMap->Add(glTexture, pImage->Delay);
           free(pDest);
         }
@@ -441,16 +425,17 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     return 1;
   } // of if (strPath.Right(4).ToLower()==".gif")
 
-  CTexture *renderTexture;
+  CBaseTexture *renderTexture;
   if (bundle >= 0)
   {
-    if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &info, &pTexture, &pPal)))  
+    if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &pTexture, &pPal)))  
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
       return 0;
     }
-    renderTexture = new CTexture(pTexture, false);
-    DELETE_TEXTURE(pTexture);
+    //renderTexture = new CTexture(*pTexture);
+    renderTexture = pTexture;
+    //delete(pTexture);
   }
   else
   {
@@ -460,13 +445,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
 
     renderTexture = new CTexture();
-    renderTexture->Load(texturePath);
-    
-    info.Width = renderTexture->imageWidth;
-    info.Height = renderTexture->imageHeight;
+    renderTexture->LoadFromFile(texturePath);
   }
 
-  CTextureMap* pMap = new CTextureMap(strTextureName, info.Width, info.Height, 0);
+  CTextureMap* pMap = new CTextureMap(strTextureName, renderTexture->GetWidth(), renderTexture->GetHeight(), 0);
   pMap->Add(renderTexture, 100);
   m_vecTextures.push_back(pMap);
 

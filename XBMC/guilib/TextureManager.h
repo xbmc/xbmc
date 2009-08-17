@@ -27,39 +27,11 @@
 #ifndef GUILIB_TEXTUREMANAGER_H
 #define GUILIB_TEXTUREMANAGER_H
 
-#include "TextureBundle.h"
+
 #include <vector>
-#include "TextureManager.h"
+#include "TextureBundle.h"
 
 #pragma once
-
-// This will be subclass to render spec (DX, GL etc.)
-/************************************************************************/
-/*                                                                      */
-/************************************************************************/
-class CBaseTexture
-{
-
-public:
-  CBaseTexture();
-  CBaseTexture(XBMC::TexturePtr surface, bool loadToGPU = true, bool freeSurface = false);
-  virtual ~CBaseTexture();
-
-  virtual bool Load(const CStdString& texturePath) = 0;
-  virtual void LoadToGPU() = 0;
-  virtual void Update(XBMC::TexturePtr surface, bool loadToGPU, bool freeSurface) = 0;
-  virtual void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) = 0; 
-
-  int imageWidth;
-  int imageHeight;
-  int textureWidth;
-  int textureHeight;
-  unsigned int id;
-  unsigned char* m_pixels;
-  bool m_loadedToGPU;
-  bool m_bRequiresPower2Textures;
-  XBMC::TexturePtr m_pTexture;
-};
 
 /************************************************************************/
 /*                                                                      */
@@ -161,14 +133,6 @@ protected:
 };
 
 extern CGUITextureManager g_TextureManager;
-
-#ifdef HAS_SDL_OPENGL
-#include "TextureManagerGL.h"
-#define CTexture CGLTexture
-#elif defined(HAS_DX)
-#include "TextureManagerDX.h"
-#define CTexture CDXTexture
-#endif
 
 /*!
 \ingroup textures

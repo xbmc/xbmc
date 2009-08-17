@@ -24,7 +24,7 @@
 #include "cores/ssrc.h"         // for M_PI
 #include "utils/GUIInfoManager.h"
 #include "Settings.h"
-#include "TextureManagerGL.h"
+#include "TextureManager.h"
 
 using namespace std;
 
@@ -58,18 +58,7 @@ void CSlideShowPic::Close()
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
   {
-#ifndef HAS_SDL
-    m_pImage->Release();
-#elif defined(HAS_SDL_OPENGL)
-    g_graphicsContext.BeginPaint();
-    if (glIsTexture(m_pImage->id)) {
-      glDeleteTextures(1, &m_pImage->id);
-    }
-    g_graphicsContext.EndPaint();
     delete m_pImage;
-#else
-    SDL_FreeSurface(m_pImage);
-#endif
     m_pImage = NULL;
   }
   m_bIsLoaded = false;
@@ -78,7 +67,7 @@ void CSlideShowPic::Close()
   m_bTransistionImmediately = false;
 }
 
-void CSlideShowPic::SetTexture(int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   Close();
@@ -86,7 +75,11 @@ void CSlideShowPic::SetTexture(int iSlideNumber, XBMC::TexturePtr pTexture, int 
   m_bNoEffect = false;
   m_bTransistionImmediately = false;
   m_iSlideNumber = iSlideNumber;
-#ifdef HAS_SDL_OPENGL
+
+  //m_pImage = new CTexture();
+  m_pImage = pTexture;
+  /*
+#ifdef HAS_GL
   // lock the graphics context, as opengl does not allow
   // creating of textures during a glBegin(), glEnd() block
   // and this is called from a different thread
@@ -96,6 +89,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, XBMC::TexturePtr pTexture, int 
 #else
   m_pImage = pTexture;
 #endif
+  */
   m_fWidth = (float)iWidth;
   m_fHeight = (float)iHeight;
   // reset our counter
@@ -180,25 +174,17 @@ int CSlideShowPic::GetOriginalHeight()
     return m_iOriginalHeight;
 }
 
-void CSlideShowPic::UpdateTexture(XBMC::TexturePtr pTexture, int iWidth, int iHeight)
+void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture, int iWidth, int iHeight)
 {
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
   {
-#ifndef HAS_SDL
-    m_pImage->Release();
-#elif defined(HAS_SDL_OPENGL)
-     // release the lock since destructor locks graphics context. avoid dead locks with rendering loop
-    CGLTexture *pTemp = m_pImage;
+    delete m_pImage;
     m_pImage = NULL;
-    lock.Leave();
-    delete pTemp;
-    lock.Enter();
-#else
-    SDL_FreeSurface(m_pImage);
-#endif
   }
-#ifdef HAS_SDL_OPENGL
+  m_pImage = pTexture;
+  /*
+#ifdef HAS_GL
   // avoid deadlock with graphicscontext
   lock.Leave();
   CGLTexture *pTemp = new CGLTexture(pTexture, false, true);
@@ -207,6 +193,7 @@ void CSlideShowPic::UpdateTexture(XBMC::TexturePtr pTexture, int iWidth, int iHe
 #else
   m_pImage = pTexture;
 #endif
+  */
   m_fWidth = (float)iWidth;
   m_fHeight = (float)iHeight;
 }
@@ -625,24 +612,31 @@ void CSlideShowPic::Render()
     if (oy[i] < fSmallY) oy[i] = fSmallY;
     if (oy[i] > fSmallY + fSmallHeight) oy[i] = fSmallY + fSmallHeight;
   }
-#ifndef HAS_SDL
+
+  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
+  /*
+#ifdef HAS_DX
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, GL_LINE);
 #else
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
 #endif
+  */
 }
 
-#ifndef HAS_SDL
-void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
-#elif defined(HAS_SDL_OPENGL)
+/*
+#ifdef HAS_DX
+void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
+#elif defined(HAS_GL)
 void CSlideShowPic::Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode)
 #else
-void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor)
+void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor)
 #endif
+*/
+void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor)
 {
-#ifndef HAS_SDL
+#ifdef HAS_DX
   struct VERTEX
   {
     D3DXVECTOR4 p;
@@ -666,7 +660,7 @@ void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD 
   vertex[3].tv = 1.0f;
 
   // Set state to render the image
-  if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
+  if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture->GetTextureObject() );
   g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -682,7 +676,7 @@ void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD 
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, fillmode );
+  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
   g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
@@ -693,12 +687,12 @@ void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD 
   g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
   if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
 
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
   g_graphicsContext.BeginPaint();
   if (pTexture)
   {
-    pTexture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, pTexture->id);
+    // elis pTexture->LoadToGPU();
+    glBindTexture(GL_TEXTURE_2D, pTexture->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
 
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -714,14 +708,14 @@ void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD 
   }
   else
     glDisable(GL_TEXTURE_2D);
-  glPolygonMode(GL_FRONT_AND_BACK, fillmode);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   glBegin(GL_QUADS);
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
   if (pTexture)
   {
-    u2 = (float)pTexture->imageWidth / pTexture->textureWidth;
-    v2 = (float)pTexture->imageHeight / pTexture->textureHeight;
+    u2 = (float)pTexture->GetWidth() / pTexture->GetHeight();
+    v2 = (float)pTexture->GetWidth() / pTexture->GetHeight();
   }
 
   glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
