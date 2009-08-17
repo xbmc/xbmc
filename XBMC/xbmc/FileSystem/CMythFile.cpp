@@ -639,4 +639,12 @@ bool CCMythFile::Record(bool bOnOff)
   return false;
 }
 
-
+bool CCMythFile::GetCommBreakList(cmyth_commbreaklist_t& commbreaklist)
+{
+  if (m_program)
+  {
+    commbreaklist = m_dll->get_commbreaklist(m_control, m_program);
+    return true;
+  }
+  return false;
+}
