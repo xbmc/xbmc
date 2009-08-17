@@ -50,6 +50,8 @@ class CFileItemList;
 #include "utils/Network.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
+#include "WinSystem.h"
+#include "RenderSystem.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
@@ -58,7 +60,7 @@ class CFileItemList;
 #endif
 #ifdef _WIN32PC
 #include "WIN32Util.h"
-#include "WINMessageHandler.h"
+// elis #include "WINMessageHandler.h"
 #endif
 
 class CWebServer;
@@ -153,6 +155,7 @@ public:
   bool IsPlayingVideo() const;
   bool IsPlayingFullScreenVideo() const;
   bool IsStartingPlayback() const { return m_bPlaybackStarting; }
+  static int OnEvent(unsigned int eventType, unsigned long param1, unsigned long param2);
   bool OnKey(CKey& key);
   bool OnAction(CAction &action);
   void RenderMemoryStatus();
@@ -284,7 +287,7 @@ protected:
   // screensaver
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
-#ifndef HAS_SDL
+#ifdef HAS_DX
   D3DGAMMARAMP m_OldRamp;
 #else
   Uint16 m_OldRampRed[256];
@@ -342,7 +345,6 @@ protected:
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
   void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
-  void InitBasicD3D();
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
@@ -387,7 +389,7 @@ protected:
 #endif
 #ifdef _WIN32PC
   CWIN32Util::SystemParams::SysParam *m_SSysParam;
-  CWINMessageHandler  m_messageHandler;
+  // elis CWINMessageHandler  m_messageHandler;
 #endif
 };
 

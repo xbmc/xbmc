@@ -143,7 +143,7 @@
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowSettingsProfile.h"
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #include "GUIWindowTestPatternGL.h"
 #endif
 #ifdef HAS_DX
@@ -246,6 +246,9 @@
 #include "lib/libcdio/logging.h"
 #include "MediaManager.h"
 
+#include "WinEvents.h"
+#include "KeyboardStat.h"
+
 #ifdef _LINUX
 #include "XHandle.h"
 #endif
@@ -269,6 +272,11 @@ using namespace DBUSSERVER;
 #define USE_RELEASE_LIBS
 
 #if defined(_WIN32)
+  #ifdef HAS_GL
+    #pragma comment (lib,"opengl32.lib")
+    #pragma comment (lib,"glu32.lib")
+    #pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib") 
+  #endif
  #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #if defined(HAS_FILESYSTEM)
     #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -383,104 +391,7 @@ CApplication::~CApplication(void)
 #endif
 }
 
-// text out routine for below
-#ifdef HAS_XFONT
-static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...)
-{
-  wchar_t buf[100];
-  va_list args;
-  va_start(args, fmt);
-  _vsnwprintf(buf, 100, fmt, args);
-  va_end(args);
-
-  if (!(iLine & 0x8000))
-    CLog::Log(LOGFATAL, "%S", buf);
-
-  bool Center = (iLine & 0x10000) > 0;
-  pFont->SetTextAlignment(Center ? XFONT_TOP | XFONT_CENTER : XFONT_TOP | XFONT_LEFT);
-
-  iLine &= 0x7fff;
-
-  for (int i = 0; i < 2; i++)
-  {
-    D3DRECT rc = { 0, 50 + 25 * iLine, 720, 50 + 25 * (iLine + 1) };
-    D3DDevice::Clear(1, &rc, D3DCLEAR_TARGET, 0, 0, 0);
-    pFont->TextOut(g_application.m_pBackBuffer, buf, -1, Center ? 360 : 80, 50 + 25*iLine);
-    D3DDevice::Present(0, 0, 0, 0);
-  }
-}
-#endif
-
 HWND g_hWnd = NULL;
-
-void CApplication::InitBasicD3D()
-{
-#ifndef HAS_SDL
-  bool bPal = g_videoConfig.HasPAL();
-  CLog::Log(LOGINFO, "Init display in default mode: %s", bPal ? "PAL" : "NTSC");
-  // init D3D with defaults (NTSC or PAL standard res)
-  m_d3dpp.BackBufferWidth = 720;
-  m_d3dpp.BackBufferHeight = bPal ? 576 : 480;
-  m_d3dpp.BackBufferFormat = D3DFMT_LIN_X8R8G8B8;
-  m_d3dpp.BackBufferCount = 1;
-  m_d3dpp.EnableAutoDepthStencil = FALSE;
-  m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
-  m_d3dpp.PresentationInterval = 0;
-  m_d3dpp.Windowed = TRUE;
-  m_d3dpp.hDeviceWindow = g_hWnd;
-
-  if (!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
-  {
-    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
-    Sleep(INFINITE); // die
-  }
-#endif
-
-  // Check if we have the required modes available
-#ifndef HAS_SDL
-  g_videoConfig.GetModes(m_pD3D);
-#else
-  g_videoConfig.GetModes();
-#endif
-  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-  {
-    // Oh uh - doesn't look good for starting in their wanted screenmode
-    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
-    CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
-    CLog::Log(LOGERROR, "Done reset");
-  }
-
-  // Transfer the resolution information to our graphics context
-#ifdef HAS_DX
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
-#endif
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
-
-  // Create the device
-#if !defined(HAS_SDL)
-  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
-  {
-    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
-    Sleep(INFINITE); // die
-  }
-#endif
-
-  if (m_splash)
-  {
-#ifndef HAS_SDL_OPENGL
-    m_splash->Stop();
-#else
-    m_splash->Hide();
-#endif
-  }
-
-#ifndef HAS_SDL
-
-  m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif
-}
 
 // This function does not return!
 void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork)
@@ -537,11 +448,7 @@ HRESULT CApplication::Create(HWND hWnd)
   tzset();   // Initialize timezone information variables
 #endif
 
-  g_hWnd = hWnd;
-
-#ifndef HAS_SDL
-  HRESULT hr = S_OK;
-#endif
+  //elis g_hWnd = hWnd;
 
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = GetCurrentThreadId();
@@ -613,15 +520,11 @@ HRESULT CApplication::Create(HWND hWnd)
     g_stSettings.m_logFolder = "special://masterprofile/";
   }
 
-#ifdef HAS_XRANDR
-  g_xrandr.LoadCustomModeLinesToAllOutputs();
-#endif
-
   // Init our DllLoaders emu env
   init_emu_environ();
 
-
-#ifndef HAS_SDL
+  /* elis
+#ifdef HAS_DX
   CLog::Log(LOGNOTICE, "Setup DirectX");
   // Create the Direct3D object
   if ( NULL == ( m_pD3D = Direct3DCreate9(D3D_SDK_VERSION) ) )
@@ -633,9 +536,9 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Setup SDL");
 
   /* Clean up on exit, exit on window close and interrupt */
-  atexit(SDL_Quit);
+  //elis atexit(SDL_Quit);
 
-  Uint32 sdlFlags = SDL_INIT_VIDEO;
+
 
 #ifdef HAS_SDL_AUDIO
   sdlFlags |= SDL_INIT_AUDIO;
@@ -653,12 +556,14 @@ HRESULT CApplication::Create(HWND hWnd)
   setenv("__GL_YIELD", "USLEEP", 0);
 #endif
 
+#ifdef HAS_SDL
+  Uint32 sdlFlags = SDL_INIT_VIDEO;
   if (SDL_Init(sdlFlags) != 0)
   {
         CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
         return E_FAIL;
   }
-
+#endif
 
   // for python scripts that check the OS
 #ifdef __APPLE__
@@ -668,13 +573,15 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
+  /* elis
   CPicture pic;
   SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon32x32.png")), NULL);
-#endif
+  */
 #endif
 
   //list available videomodes
-#ifndef HAS_SDL
+  /* elis
+#ifdef HAS_DX
   g_videoConfig.GetModes(m_pD3D);
   //init the present parameters with values that are supported
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
@@ -682,8 +589,8 @@ HRESULT CApplication::Create(HWND hWnd)
 #else
   g_videoConfig.GetModes();
   //init the present parameters with values that are supported
-  RESOLUTION initialResolution = g_videoConfig.GetInitialMode();
 #endif
+  */ 
 
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
@@ -694,73 +601,17 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_VERSION(&wmInfo.version)
   int te = SDL_GetWMInfo( &wmInfo );
   g_hWnd = wmInfo.window;
-  m_messageHandler.Initialize();
+  // elis m_messageHandler.Initialize();
 #endif
 
   // Create the Mouse and Keyboard devices
-  g_Mouse.Initialize(&hWnd);
-  g_Keyboard.Initialize(hWnd);
+  // elis g_Mouse.Initialize(&hWnd);
+  g_Keyboard.Initialize();
 #ifdef HAS_LIRC
   g_RemoteControl.Initialize();
 #endif
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize(hWnd);
-#endif
-
-#ifdef HAS_GAMEPAD
-  //Check for LTHUMBCLICK+RTHUMBCLICK and BLACK+WHITE, no LTRIGGER+RTRIGGER
-  if (((m_DefaultGamepad.wButtons & (XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB)) && !(m_DefaultGamepad.wButtons & (KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER))) ||
-      ((m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE]) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)))
-  {
-    CLog::Log(LOGINFO, "Key combination detected for userdata deletion (LTHUMB+RTHUMB or BLACK+WHITE)");
-    InitBasicD3D();
-    // D3D is up, load default font
-    XFONT* pFont;
-    if (XFONT_OpenDefaultFont(&pFont) != S_OK)
-    {
-      CLog::Log(LOGFATAL, "FATAL ERROR: Unable to open default font!");
-      Sleep(INFINITE); // die
-    }
-    // defaults for text
-    pFont->SetBkMode(XFONT_OPAQUE);
-    pFont->SetBkColor(D3DCOLOR_XRGB(0, 0, 0));
-    pFont->SetTextColor(D3DCOLOR_XRGB(0xff, 0x20, 0x20));
-    int iLine = 0;
-    FEH_TextOut(pFont, iLine++, L"Key combination for userdata deletion detected!");
-    FEH_TextOut(pFont, iLine++, L"Are you sure you want to proceed?");
-    iLine++;
-    FEH_TextOut(pFont, iLine++, L"A for yes, any other key for no");
-    bool bAnyAnalogKey = false;
-    while (m_DefaultGamepad.wPressedButtons != XBGAMEPAD_NONE) // wait for user to let go of lclick + rclick
-    {
-      ReadInput();
-    }
-    while (m_DefaultGamepad.wPressedButtons == XBGAMEPAD_NONE && !bAnyAnalogKey)
-    {
-      ReadInput();
-      bAnyAnalogKey = m_DefaultGamepad.bPressedAnalogButtons[0] || m_DefaultGamepad.bPressedAnalogButtons[1] || m_DefaultGamepad.bPressedAnalogButtons[2] || m_DefaultGamepad.bPressedAnalogButtons[3] || m_DefaultGamepad.bPressedAnalogButtons[4] || m_DefaultGamepad.bPressedAnalogButtons[5] || m_DefaultGamepad.bPressedAnalogButtons[6] || m_DefaultGamepad.bPressedAnalogButtons[7];
-    }
-    if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
-    {
-      CUtil::DeleteGUISettings();
-      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"database\\"));
-      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"thumbnails\\"));
-      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"playlists\\"));
-      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"cache\\"));
-      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"profiles\\"));
-      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations\\"));
-      CFile::Delete(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"avpacksettings.xml"));
-      g_settings.m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+1,g_settings.m_vecProfiles.end());
-
-      g_settings.SaveProfiles( PROFILES_FILE );
-
-      char szXBEFileName[1024];
-
-      CIoSupport::GetXbePath(szXBEFileName);
-      CUtil::RunXBE(szXBEFileName);
-    }
-    m_pd3dDevice->Release();
-  }
 #endif
 
   CLog::Log(LOGINFO, "Drives are mapped");
@@ -777,32 +628,45 @@ HRESULT CApplication::Create(HWND hWnd)
 
   update_emu_environ();//apply the GUI settings
 
-  // Check for WHITE + Y for forced Error Handler (to recover if something screwy happens)
-#ifdef HAS_GAMEPAD
-  if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE])
-  {
-    g_LoadErrorStr = "Key code detected for Error Recovery mode";
-    FatalErrorHandler(true, true, true);
-  }
-#endif
-
-  //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
-  CheckForDebugButtonCombo();
-
 #ifdef __APPLE__
   // Configure and possible manually start the helper.
   g_xbmcHelper.Configure();
 #endif
 
+  RESOLUTION initialResolution = DESKTOP;
+
+  // elis Create a window
+  RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
+  g_WinSystem.Create("XBMC", resInfo.iWidth, resInfo.iHeight, false, OnEvent);
+  g_RenderSystem.Create();
+  g_RenderSystem.AttachWindow(&g_WinSystem);
+
+#ifdef HAS_DX
+  // elis tmp
+  m_pd3dDevice = g_RenderSystem.GetD3DDevice();
+  g_graphicsContext.SetD3DDevice(g_RenderSystem.GetD3DDevice());
+  initialResolution = g_videoConfig.GetInitialMode(g_RenderSystem.GetD3D(), g_RenderSystem.GetD3DParams());
+#endif
+  
+#ifdef HAS_GL
+  initialResolution = g_videoConfig.GetInitialMode();
+#endif
+
+  
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
+  else
+    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+  
+ 
 
   // TODO LINUX SDL - Check that the resolution is ok
-#ifndef HAS_SDL
+ 
+#ifdef BLAH // elis
   m_d3dpp.Windowed = TRUE;
   m_d3dpp.hDeviceWindow = g_hWnd;
 
@@ -810,6 +674,11 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
+  // Lets set some reasonable params for windowed mode
+  m_d3dpp.FullScreen_RefreshRateInHz = 0;
+  m_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+  m_d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
+  m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
@@ -849,12 +718,13 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
 #endif
+  
 
   // set GUI res and force the clear of the screen
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
+  //g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
-#if defined(_WIN32PC) && defined(HAS_SDL_OPENGL)
-  CWIN32Util::CheckGLVersion();
+#if defined(_WIN32PC) && defined(HAS_GL)
+  // elis CWIN32Util::CheckGLVersion();
 #endif
 
   // initialize our charset converter
@@ -870,12 +740,14 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
+  
   m_splash = new CSplash("special://xbmc/media/Splash.png");
-#ifndef HAS_SDL_OPENGL
+#ifdef HAS_DX
   m_splash->Start();
 #else
   m_splash->Show();
 #endif
+  
 
   CStdString strLanguagePath;
   strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
@@ -903,11 +775,13 @@ HRESULT CApplication::Create(HWND hWnd)
       FatalErrorHandler(false, false, true);
     }
   }
+  /* eli
   int iResolution = g_graphicsContext.GetVideoResolution();
   CLog::Log(LOGINFO, "GUI format %ix%i %s",
             g_settings.m_ResInfo[iResolution].iWidth,
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode);
+            */
   m_gWindowManager.Initialize();
 
 #ifdef HAS_PYTHON
@@ -922,7 +796,11 @@ HRESULT CApplication::Create(HWND hWnd)
   CWIN32Util::AddRemovableDrives();
 #endif
 
-  return CXBApplicationEx::Create(hWnd);
+  HRESULT hr = Initialize();
+  
+  return hr;
+
+  // elis return CXBApplicationEx::Create(hWnd);
 }
 
 CProfile* CApplication::InitDirectoriesLinux()
@@ -1333,7 +1211,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   m_gWindowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
 #endif
 #ifdef HAS_DX
@@ -2247,13 +2125,13 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-#ifdef HAS_SDL
+#ifdef HAS_GL
   int vsync_mode = g_videoConfig.GetVSyncMode();
 #endif
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
-#ifdef HAS_SDL
+#ifdef HAS_GL
     if (vsync_mode==VSYNC_VIDEO)
       g_graphicsContext.getScreenSurface()->EnableVSync(true);
 #endif
@@ -2269,7 +2147,7 @@ void CApplication::RenderNoPresent()
 
   g_graphicsContext.AcquireCurrentContext();
 
-#ifdef HAS_SDL
+#ifdef HAS_GL
   if (vsync_mode==VSYNC_ALWAYS)
     g_graphicsContext.getScreenSurface()->EnableVSync(true);
   else if (vsync_mode!=VSYNC_DRIVER)
@@ -2282,14 +2160,14 @@ void CApplication::RenderNoPresent()
 
 void CApplication::DoRender()
 {
-#ifndef HAS_SDL
+#ifdef HAS_DX
   if(!m_pd3dDevice)
     return;
 #endif
 
   g_graphicsContext.Lock();
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   m_pd3dDevice->BeginScene();
 #endif
 
@@ -2365,7 +2243,7 @@ void CApplication::DoRender()
 
   RenderScreenSaver();
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   m_pd3dDevice->EndScene();
 #endif
 
@@ -2410,8 +2288,8 @@ bool CApplication::WaitFrame(DWORD timeout)
   SDL_mutexP(m_frameMutex);
   while(m_frameCount > 0)
   {
-    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
-    if(result == SDL_MUTEX_TIMEDOUT)
+    int result = SDL_condWaitTimeout(m_frameCond, m_frameMutex, timeout);
+    if(result == SDL_mutex_TIMEDOUT)
       break;
     if(result < 0)
       CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
@@ -2430,7 +2308,7 @@ void CApplication::NewFrame()
   m_frameCount++;
   SDL_mutexV(m_frameMutex);
 
-  SDL_CondBroadcast(m_frameCond);
+  SDL_condBroadcast(m_frameCond);
 #endif
 }
 
@@ -2457,6 +2335,18 @@ void CApplication::Render()
 
 
     m_bPresentFrame = false;
+
+    /*
+    // elis
+    g_RenderSystem.ClearBuffers(1.0f, 0.0f, 0.0f, 1.0f);
+    g_RenderSystem.BeginRender();
+    g_RenderSystem.Test();
+    g_RenderSystem.EndRender();
+    g_RenderSystem.Present();
+    return ;
+    */
+    
+
     if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
 #ifdef HAS_SDL
@@ -2465,8 +2355,8 @@ void CApplication::Render()
       // If we have frames or if we get notified of one, consume it.
       while(m_frameCount == 0)
       {
-        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100);
-        if(result == SDL_MUTEX_TIMEDOUT)
+        int result = SDL_condWaitTimeout(m_frameCond, m_frameMutex, 100);
+        if(result == SDL_mutex_TIMEDOUT)
           break;
         if(result < 0)
           CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
@@ -2501,18 +2391,18 @@ void CApplication::Render()
 
     lastFrameTime = timeGetTime();
   }
-  g_graphicsContext.Lock();
+  //g_graphicsContext.Lock();
   RenderNoPresent();
-  g_graphicsContext.Flip();
+  g_RenderSystem.Present();
   g_infoManager.UpdateFPS();
-  g_graphicsContext.Unlock();
+  //g_graphicsContext.Unlock();
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
   if(m_frameCount > 0)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
-  SDL_CondBroadcast(m_frameCond);
+  SDL_condBroadcast(m_frameCond);
 #endif
 }
 
@@ -2563,6 +2453,22 @@ void CApplication::RenderMemoryStatus()
     CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
   }
 }
+
+int CApplication::OnEvent(unsigned int eventType, unsigned long param1, unsigned long param2)
+{
+  switch(eventType)
+  {
+  case XBMC_PRESSED:
+  case XBMC_RELEASED:
+    g_Keyboard.HandleEvent(eventType, param1, param2);
+    g_application.ProcessKeyboard();
+    break;
+  }
+
+  return 0;
+}
+
+
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns
@@ -2570,6 +2476,7 @@ void CApplication::RenderMemoryStatus()
 
 bool CApplication::OnKey(CKey& key)
 {
+ 
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
   CAction action;
@@ -2609,9 +2516,8 @@ bool CApplication::OnKey(CKey& key)
   { // fullscreen info dialog - special case
     CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
-#ifdef HAS_SDL
     g_Keyboard.Reset();
-#endif
+
     if (OnAction(action))
       return true;
 
@@ -2668,13 +2574,13 @@ bool CApplication::OnKey(CKey& key)
         }
         else
         {
-          action.wID = (WORD)g_Keyboard.GetKey() | KEY_VKEY;
+          action.wID = (WORD)g_Keyboard.GetVKey() | KEY_VKEY;
           action.unicode = 0;
         }
       }
-#ifdef HAS_SDL
+
       g_Keyboard.Reset();
-#endif
+
       if (OnAction(action))
         return true;
       // failed to handle the keyboard action, drop down through to standard action
@@ -2696,7 +2602,7 @@ bool CApplication::OnKey(CKey& key)
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
 
-#ifdef HAS_SDL
+#ifdef HAS_GL
   g_Keyboard.Reset();
 #endif
 
@@ -3094,12 +3000,15 @@ void CApplication::FrameMove()
 
   UpdateLCD();
 
+  CWinEvents::MessagePump();
+
+  bool didSomething;
   // read raw input from controller, remote control, mouse and keyboard
-  ReadInput();
+  // elis ReadInput();
   // process input actions
-  bool didSomething = ProcessMouse();
+  // elis bool didSomething = ProcessMouse();
   didSomething |= ProcessHTTPApiButtons();
-  didSomething |= ProcessKeyboard();
+  // elis didSomething |= ProcessKeyboard();
   didSomething |= ProcessRemote(frameTime);
   didSomething |= ProcessGamepad(frameTime);
   didSomething |= ProcessEventServer(frameTime);
@@ -3733,7 +3642,7 @@ bool CApplication::ProcessKeyboard()
   MEASURE_FUNCTION;
 
   // process the keyboard buttons etc.
-  BYTE vkey = g_Keyboard.GetKey();
+  BYTE vkey = g_Keyboard.GetVKey();
   WCHAR unicode = g_Keyboard.GetUnicode();
   if (vkey || unicode)
   {
@@ -3775,6 +3684,7 @@ bool CApplication::IsButtonDown(DWORD code)
 
 bool CApplication::AnyButtonDown()
 {
+  /* elis
   ReadInput();
 #ifdef HAS_GAMEPAD
   if (m_DefaultGamepad.wPressedButtons || m_DefaultIR_Remote.wButtons)
@@ -3786,6 +3696,7 @@ bool CApplication::AnyButtonDown()
       return true;
   }
 #endif
+  */
   return false;
 }
 
@@ -3888,7 +3799,7 @@ HRESULT CApplication::Cleanup()
 #endif
 
   // reset our d3d params before we destroy
-#ifndef HAS_SDL
+#ifdef HAS_DX
     g_graphicsContext.SetD3DDevice(NULL);
     g_graphicsContext.SetD3DParameters(NULL);
 #endif
@@ -4370,7 +4281,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
 
-  // Workaround for bug/quirk in SDL_Mixer on OSX.
+  // Workaround for bug/quirk in XBMC_Mixer on OSX.
   // TODO: Remove after GUI Sounds redux
 #if defined(__APPLE__)
   if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
