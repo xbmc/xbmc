@@ -3213,7 +3213,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
 #endif
     {
-      if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
+      if (FAILED(XGWriteSurfaceToFile(lpSurface, _P(fn).c_str())))
       {
         CLog::Log(LOGERROR, "Failed to Generate Screenshot");
       }
