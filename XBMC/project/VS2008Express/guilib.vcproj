@@ -1366,14 +1366,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\guilib\RenderWindow.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\RenderWindow.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\guilib\Surface.cpp"
 					>
 				</File>
