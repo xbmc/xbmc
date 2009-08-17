@@ -30,6 +30,7 @@
  */
 
 #include <string>
+#include "TextureManager.h"
 
 namespace Surface {
 #if defined(_WIN32PC)
@@ -50,15 +51,23 @@ enum ONTOP {
 #include <X11/Xutil.h>
 #endif
 
+using namespace std;
+
 class CSurface
 {
 public:
+  CSurface();
   CSurface(CSurface* src);
   CSurface(int width, int height, bool doublebuffer, CSurface* shared,
-    CSurface* associatedWindow, XBMC::TexturePtr parent=0, bool fullscreen=false,
+    CSurface* associatedWindow, CBaseTexture* parent=0, bool fullscreen=false,
            bool offscreen=false, bool pbuffer=false, int antialias=0);
-
+  
   virtual ~CSurface(void);
+
+  virtual bool Create(string name, int width, int height, bool fullScreen){return false;}
+  virtual bool ResizeSurface(int newWidth, int newHeight){return false;}
+  virtual bool SetFullScreen(bool fullScreen, int width, int height){return false;}
+  virtual bool Destroy(){return false;}
 
   int GetWidth() const { return m_iWidth; }
   int GetHeight() const { return m_iHeight; }
@@ -77,7 +86,7 @@ public:
   virtual bool MakeCurrent() = 0;
   virtual void ReleaseContext() = 0;
   virtual void EnableVSync(bool enable=true) = 0;
-  virtual bool ResizeSurface(int newWidth, int newHeight) = 0;
+  
   virtual void RefreshCurrentContext() = 0;
   virtual  void* GetRenderWindow() = 0;
 
@@ -99,19 +108,13 @@ public:
   short int m_iGreenSize;
   short int m_iBlueSize;
   short int m_iAlphaSize;
-  /*
-  std::string s_RenderVendor;
-  std::string s_RenderRenderer;
-  std::string s_RenderExt;
-  int         s_RenderMajVer;
-  int         s_RenderMinVer;
-  */
+ 
 #ifdef _WIN32
   bool m_bCoversScreen;
   ONTOP m_iOnTop;
 #endif
 
-  XBMC::TexturePtr m_Surface;
+  CBaseTexture* m_Surface;
 };
 
 }

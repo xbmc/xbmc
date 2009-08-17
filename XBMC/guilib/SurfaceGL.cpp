@@ -31,7 +31,7 @@
 #include <string>
 #include "Settings.h"
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 #ifdef _WIN32
 #include "VideoReferenceClock.h"
@@ -39,7 +39,9 @@
 
 using namespace Surface;
 
+#ifdef HAS_SDL
 #include <SDL/SDL_syswm.h>
+#endif
 #include "XBVideoConfig.h"
 
 bool CSurfaceGL::b_glewInit = 0;
@@ -82,11 +84,12 @@ CSurfaceGL::CSurfaceGL(CSurface* src) : CSurface(src)
 
 
 CSurfaceGL::CSurfaceGL(int width, int height, bool doublebuffer, CSurface* shared,
-                       CSurface* window, XBMC::SurfacePtr parent, bool fullscreen,
+                       CSurface* window, CBaseTexture* parent, bool fullscreen,
                    bool pixmap, bool pbuffer, int antialias)
                    : CSurface(width, height, doublebuffer, shared, window, 
                    parent, fullscreen, pixmap, pbuffer, antialias)
 {
+  /* elis
 #ifdef __APPLE__
   m_glContext = 0;
 #endif
@@ -309,7 +312,7 @@ CSurfaceGL::CSurfaceGL(int width, int height, bool doublebuffer, CSurface* share
   {
     CLog::Log(LOGERROR, "GLX Error: Could not create context");
   }
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_SDL)
 #ifdef __APPLE__
   // We only want to call SDL_SetVideoMode if it's not shared, otherwise we'll create a new window.
   if (shared == 0)
@@ -394,6 +397,7 @@ CSurfaceGL::CSurfaceGL(int width, int height, bool doublebuffer, CSurface* share
     m_bOK = true;
   }
 #endif
+  */
 }
 
 CSurfaceGL::~CSurfaceGL()
@@ -410,7 +414,7 @@ CSurfaceGL& CSurfaceGL::operator =(const CSurface &base)
 
 void CSurfaceGL::EnableVSync(bool enable)
 {
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   if (m_bVSync==enable && m_bVsyncInit == true)
     return;
 
@@ -555,6 +559,7 @@ void CSurfaceGL::EnableVSync(bool enable)
 
 void CSurfaceGL::Flip()
 {
+#ifdef BLAH // elis
   if (m_bOK && m_bDoublebuffer)
   {
 #ifdef _WIN32
@@ -563,7 +568,7 @@ void CSurfaceGL::Flip()
 #endif
     if (m_iVSyncMode && m_iSwapRate != 0)
     {
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
       glFlush();
 #endif
 #ifdef _WIN32
@@ -661,9 +666,9 @@ void CSurfaceGL::Flip()
       glXSwapBuffers(s_dpy, m_glWindow);
 #elif defined(__APPLE__)
     Cocoa_GL_SwapBuffers(m_glContext);
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
     SDL_GL_SwapBuffers();
-#elif defined(HAS_SDL)
+#elif defined(HAS_GL)
     SDL_Flip(m_SDLSurface);
 #endif
 
@@ -683,11 +688,13 @@ void CSurfaceGL::Flip()
         CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
     }
   }
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   else
   {
     glFlush();
   }
+#endif
+
 #endif
 }
 
@@ -696,7 +703,7 @@ bool CSurfaceGL::MakeCurrent()
   if (m_pShared)
     return m_pShared->MakeCurrent();
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   if (!m_glContext)
     return false;
 #endif
@@ -728,7 +735,7 @@ bool CSurfaceGL::MakeCurrent()
 #endif
 
 #ifdef _WIN32
-#ifdef HAS_SDL // TODO:DIRECTX
+#ifdef HAS_GL // TODO:DIRECTX
   if(wglGetCurrentContext() == m_glContext)
     return true;
   else
@@ -764,7 +771,7 @@ void CSurfaceGL::ReleaseContext()
 #ifdef _WIN32
   if (IsShared())
     m_pShared->ReleaseContext();
-#ifdef HAS_SDL // TODO:DIRECTX
+#ifdef HAS_GL // TODO:DIRECTX
   else if (m_glContext)
     wglMakeCurrent(NULL, NULL);
 #endif
@@ -773,6 +780,7 @@ void CSurfaceGL::ReleaseContext()
 
 bool CSurfaceGL::ResizeSurface(int newWidth, int newHeight)
 {
+  /* elis
   CLog::Log(LOGDEBUG, "Asking to resize surface to %d x %d", newWidth, newHeight);
 #ifdef HAS_GLX
   if (m_parentWindow)
@@ -793,7 +801,7 @@ bool CSurfaceGL::ResizeSurface(int newWidth, int newHeight)
   }
 #endif
 #ifdef _WIN32
-#ifdef HAS_SDL // TODO:DIRECTX
+#ifdef HAS_GL // TODO:DIRECTX
   SDL_SysWMinfo sysInfo;
   SDL_VERSION(&sysInfo.version);
   if (SDL_GetWMInfo(&sysInfo))
@@ -870,6 +878,7 @@ bool CSurfaceGL::ResizeSurface(int newWidth, int newHeight)
   }
 #endif
 #endif
+  */
   return false;
 }
 
@@ -895,6 +904,7 @@ bool CSurfaceGL::glxIsSupported(const char* extension)
 
 void* CSurfaceGL::GetRenderWindow()
 {
+  /* elis
 #ifdef _WIN32
   SDL_SysWMinfo sysInfo;
   SDL_VERSION(&sysInfo.version);
@@ -906,8 +916,9 @@ void* CSurfaceGL::GetRenderWindow()
       return hwnd;
   }
 #endif
+  */
 
   return NULL;
 }
 
-#endif // HAS_SDL_OPENGL
+#endif // HAS_GL

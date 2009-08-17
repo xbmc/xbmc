@@ -33,11 +33,11 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "GUIAudioManager.h"
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 #define D3D_CLEAR_STENCIL 0x0l
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #define GLVALIDATE  { CSingleLock locker(*this); ValidateSurface(); }
 #endif
 #include "SurfaceGL.h"
@@ -75,6 +75,9 @@ CGraphicContextGL::~CGraphicContextGL(void)
 
 void CGraphicContextGL::GetRenderVersion(int& maj, int& min)
 {
+  // elis
+  return; 
+
   if (s_RenderMajVer==0)
   {
     const char* ver = (const char*)glGetString(GL_VERSION);
@@ -354,6 +357,7 @@ void CGraphicContextGL::UpdateCameraPosition(const CPoint &camera)
 
 bool CGraphicContextGL::ValidateSurface(CSurface* dest)
 {
+  /* elis
   CSingleLock aLock(m_surfaceLock);
   map<Uint32, CSurface*>::iterator iter;
   Uint32 tid = SDL_ThreadID();
@@ -393,6 +397,7 @@ bool CGraphicContextGL::ValidateSurface(CSurface* dest)
   } else {
     (iter->second)->MakeCurrent();
   }
+  */
   return true;
 }
 
@@ -434,6 +439,7 @@ CSurface* CGraphicContextGL::InitializeSurface()
 
 void CGraphicContextGL::ReleaseCurrentContext(Surface::CSurface* ctx)
 {
+  /* elis
   if (ctx)
   {
     Lock();
@@ -454,9 +460,11 @@ void CGraphicContextGL::ReleaseCurrentContext(Surface::CSurface* ctx)
   }
   (iter->second)->ReleaseContext();
   Unlock();
+  */
 }
 
 void CGraphicContextGL::DeleteThreadContext() {
+  /* elis
   CSingleLock aLock(m_surfaceLock);
   // FIXME?: DeleteThreadContext get called from different threads and
   // produces an acces_violation from time to time when doing the find
@@ -468,10 +476,12 @@ void CGraphicContextGL::DeleteThreadContext() {
   iter = m_surfaces.find(tid);
   if (iter!=m_surfaces.end())
     m_surfaces.erase(iter);
+    */
 }
 
 void CGraphicContextGL::AcquireCurrentContext(Surface::CSurface* ctx)
 {
+  /* eli
   if (ctx)
   {
     Lock();
@@ -497,6 +507,7 @@ void CGraphicContextGL::AcquireCurrentContext(Surface::CSurface* ctx)
     CLog::Log(LOGERROR, "Error making context current");
   }
   Unlock();
+  */
 }
 
 void CGraphicContextGL::BeginPaint(CSurface *dest, bool lock)
@@ -514,6 +525,7 @@ void CGraphicContextGL::EndPaint(CSurface *dest, bool lock)
 
 void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
+  /* elis
   RESOLUTION lastRes = m_Resolution;
   if (res == AUTORES)
   {
@@ -603,7 +615,7 @@ void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
     int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, (bool)g_advancedSettings.m_fullScreen);
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
     int options = SDL_RESIZABLE;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
 
@@ -771,6 +783,7 @@ void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
     m_Resolution = res;
     Unlock();
   }
+  */
 }
 
 

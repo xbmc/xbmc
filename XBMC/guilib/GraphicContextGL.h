@@ -31,7 +31,7 @@
 
 #include "GraphicContext.h"
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 /*!
  \ingroup graphics

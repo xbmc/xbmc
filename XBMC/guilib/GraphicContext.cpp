@@ -27,7 +27,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBVideoConfig.h"
-#include "TextureManagerGL.h"
+#include "TextureManager.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 #include "cores/VideoRenderers/RenderManager.h"
@@ -698,6 +698,7 @@ void CGraphicContextBase::SetCameraPosition(const CPoint &camera)
 {
   // offset the camera from our current location (this is in XML coordinates) and scale it up to
   // the screen resolution
+  /* elis
   CPoint cam(camera);
   if (m_origins.size())
     cam += m_origins.top();
@@ -708,6 +709,7 @@ void CGraphicContextBase::SetCameraPosition(const CPoint &camera)
 
   m_cameras.push(cam);
   UpdateCameraPosition(m_cameras.top());
+  */
 }
 
 void CGraphicContextBase::RestoreCameraPosition()
@@ -727,6 +729,10 @@ bool CGraphicContextBase::RectIsAngled(float x1, float y1, float x2, float y2) c
 
 float CGraphicContextBase::GetFPS() const
 {
+  // eli
+  return 60.0f;
+
+
   if (g_settings.m_ResInfo[m_Resolution].fRefreshRate > 0)
     return g_settings.m_ResInfo[m_Resolution].fRefreshRate;
   if (m_Resolution == PAL_4x3 || m_Resolution == PAL_16x9)

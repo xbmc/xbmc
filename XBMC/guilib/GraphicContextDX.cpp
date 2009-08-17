@@ -255,6 +255,10 @@ void CGraphicContextDX::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
   if (!m_pd3dParams)
   {
     m_Resolution = res;
+    RESOLUTION_INFO resInfo;
+    //g_videoConfig.GetResolutionInfo(m_Resolution, resInfo);
+    m_iScreenWidth = 1280;
+    m_iScreenHeight = 720;
     return ;
   }
   bool NeedReset = false;

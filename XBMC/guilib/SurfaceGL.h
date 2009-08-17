@@ -35,10 +35,6 @@
 #include <SDL/SDL.h>
 #endif
 
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
-#endif
-
 #ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
@@ -60,7 +56,7 @@ public:
   CSurfaceGL& operator =(const CSurface &base);
 
   CSurfaceGL(int width, int height, bool doublebuffer, CSurface* shared,
-    CSurface* associatedWindow, XBMC::TexturePtr parent=0, bool fullscreen=false,
+    CSurface* associatedWindow, CBaseTexture* parent=0, bool fullscreen=false,
            bool offscreen=false, bool pbuffer=false, int antialias=0);
 
 #ifdef HAS_GLX
@@ -87,7 +83,7 @@ public:
   bool glxIsSupported(const char* extension);
 
   // SDL_Surface always there - just sometimes not in use (HAS_GLX)
-  XBMC::TexturePtr SDL() {return m_Surface;}
+  CBaseTexture* SDL() {return m_Surface;}
 
  protected:
   static bool b_glewInit;
