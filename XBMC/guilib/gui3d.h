@@ -30,11 +30,6 @@
 
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
-#ifdef _WIN32PC
-#include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
-#include "D3DX9.h"  // or the reference video clock.
-#endif
-
 #define D3DPRESENTFLAG_INTERLACED 1
 #define D3DPRESENTFLAG_WIDESCREEN 2
 #define D3DPRESENTFLAG_PROGRESSIVE 4
@@ -69,27 +64,45 @@ struct D3DPalette
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;
 
+#ifdef HAS_GL
+
+namespace XBMC
+{
+  typedef void*  DevicePtr;
+  typedef GLuint SurfacePtr;
+  typedef GLuint TexturePtr;
+  typedef void* PalettePtr; // elis change it
+  typedef GLint PixelFormat; // elis change it
+};
+
+#define DELETE_TEXTURE(texture) glDeleteTextures(1, &texture)
+#define DELETE_SURFACE(surface) glDeleteTextures(1, &texture)
+
+
+#if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
+#define GL_GLEXT_PROTOTYPES
+#endif
+
+#endif // HAS_GL
+
 #ifdef HAS_SDL_OPENGL
 
 #include <SDL/SDL.h>
 namespace XBMC
 {
   typedef void*        DevicePtr;
-  typedef SDL_Surface* SurfacePtr;
-  typedef SDL_Surface* TexturePtr;
-  typedef SDL_Palette* PalettePtr;
-  typedef SDL_PixelFormat PixelFormat;
+  typedef GLint* SurfacePtr;
+  typedef GLint* TexturePtr;
+  typedef GLint* PalettePtr;
+  typedef GLint PixelFormat;
 };
 
 #define DELETE_TEXTURE(texture) SDL_FreeSurface(texture)
 #define DELETE_SURFACE(surface) SDL_FreeSurface(surface)
 
-#if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
-#define GL_GLEXT_PROTOTYPES
-#endif
 
-#include <GL/glew.h>
-#endif // HAS_SDL_OPENGL
+
+#endif // HAS_SDL
 
 #ifdef HAS_DX
 
