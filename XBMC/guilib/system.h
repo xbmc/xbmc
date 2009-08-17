@@ -159,13 +159,14 @@
 #if !defined(HAS_SDL_2D) && !defined(HAS_DX)
 #define HAS_SDL_OPENGL
 #endif
-#if defined(_LINUX) && !defined(__APPLE__) && defined(HAS_SDL_OPENGL)
-#define HAS_GLX
-#endif
 #ifdef _WIN32
 #define HAS_SDL_JOYSTICK
 #undef HAS_SDL_AUDIO   // use dsound for audio on win32
 #endif
+#endif
+
+#if defined(_LINUX) && !defined(__APPLE__) && defined(HAS_GL)
+#define HAS_GLX
 #endif
 
 #ifdef _WIN32
@@ -205,4 +206,18 @@
 
 #ifndef SVN_REV
 #define SVN_REV "Unknown"
+#endif
+
+#ifdef HAS_GL
+#ifdef _WIN32
+#include "glew.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/wglext.h>
+#endif
+#endif
+
+#ifdef _WIN32
+#include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
+#include "D3DX9.h"  // or the reference video clock.
 #endif

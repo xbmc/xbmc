@@ -84,11 +84,14 @@ protected:
       return false;
     };
 
-    void SetTexture(XBMC::TexturePtr texture, int width, int height, int orientation)
+    void SetTexture(CBaseTexture* texture, int width, int height, int orientation)
     {
       assert(!m_texture.size());
       if (texture)
-        m_texture.Set(new CTexture(texture, false, true), width, height);
+      {
+        //CBaseTexture* newTexture = new CTexture(*texture);
+        m_texture.Set(texture, width, height);
+      }
       m_orientation = orientation;
     };
 

@@ -21,8 +21,7 @@
 
 #include "include.h"
 
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
+#ifdef HAS_GL
 #include "../xbmc/Settings.h"
 #include "Shader.h"
 

@@ -24,7 +24,7 @@
 #include <string>
 #include <math.h>
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 using namespace Shaders;
 using namespace std;

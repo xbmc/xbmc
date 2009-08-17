@@ -43,7 +43,7 @@ private:
   virtual void OnExit();
   virtual void Process();
   void UpdateBusyCount();
-#ifndef HAS_SDL
+#ifdef HAS_DX
   bool CopySurface(LPDIRECT3DSURFACE9 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE9 pSurfaceDest, const RECT* rcDest);
 #endif
 
@@ -54,7 +54,7 @@ private:
   int m_prevbusycount;
   bool m_busyShown;
   CCriticalSection m_criticalSection;
-#ifndef HAS_SDL
+#ifdef HAS_DX
   LPDIRECT3DSURFACE9 m_lpSurface;
 #endif
   CGUIDialogBusy* m_pWindow;

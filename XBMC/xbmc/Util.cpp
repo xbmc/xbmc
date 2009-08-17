@@ -1869,7 +1869,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 
 void CUtil::InitGamma()
 {
-#ifndef HAS_SDL
+#ifdef HAS_DX
   g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampBlue);

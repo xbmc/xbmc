@@ -24,7 +24,7 @@
 #include "stdafx.h"
 #include "GUIWindowTestPatternGL.h"
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 CGUIWindowTestPatternGL::CGUIWindowTestPatternGL(void) : CGUIWindowTestPattern()
 {

@@ -62,7 +62,7 @@ void CGUILargeTextureManager::Process()
     CStdString path = image->GetPath();
     lock.Leave();
     // load the image using our image lib
-    XBMC::TexturePtr texture = NULL;
+    CBaseTexture* texture = NULL;
     CPicture pic;
     CFileItem file(path, false);
     if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
@@ -72,11 +72,7 @@ void CGUILargeTextureManager::Process()
       {
         loadPath = g_TextureManager.GetTexturePath(path);
       }
-#ifdef _XBOX
-      texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 1024), min(g_graphicsContext.GetHeight(), 720));
-#else
       texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080));
-#endif
     }
     // and add to our allocated list
     lock.Enter();
@@ -91,7 +87,7 @@ void CGUILargeTextureManager::Process()
     }
     else
     { // no need for the texture any more
-      DELETE_TEXTURE(texture);
+      delete(texture);
       texture = NULL;
     }
     if (m_queued.size() == 0)

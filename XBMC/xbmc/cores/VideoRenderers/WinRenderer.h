@@ -21,7 +21,7 @@
  *
  */
 
-#if !defined(_LINUX) && !defined(HAS_SDL)
+#if !defined(_LINUX) && !defined(HAS_GL)
 
 #include "GraphicContext.h"
 

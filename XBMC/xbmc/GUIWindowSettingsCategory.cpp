@@ -3248,7 +3248,7 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
       else  // "Auto"
         pControl->AddLabel(g_localizeStrings.Get(14061), res);
     }
-#ifdef HAS_SDL
+#ifdef HAS_GL
     else if (res == CUSTOM)
     {
       for (int i = 0 ; i<g_videoConfig.GetNumberOfResolutions() ; i++)

@@ -21,9 +21,9 @@
  *
  */
 
-#if defined (HAS_SDL_OPENGL)
+#if defined (HAS_GL)
 #include "LinuxRendererGL.h"
-#elif defined(HAS_SDL)
+#elif defined(HAS_GL)
 #include "LinuxRenderer.h"
 #elif defined(WIN32)
 #include "WinRenderer.h"
@@ -109,9 +109,9 @@ public:
 
   CStdString GetVSyncState();
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
-#elif defined(HAS_SDL)
+#elif defined(HAS_GL)
   CLinuxRenderer *m_pRenderer;
 #elif defined(HAS_XBOX_D3D)
   CXBoxRenderer *m_pRenderer;

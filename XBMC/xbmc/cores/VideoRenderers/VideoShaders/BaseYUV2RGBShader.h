@@ -1,7 +1,7 @@
 #ifndef __YUV2RGB_SHADERS_H__
 #define __YUV2RGB_SHADERS_H__
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 #include "../../../../guilib/Shader.h"
 

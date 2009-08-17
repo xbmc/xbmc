@@ -58,7 +58,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "Settings.h"
-#include "TextureManagerGL.h"
+#include "TextureManager.h"
 #include "language.h"
 #include "PythonSettings.h"
 

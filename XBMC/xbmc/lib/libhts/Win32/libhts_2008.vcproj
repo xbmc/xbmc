@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="libhts"
 	ProjectGUID="{00700E12-A63B-4E54-B962-4011A90584BD}"
 	RootNamespace="libhts"

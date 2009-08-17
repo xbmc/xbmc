@@ -177,7 +177,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#ifndef HAS_SDL
+#ifdef HAS_DX
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
@@ -210,7 +210,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX) && !defined(HAS_SDL)
+#if !defined(_LINUX) && !defined(HAS_GL)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif
@@ -223,7 +223,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX) && !defined(HAS_SDL)
+#if !defined(_LINUX) && !defined(HAS_GL)
         // send the WM_CLOSE window message
         ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
 #endif

@@ -107,13 +107,13 @@ bool IsSwizzledFormat(XB_D3DFORMAT format)
   }
 }
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE9 pSurface, const char *fileName)
 #else
 HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fileName)
 #endif
 {
-#ifndef HAS_SDL
+#ifdef HAS_DX
   D3DLOCKED_RECT lr;
   D3DSURFACE_DESC desc;
   pSurface->GetDesc(&desc);
@@ -129,7 +129,7 @@ HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fi
       memcpy(bh.id,"BM",2);
       bh.headersize = 54L;
       bh.infoSize = 0x28L;
-#ifndef HAS_SDL
+#ifdef HAS_DX
       bh.width = desc.Width;
       bh.height = desc.Height;
 #else
@@ -155,13 +155,13 @@ HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fi
       BYTE *lineBuf = new BYTE[bytesPerLine];
       memset(lineBuf, 0, bytesPerLine);
       // lines are stored in BMPs upside down
-#ifndef HAS_SDL
+#ifdef HAS_DX
       for (UINT y = bh.height; y; --y)
 #else
       for (UINT y = 1 ; y <= (UINT) bh.height ; ++y) //compensate for gl's inverted Y axis
 #endif
       {
-#ifndef HAS_SDL
+#ifdef HAS_DX
         BYTE *s = (BYTE *)lr.pBits + (y - 1) * lr.Pitch;
         BYTE *d = lineBuf;
 #else
@@ -179,7 +179,7 @@ HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fi
       delete[] lineBuf;
       file.Close();
     }
-#ifndef HAS_SDL
+#ifdef HAS_DX
     pSurface->UnlockRect();
   }
 #endif
@@ -388,29 +388,27 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
   }
 }
 
-void GetTextureFromData(D3DTexture *pTex, void *texData, XBMC::TexturePtr *ppTexture)
+void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTexture)
 {
+  /*
   XB_D3DFORMAT fmt;
   DWORD width, height, pitch, offset;
   ParseTextureHeader(pTex, fmt, width, height, pitch, offset);
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, GetD3DFormat(fmt), D3DPOOL_MANAGED, ppTexture);
   D3DLOCKED_RECT lr;
   if (D3D_OK == (*ppTexture)->LockRect(0, &lr, NULL, 0))
-#else
-#ifdef HAS_SDL_OPENGL
-  *ppTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);
-#else
-  *ppTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);
 #endif
+#ifdef HAS_SDL
+  *ppTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);
   if (SDL_LockSurface(*ppTexture) == 0)
 #endif
   {
     BYTE *texDataStart = (BYTE *)texData;
     DWORD *color = (DWORD *)texData;
     texDataStart += offset;
-#ifndef HAS_SDL
+#ifdef HAS_DX
     DWORD destPitch = lr.Pitch;
     if (fmt == XB_D3DFMT_DXT1)  // Not sure if these are 100% correct, but they seem to work :P
     {
@@ -450,7 +448,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, XBMC::TexturePtr *ppTex
       texDataStart = unswizzled;
     }
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
     BYTE *dstPixels = (BYTE *)lr.pBits;
 #else
     BYTE *dstPixels = (BYTE *)(*ppTexture)->pixels;
@@ -484,15 +482,16 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, XBMC::TexturePtr *ppTex
       delete[] texDataStart;
     }
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
     (*ppTexture)->UnlockRect(0);
 #else
     SDL_UnlockSurface(*ppTexture);
 #endif
   }
+  */
 }
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 CXBPackedResource::CXBPackedResource()
 {
   m_buffer = NULL;
@@ -526,6 +525,7 @@ HRESULT CXBPackedResource::Create(const char *fileName, int unused, void *unused
 
 LPDIRECT3DTEXTURE9 CXBPackedResource::GetTexture(UINT unused)
 {
+  /* elis
   // now here's where the fun starts...
   LPDIRECT3DTEXTURE9 pTexture = NULL;
 
@@ -535,5 +535,7 @@ LPDIRECT3DTEXTURE9 CXBPackedResource::GetTexture(UINT unused)
   GetTextureFromData(pTex, m_buffer + hdr->dwHeaderSize, &pTexture);
 
   return pTexture;
+  */
+  return NULL;
 }
 #endif

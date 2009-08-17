@@ -24,7 +24,7 @@
 #include "Util.h"
 #include "VideoDatabaseDirectory/QueryParams.h"
 #include "VideoDatabase.h"
-#include "TextureManagerGL.h"
+#include "TextureManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Settings.h"

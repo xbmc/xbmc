@@ -83,7 +83,7 @@ void CDummyVideoPlayer::Process()
     g_graphicsContext.Lock();
     if (g_graphicsContext.IsFullScreenVideo())
     {
-#ifndef HAS_SDL	
+#ifdef HAS_DX	
       g_graphicsContext.Get3DDevice()->BeginScene();
 #endif
       g_graphicsContext.Clear();
@@ -91,7 +91,7 @@ void CDummyVideoPlayer::Process()
       Render();
       if (g_application.NeedRenderFullScreen())
         g_application.RenderFullScreen();
-#ifndef HAS_SDL     
+#ifdef HAS_DX     
       g_graphicsContext.Get3DDevice()->EndScene();
 #endif      
     }
@@ -258,7 +258,7 @@ bool CDummyVideoPlayer::SetPlayerState(CStdString state)
 void CDummyVideoPlayer::Render()
 {
   RECT vw = g_graphicsContext.GetViewWindow();
-#ifndef HAS_SDL
+#ifdef HAS_DX
   D3DVIEWPORT9 newviewport;
   D3DVIEWPORT9 oldviewport;
   g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
@@ -286,7 +286,7 @@ void CDummyVideoPlayer::Render()
     float posY = (vw.top + vw.bottom) * 0.5f;
     CGUITextLayout::DrawText(font, posX, posY, 0xffffffff, 0, currentTime, XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
-#ifndef HAS_SDL
+#ifdef HAS_DX
   g_graphicsContext.RestoreClipRegion();
 #else
   g_graphicsContext.RestoreViewPort();

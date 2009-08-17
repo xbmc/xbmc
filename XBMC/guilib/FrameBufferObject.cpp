@@ -21,10 +21,11 @@
 
 #include "include.h"
 
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
+#ifdef HAS_GL
 #include "../xbmc/Settings.h"
+#include "RenderSystem.h"
 #include "FrameBufferObject.h"
+
 
 //////////////////////////////////////////////////////////////////////
 // CFrameBufferObject
@@ -41,7 +42,8 @@ CFrameBufferObject::CFrameBufferObject()
 
 bool CFrameBufferObject::IsSupported()
 {
-  if (glewIsSupported("GL_EXT_framebuffer_object"))
+  // elis
+  if(g_RenderSystem.IsExtSupported("GL_EXT_framebuffer_object"))
     m_supported = true;
   else
     m_supported = false;

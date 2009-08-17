@@ -45,7 +45,7 @@ void CApplicationRenderer::OnStartup()
   m_explicitbusy = 0;
   m_busycount = 0;
   m_prevbusycount = 0;
-#ifndef HAS_SDL
+#ifdef HAS_DX
   m_lpSurface = NULL;
 #endif
   m_pWindow = NULL;
@@ -58,14 +58,14 @@ void CApplicationRenderer::OnExit()
   m_busyShown = false;
   if (m_pWindow) m_pWindow->Close(true);
   m_pWindow = NULL;
-#ifndef HAS_SDL
+#ifdef HAS_DX
   SAFE_RELEASE(m_lpSurface);
 #endif
 }
 
 void CApplicationRenderer::Process()
 {
-#ifndef HAS_SDL
+#ifdef HAS_DX
   int iWidth = 0;
   int iHeight = 0;
   int iLeft = 0;
@@ -253,7 +253,7 @@ void CApplicationRenderer::Process()
 #endif
 }
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 bool CApplicationRenderer::CopySurface(LPDIRECT3DSURFACE9 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE9 pSurfaceDest, const RECT* rcDest)
 {
   if (m_Resolution == HDTV_1080i)
@@ -300,7 +300,7 @@ void CApplicationRenderer::Render(bool bFullscreen)
   CSingleLock lockg (g_graphicsContext);
   Disable();
   UpdateBusyCount();
-#ifndef HAS_SDL
+#ifdef HAS_DX
   SAFE_RELEASE(m_lpSurface);
 #endif
   if (bFullscreen)
@@ -327,7 +327,7 @@ void CApplicationRenderer::Disable()
 
 bool CApplicationRenderer::Start()
 {
-#ifdef HAS_SDL
+#ifdef HAS_GL
   return false;
 #else
   if (g_advancedSettings.m_busyDialogDelay <= 0) return false; //delay of 0 is considered disabled.

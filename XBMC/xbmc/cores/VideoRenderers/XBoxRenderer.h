@@ -24,7 +24,7 @@
 
 #include "GraphicContext.h"
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #include "LinuxRendererGL.h"
 #elif !defined(HAS_XBOX_D3D)
 #include "WinRenderer.h"
@@ -129,7 +129,7 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
 static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX2;
 #endif
@@ -137,7 +137,7 @@ static const DWORD FVF_Y8A8VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX2;
 class CXBoxRenderer
 {
 public:
-#ifndef HAS_SDL
+#ifdef HAS_DX
   CXBoxRenderer(LPDIRECT3DDEVICE8 pDevice);
 #else
   CXBoxRenderer();
@@ -150,7 +150,7 @@ public:
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
 #else
   void CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height);
@@ -191,7 +191,7 @@ protected:
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   static const DWORD FVF_YV12VERTEX = D3DFVF_XYZRHW | D3DFVF_TEX3;
 #endif
 
@@ -253,7 +253,7 @@ protected:
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_YUVTexture;
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   // render device
   LPDIRECT3DDEVICE8 m_pD3DDevice;
 #endif

@@ -37,9 +37,9 @@
 #include "ComboRenderer.h"
 #include "RGBRenderer.h"
 #include "RGBRendererV2.h"
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
 #include "LinuxRendererGL.h"
-#elif defined(HAS_SDL)
+#elif defined(HAS_GL)
 #include "LinuxRenderer.h"
 #else
 #include "WinRenderer.h"
@@ -233,7 +233,7 @@ void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (!m_pRenderer)
     return;
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
    || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
@@ -285,9 +285,9 @@ unsigned int CXBoxRenderManager::PreInit()
       CLog::Log(LOGDEBUG, __FUNCTION__" - Selected LQShader-Renderer");
       m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
     }
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
-#elif defined(HAS_SDL)
+#elif defined(HAS_GL)
     m_pRenderer = new CLinuxRenderer();
 #else
     m_pRenderer = new CWinRenderer(g_graphicsContext.Get3DDevice());
@@ -318,9 +318,11 @@ void CXBoxRenderManager::SetupScreenshot()
 
 void CXBoxRenderManager::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
 {
+  /* elis
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
+    */
 }
 
 void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)

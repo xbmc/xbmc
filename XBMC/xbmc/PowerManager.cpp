@@ -25,7 +25,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogMusicScan.h"
-#include "common/Keyboard.h"
+#include "KeyboardStat.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"

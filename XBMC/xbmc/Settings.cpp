@@ -305,7 +305,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_curllowspeedtime = 5;
   g_advancedSettings.m_curlretries = 3;
 
-#ifdef HAS_SDL
+#ifdef HAS_GL
   g_advancedSettings.m_fullScreen = g_advancedSettings.m_startFullScreen;
 #endif
 
@@ -822,7 +822,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     }
     ////
     GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
-#ifdef HAS_SDL
+#ifdef HAS_GL
     if(iRes == DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
     {
       CLog::Log(LOGDEBUG, "%s - Ignoring desktop resolution \"%s\" that differs from current \"%s\"", __FUNCTION__, mode.c_str(), m_ResInfo[iRes].strMode);
@@ -1311,7 +1311,7 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
   XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
-#ifdef HAS_SDL
+#ifdef HAS_GL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", g_advancedSettings.m_startFullScreen);
 #endif
 

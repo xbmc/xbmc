@@ -21,7 +21,7 @@
  
 #include "stdafx.h"
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 
 #include "WinRenderer.h"
 #include "Application.h"
