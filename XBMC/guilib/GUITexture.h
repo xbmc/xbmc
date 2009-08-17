@@ -199,7 +199,7 @@ protected:
 
 #if defined(HAS_SDL_2D)
 #include "GUITextureSDL.h"
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
 #include "GUITextureGL.h"
 #define CGUITexture CGUITextureGL
 #elif defined(HAS_DX)

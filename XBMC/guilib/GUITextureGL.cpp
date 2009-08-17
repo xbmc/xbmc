@@ -21,10 +21,9 @@
 
 #include "include.h"
 #include "GUITextureGL.h"
-#include "TextureManagerGL.h"
+#include "TextureManager.h"
 #include "GraphicContext.h"
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
+#ifdef HAS_GL
 
 CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
@@ -33,13 +32,13 @@ CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, 
 
 void CGUITextureGL::Begin()
 {
-  CGLTexture* texture = (CGLTexture *)m_texture.m_textures[m_currentFrame];
+  CBaseTexture* texture = (CBaseTexture *)m_texture.m_textures[m_currentFrame];
   glActiveTextureARB(GL_TEXTURE0_ARB);
   texture->LoadToGPU();
   if (m_diffuse.size())
-    ((CGLTexture *)m_diffuse.m_textures[0])->LoadToGPU();
+    ((CBaseTexture *)m_diffuse.m_textures[0])->LoadToGPU();
 
-  glBindTexture(GL_TEXTURE_2D, texture->id);
+  glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
   glEnable(GL_TEXTURE_2D);
   
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -58,7 +57,7 @@ void CGUITextureGL::Begin()
   if (m_diffuse.size())
   {
     glActiveTextureARB(GL_TEXTURE1_ARB);
-    glBindTexture(GL_TEXTURE_2D, ((CGLTexture *)m_diffuse.m_textures[0])->id);
+    glBindTexture(GL_TEXTURE_2D, ((CGLTexture *)m_diffuse.m_textures[0])->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
