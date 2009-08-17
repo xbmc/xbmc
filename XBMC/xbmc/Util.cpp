@@ -1920,7 +1920,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     g_application.RenderNoPresent();
     if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
     {
-      if (FAILED(XGWriteSurfaceToFile(lpSurface, _P(fn).c_str())))
+      if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
       {
         CLog::Log(LOGERROR, "Failed to Generate Screenshot");
       }
@@ -1960,7 +1960,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     if (pixels)
     {
       glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, pixels);
-      XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], _P(fn).c_str());
+      XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], fn);
       free(pixels);
     }
     g_graphicsContext.EndPaint();
