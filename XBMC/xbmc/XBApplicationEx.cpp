@@ -27,7 +27,7 @@
 // Global access to common members
 //-----------------------------------------------------------------------------
 CXBApplicationEx* g_pXBApp = NULL;
-#ifndef HAS_SDL
+#ifdef HAS_DX
 static LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 #endif
 
@@ -46,7 +46,7 @@ CXBApplicationEx::CXBApplicationEx()
   // Initialize member variables
   g_pXBApp = this;
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   // Direct3D variables
   m_pD3D = NULL;
   m_pd3dDevice = NULL;
@@ -65,7 +65,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_AppActive = true;
   m_AppFocused = true;
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   // Set up the presentation parameters for a double-buffered, 640x480,
   // 32-bit display using depth-stencil. Override these parameters in
   // your derived class as your app requires.
@@ -115,7 +115,7 @@ VOID CXBApplicationEx::Destroy()
   // Perform app-specific cleanup
   Cleanup();
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   // Release display objects
   SAFE_RELEASE( m_pd3dDevice );
   SAFE_RELEASE( m_pD3D );
@@ -295,7 +295,9 @@ inline float MaxTrigger(XBGAMEPAD &gamepad)
   return max;
 }
 #endif
-void CXBApplicationEx::ReadInput()
+
+/* eli
+void CXBApplicationEx::ReadInput(XBMC_Event newEvent)
 {
   MEASURE_FUNCTION;
 
@@ -327,9 +329,9 @@ void CXBApplicationEx::ReadInput()
   // Read the input from the mouse
   g_Mouse.Update();
 
-  SDL_Event event;
+  XBMC_Event event;
   bool bProcessNextEvent = true;
-  while (bProcessNextEvent && SDL_PollEvent(&event))
+  while (bProcessNextEvent && XBMC_PollEvent(&event))
   {
     switch(event.type)
     {
@@ -392,13 +394,6 @@ void CXBApplicationEx::ReadInput()
       break;
     }
   }
-#else
-  // Read the input from the keyboard
-  g_Keyboard.Update();
-
-  // Read the input from the mouse
-  g_Mouse.Update();
-#endif
 
 #ifdef HAS_LIRC
   g_RemoteControl.Update();
@@ -447,9 +442,11 @@ void CXBApplicationEx::ReadInput()
 #endif
 }
 
+*/
+
 void CXBApplicationEx::Process()
 {}
-
+/*
 #ifdef HAS_SDL
 bool CXBApplicationEx::ProcessOSShortcuts(SDL_Event& event)
 {
@@ -510,8 +507,8 @@ bool CXBApplicationEx::ProcessLinuxShortcuts(SDL_Event& event)
         break;
     }
   }
-
   return false;
+ 
 }
 
 bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
@@ -552,5 +549,6 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
     }
   }
   return false;
+  
 }
-#endif
+*/

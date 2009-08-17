@@ -63,7 +63,7 @@ typedef long    __off_t;
 #ifndef WORDS_BIGENDIAN
 #define WORDS_BIGENDIAN 1
 #endif
-#else
+#elif defined(HAS_DX)
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
 #define PIXEL_GSHIFT 8

@@ -119,7 +119,7 @@ using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 static D3DGAMMARAMP oldramp, flashramp;
 #elif defined(HAS_SDL_2D)
 static Uint16 oldrampRed[256];
@@ -1878,7 +1878,7 @@ void CUtil::InitGamma()
 void CUtil::RestoreBrightnessContrastGamma()
 {
   g_graphicsContext.Lock();
-#ifndef HAS_SDL
+#ifdef HAS_DX
   g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
@@ -1904,7 +1904,7 @@ void CUtil::SetBrightnessContrastGammaPercent(float brightness, float contrast, 
 void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float Gamma, bool bImmediate)
 {
   // calculate ramp
-#ifndef HAS_SDL
+#ifdef HAS_DX
   D3DGAMMARAMP ramp;
 #elif defined(HAS_SDL_2D)
   Uint16 rampRed[256];
@@ -1913,7 +1913,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 #endif
 
   Gamma = 1.0f / Gamma;
-#ifndef HAS_SDL
+#ifdef HAS_DX
   for (int i = 0; i < 256; ++i)
   {
     float f = (powf((float)i / 255.f, Gamma) * Contrast + Brightness) * 255.f;
@@ -1929,7 +1929,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 
   // set ramp next v sync
   g_graphicsContext.Lock();
-#ifndef HAS_SDL
+#ifdef HAS_DX
   g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(rampRed, rampGreen, rampBlue);
@@ -1968,7 +1968,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   g_graphicsContext.Lock();
   if (bOn)
   {
-#ifndef HAS_SDL
+#ifdef HAS_DX
     g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &flashramp);
 #elif defined(HAS_SDL_2D)
     SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
@@ -1976,7 +1976,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
     SetBrightnessContrastGamma(0.5f, 1.2f, 2.0f, bImmediate);
   }
   else
-#ifndef HAS_SDL
+#ifdef HAS_DX
     g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
 #elif defined(HAS_SDL_2D)
     SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
@@ -1986,7 +1986,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
 
 void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 {
-#ifndef HAS_SDL
+#ifdef HAS_DX
     LPDIRECT3DSURFACE9 lpSurface = NULL;
 
     g_graphicsContext.Lock();
@@ -2029,7 +2029,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 
 #endif
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
     g_graphicsContext.BeginPaint();
     if (g_application.IsPlayingVideo())

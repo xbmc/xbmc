@@ -169,7 +169,7 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
 #endif
 }
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 void XBVideoConfig::GetModes(LPDIRECT3D9 pD3D)
 {
   bHasPAL = false;
@@ -478,12 +478,12 @@ bool XBVideoConfig::IsValidResolution(RESOLUTION res) const
   return false;
 }
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 //pre: XBVideoConfig::GetModes has been called before this function
 RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D9 pD3D, D3DPRESENT_PARAMETERS *p3dParams)
 {
   bool bHasPal = HasPAL();
-  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT, D3DFMT_LIN_A8R8G8B8);
+  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT, D3DFMT_LIN_X8R8G8B8);
   D3DDISPLAYMODE mode;
   for ( DWORD i = 0; i < numModes; i++ )
   {

@@ -230,7 +230,7 @@ void CLog::MemDump(BYTE *pData, int length)
 
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
-#if defined(HAS_SDL_OPENGL) && defined(_DEBUG)
+#if defined(HAS_GL) && defined(_DEBUG)
 #define printMatrix(matrix)                                             \
   {                                                                     \
     for (int ixx = 0 ; ixx<4 ; ixx++)                                   \
@@ -268,7 +268,7 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 
 void LogGraphicsInfo()
 {
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   const GLubyte *s;
 
   s = glGetString(GL_VENDOR);
@@ -294,10 +294,10 @@ void LogGraphicsInfo()
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
   else
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
-#else /* !HAS_SDL_OPENGL */
+#else /* !HAS_GL */
   CLog::Log(LOGNOTICE,
             "Please define LogGraphicsInfo for your chosen graphics libary");
-#endif /* !HAS_SDL_OPENGL */
+#endif /* !HAS_GL */
 }
 
 

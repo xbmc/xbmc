@@ -45,7 +45,7 @@ public:
   bool HasHDPack() const;
   CStdString GetAVPack() const;
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   void GetModes(LPDIRECT3D9 pD3D);
   RESOLUTION GetInitialMode(LPDIRECT3D9 pD3D, D3DPRESENT_PARAMETERS *p3dParams);
 #else

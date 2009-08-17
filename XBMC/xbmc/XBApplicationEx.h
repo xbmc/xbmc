@@ -15,12 +15,12 @@
 #endif
 #include "IWindowManagerCallback.h"
 #include "common/Mouse.h"
-#if defined(HAS_SDL)
+#if defined(HAS_GL)
 #ifdef HAS_SDL_JOYSTICK
 #include "common/SDLJoystick.h"
 #endif
 #endif
-#include "common/Keyboard.h"
+//#include "common/Keyboard.h"
 #ifdef HAS_IRSERVERSUITE
 #include "common/IRServerSuite/IRServerSuite.h"
 #elif defined(HAS_LIRC)
@@ -58,7 +58,7 @@ public:
   D3DPRESENT_PARAMETERS m_d3dpp;
 
   // Main objects used for creating and rendering the 3D scene
-#ifndef HAS_SDL
+#ifdef HAS_DX
   LPDIRECT3D9 m_pD3D;              // The D3D enumerator object
   LPDIRECT3DDEVICE9 m_pd3dDevice;        // The D3D rendering device
   LPDIRECT3DSURFACE9 m_pBackBuffer;       // The back buffer
@@ -93,13 +93,15 @@ public:
   // Overridable functions for the 3D scene created by the app
   virtual HRESULT Initialize() { return S_OK; }
   virtual HRESULT Cleanup() { return S_OK; }
-  void ReadInput();
-#ifdef HAS_SDL
-  bool ProcessOSShortcuts(SDL_Event &event);
-  bool ProcessWin32Shortcuts(SDL_Event &event);
-  bool ProcessLinuxShortcuts(SDL_Event &event);
-  bool ProcessOSXShortcuts(SDL_Event &event);
-#endif
+  //elis void ReadInput(XBMC_Event newEvent);
+
+  /* eli
+  bool ProcessOSShortcuts(XBMC_Event &event);
+  bool ProcessWin32Shortcuts(XBMC_Event &event);
+  bool ProcessLinuxShortcuts(XBMC_Event &event);
+  bool ProcessOSXShortcuts(XBMC_Event &event);
+  */
+
 
 public:
   // Functions to create, run, and clean up the application
