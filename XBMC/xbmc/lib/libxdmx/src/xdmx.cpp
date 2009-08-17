@@ -43,7 +43,7 @@ void xdmx_aligned_free(void *p)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-const XdmxPropertyValue CXdmxPropertyBag::m_EmptyValue = {XDMX_PROP_TYPE_ANY, 0};
+const XdmxPropertyValue CXdmxPropertyBag::m_EmptyValue = {XDMX_PROP_TYPE_ANY, {0}};
 
 CXdmxPropertyBag::CXdmxPropertyBag()
 {

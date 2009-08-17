@@ -55,6 +55,8 @@ struct XdmxPropertyValue
   };
 };
 
+#define FOURCC(a,b,c,d) ((uint32_t)(((d)<<24) | ((c)<<16) | ((b)<<8) | (a)))
+
 typedef uint32_t XdmxPropertyTag;
 
 // TODO: Implement more-efficient custom hash map
@@ -78,25 +80,25 @@ protected:
 enum
 {
   // Common
-  XDMX_PROP_TAG_FOURCC      = 'frcc',   // int32
-  XDMX_PROP_TAG_STREAM_TYPE = 'styp',   // int32
-  XDMX_PROP_TAG_DURATION    = 'dur ',   // float
-  XDMX_PROP_TAG_LANGUAGE    = 'lang',   // int32
-  XDMX_PROP_TAG_BITRATE     = 'brat',   // float
-  XDMX_PROP_TAG_VAR_BITRATE = 'vbr ',   // bool
+  XDMX_PROP_TAG_FOURCC      = FOURCC('f','r','c','c'),   // int32
+  XDMX_PROP_TAG_STREAM_TYPE = FOURCC('s','t','y','p'),   // int32
+  XDMX_PROP_TAG_DURATION    = FOURCC('d','u','r',' '),   // float
+  XDMX_PROP_TAG_LANGUAGE    = FOURCC('l','a','n','g'),   // int32
+  XDMX_PROP_TAG_BITRATE     = FOURCC('b','r','a','t'),   // float
+  XDMX_PROP_TAG_VAR_BITRATE = FOURCC('v','b','r',' '),   // bool
 
   // Audio
-  XDMX_PROP_TAG_CHANNELS    = 'chan',   // int32
-  XDMX_PROP_TAG_SAMPLE_RATE = 'srat',   // int32
-  XDMX_PROP_TAG_FRAME_SIZE  = 'fmsz',   // int32
-  XDMX_PROP_TAG_BIT_DEPTH   = 'dpth',   // int32
+  XDMX_PROP_TAG_CHANNELS    = FOURCC('c','h','a','n'),   // int32
+  XDMX_PROP_TAG_SAMPLE_RATE = FOURCC('s','r','a','t'),   // int32
+  XDMX_PROP_TAG_FRAME_SIZE  = FOURCC('f','m','s','z'),   // int32
+  XDMX_PROP_TAG_BIT_DEPTH   = FOURCC('d','p','t','h'),   // int32
 
   // Video
-  XDMX_PROP_TAG_FRAMES_PER_SEC  = 'fps ', // float
-  XDMX_PROP_TAG_HEIGHT          = 'hght', // int32
-  XDMX_PROP_TAG_WIDTH           = 'wdth', // int32
-  XDMX_PROP_TAG_ASPECT_RATIO    = 'aspt', // float
-  XDMX_PROP_TAG_VAR_FPS         = 'vfps'  // bool
+  XDMX_PROP_TAG_FRAMES_PER_SEC  = FOURCC('f','p','s',' '), // float
+  XDMX_PROP_TAG_HEIGHT          = FOURCC('h','g','h','t'), // int32
+  XDMX_PROP_TAG_WIDTH           = FOURCC('w','d','t','h'), // int32
+  XDMX_PROP_TAG_ASPECT_RATIO    = FOURCC('a','s','p','t'), // float
+  XDMX_PROP_TAG_VAR_FPS         = FOURCC('v','f','p','s')  // bool
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

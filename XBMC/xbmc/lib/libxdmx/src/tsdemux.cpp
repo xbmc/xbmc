@@ -417,10 +417,10 @@ CElementaryStreamFilter::CElementaryStreamFilter(CElementaryStream* pStream, Pay
   m_pParser = new CPESParserStandard(pStream, pPayloadList);
 }
 
-  CElementaryStreamFilter::CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList, IPacketFilter* pInnerFilter) :
+CElementaryStreamFilter::CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList, IPacketFilter* pInnerFilter) :
   m_pStream(pStream),
-  m_BytesIn(0),
-  m_pParser(pInnerFilter)
+  m_pParser(pInnerFilter),
+  m_BytesIn(0)
 {
   if (!pInnerFilter)
     m_pParser = new CPESParserStandard(pStream, pPayloadList);
@@ -814,8 +814,8 @@ protected:
 
   // System Layer Information
   CTSFilterRegistry m_FilterRegistry;
-  CTSProgramAssociationFilter* m_pPATFilter;
   CTransportStream* m_pTransportStream;
+  CTSProgramAssociationFilter* m_pPATFilter;
   PayloadList m_PayloadList;
 
   // Input Configuration
