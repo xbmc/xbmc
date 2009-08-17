@@ -23,6 +23,7 @@
  */
 
 #include "StdString.h"
+#include "URL.h"
 #include <vector>
 #include "linux/PlatformDefs.h"
 
@@ -36,7 +37,8 @@ public:
   {
     CUT = 0,
     MUTE = 1,
-    SCENE = 2
+    SCENE = 2,
+    COMM_BREAK = 3
   } Action;
 
   struct Cut
@@ -48,6 +50,8 @@ public:
 
   bool ReadFiles(const CStdString& strMovie);
   void Clear();
+
+  bool ReadMythCommBreaks(const CURL url, const float fFramesPerSecond);
 
   bool HasCut();
   bool HasSceneMarker();

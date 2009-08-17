@@ -24,6 +24,12 @@
 #include "include.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "FileSystem/CMythFile.h"
+
+extern "C"
+{
+#include "lib/libcmyth/cmyth.h"
+}
 
 using namespace std;
 
@@ -418,9 +424,9 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 
 bool CEdl::AddCut(const Cut& cut)
 {
-  if (cut.action != CUT && cut.action != MUTE)
+  if (cut.action != CUT && cut.action != MUTE && cut.action != COMM_BREAK)
   {
-    CLog::Log(LOGERROR, "%s - Not a CUT or MUTE! [%s - %s], %d",
+    CLog::Log(LOGERROR, "%s - Not a CUT, MUTE, or COMM_BREAK! [%s - %s], %d",
               __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
               cut.action);
     return false;
@@ -666,3 +672,67 @@ CStdString CEdl::MillisecondsToTimeString(const int iMilliseconds)
   return strTimeString;
 }
 
+bool CEdl::ReadMythCommBreaks(const CURL url, const float fFramesPerSecond)
+{
+  Clear();
+
+  /*
+   * Exists() sets up all the internal bits needed for GetCommBreakList().
+   */
+  CCMythFile mythFile;
+  if (!mythFile.Exists(url))
+    return false;
+
+  CLog::Log(LOGDEBUG, "%s - Reading commercial breaks from MythTV for: %s", __FUNCTION__, url.GetFileName().c_str());
+
+  cmyth_commbreaklist_t commbreaklist;
+  if (!mythFile.GetCommBreakList(commbreaklist))
+  {
+    CLog::Log(LOGERROR, "%s - Error getting commercial breaks from MythTV for: %s", __FUNCTION__,
+              url.GetFileName().c_str());
+    return false;
+  }
+
+  for (int i = 0; i < (int)commbreaklist->commbreak_count; i++)
+  {
+    cmyth_commbreak_t commbreak = commbreaklist->commbreak_list[i];
+
+    Cut cut;
+    cut.action = COMM_BREAK;
+    cut.start = commbreak->start_mark / fFramesPerSecond * 1000;
+    cut.end = commbreak->end_mark / fFramesPerSecond * 1000;
+
+    /*
+     * Detection isn't perfect near the edges so autowind by a small amount into each end of the
+     * detected commercial break.
+     *
+     * TODO: Advanced setting for the autowind amount. Perhaps one for fowards and one for backwards?
+     */
+    int autowind = 2 * 1000; // 2 seconds in ms
+    if (cut.start > 0) // Only autowind forwards if not at the start.
+      cut.start += autowind;
+    if (cut.end > cut.start + autowind) // Only autowind if it won't go back past the start (should never happen).
+      cut.end -= autowind;
+
+    if (!AddCut(cut)) // Log and continue with errors while still testing.
+      CLog::Log(LOGERROR, "%s - Invalid commercial break [%s - %s] found in MythTV for: %s. autowind: %d. Continuing anyway.",
+                __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
+                MillisecondsToTimeString(cut.end).c_str(), url.GetFileName().c_str(), autowind);
+  }
+
+  if (HasCut())
+  {
+    CLog::Log(LOGDEBUG, "%s - Added %i commercial breaks from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
+              __FUNCTION__, m_vecCuts.size(), url.GetFileName().c_str(), fFramesPerSecond);
+    // TODO: ConsolidateCommBreaks();
+    /*
+     * No point writing the MPlayer EDL file as it won't be able to play the MythTV files anyway.
+     */
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - No commercial breaks found in MythTV for: %s", __FUNCTION__, url.GetFileName().c_str());
+    return false;
+  }
+}
