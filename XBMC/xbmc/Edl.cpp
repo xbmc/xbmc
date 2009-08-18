@@ -530,8 +530,16 @@ bool CEdl::WriteMPlayerEdl()
   CStdString strBuffer;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    strBuffer.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
-                           m_vecCuts[i].action);
+    /* 
+     * MPlayer doesn't understand the scene marker (2) or commercial break (3) identifiers that XBMC
+     * supports in EDL files.
+     *
+     * http://www.mplayerhq.hu/DOCS/HTML/en/edl.html
+     *
+     * Write out mutes (1) directly. Treat commercial breaks as cuts (everything other than MUTES = 0).
+     */
+    strBuffer.AppendFormat("%.3f\t%.3f\t%i\n", (float)(m_vecCuts[i].start / 1000),
+                           (float)(m_vecCuts[i].end / 1000), m_vecCuts[i].action == MUTE ? 1 : 0);
   }
   mplayerEdlFile.Write(strBuffer.c_str(), strBuffer.size());
   mplayerEdlFile.Close();
