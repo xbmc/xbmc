@@ -30,6 +30,9 @@
 #include "GUISettings.h"
 #include "TVDatabase.h"
 #include "PVRManager.h"
+#include "GUIWindowManager.h"
+#include "GUIDialogYesNo.h"
+#include "GUIDialogOK.h"
 
 /**
  * Create a blank unmodified channel tag
@@ -397,55 +400,54 @@ void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
 
 void cPVRChannels::HideChannel(unsigned int number)
 {
-//  for (unsigned int i = 0; i < PVRTimers.size(); i++)
-//  {
-//    if ((PVRTimers[i].m_channelNum == number) && (PVRTimers[i].m_Radio == radio))
-//    {
-//      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
-//      if (!pDialog)
-//        return;
-//
-//      pDialog->SetHeading(18090);
-//      pDialog->SetLine(0, 18095);
-//      pDialog->SetLine(1, "");
-//      pDialog->SetLine(2, 18096);
-//      pDialog->DoModal();
-//
-//      if (!pDialog->IsConfirmed())
-//        return;
-//
-//      DeleteTimer(PVRTimers[i], true);
-//    }
-//  }
-//
-//    if (IsPlayingTV() && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum == number)
-//    {
-//      CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
-//      return;
-//    }
-//
-//    if (PVRChannelsTV[number-1].m_hide)
-//    {
-//      EnterCriticalSection(&m_critSection);
-//      PVRChannelsTV[number-1].m_hide = false;
-//      m_database.Open();
-//      m_database.UpdateChannel(m_currentClientID, PVRChannelsTV[number-1]);
-//      m_HiddenChannels = m_database.GetNumHiddenChannels(m_currentClientID);
-//      m_database.Close();
-//      LeaveCriticalSection(&m_critSection);
-//    }
-//    else
-//    {
-//      EnterCriticalSection(&m_critSection);
-//      PVRChannelsTV[number-1].m_hide = true;
-//      PVRChannelsTV[number-1].m_EPG.erase(PVRChannelsTV[number-1].m_EPG.begin(), PVRChannelsTV[number-1].m_EPG.end());
-//      m_database.Open();
-//      m_database.UpdateChannel(m_currentClientID, PVRChannelsTV[number-1]);
-//      m_HiddenChannels = m_database.GetNumHiddenChannels(m_currentClientID);
-//      m_database.Close();
-//      LeaveCriticalSection(&m_critSection);
-//      MoveChannel(number, PVRChannelsTV.size(), false);
-//    }
+  CPVRManager *manager  = CPVRManager::GetInstance();
+  CTVDatabase *database = manager->GetTVDatabase();
+
+  for (unsigned int i = 0; i < PVRTimers.size(); i++)
+  {
+    if ((PVRTimers[i].Number() == number) && (PVRTimers[i].IsRadio() == m_bRadio))
+    {
+      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      if (!pDialog)
+        return;
+
+      pDialog->SetHeading(18090);
+      pDialog->SetLine(0, 18095);
+      pDialog->SetLine(1, "");
+      pDialog->SetLine(2, 18096);
+      pDialog->DoModal();
+
+      if (!pDialog->IsConfirmed())
+        return;
+
+      PVRTimers.DeleteTimer(PVRTimers[i], true);
+    }
+  }
+
+  if (manager->IsPlayingTV() || manager->IsPlayingRadio() && manager->GetCurrentChannelItem()->GetTVChannelInfoTag()->Number() == number)
+  {
+    CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
+    return;
+  }
+
+    if (at(number-1).IsHidden())
+    {
+      at(number-1).SetHidden(false);
+      database->Open();
+      database->UpdateDBChannel(at(number-1));
+      m_iHiddenChannels = database->GetNumHiddenChannels();
+      database->Close();
+    }
+    else
+    {
+      at(number-1).SetHidden(true);
+      cPVREpgs::ClearChannel(at(number-1).ChannelID());
+      database->Open();
+      database->UpdateDBChannel(at(number-1));
+      m_iHiddenChannels = database->GetNumHiddenChannels();
+      database->Close();
+      MoveChannel(number, size());
+    }
 }
 
 cPVRChannelInfoTag *cPVRChannels::GetByNumber(int Number)

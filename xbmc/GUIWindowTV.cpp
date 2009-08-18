@@ -555,7 +555,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
       else if (iAction == ACTION_DELETE_ITEM)
       {
         /* Check if entry is a valid deleteable channel */
-        int iChannel = pItem->GetTVChannelInfoTag()->m_iChannelNum;
+        int iChannel = pItem->GetTVChannelInfoTag()->Number();
 
         if (iChannel != -1)
         {
@@ -573,12 +573,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
             if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
             {
-              PVRChannelsTV.HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum);
+              PVRChannelsTV.HideChannel(pItem->GetTVChannelInfoTag()->Number());
               UpdateChannelsTV();
             }
             else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
             {
-              PVRChannelsRadio.HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum);
+              PVRChannelsRadio.HideChannel(pItem->GetTVChannelInfoTag()->Number());
               UpdateChannelsRadio();
             }
           }
@@ -1029,20 +1029,20 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   else if (button == CONTEXT_BUTTON_MOVE)
   {
     CStdString strIndex;
-    strIndex.Format("%i", pItem->GetTVChannelInfoTag()->m_iChannelNum);
+    strIndex.Format("%i", pItem->GetTVChannelInfoTag()->Number());
     CGUIDialogNumeric::ShowAndGetNumber(strIndex, g_localizeStrings.Get(18197));
     int newIndex = atoi(strIndex.c_str());
 
-    if (newIndex != pItem->GetTVChannelInfoTag()->m_iChannelNum)
+    if (newIndex != pItem->GetTVChannelInfoTag()->Number())
     {
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        PVRChannelsTV.MoveChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, newIndex);
+        PVRChannelsTV.MoveChannel(pItem->GetTVChannelInfoTag()->Number(), newIndex);
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        PVRChannelsRadio.MoveChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum, newIndex);
+        PVRChannelsRadio.MoveChannel(pItem->GetTVChannelInfoTag()->Number(), newIndex);
         UpdateChannelsRadio();
       }
     }
@@ -1064,12 +1064,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        PVRChannelsTV.HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum);
+        PVRChannelsTV.HideChannel(pItem->GetTVChannelInfoTag()->Number());
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        PVRChannelsRadio.HideChannel(pItem->GetTVChannelInfoTag()->m_iChannelNum);
+        PVRChannelsRadio.HideChannel(pItem->GetTVChannelInfoTag()->Number());
         UpdateChannelsRadio();
       }
     }
@@ -1103,12 +1103,12 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
       {
-        PVRChannelsTV.SetChannelIcon(pItem->GetTVChannelInfoTag()->m_iChannelNum, strIcon);
+        PVRChannelsTV.SetChannelIcon(pItem->GetTVChannelInfoTag()->Number(), strIcon);
         UpdateChannelsTV();
       }
       else if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
       {
-        PVRChannelsRadio.SetChannelIcon(pItem->GetTVChannelInfoTag()->m_iChannelNum, strIcon);
+        PVRChannelsRadio.SetChannelIcon(pItem->GetTVChannelInfoTag()->Number(), strIcon);
         UpdateChannelsRadio();
       }
     }
