@@ -374,6 +374,8 @@ protected:
     void Clear()
     {
       cut = -1;
+      commbreak_start = -1;
+      commbreak_end = -1;
       reset = 0;
     }
 
@@ -394,8 +396,9 @@ protected:
     }
 
     int cut;              // last automatically skipped EDL cut seek position
+    int commbreak_start;  // start time of the last commercial break automatically skipped
+    int commbreak_end;    // end time of the last commercial break automatically skipped
     double reset;         // last actual reset time
-    // TODO: Add automatic commercial break skip markers.
 
   } m_EdlAutoSkipMarkers;
 
