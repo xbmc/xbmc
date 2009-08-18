@@ -29,8 +29,12 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
     // If an unbounded payload is currently in-process, this signals its end
     if (m_Accum.IsUnbounded() && m_Accum.GetLen()) 
     {
-        XDMX_LOG_DEBUG("%s: Completing unbounded payload. Len: %lu (0x%04x). Total Bytes in: %lu (0x%04x)", __PES_MODULE__, m_Accum.GetLen(), m_Accum.GetLen(), (unsigned int)m_BytesIn, (unsigned int)m_BytesIn);
-        CompletePayload();
+      XDMX_LOG_DEBUG("%s: Completing unbounded payload. Len: %lu (0x%04x). Total Bytes in: %lu (0x%04x)", __PES_MODULE__, m_Accum.GetLen(), m_Accum.GetLen(), (unsigned int)m_BytesIn, (unsigned int)m_BytesIn);
+      CompletePayload();
+    }
+    else if (m_Accum.GetPayloadLen())
+    {
+      XDMX_LOG_DEBUG("%s: Abandoning incomplete payload.", __PES_MODULE__);
     }
 
     // Peek at the packet header to get the size

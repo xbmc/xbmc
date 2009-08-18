@@ -578,6 +578,7 @@ void CTSProgramMapFilter::ParseStream(CSimpleBitstreamReader& reader)
   {
   case ES_STREAM_TYPE_VIDEO_MPEG2_2:
     pTypeName = "MPEG2 Video";
+    break;
   case ES_STREAM_TYPE_VIDEO_H264:
     pTypeName = "H264 Video";
     break;
@@ -851,7 +852,8 @@ CTransportStreamDemux::CTransportStreamDemux(TSTransportType type /*= TS_TYPE_UN
   m_CacheSize(0),
   m_CacheOffset(0),
   m_PacketCount(0),
-  m_HDMVArrivalTime(0)
+  m_HDMVArrivalTime(0),
+  m_Duration(0.0)
 {
   
 }
@@ -927,7 +929,7 @@ bool CTransportStreamDemux::Open(IXdmxInputStream* pInput)
   }
 
   // Try to probe streams for format information
-  return ProbeStreams(m_pTransportStream->GetProgramCount() - 1);
+  return true;//ProbeStreams(m_pTransportStream->GetProgramCount() - 1);
 }
 
 void CTransportStreamDemux::ProbeDuration()
