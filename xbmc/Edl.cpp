@@ -137,6 +137,10 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
       case 2:
         bValid = AddSceneMarker(cut.end);
         break;
+      case 3:
+        cut.action = COMM_BREAK;
+        bValid = AddCut(cut);
+        break;
       default:
         bValid = false;
         continue;
