@@ -427,7 +427,7 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.radio=%u ORDER BY Channels.idChannel", radio);
+    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.radio=%u ORDER BY Channels.XBMCNumber", radio);
 
     m_pDS->query(SQL.c_str());
 
