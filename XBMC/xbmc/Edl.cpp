@@ -823,5 +823,18 @@ void CEdl::MergeShortCommBreaks()
       }
     }
   }
+
+  /*
+   * Add in scene markers at the start and end of the commercial breaks.
+   */
+  for (int i = 0; i < (int)m_vecCuts.size(); i++)
+  {
+    if (m_vecCuts[i].action == COMM_BREAK)
+    {
+      if (m_vecCuts[i].start > 0) // Don't add a scene marker at the start.
+        AddSceneMarker(m_vecCuts[i].start);
+      AddSceneMarker(m_vecCuts[i].end);
+    }
+  }
   return;
 }
