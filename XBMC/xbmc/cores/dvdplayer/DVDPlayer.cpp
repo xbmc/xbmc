@@ -2045,7 +2045,6 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
     CStdString strEDL;
-
     if (g_guiSettings.GetBool("videoplayer.editdecision"))
       strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
 
