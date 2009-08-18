@@ -15,6 +15,7 @@ public:
   virtual unsigned int Read(unsigned char* buf, unsigned int len);
   virtual __int64 Seek(__int64 offset, int whence);
   virtual __int64 GetLength();
+  virtual int64_t GetPosition();
   virtual bool IsEOF();
   bool Open(const char* pFilePath);
 protected:
@@ -48,12 +49,31 @@ unsigned int CFileStream::Read(unsigned char* buf, unsigned int len)
 
 __int64 CFileStream::Seek(__int64 offset, int whence)
 {
-  return m_FileLen;
+  std::ios::seekdir dir;
+  switch (whence)
+  {
+  case SEEK_SET:
+    dir = std::ios::beg;
+    break;
+  case SEEK_CUR:
+    dir = std::ios::cur;
+    break;
+  case SEEK_END:
+    dir = std::ios::end;
+    break;
+  }
+  m_InputFile.seekg((long)offset, dir);
+  return GetPosition();
 }
 
 __int64 CFileStream::GetLength()
 {
-  return 0;
+  return m_FileLen;
+}
+
+__int64 CFileStream::GetPosition()
+{
+  return m_InputFile.tellg();
 }
 
 bool CFileStream::IsEOF()
@@ -98,13 +118,14 @@ ITransportStreamDemux* m_pDemux;
 CFileStream* m_pInput; 
 int main() 
 {
+  XdmxSetLogLevel(XDMX_LOG_LEVEL_DEBUG);
   m_pInput = new CFileStream();
-//  if (!m_pInput->Open("Z:\\video\\HD Movies\\Casino Royale (BluRay).m2ts")) // H264
-  if (!m_pInput->Open("Z:\\video\\HD Movies\\V For Vendetta (BluRay).m2ts")) // VC1
+//  if (!m_pInput->Open("Z:\\video\\HD Movies\\Casino Test.m2ts"))
+  if (!m_pInput->Open("C:\\Users\\Chr\\Videos\\Tests\\test.ts"))
   {
     return 1;
   }
-  m_pDemux = CreateTSDemux(TS_TYPE_M2TS);
+  m_pDemux = CreateTSDemux(TS_TYPE_STD);
 
   if (!m_pDemux->Open(dynamic_cast<IXdmxInputStream*>(m_pInput)))
   {
@@ -121,6 +142,8 @@ int main()
     m_StreamMap[pStream->GetId()] = s;
   }
 
+  std::fstream outFile;
+  outFile.open("c:\\users\\chr\\desktop\\stream.raw", std::ios::out | std::ios::binary);
   for (CParserPayload* pPayload = m_pDemux->GetPayload(); pPayload != NULL; pPayload = m_pDemux->GetPayload())
   {
     DemuxPacket dmx;
@@ -136,10 +159,13 @@ int main()
     dmx.dts -= m_StartTime;
     dmx.pts -= m_StartTime;
     //printf("*** Got One *** stream: %d, size: %lu, pts: %0.06f, dts: %0.06f\n", dmx.iStreamId, dmx.iSize, dmx.pts, dmx.dts);
+    if (pPayload->GetStream()->GetId() == 0x31)
+      outFile.write((const char*)dmx.pData, dmx.iSize);
     delete pPayload;
     _aligned_free(dmx.pData);
     Sleep(5);
   }
+  outFile.close();
 
 	return 0;
 }
