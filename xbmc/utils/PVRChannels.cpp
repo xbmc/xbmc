@@ -108,7 +108,6 @@ int cPVRChannelInfoTag::GetDuration() const
   duration += m_duration.GetHours()*60*60;
   duration += m_duration.GetMinutes()*60;
   duration += m_duration.GetSeconds();
-  duration /= 60;
   return duration;
 }
 
@@ -249,7 +248,7 @@ bool cPVRChannels::Update()
    */
   for (unsigned int i = 0; i < PVRChannels_tmp.size(); i++)
   {
-    PVRChannels_tmp[i].m_iIdChannel = database->AddDBChannel(PVRChannels_tmp[i]);
+    PVRChannels_tmp[i].SetChannelID(database->AddDBChannel(PVRChannels_tmp[i]));
     push_back(PVRChannels_tmp[i]);
     CLog::Log(LOGINFO,"PVRManager: Added %s channel %s", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].Name().c_str());
     fprintf(stderr,"PVRManager: Added %s channel %s\n", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].Name().c_str());
@@ -321,7 +320,7 @@ int cPVRChannels::GetChannels(CFileItemList* results, int group_id)
     if (at(i).IsHidden())
       continue;
 
-    if ((group_id != -1) && (at(i).m_iGroupID != group_id))
+    if ((group_id != -1) && (at(i).GroupID() != group_id))
       continue;
 
     CFileItemPtr channel(new CFileItem(at(i)));

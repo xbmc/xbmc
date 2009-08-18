@@ -202,13 +202,13 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(const CFileItem& item)
   m_clientIndex   = -1;
   m_Active        = true;
   m_strTitle      = tag->m_strTitle;
-  m_channelNum    = channel->m_iChannelNum;
-  m_clientNum     = channel->m_iClientNum;
-  m_clientID      = channel->m_clientID;
-  m_Radio         = channel->m_radio;
+  m_channelNum    = channel->Number();
+  m_clientNum     = channel->ClientNumber();
+  m_clientID      = channel->ClientID();
+  m_Radio         = channel->IsRadio();
 
   if (m_strTitle.IsEmpty())
-    m_strTitle  = channel->m_strChannel;
+    m_strTitle  = channel->Name();
 
   /* Calculate start/stop times */
   m_StartTime     = tag->m_startTime - CDateTimeSpan(0, marginstart / 60, marginstart % 60, 0);

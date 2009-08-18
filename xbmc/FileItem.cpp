@@ -167,12 +167,12 @@ CFileItem::CFileItem(const cPVRChannelInfoTag& channel)
   m_pvrTimerInfoTag = NULL;
   m_pictureInfoTag = NULL;
   Reset();
-  m_strPath = channel.m_strFileNameAndPath;
+  m_strPath = channel.Path();
   m_bIsFolder = false;
   *GetTVChannelInfoTag() = channel;
-  SetLabel(channel.m_strChannel);
+  SetLabel(channel.Name());
   m_strLabel2 = channel.m_strTitle;
-  SetThumbnailImage(channel.m_IconPath);
+  SetThumbnailImage(channel.Icon());
   //FillInDefaultIcon();
   //SetVideoThumb();
   SetInvalid();

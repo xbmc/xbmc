@@ -205,12 +205,11 @@ class cPVREpg;
 class cPVRChannelInfoTag : public CVideoInfoTag
 {
   friend class cPVREpgs;
-  friend class cPVRChannels;
+  friend class CTVDatabase;
 
 private:
   mutable const cPVREpg *m_Epg;
 
-public:
   int                 m_iIdChannel;           /// Database number
   int                 m_iChannelNum;          /// Channel number for channels on XBMC
   int                 m_iGroupID;             /// Channel group identfier
@@ -259,7 +258,17 @@ public:
   long ChannelID(void) const { return m_iIdChannel; }
   void SetChannelID(int ChannelID) { m_iIdChannel = ChannelID; }
   long UniqueID(void) const { return m_iIdUnique; }
+  void SetUniqueID(long id) { m_iIdUnique = id; }
+  long GroupID(void) const { return m_iGroupID; }
+  void SetGroupID(long group) { m_iGroupID = group; }
+  bool IsEncrypted(void) const { return m_encrypted; }
+  void SetEncrypted(bool encrypted) { m_encrypted = encrypted; }
   bool IsRadio(void) const { return m_radio; }
+  void SetRadio(bool radio) { m_radio = radio; }
+  bool IsRecording(void) const { return m_isRecording; }
+  void SetRecording(bool rec) { m_isRecording = rec; }
+  bool HaveTeletext(void) const { return m_bTeletext; }
+  void SetTeletext(bool tt) { m_bTeletext = tt; }
   CStdString Stream(void) const { return m_strStreamURL; }
   void SetStream(CStdString stream) { m_strStreamURL = stream; }
   CStdString Path(void) const { return m_strFileNameAndPath; }
@@ -269,6 +278,13 @@ public:
   bool IsHidden(void) const { return m_hide; }
   void SetHidden(bool hide) { m_hide = hide; }
   int GetDuration() const;
+  void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
+  CDateTime StartTime(void) const { return m_startTime; }
+  void SetStartTime(CDateTime time) { m_startTime = time; }
+  CDateTime EndTime(void) const { return m_endTime; }
+  void SetEndTime(CDateTime time) { m_endTime = time; }
+  CStdString NextTitle(void) const { return m_strNextTitle; }
+  void SetNextTitle(CStdString title) { m_strNextTitle = title; }
 };
 
 typedef std::vector<cPVRChannelInfoTag> VECCHANNELS;

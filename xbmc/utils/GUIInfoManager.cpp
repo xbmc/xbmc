@@ -3056,13 +3056,13 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_ALBUM:
       return m_currentFile->GetTVChannelInfoTag()->m_strAlbum;
     case VIDEOPLAYER_NEXT:
-      return m_currentFile->GetTVChannelInfoTag()->m_strNextTitle;
+      return m_currentFile->GetTVChannelInfoTag()->NextTitle();
     case VIDEOPLAYER_GROUP:
       return CPVRManager::GetInstance()->GetGroupName(CPVRManager::GetInstance()->GetPlayingGroup());
     case VIDEOPLAYER_STARTTIME:
-      return m_currentFile->GetTVChannelInfoTag()->m_startTime.GetAsLocalizedTime("", false);
+      return m_currentFile->GetTVChannelInfoTag()->StartTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_ENDTIME:
-      return m_currentFile->GetTVChannelInfoTag()->m_endTime.GetAsLocalizedTime("", false);
+      return m_currentFile->GetTVChannelInfoTag()->EndTime().GetAsLocalizedTime("", false);
     }
   }
   else if (m_currentFile->HasVideoInfoTag())
@@ -4010,11 +4010,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     break;
   case LISTITEM_STARTTIME:
     if (item->HasTVChannelInfoTag())
-      return item->GetTVChannelInfoTag()->m_startTime.GetAsLocalizedTime("", false);
+      return item->GetTVChannelInfoTag()->StartTime().GetAsLocalizedTime("", false);
     break;
   case LISTITEM_ENDTIME:
     if (item->HasTVChannelInfoTag())
-      return item->GetTVChannelInfoTag()->m_endTime.GetAsLocalizedTime("", false);
+      return item->GetTVChannelInfoTag()->EndTime().GetAsLocalizedTime("", false);
     break;
   case LISTITEM_CHANNELNUMBER:
     {

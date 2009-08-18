@@ -554,7 +554,7 @@ PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
     tag.uid = channel.Sid();
     tag.number = channel.Number();
     tag.name = channel.Name();
-    tag.callsign = "";
+    tag.callsign = channel.Name();
     tag.iconpath = "";
     tag.encrypted = channel.Ca() ? true : false;
     tag.radio = (channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
