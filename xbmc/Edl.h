@@ -48,7 +48,7 @@ public:
     Action action;
   };
 
-  bool ReadFiles(const CStdString& strMovie);
+  bool ReadFiles(const CStdString& strMovie, const float fFramesPerSecond);
   void Clear();
 
   bool ReadMythCommBreaks(const CURL url, const float fFramesPerSecond);
@@ -73,7 +73,7 @@ private:
   std::vector<__int64> m_vecSceneMarkers;
 
   bool ReadEdl(const CStdString& strMovie);
-  bool ReadComskip(const CStdString& strMovie);
+  bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadVideoReDo(const CStdString& strMovie);
   bool ReadBeyondTV(const CStdString& strMovie);
 
