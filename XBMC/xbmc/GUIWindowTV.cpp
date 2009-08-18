@@ -565,7 +565,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
           {
             pDialog->SetHeading(18196);
             pDialog->SetLine(0, "");
-            pDialog->SetLine(1, pItem->GetTVChannelInfoTag()->m_strChannel);
+            pDialog->SetLine(1, pItem->GetTVChannelInfoTag()->Name());
             pDialog->SetLine(2, "");
             pDialog->DoModal();
 
@@ -1056,7 +1056,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       pDialog->SetHeading(18196);
       pDialog->SetLine(0, "");
-      pDialog->SetLine(1, pItem->GetTVChannelInfoTag()->m_strChannel);
+      pDialog->SetLine(1, pItem->GetTVChannelInfoTag()->Name());
       pDialog->SetLine(2, "");
       pDialog->DoModal();
 
@@ -1094,7 +1094,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       return true;
     }
 
-    CStdString strIcon = pItem->GetTVChannelInfoTag()->m_IconPath == "" ? g_guiSettings.GetString("pvrmenu.iconpath") : pItem->GetTVChannelInfoTag()->m_IconPath;
+    CStdString strIcon = pItem->GetTVChannelInfoTag()->Icon() == "" ? g_guiSettings.GetString("pvrmenu.iconpath") : pItem->GetTVChannelInfoTag()->Icon();
 
     VECSOURCES shares;
     g_mediaManager.GetLocalDrives(shares);

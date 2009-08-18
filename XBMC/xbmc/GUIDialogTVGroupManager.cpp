@@ -157,7 +157,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
           {
             CFileItemPtr pItemGroup   = m_channelGroupItems->Get(m_iSelectedGroup);
             CFileItemPtr pItemChannel = m_channelLeftItems->Get(m_iSelectedLeft);
-            CPVRManager::GetInstance()->ChannelToGroup(pItemChannel->GetTVChannelInfoTag()->m_iChannelNum, atoi(pItemGroup->m_strPath.c_str()), m_bIsRadio);
+            CPVRManager::GetInstance()->ChannelToGroup(pItemChannel->GetTVChannelInfoTag()->Number(), atoi(pItemGroup->m_strPath.c_str()), m_bIsRadio);
             Update();
           }
           return true;
@@ -173,7 +173,7 @@ bool CGUIDialogTVGroupManager::OnMessage(CGUIMessage& message)
           if (m_channelRightItems->GetFileCount() > 0)
           {
             CFileItemPtr pItemChannel = m_channelRightItems->Get(m_iSelectedRight);
-            CPVRManager::GetInstance()->ChannelToGroup(pItemChannel->GetTVChannelInfoTag()->m_iChannelNum, 0, m_bIsRadio);
+            CPVRManager::GetInstance()->ChannelToGroup(pItemChannel->GetTVChannelInfoTag()->Number(), 0, m_bIsRadio);
             Update();
           }
           return true;

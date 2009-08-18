@@ -79,7 +79,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
     {
       CStdString string;
       CFileItemPtr item = channelslist_tv[i];
-      string.Format("%i %s", item->GetTVChannelInfoTag()->m_iChannelNum, item->GetTVChannelInfoTag()->m_strChannel.c_str());
+      string.Format("%i %s", item->GetTVChannelInfoTag()->Number(), item->GetTVChannelInfoTag()->Name().c_str());
       channelstrings_tv.push_back(string);
     }
 
@@ -97,7 +97,7 @@ void CGUIDialogTVTimerSettings::CreateSettings()
     {
       CStdString string;
       CFileItemPtr item = channelslist_radio[i];
-      string.Format("%i %s", item->GetTVChannelInfoTag()->m_iChannelNum, item->GetTVChannelInfoTag()->m_strChannel.c_str());
+      string.Format("%i %s", item->GetTVChannelInfoTag()->Number(), item->GetTVChannelInfoTag()->Name().c_str());
       channelstrings_radio.push_back(string);
     }
 

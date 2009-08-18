@@ -182,7 +182,7 @@ bool CGUIDialogTVTeletext::OnMessage(CGUIMessage& message)
   if (iMessage == GUI_MSG_WINDOW_INIT)
   {
     const cPVRChannelInfoTag* tag = CPVRManager::GetInstance()->GetCurrentChannelItem()->GetTVChannelInfoTag();
-    int channel = tag->m_iClientNum;
+    int channel = tag->ClientNumber();
     if (channel != m_CurrentChannel)
     {
       m_currentPage           = 0x100; //Believe it or not, the teletext numbers are somehow hexadecimal
@@ -196,7 +196,7 @@ bool CGUIDialogTVTeletext::OnMessage(CGUIMessage& message)
       m_Blinked               = false;
       m_Concealed             = false;
       m_CurrentChannel        = channel;
-      m_TeletextSupported     = tag->m_bTeletext;
+      m_TeletextSupported     = tag->HaveTeletext();
     }
   }
   else if (iMessage == GUI_MSG_WINDOW_DEINIT)

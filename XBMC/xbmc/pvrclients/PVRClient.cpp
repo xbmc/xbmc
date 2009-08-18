@@ -383,22 +383,21 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   cPVRChannels *xbmcChannels = (cPVRChannels*) handle;
   cPVRChannelInfoTag tag;
 
-  tag.m_iIdChannel          = -1;
-  tag.m_iChannelNum         = -1;
-  tag.m_iClientNum          = channel->number;
-  tag.m_iGroupID            = 0;
-  tag.m_clientID            = client->m_clientID;
-  tag.m_iIdUnique           = channel->uid;
-  tag.m_strChannel          = channel->name;
-  tag.m_strClientName       = channel->name;
-  //= channel->callsign;
-  tag.m_IconPath            = channel->iconpath;
-  tag.m_encrypted           = channel->encrypted;
-  tag.m_bTeletext           = channel->teletext;
-  tag.m_radio               = channel->radio;
-  tag.m_hide                = channel->hide;
-  tag.m_isRecording         = channel->recording;
-  tag.m_strFileNameAndPath  = channel->stream_url;
+  tag.SetChannelID(-1);
+  tag.SetNumber(-1);
+  tag.SetClientNumber(channel->number);
+  tag.SetGroupID(0);
+  tag.SetClientID(client->m_clientID);
+  tag.SetUniqueID(channel->uid);
+  tag.SetName(channel->name);
+  tag.SetClientName(channel->callsign);
+  tag.SetIcon(channel->iconpath);
+  tag.SetEncrypted(channel->encrypted);
+  tag.SetTeletext(channel->teletext);
+  tag.SetRadio(channel->radio);
+  tag.SetHidden(channel->hide);
+  tag.SetRecording(channel->recording);
+  tag.SetStream(channel->stream_url);
 
   xbmcChannels->push_back(tag);
   return;
@@ -813,8 +812,8 @@ void CPVRClient::PVRTransferTimerEntry(void *userData, const PVRHANDLE handle, c
   tag.SetRecording(timer->recording);
   tag.SetRepeating(timer->repeat);
   tag.SetWeekdays(timer->repeatflags);
-  tag.SetNumber(channel->m_iChannelNum);
-  tag.SetRadio(channel->m_radio);
+  tag.SetNumber(channel->Number());
+  tag.SetRadio(channel->IsRadio());
   CStdString path;
   path.Format("pvr://client%i/timers/%i", tag.ClientID(), tag.ClientIndex());
   tag.SetPath(path);
