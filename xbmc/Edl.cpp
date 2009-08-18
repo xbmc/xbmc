@@ -220,7 +220,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
       Cut cut;
       cut.start = (__int64)(dStartFrame / fFrameRate * 1000);
       cut.end = (__int64)(dEndFrame / fFrameRate * 1000);
-      cut.action = CUT;
+      cut.action = COMM_BREAK;
       bValid = AddCut(cut);
     }
     else
@@ -393,7 +393,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
       Cut cut;
       cut.start = (__int64)(atof(pStart->GetText()) / 10000);
       cut.end = (__int64)(atof(pEnd->GetText()) / 10000);
-      cut.action = CUT;
+      cut.action = COMM_BREAK;
       bValid = AddCut(cut);
     }
     else
