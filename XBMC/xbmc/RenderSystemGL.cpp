@@ -65,6 +65,14 @@ bool CRenderSystemGL::AttachWindow(CWinSystem* winSystem)
     return false;
   }
 
+  // init glew library
+  GLenum err = glewInit();
+  if (GLEW_OK != err)
+  {
+    /* Problem: glewInit failed, something is seriously wrong. */
+    return false;
+  }
+
   return true;
 }
 
@@ -144,6 +152,9 @@ bool CRenderSystemGL::IsExtSupported(CStdString strExt)
 bool CRenderSystemGL::Test()
 {
   static float theta = 0.0;
+
+  //RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
+  //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
 
   glPushMatrix();
   glRotatef( theta, 0.0f, 0.0f, 1.0f );
