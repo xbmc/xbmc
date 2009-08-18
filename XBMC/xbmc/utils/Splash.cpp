@@ -23,7 +23,8 @@
 #include "Splash.h"
 #include "GUIImage.h"
 #include "FileSystem/File.h"
-#include "Surface.h"
+// elis #include "Surface.h"
+#include "RenderSystem.h"
 
 using namespace XFILE;
 
@@ -80,6 +81,7 @@ void CSplash::Show()
   delete image;
 
   //show it on screen
+  /*
 #ifdef HAS_DX
 #ifdef HAS_XBOX_D3D
   g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
@@ -93,6 +95,9 @@ void CSplash::Show()
   g_graphicsContext.Flip();
 #endif
   g_graphicsContext.Unlock();
+  */
+  
+  g_RenderSystem.Present();
 }
 
 void CSplash::Hide()

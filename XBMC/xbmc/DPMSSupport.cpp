@@ -25,7 +25,7 @@
 #include "DPMSSupport.h"
 #include "system.h"
 #include "utils/log.h"
-#include "Surface.h"
+// elis #include "Surface.h"
 
 //////// Generic, non-platform-specific code
 

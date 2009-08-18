@@ -30,7 +30,7 @@
 #include <shlobj.h>
 #include "SpecialProtocol.h"
 #include "my_ntddscsi.h"
-#include "Surface.h"
+// elis #include "Surface.h"
 #if _MSC_VER > 1400
 #include "Setupapi.h"
 #endif

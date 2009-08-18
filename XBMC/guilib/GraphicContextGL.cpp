@@ -40,7 +40,7 @@
 #ifdef HAS_GL
 #define GLVALIDATE  { CSingleLock locker(*this); ValidateSurface(); }
 #endif
-#include "SurfaceGL.h"
+//#include "SurfaceGL.h"
 #include "SkinInfo.h"
 using namespace Surface;
 #ifdef HAS_GLX
@@ -403,6 +403,7 @@ bool CGraphicContextGL::ValidateSurface(CSurface* dest)
 
 CSurface* CGraphicContextGL::InitializeSurface()
 {
+  /* elis
   CSurfaceGL* screenSurface = NULL;
   Lock();
 
@@ -435,6 +436,8 @@ CSurface* CGraphicContextGL::InitializeSurface()
 
   Unlock();
   return screenSurface;
+  */
+  return NULL;
 }
 
 void CGraphicContextGL::ReleaseCurrentContext(Surface::CSurface* ctx)
@@ -525,7 +528,6 @@ void CGraphicContextGL::EndPaint(CSurface *dest, bool lock)
 
 void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
-  /* elis
   RESOLUTION lastRes = m_Resolution;
   if (res == AUTORES)
   {
@@ -616,8 +618,10 @@ void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
     m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, (bool)g_advancedSettings.m_fullScreen);
 #elif defined(HAS_GL)
+    /* elis
     int options = SDL_RESIZABLE;
     if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
+    */
 
     // Create a bare root window so that SDL Input handling works
 #ifdef HAS_GLX
@@ -663,18 +667,20 @@ void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
 
 #elif defined(__APPLE__) || defined(_WIN32PC)
     // Allow for fullscreen.
-    bool needsResize = (m_screenSurface != 0);
+    // elis bool needsResize = (m_screenSurface != 0);
 #if defined(_WIN32PC)
     // Always resize even the first time because we need to change the attributes on the SDL window and center
-    needsResize = true;
+   // elis  needsResize = true;
 #endif
+    /* elis
     if (!m_screenSurface)
       m_screenSurface = new CSurfaceGL(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
+      */
 
     if (g_advancedSettings.m_fullScreen)
     {
       // SetFullScreenRoot will call m_screenSurface->ResizeSurface
-      needsResize = false;
+      // elis needsResize = false;
       SetFullScreenRoot(true);
     }
 #ifndef _WIN32PC
@@ -684,12 +690,13 @@ void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
 #endif
     {
       // SetFullScreenRoot will call m_screenSurface->ResizeSurface
-      needsResize = false;
+      // elis needsResize = false;
       SetFullScreenRoot(false);
     }
-
+    /*
     if (needsResize)
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
+      */
 #endif
 
 #if defined(_WIN32PC) && !defined(__APPLE__)
@@ -710,11 +717,13 @@ void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
         g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
 #endif
 
-    SDL_WM_SetCaption("XBMC Media Center", NULL);
+    // elis SDL_WM_SetCaption("XBMC Media Center", NULL);
 
     {
+      /* elis
       CSingleLock aLock(m_surfaceLock);
       m_surfaces[SDL_ThreadID()] = m_screenSurface;
+      */
     }
 
     glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -783,7 +792,6 @@ void CGraphicContextGL::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
     m_Resolution = res;
     Unlock();
   }
-  */
 }
 
 
@@ -835,11 +843,13 @@ void CGraphicContextGL::SetFullScreenRoot(bool fs)
 #else
     SDL_SetVideoMode(m_iFullScreenWidth, m_iFullScreenHeight, 0, SDL_FULLSCREEN);
 #endif
+    /* elis
     if (m_screenSurface)
     {
       m_screenSurface->RefreshCurrentContext();
       m_screenSurface->ResizeSurface(m_iFullScreenWidth, m_iFullScreenHeight);
     }
+    */
 
     glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
     glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
@@ -860,11 +870,13 @@ void CGraphicContextGL::SetFullScreenRoot(bool fs)
 #else
     SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
 #endif
+    /* elis
     if (m_screenSurface)
     {
       m_screenSurface->RefreshCurrentContext();
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
     }
+    */
 
     glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
     glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
@@ -882,7 +894,7 @@ void CGraphicContextGL::SetFullScreenRoot(bool fs)
 
 void CGraphicContextGL::Flip()
 {
-  m_screenSurface->Flip();
+  // elis m_screenSurface->Flip();
 }
 
 void CGraphicContextGL::ApplyHardwareTransform()

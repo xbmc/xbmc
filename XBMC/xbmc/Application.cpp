@@ -75,7 +75,7 @@
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
-#include "Surface.h"
+// elis #include "Surface.h"
 #include "PowerManager.h"
 #include "DPMSSupport.h"
 
@@ -721,7 +721,7 @@ HRESULT CApplication::Create(HWND hWnd)
   
 
   // set GUI res and force the clear of the screen
-  //g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
 #if defined(_WIN32PC) && defined(HAS_GL)
   // elis CWIN32Util::CheckGLVersion();
@@ -740,7 +740,6 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  
   m_splash = new CSplash("special://xbmc/media/Splash.png");
 #ifdef HAS_DX
   m_splash->Start();
@@ -1194,7 +1193,8 @@ HRESULT CApplication::Initialize()
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
-  m_dpms = new DPMSSupport(g_graphicsContext.getScreenSurface());
+  // elis m_dpms = new DPMSSupport(g_graphicsContext.getScreenSurface());
+  m_dpms = new DPMSSupport(NULL);
   g_guiSettings.GetSetting("screensaver.sep_powersaving")->SetVisible(
       m_dpms->IsSupported());
   g_guiSettings.GetSetting("screensaver.powersavingtime")->SetVisible(
@@ -2132,8 +2132,10 @@ void CApplication::RenderNoPresent()
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
 #ifdef HAS_GL
+    /* elis 
     if (vsync_mode==VSYNC_VIDEO)
       g_graphicsContext.getScreenSurface()->EnableVSync(true);
+      */
 #endif
     if (m_bPresentFrame)
       g_renderManager.Present();
@@ -2148,10 +2150,12 @@ void CApplication::RenderNoPresent()
   g_graphicsContext.AcquireCurrentContext();
 
 #ifdef HAS_GL
+  /* elis
   if (vsync_mode==VSYNC_ALWAYS)
     g_graphicsContext.getScreenSurface()->EnableVSync(true);
   else if (vsync_mode!=VSYNC_DRIVER)
     g_graphicsContext.getScreenSurface()->EnableVSync(false);
+    */
 #endif
 
   g_ApplicationRenderer.Render();

@@ -31,7 +31,7 @@
 #include "Network.h"
 #include "Application.h"
 #include "GraphicContext.h"
-#include "Surface.h"
+// elis #include "Surface.h"
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()

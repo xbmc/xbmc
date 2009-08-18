@@ -35,7 +35,7 @@
 
 #define D3D_CLEAR_STENCIL 0x0l
 
-#include "SurfaceGL.h"
+// elis #include "SurfaceGL.h"
 #include "SkinInfo.h"
 using namespace Surface;
 #ifdef HAS_GLX
@@ -63,15 +63,19 @@ CGraphicContextBase::CGraphicContextBase(void)
 {
   m_iScreenWidth = 720;
   m_iScreenHeight = 576;
-  m_screenSurface = NULL;
+  // elis m_screenSurface = NULL;
 
   m_dwID = 0;
   m_strMediaDir = "";
   m_bCalibrating = false;
-  m_Resolution = INVALID;
+  // elis m_Resolution = INVALID;
+  m_Resolution = WINDOW;
+
   m_pCallback = NULL;
   m_guiScaleX = m_guiScaleY = 1.0f;
-  m_windowResolution = INVALID;
+  // elis m_windowResolution = INVALID;
+  m_windowResolution = WINDOW;
+
   m_bFullScreenRoot = false;
 
   s_RenderVendor = "";
@@ -698,7 +702,6 @@ void CGraphicContextBase::SetCameraPosition(const CPoint &camera)
 {
   // offset the camera from our current location (this is in XML coordinates) and scale it up to
   // the screen resolution
-  /* elis
   CPoint cam(camera);
   if (m_origins.size())
     cam += m_origins.top();
@@ -709,7 +712,6 @@ void CGraphicContextBase::SetCameraPosition(const CPoint &camera)
 
   m_cameras.push(cam);
   UpdateCameraPosition(m_cameras.top());
-  */
 }
 
 void CGraphicContextBase::RestoreCameraPosition()
@@ -795,7 +797,9 @@ void CGraphicContextBase::SetMediaDir(const CStdString &strMediaDir)
 void CGraphicContextBase::NotifyAppFocusChange(bool bGaining)
 {
   /* Notification from the Application that we are either becoming the foreground window or are losing focus */
+  /* elis
   if (m_screenSurface)
     m_screenSurface->NotifyAppFocusChange(bGaining);
+    */
 }
 

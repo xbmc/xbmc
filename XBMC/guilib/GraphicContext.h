@@ -31,9 +31,9 @@
 
 #ifdef __GNUC__
 // under gcc, inline will only take place if optimizations are applied (-O). this will force inline even whith optimizations.
-#define SDL_FORCE_INLINE __attribute__((always_inline))
+#define XBMC_FORCE_INLINE __attribute__((always_inline))
 #else
-#define SDL_FORCE_INLINE
+#define XBMC_FORCE_INLINE
 #endif
 
 
@@ -140,8 +140,10 @@ public:
   std::string  GetRenderVendor();
   std::string  GetRenderRenderer();
 
-  inline void setScreenSurface(Surface::CSurface* surface) SDL_FORCE_INLINE { m_screenSurface = surface; }
-  inline Surface::CSurface* getScreenSurface() SDL_FORCE_INLINE { return m_screenSurface; }
+  /* elis 
+  inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }
+  inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }
+  */
 
   virtual XBMC::DevicePtr Get3DDevice() = 0;
   virtual void GetRenderVersion(int& maj, int& min) = 0;
@@ -201,15 +203,15 @@ public:
   float GetScalingPixelRatio() const;
   virtual void Flip() = 0;
   void InvertFinalCoords(float &x, float &y) const;
-  inline float ScaleFinalXCoord(float x, float y) const SDL_FORCE_INLINE { return m_finalTransform.TransformXCoord(x, y, 0); }
-  inline float ScaleFinalYCoord(float x, float y) const SDL_FORCE_INLINE { return m_finalTransform.TransformYCoord(x, y, 0); }
-  inline float ScaleFinalZCoord(float x, float y) const SDL_FORCE_INLINE { return m_finalTransform.TransformZCoord(x, y, 0); }
-  inline void ScaleFinalCoords(float &x, float &y, float &z) const SDL_FORCE_INLINE { m_finalTransform.TransformPosition(x, y, z); }
+  inline float ScaleFinalXCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformXCoord(x, y, 0); }
+  inline float ScaleFinalYCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformYCoord(x, y, 0); }
+  inline float ScaleFinalZCoord(float x, float y) const XBMC_FORCE_INLINE { return m_finalTransform.TransformZCoord(x, y, 0); }
+  inline void ScaleFinalCoords(float &x, float &y, float &z) const XBMC_FORCE_INLINE { m_finalTransform.TransformPosition(x, y, z); }
   bool RectIsAngled(float x1, float y1, float x2, float y2) const;
 
-  inline float GetGUIScaleX() const SDL_FORCE_INLINE { return m_guiScaleX; }
-  inline float GetGUIScaleY() const SDL_FORCE_INLINE { return m_guiScaleY; }
-  inline DWORD MergeAlpha(DWORD color) const SDL_FORCE_INLINE
+  inline float GetGUIScaleX() const XBMC_FORCE_INLINE { return m_guiScaleX; }
+  inline float GetGUIScaleY() const XBMC_FORCE_INLINE { return m_guiScaleY; }
+  inline DWORD MergeAlpha(DWORD color) const XBMC_FORCE_INLINE
   {
     DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
     if (alpha > 255) alpha = 255;
@@ -260,7 +262,7 @@ protected:
   virtual void UpdateCameraPosition(const CPoint &camera) = 0;
 
   IMsgSenderCallback* m_pCallback;
-  Surface::CSurface* m_screenSurface;
+  // elis Surface::CSurface* m_screenSurface;
 
   std::stack<CRect> m_viewStack;
   std::map<unsigned int, Surface::CSurface*> m_surfaces;

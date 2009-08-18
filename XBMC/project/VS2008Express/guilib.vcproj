@@ -1366,14 +1366,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\guilib\Surface.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\Surface.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\guilib\Texture.cpp"
 					>
 				</File>
@@ -1475,21 +1467,6 @@
 				<File
 					RelativePath="..\..\guilib\GUITextureGL.h"
 					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\SurfaceGL.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\SurfaceGL.h"
-					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\guilib\TextureGL.cpp"

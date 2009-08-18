@@ -31,7 +31,7 @@
 #include "../../Util.h"
 #include "../../Settings.h"
 #include "../../XBVideoConfig.h"
-#include "../../../guilib/Surface.h"
+// elis #include "../../../guilib/Surface.h"
 #include "../../../guilib/FrameBufferObject.h"
 
 #ifdef HAVE_LIBVDPAU
@@ -1848,7 +1848,6 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
 
 void CLinuxRendererGL::CreateThumbnail(CBaseTexture* surface, unsigned int width, unsigned int height)
 {
-  /* elis
   // get our screen rect
   const RECT& rv = g_graphicsContext.GetViewWindow();
 
@@ -1869,7 +1868,7 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* surface, unsigned int width
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
   // read pixels
-  glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);
+  glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, surface->GetPixels());
 
   // revert model view matrix
   glMatrixMode(GL_MODELVIEW);
@@ -1877,7 +1876,6 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* surface, unsigned int width
 
   // restore original video rect
   rd = saveSize;
-  */
 }
 
 //********************************************************************************************************

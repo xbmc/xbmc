@@ -55,7 +55,7 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
-#include "Surface.h"
+// elis #include "Surface.h"
 #include "PowerManager.h"
 
 // stuff for current song
