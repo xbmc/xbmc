@@ -282,12 +282,15 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
   char* dvdDevice = c_cdio->GetDeviceFileName();
   m_isoReader.Reset();
   int nRetries=2;
+  CLog::Log(LOGDEBUG, "Ejecting device %s", dvdDevice);
   while (nRetries-- > 0)
   {
+    int r;
     CdIo_t* cdio = c_cdio->cdio_open(dvdDevice, DRIVER_UNKNOWN);
     if (cdio)
     {
-      c_cdio->cdio_eject_media(&cdio);
+      if ((r=c_cdio->cdio_eject_media(&cdio)) < 0)
+        CLog::Log(LOGDEBUG, "cdio_eject_media: failed %d", r);
       c_cdio->cdio_destroy(cdio);
     }
     else 

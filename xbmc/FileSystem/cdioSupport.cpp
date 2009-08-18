@@ -21,12 +21,15 @@
 
 #include "stdafx.h"
 #include "cdioSupport.h"
-#include "lib/libcdio/cdio.h"
+#ifndef _LINUX
 #include "lib/libcdio/logging.h"
-#include "../lib/libcdio/util.h"
-#include "../lib/libcdio/mmc.h"
-#ifdef _LINUX
-#include "../lib/libcdio/cd_types.h"
+#include "lib/libcdio/util.h"
+#include "lib/libcdio/mmc.h"
+#else
+#include <cdio/logging.h>
+#include <cdio/util.h>
+#include <cdio/mmc.h>
+#include <cdio/cd_types.h>
 #endif
 
 using namespace MEDIA_DETECT;
