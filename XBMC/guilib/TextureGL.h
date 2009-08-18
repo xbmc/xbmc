@@ -39,11 +39,8 @@
 class CGLTexture : public CBaseTexture
 {
 public:
-  CGLTexture();
-  
+  CGLTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
   virtual ~CGLTexture();
-
-  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
   
   void Delete();
   bool LoadFromFile(const CStdString& texturePath);
@@ -56,6 +53,7 @@ protected:
   CGLTexture(CBaseTexture& texture); 
   CBaseTexture& operator = (const CBaseTexture &rhs);
   void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
+  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
 
   bool NeedPower2Texture();
   unsigned int m_nTextureWidth;

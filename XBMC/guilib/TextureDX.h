@@ -40,11 +40,9 @@
 class CDXTexture : public CBaseTexture
 {
 public:
-  CDXTexture();
+  CDXTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
   virtual ~CDXTexture();
 
-  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
- 
   void Delete();
   bool LoadFromFile(const CStdString& texturePath);
   bool LoadFromMemory(unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels); 
@@ -52,6 +50,7 @@ public:
 
 
 protected:
+  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
   CDXTexture(CBaseTexture& texture);
    CBaseTexture& operator = (const CBaseTexture &rhs);
 };

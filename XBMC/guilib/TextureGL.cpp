@@ -45,13 +45,15 @@ DWORD PadPow2(DWORD x)
 }
 
 /************************************************************************/
-/*    CDXTexture                                                       */
+/*    CGLTexture                                                       */
 /************************************************************************/
-CGLTexture::CGLTexture()
-: CBaseTexture()
+CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int BPP)
+: CBaseTexture(width, height, BPP)
 {
   m_nTextureWidth = 0;
   m_nTextureHeight = 0;
+
+  Allocate(m_imageWidth, m_imageHeight, m_nBPP);
 }
 
 CGLTexture::~CGLTexture()
@@ -81,9 +83,8 @@ CBaseTexture& CGLTexture::operator = (const CBaseTexture &rhs)
 
 void CGLTexture::Allocate(unsigned int width, unsigned int height, unsigned int BPP)
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
-  m_nBPP = BPP;
+  if(BPP != 0)
+    m_nBPP = BPP;
 
   if(NeedPower2Texture())
   {
@@ -96,7 +97,7 @@ void CGLTexture::Allocate(unsigned int width, unsigned int height, unsigned int 
     m_nTextureHeight = m_imageHeight;
   }
 
-  m_pPixels = (unsigned char *)malloc(m_nTextureWidth * m_nTextureHeight * m_nBPP / 8);
+  m_pPixels = new unsigned char[m_imageWidth * m_imageHeight * m_nBPP / 8];
 }
 
 void CGLTexture::Delete()
@@ -104,7 +105,11 @@ void CGLTexture::Delete()
   m_imageWidth = 0;
   m_imageHeight = 0;
 
-  glDeleteTextures(1, &m_pTexture);
+  if(m_pPixels)
+  {
+    delete [] m_pPixels;
+    m_pPixels = NULL;
+  }
 }
 
 bool CGLTexture::LoadFromFile(const CStdString& texturePath)
@@ -140,15 +145,18 @@ bool CGLTexture::LoadFromFile(const CStdString& texturePath)
 
   Update(original, false, false);
   */
+  m_imageWidth = original->GetWidth();
+  m_imageHeight = original->GetHeight();
+  m_nBPP = original->GetBPP();
+
   Update(original->GetWidth(), original->GetHeight(), original->GetPitch(), original->GetPixels(), false);
 
+  delete original;
 }
 
 
 bool CGLTexture::LoadFromMemory(unsigned int width, unsigned int pitch, unsigned int BPP, unsigned char* pPixels)
 {
-  
-
   return TRUE;
 }
 
@@ -159,9 +167,9 @@ bool CGLTexture::NeedPower2Texture()
   g_RenderSystem.GetVersion(vmaj, vmin);
 
   if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
-    return true;
+    return false;
 
-  return false;
+  return true;
 }
 
 void CGLTexture::LoadToGPU()
@@ -187,7 +195,7 @@ void CGLTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  static GLint maxSize = MAX_PICTURE_WIDTH;
+  static unsigned int maxSize = MAX_PICTURE_WIDTH;
   {
     if (m_nTextureHeight > maxSize)
     {
@@ -230,7 +238,7 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
   if (m_pPixels)
     delete [] m_pPixels;
 
-  Allocate(w, h, m_nBPP);
+  Allocate(w, h, 0);
 
   // Resize texture to POT
   const unsigned char *src = pixels;
@@ -243,19 +251,19 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
     src += pitch;
 
     // repeat last column to simulate clamp_to_edge
-    for(int i = tpitch; i < m_nTextureWidth*4; i+=4)
+    for(unsigned int i = tpitch; i < m_nTextureWidth*4; i+=4)
       memcpy(resized+i, src-4, 4);
 
     resized += (m_nTextureWidth * 4);
   }
 
   // repeat last row to simulate clamp_to_edge
-  for(int y = h; y < m_nTextureHeight; y++) 
+  for(unsigned int y = h; y < m_nTextureHeight; y++) 
   {
     memcpy(resized, src - tpitch, tpitch);
 
     // repeat last column to simulate clamp_to_edge
-    for(int i = tpitch; i < m_nTextureWidth*4; i+=4) 
+    for(unsigned int i = tpitch; i < m_nTextureWidth*4; i+=4) 
       memcpy(resized+i, src-4, 4);
 
     resized += (m_nTextureWidth * 4);

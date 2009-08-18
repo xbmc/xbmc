@@ -23,7 +23,7 @@
 #include "TextureManager.h"
 #include "AnimatedGif.h"
 #include "GraphicContext.h"
-#include "Surface.h"
+// elis #include "Surface.h"
 #include "../xbmc/Picture.h"
 #include "utils/SingleLock.h"
 #include "StringUtils.h"
@@ -376,10 +376,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
         int h = iHeight;
 
         CTexture *glTexture = new CTexture();
-
         if (glTexture)
         {
-          glTexture->Allocate(w, h, 32);
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
 
           COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;

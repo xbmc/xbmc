@@ -55,9 +55,8 @@ CBaseTexture* CPictureGL::Load(const CStdString& strFileName, int iMaxWidth, int
   }
   CBaseTexture* pTexture = NULL;
   //pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
-  pTexture = new CGLTexture();
-  pTexture->Allocate(m_info.width, m_info.height, 32);
-
+  pTexture = new CTexture(m_info.width, m_info.height, 32);
+ 
   if (pTexture)
   {
     //if (SDL_LockSurface(pTexture) == 0)

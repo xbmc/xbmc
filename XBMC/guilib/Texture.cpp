@@ -25,13 +25,13 @@
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-CBaseTexture::CBaseTexture()
+CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int BPP)
 {
-  m_imageWidth = 0;
-  m_imageHeight = 0;
+  m_imageWidth = width;
+  m_imageHeight = height;
   m_pTexture = NULL;
   m_pPixels = NULL;
-  m_nBPP = 0;
+  m_nBPP = BPP;
   m_loadedToGPU = false;
 }
 

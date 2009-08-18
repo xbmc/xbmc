@@ -96,8 +96,7 @@ bool CKaraokeLyricsCDG::InitGraphics()
 
   if (!m_pCdgTexture)
   {
-    m_pCdgTexture = new CTexture();
-    m_pCdgTexture->Allocate(WIDTH, HEIGHT, 32);
+    m_pCdgTexture = new CTexture(WIDTH, HEIGHT, 32);
     /*
 #if defined(HAS_SDL)
     m_pCdgTexture = new CGLTexture( SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, RMASK, GMASK, BMASK, AMASK), false, true );

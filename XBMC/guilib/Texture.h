@@ -41,11 +41,10 @@ class CBaseTexture
 {
 
 public:
-  CBaseTexture();
+  CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
   CBaseTexture(const CBaseTexture& texture);  
   virtual ~CBaseTexture();
 
-  virtual void Allocate(unsigned int width, unsigned int height, unsigned int BPP) = 0;
   virtual CBaseTexture& operator = (const CBaseTexture &rhs) = 0;
   virtual void Delete() = 0;
 
@@ -58,6 +57,7 @@ public:
   virtual unsigned int GetPitch() const { return 0; }
   unsigned int GetWidth() const { return m_imageWidth; }
   unsigned int GetHeight() const { return m_imageHeight; }
+  unsigned int GetBPP() const { return m_nBPP; }
 
 
   //CBaseTexture(unsigned int w, unsigned int h, unsigned int BPP);
@@ -66,6 +66,8 @@ public:
   //virtual void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) = 0; 
 
 protected:
+  virtual void Allocate(unsigned int width, unsigned int height, unsigned int BPP) = 0;
+
   unsigned int m_imageWidth;
   unsigned int m_imageHeight;
   unsigned int m_nBPP;
