@@ -30,14 +30,14 @@
 typedef enum _WindowSystemType
 {
   WINDOW_SYSTEM_WIN32
-} eWindowSystemType;
+} WindowSystemType;
 
 class CWinSystemBase
 {
 public:
   CWinSystemBase();
   virtual ~CWinSystemBase();
-  eWindowSystemType GetWinSystem() { return m_eWindowSystem; }
+  WindowSystemType GetWinSystem() { return m_eWindowSystem; }
 
 
   virtual bool Create(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction){return false;}
@@ -58,7 +58,7 @@ protected:
   // resize window based on dimensions, positions and full screen flag
   virtual bool Resize(){ return false; }
 
-  eWindowSystemType m_eWindowSystem;
+  WindowSystemType m_eWindowSystem;
   unsigned  int m_nWidth;
   unsigned m_nHeight;
   unsigned m_nTop;
