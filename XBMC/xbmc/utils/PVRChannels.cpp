@@ -348,52 +348,49 @@ int cPVRChannels::GetHiddenChannels(CFileItemList* results)
 
 void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
 {
-//  cPVRChannels m_channels_temp;
-//
-//  if ((newindex == oldindex) || (newindex == 0))
-//    return;
-//
-//  CPVRManager *manager  = CPVRManager::GetInstance();
-//  CTVDatabase *database = manager->GetTVDatabase();
-//  database->Open();
-//
-//  int CurrentChannelID = m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum;
-//  int CurrentClientChannel = m_currentPlayingChannel->GetTVChannelInfoTag()->m_iChannelNum;
-//
-//  m_channels_temp.push_back(PVRChannelsTV[oldindex-1]);
-//  PVRChannelsTV.erase(PVRChannelsTV.begin()+oldindex-1);
-//  if (newindex < PVRChannelsTV.size())
-//    PVRChannelsTV.insert(PVRChannelsTV.begin()+newindex-1, m_channels_temp[0]);
-//  else
-//    PVRChannelsTV.push_back(m_channels_temp[0]);
-//
-//  for (unsigned int i = 0; i < PVRChannelsTV.size(); i++)
-//  {
-//    if (at(i).m_iChannelNum != i+1)
-//    {
-//      at(i).m_iChannelNum = i+1;
-//      at(i).m_strFileNameAndPath.Format("tv://%i", at(i).m_iChannelNum);
-//      database->UpdateDBChannel(at(i));
-//    }
-//  }
-//
-//  CLog::Log(LOGNOTICE, "cPVRChannels: TV Channel %d moved to %d", oldindex, newindex);
-//
-//  if (IsPlayingTV() && m_currentPlayingChannel->GetTVChannelInfoTag()->m_iIdChannel != CurrentChannelID)
-//  {
-//    /* Perform Channel switch with new number, if played channelnumber is modified */
-//   // GetFrontendChannelNumber(CurrentClientChannel, m_currentClientID, &m_CurrentTVChannel, NULL);
-//    CFileItemPtr channel(new CFileItem(m_currentPlayingChannel));
-//    g_application.PlayFile(*channel);
-//  }
-//
-//  database->Close();
-//
-//  /* Synchronize channel numbers inside timers */
-//  for (unsigned int i = 0; i < PVRTimers.size(); i++)
-//  {
-////    GetFrontendChannelNumber(PVRTimers[i].m_clientNum, m_currentClientID, &PVRTimers[i].m_channelNum, &PVRTimers[i].m_Radio);
-//  }
+  cPVRChannels m_channels_temp;
+
+  if ((newindex == oldindex) || (newindex == 0))
+    return;
+
+  CPVRManager *manager  = CPVRManager::GetInstance();
+  CTVDatabase *database = manager->GetTVDatabase();
+  database->Open();
+
+  m_channels_temp.push_back(at(oldindex-1));
+  erase(begin()+oldindex-1);
+  if (newindex < size())
+    insert(begin()+newindex-1, m_channels_temp[0]);
+  else
+    push_back(m_channels_temp[0]);
+
+  for (unsigned int i = 0; i < size(); i++)
+  {
+    if (at(i).Number() != i+1)
+    {
+      CStdString path;
+      at(i).SetNumber(i+1);
+    
+      if (!m_bRadio)
+        path.Format("pvr://channelstv/%i.ts", at(i).Number());
+      else
+        path.Format("pvr://channelsradio/%i.ts", at(i).Number());
+      
+      at(i).SetPath(path);
+      database->UpdateDBChannel(at(i));
+    }
+  }
+
+  CLog::Log(LOGNOTICE, "cPVRChannels: TV Channel %d moved to %d", oldindex, newindex);
+  database->Close();
+
+  /* Synchronize channel numbers inside timers */
+  for (unsigned int i = 0; i < PVRTimers.size(); i++)
+  {
+    cPVRChannelInfoTag *tag = GetByClient(PVRTimers[i].ClientNumber(), PVRTimers[i].ClientID());
+    if (tag)
+      PVRTimers[i].SetNumber(tag->Number());
+  }
 
   return;
 }
