@@ -81,6 +81,8 @@ private:
   bool AddSceneMarker(const __int64 sceneMarker);
 
   bool WriteMPlayerEdl();
+
+  void MergeShortCommBreaks();
 };
 
 #endif
