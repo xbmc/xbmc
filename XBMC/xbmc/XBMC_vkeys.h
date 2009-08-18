@@ -60,6 +60,7 @@
 #endif /* VK_0 */
 
 /* These keys haven't been defined, but were experimentally determined */
+#ifndef VK_SEMICOLON
 #define VK_SEMICOLON	0xBA
 #define VK_EQUALS	0xBB
 #define VK_COMMA	0xBC
@@ -73,3 +74,4 @@
 #define VK_APOSTROPHE	0xDE
 #define VK_BACKTICK	0xDF
 #define VK_OEM_102	0xE2
+#endif

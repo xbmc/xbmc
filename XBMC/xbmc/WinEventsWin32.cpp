@@ -57,7 +57,7 @@ void DIB_InitOSKeymap()
   LoadKeyboardLayout(current_layout, KLF_ACTIVATE);
 
   /* Map the VK keysyms */
-  for ( i=0; i<SDL_arraysize(VK_keymap); ++i )
+  for ( i=0; i<XBMC_arraysize(VK_keymap); ++i )
     VK_keymap[i] = XBMCK_UNKNOWN;
 
   VK_keymap[VK_BACK] = XBMCK_BACKSPACE;
@@ -231,7 +231,7 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
 {
   /* Set the keysym information */
   keysym->scancode = (unsigned char) scancode;
-  keysym->mod = KMOD_NONE;
+  keysym->mod = XBMCKMOD_NONE;
   keysym->unicode = 0;
 
   if ((vkey == VK_RETURN) && (scancode & 0x100)) 

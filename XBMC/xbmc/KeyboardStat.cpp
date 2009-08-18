@@ -56,7 +56,7 @@ int XBMC_EnableKeyRepeat(int delay, int interval)
 CKeyboardStat::CKeyboardStat()
 {
   /* Initialize the tables */
-  XBMC_ModState = KMOD_NONE;
+  XBMC_ModState = XBMCKMOD_NONE;
   memset((void*)keynames, 0, sizeof(keynames));
   memset(XBMC_KeyState, 0, sizeof(XBMC_KeyState));
 
@@ -402,47 +402,47 @@ int CKeyboardStat::HandleEvent(unsigned int eventType, unsigned int param1, unsi
       case XBMCK_UNKNOWN:
         break;
       case XBMCK_NUMLOCK:
-        modstate ^= KMOD_NUM;
+        modstate ^= XBMCKMOD_NUM;
         if ( XBMC_NoLockKeys & XBMC_NLK_NUM )
           break;
-        if ( ! (modstate&KMOD_NUM) )
+        if ( ! (modstate&XBMCKMOD_NUM) )
           state = XBMC_RELEASED;
         keysym->mod = (XBMCMod)modstate;
         break;
       case XBMCK_CAPSLOCK:
-        modstate ^= KMOD_CAPS;
+        modstate ^= XBMCKMOD_CAPS;
         if ( XBMC_NoLockKeys & XBMC_NLK_CAPS )
           break;
-        if ( ! (modstate&KMOD_CAPS) )
+        if ( ! (modstate&XBMCKMOD_CAPS) )
           state = XBMC_RELEASED;
         keysym->mod = (XBMCMod)modstate;
         break;
       case XBMCK_LCTRL:
-        modstate |= KMOD_LCTRL;
+        modstate |= XBMCKMOD_LCTRL;
         break;
       case XBMCK_RCTRL:
-        modstate |= KMOD_RCTRL;
+        modstate |= XBMCKMOD_RCTRL;
         break;
       case XBMCK_LSHIFT:
-        modstate |= KMOD_LSHIFT;
+        modstate |= XBMCKMOD_LSHIFT;
         break;
       case XBMCK_RSHIFT:
-        modstate |= KMOD_RSHIFT;
+        modstate |= XBMCKMOD_RSHIFT;
         break;
       case XBMCK_LALT:
-        modstate |= KMOD_LALT;
+        modstate |= XBMCKMOD_LALT;
         break;
       case XBMCK_RALT:
-        modstate |= KMOD_RALT;
+        modstate |= XBMCKMOD_RALT;
         break;
       case XBMCK_LMETA:
-        modstate |= KMOD_LMETA;
+        modstate |= XBMCKMOD_LMETA;
         break;
       case XBMCK_RMETA:
-        modstate |= KMOD_RMETA;
+        modstate |= XBMCKMOD_RMETA;
         break;
       case XBMCK_MODE:
-        modstate |= KMOD_MODE;
+        modstate |= XBMCKMOD_MODE;
         break;
       default:
         repeatable = 1;
@@ -466,31 +466,31 @@ int CKeyboardStat::HandleEvent(unsigned int eventType, unsigned int param1, unsi
         /* Only send keydown events */
         return(0);
       case XBMCK_LCTRL:
-        modstate &= ~KMOD_LCTRL;
+        modstate &= ~XBMCKMOD_LCTRL;
         break;
       case XBMCK_RCTRL:
-        modstate &= ~KMOD_RCTRL;
+        modstate &= ~XBMCKMOD_RCTRL;
         break;
       case XBMCK_LSHIFT:
-        modstate &= ~KMOD_LSHIFT;
+        modstate &= ~XBMCKMOD_LSHIFT;
         break;
       case XBMCK_RSHIFT:
-        modstate &= ~KMOD_RSHIFT;
+        modstate &= ~XBMCKMOD_RSHIFT;
         break;
       case XBMCK_LALT:
-        modstate &= ~KMOD_LALT;
+        modstate &= ~XBMCKMOD_LALT;
         break;
       case XBMCK_RALT:
-        modstate &= ~KMOD_RALT;
+        modstate &= ~XBMCKMOD_RALT;
         break;
       case XBMCK_LMETA:
-        modstate &= ~KMOD_LMETA;
+        modstate &= ~XBMCKMOD_LMETA;
         break;
       case XBMCK_RMETA:
-        modstate &= ~KMOD_RMETA;
+        modstate &= ~XBMCKMOD_RMETA;
         break;
       case XBMCK_MODE:
-        modstate &= ~KMOD_MODE;
+        modstate &= ~XBMCKMOD_MODE;
         break;
       default:
         break;
@@ -558,10 +558,10 @@ void CKeyboardStat::Update(XBMC_Event& m_keyEvent)
 
     m_wUnicode = m_keyEvent.key.keysym.unicode;
 
-    m_bCtrl = (m_keyEvent.key.keysym.mod & KMOD_CTRL) != 0;
-    m_bShift = (m_keyEvent.key.keysym.mod & KMOD_SHIFT) != 0;
-    m_bAlt = (m_keyEvent.key.keysym.mod & KMOD_ALT) != 0;
-    m_bRAlt = (m_keyEvent.key.keysym.mod & KMOD_RALT) != 0;
+    m_bCtrl = (m_keyEvent.key.keysym.mod & XBMCKMOD_CTRL) != 0;
+    m_bShift = (m_keyEvent.key.keysym.mod & XBMCKMOD_SHIFT) != 0;
+    m_bAlt = (m_keyEvent.key.keysym.mod & XBMCKMOD_ALT) != 0;
+    m_bRAlt = (m_keyEvent.key.keysym.mod & XBMCKMOD_RALT) != 0;
 
     CLog::Log(LOGDEBUG, "SDLKeyboard: scancode: %d, sym: %d, unicode: %d, modifier: %x", m_keyEvent.key.keysym.scancode, m_keyEvent.key.keysym.sym, m_keyEvent.key.keysym.unicode, m_keyEvent.key.keysym.mod);
 
@@ -748,12 +748,12 @@ void CKeyboardStat::Update(XBMC_Event& m_keyEvent)
       }
       if (!m_VKey && !m_cAscii)
       {
-        if (m_keyEvent.key.keysym.mod & KMOD_LSHIFT) m_VKey = 0xa0;
-        else if (m_keyEvent.key.keysym.mod & KMOD_RSHIFT) m_VKey = 0xa1;
-        else if (m_keyEvent.key.keysym.mod & KMOD_LALT) m_VKey = 0xa4;
-        else if (m_keyEvent.key.keysym.mod & KMOD_RALT) m_VKey = 0xa5;
-        else if (m_keyEvent.key.keysym.mod & KMOD_LCTRL) m_VKey = 0xa2;
-        else if (m_keyEvent.key.keysym.mod & KMOD_RCTRL) m_VKey = 0xa3;
+        if (m_keyEvent.key.keysym.mod & XBMCKMOD_LSHIFT) m_VKey = 0xa0;
+        else if (m_keyEvent.key.keysym.mod & XBMCKMOD_RSHIFT) m_VKey = 0xa1;
+        else if (m_keyEvent.key.keysym.mod & XBMCKMOD_LALT) m_VKey = 0xa4;
+        else if (m_keyEvent.key.keysym.mod & XBMCKMOD_RALT) m_VKey = 0xa5;
+        else if (m_keyEvent.key.keysym.mod & XBMCKMOD_LCTRL) m_VKey = 0xa2;
+        else if (m_keyEvent.key.keysym.mod & XBMCKMOD_RCTRL) m_VKey = 0xa3;
         else if (m_keyEvent.key.keysym.unicode > 32 && m_keyEvent.key.keysym.unicode < 128)
           // only TRUE ASCII! (Otherwise XBMC crashes! No unicode not even latin 1!)
           m_cAscii = (char)(m_keyEvent.key.keysym.unicode & 0xff);

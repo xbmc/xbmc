@@ -68,14 +68,8 @@
 #endif
 
 /* The number of elements in an array */
-#define SDL_arraysize(array)	(sizeof(array)/sizeof(array[0]))
-#define SDL_TABLESIZE(table)	SDL_arraysize(table)
-
-/* Basic data types */
-typedef enum SDL_bool {
-	SDL_FALSE = 0,
-	SDL_TRUE  = 1
-} SDL_bool;
+#define XBMC_arraysize(array)	(sizeof(array)/sizeof(array[0]))
+#define XBMC_TABLESIZE(table)	XBMC_arraysize(table)
 
 typedef int8_t		Sint8;
 typedef uint8_t		Uint8;
