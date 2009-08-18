@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/CMythFile.h"
+#include "Settings.h"
 
 extern "C"
 {
@@ -85,8 +86,10 @@ bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
     bFound = ReadBeyondTV(strMovie);
 
   if (bFound)
+  {
+    MergeShortCommBreaks();
     WriteMPlayerEdl();
-
+  }
   return bFound;
 }
 
@@ -759,7 +762,7 @@ bool CEdl::ReadMythCommBreaks(const CURL url, const float fFramesPerSecond)
   {
     CLog::Log(LOGDEBUG, "%s - Added %i commercial breaks from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
               __FUNCTION__, m_vecCuts.size(), url.GetFileName().c_str(), fFramesPerSecond);
-    // TODO: ConsolidateCommBreaks();
+    MergeShortCommBreaks();
     /*
      * No point writing the MPlayer EDL file as it won't be able to play the MythTV files anyway.
      */
@@ -770,4 +773,55 @@ bool CEdl::ReadMythCommBreaks(const CURL url, const float fFramesPerSecond)
     CLog::Log(LOGDEBUG, "%s - No commercial breaks found in MythTV for: %s", __FUNCTION__, url.GetFileName().c_str());
     return false;
   }
+}
+
+void CEdl::MergeShortCommBreaks()
+{
+  if (g_advancedSettings.m_bEdlMergeShortCommBreaks)
+  {
+    for (int i = 0; i < (int)m_vecCuts.size() - 1; i++)
+    {
+      if ((m_vecCuts[i].action == COMM_BREAK && m_vecCuts[i + 1].action == COMM_BREAK)
+      &&  (m_vecCuts[i + 1].end - m_vecCuts[i].start < g_advancedSettings.m_iEdlMaxCommBreakLength * 1000) // s to ms
+      &&  (m_vecCuts[i + 1].start - m_vecCuts[i].end < g_advancedSettings.m_iEdlMaxCommBreakGap * 1000)) // s to ms
+      {
+        Cut commBreak;
+        commBreak.action = COMM_BREAK;
+        commBreak.start = m_vecCuts[i].start;
+        commBreak.end = m_vecCuts[i + 1].end;
+
+        CLog::Log(LOGDEBUG, "%s - Consolidating commercial break [%s - %s] and [%s - %s] to: [%s - %s]", __FUNCTION__,
+                  MillisecondsToTimeString(m_vecCuts[i].start).c_str(), MillisecondsToTimeString(m_vecCuts[i].end).c_str(),
+                  MillisecondsToTimeString(m_vecCuts[i + 1].start).c_str(), MillisecondsToTimeString(m_vecCuts[i + 1].end).c_str(),
+                  MillisecondsToTimeString(commBreak.start).c_str(), MillisecondsToTimeString(commBreak.end).c_str());
+
+        /*
+         * Erase old cuts and insert the new merged one.
+         */
+        m_vecCuts.erase(m_vecCuts.begin() + i, m_vecCuts.begin() + i + 2);
+        m_vecCuts.insert(m_vecCuts.begin() + i, commBreak);
+
+        i--; // Reduce i to see if the next break is also within the max commercial break length.
+      }
+    }
+
+    /*
+     * Remove any commercial breaks shorter than the minimum (unless at the start)
+     */
+    for (int i = 0; i < (int)m_vecCuts.size(); i++)
+    {
+      if (m_vecCuts[i].action == COMM_BREAK
+      &&  m_vecCuts[i].start > 0
+      && (m_vecCuts[i].end - m_vecCuts[i].start) < g_advancedSettings.m_iEdlMinCommBreakLength * 1000)
+      {
+        CLog::Log(LOGDEBUG, "%s - Removing short commercial break [%s - %s]. Minimum length: %i seconds",
+                  __FUNCTION__, MillisecondsToTimeString(m_vecCuts[i].start).c_str(), MillisecondsToTimeString(m_vecCuts[i].end).c_str(),
+                  g_advancedSettings.m_iEdlMinCommBreakLength);
+        m_vecCuts.erase(m_vecCuts.begin() + i);
+
+        i--;
+      }
+    }
+  }
+  return;
 }

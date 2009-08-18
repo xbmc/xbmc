@@ -285,6 +285,13 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_iMythMovieLength;         // minutes
+
+    // EDL Commercial Break
+    bool m_bEdlMergeShortCommBreaks;
+    int m_iEdlMaxCommBreakLength;   // seconds
+    int m_iEdlMinCommBreakLength;   // seconds
+    int m_iEdlMaxCommBreakGap;      // seconds
+
     bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
