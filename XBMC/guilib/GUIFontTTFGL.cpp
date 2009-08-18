@@ -67,7 +67,6 @@ float CGUIFontTTFGL::TruncToPixel(float x)
 
 void CGUIFontTTFGL::Begin()
 {
-  /* elis
   if (m_dwNestedBeginCount == 0)
   {
     if (!m_bTextureLoaded)
@@ -84,8 +83,8 @@ void CGUIFontTTFGL::Begin()
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
       // Set the texture image -- THIS WORKS, so the pixels must be wrong.
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->Width, m_texture->Height, 0,
-                   GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->m_pixels);
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, m_texture->GetWidth(), m_texture->GetHeight(), 0,
+                   GL_ALPHA, GL_UNSIGNED_BYTE, m_texture->GetPixels());
 
       VerifyGLState();
       m_bTextureLoaded = true;
@@ -112,7 +111,6 @@ void CGUIFontTTFGL::Begin()
   }
   // Keep track of the nested begin/end calls.
   m_dwNestedBeginCount++;
-  */
 }
 
 void CGUIFontTTFGL::End()
@@ -137,50 +135,51 @@ void CGUIFontTTFGL::End()
 
 CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
-  /* elis
   newHeight = PadPow2(newHeight);
+
+  CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, 8);
+  
+  /*
   SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_textureWidth, newHeight, 8,
           0, 0, 0, 0xff);
+          */
 
 #ifdef __APPLE__
   // Because of an SDL bug (?), bpp gets set to 4 even though we asked for 1, in fullscreen mode.
   // To be completely honest, we probably shouldn't even be using an SDL surface in OpenGL mode, since
   // we only use it to store the image before copying it (no blitting!) to an OpenGL texture.
   //
-  if (newTexture->pitch != m_textureWidth)
-    newTexture->pitch = m_textureWidth;
+  if (newTexture->GetPitch() != m_textureWidth)
+    newTexture->GetPitch() = m_textureWidth;
 #endif
 
-  if (!newTexture || newTexture->pixels == NULL)
+  if (!newTexture || newTexture->GetPixels() == NULL)
   {
     CLog::Log(LOGERROR, "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size %f", m_height);
     return NULL;
   }
-  m_textureHeight = newTexture->h;
-  m_textureWidth = newTexture->w;
+  m_textureHeight = newTexture->GetHeight();
+  m_textureWidth = newTexture->GetWidth();
 
   if (m_texture)
   {
-    unsigned char* src = (unsigned char*) m_texture->pixels;
-    unsigned char* dst = (unsigned char*) newTexture->pixels;
-    for (int y = 0; y < m_texture->h; y++)
+    unsigned char* src = (unsigned char*) m_texture->GetPixels();
+    unsigned char* dst = (unsigned char*) newTexture->GetPixels();
+    for (unsigned int y = 0; y < m_texture->GetHeight(); y++)
     {
-      memcpy(dst, src, m_texture->pitch);
-      src += m_texture->pitch;
-      dst += newTexture->pitch;
+      memcpy(dst, src, m_texture->GetPitch());
+      src += m_texture->GetPitch();
+      dst += newTexture->GetPitch();
     }
-    DELETE_TEXTURE(m_texture);
+    delete m_texture;
   }
 
   return newTexture;
-  */
-  return NULL; // elis remove
 }
 
 bool CGUIFontTTFGL::CopyCharToTexture(void* pGlyph, void* pCharacter)
 {
-  /* elis
-  SDL_LockSurface(m_texture);
+  //SDL_LockSurface(m_texture);
 
   FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)pGlyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
@@ -188,13 +187,13 @@ bool CGUIFontTTFGL::CopyCharToTexture(void* pGlyph, void* pCharacter)
   Character *ch = (Character *)pCharacter;
 
   unsigned char* source = (unsigned char*) bitmap.buffer;
-  unsigned char* target = (unsigned char*) m_texture->pixels + (m_posY + ch->offsetY) * m_texture->pitch + m_posX + bitGlyph->left;
+  unsigned char* target = (unsigned char*) m_texture->GetPixels() + (m_posY + ch->offsetY) * m_texture->GetPitch() + m_posX + bitGlyph->left;
 
   for (int y = 0; y < bitmap.rows; y++)
   {
     memcpy(target, source, bitmap.width);
     source += bitmap.width;
-    target += m_texture->pitch;
+    target += m_texture->GetPitch();
   }
   // THE SOURCE VALUES ARE THE SAME IN BOTH SITUATIONS.
 
@@ -208,8 +207,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(void* pGlyph, void* pCharacter)
     m_bTextureLoaded = false;
   }
 
-  SDL_UnlockSurface(m_texture);
-  */
+  //SDL_UnlockSurface(m_texture);
 
   return TRUE;
 }
