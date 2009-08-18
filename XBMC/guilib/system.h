@@ -156,8 +156,8 @@
 #ifdef HAS_SDL
 #define HAS_SDL_AUDIO
 #define HAS_DVD_SWSCALE
-#if !defined(HAS_SDL_2D) && !defined(HAS_DX)
-#define HAS_SDL_OPENGL
+#ifdef _LINUX
+#define HAS_GL
 #endif
 #ifdef _WIN32
 #define HAS_SDL_JOYSTICK
@@ -214,6 +214,13 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/wglext.h>
+#elif defined(_LINUX)
+#include <GL/glew.h>
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 #endif
 #endif
 
