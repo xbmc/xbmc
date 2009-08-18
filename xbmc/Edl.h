@@ -55,7 +55,7 @@ public:
 
   bool HasCut();
   bool HasSceneMarker();
-  char GetEdlStatus();
+  CStdString GetInfo();
   __int64 GetTotalCutTime();
   __int64 RemoveCutTime(__int64 iSeek);
   __int64 RestoreCutTime(__int64 iClock);

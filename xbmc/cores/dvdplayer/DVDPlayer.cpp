@@ -2046,8 +2046,8 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 
     CStdString strEDL;
 
-    if(m_Edl.HasCut())
-      strEDL.Format(", edl:%c",  m_Edl.GetEdlStatus());
+    if (g_guiSettings.GetBool("videoplayer.editdecision"))
+      strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
                          , dDelay

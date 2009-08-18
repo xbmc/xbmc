@@ -597,18 +597,42 @@ bool CEdl::HasSceneMarker()
   return !m_vecSceneMarkers.empty();
 }
 
-char CEdl::GetEdlStatus()
+CStdString CEdl::GetInfo()
 {
-  char cEdlStatus = 'n';
+  /*
+   * TODO: Update wiki (http://xbmc.org/wiki/?title=EDL_(commercial_skipping)_and_SceneMarker_support)
+   * if these different status strings are used.
+   */
+  CStdString strInfo = "";
+  if (HasCut())
+  {
+    int cutCount = 0, muteCount = 0, commBreakCount = 0;
+    for (int i = 0; i < (int)m_vecCuts.size(); i++)
+    {
+      switch (m_vecCuts[i].action)
+      {
+      case CUT:
+        cutCount++;
+        break;
+      case MUTE:
+        muteCount++;
+        break;
+      case COMM_BREAK:
+        commBreakCount++;
+        break;
+      }
+    }
+    if (cutCount > 0)
+      strInfo.AppendFormat("c%i", cutCount);
+    if (muteCount > 0)
+      strInfo.AppendFormat("m%i", muteCount);
+    if (commBreakCount > 0)
+      strInfo.AppendFormat("b%i", commBreakCount);
+  }
+  if (HasSceneMarker())
+    strInfo.AppendFormat("s%i", m_vecSceneMarkers.size());
 
-  if (HasCut() && HasSceneMarker())
-    cEdlStatus = 'b';
-  else if (HasCut())
-    cEdlStatus = 'e';
-  else if (HasSceneMarker())
-    cEdlStatus = 's';
-
-  return cEdlStatus;
+  return strInfo.IsEmpty() ? "-" : strInfo;
 }
 
 bool CEdl::InCut(const __int64 iSeek, Cut *pCut)
