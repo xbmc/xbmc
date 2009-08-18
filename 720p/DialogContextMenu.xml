@@ -33,7 +33,7 @@
         <include>ContextDialogBottomTexture</include>
       </control>
 
-      <control type="label">
+      <control type="label" id="900">
        <posy>-38</posy>
        <width>ContextMenuWidth</width>
        <align>center</align>
@@ -65,6 +65,32 @@
         <include>DialogTextColors</include>
         <include>DialogQuickFade</include>
       </control>
+      
+      <control type="button" id="990">
+        <description>Footer button</description>
+        <include condition="Skin.HasSetting(HideListViewIcons) | Skin.HasSetting(HideListViewIconsVideos) | Skin.HasSetting(HideListViewIconsMusic)">NoIconsListContextMenuPos</include>
+        <posx>0</posx>
+        <posy>0</posy>
+        <width>ContextMenuWidth</width>
+        <height>33</height>
+        <texturefocus>-</texturefocus>
+        <texturenofocus>-</texturenofocus>
+        <label>-</label>
+        <font>SmallDefaultCapsFont</font>
+        <align>center</align>
+        <aligny>center</aligny>
+        <textoffsetx>-</textoffsetx>
+        <textoffsety>6</textoffsety>
+        <pulseonselect>no</pulseonselect>
+        <onfocus>-</onfocus>
+        <onup>1000</onup>
+        <ondown>1000</ondown>
+        <onleft>-</onleft>
+        <onright>-</onright>
+        <include>DialogTextColors</include>
+        <include>DialogQuickFade</include>
+      </control>
+      
     </control>
 
     <control type="group">
