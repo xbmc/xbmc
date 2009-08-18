@@ -781,7 +781,7 @@ void CDVDPlayer::Process()
     }
 
     if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE))
-      m_Edl.ReadFiles(m_filename);
+      m_Edl.ReadFiles(m_filename, fFramesPerSecond);
     else if (m_item.IsMythTV())
       m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
   }

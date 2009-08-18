@@ -61,7 +61,7 @@ void CEdl::Clear()
   m_iTotalCutTime = 0;
 }
 
-bool CEdl::ReadFiles(const CStdString& strMovie)
+bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
 {
   CLog::Log(LOGDEBUG, "%s - checking for any edit decision list (EDL) files for: %s", __FUNCTION__, strMovie.c_str());
 
@@ -79,7 +79,7 @@ bool CEdl::ReadFiles(const CStdString& strMovie)
     bFound = ReadEdl(strMovie);
 
   if (!bFound)
-    bFound = ReadComskip(strMovie);
+    bFound = ReadComskip(strMovie, fFramesPerSecond);
 
   if (!bFound)
     bFound = ReadBeyondTV(strMovie);
@@ -171,7 +171,7 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
   }
 }
 
-bool CEdl::ReadComskip(const CStdString& strMovie)
+bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
@@ -197,19 +197,18 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
   }
   
   int iFrames;
-  int iFrameRate;
-  if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFrameRate) != 2)
+  float fFrameRate;
+  if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %f", &iFrames, &fFrameRate) != 2)
   {
     /*
      * Not all generated Comskip files have the frame rate information.
      */
-    CLog::Log(LOGERROR, "%s - Frame rate not found on line 1 in Comskip file.",
-              __FUNCTION__);
-    comskipFile.Close();
-    return false;
+    fFrameRate = fFramesPerSecond;
+    CLog::Log(LOGWARNING, "%s - Frame rate not in Comskip file. Using detected frames per second: %.3f",
+              __FUNCTION__, fFrameRate);
   }
-
-  float fFrameRate = iFrameRate / 100; // Reduce by factor of 100 to get fps.
+  else
+    fFrameRate /= 100; // Reduce by factor of 100 to get fps.
 
   comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
 
