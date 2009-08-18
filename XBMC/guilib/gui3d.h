@@ -75,10 +75,6 @@ namespace XBMC
   typedef GLint PixelFormat; // elis change it
 };
 
-#define DELETE_TEXTURE(texture) glDeleteTextures(1, &texture)
-#define DELETE_SURFACE(surface) glDeleteTextures(1, &texture)
-
-
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES
 #endif
