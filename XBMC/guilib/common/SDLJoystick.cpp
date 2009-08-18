@@ -56,7 +56,7 @@ void CJoystick::Initialize(HWND hWnd)
       // On OS X, the 360 controllers are handled externally, since the SDL code is
       // really buggy and doesn't handle disconnects.
       //
-      if (std::string(SDL_JoystickName(i)).find("360") != -1)
+      if (std::string(SDL_JoystickName(i)).find("360") != (size_t) -1)
       {
         CLog::Log(LOGNOTICE, "Ignoring joystick: %s", SDL_JoystickName(i));
         continue;
