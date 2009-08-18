@@ -3,8 +3,8 @@
 \brief
 */
 
-#ifndef WINDOW_SYSTEM_WIN32_H
-#define WINDOW_SYSTEM_WIN32_H
+#ifndef WINDOW_SYSTEM_SDL_H
+#define WINDOW_SYSTEM_SDL_H
 
 #pragma once
 
@@ -30,28 +30,22 @@
  */
 #include "WinSystem.h"
 
-class CWinSystemWin32 : public CWinSystemBase
+class CWinSystemSDL : public CWinSystemBase
 {
 public:
-  CWinSystemWin32();
-  virtual ~CWinSystemWin32();
+  CWinSystemSDL();
+  virtual ~CWinSystemSDL();
 
   virtual bool Create(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, int width, int height);
   virtual bool Destroy();
 
-  HWND GetHwnd() { return m_Hwnd; }
-
 protected:
   virtual bool Resize();
-
-  HWND m_Hwnd;
-  HINSTANCE m_hInstance; 
-  HICON m_hIcon;
 };
 
-extern CWinSystemWin32 g_WinSystem;
+extern CWinSystemSDL g_WinSystem;
 
 #endif // WINDOW_SYSTEM_H
 

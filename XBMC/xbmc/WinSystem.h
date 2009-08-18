@@ -29,7 +29,8 @@
 
 typedef enum _WindowSystemType
 {
-  WINDOW_SYSTEM_WIN32
+  WINDOW_SYSTEM_WIN32,
+  WINDOW_SYSTEM_SDL
 } WindowSystemType;
 
 class CWinSystemBase
@@ -74,3 +75,9 @@ protected:
 #include "WinSystemWin32.h"
 #define CWinSystem CWinSystemWin32
 #endif
+
+#ifdef _LINUX
+#include "WinSystemSDL.h"
+#define CWinSystem CWinSystemSDL
+#endif
+

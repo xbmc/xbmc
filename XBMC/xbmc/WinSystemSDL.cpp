@@ -1,13 +1,3 @@
-/*!
-\file Surface.h
-\brief
-*/
-
-#ifndef WINDOW_SYSTEM_WIN32_H
-#define WINDOW_SYSTEM_WIN32_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -28,30 +18,50 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "WinSystem.h"
 
-class CWinSystemWin32 : public CWinSystemBase
+#include "stdafx.h"
+#include "WinSystemSDL.h"
+#include "WinEvents.h"
+
+CWinSystem g_WinSystem;
+
+CWinSystemSDL::CWinSystemSDL()
+: CWinSystemBase()
 {
-public:
-  CWinSystemWin32();
-  virtual ~CWinSystemWin32();
+  m_eWindowSystem = WINDOW_SYSTEM_SDL;
+}
 
-  virtual bool Create(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, int width, int height);
-  virtual bool Destroy();
-
-  HWND GetHwnd() { return m_Hwnd; }
-
-protected:
-  virtual bool Resize();
-
-  HWND m_Hwnd;
-  HINSTANCE m_hInstance; 
-  HICON m_hIcon;
+CWinSystemSDL::~CWinSystemSDL()
+{
+  Destroy();
 };
 
-extern CWinSystemWin32 g_WinSystem;
+bool CWinSystemSDL::Create(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+{
+  m_nWidth = width;
+  m_nHeight = height;
+  m_bFullScreen = fullScreen;
+  
+  return true;
+}
 
-#endif // WINDOW_SYSTEM_H
+bool CWinSystemWin32::Destroy()
+{
+  return true;
+}
+
+bool CWinSystemWin32::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
+{
+  return true;
+}
+
+bool CWinSystemWin32::SetFullScreen(bool fullScreen, int width, int height)
+{
+  return true;
+}
+
+bool CWinSystemWin32::Resize()
+{
+  return true;
+}
 

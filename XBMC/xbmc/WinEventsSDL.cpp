@@ -19,32 +19,16 @@
 *
 */
 
-#ifndef WINDOW_EVENTS_H
-#define WINDOW_EVENTS_H
-
-#pragma once
-
-#include "StdString.h"
-#include "XBMC_events.h"
-
-typedef int (* PHANDLE_EVENT_FUNC)(unsigned int eventType, unsigned long param1, unsigned long param2); 
-
-class CWinEventsBase
-{
-public:
-  static void MessagePump(){};
-  static PHANDLE_EVENT_FUNC m_pEventFunc;
-};
-
-#ifdef _WIN32
-#include "WinEventsWin32.h"
-#define CWinEvents CWinEventsWin32
-#endif
-
-#ifdef _LINUX
-#include "WinEventsSDL.h"
-#define CWinEvents CWinEventsSDL
-#endif
 
 
-#endif // WINDOW_EVENTS_H
+#include "stdafx.h"
+#include "WinEvents.h"
+#include "Application.h"
+#include "XBMC_vkeys.h"
+
+PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
+
+void CWinEventsSDL::MessagePump()
+{ 
+  
+}

@@ -33,4 +33,4 @@ public:
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 };
 
-#endif // WINDOW_EVENTS_H
+#endif // WINDOW_EVENTS_WIN32_H

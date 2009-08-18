@@ -26,6 +26,8 @@
 #include "Application.h"
 #include "XBMC_vkeys.h"
 
+#ifdef _WIN32
+
 /* Masks for processing the windows KEYDOWN and KEYUP messages */
 #define REPEATED_KEYMASK	(1<<30)
 #define EXTENDED_KEYMASK	(1<<24)
@@ -372,3 +374,5 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
+
+#endif

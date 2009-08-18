@@ -23,6 +23,8 @@
 #include "WinSystemWin32.h"
 #include "WinEvents.h"
 
+#ifdef _WIN32
+
 CWinSystem g_WinSystem;
 
 CWinSystemWin32::CWinSystemWin32()
@@ -113,3 +115,4 @@ bool CWinSystemWin32::Resize()
   return true;
 }
 
+#endif
