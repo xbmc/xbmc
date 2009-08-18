@@ -205,6 +205,7 @@ class cPVREpg;
 class cPVRChannelInfoTag : public CVideoInfoTag
 {
   friend class cPVREpgs;
+  friend class cPVRChannels;
 
 private:
   mutable const cPVREpg *m_Epg;
@@ -266,6 +267,7 @@ public:
   CStdString Icon(void) const { return m_IconPath; }
   void SetIcon(CStdString icon) { m_IconPath = icon; }
   bool IsHidden(void) const { return m_hide; }
+  void SetHidden(bool hide) { m_hide = hide; }
   int GetDuration() const;
 };
 

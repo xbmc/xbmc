@@ -396,14 +396,14 @@ int CTVDatabase::GetDBNumChannels(bool radio)
   }
 }
 
-int CTVDatabase::GetNumHiddenChannels(DWORD clientID)
+int CTVDatabase::GetNumHiddenChannels()
 {
   try
   {
     if (NULL == m_pDB.get()) return 0;
     if (NULL == m_pDS.get()) return 0;
 
-    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.idClient=%u AND Channels.hide=%u", clientID, true);
+    CStdString SQL=FormatSQL("select * from Channels WHERE Channels.hide=%u", true);
 
     m_pDS->query(SQL.c_str());
 

@@ -45,7 +45,7 @@ public:
   bool RemoveDBChannel(const cPVRChannelInfoTag &info);
   long UpdateDBChannel(const cPVRChannelInfoTag &info);
   int  GetDBNumChannels(bool radio);
-  int  GetNumHiddenChannels(DWORD clientID);
+  int  GetNumHiddenChannels();
   bool HasChannel(DWORD clientID, const cPVRChannelInfoTag &info);
   bool GetDBChannelList(cPVRChannels &results, bool radio);
   bool GetChannelSettings(DWORD clientID, unsigned int channelID, CVideoSettings &settings);

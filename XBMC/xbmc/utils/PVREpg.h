@@ -159,6 +159,7 @@ public:
   static const cPVREpgs *EPGs(cPVREpgsLock &PVREpgsLock);
   static void Cleanup(void);
   static bool ClearAll(void);
+  static bool ClearChannel(long ChannelID);
   static bool Load();
   static bool Update(bool Wait = false);
   static int GetEPGAll(CFileItemList* results, bool radio = false);

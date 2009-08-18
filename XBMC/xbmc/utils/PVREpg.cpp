@@ -279,6 +279,24 @@ bool cPVREpgs::ClearAll(void)
   return false;
 }
 
+bool cPVREpgs::ClearChannel(long ChannelID)
+{
+  cPVREpgsLock EpgsLock(true);
+  cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
+  if (s) 
+  {
+    for (unsigned int i = 0; i < s->size(); i++)
+    {
+      if (ChannelID == s->at(i).ChannelID())
+      {
+        s->at(i).Cleanup(-1);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool cPVREpgs::Load()
 { 
   InitializeCriticalSection(&m_epgs.m_critSection);
