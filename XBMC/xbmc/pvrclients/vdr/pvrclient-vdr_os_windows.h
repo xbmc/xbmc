@@ -24,11 +24,10 @@
 #ifndef PVRCLIENT_VDR_OS_WIN_H
 #define PVRCLIENT_VDR_OS_WIN_H
 
-//#define _WINSOCKAPI_
-//#include <winsock2.h>
+#include <winsock2.h>
 #include <windows.h>
-//#include <ws2tcpip.h>
-//#include <wspiapi.h>
+#include <ws2tcpip.h>
+#include <wspiapi.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
@@ -73,8 +72,6 @@ typedef HANDLE pthread_mutex_t;
 #define ftello _ftelli64
 #define THREAD_FUNC_PREFIX DWORD WINAPI
 #define SIGPIPE SIGABRT
-
-extern "C" int inet_pton(int af, const char *src, void *dst);
 
 static inline int usleep(unsigned int us)
 {
@@ -158,5 +155,29 @@ static inline void console_printf(const char *fmt, ...)
 	console_vprintf(fmt, ap);
 	va_end(ap);
 }
+
+#if !defined(__MINGW32__)
+#define strtok_r( _s, _sep, _lasts ) \
+	( *(_lasts) = strtok( (_s), (_sep) ) )
+#endif /* !__MINGW32__ */
+
+#define asctime_r( _tm, _buf ) \
+	( strcpy( (_buf), asctime( (_tm) ) ), \
+	  (_buf) )
+
+#define ctime_r( _clock, _buf ) \
+	( strcpy( (_buf), ctime( (_clock) ) ),  \
+	  (_buf) )
+
+#define gmtime_r( _clock, _result ) \
+	( *(_result) = *gmtime( (_clock) ), \
+	  (_result) )
+
+#define localtime_r( _clock, _result ) \
+	( *(_result) = *localtime( (_clock) ), \
+	  (_result) )
+
+#define rand_r( _seed ) \
+	( _seed == _seed? rand() : rand() )
 
 #endif

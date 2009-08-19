@@ -324,7 +324,7 @@ extern "C" PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo)
   return g_client->DeleteRecording(recinfo);
 }
 
-extern "C" PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, CStdString &newname)
+extern "C" PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
 {
   return g_client->RenameRecording(recinfo, newname);
 }

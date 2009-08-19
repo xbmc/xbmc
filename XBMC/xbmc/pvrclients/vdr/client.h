@@ -24,6 +24,7 @@
 #define CLIENT_H
 
 #include <string>
+#include "StdString.h"
 #include "pvrclient-vdr_os.h"
 #include "../../addons/include/xbmc_addon_lib++.h"
 #include "../../addons/include/xbmc_pvr_lib++.h"

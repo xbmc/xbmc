@@ -171,26 +171,6 @@ typedef struct
 
 } TVChannelSettings;
 
-//typedef struct
-//{
-//  unsigned int  m_uniqueID;
-//
-//  CStdString    m_strTitle;
-//  CStdString    m_strPlotOutline;
-//  CStdString    m_strPlot;
-//
-//  CDateTime     m_startTime;
-//  CDateTime     m_endTime;
-//  CDateTimeSpan m_duration;
-//
-//  CStdString    m_strGenre;
-//  int           m_GenreType;
-//  int           m_GenreSubType;
-//
-//} TVEPGData;
-//
-typedef std::vector<PVR_PROGINFO> EPG_DATA;
-
 typedef struct
 {
   unsigned long m_ID;

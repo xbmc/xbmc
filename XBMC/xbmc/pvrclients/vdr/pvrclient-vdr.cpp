@@ -23,6 +23,7 @@
 #include "timers.h"
 #include "channels.h"
 #include "recordings.h"
+#include "epg.h"
 #include "pvrclient-vdr.h"
 #include "pvrclient-vdr_os.h"
 
@@ -35,27 +36,6 @@
 using namespace std;
 
 pthread_mutex_t m_critSection;
-
-#ifndef _LINUX
-extern "C" long long atoll(const char *ca)
-{
-  long long ig=0;
-  int       sign=1;
-  /* test for prefixing white space */
-  while (*ca == ' ' || *ca == '\t' )
-    ca++;
-  /* Check sign entered or no */
-  if ( *ca == '-' )
-    sign = -1;
-  /* convert string to int */
-  while (*ca != '\0')
-    if (*ca >= '0' && *ca <= '9')
-      ig = ig * 10LL + *ca++ - '0';
-    else
-      ca++;
-  return (ig*(long long)sign);
-}
-#endif
 
 bool PVRClientVDR::m_bStop						= true;
 SOCKET PVRClientVDR::m_socket_data				= INVALID_SOCKET;
@@ -349,6 +329,7 @@ PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE hand
   int            code;
   char           buffer[1024];
   int            found;
+  cEpg           epg;
   PVR_PROGINFO   broadcast;
 
   if (!m_transceiver->IsOpen())
@@ -377,109 +358,22 @@ PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE hand
 
     if (m_bCharsetConv)
       XBMC_unknown_to_utf8(str_result);
-
-    /** Get Channelname **/
-    found = str_result.find("C", 0);
-    if (found == 0)
+    
+    bool isEnd = epg.ParseLine(str_result.c_str());
+    if (isEnd && epg.StartTime() != 0)
     {
-      str_result.erase(0, 2);
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-//    = str_result.c_str();
-      continue;
-    }
-
-    /** Get Title **/
-    found = str_result.find("T", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      broadcast.m_strTitle = str_result.c_str();
-      continue;
-    }
-
-    /** Get short description **/
-    found = str_result.find("S", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      broadcast.m_strPlotOutline = str_result.c_str();
-      continue;
-    }
-
-    /** Get description **/
-    found = str_result.find("D", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-
-      int pos = 0;
-
-      while (1)
-      {
-        pos = str_result.find("|", pos);
-
-        if (pos < 0)
-          break;
-
-        str_result.replace(pos, 1, 1, '\n');
-      }
-      broadcast.m_strPlot = str_result.c_str();
-      continue;
-    }
-
-    /** Get Genre **/
-    found = str_result.find("G", 0);
-    if (found == 0)
-    {
-      str_result.erase(0, 2);
-      broadcast.m_GenreType = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      broadcast.m_GenreSubType = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      broadcast.m_strGenre = str_result.c_str();
-      continue;
-    }
-
-    /** Get ID, date and length**/
-    found = str_result.find("E ", 0);
-    if (found == 0)
-    {
-      time_t rec_time;
-      int duration;
-      str_result.erase(0, 2);
-//    = atol(str_result.c_str());
-
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-
-      rec_time = atol(str_result.c_str());
-      found = str_result.find(" ", 0);
-      str_result.erase(0, found + 1);
-      duration = atol(str_result.c_str());
-
-      broadcast.m_startTime = CDateTime((time_t)rec_time);
-      broadcast.m_endTime = CDateTime((time_t)rec_time + duration);
-      broadcast.m_duration = CDateTimeSpan(0, 0, duration / 60, duration % 60);
-      continue;
-    }
-
-    /** end tag **/
-    found = str_result.find("e", 0);
-    if (found == 0)
-    {
+      broadcast.channum         = number;
+      broadcast.uid             = epg.UniqueId();
+      broadcast.title           = epg.Title();
+      broadcast.subtitle        = epg.ShortText();
+      broadcast.description     = epg.Description();
+      broadcast.starttime       = epg.StartTime();
+      broadcast.endtime         = epg.EndTime();
+      broadcast.genre           = epg.Genre();
+      broadcast.genre_type      = epg.GenreType();
+      broadcast.genre_sub_type  = epg.GenreSubType();
       PVR_transfer_epg_entry(handle, &broadcast);
-
-      broadcast.m_strTitle = "";
-      broadcast.m_strPlotOutline = "";
-      broadcast.m_strPlot = "";
-      broadcast.m_startTime = NULL;
-      broadcast.m_endTime = NULL;
-      broadcast.m_strGenre = "";
-      broadcast.m_GenreType = NULL;
-      broadcast.m_GenreSubType = NULL;
+      epg.Reset();
     }
   }
 
@@ -2218,7 +2112,7 @@ PVR_ERROR PVRClientVDR::DeleteRecording(const PVR_RECORDINGINFO &recinfo)
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR PVRClientVDR::RenameRecording(const PVR_RECORDINGINFO &recinfo, CStdString &newname)
+PVR_ERROR PVRClientVDR::RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname)
 {
   vector<string> lines;
   int            code;
@@ -2242,7 +2136,7 @@ PVR_ERROR PVRClientVDR::RenameRecording(const PVR_RECORDINGINFO &recinfo, CStdSt
     return PVR_ERROR_NOT_SYNC;
   }
 
-  sprintf(buffer, "RENR %d %s", recinfo.index, newname.c_str());
+  sprintf(buffer, "RENR %d %s", recinfo.index, newname);
 
   if (!m_transceiver->SendCommand(buffer, code, lines))
   {
