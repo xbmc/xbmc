@@ -1,5 +1,4 @@
-#ifndef CEDL_H
-#define CEDL_H
+#pragma once
 
 /*
  *      Copyright (C) 2005-2008 Team XBMC
@@ -83,5 +82,3 @@ private:
 
   void MergeShortCommBreaks();
 };
-
-#endif
