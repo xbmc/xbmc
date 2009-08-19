@@ -118,14 +118,14 @@ ITransportStreamDemux* m_pDemux;
 CFileStream* m_pInput; 
 int main() 
 {
-  XdmxSetLogLevel(XDMX_LOG_LEVEL_DEBUG);
+  XdmxSetLogLevel(XDMX_LOG_LEVEL_INFO);
   m_pInput = new CFileStream();
-//  if (!m_pInput->Open("Z:\\video\\HD Movies\\Casino Test.m2ts"))
-  if (!m_pInput->Open("C:\\Users\\Chr\\Videos\\Tests\\test.ts"))
+  if (!m_pInput->Open("Z:\\video\\HD Movies\\Casino Test.m2ts"))
+//  if (!m_pInput->Open("C:\\Users\\Chr\\Videos\\Tests\\test.ts"))
   {
     return 1;
   }
-  m_pDemux = CreateTSDemux(TS_TYPE_STD);
+  m_pDemux = CreateTSDemux(TS_TYPE_M2TS);
 
   if (!m_pDemux->Open(dynamic_cast<IXdmxInputStream*>(m_pInput)))
   {
@@ -163,7 +163,7 @@ int main()
       outFile.write((const char*)dmx.pData, dmx.iSize);
     delete pPayload;
     _aligned_free(dmx.pData);
-    Sleep(5);
+    //Sleep(5);
   }
   outFile.close();
 

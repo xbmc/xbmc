@@ -6,6 +6,7 @@
 #include "accum.h"
 
 #include <list>
+#include <fstream>
 
 #define __TS_MODULE__ "Xdmx Transport Stream Demux"
 
@@ -47,15 +48,16 @@ bool CTSFilter::CheckContinuity(unsigned char counterValue)
 class CTableFilter : public CTSFilter
 {
 public:
-  virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual unsigned int Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
   virtual void Flush();
 protected:
   virtual bool ParseSection(unsigned char* pData, unsigned int len) = 0;
   CPayloadAccumulator m_Accum;
 };
 
-bool CTableFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
+unsigned int CTableFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
 {
+  unsigned int inLen = len;
   if (newPayloadUnit)
   {
     // TODO: Handle packet data before new payload
@@ -86,7 +88,7 @@ bool CTableFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUn
     // Pass on to the derived class' handler method
     ParseSection(m_Accum.GetData(), m_Accum.GetLen());
   }
-  return true;
+  return inLen - len;
 }
 
 void CTableFilter::Flush()
@@ -99,14 +101,14 @@ void CTableFilter::Flush()
 class CPCRFilter : public CTSFilter
 {
 public:
-  virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual unsigned int Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
   virtual void Flush();
 protected:
 };
 
-bool CPCRFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
+unsigned int CPCRFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
 {
-  return false;
+  return len;
 }
 
 void CPCRFilter::Flush()
@@ -400,7 +402,7 @@ public:
   CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList);
   CElementaryStreamFilter(CElementaryStream* pStream, PayloadList* pPayloadList, IPacketFilter* pInnerFilter);
   virtual ~CElementaryStreamFilter();
-  virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual unsigned int Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
   virtual void Flush();
   CElementaryStream* GetStream();
   uint64_t GetBytesIn();
@@ -431,7 +433,7 @@ CElementaryStreamFilter::~CElementaryStreamFilter()
   delete m_pParser;
 }
 
-bool CElementaryStreamFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
+unsigned int CElementaryStreamFilter::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
 {
   m_BytesIn += len;
   return m_pParser->Add(pData, len, newPayloadUnit);
@@ -538,13 +540,29 @@ unsigned int CTSProgramMapFilter::ParseProgramDescriptor(CSimpleBitstreamReader&
   char formatId[4];
   switch (tag)
   {
-  case 5: // Registration Descriptor
+  case TS_DESC_REGISTRATION: // Registration Descriptor
     formatId[0] = reader.ReadChar(8);
     formatId[1] = reader.ReadChar(8);
     formatId[2] = reader.ReadChar(8);
     formatId[3] = reader.ReadChar(8);
     XDMX_LOG_INFO("%s:   Found Program Registration Descriptor. Format: %4.4s, InfoLen: %d.", __TS_MODULE__, formatId, descLen - 4);
+    if (formatId[0] == 'G' && formatId[1] == 'A' && formatId[2] == '9' && formatId[3] == '4')
+    {
+      XDMX_LOG_INFO("%s:   This is an ATSC (A/53) Stream", __TS_MODULE__);
+    }
     reader.UpdatePosition(descLen * 8 - 32);
+    break;
+  case TS_DESC_ATSC_CAPT_SVC: // ATSC Caption Service Descriptor (A/65 Table 6.25)
+    {
+      unsigned char* pDesc = reader.GetCurrentPointer();
+      unsigned char serviceCount = (pDesc[0] & 0x1f); // 5 bits
+      for (int s = 0; s < serviceCount; s++)
+      {
+        unsigned char* svc = &pDesc[s*6+1];
+      }
+      XDMX_LOG_INFO("%s:     ATSC Caption Service Descriptor.", __TS_MODULE__);
+    }
+    reader.UpdatePosition(descLen * 8);
     break;
   default:
     XDMX_LOG_INFO("%s:   Found Unknown Program Descriptor. Tag: %d (0x%02lx), Len: %d.", __TS_MODULE__, tag, tag, descLen);
@@ -704,8 +722,19 @@ unsigned int CTSProgramMapFilter::ParseStreamDescriptor(CSimpleBitstreamReader& 
     XDMX_LOG_INFO("%s:     Found Stream Language Descriptor. Language: %3.3s, AudioType: %d (0x%02lx).", __TS_MODULE__, languageId, audioType, audioType);
     reader.UpdatePosition(descLen * 8 - 32);
     break;
-  case TS_DESC_AC3:     // AC-3 Descriptor
-    XDMX_LOG_INFO("%s:     Found AC-3 Stream Identification Descriptor.", __TS_MODULE__);
+  case TS_DESC_AC3:     // AC-3 Descriptor (A/52 Annex A)
+    {
+    //unsigned char* pDesc = reader.GetCurrentPointer();
+    //unsigned char sampleRateCode = (pDesc[0] >> 5); // 3 bits
+    //unsigned char bsid = (pDesc[0] & 0x1f); // 5 bits
+    //unsigned char bitRateCode = (pDesc[1] >> 2); // 6 bits
+    //unsigned char surroundMode = (pDesc[1] & 0x03); // 2 bits
+    //unsigned char bsMode = (pDesc[2] >> 5); // 3 bits
+    //unsigned char channels = ((pDesc[2] >> 1) & 0x0f); // 4 bits
+    //bool fullSvc = (pDesc[2] & 0x01); // 1 bit
+    //unsigned char lang = pDesc[3];
+    XDMX_LOG_INFO("%s:     Found AC-3 (A/52) Audio Descriptor.", __TS_MODULE__);
+    }
     reader.UpdatePosition(descLen * 8);
     break;
   default:
@@ -1118,6 +1147,11 @@ bool CTransportStreamDemux::ProcessNext()
     26    - Adaptation Field Flag
     27    - Payload Flag
     28:31 - Continuity Counter - Big Endian
+
+    3 Valid types of stuffing:
+      Over-sized adaptation field padded-out with 0xff at the end
+      Bytes after section data. If 1st following valid data is 0xff. All following bytes considered invalid.
+      NULL packets. PID == 0x1FFF.
     */
 
     // Skip the sync word. We do not need it.
@@ -1175,7 +1209,6 @@ bool CTransportStreamDemux::ProcessNext()
             uint64_t pcrBase = ((uint64_t)pHeader[0] << 25) | ((unsigned int)pHeader[1] << 17) | ((unsigned int)pHeader[2] << 9) | ((unsigned int)pHeader[3] << 1) | ((unsigned int)pHeader[4] >> 7);
             unsigned short pcrExt = (((unsigned short)pHeader[4] & 0x1) << 8) | pHeader[5];
             pClock->AddReference(m_PacketCount * m_PacketSize - bytesLeft, pcrBase, pcrExt);
-            fieldLen -= 6;
           }
         }
         pHeader += (fieldLen - 1);
@@ -1195,7 +1228,11 @@ bool CTransportStreamDemux::ProcessNext()
       {
         // TODO: Handle these
       }
-      pFilter->Add(pHeader, bytesLeft, newPayload);
+      bytesLeft -= pFilter->Add(pHeader, bytesLeft, newPayload);
+    }
+    if (bytesLeft)
+    {
+      XDMX_LOG_DEBUG("%s: Detected Dangling Bytes: %d", __TS_MODULE__, bytesLeft);
     }
     return true;
   }

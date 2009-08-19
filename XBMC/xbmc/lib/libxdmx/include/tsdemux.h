@@ -94,7 +94,8 @@ enum
   TS_DESC_DVB_EAC3                    = 0x7A,
   TS_DESC_DVB_DTS                     = 0x7B,
   TS_DESC_DVB_AAC                     = 0x7C,
-  TS_DESC_AC3                         = 0x81
+  TS_DESC_AC3                         = 0x81,
+  TS_DESC_ATSC_CAPT_SVC               = 0x86
 };
 
 

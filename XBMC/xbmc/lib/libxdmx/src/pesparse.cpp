@@ -22,8 +22,9 @@ CPESParser::~CPESParser()
 
 }
 
-bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
+unsigned int CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
 {
+  unsigned int inLen = len;
   if (newPayloadUnit)
   {
     // If an unbounded payload is currently in-process, this signals its end
@@ -65,7 +66,7 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
       ProbeFormat(pData, len);
   }
   else if (!m_HeaderLen) // This is the first packet added
-    return true; // Wait for a new payload
+    return inLen; // Wait for a new payload. Consume all bytes.
 
   if (m_HeaderOffset < m_HeaderLen) // Still need some header data
   {
@@ -79,7 +80,7 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
   }
 
   if (!len)
-    return true;
+    return inLen;
 
   // Add the data to the payload accumulator
   m_BytesIn += len;
@@ -96,7 +97,7 @@ bool CPESParser::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit
     // Pass on to the derived class' handler method
     CompletePayload();
   }
-  return true;
+  return inLen - len;
 }
 
 void CPESParser::Flush()
@@ -329,7 +330,7 @@ CPESParserLPCM::CPESParserLPCM(CElementaryStream* pStream, PayloadList* pPayload
 
 }
 
-bool CPESParserLPCM::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
+unsigned int CPESParserLPCM::Add(unsigned char* pData, unsigned int len, bool newPayloadUnit)
 {
   if (newPayloadUnit)
   {

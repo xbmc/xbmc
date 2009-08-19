@@ -69,7 +69,7 @@ class IPacketFilter
 {
 public:
   virtual ~IPacketFilter() {}
-  virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit) = 0;
+  virtual unsigned int Add(unsigned char* pData, unsigned int len, bool newPayloadUnit) = 0;
   virtual void Flush() = 0;
 protected:
   IPacketFilter() {}
@@ -84,7 +84,7 @@ class CPESParser : public IPacketFilter
 public:
   CPESParser(CElementaryStream* pStream, PayloadList* pPayloadList);
   virtual ~CPESParser();
-  virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual unsigned int Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
   virtual void Flush();
   virtual bool ProbeFormat(unsigned char* pData, unsigned int len) = 0;
 protected:
@@ -120,7 +120,7 @@ class CPESParserLPCM : public CPESParser
 public:
   virtual ~CPESParserLPCM() {}
   CPESParserLPCM(CElementaryStream* pStream, PayloadList* pPayloadList);
-  virtual bool Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
+  virtual unsigned int Add(unsigned char* pData, unsigned int len, bool newPayloadUnit);
 protected:
   virtual bool Parse(unsigned char* pHeader, unsigned int headerLen, unsigned char* pData, unsigned int dataLen);
   virtual bool ProbeFormat(unsigned char* pData, unsigned int len);

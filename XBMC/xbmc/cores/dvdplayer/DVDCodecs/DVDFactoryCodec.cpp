@@ -28,6 +28,9 @@
 
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
+
+#include "Video/DVDVideoCodecCrystalHD.h"
+
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLiba52.h"
 #include "Audio/DVDAudioCodecLibDts.h"
@@ -114,6 +117,14 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 {
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
+
+#if defined(HAVE_CRYSTALHD)
+  if (hint.codec == CODEC_ID_VC1 || hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO)
+  {
+    CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");
+    if ( (pCodec = OpenCodec(new CDVDVideoCodecCrystalHD(), hint, options)) ) return pCodec;
+  }
+#endif
 
   // try to decide if we want to try halfres decoding
 #if !defined(_LINUX) && !defined(_WIN32)
