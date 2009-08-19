@@ -26,9 +26,13 @@
 #include "Application.h"
 #include "XBMC_vkeys.h"
 
+#ifdef HAS_SDL
+
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 
 void CWinEventsSDL::MessagePump()
 { 
   
 }
+
+#endif

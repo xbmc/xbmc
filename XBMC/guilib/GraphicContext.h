@@ -46,7 +46,6 @@
 #include "gui3d.h"
 #include "StdString.h"
 #include "common/Mouse.h"
-//#include "GraphicContextFactory.h"
 
 namespace Surface { class CSurface; }
 

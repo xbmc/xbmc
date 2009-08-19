@@ -30,6 +30,8 @@
  */
 #include "WinSystem.h"
 
+#ifdef _LINUX
+
 class CWinSystemSDL : public CWinSystemBase
 {
 public:
@@ -46,6 +48,8 @@ protected:
 };
 
 extern CWinSystemSDL g_WinSystem;
+
+#endif
 
 #endif // WINDOW_SYSTEM_H
 

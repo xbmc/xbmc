@@ -53,8 +53,7 @@ CBaseTexture* CPictureDX::Load(const CStdString& strFileName, int iMaxWidth, int
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-  CBaseTexture* pTexture = new CTexture();
-  pTexture->Allocate(m_info.width, m_info.height, 32);
+  CBaseTexture* pTexture = new CTexture(m_info.width,  m_info.height, 32);
 
   //g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture, NULL);
 

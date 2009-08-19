@@ -5573,6 +5573,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\WinSystemSDL.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinSystemSDL.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\WinSystemWin32.cpp"
 						>
 					</File>
@@ -5590,6 +5598,14 @@
 					>
 					<File
 						RelativePath="..\..\xbmc\WinEvents.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinEventsSDL.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinEventsSDL.h"
 						>
 					</File>
 					<File

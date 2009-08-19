@@ -152,6 +152,8 @@ bool CGLTexture::LoadFromFile(const CStdString& texturePath)
   Update(original->GetWidth(), original->GetHeight(), original->GetPitch(), original->GetPixels(), false);
 
   delete original;
+
+  return true;
 }
 
 

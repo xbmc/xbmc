@@ -23,6 +23,8 @@
 #include "WinSystemSDL.h"
 #include "WinEvents.h"
 
+#ifdef _LINUX
+
 CWinSystem g_WinSystem;
 
 CWinSystemSDL::CWinSystemSDL()
@@ -64,4 +66,6 @@ bool CWinSystemWin32::Resize()
 {
   return true;
 }
+
+#endif
 

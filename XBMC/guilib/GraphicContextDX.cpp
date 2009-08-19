@@ -37,7 +37,7 @@
 
 #define D3D_CLEAR_STENCIL 0x0l
 
-#include "Surface.h"
+// elis #include "Surface.h"
 #include "SkinInfo.h"
 
 using namespace std;
@@ -212,11 +212,13 @@ void CGraphicContextDX::SetFullScreenRoot(bool fs)
     if(ChangeDisplaySettings(&settings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
       CLog::Log(LOGERROR, "CGraphicContext::SetFullScreenRoot - failed to change resolution");
 
+    /* elis
     if (m_screenSurface)
     {
       m_screenSurface->RefreshCurrentContext();
       m_screenSurface->ResizeSurface(m_iFullScreenWidth, m_iFullScreenHeight);
     }
+    */
 
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
@@ -225,11 +227,13 @@ void CGraphicContextDX::SetFullScreenRoot(bool fs)
   else
   {
     ChangeDisplaySettings(NULL, 0);
+    /* elis
     if (m_screenSurface)
     {
       m_screenSurface->RefreshCurrentContext();
       m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
     }
+    */
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
     g_renderManager.Recover();
@@ -256,9 +260,8 @@ void CGraphicContextDX::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool for
   {
     m_Resolution = res;
     RESOLUTION_INFO resInfo;
-    //g_videoConfig.GetResolutionInfo(m_Resolution, resInfo);
-    m_iScreenWidth = 1280;
-    m_iScreenHeight = 720;
+    g_videoConfig.GetResolutionInfo(m_Resolution, resInfo);
+    
     return ;
   }
   bool NeedReset = false;

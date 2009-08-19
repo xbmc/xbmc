@@ -579,18 +579,23 @@ HRESULT CApplication::Create(HWND hWnd)
   */
 #endif
 
+  // elis Create a window
+  RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
+  g_WinSystem.Create("XBMC", 1280, 720, false, OnEvent);
+  g_RenderSystem.Create();
+  g_RenderSystem.AttachWindow(&g_WinSystem);
+
+
   //list available videomodes
-  /* elis
 #ifdef HAS_DX
-  g_videoConfig.GetModes(m_pD3D);
+  g_videoConfig.GetModes(g_RenderSystem.GetD3D());
   //init the present parameters with values that are supported
-  RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
+  RESOLUTION initialResolution = g_videoConfig.GetInitialMode(g_RenderSystem.GetD3D(), g_RenderSystem.GetD3DParams());
+  g_graphicsContext.SetD3DParameters(g_RenderSystem.GetD3DParams());
 #else
   g_videoConfig.GetModes();
   //init the present parameters with values that are supported
 #endif
-  */ 
 
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
@@ -601,7 +606,7 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_VERSION(&wmInfo.version)
   int te = SDL_GetWMInfo( &wmInfo );
   g_hWnd = wmInfo.window;
-  // elis m_messageHandler.Initialize();
+  m_messageHandler.Initialize();
 #endif
 
   // Create the Mouse and Keyboard devices
@@ -634,13 +639,6 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   RESOLUTION initialResolution = DESKTOP;
-
-  // elis Create a window
-  RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
-  g_WinSystem.Create("XBMC", resInfo.iWidth, resInfo.iHeight, false, OnEvent);
-  g_RenderSystem.Create();
-  g_RenderSystem.AttachWindow(&g_WinSystem);
-
 #ifdef HAS_DX
   // elis tmp
   m_pd3dDevice = g_RenderSystem.GetD3DDevice();
@@ -774,13 +772,11 @@ HRESULT CApplication::Create(HWND hWnd)
       FatalErrorHandler(false, false, true);
     }
   }
-  /* eli
   int iResolution = g_graphicsContext.GetVideoResolution();
   CLog::Log(LOGINFO, "GUI format %ix%i %s",
             g_settings.m_ResInfo[iResolution].iWidth,
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode);
-            */
   m_gWindowManager.Initialize();
 
 #ifdef HAS_PYTHON
@@ -2395,11 +2391,11 @@ void CApplication::Render()
 
     lastFrameTime = timeGetTime();
   }
-  //g_graphicsContext.Lock();
+  g_graphicsContext.Lock();
   RenderNoPresent();
   g_RenderSystem.Present();
   g_infoManager.UpdateFPS();
-  //g_graphicsContext.Unlock();
+  g_graphicsContext.Unlock();
 
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);

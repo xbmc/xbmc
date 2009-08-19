@@ -174,15 +174,15 @@ void XBVideoConfig::GetModes(LPDIRECT3D9 pD3D)
 {
   bHasPAL = false;
   bHasNTSC = false;
-  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT, D3DFMT_LIN_A8R8G8B8);
+  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT, D3DFMT_LIN_X8R8G8B8);
   D3DDISPLAYMODE mode;
   CLog::Log(LOGINFO, "Available videomodes:");
   for ( DWORD i = 0; i < numModes; i++ )
   {
-    pD3D->EnumAdapterModes( 0, D3DFMT_LIN_A8R8G8B8, i, &mode );
+    pD3D->EnumAdapterModes( 0, D3DFMT_LIN_X8R8G8B8, i, &mode );
 
     // Skip modes we don't care about
-    if ( mode.Format != D3DFMT_LIN_A8R8G8B8 )
+    if ( mode.Format != D3DFMT_LIN_X8R8G8B8 )
       continue;
     // ignore 640 wide modes
     if ( mode.Width < 720)
@@ -487,7 +487,7 @@ RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D9 pD3D, D3DPRESENT_PARAMETERS
   D3DDISPLAYMODE mode;
   for ( DWORD i = 0; i < numModes; i++ )
   {
-    pD3D->EnumAdapterModes( 0, D3DFMT_LIN_A8R8G8B8, i, &mode );
+    pD3D->EnumAdapterModes( 0, D3DFMT_LIN_X8R8G8B8, i, &mode );
 
     // ignore 640 wide modes
     if ( mode.Width < 720)

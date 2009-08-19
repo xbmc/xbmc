@@ -35,10 +35,10 @@ DWORD PadPow2(DWORD x)
 /************************************************************************/
 /*    CDXTexture                                                       */
 /************************************************************************/
-CDXTexture::CDXTexture()
-: CBaseTexture()
+CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int BPP)
+: CBaseTexture(width, height, BPP)
 {
- 
+  Allocate(m_imageWidth, m_imageHeight, m_nBPP);
 }
 
 CDXTexture::~CDXTexture()

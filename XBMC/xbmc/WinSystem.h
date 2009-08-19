@@ -74,9 +74,7 @@ protected:
 #ifdef _WIN32
 #include "WinSystemWin32.h"
 #define CWinSystem CWinSystemWin32
-#endif
-
-#ifdef _LINUX
+#elif defined (_LINUX)
 #include "WinSystemSDL.h"
 #define CWinSystem CWinSystemSDL
 #endif
