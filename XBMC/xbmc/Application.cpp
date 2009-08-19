@@ -213,6 +213,10 @@
 #define MEASURE_FUNCTION
 #endif
 
+#ifdef HAS_SDL
+#include <SDL/SDL_mutex.h>
+#endif
+
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
@@ -539,6 +543,7 @@ HRESULT CApplication::Create(HWND hWnd)
   //elis atexit(SDL_Quit);
 
 
+  Uint32 sdlFlags = 0;
 
 #ifdef HAS_SDL_AUDIO
   sdlFlags |= SDL_INIT_AUDIO;
@@ -556,8 +561,11 @@ HRESULT CApplication::Create(HWND hWnd)
   setenv("__GL_YIELD", "USLEEP", 0);
 #endif
 
+#ifdef HAS_SDL_OPENGL
+  sdlFlags |= SDL_INIT_VIDEO;
+#endif
+  
 #ifdef HAS_SDL
-  Uint32 sdlFlags = SDL_INIT_VIDEO;
   if (SDL_Init(sdlFlags) != 0)
   {
         CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
@@ -2288,8 +2296,8 @@ bool CApplication::WaitFrame(DWORD timeout)
   SDL_mutexP(m_frameMutex);
   while(m_frameCount > 0)
   {
-    int result = SDL_condWaitTimeout(m_frameCond, m_frameMutex, timeout);
-    if(result == SDL_mutex_TIMEDOUT)
+    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+    if(result == SDL_MUTEX_TIMEDOUT)
       break;
     if(result < 0)
       CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
@@ -2308,7 +2316,7 @@ void CApplication::NewFrame()
   m_frameCount++;
   SDL_mutexV(m_frameMutex);
 
-  SDL_condBroadcast(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
@@ -2355,8 +2363,8 @@ void CApplication::Render()
       // If we have frames or if we get notified of one, consume it.
       while(m_frameCount == 0)
       {
-        int result = SDL_condWaitTimeout(m_frameCond, m_frameMutex, 100);
-        if(result == SDL_mutex_TIMEDOUT)
+        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100);
+        if(result == SDL_MUTEX_TIMEDOUT)
           break;
         if(result < 0)
           CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
@@ -2402,7 +2410,7 @@ void CApplication::Render()
   if(m_frameCount > 0)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
-  SDL_condBroadcast(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 

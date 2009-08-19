@@ -267,14 +267,15 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     surface->Release();
     texture->Release();
   }
-#elif defined(HAS_SDL)
+#elif defined(HAS_SDL_OPENGL)
   SDL_Surface *texture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
                                               RMASK, GMASK, BMASK, AMASK);
   if (texture)
   {
     SDL_LockSurface(texture);
 #ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.CreateThumbnail(texture, width, height);
+    // TBD:: elis please fix
+    //g_renderManager.CreateThumbnail(texture, width, height);
 #endif
     Crc32 crc;
     crc.ComputeFromLowerCase(g_application.CurrentFile());

@@ -205,7 +205,14 @@ SRCS=Application.cpp \
      DPMSSupport.cpp \
      ScriptSettings.cpp \
      PictureGL.cpp \
-     GUIWindowTestPatternGL.cpp
+     GUIWindowTestPatternGL.cpp \
+     RenderSystem.cpp \
+     RenderSystemGL.cpp \
+     KeyboardStat.cpp \
+     WinSystem.cpp \
+     WinSystemSDL.cpp \
+     GLContextSDL.cpp \
+     WinEventsSDL.cpp
 
 LIB=xbmc.a
 

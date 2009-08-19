@@ -265,6 +265,7 @@ CStdString CSMB::URLEncode(const CURL &url)
 
 CStdString CSMB::URLEncode(const CStdString &value)
 {
+/*
   int buffer_len = value.length()*3+1;
   char* buffer = (char*)malloc(buffer_len);
 
@@ -272,7 +273,8 @@ CStdString CSMB::URLEncode(const CStdString &value)
 
   CStdString encoded = buffer;
   free(buffer);
-  return encoded;
+*/
+  return value;
 }
 
 #ifndef _LINUX

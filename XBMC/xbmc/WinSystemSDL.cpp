@@ -47,22 +47,22 @@ bool CWinSystemSDL::Create(CStdString name, int width, int height, bool fullScre
   return true;
 }
 
-bool CWinSystemWin32::Destroy()
+bool CWinSystemSDL::Destroy()
 {
   return true;
 }
 
-bool CWinSystemWin32::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
+bool CWinSystemSDL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   return true;
 }
 
-bool CWinSystemWin32::SetFullScreen(bool fullScreen, int width, int height)
+bool CWinSystemSDL::SetFullScreen(bool fullScreen, int width, int height)
 {
   return true;
 }
 
-bool CWinSystemWin32::Resize()
+bool CWinSystemSDL::Resize()
 {
   return true;
 }

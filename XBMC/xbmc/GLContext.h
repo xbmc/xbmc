@@ -30,6 +30,7 @@
 class CGLContextBase
 {
 public:
+  virtual ~CGLContextBase() { }
   virtual bool Create(CWinSystem* pWinSystem ){ return false; }
   virtual bool Release() { return false; }
   virtual bool MakeCurrent() { return false; }
@@ -49,6 +50,11 @@ protected:
 #ifdef HAS_WGL
 #include "GLContextWGL.h"
 #define CGLContext CGLContextWGL 
+#endif
+
+#ifdef __APPLE__
+#include "GLContextSDL.h"
+#define CGLContext CGLContextSDL
 #endif
 
 #endif // GL_CONTEXT_H

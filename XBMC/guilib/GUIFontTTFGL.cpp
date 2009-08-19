@@ -144,15 +144,19 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
           0, 0, 0, 0xff);
           */
 
+/* yuvalt
+
 #ifdef __APPLE__
   // Because of an SDL bug (?), bpp gets set to 4 even though we asked for 1, in fullscreen mode.
   // To be completely honest, we probably shouldn't even be using an SDL surface in OpenGL mode, since
   // we only use it to store the image before copying it (no blitting!) to an OpenGL texture.
   //
   if (newTexture->GetPitch() != m_textureWidth)
-    newTexture->GetPitch() = m_textureWidth;
+    newTexture->SetPitch(m_textureWidth);
 #endif
 
+*/
+  
   if (!newTexture || newTexture->GetPixels() == NULL)
   {
     CLog::Log(LOGERROR, "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size %f", m_height);

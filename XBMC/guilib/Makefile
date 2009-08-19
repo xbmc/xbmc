@@ -64,7 +64,6 @@ SRCS=ActionManager.cpp \
      XMLUtils.cpp \
      GUISound.cpp \
      GUIColorManager.cpp \
-     Surface.cpp \
      FrameBufferObject.cpp \
      Shader.cpp \
      GUIListLabel.cpp \
@@ -74,8 +73,8 @@ SRCS=ActionManager.cpp \
      GUIInfoColor.cpp \
      GraphicContextGL.cpp \
      GUIFontTTFGL.cpp \
-     SurfaceGL.cpp \
-     TextureManagerGL.cpp
+     Texture.cpp \
+     TextureGL.cpp
 
 LIB=guilib.a
 

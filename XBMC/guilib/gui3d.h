@@ -81,25 +81,6 @@ namespace XBMC
 
 #endif // HAS_GL
 
-#ifdef HAS_SDL_OPENGL
-
-#include <SDL/SDL.h>
-namespace XBMC
-{
-  typedef void*        DevicePtr;
-  typedef GLint* SurfacePtr;
-  typedef GLint* TexturePtr;
-  typedef GLint* PalettePtr;
-  typedef GLint PixelFormat;
-};
-
-#define DELETE_TEXTURE(texture) SDL_FreeSurface(texture)
-#define DELETE_SURFACE(surface) SDL_FreeSurface(surface)
-
-
-
-#endif // HAS_SDL
-
 #ifdef HAS_DX
 
 namespace XBMC

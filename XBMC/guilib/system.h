@@ -224,6 +224,10 @@
 #endif
 #endif
 
+#if defined(HAS_GL) && defined(_LINUX)
+#define HAS_SDL_OPENGL
+#endif
+
 #ifdef _WIN32
 #include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
 #include "D3DX9.h"  // or the reference video clock.

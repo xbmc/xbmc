@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #include "PerformanceSample.h"
 
 #ifdef _LINUX

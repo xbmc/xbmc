@@ -33,7 +33,7 @@ class CRenderSystemGL : public CRenderSystemBase
 {
 public:
   CRenderSystemGL();
-  ~CRenderSystemGL();
+  virtual ~CRenderSystemGL();
 
   virtual bool Create();
   virtual bool Destroy();
