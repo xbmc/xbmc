@@ -25,7 +25,6 @@
 #include "StdString.h"
 #include "URL.h"
 #include <vector>
-#include "linux/PlatformDefs.h"
 
 class CEdl
 {
