@@ -25,7 +25,7 @@ LIB      = ../../../addons/pvr/VDR/XBMC_VDR.pvr
 
 -include Make.config
 
-OBJS = client.o pvrclient-vdr.o vtptransceiver.o timers.o channels.o recordings.o
+OBJS = client.o pvrclient-vdr.o vtptransceiver.o timers.o channels.o recordings.o epg.o
 
 all: pvrVDR
 

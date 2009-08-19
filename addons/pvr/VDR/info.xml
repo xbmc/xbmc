@@ -22,6 +22,7 @@
 
   <!-- library: file name of the library !-->
   <library>XBMC_VDR.pvr</library>
+  <librarywin32>XBMC_VDR_win32.pvr</librarywin32>
 
   <!-- icon: icon name of the library !-->
   <icon>vdr.tbn</icon>

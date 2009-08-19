@@ -28,7 +28,7 @@ extern "C"
 //  PVR_ERROR MoveChannel(unsigned int number, unsigned int newnumber);
   PVR_ERROR RequestRecordingsList(PVRHANDLE handle);
   PVR_ERROR DeleteRecording(const PVR_RECORDINGINFO &recinfo);
-  PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, CStdString &newname);
+  PVR_ERROR RenameRecording(const PVR_RECORDINGINFO &recinfo, const char *newname);
   PVR_ERROR RequestTimerList(PVRHANDLE handle);
   PVR_ERROR AddTimer(const PVR_TIMERINFO &timerinfo);
   PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force);

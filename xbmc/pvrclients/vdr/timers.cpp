@@ -28,7 +28,9 @@
 
 #define SECSINDAY  86400
 
+#if !defined(__WINDOWS__)
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+#endif
 
 cTimer::cTimer()
 {
@@ -242,17 +244,17 @@ time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
   return mktime(&tm);
 }
 
-void cTimer::ClrFlags(uint Flags)
+void cTimer::ClrFlags(unsigned int Flags)
 {
   flags &= ~Flags;
 }
 
-void cTimer::InvFlags(uint Flags)
+void cTimer::InvFlags(unsigned int Flags)
 {
   flags ^= Flags;
 }
 
-bool cTimer::HasFlags(uint Flags) const
+bool cTimer::HasFlags(unsigned int Flags) const
 {
   return (flags & Flags) == Flags;
 }

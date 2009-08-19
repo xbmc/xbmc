@@ -33,7 +33,6 @@
 #include <string.h>
 #include <time.h>
 #include "xbmc_addon_types.h"
-#include "DateTime.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -138,34 +137,21 @@ extern "C" {
   * Used to signify an individual broadcast, whether it is also a recording, timer etc.
   */
   typedef struct PVR_PROGINFO {
-//    int           uid; // unique identifier, if supported will be used for
-//    int           channum;
 //    int           bouquet;
-//    const char   *title;
-//    const char   *subtitle;
-//    const char   *description;
-//    time_t        starttime;
-//    time_t        endtime;
-//    const char   *episodeid;
-//    const char   *seriesid;
-//    const char   *category;
 //    int           recording;
 //    int           rec_status;
 //    int           event_flags;
 
-    unsigned int  m_uniqueID;
-    
-    CStdString    m_strTitle;
-    CStdString    m_strPlotOutline;
-    CStdString    m_strPlot;
-
-    CDateTime     m_startTime;
-    CDateTime     m_endTime;
-    CDateTimeSpan m_duration;
-   
-    CStdString    m_strGenre;
-    int           m_GenreType;
-    int           m_GenreSubType;
+    unsigned int  uid;
+    int           channum;
+    const char   *title;
+    const char   *subtitle;
+    const char   *description;
+    time_t        starttime;
+    time_t        endtime;
+    const char   *genre;
+    int           genre_type;
+    int           genre_sub_type;
   } PVR_PROGINFO;
 
   /**
@@ -235,7 +221,7 @@ extern "C" {
     int (__cdecl* GetNumRecordings)();
     PVR_ERROR (__cdecl* RequestRecordingsList)(PVRHANDLE handle);
     PVR_ERROR (__cdecl* DeleteRecording)(const PVR_RECORDINGINFO &recinfo);
-    PVR_ERROR (__cdecl* RenameRecording)(const PVR_RECORDINGINFO &recinfo, CStdString &newname);
+    PVR_ERROR (__cdecl* RenameRecording)(const PVR_RECORDINGINFO &recinfo, const char *newname);
 
     /** PVR Timer Functions **/
     int (__cdecl* GetNumTimers)();

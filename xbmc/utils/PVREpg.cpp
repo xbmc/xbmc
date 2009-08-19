@@ -175,8 +175,8 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
   {
     CTVEPGInfoTag *InfoTag = NULL;
 
-    long      uniqueBroadcastID = data->m_uniqueID;
-    CDateTime StartTime         = data->m_startTime;
+    long      uniqueBroadcastID = data->uid;
+    CDateTime StartTime         = CDateTime((time_t)data->starttime);
     
     InfoTag = (CTVEPGInfoTag *)Epg->GetInfoTag(uniqueBroadcastID, StartTime);
     CTVEPGInfoTag *newInfoTag = NULL;
@@ -186,15 +186,16 @@ bool cPVREpg::Add(const PVR_PROGINFO *data, cPVREpg *Epg)
     }
     if (InfoTag)
     {
-      InfoTag->SetStart(data->m_startTime);
-      InfoTag->SetEnd(data->m_endTime);
-      InfoTag->SetTitle(data->m_strTitle);
-      InfoTag->SetPlotOutline(data->m_strPlotOutline);
-      InfoTag->SetPlot(data->m_strPlot);
-      InfoTag->SetGenreType(data->m_GenreType);
-      InfoTag->SetGenreSubType(data->m_GenreSubType);
-      InfoTag->SetGenre(data->m_strGenre);
-      InfoTag->SetDuration(data->m_duration);
+      InfoTag->SetStart(CDateTime((time_t)data->starttime));
+      InfoTag->SetEnd(CDateTime((time_t)data->endtime));
+      InfoTag->SetTitle(data->title);
+      InfoTag->SetPlotOutline(data->subtitle);
+      InfoTag->SetPlot(data->description);
+      InfoTag->SetGenreType(data->genre_type);
+      InfoTag->SetGenreSubType(data->genre_sub_type);
+      InfoTag->SetGenre(data->genre);
+      int duration = data->endtime - data->starttime;
+      InfoTag->SetDuration(CDateTimeSpan(0, 0, duration / 60, duration % 60));
       InfoTag->SetChannelID(Epg->ChannelID());
       InfoTag->SetChannel(Epg->m_Channel);
   
