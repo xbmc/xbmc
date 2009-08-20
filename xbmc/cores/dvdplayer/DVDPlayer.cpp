@@ -1490,6 +1490,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
      */
     m_EdlAutoSkipMarkers.commbreak_start = cut.start;
     m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
+    m_EdlAutoSkipMarkers.seek_to_start   = true; // Allow backwards Seek() to go directly to the start
   }
 
   /*
@@ -1985,7 +1986,51 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false));
+  bool restore = true;
+  if (m_Edl.HasCut())
+  {
+    /*
+     * Alter the standard seek position based on whether any commercial breaks have been
+     * automatically skipped.
+     */
+    const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
+    /*
+     * If a backwards seek (either small or large) occurs within 10 seconds of the end of the last
+     * automated commercial skip, then seek back to the start of the commercial break under the
+     * assumption that it was flagged incorrectly. 10 seconds grace period is allowed in case the
+     * watcher has to fumble around finding the remote. Only happens once per commercial break.
+     */
+    if (!bPlus && m_EdlAutoSkipMarkers.seek_to_start
+    &&  clock >= m_EdlAutoSkipMarkers.commbreak_end
+    &&  clock <= m_EdlAutoSkipMarkers.commbreak_end + 10*1000) // Only if within 10 seconds of the end (in msec)
+    {
+      CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
+                __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
+                CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
+      seek = m_EdlAutoSkipMarkers.commbreak_start;
+      restore = false;
+      m_EdlAutoSkipMarkers.seek_to_start = false; // So this will only happen within the 10 second grace period once.
+    }
+    /*
+     * If big skip forward within the last "reverted" commercial break, seek to the end of the
+     * commercial break under the assumption that the break was incorrectly flagged and playback has
+     * now reached the actual start of the commercial break. Assume that the end is flagged more
+     * correctly than the landing point for a standard big skip (ends seem to be flagged more
+     * accurately than the start).
+     */
+    else if (bPlus && bLargeStep
+    &&       clock >= m_EdlAutoSkipMarkers.commbreak_start
+    &&       clock <= m_EdlAutoSkipMarkers.commbreak_end)
+    {
+      CLog::Log(LOGDEBUG, "%s - Seeking to end of previously skipped commercial break [%s - %s] as big forwards skip activated within the break.",
+                __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
+                CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
+      seek = m_EdlAutoSkipMarkers.commbreak_end;
+      restore = false;
+    }
+  }
+
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
   SyncronizeDemuxer(100);
   m_tmLastSeek = time(NULL);
 }
