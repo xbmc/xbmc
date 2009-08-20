@@ -378,7 +378,8 @@ bool CCMythFile::Exists(const CURL& url)
       path.Left(8)  == "tvshows/")
   {
     if(CUtil::GetExtension(path).Equals(".tbn")
-    || CUtil::GetExtension(path).Equals(".jpg"))
+    || CUtil::GetExtension(path).Equals(".jpg")
+    || CUtil::GetFileName(path).Equals("fanart.png"))
       return false;
 
     if(!SetupConnection(url, true, false, false))
