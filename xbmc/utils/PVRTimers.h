@@ -81,9 +81,9 @@ public:
   int Number(void) const { return m_channelNum; }
   void SetNumber(int Number) { m_channelNum = Number; }
   bool Active(void) const { return m_Active; }
-  void SetActive(int Active) { m_Active = Active; }
+  void SetActive(bool Active) { m_Active = Active; }
   bool IsRadio(void) const { return m_Radio; }
-  void SetRadio(int Radio) { m_Radio = Radio; }
+  void SetRadio(bool Radio) { m_Radio = Radio; }
   int ClientNumber(void) const { return m_clientNum; }
   void SetClientNumber(int Number) { m_clientNum = Number; }
   long ClientIndex(void) const { return m_clientIndex; }
@@ -91,13 +91,13 @@ public:
   long ClientID(void) const { return m_clientID; }
   void SetClientID(int ClientId) { m_clientID = ClientId; }
   bool IsRecording(void) const { return m_recStatus; }
-  void SetRecording(int Recording) { m_recStatus = Recording; }
+  void SetRecording(bool Recording) { m_recStatus = Recording; }
   int Lifetime(void) const { return m_Lifetime; }
   void SetLifetime(int Lifetime) { m_Lifetime = Lifetime; }
   int Priority(void) const { return m_Priority; }
   void SetPriority(int Priority) { m_Priority = Priority; }
   bool IsRepeating(void) const { return m_Repeat; }
-  void SetRepeating(int Repeating) { m_Repeat = Repeating; }
+  void SetRepeating(bool Repeating) { m_Repeat = Repeating; }
   int Weekdays(void) const { return m_Weekdays; }
   void SetWeekdays(int Weekdays) { m_Weekdays = Weekdays; }
   CDateTime FirstDay(void) const { return m_FirstDay; }
