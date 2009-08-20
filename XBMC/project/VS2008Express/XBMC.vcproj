@@ -68,7 +68,7 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
-				OutputFile="$(OutDir)\XBMC.exe"
+				OutputFile="c:\XBMC\XBMC.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
@@ -411,6 +411,10 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\resource.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\stdbool.h"
 				>
 			</File>
 			<File
@@ -1297,6 +1301,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserSubrip.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserVplayer.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserVplayer.h"
 						>
 					</File>
 					<File
@@ -3013,7 +3025,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\Addon.h"
+					RelativePath="..\..\xbmc\utils\AddonHelpers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
 					>
 				</File>
 				<File
@@ -3461,6 +3477,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\TeletextRender.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Temperature.cpp"
 					>
 				</File>
@@ -3582,14 +3602,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Song.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\TVDatabase.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\TVDatabase.h"
 					>
 				</File>
 				<File
@@ -4430,6 +4442,22 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\PluginDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRFile.h"
 					>
 				</File>
 				<File
@@ -5365,7 +5393,23 @@
 				Name="PVR"
 				>
 				<File
+					RelativePath="..\..\xbmc\pvrclients\DllPVRClient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogEpgScan.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogEpgScan.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogTVChannels.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVChannels.h"
 					>
 				</File>
 				<File
@@ -5373,7 +5417,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogTVEPGProgInfo.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogTVGroupManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVGroupManager.h"
 					>
 				</File>
 				<File
@@ -5381,7 +5433,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogTVGuide.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogTVRecordingInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVRecordingInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVTeletext.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIDialogTVTeletext.h"
 					>
 				</File>
 				<File
@@ -5389,7 +5457,51 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\GUIDialogTVTimerSettings.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIWindowTV.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowTV.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\IPVRClient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRChannels.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVRChannels.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\PVRClient.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\PVRClient.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVREpg.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PVREpg.h"
 					>
 				</File>
 				<File
@@ -5397,62 +5509,50 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\TVChannelInfoTag.cpp"
+					RelativePath="..\..\xbmc\PVRManager.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\TVEPGInfoTag.cpp"
+					RelativePath="..\..\xbmc\utils\PVRRecordings.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\TVRecordInfoTag.cpp"
+					RelativePath="..\..\xbmc\utils\PVRRecordings.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\TVTimerInfoTag.cpp"
+					RelativePath="..\..\xbmc\utils\PVRTimers.cpp"
 					>
 				</File>
-				<Filter
-					Name="Clients"
+				<File
+					RelativePath="..\..\xbmc\utils\PVRTimers.h"
 					>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\DllPVRClient.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\IPVRClient.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\PVRClient.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\PVRClient.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\pvrclients\PVRClientTypes.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\pvrclients\xbmc_pvr.h"
-						>
-					</File>
-				</Filter>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\TVDatabase.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			>
+			<File
+				RelativePath="..\..\xbmc\utils\Addon.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\AddonHelpers.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\AddonManager.h"
+				>
+			</File>
 			<File
 				RelativePath="..\..\xbmc\utils\AlarmClock.h"
 				>
@@ -5642,30 +5742,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\GUIDialogTVChannels.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogTVEPGProgInfo.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogTVGroupManager.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogTVGuide.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogTVRecordingInfo.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogTVTimerSettings.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\GUIDialogVolumeBar.h"
 				>
 			</File>
@@ -5771,10 +5847,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIWindowSystemInfo.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIWindowTV.h"
 				>
 			</File>
 			<File
@@ -5966,10 +6038,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\PVRManager.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\utils\RegExp.h"
 				>
 			</File>
@@ -6030,6 +6098,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\utils\TeletextRender.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\Temperature.h"
 				>
 			</File>
@@ -6039,22 +6111,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\ThumbnailCache.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\TVChannelInfoTag.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\TVEPGInfoTag.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\TVRecordInfoTag.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\TVTimerInfoTag.h"
 				>
 			</File>
 			<File

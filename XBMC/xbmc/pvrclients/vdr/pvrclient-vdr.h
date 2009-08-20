@@ -125,6 +125,8 @@ private:
   uint32_t                currentPlayingRecordFrames;
   uint64_t                currentPlayingRecordPosition;
 
+  CStdString              m_connectionString;
+
   void Close();
 };
 
