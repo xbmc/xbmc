@@ -104,15 +104,14 @@ bool cEpg::ParseLine(const char *s)
       break;
     case 'G':
       {
-        char *genre = NULL;
+        char genre[1024];
         int genreType;
         int genreSubType;
-        int n = sscanf(t, "%u %u %a[^\n]", &genreType, &genreSubType, &genre);
+        int n = sscanf(t, "%u %u %[^\n]", &genreType, &genreSubType, genre);
         if (n == 3) 
         {
           SetGenre(genre, genreType, genreSubType);
         }
-        free(genre);
       }
       break;
     case 'X': break;
@@ -147,7 +146,7 @@ void cEpg::SetGenre(const char *Genre, int genreType, int genreSubType)
   m_genre_type      = genreType;
   m_genre_sub_type  = genreSubType;
   if (m_genre)
-    m_genre = strcpyrealloc(m_description, Genre);
+    m_genre = strcpyrealloc(m_genre, Genre);
 }
 
 void cEpg::SetVps(time_t Vps)
