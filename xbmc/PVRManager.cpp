@@ -1001,9 +1001,7 @@ int CPVRManager::GetStartTime()
     if (!tag)
       return 0;
 
-    CDateTime endtime = tag->EndTime();
-
-    if (endtime < CDateTime::GetCurrentDateTime())
+    if (tag->EndTime() < CDateTime::GetCurrentDateTime())
     {
       SetCurrentPlayingProgram(*m_currentPlayingChannel);
 
@@ -1014,12 +1012,11 @@ int CPVRManager::GetStartTime()
       }
     }
 
-    time_t time_c, time_s;
-
-    CDateTime::GetCurrentDateTime().GetAsTime(time_c);
-    tag->StartTime().GetAsTime(time_s);
-
-    return (time_s - time_c) * 1000;
+	  CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->StartTime();
+	  return time.GetDays()    * 1000 * 60 * 60 * 24
+	       + time.GetHours()   * 1000 * 60 * 60
+	       + time.GetMinutes() * 1000 * 60
+	       + time.GetSeconds() * 1000;
   }
   return 0;
 }
