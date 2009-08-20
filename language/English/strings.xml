@@ -2172,4 +2172,11 @@
   <string id="33069">Backgrounds</string>
   <string id="33070">Custom background</string>
   <string id="33071">Custom backgrounds</string>
+  <string id="33072">View Readme</string>
+  <string id="33073">View Changelog</string>
+  <string id="33074">This version of %s requires an</string>
+  <string id="33075">XBMC revision of %s or greater to run.</string>
+  <string id="33076">Please update your XBMC.</string>
+  <string id="33077">No data found!</string>
+  <string id="33078">Next page</string>
 </strings>

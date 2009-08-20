@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 07/30/2009-->
+<!--Date of translation: 08/19/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21874-->
+<!--Based on english strings version 22217-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -946,6 +946,7 @@
   <string id="13012">Έξοδος</string>
   <string id="13013">Επανεκκίνηση</string>
   <string id="13014">Ελαχιστοποίηση</string>
+  <string id="13015">Ενέργεια πλήκτρου λειτουργίας</string>
   <string id="13020">Είναι ενεργή άλλη συνεδρία (ίσως μέσω ssh);</string>
   <string id="13021">Προσάρτηση αναιρούμενου δίσκου</string>
   <string id="13022">Επισφαλής αφαίρεση συσκευής</string>
@@ -1926,6 +1927,7 @@
   <string id="22018">Δικτυακά κανάλια</string>
   <string id="22019">Εγγραφές ανά τίτλο</string>
   <string id="22020">Οδηγός</string>
+  <string id="22021">Επιτρεπόμενο σφάλμα στο λόγο απεικόνισης (%)</string>
   <string id="22030">Γραμματοσειρά</string>
   <string id="22031">- Μέγεθος</string>
   <string id="22032">- Χρώματα</string>

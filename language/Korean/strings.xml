@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 07/20/2009-->
+<!--Date of translation: 08/05/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -33,6 +33,13 @@
   <string id="30">10월</string>
   <string id="31">11월</string>
   <string id="32">12월</string>
+  <string id="41">월</string>
+  <string id="42">화</string>
+  <string id="43">수</string>
+  <string id="44">목</string>
+  <string id="45">금</string>
+  <string id="46">토</string>
+  <string id="47">일</string>
   <string id="98">보기: 자동</string>
   <string id="99">보기: 자동(큰)</string>
   <string id="100">보기: 아이콘</string>
@@ -538,6 +545,7 @@
   <string id="661">내보내기 폴더 선택</string>
   <string id="662">이 파일은 더 이상 사용할수 없습니다.</string>
   <string id="663">라이브러리에서 제거 하시겠습니까?</string>
+  <string id="664">스크립트 찾기</string>
   <string id="700">라이브러리 정리</string>
   <string id="701">라이브러리에서 오래된 노래 제거</string>
   <string id="702">이 경로는 이미 검색 되었습니다</string>
@@ -899,6 +907,7 @@
   <string id="13012">종료</string>
   <string id="13013">재시작</string>
   <string id="13014">최소화</string>
+  <string id="13015">전원 버튼 동작</string>
   <string id="13020">혹시 ssh 를 통해 다른 세션이 활성화되어 있습니까?</string>
   <string id="13021">장착된 이동식 하드드라이브</string>
   <string id="13022">장치 제거 안전하지 않음</string>
@@ -1910,5 +1919,47 @@
   <string id="33015">비디오 재생전에 다운로드 묻기</string>
   <string id="33016">클립</string>
   <string id="33017">작동하기위해 플러그인 재시작</string>
-  <string id="33018">클립</string>
+  <string id="33018">오늘밤</string>
+  <string id="33019">내일밤</string>
+  <string id="33020">상태</string>
+  <string id="33021">강수</string>
+  <string id="33022">강수</string>
+  <string id="33023">습도</string>
+  <string id="33024">체감</string>
+  <string id="33025">관측됨</string>
+  <string id="33026">편차</string>
+  <string id="33027">해돋이</string>
+  <string id="33028">해넘이</string>
+  <string id="33029">상세</string>
+  <string id="33030">아웃룩</string>
+  <string id="33031">커버플로우</string>
+  <string id="33032">문자 번역</string>
+  <string id="33033">지도 목록 %s 카테고리</string>
+  <string id="33034">36 시간</string>
+  <string id="33035">지도</string>
+  <string id="33036">매시</string>
+  <string id="33037">주말</string>
+  <string id="33038">%s 일</string>
+  <string id="33049">알림</string>
+  <string id="33050">알림</string>
+  <string id="33051">선택하기</string>
+  <string id="33052">확인</string>
+  <string id="33053">설정하기</string>
+  <string id="33054">시즌</string>
+  <string id="33055">사용하기</string>
+  <string id="33056">시청하기</string>
+  <string id="33057">들어보기</string>
+  <string id="33058">살펴보기</string>
+  <string id="33059">설정하기</string>
+  <string id="33060">전원</string>
+  <string id="33061">메뉴</string>
+  <string id="33062">재생하기</string>
+  <string id="33063">옵션</string>
+  <string id="33065">편집기</string>
+  <string id="33066">정보보기</string>
+  <string id="33067">별평점</string>
+  <string id="33068">배경</string>
+  <string id="33069">배경</string>
+  <string id="33070">사용자 지정 배경</string>
+  <string id="33071">사용자 지정 배경</string>
 </strings>
