@@ -462,6 +462,9 @@ static int mpegps_read_packet(AVFormatContext *s,
         } else if(es_type == STREAM_TYPE_AUDIO_AAC){
             codec_id = CODEC_ID_AAC;
             type = CODEC_TYPE_AUDIO;
+        } else if(es_type == STREAM_TYPE_AUDIO_AAC_LATM){
+            codec_id = CODEC_ID_AAC_LATM;
+            type = CODEC_TYPE_AUDIO;
         } else if(es_type == STREAM_TYPE_VIDEO_MPEG4){
             codec_id = CODEC_ID_MPEG4;
             type = CODEC_TYPE_VIDEO;
