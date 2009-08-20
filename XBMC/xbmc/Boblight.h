@@ -33,10 +33,10 @@
 #include "stdafx.h"
 #include "Thread.h"
 
-class CBoblight : public CThread
+class CBoblightClient : public CThread
 {
   public:
-    CBoblight();
+    CBoblightClient();
     bool IsEnabled();
     void GrabImage();
     void Send();
@@ -62,6 +62,6 @@ class CBoblight : public CThread
     void             Run();         //waits for input, on a timeout calls boblight_ping to check if boblight is still alive
 };
 
-extern CBoblight g_boblight;
+extern CBoblightClient g_boblight;
 
 #endif //HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H

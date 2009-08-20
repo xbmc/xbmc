@@ -33,7 +33,7 @@
 
 using namespace std;
 
-CBoblight::CBoblight()
+CBoblightClient::CBoblightClient()
 {
   //boblight_loadlibrary returns NULL when the function pointers can be loaded
   //returns dlerror() otherwise
@@ -50,13 +50,13 @@ CBoblight::CBoblight()
   Create();
 }
 
-bool CBoblight::IsEnabled()
+bool CBoblightClient::IsEnabled()
 {
   CSingleLock lock(m_critsection);
   return m_isenabled;
 }
 
-void CBoblight::GrabImage()
+void CBoblightClient::GrabImage()
 {
   CSingleLock lock(m_critsection);
   
@@ -69,13 +69,13 @@ void CBoblight::GrabImage()
   g_renderManager.CreateThumbnail(m_texture, 64, 64);
 }
 
-void CBoblight::Send()
+void CBoblightClient::Send()
 {
   //tell boblight thread to send input to boblightd
   m_inputevent.Set();
 }
 
-void CBoblight::Disable()
+void CBoblightClient::Disable()
 {
   CSingleLock lock(m_critsection);
   if (m_hasinput)
@@ -85,16 +85,16 @@ void CBoblight::Disable()
   }
 }
 
-void CBoblight::Process()
+void CBoblightClient::Process()
 {
   //have to sort this out, can't log from constructor
   Sleep(1000);
-  CLog::Log(LOGDEBUG, "CBoblight: starting");
+  CLog::Log(LOGDEBUG, "CBoblightClient: starting");
   
   //this means boblight_loadlibrary had an error
   if (!m_liberror.empty())
   {
-    CLog::Log(LOGDEBUG, "CBoblight: %s", m_liberror.c_str());
+    CLog::Log(LOGDEBUG, "CBoblightClient: %s", m_liberror.c_str());
     return;
   }
   
@@ -113,17 +113,17 @@ void CBoblight::Process()
   }
 }
 
-bool CBoblight::Setup()
+bool CBoblightClient::Setup()
 {
   m_boblight = boblight_init();
   
   if (!boblight_connect(m_boblight, NULL, -1, SECTIMEOUT * 1000000))
   {
-    CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
+    CLog::Log(LOGDEBUG, "CBoblightClient: %s", boblight_geterror(m_boblight));
     return false;
   }
   
-  CLog::Log(LOGDEBUG, "CBoblight: Connected");
+  CLog::Log(LOGDEBUG, "CBoblightClient: Connected");
   
   //these will be made into gui options
   boblight_setscanrange(m_boblight, 64, 64);
@@ -139,7 +139,7 @@ bool CBoblight::Setup()
   return true;
 }
 
-void CBoblight::Cleanup()
+void CBoblightClient::Cleanup()
 {
   if (m_boblight)
   {
@@ -152,7 +152,7 @@ void CBoblight::Cleanup()
   m_priority = 255;
 }
 
-void CBoblight::Run()
+void CBoblightClient::Run()
 {
   while(!m_bStop)
   {
@@ -187,7 +187,7 @@ void CBoblight::Run()
       //if it fails we have a problem, probably because boblightd died
       if (!boblight_sendrgb(m_boblight))
       {
-        CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
+        CLog::Log(LOGDEBUG, "CBoblightClient: %s", boblight_geterror(m_boblight));
         return;
       }
     }
@@ -203,7 +203,7 @@ void CBoblight::Run()
       //check if the daemon is still alive
       if (!boblight_ping(m_boblight))
       {
-        CLog::Log(LOGDEBUG, "CBoblight: %s", boblight_geterror(m_boblight));
+        CLog::Log(LOGDEBUG, "CBoblightClient: %s", boblight_geterror(m_boblight));
         return;
       }
     }
@@ -215,6 +215,6 @@ void CBoblight::Run()
 }
 
 
-CBoblight g_boblight; //might make this a member of application
+CBoblightClient g_boblight; //might make this a member of application
 
 #endif //HAVE_BOBLIGHT
