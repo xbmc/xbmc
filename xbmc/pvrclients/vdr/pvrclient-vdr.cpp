@@ -106,6 +106,8 @@ bool PVRClientVDR::Connect()
     return false;
   }
 
+  m_connectionString.Format("%s:%i", m_sHostname.c_str(), m_iPort);
+
   /* Start VTP Listening Thread */
 //  m_bStop = false;
 //  if (pthread_create(&m_thread, NULL, &Process, (void *)"PVRClientVDR VTP-Listener") != 0) {
@@ -280,10 +282,7 @@ const char* PVRClientVDR::GetBackendVersion()
 
 const char* PVRClientVDR::GetConnectionString()
 {
-  char buffer[1024];
-  sprintf(buffer, "%s:%i", m_sHostname.c_str(), m_iPort);
-  string s_tmp = buffer;
-  return s_tmp.c_str();
+  return m_connectionString.c_str();
 }
 
 PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used)
