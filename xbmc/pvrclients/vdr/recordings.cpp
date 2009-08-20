@@ -136,18 +136,14 @@ bool cRecording::ParseEntryLine(const char *s)
 {
   if (*s >= '0' && *s <= '9')
   {
-    char *recdate = NULL;
-    char *rectime = NULL;
-    char *rectext = NULL;
+    char recdate[256];
+    char rectime[256];
+    char rectext[1024];
 
-    if (sscanf(s, " %u %a[^ ] %a[^ ] %a[^\n]", &m_Index, &recdate, &rectime, &rectext) >= 3)
+    if (sscanf(s, " %u %[^ ] %[^ ] %[^\n]", &m_Index, recdate, rectime, rectext) >= 3)
     {
       m_fileName = strcpyrealloc(m_fileName, rectext);
     }
-
-    free(rectext);
-    free(rectime);
-    free(recdate);
     return true;
   }
   

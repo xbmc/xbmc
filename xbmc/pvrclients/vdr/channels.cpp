@@ -258,21 +258,19 @@ bool cChannel::Parse(const char *s)
 {
   bool ok = true;
 
-  char *namebuf = NULL;
-  char *sourcebuf = NULL;
-  char *parambuf = NULL;
-  char *vpidbuf = NULL;
-  char *apidbuf = NULL;
-  char *caidbuf = NULL;
-  int fields = sscanf(s, "%d %a[^:]:%d :%a[^:]:%a[^:] :%d :%a[^:]:%a[^:]:%d :%a[^:]:%d :%d :%d :%d ", &number, &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpid, &caidbuf, &sid, &nid, &tid, &rid);
+  char namebuf[256];
+  char sourcebuf[256];
+  char parambuf[256];
+  char vpidbuf[128];
+  char apidbuf[128];
+  char caidbuf[128];
+  int fields = sscanf(s, "%d %[^:]:%d:%[^:]:%[^:]:%d :%[^:]:%[^:]:%d :%[^:]:%d :%d :%d :%d ", &number, namebuf, &frequency, parambuf, sourcebuf, &srate, vpidbuf, apidbuf, &tpid, caidbuf, &sid, &nid, &tid, &rid);
   if (fields >= 9) 
   {
     if (fields == 9)
     {
       // allow reading of old format
       sid = atoi(caidbuf);
-      delete caidbuf;
-      caidbuf = NULL;
       caids[0] = tpid;
       caids[1] = 0;
       tpid = 0;
@@ -393,13 +391,6 @@ bool cChannel::Parse(const char *s)
       shortName = strcpyrealloc(shortName, p);
     }
     name = strcpyrealloc(name, namebuf);
-
-    free(parambuf);
-    free(sourcebuf);
-    free(vpidbuf);
-    free(apidbuf);
-    free(caidbuf);
-    free(namebuf);
   }
   else
     return false;

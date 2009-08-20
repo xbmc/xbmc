@@ -84,11 +84,11 @@ cTimer::~cTimer()
 
 bool cTimer::Parse(const char *s)
 {
-  char *channelbuffer = NULL;
-  char *daybuffer = NULL;
-  char *filebuffer = NULL;
+  char channelbuffer[256];
+  char daybuffer[256];
+  char filebuffer[512];
   free(aux);
-  aux = NULL;
+  aux = (char*) malloc(256);
 
   char *s2 = NULL;
   int l2 = strlen(s);
@@ -102,7 +102,7 @@ bool cTimer::Parse(const char *s)
     s = s2;
   }
   bool result = false;
-  if (8 <= sscanf(s, "%u %u :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &index, &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &aux))
+  if (8 <= sscanf(s, "%u :%[^:]:%[^:]:%d :%d :%d :%d :%[^:\n]:%[^\n]", &flags, channelbuffer, daybuffer, &start, &stop, &priority, &lifetime, filebuffer, aux))
   {
     if (aux && !*skipspace(aux))
     {
