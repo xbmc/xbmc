@@ -21,6 +21,8 @@
  *
  */
 
+#ifndef BOBLIGHT
+
 #ifdef HAVE_CONFIG_H
   #include "config.h"
 #endif
@@ -65,3 +67,4 @@ class CBoblightClient : public CThread
 extern CBoblightClient g_boblight;
 
 #endif //HAVE_LIBBOBLIGHT_LIBBOBLIGHT_H
+#endif //BOBLIGHT
