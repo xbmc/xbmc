@@ -29,7 +29,7 @@
 */
 
 #include "vtptransceiver.h"
-#include <string>
+#include "StdString.h"
 #include <vector>
 
 /* Master defines for client control */
