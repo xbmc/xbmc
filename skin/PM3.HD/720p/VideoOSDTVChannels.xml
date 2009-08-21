@@ -95,7 +95,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
-					<info>ListItem.filename</info>
+					<info>ListItem.ChannelNumber</info>
 				</control>
 				<control type="label">
 					<posx>110</posx>
@@ -145,7 +145,7 @@
 					<align>left</align>
 					<aligny>center</aligny>
 					<selectedcolor>white</selectedcolor>
-					<info>ListItem.filename</info>
+					<info>ListItem.ChannelNumber</info>
 				</control>
 				<control type="label">
 					<posx>110</posx>
