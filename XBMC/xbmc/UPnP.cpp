@@ -1618,14 +1618,10 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
         // fetch the path to the thumbnail
         CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, (DWORD)-1); //TODO: Only audio for now
 
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
         NPT_String ip;
         if (g_application.getNetwork().GetFirstConnectedInterface()) {
             ip = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
         }
-#else
-        NPT_String ip = g_application.getNetwork().m_networkinfo.ip;
-#endif
         // build url, use the internal device http server to serv the image
         NPT_HttpUrlQuery query;
         query.AddField("path", thumb.c_str());
@@ -1956,13 +1952,9 @@ CUPnP::CUPnP() :
     m_UPnP = new PLT_UPnP(1900, !broadcast);
 
     // keep main IP around
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     if (g_application.getNetwork().GetFirstConnectedInterface()) {
         m_IP = g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress().c_str();
     }
-#else
-    m_IP = g_application.getNetwork().m_networkinfo.ip;
-#endif
     NPT_List<NPT_IpAddress> list;
     if (NPT_SUCCEEDED(PLT_UPnPMessageHelper::GetIPAddresses(list))) {
         m_IP = (*(list.GetFirstItem())).ToString();

@@ -1472,16 +1472,11 @@ void CApplication::StartWebServer()
     }
 #endif
     CSectionLoader::Load("LIBHTTP");
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     if (m_network.GetFirstConnectedInterface())
     {
        m_pWebServer = new CWebServer();
        m_pWebServer->Start(m_network.GetFirstConnectedInterface()->GetCurrentIPAddress().c_str(), webPort, "special://xbmc/web", false);
     }
-#else
-    m_pWebServer = new CWebServer();
-    m_pWebServer->Start(m_network.m_networkinfo.ip, webPort, "special://xbmc/web", false);
-#endif
     if (m_pWebServer)
     {
       m_pWebServer->SetUserName(g_guiSettings.GetString("servers.webserverusername").c_str());

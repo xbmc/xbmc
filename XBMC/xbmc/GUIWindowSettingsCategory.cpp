@@ -76,9 +76,7 @@
 #include "CoreAudio.h"
 #include "XBMCHelper.h"
 #endif
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
 #include "GUIDialogAccessPoints.h"
-#endif
 #include "FileSystem/Directory.h"
 #include "utils/ScraperParser.h"
 
@@ -1161,7 +1159,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
     }
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     else if (strSetting.Equals("network.assignment"))
     {
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
@@ -1196,7 +1193,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
     }
-#endif
     else if (strSetting.Equals("network.httpproxyserver")   || strSetting.Equals("network.httpproxyport") ||
              strSetting.Equals("network.httpproxyusername") || strSetting.Equals("network.httpproxypassword"))
     {
@@ -3774,7 +3770,6 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
   // query list of interfaces
   vector<CStdString> vecInterfaces;
   std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
@@ -3792,7 +3787,6 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   {
     pControl->AddLabel(vecInterfaces[i], iInterface++);
   }
-#endif
 }
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
@@ -3881,7 +3875,6 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
   return;
 #endif
 
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
    NetworkAssignment iAssignment;
    CStdString sIPAddress;
    CStdString sNetworkMask;
@@ -3934,5 +3927,4 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       GetSetting("network.essid")->GetSetting()->FromString("");
       GetSetting("network.key")->GetSetting()->FromString("");
    }
-#endif
 }

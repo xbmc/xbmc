@@ -868,15 +868,10 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   else
   {
     // check if we are on the local subnet
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
     unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentNetmask()));
     unsigned long local  = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress()));
-#else
-    unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().m_networkinfo.subnet));
-    unsigned long local  = ntohl(inet_addr(g_application.getNetwork().m_networkinfo.ip));
-#endif
     if( (address & subnet) == (local & subnet) )
       return true;
   }
