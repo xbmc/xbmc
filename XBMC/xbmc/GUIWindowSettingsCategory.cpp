@@ -698,18 +698,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInResolutions(pSetting, true);
     }
-#ifdef HAS_MPLAYER
-    else if (strSetting.Equals("videoplayer.framerateconversions"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(231), FRAME_RATE_LEAVE_AS_IS); // "None"
-      pControl->AddLabel(g_videoConfig.HasPAL() ? g_localizeStrings.Get(12380) : g_localizeStrings.Get(12381), FRAME_RATE_CONVERT); // "Play PAL videos at NTSC rates" or "Play NTSC videos at PAL rates"
-      if (g_videoConfig.HasPAL() && g_videoConfig.HasPAL60())
-        pControl->AddLabel(g_localizeStrings.Get(12382), FRAME_RATE_USE_PAL60); // "Play NTSC videos in PAL60"
-      pControl->SetValue(pSettingInt->GetData());
-    }
-#endif
     else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
