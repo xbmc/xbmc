@@ -757,7 +757,6 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("mplayerosd")) wAction = ACTION_SHOW_MPLAYER_OSD;
   else if (strAction.Equals("hidesubmenu")) wAction = ACTION_OSD_HIDESUBMENU;
   else if (strAction.Equals("screenshot")) wAction = ACTION_TAKE_SCREENSHOT;
-  else if (strAction.Equals("poweroff")) wAction = ACTION_POWERDOWN;
   else if (strAction.Equals("rename")) wAction = ACTION_RENAME_ITEM;
   else if (strAction.Equals("togglewatched")) wAction = ACTION_TOGGLE_WATCHED;
   else if (strAction.Equals("scanitem")) wAction = ACTION_SCAN_ITEM;

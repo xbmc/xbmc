@@ -36,7 +36,6 @@ class CFileItemList;
 #include "GUIWindowPointer.h"   // Mouse pointer
 #include "Settings.h"
 
-#include "utils/DelayController.h"
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
@@ -173,8 +172,6 @@ public:
   int GetSubtitleDelay() const;
   int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
-  bool IsButtonDown(DWORD code);
-  bool AnyButtonDown();
   void ResetScreenSaverTimer();
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS();
@@ -215,7 +212,6 @@ public:
 #ifndef _WIN32PC
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
-  CDelayController m_ctrDpad;
   CSNTPClient *m_psntpClient;
   CWebServer* m_pWebServer;
   CXBFileZilla* m_pFileZilla;
@@ -355,7 +351,6 @@ protected:
 
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
-  void CheckForDebugButtonCombo();
   void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
