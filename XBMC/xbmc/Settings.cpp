@@ -97,9 +97,6 @@ void CSettings::Initialize()
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-  strcpy(g_stSettings.szOnlineArenaPassword, "");
-  strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
-
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 

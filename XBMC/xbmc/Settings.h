@@ -380,9 +380,6 @@ public:
 
     int iAdditionalSubtitleDirectoryChecked;
 
-    char szOnlineArenaPassword[32]; // private arena password
-    char szOnlineArenaDescription[64]; // private arena description
-
     int m_HttpApiBroadcastPort;
     int m_HttpApiBroadcastLevel;
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
