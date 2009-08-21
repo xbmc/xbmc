@@ -2265,7 +2265,6 @@ void CApplication::DoRender()
     if (g_advancedSettings.m_displayRemoteCodes)
     {
       // TODO ?
-      CLog::Log(LOGDEBUG,"not implemented");
     }
 
     RenderMemoryStatus();
