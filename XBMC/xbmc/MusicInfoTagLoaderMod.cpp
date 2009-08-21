@@ -21,9 +21,6 @@
 
 #include "stdafx.h"
 #include "MusicInfoTagLoaderMod.h"
-#ifdef HAS_MIKMOD
-#include "lib/mikxbox/mikmod.h"
-#endif
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
@@ -37,17 +34,10 @@ using namespace std;
 
 CMusicInfoTagLoaderMod::CMusicInfoTagLoaderMod(void)
 {
-  CSectionLoader::Load("MOD_RX");
-  CSectionLoader::Load("MOD_RW");
-#ifdef HAS_MIKMOD
-  MikMod_RegisterAllLoaders();
-#endif
 }
 
 CMusicInfoTagLoaderMod::~CMusicInfoTagLoaderMod()
 {
-  CSectionLoader::Unload("MOD_RW");
-  CSectionLoader::Unload("MOD_RX");
 }
 
 bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& tag)
@@ -99,25 +89,7 @@ bool CMusicInfoTagLoaderMod::Load(const CStdString& strFileName, CMusicInfoTag& 
   }
   else
   {
-       // no, then try to atleast fetch the title
-     CStdString strMod;
-     tag.SetLoaded(false);
-     if (getFile(strMod,strFileName))
-     {
-#ifdef HAS_MIKMOD
-       char* szTitle = Mod_Player_LoadTitle(reinterpret_cast<CHAR*>(const_cast<char*>(_P(strMod).c_str())));
-
-       if (szTitle)
-       {
-         if (!strlen(szTitle))
-         {
-           tag.SetTitle(szTitle);
-           free(szTitle);
-           tag.SetLoaded(true);
-         }
-       }
-#endif
-     }
+    // TODO: no, then try to atleast fetch the title
   }
 
   return tag.Loaded();

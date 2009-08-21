@@ -50,7 +50,6 @@
 #undef HAS_MODPLAYER
 #undef HAS_SYSINFO
 #define HAS_SCREENSAVER
-#undef HAS_MIKMOD
 #undef HAS_SECTIONS
 #define HAS_UPNP
 #undef HAS_LCD
