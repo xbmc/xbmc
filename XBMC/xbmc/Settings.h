@@ -153,7 +153,6 @@ public:
 public:
     // multipath testing
     bool m_useMultipaths;
-    bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
     float m_ac3Gain;
