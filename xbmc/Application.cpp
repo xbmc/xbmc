@@ -4738,10 +4738,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
         }
       }
 
-      // reset our spindown
-      m_bNetworkSpinDown = false;
-      m_bSpinDown = false;
-
       // reset the current playing file
       m_itemCurrentFile->Reset();
       g_infoManager.ResetCurrentItem();

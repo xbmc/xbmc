@@ -543,16 +543,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(int(pSettingInt->GetData()));
     }
-    else if (strSetting.Equals("harddisk.remoteplayspindown"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(474), SPIN_DOWN_NONE);
-      pControl->AddLabel(g_localizeStrings.Get(475), SPIN_DOWN_MUSIC);
-      pControl->AddLabel(g_localizeStrings.Get(13002), SPIN_DOWN_VIDEO);
-      pControl->AddLabel(g_localizeStrings.Get(476), SPIN_DOWN_BOTH);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("servers.webserverusername"))
     {
 #ifdef HAS_WEB_SERVER
@@ -1112,16 +1102,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // only visible if we have autotemperature enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.autotemperature"));
-    }
-    else if (strSetting.Equals("harddisk.remoteplayspindowndelay"))
-    { // only visible if we have spin down enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("harddisk.remoteplayspindown") != SPIN_DOWN_NONE);
-    }
-    else if (strSetting.Equals("harddisk.remoteplayspindownminduration"))
-    { // only visible if we have spin down enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("harddisk.remoteplayspindown") != SPIN_DOWN_NONE);
     }
     else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword"))
     {
