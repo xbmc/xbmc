@@ -1657,14 +1657,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\WMACodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\WMACodec.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\YMCodec.cpp"
 					>
 				</File>
@@ -3086,10 +3078,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\DateTime.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\DelayController.cpp"
 					>
 				</File>
 				<File
@@ -5399,10 +5387,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\DateTime.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\DelayController.h"
 				>
 			</File>
 			<File
