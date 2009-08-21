@@ -1,9 +1,6 @@
 // Waveform.vis
 // A simple visualisation example by MrC
 
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#endif
 #include "../../../visualisations/xbmc_vis.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
