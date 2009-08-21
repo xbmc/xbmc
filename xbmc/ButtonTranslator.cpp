@@ -78,7 +78,7 @@ bool CButtonTranslator::Load()
   const CStdString oldKeymapPath = g_settings.GetUserDataItem("Keymap.xml");
   if( CFile::Exists(oldKeymapPath) )
   {
-    CLog::Log(LOGINFO, "CButtonTranslator::Load - old Keymap.xml in userdata found (%s). Please consider moving it to the \"keymaps/\" folder", oldKeymapPath.c_str());
+    CLog::Log(LOGWARNING, "CButtonTranslator::Load - Keymap.xml in userdata found (%s). This is DEPRECATED! Please move it to the \"keymaps/\" folder", oldKeymapPath.c_str());
     success |= LoadKeymap(oldKeymapPath);
   }
 
@@ -823,6 +823,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("firstpage")) wAction = ACTION_FIRST_PAGE;
   else if (strAction.Equals("lastpage")) wAction = ACTION_LAST_PAGE;
   else if (strAction.Equals("guiprofile")) wAction = ACTION_GUIPROFILE_BEGIN;
+  else if (strAction.Equals("noop")) return true;
 
   if (wAction == ACTION_NONE)
   {
