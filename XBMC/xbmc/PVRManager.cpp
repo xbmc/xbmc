@@ -37,6 +37,9 @@
 /* GUI Messages includes */
 #include "GUIDialogOK.h"
 
+#define CHANNELCHECKDELTA     600 // seconds before checking for changes inside channels list
+#define TIMERCHECKDELTA       300 // seconds before checking for changes inside timers list
+#define RECORDINGCHECKDELTA   450 // seconds before checking for changes inside recordings list
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -117,7 +120,7 @@ void CPVRManager::Start()
   /* Create the supervisor thread to do all background activities */
   Create();
   SetName("XBMC PVR Supervisor");
-  SetPriority(-15);
+ // SetPriority(-15);
 
   CLog::Log(LOGNOTICE, "PVR: PVRManager started. Clients loaded = %u", m_clients.size());
   return;
@@ -215,13 +218,31 @@ void CPVRManager::GetClientProperties(long clientID)
 
 void CPVRManager::Process()
 {
-//  while (!m_bStop)
-//  {
-//    DWORD Now = timeGetTime();
-//    static DWORD lastTime = 0;
-//
-//
-//  }
+  DWORD Now = timeGetTime();
+  DWORD LastTVChannelCheck = Now;
+  DWORD LastRadioChannelCheck = Now-CHANNELCHECKDELTA*1000/2;
+  
+  while (!m_bStop)
+  {
+    Now = timeGetTime();
+
+    /* Check for new or updated TV Channels */
+    if (Now - LastTVChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
+    {
+      CLog::Log(LOGDEBUG,"PVR: Updating TV Channel list");
+      PVRChannelsTV.Update();
+      LastTVChannelCheck = Now;
+    }
+    /* Check for new or updated Radio Channels */
+    if (Now - LastRadioChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
+    {
+      CLog::Log(LOGDEBUG,"PVR: Updating Radio Channel list");
+      PVRChannelsRadio.Update();
+      LastRadioChannelCheck = Now;
+    }    
+
+    Sleep(1000);
+  }
 }
 
 
@@ -1012,11 +1033,11 @@ int CPVRManager::GetStartTime()
       }
     }
 
-	  CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->StartTime();
-	  return time.GetDays()    * 1000 * 60 * 60 * 24
-	       + time.GetHours()   * 1000 * 60 * 60
-	       + time.GetMinutes() * 1000 * 60
-	       + time.GetSeconds() * 1000;
+    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->StartTime();
+    return time.GetDays()    * 1000 * 60 * 60 * 24
+         + time.GetHours()   * 1000 * 60 * 60
+         + time.GetMinutes() * 1000 * 60
+         + time.GetSeconds() * 1000;
   }
   return 0;
 }
