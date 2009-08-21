@@ -25,14 +25,6 @@
 #include "stdafx.h"
 #include "IoSupport.h"
 #include "Settings.h"
-#ifdef HAS_UNDOCUMENTED
-#ifdef _XBOX
-#include "Undocumented.h"
-#include "XKExports.h"
-#else
-#include "ntddcdrm.h"
-#endif
-#endif
 #ifdef _WIN32PC
 #include "my_ntddcdrm.h"
 #include "WIN32Util.h"
