@@ -2269,29 +2269,8 @@ void CApplication::DoRender()
     // If we have the remote codes enabled, then show them
     if (g_advancedSettings.m_displayRemoteCodes)
     {
-#ifdef HAS_IR_REMOTE
-      XBIR_REMOTE* pRemote = &m_DefaultIR_Remote;
-      static iRemoteCode = 0;
-      static iShowRemoteCode = 0;
-      if (pRemote->wButtons)
-      {
-        iRemoteCode = 255 - pRemote->wButtons; // remote OBC code is 255-wButtons
-        iShowRemoteCode = 50;
-      }
-      if (iShowRemoteCode > 0)
-      {
-        CStdStringW wszText;
-        wszText.Format(L"Remote Code: %i", iRemoteCode);
-        float x = 0.08f * g_graphicsContext.GetWidth();
-        float y = 0.12f * g_graphicsContext.GetHeight();
-#ifndef _DEBUG
-        if (LOG_LEVEL_DEBUG_FREEMEM > g_advancedSettings.m_logLevel)
-          y = 0.08f * g_graphicsContext.GetHeight();
-#endif
-        CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, wszText);
-        iShowRemoteCode--;
-      }
-#endif
+      // TODO ?
+      CLog::Log(LOGDEBUG,"not implemented");
     }
 
     RenderMemoryStatus();
@@ -3145,18 +3124,6 @@ bool CApplication::ProcessGamepad(float frameTime)
 
 bool CApplication::ProcessRemote(float frameTime)
 {
-#ifdef HAS_IR_REMOTE
-  if (m_DefaultIR_Remote.wButtons)
-  {
-    // time depends on whether the movement is repeated (held down) or not.
-    // If it is, we use the FPS timer to get a repeatable speed.
-    // If it isn't, we use 20 to get repeatable jumps.
-    float time = (m_DefaultIR_Remote.bHeldDown) ? frameTime : 0.020f;
-    CKey key(m_DefaultIR_Remote.wButtons, 0, 0, 0, 0, 0, 0, time);
-    return OnKey(key);
-  }
-#endif
-
   // run resume jobs if we are coming from suspend/hibernate
   if (m_bRunResumeJobs)
     g_powerManager.Resume(); 
