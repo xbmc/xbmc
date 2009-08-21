@@ -235,7 +235,6 @@ public:
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
     float m_controllerDeadzone;
-    bool m_FTPShowCache;
 
     bool m_playlistAsFolders;
     bool m_detectAsUdf;
