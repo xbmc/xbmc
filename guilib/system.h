@@ -48,7 +48,6 @@
 #undef HAS_SECTIONS
 #define HAS_UPNP
 #undef HAS_LCD
-#undef HAS_UNDOCUMENTED
 #undef HAS_SECTIONS
 #undef HAS_CDDA_RIPPER
 #define HAS_PYTHON

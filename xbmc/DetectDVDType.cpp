@@ -356,9 +356,6 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
 
 DWORD CDetectDVDMedia::GetTrayState()
 {
-#ifdef HAS_UNDOCUMENTED
-  HalReadSMCTrayState(&m_dwTrayState, &m_dwTrayCount);
-#endif
 #ifdef _LINUX
 
   char* dvdDevice = m_cdio->GetDeviceFileName();
