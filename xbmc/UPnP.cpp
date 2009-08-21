@@ -1950,12 +1950,6 @@ CUPnP::CUPnP() :
     m_RendererHolder(new CRendererReferenceHolder()),
     m_CtrlPointHolder(new CCtrlPointReferenceHolder())
 {
-//#ifdef HAS_XBOX_HARDWARE
-//    broadcast = true;
-//#else
-//    broadcast = false;
-//#endif
-    // xbox can't receive multicast, but it can send it
     broadcast = false;
 
     // initialize upnp in broadcast listening mode for xbmc

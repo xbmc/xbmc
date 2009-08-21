@@ -105,13 +105,8 @@ int check_valid_extension(const struct dirent* ent)
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-#ifdef HAS_XBOX_HARDWARE
-extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
-#else
 extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                        float fPixelRatio, const char *szSubModuleName)
-#endif
 {
   strcpy(g_visName, szVisualisationName);
   m_vecSettings.clear();
