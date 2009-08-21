@@ -22,7 +22,6 @@
  */
 
 #undef HAS_XBOX_D3D
-#undef HAS_RAM_CONTROL
 #undef HAS_XFONT
 #undef HAS_FILESYSTEM_CDDA
 #undef HAS_FILESYSTEM_SMB
