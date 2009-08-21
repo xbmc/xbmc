@@ -36,7 +36,6 @@
 #undef HAS_DTS_CODEC
 #undef HAS_AC3_CDDA_CODEC
 #undef HAS_DTS_CDDA_CODEC
-#define HAS_WMA_CODEC
 #undef HAS_AUDIO_PASS_THROUGH
 #undef HAS_FTP_SERVER
 #define HAS_WEB_SERVER
@@ -112,7 +111,6 @@
 #define HAS_VISUALISATION
 #define HAS_DVDPLAYER
 #define HAS_DVD_DRIVE
-#define HAS_WMA_CODEC
 #define HAS_CCXSTREAM
 #ifndef __APPLE__
 #define HAS_LIRC
