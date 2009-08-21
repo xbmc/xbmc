@@ -1408,6 +1408,8 @@ void CSettings::LoadAdvancedSettings()
   }
 
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
+  if (g_advancedSettings.m_displayRemoteCodes)
+    CLog::Log(LOGERROR,"displaying of remote codes currently not implemented");
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
