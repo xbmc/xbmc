@@ -137,9 +137,12 @@ void CVideoReferenceClock::Process()
 bool CVideoReferenceClock::WaitStarted(int MSecs)
 {
 #ifdef _WIN32
-  if (m_IsVista)
-    return true; //direct3d can't get an exclusive lock on vista if we wait here
+  //we don't wait on windows, causes issues with vista
+  //and it takes at least one second to set things up
+  //because we have to measure the refreshrate
+  return true;
 #endif
+  //not waiting here can cause issues with alsa
   return m_Started.WaitMSec(MSecs);
 }
 
@@ -462,6 +465,11 @@ void CVideoReferenceClock::RunD3D()
   }
 }
 
+//how many times we measure the refreshrate
+#define NRMEASURES 6
+//how long to measure in milliseconds
+#define MEASURETIME 250
+
 bool CVideoReferenceClock::SetupD3D()
 {
   D3DPRESENT_PARAMETERS  D3dPP;
@@ -586,12 +594,108 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
-  m_Width = 0;
-  m_Height = 0;
+  //forced update of windows refreshrate
   UpdateRefreshrate(true);
+
+  //measure the refreshrate a couple times
+  list<double> Measures;
+  for (int i = 0; i < NRMEASURES; i++)
+    Measures.push_back(MeasureRefreshrate(MEASURETIME));
+
+  //build up a string of measured rates
+  CStdString StrRates;
+  for (list<double>::iterator it = Measures.begin(); it != Measures.end(); it++)
+    StrRates.AppendFormat("%.2f ", *it);
+
+  //get the top half of the measured rates
+  Measures.sort();
+  double RefreshRate = 0.0;
+  int    NrMeasurements = 0;
+  while (NrMeasurements < NRMEASURES / 2 && !Measures.empty())
+  {
+    if (Measures.back() > 0.0)
+    {
+      RefreshRate += Measures.back();
+      NrMeasurements++;
+    }
+    Measures.pop_back();
+  }
+
+  if (NrMeasurements < NRMEASURES / 2)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: refreshrate measurements: %s, unable to get a good measurement",
+      StrRates.c_str(), m_RefreshRate);
+    return false;
+  }
+
+  RefreshRate /= NrMeasurements;
+  m_RefreshRate = MathUtils::round_int(RefreshRate);
+
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: refreshrate measurements: %s, assuming %i hertz", StrRates.c_str(), m_RefreshRate);
+
   m_MissedVblanks = 0;
 
   return true;
+}
+
+double CVideoReferenceClock::MeasureRefreshrate(int MSecs)
+{
+  D3DRASTER_STATUS RasterStatus;
+  LARGE_INTEGER    Now;
+  int64_t          Target;
+  int64_t          Prev;
+  int64_t          AvgInterval;
+  int64_t          MeasureCount;
+  unsigned int     LastLine;
+  int              ReturnV;
+
+  QueryPerformanceCounter(&Now);
+  Target = Now.QuadPart + (m_SystemFrequency * MSecs / 1000);
+  Prev = -1;
+  AvgInterval = 0;
+  MeasureCount = 0;
+
+  //start measuring vblanks
+  LastLine = 0;
+  while(Now.QuadPart <= Target)
+  {
+    ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
+    QueryPerformanceCounter(&Now);
+    if (ReturnV != D3D_OK)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned returned %s: %s",
+                DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
+      return -1.0;
+    }
+
+    if ((RasterStatus.InVBlank && LastLine != 0) || (!RasterStatus.InVBlank && RasterStatus.ScanLine < LastLine))
+    { //we got a vblank
+      if (Prev != -1) //need two for a measurement
+      {
+        AvgInterval += Now.QuadPart - Prev; //save how long this vblank lasted
+        MeasureCount++;
+      }
+      Prev = Now.QuadPart; //save this time for the next measurement
+    }
+
+    //save the current scanline
+    if (RasterStatus.InVBlank)
+      LastLine = 0;
+    else
+      LastLine = RasterStatus.ScanLine;
+
+    ::Sleep(1);
+  }
+
+  if (MeasureCount < 1)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Didn't measure any vblanks");
+    return -1.0;
+  }
+
+  double fRefreshRate = 1.0 / ((double)AvgInterval / (double)MeasureCount / (double)m_SystemFrequency);
+
+  return fRefreshRate;
 }
 
 void CVideoReferenceClock::CleanupD3D()
@@ -898,12 +1002,10 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   if (DisplayMode.RefreshRate == 0)
     DisplayMode.RefreshRate = 60;
 
-  if (m_RefreshRate != DisplayMode.RefreshRate || Forced)
+  if (m_PrevRefreshRate != DisplayMode.RefreshRate || Forced)
   {
     CSingleLock SingleLock(m_CritSection);
-    m_RefreshRate = DisplayMode.RefreshRate;
-
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
+    m_PrevRefreshRate = DisplayMode.RefreshRate;
     Changed = true;
   }
 
