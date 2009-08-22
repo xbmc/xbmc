@@ -36,6 +36,32 @@ typedef std::map< long, IPVRClient* >           CLIENTMAP;
 typedef std::map< long, IPVRClient* >::iterator CLIENTMAPITR;
 typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
 
+class CPVRTimeshiftRcvr : private CThread
+{
+public:
+  CPVRTimeshiftRcvr(IPVRClient *client);
+  ~CPVRTimeshiftRcvr();
+
+  /* Thread handling */
+  void Process();
+  void SetClient(IPVRClient *client);
+  bool StartReceiver();
+  void StopReceiver();
+  int WriteBuffer(BYTE* buf, int buf_size);
+  __int64 GetMaxSize();
+  __int64 GetPosition() { return m_position; }
+  __int64 GetWritten() { return m_written; }
+
+private:
+  IPVRClient         *m_client;         // pointer to a enabled client interface
+  XFILE::CFile       *m_pFile;          // Stream cache file
+  __int64             m_position;       // Current cache file write position
+  __int64             m_written;        // Total Bytes written to cache file
+  __int64             m_MaxSize;        // Maximum size after cache wraparound
+  __int64             m_MaxSizeStatic;  // The maximum size for cache from settings
+  uint8_t             buf[32768];       // temporary buffer for client read
+};
+
 class CPVRManager : IPVRClientCallback
                   , public ADDON::IAddonCallback
                   , private CThread
@@ -173,4 +199,10 @@ private:
   int                 m_PreviousChannelIndex;
   DWORD               m_LastChannelChanged;
   int                 m_LastChannel;
+  
+  XFILE::CFile       *m_pTimeshiftFile;
+  CPVRTimeshiftRcvr  *m_TimeshiftReceiver;
+  bool                m_timeshift;
+  __int64             m_timeshiftDelta;
+  __int64             m_timeshiftReaded;
 };
