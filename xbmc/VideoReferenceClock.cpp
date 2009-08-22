@@ -1127,12 +1127,13 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
 }
 
 //for the codec information screen
-bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed)
+bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate)
 {
   if (m_UseVblank)
   {
     MissedVblanks = m_TotalMissedVblanks;
     ClockSpeed = (double)m_AdjustedFrequency / (double)m_SystemFrequency * 100.0;
+    RefreshRate = (int)m_RefreshRate;
     return true;
   }
   return false;
