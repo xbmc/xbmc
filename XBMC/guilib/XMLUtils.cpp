@@ -121,6 +121,30 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdStr
   return false;
 }
 
+bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
+                                 const CStdString& strSeparator, CStdString& strStringValue)
+{
+  CStdString strTemp;
+  const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
+  bool bResult=false;
+  while (node)
+  {
+    if (node->FirstChild())
+    {
+      bResult = true;
+      strTemp = node->FirstChild()->Value();
+      const char* clear=node->Attribute("clear");
+      if (strStringValue.IsEmpty() || (clear && stricmp(clear,"true")==0))
+        strStringValue = strTemp;
+      else
+        strStringValue += strSeparator+strTemp;
+    }
+    node = node->NextSiblingElement(strTag);
+  }
+
+  return bResult;
+}
+
 /*!
   Returns true if the encoding of the document is other then UTF-8.
   /param strEncoding Returns the encoding of the document. Empty if UTF-8

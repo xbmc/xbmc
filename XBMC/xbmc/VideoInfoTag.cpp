@@ -401,53 +401,12 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     thumb = thumb->NextSiblingElement("thumb");
   }
 
-  CStdString strTemp;
-  const TiXmlElement *node = movie->FirstChildElement("genre");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (m_strGenre.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        m_strGenre = strTemp;
-      else
-        m_strGenre += g_advancedSettings.m_videoItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("genre");
-  }
+  XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
+  XMLUtils::GetAdditiveString(movie,"credits",g_advancedSettings.m_videoItemSeparator,m_strWritingCredits);
+  XMLUtils::GetAdditiveString(movie,"director",g_advancedSettings.m_videoItemSeparator,m_strDirector);
 
-  node = movie->FirstChildElement("credits");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (m_strWritingCredits.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        m_strWritingCredits = strTemp;
-      else
-        m_strWritingCredits += g_advancedSettings.m_videoItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("credits");
-  }
-
-  node = movie->FirstChildElement("director");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (m_strDirector.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        m_strDirector = strTemp;
-      else
-        m_strDirector += g_advancedSettings.m_videoItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("director");
-  }
   // cast
-  node = movie->FirstChildElement("actor");
+  const TiXmlElement* node = movie->FirstChildElement("actor");
   while (node)
   {
     const TiXmlNode *actor = node->FirstChild("name");
@@ -471,21 +430,9 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     }
     node = node->NextSiblingElement("actor");
   }
+
   // studios
-  node = movie->FirstChildElement("studio");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (m_strStudio.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        m_strStudio = strTemp;
-      else
-        m_strStudio += g_advancedSettings.m_videoItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("studio");
-  }
+  XMLUtils::GetAdditiveString(movie,"studio",g_advancedSettings.m_videoItemSeparator,m_strStudio);
   // artists
   node = movie->FirstChildElement("artist");
   while (node)

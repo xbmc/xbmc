@@ -453,12 +453,6 @@ bool CDVDPlayer::OpenInputStream()
 
       g_stSettings.m_currentVideoSettings.m_SubtitleCached = true;
     }
-
-    // look for any edl files
-    m_Edl.Clear();
-    m_EdlAutoSkipMarkers.Clear();
-    if (g_guiSettings.GetBool("videoplayer.editdecision") && !m_item.IsInternetStream())
-      m_Edl.ReadFiles(m_filename);
   }
 
   SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
@@ -775,6 +769,27 @@ void CDVDPlayer::Process()
 
   OpenDefaultStreams();
 
+  // look for any EDL files
+  m_Edl.Clear();
+  m_EdlAutoSkipMarkers.Clear();
+  if (g_guiSettings.GetBool("videoplayer.editdecision"))
+  {
+    float fFramesPerSecond;
+    if (m_CurrentVideo.id >= 0 && m_CurrentVideo.hint.fpsrate > 0 && m_CurrentVideo.hint.fpsscale > 0)
+      fFramesPerSecond = (float)m_CurrentVideo.hint.fpsrate / (float)m_CurrentVideo.hint.fpsscale;
+    else
+    {
+      fFramesPerSecond = 25.0; // TODO: Default to one of 50.0, 29.97, 25.0, or 23.976 fps. Advanced setting?
+      CLog::Log(LOGWARNING, "%s - Could not detect frame rate for: %s. Using default of %.3f fps for conversion of any commercial break frame markers to times.",
+                __FUNCTION__, m_filename.c_str(), fFramesPerSecond);
+    }
+
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_FILE))
+      m_Edl.ReadFiles(m_filename, fFramesPerSecond);
+    else if (m_item.IsMythTV())
+      m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
+  }
+  
   if( m_PlayerOptions.starttime > 0 )
   {
     int starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
@@ -1021,7 +1036,7 @@ void CDVDPlayer::Process()
     // process the packet
     ProcessPacket(pStream, pPacket);
 
-    // check if in a cut that should be automatically skipped
+    // check if in a cut or commercial break that should be automatically skipped
     CheckAutoSceneSkip();
   }
 }
@@ -1460,6 +1475,27 @@ void CDVDPlayer::CheckAutoSceneSkip()
      * cut. The cut automatic skip marker is reset every 500ms allowing another attempt at the seek.
      */
     m_EdlAutoSkipMarkers.cut = GetPlaySpeed() >= 0 ? cut.end : cut.start;
+  }
+  else if(cut.action == CEdl::COMM_BREAK
+  &&      GetPlaySpeed() >= 0
+  &&      cut.start > m_EdlAutoSkipMarkers.commbreak_end)
+  {
+    CLog::Log(LOGDEBUG, "%s - Clock in commercial break [%s - %s]: %s. Automatically skipping to end of commercial break (only done once per break)",
+              __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
+              CEdl::MillisecondsToTimeString(clock).c_str());
+    /*
+     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
+     * to accurate seeking significantly slows done the apparent speed of seeking.
+     */
+    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, false, true, false));
+    /*
+     * Each commercial break is only skipped once so poorly detected commercial breaks can be
+     * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
+     * to the start of the commercial break if incorrectly flagged.
+     */
+    m_EdlAutoSkipMarkers.commbreak_start = cut.start;
+    m_EdlAutoSkipMarkers.commbreak_end   = cut.end;
+    m_EdlAutoSkipMarkers.seek_to_start   = true; // Allow backwards Seek() to go directly to the start
   }
 
   /*
@@ -1983,7 +2019,51 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     seek = (__int64)(GetTotalTimeInMsec()*(GetPercentage()+percent)/100);
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false));
+  bool restore = true;
+  if (m_Edl.HasCut())
+  {
+    /*
+     * Alter the standard seek position based on whether any commercial breaks have been
+     * automatically skipped.
+     */
+    const int clock = DVD_TIME_TO_MSEC(m_clock.GetClock());
+    /*
+     * If a backwards seek (either small or large) occurs within 10 seconds of the end of the last
+     * automated commercial skip, then seek back to the start of the commercial break under the
+     * assumption that it was flagged incorrectly. 10 seconds grace period is allowed in case the
+     * watcher has to fumble around finding the remote. Only happens once per commercial break.
+     */
+    if (!bPlus && m_EdlAutoSkipMarkers.seek_to_start
+    &&  clock >= m_EdlAutoSkipMarkers.commbreak_end
+    &&  clock <= m_EdlAutoSkipMarkers.commbreak_end + 10*1000) // Only if within 10 seconds of the end (in msec)
+    {
+      CLog::Log(LOGDEBUG, "%s - Seeking back to start of commercial break [%s - %s] as backwards skip activated within 10 seconds of the automatic commercial skip (only done once per break).",
+                __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
+                CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
+      seek = m_EdlAutoSkipMarkers.commbreak_start;
+      restore = false;
+      m_EdlAutoSkipMarkers.seek_to_start = false; // So this will only happen within the 10 second grace period once.
+    }
+    /*
+     * If big skip forward within the last "reverted" commercial break, seek to the end of the
+     * commercial break under the assumption that the break was incorrectly flagged and playback has
+     * now reached the actual start of the commercial break. Assume that the end is flagged more
+     * correctly than the landing point for a standard big skip (ends seem to be flagged more
+     * accurately than the start).
+     */
+    else if (bPlus && bLargeStep
+    &&       clock >= m_EdlAutoSkipMarkers.commbreak_start
+    &&       clock <= m_EdlAutoSkipMarkers.commbreak_end)
+    {
+      CLog::Log(LOGDEBUG, "%s - Seeking to end of previously skipped commercial break [%s - %s] as big forwards skip activated within the break.",
+                __FUNCTION__, CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_start).c_str(),
+                CEdl::MillisecondsToTimeString(m_EdlAutoSkipMarkers.commbreak_end).c_str());
+      seek = m_EdlAutoSkipMarkers.commbreak_end;
+      restore = false;
+    }
+  }
+
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
   SyncronizeDemuxer(100);
   m_tmLastSeek = time(NULL);
 }
@@ -2043,9 +2123,8 @@ void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
       dDiff = (apts - vpts) / DVD_TIME_BASE;
 
     CStdString strEDL;
-
-    if(m_Edl.HasCut())
-      strEDL.Format(", edl:%c",  m_Edl.GetEdlStatus());
+    if (g_guiSettings.GetBool("videoplayer.editdecision"))
+      strEDL.AppendFormat(", edl:%s", m_Edl.GetInfo().c_str());
 
     strGeneralInfo.Format("C( ad:% 6.3f, a/v:% 6.3f%s, dcpu:%2i%% acpu:%2i%% vcpu:%2i%% )"
                          , dDelay

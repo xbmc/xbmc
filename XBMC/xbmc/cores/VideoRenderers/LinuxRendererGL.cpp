@@ -244,6 +244,15 @@ void CLinuxRendererGL::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, f
 
   float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
 
+  // allow a certain error to maximize screen size
+  float fCorrection = fScreenWidth / fScreenHeight / fOutputFrameRatio - 1.0;
+  if(fCorrection >   m_aspecterror)
+    fCorrection = m_aspecterror;
+  if(fCorrection < - m_aspecterror)
+    fCorrection = - m_aspecterror;
+
+  fOutputFrameRatio *= 1.0 + fCorrection;
+
   // maximize the movie width
   float fNewWidth = fScreenWidth;
   float fNewHeight = fNewWidth / fOutputFrameRatio;
@@ -251,7 +260,7 @@ void CLinuxRendererGL::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, f
   if (fNewHeight > fScreenHeight)
   {
     fNewHeight = fScreenHeight;
-    fNewWidth = fNewHeight * fOutputFrameRatio;
+    fNewWidth  = fNewHeight * fOutputFrameRatio;
   }
 
   // Scale the movie up by set zoom amount
@@ -1032,6 +1041,7 @@ unsigned int CLinuxRendererGL::PreInit()
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
+  m_aspecterror = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");

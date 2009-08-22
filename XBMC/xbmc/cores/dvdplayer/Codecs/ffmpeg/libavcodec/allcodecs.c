@@ -307,6 +307,7 @@ void avcodec_register_all(void)
     REGISTER_ENCDEC  (LIBDIRAC, libdirac);
     REGISTER_ENCODER (LIBFAAC, libfaac);
     REGISTER_DECODER (LIBFAAD, libfaad);
+    REGISTER_DECODER (LIBFAAD, libfaad_latm);
     REGISTER_ENCDEC  (LIBGSM, libgsm);
     REGISTER_ENCDEC  (LIBGSM_MS, libgsm_ms);
     REGISTER_ENCODER (LIBMP3LAME, libmp3lame);
@@ -332,6 +333,7 @@ void avcodec_register_all(void)
     REGISTER_PARSER  (H261, h261);
     REGISTER_PARSER  (H263, h263);
     REGISTER_PARSER  (H264, h264);
+    REGISTER_PARSER  (LATM, latm);
     REGISTER_PARSER  (MJPEG, mjpeg);
     REGISTER_PARSER  (MLP, mlp);
     REGISTER_PARSER  (MPEG4VIDEO, mpeg4video);

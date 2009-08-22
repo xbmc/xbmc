@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 07/31/2009-->
+<!--Date of translation: 08/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21874 -->
+<!--Based on english strings version 22217 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -982,6 +982,7 @@
   <string id="13012">退出</string>
   <string id="13013">重启</string>
   <string id="13014">最小化</string>
+  <string id="13015">电源按钮作用</string>
 
   <string id="13020">是否有通过SSH连接的会话存在？</string>
   <string id="13021">挂接移动存储器</string>
@@ -2081,6 +2082,7 @@
   <string id="22018">直播频道</string>
   <string id="22019">录音的标题</string>
   <string id="22020">节目表</string>
+  <string id="22021">高宽比允许误差 (%)</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">字体</string>
@@ -2141,7 +2143,7 @@
   <string id="33027">日出</string>
   <string id="33028">日落</string>
   <string id="33029">详细资料</string>
-  <string id="33030">景况</string>
+  <string id="33030">天气趋势</string>
   <string id="33031">流动封面</string>
   <string id="33032">翻译文本</string>
   <string id="33033">地图列表 %s 分类</string>
