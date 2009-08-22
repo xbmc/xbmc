@@ -74,7 +74,7 @@ unsigned int CTableFilter::Add(unsigned char* pData, unsigned int len, bool newP
     }
 
     // Peek at the section header to get the size
-    unsigned short sectionLen = ((pData[1] & 0x0F) << 8) | pData[2] + 3; // Include header in total size
+    unsigned short sectionLen = (((pData[1] & 0x0F) << 8) | pData[2]) + 3; // Include header in total size
     m_Accum.StartPayload(sectionLen);
     if (sectionLen < len)
       len = sectionLen;
@@ -150,10 +150,12 @@ CTSFilterRegistry::~CTSFilterRegistry()
 bool CTSFilterRegistry::RegisterFilter(unsigned short pid, CTSFilter* pFilter, bool replace/* = false*/)
 {
   if (m_Filters[pid])
+  {
     if (replace)
       delete m_Filters[pid];
     else
       return false;
+  }
   m_Filters[pid] = pFilter;
   return true;
 }
@@ -554,12 +556,12 @@ unsigned int CTSProgramMapFilter::ParseProgramDescriptor(CSimpleBitstreamReader&
     break;
   case TS_DESC_ATSC_CAPT_SVC: // ATSC Caption Service Descriptor (A/65 Table 6.25)
     {
-      unsigned char* pDesc = reader.GetCurrentPointer();
-      unsigned char serviceCount = (pDesc[0] & 0x1f); // 5 bits
-      for (int s = 0; s < serviceCount; s++)
-      {
-        unsigned char* svc = &pDesc[s*6+1];
-      }
+      //unsigned char* pDesc = reader.GetCurrentPointer();
+      //unsigned char serviceCount = (pDesc[0] & 0x1f); // 5 bits
+      //for (int s = 0; s < serviceCount; s++)
+      //{
+      //  unsigned char* svc = &pDesc[s*6+1];
+      //}
       XDMX_LOG_INFO("%s:     ATSC Caption Service Descriptor.", __TS_MODULE__);
     }
     reader.UpdatePosition(descLen * 8);
