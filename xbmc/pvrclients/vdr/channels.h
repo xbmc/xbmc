@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "../../addons/include/xbmc_pvr_lib++.h"
 #include "../../addons/include/xbmc_addon_lib++.h"
 

@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include "StdString.h"
 #include "../../addons/include/xbmc_pvr_lib++.h"
 
