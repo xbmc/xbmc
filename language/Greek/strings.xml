@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 08/19/2009-->
+<!--Date of translation: 08/21/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22217-->
+<!--Based on english strings version 22290-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -2008,4 +2008,11 @@
   <string id="33069">Υπόβαθρα</string>
   <string id="33070">Προσαρμοσμένο υπόβαθρο</string>
   <string id="33071">Προσαρμοσμένα υπόβαθρα</string>
+  <string id="33072">Σημειώσεις έκδοσης</string>
+  <string id="33073">Αλλαγές έκδοσης</string>
+  <string id="33074">Για να εκτελεστεί η έκδοση %s απαιτείται</string>
+  <string id="33075">η %s αναθεωρημένη έκδοση του XBMC ή και νεώτερη.</string>
+  <string id="33076">Παρακαλώ, αναβαθμίστε άμεσα το XBMC.</string>
+  <string id="33077">Δεν βρέθηκαν δεδομένα!</string>
+  <string id="33078">Επόμενη σελίδα</string>
 </strings>

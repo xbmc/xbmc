@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Mika Pirinen -->
-<!--Date of translation: 18/8/2009  -->
-<!--Finnish strings based on English strings revision 22217 -->
+<!--Date of translation: 22/8/2009  -->
+<!--Finnish strings based on English strings revision 22290 -->
 <strings>
   <string id="0">Ohjelmat</string>
   <string id="1">Kuvat</string>
@@ -2085,7 +2085,6 @@
   <string id="22020">Ohjelmaopas</string>
   <string id="22021">Sallittu kuvasuhteen virhe (%)</string>
 
-
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Kirjasin</string>
   <string id="22031">Koko</string>
@@ -2176,4 +2175,11 @@
   <string id="33069">Taustakuvat</string>
   <string id="33070">Oma taustakuva</string>
   <string id="33071">Omat taustakuvat</string>
+  <string id="33072">Näytä ohje</string>
+  <string id="33073">Näytä muutokset</string>
+  <string id="33074">Tämä %s:n versio vaatii toimiakseen</string>
+  <string id="33075">XBMC revision %s tai uudemman.</string>
+  <string id="33076">Päivitä XBMC uudempaan versioon.</string>
+  <string id="33077">Tietoja ei löydy!</string>
+  <string id="33078">Seuraava sivu</string>
 </strings>
