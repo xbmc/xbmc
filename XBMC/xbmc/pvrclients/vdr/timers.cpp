@@ -102,7 +102,7 @@ bool cTimer::Parse(const char *s)
     s = s2;
   }
   bool result = false;
-  if (8 <= sscanf(s, "%u :%[^:]:%[^:]:%d :%d :%d :%d :%[^:\n]:%[^\n]", &flags, channelbuffer, daybuffer, &start, &stop, &priority, &lifetime, filebuffer, aux))
+  if (9 <= sscanf(s, "%u %u :%[^:]:%[^:]:%d :%d :%d :%d :%[^:\n]:%[^\n]", &index, &flags, channelbuffer, daybuffer, &start, &stop, &priority, &lifetime, filebuffer, aux))
   {
     if (aux && !*skipspace(aux))
     {
