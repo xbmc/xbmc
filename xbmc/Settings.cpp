@@ -99,9 +99,6 @@ void CSettings::Initialize()
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-  strcpy(g_stSettings.szOnlineArenaPassword, "");
-  strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
-
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
@@ -145,7 +142,6 @@ void CSettings::Initialize()
 
   // Advanced settings
   g_advancedSettings.m_useMultipaths = true;
-  g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_ac3Gain = 12.0f;
@@ -259,7 +255,6 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_remoteRepeat = 480;
   g_advancedSettings.m_controllerDeadzone = 0.2f;
-  g_advancedSettings.m_FTPShowCache = false;
 
   g_advancedSettings.m_playlistAsFolders = true;
   g_advancedSettings.m_detectAsUdf = false;
@@ -306,6 +301,11 @@ void CSettings::Initialize()
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
   g_advancedSettings.m_iMythMovieLength = 0; // 0 == Off
+
+  g_advancedSettings.m_bEdlMergeShortCommBreaks = false;      // Off by default
+  g_advancedSettings.m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
+  g_advancedSettings.m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
+  g_advancedSettings.m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
 
   g_advancedSettings.m_curlconnecttimeout = 10;
   g_advancedSettings.m_curllowspeedtime = 5;
@@ -1327,7 +1327,6 @@ void CSettings::LoadAdvancedSettings()
 #endif
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
-  XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", g_advancedSettings.m_startFullScreen);
 #endif
@@ -1373,6 +1372,16 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "epgblocksize", g_advancedSettings.m_iPVREPGBlockSize, 5, 5, 10);
   }
 
+  // EDL commercial break handling
+  pElement = pRootElement->FirstChildElement("edl");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "mergeshortcommbreaks", g_advancedSettings.m_bEdlMergeShortCommBreaks);
+    XMLUtils::GetInt(pElement, "maxcommbreaklength", g_advancedSettings.m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes 
+    XMLUtils::GetInt(pElement, "mincommbreaklength", g_advancedSettings.m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
+    XMLUtils::GetInt(pElement, "maxcommbreakgap", g_advancedSettings.m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
+  }
+
   // picture exclude regexps
   TiXmlElement* pPictureExcludes = pRootElement->FirstChildElement("pictureexcludes");
   if (pPictureExcludes)
@@ -1411,13 +1420,13 @@ void CSettings::LoadAdvancedSettings()
   }
 
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
+  if (g_advancedSettings.m_displayRemoteCodes)
+    CLog::Log(LOGERROR,"displaying of remote codes currently not implemented");
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
   GetPath(pRootElement, "cachepath", g_advancedSettings.m_cachePath);
   CUtil::AddSlashAtEnd(g_advancedSettings.m_cachePath);
-
-  XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 

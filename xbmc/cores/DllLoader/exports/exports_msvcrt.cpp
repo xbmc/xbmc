@@ -19,7 +19,7 @@
  *
  */
 
-#if defined(_XBOX) || defined(_LINUX)
+#if defined(_LINUX)
 #include "stdafx.h"
 #endif
 #ifdef _LINUX
@@ -279,7 +279,7 @@ extern "C" void* _aligned_realloc();
 extern "C" void* _callnewh();
 extern "C" void* dll_filbuf();
 extern "C" void* dll_flsbuf();
-#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+#if defined(_WIN32)
 extern "C" void* _cabs();
 extern "C" void* _mbsnbicmp();
 extern "C" void* ldiv();
@@ -797,7 +797,7 @@ Export export_msvcr71[] =
   { "_aligned_realloc",           -1, (void*)_aligned_realloc,              NULL },
   { "_callnewh",                  -1, (void*)_callnewh,                     NULL },
 #endif
-#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+#if defined(_WIN32)
   { "_cabs",                      -1, (void*)_cabs,                         NULL },
   { "_mbsnbicmp",                 -1, (void*)_mbsnbicmp,                    NULL },
   { "ldiv",                       -1, (void*)ldiv,                          NULL },

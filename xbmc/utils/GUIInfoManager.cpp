@@ -1447,57 +1447,37 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 #endif
   case NETWORK_IP_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         return iface->GetCurrentIPAddress();
-#else
-      return g_application.getNetwork().m_networkinfo.ip;
-#endif
     }
     break;
   case NETWORK_SUBNET_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         return iface->GetCurrentNetmask();
-#else
-      return g_application.getNetwork().m_networkinfo.subnet;
-#endif
     }
     break;
   case NETWORK_GATEWAY_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         return iface->GetCurrentDefaultGateway();
-#else
-      return g_application.getNetwork().m_networkinfo.gateway;
-#endif
     }
     break;
   case NETWORK_DNS1_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
         return nss[0];
-#else
-      return g_application.getNetwork().m_networkinfo.DNS1;
-#endif
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
         return nss[1];
-#else
-      return g_application.getNetwork().m_networkinfo.DNS2;
-#endif
     }
     break;
   case NETWORK_DHCP_ADDRESS:
@@ -1510,13 +1490,11 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString linkStatus = g_localizeStrings.Get(151);
       linkStatus += " ";
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface && iface->IsConnected())
         linkStatus += g_localizeStrings.Get(15207);
       else
         linkStatus += g_localizeStrings.Get(15208);
-#endif
       return linkStatus;
     }
     break;

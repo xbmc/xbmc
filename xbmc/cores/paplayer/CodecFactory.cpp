@@ -44,7 +44,6 @@
 #include "AdplugCodec.h"
 #include "VGMCodec.h"
 #include "YMCodec.h"
-#include "WMACodec.h"
 #include "AIFFcodec.h"
 #include "ADPCMCodec.h"
 #include "TimidityCodec.h"

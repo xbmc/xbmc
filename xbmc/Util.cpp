@@ -634,12 +634,6 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
       iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
       strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
     }
-
-    // This routine is only called from the playlist loaders,
-    // where the filepath is in UTF-8 anyway, so we don't need
-    // to do checking for FatX characters.
-    //if (g_guiSettings.GetBool("servers.ftpautofatx") && (CUtil::IsHD(strFilename)))
-    //  CUtil::GetFatXQualifiedPath(strFilename);
   }
   else //Base is remote
   {
@@ -874,15 +868,10 @@ bool CUtil::IsOnLAN(const CStdString& strPath)
   else
   {
     // check if we are on the local subnet
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     if (!g_application.getNetwork().GetFirstConnectedInterface())
       return false;
     unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentNetmask()));
     unsigned long local  = ntohl(inet_addr(g_application.getNetwork().GetFirstConnectedInterface()->GetCurrentIPAddress()));
-#else
-    unsigned long subnet = ntohl(inet_addr(g_application.getNetwork().m_networkinfo.subnet));
-    unsigned long local  = ntohl(inet_addr(g_application.getNetwork().m_networkinfo.ip));
-#endif
     if( (address & subnet) == (local & subnet) )
       return true;
   }
@@ -1364,6 +1353,15 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   // checking if any of the common subdirs exist ..
   CLog::Log(LOGDEBUG,"%s: Checking for common subirs...", __FUNCTION__);
+
+  vector<CStdString> token;
+  Tokenize(strPath,token,"/\\");
+  if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+  {
+    CStdString strPath2;
+    GetParentPath(strPath,strPath2);
+    strLookInPaths.push_back(strPath2);
+  } 
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -1572,58 +1570,6 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
       }
   }
   return bFoundSubs;
-}
-
-void CUtil::PrepareSubtitleFonts()
-{
-  CStdString strFontPath = "special://xbmc/system/players/mplayer/font";
-
-  if( IsUsingTTFSubtitles()
-    || g_guiSettings.GetInt("subtitles.height") == 0
-    || g_guiSettings.GetString("subtitles.font").size() == 0)
-  {
-    /* delete all files in the font dir, so mplayer doesn't try to load them */
-
-    CStdString strSearchMask = strFontPath + "\\*.*";
-    WIN32_FIND_DATA wfd;
-    CAutoPtrFind hFind ( FindFirstFile(_P(strSearchMask).c_str(), &wfd));
-    if (hFind.isValid())
-    {
-      do
-      {
-        if(wfd.cFileName[0] == 0) continue;
-        if( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-          CFile::Delete(CUtil::AddFileToFolder(strFontPath, wfd.cFileName));
-      }
-      while (FindNextFile((HANDLE)hFind, &wfd));
-    }
-  }
-  else
-  {
-    CStdString strPath;
-    strPath.Format("%s\\%s\\%i",
-                  strFontPath.c_str(),
-                  g_guiSettings.GetString("Subtitles.Font").c_str(),
-                  g_guiSettings.GetInt("Subtitles.Height"));
-
-    CStdString strSearchMask = strPath + "\\*.*";
-    WIN32_FIND_DATA wfd;
-    CAutoPtrFind hFind ( FindFirstFile(_P(strSearchMask).c_str(), &wfd));
-    if (hFind.isValid())
-    {
-      do
-      {
-        if (wfd.cFileName[0] == 0) continue;
-        if ( (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
-        {
-          CStdString strSource = CUtil::AddFileToFolder(strPath, wfd.cFileName);
-          CStdString strDest = CUtil::AddFileToFolder(strFontPath, wfd.cFileName);
-          CFile::Cache(strSource, strDest);
-        }
-      }
-      while (FindNextFile((HANDLE)hFind, &wfd));
-    }
-  }
 }
 
 __int64 CUtil::ToInt64(DWORD dwHigh, DWORD dwLow)

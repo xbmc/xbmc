@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 07/26/2009-->
+<!--Date of translation: 08/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21769-->
+<!--Based on english strings version 22217-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -904,6 +904,7 @@
   <string id="13012">Avsluta</string>
   <string id="13013">Starta om</string>
   <string id="13014">Minimera</string>
+  <string id="13015">Funktion för avstängningsknapp</string>
   <string id="13020">Är en annan session aktiv, kanske över ssh?</string>
   <string id="13021">Monterade flyttbar hårddisk</string>
   <string id="13022">Osäker borttagning av enhet</string>
@@ -1876,6 +1877,7 @@
   <string id="22018">Aktuella kanaler</string>
   <string id="22019">Inspelningar efter titel</string>
   <string id="22020">Guide</string>
+  <string id="22021">Tillåten felmarginal i bildförhållande (%)</string>
   <string id="22030">Typsnitt</string>
   <string id="22031">- Storlek</string>
   <string id="22032">- Färg</string>
@@ -1956,4 +1958,11 @@
   <string id="33069">Bakgrunder</string>
   <string id="33070">Egen bakgrund</string>
   <string id="33071">Egna bakgrunder</string>
+  <string id="33072">Visa Läsmig</string>
+  <string id="33073">Visa ändringslogg</string>
+  <string id="33074">Denna version av %s kräver en</string>
+  <string id="33075">XBMC version större än %s för att köras.</string>
+  <string id="33076">Var god uppdatera XBMC.</string>
+  <string id="33077">Ingen data hittades!</string>
+  <string id="33078">Nästa sida</string>
 </strings>

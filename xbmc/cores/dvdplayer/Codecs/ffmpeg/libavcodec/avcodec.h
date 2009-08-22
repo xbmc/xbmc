@@ -319,6 +319,7 @@ enum CodecID {
     CODEC_ID_TWINVQ,
     CODEC_ID_TRUEHD,
     CODEC_ID_MP4ALS,
+    CODEC_ID_AAC_LATM,
 
     /* subtitle codecs */
     CODEC_ID_DVD_SUBTITLE= 0x17000,

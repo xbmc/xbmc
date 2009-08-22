@@ -1,5 +1,4 @@
-#ifndef CEDL_H
-#define CEDL_H
+#pragma once
 
 /*
  *      Copyright (C) 2005-2008 Team XBMC
@@ -23,8 +22,8 @@
  */
 
 #include "StdString.h"
+#include "URL.h"
 #include <vector>
-#include "linux/PlatformDefs.h"
 
 class CEdl
 {
@@ -36,7 +35,8 @@ public:
   {
     CUT = 0,
     MUTE = 1,
-    SCENE = 2
+    // SCENE = 2,
+    COMM_BREAK = 3
   } Action;
 
   struct Cut
@@ -46,12 +46,14 @@ public:
     Action action;
   };
 
-  bool ReadFiles(const CStdString& strMovie);
+  bool ReadFiles(const CStdString& strMovie, const float fFramesPerSecond);
   void Clear();
+
+  bool ReadMythCommBreaks(const CURL url, const float fFramesPerSecond);
 
   bool HasCut();
   bool HasSceneMarker();
-  char GetEdlStatus();
+  CStdString GetInfo();
   __int64 GetTotalCutTime();
   __int64 RemoveCutTime(__int64 iSeek);
   __int64 RestoreCutTime(__int64 iClock);
@@ -69,7 +71,7 @@ private:
   std::vector<__int64> m_vecSceneMarkers;
 
   bool ReadEdl(const CStdString& strMovie);
-  bool ReadComskip(const CStdString& strMovie);
+  bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
   bool ReadVideoReDo(const CStdString& strMovie);
   bool ReadBeyondTV(const CStdString& strMovie);
 
@@ -77,6 +79,6 @@ private:
   bool AddSceneMarker(const __int64 sceneMarker);
 
   bool WriteMPlayerEdl();
-};
 
-#endif
+  void MergeShortCommBreaks();
+};
