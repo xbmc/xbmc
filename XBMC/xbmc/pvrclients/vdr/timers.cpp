@@ -123,9 +123,6 @@ bool cTimer::Parse(const char *s)
       result = false;
     }
   }
-  free(channelbuffer);
-  free(daybuffer);
-  free(filebuffer);
   free(s2);
   return result;
 }
