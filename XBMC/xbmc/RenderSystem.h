@@ -63,6 +63,8 @@ public:
   virtual void SetViewPort(CRect& viewPort) = 0;
   virtual void GetViewPort(CRect& viewPort) = 0;
 
+  virtual bool NeedPower2Texture() = 0;
+  
   virtual bool TestRender() = 0;
 
 protected:
