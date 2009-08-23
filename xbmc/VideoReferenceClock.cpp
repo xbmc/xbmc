@@ -334,7 +334,7 @@ void CVideoReferenceClock::RunGLX()
   unsigned int  PrevVblankCount;
   unsigned int  VblankCount;
   int           ReturnV;
-  int           ResetCount = 0;
+  bool          IsReset = false;
   LARGE_INTEGER Now;
 
   CSingleLock SingleLock(m_CritSection);
@@ -367,11 +367,15 @@ void CVideoReferenceClock::RunGLX()
       SendVblankSignal();
       UpdateRefreshrate();
 
-      ResetCount = 0;
+      IsReset = false;
     }
     else
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
+      
+      //only try reattaching once
+      if (IsReset)
+        return;
 
       //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
       ReturnV = glXMakeCurrent(m_Dpy, None, NULL);
@@ -390,14 +394,7 @@ void CVideoReferenceClock::RunGLX()
         return;
       }
 
-      //failsafe, seen at least once that glXWaitVideoSyncSGI didn't wait at all,
-      //even after reattaching the glx context
-      ResetCount++;
-      if (ResetCount > 100)
-      {
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has not updated for 100 calls");
-        return;
-      }
+      IsReset = true;
     }
     PrevVblankCount = VblankCount;
   }
