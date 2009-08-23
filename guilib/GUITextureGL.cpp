@@ -22,7 +22,6 @@
 #include "include.h"
 #include "GUITextureGL.h"
 #include "GraphicContext.h"
-#include "Util.h"
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 

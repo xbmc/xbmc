@@ -34,12 +34,6 @@
 #include "MediaSource.h"
 #include "StringUtils.h"
 
-// Useful pixel colour manipulation macros
-#define GET_A(color)            ((color & AMASK) >> PIXEL_ASHIFT)
-#define GET_R(color)            ((color & RMASK) >> PIXEL_RSHIFT)
-#define GET_G(color)            ((color & GMASK) >> PIXEL_GSHIFT)
-#define GET_B(color)            ((color & BMASK) >> PIXEL_BSHIFT)
-
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0
 #define LEGAL_WIN32_COMPAT    1
