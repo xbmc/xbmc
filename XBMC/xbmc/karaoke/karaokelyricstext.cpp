@@ -12,7 +12,7 @@
 #include "stdafx.h"
 #include <math.h>
 
-#include "Application.h"
+#include "Settings.h"
 #include "GUITextLayout.h"
 #include "karaokelyricstext.h"
 #include "Util.h"

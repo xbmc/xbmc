@@ -24,7 +24,6 @@
 #ifndef HAS_SDL
 
 #include "WinRenderer.h"
-#include "Application.h"
 #include "Util.h"
 #include "XBVideoConfig.h"
 #include "Settings.h"

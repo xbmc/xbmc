@@ -11,7 +11,6 @@
 //
 #include "stdafx.h"
 
-#include "Util.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 
