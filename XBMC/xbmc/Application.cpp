@@ -2743,7 +2743,7 @@ bool CApplication::OnKey(CKey& key)
         }
         else
         {
-          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_VKEY;
+          action.wID = (WORD)g_Keyboard.GetVKey() | KEY_VKEY;
           action.unicode = 0;
         }
       }
@@ -3829,7 +3829,7 @@ bool CApplication::ProcessKeyboard()
 
   // process the keyboard buttons etc.
  
-  BYTE vkey = g_Keyboard.GetAscii();
+  BYTE vkey = g_Keyboard.GetVKey();
   WCHAR unicode = g_Keyboard.GetUnicode();
   if (vkey || unicode)
   {

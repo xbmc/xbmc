@@ -166,10 +166,6 @@ bool CGLTexture::NeedPower2Texture()
 {
   unsigned int vmaj, vmin;
 
-  return false;
-
-  //CRenderSystemBase* renderSystem = CWindowingFactory::GetRenderSystem();
-
   g_Windowing.GetRenderVersion(vmaj, vmin);
 
   if (vmaj >= 2 && GLEW_ARB_texture_non_power_of_two)
