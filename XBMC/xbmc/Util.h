@@ -120,8 +120,6 @@ public:
   static void UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
-  static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
-  static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
