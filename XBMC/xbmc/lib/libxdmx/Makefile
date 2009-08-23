@@ -37,7 +37,7 @@ ${DEPS}: %.d: %.cpp Makefile
 	${MAKEDEP} $< > $@ 
 
 clean:: 
-	-rm -f *~ ${OBJS} *.d ${STATIC_LIB} ${SHARED_LIB} 
+	-rm -f *~ .d ${OBJS} ${DEPS} ${STATIC_LIB} ${SHARED_LIB} 
 
 distclean:: clean
 
