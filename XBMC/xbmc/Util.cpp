@@ -1158,15 +1158,6 @@ void CUtil::CreateShortcut(CFileItem* pItem)
 {
 }
 
-void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl )
-{
-  strOutUrl = strProtocol;
-  CStdString temp = strPath;
-  temp.Replace( '\\', '/' );
-  temp.Delete( 0, 3 );
-  strOutUrl += temp;
-}
-
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
   if ( !g_mediaManager.IsDiscInDrive() )
