@@ -62,7 +62,7 @@ public:
 
   bool GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneMarker);
 
-  static CStdString MillisecondsToTimeString(const int iMilliseconds);
+  static CStdString MillisecondsToTimeString(const __int64 iMilliseconds);
 
 protected:
 private:
