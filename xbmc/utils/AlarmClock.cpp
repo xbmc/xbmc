@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "AlarmClock.h"
 #include "Application.h"
-#include "Util.h"
 
 CAlarmClock g_alarmClock;
 

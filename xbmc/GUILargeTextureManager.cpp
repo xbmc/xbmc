@@ -25,7 +25,6 @@
 #include "GUISettings.h"
 #include "Surface.h"
 #include "FileItem.h"
-#include "Util.h"
 
 using namespace std;
 
