@@ -27,6 +27,8 @@
 #include "OSXGNUReplacements.h"
 #endif
 
+#include "Util.h"
+
 using namespace std;
 
 CLinuxTimezone::CLinuxTimezone() : m_IsDST(0)
