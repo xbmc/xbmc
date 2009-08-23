@@ -71,7 +71,6 @@ SRCS=ActionManager.cpp \
      GUITextLayout.cpp \
      GUIMultiSelectText.cpp \
      GUIInfoColor.cpp \
-     GraphicContextGL.cpp \
      GUIFontTTFGL.cpp \
      Texture.cpp \
      TextureGL.cpp

@@ -45,6 +45,8 @@ bool CRenderSystemGL::InitRenderSystem()
     return false;
   }
     
+  LogGraphicsInfo();
+  
   return true;
 }
 

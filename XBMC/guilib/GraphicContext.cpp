@@ -1756,11 +1756,6 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
 
 void CGraphicContext::Flip()
 {
-#ifdef HAS_SDL
-  m_screenSurface->Flip();
-#elif defined(HAS_DX)
-  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif
   g_Windowing.PresentRender();
 }
 

@@ -40,7 +40,7 @@ class CRenderSystemBase
 {
 public:
   CRenderSystemBase();
-  ~CRenderSystemBase();
+  virtual ~CRenderSystemBase();
 
   RenderingSystemType GetRenderingSystemType() { return m_enumRenderingSystem; }
 

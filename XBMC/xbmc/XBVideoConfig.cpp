@@ -348,7 +348,7 @@ void XBVideoConfig::GetModes()
      //if (i<MAX_RESOLUTIONS)
      {
        RESOLUTION_INFO res={0};
-       res.iScreen = 0;
+       res.iScreen = (DISPLAYS) 0;
        res.iWidth = modes[i]->w;
        res.iHeight = modes[i]->h;
        res.fPixelRatio = 1.0f;
@@ -382,7 +382,7 @@ void XBVideoConfig::GetModes()
      CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
 
      RESOLUTION_INFO res={0};
-     res.iScreen = i;
+     res.iScreen = (DISPLAYS) i;
      res.iWidth = w;
      res.iHeight = h;
      res.fPixelRatio = 1.0f;

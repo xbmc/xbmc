@@ -29,6 +29,12 @@
 extern CWinSystemWin32GL g_Windowing;
 #endif
 
+#if defined(__APPLE__)
+#include "WinSystemOSXGL.h"
+extern CWinSystemOSXGL g_Windowing;
+#endif
+
+
 
 
 

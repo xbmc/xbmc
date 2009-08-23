@@ -210,8 +210,8 @@ SRCS=Application.cpp \
      RenderSystemGL.cpp \
      KeyboardStat.cpp \
      WinSystem.cpp \
-     WinSystemSDL.cpp \
-     GLContextSDL.cpp \
+     WinSystemOSX.cpp \
+     WinSystemOSXGL.cpp \
      WinEventsSDL.cpp
 
 LIB=xbmc.a

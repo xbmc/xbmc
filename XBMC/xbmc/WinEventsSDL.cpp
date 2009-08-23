@@ -18,9 +18,6 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
-
-
-
 #include "stdafx.h"
 #include "WinEvents.h"
 #include "Application.h"
@@ -32,7 +29,27 @@ PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 
 void CWinEventsSDL::MessagePump()
 { 
+  SDL_Event event;
   
+  while (SDL_PollEvent(&event))
+  {
+    switch(event.type)
+    {    
+    case SDL_KEYDOWN:
+      // process any platform specific shortcuts before handing off to XBMC
+      //if (!ProcessOSShortcuts(event))
+      {
+        g_application.OnEvent(XBMC_PRESSED, (long unsigned int) &event.key.keysym, 0);
+        // don't handle any more messages in the queue until we've handled keydown,
+        // if a keyup is in the queue it will reset the keypress before it is handled.
+      }
+      break;
+      
+    case SDL_KEYUP:
+      g_application.OnEvent(XBMC_RELEASED, (long unsigned int) &event.key.keysym, 0);
+      break;
+    }
+  }
 }
 
 #endif
