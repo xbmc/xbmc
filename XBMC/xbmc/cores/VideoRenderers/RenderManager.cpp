@@ -39,7 +39,7 @@
 #include "RGBRendererV2.h"
 #elif defined(HAS_GL)
 #include "LinuxRendererGL.h"
-#elif defined(HAS_GL)
+#elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
 #else
 #include "WinRenderer.h"
@@ -287,7 +287,7 @@ unsigned int CXBoxRenderManager::PreInit()
     }
 #elif defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
-#elif defined(HAS_GL)
+#elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #else
     m_pRenderer = new CWinRenderer(g_graphicsContext.Get3DDevice());

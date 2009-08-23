@@ -32,6 +32,7 @@
 #include "Application.h"
 #include "GraphicContext.h"
 // elis #include "Surface.h"
+#include "WindowingFactory.h"
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()
@@ -195,7 +196,7 @@ CStdString CSysInfo::GetMACAddress()
 CStdString CSysInfo::GetVideoEncoder()
 {
 #ifdef HAS_GL
-  return "GPU: " + g_graphicsContext.GetRenderRenderer();
+  return "GPU: " + g_Windowing.GetRenderRenderer();
 #else // TODO:DIRECTX
   return "GPU: DIRECTX";
 #endif

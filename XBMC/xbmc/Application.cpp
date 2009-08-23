@@ -36,6 +36,7 @@
 #include "GUILabelControl.h"  // needed for CInfoLabel
 #include "GUIImage.h"
 #endif
+// elis #include "GUIControlProfiler.h"
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
 #include "utils/GUIInfoManager.h"
@@ -76,8 +77,11 @@
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
 // elis #include "Surface.h"
+#include "WindowingFactory.h"
 #include "PowerManager.h"
 #include "DPMSSupport.h"
+
+#include "KeyboardStat.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"
@@ -102,6 +106,7 @@
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
 #include "Zeroconf.h"
+// elis #include "ZeroconfBrowser.h"
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
@@ -143,12 +148,7 @@
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowSettingsProfile.h"
-#ifdef HAS_GL
-#include "GUIWindowTestPatternGL.h"
-#endif
-#ifdef HAS_DX
-#include "GUIWindowTestPatternDX.h"
-#endif
+#include "GUIWindowTestPattern.h"
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
@@ -213,10 +213,6 @@
 #define MEASURE_FUNCTION
 #endif
 
-#ifdef HAS_SDL
-#include <SDL/SDL_mutex.h>
-#endif
-
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif
@@ -250,9 +246,6 @@
 #include "lib/libcdio/logging.h"
 #include "MediaManager.h"
 
-#include "WinEvents.h"
-#include "KeyboardStat.h"
-
 #ifdef _LINUX
 #include "XHandle.h"
 #endif
@@ -275,12 +268,13 @@ using namespace DBUSSERVER;
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
 
+#if defined(HAS_GL) && defined(_WIN32)
+  #pragma comment (lib,"opengl32.lib")
+  #pragma comment (lib,"glu32.lib")
+  #pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib") 
+#endif
+
 #if defined(_WIN32)
-  #ifdef HAS_GL
-    #pragma comment (lib,"opengl32.lib")
-    #pragma comment (lib,"glu32.lib")
-    #pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib") 
-  #endif
  #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #if defined(HAS_FILESYSTEM)
     #pragma comment (lib,"../../xbmc/lib/libXBMS/libXBMSd.lib")    // SECTIONNAME=LIBXBMS
@@ -395,7 +389,118 @@ CApplication::~CApplication(void)
 #endif
 }
 
+// text out routine for below
+#ifdef HAS_XFONT
+static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...)
+{
+  wchar_t buf[100];
+  va_list args;
+  va_start(args, fmt);
+  _vsnwprintf(buf, 100, fmt, args);
+  va_end(args);
+
+  if (!(iLine & 0x8000))
+    CLog::Log(LOGFATAL, "%S", buf);
+
+  bool Center = (iLine & 0x10000) > 0;
+  pFont->SetTextAlignment(Center ? XFONT_TOP | XFONT_CENTER : XFONT_TOP | XFONT_LEFT);
+
+  iLine &= 0x7fff;
+
+  for (int i = 0; i < 2; i++)
+  {
+    D3DRECT rc = { 0, 50 + 25 * iLine, 720, 50 + 25 * (iLine + 1) };
+    D3DDevice::Clear(1, &rc, D3DCLEAR_TARGET, 0, 0, 0);
+    pFont->TextOut(g_application.m_pBackBuffer, buf, -1, Center ? 360 : 80, 50 + 25*iLine);
+    D3DDevice::Present(0, 0, 0, 0);
+  }
+}
+#endif
+
 HWND g_hWnd = NULL;
+
+int CApplication::OnEvent(unsigned int eventType, unsigned long param1, unsigned long param2)
+{
+  switch(eventType)
+  {
+  case XBMC_PRESSED:
+  case XBMC_RELEASED:
+    g_Keyboard.HandleEvent(eventType, param1, param2);
+    g_application.ProcessKeyboard();
+    break;
+  }
+
+  return 0;
+}
+
+void CApplication::InitBasicD3D()
+{
+#ifdef HAS_DX
+  bool bPal = g_videoConfig.HasPAL();
+  CLog::Log(LOGINFO, "Init display in default mode: %s", bPal ? "PAL" : "NTSC");
+  // init D3D with defaults (NTSC or PAL standard res)
+  m_d3dpp.BackBufferWidth = 720;
+  m_d3dpp.BackBufferHeight = bPal ? 576 : 480;
+  m_d3dpp.BackBufferFormat = D3DFMT_LIN_X8R8G8B8;
+  m_d3dpp.BackBufferCount = 1;
+  m_d3dpp.EnableAutoDepthStencil = FALSE;
+  m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
+  m_d3dpp.PresentationInterval = 0;
+  m_d3dpp.Windowed = TRUE;
+  m_d3dpp.hDeviceWindow = g_hWnd;
+
+  if (!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
+  {
+    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
+    Sleep(INFINITE); // die
+  }
+#endif
+
+  // Check if we have the required modes available
+#ifdef HAS_DX
+  g_videoConfig.GetModes(m_pD3D);
+#else
+  g_videoConfig.GetModes();
+#endif
+  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+  {
+    // Oh uh - doesn't look good for starting in their wanted screenmode
+    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
+    g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
+    CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
+    CLog::Log(LOGERROR, "Done reset");
+  }
+
+  // Transfer the resolution information to our graphics context
+#ifdef HAS_DX
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
+#endif
+  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+
+  // Create the device
+#ifdef HAS_DX
+  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
+  {
+    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
+    Sleep(INFINITE); // die
+  }
+#endif
+
+  if (m_splash)
+  {
+#ifndef HAS_GL
+    m_splash->Stop();
+#else
+    m_splash->Hide();
+#endif
+  }
+
+#ifdef HAS_DX
+
+  m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
+#endif
+}
 
 // This function does not return!
 void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork)
@@ -452,7 +557,11 @@ HRESULT CApplication::Create(HWND hWnd)
   tzset();   // Initialize timezone information variables
 #endif
 
-  //elis g_hWnd = hWnd;
+  g_hWnd = hWnd;
+
+#ifdef HAS_DX
+  HRESULT hr = S_OK;
+#endif
 
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = GetCurrentThreadId();
@@ -524,10 +633,14 @@ HRESULT CApplication::Create(HWND hWnd)
     g_stSettings.m_logFolder = "special://masterprofile/";
   }
 
+#ifdef HAS_XRANDR
+  g_xrandr.LoadCustomModeLinesToAllOutputs();
+#endif
+
   // Init our DllLoaders emu env
   init_emu_environ();
 
-  /* elis
+
 #ifdef HAS_DX
   CLog::Log(LOGNOTICE, "Setup DirectX");
   // Create the Direct3D object
@@ -540,10 +653,10 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Setup SDL");
 
   /* Clean up on exit, exit on window close and interrupt */
-  //elis atexit(SDL_Quit);
+#ifdef HAS_SDL
+  atexit(SDL_Quit);
 
-
-  Uint32 sdlFlags = 0;
+  Uint32 sdlFlags = SDL_INIT_VIDEO;
 
 #ifdef HAS_SDL_AUDIO
   sdlFlags |= SDL_INIT_AUDIO;
@@ -553,6 +666,8 @@ HRESULT CApplication::Create(HWND hWnd)
   sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
 
+#endif // HAS_SDL
+
 
 #ifdef _LINUX
   // for nvidia cards - vsync currently ALWAYS enabled.
@@ -561,10 +676,6 @@ HRESULT CApplication::Create(HWND hWnd)
   setenv("__GL_YIELD", "USLEEP", 0);
 #endif
 
-#ifdef HAS_SDL_OPENGL
-  sdlFlags |= SDL_INIT_VIDEO;
-#endif
-  
 #ifdef HAS_SDL
   if (SDL_Init(sdlFlags) != 0)
   {
@@ -572,6 +683,7 @@ HRESULT CApplication::Create(HWND hWnd)
         return E_FAIL;
   }
 #endif
+
 
   // for python scripts that check the OS
 #ifdef __APPLE__
@@ -581,28 +693,25 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  /* elis
+
+#ifdef HAS_SDL
   CPicture pic;
   SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon32x32.png")), NULL);
-  */
 #endif
 
-  // elis Create a window
-  RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
-  g_WinSystem.Create("XBMC", 1280, 720, false, OnEvent);
-  g_RenderSystem.Create();
-  g_RenderSystem.AttachWindow(&g_WinSystem);
-
+#endif
+#endif
 
   //list available videomodes
 #ifdef HAS_DX
-  g_videoConfig.GetModes(g_RenderSystem.GetD3D());
+  g_videoConfig.GetModes(m_pD3D);
   //init the present parameters with values that are supported
-  RESOLUTION initialResolution = g_videoConfig.GetInitialMode(g_RenderSystem.GetD3D(), g_RenderSystem.GetD3DParams());
-  g_graphicsContext.SetD3DParameters(g_RenderSystem.GetD3DParams());
+  RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
+  g_graphicsContext.SetD3DParameters(&m_d3dpp);
 #else
   g_videoConfig.GetModes();
   //init the present parameters with values that are supported
+  RESOLUTION initialResolution = g_videoConfig.GetInitialMode();
 #endif
 
   // Initialize core peripheral port support. Note: If these parameters
@@ -617,14 +726,72 @@ HRESULT CApplication::Create(HWND hWnd)
   m_messageHandler.Initialize();
 #endif
 
+  g_Windowing.InitWindowSystem();
+
   // Create the Mouse and Keyboard devices
-  // elis g_Mouse.Initialize(&hWnd);
+  g_Mouse.Initialize(&hWnd);
   g_Keyboard.Initialize();
 #ifdef HAS_LIRC
   g_RemoteControl.Initialize();
 #endif
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize(hWnd);
+#endif
+
+#ifdef HAS_GAMEPAD
+  //Check for LTHUMBCLICK+RTHUMBCLICK and BLACK+WHITE, no LTRIGGER+RTRIGGER
+  if (((m_DefaultGamepad.wButtons & (XINPUT_GAMEPAD_LEFT_THUMB + XINPUT_GAMEPAD_RIGHT_THUMB)) && !(m_DefaultGamepad.wButtons & (KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER))) ||
+      ((m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_BLACK] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE]) && !(m_DefaultGamepad.wButtons & KEY_BUTTON_LEFT_TRIGGER+KEY_BUTTON_RIGHT_TRIGGER)))
+  {
+    CLog::Log(LOGINFO, "Key combination detected for userdata deletion (LTHUMB+RTHUMB or BLACK+WHITE)");
+    InitBasicD3D();
+    // D3D is up, load default font
+    XFONT* pFont;
+    if (XFONT_OpenDefaultFont(&pFont) != S_OK)
+    {
+      CLog::Log(LOGFATAL, "FATAL ERROR: Unable to open default font!");
+      Sleep(INFINITE); // die
+    }
+    // defaults for text
+    pFont->SetBkMode(XFONT_OPAQUE);
+    pFont->SetBkColor(D3DCOLOR_XRGB(0, 0, 0));
+    pFont->SetTextColor(D3DCOLOR_XRGB(0xff, 0x20, 0x20));
+    int iLine = 0;
+    FEH_TextOut(pFont, iLine++, L"Key combination for userdata deletion detected!");
+    FEH_TextOut(pFont, iLine++, L"Are you sure you want to proceed?");
+    iLine++;
+    FEH_TextOut(pFont, iLine++, L"A for yes, any other key for no");
+    bool bAnyAnalogKey = false;
+    while (m_DefaultGamepad.wPressedButtons != XBGAMEPAD_NONE) // wait for user to let go of lclick + rclick
+    {
+      ReadInput();
+    }
+    while (m_DefaultGamepad.wPressedButtons == XBGAMEPAD_NONE && !bAnyAnalogKey)
+    {
+      ReadInput();
+      bAnyAnalogKey = m_DefaultGamepad.bPressedAnalogButtons[0] || m_DefaultGamepad.bPressedAnalogButtons[1] || m_DefaultGamepad.bPressedAnalogButtons[2] || m_DefaultGamepad.bPressedAnalogButtons[3] || m_DefaultGamepad.bPressedAnalogButtons[4] || m_DefaultGamepad.bPressedAnalogButtons[5] || m_DefaultGamepad.bPressedAnalogButtons[6] || m_DefaultGamepad.bPressedAnalogButtons[7];
+    }
+    if (m_DefaultGamepad.bPressedAnalogButtons[XINPUT_GAMEPAD_A])
+    {
+      CUtil::DeleteGUISettings();
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"database\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"thumbnails\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"playlists\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"cache\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"profiles\\"));
+      CUtil::WipeDir(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations\\"));
+      CFile::Delete(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"avpacksettings.xml"));
+      g_settings.m_vecProfiles.erase(g_settings.m_vecProfiles.begin()+1,g_settings.m_vecProfiles.end());
+
+      g_settings.SaveProfiles( PROFILES_FILE );
+
+      char szXBEFileName[1024];
+
+      CIoSupport::GetXbePath(szXBEFileName);
+      CUtil::RunXBE(szXBEFileName);
+    }
+    m_pd3dDevice->Release();
+  }
 #endif
 
   CLog::Log(LOGINFO, "Drives are mapped");
@@ -641,38 +808,37 @@ HRESULT CApplication::Create(HWND hWnd)
 
   update_emu_environ();//apply the GUI settings
 
+  // Check for WHITE + Y for forced Error Handler (to recover if something screwy happens)
+#ifdef HAS_GAMEPAD
+  if (m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_Y] && m_DefaultGamepad.bAnalogButtons[XINPUT_GAMEPAD_WHITE])
+  {
+    g_LoadErrorStr = "Key code detected for Error Recovery mode";
+    FatalErrorHandler(true, true, true);
+  }
+#endif
+
+  //Check for X+Y - if pressed, set debug log mode and mplayer debuging on
+  CheckForDebugButtonCombo();
+
 #ifdef __APPLE__
   // Configure and possible manually start the helper.
   g_xbmcHelper.Configure();
 #endif
 
-  RESOLUTION initialResolution = DESKTOP;
-#ifdef HAS_DX
-  // elis tmp
-  m_pd3dDevice = g_RenderSystem.GetD3DDevice();
-  g_graphicsContext.SetD3DDevice(g_RenderSystem.GetD3DDevice());
-  initialResolution = g_videoConfig.GetInitialMode(g_RenderSystem.GetD3D(), g_RenderSystem.GetD3DParams());
-#endif
-  
-#ifdef HAS_GL
-  initialResolution = g_videoConfig.GetInitialMode();
-#endif
-
-  
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     g_guiSettings.m_LookAndFeelResolution = initialResolution;
   }
-  else
-    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
   
- 
+  int screenWidth = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
+  int screenHeight = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
+  g_Windowing.CreateNewWindow("XBMC", screenWidth, screenHeight, false, OnEvent);
+  g_Windowing.InitRenderSystem();
 
   // TODO LINUX SDL - Check that the resolution is ok
- 
-#ifdef BLAH // elis
+#ifdef HAS_DX
   m_d3dpp.Windowed = TRUE;
   m_d3dpp.hDeviceWindow = g_hWnd;
 
@@ -680,11 +846,6 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.SetD3DParameters(&m_d3dpp);
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
 
-  // Lets set some reasonable params for windowed mode
-  m_d3dpp.FullScreen_RefreshRateInHz = 0;
-  m_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
-  m_d3dpp.BackBufferFormat = D3DFMT_UNKNOWN;
-  m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
   if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
                                          D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
@@ -724,13 +885,12 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
 #endif
-  
 
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
-#if defined(_WIN32PC) && defined(HAS_GL)
-  // elis CWIN32Util::CheckGLVersion();
+#if defined(_WIN32PC) && defined(HAS_SDL_OPENGL)
+  CWIN32Util::CheckGLVersion();
 #endif
 
   // initialize our charset converter
@@ -746,13 +906,25 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
+  /*
+  while(true)
+  {
+    CWinEvents::MessagePump();
+    g_Windowing.ClearBuffers(1.0, 0, 0, 1.0);
+    g_Windowing.BeginRender();
+    g_Windowing.TestRender();
+    g_Windowing.EndRender();
+    g_Windowing.PresentRender();
+   
+  }
+  */
+
   m_splash = new CSplash("special://xbmc/media/Splash.png");
-#ifdef HAS_DX
+#ifdef HAS_GL__
   m_splash->Start();
 #else
   m_splash->Show();
 #endif
-  
 
   CStdString strLanguagePath;
   strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
@@ -766,8 +938,12 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
-  CStdString strSkinBase = "special://xbmc/skin/";
+  CStdString strSkinBase = "special://home/skin/";
   CStdString strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
+  if (!CFile::Exists(strSkinPath)) {
+    strSkinBase = "special://xbmc/skin/";
+    strSkinPath = strSkinBase + g_guiSettings.GetString("lookandfeel.skin");
+  }
   CLog::Log(LOGINFO, "Checking skin version of: %s", g_guiSettings.GetString("lookandfeel.skin").c_str());
   if (!g_SkinInfo.Check(strSkinPath))
   {
@@ -800,10 +976,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   HRESULT hr = Initialize();
-  
+
   return hr;
 
-  // elis return CXBApplicationEx::Create(hWnd);
+  //return CXBApplicationEx::Create(hWnd);
 }
 
 CProfile* CApplication::InitDirectoriesLinux()
@@ -866,6 +1042,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -978,6 +1155,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1074,6 +1252,7 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/keymaps");
     CDirectory::Create("special://home/visualisations");
     CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
@@ -1197,8 +1376,7 @@ HRESULT CApplication::Initialize()
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
-  // elis m_dpms = new DPMSSupport(g_graphicsContext.getScreenSurface());
-  m_dpms = new DPMSSupport(NULL);
+  m_dpms = new DPMSSupport(NULL /* elis g_graphicsContext.getScreenSurface()*/);
   g_guiSettings.GetSetting("screensaver.sep_powersaving")->SetVisible(
       m_dpms->IsSupported());
   g_guiSettings.GetSetting("screensaver.powersavingtime")->SetVisible(
@@ -1215,12 +1393,7 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
-#ifdef HAS_GL
-  m_gWindowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
-#endif
-#ifdef HAS_DX
-  m_gWindowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
-#endif
+  // elis m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
@@ -1485,7 +1658,7 @@ void CApplication::StartFtpServer()
 
       // check file size and presence
       CFile xml;
-      if (xml.Open(xmlpath+"FileZilla Server.xml",true) && xml.GetLength() > 0)
+      if (xml.Open(xmlpath+"FileZilla Server.xml") && xml.GetLength() > 0)
       {
         m_pFileZilla = new CXBFileZilla(_P(xmlpath));
         m_pFileZilla->Start(false);
@@ -1748,8 +1921,11 @@ void CApplication::StartZeroconf()
 void CApplication::StopZeroconf()
 {
 #ifdef HAS_ZEROCONF
-  CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
-  CZeroconf::GetInstance()->Stop();
+  if(CZeroconf::IsInstantiated())
+  {
+    CLog::Log(LOGNOTICE, "stopping zeroconf publishing");
+    CZeroconf::GetInstance()->Stop();
+  }
 #endif
 }
 
@@ -2129,22 +2305,24 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-#ifdef HAS_GL
+#ifdef HAS_SDL
   int vsync_mode = g_videoConfig.GetVSyncMode();
 #endif
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
-#ifdef HAS_GL
-    /* elis 
+#ifdef HAS_SDL
     if (vsync_mode==VSYNC_VIDEO)
       g_graphicsContext.getScreenSurface()->EnableVSync(true);
-      */
 #endif
     if (m_bPresentFrame)
       g_renderManager.Present();
     else
       g_renderManager.RenderUpdate(true, 0, 255);
+
+    if (NeedRenderFullScreen())
+      RenderFullScreen();
+    RenderMemoryStatus();
 
     ResetScreenSaver();
     g_infoManager.ResetCache();
@@ -2153,13 +2331,11 @@ void CApplication::RenderNoPresent()
 
   g_graphicsContext.AcquireCurrentContext();
 
-#ifdef HAS_GL
-  /* elis
+#ifdef HAS_SDL
   if (vsync_mode==VSYNC_ALWAYS)
     g_graphicsContext.getScreenSurface()->EnableVSync(true);
   else if (vsync_mode!=VSYNC_DRIVER)
     g_graphicsContext.getScreenSurface()->EnableVSync(false);
-    */
 #endif
 
   g_ApplicationRenderer.Render();
@@ -2267,25 +2443,37 @@ static int screenSaverFadeAmount = 0;
 
 void CApplication::RenderScreenSaver()
 {
+  bool draw = false;
+  float amount = 0.0f;
+  if (m_screenSaverMode == "Dim")
+    amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
+  else if (m_screenSaverMode == "Black")
+    amount = 1.0f; // fully fade
   // special case for dim screensaver
-  if (m_bScreenSave)
+  if (amount > 0.f)
   {
-    float amount = 0.0f;
-    if (m_screenSaverMode == "Dim")
-      amount = 1.0f - g_guiSettings.GetInt("screensaver.dimlevel")*0.01f;
-    else if (m_screenSaverMode == "Black")
-      amount = 1.0f; // fully fade
-    if (amount > 0.0f)
-    { // render a black quad at suitable transparency
+    if (m_bScreenSave)
+    {
+      draw = true;
       if (screenSaverFadeAmount < 100)
-        screenSaverFadeAmount += 2;  // around a second to fade
-
-      DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-      CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
+      {
+        screenSaverFadeAmount = std::min(100, screenSaverFadeAmount + 2);  // around a second to fade
+      }
+    }
+    else
+    {
+      if (screenSaverFadeAmount > 0)
+      {
+        draw = true;
+        screenSaverFadeAmount = std::max(0, screenSaverFadeAmount - 4);  // around a half second to unfade
+      }
     }
   }
-  else
-    screenSaverFadeAmount = 0;
+  if (draw)
+  {
+    DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
+    CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
+  }
 }
 
 bool CApplication::WaitFrame(DWORD timeout)
@@ -2343,18 +2531,6 @@ void CApplication::Render()
 
 
     m_bPresentFrame = false;
-
-    /*
-    // elis
-    g_RenderSystem.ClearBuffers(1.0f, 0.0f, 0.0f, 1.0f);
-    g_RenderSystem.BeginRender();
-    g_RenderSystem.Test();
-    g_RenderSystem.EndRender();
-    g_RenderSystem.Present();
-    return ;
-    */
-    
-
     if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
 #ifdef HAS_SDL
@@ -2401,7 +2577,7 @@ void CApplication::Render()
   }
   g_graphicsContext.Lock();
   RenderNoPresent();
-  g_RenderSystem.Present();
+  g_graphicsContext.Flip();
   g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();
 
@@ -2429,18 +2605,19 @@ void CApplication::RenderMemoryStatus()
     CStdString info;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
+    // elis CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
 #ifdef __APPLE__
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
+    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
+              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
 #elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s.", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str());
+    // elis info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
-              g_infoManager.GetFPS(), strCores.c_str(), dCPU);
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
     static int yShift = 20;
@@ -2461,22 +2638,6 @@ void CApplication::RenderMemoryStatus()
     CGUITextLayout::DrawOutlineText(g_fontManager.GetFont("font13"), x, y, 0xffffffff, 0xff000000, 2, info);
   }
 }
-
-int CApplication::OnEvent(unsigned int eventType, unsigned long param1, unsigned long param2)
-{
-  switch(eventType)
-  {
-  case XBMC_PRESSED:
-  case XBMC_RELEASED:
-    g_Keyboard.HandleEvent(eventType, param1, param2);
-    g_application.ProcessKeyboard();
-    break;
-  }
-
-  return 0;
-}
-
-
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
 // The window manager will return true if the event is processed, false otherwise.
 // If not already processed, this routine handles global keypresses.  It returns
@@ -2484,7 +2645,6 @@ int CApplication::OnEvent(unsigned int eventType, unsigned long param1, unsigned
 
 bool CApplication::OnKey(CKey& key)
 {
- 
   // Turn the mouse off, as we've just got a keypress from controller or remote
   g_Mouse.SetInactive();
   CAction action;
@@ -2510,7 +2670,7 @@ bool CApplication::OnKey(CKey& key)
     // allow some keys to be processed while the screensaver is active
     if (WakeUpScreenSaverAndDPMS() && !processKey)
     {
-      g_Keyboard.Reset();
+      // elis g_Keyboard.Reset();
       return true;
     }
   }
@@ -2524,8 +2684,9 @@ bool CApplication::OnKey(CKey& key)
   { // fullscreen info dialog - special case
     CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
+#ifdef HAS_SDL
     g_Keyboard.Reset();
-
+#endif
     if (OnAction(action))
       return true;
 
@@ -2582,13 +2743,13 @@ bool CApplication::OnKey(CKey& key)
         }
         else
         {
-          action.wID = (WORD)g_Keyboard.GetVKey() | KEY_VKEY;
+          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_VKEY;
           action.unicode = 0;
         }
       }
-
+#ifdef HAS_SDL
       g_Keyboard.Reset();
-
+#endif
       if (OnAction(action))
         return true;
       // failed to handle the keyboard action, drop down through to standard action
@@ -2610,7 +2771,7 @@ bool CApplication::OnKey(CKey& key)
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
 
-#ifdef HAS_GL
+#ifdef HAS_SDL
   g_Keyboard.Reset();
 #endif
 
@@ -2702,6 +2863,15 @@ bool CApplication::OnAction(CAction &action)
     else
       PowerButtonDown = false;
   }
+  // reload keymaps
+  /* elis
+  if (action.wID == ACTION_RELOAD_KEYMAPS)
+  {
+    CButtonTranslator::GetInstance().Clear();
+    CButtonTranslator::GetInstance().Load();
+  }
+  */
+
   // show info : Shows the current video or song information
   if (action.wID == ACTION_SHOW_INFO)
   {
@@ -2910,38 +3080,38 @@ bool CApplication::OnAction(CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-    // increase or decrease the volume
-    int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
+      // increase or decrease the volume
+      int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
 
-    // calculate speed so that a full press will equal 1 second from min to max
-    float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
-    if( action.fRepeat )
-      speed *= action.fRepeat;
-    else
-      speed /= 50; //50 fps
-    if (g_stSettings.m_bMute)
-    {
-      // only unmute if volume is to be increased, otherwise leave muted
-      if (action.wID == ACTION_VOLUME_DOWN)
+      // calculate speed so that a full press will equal 1 second from min to max
+      float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
+      if( action.fRepeat )
+        speed *= action.fRepeat;
+      else
+        speed /= 50; //50 fps
+      if (g_stSettings.m_bMute)
+      {
+        // only unmute if volume is to be increased, otherwise leave muted
+        if (action.wID == ACTION_VOLUME_DOWN)
+          return true;
+        Mute();
         return true;
-      Mute();
-      return true;
-    }
-    if (action.wID == ACTION_VOLUME_UP)
-    {
-      volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
-    }
-    else
-    {
-      volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
-    }
+      }
+      if (action.wID == ACTION_VOLUME_UP)
+      {
+        volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+      }
+      else
+      {
+        volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+      }
 
-    SetHardwareVolume(volume);
-#ifndef HAS_SDL_AUDIO
-    g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
-#else
-    g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
-#endif
+      SetHardwareVolume(volume);
+  #ifndef HAS_SDL_AUDIO
+      g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+  #else
+      g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+  #endif
     }
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
@@ -2955,6 +3125,14 @@ bool CApplication::OnAction(CAction &action)
     m_guiDialogSeekBar.OnAction(action);
     return true;
   }
+  /* elis
+  if (action.wID == ACTION_GUIPROFILE_BEGIN)
+  {
+    CGUIControlProfiler::Instance().SetOutputFile(_P("special://home/guiprofiler.xml"));
+    CGUIControlProfiler::Instance().Start();
+    return true;
+  }
+  */
   return false;
 }
 
@@ -3010,10 +3188,10 @@ void CApplication::FrameMove()
 
   CWinEvents::MessagePump();
 
-  bool didSomething;
   // read raw input from controller, remote control, mouse and keyboard
   // elis ReadInput();
   // process input actions
+  bool didSomething;
   // elis bool didSomething = ProcessMouse();
   didSomething |= ProcessHTTPApiButtons();
   // elis didSomething |= ProcessKeyboard();
@@ -3650,7 +3828,8 @@ bool CApplication::ProcessKeyboard()
   MEASURE_FUNCTION;
 
   // process the keyboard buttons etc.
-  BYTE vkey = g_Keyboard.GetVKey();
+ 
+  BYTE vkey = g_Keyboard.GetAscii();
   WCHAR unicode = g_Keyboard.GetUnicode();
   if (vkey || unicode)
   {
@@ -3665,6 +3844,7 @@ bool CApplication::ProcessKeyboard()
     key.SetHeld(g_Keyboard.KeyHeld());
     return OnKey(key);
   }
+ 
   return false;
 }
 
@@ -3692,8 +3872,7 @@ bool CApplication::IsButtonDown(DWORD code)
 
 bool CApplication::AnyButtonDown()
 {
-  /* elis
-  ReadInput();
+  // elis ReadInput();
 #ifdef HAS_GAMEPAD
   if (m_DefaultGamepad.wPressedButtons || m_DefaultIR_Remote.wButtons)
     return true;
@@ -3704,7 +3883,6 @@ bool CApplication::AnyButtonDown()
       return true;
   }
 #endif
-  */
   return false;
 }
 
@@ -3920,7 +4098,14 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stop sap announcement listener");
     g_sapsessions.StopThread();
 #endif
-
+#ifdef HAS_ZEROCONF
+    if(CZeroconfBrowser::IsInstantiated())
+    {
+      CLog::Log(LOGNOTICE, "stop zeroconf browser");
+      CZeroconfBrowser::GetInstance()->Stop();
+      CZeroconfBrowser::ReleaseInstance();
+    }
+#endif
     m_applicationMessenger.Cleanup();
 
     CLog::Log(LOGNOTICE, "clean cached files!");
@@ -4289,7 +4474,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
     m_pPlayer = CPlayerCoreFactory::CreatePlayer(eNewCore, *this);
   }
 
-  // Workaround for bug/quirk in XBMC_Mixer on OSX.
+  // Workaround for bug/quirk in SDL_Mixer on OSX.
   // TODO: Remove after GUI Sounds redux
 #if defined(__APPLE__)
   if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
@@ -4584,6 +4769,12 @@ void CApplication::SaveFileState()
 
 void CApplication::UpdateFileState()
 {
+  // No resume for livetv
+  /* elis
+  if (m_progressTrackingItem->IsLiveTV())
+    return;
+    */
+
   // Did the file change?
   if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
   {
@@ -5320,6 +5511,12 @@ void CApplication::ProcessSlow()
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
     m_gWindowManager.SendThreadMessage(msg);
   }
+#endif
+#ifdef HAS_LIRC
+  /* elis
+  if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())
+    g_RemoteControl.Initialize();
+    */
 #endif
 }
 

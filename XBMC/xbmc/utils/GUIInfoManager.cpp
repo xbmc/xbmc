@@ -56,6 +56,7 @@
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
 // elis #include "Surface.h"
+#include "WindowingFactory.h"
 #include "PowerManager.h"
 
 // stuff for current song
@@ -1515,15 +1516,15 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case SYSTEM_OPENGL_VENDOR:
-    strLabel = g_graphicsContext.GetRenderVendor();
+    strLabel = g_Windowing.GetRenderVendor();
     break;
   case SYSTEM_OPENGL_RENDERER:
-    strLabel = g_graphicsContext.GetRenderRenderer();
+    strLabel = g_Windowing.GetRenderRenderer();
     break;
   case SYSTEM_OPENGL_VERSION:
   {
-    int major, minor;
-    g_graphicsContext.GetRenderVersion(major, minor);
+    unsigned int major, minor;
+    g_Windowing.GetRenderVersion(major, minor);
     strLabel.Format("%d.%d", major, minor);
     break;
   }

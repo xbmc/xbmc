@@ -35,6 +35,7 @@
 #include "Setupapi.h"
 #endif
 #include "MediaManager.h"
+#include "WindowingFactory.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -758,9 +759,10 @@ void CWIN32Util::CheckGLVersion()
 
 bool CWIN32Util::HasGLDefaultDrivers()
 {
-  int a=0,b=0;
-  CStdString strVendor = g_graphicsContext.GetRenderVendor();
-  g_graphicsContext.GetRenderVersion(a, b);
+  unsigned int a=0,b=0;
+
+  CStdString strVendor = g_Windowing.GetRenderVendor();
+  g_Windowing.GetRenderVersion(a, b);
 
   if(strVendor.find("Microsoft")!=strVendor.npos && a==1 && b==1)
     return true;
@@ -770,8 +772,9 @@ bool CWIN32Util::HasGLDefaultDrivers()
 
 bool CWIN32Util::HasReqGLVersion()
 {
-  int a=0,b=0;
-  g_graphicsContext.GetRenderVersion(a, b);
+  unsigned int a=0,b=0;
+
+  g_Windowing.GetRenderVersion(a, b);
   if((a>=2) || (a == 1 && b >= 3))
     return true;
   else

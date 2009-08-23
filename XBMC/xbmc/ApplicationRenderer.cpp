@@ -45,8 +45,8 @@ void CApplicationRenderer::OnStartup()
   m_explicitbusy = 0;
   m_busycount = 0;
   m_prevbusycount = 0;
-#ifdef HAS_DX
-  m_lpSurface = NULL;
+#ifndef HAS_SDL
+  // elis m_lpSurface = NULL;
 #endif
   m_pWindow = NULL;
   m_Resolution = g_graphicsContext.GetVideoResolution();
@@ -58,8 +58,8 @@ void CApplicationRenderer::OnExit()
   m_busyShown = false;
   if (m_pWindow) m_pWindow->Close(true);
   m_pWindow = NULL;
-#ifdef HAS_DX
-  SAFE_RELEASE(m_lpSurface);
+#ifndef HAS_SDL
+  // elis SAFE_RELEASE(m_lpSurface);
 #endif
 }
 
@@ -327,7 +327,7 @@ void CApplicationRenderer::Disable()
 
 bool CApplicationRenderer::Start()
 {
-#ifdef HAS_GL
+#ifdef HAS_SDL
   return false;
 #else
   if (g_advancedSettings.m_busyDialogDelay <= 0) return false; //delay of 0 is considered disabled.

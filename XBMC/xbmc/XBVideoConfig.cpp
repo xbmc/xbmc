@@ -270,6 +270,7 @@ void XBVideoConfig::GetModes()
 #elif defined(_WIN32PC)
 void XBVideoConfig::GetModes()
 {
+  /* elis
   m_iNumResolutions = 0;
 
   for(int mode = 0;; mode++)
@@ -308,6 +309,7 @@ void XBVideoConfig::GetModes()
   }
   g_graphicsContext.ResetScreenParameters(DESKTOP);
   g_graphicsContext.ResetScreenParameters(WINDOW);
+  */
 }
 
 #else

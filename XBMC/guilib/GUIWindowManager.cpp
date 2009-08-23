@@ -556,7 +556,7 @@ void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
       m_pCallback->FrameMove();
     }
     m_pCallback->Render();
-#if defined(WIN32) && !defined(HAS_GL)
+#if defined(WIN32) && !defined(HAS_SDL)
     /*
     extern CXBMC_PC *g_xbmcPC;
     g_xbmcPC->ProcessMessage(NULL);

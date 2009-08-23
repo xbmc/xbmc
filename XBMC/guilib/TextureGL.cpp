@@ -21,7 +21,7 @@
 
 #include "include.h"
 #include "TextureGL.h"
-#include "RenderSystem.h"
+#include "WindowingFactory.h"
 #include "../xbmc/Picture.h"
 
 #ifdef HAS_GL
@@ -166,9 +166,13 @@ bool CGLTexture::NeedPower2Texture()
 {
   unsigned int vmaj, vmin;
 
-  g_RenderSystem.GetVersion(vmaj, vmin);
+  return false;
 
-  if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
+  //CRenderSystemBase* renderSystem = CWindowingFactory::GetRenderSystem();
+
+  g_Windowing.GetRenderVersion(vmaj, vmin);
+
+  if (vmaj >= 2 && GLEW_ARB_texture_non_power_of_two)
     return false;
 
   return true;

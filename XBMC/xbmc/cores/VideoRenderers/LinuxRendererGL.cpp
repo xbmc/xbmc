@@ -33,6 +33,7 @@
 #include "../../XBVideoConfig.h"
 // elis #include "../../../guilib/Surface.h"
 #include "../../../guilib/FrameBufferObject.h"
+#include "WindowingFactory.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
@@ -659,8 +660,8 @@ void CLinuxRendererGL::LoadTextures(int source)
     }
     else
     {
-      int maj=0, min=0;
-      g_graphicsContext.GetRenderVersion(maj, min);
+      unsigned int maj=0, min=0;
+      g_Windowing.GetRenderVersion(maj, min);
       if (maj>=2)
       {
         imaging = 1;

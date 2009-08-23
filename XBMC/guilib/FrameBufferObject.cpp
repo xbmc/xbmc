@@ -23,7 +23,7 @@
 
 #ifdef HAS_GL
 #include "../xbmc/Settings.h"
-#include "RenderSystem.h"
+#include "WindowingFactory.h"
 #include "FrameBufferObject.h"
 
 
@@ -42,8 +42,7 @@ CFrameBufferObject::CFrameBufferObject()
 
 bool CFrameBufferObject::IsSupported()
 {
-  // elis
-  if(g_RenderSystem.IsExtSupported("GL_EXT_framebuffer_object"))
+  if(g_Windowing.IsExtSupported("GL_EXT_framebuffer_object"))
     m_supported = true;
   else
     m_supported = false;

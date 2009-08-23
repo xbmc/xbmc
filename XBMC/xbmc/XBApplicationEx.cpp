@@ -296,7 +296,7 @@ inline float MaxTrigger(XBGAMEPAD &gamepad)
 }
 #endif
 
-/* eli
+/* elis
 void CXBApplicationEx::ReadInput(XBMC_Event newEvent)
 {
   MEASURE_FUNCTION;
