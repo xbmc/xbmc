@@ -47,7 +47,8 @@ CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_OutputTimeout(0),
   m_LastPts(-1.0)
 {
-
+  memset(&m_Output, 0, sizeof(m_Output));
+  memset(&m_CurrentFormat, 0, sizeof(m_CurrentFormat));
 }
 
 CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
@@ -152,7 +153,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     return VC_BUFFER;
 
   //CLog::Log(LOGDEBUG, "%s: Tx %d bytes to decoder.", __FUNCTION__, iSize);
-  BC_STATUS ret = DtsProcInput(m_Device, pData, iSize, (U64)(pts * (100000000.0 / DVD_TIME_BASE)), FALSE);
+  BC_STATUS ret = DtsProcInput(m_Device, pData, iSize, (U64)(pts * (10000000.0 / DVD_TIME_BASE)), FALSE);
   if (ret != BC_STS_SUCCESS)
   {
     CLog::Log(LOGDEBUG, "%s: DtsProcInput returned %d.", __FUNCTION__, ret);
@@ -172,9 +173,13 @@ void CDVDVideoCodecCrystalHD::Reset()
 
 bool CDVDVideoCodecCrystalHD::IsPictureReady()
 {
-  memset(&m_Output, 0, sizeof(m_Output));
-  DtsReleaseOutputBuffs(m_Device, FALSE, FALSE); // Previous output is no longer valid
-  BC_STATUS ret = DtsProcOutputNoCopy(m_Device, m_OutputTimeout, &m_Output);  
+  //memset(&m_Output, 0, sizeof(m_Output));
+  //DtsReleaseOutputBuffs(m_Device, FALSE, FALSE); // Previous output is no longer valid
+
+  m_Output.PoutFlags = BC_POUT_FLAGS_SIZE | BC_POUT_FLAGS_YV12;
+  m_Output.PicInfo.width = m_CurrentFormat.width;
+  m_Output.PicInfo.height = m_CurrentFormat.height;
+  BC_STATUS ret = DtsProcOutput(m_Device, m_OutputTimeout, &m_Output);  
   switch (ret)
   {
   case BC_STS_SUCCESS:
@@ -207,6 +212,12 @@ bool CDVDVideoCodecCrystalHD::IsPictureReady()
       CLog::Log(LOGDEBUG, "\tFrames to Drop: %lu", m_Output.PicInfo.n_drop);
       CLog::Log(LOGDEBUG, "\tH264 Valid Fields: 0x%08x", m_Output.PicInfo.other.h264.valid);   
       memcpy(&m_CurrentFormat, &m_Output.PicInfo, sizeof(BC_PIC_INFO_BLOCK));
+
+      m_Output.YbuffSz = m_CurrentFormat.width * m_CurrentFormat.height;
+      m_Output.UVbuffSz = m_Output.YbuffSz / 2;
+      m_Output.Ybuff = (U8*)_aligned_malloc(m_Output.YbuffSz + m_Output.UVbuffSz, 4);
+      m_Output.UVbuff =  m_Output.Ybuff + m_Output.YbuffSz;
+
       m_OutputTimeout = 15000;
     }
     break;
@@ -229,14 +240,14 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (m_Output.PicInfo.timeStamp == 0)
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
   else
-    pDvdVideoPicture->pts = (double)m_Output.PicInfo.timeStamp / (100000000.0 / DVD_TIME_BASE);
+    pDvdVideoPicture->pts = (double)m_Output.PicInfo.timeStamp / (10000000.0 / DVD_TIME_BASE);
 
   pDvdVideoPicture->data[0] = m_Output.Ybuff; // Y plane
-  pDvdVideoPicture->data[1] = m_Output.UVbuff; // U plane
-  pDvdVideoPicture->data[2] = m_Output.UVbuff + (m_Output.UVbuffSz / 2); // V plane
+  pDvdVideoPicture->data[2] = m_Output.UVbuff; // U plane
+  pDvdVideoPicture->data[1] = m_Output.UVbuff + (m_Output.UVbuffSz / 2); // V plane
   pDvdVideoPicture->iLineSize[0] = m_CurrentFormat.width;
-  pDvdVideoPicture->iLineSize[1] = m_CurrentFormat.width/4;
-  pDvdVideoPicture->iLineSize[2] = m_CurrentFormat.width/4;
+  pDvdVideoPicture->iLineSize[1] = m_CurrentFormat.width/2;
+  pDvdVideoPicture->iLineSize[2] = m_CurrentFormat.width/2;
 
   // Flags
   pDvdVideoPicture->iFlags |= (m_CurrentFormat.flags & VDEC_FLAG_BOTTOM_FIRST) ? 0 : DVP_FLAG_TOP_FIELD_FIRST;
