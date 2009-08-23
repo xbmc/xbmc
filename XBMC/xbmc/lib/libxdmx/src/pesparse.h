@@ -102,6 +102,7 @@ protected:
   uint64_t m_BytesOut;
   unsigned int m_MaxPayloadLen;
   PayloadList* m_pPayloadList;
+  uint64_t m_ClockOffset;
 
   bool m_NeedProbe;
 };

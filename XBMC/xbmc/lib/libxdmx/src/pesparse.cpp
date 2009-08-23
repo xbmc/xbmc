@@ -12,7 +12,8 @@ CPESParser::CPESParser(CElementaryStream* pStream, PayloadList* pPayloadList) :
   m_BytesOut(0),
   m_MaxPayloadLen(0),
   m_pPayloadList(pPayloadList),
-  m_NeedProbe(true)
+  m_NeedProbe(true),
+  m_ClockOffset(0)
 {
 
 }
@@ -109,11 +110,14 @@ void CPESParser::Flush()
 
 void CPESParser::SetTimeStamps(CParserPayload* pPayload, uint64_t pts, uint64_t dts)
 {
-  // Scale timestamps to 90 KHz Clock
-  pPayload->SetPts((double)pts/90000.0);
+  if (m_ClockOffset == 0)
+    m_ClockOffset = pts;
+
+  // Scale timestamps to clock
+  pPayload->SetPts((double)(pts - m_ClockOffset)/90000.0);
   if (dts == 0)
     dts = pts;
-  pPayload->SetDts((double)dts/90000.0);
+  pPayload->SetDts((double)(dts - m_ClockOffset)/90000.0);
  
 }
 

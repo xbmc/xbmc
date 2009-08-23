@@ -19,7 +19,7 @@
  *
  */
 
-//#define HAVE_CRYSTALHD
+#define HAVE_CRYSTALHD
 #if defined(HAVE_CRYSTALHD)
 #pragma once
 
@@ -45,6 +45,8 @@ typedef char				S8;
 #include "lib/crystalhd/include/linux/bc_ldil_if.h"
 #endif
 
+#include <fstream>
+
 class CDVDVideoCodecCrystalHD : public CDVDVideoCodec
 {
 public:
@@ -62,19 +64,20 @@ public:
 
 protected:
   bool IsPictureReady();
-  void InitOutput(BC_DTS_PROC_OUT* pOut);
-  void SetSize(unsigned int height, unsigned int width);
   HANDLE m_Device;
-  unsigned int m_Height;
-  unsigned int m_Width;
-  U32 m_YSize;
-  U32 m_UVSize;
-  U8* m_pBuffer;
   BC_DTS_PROC_OUT m_Output;
   bool m_DropPictures;
   unsigned int m_PicturesDecoded;
   unsigned int m_LastDecoded;
   char* m_pFormatName;
+
+  BC_PIC_INFO_BLOCK m_CurrentFormat;
+
+  unsigned int m_FramesOut;
+  unsigned int m_OutputTimeout;
+  double m_LastPts;
+
+  std::fstream m_DumpFile;
 };
 
 #endif

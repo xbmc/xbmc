@@ -39,15 +39,13 @@ const int CODEC_ID_H264 = 28;
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(0),
-  m_Height(0),
-  m_Width(0),
-  m_pBuffer(NULL),
-  m_YSize(0),
-  m_UVSize(0),
   m_DropPictures(false),
   m_PicturesDecoded(0),
   m_LastDecoded(0),
-  m_pFormatName("")
+  m_pFormatName(""),
+  m_FramesOut(0),
+  m_OutputTimeout(0),
+  m_LastPts(-1.0)
 {
 
 }
@@ -60,7 +58,7 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   BC_STATUS res;
-  U32 mode = DTS_PLAYBACK_MODE | DTS_LOAD_FILE_PLAY_FW | DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(vdecRESOLUTION_480i);
+  U32 mode = DTS_PLAYBACK_MODE | DTS_LOAD_FILE_PLAY_FW | DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(vdecRESOLUTION_720p23_976);
   
   U32 videoAlg = 0;
   switch (hints.codec)
@@ -131,42 +129,8 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     return false;
   }
 
-  m_Height = hints.height;
-  m_Width = hints.width;
-
-  // Create a 4-byte aligned m_Output buffer
-  m_YSize = m_Height * m_Width;
-  m_UVSize = m_YSize / 2;
-  m_pBuffer =  (U8*)malloc(m_YSize + m_UVSize + 4);
-
   CLog::Log(LOGDEBUG, "%s: Opened Broadcom Crystal HD", __FUNCTION__);
   return true;
-}
-
-void CDVDVideoCodecCrystalHD::SetSize(unsigned int height, unsigned int width)
-{
-  if (m_Height == height && m_Width == width)
-    return;
-
-  m_Height = height;
-  m_Width = width;
-
-  if (m_pBuffer)
-    free(m_pBuffer);
-
-  if (m_Height && m_Width)
-  {
-    // Create a 4-byte aligned m_Output buffer
-    m_YSize = m_Height * m_Width;
-    m_UVSize = m_YSize / 2;
-    m_pBuffer =  (U8*)malloc(m_YSize + m_UVSize + 4);
-  }
-  else
-  {
-    m_YSize = 0;
-    m_UVSize = 0;
-    m_pBuffer = NULL;
-  }
 }
 
 void CDVDVideoCodecCrystalHD::Dispose()
@@ -175,8 +139,6 @@ void CDVDVideoCodecCrystalHD::Dispose()
   DtsCloseDecoder(m_Device);
   DtsDeviceClose(m_Device);
   m_Device = 0;
-  free(m_pBuffer);
-  m_pBuffer = NULL;
 }
 
 void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
@@ -186,7 +148,11 @@ void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 
 int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
-  BC_STATUS ret = DtsProcInput(m_Device, pData, iSize, 0/*(U64)(pts * 1000000000)*/, FALSE);
+  if (!pData)
+    return VC_BUFFER;
+
+  //CLog::Log(LOGDEBUG, "%s: Tx %d bytes to decoder.", __FUNCTION__, iSize);
+  BC_STATUS ret = DtsProcInput(m_Device, pData, iSize, (U64)(pts * (100000000.0 / DVD_TIME_BASE)), FALSE);
   if (ret != BC_STS_SUCCESS)
   {
     CLog::Log(LOGDEBUG, "%s: DtsProcInput returned %d.", __FUNCTION__, ret);
@@ -206,15 +172,14 @@ void CDVDVideoCodecCrystalHD::Reset()
 
 bool CDVDVideoCodecCrystalHD::IsPictureReady()
 {
-  InitOutput(&m_Output);
-  BC_STATUS ret = DtsProcOutput(m_Device, 0, &m_Output);  
+  memset(&m_Output, 0, sizeof(m_Output));
+  DtsReleaseOutputBuffs(m_Device, FALSE, FALSE); // Previous output is no longer valid
+  BC_STATUS ret = DtsProcOutputNoCopy(m_Device, m_OutputTimeout, &m_Output);  
   switch (ret)
   {
   case BC_STS_SUCCESS:
-    if (m_Output.PoutFlags & ~BC_POUT_FLAGS_PIB_VALID)
-      return true;
-    CLog::Log(LOGDEBUG, "%s: Recieved picture with no PIB. Flags: 0x%08x", __FUNCTION__, m_Output.PoutFlags);
-    break;
+    m_FramesOut++;
+    return true;
   case BC_STS_NO_DATA:
     break;
   case BC_STS_FMT_CHANGE:
@@ -240,8 +205,9 @@ bool CDVDVideoCodecCrystalHD::IsPictureReady()
       CLog::Log(LOGDEBUG, "\tTimeStamp: %lu", m_Output.PicInfo.ycom);
       CLog::Log(LOGDEBUG, "\tCustom Aspect: %lu", m_Output.PicInfo.custom_aspect_ratio_width_height);
       CLog::Log(LOGDEBUG, "\tFrames to Drop: %lu", m_Output.PicInfo.n_drop);
-      CLog::Log(LOGDEBUG, "\tH264 Valid Fields: 0x%08x", m_Output.PicInfo.other.h264.valid);    
-      SetSize(m_Output.PicInfo.height, m_Output.PicInfo.width);
+      CLog::Log(LOGDEBUG, "\tH264 Valid Fields: 0x%08x", m_Output.PicInfo.other.h264.valid);   
+      memcpy(&m_CurrentFormat, &m_Output.PicInfo, sizeof(BC_PIC_INFO_BLOCK));
+      m_OutputTimeout = 15000;
     }
     break;
   case BC_STS_IO_XFR_ERROR:
@@ -260,57 +226,36 @@ bool CDVDVideoCodecCrystalHD::IsPictureReady()
 
 bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  //pDvdVideoPicture->pts = (double)m_Output.PicInfo.timeStamp / (DVD_TIME_BASE * 1000);
-  pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+  if (m_Output.PicInfo.timeStamp == 0)
+    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+  else
+    pDvdVideoPicture->pts = (double)m_Output.PicInfo.timeStamp / (100000000.0 / DVD_TIME_BASE);
+
   pDvdVideoPicture->data[0] = m_Output.Ybuff; // Y plane
-  pDvdVideoPicture->data[2] = m_Output.UVbuff; // U plane
-  pDvdVideoPicture->data[1] = m_Output.UVbuff + (m_UVSize / 2); // V plane
-  pDvdVideoPicture->iLineSize[0] = m_Width;
-  pDvdVideoPicture->iLineSize[1] = m_Width/4;
-  pDvdVideoPicture->iLineSize[2] = m_Width/4;
+  pDvdVideoPicture->data[1] = m_Output.UVbuff; // U plane
+  pDvdVideoPicture->data[2] = m_Output.UVbuff + (m_Output.UVbuffSz / 2); // V plane
+  pDvdVideoPicture->iLineSize[0] = m_CurrentFormat.width;
+  pDvdVideoPicture->iLineSize[1] = m_CurrentFormat.width/4;
+  pDvdVideoPicture->iLineSize[2] = m_CurrentFormat.width/4;
 
   // Flags
-  pDvdVideoPicture->iFlags |= (m_Output.PicInfo.flags & VDEC_FLAG_BOTTOM_FIRST) ? 0 : DVP_FLAG_TOP_FIELD_FIRST;
+  pDvdVideoPicture->iFlags |= (m_CurrentFormat.flags & VDEC_FLAG_BOTTOM_FIRST) ? 0 : DVP_FLAG_TOP_FIELD_FIRST;
   // DVP_FLAG_ALLOCATED == 0
-  pDvdVideoPicture->iFlags |= (m_Output.PicInfo.flags & VDEC_FLAG_INTERLACED_SRC) ? DVP_FLAG_INTERLACED : 0;
+  pDvdVideoPicture->iFlags |= (m_CurrentFormat.flags & VDEC_FLAG_INTERLACED_SRC) ? DVP_FLAG_INTERLACED : 0;
   //pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED; // use n_drop
 
-  // pDvdVideoPicture->iRepeatPicture = ??
-  pDvdVideoPicture->iDuration = 41711.111111;
+  pDvdVideoPicture->iRepeatPicture = 0;
+  //pDvdVideoPicture->iDuration = 41711.111111;
   // pDvdVideoPicture->iFrameType
   // pDvdVideoPicture->color_matrix // colour_primaries
 
   pDvdVideoPicture->color_range = 0;
-  pDvdVideoPicture->iWidth = m_Output.PicInfo.width;
-  pDvdVideoPicture->iHeight = m_Output.PicInfo.height;
-  pDvdVideoPicture->iDisplayWidth = m_Output.PicInfo.width;
-  pDvdVideoPicture->iDisplayHeight = m_Output.PicInfo.height;
+  pDvdVideoPicture->iWidth = m_CurrentFormat.width;
+  pDvdVideoPicture->iHeight = m_CurrentFormat.height;
+  pDvdVideoPicture->iDisplayWidth = m_CurrentFormat.width;
+  pDvdVideoPicture->iDisplayHeight = m_CurrentFormat.height;
   pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
   return true;
-}
-
-void CDVDVideoCodecCrystalHD::InitOutput(BC_DTS_PROC_OUT* pOut)
-{
-  U8* alignedBuf = m_pBuffer;
-  if(((unsigned int)m_pBuffer)%4)
-  {
-    // TODO: This will not work on x86_64. Use _aligned_malloc
-    U8 oddBytes = 4 - ((U8)((DWORD)m_pBuffer % 4));
-    alignedBuf = m_pBuffer + oddBytes;
-  }
-
-  memset(pOut, 0, sizeof(BC_DTS_PROC_OUT));
-  pOut->PicInfo.width = m_Width;
-  pOut->PicInfo.height = m_Height;
-  pOut->Ybuff = alignedBuf;
-  pOut->YbuffSz = m_YSize/4;
-  // If UV is in use, it's data immediately follows Y
-  if (m_UVSize)
-    pOut->UVbuff = alignedBuf + m_YSize;
-  else
-    pOut->UVbuff = NULL;
-  pOut->UVbuffSz = m_UVSize/4;
-  pOut->PoutFlags = BC_POUT_FLAGS_SIZE;
 }
 #endif
