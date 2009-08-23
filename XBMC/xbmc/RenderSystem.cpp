@@ -23,12 +23,9 @@
 #include "stdafx.h"
 #include "RenderSystem.h"
 
-CRenderSystem g_RenderSystem;
-
 CRenderSystemBase::CRenderSystemBase()
 {
-  m_bCreated = false;
-  m_pWinSystem = NULL;
+  m_bRenderCreated = false;
   m_bVSync = true;
 }
 

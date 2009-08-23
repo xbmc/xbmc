@@ -19,11 +19,8 @@
 *
 */
 
-
 #include "stdafx.h"
 #include "RenderSystemGL.h"
-
-#ifdef HAS_GL
 
 CRenderSystemGL::CRenderSystemGL()
 : CRenderSystemBase()
@@ -33,50 +30,33 @@ CRenderSystemGL::CRenderSystemGL()
 
 CRenderSystemGL::~CRenderSystemGL()
 {
-  Destroy();
+  DestroyRenderSystem();
 }
 
-bool CRenderSystemGL::Create()
+bool CRenderSystemGL::InitRenderSystem()
 {
-  // get version, atributes etc.
-
-  m_bCreated = true;
-    
-  return true;
-}
-
-bool CRenderSystemGL::Destroy()
-{
-  m_bCreated = false;
-  m_glContext.Release();
-
-  return true;
-}
-
-bool CRenderSystemGL::AttachWindow(CWinSystem* winSystem)
-{
-  if(winSystem == NULL)
-    return false;
-
-  m_pWinSystem = winSystem;
-
-  if(!m_glContext.Create(m_pWinSystem))
-  {
-    return false;
-  }
+  m_bRenderCreated = true;
 
   // init glew library
   GLenum err = glewInit();
   if (GLEW_OK != err)
   {
-    /* Problem: glewInit failed, something is seriously wrong. */
+    // Problem: glewInit failed, something is seriously wrong
     return false;
   }
+    
+  return true;
+}
+
+bool CRenderSystemGL::DestroyRenderSystem()
+{
+  m_bRenderCreated = false;
+  //m_glContext.Release();
 
   return true;
 }
 
-void CRenderSystemGL::GetVersion(unsigned int& major, unsigned int& minor)
+void CRenderSystemGL::GetRenderVersion(unsigned int& major, unsigned int& minor)
 {
   major = 0;
   minor = 0;
@@ -86,21 +66,32 @@ void CRenderSystemGL::GetVersion(unsigned int& major, unsigned int& minor)
     sscanf(ver, "%d.%d", &major, &minor);
 }
 
+CStdString CRenderSystemGL::GetRenderVendor()
+{
+  return CStdString((const char*)glGetString(GL_VENDOR));
+}
+
+CStdString CRenderSystemGL::GetRenderRenderer()
+{
+  return CStdString((const char*)glGetString(GL_RENDERER));
+
+}
+
 void CRenderSystemGL::SetViewPort(CRect& viewPort)
 {
-  if(!m_bCreated)
+  if(!m_bRenderCreated)
     return;
 }
 
 void CRenderSystemGL::GetViewPort(CRect& viewPort)
 {
-  if(!m_bCreated)
+  if(!m_bRenderCreated)
     return;
 }
 
 bool CRenderSystemGL::BeginRender()
 {
-  if(!m_bCreated)
+  if(!m_bRenderCreated)
     return false;
 
   return true;
@@ -108,28 +99,16 @@ bool CRenderSystemGL::BeginRender()
 
 bool CRenderSystemGL::EndRender()
 {
-  if(!m_bCreated)
+  if(!m_bRenderCreated)
     return false;
-
-  return true;
-}
-
-bool CRenderSystemGL::Present()
-{
-  if(!m_bCreated)
-    return false;
-
-  m_glContext.SwapBuffers();
 
   return true;
 }
 
 bool CRenderSystemGL::ClearBuffers(DWORD color)
 {
-  if(!m_bCreated)
+  if(!m_bRenderCreated)
     return false;
-
-  
 
   return true;
 }
@@ -149,7 +128,7 @@ bool CRenderSystemGL::IsExtSupported(CStdString strExt)
   return true;
 }
 
-bool CRenderSystemGL::Test()
+bool CRenderSystemGL::TestRender()
 {
   static float theta = 0.0;
 
@@ -169,6 +148,3 @@ bool CRenderSystemGL::Test()
 
   return true;
 }
-
-
-#endif

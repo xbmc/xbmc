@@ -3,8 +3,8 @@
 \brief
 */
 
-#ifndef WINDOW_SYSTEM_SDL_H
-#define WINDOW_SYSTEM_SDL_H
+#ifndef WINDOW_SYSTEM_WIN32_GL_H
+#define WINDOW_SYSTEM_WIN32_GL_H
 
 #pragma once
 
@@ -28,28 +28,21 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "WinSystem.h"
+#include "WinSystemWin32.h"
+#include "RenderSystemGL.h"
 
-#ifdef _LINUX
-
-class CWinSystemSDL : public CWinSystemBase
+class CWinSystemWin32GL : public CWinSystemWin32, public CRenderSystemGL
 {
 public:
-  CWinSystemSDL();
-  virtual ~CWinSystemSDL();
+  CWinSystemWin32GL();
+  virtual ~CWinSystemWin32GL();
 
-  virtual bool Create(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, int width, int height);
-  virtual bool Destroy();
+  virtual bool InitRenderSystem();
+  virtual bool PresentRender();
 
 protected:
-  virtual bool Resize();
+  HGLRC m_hglrc;
 };
-
-extern CWinSystemSDL g_WinSystem;
-
-#endif
 
 #endif // WINDOW_SYSTEM_H
 

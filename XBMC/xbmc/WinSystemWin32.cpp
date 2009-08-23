@@ -21,19 +21,18 @@
 
 #include "stdafx.h"
 #include "WinSystemWin32.h"
-#include "WinEvents.h"
+#include "WinEventsWin32.h"
 
 #ifdef _WIN32
-
-CWinSystem g_WinSystem;
 
 CWinSystemWin32::CWinSystemWin32()
 : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_WIN32;
-  m_Hwnd = NULL;
+  m_hWnd = NULL;
   m_hInstance = NULL;
   m_hIcon = NULL;
+  m_hDC = NULL;
 }
 
 CWinSystemWin32::~CWinSystemWin32()
@@ -41,7 +40,20 @@ CWinSystemWin32::~CWinSystemWin32()
   Destroy();
 };
 
-bool CWinSystemWin32::Create(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemWin32::InitWindowSystem()
+{
+  if(!CWinSystemBase::InitWindowSystem())
+    return false;
+
+  return true;
+}
+
+bool CWinSystemWin32::DestroyWindowSystem()
+{
+  return true;
+}
+
+bool CWinSystemWin32::CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
 {
   m_hInstance = ( HINSTANCE )GetModuleHandle( NULL );
 
@@ -63,6 +75,15 @@ bool CWinSystemWin32::Create(CStdString name, int width, int height, bool fullSc
   wndClass.lpszMenuName = NULL;
   wndClass.lpszClassName = name.c_str();
 
+  // center the window on the screen
+  int left = 0;
+  int top = 0;
+  if(!fullScreen && m_DesktopRes.iHeight != 0 && m_DesktopRes.iWidth != 0)
+  {
+    left = (m_DesktopRes.iWidth / 2) - (width / 2);
+    top = (m_DesktopRes.iHeight / 2) - (height / 2);
+  }
+
   if( !RegisterClass( &wndClass ) )
   {
     return false;
@@ -79,18 +100,19 @@ bool CWinSystemWin32::Create(CStdString name, int width, int height, bool fullSc
     WS_SYSMENU | WS_MINIMIZEBOX;
 
   HWND hWnd = CreateWindow( name.c_str(), name.c_str(), dwStyle,
-    0, 0, ( rc.right - rc.left ), ( rc.bottom - rc.top ), 0,
+    left, top, ( rc.right - rc.left ), ( rc.bottom - rc.top ), 0,
     NULL, m_hInstance, userFunction );
   if( hWnd == NULL )
   {
     return false;
   }
 
-  m_Hwnd = hWnd;
+  m_hWnd = hWnd;
+  m_hDC = GetDC(m_hWnd);
 
   // Show the window
-  ShowWindow( m_Hwnd, SW_SHOWDEFAULT );
-  UpdateWindow( m_Hwnd );
+  ShowWindow( m_hWnd, SW_SHOWDEFAULT );
+  UpdateWindow( m_hWnd );
 
   return true;
 }
@@ -113,6 +135,61 @@ bool CWinSystemWin32::SetFullScreen(bool fullScreen, int width, int height)
 bool CWinSystemWin32::Resize()
 {
   return true;
+}
+
+void CWinSystemWin32::UpdateResolutions()
+{
+  CWinSystemBase::UpdateResolutions();
+
+  DWORD		iDevNum	= 0 ;
+  DWORD		iModeNum = 0 ;
+  DISPLAY_DEVICE	ddi ;
+  DEVMODE		dmi ;
+
+  ZeroMemory (&ddi, sizeof(ddi)) ;
+  ddi.cb = sizeof(ddi) ;
+  ZeroMemory (&dmi, sizeof(dmi)) ;
+  dmi.dmSize = sizeof(dmi) ;
+
+  while (EnumDisplayDevices (NULL, iDevNum++, &ddi, 0))
+  {
+    while (EnumDisplaySettings (ddi.DeviceName, iModeNum++, &dmi))
+    {
+      RESOLUTION_INFO newRes;
+      ZeroMemory(&newRes, sizeof(RESOLUTION_INFO));
+
+      if(dmi.dmDisplayFrequency == 59 || dmi.dmDisplayFrequency == 29 || dmi.dmDisplayFrequency == 23)
+        newRes.fRefreshRate = (float)(dmi.dmDisplayFrequency + 1) / 1.001f;
+      else
+        newRes.fRefreshRate = (float)dmi.dmDisplayFrequency;
+      
+      newRes.iWidth = dmi.dmPelsWidth;
+      newRes.iHeight = dmi.dmPelsHeight;
+      newRes.fRefreshRate = (float)dmi.dmDisplayFrequency;
+
+      AddNewResolution(newRes);
+      
+      ZeroMemory (&dmi, sizeof(dmi)) ;
+      dmi.dmSize = sizeof(dmi) ;
+    }
+    ZeroMemory (&ddi, sizeof(ddi)) ;
+    ddi.cb = sizeof(ddi) ;
+    iModeNum = 0 ;
+  }
+}
+
+void CWinSystemWin32::GetDesktopRes(RESOLUTION_INFO& desktopRes)
+{
+  // get current screen refresh rate
+  DEVMODE mode;
+
+  EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &mode);
+  m_DesktopRes.iWidth = mode.dmPelsWidth;
+  m_DesktopRes.iHeight = mode.dmPelsHeight;
+  if(mode.dmDisplayFrequency == 59 || mode.dmDisplayFrequency == 29 || mode.dmDisplayFrequency == 23)
+    m_DesktopRes.fRefreshRate = (float)(mode.dmDisplayFrequency + 1) / 1.001f;
+  else
+    m_DesktopRes.fRefreshRate = (float)mode.dmDisplayFrequency;
 }
 
 #endif

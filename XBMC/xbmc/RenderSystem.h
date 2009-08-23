@@ -40,40 +40,35 @@ class CRenderSystemBase
 {
 public:
   CRenderSystemBase();
-  virtual ~CRenderSystemBase();
+  ~CRenderSystemBase();
 
   RenderingSystemType GetRenderingSystemType() { return m_enumRenderingSystem; }
-  bool GetVSync() { return m_bVSync; }
 
-  virtual bool Create(){ return false; }
-  virtual bool Destroy() { return false; }
-  virtual void GetVersion(unsigned int& major, unsigned int& minor) { major = 0; minor = 0; }
-  virtual bool AttachWindow(CWinSystem* winSystem) { return false; }
-  virtual bool BeginRender() { return false; }
-  virtual bool EndRender() { return false; }
-  virtual bool Present() { return false; }
-  virtual bool ClearBuffers(DWORD color) { return false; }
-  virtual bool ClearBuffers(float r, float g, float b, float a) { return false; }
-  virtual bool IsExtSupported(CStdString strExt) { return false; }
+  virtual bool InitRenderSystem() = 0;
+  virtual bool DestroyRenderSystem() = 0;
 
-  virtual bool Test() { return false; }
+  virtual void GetRenderVersion(unsigned int& major, unsigned int& minor) = 0;
+  virtual CStdString GetRenderVendor() = 0;
+  virtual CStdString GetRenderRenderer() = 0;
+  virtual bool BeginRender() = 0;
+  virtual bool EndRender() = 0;
+  virtual bool PresentRender() = 0;
+  virtual bool ClearBuffers(DWORD color) = 0;
+  virtual bool ClearBuffers(float r, float g, float b, float a) = 0;
+  virtual bool IsExtSupported(CStdString strExt) = 0;
 
-  virtual void SetViewPort(CRect& viewPort) {}
-  virtual void GetViewPort(CRect& viewPort) {}
+  virtual void SetVSync(bool vsync) = 0;
+  virtual bool GetVSync() { return m_bVSync; }
+
+  virtual void SetViewPort(CRect& viewPort) = 0;
+  virtual void GetViewPort(CRect& viewPort) = 0;
+
+  virtual bool TestRender() = 0;
 
 protected:
-  CWinSystem* m_pWinSystem;
-  bool m_bCreated;
+  bool m_bRenderCreated;
   RenderingSystemType m_enumRenderingSystem;
   bool m_bVSync;
 };
-
-#ifdef HAS_DX
-#include "RenderSystemDX.h"
-#define CRenderSystem CRenderSystemDX 
-#elif defined(HAS_GL)
-#include "RenderSystemGL.h"
-#define CRenderSystem CRenderSystemGL 
-#endif
 
 #endif // RENDER_SYSTEM_H

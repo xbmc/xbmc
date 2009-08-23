@@ -24,8 +24,69 @@
 
 #pragma once
 
+#include <stdio.h>
+#include <vector>
 #include "StdString.h"
 #include "WinEvents.h"
+#include "WinSystem.h"
+
+using namespace std;    
+enum RESOLUTION {
+  INVALID = -1,
+  HDTV_1080i = 0,
+  HDTV_720p = 1,
+  HDTV_480p_4x3 = 2,
+  HDTV_480p_16x9 = 3,
+  NTSC_4x3 = 4,
+  NTSC_16x9 = 5,
+  PAL_4x3 = 6,
+  PAL_16x9 = 7,
+  PAL60_4x3 = 8,
+  PAL60_16x9 = 9,
+  AUTORES = 10,
+  WINDOW = 11,
+  DESKTOP = 12,
+  CUSTOM = 13
+};
+
+enum VSYNC {
+  VSYNC_DISABLED = 0,
+  VSYNC_VIDEO = 1,
+  VSYNC_ALWAYS = 2,
+  VSYNC_DRIVER = 3
+};
+
+enum DISPLAYS
+{
+  PRIMARY_MONITOR = 0,
+  SECONDARY_MONITOR = 1
+};
+
+struct OVERSCAN
+{
+  int left;
+  int top;
+  int right;
+  int bottom;
+};
+
+struct RESOLUTION_INFO
+{
+  OVERSCAN Overscan;
+  bool bFullScreen;
+  DISPLAYS iScreen;
+  int iWidth;
+  int iHeight;
+  int iSubtitles;
+  DWORD dwFlags;
+  float fPixelRatio;
+  float fRefreshRate;
+  char strMode[48];
+  char strOutput[32];
+  char strId[16];
+};
+
+typedef std::vector<RESOLUTION_INFO> ResVector;
 
 typedef enum _WindowSystemType
 {
@@ -40,42 +101,42 @@ public:
   virtual ~CWinSystemBase();
   WindowSystemType GetWinSystem() { return m_eWindowSystem; }
 
-
-  virtual bool Create(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction){return false;}
-  virtual bool Destroy(){ return false; }
+  // windowing interfaces
+  virtual bool InitWindowSystem();
+  virtual bool DestroyWindowSystem() = 0;
+  virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction) = 0;
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop){return false;}
   virtual bool SetFullScreen(bool fullScreen, int width, int height){return false;}
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
   virtual bool CenterWindow(){return false;}
+  virtual bool IsCreated(){ return m_bWindowCreated; }
 
-  virtual bool IsCreated(){ return false; }
-
+  // resolution interfaces
   virtual bool IsFullScreen() { return m_bFullScreen; }
   virtual unsigned int GetWidth() { return m_nWidth; }
   virtual unsigned int GetHeight() { return m_nHeight; }
-  virtual unsigned int GetDisplayFreq() { return m_nDisplayFreq; }
-
+  virtual void GetResolutions(ResVector& vec);
+  virtual void GetDesktopRes(RESOLUTION_INFO& desktopRes) = 0;
+  virtual bool IsValidResolution(RESOLUTION_INFO res);
+ 
 protected:
   // resize window based on dimensions, positions and full screen flag
   virtual bool Resize(){ return false; }
-
+  virtual void UpdateResolutions();
+  virtual void AddNewResolution(RESOLUTION_INFO newRes);
+  
   WindowSystemType m_eWindowSystem;
   unsigned  int m_nWidth;
   unsigned m_nHeight;
   unsigned m_nTop;
   unsigned m_nLeft;
   bool m_bFullScreen;
-  bool m_bCreated;
-  unsigned int m_nDisplayFreq;
+  bool m_bWindowCreated;
+
+  RESOLUTION_INFO m_DesktopRes;
+  int m_nCurrentResolution;
+  ResVector m_VecResInfo;
 };
 
+
 #endif // WINDOW_SYSTEM_H
-
-#ifdef _WIN32
-#include "WinSystemWin32.h"
-#define CWinSystem CWinSystemWin32
-#elif defined (_LINUX)
-#include "WinSystemSDL.h"
-#define CWinSystem CWinSystemSDL
-#endif
-

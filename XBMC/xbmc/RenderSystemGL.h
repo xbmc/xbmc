@@ -24,43 +24,37 @@
 
 #pragma once
 
-#ifdef HAS_GL
-
 #include "RenderSystem.h"
-#include "GLContext.h"
 
 class CRenderSystemGL : public CRenderSystemBase
 {
 public:
   CRenderSystemGL();
-  virtual ~CRenderSystemGL();
+  ~CRenderSystemGL();
 
-  virtual bool Create();
-  virtual bool Destroy();
-  virtual bool AttachWindow(CWinSystem* winSystem);
+  virtual bool InitRenderSystem();
+  virtual bool DestroyRenderSystem();
 
-  virtual void GetVersion(unsigned int& major, unsigned int& minor);
-
-  virtual void SetViewPort(CRect& viewPort);
-  virtual void GetViewPort(CRect& viewPort);
-
+  virtual void GetRenderVersion(unsigned int& major, unsigned int& minor);
+  virtual CStdString GetRenderVendor();
+  virtual CStdString GetRenderRenderer();
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool Present();
-
+  virtual bool PresentRender() = 0;
   virtual bool ClearBuffers(DWORD color);
   virtual bool ClearBuffers(float r, float g, float b, float a);
   virtual bool IsExtSupported(CStdString strExt);
 
-  virtual bool Test();
+  virtual void SetVSync(bool vsync){};
+  virtual bool GetVSync() { return m_bVSync; }
+
+  virtual void SetViewPort(CRect& viewPort);
+  virtual void GetViewPort(CRect& viewPort);
+
+  virtual bool TestRender();
 
 protected:
-  CGLContext m_glContext;
 
 };
-
-extern CRenderSystemGL g_RenderSystem;
-
-#endif
 
 #endif // RENDER_SYSTEM_H

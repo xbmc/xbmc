@@ -36,22 +36,27 @@ public:
   CWinSystemWin32();
   virtual ~CWinSystemWin32();
 
-  virtual bool Create(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
+  // CWinSystemBase
+  virtual bool InitWindowSystem();
+  virtual bool DestroyWindowSystem();
+  virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, int width, int height);
   virtual bool Destroy();
-
-  HWND GetHwnd() { return m_Hwnd; }
+  virtual void UpdateResolutions();
+  
+  // CWinSystemWin32
+  HWND GetHwnd() { return m_hWnd; }
 
 protected:
+  void GetDesktopRes(RESOLUTION_INFO& desktopRes);
   virtual bool Resize();
 
-  HWND m_Hwnd;
+  HWND m_hWnd;
+  HDC m_hDC;
   HINSTANCE m_hInstance; 
   HICON m_hIcon;
 };
-
-extern CWinSystemWin32 g_WinSystem;
 
 #endif // WINDOW_SYSTEM_H
 

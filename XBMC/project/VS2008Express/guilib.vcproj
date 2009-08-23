@@ -1386,22 +1386,6 @@
 				Name="DX"
 				>
 				<File
-					RelativePath="..\..\guilib\GraphicContextDX.cpp"
-					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\guilib\GraphicContextDX.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\guilib\GUIFontTTFDX.cpp"
 					>
 				</File>
@@ -1437,21 +1421,6 @@
 			<Filter
 				Name="GL"
 				>
-				<File
-					RelativePath="..\..\guilib\GraphicContextGL.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\GraphicContextGL.h"
-					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						>
-						<Tool
-							Name="VCCustomBuildTool"
-						/>
-					</FileConfiguration>
-				</File>
 				<File
 					RelativePath="..\..\guilib\GUIFontTTFGL.cpp"
 					>

@@ -19,42 +19,19 @@
 *
 */
 
-#ifndef GL_CONTEXT_H
-#define GL_CONTEXT_H
+#ifndef WINDOWING_FACTORY_H
+#define WINDOWING_FACTORY_H
 
 #pragma once
 
-#include "WinSystem.h"
-
-
-class CGLContextBase
-{
-public:
-  virtual ~CGLContextBase() { }
-  virtual bool Create(CWinSystem* pWinSystem ){ return false; }
-  virtual bool Release() { return false; }
-  virtual bool MakeCurrent() { return false; }
-  virtual bool GetPixelFormats() { return false; }
-  virtual bool SwapBuffers() { return false; }
-  virtual bool IsCreated() { return false; }
-
-protected:
-  bool m_bCreated;
-  CWinSystem* m_pWinSystem;
-
-  bool m_HasPixelFormatARB;
-  bool m_HasMultisample;
-  bool m_HasHardwareGamma;
-};
-
-#ifdef HAS_WGL
-#include "GLContextWGL.h"
-#define CGLContext CGLContextWGL 
+#if defined(_WIN32) && defined(HAS_GL)
+#include "WinSystemWin32GL.h"
+extern CWinSystemWin32GL g_Windowing;
 #endif
 
-#ifdef __APPLE__
-#include "GLContextSDL.h"
-#define CGLContext CGLContextSDL
-#endif
 
-#endif // GL_CONTEXT_H
+
+
+
+#endif // WINDOWING_FACTORY_H
+

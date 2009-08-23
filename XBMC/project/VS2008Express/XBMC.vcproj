@@ -5543,7 +5543,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="WinSystems"
+				Name="Windwing"
 				>
 				<Filter
 					Name="Keyboard"
@@ -5562,8 +5562,12 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="Window"
+					Name="Window System"
 					>
+					<File
+						RelativePath="..\..\xbmc\WindowingFactory.h"
+						>
+					</File>
 					<File
 						RelativePath="..\..\xbmc\WinSystem.cpp"
 						>
@@ -5573,19 +5577,19 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\WinSystemSDL.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\WinSystemSDL.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\WinSystemWin32.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\WinSystemWin32.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinSystemWin32GL.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\WinSystemWin32GL.h"
 						>
 					</File>
 				</Filter>
@@ -5617,47 +5621,23 @@
 						>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="RenderSystems"
-				>
-				<File
-					RelativePath="..\..\xbmc\RenderSystem.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\RenderSystem.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\RenderSystemDX.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\RenderSystemDX.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\RenderSystemGL.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\RenderSystemGL.h"
-					>
-				</File>
 				<Filter
-					Name="GLContext"
+					Name="Render System"
 					>
 					<File
-						RelativePath="..\..\xbmc\GLContext.h"
+						RelativePath="..\..\xbmc\RenderSystem.cpp"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\GLContextWGL.cpp"
+						RelativePath="..\..\xbmc\RenderSystem.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\GLContextWGL.h"
+						RelativePath="..\..\xbmc\RenderSystemGL.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\RenderSystemGL.h"
 						>
 					</File>
 				</Filter>
