@@ -178,8 +178,6 @@ public:
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
   
-  static void AddDirectorySeperator(CStdString& strPath);
-
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);

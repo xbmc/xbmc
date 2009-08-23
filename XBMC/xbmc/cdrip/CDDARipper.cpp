@@ -267,7 +267,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   if (!pItem->GetMusicInfoTag()->GetAlbum().empty())
   {
     strDirectory += CUtil::MakeLegalFileName(pItem->GetMusicInfoTag()->GetAlbum().c_str(), LegalType);
-    CUtil::AddDirectorySeperator(strDirectory);
+    CUtil::AddSlashAtEnd(strDirectory);
   }
 
   // Create directory if it doesn't exist
@@ -365,7 +365,7 @@ bool CCDDARipper::RipCD()
 
   // construct directory where the tracks are stored
   strDirectory += strAlbumDir;
-  CUtil::AddDirectorySeperator(strDirectory);
+  CUtil::AddSlashAtEnd(strDirectory);
 
   // Create directory if it doesn't exist
   if (!CUtil::CreateDirectoryEx(strDirectory))

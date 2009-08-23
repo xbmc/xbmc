@@ -2196,12 +2196,6 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
   return strPath + MakeLegalFileName(strFileName, LegalType);
 }
 
-void CUtil::AddDirectorySeperator(CStdString& strPath)
-{
-  CURL url(strPath);
-  strPath += url.GetDirectorySeparator();
-}
-
 bool CUtil::IsUsingTTFSubtitles()
 {
   return CUtil::GetExtension(g_guiSettings.GetString("subtitles.font")).Equals(".ttf");
