@@ -36,8 +36,8 @@ public:
   virtual bool DestroyRenderSystem();
 
   virtual void GetRenderVersion(unsigned int& major, unsigned int& minor);
-  virtual CStdString GetRenderVendor();
-  virtual CStdString GetRenderRenderer();
+  virtual CStdString GetRenderVendor() { return m_RenderVendor; }
+  virtual CStdString GetRenderRenderer() { return m_RenderRenderer; }
   virtual bool BeginRender();
   virtual bool EndRender();
   virtual bool PresentRender() = 0;
@@ -45,16 +45,22 @@ public:
   virtual bool ClearBuffers(float r, float g, float b, float a);
   virtual bool IsExtSupported(CStdString strExt);
 
-  virtual void SetVSync(bool vsync){};
+  virtual void SetVSync(bool vsync) { m_bVSync = vsync; }
   virtual bool GetVSync() { return m_bVSync; }
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
+  
+  virtual bool NeedPower2Texture() { return m_NeedPower2Texture; }
 
   virtual bool TestRender();
 
 protected:
-
+  CStdString m_RenderRenderer;
+  CStdString m_RenderVendor;
+  int        m_RenderVerdenVersionMinor;
+  int        m_RenderVerdenVersionMajor;
+  bool       m_NeedPower2Texture;
 };
 
 #endif // RENDER_SYSTEM_H

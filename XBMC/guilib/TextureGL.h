@@ -55,7 +55,6 @@ protected:
   void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
   void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
 
-  bool NeedPower2Texture();
   unsigned int m_nTextureWidth;
   unsigned int m_nTextureHeight;
 

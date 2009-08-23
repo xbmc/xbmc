@@ -22,8 +22,7 @@
 #include "stdafx.h"
 #include "RenderSystemGL.h"
 
-CRenderSystemGL::CRenderSystemGL()
-: CRenderSystemBase()
+CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGL;
 }
@@ -44,7 +43,24 @@ bool CRenderSystemGL::InitRenderSystem()
     // Problem: glewInit failed, something is seriously wrong
     return false;
   }
-    
+ 
+  // Get the GL version number 
+  m_RenderVerdenVersionMajor = 0;
+  m_RenderVerdenVersionMinor = 0;
+
+  const char* ver = (const char*)glGetString(GL_VERSION);
+  if (ver != 0)
+    sscanf(ver, "%d.%d", &m_RenderVerdenVersionMajor, &m_RenderVerdenVersionMinor);
+  
+  // Check if we need DPOT  
+  m_NeedPower2Texture = true;
+  if (m_RenderVerdenVersionMajor >= 2 && GLEW_ARB_texture_non_power_of_two)
+    m_NeedPower2Texture = false;
+  
+  // Get our driver vendor and renderer
+  m_RenderVendor = (const char*) glGetString(GL_VENDOR);
+  m_RenderRenderer = (const char*) glGetString(GL_RENDERER);
+  
   LogGraphicsInfo();
   
   return true;
@@ -53,30 +69,14 @@ bool CRenderSystemGL::InitRenderSystem()
 bool CRenderSystemGL::DestroyRenderSystem()
 {
   m_bRenderCreated = false;
-  //m_glContext.Release();
 
   return true;
 }
 
 void CRenderSystemGL::GetRenderVersion(unsigned int& major, unsigned int& minor)
 {
-  major = 0;
-  minor = 0;
-
-  const char* ver = (const char*)glGetString(GL_VERSION);
-  if (ver != 0)
-    sscanf(ver, "%d.%d", &major, &minor);
-}
-
-CStdString CRenderSystemGL::GetRenderVendor()
-{
-  return CStdString((const char*)glGetString(GL_VENDOR));
-}
-
-CStdString CRenderSystemGL::GetRenderRenderer()
-{
-  return CStdString((const char*)glGetString(GL_RENDERER));
-
+  major = m_RenderVerdenVersionMajor;
+  minor = m_RenderVerdenVersionMinor;
 }
 
 void CRenderSystemGL::SetViewPort(CRect& viewPort)

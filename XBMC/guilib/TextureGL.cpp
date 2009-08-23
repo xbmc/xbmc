@@ -86,7 +86,7 @@ void CGLTexture::Allocate(unsigned int width, unsigned int height, unsigned int 
   if(BPP != 0)
     m_nBPP = BPP;
 
-  if(NeedPower2Texture())
+  if (g_Windowing.NeedPower2Texture())
   {
     m_nTextureWidth = PadPow2(m_imageWidth);
     m_nTextureHeight = PadPow2(m_imageHeight);
@@ -160,18 +160,6 @@ bool CGLTexture::LoadFromFile(const CStdString& texturePath)
 bool CGLTexture::LoadFromMemory(unsigned int width, unsigned int pitch, unsigned int BPP, unsigned char* pPixels)
 {
   return TRUE;
-}
-
-bool CGLTexture::NeedPower2Texture()
-{
-  unsigned int vmaj, vmin;
-
-  g_Windowing.GetRenderVersion(vmaj, vmin);
-
-  if (vmaj >= 2 && GLEW_ARB_texture_non_power_of_two)
-    return false;
-
-  return true;
 }
 
 void CGLTexture::LoadToGPU()
