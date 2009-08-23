@@ -27,12 +27,12 @@
 #ifndef HAS_SDL_2D
 #include <locale.h>
 #include "LinuxRendererGL.h"
-#include "../../Application.h"
-#include "../../Util.h"
-#include "../../Settings.h"
-#include "../../XBVideoConfig.h"
-#include "../../../guilib/Surface.h"
-#include "../../../guilib/FrameBufferObject.h"
+#include "Application.h"
+#include "MathUtils.h"
+#include "Settings.h"
+#include "XBVideoConfig.h"
+#include "guilib/Surface.h"
+#include "guilib/FrameBufferObject.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"

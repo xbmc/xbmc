@@ -20,7 +20,7 @@
 #include "GUIFontManager.h"
 #include "GUIWindowManager.h"
 #include "SkinInfo.h"
-
+#include "MathUtils.h"
 
 typedef struct
 {
