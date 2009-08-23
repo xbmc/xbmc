@@ -1097,6 +1097,8 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
       NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
       SleepTime = (int)((NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency);
 
+      int64_t CurrTime = m_CurrTime; //save current value of the clock
+      
       Late = false;
       if (SleepTime <= 0) //if sleeptime is 0 or lower, the vblank clock is already late in updating
       {
@@ -1110,8 +1112,9 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
           Late = true;                          //the required time
         SingleLock.Enter();
       }
-
-      if (Late) //if the vblank clock was late with its update, we update the clock ourselves
+      
+      //if the vblank clock was late with its update, we update the clock ourselves
+      if (Late && CurrTime == m_CurrTime)
       {
 #ifndef HAVE_LIBVDPAU
         // vdpau spams the log with missed vblanks so only log if vdpau is not compiled in.
