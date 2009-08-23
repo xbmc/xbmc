@@ -23,7 +23,7 @@
 
 #include "stdafx.h"
 #include "GUIWindowTestPattern.h"
-#include "Application.h"
+#include "Settings.h"
 #include "GUIWindowManager.h"
 
 #define NUM_PATTERNS 5
