@@ -1,6 +1,7 @@
 #ifndef LIBXDMX_COMMON_H_
 #define LIBXDMX_COMMON_H_
 
+#include <string.h>
 #include <stdlib.h>
 #include "xdmx.h"
 
