@@ -24,7 +24,6 @@
 #include "ScraperParser.h"
 #include "ScraperSettings.h"
 #include "XMLUtils.h"
-#include "Util.h"
 #include "Settings.h"
 
 using namespace MUSIC_GRABBER;
