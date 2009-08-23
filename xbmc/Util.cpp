@@ -1154,10 +1154,6 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
   return true;
 }
 
-void CUtil::CreateShortcut(CFileItem* pItem)
-{
-}
-
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
   if ( !g_mediaManager.IsDiscInDrive() )
