@@ -228,10 +228,6 @@ public:
   //
   static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
-
-private:
-
-  static HANDLE m_hCurrentCpuUsage;
 };
 
 

@@ -113,8 +113,6 @@ using namespace DIRECTORY;
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600LL;
 static const __int64 SECS_TO_100NS = 10000000;
 
-HANDLE CUtil::m_hCurrentCpuUsage = NULL;
-
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
