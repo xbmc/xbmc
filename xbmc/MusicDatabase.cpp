@@ -3059,19 +3059,6 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
                           , idArtist, idArtist, idArtist, idArtist);
   }
 
-#ifdef _XBOX
-  if (idAlbum == -1 && idArtist == -1 && idGenre == -1)
-  {
-    int iLIMIT = 5000;    // chunk size
-    for (int i=0;;i+=iLIMIT)
-    {
-      CStdString limitedWhere = FormatSQL("%s limit %i offset %i", strWhere.c_str(), iLIMIT, i);
-      if (!GetSongsByWhere(strBaseDir, limitedWhere, items))
-        return items.Size() > 0;
-    }
-    return true;
-  }
-#endif
   // run query
   bool bResult = GetSongsByWhere(strBaseDir, strWhere, items);
   if (bResult)
