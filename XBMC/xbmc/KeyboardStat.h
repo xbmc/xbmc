@@ -42,7 +42,7 @@ public:
   BYTE GetVKey() { return m_VKey;};
   unsigned int KeyHeld() const;
   
-  int HandleEvent(unsigned int eventType, unsigned int param1, unsigned int param2);
+  int HandleEvent(XBMC_Event& newEvent);
 
 private:
   bool m_bShift;

@@ -377,22 +377,24 @@ unsigned int CKeyboardStat::KeyHeld() const
 
 
 
-int CKeyboardStat::HandleEvent(unsigned int eventType, unsigned int param1, unsigned int param2)
-//int XBMC_PrivateKeyboard(Uint8 state, XBMC_keysym *keysym)
+int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
 {
-  XBMC_Event event;
-  int posted, repeatable;
+  int repeatable;
   Uint16 modstate;
 
-  memset(&event, 0, sizeof(event));
-
   /* Set up the keysym */
-  XBMC_keysym *keysym = (XBMC_keysym *)param1;
+  XBMC_keysym *keysym = &newEvent.key.keysym;
   modstate = (Uint16)XBMC_ModState;
 
   repeatable = 0;
 
-  int state = eventType;
+  int state;
+  if(newEvent.type == XBMC_KEYDOWN)
+    state = XBMC_PRESSED;
+  else if(newEvent.type = XBMC_KEYUP)
+    state = XBMC_RELEASED;
+  else
+    return 0;
 
   if ( state == XBMC_PRESSED ) 
   {
@@ -498,16 +500,24 @@ int CKeyboardStat::HandleEvent(unsigned int eventType, unsigned int param1, unsi
     keysym->mod = (XBMCMod)modstate;
   }
 
-  /* Figure out what type of event this is */
+  /*
+  * jk 991215 - Added
+  */
+  if(state == XBMC_RELEASED)
+  if ( XBMC_KeyRepeat.timestamp &&
+    XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym ) 
+  {
+    XBMC_KeyRepeat.timestamp = 0;
+  }
+
+ /*
   switch (state) {
     case XBMC_PRESSED:
       event.type = XBMC_KEYDOWN;
       break;
     case XBMC_RELEASED:
       event.type = XBMC_KEYUP;
-      /*
-      * jk 991215 - Added
-      */
+      
       if ( XBMC_KeyRepeat.timestamp &&
         XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym ) 
       {
@@ -515,9 +525,10 @@ int CKeyboardStat::HandleEvent(unsigned int eventType, unsigned int param1, unsi
       }
       break;
     default:
-      /* Invalid state -- bail */
+      
       return(0);
   }
+  */
 
   if ( keysym->sym != XBMCK_UNKNOWN ) 
   {
@@ -531,15 +542,10 @@ int CKeyboardStat::HandleEvent(unsigned int eventType, unsigned int param1, unsi
     XBMC_ModState = (XBMCMod)modstate;
     XBMC_KeyState[keysym->sym] = state;
   }
-
-  /* Post the event, if desired */
-  posted = 0;
   
-    event.key.state = state;
-    event.key.keysym = *keysym;
-    Update(event);
-    
-   
+  newEvent.key.state = state;
+  Update(newEvent);
+  
   return 0;
 }
 

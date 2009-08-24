@@ -27,7 +27,7 @@
 #include "StdString.h"
 #include "XBMC_events.h"
 
-typedef int (* PHANDLE_EVENT_FUNC)(unsigned int eventType, unsigned long param1, unsigned long param2); 
+typedef int (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent); 
 
 class CWinEventsBase
 {
