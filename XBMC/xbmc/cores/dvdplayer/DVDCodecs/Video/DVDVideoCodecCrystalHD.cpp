@@ -20,9 +20,9 @@
  */
 
 #include "stdafx.h"
+#define HAVE_MPCLINK // TODO: Remove this and define in configure/project
+#if defined(HAVE_MPCLINK)
 #include "DVDVideoCodecCrystalHD.h"
-
-#if defined(HAVE_CRYSTALHD)
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 
@@ -31,11 +31,9 @@
 #endif
 
 /* We really don't want to include ffmpeg headers, so define these */
-const int CODEC_ID_MPEG2 = 2;
-const int CODEC_ID_VC1 = 73;
-const int CODEC_ID_H264 = 28;
-
-#define OUTPUT_PROC_TIMEOUT 10
+const int BC_CODEC_ID_MPEG2 = 2;
+const int BC_CODEC_ID_VC1 = 73;
+const int BC_CODEC_ID_H264 = 28;
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(0),
@@ -64,15 +62,15 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
   U32 videoAlg = 0;
   switch (hints.codec)
   {
-  case CODEC_ID_VC1:
+  case BC_CODEC_ID_VC1:
     videoAlg = BC_VID_ALGO_VC1;
     m_pFormatName = "bcm-vc1";
     break;
-  case CODEC_ID_H264:
+  case BC_CODEC_ID_H264:
     videoAlg = BC_VID_ALGO_H264;
     m_pFormatName = "bcm-h264";
     break;
-  case CODEC_ID_MPEG2:
+  case BC_CODEC_ID_MPEG2:
     videoAlg = BC_VID_ALGO_MPEG2;
     m_pFormatName = "bcm-mpeg2";
     break;
@@ -251,12 +249,11 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   // Flags
   pDvdVideoPicture->iFlags |= (m_CurrentFormat.flags & VDEC_FLAG_BOTTOM_FIRST) ? 0 : DVP_FLAG_TOP_FIELD_FIRST;
-  // DVP_FLAG_ALLOCATED == 0
   pDvdVideoPicture->iFlags |= (m_CurrentFormat.flags & VDEC_FLAG_INTERLACED_SRC) ? DVP_FLAG_INTERLACED : 0;
   //pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED; // use n_drop
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  //pDvdVideoPicture->iDuration = 41711.111111;
+  pDvdVideoPicture->iDuration = 41711.111111;
   // pDvdVideoPicture->iFrameType
   // pDvdVideoPicture->color_matrix // colour_primaries
 

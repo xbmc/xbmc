@@ -12,8 +12,8 @@ CPESParser::CPESParser(CElementaryStream* pStream, PayloadList* pPayloadList) :
   m_BytesOut(0),
   m_MaxPayloadLen(0),
   m_pPayloadList(pPayloadList),
-  m_NeedProbe(true),
-  m_ClockOffset(0)
+  m_ClockOffset(0),
+  m_NeedProbe(true)
 {
 
 }

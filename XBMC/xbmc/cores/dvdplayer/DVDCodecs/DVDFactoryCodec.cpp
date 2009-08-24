@@ -29,7 +29,11 @@
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
 
+
+#define HAVE_MPCLINK // TODO: Remove this and define in configure/project
+#if defined(HAVE_MPCLINK)
 #include "Video/DVDVideoCodecCrystalHD.h"
+#endif
 
 #include "Audio/DVDAudioCodecFFmpeg.h"
 #include "Audio/DVDAudioCodecLiba52.h"

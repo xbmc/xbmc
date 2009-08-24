@@ -19,32 +19,28 @@
  *
  */
 
-#define HAVE_CRYSTALHD
-#if defined(HAVE_CRYSTALHD)
 #pragma once
 
-#include "DVDVideoCodec.h"
-
-#define _BC_DTS_TYPES_H_
-#ifdef WIN32
-    typedef unsigned __int64  	U64;
-#else
-    typedef unsigned long long  U64;
-#endif
-typedef unsigned int		U32;
-typedef int					S32;
-typedef unsigned short  	U16;
-typedef short				S16;
-typedef unsigned char		U8;
-typedef char				S8;
-
-
 #if defined(WIN32)
+// The Broadcom headers collide with existing defines. Explicitly define those that are needed.
+#define _BC_DTS_TYPES_H_
+typedef unsigned __int64  U64;
+typedef unsigned int   U32;
+typedef int            S32;
+typedef unsigned short U16;
+typedef short          S16;
+typedef unsigned char  U8;
+typedef char           S8;
 #include "lib/crystalhd/include/windows/bc_drv_if.h"
 #else
+#ifndef __LINUX_USER__
+#define __LINUX_USER__
+#endif
+#include "lib/crystalhd/include/linux/bc_dts_defs.h"
 #include "lib/crystalhd/include/linux/bc_ldil_if.h"
 #endif
 
+#include "DVDVideoCodec.h"
 #include <fstream>
 
 class CDVDVideoCodecCrystalHD : public CDVDVideoCodec
@@ -79,5 +75,3 @@ protected:
 
   std::fstream m_DumpFile;
 };
-
-#endif
