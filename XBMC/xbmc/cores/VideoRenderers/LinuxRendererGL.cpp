@@ -31,7 +31,6 @@
 #include "MathUtils.h"
 #include "Settings.h"
 #include "XBVideoConfig.h"
-#include "guilib/Surface.h"
 #include "guilib/FrameBufferObject.h"
 #include "WindowingFactory.h"
 

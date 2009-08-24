@@ -27,6 +27,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "Util.h"
 #include "gui3d.h"
+#include "MathUtils.h"
 #include <math.h>
 
 // stuff for freetype
@@ -138,12 +139,6 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   newHeight = PadPow2(newHeight);
 
   CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, 8);
-  
-  /*
-  SDL_Surface* newTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_textureWidth, newHeight, 8,
-          0, 0, 0, 0xff);
-          */
-
 /* yuvalt
 
 #ifdef __APPLE__

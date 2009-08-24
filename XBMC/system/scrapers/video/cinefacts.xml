@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
-<scraper framework="1.1" date="2009-07-28" name="Cinefacts.de" content="movies" thumb="cinefacts.png" language="de">
-	<include>common/tmdb.xml</include>
+<scraper framework="1.0" date="2009-07-25" name="Cinefacts.de" content="movies" thumb="cinefacts.png" language="de">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -100,7 +99,7 @@
     			</RegExp>
 
 			<!--IMDB URL-->
-			<RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$8" output="&lt;url function=&quot;GoogleToIMDB&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">
 				<RegExp input="$$1" output="&quot;\2&quot;+\1+||+&quot;\2&quot;" dest="7">
 					<expression>&lt;h1&gt;[^&lt;]*&lt;/h1&gt;[^0-9]*([0-9]*) &lt;/li&gt;[^:]*:&lt;/dt&gt;[^&lt;]*&lt;dd class=&quot;first&quot;&gt;(.[^&lt;]*)&lt;/dd&gt;</expression>
 				</RegExp>
@@ -114,21 +113,56 @@
 	</GetDetails>
 
 	<!--Thumbnail-->
-        <GetThumbnailLink dest="5">
-              <RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
-         	    <RegExp input="$$1" output="&lt;url function=&quot;GetThumbnail&quot;&gt;http://www.cinefacts.de/kino/film/\1&lt;/url&gt;" dest="2+">
+        <GetThumbnailLink clearbuffers="no" dest="6">
+               <RegExp input="$$7" output="&lt;details&gt;\1&lt;/details&gt;" dest="6">
+         	    <RegExp input="$$1" output="&lt;url function=&quot;GetThumbnail&quot;&gt;http://www.cinefacts.de/kino/film/\1&lt;/url&gt;" dest="7">
 			<expression repeat="yes" noclean="1">&lt;a href=&quot;/kino/film/([^&quot;]+)&quot;&gt;[^&lt;]*&lt;img</expression>
                     </RegExp>
+                    <RegExp input="" output="&lt;url function=&quot;CollectThumbnails&quot; cache=&quot;film.xml&quot;&gt;http://www.cinefacts.de/kino/datenbank.html&lt;/url&gt;" dest="7+">
+                        <expression/>
+		    </RegExp>
                     <expression noclean="1"/>
                </RegExp>
         </GetThumbnailLink>
 
-	<GetThumbnail dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb&gt;http://www.cinefacts.de/kino/plakat/\1&lt;/thumb&gt;" dest="2+">
-		       		<expression>src=&quot;/kino/plakat/([^&quot;]*)&quot;</expression>
-	               	</RegExp>
-			<expression noclean="1"/>
+	<GetThumbnail clearbuffers="no" dest="5">
+		<RegExp input="$$1" output="&lt;thumb&gt;http://www.cinefacts.de/kino/plakat/\1&lt;/thumb&gt;" dest="8+">
+		       <expression>href=&quot;/kino/plakat/([^&quot;]*)&quot;</expression>
+                </RegExp>
+                <RegExp input="" output="&lt;details&gt;&lt;/details&gt;" dest="5">
+		       <expression noclean="1"/>
 		</RegExp>
 	</GetThumbnail>
+
+        <CollectThumbnails dest="2">
+           <RegExp input="$$8" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="2">
+             <expression noclean="1"/>
+           </RegExp>
+        </CollectThumbnails>
+
+        <!--GoogleToIMDB-->
+	<GoogleToIMDB dest="5">
+		<RegExp input="$$2" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="2+">
+				<expression>/title/([t0-9]*)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GoogleToIMDB>
+
+	<!-- Fanart -->
+	<GetTMDBId dest="5">
+		<RegExp conditional="fanart" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
+			<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
+		</RegExp>
+	</GetTMDBId>
+
+	<GetTMDBFanart dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="2">
+				<expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</GetTMDBFanart>
 </scraper>

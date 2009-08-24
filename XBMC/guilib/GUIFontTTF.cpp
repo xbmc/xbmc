@@ -26,7 +26,6 @@
 #include "GraphicContext.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "MathUtils.h"
-#include "gui3d.h"
 #include <math.h>
 
 // stuff for freetype
