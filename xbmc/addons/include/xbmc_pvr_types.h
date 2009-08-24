@@ -34,6 +34,22 @@
 #include <time.h>
 #include "xbmc_addon_types.h"
 
+#undef ATTRIBUTE_PACKED
+#undef PRAGMA_PACK_BEGIN
+#undef PRAGMA_PACK_END
+
+#if defined(__GNUC__)
+#if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
+#define ATTRIBUTE_PACKED __attribute__ ((packed))
+#define PRAGMA_PACK 0
+#endif
+#endif
+
+#if !defined(ATTRIBUTE_PACKED)
+#define ATTRIBUTE_PACKED
+#define PRAGMA_PACK 1
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -68,6 +84,10 @@ extern "C" {
     PVR_EVENT_TIMERS_CHANGE        = 4
   } PVR_EVENT;
 
+#if PRAGMA_PACK
+#pragma pack(1)
+#endif
+
   /**
   * PVR Client Properties
   * Returned on client initialization
@@ -83,7 +103,7 @@ extern "C" {
     bool SupportTeletext;
     bool SupportDirector;
     bool SupportBouquets;
-  } PVR_SERVERPROPS;
+  } ATTRIBUTE_PACKED PVR_SERVERPROPS;
 
   /**
   * EPG Channel Definition
@@ -121,7 +141,7 @@ extern "C" {
      *   http://192.168.0.120:3000/PS/C-61441-10008-53621+1.vob
      */
     const char     *stream_url;
-  } PVR_CHANNEL;
+  } ATTRIBUTE_PACKED PVR_CHANNEL;
 
   /**
   * EPG Bouquet Definition
@@ -130,7 +150,7 @@ extern "C" {
     char*  Name;
     char*  Category;
     int    Number;
-  } PVR_BOUQUET;
+  } ATTRIBUTE_PACKED PVR_BOUQUET;
 
   /**
   * EPG Programme Definition
@@ -152,7 +172,7 @@ extern "C" {
     const char   *genre;
     int           genre_type;
     int           genre_sub_type;
-  } PVR_PROGINFO;
+  } ATTRIBUTE_PACKED PVR_PROGINFO;
 
   /**
    * TV Timer Definition
@@ -170,8 +190,8 @@ extern "C" {
     int           lifetime;
     int           repeat;
     int           repeatflags;
-  } PVR_TIMERINFO;
-  
+  } ATTRIBUTE_PACKED PVR_TIMERINFO;
+
   /**
    * TV Recording Definition
    */
@@ -187,8 +207,12 @@ extern "C" {
     int           priority;
     int           lifetime;
 
-  } PVR_RECORDINGINFO;
-  
+  } ATTRIBUTE_PACKED PVR_RECORDINGINFO;
+
+#if PRAGMA_PACK
+#pragma pack()
+#endif
+
   // Structure to transfer the above functions to XBMC
   typedef struct PVRClient
   {
