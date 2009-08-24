@@ -95,7 +95,6 @@ class CVideoReferenceClock : public CThread
     int  (*m_glXGetVideoSyncSGI)(unsigned int*);
 
     Display*     m_Dpy;
-    GLXFBConfig *m_fbConfigs;
     XVisualInfo *m_vInfo;
     Window       m_Window;
     GLXContext   m_Context;
