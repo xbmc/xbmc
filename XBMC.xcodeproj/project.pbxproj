@@ -312,7 +312,6 @@
 		E38E1FDB0D25F9FD00618676 /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16370D25F9FA00618676 /* TimidityCodec.cpp */; };
 		E38E1FDC0D25F9FD00618676 /* WAVcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16390D25F9FA00618676 /* WAVcodec.cpp */; };
 		E38E1FDD0D25F9FD00618676 /* WAVPackcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */; };
-		E38E1FDE0D25F9FD00618676 /* WMACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E163F0D25F9FA00618676 /* WMACodec.cpp */; };
 		E38E1FDF0D25F9FD00618676 /* YMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16410D25F9FA00618676 /* YMCodec.cpp */; };
 		E38E1FE00D25F9FD00618676 /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16430D25F9FA00618676 /* PlayerCoreFactory.cpp */; };
 		E38E1FE50D25F9FD00618676 /* ssrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16560D25F9FA00618676 /* ssrc.cpp */; };
@@ -712,7 +711,6 @@
 		E38E22C70D25F9FE00618676 /* CharsetConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E290D25F9FD00618676 /* CharsetConverter.cpp */; };
 		E38E22C80D25F9FE00618676 /* CPUInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */; };
 		E38E22C90D25F9FE00618676 /* CriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2D0D25F9FD00618676 /* CriticalSection.cpp */; };
-		E38E22CA0D25F9FE00618676 /* DelayController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2F0D25F9FD00618676 /* DelayController.cpp */; };
 		E38E22CB0D25F9FE00618676 /* DownloadQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */; };
 		E38E22CC0D25F9FE00618676 /* DownloadQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */; };
 		E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E350D25F9FD00618676 /* Event.cpp */; };
@@ -1098,7 +1096,6 @@
 		F5A1C92B0F6B06CF00A96ABD /* TimidityCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16370D25F9FA00618676 /* TimidityCodec.cpp */; };
 		F5A1C92C0F6B06CF00A96ABD /* WAVcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16390D25F9FA00618676 /* WAVcodec.cpp */; };
 		F5A1C92D0F6B06CF00A96ABD /* WAVPackcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */; };
-		F5A1C92E0F6B06CF00A96ABD /* WMACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E163F0D25F9FA00618676 /* WMACodec.cpp */; };
 		F5A1C92F0F6B06CF00A96ABD /* YMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16410D25F9FA00618676 /* YMCodec.cpp */; };
 		F5A1C9300F6B06CF00A96ABD /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16430D25F9FA00618676 /* PlayerCoreFactory.cpp */; };
 		F5A1C9310F6B06CF00A96ABD /* ssrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16560D25F9FA00618676 /* ssrc.cpp */; };
@@ -1498,7 +1495,6 @@
 		F5A1CAC40F6B06CF00A96ABD /* CharsetConverter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E290D25F9FD00618676 /* CharsetConverter.cpp */; };
 		F5A1CAC50F6B06CF00A96ABD /* CPUInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */; };
 		F5A1CAC60F6B06CF00A96ABD /* CriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2D0D25F9FD00618676 /* CriticalSection.cpp */; };
-		F5A1CAC70F6B06CF00A96ABD /* DelayController.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E2F0D25F9FD00618676 /* DelayController.cpp */; };
 		F5A1CAC80F6B06CF00A96ABD /* DownloadQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */; };
 		F5A1CAC90F6B06CF00A96ABD /* DownloadQueueManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */; };
 		F5A1CACA0F6B06CF00A96ABD /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E350D25F9FD00618676 /* Event.cpp */; };
@@ -2430,8 +2426,6 @@
 		E38E163A0D25F9FA00618676 /* WAVcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVcodec.h; sourceTree = "<group>"; };
 		E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WAVPackcodec.cpp; sourceTree = "<group>"; };
 		E38E163E0D25F9FA00618676 /* WAVPackcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WAVPackcodec.h; sourceTree = "<group>"; };
-		E38E163F0D25F9FA00618676 /* WMACodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WMACodec.cpp; sourceTree = "<group>"; };
-		E38E16400D25F9FA00618676 /* WMACodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WMACodec.h; sourceTree = "<group>"; };
 		E38E16410D25F9FA00618676 /* YMCodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YMCodec.cpp; sourceTree = "<group>"; };
 		E38E16420D25F9FA00618676 /* YMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMCodec.h; sourceTree = "<group>"; };
 		E38E16430D25F9FA00618676 /* PlayerCoreFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerCoreFactory.cpp; sourceTree = "<group>"; };
@@ -3025,7 +3019,6 @@
 		E38E1B0E0D25F9FB00618676 /* PltFileMediaServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltFileMediaServer.h; sourceTree = "<group>"; };
 		E38E1B0F0D25F9FB00618676 /* PltMediaBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaBrowser.cpp; sourceTree = "<group>"; };
 		E38E1B100D25F9FB00618676 /* PltMediaBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaBrowser.h; sourceTree = "<group>"; };
-		E38E1B110D25F9FB00618676 /* PltMediaBrowserListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaBrowserListener.h; sourceTree = "<group>"; };
 		E38E1B120D25F9FB00618676 /* PltMediaCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaCache.cpp; sourceTree = "<group>"; };
 		E38E1B130D25F9FB00618676 /* PltMediaCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PltMediaCache.h; sourceTree = "<group>"; };
 		E38E1B140D25F9FB00618676 /* PltMediaItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PltMediaItem.cpp; sourceTree = "<group>"; };
@@ -3336,7 +3329,6 @@
 		E38E1DE00D25F9FD00618676 /* PlayList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayList.h; sourceTree = "<group>"; };
 		E38E1DE10D25F9FD00618676 /* PlayListB4S.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListB4S.cpp; sourceTree = "<group>"; };
 		E38E1DE20D25F9FD00618676 /* PlayListB4S.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListB4S.h; sourceTree = "<group>"; };
-		E38E1DE40D25F9FD00618676 /* PlaylistDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaylistDirectory.h; sourceTree = "<group>"; };
 		E38E1DE50D25F9FD00618676 /* PlayListFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListFactory.cpp; sourceTree = "<group>"; };
 		E38E1DE60D25F9FD00618676 /* PlayListFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayListFactory.h; sourceTree = "<group>"; };
 		E38E1DE70D25F9FD00618676 /* PlayListM3U.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayListM3U.cpp; sourceTree = "<group>"; };
@@ -3405,8 +3397,6 @@
 		E38E1E2C0D25F9FD00618676 /* CPUInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPUInfo.h; sourceTree = "<group>"; };
 		E38E1E2D0D25F9FD00618676 /* CriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CriticalSection.cpp; sourceTree = "<group>"; };
 		E38E1E2E0D25F9FD00618676 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
-		E38E1E2F0D25F9FD00618676 /* DelayController.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DelayController.cpp; sourceTree = "<group>"; };
-		E38E1E300D25F9FD00618676 /* DelayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DelayController.h; sourceTree = "<group>"; };
 		E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DownloadQueue.cpp; sourceTree = "<group>"; };
 		E38E1E320D25F9FD00618676 /* DownloadQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DownloadQueue.h; sourceTree = "<group>"; };
 		E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DownloadQueueManager.cpp; sourceTree = "<group>"; };
@@ -4571,7 +4561,6 @@
 				E38E1DE00D25F9FD00618676 /* PlayList.h */,
 				E38E1DE10D25F9FD00618676 /* PlayListB4S.cpp */,
 				E38E1DE20D25F9FD00618676 /* PlayListB4S.h */,
-				E38E1DE40D25F9FD00618676 /* PlaylistDirectory.h */,
 				E38E1DE50D25F9FD00618676 /* PlayListFactory.cpp */,
 				E38E1DE60D25F9FD00618676 /* PlayListFactory.h */,
 				E38E1DE70D25F9FD00618676 /* PlayListM3U.cpp */,
@@ -5213,8 +5202,6 @@
 				E38E163A0D25F9FA00618676 /* WAVcodec.h */,
 				E38E163D0D25F9FA00618676 /* WAVPackcodec.cpp */,
 				E38E163E0D25F9FA00618676 /* WAVPackcodec.h */,
-				E38E163F0D25F9FA00618676 /* WMACodec.cpp */,
-				E38E16400D25F9FA00618676 /* WMACodec.h */,
 				E38E16410D25F9FA00618676 /* YMCodec.cpp */,
 				E38E16420D25F9FA00618676 /* YMCodec.h */,
 			);
@@ -5978,7 +5965,6 @@
 				E38E1B0E0D25F9FB00618676 /* PltFileMediaServer.h */,
 				E38E1B0F0D25F9FB00618676 /* PltMediaBrowser.cpp */,
 				E38E1B100D25F9FB00618676 /* PltMediaBrowser.h */,
-				E38E1B110D25F9FB00618676 /* PltMediaBrowserListener.h */,
 				E38E1B120D25F9FB00618676 /* PltMediaCache.cpp */,
 				E38E1B130D25F9FB00618676 /* PltMediaCache.h */,
 				E38E1B140D25F9FB00618676 /* PltMediaItem.cpp */,
@@ -6649,8 +6635,6 @@
 				E38E1E2C0D25F9FD00618676 /* CPUInfo.h */,
 				E38E1E2D0D25F9FD00618676 /* CriticalSection.cpp */,
 				E38E1E2E0D25F9FD00618676 /* CriticalSection.h */,
-				E38E1E2F0D25F9FD00618676 /* DelayController.cpp */,
-				E38E1E300D25F9FD00618676 /* DelayController.h */,
 				E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */,
 				E38E1E320D25F9FD00618676 /* DownloadQueue.h */,
 				E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */,
@@ -7230,7 +7214,6 @@
 				E38E1FDB0D25F9FD00618676 /* TimidityCodec.cpp in Sources */,
 				E38E1FDC0D25F9FD00618676 /* WAVcodec.cpp in Sources */,
 				E38E1FDD0D25F9FD00618676 /* WAVPackcodec.cpp in Sources */,
-				E38E1FDE0D25F9FD00618676 /* WMACodec.cpp in Sources */,
 				E38E1FDF0D25F9FD00618676 /* YMCodec.cpp in Sources */,
 				E38E1FE00D25F9FD00618676 /* PlayerCoreFactory.cpp in Sources */,
 				E38E1FE50D25F9FD00618676 /* ssrc.cpp in Sources */,
@@ -7630,7 +7613,6 @@
 				E38E22C70D25F9FE00618676 /* CharsetConverter.cpp in Sources */,
 				E38E22C80D25F9FE00618676 /* CPUInfo.cpp in Sources */,
 				E38E22C90D25F9FE00618676 /* CriticalSection.cpp in Sources */,
-				E38E22CA0D25F9FE00618676 /* DelayController.cpp in Sources */,
 				E38E22CB0D25F9FE00618676 /* DownloadQueue.cpp in Sources */,
 				E38E22CC0D25F9FE00618676 /* DownloadQueueManager.cpp in Sources */,
 				E38E22CD0D25F9FE00618676 /* Event.cpp in Sources */,
@@ -8073,7 +8055,6 @@
 				F5A1C92B0F6B06CF00A96ABD /* TimidityCodec.cpp in Sources */,
 				F5A1C92C0F6B06CF00A96ABD /* WAVcodec.cpp in Sources */,
 				F5A1C92D0F6B06CF00A96ABD /* WAVPackcodec.cpp in Sources */,
-				F5A1C92E0F6B06CF00A96ABD /* WMACodec.cpp in Sources */,
 				F5A1C92F0F6B06CF00A96ABD /* YMCodec.cpp in Sources */,
 				F5A1C9300F6B06CF00A96ABD /* PlayerCoreFactory.cpp in Sources */,
 				F5A1C9310F6B06CF00A96ABD /* ssrc.cpp in Sources */,
@@ -8473,7 +8454,6 @@
 				F5A1CAC40F6B06CF00A96ABD /* CharsetConverter.cpp in Sources */,
 				F5A1CAC50F6B06CF00A96ABD /* CPUInfo.cpp in Sources */,
 				F5A1CAC60F6B06CF00A96ABD /* CriticalSection.cpp in Sources */,
-				F5A1CAC70F6B06CF00A96ABD /* DelayController.cpp in Sources */,
 				F5A1CAC80F6B06CF00A96ABD /* DownloadQueue.cpp in Sources */,
 				F5A1CAC90F6B06CF00A96ABD /* DownloadQueueManager.cpp in Sources */,
 				F5A1CACA0F6B06CF00A96ABD /* Event.cpp in Sources */,

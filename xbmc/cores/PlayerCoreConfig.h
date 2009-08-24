@@ -27,7 +27,6 @@
 #include "dvdplayer/DVDPlayer.h"
 #include "paplayer/PAPlayer.h"
 #include "ExternalPlayer/ExternalPlayer.h"
-#include "Application.h"
 
 class CPlayerCoreConfig
 {

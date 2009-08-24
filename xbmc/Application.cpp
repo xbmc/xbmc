@@ -918,7 +918,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CStdString strTempPath = CUtil::AddFileToFolder(userHome, ".xbmc/temp");
     CSpecialProtocol::SetTempPath(strTempPath);
 
-    CUtil::AddDirectorySeperator(strTempPath);
+    CUtil::AddSlashAtEnd(strTempPath);
     g_stSettings.m_logFolder = strTempPath;
 
     bool bCopySystemPlugins = false;
@@ -981,7 +981,7 @@ CProfile* CApplication::InitDirectoriesLinux()
   }
   else
   {
-    CUtil::AddDirectorySeperator(strHomePath);
+    CUtil::AddSlashAtEnd(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
     CSpecialProtocol::SetXBMCPath(strHomePath);
@@ -992,7 +992,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
-    CUtil::AddDirectorySeperator(strTempPath);
+    CUtil::AddSlashAtEnd(strTempPath);
     g_stSettings.m_logFolder = strTempPath;
   }
 
@@ -1050,7 +1050,7 @@ CProfile* CApplication::InitDirectoriesOSX()
 #ifdef __APPLE__
     strTempPath = userHome + "/Library/Logs";
 #endif
-    CUtil::AddDirectorySeperator(strTempPath);
+    CUtil::AddSlashAtEnd(strTempPath);
     g_stSettings.m_logFolder = strTempPath;
 
     bool bCopySystemPlugins = false;
@@ -1113,7 +1113,7 @@ CProfile* CApplication::InitDirectoriesOSX()
   }
   else
   {
-    CUtil::AddDirectorySeperator(strHomePath);
+    CUtil::AddSlashAtEnd(strHomePath);
     g_stSettings.m_logFolder = strHomePath;
 
     CSpecialProtocol::SetXBMCPath(strHomePath);
@@ -1124,7 +1124,7 @@ CProfile* CApplication::InitDirectoriesOSX()
     CSpecialProtocol::SetTempPath(strTempPath);
     CDirectory::Create("special://temp/");
 
-    CUtil::AddDirectorySeperator(strTempPath);
+    CUtil::AddSlashAtEnd(strTempPath);
     g_stSettings.m_logFolder = strTempPath;
   }
 

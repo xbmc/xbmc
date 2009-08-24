@@ -23,10 +23,6 @@
 #ifndef REGEXP_H
 #define REGEXP_H
 
-#ifdef _XBOX
-#include <xtl.h>
-#endif
-
 #include <stdio.h>
 #include <string>
 

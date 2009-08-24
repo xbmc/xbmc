@@ -44,7 +44,6 @@
 #include "utils/Win32Exception.h"
 #include "Settings.h"
 #include "FileSystem/File.h"
-#include "Util.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {

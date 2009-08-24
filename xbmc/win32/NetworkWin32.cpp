@@ -23,7 +23,6 @@
 #include <errno.h>
 #include "PlatformDefs.h"
 #include "NetworkWin32.h"
-#include "Util.h"
 #include "log.h"
 
 // undefine if you want to build without the wlan stuff

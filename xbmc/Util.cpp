@@ -113,8 +113,6 @@ using namespace DIRECTORY;
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600LL;
 static const __int64 SECS_TO_100NS = 10000000;
 
-HANDLE CUtil::m_hCurrentCpuUsage = NULL;
-
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
 using namespace XFILE;
@@ -1157,19 +1155,6 @@ bool CUtil::GetDirectoryName(const CStdString& strFileName, CStdString& strDescr
   else if (strDescription.size() <= 0)
     strDescription = strFName;
   return true;
-}
-
-void CUtil::CreateShortcut(CFileItem* pItem)
-{
-}
-
-void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl )
-{
-  strOutUrl = strProtocol;
-  CStdString temp = strPath;
-  temp.Replace( '\\', '/' );
-  temp.Delete( 0, 3 );
-  strOutUrl += temp;
 }
 
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
@@ -2216,12 +2201,6 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
   GetDirectory(strPathAndFile,strPath);
   CStdString strFileName = GetFileName(strPathAndFile);
   return strPath + MakeLegalFileName(strFileName, LegalType);
-}
-
-void CUtil::AddDirectorySeperator(CStdString& strPath)
-{
-  CURL url(strPath);
-  strPath += url.GetDirectorySeparator();
 }
 
 bool CUtil::IsUsingTTFSubtitles()

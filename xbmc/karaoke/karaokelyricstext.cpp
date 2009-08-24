@@ -12,7 +12,7 @@
 #include "stdafx.h"
 #include <math.h>
 
-#include "Application.h"
+#include "Settings.h"
 #include "GUITextLayout.h"
 #include "karaokelyricstext.h"
 #include "Util.h"
@@ -20,7 +20,7 @@
 #include "GUIFontManager.h"
 #include "GUIWindowManager.h"
 #include "SkinInfo.h"
-
+#include "MathUtils.h"
 
 typedef struct
 {

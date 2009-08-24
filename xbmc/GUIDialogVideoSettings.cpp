@@ -24,7 +24,7 @@
 #include "GUIWindowManager.h"
 #include "GUIPassword.h"
 #include "Util.h"
-#include "Application.h"
+#include "MathUtils.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif

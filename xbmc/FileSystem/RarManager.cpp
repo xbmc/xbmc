@@ -32,7 +32,6 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "Settings.h"
 #include "FileItem.h"
-#include "Application.h"
 
 #include <set>
 

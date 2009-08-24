@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "stdafx.h"
 
-#include "Application.h"
 #include "Util.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
