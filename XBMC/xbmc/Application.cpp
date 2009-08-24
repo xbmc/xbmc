@@ -419,15 +419,21 @@ static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...
 
 HWND g_hWnd = NULL;
 
-int CApplication::OnEvent(unsigned int eventType, unsigned long param1, unsigned long param2)
+int CApplication::OnEvent(XBMC_Event& newEvent)
 {
-  switch(eventType)
+  switch(newEvent.type)
   {
-  case XBMC_PRESSED:
-  case XBMC_RELEASED:
-    g_Keyboard.HandleEvent(eventType, param1, param2);
-    g_application.ProcessKeyboard();
-    break;
+    case XBMC_KEYDOWN:
+    case XBMC_KEYUP:
+      g_Keyboard.HandleEvent(newEvent);
+      g_application.ProcessKeyboard();
+        break;
+    case XBMC_MOUSEBUTTONDOWN:
+    case XBMC_MOUSEBUTTONUP:
+    case XBMC_MOUSEMOTION:
+      g_Mouse.HandleEvent(newEvent);
+      g_application.ProcessMouse();
+      break;
   }
 
   return 0;

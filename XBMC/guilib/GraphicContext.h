@@ -57,12 +57,15 @@ namespace Surface { class CSurface; }
 class IMsgSenderCallback;
 class CGUIMessage;
 
-#include "common/Mouse.h"
+
+#include "MouseStat.h"
+/* elis
 #if defined(HAS_SDL)
 #include "common/SDLMouse.h"
 #else
-// elis #include "common/DirectInputMouse.h"
+#include "common/DirectInputMouse.h"
 #endif
+*/
 
 
 /*!

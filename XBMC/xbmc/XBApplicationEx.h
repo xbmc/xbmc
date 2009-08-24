@@ -22,7 +22,7 @@
 #define XBAPPLICATIONEX_H
 
 #include "IWindowManagerCallback.h"
-#include "common/Mouse.h"
+#include "MouseStat.h"
 #if defined (HAS_SDL) && defined (HAS_SDL_JOYSTICK)
 #include "common/SDLJoystick.h"
 #endif
