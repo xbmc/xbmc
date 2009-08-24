@@ -477,7 +477,14 @@ void cRenderTTPage::RenderTeletextCode(unsigned char *PageCode) {
                 
             // Handle all 'Set-After' spacing codes
             switch (ttc) {
-            case 0x00 ... 0x07: // Set FG color
+            case 0x00:
+            case 0x01:
+            case 0x02:
+            case 0x03:
+            case 0x04:
+            case 0x05:
+            case 0x06:
+            case 0x07: // Set FG color
                 if (GraphicCharset) {
                     // Actual switch from graphics charset
                     HoldMosaicChar=' ';
@@ -518,7 +525,14 @@ void cRenderTTPage::RenderTeletextCode(unsigned char *PageCode) {
                     HoldMosaicCharset=FirstG0;
                 }                   
                 break;
-            case 0x10 ... 0x17: // Mosaic FG Color
+            case 0x10:
+            case 0x11:
+            case 0x12:
+            case 0x13:
+            case 0x14:
+            case 0x15:
+            case 0x16:
+            case 0x17: // Mosaic FG Color
                 if (!GraphicCharset) {
                     // Actual switch to graphics charset
                     HoldMosaicChar=' ';
