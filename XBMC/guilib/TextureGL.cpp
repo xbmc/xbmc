@@ -53,7 +53,8 @@ CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int BPP
   m_nTextureWidth = 0;
   m_nTextureHeight = 0;
 
-  Allocate(m_imageWidth, m_imageHeight, m_nBPP);
+  if(m_imageWidth != 0 && m_imageHeight != 0)
+    Allocate(m_imageWidth, m_imageHeight, m_nBPP);
 }
 
 CGLTexture::~CGLTexture()
@@ -121,30 +122,6 @@ bool CGLTexture::LoadFromFile(const CStdString& texturePath)
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
     return 0;
   }
-  // make sure the texture format is correct
-  /* elis
-  SDL_PixelFormat format;
-  format.palette = 0; format.colorkey = 0; format.alpha = 0;
-  format.BitsPerPixel = 32; format.BytesPerPixel = 4;
-  format.Amask = AMASK; format.Ashift = PIXEL_ASHIFT;
-  format.Rmask = RMASK; format.Rshift = PIXEL_RSHIFT;
-  format.Gmask = GMASK; format.Gshift = PIXEL_GSHIFT;
-  format.Bmask = BMASK; format.Bshift = PIXEL_BSHIFT;
-
-  XBMC::TexturePtr pTexture = SDL_ConvertSurface(original, &format, SDL_SWSURFACE);
-
-  DELETE_TEXTURE(original);
-  if (!pTexture)
-  {
-    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
-    return 0;
-  }
-
-  Update(pTexture, false, false);
-  DELETE_TEXTURE(pTexture);
-
-  Update(original, false, false);
-  */
   m_imageWidth = original->GetWidth();
   m_imageHeight = original->GetHeight();
   m_nBPP = original->GetBPP();
@@ -157,8 +134,13 @@ bool CGLTexture::LoadFromFile(const CStdString& texturePath)
 }
 
 
-bool CGLTexture::LoadFromMemory(unsigned int width, unsigned int pitch, unsigned int BPP, unsigned char* pPixels)
+bool CGLTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels)
 {
+  m_imageWidth = width;
+  m_imageHeight = height;
+  m_nBPP = BPP;
+  Update(width, height, pitch, pPixels, false);
+
   return TRUE;
 }
 
@@ -226,7 +208,10 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
   int tpitch;
 
   if (m_pPixels)
+  {
     delete [] m_pPixels;
+    m_pPixels = NULL;
+  }
 
   Allocate(w, h, 0);
 
@@ -262,224 +247,5 @@ void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bo
   if (loadToGPU)
     LoadToGPU();
 }
-
-
-
-
-/*
-CGLTexture::CGLTexture()
-: CBaseTexture()
-{
-
-}
-
-CGLTexture::CGLTexture(int w, int h, int BPP)
-: CBaseTexture(w, h, BPP)
-{
-  imageWidth = w;
-  imageHeight = h;
-
-  if (!m_bRequiresPower2Textures)
-  {
-    textureWidth = imageWidth;
-    textureHeight = imageHeight;
-  }
-  else
-  {
-    textureWidth = PadPow2(imageWidth);
-    textureHeight = PadPow2(imageHeight);
-  }
-
-  m_pitch = (BPP / 8) * textureWidth;
-  m_pixels = new unsigned char[textureWidth * textureHeight * (BPP / 8)];
-
-  
-}
-
-CGLTexture::CGLTexture(CTexture* surface, bool load, bool freeSurface) 
-: CBaseTexture()
-{
-  int vmaj, vmin;
-
-  g_graphicsContext.GetRenderVersion(vmaj, vmin);    
-
-  if (vmaj>=2 && GLEW_ARB_texture_non_power_of_two)
-    m_bRequiresPower2Textures = false;
-  else
-    m_bRequiresPower2Textures = true;
-
-  Update(surface, load, freeSurface);
-}
-
-
-CGLTexture::~CGLTexture()
-{
-  g_graphicsContext.BeginPaint();
-  if (glIsTexture(m_pTexture)) {
-    glDeleteTextures(1, (GLuint*) &m_pTexture);
-  }
-  g_graphicsContext.EndPaint();
-
-  if (m_pixels)
-    delete [] m_pixels;
-
-  m_pixels = NULL;
-
-  id = 0;
-}
-
-bool CGLTexture::Load(const CStdString& texturePath)
-{
-  CPicture pic;
-  CBaseTexture* original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT);
-  if (!original)
-  {
-    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
-    return 0;
-  }
-  // make sure the texture format is correct
-  SDL_PixelFormat format;
-  format.palette = 0; format.colorkey = 0; format.alpha = 0;
-  format.BitsPerPixel = 32; format.BytesPerPixel = 4;
-  format.Amask = AMASK; format.Ashift = PIXEL_ASHIFT;
-  format.Rmask = RMASK; format.Rshift = PIXEL_RSHIFT;
-  format.Gmask = GMASK; format.Gshift = PIXEL_GSHIFT;
-  format.Bmask = BMASK; format.Bshift = PIXEL_BSHIFT;
-
-  XBMC::TexturePtr pTexture = SDL_ConvertSurface(original, &format, SDL_SWSURFACE);
-
-  DELETE_TEXTURE(original);
-  if (!pTexture)
-  {
-    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
-    return 0;
-  }
-
-  Update(pTexture, false, false);
-  DELETE_TEXTURE(pTexture);
-  
-  Update(original, false, false);
-  
-
-  return true;
-}
-
-void CGLTexture::Update(CTexture* surface, bool loadToGPU, bool freeSurface)
-{
-
-  SDL_LockSurface(surface);
-  Update(surface->w, surface->h, surface->pitch, (unsigned char *)surface->pixels, loadToGPU);
-  SDL_UnlockSurface(surface);
-
-  if (freeSurface)
-    DELETE_TEXTURE(surface);
-    
-}
-
-void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) 
-{
-  int tpitch;
-
-  if (m_pixels)
-    delete [] m_pixels;
-
-  imageWidth = w;
-  imageHeight = h;
-
-  if (!m_bRequiresPower2Textures)
-  {
-    textureWidth = imageWidth;
-    textureHeight = imageHeight;
-  }
-  else
-  {
-    textureWidth = PadPow2(imageWidth);
-    textureHeight = PadPow2(imageHeight);
-  }
-
-  // Resize texture to POT
-  const unsigned char *src = pixels;
-  tpitch = min(pitch,textureWidth*4);
-  m_pixels = new unsigned char[textureWidth * textureHeight * 4];
-  unsigned char* resized = m_pixels;
-
-  for (int y = 0; y < h; y++)
-  {
-    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
-    src += pitch;
-
-    // repeat last column to simulate clamp_to_edge
-    for(int i = tpitch; i < textureWidth*4; i+=4)
-      memcpy(resized+i, src-4, 4);
-
-    resized += (textureWidth * 4);
-  }
-
-  // repeat last row to simulate clamp_to_edge
-  for(int y = h; y < textureHeight; y++) 
-  {
-    memcpy(resized, src - tpitch, tpitch);
-
-    // repeat last column to simulate clamp_to_edge
-    for(int i = tpitch; i < textureWidth*4; i+=4) 
-      memcpy(resized+i, src-4, 4);
-
-    resized += (textureWidth * 4);
-  }
-  if (loadToGPU)
-    LoadToGPU();
-}
-
-
-void CGLTexture::LoadToGPU()
-{
-  if (!m_pixels) {
-    // nothing to load - probably same image (no change)
-    return;
-  }
-
-  g_graphicsContext.BeginPaint();
-  if (!m_loadedToGPU) {
-    // Have OpenGL generate a texture object handle for us
-    // this happens only one time - the first time the texture is loaded
-    glGenTextures(1, (GLuint*) &id);
-  }
-
-  // Bind the texture object
-  glBindTexture(GL_TEXTURE_2D, id);
-
-  // Set the texture's stretching properties
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-  static GLint maxSize = g_graphicsContext.GetMaxTextureSize();
-  {
-    if (textureHeight>maxSize)
-    {
-      CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %d", textureHeight, (int) maxSize);
-      textureHeight = maxSize;
-    }
-    if (textureWidth>maxSize)
-    {
-      CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %d", textureWidth, (int) maxSize);
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, textureWidth);
-      textureWidth = maxSize;
-    }
-  }
-  //CLog::Log(LOGNOTICE, "Texture width x height: %d x %d", textureWidth, textureHeight);
-  glTexImage2D(GL_TEXTURE_2D, 0, 4, textureWidth, textureHeight, 0,
-    GL_BGRA, GL_UNSIGNED_BYTE, m_pixels);
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-  VerifyGLState();
-
-  g_graphicsContext.EndPaint();
-  delete [] m_pixels;
-  m_pixels = NULL;
-
-  m_loadedToGPU = true;           
-}
-*/
 
 #endif // HAS_GL

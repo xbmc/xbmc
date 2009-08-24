@@ -44,7 +44,7 @@ public:
   
   void Delete();
   bool LoadFromFile(const CStdString& texturePath);
-  bool LoadFromMemory(unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels); 
+  bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels); 
   void LoadToGPU();
   unsigned int GetPitch() const;
   unsigned char* GetPixels() const;

@@ -346,9 +346,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
       pMap = new CTextureMap(strTextureName, pTextures->GetWidth(), pTextures->GetHeight(), nLoops);
       for (int iImage = 0; iImage < nImages; ++iImage)
       {
-        //CBaseTexture *newTexture = new CTexture(pTextures[iImage]);
         pMap->Add(&pTextures[iImage], Delay[iImage]);
-        //delete &pTextures[iImage];
       }
 
       delete [] pTextures;
@@ -372,10 +370,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
       for (int iImage = 0; iImage < iImages; iImage++)
       {
-        int w = iWidth;
-        int h = iHeight;
-
         CTexture *glTexture = new CTexture();
+   
         if (glTexture)
         {
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
@@ -388,11 +384,13 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
           if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
             palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
 
-          BYTE* pDest = (BYTE *)malloc(w * h * 4);
+          BYTE* pDest = (BYTE *)malloc(pImage->Width * pImage->Height * 4);
+          if(pDest == NULL)
+            return 0;
 
           for (int y = 0; y < pImage->Height; y++)
           {
-            BYTE *dest = pDest + (y * w * 4);
+            BYTE *dest = pDest + (y * pImage->Width * 4);
             BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
             for (int x = 0; x < pImage->Width; x++)
             {
@@ -403,7 +401,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
               *dest++ = col.x;
             }
           }
-          glTexture->LoadFromMemory(h, w * 4, 32, pDest);
+          glTexture->LoadFromMemory(pImage->Width, pImage->Height, pImage->Width * 4, 32, pDest);
           pMap->Add(glTexture, pImage->Delay);
           free(pDest);
         }

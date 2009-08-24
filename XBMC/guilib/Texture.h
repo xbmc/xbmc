@@ -49,7 +49,7 @@ public:
   virtual void Delete() = 0;
 
   virtual bool LoadFromFile(const CStdString& texturePath) = 0;
-  virtual bool LoadFromMemory(unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels) = 0;
+  virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels) = 0; 
   virtual void LoadToGPU() = 0;
 
   XBMC::TexturePtr GetTextureObject() const { return m_pTexture; }
