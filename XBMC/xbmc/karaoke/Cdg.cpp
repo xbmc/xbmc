@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "stdafx.h"
 
-#include "Application.h"
 #include "Util.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
@@ -414,7 +413,7 @@ void CCdgLoader::OnStartup()
     m_CdgFileState = FILE_ERR_NOT_FOUND;
     return ;
   }
-  if (!m_File.Open(m_strFileName, TRUE))
+  if (!m_File.Open(m_strFileName))
   {
     m_CdgFileState = FILE_ERR_OPENING;
     return ;

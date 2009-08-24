@@ -24,7 +24,7 @@ public:
   virtual ~CSDLMouse();
 
   virtual void Initialize(void *appData = NULL);
-  virtual void Acquire() {};
+  virtual void Acquire();
   virtual void ShowPointer(bool show);
   virtual bool Update(MouseState &state);
 

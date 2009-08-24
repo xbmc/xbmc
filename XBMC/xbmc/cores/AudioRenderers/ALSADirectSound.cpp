@@ -98,8 +98,6 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
 
   if(m_bPassthrough)
   {
-    if(deviceuse == "iec958")
-    {
       /* http://www.alsa-project.org/alsa-doc/alsa-lib/group___digital___audio___interface.html */
       deviceuse += ":AES0=0x6";
       deviceuse += ",AES1=0x82";
@@ -113,9 +111,13 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
       else
         deviceuse += ",AES3=0x1"; /* just a guess, maybe works for 96k */
     }
-  }
   else
   {
+    if(deviceuse == "hdmi"
+    || deviceuse == "iec958"
+    || deviceuse == "spdif")
+      deviceuse = "plug:" + deviceuse;
+
     if(g_guiSettings.GetBool("audiooutput.downmixmultichannel"))
     {
       if(iChannels == 6)

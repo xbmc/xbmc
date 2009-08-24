@@ -36,7 +36,7 @@ CProfile::CProfile(void)
   _bLockVideo = false;
   _bLockMusic = false;
   _bLockSettings = false;
-  _iLockMode = LOCK_MODE_UNKNOWN;
+  _iLockMode = LOCK_MODE_EVERYONE;
 }
 
 CProfile::~CProfile(void)

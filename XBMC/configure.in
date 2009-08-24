@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT("xbmc", 9.04, bugs@xbmc.org)
+AC_INIT("xbmc", 9.04, http://xbmc.org/trac/)
 AC_CONFIG_HEADERS([config.h])
 AH_TOP([#pragma once])
 
@@ -365,6 +365,7 @@ AC_CHECK_LIB([rt],          [clock_gettime])  # check for rt, required for clock
 AC_CHECK_LIB([png12],       [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [__lzo_init_v2],,
   AC_CHECK_LIB([lzo],       [__lzo_init2],, AC_MSG_ERROR(ERROR: Could not find either liblzo or liblzo2 - one of these must be present))
   )
@@ -374,8 +375,8 @@ AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
 else
+  AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
@@ -475,6 +476,13 @@ if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"
   AC_CHECK_LIB([avutil],           [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([postproc],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([swscale],          [main],, AC_MSG_ERROR($missing_library))
+
+  # Determine whether AVPacket and relevant functions are defined in libavformat
+  # or libavcodec
+  AC_CHECK_LIB([avcodec], [av_free_packet],
+  [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavcodec. ==)],
+  [AC_MSG_NOTICE(== AVPacket and relevant functions defined in libavformat. ==)
+   AC_DEFINE([AVPACKET_IN_AVFORMAT], [1], [Whether AVPacket is in libavformat.])])
 
   # Possible places the ffmpeg headers may be
   AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
@@ -580,11 +588,14 @@ fi
 
 # External libass
 if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"; then
-  AC_CHECK_LIB([ass],          [main],, AC_MSG_ERROR($missing_library))
-
+  # We need libass >= 0.9.7.
+  AC_CHECK_LIB([ass], [ass_set_message_cb],
+  [AC_CHECK_LIB([ass], [main],,)
   AC_MSG_NOTICE($external_libass_enabled)
   USE_EXTERNAL_LIBASS=1
-  AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])
+   AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])],
+  [AC_MSG_WARN(== Need libass >= 0.9.7. Disabling external libass. ==)
+   USE_EXTERNAL_LIBASS=0])
 else
   AC_MSG_NOTICE($external_libass_disabled)
   USE_EXTERNAL_LIBASS=0
@@ -1178,7 +1189,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     ./configure \
       --extra-cflags="-w -D_DARWIN_C_SOURCE -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
       --disable-static \
-      --disable-vhook \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
@@ -1191,7 +1201,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
-      --enable-swscale \
       --enable-protocol=http \
       --enable-pthreads \
       --cc="$CC" &&
@@ -1205,7 +1214,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --extra-cflags="-D_XBOX" \
       --disable-static \
       --disable-altivec \
-      --disable-vhook \
       --disable-ipv6 \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
@@ -1218,7 +1226,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-shared \
       --enable-postproc \
       --enable-gpl \
-      --enable-swscale \
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
       `if test "$use_external_libfaad" = "yes"; then echo --enable-libfaad; fi` \
       --enable-protocol=http \

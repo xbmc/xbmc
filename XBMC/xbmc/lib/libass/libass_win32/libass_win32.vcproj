@@ -19,7 +19,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
+				AdditionalIncludeDirectories=".\freetype\include;.\freetype\include\freetype2;.\"
+				PreprocessorDefinitions="_WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -68,7 +69,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories=".\freetype\include;.\freetype\include\freetype2;.\"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
+				PreprocessorDefinitions="_WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -113,7 +114,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Quelldateien"
+			Name="Sources"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
@@ -124,6 +125,9 @@
 			</File>
 			<File
 				RelativePath="..\libass\ass_cache.c">
+			</File>
+			<File
+				RelativePath="..\libass\ass_drawing.c">
 			</File>
 			<File
 				RelativePath="..\libass\ass_font.c">
@@ -140,12 +144,9 @@
 			<File
 				RelativePath="..\libass\ass_utils.c">
 			</File>
-			<File
-				RelativePath="..\libass\mputils.c">
-			</File>
 		</Filter>
 		<Filter
-			Name="Headerdateien"
+			Name="Headers"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
@@ -156,6 +157,9 @@
 			</File>
 			<File
 				RelativePath="..\libass\ass_cache.h">
+			</File>
+			<File
+				RelativePath="..\libass\ass_drawing.h">
 			</File>
 			<File
 				RelativePath="..\libass\ass_font.h">
@@ -173,22 +177,8 @@
 				RelativePath="..\libass\ass_utils.h">
 			</File>
 			<File
-				RelativePath="..\libass\help_mp.h">
-			</File>
-			<File
-				RelativePath="..\libass\mp_msg.h">
-			</File>
-			<File
-				RelativePath="..\libass\mputils.h">
-			</File>
-			<File
 				RelativePath="..\libass\msvc.h">
 			</File>
-		</Filter>
-		<Filter
-			Name="Ressourcendateien"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
 		</Filter>
 	</Files>
 	<Globals>

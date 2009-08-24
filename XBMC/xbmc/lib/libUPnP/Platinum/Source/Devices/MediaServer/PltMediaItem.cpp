@@ -125,7 +125,8 @@ const NPT_HttpFileRequestHandler_FileTypeMapEntry
 PLT_HttpFileRequestHandler_360FileTypeMap[] = {
     {"avi",  "video/avi"},
     {"divx", "video/avi"},
-    {"xvid", "video/avi"}
+    {"xvid", "video/avi"},
+    {"mov",  "video/mp4"}
 };
 
 const NPT_HttpFileRequestHandler_FileTypeMapEntry 
@@ -278,14 +279,26 @@ PLT_MediaObject::GetDlnaExtension(const char*                   mime_type,
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaObject::GetProtInfo
+|   PLT_MediaObject::GetProtocolInfo
 +---------------------------------------------------------------------*/
 NPT_String
-PLT_MediaObject::GetProtInfo(const char*                   filepath, 
+PLT_MediaObject::GetProtocolInfo(const char*                   filepath, 
                              const PLT_HttpRequestContext* context /* = NULL */)
 {
     NPT_String mime_type = GetMimeType(filepath, context);
     return "http-get:*:"+mime_type+":"+GetDlnaExtension(mime_type, context);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaObject::GetMimeTypeFromProtocolInfo
++---------------------------------------------------------------------*/
+NPT_String  
+PLT_MediaObject::GetMimeTypeFromProtocolInfo(const char* protocol_info)
+{
+	NPT_String info = protocol_info;
+	NPT_List<NPT_String> fragments = info.Split(":");
+	if (fragments.GetItemCount() != 4) return "";
+	return *fragments.GetItem(2);
 }
 
 /*----------------------------------------------------------------------

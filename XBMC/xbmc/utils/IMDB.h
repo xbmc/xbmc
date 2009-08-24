@@ -58,7 +58,7 @@ public:
   CIMDB();
   virtual ~CIMDB();
 
-  int InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
+  int InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
   bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
   bool InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details);
   bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
@@ -78,7 +78,6 @@ public:
   const SScraperInfo& GetScraperInfo() const { return m_info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
-  void GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear);
 
   static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
 
@@ -101,7 +100,6 @@ protected:
   IMDB_EPISODELIST  m_episode;
   LOOKUP_STATE      m_state;
   int               m_found;
-  bool              m_retry;
   SScraperInfo      m_info;
 };
 

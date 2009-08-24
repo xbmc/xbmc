@@ -292,15 +292,12 @@ extern "C"
     _vsnprintf(tmp, 2048, format, va);
     va_end(va);
     tmp[2048 - 1] = 0;
-#if defined(HAS_VIDEO_PLAYBACK) && defined(HAS_XBOX_HARDWARE)
-    update_cache_dialog(tmp);
-#endif
     CLog::Log(LOGDEBUG, "  msg: %s", tmp);
     
     return strlen(tmp);
   }
 
-  char *_fullpath(char *absPath, const char *relPath, size_t maxLength)
+  char *dll_fullpath(char *absPath, const char *relPath, size_t maxLength)
   {
     unsigned int len = strlen(relPath);
     if (len > maxLength && absPath != NULL) return NULL;

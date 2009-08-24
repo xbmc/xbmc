@@ -36,7 +36,7 @@
 
 #define ALT_BITSTREAM_READER_LE
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "dsputil.h"
 #include "mpegaudio.h"
 
@@ -278,76 +278,122 @@ static av_cold void init_noise_samples(void) {
     }
 }
 
+static const uint16_t qdm2_vlc_offs[] = {
+    0,260,566,598,894,1166,1230,1294,1678,1950,2214,2278,2310,2570,2834,3124,3448,3838,
+};
 
 static av_cold void qdm2_init_vlc(void)
 {
+    static int vlcs_initialized = 0;
+    static VLC_TYPE qdm2_table[3838][2];
+
+    if (!vlcs_initialized) {
+
+        vlc_tab_level.table = &qdm2_table[qdm2_vlc_offs[0]];
+        vlc_tab_level.table_allocated = qdm2_vlc_offs[1] - qdm2_vlc_offs[0];
     init_vlc (&vlc_tab_level, 8, 24,
         vlc_tab_level_huffbits, 1, 1,
-        vlc_tab_level_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_level_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_diff.table = &qdm2_table[qdm2_vlc_offs[1]];
+        vlc_tab_diff.table_allocated = qdm2_vlc_offs[2] - qdm2_vlc_offs[1];
     init_vlc (&vlc_tab_diff, 8, 37,
         vlc_tab_diff_huffbits, 1, 1,
-        vlc_tab_diff_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_diff_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_run.table = &qdm2_table[qdm2_vlc_offs[2]];
+        vlc_tab_run.table_allocated = qdm2_vlc_offs[3] - qdm2_vlc_offs[2];
     init_vlc (&vlc_tab_run, 5, 6,
         vlc_tab_run_huffbits, 1, 1,
-        vlc_tab_run_huffcodes, 1, 1, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_run_huffcodes, 1, 1, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        fft_level_exp_alt_vlc.table = &qdm2_table[qdm2_vlc_offs[3]];
+        fft_level_exp_alt_vlc.table_allocated = qdm2_vlc_offs[4] - qdm2_vlc_offs[3];
     init_vlc (&fft_level_exp_alt_vlc, 8, 28,
         fft_level_exp_alt_huffbits, 1, 1,
-        fft_level_exp_alt_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            fft_level_exp_alt_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+
+        fft_level_exp_vlc.table = &qdm2_table[qdm2_vlc_offs[4]];
+        fft_level_exp_vlc.table_allocated = qdm2_vlc_offs[5] - qdm2_vlc_offs[4];
     init_vlc (&fft_level_exp_vlc, 8, 20,
         fft_level_exp_huffbits, 1, 1,
-        fft_level_exp_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            fft_level_exp_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        fft_stereo_exp_vlc.table = &qdm2_table[qdm2_vlc_offs[5]];
+        fft_stereo_exp_vlc.table_allocated = qdm2_vlc_offs[6] - qdm2_vlc_offs[5];
     init_vlc (&fft_stereo_exp_vlc, 6, 7,
         fft_stereo_exp_huffbits, 1, 1,
-        fft_stereo_exp_huffcodes, 1, 1, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            fft_stereo_exp_huffcodes, 1, 1, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        fft_stereo_phase_vlc.table = &qdm2_table[qdm2_vlc_offs[6]];
+        fft_stereo_phase_vlc.table_allocated = qdm2_vlc_offs[7] - qdm2_vlc_offs[6];
     init_vlc (&fft_stereo_phase_vlc, 6, 9,
         fft_stereo_phase_huffbits, 1, 1,
-        fft_stereo_phase_huffcodes, 1, 1, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            fft_stereo_phase_huffcodes, 1, 1, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_tone_level_idx_hi1.table = &qdm2_table[qdm2_vlc_offs[7]];
+        vlc_tab_tone_level_idx_hi1.table_allocated = qdm2_vlc_offs[8] - qdm2_vlc_offs[7];
     init_vlc (&vlc_tab_tone_level_idx_hi1, 8, 20,
         vlc_tab_tone_level_idx_hi1_huffbits, 1, 1,
-        vlc_tab_tone_level_idx_hi1_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_tone_level_idx_hi1_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_tone_level_idx_mid.table = &qdm2_table[qdm2_vlc_offs[8]];
+        vlc_tab_tone_level_idx_mid.table_allocated = qdm2_vlc_offs[9] - qdm2_vlc_offs[8];
     init_vlc (&vlc_tab_tone_level_idx_mid, 8, 24,
         vlc_tab_tone_level_idx_mid_huffbits, 1, 1,
-        vlc_tab_tone_level_idx_mid_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_tone_level_idx_mid_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_tone_level_idx_hi2.table = &qdm2_table[qdm2_vlc_offs[9]];
+        vlc_tab_tone_level_idx_hi2.table_allocated = qdm2_vlc_offs[10] - qdm2_vlc_offs[9];
     init_vlc (&vlc_tab_tone_level_idx_hi2, 8, 24,
         vlc_tab_tone_level_idx_hi2_huffbits, 1, 1,
-        vlc_tab_tone_level_idx_hi2_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_tone_level_idx_hi2_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_type30.table = &qdm2_table[qdm2_vlc_offs[10]];
+        vlc_tab_type30.table_allocated = qdm2_vlc_offs[11] - qdm2_vlc_offs[10];
     init_vlc (&vlc_tab_type30, 6, 9,
         vlc_tab_type30_huffbits, 1, 1,
-        vlc_tab_type30_huffcodes, 1, 1, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_type30_huffcodes, 1, 1, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_type34.table = &qdm2_table[qdm2_vlc_offs[11]];
+        vlc_tab_type34.table_allocated = qdm2_vlc_offs[12] - qdm2_vlc_offs[11];
     init_vlc (&vlc_tab_type34, 5, 10,
         vlc_tab_type34_huffbits, 1, 1,
-        vlc_tab_type34_huffcodes, 1, 1, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_type34_huffcodes, 1, 1, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_fft_tone_offset[0].table = &qdm2_table[qdm2_vlc_offs[12]];
+        vlc_tab_fft_tone_offset[0].table_allocated = qdm2_vlc_offs[13] - qdm2_vlc_offs[12];
     init_vlc (&vlc_tab_fft_tone_offset[0], 8, 23,
         vlc_tab_fft_tone_offset_0_huffbits, 1, 1,
-        vlc_tab_fft_tone_offset_0_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_fft_tone_offset_0_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_fft_tone_offset[1].table = &qdm2_table[qdm2_vlc_offs[13]];
+        vlc_tab_fft_tone_offset[1].table_allocated = qdm2_vlc_offs[14] - qdm2_vlc_offs[13];
     init_vlc (&vlc_tab_fft_tone_offset[1], 8, 28,
         vlc_tab_fft_tone_offset_1_huffbits, 1, 1,
-        vlc_tab_fft_tone_offset_1_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_fft_tone_offset_1_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_fft_tone_offset[2].table = &qdm2_table[qdm2_vlc_offs[14]];
+        vlc_tab_fft_tone_offset[2].table_allocated = qdm2_vlc_offs[15] - qdm2_vlc_offs[14];
     init_vlc (&vlc_tab_fft_tone_offset[2], 8, 32,
         vlc_tab_fft_tone_offset_2_huffbits, 1, 1,
-        vlc_tab_fft_tone_offset_2_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_fft_tone_offset_2_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_fft_tone_offset[3].table = &qdm2_table[qdm2_vlc_offs[15]];
+        vlc_tab_fft_tone_offset[3].table_allocated = qdm2_vlc_offs[16] - qdm2_vlc_offs[15];
     init_vlc (&vlc_tab_fft_tone_offset[3], 8, 35,
         vlc_tab_fft_tone_offset_3_huffbits, 1, 1,
-        vlc_tab_fft_tone_offset_3_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_fft_tone_offset_3_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
 
+        vlc_tab_fft_tone_offset[4].table = &qdm2_table[qdm2_vlc_offs[16]];
+        vlc_tab_fft_tone_offset[4].table_allocated = qdm2_vlc_offs[17] - qdm2_vlc_offs[16];
     init_vlc (&vlc_tab_fft_tone_offset[4], 8, 38,
         vlc_tab_fft_tone_offset_4_huffbits, 1, 1,
-        vlc_tab_fft_tone_offset_4_huffcodes, 2, 2, INIT_VLC_USE_STATIC | INIT_VLC_LE);
+            vlc_tab_fft_tone_offset_4_huffcodes, 2, 2, INIT_VLC_USE_NEW_STATIC | INIT_VLC_LE);
+
+        vlcs_initialized=1;
+}
 }
 
 
@@ -707,8 +753,7 @@ static void fill_coding_method_array (sb_int8_array tone_level_idx, sb_int8_arra
                 for (sb = 0; sb < 30; sb++)
                     for (j = 0; j < 64; j++)
                         acc += tone_level_idx_temp[ch][sb][j];
-            if (acc)
-                tmp = c * 256 / (acc & 0xffff);
+
             multres = 0x66666667 * (acc * 10);
             esp_40 = (multres >> 32) / 8 + ((multres & 0xffffffff) >> 31);
             for (ch = 0;  ch < nb_channels; ch++)
@@ -1835,7 +1880,6 @@ static av_cold int qdm2_decode_init(AVCodecContext *avctx)
     extradata += 4;
 
     s->checksum_size = AV_RB32(extradata);
-    extradata += 4;
 
     s->fft_order = av_log2(s->fft_size) + 1;
     s->fft_frame_size = 2 * s->fft_size; // complex has two floats
@@ -1968,8 +2012,10 @@ static void qdm2_decode (QDM2Context *q, const uint8_t *in, int16_t *out)
 
 static int qdm2_decode_frame(AVCodecContext *avctx,
             void *data, int *data_size,
-            const uint8_t *buf, int buf_size)
+            AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     QDM2Context *s = avctx->priv_data;
 
     if(!buf)

@@ -58,8 +58,10 @@ static av_cold int libopenjpeg_decode_init(AVCodecContext *avctx)
 
 static int libopenjpeg_decode_frame(AVCodecContext *avctx,
                                     void *data, int *data_size,
-                                    const uint8_t *buf, int buf_size)
+                                    AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     LibOpenJPEGContext *ctx = avctx->priv_data;
     AVFrame *picture = &ctx->image, *output = data;
     opj_dinfo_t *dec;
@@ -87,6 +89,7 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
     }
     opj_set_event_mgr((opj_common_ptr)dec, NULL, NULL);
 
+    ctx->dec_params.cp_reduce = avctx->lowres;
     // Tie decoder with decoding parameters
     opj_setup_decoder(dec, &ctx->dec_params);
     stream = opj_cio_open((opj_common_ptr)dec, buf, buf_size);
@@ -104,8 +107,8 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
         opj_destroy_decompress(dec);
         return -1;
     }
-    width  = image->comps[0].w;
-    height = image->comps[0].h;
+    width  = image->comps[0].w << avctx->lowres;
+    height = image->comps[0].h << avctx->lowres;
     if(avcodec_check_dimensions(avctx, width, height) < 0) {
         av_log(avctx, AV_LOG_ERROR, "%dx%d dimension invalid.\n", width, height);
         goto done;
@@ -142,10 +145,10 @@ static int libopenjpeg_decode_frame(AVCodecContext *avctx,
         adjust[x] = FFMAX(image->comps[x].prec - 8, 0);
     }
 
-    for(y = 0; y < height; y++) {
-        index = y*width;
+    for(y = 0; y < avctx->height; y++) {
+        index = y*avctx->width;
         img_ptr = picture->data[0] + y*picture->linesize[0];
-        for(x = 0; x < width; x++, index++) {
+        for(x = 0; x < avctx->width; x++, index++) {
             *img_ptr++ = image->comps[0].data[index] >> adjust[0];
             if(image->numcomps > 2 && check_image_attributes(image)) {
                 *img_ptr++ = image->comps[1].data[index] >> adjust[1];
@@ -185,6 +188,6 @@ AVCodec libopenjpeg_decoder = {
     NULL,
     libopenjpeg_decode_close,
     libopenjpeg_decode_frame,
-    NULL,
+    CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("OpenJPEG based JPEG 2000 decoder"),
 } ;

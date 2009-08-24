@@ -25,7 +25,7 @@
 #include "GraphicContext.h"
 
 #include "utils/SingleLock.h"
-#include "Util.h"
+#include "MathUtils.h"
 
 #define ROUND(x) (float)(MathUtils::round_int(x))
 

@@ -243,26 +243,31 @@ static int tiff_decode_tag(TiffContext *s, const uint8_t *start, const uint8_t *
                 s->bpp = -1;
             }
         }
-        switch(s->bpp){
-        case 1:
+        if(count > 4){
+            av_log(s->avctx, AV_LOG_ERROR, "This format is not supported (bpp=%d, %d components)\n", s->bpp, count);
+            return -1;
+        }
+        switch(s->bpp*10 + count){
+        case 11:
             s->avctx->pix_fmt = PIX_FMT_MONOBLACK;
             break;
-        case 8:
+        case 81:
             s->avctx->pix_fmt = PIX_FMT_PAL8;
             break;
-        case 24:
+        case 243:
             s->avctx->pix_fmt = PIX_FMT_RGB24;
             break;
-        case 16:
-            if(count == 1){
+        case 161:
                 s->avctx->pix_fmt = PIX_FMT_GRAY16BE;
-            }else{
-                av_log(s->avctx, AV_LOG_ERROR, "This format is not supported (bpp=%i)\n", s->bpp);
-                return -1;
-            }
+            break;
+        case 324:
+            s->avctx->pix_fmt = PIX_FMT_RGBA;
+            break;
+        case 483:
+            s->avctx->pix_fmt = s->le ? PIX_FMT_RGB48LE : PIX_FMT_RGB48BE;
             break;
         default:
-            av_log(s->avctx, AV_LOG_ERROR, "This format is not supported (bpp=%i)\n", s->bpp);
+            av_log(s->avctx, AV_LOG_ERROR, "This format is not supported (bpp=%d, %d components)\n", s->bpp, count);
             return -1;
         }
         if(s->width != s->avctx->width || s->height != s->avctx->height){
@@ -404,8 +409,10 @@ static int tiff_decode_tag(TiffContext *s, const uint8_t *start, const uint8_t *
 
 static int decode_frame(AVCodecContext *avctx,
                         void *data, int *data_size,
-                        const uint8_t *buf, int buf_size)
+                        AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     TiffContext * const s = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame * const p= (AVFrame*)&s->picture;
@@ -510,7 +517,6 @@ static av_cold int tiff_init(AVCodecContext *avctx){
     s->avctx = avctx;
     avcodec_get_frame_defaults((AVFrame*)&s->picture);
     avctx->coded_frame= (AVFrame*)&s->picture;
-    s->picture.data[0] = NULL;
     ff_lzw_decode_open(&s->lzw);
     ff_ccitt_unpack_init();
 
@@ -536,7 +542,7 @@ AVCodec tiff_decoder = {
     NULL,
     tiff_end,
     decode_frame,
-    0,
+    CODEC_CAP_DR1,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("TIFF image"),
 };

@@ -44,7 +44,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 29
+#define VIDEO_DATABASE_VERSION 32
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -93,7 +93,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
 
     CLog::Log(LOGINFO, "create settings table");
-    m_pDS->exec("CREATE TABLE settings ( idFile integer, Interleaved bool, NoCache bool, Deinterlace bool, FilmGrain float,"
+    m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool," 
                 "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
                 "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
                 "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
@@ -295,11 +295,11 @@ bool CVideoDatabase::CreateTables()
     CLog::Log(LOGINFO, "create episodeview");
     CStdString episodeview = FormatSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
                                        "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
-                                       "tvshow.c%02d as premiered from episode "
+                                       "tvshow.c%02d as premiered, tvshow.c%02d as mpaa from episode "
                                        "join files on files.idFile=episode.idFile "
                                        "join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode "
                                        "join tvshow on tvshow.idshow=tvshowlinkepisode.idshow "
-                                       "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED);
+                                       "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA);
     m_pDS->exec(episodeview.c_str());
 
     CLog::Log(LOGINFO, "create musicvideoview");
@@ -2420,9 +2420,11 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      CStdString strPath;
-      CUtil::AddFileToFolder(m_pDS2->fv("path.strPath").get_asString(),m_pDS2->fv("files.strFilename").get_asString(),strPath);
-      DeleteEpisode(strPath,m_pDS2->fv(0).get_asLong(), bKeepId);
+      CStdString strFilenameAndPath;
+      CStdString strPath = m_pDS2->fv("path.strPath").get_asString();
+      CStdString strFileName = m_pDS2->fv("files.strFilename").get_asString();
+      ConstructPath(strFilenameAndPath, strPath, strFileName);
+      DeleteEpisode(strFilenameAndPath, m_pDS2->fv(0).get_asLong(), bKeepId);
       m_pDS2->next();
     }
 
@@ -2453,15 +2455,6 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
       strSQL=FormatSQL("delete from movielinktvshow where idshow=%i", lTvShowId);
       m_pDS->exec(strSQL.c_str());
     }
-    /*
-    // work in progress
-    else
-    {
-      // clear the title
-      strSQL=FormatSQL("update tvshow set c%02d=NULL where idshow=%i", VIDEODB_ID_TV_TITLE, lTvShowId);
-      m_pDS->exec(strSQL.c_str());
-    }
-    */
 
     InvalidatePathHash(strPath);
 
@@ -2469,7 +2462,7 @@ void CVideoDatabase::DeleteTvShow(const CStdString& strPath, bool bKeepId /* = f
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
   }
 }
 
@@ -2506,7 +2499,7 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     m_pDS->exec(strSQL.c_str());
 
     if (!bKeepThumb)
-      DeleteThumbForItem(strFilenameAndPath,false);
+      DeleteThumbForItem(strFilenameAndPath, false, lEpisodeId);
 
     DeleteStreamDetails(lFileId);
 
@@ -2516,23 +2509,14 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, long lE
     {
       ClearBookMarksOfFile(strFilenameAndPath);
 
-      strSQL=FormatSQL("delete from episode where idfile=%i", lFileId);
+      strSQL=FormatSQL("delete from episode where idEpisode=%i", lEpisodeId);
       m_pDS->exec(strSQL.c_str());
     }
-    /*
-    // work in progress
-    else
-    {
-      // clear the title
-      strSQL=FormatSQL("update episode set c%02d=NULL where idepisode=%i", VIDEODB_ID_EPISODE_TITLE, lEpisodeId);
-      m_pDS->exec(strSQL.c_str());
-    }
-    */
 
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
 }
 
@@ -2803,8 +2787,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   GetCommonDetails(pDS, details);
   movieTime += timeGetTime() - time; time = timeGetTime();
 
+  details.m_strMPAARating = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA).get_asString();
   details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
-  details.m_strStudio = pDS->fv(VIDEODB_DETAILS_EPISODE_STUDIO).get_asString();
+  details.m_strStudio = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString();
 
   GetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
 
@@ -2905,8 +2890,6 @@ bool CVideoDatabase::GetVideoSettings(const CStdString &strFilenameAndPath, CVid
       settings.m_Sharpness = m_pDS->fv("Sharpness").get_asFloat();
       settings.m_CustomZoomAmount = m_pDS->fv("ZoomAmount").get_asFloat();
       settings.m_Gamma = m_pDS->fv("Gamma").get_asFloat();
-      settings.m_NonInterleaved = m_pDS->fv("Interleaved").get_asBool();
-      settings.m_NoCache = m_pDS->fv("NoCache").get_asBool();
       settings.m_SubtitleDelay = m_pDS->fv("SubtitleDelay").get_asFloat();
       settings.m_SubtitleOn = m_pDS->fv("SubtitlesOn").get_asBool();
       settings.m_SubtitleStream = m_pDS->fv("SubtitleStream").get_asInteger();
@@ -2953,10 +2936,10 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
     {
       m_pDS->close();
       // update the item
-      strSQL=FormatSQL("update settings set Interleaved=%i,NoCache=%i,Deinterlace=%i,FilmGrain=%f,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
+      strSQL=FormatSQL("update settings set Deinterlace=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
                        "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%f,Contrast=%f,Gamma=%f,"
                        "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,Sharpness=%f,NoiseReduction=%f,",
-                       setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
+                       setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay,
                        setting.m_OutputToAllSpeakers,setting.m_Sharpness,setting.m_NoiseReduction);
@@ -2969,11 +2952,11 @@ void CVideoDatabase::SetVideoSettings(const CStdString& strFilenameAndPath, cons
     else
     { // add the items
       m_pDS->close();
-      strSQL=FormatSQL("insert into settings ( idFile,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
+      strSQL=FormatSQL("insert into settings ( idFile,Deinterlace,ViewMode,ZoomAmount,PixelRatio,"
                        "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
                        "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom,Sharpness,NoiseReduction)"
-                       " values (%i,%i,%i,%i,%f,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%f,%f,",
-                       lFileId, setting.m_NonInterleaved, setting.m_NoCache, setting.m_InterlaceMethod, setting.m_FilmGrain, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
+                       " values (%i,%i,%i,%f,%f,%i,%i,%f,%i,%f,%f,%f,%f,%f,%f,%f,",
+                       lFileId, setting.m_InterlaceMethod, setting.m_ViewMode, setting.m_CustomZoomAmount, setting.m_CustomPixelRatio,
                        setting.m_AudioStream, setting.m_SubtitleStream, setting.m_SubtitleDelay, setting.m_SubtitleOn,
                        setting.m_Brightness, setting.m_Contrast, setting.m_Gamma, setting.m_VolumeAmplification, setting.m_AudioDelay, setting.m_Sharpness, setting.m_NoiseReduction);
       CStdString strSQL2;
@@ -3528,8 +3511,8 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec(showview.c_str());
       // and fill the new playcount fields
       CStdString sql;
-      sql = FormatSQL("update files set playCount = (select movie.c%02d from movie where movie.idFile = files.idFile) "
-                      "where exists (select movie.c%02d from movie where movie.idFile = files.idFile)", VIDEODB_ID_PLAYCOUNT, VIDEODB_ID_PLAYCOUNT);
+      sql = FormatSQL("update files set playCount = (select movie.c10 from movie where movie.idFile = files.idFile) " // NOTE: c10 was the old playcount field which is now reused
+                      "where exists (select movie.c10 from movie where movie.idFile = files.idFile)");
       m_pDS->exec(sql.c_str());
       sql = FormatSQL("update files set playCount = (select episode.c%02d from episode where episode.idFile = files.idFile) "
         "where exists (select episode.c%02d from episode where episode.idFile = files.idFile)", VIDEODB_ID_EPISODE_PLAYCOUNT, VIDEODB_ID_EPISODE_PLAYCOUNT);
@@ -3538,7 +3521,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         "where exists (select musicvideo.c%02d from musicvideo where musicvideo.idFile = files.idFile)", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
       m_pDS->exec(sql.c_str());
       // and clear out the old fields
-      sql = FormatSQL("update movie set c%02d=NULL", VIDEODB_ID_PLAYCOUNT);
+      sql = FormatSQL("update movie set c10=NULL"); // NOTE: c10 was the old playcount field which has now been reused
       m_pDS->exec(sql.c_str());
       sql = FormatSQL("update episode set c%02d=NULL", VIDEODB_ID_EPISODE_PLAYCOUNT);
       m_pDS->exec(sql.c_str());
@@ -3579,6 +3562,59 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     if (iVersion < 29)
     {
       m_pDS->exec("alter table bookmark add totalTimeInSeconds double");
+    }
+    if (iVersion < 30)
+    {
+      m_pDS->exec("drop view episodeview");
+      CStdString episodeview = FormatSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
+                                       "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
+                                       "tvshow.c%02d as premiered, tvshow.c%02d as mpaa from episode "
+                                       "join files on files.idFile=episode.idFile "
+                                       "join tvshowlinkepisode on episode.idepisode=tvshowlinkepisode.idepisode "
+                                       "join tvshow on tvshow.idshow=tvshowlinkepisode.idshow "
+                                       "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA);
+      m_pDS->exec(episodeview.c_str());
+  }
+    if (iVersion < 31)
+    {
+      const char* tag1[] = {"idmovie","idshow","idepisode","idmvideo","idactor"};
+      const char* tag2[] = {"c08","c06","c06","c02","strThumb"};
+      const char* tag3[] = {"movie","tvshow","episode","musicvideo","actors"};
+      for (int i=0;i<5;++i)
+      {
+        CStdString strSQL=FormatSQL("select %s,%s from %s",
+                                    tag1[i],tag2[i],tag3[i]);
+        m_pDS->query(strSQL.c_str());
+        while (!m_pDS->eof())
+        {
+          TiXmlDocument doc;
+          doc.Parse(m_pDS->fv(1).get_asString().c_str());
+          if (!doc.RootElement() || !doc.RootElement()->FirstChildElement("thumb"))
+          {
+            m_pDS->next();
+            continue;
+          }
+          const TiXmlElement* thumb = doc.RootElement()->FirstChildElement("thumb");
+          stringstream str;
+          while (thumb)
+          {
+            str << *thumb;
+            thumb = thumb->NextSiblingElement("thumb");
+          }
+          CStdString strSQL = FormatSQL("update %s set %s='%s' where %s=%u",
+                                        tag3[i],tag2[i],
+                                        str.str().c_str(),tag1[i],
+                                        m_pDS->fv(0).get_asLong());
+          m_pDS2->exec(strSQL.c_str());
+          m_pDS->next();
+        }
+      }
+    }
+    if (iVersion < 32)
+    {
+      CStdString sql;
+      sql = FormatSQL("UPDATE movie SET c%02d=NULL", VIDEODB_ID_SORTTITLE);
+      m_pDS->exec(sql.c_str());
     }
   }
   catch (...)
@@ -6513,7 +6549,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     m_pDS->exec(sql.c_str());
 
     CLog::Log(LOGDEBUG, "%s Cleaning studio table", __FUNCTION__);
-    sql = "delete from studio where idStudio not in (select distinct idStudio from studiolinkmovie) and idStudio not in (select distinct idStudio from studiolinkmusicvideo)";
+    sql = "delete from studio where idStudio not in (select distinct idStudio from studiolinkmovie) and idStudio not in (select distinct idStudio from studiolinkmusicvideo) and idStudio not in (select distinct idStudio from studiolinktvshow)";
     m_pDS->exec(sql.c_str());
 
     CommitTransaction();
@@ -6690,6 +6726,8 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(strFanart)))
             if (!CFile::Cache(item.GetCachedFanart(),strFanart))
               CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), strFanart.c_str());
+
+          ExportActorThumbs(movie);
         }
       }
 
@@ -6856,6 +6894,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (!CFile::Cache(item.GetCachedFanart(),item.GetFolderThumb("fanart.jpg")))
               CLog::Log(LOGERROR, "%s: TVShow fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), item.GetFolderThumb("fanart.jpg").c_str());
 
+          ExportActorThumbs(tvshow);
 
           // now get all available seasons from this show
           sql = FormatSQL("select distinct(c%02d) from episodeview where idShow=%i", VIDEODB_ID_EPISODE_SEASON, tvshow.m_iDbId);
@@ -6900,7 +6939,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             else if (iSeason == 0)
               strSeasonThumb = "season-specials.tbn";
             else
-              strSeasonThumb.Format("season0%i.tbn",iSeason);
+              strSeasonThumb.Format("season%2i.tbn",iSeason);
             CUtil::GetParentPath(item.GetTBNFile(), strParent);
             CUtil::AddFileToFolder(strParent, strSeasonThumb, strDest);
 
@@ -6970,6 +7009,8 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
               if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
                 CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
+
+            ExportActorThumbs(episode);
           }
         }
         pDS->next();
@@ -7018,6 +7059,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
   if (progress)
     progress->Close();
+}
+
+void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag)
+{
+  CStdString strDir = CUtil::AddFileToFolder(tag.m_strPath,".actors");
+  for (CVideoInfoTag::iCast iter = tag.m_cast.begin();iter != tag.m_cast.end();++iter)
+  {
+    CFileItem item;
+    item.SetLabel(iter->strName);
+    CStdString strThumb = item.GetCachedActorThumb();
+    if (CFile::Exists(strThumb))
+    {
+      CDirectory::Create(strDir);
+      CStdString thumbFile = iter->strName;
+      thumbFile.Replace(" ","_");
+      thumbFile += ".tbn";
+      if (!CFile::Cache(strThumb,CUtil::AddFileToFolder(strDir,thumbFile)))
+        CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')", 
+                  __FUNCTION__, strThumb.c_str(), CUtil::AddFileToFolder(strDir,thumbFile).c_str());
+    }
+  }
 }
 
 CStdString CVideoDatabase::GetCachedThumb(const CFileItem& item) const
@@ -7239,7 +7301,7 @@ bool CVideoDatabase::ArbitraryExec(const CStdString& strExec)
 
 void CVideoDatabase::ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName)
 {
-  if (CUtil::IsStack(strFileName) || strFileName.Mid(0,6).Equals("rar://") || strFileName.Mid(0,6).Equals("zip://"))
+  if (CUtil::IsStack(strFileName) || CUtil::IsInArchive(strFileName))
     strDest = strFileName;
   else
     CUtil::AddFileToFolder(strPath, strFileName, strDest);
@@ -7286,13 +7348,22 @@ bool CVideoDatabase::CommitTransaction()
   return false;
 }
 
-void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder)
+void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder, long lEpisodeId)
 {
   CFileItem item(strPath,bFolder);
+  if (lEpisodeId > 0)
+  {
+    item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (CFile::Exists(item.GetCachedEpisodeThumb()))
+      XFILE::CFile::Delete(item.GetCachedEpisodeThumb());
+    else
   XFILE::CFile::Delete(item.GetCachedVideoThumb());
-  if (item.HasVideoInfoTag())
-    XFILE::CFile::Delete(item.GetCachedEpisodeThumb());
+  }
+  else
+  {
+    XFILE::CFile::Delete(item.GetCachedVideoThumb());
   XFILE::CFile::Delete(item.GetCachedFanart());
+  }
 
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)

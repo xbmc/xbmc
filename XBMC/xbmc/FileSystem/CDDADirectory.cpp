@@ -43,11 +43,11 @@ bool CCDDADirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 {
   // Reads the tracks from an audio cd
 
-  if (!g_mediaManager.IsDiscInDrive())
+  if (!g_mediaManager.IsDiscInDrive(strPath))
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
+  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo(strPath);
   if (pCdInfo == NULL)
     return false;
 

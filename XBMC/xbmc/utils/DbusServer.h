@@ -25,7 +25,6 @@
 #include "system.h"
 #include "Thread.h"
 #include "CriticalSection.h"
-#include "Application.h"
 #include <map>
 #include <queue>
 #include <dbus/dbus.h>
@@ -104,6 +103,8 @@
         return function( p_conn, p_from, p_this )
 
 #endif
+
+class CApplication;
 
 namespace DBUSSERVER
 {

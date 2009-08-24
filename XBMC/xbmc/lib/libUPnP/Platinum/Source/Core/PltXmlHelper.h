@@ -248,10 +248,10 @@ public:
         return NPT_FAILURE;
     }
 
-    static NPT_Result Serialize(NPT_XmlNode& node, NPT_String& xml) {
-        NPT_XmlWriter writer(2);
+    static NPT_Result Serialize(NPT_XmlNode& node, NPT_String& xml, bool add_header = true) {
+        NPT_XmlWriter writer(0);
         NPT_MemoryStreamReference stream(new NPT_MemoryStream());
-        NPT_CHECK(writer.Serialize(node, *stream));
+        NPT_CHECK(writer.Serialize(node, *stream, add_header));
 
         NPT_LargeSize size;
         stream->GetAvailable(size);

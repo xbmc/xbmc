@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-05-22" name="Last.FM" content="albums" thumb="lastfm.gif">
+<scraper framework="1.1" date="2009-08-11" name="Last.FM" content="albums" thumb="lastfm.gif">
+	<include>common/htbackdrops.xml</include>
+	<include>common/lastfm.xml</include>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;album=\2&amp;artist=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b" dest="3">
 			<expression>(http://www.last.fm/music/([^/]*)/(.*))</expression>
@@ -68,7 +70,7 @@
 			<expression noclean="1"/>
 		</RegExp>		
 	</GetArtistSearchResults>
-	<GetArtistDetails dest="3" clearbuffers="no">
+	<GetArtistDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
 				<expression noclean="1">&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression>
@@ -82,13 +84,13 @@
 			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetGenres&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">
 				<expression noclean="1">&lt;url&gt;http://www.last.fm/music/(.*?)&lt;/url&gt;</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;GetDiscography&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url function=&quot;GetLastFMDiscography&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">
 				<expression noclean="1">&lt;url&gt;http://www.last.fm/music/(.*?)&lt;/url&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
@@ -105,28 +107,4 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetGenres>
-	<GetDiscography dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;album&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/album&gt;" dest="2+">
-				<expression repeat="yes">&lt;album[^&gt;]*&gt;[^&lt;]*&lt;name&gt;([^&lt;]*?)&lt;/name&gt;</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetDiscography>
-	<GetHTBThumbs dest="5">
-		<RegExp input="$$13" output="&lt;details&gt;&lt;thumbs&gt;\1$$7&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://www.htbackdrops.com/data/thumbnails/\2&quot;&gt;http://www.htbackdrops.com/data/media/\2&lt;/thumb&gt;" dest="13">
-				<expression noclean="1" repeat="yes">mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetHTBThumbs>
-	<GetFanart dest="5">
-		<RegExp input="$$13" output="&lt;details&gt;&lt;fanart url=&quot;http://www.htbackdrops.com/&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;data/thumbnails/\2&quot;&gt;data/media/\2&lt;/thumb&gt;" dest="13">
-				<expression noclean="1" repeat="yes">mode=search(&amp;amp;sessionid=[^&quot;]*)?&quot;&gt;&lt;img src=&quot;./data/thumbnails/([^&quot;]+)&quot;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetFanart>
 </scraper>

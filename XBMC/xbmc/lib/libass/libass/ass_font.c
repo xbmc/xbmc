@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -36,20 +34,21 @@
 #include "ass_cache.h"
 #include "ass_fontconfig.h"
 #include "ass_utils.h"
-#include "mputils.h"
 
 /**
  * Select Microfost Unicode CharMap, if the font has one.
  * Otherwise, let FreeType decide.
  */
-static void charmap_magic(FT_Face face)
+static void charmap_magic(ass_library_t *library, FT_Face face)
 {
 	int i;
 	for (i = 0; i < face->num_charmaps; ++i) {
 		FT_CharMap cmap = face->charmaps[i];
 		unsigned pid = cmap->platform_id;
 		unsigned eid = cmap->encoding_id;
-		if (pid == 3 /*microsoft*/ && (eid == 1 /*unicode bmp*/ || eid == 10 /*full unicode*/)) {
+        if (pid == 3 /*microsoft */
+            && (eid == 1 /*unicode bmp */
+                || eid == 10 /*full unicode */ )) {
 			FT_Set_Charmap(face, cmap);
 			return;
 		}
@@ -57,10 +56,11 @@ static void charmap_magic(FT_Face face)
 
 	if (!face->charmap) {
 		if (face->num_charmaps == 0) {
-			mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_NoCharmaps);
+            ass_msg(library, MSGL_WARN, "Font face with no charmaps");
 			return;
 		}
-		mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_NoCharmapAutodetected);
+        ass_msg(library, MSGL_WARN,
+                "No charmap autodetected, trying the first one");
 		FT_Set_Charmap(face, face->charmaps[0]);
 		return;
 	}
@@ -125,43 +125,58 @@ static int add_face(void* fc_priv, ass_font_t* font, uint32_t ch)
 	if (font->n_faces == ASS_FONT_MAX_FACES)
 		return -1;
 	
-	path = fontconfig_select(fc_priv, font->desc.family, font->desc.bold,
-					      font->desc.italic, &index, ch);
+    path =
+        fontconfig_select(font->library, fc_priv, font->desc.family,
+                          font->desc.treat_family_as_pattern,
+                          font->desc.bold, font->desc.italic, &index, ch);
+    if (!path)
+        return -1;
 
 	mem_idx = find_font(font->library, path);
 	if (mem_idx >= 0) {
-		error = FT_New_Memory_Face(font->ftlibrary, (unsigned char*)font->library->fontdata[mem_idx].data,
-					   font->library->fontdata[mem_idx].size, 0, &face);
+        error =
+            FT_New_Memory_Face(font->ftlibrary,
+                               (unsigned char *) font->library->
+                               fontdata[mem_idx].data,
+                               font->library->fontdata[mem_idx].size, 0,
+                               &face);
 		if (error) {
-			mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_ErrorOpeningMemoryFont, path);
+            ass_msg(font->library, MSGL_WARN,
+                    "Error opening memory font: '%s'", path);
+            free(path);
 			return -1;
 		}
 	} else {
 		error = FT_New_Face(font->ftlibrary, path, index, &face);
 		if (error) {
-			mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_ErrorOpeningFont, path, index);
+            ass_msg(font->library, MSGL_WARN,
+                    "Error opening font: '%s', %d", path, index);
+            free(path);
 			return -1;
 		}
 	}
-	charmap_magic(face);
+    charmap_magic(font->library, face);
 	buggy_font_workaround(face);
 	
 	font->faces[font->n_faces++] = face;
 	update_transform(font);
 	face_set_size(face, font->size);
+    free(path);
 	return font->n_faces - 1;
 }
 
 /**
  * \brief Create a new ass_font_t according to "desc" argument
  */
-ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_priv, ass_font_desc_t* desc)
+ass_font_t *ass_font_new(void *font_cache, ass_library_t *library,
+                         FT_Library ftlibrary, void *fc_priv,
+                         ass_font_desc_t *desc)
 {
 	int error;
 	ass_font_t* fontp;
 	ass_font_t font;
 
-	fontp = ass_font_cache_find(library->font_cache, desc);
+    fontp = ass_font_cache_find((hashmap_t *) font_cache, desc);
 	if (fontp)
 		return fontp;
 	
@@ -169,6 +184,7 @@ ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_
 	font.ftlibrary = ftlibrary;
 	font.n_faces = 0;
 	font.desc.family = strdup(desc->family);
+    font.desc.treat_family_as_pattern = desc->treat_family_as_pattern;
 	font.desc.bold = desc->bold;
 	font.desc.italic = desc->italic;
 
@@ -181,18 +197,21 @@ ass_font_t* ass_font_new(ass_library_t* library, FT_Library ftlibrary, void* fc_
 		free(font.desc.family);
 		return 0;
 	} else
-		return ass_font_cache_add(library->font_cache, &font);
+        return ass_font_cache_add((hashmap_t *) font_cache, &font);
 }
 
 /**
  * \brief Set font transformation matrix and shift vector
  **/
-void ass_font_set_transform(ass_font_t* font, double scale_x, double scale_y, FT_Vector* v)
+void ass_font_set_transform(ass_font_t *font, double scale_x,
+                            double scale_y, FT_Vector *v)
 {
 	font->scale_x = scale_x;
 	font->scale_y = scale_y;
+    if (v) {
 	font->v.x = v->x;
 	font->v.y = v->y;
+    }
 	update_transform(font);
 }
 
@@ -244,14 +263,22 @@ void ass_font_set_size(ass_font_t* font, double size)
  * \param ch character code
  * The values are extracted from the font face that provides glyphs for the given character
  **/
-void ass_font_get_asc_desc(ass_font_t* font, uint32_t ch, int* asc, int* desc)
+void ass_font_get_asc_desc(ass_font_t *font, uint32_t ch, int *asc,
+                           int *desc)
 {
 	int i;
 	for (i = 0; i < font->n_faces; ++i) {
 		FT_Face face = font->faces[i];
+        TT_OS2 *os2 = FT_Get_Sfnt_Table(face, ft_sfnt_os2);
 		if (FT_Get_Char_Index(face, ch)) {
-			*asc = face->size->metrics.ascender;
-			*desc = - face->size->metrics.descender;
+            int y_scale = face->size->metrics.y_scale;
+            if (os2) {
+                *asc = FT_MulFix(os2->usWinAscent, y_scale);
+                *desc = FT_MulFix(os2->usWinDescent, y_scale);
+            } else {
+                *asc = FT_MulFix(face->ascender, y_scale);
+                *desc = FT_MulFix(-face->descender, y_scale);
+            }
 			return;
 		}
 	}
@@ -259,11 +286,91 @@ void ass_font_get_asc_desc(ass_font_t* font, uint32_t ch, int* asc, int* desc)
 	*asc = *desc = 0;
 }
 
+/*
+ * Strike a glyph with a horizontal line; it's possible to underline it
+ * and/or strike through it.  For the line's position and size, truetype
+ * tables are consulted.  Obviously this relies on the data in the tables
+ * being accurate.
+ *
+ */
+static int ass_strike_outline_glyph(FT_Face face, ass_font_t *font,
+                                    FT_Glyph glyph, int under, int through)
+{
+    TT_OS2 *os2 = FT_Get_Sfnt_Table(face, ft_sfnt_os2);
+    TT_Postscript *ps = FT_Get_Sfnt_Table(face, ft_sfnt_post);
+    FT_Outline *ol = &((FT_OutlineGlyph) glyph)->outline;
+    int bear, advance, y_scale, i;
+
+    // Grow outline
+    i = (under ? 4 : 0) + (through ? 4 : 0);
+    ol->points = realloc(ol->points, sizeof(FT_Vector) *
+                         (ol->n_points + i));
+    ol->tags = realloc(ol->tags, ol->n_points + i);
+    i = !!under + !!through;
+    ol->contours = realloc(ol->contours, sizeof(short) *
+                           (ol->n_contours + i));
+
+    // If the bearing is negative, the glyph starts left of the current
+    // pen position
+    bear = FFMIN(face->glyph->metrics.horiBearingX, 0);
+    // We're adding half a pixel to avoid small gaps
+    advance = d16_to_d6(glyph->advance.x) + 32;
+    y_scale = face->size->metrics.y_scale;
+
+    // Add points to the outline
+    if (under && ps) {
+        FT_Vector points[4];
+        int pos, size;
+        pos = FT_MulFix(ps->underlinePosition, y_scale * font->scale_y);
+        size = FT_MulFix(ps->underlineThickness,
+                         y_scale * font->scale_y / 2);
+
+        if (pos > 0 || size <= 0)
+            return 0;
+
+        points[0].x = bear;    points[0].y = pos + size;
+        points[1].x = advance; points[1].y = pos + size;
+        points[2].x = advance; points[2].y = pos - size;
+        points[3].x = bear;    points[3].y = pos - size;
+
+        for (i = 0; i < 4; i++) {
+            ol->points[ol->n_points] = points[i];
+            ol->tags[ol->n_points++] = 1;
+        }
+        ol->contours[ol->n_contours++] = ol->n_points - 1;
+    }
+
+    if (through && os2) {
+        FT_Vector points[4];
+        int pos, size;
+        pos = FT_MulFix(os2->yStrikeoutPosition, y_scale * font->scale_y);
+        size = FT_MulFix(os2->yStrikeoutSize, y_scale * font->scale_y / 2);
+
+        if (pos < 0 || size <= 0)
+            return 0;
+
+        points[0].x = bear;    points[0].y = pos + size;
+        points[1].x = advance; points[1].y = pos + size;
+        points[2].x = advance; points[2].y = pos - size;
+        points[3].x = bear;    points[3].y = pos - size;
+
+        for (i = 0; i < 4; i++) {
+            ol->points[ol->n_points] = points[i];
+            ol->tags[ol->n_points++] = 1;
+        }
+
+        ol->contours[ol->n_contours++] = ol->n_points - 1;
+    }
+
+    return 1;
+}
+
 /**
  * \brief Get a glyph
  * \param ch character code
  **/
-FT_Glyph ass_font_get_glyph(void* fontconfig_priv, ass_font_t* font, uint32_t ch, ass_hinting_t hinting)
+FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ass_font_t *font,
+                            uint32_t ch, ass_hinting_t hinting, int deco)
 {
 	int error;
 	int index = 0;
@@ -284,36 +391,48 @@ FT_Glyph ass_font_get_glyph(void* fontconfig_priv, ass_font_t* font, uint32_t ch
 			break;
 	}
 
-#ifdef HAVE_FONTCONFIG
+#ifdef CONFIG_FONTCONFIG
 	if (index == 0) {
 		int face_idx;
-		mp_msg(MSGT_ASS, MSGL_INFO, MSGTR_LIBASS_GlyphNotFoundReselectingFont,
-		       ch, font->desc.family, font->desc.bold, font->desc.italic);
+        ass_msg(font->library, MSGL_INFO,
+                "Glyph 0x%X not found, selecting one more "
+                "font for (%s, %d, %d)", ch, font->desc.family,
+                font->desc.bold, font->desc.italic);
 		face_idx = add_face(fontconfig_priv, font, ch);
 		if (face_idx >= 0) {
 			face = font->faces[face_idx];
 			index = FT_Get_Char_Index(face, ch);
 			if (index == 0) {
-				mp_msg(MSGT_ASS, MSGL_ERR, MSGTR_LIBASS_GlyphNotFound,
-				       ch, font->desc.family, font->desc.bold, font->desc.italic);
+                ass_msg(font->library, MSGL_ERR,
+                        "Glyph 0x%X not found in font for (%s, %d, %d)",
+                        ch, font->desc.family, font->desc.bold,
+                        font->desc.italic);
 			}
 		}
 	}
 #endif
 
 	switch (hinting) {
-	case ASS_HINTING_NONE: flags = FT_LOAD_NO_HINTING; break;
-	case ASS_HINTING_LIGHT: flags = FT_LOAD_FORCE_AUTOHINT | FT_LOAD_TARGET_LIGHT; break;
-	case ASS_HINTING_NORMAL: flags = FT_LOAD_FORCE_AUTOHINT; break;
-	case ASS_HINTING_NATIVE: flags = 0; break;
+    case ASS_HINTING_NONE:
+        flags = FT_LOAD_NO_HINTING;
+        break;
+    case ASS_HINTING_LIGHT:
+        flags = FT_LOAD_FORCE_AUTOHINT | FT_LOAD_TARGET_LIGHT;
+        break;
+    case ASS_HINTING_NORMAL:
+        flags = FT_LOAD_FORCE_AUTOHINT;
+        break;
+    case ASS_HINTING_NATIVE:
+        flags = 0;
+        break;
 	}
 	
 	error = FT_Load_Glyph(face, index, FT_LOAD_NO_BITMAP | flags);
 	if (error) {
-		mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_ErrorLoadingGlyph);
+        ass_msg(font->library, MSGL_WARN, "Error loading glyph, index %d",
+                index);
 		return 0;
 	}
-	
 #if (FREETYPE_MAJOR > 2) || \
     ((FREETYPE_MAJOR == 2) && (FREETYPE_MINOR >= 2)) || \
     ((FREETYPE_MAJOR == 2) && (FREETYPE_MINOR == 1) && (FREETYPE_PATCH >= 10))
@@ -325,10 +444,14 @@ FT_Glyph ass_font_get_glyph(void* fontconfig_priv, ass_font_t* font, uint32_t ch
 #endif
 	error = FT_Get_Glyph(face->glyph, &glyph);
 	if (error) {
-		mp_msg(MSGT_ASS, MSGL_WARN, MSGTR_LIBASS_ErrorLoadingGlyph);
+        ass_msg(font->library, MSGL_WARN, "Error loading glyph, index %d",
+                index);
 		return 0;
 	}
 	
+    ass_strike_outline_glyph(face, font, glyph, deco & DECO_UNDERLINE,
+                             deco & DECO_STRIKETHROUGH);
+
 	return glyph;
 }
 
@@ -362,7 +485,9 @@ void ass_font_free(ass_font_t* font)
 {
 	int i;
 	for (i = 0; i < font->n_faces; ++i)
-		if (font->faces[i]) FT_Done_Face(font->faces[i]);
-	if (font->desc.family) free(font->desc.family);
+        if (font->faces[i])
+            FT_Done_Face(font->faces[i]);
+    if (font->desc.family)
+        free(font->desc.family);
 	free(font);
 }

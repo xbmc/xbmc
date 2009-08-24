@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -32,8 +30,14 @@
 #define HALIGN_CENTER 2
 #define HALIGN_RIGHT 3
 
-/// ass Style: line
-typedef struct ass_style_s {
+/* Opaque objects internally used by libass.  Contents are private. */
+typedef struct ass_renderer ass_renderer_t;
+typedef struct render_priv render_priv_t;
+typedef struct parser_priv parser_priv_t;
+typedef struct ass_library ass_library_t;
+
+/* ASS Style: line */
+typedef struct ass_style {
 	char* Name;
 	char* FontName;
 	double FontSize;
@@ -56,15 +60,15 @@ typedef struct ass_style_s {
 	int MarginL;
 	int MarginR;
 	int MarginV;
-//        int AlphaLevel;
 	int Encoding;
+    int treat_fontname_as_pattern;
 } ass_style_t;
 
-typedef struct render_priv_s render_priv_t;
-
-/// ass_event_t corresponds to a single Dialogue line
-/// Text is stored as-is, style overrides will be parsed later
-typedef struct ass_event_s {
+/*
+ * ass_event_t corresponds to a single Dialogue line;
+ * text is stored as-is, style overrides will be parsed later.
+ */
+typedef struct ass_event {
 	long long Start; // ms
 	long long Duration; // ms
 
@@ -81,13 +85,12 @@ typedef struct ass_event_s {
 	render_priv_t* render_priv;
 } ass_event_t;
 
-typedef struct parser_priv_s parser_priv_t;
-
-typedef struct ass_library_s ass_library_t;
-
-/// ass track represent either an external script or a matroska subtitle stream (no real difference between them)
-/// it can be used in rendering after the headers are parsed (i.e. events format line read)
-typedef struct ass_track_s {
+/*
+ * ass track represent either an external script or a matroska subtitle stream
+ * (no real difference between them); it can be used in rendering after the
+ * headers are parsed (i.e. events format line read).
+ */
+typedef struct ass_track {
 	int n_styles; // amount used
 	int max_styles; // amount allocated
 	int n_events;
@@ -98,13 +101,18 @@ typedef struct ass_track_s {
 	char* style_format; // style format line (everything after "Format: ")
 	char* event_format; // event format line
 
-	enum {TRACK_TYPE_UNKNOWN = 0, TRACK_TYPE_ASS, TRACK_TYPE_SSA} track_type;
+    enum {
+        TRACK_TYPE_UNKNOWN = 0,
+        TRACK_TYPE_ASS,
+        TRACK_TYPE_SSA
+    } track_type;
 	
-	// script header fields
+    // Script header fields
 	int PlayResX;
 	int PlayResY;
 	double Timer;
 	int WrapStyle;
+    char ScaledBorderAndShadow;
 
 	
 	int default_style; // index of default style

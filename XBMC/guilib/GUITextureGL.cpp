@@ -85,10 +85,10 @@ void CGUITextureGL::End()
 
 void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
 {
-  GLubyte a = (GLubyte)(color >> 24);
-  GLubyte r = (GLubyte)((color >> 16) & 0xff);
-  GLubyte g = (GLubyte)((color >> 8) & 0xff);
-  GLubyte b = (GLubyte)(color & 0xff);
+  GLubyte a = (GLubyte)GET_A(color);
+  GLubyte r = (GLubyte)GET_R(color);
+  GLubyte g = (GLubyte)GET_G(color);
+  GLubyte b = (GLubyte)GET_B(color);
 
   // Top-left vertex (corner)
   glColor4ub(r, g, b, a);
@@ -155,12 +155,8 @@ void CGUITextureGL::DrawQuad(const CRect &rect, DWORD color)
   
   glBegin(GL_QUADS);
 
-  GLubyte a = (GLubyte)(color >> 24);
-  GLubyte r = (GLubyte)((color >> 16) & 0xff);
-  GLubyte g = (GLubyte)((color >> 8) & 0xff);
-  GLubyte b = (GLubyte)(color & 0xff);
+  glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
 
-  glColor4ub(r, g, b, a);
   glTexCoord2f(0.0f, 0.0f);
   glVertex3f(rect.x1, rect.y1, 0);
   glTexCoord2f(1.0f, 0.0f);

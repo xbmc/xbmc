@@ -284,8 +284,10 @@ static int decode_hextile(VmncContext *c, uint8_t* dst, const uint8_t* src, int 
     return src - ssrc;
 }
 
-static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, const uint8_t *buf, int buf_size)
+static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     VmncContext * const c = avctx->priv_data;
     uint8_t *outptr;
     const uint8_t *src = buf;
@@ -463,7 +465,6 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     c->avctx = avctx;
 
-    c->pic.data[0] = NULL;
     c->width = avctx->width;
     c->height = avctx->height;
 
@@ -519,6 +520,7 @@ AVCodec vmnc_decoder = {
     NULL,
     decode_end,
     decode_frame,
+    CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("VMware Screen Codec / VMware Video"),
 };
 

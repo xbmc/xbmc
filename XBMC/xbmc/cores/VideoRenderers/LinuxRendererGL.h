@@ -254,15 +254,17 @@ protected:
   DllAvCodec  m_dllAvCodec;
   DllSwScale  m_dllSwScale;
   BYTE	     *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  int	      m_rgbBufferSize;
+  unsigned int m_rgbBufferSize;
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
+  CRect m_crop;
+  float m_aspecterror;
 };
 
 
 inline int NP2( unsigned x ) {
-#if defined(_LINUX) && !defined(__POWERPC__)
+#if defined(_LINUX) && !defined(__POWERPC__) && !defined(__PPC__)
   // If there are any issues compiling this, just append a ' && 0'
   // to the above to make it '#if defined(_LINUX) && 0'
 

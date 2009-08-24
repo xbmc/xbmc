@@ -28,6 +28,8 @@
 #include "SingleLock.h"
 #include "../Util.h"
 #include "../../guilib/LocalizeStrings.h"
+#include "GUISettings.h"
+#include "PowerManager.h"
 
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL/SDL.h>
@@ -75,7 +77,23 @@ void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const cha
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Condition %s | %s", udi, condition_name, condition_details);
   if (!strcmp(condition_name, "ButtonPressed") && !strcmp(condition_details, "power"))
   {
+    switch (g_guiSettings.GetInt("system.powerbuttonaction"))
+    {
+      case POWERSTATE_ASK:
     CUtil::ExecBuiltIn("XBMC.ActivateWindow(ShutdownMenu)");
+        break;
+      case POWERSTATE_SHUTDOWN:
+        g_powerManager.Powerdown();
+        break;
+      case POWERSTATE_SUSPEND:
+        g_powerManager.Suspend();
+        break;
+      case POWERSTATE_HIBERNATE:
+        g_powerManager.Hibernate();
+        break;
+      default:
+        ;
+    }
     return;
   }
   NewMessage = true;

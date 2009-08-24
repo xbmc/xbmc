@@ -37,7 +37,7 @@
 #include <stdio.h>
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "dsputil.h"
 #include "bytestream.h"
 
@@ -230,7 +230,7 @@ static int decode_bytes(const uint8_t* inbuffer, uint8_t* out, int bytes){
     const uint32_t* buf;
     uint32_t* obuf = (uint32_t*) out;
 
-    off = (int)((long)inbuffer & 3);
+    off = (intptr_t)inbuffer & 3;
     buf = (const uint32_t*) (inbuffer - off);
     c = be2me_32((0x537F6103 >> (off*8)) | (0x537F6103 << (32-(off*8))));
     bytes += 3 + off;
@@ -268,7 +268,7 @@ static av_cold void init_atrac3_transforms(ATRAC3Context *q) {
     }
 
     /* Initialize the MDCT transform. */
-    ff_mdct_init(&mdct_ctx, 9, 1);
+    ff_mdct_init(&mdct_ctx, 9, 1, 1.0);
 }
 
 /**
@@ -878,7 +878,9 @@ static int decodeFrame(ATRAC3Context *q, const uint8_t* databuf)
 
 static int atrac3_decode_frame(AVCodecContext *avctx,
             void *data, int *data_size,
-            const uint8_t *buf, int buf_size) {
+            AVPacket *avpkt) {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     ATRAC3Context *q = avctx->priv_data;
     int result = 0, i;
     const uint8_t* databuf;
@@ -931,6 +933,8 @@ static av_cold int atrac3_decode_init(AVCodecContext *avctx)
     int i;
     const uint8_t *edata_ptr = avctx->extradata;
     ATRAC3Context *q = avctx->priv_data;
+    static VLC_TYPE atrac3_vlc_table[4096][2];
+    static int vlcs_initialized = 0;
 
     /* Take data from the AVCodecContext (RM container). */
     q->sample_rate = avctx->sample_rate;
@@ -1021,10 +1025,15 @@ static av_cold int atrac3_decode_init(AVCodecContext *avctx)
 
 
     /* Initialize the VLC tables. */
+    if (!vlcs_initialized) {
     for (i=0 ; i<7 ; i++) {
+            spectral_coeff_tab[i].table = &atrac3_vlc_table[atrac3_vlc_offs[i]];
+            spectral_coeff_tab[i].table_allocated = atrac3_vlc_offs[i + 1] - atrac3_vlc_offs[i];
         init_vlc (&spectral_coeff_tab[i], 9, huff_tab_sizes[i],
             huff_bits[i], 1, 1,
-            huff_codes[i], 1, 1, INIT_VLC_USE_STATIC);
+                huff_codes[i], 1, 1, INIT_VLC_USE_NEW_STATIC);
+    }
+        vlcs_initialized = 1;
     }
 
     init_atrac3_transforms(q);

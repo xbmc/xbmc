@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 07/06/2009-->
+<!--Date of translation: 08/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21415-->
+<!--Based on english strings version 22217-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -33,6 +33,13 @@
   <string id="30">Oktober</string>
   <string id="31">November</string>
   <string id="32">December</string>
+  <string id="41">Mån</string>
+  <string id="42">Tis</string>
+  <string id="43">Ons</string>
+  <string id="44">Tors</string>
+  <string id="45">Fre</string>
+  <string id="46">Lör</string>
+  <string id="47">Sön</string>
   <string id="98">Vy: Auto</string>
   <string id="99">Vy: Auto stor</string>
   <string id="100">Vy: Ikoner</string>
@@ -538,6 +545,7 @@
   <string id="661">Välj exporteringsmapp</string>
   <string id="662">Denna fil är inte tillgänglig längre.</string>
   <string id="663">Vill du ta bort den från biblioteket?</string>
+  <string id="664">Bläddra efter skript</string>
   <string id="700">Rensar bibliotek</string>
   <string id="701">Raderar gamla låtar från databasen</string>
   <string id="702">Denna sökväg har skannats tidigare</string>
@@ -896,6 +904,7 @@
   <string id="13012">Avsluta</string>
   <string id="13013">Starta om</string>
   <string id="13014">Minimera</string>
+  <string id="13015">Funktion för avstängningsknapp</string>
   <string id="13020">Är en annan session aktiv, kanske över ssh?</string>
   <string id="13021">Monterade flyttbar hårddisk</string>
   <string id="13022">Osäker borttagning av enhet</string>
@@ -1550,6 +1559,7 @@
   <string id="20301">Webbserver-mapp (HTTPS)</string>
   <string id="20302">Kunde inte skriva till mapp:</string>
   <string id="20303">Vill du hoppa över och fortsätta?</string>
+  <string id="20304">RSS flöde</string>
   <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
@@ -1867,6 +1877,7 @@
   <string id="22018">Aktuella kanaler</string>
   <string id="22019">Inspelningar efter titel</string>
   <string id="22020">Guide</string>
+  <string id="22021">Tillåten felmarginal i bildförhållande (%)</string>
   <string id="22030">Typsnitt</string>
   <string id="22031">- Storlek</string>
   <string id="22032">- Färg</string>
@@ -1905,4 +1916,53 @@
   <string id="33016">Klipp</string>
   <string id="33017">Starta om tillägg för att aktivera</string>
   <string id="33018">Klipp</string>
+  <string id="33019">Imorgon natt</string>
+  <string id="33020">Förhållande</string>
+  <string id="33021">Nederbörd</string>
+  <string id="33022">Nederbörd</string>
+  <string id="33023">Fuktig</string>
+  <string id="33024">Känns</string>
+  <string id="33025">Observerad</string>
+  <string id="33026">Avvikelse från normal</string>
+  <string id="33027">Soluppgång</string>
+  <string id="33028">Solnedgång</string>
+  <string id="33029">Detaljer</string>
+  <string id="33030">Utsikt</string>
+  <string id="33031">Omslagsflöde</string>
+  <string id="33032">Översätt text</string>
+  <string id="33033">Kartlista %s kategori</string>
+  <string id="33034">36 timmar</string>
+  <string id="33035">Kartor</string>
+  <string id="33036">Per timme</string>
+  <string id="33037">Helg</string>
+  <string id="33038">%s dag</string>
+  <string id="33049">Varning</string>
+  <string id="33050">Varningar</string>
+  <string id="33051">Välj dina</string>
+  <string id="33052">Kontrollera</string>
+  <string id="33053">Konfigurera</string>
+  <string id="33054">Säsonger</string>
+  <string id="33055">Använd din</string>
+  <string id="33056">Se dina</string>
+  <string id="33057">Lyssna på</string>
+  <string id="33058">Visa dina</string>
+  <string id="33059">Konfigurera</string>
+  <string id="33060">Ström</string>
+  <string id="33061">Meny</string>
+  <string id="33062">Spela</string>
+  <string id="33063">Val</string>
+  <string id="33065">Redigerare</string>
+  <string id="33066">Om ditt</string>
+  <string id="33067">Stjärnbetyg</string>
+  <string id="33068">Bakgrund</string>
+  <string id="33069">Bakgrunder</string>
+  <string id="33070">Egen bakgrund</string>
+  <string id="33071">Egna bakgrunder</string>
+  <string id="33072">Visa Läsmig</string>
+  <string id="33073">Visa ändringslogg</string>
+  <string id="33074">Denna version av %s kräver en</string>
+  <string id="33075">XBMC version större än %s för att köras.</string>
+  <string id="33076">Var god uppdatera XBMC.</string>
+  <string id="33077">Ingen data hittades!</string>
+  <string id="33078">Nästa sida</string>
 </strings>

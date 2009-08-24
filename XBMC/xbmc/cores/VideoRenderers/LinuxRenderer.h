@@ -52,7 +52,6 @@ typedef struct YV12Image
 #define RENDER_FLAG_FIELDMASK   0x03
 
 #define RENDER_FLAG_NOOSD       0x04 /* don't draw any osd */
-#define RENDER_FLAG_NOOSDALPHA  0x08 /* don't allow alpha when osd is drawn */
 
 /* these two flags will be used if we need to render same image twice (bob deinterlacing) */
 #define RENDER_FLAG_NOLOCK      0x10   /* don't attempt to lock texture before rendering */
@@ -123,6 +122,7 @@ public:
   virtual bool 	       Configure(unsigned int width, 
 				unsigned int height, unsigned int d_width, unsigned int d_height, 
 			 	float fps, unsigned flags);
+  virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);

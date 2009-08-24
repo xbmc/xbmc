@@ -44,6 +44,7 @@
 #include "pyutil.h"
 #include "listitem.h"
 #include "PlayList.h"
+#include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 
 using namespace std;
@@ -95,9 +96,13 @@ namespace PYXBMC
 
   PyObject* PlayListItem_GetDuration(PlayListItem *self, PyObject *key)
   {
-    if (!self->item->HasMusicInfoTag())
-      self->item->LoadMusicTag();
+    if (self->item->LoadMusicTag())
     return Py_BuildValue((char*)"l", self->item->GetMusicInfoTag()->GetDuration());
+
+    if (self->item->HasVideoInfoTag())
+      return Py_BuildValue((char*)"s", self->item->GetVideoInfoTag()->m_strRuntime.c_str());
+
+    return Py_BuildValue((char*)"l", 0);
   }
 
   PyDoc_STRVAR(getFilename__doc__,

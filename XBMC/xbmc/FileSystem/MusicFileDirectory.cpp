@@ -48,7 +48,7 @@ bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList
 
   int iStreams = GetTrackCount(strPath1);
 
-  CUtil::AddDirectorySeperator(strPath);
+  CUtil::AddSlashAtEnd(strPath);
 
   for (int i=0; i<iStreams; ++i)
   {

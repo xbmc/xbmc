@@ -378,7 +378,8 @@ bool CCMythFile::Exists(const CURL& url)
       path.Left(8)  == "tvshows/")
   {
     if(CUtil::GetExtension(path).Equals(".tbn")
-    || CUtil::GetExtension(path).Equals(".jpg"))
+    || CUtil::GetExtension(path).Equals(".jpg")
+    || CUtil::GetFileName(path).Equals("fanart.png"))
       return false;
 
     if(!SetupConnection(url, true, false, false))
@@ -639,4 +640,12 @@ bool CCMythFile::Record(bool bOnOff)
   return false;
 }
 
-
+bool CCMythFile::GetCommBreakList(cmyth_commbreaklist_t& commbreaklist)
+{
+  if (m_program)
+  {
+    commbreaklist = m_dll->get_commbreaklist(m_control, m_program);
+    return true;
+  }
+  return false;
+}

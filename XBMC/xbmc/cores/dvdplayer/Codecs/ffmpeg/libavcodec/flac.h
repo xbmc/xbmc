@@ -30,6 +30,16 @@
 #include "avcodec.h"
 
 #define FLAC_STREAMINFO_SIZE 34
+#define FLAC_MAX_CHANNELS       8
+#define FLAC_MIN_BLOCKSIZE     16
+#define FLAC_MAX_BLOCKSIZE  65535
+
+enum {
+    FLAC_CHMODE_INDEPENDENT =  0,
+    FLAC_CHMODE_LEFT_SIDE   =  8,
+    FLAC_CHMODE_RIGHT_SIDE  =  9,
+    FLAC_CHMODE_MID_SIDE    = 10,
+};
 
 enum {
     FLAC_METADATA_TYPE_STREAMINFO = 0,
@@ -47,22 +57,30 @@ enum FLACExtradataFormat {
     FLAC_EXTRADATA_FORMAT_FULL_HEADER = 1
 };
 
+#define FLACCOMMONINFO \
+    int samplerate;         /**< sample rate                             */\
+    int channels;           /**< number of channels                      */\
+    int bps;                /**< bits-per-sample                         */\
+
 /**
  * Data needed from the Streaminfo header for use by the raw FLAC demuxer
  * and/or the FLAC decoder.
  */
 #define FLACSTREAMINFO \
-    int min_blocksize;      /**< minimum block size, in samples          */\
+    FLACCOMMONINFO \
     int max_blocksize;      /**< maximum block size, in samples          */\
     int max_framesize;      /**< maximum frame size, in bytes            */\
-    int samplerate;         /**< sample rate                             */\
-    int channels;           /**< number of channels                      */\
-    int bps;                /**< bits-per-sample                         */\
     int64_t samples;        /**< total number of samples                 */\
 
 typedef struct FLACStreaminfo {
     FLACSTREAMINFO
 } FLACStreaminfo;
+
+typedef struct FLACFrameInfo {
+    FLACCOMMONINFO
+    int blocksize;          /**< block size of the frame                 */
+    int ch_mode;            /**< channel decorrelation mode              */
+} FLACFrameInfo;
 
 /**
  * Parse the Streaminfo metadata block
@@ -83,5 +101,23 @@ void ff_flac_parse_streaminfo(AVCodecContext *avctx, struct FLACStreaminfo *s,
 int ff_flac_is_extradata_valid(AVCodecContext *avctx,
                                enum FLACExtradataFormat *format,
                                uint8_t **streaminfo_start);
+
+/**
+ * Parse the metadata block parameters from the header.
+ * @param[in]  block_header header data, at least 4 bytes
+ * @param[out] last indicator for last metadata block
+ * @param[out] type metadata block type
+ * @param[out] size metadata block size
+ */
+void ff_flac_parse_block_header(const uint8_t *block_header,
+                                int *last, int *type, int *size);
+
+/**
+ * Calculate an estimate for the maximum frame size based on verbatim mode.
+ * @param blocksize block size, in samples
+ * @param ch number of channels
+ * @param bps bits-per-sample
+ */
+int ff_flac_get_max_frame_size(int blocksize, int ch, int bps);
 
 #endif /* AVCODEC_FLAC_H */

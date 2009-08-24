@@ -76,9 +76,7 @@
 #include "CoreAudio.h"
 #include "XBMCHelper.h"
 #endif
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
 #include "GUIDialogAccessPoints.h"
-#endif
 #include "FileSystem/Directory.h"
 #include "utils/ScraperParser.h"
 
@@ -545,16 +543,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
       pControl->SetValue(int(pSettingInt->GetData()));
     }
-    else if (strSetting.Equals("harddisk.remoteplayspindown"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(474), SPIN_DOWN_NONE);
-      pControl->AddLabel(g_localizeStrings.Get(475), SPIN_DOWN_MUSIC);
-      pControl->AddLabel(g_localizeStrings.Get(13002), SPIN_DOWN_VIDEO);
-      pControl->AddLabel(g_localizeStrings.Get(476), SPIN_DOWN_BOTH);
-      pControl->SetValue(pSettingInt->GetData());
-    }
     else if (strSetting.Equals("servers.webserverusername"))
     {
 #ifdef HAS_WEB_SERVER
@@ -698,18 +686,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInResolutions(pSetting, true);
     }
-#ifdef HAS_MPLAYER
-    else if (strSetting.Equals("videoplayer.framerateconversions"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(231), FRAME_RATE_LEAVE_AS_IS); // "None"
-      pControl->AddLabel(g_videoConfig.HasPAL() ? g_localizeStrings.Get(12380) : g_localizeStrings.Get(12381), FRAME_RATE_CONVERT); // "Play PAL videos at NTSC rates" or "Play NTSC videos at PAL rates"
-      if (g_videoConfig.HasPAL() && g_videoConfig.HasPAL60())
-        pControl->AddLabel(g_localizeStrings.Get(12382), FRAME_RATE_USE_PAL60); // "Play NTSC videos in PAL60"
-      pControl->SetValue(pSettingInt->GetData());
-    }
-#endif
     else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -778,6 +754,27 @@ void CGUIWindowSettingsCategory::CreateSettings()
 
       pControl->SetValue(pSettingInt->GetData());
     }
+#if defined(_LINUX) && !defined(__APPLE__)
+    else if (strSetting.Equals("system.powerbuttonaction"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      
+      pControl->AddLabel(g_localizeStrings.Get(231), POWERSTATE_NONE);
+      pControl->AddLabel(g_localizeStrings.Get(12020), POWERSTATE_ASK);
+
+      if (g_powerManager.CanPowerdown())
+        pControl->AddLabel(g_localizeStrings.Get(13005), POWERSTATE_SHUTDOWN);
+
+      if (g_powerManager.CanHibernate())
+        pControl->AddLabel(g_localizeStrings.Get(13010), POWERSTATE_HIBERNATE);
+
+      if (g_powerManager.CanSuspend())
+        pControl->AddLabel(g_localizeStrings.Get(13011), POWERSTATE_SUSPEND);
+
+      pControl->SetValue(pSettingInt->GetData());
+    }
+#endif
     else if (strSetting.Equals("system.ledcolour"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1033,11 +1030,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteSources() || g_passwordManager.bMasterUser);
     }
-    else if (strSetting.Equals("myprograms.ntscmode"))
-    { // set visibility based on our other setting...
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("myprograms.gameautoregion"));
-    }
     else if (strSetting.Equals("masterlock.startuplock") || strSetting.Equals("masterlock.enableshutdown") || strSetting.Equals("masterlock.automastermode"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1111,17 +1103,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.autotemperature"));
     }
-    else if (strSetting.Equals("harddisk.remoteplayspindowndelay"))
-    { // only visible if we have spin down enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("harddisk.remoteplayspindown") != SPIN_DOWN_NONE);
-    }
-    else if (strSetting.Equals("harddisk.remoteplayspindownminduration"))
-    { // only visible if we have spin down enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("harddisk.remoteplayspindown") != SPIN_DOWN_NONE);
-    }
-    else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword") || strSetting.Equals("servers.ftpautofatx"))
+    else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(g_guiSettings.GetBool("servers.ftpserver"));
@@ -1157,7 +1139,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
     }
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
     else if (strSetting.Equals("network.assignment"))
     {
       CGUISpinControlEx* pControl1 = (CGUISpinControlEx *)GetControl(GetSetting("network.assignment")->GetID());
@@ -1192,7 +1173,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
        if (pControl) pControl->SetEnabled(enabled);
     }
-#endif
     else if (strSetting.Equals("network.httpproxyserver")   || strSetting.Equals("network.httpproxyport") ||
              strSetting.Equals("network.httpproxyusername") || strSetting.Equals("network.httpproxypassword"))
     {
@@ -1402,6 +1382,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
+    else if (strSetting.Equals("lookandfeel.rssedit"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
+    }
     else if (!strSetting.Equals("musiclibrary.enabled")
       && strSetting.Left(13).Equals("musiclibrary."))
     {
@@ -1492,6 +1477,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
     g_weatherManager.ResetTimer();
   }
+  else if (strSetting.Equals("lookandfeel.rssedit"))
+    CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
   // require immediate update
@@ -1550,15 +1537,17 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("system.debuglogging"))
   {
-    if (g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel < LOG_LEVEL_DEBUG_FREEMEM)
+    if (g_guiSettings.GetBool("system.debuglogging"))
     {
-      g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG_FREEMEM;
-      CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting");
+      int level = std::max(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG_FREEMEM);
+      g_advancedSettings.m_logLevel = level;
+      CLog::Log(LOGNOTICE, "Enabled debug logging due to GUI setting. Level %d.", level);
     }
-    else if (!g_guiSettings.GetBool("system.debuglogging") && g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_FREEMEM)
+    else
     {
-      CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting");
-      g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG; // = LOG_LEVEL_NORMAL
+      int level = std::min(g_advancedSettings.m_logLevelHint, LOG_LEVEL_DEBUG/*LOG_LEVEL_NORMAL*/);
+      CLog::Log(LOGNOTICE, "Disabled debug logging due to GUI setting. Level %d.", level);
+      g_advancedSettings.m_logLevel = level;
     }
   }
   /*else if (strSetting.Equals("musicfiles.repeat"))
@@ -2210,6 +2199,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     const CStdString& strRegion=pControl->GetCurrentLabel();
     g_langInfo.SetCurrentRegion(strRegion);
     g_guiSettings.SetString("locale.country", strRegion);
+    g_weatherManager.ResetTimer(); // need to reset our weather, as temperatures need re-translating.
   }
 #ifdef HAS_TIME_SERVER
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))
@@ -2711,36 +2701,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
     }
     pControl->SetValue(pSettingInt->GetData());
   }
-#ifdef _XBOX
-  else
-  {
-    if (g_guiSettings.GetString("subtitles.font").size())
-    {
-      //find font sizes...
-      CFileItemList items;
-      CStdString strPath = "special://xbmc/system/players/mplayer/font/";
-      strPath += g_guiSettings.GetString("subtitles.font");
-      strPath += "/";
-      CDirectory::GetDirectory(strPath, items);
-      int iCurrentSize = 0;
-      int iSize = 0;
-      for (int i = 0; i < items.Size(); ++i)
-      {
-        CFileItemPtr pItem = items[i];
-        if (pItem->m_bIsFolder)
-        {
-          if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
-          int iSizeTmp = atoi(pItem->GetLabel().c_str());
-          if (iSizeTmp == pSettingInt->GetData())
-            iCurrentSize = iSize;
-          pControl->AddLabel(pItem->GetLabel(), iSize++);
         }
-      }
-      pControl->SetValue(iCurrentSize);
-    }
-  }
-#endif
-}
 
 void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
 {
@@ -2750,25 +2711,6 @@ void CGUIWindowSettingsCategory::FillInSubtitleFonts(CSetting *pSetting)
   pControl->Clear();
   int iCurrentFont = 0;
   int iFont = 0;
-
-#ifdef _XBOX
-  // Find mplayer fonts...
-  {
-    CFileItemList items;
-    CDirectory::GetDirectory("special://xbmc/system/players/mplayer/font/", items);
-    for (int i = 0; i < items.Size(); ++i)
-    {
-      CFileItemPtr pItem = items[i];
-      if (pItem->m_bIsFolder)
-      {
-        if (strcmpi(pItem->GetLabel().c_str(), ".svn") == 0) continue;
-        if (strcmpi(pItem->GetLabel().c_str(), pSettingString->GetData().c_str()) == 0)
-          iCurrentFont = iFont;
-        pControl->AddLabel(pItem->GetLabel(), iFont++);
-      }
-    }
-  }
-#endif
 
   // find TTF fonts
   {
@@ -3237,7 +3179,6 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
     {
       if (playbackSetting)
       {
-        //  TODO: localize 2.0
         if (g_videoConfig.Has1080i() || g_videoConfig.Has720p())
           pControl->AddLabel(g_localizeStrings.Get(20049) , res); // Best Available
         else if (g_videoConfig.HasWidescreen())
@@ -3809,7 +3750,6 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
   // query list of interfaces
   vector<CStdString> vecInterfaces;
   std::vector<CNetworkInterface*>& ifaces = g_application.getNetwork().GetInterfaceList();
@@ -3827,7 +3767,6 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   {
     pControl->AddLabel(vecInterfaces[i], iInterface++);
   }
-#endif
 }
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
@@ -3916,7 +3855,6 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
   return;
 #endif
 
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
    NetworkAssignment iAssignment;
    CStdString sIPAddress;
    CStdString sNetworkMask;
@@ -3969,5 +3907,4 @@ void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)
       GetSetting("network.essid")->GetSetting()->FromString("");
       GetSetting("network.key")->GetSetting()->FromString("");
    }
-#endif
 }

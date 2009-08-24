@@ -79,6 +79,7 @@ public:
   void SetFromDateString(const CStdString &date);
 
   static CDateTime GetCurrentDateTime();
+  static CDateTime GetUTCDateTime();
 
   const CDateTime& operator =(const SYSTEMTIME& right);
   const CDateTime& operator =(const FILETIME& right);

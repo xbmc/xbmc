@@ -28,8 +28,8 @@
 
 /* XXX: use same run/length optimization as mpeg decoders */
 //FIXME maybe split decode / encode or pass flag
-static void init_coef_vlc(VLC *vlc,
-                          uint16_t **prun_table, uint16_t **plevel_table, uint16_t **pint_table,
+static void init_coef_vlc(VLC *vlc, uint16_t **prun_table,
+                          uint16_t **plevel_table, uint16_t **pint_table,
                           const CoefVLCTable *vlc_table)
 {
     int n = vlc_table->n;
@@ -62,6 +62,46 @@ static void init_coef_vlc(VLC *vlc,
     *pint_table= int_table;
 }
 
+/**
+ *@brief Get the samples per frame for this stream.
+ *@param sample_rate output sample_rate
+ *@param version wma version
+ *@param decode_flags codec compression features
+ *@return log2 of the number of output samples per frame
+ */
+int av_cold ff_wma_get_frame_len_bits(int sample_rate, int version,
+                                      unsigned int decode_flags)
+{
+
+    int frame_len_bits;
+
+    if (sample_rate <= 16000) {
+        frame_len_bits = 9;
+    } else if (sample_rate <= 22050 ||
+             (sample_rate <= 32000 && version == 1)) {
+        frame_len_bits = 10;
+    } else if (sample_rate <= 48000) {
+        frame_len_bits = 11;
+    } else if (sample_rate <= 96000) {
+        frame_len_bits = 12;
+    } else {
+        frame_len_bits = 13;
+    }
+
+    if (version == 3) {
+        int tmp = decode_flags & 0x6;
+        if (tmp == 0x2) {
+            ++frame_len_bits;
+        } else if (tmp == 0x4) {
+            --frame_len_bits;
+        } else if (tmp == 0x6) {
+            frame_len_bits -= 2;
+        }
+    }
+
+    return frame_len_bits;
+}
+
 int ff_wma_init(AVCodecContext * avctx, int flags2)
 {
     WMACodecContext *s = avctx->priv_data;
@@ -90,14 +130,8 @@ int ff_wma_init(AVCodecContext * avctx, int flags2)
     }
 
     /* compute MDCT block size */
-    if (s->sample_rate <= 16000) {
-        s->frame_len_bits = 9;
-    } else if (s->sample_rate <= 22050 ||
-               (s->sample_rate <= 32000 && s->version == 1)) {
-        s->frame_len_bits = 10;
-    } else {
-        s->frame_len_bits = 11;
-    }
+    s->frame_len_bits = ff_wma_get_frame_len_bits(s->sample_rate, s->version, 0);
+
     s->frame_len = 1 << s->frame_len_bits;
     if (s->use_variable_block_len) {
         int nb_max, nb;
@@ -119,16 +153,17 @@ int ff_wma_init(AVCodecContext * avctx, int flags2)
     /* if version 2, then the rates are normalized */
     sample_rate1 = s->sample_rate;
     if (s->version == 2) {
-        if (sample_rate1 >= 44100)
+        if (sample_rate1 >= 44100) {
             sample_rate1 = 44100;
-        else if (sample_rate1 >= 22050)
+        } else if (sample_rate1 >= 22050) {
             sample_rate1 = 22050;
-        else if (sample_rate1 >= 16000)
+        } else if (sample_rate1 >= 16000) {
             sample_rate1 = 16000;
-        else if (sample_rate1 >= 11025)
+        } else if (sample_rate1 >= 11025) {
             sample_rate1 = 11025;
-        else if (sample_rate1 >= 8000)
+        } else if (sample_rate1 >= 8000) {
             sample_rate1 = 8000;
+    }
     }
 
     bps = (float)s->bit_rate / (float)(s->nb_channels * s->sample_rate);
@@ -140,22 +175,25 @@ int ff_wma_init(AVCodecContext * avctx, int flags2)
     if (s->nb_channels == 2)
         bps1 = bps * 1.6;
     if (sample_rate1 == 44100) {
-        if (bps1 >= 0.61)
+        if (bps1 >= 0.61) {
             s->use_noise_coding = 0;
-        else
+        } else {
             high_freq = high_freq * 0.4;
+        }
     } else if (sample_rate1 == 22050) {
-        if (bps1 >= 1.16)
+        if (bps1 >= 1.16) {
             s->use_noise_coding = 0;
-        else if (bps1 >= 0.72)
+        } else if (bps1 >= 0.72) {
             high_freq = high_freq * 0.7;
-        else
+        } else {
             high_freq = high_freq * 0.6;
+        }
     } else if (sample_rate1 == 16000) {
-        if (bps > 0.5)
+        if (bps > 0.5) {
             high_freq = high_freq * 0.5;
-        else
+        } else {
             high_freq = high_freq * 0.3;
+        }
     } else if (sample_rate1 == 11025) {
         high_freq = high_freq * 0.7;
     } else if (sample_rate1 == 8000) {
@@ -218,12 +256,13 @@ int ff_wma_init(AVCodecContext * avctx, int flags2)
                 table = NULL;
                 a = s->frame_len_bits - BLOCK_MIN_BITS - k;
                 if (a < 3) {
-                    if (s->sample_rate >= 44100)
+                    if (s->sample_rate >= 44100) {
                         table = exponent_band_44100[a];
-                    else if (s->sample_rate >= 32000)
+                    } else if (s->sample_rate >= 32000) {
                         table = exponent_band_32000[a];
-                    else if (s->sample_rate >= 22050)
+                    } else if (s->sample_rate >= 22050) {
                         table = exponent_band_22050[a];
+                }
                 }
                 if (table) {
                     n = *table++;
@@ -311,10 +350,11 @@ int ff_wma_init(AVCodecContext * avctx, int flags2)
     if (s->use_noise_coding) {
 
         /* init the noise generator */
-        if (s->use_exp_vlc)
+        if (s->use_exp_vlc) {
             s->noise_mult = 0.02;
-        else
+        } else {
             s->noise_mult = 0.04;
+        }
 
 #ifdef TRACE
         for(i=0;i<NOISE_TAB_SIZE;i++)
@@ -336,10 +376,11 @@ int ff_wma_init(AVCodecContext * avctx, int flags2)
     /* choose the VLC tables for the coefficients */
     coef_vlc_table = 2;
     if (s->sample_rate >= 32000) {
-        if (bps1 < 0.72)
+        if (bps1 < 0.72) {
             coef_vlc_table = 0;
-        else if (bps1 < 1.16)
+        } else if (bps1 < 1.16) {
             coef_vlc_table = 1;
+    }
     }
     s->coef_vlcs[0]= &coef_vlcs[coef_vlc_table * 2    ];
     s->coef_vlcs[1]= &coef_vlcs[coef_vlc_table * 2 + 1];
@@ -351,7 +392,8 @@ int ff_wma_init(AVCodecContext * avctx, int flags2)
     return 0;
 }
 
-int ff_wma_total_gain_to_bits(int total_gain){
+int ff_wma_total_gain_to_bits(int total_gain)
+{
          if (total_gain < 15) return 13;
     else if (total_gain < 32) return 12;
     else if (total_gain < 40) return 11;
@@ -382,3 +424,95 @@ int ff_wma_end(AVCodecContext *avctx)
 
     return 0;
 }
+
+/**
+ * Decode an uncompressed coefficient.
+ * @param s codec context
+ * @return the decoded coefficient
+ */
+unsigned int ff_wma_get_large_val(GetBitContext* gb)
+{
+    /** consumes up to 34 bits */
+    int n_bits = 8;
+    /** decode length */
+    if (get_bits1(gb)) {
+        n_bits += 8;
+        if (get_bits1(gb)) {
+            n_bits += 8;
+            if (get_bits1(gb)) {
+                n_bits += 7;
+            }
+        }
+    }
+    return get_bits_long(gb, n_bits);
+}
+
+/**
+ * Decode run level compressed coefficients.
+ * @param avctx codec context
+ * @param gb bitstream reader context
+ * @param vlc vlc table for get_vlc2
+ * @param level_table level codes
+ * @param run_table run codes
+ * @param version 0 for wma1,2 1 for wmapro
+ * @param ptr output buffer
+ * @param offset offset in the output buffer
+ * @param num_coefs number of input coefficents
+ * @param block_len input buffer length (2^n)
+ * @param frame_len_bits number of bits for escaped run codes
+ * @param coef_nb_bits number of bits for escaped level codes
+ * @return 0 on success, -1 otherwise
+ */
+int ff_wma_run_level_decode(AVCodecContext* avctx, GetBitContext* gb,
+                            VLC *vlc,
+                            const uint16_t *level_table, const uint16_t *run_table,
+                            int version, WMACoef *ptr, int offset,
+                            int num_coefs, int block_len, int frame_len_bits,
+                            int coef_nb_bits)
+{
+    int code, level, sign;
+    const unsigned int coef_mask = block_len - 1;
+    for (; offset < num_coefs; offset++) {
+        code = get_vlc2(gb, vlc->table, VLCBITS, VLCMAX);
+        if (code > 1) {
+            /** normal code */
+            offset += run_table[code];
+            level = level_table[code];
+        } else if (code == 1) {
+            /** EOB */
+            break;
+        } else {
+            /** escape */
+            if (!version) {
+                level = get_bits(gb, coef_nb_bits);
+                /** NOTE: this is rather suboptimal. reading
+                    block_len_bits would be better */
+                offset += get_bits(gb, frame_len_bits);
+            } else {
+                level = ff_wma_get_large_val(gb);
+                /** escape decode */
+                if (get_bits1(gb)) {
+                    if (get_bits1(gb)) {
+                        if (get_bits1(gb)) {
+                            av_log(avctx,AV_LOG_ERROR,
+                                "broken escape sequence\n");
+                            return -1;
+                        } else
+                            offset += get_bits(gb, frame_len_bits) + 4;
+                    } else
+                        offset += get_bits(gb, 2) + 1;
+                }
+            }
+        }
+        sign = get_bits1(gb) - 1;
+        ptr[offset & coef_mask] = (level^sign) - sign;
+    }
+    /** NOTE: EOB can be omitted */
+    if (offset > num_coefs) {
+        av_log(avctx, AV_LOG_ERROR, "overflow in spectral RLE, ignoring\n");
+        return -1;
+    }
+
+    return 0;
+}
+

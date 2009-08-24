@@ -513,6 +513,8 @@ HRESULT CWIN32Util::ToggleTray(const char cDriveLetter)
   if( !cDL )
   {
     char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    if(dvdDevice == "")
+      return S_FALSE;
     cDL = dvdDevice[4];
   }
   
@@ -546,6 +548,8 @@ HRESULT CWIN32Util::EjectTray(const char cDriveLetter)
   if( !cDL )
   {
     char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    if(dvdDevice == "")
+      return S_FALSE;
     cDL = dvdDevice[4];
   }
   
@@ -564,6 +568,8 @@ HRESULT CWIN32Util::CloseTray(const char cDriveLetter)
   if( !cDL )
   {
     char* dvdDevice = CLibcdio::GetInstance()->GetDeviceFileName();
+    if(dvdDevice == "")
+      return S_FALSE;
     cDL = dvdDevice[4];
   }
   
@@ -898,9 +904,12 @@ void CWIN32Util::AddRemovableDrives()
     g_mediaManager.AddAutoSource(*it);
   vShare.clear();
   GetDrivesByType(vShare, DVD_DRIVES);
+  if(!vShare.empty())
+    g_mediaManager.SetHasOpticalDrive(true);
+
   for(it=vShare.begin();it!=vShare.end();++it)
     if(g_mediaManager.GetDriveStatus(it->strPath) == DRIVE_CLOSED_MEDIA_PRESENT)
-      g_mediaManager.AddAutoSource(*it);
+      g_application.getApplicationMessenger().OpticalMount(it->strPath);
 }
 
 bool CWIN32Util::IsAudioCD(const CStdString& strPath)

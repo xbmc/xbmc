@@ -30,11 +30,8 @@
 #include "GUIPassword.h"
 #include "SMBDirectory.h"
 #include "Util.h"
-#ifndef _LINUX
-#include "Win32Exception.h"
-#include "lib/libsmb/xbLibSmb.h"
-#else
-#include "../lib/libsmb/libsmbclient.h"
+#ifndef _WIN32PC
+#include <libsmbclient.h>
 #endif
 #include "../utils/Network.h"
 #include "Settings.h"
@@ -109,15 +106,23 @@ void CSMB::Init()
 
     // setup our context
     m_context = smbc_new_context();
+#ifdef DEPRECATED_SMBC_INTERFACE
+    smbc_setDebug(m_context, g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0);
+    smbc_setFunctionAuthData(m_context, xb_smbc_auth);
+    orig_cache = smbc_getFunctionGetCachedServer(m_context);
+    smbc_setFunctionGetCachedServer(m_context, xb_smbc_cache);
+    smbc_setOptionOneSharePerServer(m_context, false);
+    smbc_setOptionBrowseMaxLmbCount(m_context, 0);
+    smbc_setTimeout(m_context, g_advancedSettings.m_sambaclienttimeout * 1000);
+#else
     m_context->debug = g_advancedSettings.m_logLevel == LOG_LEVEL_DEBUG_SAMBA ? 10 : 0;
     m_context->callbacks.auth_fn = xb_smbc_auth;
     orig_cache = m_context->callbacks.get_cached_srv_fn;
     m_context->callbacks.get_cached_srv_fn = xb_smbc_cache;
     m_context->options.one_share_per_server = false;
     m_context->options.browse_max_lmb_count = 0;
-
-    /* set connection timeout. since samba always tries two ports, divide this by two the correct value */
     m_context->timeout = g_advancedSettings.m_sambaclienttimeout * 1000;
+#endif
 
 #ifdef _LINUX
     // Create ~/.smb/smb.conf

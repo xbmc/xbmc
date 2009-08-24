@@ -702,7 +702,7 @@ PLT_Service::UpdateLastChange(NPT_List<PLT_StateVariable*>& vars)
 
     // serialize node
     NPT_String value;
-    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, value));
+    NPT_CHECK_SEVERE(PLT_XmlHelper::Serialize(*top, value, false));
     delete top;
 
     // set the state change direcly instead of calling SetValue

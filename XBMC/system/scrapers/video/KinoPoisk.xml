@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="windows-1251"?>
-  <scraper framework="1.0" date="2009-05-22" name="KinoPoisk_v2.001.ru" content="movies" thumb="KinoPoisk.gif" ServerContentEncoding="CP1251" language="ru">
+<scraper framework="1.1" date="2009-08-08" name="KinoPoisk_v2.001.ru" content="movies" thumb="KinoPoisk.gif" ServerContentEncoding="CP1251" language="ru">
   
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
@@ -41,7 +41,7 @@
   	       <RegExp input="$$6" output="(\1)&lt;/title&gt;" dest="7+">
 				<expression>&lt;tr&gt;&lt;td class=&quot;desc-title&quot; height=25&gt;&lt;img[^&gt;]+&gt;год&lt;/td&gt;&lt;td class=&quot;desc-data&quot;&gt;&lt;a[^&gt;]+&gt;([0-9]+)&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;</expression>
 		   </RegExp>
-  	       <RegExp input="$$6" output="&lt;url&gt;http://www.kinopoisk.ru/level/1/film/\1&lt/url&gt;" dest="7+">
+				<RegExp input="$$6" output="&lt;url&gt;http://www.kinopoisk.ru/level/1/film/\1&lt;/url&gt;" dest="7+">
  				<expression>href=&quot;/level/19/film/([^&quot;]+)&quot; class=&quot;all&quot;&gt;\.\.\.&lt;/a&gt;</expression>
 		   </RegExp>
            <expression noclean="1"></expression>
@@ -159,14 +159,12 @@
 			<RegExp input="$$1" output="&lt;url cache=&quot;KinoPoisk_opa.html&quot; function=&quot;GetFanart&quot;&gt;http://www.kinopoisk.ru/&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
-            
 			<expression noclean="1"></expression>
 		</RegExp>
 
 	</GetDetails>
     
 <GMTR dest="10">
-
 		<RegExp input="$$9" output="&lt;details&gt;\1&lt;/details&gt;" dest="10">
 			<RegExp input="$$1" output="&lt;url&gt;http://akas.imdb.com/video/imdb/vi\1/player&lt;/url&gt;" dest="7">
 				<expression noclean="1">&lt;imdb&gt;tt([^&quot;]+)&lt;/imdb&gt;</expression>
@@ -176,7 +174,6 @@
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
-        
 </GMTR>
     
 	<GetTrailer clearbuffers="no" dest="5">
@@ -192,7 +189,6 @@
         </GetTrailer>
 
 	<GMA dest="10">
-
 		<RegExp input="$$9" output="&lt;details&gt;\1&lt;/details&gt;" dest="10">
 			<RegExp input="$$1" output="&lt;url&gt;http://www.themoviedb.org/movie/\1/backdrops&lt;/url&gt;" dest="7">
 				<expression noclean="1">&lt;a href=&quot;/movie/([^&quot;]+)&quot;&gt;</expression>
@@ -202,11 +198,9 @@
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
-        
 	</GMA>
     
     <GMAF dest="10">
-
 		<RegExp input="$$9" output="&lt;details&gt;\1&lt;/details&gt;" dest="10">
 			<RegExp input="$$1" output="&lt;url&gt;http://www.themoviedb.org/movie/\1/backdrops&lt;/url&gt;" dest="7">
 				<expression repeat="yes" noclean="1">&lt;a href=&quot;/movie/([^&quot;]+)&quot;&gt;</expression>
@@ -216,7 +210,6 @@
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
-        
 	</GMAF>
     
 	<GMFFS dest="10" clearbuffers="no">
@@ -288,7 +281,7 @@
 
 
 	<GetPoster dest="5">
-		<RegExp input="$$6" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetPoster>
@@ -346,5 +339,4 @@
 	    <expression noclean="1"></expression>
 	  </RegExp>
 	</PEOPLE>
-     
 </scraper>

@@ -23,7 +23,7 @@
 
 #include "stdafx.h"
 #include "GUIWindowTestPattern.h"
-#include "Application.h"
+#include "Settings.h"
 #include "GUIWindowManager.h"
 
 CGUIWindowTestPattern::CGUIWindowTestPattern(void)

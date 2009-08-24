@@ -27,7 +27,6 @@
 #include "Profile.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
-#include "DetectDVDType.h"
 #include "../MediaManager.h"
 #ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
 #include "linux/LinuxFileSystem.h"

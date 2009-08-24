@@ -1,6 +1,7 @@
 /*
  * MOV demuxer
  * Copyright (c) 2001 Fabrice Bellard
+ * Copyright (c) 2009 Baptiste Coudurier <baptiste dot coudurier at gmail dot com>
  *
  * This file is part of FFmpeg.
  *
@@ -22,15 +23,17 @@
 #include <limits.h>
 
 //#define DEBUG
+//#define DEBUG_METADATA
+//#define MOV_EXPORT_ALL_METADATA
 
 #include "libavutil/intreadwrite.h"
 #include "libavutil/avstring.h"
 #include "avformat.h"
 #include "riff.h"
 #include "isom.h"
-#include "dv.h"
 #include "libavcodec/mpeg4audio.h"
 #include "libavcodec/mpegaudiodata.h"
+#include "libavcodec/get_bits.h"
 
 #if CONFIG_ZLIB
 #include <zlib.h>
@@ -62,101 +65,6 @@
 #undef NDEBUG
 #include <assert.h>
 
-/* the QuickTime file format is quite convoluted...
- * it has lots of index tables, each indexing something in another one...
- * Here we just use what is needed to read the chunks
- */
-
-typedef struct {
-    int first;
-    int count;
-    int id;
-} MOVStsc;
-
-typedef struct {
-    uint32_t type;
-    char *path;
-} MOVDref;
-
-typedef struct {
-    uint32_t type;
-    int64_t offset;
-    int64_t size; /* total size (excluding the size and type fields) */
-} MOVAtom;
-
-struct MOVParseTableEntry;
-
-typedef struct {
-    unsigned track_id;
-    uint64_t base_data_offset;
-    uint64_t moof_offset;
-    unsigned stsd_id;
-    unsigned duration;
-    unsigned size;
-    unsigned flags;
-} MOVFragment;
-
-typedef struct {
-    unsigned track_id;
-    unsigned stsd_id;
-    unsigned duration;
-    unsigned size;
-    unsigned flags;
-} MOVTrackExt;
-
-typedef struct MOVStreamContext {
-    ByteIOContext *pb;
-    int ffindex; /* the ffmpeg stream id */
-    int next_chunk;
-    unsigned int chunk_count;
-    int64_t *chunk_offsets;
-    unsigned int stts_count;
-    MOVStts *stts_data;
-    unsigned int ctts_count;
-    MOVStts *ctts_data;
-    unsigned int stsc_count;
-    MOVStsc *stsc_data;
-    int ctts_index;
-    int ctts_sample;
-    unsigned int sample_size;
-    unsigned int sample_count;
-    int *sample_sizes;
-    unsigned int keyframe_count;
-    int *keyframes;
-    int time_scale;
-    int time_rate;
-    int time_offset; ///< time offset of the first edit list entry
-    int current_sample;
-    unsigned int bytes_per_frame;
-    unsigned int samples_per_frame;
-    int dv_audio_container;
-    int pseudo_stream_id; ///< -1 means demux all ids
-    int16_t audio_cid; ///< stsd audio compression id
-    unsigned drefs_count;
-    MOVDref *drefs;
-    int dref_id;
-    int wrong_dts; ///< dts are wrong due to negative ctts
-    int width;  ///< tkhd width
-    int height; ///< tkhd height
-} MOVStreamContext;
-
-typedef struct MOVContext {
-    AVFormatContext *fc;
-    int time_scale;
-    int64_t duration; /* duration of the longest track */
-    int found_moov; /* when both 'moov' and 'mdat' sections has been found */
-    int found_mdat; /* we suppose we have enough data to read the file */
-    AVPaletteControl palette_control;
-    DVDemuxContext *dv_demux;
-    AVFormatContext *dv_fctx;
-    int isom; /* 1 if file is ISO Media (mp4/3gp) */
-    MOVFragment fragment; ///< current fragment in moof atom
-    MOVTrackExt *trex_data;
-    unsigned trex_count;
-    int itunes_metadata; ///< metadata are itunes style
-} MOVContext;
-
-
 /* XXX: it's the first time I make a recursive parser I think... sorry if it's ugly :P */
 
 /* those functions parse an atom */
@@ -172,6 +80,96 @@ typedef struct MOVParseTableEntry {
 
 static const MOVParseTableEntry mov_default_parse_table[];
 
+static int mov_metadata_trkn(MOVContext *c, ByteIOContext *pb, unsigned len)
+{
+    char buf[16];
+
+    get_be16(pb); // unknown
+    snprintf(buf, sizeof(buf), "%d", get_be16(pb));
+    av_metadata_set(&c->fc->metadata, "track", buf);
+
+    get_be16(pb); // total tracks
+
+    return 0;
+}
+
+static int mov_read_udta_string(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
+{
+#ifdef MOV_EXPORT_ALL_METADATA
+    char tmp_key[5];
+#endif
+    char str[1024], key2[16], language[4] = {0};
+    const char *key = NULL;
+    uint16_t str_size;
+    int (*parse)(MOVContext*, ByteIOContext*, unsigned) = NULL;
+
+    switch (atom.type) {
+    case MKTAG(0xa9,'n','a','m'): key = "title";     break;
+    case MKTAG(0xa9,'a','u','t'):
+    case MKTAG(0xa9,'A','R','T'):
+    case MKTAG(0xa9,'w','r','t'): key = "author";    break;
+    case MKTAG(0xa9,'c','p','y'): key = "copyright"; break;
+    case MKTAG(0xa9,'c','m','t'):
+    case MKTAG(0xa9,'i','n','f'): key = "comment";   break;
+    case MKTAG(0xa9,'a','l','b'): key = "album";     break;
+    case MKTAG(0xa9,'d','a','y'): key = "year";      break;
+    case MKTAG(0xa9,'g','e','n'): key = "genre";     break;
+    case MKTAG(0xa9,'t','o','o'):
+    case MKTAG(0xa9,'e','n','c'): key = "muxer";     break;
+    case MKTAG( 't','r','k','n'): key = "track";
+        parse = mov_metadata_trkn; break;
+    }
+
+    if (c->itunes_metadata && atom.size > 8) {
+        int data_size = get_be32(pb);
+        int tag = get_le32(pb);
+        if (tag == MKTAG('d','a','t','a')) {
+            get_be32(pb); // type
+            get_be32(pb); // unknown
+            str_size = data_size - 16;
+            atom.size -= 16;
+        } else return 0;
+    } else if (atom.size > 4 && key && !c->itunes_metadata) {
+        str_size = get_be16(pb); // string length
+        ff_mov_lang_to_iso639(get_be16(pb), language);
+        atom.size -= 4;
+    } else
+        str_size = atom.size;
+
+#ifdef MOV_EXPORT_ALL_METADATA
+    if (!key) {
+        snprintf(tmp_key, 5, "%.4s", (char*)&atom.type);
+        key = tmp_key;
+    }
+#endif
+
+    if (!key)
+        return 0;
+    if (atom.size < 0)
+        return -1;
+
+    str_size = FFMIN3(sizeof(str)-1, str_size, atom.size);
+
+    if (parse)
+        parse(c, pb, str_size);
+    else {
+        get_buffer(pb, str, str_size);
+        str[str_size] = 0;
+        av_metadata_set(&c->fc->metadata, key, str);
+        if (*language && strcmp(language, "und")) {
+            snprintf(key2, sizeof(key2), "%s-%s", key, language);
+            av_metadata_set(&c->fc->metadata, key2, str);
+        }
+    }
+#ifdef DEBUG_METADATA
+    av_log(c->fc, AV_LOG_DEBUG, "lang \"%3s\" ", language);
+    av_log(c->fc, AV_LOG_DEBUG, "tag \"%s\" value \"%s\" atom \"%.4s\" %d %lld\n",
+           key, str, (char*)&atom.type, str_size, atom.size);
+#endif
+
+    return 0;
+}
+
 static int mov_read_default(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
     int64_t total_size = 0;
@@ -184,6 +182,7 @@ static int mov_read_default(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     if (atom.size < 0)
         atom.size = INT64_MAX;
     while(((total_size + 8) < atom.size) && !url_feof(pb) && !err) {
+        int (*parse)(MOVContext*, ByteIOContext*, MOVAtom) = NULL;
         a.size = atom.size;
         a.type=0;
         if(atom.size >= 8) {
@@ -209,16 +208,23 @@ static int mov_read_default(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
             break;
         a.size = FFMIN(a.size, atom.size - total_size);
 
-        for (i = 0; mov_default_parse_table[i].type != 0
-             && mov_default_parse_table[i].type != a.type; i++)
-            /* empty */;
+        for (i = 0; mov_default_parse_table[i].type; i++)
+            if (mov_default_parse_table[i].type == a.type) {
+                parse = mov_default_parse_table[i].parse;
+                break;
+            }
 
-        if (mov_default_parse_table[i].type == 0) { /* skip leaf atoms data */
+        // container is user data
+        if (!parse && (atom.type == MKTAG('u','d','t','a') ||
+                       atom.type == MKTAG('i','l','s','t')))
+            parse = mov_read_udta_string;
+
+        if (!parse) { /* skip leaf atoms data */
             url_fskip(pb, a.size);
         } else {
             int64_t start_pos = url_ftell(pb);
             int64_t left;
-            err = mov_default_parse_table[i].parse(c, pb, a);
+            err = parse(c, pb, a);
             if (url_is_streamed(pb) && c->found_moov && c->found_mdat)
                 break;
             left = a.size - url_ftell(pb) + start_pos;
@@ -238,9 +244,14 @@ static int mov_read_default(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_dref(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
+    AVStream *st;
+    MOVStreamContext *sc;
     int entries, i, j;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
 
     get_be32(pb); // version + flags
     entries = get_be32(pb);
@@ -308,9 +319,14 @@ static int mov_read_dref(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_hdlr(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
+    AVStream *st;
     uint32_t type;
     uint32_t ctype;
+
+    if (c->fc->nb_streams < 1) // meta before first trak
+        return 0;
+
+    st = c->fc->streams[c->fc->nb_streams-1];
 
     get_byte(pb); /* version */
     get_be24(pb); /* flags */
@@ -319,21 +335,18 @@ static int mov_read_hdlr(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     ctype = get_le32(pb);
     type = get_le32(pb); /* component subtype */
 
-    dprintf(c->fc, "ctype= %c%c%c%c (0x%08x)\n", *((char *)&ctype), ((char *)&ctype)[1],
-            ((char *)&ctype)[2], ((char *)&ctype)[3], (int) ctype);
-    dprintf(c->fc, "stype= %c%c%c%c\n",
-            *((char *)&type), ((char *)&type)[1], ((char *)&type)[2], ((char *)&type)[3]);
-    if(!ctype)
-        c->isom = 1;
+    dprintf(c->fc, "ctype= %.4s (0x%08x)\n", (char*)&ctype, ctype);
+    dprintf(c->fc, "stype= %.4s\n", (char*)&type);
+
     if     (type == MKTAG('v','i','d','e'))
         st->codec->codec_type = CODEC_TYPE_VIDEO;
     else if(type == MKTAG('s','o','u','n'))
         st->codec->codec_type = CODEC_TYPE_AUDIO;
     else if(type == MKTAG('m','1','a',' '))
         st->codec->codec_id = CODEC_ID_MP2;
-    else if(type == MKTAG('s','u','b','p')) {
+    else if(type == MKTAG('s','u','b','p'))
         st->codec->codec_type = CODEC_TYPE_SUBTITLE;
-    }
+
     get_be32(pb); /* component  manufacture */
     get_be32(pb); /* component flags */
     get_be32(pb); /* component flags mask */
@@ -372,17 +385,22 @@ static int mp4_read_descr(MOVContext *c, ByteIOContext *pb, int *tag)
 #define MP4DecSpecificDescrTag          0x05
 
 static const AVCodecTag mp4_audio_types[] = {
-    { CODEC_ID_MP3ON4, 29 }, /* old mp3on4 draft */
-    { CODEC_ID_MP3ON4, 32 }, /* layer 1 */
-    { CODEC_ID_MP3ON4, 33 }, /* layer 2 */
-    { CODEC_ID_MP3ON4, 34 }, /* layer 3 */
-    { CODEC_ID_NONE,    0 },
+    { CODEC_ID_MP3ON4, AOT_PS   }, /* old mp3on4 draft */
+    { CODEC_ID_MP3ON4, AOT_L1   }, /* layer 1 */
+    { CODEC_ID_MP3ON4, AOT_L2   }, /* layer 2 */
+    { CODEC_ID_MP3ON4, AOT_L3   }, /* layer 3 */
+    { CODEC_ID_MP4ALS, AOT_ALS  }, /* MPEG-4 ALS */
+    { CODEC_ID_NONE,   AOT_NULL },
 };
 
 static int mov_read_esds(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
+    AVStream *st;
     int tag, len;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
 
     get_be32(pb); /* version + flags */
     len = mp4_read_descr(c, pb, &tag);
@@ -400,7 +418,7 @@ static int mov_read_esds(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         get_be32(pb); /* max bitrate */
         get_be32(pb); /* avg bitrate */
 
-        st->codec->codec_id= codec_get_id(ff_mp4_obj_type, object_type_id);
+        st->codec->codec_id= ff_codec_get_id(ff_mp4_obj_type, object_type_id);
         dprintf(c->fc, "esds object type id %d\n", object_type_id);
         len = mp4_read_descr(c, pb, &tag);
         if (tag == MP4DecSpecificDescrTag) {
@@ -427,7 +445,7 @@ static int mov_read_esds(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                         "sample rate %d ext sample rate %d\n", st->codec->channels,
                         cfg.object_type, cfg.ext_object_type,
                         cfg.sample_rate, cfg.ext_sample_rate);
-                if (!(st->codec->codec_id = codec_get_id(mp4_audio_types,
+                if (!(st->codec->codec_id = ff_codec_get_id(mp4_audio_types,
                                                          cfg.object_type)))
                     st->codec->codec_id = CODEC_ID_AAC;
             }
@@ -440,7 +458,12 @@ static int mov_read_pasp(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
     const int num = get_be32(pb);
     const int den = get_be32(pb);
-    AVStream * const st = c->fc->streams[c->fc->nb_streams-1];
+    AVStream *st;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+
     if (den != 0) {
         if ((st->sample_aspect_ratio.den != 1 || st->sample_aspect_ratio.num) && // default
             (den != st->sample_aspect_ratio.den || num != st->sample_aspect_ratio.num))
@@ -494,12 +517,18 @@ static int mov_read_moof(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_mdhd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
-    int version = get_byte(pb);
+    AVStream *st;
+    MOVStreamContext *sc;
+    int version;
     char language[4] = {0};
     unsigned lang;
 
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
+
+    version = get_byte(pb);
     if (version > 1)
         return -1; /* unsupported */
 
@@ -561,7 +590,11 @@ static int mov_read_mvhd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_smi(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
+    AVStream *st;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
 
     if((uint64_t)atom.size > (1<<30))
         return -1;
@@ -581,9 +614,14 @@ static int mov_read_smi(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_enda(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    int little_endian = get_be16(pb);
+    AVStream *st;
+    int little_endian;
 
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+
+    little_endian = get_be16(pb);
     dprintf(c->fc, "enda %d\n", little_endian);
     if (little_endian == 1) {
         switch (st->codec->codec_id) {
@@ -633,7 +671,11 @@ static int mov_read_extradata(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_wave(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
+    AVStream *st;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
 
     if((uint64_t)atom.size > (1<<30))
         return -1;
@@ -660,7 +702,11 @@ static int mov_read_wave(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
  */
 static int mov_read_glbl(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
+    AVStream *st;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
 
     if((uint64_t)atom.size > (1<<30))
         return -1;
@@ -676,9 +722,14 @@ static int mov_read_glbl(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_stco(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
+    AVStream *st;
+    MOVStreamContext *sc;
     unsigned int i, entries;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
 
     get_byte(pb); /* version */
     get_be24(pb); /* flags */
@@ -742,9 +793,14 @@ static enum CodecID mov_get_lpcm_codec_id(int bps, int flags)
 
 static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
+    AVStream *st;
+    MOVStreamContext *sc;
     int j, entries, pseudo_stream_id;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
 
     get_byte(pb); /* version */
     get_be24(pb); /* flags */
@@ -754,19 +810,21 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     for(pseudo_stream_id=0; pseudo_stream_id<entries; pseudo_stream_id++) {
         //Parsing Sample description table
         enum CodecID id;
-        int dref_id;
+        int dref_id = 1;
         MOVAtom a = { 0, 0, 0 };
         int64_t start_pos = url_ftell(pb);
         int size = get_be32(pb); /* size */
         uint32_t format = get_le32(pb); /* data format */
 
+        if (size >= 16) {
         get_be32(pb); /* reserved */
         get_be16(pb); /* reserved */
         dref_id = get_be16(pb);
+        }
 
         if (st->codec->codec_tag &&
             st->codec->codec_tag != format &&
-            (c->fc->video_codec_id ? codec_get_id(codec_movvideo_tags, format) != c->fc->video_codec_id
+            (c->fc->video_codec_id ? ff_codec_get_id(codec_movvideo_tags, format) != c->fc->video_codec_id
                                    : st->codec->codec_tag != MKTAG('j','p','e','g'))
            ){
             /* Multiple fourcc, we skip JPEG. This is not correct, we should
@@ -780,21 +838,21 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         sc->dref_id= dref_id;
 
         st->codec->codec_tag = format;
-        id = codec_get_id(codec_movaudio_tags, format);
-        if (id<=0 && (format&0xFFFF) == 'm'+('s'<<8))
-            id = codec_get_id(codec_wav_tags, bswap_32(format)&0xFFFF);
+        id = ff_codec_get_id(codec_movaudio_tags, format);
+        if (id<=0 && ((format&0xFFFF) == 'm'+('s'<<8) || (format&0xFFFF) == 'T'+('S'<<8)))
+            id = ff_codec_get_id(ff_codec_wav_tags, bswap_32(format)&0xFFFF);
 
         if (st->codec->codec_type != CODEC_TYPE_VIDEO && id > 0) {
             st->codec->codec_type = CODEC_TYPE_AUDIO;
         } else if (st->codec->codec_type != CODEC_TYPE_AUDIO && /* do not overwrite codec type */
                    format && format != MKTAG('m','p','4','s')) { /* skip old asf mpeg4 tag */
-            id = codec_get_id(codec_movvideo_tags, format);
+            id = ff_codec_get_id(codec_movvideo_tags, format);
             if (id <= 0)
-                id = codec_get_id(codec_bmp_tags, format);
+                id = ff_codec_get_id(ff_codec_bmp_tags, format);
             if (id > 0)
                 st->codec->codec_type = CODEC_TYPE_VIDEO;
             else if(st->codec->codec_type == CODEC_TYPE_DATA){
-                id = codec_get_id(ff_codec_movsubtitle_tags, format);
+                id = ff_codec_get_id(ff_codec_movsubtitle_tags, format);
                 if(id > 0)
                     st->codec->codec_type = CODEC_TYPE_SUBTITLE;
             }
@@ -845,6 +903,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                 unsigned int color_start, color_count, color_end;
                 unsigned char r, g, b;
 
+                st->codec->palctrl = av_malloc(sizeof(*st->codec->palctrl));
                 if (color_greyscale) {
                     int color_index, color_dec;
                     /* compute the greyscale palette */
@@ -854,7 +913,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                     color_dec = 256 / (color_count - 1);
                     for (j = 0; j < color_count; j++) {
                         r = g = b = color_index;
-                        c->palette_control.palette[j] =
+                        st->codec->palctrl->palette[j] =
                             (r << 16) | (g << 8) | (b);
                         color_index -= color_dec;
                         if (color_index < 0)
@@ -872,10 +931,10 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                         color_table = ff_qt_default_palette_256;
 
                     for (j = 0; j < color_count; j++) {
-                        r = color_table[j * 4 + 0];
-                        g = color_table[j * 4 + 1];
-                        b = color_table[j * 4 + 2];
-                        c->palette_control.palette[j] =
+                        r = color_table[j * 3 + 0];
+                        g = color_table[j * 3 + 1];
+                        b = color_table[j * 3 + 2];
+                        st->codec->palctrl->palette[j] =
                             (r << 16) | (g << 8) | (b);
                     }
                 } else {
@@ -897,15 +956,13 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                             get_byte(pb);
                             b = get_byte(pb);
                             get_byte(pb);
-                            c->palette_control.palette[j] =
+                            st->codec->palctrl->palette[j] =
                                 (r << 16) | (g << 8) | (b);
                         }
                     }
                 }
-                st->codec->palctrl = &c->palette_control;
                 st->codec->palctrl->palette_changed = 1;
-            } else
-                st->codec->palctrl = NULL;
+            }
         } else if(st->codec->codec_type==CODEC_TYPE_AUDIO) {
             int bits_per_sample, flags;
             uint16_t version = get_be16(pb);
@@ -990,6 +1047,7 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
             // ttxt stsd contains display flags, justification, background
             // color, fonts, and default styles, so fake an atom to read it
             MOVAtom fake_atom = { .size = size - (url_ftell(pb) - start_pos) };
+            if (format != AV_RL32("mp4s")) // mp4s contains a regular esds atom
             mov_read_glbl(c, pb, fake_atom);
             st->codec->codec_id= id;
             st->codec->width = sc->width;
@@ -1026,6 +1084,9 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 #endif
     /* no ifdef since parameters are always those */
     case CODEC_ID_QCELP:
+        // force sample rate for qcelp when not stored in mov
+        if (st->codec->codec_tag != MKTAG('Q','c','l','p'))
+            st->codec->sample_rate = 8000;
         st->codec->frame_size= 160;
         st->codec->channels= 1; /* really needed */
         break;
@@ -1064,9 +1125,14 @@ static int mov_read_stsd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_stsc(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
+    AVStream *st;
+    MOVStreamContext *sc;
     unsigned int i, entries;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
 
     get_byte(pb); /* version */
     get_be24(pb); /* flags */
@@ -1090,11 +1156,45 @@ static int mov_read_stsc(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     return 0;
 }
 
+static int mov_read_stps(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
+{
+    AVStream *st;
+    MOVStreamContext *sc;
+    unsigned i, entries;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
+
+    get_be32(pb); // version + flags
+
+    entries = get_be32(pb);
+    if (entries >= UINT_MAX / sizeof(*sc->stps_data))
+        return -1;
+    sc->stps_data = av_malloc(entries * sizeof(*sc->stps_data));
+    if (!sc->stps_data)
+        return AVERROR(ENOMEM);
+    sc->stps_count = entries;
+
+    for (i = 0; i < entries; i++) {
+        sc->stps_data[i] = get_be32(pb);
+        //dprintf(c->fc, "stps %d\n", sc->stps_data[i]);
+    }
+
+    return 0;
+}
+
 static int mov_read_stss(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
+    AVStream *st;
+    MOVStreamContext *sc;
     unsigned int i, entries;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
 
     get_byte(pb); /* version */
     get_be24(pb); /* flags */
@@ -1119,16 +1219,30 @@ static int mov_read_stss(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_stsz(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
-    unsigned int i, entries, sample_size;
+    AVStream *st;
+    MOVStreamContext *sc;
+    unsigned int i, entries, sample_size, field_size, num_bytes;
+    GetBitContext gb;
+    unsigned char* buf;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
 
     get_byte(pb); /* version */
     get_be24(pb); /* flags */
 
+    if (atom.type == MKTAG('s','t','s','z')) {
     sample_size = get_be32(pb);
     if (!sc->sample_size) /* do not overwrite value computed in stsd */
         sc->sample_size = sample_size;
+        field_size = 32;
+    } else {
+        sample_size = 0;
+        get_be24(pb); /* reserved */
+        field_size = get_byte(pb);
+    }
     entries = get_be32(pb);
 
     dprintf(c->fc, "sample_size = %d sample_count = %d\n", sc->sample_size, entries);
@@ -1137,24 +1251,52 @@ static int mov_read_stsz(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     if (sample_size)
         return 0;
 
+    if (field_size != 4 && field_size != 8 && field_size != 16 && field_size != 32) {
+        av_log(c->fc, AV_LOG_ERROR, "Invalid sample field size %d\n", field_size);
+        return -1;
+    }
+
     if(entries >= UINT_MAX / sizeof(int))
         return -1;
     sc->sample_sizes = av_malloc(entries * sizeof(int));
     if (!sc->sample_sizes)
         return AVERROR(ENOMEM);
 
+    num_bytes = (entries*field_size+4)>>3;
+
+    buf = av_malloc(num_bytes+FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!buf) {
+        av_freep(&sc->sample_sizes);
+        return AVERROR(ENOMEM);
+    }
+
+    if (get_buffer(pb, buf, num_bytes) < num_bytes) {
+        av_freep(&sc->sample_sizes);
+        av_free(buf);
+        return -1;
+    }
+
+    init_get_bits(&gb, buf, 8*num_bytes);
+
     for(i=0; i<entries; i++)
-        sc->sample_sizes[i] = get_be32(pb);
+        sc->sample_sizes[i] = get_bits_long(&gb, field_size);
+
+    av_free(buf);
     return 0;
 }
 
 static int mov_read_stts(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
+    AVStream *st;
+    MOVStreamContext *sc;
     unsigned int i, entries;
     int64_t duration=0;
     int64_t total_sample_count=0;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
 
     get_byte(pb); /* version */
     get_be24(pb); /* flags */
@@ -1178,8 +1320,6 @@ static int mov_read_stts(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         sc->stts_data[i].count= sample_count;
         sc->stts_data[i].duration= sample_duration;
 
-        sc->time_rate= av_gcd(sc->time_rate, sample_duration);
-
         dprintf(c->fc, "sample_count=%d, sample_duration=%d\n",sample_count,sample_duration);
 
         duration+=(int64_t)sample_duration*sample_count;
@@ -1192,11 +1332,39 @@ static int mov_read_stts(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     return 0;
 }
 
+static int mov_read_cslg(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
+{
+    AVStream *st;
+    MOVStreamContext *sc;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
+
+    get_be32(pb); // version + flags
+
+    sc->dts_shift = get_be32(pb);
+    dprintf(c->fc, "dts shift %d\n", sc->dts_shift);
+
+    get_be32(pb); // least dts to pts delta
+    get_be32(pb); // greatest dts to pts delta
+    get_be32(pb); // pts start
+    get_be32(pb); // pts end
+
+    return 0;
+}
+
 static int mov_read_ctts(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
+    AVStream *st;
+    MOVStreamContext *sc;
     unsigned int i, entries;
+
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
 
     get_byte(pb); /* version */
     get_be24(pb); /* flags */
@@ -1215,14 +1383,8 @@ static int mov_read_ctts(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
         int count    =get_be32(pb);
         int duration =get_be32(pb);
 
-        if (duration < 0) {
-            sc->wrong_dts = 1;
-            st->codec->has_b_frames = 1;
-        }
         sc->ctts_data[i].count   = count;
         sc->ctts_data[i].duration= duration;
-
-        sc->time_rate= av_gcd(sc->time_rate, FFABS(duration));
     }
     return 0;
 }
@@ -1235,12 +1397,19 @@ static void mov_build_index(MOVContext *mov, AVStream *st)
     unsigned int stts_index = 0;
     unsigned int stsc_index = 0;
     unsigned int stss_index = 0;
+    unsigned int stps_index = 0;
     unsigned int i, j;
 
     /* adjust first dts according to edit list */
     if (sc->time_offset) {
-        assert(sc->time_offset % sc->time_rate == 0);
-        current_dts = - (sc->time_offset / sc->time_rate);
+        int rescaled = sc->time_offset < 0 ? av_rescale(sc->time_offset, sc->time_scale, mov->time_scale) : sc->time_offset;
+        current_dts = -rescaled;
+        if (sc->ctts_data && sc->ctts_data[0].duration / sc->stts_data[0].duration > 16) {
+            /* more than 16 frames delay, dts are likely wrong
+               this happens with files created by iMovie */
+            sc->wrong_dts = 1;
+            st->codec->has_b_frames = 1;
+    }
     }
 
     /* only use old uncompressed audio chunk demuxing when stts specifies it */
@@ -1248,9 +1417,11 @@ static void mov_build_index(MOVContext *mov, AVStream *st)
           sc->stts_count == 1 && sc->stts_data[0].duration == 1)) {
         unsigned int current_sample = 0;
         unsigned int stts_sample = 0;
-        unsigned int keyframe, sample_size;
+        unsigned int sample_size;
         unsigned int distance = 0;
         int key_off = sc->keyframes && sc->keyframes[0] == 1;
+
+        current_dts -= sc->dts_shift;
 
         st->nb_frames = sc->sample_count;
         for (i = 0; i < sc->chunk_count; i++) {
@@ -1259,16 +1430,23 @@ static void mov_build_index(MOVContext *mov, AVStream *st)
                 i + 1 == sc->stsc_data[stsc_index + 1].first)
                 stsc_index++;
             for (j = 0; j < sc->stsc_data[stsc_index].count; j++) {
+                int keyframe = 0;
                 if (current_sample >= sc->sample_count) {
                     av_log(mov->fc, AV_LOG_ERROR, "wrong sample count\n");
-                    goto out;
+                    return;
                 }
-                keyframe = !sc->keyframe_count || current_sample+key_off == sc->keyframes[stss_index];
-                if (keyframe) {
-                    distance = 0;
+
+                if (!sc->keyframe_count || current_sample+key_off == sc->keyframes[stss_index]) {
+                    keyframe = 1;
                     if (stss_index + 1 < sc->keyframe_count)
                         stss_index++;
+                } else if (sc->stps_count && current_sample+key_off == sc->stps_data[stps_index]) {
+                    keyframe = 1;
+                    if (stps_index + 1 < sc->stps_count)
+                        stps_index++;
                 }
+                if (keyframe)
+                    distance = 0;
                 sample_size = sc->sample_size > 0 ? sc->sample_size : sc->sample_sizes[current_sample];
                 if(sc->pseudo_stream_id == -1 ||
                    sc->stsc_data[stsc_index].id - 1 == sc->pseudo_stream_id) {
@@ -1278,9 +1456,9 @@ static void mov_build_index(MOVContext *mov, AVStream *st)
                             "size %d, distance %d, keyframe %d\n", st->index, current_sample,
                             current_offset, current_dts, sample_size, distance, keyframe);
                 }
+
                 current_offset += sample_size;
-                assert(sc->stts_data[stts_index].duration % sc->time_rate == 0);
-                current_dts += sc->stts_data[stts_index].duration / sc->time_rate;
+                current_dts += sc->stts_data[stts_index].duration;
                 distance++;
                 stts_sample++;
                 current_sample++;
@@ -1290,55 +1468,49 @@ static void mov_build_index(MOVContext *mov, AVStream *st)
                 }
             }
         }
-    } else { /* read whole chunk */
-        unsigned int chunk_samples, chunk_size, chunk_duration;
-        unsigned int frames = 1;
+    } else {
         for (i = 0; i < sc->chunk_count; i++) {
+            unsigned chunk_samples;
+
             current_offset = sc->chunk_offsets[i];
             if (stsc_index + 1 < sc->stsc_count &&
                 i + 1 == sc->stsc_data[stsc_index + 1].first)
                 stsc_index++;
             chunk_samples = sc->stsc_data[stsc_index].count;
-            /* get chunk size, beware of alaw/ulaw/mace */
-            if (sc->samples_per_frame > 0 &&
-                (chunk_samples * sc->bytes_per_frame % sc->samples_per_frame == 0)) {
-                if (sc->samples_per_frame < 160)
-                    chunk_size = chunk_samples * sc->bytes_per_frame / sc->samples_per_frame;
-                else {
-                    chunk_size = sc->bytes_per_frame;
-                    frames = chunk_samples / sc->samples_per_frame;
-                    chunk_samples = sc->samples_per_frame;
+
+            if (sc->samples_per_frame && chunk_samples % sc->samples_per_frame) {
+                av_log(mov->fc, AV_LOG_ERROR, "error unaligned chunk\n");
+                return;
                 }
-            } else
-                chunk_size = chunk_samples * sc->sample_size;
-            for (j = 0; j < frames; j++) {
-                av_add_index_entry(st, current_offset, current_dts, chunk_size, 0, AVINDEX_KEYFRAME);
-                /* get chunk duration */
-                chunk_duration = 0;
+
                 while (chunk_samples > 0) {
-                    if (chunk_samples < sc->stts_data[stts_index].count) {
-                        chunk_duration += sc->stts_data[stts_index].duration * chunk_samples;
-                        sc->stts_data[stts_index].count -= chunk_samples;
-                        break;
+                unsigned size, samples;
+
+                if (sc->samples_per_frame >= 160) { // gsm
+                    samples = sc->samples_per_frame;
+                    size = sc->bytes_per_frame;
                     } else {
-                        chunk_duration += sc->stts_data[stts_index].duration * chunk_samples;
-                        chunk_samples -= sc->stts_data[stts_index].count;
-                        if (stts_index + 1 < sc->stts_count)
-                            stts_index++;
+                    if (sc->samples_per_frame > 1) {
+                        samples = FFMIN((1024 / sc->samples_per_frame)*
+                                        sc->samples_per_frame, chunk_samples);
+                        size = (samples / sc->samples_per_frame) * sc->bytes_per_frame;
+                    } else {
+                        samples = FFMIN(1024, chunk_samples);
+                        size = samples * sc->sample_size;
                     }
                 }
-                current_offset += sc->bytes_per_frame;
+
+                av_add_index_entry(st, current_offset, current_dts, size, 0, AVINDEX_KEYFRAME);
                 dprintf(mov->fc, "AVIndex stream %d, chunk %d, offset %"PRIx64", dts %"PRId64", "
                         "size %d, duration %d\n", st->index, i, current_offset, current_dts,
-                        chunk_size, chunk_duration);
-                assert(chunk_duration % sc->time_rate == 0);
-                current_dts += chunk_duration / sc->time_rate;
+                        size, samples);
+
+                current_offset += size;
+                current_dts += samples;
+                chunk_samples -= samples;
             }
         }
     }
- out:
-    /* adjust sample count to avindex entries */
-    sc->sample_count = st->nb_index_entries;
 }
 
 static int mov_read_trak(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
@@ -1364,25 +1536,19 @@ static int mov_read_trak(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                            (!sc->sample_size && !sc->sample_count))){
         av_log(c->fc, AV_LOG_ERROR, "stream %d, missing mandatory atoms, broken header\n",
                st->index);
-        sc->sample_count = 0; //ignore track
         return 0;
     }
-    if(!sc->time_rate)
-        sc->time_rate=1;
+
     if(!sc->time_scale)
         sc->time_scale= c->time_scale;
-    av_set_pts_info(st, 64, sc->time_rate, sc->time_scale);
+
+    av_set_pts_info(st, 64, 1, sc->time_scale);
 
     if (st->codec->codec_type == CODEC_TYPE_AUDIO &&
         !st->codec->frame_size && sc->stts_count == 1) {
         st->codec->frame_size = av_rescale(sc->stts_data[0].duration,
                                            st->codec->sample_rate, sc->time_scale);
         dprintf(c->fc, "frame size %d\n", st->codec->frame_size);
-    }
-
-    if(st->duration != AV_NOPTS_VALUE){
-        assert(st->duration % sc->time_rate == 0);
-        st->duration /= sc->time_rate;
     }
 
     mov_build_index(c, st);
@@ -1401,6 +1567,9 @@ static int mov_read_trak(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 #if CONFIG_H263_DECODER
     case CODEC_ID_H263:
 #endif
+#if CONFIG_H264_DECODER
+    case CODEC_ID_H264:
+#endif
 #if CONFIG_MPEG4_DECODER
     case CODEC_ID_MPEG4:
 #endif
@@ -1415,6 +1584,7 @@ static int mov_read_trak(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     av_freep(&sc->sample_sizes);
     av_freep(&sc->keyframes);
     av_freep(&sc->stts_data);
+    av_freep(&sc->stps_data);
 
     return 0;
 }
@@ -1430,72 +1600,17 @@ static int mov_read_ilst(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
 static int mov_read_meta(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
-    url_fskip(pb, 4); // version + flags
+    while (atom.size > 8) {
+        uint32_t tag = get_le32(pb);
     atom.size -= 4;
+        if (tag == MKTAG('h','d','l','r')) {
+            url_fseek(pb, -8, SEEK_CUR);
+            atom.size += 8;
     return mov_read_default(c, pb, atom);
 }
-
-static int mov_read_trkn(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
-{
-    char track[16];
-    get_be32(pb); // type
-    get_be32(pb); // unknown
-    snprintf(track, sizeof(track), "%d", get_be32(pb));
-    av_metadata_set(&c->fc->metadata, "track", track);
-    dprintf(c->fc, "%.4s %s\n", (char*)&atom.type, track);
-    return 0;
 }
-
-static int mov_read_udta_string(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
-{
-    char str[1024], key2[16], language[4] = {0};
-    const char *key = NULL;
-    uint16_t str_size;
-
-    if (c->itunes_metadata) {
-        int data_size = get_be32(pb);
-        int tag = get_le32(pb);
-        if (tag == MKTAG('d','a','t','a')) {
-            get_be32(pb); // type
-            get_be32(pb); // unknown
-            str_size = data_size - 16;
-            atom.size -= 16;
-        } else return 0;
-    } else {
-        str_size = get_be16(pb); // string length
-        ff_mov_lang_to_iso639(get_be16(pb), language);
-        atom.size -= 4;
-    }
-    switch (atom.type) {
-    case MKTAG(0xa9,'n','a','m'): key = "title";     break;
-    case MKTAG(0xa9,'a','u','t'):
-    case MKTAG(0xa9,'A','R','T'):
-    case MKTAG(0xa9,'w','r','t'): key = "author";    break;
-    case MKTAG(0xa9,'c','p','y'): key = "copyright"; break;
-    case MKTAG(0xa9,'c','m','t'):
-    case MKTAG(0xa9,'i','n','f'): key = "comment";   break;
-    case MKTAG(0xa9,'a','l','b'): key = "album";     break;
-    case MKTAG(0xa9,'d','a','y'): key = "year";      break;
-    case MKTAG(0xa9,'g','e','n'): key = "genre";     break;
-    case MKTAG(0xa9,'t','o','o'):
-    case MKTAG(0xa9,'e','n','c'): key = "muxer";     break;
-    }
-    if (!key)
         return 0;
-    if (atom.size < 0)
-        return -1;
-
-    str_size = FFMIN3(sizeof(str)-1, str_size, atom.size);
-    get_buffer(pb, str, str_size);
-    str[str_size] = 0;
-    av_metadata_set(&c->fc->metadata, key, str);
-    if (*language && strcmp(language, "und")) {
-        snprintf(key2, sizeof(key2), "%s-%s", key, language);
-        av_metadata_set(&c->fc->metadata, key2, str);
     }
-    dprintf(c->fc, "%.4s %s %d %lld\n", (char*)&atom.type, str, str_size, atom.size);
-    return 0;
-}
 
 static int mov_read_tkhd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
@@ -1504,10 +1619,16 @@ static int mov_read_tkhd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     int height;
     int64_t disp_transform[2];
     int display_matrix[3][2];
-    AVStream *st = c->fc->streams[c->fc->nb_streams-1];
-    MOVStreamContext *sc = st->priv_data;
-    int version = get_byte(pb);
+    AVStream *st;
+    MOVStreamContext *sc;
+    int version;
 
+    if (c->fc->nb_streams < 1)
+        return 0;
+    st = c->fc->streams[c->fc->nb_streams-1];
+    sc = st->priv_data;
+
+    version = get_byte(pb);
     get_be24(pb); /* flags */
     /*
     MOV_TRACK_ENABLED 0x0001
@@ -1552,11 +1673,14 @@ static int mov_read_tkhd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 
     //transform the display width/height according to the matrix
     // skip this if the display matrix is the default identity matrix
+    // or if it is rotating the picture, ex iPhone 3GS
     // to keep the same scale, use [width height 1<<16]
     if (width && height &&
-        (display_matrix[0][0] != 65536 || display_matrix[0][1]           ||
-        display_matrix[1][0]           || display_matrix[1][1] != 65536  ||
-        display_matrix[2][0]           || display_matrix[2][1])) {
+        ((display_matrix[0][0] != 65536  ||
+          display_matrix[1][1] != 65536) &&
+         !display_matrix[0][1] &&
+         !display_matrix[1][0] &&
+         !display_matrix[2][0] && !display_matrix[2][1])) {
         for (i = 0; i < 2; i++)
             disp_transform[i] =
                 (int64_t)  width  * display_matrix[0][i] +
@@ -1581,7 +1705,7 @@ static int mov_read_tfhd(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     flags = get_be24(pb);
 
     track_id = get_be32(pb);
-    if (!track_id || track_id > c->fc->nb_streams)
+    if (!track_id)
         return -1;
     frag->track_id = track_id;
     for (i = 0; i < c->trex_count; i++)
@@ -1630,7 +1754,7 @@ static int mov_read_trex(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 static int mov_read_trun(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 {
     MOVFragment *frag = &c->fragment;
-    AVStream *st;
+    AVStream *st = NULL;
     MOVStreamContext *sc;
     uint64_t offset;
     int64_t dts;
@@ -1638,9 +1762,16 @@ static int mov_read_trun(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     unsigned entries, first_sample_flags = frag->flags;
     int flags, distance, i;
 
-    if (!frag->track_id || frag->track_id > c->fc->nb_streams)
+    for (i = 0; i < c->fc->nb_streams; i++) {
+        if (c->fc->streams[i]->id == frag->track_id) {
+            st = c->fc->streams[i];
+            break;
+        }
+    }
+    if (!st) {
+        av_log(c->fc, AV_LOG_ERROR, "could not find corresponding track id %d\n", frag->track_id);
         return -1;
-    st = c->fc->streams[frag->track_id-1];
+    }
     sc = st->priv_data;
     if (sc->pseudo_stream_id+1 != frag->stsd_id)
         return 0;
@@ -1687,12 +1818,10 @@ static int mov_read_trun(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
                 "size %d, distance %d, keyframe %d\n", st->index, sc->sample_count+i,
                 offset, dts, sample_size, distance, keyframe);
         distance++;
-        assert(sample_duration % sc->time_rate == 0);
-        dts += sample_duration / sc->time_rate;
+        dts += sample_duration;
         offset += sample_size;
     }
     frag->moof_offset = offset;
-    sc->sample_count = st->nb_index_entries;
     st->duration = dts;
     return 0;
 }
@@ -1783,14 +1912,16 @@ static int mov_read_elst(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
     get_be24(pb); /* flags */
     edit_count = get_be32(pb); /* entries */
 
+    if((uint64_t)edit_count*12+8 > atom.size)
+        return -1;
+
     for(i=0; i<edit_count; i++){
         int time;
-        get_be32(pb); /* Track duration */
+        int duration = get_be32(pb); /* Track duration */
         time = get_be32(pb); /* Media time */
         get_be32(pb); /* Media rate */
-        if (i == 0 && time != -1) {
-            sc->time_offset = time;
-            sc->time_rate = av_gcd(sc->time_rate, time);
+        if (i == 0 && time >= -1) {
+            sc->time_offset = time != -1 ? time : -duration;
         }
     }
 
@@ -1805,6 +1936,7 @@ static int mov_read_elst(MOVContext *c, ByteIOContext *pb, MOVAtom atom)
 static const MOVParseTableEntry mov_default_parse_table[] = {
 { MKTAG('a','v','s','s'), mov_read_extradata },
 { MKTAG('c','o','6','4'), mov_read_stco },
+{ MKTAG('c','s','l','g'), mov_read_cslg },
 { MKTAG('c','t','t','s'), mov_read_ctts }, /* composition time to sample */
 { MKTAG('d','i','n','f'), mov_read_default },
 { MKTAG('d','r','e','f'), mov_read_dref },
@@ -1832,36 +1964,24 @@ static const MOVParseTableEntry mov_default_parse_table[] = {
 { MKTAG('p','a','s','p'), mov_read_pasp },
 { MKTAG('s','t','b','l'), mov_read_default },
 { MKTAG('s','t','c','o'), mov_read_stco },
+{ MKTAG('s','t','p','s'), mov_read_stps },
 { MKTAG('s','t','s','c'), mov_read_stsc },
 { MKTAG('s','t','s','d'), mov_read_stsd }, /* sample description */
 { MKTAG('s','t','s','s'), mov_read_stss }, /* sync sample */
 { MKTAG('s','t','s','z'), mov_read_stsz }, /* sample size */
 { MKTAG('s','t','t','s'), mov_read_stts },
+{ MKTAG('s','t','z','2'), mov_read_stsz }, /* compact sample size */
 { MKTAG('t','k','h','d'), mov_read_tkhd }, /* track header */
 { MKTAG('t','f','h','d'), mov_read_tfhd }, /* track fragment header */
 { MKTAG('t','r','a','k'), mov_read_trak },
 { MKTAG('t','r','a','f'), mov_read_default },
 { MKTAG('t','r','e','x'), mov_read_trex },
-{ MKTAG('t','r','k','n'), mov_read_trkn },
 { MKTAG('t','r','u','n'), mov_read_trun },
 { MKTAG('u','d','t','a'), mov_read_default },
 { MKTAG('w','a','v','e'), mov_read_wave },
 { MKTAG('e','s','d','s'), mov_read_esds },
 { MKTAG('w','i','d','e'), mov_read_wide }, /* place holder */
 { MKTAG('c','m','o','v'), mov_read_cmov },
-{ MKTAG(0xa9,'n','a','m'), mov_read_udta_string },
-{ MKTAG(0xa9,'w','r','t'), mov_read_udta_string },
-{ MKTAG(0xa9,'c','p','y'), mov_read_udta_string },
-{ MKTAG(0xa9,'i','n','f'), mov_read_udta_string },
-{ MKTAG(0xa9,'i','n','f'), mov_read_udta_string },
-{ MKTAG(0xa9,'A','R','T'), mov_read_udta_string },
-{ MKTAG(0xa9,'a','l','b'), mov_read_udta_string },
-{ MKTAG(0xa9,'c','m','t'), mov_read_udta_string },
-{ MKTAG(0xa9,'a','u','t'), mov_read_udta_string },
-{ MKTAG(0xa9,'d','a','y'), mov_read_udta_string },
-{ MKTAG(0xa9,'g','e','n'), mov_read_udta_string },
-{ MKTAG(0xa9,'e','n','c'), mov_read_udta_string },
-{ MKTAG(0xa9,'t','o','o'), mov_read_udta_string },
 { 0, NULL }
 };
 
@@ -1938,21 +2058,17 @@ static int mov_read_header(AVFormatContext *s, AVFormatParameters *ap)
     return 0;
 }
 
-static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
+static AVIndexEntry *mov_find_next_sample(AVFormatContext *s, AVStream **st)
 {
-    MOVContext *mov = s->priv_data;
-    MOVStreamContext *sc = 0;
-    AVIndexEntry *sample = 0;
+    AVIndexEntry *sample = NULL;
     int64_t best_dts = INT64_MAX;
-    int i, ret;
- retry:
+    int i;
     for (i = 0; i < s->nb_streams; i++) {
-        AVStream *st = s->streams[i];
-        MOVStreamContext *msc = st->priv_data;
-        if (st->discard != AVDISCARD_ALL && msc->pb && msc->current_sample < msc->sample_count) {
-            AVIndexEntry *current_sample = &st->index_entries[msc->current_sample];
-            int64_t dts = av_rescale(current_sample->timestamp * (int64_t)msc->time_rate,
-                                     AV_TIME_BASE, msc->time_scale);
+        AVStream *avst = s->streams[i];
+        MOVStreamContext *msc = avst->priv_data;
+        if (msc->pb && msc->current_sample < avst->nb_index_entries) {
+            AVIndexEntry *current_sample = &avst->index_entries[msc->current_sample];
+            int64_t dts = av_rescale(current_sample->timestamp, AV_TIME_BASE, msc->time_scale);
             dprintf(s, "stream %d, sample %d, dts %"PRId64"\n", i, msc->current_sample, dts);
             if (!sample || (url_is_streamed(s->pb) && current_sample->pos < sample->pos) ||
                 (!url_is_streamed(s->pb) &&
@@ -1961,21 +2077,36 @@ static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
                   (FFABS(best_dts - dts) > AV_TIME_BASE && dts < best_dts)))))) {
                 sample = current_sample;
                 best_dts = dts;
-                sc = msc;
+                *st = avst;
             }
         }
     }
+    return sample;
+}
+
+static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
+{
+    MOVContext *mov = s->priv_data;
+    MOVStreamContext *sc;
+    AVIndexEntry *sample;
+    AVStream *st = NULL;
+    int ret;
+ retry:
+    sample = mov_find_next_sample(s, &st);
     if (!sample) {
         mov->found_mdat = 0;
         if (!url_is_streamed(s->pb) ||
             mov_read_default(mov, s->pb, (MOVAtom){ 0, 0, INT64_MAX }) < 0 ||
             url_feof(s->pb))
-            return -1;
+            return AVERROR_EOF;
         dprintf(s, "read fragments, offset 0x%llx\n", url_ftell(s->pb));
         goto retry;
     }
+    sc = st->priv_data;
     /* must be done just before reading, to avoid infinite loop on sample */
     sc->current_sample++;
+
+    if (st->discard != AVDISCARD_ALL) {
     if (url_fseek(sc->pb, sample->pos, SEEK_SET) != sample->pos) {
         av_log(mov->fc, AV_LOG_ERROR, "stream %d, offset 0x%"PRIx64": partial file\n",
                sc->ffindex, sample->pos);
@@ -1989,15 +2120,17 @@ static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
         dv_produce_packet(mov->dv_demux, pkt, pkt->data, pkt->size);
         av_free(pkt->data);
         pkt->size = 0;
-        if (dv_get_packet(mov->dv_demux, pkt) < 0)
-            return -1;
+            ret = dv_get_packet(mov->dv_demux, pkt);
+            if (ret < 0)
+                return ret;
     }
 #endif
+    }
+
     pkt->stream_index = sc->ffindex;
     pkt->dts = sample->timestamp;
     if (sc->ctts_data) {
-        assert(sc->ctts_data[sc->ctts_index].duration % sc->time_rate == 0);
-        pkt->pts = pkt->dts + sc->ctts_data[sc->ctts_index].duration / sc->time_rate;
+        pkt->pts = pkt->dts + sc->dts_shift + sc->ctts_data[sc->ctts_index].duration;
         /* update ctts context */
         sc->ctts_sample++;
         if (sc->ctts_index < sc->ctts_count &&
@@ -2008,12 +2141,13 @@ static int mov_read_packet(AVFormatContext *s, AVPacket *pkt)
         if (sc->wrong_dts)
             pkt->dts = AV_NOPTS_VALUE;
     } else {
-        AVStream *st = s->streams[sc->ffindex];
-        int64_t next_dts = (sc->current_sample < sc->sample_count) ?
+        int64_t next_dts = (sc->current_sample < st->nb_index_entries) ?
             st->index_entries[sc->current_sample].timestamp : st->duration;
         pkt->duration = next_dts - pkt->dts;
         pkt->pts = pkt->dts;
     }
+    if (st->discard == AVDISCARD_ALL)
+        goto retry;
     pkt->flags |= sample->flags & AVINDEX_KEYFRAME ? PKT_FLAG_KEY : 0;
     pkt->pos = sample->pos;
     dprintf(s, "stream %d, pts %"PRId64", dts %"PRId64", pos 0x%"PRIx64", duration %d\n",
@@ -2071,7 +2205,7 @@ static int mov_read_seek(AVFormatContext *s, int stream_index, int64_t sample_ti
 
     for (i = 0; i < s->nb_streams; i++) {
         st = s->streams[i];
-        if (stream_index == i || st->discard == AVDISCARD_ALL)
+        if (stream_index == i)
             continue;
 
         timestamp = av_rescale_q(seek_timestamp, s->streams[stream_index]->time_base, st->time_base);
@@ -2082,17 +2216,23 @@ static int mov_read_seek(AVFormatContext *s, int stream_index, int64_t sample_ti
 
 static int mov_read_close(AVFormatContext *s)
 {
-    int i, j;
     MOVContext *mov = s->priv_data;
+    int i, j;
+
     for(i=0; i<s->nb_streams; i++) {
-        MOVStreamContext *sc = s->streams[i]->priv_data;
+        AVStream *st = s->streams[i];
+        MOVStreamContext *sc = st->priv_data;
+
         av_freep(&sc->ctts_data);
         for (j=0; j<sc->drefs_count; j++)
             av_freep(&sc->drefs[j].path);
         av_freep(&sc->drefs);
         if (sc->pb && sc->pb != s->pb)
             url_fclose(sc->pb);
+
+        av_freep(&st->codec->palctrl);
     }
+
     if(mov->dv_demux){
         for(i=0; i<mov->dv_fctx->nb_streams; i++){
             av_freep(&mov->dv_fctx->streams[i]->codec);
@@ -2101,7 +2241,9 @@ static int mov_read_close(AVFormatContext *s)
         av_freep(&mov->dv_fctx);
         av_freep(&mov->dv_demux);
     }
+
     av_freep(&mov->trex_data);
+
     return 0;
 }
 

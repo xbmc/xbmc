@@ -25,6 +25,10 @@
 #include "CMythSession.h"
 #include "VideoInfoTag.h"
 
+extern "C" {
+#include "lib/libcmyth/cmyth.h"
+}
+
 class DllLibCMyth;
 
 namespace XFILE
@@ -68,6 +72,8 @@ public:
   virtual bool           CanRecord();
   virtual bool           IsRecording();
   virtual bool           Record(bool bOnOff);
+
+  virtual bool           GetCommBreakList(cmyth_commbreaklist_t& commbreaklist);
 
 protected:
   virtual void OnEvent(int event, const std::string& data);

@@ -39,6 +39,7 @@ namespace RTMP_LIB
       void SetPlayPath(const std::string &strPlayPath);
       void SetLive();
       void SetBufferMS(int size);
+      bool Seek(double dTime);
 
       bool Connect(const std::string &strRTMPLink, double dTime = 0);
       inline bool IsConnected() { return m_socket != INVALID_SOCKET; }

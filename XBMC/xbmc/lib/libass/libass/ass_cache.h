@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -27,81 +25,95 @@
 #include "ass_font.h"
 #include "ass_bitmap.h"
 
-typedef struct hashmap_s ass_font_cache_t;
+typedef void (*hashmap_item_dtor_t) (void *key, size_t key_size,
+                                     void *value, size_t value_size);
+typedef int (*hashmap_key_compare_t) (void *key1, void *key2,
+                                      size_t key_size);
+typedef unsigned (*hashmap_hash_t) (void *key, size_t key_size);
 
-ass_font_cache_t* ass_font_cache_init(void);
-ass_font_t* ass_font_cache_find(ass_font_cache_t* cache, ass_font_desc_t* desc);
-void* ass_font_cache_add(ass_font_cache_t* cache, ass_font_t* font);
-void ass_font_cache_done(ass_font_cache_t* cache);
+typedef struct hashmap_item {
+    void *key;
+    void *value;
+    struct hashmap_item *next;
+} hashmap_item_t;
+typedef hashmap_item_t *hashmap_item_p;
 
+typedef struct {
+    int nbuckets;
+    size_t key_size, value_size;
+    hashmap_item_p *root;
+    hashmap_item_dtor_t item_dtor;      // a destructor for hashmap key/value pairs
+    hashmap_key_compare_t key_compare;
+    hashmap_hash_t hash;
+    size_t cache_size;
+    // stats
+    int hit_count;
+    int miss_count;
+    int count;
+    ass_library_t *library;
+} hashmap_t;
 
-// describes a bitmap; bitmaps with equivalents structs are considered identical
-typedef struct bitmap_hash_key_s {
-	char bitmap; // bool : true = bitmap, false = outline
-	ass_font_t* font;
-	double size; // font size
-	uint32_t ch; // character code
-	unsigned outline; // border width, 16.16 fixed point value
-	int bold, italic;
-	char be; // blur edges
+hashmap_t *hashmap_init(ass_library_t *library, size_t key_size,
+                        size_t value_size, int nbuckets,
+                        hashmap_item_dtor_t item_dtor,
+                        hashmap_key_compare_t key_compare,
+                        hashmap_hash_t hash);
+void hashmap_done(hashmap_t *map);
+void *hashmap_insert(hashmap_t *map, void *key, void *value);
+void *hashmap_find(hashmap_t *map, void *key);
 
-	unsigned scale_x, scale_y; // 16.16
-	int frx, fry, frz; // signed 16.16
-	int shift_x, shift_y; // shift vector that was added to glyph before applying rotation
-	                      // = 0, if frx = fry = frx = 0
-	                      // = (glyph base point) - (rotation origin), otherwise
+hashmap_t *ass_font_cache_init(ass_library_t *library);
+ass_font_t *ass_font_cache_find(hashmap_t *, ass_font_desc_t *desc);
+void *ass_font_cache_add(hashmap_t *, ass_font_t *font);
+void ass_font_cache_done(hashmap_t *);
 	
-	FT_Vector advance; // subpixel shift vector
-} bitmap_hash_key_t;
+// Create definitions for bitmap_hash_key and glyph_hash_key
+#define CREATE_STRUCT_DEFINITIONS
+#include "ass_cache_template.h"
 
-typedef struct bitmap_hash_val_s {
+typedef struct {
 	bitmap_t* bm; // the actual bitmaps
 	bitmap_t* bm_o;
 	bitmap_t* bm_s;
 } bitmap_hash_val_t;
 
-typedef struct hashmap_s ass_bitmap_cache_t;
+hashmap_t *ass_bitmap_cache_init(ass_library_t *library);
+void *cache_add_bitmap(hashmap_t *, bitmap_hash_key_t *key,
+                       bitmap_hash_val_t *val);
+bitmap_hash_val_t *cache_find_bitmap(hashmap_t *bitmap_cache,
+                                     bitmap_hash_key_t *key);
+hashmap_t *ass_bitmap_cache_reset(hashmap_t *bitmap_cache);
+void ass_bitmap_cache_done(hashmap_t *bitmap_cache);
 
-ass_bitmap_cache_t* ass_bitmap_cache_init(void);
-void* cache_add_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key, bitmap_hash_val_t* val);
-bitmap_hash_val_t* cache_find_bitmap(ass_bitmap_cache_t* cache, bitmap_hash_key_t* key);
-void ass_bitmap_cache_done(ass_bitmap_cache_t* cache);
 
-// describes an outline glyph
-typedef struct glyph_hash_key_s {
-	ass_font_t* font;
-	double size; // font size
-	uint32_t ch; // character code
-	int bold, italic;
-	unsigned scale_x, scale_y; // 16.16
-	FT_Vector advance; // subpixel shift vector
-	unsigned outline; // border width, 16.16
-} glyph_hash_key_t;
+typedef struct {
+    unsigned char *a;
+    unsigned char *b;
+} composite_hash_val_t;
 
-typedef struct glyph_hash_val_s {
+hashmap_t *ass_composite_cache_init(ass_library_t *library);
+void *cache_add_composite(hashmap_t *, composite_hash_key_t *key,
+                          composite_hash_val_t *val);
+composite_hash_val_t *cache_find_composite(hashmap_t *composite_cache,
+                                           composite_hash_key_t *key);
+hashmap_t *ass_composite_cache_reset(hashmap_t *composite_cache);
+void ass_composite_cache_done(hashmap_t *composite_cache);
+
+
+typedef struct {
 	FT_Glyph glyph;
 	FT_Glyph outline_glyph;
 	FT_BBox bbox_scaled; // bbox after scaling, but before rotation
 	FT_Vector advance; // 26.6, advance distance to the next bitmap in line
+    int asc, desc;              // ascender/descender of a drawing
 } glyph_hash_val_t;
 
-typedef struct hashmap_s ass_glyph_cache_t;
-
-ass_glyph_cache_t* ass_glyph_cache_init(void);
-void* cache_add_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key, glyph_hash_val_t* val);
-glyph_hash_val_t* cache_find_glyph(ass_glyph_cache_t* cache, glyph_hash_key_t* key);
-void ass_glyph_cache_done(ass_glyph_cache_t* cache);
-
-typedef struct hashmap_s hashmap_t; 
-typedef void (*hashmap_item_dtor_t)(void* key, size_t key_size, void* value, size_t value_size);
-typedef int (*hashmap_key_compare_t)(void* key1, void* key2, size_t key_size);
-typedef unsigned (*hashmap_hash_t)(void* key, size_t key_size);
-
-hashmap_t* hashmap_init(size_t key_size, size_t value_size, int nbuckets,
-			hashmap_item_dtor_t item_dtor, hashmap_key_compare_t key_compare,
-			hashmap_hash_t hash);
-void hashmap_done(hashmap_t* map);
-void* hashmap_insert(hashmap_t* map, void* key, void* value);
-void* hashmap_find(hashmap_t* map, void* key);
+hashmap_t *ass_glyph_cache_init(ass_library_t *library);
+void *cache_add_glyph(hashmap_t *, glyph_hash_key_t *key,
+                      glyph_hash_val_t *val);
+glyph_hash_val_t *cache_find_glyph(hashmap_t *glyph_cache,
+                                   glyph_hash_key_t *key);
+hashmap_t *ass_glyph_cache_reset(hashmap_t *glyph_cache);
+void ass_glyph_cache_done(hashmap_t *glyph_cache);
 
 #endif /* LIBASS_CACHE_H */

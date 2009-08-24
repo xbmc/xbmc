@@ -138,7 +138,7 @@ void CGUIDialogSettings::EnableSettings(unsigned int id, bool enabled)
 
 void CGUIDialogSettings::UpdateSetting(unsigned int id)
 {
-  unsigned int settingNum = 0;
+  unsigned int settingNum = (unsigned int)-1;
   for (unsigned int i = 0; i < m_settings.size(); i++)
   {
     if (m_settings[i].id == id)
@@ -147,6 +147,9 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
       break;
     }
   }
+  if(settingNum == (unsigned int)-1)
+    return;
+
   SettingInfo &setting = m_settings.at(settingNum);
   unsigned int controlID = settingNum + CONTROL_START;
   if (setting.type == SettingInfo::SPIN)

@@ -34,7 +34,7 @@
 #include "avcodec.h"
 
 #define ALT_BITSTREAM_READER_LE
-#include "bitstream.h"
+#include "get_bits.h"
 #include "bytestream.h"
 
 #define SMKTREE_BITS 9
@@ -345,8 +345,10 @@ static av_always_inline int smk_get_code(GetBitContext *gb, int *recode, int *la
     return v;
 }
 
-static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, const uint8_t *buf, int buf_size)
+static int decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     SmackVContext * const smk = avctx->priv_data;
     uint8_t *out;
     uint32_t *pal;
@@ -512,8 +514,6 @@ static av_cold int decode_init(AVCodecContext *avctx)
 
     c->avctx = avctx;
 
-    c->pic.data[0] = NULL;
-
     if (avcodec_check_dimensions(avctx, avctx->width, avctx->height) < 0) {
         return 1;
     }
@@ -558,7 +558,6 @@ static av_cold int decode_end(AVCodecContext *avctx)
 
 static av_cold int smka_decode_init(AVCodecContext *avctx)
 {
-    avctx->sample_fmt = SAMPLE_FMT_S16;
     avctx->channel_layout = (avctx->channels==2) ? CH_LAYOUT_STEREO : CH_LAYOUT_MONO;
     return 0;
 }
@@ -566,12 +565,15 @@ static av_cold int smka_decode_init(AVCodecContext *avctx)
 /**
  * Decode Smacker audio data
  */
-static int smka_decode_frame(AVCodecContext *avctx, void *data, int *data_size, const uint8_t *buf, int buf_size)
+static int smka_decode_frame(AVCodecContext *avctx, void *data, int *data_size, AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     GetBitContext gb;
     HuffContext h[4];
     VLC vlc[4];
     int16_t *samples = data;
+    int8_t *samples8 = data;
     int val;
     int i, res;
     int unp_size;
@@ -589,7 +591,7 @@ static int smka_decode_frame(AVCodecContext *avctx, void *data, int *data_size, 
     }
     stereo = get_bits1(&gb);
     bits = get_bits1(&gb);
-    if (unp_size & 0xC0000000 || (unp_size << !bits) > *data_size) {
+    if (unp_size & 0xC0000000 || unp_size > *data_size) {
         av_log(avctx, AV_LOG_ERROR, "Frame is too large to fit in buffer\n");
         return -1;
     }
@@ -655,7 +657,7 @@ static int smka_decode_frame(AVCodecContext *avctx, void *data, int *data_size, 
         for(i = stereo; i >= 0; i--)
             pred[i] = get_bits(&gb, 8);
         for(i = 0; i < stereo; i++)
-            *samples++ = (pred[i] - 0x80) << 8;
+            *samples8++ = pred[i];
         for(i = 0; i < unp_size; i++) {
             if(i & stereo){
                 if(vlc[1].table)
@@ -663,17 +665,16 @@ static int smka_decode_frame(AVCodecContext *avctx, void *data, int *data_size, 
                 else
                     res = 0;
                 pred[1] += (int8_t)h[1].values[res];
-                *samples++ = (pred[1] - 0x80) << 8;
+                *samples8++ = pred[1];
             } else {
                 if(vlc[0].table)
                     res = get_vlc2(&gb, vlc[0].table, SMKTREE_BITS, 3);
                 else
                     res = 0;
                 pred[0] += (int8_t)h[0].values[res];
-                *samples++ = (pred[0] - 0x80) << 8;
+                *samples8++ = pred[0];
             }
         }
-        unp_size *= 2;
     }
 
     for(i = 0; i < 4; i++) {
@@ -700,6 +701,7 @@ AVCodec smacker_decoder = {
     NULL,
     decode_end,
     decode_frame,
+    CODEC_CAP_DR1,
     .long_name = NULL_IF_CONFIG_SMALL("Smacker video"),
 };
 

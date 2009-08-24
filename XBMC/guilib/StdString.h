@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
+#include <stdint.h>
 #if !defined(_LINUX)
 #include <windows.h>
-#include <stdint.h>
 #include "win32/PlatformDefs.h"
 #endif
 

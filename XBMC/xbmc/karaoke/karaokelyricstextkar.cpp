@@ -11,7 +11,6 @@
 //
 #include "stdafx.h"
 
-#include "Util.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 
@@ -144,7 +143,7 @@ bool CKaraokeLyricsTextKAR::Load()
   // Clear the lyrics array
   clearLyrics();
 
-  if ( !file.Open( m_midiFile, TRUE ) )
+  if ( !file.Open( m_midiFile ) )
     return false;
 
   m_midiSize = (unsigned int) file.GetLength();

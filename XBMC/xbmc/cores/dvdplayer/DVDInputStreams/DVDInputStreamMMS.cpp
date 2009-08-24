@@ -48,7 +48,8 @@ bool CDVDInputStreamMMS::IsEOF()
 
 bool CDVDInputStreamMMS::Open(const char* strFile, const std::string& content)
 {
-  return (m_mms=mmsx_connect((mms_io_t*)mms_get_default_io_impl(),NULL,strFile,2000*1000)); // TODO: what to do with bandwidth?
+  m_mms = mmsx_connect((mms_io_t*)mms_get_default_io_impl(),NULL,strFile,2000*1000); // TODO: what to do with bandwidth?
+  return (m_mms != NULL);
 }
 
 // close file and reset everyting
@@ -75,14 +76,14 @@ __int64 CDVDInputStreamMMS::Seek(__int64 offset, int whence)
 bool CDVDInputStreamMMS::SeekTime(int iTimeInMsec)
 {
   if (mmsx_get_seekable(m_mms))
-    return mmsx_time_seek(NULL,m_mms,double(iTimeInMsec)/1000);
+    return (mmsx_time_seek(NULL,m_mms,double(iTimeInMsec)/1000) != -1);
   
   return false;
 }
 
 __int64 CDVDInputStreamMMS::GetLength()
 {
-  return mmsx_get_time_length(m_mms);
+  return (__int64)mmsx_get_time_length(m_mms);
 }
 
 bool CDVDInputStreamMMS::NextStream()

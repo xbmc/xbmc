@@ -67,126 +67,6 @@ struct XBOXDETECTION
   std::vector<bool> client_informed;
 };
 
-namespace MathUtils
-{
-  // GCC does something stupid with optimization on release builds if we try
-  // to assert in these functions
-  inline int round_int (double x)
-  {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-    const float round_to_nearest = 0.5f;
-    int i;
-
-#ifndef _LINUX
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fadd round_to_nearest
-      fistp i
-      sar i, 1
-    }
-#else
-    #if defined(__powerpc__) || defined(__ppc__)
-        i = floor(x + round_to_nearest);
-    #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fadd %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_to_nearest), "t"(x) : "st"
-        );
-    #endif
-#endif
-    return (i);
-  }
-
-  inline int ceil_int (double x)
-  {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-
-    #if !defined(__powerpc__) && !defined(__ppc__)
-        const float round_towards_p_i = -0.5f;
-    #endif
-    int i;
-
-#ifndef _LINUX
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fsubr round_towards_p_i
-      fistp i
-      sar i, 1
-    }
-#else
-    #if defined(__powerpc__) || defined(__ppc__)
-        return (int)ceil(x);
-    #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fsubr %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_towards_p_i), "t"(x) : "st"
-        );
-    #endif
-#endif
-    return (-i);
-  }
-
-  inline int truncate_int(double x)
-  {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-
-    #if !defined(__powerpc__) && !defined(__ppc__)
-        const float round_towards_m_i = -0.5f;
-    #endif
-    int i;
-
-#ifndef _LINUX
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fabs
-      fadd round_towards_m_i
-      fistp i
-      sar i, 1
-    }
-#else
-    #if defined(__powerpc__) || defined(__ppc__)
-        return (int)x;
-    #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fabs\n\t"
-            "fadd %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_towards_m_i), "t"(x) : "st"
-        );
-    #endif
-#endif
-    if (x < 0)
-      i = -i;
-    return (i);
-  }
-
-  inline void hack()
-  {
-    // stupid hack to keep compiler from dropping these
-    // functions as unused
-    MathUtils::round_int(0.0);
-    MathUtils::truncate_int(0.0);
-    MathUtils::ceil_int(0.0);
-  }
-} // namespace MathUtils
-
 class CUtil
 {
 public:
@@ -195,7 +75,7 @@ public:
   static const CStdString GetExtension(const CStdString& strFileName);
   static void RemoveExtension(CStdString& strFileName);
   static bool GetVolumeFromFileName(const CStdString& strFileName, CStdString& strFileTitle, CStdString& strVolumeNumber);
-  static void CleanString(CStdString& strFileName, bool bIsFolder = false);
+  static void CleanString(CStdString& strFileName, CStdString& strTitle, CStdString& strTitleAndYear, CStdString& strYear, bool bIsFolder = false);
   static const CStdString GetFileName(const CStdString& strFileNameAndPath);
   static CStdString GetTitleFromPath(const CStdString& strFileNameAndPath, bool bIsFolder = false);
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
@@ -205,7 +85,6 @@ public:
   static void GetBuiltInHelp(CStdString &help);
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
-  static const CStdString  GetMovieName(CFileItem* pItem, bool bUseFolderNames = false);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
   static void GetDirectory(const CStdString& strFilePath, CStdString& strDirectoryPath);
@@ -234,22 +113,17 @@ public:
   static bool IsHDHomeRun(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
-  static bool IsTV(const CStdString& strFile);
+  static bool IsLiveTV(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
   static void UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
-  static void CreateShortcuts(CFileItemList &items);
-  static void CreateShortcut(CFileItem* pItem);
-  static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
-  static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
-  static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
   static void DeleteGUISettings();
@@ -257,7 +131,6 @@ public:
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback = NULL);
   static bool CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt="");
   static void ClearSubtitles();
-  static void PrepareSubtitleFonts();
   static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile)
@@ -300,8 +173,6 @@ public:
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
   
-  static void AddDirectorySeperator(CStdString& strPath);
-
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
@@ -357,10 +228,6 @@ public:
   //
   static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
-
-private:
-
-  static HANDLE m_hCurrentCpuUsage;
 };
 
 

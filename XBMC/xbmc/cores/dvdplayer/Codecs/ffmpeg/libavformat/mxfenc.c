@@ -35,7 +35,7 @@
 #include <math.h>
 #include <time.h>
 
-#include "libavutil/fifo.h"
+#include "libavutil/random_seed.h"
 #include "libavcodec/bytestream.h"
 #include "audiointerleave.h"
 #include "avformat.h"
@@ -69,6 +69,7 @@ typedef struct {
     int interlaced;       ///< wether picture is interlaced
     int temporal_reordering;
     AVRational aspect_ratio; ///< display aspect ratio
+    int closed_gop;          ///< gop is closed, used in mpeg-2 frame parsing
 } MXFStreamContext;
 
 typedef struct {
@@ -187,10 +188,12 @@ typedef struct MXFContext {
     int timecode_drop_frame; ///< time code use drop frame method frop mpeg-2 essence gop header
     int edit_unit_byte_count; ///< fixed edit unit byte count
     uint64_t body_offset;
+    uint32_t instance_number;
+    uint8_t umid[16];        ///< unique material identifier
 } MXFContext;
 
 static const uint8_t uuid_base[]            = { 0xAD,0xAB,0x44,0x24,0x2f,0x25,0x4d,0xc7,0x92,0xff,0x29,0xbd };
-static const uint8_t umid_base[]            = { 0x06,0x0A,0x2B,0x34,0x01,0x01,0x01,0x05,0x01,0x01,0x0D,0x00,0x13,0x00,0x00,0x00 };
+static const uint8_t umid_ul[]              = { 0x06,0x0A,0x2B,0x34,0x01,0x01,0x01,0x05,0x01,0x01,0x0D,0x00,0x13 };
 
 /**
  * complete key for operation pattern, partitions, and primer pack
@@ -295,6 +298,7 @@ static const MXFLocalTagPair mxf_local_tag_batch[] = {
     { 0x3F0A, {0x06,0x0E,0x2B,0x34,0x01,0x01,0x01,0x05,0x04,0x04,0x04,0x02,0x05,0x00,0x00,0x00}}, /* Index Entry Array */
     // MPEG video Descriptor
     { 0x8000, {0x06,0x0E,0x2B,0x34,0x01,0x01,0x01,0x05,0x04,0x01,0x06,0x02,0x01,0x0B,0x00,0x00}}, /* BitRate */
+    { 0x8007, {0x06,0x0E,0x2B,0x34,0x01,0x01,0x01,0x05,0x04,0x01,0x06,0x02,0x01,0x0A,0x00,0x00}}, /* ProfileAndLevel */
     // Wave Audio Essence Descriptor
     { 0x3D09, {0x06,0x0E,0x2B,0x34,0x01,0x01,0x01,0x05,0x04,0x02,0x03,0x03,0x05,0x00,0x00,0x00}}, /* Average Bytes Per Second */
     { 0x3D0A, {0x06,0x0E,0x2B,0x34,0x01,0x01,0x01,0x05,0x04,0x02,0x03,0x02,0x01,0x00,0x00,0x00}}, /* Block Align */
@@ -307,10 +311,13 @@ static void mxf_write_uuid(ByteIOContext *pb, enum MXFMetadataSetType type, int 
     put_be16(pb, value);
 }
 
-static void mxf_write_umid(ByteIOContext *pb, enum MXFMetadataSetType type, int value)
+static void mxf_write_umid(AVFormatContext *s, int type)
 {
-    put_buffer(pb, umid_base, 16);
-    mxf_write_uuid(pb, type, value);
+    MXFContext *mxf = s->priv_data;
+    put_buffer(s->pb, umid_ul, 13);
+    put_be24(s->pb, mxf->instance_number);
+    put_buffer(s->pb, mxf->umid, 15);
+    put_byte(s->pb, type);
 }
 
 static void mxf_write_refs_count(ByteIOContext *pb, int ref_count)
@@ -693,7 +700,7 @@ static void mxf_write_structural_component(AVFormatContext *s, AVStream *st, enu
         for (i = 0; i < 4; i++)
             put_be64(pb, 0);
     } else
-        mxf_write_umid(pb, SourcePackage, 0);
+        mxf_write_umid(s, 1);
 
     // write source track id
     mxf_write_local_tag(pb, 4, 0x1102);
@@ -747,7 +754,7 @@ static void mxf_write_generic_desc(AVFormatContext *s, AVStream *st, const UID k
     ByteIOContext *pb = s->pb;
 
     put_buffer(pb, key, 16);
-    klv_encode_ber_length(pb, size+20+8+12+20);
+    klv_encode_ber4_length(pb, size+20+8+12+20);
 
     mxf_write_local_tag(pb, 16, 0x3C0A);
     mxf_write_uuid(pb, SubDescriptor, st->index);
@@ -849,12 +856,19 @@ static void mxf_write_cdci_desc(AVFormatContext *s, AVStream *st)
 static void mxf_write_mpegvideo_desc(AVFormatContext *s, AVStream *st)
 {
     ByteIOContext *pb = s->pb;
+    int profile_and_level = (st->codec->profile<<4) | st->codec->level;
 
-    mxf_write_cdci_common(s, st, mxf_mpegvideo_descriptor_key, 8);
+    mxf_write_cdci_common(s, st, mxf_mpegvideo_descriptor_key, 8+5);
 
     // bit rate
     mxf_write_local_tag(pb, 4, 0x8000);
     put_be32(pb, st->codec->bit_rate);
+
+    // profile and level
+    mxf_write_local_tag(pb, 1, 0x8007);
+    if (!st->codec->profile)
+        profile_and_level |= 0x80; // escape bit
+    put_byte(pb, profile_and_level);
 }
 
 static void mxf_write_generic_sound_common(AVFormatContext *s, AVStream *st, const UID key, unsigned size)
@@ -932,7 +946,7 @@ static void mxf_write_package(AVFormatContext *s, enum MXFMetadataSetType type)
 
     // write package umid
     mxf_write_local_tag(pb, 32, 0x4401);
-    mxf_write_umid(pb, type, 0);
+    mxf_write_umid(s, type == SourcePackage);
     PRINT_KEY(s, "package umid second part", pb->buf_ptr - 16);
 
     // package creation date
@@ -990,7 +1004,7 @@ static int mxf_write_essence_container_data(AVFormatContext *s)
     mxf_write_uuid(pb, EssenceContainerData, 0);
 
     mxf_write_local_tag(pb, 32, 0x2701); // Linked Package UID
-    mxf_write_umid(pb, SourcePackage, 0);
+    mxf_write_umid(s, 1);
 
     mxf_write_local_tag(pb, 4, 0x3F07); // BodySID
     put_be32(pb, 1);
@@ -1058,6 +1072,9 @@ static void mxf_write_index_table_segment(AVFormatContext *s)
 
     // index duration
     mxf_write_local_tag(pb, 8, 0x3F0D);
+    if (mxf->edit_unit_byte_count)
+        put_be64(pb, 0); // index table covers whole container
+    else
     put_be64(pb, mxf->edit_units_count);
 
     // edit unit byte count
@@ -1106,14 +1123,14 @@ static void mxf_write_index_table_segment(AVFormatContext *s)
         put_be32(pb, mxf->edit_units_count);  // num of entries
         put_be32(pb, 11+mxf->slice_count*4);  // size of one entry
         for (i = 0; i < mxf->edit_units_count; i++) {
+            int temporal_offset = 0;
             if (temporal_reordering) {
-                int temporal_offset = 0;
                 for (j = i+1; j < mxf->edit_units_count; j++) {
                     temporal_offset++;
                     if (mxf->index_entries[j].flags & 0x10) { // backward prediction
                         // next is not b, so is reordered
                         if (!(mxf->index_entries[i+1].flags & 0x10)) {
-                            if ((mxf->index_entries[i].flags & 0x11) == 0) // i frame
+                            if ((mxf->index_entries[i].flags & 0x11) == 0) // I frame
                                 temporal_offset = 0;
                             else
                                 temporal_offset = -temporal_offset;
@@ -1121,15 +1138,17 @@ static void mxf_write_index_table_segment(AVFormatContext *s)
                         break;
                     }
                 }
+            }
                 put_byte(pb, temporal_offset);
-            } else
-                put_byte(pb, 0);
+
             if (!(mxf->index_entries[i].flags & 0x33)) { // I frame
+                if (mxf->index_entries[i].flags & 0x40 && // seq header
+                    (!temporal_reordering || !temporal_offset))
+                    mxf->index_entries[i].flags |= 0x80; // random access
                 mxf->last_key_index = key_index;
                 key_index = i;
             }
-            if (mxf->index_entries[i].flags & 0x10 && // backward prediction
-                !(mxf->index_entries[key_index].flags & 0x80)) { // open gop
+            if ((mxf->index_entries[i].flags & 0x30) == 0x30) { // back and forward prediction
                 put_byte(pb, mxf->last_key_index - i);
             } else {
                 put_byte(pb, key_index - i); // key frame offset
@@ -1268,24 +1287,18 @@ static const UID mxf_mpeg2_codec_uls[] = {
 
 static const UID *mxf_get_mpeg2_codec_ul(AVCodecContext *avctx)
 {
+    int long_gop = avctx->gop_size > 1 || avctx->has_b_frames;
+
     if (avctx->profile == 4) { // Main
         if (avctx->level == 8) // Main
-            return avctx->gop_size ?
-                &mxf_mpeg2_codec_uls[1] :
-                &mxf_mpeg2_codec_uls[0];
+            return &mxf_mpeg2_codec_uls[0+long_gop];
         else if (avctx->level == 4) // High
-            return avctx->gop_size ?
-                &mxf_mpeg2_codec_uls[5] :
-                &mxf_mpeg2_codec_uls[4];
+            return &mxf_mpeg2_codec_uls[4+long_gop];
     } else if (avctx->profile == 0) { // 422
         if (avctx->level == 5) // Main
-            return avctx->gop_size ?
-                &mxf_mpeg2_codec_uls[3] :
-                &mxf_mpeg2_codec_uls[2];
+            return &mxf_mpeg2_codec_uls[2+long_gop];
         else if (avctx->level == 2) // High
-            return avctx->gop_size ?
-                &mxf_mpeg2_codec_uls[7] :
-                &mxf_mpeg2_codec_uls[6];
+            return &mxf_mpeg2_codec_uls[6+long_gop];
     }
     return NULL;
 }
@@ -1301,8 +1314,8 @@ static int mxf_parse_mpeg2_frame(AVFormatContext *s, AVStream *st, AVPacket *pkt
 
     for(i = 0; i < pkt->size - 4; i++) {
         c = (c<<8) + pkt->data[i];
-        if (c == 0x1B5) {
-            if (i + 2 < pkt->size && (pkt->data[i+1] & 0xf0) == 0x10) { // seq ext
+        if (c == 0x1b5) {
+            if ((pkt->data[i+1] & 0xf0) == 0x10) { // seq ext
                 st->codec->profile = pkt->data[i+1] & 0x07;
                 st->codec->level   = pkt->data[i+2] >> 4;
             } else if (i + 5 < pkt->size && (pkt->data[i+1] & 0xf0) == 0x80) { // pict coding ext
@@ -1310,9 +1323,11 @@ static int mxf_parse_mpeg2_frame(AVFormatContext *s, AVStream *st, AVPacket *pkt
                 break;
             }
         } else if (c == 0x1b8) { // gop
-            if (i + 4 < pkt->size) {
-                if (pkt->data[i+4]>>6 & 0x01) // closed
+            if (pkt->data[i+4]>>6 & 0x01) { // closed
+                sc->closed_gop = 1;
+                if (*flags & 0x40) // sequence header present
                     *flags |= 0x80; // random access
+            }
                 if (!mxf->header_written) {
                     unsigned hours   =  (pkt->data[i+1]>>2) & 0x1f;
                     unsigned minutes = ((pkt->data[i+1] & 0x03) << 4) | (pkt->data[i+2]>>4);
@@ -1328,10 +1343,8 @@ static int mxf_parse_mpeg2_frame(AVFormatContext *s, AVStream *st, AVPacket *pkt
                     av_log(s, AV_LOG_DEBUG, "frame %d %d:%d:%d%c%d\n", mxf->timecode_start,
                            hours, minutes, seconds, mxf->timecode_drop_frame ? ';':':', frames);
                 }
-            }
         } else if (c == 0x1b3) { // seq
             *flags |= 0x40;
-            if (i + 4 < pkt->size) {
                 switch ((pkt->data[i+4]>>4) & 0xf) {
                 case 2:  sc->aspect_ratio = (AVRational){  4,  3}; break;
                 case 3:  sc->aspect_ratio = (AVRational){ 16,  9}; break;
@@ -1340,13 +1353,15 @@ static int mxf_parse_mpeg2_frame(AVFormatContext *s, AVStream *st, AVPacket *pkt
                     av_reduce(&sc->aspect_ratio.num, &sc->aspect_ratio.den,
                               st->codec->width, st->codec->height, 1024*1024);
                 }
-            }
         } else if (c == 0x100) { // pic
             int pict_type = (pkt->data[i+2]>>3) & 0x07;
             if (pict_type == 2) { // P frame
                 *flags |= 0x22;
-                st->codec->gop_size = 1;
+                sc->closed_gop = 0; // reset closed gop, don't matter anymore
             } else if (pict_type == 3) { // B frame
+                if (sc->closed_gop)
+                    *flags |= 0x13; // only backward prediction
+                else
                 *flags |= 0x33;
                 sc->temporal_reordering = -1;
             } else if (!pict_type) {
@@ -1362,7 +1377,7 @@ static int mxf_parse_mpeg2_frame(AVFormatContext *s, AVStream *st, AVPacket *pkt
 
 static uint64_t mxf_parse_timestamp(time_t timestamp)
 {
-    struct tm *time = localtime(&timestamp);
+    struct tm *time = gmtime(&timestamp);
     return (uint64_t)(time->tm_year+1900) << 48 |
            (uint64_t)(time->tm_mon+1)     << 40 |
            (uint64_t) time->tm_mday       << 32 |
@@ -1371,12 +1386,27 @@ static uint64_t mxf_parse_timestamp(time_t timestamp)
                       time->tm_sec        << 8;
 }
 
+static void mxf_gen_umid(AVFormatContext *s)
+{
+    MXFContext *mxf = s->priv_data;
+    uint32_t seed = ff_random_get_seed();
+    uint64_t umid = seed + 0x5294713400000000LL;
+
+    AV_WB64(mxf->umid  , umid);
+    AV_WB64(mxf->umid+8, umid>>8);
+
+    mxf->instance_number = seed;
+}
+
 static int mxf_write_header(AVFormatContext *s)
 {
     MXFContext *mxf = s->priv_data;
     int i;
     uint8_t present[FF_ARRAY_ELEMS(mxf_essence_container_uls)] = {0};
     const int *samples_per_frame = NULL;
+
+    if (!s->nb_streams)
+        return -1;
 
     for (i = 0; i < s->nb_streams; i++) {
         AVStream *st = s->streams[i];
@@ -1469,6 +1499,9 @@ static int mxf_write_header(AVFormatContext *s)
         mxf->essence_container_count = 1;
     }
 
+    if (!(s->streams[0]->codec->flags & CODEC_FLAG_BITEXACT))
+        mxf_gen_umid(s);
+
     for (i = 0; i < s->nb_streams; i++) {
         MXFStreamContext *sc = s->streams[i]->priv_data;
         // update element count
@@ -1476,6 +1509,7 @@ static int mxf_write_header(AVFormatContext *s)
         sc->order = AV_RB32(sc->track_essence_element_key+12);
     }
 
+    if (s->timestamp)
     mxf->timestamp = mxf_parse_timestamp(s->timestamp);
     mxf->duration = -1;
 
@@ -1555,7 +1589,7 @@ static void mxf_write_system_item(AVFormatContext *s)
     klv_encode_ber4_length(pb, 35);
     put_byte(pb, 0x83); // UMID
     put_be16(pb, 0x20);
-    mxf_write_umid(pb, SourcePackage, 0);
+    mxf_write_umid(s, 1);
 }
 
 static void mxf_write_d10_video_packet(AVFormatContext *s, AVStream *st, AVPacket *pkt)

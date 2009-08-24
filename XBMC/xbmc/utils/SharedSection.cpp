@@ -29,14 +29,12 @@ CSharedSection::CSharedSection()
   m_sharedLock = 0;
   m_exclusive = false;
   InitializeCriticalSection(&m_critSection);
-  InitializeCriticalSection(&m_helperLock);
   m_eventFree = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 CSharedSection::~CSharedSection()
 {
   DeleteCriticalSection(&m_critSection);
-  DeleteCriticalSection(&m_helperLock);
   CloseHandle(m_eventFree);
 }
 
@@ -46,32 +44,36 @@ void CSharedSection::EnterShared()
   if( !m_exclusive )
   { //exclusve will be set if this thread already owns this object
     ResetEvent(m_eventFree);
-    EnterCriticalSection(&m_helperLock);
     m_sharedLock++;
-    LeaveCriticalSection(&m_helperLock);
   }
   LeaveCriticalSection(&m_critSection);
 }
 
 void CSharedSection::LeaveShared()
 {
-  // NO! We always need to do this to keep the count right and set the event.
-  //if( !m_exclusive )
+  EnterCriticalSection(&m_critSection);
+  if( !m_exclusive )
   {
-    EnterCriticalSection(&m_helperLock);
     m_sharedLock--;
     if (m_sharedLock == 0)
+    {
+      LeaveCriticalSection(&m_critSection);
       SetEvent(m_eventFree);
-
-    LeaveCriticalSection(&m_helperLock);
+      return;
   }
+}
+  LeaveCriticalSection(&m_critSection);
 }
 
 void CSharedSection::EnterExclusive()
 {
   EnterCriticalSection(&m_critSection);
-  if( m_sharedLock != 0 )
+  while( m_sharedLock != 0 )
+  {
+    LeaveCriticalSection(&m_critSection);
     WaitForSingleObject(m_eventFree, INFINITE);
+    EnterCriticalSection(&m_critSection);
+  }
 
   m_exclusive = true;
 }

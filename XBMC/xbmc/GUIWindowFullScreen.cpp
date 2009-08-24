@@ -551,6 +551,14 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
       pOSD->DoModal();
     }
   }
+  if (g_Mouse.GetWheel())
+  { // Mouse wheel
+    int wheel = abs(g_Mouse.GetWheel());
+    CAction action;
+    action.fAmount1 = 0.5f * (float)wheel;
+    action.wID = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    return g_application.OnAction(action);
+  }
   return true;
 }
 
@@ -642,11 +650,13 @@ void CGUIWindowFullScreen::RenderFullScreen()
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #endif
       int missedvblanks;
+      int    refreshrate;
       double clockspeed;
       CStdString strClock;
       
-      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed))
-        strClock.Format("S( missed:%i speed:%+.3f%% %s )"
+      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
+        strClock.Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
+                       , refreshrate
                        , missedvblanks
                        , clockspeed - 100.0
                        , g_renderManager.GetVSyncState().c_str());
@@ -717,7 +727,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
     }
-    CStdString strDispTime = "??:??";
+    CStdString strDispTime = "hh:mm";
 
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW1);
     for (int count = 0; count < m_timeCodePosition; count++)
@@ -727,7 +737,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       else
         strDispTime[count] = (char)m_timeCodeStamp[count] + 48;
     }
-    strDispTime += "/" + g_infoManager.GetVideoLabel(257) + " [" + g_infoManager.GetVideoLabel(254) + "]"; // duration [ time ]
+    strDispTime += "/" + g_infoManager.GetLabel(PLAYER_DURATION) + " [" + g_infoManager.GetLabel(PLAYER_TIME) + "]"; // duration [ time ]
     msg.SetLabel(strDispTime);
     OnMessage(msg);
   }
@@ -758,7 +768,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
-  //if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subsLayout)
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
       CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible())
   {

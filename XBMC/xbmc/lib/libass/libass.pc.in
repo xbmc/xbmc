@@ -6,5 +6,7 @@ includedir=@includedir@
 Name: libass
 Description: LibASS is an SSA/ASS subtitles rendering library
 Version: @PACKAGE_VERSION@
+Requires.private: @PKG_REQUIRES@
 Libs: -L${libdir} -lass
+Libs.private: -lm
 Cflags: -I${includedir}

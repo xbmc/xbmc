@@ -19,7 +19,7 @@
  *
  */
 
-#if defined(_XBOX) || defined(_LINUX)
+#if defined(_LINUX)
 #include "stdafx.h"
 #endif
 #ifdef _LINUX
@@ -120,7 +120,7 @@ extern "C" void* _swab();
 extern "C" void* dll_findclose();
 extern "C" void* dll_findfirst();
 extern "C" void* dll_findnext();
-extern "C" void* _fullpath();
+extern "C" void* dll_fullpath();
 extern "C" void* _pctype();
 extern "C" void* dllcalloc();
 extern "C" void* ceil();
@@ -279,7 +279,7 @@ extern "C" void* _aligned_realloc();
 extern "C" void* _callnewh();
 extern "C" void* dll_filbuf();
 extern "C" void* dll_flsbuf();
-#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+#if defined(_WIN32)
 extern "C" void* _cabs();
 extern "C" void* _mbsnbicmp();
 extern "C" void* ldiv();
@@ -405,7 +405,7 @@ Export export_msvcrt[] =
 #else
   { "_swab",                      -1, (void*)swab,                          NULL },
 #endif
-  { "_fullpath",                  -1, (void*)_fullpath,                     NULL },
+  { "_fullpath",                  -1, (void*)dll_fullpath,                     NULL },
   { "calloc",                     -1, (void*)dllcalloc,                     (void*)track_calloc},
   { "ceil",                       -1, (void*)ceil,                          NULL },
   { "ctime",                      -1, (void*)ctime,                         NULL },
@@ -618,7 +618,7 @@ Export export_msvcr71[] =
   { "_strdup",                    -1, (void*)strdup,                        (void*)track_strdup },
   { "_swab",                      -1, (void*)swab,                          NULL },
 #endif
-  { "_fullpath",                  -1, (void*)_fullpath,                     NULL },
+  { "_fullpath",                  -1, (void*)dll_fullpath,                     NULL },
   { "calloc",                     -1, (void*)dllcalloc,                     (void*)track_calloc },
   { "ceil",                       -1, (void*)ceil,                          NULL },
   { "ctime",                      -1, (void*)ctime,                         NULL },
@@ -797,7 +797,7 @@ Export export_msvcr71[] =
   { "_aligned_realloc",           -1, (void*)_aligned_realloc,              NULL },
   { "_callnewh",                  -1, (void*)_callnewh,                     NULL },
 #endif
-#if defined(_WIN32) && !defined(HAS_XBOX_HARDWARE)
+#if defined(_WIN32)
   { "_cabs",                      -1, (void*)_cabs,                         NULL },
   { "_mbsnbicmp",                 -1, (void*)_mbsnbicmp,                    NULL },
   { "ldiv",                       -1, (void*)ldiv,                          NULL },

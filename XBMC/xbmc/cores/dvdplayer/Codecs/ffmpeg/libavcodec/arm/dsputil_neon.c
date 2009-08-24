@@ -41,6 +41,10 @@ void ff_put_pixels8_xy2_no_rnd_neon(uint8_t *, const uint8_t *, int, int);
 
 void ff_avg_pixels16_neon(uint8_t *, const uint8_t *, int, int);
 
+void ff_add_pixels_clamped_neon(const DCTELEM *, uint8_t *, int);
+void ff_put_pixels_clamped_neon(const DCTELEM *, uint8_t *, int);
+void ff_put_signed_pixels_clamped_neon(const DCTELEM *, uint8_t *, int);
+
 void ff_put_h264_qpel16_mc00_neon(uint8_t *, uint8_t *, int);
 void ff_put_h264_qpel16_mc10_neon(uint8_t *, uint8_t *, int);
 void ff_put_h264_qpel16_mc20_neon(uint8_t *, uint8_t *, int);
@@ -146,6 +150,9 @@ void ff_h264_idct_add8_neon(uint8_t **dest, const int *block_offset,
                             DCTELEM *block, int stride,
                             const uint8_t nnzc[6*8]);
 
+void ff_vp3_v_loop_filter_neon(uint8_t *, int, int *);
+void ff_vp3_h_loop_filter_neon(uint8_t *, int, int *);
+
 void ff_vector_fmul_neon(float *dst, const float *src, int len);
 void ff_vector_fmul_window_neon(float *dst, const float *src0,
                                 const float *src1, const float *win,
@@ -176,6 +183,11 @@ void ff_dsputil_init_neon(DSPContext *c, AVCodecContext *avctx)
 
     c->avg_pixels_tab[0][0] = ff_avg_pixels16_neon;
 
+    c->add_pixels_clamped = ff_add_pixels_clamped_neon;
+    c->put_pixels_clamped = ff_put_pixels_clamped_neon;
+    c->put_signed_pixels_clamped = ff_put_signed_pixels_clamped_neon;
+
+    if (CONFIG_H264_DECODER) {
     c->put_h264_chroma_pixels_tab[0] = ff_put_h264_chroma_mc8_neon;
     c->put_h264_chroma_pixels_tab[1] = ff_put_h264_chroma_mc4_neon;
 
@@ -246,6 +258,12 @@ void ff_dsputil_init_neon(DSPContext *c, AVCodecContext *avctx)
     c->h264_idct_add16      = ff_h264_idct_add16_neon;
     c->h264_idct_add16intra = ff_h264_idct_add16intra_neon;
     c->h264_idct_add8       = ff_h264_idct_add8_neon;
+    }
+
+    if (CONFIG_VP3_DECODER) {
+        c->vp3_v_loop_filter = ff_vp3_v_loop_filter_neon;
+        c->vp3_h_loop_filter = ff_vp3_h_loop_filter_neon;
+    }
 
     c->vector_fmul = ff_vector_fmul_neon;
     c->vector_fmul_window = ff_vector_fmul_window_neon;

@@ -28,9 +28,6 @@
  */
 
 
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#endif
 #include "../../../visualisations/xbmc_vis.h"
 #include <math.h>
 #include <GL/glew.h>

@@ -173,7 +173,6 @@
 #define ACTION_SHOW_MPLAYER_OSD     83  // toggles mplayers OSD. Can be used in videofullscreen.xml window id=2005
 #define ACTION_OSD_HIDESUBMENU      84  // removes an OSD sub menu. Can be used in videoOSD.xml window id=2901
 #define ACTION_TAKE_SCREENSHOT      85  // take a screenshot
-#define ACTION_POWERDOWN            86  // restart
 #define ACTION_RENAME_ITEM          87  // rename item
 
 #define ACTION_VOLUME_UP            88
@@ -273,6 +272,8 @@
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
 #define ACTION_SCAN_ITEM              201 // scan item
 #define ACTION_TOGGLE_DIGITAL_ANALOG  202 // switch digital <-> analog
+#define ACTION_RELOAD_KEYMAPS         203 // reloads CButtonTranslator's keymaps
+#define ACTION_GUIPROFILE_BEGIN       204 // start the GUIControlProfiler running
 
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999

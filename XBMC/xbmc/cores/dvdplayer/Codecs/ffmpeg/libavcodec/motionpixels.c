@@ -20,7 +20,7 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "dsputil.h"
 
 #define MAX_HUFF_CODES 16
@@ -281,8 +281,10 @@ static void mp_decode_frame_helper(MotionPixelsContext *mp, GetBitContext *gb)
 
 static int mp_decode_frame(AVCodecContext *avctx,
                                  void *data, int *data_size,
-                                 const uint8_t *buf, int buf_size)
+                                 AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     MotionPixelsContext *mp = avctx->priv_data;
     GetBitContext gb;
     int i, count1, count2, sz;
@@ -295,7 +297,9 @@ static int mp_decode_frame(AVCodecContext *avctx,
     }
 
     /* le32 bitstream msb first */
-    mp->bswapbuf = av_fast_realloc(mp->bswapbuf, &mp->bswapbuf_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    av_fast_malloc(&mp->bswapbuf, &mp->bswapbuf_size, buf_size + FF_INPUT_BUFFER_PADDING_SIZE);
+    if (!mp->bswapbuf)
+        return AVERROR(ENOMEM);
     mp->dsp.bswap_buf((uint32_t *)mp->bswapbuf, (const uint32_t *)buf, buf_size / 4);
     if (buf_size & 3)
         memcpy(mp->bswapbuf + (buf_size & ~3), buf + (buf_size & ~3), buf_size & 3);

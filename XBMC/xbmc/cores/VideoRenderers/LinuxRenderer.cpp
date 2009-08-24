@@ -941,17 +941,7 @@ void CLinuxRenderer::Render(DWORD flags)
   /* general stuff */
   RenderLowMem(flags);
   RenderOSD();
-
-  if (g_graphicsContext.IsFullScreenVideo())
-  {
-    if (g_application.NeedRenderFullScreen())
-    { // render our subtitles and osd
-      g_application.RenderFullScreen();
     }
-
-    g_application.RenderMemoryStatus();
-  }
-}
 
 void CLinuxRenderer::SetViewMode(int iViewMode)
 {

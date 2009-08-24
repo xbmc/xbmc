@@ -79,21 +79,7 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
   stringstream stream;
   stream << *element;
   m_xml += stream.str();
-  bool bHasChilds = false;
-  if (element->FirstChildElement("thumb"))
-  {
-    element = element->FirstChildElement("thumb");
-    bHasChilds = true;
-  }
-  else if (element->FirstChildElement("url"))
-  {
-    element = element->FirstChildElement("url");
-    bHasChilds = true;
-  }
-  while (element)
-  {
-    if (element->FirstChild())
-    {
+
       SUrlEntry url;
       url.m_url = element->FirstChild()->Value();
       const char* pSpoof = element->Attribute("spoof");
@@ -115,31 +101,17 @@ bool CScraperUrl::ParseElement(const TiXmlElement* element)
 
       const char* szType = element->Attribute("type");
       url.m_type = URL_TYPE_GENERAL;
+  url.m_season = -1;
       if (szType && stricmp(szType,"season") == 0)
       {
         url.m_type = URL_TYPE_SEASON;
         const char* szSeason = element->Attribute("season");
         if (szSeason)
           url.m_season = atoi(szSeason);
-        else
-          url.m_season = -1;
       }
-      else
-        url.m_season = -1;
 
       m_url.push_back(url);
-    }
-    if (bHasChilds)
-    {
-      const TiXmlElement* temp = element->NextSiblingElement("thumb");
-      if (temp)
-        element = temp;
-      else
-        element = element->NextSiblingElement("url");
-    }
-    else
-      element = NULL;
-  }
+
   return true;
 }
 
@@ -154,12 +126,9 @@ bool CScraperUrl::ParseString(CStdString strUrl)
 
   TiXmlDocument doc;
   doc.Parse(strUrl.c_str(),0,TIXML_ENCODING_UTF8);
-  m_xml += strUrl;
 
   TiXmlElement* pElement = doc.RootElement();
-  if (pElement)
-    ParseElement(pElement);
-  else
+  if (!pElement)
   {
     SUrlEntry url;
     url.m_url = strUrl;
@@ -168,7 +137,17 @@ bool CScraperUrl::ParseString(CStdString strUrl)
     url.m_post = false;
     url.m_isgz = false;
     m_url.push_back(url);
+    m_xml = strUrl;
   }
+  else
+  { 
+    while (pElement)
+    {
+      ParseElement(pElement);
+      pElement = pElement->NextSiblingElement(pElement->Value());
+    }
+  }
+
   return true;
 }
 

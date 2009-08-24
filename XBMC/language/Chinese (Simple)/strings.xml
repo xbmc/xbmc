@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 07/06/2009-->
+<!--Date of translation: 08/20/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21415 -->
+<!--Based on english strings version 22217 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -36,6 +36,14 @@
   <string id="31">十一月</string>
   <string id="32">十二月</string>
   
+  <string id="41">星期一</string>
+  <string id="42">星期二</string>
+  <string id="43">星期三</string>
+  <string id="44">星期四</string>
+  <string id="45">星期五</string>
+  <string id="46">星期六</string>
+  <string id="47">星期日</string>
+
   <string id="98">显示：自动</string>
   <string id="99">显示：自动大图标</string>
   <string id="100">显示：图标</string>
@@ -197,7 +205,7 @@
   <string id="259">开始</string>
   <string id="260">Shoutcast 网络音乐台</string>
   <string id="261">等待开始…</string>
-  <string id="262">脚本输出</string>
+  <string id="262">脚本程序输出</string>
   <string id="263">启用 Web 服务器</string>
   <string id="264">录音</string>
   <string id="265">停止录音.</string>
@@ -567,6 +575,7 @@
   <string id="661">选择导出文件夹</string>
   <string id="662">此文件已不可用</string>
   <string id="663">要从资料库移除吗？</string>
+  <string id="664">浏览脚本程序</string>
 
   <string id="700">清理资料库</string>
   <string id="701">清除资料库中的旧歌曲</string>
@@ -973,6 +982,7 @@
   <string id="13012">退出</string>
   <string id="13013">重启</string>
   <string id="13014">最小化</string>
+  <string id="13015">电源按钮作用</string>
 
   <string id="13020">是否有通过SSH连接的会话存在？</string>
   <string id="13021">挂接移动存储器</string>
@@ -1188,7 +1198,7 @@
   <string id="13409">排行榜前 250：</string>
   <string id="13410">收听 last.fm 电台</string>
   <string id="13411">风扇最低转速</string>
-  <string id="13412">- RSS种子内容为从右到左</string>
+  <string id="13412">- RSS信源内容为从右到左</string>
   <string id="13413">正在下载</string>
   <string id="13414">隐藏只在编辑中出现的艺术家</string>
   <string id="13415">渲染模式</string>
@@ -1736,7 +1746,7 @@
   <string id="20301">WEB服务器目录(HTTPS)</string>
   <string id="20302">无法写入文件夹：</string>
   <string id="20303">你要跳过并继续吗？</string>
-  <string id="20304"></string>
+  <string id="20304">RSS 信源</string>
   <string id="20305"></string>
 
   <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
@@ -2072,6 +2082,7 @@
   <string id="22018">直播频道</string>
   <string id="22019">录音的标题</string>
   <string id="22020">节目表</string>
+  <string id="22021">高宽比允许误差 (%)</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">字体</string>
@@ -2095,6 +2106,7 @@
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
   <string id="29801">QWERTY 键盘</string>
+  <string id="29802">音频直通输出启用中</string>
 
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 
@@ -2119,5 +2131,47 @@
   <string id="33015">播放视频前揭示是否先下载</string>
   <string id="33016">片断</string>
   <string id="33017">重启以启用插件</string>
-  <string id="33018">片断</string>
+  <string id="33018">今晚</string>
+  <string id="33019">明晚</string>
+  <string id="33020">状况</string>
+  <string id="33021">降雨量</string>
+  <string id="33022">降雨</string>
+  <string id="33023">潮湿</string>
+  <string id="33024">感觉</string>
+  <string id="33025">观测值</string>
+  <string id="33026">偏离正常值</string>
+  <string id="33027">日出</string>
+  <string id="33028">日落</string>
+  <string id="33029">详细资料</string>
+  <string id="33030">天气趋势</string>
+  <string id="33031">流动封面</string>
+  <string id="33032">翻译文本</string>
+  <string id="33033">地图列表 %s 分类</string>
+  <string id="33034">36 小时</string>
+  <string id="33035">地图</string>
+  <string id="33036">每小时</string>
+  <string id="33037">周末</string>
+  <string id="33038">%s 天</string>
+  <string id="33049">提醒</string>
+  <string id="33050">提醒</string>
+  <string id="33051">选择您的</string>
+  <string id="33052">查看您的</string>
+  <string id="33053">配置您的</string>
+  <string id="33054">季节</string>
+  <string id="33055">使用您的</string>
+  <string id="33056">观看您的</string>
+  <string id="33057">聆听您的</string>
+  <string id="33058">浏览您的</string>
+  <string id="33059">配置您的</string>
+  <string id="33060">电源控制</string>
+  <string id="33061">菜单</string>
+  <string id="33062">播放您的</string>
+  <string id="33063">选项</string>
+  <string id="33065">编辑</string>
+  <string id="33066">关于您的</string>
+  <string id="33067">星级</string>
+  <string id="33068">桌面背景</string>
+  <string id="33069">桌面背景集</string>
+  <string id="33070">自定义桌面背景</string>
+  <string id="33071">自定义桌面背景集</string>
 </strings>

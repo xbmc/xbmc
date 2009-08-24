@@ -97,9 +97,6 @@ void CSettings::Initialize()
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-  strcpy(g_stSettings.szOnlineArenaPassword, "");
-  strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
-
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
@@ -143,10 +140,10 @@ void CSettings::Initialize()
 
   // Advanced settings
   g_advancedSettings.m_useMultipaths = true;
-  g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_ac3Gain = 12.0f;
+  g_advancedSettings.m_audioApplyDrc = true;      
 
   g_advancedSettings.m_karaokeSyncDelayCDG = 0.0f;
   g_advancedSettings.m_karaokeSyncDelayLRC = 0.0f;
@@ -181,8 +178,6 @@ void CSettings::Initialize()
   g_advancedSettings.m_videoIgnoreAtStart = 15;
   g_advancedSettings.m_videoIgnoreAtEnd = 5; 
   g_advancedSettings.m_videoPlayCountMinimumPercent = 90.0f;
-  g_advancedSettings.m_videoApplyAC3Drc = true;
-  g_advancedSettings.m_videoApplyDTSDrc = true;
 
   g_advancedSettings.m_musicUseTimeSeeking = true;
   g_advancedSettings.m_musicTimeSeekForward = 10;
@@ -214,8 +209,10 @@ void CSettings::Initialize()
   g_advancedSettings.m_busyDialogDelay = 2000;
 #ifdef _DEBUG
   g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
 #else
   g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
 #ifdef HAS_HAL
@@ -226,8 +223,10 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "special://temp/";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoCleanRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
-  g_advancedSettings.m_videoCleanRegExps.push_back("(\\[.*\\])");
+  g_advancedSettings.m_videoCleanDateTimeRegExp = "(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])[^0-9]([ _\\,\\.\\(\\)\\[\\]\\-]|$)";
+
+  g_advancedSettings.m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  g_advancedSettings.m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("-trailer");
   g_advancedSettings.m_moviesExcludeFromScanRegExps.push_back("[-._ ]sample");
@@ -254,7 +253,6 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_remoteRepeat = 480;
   g_advancedSettings.m_controllerDeadzone = 0.2f;
-  g_advancedSettings.m_FTPShowCache = false;
 
   g_advancedSettings.m_playlistAsFolders = true;
   g_advancedSettings.m_detectAsUdf = false;
@@ -287,6 +285,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_bVideoLibraryHideEmptySeries = false;
   g_advancedSettings.m_bVideoLibraryCleanOnUpdate = false;
   g_advancedSettings.m_bVideoLibraryExportAutoThumbs = false;
+  g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres = false;
 
   g_advancedSettings.m_bUseEvilB = true;
 
@@ -300,6 +299,11 @@ void CSettings::Initialize()
   g_advancedSettings.m_iTuxBoxZapWaitTime = 0; // Time in sec. Default 0:OFF
 
   g_advancedSettings.m_iMythMovieLength = 0; // 0 == Off
+
+  g_advancedSettings.m_bEdlMergeShortCommBreaks = false;      // Off by default
+  g_advancedSettings.m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
+  g_advancedSettings.m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
+  g_advancedSettings.m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
 
   g_advancedSettings.m_curlconnecttimeout = 10;
   g_advancedSettings.m_curllowspeedtime = 5;
@@ -333,6 +337,8 @@ void CSettings::Initialize()
   // default for windows is not always on top
   g_advancedSettings.m_alwaysOnTop = false;
 #endif
+
+  g_advancedSettings.m_bgInfoLoaderMaxThreads = 5;
 }
 
 CSettings::~CSettings(void)
@@ -1026,7 +1032,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_CUBIC);
     g_stSettings.m_defaultVideoSettings.m_ScalingMethod = (ESCALINGMETHOD)scalingMethod;
 
-    GetFloat(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
     GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
     GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
@@ -1147,6 +1152,7 @@ void CSettings::LoadAdvancedSettings()
       GetCustomRegexps(pAudioExcludes, g_advancedSettings.m_audioExcludeFromScanRegExps);
 
     XMLUtils::GetString(pElement, "audiohost", g_advancedSettings.m_audioHost);
+    XMLUtils::GetBoolean(pElement, "applydrc", g_advancedSettings.m_audioApplyDrc);        
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
@@ -1185,8 +1191,6 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", g_advancedSettings.m_videoPlayCountMinimumPercent, 0.0f, 100.0f);
     XMLUtils::GetInt(pElement, "ignoreatstart", g_advancedSettings.m_videoIgnoreAtStart, 0, 900);
     XMLUtils::GetInt(pElement, "ignoreatend", g_advancedSettings.m_videoIgnoreAtEnd, 0, 900);
-    XMLUtils::GetBoolean(pElement, "applyac3drc", g_advancedSettings.m_videoApplyAC3Drc);
-    XMLUtils::GetBoolean(pElement, "applydtsdrc", g_advancedSettings.m_videoApplyDTSDrc);
 
     XMLUtils::GetInt(pElement, "smallstepbackseconds", g_advancedSettings.m_videoSmallStepBackSeconds, 1, INT_MAX);
     XMLUtils::GetInt(pElement, "smallstepbacktries", g_advancedSettings.m_videoSmallStepBackTries, 1, 10);
@@ -1217,8 +1221,9 @@ void CSettings::LoadAdvancedSettings()
 
     pVideoExcludes = pElement->FirstChildElement("cleanstrings");
     if (pVideoExcludes)
-      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanRegExps);
+      GetCustomRegexps(pVideoExcludes, g_advancedSettings.m_videoCleanStringRegExps);
 
+    XMLUtils::GetString(pElement,"cleandatetime", g_advancedSettings.m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"postprocessing",g_advancedSettings.m_videoPPFFmpegType);
   }
 
@@ -1246,6 +1251,10 @@ void CSettings::LoadAdvancedSettings()
     XMLUtils::GetBoolean(pElement, "cleanonupdate", g_advancedSettings.m_bVideoLibraryCleanOnUpdate);
     XMLUtils::GetString(pElement, "itemseparator", g_advancedSettings.m_videoItemSeparator);
     XMLUtils::GetBoolean(pElement, "exportautothumbs", g_advancedSettings.m_bVideoLibraryExportAutoThumbs);
+    
+    TiXmlElement* pMyMovies = pElement->FirstChildElement("mymovies");
+    if (pMyMovies)
+      XMLUtils::GetBoolean(pMyMovies, "categoriestogenres", g_advancedSettings.m_bVideoLibraryMyMoviesCategoriesToGenres);
   }
   // Backward-compatibility of ExternalPlayer config
   pElement = pRootElement->FirstChildElement("externalplayer");
@@ -1294,13 +1303,16 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
     XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
 
-  if (XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
+  pElement = pRootElement->FirstChildElement("loglevel");
+  if (pElement)
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
+    XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
     CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("system.debuglogging");
     if (setting)
     {
-      setting->SetData(g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_FREEMEM);
+      const char* hide;
+      if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
       setting->SetAdvanced();
     }
   }
@@ -1310,7 +1322,6 @@ void CSettings::LoadAdvancedSettings()
 #endif
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
-  XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
 #ifdef HAS_GL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", g_advancedSettings.m_startFullScreen);
 #endif
@@ -1347,6 +1358,16 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
   {
     XMLUtils::GetInt(pElement, "movielength", g_advancedSettings.m_iMythMovieLength);
+  }
+
+  // EDL commercial break handling
+  pElement = pRootElement->FirstChildElement("edl");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "mergeshortcommbreaks", g_advancedSettings.m_bEdlMergeShortCommBreaks);
+    XMLUtils::GetInt(pElement, "maxcommbreaklength", g_advancedSettings.m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes 
+    XMLUtils::GetInt(pElement, "mincommbreaklength", g_advancedSettings.m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
+    XMLUtils::GetInt(pElement, "maxcommbreakgap", g_advancedSettings.m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
   }
 
   // picture exclude regexps
@@ -1387,13 +1408,13 @@ void CSettings::LoadAdvancedSettings()
   }
 
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
+  if (g_advancedSettings.m_displayRemoteCodes)
+    CLog::Log(LOGERROR,"displaying of remote codes currently not implemented");
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
   GetPath(pRootElement, "cachepath", g_advancedSettings.m_cachePath);
   CUtil::AddSlashAtEnd(g_advancedSettings.m_cachePath);
-
-  XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
@@ -1546,6 +1567,9 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
 
   XMLUtils::GetBoolean(pRootElement, "alwaysontop", g_advancedSettings.m_alwaysOnTop);
+
+  XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", g_advancedSettings.m_bgInfoLoaderMaxThreads);
+  g_advancedSettings.m_bgInfoLoaderMaxThreads = std::max(1, g_advancedSettings.m_bgInfoLoaderMaxThreads);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
@@ -1772,7 +1796,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "scalingmethod", g_stSettings.m_defaultVideoSettings.m_ScalingMethod);
   XMLUtils::SetFloat(pNode, "noisereduction", g_stSettings.m_defaultVideoSettings.m_NoiseReduction);
   XMLUtils::SetFloat(pNode, "sharpness", g_stSettings.m_defaultVideoSettings.m_Sharpness);
-  XMLUtils::SetFloat(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
   XMLUtils::SetInt(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
   XMLUtils::SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
   XMLUtils::SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
@@ -2028,8 +2051,8 @@ bool CSettings::LoadProfiles(const CStdString& strSettingsFile)
     XMLUtils::GetBoolean(pProfile, "lockprograms", bHas);
     profile.setProgramsLocked(bHas);
 
-    LockType iLockMode=LOCK_MODE_EVERYONE;
-    int lockMode;
+    LockType iLockMode;
+    int lockMode = (int)LOCK_MODE_EVERYONE;
     XMLUtils::GetInt(pProfile,"lockmode",lockMode);
     iLockMode = (LockType)lockMode;
 
@@ -2441,7 +2464,7 @@ void CSettings::Clear()
   m_videoSources.clear();
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
-  g_advancedSettings.m_videoCleanRegExps.clear();
+  g_advancedSettings.m_videoCleanStringRegExps.clear();
   g_advancedSettings.m_moviesExcludeFromScanRegExps.clear();
   g_advancedSettings.m_tvshowExcludeFromScanRegExps.clear();
   g_advancedSettings.m_videoExcludeFromListingRegExps.clear();

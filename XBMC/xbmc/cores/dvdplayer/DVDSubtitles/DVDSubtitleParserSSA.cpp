@@ -23,7 +23,6 @@
 #include "DVDSubtitleParserSSA.h"
 #include "DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "DVDClock.h"
-#include "Util.h"
 
 using namespace std;
 

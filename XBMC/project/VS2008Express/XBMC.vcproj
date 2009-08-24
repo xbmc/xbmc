@@ -1389,6 +1389,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserVplayer.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParserVplayer.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitlesLibass.cpp"
 						>
 					</File>
@@ -1743,14 +1751,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\WAVPackcodec.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\WMACodec.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\WMACodec.h"
 					>
 				</File>
 				<File
@@ -2411,6 +2411,22 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\OverlayRendererGL.h"
 					>
 				</File>
 				<File
@@ -3243,14 +3259,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\DateTime.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\utils\DelayController.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\DetectDVDType.cpp"
 					>
 				</File>
 				<File
@@ -5740,14 +5748,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\DateTime.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\utils\DelayController.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\DetectDVDType.h"
 				>
 			</File>
 			<File

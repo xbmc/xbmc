@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Date of translation: 05/07/2009-->
-<!--Based on english strings version 21415-->
+<!--Date of translation: 22/08/2009-->
+<!--Based on english strings version 22290-->
 <!--$Revision$-->
 <strings>
   <string id="0">Forrit</string>
@@ -34,6 +34,14 @@
   <string id="30">Október</string>
   <string id="31">Nóvember</string>
   <string id="32">Desember</string>
+
+  <string id="41">Mán</string>
+  <string id="42">Þri</string>
+  <string id="43">Mið</string>
+  <string id="44">Fim</string>
+  <string id="45">Fös</string>
+  <string id="46">Lau</string>
+  <string id="47">Sun</string>
 
   <string id="98">Útlit: Sjálfvirkt</string>
   <string id="99">Útlit: Sjálfvirkt stórt</string>
@@ -472,7 +480,7 @@
   <string id="551">Nafn</string>
   <string id="552">Dagsetning</string>
   <string id="553">Stærð</string>
-  <string id="554">Lagi</string>
+  <string id="554">Lag</string>
   <string id="555">Tími</string>
   <string id="556">Titill</string>
   <string id="557">Listamaður</string>
@@ -566,6 +574,7 @@
   <string id="661">Veldu möppu til að vista í</string>
   <string id="662">Þessi skrá er ekki lengur tiltæk.</string>
   <string id="663">Viltu fjarlægja hana úr safninu?</string>
+  <string id="664">Leita eftir skriftu</string>
 
   <string id="700">Hreinsa upp safn</string>
   <string id="701">Fjarlægi gömul lög úr tónlistarsafninu</string>
@@ -705,12 +714,12 @@
   <string id="1035">Virkja undirvalmyndar takka</string>
   <string id="1036">Uppáhalds</string>
   <string id="1037">Myndefnis viðbætur</string>
-  <string id="1038">Tónlistar viðbætur</string>
+  <string id="1038">Tónlistaviðbætur</string>
   <string id="1039">Ljósmynda viðbætur</string>
   <string id="1040">Hleð inn möppu</string>
   <string id="1041">Náði í %i hluti</string>
   <string id="1042">Náði í %i af %i hlutum</string>
-  <string id="1043">Forrita viðbætur</string>
+  <string id="1043">Forritsviðbætur</string>
   <string id="1044">Setja viðbótar smámynd</string>
   <string id="1045">Stilling viðbóta</string>
   <string id="1046">Aðgangsstaðir</string>
@@ -972,6 +981,7 @@
   <string id="13012">Hætta</string>
   <string id="13013">Endurræsa</string>
   <string id="13014">Minnka</string>
+  <string id="13015">Aðgerð straumrofa</string>
 
   <string id="13020">Er önnur lota virk, kannski yfir ssh?</string>
   <string id="13021">Tengdur utanáliggjandi harður diskur</string>
@@ -1736,7 +1746,7 @@
   <string id="20301">Mappa vefþjóns (HTTPS)</string>
   <string id="20302">Get ekki skrifað í möppu:</string>
   <string id="20303">Viltu sleppa og halda áfram?</string>
-  <string id="20304"/>
+  <string id="20304">RSS straumur</string>
   <string id="20305"/>
 
   <string id="20306">Óþekkt. Vinsamlegast bættu við MD5 frá xbmc.log í BiosIDs.ini.</string>
@@ -2072,6 +2082,7 @@
   <string id="22018">Beinar rásir</string>
   <string id="22019">Upptökur eftir titli</string>
   <string id="22020">Leiðsagnarsíða</string>
+  <string id="22021">Leyfð skekkja í hlutfalli (%)</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Leturgerð</string>
@@ -2095,6 +2106,7 @@
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Safnhamur</string>
   <string id="29801">QWERTY Lyklaborð</string>
+  <string id="29802">Gegnumúttshljóð í notkun</string>
   
   <string id="29999">Sjálfvirk flöktsía á leiki</string>
 
@@ -2120,4 +2132,53 @@
   <string id="33016">Úrklippur</string>
   <string id="33017">Endurræstu viðbót til að gera virkt</string>
   <string id="33018">Úrklippur</string>
+  <string id="33019">Aðra nótt</string>
+  <string id="33020">Staða</string>
+  <string id="33021">Úrkoma</string>
+  <string id="33022">Úrkoma</string>
+  <string id="33023">Rakur</string>
+  <string id="33024">Skynjast sem</string>
+  <string id="33025">Sést sem</string>
+  <string id="33026">Frávík frá venjulegu</string>
+  <string id="33027">Sólarupprás</string>
+  <string id="33028">Sólsetur</string>
+  <string id="33029">Nánar</string>
+  <string id="33030">Veðurspá</string>
+  <string id="33031">Plötuumslagsýn</string>
+  <string id="33032">Þýða texta</string>
+  <string id="33033">Stilla lista %s flokk</string>
+  <string id="33034">36 klukkustundir</string>
+  <string id="33035">Kort</string>
+  <string id="33036">Klukkustunda fresti</string>
+  <string id="33037">Helgi</string>
+  <string id="33038">%s dagur</string>
+  <string id="33049">Aðvörun</string>
+  <string id="33050">Viðvaranir</string>
+  <string id="33051">Veldu þinn</string>
+  <string id="33052">Haka</string>
+  <string id="33053">Stilltu</string>
+  <string id="33054">Árstíðir</string>
+  <string id="33055">Notaðu</string>
+  <string id="33056">Fylgstu með</string>
+  <string id="33057">Hlusta á</string>
+  <string id="33058">Skoðaðu</string>
+  <string id="33059">Stilltu</string>
+  <string id="33060">Orku</string>
+  <string id="33061">Valmynd</string>
+  <string id="33062">Spilaðu</string>
+  <string id="33063">Valkostir</string>
+  <string id="33065">Ritill</string>
+  <string id="33066">Um</string>
+  <string id="33067">Stjörnugjöf</string>
+  <string id="33068">Bakgrunnur</string>
+  <string id="33069">Bakgrunnar</string>
+  <string id="33070">Sérsniðinn bakgrunnur</string>
+  <string id="33071">Sérsniðinn bakgrunnar</string>
+  <string id="33072">Skoða upplýsingaskrá</string>
+  <string id="33073">Skoða breytingaannál</string>
+  <string id="33074">Þessi útgáfa af %s þarfnast</string>
+  <string id="33075">XBMC útgáfu af %s eða hærri til að keyra.</string>
+  <string id="33076">Vinsamlega uppfærðu XBMC.</string>
+  <string id="33077">Engin gögn fundust!</string>
+  <string id="33078">Næsta síða</string>
 </strings>

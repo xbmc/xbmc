@@ -55,6 +55,7 @@
 				WarningLevel="3"
 				DebugInformationFormat="4"
 				CompileAs="1"
+				DisableSpecificWarnings="4018"
 				ForcedIncludeFiles="msvc_recommended_pragmas.h"
 			/>
 			<Tool
@@ -121,6 +122,7 @@
 				WarningLevel="3"
 				DebugInformationFormat="3"
 				CompileAs="1"
+				DisableSpecificWarnings="4018"
 				ForcedIncludeFiles="msvc_recommended_pragmas.h"
 			/>
 			<Tool

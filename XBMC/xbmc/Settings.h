@@ -153,7 +153,6 @@ public:
 public:
     // multipath testing
     bool m_useMultipaths;
-    bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
     float m_ac3Gain;
@@ -188,9 +187,8 @@ public:
     int m_videoBlackBarColour;
     int m_videoIgnoreAtStart;
     int m_videoIgnoreAtEnd;
-    bool m_videoApplyAC3Drc;
-    bool m_videoApplyDTSDrc;
     CStdString m_audioHost;
+    bool m_audioApplyDrc;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
@@ -214,6 +212,7 @@ public:
     int m_songInfoDuration;
     int m_busyDialogDelay;
     int m_logLevel;
+    int m_logLevelHint;
     CStdString m_cddbAddress;
 #ifdef HAS_HAL
     bool m_useHalMount;
@@ -222,7 +221,8 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
-    CStdStringArray m_videoCleanRegExps;
+    CStdString m_videoCleanDateTimeRegExp;
+    CStdStringArray m_videoCleanStringRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_moviesExcludeFromScanRegExps;
     CStdStringArray m_tvshowExcludeFromScanRegExps;
@@ -235,7 +235,6 @@ public:
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
     float m_controllerDeadzone;
-    bool m_FTPShowCache;
 
     bool m_playlistAsFolders;
     bool m_detectAsUdf;
@@ -269,6 +268,7 @@ public:
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
+    bool m_bVideoLibraryMyMoviesCategoriesToGenres;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
@@ -283,6 +283,13 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_iMythMovieLength;         // minutes
+
+    // EDL Commercial Break
+    bool m_bEdlMergeShortCommBreaks;
+    int m_iEdlMaxCommBreakLength;   // seconds
+    int m_iEdlMinCommBreakLength;   // seconds
+    int m_iEdlMaxCommBreakGap;      // seconds
+
     bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
@@ -313,6 +320,7 @@ public:
 
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;
+    int m_bgInfoLoaderMaxThreads;
   };
 
   struct stSettings
@@ -371,9 +379,6 @@ public:
     int m_iMyVideoStack;
 
     int iAdditionalSubtitleDirectoryChecked;
-
-    char szOnlineArenaPassword[32]; // private arena password
-    char szOnlineArenaDescription[64]; // private arena description
 
     int m_HttpApiBroadcastPort;
     int m_HttpApiBroadcastLevel;
@@ -456,6 +461,7 @@ public:
 
   bool SaveSources();
 
+  void LoadRSSFeeds();
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
@@ -491,8 +497,6 @@ protected:
   void LoadAdvancedSettings();
 
   void LoadUserFolderLayout();
-
-  void LoadRSSFeeds();
 };
 
 extern class CSettings g_settings;

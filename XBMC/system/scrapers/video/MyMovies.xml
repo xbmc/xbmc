@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-05-22" name="MyMovies.it" content="movies" thumb="MyMovies.png" language="it">
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.1" date="2009-08-08" name="MyMovies.it" content="movies" thumb="MyMovies.png" language="it">
 
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
@@ -78,17 +78,6 @@
 
     <GetDetails clearbuffers="no" dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-    
-			<!-- Title, Year, Runtime, Genre -->
-<!-- Daniele Levorato: QUESTO CHE SEGUE NON FUNZIONA... forse mymovies ha cambiato le pagine web...
-	        <RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\4&lt;/year&gt;&lt;runtime&gt;\3&lt;/runtime&gt;&lt;genre&gt;\2&lt;/genre&gt;" dest="5">
-	            <expression noclean="1,2,3,4">&lt;div class=&quot;linkblu&quot;[^&lt;]+&lt;h1&gt;[^A-Z]+([^&lt;]+)..&lt;.+Genere &lt;[^&gt;]+&gt;([^&lt;]+)[^0-9]+([0-9]+)[^\?]+\?anno=([0-9]+).*src=&quot;[^&quot;]+&quot;</expression>
-	        </RegExp>
--->
-
-
-		<!-- Modifica di Daniele Levorato per far funzionare titolo, anno, durata, genere-->
-		
 		<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;" dest="5+">
 	            <expression noclean="1">&lt;title&gt;(.+).\((.+)\)&lt;/title&gt;</expression>
 	        </RegExp>
@@ -101,13 +90,11 @@
 	            <expression noclean="1">&lt;a title=&quot;Film ([^&quot;]*)&quot; href=&quot;http://www.mymovies.it/film/([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 	        </RegExp>
 
-
-		<!-- fine modifica -->
-			
 			<!-- Director(s) -->
 	        <RegExp input="$$1" output="\1" dest="4">
 	            <expression noclean="1">Un film di (.+)Con &lt;a</expression>
 	        </RegExp>
+
 	        <RegExp input="$$4" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
 	            <expression repeat="yes" noclean="1">[^A-Z]*([^\.^,^&lt;]+)[^\.^,]*[\.,]</expression>
 	        </RegExp>
@@ -127,10 +114,12 @@
 	        <RegExp conditional="rating_ten" output="&lt;r&gt;0.1-0.2&lt;/r&gt;&lt;r&gt;0.2-0.4&lt;/r&gt;&lt;r&gt;0.3-0.6&lt;/r&gt;&lt;r&gt;0.4-0.8&lt;/r&gt;&lt;r&gt;0.5-1.0&lt;/r&gt;&lt;r&gt;0.6-1.2&lt;/r&gt;&lt;r&gt;0.7-1.4&lt;/r&gt;&lt;r&gt;0.8-1.6&lt;/r&gt;&lt;r&gt;0.9-1.8&lt;/r&gt;&lt;r&gt;1.0-2.0&lt;/r&gt;&lt;r&gt;1.1-2.2&lt;/r&gt;&lt;r&gt;1.2-2.4&lt;/r&gt;&lt;r&gt;1.3-2.6&lt;/r&gt;&lt;r&gt;1.4-2.8&lt;/r&gt;&lt;r&gt;1.5-3.0&lt;/r&gt;&lt;r&gt;1.6-3.2&lt;/r&gt;&lt;r&gt;1.7-3.4&lt;/r&gt;&lt;r&gt;1.8-3.6&lt;/r&gt;&lt;r&gt;1.9-3.8&lt;/r&gt;&lt;r&gt;2.0-4.0&lt;/r&gt;&lt;r&gt;2.1-4.2&lt;/r&gt;&lt;r&gt;2.2-4.4&lt;/r&gt;&lt;r&gt;2.3-4.6&lt;/r&gt;&lt;r&gt;2.4-4.8&lt;/r&gt;&lt;r&gt;2.5-5.0&lt;/r&gt;&lt;r&gt;2.6-5.2&lt;/r&gt;&lt;r&gt;2.7-5.4&lt;/r&gt;&lt;r&gt;2.8-5.6&lt;/r&gt;&lt;r&gt;2.9-5.8&lt;/r&gt;&lt;r&gt;3.0-6.0&lt;/r&gt;&lt;r&gt;3.1-6.2&lt;/r&gt;&lt;r&gt;3.2-6.4&lt;/r&gt;&lt;r&gt;3.3-6.6&lt;/r&gt;&lt;r&gt;3.4-6.8&lt;/r&gt;&lt;r&gt;3.5-7.0&lt;/r&gt;&lt;r&gt;3.6-7.2&lt;/r&gt;&lt;r&gt;3.7-7.4&lt;/r&gt;&lt;r&gt;3.8-7.6&lt;/r&gt;&lt;r&gt;3.9-7.8&lt;/r&gt;&lt;r&gt;4.0-8.0&lt;/r&gt;&lt;r&gt;4.1-8.2&lt;/r&gt;&lt;r&gt;4.2-8.4&lt;/r&gt;&lt;r&gt;4.3-8.6&lt;/r&gt;&lt;r&gt;4.4-8.8&lt;/r&gt;&lt;r&gt;4.5-9.0&lt;/r&gt;&lt;r&gt;4.6-9.2&lt;/r&gt;&lt;r&gt;4.7-9.4&lt;/r&gt;&lt;r&gt;4.8-9.6&lt;/r&gt;&lt;r&gt;4.9-9.8&lt;/r&gt;&lt;r&gt;5.0-10.0&lt;/r&gt;&lt;r&gt;n.d- &lt;/r&gt;" dest="4">
 	            <expression noclean="1"></expression>
 	        </RegExp>
+
 			<!-- Average -->
 	        <RegExp input="$$1" output="\1.\2" dest="6">
 	            <expression noclean="1">Giudizio medio[^,]+([0-9]),?([0-9]?)/5</expression>
 	        </RegExp>
+
 	        <RegExp conditional="rating_ten" input="$$4" output="\1" dest="6">
 	            <expression noclean="1">$$6-([^&lt;]+)</expression>
 	        </RegExp>
@@ -209,8 +198,6 @@
 			<RegExp output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;AppendToPlot&quot;&gt;http://www.mymovies.it/cast/?id=$$2&lt;/url&gt;" dest="5+">
 	            <expression></expression>
 	        </RegExp>
-
-			
 			<expression noclean="1"></expression>
 		</RegExp>
     </GetDetails>
@@ -231,7 +218,7 @@
     </GetMovieTrailer>
 	
 	<GetMovieThumbs clearbuffers="no" dest="5">
-        <RegExp input="$$3" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$3" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
         	<!-- Mask unnecessary part of source...is necessary when there is one thumb only -->
         	<RegExp input="$$1" output="\1" dest="2">
             	<expression noclean="1">&lt;table cellpadding=&quot;0&quot; cellspacing=&quot;3&quot; style=&quot;width:100%&quot;&gt;(.+?)&lt;/table&gt;</expression>
@@ -246,7 +233,6 @@
 	
     <GetMovieCast clearbuffers="no" dest="5">
         <RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-            
             <!-- Director(s) -->
             <RegExp conditional="viewDirector" input="$$3" output="\1" dest="2">
                 <!-- Fake Actor for Section delimiter: Regia -->
@@ -300,18 +286,6 @@
 		</RegExp>
 	</GetMovieCast>
 	
-		<!--
-	<GetMovieFrasiCelebri clearbuffers="no" dest="5">
-    	<RegExp input="$$2" output="&lt;details&gt;&lt;plot&gt;$$10\n\n:: Frasi Celebri\n\1&lt;/plot&gt;&lt;/details&gt;" dest="5">
-    		<RegExp input="$$1" output="\1\n" dest="2">
-        		<expression repeat="yes">&lt;div style=&quot;text-align:justify;&quot;&gt;(.+?)&lt;/div&gt;</expression>
-   			</RegExp>
-        	<expression noclean="1"></expression>
-   		</RegExp>
-    </GetMovieFrasiCelebri> -->
-	
-	<!-- All stuff to append plot -->
-	
 	<!-- Mancano i commenti estesi -->
 	<GetMovieCritic clearbuffers="no" dest="5">
     	<RegExp input="$$2" output="\n\n:: Critica\n\1" dest="11">
@@ -356,5 +330,4 @@
         	<expression noclean="1"></expression>
    		</RegExp>
     </AppendToPlot>
-
 </scraper>

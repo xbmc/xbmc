@@ -74,6 +74,7 @@ SRCS=ActionManager.cpp \
      GUIFontTTFGL.cpp \
      Texture.cpp \
      TextureGL.cpp
+     GUIControlProfiler.cpp \
 
 LIB=guilib.a
 

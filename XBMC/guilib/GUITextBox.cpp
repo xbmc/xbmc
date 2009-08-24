@@ -60,9 +60,11 @@ CGUITextBox::CGUITextBox(const CGUITextBox &from)
   m_autoScrollDelay = from.m_autoScrollDelay;
   m_autoScrollRepeatAnim = NULL;
   m_label = from.m_label;
+  m_info = from.m_info;
   // defaults
   m_offset = 0;
   m_scrollOffset = 0;
+  m_scrollSpeed = 0;
   m_itemsPerPage = 10;
   m_itemHeight = 10;
   m_renderTime = 0;
@@ -110,11 +112,13 @@ void CGUITextBox::UpdateColors()
   CGUIControl::UpdateColors();
 }
 
-void CGUITextBox::Render()
+void CGUITextBox::UpdateInfo(const CGUIListItem *item)
 {
   m_textColor = m_label.textColor;
-  if (CGUITextLayout::Update(m_info.GetLabel(m_dwParentID), m_width))
-  { // needed update, so reset to the top of the textbox and update our sizing/page control
+  if (!CGUITextLayout::Update(item ? m_info.GetItemLabel(item) : m_info.GetLabel(m_dwParentID), m_width))
+    return; // nothing changed
+
+  // needed update, so reset to the top of the textbox and update our sizing/page control
     m_offset = 0;
     m_scrollOffset = 0;
     ResetAutoScrolling();
@@ -125,6 +129,8 @@ void CGUITextBox::Render()
     UpdatePageControl();
   }
 
+void CGUITextBox::Render()
+{
   // update our auto-scrolling as necessary
   if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
   {

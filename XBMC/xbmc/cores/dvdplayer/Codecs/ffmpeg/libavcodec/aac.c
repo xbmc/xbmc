@@ -78,7 +78,7 @@
 
 #include "avcodec.h"
 #include "internal.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "dsputil.h"
 #include "lpc.h"
 
@@ -93,9 +93,65 @@
 #include <math.h>
 #include <string.h>
 
+union float754 {
+    float f;
+    uint32_t i;
+};
+
 static VLC vlc_scalefactors;
 static VLC vlc_spectral[11];
 
+
+static ChannelElement *get_che(AACContext *ac, int type, int elem_id)
+{
+    static const int8_t tags_per_config[16] = { 0, 1, 1, 2, 3, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0 };
+    if (ac->tag_che_map[type][elem_id]) {
+        return ac->tag_che_map[type][elem_id];
+    }
+    if (ac->tags_mapped >= tags_per_config[ac->m4ac.chan_config]) {
+        return NULL;
+    }
+    switch (ac->m4ac.chan_config) {
+    case 7:
+        if (ac->tags_mapped == 3 && type == TYPE_CPE) {
+            ac->tags_mapped++;
+            return ac->tag_che_map[TYPE_CPE][elem_id] = ac->che[TYPE_CPE][2];
+        }
+    case 6:
+        /* Some streams incorrectly code 5.1 audio as SCE[0] CPE[0] CPE[1] SCE[1]
+           instead of SCE[0] CPE[0] CPE[0] LFE[0]. If we seem to have
+           encountered such a stream, transfer the LFE[0] element to SCE[1] */
+        if (ac->tags_mapped == tags_per_config[ac->m4ac.chan_config] - 1 && (type == TYPE_LFE || type == TYPE_SCE)) {
+            ac->tags_mapped++;
+            return ac->tag_che_map[type][elem_id] = ac->che[TYPE_LFE][0];
+        }
+    case 5:
+        if (ac->tags_mapped == 2 && type == TYPE_CPE) {
+            ac->tags_mapped++;
+            return ac->tag_che_map[TYPE_CPE][elem_id] = ac->che[TYPE_CPE][1];
+        }
+    case 4:
+        if (ac->tags_mapped == 2 && ac->m4ac.chan_config == 4 && type == TYPE_SCE) {
+            ac->tags_mapped++;
+            return ac->tag_che_map[TYPE_SCE][elem_id] = ac->che[TYPE_SCE][1];
+        }
+    case 3:
+    case 2:
+        if (ac->tags_mapped == (ac->m4ac.chan_config != 2) && type == TYPE_CPE) {
+            ac->tags_mapped++;
+            return ac->tag_che_map[TYPE_CPE][elem_id] = ac->che[TYPE_CPE][0];
+        } else if (ac->m4ac.chan_config == 2) {
+            return NULL;
+        }
+    case 1:
+        if (!ac->tags_mapped && type == TYPE_SCE) {
+            ac->tags_mapped++;
+            return ac->tag_che_map[TYPE_SCE][elem_id] = ac->che[TYPE_SCE][0];
+        }
+    default:
+        return NULL;
+    }
+}
 
 /**
  * Configure output channel order based on the current program configuration element.
@@ -105,13 +161,13 @@ static VLC vlc_spectral[11];
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int output_configure(AACContext *ac, enum ChannelPosition che_pos[4][MAX_ELEM_ID],
-        enum ChannelPosition new_che_pos[4][MAX_ELEM_ID]) {
+static int output_configure(AACContext *ac,
+                            enum ChannelPosition che_pos[4][MAX_ELEM_ID],
+                            enum ChannelPosition new_che_pos[4][MAX_ELEM_ID],
+                            int channel_config)
+{
     AVCodecContext *avctx = ac->avccontext;
     int i, type, channels = 0;
-
-    if(!memcmp(che_pos, new_che_pos, 4 * MAX_ELEM_ID * sizeof(new_che_pos[0][0])))
-        return 0; /* no change */
 
     memcpy(che_pos, new_che_pos, 4 * MAX_ELEM_ID * sizeof(new_che_pos[0][0]));
 
@@ -140,7 +196,18 @@ static int output_configure(AACContext *ac, enum ChannelPosition che_pos[4][MAX_
         }
     }
 
+    if (channel_config) {
+        memset(ac->tag_che_map, 0,       4 * MAX_ELEM_ID * sizeof(ac->che[0][0]));
+        ac->tags_mapped = 0;
+    } else {
+        memcpy(ac->tag_che_map, ac->che, 4 * MAX_ELEM_ID * sizeof(ac->che[0][0]));
+        ac->tags_mapped = 4 * MAX_ELEM_ID;
+    }
+
     avctx->channels = channels;
+
+    ac->output_configured = 1;
+
     return 0;
 }
 
@@ -152,7 +219,10 @@ static int output_configure(AACContext *ac, enum ChannelPosition che_pos[4][MAX_
  * @param type speaker type/position for these channels
  */
 static void decode_channel_map(enum ChannelPosition *cpe_map,
-        enum ChannelPosition *sce_map, enum ChannelPosition type, GetBitContext * gb, int n) {
+                               enum ChannelPosition *sce_map,
+                               enum ChannelPosition type,
+                               GetBitContext *gb, int n)
+{
     while(n--) {
         enum ChannelPosition *map = cpe_map && get_bits1(gb) ? cpe_map : sce_map; // stereo or mono map
         map[get_bits(gb, 4)] = type;
@@ -167,18 +237,16 @@ static void decode_channel_map(enum ChannelPosition *cpe_map,
  * @return  Returns error status. 0 - OK, !0 - error
  */
 static int decode_pce(AACContext * ac, enum ChannelPosition new_che_pos[4][MAX_ELEM_ID],
-        GetBitContext * gb) {
+                      GetBitContext *gb)
+{
     int num_front, num_side, num_back, num_lfe, num_assoc_data, num_cc, sampling_index;
 
     skip_bits(gb, 2);  // object_type
 
     sampling_index = get_bits(gb, 4);
-    if(sampling_index > 12) {
-        av_log(ac->avccontext, AV_LOG_ERROR, "invalid sampling rate index %d\n", ac->m4ac.sampling_index);
-        return -1;
-    }
-    ac->m4ac.sampling_index = sampling_index;
-    ac->m4ac.sample_rate = ff_mpeg4audio_sample_rates[ac->m4ac.sampling_index];
+    if (ac->m4ac.sampling_index != sampling_index)
+        av_log(ac->avccontext, AV_LOG_WARNING, "Sample rate index in program config element does not match the sample rate index configured by the container.\n");
+
     num_front       = get_bits(gb, 4);
     num_side        = get_bits(gb, 4);
     num_back        = get_bits(gb, 4);
@@ -218,7 +286,8 @@ static int decode_pce(AACContext * ac, enum ChannelPosition new_che_pos[4][MAX_E
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int set_default_channel_config(AACContext *ac, enum ChannelPosition new_che_pos[4][MAX_ELEM_ID],
+static int set_default_channel_config(AACContext *ac,
+                                      enum ChannelPosition new_che_pos[4][MAX_ELEM_ID],
         int channel_config)
 {
     if(channel_config < 1 || channel_config > 7) {
@@ -260,12 +329,14 @@ static int set_default_channel_config(AACContext *ac, enum ChannelPosition new_c
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int decode_ga_specific_config(AACContext * ac, GetBitContext * gb, int channel_config) {
+static int decode_ga_specific_config(AACContext *ac, GetBitContext *gb,
+                                     int channel_config)
+{
     enum ChannelPosition new_che_pos[4][MAX_ELEM_ID];
     int extension_flag, ret;
 
     if(get_bits1(gb)) {  // frameLengthFlag
-        ff_log_missing_feature(ac->avccontext, "960/120 MDCT window is", 1);
+        av_log_missing_feature(ac->avccontext, "960/120 MDCT window is", 1);
         return -1;
     }
 
@@ -286,7 +357,7 @@ static int decode_ga_specific_config(AACContext * ac, GetBitContext * gb, int ch
         if((ret = set_default_channel_config(ac, new_che_pos, channel_config)))
             return ret;
     }
-    if((ret = output_configure(ac, ac->che_pos, new_che_pos)))
+    if ((ret = output_configure(ac, ac->che_pos, new_che_pos, channel_config)))
         return ret;
 
     if (extension_flag) {
@@ -318,7 +389,9 @@ static int decode_ga_specific_config(AACContext * ac, GetBitContext * gb, int ch
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int decode_audio_specific_config(AACContext * ac, void *data, int data_size) {
+static int decode_audio_specific_config(AACContext *ac, void *data,
+                                        int data_size)
+{
     GetBitContext gb;
     int i;
 
@@ -354,11 +427,13 @@ static int decode_audio_specific_config(AACContext * ac, void *data, int data_si
  *
  * @return  Returns a 32-bit pseudorandom integer
  */
-static av_always_inline int lcg_random(int previous_val) {
+static av_always_inline int lcg_random(int previous_val)
+{
     return previous_val * 1664525 + 1013904223;
 }
 
-static void reset_predict_state(PredictorState * ps) {
+static void reset_predict_state(PredictorState *ps)
+{
     ps->r0 = 0.0f;
     ps->r1 = 0.0f;
     ps->cor0 = 0.0f;
@@ -367,19 +442,22 @@ static void reset_predict_state(PredictorState * ps) {
     ps->var1 = 1.0f;
 }
 
-static void reset_all_predictors(PredictorState * ps) {
+static void reset_all_predictors(PredictorState *ps)
+{
     int i;
     for (i = 0; i < MAX_PREDICTORS; i++)
         reset_predict_state(&ps[i]);
 }
 
-static void reset_predictor_group(PredictorState * ps, int group_num) {
+static void reset_predictor_group(PredictorState *ps, int group_num)
+{
     int i;
     for (i = group_num-1; i < MAX_PREDICTORS; i+=30)
         reset_predict_state(&ps[i]);
 }
 
-static av_cold int aac_decode_init(AVCodecContext * avccontext) {
+static av_cold int aac_decode_init(AVCodecContext *avccontext)
+{
     AACContext * ac = avccontext->priv_data;
     int i;
 
@@ -390,16 +468,7 @@ static av_cold int aac_decode_init(AVCodecContext * avccontext) {
             return -1;
         avccontext->sample_rate = ac->m4ac.sample_rate;
     } else if (avccontext->channels > 0) {
-        enum ChannelPosition new_che_pos[4][MAX_ELEM_ID];
-        memset(new_che_pos, 0, 4 * MAX_ELEM_ID * sizeof(new_che_pos[0][0]));
-        if(set_default_channel_config(ac, new_che_pos, avccontext->channels - (avccontext->channels == 8)))
-            return -1;
-        if(output_configure(ac, ac->che_pos, new_che_pos))
-            return -1;
         ac->m4ac.sample_rate = avccontext->sample_rate;
-    } else {
-        ff_log_missing_feature(ac->avccontext, "Implicit channel configuration is", 0);
-        return -1;
     }
 
     avccontext->sample_fmt  = SAMPLE_FMT_S16;
@@ -445,8 +514,8 @@ static av_cold int aac_decode_init(AVCodecContext * avccontext) {
         ff_aac_scalefactor_code, sizeof(ff_aac_scalefactor_code[0]), sizeof(ff_aac_scalefactor_code[0]),
         352);
 
-    ff_mdct_init(&ac->mdct, 11, 1);
-    ff_mdct_init(&ac->mdct_small, 8, 1);
+    ff_mdct_init(&ac->mdct, 11, 1, 1.0);
+    ff_mdct_init(&ac->mdct_small, 8, 1, 1.0);
     // window initialization
     ff_kbd_window_init(ff_aac_kbd_long_1024, 4.0, 1024);
     ff_kbd_window_init(ff_aac_kbd_short_128, 6.0, 128);
@@ -459,7 +528,8 @@ static av_cold int aac_decode_init(AVCodecContext * avccontext) {
 /**
  * Skip data_stream_element; reference: table 4.10.
  */
-static void skip_data_stream_element(GetBitContext * gb) {
+static void skip_data_stream_element(GetBitContext *gb)
+{
     int byte_align = get_bits1(gb);
     int count = get_bits(gb, 8);
     if (count == 255)
@@ -469,7 +539,9 @@ static void skip_data_stream_element(GetBitContext * gb) {
     skip_bits_long(gb, 8 * count);
 }
 
-static int decode_prediction(AACContext * ac, IndividualChannelStream * ics, GetBitContext * gb) {
+static int decode_prediction(AACContext *ac, IndividualChannelStream *ics,
+                             GetBitContext *gb)
+{
     int sfb;
     if (get_bits1(gb)) {
         ics->predictor_reset_group = get_bits(gb, 5);
@@ -489,7 +561,9 @@ static int decode_prediction(AACContext * ac, IndividualChannelStream * ics, Get
  *
  * @param   common_window   Channels have independent [0], or shared [1], Individual Channel Stream information.
  */
-static int decode_ics_info(AACContext * ac, IndividualChannelStream * ics, GetBitContext * gb, int common_window) {
+static int decode_ics_info(AACContext *ac, IndividualChannelStream *ics,
+                           GetBitContext *gb, int common_window)
+{
     if (get_bits1(gb)) {
         av_log(ac->avccontext, AV_LOG_ERROR, "Reserved bit set.\n");
         memset(ics, 0, sizeof(IndividualChannelStream));
@@ -513,16 +587,16 @@ static int decode_ics_info(AACContext * ac, IndividualChannelStream * ics, GetBi
             }
         }
         ics->num_windows   = 8;
-        ics->swb_offset    =      swb_offset_128[ac->m4ac.sampling_index];
+        ics->swb_offset        =    ff_swb_offset_128[ac->m4ac.sampling_index];
         ics->num_swb       =  ff_aac_num_swb_128[ac->m4ac.sampling_index];
-        ics->tns_max_bands =   tns_max_bands_128[ac->m4ac.sampling_index];
+        ics->tns_max_bands     = ff_tns_max_bands_128[ac->m4ac.sampling_index];
         ics->predictor_present = 0;
     } else {
         ics->max_sfb       = get_bits(gb, 6);
         ics->num_windows   = 1;
-        ics->swb_offset    =     swb_offset_1024[ac->m4ac.sampling_index];
+        ics->swb_offset            =    ff_swb_offset_1024[ac->m4ac.sampling_index];
         ics->num_swb       = ff_aac_num_swb_1024[ac->m4ac.sampling_index];
-        ics->tns_max_bands =  tns_max_bands_1024[ac->m4ac.sampling_index];
+        ics->tns_max_bands         = ff_tns_max_bands_1024[ac->m4ac.sampling_index];
         ics->predictor_present = get_bits1(gb);
         ics->predictor_reset_group = 0;
         if (ics->predictor_present) {
@@ -536,7 +610,7 @@ static int decode_ics_info(AACContext * ac, IndividualChannelStream * ics, GetBi
                 memset(ics, 0, sizeof(IndividualChannelStream));
                 return -1;
             } else {
-                ff_log_missing_feature(ac->avccontext, "Predictor bit set but LTP is", 1);
+                av_log_missing_feature(ac->avccontext, "Predictor bit set but LTP is", 1);
                 memset(ics, 0, sizeof(IndividualChannelStream));
                 return -1;
             }
@@ -563,7 +637,9 @@ static int decode_ics_info(AACContext * ac, IndividualChannelStream * ics, GetBi
  * @return  Returns error status. 0 - OK, !0 - error
  */
 static int decode_band_types(AACContext * ac, enum BandType band_type[120],
-        int band_type_run_end[120], GetBitContext * gb, IndividualChannelStream * ics) {
+                             int band_type_run_end[120], GetBitContext *gb,
+                             IndividualChannelStream *ics)
+{
     int g, idx = 0;
     const int bits = (ics->window_sequence[0] == EIGHT_SHORT_SEQUENCE) ? 3 : 5;
     for (g = 0; g < ics->num_window_groups; g++) {
@@ -605,8 +681,11 @@ static int decode_band_types(AACContext * ac, enum BandType band_type[120],
  * @return  Returns error status. 0 - OK, !0 - error
  */
 static int decode_scalefactors(AACContext * ac, float sf[120], GetBitContext * gb,
-        unsigned int global_gain, IndividualChannelStream * ics,
-        enum BandType band_type[120], int band_type_run_end[120]) {
+                               unsigned int global_gain,
+                               IndividualChannelStream *ics,
+                               enum BandType band_type[120],
+                               int band_type_run_end[120])
+{
     const int sf_offset = ac->sf_offset + (ics->window_sequence[0] == EIGHT_SHORT_SEQUENCE ? 12 : 0);
     int g, i, idx = 0;
     int offset[3] = { global_gain, global_gain - 90, 100 };
@@ -660,7 +739,9 @@ static int decode_scalefactors(AACContext * ac, float sf[120], GetBitContext * g
 /**
  * Decode pulse data; reference: table 4.7.
  */
-static int decode_pulses(Pulse * pulse, GetBitContext * gb, const uint16_t * swb_offset, int num_swb) {
+static int decode_pulses(Pulse *pulse, GetBitContext *gb,
+                         const uint16_t *swb_offset, int num_swb)
+{
     int i, pulse_swb;
     pulse->num_pulse = get_bits(gb, 2) + 1;
     pulse_swb        = get_bits(gb, 6);
@@ -686,7 +767,8 @@ static int decode_pulses(Pulse * pulse, GetBitContext * gb, const uint16_t * swb
  * @return  Returns error status. 0 - OK, !0 - error
  */
 static int decode_tns(AACContext * ac, TemporalNoiseShaping * tns,
-        GetBitContext * gb, const IndividualChannelStream * ics) {
+                      GetBitContext *gb, const IndividualChannelStream *ics)
+{
     int w, filt, i, coef_len, coef_res, coef_compress;
     const int is8 = ics->window_sequence[0] == EIGHT_SHORT_SEQUENCE;
     const int tns_max_order = is8 ? 7 : ac->m4ac.object_type == AOT_AAC_MAIN ? 20 : 12;
@@ -727,7 +809,8 @@ static int decode_tns(AACContext * ac, TemporalNoiseShaping * tns,
  *                      [3] reserved for scalable AAC
  */
 static void decode_mid_side_stereo(ChannelElement * cpe, GetBitContext * gb,
-        int ms_present) {
+                                   int ms_present)
+{
     int idx;
     if (ms_present == 1) {
         for (idx = 0; idx < cpe->ch[0].ics.num_window_groups * cpe->ch[0].ics.max_sfb; idx++)
@@ -749,8 +832,12 @@ static void decode_mid_side_stereo(ChannelElement * cpe, GetBitContext * gb,
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBitContext * gb, float sf[120],
-        int pulse_present, const Pulse * pulse, const IndividualChannelStream * ics, enum BandType band_type[120]) {
+static int decode_spectrum_and_dequant(AACContext *ac, float coef[1024],
+                                       GetBitContext *gb, float sf[120],
+                                       int pulse_present, const Pulse *pulse,
+                                       const IndividualChannelStream *ics,
+                                       enum BandType band_type[120])
+{
     int i, k, g, idx = 0;
     const int c = 1024/ics->num_windows;
     const uint16_t * offsets = ics->swb_offset;
@@ -799,11 +886,15 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
                         }
                         vq_ptr = &ff_aac_codebook_vectors[cur_band_type - 1][index * dim];
                         if (is_cb_unsigned) {
-                            if (vq_ptr[0]) coef[coef_tmp_idx    ] = sign_lookup[get_bits1(gb)];
-                            if (vq_ptr[1]) coef[coef_tmp_idx + 1] = sign_lookup[get_bits1(gb)];
+                            if (vq_ptr[0])
+                                coef[coef_tmp_idx    ] = sign_lookup[get_bits1(gb)];
+                            if (vq_ptr[1])
+                                coef[coef_tmp_idx + 1] = sign_lookup[get_bits1(gb)];
                             if (dim == 4) {
-                                if (vq_ptr[2]) coef[coef_tmp_idx + 2] = sign_lookup[get_bits1(gb)];
-                                if (vq_ptr[3]) coef[coef_tmp_idx + 3] = sign_lookup[get_bits1(gb)];
+                                if (vq_ptr[2])
+                                    coef[coef_tmp_idx + 2] = sign_lookup[get_bits1(gb)];
+                                if (vq_ptr[3])
+                                    coef[coef_tmp_idx + 3] = sign_lookup[get_bits1(gb)];
                             }
                             if (cur_band_type == ESC_BT) {
                                 for (j = 0; j < 2; j++) {
@@ -821,8 +912,7 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
                                     }else
                                         coef[coef_tmp_idx + j] *= vq_ptr[j];
                                 }
-                            }else
-                            {
+                            } else {
                                 coef[coef_tmp_idx    ] *= vq_ptr[0];
                                 coef[coef_tmp_idx + 1] *= vq_ptr[1];
                                 if (dim == 4) {
@@ -870,28 +960,33 @@ static int decode_spectrum_and_dequant(AACContext * ac, float coef[1024], GetBit
     return 0;
 }
 
-static av_always_inline float flt16_round(float pf) {
-    int exp;
-    pf = frexpf(pf, &exp);
-    pf = ldexpf(roundf(ldexpf(pf, 8)), exp-8);
-    return pf;
+static av_always_inline float flt16_round(float pf)
+{
+    union float754 tmp;
+    tmp.f = pf;
+    tmp.i = (tmp.i + 0x00008000U) & 0xFFFF0000U;
+    return tmp.f;
 }
 
-static av_always_inline float flt16_even(float pf) {
-    int exp;
-    pf = frexpf(pf, &exp);
-    pf = ldexpf(rintf(ldexpf(pf, 8)), exp-8);
-    return pf;
+static av_always_inline float flt16_even(float pf)
+{
+    union float754 tmp;
+    tmp.f = pf;
+    tmp.i = (tmp.i + 0x00007FFFU + (tmp.i & 0x00010000U >> 16)) & 0xFFFF0000U;
+    return tmp.f;
 }
 
-static av_always_inline float flt16_trunc(float pf) {
-    int exp;
-    pf = frexpf(pf, &exp);
-    pf = ldexpf(truncf(ldexpf(pf, 8)), exp-8);
-    return pf;
+static av_always_inline float flt16_trunc(float pf)
+{
+    union float754 pun;
+    pun.f = pf;
+    pun.i &= 0xFFFF0000U;
+    return pun.f;
 }
 
-static void predict(AACContext * ac, PredictorState * ps, float* coef, int output_enable) {
+static void predict(AACContext *ac, PredictorState *ps, float *coef,
+                    int output_enable)
+{
     const float a     = 0.953125; // 61.0/64
     const float alpha = 0.90625;  // 29.0/32
     float e0, e1;
@@ -920,7 +1015,8 @@ static void predict(AACContext * ac, PredictorState * ps, float* coef, int outpu
 /**
  * Apply AAC-Main style frequency domain prediction.
  */
-static void apply_prediction(AACContext * ac, SingleChannelElement * sce) {
+static void apply_prediction(AACContext *ac, SingleChannelElement *sce)
+{
     int sfb, k;
 
     if (!sce->ics.predictor_initialized) {
@@ -949,7 +1045,9 @@ static void apply_prediction(AACContext * ac, SingleChannelElement * sce) {
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int decode_ics(AACContext * ac, SingleChannelElement * sce, GetBitContext * gb, int common_window, int scale_flag) {
+static int decode_ics(AACContext *ac, SingleChannelElement *sce,
+                      GetBitContext *gb, int common_window, int scale_flag)
+{
     Pulse pulse;
     TemporalNoiseShaping * tns = &sce->tns;
     IndividualChannelStream * ics = &sce->ics;
@@ -988,7 +1086,7 @@ static int decode_ics(AACContext * ac, SingleChannelElement * sce, GetBitContext
         if ((tns->present = get_bits1(gb)) && decode_tns(ac, tns, gb, ics))
             return -1;
         if (get_bits1(gb)) {
-            ff_log_missing_feature(ac->avccontext, "SSR", 1);
+            av_log_missing_feature(ac->avccontext, "SSR", 1);
             return -1;
         }
     }
@@ -1005,7 +1103,8 @@ static int decode_ics(AACContext * ac, SingleChannelElement * sce, GetBitContext
 /**
  * Mid/Side stereo decoding; reference: 4.6.8.1.3.
  */
-static void apply_mid_side_stereo(ChannelElement * cpe) {
+static void apply_mid_side_stereo(ChannelElement *cpe)
+{
     const IndividualChannelStream * ics = &cpe->ch[0].ics;
     float *ch0 = cpe->ch[0].coeffs;
     float *ch1 = cpe->ch[1].coeffs;
@@ -1036,7 +1135,8 @@ static void apply_mid_side_stereo(ChannelElement * cpe) {
  *                      [1] mask is decoded from bitstream; [2] mask is all 1s;
  *                      [3] reserved for scalable AAC
  */
-static void apply_intensity_stereo(ChannelElement * cpe, int ms_present) {
+static void apply_intensity_stereo(ChannelElement *cpe, int ms_present)
+{
     const IndividualChannelStream * ics = &cpe->ch[1].ics;
     SingleChannelElement * sce1 = &cpe->ch[1];
     float *coef0 = cpe->ch[0].coeffs, *coef1 = cpe->ch[1].coeffs;
@@ -1075,7 +1175,8 @@ static void apply_intensity_stereo(ChannelElement * cpe, int ms_present) {
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int decode_cpe(AACContext * ac, GetBitContext * gb, ChannelElement * cpe) {
+static int decode_cpe(AACContext *ac, GetBitContext *gb, ChannelElement *cpe)
+{
     int i, ret, common_window, ms_present = 0;
 
     common_window = get_bits1(gb);
@@ -1117,7 +1218,8 @@ static int decode_cpe(AACContext * ac, GetBitContext * gb, ChannelElement * cpe)
  *
  * @return  Returns error status. 0 - OK, !0 - error
  */
-static int decode_cce(AACContext * ac, GetBitContext * gb, ChannelElement * che) {
+static int decode_cce(AACContext *ac, GetBitContext *gb, ChannelElement *che)
+{
     int num_gain = 0;
     int c, g, sfb, ret;
     int sign;
@@ -1138,14 +1240,7 @@ static int decode_cce(AACContext * ac, GetBitContext * gb, ChannelElement * che)
         } else
             coup->ch_select[c] = 2;
     }
-    coup->coupling_point += get_bits1(gb);
-
-    if (coup->coupling_point == 2) {
-        av_log(ac->avccontext, AV_LOG_ERROR,
-            "Independently switched CCE with 'invalid' domain signalled.\n");
-        memset(coup, 0, sizeof(ChannelCoupling));
-        return -1;
-    }
+    coup->coupling_point += get_bits1(gb) || (coup->coupling_point >> 1);
 
     sign = get_bits(gb, 1);
     scale = pow(2., pow(2., (int)get_bits(gb, 2) - 3));
@@ -1198,9 +1293,11 @@ static int decode_cce(AACContext * ac, GetBitContext * gb, ChannelElement * che)
  *
  * @return  Returns number of bytes consumed from the TYPE_FIL element.
  */
-static int decode_sbr_extension(AACContext * ac, GetBitContext * gb, int crc, int cnt) {
+static int decode_sbr_extension(AACContext *ac, GetBitContext *gb,
+                                int crc, int cnt)
+{
     // TODO : sbr_extension implementation
-    ff_log_missing_feature(ac->avccontext, "SBR", 0);
+    av_log_missing_feature(ac->avccontext, "SBR", 0);
     skip_bits_long(gb, 8*cnt - 4); // -4 due to reading extension type
     return cnt;
 }
@@ -1210,7 +1307,9 @@ static int decode_sbr_extension(AACContext * ac, GetBitContext * gb, int crc, in
  *
  * @return  Returns number of bytes consumed.
  */
-static int decode_drc_channel_exclusions(DynamicRangeControl *che_drc, GetBitContext * gb) {
+static int decode_drc_channel_exclusions(DynamicRangeControl *che_drc,
+                                         GetBitContext *gb)
+{
     int i;
     int num_excl_chan = 0;
 
@@ -1229,7 +1328,9 @@ static int decode_drc_channel_exclusions(DynamicRangeControl *che_drc, GetBitCon
  *
  * @return  Returns number of bytes consumed.
  */
-static int decode_dynamic_range(DynamicRangeControl *che_drc, GetBitContext * gb, int cnt) {
+static int decode_dynamic_range(DynamicRangeControl *che_drc,
+                                GetBitContext *gb, int cnt)
+{
     int n = 1;
     int drc_num_bands = 1;
     int i;
@@ -1281,7 +1382,8 @@ static int decode_dynamic_range(DynamicRangeControl *che_drc, GetBitContext * gb
  *
  * @return Returns number of bytes consumed
  */
-static int decode_extension_payload(AACContext * ac, GetBitContext * gb, int cnt) {
+static int decode_extension_payload(AACContext *ac, GetBitContext *gb, int cnt)
+{
     int crc_flag = 0;
     int res = cnt;
     switch (get_bits(gb, 4)) { // extension type
@@ -1309,7 +1411,9 @@ static int decode_extension_payload(AACContext * ac, GetBitContext * gb, int cnt
  * @param   decode  1 if tool is used normally, 0 if tool is used in LTP.
  * @param   coef    spectral coefficients
  */
-static void apply_tns(float coef[1024], TemporalNoiseShaping * tns, IndividualChannelStream * ics, int decode) {
+static void apply_tns(float coef[1024], TemporalNoiseShaping *tns,
+                      IndividualChannelStream *ics, int decode)
+{
     const int mmm = FFMIN(ics->tns_max_bands,  ics->max_sfb);
     int w, filt, m, i;
     int bottom, top, order, start, end, size, inc;
@@ -1332,7 +1436,8 @@ static void apply_tns(float coef[1024], TemporalNoiseShaping * tns, IndividualCh
             if ((size = end - start) <= 0)
                 continue;
             if (tns->direction[w][filt]) {
-                inc = -1; start = end - 1;
+                inc = -1;
+                start = end - 1;
             } else {
                 inc = 1;
             }
@@ -1349,7 +1454,8 @@ static void apply_tns(float coef[1024], TemporalNoiseShaping * tns, IndividualCh
 /**
  * Conduct IMDCT and windowing.
  */
-static void imdct_and_windowing(AACContext * ac, SingleChannelElement * sce) {
+static void imdct_and_windowing(AACContext *ac, SingleChannelElement *sce)
+{
     IndividualChannelStream * ics = &sce->ics;
     float * in = sce->coeffs;
     float * out = sce->ret;
@@ -1420,7 +1526,10 @@ static void imdct_and_windowing(AACContext * ac, SingleChannelElement * sce) {
  *
  * @param   index   index into coupling gain array
  */
-static void apply_dependent_coupling(AACContext * ac, SingleChannelElement * target, ChannelElement * cce, int index) {
+static void apply_dependent_coupling(AACContext *ac,
+                                     SingleChannelElement *target,
+                                     ChannelElement *cce, int index)
+{
     IndividualChannelStream * ics = &cce->ch[0].ics;
     const uint16_t * offsets = ics->swb_offset;
     float * dest = target->coeffs;
@@ -1434,10 +1543,11 @@ static void apply_dependent_coupling(AACContext * ac, SingleChannelElement * tar
     for (g = 0; g < ics->num_window_groups; g++) {
         for (i = 0; i < ics->max_sfb; i++, idx++) {
             if (cce->ch[0].band_type[idx] != ZERO_BT) {
+                const float gain = cce->coup.gain[index][idx];
                 for (group = 0; group < ics->group_len[g]; group++) {
                     for (k = offsets[i]; k < offsets[i+1]; k++) {
                         // XXX dsputil-ize
-                        dest[group*128+k] += cce->coup.gain[index][idx] * src[group*128+k];
+                        dest[group * 128 + k] += gain * src[group * 128 + k];
                     }
                 }
             }
@@ -1452,7 +1562,10 @@ static void apply_dependent_coupling(AACContext * ac, SingleChannelElement * tar
  *
  * @param   index   index into coupling gain array
  */
-static void apply_independent_coupling(AACContext * ac, SingleChannelElement * target, ChannelElement * cce, int index) {
+static void apply_independent_coupling(AACContext *ac,
+                                       SingleChannelElement *target,
+                                       ChannelElement *cce, int index)
+{
     int i;
     const float gain = cce->coup.gain[index][0];
     const float bias = ac->add_bias;
@@ -1470,7 +1583,8 @@ static void apply_independent_coupling(AACContext * ac, SingleChannelElement * t
  * @param   apply_coupling_method   pointer to (in)dependent coupling function
  */
 static void apply_channel_coupling(AACContext * ac, ChannelElement * cc,
-        enum RawDataBlockType type, int elem_id, enum CouplingPoint coupling_point,
+                                   enum RawDataBlockType type, int elem_id,
+                                   enum CouplingPoint coupling_point,
         void (*apply_coupling_method)(AACContext * ac, SingleChannelElement * target, ChannelElement * cce, int index))
 {
     int i, c;
@@ -1501,7 +1615,8 @@ static void apply_channel_coupling(AACContext * ac, ChannelElement * cc,
 /**
  * Convert spectral data to float samples, applying all supported tools as appropriate.
  */
-static void spectral_to_sample(AACContext * ac) {
+static void spectral_to_sample(AACContext *ac)
+{
     int i, type;
     for(type = 3; type >= 0; type--) {
         for (i = 0; i < MAX_ELEM_ID; i++) {
@@ -1526,31 +1641,43 @@ static void spectral_to_sample(AACContext * ac) {
     }
 }
 
-static int parse_adts_frame_header(AACContext * ac, GetBitContext * gb) {
-
+static int parse_adts_frame_header(AACContext *ac, GetBitContext *gb)
+{
     int size;
     AACADTSHeaderInfo hdr_info;
 
     size = ff_aac_parse_header(gb, &hdr_info);
     if (size > 0) {
-        if (hdr_info.chan_config)
+        if (!ac->output_configured && hdr_info.chan_config) {
+            enum ChannelPosition new_che_pos[4][MAX_ELEM_ID];
+            memset(new_che_pos, 0, 4 * MAX_ELEM_ID * sizeof(new_che_pos[0][0]));
             ac->m4ac.chan_config = hdr_info.chan_config;
+            if (set_default_channel_config(ac, new_che_pos, hdr_info.chan_config))
+                return -7;
+            if (output_configure(ac, ac->che_pos, new_che_pos, 1))
+                return -7;
+        }
         ac->m4ac.sample_rate     = hdr_info.sample_rate;
         ac->m4ac.sampling_index  = hdr_info.sampling_index;
         ac->m4ac.object_type     = hdr_info.object_type;
-    }
     if (hdr_info.num_aac_frames == 1) {
         if (!hdr_info.crc_absent)
             skip_bits(gb, 16);
     } else {
-        ff_log_missing_feature(ac->avccontext, "More than one AAC RDB per ADTS frame is", 0);
+            av_log_missing_feature(ac->avccontext, "More than one AAC RDB per ADTS frame is", 0);
         return -1;
+    }
     }
     return size;
 }
 
-static int aac_decode_frame(AVCodecContext * avccontext, void * data, int * data_size, const uint8_t * buf, int buf_size) {
+static int aac_decode_frame(AVCodecContext *avccontext, void *data,
+                            int *data_size, AVPacket *avpkt)
+{
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     AACContext * ac = avccontext->priv_data;
+    ChannelElement *che = NULL;
     GetBitContext gb;
     enum RawDataBlockType elem_type;
     int err, elem_id, data_size_tmp;
@@ -1558,7 +1685,7 @@ static int aac_decode_frame(AVCodecContext * avccontext, void * data, int * data
     init_get_bits(&gb, buf, buf_size*8);
 
     if (show_bits(&gb, 12) == 0xfff) {
-        if ((err = parse_adts_frame_header(ac, &gb)) < 0) {
+        if (parse_adts_frame_header(ac, &gb) < 0) {
             av_log(avccontext, AV_LOG_ERROR, "Error decoding AAC frame header.\n");
             return -1;
         }
@@ -1571,17 +1698,8 @@ static int aac_decode_frame(AVCodecContext * avccontext, void * data, int * data
     // parse
     while ((elem_type = get_bits(&gb, 3)) != TYPE_END) {
         elem_id = get_bits(&gb, 4);
-        err = -1;
 
-        if(elem_type == TYPE_SCE && elem_id == 1 &&
-                !ac->che[TYPE_SCE][elem_id] && ac->che[TYPE_LFE][0]) {
-            /* Some streams incorrectly code 5.1 audio as SCE[0] CPE[0] CPE[1] SCE[1]
-               instead of SCE[0] CPE[0] CPE[0] LFE[0]. If we seem to have
-               encountered such a stream, transfer the LFE[0] element to SCE[1] */
-            ac->che[TYPE_SCE][elem_id] = ac->che[TYPE_LFE][0];
-            ac->che[TYPE_LFE][0] = NULL;
-        }
-        if(elem_type < TYPE_DSE && !ac->che[elem_type][elem_id]) {
+        if (elem_type < TYPE_DSE && !(che=get_che(ac, elem_type, elem_id))) {
             av_log(ac->avccontext, AV_LOG_ERROR, "channel element %d.%d is not allocated\n", elem_type, elem_id);
             return -1;
         }
@@ -1589,19 +1707,19 @@ static int aac_decode_frame(AVCodecContext * avccontext, void * data, int * data
         switch (elem_type) {
 
         case TYPE_SCE:
-            err = decode_ics(ac, &ac->che[TYPE_SCE][elem_id]->ch[0], &gb, 0, 0);
+            err = decode_ics(ac, &che->ch[0], &gb, 0, 0);
             break;
 
         case TYPE_CPE:
-            err = decode_cpe(ac, &gb, ac->che[TYPE_CPE][elem_id]);
+            err = decode_cpe(ac, &gb, che);
             break;
 
         case TYPE_CCE:
-            err = decode_cce(ac, &gb, ac->che[TYPE_CCE][elem_id]);
+            err = decode_cce(ac, &gb, che);
             break;
 
         case TYPE_LFE:
-            err = decode_ics(ac, &ac->che[TYPE_LFE][elem_id]->ch[0], &gb, 0, 0);
+            err = decode_ics(ac, &che->ch[0], &gb, 0, 0);
             break;
 
         case TYPE_DSE:
@@ -1609,13 +1727,16 @@ static int aac_decode_frame(AVCodecContext * avccontext, void * data, int * data
             err = 0;
             break;
 
-        case TYPE_PCE:
-        {
+        case TYPE_PCE: {
             enum ChannelPosition new_che_pos[4][MAX_ELEM_ID];
             memset(new_che_pos, 0, 4 * MAX_ELEM_ID * sizeof(new_che_pos[0][0]));
             if((err = decode_pce(ac, new_che_pos, &gb)))
                 break;
-            err = output_configure(ac, ac->che_pos, new_che_pos);
+            if (ac->output_configured)
+                av_log(avccontext, AV_LOG_ERROR,
+                       "Not evaluating a further program_config_element as this construct is dubious at best.\n");
+            else
+                err = output_configure(ac, ac->che_pos, new_che_pos, 0);
             break;
         }
 
@@ -1658,7 +1779,8 @@ static int aac_decode_frame(AVCodecContext * avccontext, void * data, int * data
     return buf_size;
 }
 
-static av_cold int aac_decode_close(AVCodecContext * avccontext) {
+static av_cold int aac_decode_close(AVCodecContext *avccontext)
+{
     AACContext * ac = avccontext->priv_data;
     int i, type;
 
@@ -1682,5 +1804,7 @@ AVCodec aac_decoder = {
     aac_decode_close,
     aac_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("Advanced Audio Coding"),
-    .sample_fmts = (enum SampleFormat[]){SAMPLE_FMT_S16,SAMPLE_FMT_NONE},
+    .sample_fmts = (enum SampleFormat[]) {
+        SAMPLE_FMT_S16,SAMPLE_FMT_NONE
+    },
 };

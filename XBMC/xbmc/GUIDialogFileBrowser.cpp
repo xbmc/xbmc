@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIDialogFileBrowser.h"
 #include "Util.h"
-#include "DetectDVDType.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogContextMenu.h"
@@ -38,6 +37,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "FileSystem/MultiPathDirectory.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -270,13 +270,17 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
       {
-        if (message.GetStringParam() == m_Directory->m_strPath && IsActive())
+        if (IsActive())
         {
+          if((message.GetStringParam() == m_Directory->m_strPath) ||
+             (m_Directory->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_Directory->m_strPath, message.GetStringParam())))
+          {
           int iItem = m_viewControl.GetSelectedItem();
           Update(m_Directory->m_strPath);
           m_viewControl.SetSelectedItem(iItem);
         }
       }
+    }
     }
     break;
 

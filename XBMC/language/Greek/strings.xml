@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 07/20/2009-->
+<!--Date of translation: 08/21/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21769-->
+<!--Based on english strings version 22290-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -35,6 +35,13 @@
   <string id="30">Οκτωβρίου</string>
   <string id="31">Νοεμβρίου</string>
   <string id="32">Δεκεμβρίου</string>
+  <string id="41">Δευ</string>
+  <string id="42">Τρι</string>
+  <string id="43">Τετ</string>
+  <string id="44">Πεμ</string>
+  <string id="45">Παρ</string>
+  <string id="46">Σαβ</string>
+  <string id="47">Κυρ</string>
   <string id="98">Προβολή: Αυτόματη</string>
   <string id="99">Προβολή: Εικόνες</string>
   <string id="100">Προβολή: Εικονίδια</string>
@@ -296,7 +303,7 @@
   <string id="369">Τίτλος</string>
   <string id="370">Καταιγίδες</string>
   <string id="371">Διάσπαρτα</string>
-  <string id="372">Κατά το μεγαλύτερο διάστημα</string>
+  <string id="372">Υετός</string>
   <string id="373">Αίθριος</string>
   <string id="374">Νέφη</string>
   <string id="375">Χιόνι</string>
@@ -532,7 +539,7 @@
   <string id="633">Επέκταση 14:9</string>
   <string id="634">Επέκταση 16:9</string>
   <string id="635">Κανονικό μέγεθος</string>
-  <string id="636">Προσωπικό</string>
+  <string id="636">Προσαρμογή</string>
   <string id="637">Ενίσχυση ήχου</string>
   <string id="638">Μέθοδος ενίσχυσης ήχου</string>
   <string id="639">Σε επίπεδο κομματιού</string>
@@ -560,6 +567,7 @@
   <string id="661">Επιλογή φακέλου εξαγωγής</string>
   <string id="662">Αυτό το αρχείο δεν είναι πλέον διαθέσιμο.</string>
   <string id="663">Να αφαιρεθεί από τη συλλογή;</string>
+  <string id="664">Αναζήτηση Script</string>
   <string id="700">Εκκαθάριση συλλογής</string>
   <string id="701">Απομάκρυνση παλαιών τραγουδιών από τη συλλογή</string>
   <string id="702">Η διαδρομή έχει σαρωθεί προηγούμενος</string>
@@ -930,7 +938,7 @@
   <string id="13004">- Ελάχιστη διάρκεια αρχείου</string>
   <string id="13005">Παύση λειτουργίας</string>
   <string id="13006">Εκκινητής</string>
-  <string id="13007">Χρήση τροποποιημένου εκκινητή</string>
+  <string id="13007">Χρήση προσαρμοσμένης διαδρομής εκκινητή</string>
   <string id="13008">Λειτουργία τερματισμού</string>
   <string id="13009">Έξοδος</string>
   <string id="13010">Αδρανοποίηση</string>
@@ -938,6 +946,7 @@
   <string id="13012">Έξοδος</string>
   <string id="13013">Επανεκκίνηση</string>
   <string id="13014">Ελαχιστοποίηση</string>
+  <string id="13015">Ενέργεια πλήκτρου λειτουργίας</string>
   <string id="13020">Είναι ενεργή άλλη συνεδρία (ίσως μέσω ssh);</string>
   <string id="13021">Προσάρτηση αναιρούμενου δίσκου</string>
   <string id="13022">Επισφαλής αφαίρεση συσκευής</string>
@@ -1539,7 +1548,7 @@
   <string id="20147">Τερματισμός σε 30 λεπτά</string>
   <string id="20148">Τερματισμός σε 60 λεπτά</string>
   <string id="20149">Τερματισμός σε 120 λεπτά</string>
-  <string id="20150">Προσωπικός χρονοδιακόπτης τερματισμού</string>
+  <string id="20150">Προσαρμογή χρονοδιακόπτη τερματισμού</string>
   <string id="20151">Ακύρωση χρονοδιακόπτη τερματισμού</string>
   <string id="20152">Κλείδωμα ρυθμίσεων για %s</string>
   <string id="20153">Αναζήτηση...</string>
@@ -1579,7 +1588,7 @@
   <string id="20187">Επανάκτηση EEPROM</string>
   <string id="20188">Επανάκτηση BIOS</string>
   <string id="20189">Ενεργοποίηση αυτόματης κύλισης στην επισκόπηση πλοκής &amp; κριτικής</string>
-  <string id="20190">Προσωπικό</string>
+  <string id="20190">Προσαρμογή</string>
   <string id="20191">Ενεργοποίηση καταγραφής αποσφαλμάτωσης</string>
   <string id="20192">Ανάκτηση πληροφοριών άλμπουμ κατά προσθήκη</string>
   <string id="20193">Ανάκτηση πληροφοριών καλλιτέχνη κατά προσθήκη</string>
@@ -1744,7 +1753,7 @@
   <string id="21363">Διαχείριση κοινόχρηστων εικόνων (UPnP)</string>
   <string id="21364">Επεξεργασία κοινόχρηστων πολυμέσων</string>
   <string id="21365">Απομάκρυνση κοινόχρηστων πολυμέσων</string>
-  <string id="21366">Τροποποιημένος φάκελος υποτίτλων</string>
+  <string id="21366">Προσαρμογή φακέλου υποτίτλων</string>
   <string id="21367">Ταινία &amp; εναλλακτικός φάκελος υποτίτλων</string>
   <string id="21369">Ενεργοποίηση ποντικιού</string>
   <string id="21370">Ενεργοποίηση ήχων πλοήγησης κατά την εκτέλεση πολυμέσων</string>
@@ -1766,7 +1775,7 @@
   <string id="21386">Διαχείριση στάθμης θορύβου</string>
   <string id="21387">Θορυβώδες</string>
   <string id="21388">Αθόρυβο</string>
-  <string id="21389">Ενεργοποίηση τροποποιημένου υπόβαθρου</string>
+  <string id="21389">Ενεργοποίηση προσαρμοσμένου υπόβαθρου</string>
   <string id="21390">Διαχείριση παροχής ενέργειας</string>
   <string id="21391">Υψηλή τροφοδοσία</string>
   <string id="21392">Χαμηλή τροφοδοσία</string>
@@ -1918,6 +1927,7 @@
   <string id="22018">Δικτυακά κανάλια</string>
   <string id="22019">Εγγραφές ανά τίτλο</string>
   <string id="22020">Οδηγός</string>
+  <string id="22021">Επιτρεπόμενο σφάλμα στο λόγο απεικόνισης (%)</string>
   <string id="22030">Γραμματοσειρά</string>
   <string id="22031">- Μέγεθος</string>
   <string id="22032">- Χρώματα</string>
@@ -1955,5 +1965,54 @@
   <string id="33015">Επιβεβαίωση λήψης πριν την αναπαραγωγή του βίντεο</string>
   <string id="33016">Clips</string>
   <string id="33017">Επανεκκίνηση plugin για την ενεργοποίηση του</string>
-  <string id="33018">Clips</string>
+  <string id="33018">Σήμερα το βράδυ</string>
+  <string id="33019">Αύριο το βράδυ</string>
+  <string id="33020">Kατάσταση καιρού</string>
+  <string id="33021">Υετός</string>
+  <string id="33022">Υετός</string>
+  <string id="33023">Υγρασία</string>
+  <string id="33024">Αίσθηση</string>
+  <string id="33025">Παρατηρούμενη</string>
+  <string id="33026">Εκφυγή από το κανονικό</string>
+  <string id="33027">Ανατολή ηλίου</string>
+  <string id="33028">Δύση ηλίου</string>
+  <string id="33029">Λεπτομέρειες</string>
+  <string id="33030">Εξέλιξη</string>
+  <string id="33031">Ροή εξώφυλλων</string>
+  <string id="33032">Μετάφραση κειμένου</string>
+  <string id="33033">Κατηγορία λίστας χαρτών %s</string>
+  <string id="33034">36ωρη </string>
+  <string id="33035">Χάρτες καιρού</string>
+  <string id="33036">Ωριαία</string>
+  <string id="33037">Σαββατοκύριακου</string>
+  <string id="33038">%sη ημέρα</string>
+  <string id="33049">Προειδοποίηση</string>
+  <string id="33050">Προειδοποιήσεις</string>
+  <string id="33051">Επιλογή</string>
+  <string id="33052">Πρόγνωση</string>
+  <string id="33053">Ρύθμιση</string>
+  <string id="33054">Κύκλοι</string>
+  <string id="33055">Εκτέλεση</string>
+  <string id="33056">Παρακολούθηση</string>
+  <string id="33057">Ακρόαση</string>
+  <string id="33058">Προβολή</string>
+  <string id="33059">Ρύθμιση</string>
+  <string id="33060">Λειτουργία</string>
+  <string id="33061">Μενού</string>
+  <string id="33062">Αναπαραγωγή</string>
+  <string id="33063">Επιλογές</string>
+  <string id="33065">Επεξεργαστής</string>
+  <string id="33066">Περιήγηση</string>
+  <string id="33067">Αξιολόγηση</string>
+  <string id="33068">Υπόβαθρο</string>
+  <string id="33069">Υπόβαθρα</string>
+  <string id="33070">Προσαρμοσμένο υπόβαθρο</string>
+  <string id="33071">Προσαρμοσμένα υπόβαθρα</string>
+  <string id="33072">Σημειώσεις έκδοσης</string>
+  <string id="33073">Αλλαγές έκδοσης</string>
+  <string id="33074">Για να εκτελεστεί η έκδοση %s απαιτείται</string>
+  <string id="33075">η %s αναθεωρημένη έκδοση του XBMC ή και νεώτερη.</string>
+  <string id="33076">Παρακαλώ, αναβαθμίστε άμεσα το XBMC.</string>
+  <string id="33077">Δεν βρέθηκαν δεδομένα!</string>
+  <string id="33078">Επόμενη σελίδα</string>
 </strings>

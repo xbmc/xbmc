@@ -28,14 +28,19 @@
 #include "SingleLock.h"
 #include "StdString.h"
 #include "Settings.h"
-#include "Util.h"
 
-FILE* CLog::fd = NULL;
+XFILE::CFile* CLog::m_file = NULL;
 
 static CCriticalSection critSec;
 
 static char levelNames[][8] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
+
+#ifdef _WIN32PC
+#define LINE_ENDING "\r\n"
+#else
+#define LINE_ENDING "\n"
+#endif
 
 
 CLog::CLog()
@@ -47,10 +52,11 @@ CLog::~CLog()
 void CLog::Close()
 {
   CSingleLock waitLock(critSec);
-  if (fd)
+  if (m_file)
   {
-    fclose(fd);
-    fd = NULL;
+    m_file->Close();
+    delete m_file;
+    m_file = NULL;
   }
 }
 
@@ -61,8 +67,12 @@ void CLog::Log(int loglevel, const char *format, ... )
      (g_advancedSettings.m_logLevel > LOG_LEVEL_NONE && loglevel >= LOGNOTICE))
   {
     CSingleLock waitLock(critSec);
-    if (!fd)
+    if (!m_file)
     {
+      m_file = new XFILE::CFile;
+      if (!m_file)
+        return;
+
       // g_stSettings.m_logFolder is initialized in the CSettings constructor
       // and changed in CApplication::Create()
       CStdString strLogFile, strLogFileOld;
@@ -70,26 +80,14 @@ void CLog::Log(int loglevel, const char *format, ... )
       strLogFile.Format("%sxbmc.log", g_stSettings.m_logFolder.c_str());
       strLogFileOld.Format("%sxbmc.old.log", g_stSettings.m_logFolder.c_str());
 
-#ifndef _LINUX
-      CStdStringW strLogFileW, strLogFileOldW;
-      g_charsetConverter.utf8ToW(strLogFile, strLogFileW, false);
-      g_charsetConverter.utf8ToW(strLogFileOld, strLogFileOldW, false);
-      ::DeleteFileW(strLogFileOldW.c_str());
-      ::MoveFileW(strLogFileW.c_str(), strLogFileOldW.c_str());
-#else
-      ::unlink(strLogFileOld.c_str());
-      ::rename(strLogFile.c_str(), strLogFileOld.c_str());
-#endif
+      if(m_file->Exists(strLogFileOld))
+        m_file->Delete(strLogFileOld);
+      if(m_file->Exists(strLogFile))
+        m_file->Rename(strLogFile, strLogFileOld);
 
-#ifndef _LINUX
-      fd = _wfsopen(strLogFileW.c_str(), L"a+", _SH_DENYWR);
-#else
-      fd = fopen(strLogFile, "a+");
-#endif
+      if(!m_file->OpenForWrite(strLogFile))
+        return;
     }
-
-    if (!fd)
-      return ;
 
     SYSTEMTIME time;
     GetLocalTime(&time);
@@ -130,12 +128,12 @@ void CLog::Log(int loglevel, const char *format, ... )
 #endif
 
     /* fixup newline alignment, number of spaces should equal prefix length */
-    strData.Replace("\n", "\n                                            ");
-    strData += "\n";
+    strData.Replace("\n", LINE_ENDING"                                            ");
+    strData += LINE_ENDING;
 
-    fwrite(strPrefix.c_str(), strPrefix.size(), 1, fd);
-    fwrite(strData.c_str(), strData.size(), 1, fd);
-    fflush(fd);
+    m_file->Write(strPrefix.c_str(), strPrefix.size());
+    m_file->Write(strData.c_str(), strData.size());
+
   }
 #ifndef _LINUX
 #if defined(_DEBUG) || defined(PROFILE)

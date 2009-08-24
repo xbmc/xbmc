@@ -117,7 +117,6 @@ public:
   int xbmcGetGUIDescription();
   int xbmcAutoGetPictureThumbs(int numParas, CStdString paras[]);
   int xbmcSetResponseFormat(int numParas, CStdString paras[]);
-  int xbmcSpinDownHardDisk(int numParas, CStdString paras[]);
   int xbmcBroadcast(int numParas, CStdString paras[]);
   bool xbmcBroadcast(CStdString message, int level=0);
   int xbmcSetBroadcast(int numParas, CStdString paras[]);

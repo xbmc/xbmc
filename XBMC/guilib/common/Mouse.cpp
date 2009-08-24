@@ -27,10 +27,6 @@
 #include "../Key.h"
 #include "../GraphicContext.h"
 
-#define MOUSE_MINIMUM_MOVEMENT 2
-#define MOUSE_DOUBLE_CLICK_LENGTH 500L
-#define MOUSE_ACTIVE_LENGTH   5000L
-
 CMouse g_Mouse; // global
 
 CMouse::CMouse()

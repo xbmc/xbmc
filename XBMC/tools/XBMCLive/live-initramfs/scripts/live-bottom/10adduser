@@ -1,0 +1,120 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+if [ -n "${NOUSER}" ]
+then
+	exit 0
+fi
+
+. /scripts/live-functions
+
+log_begin_msg "Adding live session user"
+
+# live-initramfs script
+
+user_crypted="8Ab05sVQ4LLps" # as in $(echo "live" | mkpasswd -s)
+
+# U6aMy0wojraho is just a blank password
+chroot /root debconf-communicate -fnoninteractive live-initramfs > /dev/null << EOF
+set passwd/make-user true
+set passwd/root-password-crypted *
+set passwd/user-password-crypted ${user_crypted}
+set passwd/user-fullname ${USERFULLNAME}
+set passwd/username ${USERNAME}
+set passwd/user-uid 1000
+EOF
+
+chroot /root /usr/bin/env -i HOME="/root" \
+	TERM="${TERM}" PATH="/usr/sbin:/usr/bin:/sbin:/bin" \
+	/usr/lib/user-setup/user-setup-apply 2>&1 \
+		| grep -v "Shadow passwords are now on"
+
+# Clear out debconf database again to avoid confusing ubiquity later.
+chroot /root debconf-communicate -fnoninteractive live-initramfs > /dev/null << EOF
+set passwd/make-user
+set passwd/root-password-crypted
+set passwd/user-password-crypted
+set passwd/user-fullname
+set passwd/username
+set passwd/user-uid
+EOF
+
+if ! grep -qs "${USERNAME}" /root/etc/passwd
+then
+	echo "The default user (${USERNAME}) is not present,"
+	first_user=$(grep '^[^:]*:[^:]*:[12]\?[0-9][0-9][0-9][0-9]:' /root/etc/passwd | head -1 | cut -f1 -d ':')
+	if [ -n "${first_user}" ];
+	then
+		echo "setting default user to: ${first_user}."
+		USERNAME="${first_user}"
+		really_export USERNAME
+	else
+		echo "no other valid users found, disabling autologin."
+		NOAUTOLOGIN="Yes"
+		NOXAUTOLOGIN="Yes"
+		USERNAME=""
+		really_export NOAUTOLOGIN
+		really_export NOXAUTOLOGIN
+		really_export USERNAME
+		log_end_msg
+		exit 0
+	fi
+fi
+
+if [ -z "${NOSUDO}" ]
+then
+	if ! grep -q "${USERNAME}" /root/etc/sudoers
+	then
+		echo "${USERNAME}  ALL=(ALL) NOPASSWD: ALL" >> /root/etc/sudoers
+
+		chroot /root sudo -u "${USERNAME}" sh -c "echo 'SU_TO_ROOT_SU=sudo' >> /home/${USERNAME}/.su-to-rootrc"
+
+		if [ -x /root/usr/bin/gconftool-2 ]
+		then
+			chroot /root sudo -u "${USERNAME}" gconftool-2 -s -t bool /apps/gksu/sudo-mode true
+			chroot /root sudo -u "${USERNAME}" gconftool-2 -s -t bool /apps/gksu/display-no-pass-info false
+		fi
+
+chroot /root sudo -u "${USERNAME}" sh -c "umask 0077 && mkdir -p /home/${USERNAME}/.kde/share/config && cat > /home/${USERNAME}/.kde/share/config/kdesurc" << EOF
+[super-user-command]
+super-user-command=sudo
+EOF
+
+		if [ -f /root/usr/share/apps/konsole/sumc.desktop ]
+		then
+			chroot /root sudo -u "${USERNAME}" sh -c "umask 0077 && mkdir -p /home/${USERNAME}/.kde/share/apps/konsole && sed -e's/Exec=su.*$/Exec=sudo mc -c/' /usr/share/apps/konsole/sumc.desktop > /home/${USERNAME}/.kde/share/apps/konsole/sumc.desktop"
+		fi
+
+		if [ -f /root/usr/share/apps/konsole/su.desktop ]
+		then
+			chroot /root sudo -u "${USERNAME}" sh -c "umask 0077 && mkdir -p /home/${USERNAME}/.kde/share/apps/konsole && sed -e's/Exec=su.*$/Exec=sudo -i/' /usr/share/apps/konsole/su.desktop > /home/${USERNAME}/.kde/share/apps/konsole/su.desktop"
+		fi
+	fi
+fi
+
+if [ -L /root/home/${USERNAME}/Examples ]
+then
+	chroot /root install -o ${USERNAME} -g ${USERNAME} -d /home/${USERNAME}/Desktop/
+	mv /root/home/${USERNAME}/Examples /root/home/${USERNAME}/Desktop/
+fi
+
+log_end_msg

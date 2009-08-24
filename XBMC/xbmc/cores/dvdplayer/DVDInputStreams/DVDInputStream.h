@@ -55,6 +55,14 @@ public:
     virtual bool UpdateItem(CFileItem& item) = 0;
   };
 
+  class IDisplayTime
+  {
+    public:
+    virtual ~IDisplayTime() {};
+    virtual int GetTotalTime() = 0;
+    virtual int GetTime() = 0;
+  };
+
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content) = 0;

@@ -24,7 +24,6 @@
 #include "ScraperParser.h"
 #include "ScraperSettings.h"
 #include "XMLUtils.h"
-#include "Util.h"
 #include "Settings.h"
 
 using namespace MUSIC_GRABBER;
@@ -106,6 +105,7 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
   m_parser.m_param[strHTML.size()] = m_strSearch;
 
   CStdString strXML = m_parser.Parse(strFunction);
+  CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);

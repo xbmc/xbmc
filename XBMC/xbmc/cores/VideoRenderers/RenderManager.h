@@ -32,12 +32,13 @@
 #include "utils/SharedSection.h"
 #include "utils/Thread.h"
 #include "settings/VideoSettings.h"
+#include "OverlayRenderer.h"
 
-class CXBoxRenderManager
+class CXBMCRenderManager
 {
 public:
-  CXBoxRenderManager();
-  ~CXBoxRenderManager();
+  CXBMCRenderManager();
+  ~CXBMCRenderManager();
 
   // Functions called from the GUI
   void GetVideoRect(RECT &rs, RECT &rd) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->GetVideoRect(rs, rd); };
@@ -81,6 +82,18 @@ public:
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
+
+  void AddOverlay(CDVDOverlay* o)
+  {
+    CSharedLock lock(m_sharedSection);
+    m_overlays.AddOverlay(o);
+  }
+
+  void AddCleanup(OVERLAY::COverlay* o)
+  {
+    CSharedLock lock(m_sharedSection);
+    m_overlays.AddCleanup(o);
+  }
 
   inline void Reset()
   {
@@ -145,8 +158,11 @@ protected:
   EINTERLACEMETHOD m_presentmethod;
   int        m_presentstep;
   CEvent     m_presentevent;
+
+
+  OVERLAY::CRenderer m_overlays;
 };
 
-extern CXBoxRenderManager g_renderManager;
+extern CXBMCRenderManager g_renderManager;
 
 

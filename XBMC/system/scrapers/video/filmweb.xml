@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<scraper framework="1.0" date="2009-06-05" name="filmweb.pl" content="movies" thumb="filmweb.jpg" language="pl">
+<scraper framework="1.0" date="2009-08-08" name="filmweb.pl" content="movies" thumb="filmweb.jpg" language="pl">
+	<include>common/tmdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Wysoka jakosc okladki&quot; type=&quot;bool&quot; id=&quot;poster&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -132,7 +133,7 @@
 			<RegExp input="$$1" output="\1" dest="10">
 				<expression>id=$$9&lt;/a&gt; linkuje z [^&gt;]+&gt;([^&lt;]+)</expression>
 			</RegExp>
-			<RegExp input="$$11" output="&lt;url function=&quot;WikipediaToIMDB&quot;&gt;http://pl.wikipedia.org/wiki/\1&lt;/url&gt;" dest="2+">
+			<RegExp input="$$11" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://pl.wikipedia.org/wiki/\1&lt;/url&gt;" dest="2+">
 				<RegExp input="$$10" output="_\1" dest="11">
 					<expression repeat="yes">([^ ]+)</expression>
 				</RegExp>
@@ -141,30 +142,6 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</FilmwebToWikipedia>
-	<WikipediaToIMDB dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-<!--			<RegExp input="$$1" output="&lt;mpaa&gt;IMDb.id = \1&lt;/mpaa&gt;" dest="2+">-->
-<!--				<expression>/title/([t0-9]*)</expression>-->
-<!--			</RegExp>-->
-			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="2+">
-				<expression>/title/([t0-9]*)</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</WikipediaToIMDB>
-	<GetTMDBId dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-		</RegExp>
-	</GetTMDBId>
-	<GetTMDBFanart dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
-			</RegExp>
-			<expression noclean="1">(.+)</expression>
-		</RegExp>
-	</GetTMDBFanart>
 	<Opisy dest="5">
 		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;plot&gt;\1&lt;/plot&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="\1\n" dest="9">
@@ -183,7 +160,7 @@
 		</RegExp>
 	</Opisy>
 	<Plakaty dest="5">
-		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$8" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb&gt;http://gfx.filmweb.pl/po\1&lt;/thumb&gt;" dest="8+">
 				<expression noclean="1" repeat="yes">href=&quot;http://gfx.filmweb.pl/po(.[^&quot;]*)</expression>
 			</RegExp>            

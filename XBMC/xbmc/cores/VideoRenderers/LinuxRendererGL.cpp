@@ -27,12 +27,12 @@
 #ifndef HAS_SDL_2D
 #include <locale.h>
 #include "LinuxRendererGL.h"
-#include "../../Application.h"
-#include "../../Util.h"
-#include "../../Settings.h"
-#include "../../XBVideoConfig.h"
-// elis #include "../../../guilib/Surface.h"
-#include "../../../guilib/FrameBufferObject.h"
+#include "Application.h"
+#include "MathUtils.h"
+#include "Settings.h"
+#include "XBVideoConfig.h"
+#include "guilib/Surface.h"
+#include "guilib/FrameBufferObject.h"
 #include "WindowingFactory.h"
 
 #ifdef HAVE_LIBVDPAU
@@ -242,6 +242,15 @@ void CLinuxRendererGL::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, f
 
   float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
 
+  // allow a certain error to maximize screen size
+  float fCorrection = fScreenWidth / fScreenHeight / fOutputFrameRatio - 1.0;
+  if(fCorrection >   m_aspecterror)
+    fCorrection = m_aspecterror;
+  if(fCorrection < - m_aspecterror)
+    fCorrection = - m_aspecterror;
+
+  fOutputFrameRatio *= 1.0 + fCorrection;
+
   // maximize the movie width
   float fNewWidth = fScreenWidth;
   float fNewHeight = fNewWidth / fOutputFrameRatio;
@@ -281,6 +290,8 @@ void CLinuxRendererGL::ManageDisplay()
   float fScreenHeight = (float)rv.bottom - rv.top;
   float fOffsetX1 = (float)rv.left;
   float fOffsetY1 = (float)rv.top;
+
+  AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
 
   // source rect
   rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
@@ -943,13 +954,6 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   glEnable(GL_BLEND);
   glFlush();
 
-  if (g_graphicsContext.IsFullScreenVideo() && !g_application.IsPaused() && !(flags & RENDER_FLAG_NOOSD))
-  {
-    if (g_application.NeedRenderFullScreen())
-      g_application.RenderFullScreen();
-    g_application.RenderMemoryStatus();
-  }
-
   g_graphicsContext.EndPaint();
 }
 
@@ -1035,6 +1039,7 @@ unsigned int CLinuxRendererGL::PreInit()
 
   // setup the background colour
   m_clearColour = (float)(g_advancedSettings.m_videoBlackBarColour & 0xff) / 0xff;
+  m_aspecterror = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01;
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
     CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
@@ -1255,6 +1260,7 @@ void CLinuxRendererGL::UnInit()
     delete [] m_rgbBuffer;
     m_rgbBuffer = NULL;
   }
+  m_rgbBufferSize = 0;
 
 #ifdef HAVE_LIBVDPAU
   if (g_VDPAU)
@@ -1457,14 +1463,160 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
 
 void CLinuxRendererGL::AutoCrop(bool bCrop)
 {
-  // FIXME: no cropping for now
-  { // reset to defaults
-    g_stSettings.m_currentVideoSettings.m_CropLeft = 0;
-    g_stSettings.m_currentVideoSettings.m_CropRight = 0;
-    g_stSettings.m_currentVideoSettings.m_CropTop = 0;
-    g_stSettings.m_currentVideoSettings.m_CropBottom = 0;
+  RECT crop;
+
+  if(!m_bValidated) return;
+
+  if (bCrop)
+  {
+    YV12Image &im = m_buffers[m_iYV12RenderBuffer].image;
+    crop.left   = g_stSettings.m_currentVideoSettings.m_CropLeft;
+    crop.right  = g_stSettings.m_currentVideoSettings.m_CropRight;
+    crop.top    = g_stSettings.m_currentVideoSettings.m_CropTop;
+    crop.bottom = g_stSettings.m_currentVideoSettings.m_CropBottom;
+
+    int black  = 16; // what is black in the image
+    int level  = 8;  // how high above this should we detect
+    int multi  = 4;  // what multiple of last line should failing line be to accept
+    BYTE *s;
+    int last, detect, black2;
+
+    // top and bottom levels
+    black2 = black * im.width;
+    detect = level * im.width + black2;
+
+    // Crop top
+    s      = im.plane[0];
+    last   = black2;
+    for (unsigned int y = 0; y < im.height/2; y++)
+    {
+      int total = 0;
+      for (unsigned int x = 0; x < im.width; x++)
+        total += s[x];
+      s += im.stride[0];
+
+      if (total > detect)
+      {
+        if (total - black2 > (last - black2) * multi)
+          crop.top = y;
+        break;
+      }
+      last = total;
+    }
+
+    // Crop bottom
+    s    = im.plane[0] + (im.height-1)*im.stride[0];
+    last = black2;
+    for (unsigned int y = (int)im.height; y > im.height/2; y--)
+    {
+      int total = 0;
+      for (unsigned int x = 0; x < im.width; x++)
+        total += s[x];
+      s -= im.stride[0];
+
+      if (total > detect)
+      {
+        if (total - black2 > (last - black2) * multi)
+          crop.bottom = im.height - y;
+        break;
+      }
+      last = total;
+    }
+
+    // left and right levels
+    black2 = black * im.height;
+    detect = level * im.height + black2;
+
+
+    // Crop left
+    s    = im.plane[0];
+    last = black2;
+    for (unsigned int x = 0; x < im.width/2; x++)
+    {
+      int total = 0;
+      for (unsigned int y = 0; y < im.height; y++)
+        total += s[y * im.stride[0]];
+      s++;
+      if (total > detect)
+      {
+        if (total - black2 > (last - black2) * multi)
+          crop.left = x;
+        break;
+      }
+      last = total;
+    }
+
+    // Crop right
+    s    = im.plane[0] + (im.width-1);
+    last = black2;
+    for (unsigned int x = (int)im.width-1; x > im.width/2; x--)
+    {
+      int total = 0;
+      for (unsigned int y = 0; y < im.height; y++)
+        total += s[y * im.stride[0]];
+      s--;
+
+      if (total > detect)
+      {
+        if (total - black2 > (last - black2) * multi)
+          crop.right = im.width - x;
+        break;
+      }
+      last = total;
+    }
+
+    // We always crop equally on each side to get zoom
+    // effect intead of moving the image. Aslong as the
+    // max crop isn't much larger than the min crop
+    // use that.
+    int min, max;
+
+    min = std::min(crop.left, crop.right);
+    max = std::max(crop.left, crop.right);
+    if(10 * (max - min) / im.width < 1)
+      crop.left = crop.right = max;
+    else
+      crop.left = crop.right = min;
+
+    min = std::min(crop.top, crop.bottom);
+    max = std::max(crop.top, crop.bottom);
+    if(10 * (max - min) / im.height < 1)
+      crop.top = crop.bottom = max;
+    else
+      crop.top = crop.bottom = min;
   }
+  else
+  { // reset to defaults
+    crop.left   = 0;
+    crop.right  = 0;
+    crop.top    = 0;
+    crop.bottom = 0;
+  }
+
+  m_crop.x1 += ((float)crop.left   - m_crop.x1) * 0.1;
+  m_crop.x2 += ((float)crop.right  - m_crop.x2) * 0.1;
+  m_crop.y1 += ((float)crop.top    - m_crop.y1) * 0.1;
+  m_crop.y2 += ((float)crop.bottom - m_crop.y2) * 0.1;
+
+  crop.left   = MathUtils::round_int(m_crop.x1);
+  crop.right  = MathUtils::round_int(m_crop.x2);
+  crop.top    = MathUtils::round_int(m_crop.y1);
+  crop.bottom = MathUtils::round_int(m_crop.y2);
+
+  //compare with hysteresis
+# define HYST(n, o) ((n) > (o) || (n) + 1 < (o))
+  if(HYST(g_stSettings.m_currentVideoSettings.m_CropLeft  , crop.left)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropRight , crop.right)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropTop   , crop.top)
+  || HYST(g_stSettings.m_currentVideoSettings.m_CropBottom, crop.bottom))
+  {
+    g_stSettings.m_currentVideoSettings.m_CropLeft   = crop.left;
+    g_stSettings.m_currentVideoSettings.m_CropRight  = crop.right;
+    g_stSettings.m_currentVideoSettings.m_CropTop    = crop.top;
+    g_stSettings.m_currentVideoSettings.m_CropBottom = crop.bottom;
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
+}
+# undef HYST
 }
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)

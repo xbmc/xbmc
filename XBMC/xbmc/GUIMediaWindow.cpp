@@ -25,6 +25,7 @@
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/PluginDirectory.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "GUIPassword.h"
 #include "Application.h"
 #include "utils/Network.h"
@@ -333,8 +334,14 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
       {
-        if (message.GetStringParam() == m_vecItems->m_strPath && IsActive())
+        if (IsActive())
+        {
+          if((message.GetStringParam() == m_vecItems->m_strPath) ||
+             (m_vecItems->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_vecItems->m_strPath, message.GetStringParam())))
+          {
           Update(m_vecItems->m_strPath);
+      }
+        }
       }
       else
         return CGUIWindow::OnMessage(message);

@@ -12,6 +12,12 @@ CPlayerSelectionRule::~CPlayerSelectionRule()
 
 void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
 {
+  m_name = pRule->Attribute("name");
+  if (!m_name || m_name.IsEmpty())
+    m_name = "un-named";
+
+  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::Initialize: creating rule: %s", m_name.c_str());
+
   m_tInternetStream = GetTristate(pRule->Attribute("internetstream"));
   m_tAudio = GetTristate(pRule->Attribute("audio"));
   m_tVideo = GetTristate(pRule->Attribute("video"));
@@ -48,6 +54,8 @@ int CPlayerSelectionRule::GetTristate(const char* szValue) const
 
 void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vecCores)
 {
+  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: considering rule: %s", m_name.c_str());
+
   if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio()) return;
   if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo()) return;
   if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != item.IsInternetStream()) return;
@@ -71,11 +79,17 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   if (m_fileName && m_fileName.length() > 0 && regExp.RegComp(m_fileName.c_str()) &&
       regExp.RegFind(item.m_strPath, 0) != 0) return;
 
+  CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: matches rule: %s", m_name.c_str());
+
   for (unsigned int i = 0; i < vecSubRules.size(); i++)
     vecSubRules[i]->GetPlayers(item, vecCores);
   
-  if (GetPlayerCore() != EPC_NONE)
+  PLAYERCOREID playerCoreId = GetPlayerCore();
+  if (playerCoreId != EPC_NONE)
+  {
+    CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: adding player: %s (%d) for rule: %s", m_playerName.c_str(), playerCoreId, m_name.c_str());
     vecCores.push_back(GetPlayerCore());
+}
 }
 
 PLAYERCOREID CPlayerSelectionRule::GetPlayerCore()

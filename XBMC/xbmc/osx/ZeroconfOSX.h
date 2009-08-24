@@ -21,7 +21,12 @@
  */
 
 #include <memory>
+#include <Carbon/Carbon.h>
+#include <CoreFoundation/CoreFoundation.h>
+#include <CoreServices/CoreServices.h>
+
 #include "Zeroconf.h"
+#include <CriticalSection.h>
 
 class CZeroconfOSX : public CZeroconf
 {
@@ -40,8 +45,14 @@ protected:
   virtual void doStop();
 
 private:
-  //another indirection with pimpl
-  //CZeroconfOSXData stores the actual (objective-c-) data
-  class CZeroconfOSXData;
-  std::auto_ptr<CZeroconfOSXData> mp_data;
+  static void registerCallback(CFNetServiceRef theService, CFStreamError* error, void* info);
+  void cancelRegistration(CFNetServiceRef theService);
+
+  //CF runloop ref; we're using main-threads runloop
+  CFRunLoopRef m_runloop;
+
+  //lock + data (accessed from runloop(main thread) + the rest)
+  CCriticalSection m_data_guard;
+  typedef std::map<std::string, CFNetServiceRef> tServiceMap;
+  tServiceMap m_services;
 };

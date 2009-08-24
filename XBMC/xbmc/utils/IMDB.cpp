@@ -57,15 +57,17 @@ CIMDB::~CIMDB()
 {
 }
 
-int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction, CScraperUrl* pUrl)
+int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList, const CStdString& strFunction, CScraperUrl* pUrl)
 {
   movielist.clear();
 
   CScraperUrl scrURL;
 
-  CStdString movieTitle = strMovie;
-  CStdString movieYear;
-  GetCleanNameAndYear(movieTitle, movieYear);
+  CStdString strName = strMovie;
+  CStdString movieTitle, movieTitleAndYear, movieYear;
+  CUtil::CleanString(strName, movieTitle, movieTitleAndYear, movieYear, true);
+
+  movieTitle.ToLower();
 
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
     __FUNCTION__, movieTitle.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strLanguage.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
@@ -150,7 +152,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     if (szFunction)
     {
       CScraperUrl scrURL(xurl);
-      InternalFindMovie(strMovie,movielist,szFunction,&scrURL);
+      InternalFindMovie(strMovie,movielist,sortMovieList,szFunction,&scrURL);
     }
     xurl = xurl->NextSiblingElement("url");
   }
@@ -161,6 +163,17 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
 
   while (movie)
   {
+    // is our result already sorted correctly when handed over from scraper? if so, do not let xbmc sort it
+    if (sortMovieList)
+    {
+      TiXmlElement* results = docHandle.FirstChild("results").Element();
+      if (results)
+      {
+        CStdString szSorted = results->Attribute("sorted");
+        sortMovieList = (szSorted.CompareNoCase("yes") != 0);
+      }
+    }
+
     CScraperUrl url;
     TiXmlNode *title = movie->FirstChild("title");
     TiXmlElement *link = movie->FirstChildElement("url");
@@ -458,35 +471,6 @@ void CIMDB::GetURL(const CStdString &movieFile, const CStdString &movieName, con
   scrURL.ParseString(m_parser.Parse("CreateSearchUrl",&m_info.settings));
 }
 
-// TODO: Make this user-configurable?
-void CIMDB::GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear)
-{
-#define SEP " _\\.\\(\\)\\[\\]\\-"
-  CRegExp reYear;
-  reYear.RegComp("(.+[^"SEP"])["SEP"]+(19[0-9][0-9]|20[0-1][0-9])(["SEP"]|$)");
-
-  strMovieName.ToLower();
-
-  if (reYear.RegFind(strMovieName.c_str()) >= 0)
-  {
-    char *pMovie = reYear.GetReplaceString("\\1");
-    char *pYear = reYear.GetReplaceString("\\2");
-
-    if(pMovie)
-    {
-      strMovieName = pMovie;
-      free(pMovie);
-    }
-    if(pYear)
-    {
-      strYear = pYear;
-      free(pYear);
-    }
-  }
-  // get clean string
-  CUtil::CleanString(strMovieName,true);
-}
-
 // threaded functions
 void CIMDB::Process()
 {
@@ -563,8 +547,10 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   }
   
   // unthreaded
-  int success = InternalFindMovie(strMovie, movieList);
+  bool sortList = true;
+  int success = InternalFindMovie(strMovie, movieList, sortList);
   // sort our movie list by fuzzy match
+  if (sortList)
   std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
   return success;
 }

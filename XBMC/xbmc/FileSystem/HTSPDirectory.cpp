@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "HTSPDirectory.h"
 #include "URL.h"
-#include "Util.h"
 #include "FileItem.h"
 #include "Settings.h"
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h"
@@ -168,10 +167,13 @@ bool CHTSPDirectorySession::Open(const CURL& url)
   if(!url.GetUserName().IsEmpty())
     m_session.Auth(url.GetUserName(), url.GetPassWord());
 
+  if(!m_session.SendEnableAsync())
+    return false;
+
   Create();
 
   m_started.WaitMSec(30000);
-  return true;
+  return !m_bStop;
 }
 
 void CHTSPDirectorySession::Close()
@@ -179,6 +181,7 @@ void CHTSPDirectorySession::Close()
   m_bStop = true;
   m_session.Abort();
   StopThread();
+  m_session.Close();
 }
 
 htsmsg_t* CHTSPDirectorySession::ReadResult(htsmsg_t* m)
@@ -243,7 +246,6 @@ bool CHTSPDirectorySession::GetEvent(SEvent& event, uint32_t id)
 void CHTSPDirectorySession::Process()
 {
   CLog::Log(LOGDEBUG, "CHTSPDirectorySession::Process() - Starting");
-  m_session.SendEnableAsync();
 
   htsmsg_t* msg;
 
@@ -290,7 +292,7 @@ void CHTSPDirectorySession::Process()
     htsmsg_destroy(msg);
   }
 
-  m_session.Close();
+  m_started.Set();
   CLog::Log(LOGDEBUG, "CHTSPDirectorySession::Process() - Exiting");
 }
 

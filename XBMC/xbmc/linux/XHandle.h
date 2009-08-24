@@ -26,7 +26,7 @@
 
 #include "../../guilib/StdString.h"
 #include <SDL/SDL_mutex.h>
-#include <SDL/SDL_thread.h>
+#include <pthread.h>
 
 #include "PlatformDefs.h"
 #include "StringUtils.h"
@@ -48,7 +48,8 @@ public:
   void ChangeType(HandleType newType);
 
   SDL_sem    *m_hSem;
-  SDL_Thread  *m_hThread;
+  pthread_t  m_hThread;
+  bool       m_threadValid;
   SDL_cond    *m_hCond;
   std::list<CXHandle*> m_hParents;
 
@@ -62,7 +63,7 @@ public:
   // simulate mutex and critical section
   SDL_mutex  *m_hMutex;
   int      RecursionCount;  // for mutex - for compatibility with WIN32 critical section
-  DWORD    OwningThread;
+  pthread_t OwningThread;
   int      fd;
   bool     m_bManualEvent;
   time_t    m_tmCreation;

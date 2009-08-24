@@ -706,32 +706,55 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // remove any overlays that are out of time
   m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
 
-  if(pSource->format != DVDVideoPicture::FMT_YUV420P)
-    return;
+  enum EOverlay
+  { OVERLAY_AUTO // select mode auto
+  , OVERLAY_GPU  // render osd using gpu
+  , OVERLAY_VID  // render osd directly on video memory
+  , OVERLAY_BUF  // render osd on buffer
+  } render = OVERLAY_AUTO;
 
+  if(render == OVERLAY_AUTO)
+  {
+    render = OVERLAY_GPU;
+
+    if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA))
+      render = OVERLAY_VID;
+
+    if(render == OVERLAY_VID)
+    {
+      if( m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU)
+       || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
+       || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) )
+        render = OVERLAY_BUF;
+    }
+  }
+
+  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+  {
+    if(render == OVERLAY_BUF)
+    {
   // rendering spu overlay types directly on video memory costs a lot of processing power.
   // thus we allocate a temp picture, copy the original to it (needed because the same picture can be used more than once).
   // then do all the rendering on that temp picture and finaly copy it to video memory.
   // In almost all cases this is 5 or more times faster!.
-  bool bHasSpecialOverlay = m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU)
-                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
-                         || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA);
 
-  if (bHasSpecialOverlay)
+      if(m_pTempOverlayPicture && ( m_pTempOverlayPicture->iWidth  != pSource->iWidth
+                                 || m_pTempOverlayPicture->iHeight != pSource->iHeight))
   {
-    if (m_pTempOverlayPicture && (m_pTempOverlayPicture->iWidth != pSource->iWidth || m_pTempOverlayPicture->iHeight != pSource->iHeight))
-    {
       CDVDCodecUtils::FreePicture(m_pTempOverlayPicture);
       m_pTempOverlayPicture = NULL;
     }
 
-    if (!m_pTempOverlayPicture) m_pTempOverlayPicture = CDVDCodecUtils::AllocatePicture(pSource->iWidth, pSource->iHeight);
-  }
+      if(!m_pTempOverlayPicture)
+        m_pTempOverlayPicture = CDVDCodecUtils::AllocatePicture(pSource->iWidth, pSource->iHeight);
+      if(!m_pTempOverlayPicture)
+        return;
 
-  if (bHasSpecialOverlay && m_pTempOverlayPicture)
     CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
+    }
   else
     CDVDCodecUtils::CopyPicture(pDest, pSource);
+  }
 
   m_pOverlayContainer->Lock();
 
@@ -751,19 +774,29 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
 
     double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
 
-    if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime >= pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
+    if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
     {
-      if (bHasSpecialOverlay && m_pTempOverlayPicture)
+      if (render == OVERLAY_GPU)
+        g_renderManager.AddOverlay(pOverlay);
+
+      if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+      {
+        if     (render == OVERLAY_BUF)
         CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts2);
-      else
+        else if(render == OVERLAY_VID)
         CDVDOverlayRenderer::Render(pDest, pOverlay, pts2);
     }
+
+  }
   }
 
   m_pOverlayContainer->Unlock();
 
-  if (bHasSpecialOverlay && m_pTempOverlayPicture)
+  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+  {
+    if(render == OVERLAY_BUF)
     CDVDCodecUtils::CopyPicture(pDest, m_pTempOverlayPicture);
+}
 }
 #endif
 

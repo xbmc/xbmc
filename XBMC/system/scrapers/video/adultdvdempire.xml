@@ -1,4 +1,5 @@
-<scraper framework="1.0" date="2009-05-22" name="Adult DVD Empire" content="movies" thumb="adultdvdempire.jpg" language="en">
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<scraper framework="1.1" date="2009-08-05" name="Adult DVD Empire" content="movies" thumb="adultdvdempire.jpg" language="en">
 <NfoUrl dest="3">
 <RegExp input="$$1" output="&lt;url&gt;http://www.adultdvdempire.com/itempage.aspx?item_id=\1&lt;/url&gt;" dest="3">
 <expression noclean="1">adultdvdempire.com/itempage.aspx?item_id=([0-9]*)</expression>
@@ -9,7 +10,6 @@
 <RegExp input="$$1" output="&lt;url&gt;http://www.adultdvdempire.com/SearchTitlesPage.aspx?SearchString=\1&lt;/url&gt;" dest="3">
 <expression noclean="1"></expression>
 </RegExp>
-
 </CreateSearchUrl>
 
 <GetSearchResults dest="6">
@@ -23,11 +23,11 @@
 
 <GetDetails dest="3">
 <RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-<RegExp input="$$1" output="&lt;thumbs&gt;&lt;thumb&gt;http://images2.dvdempire.com/res/movies/\1h.jpg&lt;/thumb&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://images2.dvdempire.com/res/movies/\1h.jpg&lt;/thumb&gt;" dest="5+">
 <expression>BoxCover_Container&quot;&gt;[^&gt;]*&gt;&lt;img src=&quot;http://images2.dvdempire.com/res/movies/([^m]*)</expression>
 </RegExp>
 
-<RegExp input="$$1" output="&lt;thumb&gt;http://images2.dvdempire.com/res/movies/\1bh.jpg&lt;/thumb&gt;&lt;/thumbs&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://images2.dvdempire.com/res/movies/\1bh.jpg&lt;/thumb&gt;" dest="5+">
 <expression>BoxCover_Container&quot;&gt;[^&gt;]*&gt;&lt;img src=&quot;http://images2.dvdempire.com/res/movies/([^m]*)</expression>
 </RegExp>
 
@@ -55,11 +55,9 @@
 <expression repeat="yes">&lt;a href=&quot;/([0-9]*)/([^&quot;]*)-Pornstars.html&quot;&gt;([^&lt;]*)</expression>
 </RegExp>
 
-
 <RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 <expression repeat="yes">media_id=[^i]*item_id=[^&gt;]*&gt;([^&lt;]*)</expression>
 </RegExp>
-
 
 <RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
 <expression>&gt;Length: ([^&lt;]*)&lt;</expression>

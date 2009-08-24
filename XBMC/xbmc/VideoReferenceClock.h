@@ -53,7 +53,7 @@ class CVideoReferenceClock : public CThread
     int     GetRefreshRate();
     int64_t Wait(int64_t Target);
     bool    WaitStarted(int MSecs);
-    bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed);
+    bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate);
 
 #ifdef _WIN32
     void SetMonitor(MONITORINFOEX &Monitor);
@@ -61,7 +61,7 @@ class CVideoReferenceClock : public CThread
     void VblankHandler(int64_t nowtime, double fps);
 #endif
     
-  protected:
+  private:
     void Process();
     bool UpdateRefreshrate(bool Forced = false);
     void SendVblankSignal();
@@ -105,6 +105,7 @@ class CVideoReferenceClock : public CThread
 #elif defined(_WIN32)
     bool CreateHiddenWindow();
     bool SetupD3D();
+    double MeasureRefreshrate(int MSecs);
     void RunD3D();
     void CleanupD3D();
     void HandleWindowMessages();

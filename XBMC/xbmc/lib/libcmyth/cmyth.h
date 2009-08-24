@@ -122,9 +122,9 @@ struct cmyth_file;
 typedef struct cmyth_file *cmyth_file_t;
 
 struct cmyth_commbreak {
-        long start_mark;
+        long long start_mark;
         long long start_offset;
-        long end_mark;
+        long long end_mark;
         long long end_offset;
 };
 typedef struct cmyth_commbreak *cmyth_commbreak_t;
@@ -995,7 +995,8 @@ extern int cmyth_set_bookmark(cmyth_conn_t conn, cmyth_proginfo_t prog,
 	long long bookmark);
 extern cmyth_commbreaklist_t cmyth_commbreaklist_create(void);
 extern cmyth_commbreak_t cmyth_commbreak_create(void);
-extern cmyth_commbreaklist_t cmyth_get_commbreaklist(cmyth_database_t db, cmyth_conn_t conn, cmyth_proginfo_t prog);
+extern cmyth_commbreaklist_t cmyth_mysql_get_commbreaklist(cmyth_database_t db, cmyth_conn_t conn, cmyth_proginfo_t prog);
+extern cmyth_commbreaklist_t cmyth_get_commbreaklist(cmyth_conn_t conn, cmyth_proginfo_t prog);
 extern int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err, cmyth_commbreaklist_t breaklist, int count);
 
 /*

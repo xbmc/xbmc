@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -24,16 +22,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "ass.h"
 #include "ass_library.h"
+#include "ass_utils.h"
 
+static void ass_msg_handler(int level, const char *fmt, va_list va, void *data)
+{
+    if (level > MSGL_INFO)
+      return;
+
+    fprintf(stderr, "[ass] ");
+    vfprintf(stderr, fmt, va);
+    fprintf(stderr, "\n");
+}
 
 ass_library_t* ass_library_init(void)
 {
-	ass_library_t* priv = calloc(1, sizeof(ass_library_t));
-	priv->font_cache = ass_font_cache_init();
-	return priv;
+    ass_library_t* lib = calloc(1, sizeof(ass_library_t));
+    lib->msg_callback = ass_msg_handler;
+
+    return lib;
 }
 
 void ass_library_done(ass_library_t* priv)
@@ -42,9 +52,7 @@ void ass_library_done(ass_library_t* priv)
 		ass_set_fonts_dir(priv, NULL);
 		ass_set_style_overrides(priv, NULL);
 		ass_clear_fonts(priv);
-		ass_font_cache_done(priv->font_cache);
 		free(priv);
-
 	}
 }
 
@@ -73,9 +81,11 @@ void ass_set_style_overrides(ass_library_t* priv, char** list)
 		free(priv->style_overrides);
 	}
 	
-	if (!list) return;
+    if (!list)
+        return;
 
-	for (p = list, cnt = 0; *p; ++p, ++cnt) {}
+    for (p = list, cnt = 0; *p; ++p, ++cnt) {
+    }
 
 	priv->style_overrides = malloc((cnt + 1) * sizeof(char*));
 	for (p = list, q = priv->style_overrides; *p; ++p, ++q)
@@ -94,7 +104,8 @@ void ass_add_font(ass_library_t* priv, char* name, char* data, int size)
 	int idx = priv->num_fontdata;
 	if (!name || !data || !size)
 		return;
-	grow_array((void**)&priv->fontdata, priv->num_fontdata, sizeof(*priv->fontdata));
+    grow_array((void **) &priv->fontdata, priv->num_fontdata,
+               sizeof(*priv->fontdata));
 	
 	priv->fontdata[idx].name = strdup(name);
 	
@@ -116,4 +127,22 @@ void ass_clear_fonts(ass_library_t* priv)
 	free(priv->fontdata);
 	priv->fontdata = NULL;
 	priv->num_fontdata = 0;
+}
+
+/*
+ * Register a message callback function with libass.  Without setting one,
+ * a default handler is used which prints everything with MSGL_INFO or
+ * higher to the standard output.
+ *
+ * \param msg_cb the callback function
+ * \param data additional data that will be passed to the callback
+ */
+void ass_set_message_cb(ass_library_t *priv,
+                        void (*msg_cb)(int, const char *, va_list, void *),
+                        void *data)
+{
+    if (msg_cb) {
+        priv->msg_callback = msg_cb;
+        priv->msg_callback_data = data;
+    }
 }

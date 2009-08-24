@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -23,22 +21,23 @@
 #ifndef LIBASS_LIBRARY_H
 #define LIBASS_LIBRARY_H
 
-#include "ass_cache.h"
+#include <stdarg.h>
 
-typedef struct ass_fontdata_s {
+typedef struct {
 	char* name;
 	char* data;
 	int size;
 } ass_fontdata_t;
 
-struct ass_library_s {
+struct ass_library {
 	char* fonts_dir;
 	int extract_fonts;
 	char** style_overrides;
 
 	ass_fontdata_t* fontdata;
 	int num_fontdata;
-	ass_font_cache_t* font_cache;
+    void (*msg_callback)(int, const char *, va_list, void *);
+    void *msg_callback_data;
 };
 
 #endif /* LIBASS_LIBRARY_H */

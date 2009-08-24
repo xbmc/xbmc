@@ -33,6 +33,14 @@
   <string id="31">November</string>
   <string id="32">December</string>
 
+  <string id="41">Mon</string>
+  <string id="42">Tue</string>
+  <string id="43">Wed</string>
+  <string id="44">Thu</string>
+  <string id="45">Fri</string>
+  <string id="46">Sat</string>
+  <string id="47">Sun</string>
+
   <string id="98">View: Auto</string>
   <string id="99">View: Auto big</string>
   <string id="100">View: Icons</string>
@@ -564,6 +572,7 @@
   <string id="661">Choose export folder</string>
   <string id="662">This file is no longer available.</string>
   <string id="663">Would you like to remove it from the library?</string>
+  <string id="664">Browse for Script</string>
 
   <string id="700">Cleaning up library</string>
   <string id="701">Removing old songs from the library</string>
@@ -970,6 +979,7 @@
   <string id="13012">Exit</string>
   <string id="13013">Reboot</string>
   <string id="13014">Minimize</string>
+  <string id="13015">Power button action</string>
 
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>
@@ -2070,6 +2080,7 @@
   <string id="22018">Live channels</string>
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
+  <string id="22021">Allowed error in aspect ratio (%)</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
@@ -2118,5 +2129,54 @@
   <string id="33015">Ask for download before playing video</string>
   <string id="33016">Clips</string>
   <string id="33017">Restart plugin to enable</string>
-  <string id="33018">Clips</string>
+  <string id="33018">Tonight</string>
+  <string id="33019">Tomorrow Night</string>
+  <string id="33020">Condition</string>
+  <string id="33021">Precipitation</string>
+  <string id="33022">Precip</string>
+  <string id="33023">Humid</string>
+  <string id="33024">Feels</string>
+  <string id="33025">Observed</string>
+  <string id="33026">Departure from normal</string>
+  <string id="33027">Sunrise</string>
+  <string id="33028">Sunset</string>
+  <string id="33029">Details</string>
+  <string id="33030">Outlook</string>
+  <string id="33031">Coverflow</string>
+  <string id="33032">Translate text</string>
+  <string id="33033">Map list %s category</string>
+  <string id="33034">36 Hour</string>
+  <string id="33035">Maps</string>
+  <string id="33036">Hourly</string>
+  <string id="33037">Weekend</string>
+  <string id="33038">%s day</string>
+  <string id="33049">Alert</string>
+  <string id="33050">Alerts</string>
+  <string id="33051">Choose Your</string>
+  <string id="33052">Check</string>
+  <string id="33053">Configure the</string>
+  <string id="33054">Seasons</string>
+  <string id="33055">Use your</string>
+  <string id="33056">Watch your</string>
+  <string id="33057">Listen to</string>
+  <string id="33058">View your</string>
+  <string id="33059">Configure the</string>
+  <string id="33060">Power</string>
+  <string id="33061">Menu</string>
+  <string id="33062">Play the</string>
+  <string id="33063">Options</string>
+  <string id="33065">Editor</string>
+  <string id="33066">About your</string>
+  <string id="33067">Star rating</string>
+  <string id="33068">Background</string>
+  <string id="33069">Backgrounds</string>
+  <string id="33070">Custom background</string>
+  <string id="33071">Custom backgrounds</string>
+  <string id="33072">View Readme</string>
+  <string id="33073">View Changelog</string>
+  <string id="33074">This version of %s requires an</string>
+  <string id="33075">XBMC revision of %s or greater to run.</string>
+  <string id="33076">Please update XBMC.</string>
+  <string id="33077">No data found!</string>
+  <string id="33078">Next page</string>
 </strings>

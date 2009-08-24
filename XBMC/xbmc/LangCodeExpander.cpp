@@ -180,11 +180,6 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   return false;
 }
 
-#ifdef _XBOX
-#pragma const_seg("LC_RDATA")
-#pragma comment(linker, "/merge:LC_RDATA=LCODE")
-#endif
-
 extern const LCENTRY g_iso639_1[143] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },

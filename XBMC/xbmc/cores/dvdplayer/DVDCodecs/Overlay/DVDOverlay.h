@@ -1,9 +1,6 @@
 #pragma once
 
-
-
-#include "cores/dvdplayer/dvd_config.h"
-
+#include "cores/VideoRenderers/OverlayRenderer.h"
 #include <assert.h>
 #include <vector>
 
@@ -29,29 +26,39 @@ public:
     replace = false;
 
     m_references = 1;
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-    m_bTrackerReference = 0;
-#endif
     iGroupId = 0;
+    m_overlay = NULL;
+  }
+
+  CDVDOverlay(const CDVDOverlay& src)
+  {
+    m_type        = src.m_type;
+    iPTSStartTime = src.iPTSStartTime;
+    iPTSStopTime  = src.iPTSStopTime;
+    bForced       = src.bForced;
+    replace       = src.replace;
+    iGroupId      = src.iGroupId;
+    if(src.m_overlay)
+      m_overlay   = src.m_overlay->Acquire();
+    else
+      m_overlay   = NULL;
+    m_references  = 1;
   }
 
   virtual ~CDVDOverlay()
   {
-    // CLog::DebugLog("CDVDOverlay::CleanUp, remove, start : %d, stop : %d", (int)(iPTSStartTime / 1000), (int)(iPTSStopTime / 1000));
     assert(m_references == 0);
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-    if (m_bTrackerReference != 0) CLog::DebugLog("CDVDOverlay::~, overlay has an invalid olverlaycontainer reference, value : %d", m_bTrackerReference);
-    assert(m_bTrackerReference == 0);
-#endif
+    if(m_overlay)
+      m_overlay->Release();
   }
 
   /**
    * decrease the reference counter by one.
    */
-  long Acquire()
+  CDVDOverlay* Acquire()
   {
-    long count = InterlockedIncrement(&m_references);
-    return count;
+    InterlockedIncrement(&m_references);
+    return this;
   }
 
   /**
@@ -64,11 +71,6 @@ public:
     return count;
   }
 
-  long GetNrOfReferences()
-  {
-    return m_references;
-  }
-
   bool IsOverlayType(DVDOverlayType type) { return (m_type == type); }
 
   double iPTSStartTime;
@@ -76,10 +78,7 @@ public:
   bool bForced; // display, no matter what
   bool replace; // replace by next nomatter what stoptime it has
   int iGroupId;
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-  int m_bTrackerReference;
-#endif
-
+  OVERLAY::COverlay* m_overlay;
 protected:
   DVDOverlayType m_type;
 

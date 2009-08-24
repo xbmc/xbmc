@@ -1010,6 +1010,14 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         strLabel.Format("%i", iLevel);
     }
     break;
+  case PLAYER_TIME:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = GetCurrentPlayTime(TIME_FORMAT_HH_MM);
+    break;
+  case PLAYER_DURATION:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = GetDuration(TIME_FORMAT_HH_MM);
+    break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -1381,57 +1389,37 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 #endif
   case NETWORK_IP_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         return iface->GetCurrentIPAddress();
-#else
-      return g_application.getNetwork().m_networkinfo.ip;
-#endif
     }
     break;
   case NETWORK_SUBNET_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         return iface->GetCurrentNetmask();
-#else
-      return g_application.getNetwork().m_networkinfo.subnet;
-#endif
     }
     break;
   case NETWORK_GATEWAY_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
         return iface->GetCurrentDefaultGateway();
-#else
-      return g_application.getNetwork().m_networkinfo.gateway;
-#endif
     }
     break;
   case NETWORK_DNS1_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 1)
         return nss[0];
-#else
-      return g_application.getNetwork().m_networkinfo.DNS1;
-#endif
     }
     break;
   case NETWORK_DNS2_ADDRESS:
     {
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       vector<CStdString> nss = g_application.getNetwork().GetNameServers();
       if (nss.size() >= 2)
         return nss[1];
-#else
-      return g_application.getNetwork().m_networkinfo.DNS2;
-#endif
     }
     break;
   case NETWORK_DHCP_ADDRESS:
@@ -1444,13 +1432,11 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CStdString linkStatus = g_localizeStrings.Get(151);
       linkStatus += " ";
-#if defined(HAS_LINUX_NETWORK) || defined(HAS_WIN32_NETWORK)
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface && iface->IsConnected())
         linkStatus += g_localizeStrings.Get(15207);
       else
         linkStatus += g_localizeStrings.Get(15208);
-#endif
       return linkStatus;
     }
     break;
@@ -2015,19 +2001,26 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       case STRING_IS_EMPTY:
         // note: Get*Image() falls back to Get*Label(), so this should cover all of them
         if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-          bReturn = GetItemImage((CFileItem *)item, info.GetData1()).IsEmpty();
+          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).IsEmpty();
         else
           bReturn = GetImage(info.GetData1(), dwContextWindow).IsEmpty();
         break;
       case STRING_COMPARE:
-          bReturn = GetLabel(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+          bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
+        else
+          bReturn = GetImage(info.GetData1(), dwContextWindow).Equals(m_stringParameters[info.GetData2()]);
         break;
       case STRING_STR:
           {
             CStdString compare = m_stringParameters[info.GetData2()];
             // our compare string is already in lowercase, so lower case our label as well
             // as CStdString::Find() is case sensitive
-            CStdString label = GetLabel(info.GetData1()).ToLower();
+            CStdString label;
+            if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+              label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
+            else
+              label = GetImage(info.GetData1(), dwContextWindow).ToLower();
             if (compare.Right(5).Equals(",left"))
               bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
             else if (compare.Right(6).Equals(",right"))
