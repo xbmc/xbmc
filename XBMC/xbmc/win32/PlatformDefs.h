@@ -47,10 +47,29 @@ typedef uint32_t  u_int32_t;
 #define popen   _popen
 #define pclose  _pclose 
 
+#define XBMC_LIL_ENDIAN	1234
+#define XBMC_BIG_ENDIAN	4321
+
+#if defined(__hppa__) || \
+  defined(__m68k__) || defined(mc68000) || defined(_M_M68K) || \
+  (defined(__MIPS__) && defined(__MISPEB__)) || \
+  defined(__ppc__) || defined(__POWERPC__) || defined(_M_PPC) || \
+  defined(__sparc__)
+#define XBMC_BYTEORDER XBMC_BIG_ENDIAN
+#else
+#define XBMC_BYTEORDER XBMC_LIL_ENDIAN
+#endif
+
 #ifdef HAS_SDL
 #include <SDL/SDL_endian.h>
-
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#define XBMC_BYTEORDER XBMC_BIG_ENDIAN
+#else
+#define XBMC_BYTEORDER = XBMC_LITTLE_ENDIAN
+#endif
+#endif // SDL
+
+#if XBMC_BYTEORDER == XBMC_BIG_ENDIAN
 #define PIXEL_ASHIFT 0
 #define PIXEL_RSHIFT 8
 #define PIXEL_GSHIFT 16
@@ -59,13 +78,12 @@ typedef uint32_t  u_int32_t;
 #define RMASK 0x0000ff00
 #define GMASK 0x00ff0000
 #define BMASK 0xff000000
-
 // so we can use endian neutral PIX_FMT_BGRA in place of 
 // little endian PIX_FMT_RGB32 when setting up ffmpeg 
 #ifndef WORDS_BIGENDIAN
 #define WORDS_BIGENDIAN 1
 #endif
-#elif defined(HAS_DX)
+#else // little endian
 #define PIXEL_ASHIFT 24
 #define PIXEL_RSHIFT 16
 #define PIXEL_GSHIFT 8
@@ -75,7 +93,7 @@ typedef uint32_t  u_int32_t;
 #define GMASK 0x0000ff00
 #define BMASK 0x000000ff
 #endif
-#endif
+
 
 #ifndef va_copy
 #define va_copy(dst, src) ((dst) = (src))
