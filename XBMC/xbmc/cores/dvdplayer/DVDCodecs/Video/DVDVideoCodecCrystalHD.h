@@ -48,13 +48,13 @@ typedef char				S8;
 #ifndef __LINUX_USER__
 #define __LINUX_USER__
 #endif //__LINUX_USER__
-#if defined(__APPLE)
+#if defined(__APPLE__)
 #include "bc_dts_defs.h" 
 #include "bc_ldil_if.h" 
 #else 
 #include "lib/crystalhd/include/linux/bc_ldil_if.h"
 #include "lib/crystalhd/include/linux/bc_dts_defs.h"
-#endif //defined(__APPLE)
+#endif //defined(__APPLE__)
 #endif //defined(WIN32)
 
 class CDVDVideoCodecCrystalHD : public CDVDVideoCodec
