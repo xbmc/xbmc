@@ -448,7 +448,7 @@ install-bin: xbmc.bin # developement convenience target
 ifeq ($(findstring osx,$(ARCH)), osx)
 	# TODO: add osx install
 else
-install: install-datas install-web
+install:
 	@echo "Copying XBMC binary to $(prefix)/share/xbmc/xbmc.bin"
 	@install -D xbmc.bin $(prefix)/share/xbmc/xbmc.bin
 	@install -D xbmc-xrandr $(prefix)/share/xbmc/xbmc-xrandr
@@ -456,21 +456,23 @@ install: install-datas install-web
 	@install -D tools/Linux/xbmc-standalone.sh $(prefix)/bin/xbmc-standalone
 	@install -D -m 0644 tools/Linux/FEH.py $(prefix)/share/xbmc/FEH.py
 	@install -D -m 0644 tools/Linux/xbmc-xsession.desktop $(prefix)/share/xsessions/XBMC.desktop
-	@echo "Copying support and legal files,,,"
+	@echo "Copying support and legal files..."
 	@for FILE in `ls README.linux LICENSE.GPL *.txt`; do \
 		install -D -m 0644 "$$FILE" $(prefix)/share/xbmc/; done
 	@echo "Done!"
 	@echo "You can run XBMC with the command 'xbmc'"
+	@$(MAKE) install-datas
+	@$(MAKE) install-web
 endif
 
 install-datas:
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Arch dependent files
-	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*@ARCH@.*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %f                           \r"
+	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
-	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %f                            \r"
+	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 
 install-livedatas:
 	@echo "Install Live CD datas in $(prefix) ..."
@@ -481,8 +483,8 @@ install-livedatas:
 
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
-	@unzip -oq web/Project_Mayhem_III_webserver_v1.0.zip \
-		-d $(prefix)/share/xbmc/web -x "*/Thumbs.db"
+	@cp -r web/Project_Mayhem_III/* $(prefix)/share/xbmc/web
+	@find $(prefix)/share/xbmc/web -regextype posix-extended -iregex ".*svn.*" -delete
 
 uninstall:
 	@echo "Removing XBMC..."
