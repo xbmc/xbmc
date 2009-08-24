@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="pvrlib++"
-	ProjectGUID="{D450FE9A-CE56-4496-B4AB-379094E642F2}"
+	ProjectGUID="{5D7D9876-7553-4136-9C43-42DB5725361C}"
 	RootNamespace="XBMC_VDR"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
