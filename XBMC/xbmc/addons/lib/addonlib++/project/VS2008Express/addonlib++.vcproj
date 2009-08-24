@@ -106,7 +106,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\..\..\include;.;..\..\..;..\..\..\..\..\"
+				AdditionalIncludeDirectories="..\..\..\..\include;.;..\..\..;..\..\..\..\..\;..\..\..\..\..\win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;HAS_SDL_OPENGL;HAS_SDL;_USRDLL;XBMC_VDR_EXPORTS;_WIN32PC"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"

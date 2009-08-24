@@ -45,6 +45,7 @@
 #include "lib/libGoAhead/XBMChttp.h"
 #endif
 #include "Crc32.h"
+#include "xbox/IoSupport.h"
 
 using namespace std;
 using namespace XFILE;
