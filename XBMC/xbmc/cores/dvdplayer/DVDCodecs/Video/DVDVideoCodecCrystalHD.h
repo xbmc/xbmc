@@ -36,9 +36,15 @@ typedef char           S8;
 #ifndef __LINUX_USER__
 #define __LINUX_USER__
 #endif
+#if defined(__APPLE__)
+#include "bc_dts_defs.h"
+#include "bc_ldil_if.h"
+#else
 #include "lib/crystalhd/include/linux/bc_dts_defs.h"
 #include "lib/crystalhd/include/linux/bc_ldil_if.h"
 #endif
+#endif
+
 
 #include "DVDVideoCodec.h"
 #include <fstream>
@@ -60,7 +66,7 @@ public:
 
 protected:
   bool IsPictureReady();
-  HANDLE m_Device;
+  void* m_Device;
   BC_DTS_PROC_OUT m_Output;
   bool m_DropPictures;
   unsigned int m_PicturesDecoded;
