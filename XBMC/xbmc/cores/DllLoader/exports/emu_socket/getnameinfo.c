@@ -207,9 +207,9 @@ getnameinfo(sa, salen, host, hostlen, serv, servlen, flags)
 		strcpy(host, numaddr);
 	} else {
 #ifdef ENABLE_IPV6
-		hp = (mphostent *)getipnodebyaddr(addr, gni_afd->a_addrlen, gni_afd->a_af, &h_error);
+		hp = (struct hostent *)getipnodebyaddr(addr, gni_afd->a_addrlen, gni_afd->a_af, &h_error);
 #else
-		hp = (mphostent *)gethostbyaddr(addr, gni_afd->a_addrlen, gni_afd->a_af);
+		hp = (struct hostent *)gethostbyaddr(addr, gni_afd->a_addrlen, gni_afd->a_af);
 		h_error = h_errno;
 #endif
 
