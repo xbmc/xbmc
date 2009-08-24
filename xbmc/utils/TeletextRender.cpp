@@ -27,7 +27,7 @@
  *
  */
 
-#include <strings.h>
+#include "stdafx.h"
 #include "TeletextRender.h"
 
 
