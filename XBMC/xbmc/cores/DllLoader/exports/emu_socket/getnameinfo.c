@@ -209,7 +209,7 @@ getnameinfo(sa, salen, host, hostlen, serv, servlen, flags)
 #ifdef ENABLE_IPV6
 		hp = (mphostent *)getipnodebyaddr(addr, gni_afd->a_addrlen, gni_afd->a_af, &h_error);
 #else
-		hp = (mphostent *)gethostbyaddr(addr, gni_afd->a_addrlen, gni_afd->a_af);
+		hp = (struct mphostent *)gethostbyaddr(addr, gni_afd->a_addrlen, gni_afd->a_af);
 		h_error = h_errno;
 #endif
 
