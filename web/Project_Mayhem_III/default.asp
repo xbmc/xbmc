@@ -75,8 +75,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <title> XBMC - Remote Control </title>
-        <link href="styles/Project%20Mayhem/screen.css" rel="stylesheet" type="text/css" />
-        <link rel="shortcut icon" href="/styles/Project%20Mayhem/images/ShortcutIcon.ico" type="image/x-icon" />        
+        <link href="styles/Project_Mayhem/screen.css" rel="stylesheet" type="text/css" />
+        <link rel="shortcut icon" href="/styles/Project_Mayhem/images/ShortcutIcon.ico" type="image/x-icon" />        
 
         <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     </head>
