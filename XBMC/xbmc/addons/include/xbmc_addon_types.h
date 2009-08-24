@@ -59,12 +59,12 @@
 extern "C" {
 #endif
 
-#include "stdbool.h"
 #include <vector>
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #else
 #ifdef _LINUX
+#include "stdbool.h"
 #include "linux/PlatformInclude.h"
 #ifndef __APPLE__
 #include <sys/sysinfo.h>
