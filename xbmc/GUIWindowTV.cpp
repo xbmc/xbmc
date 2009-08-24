@@ -501,7 +501,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
            open channel with player */
         if (pItem->m_strPath == g_localizeStrings.Get(18061))
         {
-          cPVRChannelInfoTag newchannel();
+          cPVRChannelInfoTag newchannel;
           CFileItem *item = new CFileItem(newchannel);
           CGUIDialogOK::ShowAndGetInput(18100,0,18059,0);
         }
@@ -1133,7 +1133,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO ||
         m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
     {
-      cPVRChannelInfoTag newchannel();
+      cPVRChannelInfoTag newchannel;
       CFileItem *item = new CFileItem(newchannel);
       CGUIDialogOK::ShowAndGetInput(18100,0,18059,0);
     }
