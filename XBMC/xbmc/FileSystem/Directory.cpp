@@ -26,7 +26,6 @@
 #ifndef _LINUX
 #include "utils/Win32Exception.h"
 #endif
-#include "Util.h"
 #include "FileItem.h"
 #include "DirectoryCache.h"
 #include "Settings.h"

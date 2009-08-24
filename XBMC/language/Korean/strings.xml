@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 08/05/2009-->
+<!--Date of translation: 08/21/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1822,7 +1822,7 @@
   <string id="21843">방향</string>
   <string id="21860">추가 카테고리</string>
   <string id="21861">키워드</string>
-  <string id="21862">표제</string>
+  <string id="21862">제목</string>
   <string id="21863">저자</string>
   <string id="21864">헤드라인</string>
   <string id="21865">특별 지시</string>
@@ -1882,6 +1882,7 @@
   <string id="22018">라이브 채널</string>
   <string id="22019">제목별 녹음</string>
   <string id="22020">가이드</string>
+  <string id="22021">가로세로 비에 허용된 오류 (%)</string>
   <string id="22030">글꼴</string>
   <string id="22031">- 크기</string>
   <string id="22032">- 색깔</string>
@@ -1962,4 +1963,11 @@
   <string id="33069">배경</string>
   <string id="33070">사용자 지정 배경</string>
   <string id="33071">사용자 지정 배경</string>
+  <string id="33072">읽어보기 보기</string>
+  <string id="33073">변경로그 보기</string>
+  <string id="33074">이 버전의 %s 는 실행하려면</string>
+  <string id="33075">XBMC 리비전 %s 또는 이상이 필요합니다</string>
+  <string id="33076">XBMC 를 업데이트 하세요.</string>
+  <string id="33077">데이터를 찾을수 없음!</string>
+  <string id="33078">다음 페이지</string>
 </strings>

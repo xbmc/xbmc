@@ -496,3 +496,4 @@ bool CRssManager::GetReader(DWORD controlID, DWORD windowID, IRssObserver* obser
   m_readers.push_back(readerControl);
   return false;
 }
+

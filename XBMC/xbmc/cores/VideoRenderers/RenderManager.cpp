@@ -23,7 +23,7 @@
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
 #include "VideoReferenceClock.h"
-#include "Util.h"
+#include "MathUtils.h"
 
 #include "Application.h"
 #include "Settings.h"

@@ -13,7 +13,7 @@
 #include "stdafx.h"
 #include <math.h>
 
-#include "Util.h"
+#include "MathUtils.h"
 #include "Application.h"
 #include "MusicDatabase.h"
 

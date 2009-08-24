@@ -317,7 +317,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
       int iScene;
       double dSceneMarker;
       if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
-        bValid = AddSceneMarker(dSceneMarker / 10000); // Times need adjusting by 1/10,000 to get ms.
+        bValid = AddSceneMarker((int)dSceneMarker / 10000); // Times need adjusting by 1/10,000 to get ms.
       else
         bValid = false;
     }
@@ -709,10 +709,10 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
   return bFound;
 }
 
-CStdString CEdl::MillisecondsToTimeString(const int iMilliseconds)
+CStdString CEdl::MillisecondsToTimeString(const __int64 iMilliseconds)
 {
   CStdString strTimeString = "";
-  StringUtils::SecondsToTimeString(iMilliseconds / 1000, strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
   strTimeString.AppendFormat(".%03i", iMilliseconds % 1000);
   return strTimeString;
 }
@@ -745,8 +745,8 @@ bool CEdl::ReadMythCommBreaks(const CURL url, const float fFramesPerSecond)
 
     Cut cut;
     cut.action = COMM_BREAK;
-    cut.start = commbreak->start_mark / fFramesPerSecond * 1000;
-    cut.end = commbreak->end_mark / fFramesPerSecond * 1000;
+    cut.start = (int)(commbreak->start_mark / fFramesPerSecond * 1000);
+    cut.end = (int)(commbreak->end_mark / fFramesPerSecond * 1000);
 
     /*
      * Detection isn't perfect near the edges so autowind by a small amount into each end of the

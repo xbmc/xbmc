@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "dlgcache.h"
 #include "GUIWindowManager.h"
-#include "Application.h"
 #include "GUIDialogProgress.h"
 
 CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg)

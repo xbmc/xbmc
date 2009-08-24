@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "HTSPDirectory.h"
 #include "URL.h"
-#include "Util.h"
 #include "FileItem.h"
 #include "Settings.h"
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h"

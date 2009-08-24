@@ -26,7 +26,6 @@
 #include "PlatformInclude.h"
 #include "XRandR.h"
 #include "tinyXML/tinyxml.h"
-#include "Util.h"
 #include "../xbmc/utils/log.h"
 
 using namespace std;

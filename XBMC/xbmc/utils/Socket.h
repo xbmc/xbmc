@@ -3,22 +3,9 @@
 
 #include <string.h>
 #include <map>
-#ifdef _XBOX
-#include <xtl.h>
-#include "xbox/Network.h"
-#endif
 
 namespace SOCKETS
 {
-
-#ifdef _XBOX
-static char* inet_ntoa (struct in_addr in)
-{
-  static char _inetaddress[32];
-  sprintf(_inetaddress, "%d.%d.%d.%d", in.S_un.S_un_b.s_b1, in.S_un.S_un_b.s_b2, in.S_un.S_un_b.s_b3, in.S_un.S_un_b.s_b4);
-  return _inetaddress;
-}
-#endif
 
 #ifdef _LINUX
 #include <sys/socket.h>

@@ -25,7 +25,6 @@
 #include "GUISettings.h"
 #include "Surface.h"
 #include "FileItem.h"
-#include "Util.h"
 
 using namespace std;
 
@@ -72,11 +71,7 @@ void CGUILargeTextureManager::Process()
       {
         loadPath = g_TextureManager.GetTexturePath(path);
       }
-#ifdef _XBOX
-      texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 1024), min(g_graphicsContext.GetHeight(), 720));
-#else
       texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080));
-#endif
     }
     // and add to our allocated list
     lock.Enter();

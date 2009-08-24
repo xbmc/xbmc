@@ -34,12 +34,6 @@
 #include "MediaSource.h"
 #include "StringUtils.h"
 
-// Useful pixel colour manipulation macros
-#define GET_A(color)            ((color & AMASK) >> PIXEL_ASHIFT)
-#define GET_R(color)            ((color & RMASK) >> PIXEL_RSHIFT)
-#define GET_G(color)            ((color & GMASK) >> PIXEL_GSHIFT)
-#define GET_B(color)            ((color & BMASK) >> PIXEL_BSHIFT)
-
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0
 #define LEGAL_WIN32_COMPAT    1
@@ -72,126 +66,6 @@ struct XBOXDETECTION
   std::vector<unsigned int> client_lookup_count;
   std::vector<bool> client_informed;
 };
-
-namespace MathUtils
-{
-  // GCC does something stupid with optimization on release builds if we try
-  // to assert in these functions
-  inline int round_int (double x)
-  {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-    const float round_to_nearest = 0.5f;
-    int i;
-
-#ifndef _LINUX
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fadd round_to_nearest
-      fistp i
-      sar i, 1
-    }
-#else
-    #if defined(__powerpc__) || defined(__ppc__)
-        i = floor(x + round_to_nearest);
-    #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fadd %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_to_nearest), "t"(x) : "st"
-        );
-    #endif
-#endif
-    return (i);
-  }
-
-  inline int ceil_int (double x)
-  {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-
-    #if !defined(__powerpc__) && !defined(__ppc__)
-        const float round_towards_p_i = -0.5f;
-    #endif
-    int i;
-
-#ifndef _LINUX
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fsubr round_towards_p_i
-      fistp i
-      sar i, 1
-    }
-#else
-    #if defined(__powerpc__) || defined(__ppc__)
-        return (int)ceil(x);
-    #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fsubr %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_towards_p_i), "t"(x) : "st"
-        );
-    #endif
-#endif
-    return (-i);
-  }
-
-  inline int truncate_int(double x)
-  {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-
-    #if !defined(__powerpc__) && !defined(__ppc__)
-        const float round_towards_m_i = -0.5f;
-    #endif
-    int i;
-
-#ifndef _LINUX
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fabs
-      fadd round_towards_m_i
-      fistp i
-      sar i, 1
-    }
-#else
-    #if defined(__powerpc__) || defined(__ppc__)
-        return (int)x;
-    #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fabs\n\t"
-            "fadd %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_towards_m_i), "t"(x) : "st"
-        );
-    #endif
-#endif
-    if (x < 0)
-      i = -i;
-    return (i);
-  }
-
-  inline void hack()
-  {
-    // stupid hack to keep compiler from dropping these
-    // functions as unused
-    MathUtils::round_int(0.0);
-    MathUtils::truncate_int(0.0);
-    MathUtils::ceil_int(0.0);
-  }
-} // namespace MathUtils
 
 class CUtil
 {
@@ -247,15 +121,10 @@ public:
   static void UrlDecode(CStdString& strURLData);
   static void URLEncode(CStdString& strURLData);
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
-  static void CreateShortcuts(CFileItemList &items);
-  static void CreateShortcut(CFileItem* pItem);
-  static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
-  static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
-  static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
   static void DeleteGUISettings();
@@ -305,8 +174,6 @@ public:
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
   
-  static void AddDirectorySeperator(CStdString& strPath);
-
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
@@ -364,10 +231,6 @@ public:
   //
   static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
-
-private:
-
-  static HANDLE m_hCurrentCpuUsage;
 };
 
 

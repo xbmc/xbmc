@@ -758,12 +758,14 @@ void CGUIWindowFullScreen::RenderFullScreen()
 #else
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #endif
-      int missedvblanks;
+      int    missedvblanks;
+      int    refreshrate;
       double clockspeed;
       CStdString strClock;
       
-      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed))
-        strClock.Format("S( missed:%i speed:%+.3f%% %s )"
+      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
+        strClock.Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
+                       , refreshrate
                        , missedvblanks
                        , clockspeed - 100.0
                        , g_renderManager.GetVSyncState().c_str());
