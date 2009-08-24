@@ -5604,6 +5604,14 @@
 				<Filter
 					Name="Mouse"
 					>
+					<File
+						RelativePath="..\..\xbmc\MouseStat.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\MouseStat.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Events"

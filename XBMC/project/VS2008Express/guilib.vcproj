@@ -1299,27 +1299,11 @@
 			Name="common"
 			>
 			<File
-				RelativePath="..\..\guilib\common\Mouse.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\Mouse.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\guilib\common\SDLJoystick.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\guilib\common\SDLJoystick.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\SDLMouse.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\common\SDLMouse.h"
 				>
 			</File>
 			<Filter
