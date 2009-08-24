@@ -712,7 +712,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
 CStdString CEdl::MillisecondsToTimeString(const __int64 iMilliseconds)
 {
   CStdString strTimeString = "";
-  StringUtils::SecondsToTimeString(iMilliseconds / 1000, strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
   strTimeString.AppendFormat(".%03i", iMilliseconds % 1000);
   return strTimeString;
 }
