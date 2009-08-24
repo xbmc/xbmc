@@ -712,7 +712,7 @@ div.SiteBackgroundConfiguration
                         
                         /* Fix for buggy IE */
                         _background-image : none;
-                        _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='styles/Project%20Mayhem/images/ItemFolder.png');
+                        _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='styles/Project_Mayhem/images/ItemFolder.png');
                     }
 
                     #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.ItemFileMyPictures
@@ -725,7 +725,7 @@ div.SiteBackgroundConfiguration
                         background-image : url('images/ItemFileMyPictures.png');
                         /* Fix for buggy IE */
                         _background-image : none;
-                        _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='styles/Project%20Mayhem/images/ItemFileMyPictures.png');
+                        _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='styles/Project_Mayhem/images/ItemFileMyPictures.png');
                     }
 
                     #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.ItemFileMyMusic, #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.ItemFileMusicPlaylist
@@ -738,7 +738,7 @@ div.SiteBackgroundConfiguration
                         background-image : url('images/ItemFileMyMusic.png');
                         /* Fix for buggy IE */
                         _background-image : none;
-                        _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='styles/Project%20Mayhem/images/ItemFileMyMusic.png');
+                        _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='styles/Project_Mayhem/images/ItemFileMyMusic.png');
                     }
 
                     #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.ItemFileMyVideos, #SiteContainer #SiteRightContainer #SiteContentContainer #ItemList li div.ItemFileVideoPlaylist
@@ -751,7 +751,7 @@ div.SiteBackgroundConfiguration
                         background-image : url('images/ItemFileMyVideos.png');
                         /* Fix for buggy IE */
                         _background-image : none;
-                        _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='styles/Project%20Mayhem/images/ItemFileMyVideos.png');
+                        _filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, sizingMethod=scale src='styles/Project_Mayhem/images/ItemFileMyVideos.png');
                     }
 
 
