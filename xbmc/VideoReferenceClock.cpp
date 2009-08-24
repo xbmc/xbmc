@@ -231,7 +231,7 @@ bool CVideoReferenceClock::SetupGLX()
   }
 
   m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!m_glXWaitVideoSyncSGI)
+  if (!m_glXGetVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI not found");
     return false;
