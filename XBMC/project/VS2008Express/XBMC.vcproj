@@ -1669,6 +1669,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\paplayer\WMACodec.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\WMACodec.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\paplayer\YMCodec.cpp"
 					>
 				</File>
@@ -3106,6 +3114,10 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\DateTime.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\DelayController.cpp"
 					>
 				</File>
 				<File
@@ -5606,6 +5618,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\utils\DelayController.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\FileSystem\Directory.h"
 				>
 			</File>
@@ -6141,6 +6157,58 @@
 				RelativePath="..\..\xbmc\xbox\XKGeneral.h"
 				>
 			</File>
+			<Filter
+				Name="Addons"
+				>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_addon_dll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_addon_lib++.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_addon_lib.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_addon_types.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_dll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_lib++.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_lib.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_pvr_types.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_scr_dll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_scr_types.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_vis_dll.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\addons\include\xbmc_vis_types.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="libraries"

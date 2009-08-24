@@ -723,8 +723,8 @@ void CPVRClient::WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordingi
   tag.duration      = recordinginfo.DurationSeconds();
   tag.priority      = recordinginfo.Priority();
   tag.lifetime      = recordinginfo.Lifetime();
-
-  recordinginfo.RecordingTime().GetAsTime(tag.starttime);
+  time_t recTime    = tag.starttime;
+  recordinginfo.RecordingTime().GetAsTime(recTime);
   return;
 }
 

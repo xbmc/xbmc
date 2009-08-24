@@ -323,13 +323,11 @@ PVR_ERROR PVRClientVDR::GetDriveSpace(long long *total, long long *used)
 
 PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE handle, time_t start, time_t end)
 {
-
   vector<string> lines;
   int            code;
   char           buffer[1024];
   int            found;
   cEpg           epg;
-  PVR_PROGINFO   broadcast;
 
   if (!m_transceiver->IsOpen())
     return PVR_ERROR_SERVER_ERROR;
@@ -361,6 +359,7 @@ PVR_ERROR PVRClientVDR::RequestEPGForChannel(unsigned int number, PVRHANDLE hand
     bool isEnd = epg.ParseLine(str_result.c_str());
     if (isEnd && epg.StartTime() != 0)
     {
+      PVR_PROGINFO broadcast;
       broadcast.channum         = number;
       broadcast.uid             = epg.UniqueId();
       broadcast.title           = epg.Title();
