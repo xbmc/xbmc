@@ -31,8 +31,8 @@
 #include "MathUtils.h"
 #include "Settings.h"
 #include "XBVideoConfig.h"
-#include "guilib/Surface.h"
-#include "guilib/FrameBufferObject.h"
+#include "Surface.h"
+#include "FrameBufferObject.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
