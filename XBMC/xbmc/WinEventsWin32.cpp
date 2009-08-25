@@ -19,8 +19,6 @@
 *
 */
 
-
-
 #include "stdafx.h"
 #include "Windowsx.h"
 #include "WinEvents.h"
@@ -420,5 +418,42 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
+
+/*
+ * elis
+ * need to implement for windows in new event model
+ * 
+bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
+{
+  static bool alt = false;
+  static CAction action;
+
+  alt = !!(SDL_GetModState() & (XBMCXBMCKMOD_LALT | XBMCXBMCKMOD_RALT));
+
+  if (event.key.type == SDL_KEYDOWN)
+  {
+    if(alt)
+    {
+      switch(event.key.keysym.sym)
+      {
+      case SDLK_F4:  // alt-F4 to quit
+        if (!g_application.m_bStop)
+          g_application.getApplicationMessenger().Quit();
+      case SDLK_RETURN:  // alt-Return to toggle fullscreen
+        {
+          action.wID = ACTION_TOGGLE_FULLSCREEN;
+          g_application.OnAction(action);
+          return true;
+        }
+        return false;
+      default:
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
+*/
 
 #endif

@@ -34,7 +34,11 @@ public:
   static bool MessagePump();
   
 protected:
-  static bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event);
+#ifdef __APPLE__  
+  static bool ProcessOSXShortcuts(SDL_Event& event);
+#elif defined(_LINUX)
+  static bool ProcessLinuxShortcuts(SDL_Event& event);
+#endif  
 };
 
 #endif // WINDOW_EVENTS_SDL_H

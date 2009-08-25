@@ -67,10 +67,12 @@ bool CWinEventsSDL::MessagePump()
     case SDL_KEYDOWN:
     {
       // process any platform specific shortcuts before handing off to XBMC
+#ifdef __APPLE__      
       if (ProcessOSXShortcuts(event))
       {
         return true;
       }
+#endif      
       
       XBMC_Event newEvent;
       newEvent.type = XBMC_KEYDOWN;
@@ -151,6 +153,7 @@ bool CWinEventsSDL::MessagePump()
   return false;
 }
 
+#ifdef __APPLE__
 bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
 {
   static bool shift = false, cmd = false;
@@ -191,5 +194,28 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
   
   return false;  
 }
+
+#elif defined(_LINUX)
+
+bool CWinEventsSDL::ProcessLinuxShortcuts(SDL_Event& event)
+{
+  bool alt = false;
+
+  alt = !!(SDL_GetModState() & (XBMCXBMCKMOD_LALT  | XBMCXBMCKMOD_RALT));
+
+  if (alt && event.key.type == SDL_KEYDOWN)
+  {
+    switch(event.key.keysym.sym)
+    {
+      case SDLK_TAB:  // ALT+TAB to minimize/hide
+        g_application.Minimize();
+        return true;
+      default:
+        break;
+    }
+  }
+  return false;
+}
+#endif
 
 #endif

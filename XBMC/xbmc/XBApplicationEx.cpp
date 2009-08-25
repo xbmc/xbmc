@@ -20,20 +20,12 @@
 
 #include "stdafx.h"
 #include "XBApplicationEx.h"
-#include "Settings.h"
-#include "Application.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
 #endif
-#include "GUIFontManager.h"
 
-
-//-----------------------------------------------------------------------------
-// Name: CXBApplication()
-// Desc: Constructor
-//-----------------------------------------------------------------------------
 CXBApplicationEx::CXBApplicationEx()
 {
   // Variables to perform app timing
@@ -42,9 +34,9 @@ CXBApplicationEx::CXBApplicationEx()
   m_AppFocused = true;
 }
 
-/* CXBApplicationEx() destructor */
 CXBApplicationEx::~CXBApplicationEx()
-{}
+{
+}
 
 /* Create the app */
 HRESULT CXBApplicationEx::Create(HWND hWnd)
@@ -170,62 +162,3 @@ INT CXBApplicationEx::Run()
   CLog::Log(LOGNOTICE, "application stopped..." );
   return 0;
 }
-
-
-/*
- * elis
- * 
-bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
-{
-  static bool alt = false;
-  static CAction action;
-
-  alt = !!(SDL_GetModState() & (XBMCXBMCKMOD_LALT | XBMCXBMCKMOD_RALT));
-
-  if (event.key.type == SDL_KEYDOWN)
-  {
-    if(alt)
-    {
-      switch(event.key.keysym.sym)
-      {
-      case SDLK_F4:  // alt-F4 to quit
-        if (!g_application.m_bStop)
-          g_application.getApplicationMessenger().Quit();
-      case SDLK_RETURN:  // alt-Return to toggle fullscreen
-        {
-          action.wID = ACTION_TOGGLE_FULLSCREEN;
-          g_application.OnAction(action);
-          return true;
-        }
-        return false;
-      default:
-        return false;
-      }
-    }
-  }
-  return false;
-}
-
-bool CXBApplicationEx::ProcessLinuxShortcuts(SDL_Event& event)
-{
-  bool alt = false;
-
-  alt = !!(SDL_GetModState() & (XBMCXBMCKMOD_LALT  | XBMCXBMCKMOD_RALT));
-
-  if (alt && event.key.type == SDL_KEYDOWN)
-  {
-    switch(event.key.keysym.sym)
-    {
-      case SDLK_TAB:  // ALT+TAB to minimize/hide
-        g_application.Minimize();
-        return true;
-      default:
-        break;
-    }
-  }
-  return false;
- 
-}
-
-#endif // HAS_SDL
-*/
