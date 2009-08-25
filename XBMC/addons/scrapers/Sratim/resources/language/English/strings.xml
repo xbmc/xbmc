@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Enable Full Cast Credits</string>
+    <string id="30001">Enable Trailer</string>
+    <string id="30002">Enable Fanart</string>
+    <string id="30003">Get Rank From IMDB</string>
+</strings>

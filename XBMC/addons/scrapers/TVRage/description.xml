@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>25283C78-EF03-4115-8B5F-9BF6F3A6FA0D</uuid>
+  <type>scraper</type>
+  <title>TV Rage</title>
+  <library>tvrage.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>TV Rage Scraper</summary>
+  <description>Download TV Show information</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>tvshows</content>
+  </supportedcontent>
+</addoninfo>

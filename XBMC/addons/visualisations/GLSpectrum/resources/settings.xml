@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>
-    <setting id="barheight" type="enum" lvalues="30001|30002|30003|30004" label="30000" default="0" />
-    <setting id="mode" type="enum" lvalues="30006|30007|30008" label="30005" default="0" />
-    <setting id="speed" type="enum" lvalues="30010|30011|30012|30013|30014" label="30009" default="0" />
-</settings>

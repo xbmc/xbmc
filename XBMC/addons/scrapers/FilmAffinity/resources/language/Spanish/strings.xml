@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Buscar fotos de actores en IMDB (muy lento)</string>
+    <string id="30001">Habilitar trailers</string>
+    <string id="30002">Sólo póster de FilmAffinity y sin FanArt (rápido)</string>
+    <string id="30003">Habilitar FanArt</string>
+    <string id="30004">Descargar pósters de IMPAwards</string>
+    <string id="30005">Descargar pósters de MoviePosterDB</string>
+    <string id="30006">Descargar póster de IMDB</string>
+    <string id="30007">Tamaño del póster de IMDB</string>
+</strings>

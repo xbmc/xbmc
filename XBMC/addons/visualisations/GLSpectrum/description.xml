@@ -1,55 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <!-- guid: unique identifier of this addon 	!-->
-  <guid>7A4551D9-2F50-4173-B224-EE209FC9EB1F</guid>
-
-  <!-- 	type:
-    1:  visualization
-    2:  skin
-    3:  pvrdll
-    4:  script
-    5:  scraper-pvr
-    6:  scraper-video
-    7:  scraper-music
-    8:  scraper-program
-    9:  screensaver
-    10: plugin-pvr
-    11: plugin-video
-    12: plugin-music
-    13: plugin-program
-    14: plugin-pictures !-->
-  <type>1</type>
-
-  <!-- title: name of the addon !-->
+  <uuid>7A4551D9-2F50-4173-B224-EE209FC9EB1F</uuid>
+  <type>visualisation</type>
   <title>OpenGL Spectrum</title>
-
-  <!-- library: file name of the library !-->
   <library>opengl_spectrum.vis</library>
-
-  <!-- library: file name of the library for WIN32 to different between static build (optional) !-->
   <librarywin32>opengl_spectrum_win32.vis</librarywin32>
-
-  <!-- version:  version number in the following format major[.minor[.release[.build]]] !-->
   <version>1.0.0</version>
-
-  <!-- platforms: xbmc platforms this addon is compatible with: 
-    atv|osx|xbox|windows|linux|all !-->
-  <platforms><platform>linux</platform></platforms>
-
-  <!-- minversion: earliest xbmc revision that this addon supports !-->
+  <platforms>
+    <platform>linux</platform>
+    <platform>windows</platform>
+  </platforms>
   <minversion>
     <xbmc>20000</xbmc>
   </minversion>
-
-  <!-- summary: short summary of addon !-->
   <summary>OpenGL Visualisation</summary>
-
-  <!-- description: more verbose description of addon !-->
   <description>Visualisation showing a rotating 3D Spectrum Analyzer</description>
-
-  <!-- author: name of devloper/organisation !-->
   <author>TEAMXBMC</author>
-
-  <!-- disclaimer: if required, will be shown once to user upon installation !-->
-  <disclaimer></disclaimer>
 </addoninfo>

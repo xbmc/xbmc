@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Enable Full Plot</string>
+    <string id="30001">Plot Method B</string>
+    <string id="30002">Enable Fanart</string>
+</strings>

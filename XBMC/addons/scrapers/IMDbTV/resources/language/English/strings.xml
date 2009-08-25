@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Enable Full Cast Credits</string>
+    <string id="30001">Enable IMPAwards</string>
+    <string id="30002">Enable MoviePosterDB</string>
+    <string id="30003">IMDB Poster &amp;amp; Actor Thumb(s) Size</string>
+    <string id="30004">Input Alternative IMDb Source</string>
+</strings>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Utilizar apenas o Cinema PTGate</string>
+    <string id="30001">Incluir detalhes e fotos dos Actores</string>
+    <string id="30002">Incluir detalhes do IMPAwards</string>
+    <string id="30003">Incluir detalhes do MoviePosterDB</string>
+    <string id="30004">Incluir trailer</string>
+    <string id="30005">Incluir Fanart</string>
+    <string id="30006">Tamanhos do Poster e das Fotos dos Actores</string>
+    <string id="30007">Url para acesso ao IMDb</string>
+</strings>

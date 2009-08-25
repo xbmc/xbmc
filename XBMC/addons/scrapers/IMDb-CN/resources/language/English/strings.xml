@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Enable MoviePosterDB</string>
+    <string id="30001">Enable Fanart</string>
+</strings>

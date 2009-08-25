@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Full Cast Credits</string>
+    <string id="30001">Full Cast Credits > Get Director(s)</string>
+    <string id="30002">Full Cast Credits > Get Actors</string>
+    <string id="30003">Full Cast Credits > Get Filmmakers</string>
+    <string id="30004">Full Cast Credits > Cast Separeted by Fake Actor</string>
+    <string id="30005">Get All Thumbs</string>
+    <string id="30006">Get Trailer</string>
+    <string id="30007">Get Critic</string>
+    <string id="30008">Get Pubblic</string>
+    <string id="30009">Get Forum</string>
+    <string id="30010">Get Frasi Celebri</string>
+    <string id="30011">Rating x of 10</string>
+    <string id="30012">Director, Critics, and Public Rating</string>
+    <string id="30013">Director, Critics, and Public Rating > Insert into:</string>
+</strings>

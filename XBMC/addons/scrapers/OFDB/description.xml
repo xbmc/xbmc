@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>4D4B5195-6FC1-4a4b-B072-41E4C11AB3E7</uuid>
+  <type>scraper</type>
+  <title>OFDb</title>
+  <library>ofdb.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>OFDb German Movie Scraper</summary>
+  <description>Download Movie information</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>movies</content>
+  </supportedcontent>
+</addoninfo>

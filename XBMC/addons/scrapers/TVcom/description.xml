@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>576CBD98-BE8C-4a6e-AA8B-2A41CB530D1F</uuid>
+  <type>scraper</type>
+  <title>TV.com</title>
+  <library>tvcom.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>TV.com TV Show Scraper</summary>
+  <description>Download TV Show information</description>
+  <author>TEAMXBMC</author>
+  <disclaimer></disclaimer>
+  <supportedcontent>
+    <content>tvshows</content>
+  </supportedcontent>
+</addoninfo>

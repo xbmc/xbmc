@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>E3BD9A54-19D4-4fbe-AABC-51F76CB53E20</uuid>
+  <type>scraper</type>
+  <title>TMDb</title>
+  <library>tmdb.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>TMDb Movie Scraper</summary>
+  <description>Download Movie information</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>movies</content>
+  </supportedcontent>
+</addoninfo>

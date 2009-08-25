@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">фанарт в виде фото (выбрать одно)</string>
+    <string id="30001">фанарт в виде обоев (выбрать одно)</string>
+    <string id="30002">фанарт с сайта (www.themoviedb.org) (выбрать одно)</string>
+    <string id="30003">фанарт с сайта (www.themoviedb.org) +24 (выбрать одно)</string>
+    <string id="30004">трейлер с сайта (www.imdb.com)</string>
+</strings>

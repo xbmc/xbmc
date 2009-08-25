@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">주연배우/각본/제작사에 대한 상세정보</string>
+    <string id="30001">포스터</string>
+    <string id="30002">평점 투표자수</string>
+    <string id="30003">팬아트(고화질)</string>
+</strings>
