@@ -142,6 +142,7 @@ void CDVDVideoCodecCrystalHD::Dispose()
 
 void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 {
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecCrystalHD::SetDropState, %d", bDrop);
   m_DropPictures = bDrop;
 }
 

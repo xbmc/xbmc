@@ -887,6 +887,8 @@
 		F551107F0F5C424700955236 /* htsmsg_binary.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110730F5C424700955236 /* htsmsg_binary.c */; };
 		F55110800F5C424700955236 /* htsstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F55110760F5C424700955236 /* htsstr.c */; };
 		F55110820F5C424700955236 /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
+		F559A97C104395B7002556BF /* libldil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F559A97B104395B7002556BF /* libldil.dylib */; };
+		F559A97D104395B7002556BF /* libldil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F559A97B104395B7002556BF /* libldil.dylib */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
 		F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
@@ -914,8 +916,6 @@
 		F5987FDC0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */; };
 		F59D70F31041F01600AD752F /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59D70F11041F01600AD752F /* DVDVideoCodecCrystalHD.cpp */; };
 		F59D70F41041F01600AD752F /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59D70F11041F01600AD752F /* DVDVideoCodecCrystalHD.cpp */; };
-		F59D71261041F1EA00AD752F /* libldil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F59D71251041F1EA00AD752F /* libldil.dylib */; };
-		F59D71271041F1EA00AD752F /* libldil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F59D71251041F1EA00AD752F /* libldil.dylib */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };
 		F5A1C8740F6B06CF00A96ABD /* ActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138A0D25F9F900618676 /* ActionManager.cpp */; };
@@ -3671,6 +3671,7 @@
 		F55110780F5C424700955236 /* htsthreads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsthreads.h; path = xbmc/lib/libhts/htsthreads.h; sourceTree = SOURCE_ROOT; };
 		F551107A0F5C424700955236 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net.h; path = xbmc/lib/libhts/net.h; sourceTree = SOURCE_ROOT; };
 		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_posix.c; path = xbmc/lib/libhts/net_posix.c; sourceTree = SOURCE_ROOT; };
+		F559A97B104395B7002556BF /* libldil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libldil.dylib; path = /crystalhd/broadcom/dil/darwin/libldil.dylib; sourceTree = "<absolute>"; };
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokewindowbackground.h; path = karaoke/karaokewindowbackground.h; sourceTree = "<group>"; };
 		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokewindowbackground.cpp; path = karaoke/karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F56A08DE0F4D3C20003F9F87 /* GUITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUITexture.h; path = guilib/GUITexture.h; sourceTree = SOURCE_ROOT; };
@@ -3706,7 +3707,6 @@
 		F59D70EE1041EF6000AD752F /* bc_dts_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_dts_types.h; path = /crystalhd/broadcom/include/bc_dts_types.h; sourceTree = "<absolute>"; };
 		F59D70F11041F01600AD752F /* DVDVideoCodecCrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecCrystalHD.cpp; sourceTree = "<group>"; };
 		F59D70F21041F01600AD752F /* DVDVideoCodecCrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecCrystalHD.h; sourceTree = "<group>"; };
-		F59D71251041F1EA00AD752F /* libldil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libldil.dylib; path = /usr/lib/libldil.dylib; sourceTree = "<absolute>"; };
 		F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AudioRendererFactory.cpp; path = xbmc/cores/AudioRenderers/AudioRendererFactory.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B090EFDDE5F00CD59F3 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = xbmc/cores/AudioRenderers/AudioRendererFactory.h; sourceTree = SOURCE_ROOT; };
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
@@ -3809,7 +3809,7 @@
 				F59876C40FBA3569008EF4FB /* libsamplerate.dylib in Frameworks */,
 				F59879080FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */,
-				F59D71261041F1EA00AD752F /* libldil.dylib in Frameworks */,
+				F559A97C104395B7002556BF /* libldil.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3856,7 +3856,7 @@
 				F59876C50FBA3569008EF4FB /* libsamplerate.dylib in Frameworks */,
 				F59879090FBAA0C3008EF4FB /* QuartzCore.framework in Frameworks */,
 				E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */,
-				F59D71271041F1EA00AD752F /* libldil.dylib in Frameworks */,
+				F559A97D104395B7002556BF /* libldil.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6889,7 +6889,7 @@
 				F59D70ED1041EF5800AD752F /* bc_dts_defs.h */,
 				F59D70EE1041EF6000AD752F /* bc_dts_types.h */,
 				F59D70E31041EF2B00AD752F /* bc_ldil_if.h */,
-				F59D71251041F1EA00AD752F /* libldil.dylib */,
+				F559A97B104395B7002556BF /* libldil.dylib */,
 			);
 			name = mpclink;
 			sourceTree = "<group>";
@@ -8835,18 +8835,17 @@
 					xbmc/lib/libGoAhead,
 					"xbmc/lib/libSDL-OSX",
 					xbmc/lib/libportaudio,
+					xbmc/lib/libXBMS,
 					/opt/local/lib,
 					/opt/local/lib/mysql5/mysql,
 					/opt/local/lib/samba3,
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					/crystalhd/broadcom/dil/darwin,
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libtsci2/tsc-i2lib/.libs\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/xbmc/lib/libsmb\"";
@@ -8922,6 +8921,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					/crystalhd/broadcom/dil/darwin,
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
@@ -9060,6 +9060,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					/crystalhd/broadcom/dil/darwin,
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
@@ -9157,6 +9158,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					/crystalhd/broadcom/dil/darwin,
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
