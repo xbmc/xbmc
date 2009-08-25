@@ -48,8 +48,8 @@ public:
   virtual bool DestroyRenderSystem() = 0;
 
   virtual void GetRenderVersion(unsigned int& major, unsigned int& minor) = 0;
-  virtual CStdString GetRenderVendor() = 0;
-  virtual CStdString GetRenderRenderer() = 0;
+  virtual const CStdString& GetRenderVendor() = 0;
+  virtual const CStdString& GetRenderRenderer() = 0;
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;
   virtual bool PresentRender() = 0;

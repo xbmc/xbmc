@@ -1,8 +1,3 @@
-/*!
-\file Surface.h
-\brief
-*/
-
 #ifndef WINDOW_SYSTEM_OSX_GL_H
 #define WINDOW_SYSTEM_OSX_GL_H
 
@@ -37,11 +32,9 @@ public:
   CWinSystemOSXGL();
   virtual ~CWinSystemOSXGL();
 
-  virtual bool InitRenderSystem();
-  virtual bool PresentRender();
-
 protected:
+  virtual bool PresentRenderImpl();
+  virtual void SetVSyncImpl(bool enable);  
 };
 
 #endif // WINDOW_SYSTEM_H
-

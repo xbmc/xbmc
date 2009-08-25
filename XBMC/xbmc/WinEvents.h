@@ -32,7 +32,6 @@ typedef bool (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent);
 class CWinEventsBase
 {
 public:
-  static bool MessagePump() { return false; }
   static PHANDLE_EVENT_FUNC m_pEventFunc;
 };
 

@@ -1,10 +1,3 @@
-/*!
-\file Surface.h
-\brief
-*/
-
-
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -31,29 +24,28 @@
 
 CWinSystemOSXGL g_Windowing;
 
-
 CWinSystemOSXGL::CWinSystemOSXGL()
 {
-
 }
 
 CWinSystemOSXGL::~CWinSystemOSXGL()
 {
-
 }
 
-bool CWinSystemOSXGL::InitRenderSystem()
-{
-  return CRenderSystemGL::InitRenderSystem();
-}
-
-bool CWinSystemOSXGL::PresentRender()
-{
-  if(!m_bWindowCreated || !m_bRenderCreated)
-    return false;
-
+bool CWinSystemOSXGL::PresentRenderImpl()
+{    
   Cocoa_GL_SwapBuffers(m_glContext);
-  
+    
   return true;
 }
 
+void CWinSystemOSXGL::SetVSyncImpl(bool enable)
+{
+  Cocoa_GL_EnableVSync(false);
+  
+  if (enable && m_iVSyncMode == 0)
+  {
+    Cocoa_GL_EnableVSync(true);
+    m_iVSyncMode = 10;
+  }
+}

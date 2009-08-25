@@ -589,16 +589,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef __APPLE__
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
-  CPicture pic;
-  SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
-#else
-
-#ifdef HAS_SDL
-  CPicture pic;
-  SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon32x32.png")), NULL);
-#endif
-
 #endif
 
   //list available videomodes

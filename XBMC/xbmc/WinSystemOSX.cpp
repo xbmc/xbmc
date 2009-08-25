@@ -105,6 +105,7 @@ bool CWinSystemOSX::CreateNewWindow(CStdString name, int width, int height, bool
 
 bool CWinSystemOSX::DestroyWindow()
 {
+  return true;
 }
     
 bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
@@ -130,5 +131,6 @@ void CWinSystemOSX::UpdateResolutions()
 void CWinSystemOSX::GetDesktopRes(RESOLUTION_INFO& desktopRes)
 {
 }
+
 
 #endif

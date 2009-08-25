@@ -36,16 +36,16 @@ public:
   virtual bool DestroyRenderSystem();
 
   virtual void GetRenderVersion(unsigned int& major, unsigned int& minor);
-  virtual CStdString GetRenderVendor() { return m_RenderVendor; }
-  virtual CStdString GetRenderRenderer() { return m_RenderRenderer; }
+  virtual const CStdString& GetRenderVendor() { return m_RenderVendor; }
+  virtual const CStdString& GetRenderRenderer() { return m_RenderRenderer; }
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool PresentRender() = 0;
+  virtual bool PresentRender();
   virtual bool ClearBuffers(DWORD color);
   virtual bool ClearBuffers(float r, float g, float b, float a);
   virtual bool IsExtSupported(CStdString strExt);
 
-  virtual void SetVSync(bool vsync) { m_bVSync = vsync; }
+  virtual void SetVSync(bool vsync);
   virtual bool GetVSync() { return m_bVSync; }
 
   virtual void SetViewPort(CRect& viewPort);
@@ -56,6 +56,16 @@ public:
   virtual bool TestRender();
 
 protected:
+  virtual void SetVSyncImpl(bool enable) = 0;
+  virtual bool PresentRenderImpl() = 0;
+  
+  int        m_iVSyncMode;
+  int        m_iVSyncErrors;
+  __int64    m_iSwapStamp;
+  __int64    m_iSwapRate;
+  __int64    m_iSwapTime;
+  bool       m_bVsyncInit;
+  
   CStdString m_RenderRenderer;
   CStdString m_RenderVendor;
   int        m_RenderVerdenVersionMinor;
