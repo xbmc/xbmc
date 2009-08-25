@@ -83,7 +83,7 @@
 			<texture>separator.png</texture>
 		</control>
 		<control type="group" id="9001">
-			<control type="button" id="10">
+			<control type="button" id="500">
 				<description>OK Button</description>
 				<posx>300</posx>
 				<posy>525</posy>
@@ -99,7 +99,7 @@
 				<onup>2</onup>
 				<ondown>2</ondown>
 			</control>
-			<control type="button" id="11">
+			<control type="button" id="501">
 				<description>Cancel Button</description>
 				<posx>510</posx>
 				<posy>525</posy>

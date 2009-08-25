@@ -25,10 +25,6 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/karaoke \
-	xbmc/lib/libaddon/addonlib \
-	xbmc/lib/libaddon/addonlib++ \
-	xbmc/lib/libaddon/pvrlib \
-	xbmc/lib/libaddon/pvrlib++ \
 	xbmc/lib/libcmyth \
 	xbmc/lib/libhts \
 	xbmc/lib/libGoAhead \
@@ -88,10 +84,6 @@ LIB_DIRS=\
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
 	xbmc/lib/libPython/linux \
-	xbmc/lib/libaddon/addonlib \
-	xbmc/lib/libaddon/addonlib++ \
-	xbmc/lib/libaddon/pvrlib \
-	xbmc/lib/libaddon/pvrlib++
 
 SS_DIRS=\
 	xbmc/screensavers/rsxs-0.9/xbmc
@@ -120,7 +112,7 @@ all : xbmc.bin externals xbmc-xrandr $(PM3_MEDIA)/Textures.xpr $(PM3HD_MEDIA)/Te
 
 include Makefile.include
 
-.PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force libaddon
+.PHONY : dllloader exports visualizations screensavers eventclients papcodecs dvdpcodecs imagelib codecs externals force
 
 $(PM3_MEDIA)/Textures.xpr: tools/XBMCTex/XBMCTex $(PM3_MEDIA)/*.png $(PM3_MEDIA)/*/*.png
 	 tools/XBMCTex/XBMCTex -input \"$(PM3_MEDIA)\" -output \"$(PM3_MEDIA)/Textures.xpr\"
@@ -242,11 +234,6 @@ visualizations: exports
 	$(MAKE) -C xbmc/visualizations/Goom
 screensavers: exports
 	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
-libaddon: exports
-	$(MAKE) -C xbmc/lib/libaddon/addonlib
-	$(MAKE) -C xbmc/lib/libaddon/addonlib++
-	$(MAKE) -C xbmc/lib/libaddon/pvrlib
-	$(MAKE) -C xbmc/lib/libaddon/pvrlib++
 libpython: dllloader
 	$(MAKE) -C xbmc/lib/libPython
 	$(MAKE) -C xbmc/lib/libPython/xbmcmodule
@@ -292,10 +279,12 @@ ifneq ($(ARCH), x86_64-linux)
 endif
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
+libaddon: dllloader
+	$(MAKE) -C xbmc/lib/libaddon
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python
-externals: libaddon codecs libs python visualizations screensavers
+libs: libhdhomerun libid3tag imagelib libaddon libexif python 
+externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
 	codecs libs python visualizations screensavers \
@@ -334,6 +323,7 @@ OBJSXBMC=	\
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
+	xbmc/lib/librefmem/librefmem.a \
 	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/lib/libhts/libhts.a \
 	xbmc/lib/libPython/python.a \

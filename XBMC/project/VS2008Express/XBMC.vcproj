@@ -68,7 +68,6 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
 				AdditionalDependencies="SDL.lib SDL_image.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
-				OutputFile="d:\dev\svn.xbmc\branches\unified-pvr\XBMC\xbmc.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
@@ -866,6 +865,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamNavigator.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVR.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamPVR.h"
 						>
 					</File>
 					<File
@@ -1897,14 +1904,6 @@
 					RelativePath="..\..\xbmc\visualizations\Visualisation.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\visualizations\VisualisationFactory.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="VideoRenderers"
@@ -1975,14 +1974,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\screensavers\ScreenSaver.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\screensavers\ScreenSaverFactory.h"
 					>
 				</File>
 				<File
@@ -2098,14 +2089,6 @@
 				Name="Settings"
 				>
 				<File
-					RelativePath="..\..\xbmc\settings\AddonSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\settings\AddonSettings.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\GUISettings.cpp"
 					>
 				</File>
@@ -2131,14 +2114,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowTestPattern.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\ScraperSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\ScraperSettings.h"
 					>
 				</File>
 				<File
@@ -2606,11 +2581,15 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\AddonHelpers.cpp"
+					RelativePath="..\..\xbmc\utils\AddonDll.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\utils\AddonHelpers.h"
+					RelativePath="..\..\xbmc\utils\AddonManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\AddonManager.h"
 					>
 				</File>
 				<File
@@ -2991,6 +2970,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\RssReader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Scraper.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Scraper.h"
 					>
 				</File>
 				<File
@@ -3507,14 +3494,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIDialogVisualisationPresetList.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogVisualisationSettings.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\GUIDialogVisualisationSettings.h"
 					>
 				</File>
 				<File
@@ -4099,6 +4078,22 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\FileSystem\PluginDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRDirectory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRDirectory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRFile.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\FileSystem\PVRFile.h"
 					>
 				</File>
 				<File
@@ -4867,14 +4862,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\pvrclients\PVRClient.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\pvrclients\PVRClientFactory.h"
 					>
 				</File>
 			</Filter>
