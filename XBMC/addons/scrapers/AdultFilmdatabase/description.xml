@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addoninfo>
-  <!-- guid: unique identifier of this addon 	!-->
-  <guid>39BBBBDE-DD9E-4839-86B5-544485D0BC76</guid>
+  <!-- uuid: unique identifier of this addon 	!-->
+  <uuid>39BBBBDE-DD9E-4839-86B5-544485D0BC76</uuid>
 
   <!-- 	type:
     1:  visualization
@@ -18,7 +18,7 @@
     12: plugin-music
     13: plugin-program
     14: plugin-pictures !-->
-  <type>6</type>
+  <type>scraper</type>
 
   <!-- title: name of the addon !-->
   <title>Adult Filmdatabase</title>
@@ -49,4 +49,8 @@
 
   <!-- disclaimer: if required, will be shown once to user upon installation !-->
   <disclaimer></disclaimer>
+
+  <!-- supportedcontent: plugins & scrapers must support at least one content type !-->
+  <supportedcontent><content>movies</content></supportedcontent>
+
 </addoninfo>
