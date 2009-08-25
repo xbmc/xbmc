@@ -355,6 +355,11 @@ Arguments ()
 				export NOPERSISTENT
 				;;
 
+			quickusbmodules)
+				QUICKUSBMODULES="Yes"
+				export QUICKUSBMODULES
+				;;
+
 			preseed/file=*|file=*)
 				LOCATION="${ARGUMENT#*=}"
 				export LOCATION
@@ -1080,7 +1085,7 @@ setup_unionfs ()
 {
 	image_directory="${1}"
 	rootmnt="${2}"
-        addimage_directory="${3}"
+	addimage_directory="${3}"
 	modprobe -q -b ${UNIONTYPE}
 
 	# run-init can't deal with images in a subdir, but we're going to
@@ -1106,37 +1111,26 @@ setup_unionfs ()
 		roopt="ro"
 	fi
 
-	# Read image names from ${MODULE}.module if it exists
-	if [ -e "${image_directory}/filesystem.${MODULE}.module" ]
+	if [ -z "${PLAIN_ROOT}" ]
 	then
-		for IMAGE in $(cat ${image_directory}/filesystem.${MODULE}.module)
-		do
-			image_string="${image_string} ${image_directory}/${IMAGE}"
-		done
-	elif [ -e "${image_directory}/${MODULE}.module" ]
-	then
-		for IMAGE in $(cat ${image_directory}/${MODULE}.module)
-		do
-			image_string="${image_string} ${image_directory}/${IMAGE}"
-		done
-	else
-		# ${MODULE}.module does not exist, create a list of images
-		for FILESYSTEM in squashfs ext2 ext3 ext4 xfs jffs2 dir
-		do
-			for IMAGE in "${image_directory}"/*."${FILESYSTEM}"
-			do
-				if [ -e "${IMAGE}" ]
-				then
-					image_string="${image_string} ${IMAGE}"
-				fi
-			done
-		done
-
-		if [ -n "${addimage_directory}" ] && [ -d "${addimage_directory}" ]
+		# Read image names from ${MODULE}.module if it exists
+		if [ -e "${image_directory}/filesystem.${MODULE}.module" ]
 		then
+			for IMAGE in $(cat ${image_directory}/filesystem.${MODULE}.module)
+			do
+				image_string="${image_string} ${image_directory}/${IMAGE}"
+			done
+		elif [ -e "${image_directory}/${MODULE}.module" ]
+		then
+			for IMAGE in $(cat ${image_directory}/${MODULE}.module)
+			do
+				image_string="${image_string} ${image_directory}/${IMAGE}"
+			done
+		else
+			# ${MODULE}.module does not exist, create a list of images
 			for FILESYSTEM in squashfs ext2 ext3 ext4 xfs jffs2 dir
 			do
-				for IMAGE in "${addimage_directory}"/*."${FILESYSTEM}"
+				for IMAGE in "${image_directory}"/*."${FILESYSTEM}"
 				do
 					if [ -e "${IMAGE}" ]
 					then
@@ -1144,58 +1138,80 @@ setup_unionfs ()
 					fi
 				done
 			done
+
+			if [ -n "${addimage_directory}" ] && [ -d "${addimage_directory}" ]
+			then
+				for FILESYSTEM in squashfs ext2 ext3 ext4 xfs jffs2 dir
+				do
+					for IMAGE in "${addimage_directory}"/*."${FILESYSTEM}"
+					do
+						if [ -e "${IMAGE}" ]
+						then
+							image_string="${image_string} ${IMAGE}"
+						fi
+					done
+				done
+			fi
+
+			# Now sort the list
+			image_string="$(echo ${image_string} | sed -e 's/ /\n/g' | sort )"
 		fi
 
-		# Now sort the list
-		image_string="$(echo ${image_string} | sed -e 's/ /\n/g' | sort )"
-	fi
+		[ -n "${MODULETORAMFILE}" ] && image_string="${image_directory}/$(basename ${MODULETORAMFILE})"
 
-	[ -n "${MODULETORAMFILE}" ] && image_string="${image_directory}/$(basename ${MODULETORAMFILE})"
+		mkdir -p "${croot}"
 
-	mkdir -p "${croot}"
+		for image in ${image_string}
+		do
+			imagename=$(basename "${image}")
 
-	for image in ${image_string}
-	do
-		imagename=$(basename "${image}")
-
-		export image devname
-		maybe_break live-realpremount
-		log_begin_msg "Running /scripts/live-realpremount"
-		run_scripts /scripts/live-realpremount
-		log_end_msg
-
-		if [ -d "${image}" ]
-		then
-			# it is a plain directory: do nothing
-			rofsstring="${image}=${roopt}:${rofsstring}"
-			rofslist="${image} ${rofslist}"
-		elif [ -f "${image}" ]
-		then
-			if losetup --help 2>&1 | grep -q -- "-r\b"
-			then
-				backdev=$(get_backing_device "${image}" "-r")
-			else
-				backdev=$(get_backing_device "${image}")
-			fi
-			fstype=$(get_fstype "${backdev}")
-
-			if [ "${fstype}" = "unknown" ]
-			then
-				panic "Unknown file system type on ${backdev} (${image})"
-			fi
-
-			if [ -z "${fstype}" ]
-			then
-				fstype="${imagename##*.}"
-				log_warning_msg "Unknown file system type on ${backdev} (${image}), assuming ${fstype}."
-			fi
-
-			mkdir -p "${croot}/${imagename}"
-			log_begin_msg "Mounting \"${image}\" on \"${croot}${imagename}\" via \"${backdev}\""
-			mount -t "${fstype}" -o ro,noatime "${backdev}" "${croot}/${imagename}" || panic "Can not mount ${backdev} (${image}) on ${croot}/${imagename}" && rofsstring="${croot}/${imagename}=${roopt}:${rofsstring}" && rofslist="${croot}/${imagename} ${rofslist}"
+			export image devname
+			maybe_break live-realpremount
+			log_begin_msg "Running /scripts/live-realpremount"
+			run_scripts /scripts/live-realpremount
 			log_end_msg
-		fi
-	done
+
+			if [ -d "${image}" ]
+			then
+				# it is a plain directory: do nothing
+				rofsstring="${image}=${roopt}:${rofsstring}"
+				rofslist="${image} ${rofslist}"
+			elif [ -f "${image}" ]
+			then
+				if losetup --help 2>&1 | grep -q -- "-r\b"
+				then
+					backdev=$(get_backing_device "${image}" "-r")
+				else
+					backdev=$(get_backing_device "${image}")
+				fi
+				fstype=$(get_fstype "${backdev}")
+
+				if [ "${fstype}" = "unknown" ]
+				then
+					panic "Unknown file system type on ${backdev} (${image})"
+				fi
+
+				if [ -z "${fstype}" ]
+				then
+					fstype="${imagename##*.}"
+					log_warning_msg "Unknown file system type on ${backdev} (${image}), assuming ${fstype}."
+				fi
+
+				mkdir -p "${croot}/${imagename}"
+				log_begin_msg "Mounting \"${image}\" on \"${croot}${imagename}\" via \"${backdev}\""
+				mount -t "${fstype}" -o ro,noatime "${backdev}" "${croot}/${imagename}" || panic "Can not mount ${backdev} (${image}) on ${croot}/${imagename}" && rofsstring="${croot}/${imagename}=${roopt}:${rofsstring}" && rofslist="${croot}/${imagename} ${rofslist}"
+				log_end_msg
+			fi
+		done
+	else
+		# we have a plain root system
+		mkdir -p "${croot}/filesystem"
+		log_begin_msg "Mounting \"${image_directory}\" on \"${croot}/filesystem\""
+		mount -t $(get_fstype "${image_directory}") -o ro,noatime "${image_directory}" "${croot}/filesystem" || panic "Can not mount ${image_directory} on ${croot}/filesystem" && rofsstring="${croot}/filesystem=${roopt}:${rofsstring}" && rofslist="${croot}/filesystem ${rofslist}"
+		# probably broken:
+		mount -o bind ${croot}/filesystem $mountpoint
+		log_end_msg
+	fi
 
 	rofsstring=${rofsstring%:}
 
@@ -1204,55 +1220,43 @@ setup_unionfs ()
 	# Looking for "${root_persistence}" device or file
 	if [ -n "${PERSISTENT}" ] && [ -z "${NOPERSISTENT}" ]
 	then
-		# Load USB modules
-		if [ -x /usr/bin/wc ]; then
-			num_block=$(ls -l /sys/block | wc -l)
-		else
-			num_block=0
-			for word in `ls  /sys/block`;
+		if [ -z "${QUICKUSBMODULES}" ];
+		then
+			# Load USB modules
+			num_block=$(wordCount "ls /sys/block")
+
+			for module in sd_mod uhci-hcd ehci-hcd ohci-hcd usb-storage
 			do
-				num_block=$(( $num_block + 1 ))
+				modprobe -q -b ${module}
+			done
+
+			if [ -x /sbin/udevadm ]
+			then
+				# lenny
+				udevadm trigger
+				udevadm settle
+			else
+				# etch
+				udevtrigger
+				udevsettle
+			fi
+
+			# For some reason, udevsettle does not block in this scenario,
+			# so we sleep for a little while.
+			#
+			# See https://bugs.launchpad.net/ubuntu/+source/casper/+bug/84591
+			for timeout in 5 4 3 2 1
+			do
+				sleep 1
+
+				num_curr_block=$(wordCount "ls /sys/block")
+
+				if [ ${num_curr_block} -gt ${num_block} ]
+				then
+					break
+				fi
 			done
 		fi
-		for module in sd_mod uhci-hcd ehci-hcd ohci-hcd usb-storage
-		do
-			modprobe -q -b ${module}
-		done
-
-		if [ -x /sbin/udevadm ]
-		then
-			# lenny
-			udevadm trigger
-			udevadm settle
-		else
-			# etch
-			udevtrigger
-			udevsettle
-		fi
-
-		# For some reason, udevsettle does not block in this scenario,
-		# so we sleep for a little while.
-		#
-		# See https://bugs.launchpad.net/ubuntu/+source/casper/+bug/84591
-		for timeout in 5 4 3 2 1
-		do
-			sleep 1
-
-			if [ -x /usr/bin/wc ]; then
-				num_curr_block=$(ls -l /sys/block | wc -l)
-			else
-				num_curr_block=0
-				for word in `ls /sys/block`;
-				do
-					num_curr_block=$(( $num_curr_block + 1 ))
-				done
-			fi
-
-			if [ ${num_curr_block} -gt ${num_block} ]
-			then
-				break
-			fi
-		done
 
 		# search for label and files (this could be hugely optimized)
 		cowprobe=$(find_cow_device "${root_persistence}")
@@ -1326,15 +1330,7 @@ setup_unionfs ()
 			panic "Can not mount ${cowdevice} (o: ${cow_fstype}) on /cow"
 	fi
 
-	if [ -x /usr/bin/wc ]; then
-		rofscount=$(echo ${rofslist} |wc -w)
-	else
-		rofscount=0
-		for word in ${rofslist};
-		do
-			rofscount=$(( $rofscount+ 1 ))
-		done
-	fi
+	rofscount=$(wordCount "echo ${rofslist}")
 
 	if [ -n "${EXPOSED_ROOT}" ]
 	then
@@ -1370,7 +1366,6 @@ setup_unionfs ()
 
 	# Correct the permissions of /:
 	chmod 0755 "${rootmnt}"
-	chown 0:0 "${rootmnt}"
 
 	# tmpfs file systems
 	touch /etc/fstab
@@ -1496,7 +1491,8 @@ find_livefs ()
 			do
 				if [ "$(cat ${sysblock}/removable)" = "1" ]
 				then
-					if readlink ${sysblock}/device | grep -q usb
+					if readlink ${sysblock} | grep -q usb ||
+					   readlink ${sysblock}/device | grep -q usb # linux < 2.6.29
 					then
 						for dev in $(subdevices "${sysblock}")
 						do
@@ -1705,7 +1701,7 @@ mountroot ()
 		log_end_msg
 	fi
 
-	if [ -n "${MODULETORAMFILE}" ]
+	if [ -n "${MODULETORAMFILE}" ] || [ -n "${PLAIN_ROOT}" ]
 	then
 		setup_unionfs "${livefs_root}" "${rootmnt}"
 	else
