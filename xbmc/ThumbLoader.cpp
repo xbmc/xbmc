@@ -140,7 +140,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
       // create unique thumb for auto generated thumbs
       cachedThumb = strPath + "auto-" + strFileName;
-      if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb))
+      if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb) && !pItem->m_bIsFolder)
       {
         CStreamDetails details;
         if (pItem->IsStack())
