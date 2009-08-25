@@ -22,6 +22,8 @@
 #ifndef WINDOW_EVENTS_SDL_H
 #define WINDOW_EVENTS_SDL_H
 
+#include <SDL/SDL_events.h>
+
 #pragma once
 
 #include "WinEvents.h"
@@ -30,6 +32,9 @@ class CWinEventsSDL : public CWinEventsBase
 {
 public:
   static bool MessagePump();
+  
+protected:
+  static bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event);
 };
 
 #endif // WINDOW_EVENTS_SDL_H

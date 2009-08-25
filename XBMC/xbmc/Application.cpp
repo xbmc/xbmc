@@ -387,7 +387,7 @@ CApplication::~CApplication(void)
 #endif
 }
 
-int CApplication::OnEvent(XBMC_Event& newEvent)
+bool CApplication::OnEvent(XBMC_Event& newEvent)
 {
   switch(newEvent.type)
   {
@@ -396,15 +396,24 @@ int CApplication::OnEvent(XBMC_Event& newEvent)
       g_Keyboard.HandleEvent(newEvent);
       g_application.ProcessKeyboard();
       break;
+      
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
-      g_Mouse.HandleEvent(newEvent);
-      g_application.ProcessMouse();
+      // mouse scroll wheel.
+      if (newEvent.button.button == 4)
+        g_Mouse.UpdateMouseWheel(1);
+      else if (newEvent.button.button == 5)
+        g_Mouse.UpdateMouseWheel(-1);
+      else
+      {
+        g_Mouse.HandleEvent(newEvent);
+        g_application.ProcessMouse();
+      }
       break;
   }
 
-  return 0;
+  return false;
 }
 
 // This function does not return!
@@ -2856,6 +2865,11 @@ void CApplication::FrameMove()
   }
 
   UpdateLCD();
+  
+#ifdef HAS_LIRC
+  // Read the input from a remote
+  g_RemoteControl.Update();
+#endif
   
   // read raw input from controller, remote control, mouse and keyboard
   // elis ReadInput();

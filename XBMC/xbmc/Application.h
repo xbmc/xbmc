@@ -190,7 +190,7 @@ public:
   bool ExecuteXBMCAction(std::string action);
   bool ExecuteAction(CGUIActionDescriptor action);
 
-  static int OnEvent(XBMC_Event& newEvent);
+  static bool OnEvent(XBMC_Event& newEvent);
   
 
   CApplicationMessenger& getApplicationMessenger();
