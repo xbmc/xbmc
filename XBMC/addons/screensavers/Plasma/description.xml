@@ -2,51 +2,17 @@
 <addoninfo>
   <!-- guid: unique identifier of this addon 	!-->
   <guid>F20BE86C-7EA9-4b79-BE92-9BF3311EC092</guid>
-
-  <!-- 	type:
-    1:  visualization
-    2:  skin
-    3:  pvrdll
-    4:  script
-    5:  scraper-pvr
-    6:  scraper-video
-    7:  scraper-music
-    8:  scraper-program
-    9:  screensaver
-    10: plugin-pvr
-    11: plugin-video
-    12: plugin-music
-    13: plugin-program
-    14: plugin-pictures !-->
-  <type>9</type>
-
-  <!-- title: name of the addon !-->
+  <type>screensaver</type>
   <title>Plasma</title>
-
-  <!-- library: file name of the library !-->
   <library>Plasma.xbs</library>
-
-  <!-- version:  version number in the following format major[.minor[.release[.build]]] !-->
   <version>1.0.0</version>
-
-  <!-- platforms: xbmc platforms this addon is compatible with: 
-    atv|osx|xbox|windows|linux|all !-->
-  <platforms><platform>linux</platform></platforms>
-
-  <!-- minversion: earliest xbmc revision that this addon supports !-->
+  <platforms>
+    <platform>linux</platform>
+  </platforms>
   <minversion>
     <xbmc>20000</xbmc>
   </minversion>
-
-  <!-- summary: short summary of addon !-->
   <summary>OpenGL Screensaver</summary>
-
-  <!-- description: more verbose description of addon !-->
   <description>Screensaver showing...</description>
-
-  <!-- author: name of devloper/organisation !-->
   <author>TEAMXBMC</author>
-
-  <!-- disclaimer: if required, will be shown once to user upon installation !-->
-  <disclaimer></disclaimer>
 </addoninfo>
