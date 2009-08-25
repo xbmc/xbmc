@@ -56,30 +56,30 @@ CDVDVideoCodecCrystalHD::~CDVDVideoCodecCrystalHD()
 
 bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
-  BC_STATUS res;
-  U32 mode = DTS_PLAYBACK_MODE | DTS_LOAD_FILE_PLAY_FW | DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(vdecRESOLUTION_720p23_976);
+  BCM::BC_STATUS res;
+  BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_LOAD_FILE_PLAY_FW | BCM::DTS_SKIP_TX_CHK_CPB | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   
-  U32 videoAlg = 0;
+  BCM::U32 videoAlg = 0;
   switch (hints.codec)
   {
   case BC_CODEC_ID_VC1:
-    videoAlg = BC_VID_ALGO_VC1;
+    videoAlg = BCM::BC_VID_ALGO_VC1;
     m_pFormatName = "bcm-vc1";
     break;
   case BC_CODEC_ID_H264:
-    videoAlg = BC_VID_ALGO_H264;
+    videoAlg = BCM::BC_VID_ALGO_H264;
     m_pFormatName = "bcm-h264";
     break;
   case BC_CODEC_ID_MPEG2:
-    videoAlg = BC_VID_ALGO_MPEG2;
+    videoAlg = BCM::BC_VID_ALGO_MPEG2;
     m_pFormatName = "bcm-mpeg2";
     break;
   default:
     return false;
   }
 
-  res = DtsDeviceOpen(&m_Device, mode);
-  if (res != BC_STS_SUCCESS)
+  res = BCM::DtsDeviceOpen(&m_Device, mode);
+  if (res != BCM::BC_STS_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s: Failed to open Broadcom Crystal HD", __FUNCTION__);
     Dispose();
@@ -87,40 +87,40 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     return false;
   }
 
-  res = DtsOpenDecoder(m_Device, BC_STREAM_TYPE_ES);
-  if (res != BC_STS_SUCCESS)
+  res = BCM::DtsOpenDecoder(m_Device, BCM::BC_STREAM_TYPE_ES);
+  if (res != BCM::BC_STS_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s: Failed to open decoder", __FUNCTION__);
     Dispose();
     Reset();
     return false;
   }
-  res = DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | vdecFrameRate23_97);
-  if (res != BC_STS_SUCCESS)
+  res = BCM::DtsSetVideoParams(m_Device, videoAlg, FALSE, FALSE, TRUE, 0x80000000 | BCM::vdecFrameRate23_97);
+  if (res != BCM::BC_STS_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s: Failed to set video params", __FUNCTION__);
     Dispose();
     Reset();
     return false;
   }
-  res = DtsSet422Mode(m_Device, MODE420);
-  if (res != BC_STS_SUCCESS)
+  res = BCM::DtsSet422Mode(m_Device, BCM::MODE420);
+  if (res != BCM::BC_STS_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s: Failed to set 422 mode", __FUNCTION__);
     Dispose();
     Reset();
     return false;
   }
-  res = DtsStartDecoder(m_Device);
-  if (res != BC_STS_SUCCESS)
+  res = BCM::DtsStartDecoder(m_Device);
+  if (res != BCM::BC_STS_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s: Failed to start decoder", __FUNCTION__);
     Dispose();
     Reset();
     return false;
   }
-  res = DtsStartCapture(m_Device);
-  if (res != BC_STS_SUCCESS)
+  res = BCM::DtsStartCapture(m_Device);
+  if (res != BCM::BC_STS_SUCCESS)
   {
     CLog::Log(LOGERROR, "%s: Failed to start capture", __FUNCTION__);
     Dispose();
@@ -134,9 +134,9 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
 
 void CDVDVideoCodecCrystalHD::Dispose()
 {
-  DtsStopDecoder(m_Device);
-  DtsCloseDecoder(m_Device);
-  DtsDeviceClose(m_Device);
+  BCM::DtsStopDecoder(m_Device);
+  BCM::DtsCloseDecoder(m_Device);
+  BCM::DtsDeviceClose(m_Device);
   m_Device = 0;
 }
 
@@ -152,8 +152,8 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     return VC_BUFFER;
 
   //CLog::Log(LOGDEBUG, "%s: Tx %d bytes to decoder.", __FUNCTION__, iSize);
-  BC_STATUS ret = DtsProcInput(m_Device, pData, iSize, (U64)(pts * (100000000.0 / DVD_TIME_BASE)), FALSE);
-  if (ret != BC_STS_SUCCESS)
+  BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pData, iSize, (BCM::U64)(pts * (100000000.0 / DVD_TIME_BASE)), FALSE);
+  if (ret != BCM::BC_STS_SUCCESS)
   {
     CLog::Log(LOGDEBUG, "%s: DtsProcInput returned %d.", __FUNCTION__, ret);
     return VC_ERROR;
@@ -173,25 +173,25 @@ void CDVDVideoCodecCrystalHD::Reset()
 bool CDVDVideoCodecCrystalHD::IsPictureReady()
 {
   memset(&m_Output, 0, sizeof(m_Output));
-  DtsReleaseOutputBuffs(m_Device, FALSE, FALSE); // Previous output is no longer valid
+  BCM::DtsReleaseOutputBuffs(m_Device, FALSE, FALSE); // Previous output is no longer valid
 
-  m_Output.PoutFlags = BC_POUT_FLAGS_SIZE | BC_POUT_FLAGS_YV12;
+  m_Output.PoutFlags = BCM::BC_POUT_FLAGS_SIZE | BCM::BC_POUT_FLAGS_YV12;
   m_Output.PicInfo.width = m_CurrentFormat.width;
   m_Output.PicInfo.height = m_CurrentFormat.height;
-  BC_STATUS ret = DtsProcOutput(m_Device, 2000, &m_Output);  
-  //BC_STATUS ret = DtsProcOutputNoCopy(m_Device, 2000, &m_Output);
+  BCM::BC_STATUS ret = DtsProcOutput(m_Device, 2000, &m_Output);  
+  //BCM::BC_STATUS ret = DtsProcOutputNoCopy(m_Device, 2000, &m_Output);
   /* motd - using NoCopy gives full frame rate - should it really incur such a large penalty? */
   switch (ret)
   {
-  case BC_STS_SUCCESS:
+  case BCM::BC_STS_SUCCESS:
     m_FramesOut++;
     return true;
-  case BC_STS_NO_DATA:
+  case BCM::BC_STS_NO_DATA:
     break;
-  case BC_STS_FMT_CHANGE:
+  case BCM::BC_STS_FMT_CHANGE:
     CLog::Log(LOGDEBUG, "%s: Format Change Detected. Flags: 0x%08x", __FUNCTION__, m_Output.PoutFlags); 
 
-    if ((m_Output.PoutFlags & BC_POUT_FLAGS_PIB_VALID) && (m_Output.PoutFlags & BC_POUT_FLAGS_FMT_CHANGE))
+    if ((m_Output.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID) && (m_Output.PoutFlags & BCM::BC_POUT_FLAGS_FMT_CHANGE))
     {
       // Read format data from driver
       CLog::Log(LOGDEBUG, "%s: New Format", __FUNCTION__);
@@ -212,20 +212,20 @@ bool CDVDVideoCodecCrystalHD::IsPictureReady()
       CLog::Log(LOGDEBUG, "\tCustom Aspect: %lu", m_Output.PicInfo.custom_aspect_ratio_width_height);
       CLog::Log(LOGDEBUG, "\tFrames to Drop: %lu", m_Output.PicInfo.n_drop);
       CLog::Log(LOGDEBUG, "\tH264 Valid Fields: 0x%08x", m_Output.PicInfo.other.h264.valid);   
-      memcpy(&m_CurrentFormat, &m_Output.PicInfo, sizeof(BC_PIC_INFO_BLOCK));
+      memcpy(&m_CurrentFormat, &m_Output.PicInfo, sizeof(BCM::BC_PIC_INFO_BLOCK));
 
       m_Output.YbuffSz = m_CurrentFormat.width * m_CurrentFormat.height;
       m_Output.UVbuffSz = m_Output.YbuffSz / 2;
-      m_Output.Ybuff = (U8*)_aligned_malloc(m_Output.YbuffSz + m_Output.UVbuffSz, 4);
+      m_Output.Ybuff = (BCM::U8*)_aligned_malloc(m_Output.YbuffSz + m_Output.UVbuffSz, 4);
       m_Output.UVbuff =  m_Output.Ybuff + m_Output.YbuffSz;
 
       m_OutputTimeout = 15000;
     }
     break;
-  case BC_STS_IO_XFR_ERROR:
+  case BCM::BC_STS_IO_XFR_ERROR:
     CLog::Log(LOGDEBUG, "%s: DtsProcOutput (Peek) returned BC_STS_IO_XFR_ERROR.", __FUNCTION__);
     break;
-  case BC_STS_BUSY:
+  case BCM::BC_STS_BUSY:
     CLog::Log(LOGDEBUG, "%s: DtsProcOutput (Peek) returned BC_STS_BUSY.", __FUNCTION__);
     break;
   default:
