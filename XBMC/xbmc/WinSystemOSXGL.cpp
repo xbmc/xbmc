@@ -49,3 +49,30 @@ void CWinSystemOSXGL::SetVSyncImpl(bool enable)
     m_iVSyncMode = 10;
   }
 }
+
+bool CWinSystemOSXGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
+{
+  CWinSystemOSX::ResizeWindow(newWidth, newHeight, newLeft, newTop);
+  CRenderSystemGL::ResetRenderSystem(newWidth, newHeight);  
+  
+  if (m_bVSync)
+  {
+    Cocoa_GL_EnableVSync(m_bVSync);
+  } 
+  
+  return true;
+}
+
+bool CWinSystemOSXGL::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+{
+  CWinSystemOSX::SetFullScreen(fullScreen, screen, width, height, blankOtherDisplays, alwaysOnTop);
+  CRenderSystemGL::ResetRenderSystem(width, height);  
+  
+  if (m_bVSync)
+  {
+    Cocoa_GL_EnableVSync(m_bVSync);
+  } 
+  
+  return true;
+}
+

@@ -52,6 +52,7 @@ bool CRenderSystemGL::InitRenderSystem()
   m_iSwapTime = 0;
   m_iSwapRate = 0;
   m_bVsyncInit = false;
+  m_maxTextureSize = 2048;
   
   // init glew library
   GLenum err = glewInit();
@@ -86,6 +87,33 @@ bool CRenderSystemGL::InitRenderSystem()
   
   m_bRenderCreated = true;
   
+  return true;
+}
+
+bool CRenderSystemGL::ResetRenderSystem(int width, int height)
+{
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  
+  CalculateMaxTexturesize();
+  
+  glViewport(0, 0, width, height);
+  glScissor(0, 0, width, height);
+
+  glEnable(GL_TEXTURE_2D); 
+  glEnable(GL_SCISSOR_TEST); 
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+
+  glOrtho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity(); 
+  
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  glEnable(GL_BLEND);          // Turn Blending On
+  glDisable(GL_DEPTH_TEST);  
+    
   return true;
 }
 
@@ -244,7 +272,63 @@ void CRenderSystemGL::SetVSync(bool enable)
   else
     CLog::Log(LOGINFO, "GL: Selected vsync mode %d", m_iVSyncMode);  
 }
- 
+
+void CRenderSystemGL::CaptureStateBlock()
+{
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+  glMatrixMode(GL_TEXTURE);
+  glPushMatrix();
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
+  if (glActiveTextureARB)
+    glActiveTextureARB(GL_TEXTURE0_ARB);
+  glDisable(GL_TEXTURE_2D);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glColor3f(1.0, 1.0, 1.0);  
+}
+
+void CRenderSystemGL::ApplyStateBlock()
+{
+  glMatrixMode(GL_PROJECTION);
+  glPopMatrix();
+  glMatrixMode(GL_TEXTURE);
+  glPopMatrix();
+  glMatrixMode(GL_MODELVIEW);
+  glPopMatrix();
+  if (glActiveTextureARB)
+    glActiveTextureARB(GL_TEXTURE0_ARB);
+  glEnable(GL_TEXTURE_2D);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glEnable(GL_BLEND);
+  glEnable(GL_SCISSOR_TEST);  
+}
+
+void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
+{ 
+  g_graphicsContext.BeginPaint();
+  
+  CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
+  
+  GLint viewport[4];
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  float w = (float)viewport[2]*0.5f;
+  float h = (float)viewport[3]*0.5f;
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glTranslatef(-(viewport[0] + w + offset.x), +(viewport[1] + h + offset.y), 0);
+  gluLookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glFrustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
+  glMatrixMode(GL_MODELVIEW);
+  
+  g_graphicsContext.EndPaint();
+}
+
 bool CRenderSystemGL::TestRender()
 {
   static float theta = 0.0;
@@ -264,6 +348,60 @@ bool CRenderSystemGL::TestRender()
   theta += 1.0f;
 
   return true;
+}
+
+void CRenderSystemGL::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
+{ 
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  GLfloat matrix[4][4];
+
+  for(int i=0;i<3;i++)
+    for(int j=0;j<4;j++)
+      matrix[j][i] = finalMatrix.m[i][j];
+
+  matrix[0][3] = 0.0f;
+  matrix[1][3] = 0.0f;
+  matrix[2][3] = 0.0f;
+  matrix[3][3] = 1.0f;
+
+  glMultMatrixf(&matrix[0][0]);
+}
+
+void CRenderSystemGL::RestoreHardwareTransform()
+{
+  glMatrixMode(GL_MODELVIEW);
+  glPopMatrix();  
+}
+
+void CRenderSystemGL::CalculateMaxTexturesize()
+{
+  GLint width = 256;
+  glGetError(); // reset any previous GL errors
+
+  // max out at 2^(8+8)
+  for (int i = 0 ; i<8 ; i++) 
+  {
+    glTexImage2D(GL_PROXY_TEXTURE_2D, 0, 4, width, width, 0, GL_BGRA,
+                 GL_UNSIGNED_BYTE, NULL);
+    glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
+                             &width);
+
+    // GMA950 on OS X sets error instead
+    if (width == 0 || (glGetError() != GL_NO_ERROR) )
+      break;
+    
+    m_maxTextureSize = width;
+    width *= 2;
+    if (width > 65536) // have an upper limit in case driver acts stupid
+    {
+      CLog::Log(LOGERROR, "GL: Could not determine maximum texture width, falling back to 2048");
+      m_maxTextureSize = 2048;
+      break;
+    }
+  }
+
+  CLog::Log(LOGINFO, "GL: Maximum texture width: %d", (int) m_maxTextureSize);
 }
 
 #endif

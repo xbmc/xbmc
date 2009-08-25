@@ -30,7 +30,8 @@
 #include "WinEvents.h"
 #include "WinSystem.h"
 
-using namespace std;    
+using namespace std;
+
 enum RESOLUTION {
   INVALID = -1,
   HDTV_1080i = 0,
@@ -108,8 +109,8 @@ public:
   virtual bool DestroyWindowSystem() = 0;
   virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction) = 0;
   virtual bool DestroyWindow() = 0;
-  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop){return false;}
-  virtual bool SetFullScreen(bool fullScreen, int width, int height){return false;}
+  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) = 0;
+  virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop) = 0;
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
   virtual bool CenterWindow(){return false;}
   virtual bool IsCreated(){ return m_bWindowCreated; }
@@ -121,7 +122,7 @@ public:
   virtual void GetResolutions(ResVector& vec);
   virtual void GetDesktopRes(RESOLUTION_INFO& desktopRes) = 0;
   virtual bool IsValidResolution(RESOLUTION_INFO res);
- 
+  
 protected:
   // resize window based on dimensions, positions and full screen flag
   virtual bool Resize(){ return false; }
@@ -129,10 +130,10 @@ protected:
   virtual void AddNewResolution(RESOLUTION_INFO newRes);
   
   WindowSystemType m_eWindowSystem;
-  unsigned  int m_nWidth;
-  unsigned m_nHeight;
-  unsigned m_nTop;
-  unsigned m_nLeft;
+  unsigned int m_nWidth;
+  unsigned int m_nHeight;
+  unsigned int m_nTop;
+  unsigned int m_nLeft;
   bool m_bFullScreen;
   bool m_bWindowCreated;
 

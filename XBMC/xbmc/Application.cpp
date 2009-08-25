@@ -2060,8 +2060,6 @@ void CApplication::RenderNoPresent()
     return;
   }
 
-  g_graphicsContext.AcquireCurrentContext();
-
   if (vsync_mode==VSYNC_ALWAYS)
     g_Windowing.SetVSync(true);
   else if (vsync_mode!=VSYNC_DRIVER)

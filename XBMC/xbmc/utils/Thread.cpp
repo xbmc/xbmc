@@ -249,8 +249,6 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   else
     CLog::Log(LOGDEBUG,"Thread %u terminating", GetCurrentThreadId());  
 
-  g_graphicsContext.DeleteThreadContext();
-
 #ifndef _LINUX
   _endthreadex(123);
 #endif

@@ -24,6 +24,7 @@
 #include "WinSystemOSX.h"
 #include "SpecialProtocol.h"
 #include "CocoaInterface.h"
+#include "Settings.h"
 
 #ifdef __APPLE__
 
@@ -110,11 +111,25 @@ bool CWinSystemOSX::DestroyWindow()
     
 bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
+  m_nWidth = newWidth;
+  m_nHeight = newHeight;
+  
+  m_glContext = Cocoa_GL_ResizeWindow(m_glContext, newWidth, newHeight);
+  Cocoa_GL_MakeCurrentContext(m_glContext);
+  
   return true;
 }
 
-bool CWinSystemOSX::SetFullScreen(bool fullScreen, int width, int height)
-{
+bool CWinSystemOSX::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+{  
+  m_nWidth = width;
+  m_nHeight = height;
+  m_bFullScreen = fullScreen;
+  
+  Cocoa_GL_SetFullScreen(screen, width, height, fullScreen, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+  m_glContext = Cocoa_GL_GetCurrentContext();
+  Cocoa_GL_MakeCurrentContext(m_glContext);
+  
   return true;
 }
 

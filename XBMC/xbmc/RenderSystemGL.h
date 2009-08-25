@@ -34,6 +34,7 @@ public:
 
   virtual bool InitRenderSystem();
   virtual bool DestroyRenderSystem();
+  virtual bool ResetRenderSystem(int width, int height);  
 
   virtual void GetRenderVersion(unsigned int& major, unsigned int& minor);
   virtual const CStdString& GetRenderVendor() { return m_RenderVendor; }
@@ -53,11 +54,20 @@ public:
   
   virtual bool NeedPower2Texture() { return m_NeedPower2Texture; }
 
+  virtual void CaptureStateBlock();
+  virtual void ApplyStateBlock();
+
+  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight);
+
+  virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
+  virtual void RestoreHardwareTransform();
+  
   virtual bool TestRender();
 
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl() = 0;
+  void CalculateMaxTexturesize();
   
   int        m_iVSyncMode;
   int        m_iVSyncErrors;
@@ -71,6 +81,8 @@ protected:
   int        m_RenderVerdenVersionMinor;
   int        m_RenderVerdenVersionMajor;
   bool       m_NeedPower2Texture;
+  
+  int        m_maxTextureSize;
 };
 
 #endif // RENDER_SYSTEM_H

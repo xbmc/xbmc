@@ -333,6 +333,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
     if (bundle >= 0)
     {
+      return 0;
       CBaseTexture *pTextures;
       int nLoops = 0;
       int* Delay;
@@ -444,6 +445,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     renderTexture->LoadFromFile(texturePath);
   }
 
+  if (!renderTexture) return 0;
+  
   CTextureMap* pMap = new CTextureMap(strTextureName, renderTexture->GetWidth(), renderTexture->GetHeight(), 0);
   pMap->Add(renderTexture, 100);
   m_vecTextures.push_back(pMap);

@@ -26,6 +26,7 @@
 
 #include "WinSystem.h"
 #include "Geometry.h"
+#include "TransformMatrix.h"
 #include "StdString.h"
 
 
@@ -46,6 +47,7 @@ public:
 
   virtual bool InitRenderSystem() = 0;
   virtual bool DestroyRenderSystem() = 0;
+  virtual bool ResetRenderSystem(int width, int height) = 0;
 
   virtual void GetRenderVersion(unsigned int& major, unsigned int& minor) = 0;
   virtual const CStdString& GetRenderVendor() = 0;
@@ -65,6 +67,14 @@ public:
 
   virtual bool NeedPower2Texture() = 0;
   
+  virtual void CaptureStateBlock() = 0;
+  virtual void ApplyStateBlock() = 0;
+
+  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight) = 0;
+  
+  virtual void ApplyHardwareTransform(const TransformMatrix &matrix) = 0;
+  virtual void RestoreHardwareTransform() = 0;
+    
   virtual bool TestRender() = 0;
 
 protected:

@@ -39,8 +39,8 @@ static NSWindow* blankingWindows[MAX_DISPLAYS];
 static CVDisplayLinkRef displayLink = NULL; 
 
 // Display Blanking
-void Cocoa_GL_BlankOtherDisplays(int screen_index);
-void Cocoa_GL_UnblankDisplays(void);
+//void Cocoa_GL_BlankOtherDisplays(int screen_index);
+//void Cocoa_GL_UnblankDisplays(void);
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
 
@@ -323,21 +323,21 @@ void Cocoa_GL_UnblankDisplays(void)
 
 static NSOpenGLContext* lastOwnedContext = 0;
 
-void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen, bool alwaysOnTop)
+void Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen)
 {
   static NSView* lastView = NULL;
   static CGDirectDisplayID fullScreenDisplayID = 0;
   static NSScreen* lastScreen = NULL;
   static NSWindow* mainWindow = NULL;
   static NSPoint last_origin;
-  static NSSize view_size;
+  static NSSize view_size ;
   static NSPoint view_origin;
   int screen_index;
 
   // If we're already fullscreen then we must be moving to a different display.
   // Recurse to reset fullscreen mode and then continue.
   if (fs == true && lastScreen != NULL)
-    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays, gl_FullScreen, alwaysOnTop);
+    Cocoa_GL_SetFullScreen(0, 0, 0, false, blankOtherDisplays, gl_FullScreen);
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
@@ -357,7 +357,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     // Save and make sure the view is on the screen that we're activating (to hide it).
     lastView = [context view];
     lastScreen = [[lastView window] screen];
-    screen_index = Cocoa_GetDisplayIndex( Cocoa_GetDisplayIDFromScreen(lastScreen) );
+    screen_index = screen;
     
     if (gl_FullScreen)
     {
@@ -423,22 +423,14 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       [mainWindow setBackgroundColor:[NSColor blackColor]];
       [mainWindow makeKeyAndOrderFront:nil];
       
-      // Own'ed, Everything is below our window...
-      if (alwaysOnTop)
-      {
-        // Uncomment this to debug fullscreen on a one display system
-        //[mainWindow setLevel:NSNormalWindowLevel];
-        [mainWindow setLevel:CGShieldingWindowLevel()];
-      }
-      else
-        [mainWindow setLevel:NSNormalWindowLevel];
-
+      [mainWindow setLevel:NSNormalWindowLevel]; // make our window the same level as the rest to enable cmd+tab switching
+      //[mainWindow setLevel:CGShieldingWindowLevel()]; // this will make our window topmost and hide all system messages
 
       // ...and the original one beneath it and on the same screen.
       view_size = [lastView frame].size;
       view_origin = [lastView frame].origin;
       last_origin = [[lastView window] frame].origin;
-      [[lastView window] setLevel:NSNormalWindowLevel];
+      [[lastView window] setLevel:NSNormalWindowLevel-1];
       [[lastView window] setFrameOrigin:[pScreen frame].origin];
       // expand the mouse bounds in SDL view to fullscreen
       [ lastView setFrameOrigin:NSMakePoint(0.0,0.0)];
@@ -494,7 +486,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     
     // exit fullscreen
     [context clearDrawable];
-    
+
     [NSCursor unhide];
     
     // Show menubar.
@@ -508,10 +500,12 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
     }
     else
     {
+      [[lastView window] setLevel:NSNormalWindowLevel];
+      
       // Get rid of the new window we created.
       [mainWindow close];
       [mainWindow release];
-      
+
       // Unblank.
       if (blankOtherDisplays)
       {

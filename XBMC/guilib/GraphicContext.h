@@ -51,30 +51,12 @@
 
 #include "WinSystem.h"
 
-namespace Surface { class CSurface; }
-
 // forward definitions
 class IMsgSenderCallback;
 class CGUIMessage;
 
 
 #include "MouseStat.h"
-/* elis
-#if defined(HAS_SDL)
-#include "common/SDLMouse.h"
-#else
-#include "common/DirectInputMouse.h"
-#endif
-*/
-
-
-/*!
- \ingroup graphics
- \brief
- */
-
-
-
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -94,30 +76,11 @@ class CGraphicContext : public CCriticalSection
 public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
-#ifdef HAS_DX
-  LPDIRECT3DDEVICE9 Get3DDevice() { return m_pd3dDevice; }
-  void SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice);
-  //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
-  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
-  int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
-#endif
-  inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }
-  inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }
-#ifdef HAS_SDL_2D
-  int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect);
-#endif
-#ifdef HAS_GL
-  bool ValidateSurface(Surface::CSurface* dest=NULL);
-  Surface::CSurface* InitializeSurface();
-  void ReleaseThreadSurface();
-#endif
+
   // the following two functions should wrap any
   // GL calls to maintain thread safety
-  void BeginPaint(Surface::CSurface* dest=NULL, bool lock=true);
-  void EndPaint(Surface::CSurface* dest=NULL, bool lock=true);
-  void ReleaseCurrentContext(Surface::CSurface* dest=NULL);
-  void AcquireCurrentContext(Surface::CSurface* dest=NULL);
-  void DeleteThreadContext();
+  void BeginPaint(bool lock=true);
+  void EndPaint(bool lock=true);
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
@@ -125,7 +88,6 @@ public:
   bool SendMessage(CGUIMessage& message);
   bool SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1 = 0, DWORD param2 = 0);
   void setMessageSender(IMsgSenderCallback* pCallback);
-  DWORD GetNewID();
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
   void SetMediaDir(const CStdString& strMediaDir);
   bool IsWidescreen() const { return m_bWidescreen; }
@@ -137,7 +99,6 @@ public:
   bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
   void SetFullScreenRoot(bool fs = true);
-  void ClipToViewWindow();
   void SetFullScreenVideo(bool bOnOff);
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;
@@ -187,6 +148,7 @@ public:
   void RestoreHardwareTransform();
   void NotifyAppFocusChange(bool bGaining);
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
+  void ClipToViewWindow();
   inline void ResetWindowTransform()
   {
     while (m_groupTransform.size())
@@ -216,20 +178,8 @@ public:
   int GetMaxTextureSize() const { return m_maxTextureSize; };
 protected:
   IMsgSenderCallback* m_pCallback;
-#ifdef HAS_DX
-  LPDIRECT3DDEVICE9 m_pd3dDevice;
-  D3DPRESENT_PARAMETERS* m_pd3dParams;
-  std::stack<D3DVIEWPORT9*> m_viewStack;
-  DWORD m_stateBlock;
-#endif
-  Surface::CSurface* m_screenSurface;
-#ifdef HAS_SDL_2D
-  std::stack<SDL_Rect*> m_viewStack;
-#endif
 #ifdef HAS_GL
   std::stack<GLint*> m_viewStack;
-  // elis std::map<Uint32, Surface::CSurface*> m_surfaces;
-  CCriticalSection m_surfaceLock;
 #endif
 
   int m_iScreenHeight;
