@@ -29,7 +29,7 @@
 class CWinEventsSDL : public CWinEventsBase
 {
 public:
-  static void MessagePump();
+  static bool MessagePump();
 };
 
 #endif // WINDOW_EVENTS_SDL_H

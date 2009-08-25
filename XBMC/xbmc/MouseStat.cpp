@@ -60,7 +60,8 @@ CMouseStat::~CMouseStat()
 
 void CMouseStat::Initialize(void *appData)
 {
-#ifdef HAS_SDL
+#ifdef HAS_SDL_XX 
+  //elis
   // save the current cursor so it can be restored
   m_visibleCursor = SDL_GetCursor();
 
@@ -80,7 +81,9 @@ void CMouseStat::Initialize(void *appData)
 
 void CMouseStat::Cleanup()
 {
-#ifdef HAS_SDL
+#ifdef HAS_SDL_XX
+  //elis
+  
   SDL_SetCursor(m_visibleCursor);
   if (m_hiddenCursor)
     SDL_FreeCursor(m_hiddenCursor);
@@ -91,7 +94,9 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
 {
   bool bMouseMoved(false);
   int x=0, y=0;
-#ifdef HAS_SDL
+#ifdef HAS_SDL_XX
+  //elis
+  
   if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
   {
     bMouseMoved = false;
@@ -210,7 +215,9 @@ void CMouseStat::UpdateInternal(bool bMouseMoved)
 
   // update our mouse pointer as necessary - we show the default pointer
   // only if we don't have the mouse on, and the mouse is active
-#ifdef HAS_SDL
+#ifdef HAS_SDL_XX
+  //elis
+  
   SDL_SetCursor(m_mouseState.active && !m_mouseEnabled);
 #endif
 }

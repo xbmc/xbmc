@@ -3,9 +3,9 @@ ARCH=@ARCH@
 INCLUDES=-I. -I../ -I../../xbmc -I../../xbmc/linux -I../../xbmc/utils
 
 ifeq ($(findstring osx,$(ARCH)), osx)
-SRCS=Mouse.cpp SDLMouse.cpp SDLJoystick.cpp
+SRCS=SDLJoystick.cpp
 else
-SRCS=Mouse.cpp SDLMouse.cpp SDLJoystick.cpp LIRC.cpp 
+SRCS=SDLJoystick.cpp LIRC.cpp 
 endif
 
 LIB=gui_common.a

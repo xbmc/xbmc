@@ -73,7 +73,7 @@ SRCS=ActionManager.cpp \
      GUIInfoColor.cpp \
      GUIFontTTFGL.cpp \
      Texture.cpp \
-     TextureGL.cpp
+     TextureGL.cpp \
      GUIControlProfiler.cpp \
 
 LIB=guilib.a

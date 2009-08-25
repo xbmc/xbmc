@@ -210,6 +210,7 @@ SRCS=Application.cpp \
      RenderSystem.cpp \
      RenderSystemGL.cpp \
      KeyboardStat.cpp \
+     MouseStat.cpp \
      WinSystem.cpp \
      WinSystemOSX.cpp \
      WinSystemOSXGL.cpp \

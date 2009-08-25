@@ -41,6 +41,7 @@ public:
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
   virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool DestroyWindow();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, int width, int height);
   virtual void UpdateResolutions();

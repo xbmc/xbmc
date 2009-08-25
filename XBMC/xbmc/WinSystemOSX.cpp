@@ -89,17 +89,24 @@ bool CWinSystemOSX::CreateNewWindow(CStdString name, int width, int height, bool
   m_glContext = Cocoa_GL_ReplaceSDLWindowContext();  
   Cocoa_GL_MakeCurrentContext(m_glContext);
 
-  #if defined(_LINUX)
+  /*
+   * we no longer haave SDL_Image..
+#if defined(_LINUX)
   SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
 #else
   SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon32x32.png")), NULL);
 #endif
+   */
   
   SDL_WM_SetCaption("XBMC Media Center", NULL);
   
   return true;
 }
 
+bool CWinSystemOSX::DestroyWindow()
+{
+}
+    
 bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   return true;

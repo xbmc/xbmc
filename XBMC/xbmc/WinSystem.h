@@ -107,6 +107,7 @@ public:
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem() = 0;
   virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction) = 0;
+  virtual bool DestroyWindow() = 0;
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop){return false;}
   virtual bool SetFullScreen(bool fullScreen, int width, int height){return false;}
   virtual bool MoveWindow(int topLeft, int topRight){return false;}

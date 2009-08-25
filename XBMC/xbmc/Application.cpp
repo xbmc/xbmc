@@ -76,7 +76,6 @@
 #include "SmartPlaylist.h"
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
-// elis #include "Surface.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
 #include "DPMSSupport.h"
@@ -148,7 +147,9 @@
 #include "GUIWindowVideoFiles.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowSettingsProfile.h"
-#include "GUIWindowTestPattern.h"
+#ifdef HAS_GL
+#include "GUIWindowTestPatternGL.h"
+#endif
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
@@ -441,33 +442,8 @@ int CApplication::OnEvent(XBMC_Event& newEvent)
 
 void CApplication::InitBasicD3D()
 {
-#ifdef HAS_DX
-  bool bPal = g_videoConfig.HasPAL();
-  CLog::Log(LOGINFO, "Init display in default mode: %s", bPal ? "PAL" : "NTSC");
-  // init D3D with defaults (NTSC or PAL standard res)
-  m_d3dpp.BackBufferWidth = 720;
-  m_d3dpp.BackBufferHeight = bPal ? 576 : 480;
-  m_d3dpp.BackBufferFormat = D3DFMT_LIN_X8R8G8B8;
-  m_d3dpp.BackBufferCount = 1;
-  m_d3dpp.EnableAutoDepthStencil = FALSE;
-  m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
-  m_d3dpp.PresentationInterval = 0;
-  m_d3dpp.Windowed = TRUE;
-  m_d3dpp.hDeviceWindow = g_hWnd;
-
-  if (!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
-  {
-    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
-    Sleep(INFINITE); // die
-  }
-#endif
-
   // Check if we have the required modes available
-#ifdef HAS_DX
-  g_videoConfig.GetModes(m_pD3D);
-#else
   g_videoConfig.GetModes();
-#endif
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
@@ -478,34 +454,12 @@ void CApplication::InitBasicD3D()
   }
 
   // Transfer the resolution information to our graphics context
-#ifdef HAS_DX
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
-#endif
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
-
-  // Create the device
-#ifdef HAS_DX
-  if (m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &m_d3dpp, &m_pd3dDevice) != S_OK)
-  {
-    CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create D3D Device!");
-    Sleep(INFINITE); // die
-  }
-#endif
 
   if (m_splash)
   {
-#ifndef HAS_GL
-    m_splash->Stop();
-#else
     m_splash->Hide();
-#endif
   }
-
-#ifdef HAS_DX
-
-  m_pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-  m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif
 }
 
 // This function does not return!
@@ -563,19 +517,12 @@ HRESULT CApplication::Create(HWND hWnd)
   tzset();   // Initialize timezone information variables
 #endif
 
-  g_hWnd = hWnd;
-
-#ifdef HAS_DX
-  HRESULT hr = S_OK;
-#endif
-
   // Grab a handle to our thread to be used later in identifying the render thread.
   m_threadID = GetCurrentThreadId();
 
 #ifndef _LINUX
   //floating point precision to 24 bits (faster performance)
   _controlfp(_PC_24, _MCW_PC);
-
 
   /* install win32 exception translator, win32 exceptions
    * can now be caught using c++ try catch */
@@ -603,10 +550,10 @@ HRESULT CApplication::Create(HWND hWnd)
   }
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-#if defined(_LINUX) && !defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
-#elif defined(__APPLE__)
+#if defined(__APPLE__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
+#elif defined(_LINUX)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: GNU/Linux.  Built on %s (SVN:%s)", __DATE__, SVN_REV);
 #elif defined(_WIN32)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
@@ -647,22 +594,17 @@ HRESULT CApplication::Create(HWND hWnd)
   init_emu_environ();
 
 
-#ifdef HAS_DX
-  CLog::Log(LOGNOTICE, "Setup DirectX");
-  // Create the Direct3D object
-  if ( NULL == ( m_pD3D = Direct3DCreate9(D3D_SDK_VERSION) ) )
-  {
-    CLog::Log(LOGFATAL, "XBAppEx: Unable to create Direct3D!" );
-    return E_FAIL;
-  }
-#else
+#ifdef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup SDL");
 
   /* Clean up on exit, exit on window close and interrupt */
-#ifdef HAS_SDL
   atexit(SDL_Quit);
 
-  Uint32 sdlFlags = SDL_INIT_VIDEO;
+  Uint32 sdlFlags = 0;
+  
+#ifdef HAS_SDL_OPENGL
+  sdlFlags |= SDL_INIT_VIDEO;
+#endif
 
 #ifdef HAS_SDL_AUDIO
   sdlFlags |= SDL_INIT_AUDIO;
@@ -685,11 +627,10 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_SDL
   if (SDL_Init(sdlFlags) != 0)
   {
-        CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
-        return E_FAIL;
+    CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
+    return E_FAIL;
   }
 #endif
-
 
   // for python scripts that check the OS
 #ifdef __APPLE__
@@ -706,32 +647,16 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
 #endif
-#endif
 
   //list available videomodes
-#ifdef HAS_DX
-  g_videoConfig.GetModes(m_pD3D);
-  //init the present parameters with values that are supported
-  RESOLUTION initialResolution = g_videoConfig.GetInitialMode(m_pD3D, &m_d3dpp);
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
-#else
   g_videoConfig.GetModes();
+  
   //init the present parameters with values that are supported
   RESOLUTION initialResolution = g_videoConfig.GetInitialMode();
-#endif
 
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.
-
-#if defined(HAS_SDL) && defined(_WIN32)
-  SDL_SysWMinfo wmInfo;
-  SDL_VERSION(&wmInfo.version)
-  int te = SDL_GetWMInfo( &wmInfo );
-  g_hWnd = wmInfo.window;
-  m_messageHandler.Initialize();
-#endif
-
   g_Windowing.InitWindowSystem();
 
   // Create the Mouse and Keyboard devices
@@ -740,6 +665,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef HAS_LIRC
   g_RemoteControl.Initialize();
 #endif
+  
 #ifdef HAS_SDL_JOYSTICK
   g_Joystick.Initialize(hWnd);
 #endif
@@ -775,59 +701,10 @@ HRESULT CApplication::Create(HWND hWnd)
   g_Windowing.CreateNewWindow("XBMC", screenWidth, screenHeight, false, OnEvent);
   g_Windowing.InitRenderSystem();
 
-  // TODO LINUX SDL - Check that the resolution is ok
-#ifdef HAS_DX
-  m_d3dpp.Windowed = TRUE;
-  m_d3dpp.hDeviceWindow = g_hWnd;
-
-  // Transfer the new resolution information to our graphics context
-  g_graphicsContext.SetD3DParameters(&m_d3dpp);
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
-
-
-  if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
-                                         D3DCREATE_MULTITHREADED | D3DCREATE_HARDWARE_VERTEXPROCESSING,
-                                         &m_d3dpp, &m_pd3dDevice ) ) )
-  {
-    // try software vertex processing
-    if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_HAL, NULL,
-                                          D3DCREATE_MULTITHREADED | D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                          &m_d3dpp, &m_pd3dDevice ) ) )
-    {
-      // and slow as arse reference processing
-      if ( FAILED( hr = m_pD3D->CreateDevice(0, D3DDEVTYPE_REF, NULL,
-                                            D3DCREATE_MULTITHREADED | D3DCREATE_SOFTWARE_VERTEXPROCESSING,
-                                            &m_d3dpp, &m_pd3dDevice ) ) )
-      {
-
-        CLog::Log(LOGFATAL, "XBAppEx: Could not create D3D device!" );
-        CLog::Log(LOGFATAL, " width/height:(%ix%i)" , m_d3dpp.BackBufferWidth, m_d3dpp.BackBufferHeight);
-        CLog::Log(LOGFATAL, " refreshrate:%i" , m_d3dpp.FullScreen_RefreshRateInHz);
-        if (m_d3dpp.Flags & D3DPRESENTFLAG_WIDESCREEN)
-          CLog::Log(LOGFATAL, " 16:9 widescreen");
-        else
-          CLog::Log(LOGFATAL, " 4:3");
-
-        if (m_d3dpp.Flags & D3DPRESENTFLAG_INTERLACED)
-          CLog::Log(LOGFATAL, " interlaced");
-        if (m_d3dpp.Flags & D3DPRESENTFLAG_PROGRESSIVE)
-          CLog::Log(LOGFATAL, " progressive");
-        return hr;
-      }
-    }
-  }
-  g_graphicsContext.SetD3DDevice(m_pd3dDevice);
-  g_graphicsContext.CaptureStateBlock();
-  // set filters
-  g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  CUtil::InitGamma();
-#endif
-
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
-#if defined(_WIN32PC) && defined(HAS_SDL_OPENGL)
+#if defined(_WIN32PC) && defined(HAS_GL)
   CWIN32Util::CheckGLVersion();
 #endif
 
@@ -844,25 +721,8 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "load language info file: %s", strLangInfoPath.c_str());
   g_langInfo.Load(strLangInfoPath);
 
-  /*
-  while(true)
-  {
-    CWinEvents::MessagePump();
-    g_Windowing.ClearBuffers(1.0, 0, 0, 1.0);
-    g_Windowing.BeginRender();
-    g_Windowing.TestRender();
-    g_Windowing.EndRender();
-    g_Windowing.PresentRender();
-   
-  }
-  */
-
   m_splash = new CSplash("special://xbmc/media/Splash.png");
-#ifdef HAS_GL__
-  m_splash->Start();
-#else
   m_splash->Show();
-#endif
 
   CStdString strLanguagePath;
   strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
@@ -1314,7 +1174,7 @@ HRESULT CApplication::Initialize()
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
-  m_dpms = new DPMSSupport(NULL /* elis g_graphicsContext.getScreenSurface()*/);
+  m_dpms = new DPMSSupport(NULL);
   g_guiSettings.GetSetting("screensaver.sep_powersaving")->SetVisible(
       m_dpms->IsSupported());
   g_guiSettings.GetSetting("screensaver.powersavingtime")->SetVisible(
@@ -1331,7 +1191,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVideoFiles);          // window id = 6
   m_gWindowManager.Add(new CGUIWindowSettings);                 // window id = 4
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
-  // elis m_gWindowManager.Add(new CGUIWindowTestPattern);      // window id = 8
+#ifdef HAS_GL  
+  m_gWindowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
+#endif
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
@@ -2234,18 +2096,15 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-#ifdef HAS_SDL
   int vsync_mode = g_videoConfig.GetVSyncMode();
-#endif
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
-#ifdef HAS_SDL
-    if (vsync_mode==VSYNC_VIDEO)
-      g_graphicsContext.getScreenSurface()->EnableVSync(true);
-#endif
-    if (m_bPresentFrame)
+    if (vsync_mode == VSYNC_VIDEO)
+    {
+      g_Windowing.SetVSync(true);
       g_renderManager.Present();
+    }
     else
       g_renderManager.RenderUpdate(true, 0, 255);
 
@@ -2260,12 +2119,10 @@ void CApplication::RenderNoPresent()
 
   g_graphicsContext.AcquireCurrentContext();
 
-#ifdef HAS_SDL
   if (vsync_mode==VSYNC_ALWAYS)
-    g_graphicsContext.getScreenSurface()->EnableVSync(true);
+    g_Windowing.SetVSync(true);
   else if (vsync_mode!=VSYNC_DRIVER)
-    g_graphicsContext.getScreenSurface()->EnableVSync(false);
-#endif
+    g_Windowing.SetVSync(false);
 
   g_ApplicationRenderer.Render();
 
@@ -2273,16 +2130,9 @@ void CApplication::RenderNoPresent()
 
 void CApplication::DoRender()
 {
-#ifdef HAS_DX
-  if(!m_pd3dDevice)
-    return;
-#endif
-
   g_graphicsContext.Lock();
 
-#ifdef HAS_DX
-  m_pd3dDevice->BeginScene();
-#endif
+  g_Windowing.BeginRender();
 
   m_gWindowManager.UpdateModelessVisibility();
 
@@ -2334,9 +2184,7 @@ void CApplication::DoRender()
 
   RenderScreenSaver();
 
-#ifdef HAS_DX
-  m_pd3dDevice->EndScene();
-#endif
+  g_Windowing.EndRender();
 
   g_graphicsContext.Unlock();
 
@@ -2516,7 +2364,7 @@ void CApplication::RenderMemoryStatus()
 #ifdef __APPLE__
     double dCPU = m_resourceCounter.GetCPUUsage();
     info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
+              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, "XXX");
 #elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
     info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
@@ -2577,7 +2425,7 @@ bool CApplication::OnKey(CKey& key)
     // allow some keys to be processed while the screensaver is active
     if (WakeUpScreenSaverAndDPMS() && !processKey)
     {
-      // elis g_Keyboard.Reset();
+      g_Keyboard.Reset();
       return true;
     }
   }
@@ -2591,9 +2439,8 @@ bool CApplication::OnKey(CKey& key)
   { // fullscreen info dialog - special case
     CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
-#ifdef HAS_SDL
     g_Keyboard.Reset();
-#endif
+
     if (OnAction(action))
       return true;
 
@@ -2654,9 +2501,9 @@ bool CApplication::OnKey(CKey& key)
           action.unicode = 0;
         }
       }
-#ifdef HAS_SDL
+
       g_Keyboard.Reset();
-#endif
+
       if (OnAction(action))
         return true;
       // failed to handle the keyboard action, drop down through to standard action
@@ -2678,9 +2525,7 @@ bool CApplication::OnKey(CKey& key)
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
 
-#ifdef HAS_SDL
   g_Keyboard.Reset();
-#endif
 
   return OnAction(action);
 }
@@ -2750,14 +2595,13 @@ bool CApplication::OnAction(CAction &action)
     CButtonTranslator::GetInstance().Load();
     }
 
+
   // reload keymaps
-  /* elis
   if (action.wID == ACTION_RELOAD_KEYMAPS)
   {
     CButtonTranslator::GetInstance().Clear();
     CButtonTranslator::GetInstance().Load();
   }
-  */
 
   // show info : Shows the current video or song information
   if (action.wID == ACTION_SHOW_INFO)
@@ -3070,13 +2914,11 @@ void CApplication::FrameMove()
   }
 
   UpdateLCD();
-
-  CWinEvents::MessagePump();
-
+  
   // read raw input from controller, remote control, mouse and keyboard
   // elis ReadInput();
   // process input actions
-  bool didSomething;
+  bool didSomething = CWinEvents::MessagePump();
   // elis bool didSomething = ProcessMouse();
   didSomething |= ProcessHTTPApiButtons();
   // elis didSomething |= ProcessKeyboard();
@@ -3573,12 +3415,6 @@ HRESULT CApplication::Cleanup()
     m_perfStats.DumpStats();
 #endif
 
-  // reset our d3d params before we destroy
-#ifdef HAS_DX
-    g_graphicsContext.SetD3DDevice(NULL);
-    g_graphicsContext.SetD3DParameters(NULL);
-#endif
-
     //  Shutdown as much as possible of the
     //  application, to reduce the leaks dumped
     //  to the vc output window before calling
@@ -3687,7 +3523,8 @@ void CApplication::Stop()
     CLog::Log(LOGNOTICE, "stop sap announcement listener");
     g_sapsessions.StopThread();
 #endif
-#ifdef HAS_ZEROCONF
+    // elis
+#ifdef HAS_ZEROCONF_XXX
     if(CZeroconfBrowser::IsInstantiated())
     {
       CLog::Log(LOGNOTICE, "stop zeroconf browser");

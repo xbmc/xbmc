@@ -116,7 +116,7 @@ private:
   DWORD m_lastActiveTime;
   DWORD m_lastClickTime[5];
 
-#ifdef HAS_SDL
+#ifdef HAS_SDL_XX
   SDL_Cursor *m_visibleCursor;
   SDL_Cursor *m_hiddenCursor;
 #endif

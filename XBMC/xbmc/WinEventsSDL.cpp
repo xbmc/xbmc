@@ -27,7 +27,7 @@
 
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 
-void CWinEventsSDL::MessagePump()
+bool CWinEventsSDL::MessagePump()
 { 
   SDL_Event event;
   
@@ -36,20 +36,49 @@ void CWinEventsSDL::MessagePump()
     switch(event.type)
     {    
     case SDL_KEYDOWN:
+    {
       // process any platform specific shortcuts before handing off to XBMC
       //if (!ProcessOSShortcuts(event))
       {
-        g_application.OnEvent(XBMC_PRESSED, (long unsigned int) &event.key.keysym, 0);
+        XBMC_Event newEvent;
+        newEvent.type = XBMC_KEYDOWN;
+        newEvent.key.keysym.scancode = event.key.keysym.scancode;
+        newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
+        newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
+        newEvent.key.keysym.unicode = event.key.keysym.unicode;
+        newEvent.key.state = event.key.state;
+        newEvent.key.type = event.key.type;
+        newEvent.key.which = event.key.which;
+
+        g_application.OnEvent(newEvent);
+        return true;
+        
         // don't handle any more messages in the queue until we've handled keydown,
         // if a keyup is in the queue it will reset the keypress before it is handled.
       }
       break;
+    }
       
     case SDL_KEYUP:
-      g_application.OnEvent(XBMC_RELEASED, (long unsigned int) &event.key.keysym, 0);
-      break;
+    {
+      XBMC_Event newEvent;
+      newEvent.type = XBMC_KEYUP;
+      newEvent.key.keysym.scancode = event.key.keysym.scancode;
+      newEvent.key.keysym.sym = (XBMCKey) event.key.keysym.sym;
+      newEvent.key.keysym.mod =(XBMCMod) event.key.keysym.mod;
+      newEvent.key.keysym.unicode = event.key.keysym.unicode;
+      newEvent.key.state = event.key.state;
+      newEvent.key.type = event.key.type;
+      newEvent.key.which = event.key.which;
+      
+      g_application.OnEvent(newEvent);
+      
+      return true;
+    }
     }
   }
+  
+  return false;
 }
 
 #endif
