@@ -414,10 +414,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   {
     SetFullScreenRoot(false);
   }
-  else
-  {
-    g_Windowing.ResizeWindow(m_iScreenWidth, m_iScreenHeight, -1, -1);
-  }
+
+  g_Windowing.ResizeWindow(m_iScreenWidth, m_iScreenHeight, -1, -1);
 
   // set the mouse resolution
   g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
@@ -809,27 +807,22 @@ bool CGraphicContext::IsFullScreenRoot () const
 
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
-  static RESOLUTION desktopres = DESKTOP;
-  static RESOLUTION windowres = WINDOW;
-  static RESOLUTION lastres = INVALID;
-
+  RESOLUTION newRes;
+  
   if (m_bFullScreenRoot)
   {
-    lastres = GetVideoResolution();
-    SetVideoResolution(windowres);
+    newRes = HDTV_720p;
   }
   else
   {
-    if (lastres != INVALID)
-    {
-      SetVideoResolution(lastres);
-    }
+    if (g_guiSettings.m_LookAndFeelResolution > DESKTOP)
+      newRes = g_guiSettings.m_LookAndFeelResolution;
     else
-    {
-      SetVideoResolution(desktopres);
-    }
+      newRes = DESKTOP;      
   }
 
+  SetVideoResolution(newRes);
+  
   return  m_bFullScreenRoot;
 }
 
