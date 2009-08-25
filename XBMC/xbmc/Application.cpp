@@ -150,6 +150,9 @@
 #ifdef HAS_GL
 #include "GUIWindowTestPatternGL.h"
 #endif
+#ifdef HAS_DX
+#include "GUIWindowTestPatternDX.h"
+#endif
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
@@ -269,12 +272,6 @@ using namespace DBUSSERVER;
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
 
-#if defined(HAS_GL) && defined(_WIN32)
-  #pragma comment (lib,"opengl32.lib")
-  #pragma comment (lib,"glu32.lib")
-  #pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib") 
-#endif
-
 #if defined(_WIN32)
  #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
   #if defined(HAS_FILESYSTEM)
@@ -390,36 +387,6 @@ CApplication::~CApplication(void)
 #endif
 }
 
-// text out routine for below
-#ifdef HAS_XFONT
-static void __cdecl FEH_TextOut(XFONT* pFont, int iLine, const wchar_t* fmt, ...)
-{
-  wchar_t buf[100];
-  va_list args;
-  va_start(args, fmt);
-  _vsnwprintf(buf, 100, fmt, args);
-  va_end(args);
-
-  if (!(iLine & 0x8000))
-    CLog::Log(LOGFATAL, "%S", buf);
-
-  bool Center = (iLine & 0x10000) > 0;
-  pFont->SetTextAlignment(Center ? XFONT_TOP | XFONT_CENTER : XFONT_TOP | XFONT_LEFT);
-
-  iLine &= 0x7fff;
-
-  for (int i = 0; i < 2; i++)
-  {
-    D3DRECT rc = { 0, 50 + 25 * iLine, 720, 50 + 25 * (iLine + 1) };
-    D3DDevice::Clear(1, &rc, D3DCLEAR_TARGET, 0, 0, 0);
-    pFont->TextOut(g_application.m_pBackBuffer, buf, -1, Center ? 360 : 80, 50 + 25*iLine);
-    D3DDevice::Present(0, 0, 0, 0);
-  }
-}
-#endif
-
-HWND g_hWnd = NULL;
-
 int CApplication::OnEvent(XBMC_Event& newEvent)
 {
   switch(newEvent.type)
@@ -428,7 +395,7 @@ int CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_KEYUP:
       g_Keyboard.HandleEvent(newEvent);
       g_application.ProcessKeyboard();
-        break;
+      break;
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
@@ -440,30 +407,8 @@ int CApplication::OnEvent(XBMC_Event& newEvent)
   return 0;
 }
 
-void CApplication::InitBasicD3D()
-{
-  // Check if we have the required modes available
-  g_videoConfig.GetModes();
-  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-  {
-    // Oh uh - doesn't look good for starting in their wanted screenmode
-    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_guiSettings.m_LookAndFeelResolution = g_videoConfig.GetSafeMode();
-    CLog::Log(LOGERROR, "Resetting to mode %s", g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode);
-    CLog::Log(LOGERROR, "Done reset");
-  }
-
-  // Transfer the resolution information to our graphics context
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
-
-  if (m_splash)
-  {
-    m_splash->Hide();
-  }
-}
-
 // This function does not return!
-void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork)
+void CApplication::FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork)
 {
   // XBMC couldn't start for some reason...
   // g_LoadErrorStr should contain the reason
@@ -616,7 +561,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
 #endif // HAS_SDL
 
-
 #ifdef _LINUX
   // for nvidia cards - vsync currently ALWAYS enabled.
   // the reason is that after screen has been setup changing this env var will make no difference.
@@ -703,10 +647,6 @@ HRESULT CApplication::Create(HWND hWnd)
 
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
-
-#if defined(_WIN32PC) && defined(HAS_GL)
-  CWIN32Util::CheckGLVersion();
-#endif
 
   // initialize our charset converter
   g_charsetConverter.reset();
@@ -1193,6 +1133,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
 #ifdef HAS_GL  
   m_gWindowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
+#endif
+#ifdef HAS_DX
+  m_gWindowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
 #endif
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
@@ -2283,7 +2226,6 @@ void CApplication::Render()
                    || (m_bScreenSave && (m_screenSaverMode == "Black")
                        && (screenSaverFadeAmount >= 100)));
     unsigned int singleFrameTime = 10; // default limit 100 fps
-
 
     m_bPresentFrame = false;
     if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())

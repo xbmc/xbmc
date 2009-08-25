@@ -279,13 +279,6 @@ protected:
   // screensaver
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
-#ifdef HAS_DX
-  D3DGAMMARAMP m_OldRamp;
-#else
-  Uint16 m_OldRampRed[256];
-  Uint16 m_OldRampGreen[256];
-  Uint16 m_OldRampBlue[256];
-#endif
 
   // timer information
   CStopWatch m_idleTimer;
@@ -336,8 +329,7 @@ protected:
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
-  void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
-  void InitBasicD3D();
+  void FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork);
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();

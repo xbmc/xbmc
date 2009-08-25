@@ -55,8 +55,6 @@
 
 using namespace std;
 
-extern HWND g_hWnd;
-
 CApplicationMessenger::~CApplicationMessenger()
 {
   Cleanup();
