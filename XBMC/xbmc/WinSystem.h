@@ -57,12 +57,6 @@ enum VSYNC {
   VSYNC_DRIVER = 3
 };
 
-enum DISPLAYS
-{
-  PRIMARY_MONITOR = 0,
-  SECONDARY_MONITOR = 1
-};
-
 struct OVERSCAN
 {
   int left;
@@ -75,7 +69,7 @@ struct RESOLUTION_INFO
 {
   OVERSCAN Overscan;
   bool bFullScreen;
-  DISPLAYS iScreen;
+  int iScreen;
   int iWidth;
   int iHeight;
   int iSubtitles;
@@ -86,8 +80,6 @@ struct RESOLUTION_INFO
   char strOutput[32];
   char strId[16];
 };
-
-typedef std::vector<RESOLUTION_INFO> ResVector;
 
 typedef enum _WindowSystemType
 {
@@ -116,30 +108,22 @@ public:
   virtual bool IsCreated(){ return m_bWindowCreated; }
 
   // resolution interfaces
-  virtual bool IsFullScreen() { return m_bFullScreen; }
-  virtual unsigned int GetWidth() { return m_nWidth; }
-  virtual unsigned int GetHeight() { return m_nHeight; }
-  virtual void GetResolutions(ResVector& vec);
-  virtual void GetDesktopRes(RESOLUTION_INFO& desktopRes) = 0;
-  virtual bool IsValidResolution(RESOLUTION_INFO res);
+  unsigned int GetWidth() { return m_nWidth; }
+  unsigned int GetHeight() { return m_nHeight; }
+  bool IsFullScreen() { return m_bFullScreen; } 
+
+  virtual void UpdateResolutions();
   
 protected:
-  // resize window based on dimensions, positions and full screen flag
-  virtual bool Resize(){ return false; }
-  virtual void UpdateResolutions();
-  virtual void AddNewResolution(RESOLUTION_INFO newRes);
+  void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate);
   
   WindowSystemType m_eWindowSystem;
   unsigned int m_nWidth;
   unsigned int m_nHeight;
   unsigned int m_nTop;
   unsigned int m_nLeft;
-  bool m_bFullScreen;
   bool m_bWindowCreated;
-
-  RESOLUTION_INFO m_DesktopRes;
-  int m_nCurrentResolution;
-  ResVector m_VecResInfo;
+  bool m_bFullScreen;
 };
 
 

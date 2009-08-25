@@ -19,11 +19,10 @@
  *
  */
 
-
-
 #include "stdafx.h"
 #include "WinSystem.h"
-
+#include "GraphicContext.h"
+#include "Settings.h"
 
 CWinSystemBase::CWinSystemBase()
 {
@@ -31,10 +30,7 @@ CWinSystemBase::CWinSystemBase()
   m_nHeight = 0;
   m_nTop = 0;
   m_nLeft = 0;
-  m_bFullScreen = false;
   m_bWindowCreated = false;
-  ZeroMemory(&m_DesktopRes, sizeof(RESOLUTION_INFO));
-  m_nCurrentResolution = INVALID;
 }
 
 CWinSystemBase::~CWinSystemBase()
@@ -51,99 +47,77 @@ bool CWinSystemBase::InitWindowSystem()
   return true;
 }
 
-void CWinSystemBase::GetResolutions(ResVector& vec)
+void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate)
 {
- // add window resolution
-  vec[WINDOW] = m_VecResInfo[0];
-  vec[DESKTOP] = m_VecResInfo[1];
-
-  for(unsigned int i = 0; i < m_VecResInfo.size(); i++)
-  {
-    vec.push_back(m_VecResInfo[i]);
-  }
-}
-
-void CWinSystemBase::AddNewResolution(RESOLUTION_INFO newRes)
-{
-  // don't add res different than desktop
-  if(newRes.iWidth != m_DesktopRes.iWidth || newRes.iHeight != m_DesktopRes.iHeight)
-  {
-    return;
-  }
-
-  // don't add if the refresh is the same
-  if(newRes.fRefreshRate == m_DesktopRes.fRefreshRate)
-  {
-    return;
-  }
-
   newRes.Overscan.left = 0;
   newRes.Overscan.top = 0;
-  newRes.Overscan.right = newRes.iWidth;
-  newRes.Overscan.bottom = newRes.iHeight;
-  newRes.iScreen = PRIMARY_MONITOR;
+  newRes.Overscan.right = width;
+  newRes.Overscan.bottom = height;
+  newRes.iScreen = screen;
   newRes.bFullScreen = true;
-  newRes.iSubtitles = (int)(0.965 * newRes.iHeight);
-  sprintf(newRes.strMode,
-    "%dx%d @ %.2fHz (Full Screen)"
-    , newRes.iWidth
-    , newRes.iHeight
-    , newRes.fRefreshRate);
-  newRes.fPixelRatio = 1.0f;
+  newRes.iSubtitles = (int)(0.965 * height);
+  newRes.fRefreshRate = refreshRate;
+  newRes.fPixelRatio = 1.0f;  
+  
+  bool stdRes = false;
+  if (width == 1280 && height == 720)
+  {
+    strcpy(newRes.strMode, "720");
+    stdRes = true;
+  }
+  if (width == 1366 && height == 768)
+  {
+    strcpy(newRes.strMode, "720");
+    stdRes = true;
+  }
+  else if (width == 720 && height == 480)
+  {
+    strcpy(newRes.strMode, "480");
+    stdRes = true;
+  }
+  else if (width == 1920 && height == 1080)
+  {
+    strcpy(newRes.strMode, "1080");
+    stdRes = true;
+  }
 
-  m_VecResInfo.push_back(newRes);
+  if (stdRes)
+  {
+    if (refreshRate > 23 && refreshRate < 31)
+    {
+      strcat(newRes.strMode, "i");
+    }
+    else
+    {
+      strcat(newRes.strMode, "p");
+    }
+      
+    sprintf(newRes.strMode, "%s%2.f",  newRes.strMode, refreshRate);
+  }  
+  else
+  {
+    sprintf(newRes.strMode, "%dx%d", width, height);
+  }
+  
+  if (screen > 0)
+  {
+    sprintf(newRes.strMode, "%s (Screen #%d)", newRes.strMode, screen + 1);    
+  }  
 }
 
 void CWinSystemBase::UpdateResolutions()
 {
-  m_VecResInfo.clear();
-
-  GetDesktopRes(m_DesktopRes);
-
-  // add 2 default res: 720p and desktop. the system will add the rest
-  RESOLUTION_INFO res720p;
-
-  res720p.iWidth = 1280;
-  res720p.iHeight = 720;
-  res720p.Overscan.left = 0;
-  res720p.Overscan.top = 0;
-  res720p.Overscan.right = res720p.iWidth;
-  res720p.Overscan.bottom = res720p.iHeight;
-  res720p.bFullScreen = false;
-  res720p.iScreen = PRIMARY_MONITOR;
-  res720p.iSubtitles = (int)(0.965 * 720);
- // res720p.dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
-  res720p.fPixelRatio = 1.0f;
-  res720p.fRefreshRate = m_DesktopRes.fRefreshRate;
-  sprintf(res720p.strMode, "720p 16:9 (Windowed)");
-
-  m_VecResInfo.push_back(res720p);
-
-  m_DesktopRes.Overscan.left = 0;
-  m_DesktopRes.Overscan.top = 0;
-  m_DesktopRes.Overscan.right = m_DesktopRes.iWidth;
-  m_DesktopRes.Overscan.bottom = m_DesktopRes.iHeight;
-  m_DesktopRes.iScreen = PRIMARY_MONITOR;
-  m_DesktopRes.bFullScreen = true;
-  m_DesktopRes.iSubtitles = (int)(0.965 * m_DesktopRes.iHeight);
-  //m_DesktopRes.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-  m_DesktopRes.fPixelRatio = 1.0f;
-  sprintf(m_DesktopRes.strMode,
-    "%dx%d @ %.2fHz (Full Screen)"
-    , m_DesktopRes.iWidth
-    , m_DesktopRes.iHeight
-    , m_DesktopRes.fRefreshRate);
-
-  m_VecResInfo.push_back(m_DesktopRes);
-
- // default res is 720p
-  m_nCurrentResolution = 0;
-}
-
-bool CWinSystemBase::IsValidResolution(RESOLUTION_INFO res)
-{
-  if(m_VecResInfo.size() == 0)
-    return false;
-
-  return false;
+  // Set the resolution info for a window
+  RESOLUTION_INFO& window = g_settings.m_ResInfo[WINDOW];
+  window.iSubtitles = (int)(0.965 * 720);
+  window.iWidth = 1280;
+  window.iHeight = 720;
+  window.iScreen = 0;
+  window.fPixelRatio = 1.0f;
+  strcpy(window.strMode, "1280x720 (Window)");
+  window.fRefreshRate = 0.0f;
+  window.Overscan.left = 0;
+  window.Overscan.top = 0;
+  window.Overscan.right = window.iWidth;
+  window.Overscan.bottom = window.iHeight;  
 }

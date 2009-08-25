@@ -140,7 +140,27 @@ bool CWinSystemOSX::Resize()
 
 void CWinSystemOSX::UpdateResolutions()
 {
+  CWinSystemBase::UpdateResolutions();
+  
+  // Add desktop resolution
+  int w, h;
+  Cocoa_GetScreenResolution(&w, &h);
+  UpdateDesktopResolution(g_settings.m_ResInfo[DESKTOP], 0, w, h, Cocoa_GetScreenRefreshRate(0));
+  
+  // Add full screen settings for additional monitors
+  int numDisplays = Cocoa_GetNumDisplays();
+  for (int i = 1; i < numDisplays; i++)
+  {
+     Cocoa_GetScreenResolutionOfAnotherScreen(i, &w, &h);
+     CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
 
+     RESOLUTION_INFO res;
+     memset(&res, 0, sizeof(res));
+
+     UpdateDesktopResolution(res, i, w, h, Cocoa_GetScreenRefreshRate(i));
+     g_graphicsContext.ResetOverscan(res);
+     g_settings.m_ResInfo.push_back(res);
+  }  
 }
 
 void CWinSystemOSX::GetDesktopRes(RESOLUTION_INFO& desktopRes)
