@@ -3701,9 +3701,9 @@
 		F5987F040FBDF274008EF4FB /* DPMSSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DPMSSupport.cpp; sourceTree = "<group>"; };
 		F5987FD90FBE2DFD008EF4FB /* PAPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PAPlayer.h; sourceTree = "<group>"; };
 		F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PAPlayer.cpp; sourceTree = "<group>"; };
-		F59D70E31041EF2B00AD752F /* bc_ldil_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_ldil_if.h; path = ../../../../crystalhd/broadcom/dil/darwin/bc_ldil_if.h; sourceTree = SOURCE_ROOT; };
-		F59D70ED1041EF5800AD752F /* bc_dts_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_dts_defs.h; path = ../../../../crystalhd/broadcom/include/bc_dts_defs.h; sourceTree = SOURCE_ROOT; };
-		F59D70EE1041EF6000AD752F /* bc_dts_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_dts_types.h; path = ../../../../crystalhd/broadcom/include/bc_dts_types.h; sourceTree = SOURCE_ROOT; };
+		F59D70E31041EF2B00AD752F /* bc_ldil_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_ldil_if.h; path = /crystalhd/broadcom/dil/darwin/bc_ldil_if.h; sourceTree = "<absolute>"; };
+		F59D70ED1041EF5800AD752F /* bc_dts_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_dts_defs.h; path = /crystalhd/broadcom/include/bc_dts_defs.h; sourceTree = "<absolute>"; };
+		F59D70EE1041EF6000AD752F /* bc_dts_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_dts_types.h; path = /crystalhd/broadcom/include/bc_dts_types.h; sourceTree = "<absolute>"; };
 		F59D70F11041F01600AD752F /* DVDVideoCodecCrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecCrystalHD.cpp; sourceTree = "<group>"; };
 		F59D70F21041F01600AD752F /* DVDVideoCodecCrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecCrystalHD.h; sourceTree = "<group>"; };
 		F59D71251041F1EA00AD752F /* libldil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libldil.dylib; path = /usr/lib/libldil.dylib; sourceTree = "<absolute>"; };
@@ -8947,7 +8947,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PREBINDING = NO;
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				VALID_ARCHS = "ppc i386";
+				VALID_ARCHS = i386;
 			};
 			name = Debug;
 		};

@@ -28,7 +28,6 @@
 
 #include "DVDVideoCodec.h"
 
-#define _BC_DTS_TYPES_H_
 #ifdef WIN32
     typedef unsigned __int64  	U64;
 #else
