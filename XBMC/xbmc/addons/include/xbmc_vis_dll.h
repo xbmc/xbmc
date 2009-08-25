@@ -35,10 +35,8 @@ extern "C"
   #define VIS_ACTION_USER 100
 
   // Functions that your visualisation must implement
-  ADDON_STATUS Create(ADDON_HANDLE hdl, void* unused, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-              float fPixelRatio);
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
-  void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+  void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
   void Stop();
   bool OnAction(long action, void *param);
@@ -48,13 +46,12 @@ extern "C"
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct Visualisation* pVisz)
   {
-    pVisz->Create = Create;
     pVisz->Start = Start;
     pVisz->AudioData = AudioData;
     pVisz->Render = Render;
     pVisz->Stop = Stop;
-    pVisz->GetInfo = GetInfo;
     pVisz->OnAction = OnAction;
+    pVisz->GetInfo = GetInfo;
     pVisz->GetPresets = GetPresets;
   };
 };

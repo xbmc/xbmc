@@ -19,42 +19,30 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#ifndef ADDONMANAGER_H
+#define ADDONMANAGER_H
 
-#include "../addons/include/xbmc_addon_types.h"
+#include "Settings.h"
+#include "Addon.h"
+#include "../Scraper.h"
+#include "../addons/include/libaddon.h"
 #include "tinyXML/tinyxml.h"
 #include "Thread.h"
 #include "StdString.h"
+#include "DateTime.h"
 #include <vector>
+#include <map>
+
+class CCriticalSection;
 
 namespace ADDON
 {
-  typedef enum
-  {
-    ADDON_UNKNOWN           = -1,
-    ADDON_MULTITYPE         = 0,
-    ADDON_VIZ               = 1,
-    ADDON_SKIN              = 2,
-    ADDON_PVRDLL            = 3,
-    ADDON_SCRIPT            = 4,
-    ADDON_SCRAPER_PVR       = 5,
-    ADDON_SCRAPER_VIDEO     = 6,
-    ADDON_SCRAPER_MUSIC     = 7,
-    ADDON_SCRAPER_PROGRAM   = 8,
-    ADDON_SCREENSAVER       = 9,
-    ADDON_PLUGIN_PVR        = 10,
-    ADDON_PLUGIN_VIDEO      = 11,
-    ADDON_PLUGIN_MUSIC      = 12,
-    ADDON_PLUGIN_PROGRAM    = 13,
-    ADDON_PLUGIN_PICTURES   = 14,
-    ADDON_PLUGIN_WEATHER    = 16,
-    ADDON_DSP_AUDIO         = 17
-  } AddonType;
+  typedef std::vector<AddonPtr> VECADDONS;
+  typedef std::vector<AddonPtr>::iterator IVECADDONS;
+  typedef std::map<TYPE, VECADDONS> MAPADDONS;
 
-  class CAddon;
-
-  typedef std::vector<CAddon> VECADDONS;
-  typedef std::vector<CAddon>::iterator IVECADDONS;
-
+  const int        ADDON_DIRSCAN_FREQ         = 60;
+  const CStdString ADDON_METAFILE             = "description.xml";
   const CStdString ADDON_MULTITYPE_EXT        = "*.add";
   const CStdString ADDON_VIZ_EXT              = "*.vis";
   const CStdString ADDON_SKIN_EXT             = "*.skin";
@@ -69,7 +57,6 @@ namespace ADDON
   const CStdString ADDON_PLUGIN_PICTURES_EXT  = "*.py|*.plpic";
   const CStdString ADDON_PLUGIN_WEATHER_EXT   = "*.py|*.plwea";
   const CStdString ADDON_DSP_AUDIO_EXT        = "*.adsp";
-  const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
   const CStdString ADDON_VERSION_RE = "(?<Major>\\d*)\\.?(?<Minor>\\d*)?\\.?(?<Build>\\d*)?\\.?(?<Revision>\\d*)?";
 
   /**
@@ -82,25 +69,10 @@ namespace ADDON
   class IAddonCallback
   {
     public:
-      virtual bool RequestRestart(const CAddon* addon, bool datachanged)=0;
-      virtual bool RequestRemoval(const CAddon* addon)=0;
-      virtual ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)=0;
-      virtual addon_settings_t GetSettings(const CAddon* addon)=0;
-  };
-
-  /**
-  * Class - CAddonDummyCallback
-  * Used as fallback by unkown Add-on type
-  */
-  class CAddonDummyCallback : public IAddonCallback
-  {
-    public:
-      CAddonDummyCallback() {}
-      ~CAddonDummyCallback() {}
-      bool RequestRestart(const CAddon* addon, bool datachanged) { return false; }
-      bool RequestRemoval(const CAddon* addon) { return false; }
-      ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue) { return STATUS_UNKNOWN; }
-      addon_settings_t GetSettings(const CAddon* addon) { return NULL; }
+      virtual bool RequestRestart(const IAddon* addon, bool datachanged)=0;
+      virtual bool RequestRemoval(const IAddon* addon)=0;
+      virtual ADDON_STATUS SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)=0;
+      virtual addon_settings_t GetSettings(const IAddon* addon)=0;
   };
 
   /**
@@ -113,7 +85,7 @@ namespace ADDON
   class CAddonStatusHandler : private CThread
   {
     public:
-      CAddonStatusHandler(const CAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
+      CAddonStatusHandler(IAddon* const addon, ADDON_STATUS status, CStdString message, bool sameThread = true);
       ~CAddonStatusHandler();
 
       /* Thread handling */
@@ -123,94 +95,71 @@ namespace ADDON
 
     private:
       static CCriticalSection   m_critSection;
-      const CAddon*             m_addon;
+      IAddon*                   m_addon;
       ADDON_STATUS              m_status;
       CStdString                m_message;
   };
 
   /**
-  * Class - CAddonManager
+  * Class - CAddonMgr
+  * Holds references to all addons, enabled or
+  * otherwise. Services the generic callbacks available
+  * to all addon variants.
   */
-  class CAddonManager : public IAddonCallback
+  class CAddonMgr : public IAddonCallback
   {
   public:
-    static CAddonManager* Get();
-    virtual ~CAddonManager();
+    static CAddonMgr* Get();
+    virtual ~CAddonMgr();
 
-    IAddonCallback* GetCallbackForType(AddonType type);
-    bool RegisterAddonCallback(AddonType type, IAddonCallback* cb);
-    void UnregisterAddonCallback(AddonType type);
+    IAddonCallback* GetCallbackForType(TYPE type);
+    bool RegisterAddonCallback(TYPE type, IAddonCallback* cb);
+    void UnregisterAddonCallback(TYPE type);
 
-    /* addon callbacks */
-    addon_settings_t GetSettings(const CAddon* addon) { return NULL; }
-    ADDON_STATUS SetSetting(const CAddon* addon, const char *settingName, const void *settingValue);
-    bool RequestRestart(const CAddon* addon, bool datachanged);
-    bool RequestRemoval(const CAddon* addon);
+    /* Dll/so callbacks */
+    addon_settings_t GetSettings(const IAddon* addon) { return NULL; }
+    ADDON_STATUS SetSetting(const IAddon* addon, const char *settingName, const void *settingValue);
+    bool RequestRestart(const IAddon* addon, bool datachanged);
+    bool RequestRemoval(const IAddon* addon);
 
-    void UpdateAddons();
-    CAddon* LoadDll(const CAddon& addon) { return NULL; }
-    bool GetAddonFromNameAndType(const CStdString &name, const AddonType &type, CAddon &addon);
-    VECADDONS *GetAllAddons();
-    VECADDONS *GetAddonsFromType(const AddonType &type);
-    bool GetAddonFromGUID(const CStdString &guid, CAddon &addon);
-    bool DisableAddon(const CStdString &addon, const AddonType &type);
+    /* Addon access */
+    bool GetDefaultScraper(CScraperPtr &scaper, const CONTENT_TYPE & content);
+    bool GetDefaultScraper(AddonPtr &scraper, const CONTENT_TYPE &content);
+    bool GetAddon(const TYPE &type, const CStdString &str, AddonPtr &addon);
+    bool GetAddonFromPath(const CStdString &path, AddonPtr &addon);
+    bool HasAddons(const TYPE &type);
+    bool GetAddons(const TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
+    bool GetAddons(const TYPE &type, VECADDONPROPS &addons, const CONTENT_TYPE &content = CONTENT_NONE, bool enabled = true, bool refresh = false);
+    CStdString GetString(const CStdString &uuid, const int number);
 
-    void LoadAddons(const AddonType &type) {};
-    bool SaveAddons(const AddonType &type);
+    /* Addon operations */
+    bool EnableAddon(AddonPtr &addon);
+    bool DisableAddon(AddonPtr &addon);
+    bool Clone(const AddonPtr& parent, AddonPtr& child);
+
+    bool SaveAddonsXML(const TYPE &type);
+    bool LoadAddonsXML(const TYPE &type);
 
   protected:
-    /* addon.xml parsing and addon verfification */
-    bool AddonFromInfoXML(const CStdString &path, CAddon &addon);
-
+    void FindAddons(const TYPE &type, const bool refresh = false);
+    bool AddonFromInfoXML(const TYPE &reqType, const CStdString &path, AddonPtr &addon);
     CStdString GetAddonsFile() const;
     CStdString GetAddonsFolder() const;
 
-    bool SetAddons(TiXmlNode *root, const AddonType &type, const VECADDONS &addons);
-    void GetAddons(const TiXmlElement* pRootElement, const AddonType &type);
-    bool GetAddon(const AddonType &type, const TiXmlNode *node, CAddon &addon);
+    bool SetAddons(TiXmlNode *root, const TYPE &type, const VECADDONS &addons);
+    void GetAddons(const TiXmlElement* pRootElement, const TYPE &type);
+    bool GetAddon(const TYPE &type, const TiXmlNode *node, AddonPtr &addon);
 
   private:
-    CAddonManager();
-    static CAddonManager* m_pInstance;
+    CAddonMgr();
+    static CAddonMgr* m_pInstance;
 
-    static IAddonCallback *m_cbMultitye;
-    static IAddonCallback *m_cbViz;
-    static IAddonCallback *m_cbSkin;
-    static IAddonCallback *m_cbPVR;
-    static IAddonCallback *m_cbScript;
-    static IAddonCallback *m_cbScraperPVR;
-    static IAddonCallback *m_cbScraperVideo;
-    static IAddonCallback *m_cbScraperMusic;
-    static IAddonCallback *m_cbScraperProgram;
-    static IAddonCallback *m_cbScreensaver;
-    static IAddonCallback *m_cbPluginPVR;
-    static IAddonCallback *m_cbPluginVideo;
-    static IAddonCallback *m_cbPluginMusic;
-    static IAddonCallback *m_cbPluginProgram;
-    static IAddonCallback *m_cbPluginPictures;
-    static IAddonCallback *m_cbPluginWeather;
-    static IAddonCallback *m_cbDSPAudio;
-
-    VECADDONS  m_allAddons;
-    VECADDONS  m_virtualAddons;
-
-    VECADDONS  m_multitypeAddons;
-    VECADDONS  m_visualisationAddons;
-    VECADDONS  m_skinAddons;
-    VECADDONS  m_pvrAddons;
-    VECADDONS  m_scriptAddons;
-    VECADDONS  m_scraperPVRAddons;
-    VECADDONS  m_scraperVideoAddons;
-    VECADDONS  m_scraperMusicAddons;
-    VECADDONS  m_scraperProgramAddons;
-    VECADDONS  m_screensaverAddons;
-    VECADDONS  m_pluginPvrAddons;
-    VECADDONS  m_pluginMusicAddons;
-    VECADDONS  m_pluginVideoAddons;
-    VECADDONS  m_pluginProgramAddons;
-    VECADDONS  m_pluginPictureAddons;
-    VECADDONS  m_pluginWeatherAddons;
-    VECADDONS  m_DSPAudioAddons;
+    static std::map<TYPE, IAddonCallback*> m_managers;
+    MAPADDONS m_addons;
+    std::map<TYPE, CDateTime> m_lastScan;
+    std::map<CStdString, AddonPtr> m_uuidMap;
   };
 
 }; /* namespace ADDON */
+
+#endif /* ADDONMANAGER_H */

@@ -4,15 +4,13 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../addons/include/xbmc_addon_lib++.h"
+#include "../../addons/include/libaddon.h"
 #include "../../addons/include/xbmc_vis_dll.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif
 #include <string.h>
 #include <stdio.h>
-
-typedef unsigned int D3DCOLOR;
 
 
 char g_visName[512];
@@ -34,6 +32,8 @@ typedef struct {
 } D3DVIEWPORT8;
 #ifdef _WIN32PC
 typedef unsigned long D3DCOLOR;
+#else
+typedef unsigned int D3DCOLOR;
 #endif
 #endif
 
@@ -54,26 +54,28 @@ extern "C" {
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-#ifndef HAS_SDL_OPENGL
-ADDON_STATUS Create(ADDON_HANDLE hdl, LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio)
-#else
-ADDON_STATUS Create(ADDON_HANDLE hdl, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio)
-#endif
+ADDON_STATUS Create(ADDON_HANDLE hdl, void *props)
 {
-  if (!XBMC_register_me(hdl))
-    return STATUS_UNKNOWN;
+  //if (!XBMC_register_me(hdl))
+  //  return STATUS_UNKNOWN;
 
-  //printf("Creating Waveform\n");
-  strcpy(g_visName, szVisualisationName);
-  g_device = pd3dDevice;
-  g_viewport.X = iPosX;
-  g_viewport.Y = iPosY;
-  g_viewport.Width = iWidth;
-  g_viewport.Height = iHeight;
-  g_viewport.MinZ = 0;
-  g_viewport.MaxZ = 1;
+  strcpy(g_visName, "WaveForm");
+
+  if (props)
+  {
+    VIS_PROPS* visProps = (VIS_PROPS*) props;
+#ifndef HAS_SDL_OPENGL
+    g_device = visProps->device;
+#else
+    g_device = NULL;
+#endif
+    g_viewport.X = visProps->x;
+    g_viewport.Y = visProps->y;
+    g_viewport.Width = visProps->width;
+    g_viewport.Height = visProps->height;
+    g_viewport.MinZ = 0;
+    g_viewport.MaxZ = 1;
+  }
   return STATUS_OK;
 }
 
@@ -96,7 +98,7 @@ void Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   // Convert the audio data into a floating -1 to +1 range
   int ipos=0;
@@ -198,8 +200,7 @@ void GetInfo(VIS_INFO* pInfo)
 //-----------------------------------------------------------------------------
 bool OnAction(long flags, void *param)
 {
-  bool ret = false;
-  return ret;
+  return true;
 }
 
 //-- GetPresets ---------------------------------------------------------------
@@ -224,6 +225,16 @@ void Remove()
 bool HasSettings()
 {
   return false;
+}
+
+//-- GetSettings --------------------------------------------------------------
+// Returns a pointer to an addon_settings list; return NULL on failure
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+
+addon_settings_t GetSettings()
+{
+  return NULL;
 }
 
 //-- SetSetting ---------------------------------------------------------------

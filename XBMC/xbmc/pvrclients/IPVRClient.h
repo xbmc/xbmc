@@ -25,7 +25,6 @@
 
 #include <vector>
 
-#include "../utils/AddonDll.h"
 #include "../utils/TVChannelInfoTag.h"
 #include "../utils/TVTimerInfoTag.h"
 #include "../addons/include/xbmc_pvr_types.h"
@@ -55,10 +54,9 @@ public:
   /**
   * Constructor
   * \param long clientID    = Individual ID for the generated Client Class
-  * \param *addonCB         = IAddonCallback callback to the PVRManager
   * \param *pvrCB           = IPVRClientCallback callback to the PVRManager
   */
-  IPVRClient(long clientID, IPVRClientCallback *pvrCB);
+  IPVRClient(){};
 
   /**
   * Destructor

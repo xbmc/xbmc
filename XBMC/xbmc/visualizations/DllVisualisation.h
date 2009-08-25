@@ -23,7 +23,7 @@
 #include "../DllAddon.h"
 #include "../addons/include/xbmc_vis_types.h"
 
-class DllVisualisation : public DllAddon<Visualisation>
+class DllVisualisation : public DllAddon<Visualisation, VIS_PROPS>
 {
   // this is populated via Macro calls in DllAddon.h
 };

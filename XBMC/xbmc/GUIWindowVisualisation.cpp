@@ -144,15 +144,6 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
         return pVisControl->OnMessage(message);
     }
     break;
-  case GUI_MSG_GET_VISUALISATION:
-    {
-//      message.SetControlID(CONTROL_VIS);
-      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-      if (pVisControl)
-        message.SetLPVOID(pVisControl->GetVisualisation());
-      return true;
-    }
-    break;
   case GUI_MSG_VISUALISATION_ACTION:
     {
       // message.SetControlID(CONTROL_VIS);

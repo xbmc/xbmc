@@ -24,90 +24,107 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Visualisation.h"
+#include "visualizations/fft.h"
 #include "../addons/include/xbmc_vis_types.h"
+#include "utils/GUIInfoManager.h"
+#include "Application.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
 #include "URL.h"
-#include "../utils/AddonHelpers.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace ADDON;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-CVisualisation::CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll,
-                               const CAddon& addon)
-    : m_pVisz(pVisz)
-    , m_pDll(pDll)
-    , CAddon(addon)
-    , m_ReadyToUse(false)
-{}
-
-CVisualisation::~CVisualisation()
+CAudioBuffer::CAudioBuffer(int iSize)
 {
+  m_iLen = iSize;
+  m_pBuffer = new short[iSize];
 }
 
-void CVisualisation::Create(int posx, int posy, int width, int height)
+CAudioBuffer::~CAudioBuffer()
 {
-  /* Allocate the callback table to save all the pointers
-     to the helper callback functions */
-  m_callbacks = new AddonCB;
+  delete [] m_pBuffer;
+}
 
-  /* PVR Helper functions */
-  m_callbacks->userData                 = this;
-  m_callbacks->addonData                = (CAddon*) this;
+const short* CAudioBuffer::Get() const
+{
+  return m_pBuffer;
+}
 
-  /* Write XBMC Global Add-on function addresses to callback table */
-  CAddonUtils::CreateAddOnCallbacks(m_callbacks);
-
-  // allow vis. to create internal things needed
-  // pass it the location,width,height
-  // and the name of the visualisation.
-  char szTmp[129];
-  sprintf(szTmp, "create:%ix%i at %ix%i %s\n", width, height, posx, posy, m_strName.c_str());
-  OutputDebugString(szTmp);
-
-  /* Call Create to make connections, initializing data or whatever is
-     needed to become the AddOn running */
-  try
+void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample)
+{
+  if (iSize<0)
   {
-    float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
-#ifndef HAS_SDL
-    // TODO LINUX this is obviously not good, but until we have visualization sorted out, this will have to do
-    ADDON_STATUS status = m_pVisz->Create (m_callbacks, g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strName.c_str(),
-                     pixelRatio);
-#else
-    ADDON_STATUS status = m_pVisz->Create (m_callbacks, 0, posx, posy, width, height, m_strName.c_str(), pixelRatio);
-#endif
-    if (status != STATUS_OK)
-      throw status;
-    m_ReadyToUse = true;
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "Visualisation: %s - exception '%s' during Create occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
-    m_ReadyToUse = false;
-  }
-  catch (ADDON_STATUS status)
-  {
-    CLog::Log(LOGERROR, "Visualisation: %s - Client returns bad status (%i) after Create and is not usable", m_strName.c_str(), status);
-    m_ReadyToUse = false;
-
-    /* Delete is performed by the calling class */
-    new CAddonStatusHandler(this, status, "", false);
+    return;
   }
 
-  return;
+  if (iBitsPerSample == 16)
+  {
+    iSize /= 2;
+    for (int i = 0; i < iSize && i < m_iLen; i++)
+    { // 16 bit -> convert to short directly
+      m_pBuffer[i] = ((short *)psBuffer)[i];
+    }
+  }
+  else if (iBitsPerSample == 8)
+  {
+    for (int i = 0; i < iSize && i < m_iLen; i++)
+    { // 8 bit -> convert to signed short by multiplying by 256
+      m_pBuffer[i] = ((short)((char *)psBuffer)[i]) << 8;
+    }
+  }
+  else // assume 24 bit data
+  {
+    iSize /= 3;
+    for (int i = 0; i < iSize && i < m_iLen; i++)
+    { // 24 bit -> ignore least significant byte and convert to signed short
+      m_pBuffer[i] = (((int)psBuffer[3 * i + 1]) << 0) + (((int)((char *)psBuffer)[3 * i + 2]) << 8);
+    }
+  }
+  for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
+}
+
+//////////////////////////////////////////////////////////////////////
+// CVisualisation
+//////////////////////////////////////////////////////////////////////
+
+CVisualisation::~CVisualisation()
+{}
+
+bool CVisualisation::Create(int x, int y, int w, int h)
+{
+  m_pInfo = new VIS_PROPS;
+  m_pInfo->x = x;
+  m_pInfo->y = y;
+  m_pInfo->width = w;
+  m_pInfo->height = h;
+  m_pInfo->pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
+
+  if (CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>::Create())
+  {
+    // Start the visualisation (this loads settings etc.)
+    CStdString strFile = CUtil::GetFileName(g_application.CurrentFile());
+    CLog::Log(LOGDEBUG, "Visualisation::Start()\n");
+    m_pStruct->Start(m_iChannels, m_iSamplesPerSec, m_iBitsPerSample, strFile);
+    m_initialized = true;
+
+    CreateBuffers();
+    if (g_application.m_pPlayer)
+    {
+      g_application.m_pPlayer->RegisterAudioCallback(this);
+    }
+
+    return true;
+  }
+  return false;
 }
 
 void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName)
 {
   // notify visz. that new song has been started
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
-  if (m_ReadyToUse) m_pVisz->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
+  if (m_initialized) m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
 }
 
 void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
@@ -117,28 +134,27 @@ void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, fl
   // iAudioDataLength = length of audiodata array
   // pFreqData = fft-ed audio data
   // iFreqDataLength = length of pFreqData
-  if (m_ReadyToUse) m_pVisz->AudioData(const_cast<short*>(pAudioData), iAudioDataLength, pFreqData, iFreqDataLength);
+  if (m_initialized) m_pStruct->AudioData(const_cast<short*>(pAudioData), iAudioDataLength, pFreqData, iFreqDataLength);
 }
 
 void CVisualisation::Render()
 {
   // ask visz. to render itself
   g_graphicsContext.BeginPaint();
-  if (m_ReadyToUse) m_pVisz->Render();
+  if (m_initialized) m_pStruct->Render();
   g_graphicsContext.EndPaint();
 }
 
 void CVisualisation::Stop()
 {
   // ask visz. to cleanup
-  if (m_ReadyToUse) m_pVisz->Stop();
+  if (m_initialized) m_pStruct->Stop();
 }
-
 
 void CVisualisation::GetInfo(VIS_INFO *info)
 {
   // get info from vis
-  if (m_ReadyToUse) m_pVisz->GetInfo(info);
+  if (m_initialized) m_pStruct->GetInfo(info);
 }
 
 bool CVisualisation::OnAction(VIS_ACTION action, void *param)
@@ -146,7 +162,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
   // see if vis wants to handle the input
   // returns false if vis doesnt want the input
   // returns true if vis handled the input
-  if (action != VIS_ACTION_NONE && m_pVisz->OnAction)
+  if (action != VIS_ACTION_NONE && m_pStruct->OnAction)
   {
     // if this is a VIS_ACTION_UPDATE_TRACK action, copy relevant
     // tags from CMusicInfoTag to VisTag
@@ -168,28 +184,174 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       track.year        = tag->GetYear();
       track.rating      = tag->GetRating();
 
-      return m_pVisz->OnAction((int)action, (void*)(&track));
+      return m_pStruct->OnAction((int)action, (void*)(&track));
     }
-    return m_pVisz->OnAction((int)action, param);
+    return m_pStruct->OnAction((int)action, param);
   }
   return false;
 }
 
+void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
+{
+  CSingleLock lock (m_critSection);
+  if (!m_pStruct)
+    return ;
+  CLog::Log(LOGDEBUG, "OnInitialize() started");
+
+  m_iChannels = iChannels;
+  m_iSamplesPerSec = iSamplesPerSec;
+  m_iBitsPerSample = iBitsPerSample;
+  UpdateTrack();
+
+  CLog::Log(LOGDEBUG, "OnInitialize() done");
+}
+
+void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
+{
+  CSingleLock lock (m_critSection);
+  if (!m_pStruct)
+    return ;
+  if (!m_initialized) return ;
+
+  // FIXME: iAudioDataLength should never be less than 0
+  if (iAudioDataLength<0)
+    return;
+
+  // Save our audio data in the buffers
+  auto_ptr<CAudioBuffer> pBuffer ( new CAudioBuffer(2*AUDIO_BUFFER_SIZE) );
+  pBuffer->Set(pAudioData, iAudioDataLength, m_iBitsPerSample);
+  m_vecBuffers.push_back( pBuffer.release() );
+
+  if ( (int)m_vecBuffers.size() < m_iNumBuffers) return ;
+
+  auto_ptr<CAudioBuffer> ptrAudioBuffer ( m_vecBuffers.front() );
+  m_vecBuffers.pop_front();
+  // Fourier transform the data if the vis wants it...
+  if (m_bWantsFreq)
+  {
+    // Convert to floats
+    const short* psAudioData = ptrAudioBuffer->Get();
+    for (int i = 0; i < 2*AUDIO_BUFFER_SIZE; i++)
+    {
+      m_fFreq[i] = (float)psAudioData[i];
+    }
+
+    // FFT the data
+    twochanwithwindow(m_fFreq, AUDIO_BUFFER_SIZE);
+
+    // Normalize the data
+    float fMinData = (float)AUDIO_BUFFER_SIZE * AUDIO_BUFFER_SIZE * 3 / 8 * 0.5 * 0.5; // 3/8 for the Hann window, 0.5 as minimum amplitude
+    float fInvMinData = 1.0f/fMinData;
+    for (int i = 0; i < AUDIO_BUFFER_SIZE + 2; i++)
+    {
+      m_fFreq[i] *= fInvMinData;
+    }
+
+    // Transfer data to our visualisation
+    try
+    {
+      m_pStruct->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Exception in Visualisation::AudioData()");
+    }
+  }
+  else
+  { // Transfer data to our visualisation
+    try
+    {
+      m_pStruct->AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "Exception in Visualisation::AudioData()");
+    }
+  }
+  return ;
+}
+
+void CVisualisation::CreateBuffers()
+{
+  CSingleLock lock (m_critSection);
+  ClearBuffers();
+
+  // Get the number of buffers from the current vis
+  VIS_INFO info;
+  m_pStruct->GetInfo(&info);
+  m_iNumBuffers = info.iSyncDelay + 1;
+  m_bWantsFreq = info.bWantsFreq;
+  if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
+    m_iNumBuffers = MAX_AUDIO_BUFFERS;
+  if (m_iNumBuffers < 1)
+    m_iNumBuffers = 1;
+}
+
+void CVisualisation::ClearBuffers()
+{
+  CSingleLock lock (m_critSection);
+  m_bWantsFreq = false;
+  m_iNumBuffers = 0;
+
+  while (m_vecBuffers.size() > 0)
+  {
+    CAudioBuffer* pAudioBuffer = m_vecBuffers.front();
+    delete pAudioBuffer;
+    m_vecBuffers.pop_front();
+  }
+  for (int j = 0; j < AUDIO_BUFFER_SIZE*2; j++)
+  {
+    m_fFreq[j] = 0.0f;
+  }
+}
+
+bool CVisualisation::UpdateTrack()
+{
+  bool handled;
+  if (m_initialized)
+  {
+    // get the current album art filename
+    m_AlbumThumb = g_infoManager.GetImage(MUSICPLAYER_COVER, WINDOW_INVALID);
+
+    // get the current track tag
+    const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
+
+    if (m_AlbumThumb == "DefaultAlbumCover.png")
+      m_AlbumThumb = "";
+    else
+      CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
+
+    // inform the visulisation of the current album art
+    if ( m_pStruct->OnAction( CVisualisation::VIS_ACTION_UPDATE_ALBUMART,
+      (void*)( m_AlbumThumb.c_str() ) ) )
+      handled = true;
+
+    // inform the visualisation of the current track's tag information
+    if ( tag && m_pStruct->OnAction( CVisualisation::VIS_ACTION_UPDATE_TRACK,
+      (void*)tag ) )
+      handled = true;
+  }
+  return handled;
+}
+
 void CVisualisation::GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
 {
-  if (m_pVisz->GetPresets)
-    m_pVisz->GetPresets(pPresets, currentPreset, numPresets, locked);
+  if (m_pStruct->GetPresets)
+    m_pStruct->GetPresets(pPresets, currentPreset, numPresets, locked);
 }
 
 void CVisualisation::GetCurrentPreset(char **pPreset, bool *locked)
 {
-  if (pPreset && locked && m_pVisz->GetPresets)
+  if (!m_initialized)
+    return;
+
+  if (pPreset && locked && m_pStruct->GetPresets)
   {
     char **presets = NULL;
     int currentPreset = 0;
     int numPresets = 0;
     *locked = false;
-    m_pVisz->GetPresets(&presets, &currentPreset, &numPresets, locked);
+    m_pStruct->GetPresets(&presets, &currentPreset, &numPresets, locked);
     if (presets && currentPreset < numPresets)
       *pPreset = presets[currentPreset];
   }
@@ -211,65 +373,3 @@ char *CVisualisation::GetPreset()
   return preset;
 }
 
-
-/**********************************************************
- * Addon specific functions
- * Is a must do, to all types of available addons handler
- */
-
-void CVisualisation::Remove()
-{
-}
-
-ADDON_STATUS CVisualisation::GetStatus()
-{
-  try
-  {
-    return m_pDll->GetStatus();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "Visualisation: %s - exception '%s' during GetStatus occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
-  }
-  return STATUS_UNKNOWN;
-}
-
-bool CVisualisation::HasSettings()
-{
-  try
-  {
-    return m_pDll->HasSettings();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "Visualisation: %s - exception '%s' during HasSettings occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
-    return false;
-  }
-}
-
-addon_settings_t CVisualisation::GetSettings()
-{
-  try
-  {
-    return m_pDll->GetSettings();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "Visualisation: %s - exception '%s' during GetSettings occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
-    return NULL;
-  }
-}
-
-
-ADDON_STATUS CVisualisation::SetSetting(const char *settingName, const void *settingValue)
-{
-  try
-  {
-    return m_pDll->SetSetting(settingName, settingValue);
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "Visualisation: %s - exception '%s' during SetSetting occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), e.what(), m_strCreator.c_str());
-    return STATUS_UNKNOWN;
-  }
-}

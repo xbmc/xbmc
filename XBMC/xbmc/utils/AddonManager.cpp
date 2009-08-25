@@ -18,15 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#include "stdafx.h"
 #include "AddonManager.h"
 #include "Addon.h"
-#include "settings/AddonSettings.h"
 #include "Application.h"
-#include "Util.h"
-#include "FileSystem/File.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "FileSystem/Directory.h"
 #include "utils/log.h"
 #include "utils/RegExp.h"
 #include "XMLUtils.h"
@@ -43,62 +38,17 @@
 #include "../pvrclients/DllPVRClient.h"
 #include "../pvrclients/PVRClient.h"
 #endif
-#ifdef HAS_SCREENSAVERS
+#ifdef HAS_SCREENSAVER
 #include "../screensavers/DllScreenSaver.h"
 #include "../screensavers/ScreenSaver.h"
 #endif
+//#ifdef HAS_SCRAPERS
+#include "../Scraper.h"
+//#endif
 
-using namespace XFILE;
-using namespace DIRECTORY;
-
-template<class T, typename U, class V>
-static ADDON::CAddon* loadDll(const ADDON::CAddon& addon)
-{
-  // add the library name readed from info.xml to the addon's path
-  CStdString strFileName;
-  if (addon.m_guid_parent.IsEmpty())
-  {
-    strFileName = addon.m_strPath + addon.m_strLibName;
-  }
-  else
-  {
-    CStdString extension = CUtil::GetExtension(addon.m_strLibName);
-    strFileName = "special://temp/" + addon.m_strLibName;
-    CUtil::RemoveExtension(strFileName);
-    strFileName += "-" + addon.m_guid + extension;
-
-    if (!CFile::Exists(strFileName))
-      CFile::Cache(addon.m_strPath + addon.m_strLibName, strFileName);
-
-    CLog::Log(LOGNOTICE, "Loaded virtual child addon %s", strFileName.c_str());
-  }
-
-  // load dll
-  T* pDll = new T;
-  pDll->SetFile(strFileName);
-  pDll->EnableDelayedUnload(false);
-  if (!pDll->Load())
-  {
-    delete pDll;
-    return NULL;
-  }
-
-  U* pStruct = (U*)malloc(sizeof(U));
-  ZeroMemory(pStruct, sizeof(U));
-  pDll->GetAddon(pStruct);
-
-  // and pass it to a new instance of typename 'V' which will handle the dll
-  return new V(pStruct, pDll, addon);
-}
 
 namespace ADDON
 {
-
-/**********************************************************
- * Callback for unknown Add-on types as fallback
- */
-CAddonDummyCallback *AddonDummyCallback = new CAddonDummyCallback();
-
 
 /**********************************************************
  * CAddonStatusHandler - AddOn Status Report Class
@@ -110,14 +60,14 @@ CAddonDummyCallback *AddonDummyCallback = new CAddonDummyCallback();
 
 CCriticalSection CAddonStatusHandler::m_critSection;
 
-CAddonStatusHandler::CAddonStatusHandler(const CAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
+CAddonStatusHandler::CAddonStatusHandler(IAddon* addon, ADDON_STATUS status, CStdString message, bool sameThread)
+  : m_addon(addon)
 {
-  if (addon == NULL)
+  if (m_addon == NULL)
     return;
 
-  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientGUID:%s (same Thread=%s)", status, addon->m_strName.c_str(), addon->m_guid.c_str(), sameThread ? "yes" : "no");
+  CLog::Log(LOGINFO, "Called Add-on status handler for '%u' of clientName:%s, clientGUID:%s (same Thread=%s)", status, m_addon->Name().c_str(), m_addon->UUID().c_str(), sameThread ? "yes" : "no");
 
-  m_addon   = addon;
   m_status  = status;
   m_message = message;
 
@@ -129,7 +79,7 @@ CAddonStatusHandler::CAddonStatusHandler(const CAddon* addon, ADDON_STATUS statu
   else
   {
     CStdString ThreadName;
-    ThreadName.Format("Addon Status: %s", m_addon->m_strName.c_str());
+    ThreadName.Format("Addon Status: %s", m_addon->Name().c_str());
 
     Create(false, THREAD_MINSTACKSIZE);
     SetName(ThreadName.c_str());
@@ -163,7 +113,7 @@ void CAddonStatusHandler::Process()
     if (!pDialog) return;
 
     CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    /*heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());*/
 
     pDialog->SetHeading(heading);
     pDialog->SetLine(1, 23047);
@@ -175,7 +125,7 @@ void CAddonStatusHandler::Process()
 
     if (pDialog->IsConfirmed())
     {
-      CAddonManager::Get()->GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, false);
+      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, false);
     }
   }
   /* Request to restart the AddOn and data structures need updated */
@@ -185,7 +135,7 @@ void CAddonStatusHandler::Process()
     if (!pDialog) return;
 
     CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
 
     pDialog->SetHeading(heading);
     pDialog->SetLine(1, 23049);
@@ -194,7 +144,7 @@ void CAddonStatusHandler::Process()
     ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
-    CAddonManager::Get()->GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
+    CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
   }
   /* Request to restart XBMC (hope no AddOn need or do this) */
   else if (m_status == STATUS_NEED_EMER_RESTART)
@@ -206,7 +156,7 @@ void CAddonStatusHandler::Process()
     if (!pDialog) return ;
 
     CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
 
     pDialog->SetHeading(heading);
     pDialog->SetLine( 0, 23050);
@@ -229,7 +179,7 @@ void CAddonStatusHandler::Process()
     if (!pDialogYesNo) return;
 
     CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
 
     pDialogYesNo->SetHeading(heading);
     pDialogYesNo->SetLine(1, 23053);
@@ -242,48 +192,52 @@ void CAddonStatusHandler::Process()
 
     if (!pDialogYesNo->IsConfirmed()) return;
 
-    if (!CAddonSettings::SettingsExist(*m_addon))
+    if (m_addon->Type() == ADDON_SKIN)
     {
-      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", m_addon->m_strName.c_str());
+      CLog::Log(LOGERROR, "ADDONS: Incompatible type (%s) encountered, %s", ADDON::TranslateType(m_addon->Type()), __FUNCTION__);
       return;
     }
 
-    CURL cUrl(m_addon->m_strPath);
+    if (!m_addon->HasSettings())
+    {
+      CLog::Log(LOGERROR, "No settings.xml file could be found to AddOn '%s' Settings!", m_addon->Name().c_str());
+      return;
+    }
 
     // Load language strings temporarily
-    CAddon::LoadAddonStrings(cUrl);
+    m_addon->LoadStrings();
 
     // Create the dialog
     CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
-    heading.Format("$LOCALIZE[23053]: %s %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    heading.Format("$LOCALIZE[23053]: %s %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
     pDialog->SetHeading(heading);
-
-    CAddonSettings settings;
-    settings.Load(cUrl);
-    pDialog->SetSettings(settings);
+    //pDialog->SetAddon(m_addon);
 
     pDialog->DoModal();
 
-    settings = pDialog->GetSettings();
-    settings.Save();
-
     // Unload temporary language strings
-    CAddon::ClearAddonStrings();
+    m_addon->ClearStrings();
 
     if (pDialog->IsConfirmed())
     {
-      CAddonManager::Get()->GetCallbackForType(m_addon->m_addonType)->RequestRestart(m_addon, true);
+      m_addon->SaveSettings();
+      CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
+    }
+    else
+    {
+      m_addon->LoadSettings();
     }
   }
-  /* One or more AddOn file(s) missing (check log's for missing data) */
+  // One or more AddOn file(s) missing (check log's for missing data)
+  //TODO if installer has file manifest per addon (for incremental updates), we can check this ourselves
   else if (m_status == STATUS_MISSING_FILE)
   {
     CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
     CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
 
     pDialog->SetHeading(heading);
     pDialog->SetLine(1, 23055);
@@ -300,8 +254,10 @@ void CAddonStatusHandler::Process()
     CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
-    CStdString heading;
-    heading.Format("%s: %s", g_localizeStrings.Get(23012 + m_addon->m_addonType).c_str(), m_addon->m_strName.c_str());
+    CStdString heading, name;
+    name = m_addon->Name();
+    int type = m_addon->Type();
+    heading.Format("%s: %s", g_localizeStrings.Get(23012 + type).c_str(), name.c_str());
 
     pDialog->SetHeading(heading);
     pDialog->SetLine(1, 23057);
@@ -318,429 +274,425 @@ void CAddonStatusHandler::Process()
 
 
 /**********************************************************
- * CAddonManager
+ * CAddonMgr
  *
  */
 
-IAddonCallback *CAddonManager::m_cbMultitye        = NULL;
-IAddonCallback *CAddonManager::m_cbViz             = NULL;
-IAddonCallback *CAddonManager::m_cbSkin            = NULL;
-IAddonCallback *CAddonManager::m_cbPVR             = NULL;
-IAddonCallback *CAddonManager::m_cbScript          = NULL;
-IAddonCallback *CAddonManager::m_cbScraperPVR      = NULL;
-IAddonCallback *CAddonManager::m_cbScraperVideo    = NULL;
-IAddonCallback *CAddonManager::m_cbScraperMusic    = NULL;
-IAddonCallback *CAddonManager::m_cbScraperProgram  = NULL;
-IAddonCallback *CAddonManager::m_cbScreensaver     = NULL;
-IAddonCallback *CAddonManager::m_cbPluginPVR       = NULL;
-IAddonCallback *CAddonManager::m_cbPluginVideo     = NULL;
-IAddonCallback *CAddonManager::m_cbPluginMusic     = NULL;
-IAddonCallback *CAddonManager::m_cbPluginProgram   = NULL;
-IAddonCallback *CAddonManager::m_cbPluginPictures  = NULL;
-IAddonCallback *CAddonManager::m_cbPluginWeather   = NULL;
-IAddonCallback *CAddonManager::m_cbDSPAudio        = NULL;
+CAddonMgr* CAddonMgr::m_pInstance = NULL;
+std::map<ADDON::TYPE, ADDON::IAddonCallback*> CAddonMgr::m_managers;
 
-CAddonManager* CAddonManager::m_pInstance = NULL;
-
-CAddonManager::CAddonManager()
-{
-  m_pInstance = NULL;
-}
-
-CAddonManager::~CAddonManager()
+CAddonMgr::CAddonMgr()
 {
 }
 
-CAddonManager* CAddonManager::Get()
+CAddonMgr::~CAddonMgr()
+{
+}
+
+CAddonMgr* CAddonMgr::Get()
 {
   if (!m_pInstance)
   {
-    m_pInstance = new CAddonManager();
+    m_pInstance = new CAddonMgr();
   }
   return m_pInstance;
 }
 
-IAddonCallback* CAddonManager::GetCallbackForType(AddonType type)
+IAddonCallback* CAddonMgr::GetCallbackForType(ADDON::TYPE type)
 {
-  IAddonCallback *cb_tmp;
-
-  switch (type)
-  {
-    case ADDON_MULTITYPE:
-      cb_tmp = m_cbMultitye;
-      break;
-    case ADDON_VIZ:
-      cb_tmp = m_cbViz;
-      break;
-    case ADDON_SKIN:
-      cb_tmp = m_cbSkin;
-      break;
-    case ADDON_PVRDLL:
-      cb_tmp = m_cbPVR;
-      break;
-    case ADDON_SCRIPT:
-      cb_tmp = m_cbScript;
-      break;
-    case ADDON_SCRAPER_PVR:
-      cb_tmp = m_cbScraperPVR;
-      break;
-    case ADDON_SCRAPER_VIDEO:
-      cb_tmp = m_cbScraperVideo;
-      break;
-    case ADDON_SCRAPER_MUSIC:
-      cb_tmp = m_cbScraperMusic;
-      break;
-    case ADDON_SCRAPER_PROGRAM:
-      cb_tmp = m_cbScraperProgram;
-      break;
-    case ADDON_SCREENSAVER:
-      cb_tmp = m_cbScreensaver;
-      break;
-    case ADDON_PLUGIN_PVR:
-      cb_tmp = m_cbPluginPVR;
-      break;
-    case ADDON_PLUGIN_MUSIC:
-      cb_tmp = m_cbPluginMusic;
-      break;
-    case ADDON_PLUGIN_VIDEO:
-      cb_tmp = m_cbPluginVideo;
-      break;
-    case ADDON_PLUGIN_PROGRAM:
-      cb_tmp = m_cbPluginProgram;
-      break;
-    case ADDON_PLUGIN_PICTURES:
-      cb_tmp = m_cbPluginPictures;
-      break;
-    case ADDON_PLUGIN_WEATHER:
-      cb_tmp = m_cbPluginWeather;
-      break;
-    case ADDON_DSP_AUDIO:
-      cb_tmp = m_cbDSPAudio;
-      break;
-    case ADDON_UNKNOWN:
-    default:
-      cb_tmp = NULL;
-      break;
-  }
-
-  if (cb_tmp == NULL)
-    cb_tmp = AddonDummyCallback;
-
-  return cb_tmp;
+  if (m_managers.find(type) == m_managers.end())
+    return NULL;
+  else
+    return m_managers[type];
 }
 
-bool CAddonManager::RegisterAddonCallback(AddonType type, IAddonCallback* cb)
+bool CAddonMgr::RegisterAddonCallback(const ADDON::TYPE type, IAddonCallback* cb)
 {
   if (cb == NULL)
     return false;
 
-  if (type == ADDON_MULTITYPE && m_cbMultitye == NULL)
-    m_cbMultitye = cb;
-  else if (type == ADDON_VIZ && m_cbViz == NULL)
-    m_cbViz = cb;
-  else if (type == ADDON_SKIN && m_cbSkin == NULL)
-    m_cbSkin = cb;
-  else if (type == ADDON_PVRDLL && m_cbPVR == NULL)
-    m_cbPVR = cb;
-  else if (type == ADDON_SCRIPT && m_cbScript == NULL)
-    m_cbScript = cb;
-  else if (type == ADDON_SCRAPER_PVR && m_cbScraperPVR == NULL)
-    m_cbScraperPVR = cb;
-  else if (type == ADDON_SCRAPER_VIDEO && m_cbScraperVideo == NULL)
-    m_cbScraperVideo = cb;
-  else if (type == ADDON_SCRAPER_MUSIC && m_cbScraperMusic == NULL)
-    m_cbScraperMusic = cb;
-  else if (type == ADDON_SCRAPER_PROGRAM && m_cbScraperProgram == NULL)
-    m_cbScraperProgram = cb;
-  else if (type == ADDON_SCREENSAVER && m_cbScreensaver == NULL)
-    m_cbScreensaver = cb;
-  else if (type == ADDON_PLUGIN_PVR && m_cbPluginPVR == NULL)
-    m_cbPluginPVR = cb;
-  else if (type == ADDON_PLUGIN_MUSIC && m_cbPluginMusic == NULL)
-    m_cbPluginMusic = cb;
-  else if (type == ADDON_PLUGIN_VIDEO && m_cbPluginVideo == NULL)
-    m_cbPluginVideo = cb;
-  else if (type == ADDON_PLUGIN_PROGRAM && m_cbPluginProgram == NULL)
-    m_cbPluginProgram = cb;
-  else if (type == ADDON_PLUGIN_PICTURES && m_cbPluginPictures == NULL)
-    m_cbPluginPictures = cb;
-  else if (type == ADDON_PLUGIN_WEATHER && m_cbPluginWeather == NULL)
-    m_cbPluginWeather = cb;
-  else if (type == ADDON_DSP_AUDIO && m_cbDSPAudio == NULL)
-    m_cbDSPAudio = cb;
-  else
-    return false;
-
+  m_managers.erase(type);
+  m_managers[type] = cb;
+  
   return true;
 }
 
-void CAddonManager::UnregisterAddonCallback(AddonType type)
+void CAddonMgr::UnregisterAddonCallback(ADDON::TYPE type)
 {
-  switch (type)
-  {
-    case ADDON_MULTITYPE:
-      m_cbMultitye = NULL;
-      return;
-    case ADDON_VIZ:
-      m_cbViz = NULL;
-      return;
-    case ADDON_SKIN:
-      m_cbSkin = NULL;
-      return;
-    case ADDON_PVRDLL:
-      m_cbPVR = NULL;
-      return;
-    case ADDON_SCRIPT:
-      m_cbScript = NULL;
-      return;
-    case ADDON_SCRAPER_PVR:
-      m_cbScraperPVR = NULL;
-      return;
-    case ADDON_SCRAPER_VIDEO:
-      m_cbScraperVideo = NULL;
-      return;
-    case ADDON_SCRAPER_MUSIC:
-      m_cbScraperMusic = NULL;
-      return;
-    case ADDON_SCRAPER_PROGRAM:
-      m_cbScraperProgram = NULL;
-      return;
-    case ADDON_SCREENSAVER:
-      m_cbScreensaver = NULL;
-      return;
-    case ADDON_PLUGIN_PVR:
-      m_cbPluginPVR = NULL;
-      return;
-    case ADDON_PLUGIN_MUSIC:
-      m_cbPluginMusic = NULL;
-      return;
-    case ADDON_PLUGIN_VIDEO:
-      m_cbPluginVideo = NULL;
-      return;
-    case ADDON_PLUGIN_PROGRAM:
-      m_cbPluginProgram = NULL;
-      return;
-    case ADDON_PLUGIN_PICTURES:
-      m_cbPluginPictures = NULL;
-      return;
-    case ADDON_PLUGIN_WEATHER:
-      m_cbPluginWeather = NULL;
-      return;
-    case ADDON_DSP_AUDIO:
-      m_cbDSPAudio = NULL;
-      return;
-    case ADDON_UNKNOWN:
-    default:
-      return;
-  }
+  m_managers.erase(type);
 }
+
 /*****************************************************************************/
-VECADDONS *CAddonManager::GetAllAddons()
+bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONTENT_TYPE &content, bool enabled, bool refresh)
 {
-  return &m_allAddons;
-}
+  // recheck addon folders if necessary
+  FindAddons(type, refresh);
 
-VECADDONS *CAddonManager::GetAddonsFromType(const AddonType &type)
-{
-  switch (type)
+  addons.clear();
+  bool found = (m_addons.find(type) != m_addons.end());
+  if (found)
   {
-    case ADDON_MULTITYPE:
-      return &m_multitypeAddons;
-    case ADDON_VIZ:
-      return &m_visualisationAddons;
-    case ADDON_SKIN:
-      return &m_skinAddons;
-    case ADDON_PVRDLL:
-      return &m_pvrAddons;
-    case ADDON_SCRIPT:
-      return &m_scriptAddons;
-    case ADDON_SCRAPER_PVR:
-      return &m_scraperPVRAddons;
-    case ADDON_SCRAPER_VIDEO:
-      return &m_scraperVideoAddons;
-    case ADDON_SCRAPER_MUSIC:
-      return &m_scraperMusicAddons;
-    case ADDON_SCRAPER_PROGRAM:
-      return &m_scraperProgramAddons;
-    case ADDON_SCREENSAVER:
-      return &m_screensaverAddons;
-    case ADDON_PLUGIN_PVR:
-      return &m_pluginPvrAddons;
-    case ADDON_PLUGIN_MUSIC:
-      return &m_pluginMusicAddons;
-    case ADDON_PLUGIN_VIDEO:
-      return &m_pluginVideoAddons;
-    case ADDON_PLUGIN_PROGRAM:
-      return &m_pluginProgramAddons;
-    case ADDON_PLUGIN_PICTURES:
-      return &m_pluginPictureAddons;
-    case ADDON_PLUGIN_WEATHER:
-      return &m_pluginWeatherAddons;
-    case ADDON_DSP_AUDIO:
-      return &m_DSPAudioAddons;
-    default:
-      return NULL;
+    IVECADDONS itr = m_addons[type].begin();
+    while (itr != m_addons[type].end())
+    { // filter out what we're not looking for      
+      if (enabled && (*itr)->Disabled() 
+        || !(*itr)->Disabled() && !enabled 
+        || content != CONTENT_NONE && !(*itr)->Supports(content))
+      {
+        ++itr;
+        continue;
+      }
+      addons.push_back(*itr);
+      ++itr;
+    }
   }
+  return found; 
 }
 
-bool CAddonManager::GetAddonFromGUID(const CStdString &guid, CAddon &addon)
+bool CAddonMgr::GetAddons(const TYPE &type, VECADDONPROPS &props, const CONTENT_TYPE &content, bool enabled, bool refresh)
+{
+  props.clear();
+  VECADDONS addons;
+  bool found = GetAddons(type, addons, content, enabled, refresh);
+  if (found)
+  {  // copy each addon's properties    
+    IVECADDONS itr = addons.begin();
+    while (itr != addons.end())
+    {
+      const AddonProps addon(*itr);
+      props.push_back(addon);
+      ++itr;
+    }
+  }
+  return found; 
+}
+
+//TODO next two methods duplicate behaviour
+bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPtr &addon)
+{
+  // recheck addon folders if necessary
+  FindAddons(type);
+
+  if (m_addons.find(type) == m_addons.end())
+    return false;
+
+  bool isUUID = CUtil::ValidateUUID(str);
+
+  VECADDONS &addons = m_addons[type];
+  IVECADDONS adnItr = addons.begin();
+  while (adnItr != addons.end())
+  {
+    //FIXME scrapers were previously registered by filename
+    if (isUUID && (*adnItr)->UUID() == str 
+      || !isUUID && (*adnItr)->Name() == str
+      || type == ADDON_SCRAPER && (*adnItr)->LibName() == str)
+    {
+      addon = (*adnItr);
+      return true;
+    }
+    adnItr++;
+  }
+
+  return false;
+}
+
+//TODO remove support
+bool CAddonMgr::GetAddonFromPath(const CStdString &path, AddonPtr &addon)
 {
   /* iterate through alladdons vec and return matched Addon */
-  for (unsigned int i = 0; i < m_allAddons.size(); i++)
+  MAPADDONS::iterator typeItr = m_addons.begin();
+  while (typeItr !=  m_addons.end())
   {
-    if (m_allAddons[i].m_guid == guid)
+    VECADDONS addons = m_addons[typeItr->first];
+    IVECADDONS adnItr = addons.begin();
+    while (adnItr != addons.end())
     {
-      addon = m_allAddons[i];
-      return true;
+      if ((*adnItr).get()->Path() == path)
+      {
+        addon = (*adnItr);
+        return true;
+      }
+      adnItr++;
     }
+    typeItr++;
   }
+
   return false;
 }
 
-bool CAddonManager::GetAddonFromNameAndType(const CStdString &name, const AddonType &type, CAddon &addon)
-{
-  VECADDONS *addons = GetAddonsFromType(type);
-  if (!addons) return false;
-
-  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
-  {
-    if ((*it).m_strName == name)
-    {
-      addon = (*it);
-      return true;
-    }
-  }
-  return false;
+bool CAddonMgr::GetDefaultScraper(CScraperPtr &scraper, const CONTENT_TYPE & content)
+{ 
+  return GetDefaultScraper(boost::dynamic_pointer_cast<IAddon>(scraper), content);
 }
-
-bool CAddonManager::DisableAddon(const CStdString &guid, const AddonType &type)
+bool CAddonMgr::GetDefaultScraper(AddonPtr &scraper, const CONTENT_TYPE &content)
 {
-  VECADDONS *addons = GetAddonsFromType(type);
-  if (!addons) return false;
-
-  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+  CStdString default;
+  switch (content)
   {
-    if ((*it).m_guid == guid)
+  case CONTENT_MOVIES:
     {
-      CLog::Log(LOGDEBUG,"found addon, disabling!");
-      addons->erase(it);
+      default = g_guiSettings.GetString("scrapers.moviedefault");
       break;
     }
+  case CONTENT_TVSHOWS:
+    {
+      default = g_guiSettings.GetString("scrapers.tvshowdefault");
+      break;
+    }
+  case CONTENT_MUSICVIDEOS:
+    {
+      default = g_guiSettings.GetString("scrapers.musicvideodefault");
+      break;
+    }
+  case CONTENT_ALBUMS:
+  case CONTENT_ARTISTS:
+  case CONTENT_MUSIC:
+    {
+      default = g_guiSettings.GetString("musiclibrary.defaultscraper");
+      break;
+    }
+  default:
+    return false;
   }
-
-  return SaveAddons(type);
+  return GetAddon(ADDON_SCRAPER, default, scraper);
 }
 
-bool CAddonManager::SaveAddons(const AddonType &type)
+CStdString CAddonMgr::GetString(const CStdString &uuid, const int number)
 {
-  // call settings.saveaddons
+  AddonPtr addon = m_uuidMap[uuid];
+  if (addon)
+    return addon->GetString(number);
+
+  return "";
+}
+
+bool CAddonMgr::EnableAddon(AddonPtr &addon)
+{
+  const ADDON::TYPE type = addon->Type();
+
+  if (m_addons.find(type) == m_addons.end())
+    return false;
+
+  for (IVECADDONS itr = m_addons[type].begin(); itr != m_addons[type].end(); itr++)
+  {
+    if (addon->UUID() == (*itr)->UUID())
+    {
+      addon->Enable();
+      CLog::Log(LOGINFO,"ADDON: Enabled %s: %s", TranslateType(addon->Type()).c_str(), addon->Name().c_str());
+      return true; //don't update addons.xml until confirmed
+    }
+  }
+  CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Enable: %s", addon->Name().c_str());
   return false;
 }
 
-void CAddonManager::UpdateAddons()
+bool CAddonMgr::DisableAddon(AddonPtr &addon)
 {
-  //TODO: only caches packaged icon thumbnail
-  m_allAddons.clear();
+  const ADDON::TYPE type = addon->Type();
 
-  // Go thru all addon directorys in xbmc and if present in user directory
-  CFileItemList items;
-  // User add-on's have priority over application add-on's
-  if (!CSpecialProtocol::XBMCIsHome())
+  if (m_addons.find(type) == m_addons.end())
+    return false;
+
+  for (IVECADDONS itr = m_addons[type].begin(); itr != m_addons[type].end(); itr++)
   {
-    CDirectory::GetDirectory("special://home/addons/multitype", items, ADDON_MULTITYPE_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/visualisations", items, ADDON_VIZ_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/pvr", items, ADDON_PVRDLL_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/scripts", items, ADDON_SCRIPT_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/scrapers/pvr", items, ADDON_SCRAPER_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/scrapers/video", items, ADDON_SCRAPER_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/scrapers/music", items, ADDON_SCRAPER_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/scrapers/programs", items, ADDON_SCRAPER_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
-    CDirectory::GetDirectory("special://home/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+    if (addon == (*itr))
+    {
+      addon->Disable();
+
+      if (!addon->Parent().empty())
+      { // we can delete this duplicate addon
+        m_addons[type].erase(itr);
+      }
+
+      CLog::Log(LOGINFO,"ADDON: Disabled Add-on: %s", addon->Name().c_str());
+      //TODO BUG, if addon disabled from outwith addonbrowser, addons.xml not updated
+      // add locks to LoadAddonsXML
+      return true;
+    }
   }
-  // Now load the add-on's located in the application directory
-  CDirectory::GetDirectory("special://xbmc/addons/multitype", items, ADDON_MULTITYPE_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/visualisations", items, ADDON_VIZ_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/scripts", items, ADDON_SCRIPT_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/scrapers/pvr", items, ADDON_SCRAPER_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/scrapers/video", items, ADDON_SCRAPER_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/scrapers/music", items, ADDON_SCRAPER_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/scrapers/programs", items, ADDON_SCRAPER_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
-  CDirectory::GetDirectory("special://xbmc/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+  CLog::Log(LOGINFO,"ADDON: Couldn't find Add-on to Disable: %s", addon->Name().c_str());
+  return false;
+}
 
-  // Plugin Directory currently only located in Home
-  CDirectory::GetDirectory("special://home/addons/plugins/pvr", items, ADDON_PLUGIN_PVR_EXT, false);
-  CDirectory::GetDirectory("special://home/addons/plugins/music", items, ADDON_PLUGIN_MUSIC_EXT, false);
-  CDirectory::GetDirectory("special://home/addons/plugins/video", items, ADDON_PLUGIN_VIDEO_EXT, false);
-  CDirectory::GetDirectory("special://home/addons/plugins/programs", items, ADDON_PLUGIN_PROGRAM_EXT, false);
-  CDirectory::GetDirectory("special://home/addons/plugins/pictures", items, ADDON_PLUGIN_PICTURES_EXT, false);
-  CDirectory::GetDirectory("special://home/addons/plugins/weather", items, ADDON_PLUGIN_WEATHER_EXT, false);
+bool CAddonMgr::SaveAddonsXML(const ADDON::TYPE &type)
+{
+  VECADDONPROPS props;
+  GetAddons(type, props);
+  return g_settings.SaveAddonsXML(type, props);
+}
 
-  if (items.Size() == 0)
+bool CAddonMgr::LoadAddonsXML(const ADDON::TYPE &type)
+{
+  VECADDONPROPS props;
+  if (!g_settings.LoadAddonsXML(type, props))
+    return false;
+
+  // recheck addon folders if necessary
+  FindAddons(type);
+
+  // now enable accordingly
+  VECADDONPROPS::const_iterator itr = props.begin();
+  while (itr != props.end())
+  {
+    AddonPtr addon;
+    if (itr->parent.empty() && GetAddon(type, itr->uuid, addon))
+    {
+      addon->Enable();
+    }
+    else if (GetAddon(type, itr->parent, addon))
+    { // multiple addon configurations
+      AddonPtr clone = addon->Clone();
+      if (clone)
+      {
+        m_addons[type].push_back(clone);
+      }
+    }
+    else
+    { // addon not found
+      CLog::Log(LOGERROR, "ADDON: Couldn't find %s requested. Name: %s", TranslateType(type).c_str(), itr->name.c_str());
+      //TODO we should really add but mark unavailable, to prompt user
+    }
+    ++itr;
+  }
+  return true;
+}
+
+void CAddonMgr::FindAddons(const ADDON::TYPE &type, const bool refresh)
+{
+  if (!refresh)
+  {
+    // recheck each addontype's directories no more than once every ADDON_DIRSCAN_FREQ seconds
+    CDateTimeSpan span;
+    span.SetDateTimeSpan(0, 0, 0, ADDON_DIRSCAN_FREQ);
+    if(m_lastScan[type].IsValid() && m_lastScan[type] > (CDateTime::GetCurrentDateTime() - span))
+      return;
+  }
+
+  // parse the user & system dirs for addons of the requested type
+  CFileItemList items;
+  bool isHome = CSpecialProtocol::XBMCIsHome();
+  switch (type)
+  {
+  case ADDON_PVRDLL:
+    {
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/pvr", items, ADDON_PVRDLL_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/pvr", items, ADDON_PVRDLL_EXT, false);
+      break;
+    }
+  case ADDON_VIZ:
+    {
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/visualisations", items, ADDON_VIZ_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/visualisations", items, ADDON_VIZ_EXT, false);
+      break;
+    }
+  case ADDON_SCREENSAVER:
+    {
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/screensavers", items, ADDON_SCREENSAVER_EXT, false);
+      break;
+    }
+  case ADDON_DSP_AUDIO:
+    {
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/dsp-audio", items, ADDON_DSP_AUDIO_EXT, false);
+      break;
+    }
+  case ADDON_SCRAPER:
+    {
+      if (!isHome)
+        CDirectory::GetDirectory("special://home/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
+      CDirectory::GetDirectory("special://xbmc/addons/scrapers", items, ADDON_SCRAPER_EXT, false);
+      break;
+    }
+  /* Plugin directories only located in Home */ //TODO why?
+  case ADDON_PLUGIN:
+    {
+      CDirectory::GetDirectory("special://home/addons/plugins", items, ADDON_PLUGIN_MUSIC_EXT, false);
+      break;
+    }
+  default:
     return;
+  }
 
-  // for each folder found
+  // for all folders found
   for (int i = 0; i < items.Size(); ++i)
   {
+    bool known = false;
     CFileItemPtr item = items[i];
 
-    // read info.xml and generate the addon
-    CAddon addon;
-    if (!AddonFromInfoXML(item->m_strPath, addon))
+    // read description.xml and populate the addon
+    AddonPtr addon;
+    if (!AddonFromInfoXML(type, item->m_strPath, addon))
     {
-      CLog::Log(LOGERROR, "Addon: Error reading %s/info.xml, bypassing package", item->m_strPath.c_str());
+      CLog::Log(LOGDEBUG, "ADDON: Error reading %sdescription.xml, bypassing package", item->m_strPath.c_str()); //TODO why slash at end of path?
       continue;
     }
 
-    // iterate through current alladdons vec and skip if guid is already present
-    for (unsigned int i = 0; i < m_allAddons.size(); i++)
+    // update any existing match
+    if (m_addons.find(type) != m_addons.end())
     {
-      if (m_allAddons[i].m_guid == addon.m_guid)
+      for (unsigned int i = 0; i < m_addons[type].size(); i++)
       {
-        CLog::Log(LOGNOTICE, "Addon: GUID=%s, Name=%s already present in %s, ignoring package", addon.m_guid.c_str(), addon.m_strName.c_str(), m_allAddons[i].m_strPath.c_str());
-        continue;
+        if (m_addons[type][i]->UUID() == addon->UUID())
+        {
+          //TODO inform any manager first, and request removal
+          //TODO choose most recent version if varying
+          m_addons[type][i] = addon;
+          m_uuidMap[addon->UUID()] = addon;
+          known = true;
+          break;
+        }
       }
     }
 
-    // check for/cache icon thumbnail
+    // check for/cache icon thumbnail 
+    //TODO cache one thumb per addon uuid instead
     item->SetThumbnailImage("");
     item->SetCachedProgramThumb();
     if (!item->HasThumbnail())
       item->SetUserProgramThumb();
     if (!item->HasThumbnail())
     {
-      CFileItem item2(addon.m_strPath);
-      CUtil::AddFileToFolder(addon.m_strPath, addon.m_strLibName, item2.m_strPath);
+      CFileItem item2(addon->Path());
+      CStdString defaulticon;
+      CUtil::AddFileToFolder(addon->Path(), addon->LibName(), item2.m_strPath);
       item2.m_bIsFolder = false;
       item2.SetCachedProgramThumb();
       if (!item2.HasThumbnail())
         item2.SetUserProgramThumb();
       if (!item2.HasThumbnail())
-        item2.SetThumbnailImage(addon.m_icon);
+        item2.SetThumbnailImage(addon->Icon());
       if (item2.HasThumbnail())
       {
         XFILE::CFile::Cache(item2.GetThumbnailImage(),item->GetCachedProgramThumb());
         item->SetThumbnailImage(item->GetCachedProgramThumb());
       }
     }
-    addon.m_strPath = item->m_strPath;
 
-    // everything ok, add to available addons
-    m_allAddons.push_back(addon);
+    // sanity check
+    assert(addon->Type() == type);
+
+    // everything ok, add to available addons if new
+    if (!known)
+    {
+      m_addons[type].push_back(addon);
+      m_uuidMap.insert(std::make_pair(addon->UUID(), addon));
+    }
   }
 
-  /* Copy also virtual child add-on's to the list */
-  for (unsigned int i = 0; i < m_virtualAddons.size(); i++)
-    m_allAddons.push_back(m_virtualAddons[i]);
+  m_lastScan[type] = CDateTime::GetCurrentDateTime();
+  CLog::Log(LOGINFO, "ADDON: Found %u addons of type %s", m_addons[type].size(), TranslateType(type).c_str());
 }
 
-bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
+bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &path, AddonPtr &addon)
 {
-  // First check that we can load info.xml
+  // First check that we can load description.xml
   CStdString strPath(path);
-  CUtil::AddFileToFolder(strPath, "info.xml", strPath);
+  CUtil::AddFileToFolder(strPath, ADDON_METAFILE, strPath);
 
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
@@ -752,75 +704,59 @@ bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   TiXmlElement *element = xmlDoc.RootElement();
   if (!element || strcmpi(element->Value(), "addoninfo") != 0)
   {
-    CLog::Log(LOGERROR, "Addon: Error loading %s: cannot find root element 'addon'", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: Error loading %s: cannot find <addon> root element", strPath.c_str());
     return false;
   }
 
   /* Steps required to meet package requirements
-  * 1. guid exists and is valid
+  * 1. uuid exists and is valid
   * 2. type exists and is valid
   * 3. version exists
   * 4. operating system matches ours
   * 5. summary exists
+  * 6. for scrapers & plugins, support at least one type of content
   */
-
-  /* Read guid */
-  CStdString guid;
-  element = xmlDoc.RootElement()->FirstChildElement("guid");
+  
+  /* Read uuid */
+  CStdString uuid;
+  element = xmlDoc.RootElement()->FirstChildElement("uuid");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: %s does not contain the <guid> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s does not contain the <uuid> element, ignoring", strPath.c_str());
     return false;
   }
-  guid = element->GetText(); // grab guid
+  uuid = element->GetText();
 
   /* Validate type */
   element = xmlDoc.RootElement()->FirstChildElement("type");
-  int type = atoi(element->GetText());
-  if (type < ADDON_MULTITYPE || type > ADDON_DSP_AUDIO)
+  ADDON::TYPE type = TranslateType(element->GetText());
+  if (type != reqType)
   {
-    CLog::Log(LOGERROR, "Addon: %s has invalid type identifier: %d", strPath.c_str(), type);
+    CLog::Log(LOGERROR, "ADDON: %s has invalid type identifier: '%d'", strPath.c_str(), type);
     return false;
   }
-  addon.m_addonType = (AddonType) type; // type was validated //TODO this cast to AddonType
 
-  /* Validate guid*/
-  CRegExp guidRE;
-  guidRE.RegComp(ADDON_GUID_RE.c_str());
-  if (guidRE.RegFind(guid.c_str()) != 0)
+  /* Validate uuid */
+  if (!CUtil::ValidateUUID(uuid))
   {
-    CLog::Log(LOGERROR, "Addon: %s has invalid <guid> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s has invalid <uuid> element, ignoring", strPath.c_str());
     return false;
   }
-  if (addon.m_guid.IsEmpty())
-    addon.m_guid = guid; // guid was validated
-  else
-  {
-    addon.m_guid_parent = guid; // guid was validated and is part of a child addon
 
-    VECADDONS *addons = GetAddonsFromType(addon.m_addonType);
-    if (!addons) return false;
-
-    for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
-    {
-      if ((*it).m_guid == addon.m_guid_parent)
-      {
-        (*it).m_childs++;
-        break;
-      }
-    }
-  }
+  /* Path & UUID are valid */
+  AddonProps addonProps(uuid, type);
+  addonProps.path = path;
 
   /* Retrieve Name */
   CStdString name;
   element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("name");
+  element = xmlDoc.RootElement()->FirstChildElement("title");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: %s missing <name> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <title> element, ignoring", strPath.c_str());
     return false;
   }
-  addon.m_strName = element->GetText();
+  addonProps.name = element->GetText();
 
   /* Retrieve version */
   CStdString version;
@@ -828,7 +764,7 @@ bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("version");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: %s missing <version> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <version> element, ignoring", strPath.c_str());
     return false;
   }
   /* Validate version */
@@ -837,47 +773,59 @@ bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   versionRE.RegComp(ADDON_VERSION_RE.c_str());
   if (versionRE.RegFind(version.c_str()) != 0)
   {
-    CLog::Log(LOGERROR, "Addon: %s has invalid <version> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s has invalid <version> element, ignoring", strPath.c_str());
     return false;
   }
-  addon.m_strVersion = version; // guid was validated
+  addonProps.version = version;
 
-  /* Retrieve platform which is supported */
+  /* Retrieve platforms which this addon supports */
   CStdString platform;
   element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("platform");
+  element = xmlDoc.RootElement()->FirstChildElement("platforms")->FirstChildElement("platform");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: %s missing <platform> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <platforms> element, ignoring", strPath.c_str());
     return false;
   }
 
-  /* Validate platform */
-  platform = element->GetText();
-  if (platform.Find("all") < 0)
+  bool all;
+  std::set<CStdString> platforms;
+  do 
+  {
+    CStdString platform = element->GetText();
+    if (platform == "all")
+    {
+      all = true;
+      break;
+    }
+    platforms.insert(platform);
+    element = element->NextSiblingElement("platform");
+  } while (element != NULL);
+
+  if (!all)
   {
 #if defined(_LINUX)
-    if (platform.Find("linux") < 0)
+    if (!platforms.count("linux"))
     {
-      CLog::Log(LOGERROR, "Addon: %s is not supported under Linux, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "ADDON: %s is not supported under Linux, ignoring", strPath.c_str());
       return false;
     }
 #elif defined(_WIN32PC)
-    if (platform.Find("windows") < 0)
+    if (!platforms.count("windows"))
     {
-      CLog::Log(LOGERROR, "Addon: %s is not supported under Windows, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "ADDON: %s is not supported under Windows, ignoring", strPath.c_str());
       return false;
     }
 #elif defined(__APPLE__)
-    if (platform.Find("osx") < 0)
+    if (!platforms.count("osx"))
     {
-      CLog::Log(LOGERROR, "Addon: %s is not supported under OSX, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "ADDON: %s is not supported under OSX, ignoring", strPath.c_str());
       return false;
     }
 #elif defined(_XBOX)
-    if (platform.Find("xbox") < 0)
+    if (!platforms.count("xbox"))
     {
-      CLog::Log(LOGERROR, "Addon: %s is not supported under XBOX, ignoring", strPath.c_str());
+      CLog::Log(LOGERROR, "ADDON: %s is not supported under XBOX, ignoring", strPath.c_str());
       return false;
     }
 #endif
@@ -889,168 +837,150 @@ bool CAddonManager::AddonFromInfoXML(const CStdString &path, CAddon &addon)
   element = xmlDoc.RootElement()->FirstChildElement("summary");
   if (!element)
   {
-    CLog::Log(LOGERROR, "Addon: %s missing <summary> element, ignoring", strPath.c_str());
+    CLog::Log(LOGERROR, "ADDON: %s missing <summary> element, ignoring", strPath.c_str());
     return false;
   }
-  addon.m_summary = element->GetText(); // summary was present
+  addonProps.summary = element->GetText();
+
+  if (addonProps.type == ADDON_SCRAPER || addonProps.type == ADDON_PLUGIN)
+  {
+    /* Retrieve content types that this addon supports */
+    CStdString platform;
+    element = NULL;
+    if (xmlDoc.RootElement()->FirstChildElement("supportedcontent"))
+    {
+      element = xmlDoc.RootElement()->FirstChildElement("supportedcontent")->FirstChildElement("content");
+    }
+    if (!element)
+    {
+      CLog::Log(LOGERROR, "ADDON: %s missing <supportedcontent> element, ignoring", strPath.c_str());
+      return false;
+    }
+
+    std::set<CONTENT_TYPE> contents;
+    do 
+    {
+      CONTENT_TYPE content = TranslateContent(element->GetText());
+      if (content != CONTENT_NONE)
+      {
+        //TODO fix the music vs albums content type issue
+        if (content == CONTENT_ALBUMS || content == CONTENT_ARTISTS)
+          contents.insert(CONTENT_MUSIC);
+
+        contents.insert(content);
+      }
+      element = element->NextSiblingElement("content");
+    } while (element != NULL);
+
+    if (contents.empty())
+    {
+      CLog::Log(LOGERROR, "ADDON: %s %s supports no available content-types, ignoring", TranslateType(addonProps.type).c_str(), addonProps.name.c_str());
+      return false;
+    }
+    else
+    {
+      addonProps.contents = contents;
+    }
+  }
 
   /*** Beginning of optional fields ***/
   /* Retrieve description */
-  CStdString description;
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("description");
   if (element)
-    addon.m_strDesc = element->GetText();
+    addonProps.description = element->GetText();
 
-  /* Retrieve creator */
-  CStdString creator;
+  /* Retrieve author */
   element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("creator");
+  element = xmlDoc.RootElement()->FirstChildElement("author");
   if (element)
-    addon.m_strCreator = element->GetText();
+    addonProps.author = element->GetText();
 
   /* Retrieve disclaimer */
-  CStdString disclaimer;
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("disclaimer");
   if (element)
-    addon.m_disclaimer = element->GetText();
+    addonProps.disclaimer = element->GetText();
 
   /* Retrieve library file name */
-  CStdString library;
+  //TODO why are these 2 in optional fields??
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("library");
   if (element)
-    addon.m_strLibName = element->GetText();
+    addonProps.libname = element->GetText();
 
 #ifdef _WIN32PC
   /* Retrieve WIN32 library file name in case it is present
   * This is required for no overwrite to the fixed WIN32 add-on's
   * during compile time
   */
-  CStdString library_win32;
   element = NULL;
   element = xmlDoc.RootElement()->FirstChildElement("librarywin32");
-  if (element) // If it is found overwrite standart library name
-    addon.m_strLibName = element->GetText();
+  if (element) // If it is found overwrite standard library name
+    addonProps.libname = element->GetText();
 #endif
 
-  /* Retrieve thumbnail file name */
-  CStdString icon;
-  element = NULL;
-  element = xmlDoc.RootElement()->FirstChildElement("icon");
-  if (element)
-  {
-    CStdString iconPath = element->GetText();
-    addon.m_icon = path + iconPath;
-  }
+  addonProps.icon = path + "default.tbn";
 
   /*** end of optional fields ***/
 
-  /* Everything's valid */
-
-  CLog::Log(LOGINFO, "Addon: %s retrieved. Name: %s, GUID: %s, Version: %s",
-            strPath.c_str(), addon.m_strName.c_str(), addon.m_guid.c_str(), addon.m_strVersion.c_str());
-
-  return true;
-}
-
-bool CAddonManager::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDONS &addons)
-{
-  CStdString strType;
+  /* Create an addon object and store in a shared_ptr */
+  addon.reset();
   switch (type)
   {
-    case ADDON_MULTITYPE:
-      strType = "multitype";
+    //case ADDON_PLUGIN:
+    //{
+    //  AddonPtr temp(new CAddon(addonProps));
+    //  addon = temp;
+    //  break;
+    //}
+    case ADDON_SCRAPER:
+    {
+      AddonPtr temp(new CScraper(addonProps));
+      addon = temp;
       break;
-    case ADDON_VIZ:
-      strType = "visualistation";
-      break;
-    case ADDON_SKIN:
-      strType = "skin";
-      break;
+    }
     case ADDON_PVRDLL:
-      strType = "pvr";
+    {
+      AddonPtr temp(new CPVRClient(addonProps));
+      addon = temp;
       break;
-    case ADDON_SCRIPT:
-      strType = "script";
+    }
+    case ADDON_VIZ:
+    {
+      AddonPtr temp(new CVisualisation(addonProps));
+      addon = temp;
       break;
-    case ADDON_SCRAPER_PVR:
-      strType = "scraperpvr";
-      break;
-    case ADDON_SCRAPER_VIDEO:
-      strType = "scrapervideo";
-      break;
-    case ADDON_SCRAPER_MUSIC:
-      strType = "scrapermusic";
-      break;
-    case ADDON_SCRAPER_PROGRAM:
-      strType = "scraperprogram";
-      break;
+    }
     case ADDON_SCREENSAVER:
-      strType = "screensaver";
+    {
+      AddonPtr temp(new CScreenSaver(addonProps));
+      addon = temp;
       break;
-    case ADDON_PLUGIN_PVR:
-      strType = "pluginpvr";
-      break;
-    case ADDON_PLUGIN_MUSIC:
-      strType = "pluginmusic";
-      break;
-    case ADDON_PLUGIN_VIDEO:
-      strType = "pluginvideo";
-      break;
-    case ADDON_PLUGIN_PROGRAM:
-      strType = "pluginprogram";
-      break;
-    case ADDON_PLUGIN_PICTURES:
-      strType = "pluginpictures";
-      break;
-    case ADDON_PLUGIN_WEATHER:
-      strType = "pluginweather";
-      break;
-    case ADDON_DSP_AUDIO:
-      strType = "dspaudio";
-      break;
+    }
     default:
       return false;
   }
 
-  TiXmlElement sectionElement(strType);
-  TiXmlNode *sectionNode = root->InsertEndChild(sectionElement);
-  if (sectionNode)
-  {
-    for (unsigned int i = 0; i < addons.size(); i++)
-    {
-      const CAddon &addon = addons[i];
-      TiXmlElement element("addon");
+  /* Everything's valid */
+  //CLog::Log(LOGDEBUG, "ADDON: Discovered: Name: %s, UUID: %s, Version: %s, Path: %s", addon->Name().c_str(), addon->UUID().c_str(), addon->Version().c_str(), addon->Path().c_str());
 
-      XMLUtils::SetString(&element, "name", addon.m_strName);
-      XMLUtils::SetPath(&element, "path", addon.m_strPath);
-      if (!addon.m_guid_parent.IsEmpty())
-        XMLUtils::SetString(&element, "childguid", addon.m_guid);
-
-      if (!addon.m_icon.IsEmpty())
-        XMLUtils::SetPath(&element, "thumbnail", addon.m_icon);
-
-      sectionNode->InsertEndChild(element);
-    }
-  }
   return true;
 }
 
 /*****************************************************************************/
-ADDON_STATUS CAddonManager::SetSetting(const CAddon* addon, const char *settingName, const void *settingValue)
+ADDON_STATUS CAddonMgr::SetSetting(const IAddon* addon, const char *settingName, const void *settingValue)
 {
   if (!addon)
     return STATUS_UNKNOWN;
 
-  CLog::Log(LOGINFO, "ADDONS: set setting of clientName: %s, settingName: %s", addon->m_strName.c_str(), settingName);
+  CLog::Log(LOGINFO, "ADDONS: set setting of clientName: %s, settingName: %s", addon->Name().c_str(), settingName);
   /*CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
   {
-    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
+    if (m_clients[(*itr).first]->UUID() == addon->UUID())
     {
-      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
+      if (m_clients[(*itr).first]->m_strName == addon->Name())
       {
         return m_clients[(*itr).first]->SetSetting(settingName, settingValue);
       }
@@ -1060,20 +990,20 @@ ADDON_STATUS CAddonManager::SetSetting(const CAddon* addon, const char *settingN
   return STATUS_UNKNOWN;
 }
 
-bool CAddonManager::RequestRestart(const CAddon* addon, bool datachanged)
+bool CAddonMgr::RequestRestart(const IAddon* addon, bool datachanged)
 {
   if (!addon)
     return false;
 
-  CLog::Log(LOGINFO, "ADDONS: requested restart of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
+  CLog::Log(LOGINFO, "ADDONS: requested restart of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
   /*CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
   {
-    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
+    if (m_clients[(*itr).first]->UUID() == addon->UUID())
     {
-      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
+      if (m_clients[(*itr).first]->m_strName == addon->Name())
       {
-        CLog::Log(LOGINFO, "ADDONS: restarting clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
+        CLog::Log(LOGINFO, "ADDONS: restarting clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
         m_clients[(*itr).first]->ReInit();
         if (datachanged)
         {
@@ -1086,20 +1016,20 @@ bool CAddonManager::RequestRestart(const CAddon* addon, bool datachanged)
   return true;
 }
 
-bool CAddonManager::RequestRemoval(const CAddon* addon)
+bool CAddonMgr::RequestRemoval(const IAddon* addon)
 {
   if (!addon)
     return false;
 
-  CLog::Log(LOGINFO, "ADDONS: requested removal of clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
+  CLog::Log(LOGINFO, "ADDONS: requested removal of clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
   /*CLIENTMAPITR itr = m_clients.begin();
   while (itr != m_clients.end())
   {
-    if (m_clients[(*itr).first]->m_guid == addon->m_guid)
+    if (m_clients[(*itr).first]->UUID() == addon->UUID())
     {
-      if (m_clients[(*itr).first]->m_strName == addon->m_strName)
+      if (m_clients[(*itr).first]->m_strName == addon->Name())
       {
-        CLog::Log(LOGINFO, "ADDONS: removing clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
+        CLog::Log(LOGINFO, "ADDONS: removing clientName:%s, clientGUID:%s", addon->Name().c_str(), addon->UUID().c_str());
         m_clients[(*itr).first]->Remove();
         m_clients.erase((*itr).first);
         return true;

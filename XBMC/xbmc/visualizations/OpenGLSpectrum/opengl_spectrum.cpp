@@ -35,7 +35,6 @@
 #ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #endif
-#include "../../addons/include/xbmc_addon_lib++.h"
 #include "../../addons/include/xbmc_vis_dll.h"
 #include <math.h>
 #include <GL/glew.h>
@@ -49,7 +48,7 @@ GLfloat y_angle = 45.0, y_speed = 0.5;
 GLfloat x_angle = 20.0, x_speed = 0.0;
 GLfloat z_angle = 0.0, z_speed = 0.0;
 GLfloat heights[16][16], cHeights[16][16], scale;
-GLfloat hSpeed = 0.05;
+GLfloat hSpeed = 0.05f;
 GLenum  g_mode = GL_FILL;
 
 void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
@@ -78,31 +77,31 @@ void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, 
 
 void draw_bar(GLfloat x_offset, GLfloat z_offset, GLfloat height, GLfloat red, GLfloat green, GLfloat blue )
 {
-  GLfloat width = 0.1;
+  GLfloat width = 0.1f;
 
   if (g_mode == GL_POINT)
-    glColor3f(0.2, 1.0, 0.2);
+    glColor3f(0.2f, 1.f, 0.2f);
 
   if (g_mode != GL_POINT)
   {
     glColor3f(red,green,blue);
-    draw_rectangle(x_offset, height, z_offset, x_offset + width, height, z_offset + 0.1);
+    draw_rectangle(x_offset, height, z_offset, x_offset + width, height, z_offset + 0.1f);
   }
-  draw_rectangle(x_offset, 0, z_offset, x_offset + width, 0, z_offset + 0.1);
+  draw_rectangle(x_offset, 0, z_offset, x_offset + width, 0, z_offset + 0.1f);
 
   if (g_mode != GL_POINT)
   {
-    glColor3f(0.5 * red, 0.5 * green, 0.5 * blue);
-    draw_rectangle(x_offset, 0.0, z_offset + 0.1, x_offset + width, height, z_offset + 0.1);
+    glColor3f(0.5f * red, 0.5f * green, 0.5f * blue);
+    draw_rectangle(x_offset, 0.f, z_offset + 0.1f, x_offset + width, height, z_offset + 0.1f);
   }
-  draw_rectangle(x_offset, 0.0, z_offset, x_offset + width, height, z_offset );
+  draw_rectangle(x_offset, 0.f, z_offset, x_offset + width, height, z_offset);
 
   if (g_mode != GL_POINT)
   {
-    glColor3f(0.25 * red, 0.25 * green, 0.25 * blue);
-    draw_rectangle(x_offset, 0.0, z_offset , x_offset, height, z_offset + 0.1);
+    glColor3f(0.25f * red, 0.25f * green, 0.25f * blue);
+    draw_rectangle(x_offset, 0.f, z_offset , x_offset, height, z_offset + 0.1f);
   }
-  draw_rectangle(x_offset + width, 0.0, z_offset , x_offset + width, height, z_offset + 0.1);
+  draw_rectangle(x_offset + width, 0.f, z_offset , x_offset + width, height, z_offset + 0.1f);
 }
 
 void draw_bars(void)
@@ -113,22 +112,22 @@ void draw_bars(void)
   //glClearColor(0,0,0,0);
   glClear(GL_DEPTH_BUFFER_BIT);
   glPushMatrix();
-  glTranslatef(0.0,-0.5,-5.0);
-  glRotatef(x_angle,1.0,0.0,0.0);
-  glRotatef(y_angle,0.0,1.0,0.0);
-  glRotatef(z_angle,0.0,0.0,1.0);
+  glTranslatef(0.f,-0.5f,-5.f);
+  glRotatef(x_angle,1.f,0.f,0.f);
+  glRotatef(y_angle,0.f,1.f,0.f);
+  glRotatef(z_angle,0.f,0.f,1.f);
   glPolygonMode(GL_FRONT_AND_BACK, g_mode);
   glBegin(GL_TRIANGLES);
   for(y = 0; y < 16; y++)
   {
-    z_offset = -1.6 + ((15 - y) * 0.2);
+    z_offset = -1.6f + ((15 - y) * 0.2f);
 
-    b_base = y * (1.0 / 15);
-    r_base = 1.0 - b_base;
+    b_base = y * (1.f / 15);
+    r_base = 1.f - b_base;
 
     for(x = 0; x < 16; x++)
     {
-      x_offset = -1.6 + (x * 0.2);
+      x_offset = -1.6f + (x * 0.2f);
       if (::fabs(cHeights[y][x]-heights[y][x])>hSpeed)
       {
         if (cHeights[y][x]<heights[y][x])
@@ -137,8 +136,8 @@ void draw_bars(void)
           cHeights[y][x] -= hSpeed;
       }
       draw_bar(x_offset, z_offset,
-               cHeights[y][x], r_base - (x * (r_base / 15.0)),
-               x * (1.0 / 15), b_base);
+               cHeights[y][x], r_base - (x * (r_base / 15.f)),
+               x * (1.f / 15), b_base);
     }
   }
   glEnd();
@@ -154,27 +153,27 @@ void draw_bars(void)
 extern "C" {
 
 //-- Create -------------------------------------------------------------------
-// Called after add-on loading to perform all initializing stuff
+// Called on load. Addon should fully initalize or return error status
 //-----------------------------------------------------------------------------
-ADDON_STATUS Create(ADDON_HANDLE hdl, void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                    float fPixelRatio)
+ADDON_STATUS Create(ADDON_HANDLE hdl, void* props)
 {
-  int tmp;
+  //if (!hdl)
+  //  return STATUS_UNKNOWN;
 
-  if (!XBMC_register_me(hdl))
-    return STATUS_UNKNOWN;
+  //if (!XBMC_register_me(hdl))
+  //  return STATUS_UNKNOWN;
 
   /* Read setting "barheight" from settings.xml */
-  if (XBMC_get_setting("barheight", &tmp))
-    SetSetting("barheight", &tmp);
+  // if (XBMC_get_setting("barheight", &tmp))
+    // SetSetting("barheight", &tmp);
 
-  /* Read setting "mode" from settings.xml */
-  if (XBMC_get_setting("mode", &tmp))
-    SetSetting("mode", &tmp);
+  // /* Read setting "mode" from settings.xml */
+  // if (XBMC_get_setting("mode", &tmp))
+    // SetSetting("mode", &tmp);
 
-  /* Read setting "speed" from settings.xml */
-  if (XBMC_get_setting("speed", &tmp))
-    SetSetting("speed", &tmp);
+  // /* Read setting "speed" from settings.xml */
+  // if (XBMC_get_setting("speed", &tmp))
+    // SetSetting("speed", &tmp);
 
   return STATUS_OK;
 }
@@ -236,7 +235,7 @@ void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* sz
     }
   }
 
-  scale = 1.0 / log(256.0);
+  scale = 1.f / log(256.f);
 
   x_speed = 0.0;
   y_speed = 0.5;
@@ -257,7 +256,7 @@ void Stop()
 //-- AudioData ----------------------------------------------------------------
 // Audio data receiver
 //-----------------------------------------------------------------------------
-void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int i,c;
   int y=0;
@@ -287,7 +286,7 @@ void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iF
     }
     y >>= 7;
     if(y > 0)
-      val = (logf(y) * scale);
+      val = (logf((float)y) * scale);
     else
       val = 0;
     heights[0][i] = val;
@@ -352,7 +351,45 @@ ADDON_STATUS GetStatus()
 //-----------------------------------------------------------------------------
 addon_settings_t GetSettings()
 {
-  addon_settings_t settings = addon_settings_create();
+  // create settings list and setting pointers
+  addon_settings_t settings = NULL;
+  addon_setting_t setting = NULL;
+  addon_setting_t setting2 = NULL;
+  addon_setting_t setting3 = NULL;
+  int err = 0;
+  
+  // allocate the structures
+  settings = addon_settings_create();
+  setting = addon_setting_create();
+  setting2 = addon_setting_create();
+  setting3 = addon_setting_create();
+
+  if (!settings || !setting || !setting2 || !setting3) {
+    return NULL;
+  }
+
+  addon_setting_set_id(setting, "barheight");
+  addon_setting_set_type(setting, SETTING_ENUM);
+  addon_setting_set_label(setting, "30000");
+  addon_setting_set_lvalues(setting, "30001|30002|30003|30004");
+
+  addon_setting_set_id(setting2, "mode");
+  addon_setting_set_type(setting2, SETTING_ENUM);
+  addon_setting_set_label(setting2, "30005");
+  addon_setting_set_lvalues(setting2, "30006|30007|30008");
+
+  addon_setting_set_id(setting3, "speed");
+  addon_setting_set_type(setting3, SETTING_ENUM);
+  addon_setting_set_label(setting3, "30009");
+  addon_setting_set_lvalues(setting3, "30010|30011|30012|30013|30014");
+
+  if (addon_settings_add_item(settings, setting) != 0)
+    return NULL;
+  if (addon_settings_add_item(settings, setting2) != 0)
+    return NULL;
+  if (addon_settings_add_item(settings, setting3) != 0)
+    return NULL;
+
   return settings;
 }
 
@@ -368,23 +405,23 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     switch (*(int*) settingValue)
     {
     case 0:
-      scale = 1.0 / log(256.0);
+      scale = 1.f / log(256.f);
       break;
 
     case 1:
-      scale = 2.0 / log(256.0);
+      scale = 2.f / log(256.f);
       break;
 
     case 2:
-      scale = 3.0 / log(256.0);
+      scale = 3.f / log(256.f);
       break;
 
     case 3:
-      scale = 0.5 / log(256.0);
+      scale = 0.5f / log(256.f);
       break;
 
     case 4:
-      scale = 0.33 / log(256.0);
+      scale = 0.33f / log(256.f);
       break;
     }
   }
@@ -410,23 +447,23 @@ ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
     switch (*(int*) settingValue)
     {
     case 0:
-      hSpeed = 0.05;
+      hSpeed = 0.05f;
       break;
 
     case 1:
-      hSpeed = 0.025;
+      hSpeed = 0.025f;
       break;
 
     case 2:
-      hSpeed = 0.0125;
+      hSpeed = 0.0125f;
       break;
 
     case 3:
-      hSpeed = 0.10;
+      hSpeed = 0.1f;
       break;
 
     case 4:
-      hSpeed = 0.20;
+      hSpeed = 0.2f;
       break;
     }
   }

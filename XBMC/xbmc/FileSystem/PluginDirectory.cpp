@@ -24,12 +24,11 @@
 #include "PluginDirectory.h"
 #include "Util.h"
 #include "utils/AddonManager.h"
-#include "utils/Addon.h"
+#include "utils/IAddon.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif
 #include "../utils/SingleLock.h"
-#include "settings/AddonSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileSystem/File.h"
@@ -74,6 +73,8 @@ void CPluginDirectory::removeHandle(int handle)
 
 bool CPluginDirectory::StartScript(const CStdString& strPath)
 {
+  ADDON::AddonPtr addon;
+  CAddonMgr::Get()->GetAddonFromPath(strPath, addon);
   CURL url(strPath);
 
   CStdString fileName;
@@ -96,10 +97,10 @@ bool CPluginDirectory::StartScript(const CStdString& strPath)
 
   // Load the plugin settings
   CLog::Log(LOGDEBUG, "%s - URL for plugin settings: %s", __FUNCTION__, url.GetFileName().c_str() );
-  g_currentPluginSettings.Load(url);
+  //TODO g_currentPluginSettings.Load(url);
 
   // Load language strings
-  ADDON::CAddon::LoadAddonStrings(url);
+  addon->LoadStrings();
 
   // reset our wait event, and grab a new handle
   ResetEvent(m_fetchComplete);
@@ -200,9 +201,6 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
 
   dir->m_success = success;
   dir->m_listItems->SetReplaceListing(replaceListing);
-
-  // Unload temporary language strings
-  CAddon::ClearAddonStrings();
 
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
@@ -394,10 +392,10 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
     return false;
 
   // Load the settings incase they changed while in the plugins directory
-  g_currentPluginSettings.Load(url);
+  //g_currentPluginSettings.Load(url);
 
   // Load language strings
-  CAddon::LoadAddonStrings(url);
+  //CAddon::LoadAddonStrings(url);
 
   // path is special://home/addons/plugins/<path from here>
   CStdString pathToScript = "special://home/addons/plugins/";
@@ -436,50 +434,48 @@ bool CPluginDirectory::RunScriptWithParams(const CStdString& strPath)
 
 bool CPluginDirectory::HasPlugins(const CStdString &type)
 {
-  VECADDONS *addons = NULL;
+  //TODO get rid
+  VECADDONS addons;
 
   if (type == "pvr")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PVR);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons);
   else if (type == "video")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_VIDEO);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MOVIES);
   else if (type == "music")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_MUSIC);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MUSIC);
   else if (type == "pictures")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PICTURES);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons), CONTENT_PICTURES;
   else if (type == "programs")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PROGRAMS);
   else if (type == "weather")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_WEATHER);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_WEATHER);
 
-  if (addons && addons->size() > 0)
-    return true;
-
-  return false;
+  return !addons.empty();
 }
 
 bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList &items)
 {
-  VECADDONS *addons = NULL;
+  VECADDONS addons;
 
   if (type == "pvr")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PVR);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PVR);
   else if (type == "video")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_VIDEO);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MOVIES);
   else if (type == "music")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_MUSIC);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MUSIC);
   else if (type == "pictures")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PICTURES);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PICTURES);
   else if (type == "programs")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_PROGRAM);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PROGRAMS);
   else if (type == "weather")
-    addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PLUGIN_WEATHER);
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_WEATHER);
 
-  if (!addons || addons->size() == 0)
+  if (addons.empty())
     return false;
 
-  for (IVECADDONS it = addons->begin(); it != addons->end(); it++)
+  for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
-    CStdString path = (*it).m_strPath;
+    CStdString path = (*it)->Path();
     path.Replace("special://home/addons/plugins/", "plugin://");
     path.Replace("\\", "/");
     CFileItemPtr newItem(new CFileItem(path,true));
@@ -490,14 +486,14 @@ bool CPluginDirectory::GetPluginsDirectory(const CStdString &type, CFileItemList
       newItem->SetUserProgramThumb();
     if (!newItem->HasThumbnail())
     {
-      CFileItem item2((*it).m_strPath);
-      CUtil::AddFileToFolder((*it).m_strPath, (*it).m_strLibName, item2.m_strPath);
+      CFileItem item2((*it)->Path());
+      CUtil::AddFileToFolder((*it)->Path(), (*it)->LibName(), item2.m_strPath);
       item2.m_bIsFolder = false;
       item2.SetCachedProgramThumb();
       if (!item2.HasThumbnail())
         item2.SetUserProgramThumb();
       if (!item2.HasThumbnail())
-        item2.SetThumbnailImage((*it).m_icon);
+        item2.SetThumbnailImage((*it)->Icon());
       if (item2.HasThumbnail())
       {
         XFILE::CFile::Cache(item2.GetThumbnailImage(),newItem->GetCachedProgramThumb());

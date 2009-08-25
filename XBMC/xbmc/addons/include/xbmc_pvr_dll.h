@@ -20,8 +20,6 @@ extern "C"
 {
   // Functions that your PVR client must implement, also you must implement the functions from
   // xbmc_addon.h
-  ADDON_STATUS Create(ADDON_HANDLE hdl, int ClientID);
-  void Destroy();
   PVR_ERROR GetProperties(PVR_SERVERPROPS* pProps);
   const char* GetBackendName();
   const char* GetBackendVersion();
@@ -41,8 +39,6 @@ extern "C"
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
   {
-    pClient->Create = Create;
-    pClient->Destroy = Destroy;
     pClient->GetProperties = GetProperties;
     pClient->GetBackendName = GetBackendName;
     pClient->GetBackendVersion = GetBackendVersion;

@@ -97,7 +97,7 @@ void CPVRManager::Start()
   epgLock.Leave();
 
   /* Discover, load and create chosen Client add-on's. */
-  //TODO CAddonManager::Get()->RegisterAddonCallback(ADDON_PVRDLL, this);
+  //TODO CAddonMgr::Get()->RegisterAddonCallback(ADDON_PVRDLL, this);
   if (!LoadClients())
   {
     CLog::Log(LOGERROR, "PVR: couldn't load clients");
@@ -116,7 +116,7 @@ void CPVRManager::Stop()
 {
   CSingleLock lock(m_clientsSection);
 
-  CAddonManager::Get()->UnregisterAddonCallback(ADDON_PVRDLL);
+  CAddonMgr::Get()->UnregisterAddonCallback(ADDON_PVRDLL);
   StopThread();
 
   m_infoToggleStart = NULL;
@@ -143,22 +143,10 @@ CPVRManager* CPVRManager::GetInstance()
   return m_instance;
 }
 
-void CPVRManager::ReleaseInstance()
-{
-  if (m_instance)
-  {
-    delete m_instance;
-    m_instance = NULL;
-  }
-}
-
 void CPVRManager::RemoveInstance()
 {
-  if (m_instance)
-  {
-    delete m_instance;
-    m_instance = NULL;
-  }
+  delete m_instance;
+  m_instance = NULL;
 }
 
 /************************************************************/
@@ -195,39 +183,37 @@ void CPVRManager::Process()
 
 bool CPVRManager::LoadClients()
 {
-  VECADDONS *addons;
+  VECADDONS addons;
   // call update
-  addons = CAddonManager::Get()->GetAddonsFromType(ADDON_PVRDLL);
+  CAddonMgr::Get()->GetAddons(ADDON_PVRDLL, addons);
 
   /* Make sure addon's are loaded */
-  if (addons == NULL || addons->empty())
+  if (addons.empty())
     return false;
 
   m_database.Open();
 
   /* load the clients */
-  for (unsigned i=0; i<addons->size(); i++)
+  for (unsigned i=0; i<addons.size(); i++)
   {
-    const CAddon& clientAddon = addons->at(i);
-
-    if (clientAddon.m_disabled) // ignore disabled addons
-      continue;
+    const AddonPtr clientAddon = addons.at(i);
 
     /* Add client to TV-Database to identify different backend types,
      * if client is already added his id is given.
      */
-    long clientID = m_database.AddClient(clientAddon.m_strName, clientAddon.m_guid);
+    long clientID = m_database.AddClient(clientAddon->Name(), clientAddon->UUID());
     if (clientID == -1)
     {
-      CLog::Log(LOGERROR, "PVR: Can't Add/Get PVR Client '%s' to to TV Database", clientAddon.m_strName.c_str());
+      CLog::Log(LOGERROR, "PVR: Can't Add/Get PVR Client '%s' to TV Database", clientAddon->Name().c_str());
       continue;
     }
 
     /* Load the Client library's and inside them into Client list if
      * success. Client initialization is also performed during loading.
      */
-    IPVRClient *client;
-    client = (IPVRClient*) CAddonManager::Get()->LoadDll(clientAddon);
+    IPVRClient *client = NULL;
+    /*clientAddon->
+    client = boost::dynamic_pointer_cast<IPVRClient>(clientAddon);*/
     if (client)
     {
       m_clients.insert(std::make_pair(client->GetID(), client));

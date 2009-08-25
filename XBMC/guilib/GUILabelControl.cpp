@@ -128,9 +128,7 @@ void CGUIInfoLabel::Parse(const CStdString &label)
     {
       CStdString left = work.Left(pos1);
       CStdString right = work.Mid(pos2 + 1);
-      CStdString replace = g_localizeStringsTemp.Get(atoi(work.Mid(pos1 + 10).c_str()));
-      if (replace == "")
-         replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
+      CStdString replace = g_localizeStrings.Get(atoi(work.Mid(pos1 + 10).c_str()));
       work = left + replace + right;
     }
     else
@@ -140,7 +138,40 @@ void CGUIInfoLabel::Parse(const CStdString &label)
     }
     pos1 = work.Find("$LOCALIZE[", pos1);
   }
-  // Step 2: Find all $INFO[info,prefix,postfix] blocks
+  // Step 2: Replace all $ADDON[uuid number] with the real string
+  pos1 = work.Find("$ADDON[");
+  while (pos1 >= 0)
+  {
+    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 7);
+    if (pos2 > pos1)
+    {
+      CStdString left = work.Left(pos1);
+      CStdString right = work.Mid(pos2 + 1);
+      
+      int number;
+      CStdString uuid;
+
+      stringstream stream(work.Mid(7)); // ignore $ADDON chars
+      CStdString tmp;
+      while (stream >> tmp)
+      {
+        if (tmp.size() == 36) // uuid formatted as 8-4-4-4-12
+          uuid = tmp;
+        else
+          number = atoi(tmp.c_str());
+      }
+      CStdString replace = ADDON::CAddonMgr::Get()->GetString(uuid, number);
+
+      work = left + replace + right;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      return;
+    }
+    pos1 = work.Find("$LOCALIZE[", pos1);
+  }
+  // Step 3: Find all $INFO[info,prefix,postfix] blocks
   pos1 = work.Find("$INFO[");
   while (pos1 >= 0)
   {

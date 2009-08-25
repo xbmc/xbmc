@@ -35,7 +35,7 @@ public:
 
   virtual bool CommitTransaction();
 
-  long AddClient(const CStdString &client, const CStdString &guid);
+  long AddClient(const CStdString &client, const CStdString &uuid);
   int GetLastChannel(DWORD clientID);
   bool UpdateLastChannel(DWORD clientID, unsigned int channelID, CStdString m_strChannel);
 
@@ -58,7 +58,7 @@ public:
   bool GetGroupList(DWORD clientID, CHANNELGROUPS_DATA* results);
 
 protected:
-  long GetClientId(const CStdString &guid);
+  long GetClientId(const CStdString &uuid);
   long GetGroupId(const CStdString &groupname);
 
 private:

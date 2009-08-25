@@ -29,29 +29,21 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "stdafx.h"
+#include "AddonDll.h"
 #include "DllScreenSaver.h"
-#include "../utils/Addon.h"
-#include "../lib/libaddon/addon_local.h"
 
-class CScreenSaver : public ADDON::CAddon
+class CScreenSaver : public ADDON::CAddonDll<DllScreensaver, ScreenSaver, SCR_PROPS>
 {
 public:
-  CScreenSaver(struct ScreenSaver* pScr, DllScreensaver* pDll, const ADDON::CAddon& addon);
-  ~CScreenSaver();
+  CScreenSaver(const ADDON::AddonProps &props) : CAddonDll(props) {};
+  virtual ~CScreenSaver() {};
 
   // Things that MUST be supplied by the child classes
-  void Create();
-  void Destroy();
   void Start();
   void Render();
   void Stop();
   void GetInfo(SCR_INFO *info);
-
-protected:
-  std::auto_ptr<struct ScreenSaver> m_pScr;
-  std::auto_ptr<DllScreensaver> m_pDll;
-  AddonCB *m_callbacks;
-  bool m_ReadyToUse;
 };
 
 #endif // !defined(AFX_ScreenSaver_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)

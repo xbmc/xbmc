@@ -22,23 +22,26 @@
  *
  */
 
-#include "GUIDialogBoxBase.h"
-#include "settings/AddonSettings.h"
+#include "GUIDialogSettings.h"
+#include "Addon.h"
+#include "URL.h"
+#include "settings/ISettingsProvider.h"
 
-struct SScraperInfo;
-
-class CGUIDialogAddonSettings : public CGUIDialogBoxBase
+class CGUIDialogAddonSettings : public CGUIDialogSettings
 {
 public:
   CGUIDialogAddonSettings(void);
   virtual ~CGUIDialogAddonSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
-  static void ShowAndGetInput(CURL& url);
-  static void ShowAndGetInput(SScraperInfo& info);
-  static void ShowAndGetInput(ADDON::CAddon& addon);
+  virtual void OnOkay() { m_cancelled = false; }
+  virtual void OnCancel() { m_cancelled = true; }
+  static bool ShowAndGetInput(const ADDON::AddonPtr &addon);
+  bool IsConfirmed() { return !m_cancelled; }
   void SetHeading(const CStdString &strHeading);
-  void SetSettings(CAddonSettings settings) { m_settings = settings; };
-  CAddonSettings GetSettings() { return m_settings; };
+  void SetAddon(const ADDON::AddonPtr& addon);
+
+protected:
+  virtual void OnSettingChanged(SettingInfo &setting);
 
 private:
   void CreateControls();
@@ -49,11 +52,11 @@ private:
 
   bool SaveSettings(void);
   bool ShowVirtualKeyboard(int iControl);
-  static CURL m_url;
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
-  CAddonSettings m_settings;
+  ADDON::AddonPtr m_addon;
   CStdString m_strHeading;
   std::map<CStdString,CStdString> m_buttonValues;
+  bool m_cancelled;
 };
 
 #endif

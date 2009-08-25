@@ -19,15 +19,17 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#ifndef PLUGINDIRECTORY_H
+#define PLUGINDIRECTORY_H
 
 #include "FileSystem/IDirectory.h"
 #include "FileSystem/Directory.h"
 #include "StdString.h"
 #include "SortFileItem.h"
-
 #include <string>
 #include <vector>
 #include "../utils/CriticalSection.h"
+//#include "../utils/IAddon.h"
 
 class CURL;
 class CFileItemList;
@@ -59,6 +61,7 @@ public:
   static CStdString TranslatePluginDirectory(const CStdString &strPath);
 
 private:
+  ADDON::AddonPtr m_addon;
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
 
   static std::vector<CPluginDirectory*> globalHandles;
@@ -75,3 +78,5 @@ private:
   int    m_totalItems;   // set by script in AddDirectoryItem
 };
 }
+
+#endif /* PLUGINDIRECTORY_H */

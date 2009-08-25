@@ -514,9 +514,8 @@ CStdString CSettings::GetDefaultSourceFromType(const CStdString &type)
   return defaultShare;
 }
 
-bool CSettings::ParseAddonsXML(const AddonType &type, VECADDONS &addons)
+bool CSettings::LoadAddonsXML(const ADDON::TYPE &type, VECADDONPROPS &addons)
 {
-  addons.clear();
   CStdString strXMLFile;
   TiXmlDocument xmlDoc;
   TiXmlElement *pRootElement = NULL;
@@ -554,10 +553,10 @@ bool CSettings::ParseAddonsXML(const AddonType &type, VECADDONS &addons)
   return false;
 }
 
-void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &type, VECADDONS &addons)
+void CSettings::GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type, VECADDONPROPS &addons)
 {
   CStdString strTagName;
-  AddonTypeString(type, strTagName);
+  strTagName = ADDON::TranslateType(type);
 
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
   if (pChild)
@@ -568,11 +567,7 @@ void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &typ
       CStdString strValue = pChild->Value();
       if (strValue == "addon")
       {
-        CAddon addon;
-        if (GetAddon(type, pChild, addon))
-        {
-          addons.push_back(addon);
-        }
+        GetAddon(type, pChild, addons);
       }
       pChild = pChild->NextSibling();
     }
@@ -583,47 +578,54 @@ void CSettings::GetAddons(const TiXmlElement* pRootElement, const AddonType &typ
   }
 }
 
-bool CSettings::GetAddon(const AddonType &type, const TiXmlNode *node, CAddon &addon)
+bool CSettings::GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons)
 {
-  // The actual addons will be validated by CAddonManager
+  // uuid
+  const TiXmlNode *pNodePath = node->FirstChild("uuid");
+  CStdString uuid;
+  if (pNodePath && pNodePath->FirstChild())
+  {
+    uuid = pNodePath->FirstChild()->Value();
+  }
+  else
+    return false;
+
+  ADDON::AddonProps props(uuid, type);
+  /*props.uuid = uuid;
+  props.type = type;*/
+
   // name
   const TiXmlNode *pNodeName = node->FirstChild("name");
   CStdString strName;
   if (pNodeName && pNodeName->FirstChild())
   {
-    strName = pNodeName->FirstChild()->Value();
+    props.name = pNodeName->FirstChild()->Value();
   }
   else
     return false;
 
-  // path
-  const TiXmlNode *pNodePath = node->FirstChild("path");
-  if (pNodePath && pNodePath->FirstChild())
-  {
-    addon.m_strPath = pNodePath->FirstChild()->Value();
-  }
-  else
-    return false;
-
-  // childguid if present
-  const TiXmlNode *pNodeChildGUID = node->FirstChild("childguid");
+  // parent uuid if present
+  const TiXmlNode *pNodeChildGUID = node->FirstChild("parentuuid");
   if (pNodeChildGUID && pNodeChildGUID->FirstChild())
   {
-    addon.m_guid = pNodeChildGUID->FirstChild()->Value();
+    props.parent = pNodeChildGUID->FirstChild()->Value();
   }
 
   // get custom thumbnail
   const TiXmlNode *pThumbnailNode = node->FirstChild("thumbnail");
   if (pThumbnailNode && pThumbnailNode->FirstChild())
   {
-    addon.m_icon = pThumbnailNode->FirstChild()->Value();
+    props.icon = pThumbnailNode->FirstChild()->Value();
   }
 
-  // get custom name
-  if (strName != addon.m_strName)
-    addon.m_strName = strName;
+  // finished
+  if (/*props.Valid()*/true)
+  {
+    addons.insert(addons.end(), props);
+    return true;
+  }
 
-  return true;
+  return false;
 }
 
 void CSettings::GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault)
@@ -2500,14 +2502,24 @@ bool CSettings::SaveSources()
   return doc.SaveFile(g_settings.GetSourcesFile());
 }
 
-bool CSettings::SaveAddons(const AddonType &type, const VECADDONS &addons)
+bool CSettings::SaveAddonsXML(const ADDON::TYPE &type, const VECADDONPROPS &addons)
 {
   // TODO: Should we be specifying utf8 here??
   TiXmlDocument doc;
-  doc.LoadFile(GetAddonsFile());
-  TiXmlElement xmlRootElement("addons");
-  TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
-  if (!pRoot) return false;
+
+  if (!doc.LoadFile(GetAddonsFile()))
+    doc.ClearError();
+
+  // either point to existing addons node, or create one
+  TiXmlNode *pRoot = NULL;
+  pRoot = doc.FirstChildElement("addons");
+  if (!pRoot)
+  {
+    TiXmlElement xmlRootElement("addons");
+    pRoot = doc.InsertEndChild(xmlRootElement);
+    if (!pRoot)
+      return false;
+  }
 
   // ok, now run through and save the modified addons section
   SetAddons(pRoot, type, addons);
@@ -2515,10 +2527,13 @@ bool CSettings::SaveAddons(const AddonType &type, const VECADDONS &addons)
   return doc.SaveFile(g_settings.GetAddonsFile());
 }
 
-bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDONS &addons)
+bool CSettings::SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const VECADDONPROPS &addons)
 {
   CStdString strType;
-  AddonTypeString(type, strType);
+  strType = ADDON::TranslateType(type);
+
+  if (strType.IsEmpty())
+    return false;
 
   TiXmlElement sectionElement(strType);
   TiXmlNode *sectionNode = root->FirstChild(strType);
@@ -2528,25 +2543,28 @@ bool CSettings::SetAddons(TiXmlNode *root, const AddonType &type, const VECADDON
     root->RemoveChild(sectionNode);
   }
 
-  sectionNode = root->InsertEndChild(sectionElement);
-  if (sectionNode)
-  {
-    for (unsigned int i = 0; i < addons.size(); i++)
+  if (!addons.empty())
+  { // only recreate the sectionNode if there's addons of this type enabled
+    sectionNode = root->InsertEndChild(sectionElement);
+
+    VECADDONPROPS::const_iterator itr = addons.begin();
+    while (itr != addons.end())
     {
-      const CAddon &addon = addons[i];
       TiXmlElement element("addon");
 
-      XMLUtils::SetString(&element, "name", addon.m_strName);
-      XMLUtils::SetPath(&element, "path", addon.m_strPath);
-      if (!addon.m_guid_parent.IsEmpty())
-        XMLUtils::SetString(&element, "childguid", addon.m_guid);
+      XMLUtils::SetString(&element, "name", itr->name);
+      XMLUtils::SetString(&element, "uuid", itr->uuid);
+      if (!itr->parent.IsEmpty())
+        XMLUtils::SetString(&element, "parentuuid", itr->parent);
 
-      if (!addon.m_icon.IsEmpty())
-        XMLUtils::SetPath(&element, "thumbnail", addon.m_icon);
+      if (!itr->icon.IsEmpty())
+        XMLUtils::SetPath(&element, "thumbnail", itr->icon);
 
       sectionNode->InsertEndChild(element);
+      ++itr;
     }
   }
+
   return true;
 }
 
@@ -3047,49 +3065,6 @@ CStdString CSettings::GetSkinFolder(const CStdString &skinName) const
     CUtil::AddFileToFolder("special://xbmc/skin/", skinName, folder);
 
   return folder;
-}
-
-void CSettings::AddonTypeString(const AddonType &type, CStdString &strElement)
-{
-  switch (type)
-  {
-  case ADDON_MULTITYPE:
-      strElement = "multitype";
-  case ADDON_VIZ:
-      strElement = "visualistation";
-  case ADDON_SKIN:
-      strElement = "skin";
-  case ADDON_PVRDLL:
-      strElement = "pvr";
-  case ADDON_SCRIPT:
-      strElement = "script";
-  case ADDON_SCRAPER_PVR:
-      strElement = "scraperpvr";
-  case ADDON_SCRAPER_VIDEO:
-      strElement = "scrapervideo";
-  case ADDON_SCRAPER_MUSIC:
-      strElement = "scrapermusic";
-  case ADDON_SCRAPER_PROGRAM:
-      strElement = "scraperprogram";
-  case ADDON_SCREENSAVER:
-      strElement = "screensaver";
-  case ADDON_PLUGIN_PVR:
-      strElement = "pluginpvr";
-  case ADDON_PLUGIN_MUSIC:
-      strElement = "pluginmusic";
-  case ADDON_PLUGIN_VIDEO:
-      strElement = "pluginvideo";
-  case ADDON_PLUGIN_PROGRAM:
-      strElement = "pluginprogram";
-  case ADDON_PLUGIN_PICTURES:
-      strElement = "pluginpictures";
-  case ADDON_PLUGIN_WEATHER:
-      strElement = "pluginweather";
-  case ADDON_DSP_AUDIO:
-      strElement = "dspaudio";
-  default:
-    strElement = "";
-  }
 }
 
 void CSettings::LoadRSSFeeds()

@@ -59,8 +59,6 @@
 extern "C" {
 #endif
 
-#include "stdbool.h"
-
 typedef void* ADDON_HANDLE;
 
 typedef enum addon_log {
@@ -73,7 +71,7 @@ typedef enum addon_log {
 typedef struct addon_string_list {
   const char**    Strings;
   int             Items;
-} addon_string_list_s;
+} addon_string_list_t;
 
 typedef enum addon_setting_type {
   SETTING_TEXT,
@@ -97,76 +95,6 @@ typedef enum addon_status {
   STATUS_UNKNOWN             /* A unknown event is occurred */
 } addon_status_t;
 typedef addon_status_t ADDON_STATUS; /* XBMC uses "ADDON_STATUS" for "addon_status_t" */
-
-/**
- * AddOn Settings
- */
-
-/* An individual setting */
-struct addon_setting;
-typedef struct addon_setting *addon_setting_t;
-
-/* A list of settings */
-struct addon_settings;
-typedef struct addon_settings *addon_settings_t;
-
-/*
- * AddOn Setting Operations
- */
-
-/**
- * Create a new settings list structure
- * \return settings handle
- */
-extern addon_settings_t addon_settings_create(void);
-
-/**
- * Create a new setting structure
- * \return setting handle
- */
-extern addon_setting_t addon_setting_create(void);
-
-/**
- * Retrieve the 'ID' field of a setting
- * \param set setting handle
- * \return null-terminated string
- */
-extern char *addon_setting_id(addon_setting_t set);
-
-/**
- * Retrieve the 'label' field of a setting
- * \param set setting handle
- * \return null-terminated string
- */
-extern char *addon_setting_label(addon_setting_t set);
-
-/**
- * Retrieve the 'enable' field of a setting
- * \param set setting handle
- * \return null-terminated string
- */
-extern char *addon_setting_enable(addon_setting_t set);
-
-/**
- * Retrieve the 'lvalues' field of a setting
- * \param set setting handle
- * \return null-terminated string
- */
-extern char *addon_setting_lvalues(addon_setting_t set);
-
-/**
- * Retrieve the type of a setting
- * \param set setting handle
- * \return settingtype handle
- */
-extern addon_setting_type_t addon_setting_type(addon_setting_t set);
-
-/**
- * Retrieve the 'valid' field of a setting
- * \param set setting handle
- * \return signed integer
- */
-extern int addon_setting_valid(addon_setting_t set);
 
 #ifdef __cplusplus
 }

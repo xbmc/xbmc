@@ -40,7 +40,6 @@
 #include "PVRClient.h"
 #include "URL.h"
 #include "../utils/log.h"
-#include "../utils/AddonHelpers.h"
 
 using namespace std;
 using namespace ADDON;
@@ -49,27 +48,21 @@ using namespace ADDON;
  * CPVRClient Class constructor/destructor
  */
 
-CPVRClient::CPVRClient(long clientID, struct PVRClient* pClient,
-                       IPVRClientCallback* pvrCB)
-                              : IPVRClient(clientID, pvrCB)
-                              , m_clientID(clientID)
+CPVRClient::CPVRClient(const ADDON::AddonProps &props)
+                              : CAddonDll(props)
                               , m_ReadyToUse(false)
                               , m_hostName("unknown")
-                              , m_pClient(pClient)
-                              , m_manager(pvrCB)
-                              , m_callbacks(NULL)
 {
   InitializeCriticalSection(&m_critSection);
 }
 
 CPVRClient::~CPVRClient()
 {
-  /* tell the AddOn to deinitialize */
+  // tell the AddOn to deinitialize
   DeInit();
 
   DeleteCriticalSection(&m_critSection);
 }
-
 
 /**********************************************************
  * AddOn/PVR specific init and status functions
@@ -77,57 +70,6 @@ CPVRClient::~CPVRClient()
 
 bool CPVRClient::Init()
 {
-  CLog::Log(LOGDEBUG, "PVR: %s - Initializing PVR-Client AddOn", m_strName.c_str());
-
-  /* Allocate the callback table to save all the pointers
-     to the helper callback functions */
-  m_callbacks = new AddonCB;
-
-  /* PVR Helper functions */
-  m_callbacks->userData     = this;
-  m_callbacks->addonData    = (CAddon*) this;
-
-  /* Write XBMC Global Add-on function addresses to callback table */
-  CAddonUtils::CreateAddOnCallbacks(m_callbacks);
-
-  /* Write XBMC PVR specific Add-on function addresses to callback table */
-  m_callbacks->PVR.EventCallback        = PVREventCallback;
-  m_callbacks->PVR.TransferChannelEntry = PVRTransferChannelEntry;
-
-  /* Call Create to make connections, initializing data or whatever is
-     needed to become the AddOn running */
-  try
-  {
-    ADDON_STATUS status = m_pClient->Create(m_callbacks, m_clientID);
-    if (status != STATUS_OK)
-      throw status;
-    m_ReadyToUse = true;
-    m_hostName   = m_pClient->GetConnectionString();
-  }
-  catch (std::exception &e)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during Create occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
-    m_ReadyToUse = false;
-  }
-  catch (ADDON_STATUS status)
-  {
-    CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad status (%i) after Create and is not usable", m_strName.c_str(), m_hostName.c_str(), status);
-    m_ReadyToUse = false;
-
-    /* Delete is performed by the calling class */
-    new CAddonStatusHandler(this, status, "", false);
-  }
-
-/***** CHANNEL TRANSFER TEST *****/
-//VECCHANNELS channels;
-//GetChannelList(channels);
-//  VECCHANNELS::iterator itr = channels.begin();
-//  while (itr != channels.end())
-//  {
-//    fprintf(stderr, "<< %s __ %s\n", (*itr).m_strChannel.c_str(), (*itr).m_strFileNameAndPath.c_str());
-//    itr++;
-//  }
-
   return m_ReadyToUse;
 }
 
@@ -136,19 +78,16 @@ void CPVRClient::DeInit()
   /* tell the AddOn to disconnect and prepare for destruction */
   try
   {
-    CLog::Log(LOGDEBUG, "PVR: %s/%s - Destroying PVR-Client AddOn", m_strName.c_str(), m_hostName.c_str());
+    CLog::Log(LOGDEBUG, "PVR: %s/%s - Destroying PVR-Client AddOn", Name().c_str(), m_hostName.c_str());
     m_ReadyToUse = false;
 
-    /* Tell the client to destroy */
-    m_pClient->Destroy();
-
     /* Release Callback table in memory */
-    delete m_callbacks;
-    m_callbacks = NULL;
+    /*delete m_callbacks;
+    m_callbacks = NULL; */
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during destruction of AddOn occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during destruction of AddOn occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
   }
 }
 
@@ -167,11 +106,11 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
 {
   try
   {
-    return m_pClient->GetProperties(props);
+    return m_pStruct->GetProperties(props);
   }
   catch (std::exception &e)
   {
-    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetProperties occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetProperties occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
 
     /* Set all properties in a case of exception to not supported */
     props->SupportChannelLogo        = false;
@@ -199,11 +138,11 @@ const std::string CPVRClient::GetBackendName()
   {
     try
     {
-      return m_pClient->GetBackendName();
+      return m_pStruct->GetBackendName();
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetBackendName occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetBackendName occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
   }
   /* return string "Unavailable" as fallback */
@@ -216,11 +155,11 @@ const std::string CPVRClient::GetBackendVersion()
   {
     try
     {
-      return m_pClient->GetBackendVersion();
+      return m_pStruct->GetBackendVersion();
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetBackendVersion occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetBackendVersion occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
   }
   /* return string "Unavailable" as fallback */
@@ -233,11 +172,11 @@ const std::string CPVRClient::GetConnectionString()
   {
     try
     {
-      return m_pClient->GetConnectionString();
+      return m_pStruct->GetConnectionString();
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetConnectionString occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetConnectionString occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
   }
   /* return string "Unavailable" as fallback */
@@ -250,11 +189,11 @@ PVR_ERROR CPVRClient::GetDriveSpace(long long *total, long long *used)
   {
     try
     {
-      return m_pClient->GetDriveSpace(total, used);
+      return m_pStruct->GetDriveSpace(total, used);
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetDriveSpace occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetDriveSpace occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
   }
   *total = 0;
@@ -273,11 +212,11 @@ int CPVRClient::GetNumBouquets()
   {
     try
     {
-      return m_pClient->GetNumBouquets();
+      return m_pStruct->GetNumBouquets();
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetNumBouquets occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetNumBouquets occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
   }
   return -1;
@@ -299,11 +238,11 @@ int CPVRClient::GetNumChannels()
   {
     try
     {
-      return m_pClient->GetNumChannels();
+      return m_pStruct->GetNumChannels();
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetNumChannels occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetNumChannels occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
   }
   return -1;
@@ -316,17 +255,17 @@ PVR_ERROR CPVRClient::GetChannelList(VECCHANNELS &channels)
     try
     {
       const PVRHANDLE handle = (VECCHANNELS*) &channels;
-      PVR_ERROR err = m_pClient->RequestChannelList(handle);
+      PVR_ERROR err = m_pStruct->RequestChannelList(handle);
       if (err != PVR_ERROR_NO_ERROR)
         throw err;
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetChannelList occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetChannelList occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
     catch (PVR_ERROR err)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after GetChannelList", m_strName.c_str(), m_hostName.c_str(), err);
+      CLog::Log(LOGERROR, "PVR: %s/%s - Client returns bad error (%i) after GetChannelList", Name().c_str(), m_hostName.c_str(), err);
     }
   }
   return PVR_ERROR_NO_ERROR;
@@ -371,7 +310,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, CFileItemList 
 //  PVR_ERROR err;
 //  PVR_PROGLIST **epg = NULL;
 //
-//  err = m_pClient->GetEPGForChannel(number, epg, start_t, end_t);
+//  err = m_pStruct->GetEPGForChannel(number, epg, start_t, end_t);
 //  if (err != PVR_ERROR_NO_ERROR)
 //    return PVR_ERROR_SERVER_ERROR;
 
@@ -382,12 +321,12 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const unsigned int number, CFileItemList 
 
 PVR_ERROR CPVRClient::GetEPGNowInfo(const unsigned int number, PVR_PROGINFO *result)
 {
-  return PVR_ERROR_SERVER_ERROR;//m_pClient->GetEPGNowInfo(number, result);
+  return PVR_ERROR_SERVER_ERROR;//m_pStruct->GetEPGNowInfo(number, result);
 }
 
 PVR_ERROR CPVRClient::GetEPGNextInfo(const unsigned int number, PVR_PROGINFO *result)
 {
-  return PVR_ERROR_SERVER_ERROR;//m_pClient->GetEPGNextInfo(number, result);
+  return PVR_ERROR_SERVER_ERROR;//m_pStruct->GetEPGNextInfo(number, result);
 }
 
 PVR_ERROR CPVRClient::GetEPGDataEnd(time_t end)
@@ -406,11 +345,11 @@ int CPVRClient::GetNumRecordings()
   {
     try
     {
-      return m_pClient->GetNumRecordings();
+      return m_pStruct->GetNumRecordings();
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetNumRecordings occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetNumRecordings occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
   }
   return -1;
@@ -427,11 +366,11 @@ int CPVRClient::GetNumTimers()
   {
     try
     {
-      return m_pClient->GetNumTimers();
+      return m_pStruct->GetNumTimers();
     }
     catch (std::exception &e)
     {
-      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetNumTimers occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetNumTimers occurred, contact Developer '%s' of this AddOn", Name().c_str(), m_hostName.c_str(), e.what(), Author().c_str());
     }
   }
   return -1;

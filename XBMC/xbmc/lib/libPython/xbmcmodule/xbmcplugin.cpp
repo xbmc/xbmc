@@ -21,9 +21,8 @@
 
 #include "stdafx.h"
 #include "FileSystem/PluginDirectory.h"
-#include "utils/Addon.h"
+#include "utils/IAddon.h"
 #include "listitem.h"
-#include "settings/AddonSettings.h"
 #include "FileItem.h"
 #include "GUIDialogAddonSettings.h"
 
@@ -32,6 +31,7 @@
 
 using namespace std;
 using namespace XFILE;
+using namespace ADDON;
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -305,6 +305,7 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_GetSetting(PyObject *self, PyObject *args, PyObject *kwds)
   {
+    //TODO need to grab pointer to CAddon (using threadid?)
     static const char *keywords[] = { "id", NULL };
     char *id;
     if (!PyArg_ParseTupleAndKeywords(
@@ -318,7 +319,7 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", g_currentPluginSettings.Get(id).c_str());
+    return Py_BuildValue((char*)"s", "");
   }
 
   PyDoc_STRVAR(setSetting__doc__,
@@ -357,9 +358,6 @@ namespace PYXBMC
       return NULL;
     }
     
-    g_currentPluginSettings.Set(id, value);
-    g_currentPluginSettings.Save();
-
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -536,7 +534,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(openSettings__doc__,
-    "openSettings(url[, reload]) -- Opens this plugins settings.\n"
+    "openSettings(url[, reload]) -- Opens this plugin's settings dialog.\n"
     "\n"
     "url         : string or unicode - url of plugin. (plugin://pictures/picasa/)\n"
     "reload      : [opt] bool - reload language strings and settings (default=True)\n"
@@ -570,20 +568,22 @@ namespace PYXBMC
     if (!pUrl || (pUrl && !PyGetUnicodeString(url, pUrl, 1)))
       return NULL;
 
-    if (!CAddonSettings::SettingsExist(url))
+    //TODO avoid relying on plugin supplying a URL
+    ADDON::AddonPtr addon;
+    CAddonMgr::Get()->GetAddonFromPath(url, addon);
+    if (!addon->HasSettings())
     {
       PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");
       return NULL;
     }
 
-    CURL cUrl(url);
-    CGUIDialogAddonSettings::ShowAndGetInput(cUrl);
+    CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
     // reload plugin settings & strings
     if (bReload)
     {
-      g_currentPluginSettings.Load(cUrl);
-      ADDON::CAddon::LoadAddonStrings(cUrl);
+      addon->LoadSettings();
+      addon->LoadStrings();
     }
 
     Py_INCREF(Py_None);

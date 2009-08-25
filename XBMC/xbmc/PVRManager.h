@@ -21,7 +21,7 @@
  */
 
 #include "utils/Thread.h"
-#include "utils/Addon.h"
+#include "utils/IAddon.h"
 #include "pvrclients/IPVRClient.h"
 #include "utils/GUIInfoManager.h"
 #include "TVTimerInfoTag.h"
@@ -44,14 +44,13 @@ public:
 
   /* Manager access */
   static void RemoveInstance();
-  static void ReleaseInstance();
   static CPVRManager* GetInstance();
 
   /* addon specific */
-  bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
-  bool RequestRemoval(const ADDON::CAddon* addon);
-  ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
-  addon_settings_t GetSettings(const ADDON::CAddon* addon);
+  bool RequestRestart(const ADDON::IAddon* addon, bool datachanged);
+  bool RequestRemoval(const ADDON::IAddon* addon);
+  ADDON_STATUS SetSetting(const ADDON::IAddon* addon, const char *settingName, const void *settingValue);
+  addon_settings_t GetSettings(const ADDON::IAddon* addon);
 
   /* Event Handling */
   bool LoadClients();

@@ -41,9 +41,10 @@ public:
   bool IsConfirmed() { return m_confirmed; };
   void SetHeading(const CStdString &heading);
 
-  static bool ShowAndGetAddons(const ADDON::AddonType &type, const bool activeOnly);
+  static bool ShowAndGetAddons(const ADDON::TYPE &type, const bool activeOnly, const CONTENT_TYPE &content = CONTENT_NONE);
 
-  void SetAddonType(const ADDON::AddonType &type);
+  void SetType(const ADDON::TYPE &type);
+  void SetContent(const CONTENT_TYPE &content);
 
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
@@ -54,14 +55,15 @@ protected:
   void ClearFileItems();
   void Update();
   bool OnContextMenu(int iItem);
-  void OnGetAddons(const ADDON::AddonType &type);
+  void OnGetAddons(const ADDON::TYPE &type);
   
-  ADDON::AddonType m_type;
+  ADDON::TYPE m_type;
+  CONTENT_TYPE m_content;
   CFileItemList* m_vecItems;
 
   bool m_confirmed;
   bool m_changed;
-  inline void SetAddNew(bool activeOnly) { m_getAddons = !activeOnly; };
+  inline void SetActiveOnly(bool activeOnly) { m_getAddons = !activeOnly; };
   bool m_getAddons;
   CGUIViewControl m_viewControl;
 };

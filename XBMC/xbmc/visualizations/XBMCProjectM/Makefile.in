@@ -1,6 +1,6 @@
 ARCH=@ARCH@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations
-OBJS=Main.o ../../addons/include/xbmc_addon_lib++.a
+OBJS=Main.o
 SLIB=../../../addons/visualisations/ProjectM/ProjectM.vis
 CXXFLAGS=-O3 -g -fPIC
 DIRS=libprojectM

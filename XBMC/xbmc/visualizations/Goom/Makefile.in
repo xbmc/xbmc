@@ -1,6 +1,6 @@
 ARCH=@ARCH@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I../../../guilib -I../../../visualisations -Igoom2k4-0/src
-OBJS=Main.o ../../addons/include/xbmc_addon_lib++.a
+OBJS=Main.o
 SLIB=../../../addons/visualisations/Goom/Goom.vis
 CXXFLAGS=-g -O3 -fPIC
 DIRS=goom2k4-0

@@ -39,6 +39,17 @@ extern "C"
     int iSyncDelay;
   };
 
+  struct VIS_PROPS
+  {
+    void *device;
+    int x;
+    int y;
+    int width;
+    int height;
+    float pixelRatio;
+    char *name;
+  };
+
   typedef struct PresetsList
   {
     char**          Presets;
@@ -70,10 +81,9 @@ extern "C"
 
   struct Visualisation
   {
-    ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, void* unused, int iPosX, int iPosY, int iWidth, int iHeight,
-                           const char* szVisualisation, float pixelRatio);
+    void (__cdecl* Init)(void* unused, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisation, float pixelRatio);
     void (__cdecl* Start)(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
-    void (__cdecl* AudioData)(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
+    void (__cdecl* AudioData)(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
     void (__cdecl* Render) ();
     void (__cdecl* Stop)();
     void (__cdecl* GetInfo)(VIS_INFO *info);

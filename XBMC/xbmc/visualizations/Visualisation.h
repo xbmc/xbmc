@@ -28,13 +28,33 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
 #include "stdafx.h"
 #include "Key.h"
+#include "AddonDll.h"
 #include "DllVisualisation.h"
-#include "../utils/Addon.h"
-#include "../lib/libaddon/addon_local.h"
+#include "cores/IAudioCallback.h"
 
-class CVisualisation : public ADDON::CAddon
+#define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
+#define MAX_AUDIO_BUFFERS 16
+
+class CCriticalSection;
+
+class CAudioBuffer
+{
+public:
+  CAudioBuffer(int iSize);
+  virtual ~CAudioBuffer();
+  const short* Get() const;
+  void Set(const unsigned char* psBuffer, int iSize, int iBitsPerSample);
+private:
+  CAudioBuffer();
+  short* m_pBuffer;
+  int m_iLen;
+};
+
+class CVisualisation : public ADDON::CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>
+                     , public IAudioCallback
 {
 public:
   enum VIS_ACTION { VIS_ACTION_NONE = 0,
@@ -48,33 +68,48 @@ public:
                     VIS_ACTION_UPDATE_ALBUMART,
                     VIS_ACTION_UPDATE_TRACK
   };
-  CVisualisation(struct Visualisation* pVisz, DllVisualisation* pDll,
-                 const CAddon& addon);
   ~CVisualisation();
 
-  virtual void Remove();
-  virtual ADDON_STATUS GetStatus();
-  virtual bool HasSettings();
-  virtual addon_settings_t GetSettings();
-  virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
-
-  void Create(int posx, int posy, int width, int height);
+  CVisualisation(const ADDON::AddonProps &props) : CAddonDll(props) {}
+  virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
+  virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
+  bool Create(int x, int y, int w, int h);
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const CStdString strSongName);
   void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength);
   void Render();
   void Stop();
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
+  bool UpdateTrack();
   void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   void GetCurrentPreset(char **pPreset, bool *locked);
   bool IsLocked();
   char *GetPreset();
 
-protected:
-  std::auto_ptr<struct Visualisation> m_pVisz;
-  std::auto_ptr<DllVisualisation> m_pDll;
-  AddonCB *m_callbacks;
-  bool m_ReadyToUse;
+private:
+  void CreateBuffers();
+  void ClearBuffers();
+
+  // attributes of the viewport we render to
+  int m_xPos;
+  int m_yPos;
+  int m_width;
+  int m_height;
+
+  // audio properties
+  int m_iChannels;
+  int m_iSamplesPerSec;
+  int m_iBitsPerSample;
+  std::list<CAudioBuffer*> m_vecBuffers;
+  int m_iNumBuffers;        // Number of Audio buffers
+  bool m_bWantsFreq;
+  float m_fFreq[2*AUDIO_BUFFER_SIZE];         // Frequency data
+  bool m_bCalculate_Freq;       // True if the vis wants freq data
+
+  // track information
+  CStdString m_AlbumThumb;
+
+  CCriticalSection m_critSection;
 };
 
 

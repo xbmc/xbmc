@@ -32,13 +32,19 @@ extern "C"
     int dummy;
   };
 
+  struct SCR_PROPS
+  {
+    void *device;
+    int x;
+    int y;
+    int width;
+    int height;
+    float pixelRatio;
+    char *name;
+  };
+
   struct ScreenSaver
   {
-#if !defined(_LINUX) && !defined(HAS_SDL)
-    ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, LPDIRECT3DDEVICE8 pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
-#else
-    ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, void* pd3dDevice, int iWidth, int iHeight, const char* szScreensaver, float pixelRatio);
-#endif
     void (__cdecl* Start) ();
     void (__cdecl* Render) ();
     void (__cdecl* Stop) ();

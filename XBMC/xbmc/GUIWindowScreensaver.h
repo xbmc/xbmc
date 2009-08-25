@@ -28,11 +28,6 @@
 
 #include "utils/CriticalSection.h"
 
-namespace ADDON
-{
-  class CAddon;
-}
-
 #define SCREENSAVER_FADE   1
 #define SCREENSAVER_BLACK  2
 #define SCREENSAVER_XBS    3
@@ -54,5 +49,5 @@ private:
 #endif
   bool m_bInitialized;
   CCriticalSection m_critSection;
-  ADDON::CAddon m_addon;
+  boost::shared_ptr<CScreenSaver> m_addon;
 };

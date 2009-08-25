@@ -28,7 +28,7 @@
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
 #include "Settings.h"
-#include "utils/Addon.h"
+#include "utils/IAddon.h"
 
 using namespace ADDON;
 
@@ -308,12 +308,12 @@ void CGUIWindowWeather::CallPlugin()
   if (!g_guiSettings.GetString("weather.plugin", false).empty() && !g_guiSettings.GetString("weather.plugin", false).Equals(g_localizeStrings.Get(1223)))
   {
     
-    CAddon addon;
-    if (!CAddonManager::Get()->GetAddonFromNameAndType(g_guiSettings.GetString("weather.plugin"), ADDON_PLUGIN_WEATHER, addon))
+    AddonPtr addon;
+    if (!CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, g_guiSettings.GetString("weather.plugin"), addon))
       return;
     
     // create the full path to the plugin
-    CStdString plugin = addon.m_strPath + addon.m_strLibName;
+    CStdString plugin = addon->Path() + addon->LibName();
 
     // initialize our sys.argv variables
     unsigned int argc = 2;

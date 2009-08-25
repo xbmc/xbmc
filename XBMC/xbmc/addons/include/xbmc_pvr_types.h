@@ -28,7 +28,7 @@
 
 #define MIN_XBMC_PVRDLL_API 1
 
-//#define __cdecl
+#define __cdecl
 //#define __declspec(x)
 #include <string.h>
 #include <time.h>
@@ -39,6 +39,10 @@ extern "C" {
 #endif
 
   typedef void*         PVRHANDLE;
+
+  struct PVR_PROPS {
+    int filler;
+  };
 
   /**
   * PVR Client Error Codes
@@ -164,8 +168,6 @@ extern "C" {
   // Structure to transfer the above functions to XBMC
   typedef struct PVRClient
   {
-    ADDON_STATUS (__cdecl* Create)(ADDON_HANDLE hdl, int ClientID);
-    void (__cdecl* Destroy)();
     PVR_ERROR (__cdecl* GetProperties)(PVR_SERVERPROPS *props);
     const char* (__cdecl* GetBackendName)();
     const char* (__cdecl* GetBackendVersion)();

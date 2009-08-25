@@ -50,7 +50,7 @@ bool CTVDatabase::CreateTables()
     CLog::Log(LOGINFO, "TV: Creating tables");
 
     CLog::Log(LOGINFO, "TV: Creating Clients table");
-    m_pDS->exec("CREATE TABLE Clients (idClient integer primary key, Name text, GUID text)\n");
+    m_pDS->exec("CREATE TABLE Clients (idClient integer primary key, Name text, UUID text)\n");
 
     CLog::Log(LOGINFO, "TV: Creating Last Channel table");
     m_pDS->exec("CREATE TABLE LastChannel (idClient integer, idChannel integer primary key, Number integer, Name text)\n");
@@ -179,28 +179,28 @@ bool CTVDatabase::UpdateLastChannel(DWORD clientID, unsigned int channelID, CStd
   }
 }
 
-long CTVDatabase::AddClient(const CStdString &client, const CStdString &guid)
+long CTVDatabase::AddClient(const CStdString &client, const CStdString &uuid)
 {
   try
   {
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    long clientId = GetClientId(guid);
+    long clientId = GetClientId(uuid);
     if (clientId < 0)
     {
-      CStdString SQL=FormatSQL("insert into Clients (idClient, Name, GUID) values (NULL, '%s', '%s')\n", client.c_str(), guid.c_str());
+      CStdString SQL=FormatSQL("insert into Clients (idClient, Name, UUID) values (NULL, '%s', '%s')\n", client.c_str(), uuid.c_str());
       m_pDS->exec(SQL.c_str());
       clientId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
 
-      CLog::Log(LOGNOTICE, "TVDatabase: Added new PVR Client ID '%i' with Name '%s' and GUID '%s'", clientId, client.c_str(), guid.c_str());
+      CLog::Log(LOGNOTICE, "TVDatabase: Added new PVR Client ID '%i' with Name '%s' and UUID '%s'", clientId, client.c_str(), uuid.c_str());
     }
 
     return clientId;
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (Name: %s, GUID: %s) failed", __FUNCTION__, client.c_str(), guid.c_str());
+    CLog::Log(LOGERROR, "%s (Name: %s, UUID: %s) failed", __FUNCTION__, client.c_str(), uuid.c_str());
   }
 
   return -1;
@@ -477,11 +477,11 @@ bool CTVDatabase::GetChannelSettings(DWORD clientID, unsigned int channelID, CVi
       // get the channel settings info
       settings.m_AudioDelay           = m_pDS->fv("AudioDelay").get_asFloat();
       settings.m_AudioStream          = m_pDS->fv("AudioStream").get_asInteger();
-      settings.m_Brightness           = m_pDS->fv("Brightness").get_asInteger();
-      settings.m_Contrast             = m_pDS->fv("Contrast").get_asInteger();
+      settings.m_Brightness           = m_pDS->fv("Brightness").get_asFloat();
+      settings.m_Contrast             = m_pDS->fv("Contrast").get_asFloat();
       settings.m_CustomPixelRatio     = m_pDS->fv("PixelRatio").get_asFloat();
       settings.m_CustomZoomAmount     = m_pDS->fv("ZoomAmount").get_asFloat();
-      settings.m_Gamma                = m_pDS->fv("Gamma").get_asInteger();
+      settings.m_Gamma                = m_pDS->fv("Gamma").get_asFloat();
       settings.m_NonInterleaved       = m_pDS->fv("Interleaved").get_asBool();
       settings.m_NoCache              = m_pDS->fv("NoCache").get_asBool();
       settings.m_SubtitleDelay        = m_pDS->fv("SubtitleDelay").get_asFloat();
@@ -699,7 +699,7 @@ bool CTVDatabase::GetGroupList(DWORD clientID, CHANNELGROUPS_DATA* results)
   return false;
 }
 
-long CTVDatabase::GetClientId(const CStdString& guid)
+long CTVDatabase::GetClientId(const CStdString& uuid)
 {
   CStdString SQL;
 
@@ -710,7 +710,7 @@ long CTVDatabase::GetClientId(const CStdString& guid)
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
 
-    SQL = FormatSQL("select idClient from Clients where GUID like '%s'", guid.c_str());
+    SQL = FormatSQL("select idClient from Clients where UUID like '%s'", uuid.c_str());
 
     m_pDS->query(SQL.c_str());
 

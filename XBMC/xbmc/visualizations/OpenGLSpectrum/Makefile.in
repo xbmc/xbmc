@@ -2,7 +2,7 @@ ARCH=@ARCH@
 INCLUDES=-I. -I.. -I../../linux -I../../ -I ../../../guilib
 DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
 CXXFLAGS=-fPIC
-OBJS=opengl_spectrum.o ../../addons/include/xbmc_addon_lib++.a
+OBJS=opengl_spectrum.o
 
 SLIB=../../../addons/visualisations/GLSpectrum/opengl_spectrum.vis
 

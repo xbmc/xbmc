@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "utils/Addon.h"
+#include "utils/IAddon.h"
 #include "GUIDialogAddonBrowser.h"
 #include "GUISpinControlEx.h"
 #include "GUIDialogContextMenu.h"
@@ -33,7 +33,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 
 #define CONTROL_LIST            450
 #define CONTROL_HEADING_LABEL   411
@@ -100,7 +100,10 @@ bool CGUIDialogAddonBrowser::OnMessage(CGUIMessage& message)
         }
         if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
         {
-          OnContextMenu(iItem);
+          if(OnContextMenu(iItem))
+          { // something changed, disable cancel button
+            m_changed = true;
+          }
           return true;
         }
       }
@@ -155,50 +158,22 @@ void CGUIDialogAddonBrowser::Update()
 {
   m_vecItems->Clear();
 
-  VECADDONS *addons;
-  if (m_getAddons)
+  VECADDONS addons;
+  CAddonMgr::Get()->GetAddons(m_type, addons, m_content, !m_getAddons);
+
+  for (unsigned i=0; i < addons.size(); i++)
   {
-    addons = CAddonManager::Get()->GetAllAddons();
-  }
-  else
-  {
-    addons = CAddonManager::Get()->GetAddonsFromType(m_type);
-    if (addons == NULL)
-      return;
-  }
-
-  for (unsigned i=0; i < addons->size(); i++)
-  {
-    CAddon &addon = (*addons)[i];
-
-    if (addon.m_addonType != m_type)
-        continue;
-
-    if (m_getAddons)
-    { // don't show addons that are enabled
-      //TODO add-on manager should do all this
-      bool skip(false);
-      VECADDONS *addons = CAddonManager::Get()->GetAddonsFromType(m_type);
-      for (unsigned i = 0; i < addons->size(); i++)
-      {
-        if ((*addons)[i].m_guid == addon.m_guid)
-          skip = true;
-      }
-      if (skip)
-        continue;
-    }
-
-    CFileItemPtr pItem(new CFileItem(addon.m_strPath, false));
-    pItem->SetProperty("Addon.GUID", addon.m_guid);
-    pItem->SetProperty("Addon.parentGUID", addon.m_guid_parent);
-    pItem->SetProperty("Addon.Name", addon.m_strName);
-    pItem->SetProperty("Addon.Summary", addon.m_summary);
-    pItem->SetProperty("Addon.Description", addon.m_strDesc);
-    pItem->SetProperty("Addon.Creator", addon.m_strCreator);
-    pItem->SetProperty("Addon.Disclaimer", addon.m_disclaimer);
-    pItem->SetProperty("Addon.m_strLibName", addon.m_disclaimer);
-    pItem->SetProperty("Addon.Rating", addon.m_stars);
-    pItem->SetThumbnailImage(addon.m_icon);
+    AddonPtr addon = addons[i];
+    CFileItemPtr pItem(new CFileItem(addon->Path(), false));
+    pItem->SetProperty("Addon.UUID", addon->UUID());
+    pItem->SetProperty("Addon.parentUUID", addon->Parent());
+    pItem->SetProperty("Addon.Name", addon->Name());
+    pItem->SetProperty("Addon.Summary", addon->Summary());
+    pItem->SetProperty("Addon.Description", addon->Description());
+    pItem->SetProperty("Addon.Creator", addon->Author());
+    pItem->SetProperty("Addon.Disclaimer", addon->Disclaimer());
+    pItem->SetProperty("Addon.Rating", addon->Stars());
+    pItem->SetThumbnailImage(addon->Icon());
     m_vecItems->Add(pItem);
   }
   m_vecItems->FillInDefaultIcons();
@@ -213,7 +188,6 @@ void CGUIDialogAddonBrowser::Render()
 {
   CONTROL_ENABLE_ON_CONDITION(CONTROL_ADDONS, !m_getAddons);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, m_changed && !m_getAddons);
-
   CGUIDialog::Render();
 }
 
@@ -223,30 +197,31 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
   CFileItemPtr pItem = (*m_vecItems)[iItem];
   CStdString strPath = pItem->m_strPath;
 
+  addon_settings_t settings = addon_settings_create();
+
   if (m_getAddons)
   {
-    /* need to determine which addon from allAddons this and add to AddonType specific vector */
-    VECADDONS *addons = CAddonManager::Get()->GetAddonsFromType(m_type);
-    CAddon addon;
-    if (CAddonManager::Get()->GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+    // get a pointer to the addon in question
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon))
     {
       CStdString disclaimer = pItem->GetProperty("Addon.Disclaimer");
-      if (disclaimer.size() > 0)
+      if (!disclaimer.empty())
       {
          CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
          if (!pDialog->ShowAndGetInput(g_localizeStrings.Get(23058), pItem->GetProperty("Addon.Name"), disclaimer, g_localizeStrings.Get(23059)))
            return;
       }
 
-      // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed
-      addons->push_back(addon);
+      // now enable this addon (will show up on parent dialog)
+      CAddonMgr::Get()->EnableAddon(addon);
       m_confirmed = true;
       Close(false);
     }
     else
     {
-      // shouldn't happen as we just retrieved this guid from g_settings
-      CLog::Log(LOGERROR, "Addons: Can't determine Addon by GUID");
+      // shouldn't happen as we just retrieved this uuid from g_settings
+      CLog::Log(LOGERROR, "GetAddons: Can't determine Addon by UUID");
     }
   }
   else
@@ -256,14 +231,10 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 
-    if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
-        m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
-    {
-      /* open up settings dialog */
-      CAddon addon;
-      if (CAddonManager::Get()->GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
-        CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    }
+    /* open up settings dialog */
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
 }
 
@@ -273,14 +244,6 @@ void CGUIDialogAddonBrowser::OnWindowLoaded()
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
   m_viewControl.AddView(GetControl(CONTROL_LIST));
-  // set the page spin controls to hidden
-#ifdef PRE_SKIN_VERSION_2_1_COMPATIBILITY
-  CGUIControl *spin = (CGUIControl *)GetControl(CONTROL_LIST + 5000);
-  if (spin) spin->SetVisible(false);
-#endif
-
-  // request available addons update
-  CAddonManager::Get()->UpdateAddons();
 }
 
 void CGUIDialogAddonBrowser::OnWindowUnload()
@@ -295,7 +258,7 @@ void CGUIDialogAddonBrowser::SetHeading(const CStdString &heading)
   SET_CONTROL_LABEL(CONTROL_HEADING_LABEL, heading);
 }
 
-bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool viewActive)
+bool CGUIDialogAddonBrowser::ShowAndGetAddons(const ADDON::TYPE &type, const bool viewActive, const CONTENT_TYPE &content)
 {
   // Create a new addonbrowser window
   CGUIDialogAddonBrowser *browser = new CGUIDialogAddonBrowser();
@@ -309,7 +272,7 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
   if (!viewActive)
     heading = g_localizeStrings.Get(23002); // "Available Add-ons"
   else
-    heading = g_localizeStrings.Get(23060 + type); // Name is calculated by type!
+    heading = g_localizeStrings.Get(23060 + type); // Name is calculated by type! //TODO fix this
 
   // check if user is allowed to open this window
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].addonmanagerLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
@@ -317,8 +280,9 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
 
   // finalize the window and display
   browser->SetHeading(heading);
-  browser->SetAddonType(type);
-  browser->SetAddNew(viewActive);
+  browser->SetType(type);
+  browser->SetContent(content);
+  browser->SetActiveOnly(viewActive);
   browser->DoModal();
   bool confirmed = browser->IsConfirmed();
 
@@ -327,23 +291,20 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const AddonType &type, const bool 
   return confirmed;
 }
 
-void CGUIDialogAddonBrowser::SetAddonType(const AddonType &type)
+void CGUIDialogAddonBrowser::SetType(const ADDON::TYPE &type)
 {
   m_type = type;
 }
 
-void CGUIDialogAddonBrowser::OnGetAddons(const AddonType &type)
+void CGUIDialogAddonBrowser::SetContent(const CONTENT_TYPE &content)
 {
-  // switch context to available addons
-  // creates a new addonbrowser window
-  CGUIDialogAddonBrowser *browser = new CGUIDialogAddonBrowser();
-  if (!browser) return;
+  m_content = content;
+}
 
-  // Add it to our window manager
-  m_gWindowManager.AddUniqueInstance(browser);
-
+void CGUIDialogAddonBrowser::OnGetAddons(const ADDON::TYPE &type)
+{
   // present dialog with available addons
-  if (ShowAndGetAddons(type, false))
+  if (ShowAndGetAddons(type, false, m_content))
   {
     // need to update the list of installed addons
     Update();
@@ -376,57 +337,58 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
 
   int btn_Settings = -1;
   int btn_ReUse = -1;
-  if (m_type != ADDON_SCRAPER_PVR && m_type != ADDON_SCRAPER_VIDEO &&
-      m_type != ADDON_SCRAPER_MUSIC && m_type != ADDON_SCRAPER_PROGRAM)
+  if (m_type != ADDON_SCRAPER)
     btn_Settings = pMenu->AddButton(iSettingsLabel);
-  if (m_type == ADDON_PVRDLL && pItem->GetProperty("Addon.parentGUID").IsEmpty())
+  if (m_type == ADDON_PVRDLL && pItem->GetProperty("Addon.parentUUID").IsEmpty())
     btn_ReUse = pMenu->AddButton(iReUseLabel);
-  int btn_Remove = pMenu->AddButton(iRemoveLabel);
+  int btn_Disable = pMenu->AddButton(iRemoveLabel);
 
   pMenu->CenterWindow();
   pMenu->DoModal();
 
   int btnid = pMenu->GetButton();
-  if (btnid == btn_Settings)
+  if (btnid == btn_Settings && btnid != -1)
   { // present addon settings dialog
-    CAddon addon;
-    if (CAddonManager::Get()->GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon))
       CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    else
+      return false;
     return true;
   }
-  else if (btnid == btn_ReUse)
+  else if (btnid == btn_ReUse && btnid != -1)
   {
-    /* need to determine which addon from allAddons this and add to AddonType specific vector */
-    VECADDONS *addons = CAddonManager::Get()->GetAddonsFromType(m_type);
-    CAddon addon_parent;
-    if (CAddonManager::Get()->GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon_parent))
+    /* need to determine which addon from allAddons this and add to ADDON::TYPE specific vector */
+    VECADDONS addons;
+    CAddonMgr::Get()->GetAddons(m_type, addons);
+    AddonPtr addon_parent;
+    if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon_parent))
     {
-      CAddon addon_child;
-      if (CAddon::CreateChildAddon(addon_parent, addon_child))
-      {
-        // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed
-        addons->push_back(addon_child);
-        //TODOg_settings.m_virtualAddons.push_back(addon_child);
-        m_changed = true;
-        Update();
-        return true;
-      }
+      AddonPtr addon_child;
+      //if (CAddon::CreateChild(addon_parent, addon_child))
+      //{
+      //  // add the addon to g_settings, not saving to addons.xml until parent dialog is confirmed
+      //  addons.push_back(addon_child);
+      //  //TODOg_settings.m_virtualAddons.push_back(addon_child);
+      //  m_changed = true;
+      //  Update();
+      //  return true;
+      //}
     }
   }
-  else if (btnid == btn_Remove)
+  else if (btnid == btn_Disable)
   { // request confirmation
     CGUIDialogYesNo* pDialog = new CGUIDialogYesNo();
     if (pDialog->ShowAndGetInput(g_localizeStrings.Get(23009), pItem->GetProperty("Addon.Name"), "", g_localizeStrings.Get(23010)))
     {
-      CAddon addon;
-      if (CAddonManager::Get()->GetAddonFromGUID(pItem->GetProperty("Addon.GUID"), addon))
+      AddonPtr addon;
+      if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon))
       {
-        CAddonManager::Get()->GetCallbackForType(m_type)->RequestRemoval(&addon);
-        CAddonManager::Get()->DisableAddon(addon.m_guid, m_type);
-        m_changed = true;
-        Update();
-        return true;
+        CAddonMgr::Get()->DisableAddon(addon);
       }
+      m_changed = true;
+      Update();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+      return true;
     }
   }
   return false;
@@ -436,4 +398,3 @@ CFileItemPtr CGUIDialogAddonBrowser::GetCurrentListItem(int offset)
 {
   return CFileItemPtr();
 }
-

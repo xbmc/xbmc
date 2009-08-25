@@ -41,7 +41,7 @@
 #include "GUISettings.h"
 #include "Profile.h"
 #include "MediaSource.h"
-#include "utils/Addon.h"
+#include "utils/IAddon.h"
 #include "XBVideoConfig.h"
 #include "ViewState.h"
 
@@ -89,6 +89,40 @@ struct TVShowRegexp
 };
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
+
+namespace ADDON
+{
+  struct AddonProps
+  {
+  public:
+    AddonProps(CStdString uuid, TYPE type) : uuid(uuid)
+                                           , type(type)
+    {}
+
+    AddonProps(const AddonPtr &addon) : uuid(addon->UUID())
+                                      , type(addon->Type())
+                                      , parent(addon->Parent())                              
+                                      , name(addon->Name())
+                                      , icon(addon->Icon())
+    {}
+    const CStdString uuid;
+    const TYPE type;
+    std::set<CONTENT_TYPE> contents;
+    CStdString parent;
+    CStdString name;
+    CStdString version;
+    CStdString summary;
+    CStdString description;
+    CStdString path;
+    CStdString libname;
+    CStdString author;
+    CStdString icon;
+    int        stars;
+    CStdString disclaimer;
+  };
+  typedef std::list<const AddonProps> VECADDONPROPS;
+}
+
 
 class CSkinString
 {
@@ -463,8 +497,8 @@ public:
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
-  bool ParseAddonsXML(const ADDON::AddonType& type, ADDON::VECADDONS& addons);
-  bool SaveAddons(const ADDON::AddonType &type, const ADDON::VECADDONS &addons);
+  bool LoadAddonsXML(const ADDON::TYPE& type, ADDON::VECADDONPROPS& addons);
+  bool SaveAddonsXML(const ADDON::TYPE& type, const ADDON::VECADDONPROPS &addons);
   bool SaveSources();
 
 protected:
@@ -481,11 +515,10 @@ protected:
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
-  bool SetAddons(TiXmlNode *root, const ADDON::AddonType &type, const ADDON::VECADDONS &addons);
-  void GetAddons(const TiXmlElement* pRootElement, const ADDON::AddonType &type, ADDON::VECADDONS &addons);
-  bool GetAddon(const ADDON::AddonType &type, const TiXmlNode *node, ADDON::CAddon &addon);
+  bool SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const ADDON::VECADDONPROPS &addons);
+  void GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type, ADDON::VECADDONPROPS &addons);
+  bool GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, ADDON::VECADDONPROPS &addons);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
-  void AddonTypeString(const ADDON::AddonType &type, CStdString &strElement);
 
   // functions for writing xml files
   void SetViewState(TiXmlNode* pRootNode, const CStdString& strTagName, const CViewState &viewState) const;

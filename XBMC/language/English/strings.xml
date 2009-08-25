@@ -2281,7 +2281,7 @@
   <string id="23006">Searching..</string>
   <string id="23007">New search</string>
   <string id="23008">Configure Add-on</string>
-  <string id="23009">Remove Add-on</string>
+  <string id="23009">Disable Add-on</string>
   <string id="23010">Are you sure you want to disable this add-on?</string>
   <string id="23011">Unknown Add-on</string>
   <string id="23012">Multitype Add-on</string>
@@ -2328,7 +2328,7 @@
   <string id="23063">Manage PVR clients</string>
   <string id="23064">Manage Scripts</string>
   <string id="23065">Manage PVR Scrapers</string>
-  <string id="23066">Manage Video Scrapers</string>
+  <string id="23066">Manage Movie Scrapers</string>
   <string id="23067">Manage Music Scrapers</string>
   <string id="23068">Manage Program Scrapers</string>
   <string id="23069">Manage Screensaver</string>
@@ -2339,6 +2339,8 @@
   <string id="23074">Manage Picture plugins</string>
   <string id="23075">Manage Weather plugins</string>
   <string id="23076">Manage Audio DSP's</string>
+  <string id="23077">Manage TV-Show Scrapers</string>
+  <string id="23078">Manage Music-Video Scrapers</string>
 
   <string id="23080">Manage external Screensaver</string>
   <string id="23081">This Add-on can not be configured</string>
