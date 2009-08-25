@@ -313,7 +313,7 @@ void XBMC_unknown_to_utf8(string &str)
   if (m_cb == NULL)
     return;
 
-  string buffer = m_cb->Utils.UnknownToUTF8(str.c_str());
+  string buffer = m_cb->Utils.UnknownToUTF8(str);
   str = buffer;
 }
 
