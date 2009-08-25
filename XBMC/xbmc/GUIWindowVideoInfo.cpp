@@ -129,8 +129,8 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_REFRESH, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Left(2).Equals("xx"));
       CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
 
-      VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
-      if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
+      CONTENT_TYPE type = GetContent(m_movieItem.get());
+      if (type == CONTENT_TVSHOWS || type == CONTENT_MOVIES)
         CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_FANART, (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser) && !m_movieItem->GetVideoInfoTag()->m_strIMDBNumber.Mid(2).Equals("plugin"));
       else
         CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
@@ -255,8 +255,8 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
   // old fixed id labels that we have floating around (they may be using
   // content type to determine visibility, so we'll set the wrong label)
   ClearCastList();
-  VIDEODB_CONTENT_TYPE type = GetContentType(m_movieItem.get());
-  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+  CONTENT_TYPE type = GetContent(m_movieItem.get());
+  if (type == CONTENT_MUSICVIDEOS)
   { // music video
     CStdStringArray artists;
     StringUtils::SplitString(m_movieItem->GetVideoInfoTag()->m_strArtist, g_advancedSettings.m_videoItemSeparator, artists);
@@ -287,14 +287,14 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_castList->Add(item);
     }
     // set fanart property for tvshows and movies
-    if (type == VIDEODB_CONTENT_TVSHOWS || type == VIDEODB_CONTENT_MOVIES)
+    if (type == CONTENT_TVSHOWS || type == CONTENT_MOVIES)
     {
       m_movieItem->CacheFanart();
       if (CFile::Exists(m_movieItem->GetCachedFanart()))
         m_movieItem->SetProperty("fanart_image",m_movieItem->GetCachedFanart());
     }
     // determine type:
-    if (type == VIDEODB_CONTENT_TVSHOWS)
+    if (type == CONTENT_TVSHOWS)
     {
       m_castList->SetContent("tvshows");
       // special case stuff for shows (not currently retrieved from the library in filemode (ref: GetTvShowInfo vs GetTVShowsByWhere)
@@ -304,7 +304,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
       m_movieItem->SetProperty("unwatchedepisodes", m_movieItem->GetVideoInfoTag()->m_iEpisode - m_movieItem->GetVideoInfoTag()->m_playCount);
       m_movieItem->GetVideoInfoTag()->m_playCount = (m_movieItem->GetVideoInfoTag()->m_iEpisode == m_movieItem->GetVideoInfoTag()->m_playCount) ? 1 : 0;
     }
-    else if (type == VIDEODB_CONTENT_EPISODES)
+    else if (type == CONTENT_EPISODES)
     {
       m_castList->SetContent("episodes");
       // special case stuff for episodes (not currently retrieved from the library in filemode (ref: GetEpisodeInfo vs GetEpisodesByWhere)
@@ -339,7 +339,7 @@ void CGUIWindowVideoInfo::SetMovie(const CFileItem *item)
           m_movieItem->SetProperty("seasonthumb", season.GetThumbnailImage());
       }
     }
-    else if (type == VIDEODB_CONTENT_MOVIES)
+    else if (type == CONTENT_MOVIES)
       m_castList->SetContent("movies");
   }
   loader.LoadItem(m_movieItem.get());
@@ -627,15 +627,15 @@ void CGUIWindowVideoInfo::DoSearch(CStdString& strSearch, CFileItemList& items)
   db.Close();
 }
 
-VIDEODB_CONTENT_TYPE CGUIWindowVideoInfo::GetContentType(const CFileItem *pItem) const
+CONTENT_TYPE CGUIWindowVideoInfo::GetContent(const CFileItem *pItem) const
 {
-  VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+  CONTENT_TYPE type = CONTENT_MOVIES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strShowTitle.IsEmpty()) // tvshow
-    type = VIDEODB_CONTENT_TVSHOWS;
+    type = CONTENT_TVSHOWS;
   if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iSeason > -1 && !pItem->m_bIsFolder) // episode
-    type = VIDEODB_CONTENT_EPISODES;
+    type = CONTENT_EPISODES;
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
-    type = VIDEODB_CONTENT_MUSICVIDEOS;
+    type = CONTENT_MUSICVIDEOS;
   return type;
 }
 
@@ -643,20 +643,20 @@ VIDEODB_CONTENT_TYPE CGUIWindowVideoInfo::GetContentType(const CFileItem *pItem)
 /// \param pItem Search result item
 void CGUIWindowVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 {
-  VIDEODB_CONTENT_TYPE type = GetContentType(pItem);
+  CONTENT_TYPE type = GetContent(pItem);
 
   CVideoDatabase db;
   if (!db.Open())
     return;
 
   CVideoInfoTag movieDetails;
-  if (type == VIDEODB_CONTENT_MOVIES)
+  if (type == CONTENT_MOVIES)
     db.GetMovieInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_EPISODES)
+  if (type == CONTENT_EPISODES)
     db.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_TVSHOWS)
+  if (type == CONTENT_TVSHOWS)
     db.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
-  if (type == VIDEODB_CONTENT_MUSICVIDEOS)
+  if (type == CONTENT_MUSICVIDEOS)
     db.GetMusicVideoInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   db.Close();
 
@@ -897,7 +897,7 @@ void CGUIWindowVideoInfo::OnGetFanart()
     CVideoDatabase db;
     if (db.Open())
     {
-      db.UpdateFanart(*m_movieItem, GetContentType(m_movieItem.get()));
+      db.UpdateFanart(*m_movieItem, GetContent(m_movieItem.get()));
       db.Close();
     }
 

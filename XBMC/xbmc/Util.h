@@ -340,6 +340,8 @@ public:
   static void ClearFileItemCache();
 
   static CStdString CreateUUID();
+  static bool       ValidateUUID(const CStdString &uuid); // NB only validates syntax
+
 
 #ifdef _LINUX
   // this will run the command using sudo in a new process.

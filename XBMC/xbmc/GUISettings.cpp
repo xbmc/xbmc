@@ -514,11 +514,13 @@ void CGUISettings::Initialize()
 
   AddCategory(5, "scrapers", 21412);
   AddString(1, "scrapers.moviedefault", 21413, "tmdb.xml", SPIN_CONTROL_TEXT);
-  AddString(2, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
-  AddString(3, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
-  AddString(4, "scrapers.managescraper", 23066, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(5,"scrapers.sep2");
-  AddBool(6, "scrapers.langfallback", 21416, true);
+  AddString(2, "scrapers.managemoviescraper", 23066, "", BUTTON_CONTROL_STANDARD);
+  AddString(3, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
+  AddString(4, "scrapers.managetvshowscraper", 23077, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
+  AddString(6, "scrapers.managemusicvideoscraper", 23078, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(7,"scrapers.sep2");
+  AddBool(8, "scrapers.langfallback", 21416, true);
 
   // network settings
   AddGroup(6, 705);

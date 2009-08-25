@@ -29,7 +29,7 @@
 #include "RegExp.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
 #include "Settings.h"
@@ -39,12 +39,14 @@
 
 using namespace std;
 
+namespace ADDON
+{
+
 CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
-  m_name = m_content = NULL;
+  m_name = NULL;
   m_document = NULL;
-  m_settings = NULL;
   m_language = NULL;
   m_framework = NULL;
   m_date = NULL;
@@ -83,8 +85,7 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_name = m_content = m_language = m_framework = m_date = NULL;
-  m_settings = NULL;
+  m_name = m_language = m_framework = m_date = NULL;
 }
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
@@ -92,6 +93,26 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
   Clear();
 
   m_document = new TiXmlDocument(strXMLFile);
+
+  if (!m_document)
+    return false;
+
+  if (m_document->LoadFile())
+    return LoadFromXML();
+
+  delete m_document;
+  m_document = NULL;
+  return false;
+}
+
+bool CScraperParser::Load(const AddonPtr &scraper)
+{
+  Clear();
+  m_scraper = scraper;
+  if (!m_scraper)
+    return false;
+
+  m_document = new TiXmlDocument(m_scraper->Path() + m_scraper->LibName());
 
   if (!m_document)
     return false;
@@ -114,18 +135,18 @@ bool CScraperParser::LoadFromXML()
   if (strValue == "scraper")
   {
     m_name = m_pRootElement->Attribute("name");
-    m_content = m_pRootElement->Attribute("content");
+    m_content = TranslateContent(m_pRootElement->Attribute("content"));
     m_language = m_pRootElement->Attribute("language");
     m_framework = m_pRootElement->Attribute("framework");
     m_date = m_pRootElement->Attribute("date");
 
-    if (m_name && m_content) // FIXME
+    if (m_name) // FIXME
     {
       // check for known content
-      if ((0 == stricmp(m_content,"tvshows")) ||
-          (0 == stricmp(m_content,"movies")) ||
-          (0 == stricmp(m_content,"musicvideos")) ||
-          (0 == stricmp(m_content,"albums")))
+      if ( m_content == CONTENT_TVSHOWS ||
+           m_content == CONTENT_MOVIES ||
+           m_content == CONTENT_MUSICVIDEOS ||
+           m_content == CONTENT_ALBUMS)
       {
         TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
         if (pChildElement)
@@ -160,11 +181,11 @@ void CScraperParser::ReplaceBuffers(CStdString& strDest)
   }
   // insert settings
   iIndex = 0;
-  while ((size_t)(iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos && m_settings)
+  while ((size_t)(iIndex = strDest.find("$INFO[",iIndex)) != CStdString::npos)
   {
     int iEnd = strDest.Find("]",iIndex);
     CStdString strInfo = strDest.Mid(iIndex+6,iEnd-iIndex-6);
-    CStdString strReplace = m_settings->Get(strInfo);
+    CStdString strReplace = m_scraper->GetSetting(strInfo);
     strDest.replace(strDest.begin()+iIndex,strDest.begin()+iEnd+1,strReplace);
     iIndex += strReplace.length();
   }
@@ -391,8 +412,8 @@ void CScraperParser::ParseNext(TiXmlElement* element)
           szConditional++;
         }
         CStdString strSetting;
-        if (m_settings)
-           strSetting = m_settings->Get(szConditional);
+        if (m_scraper && m_scraper->HasSettings())
+           strSetting = m_scraper->GetSetting(szConditional);
         bExecute = bInverse != strSetting.Equals("true");
       }
 
@@ -403,17 +424,13 @@ void CScraperParser::ParseNext(TiXmlElement* element)
   }
 }
 
-const CStdString CScraperParser::Parse(const CStdString& strTag, CScraperSettings* pSettings)
+const CStdString CScraperParser::Parse(const CStdString& strTag)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
   if(pChildElement == NULL) return "";
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
   TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
-  if (pSettings)
-    m_settings = pSettings;
-  else
-    m_settings = NULL;
   ParseNext(pChildStart);
   CStdString tmp = m_param[iResult-1];
 
@@ -499,3 +516,4 @@ void CScraperParser::ClearCache()
   DIRECTORY::CDirectory::Create(strCachePath);
 }
 
+};

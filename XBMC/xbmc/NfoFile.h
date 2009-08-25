@@ -32,8 +32,12 @@
 #include "tinyXML/tinyxml.h"
 
 class CVideoInfoTag;
-class CScraperParser;
 class CScraperUrl;
+namespace ADDON
+{
+  class CScraperParser;
+}
+
 
 class CNfoFile
 {
@@ -48,7 +52,7 @@ public:
     COMBINED_NFO = 3
   };
 
-  NFOResult Create(const CStdString&,const CStdString&, int episode=-1);
+  NFOResult Create(const CStdString&,const CONTENT_TYPE&, int episode=-1);
   template<class T>
     bool GetDetails(T& details,const char* document=NULL)
   {
@@ -81,7 +85,8 @@ private:
   char* m_headofdoc;
   int m_size;
   CStdString m_strContent;
-  void DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
+  CONTENT_TYPE m_content;
+  void DoScrape(ADDON::CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

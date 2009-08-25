@@ -20,23 +20,27 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#include "settings/AddonSettings.h"
-
+#include "settings/ISettingsProvider.h"
 class CScraperUrl;
 
-class CScraperSettings : public CAddonSettings
+class CScraperSettings : ADDON::CAddon
 {
 public:
   CScraperSettings();
   virtual ~CScraperSettings();
-  bool LoadUserXML(const CStdString& strXML);
-  bool LoadSettingsXML(const CStdString& strScraper, const CStdString& strFunction="GetSettings", const CScraperUrl* url=NULL);
-  bool Load(const CStdString& strSettings, const CStdString& strSaved);
-  CStdString GetSettings() const;
+  virtual bool HasSettings() { return false; }
+  virtual bool LoadSettings() { return false; }
+  virtual void SaveSettings() {}
+  virtual void SaveFromDefault() {}
+  virtual void UpdateSetting(const CStdString& key, const CStdString& value) {}
+  virtual CStdString GetSetting(const CStdString& key) { return ""; }
+  virtual TiXmlElement* GetAddonRoot() { return NULL; }
+private:
+	TiXmlDocument m_addonXmlDoc;
+	TiXmlDocument m_userXmlDoc;
 };
 
-struct SScraperInfo
+struct CScraper
 {
   CStdString strTitle;
   CStdString strPath;
@@ -53,7 +57,7 @@ struct SScraperInfo
     strThumb.clear();
     strContent.clear();
     strLanguage.clear();
-    settings.Clear();
+//     settings.Clear();
   }
 };
 

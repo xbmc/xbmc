@@ -29,7 +29,8 @@
 
 #define MAX_SCRAPER_BUFFERS 20
 
-class CScraperSettings;
+namespace ADDON
+{
 
 class CScraperParser
 {
@@ -40,14 +41,15 @@ public:
   CScraperParser& operator= (const CScraperParser& parser);
 
   void Clear();
+  bool Load(const AddonPtr &scraper);
   bool Load(const CStdString& strXMLFile);
   const CStdString GetName() { return m_name; }
-  const CStdString GetContent() { return m_content; }
+  const CONTENT_TYPE GetContent() { return m_content; }
   const CStdString GetLanguage() { return m_language; }
   const CStdString GetFramework() { return m_framework; }
   const CStdString GetDate() { return m_date; }
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
-  const CStdString Parse(const CStdString& strTag, CScraperSettings* pSettings=NULL);
+  const CStdString Parse(const CStdString& strTag/*, CScraperSettings* pSettings=NULL*/);
   bool HasFunction(const CStdString& strTag);
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
@@ -62,19 +64,19 @@ private:
   char* RemoveWhiteSpace(const char *string);
   void ClearBuffers();
 
+  AddonPtr m_scraper;
   TiXmlDocument* m_document;
   TiXmlElement* m_pRootElement;
 
+  CONTENT_TYPE m_content;
   const char* m_name;
-  const char* m_content;
   const char* m_language;
   const char* m_framework;
   const char* m_date;
   const char* m_SearchStringEncoding;
-
-  CScraperSettings* m_settings;
 };
 
+};
 #endif
 
 

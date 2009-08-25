@@ -27,7 +27,10 @@
 
 class TiXmlDocument;
 class CScraperUrl;
-struct SScraperInfo;
+namespace ADDON
+{
+  class CScraper;
+}
 
 namespace XFILE { class CFileCurl; }
 
@@ -53,14 +56,14 @@ public:
   float GetRelevance() const { return m_relevance; }
   void SetTitle(const CStdString& strTitle);
   void SetRelevance(float relevance) { m_relevance = relevance; }
-  bool Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
+  bool Load(XFILE::CFileCurl& http, const ADDON::CScraperPtr& scraper, const CStdString& strFunction="GetAlbumDetails", const CScraperUrl* url=NULL);
   bool Parse(const TiXmlElement* album, bool bChained=false);
 protected:
   CAlbum m_album;
   float m_relevance;
   CStdString m_strTitle2;
   CScraperUrl m_albumURL;
-  CScraperParser m_parser;
+  ADDON::CScraperParser m_parser;
   bool m_bLoaded;
 };
 }

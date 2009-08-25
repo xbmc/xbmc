@@ -27,7 +27,12 @@
 
 class TiXmlDocument;
 class CScraperUrl;
-struct SScraperInfo;
+namespace ADDON
+{
+  class CScraper;
+  class CScraperParser;
+}
+
 
 namespace MUSIC_GRABBER
 {
@@ -43,13 +48,13 @@ public:
   const CArtist& GetArtist() const;
   CArtist& GetArtist();
   const CScraperUrl& GetArtistURL() const;
-  bool Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction="GetArtistDetails", const CScraperUrl* url=NULL);
+  bool Load(XFILE::CFileCurl& http, const ADDON::CScraperPtr& scraper, const CStdString& strFunction="GetArtistDetails", const CScraperUrl* url=NULL);
   bool Parse(const TiXmlElement* artist, bool bChained=false);
   CStdString m_strSearch;
 protected:
   CArtist m_artist;
   CScraperUrl m_artistURL;
-  CScraperParser m_parser;
+  ADDON::CScraperParser m_parser;
   bool m_bLoaded;
 };
 }

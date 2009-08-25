@@ -68,7 +68,7 @@ protected:
   void FillInNetworkInterfaces(CSetting *pSetting);
   void NetworkInterfaceChanged(void);
 
-  void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent);
+  void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CONTENT_TYPE& content);
 
   void FillInAudioDevices(CSetting* pSetting);
   void FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected);

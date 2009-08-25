@@ -21,7 +21,8 @@
  */
 #include "utils/Thread.h"
 #include "VideoDatabase.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
+#include "FileItem.h"
 #include "NfoFile.h"
 #include "IMDB.h"
 #include "DateTime.h"
@@ -68,7 +69,7 @@ namespace VIDEO
   public:
     CVideoInfoScanner();
     virtual ~CVideoInfoScanner();
-    void Start(const CStdString& strDirectory, const SScraperInfo& info, const SScanSettings& settings, bool bUpdateAll);
+    void Start(const CStdString& strDirectory, const SScanSettings& settings, bool bUpdateAll);
     bool IsScanning();
     void Stop();
     void SetObserver(IVideoInfoScannerObserver* pObserver);
@@ -79,10 +80,10 @@ namespace VIDEO
     long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
     bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, long lShowId, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
-    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool combined=false);
-    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL);
+    long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const ADDON::CScraperPtr& scraper, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool combined=false);
+    bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::CScraperPtr& scraper, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL);
     static void ApplyIMDBThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
-    CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, SScraperInfo& info, CScraperUrl& scrUrl);
+    CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, const CONTENT_TYPE& content, CScraperUrl& scrUrl);
     CIMDB m_IMDB;
   protected:
     virtual void Process();
@@ -104,7 +105,7 @@ namespace VIDEO
     bool m_bClean;
     CStdString m_strStartDir;
     CVideoDatabase m_database;
-    SScraperInfo m_info;
+    ADDON::CScraperPtr m_info;
     std::map<CStdString,SScanSettings> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
     std::vector<long> m_pathsToClean;

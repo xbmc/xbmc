@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "MusicAlbumInfo.h"
 #include "ScraperParser.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 #include "XMLUtils.h"
 #include "HTMLTable.h"
 #include "HTMLUtil.h"
@@ -30,6 +30,7 @@
 
 using namespace MUSIC_GRABBER;
 using namespace std;
+using ADDON::CScraperParser;
 
 CMusicAlbumInfo::CMusicAlbumInfo(void)
 {
@@ -122,10 +123,10 @@ bool CMusicAlbumInfo::Parse(const TiXmlElement* album, bool bChained)
 }
 
 
-bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, const CStdString& strFunction, const CScraperUrl* url)
+bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const ADDON::CScraperPtr& scraper, const CStdString& strFunction, const CScraperUrl* url)
 {
   // load our scraper xml
-  if (!m_parser.Load(info.strPath))
+  if (!m_parser.Load(scraper))
     return false;
 
   bool bChained=true;
@@ -179,7 +180,7 @@ bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, con
     if (szFunction)
     {
       CScraperUrl scrURL(xurl);
-      Load(http,info,szFunction,&scrURL);
+      Load(http,scraper,szFunction,&scrURL);
     }
     xurl = xurl->NextSiblingElement("url");
   }

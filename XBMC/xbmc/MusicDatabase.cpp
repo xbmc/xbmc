@@ -32,7 +32,7 @@
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
 #include "AddonManager.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 #include "Addon.h"
 #include "Util.h"
 #include "Artist.h"
@@ -64,6 +64,7 @@ using namespace MEDIA_DETECT;
 #define MIN_FULL_SEARCH_LENGTH 3
 
 using namespace CDDB;
+using ADDON::AddonPtr;
 
 CMusicDatabase::CMusicDatabase(void)
 {
@@ -3990,7 +3991,7 @@ bool CMusicDatabase::CommitTransaction()
   return false;
 }
 
-bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraperInfo& info)
+bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const ADDON::CScraperPtr& scraper)
 {
   try
   {
@@ -4002,7 +4003,8 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
     m_pDS->exec(strSQL.c_str());
 
     // insert new settings
-    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
+    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",
+      strPath.c_str(), scraper->Path().c_str(), ADDON::TranslateContent(scraper->Content()).c_str(), scraper->GetSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -4014,7 +4016,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
   return false;
 }
 
-bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& info)
+bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& info)
 {
   try
   {
@@ -4056,31 +4058,21 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
 
     if (!m_pDS->eof())
     {
-      info.strContent = m_pDS->fv("content.strContent").get_asString();
-      info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
-
-      ADDON::CAddon addon;
-      CScraperParser parser;
-      if (ADDON::CAddonManager::Get()->GetAddonFromNameAndType(m_pDS->fv("content.strScraperPath").get_asString(), ADDON::ADDON_SCRAPER_MUSIC, addon))
+      // assign scraper
+      //TODO MIGRATION: check for path, replace with uuid
+      ADDON::CScraperParser parser;
+    /*  ADDON::CScraperPtr addon;
+      CONTENT_TYPE content = ADDON::TranslateContent(m_pDS->fv("content.strContent").get_asString());
+      if (!ADDON::CAddonManager::Get()->GetAddon(ADDON::ADDON_SCRAPER, m_pDS->fv("content.strScraperPath").get_asString(), addon))
       {
-        info.strPath = addon.m_strPath + addon.m_strLibName;
-        info.strTitle = addon.m_strName;
-        parser.Load(info.strPath);
-        info.strDate = parser.GetDate();
-        info.strFramework = parser.GetFramework();
-      }
-      else
-      {
-        if (!ADDON::CAddonManager::Get()->GetAddonFromNameAndType(g_guiSettings.GetString("musiclibrary.defaultscraper"), ADDON::ADDON_SCRAPER_MUSIC, addon))
+        if (!ADDON::CAddonManager::Get()->GetDefaultScraper(addon, content))
           return false;
-
-        info.strPath = addon.m_strPath + addon.m_strLibName;
-        info.strTitle = addon.m_strName;
-        parser.Load(info.strPath);
-        info.strContent = parser.GetContent();
-        info.strDate = parser.GetDate();
-        info.strFramework = parser.GetFramework();
       }
+      info->LoadUserXML(m_pDS->fv("content.strSettings").get_asString());*/
+      //TODO addonmanager fills the three below
+      /*info->Content() = parser.GetContent(); 
+      info.strDate = parser.GetDate();
+      info.strFramework = parser.GetFramework();*/
     }
 
     m_pDS->close();
@@ -4453,7 +4445,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     CStdString outdoc;
     if ( asHTML )
     {
-      outdoc = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
+      outdoc = "<html><head><meta http-equiv=\"CONTENT_TYPE-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
           "<body>\n<table>\n";
 
       file.Write( outdoc, outdoc.size() );

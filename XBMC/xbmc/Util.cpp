@@ -113,6 +113,8 @@ using namespace DIRECTORY;
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600LL;
 static const __int64 SECS_TO_100NS = 10000000;
 
+const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
+
 HANDLE CUtil::m_hCurrentCpuUsage = NULL;
 
 using namespace AUTOPTR;
@@ -2708,11 +2710,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       database.Open();
       DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
       DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(item.m_strPath,params);
-      if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+      if (params.GetContent() == CONTENT_MOVIES)
         database.GetMovieInfo("",*item.GetVideoInfoTag(),params.GetMovieId());
-      if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
+      if (params.GetContent() == CONTENT_TVSHOWS)
         database.GetEpisodeInfo("",*item.GetVideoInfoTag(),params.GetEpisodeId());
-      if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+      if (params.GetContent() == CONTENT_MUSICVIDEOS)
         database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     }
@@ -3325,14 +3327,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (param_array[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      SScraperInfo info;
       VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan(param_array.size() > 1 ? param_array[1] : "",info,settings);
+          CGUIWindowVideoBase::OnScan(param_array.size() > 1 ? param_array[1] : "",settings);
       }
     }
   }
@@ -4605,6 +4606,13 @@ CStdString CUtil::CreateUUID()
   *pUuidStr = '\0'; 
 
   return UuidStrTmp;
+}
+
+bool CUtil::ValidateUUID(const CStdString &uuid)
+{
+  CRegExp guidRE;
+  guidRE.RegComp(ADDON_GUID_RE.c_str());
+  return (guidRE.RegFind(uuid.c_str()) == 0);
 }
 
 #ifdef _LINUX

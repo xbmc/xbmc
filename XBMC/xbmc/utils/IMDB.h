@@ -33,7 +33,7 @@
 #include "Thread.h"
 #include "ScraperParser.h"
 #include "VideoInfoTag.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 #include "DateTime.h"
 #include "FileSystem/FileCurl.h"
 
@@ -58,7 +58,6 @@ public:
   CIMDB();
   virtual ~CIMDB();
 
-  bool LoadDLL();
   bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
   bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
   bool InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details);
@@ -74,8 +73,8 @@ public:
   bool GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
   bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
 
-  void SetScraperInfo(const SScraperInfo& info) { m_info.Reset(); m_info = info; }
-  const SScraperInfo& GetScraperInfo() const { return m_info; }
+  void SetScraperInfo(const ADDON::CScraperPtr& scraper) { m_info = scraper; }
+  const ADDON::CScraperPtr GetScraperInfo() const { return m_info; }
 protected:
   void RemoveAllAfter(char* szMovie, const char* szSearch);
   void GetCleanNameAndYear(CStdString &strMovieName, CStdString &strYear);
@@ -83,7 +82,7 @@ protected:
   static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
 
   XFILE::CFileCurl m_http;
-  CScraperParser m_parser;
+  ADDON::CScraperParser m_parser;
 
   // threaded stuff
   void Process();
@@ -102,7 +101,7 @@ protected:
   LOOKUP_STATE      m_state;
   bool              m_found;
   bool              m_retry;
-  SScraperInfo      m_info;
+  ADDON::CScraperPtr m_info;
 };
 
 #endif // !defined(AFX_IMDB1_H__562A722A_CD2A_4B4A_8A67_32DE8088A7D3__INCLUDED_)

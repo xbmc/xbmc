@@ -38,8 +38,8 @@ public:
   int  GetResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
-  static void OnScan(const CStdString& strPath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
-  virtual void OnInfo(CFileItem* pItem, const SScraperInfo& info);
+  static void OnScan(const CStdString& strPath, const VIDEO::SScanSettings& settings);
+  virtual void OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper);
   static void MarkUnWatched(const CFileItemPtr &pItem);
   static void MarkWatched(const CFileItemPtr &pItem);
   static void UpdateVideoTitle(const CFileItem* pItem);
@@ -56,7 +56,7 @@ protected:
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   void GetNonContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
-  virtual void OnAssignContent(int iItem, int iFound, SScraperInfo& info, VIDEO::SScanSettings& settings) {};
+  virtual void OnAssignContent(int iItem, int iFound, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings) {};
   virtual void OnUnAssignContent(int iItem) {};
   virtual void OnQueueItem(int iItem);
   virtual void OnDeleteItem(int iItem);
@@ -70,7 +70,7 @@ protected:
   virtual bool OnPlayMedia(int iItem);
   void LoadPlayList(const CStdString& strPlayList, int iPlayList = PLAYLIST_VIDEO);
 
-  bool ShowIMDB(CFileItem *item, const SScraperInfo& info);
+  bool ShowIMDB(CFileItem *item, const CONTENT_TYPE& content);
 
   void OnManualIMDB();
   bool CheckMovie(const CStdString& strFileName);
@@ -80,7 +80,7 @@ protected:
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
-  int GetScraperForItem(CFileItem *item, SScraperInfo &info, VIDEO::SScanSettings& settings);
+  int GetScraperForItem(CFileItem *item, ADDON::CScraperPtr &info, VIDEO::SScanSettings& settings);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

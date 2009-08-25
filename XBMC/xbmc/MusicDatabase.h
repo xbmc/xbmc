@@ -1,4 +1,4 @@
-/*
+/* 
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
@@ -24,10 +24,9 @@
 */
 #pragma once
 #include "Database.h"
+#include "Scraper.h"
 #include "Album.h"
 #include "StringUtils.h"
-
-struct SScraperInfo;
 
 class CArtist;
 class CFileItem;
@@ -195,8 +194,8 @@ public:
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
 
   bool SetSongRating(const CStdString &filePath, char rating);
-  bool SetScraperForPath(const CStdString& strPath, const SScraperInfo& info);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
+  bool SetScraperForPath(const CStdString& strPath, const ADDON::CScraperPtr& info);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& info);
 
   void ExportToXML(const CStdString &xmlFile, bool singleFiles = false, bool images=false, bool overwrite=false);
   void ImportFromXML(const CStdString &xmlFile);
