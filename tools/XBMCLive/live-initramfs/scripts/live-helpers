@@ -25,6 +25,23 @@ else
 	volume_fstype='/lib/udev/blkid -s TYPE -o value'
 fi
 
+!(wc --version > /dev/null 2>&1) || wcIsAvailable=1
+
+wordCount()
+{
+	cmdLine=${1}
+	if [ -n "${wcIsAvailable}" ];
+	then
+		num=$($cmdLine | wc -w)
+	else
+		num=0
+		for word in $($cmdLine);
+		do
+			num=$(( $num + 1 ))
+		done
+	fi
+	echo $num
+}
 
 sys2dev ()
 {
