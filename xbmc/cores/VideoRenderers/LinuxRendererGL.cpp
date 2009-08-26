@@ -1625,6 +1625,7 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
 {
+  YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
 
@@ -1658,6 +1659,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
     m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
