@@ -28,32 +28,92 @@
 
 #include "DVDVideoCodec.h"
 
-namespace BCM
-{
-#if defined(WIN32)
-    #define _BC_DTS_TYPES_H_
+#define _BC_DTS_TYPES_H_
+#ifdef WIN32
     typedef unsigned __int64  	U64;
-    typedef unsigned int		U32;
-    typedef int					S32;
-    typedef unsigned short  	U16;
-    typedef short				S16;
-    typedef unsigned char		U8;
-    typedef char				S8;
-
-    #include "lib/crystalhd/include/windows/bc_drv_if.h"
 #else
-    #ifndef __LINUX_USER__
-    #define __LINUX_USER__
-    #endif //__LINUX_USER__
-    #if defined(__APPLE__)
-        #include "bc_dts_types.h" 
-        #include "bc_dts_defs.h" 
-        #include "bc_ldil_if.h" 
-    #else 
-        #include "lib/crystalhd/include/linux/bc_ldil_if.h"
-        #include "lib/crystalhd/include/linux/bc_dts_defs.h"
-    #endif //defined(__APPLE__)
+    typedef unsigned long long  U64;
+#endif
+typedef unsigned int		U32;
+typedef int					S32;
+typedef unsigned short  	U16;
+typedef short				S16;
+typedef unsigned char		U8;
+typedef char				S8;
+
+
+#if defined(WIN32)
+#include "lib/crystalhd/include/windows/bc_drv_if.h"
+#else
+#ifndef __LINUX_USER__
+#define __LINUX_USER__
+#endif //__LINUX_USER__
+#if defined(__APPLE__)
+#include "bc_dts_defs.h" 
+#include "bc_ldil_if.h" 
+#else 
+#include "lib/crystalhd/include/linux/bc_ldil_if.h"
+#include "lib/crystalhd/include/linux/bc_dts_defs.h"
+#endif //defined(__APPLE__)
 #endif //defined(WIN32)
+
+#include "LockFree.h"
+
+class CMPCDecodeBuffer
+{
+public:
+  CMPCDecodeBuffer(size_t size);
+  virtual ~CMPCDecodeBuffer();
+  size_t GetSize();
+  unsigned char* GetPtr();
+  unsigned int GetId() {return m_Id;}
+protected:
+  size_t m_Size;
+  unsigned char* m_pBuffer;
+  unsigned int m_Id;
+  static unsigned int m_NextId;
+};
+
+#include <deque>
+#include <vector>
+#include "Thread.h"
+
+class CMPCDecodeThread : public CThread
+{
+public:
+#ifdef __APPLE__
+  CMPCDecodeThread(void* device);
+#else
+  CMPCDecodeThread(HANDLE device);
+#endif
+  virtual ~CMPCDecodeThread();
+  unsigned int GetReadyCount();
+  CMPCDecodeBuffer* GetNext();
+  void FreeBuffer(CMPCDecodeBuffer* pBuffer);
+protected:
+  virtual void Process();
+  CMPCDecodeBuffer* AllocBuffer();
+  void AddFrame(CMPCDecodeBuffer* pBuffer);
+  CMPCDecodeBuffer* GetDecoderOutput();
+  
+//  lf_queue m_FreeBuffers;
+//  lf_queue m_DecodedFrames;
+
+  CCriticalSection m_FreeLock;
+  CCriticalSection m_ReadyLock;
+  
+  std::deque<CMPCDecodeBuffer*> m_FreeList;
+  std::deque<CMPCDecodeBuffer*> m_ReadyList;
+  unsigned int m_BufferCount;
+  
+  unsigned int m_OutputHeight;
+  unsigned int m_OutputWidth;
+#ifdef __APPLE__
+  void* m_Device;
+#else
+  HANDLE m_Device;
+#endif
+  unsigned int m_OutputTimeout;
 };
 
 class CDVDVideoCodecCrystalHD : public CDVDVideoCodec
@@ -72,23 +132,30 @@ public:
   virtual const char* GetName() { return (const char*)m_pFormatName; }
 
 protected:
-  bool IsPictureReady();
-  void InitOutput(BCM::BC_DTS_PROC_OUT* pOut);
-  void SetSize(unsigned int height, unsigned int width);
-  
-  BCM::HANDLE m_Device;
+#ifdef __APPLE__
+  void* m_Device;
+#else
+  HANDLE m_Device;
+#endif
   unsigned int m_Height;
   unsigned int m_Width;
-  BCM::BC_DTS_PROC_OUT m_Output;
+  U32 m_YSize;
+  U32 m_UVSize;
+  U8* m_pBuffer;
+  BC_DTS_PROC_OUT m_Output;
   bool m_DropPictures;
   unsigned int m_PicturesDecoded;
   unsigned int m_LastDecoded;
   char* m_pFormatName;
 
-  BCM::BC_PIC_INFO_BLOCK m_CurrentFormat;
+  BC_PIC_INFO_BLOCK m_CurrentFormat;
+  unsigned int m_PacketsIn;
   unsigned int m_FramesOut;
   unsigned int m_OutputTimeout;
   double m_LastPts;
+  
+  CMPCDecodeThread* m_pDecodeThread;
+  std::deque<CMPCDecodeBuffer*> m_BusyList;
 };
 
 #endif
