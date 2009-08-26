@@ -43,6 +43,7 @@ wordCount()
 	echo $num
 }
 
+
 sys2dev ()
 {
 	sysdev=${1#/sys}
@@ -363,15 +364,8 @@ find_cow_device ()
 				do
 					load_keymap
 
-					echo -n "Enter passphrase for ${pers_label} on ${devname}: " >&6
-					read -s passphrase
-					echo "${passphrase}" > /tmp/passphrase
-					unset passphrase
-					exec 9</tmp/passphrase
-					/sbin/cryptsetup luksOpen ${devname} $(basename ${devname})
+					/lib/cryptsetup/askpass "Enter passphrase for ${pers_label} on ${devname}: " /sbin/cryptsetup -T 1 luksOpen ${devname} $(basename ${devname}) --key-file=-
 					error=${?}
-					exec 9<&-
-					rm -f /tmp/passphrase
 
 					devname="/dev/mapper/$(basename ${devname})"
 
