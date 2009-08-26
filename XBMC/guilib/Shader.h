@@ -42,8 +42,7 @@ namespace Shaders {
     virtual bool Compile() = 0;
     virtual void Free() = 0;
     virtual GLuint Handle() = 0;
-    virtual void SetSource(string& src) { m_source = src; }
-    virtual void SetSource(const char* src) { m_source = src; }
+    virtual void SetSource(const string& src) { m_source = src; }
     bool OK() { return m_compiled; }
 
   protected:
@@ -169,14 +168,6 @@ namespace Shaders {
     // E.g. setting attributes, disabling texture unites, etc
     virtual bool OnEnabled() { return true; }
     virtual void OnDisabled() { }
-
-    // sets the vertex shader's source (in GLSL)
-    virtual void SetVertexShaderSource(const char* src) { m_pVP->SetSource(src); }
-    virtual void SetVertexShaderSource(string& src) { m_pVP->SetSource(src); }
-
-    // sets the pixel shader's source (in GLSL)
-    virtual void SetPixelShaderSource(const char* src) { m_pFP->SetSource(src); }
-    virtual void SetPixelShaderSource(string& src) { m_pFP->SetSource(src); }
 
     virtual GLuint ProgramHandle() { return m_shaderProgram; }
 
