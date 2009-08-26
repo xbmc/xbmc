@@ -37,8 +37,6 @@ namespace Shaders {
     unsigned m_flags;
     int   m_width;
     int   m_height;
-    float m_stepX;
-    float m_stepY;
     int   m_field;
 
     // shader attribute handles
@@ -66,8 +64,6 @@ namespace Shaders {
     unsigned m_flags;
     int   m_width;
     int   m_height;
-    float m_stepX;
-    float m_stepY;
     int   m_field;
 
     // shader attribute handles

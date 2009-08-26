@@ -96,8 +96,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
 {
   m_width      = 1;
   m_height     = 1;
-  m_stepX      = 0;
-  m_stepY      = 0;
   m_field      = 0;
   m_flags      = flags;
 
@@ -179,8 +177,6 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 {
   m_width         = 1;
   m_height        = 1;
-  m_stepX         = 0;
-  m_stepY         = 0;
   m_field         = 0;
   m_flags         = flags;
 
