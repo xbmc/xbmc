@@ -70,22 +70,20 @@ static float yuv_coef_smtp240m[4][4] =
 static float** PickYUVConversionMatrix(unsigned flags)
 {
   // Pick the matrix.
-   float (*matrix)[4];
+   
    switch(CONF_FLAGS_YUVCOEF_MASK(flags))
    {
      case CONF_FLAGS_YUVCOEF_240M:
-       matrix = yuv_coef_smtp240m; break;
+       return (float**)yuv_coef_smtp240m; break;
      case CONF_FLAGS_YUVCOEF_BT709:
-       matrix = yuv_coef_bt709; break;
+       return (float**)yuv_coef_bt709; break;
      case CONF_FLAGS_YUVCOEF_BT601:    
-       matrix = yuv_coef_bt601; break;
+       return (float**)yuv_coef_bt601; break;
      case CONF_FLAGS_YUVCOEF_EBU:
-       matrix = yuv_coef_ebu; break;
+       return (float**)yuv_coef_ebu; break;
      default:
-       matrix = yuv_coef_bt601; break;
+       return (float**)yuv_coef_bt601; break;
    }
-   
-   return (float**)matrix;
 }
 
 //////////////////////////////////////////////////////////////////////
