@@ -17,7 +17,6 @@ namespace Shaders {
     virtual void SetField(int field) {}
     virtual void SetWidth(int width);
     virtual void SetHeight(int width);
-    virtual void SetFullRange(bool range) { m_bFullYUVRange  = range; }
 
   protected:
     int   m_width;
@@ -28,7 +27,6 @@ namespace Shaders {
     GLint m_ytex;
     GLint m_utex;
     GLint m_vtex;
-    bool  m_bFullYUVRange;
   };
 
 } // end namespace
