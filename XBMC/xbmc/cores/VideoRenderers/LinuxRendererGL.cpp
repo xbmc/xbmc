@@ -1656,9 +1656,6 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetVTexture(2);
   if     (field == FIELD_ODD)
     ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
   else if(field == FIELD_EVEN)
@@ -1774,9 +1771,6 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_fbo.BeginRender();
   VerifyGLState();
 
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetVTexture(2);
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetWidth(im.width);
   ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetHeight(im.height);
   if     (field == FIELD_ODD)

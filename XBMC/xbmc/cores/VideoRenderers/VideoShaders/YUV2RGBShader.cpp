@@ -99,9 +99,6 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
   m_stepX      = 0;
   m_stepY      = 0;
   m_field      = 0;
-  m_yTexUnit   = 0;
-  m_uTexUnit   = 0;
-  m_vTexUnit   = 0;
   m_flags      = flags;
 
   // shader attribute handles
@@ -185,9 +182,6 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
   m_stepX         = 0;
   m_stepY         = 0;
   m_field         = 0;
-  m_yTexUnit      = 0;
-  m_uTexUnit      = 0;
-  m_vTexUnit      = 0;
   m_flags         = flags;
 
   // shader attribute handles
@@ -265,9 +259,9 @@ void YUV2RGBProgressiveShader::OnCompiledAndLinked()
 bool YUV2RGBProgressiveShader::OnEnabled()
 {
   // set shader attributes once enabled
-  glUniform1i(m_hYTex, m_yTexUnit);
-  glUniform1i(m_hUTex, m_uTexUnit);
-  glUniform1i(m_hVTex, m_vTexUnit);
+  glUniform1i(m_hYTex, 0);
+  glUniform1i(m_hUTex, 1);
+  glUniform1i(m_hVTex, 2);
   VerifyGLState();
   return true;
 }
@@ -353,9 +347,9 @@ void YUV2RGBBobShader::OnCompiledAndLinked()
 bool YUV2RGBBobShader::OnEnabled()
 {
   // set shader attributes once enabled
-  glUniform1i(m_hYTex, m_yTexUnit);
-  glUniform1i(m_hUTex, m_uTexUnit);
-  glUniform1i(m_hVTex, m_vTexUnit);
+  glUniform1i(m_hYTex, 0);
+  glUniform1i(m_hUTex, 1);
+  glUniform1i(m_hVTex, 2);
   glUniform1i(m_hField, m_field);
   glUniform1f(m_hStepX, 1.0f / (float)m_width);
   glUniform1f(m_hStepY, 1.0f / (float)m_height);
