@@ -63,6 +63,7 @@ class CMPCDecodeBuffer
 {
 public:
   CMPCDecodeBuffer(size_t size);
+  CMPCDecodeBuffer(unsigned char* pBuffer, size_t size);
   virtual ~CMPCDecodeBuffer();
   size_t GetSize();
   unsigned char* GetPtr();
@@ -90,18 +91,20 @@ public:
   unsigned int GetReadyCount();
   CMPCDecodeBuffer* GetNext();
   void FreeBuffer(CMPCDecodeBuffer* pBuffer);
+  bool AddInput(CMPCDecodeBuffer* pBuffer);
+  unsigned int GetInputCount();
 protected:
   virtual void Process();
   CMPCDecodeBuffer* AllocBuffer();
   void AddFrame(CMPCDecodeBuffer* pBuffer);
   CMPCDecodeBuffer* GetDecoderOutput();
   
-//  lf_queue m_FreeBuffers;
-//  lf_queue m_DecodedFrames;
 
+  CCriticalSection m_InputLock;
   CCriticalSection m_FreeLock;
   CCriticalSection m_ReadyLock;
   
+  std::deque<CMPCDecodeBuffer*> m_InputList;
   std::deque<CMPCDecodeBuffer*> m_FreeList;
   std::deque<CMPCDecodeBuffer*> m_ReadyList;
   unsigned int m_BufferCount;

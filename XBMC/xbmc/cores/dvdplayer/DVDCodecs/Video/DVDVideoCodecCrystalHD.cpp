@@ -43,22 +43,22 @@ class CExecTimer
 public:
   CExecTimer() :
     m_StartTime(0),
-    m_StopTime(0),
     m_PunchInTime(0),
     m_PunchOutTime(0),
     m_LastCallInterval(0)
   {
-    
+    QueryPerformanceFrequency((LARGE_INTEGER*)&m_CounterFreq);
+    m_CounterFreq /= 1000; // Scale to ms
   }
   
   void Start()
   {
-    m_StartTime = m_StopTime = GetTickCount();
+    QueryPerformanceCounter((LARGE_INTEGER*)&m_StartTime);
   }
   
   void PunchIn()
   {
-    m_PunchInTime = GetTickCount();
+    QueryPerformanceCounter((LARGE_INTEGER*)&m_PunchInTime);
     if (m_PunchOutTime)
       m_LastCallInterval = m_PunchInTime - m_PunchOutTime;
     else
@@ -69,13 +69,12 @@ public:
   void PunchOut()
   {
     if (m_PunchInTime)
-      m_PunchOutTime = GetTickCount();
+      QueryPerformanceCounter((LARGE_INTEGER*)&m_PunchOutTime);
   }
   
   void Reset()
   {
     m_StartTime = 0;
-    m_StopTime = 0;
     m_PunchInTime = 0;
     m_PunchOutTime = 0;
     m_LastCallInterval = 0;
@@ -84,7 +83,11 @@ public:
   uint64_t GetElapsedTime()
   {
     if (m_StartTime)
-      return GetTickCount() - m_StartTime;  
+    {
+      uint64_t now;
+      QueryPerformanceCounter((LARGE_INTEGER*)&now);
+      return (now - m_StartTime)/m_CounterFreq;  
+    }
     else
       return 0;
   }
@@ -92,22 +95,22 @@ public:
   uint64_t GetExecTime()
   {
     if (m_PunchOutTime && m_PunchInTime)
-      return m_PunchOutTime - m_PunchInTime;  
+      return (m_PunchOutTime - m_PunchInTime)/m_CounterFreq;  
     else
       return 0;
   }
   
   uint64_t GetIntervalTime()
   {
-    return m_LastCallInterval;
+    return m_LastCallInterval/m_CounterFreq;
   }
   
 protected:
   uint64_t m_StartTime;
-  uint64_t m_StopTime;
   uint64_t m_PunchInTime;
   uint64_t m_PunchOutTime;
   uint64_t m_LastCallInterval;
+  uint64_t m_CounterFreq;
 };
 
 CExecTimer g_InputTimer;
@@ -152,9 +155,7 @@ CMPCDecodeThread::CMPCDecodeThread(HANDLE device) :
   
   InitializeCriticalSection(&m_FreeLock);
   InitializeCriticalSection(&m_ReadyLock);
-  
-//  lf_queue_init(&m_FreeBuffers);
-//  lf_queue_init(&m_DecodedFrames);
+  InitializeCriticalSection(&m_InputLock);
 }
 
 CMPCDecodeThread::~CMPCDecodeThread()
@@ -173,20 +174,17 @@ CMPCDecodeThread::~CMPCDecodeThread()
 
 unsigned int CMPCDecodeThread::GetReadyCount()
 {
-//  return m_DecodedFrames.len;
   return m_ReadyList.size();
 }
 
 void CMPCDecodeThread::AddFrame(CMPCDecodeBuffer* pBuffer)
 {
-//  lf_queue_enqueue(&m_DecodedFrames, pBuffer);
   CSingleLock lock(m_ReadyLock);
   m_ReadyList.push_back(pBuffer);
 }
 
 CMPCDecodeBuffer* CMPCDecodeThread::GetNext()
 {
-//  return (CMPCDecodeBuffer*)lf_queue_dequeue(&m_DecodedFrames);
   CSingleLock lock(m_ReadyLock);
   CMPCDecodeBuffer* pBuf = NULL;
   if (m_ReadyList.size())
@@ -199,14 +197,12 @@ CMPCDecodeBuffer* CMPCDecodeThread::GetNext()
 
 void CMPCDecodeThread::FreeBuffer(CMPCDecodeBuffer* pBuffer)
 {
-//  lf_queue_enqueue(&m_FreeBuffers, &pBuffer);
   CSingleLock lock(m_FreeLock);
   m_FreeList.push_back(pBuffer);
 }
 
 CMPCDecodeBuffer* CMPCDecodeThread::AllocBuffer()
 {
-//  return (CMPCDecodeBuffer*)lf_queue_dequeue(&m_FreeBuffers) ;
   CSingleLock lock(m_FreeLock);
   CMPCDecodeBuffer* pBuf = NULL;
   if (m_FreeList.size())
@@ -223,16 +219,46 @@ void CMPCDecodeThread::Process()
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
-    CMPCDecodeBuffer* pBuffer = GetDecoderOutput();
-    if (pBuffer)
+    if (GetReadyCount() < 3) // Need more frames in ready list
     {
-      CLog::Log(LOGDEBUG, "%s: Moving Buffer %d (Free -> Ready)", __MODULE_NAME__, pBuffer->GetId());    
-      AddFrame(pBuffer);
+      if (m_InputList.size()) // Read from the input queue and push to decoder
+      {
+        CSingleLock lock(m_InputLock);
+        CMPCDecodeBuffer* pInput = m_InputList.front();
+        m_InputList.pop_front();
+        lock.Leave();
+
+        g_InputTimer.PunchIn();
+        BC_STATUS ret = DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), 0, FALSE);
+        g_InputTimer.PunchOut();
+        if (ret != BC_STS_SUCCESS)
+          CLog::Log(LOGDEBUG, "%s: DtsProcInput returned %d.", __MODULE_NAME__, ret);
+        CLog::Log(LOGDEBUG, "%s: InputTimer (%d bytes) - %llu exec / %llu interval. %d in queue", __MODULE_NAME__, pInput->GetSize(), g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime(), m_InputList.size());
+        delete pInput;
+      }
+      CMPCDecodeBuffer* pBuffer = GetDecoderOutput(); // Check for output frames
+      if (pBuffer)
+      {
+        CLog::Log(LOGDEBUG, "%s: Moving Buffer %d (Free -> Ready)", __MODULE_NAME__, pBuffer->GetId());    
+        AddFrame(pBuffer);
+      }
     }
     else
-      Sleep(1);
+      Sleep(20);
   }
   CLog::Log(LOGDEBUG, "%s: MPCLink Output Thread Stopped...", __MODULE_NAME__);
+}
+
+bool CMPCDecodeThread::AddInput(CMPCDecodeBuffer* pBuffer)
+{
+  CSingleLock lock(m_InputLock);
+  m_InputList.push_back(pBuffer);
+  return true;
+}
+
+unsigned int CMPCDecodeThread::GetInputCount()
+{
+  return m_InputList.size();
 }
 
 CMPCDecodeBuffer* CMPCDecodeThread::GetDecoderOutput()
@@ -241,8 +267,6 @@ CMPCDecodeBuffer* CMPCDecodeThread::GetDecoderOutput()
   CMPCDecodeBuffer* pBuffer = AllocBuffer();
   if (!pBuffer) // No free buffers
   {
-    if (m_BufferCount >= 3)
-      return NULL;
     pBuffer = new CMPCDecodeBuffer(m_OutputWidth * m_OutputHeight * 2); // Allocate a new buffer
     CLog::Log(LOGDEBUG, "%s: Added a new Buffer. Id: %d, Size: %d", __MODULE_NAME__, pBuffer->GetId(), pBuffer->GetSize());    
     m_BufferCount++;
@@ -279,13 +303,14 @@ CMPCDecodeBuffer* CMPCDecodeThread::GetDecoderOutput()
   g_OutputTimer.PunchIn();
   BC_STATUS ret = DtsProcOutput(m_Device, m_OutputTimeout, &procOut);
   g_OutputTimer.PunchOut();
-  CLog::Log(LOGDEBUG, "%s: OutputTimer - %llu exec / %llu interval. (Status: %02x Timeout: %d)", __MODULE_NAME__, g_OutputTimer.GetExecTime(), g_OutputTimer.GetIntervalTime(), ret, m_OutputTimeout);
+  CLog::Log(LOGDEBUG, "%s: OutputTimer - %llu exec / %llu interval. (Status: %02x Timeout: %d CPU %0.02f)", __MODULE_NAME__, g_OutputTimer.GetExecTime(), g_OutputTimer.GetIntervalTime(), ret, m_OutputTimeout, GetRelativeUsage() * 100.0);
   
   switch (ret)
   {
     case BC_STS_SUCCESS:
       return pBuffer;
     case BC_STS_NO_DATA:
+      Sleep(41);
       break;
     case BC_STS_FMT_CHANGE:
       CLog::Log(LOGDEBUG, "%s: Format Change Detected. Flags: 0x%08x", __MODULE_NAME__, procOut.PoutFlags); 
@@ -311,7 +336,7 @@ CMPCDecodeBuffer* CMPCDecodeThread::GetDecoderOutput()
         CLog::Log(LOGDEBUG, "%s: \tCustom Aspect: %lu", __MODULE_NAME__, procOut.PicInfo.custom_aspect_ratio_width_height);
         CLog::Log(LOGDEBUG, "%s: \tFrames to Drop: %lu", __MODULE_NAME__, procOut.PicInfo.n_drop);
         CLog::Log(LOGDEBUG, "%s: \tH264 Valid Fields: 0x%08x", __MODULE_NAME__, procOut.PicInfo.other.h264.valid);   
-        m_OutputTimeout = 15000;
+        m_OutputTimeout = 20;
       }
       break;
     case BC_STS_IO_XFR_ERROR:
@@ -464,8 +489,6 @@ void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 
 int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
-//  return VC_PICTURE;
-
   if (m_BusyList.size())
   {
     CMPCDecodeBuffer* pBuffer = m_BusyList.front();
@@ -477,28 +500,47 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
   if (!pData)
     return VC_BUFFER;
 
-  //CLog::Log(LOGDEBUG, "%s: Tx %d bytes to mpclink.", __MODULE_NAME__, iSize);
-  g_InputTimer.PunchIn();
-  BC_STATUS ret = DtsProcInput(m_Device, pData, iSize, 0/*(U64)(pts * (10000000.0 / DVD_TIME_BASE))*/, FALSE);
-  g_InputTimer.PunchOut();
-  if (ret != BC_STS_SUCCESS)
-  {
-    CLog::Log(LOGDEBUG, "%s: DtsProcInput returned %d.", __MODULE_NAME__, ret);
-    return VC_ERROR;
-  }
-  m_PacketsIn++;
-  CLog::Log(LOGDEBUG, "%s: InputTimer - %llu exec / %llu interval.", __MODULE_NAME__, g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime());
+  CMPCDecodeBuffer* pBuffer = new CMPCDecodeBuffer(iSize);
+  memcpy(pBuffer->GetPtr(), pData, iSize);
+  m_pDecodeThread->AddInput(pBuffer);
 
-  for (unsigned int waitTime = 0; waitTime < 100; waitTime += 10)
+  for (unsigned int waitTime = 0; waitTime < 40; waitTime += 5)
   {    
     if (m_pDecodeThread->GetReadyCount())
     {
-      CLog::Log(LOGDEBUG, "%s: Decoded Picture is Ready. %d In, %d Out, %d Ready", __MODULE_NAME__, m_PacketsIn, m_FramesOut, m_pDecodeThread->GetReadyCount());
+      CLog::Log(LOGDEBUG, "%s: Decoded Picture is Ready (%d wait). %d In, %d Out, %d Ready", __MODULE_NAME__, waitTime, m_PacketsIn, m_FramesOut, m_pDecodeThread->GetReadyCount());
       return VC_PICTURE;
     }
-    Sleep(5);
+    if (m_pDecodeThread->GetInputCount() > 4)
+      Sleep(5);
   }  
   return VC_BUFFER;
+
+  //g_InputTimer.PunchIn();
+  //BC_STATUS ret = DtsProcInput(m_Device, pData, iSize, 0/*(U64)(pts * (10000000.0 / DVD_TIME_BASE))*/, FALSE);
+  //g_InputTimer.PunchOut();
+  //if (ret != BC_STS_SUCCESS)
+  //{
+  //  CLog::Log(LOGDEBUG, "%s: DtsProcInput returned %d.", __MODULE_NAME__, ret);
+  //  return VC_ERROR;
+  //}
+  //m_PacketsIn++;
+
+  //CLog::Log(LOGDEBUG, "%s: InputTimer (%d bytes) - %llu exec / %llu interval.\t%d %llu %llu", __MODULE_NAME__, iSize, g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime(), iSize, g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime());
+  //if (g_InputTimer.GetExecTime() > 40)
+  //{
+  //  CLog::Log(LOGERROR, "%s: **INPUT PROCESSING TIME EXCEEDED FRAME DURATION**", __MODULE_NAME__);
+  //}
+  //for (unsigned int waitTime = 0; waitTime < 100; waitTime += 10)
+  //{    
+  //if (m_pDecodeThread->GetReadyCount())
+  //{
+  //  CLog::Log(LOGDEBUG, "%s: Decoded Picture is Ready. %d In, %d Out, %d Ready", __MODULE_NAME__, m_PacketsIn, m_FramesOut, m_pDecodeThread->GetReadyCount());
+  //  return VC_PICTURE;
+  //}
+  //  Sleep(5);
+  //}  
+  //return VC_BUFFER;
 }
 
 void CDVDVideoCodecCrystalHD::Reset()
