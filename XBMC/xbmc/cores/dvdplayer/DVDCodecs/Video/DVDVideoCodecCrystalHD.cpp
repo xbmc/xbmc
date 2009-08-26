@@ -152,7 +152,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     return VC_BUFFER;
 
   //CLog::Log(LOGDEBUG, "%s: Tx %d bytes to decoder.", __FUNCTION__, iSize);
-  BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pData, iSize, (BCM::U64)(pts * (100000000.0 / DVD_TIME_BASE)), FALSE);
+  BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pData, iSize, (BCM::U64)(pts * (10000000.0 / DVD_TIME_BASE)), FALSE);
   if (ret != BCM::BC_STS_SUCCESS)
   {
     CLog::Log(LOGDEBUG, "%s: DtsProcInput returned %d.", __FUNCTION__, ret);
@@ -172,13 +172,13 @@ void CDVDVideoCodecCrystalHD::Reset()
 
 bool CDVDVideoCodecCrystalHD::IsPictureReady()
 {
-  memset(&m_Output, 0, sizeof(m_Output));
-  BCM::DtsReleaseOutputBuffs(m_Device, FALSE, FALSE); // Previous output is no longer valid
+  //memset(&m_Output, 0, sizeof(m_Output));
+  //BCM::DtsReleaseOutputBuffs(m_Device, FALSE, FALSE); // Previous output is no longer valid
 
   m_Output.PoutFlags = BCM::BC_POUT_FLAGS_SIZE | BCM::BC_POUT_FLAGS_YV12;
   m_Output.PicInfo.width = m_CurrentFormat.width;
   m_Output.PicInfo.height = m_CurrentFormat.height;
-  BCM::BC_STATUS ret = DtsProcOutput(m_Device, 2000, &m_Output);  
+  BCM::BC_STATUS ret = DtsProcOutput(m_Device, m_OutputTimeout, &m_Output);  
   //BCM::BC_STATUS ret = DtsProcOutputNoCopy(m_Device, 2000, &m_Output);
   /* motd - using NoCopy gives full frame rate - should it really incur such a large penalty? */
   switch (ret)
@@ -241,7 +241,7 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (m_Output.PicInfo.timeStamp == 0)
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
   else
-    pDvdVideoPicture->pts = (double)m_Output.PicInfo.timeStamp / (100000000.0 / DVD_TIME_BASE);
+    pDvdVideoPicture->pts = (double)m_Output.PicInfo.timeStamp / (10000000.0 / DVD_TIME_BASE);
 
   pDvdVideoPicture->data[0] = m_Output.Ybuff; // Y plane
   pDvdVideoPicture->data[2] = m_Output.UVbuff; // U plane
@@ -256,7 +256,7 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   //pDvdVideoPicture->iFlags |= pDvdVideoPicture->data[0] ? 0 : DVP_FLAG_DROPPED; // use n_drop
 
   pDvdVideoPicture->iRepeatPicture = 0;
-  //pDvdVideoPicture->iDuration = 41711.111111;
+  pDvdVideoPicture->iDuration = 41711.111111;
   // pDvdVideoPicture->iFrameType
   // pDvdVideoPicture->color_matrix // colour_primaries
 
