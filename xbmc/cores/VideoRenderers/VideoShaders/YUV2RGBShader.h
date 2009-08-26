@@ -2,15 +2,32 @@
 #define __YUV2RGB_SHADERS_H__
 
 #ifdef HAS_SDL_OPENGL
+#pragma warning( push )
+#pragma warning( disable : 4250 )
 
 #include "../../../../guilib/Shader.h"
 
 namespace Shaders {
 
-  class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
+  class BaseYUV2RGBShader
+    : virtual public CShaderProgram
+  {
+  public:
+    BaseYUV2RGBShader() {};
+   ~BaseYUV2RGBShader() {};
+    virtual void SetField(int field)  {};
+    virtual void SetWidth(int width)  {};
+    virtual void SetHeight(int width) {};
+  };
+
+
+  class BaseYUV2RGBGLSLShader 
+    : public BaseYUV2RGBShader
+    , public CGLSLShaderProgram
   {
   public:
     BaseYUV2RGBGLSLShader(bool rect, unsigned flags);
+   ~BaseYUV2RGBGLSLShader() {}
     virtual void SetField(int field) { field    = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
@@ -33,10 +50,13 @@ namespace Shaders {
     GLint m_hField;
   };
 
-  class BaseYUV2RGBARBShader : public CARBShaderProgram
+  class BaseYUV2RGBARBShader 
+    : public BaseYUV2RGBShader
+    , public CARBShaderProgram
   {
   public:
     BaseYUV2RGBARBShader(unsigned flags);
+   ~BaseYUV2RGBARBShader() {}
     virtual void SetField(int field) { field    = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
@@ -85,6 +105,7 @@ namespace Shaders {
 
 } // end namespace
 
+#pragma warning( pop )
 #endif
 
 #endif //__YUV2RGB_SHADERS_H__

@@ -180,7 +180,8 @@ namespace Shaders {
   };
 
 
-  class CGLSLShaderProgram : public CShaderProgram
+  class CGLSLShaderProgram 
+    : virtual public CShaderProgram
   {
   public:
     CGLSLShaderProgram()
@@ -214,7 +215,8 @@ namespace Shaders {
   };
 
 
-  class CARBShaderProgram : public CShaderProgram
+  class CARBShaderProgram 
+    : virtual public CShaderProgram
   {
   public:
     CARBShaderProgram()

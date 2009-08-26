@@ -1657,9 +1657,9 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   VerifyGLState();
 
   if     (field == FIELD_ODD)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
+    m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
+    m_pYUVShader->SetField(0);
 
   m_pYUVShader->Enable();
 
@@ -1771,12 +1771,12 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_fbo.BeginRender();
   VerifyGLState();
 
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetWidth(im.width);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetHeight(im.height);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
+    m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
+    m_pYUVShader->SetField(0);
 
   VerifyGLState();
 
