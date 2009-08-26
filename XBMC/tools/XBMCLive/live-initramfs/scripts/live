@@ -1220,7 +1220,7 @@ setup_unionfs ()
 	# Looking for "${root_persistence}" device or file
 	if [ -n "${PERSISTENT}" ] && [ -z "${NOPERSISTENT}" ]
 	then
-		if [ -z "${QUICKUSBMODULES}" ];
+		if [ -z "${QUICKUSBMODULES}" ]
 		then
 			# Load USB modules
 			num_block=$(wordCount "ls /sys/block")
