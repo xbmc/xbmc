@@ -241,7 +241,7 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
-  CShaderProgram        *m_pYUVShader;
+  BaseYUV2RGBShader     *m_pYUVShader;
   BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
 
