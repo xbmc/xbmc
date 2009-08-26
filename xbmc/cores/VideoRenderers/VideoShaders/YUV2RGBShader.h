@@ -14,7 +14,6 @@ namespace Shaders {
     virtual void SetField(int field) { field    = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
-    virtual void SetFullRange(bool range) {m_bFullYUVRange = range; }
     string       BuildYUVMatrix();
     
   protected:
@@ -24,7 +23,6 @@ namespace Shaders {
     float m_stepX;
     float m_stepY;
     int   m_field;
-    bool  m_bFullYUVRange;
 
     // shader attribute handles
     GLint m_hYTex;
