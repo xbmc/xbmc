@@ -30,21 +30,22 @@ namespace Shaders {
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
-    string       BuildYUVMatrix();
     
   protected:
+    void OnCompiledAndLinked();
+    bool OnEnabled();
+
     unsigned m_flags;
     int   m_width;
     int   m_height;
     int   m_field;
+    string m_defines;
 
     // shader attribute handles
     GLint m_hYTex;
     GLint m_hUTex;
     GLint m_hVTex;
-    GLint m_hStepX;
-    GLint m_hStepY;
-    GLint m_hField;
+    GLint m_hMatrix;
   };
 
   class BaseYUV2RGBARBShader 
@@ -69,9 +70,6 @@ namespace Shaders {
     GLint m_hYTex;
     GLint m_hUTex;
     GLint m_hVTex;
-    GLint m_hStepX;
-    GLint m_hStepY;
-    GLint m_hField;
   };
 
   class YUV2RGBProgressiveShaderARB : public BaseYUV2RGBARBShader
@@ -86,8 +84,6 @@ namespace Shaders {
   {
   public:
     YUV2RGBProgressiveShader(bool rect=false, unsigned flags=0);
-    void OnCompiledAndLinked();
-    bool OnEnabled();
   };
 
   class YUV2RGBBobShader : public BaseYUV2RGBGLSLShader
@@ -96,6 +92,10 @@ namespace Shaders {
     YUV2RGBBobShader(bool rect=false, unsigned flags=0);
     void OnCompiledAndLinked();
     bool OnEnabled();
+
+    GLint m_hStepX;
+    GLint m_hStepY;
+    GLint m_hField;
   };
 
 } // end namespace
