@@ -33,6 +33,8 @@
 #include "XBVideoConfig.h"
 #include "Surface.h"
 #include "FrameBufferObject.h"
+#include "VideoShaders/YUV2RGBShader.h"
+#include "VideoShaders/VideoFilterShader.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"

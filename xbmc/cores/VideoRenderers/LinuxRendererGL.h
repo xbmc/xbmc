@@ -7,13 +7,13 @@
 #include "../../../guilib/Shader.h"
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
-#include "VideoShaders/YUV2RGBShader.h"
-#include "VideoShaders/VideoFilterShader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "GraphicContext.h"
 
 namespace Surface { class CSurface; }
+namespace Shaders { class BaseYUV2RGBShader; }
+namespace Shaders { class BaseVideoFilterShader; }
 
 using namespace Surface;
 using namespace Shaders;
