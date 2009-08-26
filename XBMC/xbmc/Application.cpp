@@ -37,7 +37,6 @@
 #include "GUIImage.h"
 #endif
 #include "GUIControlProfiler.h"
-#include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
 #include "utils/GUIInfoManager.h"
 #include "PlayListFactory.h"
@@ -118,9 +117,6 @@
 #endif
 #ifdef HAS_TIME_SERVER
 #include "utils/Sntp.h"
-#endif
-#ifdef HAS_XFONT
-#include <xfont.h>  // for textout functions
 #endif
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventServer.h"
@@ -592,12 +588,6 @@ HRESULT CApplication::Create(HWND hWnd)
   setenv("OS","Linux",true);
 #endif
 
-  //list available videomodes
-  g_videoConfig.GetModes();
-  
-  //init the present parameters with values that are supported
-  RESOLUTION initialResolution = g_videoConfig.GetInitialMode();
-
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.
@@ -637,7 +627,7 @@ HRESULT CApplication::Create(HWND hWnd)
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_guiSettings.m_LookAndFeelResolution = initialResolution;
+    g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
   
   int screenWidth = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
@@ -1231,7 +1221,7 @@ HRESULT CApplication::Initialize()
   }
   else
   {
-    RESOLUTION res = INVALID;
+    RESOLUTION res = RES_INVALID;
     CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
     int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
     // test for a startup window, and activate that instead of home
@@ -1933,16 +1923,16 @@ bool CApplication::LoadUserWindows(const CStdString& strSkinPath)
   WIN32_FIND_DATA NextFindFileData;
   HANDLE hFind;
   TiXmlDocument xmlDoc;
-  RESOLUTION resToUse = INVALID;
+  RESOLUTION resToUse = RES_INVALID;
 
   // Start from wherever home.xml is
   g_SkinInfo.GetSkinPath("Home.xml", &resToUse);
   std::vector<CStdString> vecSkinPath;
-  if (resToUse == HDTV_1080i)
-    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(HDTV_1080i)));
-  if (resToUse == HDTV_720p)
-    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(HDTV_720p)));
-  if (resToUse == PAL_16x9 || resToUse == NTSC_16x9 || resToUse == HDTV_480p_16x9 || resToUse == HDTV_720p || resToUse == HDTV_1080i)
+  if (resToUse == RES_HDTV_1080i)
+    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(RES_HDTV_1080i)));
+  if (resToUse == RES_HDTV_720p)
+    vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(RES_HDTV_720p)));
+  if (resToUse == RES_PAL_16x9 || resToUse == RES_NTSC_16x9 || resToUse == RES_HDTV_480p_16x9 || resToUse == RES_HDTV_720p || resToUse == RES_HDTV_1080i)
     vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultWideResolution())));
   vecSkinPath.push_back(CUtil::AddFileToFolder(strSkinPath, g_SkinInfo.GetDirFromRes(g_SkinInfo.GetDefaultResolution())));
   for (unsigned int i = 0;i < vecSkinPath.size();++i)
@@ -2039,7 +2029,8 @@ void CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
-  int vsync_mode = g_videoConfig.GetVSyncMode();
+  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
+  
   // dont show GUI when playing full screen video
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && !IsPaused())
   {
@@ -2251,8 +2242,8 @@ void CApplication::Render()
     {
       // engage the frame limiter as needed
       bool limitFrames = lowfps;
-      if (g_videoConfig.GetVSyncMode() == VSYNC_DISABLED ||
-          g_videoConfig.GetVSyncMode() == VSYNC_VIDEO)
+      if (g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_DISABLED ||
+          g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_VIDEO)
         limitFrames = true; // not using vsync.
       else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
         limitFrames = true; // using vsync, but it isn't working.

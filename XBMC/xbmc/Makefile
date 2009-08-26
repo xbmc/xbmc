@@ -107,7 +107,6 @@ SRCS=Application.cpp \
      URL.cpp \
      VideoInfoTag.cpp \
      XBAudioConfig.cpp \
-     XBVideoConfig.cpp \
      Database.cpp \
      MusicDatabase.cpp \
      ProgramDatabase.cpp \

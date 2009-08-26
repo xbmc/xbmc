@@ -42,8 +42,6 @@ bool CWinSystemBase::InitWindowSystem()
 {
   UpdateResolutions();
 
-  m_bWindowCreated = true;
-
   return true;
 }
 
@@ -58,6 +56,8 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   newRes.iSubtitles = (int)(0.965 * height);
   newRes.fRefreshRate = refreshRate;
   newRes.fPixelRatio = 1.0f;  
+  newRes.iWidth = width;
+  newRes.iHeight = height;
   
   bool stdRes = false;
   if (width == 1280 && height == 720)
@@ -92,23 +92,23 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
       strcat(newRes.strMode, "p");
     }
       
-    sprintf(newRes.strMode, "%s%2.f",  newRes.strMode, refreshRate);
+    sprintf(newRes.strMode, "%s%2.f (Full Screen)",  newRes.strMode, refreshRate);
   }  
   else
   {
-    sprintf(newRes.strMode, "%dx%d", width, height);
+    sprintf(newRes.strMode, "%dx%d @ %.2f (Full Screen)", width, height, refreshRate);
   }
   
   if (screen > 0)
   {
-    sprintf(newRes.strMode, "%s (Screen #%d)", newRes.strMode, screen + 1);    
+    sprintf(newRes.strMode, "@ %s (Full Screen #%d)", newRes.strMode, screen + 1);    
   }  
 }
 
 void CWinSystemBase::UpdateResolutions()
 {
   // Set the resolution info for a window
-  RESOLUTION_INFO& window = g_settings.m_ResInfo[WINDOW];
+  RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
   window.iSubtitles = (int)(0.965 * 720);
   window.iWidth = 1280;
   window.iHeight = 720;

@@ -30,7 +30,6 @@
 #include "Application.h"
 #include "MathUtils.h"
 #include "Settings.h"
-#include "XBVideoConfig.h"
 #include "guilib/FrameBufferObject.h"
 #include "WindowingFactory.h"
 
@@ -87,7 +86,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
-  m_iResolution = PAL_4x3;
+  m_iResolution = RES_PAL_4x3;
   for (int i = 0; i < NUM_BUFFERS; i++)
     m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
 
@@ -304,7 +303,7 @@ void CLinuxRendererGL::ManageDisplay()
 void CLinuxRendererGL::ChooseBestResolution(float fps)
 {
   RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
-  if ( DisplayRes == AUTORES )
+  if ( DisplayRes == RES_AUTORES )
     m_iResolution = g_graphicsContext.GetVideoResolution();
   else
     m_iResolution = DisplayRes;
@@ -338,7 +337,7 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
   }
   else
 #endif
-    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", DisplayRes == AUTORES ? "AUTO" : "USER", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", DisplayRes == RES_AUTORES ? "AUTO" : "USER", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
 }
 
 bool CLinuxRendererGL::ValidateRenderTarget()
@@ -1031,7 +1030,7 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
-  m_iResolution = PAL_4x3;
+  m_iResolution = RES_PAL_4x3;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
@@ -1397,7 +1396,7 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
   { // stretch image to 4:3 ratio
     g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
+    if (m_iResolution == RES_PAL_4x3 || m_iResolution == RES_PAL60_4x3 || m_iResolution == RES_NTSC_4x3 || m_iResolution == RES_HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
       g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
@@ -1430,7 +1429,7 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
   { // stretch image to 16:9 ratio
     g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
+    if (m_iResolution == RES_PAL_4x3 || m_iResolution == RES_PAL60_4x3 || m_iResolution == RES_NTSC_4x3 || m_iResolution == RES_HDTV_480p_4x3)
     { // now we need to set g_stSettings.m_fPixelRatio so that
       // fOutputFrameRatio = 16:9.
       g_stSettings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;

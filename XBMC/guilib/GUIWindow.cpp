@@ -78,7 +78,7 @@ bool CGUIWindow::Load(const CStdString& strFileName, bool bContainsPath)
   LARGE_INTEGER start;
   QueryPerformanceCounter(&start);
 
-  RESOLUTION resToUse = INVALID;
+  RESOLUTION resToUse = RES_INVALID;
   CLog::Log(LOGINFO, "Loading skin file: %s", strFileName.c_str());
   TiXmlDocument xmlDoc;
   // Find appropriate skin folder + resolution to load from

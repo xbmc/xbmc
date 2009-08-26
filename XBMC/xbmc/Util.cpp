@@ -85,7 +85,6 @@
 #include "lib/libscrobbler/scrobbler.h"
 #include "LastFmManager.h"
 #include "MusicInfoLoader.h"
-#include "XBVideoConfig.h"
 #include "DirectXGraphics.h"
 #ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
@@ -2504,14 +2503,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("resolution"))
   {
-    RESOLUTION res = PAL_4x3;
-    if (parameter.Equals("pal")) res = PAL_4x3;
-    else if (parameter.Equals("pal16x9")) res = PAL_16x9;
-    else if (parameter.Equals("ntsc")) res = NTSC_4x3;
-    else if (parameter.Equals("ntsc16x9")) res = NTSC_16x9;
-    else if (parameter.Equals("720p")) res = HDTV_720p;
-    else if (parameter.Equals("1080i")) res = HDTV_1080i;
-    if (g_videoConfig.IsValidResolution(res))
+    RESOLUTION res = RES_PAL_4x3;
+    if (parameter.Equals("pal")) res = RES_PAL_4x3;
+    else if (parameter.Equals("pal16x9")) res = RES_PAL_16x9;
+    else if (parameter.Equals("ntsc")) res = RES_NTSC_4x3;
+    else if (parameter.Equals("ntsc16x9")) res = RES_NTSC_16x9;
+    else if (parameter.Equals("720p")) res = RES_HDTV_720p;
+    else if (parameter.Equals("1080i")) res = RES_HDTV_1080i;
+    if (g_graphicsContext.IsValidResolution(res))
     {
       g_guiSettings.SetInt("videoscreen.resolution", res);
       //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution

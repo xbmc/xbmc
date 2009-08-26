@@ -37,7 +37,7 @@ GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
 {
-  m_skinResolution=INVALID;
+  m_skinResolution=RES_INVALID;
   m_fontsetUnicode=false;
 }
 
@@ -55,7 +55,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (pFont)
     return pFont;
 
-  if (sourceRes == INVALID) // no source res specified, so assume the skin res
+  if (sourceRes == RES_INVALID) // no source res specified, so assume the skin res
     sourceRes = m_skinResolution;
 
 
@@ -65,7 +65,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   g_graphicsContext.SetScalingResolution(sourceRes, 0, 0, true);
 
   // adjust aspect ratio
-  if (sourceRes == PAL_16x9 || sourceRes == PAL60_16x9 || sourceRes == NTSC_16x9 || sourceRes == HDTV_480p_16x9)
+  if (sourceRes == RES_PAL_16x9 || sourceRes == RES_PAL60_16x9 || sourceRes == RES_NTSC_16x9 || sourceRes == RES_HDTV_480p_16x9)
     aspect *= 0.75f;
 
   aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
@@ -150,7 +150,7 @@ void GUIFontManager::ReloadTTFFonts(void)
     CStdString& strPath = fontInfo.fontFilePath;
     CStdString& strFilename = fontInfo.fileName;
 
-    if (m_skinResolution == PAL_16x9 || m_skinResolution == PAL60_16x9 || m_skinResolution == NTSC_16x9 || m_skinResolution == HDTV_480p_16x9)
+    if (m_skinResolution == RES_PAL_16x9 || m_skinResolution == RES_PAL60_16x9 || m_skinResolution == RES_NTSC_16x9 || m_skinResolution == RES_HDTV_480p_16x9)
       aspect *= 0.75f;
 
     aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();

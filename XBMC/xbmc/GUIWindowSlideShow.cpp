@@ -33,6 +33,7 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "WindowingFactory.h"
 
 using namespace DIRECTORY;
 
@@ -99,9 +100,9 @@ void CBackgroundPicLoader::Process()
           if ((iSize + (int)pic.GetWidth() > 0) || (iSize + (int)pic.GetHeight() > 0))
             bFullSize = true;
 #ifdef HAS_GL
-          if (!bFullSize && (int)pic.GetWidth() == g_graphicsContext.GetMaxTextureSize())
+          if (!bFullSize && (int)pic.GetWidth() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
-          if (!bFullSize && (int)pic.GetHeight() == g_graphicsContext.GetMaxTextureSize())
+          if (!bFullSize && (int)pic.GetHeight() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
 #endif
         }
@@ -130,7 +131,7 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
 {
   m_pBackgroundLoader = NULL;
   m_slides = new CFileItemList;
-  m_Resolution = INVALID;
+  m_Resolution = RES_INVALID;
   Reset();
 }
 
@@ -846,11 +847,11 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   }
   maxWidth = (int)width;
   maxHeight = (int)height;
-  if (maxWidth > g_graphicsContext.GetMaxTextureSize()) maxWidth = g_graphicsContext.GetMaxTextureSize();
-  if (maxHeight > g_graphicsContext.GetMaxTextureSize()) maxHeight = g_graphicsContext.GetMaxTextureSize();
+  if (maxWidth > g_Windowing.GetMaxTextureSize()) maxWidth = g_graphicsContext.GetMaxTextureSize();
+  if (maxHeight > g_Windowing.GetMaxTextureSize()) maxHeight = g_graphicsContext.GetMaxTextureSize();
 #elif defined(HAS_GL)
-  maxWidth = g_graphicsContext.GetMaxTextureSize();
-  maxHeight = g_graphicsContext.GetMaxTextureSize();
+  maxWidth = g_Windowing.GetMaxTextureSize();
+  maxHeight = g_Windowing.GetMaxTextureSize();
 #endif
 }
 

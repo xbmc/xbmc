@@ -107,7 +107,7 @@ public:
     if (m_pRenderer)
       return m_pRenderer->GetResolution();
     else
-      return INVALID;
+      return RES_INVALID;
   }
 
   float GetMaximumFPS();

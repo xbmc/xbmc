@@ -27,7 +27,6 @@
 #include "LinuxRenderer.h"
 #include "../../Application.h"
 #include "../../Util.h"
-#include "../../XBVideoConfig.h"
 #include "TextureManager.h"
 
 #ifdef HAS_DX

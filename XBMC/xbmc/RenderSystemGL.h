@@ -63,7 +63,7 @@ public:
   virtual void RestoreHardwareTransform();
   
   virtual bool TestRender();
-
+  
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl() = 0;
@@ -80,9 +80,7 @@ protected:
   CStdString m_RenderVendor;
   int        m_RenderVerdenVersionMinor;
   int        m_RenderVerdenVersionMajor;
-  bool       m_NeedPower2Texture;
-  
-  int        m_maxTextureSize;
+  bool       m_NeedPower2Texture;  
 };
 
 #endif // RENDER_SYSTEM_H

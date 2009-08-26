@@ -23,10 +23,6 @@
 #include "GUISettings.h"
 #include "GUIDialogFileBrowser.h"
 #include "XBAudioConfig.h"
-#include "XBVideoConfig.h"
-#ifdef HAS_XFONT
-#include <xfont.h>
-#endif
 #include "MediaManager.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
@@ -203,7 +199,7 @@ void CGUISettings::Initialize()
   AddBool(7, "pictures.usetags", 258, true);
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddInt(0, "pictures.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddInt(0, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
   AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -449,7 +445,7 @@ void CGUISettings::Initialize()
 #endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  AddInt(0, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
@@ -637,8 +633,7 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(7, "videoscreen", 131);
-  int DefaultResolution = g_application.IsStandAlone() ? (int)DESKTOP : (int)AUTORES;
-  AddInt(1, "videoscreen.resolution",169, DefaultResolution, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
+  AddInt(1, "videoscreen.resolution",169, (int)RES_DESKTOP, (int)RES_WINDOW, 1, (int)RES_CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
 
 #ifdef __APPLE__
@@ -1027,16 +1022,14 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
   }
 #endif
-  g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
-  g_videoConfig.PrintInfo();
   if (
-    (g_guiSettings.m_LookAndFeelResolution == AUTORES) ||
+    (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES) ||
     (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   )
   {
-    RESOLUTION newRes = g_videoConfig.GetSafeMode();
-    if (g_guiSettings.m_LookAndFeelResolution == AUTORES)
+    RESOLUTION newRes = RES_DESKTOP;
+    if (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES)
     {
       //"videoscreen.resolution" will stay at AUTORES, m_LookAndFeelResolution will be the real mode
       CLog::Log(LOGNOTICE, "Setting autoresolution mode %i", newRes);

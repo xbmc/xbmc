@@ -55,6 +55,7 @@
 class IMsgSenderCallback;
 class CGUIMessage;
 
+#define MAX_RESOLUTIONS 128
 
 #include "MouseStat.h"
 
@@ -103,7 +104,6 @@ public:
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
-  void GetAllowedResolutions(std::vector<RESOLUTION> &res, bool bAllowPAL60 = false);
   bool IsValidResolution(RESOLUTION res);
   void SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE, bool forceClear = false);
   RESOLUTION GetVideoResolution() const;
@@ -116,6 +116,7 @@ public:
   void CaptureStateBlock();
   void ApplyStateBlock();
   void Clear();
+  void GetAllowedResolutions(vector<RESOLUTION> &res);
 
   // output scaling
   void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
@@ -175,7 +176,6 @@ public:
       UpdateFinalTransform(TransformMatrix());
   }
 
-  int GetMaxTextureSize() const { return m_maxTextureSize; };
 protected:
   IMsgSenderCallback* m_pCallback;
 #ifdef HAS_GL
@@ -184,6 +184,7 @@ protected:
 
   int m_iScreenHeight;
   int m_iScreenWidth;
+  int m_iScreenId;
   int m_iFullScreenHeight;
   int m_iFullScreenWidth;
   int m_iBackBufferCount;
@@ -209,11 +210,6 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
-#ifdef HAS_GL
-  GLint m_maxTextureSize;
-#else
-  int   m_maxTextureSize;
-#endif
 };
 
 /*!

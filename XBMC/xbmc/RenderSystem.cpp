@@ -27,6 +27,7 @@ CRenderSystemBase::CRenderSystemBase()
 {
   m_bRenderCreated = false;
   m_bVSync = true;
+  m_maxTextureSize = 2048;
 }
 
 CRenderSystemBase::~CRenderSystemBase()

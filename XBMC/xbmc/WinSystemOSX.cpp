@@ -100,7 +100,9 @@ bool CWinSystemOSX::CreateNewWindow(CStdString name, int width, int height, bool
    */
   
   SDL_WM_SetCaption("XBMC Media Center", NULL);
-  
+    
+  m_bWindowCreated = true;
+
   return true;
 }
 
@@ -133,11 +135,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, int screen, int width, int he
   return true;
 }
 
-bool CWinSystemOSX::Resize()
-{
-  return true;
-}
-
 void CWinSystemOSX::UpdateResolutions()
 {
   CWinSystemBase::UpdateResolutions();
@@ -145,7 +142,7 @@ void CWinSystemOSX::UpdateResolutions()
   // Add desktop resolution
   int w, h;
   Cocoa_GetScreenResolution(&w, &h);
-  UpdateDesktopResolution(g_settings.m_ResInfo[DESKTOP], 0, w, h, Cocoa_GetScreenRefreshRate(0));
+  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, Cocoa_GetScreenRefreshRate(0));
   
   // Add full screen settings for additional monitors
   int numDisplays = Cocoa_GetNumDisplays();
@@ -162,10 +159,5 @@ void CWinSystemOSX::UpdateResolutions()
      g_settings.m_ResInfo.push_back(res);
   }  
 }
-
-void CWinSystemOSX::GetDesktopRes(RESOLUTION_INFO& desktopRes)
-{
-}
-
 
 #endif

@@ -41,7 +41,6 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE enum
 #include "MediaManager.h"
-#include "XBVideoConfig.h"
 #include "DNSNameCache.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
@@ -76,24 +75,19 @@ void CSettings::Initialize()
   vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
 
   memset(&res,0,sizeof(res));
-  m_ResInfo.insert(it,CUSTOM,res);
+  m_ResInfo.insert(it, RES_CUSTOM, res);
 
-  for (int i = HDTV_1080i; i <= PAL60_16x9; i++)
+  for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
     g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
     g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
   }
 
-  for (int i = DESKTOP ; i<CUSTOM ; i++)
+  for (int i = RES_DESKTOP ; i < RES_CUSTOM ; i++)
   {
     ZeroMemory(&m_ResInfo[i], sizeof(RESOLUTION));
-    g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
-    g_graphicsContext.ResetOverscan(m_ResInfo[i]);
   }
-
-  g_graphicsContext.ResetScreenParameters(WINDOW);
-  g_graphicsContext.ResetOverscan(m_ResInfo[WINDOW]);
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
@@ -819,7 +813,7 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     // get the data for this resolution
     int iRes;
     CStdString mode;
-    GetInteger(pResolution, "id", iRes, (int)PAL_4x3, HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
+    GetInteger(pResolution, "id", iRes, (int)RES_PAL_4x3, RES_HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
     // FIXME: Workaround to prevent crash if calibration section contains more items than m_ResInfo
     if((size_t)iRes >= g_settings.m_ResInfo.size())
     {
@@ -828,19 +822,17 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     }
     ////
     GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
-#ifdef HAS_GL
-    if(iRes == DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
+    if(iRes == RES_DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
     {
       CLog::Log(LOGDEBUG, "%s - Ignoring desktop resolution \"%s\" that differs from current \"%s\"", __FUNCTION__, mode.c_str(), m_ResInfo[iRes].strMode);
 
       pResolution = pResolution->NextSiblingElement("resolution");
       continue;
     }
-#endif
 
     // get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
     float fSafe;
-    if (iRes == PAL_4x3 || iRes == NTSC_4x3 || iRes == PAL60_4x3 || iRes == HDTV_480p_4x3)
+    if (iRes == RES_PAL_4x3 || iRes == RES_NTSC_4x3 || iRes == RES_PAL60_4x3 || iRes == RES_HDTV_480p_4x3)
       fSafe = 0.1f;
     else
       fSafe = 0.035f;
@@ -906,7 +898,7 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
   }
 
   // save WINDOW, DESKTOP and CUSTOM resolution
-  for (int i = (int)WINDOW ; i<(CUSTOM+g_videoConfig.GetNumberOfResolutions()) ; i++)
+  for (size_t i = RES_WINDOW ; i < m_ResInfo.size() ; i++)
   {
     // Write the resolution tag
     TiXmlElement resElement("resolution");
@@ -1850,7 +1842,7 @@ bool CSettings::LoadProfile(int index)
   CStdString strOldFont = g_guiSettings.GetString("lookandfeel.font");
   CStdString strOldTheme = g_guiSettings.GetString("lookandfeel.skintheme");
   CStdString strOldColors = g_guiSettings.GetString("lookandfeel.skincolors");
-  //int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
+  int iOldRes = g_guiSettings.GetInt("videoscreen.resolution");
   if (Load(bSourcesXML,bSourcesXML))
   {
     g_settings.CreateProfileFolders();

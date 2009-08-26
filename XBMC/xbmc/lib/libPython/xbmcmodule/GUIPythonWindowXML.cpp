@@ -49,7 +49,7 @@ CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdStri
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
-  m_coordsRes = PAL_4x3;
+  m_coordsRes = RES_PAL_4x3;
   m_scriptPath = strFallBackPath;
 }
 

@@ -75,12 +75,15 @@ public:
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix) = 0;
   virtual void RestoreHardwareTransform() = 0;
     
+  int  GetMaxTextureSize() { return m_maxTextureSize; }
+  
   virtual bool TestRender() = 0;
 
 protected:
-  bool m_bRenderCreated;
+  bool                m_bRenderCreated;
   RenderingSystemType m_enumRenderingSystem;
-  bool m_bVSync;
+  bool                m_bVSync;
+  int                 m_maxTextureSize;
 };
 
 #endif // RENDER_SYSTEM_H

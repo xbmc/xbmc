@@ -33,21 +33,21 @@
 using namespace std;
 
 enum RESOLUTION {
-  INVALID = -1,
-  HDTV_1080i = 0,
-  HDTV_720p = 1,
-  HDTV_480p_4x3 = 2,
-  HDTV_480p_16x9 = 3,
-  NTSC_4x3 = 4,
-  NTSC_16x9 = 5,
-  PAL_4x3 = 6,
-  PAL_16x9 = 7,
-  PAL60_4x3 = 8,
-  PAL60_16x9 = 9,
-  AUTORES = 10,
-  WINDOW = 11,
-  DESKTOP = 12,
-  CUSTOM = 13
+  RES_INVALID = -1,
+  RES_HDTV_1080i = 0,
+  RES_HDTV_720p = 1,
+  RES_HDTV_480p_4x3 = 2,
+  RES_HDTV_480p_16x9 = 3,
+  RES_NTSC_4x3 = 4,
+  RES_NTSC_16x9 = 5,
+  RES_PAL_4x3 = 6,
+  RES_PAL_16x9 = 7,
+  RES_PAL60_4x3 = 8,
+  RES_PAL60_16x9 = 9,
+  RES_AUTORES = 10,
+  RES_WINDOW = 11,
+  RES_DESKTOP = 12,
+  RES_CUSTOM = 13
 };
 
 enum VSYNC {

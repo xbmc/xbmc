@@ -46,10 +46,7 @@ public:
   virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop);
   virtual void UpdateResolutions();
 
-protected:
-  void GetDesktopRes(RESOLUTION_INFO& desktopRes);
-  virtual bool Resize();
-  
+protected:  
   void* m_glContext;
   SDL_Surface* m_SDLSurface;
 };

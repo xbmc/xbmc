@@ -120,7 +120,7 @@ namespace PYXBMC
 
       skinInfo.Load(basePath);
       // if no skin.xml file exists default to PAL_4x3 and PAL_16x9
-      if (skinInfo.GetDefaultResolution() == INVALID)
+      if (skinInfo.GetDefaultResolution() == RES_INVALID)
         skinInfo.SetDefaults();
       strSkinPath = skinInfo.GetSkinPath(strXMLname, &res, basePath);
 

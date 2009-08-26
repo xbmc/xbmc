@@ -884,7 +884,7 @@ namespace PYXBMC
     long res;
     if (!PyArg_ParseTuple(args, (char*)"l", &res)) return NULL;
 
-    if (res < HDTV_1080i || res > AUTORES)
+    if (res < RES_HDTV_1080i || res > RES_AUTORES)
     {
       PyErr_SetString(PyExc_RuntimeError, "Invalid resolution.");
       return NULL;
