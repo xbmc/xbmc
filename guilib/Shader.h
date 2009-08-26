@@ -43,6 +43,7 @@ namespace Shaders {
     virtual void Free() = 0;
     virtual GLuint Handle() = 0;
     virtual void SetSource(const string& src) { m_source = src; }
+    virtual bool LoadSource(const string& filename, const string& prefix = "");
     bool OK() { return m_compiled; }
 
   protected:
@@ -187,6 +188,14 @@ namespace Shaders {
         m_pFP = new CGLSLPixelShader();
         m_pVP = new CGLSLVertexShader();
       }
+    CGLSLShaderProgram(const std::string vert
+                     , const std::string frag)
+      {
+        m_pFP = new CGLSLPixelShader();
+        m_pFP->LoadSource(vert);
+        m_pVP = new CGLSLVertexShader();
+        m_pVP->LoadSource(vert);
+      }
 
     // enable the shader
     virtual bool Enable();
@@ -212,6 +221,14 @@ namespace Shaders {
       {
         m_pFP = new CARBPixelShader();
         m_pVP = new CARBVertexShader();
+      }
+    CARBShaderProgram(const std::string vert
+                    , const std::string frag)
+      {
+        m_pFP = new CARBPixelShader();
+        m_pFP->LoadSource(vert);
+        m_pVP = new CARBVertexShader();
+        m_pVP->LoadSource(vert);
       }
 
     // enable the shader
