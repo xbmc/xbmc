@@ -125,7 +125,7 @@ public:
   /* Live stream handling */
   bool OpenLiveStream(unsigned int channel, bool radio = false);
   void CloseLiveStream();
-  void PauseLiveStream(bool OnOff);
+  bool PauseLiveStream(bool DoPause, double dTime);
   int ReadLiveStream(BYTE* buf, int buf_size);
   __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
   int GetCurrentChannel(bool radio = false);
@@ -200,9 +200,13 @@ private:
   DWORD               m_LastChannelChanged;
   int                 m_LastChannel;
   
-  XFILE::CFile       *m_pTimeshiftFile;
-  CPVRTimeshiftRcvr  *m_TimeshiftReceiver;
-  bool                m_timeshift;
-  __int64             m_timeshiftDelta;
-  __int64             m_timeshiftReaded;
+  /*--- Timeshift data ---*/
+  bool                m_timeshift;          /* True if Timeshift is possible and active */
+  bool                m_bPaused;            /* True if stream is paused */
+  XFILE::CFile       *m_pTimeshiftFile;     /* File class to read buffer file */
+  CPVRTimeshiftRcvr  *m_TimeshiftReceiver;  /* The Thread based Receiver to fill buffer file */
+  DWORD               m_timeshiftTimePause; /* Time in ms where the stream was paused */
+  int                 m_timeshiftTimeDiff;  /* Difference between current position and true position in sec. */
+  __int64             m_timeshiftDelta;     /* Difference between current position and true position in bytes */
+  __int64             m_timeshiftReaded;    /* Continues bytes readed for this channel */
 };

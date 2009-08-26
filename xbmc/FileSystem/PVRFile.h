@@ -32,6 +32,7 @@ namespace XFILE {
 class CPVRFile
   : public  IFile
   ,         ILiveTVInterface
+  ,         ITimeshiftTV
   ,         IRecordable
 {
 public:
@@ -65,6 +66,10 @@ public:
   virtual bool           CanRecord();
   virtual bool           IsRecording();
   virtual bool           Record(bool bOnOff);
+  
+  virtual ITimeshiftTV* GetTimeshiftTV() {return (ITimeshiftTV*)this;}
+
+  virtual bool           SendPause(bool DoPause, double dTime);
 
   static CStdString      TranslatePVRFilename(const CStdString& pathFile);
 

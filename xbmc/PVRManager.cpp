@@ -934,7 +934,9 @@ bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
   }
 
   SetCurrentPlayingProgram(*m_currentPlayingChannel);
-
+  m_bPaused           = false;
+  m_timeshiftTimeDiff = 0;
+      
   /* Start Timeshift buffering */
   if (g_guiSettings.GetBool("pvrrecord.timeshift"))
   {
@@ -964,10 +966,7 @@ void CPVRManager::CloseLiveStream()
 
   EnterCriticalSection(&m_critSection);
 
-  m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->CloseLiveStream();
-  delete m_currentPlayingChannel;
-  m_currentPlayingChannel = NULL;
-
+  /* Stop the Timeshift receiving if active */
   if (m_timeshift)
   {
     m_pTimeshiftFile->Close();
@@ -978,20 +977,32 @@ void CPVRManager::CloseLiveStream()
     m_timeshift         = false;
   }
 
+  /* Close the Client connection */
+  m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->CloseLiveStream();
+  delete m_currentPlayingChannel;
+  m_currentPlayingChannel = NULL;
+
   LeaveCriticalSection(&m_critSection);
   return;
 }
 
-void CPVRManager::PauseLiveStream(bool OnOff)
+bool CPVRManager::PauseLiveStream(bool DoPause, double dTime)
 {
-
+  /* Save the XBMC runtime if Pause is pressed to calculate
+     difference between shifted and true position */
+  if (DoPause)
+    m_timeshiftTimePause = timeGetTime() - m_timeshiftTimeDiff*1000;
+  m_bPaused = DoPause;
 }
 
 int CPVRManager::ReadLiveStream(BYTE* buf, int buf_size)
 {
+  /* Check for a open channel indicated by the m_currentPlayingChannel pointer */
   if (!m_currentPlayingChannel)
     return 0;
 
+  /* Check stream for available video or audio data, if after the scantime no stream
+     is present playback is canceled and returns to the window */
   if (m_scanStart)
   {
     if (timeGetTime() - m_scanStart > g_guiSettings.GetInt("pvrplayback.scantime")*1000)
@@ -999,6 +1010,8 @@ int CPVRManager::ReadLiveStream(BYTE* buf, int buf_size)
     else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
       m_scanStart = NULL;
   }
+  
+  /* Process Timeshift based stream reading from buffer file */
   if (m_timeshift)
   {
     if (!m_pTimeshiftFile) return -1;
@@ -1016,7 +1029,7 @@ int CPVRManager::ReadLiveStream(BYTE* buf, int buf_size)
       Sleep(5);
     }
     
-    /* Reduce buffer size to prevent partly read behinde range */
+    /* Reduce buffer size to prevent partly read behind range */
     int tmp = m_TimeshiftReceiver->GetMaxSize() - m_pTimeshiftFile->GetPosition();
     if (tmp > 0 && tmp < buf_size)
       buf_size = tmp;
@@ -1046,6 +1059,7 @@ REPEAT_READ:
     m_timeshiftReaded += ret;
     return ret;
   }
+  /* Read stream directly from client without a buffer file */
   else
   {
     return m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->ReadLiveStream(buf, buf_size);
@@ -1089,6 +1103,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 
   EnterCriticalSection(&m_critSection);
 
+  /* If Timeshift is active reset all relevant data and stop the receiver */
   if (m_timeshift)
   {
     m_timeshiftDelta  = 0;
@@ -1096,18 +1111,25 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
     m_TimeshiftReceiver->StopReceiver();
     m_pTimeshiftFile->Seek(0);
   }
+  m_bPaused           = false;
+  m_timeshiftTimeDiff = 0;
+
+  /* Perform Channelswitch */
   if (!m_clients[channels->at(iChannel-1).ClientID()]->SwitchChannel(channels->at(iChannel-1).ClientNumber()))
   {
     CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
     LeaveCriticalSection(&m_critSection);
     return false;
   }
+  
+  /* Start the Timeshift receiver again if active */
   if (m_timeshift)
   {
     m_TimeshiftReceiver->SetClient(m_clients[channels->at(iChannel-1).ClientID()]);
     m_TimeshiftReceiver->StartReceiver();
   }
 
+  /* Update the Playing channel data and the current epg data */
   delete m_currentPlayingChannel;
   m_currentPlayingChannel = new CFileItem(channels->at(iChannel-1));
   m_scanStart = timeGetTime();
@@ -1140,6 +1162,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
       if ((m_CurrentGroupID != -1) && (m_CurrentGroupID != channels->at(currentTVChannel-1).GroupID()))
         continue;
 
+      /* If Timeshift is active reset all relevant data and stop the receiver */
       if (m_timeshift)
       {
         m_timeshiftDelta  = 0;
@@ -1147,12 +1170,19 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
         m_TimeshiftReceiver->StopReceiver();
         m_pTimeshiftFile->Seek(0);
       }
+      m_bPaused           = false;
+      m_timeshiftTimeDiff = 0;
+
+      /* Perform Channelswitch */
       if (m_clients[channels->at(currentTVChannel-1).ClientID()]->SwitchChannel(channels->at(currentTVChannel-1).ClientNumber()))
       {
+        /* Update the Playing channel data and the current epg data */
         m_scanStart = timeGetTime();
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(channels->at(currentTVChannel-1));
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
+
+        /* Start the Timeshift receiver again if active */
         if (m_timeshift)
         {
           m_TimeshiftReceiver->SetClient(m_clients[channels->at(currentTVChannel-1).ClientID()]);
@@ -1192,6 +1222,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
       if ((m_CurrentGroupID != -1) && (m_CurrentGroupID != channels->at(currentTVChannel-1).GroupID()))
         continue;
 
+      /* If Timeshift is active reset all relevant data and stop the receiver */
       if (m_timeshift)
       {
         m_timeshiftDelta  = 0;
@@ -1199,12 +1230,19 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
         m_TimeshiftReceiver->StopReceiver();
         m_pTimeshiftFile->Seek(0);
       }
+      m_bPaused           = false;
+      m_timeshiftTimeDiff = 0;
+
+      /* Perform Channelswitch */
       if (m_clients[channels->at(currentTVChannel-1).ClientID()]->SwitchChannel(channels->at(currentTVChannel-1).ClientNumber()))
       {
+        /* Update the Playing channel data and the current epg data */
         m_scanStart = timeGetTime();
         delete m_currentPlayingChannel;
         m_currentPlayingChannel = new CFileItem(channels->at(currentTVChannel-1));
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
+
+        /* Start the Timeshift receiver again if active */
         if (m_timeshift)
         {
           m_TimeshiftReceiver->SetClient(m_clients[channels->at(currentTVChannel-1).ClientID()]);
@@ -1226,39 +1264,36 @@ int CPVRManager::GetTotalTime()
   if (!m_currentPlayingChannel)
     return 0;
 
-  cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
-  if (!tag)
-    return 0;
-
-  return tag->GetDuration() * 1000;
+  return m_currentPlayingChannel->GetTVChannelInfoTag()->GetDuration() * 1000;
 }
 
 int CPVRManager::GetStartTime()
 {
-  if (m_currentPlayingChannel)
+  if (!m_currentPlayingChannel)
+    return 0;
+
+  cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
+  if (tag->EndTime() < CDateTime::GetCurrentDateTime())
   {
-    cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
-    if (!tag)
-      return 0;
+    SetCurrentPlayingProgram(*m_currentPlayingChannel);
 
-    if (tag->EndTime() < CDateTime::GetCurrentDateTime())
+    if (UpdateItem(*m_currentPlayingChannel))
     {
-      SetCurrentPlayingProgram(*m_currentPlayingChannel);
-
-      if (UpdateItem(*m_currentPlayingChannel))
-      {
-        g_application.CurrentFileItem() = *m_currentPlayingChannel;
-        g_infoManager.SetCurrentItem(*m_currentPlayingChannel);
-      }
+      g_application.CurrentFileItem() = *m_currentPlayingChannel;
+      g_infoManager.SetCurrentItem(*m_currentPlayingChannel);
     }
-
-    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->StartTime();
-    return time.GetDays()    * 1000 * 60 * 60 * 24
-         + time.GetHours()   * 1000 * 60 * 60
-         + time.GetMinutes() * 1000 * 60
-         + time.GetSeconds() * 1000;
   }
-  return 0;
+  
+  /* Correct EPG Time with difference to paused Timeshift stream */
+  if (m_timeshift && m_bPaused)
+    m_timeshiftTimeDiff = (timeGetTime() - m_timeshiftTimePause) / 1000;
+  
+  CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->StartTime();
+  return time.GetDays()    * 1000 * 60 * 60 * 24
+       + time.GetHours()   * 1000 * 60 * 60
+       + time.GetMinutes() * 1000 * 60
+       + time.GetSeconds() * 1000
+       - m_timeshiftTimeDiff * 1000;
 }
 
 bool CPVRManager::UpdateItem(CFileItem& item)

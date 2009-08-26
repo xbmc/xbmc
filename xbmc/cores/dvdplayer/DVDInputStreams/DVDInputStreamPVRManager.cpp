@@ -37,8 +37,10 @@ CDVDInputStreamPVRManager::CDVDInputStreamPVRManager(IDVDPlayer* pPlayer) : CDVD
   m_pFile           = NULL;
   m_pRecordable     = NULL;
   m_pLiveTV         = NULL;
+  m_pTimeshift      = NULL;
   m_pOtherStream    = NULL;
   m_eof             = true;
+  m_bPaused         = false;
 }
 
 /************************************************************************
@@ -65,6 +67,7 @@ bool CDVDInputStreamPVRManager::Open(const char* strFile, const std::string& con
   m_pFile       = new CPVRFile();
   m_pLiveTV     = ((CPVRFile*)m_pFile)->GetLiveTV();
   m_pRecordable = ((CPVRFile*)m_pFile)->GetRecordable();
+  m_pTimeshift  = ((CPVRFile*)m_pFile)->GetTimeshiftTV();
 
   /*
    * Translate the "pvr://....." entry.
@@ -128,6 +131,7 @@ void CDVDInputStreamPVRManager::Close()
   m_pFile           = NULL;
   m_pLiveTV         = NULL;
   m_pRecordable     = NULL;
+  m_pTimeshift      = NULL;
   m_pOtherStream    = NULL;
   m_eof             = true;
 }
@@ -161,6 +165,7 @@ __int64 CDVDInputStreamPVRManager::Seek(__int64 offset, int whence)
   }
   else
   {
+    fprintf(stderr, "Seek >>>>>>>>>> %i %i\n", offset, whence);
     __int64 ret = m_pFile->Seek(offset, whence);
 
     /* if we succeed, we are not eof anymore */
@@ -224,8 +229,28 @@ bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
 
 bool CDVDInputStreamPVRManager::SeekTime(int iTimeInMsec)
 {
+  fprintf(stderr, "SeekTime >>>>>>>>>> %i\n", iTimeInMsec);
   return false;
 }
+
+bool CDVDInputStreamPVRManager::Pause(double dTime)
+{
+  if (!m_pTimeshift)
+    return false;
+
+  if (m_bPaused)
+  {
+    m_bPaused = false;
+    m_pTimeshift->SendPause(m_bPaused, dTime);
+  }
+  else
+  {
+    m_bPaused = true;
+    m_pTimeshift->SendPause(m_bPaused, dTime);
+  }
+
+  return true;
+};
 
 bool CDVDInputStreamPVRManager::NextStream()
 {
