@@ -11,9 +11,6 @@ namespace Shaders {
   {
   public:
     BaseYUV2RGBShader();
-    virtual void SetYTexture(GLint ytex) { m_ytex = ytex; }
-    virtual void SetUTexture(GLint utex) { m_utex = utex; }
-    virtual void SetVTexture(GLint vtex) { m_vtex = vtex; }
     virtual void SetField(int field) {}
     virtual void SetWidth(int width);
     virtual void SetHeight(int width);
