@@ -17,6 +17,9 @@ namespace Shaders {
     virtual void SetField(int field)  {};
     virtual void SetWidth(int width)  {};
     virtual void SetHeight(int width) {};
+
+    virtual void SetBlack(float black)       {};
+    virtual void SetContrast(float contrast) {};
   };
 
 
@@ -30,7 +33,9 @@ namespace Shaders {
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
-    
+
+    virtual void SetBlack(float black)       { m_black    = black; }
+    virtual void SetContrast(float contrast) { m_contrast = contrast; }
   protected:
     void OnCompiledAndLinked();
     bool OnEnabled();
@@ -39,6 +44,10 @@ namespace Shaders {
     int   m_width;
     int   m_height;
     int   m_field;
+
+    float m_black;
+    float m_contrast;
+
     string m_defines;
 
     // shader attribute handles

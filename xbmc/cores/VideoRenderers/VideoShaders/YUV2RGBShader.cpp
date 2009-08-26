@@ -88,18 +88,13 @@ static float** PickYUVConversionMatrix(unsigned flags)
 
 static void CalculateYUVMatrix(GLfloat      res[4][4]
                              , unsigned int flags
-                             , float        blacklevel
+                             , float        black
                              , float        contrast)
 {
   TransformMatrix matrix, coef;
 
-#if 0
-  float blacklevel = g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f;
-  float contrast   = g_stSettings.m_currentVideoSettings.m_Contrast   * 0.02f;
-#endif
-
   matrix *= TransformMatrix::CreateScaler(contrast, contrast, contrast);
-  matrix *= TransformMatrix::CreateTranslation(blacklevel, blacklevel, blacklevel);
+  matrix *= TransformMatrix::CreateTranslation(black, black, black);
 
   float (*conv)[4] = (float (*)[4])PickYUVConversionMatrix(flags);
   for(int row = 0; row < 3; row++)
@@ -139,6 +134,9 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
   m_field      = 0;
   m_flags      = flags;
 
+  m_black      = 0.0f;
+  m_contrast   = 1.0f;
+
   // shader attribute handles
   m_hYTex  = -1;
   m_hUTex  = -1;
@@ -174,7 +172,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   glUniform1i(m_hVTex, 2);
 
   GLfloat matrix[4][4];
-  CalculateYUVMatrix(matrix, m_flags, 0.0, 1.0);
+  CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
   VerifyGLState();

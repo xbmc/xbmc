@@ -1659,6 +1659,8 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
@@ -1776,6 +1778,8 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_fbo.BeginRender();
   VerifyGLState();
 
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
   m_pYUVShader->SetWidth(im.width);
   m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
@@ -2242,12 +2246,14 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGL::SupportsBrightness()
 {
-  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+  return m_renderMethod == RENDER_GLSL
+      || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
-  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+  return m_renderMethod == RENDER_GLSL
+      || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsGamma()
