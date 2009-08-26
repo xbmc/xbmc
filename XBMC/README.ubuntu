@@ -41,7 +41,7 @@ Two methods exist to install the required Ubuntu packages :
 
 For Ubuntu (all versions >= 7.04):
 
-   # sudo aptitude install subversion make g++ gcc gawk pmount libtool nasm automake cmake gperf unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libfribidi-dev liblzo2-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound-dev python-sqlite libglew-dev libcurl4-dev x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbis-dev libsmbclient-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libfaac-dev libenca-dev libxt-dev libxtst-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev libsamplerate-dev libmms-dev
+   # sudo aptitude install subversion make g++ gcc gawk pmount libtool nasm automake cmake gperf unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libfribidi-dev liblzo2-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound-dev python-sqlite libglew-dev libcurl4-dev x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbis-dev libsmbclient-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libfaac-dev libenca-dev libxt-dev libxtst-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev libsamplerate-dev libmms-dev libmpeg3-dev
 
 On 8.04 and older versions, libmms is outdated and thus XBMC will not compile properly.
 In this case you will have to manually compile the latest version.
@@ -82,9 +82,9 @@ To create the XBMC executable manually perform these two steps:
 .1  # ./configure <option1> <option2> <etc>
 
 These configure options exist:
-  --enable-debug          enable debugging information (default is yes)       
-  --enable-optimizations  enable optimization (default is yes)                
-  --enable-gl             enable OpenGL rendering (default is yes)            
+  --enable-debug          enable debugging information (default is yes)
+  --enable-optimizations  enable optimization (default is yes)
+  --enable-gl             enable OpenGL rendering (default is yes)
   --enable-vdpau          enable VDPAU decoding (default is yes if vdpau installed)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
@@ -104,7 +104,7 @@ Tip: by adding -j<number> to the make command, you describe how many
 
     # make -j2
 
-.3  # make install  
+.3  # make install
 
 This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
 
