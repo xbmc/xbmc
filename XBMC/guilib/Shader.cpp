@@ -24,17 +24,35 @@
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #include "../xbmc/Settings.h"
+#include "../xbmc/FileSystem/File.h"
 #include "Shader.h"
 
 #define LOG_SIZE 1024
 
 using namespace Shaders;
+using namespace XFILE;
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // CShader
 //////////////////////////////////////////////////////////////////////
+bool CShader::LoadSource(const string& filename, const string& prefix)
+{
+  if(filename.empty())
+    return true;
 
+  CFileStream file;
+
+  if(!file.Open("special://xbmc/system/shaders/" + filename))
+  {
+    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
+    return false;
+  }
+
+  getline(file, m_source, '\0');
+  m_source.insert(0, prefix);
+  return true;
+}
 
 //////////////////////////////////////////////////////////////////////
 // CGLSLVertexShader
