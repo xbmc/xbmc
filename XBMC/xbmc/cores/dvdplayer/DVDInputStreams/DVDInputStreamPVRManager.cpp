@@ -165,7 +165,6 @@ __int64 CDVDInputStreamPVRManager::Seek(__int64 offset, int whence)
   }
   else
   {
-    fprintf(stderr, "Seek >>>>>>>>>> %i %i\n", offset, whence);
     __int64 ret = m_pFile->Seek(offset, whence);
 
     /* if we succeed, we are not eof anymore */

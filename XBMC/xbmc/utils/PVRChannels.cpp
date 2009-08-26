@@ -229,13 +229,11 @@ bool cPVRChannels::Update()
     {
       database->UpdateDBChannel(at(i));
       CLog::Log(LOGINFO,"PVRManager: Updated %s channel %s", m_bRadio?"Radio":"TV", at(i).Name().c_str());
-      fprintf(stderr,"PVRManager: Updated %s channel %s\n", m_bRadio?"Radio":"TV", at(i).Name().c_str());
     }
 
     if (!found)
     {
       CLog::Log(LOGINFO,"PVRManager: Removing %s channel %s (no more present)", m_bRadio?"Radio":"TV", at(i).Name().c_str());
-      fprintf(stderr,"PVRManager: Removing %s channel %s (no more present)\n", m_bRadio?"Radio":"TV", at(i).Name().c_str());
       database->RemoveDBChannel(at(i));
       erase(begin()+i);
       i--;
@@ -251,7 +249,6 @@ bool cPVRChannels::Update()
     PVRChannels_tmp[i].SetChannelID(database->AddDBChannel(PVRChannels_tmp[i]));
     push_back(PVRChannels_tmp[i]);
     CLog::Log(LOGINFO,"PVRManager: Added %s channel %s", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].Name().c_str());
-    fprintf(stderr,"PVRManager: Added %s channel %s\n", m_bRadio?"Radio":"TV", PVRChannels_tmp[i].Name().c_str());
   }
 
   database->Close();
