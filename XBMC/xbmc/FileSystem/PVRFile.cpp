@@ -256,6 +256,11 @@ bool CPVRFile::UpdateItem(CFileItem& item)
   return CPVRManager::GetInstance()->UpdateItem(item);
 }
 
+bool CPVRFile::SendPause(bool DoPause, double dTime)
+{
+  return CPVRManager::GetInstance()->PauseLiveStream(DoPause, dTime);
+}
+
 CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
 {
   int playingItem;
