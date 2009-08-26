@@ -43,8 +43,8 @@ For Ubuntu (all versions >= 7.04):
 
    # sudo aptitude install subversion make g++ gcc gawk pmount libtool nasm automake cmake gperf unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libfribidi-dev liblzo2-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound-dev python-sqlite libglew-dev libcurl4-dev x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbis-dev libsmbclient-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libfaac-dev libenca-dev libxt-dev libxtst-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev libsamplerate-dev libmms-dev
 
-Note 8.04 and older versions libmms is outdated and thus XBMC will not compile properly
-so you will need to manually install the latest version.
+On 8.04 and older versions, libmms is outdated and thus XBMC will not compile properly.
+In this case you will have to manually compile the latest version.
    # wget "http://launchpad.net/libmms/trunk/0.4/+download/libmms-0.4.tar.gz"
    # tar zxvf libmms-0.4.tar.gz
    # cd libmms-0.4
