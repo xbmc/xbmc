@@ -13,8 +13,7 @@ namespace Shaders {
     : virtual public CShaderProgram
   {
   public:
-    BaseYUV2RGBShader() {};
-   ~BaseYUV2RGBShader() {};
+    virtual ~BaseYUV2RGBShader()      {};
     virtual void SetField(int field)  {};
     virtual void SetWidth(int width)  {};
     virtual void SetHeight(int width) {};
@@ -28,7 +27,7 @@ namespace Shaders {
   public:
     BaseYUV2RGBGLSLShader(bool rect, unsigned flags);
    ~BaseYUV2RGBGLSLShader() {}
-    virtual void SetField(int field) { field    = field; }
+    virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
     string       BuildYUVMatrix();
@@ -55,7 +54,7 @@ namespace Shaders {
   public:
     BaseYUV2RGBARBShader(unsigned flags);
    ~BaseYUV2RGBARBShader() {}
-    virtual void SetField(int field) { field    = field; }
+    virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
     string       BuildYUVMatrix();
