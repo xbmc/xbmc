@@ -141,7 +141,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
       "}";
   }
 
-  SetVertexShaderSource(shaderv);
+  VertexShader()->SetSource(shaderv);
 }
 
 string BaseYUV2RGBGLSLShader::BuildYUVMatrix()
@@ -250,7 +250,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
     "rgb.a = gl_Color.a;\n"
     "gl_FragColor = rgb;\n"
     "}";
-  SetPixelShaderSource(shaderf);
+  PixelShader()->SetSource(shaderf);
 }
 
 void YUV2RGBProgressiveShader::OnCompiledAndLinked()
@@ -335,7 +335,7 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
       "rgb.a = gl_Color.a;\n"
       "gl_FragColor = rgb;\n"
       "}";
-  SetPixelShaderSource(shaderf);  
+  PixelShader()->SetSource(shaderf);  
 }
 
 void YUV2RGBBobShader::OnCompiledAndLinked()
@@ -451,7 +451,7 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
       "MOV result.color.w, fragment.color.w;\n"
       "END\n";
   }
-  SetPixelShaderSource(source);
+  PixelShader()->SetSource(source);
 }
 
 void YUV2RGBProgressiveShaderARB::OnCompiledAndLinked()
