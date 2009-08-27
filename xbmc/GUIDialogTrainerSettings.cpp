@@ -124,11 +124,8 @@ void CGUIDialogTrainerSettings::CreateSettings()
   }
 }
 
-void CGUIDialogTrainerSettings::OnSettingChanged(unsigned int num)
+void CGUIDialogTrainerSettings::OnSettingChanged(SettingInfo &setting)
 {
-  // setting has changed - update anything that needs it
-  if (num >= m_settings.size()) return;
-  SettingInfo &setting = m_settings.at(num);
   // check and update anything that needs it
   if (setting.id == 1)
   {

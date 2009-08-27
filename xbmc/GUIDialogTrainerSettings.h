@@ -39,7 +39,7 @@ protected:
   virtual void SetupPage();
   virtual void CreateSettings();
   virtual void OnCancel();
-  void OnSettingChanged(unsigned int setting);
+  virtual void OnSettingChanged(SettingInfo &setting);
 
   void AddBool(unsigned int id, const CStdString& strLabel, unsigned char* on);
   
