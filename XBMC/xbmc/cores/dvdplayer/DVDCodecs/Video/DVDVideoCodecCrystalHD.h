@@ -31,15 +31,17 @@
 namespace BCM
 {
 #if defined(WIN32)
-  #define _BC_DTS_TYPES_H_
-  typedef unsigned __int64  	U64;
-  typedef unsigned int        U32;
-  typedef int                 S32;
-  typedef unsigned short      U16;
-  typedef short               S16;
-  typedef unsigned char       U8;
-  typedef char                S8;
+  //#define _BC_DTS_TYPES_H_
+  //typedef unsigned __int64  	U64;
+  //typedef unsigned int        U32;
+  //typedef int                 S32;
+  //typedef unsigned short      U16;
+  //typedef short               S16;
+  //typedef unsigned char       U8;
+  //typedef char                S8;
+  typedef void		*HANDLE;
   #include "lib/crystalhd/include/windows/bc_drv_if.h"
+  #include "lib/crystalhd/include/bc_dts_defs.h"
 #else
   #ifndef __LINUX_USER__
   #define __LINUX_USER__
@@ -55,8 +57,6 @@ namespace BCM
   #endif //defined(WIN32)
 };
 
-#include "LockFree.h"
-
 class CMPCDecodeBuffer
 {
 public:
@@ -66,39 +66,56 @@ public:
   size_t GetSize();
   unsigned char* GetPtr();
   unsigned int GetId() {return m_Id;}
+  void SetPts(double pts);
+  double GetPts();
 protected:
   size_t m_Size;
   unsigned char* m_pBuffer;
   unsigned int m_Id;
   static unsigned int m_NextId;
+  double m_Pts;
 };
 
 #include <deque>
 #include <vector>
 #include "Thread.h"
 
-class CMPCDecodeThread : public CThread
+
+class CMPCInputThread : public CThread
 {
 public:
-  CMPCDecodeThread(BCM::HANDLE device);
-  virtual ~CMPCDecodeThread();
+  CMPCInputThread(BCM::HANDLE device);
+  virtual ~CMPCInputThread();
+  bool AddInput(unsigned char* pData, size_t size, double pts);
+  unsigned int GetInputCount();
+protected:
+  CMPCDecodeBuffer* AllocBuffer(size_t size);
+  void FreeBuffer(CMPCDecodeBuffer* pBuffer);
+  CMPCDecodeBuffer* GetNext();
+  virtual void Process();
+
+  CCriticalSection m_InputLock;
+  std::deque<CMPCDecodeBuffer*> m_InputList;
+  BCM::HANDLE m_Device;
+};
+
+class CMPCOutputThread : public CThread
+{
+public:
+  CMPCOutputThread(BCM::HANDLE device);
+  virtual ~CMPCOutputThread();
   unsigned int GetReadyCount();
   CMPCDecodeBuffer* GetNext();
   void FreeBuffer(CMPCDecodeBuffer* pBuffer);
-  bool AddInput(CMPCDecodeBuffer* pBuffer);
-  unsigned int GetInputCount();
 protected:
   virtual void Process();
   CMPCDecodeBuffer* AllocBuffer();
   void AddFrame(CMPCDecodeBuffer* pBuffer);
   CMPCDecodeBuffer* GetDecoderOutput();
   
-
-  CCriticalSection m_InputLock;
   CCriticalSection m_FreeLock;
   CCriticalSection m_ReadyLock;
   
-  std::deque<CMPCDecodeBuffer*> m_InputList;
   std::deque<CMPCDecodeBuffer*> m_FreeList;
   std::deque<CMPCDecodeBuffer*> m_ReadyList;
   unsigned int m_BufferCount;
@@ -140,10 +157,10 @@ protected:
   BCM::BC_PIC_INFO_BLOCK m_CurrentFormat;
   unsigned int m_PacketsIn;
   unsigned int m_FramesOut;
-  unsigned int m_OutputTimeout;
   double m_LastPts;
   
-  CMPCDecodeThread* m_pDecodeThread;
+  CMPCOutputThread* m_pOutputThread;
+  CMPCInputThread* m_pInputThread;
   std::deque<CMPCDecodeBuffer*> m_BusyList;
 };
 
