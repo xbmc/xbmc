@@ -28,34 +28,32 @@
 
 #include "DVDVideoCodec.h"
 
-#define _BC_DTS_TYPES_H_
-#ifdef WIN32
-    typedef unsigned __int64  	U64;
-#else
-    typedef unsigned long long  U64;
-#endif
-typedef unsigned int		U32;
-typedef int					S32;
-typedef unsigned short  	U16;
-typedef short				S16;
-typedef unsigned char		U8;
-typedef char				S8;
-
-
+namespace BCM
+{
 #if defined(WIN32)
-#include "lib/crystalhd/include/windows/bc_drv_if.h"
+  #define _BC_DTS_TYPES_H_
+  typedef unsigned __int64  	U64;
+  typedef unsigned int        U32;
+  typedef int                 S32;
+  typedef unsigned short      U16;
+  typedef short               S16;
+  typedef unsigned char       U8;
+  typedef char                S8;
+  #include "lib/crystalhd/include/windows/bc_drv_if.h"
 #else
-#ifndef __LINUX_USER__
-#define __LINUX_USER__
-#endif //__LINUX_USER__
-#if defined(__APPLE__)
-#include "bc_dts_defs.h" 
-#include "bc_ldil_if.h" 
-#else 
-#include "lib/crystalhd/include/linux/bc_ldil_if.h"
-#include "lib/crystalhd/include/linux/bc_dts_defs.h"
-#endif //defined(__APPLE__)
-#endif //defined(WIN32)
+  #ifndef __LINUX_USER__
+  #define __LINUX_USER__
+  #endif //__LINUX_USER__
+  #if defined(__APPLE__)
+    #include "bc_dts_types.h" 
+    #include "bc_dts_defs.h" 
+    #include "bc_ldil_if.h" 
+  #else 
+    #include "lib/crystalhd/include/linux/bc_ldil_if.h"
+    #include "lib/crystalhd/include/linux/bc_dts_defs.h"
+  #endif //defined(__APPLE__)
+  #endif //defined(WIN32)
+};
 
 #include "LockFree.h"
 
@@ -82,11 +80,7 @@ protected:
 class CMPCDecodeThread : public CThread
 {
 public:
-#ifdef __APPLE__
-  CMPCDecodeThread(void* device);
-#else
-  CMPCDecodeThread(HANDLE device);
-#endif
+  CMPCDecodeThread(BCM::HANDLE device);
   virtual ~CMPCDecodeThread();
   unsigned int GetReadyCount();
   CMPCDecodeBuffer* GetNext();
@@ -111,11 +105,7 @@ protected:
   
   unsigned int m_OutputHeight;
   unsigned int m_OutputWidth;
-#ifdef __APPLE__
-  void* m_Device;
-#else
-  HANDLE m_Device;
-#endif
+  BCM::HANDLE m_Device;
   unsigned int m_OutputTimeout;
 };
 
@@ -135,23 +125,19 @@ public:
   virtual const char* GetName() { return (const char*)m_pFormatName; }
 
 protected:
-#ifdef __APPLE__
-  void* m_Device;
-#else
-  HANDLE m_Device;
-#endif
+  BCM::HANDLE m_Device;
   unsigned int m_Height;
   unsigned int m_Width;
-  U32 m_YSize;
-  U32 m_UVSize;
-  U8* m_pBuffer;
-  BC_DTS_PROC_OUT m_Output;
+  BCM::U32 m_YSize;
+  BCM::U32 m_UVSize;
+  BCM::U8* m_pBuffer;
+  BCM::BC_DTS_PROC_OUT m_Output;
   bool m_DropPictures;
   unsigned int m_PicturesDecoded;
   unsigned int m_LastDecoded;
   char* m_pFormatName;
 
-  BC_PIC_INFO_BLOCK m_CurrentFormat;
+  BCM::BC_PIC_INFO_BLOCK m_CurrentFormat;
   unsigned int m_PacketsIn;
   unsigned int m_FramesOut;
   unsigned int m_OutputTimeout;
