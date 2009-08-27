@@ -24,7 +24,7 @@
 #include "GUIWindowManager.h"
 #include "GUIPassword.h"
 #include "Util.h"
-#include "Application.h"
+#include "MathUtils.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -58,12 +58,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_MAKE_DEFAULT       10
 
 #define VIDEO_SETTINGS_CALIBRATION        11
-#define VIDEO_SETTINGS_FLICKER            12
 #define VIDEO_SETTINGS_SOFTEN             13
-#define VIDEO_SETTINGS_FILM_GRAIN         14
-#define VIDEO_SETTINGS_NON_INTERLEAVED    15
-#define VIDEO_SETTINGS_NO_CACHE           16
-#define VIDEO_SETTINGS_FORCE_INDEX        17
 #define VIDEO_SETTINGS_SCALINGMETHOD      18
 
 #define VIDEO_SETTING_VDPAU_NOISE         19
@@ -114,24 +109,13 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSeparator(8);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
-  if (g_application.GetCurrentPlayer() == EPC_MPLAYER)
-  {
-    AddSlider(VIDEO_SETTINGS_FILM_GRAIN, 14058, &g_stSettings.m_currentVideoSettings.m_FilmGrain, 0, 1, 10, FormatInteger);
-    AddBool(VIDEO_SETTINGS_NON_INTERLEAVED, 306, &g_stSettings.m_currentVideoSettings.m_NonInterleaved);
-    AddBool(VIDEO_SETTINGS_NO_CACHE, 431, &g_stSettings.m_currentVideoSettings.m_NoCache);
-    AddButton(VIDEO_SETTINGS_FORCE_INDEX, 12009);
-  }
 }
 
 void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
 {
   // check and update anything that needs it
-  if (setting.id == VIDEO_SETTINGS_NON_INTERLEAVED ||  setting.id == VIDEO_SETTINGS_NO_CACHE)
-    g_application.Restart(true);
-  else if (setting.id == VIDEO_SETTINGS_FILM_GRAIN)
-    g_application.DelayedPlayerRestart();
 #ifdef HAS_VIDEO_PLAYBACK
-  else if (setting.id == VIDEO_SETTINGS_CROP)
+  if (setting.id == VIDEO_SETTINGS_CROP)
     g_renderManager.AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
   else if (setting.id == VIDEO_SETTINGS_VIEW_MODE)
   {
@@ -147,8 +131,9 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
     UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
   }
+  else 
 #endif
-  else if (setting.id == VIDEO_SETTINGS_BRIGHTNESS || setting.id == VIDEO_SETTINGS_CONTRAST || setting.id == VIDEO_SETTINGS_GAMMA)
+  if (setting.id == VIDEO_SETTINGS_BRIGHTNESS || setting.id == VIDEO_SETTINGS_CONTRAST || setting.id == VIDEO_SETTINGS_GAMMA)
     CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, true);
   else if (setting.id == VIDEO_SETTINGS_CALIBRATION)
   {
@@ -157,11 +142,6 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
     m_gWindowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
-  }
-  else if (setting.id == VIDEO_SETTINGS_FORCE_INDEX)
-  {
-    g_stSettings.m_currentVideoSettings.m_bForceIndex = true;
-    g_application.Restart(true);
   }
   else if (setting.id == VIDEO_SETTINGS_MAKE_DEFAULT)
   {

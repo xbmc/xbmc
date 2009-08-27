@@ -25,7 +25,7 @@
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
 #include "FileSystem/SpecialProtocol.h"
-#include "Util.h"
+#include "MathUtils.h"
 #include <math.h>
 
 // stuff for freetype
@@ -1017,10 +1017,10 @@ struct CUSTOMVERTEX {
 
   for(int i = 0; i < 4; i++)
   {
-    v[i].r = (dwColor >> 16) & 0xff;
-    v[i].g = (dwColor >>  8) & 0xff;
-    v[i].b = (dwColor >>  0) & 0xff;
-    v[i].a = (dwColor >> 24) & 0xff;
+    v[i].r = GET_R(dwColor);
+    v[i].g = GET_G(dwColor);
+    v[i].b = GET_B(dwColor);
+    v[i].a = GET_A(dwColor);
   }
 
   v[0].u = tl;

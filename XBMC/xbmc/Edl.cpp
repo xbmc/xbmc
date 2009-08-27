@@ -21,9 +21,15 @@
 
 #include "stdafx.h"
 #include "Edl.h"
-#include "include.h"
 #include "Util.h"
 #include "FileSystem/File.h"
+#include "FileSystem/CMythFile.h"
+#include "Settings.h"
+
+extern "C"
+{
+#include "lib/libcmyth/cmyth.h"
+}
 
 using namespace std;
 
@@ -55,9 +61,10 @@ void CEdl::Clear()
   m_iTotalCutTime = 0;
 }
 
-bool CEdl::ReadFiles(const CStdString& strMovie)
+bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
 {
-  CLog::Log(LOGDEBUG, "%s - checking for any edit decision list (EDL) files for: %s", __FUNCTION__, strMovie.c_str());
+  CLog::Log(LOGDEBUG, "%s - checking for any edit decision list (EDL) files for: %s", __FUNCTION__,
+            strMovie.c_str());
 
   /*
    * Read any available format until a valid EDL related file is found.
@@ -73,14 +80,16 @@ bool CEdl::ReadFiles(const CStdString& strMovie)
     bFound = ReadEdl(strMovie);
 
   if (!bFound)
-    bFound = ReadComskip(strMovie);
+    bFound = ReadComskip(strMovie, fFramesPerSecond);
 
   if (!bFound)
     bFound = ReadBeyondTV(strMovie);
 
   if (bFound)
+  {
+    MergeShortCommBreaks();
     WriteMPlayerEdl();
-
+  }
   return bFound;
 }
 
@@ -131,6 +140,10 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
       case 2:
         bValid = AddSceneMarker(cut.end);
         break;
+      case 3:
+        cut.action = COMM_BREAK;
+        bValid = AddCut(cut);
+        break;
       default:
         bValid = false;
         continue;
@@ -150,18 +163,19 @@ bool CEdl::ReadEdl(const CStdString& strMovie)
   }
   else if (HasCut() || HasSceneMarker())
   {
-    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in EDL file: %s", __FUNCTION__, m_vecCuts.size(),
-              m_vecSceneMarkers.size(), edlFilename.c_str());
+    CLog::Log(LOGDEBUG, "%s - Read %i cuts and %i scene markers in EDL file: %s", __FUNCTION__,
+              m_vecCuts.size(), m_vecSceneMarkers.size(), edlFilename.c_str());
     return true;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "%s - No cuts or scene markers found in EDL file: %s", __FUNCTION__, edlFilename.c_str());
+    CLog::Log(LOGDEBUG, "%s - No cuts or scene markers found in EDL file: %s", __FUNCTION__,
+              edlFilename.c_str());
     return false;
   }
 }
 
-bool CEdl::ReadComskip(const CStdString& strMovie)
+bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
 {
   Clear();
 
@@ -176,30 +190,30 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
     CLog::Log(LOGERROR, "%s - Could not open Comskip file: %s", __FUNCTION__, comskipFilename.c_str());
     return false;
   }
-  
+
   char szBuffer[1024];
-  if (comskipFile.ReadString(szBuffer, 1023) && (strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0)) // Line 1.
+  if (comskipFile.ReadString(szBuffer, 1023)
+  &&  strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0) // Line 1.
   {
     CLog::Log(LOGERROR, "%s - Invalid Comskip file: %s. Error reading line 1 - expected '%s' at start.",
               __FUNCTION__, comskipFilename.c_str(), COMSKIP_HEADER);
     comskipFile.Close();
     return false;
   }
-  
+
   int iFrames;
-  int iFrameRate;
-  if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %i", &iFrames, &iFrameRate) != 2)
+  float fFrameRate;
+  if (sscanf(szBuffer, "FILE PROCESSING COMPLETE %i FRAMES AT %f", &iFrames, &fFrameRate) != 2)
   {
     /*
      * Not all generated Comskip files have the frame rate information.
      */
-    CLog::Log(LOGERROR, "%s - Frame rate not found on line 1 in Comskip file.",
-              __FUNCTION__);
-    comskipFile.Close();
-    return false;
+    fFrameRate = fFramesPerSecond;
+    CLog::Log(LOGWARNING, "%s - Frame rate not in Comskip file. Using detected frames per second: %.3f",
+              __FUNCTION__, fFrameRate);
   }
-
-  float fFrameRate = iFrameRate / 100; // Reduce by factor of 100 to get fps.
+  else
+    fFrameRate /= 100; // Reduce by factor of 100 to get fps.
 
   comskipFile.ReadString(szBuffer, 1023); // Line 2. Ignore "-------------"
 
@@ -214,7 +228,7 @@ bool CEdl::ReadComskip(const CStdString& strMovie)
       Cut cut;
       cut.start = (__int64)(dStartFrame / fFrameRate * 1000);
       cut.end = (__int64)(dEndFrame / fFrameRate * 1000);
-      cut.action = CUT;
+      cut.action = COMM_BREAK;
       bValid = AddCut(cut);
     }
     else
@@ -264,7 +278,8 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
   }
 
   char szBuffer[1024];
-  if (videoReDoFile.ReadString(szBuffer, 1023) && strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
+  if (videoReDoFile.ReadString(szBuffer, 1023)
+  &&  strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
   {
     CLog::Log(LOGERROR, "%s - Invalid VideoReDo file: %s. Error reading line 1 - expected %s. Only version 2 files are supported.",
               __FUNCTION__, videoReDoFilename.c_str(), VIDEOREDO_HEADER);
@@ -302,7 +317,7 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
       int iScene;
       double dSceneMarker;
       if (sscanf(szBuffer + strlen(VIDEOREDO_TAG_SCENE), " %i>%lf", &iScene, &dSceneMarker) == 2)
-        bValid = AddSceneMarker(dSceneMarker / 10000); // Times need adjusting by 1/10,000 to get ms.
+        bValid = AddSceneMarker((int)dSceneMarker / 10000); // Times need adjusting by 1/10,000 to get ms.
       else
         bValid = false;
     }
@@ -387,7 +402,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
       Cut cut;
       cut.start = (__int64)(atof(pStart->GetText()) / 10000);
       cut.end = (__int64)(atof(pEnd->GetText()) / 10000);
-      cut.action = CUT;
+      cut.action = COMM_BREAK;
       bValid = AddCut(cut);
     }
     else
@@ -418,33 +433,34 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 
 bool CEdl::AddCut(const Cut& cut)
 {
-  if (cut.action != CUT && cut.action != MUTE)
+  if (cut.action != CUT && cut.action != MUTE && cut.action != COMM_BREAK)
   {
-    CLog::Log(LOGERROR, "%s - Not a CUT or MUTE! [%s - %s], %d",
-              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+    CLog::Log(LOGERROR, "%s - Not a CUT, MUTE, or COMM_BREAK! [%s - %s], %d", __FUNCTION__,
+              MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
               cut.action);
     return false;
   }
 
   if (cut.start < 0)
   {
-    CLog::Log(LOGERROR, "%s - Before start! [%s - %s], %d", __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
-              MillisecondsToTimeString(cut.end).c_str(), cut.action);
+    CLog::Log(LOGERROR, "%s - Before start! [%s - %s], %d", __FUNCTION__,
+              MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+              cut.action);
     return false;
   }
-  
+
   if (cut.start >= cut.end)
   {
-    CLog::Log(LOGERROR, "%s - Times are around the wrong way or the same! [%s - %s], %d",
-              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+    CLog::Log(LOGERROR, "%s - Times are around the wrong way or the same! [%s - %s], %d", __FUNCTION__,
+              MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
               cut.action);
     return false;
   }
 
   if (InCut(cut.start) || InCut(cut.end))
   {
-    CLog::Log(LOGERROR, "%s - Start or end is in an existing cut! [%s - %s], %d",
-              __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+    CLog::Log(LOGERROR, "%s - Start or end is in an existing cut! [%s - %s], %d", __FUNCTION__,
+              MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
               cut.action);
     return false;
   }
@@ -453,8 +469,8 @@ bool CEdl::AddCut(const Cut& cut)
   {
     if (cut.start < m_vecCuts[i].start && cut.end > m_vecCuts[i].end)
     {
-      CLog::Log(LOGERROR, "%s - Cut surrounds an existing cut! [%s - %s], %d",
-                __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
+      CLog::Log(LOGERROR, "%s - Cut surrounds an existing cut! [%s - %s], %d", __FUNCTION__,
+                MillisecondsToTimeString(cut.start).c_str(), MillisecondsToTimeString(cut.end).c_str(),
                 cut.action);
       return false;
     }
@@ -499,7 +515,8 @@ bool CEdl::AddSceneMarker(const __int64 iSceneMarker)
   if (InCut(iSceneMarker, &cut) && cut.action == CUT) // Only works for current cuts.
     return false;
 
-  CLog::Log(LOGDEBUG, "%s - Inserting new scene marker: %s", __FUNCTION__, MillisecondsToTimeString(iSceneMarker).c_str());
+  CLog::Log(LOGDEBUG, "%s - Inserting new scene marker: %s", __FUNCTION__,
+            MillisecondsToTimeString(iSceneMarker).c_str());
   m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
 
   return true;
@@ -513,15 +530,25 @@ bool CEdl::WriteMPlayerEdl()
   CFile mplayerEdlFile;
   if (!mplayerEdlFile.OpenForWrite(MPLAYER_EDL_FILENAME, true))
   {
-    CLog::Log(LOGERROR, "%s - Error opening MPlayer EDL file for writing: %s", __FUNCTION__, MPLAYER_EDL_FILENAME);
+    CLog::Log(LOGERROR, "%s - Error opening MPlayer EDL file for writing: %s", __FUNCTION__,
+              MPLAYER_EDL_FILENAME);
     return false;
   }
 
   CStdString strBuffer;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
-    strBuffer.AppendFormat("%.2f\t%.2f\t%i\n", ((double)m_vecCuts[i].start) / 1000, ((double)m_vecCuts[i].end) / 1000,
-                           m_vecCuts[i].action);
+    /* 
+     * MPlayer doesn't understand the scene marker (2) or commercial break (3) identifiers that XBMC
+     * supports in EDL files.
+     *
+     * http://www.mplayerhq.hu/DOCS/HTML/en/edl.html
+     *
+     * Write out mutes (1) directly. Treat commercial breaks as cuts (everything other than MUTES = 0).
+     */
+    strBuffer.AppendFormat("%.3f\t%.3f\t%i\n", (float)(m_vecCuts[i].start / 1000),
+                                               (float)(m_vecCuts[i].end / 1000),
+                                               m_vecCuts[i].action == MUTE ? 1 : 0);
   }
   mplayerEdlFile.Write(strBuffer.c_str(), strBuffer.size());
   mplayerEdlFile.Close();
@@ -580,18 +607,42 @@ bool CEdl::HasSceneMarker()
   return !m_vecSceneMarkers.empty();
 }
 
-char CEdl::GetEdlStatus()
+CStdString CEdl::GetInfo()
 {
-  char cEdlStatus = 'n';
+  /*
+   * TODO: Update wiki (http://xbmc.org/wiki/?title=EDL_(commercial_skipping)_and_SceneMarker_support)
+   * if these different status strings are used.
+   */
+  CStdString strInfo = "";
+  if (HasCut())
+  {
+    int cutCount = 0, muteCount = 0, commBreakCount = 0;
+    for (int i = 0; i < (int)m_vecCuts.size(); i++)
+    {
+      switch (m_vecCuts[i].action)
+      {
+      case CUT:
+        cutCount++;
+        break;
+      case MUTE:
+        muteCount++;
+        break;
+      case COMM_BREAK:
+        commBreakCount++;
+        break;
+      }
+    }
+    if (cutCount > 0)
+      strInfo.AppendFormat("c%i", cutCount);
+    if (muteCount > 0)
+      strInfo.AppendFormat("m%i", muteCount);
+    if (commBreakCount > 0)
+      strInfo.AppendFormat("b%i", commBreakCount);
+  }
+  if (HasSceneMarker())
+    strInfo.AppendFormat("s%i", m_vecSceneMarkers.size());
 
-  if (HasCut() && HasSceneMarker())
-    cEdlStatus = 'b';
-  else if (HasCut())
-    cEdlStatus = 'e';
-  else if (HasSceneMarker())
-    cEdlStatus = 's';
-
-  return cEdlStatus;
+  return strInfo.IsEmpty() ? "-" : strInfo;
 }
 
 bool CEdl::InCut(const __int64 iSeek, Cut *pCut)
@@ -658,11 +709,141 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
   return bFound;
 }
 
-CStdString CEdl::MillisecondsToTimeString(const int iMilliseconds)
+CStdString CEdl::MillisecondsToTimeString(const __int64 iMilliseconds)
 {
   CStdString strTimeString = "";
-  StringUtils::SecondsToTimeString(iMilliseconds / 1000, strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
+  StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds
   strTimeString.AppendFormat(".%03i", iMilliseconds % 1000);
   return strTimeString;
 }
 
+bool CEdl::ReadMythCommBreaks(const CURL url, const float fFramesPerSecond)
+{
+  Clear();
+
+  /*
+   * Exists() sets up all the internal bits needed for GetCommBreakList().
+   */
+  CCMythFile mythFile;
+  if (!mythFile.Exists(url))
+    return false;
+
+  CLog::Log(LOGDEBUG, "%s - Reading commercial breaks from MythTV for: %s", __FUNCTION__,
+            url.GetFileName().c_str());
+
+  cmyth_commbreaklist_t commbreaklist;
+  if (!mythFile.GetCommBreakList(commbreaklist))
+  {
+    CLog::Log(LOGERROR, "%s - Error getting commercial breaks from MythTV for: %s", __FUNCTION__,
+              url.GetFileName().c_str());
+    return false;
+  }
+
+  for (int i = 0; i < (int)commbreaklist->commbreak_count; i++)
+  {
+    cmyth_commbreak_t commbreak = commbreaklist->commbreak_list[i];
+
+    Cut cut;
+    cut.action = COMM_BREAK;
+    cut.start = (int)(commbreak->start_mark / fFramesPerSecond * 1000);
+    cut.end = (int)(commbreak->end_mark / fFramesPerSecond * 1000);
+
+    /*
+     * Detection isn't perfect near the edges so autowind by a small amount into each end of the
+     * detected commercial break.
+     *
+     * TODO: Advanced setting for the autowind amount. Perhaps one for fowards and one for backwards?
+     */
+    int autowind = 2 * 1000; // 2 seconds in ms
+    if (cut.start > 0) // Only autowind forwards if not at the start.
+      cut.start += autowind;
+    if (cut.end > cut.start + autowind) // Only autowind if it won't go back past the start (should never happen).
+      cut.end -= autowind;
+
+    if (!AddCut(cut)) // Log and continue with errors while still testing.
+      CLog::Log(LOGERROR, "%s - Invalid commercial break [%s - %s] found in MythTV for: %s. autowind: %d. Continuing anyway.",
+                __FUNCTION__, MillisecondsToTimeString(cut.start).c_str(),
+                MillisecondsToTimeString(cut.end).c_str(), url.GetFileName().c_str(), autowind);
+  }
+
+  if (HasCut())
+  {
+    CLog::Log(LOGDEBUG, "%s - Added %i commercial breaks from MythTV for: %s. Used detected frame rate of %.3f fps to calculate times from the frame markers.",
+              __FUNCTION__, m_vecCuts.size(), url.GetFileName().c_str(), fFramesPerSecond);
+    MergeShortCommBreaks();
+    /*
+     * No point writing the MPlayer EDL file as it won't be able to play the MythTV files anyway.
+     */
+    return true;
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "%s - No commercial breaks found in MythTV for: %s", __FUNCTION__,
+              url.GetFileName().c_str());
+    return false;
+  }
+}
+
+void CEdl::MergeShortCommBreaks()
+{
+  if (g_advancedSettings.m_bEdlMergeShortCommBreaks)
+  {
+    for (int i = 0; i < (int)m_vecCuts.size() - 1; i++)
+    {
+      if ((m_vecCuts[i].action == COMM_BREAK && m_vecCuts[i + 1].action == COMM_BREAK)
+      &&  (m_vecCuts[i + 1].end - m_vecCuts[i].start < g_advancedSettings.m_iEdlMaxCommBreakLength * 1000) // s to ms
+      &&  (m_vecCuts[i + 1].start - m_vecCuts[i].end < g_advancedSettings.m_iEdlMaxCommBreakGap * 1000)) // s to ms
+      {
+        Cut commBreak;
+        commBreak.action = COMM_BREAK;
+        commBreak.start = m_vecCuts[i].start;
+        commBreak.end = m_vecCuts[i + 1].end;
+
+        CLog::Log(LOGDEBUG, "%s - Consolidating commercial break [%s - %s] and [%s - %s] to: [%s - %s]", __FUNCTION__,
+                  MillisecondsToTimeString(m_vecCuts[i].start).c_str(), MillisecondsToTimeString(m_vecCuts[i].end).c_str(),
+                  MillisecondsToTimeString(m_vecCuts[i + 1].start).c_str(), MillisecondsToTimeString(m_vecCuts[i + 1].end).c_str(),
+                  MillisecondsToTimeString(commBreak.start).c_str(), MillisecondsToTimeString(commBreak.end).c_str());
+
+        /*
+         * Erase old cuts and insert the new merged one.
+         */
+        m_vecCuts.erase(m_vecCuts.begin() + i, m_vecCuts.begin() + i + 2);
+        m_vecCuts.insert(m_vecCuts.begin() + i, commBreak);
+
+        i--; // Reduce i to see if the next break is also within the max commercial break length.
+      }
+    }
+
+    /*
+     * Remove any commercial breaks shorter than the minimum (unless at the start)
+     */
+    for (int i = 0; i < (int)m_vecCuts.size(); i++)
+    {
+      if (m_vecCuts[i].action == COMM_BREAK
+      &&  m_vecCuts[i].start > 0
+      && (m_vecCuts[i].end - m_vecCuts[i].start) < g_advancedSettings.m_iEdlMinCommBreakLength * 1000)
+      {
+        CLog::Log(LOGDEBUG, "%s - Removing short commercial break [%s - %s]. Minimum length: %i seconds", __FUNCTION__,
+                  MillisecondsToTimeString(m_vecCuts[i].start).c_str(), MillisecondsToTimeString(m_vecCuts[i].end).c_str(),
+                  g_advancedSettings.m_iEdlMinCommBreakLength);
+        m_vecCuts.erase(m_vecCuts.begin() + i);
+
+        i--;
+      }
+    }
+  }
+
+  /*
+   * Add in scene markers at the start and end of the commercial breaks.
+   */
+  for (int i = 0; i < (int)m_vecCuts.size(); i++)
+  {
+    if (m_vecCuts[i].action == COMM_BREAK)
+    {
+      if (m_vecCuts[i].start > 0) // Don't add a scene marker at the start.
+        AddSceneMarker(m_vecCuts[i].start);
+      AddSceneMarker(m_vecCuts[i].end);
+    }
+  }
+  return;
+}

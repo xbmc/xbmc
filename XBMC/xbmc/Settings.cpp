@@ -99,9 +99,6 @@ void CSettings::Initialize()
 
   g_stSettings.m_iMyVideoStack = STACK_NONE;
 
-  strcpy(g_stSettings.szOnlineArenaPassword, "");
-  strcpy(g_stSettings.szOnlineArenaDescription, "It's Good To Play Together!");
-
   g_stSettings.m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   g_stSettings.m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
 
@@ -145,7 +142,6 @@ void CSettings::Initialize()
 
   // Advanced settings
   g_advancedSettings.m_useMultipaths = true;
-  g_advancedSettings.m_DisableModChipDetection = true;
 
   g_advancedSettings.m_audioHeadRoom = 0;
   g_advancedSettings.m_ac3Gain = 12.0f;
@@ -214,9 +210,11 @@ void CSettings::Initialize()
   g_advancedSettings.m_songInfoDuration = 10;
   g_advancedSettings.m_busyDialogDelay = 2000;
 #ifdef _DEBUG
-  g_advancedSettings.m_logLevel = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
 #else
-  g_advancedSettings.m_logLevel = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevel     = LOG_LEVEL_NORMAL;
+  g_advancedSettings.m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
   g_advancedSettings.m_cddbAddress = "freedb.freedb.org";
 #ifdef HAS_HAL
@@ -227,7 +225,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_cachePath = "special://temp/";
   g_advancedSettings.m_displayRemoteCodes = false;
 
-  g_advancedSettings.m_videoCleanDateTimeRegExp = "(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-][^0-9]|$)";
+  g_advancedSettings.m_videoCleanDateTimeRegExp = "(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])[^0-9]([ _\\,\\.\\(\\)\\[\\]\\-]|$)";
 
   g_advancedSettings.m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   g_advancedSettings.m_videoCleanStringRegExps.push_back("(\\[.*\\])");
@@ -257,7 +255,6 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_remoteRepeat = 480;
   g_advancedSettings.m_controllerDeadzone = 0.2f;
-  g_advancedSettings.m_FTPShowCache = false;
 
   g_advancedSettings.m_playlistAsFolders = true;
   g_advancedSettings.m_detectAsUdf = false;
@@ -305,6 +302,11 @@ void CSettings::Initialize()
 
   g_advancedSettings.m_iMythMovieLength = 0; // 0 == Off
 
+  g_advancedSettings.m_bEdlMergeShortCommBreaks = false;      // Off by default
+  g_advancedSettings.m_iEdlMaxCommBreakLength = 8 * 30 + 10;  // Just over 8 * 30 second commercial break.
+  g_advancedSettings.m_iEdlMinCommBreakLength = 3 * 30;       // 3 * 30 second commercial breaks.
+  g_advancedSettings.m_iEdlMaxCommBreakGap = 4 * 30;          // 4 * 30 second commercial breaks.
+
   g_advancedSettings.m_curlconnecttimeout = 10;
   g_advancedSettings.m_curllowspeedtime = 5;
   g_advancedSettings.m_curlretries = 3;
@@ -337,6 +339,8 @@ void CSettings::Initialize()
   // default for windows is not always on top
   g_advancedSettings.m_alwaysOnTop = false;
 #endif
+
+  g_advancedSettings.m_bgInfoLoaderMaxThreads = 5;
 }
 
 CSettings::~CSettings(void)
@@ -1144,7 +1148,6 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_CUBIC);
     g_stSettings.m_defaultVideoSettings.m_ScalingMethod = (ESCALINGMETHOD)scalingMethod;
 
-    GetFloat(pElement, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain, 0, 0, 10);
     GetInteger(pElement, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);
     GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
@@ -1416,14 +1419,17 @@ void CSettings::LoadAdvancedSettings()
   if (pElement)
     XMLUtils::GetBoolean(pElement, "statfilesize", g_advancedSettings.m_bHTTPDirectoryStatFilesize);
 
-  if (XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevel, LOG_LEVEL_NONE, LOG_LEVEL_MAX))
+  pElement = pRootElement->FirstChildElement("loglevel");
+  if (pElement)
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
+    XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
     CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("system.debuglogging");
     if (setting)
     {
-      setting->SetData(g_advancedSettings.m_logLevel >= LOG_LEVEL_DEBUG_FREEMEM);
-      setting->SetAdvanced();
+      const char* hide;
+      if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
+        setting->SetAdvanced();
     }
   }
   XMLUtils::GetString(pRootElement, "cddbaddress", g_advancedSettings.m_cddbAddress);
@@ -1432,7 +1438,6 @@ void CSettings::LoadAdvancedSettings()
 #endif
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", g_advancedSettings.m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", g_advancedSettings.m_useMultipaths);
-  XMLUtils::GetBoolean(pRootElement, "disablemodchipdetection", g_advancedSettings.m_DisableModChipDetection);
 #ifdef HAS_SDL
   XMLUtils::GetBoolean(pRootElement, "fullscreen", g_advancedSettings.m_startFullScreen);
 #endif
@@ -1478,6 +1483,16 @@ void CSettings::LoadAdvancedSettings()
     GetInteger(pElement, "epgblocksize", g_advancedSettings.m_iPVREPGBlockSize, 5, 5, 10);
   }
 
+  // EDL commercial break handling
+  pElement = pRootElement->FirstChildElement("edl");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "mergeshortcommbreaks", g_advancedSettings.m_bEdlMergeShortCommBreaks);
+    XMLUtils::GetInt(pElement, "maxcommbreaklength", g_advancedSettings.m_iEdlMaxCommBreakLength, 0, 10 * 60); // Between 0 and 10 minutes 
+    XMLUtils::GetInt(pElement, "mincommbreaklength", g_advancedSettings.m_iEdlMinCommBreakLength, 0, 5 * 60);  // Between 0 and 5 minutes
+    XMLUtils::GetInt(pElement, "maxcommbreakgap", g_advancedSettings.m_iEdlMaxCommBreakGap, 0, 5 * 60);        // Between 0 and 5 minutes.
+  }
+
   // picture exclude regexps
   TiXmlElement* pPictureExcludes = pRootElement->FirstChildElement("pictureexcludes");
   if (pPictureExcludes)
@@ -1516,13 +1531,13 @@ void CSettings::LoadAdvancedSettings()
   }
 
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", g_advancedSettings.m_displayRemoteCodes);
+  if (g_advancedSettings.m_displayRemoteCodes)
+    CLog::Log(LOGERROR,"displaying of remote codes currently not implemented");
 
   // TODO: Should cache path be given in terms of our predefined paths??
   //       Are we even going to have predefined paths??
   GetPath(pRootElement, "cachepath", g_advancedSettings.m_cachePath);
   CUtil::AddSlashAtEnd(g_advancedSettings.m_cachePath);
-
-  XMLUtils::GetBoolean(pRootElement, "ftpshowcache", g_advancedSettings.m_FTPShowCache);
 
   g_LangCodeExpander.LoadUserCodes(pRootElement->FirstChildElement("languagecodes"));
 
@@ -1675,6 +1690,9 @@ void CSettings::LoadAdvancedSettings()
   XMLUtils::GetString(pRootElement, "gputempcommand", g_advancedSettings.m_gpuTempCmd);
 
   XMLUtils::GetBoolean(pRootElement, "alwaysontop", g_advancedSettings.m_alwaysOnTop);
+
+  XMLUtils::GetInt(pRootElement, "bginfoloadermaxthreads", g_advancedSettings.m_bgInfoLoaderMaxThreads);
+  g_advancedSettings.m_bgInfoLoaderMaxThreads = std::max(1, g_advancedSettings.m_bgInfoLoaderMaxThreads);
 
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
@@ -1901,7 +1919,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   XMLUtils::SetInt(pNode, "scalingmethod", g_stSettings.m_defaultVideoSettings.m_ScalingMethod);
   XMLUtils::SetFloat(pNode, "noisereduction", g_stSettings.m_defaultVideoSettings.m_NoiseReduction);
   XMLUtils::SetFloat(pNode, "sharpness", g_stSettings.m_defaultVideoSettings.m_Sharpness);
-  XMLUtils::SetFloat(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
   XMLUtils::SetInt(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
   XMLUtils::SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
   XMLUtils::SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);

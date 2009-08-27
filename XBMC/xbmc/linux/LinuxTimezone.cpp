@@ -23,10 +23,11 @@
 #include "system.h"
 #include "PlatformInclude.h"
 #include "LinuxTimezone.h"
-#include "Util.h"
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h"
 #endif
+
+#include "Util.h"
 
 using namespace std;
 

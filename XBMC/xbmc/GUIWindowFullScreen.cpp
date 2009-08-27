@@ -635,6 +635,14 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
       pOSD->DoModal();
     }
   }
+  if (g_Mouse.GetWheel())
+  { // Mouse wheel
+    int wheel = abs(g_Mouse.GetWheel());
+    CAction action;
+    action.fAmount1 = 0.5f * (float)wheel;
+    action.wID = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    return g_application.OnAction(action);
+  }
   return true;
 }
 
@@ -725,12 +733,14 @@ void CGUIWindowFullScreen::RenderFullScreen()
 #else
       CStdString strCores = g_cpuInfo.GetCoresUsageString();
 #endif
-      int missedvblanks;
+      int    missedvblanks;
+      int    refreshrate;
       double clockspeed;
       CStdString strClock;
       
-      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed))
-        strClock.Format("S( missed:%i speed:%+.3f%% %s )"
+      if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
+        strClock.Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
+                       , refreshrate
                        , missedvblanks
                        , clockspeed - 100.0
                        , g_renderManager.GetVSyncState().c_str());
@@ -842,7 +852,6 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
 void CGUIWindowFullScreen::RenderTTFSubtitles()
 {
-  //if ( g_application.GetCurrentPlayer() == EPC_MPLAYER && CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible() && m_subsLayout)
   if ((g_application.GetCurrentPlayer() == EPC_MPLAYER || g_application.GetCurrentPlayer() == EPC_DVDPLAYER) &&
       CUtil::IsUsingTTFSubtitles() && g_application.m_pPlayer->GetSubtitleVisible())
   {

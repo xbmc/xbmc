@@ -1,5 +1,3 @@
-// -*- c-basic-offset: 8; indent-tabs-mode: t -*-
-// vim:ts=8:sw=8:noet:ai:
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
  *
@@ -26,15 +24,17 @@
 #include <ft2build.h>
 #include FT_GLYPH_H
 
-typedef struct ass_synth_priv_s ass_synth_priv_t;
+#include "ass.h"
 
-ass_synth_priv_t* ass_synth_init(void);
-void ass_synth_done(ass_synth_priv_t* priv);
+typedef struct ass_synth_priv ass_synth_priv_t;
 
-typedef struct bitmap_s {
-	int left, top;
-	int w, h; // width, height
-	unsigned char* buffer; // w x h buffer
+ass_synth_priv_t *ass_synth_init(double);
+void ass_synth_done(ass_synth_priv_t *priv);
+
+typedef struct {
+    int left, top;
+    int w, h;                   // width, height
+    unsigned char *buffer;      // w x h buffer
 } bitmap_t;
 
 /**
@@ -46,8 +46,11 @@ typedef struct bitmap_s {
  * \param bm_g out: pointer to the bitmap of glyph shadow is returned here
  * \param be 1 = produces blurred bitmaps, 0 = normal bitmaps
  */
-int glyph_to_bitmap(ass_synth_priv_t* priv, FT_Glyph glyph, FT_Glyph outline_glyph, bitmap_t** bm_g, bitmap_t** bm_o, bitmap_t** bm_s, int be);
+int glyph_to_bitmap(ass_library_t *library, ass_synth_priv_t *priv_blur,
+                    FT_Glyph glyph, FT_Glyph outline_glyph,
+                    bitmap_t **bm_g, bitmap_t **bm_o, bitmap_t **bm_s,
+                    int be, double blur_radius, FT_Vector shadow_offset);
 
-void ass_free_bitmap(bitmap_t* bm);
+void ass_free_bitmap(bitmap_t *bm);
 
-#endif /* LIBASS_BITMAP_H */
+#endif                          /* LIBASS_BITMAP_H */

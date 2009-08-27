@@ -80,6 +80,11 @@ void CRTMP::SetPlayPath(const std::string &strPlayPath)
   m_strPlayPath = strPlayPath;
 }
 
+void CRTMP::SetTcUrl(const std::string &strTcUrl)
+{
+  m_strTcUrl = strTcUrl;
+}
+
 void CRTMP::SetLive()
 {
     m_bIsLive = true;
@@ -328,9 +333,18 @@ bool CRTMP::SendConnectPacket()
     if( pos_slash != CStdString::npos )
       app = app.Left(pos_slash);
   }
+  
   CStdString tcURL;
-  url.GetURLWithoutFilename(tcURL);
-  tcURL += app;
+  if (m_strTcUrl.empty())
+  {
+    url.GetURLWithoutFilename(tcURL);
+    tcURL += app;
+  }
+  else
+  {
+    tcURL = m_strTcUrl;
+  }
+  
 	
   RTMPPacket packet;
   packet.m_nChannel = 0x03;   // control channel (invoke)

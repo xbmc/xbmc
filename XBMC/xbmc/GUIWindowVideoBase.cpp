@@ -188,7 +188,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           CFileItemPtr item = m_vecItems->Get(iItem);
           if (m_vecItems->IsPlugin())
             info.strContent = "plugin";
-          else if(m_vecItems->IsTV())
+          else if(m_vecItems->IsLiveTV())
             info.strContent = "livetv";
           else
           {
@@ -489,8 +489,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
     scanner.m_IMDB.SetScraperInfo(info);
 
-  // Get the correct movie title to search for
-  CStdString movieName = CUtil::GetMovieName(item, settings.parent_name);
+  // Get the correct movie title
+  CStdString movieName = item->GetMovieName(settings.parent_name);
 
   // 3. Run a loop so that if we Refresh we re-run this block
   bool listNeedsUpdating(false);
@@ -881,6 +881,10 @@ void CGUIWindowVideoBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
 
 int  CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item)
 {
+  // do not resume livetv
+  if (item->IsLiveTV())
+    return 0;
+
   m_database.Open();
   long startoffset = 0;
 
@@ -938,7 +942,7 @@ bool CGUIWindowVideoBase::OnResumeShowMenu(CFileItem &item)
   // we always resume the movie if the user doesn't want us to ask
   bool resumeItem = g_guiSettings.GetInt("myvideos.resumeautomatically") != RESUME_ASK;
 
-  if (!item.m_bIsFolder && !resumeItem)
+  if (!item.m_bIsFolder && !item.IsLiveTV() && !resumeItem)
   {
     // check to see whether we have a resume offset available
     CVideoDatabase db;
@@ -1852,7 +1856,7 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::CScraperPtr &
     info.strContent = "plugin";
     return 0;
   }
-  else if(m_vecItems->IsTV())
+  else if(m_vecItems->IsLiveTV())
   {
     info.strContent = "livetv";
     return 0;

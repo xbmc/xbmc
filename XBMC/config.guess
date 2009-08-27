@@ -1,10 +1,10 @@
 #! /bin/sh
 # Attempt to guess a canonical system name.
 #   Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
-#   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
+#   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 #   Free Software Foundation, Inc.
 
-timestamp='2009-04-27'
+timestamp='2009-06-10'
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -170,7 +170,7 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
 	    arm*|i386|m68k|ns32k|sh3*|sparc|vax)
 		eval $set_cc_for_build
 		if echo __ELF__ | $CC_FOR_BUILD -E - 2>/dev/null \
-			| grep __ELF__ >/dev/null
+			| grep -q __ELF__
 		then
 		    # Once all utilities can be ECOFF (netbsdecoff) or a.out (netbsdaout).
 		    # Return netbsd for either.  FIX?
@@ -656,7 +656,7 @@ EOF
 	    # => hppa64-hp-hpux11.23
 
 	    if echo __LP64__ | (CCOPTS= $CC_FOR_BUILD -E - 2>/dev/null) |
-		grep __LP64__ >/dev/null
+		grep -q __LP64__
 	    then
 		HP_ARCH="hppa2.0w"
 	    else
@@ -822,6 +822,9 @@ EOF
     [345]86:Windows_95:* | [345]86:Windows_98:* | [345]86:Windows_NT:*)
 	echo i${UNAME_MACHINE}-pc-mks
 	exit ;;
+    8664:Windows_NT:*)
+	echo x86_64-pc-mks
+	exit ;;
     i*:Windows_NT*:* | Pentium*:Windows_NT*:*)
 	# How do we know it's Interix rather than the generic POSIX subsystem?
 	# It also conflicts with pre-2.0 versions of AT&T UWIN. Should we
@@ -882,40 +885,17 @@ EOF
     m68*:Linux:*:*)
 	echo ${UNAME_MACHINE}-unknown-linux-gnu
 	exit ;;
-    mips:Linux:*:*)
+    mips:Linux:*:* | mips64:Linux:*:*)
 	eval $set_cc_for_build
 	sed 's/^	//' << EOF >$dummy.c
 	#undef CPU
-	#undef mips
-	#undef mipsel
+	#undef ${UNAME_MACHINE}
+	#undef ${UNAME_MACHINE}el
 	#if defined(__MIPSEL__) || defined(__MIPSEL) || defined(_MIPSEL) || defined(MIPSEL)
-	CPU=mipsel
+	CPU=${UNAME_MACHINE}el
 	#else
 	#if defined(__MIPSEB__) || defined(__MIPSEB) || defined(_MIPSEB) || defined(MIPSEB)
-	CPU=mips
-	#else
-	CPU=
-	#endif
-	#endif
-EOF
-	eval "`$CC_FOR_BUILD -E $dummy.c 2>/dev/null | sed -n '
-	    /^CPU/{
-		s: ::g
-		p
-	    }'`"
-	test x"${CPU}" != x && { echo "${CPU}-unknown-linux-gnu"; exit; }
-	;;
-    mips64:Linux:*:*)
-	eval $set_cc_for_build
-	sed 's/^	//' << EOF >$dummy.c
-	#undef CPU
-	#undef mips64
-	#undef mips64el
-	#if defined(__MIPSEL__) || defined(__MIPSEL) || defined(_MIPSEL) || defined(MIPSEL)
-	CPU=mips64el
-	#else
-	#if defined(__MIPSEB__) || defined(__MIPSEB) || defined(_MIPSEB) || defined(MIPSEB)
-	CPU=mips64
+	CPU=${UNAME_MACHINE}
 	#else
 	CPU=
 	#endif
@@ -947,7 +927,7 @@ EOF
 	  EV67)  UNAME_MACHINE=alphaev67 ;;
 	  EV68*) UNAME_MACHINE=alphaev68 ;;
         esac
-	objdump --private-headers /bin/sh | grep ld.so.1 >/dev/null
+	objdump --private-headers /bin/sh | grep -q ld.so.1
 	if test "$?" = 0 ; then LIBC="libc1" ; else LIBC="" ; fi
 	echo ${UNAME_MACHINE}-unknown-linux-gnu${LIBC}
 	exit ;;
@@ -1001,14 +981,6 @@ EOF
 	  elf32-i386)
 		TENTATIVE="${UNAME_MACHINE}-pc-linux-gnu"
 		;;
-	  a.out-i386-linux)
-		echo "${UNAME_MACHINE}-pc-linux-gnuaout"
-		exit ;;
-	  "")
-		# Either a pre-BFD a.out linker (linux-gnuoldld) or
-		# one that does not give us useful --help.
-		echo "${UNAME_MACHINE}-pc-linux-gnuoldld"
-		exit ;;
 	esac
 	# Determine whether the default compiler is a.out or elf
 	eval $set_cc_for_build
@@ -1074,7 +1046,7 @@ EOF
     i*86:syllable:*:*)
 	echo ${UNAME_MACHINE}-pc-syllable
 	exit ;;
-    i*86:LynxOS:2.*:* | i*86:LynxOS:3.[01]*:* | i*86:LynxOS:4.0*:*)
+    i*86:LynxOS:2.*:* | i*86:LynxOS:3.[01]*:* | i*86:LynxOS:4.[02]*:*)
 	echo i386-unknown-lynxos${UNAME_RELEASE}
 	exit ;;
     i*86:*DOS:*:*)
@@ -1182,7 +1154,7 @@ EOF
     rs6000:LynxOS:2.*:*)
 	echo rs6000-unknown-lynxos${UNAME_RELEASE}
 	exit ;;
-    PowerPC:LynxOS:2.*:* | PowerPC:LynxOS:3.[01]*:* | PowerPC:LynxOS:4.0*:*)
+    PowerPC:LynxOS:2.*:* | PowerPC:LynxOS:3.[01]*:* | PowerPC:LynxOS:4.[02]*:*)
 	echo powerpc-unknown-lynxos${UNAME_RELEASE}
 	exit ;;
     SM[BE]S:UNIX_SV:*:*)

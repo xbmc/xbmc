@@ -26,6 +26,7 @@ MODLIBS=        _MODLIBS_
 # === Variables set by configure
 VERSION=	@VERSION@
 srcdir=		@srcdir@
+datarootdir=	@datarootdir@ 
 VPATH=		@srcdir@
 
 CC=		@CC@
@@ -983,7 +984,8 @@ clean:
 clobber: clean
 	-rm -f $(BUILDPYTHON) $(PGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
 		tags TAGS \
-		config.cache config.log pyconfig.h Modules/config.c
+		config.cache config.log pyconfig.h Modules/config.c \
+		Include/pyconfig.h configure.lineno libpython2.4.so.1.0
 	-rm -rf build platform
 	-rm -rf $(PYTHONFRAMEWORKDIR)
 

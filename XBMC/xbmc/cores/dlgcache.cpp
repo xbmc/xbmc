@@ -22,12 +22,7 @@
 #include "stdafx.h"
 #include "dlgcache.h"
 #include "GUIWindowManager.h"
-#include "Application.h"
 #include "GUIDialogProgress.h"
-
-#ifdef HAS_MPLAYER
-extern "C" void mplayer_exit_player(void);
-#endif
 
 CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg)
 {
@@ -130,9 +125,6 @@ void CDlgCache::Process()
         if(m_pDlg->IsCanceled())
         {
           bSentCancel = true;
-#ifdef HAS_MPLAYER
-          mplayer_exit_player(); 
-#endif
         }
         else if( !m_pDlg->IsDialogRunning() && GetTickCount() > m_dwTimeStamp 
               && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )

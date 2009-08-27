@@ -32,9 +32,6 @@
  *  Moved to XBMC Add-on framework by alwinus
  */
 
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#endif
 #include "../../addons/include/xbmc_vis_dll.h"
 #include <math.h>
 #include <GL/glew.h>

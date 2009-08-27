@@ -248,7 +248,7 @@ bool CKaraokeLyricsTextUStar::Load()
       numbercount--;
     }
 
-    int notestart_timing = (numbers[0] * beatstep) * 10 + (startoffsetms / 100);
+    int notestart_timing = (int)((numbers[0] * beatstep) * 10 + (startoffsetms / 100));
 
     if ( type != '-' )
     {
@@ -268,7 +268,7 @@ bool CKaraokeLyricsTextUStar::Load()
 
       // If we're relative, adjust to the pause start
       if ( relative )
-        startoffsetms += (numbers[0] * beatstep) * 10;
+        startoffsetms += (int)((numbers[0] * beatstep) * 10);
 
       //CLog::Log( LOGERROR, ":: [stop] %d [%d]", numbers[0], notestart_timing );
     }

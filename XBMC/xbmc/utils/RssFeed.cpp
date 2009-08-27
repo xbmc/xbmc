@@ -38,15 +38,16 @@ CRssFeed::~CRssFeed()
 
 }
 
-bool CRssFeed::Init(const CStdString& strURL) {
-
+bool CRssFeed::Init(const CStdString& strURL)
+{
   m_strURL = strURL;
 
   CLog::Log(LOGINFO, "Initializing feed: %s", m_strURL.c_str());
   return true;
 }
 
-time_t CRssFeed::ParseDate(const CStdString & strDate) {
+time_t CRssFeed::ParseDate(const CStdString & strDate)
+{
   struct tm pubDate = {0};
   // TODO: Handle time zone
   strptime(strDate.c_str(), "%a, %d %b %Y %H:%M:%S", &pubDate);
@@ -54,8 +55,8 @@ time_t CRssFeed::ParseDate(const CStdString & strDate) {
   return mktime(&pubDate);
 }
 
-bool CRssFeed::ReadFeed() {
-
+bool CRssFeed::ReadFeed()
+{
   // Remove all previous items
   EnterCriticalSection(m_ItemVectorLock);
   items.Clear();
@@ -69,9 +70,7 @@ bool CRssFeed::ReadFeed() {
   TiXmlDocument xmlDoc;
   xmlDoc.Parse(strXML.c_str());
   if (xmlDoc.Error())
-  {
     CLog::Log(LOGERROR,"error parsing xml doc from <%s>. error: <%d>", m_strURL.c_str(), xmlDoc.ErrorId());
-  }
 
   TiXmlElement* rssXmlNode = xmlDoc.RootElement();
 
@@ -111,51 +110,54 @@ bool CRssFeed::ReadFeed() {
       if (aNode && !aNode->NoChildren())
         strMediaThumbnail = aNode->FirstChild()->Value();
     }
-
   }
   else
     return false;
 
   TiXmlElement* child = NULL;
   TiXmlElement* item_child = NULL;
-  for( child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement() )
+  for (child = channelXmlNode->FirstChildElement("item"); child; child = child->NextSiblingElement())
   {
     // Create new item,
     CFileItemPtr item(new CFileItem());
 
-    for( item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement() )
+    for (item_child = child->FirstChildElement(); item_child; item_child = item_child->NextSiblingElement())
     {
-      if (strcmp(item_child->Value(), "title") == 0) {
-        if (item_child->GetText()) {
+      if (strcmp(item_child->Value(), "title") == 0)
+      {
+        if (item_child->GetText())
           item->SetLabel(item_child->GetText());
-        }
       }
-      else if(strcmp(item_child->Value(), "pubDate") == 0) {
+      else if (strcmp(item_child->Value(), "pubDate") == 0)
+      {
         CDateTime pubDate(ParseDate(item_child->GetText()));
         item->m_dateTime = pubDate;
       }
-      else if(strcmp(item_child->Value(), "link") == 0) {
-        if (item_child->GetText()) {
+      else if (strcmp(item_child->Value(), "link") == 0)
+      {
+        if (item_child->GetText())
+        {
           string strLink = item_child->GetText();
 
           string strPrefix = strLink.substr(0, strLink.find_first_of(":"));
-          if (strPrefix == "rss") {
+          if (strPrefix == "rss")
+          {
             // If this is an rss item, we treat it as another level in the directory
             item->m_bIsFolder = true;
             item->m_strPath = strLink;
           }
-          else if (item->m_strPath == "" && IsPathToMedia(strLink)) {
+          else if (item->m_strPath == "" && IsPathToMedia(strLink))
             item->m_strPath = strLink;
-          }
         }
       }
-      else if(strcmp(item_child->Value(), "enclosure") == 0) {
+      else if(strcmp(item_child->Value(), "enclosure") == 0)
+      {
         const char * url = item_child->Attribute("url");
-        if (url && item->m_strPath.IsEmpty() && IsPathToMedia(url)) {
+        if (url && item->m_strPath.IsEmpty() && IsPathToMedia(url))
           item->m_strPath = url;
-        }
         const char * content_type = item_child->Attribute("type");
-        if (content_type) {
+        if (content_type)
+        {
           item->SetContentType(content_type);
           CStdString strContentType(content_type);
           if (url && item->m_strPath.IsEmpty() &&
@@ -168,14 +170,15 @@ bool CRssFeed::ReadFeed() {
         if (len)
           item->m_dwSize = _atoi64(len);
       }
-      else if(strcmp(item_child->Value(), "media:content") == 0) {
+      else if(strcmp(item_child->Value(), "media:content") == 0)
+      {
         const char * url = item_child->Attribute("url");
-        if (url && item->m_strPath == "" && IsPathToMedia(url)) {
+        if (url && item->m_strPath == "" && IsPathToMedia(url))
           item->m_strPath = url;
-        }
 
         const char * content_type = item_child->Attribute("type");
-        if (content_type) {
+        if (content_type)
+        {
           item->SetContentType(content_type);
           CStdString strContentType(content_type);
           if (url && item->m_strPath.IsEmpty() &&
@@ -187,42 +190,41 @@ bool CRssFeed::ReadFeed() {
 
         // Go over all child nodes of the media content and get the thumbnail
         TiXmlElement* media_content_child = item_child->FirstChildElement("media:thumbnail");
-        if(media_content_child && media_content_child->Value() && strcmp(media_content_child->Value(), "media:thumbnail") == 0)
+        if (media_content_child && media_content_child->Value() && strcmp(media_content_child->Value(), "media:thumbnail") == 0)
         {
           const char * url = media_content_child->Attribute("url");
           if (url && IsPathToThumbnail(url))
             item->SetThumbnailImage(url);
         }
       }
-      else if(strcmp(item_child->Value(), "guid") == 0) {
-        if (item->m_strPath.IsEmpty() && IsPathToMedia(item_child->Value())) {
-          if(item_child->GetText()) {
+      else if(strcmp(item_child->Value(), "guid") == 0)
+      {
+        if (item->m_strPath.IsEmpty() && IsPathToMedia(item_child->Value()))
+        {
+          if(item_child->GetText())
             item->m_strPath = item_child->GetText();
-          }
         }
       }
       else if(strcmp(item_child->Value(), "media:thumbnail") == 0 && IsPathToThumbnail(item_child->GetText()))
-      {
         item->SetThumbnailImage(item_child->GetText());
-      }
-      else if(strcmp(item_child->Value(), "media:thumbnail") == 0) {
+      else if(strcmp(item_child->Value(), "media:thumbnail") == 0)
+      {
         const char * url = item_child->Attribute("url");
-        if(url && IsPathToThumbnail(url)) {
+        if(url && IsPathToThumbnail(url))
           item->SetThumbnailImage(url);
-        }
       }
       else if(strcmp(item_child->Value(), "itunes:image") == 0 && IsPathToThumbnail(item_child->GetText()))
-      {
         item->SetThumbnailImage(item_child->GetText());
-      }
-      else if(strcmp(item_child->Value(), "itunes:image") == 0) {
+      else if(strcmp(item_child->Value(), "itunes:image") == 0)
+      {
         const char * url = item_child->Attribute("href");
-        if(url && IsPathToThumbnail(url)) {
+        if(url && IsPathToThumbnail(url))
           item->SetThumbnailImage(url);
-        }
       }
-      else if(strcmp(item_child->Value(), "description") == 0) {
-        if(item_child->GetText()) {
+      else if(strcmp(item_child->Value(), "description") == 0)
+      {
+        if(item_child->GetText())
+        {
           CStdString description = item_child->GetText();
           while (description.Find("<") != -1)
           {
@@ -238,34 +240,38 @@ bool CRssFeed::ReadFeed() {
           item->SetLabel2(description);
         }
       }
-      else if(strcmp(item_child->Value(), "itunes:summary") == 0) {
-        if(item_child->GetText()) {
+      else if(strcmp(item_child->Value(), "itunes:summary") == 0)
+      {
+        if(item_child->GetText())
+        {
           CStdString description = item_child->GetText();
           item->SetProperty("description", description);
           item->SetLabel2(description);
         }
       }
-      else if(strcmp(item_child->Value(), "itunes:subtitle") == 0) {
-        if(item_child->GetText()) {
+      else if(strcmp(item_child->Value(), "itunes:subtitle") == 0)
+      {
+        if(item_child->GetText())
+        {
           CStdString description = item_child->GetText();
           item->SetProperty("description", description);
           item->SetLabel2(description);
         }
       }
-      else if(strcmp(item_child->Value(), "itunes:author") == 0) {
-        if(item_child->GetText()) {
+      else if(strcmp(item_child->Value(), "itunes:author") == 0)
+      {
+        if(item_child->GetText())
           item->SetProperty("author", item_child->GetText());
-        }
       }
-      else if(strcmp(item_child->Value(), "itunes:duration") == 0) {
-        if(item_child->GetText()) {
+      else if(strcmp(item_child->Value(), "itunes:duration") == 0)
+      {
+        if(item_child->GetText())
           item->SetProperty("duration", item_child->GetText());
-        }
       }
-      else if(strcmp(item_child->Value(), "itunes:keywords") == 0) {
-        if(item_child->GetText()) {
+      else if(strcmp(item_child->Value(), "itunes:keywords") == 0)
+      {
+        if(item_child->GetText())
           item->SetProperty("keywords", item_child->GetText());
-        }
       }
     } // for item
 
@@ -283,8 +289,8 @@ bool CRssFeed::ReadFeed() {
   return true;
 }
 
-bool CRssFeed::IsPathToMedia(const CStdString& strPath ) {
-
+bool CRssFeed::IsPathToMedia(const CStdString& strPath )
+{
   CStdString extension;
   CUtil::GetExtension(strPath, extension);
 
@@ -305,11 +311,10 @@ bool CRssFeed::IsPathToMedia(const CStdString& strPath ) {
   return false;
 }
 
-bool CRssFeed::IsPathToThumbnail(const CStdString& strPath ) {
-
+bool CRssFeed::IsPathToThumbnail(const CStdString& strPath )
+{
   // Currently just check if this is an image, maybe we will add some
   // other checks later
-
   CStdString extension;
   CUtil::GetExtension(strPath, extension);
 
@@ -323,5 +328,4 @@ bool CRssFeed::IsPathToThumbnail(const CStdString& strPath ) {
 
   return false;
 }
-
 

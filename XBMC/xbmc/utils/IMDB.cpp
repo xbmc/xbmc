@@ -58,7 +58,7 @@ CIMDB::~CIMDB()
 {
 }
 
-int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction, CScraperUrl* pUrl)
+int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList, const CStdString& strFunction, CScraperUrl* pUrl)
 {
   movielist.clear();
 
@@ -176,7 +176,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     if (szFunction)
     {
       CScraperUrl scrURL(xurl);
-      InternalFindMovie(strMovie,movielist,szFunction,&scrURL);
+      InternalFindMovie(strMovie,movielist,sortMovieList,szFunction,&scrURL);
     }
     xurl = xurl->NextSiblingElement("url");
   }
@@ -187,6 +187,17 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
 
   while (movie)
   {
+    // is our result already sorted correctly when handed over from scraper? if so, do not let xbmc sort it
+    if (sortMovieList)
+    {
+      TiXmlElement* results = docHandle.FirstChild("results").Element();
+      if (results)
+      {
+        CStdString szSorted = results->Attribute("sorted");
+        sortMovieList = (szSorted.CompareNoCase("yes") != 0);
+      }
+    }
+
     CScraperUrl url;
     TiXmlNode *title = movie->FirstChild("title");
     TiXmlElement *link = movie->FirstChildElement("url");
@@ -570,9 +581,11 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   }
 
   // unthreaded
-  int success = InternalFindMovie(strMovie, movieList);
+  bool sortList = true;
+  int success = InternalFindMovie(strMovie, movieList, sortList);
   // sort our movie list by fuzzy match
-  std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
+  if (sortList)
+    std::sort(movieList.begin(), movieList.end(), RelevanceSortFunction);
   return success;
 }
 

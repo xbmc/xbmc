@@ -38,7 +38,7 @@
 #include "lib/libcdio/cd_Types.h"
 #include "lib/libcdio/cdtext.h"
 #else
-#include "../lib/libcdio/cdio.h"
+#include <cdio/cdio.h>
 #endif
 #include "../utils/CriticalSection.h"
 #include "../guilib/StdString.h"

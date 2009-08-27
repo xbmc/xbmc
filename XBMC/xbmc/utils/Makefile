@@ -6,7 +6,6 @@ SRCS=Addon.cpp \
      Archive.cpp \
      CharsetConverter.cpp \
      CriticalSection.cpp \
-     DelayController.cpp \
      Event.cpp \
      fstrcmp.cpp \
      GUIInfoManager.cpp \

@@ -188,7 +188,6 @@ public:
 public:
     // multipath testing
     bool m_useMultipaths;
-    bool m_DisableModChipDetection;
 
     int m_audioHeadRoom;
     float m_ac3Gain;
@@ -248,6 +247,7 @@ public:
     int m_songInfoDuration;
     int m_busyDialogDelay;
     int m_logLevel;
+    int m_logLevelHint;
     CStdString m_cddbAddress;
 #ifdef HAS_HAL
     bool m_useHalMount;
@@ -270,7 +270,6 @@ public:
     CStdStringArray m_pathSubstitutions;
     int m_remoteRepeat;
     float m_controllerDeadzone;
-    bool m_FTPShowCache;
 
     bool m_playlistAsFolders;
     bool m_detectAsUdf;
@@ -319,6 +318,13 @@ public:
     bool m_bTuxBoxSendAllAPids;
 
     int m_iMythMovieLength;         // minutes
+
+    // EDL Commercial Break
+    bool m_bEdlMergeShortCommBreaks;
+    int m_iEdlMaxCommBreakLength;   // seconds
+    int m_iEdlMinCommBreakLength;   // seconds
+    int m_iEdlMaxCommBreakGap;      // seconds
+
     bool m_bFirstLoop;
     int m_curlconnecttimeout;
     int m_curllowspeedtime;
@@ -351,6 +357,7 @@ public:
 
     CStdString m_cpuTempCmd;
     CStdString m_gpuTempCmd;
+    int m_bgInfoLoaderMaxThreads;
   };
 
   struct stSettings
@@ -409,9 +416,6 @@ public:
     int m_iMyVideoStack;
 
     int iAdditionalSubtitleDirectoryChecked;
-
-    char szOnlineArenaPassword[32]; // private arena password
-    char szOnlineArenaDescription[64]; // private arena description
 
     int m_HttpApiBroadcastPort;
     int m_HttpApiBroadcastLevel;

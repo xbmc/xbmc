@@ -28,7 +28,7 @@
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIWindowVideoFiles.h"
-#include "Application.h"
+#include "Autorun.h"
 #include "GUIPassword.h"
 #include "Util.h"
 #include "GUIDialogMediaSource.h"

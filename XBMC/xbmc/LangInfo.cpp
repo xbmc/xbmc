@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "LangInfo.h"
 #include "Settings.h"
-#include "Util.h"
 #include "GUISettings.h"
 
 CLangInfo g_langInfo;

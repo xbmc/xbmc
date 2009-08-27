@@ -21,10 +21,7 @@
  *
  */
 
-#ifdef _XBOX
-#include "xtl.h"
-#elif _LINUX
-#else
+#ifdef _WIN32
 #include <windows.h>
 #endif
 #include <exception>

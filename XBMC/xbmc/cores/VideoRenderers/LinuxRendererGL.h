@@ -7,13 +7,13 @@
 #include "../../../guilib/Shader.h"
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
-#include "VideoShaders/YUV2RGBShader.h"
-#include "VideoShaders/VideoFilterShader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "GraphicContext.h"
 
 namespace Surface { class CSurface; }
+namespace Shaders { class BaseYUV2RGBShader; }
+namespace Shaders { class BaseVideoFilterShader; }
 
 using namespace Surface;
 using namespace Shaders;
@@ -241,7 +241,7 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
-  CShaderProgram        *m_pYUVShader;
+  BaseYUV2RGBShader     *m_pYUVShader;
   BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
 
@@ -257,6 +257,8 @@ protected:
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
 
+  CRect m_crop;
+  float m_aspecterror;
 };
 
 

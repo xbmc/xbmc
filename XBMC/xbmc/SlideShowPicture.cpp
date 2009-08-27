@@ -25,6 +25,7 @@
 #include "utils/GUIInfoManager.h"
 #include "Settings.h"
 #include "TextureManager.h"
+#include "include.h"
 
 using namespace std;
 
@@ -724,22 +725,22 @@ void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD 
     v2 = (float)pTexture->imageHeight / pTexture->textureHeight;
   }
 
-  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
+  glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
   glTexCoord2f(u1, v1);
   glVertex3f(x[0], y[0], 0);
 
   // Bottom-left vertex (corner)
-  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
+  glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
   glTexCoord2f(u2, v1);
   glVertex3f(x[1], y[1], 0);
 
   // Bottom-right vertex (corner)
-  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
+  glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
   glTexCoord2f(u2, v2);
   glVertex3f(x[2], y[2], 0);
 
   // Top-right vertex (corner)
-  glColor4ub((GLubyte)((dwColor >> 16) & 0xff), (GLubyte)((dwColor >> 8) & 0xff), (GLubyte)(dwColor & 0xff), (GLubyte)(dwColor >> 24));
+  glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
   glTexCoord2f(u1, v2);
   glVertex3f(x[3], y[3], 0);
 

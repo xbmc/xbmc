@@ -1,17 +1,11 @@
 // Waveform.vis
 // A simple visualisation example by MrC
 
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#endif
 #include "../../addons/include/libaddon.h"
 #include "../../addons/include/xbmc_vis_dll.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif
-#include <string.h>
-#include <stdio.h>
-
 
 char g_visName[512];
 #ifndef HAS_SDL_OPENGL
@@ -32,8 +26,6 @@ typedef struct {
 } D3DVIEWPORT8;
 #ifdef _WIN32PC
 typedef unsigned long D3DCOLOR;
-#else
-typedef unsigned int D3DCOLOR;
 #endif
 #endif
 
@@ -49,40 +41,33 @@ struct Vertex_t
 #define VERTEX_FORMAT     (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
 #endif
 
-extern "C" {
-
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-ADDON_STATUS Create(ADDON_HANDLE hdl, void *props)
-{
-  //if (!XBMC_register_me(hdl))
-  //  return STATUS_UNKNOWN;
-
-  strcpy(g_visName, "WaveForm");
-
-  if (props)
-  {
-    VIS_PROPS* visProps = (VIS_PROPS*) props;
 #ifndef HAS_SDL_OPENGL
-    g_device = visProps->device;
+extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #else
-    g_device = NULL;
+extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
+                       float fPixelRatio, const char *szSubModuleName)
 #endif
-    g_viewport.X = visProps->x;
-    g_viewport.Y = visProps->y;
-    g_viewport.Width = visProps->width;
-    g_viewport.Height = visProps->height;
-    g_viewport.MinZ = 0;
-    g_viewport.MaxZ = 1;
-  }
-  return STATUS_OK;
+{
+  //printf("Creating Waveform\n");
+  strcpy(g_visName, szVisualisationName);
+  m_uiVisElements = 0;
+  g_device = pd3dDevice;
+  g_viewport.X = iPosX;
+  g_viewport.Y = iPosY;
+  g_viewport.Width = iWidth;
+  g_viewport.Height = iHeight;
+  g_viewport.MinZ = 0;
+  g_viewport.MaxZ = 1;
 }
 
 //-- Start --------------------------------------------------------------------
 // Called when a new soundtrack is played
 //-----------------------------------------------------------------------------
-void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
+extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
 {
   //printf("Got Start Command\n");
 }
@@ -90,7 +75,7 @@ void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* sz
 //-- Stop ---------------------------------------------------------------------
 // Called when the visualisation is closed by XBMC
 //-----------------------------------------------------------------------------
-void Stop()
+extern "C" void Stop()
 {
   //printf("Got Stop Command\n");
 }
@@ -98,7 +83,7 @@ void Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   // Convert the audio data into a floating -1 to +1 range
   int ipos=0;
@@ -118,7 +103,7 @@ void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, 
 //-- Render -------------------------------------------------------------------
 // Called once per frame. Do all rendering here.
 //-----------------------------------------------------------------------------
-void Render()
+extern "C" void Render()
 {
   Vertex_t  verts[512];
 
@@ -142,7 +127,7 @@ void Render()
     verts[i].x = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
     verts[i].y = g_viewport.Y + g_viewport.Height * 0.33f + (g_fWaveform[0][i] * g_viewport.Height * 0.15f);
     verts[i].z = 1.0;
-    verts[i].w = 1;
+    verts[i].w = 1;    
 #ifdef HAS_SDL_OPENGL
     glVertex2f(verts[i].x, verts[i].y);
 #endif
@@ -189,7 +174,7 @@ void Render()
 //-- GetInfo ------------------------------------------------------------------
 // Tell XBMC our requirements
 //-----------------------------------------------------------------------------
-void GetInfo(VIS_INFO* pInfo)
+extern "C" void GetInfo(VIS_INFO* pInfo)
 {
   pInfo->bWantsFreq = false;
   pInfo->iSyncDelay = 0;
@@ -198,23 +183,55 @@ void GetInfo(VIS_INFO* pInfo)
 //-- OnAction -----------------------------------------------------------------
 // Handle XBMC actions such as next preset, lock preset, album art changed etc
 //-----------------------------------------------------------------------------
-bool OnAction(long flags, void *param)
+extern "C" bool OnAction(long flags, void *param)
 {
-  return true;
+  bool ret = false;
+  return ret;
 }
 
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
 {
+
+}
+
+//-- GetSettings --------------------------------------------------------------
+// Return the settings for XBMC to display
+//-----------------------------------------------------------------------------
+extern "C" unsigned int GetSettings(StructSetting*** sSet)
+{
+  return 0;
+}
+
+extern "C" void FreeSettings()
+{
+  return;
+}
+
+
+//-- UpdateSetting ------------------------------------------------------------
+// Handle setting change request from XBMC
+//-----------------------------------------------------------------------------
+extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+{
+
+}
+
+//-- GetSubModules ------------------------------------------------------------
+// Return any sub modules supported by this vis
+//-----------------------------------------------------------------------------
+extern "C" int GetSubModules(char ***names, char ***paths)
+{
+  return 0; // this vis supports 0 sub modules
 }
 
 //-- Remove -------------------------------------------------------------------
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-void Remove()
+extern "C" void Remove()
 {
 }
 
@@ -222,7 +239,7 @@ void Remove()
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-bool HasSettings()
+extern "C" bool HasSettings()
 {
   return false;
 }
@@ -232,7 +249,7 @@ bool HasSettings()
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
 
-addon_settings_t GetSettings()
+extern "C" addon_settings_t GetSettings()
 {
   return NULL;
 }
@@ -241,7 +258,7 @@ addon_settings_t GetSettings()
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-ADDON_STATUS GetStatus()
+extern "C" ADDON_STATUS GetStatus()
 {
   return STATUS_OK;
 }
@@ -250,9 +267,8 @@ ADDON_STATUS GetStatus()
 // Set a specific Setting value (called from XBMC)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+extern "C" ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
 {
   return STATUS_OK;
 }
 
-}

@@ -23,7 +23,7 @@
 #include "DVDClock.h"
 #include "VideoReferenceClock.h"
 #include <math.h>
-#include "../../Util.h"
+#include "MathUtils.h"
 
 #if defined(_WIN32)
 static void TimeGetTimeFrequency(LARGE_INTEGER* freq){ freq->QuadPart = 1000; }

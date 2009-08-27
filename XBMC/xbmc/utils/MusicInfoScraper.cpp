@@ -117,6 +117,7 @@ void CMusicInfoScraper::FindAlbuminfo()
 
   parser.m_param[0] = strHTML;
   CStdString strXML = parser.Parse("GetAlbumSearchResults"/*,&m_scraper->settings*/);
+  CLog::Log(LOGDEBUG,"scraper: GetAlbumSearchResults returns %s",strXML.c_str());
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);
@@ -224,6 +225,7 @@ void CMusicInfoScraper::FindArtistinfo()
 
   parser.m_param[0] = strHTML;
   CStdString strXML = parser.Parse("GetArtistSearchResults"/*,&m_scraper->settings*/);
+  CLog::Log(LOGDEBUG,"scraper: GetArtistSearchResults returns %s",strXML.c_str());
   if (strXML.IsEmpty())
   {
     CLog::Log(LOGERROR, "%s: Unable to parse web site",__FUNCTION__);

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: ezechiel1917-->
-<!--Date of translation: 09/03/2009-->
+<!--Date of translation: 11/08/2009-->
 <strings>
   <string id="31000">Ztlumená hlasitost</string>
-  <string id="31001"></string>
+  <string id="31001">Pracuji...</string>
   <string id="31002"></string>
   <string id="31003"></string>
   <string id="31004"></string>
@@ -44,8 +44,8 @@
   <string id="31041">Současný Fanart obrázek[CR]TV seriálu[CR][CR]Klikněte pro změnu</string>
   <string id="31042">PŘEHRÁVÁ SE</string>
   <string id="31043">POZASTAVENO</string>
-  <string id="31044">PŘETOČIT VPŘED</string>
-  <string id="31045">PŘETOČIT ZPĚT</string>
+  <string id="31044">PŘETÁČÍ SE VPŘED</string>
+  <string id="31045">PŘETÁČÍ SE ZPĚT</string>
   <string id="31046">Vítejte v XBMC - Přihlašte se, prosím</string>
   <string id="31047">Naposledy přihlášen před</string>
   <string id="31048">Současný Fanart obrázek[CR]interpreta[CR][CR]Klikněte pro změnu</string>
@@ -81,8 +81,10 @@
   <string id="31111">Vždy zobrazovat informace o skladbě při zobrazení textu skladby</string>
   <string id="31112">Zobrazovat názvy médií při zobrazení "Široké ikony"</string>
 
+  <string id="31113">Jeden Obrázek</string>
+  <string id="31114">Více Obrázků</string>
   <!-- Script Settings labels -->
-  <string id="31200">Konfigurace vlastních skript;</string>
+  <string id="31200">Konfigurace vlastních skriptů</string>
   <string id="31201"></string>
   <string id="31202"></string>
   <string id="31203">Nastavit název tlačítka</string>

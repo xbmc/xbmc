@@ -6,8 +6,8 @@
 # Common variables used to ease maintenance of this script
 XBMC_TARBALL=""
 XBMC_TARBALL_CHECKSUM=""
-SVN_REVISION="21743"
-XBMC_VERSION="9.04.1+svn$SVN_REVISION"
+SVN_REVISION="22158"
+XBMC_VERSION="9.04.1+svn$SVN_REVISION~deb1"
 
 USAGE="\n\
 This script is used to generate the orig tarball used in building\n\
@@ -39,9 +39,13 @@ make_current_tarball() {
 
     # Take out the .svn directories
     echo "Removing .svn directories"
-    for TMP in `find xbmc-$XBMC_VERSION -type d -name .svn`; do
-        rm -rf $TMP
+    find xbmc-$XBMC_VERSION -type d -name .svn | while read TMP; do
+        rm -rf "$TMP"
     done
+
+    # Remove libdvdcss
+    echo "Remove libdvdcss"
+    rm -rf xbmc-$XBMC_VERSION/xbmc/cores/dvdplayer/Codecs/libdvd/libdvdcss
 
     # Remove some empty directories and its empty subdirectories
     echo "Remove empty directories and its empty subdirectories"

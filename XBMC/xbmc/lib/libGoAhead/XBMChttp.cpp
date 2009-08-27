@@ -2776,37 +2776,6 @@ int CXbmcHttp::xbmcGetSystemInfoByName(int numParas, CStdString paras[])
   }
 }
 
-int CXbmcHttp::xbmcSpinDownHardDisk(int numParas, CStdString paras[])
-{
-  if (numParas==1 && paras[0].ToLower()=="false")
-  {
-	  if (g_application.m_dwSpinDownTime!=0)
-	    return SetResponse(openTag+"OK:Not spun down");
-	  else
-	  {
-	    #ifdef HAS_XBOX_HARDWARE
-        XKHDD::SpindownHarddisk(false);
-      #endif
-        g_application.m_dwSpinDownTime = timeGetTime();
-        return SetResponse(openTag+"OK");
-	  }
-  }
-  if (g_application.m_dwSpinDownTime==0)
-	return SetResponse(openTag+"OK:Already spun down");
-  if (m_gWindowManager.HasModalDialog())
-	return SetResponse(openTag+"Error:Can't spin down now (modal dialog)");
-#ifdef HAS_XBOX_HARDWARE
-  if (g_application.MustBlockHDSpinDown())
-	return SetResponse(openTag+"Error:Can't spin down now (must block)");
-  if (g_application.IsPlaying() && g_application.CurrentFileItem().IsHD())
-	return SetResponse(openTag+"Error:Can't spin down now (playing media on hard disk)");
-    XKHDD::SpindownHarddisk();
-  g_application.m_dwSpinDownTime = 0;
-  g_application.m_bSpinDown = true;
-#endif
-  return SetResponse(openTag+"OK");
-}
-
 bool CXbmcHttp::xbmcBroadcast(CStdString message, int level)
 {
   if  (g_stSettings.m_HttpApiBroadcastLevel>=level)
@@ -3214,7 +3183,6 @@ int CXbmcHttp::xbmcCommand(const CStdString &parameter)
       else if (command == "queryvideodatabase")       retVal = xbmcQueryVideoDataBase(numParas, paras);
       else if (command == "execmusicdatabase")        retVal = xbmcExecMusicDataBase(numParas, paras);
       else if (command == "execvideodatabase")        retVal = xbmcExecVideoDataBase(numParas, paras);
-      else if (command == "spindownharddisk")         retVal = xbmcSpinDownHardDisk(numParas, paras);
       else if (command == "broadcast")                retVal = xbmcBroadcast(numParas, paras);
       else if (command == "setbroadcast")             retVal = xbmcSetBroadcast(numParas, paras);
       else if (command == "getbroadcast")             retVal = xbmcGetBroadcast();

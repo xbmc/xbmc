@@ -416,13 +416,11 @@ namespace PYXBMC
   PyObject* XBMC_GetIPAddress(PyObject *self, PyObject *args)
   {
     char cTitleIP[32];
-#ifdef HAS_XBOX_NETWORK
-    XNADDR xna;
-    XNetGetTitleXnAddr(&xna);
-    XNetInAddrToString(xna.ina, cTitleIP, 32);
-#else
     sprintf(cTitleIP, "127.0.0.1");
-#endif
+    CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+    if (iface)
+      return PyString_FromString(iface->GetCurrentIPAddress().c_str());
+
     return PyString_FromString(cTitleIP);
   }
 

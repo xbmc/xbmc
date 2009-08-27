@@ -370,17 +370,9 @@ namespace VIDEO
 
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const ADDON::CScraperPtr& scraper, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
-    CStdString strMovieName;
     m_IMDB.SetScraperInfo(scraper);
 
-    if (bDirNames && scraper->Content() == CONTENT_MOVIES)
-    {
-      strMovieName = items.m_strPath;
-      CUtil::RemoveSlashAtEnd(strMovieName);
-      strMovieName = CUtil::GetFileName(strMovieName);
-    }
-
-    if (pDlgProgress)
+   if (pDlgProgress)
     {
       if (items.Size() > 1 || (items[0]->m_bIsFolder && !bRefresh))
       {
@@ -514,33 +506,13 @@ namespace VIDEO
           }
           continue;
         }
-        else
-        {
-          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
-          strMovieName = CUtil::GetFileName(pItem->m_strPath);
-          CUtil::AddSlashAtEnd(pItem->m_strPath);
-        }
       }
 
       if (!pItem->m_bIsFolder || info2->Content() == CONTENT_TVSHOWS)
       {
         if ((pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList()) || info2->Content() == CONTENT_TVSHOWS )
         {
-          if (!bDirNames && info2->Content() != CONTENT_TVSHOWS)
-          {
-            if (pItem->IsLabelPreformated())
-              strMovieName = pItem->GetLabel();
-            else
-            {
-              if (pItem->IsStack())
-                strMovieName = pItem->GetLabel();
-              else
-                strMovieName = CUtil::GetFileName(pItem->m_strPath);
-              CUtil::RemoveExtension(strMovieName);
-            }
-          }
-
-          if (pDlgProgress)
+         if (pDlgProgress)
           {
             int iString=198;
             if (info2->Content() == CONTENT_TVSHOWS)
@@ -602,18 +574,10 @@ namespace VIDEO
             continue;
           }
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-          {
-            if (m_pObserver)
-            {
-              CStdString strPath = pItem->m_strPath;
-              if (pItem->IsStack())
-              {
-                CStackDirectory dir;
-                strPath = dir.GetStackedTitlePath(pItem->m_strPath);
-              }
-            }
             pURL = &scrUrl;
-          }
+
+          // Get the correct movie title 
+          CStdString strMovieName = pItem->GetMovieName(bDirNames);
 
           IMDB_MOVIELIST movielist;
           int returncode=0;
@@ -1064,31 +1028,29 @@ namespace VIDEO
       }
     }
 
-    if (bApplyToDir && !strThumb.IsEmpty())
-    {
-      CStdString strCheck=pItem->m_strPath;
-      CStdString strDirectory;
-      if (pItem->IsStack())
-        strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
+    CStdString strCheck=pItem->m_strPath;
+    CStdString strDirectory;
+    if (pItem->IsStack())
+      strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
 
-      CUtil::GetDirectory(strCheck,strDirectory);
-      if (CUtil::IsInRAR(strCheck))
-      {
-        CStdString strPath=strDirectory;
-        CUtil::GetParentPath(strPath,strDirectory);
-      }
-      if (pItem->IsStack())
-      {
-        strCheck = strDirectory;
-        CUtil::RemoveSlashAtEnd(strCheck);
-        if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
-          CUtil::GetDirectory(strCheck,strDirectory);
-      }
-      ApplyIMDBThumbToFolder(strDirectory,strThumb);
+    CUtil::GetDirectory(strCheck,strDirectory);
+    if (CUtil::IsInRAR(strCheck))
+    {
+      CStdString strPath=strDirectory;
+      CUtil::GetParentPath(strPath,strDirectory);
     }
+    if (pItem->IsStack())
+    {
+      strCheck = strDirectory;
+      CUtil::RemoveSlashAtEnd(strCheck);
+      if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
+        CUtil::GetDirectory(strCheck,strDirectory);
+    }
+    if (bApplyToDir && !strThumb.IsEmpty())
+      ApplyIMDBThumbToFolder(strDirectory,strThumb);
 
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast);
+      FetchActorThumbs(movieDetails.m_cast,strDirectory);
     m_database.Close();
     return lResult;
   }
@@ -1415,15 +1377,27 @@ namespace VIDEO
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(const vector<SActorInfo>& actors)
+  void CVideoInfoScanner::FetchActorThumbs(const vector<SActorInfo>& actors, const CStdString& strPath)
   {
     for (unsigned int i=0;i<actors.size();++i)
     {
       CFileItem item;
       item.SetLabel(actors[i].strName);
       CStdString strThumb = item.GetCachedActorThumb();
-      if (!CFile::Exists(strThumb) && !actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
-        CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
+      if (!CFile::Exists(strThumb))
+      {
+        CStdString thumbFile = actors[i].strName;
+        thumbFile.Replace(" ","_");
+        thumbFile += ".tbn";
+        CStdString strLocal = CUtil::AddFileToFolder(CUtil::AddFileToFolder(strPath,".actors"),thumbFile);
+        if (CFile::Exists(strLocal))
+        {
+          CPicture pic;
+          pic.DoCreateThumbnail(strLocal,strThumb);
+        }
+        else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
+          CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
+      }
     }
   }
 

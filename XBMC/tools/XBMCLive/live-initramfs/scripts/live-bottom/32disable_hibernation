@@ -1,0 +1,45 @@
+#!/bin/sh
+
+#set -e
+
+# initramfs-tools header
+
+PREREQ=""
+
+prereqs()
+{
+	echo "${PREREQ}"
+}
+
+case "${1}" in
+	prereqs)
+		prereqs
+		exit 0
+		;;
+esac
+
+# live-initramfs header
+
+if [ -n "${NOPOWERMANAGEMENT}" ]
+then
+	exit 0
+fi
+
+. /scripts/live-functions
+
+log_begin_msg "Configuring power management"
+
+# live-initramfs script
+
+gpm_version=$(chroot /root /usr/bin/dpkg-query -W --showformat='${Version}' gnome-power-manager 2>/dev/null) || panel_version=""
+
+if [ -n "${gpm_version}" ] && [ -n "${USERNAME}" ]
+then
+	#live-reconfigure /root gnome-power-manager
+	# Gnome < 2.20
+	chroot /root sudo -u "${USERNAME}" gconftool-2 -s -t bool /apps/gnome-power-manager/can_hibernate false
+	# Gnome >= 2.20
+	chroot /root sudo -u "${USERNAME}" gconftool-2 -s -t bool /apps/gnome-power-manager/general/can_hibernate false
+fi
+
+log_end_msg

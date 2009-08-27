@@ -85,6 +85,9 @@
 #include "FileItem.h"
 #include "URL.h"
 #include "RSSDirectory.h"
+#ifdef HAS_ZEROCONF
+#include "ZeroconfDirectory.h"
+#endif
 
 using namespace DIRECTORY;
 
@@ -170,6 +173,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #endif
 #ifdef HAS_PVRCLIENTS
     if (strProtocol == "pvr") return new CPVRDirectory();
+#endif
+#ifdef HAS_ZEROCONF
+    if (strProtocol == "zeroconf") return new CZeroconfDirectory();
 #endif
   }
 

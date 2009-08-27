@@ -21,7 +21,7 @@
 #include "stdafx.h"
 #include <iostream> //for debugging, please remove
 #include "VideoReferenceClock.h"
-#include "Util.h"
+#include "MathUtils.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/extensions/Xrandr.h>
@@ -137,9 +137,12 @@ void CVideoReferenceClock::Process()
 bool CVideoReferenceClock::WaitStarted(int MSecs)
 {
 #ifdef _WIN32
-  if (m_IsVista)
-    return true; //direct3d can't get an exclusive lock on vista if we wait here
+  //we don't wait on windows, causes issues with vista
+  //and it takes at least one second to set things up
+  //because we have to measure the refreshrate
+  return true;
 #endif
+  //not waiting here can cause issues with alsa
   return m_Started.WaitMSec(MSecs);
 }
 
@@ -206,7 +209,12 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  glXMakeCurrent(m_Dpy, m_Window, m_Context);
+  ReturnV = glXMakeCurrent(m_Dpy, m_Window, m_Context);
+  if (ReturnV != True)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
+    return false;
+  }
 
   m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
   if (!m_glXWaitVideoSyncSGI)
@@ -223,7 +231,7 @@ bool CVideoReferenceClock::SetupGLX()
   }
 
   m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!m_glXWaitVideoSyncSGI)
+  if (!m_glXGetVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI not found");
     return false;
@@ -326,7 +334,7 @@ void CVideoReferenceClock::RunGLX()
   unsigned int  PrevVblankCount;
   unsigned int  VblankCount;
   int           ReturnV;
-  int           ResetCount = 0;
+  bool          IsReset = false;
   LARGE_INTEGER Now;
 
   CSingleLock SingleLock(m_CritSection);
@@ -359,24 +367,34 @@ void CVideoReferenceClock::RunGLX()
       SendVblankSignal();
       UpdateRefreshrate();
 
-      ResetCount = 0;
+      IsReset = false;
     }
     else
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has reset");
+      
+      //only try reattaching once
+      if (IsReset)
+        return;
 
       //because of a bug in the nvidia driver, glXWaitVideoSyncSGI breaks when the vblank counter resets
-      glXMakeCurrent(m_Dpy, None, NULL);
-      glXMakeCurrent(m_Dpy, m_Window, m_Context);
-
-      //failsafe, seen at least once that glXWaitVideoSyncSGI didn't wait at all,
-      //even after reattaching the glx context
-      ResetCount++;
-      if (ResetCount > 100)
+      ReturnV = glXMakeCurrent(m_Dpy, None, NULL);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detaching glX context");
+      if (ReturnV != True)
       {
-        CLog::Log(LOGDEBUG, "CVideoReferenceClock: Vblank counter has not updated for 100 calls");
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
         return;
       }
+      
+      glXMakeCurrent(m_Dpy, m_Window, m_Context);
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: Attaching glX context");
+      if (ReturnV != True)
+      {
+        CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXMakeCurrent returned %i", ReturnV);
+        return;
+      }
+
+      IsReset = true;
     }
     PrevVblankCount = VblankCount;
   }
@@ -461,6 +479,11 @@ void CVideoReferenceClock::RunD3D()
     else LastLine = RasterStatus.ScanLine;
   }
 }
+
+//how many times we measure the refreshrate
+#define NRMEASURES 6
+//how long to measure in milliseconds
+#define MEASURETIME 250
 
 bool CVideoReferenceClock::SetupD3D()
 {
@@ -586,12 +609,108 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
-  m_Width = 0;
-  m_Height = 0;
+  //forced update of windows refreshrate
   UpdateRefreshrate(true);
+
+  //measure the refreshrate a couple times
+  list<double> Measures;
+  for (int i = 0; i < NRMEASURES; i++)
+    Measures.push_back(MeasureRefreshrate(MEASURETIME));
+
+  //build up a string of measured rates
+  CStdString StrRates;
+  for (list<double>::iterator it = Measures.begin(); it != Measures.end(); it++)
+    StrRates.AppendFormat("%.2f ", *it);
+
+  //get the top half of the measured rates
+  Measures.sort();
+  double RefreshRate = 0.0;
+  int    NrMeasurements = 0;
+  while (NrMeasurements < NRMEASURES / 2 && !Measures.empty())
+  {
+    if (Measures.back() > 0.0)
+    {
+      RefreshRate += Measures.back();
+      NrMeasurements++;
+    }
+    Measures.pop_back();
+  }
+
+  if (NrMeasurements < NRMEASURES / 2)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: refreshrate measurements: %s, unable to get a good measurement",
+      StrRates.c_str(), m_RefreshRate);
+    return false;
+  }
+
+  RefreshRate /= NrMeasurements;
+  m_RefreshRate = MathUtils::round_int(RefreshRate);
+
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: refreshrate measurements: %s, assuming %i hertz", StrRates.c_str(), m_RefreshRate);
+
   m_MissedVblanks = 0;
 
   return true;
+}
+
+double CVideoReferenceClock::MeasureRefreshrate(int MSecs)
+{
+  D3DRASTER_STATUS RasterStatus;
+  LARGE_INTEGER    Now;
+  int64_t          Target;
+  int64_t          Prev;
+  int64_t          AvgInterval;
+  int64_t          MeasureCount;
+  unsigned int     LastLine;
+  int              ReturnV;
+
+  QueryPerformanceCounter(&Now);
+  Target = Now.QuadPart + (m_SystemFrequency * MSecs / 1000);
+  Prev = -1;
+  AvgInterval = 0;
+  MeasureCount = 0;
+
+  //start measuring vblanks
+  LastLine = 0;
+  while(Now.QuadPart <= Target)
+  {
+    ReturnV = m_D3dDev->GetRasterStatus(0, &RasterStatus);
+    QueryPerformanceCounter(&Now);
+    if (ReturnV != D3D_OK)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned returned %s: %s",
+                DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
+      return -1.0;
+    }
+
+    if ((RasterStatus.InVBlank && LastLine != 0) || (!RasterStatus.InVBlank && RasterStatus.ScanLine < LastLine))
+    { //we got a vblank
+      if (Prev != -1) //need two for a measurement
+      {
+        AvgInterval += Now.QuadPart - Prev; //save how long this vblank lasted
+        MeasureCount++;
+      }
+      Prev = Now.QuadPart; //save this time for the next measurement
+    }
+
+    //save the current scanline
+    if (RasterStatus.InVBlank)
+      LastLine = 0;
+    else
+      LastLine = RasterStatus.ScanLine;
+
+    ::Sleep(1);
+  }
+
+  if (MeasureCount < 1)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Didn't measure any vblanks");
+    return -1.0;
+  }
+
+  double fRefreshRate = 1.0 / ((double)AvgInterval / (double)MeasureCount / (double)m_SystemFrequency);
+
+  return fRefreshRate;
 }
 
 void CVideoReferenceClock::CleanupD3D()
@@ -898,12 +1017,10 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   if (DisplayMode.RefreshRate == 0)
     DisplayMode.RefreshRate = 60;
 
-  if (m_RefreshRate != DisplayMode.RefreshRate || Forced)
+  if (m_PrevRefreshRate != DisplayMode.RefreshRate || Forced)
   {
     CSingleLock SingleLock(m_CritSection);
-    m_RefreshRate = DisplayMode.RefreshRate;
-
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
+    m_PrevRefreshRate = DisplayMode.RefreshRate;
     Changed = true;
   }
 
@@ -980,6 +1097,8 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
       NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
       SleepTime = (int)((NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency);
 
+      int64_t CurrTime = m_CurrTime; //save current value of the clock
+      
       Late = false;
       if (SleepTime <= 0) //if sleeptime is 0 or lower, the vblank clock is already late in updating
       {
@@ -993,8 +1112,9 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
           Late = true;                          //the required time
         SingleLock.Enter();
       }
-
-      if (Late) //if the vblank clock was late with its update, we update the clock ourselves
+      
+      //if the vblank clock was late with its update, we update the clock ourselves
+      if (Late && CurrTime == m_CurrTime)
       {
 #ifndef HAVE_LIBVDPAU
         // vdpau spams the log with missed vblanks so only log if vdpau is not compiled in.
@@ -1025,12 +1145,13 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
 }
 
 //for the codec information screen
-bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed)
+bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate)
 {
   if (m_UseVblank)
   {
     MissedVblanks = m_TotalMissedVblanks;
     ClockSpeed = (double)m_AdjustedFrequency / (double)m_SystemFrequency * 100.0;
+    RefreshRate = (int)m_RefreshRate;
     return true;
   }
   return false;

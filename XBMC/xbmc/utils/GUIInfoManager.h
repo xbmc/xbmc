@@ -30,9 +30,7 @@
 #include "StringUtils.h"
 #include "Temperature.h"
 #include "CriticalSection.h"
-#ifndef _XBOX
 #include "CPUInfo.h"
-#endif
 #include "IMsgTargetCallback.h"
 #include "inttypes.h"
 

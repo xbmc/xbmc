@@ -979,6 +979,7 @@
   <string id="13012">Exit</string>
   <string id="13013">Reboot</string>
   <string id="13014">Minimize</string>
+  <string id="13015">Power button action</string>
 
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>
@@ -1774,7 +1775,7 @@
   <string id="20044">Start fresh</string>
   <string id="20045">Enter master mode</string>
   <string id="20046">Leave master mode</string>
-  <string id="20047">Create profile '%s' ?</string>
+  <string id="20047">Create profile '%s'?</string>
   <string id="20048">Start with fresh settings</string>
   <string id="20049">Best available</string>
   <string id="20050">Auto-switch between 16x9 and 4x3</string>
@@ -2274,6 +2275,7 @@
   <string id="22018">Live channels</string>
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
+  <string id="22021">Allowed error in aspect ratio (%)</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
@@ -2366,6 +2368,15 @@
   <string id="23082">Lock Add-on manager</string>
   <string id="23083">Use this Add-on again</string>
 
+  <!-- strings 24000 thru 24050 reserved for external player -->
+  <string id="24000">External Player Active</string>
+  <string id="24001">Click OK to terminate the player</string>
+  <string id="24002"></string>
+  <string id="24003"></string>
+  <string id="24004">Click OK when playback has ended</string>
+  <string id="24005"></string>
+  <string id="24006"></string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>
@@ -2437,4 +2448,11 @@
   <string id="33069">Backgrounds</string>
   <string id="33070">Custom background</string>
   <string id="33071">Custom backgrounds</string>
+  <string id="33072">View Readme</string>
+  <string id="33073">View Changelog</string>
+  <string id="33074">This version of %s requires an</string>
+  <string id="33075">XBMC revision of %s or greater to run.</string>
+  <string id="33076">Please update XBMC.</string>
+  <string id="33077">No data found!</string>
+  <string id="33078">Next page</string>
 </strings>

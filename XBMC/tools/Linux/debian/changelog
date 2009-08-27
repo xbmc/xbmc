@@ -1,4 +1,4 @@
-xbmc (1:9.04.1+svn21743-1) experimental; urgency=low
+xbmc (1:9.04.1+svn22158~deb1-1) experimental; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
     (LP: #307162)
@@ -29,6 +29,11 @@ xbmc (1:9.04.1+svn21743-1) experimental; urgency=low
   * Rewrite Description fields for each package.
   * Add Depends on python-bluez | python-lightblue for xbmc-eventclients-ps3.
   * Add manpages for the programs installed in /usr/bin.
+  * Split xmbc-common into xbmc-bin for binary data and xbmc-data for
+    arch-independent data. This is done to save space in the Debian archive.
+  * Add Provides, Replaces, and Conflicts field in xbmc-data for xbmc-common.
+  * Placing packages into non-free because of various non-DFSG licensed code
+  * being used in XBMC.
   * Various fixes for lintian warnings and errors.
     + Fix not-binnmuable-all-depends-any lintian errors.
     + Fix not-binnmuable-any-depends-all lintian errors.

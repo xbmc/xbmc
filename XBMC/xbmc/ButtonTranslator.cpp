@@ -78,7 +78,7 @@ bool CButtonTranslator::Load()
   const CStdString oldKeymapPath = g_settings.GetUserDataItem("Keymap.xml");
   if( CFile::Exists(oldKeymapPath) )
   {
-    CLog::Log(LOGINFO, "CButtonTranslator::Load - old Keymap.xml in userdata found (%s). Please consider moving it to the \"keymaps/\" folder", oldKeymapPath.c_str());
+    CLog::Log(LOGWARNING, "CButtonTranslator::Load - Keymap.xml in userdata found (%s). This is DEPRECATED! Please move it to the \"keymaps/\" folder", oldKeymapPath.c_str());
     success |= LoadKeymap(oldKeymapPath);
   }
 
@@ -757,7 +757,6 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("mplayerosd")) wAction = ACTION_SHOW_MPLAYER_OSD;
   else if (strAction.Equals("hidesubmenu")) wAction = ACTION_OSD_HIDESUBMENU;
   else if (strAction.Equals("screenshot")) wAction = ACTION_TAKE_SCREENSHOT;
-  else if (strAction.Equals("poweroff")) wAction = ACTION_POWERDOWN;
   else if (strAction.Equals("rename")) wAction = ACTION_RENAME_ITEM;
   else if (strAction.Equals("togglewatched")) wAction = ACTION_TOGGLE_WATCHED;
   else if (strAction.Equals("scanitem")) wAction = ACTION_SCAN_ITEM;
@@ -823,6 +822,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("firstpage")) wAction = ACTION_FIRST_PAGE;
   else if (strAction.Equals("lastpage")) wAction = ACTION_LAST_PAGE;
   else if (strAction.Equals("guiprofile")) wAction = ACTION_GUIPROFILE_BEGIN;
+  else if (strAction.Equals("noop")) return true;
 
   if (wAction == ACTION_NONE)
   {

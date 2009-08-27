@@ -89,7 +89,7 @@ bool CVideoThumbLoader::ExtractThumb(const CStdString &strPath, const CStdString
   if (!g_guiSettings.GetBool("myvideos.autothumb"))
     return false;
 
-  if (CUtil::IsTV(strPath)
+  if (CUtil::IsLiveTV(strPath)
   ||  CUtil::IsUPnP(strPath)
   ||  CUtil::IsDAAP(strPath))
     return false;
@@ -140,7 +140,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
 
       // create unique thumb for auto generated thumbs
       cachedThumb = strPath + "auto-" + strFileName;
-      if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb))
+      if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb) && !pItem->m_bIsFolder)
       {
         CStreamDetails details;
         if (pItem->IsStack())
