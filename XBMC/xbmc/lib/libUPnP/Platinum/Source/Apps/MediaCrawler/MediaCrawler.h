@@ -65,7 +65,7 @@ public:
 protected:
     // PLT_MediaServer methods
     NPT_Result OnBrowse(PLT_ActionReference&          action, 
-                        const NPT_HttpRequestContext& context);
+                        const PLT_HttpRequestContext& context);
 
     // PLT_MediaBrowser methods
     NPT_Result OnBrowseResponse(NPT_Result               res, 

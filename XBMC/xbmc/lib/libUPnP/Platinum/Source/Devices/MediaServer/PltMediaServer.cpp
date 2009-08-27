@@ -61,16 +61,23 @@ const char* BrowseFlagsStr[] = {
 |   PLT_MediaServer::PLT_MediaServer
 +---------------------------------------------------------------------*/
 PLT_MediaServer::PLT_MediaServer(const char*  friendly_name, 
-                                 bool         show_ip, 
-                                 const char*  uuid, 
-                                 NPT_UInt16   port) :	
+                                 bool         show_ip     /* = false */, 
+                                 const char*  uuid        /* = NULL */, 
+                                 NPT_UInt16   port        /* = 0 */,
+                                 bool         port_rebind /* = false */) :	
     PLT_DeviceHost("/DeviceDescription.xml", 
                    uuid, 
                    "urn:schemas-upnp-org:device:MediaServer:1", 
                    friendly_name, 
                    show_ip, 
-                   port)
+                   port,
+                   port_rebind)
 {
+    m_ModelDescription = "Plutinosoft AV Media Server Device";
+    m_ModelName        = "AV Media Server Device";
+    m_ModelNumber      = "1.0";
+    m_ModelURL         = "http://www.plutinosoft.com/blog/projects/platinum";
+    m_DlnaDoc          = "DMS-1.50";
 }
 
 /*----------------------------------------------------------------------
@@ -127,11 +134,11 @@ PLT_MediaServer::SetupServices(PLT_DeviceData& data)
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaServer::OnAction(PLT_ActionReference&          action, 
-                          const NPT_HttpRequestContext& context)
+                          const PLT_HttpRequestContext& context)
 {
     /* parse the action name */
     NPT_String name = action->GetActionDesc()->GetName();
-
+                   
     // ContentDirectory
     if (name.Compare("Browse", true) == 0) {
         return OnBrowse(action, context);
@@ -169,7 +176,7 @@ PLT_MediaServer::OnAction(PLT_ActionReference&          action,
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_MediaServer::OnGetCurrentConnectionIDs(PLT_ActionReference&          action,
-                                           const NPT_HttpRequestContext& context)
+                                           const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
@@ -181,7 +188,7 @@ PLT_MediaServer::OnGetCurrentConnectionIDs(PLT_ActionReference&          action,
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_MediaServer::OnGetProtocolInfo(PLT_ActionReference&          action,
-                                   const NPT_HttpRequestContext& context)
+                                   const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
@@ -193,7 +200,7 @@ PLT_MediaServer::OnGetProtocolInfo(PLT_ActionReference&          action,
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaServer::OnGetCurrentConnectionInfo(PLT_ActionReference&          action, 
-                                            const NPT_HttpRequestContext& context)
+                                            const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
@@ -232,7 +239,7 @@ PLT_MediaServer::OnGetCurrentConnectionInfo(PLT_ActionReference&          action
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_MediaServer::OnGetSortCapabilities(PLT_ActionReference&          action,
-                                       const NPT_HttpRequestContext& context)
+                                       const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
@@ -244,7 +251,7 @@ PLT_MediaServer::OnGetSortCapabilities(PLT_ActionReference&          action,
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_MediaServer::OnGetSearchCapabilities(PLT_ActionReference&          action, 
-                                         const NPT_HttpRequestContext& context)
+                                         const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
@@ -256,7 +263,7 @@ PLT_MediaServer::OnGetSearchCapabilities(PLT_ActionReference&          action,
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_MediaServer::OnGetSystemUpdateID(PLT_ActionReference&          action, 
-                                     const NPT_HttpRequestContext& context)
+                                     const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
@@ -281,52 +288,116 @@ PLT_MediaServer::GetBrowseFlag(const char* str, BrowseFlags& flag)
 }
 
 /*----------------------------------------------------------------------
+|   PLT_MediaServer::ParseSort
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_MediaServer::ParseSort(const NPT_String& sort, NPT_List<NPT_String>& list)
+{
+    // reset output params first
+    list.Clear();
+    
+    // easy out
+    if (sort.GetLength() == 0 || sort == "*") return NPT_SUCCESS;
+    
+    list = sort.Split(",");
+    
+    // verify each property has a namespace
+    NPT_List<NPT_String>::Iterator property = list.GetFirstItem();
+    while (property) {
+        NPT_List<NPT_String> parsed_property = (*property).Split(":");
+        if (parsed_property.GetItemCount() != 2 || 
+            (!(*property).StartsWith("-") && !(*property).StartsWith("+"))) {
+            NPT_LOG_WARNING_1("Invalid SortCriteria property %s", (*property).GetChars());
+            return NPT_FAILURE;
+        }
+        property++;
+    }
+    
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
 |   PLT_MediaServer::OnBrowse
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaServer::OnBrowse(PLT_ActionReference&          action, 
-                          const NPT_HttpRequestContext& context)
+                          const PLT_HttpRequestContext& context)
 {
     NPT_Result res;
     NPT_String object_id;
-    NPT_String browse_flag_val;
+    NPT_String browse_flag_val;    
+    NPT_String filter;
+    NPT_String start;
+    NPT_String count;
+    NPT_String sort;
+    NPT_List<NPT_String> sort_list;
 
     if (NPT_FAILED(action->GetArgumentValue("ObjectId", object_id)) || 
-        NPT_FAILED(action->GetArgumentValue("BrowseFlag",  browse_flag_val))) {
-        NPT_LOG_WARNING("PLT_FileMediaServer::OnBrowse - invalid arguments.");
+        NPT_FAILED(action->GetArgumentValue("BrowseFlag",  browse_flag_val)) || 
+        NPT_FAILED(action->GetArgumentValue("Filter",  filter)) || 
+        NPT_FAILED(action->GetArgumentValue("StartingIndex",  start)) || 
+        NPT_FAILED(action->GetArgumentValue("RequestedCount",  count)) || 
+        NPT_FAILED(action->GetArgumentValue("SortCriteria",  sort))) {
+        NPT_LOG_WARNING("Missing arguments");
+        action->SetError(402, "Invalid args");
         return NPT_SUCCESS;
     }
-
-    /* we don't support sorting yet */
-//    PLT_Argument* sortCritArg = action->GetArgument("SortCriteria");
-//     if (sortCritArg != NULL)  {
-//         NPT_String sortCrit = sortCritArg->GetValue();
-//         if (sortCrit.GetLength() > 0) {
-//             /* error */
-//             PLT_Log(PLT_LOG_LEVEL_1, "PLT_FileMediaServer::OnBrowse - SortCriteria not allowed.");
-//             action->SetError(709, "MediaServer does not support sorting.");
-//             return NPT_FAILURE;
-//         }
-//     }
 
     /* extract flag */
     BrowseFlags flag;
     if (NPT_FAILED(GetBrowseFlag(browse_flag_val, flag))) {
         /* error */
-        NPT_LOG_WARNING("PLT_FileMediaServer::OnBrowse - BrowseFlag value not allowed.");
-        action->SetError(402,"Invalid BrowseFlag arg.");
+        NPT_LOG_WARNING_1("BrowseFlag value not allowed (%s)", (const char*)browse_flag_val);
+        action->SetError(402, "Invalid args");
         return NPT_SUCCESS;
     }
-
-    NPT_LOG_FINE_2("PLT_FileMediaServer::On%s - id = %s", 
+    
+    /* convert index and counts to int */
+    NPT_UInt32 starting_index, requested_count;
+    if (NPT_FAILED(start.ToInteger(starting_index)) ||
+        NPT_FAILED(count.ToInteger(requested_count)) ||
+        PLT_Didl::ConvertFilterToMask(filter) == 0) {       
+        NPT_LOG_WARNING_3("Invalid arguments (%s, %s, %s)", 
+            start.GetChars(), count.GetChars(), filter.GetChars());
+        action->SetError(402, "Invalid args");
+        return NPT_FAILURE;
+    }
+    
+    /* parse sort criteria */
+    if (NPT_FAILED(ParseSort(sort, sort_list))) {
+        NPT_LOG_WARNING_1("Unsupported or invalid sort criteria error (%s)", 
+            sort.GetChars());
+        action->SetError(709, "Unsupported or invalid sort criteria error");
+        return NPT_FAILURE;
+    }
+    
+    NPT_LOG_INFO_6("Received %s from %s for id = %s with filter = %s, start = %d, count = %d", 
                    (const char*)browse_flag_val, 
-                   (const char*)object_id);
+                   (const char*)context.GetRemoteAddress().GetIpAddress().ToString(),
+                   (const char*)object_id,
+                   (const char*)filter,
+                   starting_index,
+                   requested_count);
 
     /* Invoke the browse function */
     if (flag == BROWSEMETADATA) {
-        res = OnBrowseMetadata(action, object_id, context);
+        res = OnBrowseMetadata(
+            action, 
+            object_id, 
+            filter, 
+            starting_index, 
+            requested_count, 
+            sort_list, 
+            context);
     } else {
-        res = OnBrowseDirectChildren(action, object_id, context);
+        res = OnBrowseDirectChildren(
+            action, 
+            object_id, 
+            filter, 
+            starting_index, 
+            requested_count, 
+            sort_list, 
+            context);
     }
 
     if (NPT_FAILED(res) && (action->GetErrorCode() == 0)) {
@@ -341,23 +412,71 @@ PLT_MediaServer::OnBrowse(PLT_ActionReference&          action,
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_MediaServer::OnSearch(PLT_ActionReference&          action, 
-                          const NPT_HttpRequestContext& context)
+                          const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 
     NPT_Result res;
     NPT_String container_id;
-    NPT_String search_criteria;
+    NPT_String search;
+    NPT_String start;
+    NPT_String count;
+    NPT_String sort;
+    NPT_List<NPT_String> sort_list;
 
-    NPT_CHECK_FATAL(action->GetArgumentValue("SearchCriteria", search_criteria));
-    NPT_CHECK_FATAL(action->GetArgumentValue("ContainerId", container_id));
-
-    NPT_LOG_FINE_1("PLT_FileMediaServer::OnSearch - id = %s", (const char*)container_id);
+    if (NPT_FAILED(action->GetArgumentValue("ContainerId", container_id)) ||
+        NPT_FAILED(action->GetArgumentValue("SearchCriteria", search)) || 
+        NPT_FAILED(action->GetArgumentValue("StartingIndex",  start)) || 
+        NPT_FAILED(action->GetArgumentValue("RequestedCount",  count)) || 
+        NPT_FAILED(action->GetArgumentValue("SortCriteria",  sort))) {
+        NPT_LOG_WARNING("Missing arguments");
+        action->SetError(402, "Invalid args");
+        return NPT_SUCCESS;
+    }
     
-    if(search_criteria.IsEmpty()) {
-        res = OnBrowseDirectChildren(action, container_id, context);
+    /* convert index and counts to int */
+    NPT_UInt32 starting_index, requested_count;
+    if (NPT_FAILED(start.ToInteger(starting_index)) ||
+        NPT_FAILED(count.ToInteger(requested_count))) {       
+        NPT_LOG_WARNING_2("Invalid arguments (%s, %s)", 
+            start.GetChars(), count.GetChars());
+        action->SetError(402, "Invalid args");
+        return NPT_FAILURE;
+    }
+    
+    /* parse sort criteria */
+    if (NPT_FAILED(ParseSort(sort, sort_list))) {
+        NPT_LOG_WARNING_1("Unsupported or invalid sort criteria error (%s)", 
+            sort.GetChars());
+        action->SetError(709, "Unsupported or invalid sort criteria error");
+        return NPT_FAILURE;
+    }
+    
+    NPT_LOG_INFO_5("Received Search from %s for id = %s with search = %s, start = %d, count = %d", 
+                   (const char*)context.GetRemoteAddress().GetIpAddress().ToString(),
+                   (const char*)container_id,
+                   (const char*)search,
+                   starting_index,
+                   requested_count);
+                       
+    if (search.IsEmpty() || search == "*") {
+        res = OnBrowseDirectChildren(
+            action, 
+            container_id, 
+            search, 
+            starting_index, 
+            requested_count, 
+            sort_list, 
+            context);
     } else {
-        res = OnSearch(action, container_id, search_criteria, context);
+        res = OnSearchContainer(
+            action, 
+            container_id, 
+            search, 
+            starting_index, 
+            requested_count, 
+            sort_list,
+            context);
     }
 
     if (NPT_FAILED(res) && (action->GetErrorCode() == 0)) {
@@ -371,14 +490,14 @@ PLT_MediaServer::OnSearch(PLT_ActionReference&          action,
 |   PLT_MediaServer::OnBrowseMetadata
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_MediaServer::OnBrowseMetadata(PLT_ActionReference&          action, 
-                                  const char*                   object_id, 
-                                  const NPT_HttpRequestContext& context)
+PLT_MediaServer::OnBrowseMetadata(PLT_ActionReference&          /* action */, 
+                                  const char*                   /* object_id */, 
+                                  const char*                   /* filter */,
+                                  NPT_UInt32                    /* starting_index */,
+                                  NPT_UInt32                    /* requested_count */,
+                                  const NPT_List<NPT_String>&   /* sort_criteria */,
+                                  const PLT_HttpRequestContext& /* context */)
 { 
-    NPT_COMPILER_UNUSED(action);
-    NPT_COMPILER_UNUSED(object_id);
-    NPT_COMPILER_UNUSED(context);
-
     return NPT_ERROR_NOT_IMPLEMENTED; 
 }
 
@@ -386,30 +505,28 @@ PLT_MediaServer::OnBrowseMetadata(PLT_ActionReference&          action,
 |   PLT_MediaServer::OnBrowseDirectChildren
 +---------------------------------------------------------------------*/
 NPT_Result 
-PLT_MediaServer::OnBrowseDirectChildren(PLT_ActionReference&          action, 
-                                        const char*                   object_id, 
-                                        const NPT_HttpRequestContext& context) 
+PLT_MediaServer::OnBrowseDirectChildren(PLT_ActionReference&          /* action */, 
+                                        const char*                   /* object_id */, 
+                                        const char*                   /* filter */,
+                                        NPT_UInt32                    /* starting_index */,
+                                        NPT_UInt32                    /* requested_count */,
+                                        const NPT_List<NPT_String>&   /* sort_criteria */,
+                                        const PLT_HttpRequestContext& /* context */) 
 { 
-    NPT_COMPILER_UNUSED(action);
-    NPT_COMPILER_UNUSED(object_id);
-    NPT_COMPILER_UNUSED(context);
-
     return NPT_ERROR_NOT_IMPLEMENTED;
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaServer::OnSearch
+|   PLT_MediaServer::OnSearchContainer
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_MediaServer::OnSearch(PLT_ActionReference&          action, 
-                          const NPT_String&             object_id, 
-                          const NPT_String&             search_criteria,
-                          const NPT_HttpRequestContext& context)
+PLT_MediaServer::OnSearchContainer(PLT_ActionReference&          /* action */, 
+                                   const char*                   /* object_id */, 
+                                   const char*                   /* search_criteria */,
+                                   NPT_UInt32                    /* starting_index */,
+                                   NPT_UInt32                    /* requested_count */,
+                                   const NPT_List<NPT_String>&   /* sort_criteria */,
+                                   const PLT_HttpRequestContext& /* context */)
 {
-    NPT_COMPILER_UNUSED(action);
-    NPT_COMPILER_UNUSED(object_id);
-    NPT_COMPILER_UNUSED(search_criteria);
-    NPT_COMPILER_UNUSED(context);
-
     return NPT_ERROR_NOT_IMPLEMENTED;
 }

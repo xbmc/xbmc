@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../linux -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
 
 SRCS=Addon.cpp \
      AddonManager.cpp \
@@ -29,7 +29,6 @@ SRCS=Addon.cpp \
      UdpClient.cpp \
      Weather.cpp \
      Thread.cpp \
-     HTTP.cpp \
      SharedSection.cpp \
      Win32Exception.cpp \
      CPUInfo.cpp \
@@ -56,11 +55,12 @@ SRCS=Addon.cpp \
      DbusServer.cpp \
      Atomics.cpp \
      LockFree.cpp \
+     StreamDetails.cpp
      EPG.cpp \
      TVChannelInfoTag.cpp \
      TVEPGInfoTag.cpp \
      TVRecordInfoTag.cpp \
-     TVTimerInfoTag.cpp
+     TVTimerInfoTag.cpp \
 
 LIB=utils.a
 

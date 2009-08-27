@@ -39,7 +39,39 @@
 +---------------------------------------------------------------------*/
 #include "PltCtrlPoint.h"
 #include "PltMediaItem.h"
-#include "PltMediaBrowserListener.h"
+
+/*----------------------------------------------------------------------
+|   PLT_BrowseInfo
++---------------------------------------------------------------------*/
+struct PLT_BrowseInfo {
+    NPT_String                   object_id;
+    PLT_MediaObjectListReference items;
+    NPT_UInt32                   nr;
+    NPT_UInt32                   tm;
+    NPT_UInt32                   uid;
+};
+
+/*----------------------------------------------------------------------
+|   PLT_MediaBrowserDelegate class
++---------------------------------------------------------------------*/
+class PLT_MediaBrowserDelegate
+{
+public:
+    virtual ~PLT_MediaBrowserDelegate() {}
+    
+    virtual bool OnMSAdded(PLT_DeviceDataReference& /* device */) { return true; }
+    virtual void OnMSRemoved(PLT_DeviceDataReference& /* device */) {}
+    virtual void OnMSStateVariablesChanged(
+        PLT_Service*                  /*service*/, 
+        NPT_List<PLT_StateVariable*>* /*vars*/) {}
+
+    // ContentDirectory
+    virtual void OnBrowseResult(
+        NPT_Result               /*res*/, 
+        PLT_DeviceDataReference& /*device*/, 
+        PLT_BrowseInfo*          /*info*/, 
+        void*                    /*userdata*/) {}
+};
 
 /*----------------------------------------------------------------------
 |   PLT_MediaBrowser class
@@ -47,43 +79,42 @@
 class PLT_MediaBrowser : public PLT_CtrlPointListener
 {
 public:
-    PLT_MediaBrowser(PLT_CtrlPointReference&   ctrl_point, 
-                     PLT_MediaBrowserListener* listener);
+    PLT_MediaBrowser(PLT_CtrlPointReference&   ctrl_point,
+                     PLT_MediaBrowserDelegate* delegate = NULL);
     virtual ~PLT_MediaBrowser();
 
+    // ContentDirectory service
+    virtual NPT_Result Browse(PLT_DeviceDataReference& device, 
+                              const char*              object_id, 
+                              NPT_UInt32               start_index,
+                              NPT_UInt32               count,
+                              bool                     browse_metadata = false,
+                              const char*              filter = "*",
+                              const char*              sort_criteria = "",
+                              void*                    userdata = NULL);
+
+    // methods
+    virtual const NPT_Lock<PLT_DeviceDataReferenceList>& GetMediaServers() { return m_MediaServers; }
+    virtual NPT_Result FindServer(const char* uuid, PLT_DeviceDataReference& device);    
+    virtual void SetDelegate(PLT_MediaBrowserDelegate* delegate) { m_Delegate = delegate; }
+
+protected:
     // PLT_CtrlPointListener methods
     virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device);
     virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device);
     virtual NPT_Result OnActionResponse(NPT_Result res, PLT_ActionReference& action, void* userdata);
     virtual NPT_Result OnEventNotify(PLT_Service* service, NPT_List<PLT_StateVariable*>* vars);
-
-    // ContentDirectory service
-    NPT_Result Browse(
-        PLT_DeviceDataReference& device, 
-        const char*              object_id, 
-        NPT_UInt32               start_index,
-        NPT_UInt32               count,
-        bool                     browse_metadata = false,
-        const char*              filter = "*",
-        const char*              sort_criteria = "",
-        void*                    userdata = NULL);
-
-    // accessor methods
-    const NPT_Lock<PLT_DeviceDataReferenceList>& GetMediaServers() { 
-        return m_MediaServers; 
-    }
-
-protected:
+    
     // ContentDirectory service responses
-    virtual NPT_Result OnBrowseResponse(
-        NPT_Result               res, 
-        PLT_DeviceDataReference& device, 
-        PLT_ActionReference&     action, 
-        void*                    userdata);
+    virtual NPT_Result OnBrowseResponse(NPT_Result               res, 
+                                        PLT_DeviceDataReference& device, 
+                                        PLT_ActionReference&     action, 
+                                        void*                    userdata);
 
+    
 protected:
     PLT_CtrlPointReference                m_CtrlPoint;
-    PLT_MediaBrowserListener*             m_Listener;
+    PLT_MediaBrowserDelegate*             m_Delegate;
     NPT_Lock<PLT_DeviceDataReferenceList> m_MediaServers;
 };
 

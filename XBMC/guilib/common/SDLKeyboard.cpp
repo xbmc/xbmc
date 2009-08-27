@@ -68,6 +68,17 @@ void CLowLevelKeyboard::Reset()
   m_VKey = 0;
 }
 
+// Reset SDL keyboard state.
+// Primarily used to reset state before suspend / hibernate.
+void CLowLevelKeyboard::ResetState()
+{
+  Reset();
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10); // this will reset repeat timestamp
+  int numkeys;
+  Uint8 * state = SDL_GetKeyState(&numkeys);
+  memset(state, 0, sizeof(Uint8) * numkeys);
+}
+
 unsigned int CLowLevelKeyboard::KeyHeld() const
 {
   if (m_keyHoldTime > key_hold_time)

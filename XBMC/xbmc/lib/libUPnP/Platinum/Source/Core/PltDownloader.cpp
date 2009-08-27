@@ -114,7 +114,8 @@ PLT_Downloader::ProcessResponse(NPT_Result                    res,
 
     NPT_HttpEntity* entity;
     NPT_InputStreamReference body;
-    if (!response || !(entity = response->GetEntity()) || NPT_FAILED(entity->GetInputStream(body))) {
+    if (!response || !(entity = response->GetEntity()) || 
+        NPT_FAILED(entity->GetInputStream(body)) || body.IsNull()) {
         m_State = PLT_DOWNLOADER_ERROR;
         return NPT_FAILURE;
     }

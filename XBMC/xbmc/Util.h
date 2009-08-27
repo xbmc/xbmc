@@ -302,7 +302,6 @@ public:
 #endif
 
   static void AddDirectorySeperator(CStdString& strPath);
-  static char GetDirectorySeperator(const CStdString& strFile);
 
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
@@ -338,6 +337,8 @@ public:
   static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
   static void ClearFileItemCache();
+  
+  static void InitRandomSeed();
 
   static CStdString CreateUUID();
   static bool       ValidateUUID(const CStdString &uuid); // NB only validates syntax

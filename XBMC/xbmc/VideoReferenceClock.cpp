@@ -54,6 +54,15 @@ CVideoReferenceClock::CVideoReferenceClock()
 #ifdef _WIN32
   ZeroMemory(&m_Monitor, sizeof(m_Monitor));
   ZeroMemory(&m_PrevMonitor, sizeof(m_PrevMonitor));
+  
+  m_IsVista = false;
+  OSVERSIONINFO WindowsVersion;
+  WindowsVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+  if (GetVersionEx(&WindowsVersion))
+  {
+    if (WindowsVersion.dwMajorVersion == 6 && WindowsVersion.dwMinorVersion == 0)
+      m_IsVista = true;
+  }
 #endif
 }
 
@@ -125,9 +134,13 @@ void CVideoReferenceClock::Process()
   }
 }
 
-void CVideoReferenceClock::WaitStarted(int MSecs)
+bool CVideoReferenceClock::WaitStarted(int MSecs)
 {
-  m_Started.WaitMSec(MSecs);
+#ifdef _WIN32
+  if (m_IsVista)
+    return true; //direct3d can't get an exclusive lock on vista if we wait here
+#endif
+  return m_Started.WaitMSec(MSecs);
 }
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
@@ -377,7 +390,7 @@ void CVideoReferenceClock::RunD3D()
   D3dClock::D3DRASTER_STATUS RasterStatus;
 
   LARGE_INTEGER Now;
-  __int64       LastVBlankTime;
+  int64_t       LastVBlankTime;
   unsigned int  LastLine;
   int           NrVBlanks;
   double        VBlankTime;
@@ -517,11 +530,19 @@ bool CVideoReferenceClock::SetupD3D()
   if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: SetThreadPriority failed");
 
-  //put the window on top because direct3d wants exclusive access for some reason
-  LockSetForegroundWindow(LSFW_UNLOCK);
-  SetForegroundWindow(m_Hwnd);
+  if (m_IsVista)
+  {
+    //put the window on top because direct3d wants exclusive access for some reason
+    LockSetForegroundWindow(LSFW_UNLOCK);
+    SetForegroundWindow(m_Hwnd);
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: exclusive lock workaround for Vista enabled");
+  }
+
   HandleWindowMessages();
 
+  if (m_IsVista)
+    Sleep(500); //direct3d has better luck getting an exclusive lock this way
+  
   ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
@@ -673,7 +694,7 @@ static CVReturn DisplayLinkCallBack(CVDisplayLinkRef displayLink, const CVTimeSt
   if (inNow->videoRefreshPeriod > 0)
     fps = (double)inOutputTime->videoTimeScale / (double)inOutputTime->videoRefreshPeriod;
 
-  // Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
+  // Create an autorelease pool (necessary to call into non-Obj-C code from Obj-C code)
   void* pool = Cocoa_Create_AutoReleasePool();
   
   CVideoReferenceClock *VideoReferenceClock = reinterpret_cast<CVideoReferenceClock*>(displayLinkContext);
@@ -722,7 +743,7 @@ void CVideoReferenceClock::CleanupCocoa()
   Cocoa_CVDisplayLinkRelease();
 }    
 
-void CVideoReferenceClock::VblankHandler(__int64 nowtime, double fps)
+void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
 {
   int           NrVBlanks;
   double        VBlankTime;
@@ -767,7 +788,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
   }
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
-    m_CurrTime += (__int64)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
+    m_CurrTime += (int64_t)NrVBlanks * m_AdjustedFrequency / m_RefreshRate;
 }
 
 //called from dvdclock to get the time
@@ -781,7 +802,7 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
   }
   else
   {
-    __int64 ClockOffset = m_ClockOffset;
+    int64_t ClockOffset = m_ClockOffset;
     SingleLock.Leave();
     QueryPerformanceCounter(ptime);
     ptime->QuadPart += ClockOffset;
@@ -800,7 +821,7 @@ void CVideoReferenceClock::SetSpeed(double Speed)
   //dvdplayer can change the speed to fit the rereshrate
   if (m_UseVblank)
   {
-    __int64 Frequency = (__int64)((double)m_SystemFrequency * Speed);
+    int64_t Frequency = (int64_t)((double)m_SystemFrequency * Speed);
     if (Frequency != m_AdjustedFrequency)
     {
       m_AdjustedFrequency = Frequency;
@@ -941,11 +962,11 @@ int CVideoReferenceClock::GetRefreshRate()
 
 //this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBoxRenderManager::WaitPresentTime
 //it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
-void CVideoReferenceClock::Wait(__int64 Target)
+int64_t CVideoReferenceClock::Wait(int64_t Target)
 {
   LARGE_INTEGER Now;
   int           SleepTime;
-  __int64       NextVblank;
+  int64_t       NextVblank;
   bool          Late;
 
   CSingleLock SingleLock(m_CritSection);
@@ -987,16 +1008,20 @@ void CVideoReferenceClock::Wait(__int64 Target)
         UpdateClock(1, false); //update the clock by 1 vblank
       }
     }
+    return m_CurrTime;
   }
   else
   {
-    __int64 ClockOffset = m_ClockOffset;
+    int64_t ClockOffset = m_ClockOffset;
     SingleLock.Leave();
     QueryPerformanceCounter(&Now);
     //sleep until the timestamp has passed
     SleepTime = (int)((Target - (Now.QuadPart + ClockOffset)) * 1000 / m_SystemFrequency);
     if (SleepTime > 0)
       ::Sleep(SleepTime);
+    
+    QueryPerformanceCounter(&Now);
+    return Now.QuadPart + ClockOffset;
   }
 }
 

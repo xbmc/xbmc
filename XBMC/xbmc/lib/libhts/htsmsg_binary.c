@@ -245,7 +245,7 @@ htsmsg_binary_write(htsmsg_t *msg, uint8_t *ptr)
     case HMF_S64:
       u64 = f->hmf_s64;
       for(i = 0; i < l; i++) {
-	ptr[i] = u64;
+	ptr[i] = (uint8_t)(u64 & 0xFF);
 	u64 = u64 >> 8;
       }
       break;
@@ -265,7 +265,7 @@ htsmsg_binary_serialize(htsmsg_t *msg, void **datap, size_t *lenp, int maxlen)
   uint8_t *data;
 
   len = htsmsg_binary_count(msg);
-  if(len + 4 > maxlen)
+  if(len + 4 > (size_t)maxlen)
     return -1;
 
   data = malloc(len + 4);

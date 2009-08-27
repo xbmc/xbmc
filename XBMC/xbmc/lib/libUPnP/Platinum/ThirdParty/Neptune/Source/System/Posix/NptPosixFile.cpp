@@ -86,10 +86,10 @@ NPT_File::GetRoots(NPT_List<NPT_String>& roots)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_File::CreateDirectory
+|   NPT_File::CreateDir
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_File::CreateDirectory(const char* path)
+NPT_File::CreateDir(const char* path)
 {
     int result;
     
@@ -102,10 +102,10 @@ NPT_File::CreateDirectory(const char* path)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_File::DeleteFile
+|   NPT_File::RemoveFile
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_File::DeleteFile(const char* path)
+NPT_File::RemoveFile(const char* path)
 {
     int result = unlink(path);
     if (result != 0) return MapErrno(errno);
@@ -114,10 +114,10 @@ NPT_File::DeleteFile(const char* path)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_File::DeleteDirectory
+|   NPT_File::RemoveDir
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_File::DeleteDirectory(const char* path)
+NPT_File::RemoveDir(const char* path)
 {
     int result = rmdir(path);
     if (result != 0) return MapErrno(errno);
@@ -138,13 +138,13 @@ NPT_File::Rename(const char* from_path, const char* to_path)
 }
 
 /*----------------------------------------------------------------------
-|   NPT_File::ListDirectory
+|   NPT_File::ListDir
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_File::ListDirectory(const char*           path, 
-                        NPT_List<NPT_String>& entries, 
-                        NPT_Ordinal           start /* = 0 */, 
-                        NPT_Cardinal          max   /* = 0 */)
+NPT_File::ListDir(const char*           path, 
+                  NPT_List<NPT_String>& entries, 
+                  NPT_Ordinal           start /* = 0 */, 
+                  NPT_Cardinal          max   /* = 0 */)
 {
     // default return value
     entries.Clear();
@@ -181,14 +181,14 @@ NPT_File::ListDirectory(const char*           path,
             continue;
         }        
         
-        // continue if not yet first item requested
+        // continue if we still have some items to skip
         if (start > 0) {
             --start;
             continue;
         }
         entries.Add(NPT_String(entry_pointer->d_name));
 
-        // stop when reaching maximum requested
+        // stop when we have reached the maximum requested
         if (max && ++count == max) break;
     }
     
@@ -199,10 +199,10 @@ NPT_File::ListDirectory(const char*           path,
 #endif
 
 /*----------------------------------------------------------------------
-|   NPT_File::GetWorkingDirectory
+|   NPT_File::GetWorkingDir
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_File::GetWorkingDirectory(NPT_String& path)
+NPT_File::GetWorkingDir(NPT_String& path)
 {
     char buffer[1024+1];
     char* dir = getcwd(buffer, 1024+1);
@@ -220,14 +220,19 @@ NPT_File::GetInfo(const char* path, NPT_FileInfo* info)
 {
     // default value
     if (info) NPT_SetMemory(info, 0, sizeof(*info));
-
+    
+#if defined(_WIN32) || defined(_XBOX)
     // On Windows, stat will fail if a dir ends with a separator
     NPT_String _path = path;
     _path.TrimRight("\\/");
+    // keep a separator at the end for drive names such as C:<backslash>
     if (NPT_StringLength(path) ==  2 && path[1] == ':') {
         _path += NPT_FilePath::Separator;
     }
-
+#else
+#define _path path
+#endif
+    
     // get the file info
     NPT_stat_struct stat_buffer;
     int result = NPT_stat(_path, &stat_buffer);
@@ -246,8 +251,10 @@ NPT_File::GetInfo(const char* path, NPT_FileInfo* info)
         info->m_AttributesMask &= NPT_FILE_ATTRIBUTE_READ_ONLY;
         if ((stat_buffer.st_mode & S_IWUSR) == 0) {
             info->m_Attributes &= NPT_FILE_ATTRIBUTE_READ_ONLY;
-        }
+        }        
+        info->m_Created  = (unsigned long)stat_buffer.st_ctime;
+        info->m_Modified = (unsigned long)stat_buffer.st_mtime;
     }
-    
+
     return NPT_SUCCESS;
 }

@@ -1402,8 +1402,19 @@
     </remote>
 
     <keyboard>
+      <opensquarebracket>BigStepForward</opensquarebracket>
+      <closesquarebracket>BigStepBack</closesquarebracket>
+      <m>OSD</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
+      <z>AspectRatio</z>
+      <t>ShowSubtitles</t>
+      <l>NextSubtitle</l>      
+      <a>AudioDelay</a>
+      <escape>Fullscreen</escape>
       <return>Select</return>
       <enter>Select</enter>
+      <!-- backspace>Fullscreen</backspace -->
       <backspace>PreviousMenu</backspace>
     </keyboard>
   </VideoMenu>

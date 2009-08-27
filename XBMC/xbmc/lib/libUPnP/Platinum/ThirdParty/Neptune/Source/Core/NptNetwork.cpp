@@ -173,6 +173,15 @@ NPT_IpAddress::Set(unsigned long address)
 }
 
 /*----------------------------------------------------------------------
+|   NPT_IpAddress::operator==
++---------------------------------------------------------------------*/
+bool
+NPT_IpAddress::operator==(const NPT_IpAddress& other) const
+{
+    return other.AsLong() == AsLong();
+}
+
+/*----------------------------------------------------------------------
 |   NPT_MacAddress::NPT_MacAddress
 +---------------------------------------------------------------------*/
 NPT_MacAddress::NPT_MacAddress(Type                  type,

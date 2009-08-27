@@ -75,7 +75,7 @@ ShowResponse(NPT_HttpResponse* response, ShowMode mode)
     // show entity
     NPT_HttpEntity* entity = response->GetEntity();
     if (entity != NULL) {
-        NPT_Debug("ENTITY: length=%d, type=%s, encoding=%s\n",
+        NPT_Debug("ENTITY: length=%lld, type=%s, encoding=%s\n",
                   entity->GetContentLength(),
                   entity->GetContentType().GetChars(),
                   entity->GetContentEncoding().GetChars());
@@ -133,6 +133,30 @@ TestHttpGet(const char* arg, ShowMode mode)
     if (NPT_FAILED(result)) return;
 
     ShowResponse(response, mode);
+
+    delete response;
+}
+#endif
+
+#define TEST_CHUNKED
+#if defined(TEST_CHUNKED)
+/*----------------------------------------------------------------------
+|       TestHttpChunked
++---------------------------------------------------------------------*/
+static void 
+TestHttpChunked(const char* arg)
+{
+    NPT_HttpUrl url(arg);
+    NPT_HttpRequest request(url, NPT_HTTP_METHOD_GET);
+    request.SetProtocol(NPT_HTTP_PROTOCOL_1_1);
+    NPT_HttpClient client;
+    NPT_HttpResponse* response;
+
+    NPT_Result result = client.SendRequest(request, response);
+    NPT_Debug("SendRequest returned %d\n", result);
+    if (NPT_FAILED(result)) return;
+
+    ShowResponse(response, SHOW_MODE_STREAM_BLOCKING);
 
     delete response;
 }
@@ -234,6 +258,10 @@ main(int argc, char** argv)
     TestUrlParser("http://foo.bar:176/blabla/blibli/");
     TestUrlParser("http://foo.bar/");
     TestUrlParser("http://foo.bar/blabla");
+#endif
+
+#if defined(TEST_CHUNKED) 
+    TestHttpChunked("http://www.bok.net/cgi-bin/test/test-chunked.cgi");
 #endif
 
 #if defined(TEST_PROXY)

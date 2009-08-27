@@ -2,21 +2,21 @@
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
+ *  This file is part of libRTMP.
  *
- *  This Program is distributed in the hope that it will be useful,
+ *  libRTMP is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  libRTMP is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with libRTMP; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include "stdafx.h"
@@ -55,6 +55,7 @@ CRTMP::CRTMP() : m_socket(INVALID_SOCKET)
   m_strPlayer = "file:///xbmc.flv";
   m_pBuffer = new char[RTMP_BUFFER_CACHE_SIZE];
   m_nBufferMS = 300;
+  m_dStartPoint = 0;
 }
 
 CRTMP::~CRTMP()
@@ -83,8 +84,10 @@ void CRTMP::SetBufferMS(int size)
   m_nBufferMS = size;
 }
 
-bool CRTMP::Connect(const std::string &strRTMPLink)
+bool CRTMP::Connect(const std::string &strRTMPLink, double dTime)
 {
+  m_dStartPoint = dTime;
+
   Close();
 
   CURL url(strRTMPLink.c_str());
@@ -184,14 +187,14 @@ bool CRTMP::GetNextMediaPacket(RTMPPacket &packet)
 
       case 0x08:
         // audio data
-        CLog::Log(LOGDEBUG,"%s, received: audio %lu bytes", __FUNCTION__, packet.m_nBodySize);
+        //CLog::Log(LOGDEBUG,"%s, received: audio %lu bytes", __FUNCTION__, packet.m_nBodySize);  //spamtacular
         HandleAudio(packet);
         bHasMediaPacket = true;
         break;
 
       case 0x09:
         // video data
-        CLog::Log(LOGDEBUG,"%s, received: video %lu bytes", __FUNCTION__, packet.m_nBodySize);
+        //CLog::Log(LOGDEBUG,"%s, received: video %lu bytes", __FUNCTION__, packet.m_nBodySize);  //spamtacular
         HandleVideo(packet);
         bHasMediaPacket = true;
         break;
@@ -371,7 +374,27 @@ bool CRTMP::SendCreateStream(double dStreamId)
   return SendRTMP(packet);
 }
 
-bool CRTMP::SendPause()
+bool CRTMP::SendDeleteStream(double dStreamId)
+{
+  RTMPPacket packet;
+  packet.m_nChannel = 0x03;   // control channel (invoke)
+  packet.m_headerType = RTMP_PACKET_SIZE_MEDIUM;
+  packet.m_packetType = 0x14; // INVOKE
+
+  packet.AllocPacket(256); // should be enough
+  char *enc = packet.m_body;
+  enc += EncodeString(enc, "deleteStream");
+  enc += EncodeNumber(enc, 0.0);
+  *enc = 0x05; // NULL
+  enc++;
+  enc += EncodeNumber(enc, dStreamId);
+
+  packet.m_nBodySize = enc - packet.m_body;
+
+  return SendRTMP(packet);
+}
+
+bool CRTMP::SendPause(bool DoPause, double dTime)
 {
   RTMPPacket packet;
   packet.m_nChannel = 0x08;   // video channel 
@@ -384,8 +407,8 @@ bool CRTMP::SendPause()
   enc += EncodeNumber(enc, 0);
   *enc = 0x05; // NULL
   enc++;
-  enc += EncodeBoolean(enc, true);
-  enc += EncodeNumber(enc, 0);
+  enc += EncodeBoolean(enc, DoPause);
+  enc += EncodeNumber(enc, (double)dTime/1000);
 
   packet.m_nBodySize = enc - packet.m_body;
 
@@ -526,7 +549,8 @@ bool CRTMP::SendPlay()
   CLog::Log(LOGDEBUG,"%s, invoking play '%s'", __FUNCTION__, strPlay.c_str() );
 
   enc += EncodeString(enc, strPlay.c_str());
-  enc += EncodeNumber(enc, 0.0);
+  enc += EncodeNumber(enc, (m_dStartPoint/1000));
+  //enc += EncodeNumber(enc, 10000.0);
 
   packet.m_nBodySize = enc - packet.m_body;
 
@@ -600,11 +624,12 @@ void CRTMP::HandleInvoke(const RTMPPacket &packet)
     }
     else if (methodInvoked == "play")
     {
+      SendPlay();
     }
   }
   else if (method == "onBWDone")
   {
-    //SendCheckBW();
+    SendCheckBW();
   }
   else if (method == "_onbwcheck")
   {
@@ -1069,7 +1094,10 @@ bool CRTMP::SendRTMP(RTMPPacket &packet)
 void CRTMP::Close()
 {
   if (IsConnected())
+  {
+    //SendDeleteStream(m_stream_id);
     closesocket(m_socket);
+  }
 
   m_socket = INVALID_SOCKET;
   m_chunkSize = 128;

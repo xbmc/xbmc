@@ -6,50 +6,32 @@
 <!--$Revision$-->
 <strings>
   <string id="31000">Volym avstängd</string>
-  <string id="31001">
-  </string>
-  <string id="31002">
-  </string>
-  <string id="31003">
-  </string>
-  <string id="31005">
-  </string>
-  <string id="31006">
-  </string>
-  <string id="31007">
-  </string>
-  <string id="31008">
-  </string>
-  <string id="31009">
-  </string>
+  <string id="31001">Upptagen...</string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
   <string id="31010">FANKONST[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
   <string id="31011">AVSNITTS[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
   <string id="31012">AVSNITTS[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
-  <string id="31013">
-  </string>
-  <string id="31014">
-  </string>
-  <string id="31015">
-  </string>
-  <string id="31016">
-  </string>
-  <string id="31017">
-  </string>
-  <string id="31018">
-  </string>
-  <string id="31019">
-  </string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
   <string id="31020">Kapiteltitel</string>
   <string id="31021">Video - Filer</string>
   <string id="31022">Musik - Filer</string>
-  <string id="31023">
-  </string>
+  <string id="31023"></string>
   <string id="31024">Sida</string>
   <string id="31025">Objekt</string>
-  <string id="31026">
-  </string>
-  <string id="31027">
-  </string>
+  <string id="31026"></string>
+  <string id="31027"></string>
   <string id="31028">DVD miniatyrer</string>
   <string id="31029">DVD lista</string>
   <string id="31030">Fankonst</string>
@@ -66,12 +48,9 @@
   <string id="31046">Välkommen till XBMC - Var god logga in</string>
   <string id="31047">Senast inloggad</string>
   <string id="31048">Nuvarande artists[CR]Fankonstsbild[CR][CR]Klicka för att ändra</string>
-  <string id="31050">
-  </string>
-  <string id="31051">
-  </string>
-  <string id="31052">
-  </string>
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
   <string id="31053">XBMC SÅNGTEXTER</string>
   <string id="31054">Välj din låt från listan</string>
   <string id="31055">Öppna spellista</string>
@@ -96,18 +75,13 @@
   <string id="31113">Enstaka bild</string>
   <string id="31114">Multibild</string>
   <string id="31200">Egna skriptval</string>
-  <string id="31201">
-  </string>
-  <string id="31202">
-  </string>
+  <string id="31201"></string>
+  <string id="31202"></string>
   <string id="31203">Ange knappetikett</string>
   <string id="31204">Skriptsökväg</string>
-  <string id="31205">
-  </string>
-  <string id="31206">
-  </string>
-  <string id="31207">
-  </string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
   <string id="31208">Visa sångtexts-skriptsknappen i OSD</string>
   <string id="31209">Aktivera snabbstarta skriptknapp för -</string>
   <string id="31300">Visa rollsättning</string>

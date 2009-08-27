@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="libPlatinum"
 	ProjectGUID="{B2975495-FBE4-4F94-AAC5-B21A9842BF50}"
 	RootNamespace="libPlatinum"
@@ -309,6 +309,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltConstants.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltConstants.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltCtrlPoint.cpp"
 					>
 				</File>
@@ -398,6 +406,10 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltHttpServerTask.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltIconsData.cpp"
 					>
 				</File>
 				<File

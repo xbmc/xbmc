@@ -4,7 +4,7 @@
 |
 |      Atomix - Debug Support: StdC Implementation
 |
-|      (c) 2002-2006 Gilles Boccon-Gibod
+|      (c) 2002-2009 Gilles Boccon-Gibod
 |      Author: Gilles Boccon-Gibod (bok@bok.net)
 |
  ****************************************************************/
@@ -21,19 +21,10 @@
 #include "NptDebug.h"
 
 /*----------------------------------------------------------------------
-|       NPT_Debug
+|       NPT_DebugOuput
 +---------------------------------------------------------------------*/
 void
-NPT_Debug(const char* format, ...)
+NPT_DebugOutput(const char* message)
 {
-#if defined(NPT_DEBUG)
-    va_list args;
-    va_start(args, format);
-
-    vprintf(format, args);
-
-    va_end(args);
-#else
-    NPT_COMPILER_UNUSED(format);
-#endif
+    printf("%s", message);
 }

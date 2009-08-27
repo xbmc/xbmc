@@ -23,6 +23,7 @@
  */
 
 #include "CriticalSection.h"
+#include "StdString.h"
 
 #include <vector>
 
@@ -37,7 +38,7 @@ public:
 
   void utf8ToW(const CStdStringA& utf8String, CStdStringW &utf16String, bool bVisualBiDiFlip=true, bool forceLTRReadingOrder=false, bool* bWasFlipped=NULL);
 
-  void utf16LEtoW(const CStdStringW& utf16String, CStdStringW &wString);
+  void utf16LEtoW(const CStdString16& utf16String, CStdStringW &wString);
 
   void subtitleCharsetToW(const CStdStringA& strSource, CStdStringW& strDest);
 
@@ -46,8 +47,8 @@ public:
   void utf8ToStringCharset(CStdStringA& strSourceDest);
 
   void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStringA& strDest);
-  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int16_t>& strDest);
-  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdStr<int32_t>& strDest);
+  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString16& strDest);
+  void utf8To(const CStdStringA& strDestCharset, const CStdStringA& strSource, CStdString32& strDest);
 
   void stringCharsetToUtf8(const CStdStringA& strSourceCharset, const CStdStringA& strSource, CStdStringA& strDest);
 
@@ -58,9 +59,9 @@ public:
   void ucs2CharsetToStringCharset(const CStdStringW& strSource, CStdStringA& strDest, bool swap = false);
 
   void wToUTF8(const CStdStringW& strSource, CStdStringA &strDest);
-  void utf16BEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
-  void utf16LEtoUTF8(const CStdStringW& strSource, CStdStringA &strDest);
-  void ucs2ToUTF8(const CStdStringW& strSource, CStdStringA& strDest);
+  void utf16BEtoUTF8(const CStdString16& strSource, CStdStringA &strDest);
+  void utf16LEtoUTF8(const CStdString16& strSource, CStdStringA &strDest);
+  void ucs2ToUTF8(const CStdString16& strSource, CStdStringA& strDest);
 
   void utf8logicalToVisualBiDi(const CStdStringA& strSource, CStdStringA& strDest);
 

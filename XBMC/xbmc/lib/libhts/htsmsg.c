@@ -23,6 +23,11 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+
+#ifdef _MSC_VER
+#include "msvc.h"
+#endif
+
 #include "htsmsg.h"
 
 static void htsmsg_clear(htsmsg_t *msg);
@@ -320,7 +325,7 @@ htsmsg_get_u32(htsmsg_t *msg, const char *name, uint32_t *u32p)
   if(s64 < 0 || s64 > 0xffffffffLL)
     return HTSMSG_ERR_CONVERSION_IMPOSSIBLE;
   
-  *u32p = s64;
+  *u32p = (uint32_t)s64;
   return 0;
 }
 
@@ -351,7 +356,7 @@ htsmsg_get_s32(htsmsg_t *msg, const char *name, int32_t *s32p)
   if(s64 < -0x80000000LL || s64 > 0x7fffffffLL)
     return HTSMSG_ERR_CONVERSION_IMPOSSIBLE;
   
-  *s32p = s64;
+  *s32p = (int32_t)s64;
   return 0;
 }
 
@@ -483,7 +488,7 @@ htsmsg_print0(htsmsg_t *msg, int indent)
 
     for(i = 0; i < indent; i++) printf("\t");
     
-    printf("%s (", f->hmf_name ?: "");
+    printf("%s (", f->hmf_name ? f->hmf_name : "");
     
     switch(f->hmf_type) {
 
@@ -505,7 +510,7 @@ htsmsg_print0(htsmsg_t *msg, int indent)
 
     case HMF_BIN:
       printf("BIN) = [");
-      for(i = 0; i < f->hmf_binsize - 1; i++)
+      for(i = 0; i < (int)f->hmf_binsize - 1; i++)
 	printf("%02x.", ((uint8_t *)f->hmf_bin)[i]);
       printf("%02x]\n", ((uint8_t *)f->hmf_bin)[i]);
       break;

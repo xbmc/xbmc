@@ -102,7 +102,6 @@ public:
   ~CZipManager();
 
   bool GetZipList(const CStdString& strPath, std::vector<SZipEntry>& items);
-  bool HasMultipleEntries(const CStdString& strPath);
   bool GetZipEntry(const CStdString& strPath, SZipEntry& item);
   bool ExtractArchive(const CStdString& strArchive, const CStdString& strPath);
   void CleanUp(const CStdString& strArchive, const CStdString& strPath); // deletes extracted archive. use with care!

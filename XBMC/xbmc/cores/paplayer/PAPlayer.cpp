@@ -803,7 +803,7 @@ int PAPlayer::GetSampleRate()
   return 0;
 }
 
-CStdString PAPlayer::GetCodecName()
+CStdString PAPlayer::GetAudioCodecName()
 {
   ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
   if (codec)
@@ -1098,7 +1098,7 @@ void PAPlayer::WaitForStream()
 {
   // should we wait for our other stream as well?
   // currently we don't.
-  if (!m_pAudioDecoder[m_currentStream])
+  if (m_pAudioDecoder[m_currentStream])
   {
     m_pAudioDecoder[m_currentStream]->WaitCompletion();
   }

@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "DVDVideoCodecFFmpeg.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDStreamInfo.h"
@@ -78,7 +81,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) return false;
 
-  m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #if (! defined USE_EXTERNAL_FFMPEG)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #endif
 
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
 
@@ -340,7 +347,11 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double pts)
       if(!m_dllSwScale.Load())
         return VC_ERROR;
 
-      m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+        #if (! defined USE_EXTERNAL_FFMPEG)
+          m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+        #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
+          m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+        #endif
     }
 
     if (!m_pConvertFrame)
@@ -468,9 +479,11 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   else
     pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
+  pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
+
 #ifdef HAVE_LIBVDPAU
   if(CVDPAU::IsVDPAUFormat(m_pCodecContext->pix_fmt))
-    pDvdVideoPicture->iFlags |= DVP_FLAG_NONIMAGE;
+    pDvdVideoPicture->format = DVDVideoPicture::FMT_VDPAU;
 #endif
 
   return true;

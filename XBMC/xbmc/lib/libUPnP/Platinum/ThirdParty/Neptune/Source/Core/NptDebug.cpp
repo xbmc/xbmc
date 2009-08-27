@@ -29,3 +29,55 @@
 |
  ****************************************************************/
 
+/*----------------------------------------------------------------------
+|   includes
++---------------------------------------------------------------------*/
+#include <stdarg.h>
+#include "NptUtils.h"
+#include "NptDebug.h"
+
+/*----------------------------------------------------------------------
+|   constants
++---------------------------------------------------------------------*/
+#define NPT_DEBUG_LOCAL_BUFFER_SIZE 1024
+#define NPT_DEBUG_BUFFER_INCREMENT  4096
+#define NPT_DEBUG_BUFFER_MAX_SIZE   65536
+
+/*----------------------------------------------------------------------
+|   NPT_Debug
++---------------------------------------------------------------------*/
+void
+NPT_Debug(const char* format, ...)
+{
+#if defined(NPT_DEBUG)
+    char         local_buffer[NPT_DEBUG_LOCAL_BUFFER_SIZE];
+    unsigned int buffer_size = NPT_DEBUG_LOCAL_BUFFER_SIZE;
+    char*        buffer = local_buffer;
+    va_list      args;
+
+    va_start(args, format);
+
+    for(;;) {
+        int result;
+
+        /* try to format the message (it might not fit) */
+        result = NPT_FormatStringVN(buffer, buffer_size-1, format, args);
+        buffer[buffer_size-1] = 0; /* force a NULL termination */
+        if (result >= 0) break;
+
+        /* the buffer was too small, try something bigger */
+        buffer_size = (buffer_size+NPT_DEBUG_BUFFER_INCREMENT)*2;
+        if (buffer_size > NPT_DEBUG_BUFFER_MAX_SIZE) break;
+        if (buffer != local_buffer) delete[] buffer;
+        buffer = new char[buffer_size];
+        if (buffer == NULL) return;
+    }
+
+    NPT_DebugOutput(buffer);
+    if (buffer != local_buffer) delete[] buffer;
+
+    va_end(args);
+#else
+    NPT_COMPILER_UNUSED(format);
+#endif
+}

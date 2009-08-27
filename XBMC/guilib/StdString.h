@@ -2,6 +2,8 @@
 #include <string>
 #if !defined(_LINUX)
 #include <windows.h>
+#include <stdint.h>
+#include "win32/PlatformDefs.h"
 #endif
 
 // =============================================================================
@@ -1112,15 +1114,16 @@ inline const Type& SSMAX(const Type& arg1, const Type& arg2)
 #endif
 
 // StdCodeCvt when there's no conversion to be done
-inline PSTR StdCodeCvt(PSTR pDst, int nDst, PCSTR pSrc, int nSrc)
+template <typename T>
+inline T* StdCodeCvt(T* pDst, int nDst, const T* pSrc, int nSrc)
 {
   int nChars = SSMIN(nSrc, nDst);
 
   if ( nChars > 0 )
   {
     pDst[0]        = '\0';
-    std::basic_string<char>::traits_type::copy(pDst, pSrc, nChars);
-//    std::char_traits<char>::copy(pDst, pSrc, nChars);
+    std::basic_string<T>::traits_type::copy(pDst, pSrc, nChars);
+//    std::char_traits<T>::copy(pDst, pSrc, nChars);
     pDst[nChars]  = '\0';
   }
 
@@ -1134,22 +1137,6 @@ inline PUSTR StdCodeCvt(PUSTR pDst, int nDst, PCSTR pSrc, int nSrc)
 {
   return (PUSTR)StdCodeCvt((PSTR)pDst, nDst, pSrc, nSrc);
 }
-
-inline PWSTR StdCodeCvt(PWSTR pDst, int nDst, PCWSTR pSrc, int nSrc)
-{
-  int nChars = SSMIN(nSrc, nDst);
-
-  if ( nChars > 0 )
-  {
-    pDst[0]        = '\0';
-    std::basic_string<wchar_t>::traits_type::copy(pDst, pSrc, nChars);
-//    std::char_traits<wchar_t>::copy(pDst, pSrc, nChars);
-    pDst[nChars]  = '\0';
-  }
-
-  return pDst;
-}
-
 
 // Define tstring -- generic name for std::basic_string<TCHAR>
 
@@ -1274,7 +1261,9 @@ typedef std::string::pointer    SS_PTRTYPE;
 typedef std::wstring::size_type    SW_SIZETYPE;
 typedef std::wstring::pointer    SW_PTRTYPE;
 
-inline void  ssasn(std::string& sDst, const std::string& sSrc)
+
+template <typename T>
+inline void  ssasn(std::basic_string<T>& sDst, const std::basic_string<T>& sSrc)
 {
   if ( sDst.c_str() != sSrc.c_str() )
   {
@@ -1282,7 +1271,8 @@ inline void  ssasn(std::string& sDst, const std::string& sSrc)
     sDst.assign(SSREF(sSrc));
   }
 }
-inline void  ssasn(std::string& sDst, PCSTR pA)
+template <typename T>
+inline void  ssasn(std::basic_string<T>& sDst, const T *pA)
 {
   // Watch out for NULLs, as always.
 
@@ -1296,7 +1286,7 @@ inline void  ssasn(std::string& sDst, PCSTR pA)
 
   else if ( pA >= sDst.c_str() && pA <= sDst.c_str() + sDst.size() )
   {
-    sDst =sDst.substr(static_cast<SS_SIZETYPE>(pA-sDst.c_str()));
+    sDst =sDst.substr(static_cast<typename std::basic_string<T>::size_type>(pA-sDst.c_str()));
   }
 
   // Otherwise (most cases) apply the assignment bug fix, if applicable
@@ -1371,40 +1361,6 @@ inline void ssasn(std::string& sDst, const int nNull)
   ASSERT(nNull==0);
   sDst.assign("");
 }
-inline void  ssasn(std::wstring& sDst, const std::wstring& sSrc)
-{
-  if ( sDst.c_str() != sSrc.c_str() )
-  {
-    sDst.erase();
-    sDst.assign(SSREF(sSrc));
-  }
-}
-inline void  ssasn(std::wstring& sDst, PCWSTR pW)
-{
-  // Watch out for NULLs, as always.
-
-  if ( 0 == pW )
-  {
-    sDst.erase();
-  }
-
-  // If pW actually points to part of sDst, we must NOT erase(), but
-  // rather take a substring
-
-  else if ( pW >= sDst.c_str() && pW <= sDst.c_str() + sDst.size() )
-  {
-    sDst = sDst.substr(static_cast<SW_SIZETYPE>(pW-sDst.c_str()));
-  }
-
-  // Otherwise (most cases) apply the assignment bug fix, if applicable
-  // and do the assignment
-
-  else
-  {
-    Q172398(sDst);
-    sDst.assign(pW);
-  }
-}
 #undef StrSizeType
 inline void  ssasn(std::wstring& sDst, const std::string& sSrc)
 {
@@ -1449,7 +1405,6 @@ inline void ssasn(std::wstring& sDst, const int nNull)
   sDst.assign(L"");
 }
 
-
 // -----------------------------------------------------------------------------
 // ssadd: string object concatenation -- add second argument to first
 // -----------------------------------------------------------------------------
@@ -1478,7 +1433,8 @@ inline void  ssadd(std::string& sDst, const std::wstring& sSrc)
 #endif
   }
 }
-inline void  ssadd(std::string& sDst, const std::string& sSrc)
+template <typename T>
+inline void  ssadd(typename std::basic_string<T>& sDst, const typename std::basic_string<T>& sSrc)
 {
   sDst += sSrc;
 }
@@ -1503,7 +1459,8 @@ inline void  ssadd(std::string& sDst, PCWSTR pW)
 #endif
   }
 }
-inline void  ssadd(std::string& sDst, PCSTR pA)
+template <typename T>
+inline void  ssadd(typename std::basic_string<T>& sDst, const T *pA)
 {
   if ( pA )
   {
@@ -1515,7 +1472,7 @@ inline void  ssadd(std::string& sDst, PCSTR pA)
     if ( pA >= sDst.c_str() && pA <= sDst.c_str()+sDst.length())
     {
       if ( sDst.capacity() <= sDst.size()+sslen(pA) )
-        sDst.append(std::string(pA));
+        sDst.append(std::basic_string<T>(pA));
       else
         sDst.append(pA);
     }
@@ -1524,10 +1481,6 @@ inline void  ssadd(std::string& sDst, PCSTR pA)
       sDst.append(pA);
     }
   }
-}
-inline void  ssadd(std::wstring& sDst, const std::wstring& sSrc)
-{
-  sDst += sSrc;
 }
 inline void  ssadd(std::wstring& sDst, const std::string& sSrc)
 {
@@ -1566,29 +1519,6 @@ inline void  ssadd(std::wstring& sDst, PCSTR pA)
 #endif
   }
 }
-inline void  ssadd(std::wstring& sDst, PCWSTR pW)
-{
-  if ( pW )
-  {
-    // If the string being added is our internal string or a part of our
-    // internal string, then we must NOT do any reallocation without
-    // first copying that string to another object (since we're using a
-    // direct pointer)
-
-    if ( pW >= sDst.c_str() && pW <= sDst.c_str()+sDst.length())
-    {
-      if ( sDst.capacity() <= sDst.size()+sslen(pW) )
-        sDst.append(std::wstring(pW));
-      else
-        sDst.append(pW);
-    }
-    else
-    {
-      sDst.append(pW);
-    }
-  }
-}
-
 
 // -----------------------------------------------------------------------------
 // sscmp: comparison (case sensitive, not affected by locale)
@@ -1788,6 +1718,16 @@ inline void ssupr(CT* pT, size_t nLen, const std::locale& loc=std::locale())
   {
     return ::LoadStringW(hInst, uId, pBuf, nMax);
   }
+#if defined ( _MSC_VER ) && ( _MSC_VER >= 1500 )
+  inline int ssload(HMODULE hInst, UINT uId, uint16_t *pBuf, int nMax)
+  {
+    return 0;
+  }
+  inline int ssload(HMODULE hInst, UINT uId, uint32_t *pBuf, int nMax)
+  {
+    return 0;
+  }
+#endif
 #endif
 
 
@@ -1892,6 +1832,7 @@ inline int ssicoll(const CT* sz1, int nLen1, const CT* sz2, int nLen2)
 //
 // RETURN VALUE: none
 // -----------------------------------------------------------------------------
+
 template<typename CT1, typename CT2>
 inline int sscpycvt(CT1* pDst, const CT2* pSrc, int nMax)
 {
@@ -1911,24 +1852,17 @@ inline int sscpycvt(CT1* pDst, const CT2* pSrc, int nMax)
   return sslen(szCvt);
 }
 
-inline int sscpycvt(PSTR pDst, PCSTR pSrc, int nMax)
+template<typename T>
+inline int sscpycvt(T* pDst, const T* pSrc, int nMax)
 {
   int nCount = nMax;
   for (; nCount > 0 && *pSrc; ++pSrc, ++pDst, --nCount)
-    std::basic_string<char>::traits_type::assign(*pDst, *pSrc);
+    std::basic_string<T>::traits_type::assign(*pDst, *pSrc);
 
-  *pDst =  '\0';
+  *pDst = 0;
   return nMax - nCount;
 }
-inline int sscpycvt(PWSTR pDst, PCWSTR pSrc, int nMax)
-{
-  int nCount = nMax;
-  for (; nCount > 0 && *pSrc; ++pSrc, ++pDst, --nCount)
-    std::basic_string<wchar_t>::traits_type::assign(*pDst, *pSrc);
 
-  *pDst = L'\0';
-  return nMax - nCount;
-}
 inline int sscpycvt(PWSTR pDst, PCSTR pSrc, int nMax)
 {
   // Note -- we assume pDst is big enough to hold pSrc.  If not, we're in
@@ -2180,6 +2114,26 @@ public:
   #endif
   }
 
+  CStdStr(uint16_t* pW)
+  {
+  #ifdef SS_ANSI
+    *this = pW;
+  #else
+    if ( !TryLoad(pW) )
+      *this = pW;
+  #endif
+  }
+
+  CStdStr(uint32_t* pW)
+  {
+  #ifdef SS_ANSI
+    *this = pW;
+  #else
+    if ( !TryLoad(pW) )
+      *this = pW;
+  #endif
+  }
+
   CStdStr(MYCITER first, MYCITER last)
     : MYBASE(first, last)
   {
@@ -2237,6 +2191,18 @@ public:
     return *this;
   }
 #endif
+
+  MYTYPE& operator=(uint16_t* pA)
+  {
+    ssasn(*this, pA);
+    return *this;
+  }
+
+  MYTYPE& operator=(uint32_t* pA)
+  {
+    ssasn(*this, pA);
+    return *this;
+  }
 
   MYTYPE& operator=(CT t)
   {
@@ -2394,6 +2360,18 @@ public:
   }
 
   MYTYPE& operator+=(PCWSTR pW)
+  {
+    ssadd(*this, pW);
+    return *this;
+  }
+
+  MYTYPE& operator+=(uint16_t* pW)
+  {
+    ssadd(*this, pW);
+    return *this;
+  }
+
+  MYTYPE& operator+=(uint32_t* pW)
   {
     ssadd(*this, pW);
     return *this;
@@ -3942,6 +3920,8 @@ public:
 
 typedef CStdStr<char>    CStdStringA;  // a better std::string
 typedef CStdStr<wchar_t>  CStdStringW;  // a better std::wstring
+typedef CStdStr<uint16_t>  CStdString16;  // a 16bit char string
+typedef CStdStr<uint32_t>  CStdString32;  // a 32bit char string
 typedef CStdStr<OLECHAR>  CStdStringO;  // almost always CStdStringW
 
 // -----------------------------------------------------------------------------

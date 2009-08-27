@@ -75,6 +75,7 @@
 #include "NptSerialPort.h"
 #include "NptVersion.h"
 #include "NptDynamicLibraries.h"
+#include "NptDynamicCast.h"
 
 // optional modules
 #include "NptZip.h"

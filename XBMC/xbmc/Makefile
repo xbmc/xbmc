@@ -206,6 +206,7 @@ SRCS=Application.cpp \
      Zeroconf.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
+     ScriptSettings.cpp \
 
 LIB=xbmc.a
 

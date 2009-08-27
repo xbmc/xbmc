@@ -62,6 +62,8 @@
 #define PLT_FILTER_MASK_RES_DURATION                0x00020000
 #define PLT_FILTER_MASK_RES_SIZE                    0x00040000
 #define PLT_FILTER_MASK_RES_PROTECTION              0x00080000
+#define PLT_FILTER_MASK_RES_RESOLUTION              0x00100000
+#define PLT_FILTER_MASK_RES_BITRATE                 0x00200000
 
 #define PLT_FILTER_FIELD_CREATOR                    "dc:creator"
 #define PLT_FILTER_FIELD_DATE                       "dc:date"
@@ -82,6 +84,8 @@
 #define PLT_FILTER_FIELD_RES_DURATION               "res@duration"
 #define PLT_FILTER_FIELD_RES_SIZE                   "res@size"
 #define PLT_FILTER_FIELD_RES_PROTECTION             "res@protection"
+#define PLT_FILTER_FIELD_RES_RESOLUTION             "res@resolution"
+#define PLT_FILTER_FIELD_RES_BITRATE                "res@bitrate"
 
 extern const char* didl_header;
 extern const char* didl_footer;
@@ -94,8 +98,11 @@ extern const char* didl_namespace_upnp;
 class PLT_Didl
 {
 public:
-    static NPT_Result  ToDidl(PLT_MediaObject& object, NPT_String filter, NPT_String& didl);
-    static NPT_Result  FromDidl(const char* didl, PLT_MediaObjectListReference& objects);
+    static NPT_Result  ToDidl(PLT_MediaObject& object, 
+                              NPT_String       filter, 
+                              NPT_String&      didl);
+    static NPT_Result  FromDidl(const char* didl, 
+                                PLT_MediaObjectListReference& objects);
 
     static void        AppendXmlEscape(NPT_String& out, NPT_String& in);
     static void        AppendXmlUnEscape(NPT_String& out, NPT_String& in);
@@ -109,7 +116,6 @@ public:
         return res;
     }
 
-private:
     static NPT_UInt32  ConvertFilterToMask(NPT_String filter);
 };
 

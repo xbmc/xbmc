@@ -1,6 +1,8 @@
 import os
 
-def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=True):
+def generate(env, gcc_cross_prefix=None, gcc_strict=True, gcc_stop_on_warning=None):
+    if gcc_stop_on_warning == None: gcc_stop_on_warning = env['stop_on_warning']
+ 
     ### compiler flags
     if gcc_strict:
         env.AppendUnique(CCFLAGS = ['-pedantic', '-Wall',  '-W',  '-Wundef', '-Wno-long-long'])

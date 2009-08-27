@@ -38,7 +38,7 @@ public:
 
   virtual void Process();
 
-  CTexture GetImage(const CStdString &path, int &orientation, bool firstRequest);
+  bool GetImage(const CStdString &path, CTexture &texture, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();

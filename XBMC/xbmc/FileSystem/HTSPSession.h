@@ -68,7 +68,7 @@ class const_circular_iter
       return(*this);
     }
 
-    const reference operator*()  const { return (*iter);  }
+          reference operator*()  const { return (*iter);  }
     const pointer   operator->() const { return &(*iter); }
     bool operator==(const const_circular_iter<T>&  rhs) const { return (iter == rhs.iter); }
     bool operator==(const T&                       rhs) const { return (iter == rhs); }
@@ -143,6 +143,27 @@ struct SEvent
   }
 };
 
+struct SQueueStatus
+{
+  uint32_t packets; // Number of data packets in queue.
+  uint32_t bytes;   // Number of bytes in queue.
+  uint32_t delay;   // Estimated delay of queue (in µs)
+  uint32_t bdrops;  // Number of B-frames dropped
+  uint32_t pdrops;  // Number of P-frames dropped
+  uint32_t idrops;  // Number of I-frames dropped 
+
+  SQueueStatus() { Clear(); }
+  void Clear()
+  {
+    packets = 0;
+    bytes   = 0;
+    delay   = 0;
+    bdrops  = 0;
+    pdrops  = 0;
+    idrops  = 0;
+  }
+};
+
 typedef std::map<int, SChannel> SChannels;
 typedef std::map<int, STag>     STags;
 typedef std::map<int, SEvent>   SEvents;
@@ -179,6 +200,7 @@ public:
   static void ParseTagUpdate    (htsmsg_t* msg, STags &tags);
   static void ParseTagRemove    (htsmsg_t* msg, STags &tags);
   static bool ParseItem         (const SChannel& channel, int tag, const SEvent& event, CFileItem& item);
+  static bool ParseQueueStatus  (htsmsg_t* msg, SQueueStatus &queue);
 
 private:
   SOCKET      m_fd;

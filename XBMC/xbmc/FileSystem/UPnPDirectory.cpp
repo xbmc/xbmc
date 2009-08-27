@@ -76,12 +76,11 @@ CUPnPDirectory::GetFriendlyName(const char* url)
     NPT_String object_id = path.SubString(next_slash+1, path.GetLength()-next_slash-2);
 
     // look for device
-    PLT_DeviceDataReference* device;
-    const NPT_Lock<PLT_DeviceMap>& devices = CUPnP::GetInstance()->m_MediaBrowser->GetMediaServers();
-    if (NPT_FAILED(devices.Get(uuid, device)) || device == NULL)
+    PLT_DeviceDataReference device;
+    if (NPT_FAILED(CUPnP::GetInstance()->m_MediaBrowser->FindServer(uuid, device)) || device.IsNull())
         return NULL;
 
-    return (const char*)(*device)->GetFriendlyName();
+    return (const char*)device->GetFriendlyName();
 }
 
 /*----------------------------------------------------------------------
@@ -109,22 +108,20 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
     if (path.Compare("upnp://", true) == 0) {
         // root -> get list of devices
-        const NPT_Lock<PLT_DeviceMap>& devices = upnp->m_MediaBrowser->GetMediaServers();
-        const NPT_List<PLT_DeviceMapEntry*>& entries = devices.GetEntries();
-        NPT_List<PLT_DeviceMapEntry*>::Iterator entry = entries.GetFirstItem();
-        while (entry) {
-            PLT_DeviceDataReference device = (*entry)->GetValue();
-            NPT_String name = device->GetFriendlyName();
-            NPT_String uuid = (*entry)->GetKey();
+        const NPT_Lock<PLT_DeviceDataReferenceList>& devices = upnp->m_MediaBrowser->GetMediaServers();
+        NPT_List<PLT_DeviceDataReference>::Iterator device = devices.GetFirstItem();
+        while (device) {
+            NPT_String name = (*device)->GetFriendlyName();
+            NPT_String uuid = (*device)->GetUUID();
 
             CFileItemPtr pItem(new CFileItem((const char*)name));
             pItem->m_strPath = (const char*) "upnp://" + uuid + "/";
             pItem->m_bIsFolder = true;
-            pItem->SetThumbnailImage((const char*)device->GetIconUrl("image/jpeg"));
+            pItem->SetThumbnailImage((const char*)(*device)->GetIconUrl("image/jpeg"));
 
             items.Add(pItem);
 
-            ++entry;
+            ++device;
         }
     } else {
         if (!path.EndsWith("/")) path += "/";
@@ -147,10 +144,9 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         NPT_System::GetCurrentTimeStamp(watchdog);
         watchdog += 5.f;
 
-        PLT_DeviceDataReference* device;
+        PLT_DeviceDataReference device;
         for (;;) {
-            const NPT_Lock<PLT_DeviceMap>& devices = upnp->m_MediaBrowser->GetMediaServers();
-            if (NPT_SUCCEEDED(devices.Get(uuid, device)) && device)
+            if (NPT_SUCCEEDED(upnp->m_MediaBrowser->FindServer(uuid, device)) && !device.IsNull())
                 break;
 
             // fail right away if device not found and upnp client was already running
@@ -184,8 +180,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
         // special case for Windows Media Connect and WMP11 when looking for root
         // We can target which root subfolder we want based on directory mask
-        if (object_id == "0" && (((*device)->GetFriendlyName().Find("Windows Media Connect", 0, true) >= 0) ||
-                                 ((*device)->m_ModelName == "Windows Media Player Sharing"))) {
+        if (object_id == "0" && ((device->GetFriendlyName().Find("Windows Media Connect", 0, true) >= 0) ||
+                                 (device->m_ModelName == "Windows Media Player Sharing"))) {
 
             // look for a specific type to differentiate which folder we want
             if (audio && !video && !image) {
@@ -202,8 +198,8 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
 #ifdef DISABLE_SPECIALCASE
         // same thing but special case for XBMC
-        if (object_id == "0" && (((*device)->m_ModelName.Find("XBMC", 0, true) >= 0) ||
-                                 ((*device)->m_ModelName.Find("Xbox Media Center", 0, true) >= 0))) {
+        if (object_id == "0" && ((device->m_ModelName.Find("XBMC", 0, true) >= 0) ||
+                                 (device->m_ModelName.Find("Xbox Media Center", 0, true) >= 0))) {
             // look for a specific type to differentiate which folder we want
             if (audio && !video && !image) {
                 // music
@@ -234,7 +230,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
         // if error, return now, the device could have gone away
         // this will make us go back to the sources list
         PLT_MediaObjectListReference list;
-        NPT_Result res = upnp->m_MediaBrowser->Browse(*device, object_id, list);
+        NPT_Result res = upnp->m_MediaBrowser->BrowseSync(device, object_id, list);
         if (NPT_FAILED(res)) goto failure;
 
         // empty list is ok

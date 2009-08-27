@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Set XBMC_HOME if xbmc.bin is a symlink
+if [ -L @prefix@/share/xbmc/xbmc.bin ]; then
+  export XBMC_HOME="@prefix@/share/xbmc"
+fi
+
 python @prefix@/share/xbmc/FEH.py "$@"
 if [ $? -ne 0 ]; then
   exit

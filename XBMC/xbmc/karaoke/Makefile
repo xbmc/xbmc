@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../linux -I../../guilib -I../cores -I../utils
+INCLUDES=-I. -I.. -I../linux -I../../guilib -I../cores -I../utils -I../cores/ffmpeg
 
 SRCS=GUIDialogKaraokeSongSelector.cpp \
 	karaokelyricscdg.cpp \
@@ -8,6 +8,7 @@ SRCS=GUIDialogKaraokeSongSelector.cpp \
 	karaokelyricstext.cpp \
 	karaokelyricstextkar.cpp \
 	karaokelyricstextlrc.cpp \
+	karaokelyricstextustar.cpp \
 	Cdg.cpp \
 	GUIWindowKaraokeLyrics.cpp \
 	karaokewindowbackground.cpp \

@@ -823,36 +823,72 @@ NPT_String::Erase(NPT_Ordinal start, NPT_Cardinal count /* = 1 */)
 |    NPT_String::ToInteger
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_String::ToInteger(NPT_Int32& value, bool relaxed) const
+NPT_String::ToInteger(int& value, bool relaxed) const
+{
+    return NPT_ParseInteger(GetChars(), value, relaxed);
+}
+
+/*----------------------------------------------------------------------
+|    NPT_String::ToInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_String::ToInteger(unsigned int& value, bool relaxed) const
+{
+    return NPT_ParseInteger(GetChars(), value, relaxed);
+}
+
+/*----------------------------------------------------------------------
+|    NPT_String::ToInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_String::ToInteger(long& value, bool relaxed) const
+{
+    return NPT_ParseInteger(GetChars(), value, relaxed);
+}
+
+/*----------------------------------------------------------------------
+|    NPT_String::ToInteger
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_String::ToInteger(unsigned long& value, bool relaxed) const
+{
+    return NPT_ParseInteger(GetChars(), value, relaxed);
+}
+
+/*----------------------------------------------------------------------
+|    NPT_String::ToInteger32
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_String::ToInteger32(NPT_Int32& value, bool relaxed) const
 {
     return NPT_ParseInteger32(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
-|    NPT_String::ToInteger
+|    NPT_String::ToInteger32
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_String::ToInteger(NPT_UInt32& value, bool relaxed) const
+NPT_String::ToInteger32(NPT_UInt32& value, bool relaxed) const
 {
-    return NPT_ParseInteger32U(GetChars(), value, relaxed);
+    return NPT_ParseInteger32(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
-|    NPT_String::ToInteger
+|    NPT_String::ToInteger64
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_String::ToInteger(NPT_Int64& value, bool relaxed) const
+NPT_String::ToInteger64(NPT_Int64& value, bool relaxed) const
 {
     return NPT_ParseInteger64(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------
-|    NPT_String::ToInteger
+|    NPT_String::ToInteger64
 +---------------------------------------------------------------------*/
 NPT_Result 
-NPT_String::ToInteger(NPT_UInt64& value, bool relaxed) const
+NPT_String::ToInteger64(NPT_UInt64& value, bool relaxed) const
 {
-    return NPT_ParseInteger64U(GetChars(), value, relaxed);
+    return NPT_ParseInteger64(GetChars(), value, relaxed);
 }
 
 /*----------------------------------------------------------------------

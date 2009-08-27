@@ -41,6 +41,11 @@
 NPT_SET_LOCAL_LOGGER("platinum.core.http")
 
 /*----------------------------------------------------------------------
+|   external references
++---------------------------------------------------------------------*/
+extern NPT_String HttpServerHeader;
+
+/*----------------------------------------------------------------------
 |   NPT_HttpHeaderFinder
 +---------------------------------------------------------------------*/
 class NPT_HttpHeaderFinder
@@ -142,7 +147,7 @@ PLT_HttpHelper::GetContentLength(NPT_HttpMessage& message, NPT_LargeSize& len)
         message.GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_CONTENT_LENGTH);
     NPT_CHECK_POINTER(val);
 
-    return val->ToInteger(len);
+    return val->ToInteger64(len);
 }
 
 /*----------------------------------------------------------------------
@@ -218,7 +223,7 @@ PLT_HttpHelper::GetBody(NPT_HttpMessage& message, NPT_String& body)
 
     // get stream
     NPT_HttpEntity* entity = message.GetEntity();
-    if (!entity || NPT_FAILED(entity->GetInputStream(stream))) {
+    if (!entity || NPT_FAILED(entity->GetInputStream(stream)) || stream.IsNull()) {
         return NPT_FAILURE;
     }
 
@@ -265,11 +270,10 @@ PLT_HttpHelper::IsConnectionKeepAlive(NPT_HttpMessage& message)
     const NPT_String* connection = 
         message.GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_CONNECTION);
 
-    // if we have the keep-alive header then no matter what protocol version, we want keep-alive
-    // if we are in HTTP 1.1 and we don't have the keep-alive header, make sure we also don't have the Connection: close header.
+    // the DLNA says that all HTTP 1.0 requests should be closed immediately by the server
+    // all HTTP 1.1 without a Connection header or without a Connection header saying "Close" should be kept alive
     NPT_String protocol = message.GetProtocol();
-    if ((!protocol.Compare(NPT_HTTP_PROTOCOL_1_1, true) && (!connection || connection->Compare("Close", true))) || 
-        (connection && !connection->Compare("keep-alive", true))) {
+    if (!protocol.Compare(NPT_HTTP_PROTOCOL_1_1, true) && (!connection || connection->Compare("close", true))) {
         return true; 
     }
 
@@ -284,7 +288,7 @@ PLT_HttpHelper::IsBodyStreamSeekable(NPT_HttpMessage& message)
 {
     NPT_HttpEntity* entity = message.GetEntity();
     NPT_InputStreamReference stream;
-    if (!entity || NPT_FAILED(entity->GetInputStream(stream))) return true;
+    if (!entity || NPT_FAILED(entity->GetInputStream(stream)) || stream.IsNull()) return true;
 
     // try to get current position and seek there
     NPT_Position position;
@@ -344,10 +348,10 @@ PLT_HttpHelper::GetRange(NPT_HttpRequest& request,
         return NPT_FAILURE;
     }
     if (s[0] != '\0') {
-        NPT_ParseInteger64U(s, start);
+        NPT_ParseInteger64(s, start);
     }
     if (e[0] != '\0') {
-        NPT_ParseInteger64U(e, end);
+        NPT_ParseInteger64(e, end);
     }
 
     return NPT_SUCCESS;
@@ -422,13 +426,13 @@ PLT_HttpHelper::GetContentRange(NPT_HttpResponse& response,
         return NPT_FAILURE;
     }
     if (s[0] != '\0') {
-        NPT_ParseInteger64U(s, start);
+        NPT_ParseInteger64(s, start);
     }
     if (e[0] != '\0') {
-        NPT_ParseInteger64U(e, end);
+        NPT_ParseInteger64(e, end);
     }
     if (l[0] != '\0') {
-        NPT_ParseInteger64U(l, length);
+        NPT_ParseInteger64(l, length);
     }
     return NPT_SUCCESS;
 }
@@ -483,10 +487,10 @@ PLT_HttpHelper::ToLog(NPT_LoggerReference logger, int level, NPT_HttpResponse* r
 }
 
 /*----------------------------------------------------------------------
-|   PLT_HttpClient::Connect
+|   PLT_HttpHelper::Connect
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_HttpClient::Connect(NPT_Socket* connection, NPT_HttpRequest& request, NPT_Timeout timeout)
+PLT_HttpHelper::Connect(NPT_Socket& connection, NPT_HttpRequest& request, NPT_Timeout timeout)
 {
     // get the address of the server
     NPT_IpAddress server_address;
@@ -495,119 +499,7 @@ PLT_HttpClient::Connect(NPT_Socket* connection, NPT_HttpRequest& request, NPT_Ti
 
     // connect to the server
     NPT_LOG_FINER_2("Connecting to %s:%d\n", (const char*)request.GetUrl().GetHost(), request.GetUrl().GetPort());
-    NPT_CHECK_SEVERE(connection->Connect(address, timeout));
-
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   PLT_HttpClient::SendRequest
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_HttpClient::SendRequest(NPT_OutputStreamReference& output_stream, 
-                            NPT_HttpRequest&           request, 
-                            NPT_Timeout                timeout)
-{
-    NPT_COMPILER_UNUSED(timeout);
-
-    // connect to the server
-    NPT_LOG_FINE("Sending:");
-    PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
-
-    // add any headers that may be missing
-    NPT_HttpHeaders& headers = request.GetHeaders();
-    //headers.SetHeader(NPT_HTTP_HEADER_CONNECTION, "close");
-    if (!headers.GetHeader(NPT_HTTP_HEADER_USER_AGENT)) {
-        headers.SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
-            "Platinum/" PLT_PLATINUM_VERSION_STRING);
-    }
-
-    // set host only if not already set
-    if (!headers.GetHeader(NPT_HTTP_HEADER_HOST)) {
-        NPT_String host = request.GetUrl().GetHost();
-        if (request.GetUrl().GetPort() != NPT_HTTP_DEFAULT_PORT) {
-            host += ":";
-            host += NPT_String::FromInteger(request.GetUrl().GetPort());
-        }
-        headers.SetHeader(NPT_HTTP_HEADER_HOST, host);
-    }
-
-    // get the request entity to set additional headers
-    NPT_InputStreamReference body_stream;
-    NPT_HttpEntity* entity = request.GetEntity();
-    if (entity && NPT_SUCCEEDED(entity->GetInputStream(body_stream))) {
-        // content length
-        headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, 
-            NPT_String::FromIntegerU(entity->GetContentLength()));
-
-        // content type
-        NPT_String content_type = entity->GetContentType();
-        if (!content_type.IsEmpty()) {
-            headers.SetHeader(NPT_HTTP_HEADER_CONTENT_TYPE, content_type);
-        }
-
-        // content encoding
-        NPT_String content_encoding = entity->GetContentEncoding();
-        if (!content_encoding.IsEmpty()) {
-            headers.SetHeader(NPT_HTTP_HEADER_CONTENT_ENCODING, content_encoding);
-        }
-    } else {
-        // force content length to 0 is there is no message body
-        headers.SetHeader(NPT_HTTP_HEADER_CONTENT_LENGTH, "0");
-    }
-
-    // create a memory stream to buffer the headers
-    NPT_MemoryStream header_stream;
-
-    // emit the request headers into the header buffer
-    request.Emit(header_stream);
-
-    // send the headers
-    NPT_CHECK_SEVERE(output_stream->WriteFully(header_stream.GetData(), header_stream.GetDataSize()));
-
-    // send request body
-    if (!body_stream.IsNull() && entity->GetContentLength()) {
-        NPT_CHECK_SEVERE(NPT_StreamToStreamCopy(*body_stream.AsPointer(), *output_stream.AsPointer()));
-    }
-
-    // flush the output stream so that everything is sent to the server
-    output_stream->Flush();
-
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   PLT_HttpClient::WaitForResponse
-+---------------------------------------------------------------------*/
-NPT_Result
-PLT_HttpClient::WaitForResponse(NPT_InputStreamReference&     input_stream,
-                                NPT_HttpRequest&              request, 
-                                const NPT_HttpRequestContext& context,
-                                NPT_HttpResponse*&            response)
-{
-    NPT_COMPILER_UNUSED(context);
-
-    // create a buffered stream for this connection stream
-    NPT_BufferedInputStreamReference buffered_input_stream(new NPT_BufferedInputStream(input_stream));
-
-    // parse the response
-    NPT_CHECK(NPT_HttpResponse::Parse(*buffered_input_stream, response));
-
-    // unbuffer the stream
-    buffered_input_stream->SetBufferSize(0);
-
-    // create an entity if one is expected in the response
-    if (request.GetMethod() == NPT_HTTP_METHOD_GET || request.GetMethod() == NPT_HTTP_METHOD_POST) {
-        NPT_HttpEntity* response_entity = new NPT_HttpEntity(response->GetHeaders());
-        // Transfer-Encoding: chunked ?
-        if (response_entity->GetTransferEncoding() == "chunked") {
-            NPT_InputStreamReference body_stream(new NPT_HttpChunkedDecoderInputStream(buffered_input_stream));
-            response_entity->SetInputStream((NPT_InputStreamReference)body_stream);
-        } else {
-            response_entity->SetInputStream((NPT_InputStreamReference)buffered_input_stream);
-        }
-        response->SetEntity(response_entity);
-    }
+    NPT_CHECK_SEVERE(connection.Connect(address, timeout));
 
     return NPT_SUCCESS;
 }

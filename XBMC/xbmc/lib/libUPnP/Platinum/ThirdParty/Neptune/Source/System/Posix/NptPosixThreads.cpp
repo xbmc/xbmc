@@ -17,11 +17,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
-#if defined(__SYMBIAN32__)
 #include <errno.h>
-#else
-#include <cerrno>
-#endif
 
 #include "NptConfig.h"
 #include "NptTypes.h"
@@ -436,10 +432,14 @@ NPT_PosixThread::EntryPoint(void* argument)
 
     NPT_LOG_FINE("NPT_PosixThread::EntryPoint - in =======================");
 
+    // get the thread ID from this context, because m_ThreadId may not yet
+    // have been set by the parent thread in the Start() method
+    thread->m_ThreadId = pthread_self();
+    
     // set random seed per thread
     NPT_TimeStamp now;
     NPT_System::GetCurrentTimeStamp(now);
-    NPT_System::SetRandomSeed((unsigned int)(now.m_NanoSeconds + (long)NPT_Thread::GetCurrentThreadId()));
+    NPT_System::SetRandomSeed((unsigned int)(now.m_NanoSeconds + (long)thread->m_ThreadId));
 
     // run the thread 
     thread->Run();
@@ -477,27 +477,30 @@ NPT_PosixThread::Start()
     attributes = &stack_size_attributes;
 #endif
 
-    // create a stack local id, as if detached, this object
-    // may already be deleted when pthread_create returns and
-    // before we get to call detach on the given thread
-    pthread_t id;
-    bool      detached = m_Detached;
+    // use local copies of some of the object's members, because for
+    // detached threads, the object instance may have deleted itself
+    // before the pthread_create() function returns
+    bool detached = m_Detached;
 
     // create the native thread
-    int result = pthread_create(&id, attributes, EntryPoint, 
-                                reinterpret_cast<void*>(this));
+    pthread_t thread_id;
+    int result = pthread_create(&thread_id, attributes, EntryPoint, 
+                                static_cast<NPT_PosixThread*>(this));
     NPT_LOG_FINE_2("NPT_PosixThread::Start - id = %d, res=%d", 
-                   id, result);
-    if (result) {
+                   thread_id, result);
+    if (result != 0) {
         // failed
         return NPT_FAILURE;
     } else {
         // detach the thread if we're not joinable
         if (detached) {
-            pthread_detach(id);
+            pthread_detach(thread_id);
         } else {
-            m_ThreadId = id;
-        }
+            // store the thread ID (NOTE: this is also done by the thread Run() method
+            // but it is necessary to do it from both contexts, because we don't know
+            // which one will need it first.)
+            m_ThreadId = thread_id;        
+        } 
         return NPT_SUCCESS;
     }
 }

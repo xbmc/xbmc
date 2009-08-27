@@ -60,6 +60,11 @@ void CGUIControlGroupList::Render()
   }
   m_scrollTime = m_renderTime;
 
+  // first we update visibility of all our items, to ensure our size and
+  // alignment computations are correct.
+  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+    (*it)->UpdateVisibility();
+
   ValidateOffset();
   if (m_pageControl)
   {
@@ -78,7 +83,6 @@ void CGUIControlGroupList::Render()
     // note we render all controls, even if they're offscreen, as then they'll be updated
     // with respect to animations
     CGUIControl *control = *it;
-    control->UpdateVisibility();
     if (m_renderFocusedLast && control->HasFocus())
     {
       focusedControl = control;

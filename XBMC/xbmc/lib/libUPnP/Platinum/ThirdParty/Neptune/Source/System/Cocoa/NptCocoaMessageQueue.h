@@ -13,7 +13,6 @@
 /*----------------------------------------------------------------------
 |       includes
 +---------------------------------------------------------------------*/
-#include <Cocoa/Cocoa.h>
 #include "NptStrings.h"
 #include "NptMessaging.h"
 #include "NptSimpleMessageQueue.h"

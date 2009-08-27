@@ -46,10 +46,10 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef WIN32
-#include "mpcdec/config_types.h"
+#if (!defined _WIN32PC)
+#include "config_types.h"
 #else
-#include "mpcdec/config_win32.h"
+#include "config_win32.h"
 #endif
 
 #include "decoder.h"

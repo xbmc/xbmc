@@ -25,21 +25,21 @@
 #include <string.h>
 
 
-static inline uint16_t bswap_16(uint16_t x)
+static uint16_t bswap_16(uint16_t x)
 {
     x= (x>>8) | (x<<8);
     return x;
 }
 
 
-static inline uint32_t bswap_32(uint32_t x)
+static uint32_t bswap_32(uint32_t x)
 {
     x= ((x<<8)&0xFF00FF00) | ((x>>8)&0x00FF00FF);
     x= (x>>16) | (x<<16);
     return x;
 }
 
-static inline uint64_t bswap_64(uint64_t x)
+static uint64_t bswap_64(uint64_t x)
 {
     union {
         uint64_t ll;

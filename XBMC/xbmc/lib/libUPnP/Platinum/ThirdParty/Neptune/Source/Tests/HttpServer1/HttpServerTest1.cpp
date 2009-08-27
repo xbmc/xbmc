@@ -17,12 +17,33 @@
 #include <crtdbg.h>
 #endif
 
+bool KillRequest = false;
+
 /*----------------------------------------------------------------------
-|       TestHandler
+|       KillHandler
 +---------------------------------------------------------------------*/
-class TestHandler : public NPT_HttpRequestHandler
+class KillHandler : public NPT_HttpRequestHandler
 {
 public:
+    NPT_Result SetupResponse(NPT_HttpRequest&              /*request*/, 
+                             const NPT_HttpRequestContext& /*context*/,
+                             NPT_HttpResponse&             response) {
+        NPT_HttpEntity* entity = response.GetEntity();
+        entity->SetContentType("text/html");
+        entity->SetInputStream("<html><body>Bye Bye!</body></html>");
+        KillRequest = true;
+        
+        return NPT_SUCCESS;
+    }
+};
+
+/*----------------------------------------------------------------------
+|       TestHandler1
++---------------------------------------------------------------------*/
+class TestHandler1 : public NPT_HttpRequestHandler
+{
+public:
+    TestHandler1(bool chunked = false) : m_Chunked(chunked) {}
     NPT_Result SetupResponse(NPT_HttpRequest&              request, 
                              const NPT_HttpRequestContext& context,
                              NPT_HttpResponse&             response) {
@@ -46,6 +67,14 @@ public:
                  msg += " = ";
                  msg += field.m_Value;
                  msg += " </LI>";
+                 
+                 // check for a 'delay' field
+                 if (field.m_Name == "delay") {
+                    NPT_UInt32 delay = 0;
+                    field.m_Value.ToInteger(delay);
+                    NPT_Debug("DELAY: %d seconds\n", delay);
+                    NPT_System::Sleep(NPT_TimeInterval((float)delay));
+                 }
             }
         }
         msg += "</UL></HTML>";
@@ -68,6 +97,76 @@ public:
         entity->SetContentType("text/html");
         entity->SetInputStream(msg);
 
+        if (m_Chunked) {
+            entity->SetTransferEncoding(NPT_HTTP_TRANSFER_ENCODING_CHUNKED);
+            entity->SetContentLength(0);
+        }
+        
+        return NPT_SUCCESS;
+    }
+    
+    bool m_Chunked;
+};
+
+/*----------------------------------------------------------------------
+|       TestHandler2
++---------------------------------------------------------------------*/
+class TestHandler2 : public NPT_HttpRequestHandler
+{
+public:
+    NPT_Result SetupResponse(NPT_HttpRequest&              /*request*/, 
+                             const NPT_HttpRequestContext& /*context*/,
+                             NPT_HttpResponse&             response) {
+        NPT_HttpEntity* entity = response.GetEntity();
+        entity->SetContentType("text/html");
+        return NPT_SUCCESS;
+    }
+    
+    NPT_Result SendResponseBody(const NPT_HttpRequestContext& /*context*/,
+                                NPT_HttpResponse&             /*response*/,
+                                NPT_OutputStream&             output) {
+        output.WriteString("<html><body>\r\n");
+        for (unsigned int i=0; i<30; i++) {
+            output.WriteString("Line ");
+            output.WriteString(NPT_String::FromInteger(i).GetChars());
+            output.WriteString("\r\n");
+            output.Flush();
+            NPT_System::Sleep(NPT_TimeInterval(0.2f));
+        }
+        output.WriteString("</body></html>\r\n");
+        return NPT_SUCCESS;
+    }
+};
+
+/*----------------------------------------------------------------------
+|       ChunkedHandler
++---------------------------------------------------------------------*/
+class ChunkedHandler : public NPT_HttpRequestHandler
+{
+public:
+    NPT_Result SetupResponse(NPT_HttpRequest&              /*request*/, 
+                             const NPT_HttpRequestContext& /*context*/,
+                             NPT_HttpResponse&             response) {
+        NPT_HttpEntity* entity = response.GetEntity();
+        entity->SetContentType("text/html");
+        entity->SetTransferEncoding("chunked");
+        response.SetProtocol(NPT_HTTP_PROTOCOL_1_1);
+        return NPT_SUCCESS;
+    }
+    
+    NPT_Result SendResponseBody(const NPT_HttpRequestContext& /*context*/,
+                                NPT_HttpResponse&             /*response*/,
+                                NPT_OutputStream&             output) {
+        NPT_HttpChunkedOutputStream chunker(output);
+        chunker.WriteString("<html><body>\r\n");
+        for (unsigned int i=0; i<30; i++) {
+            NPT_String line = "Line ";
+            line += NPT_String::FromInteger(i).GetChars();
+            chunker.WriteString(line.GetChars());
+            chunker.Flush();
+            NPT_System::Sleep(NPT_TimeInterval(0.2f));
+        }
+        chunker.WriteString("</body></html>\r\n");
         return NPT_SUCCESS;
     }
 };
@@ -83,28 +182,66 @@ TestHttp()
     NPT_OutputStreamReference output;
     NPT_HttpRequestContext    context;
 
-    NPT_HttpStaticRequestHandler* static_handler = new NPT_HttpStaticRequestHandler("<HTML><H1>Hello World</H1></HTML>", "text/html");
-    server.AddRequestHandler(static_handler, "/test", false);
+    NPT_HttpStaticRequestHandler* static_handler = new NPT_HttpStaticRequestHandler(
+        "<html><body>"
+        "<h1>Neptune HTTP Server Test 1</h1>"
+        "<a href='/files-autodir'>List files working directory (autodir)</a><br>"
+        "<a href='/files'>List files working directory (no autodir)</a><br>"
+        "<a href='/test1'>Test 1</a><br>"
+        "<a href='/test2'>Test 2</a><br>"
+        "<a href='/chunked1'>Chunked 1</a><br>"
+        "<a href='/chunked2'>Chunked 2</a><br>"
+        "<a href='/kill'>Kill Test Server</a><br>"
+        "</body></html>", 
+        "text/html");
+    server.AddRequestHandler(static_handler, "/", false);
 
-    TestHandler* test_handler = new TestHandler();
-    server.AddRequestHandler(test_handler, "/test2", false);
+    KillHandler* kill_handler = new KillHandler();
+    server.AddRequestHandler(kill_handler, "/kill", false);
 
-    NPT_HttpFileRequestHandler* file_handler = new NPT_HttpFileRequestHandler("/temp", "c:\\Temp");
-    server.AddRequestHandler(file_handler, "/temp", true);
+    TestHandler1* test_handler1 = new TestHandler1();
+    server.AddRequestHandler(test_handler1, "/test1", false);
 
-    NPT_Result result = server.WaitForNewClient(input, 
-                                                output,
-                                                &context);
-    NPT_Debug("WaitForNewClient returned %d\n", result);
-    if (NPT_FAILED(result)) return result;
+    TestHandler2* test_handler2 = new TestHandler2();
+    server.AddRequestHandler(test_handler2, "/test2", false);
 
-    result = server.RespondToClient(input, output, context);
-    NPT_Debug("ResponToClient returned %d\n", result);
+    ChunkedHandler* chunked_handler1 = new ChunkedHandler();
+    server.AddRequestHandler(chunked_handler1, "/chunked1", false);
 
+    TestHandler1* chunked_handler2 = new TestHandler1(true);
+    server.AddRequestHandler(chunked_handler2, "/chunked2", false);
+
+    NPT_String cwd;
+    NPT_File::GetWorkingDir(cwd);
+    NPT_HttpFileRequestHandler* file_handler_autodir = new NPT_HttpFileRequestHandler("/files-autodir", cwd.GetChars(), true);
+    server.AddRequestHandler(file_handler_autodir, "/files-autodir", true);
+    NPT_HttpFileRequestHandler* file_handler_noautodir = new NPT_HttpFileRequestHandler("/files", cwd.GetChars(), false);
+    server.AddRequestHandler(file_handler_noautodir, "/files", true);
+
+    do {
+        NPT_Console::Output("Test HTTP server waiting for connection on port 1234...\n");
+        NPT_Result result = server.WaitForNewClient(input, 
+                                                    output,
+                                                    &context);
+        NPT_Console::OutputF("WaitForNewClient returned %d (%s)\n", result, NPT_ResultText(result));
+        if (NPT_FAILED(result)) return result;
+
+        result = server.RespondToClient(input, output, context);
+        NPT_Console::OutputF("RespondToClient returned %d (%s)\n", result, NPT_ResultText(result));
+        
+        input = NULL;
+        output = NULL;
+    } while (!KillRequest);
+
+    NPT_Console::OutputF("Killing Server\n");
+    
     delete static_handler;
-    delete file_handler;
-
-    return result;
+    delete test_handler1;
+    delete test_handler2;
+    delete file_handler_autodir;
+    delete file_handler_noautodir;
+    
+    return NPT_SUCCESS;
 }
 
 /*----------------------------------------------------------------------
@@ -125,7 +262,7 @@ main(int /*argc*/, char** /*argv*/)
     //freopen("CONOUT$", "w", stdout);
 #endif 
 
-    while (NPT_SUCCEEDED(TestHttp()));
+    TestHttp();
 
 #if defined(WIN32) && defined(_DEBUG)
     _CrtDumpMemoryLeaks();

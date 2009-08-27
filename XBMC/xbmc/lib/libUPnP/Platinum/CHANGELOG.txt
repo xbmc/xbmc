@@ -1,5 +1,74 @@
+Platinum 0.5.1
+--------------
+removed: DMS 1.5 for 360, no need for it
+changed: more DLNA support, fixed deadlock when removing devices
+changed: moved back apps to Platinum proj on OSX
+fixed: ctrl point now renews subscribers in time
+added: mute/unmute function to micromediacontroller to pass DLNA tests
+fixed: fixed subscriber renewal, now wait 10 secs before doing first house keeping of old devices not renewed
+fixed: scons 1.2 support
+fixed: osx config for scons 1.2
+added: MediaServer Device Discovery & Control DLNA compliance
+changed: uses built-in Platinum icons instead of file based
+fixed: iPhone build
+fixed: xbox 360 was not playing divx anymore
+
+Platinum 0.5.0
+--------------
+added: better dlna support for embedded devices
+changed: now wait a bit before fetching device description after receiving first ssdp message just in case we have more ssdp byebye messages we have not received yet which could cause the device to be removed after we've just added it
+added: full support for HTTP/1.1 and persistent connections in compliance with dlna 1.5
+fixed: fixed rare deadlock
+changed: now uses http 1.1 for DLNA compliance
+changed: queues scpd requests instead of using one thread per scpd
+added: near DLNA compliance for device host and control point
+fixed: http server returning more than requested during HTTP byte range requests (fixed iphone playback)
+change: now DMS 1.5 for 360
+fixed: browse issue with syncbrowser
+added: SetDelegate functions to PLT_MediaBrowser and PLT_MediaController in case it is subclassed and this cannot be passed to ctor
+
+Platinum 0.4.9
+--------------
+added: PlatinumiPhone target to Platinum.xcodeproj
+changed: PlatinumApps.xcodeproj now depends on Platinum.xcodeproj
+changed: PLT_MediaBrowser and PLT_MediaController now asks delegate before subscribing to events to let a chance to decide if device is worth listening to events
+changed: renamed PLT_MediaBrowserListener to PLT_MediaBrowserDelegate and PLT_MediaControllerListener to PLT_MediaControllerDelegate
+changed: check for new event to notify every 100ms instead of 10ms, also reduce link list modifications to reduce allocatio/free
+added: can now specify custom user-agent and server http header
+fixed: missing didl resource if no protection attribute was set
+fixed: can now stop/restart devices without restarting entire upnp stack
+changed: honor Connection header from response if keep-alive is true
+fixed: more PS3 support
+added: now can specify initial port can be ignored if failed and try again with a random port
+added: support for resolution in didl, can now prevent certain files from being advertised in didl, better mimetype support in FileServer
+fixed: now aborts properly client socket tasks
+removed: null/null in array, uses NPT_ARRAY_SIZE instead
+removed: NPT_ERROR_INTERNAL result when closing a socket while still reading on it, now returns NPT_ERROR_EOS
+added: support for icons (MediaConnect sample for PS3)
+added: PLT_HttpRequestContext can hold a request and a context now
+changed: better dlna support, can now use request information to decide what to return (important to support xbox 360, ps3, etc..)
+fixed: XBox 360 not finding us anymore, don't hardcode same guid! and fix mp4 playback on 360
+
+Platinum 0.4.8
+--------------
+fixed: XBox 360 and PS3 video playback
+added: removed some FATAL logs, can pass path to MediaConnect cmd line
+changed: changes to http server to support path without a query
+added: frame streamer example (mjpeg live stream advertised via upnp)
+changed: verified that content-length was indeed set on the entity before writing it, to avoid writing 0 when the length wasn't known (multipart)
+
 Platinum 0.4.7
 --------------
+fixed: listener being called multiple times with same device when appearing or disapearing
+added: dc:date support in didl
+added: better dlna support for videos
+changed: don't cache empty results in media cache
+fixed: WMP 11 crash when unsubscribing
+fixed: crash after 15 min due to not cleaning up properly interface list before reusing it
+changed: allow for services with no actions (although not upnp compliant)
+fixed: lock media cache before access
+changed: switching to native eol
+changed: fixed xcode proj, add delay to get description/scpd for Rhapsody to be happy
 changed: uses HTTP 1.1 in server with keep-alive. Greatly improves performance
 updated: license is now GPLv2 or later
 changed: do not search, announce or respond on localhost anymore

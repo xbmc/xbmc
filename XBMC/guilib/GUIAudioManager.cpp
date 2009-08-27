@@ -40,6 +40,7 @@ CGUIAudioManager g_audioManager;
 
 CGUIAudioManager::CGUIAudioManager()
 {
+  m_bInitialized = false;
   m_actionSound=NULL;
   m_bEnabled=true;
 }
@@ -51,10 +52,16 @@ CGUIAudioManager::~CGUIAudioManager()
 
 void CGUIAudioManager::Initialize(int iDevice)
 {
-  CSingleLock lock(m_cs);
+  if (m_bInitialized || !m_bEnabled)
+    return;
 
+  if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
+    return;
+  
   if (iDevice==CAudioContext::DEFAULT_DEVICE)
   {
+    CSingleLock lock(m_cs);
+    CLog::Log(LOGDEBUG, "CGUIAudioManager::Initialize");
 #ifndef HAS_SDL_AUDIO
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
@@ -64,6 +71,7 @@ void CGUIAudioManager::Initialize(int iDevice)
     if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
        CLog::Log(LOGERROR, "Unable to open audio mixer");
 #endif
+    m_bInitialized = true;
   }
 }
 
@@ -71,7 +79,12 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 {
   if (!(iDevice == CAudioContext::DIRECTSOUND_DEVICE || iDevice == CAudioContext::DEFAULT_DEVICE)) return;
 
+  if (!m_bInitialized)
+    return;
+
   CSingleLock lock(m_cs);
+  CLog::Log(LOGDEBUG, "CGUIAudioManager::DeInitialize");
+
   if (m_actionSound) //  Wait for finish when an action sound is playing
     while(m_actionSound->IsPlaying()) {}
 
@@ -79,6 +92,7 @@ void CGUIAudioManager::DeInitialize(int iDevice)
 #ifdef HAS_SDL_AUDIO
   Mix_CloseAudio();
 #endif
+  m_bInitialized = false;
 
 }
 void CGUIAudioManager::Stop()
@@ -154,7 +168,7 @@ void CGUIAudioManager::FreeUnused()
 void CGUIAudioManager::PlayActionSound(const CAction& action)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bEnabled || g_audioContext.IsPassthroughActive())
+  if (!m_bInitialized || !m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -185,7 +199,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (!m_bEnabled || g_audioContext.IsPassthroughActive())
+  if (!m_bInitialized || !m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -235,7 +249,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
 void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
 {
   // it's not possible to play gui sounds when passthrough is active
-  if (g_audioContext.IsPassthroughActive())
+  if (!m_bInitialized || !m_bEnabled || g_audioContext.IsPassthroughActive())
     return;
 
   CSingleLock lock(m_cs);
@@ -272,6 +286,8 @@ bool CGUIAudioManager::Load()
 {
   m_actionSoundMap.clear();
   m_windowSoundMap.clear();
+
+  Enable(m_bEnabled); // make sure we initialize or deinitialize
 
   if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
     return true;
@@ -322,7 +338,7 @@ bool CGUIAudioManager::Load()
       WORD wID = 0;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
-        g_buttonTranslator.TranslateActionString(pIdNode->FirstChild()->Value(), wID);
+        CButtonTranslator::TranslateActionString(pIdNode->FirstChild()->Value(), wID);
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");
@@ -351,7 +367,7 @@ bool CGUIAudioManager::Load()
       if (pIdNode)
       {
         if (pIdNode->FirstChild())
-          wID = g_buttonTranslator.TranslateWindowString(pIdNode->FirstChild()->Value());
+          wID = CButtonTranslator::TranslateWindowString(pIdNode->FirstChild()->Value());
       }
 
       CWindowSounds sounds;
@@ -387,19 +403,16 @@ bool CGUIAudioManager::LoadWindowSound(TiXmlNode* pWindowNode, const CStdString&
 // \brief Enable/Disable nav sounds
 void CGUIAudioManager::Enable(bool bEnable)
 {
-  // Enable/Disable has no effect if nav sounds are turned off
-  if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
-    return;
-
-#if defined(HAS_SDL_AUDIO) && defined(__APPLE__)
-  // Workaround for bug/quirk in OSX 10.4 CoreAudio subsystem
-  if (bEnable && !m_bInitialized)
-    Initialize(CAudioContext::DEFAULT_DEVICE);
-  else if (!bEnable && m_bInitialized)
-    DeInitialize(CAudioContext::DEFAULT_DEVICE);
-#endif  
-  
   m_bEnabled=bEnable;
+
+  // always deinit audio when we don't want gui sounds
+  if (g_guiSettings.GetString("lookandfeel.soundskin")=="OFF")
+    bEnable = false;
+
+  if (bEnable)
+    Initialize(CAudioContext::DEFAULT_DEVICE);
+  else if (!bEnable)
+    DeInitialize(CAudioContext::DEFAULT_DEVICE);
 }
 
 // \brief Sets the volume of all playing sounds

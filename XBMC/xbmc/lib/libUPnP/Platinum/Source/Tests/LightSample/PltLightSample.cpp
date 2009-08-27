@@ -84,7 +84,7 @@ PLT_LightSampleDevice::SetupServices(PLT_DeviceData& data)
 +---------------------------------------------------------------------*/
 NPT_Result
 PLT_LightSampleDevice::OnAction(PLT_ActionReference&          action,
-                                const NPT_HttpRequestContext& context)
+                                const PLT_HttpRequestContext& context)
 {
     NPT_COMPILER_UNUSED(context);
 

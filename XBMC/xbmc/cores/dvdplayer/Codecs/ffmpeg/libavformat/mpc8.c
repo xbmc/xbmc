@@ -19,7 +19,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/bitstream.h"
+#include "libavcodec/get_bits.h"
 #include "libavcodec/unary.h"
 #include "avformat.h"
 
@@ -97,7 +97,7 @@ static void mpc8_parse_seektable(AVFormatContext *s, int64_t off)
         av_log(s, AV_LOG_ERROR, "No seek table at given position\n");
         return;
     }
-    if(!(buf = av_malloc(size)))
+    if(!(buf = av_malloc(size + FF_INPUT_BUFFER_PADDING_SIZE)))
         return;
     get_buffer(s->pb, buf, size);
     init_get_bits(&gb, buf, size * 8);

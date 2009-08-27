@@ -85,9 +85,9 @@ class LibraryModule(Module):
                         Split(linked_modules)+Split(included_modules))
         self.build_include_dirs = build_include_dirs
         if environment is None:
-            self.env            = env.Clone()
+            self.env = env.Clone()
         else:
-            self.env            = environment.Clone()
+            self.env = environment.Clone()
         self.env.AppendUnique(CPPDEFINES = extra_cpp_defines)
         
         # store this new object in the module dictionary

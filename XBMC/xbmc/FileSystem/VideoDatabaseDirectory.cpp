@@ -275,6 +275,9 @@ bool CVideoDatabaseDirectory::Exists(const char* strPath)
   if (!pNode.get())
     return false;
 
+  if (pNode->GetChildType() == VIDEODATABASEDIRECTORY::NODE_TYPE_NONE)
+    return false;
+
   return true;
 }
 

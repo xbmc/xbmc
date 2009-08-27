@@ -24,7 +24,7 @@
 
 #include "avcodec.h"
 #include "bytestream.h"
-#include "bitstream.h"
+#include "get_bits.h"
 
 typedef struct PCXContext {
     AVFrame picture;
@@ -70,7 +70,9 @@ static void pcx_palette(const uint8_t **src, uint32_t *dst, unsigned int pallen)
 }
 
 static int pcx_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
-                            const uint8_t *buf, int buf_size) {
+                            AVPacket *avpkt) {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     PCXContext * const s = avctx->priv_data;
     AVFrame *picture = data;
     AVFrame * const p = &s->picture;
@@ -242,7 +244,7 @@ AVCodec pcx_decoder = {
     NULL,
     pcx_end,
     pcx_decode_frame,
-    0,
+    CODEC_CAP_DR1,
     NULL,
     .long_name = NULL_IF_CONFIG_SMALL("PC Paintbrush PCX image"),
 };

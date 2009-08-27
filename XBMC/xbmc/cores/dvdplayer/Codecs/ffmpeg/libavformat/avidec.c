@@ -19,6 +19,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+//#define DEBUG
+//#define DEBUG_SEEK
+
 #include "libavutil/intreadwrite.h"
 #include "libavutil/bswap.h"
 #include "avformat.h"
@@ -28,9 +31,6 @@
 
 #undef NDEBUG
 #include <assert.h>
-
-//#define DEBUG
-//#define DEBUG_SEEK
 
 typedef struct AVIStream {
     int64_t frame_offset; /* current frame (video) or byte (audio) counter
@@ -78,7 +78,7 @@ static int guess_ni_flag(AVFormatContext *s);
 #ifdef DEBUG
 static void print_tag(const char *str, unsigned int tag, int size)
 {
-    printf("%s: tag=%c%c%c%c size=0x%x\n",
+    dprintf(NULL, "%s: tag=%c%c%c%c size=0x%x\n",
            str, tag & 0xff,
            (tag >> 8) & 0xff,
            (tag >> 16) & 0xff,
@@ -125,7 +125,7 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
     AVIStream *ast;
     int i;
     int64_t last_pos= -1;
-    int64_t filesize= url_fsize(s->pb);
+    int64_t filesize= avi->fsize;
 
 #ifdef DEBUG_SEEK
     av_log(s, AV_LOG_ERROR, "longs_pre_entry:%d index_type:%d entries_in_use:%d chunk_id:%X base:%16"PRIX64"\n",
@@ -175,6 +175,8 @@ static int read_braindead_odml_indx(AVFormatContext *s, int frame_num){
 
             if(ast->sample_size)
                 ast->cum_len += len;
+            else if (st->codec->block_align)
+                ast->cum_len += (len + st->codec->block_align - 1)/st->codec->block_align;
             else
                 ast->cum_len ++;
             last_pos= pos;
@@ -257,6 +259,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
     AVIStream *ast = NULL;
     int avih_width=0, avih_height=0;
     int amv_file_format=0;
+    uint64_t list_end = 0;
 
     avi->stream_index= -1;
 
@@ -264,8 +267,8 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
         return -1;
 
     avi->fsize = url_fsize(pb);
-    if(avi->fsize<=0)
-        avi->fsize= avi->riff_end;
+    if(avi->fsize<=0 || avi->fsize < avi->riff_end)
+        avi->fsize= avi->riff_end == 8 ? INT64_MAX : avi->riff_end;
 
     /* first list tag */
     stream_index = -1;
@@ -282,6 +285,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
 
         switch(tag) {
         case MKTAG('L', 'I', 'S', 'T'):
+            list_end = url_ftell(pb) + size;
             /* Ignored, except at start of video packets. */
             tag1 = get_le32(pb);
 #ifdef DEBUG
@@ -290,10 +294,8 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
             if (tag1 == MKTAG('m', 'o', 'v', 'i')) {
                 avi->movi_list = url_ftell(pb) - 4;
                 if(size) avi->movi_end = avi->movi_list + size + (size & 1);
-                else     avi->movi_end = url_fsize(pb);
-#ifdef DEBUG
-                printf("movi end=%"PRIx64"\n", avi->movi_end);
-#endif
+                else     avi->movi_end = avi->fsize;
+                dprintf(NULL, "movi end=%"PRIx64"\n", avi->movi_end);
                 goto end_of_header;
             }
             break;
@@ -450,6 +452,9 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
             if (stream_index >= (unsigned)s->nb_streams || avi->dv_demux) {
                 url_fskip(pb, size);
             } else {
+                uint64_t cur_pos = url_ftell(pb);
+                if (cur_pos < list_end)
+                    size = FFMIN(size, list_end - cur_pos);
                 st = s->streams[stream_index];
                 switch(codec_type) {
                 case CODEC_TYPE_VIDEO:
@@ -483,6 +488,10 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
                     if(size > 10*4 && size<(1<<30)){
                         st->codec->extradata_size= size - 10*4;
                         st->codec->extradata= av_malloc(st->codec->extradata_size + FF_INPUT_BUFFER_PADDING_SIZE);
+                        if (!st->codec->extradata) {
+                            st->codec->extradata_size= 0;
+                            return AVERROR(ENOMEM);
+                        }
                         get_buffer(pb, st->codec->extradata, st->codec->extradata_size);
                     }
 
@@ -494,7 +503,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
                     /* This is true for all paletted codecs implemented in FFmpeg. */
                     if (st->codec->extradata_size && (st->codec->bits_per_coded_sample <= 8)) {
                         st->codec->palctrl = av_mallocz(sizeof(AVPaletteControl));
-#ifdef WORDS_BIGENDIAN
+#if HAVE_BIGENDIAN
                         for (i = 0; i < FFMIN(st->codec->extradata_size, AVPALETTE_SIZE)/4; i++)
                             st->codec->palctrl->palette[i] = bswap_32(((uint32_t*)st->codec->extradata)[i]);
 #else
@@ -509,7 +518,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
 #endif
                     st->codec->codec_type = CODEC_TYPE_VIDEO;
                     st->codec->codec_tag = tag1;
-                    st->codec->codec_id = codec_get_id(codec_bmp_tags, tag1);
+                    st->codec->codec_id = ff_codec_get_id(ff_codec_bmp_tags, tag1);
                     st->need_parsing = AVSTREAM_PARSE_HEADERS; // This is needed to get the pict type which is necessary for generating correct pts.
 
                     if(st->codec->codec_tag==0 && st->codec->height > 0 && st->codec->extradata_size < 1U<<30){
@@ -523,7 +532,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
 //                    url_fskip(pb, size - 5 * 4);
                     break;
                 case CODEC_TYPE_AUDIO:
-                    get_wav_header(pb, st->codec, size);
+                    ff_get_wav_header(pb, st->codec, size);
                     if(ast->sample_size && st->codec->block_align && ast->sample_size != st->codec->block_align){
                         av_log(s, AV_LOG_WARNING, "sample size (%d) != block align (%d)\n", ast->sample_size, st->codec->block_align);
                         ast->sample_size= st->codec->block_align;
@@ -614,7 +623,7 @@ static int avi_read_header(AVFormatContext *s, AVFormatParameters *ap)
                 av_log(s, AV_LOG_ERROR, "Something went wrong during header parsing, "
                                         "I will ignore it and try to continue anyway.\n");
                 avi->movi_list = url_ftell(pb) - 4;
-                avi->movi_end  = url_fsize(pb);
+                avi->movi_end  = avi->fsize;
                 goto end_of_header;
             }
             /* skip tag */
@@ -785,6 +794,8 @@ resync:
             }
             if(ast->sample_size)
                 ast->frame_offset += pkt->size;
+            else if (st->codec->block_align)
+                ast->frame_offset += (size + st->codec->block_align - 1)/st->codec->block_align;
             else
                 ast->frame_offset++;
         }
@@ -857,6 +868,7 @@ resync:
                /*|| (st->discard >= AVDISCARD_NONKEY && !(pkt->flags & PKT_FLAG_KEY))*/ //FIXME needs a little reordering
                || st->discard >= AVDISCARD_ALL){
                 if(ast->sample_size) ast->frame_offset += pkt->size;
+                else if (st->codec->block_align) ast->frame_offset += (pkt->size + st->codec->block_align - 1)/st->codec->block_align;
                 else                 ast->frame_offset++;
                 url_fskip(pb, size);
                 goto resync;
@@ -952,6 +964,8 @@ static int avi_read_idx1(AVFormatContext *s, int size)
             av_add_index_entry(st, pos, ast->cum_len / FFMAX(1, ast->sample_size), len, 0, (flags&AVIIF_INDEX) ? AVINDEX_KEYFRAME : 0);
         if(ast->sample_size)
             ast->cum_len += len;
+        else if (st->codec->block_align)
+            ast->cum_len += (len + st->codec->block_align - 1)/st->codec->block_align;
         else
             ast->cum_len ++;
         last_pos= pos;
@@ -963,19 +977,30 @@ static int guess_ni_flag(AVFormatContext *s){
     int i;
     int64_t last_start=0;
     int64_t first_end= INT64_MAX;
+    int64_t oldpos= url_ftell(s->pb);
 
     for(i=0; i<s->nb_streams; i++){
         AVStream *st = s->streams[i];
         int n= st->nb_index_entries;
+        unsigned int size;
 
         if(n <= 0)
             continue;
+
+        if(n >= 2){
+            int64_t pos= st->index_entries[0].pos;
+            url_fseek(s->pb, pos + 4, SEEK_SET);
+            size= get_le32(s->pb);
+            if(pos + size > st->index_entries[1].pos)
+                last_start= INT64_MAX;
+        }
 
         if(st->index_entries[0].pos > last_start)
             last_start= st->index_entries[0].pos;
         if(st->index_entries[n-1].pos < first_end)
             first_end= st->index_entries[n-1].pos;
     }
+    url_fseek(s->pb, oldpos, SEEK_SET);
     return last_start > first_end;
 }
 

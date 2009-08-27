@@ -21,6 +21,16 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+extern "C" {
+#if (defined USE_EXTERNAL_LIBDTS)
+  #include <dts.h>
+#else
+  #include "../dvdplayer/DVDCodecs/Audio/libdts/dts.h"
+#endif
+}
 #include "DynamicDll.h"
 
 #ifdef HAS_DTS_CODEC
@@ -31,10 +41,6 @@ typedef unsigned __int8  uint8_t;
 typedef __int32          int32_t;
 typedef __int16          int16_t;
 #endif
-
-#include "../dvdplayer/DVDCodecs/Audio/libdts/dts.h"
-
-#include "cores/dvdplayer/DVDCodecs/Audio/libdts/dts.h"
 
 #ifdef LIBDTS_DOUBLE
 typedef float convert_t;
@@ -56,6 +62,40 @@ public:
   virtual sample_t * dts_samples (dts_state_t * state)=0;
   virtual void dts_free (dts_state_t * state)=0;
 };
+
+#if (defined USE_EXTERNAL_LIBDTS)
+
+class DllDCACodec : public DllDynamic, DllDCACodecInterface
+{
+public:
+    virtual ~DllDCACodec() {}
+    virtual dts_state_t * dts_init (uint32_t mm_accel)
+        { return ::dts_init (mm_accel); }
+    virtual int dts_syncinfo (dts_state_t *state, uint8_t * buf, int * flags, int * sample_rate, int * bit_rate, int *frame_length)
+        { return ::dts_syncinfo (state, buf, flags, sample_rate, bit_rate, frame_length); }
+    virtual int dts_frame (dts_state_t * state, uint8_t * buf, int * flags, level_t * level, sample_t bias)
+        { return ::dts_frame (state, buf, flags, level, bias); }
+    virtual void dts_dynrng (dts_state_t * state, level_t (* call) (level_t, void *), void * data)
+        { return ::dts_dynrng (state, call, data); }
+    virtual int dts_blocks_num (dts_state_t * state)
+        { return ::dts_blocks_num (state); }
+    virtual int dts_block (dts_state_t * state)
+        { return ::dts_block (state); }
+    virtual sample_t * dts_samples (dts_state_t * state)
+        { return ::dts_samples (state); }
+    virtual void dts_free (dts_state_t * state)
+        { return ::dts_free (state); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllDCACodec: Using libdts system library");
+        return true;
+    }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllDCACodec : public DllDynamic, DllDCACodecInterface
 {
@@ -79,4 +119,7 @@ class DllDCACodec : public DllDynamic, DllDCACodecInterface
     RESOLVE_METHOD(dts_free)
   END_METHOD_RESOLVE()
 };
-#endif
+
+#endif /* (defined USE_EXTERNAL_LIBDTS) */
+
+#endif /* HAS_DTS_CODEC */

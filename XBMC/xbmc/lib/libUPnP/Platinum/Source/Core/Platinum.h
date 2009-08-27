@@ -40,6 +40,7 @@
 #include "PltUPnP.h"
 #include "PltCtrlPoint.h"
 #include "PltDeviceData.h"
+#include "PltHttpServer.h"
 
 #ifdef PLT_DEVICE_HEADERS_INCLUDE
 #include "PltMediaServer.h"

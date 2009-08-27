@@ -41,23 +41,21 @@ public:
   virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough) = 0;
   virtual void UnRegisterAudioCallback() = 0;
   virtual void RegisterAudioCallback(IAudioCallback* pCallback) = 0;
-  virtual FLOAT GetDelay() = 0;
-  virtual FLOAT GetCacheTime() = 0;
+  virtual float GetDelay() = 0;
+  virtual float GetCacheTime() = 0;
 
-  virtual DWORD AddPackets(const void* data, DWORD len) = 0;
+  virtual unsigned int AddPackets(const void* data, unsigned int len) = 0;
   virtual bool IsResampling() { return false;};
-  virtual DWORD GetSpace() = 0;
-  virtual HRESULT Deinitialize() = 0;
-  virtual HRESULT Pause() = 0;
-  virtual HRESULT Stop() = 0;
-  virtual HRESULT Resume() = 0;
-  virtual DWORD GetChunkLen() = 0;
+  virtual unsigned int GetSpace() = 0;
+  virtual bool Deinitialize() = 0;
+  virtual bool Pause() = 0;
+  virtual bool Stop() = 0;
+  virtual bool Resume() = 0;
+  virtual unsigned int GetChunkLen() = 0;
 
-  virtual LONG GetMinimumVolume() const = 0;
-  virtual LONG GetMaximumVolume() const = 0;
-  virtual LONG GetCurrentVolume() const = 0;
+  virtual long GetCurrentVolume() const = 0;
   virtual void Mute(bool bMute) = 0;
-  virtual HRESULT SetCurrentVolume(LONG nVolume) = 0;
+  virtual bool SetCurrentVolume(long nVolume) = 0;
   virtual void SetDynamicRangeCompression(long drc) {};
   virtual int SetPlaySpeed(int iSpeed) = 0;
   virtual void WaitCompletion() = 0;

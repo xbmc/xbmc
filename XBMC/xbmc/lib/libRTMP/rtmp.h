@@ -4,21 +4,21 @@
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
- *  This Program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2, or (at your option)
- *  any later version.
+ *  This file is part of libRTMP.
  *
- *  This Program is distributed in the hope that it will be useful,
+ *  libRTMP is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  libRTMP is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  GNU General Public License for more details.
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
- *  along with XBMC; see the file COPYING.  If not, write to
- *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
- *  http://www.gnu.org/copyleft/gpl.html
- *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with libRTMP; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 #include <string>
@@ -39,7 +39,7 @@ namespace RTMP_LIB
       void SetPlayPath(const std::string &strPlayPath);
       void SetBufferMS(int size);
 
-      bool Connect(const std::string &strRTMPLink);
+      bool Connect(const std::string &strRTMPLink, double dTime = 0);
       inline bool IsConnected() { return m_socket != INVALID_SOCKET; }
 
       bool GetNextMediaPacket(RTMPPacket &packet);
@@ -61,6 +61,7 @@ namespace RTMP_LIB
       static std::string ReadString(const char *data);
       static bool ReadBool(const char *data);
       static double ReadNumber(const char *data);
+      bool SendPause(bool DoPause, double dTime);
 
     protected:
       bool HandShake();
@@ -72,8 +73,8 @@ namespace RTMP_LIB
       bool SendCheckBWResult();
       bool SendPing(short nType, unsigned int nObject, unsigned int nTime = 0);
       bool SendCreateStream(double dStreamId);
+      bool SendDeleteStream(double dStreamId);
       bool SendPlay();
-      bool SendPause();
       bool SendSeek(double dTime);
       bool SendBytesReceived();
 
@@ -83,7 +84,7 @@ namespace RTMP_LIB
       void HandleAudio(const RTMPPacket &packet);
       void HandleVideo(const RTMPPacket &packet);
       void HandlePing(const RTMPPacket &packet);
-     
+
       int EncodeString(char *output, const std::string &strName, const std::string &strValue);
       int EncodeNumber(char *output, const std::string &strName, double dVal);
       int EncodeBoolean(char *output, const std::string &strName, bool bVal);
@@ -95,6 +96,7 @@ namespace RTMP_LIB
       bool WriteN(const char *buffer, int n);
 
       bool FillBuffer();
+      void FlushBuffer();
 
       int  m_socket;
       int  m_chunkSize;
@@ -118,6 +120,8 @@ namespace RTMP_LIB
       RTMPPacket m_vecChannelsIn[64];
       RTMPPacket m_vecChannelsOut[64];
       int  m_channelTimestamp[64]; // abs timestamp of last packet
+
+      double m_dStartPoint;
 
   };
 };

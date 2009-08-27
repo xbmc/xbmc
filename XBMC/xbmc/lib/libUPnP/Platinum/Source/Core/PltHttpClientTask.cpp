@@ -39,6 +39,22 @@
 NPT_SET_LOCAL_LOGGER("platinum.core.http.clienttask")
 
 /*----------------------------------------------------------------------
+|   PLT_HttpTcpConnector::PLT_HttpTcpConnector
++---------------------------------------------------------------------*/
+PLT_HttpTcpConnector::PLT_HttpTcpConnector() :
+    NPT_HttpClient::Connector(),
+    m_Socket(new NPT_TcpClientSocket())
+{
+}
+
+/*----------------------------------------------------------------------
+|   PLT_HttpTcpConnector::~PLT_HttpTcpConnector
++---------------------------------------------------------------------*/
+PLT_HttpTcpConnector::~PLT_HttpTcpConnector()
+{
+}
+
+/*----------------------------------------------------------------------
 |   PLT_HttpTcpConnector::Connect
 +---------------------------------------------------------------------*/
 NPT_Result
@@ -62,9 +78,9 @@ PLT_HttpTcpConnector::Connect(const char*                hostname,
 
     // connect to the server
     NPT_LOG_FINE_2("NPT_HttpTcpConnector::Connect - will connect to %s:%d\n", hostname, port);
-    m_Socket = new NPT_TcpClientSocket();
     m_Socket->SetReadTimeout(io_timeout);
     m_Socket->SetWriteTimeout(io_timeout);
+
     NPT_SocketAddress socket_address(address, port);
     NPT_CHECK_FATAL(m_Socket->Connect(socket_address, connection_timeout));
 
@@ -83,7 +99,7 @@ PLT_HttpTcpConnector::Connect(const char*                hostname,
 /*----------------------------------------------------------------------
 |   PLT_HttpClientSocketTask::PLT_HttpClientSocketTask
 +---------------------------------------------------------------------*/
-PLT_HttpClientSocketTask::PLT_HttpClientSocketTask(NPT_HttpRequest* request,
+PLT_HttpClientSocketTask::PLT_HttpClientSocketTask(NPT_HttpRequest* request /* = NULL */,
                                                    bool             wait_forever /* = false */) :
     m_WaitForever(wait_forever),
     m_Connector(NULL)
@@ -122,6 +138,30 @@ PLT_HttpClientSocketTask::GetNextRequest(NPT_HttpRequest*& request, NPT_Timeout 
 }
 
 /*----------------------------------------------------------------------
+|   PLT_HttpServerSocketTask::SetConnector
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_HttpClientSocketTask::SetConnector(PLT_HttpTcpConnector* connector)
+{
+    if (IsAborting(0)) return NPT_ERROR_CONNECTION_ABORTED;
+    
+    // NPT_HttpClient will delete old connector and own the new one
+    m_Client.SetConnector(connector);
+    m_Connector = connector;
+    return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_HttpServerSocketTask::DoAbort
++---------------------------------------------------------------------*/
+void
+PLT_HttpClientSocketTask::DoAbort()
+{
+    NPT_AutoLock autolock(m_ConnectorLock);
+    if (m_Connector) m_Connector->Abort();
+}
+
+/*----------------------------------------------------------------------
 |   PLT_HttpServerSocketTask::DoRun
 +---------------------------------------------------------------------*/
 void
@@ -129,30 +169,35 @@ PLT_HttpClientSocketTask::DoRun()
 {
     NPT_HttpRequest*       request;
     NPT_HttpRequestContext context;
-    bool                   using_previous_connector;
+    bool                   using_previous_connector = false;
     NPT_Result             res;
+    NPT_HttpResponse*      response;
+    NPT_TimeStamp          watchdog;
 
-    using_previous_connector = false;
-    m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
+    NPT_System::GetCurrentTimeStamp(watchdog);
 
     do {
         // pop next request or wait for one for 100ms
-        if (NPT_SUCCEEDED(GetNextRequest(request, 100))) {
-            NPT_HttpResponse* response = NULL;
+        while (NPT_SUCCEEDED(GetNextRequest(request, 100))) {
+            response = NULL;
 retry:
-            if (IsAborting(0)) {
-                delete request;
-                return;
-            }
-
             // if body is not seekable, don't even try to
             // reuse previous connector since in case it fails because
             // server closed connection, we won't be able to
             // rewind the body to resend the request
             if (!PLT_HttpHelper::IsBodyStreamSeekable(*request) && using_previous_connector) {
+                NPT_AutoLock autolock(m_ConnectorLock);
                 using_previous_connector = false;
-                m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
+                NPT_CHECK_LABEL_WARNING(SetConnector(NULL), abort);
             }
+
+            {    
+                // assign a new connector if needed
+                NPT_AutoLock autolock(m_ConnectorLock);
+                if (!m_Connector) NPT_CHECK_LABEL_WARNING(SetConnector(new PLT_HttpTcpConnector()), abort);
+            }
+            
+            if (IsAborting(0)) goto abort;
 
             // send request
             res = m_Client.SendRequest(*request, response);
@@ -160,14 +205,17 @@ retry:
             // retry only if we were reusing a previous connector
             if (NPT_FAILED(res) && using_previous_connector) {
                 using_previous_connector = false;
-                m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
+                {
+                    NPT_AutoLock autolock(m_ConnectorLock);
+                    NPT_CHECK_LABEL_WARNING(SetConnector(NULL), abort);
+                }
 
                 // server may have closed socket on us
                 NPT_HttpEntity* entity = request->GetEntity();
                 NPT_InputStreamReference input_stream;
 
                 // rewind request body if any to be able to resend it
-                if (entity && NPT_SUCCEEDED(entity->GetInputStream(input_stream))) {
+                if (entity && NPT_SUCCEEDED(entity->GetInputStream(input_stream)) && !input_stream.IsNull()) {
                     input_stream->Seek(0);
                 }
 
@@ -189,14 +237,32 @@ retry:
                 using_previous_connector = true;
             } else {
                 using_previous_connector = false;
-                m_Client.SetConnector(m_Connector = new PLT_HttpTcpConnector());
+                NPT_AutoLock autolock(m_ConnectorLock);
+                NPT_CHECK_LABEL_WARNING(SetConnector(NULL), abort);
             }
 
             // cleanup
             delete response;
+            response = NULL;
             delete request;
+            request = NULL;
         }
+
+        // DLNA requires that we abort unanswered/unused sockets after 60 secs
+        NPT_TimeStamp now;
+        NPT_System::GetCurrentTimeStamp(now);
+        if (now > watchdog + NPT_TimeInterval(60, 0)) {    
+            using_previous_connector = false;
+            NPT_AutoLock autolock(m_ConnectorLock);
+            NPT_CHECK_LABEL_WARNING(SetConnector(NULL), abort);
+            watchdog = now;
+        }
+
     } while (m_WaitForever && !IsAborting(0));
+    
+abort:
+    if (request) delete request;
+    if (response) delete response;
 }
 
 /*----------------------------------------------------------------------
@@ -212,13 +278,14 @@ PLT_HttpClientSocketTask::ProcessResponse(NPT_Result                    res,
     NPT_COMPILER_UNUSED(context);
 
     NPT_LOG_FINE_1("PLT_HttpClientSocketTask::ProcessResponse (result=%d)", res);
-    NPT_CHECK_SEVERE(res);
+    NPT_CHECK_WARNING(res);
 
     NPT_HttpEntity* entity;
     NPT_InputStreamReference body;
     if (!response || 
         !(entity = response->GetEntity()) || 
-        NPT_FAILED(entity->GetInputStream(body))) {
+        NPT_FAILED(entity->GetInputStream(body)) ||
+        body.IsNull()) {
         return NPT_FAILURE;
     }
 

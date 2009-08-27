@@ -358,7 +358,7 @@ ParseCommandLine(char** args)
 
     while ((arg = *tmp++)) {
         if (!strcmp(arg, "-p")) {
-            if (NPT_FAILED(NPT_ParseInteger32U(*tmp++, Options.port, false))) {
+            if (NPT_FAILED(NPT_ParseInteger32(*tmp++, Options.port, false))) {
                 fprintf(stderr, "ERROR: invalid argument\n");
                 PrintUsageAndExit(args);
             }

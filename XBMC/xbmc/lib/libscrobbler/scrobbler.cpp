@@ -92,7 +92,7 @@ void CScrobbler::AddSong(const MUSIC_INFO::CMusicInfoTag &tag, bool lastfmradio)
 
   if (tag.GetArtist().IsEmpty() || tag.GetTitle().IsEmpty())
     return;
-  
+
   // our tags are stored as UTF-8, so no conversion needed
   m_CurrentTrack.length           = tag.GetDuration();
   m_CurrentTrack.strArtist        = tag.GetArtist();
@@ -154,11 +154,10 @@ void CScrobbler::UpdateStatus()
       (m_submissionTimer > m_CurrentTrack.length || 
        m_submissionTimer >= 480))
   {
-    {
-      CSingleLock lock(m_queueLock);
-      m_bSubmitted = true;
-      m_vecSubmissionQueue.push_back(m_CurrentTrack);
-    }
+    CSingleLock lock(m_queueLock);
+    m_bSubmitted = true;
+    m_vecSubmissionQueue.push_back(m_CurrentTrack);
+    lock.Leave(); 
     SaveJournal();
     CLog::Log(LOGDEBUG, "%s: Queued track for submission", m_strLogPrefix.c_str());
   }
@@ -361,8 +360,6 @@ bool CScrobbler::LoadJournal()
 
 bool CScrobbler::SaveJournal()
 {
-  CSingleLock lock(m_queueLock);
-
   CStdString        strJournalVersion;
   TiXmlDocument     xmlDoc;
   TiXmlDeclaration  decl("1.0", "utf-8", "yes");
@@ -375,6 +372,7 @@ bool CScrobbler::SaveJournal()
     return false;
 
   int i = 0;
+  CSingleLock lock(m_queueLock);
   SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
   for (; it != m_vecSubmissionQueue.end(); it++, i++)
   {
@@ -392,6 +390,7 @@ bool CScrobbler::SaveJournal()
     XMLUtils::SetString(pNode, "source", it->strSource);
     XMLUtils::SetString(pNode, "rating", it->strRating);
   }
+  lock.Leave();
 
   CStdString FileName = GetJournalFileName();
   CLog::Log(LOGDEBUG, "%s: Journal with %d entries saved to %s",
@@ -557,38 +556,38 @@ bool CScrobbler::DoSubmission()
   CStdString        strSubmissionRequest;
   CStdString        strSubmission;
   CStdString        strResponse;
+  CSingleLock lock(m_queueLock);
+
+  // Construct submission URL.
+  numSubmissions = 
+    std::min((size_t)SCROBBLER_MAX_SUBMISSIONS, m_vecSubmissionQueue.size());
+  if (numSubmissions == 0)
+    return true;
+  strSubmissionRequest.Format("s=%s", m_strSessionID.c_str());
+  SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
+  for (i = 0; it != m_vecSubmissionQueue.end() && i < numSubmissions; i++,it++)
   {
-    CSingleLock lock(m_queueLock);
-
-    // Construct submission URL.
-    numSubmissions = 
-      std::min((size_t)SCROBBLER_MAX_SUBMISSIONS, m_vecSubmissionQueue.size());
-    if (numSubmissions == 0)
-      return true;
-    strSubmissionRequest.Format("s=%s", m_strSessionID.c_str());
-    SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
-    for (i = 0; it != m_vecSubmissionQueue.end() && i < numSubmissions; i++,it++)
-    {
-      strSubmission.Format("&a[%d]=%s&t[%d]=%s&i[%d]=%s&o[%d]=%s&r[%d]=%s",
-          i, it->strArtist.c_str(),     i, it->strTitle.c_str(),
-          i, it->strStartTime.c_str(),  i, it->strSource.c_str(),
-          i, it->strRating.c_str());
-      // Too many params, must be split (or hack CStdString)
-      strSubmission.Format("%s&l[%d]=%s&b[%d]=%s&n[%d]=%s&m[%d]=%s",
-          strSubmission.c_str(),        i, it->strLength.c_str(),
-          i, it->strAlbum.c_str(),      i, it->strTrackNum.c_str(),
-          i, it->strMusicBrainzID.c_str());
-      strSubmissionRequest += strSubmission;
-    }
+    strSubmission.Format("&a[%d]=%s&t[%d]=%s&i[%d]=%s&o[%d]=%s&r[%d]=%s",
+        i, it->strArtist.c_str(),     i, it->strTitle.c_str(),
+        i, it->strStartTime.c_str(),  i, it->strSource.c_str(),
+        i, it->strRating.c_str());
+    // Too many params, must be split (or hack CStdString)
+    strSubmission.Format("%s&l[%d]=%s&b[%d]=%s&n[%d]=%s&m[%d]=%s",
+        strSubmission.c_str(),        i, it->strLength.c_str(),
+        i, it->strAlbum.c_str(),      i, it->strTrackNum.c_str(),
+        i, it->strMusicBrainzID.c_str());
+    strSubmissionRequest += strSubmission;
   }
-
+  
   // Make and handle request
+  lock.Leave();
   if (m_pHttp->Post(m_strSubmissionURL, strSubmissionRequest, strResponse) &&
       HandleSubmission(strResponse))
   {
-    CSingleLock lock(m_queueLock);
+    lock.Enter();
     SCROBBLERJOURNALITERATOR it = m_vecSubmissionQueue.begin();
     m_vecSubmissionQueue.erase(it, it + i); // Remove submitted entries
+    lock.Leave();
     SaveJournal();
     return true;
   }

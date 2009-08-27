@@ -98,7 +98,10 @@ void CGUIDialogMusicScan::StartScanning(const CStdString& strDirectory)
 {
   m_ScanState = PREPARING;
 
-  Show();
+  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  {
+    Show();
+  }
 
   // save settings
   g_application.SaveMusicScanSettings();
@@ -110,7 +113,10 @@ void CGUIDialogMusicScan::StartAlbumScan(const CStdString& strDirectory)
 {
   m_ScanState = PREPARING;
 
-  Show();
+  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  {
+    Show();
+  }
 
   // save settings
   g_application.SaveMusicScanSettings();
@@ -122,7 +128,10 @@ void CGUIDialogMusicScan::StartArtistScan(const CStdString& strDirectory)
 {
   m_ScanState = PREPARING;
 
-  Show();
+  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  {
+    Show();
+  }
 
   // save settings
   g_application.SaveMusicScanSettings();
@@ -161,7 +170,10 @@ void CGUIDialogMusicScan::OnFinished()
   CLog::Log(LOGINFO,"Music scan was stopped or finished ... restoring FindRemoteThumbs");
   g_application.RestoreMusicScanSettings();
 
-  Close();
+  if (!g_guiSettings.GetBool("musiclibrary.backgroundupdate"))
+  {
+    Close();
+  }
 }
 
 void CGUIDialogMusicScan::UpdateState()

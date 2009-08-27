@@ -17,8 +17,13 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-
 #include "stdafx.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
+#ifdef HAS_SDL
+
 #include "LinuxRenderer.h"
 #include "../../Application.h"
 #include "../../Util.h"
@@ -778,22 +783,7 @@ void CLinuxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   ManageDisplay();
   ManageTextures();
 
-#ifndef HAS_SDL
-  if (clear)
-    m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
-
-  if(alpha < 255)
-  {
-    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-    m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_CONSTANTALPHA );
-    m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVCONSTANTALPHA );
-    m_pD3DDevice->SetRenderState( D3DRS_BLENDCOLOR, alpha );
-  }
-  else
-    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-#else 
 // TODO: prepare for render in RenderUpdate
-#endif
 
   Render(flags);
 
@@ -891,7 +881,11 @@ unsigned int CLinuxRenderer::PreInit()
   if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load())
         CLog::Log(LOGERROR,"CLinuxRendererGL::PreInit - failed to load rescale libraries!");
 
-  m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #if (! defined USE_EXTERNAL_FFMPEG)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #elif (defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #endif
 
   return 0;
 }
@@ -1080,62 +1074,7 @@ void CLinuxRenderer::RenderLowMem(DWORD flags)
     g_graphicsContext.ClipToViewWindow();
   }
 
-#ifndef HAS_SDL
-  for (int i = 0; i < 3; ++i)
-  {
-    m_pD3DDevice->SetTexture(i, m_YUVTexture[index][FIELD_FULL][i]);
-    m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetTextureStageState( i, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-    m_pD3DDevice->SetTextureStageState( i, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
-  }
-
-  m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-  m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE );
-  m_pD3DDevice->SetVertexShader( FVF_YV12VERTEX );
-  m_pD3DDevice->SetPixelShader( m_hLowMemShader );
-
-  //See RGB renderer for comment on this
-  #define CHROMAOFFSET_HORIZ 0.25f
-
-  // Render the image
-  m_pD3DDevice->SetScreenSpaceOffset( -0.5f, -0.5f); // fix texel align
-  m_pD3DDevice->Begin(D3DPT_QUADLIST);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.top );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f);
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.top, 0, 1.0f );
-
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.top );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.top / 2.0f );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.top, 0, 1.0f );
-
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.right, (float)rs.bottom );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.right / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.right, (float)rd.bottom, 0, 1.0f );
-
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD0, (float)rs.left, (float)rs.bottom );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD1, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-  m_pD3DDevice->SetVertexData2f( D3DVSDE_TEXCOORD2, (float)rs.left / 2.0f + CHROMAOFFSET_HORIZ, (float)rs.bottom / 2.0f );
-  m_pD3DDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)rd.left, (float)rd.bottom, 0, 1.0f );
-  m_pD3DDevice->End();
-  m_pD3DDevice->SetScreenSpaceOffset(0, 0);
-
-  m_pD3DDevice->SetTexture(0, NULL);
-  m_pD3DDevice->SetTexture(1, NULL);
-  m_pD3DDevice->SetTexture(2, NULL);
-
-  m_pD3DDevice->SetPixelShader( NULL );
-  m_pD3DDevice->SetScissors(0, FALSE, NULL );
-
-  //Okey, when the gpu is done with the textures here, they are free to be modified again
-  m_pD3DDevice->InsertCallback(D3DCALLBACK_WRITE,&TextureCallback, (DWORD)m_eventTexturesDone[index]);
-#elif defined (USE_SDL_OVERLAY)
+#if defined (USE_SDL_OVERLAY)
 
   SDL_Rect rect;
   rect.x = rs.left;
@@ -1218,3 +1157,5 @@ void CLinuxRenderer::OnClose()
 }
 
 #endif // HAS_SDL_OPENGL
+
+#endif // HAS_SDL

@@ -17,13 +17,19 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
+ifneq (@USE_EXTERNAL_LIBFAAD@,1)
 	make -C alac_decoder
 	$(CC) -shared -o $@ *.o \
 		alac_decoder/*.o \
 		../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o \
 		../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o \
 		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+else
+	make -C alac_decoder
+	$(CC) -shared -o $@ *.o \
+		alac_decoder/*.o -lfaad -lmp4ff \
+		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
+endif
 endif
 
 include ../../../../Makefile.include
-

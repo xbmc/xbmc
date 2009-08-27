@@ -380,6 +380,11 @@ MapErrorCode(int error)
 #endif
             return NPT_ERROR_WOULD_BLOCK;
 
+#if defined(EPIPE)
+        case EPIPE:
+            return NPT_ERROR_CONNECTION_RESET;
+#endif
+
         default:
             return NPT_FAILURE;
     }
@@ -509,12 +514,10 @@ public:
 #endif
     }
     ~NPT_BsdSocketFd() {
+        Disconnect();
 #if !defined(__WIN32__) && !defined(_XBOX)
         close(m_AbortPipe[0]);
         close(m_AbortPipe[1]);
-        closesocket(m_SocketFd);
-#else
-        Disconnect();
 #endif
     }
 
@@ -527,15 +530,15 @@ public:
 
 #if !defined(__WIN32__) && !defined(_XBOX)
         write(m_AbortPipe[1], "\0", 1);
-#else
+#endif
         // no pipe on win32, but closing the socket will
         // unblock the socket
         SocketFd socketFd = m_SocketFd;
         m_SocketFd = 0;
         if (socketFd) {
+            shutdown(socketFd, 2);
             closesocket(socketFd);
         }
-#endif
     }
 
     // members
@@ -550,7 +553,7 @@ private:
     friend class NPT_BsdTcpServerSocket;
     NPT_Result WaitForCondition(bool readable, bool writeable, NPT_Timeout timeout);
     
-private:
+public:
     // members
 #if !defined(__WIN32__) && !defined(_XBOX)
     int m_AbortPipe[2]; /* an array to store the file descriptors of the abort pipe. */
@@ -634,17 +637,20 @@ NPT_BsdSocketFd::WaitForCondition(bool        wait_for_readable,
                                   bool        wait_for_writeable, 
                                   NPT_Timeout timeout)
 {
+    // store local copy, in case the object is destroyed while we wait
+    SocketFd socket_fd = m_SocketFd;
+    
     // wait for incoming connection
     NPT_Result result = NPT_SUCCESS;
     fd_set read_set;
     fd_set write_set;
     fd_set except_set;
     FD_ZERO(&read_set);
-    if (wait_for_readable) FD_SET(m_SocketFd, &read_set);
+    if (wait_for_readable) FD_SET(socket_fd, &read_set);
     FD_ZERO(&write_set);
-    if (wait_for_writeable) FD_SET(m_SocketFd, &write_set);
+    if (wait_for_writeable) FD_SET(socket_fd, &write_set);
     FD_ZERO(&except_set);
-    FD_SET(m_SocketFd, &except_set);
+    FD_SET(socket_fd, &except_set);
 
     struct timeval timeout_value;
     if (timeout != NPT_TIMEOUT_INFINITE) {
@@ -652,11 +658,11 @@ NPT_BsdSocketFd::WaitForCondition(bool        wait_for_readable,
         timeout_value.tv_usec = 1000*(timeout-1000*(timeout/1000));
     };
     
-    int nfds = (int)m_SocketFd+1;
+    int nfds = (int)socket_fd+1;
 
 #if !defined(__WIN32__) && !defined(_XBOX)
     FD_SET(m_AbortPipe[0], &read_set);
-    nfds = (m_AbortPipe[0]>(int)m_SocketFd?m_AbortPipe[0]:(int)m_SocketFd)+1;
+    nfds = (m_AbortPipe[0]>(int)socket_fd?m_AbortPipe[0]:(int)socket_fd)+1;
 #endif
 
     int io_result = select(nfds, 
@@ -674,10 +680,10 @@ NPT_BsdSocketFd::WaitForCondition(bool        wait_for_readable,
         }
     } else if (NPT_BSD_SOCKET_SELECT_FAILED(io_result)) {
         result = MapErrorCode(GetSocketError());
-    } else if ((wait_for_readable  && FD_ISSET(m_SocketFd, &read_set)) ||
-               (wait_for_writeable && FD_ISSET(m_SocketFd, &write_set))) {
+    } else if ((wait_for_readable  && FD_ISSET(socket_fd, &read_set)) ||
+               (wait_for_writeable && FD_ISSET(socket_fd, &write_set))) {
         result = NPT_SUCCESS;
-    } else if (FD_ISSET(m_SocketFd, &except_set)) {
+    } else if (FD_ISSET(socket_fd, &except_set)) {
         result = MapErrorCode(GetSocketError());
 #if !defined(__WIN32__) && !defined(_XBOX)
     } else if (FD_ISSET(m_AbortPipe[0], &read_set)) {
@@ -685,7 +691,7 @@ NPT_BsdSocketFd::WaitForCondition(bool        wait_for_readable,
 #endif
     } else {
         // should not happen
-        result = NPT_ERROR_INTERNAL;
+        result = (m_SocketFd == 0)?NPT_ERROR_EOS:NPT_ERROR_INTERNAL;
     }
 
     return result;
@@ -854,9 +860,9 @@ NPT_BsdSocketOutputStream::Write(const void*  buffer,
 
     int flags = 0;
 
-    // on some BSD implementations, signal we don't want a SIGPIPE
-    // but instead return EPIPE
 #ifdef MSG_NOSIGNAL
+    // for some BSD stacks, ask for EPIPE to be returned instead
+    // of sending a SIGPIPE signal to the process
     flags |= MSG_NOSIGNAL;
 #endif
 
@@ -913,8 +919,14 @@ NPT_BsdSocketOutputStream::Flush()
     }
 
     // send an empty buffer to flush
-    char dummy;
-    send(m_SocketFdReference->m_SocketFd, &dummy, 0, 0); 
+    int flags = 0;
+#ifdef MSG_NOSIGNAL
+    // for some BSD stacks, ask for EPIPE to be returned instead
+    // of sending a SIGPIPE signal to the process
+    flags |= MSG_NOSIGNAL;
+#endif
+    char dummy = 0;
+    send(m_SocketFdReference->m_SocketFd, &dummy, 0, flags); 
 
     // restore the nagle algorithm to its original setting
     args = 0;
@@ -1000,20 +1012,32 @@ NPT_BsdSocket::~NPT_BsdSocket()
 NPT_Result
 NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
 {
+    // on non windows, we need to set reuse address no matter what so
+    // that we can bind on the same port when the socket has closed 
+    // but is still in a timed-out mode
+#if !defined(__WIN32__) && !defined(_XBOX)
+    int option_ra = 1;
+    setsockopt(m_SocketFdReference->m_SocketFd,
+               SOL_SOCKET,
+               SO_REUSEADDR,
+               (SocketOption)&option_ra,
+               sizeof(option_ra));
+#endif
+
     // set socket options
     if (reuse_address) {
         int option = 1;
-        setsockopt(m_SocketFdReference->m_SocketFd, 
-                   SOL_SOCKET, 
-                   SO_REUSEADDR, 
-                   (SocketOption)&option, 
-                   sizeof(option));
-#if defined(SO_REUSEPORT) 
-        // some implementations (BSD 4.4) need this in addition to SO_REUSEADDR
-        option = 1;
+        // on macosx/linux, we need to use SO_REUSEPORT instead of SO_REUSEADDR
+#if defined(SO_REUSEPORT)
         setsockopt(m_SocketFdReference->m_SocketFd, 
                    SOL_SOCKET, 
                    SO_REUSEPORT, 
+                   (SocketOption)&option, 
+                   sizeof(option));
+#else
+        setsockopt(m_SocketFdReference->m_SocketFd, 
+                   SOL_SOCKET, 
+                   SO_REUSEADDR, 
                    (SocketOption)&option, 
                    sizeof(option));
 #endif
@@ -1022,7 +1046,7 @@ NPT_BsdSocket::Bind(const NPT_SocketAddress& address, bool reuse_address)
     // convert the address
     struct sockaddr_in inet_address;
     SocketAddressToInetAddress(address, &inet_address);
-
+    
 #ifdef _XBOX
     if( address.GetIpAddress().AsLong() != NPT_IpAddress::Any.AsLong() ) {
         //Xbox can't bind to specific address, defaulting to ANY
@@ -1185,6 +1209,11 @@ NPT_Result
 NPT_BsdSocket::SetWriteTimeout(NPT_Timeout timeout)
 {
     m_SocketFdReference->m_WriteTimeout = timeout;
+    setsockopt(m_SocketFdReference->m_SocketFd,
+               SOL_SOCKET,
+               SO_SNDTIMEO,
+               (SocketOption)&timeout,
+               sizeof(timeout));
     return NPT_SUCCESS;
 }
 
@@ -1303,11 +1332,18 @@ NPT_BsdUdpSocket::Send(const NPT_DataBuffer&    packet,
                            (struct sockaddr *)&inet_address, 
                            sizeof(inet_address));
     } else {
+        int flags = 0;
+#ifdef MSG_NOSIGNAL
+        // for some BSD stacks, ask for EPIPE to be returned instead
+        // of sending a SIGPIPE signal to the process
+        flags |= MSG_NOSIGNAL;
+#endif
+
         // send to whichever addr the socket is connected
         io_result = send(m_SocketFdReference->m_SocketFd, 
                          (SocketConstBuffer)buffer, 
                          buffer_length,
-                         0);
+                         flags);
     }
 
     // check result
@@ -1742,8 +1778,15 @@ NPT_BsdTcpClientSocket::DoWaitForConnection(NPT_Timeout timeout)
         timeout_value.tv_sec = timeout/1000;
         timeout_value.tv_usec = 1000*(timeout-1000*(timeout/1000));
     };
+    
+    int nfds = (int)socket_fd+1;
 
-    int io_result = select((int)socket_fd+1, 
+#if !defined(__WIN32__) && !defined(_XBOX)
+    FD_SET(m_SocketFdReference->m_AbortPipe[0], &read_set);
+    nfds = (m_SocketFdReference->m_AbortPipe[0]>(int)socket_fd?m_SocketFdReference->m_AbortPipe[0]:(int)socket_fd)+1;
+#endif
+
+    int io_result = select(nfds, 
                            &read_set, &write_set, &except_set, 
                            timeout == NPT_TIMEOUT_INFINITE ? 
                            NULL : &timeout_value);
@@ -1780,9 +1823,13 @@ NPT_BsdTcpClientSocket::DoWaitForConnection(NPT_Timeout timeout)
             return MapErrorCode(error);
         }
 #endif
+#if !defined(__WIN32__) && !defined(_XBOX)
+    } else if (FD_ISSET(m_SocketFdReference->m_AbortPipe[0], &read_set)) {
+        result = NPT_ERROR_CONNECTION_ABORTED;
+#endif
     } else {
         // should not happen
-        return NPT_ERROR_INTERNAL;
+        result = (socket_fd == 0)?NPT_ERROR_EOS:NPT_ERROR_INTERNAL;
     }
     
     // get socket info

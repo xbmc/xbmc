@@ -45,10 +45,12 @@ NPT_SET_LOCAL_LOGGER("platinum.core.http.server")
 |   PLT_HttpServer::PLT_HttpServer
 +---------------------------------------------------------------------*/
 PLT_HttpServer::PLT_HttpServer(unsigned int port,
-                               NPT_Cardinal max_clients,
+                               bool         port_rebind   /* = false */,
+                               NPT_Cardinal max_clients   /* = 0 */,
                                bool         reuse_address /* = false */) :
     m_TaskManager(new PLT_TaskManager(max_clients)),
     m_Port(port),
+    m_PortRebind(port_rebind),
     m_ReuseAddress(reuse_address),
     m_HttpListenTask(NULL)
 {
@@ -68,10 +70,19 @@ PLT_HttpServer::~PLT_HttpServer()
 NPT_Result
 PLT_HttpServer::Start()
 {
+    NPT_Result res = NPT_FAILURE;
+    
     // if we're given a port for our http server, try it
     if (m_Port) {
-        NPT_CHECK_SEVERE(SetListenPort(m_Port, m_ReuseAddress));
-    } else {
+        res = SetListenPort(m_Port, m_ReuseAddress);
+        // return right away on failure if told not to try to rebind randomly
+        if (NPT_FAILED(res) && !m_PortRebind) {
+            NPT_CHECK_SEVERE(res);
+        }
+    }
+    
+    // try random port now
+    if (!m_Port || NPT_FAILED(res)) {
         // randomly try a port for our http server
         int retries = 100;
         do {    
@@ -82,10 +93,10 @@ PLT_HttpServer::Start()
             }
         } while (--retries > 0);
 
-        if (retries == 0) return NPT_FAILURE;
+        if (retries == 0) NPT_CHECK_SEVERE(NPT_FAILURE);
     }
 
-    m_Port = m_Config.m_ListenPort;
+    m_Port = m_BoundPort;
     
     // start a task to listen
     m_HttpListenTask = new PLT_HttpServerListenTask(this, &m_Socket, false);
@@ -125,7 +136,11 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&              request,
                                    NPT_HttpResponse*&            response,
                                    bool&                         headers_only) 
 {
-    NPT_LOG_FINE("PLT_HttpServer Received Request:");
+    NPT_LOG_FINE_3("Received %s Request from %s for %s", 
+        (const char*) request.GetMethod(),
+        (const char*) context.GetRemoteAddress().GetIpAddress().ToString(),
+        (const char*) request.GetUrl().GetPath());
+        
     PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, &request);
 
     NPT_HttpRequestHandler* handler = FindRequestHandler(request);
@@ -150,11 +165,32 @@ PLT_HttpServer::ProcessHttpRequest(NPT_HttpRequest&              request,
 }
 
 /*----------------------------------------------------------------------
+|   PLT_FileServer::GetMimeType
++---------------------------------------------------------------------*/
+const char* 
+PLT_FileServer::GetMimeType(const NPT_String& filename)
+{
+    int last_dot = filename.ReverseFind('.');
+    if (last_dot > 0) {
+        NPT_String extension = filename.GetChars()+last_dot+1;
+        extension.MakeLowercase();
+
+        for (unsigned int i=0; i<NPT_ARRAY_SIZE(NPT_HttpFileRequestHandler_DefaultFileTypeMap); i++) {
+            if (extension == NPT_HttpFileRequestHandler_DefaultFileTypeMap[i].extension) {
+                return NPT_HttpFileRequestHandler_DefaultFileTypeMap[i].mime_type;
+            }
+        }
+    }
+
+    return "application/octet-stream";
+}
+
+/*----------------------------------------------------------------------
 |   PLT_FileServer::ServeFile
 +---------------------------------------------------------------------*/
 NPT_Result 
 PLT_FileServer::ServeFile(NPT_HttpResponse& response,
-                          const NPT_String& file_path, 
+                          NPT_String        file_path, 
                           NPT_Position      start,
                           NPT_Position      end,
                           bool              request_is_head) 
@@ -162,16 +198,17 @@ PLT_FileServer::ServeFile(NPT_HttpResponse& response,
     NPT_LargeSize            total_len;
     NPT_InputStreamReference stream;
     NPT_File                 file(file_path);
-    NPT_Result               result;
 
     // prevent hackers from accessing files outside of our root
     if ((file_path.Find("/..") >= 0) || (file_path.Find("\\..") >= 0)) {
-        return NPT_FAILURE;
+        response.SetStatus(404, "File Not Found");
+        return NPT_SUCCESS;
     }
 
-    if (NPT_FAILED(result = file.Open(NPT_FILE_OPEN_MODE_READ)) || 
-        NPT_FAILED(result = file.GetInputStream(stream))        ||
-        NPT_FAILED(result = stream->GetSize(total_len))) {
+    if (NPT_FAILED(file.Open(NPT_FILE_OPEN_MODE_READ)) || 
+        NPT_FAILED(file.GetInputStream(stream))        ||
+        stream.IsNull()								   ||
+        NPT_FAILED(stream->GetSize(total_len))) {
         // file didn't open
         response.SetStatus(404, "File Not Found");
         return NPT_SUCCESS;
@@ -181,37 +218,17 @@ PLT_FileServer::ServeFile(NPT_HttpResponse& response,
         response.SetEntity(entity);
 
         // set the content type if we can
-        if (file_path.EndsWith(".htm", true) || file_path.EndsWith(".html", true) ) {
-            entity->SetContentType("text/html");
-        } else if (file_path.EndsWith(".xml", true)) {
-            entity->SetContentType("text/xml; charset=\"utf-8\"");
-        } else if (file_path.EndsWith(".mp3", true)) {
-            entity->SetContentType("audio/mpeg");
-        } else if (file_path.EndsWith(".mpg", true)) {
-            entity->SetContentType("video/mpeg");
-        } else if (file_path.EndsWith(".avi", true) || file_path.EndsWith(".divx", true) || file_path.EndsWith(".divx", true)) {
-            entity->SetContentType("video/avi");
-        } else if (file_path.EndsWith(".wma", true)) {
-            entity->SetContentType("audio/x-ms-wma"); 
-        } else if (file_path.EndsWith(".wmv", true)) {
-            entity->SetContentType("video/x-ms-wmv"); 
-        } else if (file_path.EndsWith(".jpg", true)) {
-            entity->SetContentType("image/jpeg");
-        } else {
-            entity->SetContentType("application/octet-stream");
-        }
+        entity->SetContentType(GetMimeType(file_path));
 
         // request is HEAD, returns without setting a body
         if (request_is_head) return NPT_SUCCESS;
 
         // see if it was a byte range request
         if (start != (NPT_Position)-1 || end != (NPT_Position)-1) {
-            // we can only support a range from an offset to the end of the resource for now
-            // due to the fact we can't limit how much to read from a stream yet
-            NPT_Position start_offset = (NPT_Position)-1, end_offset = total_len - 1, len;
+            NPT_Position start_offset = (NPT_Position)-1, end_offset = total_len-1, len;
             if (start == (NPT_Position)-1 && end != (NPT_Position)-1) {
                 // we are asked for the last N=end bytes
-                // adjust according to total length
+                // adjust start according to total length
                 if (end >= total_len) {
                     start_offset = 0;
                 } else {
@@ -219,10 +236,14 @@ PLT_FileServer::ServeFile(NPT_HttpResponse& response,
                 }
             } else if (start != (NPT_Position)-1) {
                 start_offset = start;
-                // if the end is specified but incorrect
-                // set the end_offset in order to generate a bad response
-                if (end != (NPT_Position)-1 && end < start) {
-                    end_offset = (NPT_Position)-1;
+                if (end != (NPT_Position)-1) {
+                    if (end < start) {
+                        // if the end is specified but incorrect
+                        // set the end_offset in order to generate a bad response
+                        end_offset = (NPT_Position)-1;
+                    } else if (end - start < total_len) {
+                        end_offset = end;
+                    }
                 }
             }
 

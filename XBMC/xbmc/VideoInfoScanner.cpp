@@ -1143,6 +1143,12 @@ namespace VIDEO
       if (result == CNfoFile::FULL_NFO)
       {
         m_nfoReader.GetDetails(episodeDetails);
+        if (m_pObserver)
+        {
+          CStdString strTitle;
+          strTitle.Format("%s - %ix%i - %s",strShowTitle.c_str(),episodeDetails.m_iSeason,episodeDetails.m_iEpisode,episodeDetails.m_strTitle.c_str());
+          m_pObserver->OnSetTitle(strTitle);
+        }
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
         continue;
       }

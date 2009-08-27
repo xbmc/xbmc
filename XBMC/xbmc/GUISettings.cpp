@@ -265,11 +265,12 @@ void CGUISettings::Initialize()
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
   AddString(7, "musiclibrary.managescraper", 23067, "", BUTTON_CONTROL_STANDARD);
-  AddBool(8, "musiclibrary.updateonstartup", 22000, false);
-  AddSeparator(9,"musiclibrary.sep2");
-  AddString(10, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(11, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
-  AddString(12, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
+  AddBool(7, "musiclibrary.updateonstartup", 22000, false);
+  AddBool(0, "musiclibrary.backgroundupdate", 22001, false);
+  AddSeparator(8,"musiclibrary.sep2");
+  AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -423,9 +424,10 @@ void CGUISettings::Initialize()
   AddBool(1, "myvideos.treatstackasfile", 20051, true);
   AddInt(2, "myvideos.resumeautomatically", 12017, RESUME_ASK, RESUME_NO, 1, RESUME_ASK, SPIN_CONTROL_TEXT);
   AddBool(3, "myvideos.autothumb",12024, false);
-  AddBool(4, "myvideos.cleanfilenames", 20418, false);
-  AddSeparator(5, "myvideos.sep1");
-  AddBool(8, "myvideos.savefolderviews", 583, true);
+  AddBool(4, "myvideos.extractflags",20433,false);
+  AddBool(5, "myvideos.cleanstrings", 20418, false);
+  AddSeparator(6, "myvideos.sep1");
+  AddBool(7, "myvideos.savefolderviews", 583, true);
   AddSeparator(9, "myvideos.sep2");
   AddString(10, "myvideos.manageplugin", 23071, "", BUTTON_CONTROL_STANDARD);
 

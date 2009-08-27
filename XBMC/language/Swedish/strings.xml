@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 05/29/2009-->
+<!--Date of translation: 07/26/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20734-->
+<!--Based on english strings version 21769-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -33,6 +33,13 @@
   <string id="30">Oktober</string>
   <string id="31">November</string>
   <string id="32">December</string>
+  <string id="41">Mån</string>
+  <string id="42">Tis</string>
+  <string id="43">Ons</string>
+  <string id="44">Tors</string>
+  <string id="45">Fre</string>
+  <string id="46">Lör</string>
+  <string id="47">Sön</string>
   <string id="98">Vy: Auto</string>
   <string id="99">Vy: Auto stor</string>
   <string id="100">Vy: Ikoner</string>
@@ -281,7 +288,7 @@
   <string id="367">Sort: Betyg</string>
   <string id="368">IMDb</string>
   <string id="369">Titel</string>
-  <string id="370">Åska</string>
+  <string id="370">Åskstormar</string>
   <string id="371">Delvis</string>
   <string id="372">Mest</string>
   <string id="373">Soligt</string>
@@ -538,6 +545,7 @@
   <string id="661">Välj exporteringsmapp</string>
   <string id="662">Denna fil är inte tillgänglig längre.</string>
   <string id="663">Vill du ta bort den från biblioteket?</string>
+  <string id="664">Bläddra efter skript</string>
   <string id="700">Rensar bibliotek</string>
   <string id="701">Raderar gamla låtar från databasen</string>
   <string id="702">Denna sökväg har skannats tidigare</string>
@@ -545,7 +553,7 @@
   <string id="706">HTTP proxy värd</string>
   <string id="707">HTTP proxy port</string>
   <string id="708">Aktivera HTTP proxy</string>
-  <string id="709">HTTP Proxy  användarnamn</string>
+  <string id="709">HTTP Proxy användarnamn</string>
   <string id="710">HTTP Proxy lösenord</string>
   <string id="711">Internet protokoll (IP)</string>
   <string id="712">Felaktig port angiven. Värde måste vara mellan 1 och 65535.</string>
@@ -678,6 +686,7 @@
   <string id="1046">Accesspunkter</string>
   <string id="1047">Annan...</string>
   <string id="1048">Webbserver användarnamn</string>
+  <string id="1049">Skriptinställningar</string>
   <string id="1200">SMB utdelning</string>
   <string id="1202">SMB arbetsgrupp</string>
   <string id="1203">SMB användarnamn</string>
@@ -689,7 +698,7 @@
   <string id="1212">Film</string>
   <string id="1213">Bilder</string>
   <string id="1214">Filer</string>
-  <string id="1215">Musik &amp; Film </string>
+  <string id="1215">Musik &amp; Film</string>
   <string id="1216">Musik &amp; Bilder</string>
   <string id="1217">Musik &amp; Filer</string>
   <string id="1218">Film &amp; Bilder</string>
@@ -724,7 +733,7 @@
   <string id="1398">Nollgradigt</string>
   <string id="1399">Sent</string>
   <string id="1400">Isolerade</string>
-  <string id="1401">Åskväder</string>
+  <string id="1401">Åskskurar</string>
   <string id="1402">Åska</string>
   <string id="1403">Sol</string>
   <string id="1404">Tunga</string>
@@ -740,6 +749,8 @@
   <string id="1415">Duggar</string>
   <string id="1416">Disigt</string>
   <string id="1417">Grynigt</string>
+  <string id="1418">Åskstorm</string>
+  <string id="1419">Åskskurar</string>
   <string id="1450">Aktivera strömspar under inaktivitet</string>
   <string id="2050">Speltid</string>
   <string id="4501">LCD typ</string>
@@ -832,19 +843,19 @@
   <string id="12327">Ange huvudkod</string>
   <string id="12328">Ange låskod</string>
   <string id="12329">eller tryck C för att avbryta</string>
-  <string id="12330">Ange knappkombination på spelkontrollen och </string>
+  <string id="12330">Ange knappkombination på spelkontrollen och</string>
   <string id="12331">tryck Start, eller Back för att avbryta</string>
   <string id="12332">Ange lås</string>
   <string id="12333">Lås upp</string>
   <string id="12334">Återställ lås</string>
   <string id="12335">Ta bort låset</string>
   <string id="12337">Sifferlösen</string>
-  <string id="12338">Knappar på spelkontroll </string>
+  <string id="12338">Knappar på spelkontroll</string>
   <string id="12339">Textlösen</string>
   <string id="12340">Ange nytt lösenord</string>
   <string id="12341">Ange nytt lösenord igen</string>
   <string id="12342">Felaktigt lösenord,</string>
-  <string id="12343">försök kvar </string>
+  <string id="12343">försök kvar</string>
   <string id="12344">Lösenordet som angavs matchade inte.</string>
   <string id="12345">Åtkomst nekad</string>
   <string id="12346">Antal lösenordsförsök har överstigits.</string>
@@ -905,7 +916,7 @@
   <string id="13106">Inaktiverad</string>
   <string id="13107">Aktiverad under videouppspelning</string>
   <string id="13108">Alltid aktiverad</string>
-  <string id="13109">Prova upplösning</string>
+  <string id="13109">Prova och ange upplösning</string>
   <string id="13110">Spara upplösning?</string>
   <string id="13111">Vill du behålla denna upplösning?</string>
   <string id="13112">Högkvalitets mjukvaruuppskalning</string>
@@ -1545,6 +1556,9 @@
   <string id="20252">Fyller glasen (filmer)</string>
   <string id="20300">Webbserver-mapp (HTTP)</string>
   <string id="20301">Webbserver-mapp (HTTPS)</string>
+  <string id="20302">Kunde inte skriva till mapp:</string>
+  <string id="20303">Vill du hoppa över och fortsätta?</string>
+  <string id="20304">RSS flöde</string>
   <string id="20306">Okänd. Lägg till MD5 från xbmc.log till BiosIDs.ini.</string>
   <string id="20307">Sekundär DNS</string>
   <string id="20308">DHCP server:</string>
@@ -1669,6 +1683,7 @@
   <string id="20430">Exportera miniatyrer och fan-konst?</string>
   <string id="20431">Skriva över äldre filer?</string>
   <string id="20432">Uteslut sökväg från biblioteksuppdateringar</string>
+  <string id="20433">Utvinn media metadatainformation</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1725,7 +1740,7 @@
   <string id="21402">är</string>
   <string id="21403">är inte</string>
   <string id="21404">börjar med</string>
-  <string id="21405">slutar med </string>
+  <string id="21405">slutar med</string>
   <string id="21406">större än</string>
   <string id="21407">mindre än</string>
   <string id="21408">efter</string>
@@ -1760,6 +1775,12 @@
   <string id="21440">Hemmapp</string>
   <string id="21441">Visade-räkning</string>
   <string id="21442">Avsnittstitel</string>
+  <string id="21443">Videoupplösning</string>
+  <string id="21444">Ljudkanaler</string>
+  <string id="21445">Videocodec</string>
+  <string id="21446">Ljudcodec</string>
+  <string id="21447">Ljusdpråk</string>
+  <string id="21448">Undertextsspråk</string>
   <string id="21800">Filnamn</string>
   <string id="21801">Filsökväg</string>
   <string id="21802">Filstorlek</string>
@@ -1870,7 +1891,69 @@
   <string id="22042">vit/blå</string>
   <string id="22043">svart/vit</string>
   <string id="23000">Vädertillägg</string>
+  <string id="23001">- Tilläggsinställningar</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
+  <string id="29802">Ljudgenomströmning används</string>
   <string id="29999">Aktivera fladderfilter lagningsinställning till spel</string>
+  <string id="30011">Söklängd</string>
+  <string id="33001">Trailer kvalitet</string>
+  <string id="33002">Strömma</string>
+  <string id="33003">Ladda ner</string>
+  <string id="33004">ladda ner &amp; spela</string>
+  <string id="33005">Ladda ner &amp; spara</string>
+  <string id="33006">Idag</string>
+  <string id="33007">Imorgon</string>
+  <string id="33008">Sparar</string>
+  <string id="33009">Kopierar</string>
+  <string id="33010">Ange nedladdningsmapp</string>
+  <string id="33012">Kort</string>
+  <string id="33013">Lång</string>
+  <string id="33014">Använd DVD spelare istället för den vaniga spelaren</string>
+  <string id="33015">Fråga om nedladdning innan uppspelning</string>
+  <string id="33016">Klipp</string>
+  <string id="33017">Starta om tillägg för att aktivera</string>
+  <string id="33018">Klipp</string>
+  <string id="33019">Imorgon natt</string>
+  <string id="33020">Förhållande</string>
+  <string id="33021">Nederbörd</string>
+  <string id="33022">Nederbörd</string>
+  <string id="33023">Fuktig</string>
+  <string id="33024">Känns</string>
+  <string id="33025">Observerad</string>
+  <string id="33026">Avvikelse från normal</string>
+  <string id="33027">Soluppgång</string>
+  <string id="33028">Solnedgång</string>
+  <string id="33029">Detaljer</string>
+  <string id="33030">Utsikt</string>
+  <string id="33031">Omslagsflöde</string>
+  <string id="33032">Översätt text</string>
+  <string id="33033">Kartlista %s kategori</string>
+  <string id="33034">36 timmar</string>
+  <string id="33035">Kartor</string>
+  <string id="33036">Per timme</string>
+  <string id="33037">Helg</string>
+  <string id="33038">%s dag</string>
+  <string id="33049">Varning</string>
+  <string id="33050">Varningar</string>
+  <string id="33051">Välj dina</string>
+  <string id="33052">Kontrollera</string>
+  <string id="33053">Konfigurera</string>
+  <string id="33054">Säsonger</string>
+  <string id="33055">Använd din</string>
+  <string id="33056">Se dina</string>
+  <string id="33057">Lyssna på</string>
+  <string id="33058">Visa dina</string>
+  <string id="33059">Konfigurera</string>
+  <string id="33060">Ström</string>
+  <string id="33061">Meny</string>
+  <string id="33062">Spela</string>
+  <string id="33063">Val</string>
+  <string id="33065">Redigerare</string>
+  <string id="33066">Om ditt</string>
+  <string id="33067">Stjärnbetyg</string>
+  <string id="33068">Bakgrund</string>
+  <string id="33069">Bakgrunder</string>
+  <string id="33070">Egen bakgrund</string>
+  <string id="33071">Egna bakgrunder</string>
 </strings>

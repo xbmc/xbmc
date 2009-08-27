@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "Util.h"
+#include "Picture.h"
 #include "TextureManager.h"
 #include "cores/PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
@@ -304,7 +305,7 @@ using namespace DBUSSERVER;
 CStdString g_LoadErrorStr;
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem)
+CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
 #ifdef HAS_WEB_SERVER
@@ -351,8 +352,7 @@ CApplication::CApplication(void) : m_ctrDpad(220, 220), m_itemCurrentFile(new CF
 
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
-  m_restartLirc = false;
-  m_restartLCD = false;
+  m_bRunResumeJobs = false;
   m_lastActionCode = 0;
 #ifdef _WIN32PC
   m_SSysParam = new CWIN32Util::SystemParams::SysParam;
@@ -491,43 +491,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
   abort();
 }
 
-#ifndef _LINUX
-LONG WINAPI CApplication::UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo)
-{
-  PCSTR pExceptionString = "Unknown exception code";
-
-#define STRINGIFY_EXCEPTION(code) case code: pExceptionString = #code; break
-
-  switch (ExceptionInfo->ExceptionRecord->ExceptionCode)
-  {
-    STRINGIFY_EXCEPTION(EXCEPTION_ACCESS_VIOLATION);
-    STRINGIFY_EXCEPTION(EXCEPTION_ARRAY_BOUNDS_EXCEEDED);
-    STRINGIFY_EXCEPTION(EXCEPTION_BREAKPOINT);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_DENORMAL_OPERAND);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_DIVIDE_BY_ZERO);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_INEXACT_RESULT);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_INVALID_OPERATION);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_OVERFLOW);
-    STRINGIFY_EXCEPTION(EXCEPTION_FLT_STACK_CHECK);
-    STRINGIFY_EXCEPTION(EXCEPTION_ILLEGAL_INSTRUCTION);
-    STRINGIFY_EXCEPTION(EXCEPTION_INT_DIVIDE_BY_ZERO);
-    STRINGIFY_EXCEPTION(EXCEPTION_INT_OVERFLOW);
-    STRINGIFY_EXCEPTION(EXCEPTION_INVALID_DISPOSITION);
-    STRINGIFY_EXCEPTION(EXCEPTION_NONCONTINUABLE_EXCEPTION);
-    STRINGIFY_EXCEPTION(EXCEPTION_SINGLE_STEP);
-  }
-#undef STRINGIFY_EXCEPTION
-
-  g_LoadErrorStr.Format("%s (0x%08x)\n at 0x%08x",
-                        pExceptionString, ExceptionInfo->ExceptionRecord->ExceptionCode,
-                        ExceptionInfo->ExceptionRecord->ExceptionAddress);
-
-  CLog::Log(LOGFATAL, "%s", g_LoadErrorStr.c_str());
-
-  return ExceptionInfo->ExceptionRecord->ExceptionCode;
-}
-#endif
-
 extern "C" void __stdcall init_emu_environ();
 extern "C" void __stdcall update_emu_environ();
 
@@ -621,6 +584,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: %s.  Built on %s (SVN:%s, compiler %i)",g_sysinfo.GetKernelVersion().c_str(), __DATE__, SVN_REV, _MSC_VER);
   CLog::Log(LOGNOTICE, g_cpuInfo.getCPUModel().c_str());
   CLog::Log(LOGNOTICE, CWIN32Util::GetResInfoString());
+  CLog::Log(LOGNOTICE, "Running with %s rights", (CWIN32Util::IsCurrentUserLocalAdministrator() == TRUE) ? "administrator" : "restricted");
 #endif
   CSpecialProtocol::LogPaths();
 
@@ -699,10 +663,12 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifdef __APPLE__
   setenv("OS","OS X",true);
 #elif defined(_LINUX)
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
+  CPicture pic;
+  SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon.png")), NULL);
   setenv("OS","Linux",true);
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon32x32.png")), NULL);
+  CPicture pic;
+  SDL_WM_SetIcon(pic.Load(_P("special://xbmc/media/icon32x32.png")), NULL);
 #endif
 #endif
 
@@ -727,6 +693,7 @@ HRESULT CApplication::Create(HWND hWnd)
   SDL_VERSION(&wmInfo.version)
   int te = SDL_GetWMInfo( &wmInfo );
   g_hWnd = wmInfo.window;
+  m_messageHandler.Initialize();
 #endif
 
   // Create the Mouse and Keyboard devices
@@ -917,7 +884,7 @@ HRESULT CApplication::Create(HWND hWnd)
     FatalErrorHandler(false, false, true);
 
   CLog::Log(LOGINFO, "load keymapping");
-  if (!g_buttonTranslator.Load())
+  if (!CButtonTranslator::GetInstance().Load())
     FatalErrorHandler(false, false, true);
 
   // check the skin file for testing purposes
@@ -946,18 +913,9 @@ HRESULT CApplication::Create(HWND hWnd)
   g_actionManager.SetScriptActionCallback(&g_pythonParser);
 #endif
 
-  // show recovery console on fatal error instead of freezing
-  CLog::Log(LOGINFO, "install unhandled exception filter");
-#ifndef _LINUX
-  SetUnhandledExceptionFilter(UnhandledExceptionFilter);
-#endif
-
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
-  // Load random seed
-  time_t seconds;
-  time(&seconds);
-  srand((unsigned int)seconds);
+  CUtil::InitRandomSeed();
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -1035,7 +993,12 @@ CProfile* CApplication::InitDirectoriesLinux()
     CDirectory::Create("special://home/system");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
-    symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() );
+
+    if (!CFile::Exists("special://home/scripts/Common Scripts"))
+    {
+      if (symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() ) != 0)
+        CLog::Log(LOGERROR, "Failed to create common scripts symlink.");
+    }
 
     CDirectory::Create("special://masterprofile");
 
@@ -1440,7 +1403,9 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
   m_gWindowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
   m_gWindowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
+#ifdef HAS_KARAOKE
   m_gWindowManager.Add(new CGUIWindowKaraokeLyrics);      // window id = 2009
+#endif
 
   m_gWindowManager.Add(new CGUIWindowOSD);                // window id = 2901
   m_gWindowManager.Add(new CGUIWindowMusicOverlay);       // window id = 2903
@@ -2457,8 +2422,14 @@ bool CApplication::WaitFrame(DWORD timeout)
 #ifdef HAS_SDL
   // Wait for all other frames to be presented
   SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0)
-    SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+  while(m_frameCount > 0)
+  {
+    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, timeout);
+    if(result == SDL_MUTEX_TIMEDOUT)
+      break;
+    if(result < 0)
+      CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
+  }  
   done = m_frameCount == 0;
   SDL_mutexV(m_frameMutex);
 #endif
@@ -2473,7 +2444,7 @@ void CApplication::NewFrame()
   m_frameCount++;
   SDL_mutexV(m_frameMutex);
 
-  SDL_CondSignal(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
@@ -2506,9 +2477,16 @@ void CApplication::Render()
       SDL_mutexP(m_frameMutex);
 
       // If we have frames or if we get notified of one, consume it.
-      if (m_frameCount > 0 || SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100) == 0)
-        m_bPresentFrame = true;
+      while(m_frameCount == 0)
+      {
+        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, 100);
+        if(result == SDL_MUTEX_TIMEDOUT)
+          break;
+        if(result < 0)
+          CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
+      }
 
+      m_bPresentFrame = m_frameCount > 0;
       SDL_mutexV(m_frameMutex);
 #else
       m_bPresentFrame = true;
@@ -2516,10 +2494,15 @@ void CApplication::Render()
     }
     else
     {
-      // only "limit frames" if we are not using vsync.
-      if (g_videoConfig.GetVSyncMode() == VSYNC_DISABLED
-      ||  g_videoConfig.GetVSyncMode() == VSYNC_VIDEO  
-      ||  lowfps)
+      // engage the frame limiter as needed
+      bool limitFrames = lowfps;
+      if (g_videoConfig.GetVSyncMode() == VSYNC_DISABLED ||
+          g_videoConfig.GetVSyncMode() == VSYNC_VIDEO)
+        limitFrames = true; // not using vsync.
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
+        limitFrames = true; // using vsync, but it isn't working.
+
+      if (limitFrames)
       {
         if(lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
@@ -2528,12 +2511,6 @@ void CApplication::Render()
           nDelayTime = lastFrameTime + singleFrameTime - currentTime;
         Sleep(nDelayTime);
       }
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
-      {
-        //The driver is ignoring vsync. Was set to ALWAYS, set to VIDEO. Framerate will be limited from next render.
-        CLog::Log(LOGWARNING, "VSYNC ignored by driver, enabling framerate limiter.");
-        g_videoConfig.SetVSyncMode(VSYNC_DISABLED);
-      }
     }
 
     lastFrameTime = timeGetTime();
@@ -2541,6 +2518,7 @@ void CApplication::Render()
   g_graphicsContext.Lock();
   RenderNoPresent();
   g_graphicsContext.Flip();
+  g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();
 
 #ifdef HAS_SDL
@@ -2548,7 +2526,7 @@ void CApplication::Render()
   if(m_frameCount > 0)
     m_frameCount--;
   SDL_mutexV(m_frameMutex);
-  SDL_CondSignal(m_frameCond);
+  SDL_CondBroadcast(m_frameCond);
 #endif
 }
 
@@ -2556,7 +2534,6 @@ void CApplication::RenderMemoryStatus()
 {
   MEASURE_FUNCTION;
 
-  g_infoManager.UpdateFPS();
   g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
 
   if (LOG_LEVEL_DEBUG_FREEMEM <= g_advancedSettings.m_logLevel)
@@ -2616,7 +2593,7 @@ bool CApplication::OnKey(CKey& key)
 
   // this will be checked for certain keycodes that need
   // special handling if the screensaver is active
-  g_buttonTranslator.GetAction(iWin, key, action);
+  CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
   // a key has been pressed.
   // Reset the screensaver timer
@@ -2644,7 +2621,7 @@ bool CApplication::OnKey(CKey& key)
   }
   if (iWin == WINDOW_DIALOG_FULLSCREEN_INFO)
   { // fullscreen info dialog - special case
-    g_buttonTranslator.GetAction(iWin, key, action);
+    CButtonTranslator::GetInstance().GetAction(iWin, key, action);
 
 #ifdef HAS_SDL
     g_Keyboard.Reset();
@@ -2661,12 +2638,12 @@ bool CApplication::OnKey(CKey& key)
     if (g_application.m_pPlayer && g_application.m_pPlayer->IsInMenu())
     {
       // if player is in some sort of menu, (ie DVDMENU) map buttons differently
-      g_buttonTranslator.GetAction(WINDOW_VIDEO_MENU, key, action);
+      CButtonTranslator::GetInstance().GetAction(WINDOW_VIDEO_MENU, key, action);
     }
     else
     {
       // no then use the fullscreen window section of keymap.xml to map key->action
-      g_buttonTranslator.GetAction(iWin, key, action);
+      CButtonTranslator::GetInstance().GetAction(iWin, key, action);
     }
   }
   else
@@ -2721,11 +2698,11 @@ bool CApplication::OnKey(CKey& key)
       if (key.GetButtonCode() != KEY_INVALID)
       {
         action.wID = (WORD) key.GetButtonCode();
-        g_buttonTranslator.GetAction(iWin, key, action);
+        CButtonTranslator::GetInstance().GetAction(iWin, key, action);
       }
     }
     else
-      g_buttonTranslator.GetAction(iWin, key, action);
+      CButtonTranslator::GetInstance().GetAction(iWin, key, action);
   }
   if (!key.IsAnalogButton())
     CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
@@ -3414,7 +3391,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = 1.0f;
       action.fRepeat = 0.0f;
@@ -3440,7 +3417,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     {
       bid = -bid;
     }
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
     {
       ResetScreenSaver();
       if (WakeUpScreenSaverAndDPMS())
@@ -3477,7 +3454,7 @@ bool CApplication::ProcessGamepad(float frameTime)
     string jname = g_Joystick.GetJoystick();
     bid = position<<16|bid;
 
-    if (g_buttonTranslator.TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
     {
       action.fAmount1 = 1.0f;
       action.fRepeat = 0.0f;
@@ -3504,14 +3481,12 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
-#ifdef HAS_LIRC
-  if (m_restartLirc) {
-    CLog::Log(LOGDEBUG, "g_application.m_restartLirc is true - restarting lirc");
-    g_RemoteControl.Disconnect();
-    g_RemoteControl.Initialize();
-    m_restartLirc = false;
-  }
 
+  // run resume jobs if we are coming from suspend/hibernate
+  if (m_bRunResumeJobs)
+    g_powerManager.Resume(); 
+
+#ifdef HAS_LIRC
   if (g_RemoteControl.GetButton())
   {
     // time depends on whether the movement is repeated (held down) or not.
@@ -3521,19 +3496,6 @@ bool CApplication::ProcessRemote(float frameTime)
     CKey key(g_RemoteControl.GetButton(), 0, 0, 0, 0, 0, 0, time);
     g_RemoteControl.Reset();
     return OnKey(key);
-  }
-#endif
-#ifdef HAS_LCD
-  if (m_restartLCD) {
-    CLog::Log(LOGDEBUG, "g_application.m_restartLCD is true - restarting LCDd");
-#ifdef _LINUX
-    g_lcd->SetBackLight(1);
-#else
-    g_lcd->SetBackLight(g_guiSettings.GetInt("lcd.backlight"));
-#endif
-    g_lcd->Stop();
-    g_lcd->Initialize();
-    m_restartLCD = false;
   }
 #endif
   return false;
@@ -3763,7 +3725,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
    // wKeyID = -wKeyID;
 
    // Translate using regular joystick translator.
-   if (g_buttonTranslator.TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.wID, action.strAction, fullRange))
+   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.wID, action.strAction, fullRange))
    {
      action.fRepeat = 0.0f;
      g_audioManager.PlayActionSound(action);
@@ -3965,7 +3927,7 @@ HRESULT CApplication::Cleanup()
     g_LangCodeExpander.Clear();
     g_charsetConverter.clear();
     g_directoryCache.Clear();
-    g_buttonTranslator.Clear();
+    CButtonTranslator::GetInstance().Clear();
     CLastfmScrobbler::RemoveInstance();
     CLibrefmScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
@@ -4321,7 +4283,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   CPlayerOptions options;
-  EPLAYERCORES eNewCore = EPC_NONE;
+  PLAYERCOREID eNewCore = EPC_NONE;
   if( bRestart )
   {
     // have to be set here due to playstack using this for starting the file
@@ -4464,6 +4426,23 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       if( options.fullscreen && g_renderManager.IsStarted()
        && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
        SwitchToFullScreen();
+
+      // Save information about the stream if we currently have no data
+      if (item.HasVideoInfoTag())
+      {
+        CVideoInfoTag *details = m_itemCurrentFile->GetVideoInfoTag();
+        if (!details->HasStreamDetails())
+        {
+          if (m_pPlayer->GetStreamDetails(details->m_streamDetails) && details->HasStreamDetails())
+          {
+            CVideoDatabase dbs;
+            dbs.Open();
+            dbs.SetStreamDetailsForFileId(details->m_streamDetails, details->m_iFileId);
+            dbs.Close();
+            CUtil::DeleteVideoDatabaseDirectoryCache();
+          }
+        }
+      }
     }
 #endif
 
@@ -4494,9 +4473,6 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 
 void CApplication::OnPlayBackEnded()
 {
-  // Save status of the file ended
-  SaveFileState();
-
   if(m_bPlaybackStarting)
     return;
 
@@ -4525,9 +4501,6 @@ void CApplication::OnPlayBackEnded()
 
 void CApplication::OnPlayBackStarted()
 {
-  // Make sure the state for the previous file was saved
-  SaveFileState();
-
   if(m_bPlaybackStarting)
     return;
 
@@ -4576,9 +4549,6 @@ void CApplication::OnQueueNextItem()
 
 void CApplication::OnPlayBackStopped()
 {
-  // Save state of the file stopped
-  SaveFileState();
-
   if(m_bPlaybackStarting)
     return;
 
@@ -4652,39 +4622,41 @@ bool CApplication::IsPlayingFullScreenVideo() const
 
 void CApplication::SaveFileState()
 {
-  if (m_progressTrackingFile != "")
+  CStdString progressTrackingFile = m_progressTrackingItem->m_strPath;
+
+  if (progressTrackingFile != "")
   {
-    if (m_progressTrackingIsVideo)
+    if (m_progressTrackingItem->IsVideo())
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, m_progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for video file %s", __FUNCTION__, progressTrackingFile.c_str());
 
       CVideoDatabase videodatabase;
       if (videodatabase.Open())
       {
-        // FIXME: Currently we can't reliably check m_itemCurrentFile, as it may already
-        // point to the next file in queue thus we make sure it's the same as the our tracking filename
-        if (m_progressTrackingPlayCountUpdate && m_itemCurrentFile && m_itemCurrentFile->m_strPath == m_progressTrackingFile) 
+        if (m_progressTrackingPlayCountUpdate)
         {
-          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, m_itemCurrentFile->m_strPath.c_str());
+          CLog::Log(LOGDEBUG, "%s - Marking video file %s as watched", __FUNCTION__, progressTrackingFile.c_str());
 
           // consider this item as played
-          videodatabase.MarkAsWatched(*m_itemCurrentFile);
+          videodatabase.MarkAsWatched(*m_progressTrackingItem);
           CUtil::DeleteVideoDatabaseDirectoryCache();
+          CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
+          g_graphicsContext.SendMessage(message);
         }
 
         if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)
         {
-          videodatabase.SetVideoSettings(m_progressTrackingFile, g_stSettings.m_currentVideoSettings);
+          videodatabase.SetVideoSettings(progressTrackingFile, g_stSettings.m_currentVideoSettings);
         }
 
         if (m_progressTrackingVideoResumeBookmark.timeInSeconds < 0.0f)
         {
-          videodatabase.ClearBookMarksOfFile(m_progressTrackingFile, CBookmark::RESUME);
+          videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
         }
         else
         if (m_progressTrackingVideoResumeBookmark.timeInSeconds > 0.0f)
         {
-          videodatabase.AddBookMarkToFile(m_progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
+          videodatabase.AddBookMarkToFile(progressTrackingFile, m_progressTrackingVideoResumeBookmark, CBookmark::RESUME);
         }
 
         videodatabase.Close();
@@ -4692,7 +4664,7 @@ void CApplication::SaveFileState()
     }
     else
     {
-      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, m_progressTrackingFile.c_str());
+      CLog::Log(LOGDEBUG, "%s - Saving file state for audio file %s", __FUNCTION__, progressTrackingFile.c_str());
 
       if (m_progressTrackingPlayCountUpdate)
       {
@@ -4701,70 +4673,72 @@ void CApplication::SaveFileState()
         if (dialog && !dialog->IsDialogRunning())
         {
           // consider this item as played
-          CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, m_progressTrackingFile.c_str());
+          CLog::Log(LOGDEBUG, "%s - Marking audio file %s as listened", __FUNCTION__, progressTrackingFile.c_str());
 
           CMusicDatabase musicdatabase;
           if (musicdatabase.Open())
           {
-            musicdatabase.IncrTop100CounterByFileName(m_progressTrackingFile);
+            musicdatabase.IncrTop100CounterByFileName(progressTrackingFile);
             musicdatabase.Close();
           }
         }
       }
     }
-
-    // Reset some stuff
-    m_progressTrackingFile = "";
-    m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-    m_progressTrackingPlayCountUpdate = false;
   }
 }
 
 void CApplication::UpdateFileState()
 {
-  if (IsPlaying())
+  // Did the file change?
+  if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
   {
-    // Make sure we don't pick the wrong file when ie. crossfading
-    if (m_progressTrackingFile == "" || m_progressTrackingFile == CurrentFile())
+    SaveFileState();
+
+    // Reset tracking item
+    m_progressTrackingItem->Reset();
+  }
+  else
+  if (IsPlayingVideo() || IsPlayingAudio())
+  {
+    if (m_progressTrackingItem->m_strPath == "")
     {
-      m_progressTrackingFile = CurrentFile();
+      // Init some stuff
+      *m_progressTrackingItem = CurrentFileItem();
+      m_progressTrackingPlayCountUpdate = false;
+    }
 
-      if ((IsPlayingAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
-          (IsPlayingVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
-          GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
-      {
-        m_progressTrackingPlayCountUpdate = true;
-      }
+    if ((m_progressTrackingItem->IsAudio() && g_advancedSettings.m_audioPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_audioPlayCountMinimumPercent) ||
+        (m_progressTrackingItem->IsVideo() && g_advancedSettings.m_videoPlayCountMinimumPercent > 0 &&
+        GetPercentage() >= g_advancedSettings.m_videoPlayCountMinimumPercent))
+    {
+      m_progressTrackingPlayCountUpdate = true;
+    }
 
+    if (m_progressTrackingItem->IsVideo())
+    {
       // Update bookmark for save
-      if (IsPlayingVideo())
-      {
-        m_progressTrackingIsVideo = true;
-        m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
-        m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
-        m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
+      m_progressTrackingVideoResumeBookmark.player = CPlayerCoreFactory::GetPlayerName(m_eCurrentPlayer);
+      m_progressTrackingVideoResumeBookmark.playerState = m_pPlayer->GetPlayerState();
+      m_progressTrackingVideoResumeBookmark.thumbNailImage.Empty();
 
-        if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
-            GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
-        {
-          // Delete the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
-        }
-        else
-        if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
-        {
-          // Update the bookmark
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
-        }
-        else
-        {
-          // Do nothing
-          m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
-        }
+      if (g_advancedSettings.m_videoIgnoreAtEnd > 0 &&
+          GetTotalTime() - GetTime() < g_advancedSettings.m_videoIgnoreAtEnd)
+      {
+        // Delete the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = -1.0f;
       }
       else
-        m_progressTrackingIsVideo = false;
+      if (GetTime() > g_advancedSettings.m_videoIgnoreAtStart)
+      {
+        // Update the bookmark
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+      }
+      else
+      {
+        // Do nothing
+        m_progressTrackingVideoResumeBookmark.timeInSeconds = 0.0f;
+      }
     }
   }
 }
@@ -5119,6 +5093,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CLibrefmScrobbler::GetInstance()->AddSong(*tag, CLastFmManager::GetInstance()->IsRadioEnabled());
         }
       }
+      
       return true;
     }
     break;
@@ -5227,6 +5202,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
         WakeUpScreenSaverAndDPMS();
         m_gWindowManager.PreviousWindow();
       }
+      
       return true;
     }
     break;
@@ -5244,21 +5220,35 @@ bool CApplication::OnMessage(CGUIMessage& message)
     }
     break;
   case GUI_MSG_EXECUTE:
+    if (message.GetStringParam().length() > 0)
+      return ExecuteXBMCAction(message.GetStringParam());
+    else {
+      CGUIActionDescriptor action = message.GetAction();
+      action.m_sourceWindowId = message.GetControlId(); // set source window id, 
+      return ExecuteAction(action);
+    }
+
+    break;
+  }
+  return false;
+}
+
+bool CApplication::ExecuteXBMCAction(std::string actionStr)
     {
       // see if it is a user set string
-      CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, message.GetStringParam().c_str());
-      CGUIInfoLabel info(message.GetStringParam(), "");
-      message.SetStringParam(info.GetLabel(0));
-      CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, message.GetStringParam().c_str());
+      CLog::Log(LOGDEBUG,"%s : Translating %s", __FUNCTION__, actionStr.c_str());
+      CGUIInfoLabel info(actionStr, "");
+      actionStr = info.GetLabel(0);
+      CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, actionStr.c_str());
 
       // user has asked for something to be executed
-      if (CUtil::IsBuiltIn(message.GetStringParam()))
-        CUtil::ExecBuiltIn(message.GetStringParam());
+      if (CUtil::IsBuiltIn(actionStr))
+        CUtil::ExecBuiltIn(actionStr);
       else
       {
         // try translating the action from our ButtonTranslator
         WORD actionID;
-        if (g_buttonTranslator.TranslateActionString(message.GetStringParam().c_str(), actionID))
+        if (CButtonTranslator::TranslateActionString(actionStr.c_str(), actionID))
         {
           CAction action;
           action.wID = actionID;
@@ -5266,7 +5256,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           OnAction(action);
           return true;
         }
-        CFileItem item(message.GetStringParam(), false);
+        CFileItem item(actionStr, false);
 #ifdef HAS_PYTHON
         if (item.IsPythonScript())
         { // a python script
@@ -5283,6 +5273,19 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       return true;
     }
+
+bool CApplication::ExecuteAction(CGUIActionDescriptor action)
+{
+  if (action.m_lang == CGUIActionDescriptor::LANG_XBMC)
+  {
+    return ExecuteXBMCAction(action.m_action);
+  }
+  else if (action.m_lang == CGUIActionDescriptor::LANG_PYTHON)
+  {
+    // Determine the context of the action, if possible
+    g_pythonParser.evalString(action.m_action);
+
+    return true;
   }
   return false;
 }
@@ -5390,8 +5393,10 @@ void CApplication::ProcessSlow()
   // LED - LCD SwitchOn On Paused! m_bIsPaused=TRUE -> LED/LCD is ON!
   if(IsPaused() != m_bIsPaused)
   {
+#ifdef HAS_LCD
     if(g_guiSettings.GetBool("lcd.enableonpaused"))
       DimLCDOnPlayback(m_bIsPaused);
+#endif
     m_bIsPaused = IsPaused();
   }
 
@@ -5798,7 +5803,7 @@ void CApplication::Minimize(bool minimize)
   }
 }
 
-EPLAYERCORES CApplication::GetCurrentPlayer()
+PLAYERCOREID CApplication::GetCurrentPlayer()
 {
   return m_eCurrentPlayer;
 }

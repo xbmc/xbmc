@@ -66,7 +66,6 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
 #endif
   if (pTexture)
   {
-    CLog::Log(LOGDEBUG,"PICTURE: loaded image and created texture. height: %u, width: %u", m_info.height, m_info.width);
 #ifndef HAS_SDL
     D3DLOCKED_RECT lr;
     if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
@@ -103,6 +102,8 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
 #endif
     }
   }
+  else
+    CLog::Log(LOGERROR, "%s - failed to create texture while loading image %s", __FUNCTION__, strFileName.c_str());
   m_dll.ReleaseImage(&m_info);
   return pTexture;
 }

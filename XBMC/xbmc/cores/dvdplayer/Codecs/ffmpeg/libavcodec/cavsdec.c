@@ -26,7 +26,7 @@
  */
 
 #include "avcodec.h"
-#include "bitstream.h"
+#include "get_bits.h"
 #include "golomb.h"
 #include "cavs.h"
 
@@ -441,7 +441,7 @@ static inline int check_for_slice(AVSContext *h) {
     align = (-get_bits_count(gb)) & 7;
     /* check for stuffing byte */
     if(!align && (show_bits(gb,8) == 0x80))
-        get_bits(gb,8);
+        align = 8;
     if((show_bits_long(gb,24+align) & 0xFFFFFF) == 0x000001) {
         skip_bits_long(gb,24+align);
         h->stc = get_bits(gb,8);
@@ -625,7 +625,9 @@ static void cavs_flush(AVCodecContext * avctx) {
 }
 
 static int cavs_decode_frame(AVCodecContext * avctx,void *data, int *data_size,
-                             const uint8_t * buf, int buf_size) {
+                             AVPacket *avpkt) {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     AVSContext *h = avctx->priv_data;
     MpegEncContext *s = &h->s;
     int input_size;

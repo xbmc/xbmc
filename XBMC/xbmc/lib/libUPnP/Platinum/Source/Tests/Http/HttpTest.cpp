@@ -278,7 +278,7 @@ ParseCommandLine(char** args)
     while ((arg = *tmp++)) {
         if (Options.port == 0 && !strcmp(arg, "-p")) {
             NPT_UInt32 port;
-            if (NPT_FAILED(NPT_ParseInteger32U(*tmp++, port, false))) {
+            if (NPT_FAILED(NPT_ParseInteger32(*tmp++, port, false))) {
                 fprintf(stderr, "ERROR: invalid port\n");
                 exit(1);
             }

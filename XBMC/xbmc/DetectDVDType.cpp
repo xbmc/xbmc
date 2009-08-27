@@ -83,7 +83,7 @@ void CDetectDVDMedia::OnStartup()
 
 void CDetectDVDMedia::Process()
 {
-
+  SetName("CDetectDVDMedia");
 // for apple - currently disable this check since cdio will return null if no media is loaded
 #ifndef __APPLE__
   //Before entering loop make sure we actually have a CDrom drive

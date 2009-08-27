@@ -20,7 +20,22 @@
  */
 
 #include "stdafx.h"
-#include "lib/libPython/Python/Include/Python.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#if (defined USE_EXTERNAL_PYTHON)
+  #if (defined HAVE_LIBPYTHON2_6)
+    #include <python2.6/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_5)
+    #include <python2.5/Python.h>
+  #elif (defined HAVE_LIBPYTHON2_4)
+    #include <python2.4/Python.h>
+  #else
+    #error "Could not determine version of Python to use."
+  #endif
+#else
+  #include "lib/libPython/Python/Include/Python.h"
+#endif
 #include "../XBPythonDll.h"
 #include "listitem.h"
 #include "pyutil.h"
@@ -358,7 +373,7 @@ namespace PYXBMC
     PyGUILock();
 
     CStdString tmp;
-    while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
+    while (PyDict_Next(pInfoLabels, (Py_ssize_t*)&pos, &key, &value)) {
       if (strcmpi(cType, "video") == 0)
       {
         // TODO: add the rest of the infolabels

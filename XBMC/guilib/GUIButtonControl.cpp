@@ -285,7 +285,7 @@ void CGUIButtonControl::OnClick()
   // Save values, as the click message may deactivate the window
   DWORD dwControlID = GetID();
   DWORD dwParentID = GetParentID();
-  vector<CStdString> clickActions = m_clickActions;
+  vector<CGUIActionDescriptor> clickActions = m_clickActions;
 
   // button selected, send a message
   CGUIMessage msg(GUI_MSG_CLICKED, dwControlID, dwParentID, 0);
@@ -295,7 +295,7 @@ void CGUIButtonControl::OnClick()
   for (unsigned int i = 0; i < clickActions.size(); i++)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
-    message.SetStringParam(clickActions[i]);
+    message.SetAction(clickActions[i]);
     g_graphicsContext.SendMessage(message);
   }
 }
@@ -305,7 +305,7 @@ void CGUIButtonControl::OnFocus()
   for (unsigned int i = 0; i < m_focusActions.size(); i++)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
-    message.SetStringParam(m_focusActions[i]);
+    message.SetAction(m_focusActions[i]);
     m_gWindowManager.SendThreadMessage(message);
   }
 }
@@ -315,7 +315,7 @@ void CGUIButtonControl::OnUnFocus()
   for (unsigned int i = 0; i < m_unfocusActions.size(); i++)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
-    message.SetStringParam(m_unfocusActions[i]);
+    message.SetAction(m_unfocusActions[i]);
     m_gWindowManager.SendThreadMessage(message);
   }
 }

@@ -70,6 +70,10 @@ typedef const void*   NPT_AnyConst;
 /*----------------------------------------------------------------------
 |   limits       
 +---------------------------------------------------------------------*/
+#if defined(NPT_CONFIG_HAVE_LIMITS_H)
+#include <limits.h>
+#endif
+
 #if !defined(NPT_INT_MIN)
 #if defined(NPT_CONFIG_HAVE_INT_MIN)
 #define NPT_INT_MIN INT_MIN

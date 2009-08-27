@@ -86,7 +86,7 @@ void CGUIInfoColor::Update()
   // Expand the infolabel, and then convert it to a color
   CStdString infoLabel(g_infoManager.GetLabel(m_info));
   if (!infoLabel.IsEmpty())
-    sscanf(infoLabel.c_str(), "%x", (unsigned int*)&m_color);
+    m_color = g_colorManager.GetColor(infoLabel.c_str());
   else
     m_color = 0;
 }

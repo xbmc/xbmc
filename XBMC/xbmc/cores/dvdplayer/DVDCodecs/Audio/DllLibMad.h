@@ -20,9 +20,17 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+/* undefine byte from PlatformDefs.h since it's used in mad.h */
+#undef byte
+#if (defined USE_EXTERNAL_LIBMAD)
+  #include <mad.h>
+#else
+  #include "libmad/mad.h"
+#endif
 #include "DynamicDll.h"
-#include "libmad/mad.h"
 
 class DllLibMadInterface
 {
@@ -37,6 +45,40 @@ public:
   virtual void mad_synth_frame(struct mad_synth *, struct mad_frame const *)=0;
   virtual int mad_frame_decode(struct mad_frame *, struct mad_stream *)=0;
 };
+
+#if (defined USE_EXTERNAL_LIBMAD)
+
+class DllLibMad : public DllDynamic, DllLibMadInterface
+{
+public:
+    virtual ~DllLibMad() {}
+    virtual void mad_synth_init(struct mad_synth *synth)
+        { return ::mad_synth_init(synth); }
+    virtual void mad_stream_init(struct mad_stream *stream)
+        { return ::mad_stream_init(stream); }
+    virtual void mad_frame_init(struct mad_frame *frame)
+        { return ::mad_frame_init(frame); }
+    virtual void mad_stream_finish(struct mad_stream *stream)
+        { return ::mad_stream_finish(stream); }
+    virtual void mad_frame_finish(struct mad_frame *frame)
+        { return ::mad_frame_finish(frame); }
+    virtual void mad_stream_buffer(struct mad_stream *stream, unsigned char const *buffer, unsigned long size)
+        { return ::mad_stream_buffer(stream, buffer, size); }
+    virtual void mad_synth_frame(struct mad_synth *synth, struct mad_frame const *frame)
+        { return ::mad_synth_frame(synth, frame); }
+    virtual int mad_frame_decode(struct mad_frame *frame, struct mad_stream *stream)
+        { return ::mad_frame_decode(frame, stream); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllLibMad: Using libmad system library");
+        return true;
+    }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllLibMad : public DllDynamic, DllLibMadInterface
 {
@@ -60,3 +102,5 @@ class DllLibMad : public DllDynamic, DllLibMadInterface
     RESOLVE_METHOD(mad_frame_decode)
   END_METHOD_RESOLVE()
 };
+
+#endif

@@ -1,23 +1,22 @@
 TOC
 1. Introduction
 2. Getting the source code
-3. Installing the required Ubuntu packages
+3. Installing the required libraries and headers
 4. How to compile
 5. How to run
 6. Uninstalling
-7. Endword
+8. Endword
 
 -----------------------------------------------------------------------------
 1. Introduction
 -----------------------------------------------------------------------------
 
-We currently recommend Ubuntu Hardy(8.04) or Intrepid(8.10). A gfx-adapter
-with OpenGL acceleration is highly recommended and 24/32 bitdepth is 
-required with OpenGL.
+A gfx-adapter with OpenGL acceleration is highly recommended and 24/32 bitdepth
+is required with OpenGL.
 
-NOTE TO NEW LINUX USERS: All lines that are prefixed with the '#'
+NOTE TO NEW LINUX USERS: All lines that are prefixed with the '$'
 character are commands that need to be typed into a terminal window /
-console (similar to the command prompt for Windows). Note that the '#'
+console (similar to the command prompt for Windows). Note that the '$'
 character itself should NOT be typed as part of the command.
 
 
@@ -25,45 +24,53 @@ character itself should NOT be typed as part of the command.
 2. Getting the source code
 -----------------------------------------------------------------------------
 
-   # sudo apt-get install subversion
-   # cd $HOME
-   # svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
+You will have to grab the source code of course. First install the subversion
+package provided by your distribution. Then from a terminal, type:
+
+   $ cd $HOME
+   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
 
 -----------------------------------------------------------------------------
-3. Installing the required Ubuntu packages
+3. Installing the required libraries and headers
 -----------------------------------------------------------------------------
 
-Two methods exist to install the required Ubuntu packages :
+You will then need the required libraries. The following is the list of packages
+that are used to build XBMC packages on Debian/Ubuntu (with all supported
+external libraries enabled).
 
---------------------------------------------------------------------
-3.1. Copy and paste the following line corresponding to your system
---------------------------------------------------------------------
+Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
+ autotools-dev, autoconf, automake, unzip, libboost-dev,
+ libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev, libjpeg-dev,
+ libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
+ libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
+ libmysqlclient-dev, libasound-dev, libpng-dev, libpcre3-dev, liblzo2-dev,
+ libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libenca-dev,
+ libjasper-dev, libxt-dev, libxmu-dev, libxinerama-dev,
+ libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev, libhal-storage-dev,
+ libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
+ libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
+ libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
+ libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
+ python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
 
-For Ubuntu (all versions >= 7.04):
-
-   # sudo apt-get install subversion make g++ gcc gawk pmount libtool nasm automake cmake gperf unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libsdl-sound1.2-dev libsdl-stretch-dev libfribidi-dev liblzo-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound-dev python-sqlite libglew-dev libcurl4-dev x11proto-xinerama-dev libxinerama-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbis-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libfaac-dev libenca-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev libsamplerate-dev
+*** For developers and anyone else who compiles frequently it is recommended to
+use ccache
 
 --------------------------------------------------------------
-3.2. Use a single command to get all build dependencies
+3.1. Using the XBMC PPA to get all build dependencies (Debian/Ubuntu only)
 --------------------------------------------------------------
 
-For this, you need to specify the PPA in your apt sources. Please find them on the forum
+For this, you need to specify the PPA in your apt sources. Please find them on
+the forum.
 
 http://xbmc.org/forum/showthread.php?t=33327
 
-Update apt :
-   # sudo apt-get update
+Update apt:
+   $ sudo apt-get update
 
-Here is the magic command to get the build dependencies (used to compile the version on the PPA).
-   #  sudo apt-get build-dep xbmc
-
-
-
-*** For developers and anyone else who compiles frequently it is recommended to use ccache
-sudo apt-get install ccache
-
-*** A tip for those with multiple computers at home is to check out distcc (totally unsupported from xbmc ofcourse)
-sudo apt-get install distcc
+Here is the magic command to get the build dependencies (used to compile the
+version on the PPA).
+   $ sudo apt-get build-dep xbmc
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -71,13 +78,16 @@ sudo apt-get install distcc
 
 To create the XBMC executable manually perform these two steps:
 
-.1  # ./configure <option1> <option2> <etc>
+.1  $ ./configure <option1> <option2> ...
 
-These configure options exist:
-  --enable-debug          enable debugging information (default is yes)       
-  --enable-optimizations  enable optimization (default is yes)                
-  --enable-gl             enable OpenGL rendering (default is yes)            
-  --enable-vdpau          enable VDPAU decoding (default is yes if vdpau installed)
+These configure options exist (among others):
+  --disable-option-checking  ignore unrecognized --enable/--with options
+  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
+  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
+  --enable-debug          enable debugging information (default is yes)
+  --enable-optimizations  enable optimization (default is yes)
+  --enable-gl             enable OpenGL rendering (default is yes)
+  --enable-vdpau          enable VDPAU decoding (default is yes)
   --enable-profiling      enable gprof profiling (default is no)
   --enable-joystick       enable SDL joystick support (default is yes)
   --enable-xrandr         enable XRandR support (default is yes)
@@ -87,16 +97,62 @@ These configure options exist:
   --enable-faac           enable FAAC support (default is yes)
   --enable-dvdcss         enable DVDCSS support (default is yes)
   --enable-mid            enable MID support (default is no)
-  --disable-avahi         disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)
+  --disable-avahi         disable Avahi support (default is enabled if
+                          libavahi-common and libavahi-client is found)
+  --enable-external-libraries
+                          enable use of all supported external libraries
+                          (default is no) 'Linux only'
+  --enable-external-ffmpeg
+                          enable use of external ffmpeg libraries (default is
+                          no) 'Linux only'
+  --enable-external-libmad
+                          enable use of external libmad library (default is
+                          no) 'Linux only'
+  --enable-external-liba52
+                          enable use of external liba52 library (default is
+                          no) 'Linux only'
+  --enable-external-libdts
+                          enable use of external libdts library (default is
+                          no) 'Linux only'
+  --enable-external-libfaad
+                          enable use of external libfaad library (default is
+                          no) 'Linux only'
+  --enable-external-libmpeg2
+                          enable use of external libmpeg2 library (default is
+                          no) 'Linux only'
+  --enable-external-libass
+                          enable use of external libass library (default is
+                          no) 'Linux only'
+  --enable-external-libvorbis
+                          enable use of external libvorbis library (default is
+                          no) 'Linux only'
+  --enable-external-libogg
+                          enable use of external libogg library (default is
+                          no) 'Linux only'
+  --enable-external-libmpcdec
+                          enable use of external libmpcdec library (default is
+                          no) 'Linux only'
+  --enable-external-libflac
+                          enable use of external libflac library (default is
+                          no) 'Linux only'
+  --enable-external-libwavpack
+                          enable use of external libwavpack library (default
+                          is no) 'Linux only'
+  --enable-external-python
+                          enable use of external python library (default is
+                          no) 'Linux only'
 
-.2  # make
+A full listing of supported options can be viewed by typing
+'./configure --help'.
+
+.2  $ make
 
 Tip: by adding -j<number> to the make command, you describe how many
      concurrent jobs will be used. So for dualcore the command is: 
 
-    # make -j2
+    $ make -j2
 
-.3  # make install  
+.3  $ make install
 
 This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
 
@@ -104,13 +160,27 @@ NOTE: You may need to run this with sudo (sudo make install) if your user
 doesn't have write permissions to the prefix you have provided (as in the
 default case, /usr/local).
 
+Tip: To override the location that XBMC is installed, use PREFIX=<path>.
+For example.
+
+    $ make install PREFIX=$HOME/xbmc
+
 -----------------------------------------------------------------------------
 5. How to run
 -----------------------------------------------------------------------------
-You can now run xbmc by issuing the command "xbmc" in a terminal. You should 
-NEVER run xbmc.bin directly as this will not have platform mode enabled and 
-hence xbmc will not have write access to its home directory (ie. it will 
-probably crash).
+How to run xbmc depends on the type of installation you have done. It is
+possible to run XBMC without the requirement to install xbmc anywhere else. In
+this case, type the following from the top source directory.
+
+    $ ./xbmc.bin
+
+If you chose to install XBMC using '/usr' or '/usr/local' as the PREFIX, you
+can just issue 'xbmc' in a teminal session.
+
+If you overridden PREFIX to install XBMC into some non-standard location, you
+will have to run xbmc by directly running 'xbmc.bin'. For example.
+
+    $ $HOME/xbmc/usr/share/xbmc.bin
 
 If you wish to use VDPAU decoding you will now have to change the Render Method
 in Settings->Videos->Player from "Auto Detect" to "VDPAU".
@@ -119,12 +189,12 @@ in Settings->Videos->Player from "Auto Detect" to "VDPAU".
 6. Uninstalling
 -----------------------------------------------------------------------------
 Issue "make uninstall"  ("sudo make uninstall" if you user doesn't have write
-permission to the install directory) from your source tree.  If you would like
-to also remove any settings and 3rd party addons (skins, scripts, etc) you 
-should also run "rm -rf ~/.xbmc/".
+permission to the install directory) from your source tree. If you would like
+to also remove any settings and 3rd party addons (skins, scripts, etc) you
+should also run "rm -rf ~/.xbmc".
 
-NOTE: If you have rerun configure with a different prefix, you will need to 
-rerun configure with the correct prefix for this step to work correctly.
+NOTE: If you have rerun configure with a different prefix, you will either need
+to rerun configure with the correct prefix for this step to work correctly.
 
 -----------------------------------------------------------------------------
 7. Endword

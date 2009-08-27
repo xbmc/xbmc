@@ -40,7 +40,7 @@ addr = (host, port)
 sock = socket(AF_INET,SOCK_DGRAM)
 
 def send_key(key):
-    packet = PacketBUTTON(map_name="J2ME", button_name=key, queue=1)
+    packet = PacketBUTTON(map_name="JS0:J2ME", code=key, repeat=0, queue=0)
     packet.send(sock, addr)
 
 def send_message(caption, msg):
@@ -130,7 +130,7 @@ def main():
 
                 elif(data[0] == "2"):
                     print "<button id=\"%i\">" % ord( data[1] )
-                    send_key(str( ord( data[1] ) ))
+                    send_key(ord( data[1] ) )
                 else:
                   print "Unkown received data [%s]" % data
         except IOError:

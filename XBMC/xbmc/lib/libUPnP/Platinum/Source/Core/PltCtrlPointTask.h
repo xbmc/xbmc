@@ -77,8 +77,7 @@ protected:
 class PLT_CtrlPointGetSCPDTask : public PLT_HttpClientSocketTask
 {
 public:
-    PLT_CtrlPointGetSCPDTask(const NPT_HttpUrl&       url,
-                             PLT_CtrlPoint*           ctrl_point, 
+    PLT_CtrlPointGetSCPDTask(PLT_CtrlPoint*           ctrl_point, 
                              PLT_DeviceDataReference& m_Device);
     virtual ~PLT_CtrlPointGetSCPDTask();
 
@@ -148,7 +147,7 @@ public:
     PLT_CtrlPointSubscribeEventTask(NPT_HttpRequest* request,
                                     PLT_CtrlPoint*   ctrl_point, 
                                     PLT_Service*     service,
-                                    void*            userdata);
+                                    void*            userdata = NULL);
     virtual ~PLT_CtrlPointSubscribeEventTask();
     
 protected:

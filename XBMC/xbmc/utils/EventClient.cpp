@@ -71,26 +71,26 @@ void CEventButtonState::Load()
     {
       if ( m_mapName.compare("KB") == 0 ) // standard keyboard map
       {
-        m_iKeyCode = g_buttonTranslator.TranslateKeyboardString( m_buttonName.c_str() );
+        m_iKeyCode = CButtonTranslator::TranslateKeyboardString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("XG") == 0 ) // xbox gamepad map
       {
-        m_iKeyCode = g_buttonTranslator.TranslateGamepadString( m_buttonName.c_str() );
+        m_iKeyCode = CButtonTranslator::TranslateGamepadString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("R1") == 0 ) // xbox remote map
       {
-        m_iKeyCode = g_buttonTranslator.TranslateRemoteString( m_buttonName.c_str() );
+        m_iKeyCode = CButtonTranslator::TranslateRemoteString( m_buttonName.c_str() );
       }
       else if  ( m_mapName.compare("R2") == 0 ) // xbox unviversal remote map
       {
-        m_iKeyCode = g_buttonTranslator.TranslateUniversalRemoteString( m_buttonName.c_str() );
+        m_iKeyCode = CButtonTranslator::TranslateUniversalRemoteString( m_buttonName.c_str() );
       }
       else if ( (m_mapName.length() > 3) &&
                 (m_mapName.compare(0, 3, "LI:") == 0) ) // starts with LI: ?
       {
 #ifdef HAS_LIRC
         string lircDevice = m_mapName.substr(3);
-        m_iKeyCode = g_buttonTranslator.TranslateLircRemoteString( lircDevice.c_str(),
+        m_iKeyCode = CButtonTranslator::GetInstance().TranslateLircRemoteString( lircDevice.c_str(),
                                                                    m_buttonName.c_str() );
 #else
         CLog::Log(LOGERROR, "ES: LIRC support not enabled");

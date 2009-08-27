@@ -132,10 +132,10 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       UpdateLocations();
       SetProperties();
       if (m_gWindowManager.GetActiveWindow() == WINDOW_WEATHER)
-      {  
-        if (!g_guiSettings.GetString("weather.plugin", false).empty() && !g_guiSettings.GetString("weather.plugin", false).Equals(g_localizeStrings.Get(1223)))  
-          m_pluginTimer.StartZero();  
-      } 
+      {
+        if (!g_guiSettings.GetString("weather.plugin").IsEmpty())
+          m_pluginTimer.StartZero();
+      }
       else
         CallPlugin();
     }
@@ -305,7 +305,7 @@ void CGUIWindowWeather::SetProperties()
 
 void CGUIWindowWeather::CallPlugin()
 {
-  if (!g_guiSettings.GetString("weather.plugin", false).empty() && !g_guiSettings.GetString("weather.plugin", false).Equals(g_localizeStrings.Get(1223)))
+  if (!g_guiSettings.GetString("weather.plugin").IsEmpty())
   {
     
     AddonPtr addon;
@@ -334,7 +334,7 @@ void CGUIWindowWeather::CallPlugin()
     // get the current locations area code
     CStdString strSetting;
     strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
-    const CStdString &areacode = g_weatherManager.GetAreaCode(g_guiSettings.GetString(strSetting)).c_str();
+    const CStdString &areacode = g_weatherManager.GetAreaCode(g_guiSettings.GetString(strSetting));
     argv[1] = (char*)areacode.c_str();
 
     // call our plugin, passing the areacode

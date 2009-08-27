@@ -25,6 +25,7 @@
 //#include "DVDSubtitleParserSpu.h"
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDSubtitleParserMicroDVD.h"
+#include "DVDSubtitleParserMPL2.h"
 #include "DVDSubtitleParserSami.h"
 #include "DVDSubtitleParserSSA.h"
 #include "Util.h"
@@ -80,6 +81,11 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
           (sscanf (line, "{%d}{%d}", &i, &i)==2))
       {
         pParser = new CDVDSubtitleParserMicroDVD(pStream, strFile.c_str());
+        pStream = NULL;
+      }
+      else if (sscanf(line, "[%d][%d]", &i, &i) == 2)
+      {
+        pParser = new CDVDSubtitleParserMPL2(pStream, strFile.c_str());
         pStream = NULL;
       }
       else if (sscanf(line, "%d:%d:%d,%d --> %d:%d:%d,%d", &i, &i, &i, &i, &i, &i, &i, &i) == 8)
@@ -162,12 +168,6 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
       //     this->uses_time = 1;
       //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "subrip 0.9 subtitle format detected\n");
       //     return FORMAT_SUBRIP09;
-      //   }
-      //
-      //   if (sscanf (line, "[%d][%d]", &i, &i) == 2) {
-      //     this->uses_time = 1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "mpl2 subtitle format detected\n");
-      //     return FORMAT_MPL2;
       //   }
     }
     else

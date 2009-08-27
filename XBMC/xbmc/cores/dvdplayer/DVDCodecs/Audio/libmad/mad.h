@@ -549,7 +549,7 @@ mad_fixed_t mad_f_div(mad_fixed_t, mad_fixed_t);
 # define LIBMAD_BIT_H
 
 struct mad_bitptr {
-  unsigned char const *byte_;
+  unsigned char const *byte;
   unsigned short cache;
   unsigned short left;
 };

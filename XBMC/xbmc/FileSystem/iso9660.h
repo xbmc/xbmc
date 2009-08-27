@@ -192,7 +192,7 @@ protected:
   void IsoDateTimeToFileTime(iso9660_Datetime* isoDateTime, FILETIME* filetime);
   struct iso_dirtree* ReadRecursiveDirFromSector( DWORD sector, const char * );
   struct iso_dirtree* FindFolder( char *Folder );
-  std::string GetThinText(WCHAR* strTxt, int iLen );
+  std::string GetThinText(BYTE* strTxt, int iLen );
   bool ReadSectorFromCache(iso9660::isofile* pContext, DWORD sector, byte** ppBuffer);
   void ReleaseSectorFromCache(iso9660::isofile* pContext, DWORD sector);
   const std::string ParseName(struct iso9660_Directory& isodir);

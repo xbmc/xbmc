@@ -889,8 +889,10 @@ static av_cold int svq3_decode_init(AVCodecContext *avctx)
 
 static int svq3_decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
-                             const uint8_t *buf, int buf_size)
+                             AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     MpegEncContext *const s = avctx->priv_data;
     H264Context *const h = avctx->priv_data;
     int m, mb_type;
@@ -1028,8 +1030,6 @@ static int svq3_decode_frame(AVCodecContext *avctx,
     } else {
         *(AVFrame *) data = *(AVFrame *) &s->last_picture;
     }
-
-    avctx->frame_number = s->picture_number - 1;
 
     /* Do not output the last pic after seeking. */
     if (s->last_picture_ptr || s->low_delay) {

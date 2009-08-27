@@ -510,7 +510,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     m_musicdatabase.GetScraperForPath(item->m_strPath, info);
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() &&
-       !item->IsLastFM() && !item->IsShoutCast())
+       !item->IsLastFM() && !item->IsShoutCast() && !item->m_bIsFolder)
     {
       buttons.Add(CONTEXT_BUTTON_SONG_INFO, 658);
     }

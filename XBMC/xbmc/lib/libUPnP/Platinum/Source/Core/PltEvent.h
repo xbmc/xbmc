@@ -47,6 +47,7 @@ class PLT_StateVariable;
 class PLT_DeviceData;
 class PLT_Service;
 class PLT_TaskManager;
+class PLT_CtrlPoint;
 
 /*----------------------------------------------------------------------
 |   PLT_EventSubscriber class
@@ -60,17 +61,18 @@ public:
                         int              timeout = -1);
     ~PLT_EventSubscriber();
 
-    PLT_Service*        GetService();
-    NPT_Ordinal         GetEventKey();
-    NPT_Result          SetEventKey(NPT_Ordinal value);
-    NPT_SocketAddress   GetLocalIf();
-    NPT_Result          SetLocalIf(NPT_SocketAddress value);
-    NPT_TimeStamp       GetExpirationTime();
-    NPT_Result          SetTimeout(int timeout = -1);
-    const NPT_String&   GetSID() const { return m_SID; }
-    NPT_Result          FindCallbackURL(const char* callback_url);
-    NPT_Result          AddCallbackURL(const char* callback_url);
-    NPT_Result          Notify(NPT_List<PLT_StateVariable*>& vars);
+    PLT_Service*      GetService();
+    NPT_Ordinal       GetEventKey();
+    NPT_Result        SetEventKey(NPT_Ordinal value);
+    NPT_SocketAddress GetLocalIf();
+    NPT_Result        SetLocalIf(NPT_SocketAddress value);
+    NPT_TimeStamp     GetExpirationTime();
+    NPT_Result        SetTimeout(NPT_Cardinal timeout);
+    const NPT_String& GetSID() const { return m_SID; }
+    NPT_Result        FindCallbackURL(const char* callback_url);
+    NPT_Result        AddCallbackURL(const char* callback_url);
+    NPT_Result        Notify(NPT_List<PLT_StateVariable*>& vars);
+    NPT_Result        Renew(PLT_CtrlPoint* ctrl_point);
     
 protected:
     //members

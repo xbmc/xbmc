@@ -6,6 +6,9 @@
 #include <string.h>
 #include <errno.h>
 #include "xwinapi.h"
+#ifdef __APPLE__
+#include "OSXGNUReplacements.h"
+#endif
 
 // I hope this doesn't need to handle unicode...
 LPTSTR GetCommandLine() {
@@ -18,10 +21,17 @@ LPTSTR GetCommandLine() {
 
   pid = getpid();
   sprintf(procFile, "/proc/%u/cmdline", pid);
-  if((fp = fopen(procFile, "r")) == NULL) return NULL;
+  if((fp = fopen(procFile, "r")) == NULL)
+    return NULL;
+  
   // getline() allocates memory so be sure to free it
   // after calling GetCommandLine()
-  getline(&cmdline, &cmdlinelen, fp);
+  if (getline(&cmdline, &cmdlinelen, fp) == -1)
+  {
+    fclose(fp);
+    return NULL;
+  }
+
   fclose(fp);
   fp = NULL;
 
@@ -42,8 +52,11 @@ DWORD GetCurrentDirectory(DWORD nBufferLength, LPTSTR lpBuffer) {
   if (getcwd(lpBuffer, nBufferLength) == NULL) {
     if (errno == ERANGE) {
       LPTSTR tmp = NULL;
-      getcwd(tmp, 0);
-      nBufferLength = strlen(tmp) + 1;
+      if (getcwd(tmp, 0) == NULL )
+        nBufferLength = 0;
+      else
+        nBufferLength = strlen(tmp) + 1;
+
       free(tmp);
       return nBufferLength;
     }

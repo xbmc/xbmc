@@ -37,25 +37,23 @@ class CNullDirectSound : public IAudioRenderer
 public:
   virtual void UnRegisterAudioCallback();
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual DWORD GetChunkLen();
-  virtual FLOAT GetDelay();
-  virtual FLOAT GetCacheTime();
+  virtual unsigned int GetChunkLen();
+  virtual float GetDelay();
+  virtual float GetCacheTime();
   CNullDirectSound();
   virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bPassthrough = false);
   virtual ~CNullDirectSound();
 
-  virtual DWORD AddPackets(const void* data, DWORD len);
-  virtual DWORD GetSpace();
-  virtual HRESULT Deinitialize();
-  virtual HRESULT Pause();
-  virtual HRESULT Stop();
-  virtual HRESULT Resume();
+  virtual unsigned int AddPackets(const void* data, unsigned int len);
+  virtual unsigned int GetSpace();
+  virtual bool Deinitialize();
+  virtual bool Pause();
+  virtual bool Stop();
+  virtual bool Resume();
 
-  virtual LONG GetMinimumVolume() const;
-  virtual LONG GetMaximumVolume() const;
-  virtual LONG GetCurrentVolume() const;
+  virtual long GetCurrentVolume() const;
   virtual void Mute(bool bMute);
-  virtual HRESULT SetCurrentVolume(LONG nVolume);
+  virtual bool SetCurrentVolume(long nVolume);
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
   virtual void DoWork();
@@ -63,7 +61,7 @@ public:
 
   virtual void Flush();
 private:
-  LONG m_nCurrentVolume;
+  long m_nCurrentVolume;
 
   float m_timePerPacket;
   int m_packetsSent;

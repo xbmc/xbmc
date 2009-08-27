@@ -40,7 +40,9 @@ class CFileItemList;
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
+#ifndef _WIN32PC
 #include "DetectDVDType.h"
+#endif
 #include "Autorun.h"
 #include "utils/Splash.h"
 #include "utils/Stopwatch.h"
@@ -55,7 +57,8 @@ class CFileItemList;
 #include "linux/LinuxResourceCounter.h"
 #endif
 #ifdef _WIN32PC
-  #include "WIN32Util.h"
+#include "WIN32Util.h"
+#include "WINMessageHandler.h"
 #endif
 
 class CWebServer;
@@ -128,7 +131,7 @@ public:
   const CStdString& CurrentFile();
   CFileItem& CurrentFileItem();
   virtual bool OnMessage(CGUIMessage& message);
-  EPLAYERCORES GetCurrentPlayer();
+  PLAYERCOREID GetCurrentPlayer();
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
@@ -189,6 +192,9 @@ public:
   void RestoreMusicScanSettings();
   void CheckMusicPlaylist();
 
+  bool ExecuteXBMCAction(std::string action);
+  bool ExecuteAction(CGUIActionDescriptor action);
+
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();
@@ -208,7 +214,9 @@ public:
   CGUIWindowPointer m_guiPointer;
 
   MEDIA_DETECT::CAutorun m_Autorun;
+#ifndef _WIN32PC
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
+#endif
   CDelayController m_ctrDpad;
   CSNTPClient *m_psntpClient;
   CWebServer* m_pWebServer;
@@ -228,7 +236,7 @@ public:
 
   CKaraokeLyricsManager* m_pKaraokeMgr;
 
-  EPLAYERCORES m_eForcedNextPlayer;
+  PLAYERCOREID m_eForcedNextPlayer;
   CStdString m_strPlayListFile;
 
   int GlobalIdleTime();
@@ -269,8 +277,7 @@ public:
 
   void Minimize(bool minimize = true);
 
-  bool m_restartLirc;
-  bool m_restartLCD;
+  bool m_bRunResumeJobs;
 
 protected:
   void RenderScreenSaver();
@@ -307,7 +314,7 @@ protected:
   CStdString m_prevMedia;
   CSplash* m_splash;
   DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
-  EPLAYERCORES m_eCurrentPlayer;
+  PLAYERCOREID m_eCurrentPlayer;
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
   bool m_bAllSettingsLoaded;
@@ -315,9 +322,8 @@ protected:
   bool m_bPlatformDirectories;
 
   CBookmark m_progressTrackingVideoResumeBookmark;
-  CStdString m_progressTrackingFile;
+  CFileItemPtr m_progressTrackingItem;
   bool m_progressTrackingPlayCountUpdate;
-  bool m_progressTrackingIsVideo;
 
   int m_iPlaySpeed;
   int m_currentStackPosition;
@@ -334,8 +340,6 @@ protected:
   SDL_mutex* m_frameMutex;
   SDL_cond*  m_frameCond;
 #endif
-
-  static LONG WINAPI UnhandledExceptionFilter(struct _EXCEPTION_POINTERS *ExceptionInfo);
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
@@ -385,6 +389,7 @@ protected:
 #endif
 #ifdef _WIN32PC
   CWIN32Util::SystemParams::SysParam *m_SSysParam;
+  CWINMessageHandler  m_messageHandler;
 #endif
 };
 

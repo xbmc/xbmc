@@ -86,7 +86,7 @@ ParseCommandLine(char** args)
         if (!strcmp(arg, "-f")) {
             Options.friendly_name = *args++;
         } else if (!strcmp(arg, "-p")) {
-            if (NPT_FAILED(NPT_ParseInteger32U(*args++, Options.port))) {
+            if (NPT_FAILED(NPT_ParseInteger32(*args++, Options.port))) {
                 fprintf(stderr, "ERROR: invalid argument\n");
                 PrintUsageAndExit();
             }
@@ -115,7 +115,7 @@ main(int /* argc */, char** argv)
 {
     /* parse command line */
     ParseCommandLine(argv+1);
-
+    
     PLT_UPnP upnp(1900, !Options.broadcast);
 
     PLT_DeviceHostReference device(
@@ -127,11 +127,10 @@ main(int /* argc */, char** argv)
             (NPT_UInt16)Options.port)
             );
 
-    NPT_List<NPT_String> list;
+    NPT_List<NPT_IpAddress> list;
     NPT_CHECK_SEVERE(PLT_UPnPMessageHelper::GetIPAddresses(list));
-    NPT_String ip = *(list.GetFirstItem());
+    NPT_String ip = list.GetFirstItem()->ToString();
 
-    //device->m_PresentationURL = NPT_HttpUrl(ip, 80, "/").ToString();
     device->m_ModelDescription = "Platinum File Media Server";
     device->m_ModelURL = "http://www.plutinosoft.com/";
     device->m_ModelNumber = "1.0";

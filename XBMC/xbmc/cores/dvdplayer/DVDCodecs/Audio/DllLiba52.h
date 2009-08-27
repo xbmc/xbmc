@@ -21,15 +21,74 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+extern "C" {
+#if (defined USE_EXTERNAL_LIBA52)
+  #include <a52dec/a52.h>
+  #include <a52dec/mm_accel.h>
+#else
+  #include "liba52/a52.h"
+#endif
+}
 #include "DynamicDll.h"
-
 #ifndef _LINUX
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int8 uint8_t;
 typedef __int16 int16_t;
 #endif
 
-#include "liba52/a52.h"
+#if (defined USE_EXTERNAL_LIBA52)
+
+class DllLiba52Interface
+{
+public:
+  virtual ~DllLiba52Interface() {}
+  virtual a52_state_t * a52_init (uint32_t mm_accel)=0;
+  virtual sample_t * a52_samples (a52_state_t * state)=0;
+  virtual int a52_syncinfo (uint8_t * buf, int * flags,
+          int * sample_rate, int * bit_rate)=0;
+  virtual int a52_frame (a52_state_t * state, uint8_t * buf, int * flags,
+           sample_t * level, sample_t bias)=0;
+  virtual void a52_dynrng (a52_state_t * state,
+         sample_t (* call) (sample_t, void *), void * data)=0;
+  virtual int a52_block (a52_state_t * state)=0;
+  virtual void a52_free (a52_state_t * state)=0;
+};
+
+class DllLiba52 : public DllDynamic, DllLiba52Interface
+{
+public:
+    virtual ~DllLiba52() {}
+    virtual a52_state_t * a52_init (uint32_t mm_accel)
+        { return ::a52_init (mm_accel); }
+    virtual sample_t * a52_samples (a52_state_t * state)
+        { return ::a52_samples (state); }
+    virtual int a52_syncinfo (uint8_t * buf, int * flags,
+            int * sample_rate, int * bit_rate)
+        { return ::a52_syncinfo (buf, flags, sample_rate, bit_rate); }
+    virtual int a52_frame (a52_state_t * state, uint8_t * buf, int * flags,
+            sample_t * level, sample_t bias)
+        { return ::a52_frame (state, buf, flags, level, bias); }
+    virtual void a52_dynrng (a52_state_t * state,
+            sample_t (* call) (sample_t, void *), void * data)
+        { return ::a52_dynrng (state, call, data); }
+    virtual int a52_block (a52_state_t * state)
+        { return ::a52_block (state); }
+    virtual void a52_free (a52_state_t * state)
+        { return ::a52_free (state); }
+
+    // DLL faking.
+    virtual bool ResolveExports() { return true; }
+    virtual bool Load() {
+        CLog::Log(LOGDEBUG, "DllLiba52: Using liba52 system library");
+        return true;
+    }
+    virtual void Unload() {}
+};
+
+#else
 
 class DllLiba52Interface
 {
@@ -64,3 +123,5 @@ class DllLiba52 : public DllDynamic, DllLiba52Interface
     RESOLVE_METHOD(a52_free)
   END_METHOD_RESOLVE()
 };
+
+#endif

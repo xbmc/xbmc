@@ -67,6 +67,7 @@ const int NPT_HTTP_PROTOCOL_MAX_HEADER_COUNT = 100;
 #define NPT_HTTP_HEADER_HOST                "Host"
 #define NPT_HTTP_HEADER_CONNECTION          "Connection"
 #define NPT_HTTP_HEADER_USER_AGENT          "User-Agent"
+#define NPT_HTTP_HEADER_SERVER              "Server"
 #define NPT_HTTP_HEADER_CONTENT_LENGTH      "Content-Length"
 #define NPT_HTTP_HEADER_CONTENT_TYPE        "Content-Type"
 #define NPT_HTTP_HEADER_CONTENT_ENCODING    "Content-Encoding"
@@ -75,11 +76,16 @@ const int NPT_HTTP_PROTOCOL_MAX_HEADER_COUNT = 100;
 #define NPT_HTTP_HEADER_RANGE               "Range"
 #define NPT_HTTP_HEADER_CONTENT_RANGE       "Content-Range"
 #define NPT_HTTP_HEADER_COOKIE              "Cookie"
+#define NPT_HTTP_HEADER_ACCEPT_RANGES       "Accept-Ranges"
+#define NPT_HTTP_HEADER_CONTENT_RANGE       "Content-Range"
+
+#define NPT_HTTP_TRANSFER_ENCODING_CHUNKED  "chunked"
 
 const int NPT_ERROR_HTTP_INVALID_RESPONSE_LINE = NPT_ERROR_BASE_HTTP - 0;
 const int NPT_ERROR_HTTP_INVALID_REQUEST_LINE  = NPT_ERROR_BASE_HTTP - 1;
 const int NPT_ERROR_HTTP_NO_PROXY              = NPT_ERROR_BASE_HTTP - 2;
 const int NPT_ERROR_HTTP_INVALID_REQUEST       = NPT_ERROR_BASE_HTTP - 3;
+const int NPT_ERROR_HTTP_METHOD_NOT_SUPPORTED  = NPT_ERROR_BASE_HTTP - 4;
 
 #define NPT_HTTP_LINE_TERMINATOR "\r\n"
 
@@ -183,13 +189,15 @@ public:
     NPT_Result SetHeaders(const NPT_HttpHeaders& headers);
 
     // field access
+    NPT_Result        SetContentLength(NPT_LargeSize length);
     NPT_Result        SetContentType(const char* type);
     NPT_Result        SetContentEncoding(const char* encoding);
-    NPT_Result        SetContentLength(NPT_LargeSize length);
+    NPT_Result        SetTransferEncoding(const char* encoding);
     NPT_LargeSize     GetContentLength()   { return m_ContentLength;   }
     const NPT_String& GetContentType()     { return m_ContentType;     }
     const NPT_String& GetContentEncoding() { return m_ContentEncoding; }
-    const NPT_String& GetTransferEncoding(){ return m_TransferEncoding; }
+    const NPT_String& GetTransferEncoding(){ return m_TransferEncoding;}
+    bool              HasContentLength()   { return m_HasContentLength;}
 
 private:
     // members
@@ -198,6 +206,7 @@ private:
     NPT_String               m_ContentType;
     NPT_String               m_ContentEncoding;
     NPT_String               m_TransferEncoding;
+    bool                     m_HasContentLength;
 };
 
 /*----------------------------------------------------------------------
@@ -275,7 +284,8 @@ class NPT_HttpResponse : public NPT_HttpMessage {
 public:
     // class methods
     static NPT_Result Parse(NPT_BufferedInputStream& stream, 
-                            NPT_HttpResponse*&       response);
+                            NPT_HttpResponse*&       response,
+                            bool                     reuse_response = false);
 
     // constructors and destructor
              NPT_HttpResponse(NPT_HttpStatusCode status_code,
@@ -287,6 +297,7 @@ public:
     NPT_Result         SetStatus(NPT_HttpStatusCode status_code,
                                  const char*        reason_phrase,
                                  const char*        protocol = NPT_HTTP_PROTOCOL_1_0);
+    NPT_Result         SetProtocol(const char* protocol);
     NPT_HttpStatusCode GetStatusCode()   { return m_StatusCode;   }
     NPT_String&        GetReasonPhrase() { return m_ReasonPhrase; }
     virtual NPT_Result Emit(NPT_OutputStream& stream) const;
@@ -358,6 +369,14 @@ public:
 
     };
 
+    // class methods
+    static NPT_Result WriteRequest(NPT_OutputStream& output_stream, 
+                                   NPT_HttpRequest&  request,
+                                   bool			     use_proxy = false);
+    static NPT_Result ReadResponse(NPT_InputStreamReference& input_stream,
+                                   bool                      expect_entity,
+                                   NPT_HttpResponse*&        response);
+
     /**
      * @param connector Pointer to a Connector instance, or NULL to use 
      * the default (TCP) connector.
@@ -387,6 +406,9 @@ protected:
     NPT_HttpProxySelector* m_ProxySelector;
     bool                   m_ProxySelectorIsOwned;
     Connector*             m_Connector;
+    
+public:
+    static NPT_String m_UserAgentHeader;
 };
 
 /*----------------------------------------------------------------------
@@ -401,7 +423,7 @@ public:
                            const NPT_SocketAddress* remote_address);
                   
     // methods
-    const NPT_SocketAddress& GetLocalAddress()   const { return m_LocalAddress;  }
+    const NPT_SocketAddress& GetLocalAddress()  const { return m_LocalAddress;  }
     const NPT_SocketAddress& GetRemoteAddress() const { return m_RemoteAddress; }
     void SetLocalAddress(const NPT_SocketAddress& address) {
         m_LocalAddress = address;
@@ -429,6 +451,15 @@ public:
     virtual NPT_Result SetupResponse(NPT_HttpRequest&              request,
                                      const NPT_HttpRequestContext& context,
                                      NPT_HttpResponse&             response) = 0;
+                                     
+    /**
+     * Override this method if you want to write the body yourself.
+     * The default implementation will simply write out the entity's
+     * input stream.
+     */
+    virtual NPT_Result SendResponseBody(const NPT_HttpRequestContext& context,
+                                        NPT_HttpResponse&             response,
+                                        NPT_OutputStream&             output);
 };
 
 /*----------------------------------------------------------------------
@@ -457,6 +488,17 @@ private:
 };
 
 /*----------------------------------------------------------------------
+|   NPT_HttpFileRequestHandler_FileTypeMap
++---------------------------------------------------------------------*/
+typedef struct NPT_HttpFileRequestHandler_FileTypeMapEntry {
+    const char* extension;
+    const char* mime_type;
+} NPT_HttpFileRequestHandler_FileTypeMapEntry;
+
+// specify size here so NPT_ARRAY_SIZE can work
+extern const NPT_HttpFileRequestHandler_FileTypeMapEntry NPT_HttpFileRequestHandler_DefaultFileTypeMap[43];
+
+/*----------------------------------------------------------------------
 |   NPT_HttpFileRequestHandler
 +---------------------------------------------------------------------*/
 class NPT_HttpFileRequestHandler : public NPT_HttpRequestHandler
@@ -464,7 +506,8 @@ class NPT_HttpFileRequestHandler : public NPT_HttpRequestHandler
 public:
     // constructors
     NPT_HttpFileRequestHandler(const char* url_root,
-                               const char* file_root);
+                               const char* file_root,
+                               bool        auto_dir = false);
 
     // NPT_HttpRequetsHandler methods
     virtual NPT_Result SetupResponse(NPT_HttpRequest&              request, 
@@ -490,6 +533,7 @@ private:
     NPT_Map<NPT_String, NPT_String> m_FileTypeMap;
     NPT_String                      m_DefaultMimeType;
     bool                            m_UseDefaultFileTypeMap;
+    bool                            m_AutoDir;
 };
 
 /*----------------------------------------------------------------------
@@ -509,13 +553,17 @@ public:
     // constructors and destructor
     NPT_HttpServer(NPT_UInt16 listen_port = NPT_HTTP_DEFAULT_PORT,
                    bool       reuse_address = true);
+    NPT_HttpServer(NPT_IpAddress listen_address, 
+                   NPT_UInt16    listen_port = NPT_HTTP_DEFAULT_PORT,
+                   bool          reuse_address = true);
     virtual ~NPT_HttpServer();
 
     // methods
     NPT_Result SetConfig(const Config& config);
+    const Config& GetConfig() const { return m_Config; }
     NPT_Result SetListenPort(NPT_UInt16 port, bool reuse_address = true);
     NPT_Result SetTimeouts(NPT_Timeout connection_timeout, NPT_Timeout io_timeout);
-    void       Abort();
+    NPT_Result Abort();
     NPT_Result WaitForNewClient(NPT_InputStreamReference&  input,
                                 NPT_OutputStreamReference& output,
                                 NPT_HttpRequestContext*    context);
@@ -560,6 +608,9 @@ protected:
     NPT_UInt16               m_BoundPort;
     Config                   m_Config;
     NPT_List<HandlerConfig*> m_RequestHandlers;
+    
+public:
+    static NPT_String m_ServerHeader;
 };
 
 /*----------------------------------------------------------------------
@@ -582,8 +633,7 @@ public:
     NPT_Result SetTimeout(NPT_Timeout io_timeout);
     NPT_Result ParseRequest(NPT_HttpRequest*&        request,
                             const NPT_SocketAddress* local_address = NULL);
-    NPT_Result SendResponse(NPT_HttpResponse& response,
-                            bool              headers_only = false);
+    NPT_Result SendResponseHeaders(NPT_HttpResponse& response);
 
 protected:
     // members
@@ -593,14 +643,14 @@ protected:
 };
 
 /*----------------------------------------------------------------------
-|   NPT_HttpChunkedDecoderInputStream
+|   NPT_HttpChunkedInputStream
 +---------------------------------------------------------------------*/
-class NPT_HttpChunkedDecoderInputStream : public NPT_InputStream
+class NPT_HttpChunkedInputStream : public NPT_InputStream
 {
 public:
     // constructors and destructor
-    NPT_HttpChunkedDecoderInputStream(NPT_BufferedInputStreamReference& stream);
-    virtual ~NPT_HttpChunkedDecoderInputStream();
+    NPT_HttpChunkedInputStream(NPT_BufferedInputStreamReference& stream);
+    virtual ~NPT_HttpChunkedInputStream();
 
     // NPT_InputStream methods
     NPT_Result Read(void*     buffer, 
@@ -614,8 +664,31 @@ public:
 protected:
     // members
     NPT_BufferedInputStreamReference m_Source;
-    NPT_Size m_ChunkSize;
-    bool     m_InChunk;
+    NPT_UInt32                       m_CurrentChunkSize;
+    bool                             m_Eos;
+};
+
+/*----------------------------------------------------------------------
+|   NPT_HttpChunkedOutputStream
++---------------------------------------------------------------------*/
+class NPT_HttpChunkedOutputStream : public NPT_OutputStream
+{
+public:
+    // constructors and destructor
+    NPT_HttpChunkedOutputStream(NPT_OutputStream& stream);
+    virtual ~NPT_HttpChunkedOutputStream();
+
+    // NPT_OutputStream methods
+    NPT_Result Write(const void* buffer, 
+                     NPT_Size    bytes_to_write, 
+                     NPT_Size*   bytes_written = NULL);
+    NPT_Result Seek(NPT_Position /*offset*/) { return NPT_ERROR_NOT_SUPPORTED;}
+    NPT_Result Tell(NPT_Position& offset)    { return m_Stream.Tell(offset);  }
+    NPT_Result Flush()                       { return m_Stream.Flush();       }
+
+protected:
+    // members
+    NPT_OutputStream& m_Stream;
 };
 
 #endif // _NPT_HTTP_H_

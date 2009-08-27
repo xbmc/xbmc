@@ -36,7 +36,7 @@ CAlarmClock::~CAlarmClock()
 {
 }
 
-void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdString& strCommand)
+void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent /* false */)
 {
   // make lower case so that lookups are case-insensitive
   CStdString lowerName(strName);
@@ -68,7 +68,10 @@ void CAlarmClock::start(const CStdString& strName, float n_secs, const CStdStrin
   CStdString strMessage;
 
   strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
-  g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+
+  if(!bSilent)
+    g_application.m_guiDialogKaiToast.QueueNotification(strAlarmClock,strMessage);
+
   event.watch.StartZero();
   CSingleLock lock(m_events);
   m_event.insert(make_pair(lowerName,event));

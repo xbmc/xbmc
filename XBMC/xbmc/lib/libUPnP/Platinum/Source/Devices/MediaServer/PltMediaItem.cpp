@@ -121,103 +121,190 @@ PLT_MediaItemResource::PLT_MediaItemResource()
     m_ColorDepth      = (NPT_UInt32)-1;
 }
 
+const NPT_HttpFileRequestHandler_FileTypeMapEntry 
+PLT_HttpFileRequestHandler_360FileTypeMap[] = {
+    {"avi",  "video/avi"},
+    {"divx", "video/avi"},
+    {"xvid", "video/avi"}
+};
+
+const NPT_HttpFileRequestHandler_FileTypeMapEntry 
+PLT_HttpFileRequestHandler_PS3FileTypeMap[] = {
+    {"avi",  "video/x-msvideo"},
+    {"divx", "video/x-msvideo"},
+    {"xvid", "video/x-msvideo"}
+};
+
 /*----------------------------------------------------------------------
-|   PLT_MediaObject::GetExtFromFilePath
+|   PLT_HttpFileRequestHandler_DefaultDlnaExtMapEntry
 +---------------------------------------------------------------------*/
-const char*
-PLT_MediaObject::GetExtFromFilePath(const NPT_String filepath, const char* dir_delimiter)
+typedef struct PLT_HttpFileRequestHandler_DefaultDlnaExtMapEntry {
+    const char* mime_type;
+    const char* dlna_ext;
+} PLT_HttpFileRequestHandler_DefaultDlnaExtMapEntry ;
+
+static const PLT_HttpFileRequestHandler_DefaultDlnaExtMapEntry 
+PLT_HttpFileRequestHandler_DefaultDlnaMap[] = {
+    {"image/gif",      "DLNA.ORG_PN=GIF_LRG"},
+    {"image/jpeg",     "DLNA.ORG_PN=JPEG_LRG"},
+    {"image/jp2",      "DLNA.ORG_PN=JPEG_LRG"},
+    {"image/png",      "DLNA.ORG_PN=PNG_LRG"},
+    {"image/bmp",      "DLNA.ORG_PN=BMP_LRG"},
+    {"image/tiff",     "DLNA.ORG_PN=TIFF_LRG"},
+    {"audio/mpeg",     "DLNA.ORG_PN=MP3;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
+    {"audio/mp4",      "DLNA.ORG_PN=AAC_ISO_320;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
+    {"audio/x-ms-wma", "DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
+    {"audio/x-wav",    "DLNA.ORG_PN=WAV;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
+    {"video/avi",      "DLNA.ORG_PN=AVI;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
+    {"video/mp4",      "DLNA.ORG_PN=MPEG4_P2_SP_AAC;DLNA.ORG_CI=0"},
+    {"video/mpeg",     "DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
+    {"video/x-ms-wmv", "DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
+    {"video/x-msvideo","DLNA.ORG_PN=AVI;DLNA.ORG_OP=01;DLNA.ORG_CI=0"},
+    {"video/x-ms-asf", "DLNA.ORG_OP=01;DLNA.ORG_CI=0"}
+};
+
+static const PLT_HttpFileRequestHandler_DefaultDlnaExtMapEntry 
+PLT_HttpFileRequestHandler_360DlnaMap[] = {
+    {"video/mp4",  "DLNA.ORG_OP=01;DLNA.ORG_CI=0"}
+};
+
+static const PLT_HttpFileRequestHandler_DefaultDlnaExtMapEntry 
+PLT_HttpFileRequestHandler_PS3DlnaMap[] = {
+    {"image/jpg",  "DLNA.ORG_OP=01"},
+    {"image/png",  "DLNA.ORG_OP=01"}
+};
+
+/*----------------------------------------------------------------------
+|   PLT_MediaObject::GetMimeType
++---------------------------------------------------------------------*/
+const char* 
+PLT_MediaObject::GetMimeType(const NPT_String& filename,
+                             const PLT_HttpRequestContext* context /* = NULL */)
 {
-    /* first look for the '.' character */
-    int ext_index = filepath.ReverseFind('.');
-    if (ext_index <= 0 ) {
-        return NULL;
+    int last_dot = filename.ReverseFind('.');
+    if (last_dot > 0) {
+        NPT_String extension = filename.GetChars()+last_dot+1;
+        extension.MakeLowercase();
+        
+        return GetMimeTypeFromExtension(extension, context);
     }
 
-    /* then look for the dir delimiter index and make sure the '.' is found after the delimiter */
-    int dir_delim_index = filepath.ReverseFind(dir_delimiter);
-    if (dir_delim_index > 0 && ext_index < dir_delim_index) {
-        return NULL;
-    }
-
-    return ((const char*)filepath) + ext_index;
+    return "application/unknown";
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaObject::GetProtInfoFromExt
+|   PLT_MediaObject::GetMimeTypeFromExtension
 +---------------------------------------------------------------------*/
-const char*
-PLT_MediaObject::GetProtInfoFromExt(const char* ext)
+const char* 
+PLT_MediaObject::GetMimeTypeFromExtension(const NPT_String& extension,
+                                          const PLT_HttpRequestContext* context /* = NULL */)
 {
-    const char* ret = NULL;
-    NPT_String  extension = ext;
+    if (context) {
+        NPT_HttpRequest& request = (NPT_HttpRequest&)context->GetRequest();
+        const NPT_String* agent = request.GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_USER_AGENT);
+        const NPT_String* hdr = request.GetHeaders().GetHeaderValue("X-AV-Client-Info");
 
-    //TODO: we need to add more!
-    if (extension.Compare(".mp3", true) == 0) {
-        ret = "http-get:*:audio/mpeg:DLNA.ORG_PN=MP3;DLNA.ORG_OP=01";
-    } else if (extension.Compare(".m4a", true) == 0) {
-        ret = "http-get:*:audio/mp4:DLNA.ORG_PN=AAC_ISO_320;DLNA.ORG_OP=01";
-    } else if (extension.Compare(".wma", true) == 0) {
-        ret = "http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE;DLNA.ORG_OP=01";
-    } else if (extension.Compare(".wav", true) == 0) {
-        ret = "http-get:*:audio/x-wav:DLNA.ORG_PN=WAV;DLNA.ORG_OP=01";
-    } else if (extension.Compare(".avi", true)  == 0 || 
-               extension.Compare(".divx", true) == 0 || 
-               extension.Compare(".xvid", true) == 0) {
-        ret = "http-get:*:video/x-msvideo:DLNA.ORG_PN=AVI;DLNA.ORG_OP=01";
-    } else if (extension.Compare(".mp4", true) == 0) {
-        ret = "http-get:*:video/mp4:DLNA.ORG_PN=MPEG4_P2_SP_AAC;DLNA.ORG_OP=01";
-    } else if (extension.Compare(".mpg", true) == 0) {
-        ret = "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_PS_PAL;DLNA.ORG_OP=01";
-    } else if (extension.Compare(".wmv", true) == 0) {
-        ret = "http-get:*:video/x-ms-wmv:DLNA.ORG_PN=WMVMED_FULL;DLNA.ORG_OP=01";
-    } else if (extension.Compare(".asf", true) == 0) {
-        ret = "http-get:*:video/x-ms-asf:DLNA.ORG_OP=01";
-    } else if (extension.Compare(".jpg", true) == 0) {
-        ret = "http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG";
-    } else if (extension.Compare(".bmp", true) == 0) {
-        ret = "http-get:*:image/bmp:DLNA.ORG_PN=BMP_LRG";
-    } else if (extension.Compare(".gif", true) == 0) {
-        ret = "http-get:*:image/gif:DLNA.ORG_PN=GIF_LRG";
-    } else if (extension.Compare(".tif", true) == 0) {
-        ret = "http-get:*:image/tiff:DLNA.ORG_PN=TIFF_LRG";
-    } else if (extension.Compare(".jp2", true) == 0) {
-        ret = "http-get:*:image/jp2:DLNA.ORG_PN=JPEG_LRG";
-    } else if (extension.Compare(".png", true) == 0) {
-        ret = "http-get:*:image/png:DLNA.ORG_PN=PNG_LRG";
-    } else {
-        ret = "http-get:*:application/octet-stream:*";
+        // look for special case for 360
+        if (agent && (agent->Find("XBox", 0, true) >= 0 || agent->Find("Xenon", 0, true) >= 0)) {
+            for (unsigned int i=0; i<NPT_ARRAY_SIZE(PLT_HttpFileRequestHandler_360FileTypeMap); i++) {
+                if (extension == PLT_HttpFileRequestHandler_360FileTypeMap[i].extension) {
+                    return PLT_HttpFileRequestHandler_360FileTypeMap[i].mime_type;
+                }
+            }
+
+            // fallback to default if not found
+        } else if (hdr && hdr->Find("PLAYSTATION 3", 0, true) >= 0) {
+            for (unsigned int i=0; i<NPT_ARRAY_SIZE(PLT_HttpFileRequestHandler_PS3FileTypeMap); i++) {
+                if (extension == PLT_HttpFileRequestHandler_PS3FileTypeMap[i].extension) {
+                    return PLT_HttpFileRequestHandler_PS3FileTypeMap[i].mime_type;
+                }
+            }
+
+            // fallback to default if not found
+        }
     }
 
-    return ret;
+    for (unsigned int i=0; i<NPT_ARRAY_SIZE(NPT_HttpFileRequestHandler_DefaultFileTypeMap); i++) {
+        if (extension == NPT_HttpFileRequestHandler_DefaultFileTypeMap[i].extension) {
+            return NPT_HttpFileRequestHandler_DefaultFileTypeMap[i].mime_type;
+        }
+    }
+
+    return "application/unknown";
 }
 
 /*----------------------------------------------------------------------
-|   PLT_MediaObject::GetUPnPClassFromExt
+|   PLT_MediaObject::GetDlnaExtension
++---------------------------------------------------------------------*/
+const char* 
+PLT_MediaObject::GetDlnaExtension(const char*                   mime_type,
+                                  const PLT_HttpRequestContext* context /* = NULL */)
+{
+    NPT_String _mime_type = mime_type;
+    _mime_type.MakeLowercase();
+    
+    if (context) {
+        NPT_HttpRequest& request = (NPT_HttpRequest&)context->GetRequest();
+        const NPT_String* agent = request.GetHeaders().GetHeaderValue(NPT_HTTP_HEADER_USER_AGENT);
+        const NPT_String* hdr = request.GetHeaders().GetHeaderValue("X-AV-Client-Info");
+
+        // look for special case for 360
+        if (agent && (agent->Find("XBox", 0, true) >= 0 || agent->Find("Xenon", 0, true) >= 0)) {
+            for (unsigned int i=0; i<NPT_ARRAY_SIZE(PLT_HttpFileRequestHandler_360DlnaMap); i++) {
+                if (_mime_type == PLT_HttpFileRequestHandler_360DlnaMap[i].mime_type) {
+                    return PLT_HttpFileRequestHandler_360DlnaMap[i].dlna_ext;
+                }
+            }
+            
+            return "*"; // Should we try default dlna instead?
+        } else if (hdr && hdr->Find("PLAYSTATION 3", 0, true) >= 0) {
+            for (unsigned int i=0; i<NPT_ARRAY_SIZE(PLT_HttpFileRequestHandler_PS3DlnaMap); i++) {
+                if (_mime_type == PLT_HttpFileRequestHandler_PS3DlnaMap[i].mime_type) {
+                    return PLT_HttpFileRequestHandler_PS3DlnaMap[i].dlna_ext;
+                }
+            }
+            
+            return "DLNA.ORG_OP=01"; // Should we try default dlna instead?
+        }
+    }
+
+    for (unsigned int i=0; i<NPT_ARRAY_SIZE(PLT_HttpFileRequestHandler_DefaultDlnaMap); i++) {
+        if (_mime_type == PLT_HttpFileRequestHandler_DefaultDlnaMap[i].mime_type) {
+            return PLT_HttpFileRequestHandler_DefaultDlnaMap[i].dlna_ext;
+        }
+    }
+
+    return "*";
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaObject::GetProtInfo
++---------------------------------------------------------------------*/
+NPT_String
+PLT_MediaObject::GetProtInfo(const char*                   filepath, 
+                             const PLT_HttpRequestContext* context /* = NULL */)
+{
+    NPT_String mime_type = GetMimeType(filepath, context);
+    return "http-get:*:"+mime_type+":"+GetDlnaExtension(mime_type, context);
+}
+
+/*----------------------------------------------------------------------
+|   PLT_MediaObject::GetUPnPClass
 +---------------------------------------------------------------------*/
 const char*
-PLT_MediaObject::GetUPnPClassFromExt(const char* ext)
+PLT_MediaObject::GetUPnPClass(const char*                   filepath, 
+                              const PLT_HttpRequestContext* context /* = NULL */)
 {
-    const char* ret = NULL;
-    NPT_String  extension = ext;
+    NPT_COMPILER_UNUSED(context);
 
-    if (extension.Compare(".mp3", true) == 0 || 
-        extension.Compare(".wma", true) == 0 || 
-        extension.Compare(".m4a", true) == 0 || 
-        extension.Compare(".wav", true) == 0) {
+    const char* ret = NULL;
+    NPT_String mime_type = GetMimeType(filepath, context);
+
+    if (mime_type.StartsWith("audio")) {
         ret = "object.item.audioItem.musicTrack";
-    } else if (extension.Compare(".avi", true)  == 0 || 
-               extension.Compare(".divx", true) == 0 || 
-               extension.Compare(".mp4", true)  == 0 || 
-               extension.Compare(".mpg", true)  == 0 || 
-               extension.Compare(".wmv", true)  == 0 || 
-               extension.Compare(".asf", true)  == 0) {
-        ret = "object.item.videoItem.movie";
-    } else if (extension.Compare(".jpg", true) == 0 || 
-               extension.Compare(".bmp", true) == 0 || 
-               extension.Compare(".gif", true) == 0 || 
-               extension.Compare(".tif", true) == 0 || 
-               extension.Compare(".jp2", true) == 0 || 
-               extension.Compare(".png", true) == 0) {
+    } else if (mime_type.StartsWith("video")) {
+        ret = "object.item.videoItem"; //Note: 360 wants "object.item.videoItem" and not "object.item.videoItem.Movie"
+    } else if (mime_type.StartsWith("image")) {
         ret = "object.item.imageItem.photo";
     } else {
         ret = "object.item";
@@ -279,8 +366,9 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
     didl += "</dc:title>";
 
     // creator
-    if (mask & PLT_FILTER_MASK_CREATOR && !m_Creator.IsEmpty()) {
+    if (mask & PLT_FILTER_MASK_CREATOR) {
         didl += "<dc:creator>";
+        if (m_Creator.IsEmpty()) m_Creator = "Unknown";
         PLT_Didl::AppendXmlEscape(didl, m_Creator);
         didl += "</dc:creator>";
     }
@@ -294,8 +382,8 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     // artist
     if (mask & PLT_FILTER_MASK_ARTIST) {
-        // force an empty artist just in case
-        if (m_People.artists.GetItemCount() == 0) m_People.artists.Add("");
+        // force an empty artist just in case (not DLNA Compliant though)
+        //if (m_People.artists.GetItemCount() == 0) m_People.artists.Add("");
         m_People.artists.ToDidl(didl, "artist");
     }
 
@@ -318,6 +406,10 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
 
     // genre
     if (mask & PLT_FILTER_MASK_GENRE) {
+        // Add unknown genre
+        if (m_Affiliation.genre.GetItemCount() == 0) 
+            m_Affiliation.genre.Add("Unknown");
+
         for (NPT_List<NPT_String>::Iterator it = 
              m_Affiliation.genre.GetFirstItem(); it; ++it) {
             didl += "<upnp:genre>";
@@ -359,7 +451,7 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
             if (m_Resources[i].m_ProtocolInfo.GetLength() > 0) {
                 // protocol info is required
                 didl += "<res";
-
+                
                 if (mask & PLT_FILTER_MASK_RES_DURATION && m_Resources[i].m_Duration != (NPT_UInt32)-1) {
                     didl += " duration=\"";
                     PLT_Didl::FormatTimeStamp(didl, m_Resources[i].m_Duration);
@@ -377,7 +469,19 @@ PLT_MediaObject::ToDidl(NPT_UInt32 mask, NPT_String& didl)
                     PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Protection);
                     didl += "\"";
                 }
-
+                
+                if (mask & PLT_FILTER_MASK_RES_RESOLUTION && !m_Resources[i].m_Resolution.IsEmpty()) {
+                    didl += " resolution=\"";
+                    PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_Resolution);
+                    didl += "\"";
+                }
+                
+                if (mask & PLT_FILTER_MASK_RES_BITRATE && m_Resources[i].m_Bitrate != (NPT_Size)-1) {                    
+                    didl += " bitrate=\"";
+                    didl += NPT_String::FromIntegerU(m_Resources[i].m_Bitrate);
+                    didl += "\"";
+                }
+                
                 didl += " protocolInfo=\"";
                 PLT_Didl::AppendXmlEscape(didl, m_Resources[i].m_ProtocolInfo);
                 didl += "\">";
@@ -404,12 +508,6 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
     NPT_String str, xml;
     NPT_Array<NPT_XmlElementNode*> children;
     NPT_Result res;
-
-    // serialize the entry Didl as a we might need to pass it to a renderer
-    res = PLT_XmlHelper::Serialize(*entry, xml);
-    NPT_CHECK_LABEL_SEVERE(res, cleanup);
-    
-    m_Didl = didl_header + xml + didl_footer;    
 
     // check if item is restricted (is default true?)
     if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(entry, "restricted", str))) {
@@ -458,16 +556,27 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
         for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
             PLT_MediaItemResource resource;
             if (children[i]->GetText() == NULL) {
-                goto cleanup;
+                res = NPT_FAILURE;
+                NPT_CHECK_LABEL_SEVERE(res, cleanup);
             }
 
             resource.m_Uri = *children[i]->GetText();
-            if (NPT_FAILED(PLT_XmlHelper::GetAttribute(children[i], "protocolInfo", resource.m_ProtocolInfo))) {
-                goto cleanup;
+            
+            // validate uri
+            NPT_HttpUrl url(resource.m_Uri);
+            NPT_IpAddress ip;
+            if (!url.IsValid() || NPT_FAILED(ip.Parse(url.GetHost()))) {
+                res = NPT_FAILURE;
+                NPT_CHECK_LABEL_SEVERE(res, cleanup);
             }
+            res = PLT_XmlHelper::GetAttribute(children[i], "protocolInfo", resource.m_ProtocolInfo);
+            NPT_CHECK_LABEL_SEVERE(res, cleanup);
+            
+            PLT_XmlHelper::GetAttribute(children[i], "protection", resource.m_Protection);
+            PLT_XmlHelper::GetAttribute(children[i], "resolution", resource.m_Resolution);
 
             if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(children[i], "size", str))) {
-                if (NPT_FAILED(str.ToInteger(resource.m_Size))) resource.m_Size = (NPT_Size)-1;
+                if (NPT_FAILED(str.ToInteger64(resource.m_Size))) resource.m_Size = (NPT_Size)-1;
             }
 
             if (NPT_SUCCEEDED(PLT_XmlHelper::GetAttribute(children[i], "duration", str))) {
@@ -475,11 +584,22 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
                     // if error while converting, ignore and set to -1 to indicate we don't know the duration
                     resource.m_Duration = (NPT_UInt32)-1;
                 }
+
+                // DLNA: reformat duration in case it was wrong
+                str = "";
+                PLT_Didl::FormatTimeStamp(str, resource.m_Duration);
+                PLT_XmlHelper::SetAttribute(children[i], "duration", str); 
             }    
             m_Resources.Add(resource);
         }
     }
 
+    
+    // serialize the entry Didl as a we might need to pass it to a renderer
+    res = PLT_XmlHelper::Serialize(*entry, xml);
+    NPT_CHECK_LABEL_SEVERE(res, cleanup);
+    
+    m_Didl = didl_header + xml + didl_footer;    
     return NPT_SUCCESS;
 
 cleanup:

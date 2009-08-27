@@ -108,7 +108,7 @@ bool CKaraokeLyricsCDG::InitGraphics()
 #elif defined(HAS_SDL_2D)
     m_pCdgTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, RMASK, GMASK, BMASK, AMASK);
 #else // DirectX
-    m_pd3dDevice->CreateTexture(WIDTH, HEIGHT, 0, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture);
+    m_pd3dDevice->CreateTexture(WIDTH, HEIGHT, 0, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture, NULL);
 #endif
   }
 
@@ -275,16 +275,16 @@ void CKaraokeLyricsCDG::Render()
     // Update DirectX structure
   D3DLOCKED_RECT LockedRect;
   m_pCdgTexture->LockRect(0, &LockedRect, NULL, 0L);
-  m_Lyrics->RenderIntoBuffer( (unsigned char *)LockedRect.pBits, WIDTH, HEIGHT, LockedRect.Pitch );
+  RenderIntoBuffer( (unsigned char *)LockedRect.pBits, WIDTH, HEIGHT, LockedRect.Pitch );
   m_pCdgTexture->UnlockRect(0);
 
-  m_pd3dDevice->SetVertexShader( D3DFVF_CUSTOMVERTEX );
+  m_pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
   m_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
   m_pd3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
   m_pd3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
   m_pd3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-  m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-  m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+  m_pd3dDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+  m_pd3dDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
@@ -293,6 +293,7 @@ void CKaraokeLyricsCDG::Render()
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
   m_pd3dDevice->SetTexture(0, m_pCdgTexture);
 
+#if 0 // TODO:DIRECTX
   m_pd3dDevice->Begin(D3DPT_QUADLIST);
 
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
@@ -309,6 +310,8 @@ void CKaraokeLyricsCDG::Render()
   m_pd3dDevice->SetVertexData4f( D3DVSDE_VERTEX, (float)g_settings.m_ResInfo[res].Overscan.left, (float) g_settings.m_ResInfo[res].Overscan.bottom, 0, 0 );
 
   m_pd3dDevice->End();
+#endif
+
 #endif
 }
 
@@ -335,4 +338,14 @@ bool CKaraokeLyricsCDG::Load()
 bool CKaraokeLyricsCDG::HasBackground()
 {
   return true;
+}
+
+
+bool CKaraokeLyricsCDG::HasVideo()
+{
+  return false;
+}
+
+void CKaraokeLyricsCDG::GetVideoParameters(CStdString & path, __int64 & offset)
+{
 }

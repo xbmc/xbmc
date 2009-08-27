@@ -34,7 +34,7 @@
 #endif
 #endif
 #ifdef _WIN32PC
-#include "ntddcdrm.h"
+#include "my_ntddcdrm.h"
 #include "WIN32Util.h"
 #endif
 #if defined (_LINUX) && !defined(__APPLE__)

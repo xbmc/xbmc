@@ -33,10 +33,12 @@
 |   includes
 +---------------------------------------------------------------------*/
 #include "NptMessaging.h"
+#include "NptDynamicCast.h"
 
 /*----------------------------------------------------------------------
 |   globals
 +---------------------------------------------------------------------*/
+NPT_DEFINE_DYNAMIC_CAST_ANCHOR(NPT_MessageHandler)
 NPT_Message::Type NPT_Message::MessageType = "Generic Message";
 
 /*----------------------------------------------------------------------

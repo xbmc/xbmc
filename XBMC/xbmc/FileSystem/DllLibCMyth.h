@@ -103,6 +103,7 @@ public:
   virtual char*             proginfo_category       (cmyth_proginfo_t prog)=0;
   virtual long long         proginfo_length         (cmyth_proginfo_t prog)=0;
   virtual int               proginfo_length_sec     (cmyth_proginfo_t prog)=0;
+  virtual char*             proginfo_programid      (cmyth_proginfo_t prog)=0;
   virtual cmyth_timestamp_t proginfo_start          (cmyth_proginfo_t prog)=0;
   virtual cmyth_timestamp_t proginfo_end            (cmyth_proginfo_t prog)=0;
   virtual cmyth_timestamp_t proginfo_rec_start      (cmyth_proginfo_t prog)=0;
@@ -201,6 +202,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(char*,               proginfo_category,        (cmyth_proginfo_t p1))
   DEFINE_METHOD1(long long,           proginfo_length,          (cmyth_proginfo_t p1))
   DEFINE_METHOD1(int,                 proginfo_length_sec,      (cmyth_proginfo_t p1))
+  DEFINE_METHOD1(char*,               proginfo_programid,       (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_start,           (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_end,             (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_rec_start,       (cmyth_proginfo_t p1))
@@ -292,6 +294,7 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_proginfo_category, proginfo_category)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_length, proginfo_length)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_length_sec, proginfo_length_sec)
+    RESOLVE_METHOD_RENAME(cmyth_proginfo_programid, proginfo_programid)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_start, proginfo_start)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_end, proginfo_end)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_start, proginfo_rec_start)

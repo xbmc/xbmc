@@ -272,10 +272,12 @@ bool CIMDB::InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& det
           // date must be the format of yyyy-mm-dd
           if (strlen(dateStr)==10)
           {
-            char year[4];
-            char month[2];
+            char year[5];
+            char month[3];
             memcpy(year,dateStr,4);
+            year[4] = '\0';
             memcpy(month,dateStr+5,2);
+            month[2] = '\0';
             newEpisode.cDate.SetDate(atoi(year),atoi(month),atoi(dateStr+8));
           }
         }

@@ -135,7 +135,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   *GetVideoInfoTag() = movie;
   FillInDefaultIcon();
   SetCachedVideoThumb();
-  SetInvalid();
 }
 
 CFileItem::CFileItem(const CTVEPGInfoTag& programme)
@@ -345,7 +344,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_strPath = share.strPath;
   CUtil::AddSlashAtEnd(m_strPath);
   CStdString label = share.strName;
-  if (share.strStatus.size())
+  if (!share.strStatus.IsEmpty())
     label.Format("%s (%s)", share.strName.c_str(), share.strStatus.c_str());
   SetLabel(label);
   m_iLockMode = share.m_iLockMode;
@@ -605,7 +604,9 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_idepth;
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
-    ar >> (int&)m_iLockMode;
+    int lockmode;
+    ar >> (int &)lockmode;
+    m_iLockMode = (LockType)lockmode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
 
@@ -656,6 +657,10 @@ bool CFileItem::Exists() const
 
 bool CFileItem::IsVideo() const
 {
+  if (HasVideoInfoTag()) return true;
+  if (HasMusicInfoTag()) return false;
+  if (HasPictureInfoTag()) return false;
+
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("video/") )
     return true;
@@ -664,6 +669,9 @@ bool CFileItem::IsVideo() const
     return true;
 
   if (m_strPath.Left(10).Equals("hdhomerun:"))
+    return true;
+
+  if (m_strPath.Left(4).Equals("dvd:"))
     return true;
 
   CStdString extension;
@@ -715,6 +723,9 @@ bool CFileItem::IsTVTimer() const
 
 bool CFileItem::IsAudio() const
 {
+  if (HasMusicInfoTag()) return true;
+  if (HasVideoInfoTag()) return false;
+  if (HasPictureInfoTag()) return false;
   if (IsCDDA()) return true;
   if (IsShoutCast() && !m_bIsFolder) return true;
   if (IsLastFM() && !m_bIsFolder) return true;
@@ -747,6 +758,10 @@ bool CFileItem::IsAudio() const
 
 bool CFileItem::IsPicture() const
 {
+  if (HasPictureInfoTag()) return true;
+  if (HasMusicInfoTag()) return false;
+  if (HasVideoInfoTag()) return false;
+
   if( m_contenttype.Left(6).Equals("image/") )
     return true;
 
@@ -797,7 +812,7 @@ bool CFileItem::IsInternetStream() const
   CStdString strProtocol = url.GetProtocol();
   strProtocol.ToLower();
 
-  if (strProtocol.size() == 0 || HasProperty("IsHTTPDirectory"))
+  if (strProtocol.IsEmpty() || HasProperty("IsHTTPDirectory"))
     return false;
 
   // there's nothing to stop internet streams from being stacked
@@ -1077,27 +1092,16 @@ void CFileItem::FillInDefaultIcon()
   //   for .. folders the default picture for parent folder
   //   for other folders the defaultFolder.png
 
-  CStdString strThumb;
-  CStdString strExtension;
-  if (GetIconImage() == "")
+  if (GetIconImage().IsEmpty())
   {
     if (!m_bIsFolder)
     {
-      if ( IsPlayList() )
-      {
-        SetIconImage("DefaultPlaylist.png");
-      }
-      else if ( IsPicture() )
-      {
-        // picture
-        SetIconImage("DefaultPicture.png");
-      }
-      else if ( IsXBE() )
-      {
-        // xbe
-        SetIconImage("DefaultProgram.png");
-      }
-      else if ( IsAudio() )
+      /* To reduce the average runtime of this code, this list should
+       * be ordered with most frequently seen types first.  Also bear
+       * in mind the complexity of the code behind the check in the
+       * case of IsWhatater() returns false.
+       */
+      if ( IsAudio() )
       {
         // audio
         SetIconImage("DefaultAudio.png");
@@ -1107,15 +1111,26 @@ void CFileItem::FillInDefaultIcon()
         // video
         SetIconImage("DefaultVideo.png");
       }
+      else if ( IsPicture() )
+      {
+        // picture
+        SetIconImage("DefaultPicture.png");
+      }
+      else if ( IsPlayList() )
+      {
+        SetIconImage("DefaultPlaylist.png");
+      }
+      else if ( IsXBE() )
+      {
+        // xbe
+        SetIconImage("DefaultProgram.png");
+      }
       else if ( IsShortCut() && !IsLabelPreformated() )
       {
         // shortcut
-        CStdString strDescription;
-        CStdString strFName;
-        strFName = CUtil::GetFileName(m_strPath);
-
+        CStdString strFName = CUtil::GetFileName(m_strPath);
         int iPos = strFName.ReverseFind(".");
-        strDescription = strFName.Left(iPos);
+        CStdString strDescription = strFName.Left(iPos);
         SetLabel(strDescription);
         SetIconImage("DefaultShortcut.png");
       }
@@ -1186,7 +1201,6 @@ void CFileItem::SetCachedArtistThumb()
   {
     // found it, we are finished.
     SetThumbnailImage(thumb);
-//    SetIconImage(strThumb);
   }
 }
 
@@ -1194,6 +1208,7 @@ void CFileItem::SetCachedArtistThumb()
 void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
 {
   if (HasThumbnail()) return;
+  
   SetCachedMusicThumb();
   if (!HasThumbnail())
     SetUserMusicThumb(alwaysCheckRemote);
@@ -1212,7 +1227,7 @@ void CFileItem::SetCachedSeasonThumb()
 void CFileItem::RemoveExtension()
 {
   if (m_bIsFolder)
-    return ;
+    return;
   CStdString strLabel = GetLabel();
   CUtil::RemoveExtension(strLabel);
   SetLabel(strLabel);
@@ -1859,16 +1874,21 @@ void CFileItemList::Serialize(CArchive& ar)
     bool fastLookup=false;
     ar >> fastLookup;
 
-    ar >> (int&)m_sortMethod;
-    ar >> (int&)m_sortOrder;
-    ar >> (int&)m_cacheToDisc;
+    int tempint;
+    ar >> (int&)tempint;
+    m_sortMethod = SORT_METHOD(tempint);
+    ar >> (int&)tempint;
+    m_sortOrder = SORT_ORDER(tempint);
+    ar >> (int&)tempint;
+    m_cacheToDisc = CACHE_TYPE(tempint);
 
     unsigned int detailSize = 0;
     ar >> detailSize;
     for (unsigned int j = 0; j < detailSize; ++j)
     {
       SORT_METHOD_DETAILS details;
-      ar >> (int&)details.m_sortMethod;
+      ar >> (int&)tempint;
+      details.m_sortMethod = SORT_METHOD(tempint);
       ar >> details.m_buttonLabel;
       ar >> details.m_labelMasks.m_strLabelFile;
       ar >> details.m_labelMasks.m_strLabelFolder;

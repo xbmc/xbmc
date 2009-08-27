@@ -8,7 +8,7 @@ HEADERS = avformat.h avio.h
 OBJS = allformats.o cutils.o metadata.o metadata_compat.o options.o os_support.o sdp.o utils.o
 
 # muxers/demuxers
-OBJS-$(CONFIG_AAC_DEMUXER)               += raw.o id3v2.o
+OBJS-$(CONFIG_AAC_DEMUXER)               += raw.o id3v1.o id3v2.o
 OBJS-$(CONFIG_AC3_DEMUXER)               += raw.o
 OBJS-$(CONFIG_AC3_MUXER)                 += raw.o
 OBJS-$(CONFIG_ADTS_MUXER)                += adtsenc.o
@@ -18,9 +18,8 @@ OBJS-$(CONFIG_AMR_DEMUXER)               += amr.o
 OBJS-$(CONFIG_AMR_MUXER)                 += amr.o
 OBJS-$(CONFIG_APC_DEMUXER)               += apc.o
 OBJS-$(CONFIG_APE_DEMUXER)               += ape.o
-OBJS-$(CONFIG_ASF_DEMUXER)               += asfdec.o asf.o asfcrypt.o riff.o
+OBJS-$(CONFIG_ASF_DEMUXER)               += asfdec.o asf.o asfcrypt.o riff.o avlanguage.o
 OBJS-$(CONFIG_ASF_MUXER)                 += asfenc.o asf.o riff.o
-OBJS-$(CONFIG_ASF_STREAM_MUXER)          += asfenc.o asf.o riff.o
 OBJS-$(CONFIG_ASS_DEMUXER)               += assdec.o
 OBJS-$(CONFIG_ASS_MUXER)                 += assenc.o
 OBJS-$(CONFIG_AU_DEMUXER)                += au.o raw.o
@@ -53,7 +52,7 @@ OBJS-$(CONFIG_EAC3_DEMUXER)              += raw.o id3v2.o
 OBJS-$(CONFIG_EAC3_MUXER)                += raw.o
 OBJS-$(CONFIG_FFM_DEMUXER)               += ffmdec.o
 OBJS-$(CONFIG_FFM_MUXER)                 += ffmenc.o
-OBJS-$(CONFIG_FLAC_DEMUXER)              += flacdec.o raw.o id3v2.o
+OBJS-$(CONFIG_FLAC_DEMUXER)              += flacdec.o raw.o id3v1.o id3v2.o oggparsevorbis.o
 OBJS-$(CONFIG_FLAC_MUXER)                += flacenc.o
 OBJS-$(CONFIG_FLIC_DEMUXER)              += flic.o
 OBJS-$(CONFIG_FLV_DEMUXER)               += flvdec.o
@@ -78,27 +77,25 @@ OBJS-$(CONFIG_IMAGE2PIPE_DEMUXER)        += img2.o
 OBJS-$(CONFIG_IMAGE2PIPE_MUXER)          += img2.o
 OBJS-$(CONFIG_INGENIENT_DEMUXER)         += raw.o
 OBJS-$(CONFIG_IPMOVIE_DEMUXER)           += ipmovie.o
-OBJS-$(CONFIG_IPOD_MUXER)                += movenc.o riff.o isom.o avc.o
 OBJS-$(CONFIG_ISS_DEMUXER)               += iss.o
 OBJS-$(CONFIG_LMLM4_DEMUXER)             += lmlm4.o
 OBJS-$(CONFIG_M4V_DEMUXER)               += raw.o
 OBJS-$(CONFIG_M4V_MUXER)                 += raw.o
-OBJS-$(CONFIG_MATROSKA_AUDIO_MUXER)      += matroskaenc.o matroska.o riff.o isom.o avc.o flacenc.o
 OBJS-$(CONFIG_MATROSKA_DEMUXER)          += matroskadec.o matroska.o riff.o isom.o
 OBJS-$(CONFIG_MATROSKA_MUXER)            += matroskaenc.o matroska.o riff.o isom.o avc.o flacenc.o
 OBJS-$(CONFIG_MJPEG_DEMUXER)             += raw.o
 OBJS-$(CONFIG_MJPEG_MUXER)               += raw.o
 OBJS-$(CONFIG_MLP_DEMUXER)               += raw.o id3v2.o
+OBJS-$(CONFIG_MLP_MUXER)                 += raw.o
 OBJS-$(CONFIG_MM_DEMUXER)                += mm.o
 OBJS-$(CONFIG_MMF_DEMUXER)               += mmf.o raw.o
 OBJS-$(CONFIG_MMF_MUXER)                 += mmf.o riff.o
 OBJS-$(CONFIG_MOV_DEMUXER)               += mov.o riff.o isom.o
 OBJS-$(CONFIG_MOV_MUXER)                 += movenc.o riff.o isom.o avc.o
-OBJS-$(CONFIG_MP2_MUXER)                 += mp3.o
-OBJS-$(CONFIG_MP3_DEMUXER)               += mp3.o id3v2.o
-OBJS-$(CONFIG_MP3_MUXER)                 += mp3.o
-OBJS-$(CONFIG_MP4_MUXER)                 += movenc.o riff.o isom.o avc.o
-OBJS-$(CONFIG_MPC_DEMUXER)               += mpc.o id3v2.o
+OBJS-$(CONFIG_MP2_MUXER)                 += mp3.o id3v1.o
+OBJS-$(CONFIG_MP3_DEMUXER)               += mp3.o id3v1.o id3v2.o
+OBJS-$(CONFIG_MP3_MUXER)                 += mp3.o id3v1.o
+OBJS-$(CONFIG_MPC_DEMUXER)               += mpc.o id3v1.o id3v2.o
 OBJS-$(CONFIG_MPC8_DEMUXER)              += mpc8.o
 OBJS-$(CONFIG_MPEG1SYSTEM_MUXER)         += mpegenc.o
 OBJS-$(CONFIG_MPEG1VCD_MUXER)            += mpegenc.o
@@ -109,7 +106,6 @@ OBJS-$(CONFIG_MPEG1VIDEO_MUXER)          += raw.o
 OBJS-$(CONFIG_MPEG2VIDEO_MUXER)          += raw.o
 OBJS-$(CONFIG_MPEGPS_DEMUXER)            += mpeg.o
 OBJS-$(CONFIG_MPEGTS_DEMUXER)            += mpegts.o
-OBJS-$(CONFIG_MPEGTSRAW_DEMUXER)         += mpegts.o
 OBJS-$(CONFIG_MPEGTS_MUXER)              += mpegtsenc.o
 OBJS-$(CONFIG_MPEGVIDEO_DEMUXER)         += raw.o
 OBJS-$(CONFIG_MPJPEG_MUXER)              += mpjpeg.o
@@ -118,7 +114,6 @@ OBJS-$(CONFIG_MTV_DEMUXER)               += mtv.o
 OBJS-$(CONFIG_MVI_DEMUXER)               += mvi.o
 OBJS-$(CONFIG_MXF_DEMUXER)               += mxfdec.o mxf.o
 OBJS-$(CONFIG_MXF_MUXER)                 += mxfenc.o mxf.o audiointerleave.o
-OBJS-$(CONFIG_MXF_D10_MUXER)             += mxfenc.o mxf.o audiointerleave.o
 OBJS-$(CONFIG_NC_DEMUXER)                += ncdec.o
 OBJS-$(CONFIG_NSV_DEMUXER)               += nsvdec.o
 OBJS-$(CONFIG_NULL_MUXER)                += raw.o
@@ -174,8 +169,8 @@ OBJS-$(CONFIG_PCM_U32LE_DEMUXER)         += raw.o
 OBJS-$(CONFIG_PCM_U32LE_MUXER)           += raw.o
 OBJS-$(CONFIG_PCM_U8_DEMUXER)            += raw.o
 OBJS-$(CONFIG_PCM_U8_MUXER)              += raw.o
-OBJS-$(CONFIG_PSP_MUXER)                 += movenc.o riff.o isom.o avc.o
 OBJS-$(CONFIG_PVA_DEMUXER)               += pva.o
+OBJS-$(CONFIG_QCP_DEMUXER)               += qcp.o
 OBJS-$(CONFIG_R3D_DEMUXER)               += r3d.o
 OBJS-$(CONFIG_RAWVIDEO_DEMUXER)          += raw.o
 OBJS-$(CONFIG_RAWVIDEO_MUXER)            += raw.o
@@ -188,24 +183,30 @@ OBJS-$(CONFIG_ROQ_MUXER)                 += raw.o
 OBJS-$(CONFIG_RPL_DEMUXER)               += rpl.o
 OBJS-$(CONFIG_RTP_MUXER)                 += rtp.o         \
                                             rtp_aac.o     \
+                                            rtp_amr.o     \
+                                            rtp_asf.o     \
+                                            rtp_h263.o    \
                                             rtp_mpv.o     \
                                             rtpenc.o      \
                                             rtpenc_h264.o \
                                             avc.o
-OBJS-$(CONFIG_RTSP_DEMUXER)              += rdt.o rtsp.o
-OBJS-$(CONFIG_SDP_DEMUXER)               += rtsp.o rtp.o rtpdec.o rtp_h264.o
+OBJS-$(CONFIG_RTSP_DEMUXER)              += rdt.o rtsp.o rtp_vorbis.o rtp_asf.o
+OBJS-$(CONFIG_SDP_DEMUXER)               += rtsp.o rtp.o rtpdec.o rtp_h264.o rtp_vorbis.o rtp_asf.o
 OBJS-$(CONFIG_SEGAFILM_DEMUXER)          += segafilm.o
 OBJS-$(CONFIG_SHORTEN_DEMUXER)           += raw.o id3v2.o
 OBJS-$(CONFIG_SIFF_DEMUXER)              += siff.o
 OBJS-$(CONFIG_SMACKER_DEMUXER)           += smacker.o
 OBJS-$(CONFIG_SOL_DEMUXER)               += sol.o raw.o
+OBJS-$(CONFIG_SOX_DEMUXER)               += soxdec.o raw.o
+OBJS-$(CONFIG_SOX_MUXER)                 += soxenc.o
 OBJS-$(CONFIG_STR_DEMUXER)               += psxstr.o
 OBJS-$(CONFIG_SWF_DEMUXER)               += swfdec.o
 OBJS-$(CONFIG_SWF_MUXER)                 += swfenc.o
-OBJS-$(CONFIG_TG2_MUXER)                 += movenc.o riff.o isom.o avc.o
-OBJS-$(CONFIG_TGP_MUXER)                 += movenc.o riff.o isom.o avc.o
 OBJS-$(CONFIG_THP_DEMUXER)               += thp.o
 OBJS-$(CONFIG_TIERTEXSEQ_DEMUXER)        += tiertexseq.o
+OBJS-$(CONFIG_TMV_DEMUXER)               += tmv.o
+OBJS-$(CONFIG_TRUEHD_DEMUXER)            += raw.o id3v2.o
+OBJS-$(CONFIG_TRUEHD_MUXER)              += raw.o
 OBJS-$(CONFIG_TTA_DEMUXER)               += tta.o
 OBJS-$(CONFIG_TXD_DEMUXER)               += txd.o
 OBJS-$(CONFIG_VC1_DEMUXER)               += raw.o
@@ -214,6 +215,7 @@ OBJS-$(CONFIG_VC1T_MUXER)                += vc1testenc.o
 OBJS-$(CONFIG_VMD_DEMUXER)               += sierravmd.o
 OBJS-$(CONFIG_VOC_DEMUXER)               += vocdec.o voc.o
 OBJS-$(CONFIG_VOC_MUXER)                 += vocenc.o voc.o
+OBJS-$(CONFIG_VQF_DEMUXER)               += vqf.o
 OBJS-$(CONFIG_WAV_DEMUXER)               += wav.o riff.o raw.o
 OBJS-$(CONFIG_WAV_MUXER)                 += wav.o riff.o
 OBJS-$(CONFIG_WC3_DEMUXER)               += wc3movie.o
@@ -228,8 +230,6 @@ OBJS-$(CONFIG_YUV4MPEGPIPE_DEMUXER)      += yuv4mpeg.o
 OBJS-$(CONFIG_LIBNUT_DEMUXER)            += libnut.o riff.o
 OBJS-$(CONFIG_LIBNUT_MUXER)              += libnut.o riff.o
 
-OBJS-$(CONFIG_VHOOK)                     += framehook.o
-
 # protocols I/O
 OBJS+= avio.o aviobuf.o
 
@@ -237,8 +237,17 @@ OBJS-$(CONFIG_FILE_PROTOCOL)             += file.o
 OBJS-$(CONFIG_GOPHER_PROTOCOL)           += gopher.o
 OBJS-$(CONFIG_HTTP_PROTOCOL)             += http.o
 OBJS-$(CONFIG_PIPE_PROTOCOL)             += file.o
+OBJS-$(CONFIG_RTMP_PROTOCOL)             += rtmpproto.o rtmppkt.o
 OBJS-$(CONFIG_RTP_PROTOCOL)              += rtpproto.o
 OBJS-$(CONFIG_TCP_PROTOCOL)              += tcp.o
 OBJS-$(CONFIG_UDP_PROTOCOL)              += udp.o
 
+# libavdevice dependencies
+OBJS-$(CONFIG_JACK_INDEV)                += timefilter.o
+
+EXAMPLES  = output
+TESTPROGS = timefilter
+
 include $(SUBDIR)../subdir.mak
+
+$(SUBDIR)output-example$(EXESUF): ELIBS = -lswscale

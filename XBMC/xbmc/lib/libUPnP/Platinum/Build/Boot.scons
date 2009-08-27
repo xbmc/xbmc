@@ -1,5 +1,7 @@
 import sys
 
+EnsureSConsVersion(0,98,1)
+
 #######################################################
 # reusable functions and data structures
 #######################################################
@@ -24,19 +26,17 @@ def DefaultTarget():
 #######################################################
 # Main Build
 #######################################################
-
-options = Options()
-options.AddOptions(
-    EnumOption('target', 'build target', DefaultTarget(), allowed_values=PLATFORM_TO_TARGET_MAP.values()+CROSS_PLATFORMS),
-    ListOption('build_config', 'build configuration(s)', 'Debug', names=['Debug', 'Release'])
+options = Variables()
+options.AddVariables(
+    EnumVariable('target', 'build target', DefaultTarget(), allowed_values=PLATFORM_TO_TARGET_MAP.values()+CROSS_PLATFORMS),
+    BoolVariable('stop_on_warning', 'Stop the build on warnings', True),
+    ListVariable('build_config', 'build configurations', 'Debug', names=['Debug', 'Release'])
 )
 
-env = Environment(options=options)
+env = Environment(variables=options)
 Help(options.GenerateHelpText(env))
 
-
 ### call the actual build script for each build config
-if not hasattr(env, 'Clone'): env.Clone = env.Copy ## old scons compatibility
 base_env = env
 for build_config in env['build_config']:
     env = base_env.Clone()

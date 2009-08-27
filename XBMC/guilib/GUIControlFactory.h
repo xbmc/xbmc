@@ -62,10 +62,11 @@ public:
   static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value);
   static CStdString FilterLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition);
-  static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, std::vector<CStdString>& vecStringValue);
+  static bool GetMultipleString(const TiXmlNode* pRootNode, const char* strTag, std::vector<CGUIActionDescriptor>& vecStringValue);
   static void GetRectFromString(const CStdString &string, FRECT &rect);
+  static bool GetAction(const TiXmlElement* pElement, CGUIActionDescriptor &action);
 private:
-  bool GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, std::vector<CStdString> &actions);
+  bool GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, std::vector<CGUIActionDescriptor> &actions);
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, CGUIInfoBool &allowHiddenFocus);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);

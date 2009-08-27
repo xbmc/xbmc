@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <!-- Translator: Mika Pirinen -->
-  <!-- Date of translation: 7/3/2009 -->
-  <!-- Finnish strings based on English strings version 17058 -->
+  <!-- Date of translation: 29/6/2009 -->
+  <!-- Finnish strings based on English strings version 20978 -->
 <strings>
   <string id="31000">Ääni vaimennettu</string>
   <string id="31001"></string>
@@ -82,6 +82,8 @@
   <string id="31110">painikkeen omat taustat käytössä</string>
   <string id="31111">Näytä musiikin tiedot käytettäessä Lyrics-skriptiä</string>
   <string id="31112">Näytä median nimet "Leveät kuvakkeet"-näkymässä</string>
+  <string id="31113">Yksittäinen kuva</string>
+  <string id="31114">Vaihtuva kuva</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Skripti asetukset</string>

@@ -30,17 +30,10 @@
 #include "NptThreads.h"
 #include "NptInterfaces.h"
 #include "NptStrings.h"
-#include "NptLogging.h"
+#include "NptDebug.h"
 
 #if defined(NPT_CONFIG_HAVE_SHARE_H)
 #include <share.h>
-#endif
-
-#if defined(_MSC_VER) && _MSC_VER < 1500
-extern "C" {
-    __int64 __cdecl _ftelli64(FILE *);
-    int __cdecl _fseeki64(FILE *, __int64, int);
-}
 #endif
 
 #if defined(_WIN32)
@@ -50,12 +43,6 @@ extern FILE *NPT_fopen_utf8(const char* path, const char* mode);
 #define fopen_s NPT_fopen_s_utf8
 #define _fsopen NPT_fsopen_utf8
 #endif
-
-
-/*----------------------------------------------------------------------
-|   logging
-+---------------------------------------------------------------------*/
-NPT_SET_LOCAL_LOGGER("neptune.stdc.file")
 
 /*----------------------------------------------------------------------
 |   compatibility wrappers
@@ -102,7 +89,7 @@ class NPT_StdcFileWrapper
 {
 public:
     // constructors and destructor
-    NPT_StdcFileWrapper(FILE* file) : m_File(file) {}
+    NPT_StdcFileWrapper(FILE* file, const char* name) : m_File(file), m_Name(name) {}
     ~NPT_StdcFileWrapper() {
         if (m_File != NULL && 
             m_File != stdin && 
@@ -112,12 +99,9 @@ public:
         }
     }
 
-    // methods
-    FILE* GetFile() { return m_File; }
-
-private:
     // members
-    FILE* m_File;
+    FILE*      m_File;
+    NPT_String m_Name;
 };
 
 typedef NPT_Reference<NPT_StdcFileWrapper> NPT_StdcFileReference;
@@ -153,7 +137,7 @@ NPT_StdcFileStream::Seek(NPT_Position offset)
 {
     size_t result;
 
-    result = NPT_fseek(m_FileReference->GetFile(), offset, SEEK_SET);
+    result = NPT_fseek(m_FileReference->m_File, offset, SEEK_SET);
     if (result == 0) {
         return NPT_SUCCESS;
     } else {
@@ -169,8 +153,8 @@ NPT_StdcFileStream::Tell(NPT_Position& offset)
 {
     offset = 0;
 
-    NPT_Int64 pos = NPT_ftell(m_FileReference->GetFile());
-    if (pos <=0) return NPT_FAILURE;
+    NPT_Int64 pos = NPT_ftell(m_FileReference->m_File);
+    if (pos < 0) return NPT_FAILURE;
 
     offset = pos;
     return NPT_SUCCESS;
@@ -182,7 +166,7 @@ NPT_StdcFileStream::Tell(NPT_Position& offset)
 NPT_Result
 NPT_StdcFileStream::Flush()
 {
-    fflush(m_FileReference->GetFile());
+    fflush(m_FileReference->m_File);
     return NPT_SUCCESS;
 }
 
@@ -195,8 +179,8 @@ class NPT_StdcFileInputStream : public NPT_InputStream,
 {
 public:
     // constructors and destructor
-    NPT_StdcFileInputStream(NPT_StdcFileReference& file, NPT_LargeSize size) :
-        NPT_StdcFileStream(file), m_Size(size) {}
+    NPT_StdcFileInputStream(NPT_StdcFileReference& file) :
+        NPT_StdcFileStream(file) {}
 
     // NPT_InputStream methods
     NPT_Result Read(void*     buffer, 
@@ -210,10 +194,6 @@ public:
     }
     NPT_Result GetSize(NPT_LargeSize& size);
     NPT_Result GetAvailable(NPT_LargeSize& available);
-
-private:
-    // members
-    NPT_LargeSize m_Size;
 };
 
 /*----------------------------------------------------------------------
@@ -232,11 +212,11 @@ NPT_StdcFileInputStream::Read(void*     buffer,
     }
 
     // read from the file
-    nb_read = fread(buffer, 1, bytes_to_read, m_FileReference->GetFile());
+    nb_read = fread(buffer, 1, bytes_to_read, m_FileReference->m_File);
     if (nb_read > 0) {
         if (bytes_read) *bytes_read = (NPT_Size)nb_read;
         return NPT_SUCCESS;
-    } else if (feof(m_FileReference->GetFile())) {
+    } else if (feof(m_FileReference->m_File)) {
         if (bytes_read) *bytes_read = 0;
         return NPT_ERROR_EOS;
     } else {
@@ -251,15 +231,11 @@ NPT_StdcFileInputStream::Read(void*     buffer,
 NPT_Result
 NPT_StdcFileInputStream::GetSize(NPT_LargeSize& size)
 {
-    // keep track of where we are
-    NPT_Position offset = NPT_ftell(m_FileReference->GetFile());
+    NPT_FileInfo file_info;
+    NPT_Result result = NPT_File::GetInfo(m_FileReference->m_Name, &file_info);
+    if (NPT_FAILED(result)) return result;
+    size = file_info.m_Size;
     
-    // seek to the end to get the size
-    NPT_fseek(m_FileReference->GetFile(), 0, SEEK_END);
-    size = NPT_ftell(m_FileReference->GetFile());
-    
-    // seek back to where we were
-    NPT_fseek(m_FileReference->GetFile(), offset, SEEK_SET);
     return NPT_SUCCESS;
 }
 
@@ -269,11 +245,10 @@ NPT_StdcFileInputStream::GetSize(NPT_LargeSize& size)
 NPT_Result
 NPT_StdcFileInputStream::GetAvailable(NPT_LargeSize& available)
 {
-    NPT_LargeSize size;
-    GetSize(size);
-
-    NPT_Int64 offset = NPT_ftell(m_FileReference->GetFile());
-    if (offset >= 0 && (NPT_LargeSize)offset <= size) {
+    NPT_Int64     offset = NPT_ftell(m_FileReference->m_File);
+    NPT_LargeSize size = 0;
+    
+    if (NPT_SUCCEEDED(GetSize(size)) && offset >= 0 && (NPT_LargeSize)offset <= size) {
         available = size - offset;
         return NPT_SUCCESS;
     } else {
@@ -318,7 +293,7 @@ NPT_StdcFileOutputStream::Write(const void* buffer,
 {
     size_t nb_written;
 
-    nb_written = fwrite(buffer, 1, bytes_to_write, m_FileReference->GetFile());
+    nb_written = fwrite(buffer, 1, bytes_to_write, m_FileReference->m_File);
 
     if (nb_written > 0) {
         if (bytes_written) *bytes_written = (NPT_Size)nb_written;
@@ -342,7 +317,6 @@ public:
     // NPT_FileInterface methods
     NPT_Result Open(OpenMode mode);
     NPT_Result Close();
-    NPT_Result GetSize(NPT_LargeSize& size);
     NPT_Result GetInputStream(NPT_InputStreamReference& stream);
     NPT_Result GetOutputStream(NPT_OutputStreamReference& stream);
 
@@ -440,7 +414,7 @@ NPT_StdcFile::Open(NPT_File::OpenMode mode)
     }   
     
     // create a reference to the FILE object
-    m_FileReference = new NPT_StdcFileWrapper(file);
+    m_FileReference = new NPT_StdcFileWrapper(file, name);
 
     return NPT_SUCCESS;
 }
@@ -457,26 +431,6 @@ NPT_StdcFile::Close()
     // reset the mode
     m_Mode = 0;
 
-    return NPT_SUCCESS;
-}
-
-/*----------------------------------------------------------------------
-|   NPT_StdcFile::GetSize
-+---------------------------------------------------------------------*/
-NPT_Result 
-NPT_StdcFile::GetSize(NPT_LargeSize& size)
-{
-    // default value
-    size = 0;
-
-    // check that the file is open
-    if (m_FileReference.IsNull()) return NPT_ERROR_FILE_NOT_OPEN;
-
-    // get the size from the info (call GetInfo() in case it has not
-    // yet been called)
-    NPT_FileInfo info;
-    NPT_CHECK_FATAL(m_Delegator.GetInfo(info));
-    size = info.m_Size;
     return NPT_SUCCESS;
 }
 
@@ -498,9 +452,7 @@ NPT_StdcFile::GetInputStream(NPT_InputStreamReference& stream)
     }
 
     // create a stream
-    NPT_LargeSize size = 0;
-    GetSize(size);
-    stream = new NPT_StdcFileInputStream(m_FileReference, size);
+    stream = new NPT_StdcFileInputStream(m_FileReference);
 
     return NPT_SUCCESS;
 }
@@ -531,15 +483,14 @@ NPT_StdcFile::GetOutputStream(NPT_OutputStreamReference& stream)
 /*----------------------------------------------------------------------
 |   NPT_File::NPT_File
 +---------------------------------------------------------------------*/
-NPT_File::NPT_File(const char* path) :
-    m_Path(path)
+NPT_File::NPT_File(const char* path) : m_Path(path), m_IsSpecial(false)
 {
     m_Delegate = new NPT_StdcFile(*this);
     
     if (NPT_StringsEqual(path, NPT_FILE_STANDARD_INPUT)  ||
         NPT_StringsEqual(path, NPT_FILE_STANDARD_OUTPUT) ||
         NPT_StringsEqual(path, NPT_FILE_STANDARD_ERROR)) {
-        m_Info.m_Type = NPT_FileInfo::FILE_TYPE_SPECIAL;
+        m_IsSpecial = true;
     } 
 }
 
@@ -551,9 +502,9 @@ NPT_File::operator=(const NPT_File& file)
 {
     if (this != &file) {
         delete m_Delegate;
-        m_Path = file.m_Path;
-        m_Info = file.m_Info;
-        m_Delegate = new NPT_StdcFile(*this);
+        m_Path      = file.m_Path;
+        m_IsSpecial = file.m_IsSpecial;
+        m_Delegate  = new NPT_StdcFile(*this);
     }
     return *this;
 }

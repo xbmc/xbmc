@@ -32,6 +32,7 @@ const PixelFormatTag ff_raw_pixelFormatTags[] = {
     { PIX_FMT_YUV420P, MKTAG('I', 'Y', 'U', 'V') },
     { PIX_FMT_YUV420P, MKTAG('Y', 'V', '1', '2') },
     { PIX_FMT_YUV410P, MKTAG('Y', 'U', 'V', '9') },
+    { PIX_FMT_YUV410P, MKTAG('Y', 'V', 'U', '9') },
     { PIX_FMT_YUV411P, MKTAG('Y', '4', '1', 'B') },
     { PIX_FMT_YUV422P, MKTAG('Y', '4', '2', 'B') },
     { PIX_FMT_GRAY8,   MKTAG('Y', '8', '0', '0') },
@@ -47,10 +48,12 @@ const PixelFormatTag ff_raw_pixelFormatTags[] = {
     { PIX_FMT_BGR555,  MKTAG('B', 'G', 'R', 15) },
     { PIX_FMT_RGB565,  MKTAG('R', 'G', 'B', 16) },
     { PIX_FMT_BGR565,  MKTAG('B', 'G', 'R', 16) },
+    { PIX_FMT_RGB565,  MKTAG( 3 ,  0 ,  0 ,  0 ) },
 
     /* quicktime */
     { PIX_FMT_UYVY422, MKTAG('2', 'v', 'u', 'y') },
     { PIX_FMT_UYVY422, MKTAG('A', 'V', 'U', 'I') }, /* FIXME merge both fields */
+    { PIX_FMT_YUYV422, MKTAG('y', 'u', 'v', '2') },
     { PIX_FMT_PAL8,    MKTAG('W', 'R', 'A', 'W') },
 
     { PIX_FMT_NONE, 0 },

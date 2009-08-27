@@ -40,25 +40,23 @@ class CWin32DirectSound : public IAudioRenderer
 public:
   virtual void UnRegisterAudioCallback();
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual DWORD GetChunkLen();
-  virtual FLOAT GetDelay();
-  virtual FLOAT GetCacheTime();
+  virtual unsigned int GetChunkLen();
+  virtual float GetDelay();
+  virtual float GetCacheTime();
   CWin32DirectSound();
   virtual bool Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec = "", bool bIsMusic=false, bool bAudioPassthrough=false);
   virtual ~CWin32DirectSound();
 
-  virtual DWORD AddPackets(const void* data, DWORD len);
-  virtual DWORD GetSpace();
-  virtual HRESULT Deinitialize();
-  virtual HRESULT Pause();
-  virtual HRESULT Stop();
-  virtual HRESULT Resume();
+  virtual unsigned int AddPackets(const void* data, unsigned int len);
+  virtual unsigned int GetSpace();
+  virtual bool Deinitialize();
+  virtual bool Pause();
+  virtual bool Stop();
+  virtual bool Resume();
 
-  virtual LONG GetMinimumVolume() const;
-  virtual LONG GetMaximumVolume() const;
-  virtual LONG GetCurrentVolume() const;
+  virtual long GetCurrentVolume() const;
   virtual void Mute(bool bMute);
-  virtual HRESULT SetCurrentVolume(LONG nVolume);
+  virtual bool SetCurrentVolume(long nVolume);
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
@@ -66,7 +64,7 @@ public:
 private:
   void UpdateCacheStatus();
   void CheckPlayStatus();
-  void MapDataIntoBuffer(unsigned char* pData, DWORD len, unsigned char* pOut);
+  void MapDataIntoBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut);
   unsigned char* GetChannelMap(unsigned int channels, const char* strAudioCodec);
 
   LPDIRECTSOUNDBUFFER  m_pBuffer;
@@ -74,9 +72,9 @@ private:
 
   IAudioCallback* m_pCallback;
 
-  LONG m_nCurrentVolume;
-  DWORD m_dwChunkSize;
-  DWORD m_dwBufferLen;
+  long m_nCurrentVolume;
+  unsigned int m_dwChunkSize;
+  unsigned int m_dwBufferLen;
   bool m_bPause;
   bool m_bIsAllocated;
 

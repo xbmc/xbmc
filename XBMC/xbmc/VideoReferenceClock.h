@@ -49,19 +49,19 @@ class CVideoReferenceClock : public CThread
   public:
     CVideoReferenceClock();
 
-    void   GetTime(LARGE_INTEGER *ptime);
-    void   GetFrequency(LARGE_INTEGER *pfreq);
-    void   SetSpeed(double Speed);
-    double GetSpeed();
-    int    GetRefreshRate();
-    void   Wait(__int64 Target);
-    void   WaitStarted(int MSecs);
-    bool   GetClockInfo(int& MissedVblanks, double& ClockSpeed);
+    void    GetTime(LARGE_INTEGER *ptime);
+    void    GetFrequency(LARGE_INTEGER *pfreq);
+    void    SetSpeed(double Speed);
+    double  GetSpeed();
+    int     GetRefreshRate();
+    int64_t Wait(int64_t Target);
+    bool    WaitStarted(int MSecs);
+    bool    GetClockInfo(int& MissedVblanks, double& ClockSpeed);
 
 #ifdef _WIN32
     void SetMonitor(MONITORINFOEX &Monitor);
 #elif defined(__APPLE__)
-    void VblankHandler(__int64 nowtime, double fps);
+    void VblankHandler(int64_t nowtime, double fps);
 #endif
     
   protected:
@@ -70,18 +70,18 @@ class CVideoReferenceClock : public CThread
     void SendVblankSignal();
     void UpdateClock(int NrVBlanks, bool CheckMissed);
 
-    __int64 m_CurrTime;          //the current time of the clock when using vblank as clock source
-    __int64 m_AdjustedFrequency; //the frequency of the clock set by dvdplayer
-    __int64 m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
-    __int64 m_LastRefreshTime;   //last time we updated the refreshrate
-    __int64 m_SystemFrequency;   //frequency of the systemclock
+    int64_t m_CurrTime;          //the current time of the clock when using vblank as clock source
+    int64_t m_AdjustedFrequency; //the frequency of the clock set by dvdplayer
+    int64_t m_ClockOffset;       //the difference between the vblank clock and systemclock, set when vblank clock is stopped
+    int64_t m_LastRefreshTime;   //last time we updated the refreshrate
+    int64_t m_SystemFrequency;   //frequency of the systemclock
 
     bool    m_UseVblank;         //set to true when vblank is used as clock source
-    __int64 m_RefreshRate;       //current refreshrate
+    int64_t m_RefreshRate;       //current refreshrate
     int     m_PrevRefreshRate;   //previous refresrate, used for log printing and getting refreshrate from nvidia-settings
     int     m_MissedVblanks;     //number of clock updates missed by the vblank clock
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
-    __int64 m_VblankTime;        //last time the clock was updated when using vblank as clock
+    int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
 
     CEvent m_Started;            //set when the vblank clock is started
     CEvent m_VblankEvent;        //set when a vblank happens
@@ -123,13 +123,14 @@ class CVideoReferenceClock : public CThread
     unsigned int  m_Adapter;
     MONITORINFOEX m_Monitor;
     MONITORINFOEX m_PrevMonitor;
+    bool          m_IsVista;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();
     void RunCocoa();
     void CleanupCocoa();
     
-    __int64 m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
+    int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
                                //not the same as m_VblankTime
 #endif
 };

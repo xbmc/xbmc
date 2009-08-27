@@ -4,7 +4,7 @@
 #   2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008
 #   Free Software Foundation, Inc.
 
-timestamp='2008-12-19'
+timestamp='2009-04-27'
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -324,6 +324,9 @@ case "${UNAME_MACHINE}:${UNAME_SYSTEM}:${UNAME_RELEASE}:${UNAME_VERSION}" in
 	case `/usr/bin/uname -p` in
 	    sparc) echo sparc-icl-nx7; exit ;;
 	esac ;;
+    s390x:SunOS:*:*)
+	echo ${UNAME_MACHINE}-ibm-solaris2`echo ${UNAME_RELEASE}|sed -e 's/[^.]*//'`
+	exit ;;
     sun4H:SunOS:5.*:*)
 	echo sparc-hal-solaris2`echo ${UNAME_RELEASE}|sed -e 's/[^.]*//'`
 	exit ;;
@@ -1115,8 +1118,11 @@ EOF
     pc:*:*:*)
 	# Left here for compatibility:
         # uname -m prints for DJGPP always 'pc', but it prints nothing about
-        # the processor, so we play safe by assuming i386.
-	echo i386-pc-msdosdjgpp
+        # the processor, so we play safe by assuming i586.
+	# Note: whatever this is, it MUST be the same as what config.sub
+	# prints for the "djgpp" host, or else GDB configury will decide that
+	# this is a cross-build.
+	echo i586-pc-msdosdjgpp
         exit ;;
     Intel:Mach:3*:*)
 	echo i386-pc-mach3
@@ -1349,6 +1355,9 @@ EOF
 	exit ;;
     i*86:rdos:*:*)
 	echo ${UNAME_MACHINE}-pc-rdos
+	exit ;;
+    i*86:AROS:*:*)
+	echo ${UNAME_MACHINE}-pc-aros
 	exit ;;
 esac
 

@@ -1,0 +1,189 @@
+Source: xbmc
+Section: video
+Priority: optional
+Maintainer: Debian Multimedia Maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
+Uploaders: Ouattara Oumar Aziz (alias wattazoum) <wattazoum@gmail.com>,
+           Andres Mejia <mcitadel@gmail.com>
+DM-Upload-Allowed: yes
+Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
+ autotools-dev, autoconf, automake, unzip, libboost-dev,
+ libgl1-mesa-dev | libgl-dev, libglu-dev, libglew-dev, libmad0-dev, libjpeg-dev,
+ libsamplerate-dev, libogg-dev, libvorbis-dev, libfreetype6-dev,
+ libfontconfig-dev, libbz2-dev, libfribidi-dev, libsqlite3-dev,
+ libmysqlclient-dev, libasound-dev, libpng-dev, libpcre3-dev, liblzo2-dev,
+ libcdio-dev, libsdl-dev, libsdl-image1.2-dev, libsdl-mixer1.2-dev, libenca-dev,
+ libjasper-dev, libxt-dev, libxmu-dev, libxinerama-dev,
+ libcurl4-gnutls-dev | libcurl-dev, libdbus-1-dev, libhal-storage-dev,
+ libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
+ libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
+ libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
+ libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
+ python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
+ zlib1g-dev
+Standards-Version: 3.8.1
+Homepage: http://xbmc.org/
+Vcs-Git: git://git.debian.org/git/pkg-multimedia/xbmc.git
+Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/xbmc.git;a=summary
+
+Package: xbmc
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         xbmc-skin-pm3-hd (= ${binary:Version}),
+         xbmc-web-pm3 (= ${binary:Version}),
+         ${misc:Depends}
+Suggests: xbmc-third-parties
+Description: The Full XBMC meta package
+ XBMC is a free and open source software media player 
+ and entertainment hub distributed under the GNU General Public Licence.
+ .
+ Currently  XBMC can be used to play/view most common 
+ video/audio/picture formats such as MPEG-1/2/4, DivX, XviD, MP3, AAC, 
+ JPG, GIF plus many more less known formats
+
+Package: xbmc-live
+Architecture: all
+Depends: xbmc-standalone (= ${binary:Version}),
+         policykit,
+         openssh-server,
+         ${python:Depends},
+         python-apt,
+         adduser,
+         ${misc:Depends}
+Conflicts: kdm, gdm, xdm, wdm
+Description: The XBMC live package
+ This is used to setup the XBMC Live environment.
+
+Package: xbmc-standalone
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         xbmc-skin-pm3-hd (= ${binary:Version}),
+         xbmc-web-pm3 (= ${binary:Version}),
+         ${misc:Depends}
+Suggests: xbmc-third-parties
+Description: The XBMC Standalone package
+ XBMC is a free and open source software media player
+ and entertainment hub distributed under the GNU General Public Licence.
+ .
+ Currently  XBMC can be used to play/view most common
+ video/audio/picture formats such as MPEG-1/2/4, DivX, XviD, MP3, AAC,
+ JPG, GIF plus many more less known formats
+ .
+ This package will install files that would permit to launch XBMC without having
+ a Desktop Manager.
+ 
+Package: xbmc-common
+Architecture: i386 amd64 powerpc ppc64
+Depends: ${shlibs:Depends},
+         ${python:Depends},
+         ${misc:Depends}
+Suggests: xbmc-test-helper
+Recommends: python-qt3
+Description: XBMC common package
+ This package contains all the datas needed to have a working XBMC
+
+Package: xbmc-dbg
+Architecture: i386 amd64 powerpc ppc64
+Section: debug
+Priority: extra
+Depends: xbmc-common (= ${binary:Version}),
+         ${misc:Depends}
+Description: XBMC Debug symbols
+ This package contains debugging symbols for xbmc
+
+Package: xbmc-scripts-example
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         ${misc:Depends}
+Description: XBMC default scripts package
+ Scripts shipped with XBMC for user conveniance
+
+Package: xbmc-skin-pm3
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         ${misc:Depends}
+Replaces: xbmc-skin-default
+Conflicts: xbmc-skin-default
+Description: XBMC Project Mahem III skin package
+ The XBMC PM3 Skin package (aka Project Mahem III).
+
+Package: xbmc-skin-pm3-hd
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         ttf-liberation,
+         ${misc:Depends}
+Description: XBMC PM3 HD skin package
+ The XBMC PM3 HD Skin package (aka Project Mahem III High Definition).
+
+Package: xbmc-web-pm3
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         ${misc:Depends}
+Description: XBMC Webserver Project Mahem III skin package
+ The PM3 (aka Project Mahem III) Skin for the XBMC web server .
+
+Package: xbmc-web-pm
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         ${misc:Depends}
+Conflicts: xbmc-web-pm3
+Description: XBMC Webserver Project Mahem skin package
+ The PM (aka Project Mahem) Skin for the XBMC web server .
+
+Package: xbmc-web-eflexweb
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         ${misc:Depends}
+Conflicts: xbmc-web-pm3, xbmc-web-pm, xbmc-web-iphone-tlrobinson
+Description: XBMC Webserver Eflex web skin package
+ The XBMC Webserver Eflex web Skin for the XBMC web server .
+
+Package: xbmc-web-iphone-tlrobinson
+Architecture: all
+Depends: xbmc-common (>= ${source:Version}),
+         ${misc:Depends}
+Description: XBMC Webserver Iphone skin package
+ iPhone's web browser (based on WebKit) can display full interactive webpages, 
+ and Xbox Media Center (XBMC) contains a simple web server that can store web 
+ page and react to various commands like pause, play, volume control and many 
+ more. The remote is written entirely in JavaScript, HTML, and CSS, and makes
+ use of iUI, a framework for iPhone-like interfaces on web apps, written by 
+ Joe Hewitt.
+
+Package: xbmc-eventclients-wiiremote
+Architecture: i386 amd64 powerpc ppc64
+Depends: xbmc-eventclients-common (= ${source:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: XBMC Event Client for WII Remote support
+ The Wii Remote client package for XBMC.
+
+Package: xbmc-eventclients-common
+Architecture: all
+Depends: ${python:Depends}, ${misc:Depends}
+Description: XBMC Event Client Common package
+ The common package for XBMC Event Client.
+
+Package: xbmc-eventclients-dev
+Architecture: all
+Depends: xbmc-eventclients-common (= ${binary:Version}),
+         ${misc:Depends}
+Description: XBMC Event Client Dev package
+ The Development package for XBMC Event Client.
+
+Package: xbmc-eventclients-j2me
+Architecture: all
+Depends: xbmc-eventclients-common (= ${binary:Version}),
+         ${python:Depends},
+         python-bluez,
+         ${misc:Depends}
+Description: XBMC Event Client J2ME package
+ The J2ME package for XBMC Event Client. This is meant to provide a server that
+ communicate with a mobile tool supporting Java ME.
+
+Package: xbmc-eventclients-ps3
+Architecture: all
+Depends: xbmc-eventclients-common (= ${binary:Version}),
+         ${python:Depends},
+         ${misc:Depends}
+Description: XBMC Event Client PS3 package
+ The PS3 package for XBMC Event Client.

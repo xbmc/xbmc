@@ -41,9 +41,9 @@ public:
 
 private:
   long m_iDataLen;
-  int m_module;
-  int m_renderID;
-  int m_iFilePos;
+  struct DUH *m_module;
+  struct DUH_SIGRENDERER *m_renderID;
+  long m_iFilePos;
 
   DllDumb m_dll;
 };

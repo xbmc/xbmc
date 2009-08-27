@@ -106,10 +106,10 @@ void CDirectoryCache::SetDirectory(const CStdString& strPath, const CFileItemLis
   // this is the best solution for now.
   CSingleLock lock (m_cs);
 
-  ClearDirectory(strPath);
-
   CStdString storedPath = strPath;
   CUtil::RemoveSlashAtEnd(storedPath);
+
+  ClearDirectory(storedPath);
 
   CheckIfFull();
 

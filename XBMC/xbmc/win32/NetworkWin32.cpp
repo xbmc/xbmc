@@ -98,7 +98,7 @@ CStdString CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
   if(IsWireless())
   {
     HANDLE hClientHdl = NULL;
-	  DWORD dwVersion = 0;
+    DWORD dwVersion = 0;
     DWORD dwret = 0;
     PWLAN_CONNECTION_ATTRIBUTES pAttributes;
     DWORD dwSize = 0;
@@ -165,6 +165,7 @@ void CNetworkWin32::CleanInterfaceList()
 
 std::vector<CNetworkInterface*>& CNetworkWin32::GetInterfaceList(void)
 {
+  CSingleLock lock (m_critSection);
   if(m_netrefreshTimer.GetElapsedSeconds() >= 5.0f)
     queryInterfaceList();
 
@@ -335,7 +336,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdStri
   if(IsWireless())
   {
     HANDLE hClientHdl = NULL;
-	  DWORD dwVersion = 0;
+    DWORD dwVersion = 0;
     DWORD dwret = 0;
     PWLAN_CONNECTION_ATTRIBUTES pAttributes;
     DWORD dwSize = 0;

@@ -222,7 +222,7 @@ NPT_DataBuffer::SetData(const NPT_Byte* data, NPT_Size size)
             return NPT_ERROR_INVALID_STATE;
         }
     }
-    NPT_CopyMemory(m_Buffer, data, size);
+    if (data) NPT_CopyMemory(m_Buffer, data, size);
     m_DataSize = size;
 
     return NPT_SUCCESS;

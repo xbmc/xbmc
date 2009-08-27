@@ -1,7 +1,7 @@
 /* This is the POSIX thread API (POSIX 1003).
  * 
  * Pthreads-win32 - POSIX Threads Library for Win32
- * Copyright (C) 1998
+ * Copyright (C) 1998 John E. Bossom
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public

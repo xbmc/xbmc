@@ -52,7 +52,7 @@ public:
     // PLT_DeviceHost methods
     virtual NPT_Result SetupServices(PLT_DeviceData& data);
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const NPT_HttpRequestContext& context);
+                                const PLT_HttpRequestContext& context);
 };
 
 #endif /* _PLT_LIGHT_SAMPLE_H_ */

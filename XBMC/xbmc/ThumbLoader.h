@@ -23,10 +23,13 @@
 #define THUMBLOADER_H
 #include "BackgroundInfoLoader.h"
 
+class CStreamDetails;
+class IStreamDetailsObserver;
+
 class CThumbLoader : public CBackgroundInfoLoader
 {
 public:
-  CThumbLoader();
+  CThumbLoader(int nThreads=-1);
   virtual ~CThumbLoader();
 
   bool LoadRemoteThumb(CFileItem *pItem);
@@ -38,11 +41,14 @@ public:
   CVideoThumbLoader();
   virtual ~CVideoThumbLoader();
   virtual bool LoadItem(CFileItem* pItem);
-  bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget);
+  bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails);
+  void SetStreamDetailsObserver(IStreamDetailsObserver *pObs) { m_pStreamDetailsObs = pObs; }
 
 protected:
   virtual void OnLoaderStart() ;
   virtual void OnLoaderFinish() ;
+
+  IStreamDetailsObserver *m_pStreamDetailsObs;
 };
 
 class CProgramThumbLoader : public CThumbLoader

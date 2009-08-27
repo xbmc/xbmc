@@ -64,6 +64,7 @@ public:
   virtual void Close();
   virtual int Read(BYTE* buf, int buf_size);
   virtual __int64 Seek(__int64 offset, int whence);
+  virtual bool Pause(double dTime) { return false; };
   virtual int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_DVD; }
   virtual bool IsEOF() { return m_bEOF; }
   virtual __int64 GetLength()             { return 0; }

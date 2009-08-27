@@ -134,6 +134,7 @@ const CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
   m_dwSenderID = msg.m_dwSenderID;
   m_strParam = msg.m_strParam;
   m_item = msg.m_item;
+  m_action = msg.m_action;
   return *this;
 }
 
@@ -176,4 +177,14 @@ void CGUIMessage::SetStringParam(const string& strParam)
 const string& CGUIMessage::GetStringParam() const
 {
   return m_strParam;
+}
+
+void CGUIMessage::SetAction(const CGUIActionDescriptor& action)
+{
+  m_action = action;
+}
+
+const CGUIActionDescriptor& CGUIMessage::GetAction() const
+{
+  return m_action;
 }

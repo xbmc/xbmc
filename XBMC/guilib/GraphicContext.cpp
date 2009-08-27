@@ -127,6 +127,13 @@ void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
 }
 #endif
 
+bool CGraphicContext::SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1, DWORD param2)
+{
+  if (!m_pCallback) return false;
+  CGUIMessage msg(message, senderID, destID, param1, param2);
+  return m_pCallback->SendMessage(msg);
+}
+
 bool CGraphicContext::SendMessage(CGUIMessage& message)
 {
   if (!m_pCallback) return false;
@@ -716,7 +723,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
 
       rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
       // attach a GLX surface to the root window
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, false, false, false, g_advancedSettings.m_fullScreen);
+      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, (bool)g_advancedSettings.m_fullScreen);
       if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
         m_screenSurface->EnableVSync();
 
@@ -1558,7 +1565,8 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     SDL_ShowCursor(SDL_ENABLE);
 #endif
 #if defined(__APPLE__)
-    Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+    Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays,
+      g_advancedSettings.m_osx_GLFullScreen, g_advancedSettings.m_alwaysOnTop);
 #elif defined(_WIN32PC)
     DEVMODE settings;
     settings.dmSize = sizeof(settings);
@@ -1591,7 +1599,7 @@ void CGraphicContext::SetFullScreenRoot(bool fs)
     Cocoa_GL_SetFullScreen(
       g_settings.m_ResInfo[m_Resolution].iWidth,
       g_settings.m_ResInfo[m_Resolution].iHeight,
-      false, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+      false, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen, g_advancedSettings.m_alwaysOnTop);
 #elif defined(_WIN32PC)
     ChangeDisplaySettings(NULL, 0);
 #else

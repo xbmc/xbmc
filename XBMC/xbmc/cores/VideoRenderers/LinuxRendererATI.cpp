@@ -17,8 +17,11 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#ifndef HAS_SDL_2D
 #include "stdafx.h"
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+#ifndef HAS_SDL_2D
 #include "LinuxRendererATI.h"
 #include "../../Application.h"
 #include "../../Util.h"
@@ -256,9 +259,11 @@ unsigned int CLinuxRendererATI::PreInit()
 #endif
     CLog::Log(LOGERROR,"CLinuxRendererATI::PreInit - failed to load rescale libraries!");
 
-#ifdef HAS_DVD_SWSCALE
-  m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
-#endif
+  #if (! defined USE_EXTERNAL_FFMPEG) && (defined HAS_DVD_SWSCALE)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #elif ((defined HAVE_LIBSWSCALE_RGB2RGB_H) || (defined HAVE_FFMPEG_RGB2RGB_H)) && (defined HAS_DVD_SWSCALE)
+    m_dllSwScale.sws_rgb2rgb_init(SWS_CPU_CAPS_MMX2);
+  #endif
   return true;
 }
 

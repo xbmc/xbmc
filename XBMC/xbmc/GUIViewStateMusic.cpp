@@ -455,6 +455,9 @@ CGUIViewStateWindowMusicNav::CGUIViewStateWindowMusicNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_ARTIST,557, LABEL_MASKS("%A - %T", "%Y"));
           AddSortMethod(SORT_METHOD_ALBUM,558, LABEL_MASKS("%B - %T", "%Y"));
         }
+        CStdString strTrackLeft=g_guiSettings.GetString("musicfiles.trackformat");
+        CStdString strTrackRight=g_guiSettings.GetString("musicfiles.trackformatright");
+        AddSortMethod(SORT_METHOD_TRACKNUM, 554, LABEL_MASKS(strTrackLeft, strTrackRight));  // Userdefined, Userdefined| empty, empty
       }
       else
       {

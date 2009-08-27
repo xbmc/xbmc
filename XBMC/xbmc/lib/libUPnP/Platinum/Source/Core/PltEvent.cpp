@@ -40,6 +40,7 @@
 #include "PltUPnP.h"
 #include "PltDeviceData.h"
 #include "PltXmlHelper.h"
+#include "PltCtrlPointTask.h"
 
 NPT_SET_LOCAL_LOGGER("platinum.core.event")
 
@@ -133,19 +134,18 @@ PLT_EventSubscriber::GetExpirationTime()
 |   PLT_EventSubscriber::SetExpirationTime
 +---------------------------------------------------------------------*/
 NPT_Result
-PLT_EventSubscriber::SetTimeout(int timeout /* = -1 */) 
+PLT_EventSubscriber::SetTimeout(NPT_Cardinal timeout) 
 {
     NPT_LOG_FINE_2("subscriber (%s) expiring in %d seconds",
         m_SID.GetChars(),
         timeout);
 
-    // -1 means infinite so we set an expiration time of 0
-    if (timeout == -1) {
-        m_ExpirationTime = NPT_TimeStamp(0, 0);
-    } else {
-        NPT_System::GetCurrentTimeStamp(m_ExpirationTime);
-        m_ExpirationTime += NPT_TimeInterval(timeout, 0);
-    }
+    // -1 means infinite but we default to 300 secs
+    if (timeout == (NPT_Cardinal)-1) timeout = 300;
+    
+    NPT_System::GetCurrentTimeStamp(m_ExpirationTime);
+    m_ExpirationTime += NPT_TimeInterval(timeout, 0);
+
     return NPT_SUCCESS;
 }
 
@@ -183,15 +183,21 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
 {
     // verify we have eventable variables
     bool foundVars = false;
-    NPT_XmlElementNode* propertyset = new NPT_XmlElementNode("e", "propertyset");
-    NPT_CHECK_SEVERE(propertyset->SetNamespaceUri("e", "urn:schemas-upnp-org:event-1-0"));
+    NPT_XmlElementNode* propertyset = 
+        new NPT_XmlElementNode("e", "propertyset");
+    NPT_CHECK_SEVERE(propertyset->SetNamespaceUri(
+        "e", 
+        "urn:schemas-upnp-org:event-1-0"));
 
     NPT_List<PLT_StateVariable*>::Iterator var = vars.GetFirstItem();
     while (var) {
         if ((*var)->IsSendingEvents()) {
-            NPT_XmlElementNode* property = new NPT_XmlElementNode("e", "property");
+            NPT_XmlElementNode* property = 
+                new NPT_XmlElementNode("e", "property");
             propertyset->AddChild(property);
-            PLT_XmlHelper::AddChildText(property, (*var)->GetName(), (*var)->GetValue());
+            PLT_XmlHelper::AddChildText(property, 
+                                        (*var)->GetName(), 
+                                        (*var)->GetValue());
             foundVars = true;
         }
         ++var;
@@ -205,7 +211,8 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
 
     // format the body with the xml
     NPT_String xml;
-    if (NPT_FAILED(PLT_XmlHelper::Serialize(*propertyset, xml))) {
+    if (NPT_FAILED(PLT_XmlHelper::Serialize(*propertyset, 
+                                            xml))) {
         delete propertyset;
         NPT_CHECK_FATAL(NPT_FAILURE);
     }
@@ -218,17 +225,21 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
         NPT_CHECK_FATAL(NPT_FAILURE);
     }
     // format request
-    NPT_HttpRequest* request = new NPT_HttpRequest(url,
-                                                   "NOTIFY",
-                                                   NPT_HTTP_PROTOCOL_1_0);
-    request->GetHeaders().SetHeader(NPT_HTTP_HEADER_CONNECTION, "keep-alive");
-
+    NPT_HttpRequest* request = 
+        new NPT_HttpRequest(url,
+                            "NOTIFY",
+                            NPT_HTTP_PROTOCOL_1_1);
     // add the extra headers
-    PLT_HttpHelper::SetContentType(*request, "text/xml");
-    PLT_UPnPMessageHelper::SetNT(*request, "upnp:event");
-    PLT_UPnPMessageHelper::SetNTS(*request, "upnp:propchange");
-    PLT_UPnPMessageHelper::SetSID(*request, m_SID);
-    PLT_UPnPMessageHelper::SetSeq(*request, m_EventKey);
+    PLT_HttpHelper::SetContentType(*request, 
+                                   "text/xml; charset=\"utf-8\"");
+    PLT_UPnPMessageHelper::SetNT(*request, 
+                                 "upnp:event");
+    PLT_UPnPMessageHelper::SetNTS(*request, 
+                                  "upnp:propchange");
+    PLT_UPnPMessageHelper::SetSID(*request, 
+                                  m_SID);
+    PLT_UPnPMessageHelper::SetSeq(*request, 
+                                  m_EventKey);
 
     // wrap around sequence to 1
     if (++m_EventKey == 0) m_EventKey = 1;
@@ -238,7 +249,8 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
     // start the task now if not started already
     if (!m_SubscriberTask) {
         m_SubscriberTask = new PLT_HttpClientSocketTask(request, true);
-        NPT_TimeInterval delay(0.5f);
+        
+        NPT_TimeInterval delay(0.2f);
         // delay start to make sure ctrlpoint receives response to subscription
         // before our first NOTIFY. Also make sure task is not auto-destroy
         // since we want to destroy it ourselves when the subscriber goes away.
@@ -248,6 +260,34 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
     }
      
     return NPT_SUCCESS;
+}
+
+/*----------------------------------------------------------------------
+|   PLT_EventSubscriber::Renew
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_EventSubscriber::Renew(PLT_CtrlPoint* ctrl_point)
+{
+    NPT_LOG_FINE_3("Renewing subscriber \"%s\" for service \"%s\" of device \"%s\"", 
+        (const char*)GetSID(),
+        (const char*)m_Service->GetServiceID(),
+        (const char*)m_Service->GetDevice()->GetFriendlyName());
+
+    NPT_HttpUrl url(m_Service->GetEventSubURL(true));
+    
+    // create the request
+    NPT_HttpRequest* request = new NPT_HttpRequest(url, "SUBSCRIBE", NPT_HTTP_PROTOCOL_1_1);
+
+    PLT_UPnPMessageHelper::SetSID(*request, GetSID());
+    PLT_UPnPMessageHelper::SetTimeOut(*request, (NPT_Timeout)PLT_Constants::GetInstance().m_DefaultSubscribeLease);
+        
+    // Prepare the request
+    // create a task to post the request
+    PLT_ThreadTask* task = new PLT_CtrlPointSubscribeEventTask(
+        request,
+        ctrl_point, 
+        m_Service);
+    return m_TaskManager->StartTask(task);
 }
 
 /*----------------------------------------------------------------------

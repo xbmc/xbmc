@@ -129,6 +129,7 @@ distclean: clean
 	cp -p Makefile.in Makefile
 	cp -p zconf.in.h zconf.h
 	rm -f .DS_Store
+	rm -f config.log
 
 tags:
 	etags *.[ch]

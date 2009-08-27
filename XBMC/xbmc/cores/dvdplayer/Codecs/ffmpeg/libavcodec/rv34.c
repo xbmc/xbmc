@@ -61,14 +61,39 @@ static RV34VLC intra_vlcs[NUM_INTRA_TABLES], inter_vlcs[NUM_INTER_TABLES];
  * @{
  */
 
+static const int table_offs[] = {
+      0,   1818,   3622,   4144,   4698,   5234,   5804,   5868,   5900,   5932,
+   5996,   6252,   6316,   6348,   6380,   7674,   8944,  10274,  11668,  12250,
+  14060,  15846,  16372,  16962,  17512,  18148,  18180,  18212,  18244,  18308,
+  18564,  18628,  18660,  18692,  20036,  21314,  22648,  23968,  24614,  26384,
+  28190,  28736,  29366,  29938,  30608,  30640,  30672,  30704,  30768,  31024,
+  31088,  31120,  31184,  32570,  33898,  35236,  36644,  37286,  39020,  40802,
+  41368,  42052,  42692,  43348,  43380,  43412,  43444,  43476,  43604,  43668,
+  43700,  43732,  45100,  46430,  47778,  49160,  49802,  51550,  53340,  53972,
+  54648,  55348,  55994,  56122,  56154,  56186,  56218,  56346,  56410,  56442,
+  56474,  57878,  59290,  60636,  62036,  62682,  64460,  64524,  64588,  64716,
+  64844,  66076,  67466,  67978,  68542,  69064,  69648,  70296,  72010,  72074,
+  72138,  72202,  72330,  73572,  74936,  75454,  76030,  76566,  77176,  77822,
+  79582,  79646,  79678,  79742,  79870,  81180,  82536,  83064,  83672,  84242,
+  84934,  85576,  87384,  87448,  87480,  87544,  87672,  88982,  90340,  90902,
+  91598,  92182,  92846,  93488,  95246,  95278,  95310,  95374,  95502,  96878,
+  98266,  98848,  99542, 100234, 100884, 101524, 103320, 103352, 103384, 103416,
+ 103480, 104874, 106222, 106910, 107584, 108258, 108902, 109544, 111366, 111398,
+ 111430, 111462, 111494, 112878, 114320, 114988, 115660, 116310, 116950, 117592
+};
+
+static VLC_TYPE table_data[117592][2];
+
 /**
  * Generate VLC from codeword lengths.
  * @param bits   codeword lengths (zeroes are accepted)
  * @param size   length of input data
  * @param vlc    output VLC
  * @param insyms symbols for input codes (NULL for default ones)
+ * @param num    VLC table number (for static initialization)
  */
-static void rv34_gen_vlc(const uint8_t *bits, int size, VLC *vlc, const uint8_t *insyms)
+static void rv34_gen_vlc(const uint8_t *bits, int size, VLC *vlc, const uint8_t *insyms,
+                         const int num)
 {
     int i;
     int counts[17] = {0}, codes[17];
@@ -92,10 +117,12 @@ static void rv34_gen_vlc(const uint8_t *bits, int size, VLC *vlc, const uint8_t 
     for(i = 0; i < realsize; i++)
         cw[i] = codes[bits2[i]]++;
 
+    vlc->table = &table_data[table_offs[num]];
+    vlc->table_allocated = table_offs[num + 1] - table_offs[num];
     init_vlc_sparse(vlc, FFMIN(maxbits, 9), realsize,
                     bits2, 1, 1,
                     cw,    2, 2,
-                    syms,  2, 2, INIT_VLC_USE_STATIC);
+                    syms,  2, 2, INIT_VLC_USE_NEW_STATIC);
 }
 
 /**
@@ -107,27 +134,30 @@ static av_cold void rv34_init_tables(void)
 
     for(i = 0; i < NUM_INTRA_TABLES; i++){
         for(j = 0; j < 2; j++){
-            rv34_gen_vlc(rv34_table_intra_cbppat   [i][j], CBPPAT_VLC_SIZE,   &intra_vlcs[i].cbppattern[j],     NULL);
-            rv34_gen_vlc(rv34_table_intra_secondpat[i][j], OTHERBLK_VLC_SIZE, &intra_vlcs[i].second_pattern[j], NULL);
-            rv34_gen_vlc(rv34_table_intra_thirdpat [i][j], OTHERBLK_VLC_SIZE, &intra_vlcs[i].third_pattern[j],  NULL);
-            for(k = 0; k < 4; k++)
-                rv34_gen_vlc(rv34_table_intra_cbp[i][j+k*2],  CBP_VLC_SIZE,   &intra_vlcs[i].cbp[j][k],         rv34_cbp_code);
+            rv34_gen_vlc(rv34_table_intra_cbppat   [i][j], CBPPAT_VLC_SIZE,   &intra_vlcs[i].cbppattern[j],     NULL, 19*i + 0 + j);
+            rv34_gen_vlc(rv34_table_intra_secondpat[i][j], OTHERBLK_VLC_SIZE, &intra_vlcs[i].second_pattern[j], NULL, 19*i + 2 + j);
+            rv34_gen_vlc(rv34_table_intra_thirdpat [i][j], OTHERBLK_VLC_SIZE, &intra_vlcs[i].third_pattern[j],  NULL, 19*i + 4 + j);
+            for(k = 0; k < 4; k++){
+                rv34_gen_vlc(rv34_table_intra_cbp[i][j+k*2],  CBP_VLC_SIZE,   &intra_vlcs[i].cbp[j][k],         rv34_cbp_code, 19*i + 6 + j*4 + k);
+            }
         }
-        for(j = 0; j < 4; j++)
-            rv34_gen_vlc(rv34_table_intra_firstpat[i][j], FIRSTBLK_VLC_SIZE, &intra_vlcs[i].first_pattern[j], NULL);
-        rv34_gen_vlc(rv34_intra_coeff[i], COEFF_VLC_SIZE, &intra_vlcs[i].coefficient, NULL);
+        for(j = 0; j < 4; j++){
+            rv34_gen_vlc(rv34_table_intra_firstpat[i][j], FIRSTBLK_VLC_SIZE, &intra_vlcs[i].first_pattern[j], NULL, 19*i + 14 + j);
+        }
+        rv34_gen_vlc(rv34_intra_coeff[i], COEFF_VLC_SIZE, &intra_vlcs[i].coefficient, NULL, 19*i + 18);
     }
 
     for(i = 0; i < NUM_INTER_TABLES; i++){
-        rv34_gen_vlc(rv34_inter_cbppat[i], CBPPAT_VLC_SIZE, &inter_vlcs[i].cbppattern[0], NULL);
-        for(j = 0; j < 4; j++)
-            rv34_gen_vlc(rv34_inter_cbp[i][j], CBP_VLC_SIZE, &inter_vlcs[i].cbp[0][j], rv34_cbp_code);
-        for(j = 0; j < 2; j++){
-            rv34_gen_vlc(rv34_table_inter_firstpat [i][j], FIRSTBLK_VLC_SIZE, &inter_vlcs[i].first_pattern[j],  NULL);
-            rv34_gen_vlc(rv34_table_inter_secondpat[i][j], OTHERBLK_VLC_SIZE, &inter_vlcs[i].second_pattern[j], NULL);
-            rv34_gen_vlc(rv34_table_inter_thirdpat [i][j], OTHERBLK_VLC_SIZE, &inter_vlcs[i].third_pattern[j],  NULL);
+        rv34_gen_vlc(rv34_inter_cbppat[i], CBPPAT_VLC_SIZE, &inter_vlcs[i].cbppattern[0], NULL, i*12 + 95);
+        for(j = 0; j < 4; j++){
+            rv34_gen_vlc(rv34_inter_cbp[i][j], CBP_VLC_SIZE, &inter_vlcs[i].cbp[0][j], rv34_cbp_code, i*12 + 96 + j);
         }
-        rv34_gen_vlc(rv34_inter_coeff[i], COEFF_VLC_SIZE, &inter_vlcs[i].coefficient, NULL);
+        for(j = 0; j < 2; j++){
+            rv34_gen_vlc(rv34_table_inter_firstpat [i][j], FIRSTBLK_VLC_SIZE, &inter_vlcs[i].first_pattern[j],  NULL, i*12 + 100 + j);
+            rv34_gen_vlc(rv34_table_inter_secondpat[i][j], OTHERBLK_VLC_SIZE, &inter_vlcs[i].second_pattern[j], NULL, i*12 + 102 + j);
+            rv34_gen_vlc(rv34_table_inter_thirdpat [i][j], OTHERBLK_VLC_SIZE, &inter_vlcs[i].third_pattern[j],  NULL, i*12 + 104 + j);
+        }
+        rv34_gen_vlc(rv34_inter_coeff[i], COEFF_VLC_SIZE, &inter_vlcs[i].coefficient, NULL, i*12 + 106);
     }
 }
 
@@ -533,7 +563,7 @@ static void rv34_pred_mv_b(RV34DecContext *r, int block_type, int dir)
         B[1] = cur_pic->motion_val[dir][mv_pos - s->b8_stride][1];
         has_B = 1;
     }
-    if((r->avail_cache[5-2] & type) & mask){
+    if(r->avail_cache[5-4] && (r->avail_cache[5-2] & type) & mask){
         C[0] = cur_pic->motion_val[dir][mv_pos - s->b8_stride + 2][0];
         C[1] = cur_pic->motion_val[dir][mv_pos - s->b8_stride + 2][1];
         has_C = 1;
@@ -787,15 +817,16 @@ static int rv34_decode_mv(RV34DecContext *r, int block_type)
     case RV34_MB_B_DIRECT:
         //surprisingly, it uses motion scheme from next reference frame
         next_bt = s->next_picture_ptr->mb_type[s->mb_x + s->mb_y * s->mb_stride];
-        if(IS_INTRA(next_bt))
+        if(IS_INTRA(next_bt) || IS_SKIP(next_bt)){
             fill_rectangle(s->current_picture_ptr->motion_val[0][s->mb_x * 2 + s->mb_y * 2 * s->b8_stride], 2, 2, s->b8_stride, 0, 4);
-        else
+            fill_rectangle(s->current_picture_ptr->motion_val[1][s->mb_x * 2 + s->mb_y * 2 * s->b8_stride], 2, 2, s->b8_stride, 0, 4);
+        }else
             for(j = 0; j < 2; j++)
                 for(i = 0; i < 2; i++)
                     for(k = 0; k < 2; k++)
                         for(l = 0; l < 2; l++)
                             s->current_picture_ptr->motion_val[l][mv_pos + i + j*s->b8_stride][k] = calc_add_mv(r, l, s->next_picture_ptr->motion_val[0][mv_pos + i + j*s->b8_stride][k]);
-        if(IS_16X16(next_bt)) //we can use whole macroblock MC
+        if(!(IS_16X8(next_bt) || IS_8X16(next_bt) || IS_8X8(next_bt))) //we can use whole macroblock MC
             rv34_mc_2mv(r, block_type);
         else
             rv34_mc_2mv_skip(r);
@@ -953,15 +984,15 @@ static void rv34_output_macroblock(RV34DecContext *r, int8_t *intra_types, int c
                     rv34_add_4x4_block(Y, s->linesize, s->block[(i>>1)+(j&2)], (i&1)*4+(j&1)*32);
             }
             Y += s->linesize * 4 - 4*4;
-            intra_types += s->b4_stride;
+            intra_types += r->intra_types_stride;
         }
-        intra_types -= s->b4_stride * 4;
+        intra_types -= r->intra_types_stride * 4;
         fill_rectangle(r->avail_cache + 5, 2, 2, 4, 0, 4);
         for(j = 0; j < 2; j++){
             idx = 5 + j*4;
             for(i = 0; i < 2; i++, cbp >>= 1, idx++){
-                rv34_pred_4x4_block(r, U + i*4 + j*4*s->uvlinesize, s->uvlinesize, ittrans[intra_types[i*2+j*2*s->b4_stride]], r->avail_cache[idx-4], r->avail_cache[idx-1], !i && !j, r->avail_cache[idx-3]);
-                rv34_pred_4x4_block(r, V + i*4 + j*4*s->uvlinesize, s->uvlinesize, ittrans[intra_types[i*2+j*2*s->b4_stride]], r->avail_cache[idx-4], r->avail_cache[idx-1], !i && !j, r->avail_cache[idx-3]);
+                rv34_pred_4x4_block(r, U + i*4 + j*4*s->uvlinesize, s->uvlinesize, ittrans[intra_types[i*2+j*2*r->intra_types_stride]], r->avail_cache[idx-4], r->avail_cache[idx-1], !i && !j, r->avail_cache[idx-3]);
+                rv34_pred_4x4_block(r, V + i*4 + j*4*s->uvlinesize, s->uvlinesize, ittrans[intra_types[i*2+j*2*r->intra_types_stride]], r->avail_cache[idx-4], r->avail_cache[idx-1], !i && !j, r->avail_cache[idx-3]);
                 r->avail_cache[idx] = 1;
                 if(cbp & 0x01)
                     rv34_add_4x4_block(U + i*4 + j*4*s->uvlinesize, s->uvlinesize, s->block[4], i*4+j*32);
@@ -1025,7 +1056,7 @@ static int rv34_decode_mb_header(RV34DecContext *r, int8_t *intra_types)
         r->is16 = !!IS_INTRA16x16(s->current_picture_ptr->mb_type[mb_pos]);
         rv34_decode_mv(r, r->block_type);
         if(r->block_type == RV34_MB_SKIP){
-            fill_rectangle(intra_types, 4, 4, s->b4_stride, 0, sizeof(intra_types[0]));
+            fill_rectangle(intra_types, 4, 4, r->intra_types_stride, 0, sizeof(intra_types[0]));
             return 0;
         }
         r->chroma_vlc = 1;
@@ -1034,7 +1065,7 @@ static int rv34_decode_mb_header(RV34DecContext *r, int8_t *intra_types)
     if(IS_INTRA(s->current_picture_ptr->mb_type[mb_pos])){
         if(r->is16){
             t = get_bits(gb, 2);
-            fill_rectangle(intra_types, 4, 4, s->b4_stride, t, sizeof(intra_types[0]));
+            fill_rectangle(intra_types, 4, 4, r->intra_types_stride, t, sizeof(intra_types[0]));
             r->luma_vlc   = 2;
         }else{
             if(r->decode_intra_types(r, gb, intra_types) < 0)
@@ -1045,7 +1076,7 @@ static int rv34_decode_mb_header(RV34DecContext *r, int8_t *intra_types)
         r->cur_vlcs = choose_vlc_set(r->si.quant, r->si.vlc_set, 0);
     }else{
         for(i = 0; i < 16; i++)
-            intra_types[(i & 3) + (i>>2) * s->b4_stride] = 0;
+            intra_types[(i & 3) + (i>>2) * r->intra_types_stride] = 0;
         r->cur_vlcs = choose_vlc_set(r->si.quant, r->si.vlc_set, 1);
         if(r->mb_type[mb_pos] == RV34_MB_P_MIX16x16){
             r->is16 = 1;
@@ -1251,8 +1282,9 @@ static int rv34_decode_slice(RV34DecContext *r, int end, const uint8_t* buf, int
             s->height = r->si.height;
             if(MPV_common_init(s) < 0)
                 return -1;
-            r->intra_types_hist = av_realloc(r->intra_types_hist, s->b4_stride * 4 * 2 * sizeof(*r->intra_types_hist));
-            r->intra_types = r->intra_types_hist + s->b4_stride * 4;
+            r->intra_types_stride = s->mb_width*4 + 4;
+            r->intra_types_hist = av_realloc(r->intra_types_hist, r->intra_types_stride * 4 * 2 * sizeof(*r->intra_types_hist));
+            r->intra_types = r->intra_types_hist + r->intra_types_stride * 4;
             r->mb_type = av_realloc(r->mb_type, r->s.mb_stride * r->s.mb_height * sizeof(*r->mb_type));
             r->cbp_luma   = av_realloc(r->cbp_luma,   r->s.mb_stride * r->s.mb_height * sizeof(*r->cbp_luma));
             r->cbp_chroma = av_realloc(r->cbp_chroma, r->s.mb_stride * r->s.mb_height * sizeof(*r->cbp_chroma));
@@ -1282,7 +1314,7 @@ static int rv34_decode_slice(RV34DecContext *r, int end, const uint8_t* buf, int
         s->mb_x = r->si.start % s->mb_width;
         s->mb_y = r->si.start / s->mb_width;
     }
-    memset(r->intra_types_hist, -1, s->b4_stride * 4 * 2 * sizeof(*r->intra_types_hist));
+    memset(r->intra_types_hist, -1, r->intra_types_stride * 4 * 2 * sizeof(*r->intra_types_hist));
     s->first_slice_line = 1;
     s->resync_mb_x= s->mb_x;
     s->resync_mb_y= s->mb_y;
@@ -1292,7 +1324,7 @@ static int rv34_decode_slice(RV34DecContext *r, int end, const uint8_t* buf, int
         ff_update_block_index(s);
         s->dsp.clear_blocks(s->block[0]);
 
-        if(rv34_decode_macroblock(r, r->intra_types + s->mb_x * 4 + 1) < 0){
+        if(rv34_decode_macroblock(r, r->intra_types + s->mb_x * 4 + 4) < 0){
             ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x-1, s->mb_y, AC_ERROR|DC_ERROR|MV_ERROR);
             return -1;
         }
@@ -1301,8 +1333,8 @@ static int rv34_decode_slice(RV34DecContext *r, int end, const uint8_t* buf, int
             s->mb_y++;
             ff_init_block_index(s);
 
-            memmove(r->intra_types_hist, r->intra_types, s->b4_stride * 4 * sizeof(*r->intra_types_hist));
-            memset(r->intra_types, -1, s->b4_stride * 4 * sizeof(*r->intra_types_hist));
+            memmove(r->intra_types_hist, r->intra_types, r->intra_types_stride * 4 * sizeof(*r->intra_types_hist));
+            memset(r->intra_types, -1, r->intra_types_stride * 4 * sizeof(*r->intra_types_hist));
 
             if(r->loop_filter && s->mb_y >= 2)
                 r->loop_filter(r, s->mb_y - 2);
@@ -1346,8 +1378,9 @@ av_cold int ff_rv34_decode_init(AVCodecContext *avctx)
 
     ff_h264_pred_init(&r->h, CODEC_ID_RV40);
 
-    r->intra_types_hist = av_malloc(s->b4_stride * 4 * 2 * sizeof(*r->intra_types_hist));
-    r->intra_types = r->intra_types_hist + s->b4_stride * 4;
+    r->intra_types_stride = 4*s->mb_stride + 4;
+    r->intra_types_hist = av_malloc(r->intra_types_stride * 4 * 2 * sizeof(*r->intra_types_hist));
+    r->intra_types = r->intra_types_hist + r->intra_types_stride * 4;
 
     r->mb_type = av_mallocz(r->s.mb_stride * r->s.mb_height * sizeof(*r->mb_type));
 
@@ -1369,8 +1402,10 @@ static int get_slice_offset(AVCodecContext *avctx, const uint8_t *buf, int n)
 
 int ff_rv34_decode_frame(AVCodecContext *avctx,
                             void *data, int *data_size,
-                            const uint8_t *buf, int buf_size)
+                            AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     RV34DecContext *r = avctx->priv_data;
     MpegEncContext *s = &r->s;
     AVFrame *pict = data;

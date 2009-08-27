@@ -209,7 +209,7 @@ TestSerializer()
     CHECK(check == "<top/>");
 
     // with one attribute
-    output.SetSize(0);
+    output.SetDataSize(0);
     top->SetAttribute("attr1", "b&w");
     writer.Serialize(*top, output);
     output.GetSize(size);
@@ -217,7 +217,7 @@ TestSerializer()
     CHECK(check == "<top attr1=\"b&amp;w\"/>");
 
     // add one child
-    output.SetSize(0);
+    output.SetDataSize(0);
     delete top;
     top = new NPT_XmlElementNode("top");
     NPT_XmlElementNode* child1 = new NPT_XmlElementNode("child1");
@@ -232,7 +232,7 @@ TestSerializer()
     //
 
     // test default namespaces
-    output.SetSize(0);
+    output.SetDataSize(0);
     delete top;
     top = new NPT_XmlElementNode("top");
     top->SetNamespaceUri("", "http://namespace.com");
@@ -242,7 +242,7 @@ TestSerializer()
     CHECK(check == "<top xmlns=\"http://namespace.com\"/>");
 
     // test attribute prefixes
-    output.SetSize(0);
+    output.SetDataSize(0);
     delete top;
     top = new NPT_XmlElementNode("top");
     top->SetAttribute(NULL,  "foo", "6");
@@ -371,7 +371,7 @@ TestWhitespace()
     CHECK(NPT_SUCCEEDED(parser2.Parse(xml, root)));
     CHECK(root);
 
-    buffer.SetSize(0);
+    buffer.SetDataSize(0);
     writer.Serialize(*root, buffer);
     CHECK(buffer.GetBuffer() == NPT_DataBuffer(expect2, NPT_StringLength(expect2)));
 

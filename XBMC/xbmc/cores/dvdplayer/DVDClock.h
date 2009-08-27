@@ -62,14 +62,13 @@ public:
 
   /* tells clock at what framerate video is, to  *
    * allow it to adjust speed for a better match */
-  void UpdateFramerate(double fps);
+  int UpdateFramerate(double fps);
 
-  double GetMaxSpeedAdjust(bool playingvideo);
   bool   SetMaxSpeedAdjust(double speed);
 
   static double GetAbsoluteClock();
   static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
-  static void   WaitAbsoluteClock(double target);
+  static double WaitAbsoluteClock(double target);
 protected:
   CSharedSection m_critSection;
   LARGE_INTEGER m_systemUsed;
@@ -83,6 +82,6 @@ protected:
   static CCriticalSection m_systemsection;
 
   double           m_maxspeedadjust;
-  bool             m_playingvideo;
+  bool             m_speedadjust;
   CCriticalSection m_speedsection;
 };

@@ -36,6 +36,55 @@
 +---------------------------------------------------------------------*/
 #include "PltUPnP.h"
 #include "PltMediaConnect.h"
+#include "PltVersion.h"
+
+#include <stdlib.h>
+
+/*----------------------------------------------------------------------
+|   globals
++---------------------------------------------------------------------*/
+struct Options {
+    const char* path;
+} Options;
+
+/*----------------------------------------------------------------------
+|   PrintUsageAndExit
++---------------------------------------------------------------------*/
+static void
+PrintUsageAndExit(char** args)
+{
+    fprintf(stderr, "usage: %s <path>\n", args[0]);
+    fprintf(stderr, "<path> : local path to serve\n");
+    exit(1);
+}
+
+/*----------------------------------------------------------------------
+|   ParseCommandLine
++---------------------------------------------------------------------*/
+static void
+ParseCommandLine(char** args)
+{
+    char** _args = args++;
+    const char* arg;
+
+    /* default values */
+    Options.path = NULL;
+    
+    while ((arg = *args++)) {
+        if (Options.path == NULL) {
+            Options.path = arg;
+        } else {
+            fprintf(stderr, "ERROR: too many arguments\n");
+            PrintUsageAndExit(_args);
+        }
+    }
+
+    /* check args */
+    if (Options.path == NULL) {
+        fprintf(stderr, "ERROR: path missing\n");
+        PrintUsageAndExit(_args);
+    }
+}
 
 /*----------------------------------------------------------------------
 |       main
@@ -43,19 +92,18 @@
 int
 main(int argc, char** argv)
 {
+    // setup Neptune logging
+    NPT_LogManager::GetDefault().Configure("plist:.level=FINER;.handlers=ConsoleHandler;.ConsoleHandler.colors=off;.ConsoleHandler.filter=26");
+    
     NPT_COMPILER_UNUSED(argc);
-    NPT_COMPILER_UNUSED(argv);
-
+    
+    /* parse command line */
+    ParseCommandLine(argv);
+    
+    PLT_DeviceHostReference device(
+        new PLT_MediaConnect(Options.path, "Platinum"));
     PLT_UPnP upnp;
- 
-    PLT_DeviceHostReference device(new PLT_MediaConnect("C:\\", "Platinum: Sylvain: "));
     upnp.AddDevice(device);
-//    NPT_String uuid = device->GetUUID();
-//
-//    PLT_CtrlPoint* ctrlPoint = new PLT_CtrlPoint(uuid);
-//    PLT_MediaBrowser* browser = new PLT_MediaBrowser(ctrlPoint, NULL);
-//    upnp.AddCtrlPoint(ctrlPoint);
-//    ctrlPoint->Release();
 
     if (NPT_FAILED(upnp.Start()))
         return 1;
@@ -70,6 +118,5 @@ main(int argc, char** argv)
     }
 
     upnp.Stop();
-//    delete browser;
     return 0;
 }

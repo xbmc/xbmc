@@ -1722,9 +1722,9 @@ int CXbmcHttp::xbmcGetGUIStatus()
         output += closeTag+openTag+"Type:Button";
         if (strTmp!="")
           output += closeTag+openTag+"Description:" + strTmp;
-        CStdStringArray actions = ((CGUIButtonControl *)pControl)->GetClickActions();
+        vector<CGUIActionDescriptor> actions = ((CGUIButtonControl *)pControl)->GetClickActions();
         if (actions.size())
-          output += closeTag+openTag+"Execution:" + actions[0];
+          output += closeTag+openTag+"Execution:" + actions[0].m_action;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
       {

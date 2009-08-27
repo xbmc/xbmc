@@ -19,15 +19,6 @@
  *
  */
 
-//-----------------------------------------------------------------------------
-// File: XBMC_PC.cpp
-//
-// Desc: This is the first tutorial for using Direct3D. In this tutorial, all
-//       we are doing is creating a Direct3D device and using it to clear the
-//       window.
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
 #include "stdafx.h"
 #include "XBMC_PC.h"
 #ifndef HAS_SDL
@@ -36,6 +27,7 @@
 #include "../../xbmc/Application.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
+#include "dbghelp.h"
 
 //-----------------------------------------------------------------------------
 // Resource defines
@@ -44,6 +36,12 @@
 #include "resource.h"
 #define IDI_MAIN_ICON          101 // Application icon
 #define IDR_MAIN_ACCEL         113 // Keyboard accelerator
+
+typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
+                                        CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
+                                        CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
+                                        CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
+
 
 //-----------------------------------------------------------------------------
 // Globals
@@ -111,19 +109,88 @@ INT CXBMC_PC::Run()
   return 0;
 }
 
+// Minidump creation function 
+LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp ) 
+{
+  // Create the dump file where the xbmc.exe resides
+  CStdString errorMsg;
+  CStdString dumpFile;
+  dumpFile.Format("xbmc.r%s.dmp", SVN_REV);
+  HANDLE hFile = CreateFile(dumpFile.c_str(), GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL ); 
+
+  // Call MiniDumpWriteDump api with the dump file
+  if ( hFile && ( hFile != INVALID_HANDLE_VALUE ) ) 
+  {
+    // Load the DBGHELP DLL
+    HMODULE hDbgHelpDll = ::LoadLibrary("DBGHELP.DLL");       
+    if (hDbgHelpDll)
+    {
+      MINIDUMPWRITEDUMP pDump = (MINIDUMPWRITEDUMP)::GetProcAddress(hDbgHelpDll, "MiniDumpWriteDump");
+      if (pDump)
+      {
+        // Initialize minidump structure
+        MINIDUMP_EXCEPTION_INFORMATION mdei; 
+        mdei.ThreadId           = GetCurrentThreadId(); 
+        mdei.ExceptionPointers  = pEp; 
+        mdei.ClientPointers     = FALSE; 
+
+        // Call the minidump api with normal dumping
+        // We can get more detail information by using other minidump types but the dump file will be
+        // extermely large.
+        BOOL rv = pDump(GetCurrentProcess(), GetCurrentProcessId(), hFile, MiniDumpNormal, &mdei, 0, NULL); 
+        if( !rv ) 
+        {
+          errorMsg.Format("MiniDumpWriteDump failed with error id %d", GetLastError());
+          MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR); 
+        } 
+      }
+      else
+      {
+        errorMsg.Format("MiniDumpWriteDump failed to load with error id %d", GetLastError());
+        MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
+      }
+      
+      // Close the DLL
+      FreeLibrary(hDbgHelpDll);
+    }
+    else
+    {
+      errorMsg.Format("LoadLibrary 'DBGHELP.DLL' failed with error id %d", GetLastError());
+      MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR);
+    }
+
+    // Close the file 
+    CloseHandle( hFile ); 
+  }
+  else 
+  {
+    errorMsg.Format("CreateFile '%s' failed with error id %d", dumpFile.c_str(), GetLastError());
+    MessageBox(NULL, errorMsg.c_str(), "XBMC: Error", MB_OK|MB_ICONERROR); 
+  }
+
+  return pEp->ExceptionRecord->ExceptionCode;;
+}
+
 //-----------------------------------------------------------------------------
 // Name: WinMain()
 // Desc: The application's entry point
 //-----------------------------------------------------------------------------
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
 {
+  // Initializes CreateMiniDump to handle exceptions.
+  SetUnhandledExceptionFilter( CreateMiniDump );
+
   // check if XBMC is already running
-  HWND m_hwnd = FindWindow("SDL_app","XBMC Media Center");
-  if(m_hwnd != NULL)
+  CreateMutex(NULL, FALSE, "XBMC Media Center");
+  if(GetLastError() == ERROR_ALREADY_EXISTS)
   {
-    // switch to the running instance
-    ShowWindow(m_hwnd,SW_RESTORE);
-    SetForegroundWindow(m_hwnd);
+    HWND m_hwnd = FindWindow("SDL_app","XBMC Media Center");
+    if(m_hwnd != NULL)
+    {
+      // switch to the running instance
+      ShowWindow(m_hwnd,SW_RESTORE);
+      SetForegroundWindow(m_hwnd);
+    }
     return 0;
   }
 
@@ -137,9 +204,6 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     MessageBox(NULL, "Desktop Color Depth isn't 32Bit", "XBMC: Fatal Error", MB_OK|MB_ICONERROR);
     return 0;
   }
-
-  // update the current drive mask
-  CWIN32Util::UpdateDriveMask();
 
   if (FAILED(myApp.Create(hInst, commandLine)))
     return 1;

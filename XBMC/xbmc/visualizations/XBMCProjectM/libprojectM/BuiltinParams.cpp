@@ -1,10 +1,11 @@
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <stdio.h>
 
 #include "fatal.h"
 #include "BuiltinParams.hpp"
-#include <cassert>
 #include "Algorithms.hpp"
-#include <iostream>
-#include <algorithm>
 #include "InitCondUtils.hpp"
 
 

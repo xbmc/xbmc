@@ -158,8 +158,8 @@ CStdString CLinuxTimezone::GetOSConfiguredTimezone()
    FILE* fp = fopen("/etc/timezone", "r");
    if (fp)
    {
-      fgets(timezoneName, sizeof(timezoneName), fp);
-      timezoneName[strlen(timezoneName)-1] = '\0';
+      if (fgets(timezoneName, sizeof(timezoneName), fp))
+        timezoneName[strlen(timezoneName)-1] = '\0';
       fclose(fp);
    }
 

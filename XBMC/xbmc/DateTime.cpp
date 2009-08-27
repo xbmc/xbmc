@@ -579,7 +579,9 @@ void CDateTime::Serialize(CArchive& ar)
   else
   {
     Reset();
-    ar>>(int&)m_state;
+    int state;
+    ar >> (int &)state;
+    m_state = CDateTime::STATE(state);
     if (m_state==valid)
     {
       SYSTEMTIME st;

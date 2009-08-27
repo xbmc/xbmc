@@ -112,8 +112,8 @@ void CLog::Log(int loglevel, const char *format, ... )
     va_end(va);
 
 
-    int length = 0;
-    while ( length != (int)strData.length() )
+    unsigned int length = 0;
+    while ( length != strData.length() )
     {
       length = strData.length();
       strData.TrimRight(" ");
@@ -121,13 +121,16 @@ void CLog::Log(int loglevel, const char *format, ... )
       strData.TrimRight("\r");
     }
 
+    if (!length)
+      return;
+
 #if !defined(_LINUX) && (defined(_DEBUG) || defined(PROFILE))
     OutputDebugString(strData.c_str());
     OutputDebugString("\n");
 #endif
 
     /* fixup newline alignment, number of spaces should equal prefix length */
-    strData.Replace("\n", "\n                             ");
+    strData.Replace("\n", "\n                                            ");
     strData += "\n";
 
     fwrite(strPrefix.c_str(), strPrefix.size(), 1, fd);

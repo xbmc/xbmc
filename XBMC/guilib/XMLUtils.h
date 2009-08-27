@@ -48,5 +48,6 @@ public:
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
   static void SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
+  static void SetLong(TiXmlNode* pRootNode, const char *strTag, long iValue);
 };
 

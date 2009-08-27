@@ -6,6 +6,8 @@
 #ifndef GUILIB_MESSAGE_H
 #define GUILIB_MESSAGE_H
 
+#include "GUIActionDescriptor.h"
+
 #pragma once
 
 /*
@@ -262,10 +264,13 @@ public:
   const std::string& GetLabel() const;
   void SetStringParam(const std::string& strParam);
   const std::string& GetStringParam() const;
+  void SetAction(const CGUIActionDescriptor& action);
+  const CGUIActionDescriptor& GetAction() const;
 
 private:
   std::string m_strLabel;
   std::string m_strParam;
+  CGUIActionDescriptor m_action;
   DWORD m_dwSenderID;
   DWORD m_dwControlID;
   DWORD m_dwMessage;

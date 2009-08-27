@@ -34,8 +34,6 @@ typedef struct YV12Image
   unsigned width;
   unsigned height;
   unsigned flags;
-  float texcoord_x;
-  float texcoord_y;
 
   unsigned cshift_x; /* this is the chroma shift used */
   unsigned cshift_y;
@@ -63,7 +61,6 @@ enum EFIELDSYNC
   FS_NONE,
   FS_ODD,
   FS_EVEN,
-  FS_BOTH
 };
 
 struct YUVRANGE
@@ -132,7 +129,6 @@ public:
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void         DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -159,31 +155,25 @@ protected:
   void InitializeSoftwareUpscaling();
 
   virtual void ManageDisplay();
-  void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
-  void DeleteOSDTextures(int index);
-  void Setup_Y8A8Render();
-  void RenderOSD();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
   virtual bool CreateYV12Texture(int index, bool clear=true);
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
-  virtual void LoadShaders(int renderMethod=FIELD_FULL);
+  virtual void LoadShaders(int field=FIELD_FULL);
   void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
 
   // renderers
-  //void RenderLowMem(DWORD flags);     // low mem renderer
-  void RenderMultiPass(DWORD flags, int renderBuffer);  // multi pass glsl renderer
-  void RenderSinglePass(DWORD flags, int renderBuffer); // single pass glsl renderer
-  void RenderSoftware(DWORD flags, int renderBuffer);   // single pass s/w yuv2rgb renderer
-  void RenderVDPAU(DWORD flags, int renderBuffer);      // render using vdpau hardware
+  void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
+  void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
+  void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
+  void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
 
   CFrameBufferObject m_fbo;
-  CSurface *m_pBuffer;
 
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
@@ -204,6 +194,7 @@ protected:
   GLenum m_textureTarget;
   unsigned short m_renderMethod;
   RenderQuality m_renderQuality;
+  unsigned int m_flipindex; // just a counter to keep track of if a image has been uploaded
   bool m_StrictBinding;
 
   // Software upscaling.
@@ -212,75 +203,65 @@ protected:
   YV12Image m_imScaled;
   bool m_isSoftwareUpscaling;
 
-  // OSD stuff
-  GLuint m_pOSDYTexture[NUM_BUFFERS];
-  GLuint m_pOSDATexture[NUM_BUFFERS];
-  GLubyte* m_pOSDYBuffer;
-  GLubyte* m_pOSDABuffer;
-
-  float m_OSDWidth;
-  float m_OSDHeight;
-  DRAWRECT m_OSDRect;
-  int m_iOSDRenderBuffer;
-  int m_iOSDTextureWidth;
-  int m_iOSDTextureHeight[NUM_BUFFERS];
-  int m_NumOSDBuffers;
-  bool m_OSDRendered;
-
   // Raw data used by renderer
-  YV12Image m_image[NUM_BUFFERS];
   int m_currentField;
   int m_reloadShaders;
 
-  typedef GLuint YUVPLANES[MAX_PLANES];
+  struct YUVPLANE
+  {
+    GLuint id;
+    CRect  rect;
+
+    float  width;
+    float  height;
+
+    unsigned texwidth;
+    unsigned texheight;
+
+    unsigned flipindex;
+  };
+
+  typedef YUVPLANE           YUVPLANES[MAX_PLANES];
   typedef YUVPLANES          YUVFIELDS[MAX_FIELDS];
-  typedef YUVFIELDS          YUVBUFFERS[NUM_BUFFERS];
+
+  struct YUVBUFFER
+  {
+    YUVFIELDS fields;
+    YV12Image image;
+    unsigned  flipindex; /* used to decide if this has been uploaded */
+  };
+
+  typedef YUVBUFFER          YUVBUFFERS[NUM_BUFFERS];
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_YUVTexture;
+  YUVBUFFERS m_buffers;
 
-  //BaseYUV2RGBGLSLShader     *m_pYUVShaderGLSL;
-  //BaseYUV2RGBARBShader      *m_pYUVShaderARB;
+  void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
+                , unsigned width,  unsigned height
+                , int stride, void* data );
+
   CShaderProgram        *m_pYUVShader;
   BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
-
-//  /*
-  GLuint m_fragmentShader;
-  GLuint m_vertexShader;
-//  */
-  GLint m_yTex;
-  GLint m_uTex;
-  GLint m_vTex;
-//  /*
-  GLint m_brightness;
-  GLint m_contrast;
-  GLint m_stepX;
-  GLint m_stepY;
-  GLint m_shaderField;
-//  */
 
   // clear colour for "black" bars
   float m_clearColour;
 
   // software scale libraries (fallback if required gl version is not available)
-  DllAvUtil   m_dllAvUtil;
-  DllAvCodec  m_dllAvCodec;
-  DllSwScale  m_dllSwScale;
-  BYTE	     *m_rgbBuffer;  // if software scale is used, this will hold the result image
-  int	      m_rgbBufferSize;
-
-  static void TextureCallback(DWORD dwContext);
+  DllAvUtil    m_dllAvUtil;
+  DllAvCodec   m_dllAvCodec;
+  DllSwScale   m_dllSwScale;
+  BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
+  unsigned int m_rgbBufferSize;
 
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
-  HANDLE m_eventOSDDone[NUM_BUFFERS];
 
 };
 
 
 inline int NP2( unsigned x ) {
-#if defined(_LINUX) && !defined(__POWERPC__)
+#if defined(_LINUX) && !defined(__POWERPC__) && !defined(__PPC__)
   // If there are any issues compiling this, just append a ' && 0'
   // to the above to make it '#if defined(_LINUX) && 0'
 

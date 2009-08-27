@@ -27,6 +27,7 @@
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/FactoryFileDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "FileSystem/SpecialProtocol.h"
 #include "Picture.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIListContainer.h"
@@ -47,6 +48,7 @@
 #include "Favourites.h"
 #include "PlayList.h"
 #include "utils/AsyncFileCopy.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -304,7 +306,7 @@ void CGUIWindowFileManager::OnSort(int iList)
           pItem->SetFileSizeLabel();
         }
       }
-      else if (pItem->IsDVD() && CDetectDVDMedia::IsDiscInDrive())
+      else if (pItem->IsDVD() && g_mediaManager.IsDiscInDrive())
       {
         ULARGE_INTEGER ulBytesTotal;
         if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), NULL, &ulBytesTotal, NULL))
@@ -458,6 +460,15 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     pItem->SetLabelPreformated(true);
     m_vecItems[iList]->Add(pItem);
   }
+  
+  if (strDirectory.IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem("special://profile/", true));
+    pItem->SetLabel(g_localizeStrings.Get(20070));
+    pItem->SetThumbnailImage("DefaultFolder.png");
+    pItem->SetLabelPreformated(true);
+    m_vecItems[iList]->Add(pItem);
+  }
 
   // if we have a .tbn file, use itself as the thumb
   for (int i = 0; i < (int)m_vecItems[iList]->Size(); i++)
@@ -602,9 +613,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 {
   if ( iDriveType == CMediaSource::SOURCE_TYPE_DVD )
   {
-    CDetectDVDMedia::WaitMediaReady();
-
-    if ( !CDetectDVDMedia::IsDiscInDrive() )
+    if ( !g_mediaManager.IsDiscInDrive() )
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       int iList = GetFocusedList();

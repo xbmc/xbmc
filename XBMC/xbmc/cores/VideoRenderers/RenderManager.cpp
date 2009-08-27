@@ -23,13 +23,8 @@
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
 #include "VideoReferenceClock.h"
+#include "Util.h"
 
-#ifndef HAS_SDL
-#include "PixelShaderRenderer.h"
-#include "ComboRenderer.h"
-#include "RGBRenderer.h"
-#include "RGBRendererV2.h"
-#endif
 #include "Application.h"
 #include "Settings.h"
 
@@ -37,11 +32,17 @@
 #include "PlatformInclude.h"
 #endif
 
-#ifdef HAS_SDL_OPENGL
-#include "Application.h"
+#ifdef HAS_XBOX_D3D
+#include "PixelShaderRenderer.h"
+#include "ComboRenderer.h"
+#include "RGBRenderer.h"
+#include "RGBRendererV2.h"
+#elif defined(HAS_SDL_OPENGL)
 #include "LinuxRendererGL.h"
-#else 
+#elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
+#else
+#include "WinRenderer.h"
 #endif
 
 #ifdef HAVE_LIBVDPAU
@@ -51,7 +52,7 @@
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
 
-CXBoxRenderManager g_renderManager;
+CXBMCRenderManager g_renderManager;
 
 
 #define MAXPRESENTDELAY 0.500
@@ -61,7 +62,7 @@ CXBoxRenderManager g_renderManager;
 /* these two functions allow us to step out from that lock */
 /* and reaquire it after having the exclusive lock */
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
 //VBlank information
 HANDLE g_eventVBlank=NULL;
 void VBlankCallback(D3DVBLANKDATA *pData)
@@ -99,7 +100,7 @@ private:
   DWORD             m_count;
 };
 
-CXBoxRenderManager::CXBoxRenderManager()
+CXBMCRenderManager::CXBMCRenderManager()
 {
   m_pRenderer = NULL;
   m_bPauseDrawing = false;
@@ -107,27 +108,74 @@ CXBoxRenderManager::CXBoxRenderManager()
 
   m_presentfield = FS_NONE;
   m_presenttime = 0;
+  m_presentstep = 0;
   m_rendermethod = 0;
+  m_presentmethod = VS_INTERLACEMETHOD_NONE;
 }
 
-CXBoxRenderManager::~CXBoxRenderManager()
+CXBMCRenderManager::~CXBMCRenderManager()
 {
   delete m_pRenderer;
   m_pRenderer = NULL;
 }
 
 /* These is based on QueryPerformanceCounter */
-double CXBoxRenderManager::GetPresentTime()
+double CXBMCRenderManager::GetPresentTime()
 {
   return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
 }
 
-void CXBoxRenderManager::WaitPresentTime(double presenttime)
+void CXBMCRenderManager::WaitPresentTime(double presenttime)
 {
-  CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+  int fps = g_VideoReferenceClock.GetRefreshRate();
+  if(fps <= 0)
+  {
+    /* smooth video not enabled */
+    CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE);
+    return;
+  }
+
+  double frametime = g_VideoReferenceClock.GetSpeed() / fps;
+
+  presenttime     += m_presentcorr * frametime;
+
+  double clock     = CDVDClock::WaitAbsoluteClock(presenttime * DVD_TIME_BASE) / DVD_TIME_BASE;
+  double target    = 0.5;
+  double error     = ( clock - presenttime ) / frametime - target;
+
+  m_presenterr   = error;
+
+  // correct error so it targets the closest vblank
+  while(error >   target) error -= 1.0;
+  while(error < - target) error += 1.0;
+
+  // scale the error used for correction, 
+  // based on how much buffer we have on
+  // that side of the target
+  if(error > 0)
+    error /= 2.0 * (1.0 - target);
+  if(error < 0)
+    error /= 2.0 * (0.0 + target);
+
+  m_presentcorr += error * 0.02;
+
+  // make sure we wrap correction properly
+  while(m_presentcorr > target)       m_presentcorr -= 1.0;
+  while(m_presentcorr < target - 1.0) m_presentcorr += 1.0;
+
+  //printf("%f %f % 2.0f%% % f % f\n", presenttime, clock, m_presentcorr * 100, error, error_org);
 }
 
-bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+CStdString CXBMCRenderManager::GetVSyncState()
+{
+  CStdString state;
+  state.Format("sync:%+3d%% error:%2d%%"
+              ,     MathUtils::round_int(m_presentcorr * 100)
+              , abs(MathUtils::round_int(m_presenterr  * 100)));
+  return state;
+}
+
+bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   /* all frames before this should be rendered */
   WaitPresentTime(m_presenttime);
@@ -156,14 +204,14 @@ bool CXBoxRenderManager::Configure(unsigned int width, unsigned int height, unsi
   return result;
 }
 
-bool CXBoxRenderManager::IsConfigured()
+bool CXBMCRenderManager::IsConfigured()
 {
   if (!m_pRenderer)
     return false;
   return m_pRenderer->IsConfigured();
 }
 
-void CXBoxRenderManager::Update(bool bPauseDrawing)
+void CXBMCRenderManager::Update(bool bPauseDrawing)
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -174,21 +222,26 @@ void CXBoxRenderManager::Update(bool bPauseDrawing)
   }
 }
 
-void CXBoxRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
+void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
   CSharedLock lock(m_sharedSection);
+  if (!m_pRenderer)
+    return;
 
-#ifdef HAS_SDL_OPENGL  
-  if (m_pRenderer)
+#ifdef HAS_SDL_OPENGL
+  if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
+   || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
+    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
+  else
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
 #endif
 }
 
-unsigned int CXBoxRenderManager::PreInit()
+unsigned int CXBMCRenderManager::PreInit()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   if(!g_eventVBlank)
   {
     //Only do this on first run
@@ -197,11 +250,14 @@ unsigned int CXBoxRenderManager::PreInit()
   }
 #endif
 
+  m_presentcorr = 0.0;
+  m_presenterr  = 0.0;
+
   m_bIsStarted = false;
   m_bPauseDrawing = false;
   if (!m_pRenderer)
   { 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
     // no renderer
     m_rendermethod = g_guiSettings.GetInt("videoplayer.rendermethod");
     if (m_rendermethod == RENDER_OVERLAYS)
@@ -226,15 +282,17 @@ unsigned int CXBoxRenderManager::PreInit()
     }
 #elif defined(HAS_SDL_OPENGL)
     m_pRenderer = new CLinuxRendererGL();
-#else
+#elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
+#else
+    m_pRenderer = new CWinRenderer(g_graphicsContext.Get3DDevice());
 #endif
   }
 
   return m_pRenderer->PreInit();
 }
 
-void CXBoxRenderManager::UnInit()
+void CXBMCRenderManager::UnInit()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
@@ -246,25 +304,21 @@ void CXBoxRenderManager::UnInit()
     m_pRenderer->UnInit();
 }
 
-void CXBoxRenderManager::SetupScreenshot()
+void CXBMCRenderManager::SetupScreenshot()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->SetupScreenshot();
 }
 
-#ifndef HAS_SDL
-void CXBoxRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
-#else
-void CXBoxRenderManager::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
-#endif
+void CXBMCRenderManager::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
     m_pRenderer->CreateThumbnail(surface, width, height);
 }
 
-void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
+void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
 {
   if(timestamp - GetPresentTime() > MAXPRESENTDELAY)
     timestamp =  GetPresentTime() + MAXPRESENTDELAY;
@@ -283,6 +337,31 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
 
     m_presenttime  = timestamp;
     m_presentfield = sync;
+    m_presentstep  = 0;
+    m_presentmethod = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
+
+    /* select render method for auto */
+    if(m_presentmethod == VS_INTERLACEMETHOD_AUTO)
+    {
+      if(m_presentfield == FS_NONE)
+        m_presentmethod = VS_INTERLACEMETHOD_NONE;
+      else
+        m_presentmethod = VS_INTERLACEMETHOD_RENDER_BOB;
+    }
+
+    /* default to odd field if we want to deinterlace and don't know better */
+    if(m_presentfield == FS_NONE && m_presentmethod != VS_INTERLACEMETHOD_NONE)
+      m_presentfield = FS_ODD;
+
+    /* invert present field if we have one of those methods */
+    if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED 
+     || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+    {
+      if( m_presentfield == FS_EVEN )
+        m_presentfield = FS_ODD;
+      else
+        m_presentfield = FS_EVEN;
+    }
 
     m_pRenderer->FlipPage(source);
   }
@@ -292,19 +371,19 @@ void CXBoxRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
   m_presentevent.WaitMSec(1); // we give the application thread 1ms to present
 }
 
-float CXBoxRenderManager::GetMaximumFPS()
+float CXBMCRenderManager::GetMaximumFPS()
 {
   float fps;
 
   if (g_videoConfig.GetVSyncMode() != VSYNC_DISABLED)
   {
-    fps = g_VideoReferenceClock.GetRefreshRate();
+    fps = (float)g_VideoReferenceClock.GetRefreshRate();
     if (fps <= 0) fps = g_graphicsContext.GetFPS();
   }
   else
     fps = 1000.0f;
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
   if( m_rendermethod == RENDER_HQ_RGB_SHADER
    || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
   {
@@ -319,7 +398,7 @@ float CXBoxRenderManager::GetMaximumFPS()
   return fps;
 }
 
-bool CXBoxRenderManager::SupportsBrightness()
+bool CXBMCRenderManager::SupportsBrightness()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -327,7 +406,7 @@ bool CXBoxRenderManager::SupportsBrightness()
   return false;
 }
 
-bool CXBoxRenderManager::SupportsContrast()
+bool CXBMCRenderManager::SupportsContrast()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -335,7 +414,7 @@ bool CXBoxRenderManager::SupportsContrast()
   return false;
 }
 
-bool CXBoxRenderManager::SupportsGamma()
+bool CXBMCRenderManager::SupportsGamma()
 {
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
@@ -343,17 +422,14 @@ bool CXBoxRenderManager::SupportsGamma()
   return false;
 }
 
-void CXBoxRenderManager::Present()
+void CXBMCRenderManager::Present()
 {
   CSharedLock lock(m_sharedSection);
 
 #ifdef HAVE_LIBVDPAU
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
-  {
-    m_presentevent.Set();
     WaitPresentTime(m_presenttime);
-  }
 #endif
 
   if (!m_pRenderer)
@@ -361,43 +437,14 @@ void CXBoxRenderManager::Present()
     CLog::Log(LOGERROR, "%s called without valid Renderer object", __FUNCTION__);
     return;
   }
-  
-  EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
 
-  /* check for forced fields */
-  if( mInt == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE )
-  {
-    /* this is uggly to do on each frame, should only need be done once */
-    int mResolution = g_graphicsContext.GetVideoResolution();
-#if defined (HAS_SDL)
-    if (1)
-#else
-    if( m_rendermethod == RENDER_HQ_RGB_SHADER 
-     || m_rendermethod == RENDER_HQ_RGB_SHADERV2 )
-#endif
-      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
-    else if( mResolution == HDTV_480p_16x9 
-          || mResolution == HDTV_480p_4x3 
-          || mResolution == HDTV_720p 
-          || mResolution == HDTV_1080i )
-      mInt = VS_INTERLACEMETHOD_RENDER_BLEND;
-    else
-      mInt = VS_INTERLACEMETHOD_RENDER_BOB;
-  }
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
-  {
-    /* all methods should default to odd if nothing is specified */
-    if( m_presentfield == FS_EVEN )
-      m_presentfield = FS_ODD;
-    else
-      m_presentfield = FS_EVEN;
-  }
-
-  if( mInt == VS_INTERLACEMETHOD_RENDER_BOB || mInt == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+  if     ( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB
+        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
     PresentBob();
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
+  else if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
+        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
     PresentWeave();
-  else if( mInt == VS_INTERLACEMETHOD_RENDER_BLEND )
+  else if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BLEND )
     PresentBlend();
   else
     PresentSingle();
@@ -405,71 +452,59 @@ void CXBoxRenderManager::Present()
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
   {
+    /* we are not done until present step has reverted to 0 */
+    if(m_presentstep == 0)
+      m_presentevent.Set();
 #ifdef HAVE_LIBVDPAU
     if (!g_VDPAU)
 #endif
     {
-      m_presentevent.Set();
       WaitPresentTime(m_presenttime);
     }
   }
 }
 
 /* simple present method */
-void CXBoxRenderManager::PresentSingle()
+void CXBMCRenderManager::PresentSingle()
 {
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, 0, 255);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
 
 /* new simpler method of handling interlaced material, *
  * we just render the two fields right after eachother */
-void CXBoxRenderManager::PresentBob()
+void CXBMCRenderManager::PresentBob()
 {
   CSingleLock lock(g_graphicsContext);
 
-  if( m_presentfield == FS_EVEN )
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOUNLOCK , 255);
-  else
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOUNLOCK, 255);
-
-#ifndef HAS_SDL
-  if( m_presenttime )
+  if(m_presentstep == 0)
   {
-    D3DDevice::Present( NULL, NULL, NULL, NULL );
+    if( m_presentfield == FS_EVEN)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    else
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+    m_presentstep = 1;
+    g_application.NewFrame();
   }
   else
   {
-    /* if no present time, assume we are in a hurry */
-    /* try to present first field directly          */
-    DWORD interval;
-    D3DDevice::GetRenderState(D3DRS_PRESENTATIONINTERVAL, &interval);
-    D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, D3DPRESENT_INTERVAL_IMMEDIATE);
-    D3DDevice::Present( NULL, NULL, NULL, NULL );
-    D3DDevice::SetRenderState(D3DRS_PRESENTATIONINTERVAL, interval);
+    if( m_presentfield == FS_ODD)
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN, 255);
+    else
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
+    m_presentstep = 0;
   }
-#elif defined (HAS_SDL_OPENGL)
-
-  return; // hack for now untill bob rendering is corrected.
-
-#endif
-
-  /* render second field */
-  if( m_presentfield == FS_EVEN )
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOLOCK, 255);
-  else
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_EVEN | RENDER_FLAG_NOLOCK, 255);
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
 
-void CXBoxRenderManager::PresentBlend()
+void CXBMCRenderManager::PresentBlend()
 {
   CSingleLock lock(g_graphicsContext);
 
@@ -484,20 +519,20 @@ void CXBoxRenderManager::PresentBlend()
     m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
   }
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   D3DDevice::Present( NULL, NULL, NULL, NULL );
 #endif
 }
 
 /* renders the two fields as one, but doing fieldbased *
  * scaling then reinterlaceing resulting image         */
-void CXBoxRenderManager::PresentWeave()
+void CXBMCRenderManager::PresentWeave()
 {
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOTH, 255);
 
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D // TODO:DIRECTX
   //If we have interlaced video, we have to sync to only render on even fields
   D3DFIELD_STATUS mStatus;
   D3DDevice::GetDisplayFieldStatus(&mStatus);
@@ -517,7 +552,7 @@ void CXBoxRenderManager::PresentWeave()
 #endif
 }
 
-void CXBoxRenderManager::Recover()
+void CXBMCRenderManager::Recover()
 {
 #ifdef HAVE_LIBVDPAU
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);

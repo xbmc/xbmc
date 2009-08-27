@@ -66,12 +66,13 @@ NPT_BufferedInputStream::~NPT_BufferedInputStream()
 |   NPT_BufferedInputStream::SetBufferSize
 +---------------------------------------------------------------------*/
 NPT_Result
-NPT_BufferedInputStream::SetBufferSize(NPT_Size size)
+NPT_BufferedInputStream::SetBufferSize(NPT_Size size, bool force /* = false */)
 {
     if (m_Buffer.data != NULL) {
         // we already have a buffer
-        if (m_Buffer.size < size) {
-            // the current buffer is too small, reallocate
+        if (m_Buffer.size < size || force) {
+            // the current buffer is too small or we want to move
+            // existing data to the beginning of the buffer, reallocate
             NPT_Byte* buffer = new NPT_Byte[size];
             if (buffer == NULL) return NPT_ERROR_OUT_OF_MEMORY;
 
@@ -323,6 +324,55 @@ done:
         }
     }
     return result;
+}
+
+/*----------------------------------------------------------------------
+|   NPT_BufferedInputStream::Peek
++---------------------------------------------------------------------*/
+NPT_Result 
+NPT_BufferedInputStream::Peek(void*     buffer, 
+                              NPT_Size  bytes_to_read, 
+                              NPT_Size* bytes_read)
+{
+    NPT_Result result = NPT_SUCCESS;
+    NPT_Size   buffered;
+    NPT_Size   new_size = m_Buffer.size?m_Buffer.size:NPT_BUFFERED_BYTE_STREAM_DEFAULT_SIZE;
+    
+    // check for a possible shortcut
+    if (bytes_to_read == 0) return NPT_SUCCESS;
+    
+    // compute how much is buffered
+    buffered = m_Buffer.valid-m_Buffer.offset;
+    if (bytes_to_read > buffered && buffered < new_size && !m_Eos) {
+        // we need more data than what we have          
+        // switch to unbuffer mode and resize to force relocation
+        // of data to the beginning of the buffer
+        SetBufferSize(new_size, true);
+        // fill up the end of the buffer
+        result = FillBuffer();
+        // continue even if it failed
+        buffered = m_Buffer.valid;
+    }
+    
+    // make sure we're returning what we can
+    if (bytes_to_read > buffered) bytes_to_read = buffered;
+    
+    // get what we can from the buffer
+    NPT_CopyMemory(buffer, 
+                   m_Buffer.data + m_Buffer.offset,
+                   bytes_to_read);
+
+    if (bytes_read) *bytes_read = bytes_to_read;
+    if (result == NPT_ERROR_EOS) { 
+        m_Eos = true;
+        if (bytes_to_read != 0) {
+            // we have reached the end of the stream, but we have read
+            // some chars, so do not return EOS now
+            return NPT_SUCCESS;
+        }
+    
+    }
+    return result;    
 }
 
 /*----------------------------------------------------------------------

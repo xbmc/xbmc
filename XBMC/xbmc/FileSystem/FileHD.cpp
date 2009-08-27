@@ -119,7 +119,10 @@ int CFileHD::Stat(struct __stat64* buffer)
 #else
   fd = _open_osfhandle((intptr_t)((HANDLE)m_hFile), 0);
   if (fd == -1)
+  {
     CLog::Log(LOGERROR, "Stat: fd == -1");
+    return -1;
+  }
 #endif
   return _fstat64(fd, buffer);
 }

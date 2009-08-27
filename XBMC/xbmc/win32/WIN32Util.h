@@ -23,7 +23,9 @@
 
 #include "URL.h"
 #include "GUISettings.h"
+#if _MSC_VER > 1400
 #include "Cfgmgr32.h"
+#endif
 
 
 class CWIN32Util
@@ -40,8 +42,6 @@ public:
   static CStdString GetLocalPath(const CStdString &strPath);
   static char FirstDriveFromMask (ULONG unitmask);
   static int GetDriveStatus(const CStdString &strPath);
-  static void UpdateDriveMask();
-  static CStdString GetChangedDrive();
   static bool PowerManagement(PowerState State);
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
   static std::vector<CStdString> GetDiskUsage();
@@ -57,6 +57,7 @@ public:
   static void CheckGLVersion();
   static bool HasGLDefaultDrivers();
   static bool HasReqGLVersion();
+  static BOOL IsCurrentUserLocalAdministrator();
   
   class SystemParams
   {
@@ -72,6 +73,7 @@ public:
   };
 
 private:
-  static DWORD dwDriveMask;
+#if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);
+#endif
 };

@@ -46,11 +46,11 @@ NPT_SET_LOCAL_LOGGER("platinum.media.server.didl")
 const char* didl_header         = "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\""
                                             " xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
                                             " xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\""
-                                            " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0\">";
+                                            " xmlns:dlna=\"urn:schemas-dlna-org:metadata-1-0/\">";
 const char* didl_footer         = "</DIDL-Lite>";
 const char* didl_namespace_dc   = "http://purl.org/dc/elements/1.1/";
 const char* didl_namespace_upnp = "urn:schemas-upnp-org:metadata-1-0/upnp/";
-const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0";
+const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0/";
 
 /*----------------------------------------------------------------------
 |   PLT_Didl::ConvertFilterToMask
@@ -58,6 +58,9 @@ const char* didl_namespace_dlna = "urn:schemas-dlna-org:metadata-1-0";
 NPT_UInt32 
 PLT_Didl::ConvertFilterToMask(NPT_String filter)
 {
+    // easy out
+    if (filter.GetLength() == 0) return PLT_FILTER_MASK_ALL;
+    
     // a filter string is a comma delimited set of fields identifying
     // a given DIDL property (or set of properties).  
     // These fields are or start with: upnp:, @, res@, res, dc:, container@
@@ -107,6 +110,10 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SIZE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_PROTECTION, len) == 0) {
             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_PROTECTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_RESOLUTION, len) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_RESOLUTION;
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_BITRATE, len) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_BITRATE;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len) == 0) {
             mask |= PLT_FILTER_MASK_RES;
         } 
@@ -183,11 +190,8 @@ PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
 {
     int hours = seconds/3600;
     if (hours == 0) {
-        out += "00:";
+        out += "0:";
     } else {
-        if (hours < 10) {
-            out += '0';
-        }
         out += NPT_String::FromInteger(hours) + ":";
     }
 
@@ -210,8 +214,6 @@ PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
         }
         out += NPT_String::FromInteger(secs);
     }
-
-    out += ".000";
 }
 
 /*----------------------------------------------------------------------
@@ -231,7 +233,7 @@ PLT_Didl::ParseTimeStamp(NPT_String timestamp, NPT_UInt32& seconds)
         timestamp = timestamp.Left(colon);
     }
 
-    // extract seconds first
+    // extract seconds
     str = timestamp;
     if ((colon = timestamp.ReverseFind(':')) != -1) {
         str = timestamp.SubString(colon + 1);

@@ -63,8 +63,6 @@ CLastFmManager::CLastFmManager()
 {
   m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
   m_RadioTrackQueue = new CPlayList;
-  m_bLastShuffleState = g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
-  m_LastRepeatState = g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC);
 }
 
 CLastFmManager::~CLastFmManager()
@@ -249,8 +247,6 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   UpdateProgressDialog(261); //Waiting for start....
 
   g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
-  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
-  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
   RequestRadioTracks();
   CacheTrackThumb(XBMC_LASTFM_MINTRACKS);
   AddToPlaylist(XBMC_LASTFM_MINTRACKS);
@@ -603,6 +599,12 @@ void CLastFmManager::OnStartup()
 
 void CLastFmManager::Process()
 {
+  bool bLastShuffleState = g_playlistPlayer.IsShuffled(PLAYLIST_MUSIC);
+  PLAYLIST::REPEAT_STATE LastRepeatState = g_playlistPlayer.GetRepeat(PLAYLIST_MUSIC);
+
+  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, false);
+  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, PLAYLIST::REPEAT_NONE);
+  
   while (!m_bStop)
   {
     WaitForSingleObject(m_hWorkerEvent, INFINITE);
@@ -617,6 +619,10 @@ void CLastFmManager::Process()
     iNrCachedTracks = m_RadioTrackQueue->size();
     CacheTrackThumb(iNrCachedTracks);
   }
+  
+  g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, bLastShuffleState);
+  g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, LastRepeatState);
+  
   CLog::Log(LOGINFO,"LastFM thread terminated");
 }
 
@@ -625,8 +631,6 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
   if (bKillSession)
   {
     m_RadioSession = "";
-    g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, m_LastRepeatState);
-    g_playlistPlayer.SetShuffle(PLAYLIST_MUSIC, m_bLastShuffleState);
   }
   if (m_ThreadHandle)
   {

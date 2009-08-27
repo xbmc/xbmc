@@ -231,6 +231,8 @@ protected:
     NPT_SocketInterface* m_SocketDelegate;
 };
 
+typedef NPT_Reference<NPT_Socket> NPT_SocketReference;
+
 /*----------------------------------------------------------------------
 |   NPT_UdpSocket
 +---------------------------------------------------------------------*/

@@ -139,13 +139,19 @@ void CHTSPDirectorySession::Release(CHTSPDirectorySession* &session)
 void CHTSPDirectorySession::CheckIdle(DWORD idle)
 {
   CSingleLock lock(g_section);
-  SSessions::iterator it2 = remove_if(g_sessions.begin(), g_sessions.end(), STimedOut(idle));
-  for(SSessions::iterator it = it2; it != g_sessions.end(); it++)
+  STimedOut timeout(idle);
+
+  for(SSessions::iterator it = g_sessions.begin(); it != g_sessions.end();)
   {
-    CLog::Log(LOGINFO, "CheckIdle - Closing session to htsp://%s:%i", it->hostname.c_str(), it->port);
-    delete it->session;
+    if(timeout(*it))
+    {
+      CLog::Log(LOGINFO, "CheckIdle - Closing session to htsp://%s:%i", it->hostname.c_str(), it->port);
+      delete it->session;
+      it = g_sessions.erase(it);
+    }
+    else
+      it++;
   }
-  g_sessions.erase(it2, g_sessions.end());
 }
 
 bool CHTSPDirectorySession::Open(const CURL& url)
@@ -386,7 +392,7 @@ bool CHTSPDirectory::GetChannels( const CURL &base
   else
     items.AddSortMethod(SORT_METHOD_LABEL, 20364, LABEL_MASKS("%Z", "%B", "%L", ""));
 
-  return channels.size() > 0;
+  return !channels.empty();
 
 }
 
@@ -397,7 +403,7 @@ bool CHTSPDirectory::GetTag(const CURL &base, CFileItemList &items)
   int id = atoi(url.GetFileName().Mid(5));
 
   SChannels channels = m_session->GetChannels(id);
-  if(channels.size() == 0)
+  if(channels.empty())
     return false;
 
   return GetChannels(base, items, channels, id);

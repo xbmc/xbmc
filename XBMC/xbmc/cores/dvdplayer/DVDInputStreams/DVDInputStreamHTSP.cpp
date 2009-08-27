@@ -25,8 +25,6 @@
 #include "VideoInfoTag.h"
 #include "FileItem.h"
 #include "utils/log.h"
-#include <netinet/in.h>
-#include <netinet/tcp.h>
 
 extern "C" {
 #include "lib/libhts/net.h"
@@ -43,6 +41,10 @@ using namespace HTSP;
 htsmsg_t* CDVDInputStreamHTSP::ReadStream()
 {
   htsmsg_t* msg;
+
+  /* after anything has started reading, *
+   * we can guarantee a new stream       */
+  m_startup = false;
 
   while((msg = m_session.ReadMessage()))
   {
@@ -63,10 +65,6 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
       htsmsg_destroy(msg);
       continue;
     }
-
-    // after we get the first subscriptionStart, no demuxer can start
-    if(m_startup && strstr(method, "subscriptionStart"))
-      m_startup = false;
 
     return msg;
   }
@@ -200,8 +198,10 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
       m_event.id = channel.event;
     }
   }
+  CFileItem current(item);
   CHTSPSession::ParseItem(channel, 0, m_event, item);
   item.SetThumbnailImage(channel.icon);
   item.SetCachedVideoThumb();
-  return true;
+  return current.m_strPath  != item.m_strPath
+      || current.m_strTitle != item.m_strTitle;
 }

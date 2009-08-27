@@ -674,7 +674,7 @@ dvdnav_status_t dvdnav_get_next_cache_block(dvdnav_t *this, uint8_t **buf,
     fprintf(MSG_OUT, "libdvdnav: SPU_CLUT_CHANGE\n");
 #endif
     (*len) = 16 * sizeof(uint32_t);
-    memcpy(*buf, &(state->pgc->palette), 16 * sizeof(uint32_t));
+    memcpy(*buf, state->pgc->palette, 16 * sizeof(uint32_t));
     this->spu_clut_changed = 0;
     pthread_mutex_unlock(&this->vm_lock);
     return DVDNAV_STATUS_OK;

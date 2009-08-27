@@ -394,7 +394,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
     AddSortMethod(sort.m_sortMethod, sort.m_buttonLabel, sort.m_labelMasks);
   }
   // TODO: Should default sort/view mode be specified?
-  SetSortMethod(SORT_METHOD_LABEL);
+  m_currentSortMethod = 0;
 
   SetViewAsControl(DEFAULT_VIEW_LIST);
 

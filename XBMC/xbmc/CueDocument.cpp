@@ -63,6 +63,8 @@ CCueDocument::CCueDocument(void)
 {
   m_strArtist = "";
   m_strAlbum = "";
+  m_strGenre = "";
+  m_iYear = 0;
   m_replayGainAlbumPeak = 0.0f;
   m_replayGainAlbumGain = 0.0f;
   m_iTotalTracks = 0;
@@ -158,6 +160,25 @@ bool CCueDocument::Parse(const CStdString &strFile)
       if (strCurrentFile.length() > 0)
         ResolvePath(strCurrentFile, strFile);
     }
+    else if (strLine.Left(8) == "REM DATE")
+    {
+      int iYear = ExtractNumericInfo(strLine.c_str() + 8);
+      if (iYear > 0)
+        m_iYear = iYear;
+    }
+    else if (strLine.Left(9) == "REM GENRE")
+    {
+      if (!ExtractQuoteInfo(strLine, m_strGenre))
+      {
+        CStdString genreNoQuote = strLine.Mid(9);
+        genreNoQuote.TrimLeft();
+        if (!genreNoQuote.IsEmpty())
+        {
+          g_charsetConverter.unknownToUTF8(genreNoQuote);
+          m_strGenre = genreNoQuote;
+        }
+      }
+    }
     else if (strLine.Left(25) == "REM REPLAYGAIN_ALBUM_GAIN")
       m_replayGainAlbumGain = (float)atof(strLine.Mid(26));
     else if (strLine.Left(25) == "REM REPLAYGAIN_ALBUM_PEAK")
@@ -196,6 +217,8 @@ void CCueDocument::GetSongs(VECSONGS &songs)
     else
       song.strArtist = m_Track[i].strArtist;
     song.strAlbum = m_strAlbum;
+    song.strGenre = m_strGenre;
+    song.iYear = m_iYear;
     song.iTrack = m_Track[i].iTrackNumber;
     if (m_Track[i].strTitle.length() == 0) // No track information for this track!
       song.strTitle.Format("Track %2d", i + 1);

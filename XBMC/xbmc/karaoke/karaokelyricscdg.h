@@ -33,6 +33,12 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
     //! Virtually all CDG lyrics have some kind of background
     virtual bool HasBackground();
 
+    //! Should return true if the lyrics have video file to play
+    virtual bool HasVideo();
+
+    //! Should return video parameters if HasVideo() returned true
+    virtual void GetVideoParameters( CStdString& path, __int64& offset  );
+
     //! This function is called when the karoke visualisation window created. It may
     //! be called after Start(), but is guaranteed to be called before Render()
     //! Default implementation does nothing.
@@ -64,10 +70,10 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
 #if defined(HAS_SDL_OPENGL)
     CGLTexture * m_pCdgTexture;
 #elif defined(HAS_SDL_2D)
-    SDL_Surface *m_pCdgTexture;
+    XBMC::TexturePtr m_pCdgTexture;
 #else
-    LPDIRECT3DDEVICE8 m_pd3dDevice;
-    LPDIRECT3DTEXTURE8 m_pCdgTexture;
+    LPDIRECT3DDEVICE9 m_pd3dDevice;
+    XBMC::TexturePtr m_pCdgTexture;
 #endif
     DWORD  m_bgAlpha;  //!< background alpha
     DWORD  m_fgAlpha;  //!< foreground alpha

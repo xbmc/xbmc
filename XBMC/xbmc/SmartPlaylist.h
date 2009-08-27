@@ -70,6 +70,13 @@ public:
                         FIELD_ALBUMTYPE,
                         FIELD_LABEL,
                         FIELD_HASTRAILER,
+                        FIELD_VIDEORESOLUTION,
+                        FIELD_AUDIOCHANNELS,
+                        FIELD_VIDEOCODEC,
+                        FIELD_AUDIOCODEC,
+                        FIELD_AUDIOLANGUAGE,
+                        FIELD_SUBTITLELANGUAGE,
+                        FIELD_VIDEOASPECT,
                         FIELD_PLAYLIST,
                         FIELD_RANDOM
                       };
@@ -98,7 +105,8 @@ public:
                     DATE_FIELD,
                     PLAYLIST_FIELD,
                     SECONDS_FIELD,
-                    BOOLEAN_FIELD
+                    BOOLEAN_FIELD,
+                    TEXTIN_FIELD
                   };
 
   CStdString GetWhereClause(const CStdString& strType);
@@ -122,6 +130,8 @@ public:
   CStdString         m_parameter;
 private:
   SEARCH_OPERATOR    TranslateOperator(const char *oper);
+  
+  CStdString GetVideoResolutionQuery(void);
 };
 
 class CSmartPlaylist

@@ -38,7 +38,7 @@ using namespace XFILE;
 
 typedef struct
 {
-  char string[13];
+  char string[17];
   CSmartPlaylistRule::DATABASE_FIELD field;
   CSmartPlaylistRule::FIELD_TYPE type;
   int localizedString;
@@ -85,6 +85,13 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "type", CSmartPlaylistRule::FIELD_ALBUMTYPE, CSmartPlaylistRule::TEXT_FIELD, 564 },
                                          { "label", CSmartPlaylistRule::FIELD_LABEL, CSmartPlaylistRule::TEXT_FIELD, 21899 },
                                          { "hastrailer", CSmartPlaylistRule::FIELD_HASTRAILER, CSmartPlaylistRule::BOOLEAN_FIELD, 20423 },
+                                         { "videoresolution", CSmartPlaylistRule::FIELD_VIDEORESOLUTION, CSmartPlaylistRule::NUMERIC_FIELD, 21443 },
+                                         { "audiochannels", CSmartPlaylistRule::FIELD_AUDIOCHANNELS, CSmartPlaylistRule::NUMERIC_FIELD, 21444 },
+                                         { "videocodec", CSmartPlaylistRule::FIELD_VIDEOCODEC, CSmartPlaylistRule::TEXTIN_FIELD, 21445 },
+                                         { "audiocodec", CSmartPlaylistRule::FIELD_AUDIOCODEC, CSmartPlaylistRule::TEXTIN_FIELD, 21446 },
+                                         { "audiolanguage", CSmartPlaylistRule::FIELD_AUDIOLANGUAGE, CSmartPlaylistRule::TEXTIN_FIELD, 21447 },
+                                         { "subtitlelanguage", CSmartPlaylistRule::FIELD_SUBTITLELANGUAGE, CSmartPlaylistRule::TEXTIN_FIELD, 21448 },
+                                         { "videoaspect", CSmartPlaylistRule::FIELD_VIDEOASPECT, CSmartPlaylistRule::NUMERIC_FIELD, 21374 },
                                          { "random", CSmartPlaylistRule::FIELD_RANDOM, CSmartPlaylistRule::TEXT_FIELD, 590 },
                                          { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, CSmartPlaylistRule::PLAYLIST_FIELD, 559 }
                                        };
@@ -187,6 +194,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
   vector<DATABASE_FIELD> fields;
   if (sortOrders)
     fields.push_back(FIELD_NONE);
+  bool isVideo = false;
   if (type == "songs")
   {
     fields.push_back(FIELD_GENRE);
@@ -260,6 +268,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_SEASON);
     fields.push_back(FIELD_FILENAME);
     fields.push_back(FIELD_PATH);
+    isVideo = true;
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "movies")
@@ -285,6 +294,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_HASTRAILER);
     fields.push_back(FIELD_FILENAME);
     fields.push_back(FIELD_PATH);
+    isVideo = true;
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "musicvideos")
@@ -302,7 +312,18 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_DIRECTOR);
     fields.push_back(FIELD_STUDIO);
     fields.push_back(FIELD_PLOT);
+    isVideo = true;
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
+  }
+  if (isVideo)
+  {
+    fields.push_back(FIELD_VIDEORESOLUTION);
+    fields.push_back(FIELD_AUDIOCHANNELS);
+    fields.push_back(FIELD_VIDEOCODEC);
+    fields.push_back(FIELD_AUDIOCODEC);
+    fields.push_back(FIELD_AUDIOLANGUAGE);
+    fields.push_back(FIELD_SUBTITLELANGUAGE);
+    fields.push_back(FIELD_VIDEOASPECT);
   }
   if (sortOrders)
     fields.push_back(FIELD_RANDOM);
@@ -325,6 +346,38 @@ CStdString CSmartPlaylistRule::GetLocalizedRule()
   return rule;
 }
 
+CStdString CSmartPlaylistRule::GetVideoResolutionQuery(void)
+{
+  CStdString retVal(" in (select distinct idFile from streamdetails where iVideoWidth ");
+  int iRes = atoi(m_parameter.c_str());
+  
+  int min, max;
+  if (iRes >= 1080)     { min = 1281; max = INT_MAX; }
+  else if (iRes >= 720) { min =  961; max = 1280; }
+  else if (iRes >= 540) { min =  721; max =  960; }
+  else                  { min =    0; max =  720; }
+  
+  switch (m_operator)
+  {
+    case OPERATOR_EQUALS:
+      retVal.AppendFormat(">= %i and iVideoWidth <= %i)", min, max);
+      break;
+    case OPERATOR_DOES_NOT_EQUAL:
+      retVal.AppendFormat("< %i or iVideoWidth > %i)", min, max);
+      break;
+    case OPERATOR_LESS_THAN:
+      retVal.AppendFormat("< %i)", min);
+      break;
+    case OPERATOR_GREATER_THAN:
+      retVal.AppendFormat("> %i)", max);
+      break;
+    default:
+      retVal += ")";
+      break;
+  }
+  return retVal;
+}
+
 CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
 {
   SEARCH_OPERATOR op = m_operator;
@@ -336,38 +389,58 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
     else if (op == OPERATOR_DOES_NOT_EQUAL)
       op = OPERATOR_DOES_NOT_CONTAIN;
   }
-  // the comparison piece
   CStdString operatorString, negate;
-  switch (op)
+  CStdString parameter;
+  if (GetFieldType(m_field) == TEXTIN_FIELD)
   {
-  case OPERATOR_CONTAINS:
-    operatorString = " LIKE '%%%s%%'"; break;
-  case OPERATOR_DOES_NOT_CONTAIN:
-    negate = " NOT"; operatorString = " LIKE '%%%s%%'"; break;
-  case OPERATOR_EQUALS:
-    operatorString = " LIKE '%s'"; break;
-  case OPERATOR_DOES_NOT_EQUAL:
-    negate = " NOT"; operatorString = " LIKE '%s'"; break;
-  case OPERATOR_STARTS_WITH:
-    operatorString = " LIKE '%s%%'"; break;
-  case OPERATOR_ENDS_WITH:
-    operatorString = " LIKE '%%%s'"; break;
-  case OPERATOR_AFTER:
-  case OPERATOR_GREATER_THAN:
-  case OPERATOR_IN_THE_LAST:
-    operatorString = " > '%s'"; break;
-  case OPERATOR_BEFORE:
-  case OPERATOR_LESS_THAN:
-  case OPERATOR_NOT_IN_THE_LAST:
-    operatorString = " < '%s'"; break;
-  case OPERATOR_TRUE:
-    operatorString = " = 1"; break;
-  case OPERATOR_FALSE:
-    negate = " NOT "; operatorString = " = 0"; break;
-  default:
-    break;
+    CStdStringArray split;
+    StringUtils::SplitString(m_parameter, ",", split);
+    for (CStdStringArray::iterator it=split.begin(); it!=split.end(); ++it)
+    {
+      if (!parameter.IsEmpty())
+        parameter += ",";
+      parameter += CDatabase::FormatSQL("'%s'", (*it).Trim().c_str());
+    }
+    parameter = " IN (" + parameter + ")";
+    if (op == OPERATOR_DOES_NOT_EQUAL)
+      negate = " NOT";
   }
-  CStdString parameter = CDatabase::FormatSQL(operatorString.c_str(), m_parameter.c_str());
+  else 
+  {
+    // the comparison piece
+    switch (op)
+    {
+    case OPERATOR_CONTAINS:
+      operatorString = " LIKE '%%%s%%'"; break;
+    case OPERATOR_DOES_NOT_CONTAIN:
+      negate = " NOT"; operatorString = " LIKE '%%%s%%'"; break;
+    case OPERATOR_EQUALS:
+      operatorString = " LIKE '%s'"; break;
+    case OPERATOR_DOES_NOT_EQUAL:
+      negate = " NOT"; operatorString = " LIKE '%s'"; break;
+    case OPERATOR_STARTS_WITH:
+      operatorString = " LIKE '%s%%'"; break;
+    case OPERATOR_ENDS_WITH:
+      operatorString = " LIKE '%%%s'"; break;
+    case OPERATOR_AFTER:
+    case OPERATOR_GREATER_THAN:
+    case OPERATOR_IN_THE_LAST:
+      operatorString = " > '%s'"; break;
+    case OPERATOR_BEFORE:
+    case OPERATOR_LESS_THAN:
+    case OPERATOR_NOT_IN_THE_LAST:
+      operatorString = " < '%s'"; break;
+    case OPERATOR_TRUE:
+      operatorString = " = 1"; break;
+    case OPERATOR_FALSE:
+      negate = " NOT "; operatorString = " = 0"; break;
+    default:
+      break;
+    }
+
+    parameter = CDatabase::FormatSQL(operatorString.c_str(), m_parameter.c_str());
+  }
+  
   if (m_field == FIELD_LASTPLAYED)
   {
     if (m_operator == OPERATOR_IN_THE_LAST || m_operator == OPERATOR_NOT_IN_THE_LAST)
@@ -461,7 +534,21 @@ CStdString CSmartPlaylistRule::GetWhereClause(const CStdString& strType)
     else if (m_field == FIELD_LASTPLAYED && (m_operator == OPERATOR_LESS_THAN || m_operator == OPERATOR_BEFORE || m_operator == OPERATOR_NOT_IN_THE_LAST))
       query = "lastPlayed is NULL or lastPlayed" + parameter;
   }
-  if (m_field == FIELD_PLAYLIST)
+  if (m_field == FIELD_VIDEORESOLUTION)
+    query = "idFile" + negate + GetVideoResolutionQuery();
+  else if (m_field == FIELD_AUDIOCHANNELS)
+    query = "idFile" + negate + " in (select distinct idFile from streamdetails where iAudioChannels " + parameter + ")";
+  else if (m_field == FIELD_VIDEOCODEC)
+    query = "idFile" + negate + " in (select distinct idFile from streamdetails where strVideoCodec " + parameter + ")";
+  else if (m_field == FIELD_AUDIOCODEC)
+    query = "idFile" + negate + " in (select distinct idFile from streamdetails where strAudioCodec " + parameter + ")";
+  else if (m_field == FIELD_AUDIOLANGUAGE)
+    query = "idFile" + negate + " in (select distinct idFile from streamdetails where strAudioLanguage " + parameter + ")";
+  else if (m_field == FIELD_SUBTITLELANGUAGE)
+    query = "idFile" + negate + " in (select distinct idFile from streamdetails where strSubtitleLanguage " + parameter + ")";
+  else if (m_field == FIELD_VIDEOASPECT)
+    query = "idFile" + negate + " in (select distinct idFile from streamdetails where fVideoAspect " + parameter + ")";
+  else if (m_field == FIELD_PLAYLIST)
   { // playlist field - grab our playlist and add to our where clause
     CStdString playlistFile = CSmartPlaylistDirectory::GetPlaylistByName(m_parameter, strType);
     if (!playlistFile.IsEmpty())

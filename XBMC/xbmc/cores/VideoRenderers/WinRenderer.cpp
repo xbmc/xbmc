@@ -20,6 +20,9 @@
  */
  
 #include "stdafx.h"
+
+#ifndef HAS_SDL
+
 #include "WinRenderer.h"
 #include "Application.h"
 #include "Util.h"
@@ -57,16 +60,16 @@ YUVCOEF yuv_coef_smtp240m = {
 };
 
 
-CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE8 pDevice)
+CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
 {
   m_pD3DDevice = pDevice;
   m_fSourceFrameRatio = 1.0f;
   m_iResolution = PAL_4x3;
-  memset(m_pOSDYTexture,0,sizeof(LPDIRECT3DTEXTURE8)*NUM_BUFFERS);
-  memset(m_pOSDATexture,0,sizeof(LPDIRECT3DTEXTURE8)*NUM_BUFFERS);
+  memset(m_pOSDYTexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
+  memset(m_pOSDATexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
 
-  m_hLowMemShader = 0;
+  m_lowMemShader = NULL;
   m_iYV12RenderBuffer = 0;
 
 }
@@ -104,15 +107,15 @@ void CWinRenderer::Setup_Y8A8Render()
 
   m_pD3DDevice->SetTextureStageState( 2, D3DTSS_COLOROP, D3DTOP_DISABLE );
   m_pD3DDevice->SetTextureStageState( 2, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
+  m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+  m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+  m_pD3DDevice->SetSamplerState( 1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+  m_pD3DDevice->SetSamplerState( 1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
 
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MAGFILTER, D3DTEXF_POINT /*g_stSettings.m_maxFilter*/ );
-  m_pD3DDevice->SetTextureStageState( 1, D3DTSS_MINFILTER, D3DTEXF_POINT /*g_stSettings.m_minFilter*/ );
+  m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
+  m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  m_pD3DDevice->SetSamplerState( 1, D3DSAMP_MAGFILTER, D3DTEXF_POINT /*g_stSettings.m_maxFilter*/ );
+  m_pD3DDevice->SetSamplerState( 1, D3DSAMP_MINFILTER, D3DTEXF_POINT /*g_stSettings.m_minFilter*/ );
 
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
@@ -122,7 +125,7 @@ void CWinRenderer::Setup_Y8A8Render()
   m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_INVSRCALPHA );
   m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_SRCALPHA );
   m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );
-  m_pD3DDevice->SetVertexShader( D3DFVF_XYZRHW | D3DFVF_TEX2 );
+  m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX2 );
 }
 
 //***************************************************************************************
@@ -289,8 +292,8 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
     m_iOSDTextureHeight[iOSDBuffer] = h;
     // Create osd textures for this buffer with new size
     if (
-      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_L8, D3DPOOL_DEFAULT, &m_pOSDYTexture[iOSDBuffer]) ||
-      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_A8, D3DPOOL_DEFAULT, &m_pOSDATexture[iOSDBuffer])
+      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_L8, D3DPOOL_DEFAULT, &m_pOSDYTexture[iOSDBuffer], NULL) ||
+      D3D_OK != m_pD3DDevice->CreateTexture(m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 1, 0, D3DFMT_LIN_A8, D3DPOOL_DEFAULT, &m_pOSDATexture[iOSDBuffer], NULL)
     )
     {
       CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
@@ -846,7 +849,7 @@ unsigned int CWinRenderer::PreInit()
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
   // low memory pixel shader
-  if (!m_hLowMemShader)
+  if (!m_lowMemShader)
   {
     // lowmem shader (not as accurate, but no need for interleaving of YUV)
     const char *lowmem =
@@ -873,14 +876,14 @@ unsigned int CWinRenderer::PreInit()
 
     LPD3DXBUFFER pShader, pError;
 	  HRESULT hr;
-	  hr = D3DXAssembleShader(lowmem, strlen(lowmem),  NULL, NULL, &pShader, &pError);
+	  hr = D3DXAssembleShader(lowmem, strlen(lowmem), NULL, NULL, 0, &pShader, &pError);
 	  if (FAILED(hr))
     {
       CLog::Log(LOGERROR, "CWinRenderer::PreInit: Call to D3DXAssembleShader failed!" );
       CLog::Log(LOGERROR,  (char*)pError->GetBufferPointer());
       return 1;
     }
-    //m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_hLowMemShader);
+    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_lowMemShader);
     pShader->Release();
   }
 
@@ -898,11 +901,7 @@ void CWinRenderer::UnInit()
     DeleteOSDTextures(i);
   }
 
-  if (m_hLowMemShader)
-  {
-    m_pD3DDevice->DeletePixelShader(m_hLowMemShader);
-    m_hLowMemShader = 0;
-  }
+  SAFE_RELEASE(m_lowMemShader);
 }
 
 void CWinRenderer::Render(DWORD flags)
@@ -1122,10 +1121,10 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   for (int i = 0; i < 3; ++i)
   {
     m_pD3DDevice->SetTexture(i, m_YUVTexture[index][i]);
-    m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSU, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetTextureStageState( i, D3DTSS_ADDRESSV, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetTextureStageState( i, D3DTSS_MAGFILTER, D3DTEXF_LINEAR );
-    m_pD3DDevice->SetTextureStageState( i, D3DTSS_MINFILTER, D3DTEXF_LINEAR );
+    m_pD3DDevice->SetSamplerState( i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+    m_pD3DDevice->SetSamplerState( i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+    m_pD3DDevice->SetSamplerState( i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+    m_pD3DDevice->SetSamplerState( i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
   }
 
 
@@ -1145,8 +1144,8 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
  
   m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );  // was m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE ); ???
-  m_pD3DDevice->SetVertexShader( D3DFVF_XYZRHW | D3DFVF_TEX3 );
-  m_pD3DDevice->SetPixelShader( m_hLowMemShader );
+  m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
+  m_pD3DDevice->SetPixelShader( m_lowMemShader );
 
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
@@ -1197,21 +1196,21 @@ void CWinRenderer::RenderLowMem(DWORD flags)
 
 }
 
-void CWinRenderer::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
+void CWinRenderer::CreateThumbnail(LPDIRECT3DSURFACE9 surface, unsigned int width, unsigned int height)
 {
   CSingleLock lock(g_graphicsContext);
 
-  LPDIRECT3DSURFACE8 oldRT;
+  LPDIRECT3DSURFACE9 oldRT;
   RECT saveSize = rd;
   rd.left = rd.top = 0;
   rd.right = width;
   rd.bottom = height;
-  m_pD3DDevice->GetRenderTarget(&oldRT);
-  m_pD3DDevice->SetRenderTarget(surface, NULL);
+  m_pD3DDevice->GetRenderTarget(0, &oldRT);
+  m_pD3DDevice->SetRenderTarget(0, surface);
   m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
   RenderLowMem(0);
   rd = saveSize;
-  m_pD3DDevice->SetRenderTarget(oldRT, NULL);
+  m_pD3DDevice->SetRenderTarget(0, oldRT);
   oldRT->Release();
 }
 
@@ -1261,9 +1260,9 @@ bool CWinRenderer::CreateYV12Texture(int index)
   CSingleLock lock(g_graphicsContext);
   DeleteYV12Texture(index);
   if (
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][0]) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][1]) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][2]))
+    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][0], NULL) ||
+    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][1], NULL) ||
+    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][2], NULL))
   {
     CLog::Log(LOGERROR, "Unable to create YV12 texture %i", index);
     return false;
@@ -1274,7 +1273,7 @@ bool CWinRenderer::CreateYV12Texture(int index)
 }
 
 
-CPixelShaderRenderer::CPixelShaderRenderer(LPDIRECT3DDEVICE8 pDevice)
+CPixelShaderRenderer::CPixelShaderRenderer(LPDIRECT3DDEVICE9 pDevice)
     : CWinRenderer(pDevice)
 {
 }
@@ -1295,3 +1294,5 @@ void CPixelShaderRenderer::Render(DWORD flags)
   CWinRenderer::RenderLowMem(flags);
   CWinRenderer::Render(flags);
 }
+
+#endif

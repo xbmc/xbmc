@@ -34,12 +34,10 @@
 
 
 
-// Windows specific types and constants:
 
 #pragma pack(1)
 
-struct COLOR {unsigned char b, g, r, x;}
-; // Windows GDI expects 4bytes per color
+struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #undef ALIGN
 #define ALIGN sizeof(int)         ///< Windows GDI expects all int-aligned
 
@@ -80,15 +78,15 @@ GUIBITMAPINFOHEADER;
  \ingroup textures
  \brief
  */
-#if defined(_LINUX)
-typedef struct tagBITMAPINFO
+typedef struct tagGUIBITMAPINFO 
 {
-  GUIBITMAPINFOHEADER bmiHeader;
-  GUIRGBQUAD bmiColors[1];
+    GUIBITMAPINFOHEADER    bmiHeader;
+    GUIRGBQUAD						 bmiColors[1];
 } GUIBITMAPINFO;
-#else
-typedef tagBITMAPINFO GUIBITMAPINFO;
-#endif
+
+#pragma pack()
+
+
 // ****************************************************************************
 // * CAnimatedGif                                                                  *
 // *    Storage class for single images                                       *
@@ -129,11 +127,6 @@ public:
 
   inline char& Pixel (int x, int y) { return Raster[y*BytesPerRow + x];}
 
-#if !defined(_LINUX)
-  // Windows GDI Specific function to paint the image on a DC:
-  int GDIPaint (HDC hdc, int xDest, int yDest);
-#endif
-
 };
 
 // ****************************************************************************
@@ -168,4 +161,3 @@ protected:
   unsigned char getbyte(FILE *fd);
 };
 
-#pragma pack()

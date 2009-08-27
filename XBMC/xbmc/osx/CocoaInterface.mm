@@ -323,7 +323,7 @@ void Cocoa_GL_UnblankDisplays(void)
 
 static NSOpenGLContext* lastOwnedContext = 0;
 
-void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen)
+void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplays, bool gl_FullScreen, bool alwaysOnTop)
 {
   static NSView* lastView = NULL;
   static CGDirectDisplayID fullScreenDisplayID = 0;
@@ -337,7 +337,7 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
   // If we're already fullscreen then we must be moving to a different display.
   // Recurse to reset fullscreen mode and then continue.
   if (fs == true && lastScreen != NULL)
-    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays, gl_FullScreen);
+    Cocoa_GL_SetFullScreen(0, 0, false, blankOtherDisplays, gl_FullScreen, alwaysOnTop);
   
   NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
   
@@ -424,9 +424,15 @@ void Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDispl
       [mainWindow makeKeyAndOrderFront:nil];
       
       // Own'ed, Everything is below our window...
-      [mainWindow setLevel:CGShieldingWindowLevel()];
-      // Uncomment this to debug fullscreen on a one display system
-      //[mainWindow setLevel:NSNormalWindowLevel];
+      if (alwaysOnTop)
+      {
+        // Uncomment this to debug fullscreen on a one display system
+        //[mainWindow setLevel:NSNormalWindowLevel];
+        [mainWindow setLevel:CGShieldingWindowLevel()];
+      }
+      else
+        [mainWindow setLevel:NSNormalWindowLevel];
+
 
       // ...and the original one beneath it and on the same screen.
       view_size = [lastView frame].size;
@@ -871,3 +877,137 @@ void SetPIDFrontProcess(pid_t pid) {
 and the window's frame is automatically saved for you in the application 
 defaults each time its location changes. 
 */
+
+
+void Cocoa_HideMouse()
+{
+  [NSCursor hide];
+}
+
+void Cocoa_GetSmartFolderResults(const char* strFile, void (*CallbackFunc)(void* userData, void* userData2, const char* path), void* userData, void* userData2)
+{
+  NSString*     filePath = [[NSString alloc] initWithUTF8String:strFile];
+  NSDictionary* doc = [[NSDictionary alloc] initWithContentsOfFile:filePath];
+  NSString*     raw = [doc objectForKey:@"RawQuery"];
+  NSArray*      searchPaths = [[doc objectForKey:@"SearchCriteria"] objectForKey:@"FXScopeArrayOfPaths"];
+
+  if (raw == 0)
+    return;
+
+  // Ugh, Carbon from now on...
+  MDQueryRef query = MDQueryCreate(kCFAllocatorDefault, (CFStringRef)raw, NULL, NULL);
+  if (query)
+  {
+  	if (searchPaths)
+  	  MDQuerySetSearchScope(query, (CFArrayRef)searchPaths, 0);
+  	  
+    MDQueryExecute(query, 0);
+
+	// Keep track of when we started.
+	CFAbsoluteTime startTime = CFAbsoluteTimeGetCurrent(); 
+    for (;;)
+    {
+      CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, YES);
+    
+      // If we're done or we timed out.
+      if (MDQueryIsGatheringComplete(query) == true ||
+      	  CFAbsoluteTimeGetCurrent() - startTime >= 5)
+      {
+        // Stop the query.
+        MDQueryStop(query);
+      
+    	CFIndex count = MDQueryGetResultCount(query);
+    	char title[BUFSIZ];
+    	int i;
+  
+    	for (i = 0; i < count; ++i) 
+   		{
+      	  MDItemRef resultItem = (MDItemRef)MDQueryGetResultAtIndex(query, i);
+      	  CFStringRef titleRef = (CFStringRef)MDItemCopyAttribute(resultItem, kMDItemPath);
+      
+      	  CFStringGetCString(titleRef, title, BUFSIZ, kCFStringEncodingUTF8);
+      	  CallbackFunc(userData, userData2, title);
+      	  CFRelease(titleRef);
+    	}  
+    
+        CFRelease(query);
+    	break;
+      }
+    }
+  }
+  
+  // Freeing these causes a crash when scanning for new content.
+  CFRelease(filePath);
+  CFRelease(doc);
+}
+
+static char strVersion[32];
+
+const char* Cocoa_GetAppVersion()
+{
+  // Get the main bundle for the app and return the version.
+  CFBundleRef mainBundle = CFBundleGetMainBundle();
+  CFStringRef versStr = (CFStringRef)CFBundleGetValueForInfoDictionaryKey(mainBundle, kCFBundleVersionKey);
+  
+  memset(strVersion,0,32);
+  
+  if (versStr != NULL && CFGetTypeID(versStr) == CFStringGetTypeID())
+  {
+    bool res = CFStringGetCString(versStr, strVersion, 32,kCFStringEncodingUTF8);
+    if (!res)
+    {
+      printf("Error converting version string\n");      
+      strcpy(strVersion, "SVN");
+    }
+  }
+  else
+    strcpy(strVersion, "SVN");
+  
+  return strVersion;
+}
+
+NSWindow* childWindow = nil;
+NSWindow* mainWindow = nil;
+
+
+void Cocoa_MakeChildWindow()
+{
+  NSOpenGLContext* context = (NSOpenGLContext*)Cocoa_GL_GetCurrentContext();
+  NSView* view = [context view];
+  NSWindow* window = [view window];
+
+  // Create a child window.
+  childWindow = [[NSWindow alloc] initWithContentRect:[window frame]
+                                            styleMask:NSBorderlessWindowMask
+                                              backing:NSBackingStoreBuffered
+                                                defer:NO];
+                                          
+  [childWindow setContentSize:[view frame].size];
+  [childWindow setBackgroundColor:[NSColor blackColor]];
+  [window addChildWindow:childWindow ordered:NSWindowAbove];
+  mainWindow = window;
+  //childWindow.alphaValue = 0.5; 
+}
+
+void Cocoa_DestroyChildWindow()
+{
+  if (childWindow != nil)
+  {
+    [mainWindow removeChildWindow:childWindow];
+    [childWindow close];
+    childWindow = nil;
+  }
+}
+const char *Cocoa_Paste() 
+{
+  NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+  NSString *type = [pasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]];
+  if (type != nil) {
+    NSString *contents = [pasteboard stringForType:type];
+    if (contents != nil) {
+      return [contents UTF8String];
+    }
+  }
+  
+  return NULL;
+}

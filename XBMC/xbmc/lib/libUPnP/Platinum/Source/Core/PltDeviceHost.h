@@ -43,6 +43,7 @@
 #include "PltSsdpListener.h"
 #include "PltTaskManager.h"
 #include "PltAction.h"
+#include "PltHttp.h"
 
 /*----------------------------------------------------------------------
 |   forward declarations
@@ -64,13 +65,11 @@ public:
                    const char*  device_type = "",
                    const char*  friendly_name = "",
                    bool         show_ip = false,
-                   NPT_UInt16   port = 0);
-
-    // pure methods
-    virtual NPT_Result SetupServices(PLT_DeviceData& data) = 0;
+                   NPT_UInt16   port = 0,
+                   bool         port_rebind = false);
 
     // public methods
-    virtual void SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
+    virtual void       SetBroadcast(bool broadcast) { m_Broadcast = broadcast; }
     virtual NPT_UInt16 GetPort() { return m_Port; };
 
     // NPT_HttpRequestHandler forward for control/event requests
@@ -114,12 +113,25 @@ public:
 protected:
     virtual ~PLT_DeviceHost();
 
+    // pure methods
+    virtual NPT_Result SetupServices(PLT_DeviceData& data) = 0;
+    
+    // setup methods
+    virtual NPT_Result SetupIcons();
     virtual NPT_Result SetupDevice();
+    
+    // overridable methods
+    virtual NPT_Result AddIcon(const PLT_DeviceIcon& icon, 
+                               const char*           filepath);
+    virtual NPT_Result AddIcon(const PLT_DeviceIcon& icon, 
+                               const void*           data, 
+                               NPT_Size              size, 
+                               bool                  copy = true);
     virtual NPT_Result Start(PLT_SsdpListenTask* task);
     virtual NPT_Result Stop(PLT_SsdpListenTask* task);
     virtual NPT_Result SetupServiceSCPDHandler(PLT_Service* service);
     virtual NPT_Result OnAction(PLT_ActionReference&          action, 
-                                const NPT_HttpRequestContext& context);
+                                const PLT_HttpRequestContext& context);
     virtual NPT_Result ProcessGetDescription(NPT_HttpRequest&              request,
                                              const NPT_HttpRequestContext& context,
                                              NPT_HttpResponse&             response);
@@ -142,6 +154,7 @@ private:
     PLT_HttpServer*                   m_HttpServer;
     bool                              m_Broadcast;
     NPT_UInt16                        m_Port;
+    bool                              m_PortRebind;
     NPT_List<NPT_HttpRequestHandler*> m_RequestHandlers;
 };
 

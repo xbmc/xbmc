@@ -21,14 +21,6 @@
 #define MEASURE_FUNCTION
 #endif
 #include "GUIFontManager.h"
-#ifdef _WIN32PC
-#include <dbt.h>
-#include "SDL/SDL_syswm.h"
-#include "GUIWindowManager.h"
-#include "WIN32Util.h"
-#include "VideoReferenceClock.h"
-extern HWND g_hWnd;
-#endif
 
 
 //-----------------------------------------------------------------------------
@@ -36,7 +28,7 @@ extern HWND g_hWnd;
 //-----------------------------------------------------------------------------
 CXBApplicationEx* g_pXBApp = NULL;
 #ifndef HAS_SDL
-static LPDIRECT3DDEVICE8 g_pd3dDevice = NULL;
+static LPDIRECT3DDEVICE9 g_pd3dDevice = NULL;
 #endif
 
 // Deadzone for the gamepad inputs
@@ -85,7 +77,7 @@ CXBApplicationEx::CXBApplicationEx()
   m_d3dpp.EnableAutoDepthStencil = FALSE;
   m_d3dpp.AutoDepthStencilFormat = D3DFMT_LIN_D16;
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-  m_d3dpp.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+  m_d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 #endif
 }
 
@@ -162,10 +154,6 @@ INT CXBApplicationEx::Run()
 
 #ifndef _DEBUG
   const BYTE MAX_EXCEPTION_COUNT = 10;
-#endif
-
-#ifdef _WIN32PC
-  SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
 #endif
 
   // Run the game loop, animating and rendering frames
@@ -345,72 +333,6 @@ void CXBApplicationEx::ReadInput()
   {
     switch(event.type)
     {
-#ifdef _WIN32PC
-    case SDL_SYSWMEVENT:
-      {
-        if (event.syswm.msg->wParam == DBT_DEVICEARRIVAL)
-        {
-          CMediaSource share;
-          CStdString strDrive = CWIN32Util::GetChangedDrive();
-          if(strDrive == "")
-            break;
-          share.strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
-          share.strPath = strDrive;
-          share.m_ignore = true;
-          share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
-          g_settings.AddShare("files",share);
-          g_settings.AddShare("video",share);
-          g_settings.AddShare("pictures",share);
-          g_settings.AddShare("music",share);
-          g_settings.AddShare("programs",share);
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          m_gWindowManager.SendThreadMessage( msg );
-        }
-        if (event.syswm.msg->wParam == DBT_DEVICEREMOVECOMPLETE)
-        {
-          CStdString strDrive = CWIN32Util::GetChangedDrive();
-          if(strDrive == "")
-            break;
-          CStdString strName;
-          strName.Format("%s (%s)", g_localizeStrings.Get(437), strDrive);
-          g_settings.DeleteSource("files",strName,strDrive);
-          g_settings.DeleteSource("video",strName,strDrive);
-          g_settings.DeleteSource("pictures",strName,strDrive);
-          g_settings.DeleteSource("music",strName,strDrive);
-          g_settings.DeleteSource("programs",strName,strDrive);
-          CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          m_gWindowManager.SendThreadMessage( msg );
-        }
-        if(event.syswm.msg->msg == WM_POWERBROADCAST && (event.syswm.msg->wParam == PBT_APMRESUMESUSPEND || event.syswm.msg->wParam == PBT_APMRESUMEAUTOMATIC))
-        {
-          // TODO: reconnect shares/network, etc
-          CLog::Log(LOGINFO, "Resuming from suspend" );
-          g_application.ResetScreenSaver();
-          if(g_advancedSettings.m_fullScreen)
-          {
-            ShowWindow(g_hWnd,SW_RESTORE);
-            SetForegroundWindow(g_hWnd);
-            LockSetForegroundWindow(LSFW_LOCK);
-          }
-        }
-        if (event.syswm.msg->msg == WM_MOVE) //we moved
-        {
-          RECT rBounds;
-          HMONITOR hMonitor;
-          MONITORINFOEX mi;
-          
-          //get the monitor the main window is on
-          GetWindowRect(g_hWnd, &rBounds);
-          hMonitor = MonitorFromRect(&rBounds, MONITOR_DEFAULTTONEAREST);
-          mi.cbSize = sizeof(mi);
-          GetMonitorInfo(hMonitor, &mi);
-
-          g_VideoReferenceClock.SetMonitor(mi); //let the videoreferenceclock know which monitor we're on
-        }
-      }
-      break;
-#endif
-
     case SDL_QUIT:
       if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
       break;
@@ -528,6 +450,7 @@ void CXBApplicationEx::ReadInput()
 void CXBApplicationEx::Process()
 {}
 
+#ifdef HAS_SDL
 bool CXBApplicationEx::ProcessOSShortcuts(SDL_Event& event)
 {
 #ifdef __APPLE__
@@ -630,3 +553,4 @@ bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
   }
   return false;
 }
+#endif

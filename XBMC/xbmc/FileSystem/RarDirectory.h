@@ -33,5 +33,6 @@ namespace DIRECTORY
     virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
     virtual bool ContainsFiles(const CStdString& strPath);
     virtual bool Exists(const char* strPath);
+    virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
   };
 }

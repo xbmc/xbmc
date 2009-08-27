@@ -1,6 +1,5 @@
 Platinum UPnP SDK
 -----------------
-
 This software is provided under the following license:
 
 Plutinosoft, LLC provides its Platinum UPnP SDK under a dual 

@@ -57,10 +57,10 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetLabel(const std::string & aLabel);
   virtual void SetLabel2(const std::string & aLabel2);
-  void SetClickActions(const std::vector<CStdString>& clickActions) { m_clickActions = clickActions; };
-  const std::vector<CStdString> &GetClickActions() const { return m_clickActions; };
-  void SetFocusActions(const std::vector<CStdString>& focusActions) { m_focusActions = focusActions; };
-  void SetUnFocusActions(const std::vector<CStdString>& unfocusActions) { m_unfocusActions = unfocusActions; };
+  void SetClickActions(const std::vector<CGUIActionDescriptor>& clickActions) { m_clickActions = clickActions; };
+  const std::vector<CGUIActionDescriptor> &GetClickActions() const { return m_clickActions; };
+  void SetFocusActions(const std::vector<CGUIActionDescriptor>& focusActions) { m_focusActions = focusActions; };
+  void SetUnFocusActions(const std::vector<CGUIActionDescriptor>& unfocusActions) { m_unfocusActions = unfocusActions; };
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   virtual CStdString GetLabel() const { return GetDescription(); };
   virtual CStdString GetLabel2() const;
@@ -94,9 +94,9 @@ protected:
   CGUITextLayout m_textLayout;
   CGUITextLayout m_textLayout2;
 
-  std::vector<CStdString> m_clickActions;
-  std::vector<CStdString> m_focusActions;
-  std::vector<CStdString> m_unfocusActions;
+  std::vector<CGUIActionDescriptor> m_clickActions;
+  std::vector<CGUIActionDescriptor> m_focusActions;
+  std::vector<CGUIActionDescriptor> m_unfocusActions;
 
   bool m_bSelected;
 };

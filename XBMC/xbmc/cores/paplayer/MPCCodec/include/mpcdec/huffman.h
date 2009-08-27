@@ -38,10 +38,10 @@
 #ifndef _mpcdec_huffman_h_
 #define _mpcdec_huffman_h_
 
-#ifndef WIN32
-#include "mpcdec/config_types.h"
+#if (!defined _WIN32PC)
+#include "config_types.h"
 #else
-#include "mpcdec/config_win32.h"
+#include "config_win32.h"
 #endif
 
 #include "decoder.h"

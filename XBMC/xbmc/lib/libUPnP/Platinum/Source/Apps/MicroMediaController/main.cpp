@@ -37,10 +37,15 @@
 #include "PltMicroMediaController.h"
 #include "PltFileMediaServer.h"
 #include "PltMediaRenderer.h"
+#include "PltVersion.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+//#define HAS_RENDERER 1
+//#define SIMULATE_XBOX_360 1
+//#define SIMULATE_PS3 1
 
 /*----------------------------------------------------------------------
 |   main
@@ -48,7 +53,17 @@
 int main(void)
 {
     // Create upnp engine
-    PLT_UPnP upnp(1900, true);
+    PLT_UPnP upnp;
+    
+#ifdef SIMULATE_XBOX_360
+    // override default headers
+    NPT_HttpClient::m_UserAgentHeader = "Xbox/2.0.7371.0 UPnP/1.0 Xbox/2.0.7371.0";
+#endif
+
+#ifdef SIMULATE_PS3
+    // We need a way to add an extra header to all HTTP requests
+    //X-AV-Client-Info: av=5.0; cn="Sony Computer Entertainment Inc."; mn="PLAYSTATION 3"; mv="1.0";
+#endif
 
     // Create control point
     PLT_CtrlPointReference ctrlPoint(new PLT_CtrlPoint());
@@ -59,9 +74,8 @@ int main(void)
 #ifdef HAS_SERVER
     // create device
     PLT_DeviceHostReference server(
-        new PLT_FileMediaServer(
-        "C:\\Music", 
-        "Platinum UPnP Media Server"));
+        new PLT_FileMediaServer("C:\\Music", 
+                                "Platinum UPnP Media Server"));
 
     NPT_String ip;
     NPT_List<NPT_String> list;

@@ -40,7 +40,8 @@
 #define ALT_BITSTREAM_READER
 #include "avcodec.h"
 #include "dsputil.h"
-#include "bitstream.h"
+#include "get_bits.h"
+#include "put_bits.h"
 #include "simple_idct.h"
 #include "dvdata.h"
 
@@ -392,6 +393,7 @@ static av_cold int dvvideo_init(AVCodecContext *avctx)
 
     avctx->coded_frame = &s->picture;
     s->avctx = avctx;
+    avctx->chroma_sample_location = AVCHROMA_LOC_TOPLEFT;
 
     return 0;
 }
@@ -1075,7 +1077,7 @@ static int dv_encode_video_segment(AVCodecContext *avctx, void *arg)
             int sz = s->sys->block_sizes[i]>>3;
 
             init_put_bits(&pbs[j], dif, sz);
-            put_bits(&pbs[j], 9, (uint16_t)(((enc_blks[j].mb[0] >> 3) - 1024 + 2) >> 2));
+            put_sbits(&pbs[j], 9, ((enc_blks[j].mb[0] >> 3) - 1024 + 2) >> 2);
             put_bits(&pbs[j], 1, enc_blks[j].dct_mode);
             put_bits(&pbs[j], 2, enc_blks[j].cno);
 
@@ -1111,13 +1113,17 @@ static int dv_encode_video_segment(AVCodecContext *avctx, void *arg)
    144000 bytes for PAL - or twice those for 50Mbps) */
 static int dvvideo_decode_frame(AVCodecContext *avctx,
                                  void *data, int *data_size,
-                                 const uint8_t *buf, int buf_size)
+                                 AVPacket *avpkt)
 {
+    const uint8_t *buf = avpkt->data;
+    int buf_size = avpkt->size;
     DVVideoContext *s = avctx->priv_data;
 
-    s->sys = dv_frame_profile(buf);
-    if (!s->sys || buf_size < s->sys->frame_size || dv_init_dynamic_tables(s->sys))
+    s->sys = dv_frame_profile(s->sys, buf, buf_size);
+    if (!s->sys || buf_size < s->sys->frame_size || dv_init_dynamic_tables(s->sys)) {
+        av_log(avctx, AV_LOG_ERROR, "could not find dv frame profile\n");
         return -1; /* NOTE: we only accept several full frames */
+    }
 
     if (s->picture.data[0])
         avctx->release_buffer(avctx, &s->picture);

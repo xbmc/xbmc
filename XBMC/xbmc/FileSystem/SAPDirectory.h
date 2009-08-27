@@ -74,6 +74,19 @@ namespace SDP
 
     std::string origin;
     std::string payload_type;
+
+    void clear()
+    {
+      version    = 0;
+      addrtype   = 0;
+      msgtype    = 0;
+      encrypted  = 0;
+      compressed = 0;
+      authlen    = 0;
+      msgid      = 0;
+      origin.clear();
+      payload_type.clear();
+    }
   };
   int parse_sap(const char* data, struct sap_desc *h);
   int parse_sdp(const char* data, struct sdp_desc *sdp);

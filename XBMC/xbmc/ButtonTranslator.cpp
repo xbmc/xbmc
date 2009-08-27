@@ -26,12 +26,18 @@
 #include "SkinInfo.h"
 #include "Key.h"
 #include "File.h"
-
+#include "Directory.h"
+#include "FileItem.h"
 using namespace std;
 using namespace XFILE;
 
-CButtonTranslator g_buttonTranslator;
 extern CStdString g_LoadErrorStr;
+
+CButtonTranslator& CButtonTranslator::GetInstance()
+{
+  static CButtonTranslator sl_instance;
+  return sl_instance;
+}
 
 CButtonTranslator::CButtonTranslator()
 {}
@@ -43,25 +49,42 @@ bool CButtonTranslator::Load()
 {
   translatorMap.clear();
 
-  // Load the config file
-  CStdString keymapPath;
   bool success = false;
+  // Load the config file(s)
+  //first from system/keymaps/ directory
+  const CStdString systemKeymapDirPath = "special://xbmc/system/keymaps/";
+  if( DIRECTORY::CDirectory::Exists(systemKeymapDirPath) )
+  {
+    CFileItemList files;
+    DIRECTORY::CDirectory::GetDirectory(systemKeymapDirPath, files, "*.xml");
+    //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+    files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+    for(int i = 0; i<files.Size(); ++i)
+      success |= LoadKeymap(files[i]->m_strPath);
+  }
+  //load from user's keymaps/ directory
+  const CStdString userKeymapDirPath = g_settings.GetUserDataItem("keymaps/");
+  if( DIRECTORY::CDirectory::Exists(userKeymapDirPath) )
+  {
+    CFileItemList files;
+    DIRECTORY::CDirectory::GetDirectory(userKeymapDirPath, files, "*.xml");
+    //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+    files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+    for(int i = 0; i<files.Size(); ++i)
+      success |= LoadKeymap(files[i]->m_strPath);
+  }
 
-  keymapPath = "special://xbmc/system/Keymap.xml";
-  if(CFile::Exists(keymapPath))
-    success |= LoadKeymap(keymapPath);
-  else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no system Keymap.xml found, skipping");
-
-  keymapPath = g_settings.GetUserDataItem("Keymap.xml");
-  if(CFile::Exists(keymapPath))
-    success |= LoadKeymap(keymapPath);
-  else
-    CLog::Log(LOGDEBUG, "CButtonTranslator::Load - no userdata Keymap.xml found, skipping");
+  //try to load userdata/Keymap.xml for backward compatibility
+  const CStdString oldKeymapPath = g_settings.GetUserDataItem("Keymap.xml");
+  if( CFile::Exists(oldKeymapPath) )
+  {
+    CLog::Log(LOGINFO, "CButtonTranslator::Load - old Keymap.xml in userdata found (%s). Please consider moving it to the \"keymaps/\" folder", oldKeymapPath.c_str());
+    success |= LoadKeymap(oldKeymapPath);
+  }
 
   if (!success)
   {
-    g_LoadErrorStr.Format("Error loading keymap: %s", keymapPath.c_str());
+    g_LoadErrorStr.Format("Error loading keymaps from: %s or %s", systemKeymapDirPath.c_str(), userKeymapDirPath.c_str());
     return false;
   }
 
@@ -919,6 +942,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("karaokeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
   else if (strWindow.Equals("karaokelargeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
   else if (strWindow.Equals("sliderdialog")) wWindowID = WINDOW_DIALOG_SLIDER;
+  else if (strWindow.Equals("songinformation")) wWindowID = WINDOW_DIALOG_SONG_INFO;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 
@@ -1166,6 +1190,14 @@ WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 void CButtonTranslator::Clear()
 {
   translatorMap.clear();
+#ifdef HAS_LIRC
+  lircRemotesMap.clear();
+#endif
 
+#if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
+  m_joystickButtonMap.clear();
+  m_joystickAxisMap.clear();
+  m_joystickHatMap.clear();
+#endif
 }
 

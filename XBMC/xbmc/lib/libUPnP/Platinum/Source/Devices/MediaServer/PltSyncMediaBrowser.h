@@ -71,7 +71,8 @@ public:
 /*----------------------------------------------------------------------
 |   PLT_SyncMediaBrowser
 +---------------------------------------------------------------------*/
-class PLT_SyncMediaBrowser : public PLT_MediaBrowserListener
+class PLT_SyncMediaBrowser : public PLT_MediaBrowser,
+                             public PLT_MediaBrowserDelegate
 {
 public:
     PLT_SyncMediaBrowser(PLT_CtrlPointReference&            ctrlPoint, 
@@ -79,42 +80,44 @@ public:
                          PLT_MediaContainerChangesListener* listener = NULL);
     virtual ~PLT_SyncMediaBrowser();
 
-    // PLT_MediaBrowserListener
-    virtual void OnMSAddedRemoved(PLT_DeviceDataReference& device, int added);
+    // PLT_MediaBrowser methods
+    virtual NPT_Result OnDeviceAdded(PLT_DeviceDataReference& device);
+    virtual NPT_Result OnDeviceRemoved(PLT_DeviceDataReference& device);
+
+    // PLT_MediaBrowserDelegate methods
     virtual void OnMSStateVariablesChanged(PLT_Service*                  service, 
                                            NPT_List<PLT_StateVariable*>* vars);
-    virtual void OnMSBrowseResult(NPT_Result               res, 
-                                  PLT_DeviceDataReference& device, 
-                                  PLT_BrowseInfo*          info, 
-                                  void*                    userdata);
+    virtual void OnBrowseResult(NPT_Result               res, 
+                                PLT_DeviceDataReference& device, 
+                                PLT_BrowseInfo*          info, 
+                                void*                    userdata);
 
     // methods
     void       SetContainerListener(PLT_MediaContainerChangesListener* listener) {
         m_ContainerListener = listener;
     }
-    NPT_Result Browse(PLT_DeviceDataReference&      device, 
-                      const char*                   id, 
-                      PLT_MediaObjectListReference& list);
+    NPT_Result BrowseSync(PLT_DeviceDataReference&      device, 
+                          const char*                   id, 
+                          PLT_MediaObjectListReference& list);
 
-    const NPT_Lock<PLT_DeviceMap>& GetMediaServers() const { return m_MediaServers; }
+    const NPT_Lock<PLT_DeviceMap>& GetMediaServersMap() const { return m_MediaServers; }
     bool IsCached(const char* uuid, const char* object_id);
 
 protected:
-    NPT_Result Browse(PLT_BrowseDataReference& browse_data,
-                      PLT_DeviceDataReference& device, 
-                      const char*              object_id,
-                      NPT_Int32                index, 
-                      NPT_Int32                count,
-                      bool                     browse_metadata = false,
-                      const char*              filter = "*", 
-                      const char*              sort = "");
+    NPT_Result BrowseSync(PLT_BrowseDataReference& browse_data,
+                          PLT_DeviceDataReference& device, 
+                          const char*              object_id,
+                          NPT_Int32                index, 
+                          NPT_Int32                count,
+                          bool                     browse_metadata = false,
+                          const char*              filter = "*", 
+                          const char*              sort = "");
 private:
     NPT_Result Find(const char* ip, PLT_DeviceDataReference& device);
     NPT_Result WaitForResponse(NPT_SharedVariable& shared_var);
 
 private:
     NPT_Lock<PLT_DeviceMap>              m_MediaServers;
-    PLT_MediaBrowser*                    m_MediaBrowser;
     PLT_MediaContainerChangesListener*   m_ContainerListener;
     bool                                 m_UseCache;
     PLT_MediaCache                       m_Cache;

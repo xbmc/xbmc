@@ -1,11 +1,10 @@
 
 ARCH=@ARCH@
-
-CC=@CC@
-CXX=@CXX@
-SHELL=/bin/bash
-
 SYSDIR=../../../../../system/players/dvdplayer
+SOS= libdvdnav-$(ARCH).so
+DIRS=	libdvdread \
+	libdvdnav
+
 WRAPPER=../../../DllLoader/exports/wrapper.o
 WRAPPER_OSX=../../../../../tools/Mach5/wrapper.rb
 
@@ -15,24 +14,25 @@ ifeq ($(ARCH), powerpc-osx)
 	BUNDLE1_O = -lbundle1.o
 endif
 
-DIRS=	libdvdread \
-	libdvdnav
-
-LIBS= libdvdnav-$(ARCH).so
-
 # Allows us to optionally build xbmc with DVDCSS support
 ifeq (@BUILD_DVDCSS@,1)
   DIRS += libdvdcss
-  LIBS += libdvdcss-$(ARCH).so
+  SOS += libdvdcss-$(ARCH).so
   DVDCSS_A = libdvdcss/src/.libs/libdvdcss.a
   DVDCSS_O = libdvdcss/src/.libs/*.o
   DVDNAV_PREREQ = libdvdcss
 endif
 
-.PHONY: $(DIRS) libdvd
+SLIB=$(addprefix $(SYSDIR)/, $(SOS))
 
-libdvd: $(addprefix $(SYSDIR)/, $(LIBS));
+DISTCLEAN_FILES=includes/dvdread/*.h \
+		includes/dvdcss/*.h \
+		libdvdnav/config.h \
+		libdvdread/config.h
 
+.PHONY: $(DIRS) compile
+
+all: $(SLIB)
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 
@@ -59,23 +59,17 @@ $(SYSDIR)/libdvdnav-$(ARCH).so: $(WRAPPER) $(DVDCSS_A) libdvdread/obj/libdvdread
 
 endif
 
-libdvdcss/src/.libs/libdvdcss.a: libdvdcss;
-libdvdcss:
+libdvdcss/src/.libs/libdvdcss.a: libdvdcss
+libdvdcss: compile
 	$(MAKE) -C $@
 
-libdvdread/obj/libdvdread.a : libdvdread;
-libdvdread: $(DVDNAV_PREREQ)
+libdvdread/obj/libdvdread.a: libdvdread
+libdvdread: compile
 	$(MAKE) -C $@
 
-libdvdnav/obj/libdvdnav.a   : libdvdnav;
-libdvdnav: $(DVDNAV_PREREQ) libdvdread
+libdvdnav/obj/libdvdnav.a: libdvdnav
+libdvdnav: compile
 	$(MAKE) -C $@
 
-clean:
-	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
-	for i in $(DIRS); do $(MAKE) -C "$$i" clean; done
-
-distclean:
-	rm -f $(addprefix $(SYSDIR)/, $(LIBS))
-	for i in $(DIRS); do $(MAKE) -C "$$i" distclean; done
+include ../../../../../Makefile.include
 

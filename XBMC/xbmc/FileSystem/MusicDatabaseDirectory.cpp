@@ -246,6 +246,9 @@ bool CMusicDatabaseDirectory::Exists(const char* strPath)
   if (!pNode.get())
     return false;
 
+  if (pNode->GetChildType() == MUSICDATABASEDIRECTORY::NODE_TYPE_NONE)
+    return false;
+
   return true;
 }
 

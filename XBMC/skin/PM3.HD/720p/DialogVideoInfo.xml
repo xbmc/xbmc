@@ -871,6 +871,15 @@
 			<showonepage>true</showonepage>
 			<animation effect="slide" time="0" end="-170,0" condition="Control.IsVisible(50)">Conditional</animation>
 		</control>
+		<control type="grouplist">
+			<description>Media Codec Flagging Images</description>
+			<posx>290</posx>
+			<posy>640</posy>
+			<width>640</width>
+			<itemgap>0</itemgap>
+			<orientation>horizontal</orientation>
+			<include>CodecFlaggingConditions</include>
+		</control>
 		<control type="group" id="9001">
 			<control type="group" id="9000">
 				<posx>60</posx>

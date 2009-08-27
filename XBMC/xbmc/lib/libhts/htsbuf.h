@@ -47,15 +47,15 @@ void htsbuf_vqprintf(htsbuf_queue_t *hq, const char *fmt, va_list ap);
 
 void htsbuf_qprintf(htsbuf_queue_t *hq, const char *fmt, ...);
 
-void htsbuf_append(htsbuf_queue_t *hq, const void *buf, size_t len);
+void htsbuf_append(htsbuf_queue_t *hq, const char *buf, size_t len);
 
-void htsbuf_append_prealloc(htsbuf_queue_t *hq, const void *buf, size_t len);
+void htsbuf_append_prealloc(htsbuf_queue_t *hq, const char *buf, size_t len);
 
 void htsbuf_data_free(htsbuf_queue_t *hq, htsbuf_data_t *hd);
 
-size_t htsbuf_read(htsbuf_queue_t *hq, void *buf, size_t len);
+size_t htsbuf_read(htsbuf_queue_t *hq, char *buf, size_t len);
 
-size_t htsbuf_peek(htsbuf_queue_t *hq, void *buf, size_t len);
+size_t htsbuf_peek(htsbuf_queue_t *hq, char *buf, size_t len);
 
 size_t htsbuf_drop(htsbuf_queue_t *hq, size_t len);
 

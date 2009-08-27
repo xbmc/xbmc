@@ -280,6 +280,11 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_TRUE);
     AddOperatorLabel(CSmartPlaylistRule::OPERATOR_FALSE);
     break;
+
+  case CSmartPlaylistRule::TEXTIN_FIELD:
+    AddOperatorLabel(CSmartPlaylistRule::OPERATOR_EQUALS);
+    AddOperatorLabel(CSmartPlaylistRule::OPERATOR_DOES_NOT_EQUAL);
+    break;
   }
 
   // check our operator is valid, and update if not
@@ -297,6 +302,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   case CSmartPlaylistRule::TEXT_FIELD:
   case CSmartPlaylistRule::BROWSEABLE_FIELD:
   case CSmartPlaylistRule::PLAYLIST_FIELD:
+  case CSmartPlaylistRule::TEXTIN_FIELD:
     type = CGUIEditControl::INPUT_TYPE_TEXT;
     break;
   case CSmartPlaylistRule::DATE_FIELD:

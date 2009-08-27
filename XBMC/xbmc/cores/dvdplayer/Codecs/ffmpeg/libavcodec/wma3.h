@@ -30,6 +30,7 @@
 
 #include "wma3data.h"
 #include "dsputil.h"
+#include "get_bits.h"
 
 /* current decoder limitations */
 #define MAX_CHANNELS    8                                    ///< max number of handled channels

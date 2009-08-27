@@ -224,14 +224,6 @@ CGUITextureManager::CGUITextureManager(void)
 {
   // we set the theme bundle to be the first bundle (thus prioritising it
   m_TexBundle[0].SetThemeBundle(true);
-
-#if defined(HAS_SDL) && defined(_WIN32)
-  // Hack for SDL library that keeps loading and unloading these
-  LoadLibraryEx("zlib1.dll", NULL, 0);
-  LoadLibraryEx("libpng12-0.dll", NULL, 0);
-  LoadLibraryEx("jpeg.dll", NULL, 0);
-#endif
-
 }
 
 CGUITextureManager::~CGUITextureManager(void)
@@ -537,9 +529,9 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
     }
 #else
-    SDL_Surface *original = IMG_Load(_P(texturePath).c_str());
     CPicture pic;
-    if (!original && !(original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT)))
+    SDL_Surface *original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT);
+    if (!original)
     {
         CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());
         return 0;

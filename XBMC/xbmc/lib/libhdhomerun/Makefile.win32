@@ -15,13 +15,12 @@ CC=gcc
 SLIBS += -lws2_32 -liphlpapi
 
 SYSDIR=../../../system
-SO=hdhomerun.dll
-SLIB=$(SYSDIR)/$(SO)
+DLL=hdhomerun.dll
+SLIB=$(SYSDIR)/$(DLL)
 
 hdhomerun_dll : $(OBJS)
-	gcc $(OBJS) $(SLIBS) -Wl,--out-implib,hdhomerun.lib -shared -o hdhomerun.dll
+	gcc $(OBJS) $(SLIBS) -Wl,--out-implib,hdhomerun.lib -shared -o $(SLIB)
 
 clean :
 	rm $(OBJS)
 	rm hdhomerun.lib
-	rm hdhomerun.dll

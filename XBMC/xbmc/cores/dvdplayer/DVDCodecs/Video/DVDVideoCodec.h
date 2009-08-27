@@ -28,10 +28,10 @@
 #define FRAME_TYPE_B 3
 #define FRAME_TYPE_D 4
 
-// video structure with PIX_FMT_YUV420P data
+
 // should be entirely filled by all codecs
-typedef struct stDVDVideoPicture
-{
+struct DVDVideoPicture
+{  
   double pts; // timestamp in seconds, used in the CDVDPlayer class to keep track of pts
   BYTE* data[4];      // [4] = alpha channel, currently not used
   int iLineSize[4];   // [4] = alpha channel, currently not used
@@ -49,15 +49,18 @@ typedef struct stDVDVideoPicture
   unsigned int iHeight;
   unsigned int iDisplayWidth;  // width of the picture without black bars
   unsigned int iDisplayHeight; // height of the picture without black bars
-}
-DVDVideoPicture;
 
-typedef struct stDVDVideoUserData
+  enum EFormat {
+    FMT_YUV420P = 0,
+    FMT_VDPAU,
+  } format;
+};
+
+struct DVDVideoUserData
 {
   BYTE* data;
   int size;
-}
-DVDVideoUserData;
+};
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
 #define DVP_FLAG_REPEAT_TOP_FIELD   0x00000002 //Set to indicate that the top field should be repeated
@@ -67,7 +70,6 @@ DVDVideoUserData;
 #define DVP_FLAG_NOSKIP             0x00000010 // indicate this picture should never be dropped
 #define DVP_FLAG_DROPPED            0x00000020 // indicate that this picture has been dropped in decoder stage, will have no data
 #define DVP_FLAG_NOAUTOSYNC         0x00000040 // disregard any smooth syncing on this picture
-#define DVP_FLAG_NONIMAGE           0x00000080 // data in picture is not a YUV image
 
 // DVP_FLAG 0x00000100 - 0x00000f00 is in use by libmpeg2!
 

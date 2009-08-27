@@ -61,6 +61,7 @@ void CDVDStreamInfo::Clear()
   samplerate = 0;
   blockalign = 0;
   bitrate    = 0;
+  bitspersample = 0;
 
   identifier = 0;
 }

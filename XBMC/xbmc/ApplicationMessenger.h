@@ -66,6 +66,9 @@ class CGUIDialog;
 #define TMSG_GUI_WIN_MANAGER_RENDER   603
 #define TMSG_GUI_ACTIVATE_WINDOW      604
 
+#define TMSG_OPTICAL_MOUNT        700 
+#define TMSG_OPTICAL_UNMOUNT      701 
+
 typedef struct
 {
   DWORD dwMessage;
@@ -128,6 +131,9 @@ public:
   void WindowManagerProcess(bool renderOnly = false); // will call m_gWindowManager.Process on the rendering thread
   void Render(); // will call m_gWindowManager.Render on the rendering thread
   void ActivateWindow(int windowID, const CStdString &path, bool swappingWindows);
+
+  void OpticalMount(CStdString device); 
+ 	void OpticalUnMount(CStdString device);
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);

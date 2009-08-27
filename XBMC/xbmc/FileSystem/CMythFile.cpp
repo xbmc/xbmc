@@ -115,15 +115,15 @@ bool CCMythFile::SetupConnection(const CURL& url, bool control, bool event, bool
 
 bool CCMythFile::SetupRecording(const CURL& url)
 {
-  CStdString path(url.GetFileName());
-
-  if(path.Left(11) != "recordings/")
+  if (url.GetFileName().Left(11) != "recordings/" &&
+      url.GetFileName().Left(7)  != "movies/" &&
+      url.GetFileName().Left(8)  != "tvshows/")
     return false;
 
   if(!SetupConnection(url, true, false, false))
     return false;
 
-  m_filename = path.Mid(11);
+  m_filename = url.GetFileNameWithoutPath();
 
   m_program = m_dll->proginfo_get_from_basename(m_control, m_filename.c_str());
   if(!m_program)
@@ -164,15 +164,13 @@ bool CCMythFile::SetupRecording(const CURL& url)
 
 bool CCMythFile::SetupLiveTV(const CURL& url)
 {
-  CStdString path(url.GetFileName());
-
-  if(path.Left(9) != "channels/")
+  if (url.GetFileName().Left(9) != "channels/")
     return false;
 
   if(!SetupConnection(url, true, true, true))
     return false;
 
-  CStdString channel = path.Mid(9);
+  CStdString channel = url.GetFileNameWithoutPath();
   if(!CUtil::GetExtension(channel).Equals(".ts"))
   {
     CLog::Log(LOGERROR, "%s - invalid channel url %s", __FUNCTION__, channel.c_str());
@@ -251,15 +249,13 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
 
 bool CCMythFile::SetupFile(const CURL& url)
 {
-  CStdString path(url.GetFileName());
-
-  if(path.Left(6) != "files/")
+  if (url.GetFileName().Left(6) != "files/")
     return false;
 
   if(!SetupConnection(url, true, false, false))
     return false;
 
-  m_filename = path.Mid(5);
+  m_filename = url.GetFileNameWithoutPath();
 
   m_file = m_dll->conn_connect_path((char*)m_filename.c_str(), m_control, 16*1024, 4096);
   if(!m_file)
@@ -283,7 +279,9 @@ bool CCMythFile::Open(const CURL& url)
 
   CStdString path(url.GetFileName());
 
-  if(path.Left(11) == "recordings/")
+  if (path.Left(11) == "recordings/" ||
+      path.Left(7)  == "movies/" ||
+      path.Left(8)  == "tvshows/")
   {
     if(!SetupRecording(url))
       return false;
@@ -375,7 +373,9 @@ bool CCMythFile::Exists(const CURL& url)
 {
   CStdString path(url.GetFileName());
 
-  if(path.Left(11) == "recordings/")
+  if (path.Left(11) == "recordings/" ||
+      path.Left(7)  == "movies/" ||
+      path.Left(8)  == "tvshows/")
   {
     if(CUtil::GetExtension(path).Equals(".tbn")
     || CUtil::GetExtension(path).Equals(".jpg"))
@@ -384,7 +384,7 @@ bool CCMythFile::Exists(const CURL& url)
     if(!SetupConnection(url, true, false, false))
       return false;
 
-    m_filename = path.Mid(11);
+    m_filename = url.GetFileNameWithoutPath();
     m_program = m_dll->proginfo_get_from_basename(m_control, m_filename.c_str());
     if(!m_program)
     {
@@ -403,7 +403,9 @@ bool CCMythFile::Delete(const CURL& url)
 {
   CStdString path(url.GetFileName());
 
-  if(path.Left(11) == "recordings/")
+  if (path.Left(11) == "recordings/" ||
+      path.Left(7)  == "movies/" ||
+      path.Left(8)  == "tvshows/")
   {
     /* this will setup all interal variables */
     if(!Exists(url))

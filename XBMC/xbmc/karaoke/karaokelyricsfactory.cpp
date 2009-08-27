@@ -17,6 +17,7 @@
 #include "karaokelyricscdg.h"
 #include "karaokelyricstextkar.h"
 #include "karaokelyricstextlrc.h"
+#include "karaokelyricstextustar.h"
 #include "karaokelyricsfactory.h"
 
 
@@ -50,6 +51,15 @@ bool CheckAndCreateLyrics( const CStdString & songName, CKaraokeLyrics ** lyricp
   {
     if ( lyricptr )
       *lyricptr = new CKaraokeLyricsCDG( filename + ".cdg" );
+
+    return true;
+  }
+
+  // UltraStar lyrics have .txt extension
+  if ( XFILE::CFile::Exists( filename + ".txt" ) && CKaraokeLyricsTextUStar::isValidFile( filename + ".txt" ) )
+  {
+    if ( lyricptr )
+      *lyricptr = new CKaraokeLyricsTextUStar( filename + ".txt" );
 
     return true;
   }

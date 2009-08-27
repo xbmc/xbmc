@@ -64,7 +64,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
   m_bPassthrough = bPassthrough;
-  m_uiBytesPerSecond * uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
+  m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
 
   m_nCurrentVolume = g_stSettings.m_nVolumeLevel;
   if (!m_bPassthrough)
@@ -298,7 +298,7 @@ CALSADirectSound::~CALSADirectSound()
 
 
 //***********************************************************************************************
-HRESULT CALSADirectSound::Deinitialize()
+bool CALSADirectSound::Deinitialize()
 {
   m_bIsAllocated = false;
   if (m_pPlayHandle)
@@ -309,7 +309,7 @@ HRESULT CALSADirectSound::Deinitialize()
 
   m_pPlayHandle=NULL;
   g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-  return S_OK;
+  return true;
 }
 
 void CALSADirectSound::Flush() {
@@ -323,12 +323,12 @@ void CALSADirectSound::Flush() {
 }
 
 //***********************************************************************************************
-HRESULT CALSADirectSound::Pause()
+bool CALSADirectSound::Pause()
 {
   if (!m_bIsAllocated)
      return -1;
 
-  if (m_bPause) return S_OK;
+  if (m_bPause) return true;
   m_bPause = true;
 
   if(m_bCanPause)
@@ -345,11 +345,11 @@ HRESULT CALSADirectSound::Pause()
     Flush();
   }
 
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-HRESULT CALSADirectSound::Resume()
+bool CALSADirectSound::Resume()
 {
   if (!m_bIsAllocated)
      return -1;
@@ -359,11 +359,11 @@ HRESULT CALSADirectSound::Resume()
 
   m_bPause = false;
 
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-HRESULT CALSADirectSound::Stop()
+bool CALSADirectSound::Stop()
 {
   if (!m_bIsAllocated)
      return -1;
@@ -372,23 +372,11 @@ HRESULT CALSADirectSound::Stop()
 
   m_bPause = false;
 
-  return S_OK;
+  return true;
 }
 
 //***********************************************************************************************
-LONG CALSADirectSound::GetMinimumVolume() const
-{
-  return -60;
-}
-
-//***********************************************************************************************
-LONG CALSADirectSound::GetMaximumVolume() const
-{
-  return 60;
-}
-
-//***********************************************************************************************
-LONG CALSADirectSound::GetCurrentVolume() const
+long CALSADirectSound::GetCurrentVolume() const
 {
   return m_nCurrentVolume;
 }
@@ -400,24 +388,24 @@ void CALSADirectSound::Mute(bool bMute)
     return;
 
   if (bMute)
-    SetCurrentVolume(GetMinimumVolume());
+    SetCurrentVolume(VOLUME_MINIMUM);
   else
     SetCurrentVolume(m_nCurrentVolume);
 
 }
 
 //***********************************************************************************************
-HRESULT CALSADirectSound::SetCurrentVolume(LONG nVolume)
+bool CALSADirectSound::SetCurrentVolume(long nVolume)
 {
   if (!m_bIsAllocated || m_bPassthrough) return -1;
   m_nCurrentVolume = nVolume;
   m_amp.SetVolume(nVolume);
-  return S_OK;
+  return true;
 }
 
 
 //***********************************************************************************************
-DWORD CALSADirectSound::GetSpace()
+unsigned int CALSADirectSound::GetSpace()
 {
   if (!m_bIsAllocated) return 0;
 
@@ -440,7 +428,7 @@ DWORD CALSADirectSound::GetSpace()
 }
 
 //***********************************************************************************************
-DWORD CALSADirectSound::AddPackets(const void* data, DWORD len)
+unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
 {
   if (!m_bIsAllocated) {
     CLog::Log(LOGERROR,"CALSADirectSound::AddPackets - sanity failed. no valid play handle!");
@@ -471,6 +459,7 @@ DWORD CALSADirectSound::AddPackets(const void* data, DWORD len)
     CLog::Log(LOGDEBUG, "CALSADirectSound::AddPackets - buffer underun (tried to write %d frames)",
             framesToWrite);
     Flush();
+    return 0;
   }
   else if (writeResult != framesToWrite) {
     CLog::Log(LOGERROR, "CALSADirectSound::AddPackets - failed to write %d frames. "
@@ -486,7 +475,7 @@ DWORD CALSADirectSound::AddPackets(const void* data, DWORD len)
 }
 
 //***********************************************************************************************
-FLOAT CALSADirectSound::GetDelay()
+float CALSADirectSound::GetDelay()
 {
   if (!m_bIsAllocated) 
     return 0.0;
@@ -510,13 +499,13 @@ FLOAT CALSADirectSound::GetDelay()
   return (double)frames / m_uiSamplesPerSec;
 }
 
-FLOAT CALSADirectSound::GetCacheTime()
+float CALSADirectSound::GetCacheTime()
 {
   return (float)(m_uiBufferSize - GetSpace()) / (float)m_uiBytesPerSecond;
 }
 
 //***********************************************************************************************
-DWORD CALSADirectSound::GetChunkLen()
+unsigned int CALSADirectSound::GetChunkLen()
 {
   return m_dwPacketSize;
 }

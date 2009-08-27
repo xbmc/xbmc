@@ -30,12 +30,9 @@ namespace DIRECTORY
 
 enum FilterType
 {
-  bytitle,
-  bygenre,
-  bydate,
-  bychannel,
-  bygroup,
-  all
+  MOVIES,
+  TV_SHOWS,
+  ALL
 };
 
 class CCMythDirectory
@@ -51,15 +48,16 @@ public:
 private:
   void Release();
   bool GetGuide(const CStdString& base, CFileItemList &items);
-  bool GetGuideForChannel(const CStdString& base, int ChanNum, CFileItemList &items);
-  bool GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type, const CStdString& filter);
-  bool GetRecordingGroups(const CStdString& base, CFileItemList &items, enum FilterType type);
-  bool GetChannels  (const CStdString& base, CFileItemList &items);
-  bool GetChannelsDb(const CStdString& base, CFileItemList &items);
+  bool GetGuideForChannel(const CStdString& base, CFileItemList &items, const int channelNumber);
+  bool GetRecordings(const CStdString& base, CFileItemList &items, enum FilterType type = ALL, const CStdString& filter = "");
+  bool GetRecordingFolders(const CStdString& base, CFileItemList &items, enum FilterType type);
+  bool GetChannels(const CStdString& base, CFileItemList &items);
 
   CStdString GetValue(char* str)           { return m_session->GetValue(str); }
   int        GetValue(int integer)         { return m_session->GetValue(integer); }
   CDateTime  GetValue(cmyth_timestamp_t t);
+  bool IsMovie(const cmyth_proginfo_t program);
+  bool IsTvShow(const cmyth_proginfo_t program);
 
   XFILE::CCMythSession* m_session;
   DllLibCMyth*          m_dll;

@@ -30,8 +30,6 @@
 #include "libavutil/intreadwrite.h"
 #include "avformat.h"
 
-#define WC3_PREAMBLE_SIZE 8
-
 #define FORM_TAG MKTAG('F', 'O', 'R', 'M')
 #define MOVE_TAG MKTAG('M', 'O', 'V', 'E')
 #define  PC__TAG MKTAG('_', 'P', 'C', '_')
@@ -74,7 +72,18 @@ typedef struct Wc3DemuxContext {
 
 } Wc3DemuxContext;
 
-/* bizarre palette lookup table */
+/**
+ * palette lookup table that does gamma correction
+ *
+ * can be calculated by this formula:
+ * for i between 0 and 251 inclusive:
+ * wc3_pal_lookup[i] = round(pow(i / 256.0, 0.8) * 256);
+ * values 252, 253, 254 and 255 are all 0xFD
+ * calculating this at runtime should not cause any
+ * rounding issues, the maximum difference between
+ * the table values and the calculated doubles is
+ * about 0.497527
+ */
 static const unsigned char wc3_pal_lookup[] = {
   0x00, 0x03, 0x05, 0x07, 0x09, 0x0B, 0x0D, 0x0E,
   0x10, 0x12, 0x13, 0x15, 0x16, 0x18, 0x19, 0x1A,
@@ -131,7 +140,6 @@ static int wc3_read_header(AVFormatContext *s,
     unsigned int fourcc_tag;
     unsigned int size;
     AVStream *st;
-    unsigned char preamble[WC3_PREAMBLE_SIZE];
     char buffer[513];
     int ret = 0;
     int current_palette = 0;
@@ -152,11 +160,8 @@ static int wc3_read_header(AVFormatContext *s,
 
     /* traverse through the chunks and load the header information before
      * the first BRCH tag */
-    if ((ret = get_buffer(pb, preamble, WC3_PREAMBLE_SIZE)) !=
-        WC3_PREAMBLE_SIZE)
-        return AVERROR(EIO);
-    fourcc_tag = AV_RL32(&preamble[0]);
-    size = (AV_RB32(&preamble[4]) + 1) & (~1);
+    fourcc_tag = get_le32(pb);
+    size = (get_be32(pb) + 1) & (~1);
 
     do {
         switch (fourcc_tag) {
@@ -170,9 +175,7 @@ static int wc3_read_header(AVFormatContext *s,
         case PC__TAG:
             /* need the number of palettes */
             url_fseek(pb, 8, SEEK_CUR);
-            if ((ret = get_buffer(pb, preamble, 4)) != 4)
-                return AVERROR(EIO);
-            wc3->palette_count = AV_RL32(&preamble[0]);
+            wc3->palette_count = get_le32(pb);
             if((unsigned)wc3->palette_count >= UINT_MAX / PALETTE_SIZE){
                 wc3->palette_count= 0;
                 return -1;
@@ -194,11 +197,8 @@ static int wc3_read_header(AVFormatContext *s,
 
         case SIZE_TAG:
             /* video resolution override */
-            if ((ret = get_buffer(pb, preamble, WC3_PREAMBLE_SIZE)) !=
-                WC3_PREAMBLE_SIZE)
-                return AVERROR(EIO);
-            wc3->width = AV_RL32(&preamble[0]);
-            wc3->height = AV_RL32(&preamble[4]);
+            wc3->width  = get_le32(pb);
+            wc3->height = get_le32(pb);
             break;
 
         case PALT_TAG:
@@ -224,18 +224,17 @@ static int wc3_read_header(AVFormatContext *s,
 
         default:
             av_log(s, AV_LOG_ERROR, "  unrecognized WC3 chunk: %c%c%c%c (0x%02X%02X%02X%02X)\n",
-                preamble[0], preamble[1], preamble[2], preamble[3],
-                preamble[0], preamble[1], preamble[2], preamble[3]);
+                (uint8_t)fourcc_tag, (uint8_t)(fourcc_tag >> 8), (uint8_t)(fourcc_tag >> 16), (uint8_t)(fourcc_tag >> 24),
+                (uint8_t)fourcc_tag, (uint8_t)(fourcc_tag >> 8), (uint8_t)(fourcc_tag >> 16), (uint8_t)(fourcc_tag >> 24));
             return AVERROR_INVALIDDATA;
             break;
         }
 
-        if ((ret = get_buffer(pb, preamble, WC3_PREAMBLE_SIZE)) !=
-            WC3_PREAMBLE_SIZE)
-            return AVERROR(EIO);
-        fourcc_tag = AV_RL32(&preamble[0]);
+        fourcc_tag = get_le32(pb);
         /* chunk sizes are 16-bit aligned */
-        size = (AV_RB32(&preamble[4]) + 1) & (~1);
+        size = (get_be32(pb) + 1) & (~1);
+        if (url_feof(pb))
+            return AVERROR(EIO);
 
     } while (fourcc_tag != BRCH_TAG);
 
@@ -281,7 +280,6 @@ static int wc3_read_packet(AVFormatContext *s,
     unsigned int size;
     int packet_read = 0;
     int ret = 0;
-    unsigned char preamble[WC3_PREAMBLE_SIZE];
     unsigned char text[1024];
     unsigned int palette_number;
     int i;
@@ -290,14 +288,11 @@ static int wc3_read_packet(AVFormatContext *s,
 
     while (!packet_read) {
 
-        /* get the next chunk preamble */
-        if ((ret = get_buffer(pb, preamble, WC3_PREAMBLE_SIZE)) !=
-            WC3_PREAMBLE_SIZE)
-            ret = AVERROR(EIO);
-
-        fourcc_tag = AV_RL32(&preamble[0]);
+        fourcc_tag = get_le32(pb);
         /* chunk sizes are 16-bit aligned */
-        size = (AV_RB32(&preamble[4]) + 1) & (~1);
+        size = (get_be32(pb) + 1) & (~1);
+        if (url_feof(pb))
+            return AVERROR(EIO);
 
         switch (fourcc_tag) {
 
@@ -307,9 +302,7 @@ static int wc3_read_packet(AVFormatContext *s,
 
         case SHOT_TAG:
             /* load up new palette */
-            if ((ret = get_buffer(pb, preamble, 4)) != 4)
-                return AVERROR(EIO);
-            palette_number = AV_RL32(&preamble[0]);
+            palette_number = get_le32(pb);
             if (palette_number >= wc3->palette_count)
                 return AVERROR_INVALIDDATA;
             base_palette_index = palette_number * PALETTE_COUNT * 3;
@@ -327,8 +320,6 @@ static int wc3_read_packet(AVFormatContext *s,
             ret= av_get_packet(pb, pkt, size);
             pkt->stream_index = wc3->video_stream_index;
             pkt->pts = wc3->pts;
-            if (ret != size)
-                ret = AVERROR(EIO);
             packet_read = 1;
             break;
 
@@ -356,8 +347,6 @@ static int wc3_read_packet(AVFormatContext *s,
             ret= av_get_packet(pb, pkt, size);
             pkt->stream_index = wc3->audio_stream_index;
             pkt->pts = wc3->pts;
-            if (ret != size)
-                ret = AVERROR(EIO);
 
             /* time to advance pts */
             wc3->pts++;
@@ -367,8 +356,8 @@ static int wc3_read_packet(AVFormatContext *s,
 
         default:
             av_log (s, AV_LOG_ERROR, "  unrecognized WC3 chunk: %c%c%c%c (0x%02X%02X%02X%02X)\n",
-                preamble[0], preamble[1], preamble[2], preamble[3],
-                preamble[0], preamble[1], preamble[2], preamble[3]);
+                (uint8_t)fourcc_tag, (uint8_t)(fourcc_tag >> 8), (uint8_t)(fourcc_tag >> 16), (uint8_t)(fourcc_tag >> 24),
+                (uint8_t)fourcc_tag, (uint8_t)(fourcc_tag >> 8), (uint8_t)(fourcc_tag >> 16), (uint8_t)(fourcc_tag >> 24));
             ret = AVERROR_INVALIDDATA;
             packet_read = 1;
             break;

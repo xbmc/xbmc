@@ -213,6 +213,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\Source\Core\PltIconsData.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\Source\Core\PltLeaks.cpp"
 					>
 				</File>
@@ -340,6 +344,14 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Source\Core\PltArgument.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Core\PltConstants.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Core\PltConstants.h"
 					>
 				</File>
 				<File
@@ -508,6 +520,34 @@
 				>
 				<File
 					RelativePath="..\..\..\..\Source\Devices\MediaConnect\PltMediaConnect.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="FrameStreamer"
+				>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameBuffer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameBuffer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameServer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameServer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameStream.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Source\Devices\FrameStreamer\PltFrameStream.h"
 					>
 				</File>
 			</Filter>

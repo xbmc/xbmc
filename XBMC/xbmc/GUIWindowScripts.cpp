@@ -29,6 +29,8 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "ScriptSettings.h"
+#include "GUIDialogPluginSettings.h"
 
 using namespace XFILE;
 
@@ -210,6 +212,17 @@ bool CGUIWindowScripts::GetDirectory(const CStdString& strDirectory, CFileItemLi
 void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
+
+  // add script settings item
+  CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
+  if (item && item->IsPythonScript())
+  {
+    CStdString path, filename;
+    CUtil::Split(item->m_strPath, path, filename);
+    if (CScriptSettings::SettingsExist(path))
+      buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1049);
+  }
+
   buttons.Add(CONTEXT_BUTTON_INFO, 654);
 }
 
@@ -218,6 +231,13 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   if (button == CONTEXT_BUTTON_INFO)
   {
     OnInfo();
+    return true;
+  }
+  else if (button == CONTEXT_BUTTON_SCRIPT_SETTINGS)
+  {
+    CStdString path, filename;
+    CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
+    CGUIDialogPluginSettings::ShowAndGetInput(path);
     return true;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);

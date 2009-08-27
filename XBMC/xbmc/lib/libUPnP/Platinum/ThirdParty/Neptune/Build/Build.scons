@@ -151,7 +151,7 @@ Import("env")
 env['NPT_EXTRA_LIBS'] = []
 
 if (env['build_config'] == 'Debug'):
-    env.AppendUnique(CPPDEFINES=['NPT_DEBUG'])
+    env.AppendUnique(CPPDEFINES=['NPT_DEBUG', 'NPT_CONFIG_ENABLE_LOGGING'])
 
 ### try to read in any target specific configuration
 target_config_file = env.GetBuildPath('#/Build/Targets/'+env['target']+'/Config.scons')
@@ -161,6 +161,28 @@ if os.path.exists(target_config_file):
 
 #######################################################
 # modules
+#
+# Usage:
+#
+# The LibraryModule() function declares a code module
+# The included_modules parameter is a list of all the modules and/or directories
+# that will be added to the include path when building this module AND to
+# the include path of any other module that depends on this one.
+# The linked_modules parameter is a list of all the modules and/or directories
+# that are necessary to build this module. These modules will be added to
+# the include path of this module, but not to that of the modules that depend
+# on this module. The modules that depend on this module, however, will 
+# automatically link with the linked_modules. 
+# Note that the included_modules list is automatically added to the 
+# linked_modules list, so that you do not need to list in linked_modules
+# the modules that are already listed in included_modules.
+# If a module needs to export an include path to its dependents that
+# is not a module that the dependent can link with (ex: an include dir),
+# list it in the included_only_modules.
+# To summarize: included_modules should list all the modules that users
+# of the public interface should depend on; linked_modules should list
+# all the modules not listed in included_modules that are used by the
+# module's implementation only.
 #######################################################
 
 LibraryModule(name                  = 'Zlib',
@@ -178,8 +200,9 @@ LibraryModule(name                  = 'Neptune',
               extra_cpp_defines     = extra_cpp_flags,
               linked_modules        = env['NPT_EXTRA_LIBS']+['Zlib'])
            
-for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho']:
+for app in ['NetPump', 'NetConfig', 'NetPing', 'NetEcho', 'MiniHttpServer']:
     Application(app, 'Source/Apps/'+app)
     
 for test in ['Arrays1', 'BufferedStreams1', 'HttpClient1', 'HttpServer1', 'Lists1', 'Maps1', 'Misc1', 'RingBuffer1', 'Strings1', 'Xml1', 'Udp1', 'Threads1', 'Queue1', 'Messages1', 'Messages2', 'Url1', 'Zip1']:
     Application(test+'Test', 'Source/Tests/'+test)
+

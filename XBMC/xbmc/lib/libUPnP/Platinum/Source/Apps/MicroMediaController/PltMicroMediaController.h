@@ -72,7 +72,9 @@ private:
 /*----------------------------------------------------------------------
  |   PLT_MicroMediaController
  +---------------------------------------------------------------------*/
-class PLT_MicroMediaController : public PLT_MediaControllerListener
+class PLT_MicroMediaController : public PLT_SyncMediaBrowser,
+                                 public PLT_MediaController,
+                                 public PLT_MediaControllerDelegate
 {
 public:
     PLT_MicroMediaController(PLT_CtrlPointReference& ctrlPoint);
@@ -80,9 +82,11 @@ public:
 
     void ProcessCommandLoop();
 
-    // PLT_MediaControllerListener
-    void OnMRAddedRemoved(PLT_DeviceDataReference& device, int added);
-    void OnMRStateVariablesChanged(PLT_Service* /* service */, NPT_List<PLT_StateVariable*>* /* vars */) {};
+    // PLT_MediaControllerInterface
+    bool OnMRAdded(PLT_DeviceDataReference& device);
+    void OnMRRemoved(PLT_DeviceDataReference& device);
+    void OnMRStateVariablesChanged(PLT_Service* /* service */, 
+                                   NPT_List<PLT_StateVariable*>* /* vars */) {};
 
 private:
     const char* ChooseIDFromTable(PLT_StringMap& table);
@@ -99,6 +103,7 @@ private:
     void    HandleCmd_getms();
     void    HandleCmd_setms();
     void    HandleCmd_ls();
+    void    HandleCmd_info();
     void    HandleCmd_cd();
     void    HandleCmd_cdup();
     void    HandleCmd_pwd();
@@ -108,6 +113,8 @@ private:
     void    HandleCmd_open();
     void    HandleCmd_play();
     void    HandleCmd_stop();
+    void    HandleCmd_mute();
+    void    HandleCmd_unmute();
 
 private:
     /* The tables of known devices on the network.  These are updated via the
@@ -116,12 +123,6 @@ private:
      */
     NPT_Lock<PLT_DeviceMap> m_MediaServers;
     NPT_Lock<PLT_DeviceMap> m_MediaRenderers;
-
-    /* The UPnP MediaServer control point. */
-    PLT_SyncMediaBrowser*   m_MediaBrowser;
-
-    /* The UPnP MediaRenderer control point. */
-    PLT_MediaController*    m_MediaController;
 
     /* The currently selected media server as well as 
      * a lock.  If you ever want to hold both the m_CurMediaRendererLock lock and the 

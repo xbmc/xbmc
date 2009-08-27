@@ -171,9 +171,8 @@ public:
   bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
   bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
-  int GetSongsCount();
   int GetKaraokeSongsCount();
-  int GetSongsCount(const CStdString& strWhere);
+  int GetSongsCount(const CStdString& strWhere = "");
   unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
 
   bool GetAlbumPath(long idAlbum, CStdString &path);
@@ -240,7 +239,7 @@ private:
   bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);
   long GetSongIDFromPath(const CStdString &filePath);
 
-    // Fields should be ordered as they
+  // Fields should be ordered as they
   // appear in the songview
   enum _SongFields
   {

@@ -53,7 +53,7 @@ void CDVDVideoPPFFmpeg::Dispose()
     {
       if( m_FrameBuffer.data[i] )
       {
-        delete m_FrameBuffer.data[i];
+        _aligned_free(m_FrameBuffer.data[i]);
         m_FrameBuffer.data[i] = NULL;
         m_FrameBuffer.iLineSize[i] = 0;
       }
@@ -94,16 +94,17 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
 }
 
 
-void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
+bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
 {
-
-
   m_pSource =  pPicture;
+
+  if(m_pSource->format != DVDVideoPicture::FMT_YUV420P)
+    return false;
 
   if( !CheckInit(m_pSource->iWidth, m_pSource->iHeight) )
   {
     CLog::Log(LOGERROR, "Initialization of ffmpeg postprocessing failed");
-    return;
+    return false;
   }
 
   //If no target was set or we are using internal buffer, make sure it's correctly sized
@@ -114,7 +115,7 @@ void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
     else
     {
       m_pTarget = NULL;
-      return;
+      return false;
     }
   }
 
@@ -134,8 +135,8 @@ void CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
   m_pTarget->iDisplayWidth = m_pSource->iDisplayWidth;
   m_pTarget->pts = m_pSource->pts;
   m_pTarget->iGroupId = m_pSource->iGroupId;
-
-
+  m_pTarget->format = DVDVideoPicture::FMT_YUV420P;
+  return true;
 }
 
 
@@ -165,11 +166,9 @@ bool CDVDVideoPPFFmpeg::CheckFrameBuffer(const DVDVideoPicture* pSource)
     m_FrameBuffer.iWidth = pSource->iWidth;
     m_FrameBuffer.iHeight = pSource->iHeight;
 
-    unsigned int iPixels = pSource->iWidth*pSource->iHeight;
-
-    m_FrameBuffer.data[0] = new BYTE[iPixels];    //Y
-    m_FrameBuffer.data[1] = new BYTE[iPixels/4];  //U
-    m_FrameBuffer.data[2] = new BYTE[iPixels/4];  //V
+    m_FrameBuffer.data[0] = (BYTE*)_aligned_malloc(m_FrameBuffer.iLineSize[0] * m_FrameBuffer.iHeight  , 16);
+    m_FrameBuffer.data[1] = (BYTE*)_aligned_malloc(m_FrameBuffer.iLineSize[1] * m_FrameBuffer.iHeight/2, 16);
+    m_FrameBuffer.data[2] = (BYTE*)_aligned_malloc(m_FrameBuffer.iLineSize[2] * m_FrameBuffer.iHeight/2, 16);
 
     if( !m_FrameBuffer.data[0] || !m_FrameBuffer.data[1] || !m_FrameBuffer.data[2])
     {
@@ -177,10 +176,6 @@ bool CDVDVideoPPFFmpeg::CheckFrameBuffer(const DVDVideoPicture* pSource)
       return false;
     }
 
-    //Set all data to 0 for less artifacts.. hmm.. what is black in YUV??
-    memset( m_FrameBuffer.data[0], 0, iPixels );
-    memset( m_FrameBuffer.data[1], 0, iPixels/4 );
-    memset( m_FrameBuffer.data[2], 0, iPixels/4 );
     m_FrameBuffer.iFlags |= DVP_FLAG_ALLOCATED;
   }
 

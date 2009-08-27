@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: succo-->
 <!--Email: succo69@libero.it-->
-<!--Date of translation: 03/25/2009-->
+<!--Date of translation: 07/10/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 18906-->
+<!--Based on english strings version 21415-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -287,7 +287,7 @@
   <string id="354">Matrix trails</string>
   <string id="355">Inattività per salvaschermo</string>
   <string id="356">Modalità salvaschermo</string>
-  <string id="357">Autospegnimento per inattività</string>
+  <string id="357">Timer spegnimento</string>
   <string id="358">Tutti gli album</string>
   <string id="359">Album aggiunti di recente</string>
   <string id="360">Salvaschermo</string>
@@ -733,6 +733,7 @@
   <string id="1046">Access point</string>
   <string id="1047">Altro...</string>
   <string id="1048">Username web server</string>
+  <string id="1049">Impostazioni script</string>
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
   <string id="1203">Default username</string>
@@ -798,6 +799,9 @@
   <string id="1415">Acquerugiola</string>
   <string id="1416">Nebbie</string>
   <string id="1417">Grani</string>
+  <string id="1418">Tempeste</string>
+  <string id="1419">Piogge</string>
+  <string id="1450">Abilita risparmio energia quando inattivo</string>
   <string id="2050">Durata:</string>
   <string id="4501">Tipo LCD</string>
   <string id="10000">Home</string>
@@ -953,7 +957,7 @@
   <string id="13005">Spegni</string>
   <string id="13006">Dashboard</string>
   <string id="13007">Usa percorso dashboard personale</string>
-  <string id="13008">Tipo di spegnimento</string>
+  <string id="13008">Funzionalità spegnimento</string>
   <string id="13009">Spegni</string>
   <string id="13010">Iberna</string>
   <string id="13011">Sospendi</string>
@@ -972,7 +976,7 @@
   <string id="13106">Disattivato</string>
   <string id="13107">Attivo durante la riproduzione video</string>
   <string id="13108">Sempre attivo</string>
-  <string id="13109">Prova risoluzione</string>
+  <string id="13109">Prova e applica risoluzione</string>
   <string id="13110">Salva risoluzione?</string>
   <string id="13111">Vuoi mantenere questa risoluzione?</string>
   <string id="13112">Ridimensionamento software di alta qualità</string>
@@ -1068,7 +1072,7 @@
   <string id="13303">- Font</string>
   <string id="13304">Abilita inversione in stringhe bidirezionali</string>
   <string id="13305">Abilita i feed RSS</string>
-  <string id="13306">Nascondi oggetti delle sottocartelle</string>
+  <string id="13306">Nascondi icone cartella superiore</string>
   <string id="13307">Stile della lista tracce</string>
   <string id="13308">Vuoi riavviare il sistema</string>
   <string id="13309">invece di XBMC?</string>
@@ -1170,8 +1174,19 @@ per questo effetto grafico</string>
   <string id="13417">Sfumatura di base (ARB)</string>
   <string id="13418">Sfumatura avanzata (GLSL)</string>
   <string id="13419">Software</string>
-  <string id="13420">Espelli</string>
+  <string id="13420">Rimozione sicura</string>
   <string id="13421">VDPAU</string>
+  <string id="13500">Metodo di sincronizzazione A/V</string>
+  <string id="13501">Clock audio</string>
+  <string id="13502">Clock video (Lascia/Aggiungi audio)</string>
+  <string id="13503">Clock video (Ricampiona audio)</string>
+  <string id="13504">Ricampionamento massimo (%)</string>
+  <string id="13505">Qualità ricampionamento</string>
+  <string id="13506">Bassa</string>
+  <string id="13507">Media</string>
+  <string id="13508">Alta</string>
+  <string id="13509">Molto alta</string>
+  <string id="13510">Sinc. suono all'immagine</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Modo</string>
   <string id="13602">Sempre attivo</string>
@@ -1179,6 +1194,7 @@ per questo effetto grafico</string>
   <string id="13610">Disabilitato</string>
   <string id="13611">Standard</string>
   <string id="13612">Telecomando Universale</string>
+  <string id="13613">Telecomando Multi (Harmony)</string>
   <string id="13620">Errore Apple Remote</string>
   <string id="13621">Il supporto per Apple Remote non è stato attivato.</string>
   <string id="14000">Unisci volumi</string>
@@ -1412,6 +1428,11 @@ per questo effetto grafico</string>
   <string id="15214">Perfeziona sincronizzazione A/V</string>
   <string id="15215">Nascondi nomi dei files in vista ad icone</string>
   <string id="15216">Esegui in modalità party</string>
+  <string id="15217">Invia canzoni a Libre.fm</string>
+  <string id="15218">Nome utente di Libre.fm</string>
+  <string id="15219">Password di Libre.fm</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
   <string id="15250">Invia radio Last.fm a Last.fm</string>
   <string id="15251">Connessione a Last.fm...</string>
   <string id="15252">Selezione stazione...</string>
@@ -1869,6 +1890,7 @@ per questo effetto grafico</string>
   <string id="20430">Esporta immagini e fanart?</string>
   <string id="20431">Sovrascrivi file?</string>
   <string id="20432">Escludi percorso dagli aggiornamenti dell'archivio</string>
+  <string id="20433">Estrai unformazioni metadata</string>
   <string id="21330">Mostra i files e le directory nascoste</string>
   <string id="21331">TuxBox client</string>
   <string id="21332">ATTENZIONE: il dispositivo TuxBox è in modalità registrazione!</string>
@@ -1960,6 +1982,12 @@ per questo effetto grafico</string>
   <string id="21440">Cartella home</string>
   <string id="21441">Conteggio visti</string>
   <string id="21442">Titolo episodio</string>
+  <string id="21443">Risoluzione video</string>
+  <string id="21444">Canali audio</string>
+  <string id="21445">Codec video</string>
+  <string id="21446">Codec audio</string>
+  <string id="21447">Lingua audio</string>
+  <string id="21448">Lingua sottotitoli</string>
   <string id="21800">Nome file</string>
   <string id="21801">Percorso file</string>
   <string id="21802">Dimensione file</string>
@@ -2069,7 +2097,27 @@ per questo effetto grafico</string>
   <string id="22041">bianco/rosso</string>
   <string id="22042">bianco/blu</string>
   <string id="22043">nero/bianco</string>
+  <string id="23000">Plugin meteo</string>
+  <string id="23001">- Impostazioni plugin</string>
   <string id="29800">Modo Archivio</string>
   <string id="29801">Tastiera QWERTY</string>
   <string id="29999">Applica impostazioni flicker filter ai giochi</string>
+  <string id="30011">Durata ricerca</string>
+  <string id="33001">Qualità trailer</string>
+  <string id="33002">Stream</string>
+  <string id="33003">Scarica</string>
+  <string id="33004">Scarica e avvia</string>
+  <string id="33005">Scarica e salva</string>
+  <string id="33006">Oggi</string>
+  <string id="33007">Domani</string>
+  <string id="33008">Salvataggio</string>
+  <string id="33009">Copia</string>
+  <string id="33010">Imposta directory download</string>
+  <string id="33012">Breve</string>
+  <string id="33013">Lungo</string>
+  <string id="33014">Usa DVD player invece del player normale</string>
+  <string id="33015">Richiedi download prima di avviare video</string>
+  <string id="33016">Clip</string>
+  <string id="33017">Riavvia plugin per abilitarlo</string>
+  <string id="33018">Clip</string>
 </strings>

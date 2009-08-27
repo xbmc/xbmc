@@ -96,6 +96,8 @@
 #include "WINDirectSound.h"
 #endif
 #include <map>
+#include "ScriptSettings.h"
+#include "GUIDialogPluginSettings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -907,7 +909,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("weather.plugin"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin", false));
+      FillInWeatherPlugins(pControl, g_guiSettings.GetString("weather.plugin"));
     }
   }
 
@@ -1320,7 +1322,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("weather.plugin"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-      g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
+      if (pControl->GetCurrentLabel().Equals(g_localizeStrings.Get(13611)))
+        g_guiSettings.SetString("weather.plugin", "");
+      else
+        g_guiSettings.SetString("weather.plugin", pControl->GetCurrentLabel());
     }
     else if (strSetting.Equals("system.leddisableonplayback"))
     {
@@ -1447,7 +1452,14 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
-    }      
+    }
+    else if (strSetting.Equals("weather.pluginsettings"))
+    {
+      // Create our base path
+      CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
+    }
   }
 }
 
@@ -1492,9 +1504,16 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       g_weatherManager.ResetTimer();
     }
   }
-
-  if (strSetting.Equals("weather.plugin"))
+  else if (strSetting.Equals("weather.plugin"))
   {
+    g_weatherManager.ResetTimer();
+  }
+  else if (strSetting.Equals("weather.pluginsettings"))
+  {
+    // Create our base path
+    CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
+    CGUIDialogPluginSettings::ShowAndGetInput(basepath);
+    // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
     g_weatherManager.ResetTimer();
   }
 
@@ -4047,7 +4066,7 @@ void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pContro
   int k=0;
   pControl->Clear();
   // add our disable option
-  pControl->AddLabel(g_localizeStrings.Get(1223), j++);
+  pControl->AddLabel(g_localizeStrings.Get(13611), j++);
 
   //find weather plugins....
   CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);

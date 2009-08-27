@@ -266,6 +266,10 @@
 
 #define ACTION_RECORD                 170
 
+#define ACTION_PASTE                  180
+#define ACTION_NEXT_CONTROL           181
+#define ACTION_PREV_CONTROL           182
+
 #define ACTION_TOGGLE_FULLSCREEN      199 // switch 2 desktop resolution
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
 #define ACTION_SCAN_ITEM              201 // scan item

@@ -74,7 +74,7 @@ bool CWINFileSMB::Open(const CURL& url)
 
   if (!m_hFile.isValid())
   {
-    CLog::Log(LOGINFO,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
+    CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file '%s' Error '%d%",strWFile.c_str(), GetLastError());
     return false;
   }
 
@@ -127,7 +127,7 @@ bool CWINFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
 
   if (!m_hFile.isValid())
   {
-    CLog::Log(LOGINFO,"CWINFileSMB: Unable to open file for writing '%s' Error '%d%",strWPath.c_str(), GetLastError());
+    CLog::Log(LOGERROR,"CWINFileSMB: Unable to open file for writing '%s' Error '%d%",strWPath.c_str(), GetLastError());
     return false;
   }
 

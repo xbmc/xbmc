@@ -1,10 +1,6 @@
-
-#ifdef _LINUX
-#define __declspec(x)
-#endif
+#include "xbmc_interface.h"
 
 extern "C" {
-#include "mpcdec/mpcdec.h"
   bool __declspec(dllexport) Open(mpc_decoder **decoder, mpc_reader *reader, mpc_streaminfo *info, double *timeinseconds)
   {
     if (!reader || !decoder || !info) return false;

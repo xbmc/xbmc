@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../../ -I../../../../ -I../../../../linux -I../../../../../guilib
+INCLUDES=-I. -I../../ -I../../../../ -I../../../ffmpeg -I../../../../linux -I../../../../../guilib
 
 SRCS=	DVDOverlayCodecCC.cpp \
 	DVDOverlayCodecFFmpeg.cpp \

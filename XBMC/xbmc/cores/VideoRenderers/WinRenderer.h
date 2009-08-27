@@ -21,7 +21,7 @@
  *
  */
 
-#ifndef _LINUX
+#if !defined(_LINUX) && !defined(HAS_SDL)
 
 #include "GraphicContext.h"
 
@@ -124,7 +124,7 @@ extern YUVCOEF yuv_coef_smtp240m;
 class CWinRenderer
 {
 public:
-  CWinRenderer(LPDIRECT3DDEVICE8 pDevice);
+  CWinRenderer(LPDIRECT3DDEVICE9 pDevice);
   ~CWinRenderer();
 
   virtual void GetVideoRect(RECT &rs, RECT &rd);
@@ -132,7 +132,7 @@ public:
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
-  void CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(LPDIRECT3DSURFACE9 surface, unsigned int width, unsigned int height);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
@@ -144,6 +144,12 @@ public:
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
+
+  // TODO:DIRECTX - implement these
+  virtual bool         IsConfigured() { return false; } 
+  virtual bool         SupportsBrightness() { return false; }
+  virtual bool         SupportsContrast() { return false; }
+  virtual bool         SupportsGamma() { return false; }
 
   void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
@@ -182,8 +188,8 @@ protected:
   bool m_bConfigured;
 
   // OSD stuff
-  LPDIRECT3DTEXTURE8 m_pOSDYTexture[NUM_BUFFERS];
-  LPDIRECT3DTEXTURE8 m_pOSDATexture[NUM_BUFFERS];
+  LPDIRECT3DTEXTURE9 m_pOSDYTexture[NUM_BUFFERS];
+  LPDIRECT3DTEXTURE9 m_pOSDATexture[NUM_BUFFERS];
   float m_OSDWidth;
   float m_OSDHeight;
   DRAWRECT m_OSDRect;
@@ -193,7 +199,7 @@ protected:
   int m_NumOSDBuffers;
   bool m_OSDRendered;
 
-  typedef LPDIRECT3DTEXTURE8 YUVPLANES[MAX_PLANES];
+  typedef LPDIRECT3DTEXTURE9 YUVPLANES[MAX_PLANES];
   typedef YUVPLANES          YUVBUFFERS[NUM_BUFFERS];
 
   #define PLANE_Y 0
@@ -209,10 +215,10 @@ protected:
   YUVBUFFERS m_YUVTexture;
 
   // render device
-  LPDIRECT3DDEVICE8 m_pD3DDevice;
+  LPDIRECT3DDEVICE9 m_pD3DDevice;
 
   // pixel shader (low memory shader used in all renderers while in GUI)
-  DWORD m_hLowMemShader;
+  IDirect3DPixelShader9 *m_lowMemShader;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
@@ -222,7 +228,7 @@ protected:
 class CPixelShaderRenderer : public CWinRenderer
 {
 public:
-  CPixelShaderRenderer(LPDIRECT3DDEVICE8 pDevice);
+  CPixelShaderRenderer(LPDIRECT3DDEVICE9 pDevice);
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
 
 protected:

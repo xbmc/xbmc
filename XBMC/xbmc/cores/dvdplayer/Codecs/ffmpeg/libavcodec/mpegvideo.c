@@ -81,6 +81,7 @@ const enum PixelFormat ff_pixfmt_list_420[] = {
 };
 
 const enum PixelFormat ff_hwaccel_pixfmt_list_420[] = {
+    PIX_FMT_VAAPI_VLD,
     PIX_FMT_YUV420P,
     PIX_FMT_NONE
 };
@@ -165,10 +166,60 @@ void ff_copy_picture(Picture *dst, Picture *src){
 }
 
 /**
+ * Releases a frame buffer
+ */
+static void free_frame_buffer(MpegEncContext *s, Picture *pic)
+{
+    s->avctx->release_buffer(s->avctx, (AVFrame*)pic);
+    av_freep(&pic->hwaccel_picture_private);
+}
+
+/**
+ * Allocates a frame buffer
+ */
+static int alloc_frame_buffer(MpegEncContext *s, Picture *pic)
+{
+    int r;
+
+    if (s->avctx->hwaccel) {
+        assert(!pic->hwaccel_picture_private);
+        if (s->avctx->hwaccel->priv_data_size) {
+            pic->hwaccel_picture_private = av_mallocz(s->avctx->hwaccel->priv_data_size);
+            if (!pic->hwaccel_picture_private) {
+                av_log(s->avctx, AV_LOG_ERROR, "alloc_frame_buffer() failed (hwaccel private data allocation)\n");
+                return -1;
+            }
+        }
+    }
+
+    r = s->avctx->get_buffer(s->avctx, (AVFrame*)pic);
+
+    if (r<0 || !pic->age || !pic->type || !pic->data[0]) {
+        av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed (%d %d %d %p)\n", r, pic->age, pic->type, pic->data[0]);
+        av_freep(&pic->hwaccel_picture_private);
+        return -1;
+    }
+
+    if (s->linesize && (s->linesize != pic->linesize[0] || s->uvlinesize != pic->linesize[1])) {
+        av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed (stride changed)\n");
+        free_frame_buffer(s, pic);
+        return -1;
+    }
+
+    if (pic->linesize[1] != pic->linesize[2]) {
+        av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed (uv stride mismatch)\n");
+        free_frame_buffer(s, pic);
+        return -1;
+    }
+
+    return 0;
+}
+
+/**
  * allocates a Picture
  * The pixels are allocated/set by calling get_buffer() if shared=0
  */
-int alloc_picture(MpegEncContext *s, Picture *pic, int shared){
+int ff_alloc_picture(MpegEncContext *s, Picture *pic, int shared){
     const int big_mb_num= s->mb_stride*(s->mb_height+1) + 1; //the +1 is needed so memset(,,stride*height) does not sig11
     const int mb_array_size= s->mb_stride*s->mb_height;
     const int b8_array_size= s->b8_stride*s->mb_height*2;
@@ -183,24 +234,8 @@ int alloc_picture(MpegEncContext *s, Picture *pic, int shared){
     }else{
         assert(!pic->data[0]);
 
-        r= s->avctx->get_buffer(s->avctx, (AVFrame*)pic);
-
-        if(r<0 || !pic->age || !pic->type || !pic->data[0]){
-            av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed (%d %d %d %p)\n", r, pic->age, pic->type, pic->data[0]);
+        if (alloc_frame_buffer(s, pic) < 0)
             return -1;
-        }
-
-        if(s->linesize && (s->linesize != pic->linesize[0] || s->uvlinesize != pic->linesize[1])){
-            av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed (stride changed)\n");
-            s->avctx->release_buffer(s->avctx, (AVFrame*)pic);
-            return -1;
-        }
-
-        if(pic->linesize[1] != pic->linesize[2]){
-            av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed (uv stride mismatch)\n");
-            s->avctx->release_buffer(s->avctx, (AVFrame*)pic);
-            return -1;
-        }
 
         s->linesize  = pic->linesize[0];
         s->uvlinesize= pic->linesize[1];
@@ -249,7 +284,7 @@ int alloc_picture(MpegEncContext *s, Picture *pic, int shared){
     return 0;
 fail: //for the CHECKED_ALLOCZ macro
     if(r>=0)
-        s->avctx->release_buffer(s->avctx, (AVFrame*)pic);
+        free_frame_buffer(s, pic);
     return -1;
 }
 
@@ -260,7 +295,7 @@ static void free_picture(MpegEncContext *s, Picture *pic){
     int i;
 
     if(pic->data[0] && pic->type!=FF_BUFFER_TYPE_SHARED){
-        s->avctx->release_buffer(s->avctx, (AVFrame*)pic);
+        free_frame_buffer(s, pic);
     }
 
     av_freep(&pic->mb_var);
@@ -409,7 +444,10 @@ av_cold int MPV_common_init(MpegEncContext *s)
 {
     int y_size, c_size, yc_size, i, mb_array_size, mv_table_size, x, y, threads;
 
-    s->mb_height = (s->height + 15) / 16;
+    if(s->codec_id == CODEC_ID_MPEG2VIDEO && !s->progressive_sequence)
+        s->mb_height = (s->height + 31) / 32 * 2;
+    else
+        s->mb_height = (s->height + 15) / 16;
 
     if(s->avctx->pix_fmt == PIX_FMT_NONE){
         av_log(s->avctx, AV_LOG_ERROR, "decoding to PIX_FMT_NONE is not supported.\n");
@@ -516,6 +554,9 @@ av_cold int MPV_common_init(MpegEncContext *s)
         }
     }
     CHECKED_ALLOCZ(s->picture, MAX_PICTURE_COUNT * sizeof(Picture))
+    for(i = 0; i < MAX_PICTURE_COUNT; i++) {
+        avcodec_get_frame_defaults((AVFrame *)&s->picture[i]);
+    }
 
     CHECKED_ALLOCZ(s->error_status_table, mb_array_size*sizeof(uint8_t))
 
@@ -831,7 +872,7 @@ static void update_noise_reduction(MpegEncContext *s){
 int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx)
 {
     int i;
-    AVFrame *pic;
+    Picture *pic;
     s->mb_skipped = 0;
 
     assert(s->last_picture_ptr==NULL || s->out_format != FMT_H264 || s->codec_id == CODEC_ID_SVQ3);
@@ -839,7 +880,7 @@ int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx)
     /* mark&release old frames */
     if (s->pict_type != FF_B_TYPE && s->last_picture_ptr && s->last_picture_ptr != s->next_picture_ptr && s->last_picture_ptr->data[0]) {
       if(s->out_format != FMT_H264 || s->codec_id == CODEC_ID_SVQ3){
-        avctx->release_buffer(avctx, (AVFrame*)s->last_picture_ptr);
+          free_frame_buffer(s, s->last_picture_ptr);
 
         /* release forgotten pictures */
         /* if(mpeg124/h263) */
@@ -847,7 +888,7 @@ int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx)
             for(i=0; i<MAX_PICTURE_COUNT; i++){
                 if(s->picture[i].data[0] && &s->picture[i] != s->next_picture_ptr && s->picture[i].reference){
                     av_log(avctx, AV_LOG_ERROR, "releasing zombie picture\n");
-                    avctx->release_buffer(avctx, (AVFrame*)&s->picture[i]);
+                    free_frame_buffer(s, &s->picture[i]);
                 }
             }
         }
@@ -858,15 +899,15 @@ alloc:
         /* release non reference frames */
         for(i=0; i<MAX_PICTURE_COUNT; i++){
             if(s->picture[i].data[0] && !s->picture[i].reference /*&& s->picture[i].type!=FF_BUFFER_TYPE_SHARED*/){
-                s->avctx->release_buffer(s->avctx, (AVFrame*)&s->picture[i]);
+                free_frame_buffer(s, &s->picture[i]);
             }
         }
 
         if(s->current_picture_ptr && s->current_picture_ptr->data[0]==NULL)
-            pic= (AVFrame*)s->current_picture_ptr; //we already have a unused image (maybe it was set before reading the header)
+            pic= s->current_picture_ptr; //we already have a unused image (maybe it was set before reading the header)
         else{
             i= ff_find_unused_picture(s, 0);
-            pic= (AVFrame*)&s->picture[i];
+            pic= &s->picture[i];
         }
 
         pic->reference= 0;
@@ -879,10 +920,10 @@ alloc:
 
         pic->coded_picture_number= s->coded_picture_number++;
 
-        if( alloc_picture(s, (Picture*)pic, 0) < 0)
+        if(ff_alloc_picture(s, pic, 0) < 0)
             return -1;
 
-        s->current_picture_ptr= (Picture*)pic;
+        s->current_picture_ptr= pic;
         s->current_picture_ptr->top_field_first= s->top_field_first; //FIXME use only the vars from current_pic
         s->current_picture_ptr->interlaced_frame= !s->progressive_frame && !s->progressive_sequence;
     }
@@ -996,7 +1037,7 @@ void MPV_frame_end(MpegEncContext *s)
         /* release non-reference frames */
         for(i=0; i<MAX_PICTURE_COUNT; i++){
             if(s->picture[i].data[0] && !s->picture[i].reference /*&& s->picture[i].type!=FF_BUFFER_TYPE_SHARED*/){
-                s->avctx->release_buffer(s->avctx, (AVFrame*)&s->picture[i]);
+                free_frame_buffer(s, &s->picture[i]);
             }
         }
     }
@@ -1096,8 +1137,7 @@ static void draw_arrow(uint8_t *buf, int sx, int sy, int ex, int ey, int w, int 
  */
 void ff_print_debug_info(MpegEncContext *s, AVFrame *pict){
 
-    if(s->avctx->hwaccel) return;
-    if(!pict || !pict->mb_type) return;
+    if(s->avctx->hwaccel || !pict || !pict->mb_type) return;
 
     if(s->avctx->debug&(FF_DEBUG_SKIP | FF_DEBUG_QP | FF_DEBUG_MB_TYPE)){
         int x,y;
@@ -1743,15 +1783,11 @@ static av_always_inline
 void MPV_decode_mb_internal(MpegEncContext *s, DCTELEM block[12][64],
                             int lowres_flag, int is_mpeg12)
 {
-    int mb_x, mb_y;
     const int mb_xy = s->mb_y * s->mb_stride + s->mb_x;
     if(CONFIG_MPEG_XVMC_DECODER && s->avctx->xvmc_acceleration){
         ff_xvmc_decode_mb(s);//xvmc uses pblocks
         return;
     }
-
-    mb_x = s->mb_x;
-    mb_y = s->mb_y;
 
     if(s->avctx->debug&FF_DEBUG_DCT_COEFF) {
        /* save DCT coefficients */
@@ -2069,11 +2105,12 @@ void ff_mpeg_flush(AVCodecContext *avctx){
     for(i=0; i<MAX_PICTURE_COUNT; i++){
        if(s->picture[i].data[0] && (   s->picture[i].type == FF_BUFFER_TYPE_INTERNAL
                                     || s->picture[i].type == FF_BUFFER_TYPE_USER))
-        avctx->release_buffer(avctx, (AVFrame*)&s->picture[i]);
+        free_frame_buffer(s, &s->picture[i]);
     }
     s->current_picture_ptr = s->last_picture_ptr = s->next_picture_ptr = NULL;
 
     s->mb_x= s->mb_y= 0;
+    s->closed_gop= 0;
 
     s->parse_context.state= -1;
     s->parse_context.frame_start_found= 0;

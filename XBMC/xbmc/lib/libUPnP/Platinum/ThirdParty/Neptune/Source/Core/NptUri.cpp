@@ -235,7 +235,7 @@ NPT_Uri::PercentEncode(const char* str, const char* chars, bool encode_percents)
         }
         if (encode) {
             // encode
-            NPT_ByteToHex(c, &escaped[1]);
+            NPT_ByteToHex(c, &escaped[1], true);
             encoded.Append(escaped, 3);
         } else {
             // no encoding required
@@ -377,6 +377,26 @@ NPT_Result
 NPT_UrlQuery::AddField(const char* name, const char* value)
 {
     return m_Fields.Add(Field(name, value));
+}
+
+/*----------------------------------------------------------------------
+|   NPT_UrlQuery::SetField
++---------------------------------------------------------------------*/
+NPT_Result
+NPT_UrlQuery::SetField(const char* name, const char* value)
+{
+    for (NPT_List<Field>::Iterator it = m_Fields.GetFirstItem();
+         it;
+         ++it) {
+         Field& field = *it;
+         if (field.m_Name == name) {
+            field.m_Value = value;
+            return NPT_SUCCESS;
+        }
+    }
+
+    // field not found, add it
+    return AddField(name, value);
 }
 
 /*----------------------------------------------------------------------
@@ -554,8 +574,8 @@ NPT_Url::SetHost(const char* host)
     while (*port && *port != ':') port++;
     if (*port) {
         m_Host.Assign(host, (NPT_Size)(port-host));
-        NPT_UInt32 port_number;
-        if (NPT_SUCCEEDED(NPT_ParseInteger32U(port+1, port_number, false))) {
+        unsigned int port_number;
+        if (NPT_SUCCEEDED(NPT_ParseInteger(port+1, port_number, false))) {
             m_Port = (short)port_number;
         }
     } else {

@@ -22,9 +22,9 @@
 #include "stdafx.h"
 #include "MusicInfoTagLoaderCDDA.h"
 #include "FileSystem/cddb.h"
-#include "DetectDVDType.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
+#include "MediaManager.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
@@ -46,7 +46,7 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
     bool bResult = false;
 
     // Get information for the inserted disc
-    CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
+    CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
     if (pCdInfo == NULL)
       return bResult;
 

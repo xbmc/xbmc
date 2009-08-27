@@ -136,7 +136,7 @@ void CWinRenderManager::SetupScreenshot()
     m_pRenderer->SetupScreenshot();
 }
 
-void CWinRenderManager::CreateThumbnail(LPDIRECT3DSURFACE8 surface, unsigned int width, unsigned int height)
+void CWinRenderManager::CreateThumbnail(SurfacePtr surface, unsigned int width, unsigned int height)
 {
   DWORD locks = ExitCriticalSection(g_graphicsContext);
   CExclusiveLock lock(m_sharedSection);

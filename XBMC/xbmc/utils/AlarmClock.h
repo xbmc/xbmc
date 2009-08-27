@@ -36,7 +36,7 @@ class CAlarmClock : public CThread
 public:
   CAlarmClock();
   ~CAlarmClock();
-  void start(const CStdString& strName, float n_secs, const CStdString& strCommand);
+  void start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent = false);
   inline bool isRunning() const
   {
     return m_bIsRunning;

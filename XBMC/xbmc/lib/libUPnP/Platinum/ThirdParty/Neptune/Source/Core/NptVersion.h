@@ -35,7 +35,7 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#define NPT_NEPTUNE_VERSION        0x01000100
-#define NPT_NEPTUNE_VERSION_STRING "1.0.1"
+#define NPT_NEPTUNE_VERSION        0x01000200
+#define NPT_NEPTUNE_VERSION_STRING "1.0.2"
 
 #endif // _NPT_VERSION_H_

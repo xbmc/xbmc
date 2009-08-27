@@ -124,7 +124,6 @@ CDVDPlayerVideo::CDVDPlayerVideo( CDVDClock* pClock
 
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_iDroppedFrames = 0;
-  m_bDropFrames = true;
   m_fFrameRate = 25;
   m_bAllowFullscreen = false;
   memset(&m_output, 0, sizeof(m_output));
@@ -202,7 +201,12 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   m_messageQueue.Init();
 
   if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
+  {
     g_VideoReferenceClock.Create();
+    //we have to wait for the clock to start otherwise alsa can cause trouble
+    if (!g_VideoReferenceClock.WaitStarted(2000))
+      CLog::Log(LOGDEBUG, "g_VideoReferenceClock didn't start in time");
+  }
 
   CLog::Log(LOGNOTICE, "Creating video thread");
   Create();
@@ -378,6 +382,8 @@ void CDVDPlayerVideo::Process()
       if(m_pVideoCodec)
         m_pVideoCodec->Reset();
       LeaveCriticalSection(&m_critCodecSection);
+      
+      m_pullupCorrection.Flush();
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -420,7 +426,6 @@ void CDVDPlayerVideo::Process()
 #else
       if (m_iNrOfPicturesNotToSkip > 0) bRequestDrop = false;
       if (m_speed < 0)                  bRequestDrop = false;
-      if (m_bDropFrames == false)       bRequestDrop = false;
 #endif
 
       // if player want's us to drop this packet, do so nomatter what
@@ -501,10 +506,11 @@ void CDVDPlayerVideo::Process()
             EINTERLACEMETHOD mInt = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
             if( mInt == VS_INTERLACEMETHOD_DEINTERLACE )
             {
-              mDeinterlace.Process(&picture);
-              mDeinterlace.GetPicture(&picture);
+              if(mDeinterlace.Process(&picture))
+                mDeinterlace.GetPicture(&picture);
             }
-            else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
+            else if( mInt == VS_INTERLACEMETHOD_RENDER_WEAVE 
+                  || mInt == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED )
             {
               /* if we are syncing frames, dvdplayer will be forced to play at a given framerate */
               /* unless we directly sync to the correct pts, we won't get a/v sync as video can never catch up */
@@ -700,7 +706,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // remove any overlays that are out of time
   m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
 
-  if(pSource->iFlags & DVP_FLAG_NONIMAGE)
+  if(pSource->format != DVDVideoPicture::FMT_YUV420P)
     return;
 
   // rendering spu overlay types directly on video memory costs a lot of processing power.
@@ -833,6 +839,21 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
     limited = true;
 
+  // signal to clock what our framerate is, it may want to adjust it's
+  // speed to better match with our video renderer's output speed
+  // TODO - this should be based on m_fFrameRate, as the timestamps
+  //        in the stream matches that better, durations can vary
+  if (m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE)))
+  {
+    //correct any pattern in the timestamps if the videoreferenceclock is running
+    m_pullupCorrection.Add(pts);
+    pts += m_pullupCorrection.Correction();
+  }
+  else
+  {
+    m_pullupCorrection.Flush();
+  }
+  
   //User set delay
   pts += m_iVideoDelay;
 
@@ -843,12 +864,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   iClockSleep = pts - m_pClock->GetClock();  //sleep calculated by pts to clock comparison
   iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
   iFrameDuration = pPicture->iDuration;
-
-  // signal to clock what our framerate is, it may want to adjust it's
-  // speed to better match with our video renderer's output speed
-  // TODO - this should be based on m_fFrameRate, as the timestamps
-  //        in the stream matches that better, durations can vary
-  m_pClock->UpdateFramerate(1.0 / (iFrameDuration / DVD_TIME_BASE));
 
   // correct sleep times based on speed
   if(m_speed)

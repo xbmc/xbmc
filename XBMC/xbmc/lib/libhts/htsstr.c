@@ -22,6 +22,8 @@
 #include <string.h>
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h"
+#elif defined(_MSC_VER)
+#include "msvc.h"
 #endif
 #include "htsstr.h"
 

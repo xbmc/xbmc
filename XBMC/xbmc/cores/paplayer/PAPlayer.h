@@ -65,7 +65,6 @@ public:
   virtual bool IsPaused() const { return m_bPaused; }
   virtual bool HasVideo() const { return false; }
   virtual bool HasAudio() const { return true; }
-  virtual void ToggleFrameDrop() {}
   virtual bool CanSeek();
   virtual void Seek(bool bPlus = true, bool bLargeStep = false);
   virtual void SeekPercentage(float fPercent = 0.0f);
@@ -86,7 +85,7 @@ public:
   virtual int GetChannels();
   virtual int GetBitsPerSample();
   virtual int GetSampleRate();
-  virtual CStdString GetCodecName();
+  virtual CStdString GetAudioCodecName();
   virtual __int64 GetTime();
   virtual void ResetTime();
   virtual void SeekTime(__int64 iTime = 0);

@@ -45,8 +45,6 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 \*-------------------------------------------------------------------------*/
 int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword = NULL, bool stopattwo=false);
 
-bool urarlib_hasmultiple(const char* rarfile, char* libpassword=NULL);
-
 /*-------------------------------------------------------------------------*\
   Free the file list returned by urarlib_list()
   list - The output from urarlib_list()

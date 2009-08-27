@@ -1487,7 +1487,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="20301">Web-Server Verzeichnis (HTTPS)</string>
   <string id="20302">Ordner ist nicht schreibbar:</string>
   <string id="20303">Export Überspringen und fortsetzen?</string>
-  <string id="20304"></string>
+  <string id="20304">RSS Feed</string>
   <string id="20305"></string>
   <string id="20306">Unbekannt. Bitte MD5-Prüfsumme von xbmc.log zu BiosIDs.ini hinzufügen.</string>
   <string id="20307">Sekundärer DNS-Server</string>
@@ -1598,6 +1598,7 @@ Um abzubrechen, drücken Sie die 'Back'-Taste.</string>
   <string id="21335">Möchten Sie nun den Stream starten?</string>
   <string id="21336">Verbinden zu: %s</string>
   <string id="21337">TuxBox-Laufwerk</string>
+  <string id="21338">RSS Feed</string>
   <string id="21356">UPnP Musik</string>
   <string id="21357">UPnP Videos</string>
   <string id="21358">UPnP Bilder</string>

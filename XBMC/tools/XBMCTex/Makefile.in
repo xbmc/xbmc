@@ -1,3 +1,4 @@
+ARCH=@ARCH@
 
 INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/
 DEFINES = -DUSE_SDL
@@ -22,5 +23,9 @@ all: $(TARGET)
 include ../../Makefile.include
 
 $(TARGET): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(MAKE) -f Makefile.osx
+else
 	g++ $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+endif
 

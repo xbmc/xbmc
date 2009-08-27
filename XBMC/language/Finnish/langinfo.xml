@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--Date of translation: 19/4/2009  -->
 <language>
   <charsets>
-    <gui unicodefont="false">CP1252</gui>
+    <gui>CP1252</gui>
     <subtitle>CP1252</subtitle>
   </charsets>
 
@@ -17,8 +18,8 @@
       <datelong>D. MMMM'ta 'YYYY</datelong>
       <time symbolAM="" symbolPM="">H:mm:ss</time>
       <tempunit>C</tempunit>
-      <speedunit>kmh</speedunit>
-      <timezone>GTST</timezone>
+      <speedunit>mps</speedunit>
+      <timezone>EEST</timezone>
      </region>
   </regions>
 

@@ -20,7 +20,8 @@ DEFINES+= \
 	-D_FILE_OFFSET_BITS=64 \
 	-DINSTALL_PATH="\"@prefix@/share/xbmc\"" \
 	@SDL_DEFINES@ \
-	@ARCH_DEFINES@
+	@ARCH_DEFINES@ \
+	@DEFS@ \
 
 ifeq (linux,$(findstring linux, $(ARCH)))
 ifeq ($(ARCH), x86_64-linux)
@@ -120,6 +121,6 @@ distclean_evil:
 	@echo "Done."
 
 distclean:
-	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
+	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(STATICLIB) $(CLEAN_FILES) $(DISTCLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
 	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean || $(MAKE) -C $$d clean); fi ); done
 

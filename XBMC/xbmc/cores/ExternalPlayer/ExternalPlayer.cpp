@@ -42,6 +42,15 @@ CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
   m_clock = 0;
   m_lastTime = 0;
   m_speed = 1;
+  m_filename = "";
+  m_args = "";
+  m_launchFilename = "";
+
+  m_forceontop = false;
+  m_hideconsole = false;
+  m_hidecursor = false;
+  m_hidexbmc = false;
+  m_startupTime = 2000;
 }
 
 CExternalPlayer::~CExternalPlayer()
@@ -56,13 +65,13 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
     m_launchFilename = file.m_strPath;
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_launchFilename.c_str());
 
-    if (g_advancedSettings.m_externalPlayerFilenameReplacers.size() > 0) 
+    if (m_filenameReplacers.size() > 0) 
     {
       CRegExp regExp;
-      for (unsigned int i = 0; i < g_advancedSettings.m_externalPlayerFilenameReplacers.size(); i++)
+      for (unsigned int i = 0; i < m_filenameReplacers.size(); i++)
       {
         std::vector<CStdString> vecSplit;
-        StringUtils::SplitString(g_advancedSettings.m_externalPlayerFilenameReplacers[i], " , ", vecSplit);
+        StringUtils::SplitString(m_filenameReplacers[i], " , ", vecSplit);
 
         // something is wrong, go to next substitution
         if (vecSplit.size() != 4)
@@ -139,28 +148,33 @@ void CExternalPlayer::Process()
   m_clock = 0;
   m_lastTime = timeGetTime();
 
-  CLog::Log(LOGNOTICE, "%s: Filename: %s", __FUNCTION__, g_advancedSettings.m_externalPlayerFilename.c_str());
-  CLog::Log(LOGNOTICE, "%s: Args: %s", __FUNCTION__, g_advancedSettings.m_externalPlayerArgs.c_str());
-  CLog::Log(LOGNOTICE, "%s: Default Audio Player: %s", __FUNCTION__, g_advancedSettings.m_audioDefaultPlayer.c_str());
-  CLog::Log(LOGNOTICE, "%s: Default Video Player: %s", __FUNCTION__, g_advancedSettings.m_videoDefaultPlayer.c_str());
+  CLog::Log(LOGNOTICE, "%s: Player: %s", __FUNCTION__, m_filename.c_str());
+  CLog::Log(LOGNOTICE, "%s: File: %s", __FUNCTION__, m_launchFilename.c_str());
+  CLog::Log(LOGNOTICE, "%s: Args: %s", __FUNCTION__, m_args.c_str());
   CLog::Log(LOGNOTICE, "%s: Start", __FUNCTION__);
 
   // make sure we surround the arguments with quotes where necessary
-  CStdString strFName = g_advancedSettings.m_externalPlayerFilename.c_str();
+  CStdString strFName = m_filename;
   CStdString strFArgs = "\"";
-  strFArgs.append(g_advancedSettings.m_externalPlayerFilename.c_str());
+  strFArgs.append(m_filename);
   strFArgs.append("\" ");
-  strFArgs.append(g_advancedSettings.m_externalPlayerArgs.c_str());
-  strFArgs.append(" \"");
-  strFArgs.append(m_launchFilename.c_str());
-  strFArgs.append("\"");
-
+  strFArgs.append(m_args);
+  
+  if (strFArgs.Find("{0}") != -1)
+    strFArgs.Replace("{0}", m_launchFilename);
+  else
+  {
+    strFArgs.append(" \"");
+    strFArgs.append(m_launchFilename);
+    strFArgs.append("\"");
+  }
+ 
   int iActiveDevice = g_audioContext.GetActiveDevice();
   g_audioContext.SetActiveDevice(CAudioContext::NONE);
 
   BOOL ret = TRUE;
 #if defined(_WIN32PC)
-  if (g_advancedSettings.m_externalPlayerHidecursor)
+  if (m_hidecursor)
   {
     CLog::Log(LOGNOTICE, "%s: Hiding cursor", __FUNCTION__);
     GetCursorPos(&m_ptCursorpos);
@@ -169,12 +183,12 @@ void CExternalPlayer::Process()
   
   m_hwndXbmc = GetForegroundWindow();
 
-  if (g_advancedSettings.m_externalPlayerForceontop && m_hwndXbmc)
+  if (m_forceontop && m_hwndXbmc)
   {
     CLog::Log(LOGNOTICE, "%s: Making XBMC window NOTOPMOST", __FUNCTION__);
     SetWindowPos(m_hwndXbmc,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
   }  
-  if (g_advancedSettings.m_externalPlayerHidexbmc && m_hwndXbmc)
+  if (m_hidexbmc && m_hwndXbmc)
   {
     CLog::Log(LOGNOTICE, "%s: Hiding XBMC window", __FUNCTION__);
     ShowWindow(m_hwndXbmc,SW_HIDE);
@@ -184,14 +198,14 @@ void CExternalPlayer::Process()
 
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
 
-  if ((g_advancedSettings.m_externalPlayerForceontop || g_advancedSettings.m_externalPlayerHidexbmc) && m_hwndXbmc)
+  if ((m_forceontop || m_hidexbmc) && m_hwndXbmc)
   {
-    if (g_advancedSettings.m_externalPlayerHidexbmc)
+    if (m_hidexbmc)
     {
       CLog::Log(LOGNOTICE, "%s: Showing XBMC window", __FUNCTION__);
       ShowWindow(m_hwndXbmc,SW_SHOW);
     }
-    if (g_advancedSettings.m_externalPlayerForceontop)
+    if (m_forceontop)
     {
       CLog::Log(LOGNOTICE, "%s: Making XBMC window TOPMOST", __FUNCTION__);
       SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
@@ -200,7 +214,7 @@ void CExternalPlayer::Process()
   SetFocus(m_hwndXbmc);
   SetForegroundWindow(m_hwndXbmc);
   LockSetForegroundWindow(LSFW_LOCK);
-  if (g_advancedSettings.m_externalPlayerHidecursor)
+  if (m_hidecursor)
   {
     m_xPos = 0;
     m_yPos = 0;
@@ -264,7 +278,7 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   memset(&pi, 0, sizeof(pi));
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
-  if (g_advancedSettings.m_externalPlayerHideconsole)
+  if (m_hideconsole)
   {
     si.wShowWindow=SW_HIDE;
   }
@@ -285,9 +299,9 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   }
   else
   {
-    if (g_advancedSettings.m_externalPlayerStartupTime > 0) 
+    if (m_startupTime > 0) 
     {
-      int res = WaitForSingleObject(pi.hProcess, g_advancedSettings.m_externalPlayerStartupTime);
+      int res = WaitForSingleObject(pi.hProcess, m_startupTime);
       if (res == WAIT_TIMEOUT) 
       {
         // Hopefully by now the player window is now visible above ours; time to lock the GraphicsContext to save CPU cycles,
@@ -434,10 +448,6 @@ void CExternalPlayer::Seek(bool bPlus, bool bLargeStep)
 {
 }
 
-void CExternalPlayer::ToggleFrameDrop()
-{
-}
-
 void CExternalPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   strAudioInfo = "CExternalPlayer:GetAudioInfo";
@@ -517,3 +527,117 @@ bool CExternalPlayer::SetPlayerState(CStdString state)
   return true;
 }
 
+bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
+{
+  XMLUtils::GetString(pConfig, "filename", m_filename); 
+  if (m_filename.length() > 0)
+  {
+    CLog::Log(LOGNOTICE, "ExternalPlayer Filename: %s", m_filename.c_str());
+  }
+  else
+  {
+    CStdString xml;
+    xml<<*pConfig;
+    CLog::Log(LOGERROR, "ExternalPlayer Error: filename element missing from: %s", xml.c_str());
+    return false;
+  }
+
+  XMLUtils::GetString(pConfig, "args", m_args); 
+  XMLUtils::GetBoolean(pConfig, "forceontop", m_forceontop); 
+  XMLUtils::GetBoolean(pConfig, "hideconsole", m_hideconsole); 
+  XMLUtils::GetBoolean(pConfig, "hidecursor", m_hidecursor); 
+  XMLUtils::GetBoolean(pConfig, "hidexbmc", m_hidexbmc); 
+  XMLUtils::GetInt(pConfig,"startuptime", m_startupTime); 
+  if (m_startupTime < 0 || m_startupTime > 5000) 
+    m_startupTime = 2000;
+
+  CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s), Hidexbmc (%s), StartupTime (%d)", 
+          m_forceontop ? "true" : "false",
+          m_hideconsole ? "true" : "false",
+          m_hidecursor ? "true" : "false",
+          m_hidexbmc ? "true" : "false",
+          m_startupTime);
+
+#ifdef _WIN32PC
+  m_filenameReplacers.push_back("^smb:// , / , \\\\ , g");
+  m_filenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
+#endif
+
+  TiXmlElement* pReplacers = pConfig->FirstChildElement("replacers");
+  while (pReplacers)
+  {
+    GetCustomRegexpReplacers(pReplacers, m_filenameReplacers);
+    pReplacers = pReplacers->NextSiblingElement("replacers");
+  }
+
+  return true;
+}
+
+void CExternalPlayer::GetCustomRegexpReplacers(TiXmlElement *pRootElement,
+                                               CStdStringArray& settings)
+{
+  int iAction = 0; // overwrite
+  // for backward compatibility
+  const char* szAppend = pRootElement->Attribute("append");
+  if ((szAppend && stricmp(szAppend, "yes") == 0))
+    iAction = 1;
+  // action takes precedence if both attributes exist
+  const char* szAction = pRootElement->Attribute("action");
+  if (szAction)
+  {
+    iAction = 0; // overwrite
+    if (stricmp(szAction, "append") == 0)
+      iAction = 1; // append
+    else if (stricmp(szAction, "prepend") == 0)
+      iAction = 2; // prepend
+  }
+  if (iAction == 0)
+    settings.clear();
+
+  TiXmlElement* pReplacer = pRootElement->FirstChildElement("replacer");
+  int i = 0;
+  while (pReplacer)
+  {
+    if (pReplacer->FirstChild())
+    {
+      const char* szGlobal = pReplacer->Attribute("global");
+      const char* szStop = pReplacer->Attribute("stop");
+      bool bGlobal = szGlobal && stricmp(szGlobal, "true") == 0;
+      bool bStop = szStop && stricmp(szStop, "true") == 0;
+
+      CStdString strMatch;
+      CStdString strPat;
+      CStdString strRep;
+      XMLUtils::GetString(pReplacer,"match",strMatch);
+      XMLUtils::GetString(pReplacer,"pat",strPat);
+      XMLUtils::GetString(pReplacer,"rep",strRep);
+
+      if (!strPat.IsEmpty() && !strRep.IsEmpty())
+      {
+        CLog::Log(LOGDEBUG,"  Registering replacer:");
+        CLog::Log(LOGDEBUG,"    Match:[%s] Pattern:[%s] Replacement:[%s]", strMatch.c_str(), strPat.c_str(), strRep.c_str());
+        CLog::Log(LOGDEBUG,"    Global:[%s] Stop:[%s]", bGlobal?"true":"false", bStop?"true":"false");
+        // keep literal commas since we use comma as a seperator
+        strMatch.Replace(",",",,");
+        strPat.Replace(",",",,");
+        strRep.Replace(",",",,");
+        
+        CStdString strReplacer = strMatch + " , " + strPat + " , " + strRep + " , " + (bGlobal ? "g" : "") + (bStop ? "s" : "");
+        if (iAction == 2)
+          settings.insert(settings.begin() + i++, 1, strReplacer);
+        else
+          settings.push_back(strReplacer);
+      }
+      else
+      {
+        // error message about missing tag
+        if (strPat.IsEmpty())
+          CLog::Log(LOGERROR,"  Missing <Pat> tag");
+        else
+          CLog::Log(LOGERROR,"  Missing <Rep> tag");
+      }
+    }
+
+    pReplacer = pReplacer->NextSiblingElement("replacer");
+  }
+}

@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../ffmpeg -I../../ -I../../linux -I../../utils -I../../../guilib
+INCLUDES=-I. -I.. -I../../ -I../ffmpeg -I../../linux -I../../utils -I../../../guilib
 
 CXXFLAGS+=-DHAS_VIDEO_PLAYBACK -D__STDC_FORMAT_MACROS
 
@@ -17,7 +17,8 @@ SRCS=	DVDAudio.cpp \
 	DVDPlayerVideo.cpp \
 	DVDStreamInfo.cpp \
 	DVDFileInfo.cpp \
-        DVDPlayerAudioResampler.cpp \
+	DVDPlayerAudioResampler.cpp \
+	DVDTSCorrection.cpp \
 
 LIB=	DVDPlayer.a
 

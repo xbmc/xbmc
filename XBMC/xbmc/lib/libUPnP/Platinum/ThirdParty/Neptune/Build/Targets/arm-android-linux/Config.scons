@@ -1,0 +1,101 @@
+import os
+import re
+import sys
+
+which_gcc_popen = os.popen('which arm-eabi-gcc')
+which_gcc = which_gcc_popen.readline().replace('\n','').replace('\r','')
+which_gcc_popen.close()
+m = re.match(r'(.+)/prebuilt/.+', which_gcc)
+if not m:
+    raise(Exception('incompatible or unavailable prebuilt gcc'))
+DROID_ROOT = m.group(1)
+DROID_TOOLCHAIN = which_gcc.replace('/bin/arm-eabi-gcc','')
+print DROID_TOOLCHAIN
+print 'DROID_ROOT =', DROID_ROOT
+
+DROID_ALIB      = DROID_ROOT+'/out/target/product/generic/obj/lib'
+
+droid_includes = ['system/core/include',
+                  'hardware/libhardware/include',
+                   'hardware/ril/include',
+                   'dalvik/libnativehelper/include',
+                   'frameworks/base/include',
+                   'external/skia/include',
+                   'out/target/product/generic/obj/include',
+                   'bionic/libc/arch-arm/include',
+                   'bionic/libc/include',
+                   'bionic/libstdc++/include',
+                   'bionic/libc/kernel/common',
+                   'bionic/libc/kernel/arch-arm',
+                   'bionic/libm/include',
+                   'bionic/libm/include/arch/arm',
+                   'bionic/libthread_db/include',
+                   'bionic/libm/arm',
+                   'bionic/libm',
+                   'out/target/product/generic/obj/SHARED_LIBRARIES/libm_intermediates']
+
+droid_extras = ['-include', DROID_ROOT+'/system/core/include/arch/linux-arm/AndroidConfig.h',
+                '-march=armv5te',
+                 '-mtune=xscale',
+                 '-msoft-float',
+                 '-mthumb-interwork',
+                 '-fpic',
+                 '-ffunction-sections',
+                 '-funwind-tables',
+                 '-fstack-protector',
+                 '-fmessage-length=0',
+                 '-fno-short-enums']
+
+droid_extras_cpp = ['-fno-exceptions',
+                    '-fno-rtti']
+
+droid_defines = ['-DANDROID',
+                 '-D__ARM_ARCH_5__',
+                 '-D__ARM_ARCH_5T__',
+                 '-D__ARM_ARCH_5E__',
+                 '-D__ARM_ARCH_5TE__']
+
+
+if env['build_config'] == 'Release':
+    droid_optimize = ['-finline-functions',
+                   '-finline-limit=300',
+                   '-fno-inline-functions-called-once',
+                   '-fgcse-after-reload',
+                   '-frerun-cse-after-loop',
+                   '-frename-registers',
+                   '-fomit-frame-pointer',
+                   '-fstrict-aliasing',
+                   '-funswitch-loops']
+else:
+    droid_optimize = []
+
+droid_link = ['-Bdynamic',
+              '-Wl,-T,$DROID/build/core/armelf.x',
+              '-Wl,-dynamic-linker,/system/bin/linker',
+              '-Wl,--gc-sections',
+              '-Wl,-z,nocopyreloc',
+              '-Wl,--no-undefined',
+              '-Wl,-rpath-link=' + DROID_ALIB,
+              '-L' + DROID_ROOT,
+              '-L' + DROID_ALIB,
+              '-nostdlib',
+              DROID_TOOLCHAIN+'/lib/gcc/arm-eabi/4.2.1/interwork/libgcc.a',
+              '-lc',
+              '-lstdc++',
+              '-lm',
+              '-lcutils',
+              DROID_ALIB+'/crtbegin_dynamic.o', DROID_ALIB+'/crtend_android.o']
+
+### Load the tools
+LoadTool('gcc-generic', env, gcc_cross_prefix='arm-eabi', gcc_strict=False)
+
+LoadTool('gcc-generic', env, gcc_cross_prefix='arm-eabi', gcc_strict=False)
+env.AppendUnique(CCFLAGS = ['-I'+DROID_ROOT+'/'+x for x in droid_includes] + droid_extras + droid_defines + droid_optimize )
+env.AppendUnique(CPPFLAGS = droid_extras_cpp)
+env.AppendUnique(LINKFLAGS = droid_link)
+
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'NptStdc[!D]*.cpp',
+                           'System/Bsd':'*.cpp',
+                           'System/Posix':'*.cpp',
+                           'System/Null':'NptNullSerialPort.cpp',
+                           'System/Android':'*.cpp'}

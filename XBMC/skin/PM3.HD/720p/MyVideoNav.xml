@@ -44,11 +44,33 @@
 				<include>VideoThumbnailView</include> <!-- view id = 53 -->
 				<include>WideIconView</include> <!-- view id = 54 -->
 			</control>
+			<control type="grouplist">
+				<description>Media Codec Flagging Images</description>
+				<posx>320</posx>
+				<posy>675</posy>
+				<width>640</width>
+				<itemgap>0</itemgap>
+				<orientation>horizontal</orientation>
+				<include>CodecFlaggingConditions</include>
+				<animation effect="slide" start="0,0" end="-280,0" time="300" tween="quadratic" easing="out" condition="Control.IsVisible(500)">Conditional</animation>
+				<visible>!Control.IsVisible(56) + !Control.IsVisible(55)</visible>
+			</control>
 			<include>AllViewCommonPageControls</include>
 			<include>CommonFileCount</include>
 			<include>ScrollOffsetLabel</include>
 		</control>
 		<control type="group">
+			<control type="grouplist">
+				<description>Media Codec Flagging Images</description>
+				<posx>275</posx>
+				<posy>675</posy>
+				<width>640</width>
+				<itemgap>0</itemgap>
+				<orientation>horizontal</orientation>
+				<include>CodecFlaggingConditions</include>
+				<visible>Control.IsVisible(56) | Control.IsVisible(55)</visible>
+				<animation effect="slide" start="0,0" end="-235,0" time="0" condition="Control.IsVisible(55)">Conditional</animation>
+			</control>
 			<include>Window_OpenClose_Animation</include>
 			<include>EpisodeFanartView_Extras</include>
 			<include>MovieFanartView_Extras</include>
@@ -237,5 +259,15 @@
 			<include>WindowTitleCommons</include>
 			<label>$LOCALIZE[9] - $LOCALIZE[20314]$INFO[Container.PluginName, - ]</label>
 		</control>
+
+<!-- Test code for the flagging Can stay until all codecs done
+
+		<control type="label">
+			<posy>10</posy>
+			<font>font13</font>
+			<include>WindowTitleCommons</include>
+			<label>Video - $INFO[ListItem.VideoResolution] - $INFO[ListItem.VideoCodec] - $INFO[ListItem.VideoAspect] - Audio - $INFO[ListItem.AudioCodec] - $INFO[ListItem.AudioChannels] - $INFO[ListItem.AudioLanguage] - Subtitle - $INFO[ListItem.SubtitleLanguage]</label>
+		</control>
+-->
 	</controls>
 </window>

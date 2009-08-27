@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Translator: Kristján Bjarni Guðmundsson-->
-<!--Date of translation: 02/04/2009-->
-<!--Based on english strings version 18906-->
+<!--Date of translation: 05/07/2009-->
+<!--Based on english strings version 21415-->
 <!--$Revision$-->
 <strings>
   <string id="0">Forrit</string>
@@ -162,10 +161,10 @@
   <string id="224">Hraði</string>
   <string id="225">Breytingarhraði</string>
   <string id="226">Prufumynstur...</string>
-  <string id="227">Sæjka upplýsingar um geisladiska á internetið</string>
+  <string id="227">Sækja upplýsingar um geisladiska á internetið</string>
   <string id="228">Endurraða spilunarlista í byrjun</string>
   <string id="229">Hvíldartími harðdisks</string>
-  <string id="230">Síur</string>
+  <string id="230">Myndasíur</string>
   <string id="231">Ekkert</string>
   <string id="232">Punkta</string>
   <string id="233">Línulegur</string>
@@ -572,9 +571,9 @@
   <string id="701">Fjarlægi gömul lög úr tónlistarsafninu</string>
   <string id="702">Þessi slóð hefur verið skönnuð áður</string>
   <string id="705">Netkerfi</string>
-  <string id="706">HTTP Proxy þjónn</string>
-  <string id="707">HTTP Proxy gátt</string>
-  <string id="708">Virkja HTTP Proxy</string>
+  <string id="706">HTTP staðgengilsþjónn</string>
+  <string id="707">HTTP staðgengilsgátt</string>
+  <string id="708">Virkja HTTP staðgengil</string>
   <string id="709">HTTP staðgengils notandanafn</string>
   <string id="710">HTTP staðgengils lykilorð</string>
   <string id="711">Internet samskiptareglur (IP)</string>
@@ -598,7 +597,7 @@
   <string id="729">Internet Tími</string>
   <string id="730">Gátt vef þjóns</string>
   <string id="731">Tíma þjónn</string>
-  <string id="732">Vista &amp; Nota</string>
+  <string id="732">Vista &amp; virkja</string>
   <string id="733">Lykilorð Vef Þjóns</string>
   <string id="734">Ekkert lykilorð</string>
   <string id="735">- Stafasett</string>
@@ -607,7 +606,7 @@
   <string id="738">Venjulegt</string>
   <string id="739">Feitletrað</string>
   <string id="740">Skáletrað</string>
-  <string id="741">Feitletrað Skáletrað</string>
+  <string id="741">Feitletrað skáletrað</string>
   <string id="742">Hvítur</string>
   <string id="743">Gulur</string>
   <string id="744">Skrár</string>
@@ -659,9 +658,9 @@
 
   <string id="790">Fjarlægir atburðir</string>
   <string id="791">Virkja fjarlæga atburði</string>
-  <string id="792">Gátt fjarlægra atburða</string>
-  <string id="793">Svið gátta fyrir fjarlæga atburði</string>
-  <string id="794">Taka á móti atburðum frá öðrum tölvum</string>
+  <string id="792">Gátt</string>
+  <string id="793">Gáttabil</string>
+  <string id="794">Leyfa öðrum tölvum að tengjast</string>
   <string id="795">Upphafleg endurtekningarbið (ms)</string>
   <string id="796">Samfelld endurtekningarbið (ms)</string>
   <string id="797">Hámarksfjöldi biðlara</string>
@@ -670,12 +669,12 @@
   <string id="999"/>
   <string id="1000">Skjáhvílu sýnishorn</string>
   <string id="1001">Get ekki tengst</string>
-  <string id="1002">XBMC getur ekki tengst við net slóð.</string>
+  <string id="1002">XBMC getur ekki tengst við netslóð.</string>
   <string id="1003">Þetta gæti verið vegna þess að netið er ekki tengt.</string>
   <string id="1004">Viltu samt bæta því við?</string>
   <string id="1005"/>
   <string id="1006">IP tala</string>
-  <string id="1007">Bæta við net slóð</string>
+  <string id="1007">Bæta við ne slóð</string>
   <string id="1008">Samskiptareglur</string>
   <string id="1009">Vistfang miðlara</string>
   <string id="1010">Nafn miðlara</string>
@@ -688,7 +687,7 @@
   <string id="1017">Sláðu inn slóð á miðlara</string>
   <string id="1018">Sláðu inn númer gáttar</string>
   <string id="1019">Sláðu inn notandanafn</string>
-  <string id="1020">Bæta %s uppsprettu</string>
+  <string id="1020">Bæta við %s uppsprettu</string>
   <string id="1021">Sláðu inn slóð eða leitaðu að slóð fyrir miðlara.</string>
   <string id="1022">Sláðu inn nafn fyrir þessa miðlara uppsprettu.</string>
   <string id="1023">Leita að nýrri samnýtingu</string>
@@ -717,13 +716,14 @@
   <string id="1046">Aðgangsstaðir</string>
   <string id="1047">Annað...</string>
   <string id="1048">Notandanafn netþjóns</string>
+  <string id="1049">Skriftu stillingar</string>
 
   <string id="1200">SMB biðlari</string>
   <string id="1202">Vinnuhópur</string>
   <string id="1203">Sjálfgefið notandanafn</string>
   <string id="1204">Sjálfgefið lykilorð</string>
 
-  <string id="1207">WINS-Þjónn</string>
+  <string id="1207">WINS þjónn</string>
   <string id="1208">Virkja SMB miðla</string>
 
   <string id="1210">Fjarlægja</string>
@@ -788,8 +788,13 @@
   <string id="1415">Úði</string>
   <string id="1416">Þoka</string>
   <string id="1417">Haglél</string>
+  <string id="1418">Þrumuveður</string>
+  <string id="1419">Þrumuskúrir</string>
 
   <!-- strings through to 1450 reserved for weather translation -->
+
+  <string id="1450">Virkja lágt orkustig ef aðgerðalaus</string>
+  <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Tímalengd</string>
 
@@ -827,7 +832,7 @@
   <string id="10101">Vinnslumelding</string>
 
   <string id="10210">Leita að þýðingartexta...</string>
-  <string id="10211">Leita að þýðingartexta (og set í biðminni)...</string>
+  <string id="10211">Leita að þýðingartexta eða set í biðminni...</string>
   <string id="10212">loka</string>
   <string id="10213">biðminni</string>
   <string id="10214">Opna straum</string>
@@ -925,7 +930,7 @@
   <string id="12357">Læsa Samnýtingu</string>
   <string id="12358">Lyklorð var tómt. Reyndu aftur.</string>
   <string id="12360">Aðal læsing</string>
-  <string id="12362">Virkja slökkvun</string>
+  <string id="12362">Slökkva á kerfi ef fjöldi lykilorðságiskana á lás fer yfir hámark</string>
   <string id="12367">Aðal kóði er ekki gildur!</string>
   <string id="12368">Vinsamlega sláðu inn aðal kóða!</string>
   <string id="12373">Stillingar &amp;  skráarsýsl</string>
@@ -960,7 +965,7 @@
   <string id="13005">Slökkva</string>
   <string id="13006">Mælaborð</string>
   <string id="13007">Nota slóða að eigin mælaborði</string>
-  <string id="13008">Þegar hætt er í XBMC</string> 
+  <string id="13008">Hætta aðgerð</string> 
   <string id="13009">Hætta</string> 
   <string id="13010">Dvali</string>
   <string id="13011">Svæfa</string>
@@ -972,7 +977,7 @@
   <string id="13021">Tengdur utanáliggjandi harður diskur</string>
   <string id="13022">Ótraust fjarlæging á tæki</string>
   <string id="13023">Tókst að fjarlægja tæki</string>
-  <string id="13024">Stýripinni tengudur</string>
+  <string id="13024">Stýripinni tengdur</string>
   <string id="13025">Stýripinni ótengdur</string>
 
   <string id="13100">Flökt sía</string>
@@ -981,7 +986,7 @@
   <string id="13106">Óvirkt</string>
   <string id="13107">Virkt við afspilun</string>
   <string id="13108">Alltaf virkt</string>
-  <string id="13109">Prufa upplausn</string>
+  <string id="13109">Prufa &amp; virkja upplausn</string>
   <string id="13110">Vista upplausn?</string>
   <string id="13111">Viltu nota þessa upplausn?</string>
   
@@ -1036,11 +1041,11 @@
   <string id="13170">Aldrei</string>
   <string id="13171">Strax</string>
   <string id="13172">Eftir %i sek</string>
-  <string id="13173">Uppsetningardagur Harða disks:</string>
+  <string id="13173">Uppsetningardagur Harðdisks:</string>
   <string id="13174">Fjöldi skipta sem slökkt hefur verið á HDD:</string>
 
   <string id="13200">Forstillingar</string>
-  <string id="13201">Eyða Forstillingu '%s'?</string>
+  <string id="13201">Eyða forstillingu '%s'?</string>
   <string id="13204">Seinasta forstilling:</string>
   <string id="13205">Óþekkt</string>
   <string id="13206">Yfirskrifa</string>
@@ -1077,7 +1082,7 @@
   <string id="13289">Xbox raðnúmer:</string>
   <string id="13290">Xbox framleiðandi:</string>
   <string id="13291">Mod kubbur:</string>
-  <string id="13292">Hljóð/Mynd Tengi:</string>
+  <string id="13292">Hljóð/Mynd tengi:</string>
   <string id="13293">Skjá &amp; XBE svæði:</string>
   <string id="13294">DVD svæði:</string>
   <string id="13295">Internet:</string>
@@ -1192,7 +1197,19 @@
   <string id="13418">Ítarleg skygging (GLSL)</string>
   <string id="13419">Hugbúnaður</string>
   <string id="13421">VDPAU</string>
-  <string id="13420">Ýta út</string>
+  <string id="13420">Fjarlægja á öruggan hátt</string>
+
+  <string id="13500">A/V samstillingaraðferð</string>
+  <string id="13501">Hljóðklukka</string>
+  <string id="13502">Myndklukka (Sleppa/Afrita hljóð)</string>
+  <string id="13503">Myndklukka (Endurblanda hljóð)</string>
+  <string id="13504">Hámark endurblöndunar (%)</string>
+  <string id="13505">Endurblöndunargæði</string>
+  <string id="13506">Lágt</string>
+  <string id="13507">Meðal</string>
+  <string id="13508">Hátt</string>
+  <string id="13509">Mjög hátt</string>
+  <string id="13510">Samstilla spilun við skjá</string>
 
   <string id="13600">Apple fjarstýring</string>
   <string id="13601">Hamur</string>
@@ -1202,6 +1219,7 @@
   <string id="13610">Óvirkt</string>
   <string id="13611">Venjulegt</string>
   <string id="13612">Altæk fjarstýring</string>
+  <string id="13613">Fjölfjarstýring (Harmony)</string>
   
   <string id="13620">Villa í Apple fjarstýringu</string>
   <string id="13621">Ekki er hægt að virkja stuðning við Apple fjarstýringu.</string>
@@ -1377,6 +1395,11 @@
   <string id="15214">Nota fína Hljóð/Mynd samstillingu</string>
   <string id="15215">Fela skráarnöfn í smámynda sjónarhorni</string>
   <string id="15216">Spila í partýham</string>
+  <string id="15217">Senda lög á Libre.fm</string>
+  <string id="15218">Libre.fm notandanafn</string>
+  <string id="15219">Libre.fm lykilorð</string>
+  <string id="15220">Libre.fm</string>
+  <string id="15221">Scrobbler</string>
 
   <string id="15250">Senda Last.fm útvarp til Last.fm</string>
   <string id="15251">Tengist við Last.fm...</string>
@@ -1385,7 +1408,7 @@
   <string id="15254">Leita að svipuðum tögum...</string>
   <string id="15255">Þín forstilling (%name%)</string>
   <string id="15256">Hæstu tegundir</string>
-  <string id="15257">Hæstu lstamenn fyrir tegundir %name%</string>
+  <string id="15257">Hæstu listamenn fyrir tegundir %name%</string>
   <string id="15258">Hæstu hljómplötur fyrir tegundir %name%</string>
   <string id="15259">Hæstu lög fyrir tegundir %name%</string>
   <string id="15260">Hlusta á merki %name% last.fm útvarp</string>
@@ -1711,8 +1734,8 @@
 
   <string id="20300">Mappa vefþjóns (HTTP)</string>
   <string id="20301">Mappa vefþjóns (HTTPS)</string>
-  <string id="20302"/>
-  <string id="20303"/>
+  <string id="20302">Get ekki skrifað í möppu:</string>
+  <string id="20303">Viltu sleppa og halda áfram?</string>
   <string id="20304"/>
   <string id="20305"/>
 
@@ -1843,6 +1866,7 @@
   <string id="20430">Flytja út smámyndir og áðdáendamyndir?</string>
   <string id="20431">Skrifa yfir eldri skrár?</string>
   <string id="20432">Undanskilja slóð frá uppfærslu á safni</string> 
+  <string id="20433">Ná í lýsigögn frá margmiðlunarskrám</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Sýna faldar skrár og möppur</string>
@@ -1864,8 +1888,8 @@
   <string id="21361">Stjórna UPnP tónlistar þjónustum</string>
   <string id="21362">Stjórna UPnP myndbanda þjónustum</string>
   <string id="21363">Stjórna UPnP mynda þjónustum</string>
-  <string id="21364">Breyta þjónustum</string>
-  <string id="21365">Fjarlægja þjónustur</string>
+  <string id="21364">Breyta þjónustu</string>
+  <string id="21365">Fjarlægja þjónustu</string>
   <string id="21366">Sérsniðin mappa fyrir þýðingartexta</string>
   <string id="21367">Kvikmynda &amp; auka mappa fyrir þýðingartexta</string>
   
@@ -1897,7 +1921,7 @@
   <string id="21394">Lág biðstaða</string>
   <string id="21395">Get ekki haft stærri skrár en 4GB í flýtiminni</string>
   <string id="21396">Kafli</string>
-  <string id="21397">Hágæða punkta skyggnir V2</string>
+  <string id="21397">Hágæða punkta skyggnir v2</string>
   <string id="21398">Virkja spilunarlista í ræsingu</string>
   <string id="21399">Nota skopp hreyfimyndir</string>
   <string id="21400">inniheldur</string>
@@ -1941,6 +1965,12 @@
   <string id="21440">Heimamappa</string>
   <string id="21441">Fjöldi áhorfa</string>
   <string id="21442">Titill þáttar</string>
+  <string id="21443">Myndbanda upplausn</string>
+  <string id="21444">Hljóðrásir</string>
+  <string id="21445">Myndkótari</string>
+  <string id="21446">Hljóðkótari</string>
+  <string id="21447">Tungumál hljóðefnis</string>
+  <string id="21448">Tungumál skjátexta</string>
 
   <string id="21800">Skráarnafn</string>
   <string id="21801">Skráarslóð</string>
@@ -2059,6 +2089,9 @@
   <string id="22042">hvítt/blátt</string>
   <string id="22043">svart/hvítt</string>
 
+  <string id="23000">Veður viðbót</string>
+  <string id="23001">- Stillingar viðbótar</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Safnhamur</string>
   <string id="29801">QWERTY Lyklaborð</string>
@@ -2068,4 +2101,23 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
+  <string id="33001">Gæði kvikmyndasýnishorns</string>
+  <string id="33002">Straumur</string>
+  <string id="33003">Hala niður</string>
+  <string id="33004">Niðurhala &amp; spila</string>
+  <string id="33005">Niðurhala &amp; vista</string>
+  <string id="33006">Í dag</string>
+  <string id="33007">Á morgun</string>
+  <string id="33008">Vista</string>
+  <string id="33009">Afritun</string>
+  <string id="33010">Velja niðurhalsmöppu</string>
+  <string id="30011">Leitarlengd</string>
+  <string id="33012">Stutt</string>
+  <string id="33013">Langt</string>
+  <string id="33014">Nota DVD spilara í staðinn fyrir venjulegan spilara</string>
+  <string id="33015">Spyrja um niðurhal áður en myndband er spilað</string>
+  <string id="33016">Úrklippur</string>
+  <string id="33017">Endurræstu viðbót til að gera virkt</string>
+  <string id="33018">Úrklippur</string>
 </strings>

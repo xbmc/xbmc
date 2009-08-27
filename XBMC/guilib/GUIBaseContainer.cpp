@@ -51,6 +51,7 @@ CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float 
   m_analogScrollCount = 0;
   m_lastItem = NULL;
   m_staticContent = false;
+  m_staticUpdateTime = 0;
   m_wasReset = false;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -756,13 +757,12 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     // be visible.  Save the previous item and keep it if we are adding that one.
     CGUIListItem *lastItem = m_lastItem;
     Reset();
-    static DWORD lastUpdateTime = 0;
     bool updateItems = false;
-    if (!lastUpdateTime)
-      lastUpdateTime = timeGetTime();
-    if (timeGetTime() - lastUpdateTime > 1000)
+    if (!m_staticUpdateTime)
+      m_staticUpdateTime = timeGetTime();
+    if (timeGetTime() - m_staticUpdateTime > 1000)
     {
-      lastUpdateTime = timeGetTime();
+      m_staticUpdateTime = timeGetTime();
       updateItems = true;
     }
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
@@ -956,11 +956,18 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
         CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
         newItem.reset(new CFileItem(CGUIInfoLabel::GetLabel(label)));
         // multiple action strings are concat'd together, separated with " , "
-        vector<CStdString> actions;
+        vector<CGUIActionDescriptor> actions;
         CGUIControlFactory::GetMultipleString(item, "onclick", actions);
-        for (vector<CStdString>::iterator it = actions.begin(); it != actions.end(); ++it)
-          (*it).Replace(",", ",,");
-        StringUtils::JoinString(actions, " , ", newItem->m_strPath);
+        newItem->m_strPath = "";
+        for (vector<CGUIActionDescriptor>::iterator it = actions.begin(); it != actions.end(); ++it)
+        {
+          (*it).m_action.Replace(",", ",,");
+          if (newItem->m_strPath.length() > 0)
+          {
+            newItem->m_strPath   += " , ";
+          }
+          newItem->m_strPath += (*it).m_action;          
+        }
         newItem->SetLabel2(CGUIInfoLabel::GetLabel(label2));
         newItem->SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, true));
         newItem->SetIconImage(CGUIInfoLabel::GetLabel(icon, true));
@@ -997,6 +1004,7 @@ void CGUIBaseContainer::LoadContent(TiXmlElement *content)
 void CGUIBaseContainer::SetStaticContent(const vector<CGUIListItemPtr> &items)
 {
   m_staticContent = true;
+  m_staticUpdateTime = 0;
   m_staticItems.clear();
   m_staticItems.assign(items.begin(), items.end());
   UpdateVisibility();

@@ -59,10 +59,10 @@ public:
 
   // Main objects used for creating and rendering the 3D scene
 #ifndef HAS_SDL
-  LPDIRECT3D8 m_pD3D;              // The D3D enumerator object
-  LPDIRECT3DDEVICE8 m_pd3dDevice;        // The D3D rendering device
-  LPDIRECT3DSURFACE8 m_pBackBuffer;       // The back buffer
-  //LPDIRECT3DSURFACE8    m_pDepthBuffer;      // The depth buffer
+  LPDIRECT3D9 m_pD3D;              // The D3D enumerator object
+  LPDIRECT3DDEVICE9 m_pd3dDevice;        // The D3D rendering device
+  LPDIRECT3DSURFACE9 m_pBackBuffer;       // The back buffer
+  //LPDIRECT3DSURFACE9    m_pDepthBuffer;      // The depth buffer
 #endif
 
   // Variables for timing

@@ -432,7 +432,7 @@
   <string id="513">Hovedmeny</string>
   <string id="514">Manuelle innstillinger</string>
   <string id="515">Sjanger</string>
-  <string id="516">Gjør arkiver med én fil gjennomsiktig</string>
+  <string id="516">Gjør lagrede arkiver med én fil gjennomsiktig</string>
   <string id="517">Nylig spilte album</string>
   <string id="518">Start</string>
   <string id="519">Start som..</string>
@@ -704,16 +704,17 @@
   <string id="1037">Videoplugin</string>
   <string id="1038">Musikkplugin</string>
   <string id="1039">Bildeplugin</string>
-  <string id="1040">Laster katalog</string>
-  <string id="1041">Gjenopprettet %i deler</string>
-  <string id="1042">Gjenopprettet %i av %i deler</string>
+  <string id="1040">Henter katalog</string>
+  <string id="1041">Hentet ned %i deler</string>
+  <string id="1042">Hentet ned  %i av %i deler</string>
   <string id="1043">Programplugin</string>
-  <string id="1044">Velg plugin miniatyrbilde</string>
-  <string id="1045">Plugininstilling</string>
+  <string id="1044">Velg miniatyrbilde for plugin</string>
+  <string id="1045">Plugininnstilling</string>
   <string id="1046">Aksesspunkt</string>
   <string id="1047">Andre..</string>
   <string id="1048">Brukernavn på webserver</string>
-  
+  <string id="1049">Skript-innstillinger</string>  
+
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbeidsgruppe</string>
   <string id="1203">Standard brukernavn</string>
@@ -782,10 +783,14 @@
   <string id="1414">lyn og torden</string>
   <string id="1415">duskregn</string>
   <string id="1416">tåkete</string>
-  <string id="1417">kornete</string> <!-- Please check this one -->
+  <string id="1417">kornete</string> <!-- Please check this one (Grains) -->
+  <string id="1418">tordenvær</string> <!-- T-Storms -->
+  <string id="1419">tordenvær</string> <!-- T-Showers -->
   
   <!-- strings through to 1450 reserved for weather translation -->
   
+  <string id="1450">Aktivér strømsparing i ventemodus</string>  
+
   <string id="2050">Spilletid</string>
   
   <string id="4501">LCD-type</string>
@@ -955,7 +960,7 @@
   <string id="13005">Slå av</string>
   <string id="13006">Dashbord</string>
   <string id="13007">Bruk egen sti til dashbord</string>
-  <string id="13008">Standardinnstilling for avslutning</string>
+  <string id="13008">Avslutningsfunksjon</string>
   <string id="13009">Avslutt</string>
   <string id="13010">Dvalemodus</string>
   <string id="13011">Ventemodus</string>
@@ -974,7 +979,7 @@
   <string id="13106">Frakoblet</string>
   <string id="13107">Aktivert under filmavspilling</string>
   <string id="13108">Alltid aktivert</string>
-  <string id="13109">Test oppløsning</string>
+  <string id="13109">Test og bruk oppløsning</string>
   <string id="13110">Lagre oppløsning?</string>
   <string id="13111">Vil du beholde denne oppløsningen?</string>
   
@@ -1185,7 +1190,19 @@
   <string id="13419">Programvare</string>
   <string id="13420">Løs ut</string>
   <string id="13421">VDPAU</string>
-  
+
+  <string id="13500">A/V synkmetode</string>
+  <string id="13501">Lydklokke</string>
+  <string id="13502">Videoklokke (dropp/duplisér lyd)</string>
+  <string id="13503">Videoklokke (resamplet lyd)</string>
+  <string id="13504">Maksimal resampling (%)</string>
+  <string id="13505">Resamplingskvalitet</string>
+  <string id="13506">Lav</string>
+  <string id="13507">Medium</string>
+  <string id="13508">Høy</string>
+  <string id="13509">Veldig høy</string>
+  <string id="13510">Synkronisér avspilling til bilde</string>
+
   <string id="13600">Apple fjernkontroll</string>
   <string id="13601">Modus</string>
   <string id="13602">Alltid på</string>
@@ -1194,6 +1211,7 @@
   <string id="13610">Deaktivert</string>
   <string id="13611">Standard</string>
   <string id="13612">Universal fjernkontroll</string>
+  <string id="13613">Multifjernkontroll (Harmony)</string>
   
   <string id="13620">Feil med Apple fjernkontroll</string>
   <string id="13621">Apple fjernkontroll kan aktiveres</string>
@@ -1353,7 +1371,7 @@
   <string id="15112">Standardtema</string>
   
   <string id="15200">Last.fm</string>
-  <string id="15201">Send sanger til Last.fm</string>
+  <string id="15201">Send inn sanger til Last.fm</string>
   <string id="15202">Last.fm brukernavn</string>
   <string id="15203">Last.fm passord</string>
   <string id="15204">Kunne ikke koble til: i dvale...</string>
@@ -1369,6 +1387,12 @@
   <string id="15214">Bruk utjevnet A/V synkronisering</string>
   <string id="15215">Skjul filnavn i miniatyrvisning</string>
   <string id="15216">Spill i partymodus</string>
+  <string id="15217">Send inn sanger til Libre.fm</string> 
+  <string id="15218">Libre.fm brukernavn</string> 
+  <string id="15219">Libre.fm passord</string> 
+  <string id="15220">Libre.fm</string> 
+  <string id="15221">Scrobbler</string> 
+
   
   <string id="15250">Send inn Last.fm-radio til Last.fm</string>
   <string id="15251">Kobler til Last.fm...</string>
@@ -1701,10 +1725,10 @@
   <string id="20251">Mikser drinker (videoer)</string>
   <string id="20252">Fyller glassene (videoer)</string>
   
-  <string id="20300"></string>
-  <string id="20301">Webserverkatalog (HTTP)</string>
-  <string id="20302">Webserverkatalog (HTTPS)</string>
-  <string id="20303"></string>
+  <string id="20300">Webserverkatalog (HTTP)</string>
+  <string id="20301">Webserverkatalog (HTTPS)</string>
+  <string id="20302">Kunne ikke skrive til katalog:</string>
+  <string id="20303">Vil du ignorere problemet og fortsette?</string>
   <string id="20304"></string>
   <string id="20305"></string>
   
@@ -1834,7 +1858,8 @@
   <string id="20429">Separat</string>
   <string id="20430">Eksportér miniatyrbilder og FanArt?</string>
   <string id="20431">Overskriv gamle filer?</string>
-  <string id="20432">Eksludér fil fra biblioteksoppdateringer</string> 
+  <string id="20432">Ekskludér fil fra biblioteksoppdateringer</string> 
+  <string id="20433">Ekstrahér metadatainformasjon for media</string>
   <!-- up to 21329 is reserved for the video db !! !-->
   
   <string id="21330">Vis skjulte filer og mapper</string>
@@ -1933,7 +1958,13 @@
   <string id="21440">Hjemmekatalog</string>
   <string id="21441">Antall ganger sett</string>
   <string id="21442">Episodetittel</string>
-  
+  <string id="21443">Videooppløsning</string> 
+  <string id="21444">Lydkanalers</string> 
+  <string id="21445">Videokodek</string> 
+  <string id="21446">Lydkodek</string> 
+  <string id="21447">Lydspråk</string> 
+  <string id="21448">Språk for undertekster</string> 
+ 
   <string id="21800">Filnavn</string>
   <string id="21801">Filsti</string>
   <string id="21802">Filstørrelse</string>
@@ -2052,7 +2083,9 @@
   <string id="22042">hvitt/blått</string>
   <string id="22043">svart/hvitt</string>
 
-  
+  <string id="23000">Værplugin</string>
+  <string id="23001">- Plugininnstillinger</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Biblioteksmodus</string>
   <string id="29801">QWERTY-tastatur</string>
@@ -2062,4 +2095,23 @@
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons --> 
+  <string id="33001">Trailerkvalitet</string> 
+  <string id="33002">Strøm</string> 
+  <string id="33003">Nedlasting</string> 
+  <string id="33004">Last ned og spill av</string> 
+  <string id="33005">Last ned og lagre</string> 
+  <string id="33006">I dag</string> 
+  <string id="33007">I morgen</string> 
+  <string id="33008">Lagrer</string> 
+  <string id="33009">Kopierer</string> 
+  <string id="33010">Sett nedlastingskatalog</string> 
+  <string id="30011">Søkelengde</string> 
+  <string id="33012">Kort</string> 
+  <string id="33013">Lang</string> 
+  <string id="33014">Bruk DVD-avspiller i stedet for vanlig avspiller</string> 
+  <string id="33015">Spør om nedlasting før videoer spilles</string> 
+  <string id="33016">Klipp</string> 
+  <string id="33017">Restart plugin for å aktivere</string> 
+  <string id="33018">Klipp</string> 
 </strings>

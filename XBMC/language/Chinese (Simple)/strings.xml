@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 05/16/2009-->
+<!--Date of translation: 07/31/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 20327-->
+<!--Based on english strings version 21874 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -36,6 +36,14 @@
   <string id="31">十一月</string>
   <string id="32">十二月</string>
   
+  <string id="41">星期一</string>
+  <string id="42">星期二</string>
+  <string id="43">星期三</string>
+  <string id="44">星期四</string>
+  <string id="45">星期五</string>
+  <string id="46">星期六</string>
+  <string id="47">星期日</string>
+
   <string id="98">显示：自动</string>
   <string id="99">显示：自动大图标</string>
   <string id="100">显示：图标</string>
@@ -197,7 +205,7 @@
   <string id="259">开始</string>
   <string id="260">Shoutcast 网络音乐台</string>
   <string id="261">等待开始…</string>
-  <string id="262">脚本输出</string>
+  <string id="262">脚本程序输出</string>
   <string id="263">启用 Web 服务器</string>
   <string id="264">录音</string>
   <string id="265">停止录音.</string>
@@ -435,7 +443,7 @@
   <string id="513">主界面</string>
   <string id="514">设置界面</string>
   <string id="515">风格</string>
-  <string id="516">透通式文件管理</string>
+  <string id="516">将压缩存储的文档作为单个文件处理</string>
   <string id="517">最近播放的专辑</string>
   <string id="518">运行</string>
   <string id="519">运行方式</string>
@@ -567,6 +575,7 @@
   <string id="661">选择导出文件夹</string>
   <string id="662">此文件已不可用</string>
   <string id="663">要从资料库移除吗？</string>
+  <string id="664">浏览脚本程序</string>
 
   <string id="700">清理资料库</string>
   <string id="701">清除资料库中的旧歌曲</string>
@@ -717,6 +726,7 @@
   <string id="1046">接入点</string>
   <string id="1047">其它...</string> 
   <string id="1048">Web 服务器用户名</string>
+  <string id="1049">脚本设置</string>
    
   <string id="1200">SMB 共享设置</string>
   <string id="1202">工作组</string>
@@ -788,7 +798,9 @@
   <string id="1415">毛毛雨</string>
   <string id="1416">雾</string> 
   <string id="1417">悬浮物</string>
-  
+  <string id="1418">雷雨</string>
+  <string id="1419">雷阵雨</string>
+ 
   <!-- strings through to 1450 reserved for weather translation -->
 
   <string id="1450">启用空闲省电模式</string>
@@ -984,7 +996,7 @@
   <string id="13106">停用</string>
   <string id="13107">只在视频播放时开启</string>
   <string id="13108">总是开启</string>
-  <string id="13109">测试此分辨率</string>
+  <string id="13109">测试 &amp; 应用分辨率</string>
   <string id="13110">保存此分辨率?</string>
   <string id="13111">是否保存此分辨率?</string>
 
@@ -1136,7 +1148,7 @@
   <string id="13347">加入播放列表</string>
   <string id="13348">查询互联网电影数据库…</string>
   <string id="13349">扫描新的内容</string>
-  <string id="13350">开始播放...</string>
+  <string id="13350">正在播放...</string>
   <string id="13351">专辑信息</string>
   <string id="13352">扫瞄项目到数据库</string>
   <string id="13353">停止扫瞄</string>
@@ -1185,7 +1197,7 @@
   <string id="13409">排行榜前 250：</string>
   <string id="13410">收听 last.fm 电台</string>
   <string id="13411">风扇最低转速</string>
-  <string id="13412">- RSS种子内容为从右到左</string>
+  <string id="13412">- RSS信源内容为从右到左</string>
   <string id="13413">正在下载</string>
   <string id="13414">隐藏只在编辑中出现的艺术家</string>
   <string id="13415">渲染模式</string>
@@ -1731,14 +1743,14 @@
 
   <string id="20300">WEB服务器目录(HTTP)</string>
   <string id="20301">WEB服务器目录(HTTPS)</string>
-  <string id="20302"></string>
-  <string id="20303"></string>
-  <string id="20304"></string>
+  <string id="20302">无法写入文件夹：</string>
+  <string id="20303">你要跳过并继续吗？</string>
+  <string id="20304">RSS 信源</string>
   <string id="20305"></string>
 
   <string id="20306">未知 BIOS，请把 xbmc.log 中 MD5 部分加到 BiosIDs.ini</string>
   <string id="20307">备用 DNS 服务器地址</string>
-  <string id="20308">DHCP 服务器:</string>
+  <string id="20308">DHCP 服务器：</string>
   <string id="20309">新建文件夹</string>
   <string id="20310">播放时关闭 LCD 背光</string>
   <string id="20311">未知或板载(保护状态)</string>
@@ -1754,7 +1766,7 @@
   <string id="20321">没有当前游戏所对应的存档文件</string>
   <string id="20322">切换到游戏存档</string>
   <string id="20323">游戏存档</string>
-  <string id="20324">玩部分的…</string>
+  <string id="20324">分段播放…</string>
   <string id="20325">重新校准</string>
   <string id="20326">这个操作会重新校准%s的配置</string>
   <string id="20327">还原为初时配置</string>
@@ -1863,6 +1875,7 @@
   <string id="20430">导出缩略图和同人图？</string>
   <string id="20431">覆盖原文件？</string>
   <string id="20432">资料库更新时排除的路径</string>
+  <string id="20433">提取媒体元数据信息</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -1961,6 +1974,12 @@
   <string id="21440">Home文件夹</string>
   <string id="21441">观看次数</string>
   <string id="21442">插曲标题</string>
+  <string id="21443">视频分辨率</string>
+  <string id="21444">音频声道数</string>
+  <string id="21445">视频编码</string>
+  <string id="21446">音频编码</string>
+  <string id="21447">对白语言</string>
+  <string id="21448">字幕语言</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>
@@ -2079,13 +2098,78 @@
   <string id="22042">白/兰</string>
   <string id="22043">黑/白</string>
 
+  <string id="23000">天气插件</string>
+  <string id="23001">- 插件设置</string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
   <string id="29801">QWERTY 键盘</string>
+  <string id="29802">音频直通输出启用中</string>
 
   <string id="29999">自动开启游戏抗闪烁过滤</string>
 
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
   <!-- strings 31000 thru 31999 reserved for skins -->
   <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
+  <string id="33001">预告片质量Trailer quality</string>
+  <string id="33002">媒体流</string>
+  <string id="33003">下载</string>
+  <string id="33004">下载 &amp; 播放</string>
+  <string id="33005">下载 &amp; 保存</string>
+  <string id="33006">今天</string>
+  <string id="33007">明天</string>
+  <string id="33008">保存</string>
+  <string id="33009">拷贝</string>
+  <string id="33010">设置下载目录</string>
+  <string id="30011">搜索持续时间</string>
+  <string id="33012">短</string>
+  <string id="33013">长</string>
+  <string id="33014">用DVD player代替常规播放器</string>
+  <string id="33015">播放视频前揭示是否先下载</string>
+  <string id="33016">片断</string>
+  <string id="33017">重启以启用插件</string>
+  <string id="33018">今晚</string>
+  <string id="33019">明晚</string>
+  <string id="33020">状况</string>
+  <string id="33021">降雨量</string>
+  <string id="33022">降雨</string>
+  <string id="33023">潮湿</string>
+  <string id="33024">感觉</string>
+  <string id="33025">观测值</string>
+  <string id="33026">偏离正常值</string>
+  <string id="33027">日出</string>
+  <string id="33028">日落</string>
+  <string id="33029">详细资料</string>
+  <string id="33030">景况</string>
+  <string id="33031">流动封面</string>
+  <string id="33032">翻译文本</string>
+  <string id="33033">地图列表 %s 分类</string>
+  <string id="33034">36 小时</string>
+  <string id="33035">地图</string>
+  <string id="33036">每小时</string>
+  <string id="33037">周末</string>
+  <string id="33038">%s 天</string>
+  <string id="33049">提醒</string>
+  <string id="33050">提醒</string>
+  <string id="33051">选择您的</string>
+  <string id="33052">查看您的</string>
+  <string id="33053">配置您的</string>
+  <string id="33054">季节</string>
+  <string id="33055">使用您的</string>
+  <string id="33056">观看您的</string>
+  <string id="33057">聆听您的</string>
+  <string id="33058">浏览您的</string>
+  <string id="33059">配置您的</string>
+  <string id="33060">电源控制</string>
+  <string id="33061">菜单</string>
+  <string id="33062">播放您的</string>
+  <string id="33063">选项</string>
+  <string id="33065">编辑</string>
+  <string id="33066">关于您的</string>
+  <string id="33067">星级</string>
+  <string id="33068">桌面背景</string>
+  <string id="33069">桌面背景集</string>
+  <string id="33070">自定义桌面背景</string>
+  <string id="33071">自定义桌面背景集</string>
 </strings>
