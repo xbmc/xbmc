@@ -29,7 +29,7 @@ documentation and/or software.
 #define _h_MD5 1
 
 #ifndef UINT4
-#define UINT4 unsigned long
+#define UINT4 unsigned int
 #endif
 
 #ifndef POINTER

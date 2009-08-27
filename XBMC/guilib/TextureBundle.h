@@ -54,18 +54,10 @@ public:
   void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
   static CStdString Normalize(const CStdString &name);
 
-#ifndef HAS_SDL
-  HRESULT LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,
-                      LPDIRECT3DPALETTE8* ppPalette);
+  HRESULT LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr* ppTexture,
+                       XBMC::PalettePtr* ppPalette);
 
-  int LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8** ppTextures,
-               LPDIRECT3DPALETTE8* ppPalette, int& nLoops, int** ppDelays);
-#else
-  HRESULT LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface** ppTexture,
-                      SDL_Palette** ppPalette);
-
-  int LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface*** ppTextures,
-               SDL_Palette** ppPalette, int& nLoops, int** ppDelays);
-#endif
+  int LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr** ppTextures,
+                XBMC::PalettePtr* ppPalette, int& nLoops, int** ppDelays);
 };
 

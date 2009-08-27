@@ -40,11 +40,7 @@ CPicture::~CPicture(void)
 
 }
 
-#ifndef HAS_SDL
-IDirect3DTexture8* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
-#else
-SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
-#endif
+XBMC::TexturePtr CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
 {
   if (!m_dll.Load()) return NULL;
 
@@ -54,14 +50,14 @@ SDL_Surface* CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iM
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
+  XBMC::TexturePtr pTexture = NULL;
 #ifndef HAS_SDL
-  LPDIRECT3DTEXTURE8 pTexture = NULL;
-  g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture);
+  g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture, NULL);
 #else
 #ifdef HAS_SDL_OPENGL
-  SDL_Surface *pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
+  pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
 #else
-  SDL_Surface *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
+  pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
 #endif
 #endif
   if (pTexture)
@@ -216,17 +212,13 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
     int width = 0, height = 0;
     bool linear = false;
     CTexture baseTexture = g_TextureManager.GetTexture(srcFile);
-#ifndef HAS_SDL
-    LPDIRECT3DPALETTE8 palette = baseTexture.m_palette;
-    LPDIRECT3DTEXTURE8 texture = baseTexture.m_textures[0];
-#elif defined(HAS_SDL_2D)
-    SDL_Palette* palette = NULL;
-    SDL_Surface* texture = baseTexture.m_textures[0];
-#elif defined(HAS_SDL_OPENGL)
+#ifdef HAS_SDL_OPENGL
 #ifdef __GNUC__
 // TODO: fix this code to support OpenGL
 #endif
-    SDL_Surface* texture = NULL;
+    XBMC::TexturePtr texture = NULL;
+#else
+    XBMC::TexturePtr texture = baseTexture.m_textures[0];
 #endif
     if (texture)
     {
@@ -256,18 +248,14 @@ bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destF
   return false;
 }
 
-#ifndef HAS_SDL
-bool CPicture::CreateThumbnailFromSwizzledTexture(LPDIRECT3DTEXTURE8 &texture, int width, int height, const CStdString &thumb)
-#else
-bool CPicture::CreateThumbnailFromSwizzledTexture(SDL_Surface* &texture, int width, int height, const CStdString &thumb)
-#endif
+bool CPicture::CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb)
 {
 #ifndef HAS_SDL
-  LPDIRECT3DTEXTURE8 linTexture = NULL;
+  LPDIRECT3DTEXTURE9 linTexture = NULL;
   if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &linTexture))
   {
-    LPDIRECT3DSURFACE8 source;
-    LPDIRECT3DSURFACE8 dest;
+    LPDIRECT3DSURFACE9 source;
+    LPDIRECT3DSURFACE9 dest;
     texture->GetSurfaceLevel(0, &source);
     linTexture->GetSurfaceLevel(0, &dest);
     D3DXLoadSurfaceFromSurface(dest, NULL, NULL, source, NULL, NULL, D3DX_FILTER_NONE, 0);

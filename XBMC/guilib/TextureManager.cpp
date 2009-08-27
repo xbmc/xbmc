@@ -25,11 +25,7 @@ extern "C" void dllprintf( const char *format, ... );
 
 CGUITextureManager g_TextureManager;
 
-#ifndef HAS_SDL
-CTexture::CTexture(int width, int height, int loops, LPDIRECT3DPALETTE8 palette, bool texCoordsArePixels)
-#else
-CTexture::CTexture(int width, int height, int loops, SDL_Palette* palette, bool texCoordsArePixels)
-#endif
+CTexture::CTexture(int width, int height, int loops,  XBMC::PalettePtr palette, bool texCoordsArePixels)
 {
   m_width = width;
   m_height = height;
@@ -45,12 +41,10 @@ unsigned int CTexture::size() const
   return m_textures.size();
 }
 
-#if !defined(HAS_SDL)
-void CTexture::Add(LPDIRECT3DTEXTURE8 texture, int delay)
-#elif defined(HAS_SDL_2D)
-void CTexture::Add(SDL_Surface *texture, int delay)
-#else
+#ifdef HAS_SDL_OPENGL
 void CTexture::Add(CGLTexture *texture, int delay)
+#else
+void CTexture::Add(XBMC::TexturePtr texture, int delay)
 #endif
 {
   if (!texture)
@@ -64,7 +58,7 @@ void CTexture::Add(CGLTexture *texture, int delay)
   {
     m_texWidth = desc.Width;
     m_texHeight = desc.Height;
-    m_texCoordsArePixels = desc.Format == D3DFMT_LIN_A8R8G8B8;
+    m_texCoordsArePixels = false;
   }
 #elif defined(HAS_SDL_2D)
   m_texWidth = texture->w;
@@ -77,12 +71,10 @@ void CTexture::Add(CGLTexture *texture, int delay)
 #endif
 }
 
-#if !defined(HAS_SDL)
-void CTexture::Set(LPDIRECT3DTEXTURE8 texture, int width, int height)
-#elif defined(HAS_SDL_2D)
-void CTexture::Set(SDL_Surface *texture, int width, int height)
-#else
+#ifdef HAS_SDL_OPENGL
 void CTexture::Set(CGLTexture *texture, int width, int height)
+#else
+void CTexture::Set(XBMC::TexturePtr texture, int width, int height)
 #endif
 {
   assert(!m_textures.size()); // don't try and set a texture if we already have one!
@@ -120,11 +112,7 @@ CTextureMap::CTextureMap()
   m_memUsage = 0;
 }
 
-#ifndef HAS_SDL
-CTextureMap::CTextureMap(const CStdString& textureName, int width, int height, int loops, LPDIRECT3DPALETTE8 *palette)
-#else
-CTextureMap::CTextureMap(const CStdString& textureName, int width, int height, int loops, SDL_Palette *palette)
-#endif
+CTextureMap::CTextureMap(const CStdString& textureName, int width, int height, int loops,  XBMC::PalettePtr palette)
 : m_texture(width, height, loops, palette)
 {
   m_textureName = textureName;
@@ -152,11 +140,7 @@ const CStdString& CTextureMap::GetName() const
   return m_textureName;
 }
 
-#ifndef HAS_SDL
-void CTextureMap::Add(LPDIRECT3DTEXTURE8 pTexture, int delay)
-#else
-void CTextureMap::Add(SDL_Surface* pTexture, int delay)
-#endif
+void CTextureMap::Add(XBMC::TexturePtr pTexture, int delay)
 {
 #ifdef HAS_SDL_OPENGL
   CGLTexture *glTexture = new CGLTexture(pTexture, false);
@@ -168,7 +152,7 @@ void CTextureMap::Add(SDL_Surface* pTexture, int delay)
 #ifndef HAS_SDL
   D3DSURFACE_DESC desc;
   if (pTexture && D3D_OK == pTexture->GetLevelDesc(0, &desc))
-    m_memUsage += desc.Size;
+    m_memUsage += desc.Width * desc.Height * 4; // Not entirely accurate, but DX9 doesn't have desc.Size
 #elif defined(HAS_SDL_2D)
   if (pTexture)
     m_memUsage += sizeof(SDL_Surface) + (pTexture->w * pTexture->h * pTexture->format->BytesPerPixel);
@@ -354,13 +338,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
   //Lock here, we will do stuff that could break rendering
   CSingleLock lock(g_graphicsContext);
 
-#ifndef HAS_SDL
-  LPDIRECT3DTEXTURE8 pTexture;
-  LPDIRECT3DPALETTE8 pPal = 0;
-#else
-  SDL_Surface* pTexture;
-  SDL_Palette* pPal = NULL;
-#endif
+  XBMC::TexturePtr pTexture;
+  XBMC::PalettePtr pPal = NULL;
 
 #ifdef _DEBUG
   LARGE_INTEGER start;
@@ -375,18 +354,10 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
     if (bundle >= 0)
     {
-#ifndef HAS_SDL
-      LPDIRECT3DTEXTURE8* pTextures;
-#else
-      SDL_Surface** pTextures;
-#endif
+      XBMC::TexturePtr *pTextures;
       int nLoops = 0;
       int* Delay;
-#ifndef HAS_SDL
       int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &info, &pTextures, &pPal, nLoops, &Delay);
-#else
-      int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &info, &pTextures, &pPal, nLoops, &Delay);
-#endif
       if (!nImages)
       {
         CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
@@ -521,7 +492,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 #ifndef HAS_SDL
     if ( D3DXCreateTextureFromFileEx(g_graphicsContext.Get3DDevice(), _P(texturePath).c_str(),
                                       D3DX_DEFAULT, D3DX_DEFAULT, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED,
-                                      D3DX_FILTER_NONE , D3DX_FILTER_NONE, dwColorKey, &info, NULL, &pTexture) != D3D_OK)
+                                      D3DX_FILTER_NONE , D3DX_FILTER_NONE, 0, &info, NULL, &pTexture) != D3D_OK)
     {
       if (!strnicmp(strPath.c_str(), "special://home/skin/", 20) && !strnicmp(strPath.c_str(), "special://xbmc/skin/", 20))
         CLog::Log(LOGERROR, "Texture manager unable to load file: %s", strPath.c_str());

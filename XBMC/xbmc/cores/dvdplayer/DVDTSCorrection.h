@@ -59,4 +59,5 @@ class CPullupCorrection
     double m_ptscorrection;        //the correction needed for the last added pts
     bool   m_haspattern;           //for the log
     int    m_patternlength;        //for the codec info
+    CStdString GetPatternStr();   //also for the log
 };

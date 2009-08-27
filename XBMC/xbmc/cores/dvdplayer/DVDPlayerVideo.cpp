@@ -843,11 +843,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // speed to better match with our video renderer's output speed
   // TODO - this should be based on m_fFrameRate, as the timestamps
   //        in the stream matches that better, durations can vary
-  if (m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE)))
+  int refreshrate = m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE));
+  if (refreshrate > 0) //refreshrate of -1 means the videoreferenceclock is not running
   {
     //correct any pattern in the timestamps if the videoreferenceclock is running
     m_pullupCorrection.Add(pts);
     pts += m_pullupCorrection.Correction();
+    
+    //when using the videoreferenceclock, a frame is always presented one vblank interval too late
+    pts -= (1.0 / refreshrate) * DVD_TIME_BASE; 
   }
   else
   {
@@ -1001,10 +1005,17 @@ void CDVDPlayerVideo::UpdateMenuPicture()
 std::string CDVDPlayerVideo::GetPlayerInfo()
 {
   std::ostringstream s;
-  s << "vq:" << std::setw(3) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
-  s << ", dc: " << m_codecname;
-  s << ", cpu: " << (int)(100 * CThread::GetRelativeUsage()) << "%";
-  s << ", bitrate: " << std::setprecision(4) << (double)GetVideoBitrate() / (1024.0*1024.0) << " MBit/s";
+  s << "vq:"     << setw(2) << min(99,100 * m_messageQueue.GetDataSize() / m_messageQueue.GetMaxDataSize()) << "%";
+  s << ", dc:"   << m_codecname;
+  s << ", MB/s:" << fixed << setprecision(2) << (double)GetVideoBitrate() / (1024.0*1024.0);
+  s << ", drop:" << m_iDroppedFrames;
+
+  int pc = m_pullupCorrection.GetPatternLength();
+  if (pc > 0)
+    s << ", pc:" << pc;
+  else
+    s << ", pc:none";
+
   return s.str();
 }
 

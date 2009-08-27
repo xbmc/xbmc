@@ -99,6 +99,7 @@ class CDateTime;
 #define PLAYER_CHAPTERNAME           41
 #define PLAYER_SUBTITLE_DELAY        42
 #define PLAYER_AUDIO_DELAY           43
+#define PLAYER_PASSTHROUGH           44
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -370,6 +371,7 @@ class CDateTime;
 #define SYSTEM_OPENGL_VENDOR        707
 #define SYSTEM_OPENGL_RENDERER      708
 #define SYSTEM_OPENGL_VERSION       709
+#define SYSTEM_SETTING              710
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721

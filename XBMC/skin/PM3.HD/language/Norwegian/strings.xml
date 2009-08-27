@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
 <strings>
   <string id="31000">Volum av</string>
-  <string id="31001"></string>
+  <string id="31001">Jobber...</string>
   <string id="31002"></string>
   <string id="31003"></string>
   <string id="31004"></string>
@@ -80,6 +80,8 @@
   <string id="31110"> - Egendefinerte bakgrunner</string>
   <string id="31111">Alltid vis musikkinfo ved musikkteksting</string>
   <string id="31112">Vis medietitler under "Brede ikoner"-visning</string>
+  <string id="31113">Enkeltbilde</string>
+  <string id="31114">Multibilde</string>
 
   <!-- Script Settings labels -->
   <string id="31200">Egendefinerte skript-valg</string>

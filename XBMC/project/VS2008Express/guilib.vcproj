@@ -160,6 +160,150 @@
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
+		<Configuration
+			Name="Debug (DirectX)|Win32"
+			OutputDirectory="guilib\$(ConfigurationName)"
+			IntermediateDirectory="guilib\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
+				StringPooling="false"
+				MinimalRebuild="true"
+				ExceptionHandling="0"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				EnableEnhancedInstructionSet="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="include.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\guilib.lib"
+				AdditionalLibraryDirectories=""
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release (DirectX)|Win32"
+			OutputDirectory="guilib\$(ConfigurationName)"
+			IntermediateDirectory="guilib\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				FavorSizeOrSpeed="1"
+				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
+				MinimalRebuild="false"
+				RuntimeLibrary="0"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="include.h"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+				DisableSpecificWarnings="4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\guilib.lib"
+				AdditionalLibraryDirectories=""
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames=""
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -235,6 +379,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIControlGroupList.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUIControlProfiler.cpp"
 				>
 			</File>
 			<File
@@ -441,6 +589,22 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -502,6 +666,22 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release (SDL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -617,6 +797,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\GUIControlGroupList.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\GUIControlProfiler.h"
 				>
 			</File>
 			<File
@@ -828,6 +1012,16 @@
 						Outputs="..\..\xbmc\win32\svn_rev.h"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="update_svn_rev.bat&#x0D;&#x0A;"
+						AdditionalDependencies="..\..\.svn\entries"
+						Outputs="..\..\xbmc\win32\svn_rev.h"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\guilib\IWindowManagerCallback.h"
@@ -919,6 +1113,22 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -959,6 +1169,22 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
 					Name="Debug|Win32"
 					>
 					<Tool
@@ -988,6 +1214,22 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release (SDL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

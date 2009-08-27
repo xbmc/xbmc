@@ -1,6 +1,7 @@
-xbmc (1:9.04.1+svn21475-1) experimental; urgency=low
+xbmc (1:9.04.1+svn21743-1) experimental; urgency=low
 
   * Package XBMC for Debian. (Closes: #469397)
+    (LP: #307162)
   * Start using an epoch for use better package versioning.
   * Add Debian Multimedia team to Maintainers field.
   * Add Ouattara and myself to Uploaders field.
@@ -9,7 +10,7 @@ xbmc (1:9.04.1+svn21475-1) experimental; urgency=low
   * Switch to quilt.
   * Remove unused patch.
   * Completely rewrite debian/rules to take advantage of debhelper 7 and quilt.
-  * Bump to Standards-Version 3.8.1.
+  * Bump to Standards-Version 3.8.2.
   * Changed Architecture field for arch-indep packages to 'all'.
   * Included powerpc and ppc64 for binary packages.
   * Use ${shlibs:Depends} for all binary packages.
@@ -25,6 +26,9 @@ xbmc (1:9.04.1+svn21475-1) experimental; urgency=low
   * Fix --prefix option when calling make install* in debian/rules.
   * Ensure no 'Thumbs.db' files are installed.
   * Do not use cp -a, just cp.
+  * Rewrite Description fields for each package.
+  * Add Depends on python-bluez | python-lightblue for xbmc-eventclients-ps3.
+  * Add manpages for the programs installed in /usr/bin.
   * Various fixes for lintian warnings and errors.
     + Fix not-binnmuable-all-depends-any lintian errors.
     + Fix not-binnmuable-any-depends-all lintian errors.
@@ -42,7 +46,7 @@ xbmc (1:9.04.1+svn21475-1) experimental; urgency=low
       xbmc-eventclients-dev package.
     + Create a symlink to LiberationSans-Regular.ttf.
 
- -- Andres Mejia <mcitadel@gmail.com>  Thu, 28 May 2009 00:33:46 -0400
+ -- Andres Mejia <mcitadel@gmail.com>  Thu, 16 Jul 2009 22:50:52 -0400
 
 xbmc (9.04.1.0.20670-jaunty1) jaunty; urgency=low
 

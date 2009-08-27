@@ -49,7 +49,7 @@ void main(int argc, char *argv[])
 }
 #else
 
-#if !defined(GUI) && !defined(RARDLL) && !defined(_XBOX) && !defined(_LINUX) && !defined(XBMC)
+#if !defined(GUI) && !defined(RARDLL) && !defined(_XBOX) && !defined(_LINUX) && !defined(_XBMC)
 int main(int argc, char *argv[])
 {
 #ifdef _UNIX
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
 
 #endif /* __XBOX__TEST__ */
 
-#if defined(_XBOX) || defined(_LINUX) || defined(XBMC)
+#if defined(_XBOX) || defined(_LINUX) || defined(_XBMC)
 /*-------------------------------------------------------------------------*\
                                XBOX interface
 \*-------------------------------------------------------------------------*/

@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\win32;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;XBMC;HAS_SDL;_USE_32BIT_TIME_T"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_XBMC;HAS_SDL;_USE_32BIT_TIME_T"
 				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
@@ -116,7 +116,150 @@
 				Optimization="3"
 				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
-				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;XBMC;HAS_SDL;_USE_32BIT_TIME_T"
+				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;_XBMC;HAS_SDL;_USE_32BIT_TIME_T"
+				StringPooling="true"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="rar.hpp"
+				PrecompiledHeaderFile="$(OutDir)\$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+				DisableSpecificWarnings="4800;4018;4146;4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\$(ProjectName).lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug (DirectX)|Win32"
+			OutputDirectory="UnrarXLib\$(ConfigurationName)"
+			IntermediateDirectory="UnrarXLib\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\win32;..\..\xbmc\lib\boost"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T"
+				StringPooling="true"
+				MinimalRebuild="false"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="1"
+				BufferSecurityCheck="true"
+				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="rar.hpp"
+				PrecompiledHeaderFile="$(OutDir)\$(ProjectName).pch"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4800;4018;4146;4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\$(ProjectName)d.lib"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release (DirectX)|Win32"
+			OutputDirectory="UnrarXLib\$(ConfigurationName)"
+			IntermediateDirectory="UnrarXLib\$(ConfigurationName)"
+			ConfigurationType="4"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				Optimization="3"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\win32\;..\..\xbmc\lib\boost"
+				PreprocessorDefinitions="NDEBUG;WIN32;_LIB;_XBMC;_USE_32BIT_TIME_T"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -198,6 +341,22 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\xbmc\lib\UnrarXLib\crc.cpp"
@@ -260,6 +419,22 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release (SDL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -360,6 +535,22 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release (SDL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"

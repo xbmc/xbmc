@@ -816,7 +816,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
       pControl->AddLabel(g_localizeStrings.Get(13355), RENDER_LQ_RGB_SHADER);
       pControl->AddLabel(g_localizeStrings.Get(13356), RENDER_OVERLAYS);
       pControl->AddLabel(g_localizeStrings.Get(13357), RENDER_HQ_RGB_SHADER);
@@ -1426,6 +1426,11 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     {
       g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
+    else if (strSetting.Equals("lookandfeel.rssedit"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
+    }
     else if (!strSetting.Equals("musiclibrary.enabled")
       && strSetting.Left(13).Equals("musiclibrary."))
     {
@@ -1516,6 +1521,8 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
     g_weatherManager.ResetTimer();
   }
+  else if (strSetting.Equals("lookandfeel.rssedit"))
+    CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
   // require immediate update
@@ -1813,10 +1820,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     choices.push_back(g_localizeStrings.Get(22034));
     choices.push_back(g_localizeStrings.Get(22035));
 
-    CPoint pos( g_settings.m_ResInfo[m_coordsRes].iWidth - GetWidth() / 2,
-                g_settings.m_ResInfo[m_coordsRes].iHeight - GetHeight() / 2 );
-
-    int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices, pos);
+    int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if ( retVal > 0 )
     {
       CStdString path(g_settings.GetDatabaseFolder());

@@ -19,30 +19,52 @@
 				<bordertexture border="3">NoCover_1.png</bordertexture>
 				<bordersize>4</bordersize>
 			</control>
-			<control type="image">
-				<posx>10</posx>
-				<posy>5</posy>
-				<width>35</width>
-				<height>35</height>
-				<texture>VolumeIcon.png</texture>
+			<control type="group">
+				<visible>!player.passthrough</visible>
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>35</width>
+					<height>35</height>
+					<texture>VolumeIcon.png</texture>
+				</control>
+				<control type="label">
+					<description>Volume Label</description>
+					<posx>50</posx>
+					<posy>22</posy>
+					<label>$INFO[Player.Volume]</label>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="progress" id="1">
+					<description>Progressbar</description>
+					<posx>135</posx>
+					<posy>16</posy>
+					<width>250</width>
+					<height>12</height>
+					<info>Player.Volume</info>
+					<visible>true</visible>
+				</control>
 			</control>
-			<control type="label">
-				<description>Volume Label</description>
-				<posx>50</posx>
-				<posy>22</posy>
-				<label>$INFO[Player.Volume]</label>
-				<font>font12</font>
-				<align>left</align>
-				<aligny>center</aligny>
-			</control>
-			<control type="progress" id="1">
-				<description>Progressbar</description>
-				<posx>135</posx>
-				<posy>16</posy>
-				<width>250</width>
-				<height>12</height>
-				<info>Player.Volume</info>
-				<visible>true</visible>
+			<control type="group">
+				<visible>player.passthrough</visible>
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>35</width>
+					<height>35</height>
+					<texture>VolumeIcon-Mute.png</texture>
+				</control>
+				<control type="label">
+					<description>Passthrough Label</description>
+					<posx>50</posx>
+					<posy>22</posy>
+					<label>$LOCALIZE[29802]</label>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+				</control>
 			</control>
 		</control>
 	</controls>

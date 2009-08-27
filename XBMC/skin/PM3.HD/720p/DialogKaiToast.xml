@@ -24,7 +24,7 @@
 				<width>40</width>
 				<height>40</height>
 				<aspectratio>keep</aspectratio>
-				<texture>DefaultFileBig.png</texture>
+				<texture>DefaultFile.png</texture>
 			</control>
 			<control type="label" id="401">
 				<description>Line 1 Label</description>

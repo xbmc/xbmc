@@ -72,10 +72,13 @@ bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
     const char *thumb = favourite->Attribute("thumb");
     if (name && favourite->FirstChild())
     {
-      CFileItemPtr item(new CFileItem(name));
-      item->m_strPath = favourite->FirstChild()->Value();
-      if (thumb) item->SetThumbnailImage(thumb);
-      items.Add(item);
+      if(!items.Contains(favourite->FirstChild()->Value()))
+      {
+        CFileItemPtr item(new CFileItem(name));
+        item->m_strPath = favourite->FirstChild()->Value();
+        if (thumb) item->SetThumbnailImage(thumb);
+        items.Add(item);
+      }
     }
     favourite = favourite->NextSiblingElement("favourite");
   }

@@ -24,6 +24,7 @@
 #include "GUIListLabel.h"
 #include "GUIMultiSelectText.h"
 #include "GUIBorderedImage.h"
+#include "GUIControlProfiler.h"
 
 CGUIListGroup::CGUIListGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
 : CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
@@ -52,7 +53,8 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
           control->GetControlType() == CGUIControl::GUICONTROL_LISTGROUP ||
           control->GetControlType() == CGUIControl::GUICONTROL_IMAGE ||
           control->GetControlType() == CGUIControl::GUICONTROL_BORDEREDIMAGE ||
-          control->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT))
+          control->GetControlType() == CGUIControl::GUICONTROL_MULTISELECT ||
+          control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX))
       CLog::Log(LOGWARNING, "Trying to add unsupported control type %d", control->GetControlType());
     control->SetPushUpdates(true);
   }
@@ -65,7 +67,9 @@ void CGUIListGroup::Render()
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
+    GUIPROFILER_VISIBILITY_BEGIN(control);
     control->UpdateVisibility(m_item);
+    GUIPROFILER_VISIBILITY_END(control);
     control->DoRender(m_renderTime);
   }
   CGUIControl::Render();

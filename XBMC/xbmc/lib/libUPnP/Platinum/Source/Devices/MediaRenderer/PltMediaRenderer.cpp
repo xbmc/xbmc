@@ -83,7 +83,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service = new PLT_Service(
             &data,
             "urn:schemas-upnp-org:service:AVTransport:1", 
-            "urn:upnp-org:serviceId:AVT_1-0",
+            "urn:upnp-org:serviceId:AVTransport",
             "urn:schemas-upnp-org:metadata-1-0/AVT/");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_AVTransportSCPD));
         NPT_CHECK_FATAL(service->InitURLs("AVTransport", data.GetUUID()));
@@ -109,7 +109,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service->SetStateVariable("NextAVTransportURIMetadata", "NOT_IMPLEMENTED");
         service->SetStateVariable("PlaybackStorageMedium", "NONE");
         service->SetStateVariable("RecordStorageMedium", "NOT_IMPLEMENTED");
-        service->SetStateVariable("RecordMediumWriteStatus", "NOT_IMPLEMENTED");
+		service->SetStateVariable("RecordMediumWriteStatus", "NOT_IMPLEMENTED");
 
         // GetPositionInfo
         service->SetStateVariable("CurrentTrack", "0");
@@ -133,7 +133,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         if (var) var->DisableIndirectEventing();
 
         // GetTransportInfo
-        service->SetStateVariable("TransportState", "NO_MEDIA_PRESENT");
+        service->SetStateVariable("TransportState", "STOPPED");
         service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("TransportPlaySpeed", "1");
 
@@ -147,7 +147,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service = new PLT_Service(
             &data,
             "urn:schemas-upnp-org:service:ConnectionManager:1", 
-            "urn:upnp-org:serviceId:CMGR_1-0");
+            "urn:upnp-org:serviceId:ConnectionManager");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_ConnectionManagerSCPD));
         NPT_CHECK_FATAL(service->InitURLs("ConnectionManager", data.GetUUID()));
         NPT_CHECK_FATAL(data.AddService(service));
@@ -164,7 +164,7 @@ PLT_MediaRenderer::SetupServices(PLT_DeviceData& data)
         service = new PLT_Service(
             &data,
             "urn:schemas-upnp-org:service:RenderingControl:1", 
-            "urn:upnp-org:serviceId:RCS_1-0",
+            "urn:upnp-org:serviceId:RenderingControl",
             "urn:schemas-upnp-org:metadata-1-0/RCS/");
         NPT_CHECK_FATAL(service->SetSCPDXML((const char*) RDR_RenderingControlSCPD));
         NPT_CHECK_FATAL(service->InitURLs("RenderingControl", data.GetUUID()));
@@ -191,24 +191,29 @@ PLT_MediaRenderer::OnAction(PLT_ActionReference&          action,
     /* parse the action name */
     NPT_String name = action->GetActionDesc()->GetName();
 
-    /* Is it a ConnectionManager Service Action ? */
- 
-    if (name.Compare("GetCurrentConnectionInfo", true) == 0) {
-        return OnGetCurrentConnectionInfo(action);
-    }  
-
-    /* Is it a AVTransport Service Action ? */
-
     // since all actions take an instance ID and we only support 1 instance
     // verify that the Instance ID is 0 and return an error here now if not
     NPT_String serviceType = action->GetActionDesc()->GetService()->GetServiceType();
     if (serviceType.Compare("urn:schemas-upnp-org:service:AVTransport:1", true) == 0) {
         if (NPT_FAILED(action->VerifyArgumentValue("InstanceID", "0"))) {
-            action->SetError(802,"Not valid InstanceID.");
+            action->SetError(718, "Not valid InstanceID");
             return NPT_FAILURE;
         }
     }
+	serviceType = action->GetActionDesc()->GetService()->GetServiceType();
+	if (serviceType.Compare("urn:schemas-upnp-org:service:RenderingControl:1", true) == 0) {
+		if (NPT_FAILED(action->VerifyArgumentValue("InstanceID", "0"))) {
+			action->SetError(702, "Not valid InstanceID");
+			return NPT_FAILURE;
+		}
+	}
 
+	/* Is it a ConnectionManager Service Action ? */
+	if (name.Compare("GetCurrentConnectionInfo", true) == 0) {
+		return OnGetCurrentConnectionInfo(action);
+	}  
+
+	/* Is it a AVTransport Service Action ? */
     if (name.Compare("Next", true) == 0) {
         return OnNext(action);
     }
@@ -268,7 +273,7 @@ PLT_MediaRenderer::OnGetCurrentConnectionInfo(PLT_ActionReference& action)
     if (NPT_FAILED(action->SetArgumentValue("AVTransportID", "0"))) {
         return NPT_FAILURE;
     }
-    if (NPT_FAILED(action->SetArgumentValue("ProtocolInfo", "http-get:*:*:*"))) {
+    if (NPT_FAILED(action->SetArgumentValue("ProtocolInfo", ""))) {
         return NPT_FAILURE;
     }
     if (NPT_FAILED(action->SetArgumentValue("PeerConnectionManager", "/"))) {

@@ -41,7 +41,7 @@ static int			schedMax;
  *	Evaluate a script
  */
 
-int scriptEval(int engine, char_t *cmd, char_t **result, int chan)
+int scriptEval(int engine, char_t *cmd, char_t **result, void* chan)
 {
 	int		ejid;
 

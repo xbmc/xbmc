@@ -27,7 +27,6 @@
 #include "Profile.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
-#include "DetectDVDType.h"
 #include "../MediaManager.h"
 #ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
 #include "linux/LinuxFileSystem.h"
@@ -36,8 +35,7 @@
 #include "File.h"
 #include "FileItem.h"
 #ifdef _WIN32PC
-using namespace MEDIA_DETECT;
-#include "cdioSupport.h"
+#include "WIN32Util.h"
 #endif
 
 using namespace XFILE;
@@ -237,27 +235,13 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
     CMediaSource& share = shares[i];
     if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
     {
-#ifdef _WIN32PC
-      CCdIoSupport cdio;
-      CStdString strDevice;
-      strDevice.Format("\\\\.\\%c:",share.strPath[0]);
-      CCdInfo* pCdInfo = cdio.GetCdInfo((char*)strDevice.c_str());
-      if (pCdInfo != NULL)
+      if(g_mediaManager.IsAudio(share.strPath))
       {
-        if(pCdInfo->IsAudio(1))
-        {
-          share.strStatus = "Audio-CD";
-          share.strPath = "cdda://local/";
-        }
-        else
-          share.strStatus = pCdInfo->GetDiscLabel().c_str();
-
-        delete pCdInfo;
+        share.strStatus = "Audio-CD";
+        share.strPath = "cdda://local/";
       }
-#else
-      share.strStatus = MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
-      share.strPath = MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
-#endif
+      else
+        share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
     }
   }
 }

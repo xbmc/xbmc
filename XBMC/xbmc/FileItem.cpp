@@ -1237,9 +1237,17 @@ void CFileItem::CleanString()
 {
   if (IsTV())
     return;
+
+  bool bIsFolder = m_bIsFolder;
+
+  // make sure we don't append the extension to stacked dvd folders
+  if (HasProperty("isstacked") && IsDVDFile(false, true))
+    bIsFolder = true;
+
   CStdString strLabel = GetLabel();
-  CUtil::CleanString(strLabel, m_bIsFolder);
-  SetLabel(strLabel);
+  CStdString strTitle, strTitleAndYear, strYear;
+  CUtil::CleanString(strLabel, strTitle, strTitleAndYear, strYear, bIsFolder);
+  SetLabel(strTitleAndYear);
 }
 
 void CFileItem::SetLabel(const CStdString &strLabel)
@@ -2076,8 +2084,10 @@ void CFileItemList::FilterCueItems()
                   if (tag.Loaded())
                   {
                     if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
+                    if (song.strAlbumArtist.empty() && !tag.GetAlbumArtist().empty()) song.strAlbumArtist = tag.GetAlbumArtist();
                     if (song.strGenre.empty() && !tag.GetGenre().empty()) song.strGenre = tag.GetGenre();
                     if (song.strArtist.empty() && !tag.GetArtist().empty()) song.strArtist = tag.GetArtist();
+                    if (tag.GetDiscNumber()) song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
                     SYSTEMTIME dateTime;
                     tag.GetReleaseDate(dateTime);
                     if (dateTime.wYear) song.iYear = dateTime.wYear;
@@ -2141,8 +2151,6 @@ void CFileItemList::Stack()
   // not allowed here
   if (IsVirtualDirectoryRoot() || IsTV())
     return;
-
-  SetProperty("isstacked", "1");
 
   // items needs to be sorted for stuff below to work properly
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -2250,6 +2258,9 @@ void CFileItemList::Stack()
   while (i < Size())
   {
     CFileItemPtr item = Get(i);
+
+    // set property
+    item->SetProperty("isstacked", "1");
 
     // skip folders, nfo files, playlists, dvd images
     if (item->m_bIsFolder

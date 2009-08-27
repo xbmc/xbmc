@@ -30,6 +30,7 @@
 #include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "MediaManager.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;
@@ -316,8 +317,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
   }
 
   // Update CDDA Rip button
-  CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-  if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
+  if (g_mediaManager.IsAudio())
   {
     CONTROL_ENABLE(CONTROL_BTNRIP);
   }
@@ -370,10 +370,10 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       // get the usual music shares, and anything for all media windows
       CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
       // enable Rip CD an audio disc
-      if (CDetectDVDMedia::IsDiscInDrive() && item->IsCDDA())
+      if (g_mediaManager.IsDiscInDrive() && item->IsCDDA())
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
-        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+        CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
       }
@@ -399,16 +399,16 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
       }
 
       // enable Rip CD Audio or Track button if we have an audio disc
-      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA())
+      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA())
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
-        CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
+        CCdInfo *pCdInfo = g_mediaManager.GetCdInfo();
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
       }
 
       // enable CDDB lookup if the current dir is CDDA
-      if (CDetectDVDMedia::IsDiscInDrive() && m_vecItems->IsCDDA() &&
+      if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
         buttons.Add(CONTEXT_BUTTON_CDDB, 16002);

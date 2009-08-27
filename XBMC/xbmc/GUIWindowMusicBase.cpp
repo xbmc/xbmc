@@ -51,6 +51,7 @@
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -995,8 +996,7 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowMusicBase::OnRipCD()
 {
-  CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-  if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
+  if(g_mediaManager.IsAudio())
   {
     if (!g_application.CurrentFileItem().IsCDDA())
     {
@@ -1019,8 +1019,7 @@ void CGUIWindowMusicBase::OnRipCD()
 
 void CGUIWindowMusicBase::OnRipTrack(int iItem)
 {
-  CCdInfo *pCdInfo = CDetectDVDMedia::GetCdInfo();
-  if (CDetectDVDMedia::IsDiscInDrive() && pCdInfo && pCdInfo->IsAudio(1))
+  if(g_mediaManager.IsAudio())
   {
     if (!g_application.CurrentFileItem().IsCDDA())
     {

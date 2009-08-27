@@ -540,6 +540,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
       CStdString strCached = item.GetCachedFanart();
       if (!XFILE::CFile::Exists(strCached) && m_musicDatabase.GetArtistPath(iArtist,item.m_strPath))
       {
+        CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, i->c_str(), item.m_strPath.c_str());
         item.m_bIsFolder = true;
         CStdString strFanart = item.CacheFanart(true);
         if (!strFanart.IsEmpty())
@@ -547,6 +548,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
           CPicture pic;
           pic.CacheImage(strFanart,strCached);
         }
+        else
+          CLog::Log(LOGDEBUG, "%s no local fanart found for artist %s", __FUNCTION__, i->c_str());
       }
       if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
       {

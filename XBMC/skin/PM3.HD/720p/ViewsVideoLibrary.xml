@@ -564,19 +564,6 @@
 				<aligny>center</aligny>
 				<label>[UPPERCASE]$INFO[ListItem.Title][/UPPERCASE]</label>
 			</control>
-			<control type="textbox">
-				<description>Plot Value for TVShow</description>
-				<posx>40</posx>
-				<posy>610</posy>
-				<width>785</width>
-				<height>90</height>
-				<font>font11</font>
-				<align>justify</align>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<pagecontrol>9999999999</pagecontrol>
-				<label>$INFO[ListItem.Plot]</label>
-			</control>
 		</control>
 		<control type="group">
 			<visible>Control.IsVisible(56) + Container.Content(Seasons)</visible>
@@ -601,6 +588,21 @@
 				<aspectratio>keep</aspectratio>
 				<texture>$INFO[ListItem.Overlay]</texture>
 			</control>
+		</control>
+		<control type="textbox">
+			<description>Plot Value for TVShow</description>
+			<posx>40</posx>
+			<posy>610</posy>
+			<width>785</width>
+			<height>90</height>
+			<font>font11</font>
+			<align>justify</align>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<pagecontrol>9999999999</pagecontrol>
+			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+			<label>$INFO[ListItem.Plot]</label>
+			<visible>Control.IsVisible(56) + Container.Content(TVShows)</visible>
 		</control>
 	</include>
 	<include name="MoviesListView">

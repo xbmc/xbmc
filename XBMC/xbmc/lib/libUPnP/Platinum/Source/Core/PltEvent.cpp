@@ -211,8 +211,7 @@ PLT_EventSubscriber::Notify(NPT_List<PLT_StateVariable*>& vars)
 
     // format the body with the xml
     NPT_String xml;
-    if (NPT_FAILED(PLT_XmlHelper::Serialize(*propertyset, 
-                                            xml))) {
+    if (NPT_FAILED(PLT_XmlHelper::Serialize(*propertyset, xml))) {
         delete propertyset;
         NPT_CHECK_FATAL(NPT_FAILURE);
     }

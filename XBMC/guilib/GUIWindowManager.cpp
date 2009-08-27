@@ -30,6 +30,10 @@
 #include "Util.h"
 #include "Settings.h"
 
+#if defined(WIN32) && !defined(HAS_SDL)
+#include "../xbmc/Win32/XBMC_PC.h"
+#endif
+
 using namespace std;
 
 CGUIWindowManager m_gWindowManager;

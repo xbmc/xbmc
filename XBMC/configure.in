@@ -383,8 +383,10 @@ else
   AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([enca],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
+  AC_CHECK_LIB([mms],       [main],, AC_MSG_ERROR($missing_library))
 
   AC_CHECK_LIB([Xt],        [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([Xtst],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xmu],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xinerama],  [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
@@ -1027,6 +1029,7 @@ AC_CONFIG_FILES([Makefile Makefile.include]
                 [xbmc/cores/paplayer/AACCodec/Makefile]
                 [xbmc/cores/paplayer/AC3Codec/Makefile]
                 [xbmc/cores/paplayer/ADPCMCodec/Makefile]
+                [xbmc/cores/paplayer/FLACCodec/Makefile]
                 [xbmc/cores/paplayer/ModuleCodec/Makefile]
                 [xbmc/cores/paplayer/GYMCodec/Makefile]
                 [xbmc/cores/paplayer/MP3Codec/Makefile]
@@ -1131,7 +1134,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [
   fi
 ], [$USE_EXTERNAL_LIBMPCDEC])
 
-XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
+XB_CONFIG_MODULE([xbmc/cores/paplayer/FLACCodec/flac-1.2.1], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \    
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 -C \
@@ -1140,8 +1143,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
       --disable-xmms-plugin \
       --disable-cpplibs \
       CC="$CC" \
-      CXX="$CXX" && \
-    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+      CXX="$CXX"
   else
     ./configure -C \
       --with-pic \
@@ -1149,8 +1151,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/flac-1.2.1], [
       --disable-xmms-plugin \
       --disable-cpplibs \
       CC="$CC" \
-      CXX="$CXX" && \
-    sed -ie s/__DECLARE__XBMC__ARCH__/$ARCH/ Makefile
+      CXX="$CXX"
   fi
 ], [$USE_EXTERNAL_LIBFLAC])
 
@@ -1177,7 +1178,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     ./configure \
       --extra-cflags="-w -D_DARWIN_C_SOURCE -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
       --disable-static \
-      --disable-vhook \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
       --disable-encoders \
@@ -1190,7 +1190,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --disable-decoder=mpeg_xvmc \
       --enable-postproc \
       --enable-gpl \
-      --enable-swscale \
       --enable-protocol=http \
       --enable-pthreads \
       --cc="$CC" &&
@@ -1204,7 +1203,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --extra-cflags="-D_XBOX" \
       --disable-static \
       --disable-altivec \
-      --disable-vhook \
       --disable-ipv6 \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
@@ -1217,7 +1215,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-shared \
       --enable-postproc \
       --enable-gpl \
-      --enable-swscale \
       `if test "$use_vdpau" = "yes"; then echo --enable-vdpau; fi` \
       `if test "$use_external_libfaad" = "yes"; then echo --enable-libfaad; fi` \
       --enable-protocol=http \

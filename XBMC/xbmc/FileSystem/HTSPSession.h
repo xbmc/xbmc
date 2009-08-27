@@ -180,7 +180,7 @@ public:
   void      Abort();
   bool      Auth(const std::string& username, const std::string& password);
 
-  htsmsg_t* ReadMessage();
+  htsmsg_t* ReadMessage(int timeout = 10000);
   bool      SendMessage(htsmsg_t* m);
 
   htsmsg_t* ReadResult (htsmsg_t* m, bool sequence = true);

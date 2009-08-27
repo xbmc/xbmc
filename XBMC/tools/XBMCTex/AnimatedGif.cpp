@@ -49,7 +49,7 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 // Use SDL macros to swap data endianness
 // This assumes that big endian systems use SDL
 // Macros do not do anything on little endian systems
-#ifdef USE_SDL
+#ifdef HAS_SDL
 #include <SDL/SDL_endian.h>
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
@@ -105,8 +105,8 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   }
   // Standard members setup
   Transparent = -1;
-  BytesPerRow = Width = iWidth;
-  Height = iHeight;
+  BytesPerRow = Width = PadPow2(iWidth);
+  Height = PadPow2(iHeight);
   BPP = iBPP;
   // Animation Extra members setup:
   xPos = yPos = Delay = Transparency = 0;

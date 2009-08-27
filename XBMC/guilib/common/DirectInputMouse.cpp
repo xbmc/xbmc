@@ -25,7 +25,7 @@
 
 #ifndef HAS_SDL
 
-#include "../../Tools/Win32/XBMC_PC.h"
+#include "../../xbmc/Win32/XBMC_PC.h"
 extern CXBMC_PC *g_xbmcPC;
 
 CDirectInputMouse::CDirectInputMouse()
@@ -63,7 +63,7 @@ bool CDirectInputMouse::Update(MouseState &state)
   bool bMouseMoved(false);
   DIMOUSESTATE mouseState;
   memset(&mouseState, 0, sizeof(mouseState));
-  if (!m_mouse) return;
+  if (!m_mouse) return false;
   if (S_OK == m_mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&mouseState))
   {
     state.dx = (char)mouseState.lX;

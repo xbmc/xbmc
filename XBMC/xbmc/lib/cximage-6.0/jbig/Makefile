@@ -1,18 +1,9 @@
-CFLAGS=-O2 -fPIC -D_LINUX
-
+CFLAGS+=-fPIC
 ifeq ($(findstring osx,$(ARCH)), osx)
-	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	CFLAGS+=-fno-common
 endif
-
+LIB=jbig.a
 OBJS=jbig.o jbig_tab.o 
 
-%o : %c
-	$(CC) -c -o $@ $< $(CFLAGS)
+include ../../../../Makefile.include
 
-jbig.a: $(OBJS)
-	$(AR) rc $@ $(OBJS)
-
-clean:
-	$(RM) $(OBJS) jbig.a
-
-distclean: clean

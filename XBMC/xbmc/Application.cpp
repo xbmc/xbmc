@@ -36,6 +36,7 @@
 #include "GUILabelControl.h"  // needed for CInfoLabel
 #include "GUIImage.h"
 #endif
+#include "GUIControlProfiler.h"
 #include "XBVideoConfig.h"
 #include "LangCodeExpander.h"
 #include "utils/GUIInfoManager.h"
@@ -245,6 +246,7 @@
 #endif
 
 #include "lib/libcdio/logging.h"
+#include "MediaManager.h"
 
 #ifdef _LINUX
 #include "XHandle.h"
@@ -368,12 +370,13 @@ CApplication::~CApplication(void)
     delete m_pKaraokeMgr;
 #endif
 
+#ifdef HAS_SDL
   if (m_frameMutex)
     SDL_DestroyMutex(m_frameMutex);
 
   if (m_frameCond)
     SDL_DestroyCond(m_frameCond);
-
+#endif
   delete m_dpms;
 
 #ifdef _WIN32PC
@@ -424,11 +427,11 @@ void CApplication::InitBasicD3D()
   m_d3dpp.BackBufferCount = 1;
   m_d3dpp.EnableAutoDepthStencil = FALSE;
   m_d3dpp.SwapEffect = D3DSWAPEFFECT_COPY;
-  m_d3dpp.FullScreen_PresentationInterval = 0;
+  m_d3dpp.PresentationInterval = 0;
   m_d3dpp.Windowed = TRUE;
   m_d3dpp.hDeviceWindow = g_hWnd;
 
-  if (!(m_pD3D = Direct3DCreate8(D3D_SDK_VERSION)))
+  if (!(m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)))
   {
     CLog::Log(LOGFATAL, "FATAL ERROR: Unable to create Direct3D!");
     Sleep(INFINITE); // die
@@ -623,7 +626,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #ifndef HAS_SDL
   CLog::Log(LOGNOTICE, "Setup DirectX");
   // Create the Direct3D object
-  if ( NULL == ( m_pD3D = Direct3DCreate8(D3D_SDK_VERSION) ) )
+  if ( NULL == ( m_pD3D = Direct3DCreate9(D3D_SDK_VERSION) ) )
   {
     CLog::Log(LOGFATAL, "XBAppEx: Unable to create Direct3D!" );
     return E_FAIL;
@@ -844,15 +847,15 @@ HRESULT CApplication::Create(HWND hWnd)
   g_graphicsContext.SetD3DDevice(m_pd3dDevice);
   g_graphicsContext.CaptureStateBlock();
   // set filters
-  g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
+  g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  g_graphicsContext.Get3DDevice()->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
   CUtil::InitGamma();
 #endif
 
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
 
-#ifdef _WIN32PC
+#if defined(_WIN32PC) && defined(HAS_SDL_OPENGL)
   CWIN32Util::CheckGLVersion();
 #endif
 
@@ -916,6 +919,10 @@ HRESULT CApplication::Create(HWND hWnd)
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
   CUtil::InitRandomSeed();
+
+#ifdef _WIN32PC
+  CWIN32Util::AddRemovableDrives();
+#endif
 
   return CXBApplicationEx::Create(hWnd);
 }
@@ -1606,7 +1613,7 @@ void CApplication::StartFtpServer()
 
       // check file size and presence
       CFile xml;
-      if (xml.Open(xmlpath+"FileZilla Server.xml",true) && xml.GetLength() > 0)
+      if (xml.Open(xmlpath+"FileZilla Server.xml") && xml.GetLength() > 0)
       {
         m_pFileZilla = new CXBFileZilla(_P(xmlpath));
         m_pFileZilla->Start(false);
@@ -1912,9 +1919,11 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
+#ifndef _WIN32PC
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
+#endif
 
   CLog::Log(LOGNOTICE, "initializing playlistplayer");
   g_playlistPlayer.SetRepeat(PLAYLIST_MUSIC, g_stSettings.m_bMyMusicPlaylistRepeat ? PLAYLIST::REPEAT_ALL : PLAYLIST::REPEAT_NONE);
@@ -1937,8 +1946,10 @@ void CApplication::StopServices()
 {
   m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
+#ifndef _WIN32PC
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
+#endif
 }
 
 void CApplication::DelayLoadSkin()
@@ -2409,7 +2420,7 @@ void CApplication::RenderScreenSaver()
         screenSaverFadeAmount += 2;  // around a second to fade
 
       DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-      CGUITexture::DrawQuad(CRect(0,0,g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight()), color);
+      CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
     }
   }
   else
@@ -2545,18 +2556,19 @@ void CApplication::RenderMemoryStatus()
     CStdString info;
     MEMORYSTATUS stat;
     GlobalMemoryStatus(&stat);
+    CStdString profiling = CGUIControlProfiler::IsRunning() ? " (profiling)" : "";
 #ifdef __APPLE__
     double dCPU = m_resourceCounter.GetCPUUsage();
-    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
-              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU);
+    info.Format("FreeMem %ju/%ju MB, FPS %2.1f, CPU-Total %d%%. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/(1024*1024), stat.dwTotalPhys/(1024*1024),
+              g_infoManager.GetFPS(), g_cpuInfo.getUsedPercentage(), dCPU, profiling.c_str());
 #elif !defined(_LINUX)
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s.", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str());
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024, g_infoManager.GetFPS(), strCores.c_str(), profiling.c_str());
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
     CStdString strCores = g_cpuInfo.GetCoresUsageString();
-    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
-              g_infoManager.GetFPS(), strCores.c_str(), dCPU);
+    info.Format("FreeMem %d/%d Kb, FPS %2.1f, %s. CPU-XBMC %4.2f%%%s", stat.dwAvailPhys/1024, stat.dwTotalPhys/1024,
+              g_infoManager.GetFPS(), strCores.c_str(), dCPU, profiling.c_str());
 #endif
 
     static int yShift = 20;
@@ -2671,7 +2683,7 @@ bool CApplication::OnKey(CKey& key)
       {
         if (key.GetButtonCode() != KEY_INVALID)
           action.wID = (WORD) key.GetButtonCode();
-        action.unicode = key.GetUnicode();
+        action.unicode = (WCHAR)key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
@@ -2802,6 +2814,13 @@ bool CApplication::OnAction(CAction &action)
     else
       PowerButtonDown = false;
   }
+  // reload keymaps
+  if (action.wID == ACTION_RELOAD_KEYMAPS)
+  {
+    CButtonTranslator::GetInstance().Clear();
+    CButtonTranslator::GetInstance().Load();
+  }
+
   // show info : Shows the current video or song information
   if (action.wID == ACTION_SHOW_INFO)
   {
@@ -3008,39 +3027,41 @@ bool CApplication::OnAction(CAction &action)
   // Check for global volume control
   if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
   {
-    // increase or decrease the volume
-    int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
-
-    // calculate speed so that a full press will equal 1 second from min to max
-    float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
-    if( action.fRepeat )
-      speed *= action.fRepeat;
-    else
-      speed /= 50; //50 fps
-    if (g_stSettings.m_bMute)
+    if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      // only unmute if volume is to be increased, otherwise leave muted
-      if (action.wID == ACTION_VOLUME_DOWN)
+      // increase or decrease the volume
+      int volume = g_stSettings.m_nVolumeLevel + g_stSettings.m_dynamicRangeCompressionLevel;
+
+      // calculate speed so that a full press will equal 1 second from min to max
+      float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
+      if( action.fRepeat )
+        speed *= action.fRepeat;
+      else
+        speed /= 50; //50 fps
+      if (g_stSettings.m_bMute)
+      {
+        // only unmute if volume is to be increased, otherwise leave muted
+        if (action.wID == ACTION_VOLUME_DOWN)
+          return true;
+        Mute();
         return true;
-      Mute();
-      return true;
-    }
-    if (action.wID == ACTION_VOLUME_UP)
-    {
-      volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
-    }
-    else
-    {
-      volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
-    }
+      }
+      if (action.wID == ACTION_VOLUME_UP)
+      {
+        volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+      }
+      else
+      {
+        volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+      }
 
-    SetHardwareVolume(volume);
-#ifndef HAS_SDL_AUDIO
-    g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
-#else
-    g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
-#endif
-
+      SetHardwareVolume(volume);
+  #ifndef HAS_SDL_AUDIO
+      g_audioManager.SetVolume(g_stSettings.m_nVolumeLevel);
+  #else
+      g_audioManager.SetVolume((int)(128.f * (g_stSettings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+  #endif
+    }
     // show visual feedback of volume change...
     m_guiDialogVolumeBar.Show();
     m_guiDialogVolumeBar.OnAction(action);
@@ -3051,6 +3072,12 @@ bool CApplication::OnAction(CAction &action)
   {
     if (!m_pPlayer->CanSeek()) return false;
     m_guiDialogSeekBar.OnAction(action);
+    return true;
+  }
+  if (action.wID == ACTION_GUIPROFILE_BEGIN)
+  {
+    CGUIControlProfiler::Instance().SetOutputFile(_P("special://home/guiprofiler.xml"));
+    CGUIControlProfiler::Instance().Start();
     return true;
   }
   return false;
@@ -4733,6 +4760,7 @@ void CApplication::UpdateFileState()
       {
         // Update the bookmark
         m_progressTrackingVideoResumeBookmark.timeInSeconds = GetTime();
+        m_progressTrackingVideoResumeBookmark.totalTimeInSeconds = GetTotalTime();
       }
       else
       {
@@ -5195,7 +5223,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
 
       // DVD ejected while playing in vis ?
-      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !CDetectDVDMedia::IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+      if (!IsPlayingAudio() && (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) && !g_mediaManager.IsDiscInDrive() && m_gWindowManager.GetActiveWindow() == WINDOW_VISUALISATION)
       {
         // yes, disable vis
         g_settings.Save();    // save vis settings
@@ -5977,11 +6005,15 @@ CApplicationMessenger& CApplication::getApplicationMessenger()
 
 bool CApplication::IsPresentFrame()
 {
+#ifdef HAS_SDL // TODO:DIRECTX
   SDL_mutexP(m_frameMutex);
   bool ret = m_bPresentFrame;
   SDL_mutexV(m_frameMutex);
 
   return ret;
+#else
+  return false;
+#endif
 }
 
 #if defined(HAS_LINUX_NETWORK)

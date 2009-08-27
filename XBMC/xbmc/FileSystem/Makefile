@@ -30,7 +30,6 @@ SRCS=ASAPFileDirectory.cpp \
      FileHD.cpp \
      FileISO.cpp \
      FileLastFM.cpp \
-     FileMMS.cpp \
      FileMusicDatabase.cpp \
      FileRar.cpp \
      FileRTV.cpp \

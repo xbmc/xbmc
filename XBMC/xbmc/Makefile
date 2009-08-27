@@ -210,6 +210,8 @@ SRCS=Application.cpp \
 
 LIB=xbmc.a
 
+DISTCLEAN_FILES=DllPaths_generated.h
+
 include ../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 

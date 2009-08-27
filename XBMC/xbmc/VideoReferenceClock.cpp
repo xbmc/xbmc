@@ -387,8 +387,7 @@ void CVideoReferenceClock::RunGLX()
 
 void CVideoReferenceClock::RunD3D()
 {
-  D3dClock::D3DRASTER_STATUS RasterStatus;
-
+  D3DRASTER_STATUS RasterStatus;
   LARGE_INTEGER Now;
   int64_t       LastVBlankTime;
   unsigned int  LastLine;
@@ -415,7 +414,7 @@ void CVideoReferenceClock::RunD3D()
     if (ReturnV != D3D_OK)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned returned %s: %s",
-                D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
+                DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
       return;
     }
 
@@ -465,11 +464,11 @@ void CVideoReferenceClock::RunD3D()
 
 bool CVideoReferenceClock::SetupD3D()
 {
-  D3dClock::D3DPRESENT_PARAMETERS  D3dPP;
-  D3dClock::D3DCAPS9               DevCaps;
-  D3dClock::D3DRASTER_STATUS       RasterStatus;
-  D3dClock::D3DDISPLAYMODE         DisplayMode;
-  D3dClock::D3DADAPTER_IDENTIFIER9 AIdentifier;
+  D3DPRESENT_PARAMETERS  D3dPP;
+  D3DCAPS9               DevCaps;
+  D3DRASTER_STATUS       RasterStatus;
+  D3DDISPLAYMODE         DisplayMode;
+  D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   int ReturnV;
 
@@ -485,7 +484,7 @@ bool CVideoReferenceClock::SetupD3D()
     return false;
   }
 
-  m_D3d = D3dClock::Direct3DCreate9(D3D_SDK_VERSION);
+  m_D3d = Direct3DCreate9(D3D_SDK_VERSION);
 
   if (!m_D3d)
   {
@@ -514,11 +513,11 @@ bool CVideoReferenceClock::SetupD3D()
   ZeroMemory(&D3dPP, sizeof(D3dPP));
   D3dPP.BackBufferWidth = 64;
   D3dPP.BackBufferHeight = 64;
-  D3dPP.BackBufferFormat = D3dClock::D3DFMT_UNKNOWN;
+  D3dPP.BackBufferFormat = D3DFMT_UNKNOWN;
   D3dPP.BackBufferCount = 1;
-  D3dPP.MultiSampleType = D3dClock::D3DMULTISAMPLE_NONE;
+  D3dPP.MultiSampleType = D3DMULTISAMPLE_NONE;
   D3dPP.MultiSampleQuality = 0;
-  D3dPP.SwapEffect = D3dClock::D3DSWAPEFFECT_COPY;
+  D3dPP.SwapEffect = D3DSWAPEFFECT_COPY;
   D3dPP.hDeviceWindow = m_Hwnd;
   D3dPP.Windowed = TRUE;
   D3dPP.EnableAutoDepthStencil = FALSE;
@@ -543,13 +542,13 @@ bool CVideoReferenceClock::SetupD3D()
   if (m_IsVista)
     Sleep(500); //direct3d has better luck getting an exclusive lock this way
   
-  ReturnV = m_D3d->CreateDevice(m_Adapter, D3dClock::D3DDEVTYPE_HAL, m_Hwnd,
+  ReturnV = m_D3d->CreateDevice(m_Adapter, D3DDEVTYPE_HAL, m_Hwnd,
                                 D3DCREATE_SOFTWARE_VERTEXPROCESSING, &D3dPP, &m_D3dDev);
 
   if (ReturnV != D3D_OK)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: CreateDevice returned %s: %s",
-              D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
+              DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
     return false;
   }
 
@@ -561,7 +560,7 @@ bool CVideoReferenceClock::SetupD3D()
   if (ReturnV != D3D_OK)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetDeviceCaps returned %s: %s",
-                         D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
+                         DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
     return false;
   }
 
@@ -575,7 +574,7 @@ bool CVideoReferenceClock::SetupD3D()
   if (ReturnV != D3D_OK)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetRasterStatus returned returned %s: %s",
-              D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
+              DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
     return false;
   }
 
@@ -583,7 +582,7 @@ bool CVideoReferenceClock::SetupD3D()
   if (ReturnV != D3D_OK)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: GetAdapterDisplayMode returned returned %s: %s",
-              D3dClock::DXGetErrorString(ReturnV), D3dClock::DXGetErrorDescription(ReturnV));
+              DXGetErrorString(ReturnV), DXGetErrorDescription(ReturnV));
     return false;
   }
 
@@ -892,7 +891,7 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
 #elif defined(_WIN32)
   bool Changed = false;
 
-  D3dClock::D3DDISPLAYMODE DisplayMode;
+  D3DDISPLAYMODE DisplayMode;
   m_D3d->GetAdapterDisplayMode(m_Adapter, &DisplayMode);
 
   //0 indicates adapter default
@@ -960,7 +959,7 @@ int CVideoReferenceClock::GetRefreshRate()
 
 #define MAXDELAY 1200
 
-//this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBoxRenderManager::WaitPresentTime
+//this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBMCRenderManager::WaitPresentTime
 //it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
 int64_t CVideoReferenceClock::Wait(int64_t Target)
 {

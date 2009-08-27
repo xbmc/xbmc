@@ -66,6 +66,7 @@ public:
   void SetObserver(IRssObserver* observer);
   void CheckForUpdates();
   void requestRefresh();
+  unsigned int m_SavedScrollPos;
 
 private:
   void fromRSSToUTF16(const CStdStringA& strSource, CStdStringW& strDest);

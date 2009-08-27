@@ -108,7 +108,7 @@ bool IsSwizzledFormat(XB_D3DFORMAT format)
 }
 
 #ifndef HAS_SDL
-HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE8 pSurface, const char *fileName)
+HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE9 pSurface, const char *fileName)
 #else
 HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fileName)
 #endif
@@ -388,11 +388,7 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
   }
 }
 
-#ifndef HAS_SDL
-void GetTextureFromData(D3DTexture *pTex, void *texData, LPDIRECT3DTEXTURE8 *ppTexture)
-#else
-void GetTextureFromData(D3DTexture *pTex, void *texData, SDL_Surface* *ppTexture)
-#endif
+void GetTextureFromData(D3DTexture *pTex, void *texData, XBMC::TexturePtr *ppTexture)
 {
   XB_D3DFORMAT fmt;
   DWORD width, height, pitch, offset;
@@ -528,10 +524,10 @@ HRESULT CXBPackedResource::Create(const char *fileName, int unused, void *unused
   return S_OK;
 }
 
-LPDIRECT3DTEXTURE8 CXBPackedResource::GetTexture(UINT unused)
+LPDIRECT3DTEXTURE9 CXBPackedResource::GetTexture(UINT unused)
 {
   // now here's where the fun starts...
-  LPDIRECT3DTEXTURE8 pTexture = NULL;
+  LPDIRECT3DTEXTURE9 pTexture = NULL;
 
   D3DTexture *pTex = (D3DTexture *)(m_buffer + sizeof(XPR_HEADER));
 

@@ -1,18 +1,9 @@
-CFLAGS+=-O2 -fPIC -DXBMC -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
-
+CFLAGS+=-fPIC -DXBMC
 ifeq ($(findstring osx,$(ARCH)), osx)
-	CFLAGS+=-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+	CFLAGS+=-fno-common
 endif
-
+LIB=raw.a
 OBJS=dcr.o libdcr.o
 
-raw.a: $(OBJS)
-	$(AR) rc $@ $(OBJS)
+include ../../../../Makefile.include
 
-%o : %c
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-clean:
-	$(RM) $(OBJS) raw.a
-
-distclean: clean

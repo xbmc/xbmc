@@ -300,7 +300,7 @@ extern "C"
     return strlen(tmp);
   }
 
-  char *_fullpath(char *absPath, const char *relPath, size_t maxLength)
+  char *dll_fullpath(char *absPath, const char *relPath, size_t maxLength)
   {
     unsigned int len = strlen(relPath);
     if (len > maxLength && absPath != NULL) return NULL;

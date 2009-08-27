@@ -59,6 +59,13 @@ CNfoFile::~CNfoFile()
 CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, const CONTENT_TYPE& content, int episode)
 {
   m_content = content;
+  return Create(strPath, info, episode);
+}
+
+CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& info, int episode)
+{
+  m_info = info; // assume we can use these settings
+  m_content = info.Content();
   if (FAILED(Load(strPath)))
     return NO_NFO;
 
@@ -220,7 +227,7 @@ void CNfoFile::DoScrape(ADDON::CScraperParser& parser, const CScraperUrl* pURL, 
       parser.m_param[i] = strHTML[i];
   }
 
-  m_strImDbUrl = parser.Parse(strFunction);
+  m_strImDbUrl = parser.Parse(strFunction, m_strScraper.CompareNoCase(m_info.strPath) == 0 ? &m_info.settings : 0);
   TiXmlDocument doc;
   doc.Parse(m_strImDbUrl.c_str());
 
@@ -260,7 +267,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
   if (strURL.IsEmpty())
   {
     m_parser.m_param[0] = m_doc;
-    m_strImDbUrl = m_parser.Parse("NfoScrape");
+    m_strImDbUrl = m_parser.Parse("NfoScrape", m_strScraper.CompareNoCase(m_info.strPath) == 0 ? &m_info.settings : 0);
     TiXmlDocument doc;
     doc.Parse(m_strImDbUrl.c_str());
     if (doc.RootElement() && doc.RootElement()->FirstChildElement())
@@ -287,7 +294,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
   else // we check to identify the episodeguide url
   {
     m_parser.m_param[0] = strURL;
-    CStdString strEpGuide = m_parser.Parse("EpisodeGuideUrl"); // allow corrections?
+    CStdString strEpGuide = m_parser.Parse("EpisodeGuideUrl", m_strScraper.CompareNoCase(m_info.strPath) == 0 ? &m_info.settings : 0); // allow corrections?
     if (strEpGuide.IsEmpty())
       return E_FAIL;
     return S_OK;
@@ -298,7 +305,7 @@ HRESULT CNfoFile::Load(const CStdString& strFile)
 {
   Close();
   XFILE::CFile file;
-  if (file.Open(strFile, true))
+  if (file.Open(strFile))
   {
     m_size = (int)file.GetLength();
     try

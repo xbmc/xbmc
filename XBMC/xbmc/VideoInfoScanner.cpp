@@ -616,7 +616,8 @@ namespace VIDEO
           }
 
           IMDB_MOVIELIST movielist;
-          if (pURL || m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress))
+          int returncode=0;
+          if (pURL || (returncode=m_IMDB.FindMovie(strMovieName, movielist, pDlgProgress)) > 0)
           {
             CScraperUrl url;
             int iMoviesFound=1;
@@ -663,6 +664,11 @@ namespace VIDEO
               }
               Return = true;
             }
+          }
+          else if (returncode == -1)
+          {
+            m_bStop = true;
+            return false;
           }
         }
       }
@@ -1437,27 +1443,42 @@ namespace VIDEO
       if (result == CNfoFile::NO_NFO)
         return result;
 
+      CStdString type;
+      switch(result)
+      {
+        case CNfoFile::COMBINED_NFO:
+          type = "Mixed";
+          break;
+        case CNfoFile::FULL_NFO:
+          type = "Full";
+          break;
+        case CNfoFile::URL_NFO:
+          type = "URL";
+          break;
+        default:
+          type = "malformed";
+      }
+      CLog::Log(LOGDEBUG,"Found matching %s NFO file: %s", type.c_str(), strNfoFile.c_str());
       if (result == CNfoFile::FULL_NFO)
       {
-        CLog::Log(LOGDEBUG, "%s Got details from nfo", __FUNCTION__);
      /*   if (content == CONTENT_TVSHOWS)
           info->Path() = m_nfoReader.m_strScraper;*/
       }
-      else
+      else if (result != CNfoFile::NO_NFO)
       {
         CScraperUrl url(m_nfoReader.m_strImDbUrl);
         scrUrl = url;
         CLog::Log(LOGDEBUG,"-- nfo-scraper: %s", m_nfoReader.m_strScraper.c_str());
-        CLog::Log(LOGDEBUG,"-- nfo url: %s", scrUrl.m_url[0].m_url.c_str());
+        CLog::Log(LOGDEBUG,"-- nfo-url: %s", scrUrl.m_url[0].m_url.c_str());
         scrUrl.strId  = m_nfoReader.m_strImDbNr;
  /*       info->Path() = m_nfoReader.m_strScraper;*/
         if (result == CNfoFile::COMBINED_NFO)
           m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
       }
     }
+    else
+      CLog::Log(LOGDEBUG,"No NFO file found. Using title search for '%s'", pItem->m_strPath.c_str());
 
     return result;
   }
-
 }
-

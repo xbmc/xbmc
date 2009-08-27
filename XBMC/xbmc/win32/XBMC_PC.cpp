@@ -21,9 +21,6 @@
 
 #include "stdafx.h"
 #include "XBMC_PC.h"
-#ifndef HAS_SDL
-#include <d3d8.h>
-#endif
 #include "../../xbmc/Application.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
@@ -100,8 +97,38 @@ HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
 
 INT CXBMC_PC::Run()
 {
+#ifdef HAS_SDL
   g_application.Create(NULL);
+#else
+  // Create our window
+  HWND hWnd = NULL;
+  if (hWnd == NULL)
+  {
+    // Register the windows class
+    WNDCLASS wndClass = { 0, DefWindowProc, 0, 0, m_hInstance,
+                          LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON) ),
+                          LoadCursor( NULL, IDC_ARROW ),
+                          (HBRUSH)GetStockObject(WHITE_BRUSH),
+                          NULL, _T("XBMC DirectX") };
+    RegisterClass( &wndClass );
 
+    // Set the window's initial style
+    DWORD dwWindowStyle = WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|
+                          WS_MINIMIZEBOX|WS_MAXIMIZEBOX|WS_VISIBLE;
+    DWORD dwCreationWidth = 640;
+    DWORD dwCreationHeight = 480;
+
+    // Set the window's initial width 
+    RECT rc;
+    SetRect( &rc, 0, 0, dwCreationWidth, dwCreationHeight );
+    AdjustWindowRect( &rc, dwWindowStyle, TRUE );
+
+    // Create the render window
+    hWnd = CreateWindow(_T("XBMC DirectX"), "XBMC DirectX", dwWindowStyle,
+                            0, 0, (rc.right-rc.left), (rc.bottom-rc.top), 0L, NULL , m_hInstance, 0L );
+  }
+  g_application.Create(hWnd);
+#endif
   // we don't want to see the "no disc in drive" windows message box
   SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
 

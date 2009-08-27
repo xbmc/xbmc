@@ -120,6 +120,7 @@ public:
 
   bool IsStalled()                                  { return m_stalled
                                                           && m_messageQueue.GetDataSize() == 0;  }
+  bool IsPassthrough() const;
 protected:
 
   virtual void OnStartup();

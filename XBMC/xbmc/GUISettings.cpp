@@ -452,7 +452,7 @@ void CGUISettings::Initialize()
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
   AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
-#ifndef HAS_SDL
+#ifdef HAS_XBOX_D3D
   AddInt(4, "videoplayer.rendermethod", 13354, RENDER_HQ_RGB_SHADER, RENDER_LQ_RGB_SHADER, 1, RENDER_HQ_RGB_SHADERV2, SPIN_CONTROL_TEXT);
 #else
 #ifdef HAVE_LIBVDPAU
@@ -657,7 +657,9 @@ void CGUISettings::Initialize()
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
   AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
-  AddBool(13, "lookandfeel.enablemouse", 21369, true);
+  AddString(13, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(14, "lookandfeel.sep3");
+  AddBool(15, "lookandfeel.enablemouse", 21369, true);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);

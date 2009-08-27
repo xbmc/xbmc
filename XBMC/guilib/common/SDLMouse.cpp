@@ -17,6 +17,13 @@ CSDLMouse::~CSDLMouse()
     SDL_FreeCursor(m_hiddenCursor);
 }
 
+void CSDLMouse::Acquire()
+{
+  int x, y;
+  SDL_GetMouseState(&x, &y);
+  SDL_WarpMouse(x + MOUSE_MINIMUM_MOVEMENT, y + MOUSE_MINIMUM_MOVEMENT);
+}
+
 void CSDLMouse::Initialize(void *appData)
 {
   // save the current cursor so it can be restored

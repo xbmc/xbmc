@@ -85,7 +85,8 @@ void CPullupCorrection::Add(double pts)
   {
     m_haspattern = true;
     m_patternlength = m_pattern.size();
-    CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i", pattern.size());
+    CLog::Log(LOGDEBUG, "CPullupCorrection: detected pattern of length %i: %s",
+              pattern.size(), GetPatternStr().c_str());
   }
   
   //calculate where we are in the pattern
@@ -214,6 +215,12 @@ std::vector<double> CPullupCorrection::BuildPattern(int patternlength)
 #define MAXERR 0.01
 inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
 {
+  if (fabs(diff1) < MAXERR && fabs(diff2) < MAXERR)
+    return true; //very close to 0.0
+  
+  if (diff2 == 0.0)
+    return false; //don't want to divide by 0
+  
   return fabs(1.0 - (diff1 / diff2)) <= MAXERR;
 }
 #undef MAXERR
@@ -272,4 +279,17 @@ double CPullupCorrection::CalcFrameDuration()
     frameduration += m_pattern[i];
   }
   return frameduration / m_pattern.size();
+}
+
+//looks pretty in the log
+CStdString CPullupCorrection::GetPatternStr()
+{
+  CStdString patternstr;
+  
+  for (unsigned int i = 0; i < m_pattern.size(); i++)
+  {
+    patternstr.AppendFormat("%.2f ", m_pattern[i]);
+  }
+  
+  return patternstr;
 }

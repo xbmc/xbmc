@@ -11,7 +11,7 @@ SRCS = \
 	CoreAudioSoundManager.cpp \
 	CocoaPowerSyscall.cpp \
 	OSXGNUReplacements.c \
-	ZeroconfOSX.mm \
+	ZeroconfOSX.cpp \
 	
 LIB=osx.a
 

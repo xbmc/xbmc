@@ -99,7 +99,6 @@ bool XBVideoConfig::HasHDPack() const
   return true;
 }
 
-#ifdef HAS_SDL
 void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
 {
 #ifdef __APPLE__
@@ -107,16 +106,16 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
   res.fRefreshRate = Cocoa_GetScreenRefreshRate(res.iScreen);
 
 #elif defined(_WIN32PC)
-    DEVMODE devmode;
-    ZeroMemory(&devmode, sizeof(devmode));
-    devmode.dmSize = sizeof(devmode);
-    EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-    res.iWidth = devmode.dmPelsWidth;
-    res.iHeight = devmode.dmPelsHeight;
-    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
-      res.fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
-    else
-      res.fRefreshRate = (float)(devmode.dmDisplayFrequency);
+  DEVMODE devmode;
+  ZeroMemory(&devmode, sizeof(devmode));
+  devmode.dmSize = sizeof(devmode);
+  EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
+  res.iWidth = devmode.dmPelsWidth;
+  res.iHeight = devmode.dmPelsHeight;
+  if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+    res.fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
+  else
+    res.fRefreshRate = (float)(devmode.dmDisplayFrequency);
 
 #elif defined(HAS_GLX)
   Display * pRootDisplay = XOpenDisplay(NULL);
@@ -169,19 +168,18 @@ void XBVideoConfig::GetCurrentResolution(RESOLUTION_INFO &res) const
 #endif
 #endif
 }
-#endif
 
 #ifndef HAS_SDL
-void XBVideoConfig::GetModes(LPDIRECT3D8 pD3D)
+void XBVideoConfig::GetModes(LPDIRECT3D9 pD3D)
 {
   bHasPAL = false;
   bHasNTSC = false;
-  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT);
+  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT, D3DFMT_LIN_A8R8G8B8);
   D3DDISPLAYMODE mode;
   CLog::Log(LOGINFO, "Available videomodes:");
   for ( DWORD i = 0; i < numModes; i++ )
   {
-    pD3D->EnumAdapterModes( 0, i, &mode );
+    pD3D->EnumAdapterModes( 0, D3DFMT_LIN_A8R8G8B8, i, &mode );
 
     // Skip modes we don't care about
     if ( mode.Format != D3DFMT_LIN_A8R8G8B8 )
@@ -482,14 +480,14 @@ bool XBVideoConfig::IsValidResolution(RESOLUTION res) const
 
 #ifndef HAS_SDL
 //pre: XBVideoConfig::GetModes has been called before this function
-RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D8 pD3D, D3DPRESENT_PARAMETERS *p3dParams)
+RESOLUTION XBVideoConfig::GetInitialMode(LPDIRECT3D9 pD3D, D3DPRESENT_PARAMETERS *p3dParams)
 {
   bool bHasPal = HasPAL();
-  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT);
+  DWORD numModes = pD3D->GetAdapterModeCount(D3DADAPTER_DEFAULT, D3DFMT_LIN_A8R8G8B8);
   D3DDISPLAYMODE mode;
   for ( DWORD i = 0; i < numModes; i++ )
   {
-    pD3D->EnumAdapterModes( 0, i, &mode );
+    pD3D->EnumAdapterModes( 0, D3DFMT_LIN_A8R8G8B8, i, &mode );
 
     // ignore 640 wide modes
     if ( mode.Width < 720)

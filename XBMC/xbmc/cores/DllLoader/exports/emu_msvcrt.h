@@ -64,7 +64,7 @@ extern "C"
   int dll_putc(int c, FILE *stream);
   int dllprintf( const char *format, ... );
   int dllvprintf(const char *format, va_list va);
-  char *_fullpath(char *absPath, const char *relPath, size_t maxLength);
+  char *dll_fullpath(char *absPath, const char *relPath, size_t maxLength);
   FILE *dll_popen(const char *command, const char *mode);
   int dll_pclose(FILE *stream);
   FILE* dll_fdopen(int i, const char* file);

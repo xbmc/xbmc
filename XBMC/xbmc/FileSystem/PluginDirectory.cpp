@@ -202,6 +202,12 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
   dir->m_success = success;
   dir->m_listItems->SetReplaceListing(replaceListing);
 
+  if (!dir->m_listItems->HasSortDetails())
+    dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%L", "%D"));
+
+  // Unload temporary language strings
+  ClearPluginStrings();
+
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);
 }

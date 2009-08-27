@@ -69,6 +69,7 @@
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 #include "SkinInfo.h"
+#include "MediaManager.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -220,6 +221,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptercount")) ret = PLAYER_CHAPTERCOUNT;
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
+    else if (strTest.Equals("player.passthrough")) ret = PLAYER_PASSTHROUGH;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -418,6 +420,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(17).Equals("system.hascoreid("))
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+    else if (strTest.Left(15).Equals("system.setting("))
+      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_SETTING : SYSTEM_SETTING, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
     else if (strTest.Equals("system.canpowerdown")) ret = SYSTEM_CAN_POWERDOWN;
     else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
     else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
@@ -1045,6 +1049,14 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
         strLabel.Format("%i", iLevel);
     }
     break;
+  case PLAYER_TIME:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = GetCurrentPlayTime(TIME_FORMAT_HH_MM);
+    break;
+  case PLAYER_DURATION:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = GetDuration(TIME_FORMAT_HH_MM);
+    break;
   case MUSICPLAYER_TITLE:
   case MUSICPLAYER_ALBUM:
   case MUSICPLAYER_ARTIST:
@@ -1341,7 +1353,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case SYSTEM_DVD_LABEL:
-    strLabel = CDetectDVDMedia::GetDVDLabel();
+    strLabel = g_mediaManager.GetDiskLabel();
     break;
   case SYSTEM_ALARM_POS:
     if (g_alarmClock.GetRemaining("shutdowntimer") == 0.f)
@@ -1710,25 +1722,15 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   else if (condition == SYSTEM_PLATFORM_XBOX)
     bReturn = false;
   else if (condition == SYSTEM_MEDIA_DVD)
-  {
-    // we must: 1.  Check tray state.
-    //          2.  Check that we actually have a disc in the drive (detection
-    //              of disk type takes a while from a separate thread).
-
-    int iTrayState = CIoSupport::GetTrayState();
-    if ( iTrayState == DRIVE_CLOSED_MEDIA_PRESENT || iTrayState == TRAY_CLOSED_MEDIA_PRESENT )
-      bReturn = CDetectDVDMedia::IsDiscInDrive();
-    else
-      bReturn = false;
-  }
+    bReturn = g_mediaManager.IsDiscInDrive();
   else if (condition == SYSTEM_HAS_DRIVE_F)
     bReturn = CIoSupport::DriveExists('F');
   else if (condition == SYSTEM_HAS_DRIVE_G)
     bReturn = CIoSupport::DriveExists('G');
   else if (condition == SYSTEM_DVDREADY)
-    bReturn = CDetectDVDMedia::DriveReady() != DRIVE_NOT_READY;
+    bReturn = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
-    bReturn = CDetectDVDMedia::DriveReady() == DRIVE_OPEN;
+    bReturn = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
   else if (condition == SYSTEM_CAN_POWERDOWN)
     bReturn = g_powerManager.CanPowerdown();
   else if (condition == SYSTEM_CAN_SUSPEND)
@@ -1915,6 +1917,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     case PLAYER_SHOWTIME:
       bReturn = m_playerShowTime;
     break;
+    case PLAYER_PASSTHROUGH:
+      bReturn = g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough();
+      break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
     break;
@@ -2183,6 +2188,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case SYSTEM_HAS_CORE_ID:
         bReturn = g_cpuInfo.HasCoreId(info.GetData1());
+        break;
+      case SYSTEM_SETTING:
+        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") ) 
+          bReturn = g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
       case CONTAINER_ON_NEXT:
       case CONTAINER_ON_PREVIOUS:

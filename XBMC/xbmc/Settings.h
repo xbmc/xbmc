@@ -168,7 +168,7 @@ public:
   CStdString GetDefaultSourceFromType(const CStdString &type);
 
   bool UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath);
+  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
@@ -224,6 +224,7 @@ public:
     int m_videoIgnoreAtStart;
     int m_videoIgnoreAtEnd;
     CStdString m_audioHost;
+    bool m_audioApplyDrc;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
@@ -255,7 +256,8 @@ public:
     bool m_noDVDROM;
     CStdString m_cachePath;
     bool m_displayRemoteCodes;
-    CStdStringArray m_videoCleanRegExps;
+    CStdString m_videoCleanDateTimeRegExp;
+    CStdStringArray m_videoCleanStringRegExps;
     CStdStringArray m_videoExcludeFromListingRegExps;
     CStdStringArray m_moviesExcludeFromScanRegExps;
     CStdStringArray m_tvshowExcludeFromScanRegExps;
@@ -302,6 +304,7 @@ public:
     bool m_bVideoLibraryHideEmptySeries;
     bool m_bVideoLibraryCleanOnUpdate;
     bool m_bVideoLibraryExportAutoThumbs;
+    bool m_bVideoLibraryMyMoviesCategoriesToGenres;
 
     bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
@@ -323,10 +326,8 @@ public:
 
     int m_iPVREPGBlockSize;
 
-#ifdef HAS_SDL
     bool m_fullScreen;
     bool m_startFullScreen;
-#endif
     bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
     int m_playlistTimeout;
@@ -497,6 +498,7 @@ public:
   bool SaveAddonsXML(const ADDON::TYPE& type, const ADDON::VECADDONPROPS &addons);
   bool SaveSources();
 
+  void LoadRSSFeeds();
 protected:
   void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
   void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
@@ -535,8 +537,6 @@ protected:
   void LoadAdvancedSettings();
 
   void LoadUserFolderLayout();
-
-  void LoadRSSFeeds();
 };
 
 extern class CSettings g_settings;

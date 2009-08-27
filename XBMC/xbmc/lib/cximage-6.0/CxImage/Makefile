@@ -1,11 +1,10 @@
-CC=g++
+LIB=cximage.a
+CXXFLAGS+=-fPIC
+DEFINES+=-D_DLL -DXBMC
 ifeq ($(findstring osx,$(ARCH)), osx)
-	CFLAGS+=-isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 -fno-common \
-	  -O2 -fPIC -DXBMC -D_DLL -I../jasper/include -I../jpeg/
-else
-	CFLAGS+=-O2 -fPIC -DXBMC -D_DLL -D_LINUX -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+	CXXFLAGS+=-fno-common
+	INCLUDES+=-I../jasper/include -I../jpeg/
 endif
-
 OBJS= \
 	DllInterface.o ximadsp.o ximage.o ximaico.o ximajas.o \
 	ximalpha.o ximapal.o ximaraw.o ximatga.o ximatran.o \
@@ -14,13 +13,5 @@ OBJS= \
 	xmemfile.o ximabmp.o ximaexif.o ximahist.o ximaint.o \
 	ximajpg.o ximamng.o ximapng.o ximaska.o ximatif.o ximawmf.o
 
-%o : %cpp
-	$(CC) $(CFLAGS) -c -o $@ $< 
+include ../../../../Makefile.include
 
-cximage.a: $(OBJS)
-	$(AR) rc $@ $(OBJS)
-
-clean:
-	$(RM) -f $(OBJS) cximage.a
-
-distclean: clean

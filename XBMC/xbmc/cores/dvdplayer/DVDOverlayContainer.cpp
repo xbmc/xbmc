@@ -41,10 +41,6 @@ void CDVDOverlayContainer::Add(CDVDOverlay* pOverlay)
 {
   pOverlay->Acquire();
 
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-  pOverlay->m_bTrackerReference++;
-#endif
-
   EnterCriticalSection(&m_critSection);
 
   // markup any non ending overlays, to finish
@@ -84,10 +80,6 @@ VecOverlaysIter CDVDOverlayContainer::Remove(VecOverlaysIter itOverlay)
   EnterCriticalSection(&m_critSection);
   itNext = m_overlays.erase(itOverlay);
   LeaveCriticalSection(&m_critSection);
-
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-  pOverlay->m_bTrackerReference--;
-#endif
 
   pOverlay->Release();
 
@@ -152,10 +144,6 @@ void CDVDOverlayContainer::Remove()
     m_overlays.erase(m_overlays.begin());
 
     LeaveCriticalSection(&m_critSection);
-
-#ifdef DVDDEBUG_OVERLAY_TRACKER
-    pOverlay->m_bTrackerReference--;
-#endif
 
     pOverlay->Release();
   }

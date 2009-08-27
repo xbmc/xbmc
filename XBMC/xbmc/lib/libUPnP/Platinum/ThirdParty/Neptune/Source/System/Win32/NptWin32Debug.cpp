@@ -10,7 +10,6 @@
 /*----------------------------------------------------------------------
 |   includes
 +---------------------------------------------------------------------*/
-#include <stdarg.h>
 #include <stdio.h>
 #if defined(_XBOX)
 #include <xtl.h>
@@ -22,12 +21,6 @@
 #include "NptDefs.h"
 #include "NptTypes.h"
 #include "NptDebug.h"
-#include "NptLogging.h"
-
-/*----------------------------------------------------------------------
-|   logging
-+---------------------------------------------------------------------*/
-NPT_SET_LOCAL_LOGGER("neptune.debug.win32")
 
 /*----------------------------------------------------------------------
 |   NPT_DebugOutput
@@ -38,8 +31,6 @@ NPT_DebugOutput(const char* message)
 #if !defined(_WIN32_WCE)
     OutputDebugString(message);
 #endif
-
-	printf("%s", message);
+    printf("%s", message);
 }
-
 

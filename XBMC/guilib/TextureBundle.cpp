@@ -311,13 +311,8 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   return hr;
 }
 
-#ifndef HAS_SDL
-HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8* ppTexture,
-                                    LPDIRECT3DPALETTE8* ppPalette)
-#else
-HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface** ppTexture,
-                                    SDL_Palette** ppPalette)
-#endif
+HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr* ppTexture,
+                                     XBMC::PalettePtr* ppPalette)
 {
   DWORD ResDataOffset;
   *ppTexture = NULL; *ppPalette = NULL;
@@ -388,13 +383,8 @@ PackedLoadError:
   return E_FAIL;
 }
 
-#ifndef HAS_SDL
-int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, LPDIRECT3DTEXTURE8** ppTextures,
-                             LPDIRECT3DPALETTE8* ppPalette, int& nLoops, int** ppDelays)
-#else
-int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, SDL_Surface*** ppTextures,
-                             SDL_Palette** ppPalette, int& nLoops, int** ppDelays)
-#endif
+int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr** ppTextures,
+                              XBMC::PalettePtr* ppPalette, int& nLoops, int** ppDelays)
 {
   DWORD ResDataOffset;
   int nTextures = 0;
@@ -452,11 +442,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
   ResDataOffset = ((DWORD)(Next - UnpackedBuf) + 127) & ~127;
   ResData = UnpackedBuf + ResDataOffset;
 
-#ifndef HAS_SDL
-  *ppTextures = new LPDIRECT3DTEXTURE8[nTextures];
-#else
-  *ppTextures = new SDL_Surface*[nTextures];
-#endif
+  *ppTextures = new XBMC::TexturePtr[nTextures];
   for (int i = 0; i < nTextures; ++i)
   {
     if ((ppTex[i]->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)

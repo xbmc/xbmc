@@ -46,11 +46,11 @@ htsmsg_t* CDVDInputStreamHTSP::ReadStream()
    * we can guarantee a new stream       */
   m_startup = false;
 
-  while((msg = m_session.ReadMessage()))
+  while((msg = m_session.ReadMessage(1000)))
   {
     const char* method;
     if((method = htsmsg_get_str(msg, "method")) == NULL)
-      continue;
+      return msg;
 
     if     (strstr(method, "channelAdd"))
       CHTSPSession::ParseChannelUpdate(msg, m_channels);
@@ -204,4 +204,28 @@ bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
   item.SetCachedVideoThumb();
   return current.m_strPath  != item.m_strPath
       || current.m_strTitle != item.m_strTitle;
+}
+
+int CDVDInputStreamHTSP::GetTotalTime()
+{
+  if(m_event.id == 0)
+    return 0;
+  return (m_event.stop - m_event.start) * 1000;
+}
+
+int CDVDInputStreamHTSP::GetTime()
+{
+  CDateTimeSpan time;
+  time  = CDateTime::GetUTCDateTime() 
+        - CDateTime((time_t)m_event.start);
+
+  return time.GetDays()    * 1000 * 60 * 60 * 24
+       + time.GetHours()   * 1000 * 60 * 60
+       + time.GetMinutes() * 1000 * 60
+       + time.GetSeconds() * 1000;
+}
+
+void CDVDInputStreamHTSP::Abort()
+{
+  m_session.Abort();
 }

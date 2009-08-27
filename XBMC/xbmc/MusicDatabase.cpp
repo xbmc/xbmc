@@ -28,7 +28,6 @@
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIDialogMusicScan.h"
-#include "DetectDVDType.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
 #include "AddonManager.h"
@@ -50,6 +49,7 @@
 #ifdef HAS_KARAOKE
 #include "karaoke/karaokelyricsfactory.h"
 #endif
+#include "MediaManager.h"
 
 using namespace std;
 using namespace AUTOPTR;
@@ -59,7 +59,7 @@ using namespace MUSICDATABASEDIRECTORY;
 using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
-#define MUSIC_DATABASE_VERSION        13
+#define MUSIC_DATABASE_VERSION        14
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
@@ -2264,7 +2264,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
     return false;
 
   // Get information for the inserted disc
-  CCdInfo* pCdInfo = CDetectDVDMedia::GetCdInfo();
+  CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
 
@@ -3186,6 +3186,51 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       // add fanart info
       m_pDS->exec("alter table artistinfo add strFanart text");
     }
+    if (version < 14)
+    {
+      const char* tag1[] = {"idAlbumInfo","idArtistInfo"};
+      const char* tag2[] = {"albuminfo","artistinfo"};
+      for (int i=0;i<2;++i)
+      {
+        CStdString strSQL=FormatSQL("select %s,strImage from %s",
+                                    tag1[i],tag2[i]);
+        m_pDS->query(strSQL.c_str());
+        while (!m_pDS->eof())
+        {
+          TiXmlDocument doc;
+          doc.Parse(m_pDS->fv(1).get_asString().c_str());
+          if (!doc.RootElement() || strcmp(doc.RootElement()->Value(),"thumb") == 0)
+          {
+            m_pDS->next();
+            continue;
+          }
+          const TiXmlElement* thumb=NULL;
+          while (strstr(doc.RootElement()->FirstChild()->Value(),"<"))
+          {
+            CStdString strThumbs = doc.RootElement()->FirstChild()->Value();
+            TiXmlDocument doc2;
+            doc2.Parse(strThumbs);
+            doc = doc2;
+            thumb = doc.FirstChildElement("thumb");
+          }
+          if (!thumb)
+            thumb = doc.RootElement()->FirstChildElement("thumb");
+
+          stringstream str;
+          while (thumb)
+          {
+            str << *thumb;
+            thumb = thumb->NextSiblingElement("thumb");
+          }
+          CStdString strSQL = FormatSQL("update %s set strImage='%s' where %s=%u",
+                                        tag2[i],
+                                        str.str().c_str(),tag1[i],
+                                        m_pDS->fv(0).get_asLong());
+          m_pDS2->exec(strSQL.c_str());
+          m_pDS->next();
+        }
+      }
+    }
   }
   catch (...)
   {
@@ -3401,7 +3446,6 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
                                 "group by song.idPath", idArtist, idArtist);
 
     // run query
-    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
     if (!m_pDS2->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS2->num_rows();
     if (iRowsFound == 0)
@@ -4201,7 +4245,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
           if (CFile::Exists(item.GetCachedArtistThumb()) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"folder.jpg"))))
             CFile::Cache(item.GetCachedArtistThumb(),CUtil::AddFileToFolder(strPath,"folder.jpg"));
           if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(CUtil::AddFileToFolder(strPath,"fanart.jpg"))))
-            CFile::Cache(item.GetCachedArtistThumb(),CUtil::AddFileToFolder(strPath,"fanart.jpg"));
+            CFile::Cache(item.GetCachedFanart(),CUtil::AddFileToFolder(strPath,"fanart.jpg"));
         }
         xmlDoc.Clear();
         TiXmlDeclaration decl("1.0", "UTF-8", "yes");
@@ -4502,7 +4546,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
 
     XFILE::CFile file;
 
-    if ( !file.Open( inputFile, TRUE ) )
+    if ( !file.Open( inputFile ) )
     {
       CLog::Log( LOGERROR, "Cannot open karaoke import file %s", inputFile.c_str() );
       return;

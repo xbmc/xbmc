@@ -25,8 +25,8 @@
 #include "utils/CriticalSection.h"
 #ifdef HAS_SDL
 #include "SDL/SDL.h"
-#include "TextureManager.h"
 #endif
+#include "TextureManager.h"
 
 #include <assert.h>
 
@@ -87,7 +87,7 @@ protected:
       return false;
     };
 
-    void SetTexture(SDL_Surface * texture, int width, int height, int orientation)
+    void SetTexture(XBMC::TexturePtr texture, int width, int height, int orientation)
     {
       assert(!m_texture.size());
       if (texture)

@@ -273,7 +273,7 @@ void CGUIDialogContextMenu::GetContextButtons(const CStdString &type, const CFil
     if (item->IsDVD() || item->IsCDDA())
     {
       // We need to check if there is a detected is inserted!
-      if ( CDetectDVDMedia::IsDiscInDrive() )
+      if ( g_mediaManager.IsDiscInDrive() )
         buttons.Add(CONTEXT_BUTTON_PLAY_DISC, 341); // Play CD/DVD!
       buttons.Add(CONTEXT_BUTTON_EJECT_DISC, 13391);  // Eject/Load CD/DVD!
     }
@@ -362,8 +362,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32PC
-    if( item->m_strPath[0] )
-      CWIN32Util::ToggleTray(item->m_strPath[0]);
+    CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->m_strPath)[0]);
 #else
     CIoSupport::ToggleTray();
 #endif
@@ -740,7 +739,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
   return;
 }
 
-int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint &pos)
+int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, const CPoint *pos)
 {
   // no choices??
   if (choices.size() == 0)
@@ -757,12 +756,33 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, c
       pMenu->AddButton(choices[i]);
 
     // position it correctly
-    pMenu->OffsetPosition(pos.x, pos.y);
+    if (pos)
+      pMenu->OffsetPosition(pos->x, pos->y);
+    else
+      pMenu->PositionAtCurrentFocus();
+
     pMenu->DoModal();
 
     if (pMenu->GetButton() > 0)
       return pMenu->GetButton();
   }
   return 0;
+}
+
+void CGUIDialogContextMenu::PositionAtCurrentFocus()
+{
+  CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  if (window)
+  {
+    const CGUIControl *focusedControl = window->GetFocusedControl();
+    if (focusedControl)
+    {
+      CPoint pos = focusedControl->GetRenderPosition() + CPoint(focusedControl->GetWidth() * 0.5f, focusedControl->GetHeight() * 0.5f);
+      OffsetPosition(pos.x,pos.y);
+      return;
+    }
+  }
+  // no control to center at, so just center the window
+  CenterWindow();
 }
 

@@ -76,7 +76,6 @@ protected:
 
   static VECSOURCES m_sources;
 
-private:
   int m_currentViewAsControl;
 
   std::vector<SORT_METHOD_DETAILS> m_sortMethods;

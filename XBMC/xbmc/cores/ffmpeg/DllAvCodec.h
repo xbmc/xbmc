@@ -57,6 +57,7 @@ public:
                     int64_t pts, int64_t dts)=0;
   virtual void av_parser_close(AVCodecParserContext *s)=0;
   virtual void avpicture_free(AVPicture *picture)=0;
+  virtual void av_free_packet(AVPacket *pkt)=0;
   virtual int avpicture_alloc(AVPicture *picture, PixelFormat pix_fmt, int width, int height)=0;
   virtual AVOption *av_set_string(void *obj, const char *name, const char *val)=0;
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic)=0;
@@ -71,7 +72,7 @@ public:
   virtual int av_audio_convert(AVAudioConvert *ctx,
                                      void * const out[6], const int out_stride[6],
                                const void * const  in[6], const int  in_stride[6], int len)=0;
-
+  virtual int av_dup_packet(AVPacket *pkt)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -117,6 +118,7 @@ public:
   virtual void av_parser_close(AVCodecParserContext *s) { ::av_parser_close(s); }
   
   virtual void avpicture_free(AVPicture *picture) { ::avpicture_free(picture); }
+  virtual void av_free_packet(AVPacket *pkt) { ::av_free_packet(pkt); }
   virtual int avpicture_alloc(AVPicture *picture, PixelFormat pix_fmt, int width, int height) { return ::avpicture_alloc(picture, pix_fmt, width, height); }
   virtual AVOption *av_set_string(void *obj, const char *name, const char *val) { return ::av_set_string(obj, name, val); }
   virtual int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic) { return ::avcodec_default_get_buffer(s, pic); }
@@ -136,6 +138,8 @@ public:
                                      void * const out[6], const int out_stride[6],
                                const void * const  in[6], const int  in_stride[6], int len)
           { return ::av_audio_convert(ctx, out, out_stride, in, in_stride, len); }
+
+  virtual int av_dup_packet(AVPacket *pkt) { return ::av_dup_packet(pkt); }
 
   
   // DLL faking.
@@ -169,10 +173,11 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(AVCodecParserContext*, av_parser_init, (int p1))
   DEFINE_METHOD8(int, av_parser_parse, (AVCodecParserContext* p1, AVCodecContext* p2, uint8_t** p3, int* p4, const uint8_t* p5, int p6, int64_t p7, int64_t p8))
 #endif
+  DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
 
   LOAD_SYMBOLS();
 
-  DEFINE_METHOD0(void, avcodec_register_all)
+  DEFINE_METHOD0(void, avcodec_register_all_dont_call)
   DEFINE_METHOD1(AVCodec*, avcodec_find_decoder, (enum CodecID p1))
   DEFINE_METHOD1(int, avcodec_close_dont_call, (AVCodecContext *p1))
   DEFINE_METHOD0(AVFrame*, avcodec_alloc_frame)
@@ -182,6 +187,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_METHOD1(void, avcodec_get_context_defaults, (AVCodecContext *p1))
   DEFINE_METHOD1(void, av_parser_close, (AVCodecParserContext *p1))
   DEFINE_METHOD1(void, avpicture_free, (AVPicture *p1))
+  DEFINE_METHOD1(void, av_free_packet, (AVPacket *p1))
   DEFINE_METHOD4(int, avpicture_alloc, (AVPicture *p1, PixelFormat p2, int p3, int p4))
   DEFINE_METHOD3(AVOption*, av_set_string, (void *p1, const char *p2, const char *p3))
   DEFINE_METHOD2(int, avcodec_default_get_buffer, (AVCodecContext *p1, AVFrame *p2))
@@ -202,7 +208,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD_RENAME(avcodec_close,avcodec_close_dont_call)
     RESOLVE_METHOD(avcodec_find_decoder)
     RESOLVE_METHOD(avcodec_alloc_frame)
-    RESOLVE_METHOD(avcodec_register_all)
+    RESOLVE_METHOD_RENAME(avcodec_register_all, avcodec_register_all_dont_call)
     RESOLVE_METHOD(avpicture_fill)
     RESOLVE_METHOD(avcodec_decode_video)
     RESOLVE_METHOD(avcodec_decode_audio2)
@@ -216,6 +222,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_parser_close)
     RESOLVE_METHOD(avpicture_free)
     RESOLVE_METHOD(avpicture_alloc)
+    RESOLVE_METHOD(av_free_packet)
     RESOLVE_METHOD(av_set_string)
     RESOLVE_METHOD(avcodec_default_get_buffer)
     RESOLVE_METHOD(avcodec_default_release_buffer)
@@ -225,6 +232,7 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
     RESOLVE_METHOD(av_audio_convert_alloc)
     RESOLVE_METHOD(av_audio_convert_free)
     RESOLVE_METHOD(av_audio_convert)
+    RESOLVE_METHOD(av_dup_packet)
   END_METHOD_RESOLVE()
 public:
     static CCriticalSection m_critSection;
@@ -238,6 +246,11 @@ public:
       CSingleLock lock(DllAvCodec::m_critSection);
       return avcodec_close_dont_call(avctx);
     }
+    void avcodec_register_all()
+    {
+      CSingleLock lock(DllAvCodec::m_critSection);
+      avcodec_register_all_dont_call();
+    }    
 };
 
 #endif

@@ -38,6 +38,9 @@
 #ifdef HAS_PVRCLIENTS
 #include "DVDInputStreamPVR.h"
 #endif
+#ifdef HAS_FILESYSTEM_MMS
+#include "DVDInputStreamMMS.h"
+#endif
 #include "FileItem.h"
 
 CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, const std::string& file, const std::string& content)
@@ -76,6 +79,10 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 #ifdef HAS_PVRCLIENTS
   else if(file.substr(0, 6) == "pvr://")
     return new CDVDInputStreamPVR(pPlayer);
+#endif
+#ifdef HAS_FILESYSTEM_MMS
+  else if(file.substr(0,6) == "mms://" || file.substr(0,7) == "mmsh://")
+    return new CDVDInputStreamMMS();
 #endif
   //else if (item.IsShoutCast())
   //  /* this should be replaced with standard file as soon as ffmpeg can handle raw aac */

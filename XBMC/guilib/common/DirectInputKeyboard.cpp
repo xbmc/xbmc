@@ -28,7 +28,7 @@
 
 #define FRAME_DELAY 8
 
-CLowLevelKeyboard::CCLowLevelKeyboardKeyboard()
+CLowLevelKeyboard::CLowLevelKeyboard()
 {
   ZeroMemory(m_keystate, sizeof(BYTE) * 256);
   m_keyboard = NULL;
@@ -37,7 +37,7 @@ CLowLevelKeyboard::CCLowLevelKeyboardKeyboard()
   m_bCtrl = false;
   m_bAlt = false;
   m_bRAlt = false;
-  m_cAscii = '\0';CKeyboard
+  m_cAscii = '\0';
   m_bInitialized = false;
 }
 
@@ -67,6 +67,11 @@ void CLowLevelKeyboard::Initialize(HWND hWnd)
   m_bInitialized = true;
 
   Acquire();
+}
+
+void CLowLevelKeyboard::Reset()
+{
+  // TODO:DIRECTX - implement this
 }
 
 void CLowLevelKeyboard::Update()
@@ -223,7 +228,7 @@ void CLowLevelKeyboard::Update()
     else if (KeyDown(DIK_VOLUMEDOWN)) m_VKey = 0xae;
     else if (KeyDown(DIK_VOLUMEUP)) m_VKey = 0xaf;
     else if (KeyDown(DIK_WEBBACK)) m_VKey = 0xa6;
-    else if (KeyDown(DIK_WEBFAVORITES)) m_VKey = 0xab;
+    if (KeyDown(DIK_WEBFAVORITES)) m_VKey = 0xab;
     else if (KeyDown(DIK_WEBFORWARD)) m_VKey = 0xa7;
     else if (KeyDown(DIK_WEBHOME)) m_VKey = 0xac;
     else if (KeyDown(DIK_WEBREFRESH)) m_VKey = 0xa8;
@@ -249,6 +254,12 @@ void CLowLevelKeyboard::Update()
     if (m_VKey)
       m_keyDownLastFrame = timeGetTime();
   }
+}
+
+bool CLowLevelKeyboard::KeyHeld()
+{
+  // TODO:DIRECTX - implement this
+  return false;
 }
 
 void CLowLevelKeyboard::Acquire()

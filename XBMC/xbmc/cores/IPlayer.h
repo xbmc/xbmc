@@ -72,6 +72,7 @@ public:
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() const = 0;
   virtual bool HasAudio() const = 0;
+  virtual bool IsPassthrough() const { return false;}
   virtual bool CanSeek() {return true;}
   virtual void Seek(bool bPlus = true, bool bLargeStep = false) = 0;
   virtual bool SeekScene(bool bPlus = true) {return false;}

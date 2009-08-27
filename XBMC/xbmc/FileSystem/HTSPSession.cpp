@@ -28,6 +28,7 @@
 #ifdef _MSC_VER
 #include <winsock2.h>
 #define SHUT_RDWR SD_BOTH
+#define ETIMEDOUT WSAETIMEDOUT
 #else
 #include <netinet/in.h>
 #include <netinet/tcp.h>
@@ -159,10 +160,11 @@ bool CHTSPSession::Auth(const std::string& username, const std::string& password
   return ReadSuccess(m, false, "get reply from authentication with server");
 }
 
-htsmsg_t* CHTSPSession::ReadMessage()
+htsmsg_t* CHTSPSession::ReadMessage(int timeout)
 {
   void*    buf;
   uint32_t l;
+  int      x;
 
   if(m_queue.size())
   {
@@ -171,18 +173,26 @@ htsmsg_t* CHTSPSession::ReadMessage()
     return m;
   }
 
-  if(htsp_tcp_read_timeout(m_fd, &l, 4, 10000))
+  x = htsp_tcp_read_timeout(m_fd, &l, 4, timeout);
+  if(x == ETIMEDOUT)
+    return htsmsg_create_map();
+
+  if(x)
   {
-    printf("Failed to read packet size\n");
+    CLog::Log(LOGERROR, "CHTSPSession::ReadMessage - Failed to read packet size (%d)\n", x);
     return NULL;
   }
 
   l   = ntohl(l);
+  if(l == 0)
+    return htsmsg_create_map();
+
   buf = malloc(l);
 
-  if(htsp_tcp_read_timeout(m_fd, buf, l, 10000))
+  x = htsp_tcp_read(m_fd, buf, l);
+  if(x)
   {
-    printf("Failed to read packet\n");
+    CLog::Log(LOGERROR, "CHTSPSession::ReadMessage - Failed to read packet (%d)\n", x);
     free(buf);
     return NULL;
   }
@@ -319,8 +329,7 @@ bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   const char *title, *desc;
   if(         htsmsg_get_u32(msg, "start", &start)
   ||          htsmsg_get_u32(msg, "stop" , &stop)
-  || (title = htsmsg_get_str(msg, "title")) == NULL
-  || (desc  = htsmsg_get_str(msg, "description"))  == NULL)
+  || (title = htsmsg_get_str(msg, "title")) == NULL)
   {
     CLog::Log(LOGDEBUG, "CHTSPSession::ParseEvent - malformed event");
     htsmsg_print(msg);
@@ -332,7 +341,8 @@ bool CHTSPSession::ParseEvent(htsmsg_t* msg, uint32_t id, SEvent &event)
   event.start = start;
   event.stop  = stop;
   event.title = title;
-  event.descs = desc;
+  if((desc = htsmsg_get_str(msg, "description")))
+    event.descs = desc;
   if(htsmsg_get_u32(msg, "nextEventId", &next))
     event.next = 0;
   else
@@ -473,6 +483,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
 
   tag->m_iSeason  = 0;
   tag->m_iEpisode = 0;
+  tag->m_iTrack       = channel.id;
   tag->m_strAlbum     = channel.name;
   tag->m_strShowTitle = event.title;
   tag->m_strPlot      = event.descs;

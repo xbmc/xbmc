@@ -1334,7 +1334,7 @@ static int evalFunction(ej_t *ep)
 		return -1;
 	}
 
-	return (*fn)(ep->eid, (void*) ep->userHandle, ep->func->nArgs,
+	return (*fn)(ep->eid, ep->userHandle, ep->func->nArgs,
 		ep->func->args);
 }
 
@@ -1545,7 +1545,7 @@ int ejArgs(int argc, char_t **argv, char_t *fmt, ...)
  *	Define the user handle
  */
 
-void ejSetUserHandle(int eid, int handle)
+void ejSetUserHandle(int eid, void* handle)
 {
 	ej_t	*ep;
 
@@ -1560,12 +1560,12 @@ void ejSetUserHandle(int eid, int handle)
  *	Get the user handle
  */
 
-int ejGetUserHandle(int eid)
+void* ejGetUserHandle(int eid)
 {
 	ej_t	*ep;
 
 	if ((ep = ejPtr(eid)) == NULL) {
-		return -1;
+		return NULL;
 	}
 	return ep->userHandle;
 }

@@ -49,7 +49,7 @@ do_start()
 		if pidof usplash > /dev/null; then
 			DO_NOT_SWITCH_VT=yes /etc/init.d/usplash start
 		fi
-		su -c "/usr/bin/installXBMC.py" -l 
+		su -c "/usr/bin/installXBMC" -l
 	else
 		# Generates valid xorg.conf for proprietary drivers if missing
 		XBMC_NOGENXCONF="$( echo $XBMC_PARAMS | grep nogenxconf )"
@@ -109,12 +109,12 @@ do_start()
 				fi
 			fi
 
-			/usr/bin/runXBMC.sh &
+			/usr/bin/runXBMC &
 
 			XBMC_SETVOLUME="$(echo $XBMC_PARAMS | grep setvolume)"
 			if [ -n "$XBMC_SETVOLUME" ]; then
 				log_warning_msg "Increasing ALSA volumes..."
-				/usr/bin/setAlsaVolumes.py &
+				/usr/bin/setAlsaVolumes &
 			fi
 
 			NOMOUNT="$(echo $XBMC_PARAMS | grep nodiskmount)"

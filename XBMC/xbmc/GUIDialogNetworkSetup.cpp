@@ -136,6 +136,7 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   pSpin->AddLabel(g_localizeStrings.Get(20173), NET_PROTOCOL_FTP);
   pSpin->AddLabel(g_localizeStrings.Get(20174), NET_PROTOCOL_DAAP);
   pSpin->AddLabel(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP);
+  pSpin->AddLabel(g_localizeStrings.Get(20304), NET_PROTOCOL_RSS);
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
@@ -185,7 +186,7 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
   // set defaults for the port
   if (m_protocol == NET_PROTOCOL_FTP)
     m_port = "21";
-  if (m_protocol == NET_PROTOCOL_HTTP)
+  if (m_protocol == NET_PROTOCOL_HTTP || m_protocol == NET_PROTOCOL_RSS)
     m_port = "80";
   if (m_protocol == NET_PROTOCOL_HTTPS)
     m_port = "443";
@@ -218,7 +219,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   // remote path
   SET_CONTROL_LABEL2(CONTROL_REMOTE_PATH, m_path);
   CONTROL_ENABLE_ON_CONDITION(CONTROL_REMOTE_PATH, m_protocol != NET_PROTOCOL_DAAP && m_protocol != NET_PROTOCOL_UPNP && m_protocol != NET_PROTOCOL_TUXBOX);
-  if (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_HTTP || m_protocol == NET_PROTOCOL_HTTPS)
+  if (m_protocol == NET_PROTOCOL_FTP || m_protocol == NET_PROTOCOL_HTTP || m_protocol == NET_PROTOCOL_HTTPS || m_protocol == NET_PROTOCOL_RSS)
   {
     SET_CONTROL_LABEL(CONTROL_REMOTE_PATH, 1011);  // Remote Path
   }
@@ -240,6 +241,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol == NET_PROTOCOL_HTTP ||
                                                    m_protocol == NET_PROTOCOL_HTTPS ||
                                                    m_protocol == NET_PROTOCOL_TUXBOX ||
+                                                   m_protocol == NET_PROTOCOL_RSS ||
                                                    m_protocol == NET_PROTOCOL_DAAP);
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PORT_NUMBER, CGUIEditControl::INPUT_TYPE_NUMBER, 1018);
@@ -250,11 +252,12 @@ void CGUIDialogNetworkSetup::UpdateButtons()
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PASSWORD, CGUIEditControl::INPUT_TYPE_PASSWORD, 12326);
 
   // TODO: FIX BETTER DAAP SUPPORT
-  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS or TUXBOX
+  // server browse should be disabled if we are in DAAP, FTP, HTTP, HTTPS, RSS or TUXBOX
   CONTROL_ENABLE_ON_CONDITION(CONTROL_SERVER_BROWSE, !m_server.IsEmpty() || !(m_protocol == NET_PROTOCOL_FTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTP ||
                                                                               m_protocol == NET_PROTOCOL_HTTPS ||
                                                                               m_protocol == NET_PROTOCOL_DAAP ||
+                                                                              m_protocol == NET_PROTOCOL_RSS ||
                                                                               m_protocol == NET_PROTOCOL_TUXBOX));
 }
 
@@ -277,6 +280,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("upnp");
   else if (m_protocol == NET_PROTOCOL_TUXBOX)
     url.SetProtocol("tuxbox");
+  else if (m_protocol == NET_PROTOCOL_RSS)
+    url.SetProtocol("rss");
   if (!m_username.IsEmpty())
   {
     url.SetUserName(m_username);
@@ -288,6 +293,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   if (((m_protocol == NET_PROTOCOL_FTP) ||
        (m_protocol == NET_PROTOCOL_HTTP) || 
        (m_protocol == NET_PROTOCOL_HTTPS) ||
+       (m_protocol == NET_PROTOCOL_RSS) ||
        (m_protocol == NET_PROTOCOL_XBMSP && !m_server.IsEmpty()) ||
        (m_protocol == NET_PROTOCOL_DAAP && !m_server.IsEmpty()) ||
        (m_protocol == NET_PROTOCOL_TUXBOX))
@@ -323,6 +329,8 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_UPNP;
   else if (protocol == "tuxbox")
     m_protocol = NET_PROTOCOL_TUXBOX;
+  else if (protocol == "rss")
+    m_protocol = NET_PROTOCOL_RSS;
   else
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();

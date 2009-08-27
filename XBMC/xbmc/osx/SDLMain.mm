@@ -20,7 +20,6 @@
 #define BOOL XBMC_BOOL 
 #import "PlatformDefs.h"
 #undef BOOL
-#import "DetectDVDMedia.h"
 
 /* For some reaon, Apple removed setAppleMenu from the headers in 10.4,
  but the method still is there and works. To avoid warnings, we declare
@@ -306,7 +305,7 @@ static void setupWindowMenu(void)
   NSArray *contents = [fileManager directoryContentsAtPath:video_tsFolder];
   if (contents != nil)
   {
-    const CStdString strDrive = [devicePath cString];
+    //const CStdString strDrive = [devicePath cString];
     // TODO: might need to translate devicePath into what CDetectDVDMedia::AddMedia wants
     //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->AddMedia(strDrive);
   }
@@ -319,7 +318,7 @@ static void setupWindowMenu(void)
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
   //NSLog(@"Device did unmount: %@", devicePath);
-  const CStdString strDrive = [devicePath cString];
+  //const CStdString strDrive = [devicePath cString];
   //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strDrive);
   [pool release];
 }

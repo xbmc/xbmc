@@ -628,20 +628,20 @@
 	<include name="Window_OpenClose_Left_Panel_Animation">
 		<animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
 		<animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
-		<animation effect="slide" start="-400,0" end="0,0" time="400" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
-		<animation effect="slide" end="-400,0" start="0,0" time="400" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+		<animation effect="slide" start="-400,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+		<animation effect="slide" end="-400,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 	</include>
 	<include name="Window_OpenClose_Right_Panel_Animation">
 		<animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
 		<animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
-		<animation effect="slide" start="1030,0" end="0,0" time="400" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
-		<animation effect="slide" end="1030,0" start="0,0" time="400" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+		<animation effect="slide" start="1030,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+		<animation effect="slide" end="1030,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 	</include>
 	<include name="Window_OpenClose_Home_Panel_Animation">
 		<animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
 		<animation effect="fade" time="200" condition="Skin.HasSetting(Animate_Skin)">WindowClose</animation>
-		<animation effect="slide" start="-600,0" end="0,0" time="400" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
-		<animation effect="slide" end="-600,0" start="0,0" time="400" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+		<animation effect="slide" start="-600,0" end="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+		<animation effect="slide" end="-600,0" start="0,0" time="300" tween="quadratic" easing="out" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 	</include>
 	<include name="dialogeffect">
 		<animation effect="fade" time="200">WindowOpen</animation>
@@ -654,19 +654,19 @@
 	<include name="homestatsinfo">
 		<animation effect="fade" time="200">VisibleChange</animation>
 		<animation effect="slide" time="0" start="0,0" end="0,-320" condition="[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)]">Conditional</animation>
-		<animation effect="slide" time="400" start="700,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
-		<animation effect="slide" time="400" start="0,0" end="700,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+		<animation effect="slide" time="300" start="700,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+		<animation effect="slide" time="300" start="0,0" end="700,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 	</include>
 	<include name="homeaudioinfo">
 		<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)</visible>
 		<animation effect="fade" time="200">VisibleChange</animation>
-		<animation effect="slide" time="400" start="700,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
-		<animation effect="slide" time="400" start="0,0" end="700,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+		<animation effect="slide" time="300" start="700,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+		<animation effect="slide" time="300" start="0,0" end="700,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 	</include>
 	<include name="homevideoinfo">
 		<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)</visible>
 		<animation effect="fade" time="200">VisibleChange</animation>
-		<animation effect="slide" time="400" start="700,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
-		<animation effect="slide" time="400" start="0,0" end="700,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
+		<animation effect="slide" time="300" start="700,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowOpen</animation>
+		<animation effect="slide" time="300" start="0,0" end="700,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(Animate_Skin)">WindowClose</animation>
 	</include>
 </includes>

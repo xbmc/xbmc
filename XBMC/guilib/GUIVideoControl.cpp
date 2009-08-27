@@ -31,7 +31,9 @@
 
 CGUIVideoControl::CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-{}
+{
+  ControlType = GUICONTROL_VIDEO;
+}
 
 CGUIVideoControl::~CGUIVideoControl(void)
 {}

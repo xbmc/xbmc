@@ -1,119 +1,36 @@
-W: xbmc source: patch-system-but-direct-changes-in-diff config.log and 46 more
+W: xbmc-eventclients-common: extended-description-line-too-long
 N: 
-N:    The package uses a patch system, but the Debian diff.gz contains changes
-N:    to files or creation of additional files outside of the debian
-N:    directory. This often indicates accidental changes that weren't meant to
-N:    be in the package or changes that were supposed to be separated out into
-N:    a patch. The package will also more easily support possible future
-N:    source package formats if all changes outside the debian directory are
-N:    stored as patches.
+N:    One or more lines in the extended part of the "Description:" field have
+N:    been found to contain more than 80 characters. For the benefit of users
+N:    of 80x25 terminals, it is recommended that the lines do not exceed 80
+N:    characters.
 N:    
-N:    Severity: minor, Certainty: certain
-N: 
-W: xbmc source: configure-generated-file-in-source config.log
-N: 
-N:    Leaving config.cache/status causes autobuilders problems. config.cache
-N:    and config.status are produced by GNU autoconf's configure scripts. If
-N:    they are left in the source package, autobuilders may pick up settings
-N:    for the wrong architecture.
-N:    
-N:    The clean rule in debian/rules should remove this file. This should
-N:    ideally be done by fixing the upstream build system to do it when you
-N:    run the appropriate cleaning command (and don't forget to forward the
-N:    fix to the upstream authors so it doesn't happen in the next release).
-N:    If that is already implemented, then make sure you are indeed cleaning
-N:    it in the clean rule. If all else fails, a simple rm -f should work.
-N:    
-N:    Note that Lintian cannot reliably detect the removal in the clean rule,
-N:    so once you fix this, please ignore or override this warning.
-N:    
-N:    Severity: normal, Certainty: possible
-N: 
-W: xbmc source: ancient-libtool xbmc/lib/libid3tag/libid3tag/ltmain.sh 1.5.2
-N: 
-N:    The referenced file seems to be from a libtool version older than
-N:    1.5.2-2. This might lead to build errors on some newer architectures not
-N:    known to this libtool.
-N:    
-N:    Please ask your upstream maintainer to re-libtoolize the package or do
-N:    it yourself in case there is no active upstream anymore. Beware that
-N:    might mean you need to update autoconf, too, if you use a very old
-N:    version there as well.
-N:    
-N:    If you have not updated the file but fixed architecture-specific issues
-N:    with minimal patches and verified that it builds correctly please
-N:    override this tag. lintian will not be able to verify that.
-N:    
-N:    Severity: normal, Certainty: possible
-N: 
-W: xbmc source: configure-generated-file-in-source xbmc/lib/cximage-6.0/zlib/config.log
-W: xbmc source: ancient-libtool xbmc/cores/paplayer/MP3Codec/libmad-0.15.1b/ltmain.sh 1.5.2
-W: xbmc source: ancient-libtool xbmc/cores/dvdplayer/Codecs/libmad/ltmain.sh 1.5.2
-W: xbmc source: ancient-libtool xbmc/cores/dvdplayer/Codecs/liba52/autotools/ltmain.sh 1.4.2
-W: xbmc-eventclients-wiiremote: binary-without-manpage usr/bin/xbmc-wiiremote
-N: 
-N:    Each binary in /usr/bin, /usr/sbin, /bin, /sbin or /usr/games should
-N:    have a manual page
-N:    
-N:    Note that though the man program has the capability to check for several
-N:    program names in the NAMES section, each of these programs should have
-N:    its own manual page (a symbolic link to the appropriate manual page is
-N:    sufficient) because other manual page viewers such as xman or tkman
-N:    don't support this.
-N:    
-N:    If the name of the man page differs from the binary by case, man may be
-N:    able to find it anyway; however, it is still best practice to make the
-N:    case of the man page match the case of the binary.
-N:    
-N:    If the man pages are provided by another package on which this package
-N:    depends, lintian may not be able to determine that man pages are
-N:    available. In this case, after confirming that all binaries do have man
-N:    pages after this package and its dependencies are installed, please add
-N:    a lintian override.
-N:    
-N:    Refer to Debian Policy Manual section 12.1 (Manual pages) for details.
-N:    
-N:    Severity: normal, Certainty: possible
-N: 
-W: xbmc-eventclients-ps3: binary-without-manpage usr/bin/xbmc-ps3remote
-W: xbmc-eventclients-j2me: binary-without-manpage usr/bin/xbmc-j2meremote
-W: xbmc-live: binary-without-manpage usr/bin/diskmounter
-W: xbmc-live: binary-without-manpage usr/bin/installXBMC.py
-W: xbmc-live: binary-without-manpage usr/bin/runXBMC.sh
-W: xbmc-live: binary-without-manpage usr/bin/setAlsaVolumes.py
-W: xbmc-live: script-with-language-extension usr/bin/installXBMC.py
-N: 
-N:    When scripts are installed into a directory in the system PATH, the
-N:    script name should not include an extension such as .sh or .pl that
-N:    denotes the scripting language currently used to implement it. The
-N:    implementation language may change; if it does, leaving the name the
-N:    same would be confusing and changing it would be disruptive.
-N:    
-N:    Refer to Debian Policy Manual section 10.4 (Scripts) for details.
+N:    Refer to Debian Policy Manual section 3.4.1 (The single line synopsis)
+N:    for details.
 N:    
 N:    Severity: normal, Certainty: certain
 N: 
-W: xbmc-live: script-with-language-extension usr/bin/runXBMC.sh
-W: xbmc-live: script-with-language-extension usr/bin/setAlsaVolumes.py
-W: xbmc-common: binary-without-manpage usr/bin/xbmc
-W: xbmc-common: postinst-has-useless-call-to-ldconfig
+W: xbmc-web-pm3: extended-description-line-too-long
+W: xbmc-eventclients-ps3: manpage-has-useless-whatis-entry usr/share/man/man1/xbmc-ps3remote.1.gz
 N: 
-N:    The postinst script calls ldconfig even though no shared libraries are
-N:    installed in a directory controlled by the dynamic library loader.
+N:    The whatis entry for this manual page (the brief description found in
+N:    the NAME section) is of the form:
 N:    
-N:    Refer to Debian Policy Manual section 8.1.1 (ldconfig) for details.
+N:     program - manual page for program
 N:    
-N:    Severity: minor, Certainty: certain
+N:    This conveys no information about what the program is for and is
+N:    repetitive. The short description should contain brief information about
+N:    what the program is for to aid in searching with apropos and similar
+N:    programs.
+N:    
+N:    If this manpage was generated by help2man, use the -n option to provide
+N:    a more meaningful description.
+N:    
+N:    Severity: normal, Certainty: certain
 N: 
-W: xbmc-common: postrm-has-useless-call-to-ldconfig
-N: 
-N:    The postrm script calls ldconfig even though no shared libraries are
-N:    installed in a directory controlled by the dynamic library loader.
-N:    
-N:    Refer to Debian Policy Manual section 8.1.1 (ldconfig) for details.
-N:    
-N:    Severity: minor, Certainty: certain
-N: 
+W: xbmc-eventclients-ps3: extended-description-line-too-long
+W: xbmc-common: manpage-has-useless-whatis-entry usr/share/man/man1/xbmc.bin.1.gz
+W: xbmc-common: extended-description-line-too-long
 E: xbmc-common: depends-on-obsolete-package depends: xlibmesa-gl
 N: 
 N:    The package depends on a package that has been superseded. If the
@@ -122,4 +39,24 @@ N:    package in the group.
 N:    
 N:    Severity: important, Certainty: possible
 N: 
-W: xbmc-standalone: binary-without-manpage usr/bin/xbmc-standalone
+W: xbmc-dbg: extended-description-line-too-long
+W: xbmc-eventclients-wiiremote: manpage-has-useless-whatis-entry usr/share/man/man1/xbmc-wiiremote.1.gz
+W: xbmc-eventclients-wiiremote: extended-description-line-too-long
+W: xbmc-web-eflexweb: extended-description-line-too-long
+W: xbmc-live: manpage-has-useless-whatis-entry usr/share/man/man1/diskmounter.1.gz
+W: xbmc-live: manpage-has-useless-whatis-entry usr/share/man/man1/installXBMC.1.gz
+W: xbmc-live: manpage-has-useless-whatis-entry usr/share/man/man1/runXBMC.1.gz
+W: xbmc-live: manpage-has-useless-whatis-entry usr/share/man/man1/setAlsaVolumes.1.gz
+W: xbmc-live: extended-description-line-too-long
+W: xbmc-web-pm: extended-description-line-too-long
+W: xbmc-eventclients-dev: extended-description-line-too-long
+W: xbmc-skin-pm3-hd: extended-description-line-too-long
+W: xbmc-eventclients-j2me: manpage-has-useless-whatis-entry usr/share/man/man1/xbmc-j2meremote.1.gz
+W: xbmc-eventclients-j2me: extended-description-line-too-long
+W: xbmc-standalone: manpage-has-useless-whatis-entry usr/share/man/man1/xbmc-standalone.1.gz
+W: xbmc-standalone: extended-description-line-too-long
+W: xbmc: extended-description-line-too-long
+W: xbmc-scripts-example: extended-description-line-too-long
+W: xbmc-skin-pm3: extended-description-line-too-long
+W: xbmc-web-iphone-tlrobinson: extended-description-line-too-long
+N: 1 tag overridden (1 error)

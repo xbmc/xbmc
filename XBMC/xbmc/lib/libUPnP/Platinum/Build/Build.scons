@@ -203,11 +203,18 @@ LibraryModule(name               = 'PltMediaConnect',
               linked_modules     = ['Neptune', 'Platinum'],
               excluded_files	    = ['MACFromIP.cpp'],
               source_root        = 'Source/Devices')
+
+# FrameStreamer         
+LibraryModule(name               = 'PltFrameStreamer',
+              build_source_dirs  = ['FrameStreamer'],
+              included_modules   = ['Neptune', 'Platinum', 'PltMediaServer'],
+              linked_modules     = ['Neptune', 'Platinum'],
+              source_root        = 'Source/Devices')
                                            
-for app in ['MicroMediaController', 'MediaCrawler', 'MediaConnect']:
+for app in ['MicroMediaController', 'MediaCrawler', 'MediaConnect', 'FrameStreamer']:
     Application(name = app, 
                 dir = 'Source/Apps/' + app, 
-                deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect'])
+                deps = ['Neptune', 'Platinum', 'PltMediaServer', 'PltMediaRenderer', 'PltMediaConnect', 'PltFrameStreamer'])
     
 for test in ['FileMediaServer', 'MediaRenderer', 'LightSample', 'Http']:
     Application(name = test+'Test', 

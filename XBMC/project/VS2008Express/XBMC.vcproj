@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -133,7 +133,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -165,6 +165,189 @@
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
+				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
+				SubSystem="2"
+				LargeAddressAware="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug (DirectX)|Win32"
+			OutputDirectory="XBMC\$(ConfigurationName)"
+			IntermediateDirectory="XBMC\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T"
+				MinimalRebuild="true"
+				ExceptionHandling="0"
+				BasicRuntimeChecks="0"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="4"
+				DisableSpecificWarnings="4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
+				AdditionalDependencies="D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				OutputFile="$(OutDir)\XBMC.exe"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories=""
+				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
+				ModuleDefinitionFile=""
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
+				SubSystem="2"
+				LargeAddressAware="2"
+				EntryPointSymbol=""
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release (DirectX)|Win32"
+			OutputDirectory="XBMC\$(ConfigurationName)"
+			IntermediateDirectory="XBMC\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/EHa /MP"
+				Optimization="3"
+				InlineFunctionExpansion="0"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T"
+				StringPooling="false"
+				MinimalRebuild="false"
+				ExceptionHandling="0"
+				RuntimeLibrary="0"
+				BufferSecurityCheck="false"
+				EnableFunctionLevelLinking="false"
+				EnableEnhancedInstructionSet="1"
+				UsePrecompiledHeader="2"
+				WarningLevel="3"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="0"
+				DisableSpecificWarnings="4996"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				IgnoreImportLibrary="false"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
+				AdditionalDependencies="D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				OutputFile="$(OutDir)\XBMC.exe"
+				LinkIncremental="1"
+				AdditionalLibraryDirectories=""
 				IgnoreDefaultLibraryNames="libc;msvcrt;libci"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
@@ -761,6 +944,22 @@
 									/>
 								</FileConfiguration>
 								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										UsePrecompiledHeader="0"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										UsePrecompiledHeader="0"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
 									Name="Debug|Win32"
 									>
 									<Tool
@@ -901,6 +1100,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMemory.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamMMS.h"
 						>
 					</File>
 					<File
@@ -1596,14 +1803,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_dx8.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_dx8.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_kernel32.cpp"
 						>
 					</File>
@@ -1679,6 +1878,22 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								UsePrecompiledHeader="0"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
 							Name="Debug|Win32"
 							>
 							<Tool
@@ -1709,10 +1924,6 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_socket.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_xbox_dx8.cpp"
 						>
 					</File>
 					<Filter
@@ -1747,6 +1958,22 @@
 							</FileConfiguration>
 							<FileConfiguration
 								Name="Release (SDL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -1790,6 +2017,22 @@
 								/>
 							</FileConfiguration>
 							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Debug|Win32"
 								>
 								<Tool
@@ -1819,6 +2062,22 @@
 							</FileConfiguration>
 							<FileConfiguration
 								Name="Release (SDL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -1862,6 +2121,22 @@
 								/>
 							</FileConfiguration>
 							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Debug|Win32"
 								>
 								<Tool
@@ -1891,6 +2166,22 @@
 							</FileConfiguration>
 							<FileConfiguration
 								Name="Release (SDL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									UsePrecompiledHeader="0"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -1982,6 +2273,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\RenderManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\WinRenderer.h"
 					>
 				</File>
 				<File
@@ -2114,6 +2413,22 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release (SDL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2741,10 +3056,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\DetectDVDType.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\DllAddon.h"
 					>
 				</File>
@@ -2917,6 +3228,22 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release (SDL)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Debug (DirectX)|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							UsePrecompiledHeader="0"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release (DirectX)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -3925,14 +4252,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\FileSystem\FileMMS.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\FileSystem\FileMMS.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\FileSystem\FileMusicDatabase.cpp"
 					>
 				</File>
@@ -4515,6 +4834,22 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
 							Name="Debug|Win32"
 							>
 							<Tool
@@ -4576,6 +4911,22 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release (SDL)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (DirectX)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -4647,6 +4998,22 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
 							Name="Debug|Win32"
 							>
 							<Tool
@@ -4711,6 +5078,22 @@
 							/>
 						</FileConfiguration>
 						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
 							Name="Debug|Win32"
 							>
 							<Tool
@@ -4768,6 +5151,22 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release (SDL)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (DirectX)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -4864,6 +5263,22 @@
 						</FileConfiguration>
 						<FileConfiguration
 							Name="Release (SDL)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Debug (DirectX)|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								ObjectFile="$(IntDir)/$(InputName)1.obj"
+							/>
+						</FileConfiguration>
+						<FileConfiguration
+							Name="Release (DirectX)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -5099,10 +5514,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\utils\DelayController.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\DetectDVDType.h"
 				>
 			</File>
 			<File

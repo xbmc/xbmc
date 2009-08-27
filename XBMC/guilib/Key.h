@@ -274,8 +274,10 @@
 #define ACTION_TOGGLE_WATCHED         200 // Toggle watched status (videos)
 #define ACTION_SCAN_ITEM              201 // scan item
 #define ACTION_TOGGLE_DIGITAL_ANALOG  202 // switch digital <-> analog
-#define ACTION_CHANNEL_SWITCH         203
+#define ACTION_RELOAD_KEYMAPS         203 // reloads CButtonTranslator's keymaps
+#define ACTION_GUIPROFILE_BEGIN       204 // start the GUIControlProfiler running
 
+#define ACTION_CHANNEL_SWITCH         300
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000

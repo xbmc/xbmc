@@ -142,6 +142,7 @@ public:
   virtual bool IsPaused() const;
   virtual bool HasVideo() const;
   virtual bool HasAudio() const;
+  virtual bool IsPassthrough() const;
   virtual bool CanSeek();
   virtual void Seek(bool bPlus, bool bLargeStep);
   virtual bool SeekScene(bool bPlus = true);

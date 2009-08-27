@@ -845,7 +845,7 @@ extern int		cronFree(cron_t *cp);
 #define SOCKET_BUFSIZ			1024	/* Underlying buffer size */
 #endif /* LITTLEFOOT */
 
-typedef void 	(*socketHandler_t)(int sid, int mask, int data);
+typedef void 	(*socketHandler_t)(int sid, int mask, void* data);
 typedef int		(*socketAccept_t)(int sid, char *ipaddr, int port, 
 					int listenSid);
 typedef struct {
@@ -855,7 +855,7 @@ typedef struct {
 	ringq_t			lineBuf;				/* Line ring queue */
 	socketAccept_t	accept;					/* Accept handler */
 	socketHandler_t	handler;				/* User I/O handler */
-	int				handler_data;			/* User handler data */
+	void*				handler_data;			/* User handler data */
 	int				handlerMask;			/* Handler events of interest */
 	int				sid;					/* Index into socket[] */
 	int				port;					/* Port to listen on */
@@ -1009,12 +1009,12 @@ extern void 	ringqFlush(ringq_t *rq);
 extern void 	ringqAddNull(ringq_t *rq);
 
 extern int		scriptSetVar(int engine, char_t *var, char_t *value);
-extern int		scriptEval(int engine, char_t *cmd, char_t **rslt, int chan);
+extern int		scriptEval(int engine, char_t *cmd, char_t **rslt, void* chan);
 
 extern void		socketClose();
 extern void		socketCloseConnection(int sid);
 extern void		socketCreateHandler(int sid, int mask, socketHandler_t 
-					handler, int arg);
+					handler, void* arg);
 extern void		socketDeleteHandler(int sid);
 extern int		socketEof(int sid);
 extern int 		socketCanWrite(int sid);

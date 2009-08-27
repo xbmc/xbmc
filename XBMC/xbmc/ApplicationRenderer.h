@@ -44,7 +44,7 @@ private:
   virtual void Process();
   void UpdateBusyCount();
 #ifndef HAS_SDL
-  bool CopySurface(LPDIRECT3DSURFACE8 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE8 pSurfaceDest, const RECT* rcDest);
+  bool CopySurface(LPDIRECT3DSURFACE9 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE9 pSurfaceDest, const RECT* rcDest);
 #endif
 
   DWORD m_time;
@@ -55,7 +55,7 @@ private:
   bool m_busyShown;
   CCriticalSection m_criticalSection;
 #ifndef HAS_SDL
-  LPDIRECT3DSURFACE8 m_lpSurface;
+  LPDIRECT3DSURFACE9 m_lpSurface;
 #endif
   CGUIDialogBusy* m_pWindow;
   RESOLUTION m_Resolution;

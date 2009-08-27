@@ -1,6 +1,6 @@
 AR=ar
 ARFLAGS=crus
-RM=rm -f
+RM=rm -rf
 SHELL=/bin/bash
 ARCH=@ARCH@
 abs_top_srcdir=@abs_top_srcdir@
@@ -105,22 +105,13 @@ $(LIB): $(OBJS)
 	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
 
 pch: $(PCH:.h=.h.gch)
-	for d in $(DIRS); do (cd $$d; $(MAKE) pch ); done
+	for d in $(DIRS); do (cd "$$d"; $(MAKE) pch ); done
 
 clean: 
 	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(CLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
-	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d clean); fi ); done
-
-distclean_evil:
-	@echo "Removing all object files (.o)"
-	@find . -name "*.o" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
-	@echo "Removing all precompiled header files (.h.gch)"
-	@find . -name "*.h.gch" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
-	@echo "Removing all dependency files (.P)"
-	@find . -name "*.P" -exec echo 'Removing "{}"' \; -exec rm -f "{}" \;
-	@echo "Done."
+	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" clean); fi ); done
 
 distclean:
 	$(RM) $(OBJS) *.o $(LIB) $(SLIB) $(STATICLIB) $(CLEAN_FILES) $(DISTCLEAN_FILES) $(PCH:.h=.h.gch) $(OBJS:.o=.P)
-	for d in $(DIRS); do (if test -f $$d/Makefile; then ($(MAKE) -C $$d distclean || $(MAKE) -C $$d clean); fi ); done
+	for d in $(DIRS); do (if test -f "$$d/Makefile"; then ($(MAKE) -C "$$d" distclean || $(MAKE) -C "$$d" clean); fi ); done
 

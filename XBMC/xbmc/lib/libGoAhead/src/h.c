@@ -49,7 +49,7 @@ int HALLOC(B_ARGS_DEC, void ***map)
 int hAlloc(void ***map)
 #endif
 {
-	int		*mp;
+	intptr_t		*mp;
 	int		handle, len, memsize, incr;
 
 	a_assert(map);
@@ -58,9 +58,9 @@ int hAlloc(void ***map)
 		incr = H_INCR;
 		memsize = (incr + H_OFFSET) * sizeof(void**);
 #ifdef B_STATS
-		if ((mp = (int*) balloc(B_ARGS, memsize)) == NULL) {
+		if ((mp = (intptr_t*) balloc(B_ARGS, memsize)) == NULL) {
 #else
-		if ((mp = (int*) balloc(B_L, memsize)) == NULL) {
+		if ((mp = (intptr_t*) balloc(B_L, memsize)) == NULL) {
 #endif
 			return -1;
 		}
@@ -69,7 +69,7 @@ int hAlloc(void ***map)
 		mp[H_USED] = 0;
 		*map = (void**) &mp[H_OFFSET];
 	} else {
-		mp = &((*(int**)map)[-H_OFFSET]);
+		mp = &((*(intptr_t**)map)[-H_OFFSET]);
 	}
 
 	len = mp[H_LEN];
@@ -93,12 +93,12 @@ int hAlloc(void ***map)
  */
 	len += H_INCR;
 	memsize = (len + H_OFFSET) * sizeof(void**);
-	if ((mp = (int*) brealloc(B_L, (void*) mp, memsize)) == NULL) {
+	if ((mp = (intptr_t*) brealloc(B_L, (void*) mp, memsize)) == NULL) {
 		return -1;
 	}
 	*map = (void**) &mp[H_OFFSET];
 	mp[H_LEN] = len;
-	memset(&mp[H_OFFSET + len - H_INCR], 0, sizeof(int*) * H_INCR);
+	memset(&mp[H_OFFSET + len - H_INCR], 0, sizeof(intptr_t*) * H_INCR);
 	mp[H_USED]++;
 	return handle;
 }
@@ -111,11 +111,11 @@ int hAlloc(void ***map)
 
 int hFree(void ***map, int handle)
 {
-	int		*mp;
+	intptr_t	*mp;
 	int		len;
 
 	a_assert(map);
-	mp = &((*(int**)map)[-H_OFFSET]);
+	mp = &((*(intptr_t**)map)[-H_OFFSET]);
 	a_assert(mp[H_LEN] >= H_INCR);
 
 	a_assert(mp[handle + H_OFFSET]);

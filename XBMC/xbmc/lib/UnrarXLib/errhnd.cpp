@@ -317,7 +317,7 @@ void ErrorHandler::Throw(int Code)
   throw Code;
 #else
   File::RemoveCreated();
-#if !defined(XBMC) && !defined(_LINUX)
+#if !defined(_XBMC) && !defined(_LINUX)
   exit(Code);
 #endif
 #endif

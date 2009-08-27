@@ -1,0 +1,181 @@
+# Note that this file is hardly maintained, hardly usable without
+# manual editing, and not really part of a recommended way to build
+# GLib and related software with Microsoft's compilers. Only a few
+# persons use a build setup that involves this file.
+
+# Common makefile definitions for building GLib, GTk+, and various
+# software that use these libraries with msvc on Win32
+
+# Debug builds shoud link with msvcrtd release build with msvcrt.
+!IFNDEF DEBUG
+# Full optimization:
+OPTIMIZE = -Ox
+CRUNTIME = -MD
+# Line number debug info only
+DEBUGINFO = -Zd
+LINKDEBUG =
+!ELSE
+# Debugging:
+OPTIMIZE = 
+CRUNTIME = -MDd
+DEBUGINFO = -Zi -DG_ENABLE_DEBUG=1
+LINKDEBUG = /debug /nodefaultlib:msvcrt.lib
+!ENDIF
+
+LDFLAGS = /link /machine:ix86 $(LINKDEBUG)
+
+!IFNDEF TOP
+TOP = ..
+!ENDIF
+
+# paths and version numbers
+!INCLUDE module.defs
+
+################
+# CFLAGS and LIBS for the packages in module.defs.
+# In alphabetical order.
+
+# Note that these CFLAGS and LIBS refer to stuff in "source"
+# directories. This is for historical reasons, and only useable if you
+# have the GLib, Pango, etc sources. If you use the prebuilt developer
+# packages, you should fix these to instead refer to the place where
+# you unzipped the developer packages. Easiest of all, run pkg-config
+# --cflags gtk+-2.0 (for instance), and paste its output as the
+# definition of GTK2_CFLAGS. Etc.
+
+ATK_CFLAGS = -I $(ATK)
+ATK_LIBS = $(ATK)\atk\atk-$(ATK_VER).lib
+
+CAIRO_CFLAGS = -I $(CAIRO)\cairo\src -I $(CAIRO)\libpixman\src -I $(CAIRO) $(FONTCONFIG_CFLAGS) $(FREETYPE2_CFLAGS)
+CAIRO_LIBS = $(CAIRO)\cairo\src\libcairo-$(CAIRO_VER).lib
+
+DIRENT_CFLAGS = -I $(GLIB)\build\win32\dirent
+DIRENT_LIBS = $(GLIB)\build\win32\dirent\dirent.lib
+
+# Don't know if Freetype2, FriBiDi and some others actually can be
+# built with MSVC, but one can produce an import library even if the
+# DLL was built with gcc.
+
+FREETYPE2_CFLAGS = -I $(FREETYPE2)\include
+FREETYPE2_LIBS = $(FREETYPE2)\obj\freetype-$(FREETYPE2_VER).lib
+
+GDK_PIXBUF_CFLAGS = -I $(GDK_PIXBUF)
+GDK_PIXBUF_LIBS = $(GTK2)\gdk-pixbuf\gdk_pixbuf-$(GDK_PIXBUF_VER).lib
+
+GIMP_CFLAGS = -I $(GIMP)
+GIMP_PLUGIN_LIBS = $(GIMP)\libgimp\gimp-$(GIMP_VER).lib $(GIMP)\libgimp\gimpui-$(GIMP_VER).lib
+
+# overide definition to use it as callable path
+GLIB = $(TOP)\glib
+
+GLIB_CFLAGS = -I $(GLIB) -I $(GLIB)\glib -I $(GLIB)\gmodule $(INTL_CFLAGS)
+GLIB_LIBS = $(GLIB)\glib\glib-$(GLIB_VER).lib $(GLIB)\gmodule\gmodule-$(GLIB_VER).lib $(GLIB)\gobject\gobject-$(GLIB_VER).lib
+GTHREAD_LIBS = $(GLIB)\gthread\gthread-$(GLIB_VER).lib
+
+GNOMECANVAS_CFLAGS = -I $(GNOMECANVAS)
+GNOMECANVAS_LIBS = $(GNOMECANVAS)\libgnomecanvas\libgnomecanvas-$(GNOMECANVAS_VER).lib
+
+GNOMEPRINT_CFLAGS = -I $(GNOMEPRINT)
+GNOMEPRINT_LIBS = $(GNOMEPRINT)\libgnomeprint\gnome-print-$(GNOMEPRINT_VER).lib
+
+GNOMEPRINTUI_CFLAGS = -I $(GNOMEPRINTUI)
+GNOMEPRINTUI_LIBS = $(GNOMEPRINTUI)\libgnomeprintui\gnome-printui-$(GNOMEPRINTUI_VER).lib
+
+GTK_CFLAGS = -I$(GTK)\gdk -I$(GTK)\gdk -I$(GTK) 
+GTK_LIBS = $(GTK)\gtk\gtk.lib $(GTK)\gdk\gdk.lib 
+
+GTK2_CFLAGS = $(GLIB_CFLAGS) $(ATK_CFLAGS) -I$(GTK2)\gdk -I$(GTK2)\gdk -I$(GTK2) -I$(PANGO) -I$(ATK)
+GTK2_LIBS = $(GTK2)\gtk\gtk-win32-$(GTK2_VER).lib $(GTK2)\gdk\gdk-win32-$(GTK2_VER).lib $(GTK2)\gdk-pixbuf\gdk_pixbuf-$(GTK2_VER).lib $(PANGO_LIBS)
+
+GTKGLAREA_CFLAGS = -I $(GTKGLAREA)
+GTKGLAREA_CFLAGS = -I $(GTKGLAREA)
+GTKGLAREA_LIBS = $(GTKGLAREA)\gtkgl\gtkgl-$(GTKGLAREA_VER).lib
+
+LIBART_CFLAGS = -I$(LIBART)\.. -FIlibart_lgpl/art_config.h
+LIBART_LIBS = $(LIBART)\libart.lib
+
+INTL_CFLAGS = -I $(INTL)
+INTL_LIBS = $(INTL)\intl.lib 
+
+LIBICONV_CFLAGS = -I $(LIBICONV)\include
+LIBICONV_LIBS = $(LIBICONV)\lib\iconv.lib
+
+LIBXML_CFLAGS = -I $(LIBXML)
+LIBXML_LIBS = $(LIBXML)\xml-$(LIBXML_VER).lib
+
+LIBXML2_CFLAGS = $(LIBICONV_CFLAGS) -I $(LIBXML2)\include
+LIBXML2_LIBS = $(LIBXML2)\libxml2.lib
+
+LIBXSLT_CFLAGS = -I $(LIBXSLT)
+LIBXSLT_LIBS = $(LIBXSLT)\libxslt\libxslt.lib
+
+JPEG_CFLAGS = -I $(JPEG)
+JPEG_LIBS = $(JPEG)\libjpeg.lib
+
+OPENGL_CFLAGS = # None needed, headers bundled with the compiler
+OPENGL_LIBS = opengl32.lib lglu32.lib
+
+PANGO_CFLAGS = -I $(PANGO)
+PANGO_LIBS = $(PANGO)\pango\pango-$(PANGO_VER).lib
+PANGOWIN32_LIBS = $(PANGO_LIBS) $(PANGO)\pango\pangowin32-$(PANGO_VER).lib
+PANGOFT2_LIBS = $(PANGO_LIBS) $(PANGO)\pango\pangoft2-$(PANGO_VER).lib
+
+PNG_CFLAGS = -I $(PNG) $(ZLIB_CFLAGS)
+PNG_LIBS = $(PNG)\png.lib $(ZLIB_LIBS)
+
+RSVG_CFLAGS = -I $(RSVG)\..
+RSVG_LIBS = $(RSVG)\librsvg-$(RSVG_VER).lib
+
+SVG_CFLAGS = -I $(SVG)\src
+SVG_LIBS = $(SVG)\src\libsvg-$(SVG_VER).lib
+
+TIFF_CFLAGS = -I $(TIFF)\libtiff
+# Use single import library for both libtiff DLL versions (with or
+# without LZW code). The user selects which DLL to use.
+TIFF_NOLZW_LIBS = $(TIFF)\libtiff\tiff.lib $(JPEG_LIBS) $(ZLIB_LIBS) user32.lib
+TIFF_LZW_LIBS = $(TIFF_NOLZW_LIBS)
+TIFF_LIBS = $(TIFF_NOLZW_LIBS)
+
+ZLIB_CFLAGS = -I $(ZLIB)
+ZLIB_LIBS = $(ZLIB)\zlib.lib
+
+################
+# Compiler to use.
+
+CCOMPILER = cl
+CC = $(CCOMPILER) -G5 -GF $(CRUNTIME) -W3 -nologo
+
+################
+# The including makefile should define INCLUDES, DEFINES and
+# DEPCFLAGS.  INCLUDES are the includes related to the module being
+# built.  DEFINES similarly. DEPCFLAGS should be set to a set of
+# GLIB_CFLAGS, GTK_CFLAGS etc corresponding to what other modules we
+# depend on.
+
+CFLAGS = $(OPTIMIZE) $(DEBUGINFO) $(INCLUDES) $(DEFINES) $(DEPCFLAGS)
+
+.c.i :
+	$(CC) $(CFLAGS) -E $< >$@
+
+# The default target should be "all"
+
+default: all
+
+clean::
+	-del *.obj
+	-del *.res
+	-del *.i
+	-del *.exe
+	-del *.dll
+	-del *.lib
+	-del *.err
+	-del *.map
+	-del *.sym
+	-del *.exp
+	-del *.lk1
+	-del *.mk1
+	-del *.pdb
+	-del *.ilk
+
+# Needed by hacker rule to make makefile.msc from makefile.msc.in:
+SED = e:\cygwin\bin\sed

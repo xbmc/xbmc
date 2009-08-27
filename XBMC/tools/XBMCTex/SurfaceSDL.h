@@ -1,7 +1,7 @@
 // class CSurface - wraps the various interfaces (SDL/DirectX)
 #pragma once
 
-#ifdef USE_SDL
+#ifdef HAS_SDL
 
 #ifdef _LINUX
 #include "PlatformDefs.h"

@@ -60,7 +60,6 @@ protected:
 
   HANDLE m_hReadEvent;       // data is fetched
   HANDLE m_hDataReadyEvent;  // data is ready to be fetched
-  HANDLE m_hStopEvent;       // stop event
 
   bool m_iInitialized;
 

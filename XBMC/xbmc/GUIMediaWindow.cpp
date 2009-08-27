@@ -22,10 +22,10 @@
 #include "stdafx.h"
 #include "GUIMediaWindow.h"
 #include "Util.h"
-#include "DetectDVDType.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/PluginDirectory.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "GUIPassword.h"
 #include "Application.h"
 #include "utils/Network.h"
@@ -44,6 +44,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
+#include "MediaManager.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -333,8 +334,14 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE_PATH)
       {
-        if (message.GetStringParam() == m_vecItems->m_strPath && IsActive())
-          Update(m_vecItems->m_strPath);
+        if (IsActive())
+        {
+          if((message.GetStringParam() == m_vecItems->m_strPath) ||
+             (m_vecItems->IsMultiPath() && DIRECTORY::CMultiPathDirectory::HasPath(m_vecItems->m_strPath, message.GetStringParam())))
+          {
+            Update(m_vecItems->m_strPath);
+          }
+        }
       }
       else
         return CGUIWindow::OnMessage(message);
@@ -850,8 +857,7 @@ bool CGUIMediaWindow::HaveDiscOrConnection(CStdString& strPath, int iDriveType)
 {
   if (iDriveType==CMediaSource::SOURCE_TYPE_DVD)
   {
-    MEDIA_DETECT::CDetectDVDMedia::WaitMediaReady();
-    if (!MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive())
+    if (!g_mediaManager.IsDiscInDrive())
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       return false;
@@ -1182,8 +1188,8 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
       pMenu->AddButton((*it).second);
 
     // position it correctly
-    CPoint pos = GetContextPosition();
-    pMenu->OffsetPosition(pos.x, pos.y);
+    pMenu->PositionAtCurrentFocus();
+
     pMenu->DoModal();
 
     // translate our button press
@@ -1322,15 +1328,6 @@ bool CGUIMediaWindow::WaitForNetwork() const
   }
   progress->Close();
   return true;
-}
-
-CPoint CGUIMediaWindow::GetContextPosition() const
-{
-  CPoint pos(200, 100);
-  const CGUIControl *pList = GetControl(m_viewControl.GetCurrentControl());
-  if (pList)
-    pos = pList->GetRenderPosition() + CPoint(pList->GetWidth() * 0.5f, pList->GetHeight() * 0.5f);
-  return pos;
 }
 
 
