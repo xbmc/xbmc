@@ -53,7 +53,8 @@ public:
   virtual long GetID(void)=0;
   virtual PVR_ERROR GetProperties(PVR_SERVERPROPS *props)=0;
   virtual ADDON_STATUS GetStatus(void)=0;
-  virtual void ReInit()=0;
+  virtual bool ReInit()=0;
+  virtual bool ReadyToUse()=0;
   
   virtual const std::string GetBackendName(void)=0;
   virtual const std::string GetBackendVersion(void)=0;

@@ -94,7 +94,7 @@ public:
   bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
 
-  bool HaveClients() { return !m_clients.empty(); }
+  bool HaveActiveClients();
 
   /* Event handling */
   void	      OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);

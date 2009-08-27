@@ -138,10 +138,10 @@ void CPVRClient::DeInit()
   }
 }
 
-void CPVRClient::ReInit()
+bool CPVRClient::ReInit()
 {
   DeInit();
-  Init();
+  return Init();
 }
 
 ADDON_STATUS CPVRClient::GetStatus()

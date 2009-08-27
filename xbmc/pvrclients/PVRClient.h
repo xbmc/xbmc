@@ -35,7 +35,8 @@ public:
   /* DLL related */
   bool Init();
   void DeInit();
-  void ReInit();
+  bool ReInit();
+  bool ReadyToUse() { return m_ReadyToUse; }
   virtual ADDON_STATUS GetStatus();
   virtual ADDON_STATUS SetSetting(const char *settingName, const void *settingValue);
 
