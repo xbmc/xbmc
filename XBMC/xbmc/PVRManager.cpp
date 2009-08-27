@@ -321,6 +321,22 @@ void CPVRManager::GetClientProperties(long clientID)
   }
 }
 
+bool CPVRManager::HaveActiveClients()
+{
+  if (m_clients.empty())
+    return false;
+
+  int ready = 0;
+  CLIENTMAPITR itr = m_clients.begin();
+  while (itr != m_clients.end())
+  {
+    if (m_clients[(*itr).first]->ReadyToUse())
+      ready++;
+    itr++;
+  }
+  return ready > 0 ? true : false;
+}
+
 void CPVRManager::Process()
 {
   DWORD Now = timeGetTime();
@@ -594,11 +610,22 @@ bool CPVRManager::RequestRestart(const CAddon* addon, bool datachanged)
       if (m_clients[(*itr).first]->m_strName == addon->m_strName)
       {
         CLog::Log(LOGINFO, "PVR: restarting clientName:%s, clientGUID:%s", addon->m_strName.c_str(), addon->m_guid.c_str());
-        m_clients[(*itr).first]->ReInit();
-        if (datachanged)
+        StopThread();
+        if (m_clients[(*itr).first]->ReInit())
         {
+          /* Get TV Channels from Backends */
+          PVRChannelsTV.Update();
 
+          /* Get Radio Channels from Backends */
+          PVRChannelsRadio.Update();
+
+          /* Get Timers from Backends */
+          PVRTimers.Update();
+
+          /* Get Recordings from Backend */
+          PVRRecordings.Update();
         }
+        Create();
       }
     }
     itr++;
