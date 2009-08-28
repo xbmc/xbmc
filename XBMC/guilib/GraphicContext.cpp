@@ -24,24 +24,11 @@
 #include "GUIFontManager.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
-#include "Settings.h"
-#include "GUISettings.h"
-#include "TextureManager.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "GUIAudioManager.h"
 #include "WindowingFactory.h"
-
 #include "SkinInfo.h"
-#ifdef HAS_GLX
-#include <X11/extensions/Xinerama.h>
-#elif defined (__APPLE__)
-#include "CocoaInterface.h"
-#endif
-#ifdef HAS_XRANDR
-#include "XRandR.h"
-#endif
 
 using namespace std;
 
@@ -174,16 +161,8 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 
 bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
-#ifdef HAS_DX
-  D3DVIEWPORT9 newviewport;
-  D3DVIEWPORT9 *oldviewport = new D3DVIEWPORT9;
-  Get3DDevice()->GetViewport(oldviewport);
-#elif defined(HAS_GL)
-  //GLVALIDATE;
-  GLint newviewport[4];
-  GLint oldviewport[4];
-  glGetIntegerv(GL_SCISSOR_BOX, &oldviewport[0]);
-#endif
+  CRect oldviewport;
+  g_Windowing.GetViewPort(oldviewport);
 
   // transform coordinates - we may have a rotation which changes the positioning of the
   // minimal and maximal viewport extents.  We currently go to the maximal extent.
@@ -213,22 +192,10 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   if (intersectPrevious)
   {
     // do the intersection
-#ifdef HAS_DX
-    int oldLeft = (int)oldviewport->X;
-    int oldTop = (int)oldviewport->Y;
-    int oldRight = (int)oldviewport->X + oldviewport->Width;
-    int oldBottom = (int)oldviewport->Y + oldviewport->Height;
-#elif defined(HAS_SDL_2D)
-    int oldLeft = (int)oldviewport->x;
-    int oldTop = (int)oldviewport->y;
-    int oldRight = (int)oldviewport->x + oldviewport->w;
-    int oldBottom = (int)oldviewport->y + oldviewport->h;
-#elif defined(HAS_GL)
-    int oldLeft = (int)oldviewport[0];
-    int oldBottom = m_iScreenHeight - oldviewport[1];       // opengl uses bottomleft as origin
-    int oldTop = oldBottom - oldviewport[3];
-    int oldRight = (int)oldviewport[0] + oldviewport[2];
-#endif
+    int oldLeft = (int)oldviewport.x1;
+    int oldTop = (int)oldviewport.y1;
+    int oldRight = (int)oldviewport.x2;
+    int oldBottom = (int)oldviewport.y2;
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
       return false;
@@ -255,23 +222,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   ASSERT(newLeft < newRight);
   ASSERT(newTop < newBottom);
 
-#ifdef HAS_DX
-  newviewport.MinZ = 0.0f;
-  newviewport.MaxZ = 1.0f;
-  newviewport.X = newLeft;
-  newviewport.Y = newTop;
-  newviewport.Width = newRight - newLeft;
-  newviewport.Height = newBottom - newTop;
-  m_pd3dDevice->SetViewport(&newviewport);
-#elif defined(HAS_GL)
-  newviewport[0] = newLeft;
-  newviewport[1] = m_iScreenHeight - newBottom; // opengl uses bottomleft as origin
-  newviewport[2] = newRight - newLeft;
-  newviewport[3] = newBottom - newTop;
-  glScissor(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
-  glViewport(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
-  VerifyGLState();
-#endif
+  CRect newviewport(newLeft, newTop, newRight, newBottom);
+  g_Windowing.SetViewPort(newviewport);
 
   m_viewStack.push(oldviewport);
 
@@ -282,24 +234,11 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
 void CGraphicContext::RestoreViewPort()
 {
   if (!m_viewStack.size()) return;
-#ifdef HAS_DX
-  D3DVIEWPORT9 *oldviewport = (D3DVIEWPORT9*)m_viewStack.top();
-  Get3DDevice()->SetViewport(oldviewport);
-#elif defined(HAS_GL)
-  //GLVALIDATE;
-  GLint* oldviewport = (GLint*)m_viewStack.top();
-  glScissor(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
-  glViewport(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
-  VerifyGLState();
-#endif
+
+  CRect oldviewport = m_viewStack.top();
+  g_Windowing.SetViewPort(oldviewport);
 
   m_viewStack.pop();
-
-#if defined(HAS_GL)
-  delete [] oldviewport;
-#else
-  delete oldviewport;
-#endif
 
   UpdateCameraPosition(m_cameras.top());
 }

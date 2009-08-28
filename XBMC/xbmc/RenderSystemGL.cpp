@@ -92,6 +92,9 @@ bool CRenderSystemGL::InitRenderSystem()
 
 bool CRenderSystemGL::ResetRenderSystem(int width, int height)
 {
+  m_width = width;
+  m_height = height;
+  
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
   
   CalculateMaxTexturesize();
@@ -130,18 +133,6 @@ void CRenderSystemGL::GetRenderVersion(unsigned int& major, unsigned int& minor)
   minor = m_RenderVerdenVersionMinor;
 }
 
-void CRenderSystemGL::SetViewPort(CRect& viewPort)
-{
-  if (!m_bRenderCreated)
-    return;
-}
-
-void CRenderSystemGL::GetViewPort(CRect& viewPort)
-{
-  if (!m_bRenderCreated)
-    return;
-}
-
 bool CRenderSystemGL::BeginRender()
 {
   if (!m_bRenderCreated)
@@ -168,6 +159,9 @@ bool CRenderSystemGL::ClearBuffers(DWORD color)
 
 bool CRenderSystemGL::ClearBuffers(float r, float g, float b, float a)
 {
+  if (!m_bRenderCreated)
+    return false;
+  
   glClearColor(r, g, b, a);
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
@@ -275,6 +269,9 @@ void CRenderSystemGL::SetVSync(bool enable)
 
 void CRenderSystemGL::CaptureStateBlock()
 {
+  if (!m_bRenderCreated)
+    return;
+  
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
   glMatrixMode(GL_TEXTURE);
@@ -291,6 +288,9 @@ void CRenderSystemGL::CaptureStateBlock()
 
 void CRenderSystemGL::ApplyStateBlock()
 {
+  if (!m_bRenderCreated)
+    return;
+  
   glMatrixMode(GL_PROJECTION);
   glPopMatrix();
   glMatrixMode(GL_TEXTURE);
@@ -307,6 +307,9 @@ void CRenderSystemGL::ApplyStateBlock()
 
 void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
 { 
+  if (!m_bRenderCreated)
+    return;
+  
   g_graphicsContext.BeginPaint();
   
   CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
@@ -352,6 +355,9 @@ bool CRenderSystemGL::TestRender()
 
 void CRenderSystemGL::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
 { 
+  if (!m_bRenderCreated)
+    return;
+  
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   GLfloat matrix[4][4];
@@ -370,6 +376,9 @@ void CRenderSystemGL::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
 
 void CRenderSystemGL::RestoreHardwareTransform()
 {
+  if (!m_bRenderCreated)
+    return;
+  
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();  
 }
@@ -402,6 +411,29 @@ void CRenderSystemGL::CalculateMaxTexturesize()
   }
 
   CLog::Log(LOGINFO, "GL: Maximum texture width: %d", (int) m_maxTextureSize);
+}
+
+void CRenderSystemGL::GetViewPort(CRect& viewPort)
+{
+  if (!m_bRenderCreated)
+    return;
+  
+  GLint glvp[4];
+  glGetIntegerv(GL_SCISSOR_BOX, glvp);
+  
+  viewPort.x1 = glvp[0];
+  viewPort.y1 = m_height - glvp[1] - glvp[3];
+  viewPort.x2 = glvp[0] + glvp[2];
+  viewPort.y2 = viewPort.y1 + glvp[3];
+}
+
+void CRenderSystemGL::SetViewPort(CRect& viewPort)
+{
+  if (!m_bRenderCreated)
+    return;
+  
+  glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+  glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
 }
 
 #endif

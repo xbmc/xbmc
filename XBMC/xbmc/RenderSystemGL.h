@@ -75,6 +75,8 @@ protected:
   __int64    m_iSwapRate;
   __int64    m_iSwapTime;
   bool       m_bVsyncInit;
+  int        m_width;
+  int        m_height;
   
   CStdString m_RenderRenderer;
   CStdString m_RenderVendor;

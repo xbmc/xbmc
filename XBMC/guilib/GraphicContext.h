@@ -178,9 +178,7 @@ public:
 
 protected:
   IMsgSenderCallback* m_pCallback;
-#ifdef HAS_GL
-  std::stack<GLint*> m_viewStack;
-#endif
+  std::stack<CRect> m_viewStack;
 
   int m_iScreenHeight;
   int m_iScreenWidth;
