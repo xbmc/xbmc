@@ -224,21 +224,28 @@ void CMPCInputThread::Process()
     if (pInput)
     {
       g_InputTimer.PunchIn();
-      BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), 0/*pInput->GetPts()*/, FALSE);
+      //BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), 0/*pInput->GetPts()*/, FALSE);
+      BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), pInput->GetPts(), FALSE);
       g_InputTimer.PunchOut();
-      LOG_DEBUG("%s: InputTimer (%d bytes) - %llu exec / %llu interval. %d in queue. (Status: %s CPU: %0.02f%%)", 
-        __MODULE_NAME__, pInput->GetSize(), g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime(), GetQueueLen(), g_DtsStatusText[ret],
-        GetRelativeUsage());
+      //LOG_DEBUG("%s: InputTimer (%d bytes) - %llu exec / %llu interval. %d in queue. (Status: %s CPU: %0.02f%%)", 
+      //  __MODULE_NAME__, pInput->GetSize(), g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime(), GetQueueLen(), g_DtsStatusText[ret],
+      //  GetRelativeUsage());
       if (ret == BCM::BC_STS_SUCCESS)
       {
         delete pInput;
         pInput = NULL;
       }
       else if (ret == BCM::BC_STS_BUSY)
+      {
+        LOG_DEBUG("%s: Input Thread Buffer is full", __MODULE_NAME__);
         Sleep(40); // Buffer is full
+      }
     }
     else
-      Sleep(10);
+    {
+      LOG_DEBUG("%s: Input Thread Sleep(5)", __MODULE_NAME__);
+      Sleep(5);
+    }
   }
 
   LOG_DEBUG("%s: Input Thread Stopped...", __MODULE_NAME__);
@@ -347,9 +354,13 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   switch (ret)
   {
     case BCM::BC_STS_SUCCESS:
-      m_PictureCount++;
-      pBuffer->SetPts(procOut.PicInfo.timeStamp);
-      return pBuffer;
+      if (procOut.PicInfo.timeStamp) {
+        m_PictureCount++;
+        pBuffer->SetPts(procOut.PicInfo.timeStamp);
+        return pBuffer;
+      } else {
+        break;
+      }
     case BCM::BC_STS_NO_DATA:
       break;
     case BCM::BC_STS_FMT_CHANGE:
@@ -564,11 +575,17 @@ void CDVDVideoCodecCrystalHD::Dispose()
 void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 {
   m_DropPictures = bDrop;
+  if (m_DropPictures) {
+    BCM::DtsDropPictures(m_Device, 1);
+  } else {
+    BCM::DtsDropPictures(m_Device, 0);
+  }
+  CLog::Log(LOGDEBUG, "%s: bDrop: %d)", __MODULE_NAME__, m_DropPictures);
 }
 
 int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
-  int ret = VC_ERROR;
+  //int ret = VC_ERROR;
   g_ClientTimer.PunchIn();
 
   // Free the last provided picture buffer
@@ -588,11 +605,14 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
       if (m_pInputThread->AddInput(pData, iSize, (BCM::U64)(pts * 10)))
       {
         pData = NULL;
-        CLog::Log(LOGDEBUG, "%s: Added %d bytes to decoder input (Call Time: %llu, Input Queue Len: %d)", __MODULE_NAME__, iSize, g_ClientTimer.GetTimeSincePunchIn()/10, m_pInputThread->GetQueueLen());
+        //CLog::Log(LOGDEBUG, "%s: Added %d bytes to decoder input (Call Time: %llu, Input Queue Len: %d)", __MODULE_NAME__, iSize, g_ClientTimer.GetTimeSincePunchIn()/10, m_pInputThread->GetQueueLen());
         break;
       }
       else
+      {
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecCrystalHD:Decode:sleeping");
         Sleep(waitInterval);
+      }
     }
   }
 
@@ -601,7 +621,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
   {
     if (m_pOutputThread->GetReadyCount())
     {
-      CLog::Log(LOGDEBUG, "%s: Got a picture (Call Time: %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn()/10, m_pInputThread->GetQueueLen());
+      //CLog::Log(LOGDEBUG, "%s: Got a picture (Call Time: %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn()/10, m_pInputThread->GetQueueLen());
       return VC_PICTURE;
     }
     // If we have taken too long, return...
@@ -633,7 +653,8 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (!pBuffer)
     return false;
  
-  pDvdVideoPicture->pts = DVD_NOPTS_VALUE;// pBuffer->GetPts() / 10.0;
+  //pDvdVideoPicture->pts = DVD_NOPTS_VALUE;// pBuffer->GetPts() / 10.0;
+  pDvdVideoPicture->pts = pBuffer->GetPts() / 10.0;
   pDvdVideoPicture->data[0] = pBuffer->GetPtr(); // Y plane
   pDvdVideoPicture->data[2] = pBuffer->GetPtr() + 2073600; // U plane
   pDvdVideoPicture->data[1] = pBuffer->GetPtr() + 2073600 + 518400; // V plane
