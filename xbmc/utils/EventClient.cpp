@@ -29,7 +29,6 @@
 #include "SingleLock.h"
 #include "ButtonTranslator.h"
 #include "GraphicContext.h"
-#include "Util.h"
 #include "Key.h"
 #include <map>
 #include <queue>

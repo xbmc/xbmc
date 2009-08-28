@@ -21,7 +21,6 @@
  
 #include "stdafx.h"
 #include "WinRenderer.h"
-#include "Application.h"
 #include "Util.h"
 #include "XBVideoConfig.h"
 #include "Settings.h"

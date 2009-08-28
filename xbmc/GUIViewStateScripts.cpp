@@ -26,7 +26,6 @@
 #include "ViewState.h"
 #include "Settings.h"
 #include "FileSystem/Directory.h"
-#include "Util.h"
 
 using namespace DIRECTORY;
 

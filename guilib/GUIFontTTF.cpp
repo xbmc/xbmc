@@ -25,7 +25,7 @@
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
 #include "FileSystem/SpecialProtocol.h"
-#include "Util.h"
+#include "MathUtils.h"
 
 // stuff for freetype
 #include "ft2build.h"

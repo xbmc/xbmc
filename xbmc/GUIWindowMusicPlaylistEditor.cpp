@@ -23,7 +23,7 @@
 #include "GUIWindowMusicPlaylistEditor.h"
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
-#include "Application.h"
+#include "Autorun.h"
 #include "GUIDialogFileBrowser.h"
 #include "FileSystem/PlaylistFileDirectory.h"
 #include "FileSystem/File.h"

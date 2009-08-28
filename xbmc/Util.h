@@ -254,9 +254,7 @@ public:
   static void BootToDash();
   
   static void InitRandomSeed();
-private:
-  
-  static HANDLE m_hCurrentCpuUsage;
+
 };
 
 

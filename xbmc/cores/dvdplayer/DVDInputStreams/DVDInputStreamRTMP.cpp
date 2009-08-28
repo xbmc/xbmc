@@ -256,13 +256,13 @@ __int64 CDVDInputStreamRTMP::Seek(__int64 offset, int whence)
 
 bool CDVDInputStreamRTMP::SeekTime(int iTimeInMsec)
 {
-  CLog::Log(LOGNOTICE,"RTMP Seek to %i requested",iTimeInMsec);
+  CLog::Log(LOGNOTICE, "RTMP Seek to %i requested", iTimeInMsec);
   if (m_rtmp->Seek((double)iTimeInMsec))
   {
-    return iTimeInMsec;
+    return true;
   }
   else
-    return -1;
+    return false;
 }
 
 __int64 CDVDInputStreamRTMP::GetLength()
