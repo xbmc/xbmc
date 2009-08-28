@@ -31,14 +31,6 @@
 namespace BCM
 {
 #if defined(WIN32)
-  //#define _BC_DTS_TYPES_H_
-  //typedef unsigned __int64  	U64;
-  //typedef unsigned int        U32;
-  //typedef int                 S32;
-  //typedef unsigned short      U16;
-  //typedef short               S16;
-  //typedef unsigned char       U8;
-  //typedef char                S8;
   typedef void		*HANDLE;
   #include "lib/crystalhd/include/windows/bc_drv_if.h"
   #include "lib/crystalhd/include/bc_dts_defs.h"
@@ -57,6 +49,9 @@ namespace BCM
   #endif //defined(WIN32)
 };
 
+extern char* g_DtsStatusText[];
+void PrintFormat(BCM::BC_PIC_INFO_BLOCK& pib);
+
 class CMPCDecodeBuffer
 {
 public:
@@ -65,37 +60,69 @@ public:
   virtual ~CMPCDecodeBuffer();
   size_t GetSize();
   unsigned char* GetPtr();
-  unsigned int GetId() {return m_Id;}
-  void SetPts(double pts);
-  double GetPts();
+  void SetPts(BCM::U64 pts);
+  BCM::U64 GetPts();
 protected:
   size_t m_Size;
   unsigned char* m_pBuffer;
   unsigned int m_Id;
-  static unsigned int m_NextId;
-  double m_Pts;
+  BCM::U64 m_Pts;
 };
 
 #include <deque>
 #include <vector>
 #include "Thread.h"
 
+template <class T>
+class CSyncPtrQueue
+{
+public:
+  CSyncPtrQueue()
+  {
+    InitializeCriticalSection(&m_Lock);
+  }
+  virtual ~CSyncPtrQueue()
+  {
+    DeleteCriticalSection(&m_Lock);
+  }
+  void Push(T* p)
+  {
+    EnterCriticalSection(&m_Lock);
+    m_Queue.push_back(p);
+    LeaveCriticalSection(&m_Lock);
+  }
+  T* Pop()
+  {
+    T* p = NULL;
+    EnterCriticalSection(&m_Lock);
+    if (m_Queue.size())
+    {
+      p = m_Queue.front();
+      m_Queue.pop_front();
+    }
+    LeaveCriticalSection(&m_Lock);
+    return p;
+  }
+  unsigned int Count(){return m_Queue.size();}
+protected:
+  std::deque<T*> m_Queue;
+  CRITICAL_SECTION m_Lock;
+};
 
 class CMPCInputThread : public CThread
 {
 public:
   CMPCInputThread(BCM::HANDLE device);
   virtual ~CMPCInputThread();
-  bool AddInput(unsigned char* pData, size_t size, double pts);
-  unsigned int GetInputCount();
+  bool AddInput(unsigned char* pData, size_t size, BCM::U64 pts);
+  unsigned int GetQueueLen();
 protected:
   CMPCDecodeBuffer* AllocBuffer(size_t size);
   void FreeBuffer(CMPCDecodeBuffer* pBuffer);
   CMPCDecodeBuffer* GetNext();
   virtual void Process();
 
-  CCriticalSection m_InputLock;
-  std::deque<CMPCDecodeBuffer*> m_InputList;
+  CSyncPtrQueue<CMPCDecodeBuffer> m_InputList;
   BCM::HANDLE m_Device;
 };
 
@@ -107,23 +134,22 @@ public:
   unsigned int GetReadyCount();
   CMPCDecodeBuffer* GetNext();
   void FreeBuffer(CMPCDecodeBuffer* pBuffer);
+  bool WaitForPicture(unsigned int timeout);
 protected:
   virtual void Process();
   CMPCDecodeBuffer* AllocBuffer();
   void AddFrame(CMPCDecodeBuffer* pBuffer);
   CMPCDecodeBuffer* GetDecoderOutput();
   
-  CCriticalSection m_FreeLock;
-  CCriticalSection m_ReadyLock;
-  
-  std::deque<CMPCDecodeBuffer*> m_FreeList;
-  std::deque<CMPCDecodeBuffer*> m_ReadyList;
-  unsigned int m_BufferCount;
-  
+  CSyncPtrQueue<CMPCDecodeBuffer> m_FreeList;
+  CSyncPtrQueue<CMPCDecodeBuffer> m_ReadyList;
+
+  BCM::HANDLE m_Device;
   unsigned int m_OutputHeight;
   unsigned int m_OutputWidth;
-  BCM::HANDLE m_Device;
   unsigned int m_OutputTimeout;
+  unsigned int m_BufferCount;
+  unsigned int m_PictureCount;
 };
 
 class CDVDVideoCodecCrystalHD : public CDVDVideoCodec
@@ -148,20 +174,16 @@ protected:
   BCM::U32 m_YSize;
   BCM::U32 m_UVSize;
   BCM::U8* m_pBuffer;
-  BCM::BC_DTS_PROC_OUT m_Output;
   bool m_DropPictures;
   unsigned int m_PicturesDecoded;
-  unsigned int m_LastDecoded;
   char* m_pFormatName;
 
-  BCM::BC_PIC_INFO_BLOCK m_CurrentFormat;
   unsigned int m_PacketsIn;
   unsigned int m_FramesOut;
-  double m_LastPts;
   
   CMPCOutputThread* m_pOutputThread;
   CMPCInputThread* m_pInputThread;
-  std::deque<CMPCDecodeBuffer*> m_BusyList;
+  CSyncPtrQueue<CMPCDecodeBuffer> m_BusyList;
 };
 
 #endif
