@@ -2227,10 +2227,12 @@ void CApplication::Render()
     bool lowfps = (m_dpmsIsActive
                    || (m_bScreenSave && (m_screenSaverMode == "Black")
                        && (screenSaverFadeAmount >= 100)));
+    // Whether externalplayer is playing and we're unfocused
+    bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
     unsigned int singleFrameTime = 10; // default limit 100 fps
 
     m_bPresentFrame = false;
-    if (g_graphicsContext.IsFullScreenVideo() && !IsPaused())
+    if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
 #ifdef HAS_SDL
       SDL_mutexP(m_frameMutex);
@@ -2254,7 +2256,7 @@ void CApplication::Render()
     else
     {
       // engage the frame limiter as needed
-      bool limitFrames = lowfps;
+      bool limitFrames = lowfps || extPlayerActive;
       if (g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_DISABLED ||
           g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_VIDEO)
         limitFrames = true; // not using vsync.
@@ -2263,7 +2265,12 @@ void CApplication::Render()
 
       if (limitFrames)
       {
-        if(lowfps)
+        if (extPlayerActive)
+        {
+          ResetScreenSaver();  // Prevent screensaver dimming the screen
+          singleFrameTime = 1000;  // 1 fps, high wakeup latency but v.low CPU usage
+        }
+        else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
 
         if (lastFrameTime + singleFrameTime > currentTime)

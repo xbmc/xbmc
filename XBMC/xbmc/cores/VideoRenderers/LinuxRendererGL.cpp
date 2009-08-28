@@ -30,7 +30,9 @@
 #include "Application.h"
 #include "MathUtils.h"
 #include "Settings.h"
-#include "guilib/FrameBufferObject.h"
+#include "FrameBufferObject.h"
+#include "VideoShaders/YUV2RGBShader.h"
+#include "VideoShaders/VideoFilterShader.h"
 #include "WindowingFactory.h"
 
 #ifdef HAVE_LIBVDPAU
@@ -1619,6 +1621,7 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
 {
+  YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
 
@@ -1652,13 +1655,14 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetVTexture(2);
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
   if(field == FIELD_ODD)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
+    m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
+    m_pYUVShader->SetField(0);
 
   m_pYUVShader->Enable();
 
@@ -1770,15 +1774,14 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_fbo.BeginRender();
   VerifyGLState();
 
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetVTexture(2);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetWidth(im.width);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetHeight(im.height);
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
+    m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
+    m_pYUVShader->SetField(0);
 
   VerifyGLState();
 
@@ -2239,12 +2242,14 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGL::SupportsBrightness()
 {
-  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+  return m_renderMethod == RENDER_GLSL
+      || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
-  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+  return m_renderMethod == RENDER_GLSL
+      || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsGamma()
