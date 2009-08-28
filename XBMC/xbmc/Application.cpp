@@ -591,7 +591,11 @@ HRESULT CApplication::Create(HWND hWnd)
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.
-  g_Windowing.InitWindowSystem();
+  if (!g_Windowing.InitWindowSystem())
+  {    
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
+    return E_FAIL;
+  }    
 
   // Create the Mouse and Keyboard devices
   g_Mouse.Initialize(&hWnd);
@@ -632,8 +636,17 @@ HRESULT CApplication::Create(HWND hWnd)
   
   int screenWidth = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
   int screenHeight = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
-  g_Windowing.CreateNewWindow("XBMC", screenWidth, screenHeight, false, OnEvent);
-  g_Windowing.InitRenderSystem();
+  if (!g_Windowing.CreateNewWindow("XBMC", screenWidth, screenHeight, false, OnEvent))
+  {
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
+    return E_FAIL;
+  }
+  
+  if (!g_Windowing.InitRenderSystem())
+  {    
+    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
+    return E_FAIL;
+  }
 
   // set GUI res and force the clear of the screen
   g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE, true);
