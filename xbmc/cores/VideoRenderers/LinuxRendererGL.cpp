@@ -2247,12 +2247,14 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 bool CLinuxRendererGL::SupportsBrightness()
 {
   return m_renderMethod == RENDER_GLSL
+      || m_renderMethod == RENDER_ARB
       || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
   return m_renderMethod == RENDER_GLSL
+      || m_renderMethod == RENDER_ARB
       || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
