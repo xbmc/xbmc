@@ -489,7 +489,7 @@ bool CDVDPlayer::OpenDemuxStream()
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
     return false;
   }
 
@@ -2065,15 +2065,15 @@ bool CDVDPlayer::SeekScene(bool bPlus)
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("D( %s ) P( %s )", m_State.demux_audio.c_str()
-                                       , m_dvdPlayerAudio.GetPlayerInfo().c_str());
+  strAudioInfo.Format("D(%s) P(%s)", m_State.demux_audio.c_str()
+                                   , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
-  strVideoInfo.Format("D( %s ) P( %s )", m_State.demux_video.c_str()
-                                       , m_dvdPlayerVideo.GetPlayerInfo().c_str());
+  strVideoInfo.Format("D(%s) P(%s)", m_State.demux_video.c_str()
+                                   , m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
