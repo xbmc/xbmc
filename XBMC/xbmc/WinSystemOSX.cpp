@@ -19,15 +19,17 @@
  *
  */
 
-#include <SDL/SDL_image.h>
 #include "stdafx.h"
+
+#ifdef __APPLE__
+
+#include <SDL/SDL_image.h>
 #include "WinSystemOSX.h"
 #include "SpecialProtocol.h"
 #include "CocoaInterface.h"
 #include "Settings.h"
 #include "Texture.h"
 
-#ifdef __APPLE__
 
 CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
 {

@@ -213,6 +213,8 @@ SRCS=Application.cpp \
      WinSystem.cpp \
      WinSystemOSX.cpp \
      WinSystemOSXGL.cpp \
+     WinSystemX11.cpp \
+     WinSystemX11GL.cpp \
      WinEventsSDL.cpp
 
 LIB=xbmc.a

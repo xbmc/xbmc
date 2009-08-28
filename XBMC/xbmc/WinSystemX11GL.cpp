@@ -20,61 +20,42 @@
  */
 #include "stdafx.h"
 
-#ifdef __APPLE__
+#ifdef HAS_GLX
 
-#include "WinSystemOSXGL.h"
-#include "CocoaInterface.h"
+#include "WinSystemX11GL.h"
 
-CWinSystemOSXGL g_Windowing;
+CWinSystemX11GL g_Windowing;
 
-CWinSystemOSXGL::CWinSystemOSXGL()
+CWinSystemX11GL::CWinSystemX11GL()
 {
 }
 
-CWinSystemOSXGL::~CWinSystemOSXGL()
+CWinSystemX11GL::~CWinSystemX11GL()
 {
 }
 
-bool CWinSystemOSXGL::PresentRenderImpl()
-{    
-  Cocoa_GL_SwapBuffers(m_glContext);
-    
+bool CWinSystemX11GL::PresentRenderImpl()
+{        
   return true;
 }
 
-void CWinSystemOSXGL::SetVSyncImpl(bool enable)
+void CWinSystemX11GL::SetVSyncImpl(bool enable)
 {
-  Cocoa_GL_EnableVSync(false);
-  
-  if (enable && m_iVSyncMode == 0)
-  {
-    Cocoa_GL_EnableVSync(true);
-    m_iVSyncMode = 10;
-  }
+
 }
 
-bool CWinSystemOSXGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
+bool CWinSystemX11GL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  CWinSystemOSX::ResizeWindow(newWidth, newHeight, newLeft, newTop);
+  CWinSystemX11::ResizeWindow(newWidth, newHeight, newLeft, newTop);
   CRenderSystemGL::ResetRenderSystem(newWidth, newHeight);  
-  
-  if (m_bVSync)
-  {
-    Cocoa_GL_EnableVSync(m_bVSync);
-  } 
-  
+
   return true;
 }
 
-bool CWinSystemOSXGL::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemX11GL::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
 {
-  CWinSystemOSX::SetFullScreen(fullScreen, screen, width, height, blankOtherDisplays, alwaysOnTop);
+  CWinSystemX11::SetFullScreen(fullScreen, screen, width, height, blankOtherDisplays, alwaysOnTop);
   CRenderSystemGL::ResetRenderSystem(width, height);  
-  
-  if (m_bVSync)
-  {
-    Cocoa_GL_EnableVSync(m_bVSync);
-  } 
   
   return true;
 }

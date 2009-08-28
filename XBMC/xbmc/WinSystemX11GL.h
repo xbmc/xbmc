@@ -1,5 +1,5 @@
-#ifndef WINDOW_SYSTEM_OSX_H
-#define WINDOW_SYSTEM_OSX_H
+#ifndef WINDOW_SYSTEM_X11_GL_H
+#define WINDOW_SYSTEM_X11_GL_H
 
 #pragma once
 
@@ -23,28 +23,20 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "WinSystem.h"
-#include <SDL/SDL_video.h>
+#include "WinSystemX11.h"
+#include "RenderSystemGL.h"
 
-class CWinSystemOSX : public CWinSystemBase
+class CWinSystemX11GL : public CWinSystemX11, public CRenderSystemGL
 {
 public:
-  CWinSystemOSX();
-  virtual ~CWinSystemOSX();
-
-  // CWinSystemBase
-  virtual bool InitWindowSystem();
-  virtual bool DestroyWindowSystem();
-  virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
-  virtual bool DestroyWindow();
+  CWinSystemX11GL();
+  virtual ~CWinSystemX11GL();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop);
-  virtual void UpdateResolutions();
 
-protected:  
-  void* m_glContext;
-  SDL_Surface* m_SDLSurface;
+protected:
+  virtual bool PresentRenderImpl();
+  virtual void SetVSyncImpl(bool enable);  
 };
 
 #endif // WINDOW_SYSTEM_H
-

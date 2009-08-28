@@ -1,5 +1,5 @@
-#ifndef WINDOW_SYSTEM_OSX_H
-#define WINDOW_SYSTEM_OSX_H
+#ifndef WINDOW_SYSTEM_X11_H
+#define WINDOW_SYSTEM_X11_H
 
 #pragma once
 
@@ -24,13 +24,12 @@
  *
  */
 #include "WinSystem.h"
-#include <SDL/SDL_video.h>
 
-class CWinSystemOSX : public CWinSystemBase
+class CWinSystemX11 : public CWinSystemBase
 {
 public:
-  CWinSystemOSX();
-  virtual ~CWinSystemOSX();
+  CWinSystemX11();
+  virtual ~CWinSystemX11();
 
   // CWinSystemBase
   virtual bool InitWindowSystem();
@@ -43,7 +42,6 @@ public:
 
 protected:  
   void* m_glContext;
-  SDL_Surface* m_SDLSurface;
 };
 
 #endif // WINDOW_SYSTEM_H

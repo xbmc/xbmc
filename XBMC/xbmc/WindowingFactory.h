@@ -24,6 +24,8 @@
 
 #pragma once
 
+#include "stdafx.h"
+
 #if defined(_WIN32) && defined(HAS_GL)
 #include "WinSystemWin32GL.h"
 extern CWinSystemWin32GL g_Windowing;
@@ -34,10 +36,10 @@ extern CWinSystemWin32GL g_Windowing;
 extern CWinSystemOSXGL g_Windowing;
 #endif
 
-
-
-
-
+#if defined(HAS_GLX)
+#include "WinSystemX11GL.h"
+extern CWinSystemX11GL g_Windowing;
+#endif
 
 #endif // WINDOWING_FACTORY_H
 
