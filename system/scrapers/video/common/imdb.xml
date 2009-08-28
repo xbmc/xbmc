@@ -1,0 +1,74 @@
+<scraperfunctions>
+	<GetIMDBThumbs dest="5">
+		<RegExp input="$$6" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+                        <RegExp input="$$1" output="\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2" dest="4">
+	                        <expression noclean="1,2">&lt;a name=&quot;poster&quot;.*?src=&quot;(.*?)_S.*?(.jpg)&quot;.*?&lt;/a&gt;</expression>
+                        </RegExp>
+                        <RegExp input="$$4" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5">
+	                        <expression noclean="1">(.*?_SX[0-9]+_SY[0-9]+_.jpg)</expression>
+                        </RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetIMDBThumbs>
+	<GetIMDBTrailer dest="5">
+                <RegExp input="$$2" output="&lt;details&gt;&lt;trailer urlencoded=&quot;yes&quot;&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+                        <RegExp input="$$1" output="\1" dest="2">
+                                <expression noclean="1">&quot;file&quot;[^&quot;]*&quot;([^&quot;]*)</expression>
+                        </RegExp>
+                        <RegExp input="$$1" output="$$2/\1" dest="2">
+                                <expression noclean="1">&quot;id&quot;[^&quot;]*&quot;([^&quot;]*)</expression>
+                        </RegExp>
+                        <expression noclean="1"></expression>
+                </RegExp>
+        </GetIMDBTrailer>
+	<GetIMDBWriters dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
+				<expression noclean="1">&gt;Writer.*?:&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
+				<expression noclean="1">Writing credits(.*?)name=&quot;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
+				<expression repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetIMDBWriters>
+	<GetIMDBCast dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression noclean="1">&lt;table class=&quot;cast&quot;&gt;(.*?)&lt;/table&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
+				<expression clear="yes" repeat="yes" noclean="1,2" trim="3,4">&lt;img src=&quot;(?:([^&quot;]*\.)[^&quot;]*(\.jpg))?[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*[^&gt;]*&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;(.*?)&lt;/td&gt;</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
+				<expression clear="yes" repeat="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetIMDBCast>
+	<GetIMDBDirectors dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
+				<expression clear="yes" noclean="1">&gt;Director.*?&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
+			</RegExp>
+			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
+				<expression clear="yes" noclean="1">Directed by(.*?)name=&quot;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
+				<expression clear="yes" repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetIMDBDirectors>
+	<GetIMDBPlot dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
+				<expression clear="yes">&lt;p class="plotpar"&gt;\n([^\n]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetIMDBPlot>
+</scraperfunctions>

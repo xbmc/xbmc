@@ -58,8 +58,7 @@ public:
   CIMDB();
   virtual ~CIMDB();
 
-  bool LoadDLL();
-  bool InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
+  int InternalFindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, bool& sortMovieList, const CStdString& strFunction="GetSearchResults", CScraperUrl* pUrl=NULL);
   bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
   bool InternalGetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details);
   bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
@@ -68,7 +67,8 @@ public:
   void GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& strURL);
 
   // threaded lookup functions
-  bool FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
+  // returns -1 if we had an error
+  int FindMovie(const CStdString& strMovie, IMDB_MOVIELIST& movielist, CGUIDialogProgress *pProgress = NULL);
   bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeList(const CScraperUrl& url, IMDB_EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
@@ -99,7 +99,7 @@ protected:
   CScraperUrl       m_url;
   IMDB_EPISODELIST  m_episode;
   LOOKUP_STATE      m_state;
-  bool              m_found;
+  int               m_found;
   bool              m_retry;
   SScraperInfo      m_info;
 };

@@ -28,7 +28,6 @@ class CDVDOverlaySpu : public CDVDOverlay
 public:
   CDVDOverlaySpu() : CDVDOverlay(DVDOVERLAY_TYPE_SPU)
   {
-    pData = NULL;
     pTFData = 0;
     pBFData = 0;
     x = 0;
@@ -44,14 +43,13 @@ public:
     bHasColor = false;
     bHasAlpha = false;
   
+    memset(result, 0, sizeof(result));
     memset(alpha, 0, sizeof(alpha));
     memset(color, 0, sizeof(color));
-    memset(stats, 0, sizeof(stats));
     memset(highlight_alpha, 0, sizeof(highlight_alpha));
     memset(highlight_color, 0, sizeof(highlight_color));
   }
-
-  BYTE* pData; // rle data
+  BYTE result[2*65536 + 20]; // rle data
   int pTFData; // pointer to top field picture data (needs rle parsing)
   int pBFData; // pointer to bottom field picture data (needs rle parsing)
   int x;
@@ -59,8 +57,6 @@ public:
   int width;
   int height;
 
-  int stats[4]; // nr of pixels for each color found in the overlay.
-  
   // the four contrasts, [0] = background
   int alpha[4];
   bool bHasAlpha;
@@ -80,13 +76,4 @@ public:
   // should be used on the highlighted areas
   int highlight_color[4][3];
   int highlight_alpha[4];
-
-  bool CanDisplayWithAlphas(int a[4])
-  {
-    return(
-      a[0] * stats[0] > 0 ||
-      a[1] * stats[1] > 0 ||
-      a[2] * stats[2] > 0 ||
-      a[3] * stats[3] > 0);
-  }
 };

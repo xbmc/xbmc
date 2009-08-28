@@ -1564,7 +1564,7 @@
   <string id="20044">Start fresh</string>
   <string id="20045">Enter master mode</string>
   <string id="20046">Leave master mode</string>
-  <string id="20047">Create profile '%s' ?</string>
+  <string id="20047">Create profile '%s'?</string>
   <string id="20048">Start with fresh settings</string>
   <string id="20049">Best available</string>
   <string id="20050">Auto-switch between 16x9 and 4x3</string>
@@ -2063,6 +2063,7 @@
   <string id="22018">Live channels</string>
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
+  <string id="22021">Allowed error in aspect ratio (%)</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
@@ -2153,4 +2154,11 @@
   <string id="33069">Backgrounds</string>
   <string id="33070">Custom background</string>
   <string id="33071">Custom backgrounds</string>
+  <string id="33072">View Readme</string>
+  <string id="33073">View Changelog</string>
+  <string id="33074">This version of %s requires an</string>
+  <string id="33075">XBMC revision of %s or greater to run.</string>
+  <string id="33076">Please update XBMC.</string>
+  <string id="33077">No data found!</string>
+  <string id="33078">Next page</string>
 </strings>

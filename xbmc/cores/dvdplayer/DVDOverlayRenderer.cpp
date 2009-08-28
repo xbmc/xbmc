@@ -204,7 +204,7 @@ void CDVDOverlayRenderer::Render_SPU_YUV(DVDPictureRenderer* pPicture, CDVDOverl
   CDVDOverlaySpu* pOverlay = (CDVDOverlaySpu*)pOverlaySpu;
   
   unsigned __int8*  p_destptr = NULL;
-  unsigned __int16* p_source = (unsigned __int16*)pOverlay->pData;
+  unsigned __int16* p_source = (unsigned __int16*)pOverlay->result;
   unsigned __int8*  p_dest[3];
 
   int i_x, i_y;

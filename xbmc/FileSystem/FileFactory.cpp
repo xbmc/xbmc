@@ -90,7 +90,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "ftp"
          ||  strProtocol == "ftpx"
          ||  strProtocol == "ftps") return new CFileCurl();
-    else if (strProtocol == "upnp") return new CFileCurl();
     else if (strProtocol == "mms") return new CFileMMS();
     else if (strProtocol == "shout") return new CFileShoutcast();
     else if (strProtocol == "lastfm") return new CFileLastFM();

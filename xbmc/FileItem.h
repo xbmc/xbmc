@@ -131,7 +131,7 @@ public:
   bool IsMythTV() const;
   bool IsHDHomeRun() const;
   bool IsVTP() const;
-  bool IsTV() const;
+  bool IsLiveTV() const;
 
   void RemoveExtension();
   void CleanString();
@@ -209,6 +209,8 @@ public:
   CStdString GetTBNFile() const;
   // Gets the folder image associated with this item (defaults to folder.jpg)
   CStdString GetFolderThumb(const CStdString &folderJPG = "folder.jpg") const;
+  // Gets the correct movie title
+  CStdString GetMovieName(bool bUseFolderNames = false) const;
 
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb() const;

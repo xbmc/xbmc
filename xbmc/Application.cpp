@@ -4233,6 +4233,10 @@ void CApplication::SaveFileState()
 
 void CApplication::UpdateFileState()
 {
+  // No resume for livetv
+  if (m_progressTrackingItem->IsLiveTV())
+    return;
+
   // Did the file change?
   if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
   {

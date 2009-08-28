@@ -44,7 +44,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 31
+#define VIDEO_DATABASE_VERSION 32
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -3362,8 +3362,8 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec(showview.c_str());
       // and fill the new playcount fields
       CStdString sql;
-      sql = FormatSQL("update files set playCount = (select movie.c%02d from movie where movie.idFile = files.idFile) "
-                      "where exists (select movie.c%02d from movie where movie.idFile = files.idFile)", VIDEODB_ID_PLAYCOUNT, VIDEODB_ID_PLAYCOUNT);
+      sql = FormatSQL("update files set playCount = (select movie.c10 from movie where movie.idFile = files.idFile) " // NOTE: c10 was the old playcount field which is now reused
+                      "where exists (select movie.c10 from movie where movie.idFile = files.idFile)");
       m_pDS->exec(sql.c_str());
       sql = FormatSQL("update files set playCount = (select episode.c%02d from episode where episode.idFile = files.idFile) "
         "where exists (select episode.c%02d from episode where episode.idFile = files.idFile)", VIDEODB_ID_EPISODE_PLAYCOUNT, VIDEODB_ID_EPISODE_PLAYCOUNT);
@@ -3372,7 +3372,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         "where exists (select musicvideo.c%02d from musicvideo where musicvideo.idFile = files.idFile)", VIDEODB_ID_MUSICVIDEO_PLAYCOUNT, VIDEODB_ID_MUSICVIDEO_PLAYCOUNT);
       m_pDS->exec(sql.c_str());
       // and clear out the old fields
-      sql = FormatSQL("update movie set c%02d=NULL", VIDEODB_ID_PLAYCOUNT);
+      sql = FormatSQL("update movie set c10=NULL"); // NOTE: c10 was the old playcount field which has now been reused
       m_pDS->exec(sql.c_str());
       sql = FormatSQL("update episode set c%02d=NULL", VIDEODB_ID_EPISODE_PLAYCOUNT);
       m_pDS->exec(sql.c_str());
@@ -3464,6 +3464,12 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
         }
       }
     }
+    if (iVersion < 32)
+    {
+      CStdString sql;
+      sql = FormatSQL("UPDATE movie SET c%02d=NULL", VIDEODB_ID_SORTTITLE);
+      m_pDS->exec(sql.c_str());
+  }
   }
   catch (...)
   {
@@ -6570,6 +6576,8 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
           if (CFile::Exists(item.GetCachedFanart()) && (overwrite || !CFile::Exists(strFanart)))
             if (!CFile::Cache(item.GetCachedFanart(),strFanart))
               CLog::Log(LOGERROR, "%s: Movie fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), strFanart.c_str());
+
+          ExportActorThumbs(movie);
         }
       }
 
@@ -6736,6 +6744,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (!CFile::Cache(item.GetCachedFanart(),item.GetFolderThumb("fanart.jpg")))
               CLog::Log(LOGERROR, "%s: TVShow fanart export failed! ('%s' -> '%s')", __FUNCTION__, item.GetCachedFanart().c_str(), item.GetFolderThumb("fanart.jpg").c_str());
 
+          ExportActorThumbs(tvshow);
 
           // now get all available seasons from this show
           sql = FormatSQL("select distinct(c%02d) from episodeview where idShow=%i", VIDEODB_ID_EPISODE_SEASON, tvshow.m_iDbId);
@@ -6780,7 +6789,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             else if (iSeason == 0)
               strSeasonThumb = "season-specials.tbn";
             else
-              strSeasonThumb.Format("season0%i.tbn",iSeason);
+              strSeasonThumb.Format("season%2i.tbn",iSeason);
             CUtil::GetParentPath(item.GetTBNFile(), strParent);
             CUtil::AddFileToFolder(strParent, strSeasonThumb, strDest);
 
@@ -6850,6 +6859,8 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
             if (!cachedThumb.IsEmpty() && (overwrite || !CFile::Exists(item.GetTBNFile())))
               if (!CFile::Cache(cachedThumb, item.GetTBNFile()))
                 CLog::Log(LOGERROR, "%s: Episode thumb export failed! ('%s' -> '%s')", __FUNCTION__, cachedThumb.c_str(), item.GetTBNFile().c_str());
+
+            ExportActorThumbs(episode);
           }
         }
         pDS->next();
@@ -6898,6 +6909,27 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
 
   if (progress)
     progress->Close();
+}
+
+void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag)
+{
+  CStdString strDir = CUtil::AddFileToFolder(tag.m_strPath,".actors");
+  for (CVideoInfoTag::iCast iter = tag.m_cast.begin();iter != tag.m_cast.end();++iter)
+  {
+    CFileItem item;
+    item.SetLabel(iter->strName);
+    CStdString strThumb = item.GetCachedActorThumb();
+    if (CFile::Exists(strThumb))
+    {
+      CDirectory::Create(strDir);
+      CStdString thumbFile = iter->strName;
+      thumbFile.Replace(" ","_");
+      thumbFile += ".tbn";
+      if (!CFile::Cache(strThumb,CUtil::AddFileToFolder(strDir,thumbFile)))
+        CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')", 
+                  __FUNCTION__, strThumb.c_str(), CUtil::AddFileToFolder(strDir,thumbFile).c_str());
+    }
+  }
 }
 
 CStdString CVideoDatabase::GetCachedThumb(const CFileItem& item) const

@@ -651,6 +651,8 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
+  RemoveExtension(strTitleAndYear);
+
   for (unsigned int i = 0; i < regexps.size(); i++)
   {
     if (!reTags.RegComp(regexps[i].c_str()))
@@ -686,7 +688,6 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
     }
   }
 
-  RemoveExtension(strTitleAndYear);
   strTitle = strTitleAndYear.Trim();
 
   // append year
@@ -821,34 +822,6 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   url.SetFileName(strFile);
   url.GetURL(strParent);
   return true;
-}
-
-const CStdString CUtil::GetMovieName(CFileItem* pItem, bool bUseFolderNames /* = false */)
-{
-  CStdString movieName;
-  CStdString strArchivePath;
-  movieName = pItem->m_strPath;
-
-  if (pItem->IsMultiPath())
-    movieName = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
-
-  if (IsStack(movieName))
-    movieName = CStackDirectory::GetStackedTitlePath(movieName);
-
-  if ((!pItem->m_bIsFolder || pItem->IsDVDFile(false, true) || IsInArchive(pItem->m_strPath)) && bUseFolderNames)
-  {
-    GetParentPath(pItem->m_strPath, movieName);
-    if (IsInArchive(pItem->m_strPath) || movieName.Find( "VIDEO_TS" )  != -1)
-    {
-      GetParentPath(movieName, strArchivePath);
-      movieName = strArchivePath;
-    }
-  }
-
-  CUtil::RemoveSlashAtEnd(movieName);
-  movieName = CUtil::GetFileName(movieName);
-
-  return movieName;
 }
 
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
@@ -1950,13 +1923,17 @@ bool CUtil::IsHTSP(const CStdString& strFile)
   return strFile.Left(5).Equals("htsp:");
 }
 
-bool CUtil::IsTV(const CStdString& strFile)
+bool CUtil::IsLiveTV(const CStdString& strFile)
 {
-  return IsMythTV(strFile)
-      || IsTuxBox(strFile)
-      || IsVTP(strFile)
-      || IsHDHomeRun(strFile)
-      || IsHTSP(strFile);
+  CURL url(strFile);
+
+  if (IsTuxBox(strFile) || IsVTP(strFile) || IsHDHomeRun(strFile) || IsHTSP(strFile))
+    return true;
+
+  if (IsMythTV(strFile) && url.GetFileName().Left(9) == "channels/")
+    return true;
+
+  return false;
 }
 
 bool CUtil::ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps)
@@ -2381,14 +2358,6 @@ bool CUtil::ShortenFileName(CStdString& strFileNameAndPath)
   return false;
 }
 
-void CUtil::ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl )
-{
-  strOutUrl = strProtocol;
-  CStdString temp = strPath;
-  temp.Replace( '\\', '/' );
-  temp.Delete( 0, 3 );
-  strOutUrl += temp;
-}
 
 void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 {
@@ -2523,17 +2492,12 @@ void CUtil::ClearSubtitles()
           CStdString strFile;
           strFile.Format("special://temp/%s", wfd.cFileName);
           if (strFile.Find("subtitle") >= 0 )
-          {
-            if (strFile.Find(".keep") != (signed int) strFile.size()-5) // do not remove files ending with .keep
               CFile::Delete(strFile);
-          }
           else if (strFile.Find("vobsub_queue") >= 0 )
-          {
             CFile::Delete(strFile);
           }
         }
       }
-    }
     while (FindNextFile((HANDLE)hFind, &wfd));
   }
 }
@@ -2607,6 +2571,15 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
 
   // checking if any of the common subdirs exist ..
   CLog::Log(LOGDEBUG,"%s: Checking for common subirs...", __FUNCTION__);
+
+  vector<CStdString> token;
+  Tokenize(strPath,token,"/\\");
+  if (token[token.size()-1].size() == 3 && token[token.size()-1].Mid(0,2).Equals("cd"))
+  {
+    CStdString strPath2;
+    GetParentPath(strPath,strPath2);
+    strLookInPaths.push_back(strPath2);
+  } 
   int iSize = strLookInPaths.size();
   for (int i=0;i<iSize;++i)
   {
@@ -2721,18 +2694,6 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     }
   }
   CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - nextTimer));
-
-  // rename any keep subtitles
-  CFileItemList items;
-  CDirectory::GetDirectory("special://temp/",items,".keep");
-  for (int i=0;i<items.Size();++i)
-  {
-    if (!items[i]->m_bIsFolder)
-    {
-      CFile::Delete(items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
-      CFile::Rename(items[i]->m_strPath,items[i]->m_strPath.Left(items[i]->m_strPath.size()-5));
-    }
-  }
 
   // construct string of added exts?
   for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
@@ -3475,12 +3436,6 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
   GetDirectory(strPathAndFile,strPath);
   CStdString strFileName = GetFileName(strPathAndFile);
   return strPath + MakeLegalFileName(strFileName, LegalType);
-}
-
-void CUtil::AddDirectorySeperator(CStdString& strPath)
-{
-  CURL url(strPath);
-  strPath += url.GetDirectorySeparator();
 }
 
 bool CUtil::IsUsingTTFSubtitles()

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-05-22" name="NAVER (Korean)" content="movies" thumb="naver.png" language="ko">
+<scraper framework="1.1" date="2009-08-08" name="NAVER (Korean)" content="movies" thumb="naver.png" language="ko">
+	<include>common/tmdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;주연배우/각본/제작사에 대한 상세정보&quot; type=&quot;bool&quot; id=&quot;EnableDetail&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -106,7 +107,7 @@
 				<expression noclean="1">&lt;a href=&quot;/movie/bi/mi/photo.nhn\?code=([0-9]*)&quot;</expression>
 			</RegExp>
 			<!-- FanArts !-->
-			<RegExp conditional="EnableFanArt" input="$$5" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.search?title=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="8+">
+			<RegExp conditional="EnableFanArt" input="$$5" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.search?title=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="8+">
 				<RegExp input="$$1" output="\1" dest="7">
 					<expression noclean="1" clear="yes">&quot;&amp;sub_title=&quot;\+encodeURIComponent\(&quot;([^\,]*)\, ([0-9]*)&quot;\)</expression>
 				</RegExp>
@@ -123,7 +124,7 @@
 		</RegExp>
     </GetDetails>
 	<GetNAVERPhoto dest="8">
-		<RegExp input="$$9" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="8">
+		<RegExp input="$$9" output="&lt;details&gt;\1&lt;/details&gt;" dest="8">
             <RegExp input="$$1" output="\1" dest="7">
                 <expression noclean="1">box_story_1 mt_10&quot;&gt;(.*)btn_dbreport\.gif</expression>
             </RegExp>
@@ -164,19 +165,6 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetNAVERDetail>
-	<GetTMDBId dest="8">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="8">
-			<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-		</RegExp>
-	</GetTMDBId>
-	<GetTMDBFanart clearbuffers="no" dest="8">
-		<RegExp input="$$7" output="\1" dest="10+">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;http://themoviedb.org/image/backdrops/\1/\2_poster.\3&quot;&gt;http://themoviedb.org/image/backdrops/\1/\2.\3&lt;/thumb&gt;" dest="7">
-                                <expression repeat="yes" clear="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
-			</RegExp>
-			<expression noclean="1">(.+)</expression>
-		</RegExp>
-	</GetTMDBFanart>
 	<GetNAVERFanart clearbuffers="no" dest="8">
 		<RegExp input="$$10$$11" output="&lt;details&gt;&lt;fanart&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="8">
             <RegExp input="$$1" output="\1" dest="7">

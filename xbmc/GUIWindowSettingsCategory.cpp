@@ -1948,6 +1948,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     const CStdString& strRegion=pControl->GetCurrentLabel();
     g_langInfo.SetCurrentRegion(strRegion);
     g_guiSettings.SetString("locale.country", strRegion);
+    g_weatherManager.ResetTimer(); // need to reset our weather, as temperatures need re-translating.
   }
 #ifdef HAS_TIME_SERVER
   else if (strSetting.Equals("locale.timeserver") || strSetting.Equals("locale.timeserveraddress"))

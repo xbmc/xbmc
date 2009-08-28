@@ -212,10 +212,16 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(10504); // Top 100 Songs
       break;
     case NODE_TYPE_YEAR:
+    case NODE_TYPE_YEAR_ALBUM:
+    case NODE_TYPE_YEAR_SONG:
       strLabel = g_localizeStrings.Get(652);  // Years
       break;
     case NODE_TYPE_ALBUM_COMPILATIONS:
+    case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
       strLabel = g_localizeStrings.Get(521);
+      break;
+    case NODE_TYPE_OVERVIEW:
+      strLabel = "";
       break;
     default:
       CLog::Log(LOGWARNING, "%s - Unknown nodetype requested %d", __FUNCTION__, pNode->GetChildType());
@@ -271,6 +277,7 @@ CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_TOP100:
       return "DefaultMusicTop100.png";
   case NODE_TYPE_ALBUM:
+  case NODE_TYPE_YEAR_ALBUM:
     return "DefaultMusicAlbums.png";
   case NODE_TYPE_ALBUM_RECENTLY_ADDED:
   case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
@@ -278,7 +285,9 @@ CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     return "DefaultMusicRecentlyPlayed.png";
-  case NODE_TYPE_SONG: // Director
+  case NODE_TYPE_SONG:
+  case NODE_TYPE_YEAR_SONG:
+  case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     return "DefaultMusicSongs.png";
   case NODE_TYPE_ALBUM_TOP100:
   case NODE_TYPE_ALBUM_TOP100_SONGS:

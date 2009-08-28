@@ -797,9 +797,9 @@ bool CFileItem::IsVTP() const
   return CUtil::IsVTP(m_strPath);
 }
 
-bool CFileItem::IsTV() const
+bool CFileItem::IsLiveTV() const
 {
-  return CUtil::IsTV(m_strPath);
+  return CUtil::IsLiveTV(m_strPath);
 }
 
 bool CFileItem::IsHD() const
@@ -1006,7 +1006,7 @@ void CFileItem::RemoveExtension()
 
 void CFileItem::CleanString()
 {
-  if (IsTV())
+  if (IsLiveTV())
     return;
 
   bool bIsFolder = m_bIsFolder;
@@ -1530,6 +1530,12 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_VIDEO_TITLE:
     FillSortFields(SSortFileItem::ByMovieTitle);
     break;
+  case SORT_METHOD_VIDEO_SORT_TITLE:
+    FillSortFields(SSortFileItem::ByMovieSortTitle);
+    break;
+  case SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE:
+    FillSortFields(SSortFileItem::ByMovieSortTitleNoThe);
+    break;
   case SORT_METHOD_YEAR:
     FillSortFields(SSortFileItem::ByYear);
     break;
@@ -1908,7 +1914,7 @@ void CFileItemList::Stack()
   CSingleLock lock(m_lock);
 
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsTV())
+  if (IsVirtualDirectoryRoot() || IsLiveTV())
     return;
 
   // items needs to be sorted for stuff below to work properly
@@ -2437,7 +2443,7 @@ CStdString CFileItem::GetUserVideoThumb() const
   || IsInternetStream()
   || CUtil::IsUPnP(m_strPath)
   || IsParentFolder()
-  || IsTV())
+  || IsLiveTV())
     return "";
 
 
@@ -2498,6 +2504,36 @@ CStdString CFileItem::GetFolderThumb(const CStdString &folderJPG /* = "folder.jp
 
   CUtil::AddFileToFolder(strFolder, folderJPG, folderThumb);
   return folderThumb;
+}
+
+CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
+{
+  if (IsLabelPreformated())
+    return GetLabel();
+  
+  CStdString strMovieName = m_strPath;
+
+  if (IsMultiPath())
+    strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
+
+  if (CUtil::IsStack(strMovieName))
+    strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
+
+  if ((!m_bIsFolder || IsDVDFile(false, true) || CUtil::IsInArchive(m_strPath)) && bUseFolderNames)
+  {
+    CUtil::GetParentPath(m_strPath, strMovieName);
+    if (CUtil::IsInArchive(m_strPath) || strMovieName.Find( "VIDEO_TS" ) != -1)
+    {
+      CStdString strArchivePath;
+      CUtil::GetParentPath(strMovieName, strArchivePath);
+      strMovieName = strArchivePath;
+    }
+  }
+
+  CUtil::RemoveSlashAtEnd(strMovieName);
+  strMovieName = CUtil::GetFileName(strMovieName);
+
+  return strMovieName;
 }
 
 void CFileItem::SetVideoThumb()
@@ -2571,7 +2607,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
   // no local fanart available for these
   if (IsInternetStream()
   || CUtil::IsUPnP(strFile)
-  || IsTV() 
+  || IsLiveTV() 
   || IsPlugin() 
   || CUtil::IsFTP(strFile))
     return "";
@@ -3034,7 +3070,7 @@ CStdString CFileItem::FindTrailer() const
   }
 
   // no local trailer available for these
-  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsTV() || IsPlugin())
+  if (IsInternetStream() || CUtil::IsUPnP(strFile) || IsLiveTV() || IsPlugin())
     return strTrailer;
 
   CStdString strDir;

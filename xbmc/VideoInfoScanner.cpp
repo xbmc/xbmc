@@ -369,15 +369,7 @@ namespace VIDEO
 
   bool CVideoInfoScanner::RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh, CScraperUrl* pURL, CGUIDialogProgress* pDlgProgress)
   {
-    CStdString strMovieName;
     m_IMDB.SetScraperInfo(info);
-
-    if (bDirNames && info.strContent.Equals("movies"))
-    {
-      strMovieName = items.m_strPath;
-      CUtil::RemoveSlashAtEnd(strMovieName);
-      strMovieName = CUtil::GetFileName(strMovieName);
-    }
 
     if (pDlgProgress)
     {
@@ -512,32 +504,12 @@ namespace VIDEO
           }
           continue;
         }
-        else
-        {
-          CUtil::RemoveSlashAtEnd(pItem->m_strPath);
-          strMovieName = CUtil::GetFileName(pItem->m_strPath);
-          CUtil::AddSlashAtEnd(pItem->m_strPath);
         }
-      }
 
       if (!pItem->m_bIsFolder || info2.strContent.Equals("tvshows"))
       {
         if ((pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList()) || info2.strContent.Equals("tvshows") )
         {
-          if (!bDirNames && !info2.strContent.Equals("tvshows"))
-          {
-            if (pItem->IsLabelPreformated())
-              strMovieName = pItem->GetLabel();
-            else
-            {
-              if (pItem->IsStack())
-                strMovieName = pItem->GetLabel();
-              else
-                strMovieName = CUtil::GetFileName(pItem->m_strPath);
-              CUtil::RemoveExtension(strMovieName);
-            }
-          }
-
           if (pDlgProgress)
           {
             int iString=198;
@@ -600,18 +572,10 @@ namespace VIDEO
             continue;
           }
           if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
-          {
-            if (m_pObserver)
-            {
-              CStdString strPath = pItem->m_strPath;
-              if (pItem->IsStack())
-              {
-                CStackDirectory dir;
-                strPath = dir.GetStackedTitlePath(pItem->m_strPath);
-              }
-            }
             pURL = &scrUrl;
-          }
+
+          // Get the correct movie title 
+          CStdString strMovieName = pItem->GetMovieName(bDirNames);
 
           IMDB_MOVIELIST movielist;
           int returncode=0;
@@ -1058,8 +1022,6 @@ namespace VIDEO
       }
     }
 
-    if (bApplyToDir && !strThumb.IsEmpty())
-    {
       CStdString strCheck=pItem->m_strPath;
       CStdString strDirectory;
       if (pItem->IsStack())
@@ -1078,11 +1040,11 @@ namespace VIDEO
         if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
           CUtil::GetDirectory(strCheck,strDirectory);
       }
+    if (bApplyToDir && !strThumb.IsEmpty())
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
-    }
 
     if (g_guiSettings.GetBool("videolibrary.actorthumbs"))
-      FetchActorThumbs(movieDetails.m_cast);
+      FetchActorThumbs(movieDetails.m_cast,strDirectory);
     m_database.Close();
     return lResult;
   }
@@ -1409,16 +1371,28 @@ namespace VIDEO
     }
   }
 
-  void CVideoInfoScanner::FetchActorThumbs(const vector<SActorInfo>& actors)
+  void CVideoInfoScanner::FetchActorThumbs(const vector<SActorInfo>& actors, const CStdString& strPath)
   {
     for (unsigned int i=0;i<actors.size();++i)
     {
       CFileItem item;
       item.SetLabel(actors[i].strName);
       CStdString strThumb = item.GetCachedActorThumb();
-      if (!CFile::Exists(strThumb) && !actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
+      if (!CFile::Exists(strThumb))
+      {
+        CStdString thumbFile = actors[i].strName;
+        thumbFile.Replace(" ","_");
+        thumbFile += ".tbn";
+        CStdString strLocal = CUtil::AddFileToFolder(CUtil::AddFileToFolder(strPath,".actors"),thumbFile);
+        if (CFile::Exists(strLocal))
+        {
+          CPicture pic;
+          pic.DoCreateThumbnail(strLocal,strThumb);
+        }
+        else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
         CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
     }
+  }
   }
 
   CNfoFile::NFOResult CVideoInfoScanner::CheckForNFOFile(CFileItem* pItem, bool bGrabAny, SScraperInfo& info, CScraperUrl& scrUrl)

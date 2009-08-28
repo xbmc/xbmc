@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
-<scraper framework="1.1" date="2009-07-31" content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif" language="es">
+<scraper framework="1.1" date="2009-08-10" content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif" language="es">
+	<include>common/tmdb.xml</include>
+	<include>common/movieposterdb.xml</include>
+	<include>common/impa.xml</include>
+	<include>common/imdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Buscar fotos de actores en IMDB (muy lento)&quot; type=&quot;bool&quot; id=&quot;SearchCastThumb&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -251,7 +255,7 @@
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">/title/tt([0-9]*)</expression>
 			</RegExp>
-                        <RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt$$6&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5">
+                        <RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt$$6&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5">
                                 <expression></expression>
                         </RegExp>
 			<RegExp conditional="EnableIMPAwards" output="&lt;url function=&quot;GetIMPALink&quot;cache=&quot;$$2.html&quot;&gt;http://www.imdb.com/title/tt$$6/posters&lt;/url&gt;" dest="5+">
@@ -266,69 +270,6 @@
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GoogleToIMDB>
-
-	<!-- Fanart -->
-        <GetTMDBId dest="5">
-                <RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
-                        <expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-                </RegExp>
-        </GetTMDBId>
-        <GetTMDBFanart dest="5">
-                <RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="2">
-                                <expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
-                        </RegExp>
-                        <expression noclean="1">(.+)</expression>
-                </RegExp>
-        </GetTMDBFanart>
-
-	<GetIMPALink dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://\1impawards.com/\2.html&lt;/url&gt;&lt;/details&gt;" dest="5+">
-			<expression noclean="1,2">http://([^&quot;]*)impawards.com/([^\.]*)\.html</expression>
-		</RegExp>
-	</GetIMPALink>
-
-	<GetIMPAPosters dest="5">
-		<RegExp input="$$10" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
-			<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://www.impawards.com/\1&lt;/url&gt;&lt;/details&gt;" dest="5+">
-				<expression>&lt;meta http-equiv=&quot;REFRESH&quot; content=&quot;0;URL=[^/]*/([^&quot;]*)&quot;&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="\1" dest="14">
-				<expression noclean="1">value=&quot;/([^&quot;]*)/[^&quot;]*\.html&quot;&gt;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$14/posters/\1&lt;/thumb&gt;" dest="10+">
-				<expression noclean="1">&lt;img SRC=&quot;posters/([^&quot;]*)&quot;</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$14/posters/\1&lt;/thumb&gt;" dest="10+">
-				<expression repeat="yes" noclean="1">thumbs/imp_([^&gt;]*ver[^&gt;]*.jpg)&gt;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetIMPAPosters>
-
-	<GetMoviePosterDBLink dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetMoviePosterDB&quot;&gt;\1&lt;/url&gt;&lt;/details&gt;" dest="5+">
-			<expression>(http://www.movieposterdb.com/movie/[^&quot;]*)&quot;</expression>
-		</RegExp>
-	</GetMoviePosterDBLink>
-
-	<GetMoviePosterDB dest="5">
-		<RegExp input="$$10" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
-			<RegExp input="$$1" output="&lt;thumb&gt;\1l_\2&lt;/thumb&gt;" dest="10+">
-				<expression repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)[a-z]_(.*?)&quot;</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GetMoviePosterDB>
-
-	<GetIMDBPoster dest="5">
-		<RegExp input="$$10" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
-			<RegExp input="$$1" output="&lt;thumb&gt;\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2&lt;/thumb&gt;" dest="10+">
-				<expression noclean="1,2">&lt;a name=&quot;poster&quot;.*?src=&quot;(.*?)_S.*?(.jpg)&quot;.*?&lt;/a&gt;</expression>
-			</RegExp>
-			<expression noclean="1">(.*?_SX[0-9]+_SY[0-9]+_.jpg)</expression>
-		</RegExp>
-	</GetIMDBPoster>
 
 	<GetFilmAffinityPoster dest="5">
 		<RegExp input="$$10" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">

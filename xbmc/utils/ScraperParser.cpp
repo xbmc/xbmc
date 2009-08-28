@@ -65,6 +65,7 @@ CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
     Clear();
     if (parser.m_document)
     {
+      m_strFile = parser.m_strFile;
       m_document = new TiXmlDocument(*parser.m_document);
       LoadFromXML();
     }
@@ -85,6 +86,7 @@ void CScraperParser::Clear()
   m_document = NULL;
   m_name = m_content = m_language = m_framework = m_date = NULL;
   m_settings = NULL;
+  m_strFile.Empty();
 }
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
@@ -95,6 +97,8 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
 
   if (!m_document)
     return false;
+
+  m_strFile = strXMLFile;
 
   if (m_document->LoadFile())
     return LoadFromXML();
@@ -108,6 +112,9 @@ bool CScraperParser::LoadFromXML()
 {
   if (!m_document)
     return false;
+  
+  CStdString strPath;
+  CUtil::GetDirectory(m_strFile,strPath);
 
   m_pRootElement = m_document->RootElement();
   CStdString strValue = m_pRootElement->Value();
@@ -133,6 +140,28 @@ bool CScraperParser::LoadFromXML()
           if (!(m_SearchStringEncoding = pChildElement->Attribute("SearchStringEncoding")))
             m_SearchStringEncoding = "UTF-8";
         }
+
+        // inject includes
+        const TiXmlElement* include = m_pRootElement->FirstChildElement("include");
+        while (include)
+        {
+          if (include->FirstChild())
+          {
+            CStdString strFile = CUtil::AddFileToFolder(strPath,include->FirstChild()->Value());
+            TiXmlDocument doc;
+            if (doc.LoadFile(strFile))
+            {
+              const TiXmlNode* node = doc.RootElement()->FirstChild();
+              while (node)
+              {
+                 m_pRootElement->InsertEndChild(*node);
+                 node = node->NextSibling();
+              }
+            }
+          }
+          include = include->NextSiblingElement("include");
+        }
+
         return true;
       }
     }

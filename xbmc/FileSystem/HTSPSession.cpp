@@ -510,8 +510,8 @@ bool CHTSPSession::ParseQueueStatus (htsmsg_t* msg, SQueueStatus &queue)
   if(htsmsg_get_u32(msg, "packets", &queue.packets)
   || htsmsg_get_u32(msg, "bytes",   &queue.bytes)
   || htsmsg_get_u32(msg, "Bdrops",  &queue.bdrops)
-  || htsmsg_get_u32(msg, "Pdrops",  &queue.bdrops)
-  || htsmsg_get_u32(msg, "Pdrops",  &queue.bdrops))
+  || htsmsg_get_u32(msg, "Pdrops",  &queue.pdrops)
+  || htsmsg_get_u32(msg, "Idrops",  &queue.idrops))
   {
     CLog::Log(LOGERROR, "CHTSPSession::ParseQueueStatus - malformed message received");
     htsmsg_print(msg);

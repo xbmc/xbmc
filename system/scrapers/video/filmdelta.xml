@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
-<scraper framework="1.1" date="2009-08-01" content="movies" name="Filmdelta.se" thumb="filmdelta.png" language="sv">
+<scraper framework="1.1" date="2009-08-11" content="movies" name="Filmdelta.se" thumb="filmdelta.png" language="sv">
+        <include>common/tmdb.xml</include> 
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
@@ -10,21 +11,21 @@
 	</GetSettings>
 
 	<CreateSearchUrl clearbuffers="no" dest="3">
-		<RegExp input="$$1" output="http://www.filmdelta.se/search.php?string=\1&amp;type=movie" dest="3">
-			<expression noclean="1"/>
+		<RegExp input="$$1" output="http://www.filmdelta.se/search.php?string=\1&amp;type=movie&amp;more=1" dest="3">
+			<RegExp input="$$1" output="\1" dest="9">
+				<expression>%28(.*?)%29</expression>
+		</RegExp>
+			<expression trim="1"/>
 		</RegExp>
 	</CreateSearchUrl>
 
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<RegExp input="$$1" output="\1" dest="7">
-				<expression noclean="1">{window.location = "([^"]*)";}</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url&gt;http://www.filmdelta.se/filmer/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes" noclean="1">&lt;a href="/filmer/([^"]*)"&gt;([^&lt;]*)&lt;/a&gt; \(([0-9]*)\)</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;year&gt;\2&lt;/year&gt;&lt;url&gt;$$7&lt;/url&gt;&lt;/entity&gt;" dest="5">
-				<expression repeat="yes" noclean="1">&lt;/a&gt;&lt;h2&gt;([^&lt;|^(]*)\(([0-9]+)\)</expression>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url&gt;http://www.filmdelta.se/filmer/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<expression repeat="yes" noclean="1">&lt;a href=&quot;/filmer/([^"]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;.*?\(([0-9]+)\).*?&lt;li&gt;</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;$$9&lt;/year&gt;&lt;url&gt;http://www.filmdelta.se/filmer/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes" noclean="1">&lt;a href="/filmer/([^"]*)"&gt;([^&lt;]*)&lt;/a&gt; \($$9\)</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
@@ -65,7 +66,7 @@
 				</RegExp>
 				<expression repeat="yes" trim="1">type=category'&gt;([^&lt;]*)&lt;/a&gt;&lt;/h5&gt;</expression>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$9" output="&lt;url function=&quot;GoogleToIMDB&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">
+                        <RegExp input="$$9" output="&lt;url cache=&quot;filmdelta-trans.xml&quot; function=&quot;GetTMDBThumbsByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">                                                                
 				<RegExp input="$$1" output="&quot;\1&quot;+\2" dest="4+">
 					<expression>&lt;h4&gt;Originaltitel&lt;/h4&gt;[^&lt;]*&lt;h5&gt;([^&lt;]*)&lt;/h5&gt;.*?/filmarkiv/([0-9]*)/</expression>
 				</RegExp>
@@ -74,37 +75,16 @@
 				</RegExp>
 				<expression/>
 			</RegExp>
+                        <RegExp conditional="fanart" input="$$9" output="&lt;url cache=&quot;filmdelta-trans.xml&quot; function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">             
+                                <RegExp input="$$1" output="&quot;\1&quot;+\2" dest="4+">
+                                        <expression>&lt;h4&gt;Originaltitel&lt;/h4&gt;[^&lt;]*&lt;h5&gt;([^&lt;]*)&lt;/h5&gt;.*?/filmarkiv/([0-9]*)/</expression>
+                                </RegExp>
+                                <RegExp input="$$4" output="+\1" dest="9+">
+                                        <expression repeat="yes">([^ ,]+)</expression>
+                                </RegExp>
+                                <expression/>
+                        </RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
-
-	<GoogleToIMDB dest="5">
-		<RegExp input="$$2" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="2+">
-				<expression>/title/([t0-9]*)</expression>
-			</RegExp>
-			<expression noclean="1"/>
-		</RegExp>
-	</GoogleToIMDB>
-
-	<GetTMDBId dest="5">
-		<RegExp conditional="fanart" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;url function=&quot;GetTMDBPoster&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-		</RegExp>
-	</GetTMDBId>
-
-	<GetTMDBFanart dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="2">
-				<expression repeat="yes">&lt;backdrop size="original"&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
-			</RegExp>
-			<expression noclean="1">(.+)</expression>
-		</RegExp>
-	</GetTMDBFanart>
-
-	<GetTMDBPoster dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;thumb&gt;\1&lt;/thumb&gt;&lt;/details&gt;" dest="5">
-			<expression noclean="1">&lt;poster size="original"&gt;([^&lt;]*)&lt;/poster&gt;</expression>
-		</RegExp>
-	</GetTMDBPoster>
 </scraper>

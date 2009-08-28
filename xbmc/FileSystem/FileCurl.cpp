@@ -498,10 +498,9 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
   if( url2.GetProtocol().Equals("ftpx") )
     url2.SetProtocol("ftp");
-  else if( url2.GetProtocol().Equals("shout") 
-       ||  url2.GetProtocol().Equals("daap") 
-       ||  url2.GetProtocol().Equals("upnp") 
-       ||  url2.GetProtocol().Equals("tuxbox") 
+  else if( url2.GetProtocol().Equals("shout")
+       ||  url2.GetProtocol().Equals("daap")
+       ||  url2.GetProtocol().Equals("tuxbox")
        ||  url2.GetProtocol().Equals("lastfm")
        ||  url2.GetProtocol().Equals("mms"))
     url2.SetProtocol("http");    

@@ -839,7 +839,7 @@ komplett aktualisieren oder nur nach neuen Dateien suchen?</string>
   <string id="12019">Ja</string>
   <string id="12020">Fragen</string>
   <string id="12021">Am Anfang starten</string>
-  <string id="12022">An der letzten Positon fortsetzen</string>
+  <string id="12022">Bei %s fortsetzen</string>
   <string id="12023">Vergleiche vorhandene Trainer...</string>
   <string id="12024">Minibild automatisch erzeugen für Videos ohne Cover</string>
   <string id="12310">0</string>

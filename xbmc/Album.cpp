@@ -34,77 +34,11 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
 
   XMLUtils::GetString(album,"title",strAlbum);
   
-  CStdString strTemp;
-  const TiXmlElement* node = album->FirstChildElement("artist");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (strArtist.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        strArtist = strTemp;
-      else
-        strArtist += g_advancedSettings.m_musicItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("artist");
-  }
-  node = album->FirstChildElement("genre");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (strGenre.IsEmpty() || (clear && stricmp(clear,"true") == 0))
-        strGenre = strTemp;
-      else
-        strGenre += g_advancedSettings.m_musicItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("genre");
-  }
-  node = album->FirstChildElement("style");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (strStyles.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        strStyles = strTemp;
-      else
-        strStyles += g_advancedSettings.m_musicItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("style");
-  }
-  node = album->FirstChildElement("mood");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (strMoods.IsEmpty() || (clear && stricmp(clear,"yes")))
-        strMoods = strTemp;
-      else
-        strMoods += g_advancedSettings.m_musicItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("mood");
-  }
-  node = album->FirstChildElement("theme");
-  while (node)
-  {
-    if (node->FirstChild())
-    {
-      strTemp = node->FirstChild()->Value();
-      const char* clear=node->Attribute("clear");
-      if (strThemes.IsEmpty() || (clear && stricmp(clear,"true")==0))
-        strThemes = strTemp;
-      else
-        strThemes += g_advancedSettings.m_musicItemSeparator+strTemp;
-    }
-    node = node->NextSiblingElement("theme");
-  }
+  XMLUtils::GetAdditiveString(album,"artist",g_advancedSettings.m_musicItemSeparator,strArtist);
+  XMLUtils::GetAdditiveString(album,"genre",g_advancedSettings.m_musicItemSeparator,strGenre);
+  XMLUtils::GetAdditiveString(album,"style",g_advancedSettings.m_musicItemSeparator,strStyles);
+  XMLUtils::GetAdditiveString(album,"mood",g_advancedSettings.m_musicItemSeparator,strMoods);
+  XMLUtils::GetAdditiveString(album,"theme",g_advancedSettings.m_musicItemSeparator,strThemes);
 
   XMLUtils::GetString(album,"review",strReview);
   XMLUtils::GetString(album,"releasedate",m_strDateOfRelease);
@@ -121,7 +55,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
     thumb = thumb->NextSiblingElement("thumb");
   }
 
-  node = album->FirstChildElement("track");
+  const TiXmlElement* node = album->FirstChildElement("track");
   if (node)
     songs.clear();  // this means that the tracks can't be spread over separate pages
                     // but this is probably a reasonable limitation

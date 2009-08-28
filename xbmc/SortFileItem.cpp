@@ -346,6 +346,27 @@ void SSortFileItem::ByMovieTitle(CFileItemPtr &item)
   item->SetSortLabel(item->GetVideoInfoTag()->m_strTitle);
 }
 
+void SSortFileItem::ByMovieSortTitle(CFileItemPtr &item)
+{
+  if (!item) return;
+  if (!item->GetVideoInfoTag()->m_strSortTitle.IsEmpty())
+    item->SetSortLabel(item->GetVideoInfoTag()->m_strSortTitle);
+  else
+    item->SetSortLabel(item->GetVideoInfoTag()->m_strTitle);
+}
+
+void SSortFileItem::ByMovieSortTitleNoThe(CFileItemPtr &item)
+{
+  if (!item) return;
+  CStdString label;
+  if (!item->GetVideoInfoTag()->m_strSortTitle.IsEmpty())
+    label = item->GetVideoInfoTag()->m_strSortTitle;
+  else
+    label = item->GetVideoInfoTag()->m_strTitle;
+  label = label.Mid(StartsWithToken(label));
+  item->SetSortLabel(label);
+}
+
 void SSortFileItem::ByMovieRating(CFileItemPtr &item)
 {
   if (!item) return;

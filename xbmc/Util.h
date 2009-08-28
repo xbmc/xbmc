@@ -107,7 +107,6 @@ public:
   static void GetBuiltInHelp(CStdString &help);
   static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
-  static const CStdString  GetMovieName(CFileItem* pItem, bool bUseFolderNames = false);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static bool InstallTrainer(CTrainer& trainer);
   static bool RemoveTrainer();
@@ -141,7 +140,7 @@ public:
   static bool IsHDHomeRun(const CStdString& strFile);
   static bool IsVTP(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
-  static bool IsTV(const CStdString& strFile);
+  static bool IsLiveTV(const CStdString& strFile);
   static bool ExcludeFileOrFolder(const CStdString& strFileOrFolder, const CStdStringArray& regexps);
   static void GetFileAndProtocol(const CStdString& strURL, CStdString& strDir);
   static int GetDVDIfoTitle(const CStdString& strPathFile);
@@ -154,15 +153,12 @@ public:
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static void CreateShortcuts(CFileItemList &items);
   static void CreateShortcut(CFileItem* pItem);
-  static void GetArtistDatabase(const CStdString& strFileName, CStdString& strArtistDBS);
-  static void GetGenreDatabase(const CStdString& strFileName, CStdString& strGenreDBS);
   static void GetFatXQualifiedPath(CStdString& strFileNameAndPath);
   static bool ShortenFileName(CStdString& strFileNameAndPath);
   static bool IsISO9660(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsUPnP(const CStdString& strFile);
-  static void ConvertPathToUrl( const CStdString& strPath, const CStdString& strProtocol, CStdString& strOutUrl );
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
   static void DeleteGUISettings();
@@ -214,8 +210,6 @@ public:
   static CStdString MakeLegalPath(const CStdString &strPath, int LegalType=LEGAL_NONE);
 #endif
   
-  static void AddDirectorySeperator(CStdString& strPath);
-
   static bool IsUsingTTFSubtitles();
   static void SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);

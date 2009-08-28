@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.0" date="2009-05-22" name="PTGate and IMDb" content="movies" thumb="ptgate.jpg" language="pt">
+<scraper framework="1.1" date="2009-08-10" name="PTGate and IMDb" content="movies" thumb="ptgate.jpg" language="pt">
+	<include>common/tmdb.xml</include>
+	<include>common/movieposterdb.xml</include>
+	<include>common/impa.xml</include>
+	<include>common/imdb.xml</include>
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Utilizar apenas o Cinema PTGate&quot; type=&quot;bool&quot; id=&quot;ptgateonly&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5">
@@ -97,7 +101,6 @@
 			<RegExp dest="5+" input="$$11" output="\1">
 				<expression noclean="1"></expression>
 			</RegExp>
-
 
 			<!-- Actor -->
 			<RegExp dest="8" input="$$9" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;">
@@ -217,7 +220,7 @@
 			</RegExp>
 
 			<!-- Actor -->
-			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieCast&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetIMDBCast&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 
@@ -227,22 +230,22 @@
 			</RegExp>
 
 			<!-- Credits -->
-			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetMovieWriters&quot;&gt;$$3&lt;/url&gt;" dest="5+">
+			<RegExp conditional="!fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-credits.html&quot; function=&quot;GetIMDBWriters&quot;&gt;$$3&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 
 			<!-- Actor, full -->
-			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetMovieCast&quot;&gt;$$3fullcredits&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetIMDBCast&quot;&gt;$$3fullcredits&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 
 			<!-- Director, full -->
-			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetMovieDirectors&quot;&gt;$$3fullcredits&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetIMDBDirectors&quot;&gt;$$3fullcredits&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 
 			<!-- Credits, full -->
-			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetMovieWriters&quot;&gt;$$3fullcredits&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fullcredits" input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetIMDBWriters&quot;&gt;$$3fullcredits&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
 
@@ -257,7 +260,7 @@
 			</RegExp>
 
 			<!-- Trailer -->
-			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetTrailer&quot;&gt;http://$INFO[url]/video/imdb/vi\1/player&lt;/url&gt;" dest="5+">
+			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetIMDBTrailer&quot;&gt;http://$INFO[url]/video/imdb/vi\1/player&lt;/url&gt;" dest="5+">
 				<expression>/vi([0-9]*)/&quot;</expression>
 			</RegExp>
 
@@ -267,132 +270,11 @@
 			</RegExp>
 
 			<!-- Fanart -->
-                        <RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=$$2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
+                        <RegExp conditional="fanart" input="$$2" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=$$2&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
                                 <expression></expression>
                         </RegExp>
 
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetIMDBDetails>
-
-	<GetMoviePlot clearbuffers="no" dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="2">
-				<expression clear="yes">&lt;p class="plotpar"&gt;\n([^\n]*)</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetMoviePlot>
-	<GetMovieCast clearbuffers="no" dest="5">
-		<RegExp input="$$2" output="&lt;actors&gt;\1&lt;/actors&gt;" dest="8">
-			<RegExp input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">&lt;table class=&quot;cast&quot;&gt;(.*?)&lt;/table&gt;</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2&lt;/thumb&gt;&lt;name&gt;\3&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression clear="yes" repeat="yes" noclean="1,2" trim="3,4">&lt;img src=&quot;(?:([^&quot;]*\.)[^&quot;]*(\.jpg))?[^&gt;]*[^&quot;]*&quot;nm&quot;&gt;&lt;a href=&quot;[^&quot;]*&quot;&gt;([^&lt;]*)&lt;[^&quot;]*&quot;ddd&quot;&gt; ... [^&quot;]*&quot;char&quot;&gt;(.*?)&lt;/td&gt;</expression>
-			</RegExp>
-			<RegExp input="$$7" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;\2&lt;/actor&gt;" dest="2+">
-				<expression clear="yes" repeat="yes" noclean="1,2,3">&lt;actor&gt;&lt;thumb&gt;(?:(http.*?)|_SX[0-9]+_SY[0-9]+_)&lt;/thumb&gt;(.*?)&lt;/actor&gt;</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-		<RegExp input="$$8$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<expression noclean="1">&lt;actors&gt;(.*?)&lt;/actors&gt;</expression>
-		</RegExp>
-	</GetMovieCast>
-	<GetMovieDirectors clearbuffers="no" dest="5">
-		<RegExp input="$$2" output="&lt;directors&gt;\1&lt;/directors&gt;" dest="8">
-			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">Director.*?&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
-			</RegExp>
-			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">Directed by(.*?)name=&quot;</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="2+">
-				<expression clear="yes" repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-		<RegExp input="$$8$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<expression noclean="1">&lt;directors&gt;(.*?)&lt;/directors&gt;</expression>
-		</RegExp>
-	</GetMovieDirectors>
-	<GetMovieWriters clearbuffers="no" dest="5">
-		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
-			<RegExp conditional="!fullcredits" input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">Writers.*?:&lt;/h5&gt;(.*?)&lt;/div&gt;</expression>
-			</RegExp>
-			<RegExp conditional="fullcredits" input="$$1" output="\1" dest="6">
-				<expression clear="yes" noclean="1">Writing credits(.*?)name=&quot;</expression>
-			</RegExp>
-			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
-				<expression clear="yes" repeat="yes">&lt;a href=&quot;/name/[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
-			</RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetMovieWriters>
-	<GetIMPALink clearbuffers="no" dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://\1impawards.com/\2&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression clear="yes" noclean="1,2">http://([^&quot;]*)impawards.com/([^&quot;]*)&quot;&gt;</expression>
-		</RegExp>
-	</GetIMPALink>
-	<GetIMPAPosters clearbuffers="no" dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetIMPAPosters&quot;&gt;http://www.impawards.com/\1&lt;/url&gt;&lt;/details&gt;" dest="5">
-			<expression clear="yes">&lt;meta http-equiv=&quot;REFRESH&quot; content=&quot;0;URL=[^/]*/([^&quot;]*)&quot;&gt;</expression>
-		</RegExp>
-		<RegExp input="$$1" output="\1" dest="4">
-			<expression clear="yes" noclean="1">value=&quot;/([^&quot;]*)/[^&quot;]*\.html&quot;&gt;</expression>
-		</RegExp>
-		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="8+">
-			<expression clear="yes" noclean="1">&lt;img SRC=&quot;posters/([^&quot;]*)&quot;</expression>
-		</RegExp>
-		<RegExp input="$$1" output="&lt;thumb&gt;http://www.impawards.com/$$4/posters/\1&lt;/thumb&gt;" dest="9+">
-			<expression clear="yes" repeat="yes" noclean="1">thumbs/imp_([^&gt;]*ver[^&gt;]*.jpg)&gt;</expression>
-		</RegExp>
-	</GetIMPAPosters>
-        <GetMoviePosterDBLink dest="6" clearbuffers="no">
-         	<RegExp input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetMoviePosterDB&quot;&gt;\1&lt;/url&gt;&lt;/details&gt;" dest="6">
-			<expression>(http://www.movieposterdb.com/movie/[^&quot;]*)&quot;</expression>
-		</RegExp>
-        </GetMoviePosterDBLink>
-	<GetMoviePosterDB clearbuffers="no" dest="12">
-		<RegExp input="$$1" output="&lt;thumb&gt;\1l_\2&lt;/thumb&gt;" dest="10+">
-			<expression clear="yes" repeat="yes" noclean="1,2">&quot;poster&quot;.*?src=&quot;(.*?)[a-z]_(.*?)&quot;</expression>
-		</RegExp>
-	</GetMoviePosterDB>
-        <GetTrailer clearbuffers="no" dest="5">
-                <RegExp conditional="trailer" input="$$2" output="&lt;details&gt;&lt;trailer urlencoded=&quot;yes&quot;&gt;\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="\1" dest="2">
-                                <expression noclean="1">&quot;file&quot;[^&quot;]*&quot;([^&quot;]*)</expression>
-                        </RegExp>
-                        <RegExp input="$$1" output="$$2/\1" dest="2">
-                                <expression noclean="1">&quot;id&quot;[^&quot;]*&quot;([^&quot;]*)</expression>
-                        </RegExp>
-                        <expression noclean="1"></expression>
-                </RegExp>
-        </GetTrailer>
-	<GetIMDBPoster dest="5">
-		<RegExp input="$$8$$9$$10$$11$$12" output="&lt;details&gt;&lt;thumbs&gt;\1&lt;/thumbs&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="\1_SX$INFO[imdbscale]_SY$INFO[imdbscale]_\2" dest="6">
-	                        <expression noclean="1,2">&lt;a name=&quot;poster&quot;.*?src=&quot;(.*?)_S.*?(.jpg)&quot;.*?&lt;/a&gt;</expression>
-                        </RegExp>
-                        <RegExp input="$$6" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="11">
-	                        <expression clear="yes" noclean="1">(.*?_SX[0-9]+_SY[0-9]+_.jpg)</expression>
-                        </RegExp>
-			<expression noclean="1"></expression>
-		</RegExp>
-	</GetIMDBPoster>
-        <GetTMDBId dest="5">
-                <RegExp conditional="fanart" input="$$1" output="&lt;details&gt;&lt;url function=&quot;GetTMDBFanart&quot;&gt;http://api.themoviedb.org/2.0/Movie.getInfo?id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;&lt;/details&gt;" dest="5">
-                        <expression>&lt;id&gt;([0-9]*)&lt;/id&gt;</expression>
-                </RegExp>
-        </GetTMDBId>
-        <GetTMDBFanart dest="5">
-                <RegExp input="$$2" output="&lt;details&gt;&lt;fanart url=&quot;http://themoviedb.org/image/backdrops&quot;&gt;\1&lt;/fanart&gt;&lt;/details&gt;" dest="5">
-                        <RegExp input="$$1" output="&lt;thumb preview=&quot;/\1/\2_poster.\3&quot;&gt;/\1/\2.\3&lt;/thumb&gt;" dest="2">
-                                <expression repeat="yes">&lt;backdrop size=&quot;original&quot;&gt;.*?/([0-9]+)/([^\.]+)\.([^&lt;]*)&lt;/backdrop&gt;</expression>
-                        </RegExp>
-                        <expression noclean="1">(.+)</expression>
-                </RegExp>
-        </GetTMDBFanart>
 </scraper>

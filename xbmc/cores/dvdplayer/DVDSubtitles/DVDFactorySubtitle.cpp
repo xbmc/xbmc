@@ -28,6 +28,7 @@
 #include "DVDSubtitleParserMPL2.h"
 #include "DVDSubtitleParserSami.h"
 #include "DVDSubtitleParserSSA.h"
+#include "DVDSubtitleParserVplayer.h"
 #include "Util.h"
 
 using namespace std;
@@ -93,6 +94,11 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
         pParser = new CDVDSubtitleParserSubrip(pStream, strFile.c_str());
         pStream = NULL;
       }
+      else if (sscanf(line, "%d:%d:%d:", &i, &i, &i) == 3)
+      {
+        pParser = new CDVDSubtitleParserVplayer(pStream, strFile.c_str());
+        pStream = NULL;
+      }
       else if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10)))
       {
         pParser =  new CDVDSubtitleParserSSA(strFile.c_str());
@@ -114,11 +120,6 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
         pParser = new CDVDSubtitleParserSami(pStream, strFile.c_str());
         pStream = NULL;
       }
-      //   if (sscanf (line, "%d:%d:%d:",     &i, &i, &i )==3) {
-      //     this->uses_time=1;
-      //     xprintf (this->stream->xine, XINE_VERBOSITY_DEBUG, "vplayer subtitle format detected\n");
-      //     return FORMAT_VPLAYER;
-      //   }
       //   /*
       //   * A RealText format is a markup language, starts with <window> tag,
       //   * options (behaviour modifiers) are possible.
