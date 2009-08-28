@@ -92,13 +92,8 @@ bool CWinSystemOSX::CreateNewWindow(CStdString name, int width, int height, bool
   Cocoa_GL_MakeCurrentContext(m_glContext);
 
   CTexture iconTexture;
-#if defined(_LINUX)  
   iconTexture.LoadFromFile("special://xbmc/media/icon.png");
-#else
-  iconTexture.LoadFromFile("special://xbmc/media/icon32x32.png");
-#endif    
-  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), 
-      iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0), NULL);
+  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
     
   SDL_WM_SetCaption("XBMC Media Center", NULL);
     
