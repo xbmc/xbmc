@@ -46,13 +46,12 @@ public:
   GLXWindow GetWindow() { return m_glWindow; }
 
 protected:  
-  bool MakePBuffer();
+  bool RefreshGlxContext();
 
   SDL_Surface* m_SDLSurface;
-  GLXContext m_glContext;
-  GLXWindow  m_glWindow;
-  Window     m_parentWindow;
-  Display*   m_dpy;  
+  GLXContext   m_glContext;
+  GLXWindow    m_glWindow;
+  Display*     m_dpy;  
 };
 
 #endif // WINDOW_SYSTEM_H
