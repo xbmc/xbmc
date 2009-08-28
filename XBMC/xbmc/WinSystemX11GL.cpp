@@ -36,6 +36,8 @@ CWinSystemX11GL::~CWinSystemX11GL()
 
 bool CWinSystemX11GL::PresentRenderImpl()
 {        
+  glXSwapBuffers(m_dpy, m_glWindow);
+	  
   return true;
 }
 

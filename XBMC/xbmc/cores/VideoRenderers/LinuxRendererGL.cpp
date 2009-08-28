@@ -315,7 +315,7 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
     // Find closest refresh rate
-    for (int i = (int)CUSTOM; i<(CUSTOM+g_videoConfig.GetNumberOfResolutions()) ; i++)
+    for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
     {
       RESOLUTION_INFO &curr = g_settings.m_ResInfo[m_iResolution];
       RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
@@ -2243,13 +2243,13 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 bool CLinuxRendererGL::SupportsBrightness()
 {
   return m_renderMethod == RENDER_GLSL
-      || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+      || (m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
   return m_renderMethod == RENDER_GLSL
-      || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+      || (m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
 }
 
 bool CLinuxRendererGL::SupportsGamma()

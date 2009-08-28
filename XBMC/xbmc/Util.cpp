@@ -104,6 +104,9 @@
 #include "PlayList.h"
 #include "Crc32.h"
 #include "utils/RssReader.h"
+#ifdef HAS_LIRC
+#include "common/LIRC.h"
+#endif
 
 using namespace std;
 using namespace DIRECTORY;

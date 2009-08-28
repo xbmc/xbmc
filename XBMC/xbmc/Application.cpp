@@ -250,6 +250,10 @@
 #include "XHandle.h"
 #endif
 
+#ifdef HAS_LIRC
+#include "common/LIRC.h"
+#endif
+
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -1117,7 +1121,7 @@ HRESULT CApplication::Initialize()
   StartServices();
 
   // Init DPMS, before creating the corresponding setting control.
-  m_dpms = new DPMSSupport(NULL);
+  m_dpms = new DPMSSupport();
   g_guiSettings.GetSetting("screensaver.sep_powersaving")->SetVisible(
       m_dpms->IsSupported());
   g_guiSettings.GetSetting("screensaver.powersavingtime")->SetVisible(

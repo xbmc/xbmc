@@ -313,6 +313,7 @@ CKeyboardStat::~CKeyboardStat()
 
 void CKeyboardStat::Initialize()
 {
+	/*
   //XBMC_EnableUNICODE(1);
   // set repeat to 10ms to ensure repeat time < frame time
   // so that hold times can be reliably detected
@@ -344,6 +345,7 @@ void CKeyboardStat::Initialize()
   XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
   XCloseDisplay(dpy);
 #endif
+*/
 }
 
 void CKeyboardStat::Reset()
@@ -391,7 +393,7 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
   int state;
   if(newEvent.type == XBMC_KEYDOWN)
     state = XBMC_PRESSED;
-  else if(newEvent.type = XBMC_KEYUP)
+  else if(newEvent.type == XBMC_KEYUP)
     state = XBMC_RELEASED;
   else
     return 0;

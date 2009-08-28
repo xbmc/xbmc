@@ -39,6 +39,10 @@
 #include "win32/Win32PowerSyscall.h"
 #endif
 
+#ifdef HAS_LIRC
+#include "common/LIRC.h"
+#endif
+
 CPowerManager g_powerManager;
 
 CPowerManager::CPowerManager()

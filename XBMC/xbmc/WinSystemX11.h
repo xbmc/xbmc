@@ -24,6 +24,7 @@
  *
  */
 #include "WinSystem.h"
+#include <GL/glx.h>
 
 class CWinSystemX11 : public CWinSystemBase
 {
@@ -39,9 +40,19 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop);
   virtual void UpdateResolutions();
+  
+  // Local to WinSystemX11 only
+  Display*  GetDisplay() { return m_dpy; }
+  GLXWindow GetWindow() { return m_glWindow; }
 
 protected:  
-  void* m_glContext;
+  bool MakePBuffer();
+
+  SDL_Surface* m_SDLSurface;
+  GLXContext m_glContext;
+  GLXWindow  m_glWindow;
+  Window     m_parentWindow;
+  Display*   m_dpy;  
 };
 
 #endif // WINDOW_SYSTEM_H

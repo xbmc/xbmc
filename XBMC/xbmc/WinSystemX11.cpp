@@ -23,12 +23,11 @@
 
 #ifdef HAS_GLX
 
-#include <SDL/SDL_image.h>
+#include <SDL/SDL_syswm.h>
 #include "WinSystemX11.h"
 #include "SpecialProtocol.h"
 #include "Settings.h"
 #include "Texture.h"
-
 
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
@@ -62,7 +61,93 @@ bool CWinSystemX11::CreateNewWindow(CStdString name, int width, int height, bool
   m_nHeight = height;
   m_bFullScreen = fullScreen;
 
-  // TODO
+  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
+  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
+  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  
+  // Enable vertical sync to avoid any tearing.
+  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);  
+  
+  m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL);
+  if (!m_SDLSurface)
+  {
+    return false;
+  }
+  
+  SDL_SysWMinfo info;
+  SDL_VERSION(&info.version);
+  SDL_GetWMInfo(&info);
+  m_glWindow = info.info.x11.window;
+  
+  GLXFBConfig *fbConfigs = 0;
+  XVisualInfo *vInfo = NULL;
+  int num = 0;
+
+  int doubleVisAttributes[] =
+    {
+      GLX_RENDER_TYPE, GLX_RGBA_BIT,
+      GLX_RED_SIZE, 8,
+      GLX_GREEN_SIZE, 8,
+      GLX_BLUE_SIZE, 8,
+      GLX_ALPHA_SIZE, 8,
+      GLX_DEPTH_SIZE, 8,
+      GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+      GLX_DOUBLEBUFFER, True,
+      None
+    };
+
+  if (!m_dpy)
+  {
+    // try to open root display
+    m_dpy = XOpenDisplay(0);
+    if (!m_dpy)
+    {
+      CLog::Log(LOGERROR, "GLX Error: No Display found");
+      return false;
+    }
+  }
+
+  // query compatible framebuffers based on double buffered attributes
+  fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &num);
+  if (fbConfigs == NULL)
+  {
+    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+    return false;
+  }
+
+  for (int i = 0; i < num; i++)
+  {
+    // obtain the xvisual from the first compatible framebuffer
+    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
+    if (vInfo->depth == 24)
+    {
+      CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
+      break;
+    }
+  }
+
+  if (!vInfo) 
+  {
+    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+    return false;
+  }
+
+  m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True);
+
+  XFree(fbConfigs);
+  XFree(vInfo);
+
+  // success?
+  if (!m_glContext)
+  {
+    CLog::Log(LOGERROR, "GLX Error: Could not create context");
+    return false;
+  }
+
+  // make this context current
+  glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
   
   m_bWindowCreated = true;
 
@@ -99,7 +184,8 @@ void CWinSystemX11::UpdateResolutions()
 {
   CWinSystemBase::UpdateResolutions();
   
-  // TODO 
+  // Add desktop resolution
+  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, 1440, 900, 60.0f);
 }
 
 #endif

@@ -204,7 +204,7 @@ bool CWinEventsSDL::ProcessLinuxShortcuts(SDL_Event& event)
 {
   bool alt = false;
 
-  alt = !!(SDL_GetModState() & (XBMCXBMCKMOD_LALT  | XBMCXBMCKMOD_RALT));
+  alt = !!(SDL_GetModState() & (XBMCKMOD_LALT  | XBMCKMOD_RALT));
 
   if (alt && event.key.type == SDL_KEYDOWN)
   {
