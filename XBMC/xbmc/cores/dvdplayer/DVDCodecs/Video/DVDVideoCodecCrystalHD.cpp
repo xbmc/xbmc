@@ -85,7 +85,19 @@ public:
     m_PunchOutTime = 0;
     m_LastCallInterval = 0;
   }
-  
+
+  uint64_t GetTimeSincePunchIn()
+  {
+    if (m_PunchInTime)
+    {
+      uint64_t now;
+      QueryPerformanceCounter((LARGE_INTEGER*)&now);
+      return (now - m_PunchInTime)/m_CounterFreq;  
+    }
+    else
+      return 0;
+  }
+
   uint64_t GetElapsedTime()
   {
     if (m_StartTime)
@@ -212,10 +224,11 @@ void CMPCInputThread::Process()
     if (pInput)
     {
       g_InputTimer.PunchIn();
-      BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), pInput->GetPts(), FALSE);
+      BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), 0/*pInput->GetPts()*/, FALSE);
       g_InputTimer.PunchOut();
-      LOG_DEBUG("%s: InputTimer (%d bytes) - %llu exec / %llu interval. %d in queue. (CPU: %0.02f%%)", 
-        __MODULE_NAME__, pInput->GetSize(), g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime(), GetQueueLen(), GetRelativeUsage());
+      LOG_DEBUG("%s: InputTimer (%d bytes) - %llu exec / %llu interval. %d in queue. (Status: %s CPU: %0.02f%%)", 
+        __MODULE_NAME__, pInput->GetSize(), g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime(), GetQueueLen(), g_DtsStatusText[ret],
+        GetRelativeUsage());
       if (ret == BCM::BC_STS_SUCCESS)
       {
         delete pInput;
@@ -327,8 +340,10 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   BCM::BC_STATUS ret = BCM::DtsProcOutput(m_Device, m_OutputTimeout, &procOut);
   g_OutputTimer.PunchOut();
   BCM::U64 time = g_OutputTimer.GetElapsedTime();
-  LOG_DEBUG("%s: OutputTimer - %llu exec / %llu interval. (Count: %d Time: %llu PTS: %llu Gap: %llu FPS: %0.02f Status: %02x CPU: %0.02f%%)", 
-    __MODULE_NAME__, g_OutputTimer.GetExecTime(), g_OutputTimer.GetIntervalTime(), m_PictureCount, time, procOut.PicInfo.timeStamp/10000, (procOut.PicInfo.timeStamp/10000) - time, (double)m_PictureCount/((double)time/1000.0), ret, GetRelativeUsage() * 100.0);
+  LOG_DEBUG("%s: OutputTimer - %llu exec / %llu interval. %d frames ready (Count: %d Time: %llu PTS: %llu Gap: %d FPS: %0.02f Status: %02x CPU: %0.02f%%)", 
+    __MODULE_NAME__, g_OutputTimer.GetExecTime(), g_OutputTimer.GetIntervalTime(), m_ReadyList.Count(), m_PictureCount, time, 
+    procOut.PicInfo.timeStamp/10000, (int32_t)((int64_t)(procOut.PicInfo.timeStamp/10000) - (int64_t)time), (double)m_PictureCount/((double)time/1000.0), 
+    ret, GetRelativeUsage() * 100.0);
   switch (ret)
   {
     case BCM::BC_STS_SUCCESS:
@@ -411,6 +426,8 @@ void PrintFormat(BCM::BC_PIC_INFO_BLOCK& pib)
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
+
+CExecTimer g_ClientTimer;
 
 CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_Device(0),
@@ -503,11 +520,13 @@ bool CDVDVideoCodecCrystalHD::Open(CDVDStreamInfo &hints, CDVDCodecOptions &opti
     return false;
   }
 
-  g_InputTimer.Reset();
   g_OutputTimer.Reset();
-  g_InputTimer.Start();
   g_OutputTimer.Start();
-  
+  g_InputTimer.Reset();
+  g_InputTimer.Start();
+  g_ClientTimer.Reset();
+  g_ClientTimer.Start();
+
   m_pInputThread = new CMPCInputThread(m_Device);
   m_pInputThread->Create();
   m_pOutputThread = new CMPCOutputThread(m_Device);
@@ -550,44 +569,56 @@ void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
   int ret = VC_ERROR;
+  g_ClientTimer.PunchIn();
+
   // Free the last provided picture buffer
   if (m_BusyList.Count())
     m_pOutputThread->FreeBuffer(m_BusyList.Pop());
   
-  int maxWait = 40;
-  int waitInterval = 5;
-  int waitTime = 0;
-  for (waitTime = 0; waitTime < maxWait; waitTime += waitInterval)
+  // Handle Input
+  if (pData)
   {
-    if (pData)
+    // Try to push data to the decoder input thread. We cannot return the data to the caller. 
+    // It will be lost if we do not send it.
+    int maxWait = 40;
+    int waitTime = 0;
+    int waitInterval = 5;
+    for (waitTime = 0; waitTime < maxWait; waitTime += waitInterval)
     {
       if (m_pInputThread->AddInput(pData, iSize, (BCM::U64)(pts * 10)))
       {
         pData = NULL;
-        m_PacketsIn++;
+        CLog::Log(LOGDEBUG, "%s: Added %d bytes to decoder input (Call Time: %llu, Input Queue Len: %d)", __MODULE_NAME__, iSize, g_ClientTimer.GetTimeSincePunchIn()/10, m_pInputThread->GetQueueLen());
+        break;
       }
       else
-        ; // What do we do with it? Toss it for now...
+        Sleep(waitInterval);
     }
-
-    if (m_pOutputThread->GetReadyCount() && (ret != VC_PICTURE)) // Ding!
-    {
-      CLog::Log(LOGDEBUG, "%s: Decoded Picture is Ready. %d In, %d Out, %d Ready", __MODULE_NAME__, m_PacketsIn, m_FramesOut, m_pOutputThread->GetReadyCount());
-      ret =  VC_PICTURE;
-      if (!pData)
-        break;
-    }
-
-    if (m_pOutputThread->GetReadyCount() < 2 && m_pInputThread->GetQueueLen() < 1)
-    {
-      ret = VC_BUFFER;
-      if (!pData)
-        break;
-    }
-    Sleep(waitInterval); // No picture yet, and plenty of input
   }
-  CLog::Log(LOGDEBUG, "%s: Waited %dms for picture... %d in queue.", __MODULE_NAME__, waitTime, m_pInputThread->GetQueueLen());
-  return ret;
+
+  // Handle Output
+  for (;;)
+  {
+    if (m_pOutputThread->GetReadyCount())
+    {
+      CLog::Log(LOGDEBUG, "%s: Got a picture (Call Time: %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn()/10, m_pInputThread->GetQueueLen());
+      return VC_PICTURE;
+    }
+    // If we have taken too long, return...
+    if ((g_ClientTimer.GetTimeSincePunchIn()/10) > 35000)
+    {
+      CLog::Log(LOGDEBUG, "%s: Timed-out waiting for picture (Call Time: %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn()/10, m_pInputThread->GetQueueLen());
+      return VC_ERROR;
+    }
+
+    // If there are no frames ready, and the input queue has data, wait a while for a frame...
+    if (m_pInputThread->GetQueueLen())
+      Sleep(5);
+    else // If there is no input data, ask for some
+      return VC_BUFFER;
+  }
+
+  return VC_ERROR;
 }
 
 void CDVDVideoCodecCrystalHD::Reset()
@@ -602,7 +633,7 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (!pBuffer)
     return false;
  
-  pDvdVideoPicture->pts = pBuffer->GetPts() / 10.0;
+  pDvdVideoPicture->pts = DVD_NOPTS_VALUE;// pBuffer->GetPts() / 10.0;
   pDvdVideoPicture->data[0] = pBuffer->GetPtr(); // Y plane
   pDvdVideoPicture->data[2] = pBuffer->GetPtr() + 2073600; // U plane
   pDvdVideoPicture->data[1] = pBuffer->GetPtr() + 2073600 + 518400; // V plane
