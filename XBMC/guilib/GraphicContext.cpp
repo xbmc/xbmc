@@ -353,10 +353,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool force
   g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
   g_fontManager.ReloadTTFFonts();
 
-  // elis
-  // restore vsync mode
-  //g_videoConfig.SetVSyncMode((VSYNC)g_guiSettings.GetInt("videoscreen.vsync"));
-
   SetFullScreenViewWindow(res);
   m_Resolution = res;
 
