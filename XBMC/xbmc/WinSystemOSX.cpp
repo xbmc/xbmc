@@ -25,6 +25,7 @@
 #include "SpecialProtocol.h"
 #include "CocoaInterface.h"
 #include "Settings.h"
+#include "Texture.h"
 
 #ifdef __APPLE__
 
@@ -90,15 +91,15 @@ bool CWinSystemOSX::CreateNewWindow(CStdString name, int width, int height, bool
   m_glContext = Cocoa_GL_ReplaceSDLWindowContext();  
   Cocoa_GL_MakeCurrentContext(m_glContext);
 
-  /*
-   * we no longer haave SDL_Image..
-#if defined(_LINUX)
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon.png")), NULL);
+  CTexture iconTexture;
+#if defined(_LINUX)  
+  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
 #else
-  SDL_WM_SetIcon(IMG_Load(_P("special://xbmc/media/icon32x32.png")), NULL);
-#endif
-   */
-  
+  iconTexture.LoadFromFile("special://xbmc/media/icon32x32.png");
+#endif    
+  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), 
+      iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0), NULL);
+    
   SDL_WM_SetCaption("XBMC Media Center", NULL);
     
   m_bWindowCreated = true;
