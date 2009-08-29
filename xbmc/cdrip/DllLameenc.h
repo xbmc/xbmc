@@ -22,11 +22,7 @@
  */
 
 #include "DynamicDll.h"
-#if !defined(_LINUX) || defined(__APPLE__)
 #include "lame/lame.h"
-#else
-#include <lame/lame.h>
-#endif
 
 class DllLameEncInterface
 {
