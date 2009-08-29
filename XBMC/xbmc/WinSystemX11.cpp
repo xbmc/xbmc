@@ -45,10 +45,15 @@ bool CWinSystemX11::InitWindowSystem()
   m_dpy = XOpenDisplay(0);
   if (!m_dpy)
   {
-	CLog::Log(LOGERROR, "GLX Error: No Display found");
-	return false;
+	  CLog::Log(LOGERROR, "GLX Error: No Display found");
+	  return false;
   }
 	
+  SDL_EnableUNICODE(1);
+  // set repeat to 10ms to ensure repeat time < frame time
+  // so that hold times can be reliably detected
+  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
+
   if (!CWinSystemBase::InitWindowSystem())
     return false;
    

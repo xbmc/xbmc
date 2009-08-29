@@ -313,12 +313,7 @@ CKeyboardStat::~CKeyboardStat()
 
 void CKeyboardStat::Initialize()
 {
-	/*
-  //XBMC_EnableUNICODE(1);
-  // set repeat to 10ms to ensure repeat time < frame time
-  // so that hold times can be reliably detected
-  //XBMC_EnableKeyRepeat(XBMC_DEFAULT_REPEAT_DELAY, 10);
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(HAS_GLX)
   Display* dpy = XOpenDisplay(NULL);
   if (!dpy)
     return;
@@ -337,7 +332,7 @@ void CKeyboardStat::Initialize()
   if(symbols)
   {
     CLog::Log(LOGDEBUG, "CLowLevelKeyboard::Initialize - XKb symbols %s", symbols);
-    if(strstr(symbols, "(evdev)"))
+    if (strstr(symbols, "(evdev)"))
       m_bEvdev = true;
   }
 
@@ -345,7 +340,6 @@ void CKeyboardStat::Initialize()
   XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
   XCloseDisplay(dpy);
 #endif
-*/
 }
 
 void CKeyboardStat::Reset()
@@ -359,14 +353,11 @@ void CKeyboardStat::Reset()
   m_VKey = 0;
 
   ZeroMemory(&XBMC_KeyState, sizeof(XBMC_KeyState));
-  //memcpy(&m_sdlKeyboard.keymap, &XBMC_default_keymap, sizeof(XBMC_default_keymap));
 }
 
 void CKeyboardStat::ResetState()
 {
   Reset();
-  //int numkeys = XBMC_NUM_SCANCODES;
-  //memset(m_sdlKeyboard.keystate, 0, sizeof(unsigned char) * numkeys);
 }
 
 unsigned int CKeyboardStat::KeyHeld() const
