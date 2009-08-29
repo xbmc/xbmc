@@ -57,19 +57,7 @@ bool CWinSystemOSX::InitWindowSystem()
 }
 
 bool CWinSystemOSX::DestroyWindowSystem()
-{
-  if (m_SDLSurface)
-  {
-    SDL_FreeSurface(m_SDLSurface);
-    m_SDLSurface = NULL;    
-  }
-  
-  if (m_glContext)
-  {
-    CLog::Log(LOGINFO, "Surface: Whacking context %p", m_glContext);
-    Cocoa_GL_ReleaseContext(m_glContext);
-  }
-  
+{  
   return true;
 }
 
