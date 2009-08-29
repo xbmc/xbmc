@@ -88,6 +88,17 @@ public:
   virtual int ReadRecordedStream(BYTE* buf, int buf_size);
   virtual __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   virtual __int64 LengthRecordedStream(void);
+
+  virtual bool OpenTVDemux(PVRDEMUXHANDLE handle, const cPVRChannelInfoTag &channelinfo);
+  virtual bool OpenRecordingDemux(PVRDEMUXHANDLE handle, const cPVRRecordingInfoTag &recinfo);
+  virtual void DisposeDemux();
+  virtual void ResetDemux();
+  virtual void FlushDemux();
+  virtual void AbortDemux();
+  virtual void SetDemuxSpeed(int iSpeed);
+  virtual demux_packet_t* ReadDemux();
+  virtual bool SeekDemuxTime(int time, bool backwords, double* startpts);
+  virtual int GetDemuxStreamLength();
   
   virtual bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
   virtual bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);

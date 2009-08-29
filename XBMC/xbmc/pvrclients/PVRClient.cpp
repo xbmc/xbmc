@@ -42,6 +42,7 @@
 #include "URL.h"
 #include "../utils/log.h"
 #include "../utils/AddonHelpers.h"
+#include "../cores/dvdplayer/DVDDemuxers/DVDDemuxPVRManager.h"
 
 using namespace std;
 using namespace ADDON;
@@ -89,6 +90,11 @@ bool CPVRClient::Init()
   m_callbacks->PVR.TransferChannelEntry   = PVRTransferChannelEntry;
   m_callbacks->PVR.TransferTimerEntry     = PVRTransferTimerEntry;
   m_callbacks->PVR.TransferRecordingEntry = PVRTransferRecordingEntry;
+  m_callbacks->PVR.AddDemuxStream         = CDVDDemuxPVRManager::AddDemuxStream;
+  m_callbacks->PVR.DeleteDemuxStream      = CDVDDemuxPVRManager::DeleteDemuxStream;
+  m_callbacks->PVR.DeleteDemuxStreams     = CDVDDemuxPVRManager::DeleteDemuxStreams;
+  m_callbacks->PVR.FreeDemuxPacket        = CAddonUtils::FreeDemuxPacket;
+  m_callbacks->PVR.AllocateDemuxPacket    = CAddonUtils::AllocateDemuxPacket;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
@@ -1110,6 +1116,195 @@ bool CPVRClient::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int 
 
   return m_pClient->ReadTeletextPage(buf, channel, Page, subPage);
 }
+
+
+bool CPVRClient::OpenTVDemux(PVRDEMUXHANDLE handle, const cPVRChannelInfoTag &channelinfo)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pClient->OpenTVDemux(handle, channelinfo.ClientNumber());
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during OpenTVDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return false;
+}
+
+bool CPVRClient::OpenRecordingDemux(PVRDEMUXHANDLE handle, const cPVRRecordingInfoTag &recinfo)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      PVR_RECORDINGINFO tag;
+      WriteClientRecordingInfo(recinfo, tag);
+      return m_pClient->OpenRecordingDemux(handle, tag);
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during OpenRecordingDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return false;
+}
+
+void CPVRClient::DisposeDemux()
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      m_pClient->DisposeDemux();
+      return;
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during DisposeDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return;
+}
+
+void CPVRClient::ResetDemux()
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      m_pClient->ResetDemux();
+      return;
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during ResetDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return;
+}
+
+void CPVRClient::FlushDemux()
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      m_pClient->FlushDemux();
+      return;
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during FlushDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return;
+}
+
+void CPVRClient::AbortDemux()
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      m_pClient->AbortDemux();
+      return;
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during AbortDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return;
+}
+
+void CPVRClient::SetDemuxSpeed(int iSpeed)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      m_pClient->SetDemuxSpeed(iSpeed);
+      return;
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SetDemuxSpeed occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return;
+}
+
+demux_packet_t* CPVRClient::ReadDemux()
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pClient->ReadDemux();
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during ReadDemux occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return NULL;
+}
+
+bool CPVRClient::SeekDemuxTime(int time, bool backwords, double* startpts)
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pClient->SeekDemuxTime(time, backwords, startpts);
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during SeekDemuxTime occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return false;
+}
+
+int CPVRClient::GetDemuxStreamLength()
+{
+  CSingleLock lock(m_critSection);
+
+  if (m_ReadyToUse)
+  {
+    try
+    {
+      return m_pClient->GetDemuxStreamLength();
+    }
+    catch (std::exception &e)
+    {
+      CLog::Log(LOGERROR, "PVR: %s/%s - exception '%s' during GetDemuxStreamLength occurred, contact Developer '%s' of this AddOn", m_strName.c_str(), m_hostName.c_str(), e.what(), m_strCreator.c_str());
+    }
+  }
+  return 0;
+}
+
 
 /**********************************************************
  * Addon specific functions

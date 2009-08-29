@@ -34,6 +34,22 @@
 #include <time.h>
 #include "xbmc_addon_types.h"
 
+#ifndef _LINUX
+enum CodecID;
+#else
+extern "C" {
+#if (defined USE_EXTERNAL_FFMPEG)
+  #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
+    #include <libavcodec/avcodec.h>
+  #elif (defined HAVE_FFMPEG_AVCODEC_H)
+    #include <ffmpeg/avcodec.h>
+  #endif
+#else
+  #include "../../cores/ffmpeg/avcodec.h"
+#endif
+}
+#endif
+
 #undef ATTRIBUTE_PACKED
 #undef PRAGMA_PACK_BEGIN
 #undef PRAGMA_PACK_END
@@ -55,6 +71,7 @@ extern "C" {
 #endif
 
   typedef void*         PVRHANDLE;
+  typedef void*         PVRDEMUXHANDLE;
 
   /**
   * PVR Client Error Codes
@@ -93,16 +110,19 @@ extern "C" {
   * Returned on client initialization
   */
   typedef struct PVR_SERVERPROPS {
-    bool SupportChannelLogo;
-    bool SupportChannelSettings;
-    bool SupportTimeShift;
-    bool SupportEPG;
-    bool SupportRadio;
-    bool SupportRecordings;
-    bool SupportTimers;
-    bool SupportTeletext;
-    bool SupportDirector;
-    bool SupportBouquets;
+    bool SupportChannelLogo;            /* Client support transfer of channel logos */
+    bool SupportChannelSettings;        /* Client support changing channels on backend */
+    bool SupportTimeShift;              /* Client handle Live TV Timeshift, otherwise it is handled by XBMC */
+    bool SupportEPG;                    /* Client provide EPG information */
+    bool SupportTV;                     /* Client provide TV Channels, is false for Radio only clients */
+    bool SupportRadio;                  /* Client provide also Radio Channels */
+    bool SupportRecordings;             /* Client support playback of recordings stored on the backend */
+    bool SupportTimers;                 /* Client support creation and editing of timers */
+    bool SupportTeletext;               /* Client channels can have Teletext data */
+    bool SupportDirector;               /* Client provide information about multifeed channels, like Sky Select */
+    bool SupportBouquets;               /* Client support Bouqets */
+    bool HandleInputStream;             /* Input stream is handled by the client if set, can be false for http */
+    bool HandleDemuxing;                /* Demux of stream is handled by the client, as example TVFrontend (htsp protocol) */
   } ATTRIBUTE_PACKED PVR_SERVERPROPS;
 
   /**
@@ -209,9 +229,73 @@ extern "C" {
 
   } ATTRIBUTE_PACKED PVR_RECORDINGINFO;
 
+  enum stream_type
+  {
+    PVR_STREAM_NONE,    // if unknown
+    PVR_STREAM_AUDIO,   // audio stream
+    PVR_STREAM_VIDEO,   // video stream
+    PVR_STREAM_DATA,    // data stream
+    PVR_STREAM_SUBTITLE // subtitle stream
+  };
+  
+  enum stream_source {
+    PVR_STREAM_SOURCE_NONE          = 0x000,
+    PVR_STREAM_SOURCE_DEMUX         = 0x100,
+    PVR_STREAM_SOURCE_NAV           = 0x200,
+    PVR_STREAM_SOURCE_DEMUX_SUB     = 0x300,
+    PVR_STREAM_SOURCE_TEXT          = 0x400
+  };
+
+  /**
+   * TV Recording Definition
+   */
+  typedef struct PVR_DEMUXSTREAMINFO {
+    /* General Stream information */
+    int           index;
+    stream_type   type;
+    stream_source source;
+    CodecID       codec;            // FFMPEG Codec ID
+    unsigned int  codec_fourcc;     // if available
+    char          language[4];      // ISO 639 3-letter language code (empty string if undefined)
+    const char   *name;
+    int           duration;         // in mseconds
+
+    /* Audio Stream information, only set for "type==STREAM_AUDIO" */
+    int           channels;
+    int           sampleRate;
+    int           block_align;
+    int           bit_rate;
+    int           bits_per_sample;
+    
+    /* Video Stream information, only set for "type==STREAM_VIDEO" */
+    int           fps_scale;        // scale of 1000 and a rate of 29970 will result in 29.97 fps
+    int           fps_rate;
+    int           height;           // height of the stream reported by the demuxer
+    int           width;            // width of the stream reported by the demuxer
+    float         aspect;           // display aspect of stream
+    bool          vfr;              // variable framerate
+  } ATTRIBUTE_PACKED PVR_DEMUXSTREAMINFO;
+
 #if PRAGMA_PACK
 #pragma pack()
 #endif
+
+
+  /* WARNING: MAKE SURE IF "DemuxPacket" INSIDE "DVDDemux.h" IS CHANGED THIS STRUCT MUST
+   *          ALSO CHANGED
+   * TODO:    Is there a better way to do this???
+   */
+  typedef struct demux_packet
+  {
+    BYTE* pData;   // data
+    int iSize;     // data size
+    int iStreamId; // integer representing the stream index
+    int iGroupId;  // the group this data belongs to, used to group data from different streams together
+
+    double pts; // pts in DVD_TIME_BASE
+    double dts; // dts in DVD_TIME_BASE
+    double duration; // duration in DVD_TIME_BASE if available
+  } demux_packet_t;
 
   // Structure to transfer the above functions to XBMC
   typedef struct PVRClient
@@ -272,6 +356,19 @@ extern "C" {
     int (__cdecl* ReadRecordedStream)(BYTE* buf, int buf_size);
     __int64 (__cdecl* SeekRecordedStream)(__int64 pos, int whence);
     __int64 (__cdecl* LengthRecordedStream)(void);
+
+    /** PVR Demux Stream Functions **/
+    bool (__cdecl* OpenTVDemux)(PVRDEMUXHANDLE handle, unsigned int channel);
+    bool (__cdecl* OpenRecordingDemux)(PVRDEMUXHANDLE handle, const PVR_RECORDINGINFO &recinfo);
+    void (__cdecl* DisposeDemux)();
+    void (__cdecl* ResetDemux)();
+    void (__cdecl* FlushDemux)();
+    void (__cdecl* AbortDemux)();
+    void (__cdecl* SetDemuxSpeed)(int iSpeed);
+    demux_packet_t* (__cdecl* ReadDemux)();
+    bool (__cdecl* SeekDemuxTime)(int time, bool backwords, double* startpts);
+    int (__cdecl* GetDemuxStreamLength)();
+  
   } PVRClient;
 
 #ifdef __cplusplus

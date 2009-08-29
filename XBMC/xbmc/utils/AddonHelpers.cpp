@@ -46,6 +46,7 @@
 #endif
 #include "Crc32.h"
 #include "xbox/IoSupport.h"
+#include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -672,6 +673,15 @@ bool CAddonUtils::SkinHasImage(const char *filename)
   return g_TextureManager.HasTexture(filename);
 }
 
+void CAddonUtils::FreeDemuxPacket(demux_packet* pPacket)
+{
+  CDVDDemuxUtils::FreeDemuxPacket((DemuxPacket*) pPacket);
+}
+
+demux_packet* CAddonUtils::AllocateDemuxPacket(int iDataSize)
+{
+  return (demux_packet*) CDVDDemuxUtils::AllocateDemuxPacket(iDataSize);
+}
 
 /**
 * XBMC AddOn Dialog callbacks

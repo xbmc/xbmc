@@ -87,3 +87,46 @@ void PVR_transfer_recording_entry(const PVRHANDLE handle, const PVR_RECORDINGINF
 
   m_pvr_cb->PVR.TransferRecordingEntry(m_pvr_cb->userData, handle, recording);
 }
+
+bool PVR_add_demux_stream(const PVRDEMUXHANDLE handle, const PVR_DEMUXSTREAMINFO *demux)
+{
+  if (m_pvr_cb == NULL)
+    return false;
+
+  return m_pvr_cb->PVR.AddDemuxStream(handle, demux);
+}
+
+void PVR_delete_demux_stream(const PVRDEMUXHANDLE handle, int index)
+{
+  if (m_pvr_cb == NULL)
+    return;
+
+  m_pvr_cb->PVR.DeleteDemuxStream(handle, index);
+  return;
+}
+
+void PVR_delete_demux_streams(const PVRDEMUXHANDLE handle)
+{
+  if (m_pvr_cb == NULL)
+    return;
+
+  m_pvr_cb->PVR.DeleteDemuxStreams(handle);
+  return;
+}
+
+void PVR_free_demux_packet(demux_packet* pPacket)
+{
+  if (m_pvr_cb == NULL)
+    return;
+
+  m_pvr_cb->PVR.FreeDemuxPacket(pPacket);
+  return;
+}
+
+demux_packet* PVR_allocate_demux_packet(int iDataSize)
+{
+  if (m_pvr_cb == NULL)
+    return NULL;
+
+  return m_pvr_cb->PVR.AllocateDemuxPacket(iDataSize);
+}
