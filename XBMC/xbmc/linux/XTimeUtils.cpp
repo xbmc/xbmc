@@ -105,7 +105,11 @@ BOOL QueryPerformanceFrequency(LARGE_INTEGER *lpFrequency) {
   if (lpFrequency == NULL)
     return false;
 
+#ifdef __APPLE__
+  lpFrequency->QuadPart = CVGetHostClockFrequency();
+#else
   lpFrequency->QuadPart = 1000000000L;
+#endif
   return true;
 }
 
