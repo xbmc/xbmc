@@ -21,6 +21,7 @@
  */
 
 #include <climits>
+#include <cmath>
 
 namespace MathUtils
 {
