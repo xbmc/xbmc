@@ -31,7 +31,7 @@
 #pragma comment(lib, "bcmDIL.lib")
 #endif
 
-#define LOG_LEVEL 3
+#define LOG_LEVEL 0
 #define LOG_ERROR(x, ...) CLog::Log(LOGERROR, x, __VA_ARGS__)
 #define LOG_WARN(x, ...) if(LOG_LEVEL > 0) CLog::Log(LOGWARNING, x, __VA_ARGS__)
 #define LOG_INFO(x, ...) if(LOG_LEVEL > 1) CLog::Log(LOGINFO, x, __VA_ARGS__)
@@ -226,9 +226,9 @@ void CMPCInputThread::Process()
       g_InputTimer.PunchIn();
       BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pInput->GetPtr(), pInput->GetSize(), pInput->GetPts(), FALSE);
       g_InputTimer.PunchOut();
-      LOG_DEBUG("%s: InputTimer (%d bytes) - %llu exec / %llu interval. %d in queue. (Status: %s CPU: %0.02f%%)", 
-        __MODULE_NAME__, pInput->GetSize(), g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime(), GetQueueLen(), g_DtsStatusText[ret],
-        GetRelativeUsage());
+      //LOG_DEBUG("%s: InputTimer (%d bytes) - %llu exec / %llu interval. %d in queue. (Status: %s CPU: %0.02f%%)", 
+      //  __MODULE_NAME__, pInput->GetSize(), g_InputTimer.GetExecTime(), g_InputTimer.GetIntervalTime(), GetQueueLen(), g_DtsStatusText[ret],
+      //  GetRelativeUsage());
       if (ret == BCM::BC_STS_SUCCESS)
       {
         delete pInput;
@@ -347,9 +347,16 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   switch (ret)
   {
     case BCM::BC_STS_SUCCESS:
-      m_PictureCount++;
-      pBuffer->SetPts(procOut.PicInfo.timeStamp);
-      return pBuffer;
+      if (procOut.PicInfo.timeStamp)
+      {
+        m_PictureCount++;
+        pBuffer->SetPts(procOut.PicInfo.timeStamp);
+        return pBuffer;
+      }
+      else
+      {
+        break;
+      }
     case BCM::BC_STS_NO_DATA:
       break;
     case BCM::BC_STS_FMT_CHANGE:
@@ -564,11 +571,19 @@ void CDVDVideoCodecCrystalHD::Dispose()
 void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 {
   m_DropPictures = bDrop;
+  if (m_DropPictures)
+  {
+    BCM::DtsDropPictures(m_Device, 1);
+  }
+  else
+  {
+    BCM::DtsDropPictures(m_Device, 0);
+  }
 }
 
 int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
-  int ret = VC_ERROR;
+  int ret = 0;
   g_ClientTimer.PunchIn();
 
   // Free the last provided picture buffer
@@ -588,7 +603,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
       if (m_pInputThread->AddInput(pData, iSize, (BCM::U64)(pts * 10)))
       {
         pData = NULL;
-        CLog::Log(LOGDEBUG, "%s: Added %d bytes to decoder input (Call Time: %llu, Interval %llu, Input Queue Len: %d)", __MODULE_NAME__, iSize, g_ClientTimer.GetTimeSincePunchIn(), g_ClientTimer.GetIntervalTime(), m_pInputThread->GetQueueLen());
+        //CLog::Log(LOGDEBUG, "%s: Added %d bytes to decoder input (Call Time: %llu, Interval %llu, Input Queue Len: %d)", __MODULE_NAME__, iSize, g_ClientTimer.GetTimeSincePunchIn(), g_ClientTimer.GetIntervalTime(), m_pInputThread->GetQueueLen());
         break;
       }
       else
@@ -602,13 +617,11 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     if (!m_pInputThread->GetQueueLen())
     {
       ret = VC_BUFFER;
-      break;
     }
     if (m_pOutputThread->GetReadyCount())
     {
-      CLog::Log(LOGDEBUG, "%s: Got a picture (Call Time: %llu, Interval %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn(), g_ClientTimer.GetIntervalTime(), m_pInputThread->GetQueueLen());
-      ret = VC_PICTURE;
-      break;
+      //CLog::Log(LOGDEBUG, "%s: Got a picture (Call Time: %llu, Interval %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn(), g_ClientTimer.GetIntervalTime(), m_pInputThread->GetQueueLen());
+      ret |= VC_PICTURE;
     }
 
     // If we have taken too long, return...
@@ -616,8 +629,10 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     {
       CLog::Log(LOGDEBUG, "%s: Timed-out waiting for picture (Call Time: %llu, Interval %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn(), g_ClientTimer.GetIntervalTime(), m_pInputThread->GetQueueLen());
       ret = VC_ERROR;
-      break;
     }
+    if (ret)
+      break;
+      
     Sleep(5);
   }
 
@@ -637,7 +652,8 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   if (!pBuffer)
     return false;
  
-  pDvdVideoPicture->pts = DVD_NOPTS_VALUE;// pBuffer->GetPts() / 10.0;
+  //pDvdVideoPicture->pts = DVD_NOPTS_VALUE;// pBuffer->GetPts() / 10.0;
+  pDvdVideoPicture->pts = pBuffer->GetPts() / 10.0;
   pDvdVideoPicture->data[0] = pBuffer->GetPtr(); // Y plane
   pDvdVideoPicture->data[2] = pBuffer->GetPtr() + 2073600; // U plane
   pDvdVideoPicture->data[1] = pBuffer->GetPtr() + 2073600 + 518400; // V plane
