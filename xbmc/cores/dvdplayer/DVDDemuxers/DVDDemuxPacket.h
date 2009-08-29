@@ -20,13 +20,15 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#include "DVDDemuxPacket.h"
-
-class CDVDDemuxUtils
+ 
+ typedef struct DemuxPacket
 {
-public:
-  static void FreeDemuxPacket(DemuxPacket* pPacket);
-  static DemuxPacket* AllocateDemuxPacket(int iDataSize = 0);
-};
+  BYTE* pData;   // data
+  int iSize;     // data size
+  int iStreamId; // integer representing the stream index
+  int iGroupId;  // the group this data belongs to, used to group data from different streams together
 
+  double pts; // pts in DVD_TIME_BASE
+  double dts; // dts in DVD_TIME_BASE
+  double duration; // duration in DVD_TIME_BASE if available
+} DemuxPacket;

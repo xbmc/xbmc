@@ -44,6 +44,18 @@ extern "C"
   int ReadRecordedStream(BYTE* buf, int buf_size);
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthRecordedStream(void);
+
+  bool OpenTVDemux(PVRDEMUXHANDLE handle, unsigned int channel);
+  bool OpenRecordingDemux(PVRDEMUXHANDLE handle, const PVR_RECORDINGINFO &recinfo);
+  void DisposeDemux();
+  void ResetDemux();
+  void FlushDemux();
+  void AbortDemux();
+  void SetDemuxSpeed(int iSpeed);
+  demux_packet_t* ReadDemux();
+  bool SeekDemuxTime(int time, bool backwords, double* startpts);
+  int GetDemuxStreamLength();
+    
   bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
   bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
 
@@ -88,6 +100,16 @@ extern "C"
     pClient->LengthRecordedStream   = LengthRecordedStream;
     pClient->TeletextPagePresent    = TeletextPagePresent;
     pClient->ReadTeletextPage       = ReadTeletextPage;
+    pClient->OpenTVDemux            = OpenTVDemux;
+    pClient->OpenRecordingDemux     = OpenRecordingDemux;
+    pClient->DisposeDemux           = DisposeDemux;
+    pClient->ResetDemux             = ResetDemux;
+    pClient->FlushDemux             = FlushDemux;
+    pClient->AbortDemux             = AbortDemux;
+    pClient->SetDemuxSpeed          = SetDemuxSpeed;
+    pClient->ReadDemux              = ReadDemux;
+    pClient->SeekDemuxTime          = SeekDemuxTime;
+    pClient->GetDemuxStreamLength   = GetDemuxStreamLength;
   };
 };
 

@@ -1111,6 +1111,16 @@ CFileItem *CPVRManager::GetCurrentChannelItem()
   return m_currentPlayingChannel;
 }
 
+PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
+{
+  if (!m_currentPlayingChannel)
+    return NULL;
+
+  return &m_clientsProps[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()];
+}
+
+
+
 bool CPVRManager::ChannelSwitch(unsigned int iChannel)
 {
   if (!m_currentPlayingChannel)
@@ -1670,3 +1680,100 @@ int CPVRManager::GetPreviousChannel()
 
   return m_PreviousChannel[m_PreviousChannelIndex ^= 1];
 }
+
+
+
+/************************************************************/
+/** PVR Client internal demuxer access, is used if inside  **/
+/** PVR_SERVERPROPS the HandleDemuxing is true             **/
+
+bool CPVRManager::OpenDemux(PVRDEMUXHANDLE handle)
+{
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->OpenTVDemux(handle, *m_currentPlayingChannel->GetTVChannelInfoTag());
+  else if (m_currentPlayingRecording)
+    m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->OpenRecordingDemux(handle, *m_currentPlayingRecording->GetTVRecordingInfoTag());
+}
+
+void CPVRManager::DisposeDemux()
+{
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->DisposeDemux();
+  else if (m_currentPlayingRecording)
+    m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->DisposeDemux();
+}
+
+void CPVRManager::ResetDemux()
+{
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->ResetDemux();
+  else if (m_currentPlayingRecording)
+    m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->ResetDemux();
+}
+
+void CPVRManager::FlushDemux()
+{
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->FlushDemux();
+  else if (m_currentPlayingRecording)
+    m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->FlushDemux();
+}
+
+void CPVRManager::AbortDemux()
+{
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->AbortDemux();
+  else if (m_currentPlayingRecording)
+    m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->AbortDemux();
+}
+
+void CPVRManager::SetDemuxSpeed(int iSpeed)
+{
+  if (m_currentPlayingChannel)
+    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->SetDemuxSpeed(iSpeed);
+  else if (m_currentPlayingRecording)
+    m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->SetDemuxSpeed(iSpeed);
+}
+
+demux_packet_t* CPVRManager::ReadDemux()
+{
+  demux_packet_t *ret = NULL;
+
+  if (m_currentPlayingChannel)
+    ret = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->ReadDemux();
+  else if (m_currentPlayingRecording)
+    ret = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->ReadDemux();
+  
+  return ret;
+}
+
+bool CPVRManager::SeekDemuxTime(int time, bool backwords, double* startpts)
+{
+  bool ret = false;
+
+  if (m_currentPlayingChannel)
+    ret = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->SeekDemuxTime(time, backwords, startpts);
+  else if (m_currentPlayingRecording)
+    ret = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->SeekDemuxTime(time, backwords, startpts);
+  
+  return ret;
+}
+
+int CPVRManager::GetDemuxStreamLength()
+{
+  int ret = 0;
+
+  if (m_currentPlayingChannel)
+    ret = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->GetDemuxStreamLength();
+  else if (m_currentPlayingRecording)
+    ret = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->GetDemuxStreamLength();
+  
+  return ret;
+}
+
+
+
+
+
+
+

@@ -418,3 +418,54 @@ extern "C" bool ReadTeletextPage(BYTE* buf, unsigned int channel, unsigned int P
 {
   return g_client->ReadTeletextPage(buf, channel, Page, subPage);
 }
+
+extern "C" bool OpenTVDemux(PVRDEMUXHANDLE handle, unsigned int channel)
+{
+  return false;
+}
+
+extern "C" bool OpenRecordingDemux(PVRDEMUXHANDLE handle, const PVR_RECORDINGINFO &recinfo)
+{
+  return false;
+}
+
+extern "C" void DisposeDemux()
+{
+  return;
+}
+
+extern "C" void ResetDemux()
+{
+  return;
+}
+
+extern "C" void FlushDemux()
+{
+  return;
+}
+
+extern "C" void AbortDemux()
+{
+  return;
+}
+
+extern "C" void SetDemuxSpeed(int iSpeed)
+{
+  return;
+}
+
+extern "C" demux_packet_t* ReadDemux()
+{
+  return NULL;
+}
+
+extern "C" bool SeekDemuxTime(int time, bool backwords, double* startpts)
+{
+  return false;
+}
+
+extern "C" int GetDemuxStreamLength()
+{
+  return 0;
+}
+  

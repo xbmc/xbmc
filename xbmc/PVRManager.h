@@ -129,7 +129,6 @@ public:
   int ReadLiveStream(BYTE* buf, int buf_size);
   __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
   int GetCurrentChannel(bool radio = false);
-  CFileItem *GetCurrentChannelItem();
   bool ChannelSwitch(unsigned int channel);
   bool ChannelUp(unsigned int *newchannel);
   bool ChannelDown(unsigned int *newchannel);
@@ -153,6 +152,19 @@ public:
 
   void                SetCurrentPlayingProgram(CFileItem& item);
   void                SyncInfo(); // synchronize InfoManager related stuff
+  
+  CFileItem        *GetCurrentChannelItem();
+  PVR_SERVERPROPS  *GetCurrentClientProps();
+
+  bool OpenDemux(PVRDEMUXHANDLE handle);
+  void DisposeDemux();
+  void ResetDemux();
+  void FlushDemux();
+  void AbortDemux();
+  void SetDemuxSpeed(int iSpeed);
+  demux_packet_t* ReadDemux();
+  bool SeekDemuxTime(int time, bool backwords, double* startpts);
+  int GetDemuxStreamLength();
 
 protected:
 

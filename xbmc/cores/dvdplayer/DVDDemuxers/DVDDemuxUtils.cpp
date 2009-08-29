@@ -24,6 +24,7 @@
   #include "config.h"
 #endif
 #include "DVDDemuxUtils.h"
+#include "DVDDemux.h"
 #include "DVDClock.h"
 extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG) || (defined WIN32)

@@ -228,7 +228,6 @@ bool CDVDInputStreamPVRManager::UpdateItem(CFileItem& item)
 
 bool CDVDInputStreamPVRManager::SeekTime(int iTimeInMsec)
 {
-  fprintf(stderr, "SeekTime >>>>>>>>>> %i\n", iTimeInMsec);
   return false;
 }
 
