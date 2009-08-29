@@ -366,9 +366,7 @@ AC_CHECK_LIB([png12],       [main],, AC_MSG_ERROR($missing_library)) # check for
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([lzo2],        [__lzo_init_v2],,
-  AC_CHECK_LIB([lzo],       [__lzo_init2],, AC_MSG_ERROR(ERROR: Could not find either liblzo or liblzo2 - one of these must be present))
-  )
+AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([cdio],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([samplerate],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
@@ -791,7 +789,6 @@ AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd g
 
 # Check for various sizes
 AC_CHECK_SIZEOF([int])
-AC_CHECK_SIZEOF([size_t])
 
 dashes="------------------------"
 final_message="\n  XBMC Configuration:"

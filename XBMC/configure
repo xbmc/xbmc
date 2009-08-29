@@ -11,7 +11,7 @@
 # This configure script is free software; the Free Software Foundation
 # gives unlimited permission to copy, distribute and modify it.
 ## -------------------- ##
-## M4sh Initialization.  ##
+## M4sh Initialization. ##
 ## -------------------- ##
 
 # Be more Bourne compatible
@@ -96,8 +96,8 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  test -r "$as_dir/$0" && as_myself=$as_dir/$0 && break
-done
+    test -r "$as_dir/$0" && as_myself=$as_dir/$0 && break
+  done
 IFS=$as_save_IFS
 
      ;;
@@ -180,7 +180,7 @@ fi
   if test x$as_have_required = xyes && (eval "$as_suggested") 2>/dev/null; then :
 
 else
-    as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
 as_found=false
 for as_dir in /bin$PATH_SEPARATOR/usr/bin$PATH_SEPARATOR$PATH
 do
@@ -227,13 +227,13 @@ fi
   if test x${ZSH_VERSION+set} = xset ; then
     $as_echo "$0: In particular, zsh $ZSH_VERSION has bugs and should"
     $as_echo "$0: be upgraded to zsh 4.3.4 or later."
-else
+  else
     $as_echo "$0: Please tell bug-autoconf@gnu.org and
 $0: http://xbmc.org/trac/ about your system, including any
 $0: error possibly output before this message. Then install
 $0: a modern shell, or manually run the script under such a
 $0: shell if you do have one."
-fi
+  fi
   exit 1
 fi
 fi
@@ -300,19 +300,19 @@ $as_echo X"$as_dir" |
     sed '/^X\(.*[^/]\)\/\/*[^/][^/]*\/*$/{
 	    s//\1/
 	    q
-}
+	  }
 	  /^X\(\/\/\)[^/].*/{
 	    s//\1/
 	    q
-}
+	  }
 	  /^X\(\/\/\)$/{
 	    s//\1/
 	    q
-}
+	  }
 	  /^X\(\/\).*/{
 	    s//\1/
 	    q
-}
+	  }
 	  s/.*/./; q'`
       test -d "$as_dir" && break
     done
@@ -336,7 +336,7 @@ else
   as_fn_append ()
   {
     eval $1=\$$1\$2
-}
+  }
 fi # as_fn_append
 
 # as_fn_arith ARG...
@@ -368,7 +368,7 @@ as_fn_error ()
   if test "$3"; then
     as_lineno=${as_lineno-"$2"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
     $as_echo "$as_me:${as_lineno-$LINENO}: error: $1" >&$3
-fi
+  fi
   $as_echo "$as_me: error: $1" >&2
   as_fn_exit $as_status
 } # as_fn_error
@@ -400,7 +400,7 @@ $as_echo X/"$0" |
     sed '/^.*\/\([^/][^/]*\)\/*$/{
 	    s//\1/
 	    q
-}
+	  }
 	  /^X\/\(\/\/\)$/{
 	    s//\1/
 	    q
@@ -2547,8 +2547,8 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  $as_echo "PATH: $as_dir"
-done
+    $as_echo "PATH: $as_dir"
+  done
 IFS=$as_save_IFS
 
 } >&5
@@ -2886,11 +2886,11 @@ ac_aux_dir=
 for ac_dir in "$srcdir" "$srcdir/.." "$srcdir/../.."; do
   for ac_t in install-sh install.sh shtool; do
     if test -f "$ac_dir/$ac_t"; then
-    ac_aux_dir=$ac_dir
+      ac_aux_dir=$ac_dir
       ac_install_sh="$ac_aux_dir/$ac_t -c"
       break 2
-  fi
-done
+    fi
+  done
 done
 if test -z "$ac_aux_dir"; then
   as_fn_error "cannot find install-sh, install.sh, or shtool in \"$srcdir\" \"$srcdir/..\" \"$srcdir/../..\"" "$LINENO" 5
@@ -3131,14 +3131,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_path_CCACHE="$as_dir/$ac_word$ac_exec_ext"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
   test -z "$ac_cv_path_CCACHE" && ac_cv_path_CCACHE="none"
@@ -3349,14 +3349,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_CXX="$ac_tool_prefix$ac_prog"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 fi
@@ -3393,14 +3393,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_ac_ct_CXX="$ac_prog"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 fi
@@ -3520,7 +3520,7 @@ do
 	# certainly right.
 	break;;
     *.* )
-        if test "${ac_cv_exeext+set}" = set && test "$ac_cv_exeext" != no;
+	if test "${ac_cv_exeext+set}" = set && test "$ac_cv_exeext" != no;
 	then :; else
 	   ac_cv_exeext=`expr "$ac_file" : '[^.]*\(\..*\)'`
 	fi
@@ -3707,7 +3707,7 @@ _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
   ac_compiler_gnu=yes
 else
-	ac_compiler_gnu=no
+  ac_compiler_gnu=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 ac_cv_cxx_compiler_gnu=$ac_compiler_gnu
@@ -3745,7 +3745,7 @@ _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
   ac_cv_prog_cxx_g=yes
 else
-	CXXFLAGS=""
+  CXXFLAGS=""
       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -3760,7 +3760,7 @@ _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
 
 else
-	ac_cxx_werror_flag=$ac_save_cxx_werror_flag
+  ac_cxx_werror_flag=$ac_save_cxx_werror_flag
 	 CXXFLAGS="-g"
 	 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -3829,14 +3829,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_CC="${ac_tool_prefix}gcc"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 fi
@@ -3869,14 +3869,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_ac_ct_CC="gcc"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 fi
@@ -3922,14 +3922,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_CC="${ac_tool_prefix}cc"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 fi
@@ -3963,7 +3963,7 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     if test "$as_dir/$ac_word$ac_exec_ext" = "/usr/ucb/cc"; then
        ac_prog_rejected=yes
@@ -3974,7 +3974,7 @@ do
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 if test $ac_prog_rejected = yes; then
@@ -4021,14 +4021,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_CC="$ac_tool_prefix$ac_prog"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 fi
@@ -4065,14 +4065,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_ac_ct_CC="$ac_prog"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 fi
@@ -4158,7 +4158,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_compiler_gnu=yes
 else
-	ac_compiler_gnu=no
+  ac_compiler_gnu=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 ac_cv_c_compiler_gnu=$ac_compiler_gnu
@@ -4196,7 +4196,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_prog_cc_g=yes
 else
-	CFLAGS=""
+  CFLAGS=""
       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -4211,7 +4211,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
 
 else
-	ac_c_werror_flag=$ac_save_c_werror_flag
+  ac_c_werror_flag=$ac_save_c_werror_flag
 	 CFLAGS="-g"
 	 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
@@ -4366,14 +4366,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_AWK="$ac_prog"
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
 fi
@@ -4634,7 +4634,7 @@ for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_prog in grep ggrep; do
+    for ac_prog in grep ggrep; do
     for ac_exec_ext in '' $ac_executable_extensions; do
       ac_path_GREP="$as_dir/$ac_prog$ac_exec_ext"
       { test -f "$ac_path_GREP" && $as_test_x "$ac_path_GREP"; } || continue
@@ -4669,7 +4669,7 @@ esac
       $ac_path_GREP_found && break 3
     done
   done
-done
+  done
 IFS=$as_save_IFS
   if test -z "$ac_cv_path_GREP"; then
     as_fn_error "no acceptable grep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
@@ -4700,7 +4700,7 @@ for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_prog in egrep; do
+    for ac_prog in egrep; do
     for ac_exec_ext in '' $ac_executable_extensions; do
       ac_path_EGREP="$as_dir/$ac_prog$ac_exec_ext"
       { test -f "$ac_path_EGREP" && $as_test_x "$ac_path_EGREP"; } || continue
@@ -4735,7 +4735,7 @@ esac
       $ac_path_EGREP_found && break 3
     done
   done
-done
+  done
 IFS=$as_save_IFS
   if test -z "$ac_cv_path_EGREP"; then
     as_fn_error "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
@@ -4774,7 +4774,7 @@ _ACEOF
 if ac_fn_cxx_try_compile "$LINENO"; then :
   ac_cv_header_stdc=yes
 else
-	ac_cv_header_stdc=no
+  ac_cv_header_stdc=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
@@ -4847,7 +4847,7 @@ _ACEOF
 if ac_fn_cxx_try_run "$LINENO"; then :
 
 else
-ac_cv_header_stdc=no
+  ac_cv_header_stdc=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -4867,7 +4867,7 @@ fi
 for ac_header in sys/types.h sys/stat.h stdlib.h string.h memory.h strings.h \
 		  inttypes.h stdint.h unistd.h
 do :
-as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_cxx_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default
 "
 eval as_val=\$$as_ac_Header
@@ -4923,10 +4923,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_GLEW_main=yes
 else
-	ac_cv_lib_GLEW_main=no
+  ac_cv_lib_GLEW_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GLEW_main" >&5
@@ -4965,10 +4965,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_GL_main=yes
 else
-	ac_cv_lib_GL_main=no
+  ac_cv_lib_GL_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GL_main" >&5
@@ -5006,10 +5006,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_GLEW_main=yes
 else
-	ac_cv_lib_GLEW_main=no
+  ac_cv_lib_GLEW_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GLEW_main" >&5
@@ -5047,10 +5047,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_GLU_main=yes
 else
-	ac_cv_lib_GLU_main=no
+  ac_cv_lib_GLU_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GLU_main" >&5
@@ -5092,10 +5092,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_SDL_gfx_main=yes
 else
-	ac_cv_lib_SDL_gfx_main=no
+  ac_cv_lib_SDL_gfx_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_SDL_gfx_main" >&5
@@ -5297,10 +5297,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_mad_main=yes
 else
-	ac_cv_lib_mad_main=no
+  ac_cv_lib_mad_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mad_main" >&5
@@ -5338,10 +5338,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_ogg_main=yes
 else
-	ac_cv_lib_ogg_main=no
+  ac_cv_lib_ogg_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ogg_main" >&5
@@ -5379,10 +5379,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_vorbis_main=yes
 else
-	ac_cv_lib_vorbis_main=no
+  ac_cv_lib_vorbis_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_vorbis_main" >&5
@@ -5420,10 +5420,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_vorbisenc_main=yes
 else
-	ac_cv_lib_vorbisenc_main=no
+  ac_cv_lib_vorbisenc_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_vorbisenc_main" >&5
@@ -5461,10 +5461,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_vorbisfile_main=yes
 else
-	ac_cv_lib_vorbisfile_main=no
+  ac_cv_lib_vorbisfile_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_vorbisfile_main" >&5
@@ -5502,10 +5502,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_freetype_main=yes
 else
-	ac_cv_lib_freetype_main=no
+  ac_cv_lib_freetype_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_freetype_main" >&5
@@ -5543,10 +5543,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_fontconfig_main=yes
 else
-	ac_cv_lib_fontconfig_main=no
+  ac_cv_lib_fontconfig_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_fontconfig_main" >&5
@@ -5584,10 +5584,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_bz2_main=yes
 else
-	ac_cv_lib_bz2_main=no
+  ac_cv_lib_bz2_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_bz2_main" >&5
@@ -5625,10 +5625,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_fribidi_main=yes
 else
-	ac_cv_lib_fribidi_main=no
+  ac_cv_lib_fribidi_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_fribidi_main" >&5
@@ -5666,10 +5666,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_sqlite3_main=yes
 else
-	ac_cv_lib_sqlite3_main=no
+  ac_cv_lib_sqlite3_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_sqlite3_main" >&5
@@ -5707,10 +5707,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_mysqlclient_main=yes
 else
-	ac_cv_lib_mysqlclient_main=no
+  ac_cv_lib_mysqlclient_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mysqlclient_main" >&5
@@ -5748,10 +5748,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_asound_main=yes
 else
-	ac_cv_lib_asound_main=no
+  ac_cv_lib_asound_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_asound_main" >&5
@@ -5793,10 +5793,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_rt_clock_gettime=yes
 else
-	ac_cv_lib_rt_clock_gettime=no
+  ac_cv_lib_rt_clock_gettime=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_rt_clock_gettime" >&5
@@ -5832,10 +5832,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_png12_main=yes
 else
-	ac_cv_lib_png12_main=no
+  ac_cv_lib_png12_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_png12_main" >&5
@@ -5873,10 +5873,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_jpeg_main=yes
 else
-	ac_cv_lib_jpeg_main=no
+  ac_cv_lib_jpeg_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jpeg_main" >&5
@@ -5914,10 +5914,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_pcre_main=yes
 else
-	ac_cv_lib_pcre_main=no
+  ac_cv_lib_pcre_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pcre_main" >&5
@@ -5974,9 +5974,9 @@ else
   as_fn_error "$missing_library" "$LINENO" 5
 fi
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for __lzo_init_v2 in -llzo2" >&5
-$as_echo_n "checking for __lzo_init_v2 in -llzo2... " >&6; }
-if test "${ac_cv_lib_lzo2___lzo_init_v2+set}" = set; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llzo2" >&5
+$as_echo_n "checking for main in -llzo2... " >&6; }
+if test "${ac_cv_lib_lzo2_main+set}" = set; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
@@ -5984,33 +5984,27 @@ LIBS="-llzo2  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char __lzo_init_v2 ();
+
 int
 main ()
 {
-return __lzo_init_v2 ();
+return main ();
   ;
   return 0;
 }
 _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_lzo2___lzo_init_v2=yes
+  ac_cv_lib_lzo2_main=yes
 else
-	ac_cv_lib_lzo2___lzo_init_v2=no
+  ac_cv_lib_lzo2_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lzo2___lzo_init_v2" >&5
-$as_echo "$ac_cv_lib_lzo2___lzo_init_v2" >&6; }
-if test "x$ac_cv_lib_lzo2___lzo_init_v2" = x""yes; then :
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lzo2_main" >&5
+$as_echo "$ac_cv_lib_lzo2_main" >&6; }
+if test "x$ac_cv_lib_lzo2_main" = x""yes; then :
   cat >>confdefs.h <<_ACEOF
 #define HAVE_LIBLZO2 1
 _ACEOF
@@ -6018,54 +6012,7 @@ _ACEOF
   LIBS="-llzo2 $LIBS"
 
 else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __lzo_init2 in -llzo" >&5
-$as_echo_n "checking for __lzo_init2 in -llzo... " >&6; }
-if test "${ac_cv_lib_lzo___lzo_init2+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-llzo  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char __lzo_init2 ();
-int
-main ()
-{
-return __lzo_init2 ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_lzo___lzo_init2=yes
-else
-	ac_cv_lib_lzo___lzo_init2=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lzo___lzo_init2" >&5
-$as_echo "$ac_cv_lib_lzo___lzo_init2" >&6; }
-if test "x$ac_cv_lib_lzo___lzo_init2" = x""yes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBLZO 1
-_ACEOF
-
-  LIBS="-llzo $LIBS"
-
-else
-  as_fn_error "ERROR: Could not find either liblzo or liblzo2 - one of these must be present" "$LINENO" 5
-fi
-
-
+  as_fn_error "$missing_library" "$LINENO" 5
 fi
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lcdio" >&5
@@ -6090,10 +6037,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_cdio_main=yes
 else
-	ac_cv_lib_cdio_main=no
+  ac_cv_lib_cdio_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_cdio_main" >&5
@@ -6131,10 +6078,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_samplerate_main=yes
 else
-	ac_cv_lib_samplerate_main=no
+  ac_cv_lib_samplerate_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_samplerate_main" >&5
@@ -6172,10 +6119,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_z_main=yes
 else
-	ac_cv_lib_z_main=no
+  ac_cv_lib_z_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_z_main" >&5
@@ -6215,10 +6162,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_iconv_main=yes
 else
-	ac_cv_lib_iconv_main=no
+  ac_cv_lib_iconv_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_iconv_main" >&5
@@ -6257,10 +6204,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_smbclient_main=yes
 else
-	ac_cv_lib_smbclient_main=no
+  ac_cv_lib_smbclient_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_smbclient_main" >&5
@@ -6298,10 +6245,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_SDL_main=yes
 else
-	ac_cv_lib_SDL_main=no
+  ac_cv_lib_SDL_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_SDL_main" >&5
@@ -6339,10 +6286,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_SDL_image_main=yes
 else
-	ac_cv_lib_SDL_image_main=no
+  ac_cv_lib_SDL_image_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_SDL_image_main" >&5
@@ -6380,10 +6327,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_SDL_mixer_main=yes
 else
-	ac_cv_lib_SDL_mixer_main=no
+  ac_cv_lib_SDL_mixer_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_SDL_mixer_main" >&5
@@ -6421,10 +6368,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_dl_main=yes
 else
-	ac_cv_lib_dl_main=no
+  ac_cv_lib_dl_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dl_main" >&5
@@ -6462,10 +6409,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_resolv_main=yes
 else
-	ac_cv_lib_resolv_main=no
+  ac_cv_lib_resolv_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_resolv_main" >&5
@@ -6503,10 +6450,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_enca_main=yes
 else
-	ac_cv_lib_enca_main=no
+  ac_cv_lib_enca_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_enca_main" >&5
@@ -6544,10 +6491,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_jasper_main=yes
 else
-	ac_cv_lib_jasper_main=no
+  ac_cv_lib_jasper_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_jasper_main" >&5
@@ -6585,10 +6532,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_mms_main=yes
 else
-	ac_cv_lib_mms_main=no
+  ac_cv_lib_mms_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mms_main" >&5
@@ -6627,10 +6574,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_Xt_main=yes
 else
-	ac_cv_lib_Xt_main=no
+  ac_cv_lib_Xt_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xt_main" >&5
@@ -6668,10 +6615,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_Xtst_main=yes
 else
-	ac_cv_lib_Xtst_main=no
+  ac_cv_lib_Xtst_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xtst_main" >&5
@@ -6709,10 +6656,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_Xmu_main=yes
 else
-	ac_cv_lib_Xmu_main=no
+  ac_cv_lib_Xmu_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xmu_main" >&5
@@ -6750,10 +6697,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_Xinerama_main=yes
 else
-	ac_cv_lib_Xinerama_main=no
+  ac_cv_lib_Xinerama_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xinerama_main" >&5
@@ -6791,10 +6738,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_curl_main=yes
 else
-	ac_cv_lib_curl_main=no
+  ac_cv_lib_curl_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_curl_main" >&5
@@ -6832,10 +6779,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_dbus_1_main=yes
 else
-	ac_cv_lib_dbus_1_main=no
+  ac_cv_lib_dbus_1_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dbus_1_main" >&5
@@ -6873,10 +6820,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_hal_storage_main=yes
 else
-	ac_cv_lib_hal_storage_main=no
+  ac_cv_lib_hal_storage_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_hal_storage_main" >&5
@@ -6914,10 +6861,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_hal_main=yes
 else
-	ac_cv_lib_hal_main=no
+  ac_cv_lib_hal_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_hal_main" >&5
@@ -6959,10 +6906,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_pulse_main=yes
 else
-	ac_cv_lib_pulse_main=no
+  ac_cv_lib_pulse_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pulse_main" >&5
@@ -7009,10 +6956,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_faac_main=yes
 else
-	ac_cv_lib_faac_main=no
+  ac_cv_lib_faac_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_faac_main" >&5
@@ -7064,10 +7011,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_avahi_common_main=yes
 else
-	ac_cv_lib_avahi_common_main=no
+  ac_cv_lib_avahi_common_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avahi_common_main" >&5
@@ -7103,10 +7050,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_avahi_client_main=yes
 else
-	ac_cv_lib_avahi_client_main=no
+  ac_cv_lib_avahi_client_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avahi_client_main" >&5
@@ -7155,10 +7102,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_Xrandr_main=yes
 else
-	ac_cv_lib_Xrandr_main=no
+  ac_cv_lib_Xrandr_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_Xrandr_main" >&5
@@ -7219,10 +7166,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_avcodec_main=yes
 else
-	ac_cv_lib_avcodec_main=no
+  ac_cv_lib_avcodec_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avcodec_main" >&5
@@ -7260,10 +7207,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_avformat_main=yes
 else
-	ac_cv_lib_avformat_main=no
+  ac_cv_lib_avformat_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avformat_main" >&5
@@ -7301,10 +7248,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_avutil_main=yes
 else
-	ac_cv_lib_avutil_main=no
+  ac_cv_lib_avutil_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avutil_main" >&5
@@ -7342,10 +7289,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_postproc_main=yes
 else
-	ac_cv_lib_postproc_main=no
+  ac_cv_lib_postproc_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_postproc_main" >&5
@@ -7383,10 +7330,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_swscale_main=yes
 else
-	ac_cv_lib_swscale_main=no
+  ac_cv_lib_swscale_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_swscale_main" >&5
@@ -7465,9 +7412,9 @@ eval as_val=\$$as_ac_Header
 _ACEOF
 
 else
-for ac_header in ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h
+  for ac_header in ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h
 do :
-as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
 eval as_val=\$$as_ac_Header
    if test "x$as_val" = x""yes; then :
@@ -7487,7 +7434,7 @@ done
 
 
   # We'll support the use of rgb2rgb.h if it exists.
-for ac_header in libswscale/rgb2rgb.h
+  for ac_header in libswscale/rgb2rgb.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "libswscale/rgb2rgb.h" "ac_cv_header_libswscale_rgb2rgb_h" "$ac_includes_default"
 if test "x$ac_cv_header_libswscale_rgb2rgb_h" = x""yes; then :
@@ -7499,7 +7446,7 @@ fi
 
 done
 
-for ac_header in ffmpeg/rgb2rgb.h
+  for ac_header in ffmpeg/rgb2rgb.h
 do :
   ac_fn_c_check_header_mongrel "$LINENO" "ffmpeg/rgb2rgb.h" "ac_cv_header_ffmpeg_rgb2rgb_h" "$ac_includes_default"
 if test "x$ac_cv_header_ffmpeg_rgb2rgb_h" = x""yes; then :
@@ -7548,10 +7495,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture=yes
 else
-	ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture=no
+  ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_avcodec_ff_vdpau_vc1_decode_picture" >&5
@@ -7598,10 +7545,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_mad_main=yes
 else
-	ac_cv_lib_mad_main=no
+  ac_cv_lib_mad_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mad_main" >&5
@@ -7654,10 +7601,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_a52_main=yes
 else
-	ac_cv_lib_a52_main=no
+  ac_cv_lib_a52_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_a52_main" >&5
@@ -7710,10 +7657,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_dts_main=yes
 else
-	ac_cv_lib_dts_main=no
+  ac_cv_lib_dts_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_dts_main" >&5
@@ -7766,10 +7713,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_faad_main=yes
 else
-	ac_cv_lib_faad_main=no
+  ac_cv_lib_faad_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_faad_main" >&5
@@ -7809,10 +7756,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_mp4ff_main=yes
 else
-	ac_cv_lib_mp4ff_main=no
+  ac_cv_lib_mp4ff_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mp4ff_main" >&5
@@ -7858,10 +7805,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_faad_NeAACDecInitDRM=yes
 else
-	ac_cv_lib_faad_NeAACDecInitDRM=no
+  ac_cv_lib_faad_NeAACDecInitDRM=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_faad_NeAACDecInitDRM" >&5
@@ -7949,10 +7896,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_mpeg2_main=yes
 else
-	ac_cv_lib_mpeg2_main=no
+  ac_cv_lib_mpeg2_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mpeg2_main" >&5
@@ -7990,10 +7937,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_mpeg2convert_main=yes
 else
-	ac_cv_lib_mpeg2convert_main=no
+  ac_cv_lib_mpeg2convert_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mpeg2convert_main" >&5
@@ -8084,10 +8031,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_ass_main=yes
 else
-	ac_cv_lib_ass_main=no
+  ac_cv_lib_ass_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_ass_main" >&5
@@ -8101,7 +8048,7 @@ _ACEOF
 
 fi
 
-   { $as_echo "$as_me:${as_lineno-$LINENO}: $external_libass_enabled" >&5
+  { $as_echo "$as_me:${as_lineno-$LINENO}: $external_libass_enabled" >&5
 $as_echo "$as_me: $external_libass_enabled" >&6;}
   USE_EXTERNAL_LIBASS=1
 
@@ -8171,10 +8118,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_mpcdec_main=yes
 else
-	ac_cv_lib_mpcdec_main=no
+  ac_cv_lib_mpcdec_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mpcdec_main" >&5
@@ -8227,10 +8174,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_FLAC_main=yes
 else
-	ac_cv_lib_FLAC_main=no
+  ac_cv_lib_FLAC_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_FLAC_main" >&5
@@ -8283,10 +8230,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_wavpack_main=yes
 else
-	ac_cv_lib_wavpack_main=no
+  ac_cv_lib_wavpack_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_wavpack_main" >&5
@@ -8340,10 +8287,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_python2_6_main=yes
 else
-	ac_cv_lib_python2_6_main=no
+  ac_cv_lib_python2_6_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_python2_6_main" >&5
@@ -8378,10 +8325,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_python2_5_main=yes
 else
-	ac_cv_lib_python2_5_main=no
+  ac_cv_lib_python2_5_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_python2_5_main" >&5
@@ -8416,10 +8363,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_python2_4_main=yes
 else
-	ac_cv_lib_python2_4_main=no
+  ac_cv_lib_python2_4_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_python2_4_main" >&5
@@ -8463,10 +8410,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_python2_6_main=yes
 else
-	ac_cv_lib_python2_6_main=no
+  ac_cv_lib_python2_6_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_python2_6_main" >&5
@@ -8496,10 +8443,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_python2_5_main=yes
 else
-	ac_cv_lib_python2_5_main=no
+  ac_cv_lib_python2_5_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_python2_5_main" >&5
@@ -8529,10 +8476,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_python2_4_main=yes
 else
-	ac_cv_lib_python2_4_main=no
+  ac_cv_lib_python2_4_main=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_python2_4_main" >&5
@@ -8581,14 +8528,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_HAVE_ZIP=""yes""
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
   test -z "$ac_cv_prog_HAVE_ZIP" && ac_cv_prog_HAVE_ZIP=""no""
@@ -8650,14 +8597,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_HAVE_GAWK=""yes""
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
   test -z "$ac_cv_prog_HAVE_GAWK" && ac_cv_prog_HAVE_GAWK=""no""
@@ -8693,14 +8640,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_HAVE_CMAKE=""yes""
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
   test -z "$ac_cv_prog_HAVE_CMAKE" && ac_cv_prog_HAVE_CMAKE=""no""
@@ -8735,14 +8682,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_HAVE_GPERF=""yes""
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
   test -z "$ac_cv_prog_HAVE_GPERF" && ac_cv_prog_HAVE_GPERF=""no""
@@ -8777,14 +8724,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_HAVE_UNZIP=""yes""
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
   test -z "$ac_cv_prog_HAVE_UNZIP" && ac_cv_prog_HAVE_UNZIP=""no""
@@ -8820,14 +8767,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_HAVE_NASM=""yes""
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
   test -z "$ac_cv_prog_HAVE_NASM" && ac_cv_prog_HAVE_NASM=""no""
@@ -8874,7 +8821,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   eval "$as_ac_Header=yes"
 else
-	eval "$as_ac_Header=no"
+  eval "$as_ac_Header=no"
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -8928,7 +8875,7 @@ for ac_lib in '' dir; do
   ac_cv_search_opendir=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext
+    conftest$ac_exeext
   if test "${ac_cv_search_opendir+set}" = set; then :
   break
 fi
@@ -8985,7 +8932,7 @@ for ac_lib in '' x; do
   ac_cv_search_opendir=$ac_res
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext
+    conftest$ac_exeext
   if test "${ac_cv_search_opendir+set}" = set; then :
   break
 fi
@@ -9031,7 +8978,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_header_stdc=yes
 else
-	ac_cv_header_stdc=no
+  ac_cv_header_stdc=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 
@@ -9104,7 +9051,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
 
 else
-ac_cv_header_stdc=no
+  ac_cv_header_stdc=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -9149,7 +9096,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_header_sys_wait_h=yes
 else
-	ac_cv_header_sys_wait_h=no
+  ac_cv_header_sys_wait_h=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9178,7 +9125,7 @@ for ac_header in arpa/inet.h fcntl.h float.h inttypes.h limits.h locale.h \
   strings.h sys/file.h sys/ioctl.h sys/mount.h sys/param.h sys/socket.h \
   sys/time.h sys/timeb.h sys/vfs.h termios.h unistd.h utime.h wchar.h wctype.h
 do :
-as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
 eval as_val=\$$as_ac_Header
    if test "x$as_val" = x""yes; then :
@@ -9222,7 +9169,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_header_stat_broken=no
 else
-	ac_cv_header_stat_broken=yes
+  ac_cv_header_stat_broken=yes
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9322,7 +9269,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_header_stdbool_h=yes
 else
-	ac_cv_header_stdbool_h=no
+  ac_cv_header_stdbool_h=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9412,7 +9359,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_c_const=yes
 else
-	ac_cv_c_const=no
+  ac_cv_c_const=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9497,7 +9444,7 @@ _ACEOF
 esac
 
 ac_fn_c_find_intX_t "$LINENO" "8" "ac_cv_c_int8_t"
-  case $ac_cv_c_int8_t in #(
+case $ac_cv_c_int8_t in #(
   no|yes) ;; #(
   *)
 
@@ -9505,10 +9452,10 @@ cat >>confdefs.h <<_ACEOF
 #define int8_t $ac_cv_c_int8_t
 _ACEOF
 ;;
-  esac
+esac
 
 ac_fn_c_find_intX_t "$LINENO" "16" "ac_cv_c_int16_t"
-  case $ac_cv_c_int16_t in #(
+case $ac_cv_c_int16_t in #(
   no|yes) ;; #(
   *)
 
@@ -9516,10 +9463,10 @@ cat >>confdefs.h <<_ACEOF
 #define int16_t $ac_cv_c_int16_t
 _ACEOF
 ;;
-  esac
+esac
 
 ac_fn_c_find_intX_t "$LINENO" "32" "ac_cv_c_int32_t"
-  case $ac_cv_c_int32_t in #(
+case $ac_cv_c_int32_t in #(
   no|yes) ;; #(
   *)
 
@@ -9527,10 +9474,10 @@ cat >>confdefs.h <<_ACEOF
 #define int32_t $ac_cv_c_int32_t
 _ACEOF
 ;;
-  esac
+esac
 
 ac_fn_c_find_intX_t "$LINENO" "64" "ac_cv_c_int64_t"
-  case $ac_cv_c_int64_t in #(
+case $ac_cv_c_int64_t in #(
   no|yes) ;; #(
   *)
 
@@ -9538,7 +9485,7 @@ cat >>confdefs.h <<_ACEOF
 #define int64_t $ac_cv_c_int64_t
 _ACEOF
 ;;
-  esac
+esac
 
 ac_fn_c_check_type "$LINENO" "mode_t" "ac_cv_type_mode_t" "$ac_includes_default"
 if test "x$ac_cv_type_mode_t" = x""yes; then :
@@ -9674,7 +9621,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_header_time=yes
 else
-	ac_cv_header_time=no
+  ac_cv_header_time=no
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9709,7 +9656,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_struct_tm=time.h
 else
-	ac_cv_struct_tm=sys/time.h
+  ac_cv_struct_tm=sys/time.h
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -9722,7 +9669,7 @@ $as_echo "#define TM_IN_SYS_TIME 1" >>confdefs.h
 fi
 
 ac_fn_c_find_uintX_t "$LINENO" "8" "ac_cv_c_uint8_t"
-  case $ac_cv_c_uint8_t in #(
+case $ac_cv_c_uint8_t in #(
   no|yes) ;; #(
   *)
 
@@ -9736,7 +9683,7 @@ _ACEOF
   esac
 
 ac_fn_c_find_uintX_t "$LINENO" "16" "ac_cv_c_uint16_t"
-  case $ac_cv_c_uint16_t in #(
+case $ac_cv_c_uint16_t in #(
   no|yes) ;; #(
   *)
 
@@ -9748,7 +9695,7 @@ _ACEOF
   esac
 
 ac_fn_c_find_uintX_t "$LINENO" "32" "ac_cv_c_uint32_t"
-  case $ac_cv_c_uint32_t in #(
+case $ac_cv_c_uint32_t in #(
   no|yes) ;; #(
   *)
 
@@ -9762,7 +9709,7 @@ _ACEOF
   esac
 
 ac_fn_c_find_uintX_t "$LINENO" "64" "ac_cv_c_uint64_t"
-  case $ac_cv_c_uint64_t in #(
+case $ac_cv_c_uint64_t in #(
   no|yes) ;; #(
   *)
 
@@ -9799,10 +9746,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_working_alloca_h=yes
 else
-	ac_cv_working_alloca_h=no
+  ac_cv_working_alloca_h=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_working_alloca_h" >&5
 $as_echo "$ac_cv_working_alloca_h" >&6; }
@@ -9852,10 +9799,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_func_alloca_works=yes
 else
-	ac_cv_func_alloca_works=no
+  ac_cv_func_alloca_works=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_func_alloca_works" >&5
 $as_echo "$ac_cv_func_alloca_works" >&6; }
@@ -9951,7 +9898,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_c_stack_direction=1
 else
-ac_cv_c_stack_direction=-1
+  ac_cv_c_stack_direction=-1
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10015,7 +9962,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_chown_works=yes
 else
-ac_cv_func_chown_works=no
+  ac_cv_func_chown_works=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10059,7 +10006,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_closedir_void=no
 else
-ac_cv_func_closedir_void=yes
+  ac_cv_func_closedir_void=yes
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10093,10 +10040,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_error_at_line=yes
 else
-	ac_cv_lib_error_at_line=no
+  ac_cv_lib_error_at_line=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_error_at_line" >&5
 $as_echo "$ac_cv_lib_error_at_line" >&6; }
@@ -10132,7 +10079,7 @@ if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_sys_largefile_source=no; break
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #define _LARGEFILE_SOURCE 1
@@ -10151,7 +10098,7 @@ if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_sys_largefile_source=1; break
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
   ac_cv_sys_largefile_source=unknown
   break
 done
@@ -10248,7 +10195,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_lstat_dereferences_slashed_symlink=yes
 else
-ac_cv_func_lstat_dereferences_slashed_symlink=no
+  ac_cv_func_lstat_dereferences_slashed_symlink=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10304,7 +10251,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_lstat_empty_string_bug=no
 else
-ac_cv_func_lstat_empty_string_bug=yes
+  ac_cv_func_lstat_empty_string_bug=yes
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10356,7 +10303,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_lstat_dereferences_slashed_symlink=yes
 else
-ac_cv_func_lstat_dereferences_slashed_symlink=no
+  ac_cv_func_lstat_dereferences_slashed_symlink=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10435,7 +10382,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_memcmp_working=yes
 else
-ac_cv_func_memcmp_working=no
+  ac_cv_func_memcmp_working=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10454,9 +10401,9 @@ esac
 
 
 
-for ac_header in $ac_header_list
+  for ac_header in $ac_header_list
 do :
-as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default
 "
 eval as_val=\$$as_ac_Header
@@ -10476,9 +10423,9 @@ done
 
 
 
-for ac_func in $ac_func_list
+  for ac_func in $ac_func_list
 do :
-as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 eval as_val=\$$as_ac_var
    if test "x$as_val" = x""yes; then :
@@ -10701,7 +10648,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_working_mktime=yes
 else
-ac_cv_func_working_mktime=no
+  ac_cv_func_working_mktime=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10721,7 +10668,7 @@ fi
 
 for ac_header in stdlib.h unistd.h
 do :
-as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
 eval as_val=\$$as_ac_Header
    if test "x$as_val" = x""yes; then :
@@ -10884,7 +10831,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_mmap_fixed_mapped=yes
 else
-ac_cv_func_mmap_fixed_mapped=no
+  ac_cv_func_mmap_fixed_mapped=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10939,7 +10886,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_realloc_0_nonnull=yes
 else
-ac_cv_func_realloc_0_nonnull=no
+  ac_cv_func_realloc_0_nonnull=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -10969,7 +10916,7 @@ fi
 
 for ac_header in sys/select.h sys/socket.h
 do :
-as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
 eval as_val=\$$as_ac_Header
    if test "x$as_val" = x""yes; then :
@@ -11071,7 +11018,7 @@ _ACEOF
 if ac_fn_c_try_compile "$LINENO"; then :
   ac_cv_type_signal=int
 else
-	ac_cv_type_signal=void
+  ac_cv_type_signal=void
 fi
 rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
 fi
@@ -11106,7 +11053,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_stat_empty_string_bug=no
 else
-ac_cv_func_stat_empty_string_bug=yes
+  ac_cv_func_stat_empty_string_bug=yes
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -11153,7 +11100,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_strcoll_works=yes
 else
-ac_cv_func_strcoll_works=no
+  ac_cv_func_strcoll_works=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -11206,10 +11153,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_intl_strftime=yes
 else
-	ac_cv_lib_intl_strftime=no
+  ac_cv_lib_intl_strftime=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_intl_strftime" >&5
@@ -11267,7 +11214,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_strtod=yes
 else
-ac_cv_func_strtod=no
+  ac_cv_func_strtod=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -11317,10 +11264,10 @@ _ACEOF
 if ac_fn_c_try_link "$LINENO"; then :
   ac_cv_lib_m_pow=yes
 else
-	ac_cv_lib_m_pow=no
+  ac_cv_lib_m_pow=no
 fi
 rm -f core conftest.err conftest.$ac_objext \
-      conftest$ac_exeext conftest.$ac_ext
+    conftest$ac_exeext conftest.$ac_ext
 LIBS=$ac_check_lib_save_LIBS
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_m_pow" >&5
@@ -11371,7 +11318,7 @@ _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
   ac_cv_func_utime_null=yes
 else
-ac_cv_func_utime_null=no
+  ac_cv_func_utime_null=no
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
@@ -11409,7 +11356,7 @@ done
 
 for ac_func in atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd gethostbyaddr gethostbyname gethostname getpagesize getpass gettimeofday inet_ntoa lchown localeconv memchr memmove memset mkdir modf munmap pow rmdir select setenv setlocale socket sqrt strcasecmp strchr strcspn strdup strerror strncasecmp strpbrk strrchr strspn strstr strtol strtoul sysinfo tzset utime
 do :
-as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
 ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
 eval as_val=\$$as_ac_var
    if test "x$as_val" = x""yes; then :
@@ -11434,7 +11381,7 @@ else
   if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (int))" "ac_cv_sizeof_int"        "$ac_includes_default"; then :
 
 else
-if test "$ac_cv_type_int" = yes; then
+  if test "$ac_cv_type_int" = yes; then
      { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
 { as_fn_set_status 77
@@ -11453,40 +11400,6 @@ $as_echo "$ac_cv_sizeof_int" >&6; }
 
 cat >>confdefs.h <<_ACEOF
 #define SIZEOF_INT $ac_cv_sizeof_int
-_ACEOF
-
-
-# The cast to long int works around a bug in the HP C Compiler
-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
-# This bug is HP SR number 8606223364.
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of size_t" >&5
-$as_echo_n "checking size of size_t... " >&6; }
-if test "${ac_cv_sizeof_size_t+set}" = set; then :
-  $as_echo_n "(cached) " >&6
-else
-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (size_t))" "ac_cv_sizeof_size_t"        "$ac_includes_default"; then :
-
-else
-if test "$ac_cv_type_size_t" = yes; then
-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-{ as_fn_set_status 77
-as_fn_error "cannot compute sizeof (size_t)
-See \`config.log' for more details." "$LINENO" 5; }; }
-   else
-     ac_cv_sizeof_size_t=0
-   fi
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_size_t" >&5
-$as_echo "$ac_cv_sizeof_size_t" >&6; }
-
-
-
-cat >>confdefs.h <<_ACEOF
-#define SIZEOF_SIZE_T $ac_cv_sizeof_size_t
 _ACEOF
 
 
@@ -11638,14 +11551,14 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  for ac_exec_ext in '' $ac_executable_extensions; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
   if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
     ac_cv_prog_HAVE_SVNVERSION=""yes""
     $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
     break 2
   fi
 done
-done
+  done
 IFS=$as_save_IFS
 
   test -z "$ac_cv_prog_HAVE_SVNVERSION" && ac_cv_prog_HAVE_SVNVERSION=""no""
@@ -11979,7 +11892,7 @@ export SHELL
 _ASEOF
 cat >>$CONFIG_STATUS <<\_ASEOF || as_write_fail=1
 ## -------------------- ##
-## M4sh Initialization.  ##
+## M4sh Initialization. ##
 ## -------------------- ##
 
 # Be more Bourne compatible
@@ -12064,8 +11977,8 @@ for as_dir in $PATH
 do
   IFS=$as_save_IFS
   test -z "$as_dir" && as_dir=.
-  test -r "$as_dir/$0" && as_myself=$as_dir/$0 && break
-done
+    test -r "$as_dir/$0" && as_myself=$as_dir/$0 && break
+  done
 IFS=$as_save_IFS
 
      ;;
@@ -13048,7 +12961,7 @@ cat >>$CONFIG_STATUS <<_ACEOF || ac_write_fail=1
   s&@infodir@&$infodir&g
   s&@localedir@&$localedir&g
   s&@mandir@&$mandir&g
-    s&\\\${datarootdir}&$datarootdir&g' ;;
+  s&\\\${datarootdir}&$datarootdir&g' ;;
 esac
 _ACEOF
 
