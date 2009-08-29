@@ -22,7 +22,7 @@
  */
 
 #include "DynamicDll.h"
-#ifndef _LINUX
+#if !defined(_LINUX) || defined(__APPLE__)
 #include "lame/lame.h"
 #else
 #include <lame/lame.h>
