@@ -494,7 +494,7 @@ cPVRChannelInfoTag *cPVRChannels::GetByUniqueID(long UniqueID)
   return NULL;
 }
 
-CStdString cPVRChannels::GetNameForChannel(int Number)
+CStdString cPVRChannels::GetNameForChannel(unsigned int Number)
 {
   if ((Number <= size()+1) && (Number > 0))
   {
@@ -506,7 +506,7 @@ CStdString cPVRChannels::GetNameForChannel(int Number)
   return "";
 }
 
-CStdString cPVRChannels::GetChannelIcon(int Number)
+CStdString cPVRChannels::GetChannelIcon(unsigned int Number)
 {
   if (Number > 0 && Number <= size()+1)
     return "";
@@ -514,7 +514,7 @@ CStdString cPVRChannels::GetChannelIcon(int Number)
   return at(Number-1).Icon();
 }
 
-void cPVRChannels::SetChannelIcon(int Number, CStdString Icon)
+void cPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
 {
   CPVRManager *manager  = CPVRManager::GetInstance();
   CTVDatabase *database = manager->GetTVDatabase();

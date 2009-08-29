@@ -290,9 +290,9 @@ public:
   cPVRChannelInfoTag *GetByClient(int Number, int ClientID);
   cPVRChannelInfoTag *GetByChannelID(long ChannelID);
   cPVRChannelInfoTag *GetByUniqueID(long UniqueID);
-  CStdString GetNameForChannel(int Number);
-  CStdString GetChannelIcon(int Number);
-  void SetChannelIcon(int Number, CStdString Icon);
+  CStdString GetNameForChannel(unsigned int Number);
+  CStdString GetChannelIcon(unsigned int Number);
+  void SetChannelIcon(unsigned int Number, CStdString Icon);
   void Clear();
 
   static int GetNumChannelsFromAll();

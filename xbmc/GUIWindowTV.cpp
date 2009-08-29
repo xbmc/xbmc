@@ -1384,7 +1384,7 @@ void CGUIWindowTV::ShowEPGInfo(CFileItem *item)
     if (s)
     {
       const CTVEPGInfoTag *epgnow = s->GetEPG(item->GetTVChannelInfoTag(), true)->GetInfoTagNow();
-      CFileItem *itemNow  = new CFileItem(epgnow);
+      CFileItem *itemNow  = new CFileItem(*epgnow);
 
       /* Load programme info dialog */
       CGUIDialogTVEPGProgInfo* pDlgInfo = (CGUIDialogTVEPGProgInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_TV_GUIDE_INFO);

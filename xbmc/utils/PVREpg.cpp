@@ -122,7 +122,7 @@ const CTVEPGInfoTag *cPVREpg::GetInfoTagNow(void) const
   if (tags.size() == 0)
     return NULL;
 
-  for (int i = 0; i < tags.size(); i++)
+  for (unsigned int i = 0; i < tags.size(); i++)
   {
     if ((tags[i].Start() <= now) && (tags[i].End() > now))
       return &tags[i];
@@ -138,13 +138,13 @@ const CTVEPGInfoTag *cPVREpg::GetInfoTagNext(void) const
   if (tags.size() == 0)
     return false;
 
-  for (int i = 0; i < tags.size(); i++)
+  for (unsigned int i = 0; i < tags.size(); i++)
   {
     if ((tags[i].Start() <= now) && (tags[i].End() > now))
     {
       CDateTime next = tags[i].End();
 
-      for (int j = 0; j < tags.size(); j++)
+      for (unsigned int j = 0; j < tags.size(); j++)
       {
         if (tags[j].Start() >= next)
         {
