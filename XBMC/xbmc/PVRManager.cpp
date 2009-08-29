@@ -1020,6 +1020,7 @@ bool CPVRManager::PauseLiveStream(bool DoPause, double dTime)
   if (DoPause)
     m_timeshiftTimePause = timeGetTime() - m_timeshiftTimeDiff*1000;
   m_bPaused = DoPause;
+  return true;
 }
 
 int CPVRManager::ReadLiveStream(BYTE* buf, int buf_size)
@@ -1032,7 +1033,7 @@ int CPVRManager::ReadLiveStream(BYTE* buf, int buf_size)
      is present playback is canceled and returns to the window */
   if (m_scanStart)
   {
-    if (timeGetTime() - m_scanStart > g_guiSettings.GetInt("pvrplayback.scantime")*1000)
+    if (timeGetTime() - m_scanStart > (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
       return 0;
     else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
       m_scanStart = NULL;
@@ -1188,7 +1189,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
 
     EnterCriticalSection(&m_critSection);
 
-    int currentTVChannel = m_currentPlayingChannel->GetTVChannelInfoTag()->Number();
+    unsigned int currentTVChannel = m_currentPlayingChannel->GetTVChannelInfoTag()->Number();
     for (unsigned int i = 1; i < channels->size(); i++)
     {
       currentTVChannel += 1;
@@ -1689,10 +1690,14 @@ int CPVRManager::GetPreviousChannel()
 
 bool CPVRManager::OpenDemux(PVRDEMUXHANDLE handle)
 {
+  bool ret = false;
+
   if (m_currentPlayingChannel)
-    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->OpenTVDemux(handle, *m_currentPlayingChannel->GetTVChannelInfoTag());
+    ret = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->OpenTVDemux(handle, *m_currentPlayingChannel->GetTVChannelInfoTag());
   else if (m_currentPlayingRecording)
-    m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->OpenRecordingDemux(handle, *m_currentPlayingRecording->GetTVRecordingInfoTag());
+    ret = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->OpenRecordingDemux(handle, *m_currentPlayingRecording->GetTVRecordingInfoTag());
+
+  return ret;
 }
 
 void CPVRManager::DisposeDemux()
