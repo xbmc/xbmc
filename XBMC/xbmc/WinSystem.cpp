@@ -102,7 +102,7 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
     sprintf(newRes.strMode, "%dx%d", width, height);
     if (refreshRate > 1)
     {
-	  sprintf(newRes.strMode, "%s @ %.2f (Full Screen)", width, height, refreshRate);
+	    sprintf(newRes.strMode, "%s @ %.2f (Full Screen)", newRes.strMode, refreshRate);
     }
   }
   
