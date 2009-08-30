@@ -141,6 +141,7 @@ protected:
   CMPCDecodeBuffer* AllocBuffer();
   void AddFrame(CMPCDecodeBuffer* pBuffer);
   CMPCDecodeBuffer* GetDecoderOutput();
+  bool NV12ToYV12(BCM::BC_DTS_PROC_OUT *Vout, BCM::BC_DTS_PROC_OUT *Vin);
   
   CSyncPtrQueue<CMPCDecodeBuffer> m_FreeList;
   CSyncPtrQueue<CMPCDecodeBuffer> m_ReadyList;
@@ -162,10 +163,12 @@ public:
   // Required overrides
   virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
   virtual void Dispose();
-  virtual int Decode(BYTE* pData, int iSize, double pts);
-  virtual void Reset();
-  virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
+  virtual void Reset();
+  virtual int  Decode(BYTE* pData, int iSize, double pts);
+  virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
+  virtual bool ReleasePicture(DVDVideoPicture* pDvdVideoPicture);
+
   virtual const char* GetName() { return (const char*)m_pFormatName; }
 
 protected:

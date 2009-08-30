@@ -124,6 +124,12 @@ public:
   /*
    * returns true if successfull
    * the data is valid until the next Decode call
+   */
+  virtual bool ReleasePicture(DVDVideoPicture* pDvdVideoPicture) = 0;
+
+  /*
+   * returns true if successfull
+   * the data is valid until the next Decode call
    * userdata can be anything, for now we use it for closed captioning
    */
   virtual bool GetUserData(DVDVideoUserData* pDvdVideoUserData)

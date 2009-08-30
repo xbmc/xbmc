@@ -914,7 +914,7 @@
 		F5987F060FBDF274008EF4FB /* DPMSSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987F040FBDF274008EF4FB /* DPMSSupport.cpp */; };
 		F5987FDB0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */; };
 		F5987FDC0FBE2DFD008EF4FB /* PAPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */; };
-		F59D70F31041F01600AD752F /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59D70F11041F01600AD752F /* DVDVideoCodecCrystalHD.cpp */; };
+		F59D70F31041F01600AD752F /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59D70F11041F01600AD752F /* DVDVideoCodecCrystalHD.cpp */; settings = {COMPILER_FLAGS = "-O3"; }; };
 		F59D70F41041F01600AD752F /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59D70F11041F01600AD752F /* DVDVideoCodecCrystalHD.cpp */; };
 		F5A00B080EFDDDFC00CD59F3 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B070EFDDDFC00CD59F3 /* AudioRendererFactory.cpp */; };
 		F5A00B260EFDE44100CD59F3 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */; };

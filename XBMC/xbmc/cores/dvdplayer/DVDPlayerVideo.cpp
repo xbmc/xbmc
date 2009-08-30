@@ -546,6 +546,7 @@ void CDVDPlayerVideo::Process()
                   CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
                   iResult = EOS_ABORT;
                 }
+                m_pVideoCodec->ReleasePicture(&picture);
 
                 if (iResult == EOS_ABORT) break;
 
