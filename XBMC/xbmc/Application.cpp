@@ -391,6 +391,9 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
 {
   switch(newEvent.type)
   {
+    case XBMC_QUIT:
+      if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
+      break;
     case XBMC_KEYDOWN:
     case XBMC_KEYUP:
       g_Keyboard.HandleEvent(newEvent);
