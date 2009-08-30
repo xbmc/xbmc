@@ -74,11 +74,14 @@ PVR_ERROR PVRClientVDR::GetProperties(PVR_SERVERPROPS *props)
   props->SupportEPG                = true;
   props->SupportRecordings         = true;
   props->SupportTimers             = true;
+  props->SupportTV                 = true;
   props->SupportRadio              = true;
   props->SupportChannelSettings    = true;
-  props->SupportTeletext           = false;
+  props->SupportTeletext           = true;
   props->SupportDirector           = false;
   props->SupportBouquets           = false;
+  props->HandleInputStream         = true;
+  props->HandleDemuxing            = false;
 
   return PVR_ERROR_NO_ERROR;
 }
