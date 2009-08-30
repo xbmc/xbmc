@@ -23,12 +23,9 @@
 #include "GUIFont.h"
 #include "GUIFontTTFGL.h"
 #include "GUIFontManager.h"
+#include "Texture.h"
 #include "GraphicContext.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "Util.h"
 #include "gui3d.h"
-#include "MathUtils.h"
-#include <math.h>
 
 // stuff for freetype
 #ifndef _LINUX
@@ -54,16 +51,6 @@ CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
 CGUIFontTTFGL::~CGUIFontTTFGL(void)
 {
   
-}
-
-float CGUIFontTTFGL::RoundToPixel(float x) 
-{ 
-  return (float)MathUtils::round_int(x); 
-}
-
-float CGUIFontTTFGL::TruncToPixel(float x) 
-{ 
-  return (float)MathUtils::truncate_int(x); 
 }
 
 void CGUIFontTTFGL::Begin()
@@ -176,14 +163,11 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   return newTexture;
 }
 
-bool CGUIFontTTFGL::CopyCharToTexture(void* pGlyph, void* pCharacter)
+bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
 {
   //SDL_LockSurface(m_texture);
 
-  FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)pGlyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
-
-  Character *ch = (Character *)pCharacter;
 
   unsigned char* source = (unsigned char*) bitmap.buffer;
   unsigned char* target = (unsigned char*) m_texture->GetPixels() + (m_posY + ch->offsetY) * m_texture->GetPitch() + m_posX + bitGlyph->left;

@@ -28,37 +28,20 @@
  *
  */
 
-#include "TextureManager.h"
-
 // forward definition
+class CBaseTexture;
+
 struct FT_FaceRec_;
 struct FT_LibraryRec_;
 struct FT_GlyphSlotRec_;
+struct FT_BitmapGlyphRec_;
 
 typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
-
+typedef struct FT_BitmapGlyphRec_ *FT_BitmapGlyph;
+  
 DWORD PadPow2(DWORD x);
-
-#ifdef _LINUX
-//#define max(a,b) ((a)>(b)?(a):(b))
-//#define min(a,b) ((a)<(b)?(a):(b))
-// NOTE: rintf is inaccurate - it appears to round to the nearest EVEN integer, rather than to the nearest integer
-//       this is a useful reference for wintel platforms that may be useful:
-//         http://ldesoras.free.fr/doc/articles/rounding_en.pdf
-//       For now, we've dumped down to the simple (and slow?) floor(x + 0.5f)
-//       Ideally we'd have a common round_int routine that does float -> float, as this is the case
-//       we actually use (both here and in CGUIImage)
-#define ROUND rintf
-//#define RoundToPixel rintf
-//#define ROUND(x) MathUtils::round_int(x)
-//#define RoundToPixel(x) MathUtils::round_int(x)
-//#define TRUNC_TO_PIXEL(x) MathUtils::truncate_int(x)
-#else
-#define ROUND(x) (float)(MathUtils::round_int(x))
-#endif // _LINUX
-
 
 /*!
  \ingroup textures
@@ -86,8 +69,6 @@ public:
 
   bool Load(const CStdString& strFilename, float height = 20.0f, float aspect = 1.0f, float lineSpacing = 1.0f);
 
-  virtual float RoundToPixel(float x) = 0;
-  virtual float TruncToPixel(float x) = 0;
   virtual void Begin() = 0;
   virtual void End() = 0;
 
@@ -131,7 +112,7 @@ protected:
   void ClearCharacterCache();
 
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
-  virtual bool CopyCharToTexture(void* pGlyph, void* pCharacter) = 0;
+  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character *ch) = 0;
   virtual void DeleteHardwareTexture() = 0;
   virtual void RenderInternal(SVertex* v) = 0;
 

@@ -23,6 +23,7 @@
 #include "GUIFont.h"
 #include "GUIFontTTF.h"
 #include "GUIFontManager.h"
+#include "Texture.h"
 #include "GraphicContext.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "MathUtils.h"
@@ -93,7 +94,7 @@ public:
       return NULL;
 
     unsigned int ydpi = GetDPI();
-    unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
+    unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
 
     // we set our screen res currently to 96dpi in both directions (windows default)
     // we cache our characters (for rendering speed) so it's probably
@@ -230,7 +231,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   m_cellBaseLine = m_face->bbox.yMax;
 
   unsigned int ydpi = g_freeTypeLibrary.GetDPI();
-  unsigned int xdpi = (unsigned int)ROUND(ydpi * aspect);
+  unsigned int xdpi = (unsigned int)MathUtils::round_int(ydpi * aspect);
 
   m_cellWidth *= (unsigned int)(height * xdpi);
   m_cellWidth /= (72 * m_face->units_per_EM);
@@ -581,12 +582,12 @@ bool CGUIFontTTFBase::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;
   ch->bottom = ch->top + bitmap.rows;
-  ch->advance = ROUND( (float)m_face->glyph->advance.x / 64 );
+  ch->advance = MathUtils::round_int( (float)m_face->glyph->advance.x / 64 );
 
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
   {
-    CopyCharToTexture((void *)bitGlyph, (void *)ch);
+    CopyCharToTexture(bitGlyph, ch);
   }
   m_posX += (unsigned short)max(ch->right - ch->left + ch->offsetX, ch->advance + 1);
   m_numChars++;
@@ -634,10 +635,10 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     // altering the width of thin characters substantially.  This only really works for positive
     // coordinates (due to the direction of truncation for negatives) but this is the only case that
     // really interests us anyway.
-    float rx0 = (float)RoundToPixel(x[0]);
-    float rx3 = (float)RoundToPixel(x[3]);
-    x[1] = (float)TruncToPixel(x[1]);
-    x[2] = (float)TruncToPixel(x[2]);
+    float rx0 = (float)MathUtils::round_int(x[0]);
+    float rx3 = (float)MathUtils::round_int(x[3]);
+    x[1] = (float)MathUtils::truncate_int(x[1]);
+    x[2] = (float)MathUtils::truncate_int(x[2]);
     if (rx0 > x[0])
       x[1] += 1;
     if (rx3 > x[3])
@@ -646,15 +647,15 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     x[3] = rx3;
   }
 
-  float y1 = (float)RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
-  float y2 = (float)RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
-  float y3 = (float)RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
-  float y4 = (float)RoundToPixel(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
+  float y1 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y1));
+  float y2 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y1));
+  float y3 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x2, vertex.y2));
+  float y4 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalYCoord(vertex.x1, vertex.y2));
 
-  float z1 = (float)RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
-  float z2 = (float)RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
-  float z3 = (float)RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
-  float z4 = (float)RoundToPixel(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
+  float z1 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y1));
+  float z2 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y1));
+  float z3 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x2, vertex.y2));
+  float z4 = (float)MathUtils::round_int(g_graphicsContext.ScaleFinalZCoord(vertex.x1, vertex.y2));
 
   // tex coords converted to 0..1 range
   float tl = texture.x1 * m_textureScaleX;

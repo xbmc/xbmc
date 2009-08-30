@@ -23,11 +23,9 @@
 #include "GUIFont.h"
 #include "GUIFontTTFDX.h"
 #include "GUIFontManager.h"
+#include "Texture.h"
 #include "GraphicContext.h"
-#include "FileSystem/SpecialProtocol.h"
-#include "Util.h"
 #include "gui3d.h"
-#include <math.h>
 
 // stuff for freetype
 #include "ft2build.h"
@@ -59,23 +57,13 @@ CGUIFontTTFDX::~CGUIFontTTFDX(void)
   
 }
 
-float CGUIFontTTFDX::RoundToPixel(float x) 
-{ 
-  return (float)MathUtils::round_int(x) - 0.5f; 
-}
-
-float CGUIFontTTFDX::TruncToPixel(float x) 
-{ 
-  return (float)MathUtils::truncate_int(x) - 0.5f; 
-}
-
 void CGUIFontTTFDX::RenderInternal(SVertex* v)
 {
   CUSTOMVERTEX verts[4] =  {
-  { v[0].x, v[0].y, v[0].z, m_dwColor, v[0].u, v[0].v},
-  { v[1].x, v[1].y, v[1].z, m_dwColor, v[1].u, v[1].v},
-  { v[2].x, v[2].y, v[2].z, m_dwColor, v[2].u, v[2].v},
-  { v[3].x, v[3].y, v[3].z, m_dwColor, v[3].u, v[3].v}
+  { v[0].x-0.5f, v[0].y-0.5f, v[0].z, m_dwColor, v[0].u, v[0].v},
+  { v[1].x-0.5f, v[1].y-0.5f, v[1].z, m_dwColor, v[1].u, v[1].v},
+  { v[2].x-0.5f, v[2].y-0.5f, v[2].z, m_dwColor, v[2].u, v[2].v},
+  { v[3].x-0.5f, v[3].y-0.5f, v[3].z, m_dwColor, v[3].u, v[3].v}
   };
 
   m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
@@ -171,12 +159,9 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   return pNewTexture;
 }
 
-bool CGUIFontTTFDX::CopyCharToTexture(void* pGlyph, void* pCharacter)
+bool CGUIFontTTFDX::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
 {
-  FT_BitmapGlyph bitGlyph = (FT_BitmapGlyph)pGlyph;
   FT_Bitmap bitmap = bitGlyph->bitmap;
-
-  Character *ch = (Character *)pCharacter;
 
   // render this onto our normal texture using gpu
   LPDIRECT3DSURFACE9 target;

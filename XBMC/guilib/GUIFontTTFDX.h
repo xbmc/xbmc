@@ -42,15 +42,12 @@ public:
   CGUIFontTTFDX(const CStdString& strFileName);
   virtual ~CGUIFontTTFDX(void);
 
-  virtual float RoundToPixel(float x);
-  virtual float TruncToPixel(float x);
-
   virtual void Begin();
   virtual void End();
 
 protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
-  virtual bool CopyCharToTexture(void* pGlyph, void* pCharacter);
+  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character *ch);
   virtual void DeleteHardwareTexture();
   virtual void RenderInternal(SVertex* v);
 
