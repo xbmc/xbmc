@@ -1142,27 +1142,9 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
-    if (field & (FIELD_ODD|FIELD_EVEN))
-    {
-      if (m_renderQuality == RQ_SINGLEPASS)
-      {
         // create regular progressive scan shader
         m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
         CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
-      }
-      else if (m_renderQuality == RQ_MULTIPASS)
-      {
-        // create bob deinterlacing shader
-        m_pYUVShader = new YUV2RGBBobShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
-        CLog::Log(LOGNOTICE, "GL: Selecting Multipass Pass YUV 2 RGB shader");
-      }
-    }
-    else
-    {
-      // create regular progressive scan shader
-      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
-      CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB Progressive Shader");
-    }
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
     {
@@ -1281,17 +1263,11 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 {
   // obtain current field, if interlaced
   if( flags & RENDER_FLAG_ODD)
-  {
-    if (m_currentField == FIELD_FULL)
-      m_reloadShaders = 1;
     m_currentField = FIELD_ODD;
-  } // even field
+
   else if (flags & RENDER_FLAG_EVEN)
-  {
-    if (m_currentField == FIELD_FULL)
-      m_reloadShaders = 1;
     m_currentField = FIELD_EVEN;
-  }
+
   else if (flags & RENDER_FLAG_LAST)
   {
     switch(m_currentField)
@@ -1306,11 +1282,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     }
   }
   else
-  {
-    if (m_currentField != FIELD_FULL)
-      m_reloadShaders = 1;
     m_currentField = FIELD_FULL;
-  }
 
   LoadTextures(renderBuffer);
 
@@ -2243,13 +2215,15 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 bool CLinuxRendererGL::SupportsBrightness()
 {
   return m_renderMethod == RENDER_GLSL
-      || (m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
+      || m_renderMethod == RENDER_ARB
+      || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
   return m_renderMethod == RENDER_GLSL
-      || (m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
+      || m_renderMethod == RENDER_ARB
+      || m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE;
 }
 
 bool CLinuxRendererGL::SupportsGamma()

@@ -67,13 +67,18 @@ namespace Shaders {
     virtual void SetField(int field) { m_field  = field; }
     virtual void SetWidth(int w)     { m_width  = w; }
     virtual void SetHeight(int h)    { m_height = h; }
-    string       BuildYUVMatrix();
+
+    virtual void SetBlack(float black)       { m_black    = black; }
+    virtual void SetContrast(float contrast) { m_contrast = contrast; }
 
   protected:
     unsigned m_flags;
     int   m_width;
     int   m_height;
     int   m_field;
+
+    float m_black;
+    float m_contrast;
 
     // shader attribute handles
     GLint m_hYTex;

@@ -243,27 +243,6 @@ bool YUV2RGBBobShader::OnEnabled()
   return true;
 }
 
-string BaseYUV2RGBARBShader::BuildYUVMatrix()
-{
-  // Pick the matrix.
-  float (*matrix)[4] = (float (*)[4])PickYUVConversionMatrix(m_flags);
-  
-  // Convert to ARB matrix. The forth vector is needed because the generated code
-  // uses negation on a vector, and also negation on an element of the vector, so
-  // I needed to add another "pre-negated" vector in.
-  //
-  stringstream strStream;
-  strStream << "{ ";
-  strStream << "  {     1.0,                   -0.0625,             1.1643835,               1.1383928        },\n";
-  strStream << "  {    -0.5,                    0.0, "          <<  matrix[1][1] << ", " <<  matrix[1][2] << "},\n";
-  strStream << "  {" << matrix[2][0] << ", " << matrix[2][1] << ",  0.0,                     0.0              },\n"; 
-  strStream << "  {    -0.5,                    0.0, "          << -matrix[1][1] << ", " << -matrix[1][2] << "}\n";
-  strStream << "};\n";
-
-  return strStream.str();
-}
-
-
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
@@ -271,76 +250,30 @@ string BaseYUV2RGBARBShader::BuildYUVMatrix()
 YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags)
   : BaseYUV2RGBARBShader(flags)
 {
-  string source = "";
-  string target = "2D";
+  m_black      = 0.0f;
+  m_contrast   = 1.0f;
   if (rect)
-  {
-    target = "RECT";
-  }
-  
-  // N.B. If you're changing this code, bear in mind that the GMA X3100 
-  // (at least with OS X drivers in 10.5.2), doesn't allow for negation 
-  // of constants, like "-c[0].y".
-  //
-  // Thanks to Aras Pranckevicius for bringing this bug to light.
-  // Quoting him, in case the link dies:
-  // "In my experience, the X3100 drivers seem to ignore negate modifiers on
-  // constant registers in fragment (and possibly vertex) programs. It just
-  // seems someone forgot to implement that. (radar: 5632811)"
-  // - http://lists.apple.com/archives/mac-opengl/2008/Feb/msg00191.html
-
-  if (flags & CONF_FLAGS_YUV_FULLRANGE)
-  {
-    source ="!!ARBfp1.0\n"
-      "PARAM c[2] = { { 0,           -0.1720674,  0.88599992, -1 },\n"
-      "		             { 0.70099545,  -0.35706902, 0,           2 } };\n"
-      "TEMP R0;\n"
-      "TEMP R1;\n"
-      "TEX R1.x, fragment.texcoord[2], texture[2], "+target+";\n"
-      "TEX R0.x, fragment.texcoord[1], texture[1], "+target+";\n"
-      "MUL R0.z, R0.x, c[1].w;\n"
-      "MUL R0.y, R1.x, c[1].w;\n"
-      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+";\n"
-      "ADD R0.z, R0, c[0].w;\n"
-      "MAD R1.xyz, R0.z, c[0], R0.x;\n"
-      "ADD R0.x, R0.y, c[0].w;\n"
-      "MAD result.color.xyz, R0.x, c[1], R1;\n"
-      "MOV result.color.w, fragment.color.w;\n"
-      "END\n";
-  }
+    PixelShader()->LoadSource("yuv2rgb_basic_rect.arb");
   else
-  {
-    source = 
-      "!!ARBfp1.0\n"
-      "PARAM c[4] = \n" + BuildYUVMatrix() +
-      "TEMP R0;\n"
-      "TEMP R1;\n"
-      "TEX R1.x, fragment.texcoord[1], texture[1], "+target+"\n;"
-      "ADD R0.z, R1.x, c[0].y;\n"
-      "TEX R0.x, fragment.texcoord[2], texture[2], "+target+"\n;"
-      "ADD R0.x, R0, c[0].y;\n"
-      "MUL R0.y, R0.x, c[0].w;\n"
-      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+"\n;"
-      "ADD R0.x, R0, c[0].y;\n"
-      "MUL R0.z, R0, c[0].w;\n"
-      "MUL R0.x, R0, c[0].z;\n"
-      "ADD R0.z, R0, c[1].x;\n"
-      "MAD R1.xyz, R0.z, c[1].yzww, R0.x;\n"
-      "ADD R0.x, R0.y, c[3];\n"
-      "MAD result.color.xyz, R0.x, c[2], R1;\n"
-      "MOV result.color.w, fragment.color.w;\n"
-      "END\n";
+    PixelShader()->LoadSource("yuv2rgb_basic_2d.arb");
+  
   }
-  PixelShader()->SetSource(source);
-}
 
 void YUV2RGBProgressiveShaderARB::OnCompiledAndLinked()
 {
-
 }
 
 bool YUV2RGBProgressiveShaderARB::OnEnabled()
 {
+  GLfloat matrix[4][4];
+  CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
+
+  for(int i=0;i<4;i++)
+    glProgramLocalParameter4fARB(GL_FRAGMENT_PROGRAM_ARB, i
+                               , matrix[0][i]
+                               , matrix[1][i]
+                               , matrix[2][i]
+                               , matrix[3][i]);
   return true;
 }
 

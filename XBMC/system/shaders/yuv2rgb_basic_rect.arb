@@ -1,0 +1,13 @@
+!!ARBfp1.0
+PARAM yuvmat[4] = { program.local[0..3] };
+TEMP R0;
+TEMP R1;
+TEX R0.x, fragment.texcoord[0], texture[0], RECT;
+TEX R0.y, fragment.texcoord[1], texture[1], RECT;
+TEX R0.z, fragment.texcoord[2], texture[2], RECT;
+DPH R1.r, R0, yuvmat[0];
+DPH R1.g, R0, yuvmat[1];
+DPH R1.b, R0, yuvmat[2];
+MOV R1.a, fragment.color.a;
+MOV result.color, R1;
+END

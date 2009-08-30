@@ -11,9 +11,9 @@ TOC
 1. Introduction
 -----------------------------------------------------------------------------
 
-We currently recommend Ubuntu Hardy(8.04) or Intrepid(8.10). A gfx-adapter
-with OpenGL acceleration is highly recommended and 24/32 bitdepth is 
-required with OpenGL.
+We currently recommend Ubuntu Hardy(8.04), Intrepid(8.10), or Jaunty(9.04). 
+A gfx-adapter with OpenGL acceleration is highly recommended and 24/32 
+bitdepth is required with OpenGL.
 
 NOTE TO NEW LINUX USERS: All lines that are prefixed with the '#'
 character are commands that need to be typed into a terminal window /

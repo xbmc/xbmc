@@ -36,8 +36,6 @@ public:
   void AddTag(int key, const char* value);
 
 protected:
-  int parse_args_from_string(lame_global_flags * const gfp, const char *p,
-                              char *inPath, char *outPath);
   lame_global_flags* m_pGlobalFlags;
 
   unsigned char m_buffer[48160]; // mp3buf_size in bytes = 1.25*(chunk size / 4) + 7200

@@ -489,7 +489,7 @@ bool CDVDPlayer::OpenDemuxStream()
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
     return false;
   }
 
