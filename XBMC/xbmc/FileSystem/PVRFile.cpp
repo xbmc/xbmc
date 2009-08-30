@@ -128,6 +128,10 @@ __int64 CPVRFile::Seek(__int64 pos, int whence)
         return 0;
     }
   }
+  else
+  {
+    return CPVRManager::GetInstance()->SeekStream(pos, whence);
+  }
   return 0;
 }
 
