@@ -374,6 +374,16 @@ extern "C" int ReadLiveStream(BYTE* buf, int buf_size)
   return g_client->ReadLiveStream(buf, buf_size);
 }
 
+extern "C" __int64 SeekLiveStream(__int64 pos, int whence)
+{
+  return -1;
+}
+
+extern "C" __int64 LengthLiveStream(void)
+{
+  return -1;
+}
+  
 extern "C" int GetCurrentClientChannel()
 {
   return g_client->GetCurrentClientChannel();

@@ -77,9 +77,11 @@ public:
   virtual PVR_ERROR RenameTimer(const cPVRTimerInfoTag &timerinfo, CStdString &newname);
   virtual PVR_ERROR UpdateTimer(const cPVRTimerInfoTag &timerinfo);
 
-  virtual bool OpenLiveStream(unsigned int channel);
+  virtual bool OpenLiveStream(const cPVRChannelInfoTag &channelinfo);
   virtual void CloseLiveStream();
   virtual int ReadLiveStream(BYTE* buf, int buf_size);
+  virtual __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
+  virtual __int64 LengthLiveStream(void);
   virtual int GetCurrentClientChannel();
   virtual bool SwitchChannel(unsigned int channel);
 

@@ -347,6 +347,8 @@ extern "C" {
     bool (__cdecl* OpenLiveStream)(unsigned int channel);
     void (__cdecl* CloseLiveStream)();
     int (__cdecl* ReadLiveStream)(BYTE* buf, int buf_size);
+    __int64 (__cdecl* SeekLiveStream)(__int64 pos, int whence);
+    __int64 (__cdecl* LengthLiveStream)(void);
     int (__cdecl* GetCurrentClientChannel)();
     bool (__cdecl* SwitchChannel)(unsigned int channel);
 

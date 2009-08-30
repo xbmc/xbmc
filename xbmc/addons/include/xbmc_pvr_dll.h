@@ -37,6 +37,8 @@ extern "C"
   bool OpenLiveStream(unsigned int channel);
   void CloseLiveStream();
   int ReadLiveStream(BYTE* buf, int buf_size);
+  __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
+  __int64 LengthLiveStream(void);
   int GetCurrentClientChannel();
   bool SwitchChannel(unsigned int channel);
   bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);
@@ -91,6 +93,8 @@ extern "C"
     pClient->OpenLiveStream         = OpenLiveStream;
     pClient->CloseLiveStream        = CloseLiveStream;
     pClient->ReadLiveStream         = ReadLiveStream;
+    pClient->SeekLiveStream         = SeekLiveStream;
+    pClient->LengthLiveStream       = LengthLiveStream;
     pClient->GetCurrentClientChannel= GetCurrentClientChannel;
     pClient->SwitchChannel          = SwitchChannel;
     pClient->OpenRecordedStream     = OpenRecordedStream;
