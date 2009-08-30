@@ -56,12 +56,7 @@ extern "C" void d3dSetTransform( DWORD dwY, D3DMATRIX* dwZ )
 #ifdef HAS_SDL
 extern "C" bool d3dCreateTexture(unsigned int width, unsigned int height, XBMC::TexturePtr* pTexture)
 {
-/*
-   if (pTexture == NULL)
-      return false;
-   *pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);
-   return (*pTexture != NULL);
-*/
+  return false;
 }
 #else
 extern "C" bool d3dCreateTexture(unsigned int width, unsigned int height, LPDIRECT3DTEXTURE8 *pTexture)

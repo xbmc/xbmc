@@ -23,7 +23,7 @@
 #include "Application.h"
 #include "XBMC_vkeys.h"
 #ifdef HAS_SDL_JOYSTICK
-#include "guilib/common/SDLJoystick.h"
+#include "common/SDLJoystick.h"
 #endif
 
 #ifdef HAS_SDL
