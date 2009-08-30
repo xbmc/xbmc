@@ -45,6 +45,46 @@
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
+		7C779DA6104A4B2E00F444C4 /* GUIControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */; };
+		7C779DA8104A4B2E00F444C4 /* GUIFontTTFGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D99104A4B2E00F444C4 /* GUIFontTTFGL.cpp */; };
+		7C779DA9104A4B2E00F444C4 /* GUIImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D9B104A4B2E00F444C4 /* GUIImage.cpp */; };
+		7C779DAA104A4B2E00F444C4 /* GUITextureD3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D9E104A4B2E00F444C4 /* GUITextureD3D.cpp */; };
+		7C779DAB104A4B2E00F444C4 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779DA0104A4B2E00F444C4 /* Texture.cpp */; };
+		7C779DAC104A4B2E00F444C4 /* TextureDX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779DA2104A4B2E00F444C4 /* TextureDX.cpp */; };
+		7C779DAD104A4B2E00F444C4 /* TextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779DA4104A4B2E00F444C4 /* TextureGL.cpp */; };
+		7C779DAE104A4B2E00F444C4 /* GUIControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */; };
+		7C779DB0104A4B2E00F444C4 /* GUIFontTTFGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D99104A4B2E00F444C4 /* GUIFontTTFGL.cpp */; };
+		7C779DB1104A4B2E00F444C4 /* GUIImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D9B104A4B2E00F444C4 /* GUIImage.cpp */; };
+		7C779DB2104A4B2E00F444C4 /* GUITextureD3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D9E104A4B2E00F444C4 /* GUITextureD3D.cpp */; };
+		7C779DB3104A4B2E00F444C4 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779DA0104A4B2E00F444C4 /* Texture.cpp */; };
+		7C779DB4104A4B2E00F444C4 /* TextureDX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779DA2104A4B2E00F444C4 /* TextureDX.cpp */; };
+		7C779DB5104A4B2E00F444C4 /* TextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779DA4104A4B2E00F444C4 /* TextureGL.cpp */; };
+		7C779E35104A57E500F444C4 /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E16104A57E500F444C4 /* MouseStat.cpp */; };
+		7C779E36104A57E500F444C4 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */; };
+		7C779E37104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */; };
+		7C779E38104A57E500F444C4 /* PictureDX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1B104A57E500F444C4 /* PictureDX.cpp */; };
+		7C779E39104A57E500F444C4 /* PictureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1D104A57E500F444C4 /* PictureGL.cpp */; };
+		7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1F104A57E500F444C4 /* RenderSystem.cpp */; };
+		7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */; };
+		7C779E3C104A57E500F444C4 /* WinEventsSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */; };
+		7C779E3D104A57E500F444C4 /* WinSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E29104A57E500F444C4 /* WinSystem.cpp */; };
+		7C779E3E104A57E500F444C4 /* WinSystemOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E2B104A57E500F444C4 /* WinSystemOSX.cpp */; };
+		7C779E3F104A57E500F444C4 /* WinSystemOSXGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E2D104A57E500F444C4 /* WinSystemOSXGL.cpp */; };
+		7C779E40104A57E500F444C4 /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E16104A57E500F444C4 /* MouseStat.cpp */; };
+		7C779E41104A57E500F444C4 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */; };
+		7C779E42104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */; };
+		7C779E43104A57E500F444C4 /* PictureDX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1B104A57E500F444C4 /* PictureDX.cpp */; };
+		7C779E44104A57E500F444C4 /* PictureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1D104A57E500F444C4 /* PictureGL.cpp */; };
+		7C779E45104A57E500F444C4 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1F104A57E500F444C4 /* RenderSystem.cpp */; };
+		7C779E46104A57E500F444C4 /* RenderSystemGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */; };
+		7C779E47104A57E500F444C4 /* WinEventsSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */; };
+		7C779E48104A57E500F444C4 /* WinSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E29104A57E500F444C4 /* WinSystem.cpp */; };
+		7C779E49104A57E500F444C4 /* WinSystemOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E2B104A57E500F444C4 /* WinSystemOSX.cpp */; };
+		7C779E4A104A57E500F444C4 /* WinSystemOSXGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E2D104A57E500F444C4 /* WinSystemOSXGL.cpp */; };
+		7C779E54104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E50104A58F900F444C4 /* GUIWindowTestPatternGL.cpp */; };
+		7C779E55104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
+		7C779E56104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E50104A58F900F444C4 /* GUIWindowTestPatternGL.cpp */; };
+		7C779E57104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAE9060FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
@@ -131,11 +171,7 @@
 		E38E1ED90D25F9FD00618676 /* ActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138A0D25F9F900618676 /* ActionManager.cpp */; };
 		E38E1EDA0D25F9FD00618676 /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138C0D25F9F900618676 /* AnimatedGif.cpp */; };
 		E38E1EDB0D25F9FD00618676 /* AudioContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138E0D25F9F900618676 /* AudioContext.cpp */; };
-		E38E1EDF0D25F9FD00618676 /* Keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13970D25F9F900618676 /* Keyboard.cpp */; };
-		E38E1EE20D25F9FD00618676 /* Mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E139D0D25F9F900618676 /* Mouse.cpp */; };
 		E38E1EE30D25F9FD00618676 /* SDLJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E139F0D25F9F900618676 /* SDLJoystick.cpp */; };
-		E38E1EE40D25F9FD00618676 /* SDLKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13A10D25F9F900618676 /* SDLKeyboard.cpp */; };
-		E38E1EE50D25F9FD00618676 /* SDLMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13A30D25F9F900618676 /* SDLMouse.cpp */; };
 		E38E1EE80D25F9FD00618676 /* DirectXGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13A90D25F9F900618676 /* DirectXGraphics.cpp */; };
 		E38E1EE90D25F9FD00618676 /* FrameBufferObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13AB0D25F9F900618676 /* FrameBufferObject.cpp */; };
 		E38E1EEC0D25F9FD00618676 /* GraphicContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13C20D25F9F900618676 /* GraphicContext.cpp */; };
@@ -147,7 +183,6 @@
 		E38E1EF20D25F9FD00618676 /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D00D25F9F900618676 /* GUICheckMarkControl.cpp */; };
 		E38E1EF30D25F9FD00618676 /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D20D25F9F900618676 /* GUIColorManager.cpp */; };
 		E38E1EF50D25F9FD00618676 /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D60D25F9F900618676 /* GUIControl.cpp */; };
-		E38E1EF60D25F9FD00618676 /* GuiControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D80D25F9F900618676 /* GuiControlFactory.cpp */; };
 		E38E1EF70D25F9FD00618676 /* GUIControlGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13DA0D25F9F900618676 /* GUIControlGroup.cpp */; };
 		E38E1EF80D25F9FD00618676 /* GUIControlGroupList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13DC0D25F9F900618676 /* GUIControlGroupList.cpp */; };
 		E38E1EF90D25F9FD00618676 /* GUIDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13DE0D25F9F900618676 /* GUIDialog.cpp */; };
@@ -157,7 +192,6 @@
 		E38E1EFD0D25F9FD00618676 /* GUIFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13E60D25F9F900618676 /* GUIFont.cpp */; };
 		E38E1EFE0D25F9FD00618676 /* GUIFontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13E80D25F9F900618676 /* GUIFontManager.cpp */; };
 		E38E1EFF0D25F9FD00618676 /* GUIFontTTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EA0D25F9F900618676 /* GUIFontTTF.cpp */; };
-		E38E1F000D25F9FD00618676 /* guiImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EC0D25F9F900618676 /* guiImage.cpp */; };
 		E38E1F010D25F9FD00618676 /* GUIIncludes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */; };
 		E38E1F030D25F9FD00618676 /* GUILabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F20D25F9F900618676 /* GUILabelControl.cpp */; };
 		E38E1F060D25F9FD00618676 /* GUIListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */; };
@@ -194,7 +228,6 @@
 		E38E1F270D25F9FD00618676 /* LocalizeStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E143F0D25F9F900618676 /* LocalizeStrings.cpp */; };
 		E38E1F2A0D25F9FD00618676 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14460D25F9F900618676 /* Shader.cpp */; };
 		E38E1F2B0D25F9FD00618676 /* SkinInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14480D25F9F900618676 /* SkinInfo.cpp */; };
-		E38E1F2C0D25F9FD00618676 /* Surface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E144B0D25F9F900618676 /* Surface.cpp */; };
 		E38E1F2D0D25F9FD00618676 /* TextureBundle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E144E0D25F9F900618676 /* TextureBundle.cpp */; };
 		E38E1F2E0D25F9FD00618676 /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14500D25F9F900618676 /* TextureManager.cpp */; };
 		E38E1F300D25F9FD00618676 /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14550D25F9F900618676 /* tinystr.cpp */; };
@@ -647,13 +680,11 @@
 		E38E227E0D25F9FE00618676 /* MusicDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */; };
 		E38E227F0D25F9FE00618676 /* MusicInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D910D25F9FD00618676 /* MusicInfoLoader.cpp */; };
 		E38E22800D25F9FE00618676 /* MusicInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */; };
-		E38E22810D25F9FE00618676 /* musicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D950D25F9FD00618676 /* musicInfoTag.cpp */; };
 		E38E22820D25F9FE00618676 /* MusicInfoTagLoaderAAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */; };
 		E38E22830D25F9FE00618676 /* MusicInfoTagLoaderAdplug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D990D25F9FD00618676 /* MusicInfoTagLoaderAdplug.cpp */; };
 		E38E22840D25F9FE00618676 /* MusicInfoTagLoaderApe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9B0D25F9FD00618676 /* MusicInfoTagLoaderApe.cpp */; };
 		E38E22850D25F9FE00618676 /* MusicInfoTagLoaderCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9D0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.cpp */; };
 		E38E22860D25F9FE00618676 /* MusicInfoTagLoaderDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9F0D25F9FD00618676 /* MusicInfoTagLoaderDatabase.cpp */; };
-		E38E22870D25F9FE00618676 /* musicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DA10D25F9FD00618676 /* musicInfoTagLoaderFactory.cpp */; };
 		E38E22880D25F9FE00618676 /* MusicInfoTagLoaderFlac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DA30D25F9FD00618676 /* MusicInfoTagLoaderFlac.cpp */; };
 		E38E22890D25F9FE00618676 /* MusicInfoTagLoaderGYM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DA50D25F9FD00618676 /* MusicInfoTagLoaderGYM.cpp */; };
 		E38E228A0D25F9FE00618676 /* MusicInfoTagLoaderMod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DA70D25F9FD00618676 /* MusicInfoTagLoaderMod.cpp */; };
@@ -757,7 +788,6 @@
 		E38E23070D25F9FE00618676 /* IoSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EB00D25F9FD00618676 /* IoSupport.cpp */; };
 		E38E23100D25F9FE00618676 /* XKGeneral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */; };
 		E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
-		E38E23170D25F9FE00618676 /* XBVideoConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */; };
 		E38E23920D2626E600618676 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238B0D2626E600618676 /* AudioToolbox.framework */; };
 		E38E23930D2626E600618676 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238C0D2626E600618676 /* AudioUnit.framework */; };
 		E38E23940D2626E600618676 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E238D0D2626E600618676 /* Cocoa.framework */; };
@@ -915,11 +945,7 @@
 		F5A1C8740F6B06CF00A96ABD /* ActionManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138A0D25F9F900618676 /* ActionManager.cpp */; };
 		F5A1C8750F6B06CF00A96ABD /* AnimatedGif.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138C0D25F9F900618676 /* AnimatedGif.cpp */; };
 		F5A1C8760F6B06CF00A96ABD /* AudioContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E138E0D25F9F900618676 /* AudioContext.cpp */; };
-		F5A1C8770F6B06CF00A96ABD /* Keyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13970D25F9F900618676 /* Keyboard.cpp */; };
-		F5A1C8780F6B06CF00A96ABD /* Mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E139D0D25F9F900618676 /* Mouse.cpp */; };
 		F5A1C8790F6B06CF00A96ABD /* SDLJoystick.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E139F0D25F9F900618676 /* SDLJoystick.cpp */; };
-		F5A1C87A0F6B06CF00A96ABD /* SDLKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13A10D25F9F900618676 /* SDLKeyboard.cpp */; };
-		F5A1C87B0F6B06CF00A96ABD /* SDLMouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13A30D25F9F900618676 /* SDLMouse.cpp */; };
 		F5A1C87C0F6B06CF00A96ABD /* DirectXGraphics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13A90D25F9F900618676 /* DirectXGraphics.cpp */; };
 		F5A1C87D0F6B06CF00A96ABD /* FrameBufferObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13AB0D25F9F900618676 /* FrameBufferObject.cpp */; };
 		F5A1C87E0F6B06CF00A96ABD /* GraphicContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13C20D25F9F900618676 /* GraphicContext.cpp */; };
@@ -931,7 +957,6 @@
 		F5A1C8840F6B06CF00A96ABD /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D00D25F9F900618676 /* GUICheckMarkControl.cpp */; };
 		F5A1C8850F6B06CF00A96ABD /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D20D25F9F900618676 /* GUIColorManager.cpp */; };
 		F5A1C8860F6B06CF00A96ABD /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D60D25F9F900618676 /* GUIControl.cpp */; };
-		F5A1C8870F6B06CF00A96ABD /* GuiControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13D80D25F9F900618676 /* GuiControlFactory.cpp */; };
 		F5A1C8880F6B06CF00A96ABD /* GUIControlGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13DA0D25F9F900618676 /* GUIControlGroup.cpp */; };
 		F5A1C8890F6B06CF00A96ABD /* GUIControlGroupList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13DC0D25F9F900618676 /* GUIControlGroupList.cpp */; };
 		F5A1C88A0F6B06CF00A96ABD /* GUIDialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13DE0D25F9F900618676 /* GUIDialog.cpp */; };
@@ -941,7 +966,6 @@
 		F5A1C88E0F6B06CF00A96ABD /* GUIFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13E60D25F9F900618676 /* GUIFont.cpp */; };
 		F5A1C88F0F6B06CF00A96ABD /* GUIFontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13E80D25F9F900618676 /* GUIFontManager.cpp */; };
 		F5A1C8900F6B06CF00A96ABD /* GUIFontTTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EA0D25F9F900618676 /* GUIFontTTF.cpp */; };
-		F5A1C8910F6B06CF00A96ABD /* guiImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EC0D25F9F900618676 /* guiImage.cpp */; };
 		F5A1C8920F6B06CF00A96ABD /* GUIIncludes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */; };
 		F5A1C8930F6B06CF00A96ABD /* GUILabelControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13F20D25F9F900618676 /* GUILabelControl.cpp */; };
 		F5A1C8940F6B06CF00A96ABD /* GUIListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */; };
@@ -978,7 +1002,6 @@
 		F5A1C8B30F6B06CF00A96ABD /* LocalizeStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E143F0D25F9F900618676 /* LocalizeStrings.cpp */; };
 		F5A1C8B40F6B06CF00A96ABD /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14460D25F9F900618676 /* Shader.cpp */; };
 		F5A1C8B50F6B06CF00A96ABD /* SkinInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14480D25F9F900618676 /* SkinInfo.cpp */; };
-		F5A1C8B60F6B06CF00A96ABD /* Surface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E144B0D25F9F900618676 /* Surface.cpp */; };
 		F5A1C8B70F6B06CF00A96ABD /* TextureBundle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E144E0D25F9F900618676 /* TextureBundle.cpp */; };
 		F5A1C8B80F6B06CF00A96ABD /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14500D25F9F900618676 /* TextureManager.cpp */; };
 		F5A1C8B90F6B06CF00A96ABD /* tinystr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14550D25F9F900618676 /* tinystr.cpp */; };
@@ -1431,13 +1454,11 @@
 		F5A1CA840F6B06CF00A96ABD /* MusicDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D8F0D25F9FD00618676 /* MusicDatabase.cpp */; };
 		F5A1CA850F6B06CF00A96ABD /* MusicInfoLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D910D25F9FD00618676 /* MusicInfoLoader.cpp */; };
 		F5A1CA860F6B06CF00A96ABD /* MusicInfoScanner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */; };
-		F5A1CA870F6B06CF00A96ABD /* musicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D950D25F9FD00618676 /* musicInfoTag.cpp */; };
 		F5A1CA880F6B06CF00A96ABD /* MusicInfoTagLoaderAAC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */; };
 		F5A1CA890F6B06CF00A96ABD /* MusicInfoTagLoaderAdplug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D990D25F9FD00618676 /* MusicInfoTagLoaderAdplug.cpp */; };
 		F5A1CA8A0F6B06CF00A96ABD /* MusicInfoTagLoaderApe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9B0D25F9FD00618676 /* MusicInfoTagLoaderApe.cpp */; };
 		F5A1CA8B0F6B06CF00A96ABD /* MusicInfoTagLoaderCDDA.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9D0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.cpp */; };
 		F5A1CA8C0F6B06CF00A96ABD /* MusicInfoTagLoaderDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1D9F0D25F9FD00618676 /* MusicInfoTagLoaderDatabase.cpp */; };
-		F5A1CA8D0F6B06CF00A96ABD /* musicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DA10D25F9FD00618676 /* musicInfoTagLoaderFactory.cpp */; };
 		F5A1CA8E0F6B06CF00A96ABD /* MusicInfoTagLoaderFlac.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DA30D25F9FD00618676 /* MusicInfoTagLoaderFlac.cpp */; };
 		F5A1CA8F0F6B06CF00A96ABD /* MusicInfoTagLoaderGYM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DA50D25F9FD00618676 /* MusicInfoTagLoaderGYM.cpp */; };
 		F5A1CA900F6B06CF00A96ABD /* MusicInfoTagLoaderMod.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1DA70D25F9FD00618676 /* MusicInfoTagLoaderMod.cpp */; };
@@ -1541,7 +1562,6 @@
 		F5A1CAF40F6B06CF00A96ABD /* IoSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EB00D25F9FD00618676 /* IoSupport.cpp */; };
 		F5A1CAF50F6B06CF00A96ABD /* XKGeneral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */; };
 		F5A1CAF60F6B06CF00A96ABD /* xbmc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED10D25F9FD00618676 /* xbmc.cpp */; };
-		F5A1CAF70F6B06CF00A96ABD /* XBVideoConfig.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */; };
 		F5A1CAF80F6B06CF00A96ABD /* unpack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E25770D263BF600618676 /* unpack.cpp */; };
 		F5A1CAF90F6B06CF00A96ABD /* rar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E257B0D263C4400618676 /* rar.cpp */; };
 		F5A1CAFA0F6B06CF00A96ABD /* action.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E257E0D263CE000618676 /* action.cpp */; };
@@ -1818,6 +1838,57 @@
 		7C2D6AE30F35453E00DD2E85 /* SpecialProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpecialProtocol.h; sourceTree = "<group>"; };
 		7C5608C40F1754930056433A /* ExternalPlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ExternalPlayer.cpp; sourceTree = "<group>"; };
 		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
+		7C779D94104A4B2E00F444C4 /* GUIActionDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIActionDescriptor.h; sourceTree = "<group>"; };
+		7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlFactory.cpp; sourceTree = "<group>"; };
+		7C779D96104A4B2E00F444C4 /* GUIControlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlFactory.h; sourceTree = "<group>"; };
+		7C779D99104A4B2E00F444C4 /* GUIFontTTFGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFontTTFGL.cpp; sourceTree = "<group>"; };
+		7C779D9A104A4B2E00F444C4 /* GUIFontTTFGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIFontTTFGL.h; sourceTree = "<group>"; };
+		7C779D9B104A4B2E00F444C4 /* GUIImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIImage.cpp; sourceTree = "<group>"; };
+		7C779D9C104A4B2E00F444C4 /* GUIImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIImage.h; sourceTree = "<group>"; };
+		7C779D9D104A4B2E00F444C4 /* GUIMultiSelectText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIMultiSelectText.h; sourceTree = "<group>"; };
+		7C779D9E104A4B2E00F444C4 /* GUITextureD3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextureD3D.cpp; sourceTree = "<group>"; };
+		7C779D9F104A4B2E00F444C4 /* GUITextureD3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextureD3D.h; sourceTree = "<group>"; };
+		7C779DA0104A4B2E00F444C4 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		7C779DA1104A4B2E00F444C4 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
+		7C779DA2104A4B2E00F444C4 /* TextureDX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureDX.cpp; sourceTree = "<group>"; };
+		7C779DA3104A4B2E00F444C4 /* TextureDX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureDX.h; sourceTree = "<group>"; };
+		7C779DA4104A4B2E00F444C4 /* TextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureGL.cpp; sourceTree = "<group>"; };
+		7C779DA5104A4B2E00F444C4 /* TextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureGL.h; sourceTree = "<group>"; };
+		7C779E16104A57E500F444C4 /* MouseStat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MouseStat.cpp; sourceTree = "<group>"; };
+		7C779E17104A57E500F444C4 /* MouseStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MouseStat.h; sourceTree = "<group>"; };
+		7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTag.cpp; sourceTree = "<group>"; };
+		7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderFactory.cpp; sourceTree = "<group>"; };
+		7C779E1A104A57E500F444C4 /* MusicInfoTagLoaderFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFactory.h; sourceTree = "<group>"; };
+		7C779E1B104A57E500F444C4 /* PictureDX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureDX.cpp; sourceTree = "<group>"; };
+		7C779E1C104A57E500F444C4 /* PictureDX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureDX.h; sourceTree = "<group>"; };
+		7C779E1D104A57E500F444C4 /* PictureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureGL.cpp; sourceTree = "<group>"; };
+		7C779E1E104A57E500F444C4 /* PictureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureGL.h; sourceTree = "<group>"; };
+		7C779E1F104A57E500F444C4 /* RenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystem.cpp; sourceTree = "<group>"; };
+		7C779E20104A57E500F444C4 /* RenderSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystem.h; sourceTree = "<group>"; };
+		7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystemGL.cpp; sourceTree = "<group>"; };
+		7C779E22104A57E500F444C4 /* RenderSystemGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystemGL.h; sourceTree = "<group>"; };
+		7C779E23104A57E500F444C4 /* ScraperSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScraperSettings.h; sourceTree = "<group>"; };
+		7C779E24104A57E500F444C4 /* ViewState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewState.h; sourceTree = "<group>"; };
+		7C779E25104A57E500F444C4 /* WindowingFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WindowingFactory.h; sourceTree = "<group>"; };
+		7C779E26104A57E500F444C4 /* WinEvents.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEvents.h; sourceTree = "<group>"; };
+		7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinEventsSDL.cpp; sourceTree = "<group>"; };
+		7C779E28104A57E500F444C4 /* WinEventsSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEventsSDL.h; sourceTree = "<group>"; };
+		7C779E29104A57E500F444C4 /* WinSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinSystem.cpp; sourceTree = "<group>"; };
+		7C779E2A104A57E500F444C4 /* WinSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinSystem.h; sourceTree = "<group>"; };
+		7C779E2B104A57E500F444C4 /* WinSystemOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinSystemOSX.cpp; sourceTree = "<group>"; };
+		7C779E2C104A57E500F444C4 /* WinSystemOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinSystemOSX.h; sourceTree = "<group>"; };
+		7C779E2D104A57E500F444C4 /* WinSystemOSXGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WinSystemOSXGL.cpp; sourceTree = "<group>"; };
+		7C779E2E104A57E500F444C4 /* WinSystemOSXGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinSystemOSXGL.h; sourceTree = "<group>"; };
+		7C779E2F104A57E500F444C4 /* XBMC_events.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_events.h; sourceTree = "<group>"; };
+		7C779E30104A57E500F444C4 /* XBMC_keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keyboard.h; sourceTree = "<group>"; };
+		7C779E31104A57E500F444C4 /* XBMC_keysym.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keysym.h; sourceTree = "<group>"; };
+		7C779E32104A57E500F444C4 /* XBMC_mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_mouse.h; sourceTree = "<group>"; };
+		7C779E33104A57E500F444C4 /* XBMC_stdinc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_stdinc.h; sourceTree = "<group>"; };
+		7C779E34104A57E500F444C4 /* XBMC_vkeys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_vkeys.h; sourceTree = "<group>"; };
+		7C779E50104A58F900F444C4 /* GUIWindowTestPatternGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowTestPatternGL.cpp; sourceTree = "<group>"; };
+		7C779E51104A58F900F444C4 /* GUIWindowTestPatternGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPatternGL.h; sourceTree = "<group>"; };
+		7C779E52104A58F900F444C4 /* KeyboardStat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardStat.cpp; sourceTree = "<group>"; };
+		7C779E53104A58F900F444C4 /* KeyboardStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardStat.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
 		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextustar.cpp; path = karaoke/karaokelyricstextustar.cpp; sourceTree = "<group>"; };
@@ -1953,16 +2024,8 @@
 		E38E138D0D25F9F900618676 /* AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatedGif.h; sourceTree = "<group>"; };
 		E38E138E0D25F9F900618676 /* AudioContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioContext.cpp; sourceTree = "<group>"; };
 		E38E138F0D25F9F900618676 /* AudioContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioContext.h; sourceTree = "<group>"; };
-		E38E13970D25F9F900618676 /* Keyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Keyboard.cpp; sourceTree = "<group>"; };
-		E38E13980D25F9F900618676 /* Keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
-		E38E139D0D25F9F900618676 /* Mouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mouse.cpp; sourceTree = "<group>"; };
-		E38E139E0D25F9F900618676 /* Mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mouse.h; sourceTree = "<group>"; };
 		E38E139F0D25F9F900618676 /* SDLJoystick.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLJoystick.cpp; sourceTree = "<group>"; };
 		E38E13A00D25F9F900618676 /* SDLJoystick.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLJoystick.h; sourceTree = "<group>"; };
-		E38E13A10D25F9F900618676 /* SDLKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLKeyboard.cpp; sourceTree = "<group>"; };
-		E38E13A20D25F9F900618676 /* SDLKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLKeyboard.h; sourceTree = "<group>"; };
-		E38E13A30D25F9F900618676 /* SDLMouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLMouse.cpp; sourceTree = "<group>"; };
-		E38E13A40D25F9F900618676 /* SDLMouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLMouse.h; sourceTree = "<group>"; };
 		E38E13A90D25F9F900618676 /* DirectXGraphics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectXGraphics.cpp; sourceTree = "<group>"; };
 		E38E13AA0D25F9F900618676 /* DirectXGraphics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectXGraphics.h; sourceTree = "<group>"; };
 		E38E13AB0D25F9F900618676 /* FrameBufferObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBufferObject.cpp; sourceTree = "<group>"; };
@@ -2001,8 +2064,6 @@
 		E38E13D30D25F9F900618676 /* GUIColorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIColorManager.h; sourceTree = "<group>"; };
 		E38E13D60D25F9F900618676 /* GUIControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControl.cpp; sourceTree = "<group>"; };
 		E38E13D70D25F9F900618676 /* GUIControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControl.h; sourceTree = "<group>"; };
-		E38E13D80D25F9F900618676 /* GuiControlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GuiControlFactory.cpp; sourceTree = "<group>"; };
-		E38E13D90D25F9F900618676 /* GuiControlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GuiControlFactory.h; sourceTree = "<group>"; };
 		E38E13DA0D25F9F900618676 /* GUIControlGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlGroup.cpp; sourceTree = "<group>"; };
 		E38E13DB0D25F9F900618676 /* GUIControlGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlGroup.h; sourceTree = "<group>"; };
 		E38E13DC0D25F9F900618676 /* GUIControlGroupList.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlGroupList.cpp; sourceTree = "<group>"; };
@@ -2021,13 +2082,10 @@
 		E38E13E90D25F9F900618676 /* GUIFontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIFontManager.h; sourceTree = "<group>"; };
 		E38E13EA0D25F9F900618676 /* GUIFontTTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIFontTTF.cpp; sourceTree = "<group>"; };
 		E38E13EB0D25F9F900618676 /* GUIFontTTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIFontTTF.h; sourceTree = "<group>"; };
-		E38E13EC0D25F9F900618676 /* guiImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = guiImage.cpp; sourceTree = "<group>"; };
-		E38E13ED0D25F9F900618676 /* guiImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guiImage.h; sourceTree = "<group>"; };
 		E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIIncludes.cpp; sourceTree = "<group>"; };
 		E38E13EF0D25F9F900618676 /* GUIIncludes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIIncludes.h; sourceTree = "<group>"; };
 		E38E13F20D25F9F900618676 /* GUILabelControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUILabelControl.cpp; sourceTree = "<group>"; };
 		E38E13F30D25F9F900618676 /* GUILabelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUILabelControl.h; sourceTree = "<group>"; };
-		E38E13F70D25F9F900618676 /* guilib_win32.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = guilib_win32.vcproj; sourceTree = "<group>"; };
 		E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListContainer.cpp; sourceTree = "<group>"; };
 		E38E13FB0D25F9F900618676 /* GUIListContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIListContainer.h; sourceTree = "<group>"; };
 		E38E14000D25F9F900618676 /* GUIListItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIListItem.cpp; sourceTree = "<group>"; };
@@ -2100,8 +2158,6 @@
 		E38E14480D25F9F900618676 /* SkinInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinInfo.cpp; sourceTree = "<group>"; };
 		E38E14490D25F9F900618676 /* SkinInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinInfo.h; sourceTree = "<group>"; };
 		E38E144A0D25F9F900618676 /* StdString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StdString.h; sourceTree = "<group>"; };
-		E38E144B0D25F9F900618676 /* Surface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Surface.cpp; sourceTree = "<group>"; };
-		E38E144C0D25F9F900618676 /* Surface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Surface.h; sourceTree = "<group>"; };
 		E38E144D0D25F9F900618676 /* system.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = system.h; sourceTree = "<group>"; };
 		E38E144E0D25F9F900618676 /* TextureBundle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureBundle.cpp; sourceTree = "<group>"; };
 		E38E144F0D25F9F900618676 /* TextureBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureBundle.h; sourceTree = "<group>"; };
@@ -3267,8 +3323,6 @@
 		E38E1D920D25F9FD00618676 /* MusicInfoLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoLoader.h; sourceTree = "<group>"; };
 		E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoScanner.cpp; sourceTree = "<group>"; };
 		E38E1D940D25F9FD00618676 /* MusicInfoScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoScanner.h; sourceTree = "<group>"; };
-		E38E1D950D25F9FD00618676 /* musicInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = musicInfoTag.cpp; sourceTree = "<group>"; };
-		E38E1D960D25F9FD00618676 /* musicInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = musicInfoTag.h; sourceTree = "<group>"; };
 		E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderAAC.cpp; sourceTree = "<group>"; };
 		E38E1D980D25F9FD00618676 /* MusicInfoTagLoaderAAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderAAC.h; sourceTree = "<group>"; };
 		E38E1D990D25F9FD00618676 /* MusicInfoTagLoaderAdplug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderAdplug.cpp; sourceTree = "<group>"; };
@@ -3279,8 +3333,6 @@
 		E38E1D9E0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderCDDA.h; sourceTree = "<group>"; };
 		E38E1D9F0D25F9FD00618676 /* MusicInfoTagLoaderDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderDatabase.cpp; sourceTree = "<group>"; };
 		E38E1DA00D25F9FD00618676 /* MusicInfoTagLoaderDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderDatabase.h; sourceTree = "<group>"; };
-		E38E1DA10D25F9FD00618676 /* musicInfoTagLoaderFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = musicInfoTagLoaderFactory.cpp; sourceTree = "<group>"; };
-		E38E1DA20D25F9FD00618676 /* musicInfoTagLoaderFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = musicInfoTagLoaderFactory.h; sourceTree = "<group>"; };
 		E38E1DA30D25F9FD00618676 /* MusicInfoTagLoaderFlac.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderFlac.cpp; sourceTree = "<group>"; };
 		E38E1DA40D25F9FD00618676 /* MusicInfoTagLoaderFlac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFlac.h; sourceTree = "<group>"; };
 		E38E1DA50D25F9FD00618676 /* MusicInfoTagLoaderGYM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderGYM.cpp; sourceTree = "<group>"; };
@@ -3495,8 +3547,6 @@
 		E38E1EC70D25F9FD00618676 /* XKGeneral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XKGeneral.cpp; sourceTree = "<group>"; };
 		E38E1EC80D25F9FD00618676 /* XKGeneral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XKGeneral.h; sourceTree = "<group>"; };
 		E38E1ED10D25F9FD00618676 /* xbmc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = xbmc.cpp; sourceTree = "<group>"; };
-		E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBVideoConfig.cpp; sourceTree = "<group>"; };
-		E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBVideoConfig.h; sourceTree = "<group>"; };
 		E38E238B0D2626E600618676 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		E38E238C0D2626E600618676 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
 		E38E238D0D2626E600618676 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -3996,6 +4046,22 @@
 		E38E13890D25F9F900618676 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
+				7C779D94104A4B2E00F444C4 /* GUIActionDescriptor.h */,
+				7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */,
+				7C779D96104A4B2E00F444C4 /* GUIControlFactory.h */,
+				7C779D99104A4B2E00F444C4 /* GUIFontTTFGL.cpp */,
+				7C779D9A104A4B2E00F444C4 /* GUIFontTTFGL.h */,
+				7C779D9B104A4B2E00F444C4 /* GUIImage.cpp */,
+				7C779D9C104A4B2E00F444C4 /* GUIImage.h */,
+				7C779D9D104A4B2E00F444C4 /* GUIMultiSelectText.h */,
+				7C779D9E104A4B2E00F444C4 /* GUITextureD3D.cpp */,
+				7C779D9F104A4B2E00F444C4 /* GUITextureD3D.h */,
+				7C779DA0104A4B2E00F444C4 /* Texture.cpp */,
+				7C779DA1104A4B2E00F444C4 /* Texture.h */,
+				7C779DA2104A4B2E00F444C4 /* TextureDX.cpp */,
+				7C779DA3104A4B2E00F444C4 /* TextureDX.h */,
+				7C779DA4104A4B2E00F444C4 /* TextureGL.cpp */,
+				7C779DA5104A4B2E00F444C4 /* TextureGL.h */,
 				6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */,
 				6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */,
 				E3A478150D29030100F3C3A6 /* GUIMultiSelectText.cpp */,
@@ -4032,8 +4098,6 @@
 				E38E13D30D25F9F900618676 /* GUIColorManager.h */,
 				E38E13D60D25F9F900618676 /* GUIControl.cpp */,
 				E38E13D70D25F9F900618676 /* GUIControl.h */,
-				E38E13D80D25F9F900618676 /* GuiControlFactory.cpp */,
-				E38E13D90D25F9F900618676 /* GuiControlFactory.h */,
 				E38E13DA0D25F9F900618676 /* GUIControlGroup.cpp */,
 				E38E13DB0D25F9F900618676 /* GUIControlGroup.h */,
 				E38E13DC0D25F9F900618676 /* GUIControlGroupList.cpp */,
@@ -4054,13 +4118,10 @@
 				E38E13E90D25F9F900618676 /* GUIFontManager.h */,
 				E38E13EA0D25F9F900618676 /* GUIFontTTF.cpp */,
 				E38E13EB0D25F9F900618676 /* GUIFontTTF.h */,
-				E38E13EC0D25F9F900618676 /* guiImage.cpp */,
-				E38E13ED0D25F9F900618676 /* guiImage.h */,
 				E38E13EE0D25F9F900618676 /* GUIIncludes.cpp */,
 				E38E13EF0D25F9F900618676 /* GUIIncludes.h */,
 				E38E13F20D25F9F900618676 /* GUILabelControl.cpp */,
 				E38E13F30D25F9F900618676 /* GUILabelControl.h */,
-				E38E13F70D25F9F900618676 /* guilib_win32.vcproj */,
 				E38E13FA0D25F9F900618676 /* GUIListContainer.cpp */,
 				E38E13FB0D25F9F900618676 /* GUIListContainer.h */,
 				E38E14000D25F9F900618676 /* GUIListItem.cpp */,
@@ -4139,8 +4200,6 @@
 				E38E14480D25F9F900618676 /* SkinInfo.cpp */,
 				E38E14490D25F9F900618676 /* SkinInfo.h */,
 				E38E144A0D25F9F900618676 /* StdString.h */,
-				E38E144B0D25F9F900618676 /* Surface.cpp */,
-				E38E144C0D25F9F900618676 /* Surface.h */,
 				E38E144D0D25F9F900618676 /* system.h */,
 				E38E144E0D25F9F900618676 /* TextureBundle.cpp */,
 				E38E144F0D25F9F900618676 /* TextureBundle.h */,
@@ -4160,16 +4219,8 @@
 		E38E13900D25F9F900618676 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				E38E13970D25F9F900618676 /* Keyboard.cpp */,
-				E38E13980D25F9F900618676 /* Keyboard.h */,
-				E38E139D0D25F9F900618676 /* Mouse.cpp */,
-				E38E139E0D25F9F900618676 /* Mouse.h */,
-				E38E13A30D25F9F900618676 /* SDLMouse.cpp */,
-				E38E13A40D25F9F900618676 /* SDLMouse.h */,
 				E38E139F0D25F9F900618676 /* SDLJoystick.cpp */,
 				E38E13A00D25F9F900618676 /* SDLJoystick.h */,
-				E38E13A10D25F9F900618676 /* SDLKeyboard.cpp */,
-				E38E13A20D25F9F900618676 /* SDLKeyboard.h */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -4234,6 +4285,41 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				7C779E50104A58F900F444C4 /* GUIWindowTestPatternGL.cpp */,
+				7C779E51104A58F900F444C4 /* GUIWindowTestPatternGL.h */,
+				7C779E52104A58F900F444C4 /* KeyboardStat.cpp */,
+				7C779E53104A58F900F444C4 /* KeyboardStat.h */,
+				7C779E16104A57E500F444C4 /* MouseStat.cpp */,
+				7C779E17104A57E500F444C4 /* MouseStat.h */,
+				7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */,
+				7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */,
+				7C779E1A104A57E500F444C4 /* MusicInfoTagLoaderFactory.h */,
+				7C779E1B104A57E500F444C4 /* PictureDX.cpp */,
+				7C779E1C104A57E500F444C4 /* PictureDX.h */,
+				7C779E1D104A57E500F444C4 /* PictureGL.cpp */,
+				7C779E1E104A57E500F444C4 /* PictureGL.h */,
+				7C779E1F104A57E500F444C4 /* RenderSystem.cpp */,
+				7C779E20104A57E500F444C4 /* RenderSystem.h */,
+				7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */,
+				7C779E22104A57E500F444C4 /* RenderSystemGL.h */,
+				7C779E23104A57E500F444C4 /* ScraperSettings.h */,
+				7C779E24104A57E500F444C4 /* ViewState.h */,
+				7C779E25104A57E500F444C4 /* WindowingFactory.h */,
+				7C779E26104A57E500F444C4 /* WinEvents.h */,
+				7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */,
+				7C779E28104A57E500F444C4 /* WinEventsSDL.h */,
+				7C779E29104A57E500F444C4 /* WinSystem.cpp */,
+				7C779E2A104A57E500F444C4 /* WinSystem.h */,
+				7C779E2B104A57E500F444C4 /* WinSystemOSX.cpp */,
+				7C779E2C104A57E500F444C4 /* WinSystemOSX.h */,
+				7C779E2D104A57E500F444C4 /* WinSystemOSXGL.cpp */,
+				7C779E2E104A57E500F444C4 /* WinSystemOSXGL.h */,
+				7C779E2F104A57E500F444C4 /* XBMC_events.h */,
+				7C779E30104A57E500F444C4 /* XBMC_keyboard.h */,
+				7C779E31104A57E500F444C4 /* XBMC_keysym.h */,
+				7C779E32104A57E500F444C4 /* XBMC_mouse.h */,
+				7C779E33104A57E500F444C4 /* XBMC_stdinc.h */,
+				7C779E34104A57E500F444C4 /* XBMC_vkeys.h */,
 				88E384620E20D6EF0028AFC0 /* GUIListGroup.cpp */,
 				88E384630E20D6EF0028AFC0 /* GUIListGroup.h */,
 				886328150E07B37200BB3DAB /* GUIDialogFullScreenInfo.cpp */,
@@ -4495,8 +4581,6 @@
 				E38E1D920D25F9FD00618676 /* MusicInfoLoader.h */,
 				E38E1D930D25F9FD00618676 /* MusicInfoScanner.cpp */,
 				E38E1D940D25F9FD00618676 /* MusicInfoScanner.h */,
-				E38E1D950D25F9FD00618676 /* musicInfoTag.cpp */,
-				E38E1D960D25F9FD00618676 /* musicInfoTag.h */,
 				880DBE4D0DC223FF00E26B71 /* MusicInfoTag.h */,
 				E38E1D970D25F9FD00618676 /* MusicInfoTagLoaderAAC.cpp */,
 				E38E1D980D25F9FD00618676 /* MusicInfoTagLoaderAAC.h */,
@@ -4510,8 +4594,6 @@
 				E38E1D9E0D25F9FD00618676 /* MusicInfoTagLoaderCDDA.h */,
 				E38E1D9F0D25F9FD00618676 /* MusicInfoTagLoaderDatabase.cpp */,
 				E38E1DA00D25F9FD00618676 /* MusicInfoTagLoaderDatabase.h */,
-				E38E1DA10D25F9FD00618676 /* musicInfoTagLoaderFactory.cpp */,
-				E38E1DA20D25F9FD00618676 /* musicInfoTagLoaderFactory.h */,
 				E38E1DA30D25F9FD00618676 /* MusicInfoTagLoaderFlac.cpp */,
 				E38E1DA40D25F9FD00618676 /* MusicInfoTagLoaderFlac.h */,
 				E38E1DA50D25F9FD00618676 /* MusicInfoTagLoaderGYM.cpp */,
@@ -4643,8 +4725,6 @@
 				E38E1EAD0D25F9FD00618676 /* XBIRRemote.h */,
 				E38E1EAE0D25F9FD00618676 /* xbox */,
 				E38E1ED10D25F9FD00618676 /* xbmc.cpp */,
-				E38E1ED40D25F9FD00618676 /* XBVideoConfig.cpp */,
-				E38E1ED50D25F9FD00618676 /* XBVideoConfig.h */,
 				E46F7C280F77217400C25D29 /* Zeroconf.cpp */,
 				E46F7C290F77217400C25D29 /* Zeroconf.h */,
 				E49ACDD310074F9200A86ECD /* ZeroconfBrowser.h */,
@@ -7035,11 +7115,7 @@
 				E38E1ED90D25F9FD00618676 /* ActionManager.cpp in Sources */,
 				E38E1EDA0D25F9FD00618676 /* AnimatedGif.cpp in Sources */,
 				E38E1EDB0D25F9FD00618676 /* AudioContext.cpp in Sources */,
-				E38E1EDF0D25F9FD00618676 /* Keyboard.cpp in Sources */,
-				E38E1EE20D25F9FD00618676 /* Mouse.cpp in Sources */,
 				E38E1EE30D25F9FD00618676 /* SDLJoystick.cpp in Sources */,
-				E38E1EE40D25F9FD00618676 /* SDLKeyboard.cpp in Sources */,
-				E38E1EE50D25F9FD00618676 /* SDLMouse.cpp in Sources */,
 				E38E1EE80D25F9FD00618676 /* DirectXGraphics.cpp in Sources */,
 				E38E1EE90D25F9FD00618676 /* FrameBufferObject.cpp in Sources */,
 				E38E1EEC0D25F9FD00618676 /* GraphicContext.cpp in Sources */,
@@ -7051,7 +7127,6 @@
 				E38E1EF20D25F9FD00618676 /* GUICheckMarkControl.cpp in Sources */,
 				E38E1EF30D25F9FD00618676 /* GUIColorManager.cpp in Sources */,
 				E38E1EF50D25F9FD00618676 /* GUIControl.cpp in Sources */,
-				E38E1EF60D25F9FD00618676 /* GuiControlFactory.cpp in Sources */,
 				E38E1EF70D25F9FD00618676 /* GUIControlGroup.cpp in Sources */,
 				E38E1EF80D25F9FD00618676 /* GUIControlGroupList.cpp in Sources */,
 				E38E1EF90D25F9FD00618676 /* GUIDialog.cpp in Sources */,
@@ -7061,7 +7136,6 @@
 				E38E1EFD0D25F9FD00618676 /* GUIFont.cpp in Sources */,
 				E38E1EFE0D25F9FD00618676 /* GUIFontManager.cpp in Sources */,
 				E38E1EFF0D25F9FD00618676 /* GUIFontTTF.cpp in Sources */,
-				E38E1F000D25F9FD00618676 /* guiImage.cpp in Sources */,
 				E38E1F010D25F9FD00618676 /* GUIIncludes.cpp in Sources */,
 				E38E1F030D25F9FD00618676 /* GUILabelControl.cpp in Sources */,
 				E38E1F060D25F9FD00618676 /* GUIListContainer.cpp in Sources */,
@@ -7098,7 +7172,6 @@
 				E38E1F270D25F9FD00618676 /* LocalizeStrings.cpp in Sources */,
 				E38E1F2A0D25F9FD00618676 /* Shader.cpp in Sources */,
 				E38E1F2B0D25F9FD00618676 /* SkinInfo.cpp in Sources */,
-				E38E1F2C0D25F9FD00618676 /* Surface.cpp in Sources */,
 				E38E1F2D0D25F9FD00618676 /* TextureBundle.cpp in Sources */,
 				E38E1F2E0D25F9FD00618676 /* TextureManager.cpp in Sources */,
 				E38E1F300D25F9FD00618676 /* tinystr.cpp in Sources */,
@@ -7551,13 +7624,11 @@
 				E38E227E0D25F9FE00618676 /* MusicDatabase.cpp in Sources */,
 				E38E227F0D25F9FE00618676 /* MusicInfoLoader.cpp in Sources */,
 				E38E22800D25F9FE00618676 /* MusicInfoScanner.cpp in Sources */,
-				E38E22810D25F9FE00618676 /* musicInfoTag.cpp in Sources */,
 				E38E22820D25F9FE00618676 /* MusicInfoTagLoaderAAC.cpp in Sources */,
 				E38E22830D25F9FE00618676 /* MusicInfoTagLoaderAdplug.cpp in Sources */,
 				E38E22840D25F9FE00618676 /* MusicInfoTagLoaderApe.cpp in Sources */,
 				E38E22850D25F9FE00618676 /* MusicInfoTagLoaderCDDA.cpp in Sources */,
 				E38E22860D25F9FE00618676 /* MusicInfoTagLoaderDatabase.cpp in Sources */,
-				E38E22870D25F9FE00618676 /* musicInfoTagLoaderFactory.cpp in Sources */,
 				E38E22880D25F9FE00618676 /* MusicInfoTagLoaderFlac.cpp in Sources */,
 				E38E22890D25F9FE00618676 /* MusicInfoTagLoaderGYM.cpp in Sources */,
 				E38E228A0D25F9FE00618676 /* MusicInfoTagLoaderMod.cpp in Sources */,
@@ -7661,7 +7732,6 @@
 				E38E23070D25F9FE00618676 /* IoSupport.cpp in Sources */,
 				E38E23100D25F9FE00618676 /* XKGeneral.cpp in Sources */,
 				E38E23150D25F9FE00618676 /* xbmc.cpp in Sources */,
-				E38E23170D25F9FE00618676 /* XBVideoConfig.cpp in Sources */,
 				E38E25780D263BF600618676 /* unpack.cpp in Sources */,
 				E38E257C0D263C4400618676 /* rar.cpp in Sources */,
 				E38E259D0D263CE000618676 /* action.cpp in Sources */,
@@ -7866,6 +7936,26 @@
 				E49ACD9F10074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */,
 				E49ACDD510074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 				F5D8EF5B103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */,
+				7C779DA6104A4B2E00F444C4 /* GUIControlFactory.cpp in Sources */,
+				7C779DA8104A4B2E00F444C4 /* GUIFontTTFGL.cpp in Sources */,
+				7C779DA9104A4B2E00F444C4 /* GUIImage.cpp in Sources */,
+				7C779DAA104A4B2E00F444C4 /* GUITextureD3D.cpp in Sources */,
+				7C779DAB104A4B2E00F444C4 /* Texture.cpp in Sources */,
+				7C779DAC104A4B2E00F444C4 /* TextureDX.cpp in Sources */,
+				7C779DAD104A4B2E00F444C4 /* TextureGL.cpp in Sources */,
+				7C779E35104A57E500F444C4 /* MouseStat.cpp in Sources */,
+				7C779E36104A57E500F444C4 /* MusicInfoTag.cpp in Sources */,
+				7C779E37104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */,
+				7C779E38104A57E500F444C4 /* PictureDX.cpp in Sources */,
+				7C779E39104A57E500F444C4 /* PictureGL.cpp in Sources */,
+				7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */,
+				7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */,
+				7C779E3C104A57E500F444C4 /* WinEventsSDL.cpp in Sources */,
+				7C779E3D104A57E500F444C4 /* WinSystem.cpp in Sources */,
+				7C779E3E104A57E500F444C4 /* WinSystemOSX.cpp in Sources */,
+				7C779E3F104A57E500F444C4 /* WinSystemOSXGL.cpp in Sources */,
+				7C779E54104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */,
+				7C779E55104A58F900F444C4 /* KeyboardStat.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7876,11 +7966,7 @@
 				F5A1C8740F6B06CF00A96ABD /* ActionManager.cpp in Sources */,
 				F5A1C8750F6B06CF00A96ABD /* AnimatedGif.cpp in Sources */,
 				F5A1C8760F6B06CF00A96ABD /* AudioContext.cpp in Sources */,
-				F5A1C8770F6B06CF00A96ABD /* Keyboard.cpp in Sources */,
-				F5A1C8780F6B06CF00A96ABD /* Mouse.cpp in Sources */,
 				F5A1C8790F6B06CF00A96ABD /* SDLJoystick.cpp in Sources */,
-				F5A1C87A0F6B06CF00A96ABD /* SDLKeyboard.cpp in Sources */,
-				F5A1C87B0F6B06CF00A96ABD /* SDLMouse.cpp in Sources */,
 				F5A1C87C0F6B06CF00A96ABD /* DirectXGraphics.cpp in Sources */,
 				F5A1C87D0F6B06CF00A96ABD /* FrameBufferObject.cpp in Sources */,
 				F5A1C87E0F6B06CF00A96ABD /* GraphicContext.cpp in Sources */,
@@ -7892,7 +7978,6 @@
 				F5A1C8840F6B06CF00A96ABD /* GUICheckMarkControl.cpp in Sources */,
 				F5A1C8850F6B06CF00A96ABD /* GUIColorManager.cpp in Sources */,
 				F5A1C8860F6B06CF00A96ABD /* GUIControl.cpp in Sources */,
-				F5A1C8870F6B06CF00A96ABD /* GuiControlFactory.cpp in Sources */,
 				F5A1C8880F6B06CF00A96ABD /* GUIControlGroup.cpp in Sources */,
 				F5A1C8890F6B06CF00A96ABD /* GUIControlGroupList.cpp in Sources */,
 				F5A1C88A0F6B06CF00A96ABD /* GUIDialog.cpp in Sources */,
@@ -7902,7 +7987,6 @@
 				F5A1C88E0F6B06CF00A96ABD /* GUIFont.cpp in Sources */,
 				F5A1C88F0F6B06CF00A96ABD /* GUIFontManager.cpp in Sources */,
 				F5A1C8900F6B06CF00A96ABD /* GUIFontTTF.cpp in Sources */,
-				F5A1C8910F6B06CF00A96ABD /* guiImage.cpp in Sources */,
 				F5A1C8920F6B06CF00A96ABD /* GUIIncludes.cpp in Sources */,
 				F5A1C8930F6B06CF00A96ABD /* GUILabelControl.cpp in Sources */,
 				F5A1C8940F6B06CF00A96ABD /* GUIListContainer.cpp in Sources */,
@@ -7939,7 +8023,6 @@
 				F5A1C8B30F6B06CF00A96ABD /* LocalizeStrings.cpp in Sources */,
 				F5A1C8B40F6B06CF00A96ABD /* Shader.cpp in Sources */,
 				F5A1C8B50F6B06CF00A96ABD /* SkinInfo.cpp in Sources */,
-				F5A1C8B60F6B06CF00A96ABD /* Surface.cpp in Sources */,
 				F5A1C8B70F6B06CF00A96ABD /* TextureBundle.cpp in Sources */,
 				F5A1C8B80F6B06CF00A96ABD /* TextureManager.cpp in Sources */,
 				F5A1C8B90F6B06CF00A96ABD /* tinystr.cpp in Sources */,
@@ -8392,13 +8475,11 @@
 				F5A1CA840F6B06CF00A96ABD /* MusicDatabase.cpp in Sources */,
 				F5A1CA850F6B06CF00A96ABD /* MusicInfoLoader.cpp in Sources */,
 				F5A1CA860F6B06CF00A96ABD /* MusicInfoScanner.cpp in Sources */,
-				F5A1CA870F6B06CF00A96ABD /* musicInfoTag.cpp in Sources */,
 				F5A1CA880F6B06CF00A96ABD /* MusicInfoTagLoaderAAC.cpp in Sources */,
 				F5A1CA890F6B06CF00A96ABD /* MusicInfoTagLoaderAdplug.cpp in Sources */,
 				F5A1CA8A0F6B06CF00A96ABD /* MusicInfoTagLoaderApe.cpp in Sources */,
 				F5A1CA8B0F6B06CF00A96ABD /* MusicInfoTagLoaderCDDA.cpp in Sources */,
 				F5A1CA8C0F6B06CF00A96ABD /* MusicInfoTagLoaderDatabase.cpp in Sources */,
-				F5A1CA8D0F6B06CF00A96ABD /* musicInfoTagLoaderFactory.cpp in Sources */,
 				F5A1CA8E0F6B06CF00A96ABD /* MusicInfoTagLoaderFlac.cpp in Sources */,
 				F5A1CA8F0F6B06CF00A96ABD /* MusicInfoTagLoaderGYM.cpp in Sources */,
 				F5A1CA900F6B06CF00A96ABD /* MusicInfoTagLoaderMod.cpp in Sources */,
@@ -8502,7 +8583,6 @@
 				F5A1CAF40F6B06CF00A96ABD /* IoSupport.cpp in Sources */,
 				F5A1CAF50F6B06CF00A96ABD /* XKGeneral.cpp in Sources */,
 				F5A1CAF60F6B06CF00A96ABD /* xbmc.cpp in Sources */,
-				F5A1CAF70F6B06CF00A96ABD /* XBVideoConfig.cpp in Sources */,
 				F5A1CAF80F6B06CF00A96ABD /* unpack.cpp in Sources */,
 				F5A1CAF90F6B06CF00A96ABD /* rar.cpp in Sources */,
 				F5A1CAFA0F6B06CF00A96ABD /* action.cpp in Sources */,
@@ -8707,6 +8787,26 @@
 				E49ACDA010074A4000A86ECD /* ZeroconfBrowserOSX.cpp in Sources */,
 				E49ACDD610074F9200A86ECD /* ZeroconfBrowser.cpp in Sources */,
 				F5D8EF5C103912A4004A11AB /* DVDSubtitleParserVplayer.cpp in Sources */,
+				7C779DAE104A4B2E00F444C4 /* GUIControlFactory.cpp in Sources */,
+				7C779DB0104A4B2E00F444C4 /* GUIFontTTFGL.cpp in Sources */,
+				7C779DB1104A4B2E00F444C4 /* GUIImage.cpp in Sources */,
+				7C779DB2104A4B2E00F444C4 /* GUITextureD3D.cpp in Sources */,
+				7C779DB3104A4B2E00F444C4 /* Texture.cpp in Sources */,
+				7C779DB4104A4B2E00F444C4 /* TextureDX.cpp in Sources */,
+				7C779DB5104A4B2E00F444C4 /* TextureGL.cpp in Sources */,
+				7C779E40104A57E500F444C4 /* MouseStat.cpp in Sources */,
+				7C779E41104A57E500F444C4 /* MusicInfoTag.cpp in Sources */,
+				7C779E42104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */,
+				7C779E43104A57E500F444C4 /* PictureDX.cpp in Sources */,
+				7C779E44104A57E500F444C4 /* PictureGL.cpp in Sources */,
+				7C779E45104A57E500F444C4 /* RenderSystem.cpp in Sources */,
+				7C779E46104A57E500F444C4 /* RenderSystemGL.cpp in Sources */,
+				7C779E47104A57E500F444C4 /* WinEventsSDL.cpp in Sources */,
+				7C779E48104A57E500F444C4 /* WinSystem.cpp in Sources */,
+				7C779E49104A57E500F444C4 /* WinSystemOSX.cpp in Sources */,
+				7C779E4A104A57E500F444C4 /* WinSystemOSXGL.cpp in Sources */,
+				7C779E56104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */,
+				7C779E57104A58F900F444C4 /* KeyboardStat.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
