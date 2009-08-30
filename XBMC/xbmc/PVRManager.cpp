@@ -191,7 +191,7 @@ void CPVRManager::Start()
   m_infoToggleCurrent       = 0;
   m_TimeshiftReceiver       = NULL;
   m_pTimeshiftFile          = NULL;
-  m_timeshift               = false;
+  m_timeshiftInt            = false;
 
   /* Discover, load and create chosen Client add-on's. */
   g_addonmanager.RegisterAddonCallback(ADDON_PVRDLL, this);
@@ -937,81 +937,6 @@ bool CPVRManager::GetTeletextPage(const CFileItem &item, int Page, int subPage, 
 /************************************************************/
 /** Live stream handling **/
 
-bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
-{
-  m_scanStart = timeGetTime();
-
-  EnterCriticalSection(&m_critSection);
-
-  if (m_currentPlayingChannel)
-    delete m_currentPlayingChannel;
-
-  if (!radio)
-    m_currentPlayingChannel = new CFileItem(PVRChannelsTV[channel-1]);
-  else
-    m_currentPlayingChannel = new CFileItem(PVRChannelsRadio[channel-1]);
-
-  cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
-  if (!m_clients[tag->ClientID()]->OpenLiveStream(tag->ClientNumber()))
-  {
-    delete m_currentPlayingChannel;
-    m_currentPlayingChannel = NULL;
-    LeaveCriticalSection(&m_critSection);
-    return false;
-  }
-
-  SetCurrentPlayingProgram(*m_currentPlayingChannel);
-  m_bPaused           = false;
-  m_timeshiftTimeDiff = 0;
-      
-  /* Start Timeshift buffering */
-  if (g_guiSettings.GetBool("pvrrecord.timeshift"))
-  {
-    if (g_guiSettings.GetString("pvrrecord.timeshiftpath") != "")
-    {
-      unsigned int flags  = READ_BUFFERED;
-      m_TimeshiftReceiver = new CPVRTimeshiftRcvr(m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]);
-      m_pTimeshiftFile    = new CFile();
-      m_timeshiftDelta    = 0;
-      m_timeshiftReaded   = 0;
-      if (m_pTimeshiftFile->Open(g_guiSettings.GetString("pvrrecord.timeshiftpath")+"/.timeshift_cache.ts", flags))
-      {
-        m_timeshift = true;
-        m_TimeshiftReceiver->StartReceiver();
-      }
-    }
-  }
-
-  LeaveCriticalSection(&m_critSection);
-  return true;
-}
-
-void CPVRManager::CloseLiveStream()
-{
-  if (!m_currentPlayingChannel)
-    return;
-
-  EnterCriticalSection(&m_critSection);
-
-  /* Stop the Timeshift receiving if active */
-  if (m_timeshift)
-  {
-    m_pTimeshiftFile->Close();
-    delete m_pTimeshiftFile;
-    delete m_TimeshiftReceiver;
-    m_TimeshiftReceiver = NULL;
-    m_pTimeshiftFile    = NULL;
-    m_timeshift         = false;
-  }
-
-  /* Close the Client connection */
-  m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->CloseLiveStream();
-  delete m_currentPlayingChannel;
-  m_currentPlayingChannel = NULL;
-
-  LeaveCriticalSection(&m_critSection);
-  return;
-}
 
 bool CPVRManager::PauseLiveStream(bool DoPause, double dTime)
 {
@@ -1021,82 +946,6 @@ bool CPVRManager::PauseLiveStream(bool DoPause, double dTime)
     m_timeshiftTimePause = timeGetTime() - m_timeshiftTimeDiff*1000;
   m_bPaused = DoPause;
   return true;
-}
-
-int CPVRManager::ReadLiveStream(BYTE* buf, int buf_size)
-{
-  /* Check for a open channel indicated by the m_currentPlayingChannel pointer */
-  if (!m_currentPlayingChannel)
-    return 0;
-
-  /* Check stream for available video or audio data, if after the scantime no stream
-     is present playback is canceled and returns to the window */
-  if (m_scanStart)
-  {
-    if (timeGetTime() - m_scanStart > (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
-      return 0;
-    else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
-      m_scanStart = NULL;
-  }
-  
-  /* Process Timeshift based stream reading from buffer file */
-  if (m_timeshift)
-  {
-    if (!m_pTimeshiftFile) return -1;
-
-    DWORD now = timeGetTime();
-
-    /* Never read behind current write position inside cache */
-    while (m_timeshiftReaded+buf_size+131072 > m_TimeshiftReceiver->GetWritten())
-    {
-      if (timeGetTime() - now > 5*1000)
-      {
-        CLog::Log(LOGERROR,"PVR: Timeshift Cache Position timeout");
-        return 0;
-      }
-      Sleep(5);
-    }
-    
-    /* Reduce buffer size to prevent partly read behind range */
-    int tmp = m_TimeshiftReceiver->GetMaxSize() - m_pTimeshiftFile->GetPosition();
-    if (tmp > 0 && tmp < buf_size)
-      buf_size = tmp;
-
-REPEAT_READ:
-    int ret = m_pTimeshiftFile->Read(buf, buf_size);
-    if (ret <= 0)
-    {
-      if (timeGetTime() - now > 5*1000)
-      {
-        CLog::Log(LOGERROR,"PVR: Timeshift Cache Read timeout");
-        return 0;
-      }
-      
-      Sleep(5);
-      goto REPEAT_READ;
-    }
-
-    /* Check if we are at end of buffer file, if yes wrap around and
-       start at beginning */
-    if (m_pTimeshiftFile->GetPosition() >= m_TimeshiftReceiver->GetMaxSize())
-    {
-      CLog::Log(LOGDEBUG,"PVR: Timeshift Cache wrap around");
-      m_pTimeshiftFile->Seek(0);
-    }
-
-    m_timeshiftReaded += ret;
-    return ret;
-  }
-  /* Read stream directly from client without a buffer file */
-  else
-  {
-    return m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->ReadLiveStream(buf, buf_size);
-  }
-}
-
-__int64 CPVRManager::SeekLiveStream(__int64 pos, int whence)
-{
-  return 0;
 }
 
 int CPVRManager::GetCurrentChannel(bool radio)
@@ -1111,15 +960,6 @@ CFileItem *CPVRManager::GetCurrentChannelItem()
 {
   return m_currentPlayingChannel;
 }
-
-PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
-{
-  if (!m_currentPlayingChannel)
-    return NULL;
-
-  return &m_clientsProps[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()];
-}
-
 
 
 bool CPVRManager::ChannelSwitch(unsigned int iChannel)
@@ -1142,7 +982,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   EnterCriticalSection(&m_critSection);
 
   /* If Timeshift is active reset all relevant data and stop the receiver */
-  if (m_timeshift)
+  if (m_timeshiftInt)
   {
     m_timeshiftDelta  = 0;
     m_timeshiftReaded = 0;
@@ -1161,7 +1001,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   }
   
   /* Start the Timeshift receiver again if active */
-  if (m_timeshift)
+  if (m_timeshiftInt)
   {
     m_TimeshiftReceiver->SetClient(m_clients[channels->at(iChannel-1).ClientID()]);
     m_TimeshiftReceiver->StartReceiver();
@@ -1201,7 +1041,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
         continue;
 
       /* If Timeshift is active reset all relevant data and stop the receiver */
-      if (m_timeshift)
+      if (m_timeshiftInt)
       {
         m_timeshiftDelta  = 0;
         m_timeshiftReaded = 0;
@@ -1221,7 +1061,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
 
         /* Start the Timeshift receiver again if active */
-        if (m_timeshift)
+        if (m_timeshiftInt)
         {
           m_TimeshiftReceiver->SetClient(m_clients[channels->at(currentTVChannel-1).ClientID()]);
           m_TimeshiftReceiver->StartReceiver();
@@ -1261,7 +1101,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
         continue;
 
       /* If Timeshift is active reset all relevant data and stop the receiver */
-      if (m_timeshift)
+      if (m_timeshiftInt)
       {
         m_timeshiftDelta  = 0;
         m_timeshiftReaded = 0;
@@ -1281,7 +1121,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
         SetCurrentPlayingProgram(*m_currentPlayingChannel);
 
         /* Start the Timeshift receiver again if active */
-        if (m_timeshift)
+        if (m_timeshiftInt)
         {
           m_TimeshiftReceiver->SetClient(m_clients[channels->at(currentTVChannel-1).ClientID()]);
           m_TimeshiftReceiver->StartReceiver();
@@ -1323,7 +1163,7 @@ int CPVRManager::GetStartTime()
   }
   
   /* Correct EPG Time with difference to paused Timeshift stream */
-  if (m_timeshift && m_bPaused)
+  if (m_timeshiftInt && m_bPaused)
     m_timeshiftTimeDiff = (timeGetTime() - m_timeshiftTimePause) / 1000;
   
   CDateTimeSpan time = CDateTime::GetCurrentDateTime() - tag->StartTime();
@@ -1394,57 +1234,9 @@ int CPVRManager::GetPlayingGroup()
 /************************************************************/
 /** Recorded stream handling **/
 
-bool CPVRManager::OpenRecordedStream(unsigned int record)
-{
-  EnterCriticalSection(&m_critSection);
 
-  if (m_currentPlayingRecording)
-    delete m_currentPlayingRecording;
 
-  m_currentPlayingRecording = new CFileItem(PVRRecordings[record-1]);
 
-  if (m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->OpenRecordedStream(PVRRecordings[record-1]))
-  {
-    LeaveCriticalSection(&m_critSection);
-    return true;
-  }
-
-  LeaveCriticalSection(&m_critSection);
-  return false;
-}
-
-void CPVRManager::CloseRecordedStream(void)
-{
-  if (!m_currentPlayingRecording)
-    return;
-
-  EnterCriticalSection(&m_critSection);
-
-  m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->CloseRecordedStream();
-  delete m_currentPlayingRecording;
-  m_currentPlayingRecording = NULL;
-
-  LeaveCriticalSection(&m_critSection);
-  return;
-}
-
-int CPVRManager::ReadRecordedStream(BYTE* buf, int buf_size)
-{
-  EnterCriticalSection(&m_critSection);
-  int ret = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->ReadRecordedStream(buf, buf_size);
-  LeaveCriticalSection(&m_critSection);
-  return ret;
-}
-
-__int64 CPVRManager::SeekRecordedStream(__int64 pos, int whence)
-{
-  return m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->SeekRecordedStream(pos, whence);
-}
-
-__int64 CPVRManager::LengthRecordedStream(void)
-{
-  return m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->LengthRecordedStream();
-}
 
 bool CPVRManager::IsRecording(unsigned int channel, bool radio)
 {
@@ -1684,19 +1476,340 @@ int CPVRManager::GetPreviousChannel()
 
 
 
-/************************************************************/
-/** PVR Client internal demuxer access, is used if inside  **/
-/** PVR_SERVERPROPS the HandleDemuxing is true             **/
+
+/*************************************************************/
+/** GENERAL FUNCTIONS                                       **/
+/*************************************************************/
+
+PVR_SERVERPROPS *CPVRManager::GetCurrentClientProps()
+{
+  if (m_currentPlayingChannel)
+    return &m_clientsProps[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()];
+  else if (m_currentPlayingRecording)
+    return &m_clientsProps[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()];
+  else
+    return NULL;
+}
+
+
+/*************************************************************/
+/** PVR CLIENT INPUT STREAM                                 **/
+/**                                                         **/
+/** PVR Client internal input stream access, is used if     **/
+/** inside PVR_SERVERPROPS the HandleInputStream is true    **/
+/*************************************************************/
+
+bool CPVRManager::OpenLiveStream(unsigned int channel, bool radio)
+{
+  EnterCriticalSection(&m_critSection);
+
+  /* Check if a channel or recording is already opened and clear it if yes */
+  if (m_currentPlayingChannel)
+    delete m_currentPlayingChannel;
+  if (m_currentPlayingRecording)
+    delete m_currentPlayingRecording;
+  
+  /* Set the new channel information */
+  m_currentPlayingChannel   = new CFileItem(radio ? PVRChannelsRadio[channel-1] : PVRChannelsTV[channel-1]);
+  m_currentPlayingRecording = NULL;
+  m_scanStart               = timeGetTime();  /* Reset the stream scan timer */
+
+  /* Open the stream on the Client */
+  const cPVRChannelInfoTag* tag = m_currentPlayingChannel->GetTVChannelInfoTag();
+  if (!m_clientsProps[tag->ClientID()].HandleInputStream ||
+      !m_clients[tag->ClientID()]->OpenLiveStream(*tag))
+  {
+    delete m_currentPlayingChannel;
+    m_currentPlayingChannel = NULL;
+    LeaveCriticalSection(&m_critSection);
+    return false;
+  }
+
+  /* Set information like the EPG for this channel to have program information
+     in Fullscreen info */
+  SetCurrentPlayingProgram(*m_currentPlayingChannel);
+
+  /* Clear the timeshift flags */
+  m_timeshiftExt      = false;
+  m_timeshiftInt      = false;
+  m_bPaused           = false;
+  m_timeshiftTimeDiff = 0;
+  m_timeshiftReaded   = 0;
+    
+  /* Timeshift related code */
+  /* Check if Client handles timeshift itself */
+  if (m_clientsProps[tag->ClientID()].SupportTimeShift)
+  {
+    m_timeshiftExt = true;
+  }
+  /* Check if XBMC is allowed to do the timeshift */
+  else if (g_guiSettings.GetBool("pvrrecord.timeshift") && g_guiSettings.GetString("pvrrecord.timeshiftpath") != "")
+  {
+    /* Delete the timeshift receiving class if present */
+    if (m_TimeshiftReceiver)
+      delete m_TimeshiftReceiver;
+    if (m_pTimeshiftFile)
+      delete m_pTimeshiftFile;
+    
+    /* Create the receiving class to perform independent stream reading and 
+       Open the stream buffer file*/
+    unsigned int flags  = READ_BUFFERED;
+    m_TimeshiftReceiver = new CPVRTimeshiftRcvr(m_clients[tag->ClientID()]);
+    m_pTimeshiftFile    = new CFile();
+    if (!m_pTimeshiftFile->Open(g_guiSettings.GetString("pvrrecord.timeshiftpath")+"/.timeshift_cache.ts", flags) || !m_TimeshiftReceiver->StartReceiver())
+    {
+      /* If open fails return with timeshift disabled */
+      delete m_TimeshiftReceiver;
+      delete m_pTimeshiftFile;
+      m_TimeshiftReceiver = NULL;
+      m_pTimeshiftFile    = NULL;
+      LeaveCriticalSection(&m_critSection);
+      return true;
+    }
+
+    m_timeshiftInt = true;
+  }
+
+  LeaveCriticalSection(&m_critSection);
+  return true;
+}
+
+bool CPVRManager::OpenRecordedStream(unsigned int recording)
+{
+  EnterCriticalSection(&m_critSection);
+  
+  bool ret = false;
+
+  /* Check if a channel or recording is already opened and clear it if yes */
+  if (m_currentPlayingChannel)
+    delete m_currentPlayingChannel;
+  if (m_currentPlayingRecording)
+    delete m_currentPlayingRecording;
+
+  /* Set the new recording information */
+  m_currentPlayingRecording = new CFileItem(PVRRecordings[recording-1]);
+  m_currentPlayingChannel   = NULL;
+  m_scanStart               = timeGetTime();  /* Reset the stream scan timer */
+
+  /* Open the recording stream on the Client */
+  const cPVRRecordingInfoTag* tag = m_currentPlayingRecording->GetTVRecordingInfoTag();
+  if (m_clientsProps[tag->ClientID()].HandleInputStream)
+    ret = m_clients[tag->ClientID()]->OpenRecordedStream(*tag);
+
+  LeaveCriticalSection(&m_critSection);
+  return ret;
+}
+
+void CPVRManager::CloseStream()
+{
+  EnterCriticalSection(&m_critSection);
+  
+  if (m_currentPlayingChannel)
+  {
+    /* Stop the Timeshift if internal receiving is active */
+    if (m_timeshiftInt)
+    {
+      m_pTimeshiftFile->Close();
+      delete m_pTimeshiftFile;
+      delete m_TimeshiftReceiver;
+      m_TimeshiftReceiver = NULL;
+      m_pTimeshiftFile    = NULL;
+    }
+    m_timeshiftInt = false;
+    m_timeshiftExt = false;
+  
+    /* Close the Client connection */
+    m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->CloseLiveStream();
+    delete m_currentPlayingChannel;
+    m_currentPlayingChannel = NULL;
+  }
+  else if (m_currentPlayingRecording)
+  {
+    /* Close the Client connection */
+    m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->CloseRecordedStream();
+    delete m_currentPlayingRecording;
+    m_currentPlayingRecording = NULL;
+  }
+
+  LeaveCriticalSection(&m_critSection);
+  return;
+}
+
+int CPVRManager::ReadStream(BYTE* buf, int buf_size)
+{
+  EnterCriticalSection(&m_critSection);
+  
+  int bytesReaded = 0;
+
+  /* Check stream for available video or audio data, if after the scantime no stream
+     is present playback is canceled and returns to the window */
+  if (m_scanStart)
+  {
+    if (timeGetTime() - m_scanStart > (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime")*1000)
+    {
+      CLog::Log(LOGERROR,"PVR: No video or audio data available after %i seconds, playback stopped", g_guiSettings.GetInt("pvrplayback.scantime"));
+      LeaveCriticalSection(&m_critSection);
+      return 0;
+    }
+    else if (g_application.IsPlayingVideo() || g_application.IsPlayingAudio())
+      m_scanStart = NULL;
+  }
+
+  /* Process LiveTV Reading */
+  if (m_currentPlayingChannel)
+  {
+    /* If internal Timeshift is used read from the Buffer file */
+    if (m_timeshiftInt)
+    {
+      if (!m_pTimeshiftFile)
+      {
+        CLog::Log(LOGERROR,"PVR: internal Timeshift stream reading called without timeshift file");
+        LeaveCriticalSection(&m_critSection);
+        return -1;
+      }
+
+      DWORD now = timeGetTime();
+
+      /* Never read behind current write position inside cache */
+      while (m_timeshiftReaded+buf_size+131072 > m_TimeshiftReceiver->GetWritten())
+      {
+        if (timeGetTime() - now > 5*1000)
+        {
+          CLog::Log(LOGERROR,"PVR: internal Timeshift Cache Position timeout");
+          LeaveCriticalSection(&m_critSection);
+          return 0;
+        }
+        Sleep(5);
+      }
+      
+      /* Reduce buffer size to prevent partly read behind range */
+      int tmp = m_TimeshiftReceiver->GetMaxSize() - m_pTimeshiftFile->GetPosition();
+      if (tmp > 0 && tmp < buf_size)
+        buf_size = tmp;
+
+REPEAT_READ:
+      bytesReaded = m_pTimeshiftFile->Read(buf, buf_size);
+      if (bytesReaded <= 0)
+      {
+        if (timeGetTime() - now > 5*1000)
+        {
+          CLog::Log(LOGERROR,"PVR: internal Timeshift Cache Read timeout");
+          LeaveCriticalSection(&m_critSection);
+          return 0;
+        }
+        
+        Sleep(5);
+        goto REPEAT_READ;
+      }
+
+      /* Check if we are at end of buffer file, if yes wrap around and
+         start at beginning */
+      if (m_pTimeshiftFile->GetPosition() >= m_TimeshiftReceiver->GetMaxSize())
+      {
+        CLog::Log(LOGDEBUG,"PVR: internal Timeshift Cache wrap around");
+        m_pTimeshiftFile->Seek(0);
+      }
+
+      m_timeshiftReaded += bytesReaded;
+    }
+    /* Read stream directly if timeshift is handled by client or not supported */
+    else
+    {
+      bytesReaded = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->ReadLiveStream(buf, buf_size);
+    }
+  }
+  /* Process Recording Reading */
+  else if (m_currentPlayingRecording)
+  {
+    bytesReaded = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->ReadRecordedStream(buf, buf_size);
+  }
+
+  LeaveCriticalSection(&m_critSection);
+  return bytesReaded;
+}
+
+__int64 CPVRManager::LengthStream(void)
+{
+  __int64 streamLength = 0;
+
+  EnterCriticalSection(&m_critSection);
+
+  if (m_currentPlayingChannel)
+  {
+    if (m_timeshiftInt)
+    {
+      // TODO: handle for internal timeshift 
+      streamLength = 0;
+    }
+    else if (m_timeshiftExt)
+    {
+      // TODO: check with external timeshift 
+      streamLength = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->LengthLiveStream();
+    }
+  }
+  else if (m_currentPlayingRecording)
+  {
+    streamLength = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->LengthRecordedStream();
+  }
+  
+  LeaveCriticalSection(&m_critSection);
+  return streamLength;
+}
+
+__int64 CPVRManager::SeekStream(__int64 pos, int whence)
+{
+  __int64 streamNewPos = 0;
+
+  EnterCriticalSection(&m_critSection);
+
+  if (m_currentPlayingChannel)
+  {
+    if (m_timeshiftInt)
+    {
+      // TODO: handle for internal timeshift 
+      streamNewPos = 0;
+    }
+    else if (m_timeshiftExt)
+    {
+      // TODO: check with external timeshift 
+      streamNewPos = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->SeekLiveStream(pos, whence);
+    }
+  }
+  else if (m_currentPlayingRecording)
+  {
+    streamNewPos = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->SeekRecordedStream(pos, whence);
+  }
+
+  LeaveCriticalSection(&m_critSection);
+  return streamNewPos;
+}
+
+
+/*************************************************************/
+/** PVR CLIENT DEMUXER                                      **/
+/**                                                         **/
+/** PVR Client internal demuxer access, is used if inside   **/
+/** PVR_SERVERPROPS the HandleDemuxing is true              **/
+/*************************************************************/
 
 bool CPVRManager::OpenDemux(PVRDEMUXHANDLE handle)
 {
+  EnterCriticalSection(&m_critSection);
+
   bool ret = false;
 
   if (m_currentPlayingChannel)
-    ret = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->OpenTVDemux(handle, *m_currentPlayingChannel->GetTVChannelInfoTag());
+  {
+    if (GetCurrentClientProps()->HandleDemuxing == true)
+      ret = m_clients[m_currentPlayingChannel->GetTVChannelInfoTag()->ClientID()]->OpenTVDemux(handle, *m_currentPlayingChannel->GetTVChannelInfoTag());
+  }
   else if (m_currentPlayingRecording)
-    ret = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->OpenRecordingDemux(handle, *m_currentPlayingRecording->GetTVRecordingInfoTag());
+  {
+    if (GetCurrentClientProps()->HandleDemuxing == true)
+      ret = m_clients[m_currentPlayingRecording->GetTVRecordingInfoTag()->ClientID()]->OpenRecordingDemux(handle, *m_currentPlayingRecording->GetTVRecordingInfoTag());
+  }
 
+  LeaveCriticalSection(&m_critSection);
   return ret;
 }
 
@@ -1775,10 +1888,3 @@ int CPVRManager::GetDemuxStreamLength()
   
   return ret;
 }
-
-
-
-
-
-
-

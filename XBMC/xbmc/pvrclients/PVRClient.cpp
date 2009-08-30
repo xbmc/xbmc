@@ -1016,7 +1016,7 @@ void CPVRClient::WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIM
  * Stream PVR Functions
  */
 
-bool CPVRClient::OpenLiveStream(unsigned int channel)
+bool CPVRClient::OpenLiveStream(const cPVRChannelInfoTag &channelinfo)
 {
   CSingleLock lock(m_critSection);
 
@@ -1024,7 +1024,7 @@ bool CPVRClient::OpenLiveStream(unsigned int channel)
   {
     try
     {
-      return m_pClient->OpenLiveStream(channel);
+      return m_pClient->OpenLiveStream(channelinfo.ClientNumber());
     }
     catch (std::exception &e)
     {
@@ -1056,6 +1056,16 @@ void CPVRClient::CloseLiveStream()
 int CPVRClient::ReadLiveStream(BYTE* buf, int buf_size)
 {
   return m_pClient->ReadLiveStream(buf, buf_size);
+}
+
+__int64 CPVRClient::SeekLiveStream(__int64 pos, int whence)
+{
+  return m_pClient->SeekLiveStream(pos, whence);
+}
+
+__int64 CPVRClient::LengthLiveStream(void)
+{
+  return m_pClient->LengthLiveStream();
 }
 
 int CPVRClient::GetCurrentClientChannel()

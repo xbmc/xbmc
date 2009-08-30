@@ -123,11 +123,7 @@ public:
   bool UpdateBackendChannel(const CFileItem &item);
 
   /* Live stream handling */
-  bool OpenLiveStream(unsigned int channel, bool radio = false);
-  void CloseLiveStream();
-  bool PauseLiveStream(bool DoPause, double dTime);
-  int ReadLiveStream(BYTE* buf, int buf_size);
-  __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
+    bool PauseLiveStream(bool DoPause, double dTime);
   int GetCurrentChannel(bool radio = false);
   bool ChannelSwitch(unsigned int channel);
   bool ChannelUp(unsigned int *newchannel);
@@ -140,11 +136,6 @@ public:
   int GetPlayingGroup();
 
   /* Recorded stream handling */
-  bool OpenRecordedStream(unsigned int record);
-  void CloseRecordedStream(void);
-  int ReadRecordedStream(BYTE* buf, int buf_size);
-  __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
-  __int64 LengthRecordedStream(void);
   bool RecordChannel(unsigned int channel, bool bOnOff, bool radio = false);
 
   bool TeletextPagePresent(const CFileItem &item, int Page, int subPage);
@@ -154,8 +145,21 @@ public:
   void                SyncInfo(); // synchronize InfoManager related stuff
   
   CFileItem        *GetCurrentChannelItem();
+
+
+
+  /* General functions */
   PVR_SERVERPROPS  *GetCurrentClientProps();
 
+  /* Stream reading functions */
+  bool OpenLiveStream(unsigned int channel, bool radio = false);
+  bool OpenRecordedStream(unsigned int recording);
+  void CloseStream();
+  int ReadStream(BYTE* buf, int buf_size);
+  __int64 SeekStream(__int64 pos, int whence=SEEK_SET);
+  __int64 LengthStream(void);
+
+  /* Stream demux functions */
   bool OpenDemux(PVRDEMUXHANDLE handle);
   void DisposeDemux();
   void ResetDemux();
@@ -213,7 +217,8 @@ private:
   int                 m_LastChannel;
   
   /*--- Timeshift data ---*/
-  bool                m_timeshift;          /* True if Timeshift is possible and active */
+  bool                m_timeshiftExt;       /* True if external Timeshift is possible and active */
+  bool                m_timeshiftInt;       /* True if internal Timeshift is possible and active */
   bool                m_bPaused;            /* True if stream is paused */
   XFILE::CFile       *m_pTimeshiftFile;     /* File class to read buffer file */
   CPVRTimeshiftRcvr  *m_TimeshiftReceiver;  /* The Thread based Receiver to fill buffer file */

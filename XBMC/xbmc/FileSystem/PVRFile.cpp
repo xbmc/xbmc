@@ -37,19 +37,6 @@ CPVRFile::~CPVRFile()
 {
 }
 
-void CPVRFile::Close()
-{
-  /* Close the stream from PVRManager to DVDPlayer */
-  if (!m_isPlayRecording)
-  {
-    CPVRManager::GetInstance()->CloseLiveStream();
-  }
-  else
-  {
-    CPVRManager::GetInstance()->CloseRecordedStream();
-  }
-}
-
 bool CPVRFile::Open(const CURL& url)
 {
   Close();
@@ -108,64 +95,39 @@ bool CPVRFile::Open(const CURL& url)
   return true;
 }
 
-unsigned int CPVRFile::Read(void* buffer, __int64 size)
+void CPVRFile::Close()
 {
-  unsigned int ret;
-
-  /* Read the stream from PVRManager to DVDPlayer */
-
-  if (!m_isPlayRecording)
-  {
-    ret = CPVRManager::GetInstance()->ReadLiveStream((BYTE*)buffer, size);
-  }
-  else
-  {
-    ret = CPVRManager::GetInstance()->ReadRecordedStream((BYTE*)buffer, size);
-  }
-
-  if(ret < 0)
-  {
-    CLog::Log(LOGERROR, "%s - CPVRFile read returned error %d", __FUNCTION__, ret);
-    return 0;
-  }
-  return ret;
+  CPVRManager::GetInstance()->CloseStream();
 }
 
-__int64 CPVRFile::Seek(__int64 pos, int whence)
+unsigned int CPVRFile::Read(void* buffer, __int64 size)
 {
-  if (m_isPlayRecording)
-  {
-    if (whence == SEEK_POSSIBLE)
-    {
-      __int64 ret = CPVRManager::GetInstance()->SeekRecordedStream(pos, whence);
-
-      if (ret >= 0)
-      {
-        return ret;
-      }
-      else
-      {
-        if (CPVRManager::GetInstance()->LengthRecordedStream() && CPVRManager::GetInstance()->SeekRecordedStream(0, SEEK_CUR) >= 0)
-          return 1;
-        else
-          return 0;
-      }
-    }
-    else
-    {
-      return CPVRManager::GetInstance()->SeekRecordedStream(pos, whence);
-    }
-  }
-  return 0;
+  return CPVRManager::GetInstance()->ReadStream((BYTE*)buffer, size);
 }
 
 __int64 CPVRFile::GetLength()
 {
-  if (m_isPlayRecording)
-  {
-    return CPVRManager::GetInstance()->LengthRecordedStream();
-  }
+  return CPVRManager::GetInstance()->LengthStream();
+}
 
+__int64 CPVRFile::Seek(__int64 pos, int whence)
+{
+  if (whence == SEEK_POSSIBLE)
+  {
+    __int64 ret = CPVRManager::GetInstance()->SeekStream(pos, whence);
+
+    if (ret >= 0)
+    {
+      return ret;
+    }
+    else
+    {
+      if (CPVRManager::GetInstance()->LengthStream() && CPVRManager::GetInstance()->SeekStream(0, SEEK_CUR) >= 0)
+        return 1;
+      else
+        return 0;
+    }
+  }
   return 0;
 }
 
