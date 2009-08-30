@@ -50,7 +50,7 @@ namespace BCM
   #endif //defined(WIN32)
 };
 
-extern char* g_DtsStatusText[];
+extern const char* g_DtsStatusText[];
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK& pib);
 
 class CMPCDecodeBuffer
@@ -64,7 +64,7 @@ public:
   void SetPts(BCM::U64 pts);
   BCM::U64 GetPts();
 protected:
-  size_t m_Siztail;
+  size_t m_Size;
   unsigned char* m_pBuffer;
   unsigned int m_Id;
   BCM::U64 m_Pts;
@@ -177,7 +177,7 @@ protected:
   BCM::U8* m_pBuffer;
   bool m_DropPictures;
   unsigned int m_PicturesDecoded;
-  char* m_pFormatName;
+  const char* m_pFormatName;
 
   unsigned int m_PacketsIn;
   unsigned int m_FramesOut;
