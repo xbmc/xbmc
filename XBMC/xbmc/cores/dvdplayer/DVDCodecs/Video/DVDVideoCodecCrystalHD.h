@@ -43,8 +43,9 @@ namespace BCM
     #include "bc_dts_defs.h" 
     #include "bc_ldil_if.h" 
   #else 
-    #include "lib/crystalhd/include/linux/bc_ldil_if.h"
-    #include "lib/crystalhd/include/linux/bc_dts_defs.h"
+    #include "crystalhd/bc_dts_types.h"
+    #include "crystalhd/bc_dts_defs.h"
+    #include "crystalhd/bc_ldil_if.h"
   #endif //defined(__APPLE__)
   #endif //defined(WIN32)
 };
@@ -63,7 +64,7 @@ public:
   void SetPts(BCM::U64 pts);
   BCM::U64 GetPts();
 protected:
-  size_t m_Size;
+  size_t m_Siztail;
   unsigned char* m_pBuffer;
   unsigned int m_Id;
   BCM::U64 m_Pts;
@@ -71,7 +72,7 @@ protected:
 
 #include <deque>
 #include <vector>
-#include "Thread.h"
+#include <utils/Thread.h>
 
 template <class T>
 class CSyncPtrQueue
