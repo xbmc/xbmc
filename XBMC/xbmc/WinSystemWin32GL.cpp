@@ -27,6 +27,12 @@
  */
 #include "stdafx.h"
 #include "WinSystemWin32GL.h"
+#include "WIN32Util.h"
+
+#pragma comment (lib,"opengl32.lib")
+#pragma comment (lib,"glu32.lib")
+#pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib") 
+
 
 
 CWinSystemWin32GL g_Windowing;
@@ -72,10 +78,17 @@ bool CWinSystemWin32GL::InitRenderSystem()
   if(!CRenderSystemGL::InitRenderSystem())
     return false;
 
+  CWIN32Util::CheckGLVersion();
+
   return true;
 }
 
-bool CWinSystemWin32GL::PresentRender()
+void CWinSystemWin32GL::SetVSyncImpl(bool enable)
+{
+
+}
+
+bool CWinSystemWin32GL::PresentRenderImpl()
 {
   if(!m_bWindowCreated || !m_bRenderCreated)
     return false;

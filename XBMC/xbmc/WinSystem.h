@@ -98,9 +98,9 @@ public:
 
   // windowing interfaces
   virtual bool InitWindowSystem();
-  virtual bool DestroyWindowSystem() = 0;
+  virtual bool DestroyWindowSystem(){ return false; }
   virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction) = 0;
-  virtual bool DestroyWindow() = 0;
+  virtual bool DestroyWindow(){ return false; }
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) = 0;
   virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop) = 0;
   virtual bool MoveWindow(int topLeft, int topRight){return false;}

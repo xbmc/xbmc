@@ -22,8 +22,11 @@
 #include "stdafx.h"
 #include "WinSystemWin32.h"
 #include "WinEventsWin32.h"
+#include "Settings.h"
 
 #ifdef _WIN32
+
+HWND g_hWnd = NULL;
 
 CWinSystemWin32::CWinSystemWin32()
 : CWinSystemBase()
@@ -37,7 +40,7 @@ CWinSystemWin32::CWinSystemWin32()
 
 CWinSystemWin32::~CWinSystemWin32()
 {
-  Destroy();
+  //Destroy();
 };
 
 bool CWinSystemWin32::InitWindowSystem()
@@ -60,6 +63,8 @@ bool CWinSystemWin32::CreateNewWindow(CStdString name, int width, int height, bo
   m_nWidth = width;
   m_nHeight = height;
   m_bFullScreen = fullScreen;
+
+  RESOLUTION_INFO DesktopRes = g_settings.m_ResInfo[RES_DESKTOP];
   
   // Register the windows class
   WNDCLASS wndClass;
@@ -78,10 +83,10 @@ bool CWinSystemWin32::CreateNewWindow(CStdString name, int width, int height, bo
   // center the window on the screen
   int left = 0;
   int top = 0;
-  if(!fullScreen && m_DesktopRes.iHeight != 0 && m_DesktopRes.iWidth != 0)
+  if(!fullScreen && DesktopRes.iHeight != 0 && DesktopRes.iWidth != 0)
   {
-    left = (m_DesktopRes.iWidth / 2) - (width / 2);
-    top = (m_DesktopRes.iHeight / 2) - (height / 2);
+    left = (DesktopRes.iWidth / 2) - (width / 2);
+    top = (DesktopRes.iHeight / 2) - (height / 2);
   }
 
   if( !RegisterClass( &wndClass ) )
@@ -108,7 +113,10 @@ bool CWinSystemWin32::CreateNewWindow(CStdString name, int width, int height, bo
   }
 
   m_hWnd = hWnd;
+  g_hWnd = hWnd;
   m_hDC = GetDC(m_hWnd);
+
+  m_bWindowCreated = true;
 
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
@@ -117,17 +125,12 @@ bool CWinSystemWin32::CreateNewWindow(CStdString name, int width, int height, bo
   return true;
 }
 
-bool CWinSystemWin32::Destroy()
-{
-  return true;
-}
-
 bool CWinSystemWin32::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   return true;
 }
 
-bool CWinSystemWin32::SetFullScreen(bool fullScreen, int width, int height)
+bool CWinSystemWin32::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
 {
   return true;
 }
@@ -139,57 +142,25 @@ bool CWinSystemWin32::Resize()
 
 void CWinSystemWin32::UpdateResolutions()
 {
+
   CWinSystemBase::UpdateResolutions();
 
-  DWORD		iDevNum	= 0 ;
-  DWORD		iModeNum = 0 ;
-  DISPLAY_DEVICE	ddi ;
-  DEVMODE		dmi ;
-
-  ZeroMemory (&ddi, sizeof(ddi)) ;
-  ddi.cb = sizeof(ddi) ;
-  ZeroMemory (&dmi, sizeof(dmi)) ;
-  dmi.dmSize = sizeof(dmi) ;
-
-  while (EnumDisplayDevices (NULL, iDevNum++, &ddi, 0))
-  {
-    while (EnumDisplaySettings (ddi.DeviceName, iModeNum++, &dmi))
-    {
-      RESOLUTION_INFO newRes;
-      ZeroMemory(&newRes, sizeof(RESOLUTION_INFO));
-
-      if(dmi.dmDisplayFrequency == 59 || dmi.dmDisplayFrequency == 29 || dmi.dmDisplayFrequency == 23)
-        newRes.fRefreshRate = (float)(dmi.dmDisplayFrequency + 1) / 1.001f;
-      else
-        newRes.fRefreshRate = (float)dmi.dmDisplayFrequency;
-      
-      newRes.iWidth = dmi.dmPelsWidth;
-      newRes.iHeight = dmi.dmPelsHeight;
-      newRes.fRefreshRate = (float)dmi.dmDisplayFrequency;
-
-      AddNewResolution(newRes);
-      
-      ZeroMemory (&dmi, sizeof(dmi)) ;
-      dmi.dmSize = sizeof(dmi) ;
-    }
-    ZeroMemory (&ddi, sizeof(ddi)) ;
-    ddi.cb = sizeof(ddi) ;
-    iModeNum = 0 ;
-  }
-}
-
-void CWinSystemWin32::GetDesktopRes(RESOLUTION_INFO& desktopRes)
-{
+  // Add desktop resolution
+  int w, h;
+  DWORD refreshRate;
+  
   // get current screen refresh rate
   DEVMODE mode;
 
   EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &mode);
-  m_DesktopRes.iWidth = mode.dmPelsWidth;
-  m_DesktopRes.iHeight = mode.dmPelsHeight;
+  w = mode.dmPelsWidth;
+  h = mode.dmPelsHeight;
   if(mode.dmDisplayFrequency == 59 || mode.dmDisplayFrequency == 29 || mode.dmDisplayFrequency == 23)
-    m_DesktopRes.fRefreshRate = (float)(mode.dmDisplayFrequency + 1) / 1.001f;
+    refreshRate = (float)(mode.dmDisplayFrequency + 1) / 1.001f;
   else
-    m_DesktopRes.fRefreshRate = (float)mode.dmDisplayFrequency;
+    refreshRate = (float)mode.dmDisplayFrequency;
+
+  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, refreshRate);
 }
 
 #endif

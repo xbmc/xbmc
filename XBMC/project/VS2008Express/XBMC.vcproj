@@ -250,10 +250,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -409,8 +409,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;HAS_WGL"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew"
+				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
@@ -434,10 +434,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
+				AdditionalDependencies="SDL.lib D3D9.lib D3dx9.lib DInput8.lib DSound.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
 				OutputFile="$(OutDir)\XBMC.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories=""
+				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
 				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
 				ModuleDefinitionFile=""
 				GenerateDebugInformation="true"
@@ -2633,14 +2633,6 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\XBVideoConfig.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\XBVideoConfig.h"
-				>
 			</File>
 			<Filter
 				Name="Settings"
@@ -5646,6 +5638,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\RenderSystem.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\RenderSystemDX.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\RenderSystemDX.h"
 						>
 					</File>
 					<File

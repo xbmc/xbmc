@@ -26,7 +26,7 @@
 #include "common/SDLJoystick.h"
 #endif
 
-#ifdef HAS_SDL
+#ifdef HAS_SDL_WIN_EVENTS
 
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 

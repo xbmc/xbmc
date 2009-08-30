@@ -20,7 +20,6 @@
  *
  */
 
-#include <winsock2.h>
 #include "IrssMessage.h"
 #include "Thread.h"
 
@@ -29,7 +28,7 @@ class CRemoteControl : CThread
 public:
   CRemoteControl();
   ~CRemoteControl();
-  bool Initialize();
+  void Initialize();
   void Disconnect();
   void Reset();
   void Update();

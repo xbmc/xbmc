@@ -332,7 +332,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
+				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				StringPooling="false"
 				MinimalRebuild="true"

@@ -38,9 +38,10 @@ public:
   virtual ~CWinSystemWin32GL();
 
   virtual bool InitRenderSystem();
-  virtual bool PresentRender();
 
 protected:
+  virtual void SetVSyncImpl(bool enable);
+  virtual bool PresentRenderImpl();
   HGLRC m_hglrc;
 };
 

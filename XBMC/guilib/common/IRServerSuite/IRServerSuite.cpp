@@ -72,12 +72,12 @@ void CRemoteControl::Reset()
   m_button = 0;
 }
 
-bool CRemoteControl::Initialize()
+void CRemoteControl::Initialize()
 {
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
   SetName("CRemoteControl");
-  return true;
+  //return true;
 }
 
 void CRemoteControl::Process()

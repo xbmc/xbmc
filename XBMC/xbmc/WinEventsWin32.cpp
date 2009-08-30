@@ -266,7 +266,7 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
 }
 
 
-void CWinEventsWin32::MessagePump()
+bool CWinEventsWin32::MessagePump()
 { 
   MSG  msg;
   while( PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
@@ -274,6 +274,7 @@ void CWinEventsWin32::MessagePump()
     TranslateMessage( &msg );
     DispatchMessage( &msg );
   }
+  return true;
 }
 
 
@@ -297,6 +298,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
   switch (uMsg) 
   {
+    case WM_CLOSE:
+    case WM_QUIT:
+    case WM_DESTROY:
+      newEvent.type = XBMC_QUIT;
+      m_pEventFunc(newEvent);
+      break;
     case WM_SYSKEYDOWN:
     case WM_KEYDOWN: 
     {

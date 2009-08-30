@@ -28,11 +28,6 @@
 #include "Settings.h"
 #include "RenderSystemGL.h"
 
-#if defined(_WIN32)
-  #pragma comment (lib,"opengl32.lib")
-  #pragma comment (lib,"glu32.lib")
-  #pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib") 
-#endif
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
 {
@@ -80,10 +75,6 @@ bool CRenderSystemGL::InitRenderSystem()
   m_RenderRenderer = (const char*) glGetString(GL_RENDERER);
   
   LogGraphicsInfo();
-  
-#if defined(_WIN32PC)
-  CWIN32Util::CheckGLVersion();
-#endif
   
   m_bRenderCreated = true;
   
@@ -206,7 +197,7 @@ bool CRenderSystemGL::PresentRender()
   
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
-    __int64 curr, diff;
+    long double curr, diff;
     QueryPerformanceCounter((LARGE_INTEGER*)&curr);
 
     diff = curr - m_iSwapStamp;

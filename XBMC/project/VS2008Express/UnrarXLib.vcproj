@@ -328,8 +328,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\win32;..\..\xbmc\lib\boost"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T;HAS_DX"
+				AdditionalIncludeDirectories="..\..\guilib;..\..\xbmc;..\..\xbmc\win32;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_XBMC;_USE_32BIT_TIME_T"
 				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"

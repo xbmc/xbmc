@@ -63,7 +63,6 @@
 
 #ifdef _WIN32
 #define _WIN32PC
-#define HAS_GL
 #define HAS_SDL_JOYSTICK
 #define HAS_WIN32_NETWORK
 #define HAS_LIRC
@@ -81,6 +80,7 @@
 #define HAS_LINUX_NETWORK
 #define HAS_SDL_AUDIO
 #define HAS_SDL_OPENGL
+#define HAS_SDL_WIN_EVENTS
 #endif
 
 /*****************
@@ -101,6 +101,7 @@
 #define HAS_SDL_AUDIO
 #define HAS_LIRC
 #define HAS_SDL_OPENGL
+#define HAS_SDL_WIN_EVENTS
 #endif
 
 /*****************
@@ -124,10 +125,9 @@
  ****************************************/
 
 #ifdef _WIN32
-#include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
-#include "D3DX9.h"  // or the reference video clock.
 #if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
 #include <winsock2.h>
+#endif
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "DInput.h"
@@ -136,6 +136,10 @@
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
 #include "../xbmc/win32/PlatformInclude.h"
+#include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
+#include "D3DX9.h"  // or the reference video clock.
+#ifdef HAS_SDL
+#include "SDL\SDL.h"
 #endif
 #endif
 
@@ -154,7 +158,7 @@
 
 #ifdef HAS_GL
 #ifdef _WIN32
-#include "glew.h"
+#include "GL/glew.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/wglext.h>

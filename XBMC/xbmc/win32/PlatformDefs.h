@@ -50,6 +50,17 @@ typedef uint32_t  u_int32_t;
 #define XBMC_LIL_ENDIAN	1234
 #define XBMC_BIG_ENDIAN	4321
 
+#ifdef HAS_SDL
+#include <SDL/SDL_endian.h>
+
+#if SDL_BYTEORDER == SDL_BIG_ENDIAN
+#define XBMC_BYTEORDER XBMC_BIG_ENDIAN
+#else
+#define XBMC_BYTEORDER XBMC_LITTLE_ENDIAN
+#endif
+
+#else
+
 #if defined(__hppa__) || \
   defined(__m68k__) || defined(mc68000) || defined(_M_M68K) || \
   (defined(__MIPS__) && defined(__MISPEB__)) || \
@@ -60,14 +71,9 @@ typedef uint32_t  u_int32_t;
 #define XBMC_BYTEORDER XBMC_LIL_ENDIAN
 #endif
 
-#ifdef HAS_SDL
-#include <SDL/SDL_endian.h>
-#if SDL_BYTEORDER == SDL_BIG_ENDIAN
-#define XBMC_BYTEORDER XBMC_BIG_ENDIAN
-#else
-#define XBMC_BYTEORDER = XBMC_LITTLE_ENDIAN
-#endif
 #endif // SDL
+
+
 
 #if XBMC_BYTEORDER == XBMC_BIG_ENDIAN
 #define PIXEL_ASHIFT 0
