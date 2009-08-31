@@ -196,8 +196,10 @@ bool CRenderSystemGL::PresentRender()
 
     diff = curr - m_iSwapStamp;
     m_iSwapStamp = curr;
+/*
     if (abs(diff - m_iSwapRate) < abs(diff))
       CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
+*/
   }
   
   return result;
