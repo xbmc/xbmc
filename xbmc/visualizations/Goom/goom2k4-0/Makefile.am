@@ -1,4 +1,5 @@
 SUBDIRS = src xmms-goom sdl-goom @MACFOLDER@
+ACLOCAL_AMFLAGS = -I m4
 
 #.pc file
 pkgconfigdir = $(libdir)/pkgconfig
