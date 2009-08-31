@@ -393,9 +393,7 @@ else
   AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([hal],       [main],
-    INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal",
-    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([HAL], [hal], INCLUDES+=" $HAL_CFLAGS", AC_MSG_ERROR($missing_library))
 fi
 
 # PulseAudio
