@@ -34,3 +34,9 @@ CRenderSystemBase::~CRenderSystemBase()
 {
 
 }
+
+void CRenderSystemBase::GetRenderVersion(unsigned int& major, unsigned int& minor)
+{
+  major = m_RenderVerdenVersionMajor;
+  minor = m_RenderVerdenVersionMinor;
+}

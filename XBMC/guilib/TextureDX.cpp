@@ -118,7 +118,7 @@ bool CDXTexture::LoadFromFile(const CStdString& texturePath)
 }
 
 
-bool CDXTexture::LoadFromMemory(unsigned int width, unsigned int pitch, unsigned int BPP, unsigned char* pPixels)
+bool CDXTexture::bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels)
 {
   return TRUE;
 }

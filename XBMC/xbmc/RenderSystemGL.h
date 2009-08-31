@@ -36,9 +36,6 @@ public:
   virtual bool DestroyRenderSystem();
   virtual bool ResetRenderSystem(int width, int height);  
 
-  virtual void GetRenderVersion(unsigned int& major, unsigned int& minor);
-  virtual const CStdString& GetRenderVendor() { return m_RenderVendor; }
-  virtual const CStdString& GetRenderRenderer() { return m_RenderRenderer; }
   virtual bool BeginRender();
   virtual bool EndRender();
   virtual bool PresentRender();
@@ -77,12 +74,6 @@ protected:
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
-  
-  CStdString m_RenderRenderer;
-  CStdString m_RenderVendor;
-  int        m_RenderVerdenVersionMinor;
-  int        m_RenderVerdenVersionMajor;
-  bool       m_NeedPower2Texture;  
 };
 
 #endif // RENDER_SYSTEM_H

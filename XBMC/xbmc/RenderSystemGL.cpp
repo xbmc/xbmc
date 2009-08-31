@@ -118,12 +118,6 @@ bool CRenderSystemGL::DestroyRenderSystem()
   return true;
 }
 
-void CRenderSystemGL::GetRenderVersion(unsigned int& major, unsigned int& minor)
-{
-  major = m_RenderVerdenVersionMajor;
-  minor = m_RenderVerdenVersionMinor;
-}
-
 bool CRenderSystemGL::BeginRender()
 {
   if (!m_bRenderCreated)
