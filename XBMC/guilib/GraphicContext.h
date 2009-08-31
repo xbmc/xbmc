@@ -42,9 +42,6 @@
 #include <map>
 #include "utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"        // for the members m_guiTransform etc.
-#ifdef HAS_GL
-#include <GL/glew.h>
-#endif
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 #include "StdString.h"
