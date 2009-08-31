@@ -41,7 +41,8 @@ DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
     int h = iHeight / 2;
     int size = w * h;
     int totalsize = (iWidth * iHeight) + size * 2;
-    BYTE* data = new BYTE[totalsize];
+    BYTE* data = (BYTE*)_aligned_malloc(totalsize, 16);
+    //BYTE* data = new BYTE[totalsize];
     if (data)
     {
       pPicture->data[0] = data;
@@ -65,7 +66,8 @@ DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)
 
 void CDVDCodecUtils::FreePicture(DVDVideoPicture* pPicture)
 {
-  delete[] pPicture->data[0];
+  _aligned_free(pPicture->data[0]);
+  //delete[] pPicture->data[0];
   delete pPicture;
 }
 
@@ -110,6 +112,7 @@ bool CDVDCodecUtils::CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc)
 
 bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
 {
+
   BYTE *s = pSrc->data[0];
   BYTE *d = pImage->plane[0];
   int w = pSrc->iWidth;
@@ -127,6 +130,7 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
       d += pImage->stride[0];
     }
   }
+  
   s = pSrc->data[1];
   d = pImage->plane[1];
   w = pSrc->iWidth >> 1;
@@ -144,6 +148,7 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
       d += pImage->stride[1];
     }
   }
+  
   s = pSrc->data[2];
   d = pImage->plane[2];
   if ((w==pSrc->iLineSize[2]) && ((unsigned int) pSrc->iLineSize[2]==pImage->stride[2]))
@@ -161,3 +166,38 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
   }
   return true;
 }
+
+bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
+{
+	UINT32	x,y;
+  
+  //copy luma (Y)
+  BYTE   *pYSrc = pSrc->data[0];
+  BYTE   *pYDst = pImage->plane[0];
+  for (y = pSrc->iHeight; y > 0; y--) {
+    fast_memcpy(pYDst, pYSrc, pSrc->iWidth);
+    pYSrc += pSrc->iLineSize[0];
+    pYDst += pImage->stride[0];
+  }
+
+  //copy chroma (UV packed)
+  UINT32 uvdoublet;
+  UINT32 *pUVSrc = (UINT32*)pSrc->data[1];
+  BYTE   *pVDest = pImage->plane[1];
+  BYTE   *pUDest = pImage->plane[2];
+  
+  #pragma prefetch pUVSrc, pVDest, pUDest
+  for (y = pSrc->iHeight >> 1; y > 0; y--) {
+    for (x = pSrc->iWidth >> 2; x > 0; x--) {
+      uvdoublet = *pUVSrc++;
+      *pVDest++ = (BYTE)(uvdoublet);
+      *pVDest++ = (BYTE)(uvdoublet >> 16);
+      *pUDest++ = (BYTE)(uvdoublet >> 8 );
+      *pUDest++ = (BYTE)(uvdoublet >> 24);
+    }
+  }
+
+  return true;
+}
+
+

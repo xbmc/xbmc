@@ -135,7 +135,8 @@ CLinuxRendererGL::~CLinuxRendererGL()
   {
     if (m_imScaled.plane[i])
     {
-      delete [] m_imScaled.plane[i];
+      _aligned_free( m_imScaled.plane[i] );
+      //delete [] m_imScaled.plane[i];
       m_imScaled.plane[i] = 0;
     }
   }
@@ -437,7 +438,8 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
   {
     if (m_imScaled.plane[i])
     {
-      delete [] m_imScaled.plane[i];
+      _aligned_free( m_imScaled.plane[i] );
+      //delete [] m_imScaled.plane[i];
       m_imScaled.plane[i] = 0;
     }
   }
@@ -445,9 +447,12 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
   m_imScaled.stride[0] = ALIGN((m_upscalingWidth)   , 16);
   m_imScaled.stride[1] = ALIGN((m_upscalingWidth>>1), 16);
   m_imScaled.stride[2] = ALIGN((m_upscalingWidth>>1), 16);
-  m_imScaled.plane[0] = new BYTE[m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16)];
-  m_imScaled.plane[1] = new BYTE[m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16)];
-  m_imScaled.plane[2] = new BYTE[m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16)];
+  m_imScaled.plane[0] = (BYTE*)_aligned_malloc(m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16), 16);
+  m_imScaled.plane[1] = (BYTE*)_aligned_malloc(m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16), 16);
+  m_imScaled.plane[2] = (BYTE*)_aligned_malloc(m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16), 16);
+  //m_imScaled.plane[0] = new BYTE[m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16)];
+  //m_imScaled.plane[1] = new BYTE[m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16)];
+  //m_imScaled.plane[2] = new BYTE[m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16)];
   m_imScaled.width = m_upscalingWidth;
   m_imScaled.height = m_upscalingHeight;
   m_imScaled.flags = 0;
@@ -1915,7 +1920,8 @@ void CLinuxRendererGL::DeleteYV12Texture(int index)
   {
     if (im.plane[p])
     {
-      delete[] im.plane[p];
+      _aligned_free( im.plane[p] );
+      //delete[] im.plane[p];
       im.plane[p] = NULL;
     }
   }
@@ -1963,9 +1969,14 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.stride[0] = im.width;
     im.stride[1] = im.width >> im.cshift_x;
     im.stride[2] = im.width >> im.cshift_x;
+    /*
     im.plane[0] = new BYTE[im.stride[0] * im.height];
     im.plane[1] = new BYTE[im.stride[1] * ( im.height >> im.cshift_y )];
     im.plane[2] = new BYTE[im.stride[2] * ( im.height >> im.cshift_y )];
+    */
+    im.plane[0] = (BYTE*)_aligned_malloc(im.stride[0] * im.height, 16);
+    im.plane[1] = (BYTE*)_aligned_malloc(im.stride[1] * ( im.height >> im.cshift_y ), 16);
+    im.plane[2] = (BYTE*)_aligned_malloc(im.stride[2] * ( im.height >> im.cshift_y ), 16);
   }
 
   glEnable(m_textureTarget);
@@ -2029,6 +2040,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
         continue;
 
       glBindTexture(m_textureTarget, plane.id);
+
       if (m_renderMethod & RENDER_SW)
       {
         if(m_renderMethod & RENDER_POT)

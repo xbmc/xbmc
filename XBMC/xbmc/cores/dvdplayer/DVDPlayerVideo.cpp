@@ -716,7 +716,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // remove any overlays that are out of time
   m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
 
-  if(pSource->format != DVDVideoPicture::FMT_YUV420P)
+  if(pSource->format == DVDVideoPicture::FMT_VDPAU)
     return;
 
   // rendering spu overlay types directly on video memory costs a lot of processing power.
@@ -739,10 +739,20 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   }
 
   if (bHasSpecialOverlay && m_pTempOverlayPicture)
+  {
     CDVDCodecUtils::CopyPicture(m_pTempOverlayPicture, pSource);
+  }
   else
-    CDVDCodecUtils::CopyPicture(pDest, pSource);
-
+  {
+    if (pSource->format == DVDVideoPicture::FMT_YUV420P)
+    {
+      CDVDCodecUtils::CopyPicture(pDest, pSource);
+    }
+    else
+    {
+      CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
+    }
+  }
   m_pOverlayContainer->Lock();
 
   VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
