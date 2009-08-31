@@ -766,6 +766,15 @@ void goom_close (PluginInfo *goomInfo)
     goomInfo->tentacles_fx.free(&goomInfo->tentacles_fx);
     goomInfo->zoomFilter_fx.free(&goomInfo->zoomFilter_fx);
     
+    // Release info visual
+    free (goomInfo->params);
+    free (goomInfo->sound.params.params);
+
+    // Release PluginInfo
+    free (goomInfo->visuals);
+    gsl_free (goomInfo->scanner);
+    gsl_free (goomInfo->main_scanner);
+    
     free(goomInfo);
 }
 
