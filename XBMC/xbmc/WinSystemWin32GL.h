@@ -38,6 +38,8 @@ public:
   virtual ~CWinSystemWin32GL();
 
   virtual bool InitRenderSystem();
+  virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
+  virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop);
 
 protected:
   virtual void SetVSyncImpl(bool enable);

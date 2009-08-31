@@ -1,4 +1,4 @@
-/*
+\/*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
@@ -636,7 +636,7 @@ void CGUISettings::Initialize()
   AddInt(1, "videoscreen.resolution",169, (int)RES_DESKTOP, (int)RES_WINDOW, 1, (int)RES_CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
 
-#ifdef __APPLE__
+#if defined (__APPLE__) || defined(_WIN32)
   AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
 #endif
 

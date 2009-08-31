@@ -710,7 +710,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
-#ifdef __APPLE__
+#if defined (__APPLE__) || defined (_WIN32)
     else if (strSetting.Equals("videoscreen.displayblanking"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -719,6 +719,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13132), BLANKING_ALL_DISPLAYS);
       pControl->SetValue(pSettingInt->GetData());
     }
+#endif
+#ifdef __APPLE__
     else if (strSetting.Equals("appleremote.mode"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -935,19 +937,24 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(true);
       }
     }
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.displayblanking"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        int value = g_guiSettings.GetInt("videoscreen.resolution");
+          int value = g_guiSettings.GetInt("videoscreen.resolution");
+
+
+
         if (strstr(g_settings.m_ResInfo[value].strMode, "Full Screen") != 0)
           pControl->SetEnabled(true);
         else
           pControl->SetEnabled(false);
       }
     }
+#endif
+#ifdef __APPLE__
     else if (strSetting.Equals("appleremote.mode"))
     {
       bool cancelled;

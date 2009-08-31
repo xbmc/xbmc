@@ -34,7 +34,6 @@
 #pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib") 
 
 
-
 CWinSystemWin32GL g_Windowing;
 
 
@@ -94,6 +93,22 @@ bool CWinSystemWin32GL::PresentRenderImpl()
     return false;
 
   SwapBuffers(m_hDC);
+
+  return true;
+}
+
+bool CWinSystemWin32GL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
+{
+  CWinSystemWin32::ResizeWindow(newWidth, newHeight, newLeft, newTop);
+  CRenderSystemGL::ResetRenderSystem(newWidth, newHeight);  
+
+  return true;
+}
+
+bool CWinSystemWin32GL::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+{
+  CWinSystemWin32::SetFullScreen(fullScreen, screen, width, height, blankOtherDisplays, alwaysOnTop);
+  CRenderSystemGL::ResetRenderSystem(width, height);  
 
   return true;
 }

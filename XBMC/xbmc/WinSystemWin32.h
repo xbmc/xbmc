@@ -30,6 +30,28 @@
  */
 #include "WinSystem.h"
 
+enum MonitorType
+{
+  MONITOR_TYPE_PRIMARY = 1,
+  MONITOR_TYPE_SECONDARY = 2
+};
+
+#define MAX_MONITORS_NUM 2
+
+struct MONITOR_DETAILS
+{
+  MonitorType type;
+  int ScreenWidth;
+  int ScreenHeight;
+  RECT MonitorRC;
+  int RefreshRate;
+  int Bpp;
+  HMONITOR hMonitor;
+  char MonitorName[128];
+  char CardName[128];
+  char DeviceName[128];
+};
+
 class CWinSystemWin32 : public CWinSystemBase
 {
 public:
@@ -43,17 +65,26 @@ public:
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop);
   virtual void UpdateResolutions();
+  virtual bool CenterWindow();
   
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }
 
 protected:
-  virtual bool Resize();
+  virtual bool ResizeInternal();
+  virtual bool UpdateResolutionsInternal();
+  virtual bool CreateBlankWindow();
+  virtual bool BlankNonActiveMonitor(bool bBlank);
 
   HWND m_hWnd;
+  HWND m_hBlankWindow;
   HDC m_hDC;
   HINSTANCE m_hInstance; 
   HICON m_hIcon;
+  MONITOR_DETAILS m_MonitorsInfo[MAX_MONITORS_NUM];
+  int m_nMonitorsCount;
+  int m_nPrimary;
+  int m_nSecondary;
 };
 
 extern HWND g_hWnd;

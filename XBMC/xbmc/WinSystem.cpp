@@ -28,9 +28,12 @@ CWinSystemBase::CWinSystemBase()
 {
   m_nWidth = 0;
   m_nHeight = 0;
-  m_nTop = 0;
-  m_nLeft = 0;
+  m_nTop = -1;
+  m_nLeft = -1;
   m_bWindowCreated = false;
+  m_bFullScreen = false;
+  m_nScreen = 0;
+  m_bBlankOtherDisplay = false;
 }
 
 CWinSystemBase::~CWinSystemBase()
@@ -102,13 +105,13 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
     sprintf(newRes.strMode, "%dx%d", width, height);
     if (refreshRate > 1)
     {
-	    sprintf(newRes.strMode, "%s @ %.2f (Full Screen)", newRes.strMode, refreshRate);
+	    sprintf(newRes.strMode, "%s @ %.2f - Full Screen", newRes.strMode, refreshRate);
     }
   }
   
   if (screen > 0)
   {
-    sprintf(newRes.strMode, "%s (Full Screen #%d)", newRes.strMode, screen + 1);    
+    sprintf(newRes.strMode, "%s #%d", newRes.strMode, screen + 1);    
   }  
 }
 
