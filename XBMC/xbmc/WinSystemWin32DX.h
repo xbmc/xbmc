@@ -28,39 +28,43 @@
 #include <d3dx9.h>
 #include <dxerr9.h>
 #include <dxdiag.h>
+#include "WinSystemWin32.h"
 #include "RenderSystem.h"
 
 #ifdef HAS_DX
 
-class CRenderSystemDX : public CRenderSystemBase
+class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemBase
 {
 public:
-  CRenderSystemDX();
-  ~CRenderSystemDX();
+  CWinSystemWin32DX();
+  ~CWinSystemWin32DX();
 
-  virtual bool Create();
-  virtual bool Destroy();
-  virtual bool AttachWindow(CWinSystem* winSystem);
-  LPDIRECT3D9 GetD3D() { return m_pD3D; }
-  LPDIRECT3DDEVICE9 GetD3DDevice() { return m_pD3DDevice; }
-  D3DPRESENT_PARAMETERS* GetD3DParams() { return &m_D3DPP; }
+  // CRenderSystem
+  virtual bool InitRenderSystem();
+  virtual bool DestroyRenderSystem();
+  virtual bool ResetRenderSystem(int width, int height);
+
+  virtual bool BeginRender();
+  virtual bool EndRender();
+  virtual bool PresentRender();
+  virtual bool ClearBuffers(DWORD color);
+  virtual bool ClearBuffers(float r, float g, float b, float a);
+  virtual bool IsExtSupported(CStdString strExt);
+
+  virtual void SetVSync(bool vsync);
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
 
-  virtual bool BeginRender();
-  virtual bool EndRender();
-  virtual bool Present();
+  virtual bool NeedPower2Texture();
 
-  virtual bool ClearBuffers(DWORD color);
-  virtual bool ClearBuffers(float r, float g, float b, float a);
+  virtual void CaptureStateBlock();
+  virtual void ApplyStateBlock();
 
-  virtual bool Test();
+  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight);
 
 protected:
-  bool CreateResources();
-  bool DeleteResources();
-  bool CreateDevice();
+ 
 
 private:
   LPDIRECT3D9 m_pD3D;
@@ -68,7 +72,7 @@ private:
   D3DPRESENT_PARAMETERS m_D3DPP;
 };
 
-extern CRenderSystemDX g_RenderSystem;
+extern CWinSystemWin32DX g_RenderSystem;
 
 #endif
 

@@ -21,11 +21,13 @@
 
 
 #include "stdafx.h"
-#include "RenderSystemDX.h"
+#include "WinSystemWin32DX.h"
 
 #ifdef HAS_DX
 
-CRenderSystemDX::CRenderSystemDX()
+CWinSystemWin32DX g_Windowing;
+
+CWinSystemWin32DX::CWinSystemWin32DX()
 : CRenderSystemBase()
 {
   m_pD3D = NULL;
@@ -34,12 +36,12 @@ CRenderSystemDX::CRenderSystemDX()
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
 
-CRenderSystemDX::~CRenderSystemDX()
+CWinSystemWin32DX::~CWinSystemWin32DX()
 {
-  Destroy();
+  //Destroy();
 }
 
-bool CRenderSystemDX::Create()
+bool CWinSystemWin32DX::InitRenderSystem()
 {
   m_pD3D = NULL;
 
@@ -50,6 +52,97 @@ bool CRenderSystemDX::Create()
   return true;
 }
 
+bool CWinSystemWin32DX::DestroyRenderSystem()
+{
+  return true;
+}
+
+bool CWinSystemWin32DX::ResetRenderSystem(int width, int height)
+{
+  return true;
+}
+
+void CWinSystemWin32DX::GetRenderVersion(unsigned int& major, unsigned int& minor)
+{
+
+}
+
+const CStdString& CWinSystemWin32DX::GetRenderVendor()
+{
+
+}
+
+const CStdString& CWinSystemWin32DX::GetRenderRenderer()
+{
+  
+}
+
+bool CWinSystemWin32DX::BeginRender()
+{
+  return true;
+}
+
+bool CWinSystemWin32DX::EndRender()
+{
+  return true;
+}
+
+bool CWinSystemWin32DX::PresentRender()
+{
+  return true;
+}
+
+bool CWinSystemWin32DX::ClearBuffers(DWORD color)
+{
+  return true;
+}
+
+bool CWinSystemWin32DX::ClearBuffers(float r, float g, float b, float a)
+{
+  return true;
+}
+
+bool CWinSystemWin32DX::IsExtSupported(CStdString strExt)
+{
+  return false;
+}
+
+void CWinSystemWin32DX::SetVSync(bool vsync)
+{
+
+}
+
+void CWinSystemWin32DX::SetViewPort(CRect& viewPort)
+{
+
+}
+
+void CWinSystemWin32DX::GetViewPort(CRect& viewPort)
+{
+
+}
+
+bool CWinSystemWin32DX::NeedPower2Texture()
+{
+  return false;
+}
+
+void CWinSystemWin32DX::CaptureStateBlock()
+{
+
+}
+
+void CWinSystemWin32DX::ApplyStateBlock()
+{
+
+}
+
+void CWinSystemWin32DX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
+{
+
+}
+
+/*
 bool CRenderSystemDX::Destroy()
 {
   m_bCreated = false;
@@ -59,7 +152,9 @@ bool CRenderSystemDX::Destroy()
 
   return true;
 }
+*/
 
+/*
 bool CRenderSystemDX::AttachWindow(CWinSystem* winSystem)
 {
   if(winSystem == NULL)
@@ -78,7 +173,9 @@ bool CRenderSystemDX::AttachWindow(CWinSystem* winSystem)
 
   return true;
 }
+*/
 
+/*
 bool CRenderSystemDX::CreateResources()
 {
   if(!CreateDevice())
@@ -88,13 +185,16 @@ bool CRenderSystemDX::CreateResources()
 
   return true;
 }
+*/
 
+/*
 bool CRenderSystemDX::DeleteResources()
 {
   return true;
 }
+*/
 
-
+/*
 bool CRenderSystemDX::CreateDevice()
 {
   // Code based on Ogre 3D engine
@@ -189,7 +289,9 @@ bool CRenderSystemDX::CreateDevice()
 
   return true;
 }
+*/
 
+/*
 void CRenderSystemDX::SetViewPort(CRect& viewPort)
 {
   if(!m_bCreated)
@@ -205,7 +307,9 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
   newviewport.Height = (DWORD)(viewPort.y2 - viewPort.y1);
   m_pD3DDevice->SetViewport(&newviewport);
 }
+*/
 
+/*
 void CRenderSystemDX::GetViewPort(CRect& viewPort)
 {
   if(!m_bCreated)
@@ -219,7 +323,9 @@ void CRenderSystemDX::GetViewPort(CRect& viewPort)
   viewPort.y1 = (float)d3dviewport.X + d3dviewport.Width;
   viewPort.x2 = (float)d3dviewport.Y + d3dviewport.Height;
 }
+*/
 
+/*
 bool CRenderSystemDX::BeginRender()
 {
   if(!m_bCreated)
@@ -230,7 +336,9 @@ bool CRenderSystemDX::BeginRender()
 
   return true;
 }
+*/
 
+/*
 bool CRenderSystemDX::EndRender()
 {
   if(!m_bCreated)
@@ -241,7 +349,9 @@ bool CRenderSystemDX::EndRender()
 
   return true;
 }
+*/
 
+/*
 bool CRenderSystemDX::Present()
 {
   if(!m_bCreated)
@@ -259,7 +369,9 @@ bool CRenderSystemDX::Present()
 
   return true;
 }
+*/
 
+/*
 bool CRenderSystemDX::ClearBuffers(DWORD color)
 {
   if(!m_bCreated)
@@ -278,14 +390,18 @@ bool CRenderSystemDX::ClearBuffers(DWORD color)
 
   return true;
 }
+*/
 
+/*
 bool CRenderSystemDX::ClearBuffers(float r, float g, float b, float a)
 {
   D3DXCOLOR color(r, g, b, a);
 
   return ClearBuffers((DWORD)color); 
 }
+*/
 
+/*
 bool CRenderSystemDX::Test()
 {
   static DWORD lastTime = 0;
@@ -351,5 +467,6 @@ bool CRenderSystemDX::Test()
 
   return true;
 }
+*/
 
 #endif
