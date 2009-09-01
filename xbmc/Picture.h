@@ -23,12 +23,12 @@
 
 class CBaseTexture;
 
-class CPictureBase
+class CPicture
 {
 public:
-  CPictureBase(void);
-  virtual ~CPictureBase(void);
-  virtual CBaseTexture* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128) = 0;
+  CPicture(void);
+  virtual ~CPicture(void);
+  virtual bool Load(const CStdString& strFilename, CBaseTexture* texture, int iMaxWidth = 128, int iMaxHeight = 128);
 
   bool CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
@@ -48,22 +48,4 @@ public:
 protected:
   DllImageLib m_dll;
   ImageInfo m_info;
-private:
-#ifdef HAS_DX
-  struct VERTEX
-  {
-    D3DXVECTOR4 p;
-    D3DCOLOR col;
-    FLOAT tu, tv;
-  };
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-#endif
 };
-
-#ifdef HAS_GL
-#include "PictureGL.h"
-#define CPicture CPictureGL
-#elif defined(HAS_DX)
-#include "PictureDX.h"
-#define CPicture CPictureDX
-#endif
