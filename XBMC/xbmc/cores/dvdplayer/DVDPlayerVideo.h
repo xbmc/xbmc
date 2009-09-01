@@ -129,7 +129,9 @@ protected:
 
   int m_iDroppedFrames;
 
-  float m_fFrameRate;
+  float  m_fFrameRate;
+  double m_fStableFrameRate;
+  int    m_iFrameRateCount;
 
   struct SOutputConfiguration
   {
