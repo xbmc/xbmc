@@ -62,7 +62,6 @@
 		7C779E35104A57E500F444C4 /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E16104A57E500F444C4 /* MouseStat.cpp */; };
 		7C779E36104A57E500F444C4 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */; };
 		7C779E37104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */; };
-		7C779E38104A57E500F444C4 /* PictureDX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1B104A57E500F444C4 /* PictureDX.cpp */; };
 		7C779E39104A57E500F444C4 /* PictureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1D104A57E500F444C4 /* PictureGL.cpp */; };
 		7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1F104A57E500F444C4 /* RenderSystem.cpp */; };
 		7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */; };
@@ -73,7 +72,6 @@
 		7C779E40104A57E500F444C4 /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E16104A57E500F444C4 /* MouseStat.cpp */; };
 		7C779E41104A57E500F444C4 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */; };
 		7C779E42104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */; };
-		7C779E43104A57E500F444C4 /* PictureDX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1B104A57E500F444C4 /* PictureDX.cpp */; };
 		7C779E44104A57E500F444C4 /* PictureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1D104A57E500F444C4 /* PictureGL.cpp */; };
 		7C779E45104A57E500F444C4 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1F104A57E500F444C4 /* RenderSystem.cpp */; };
 		7C779E46104A57E500F444C4 /* RenderSystemGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */; };
@@ -1865,10 +1863,7 @@
 		7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTag.cpp; sourceTree = "<group>"; };
 		7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderFactory.cpp; sourceTree = "<group>"; };
 		7C779E1A104A57E500F444C4 /* MusicInfoTagLoaderFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFactory.h; sourceTree = "<group>"; };
-		7C779E1B104A57E500F444C4 /* PictureDX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureDX.cpp; sourceTree = "<group>"; };
-		7C779E1C104A57E500F444C4 /* PictureDX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureDX.h; sourceTree = "<group>"; };
 		7C779E1D104A57E500F444C4 /* PictureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureGL.cpp; sourceTree = "<group>"; };
-		7C779E1E104A57E500F444C4 /* PictureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PictureGL.h; sourceTree = "<group>"; };
 		7C779E1F104A57E500F444C4 /* RenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystem.cpp; sourceTree = "<group>"; };
 		7C779E20104A57E500F444C4 /* RenderSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystem.h; sourceTree = "<group>"; };
 		7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystemGL.cpp; sourceTree = "<group>"; };
@@ -2504,7 +2499,6 @@
 		E38E16660D25F9FA00618676 /* RenderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderManager.h; sourceTree = "<group>"; };
 		E38E16680D25F9FA00618676 /* RGBRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGBRenderer.h; sourceTree = "<group>"; };
 		E38E166A0D25F9FA00618676 /* RGBRendererV2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RGBRendererV2.h; sourceTree = "<group>"; };
-		E38E166C0D25F9FA00618676 /* BaseYUV2RGBShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseYUV2RGBShader.h; sourceTree = "<group>"; };
 		E38E166F0D25F9FA00618676 /* VideoFilterShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VideoFilterShader.cpp; sourceTree = "<group>"; };
 		E38E16700D25F9FA00618676 /* VideoFilterShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoFilterShader.h; sourceTree = "<group>"; };
 		E38E16710D25F9FA00618676 /* YUV2RGBShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YUV2RGBShader.cpp; sourceTree = "<group>"; };
@@ -4305,10 +4299,7 @@
 				7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */,
 				7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */,
 				7C779E1A104A57E500F444C4 /* MusicInfoTagLoaderFactory.h */,
-				7C779E1B104A57E500F444C4 /* PictureDX.cpp */,
-				7C779E1C104A57E500F444C4 /* PictureDX.h */,
 				7C779E1D104A57E500F444C4 /* PictureGL.cpp */,
-				7C779E1E104A57E500F444C4 /* PictureGL.h */,
 				7C779E1F104A57E500F444C4 /* RenderSystem.cpp */,
 				7C779E20104A57E500F444C4 /* RenderSystem.h */,
 				7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */,
@@ -5360,7 +5351,6 @@
 		E38E166B0D25F9FA00618676 /* VideoShaders */ = {
 			isa = PBXGroup;
 			children = (
-				E38E166C0D25F9FA00618676 /* BaseYUV2RGBShader.h */,
 				E38E166F0D25F9FA00618676 /* VideoFilterShader.cpp */,
 				E38E16700D25F9FA00618676 /* VideoFilterShader.h */,
 				E38E16710D25F9FA00618676 /* YUV2RGBShader.cpp */,
@@ -7962,7 +7952,6 @@
 				7C779E35104A57E500F444C4 /* MouseStat.cpp in Sources */,
 				7C779E36104A57E500F444C4 /* MusicInfoTag.cpp in Sources */,
 				7C779E37104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */,
-				7C779E38104A57E500F444C4 /* PictureDX.cpp in Sources */,
 				7C779E39104A57E500F444C4 /* PictureGL.cpp in Sources */,
 				7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */,
 				7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */,
@@ -8814,7 +8803,6 @@
 				7C779E40104A57E500F444C4 /* MouseStat.cpp in Sources */,
 				7C779E41104A57E500F444C4 /* MusicInfoTag.cpp in Sources */,
 				7C779E42104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */,
-				7C779E43104A57E500F444C4 /* PictureDX.cpp in Sources */,
 				7C779E44104A57E500F444C4 /* PictureGL.cpp in Sources */,
 				7C779E45104A57E500F444C4 /* RenderSystem.cpp in Sources */,
 				7C779E46104A57E500F444C4 /* RenderSystemGL.cpp in Sources */,
