@@ -17,80 +17,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug (SDL)|Win32"
-			OutputDirectory="guilib\$(ConfigurationName)"
-			IntermediateDirectory="guilib\$(ConfigurationName)"
-			ConfigurationType="4"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine=""
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/EHa"
-				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;HAS_SDL;_MSVC;NOMINMAX;_USE_32BIT_TIME_T"
-				StringPooling="false"
-				MinimalRebuild="true"
-				ExceptionHandling="0"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				EnableEnhancedInstructionSet="0"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="include.h"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
-				DisableSpecificWarnings="4996"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\guilib.lib"
-				AdditionalLibraryDirectories=""
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release (SDL)|Win32"
+			Name="Release (OpenGL)|Win32"
 			OutputDirectory="guilib\$(ConfigurationName)"
 			IntermediateDirectory="guilib\$(ConfigurationName)"
 			ConfigurationType="4"
@@ -618,15 +545,7 @@
 				RelativePath="..\..\guilib\include.cpp"
 				>
 				<FileConfiguration
-					Name="Debug (SDL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (SDL)|Win32"
+					Name="Release (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -702,15 +621,7 @@
 				RelativePath="..\..\guilib\tinyXML\tinystr.cpp"
 				>
 				<FileConfiguration
-					Name="Debug (SDL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (SDL)|Win32"
+					Name="Release (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1028,7 +939,7 @@
 				RelativePath="..\..\guilib\include.h"
 				>
 				<FileConfiguration
-					Name="Release (SDL)|Win32"
+					Name="Release (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1114,15 +1025,7 @@
 				RelativePath="..\..\guilib\tinyXML\tinyxml.cpp"
 				>
 				<FileConfiguration
-					Name="Debug (SDL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (SDL)|Win32"
+					Name="Release (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1178,15 +1081,7 @@
 				RelativePath="..\..\guilib\tinyXML\tinyxmlerror.cpp"
 				>
 				<FileConfiguration
-					Name="Debug (SDL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (SDL)|Win32"
+					Name="Release (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1238,15 +1133,7 @@
 				RelativePath="..\..\guilib\tinyXML\tinyxmlparser.cpp"
 				>
 				<FileConfiguration
-					Name="Debug (SDL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (SDL)|Win32"
+					Name="Release (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1388,14 +1275,6 @@
 				<File
 					RelativePath="..\..\guilib\GUITextureD3D.cpp"
 					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="..\..\guilib\GUITextureD3D.h"
