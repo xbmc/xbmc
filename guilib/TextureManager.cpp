@@ -89,8 +89,8 @@ void CTextureArray::Add(CBaseTexture *texture, int delay)
   m_textures.push_back(texture);
   m_delays.push_back(delay ? delay * 2 : 100);
 
-  m_texWidth = texture->GetWidth();
-  m_texHeight = texture->GetHeight();
+  m_texWidth = texture->GetTextureWidth();
+  m_texHeight = texture->GetTextureHeight();
   m_texCoordsArePixels = false;
 }
 
