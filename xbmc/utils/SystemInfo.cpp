@@ -31,7 +31,6 @@
 #include "Network.h"
 #include "Application.h"
 #include "GraphicContext.h"
-// elis #include "Surface.h"
 #include "WindowingFactory.h"
 CSysInfo g_sysinfo;
 

@@ -23,7 +23,6 @@
 #include "GUILargeTextureManager.h"
 #include "Picture.h"
 #include "GUISettings.h"
-// elis #include "Surface.h"
 #include "FileItem.h"
 
 using namespace std;
