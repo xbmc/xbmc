@@ -421,7 +421,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 1080;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "1080i 16:9");
+    g_settings.m_ResInfo[res].strMode ="1080i 16:9";
     break;
   case RES_HDTV_720p:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 720);
@@ -429,7 +429,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 720;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "720p 16:9");
+    g_settings.m_ResInfo[res].strMode = "720p 16:9";
     break;
   case RES_HDTV_480p_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 480);
@@ -437,7 +437,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 480;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE;
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "480p 4:3");
+    g_settings.m_ResInfo[res].strMode = "480p 4:3";
     break;
   case RES_HDTV_480p_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 480);
@@ -445,7 +445,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 480;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_PROGRESSIVE | D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "480p 16:9");
+    g_settings.m_ResInfo[res].strMode = "480p 16:9";
     break;
   case RES_NTSC_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 480);
@@ -453,7 +453,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 480;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED;
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "NTSC 4:3");
+    g_settings.m_ResInfo[res].strMode = "NTSC 4:3";
     break;
   case RES_NTSC_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 480);
@@ -461,7 +461,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 480;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "NTSC 16:9");
+    g_settings.m_ResInfo[res].strMode = "NTSC 16:9";
     break;
   case RES_PAL_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 576);
@@ -469,7 +469,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 576;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED;
     g_settings.m_ResInfo[res].fPixelRatio = 128.0f / 117.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "PAL 4:3");
+    g_settings.m_ResInfo[res].strMode = "PAL 4:3";
     break;
   case RES_PAL_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 576);
@@ -477,7 +477,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 576;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 128.0f / 117.0f*4.0f / 3.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "PAL 16:9");
+    g_settings.m_ResInfo[res].strMode = "PAL 16:9";
     break;
   case RES_PAL60_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 480);
@@ -485,7 +485,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 480;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED;
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 4:3");
+    g_settings.m_ResInfo[res].strMode = "PAL60 4:3";
     break;
   case RES_PAL60_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 480);
@@ -493,7 +493,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].iHeight = 480;
     g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_INTERLACED | D3DPRESENTFLAG_WIDESCREEN;
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
-    strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 16:9");
+    g_settings.m_ResInfo[res].strMode = "PAL60 16:9";
     break;
   default:
     break;

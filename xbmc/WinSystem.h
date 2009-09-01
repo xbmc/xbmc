@@ -23,6 +23,7 @@
 #define WINDOW_SYSTEM_H
 
 #include "WinEvents.h"
+#include "StdString.h"
 
 enum RESOLUTION {
   RES_INVALID = -1,
@@ -68,9 +69,9 @@ struct RESOLUTION_INFO
   DWORD dwFlags;
   float fPixelRatio;
   float fRefreshRate;
-  char strMode[48];
-  char strOutput[32];
-  char strId[16];
+  CStdString strMode;
+  CStdString strOutput;
+  CStdString strId;
 };
 
 typedef enum _WindowSystemType

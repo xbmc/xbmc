@@ -65,22 +65,22 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   bool stdRes = false;
   if (width == 1280 && height == 720)
   {
-    strcpy(newRes.strMode, "720");
+    newRes.strMode = "720";
     stdRes = true;
   }
   if (width == 1366 && height == 768)
   {
-    strcpy(newRes.strMode, "720");
+    newRes.strMode = "720";
     stdRes = true;
   }
   else if (width == 720 && height == 480)
   {
-    strcpy(newRes.strMode, "480");
+    newRes.strMode = "480";
     stdRes = true;
   }
   else if (width == 1920 && height == 1080)
   {
-    strcpy(newRes.strMode, "1080");
+    newRes.strMode = "1080";
     stdRes = true;
   }
 
@@ -88,30 +88,30 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
   {
     if (refreshRate > 23 && refreshRate < 31)
     {
-      strcat(newRes.strMode, "i");
+      newRes.strMode += "i";
     }
     else
     {
-      strcat(newRes.strMode, "p");
+      newRes.strMode += "p";
     }
       
     if (refreshRate > 1)
     {
-      sprintf(newRes.strMode, "%s%2.f (Full Screen)",  newRes.strMode, refreshRate);
+      newRes.strMode.Format("%s%2.f (Full Screen)",  newRes.strMode, refreshRate);
     }
   }  
   else
   {
-    sprintf(newRes.strMode, "%dx%d", width, height);
+    newRes.strMode.Format("%dx%d", width, height);
     if (refreshRate > 1)
     {
-	    sprintf(newRes.strMode, "%s @ %.2f - Full Screen", newRes.strMode, refreshRate);
+	    newRes.strMode.Format("%s @ %.2f - Full Screen", newRes.strMode, refreshRate);
     }
   }
   
   if (screen > 0)
   {
-    sprintf(newRes.strMode, "%s #%d", newRes.strMode, screen + 1);    
+    newRes.strMode.Format("%s #%d", newRes.strMode, screen + 1);    
   }  
 }
 
@@ -124,7 +124,7 @@ void CWinSystemBase::UpdateResolutions()
   window.iHeight = 720;
   window.iScreen = 0;
   window.fPixelRatio = 1.0f;
-  strcpy(window.strMode, "1280x720 (Window)");
+  window.strMode = "1280x720 (Window)";
   window.fRefreshRate = 0.0f;
   window.Overscan.left = 0;
   window.Overscan.top = 0;
