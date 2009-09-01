@@ -33,12 +33,12 @@ CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height
 
 void CGUITextureD3D::Begin()
 {
-  CBaseTexture* texture = (CBaseTexture *)m_texture.m_textures[m_currentFrame];
+  CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
 
   texture->LoadToGPU();
   if (m_diffuse.size())
-    ((CBaseTexture *)m_diffuse.m_textures[0])->LoadToGPU();
+    m_diffuse.m_textures[0]->LoadToGPU();
   // Set state to render the image
   p3DDevice->SetTexture( 0, texture->GetTextureObject() );
   p3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
@@ -53,7 +53,7 @@ void CGUITextureD3D::Begin()
   p3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
   if (m_diffuse.size())
   {
-    p3DDevice->SetTexture( 1, texture->GetTextureObject() );
+    p3DDevice->SetTexture( 1, m_diffuse.m_textures[0]->GetTextureObject() );
     p3DDevice->SetSamplerState( 1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetSamplerState( 1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
