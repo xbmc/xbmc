@@ -61,7 +61,7 @@ bool CWinSystemOSX::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemOSX::CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemOSX::CreateNewWindow(CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
 {
   m_nWidth = width;
   m_nHeight = height;
