@@ -104,8 +104,8 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
         PyXBMCAction* inf = new PyXBMCAction;
         inf->pObject = NULL;
         // find python control object with same iControl
-        std::vector<Control*>::iterator it = ((Window*)pCallbackWindow)->vecControls.begin();
-        while (it != ((Window*)pCallbackWindow)->vecControls.end())
+        std::vector<Control*>::iterator it = ((PYXBMC::Window*)pCallbackWindow)->vecControls.begin();
+        while (it != ((PYXBMC::Window*)pCallbackWindow)->vecControls.end())
         {
           Control* pControl = *it;
           if (pControl->iControlId == iControl)
