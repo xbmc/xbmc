@@ -543,8 +543,8 @@ void CGUIWindowMusicInfo::OnGetThumb()
   }
   if (result == "thumb://None")
   { // cache the default thumb
-    CPicture pic;
-    pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
+    CFile::Delete(cachedThumb);
+    cachedThumb = "";
   }
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);

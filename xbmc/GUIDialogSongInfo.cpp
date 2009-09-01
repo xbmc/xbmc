@@ -268,9 +268,9 @@ void CGUIDialogSongInfo::OnGetThumb()
   CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_song->GetMusicInfoTag()->GetAlbum(), m_song->GetMusicInfoTag()->GetArtist()));
 
   if (result == "thumb://None")
-  { // cache the default thumb
-    CPicture pic;
-    pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
+  {
+    CFile::Delete(cachedThumb);
+    cachedThumb = "";
   }
   else if (result == "thumb://allmusic.com")
     CFile::Cache(thumbFromWeb, cachedThumb);

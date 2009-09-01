@@ -21,12 +21,7 @@
 
 #include "stdafx.h"
 #include "PictureGL.h"
-#include "TextureManager.h"
-#include "Settings.h"
-#include "FileItem.h"
-#include "FileSystem/File.h"
-#include "FileSystem/FileCurl.h"
-#include "Util.h"
+#include "Texture.h"
 
 #ifdef HAS_GL
 
@@ -53,14 +48,9 @@ CBaseTexture* CPictureGL::Load(const CStdString& strFileName, int iMaxWidth, int
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
     return NULL;
   }
-  CBaseTexture* pTexture = NULL;
-  //pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
-  pTexture = new CTexture(m_info.width, m_info.height, 32);
- 
+  CBaseTexture *pTexture = new CTexture(m_info.width, m_info.height, 32);
   if (pTexture)
   {
-    //if (SDL_LockSurface(pTexture) == 0)
-    //{
     DWORD destPitch = pTexture->GetPitch();
     DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
     BYTE *pixels = (BYTE *)pTexture->GetPixels();
@@ -76,8 +66,6 @@ CBaseTexture* CPictureGL::Load(const CStdString& strFileName, int iMaxWidth, int
         *dst++ = *src++;
         *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
       }
-      //}
-      //SDL_UnlockSurface(pTexture);
     }
   }
   else
@@ -85,47 +73,6 @@ CBaseTexture* CPictureGL::Load(const CStdString& strFileName, int iMaxWidth, int
   m_dll.ReleaseImage(&m_info);
   
   return pTexture;
-}
-
-// caches a skin image as a thumbnail image
-bool CPictureGL::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
-{
-  /* elis
-  int iImages = g_TextureManager.Load(srcFile);
-  if (iImages > 0)
-  {
-    int width = 0, height = 0;
-    bool linear = false;
-    CTextureArray baseTexture = g_TextureManager.GetTexture(srcFile);
-    XBMC::TexturePtr texture = NULL;
-    if (texture)
-    {
-      bool success(false);
-      CPicture pic;
-      if (!linear)
-      { // damn, have to copy it to a linear texture first :(
-        return CreateThumbnailFromSwizzledTexture(texture, width, height, destFile);
-      }
-      else
-      {
-        SDL_LockSurface(texture);
-        success = pic.CreateThumbnailFromSurface((BYTE *)texture->pixels, width, height, texture->pitch, destFile);
-        SDL_UnlockSurface(texture);
-      }
-      g_TextureManager.ReleaseTexture(srcFile);
-      return success;
-    }
-  }
-  */
-  return false;
-}
-
-bool CPictureGL::CreateThumbnailFromSwizzledTexture(CBaseTexture* &texture, int width, int height, const CStdString &thumb)
-{
-#ifdef __GNUC__
-// FIXME: CPictureGL::CreateThumbnailFromSwizzledTexture not implemented
-#endif
-  return false;
 }
 
 #endif

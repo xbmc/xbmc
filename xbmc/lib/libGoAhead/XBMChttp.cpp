@@ -575,11 +575,6 @@ void CXbmcHttp::copyThumb(CStdString srcFn, CStdString destFn)
 	    lastThumbFn=srcFn;
 	    if (CFile::Exists(srcFn))
           CFile::Cache(srcFn, destFn);
-	    else
-	    {
-	      CPicture pic;
-          pic.CacheSkinImage(srcFn, destFn);
-	    }
       }
       catch (...)
       {
