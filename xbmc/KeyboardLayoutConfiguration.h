@@ -22,6 +22,9 @@
  *
  */
 
+// Comment OUT, if not really debugging!!!
+// #define DEBUG_KEYBOARD_GETCHAR
+
 #ifdef _LINUX
 #include "linux/PlatformDefs.h"
 #elif defined (WIN32)

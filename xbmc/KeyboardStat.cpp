@@ -18,10 +18,6 @@
 #include "KeyboardLayoutConfiguration.h"
 #include "XBMC_events.h"
 
-#if defined(HAS_GLX)
-#include <X11/XKBlib.h>
-#endif
-
 CKeyboardStat g_Keyboard;
 
 const unsigned int CKeyboardStat::key_hold_time = 500;  // time in ms before we declare it held
@@ -317,33 +313,6 @@ CKeyboardStat::~CKeyboardStat()
 
 void CKeyboardStat::Initialize()
 {
-#if defined(HAS_GLX)
-  Display* dpy = XOpenDisplay(NULL);
-  if (!dpy)
-    return;
-
-  XkbDescPtr desc;
-  char* symbols;
-
-  desc = XkbGetKeyboard(dpy, XkbAllComponentsMask, XkbUseCoreKbd);
-  if(!desc)
-  {
-    XCloseDisplay(dpy);
-    return;
-  }
-
-  symbols = XGetAtomName(dpy, desc->names->symbols);
-  if(symbols)
-  {
-    CLog::Log(LOGDEBUG, "CLowLevelKeyboard::Initialize - XKb symbols %s", symbols);
-    if (strstr(symbols, "(evdev)"))
-      m_bEvdev = true;
-  }
-
-  XFree(symbols);
-  XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
-  XCloseDisplay(dpy);
-#endif
 }
 
 void CKeyboardStat::Reset()
