@@ -504,7 +504,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 
 float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 {
-  if (iRes >= 0 && iRes < g_settings.m_ResInfo.size())
+  if (iRes >= 0 && iRes < (int)g_settings.m_ResInfo.size())
     return g_settings.m_ResInfo[iRes].fPixelRatio;
   return 0.0f;
 }
