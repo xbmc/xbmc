@@ -709,7 +709,7 @@ HRESULT CApplication::Create(HWND hWnd)
   CLog::Log(LOGINFO, "GUI format %ix%i %s",
             g_settings.m_ResInfo[iResolution].iWidth,
             g_settings.m_ResInfo[iResolution].iHeight,
-            g_settings.m_ResInfo[iResolution].strMode);
+            g_settings.m_ResInfo[iResolution].strMode.c_str());
   m_gWindowManager.Initialize();
 
 #ifdef HAS_PYTHON

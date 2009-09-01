@@ -56,6 +56,10 @@ struct OVERSCAN
   int top;
   int right;
   int bottom;
+public:
+  OVERSCAN() {
+    left = top = right = bottom = 0;
+  }
 };
 
 struct RESOLUTION_INFO
@@ -72,6 +76,12 @@ struct RESOLUTION_INFO
   CStdString strMode;
   CStdString strOutput;
   CStdString strId;
+  public:
+  RESOLUTION_INFO() {
+    bFullScreen = false;
+    iScreen = iWidth = iHeight = iSubtitles = dwFlags = 0;
+    fPixelRatio = fRefreshRate = 0.f;
+  }
 };
 
 typedef enum _WindowSystemType

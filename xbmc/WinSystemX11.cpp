@@ -53,11 +53,8 @@ bool CWinSystemX11::InitWindowSystem()
   // set repeat to 10ms to ensure repeat time < frame time
   // so that hold times can be reliably detected
   SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
-
-  if (!CWinSystemBase::InitWindowSystem())
-    return false;
    
-  return true;
+  return CWinSystemBase::InitWindowSystem();
 }
 
 bool CWinSystemX11::DestroyWindowSystem()
@@ -178,37 +175,42 @@ bool CWinSystemX11::RefreshGlxContext()
   fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &num);
   if (fbConfigs == NULL)
   {
-	CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
-	return false;
+    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+    return false;
   }
 
   for (int i = 0; i < num; i++)
   {
-	// obtain the xvisual from the first compatible framebuffer
-	vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-	if (vInfo->depth == 24)
-	{
-	  CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
-	  break;
-	}
+    // obtain the xvisual from the first compatible framebuffer
+    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
+    if (vInfo)
+    {
+      if (vInfo->depth == 24)
+      {
+        CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
+        break;
+      }
+      XFree(vInfo);
+    }
   }
+
+  XFree(fbConfigs);
 
   if (!vInfo) 
   {
-	CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
-	return false;
+    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+    return false;
   }
 
   m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True);
 
-  XFree(fbConfigs);
   XFree(vInfo);
 
   // success?
   if (!m_glContext)
   {
-	CLog::Log(LOGERROR, "GLX Error: Could not create context");
-	return false;
+    CLog::Log(LOGERROR, "GLX Error: Could not create context");
+    return false;
   }
 
   // make this context current
