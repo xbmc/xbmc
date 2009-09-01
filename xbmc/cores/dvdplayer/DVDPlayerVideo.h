@@ -129,6 +129,8 @@ protected:
 
   int m_iDroppedFrames;
 
+  void   CalcFrameRate();
+  
   float  m_fFrameRate;
   double m_fStableFrameRate;
   int    m_iFrameRateCount;
