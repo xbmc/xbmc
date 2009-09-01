@@ -28,6 +28,8 @@ class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 
+#ifdef HAS_GL
+
 namespace OVERLAY {
 
   class COverlayGL
@@ -51,6 +53,7 @@ namespace OVERLAY {
     float  m_u;
     float  m_v;
   };
-
-
 }
+
+#endif
+

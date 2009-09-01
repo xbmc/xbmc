@@ -60,7 +60,7 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
   float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
 #ifdef HAS_DX
   // TODO LINUX this is obviously not good, but until we have visualization sorted out, this will have to do
-  m_pVisz->Create (g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(),
+  m_pVisz->Create (g_Windowing.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(),
                    pixelRatio, m_strSubModuleName=="" ? NULL : m_strSubModuleName.c_str() );
 #else
   m_pVisz->Create (0, posx, posy, width, height, m_strVisualisationName.c_str(), pixelRatio,

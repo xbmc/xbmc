@@ -24,7 +24,6 @@
 
 #pragma once
 
-#include "WinSystem.h"
 #include "Geometry.h"
 #include "TransformMatrix.h"
 #include "StdString.h"

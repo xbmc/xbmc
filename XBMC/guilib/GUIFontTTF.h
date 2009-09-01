@@ -41,7 +41,6 @@ typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 typedef struct FT_BitmapGlyphRec_ *FT_BitmapGlyph;
   
-DWORD PadPow2(DWORD x);
 
 /*!
  \ingroup textures

@@ -427,7 +427,7 @@ public:
   void LoadMasterLock(TiXmlElement *pRootElement);
 
   //m_LookAndFeelResolution holds the real gui resolution,
-  //also when g_guiSettings.GetInt("videoscreen.resolution") is set to AUTORES
+  //also when g_guiSettings.GetInt("videoscreen.resolution") is set to RES_AUTORES
   RESOLUTION m_LookAndFeelResolution;
   ReplayGainSettings m_replayGain;
 

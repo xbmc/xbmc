@@ -29,6 +29,8 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "Application.h"
 
+#ifdef HAS_GL
+
 #define USE_PREMULTIPLIED_ALPHA 1
 
 using namespace OVERLAY;
@@ -382,3 +384,5 @@ void COverlayTextureGL::Render(SRenderState& state)
 
   glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+#endif // HAS_GL

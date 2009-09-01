@@ -29,7 +29,7 @@
 #include "../../Util.h"
 #include "TextureManager.h"
 
-#ifdef HAS_DX
+#ifdef CHECK_THIS_HAS_DX
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 

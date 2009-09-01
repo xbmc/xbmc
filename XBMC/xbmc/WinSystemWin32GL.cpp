@@ -29,6 +29,8 @@
 #include "WinSystemWin32GL.h"
 #include "WIN32Util.h"
 
+#ifdef HAS_GL
+
 #pragma comment (lib,"opengl32.lib")
 #pragma comment (lib,"glu32.lib")
 #pragma comment (lib,"../../xbmc/lib/libglew/glew32.lib") 
@@ -112,4 +114,6 @@ bool CWinSystemWin32GL::SetFullScreen(bool fullScreen, int screen, int width, in
 
   return true;
 }
+
+#endif // HAS_GL
 

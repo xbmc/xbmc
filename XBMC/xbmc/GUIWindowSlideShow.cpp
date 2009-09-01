@@ -33,6 +33,7 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Texture.h"
 #include "WindowingFactory.h"
 #include "Texture.h"
 
@@ -90,7 +91,8 @@ void CBackgroundPicLoader::Process()
       {
         CPicture pic;
         DWORD start = timeGetTime();
-        CBaseTexture* pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
+        CBaseTexture* pTexture = new CTexture();
+        pic.Load(m_strFileName, pTexture, m_maxWidth, m_maxHeight);
         totalTime += timeGetTime() - start;
         count++;
         // tell our parent

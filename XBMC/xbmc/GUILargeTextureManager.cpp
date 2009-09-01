@@ -71,7 +71,8 @@ void CGUILargeTextureManager::Process()
       {
         loadPath = g_TextureManager.GetTexturePath(path);
       }
-      texture = pic.Load(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080));
+      texture = new CTexture();
+      pic.Load(loadPath, texture, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080));
     }
     // and add to our allocated list
     lock.Enter();

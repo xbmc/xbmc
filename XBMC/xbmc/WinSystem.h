@@ -19,8 +19,8 @@
 *
 */
 
-#ifndef WINDOW_SYSTEM_H
-#define WINDOW_SYSTEM_H
+#ifndef WINDOW_SYSTEM_BASE_H
+#define WINDOW_SYSTEM_BASE_H
 
 #include "WinEvents.h"
 #include "StdString.h"

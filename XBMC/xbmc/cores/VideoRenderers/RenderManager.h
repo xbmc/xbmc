@@ -22,11 +22,11 @@
  */
 
 #if defined (HAS_GL)
-#include "LinuxRendererGL.h"
+  #include "LinuxRendererGL.h"
+#elif defined(HAS_DX)
+  #include "WinRenderer.h"
 #elif defined(HAS_SDL)
-#include "LinuxRenderer.h"
-#elif defined(WIN32)
-#include "WinRenderer.h"
+  #include "LinuxRenderer.h"
 #endif
 
 #include "utils/SharedSection.h"
@@ -124,12 +124,13 @@ public:
 
 #ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
+#elif defined(HAS_DX)
+  CWinRenderer *m_pRenderer;
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
-#elif defined(HAS_XBOX_D3D)
+#else defined(HAS_XBOX_D3D)
   CXBoxRenderer *m_pRenderer;
-#else
-  CWinRenderer *m_pRenderer;
+  
 #endif
 
   void Present();

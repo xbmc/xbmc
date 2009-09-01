@@ -144,7 +144,7 @@ void CApplicationRenderer::Process()
           {
             D3DSURFACE_DESC desc;
             g_application.RenderNoPresent();
-            HRESULT result = g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceFront);
+            HRESULT result = g_Windowing.Get3DDevice()->GetBackBuffer( 0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceFront);
             if (SUCCEEDED(result))
             {
               lpSurfaceFront->GetDesc( &desc );
@@ -159,7 +159,7 @@ void CApplicationRenderer::Process()
               Sleep(1000);
               continue;
             }
-            if (!SUCCEEDED(g_graphicsContext.Get3DDevice()->CreateOffscreenPlainSurface(iWidth, iHeight, desc.Format, D3DPOOL_DEFAULT, &m_lpSurface, NULL)))
+            if (!SUCCEEDED(g_Windowing.Get3DDevice()->CreateOffscreenPlainSurface(iWidth, iHeight, desc.Format, D3DPOOL_DEFAULT, &m_lpSurface, NULL)))
             {
               SAFE_RELEASE(lpSurfaceFront);
               lockg.Leave();
@@ -180,9 +180,9 @@ void CApplicationRenderer::Process()
 
             //copy front buffer to backbuffer(s) to avoid jumping
             bool bBufferCopied = true;
-            for (int i = 0; i < g_graphicsContext.GetBackbufferCount(); i++)
+            for (int i = 0; i < g_Windowing.GetBackbufferCount(); i++)
             {
-              if (!SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, i, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceBack)))
+              if (!SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer( 0, i, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceBack)))
               {
                 bBufferCopied = false;
                 break;
@@ -205,22 +205,22 @@ void CApplicationRenderer::Process()
             }
             SAFE_RELEASE(lpSurfaceFront);
           }
-          if (!SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer( 0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceBack)))
+          if (!SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer( 0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurfaceBack)))
           {
               lockg.Leave();
               Sleep(1000);
               continue;
           }
-          g_graphicsContext.Get3DDevice()->BeginScene();
+          g_Windowing.Get3DDevice()->BeginScene();
           //copy dialog background to backbuffer
           const RECT rc = { 0, 0, iWidth, iHeight };
           const RECT rcDest = { iLeft, iTop, iLeft + iWidth, iTop + iHeight };
           const D3DRECT rc2 = { iLeft, iTop, iLeft + iWidth, iTop + iHeight };
-          g_graphicsContext.Get3DDevice()->Clear(1, &rc2, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L);
+          g_Windowing.Get3DDevice()->Clear(1, &rc2, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0x00010001, 1.0f, 0L);
           if (!CopySurface(m_lpSurface, &rc, lpSurfaceBack, &rcDest))
           {
               SAFE_RELEASE(lpSurfaceBack);
-              g_graphicsContext.Get3DDevice()->EndScene();
+              g_Windowing.Get3DDevice()->EndScene();
               lockg.Leave();
               Sleep(1000);
               continue;
@@ -233,9 +233,9 @@ void CApplicationRenderer::Process()
           }
           m_pWindow->Render();
 
-          g_graphicsContext.Get3DDevice()->EndScene();
+          g_Windowing.Get3DDevice()->EndScene();
           //D3DSWAPEFFECT_DISCARD is used so we can't just present the busy rect but can only present the entire screen.
-          g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+          g_Windowing.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
         }
         m_busycount++;
         m_prevbusycount = m_busycount;
@@ -256,7 +256,7 @@ void CApplicationRenderer::Process()
 #ifdef HAS_DX
 bool CApplicationRenderer::CopySurface(LPDIRECT3DSURFACE9 pSurfaceSource, const RECT* rcSource, LPDIRECT3DSURFACE9 pSurfaceDest, const RECT* rcDest)
 {
-  if (m_Resolution == HDTV_1080i)
+  if (m_Resolution == RES_HDTV_1080i)
   {
     //CopRects doesn't work at all in 1080i, D3DXLoadSurfaceFromSurface does but is ridiculously slow...
     return SUCCEEDED(D3DXLoadSurfaceFromSurface(pSurfaceDest, NULL, rcDest, pSurfaceSource, NULL, rcSource, D3DX_FILTER_NONE, 0));
@@ -266,12 +266,12 @@ bool CApplicationRenderer::CopySurface(LPDIRECT3DSURFACE9 pSurfaceSource, const 
     if (rcDest)
     {
       const POINT ptDest = { rcDest->left, rcDest->top };
-      return SUCCEEDED(g_graphicsContext.Get3DDevice()->UpdateSurface(pSurfaceSource, rcSource, pSurfaceDest, &ptDest));
+      return SUCCEEDED(g_Windowing.Get3DDevice()->UpdateSurface(pSurfaceSource, rcSource, pSurfaceDest, &ptDest));
     }
     else
     {
       const POINT ptDest = { 0, 0 };
-      return SUCCEEDED(g_graphicsContext.Get3DDevice()->UpdateSurface(pSurfaceSource, rcSource, pSurfaceDest, &ptDest));
+      return SUCCEEDED(g_Windowing.Get3DDevice()->UpdateSurface(pSurfaceSource, rcSource, pSurfaceDest, &ptDest));
     }
   }
 }

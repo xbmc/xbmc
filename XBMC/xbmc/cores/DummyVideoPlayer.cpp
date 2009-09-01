@@ -84,7 +84,7 @@ void CDummyVideoPlayer::Process()
     if (g_graphicsContext.IsFullScreenVideo())
     {
 #ifdef HAS_DX	
-      g_graphicsContext.Get3DDevice()->BeginScene();
+      g_Windowing.Get3DDevice()->BeginScene();
 #endif
       g_graphicsContext.Clear();
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
@@ -92,7 +92,7 @@ void CDummyVideoPlayer::Process()
       if (g_application.NeedRenderFullScreen())
         g_application.RenderFullScreen();
 #ifdef HAS_DX     
-      g_graphicsContext.Get3DDevice()->EndScene();
+      g_Windowing.Get3DDevice()->EndScene();
 #endif      
     }
     g_graphicsContext.Unlock();
@@ -261,7 +261,7 @@ void CDummyVideoPlayer::Render()
 #ifdef HAS_DX
   D3DVIEWPORT9 newviewport;
   D3DVIEWPORT9 oldviewport;
-  g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+  g_Windowing.Get3DDevice()->GetViewport(&oldviewport);
   newviewport.MinZ = 0.0f;
   newviewport.MaxZ = 1.0f;
   newviewport.X = vw.left;
