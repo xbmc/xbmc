@@ -18,6 +18,10 @@
 #include "KeyboardLayoutConfiguration.h"
 #include "XBMC_events.h"
 
+#if defined(HAS_GLX)
+#include <X11/XKBlib.h>
+#endif
+
 CKeyboardStat g_Keyboard;
 
 const unsigned int CKeyboardStat::key_hold_time = 500;  // time in ms before we declare it held
