@@ -251,7 +251,7 @@ bool CWinSystemWin32::ResizeInternal()
   {
     dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |
       WS_SYSMENU | WS_MINIMIZEBOX;
-    windowAfter = HWND_TOP;
+    windowAfter = HWND_NOTOPMOST;
 
     if(m_nTop <= 0 || m_nLeft <= 0)
       CenterWindow();
@@ -266,10 +266,7 @@ bool CWinSystemWin32::ResizeInternal()
   SetWindowRgn(m_hWnd, 0, false);
   SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 
-  SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, 0);
-
-  ShowWindow(m_hWnd, SW_SHOW);
-
+  SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW);
   return true;
 }
 
