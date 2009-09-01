@@ -199,7 +199,7 @@ void CTextureMap::Add(CBaseTexture* texture, int delay)
   m_texture.Add(texture, delay);
 
   if (texture)
-    m_memUsage += sizeof(CTexture) + (texture->GetWidth() * texture->GetHeight() * 4); 
+    m_memUsage += sizeof(CTexture) + (texture->GetTextureWidth() * texture->GetTextureHeight() * 4); 
 }
 
 /************************************************************************/
