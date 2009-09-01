@@ -21,8 +21,8 @@
 
 #include "include.h"
 #include "GUITextureGL.h"
-#include "TextureManager.h"
-#include "GraphicContext.h"
+#include "Texture.h"
+
 #ifdef HAS_GL
 
 CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
@@ -151,8 +151,6 @@ void CGUITextureGL::DrawQuad(const CRect &rect, DWORD color)
   glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
   VerifyGLState();
 
-//  glEnable(GL_TEXTURE_2D);
-  
   glBegin(GL_QUADS);
 
   glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));

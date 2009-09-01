@@ -21,8 +21,7 @@
  *
  */
 
-#include "GraphicContext.h"
-#include "TextureManager.h"
+class CBaseTexture;
 
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
 void XPhysicalFree(LPVOID lpAddress);

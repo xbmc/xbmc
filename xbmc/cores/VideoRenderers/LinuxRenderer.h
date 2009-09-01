@@ -10,7 +10,6 @@
 #ifdef _LINUX
 #include "PlatformDefs.h"
 #endif
-#include "TextureManager.h"
 
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"

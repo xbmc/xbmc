@@ -9,9 +9,9 @@
 #include "../ffmpeg/DllAvCodec.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
-#include "TextureManager.h"
 #include "GraphicContext.h"
 
+class CBaseTexture;
 namespace Surface { class CSurface; }
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }

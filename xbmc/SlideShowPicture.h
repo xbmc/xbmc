@@ -20,7 +20,7 @@
  *
  */
 
-#include "TextureManager.h"
+class CBaseTexture;
 
 class CSlideShowPic
 {

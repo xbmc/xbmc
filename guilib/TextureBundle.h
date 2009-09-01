@@ -21,9 +21,8 @@
  *
  */
 
-#include "Texture.h"
-
 class CAutoTexBuffer;
+class CBaseTexture;
 
 class CTextureBundle
 {

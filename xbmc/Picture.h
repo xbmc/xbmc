@@ -20,7 +20,8 @@
  *
  */
 #include "DllImageLib.h"
-#include "TextureManager.h"
+
+class CBaseTexture;
 
 class CPictureBase
 {

@@ -21,8 +21,7 @@
 
 #include "include.h"
 #include "TextureDX.h"
-#include "../xbmc/FileSystem/File.h"
-#include "../xbmc/FileSystem/Directory.h"
+#include "RenderSystem.h"
 #include "../xbmc/FileSystem/SpecialProtocol.h"
 
 #ifdef HAS_DX
