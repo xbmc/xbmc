@@ -387,13 +387,13 @@ PackedLoadError:
   return E_FAIL;
 }
 
-int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture** ppTextures,
-                              XBMC::PalettePtr* ppPalette, int& nLoops, int** ppDelays)
+int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
+                              int &width, int &height, int& nLoops, int** ppDelays)
 {
   DWORD ResDataOffset;
   int nTextures = 0;
 
-  *ppTextures = NULL; *ppPalette = NULL; *ppDelays = NULL;
+  *ppTextures = NULL; *ppDelays = NULL;
 
   CAutoTexBuffer UnpackedBuf;
   HRESULT r = LoadFile(Filename, UnpackedBuf);
@@ -408,7 +408,6 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture** ppTextur
   *pAnimInfo;
 
   D3DTexture** ppTex = 0;
-  D3DPalette* pPal = 0;
   void* ResData = 0;
 
   BYTE* Next = UnpackedBuf;
@@ -423,11 +422,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture** ppTextur
   nLoops = pAnimInfo->nLoops;
 
   if (flags & XPRFLAG_PALETTE)
-  {
-    pPal = new D3DPalette;
-    memcpy(pPal, Next, sizeof(D3DPalette));
     Next += sizeof(D3DPalette);
-  }
 
   nTextures = flags >> 16;
   ppTex = new D3DTexture * [nTextures];
@@ -446,27 +441,21 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture** ppTextur
   ResDataOffset = ((DWORD)(Next - UnpackedBuf) + 127) & ~127;
   ResData = UnpackedBuf + ResDataOffset;
 
-  *ppTextures = new CTexture[nTextures];
+  *ppTextures = new CBaseTexture*[nTextures];
   for (int i = 0; i < nTextures; ++i)
   {
     if ((ppTex[i]->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
       goto PackedAnimError;
 
-    GetTextureFromData(ppTex[i], ResData, &(ppTextures)[i]);
+    GetTextureFromData(ppTex[i], ResData, &(*ppTextures)[i]);
     delete[] ppTex[i];
   }
 
   delete[] ppTex;
   ppTex = 0;
-  delete pPal;
-/* DXMERGE - this was previously used to specify the real size
-             of the image - is it actually being used still??
-  pInfo->Width = pAnimInfo->RealSize[0];
-  pInfo->Height = pAnimInfo->RealSize[1];
-  pInfo->Depth = 0;
-  pInfo->MipLevels = 1;
-  pInfo->Format = D3DFMT_UNKNOWN;
-  */
+
+  width = pAnimInfo->RealSize[0];
+  height = pAnimInfo->RealSize[1];
 
   return nTextures;
 
@@ -478,7 +467,6 @@ PackedAnimError:
       delete [] ppTex[i];
     delete [] ppTex;
   }
-  delete pPal;
   delete [] *ppDelays;
   return 0;
 }
