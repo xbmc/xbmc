@@ -313,10 +313,10 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
 }
 
 HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
-                                     XBMC::PalettePtr* ppPalette)
+                                     int &width, int &height)
 {
   DWORD ResDataOffset;
-  *ppTexture = NULL; *ppPalette = NULL;
+  *ppTexture = NULL;
 
   CAutoTexBuffer UnpackedBuf;
   HRESULT r = LoadFile(Filename, UnpackedBuf);
@@ -343,11 +343,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** p
     goto PackedLoadError;
 
   if (flags & XPRFLAG_PALETTE)
-  {
-    pPal = new D3DPalette;
-    memcpy(pPal, Next, sizeof(D3DPalette));
     Next += sizeof(D3DPalette);
-  }
 
   memcpy(pTex, Next, sizeof(D3DTexture));
   Next += sizeof(D3DTexture);
@@ -363,21 +359,16 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** p
 
   GetTextureFromData(pTex, ResData, ppTexture);
   delete[] pTex;
-  delete pPal;
 
-/* DXMERGE - this was previously used to specify the real size
-             of the image - is it actually being used still??
-  pInfo->Width = RealSize[0];
-  pInfo->Height = RealSize[1];
-  pInfo->Depth = 0;
-  pInfo->MipLevels = 1;
+  width = RealSize[0];
+  height = RealSize[1];
+/* DXMERGE - this was previously used to specify the format of the image - probably only affects directx?
 #ifndef HAS_SDL
   D3DSURFACE_DESC desc;
   (*ppTexture)->GetLevelDesc(0, &desc);
   pInfo->Format = desc.Format;
 #endif
 */
-
   return S_OK;
 
 PackedLoadError:

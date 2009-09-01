@@ -24,20 +24,13 @@
 #include "Texture.h"
 #include "AnimatedGif.h"
 #include "GraphicContext.h"
-#include "../xbmc/Picture.h"
 #include "utils/SingleLock.h"
-#include "StringUtils.h"
 #include "utils/CharsetConverter.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
-#include "../xbmc/FileSystem/SpecialProtocol.h"
 
 using namespace std;
-
-extern "C" void dllprintf( const char *format, ... );
-
-DWORD PadPow2(DWORD x);
 
 CGUITextureManager g_TextureManager;
 
@@ -203,7 +196,6 @@ bool CTextureMap::IsEmpty() const
 
 void CTextureMap::Add(CBaseTexture* texture, int delay)
 {
-  //CGLTexture *glTexture = new CGLTexture(pSurface, false);
   m_texture.Add(texture, delay);
 
   if (texture)
@@ -216,12 +208,6 @@ void CTextureMap::Add(CBaseTexture* texture, int delay)
 CGUITextureManager::CGUITextureManager(void)
 {
   // we set the theme bundle to be the first bundle (thus prioritizing it)
-#if defined(_WIN32)
-  // Hack for SDL library that keeps loading and unloading these
-  LoadLibraryEx("zlib1.dll", NULL, 0);
-  LoadLibraryEx("libpng12-0.dll", NULL, 0);
-  LoadLibraryEx("jpeg.dll", NULL, 0);
-#endif
   m_TexBundle[0].SetThemeBundle(true);
 }
 
@@ -318,9 +304,6 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
   //Lock here, we will do stuff that could break rendering
   CSingleLock lock(g_graphicsContext);
-
-  CBaseTexture* pTexture = NULL;
-  XBMC::PalettePtr pPal = NULL;
 
 #ifdef _DEBUG
   LARGE_INTEGER start;
@@ -421,17 +404,15 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     return 1;
   } // of if (strPath.Right(4).ToLower()==".gif")
 
-  CBaseTexture *renderTexture;
+  CBaseTexture *pTexture = NULL;
+  int width = 0, height = 0;
   if (bundle >= 0)
   {
-    if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &pTexture, &pPal)))  
+    if (FAILED(m_TexBundle[bundle].LoadTexture(strTextureName, &pTexture, width, height)))  
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
       return 0;
     }
-    //renderTexture = new CTexture(*pTexture);
-    renderTexture = pTexture;
-    //delete(pTexture);
   }
   else
   {
@@ -440,14 +421,16 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     CStdString texturePath;
     g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
 
-    renderTexture = new CTexture();
-    renderTexture->LoadFromFile(texturePath);
+    pTexture = new CTexture();
+    pTexture->LoadFromFile(texturePath);
+    width = pTexture->GetWidth();
+    height = pTexture->GetHeight();
   }
 
-  if (!renderTexture) return 0;
+  if (!pTexture) return 0;
   
-  CTextureMap* pMap = new CTextureMap(strTextureName, renderTexture->GetWidth(), renderTexture->GetHeight(), 0);
-  pMap->Add(renderTexture, 100);
+  CTextureMap* pMap = new CTextureMap(strTextureName, width, height, 0);
+  pMap->Add(pTexture, 100);
   m_vecTextures.push_back(pMap);
 
 #ifdef _DEBUG_TEXTURES
