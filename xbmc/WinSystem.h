@@ -22,15 +22,8 @@
 #ifndef WINDOW_SYSTEM_H
 #define WINDOW_SYSTEM_H
 
-#pragma once
-
-#include <stdio.h>
-#include <vector>
 #include "StdString.h"
 #include "WinEvents.h"
-#include "WinSystem.h"
-
-using namespace std;
 
 enum RESOLUTION {
   RES_INVALID = -1,
