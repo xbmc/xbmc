@@ -34,6 +34,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "WindowingFactory.h"
+#include "Texture.h"
 
 using namespace DIRECTORY;
 
