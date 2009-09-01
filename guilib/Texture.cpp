@@ -21,9 +21,11 @@
 
 #include "include.h"
 #include "Texture.h"
-#include "../xbmc/Picture.h"
+#include "Picture.h"
 #include "WindowingFactory.h"
 
+#define MAX_PICTURE_WIDTH  2048
+#define MAX_PICTURE_HEIGHT 2048
 
 /************************************************************************/
 /*                                                                      */
@@ -50,7 +52,7 @@ CBaseTexture::CBaseTexture(const CBaseTexture& texture)
 
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int BPP)
 {
-  if(BPP != 0)
+  if (BPP != 0)
     m_nBPP = BPP;
 
   m_imageWidth = width;
@@ -67,42 +69,30 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
     m_nTextureHeight = m_imageHeight;
   }
 
-  if (m_pPixels)
-  {
-    delete [] m_pPixels;
-    m_pPixels = NULL;
-  }
-  
+  delete[] m_pPixels;
   m_pPixels = new unsigned char[m_nTextureWidth * m_nTextureHeight * m_nBPP / 8];
 }
 
 void CBaseTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) 
 {
-  int tpitch;
-
-  if(pixels == NULL)
+  if (pixels == NULL)
     return;
 
-  if (m_pPixels)
-  {
-    delete [] m_pPixels;
-    m_pPixels = NULL;
-  }
+  delete[] m_pPixels;
 
   Allocate(w, h, 0);
 
-  // Resize texture to POT
+  // Resize texture to POT if needed
   const unsigned char *src = pixels;
-  tpitch = pitch;
   unsigned char* resized = m_pPixels;
 
   for (int y = 0; y < h; y++)
   {
-    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
+    memcpy(resized, src, pitch); // make sure pitch is not bigger than our width
     src += pitch;
 
     // repeat last column to simulate clamp_to_edge
-    for(unsigned int i = tpitch; i < m_nTextureWidth*4; i+=4)
+    for(unsigned int i = pitch; i < m_nTextureWidth*4; i+=4)
       memcpy(resized+i, src-4, 4);
 
     resized += (m_nTextureWidth * 4);
@@ -111,10 +101,10 @@ void CBaseTexture::Update(int w, int h, int pitch, const unsigned char *pixels, 
   // repeat last row to simulate clamp_to_edge
   for(unsigned int y = h; y < m_nTextureHeight; y++) 
   {
-    memcpy(resized, src - tpitch, tpitch);
+    memcpy(resized, src - pitch, pitch);
 
     // repeat last column to simulate clamp_to_edge
-    for(unsigned int i = tpitch; i < m_nTextureWidth*4; i+=4) 
+    for(unsigned int i = pitch; i < m_nTextureWidth*4; i+=4) 
       memcpy(resized+i, src-4, 4);
 
     resized += (m_nTextureWidth * 4);
@@ -153,7 +143,7 @@ bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsig
   m_nBPP = BPP;
   Update(width, height, pitch, pPixels, false);
 
-  return TRUE;
+  return true;
 }
 
 DWORD CBaseTexture::PadPow2(DWORD x) 
