@@ -173,19 +173,3 @@ void DXT4toARGB(const void *src, void *dest, unsigned int destWidth);
 void ConvertDXT1(const void *src, unsigned int width, unsigned int height, void *dest);
 void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void *dest);
 void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture** ppTexture);
-
-#ifdef HAS_DX
-class CXBPackedResource
-{
-public:
-  CXBPackedResource();
-  ~CXBPackedResource();
-
-  HRESULT Create(const char *fileName, int unused, void *unusedVoid);
-
-  LPDIRECT3DTEXTURE9 GetTexture(UINT offset);
-
-private:
-  BYTE *m_buffer;
-};
-#endif
