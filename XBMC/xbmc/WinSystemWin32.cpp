@@ -68,8 +68,6 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, int width, int hei
   m_nHeight = height;
   m_bFullScreen = fullScreen;
 
-  RESOLUTION_INFO DesktopRes = g_settings.m_ResInfo[RES_DESKTOP];
-  
   // Register the windows class
   WNDCLASS wndClass;
   wndClass.style = CS_DBLCLKS;
@@ -309,7 +307,6 @@ void CWinSystemWin32::UpdateResolutions()
     refreshRate = (float)m_MonitorsInfo[m_nSecondary].RefreshRate;
 
   RESOLUTION_INFO res;
-  memset(&res, 0, sizeof(res));
   UpdateDesktopResolution(res, 1, w, h, refreshRate);
   g_graphicsContext.ResetOverscan(res);
   g_settings.m_ResInfo.push_back(res);

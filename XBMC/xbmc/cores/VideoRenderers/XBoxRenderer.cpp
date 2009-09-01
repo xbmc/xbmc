@@ -665,7 +665,7 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
       if (DisplayRes == PAL_16x9) DisplayRes = PAL60_16x9;
       if (DisplayRes == PAL_4x3) DisplayRes = PAL60_4x3;
     }
-    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode, DisplayRes);
+    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode.c_str(), DisplayRes);
     m_iResolution = DisplayRes;
     return;
   }
@@ -757,7 +757,7 @@ void CXBoxRenderer::ChooseBestResolution(float fps)
     }
   }
 
-  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
 }
 
 bool CXBoxRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
