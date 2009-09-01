@@ -56,7 +56,7 @@ public:
   static CStdString Normalize(const CStdString &name);
 
   HRESULT LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
-                       XBMC::PalettePtr* ppPalette);
+                       int &width, int &height);
 
   int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
                 int &width, int &height, int& nLoops, int** ppDelays);
