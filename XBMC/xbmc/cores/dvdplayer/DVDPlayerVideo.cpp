@@ -1064,38 +1064,43 @@ void CDVDPlayerVideo::CalcFrameRate()
   //and is able to calculate the correct frame duration from it
   double frameduration = m_pullupCorrection.CalcFrameDuration();
   
-  if (frameduration != DVD_NOPTS_VALUE)
+  if (frameduration == DVD_NOPTS_VALUE)
   {
-    double framerate = DVD_TIME_BASE / frameduration;
+    //reset the stored framerates if no good framerate was detected
+    m_fStableFrameRate = 0.0;
+    m_iFrameRateCount = 0;
+    return;
+  }
+
+  double framerate = DVD_TIME_BASE / frameduration;
+  
+  //store the current calculated framerate if we don't have any yet
+  if (m_iFrameRateCount == 0)
+  {
+    m_fStableFrameRate = framerate;
+    m_iFrameRateCount++;
+  }
+  //check if the current detected framerate matches with the stored ones
+  else if (fabs(1.0 - ((m_fStableFrameRate / m_iFrameRateCount) / framerate)) <= MAXFRAMERATEDIFF)
+  {
+    m_fStableFrameRate += framerate; //store the calculated framerate
+    m_iFrameRateCount++;
     
-    //store the current calculated framerate if we don't have any yet
-    if (m_iFrameRateCount == 0)
+    //if we've measured one second of calculated framerates,
+    if (m_iFrameRateCount >= MathUtils::round_int(framerate))
     {
-      m_fStableFrameRate = framerate;
-      m_iFrameRateCount++;
-    }
-    //check if the current detected framerate matches with the stored ones
-    else if (fabs(1.0 - ((m_fStableFrameRate / m_iFrameRateCount) / framerate)) <= MAXFRAMERATEDIFF)
-    {
-      m_fStableFrameRate += framerate; //store the calculated framerate
-      m_iFrameRateCount++;
+      //store the calculated framerate if it differs too much from m_fFrameRate
+      if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
+        m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
       
-      //if we've measured one second of calculated framerates,
-      if (m_iFrameRateCount >= MathUtils::round_int(framerate))
-      {
-        //store the calculated framerate if it differs too much from m_fFrameRate
-        if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
-          m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
-        
-        //reset the stored framerates
-        m_fStableFrameRate = 0.0;
-        m_iFrameRateCount = 0;
-      }
-    }
-    else //the calculated framerate didn't match, reset the stored ones
-    {
+      //reset the stored framerates
       m_fStableFrameRate = 0.0;
       m_iFrameRateCount = 0;
     }
+  }
+  else //the calculated framerate didn't match, reset the stored ones
+  {
+    m_fStableFrameRate = 0.0;
+    m_iFrameRateCount = 0;
   }
 }
