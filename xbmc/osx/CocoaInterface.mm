@@ -38,11 +38,7 @@ static NSWindow* blankingWindows[MAX_DISPLAYS];
 //display link for display managment
 static CVDisplayLinkRef displayLink = NULL; 
 
-// Display Blanking
-//void Cocoa_GL_BlankOtherDisplays(int screen_index);
-//void Cocoa_GL_UnblankDisplays(void);
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
-
 
 void* Cocoa_Create_AutoReleasePool(void)
 {

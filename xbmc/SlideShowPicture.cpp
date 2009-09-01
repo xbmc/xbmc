@@ -77,20 +77,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, int iWi
   m_bTransistionImmediately = false;
   m_iSlideNumber = iSlideNumber;
 
-  //m_pImage = new CTexture();
   m_pImage = pTexture;
-  /*
-#ifdef HAS_GL
-  // lock the graphics context, as opengl does not allow
-  // creating of textures during a glBegin(), glEnd() block
-  // and this is called from a different thread
-  //g_graphicsContext.Lock();
-  m_pImage = new CGLTexture(pTexture, false, true);
-  //g_graphicsContext.Unlock();
-#else
-  m_pImage = pTexture;
-#endif
-  */
   m_fWidth = (float)iWidth;
   m_fHeight = (float)iHeight;
   // reset our counter
@@ -184,17 +171,6 @@ void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture, int iWidth, int iHeigh
     m_pImage = NULL;
   }
   m_pImage = pTexture;
-  /*
-#ifdef HAS_GL
-  // avoid deadlock with graphicscontext
-  lock.Leave();
-  CGLTexture *pTemp = new CGLTexture(pTexture, false, true);
-  lock.Enter();
-  m_pImage = pTemp;
-#else
-  m_pImage = pTexture;
-#endif
-  */
   m_fWidth = (float)iWidth;
   m_fHeight = (float)iHeight;
 }

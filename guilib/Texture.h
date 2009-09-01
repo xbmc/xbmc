@@ -33,10 +33,10 @@ class CDXTexture;
 
 #pragma once
 
-// This will be subclass to render spec (DX, GL etc.)
-/************************************************************************/
-/*                                                                      */
-/************************************************************************/
+/*!
+\ingroup textures
+\brief Base texture class, subclasses of which depend on the render spec (DX, GL etc.)
+*/
 class CBaseTexture
 {
 
@@ -61,12 +61,6 @@ public:
   unsigned int GetHeight() const { return m_imageHeight; }
   unsigned int GetBPP() const { return m_nBPP; }
 
-
-  //CBaseTexture(unsigned int w, unsigned int h, unsigned int BPP);
-  //CBaseTexture(CBaseTexture* surface, bool loadToGPU = true, bool freeSurface = false);
-  //virtual void Update(CBaseTexture* surface, bool loadToGPU, bool freeSurface) = 0;
-  //virtual void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) = 0; 
-
 protected:
   virtual void Allocate(unsigned int width, unsigned int height, unsigned int BPP) = 0;
 
@@ -86,8 +80,4 @@ protected:
 #define CTexture CDXTexture
 #endif
 
-/*!
-\ingroup textures
-\brief 
-*/
 #endif
