@@ -22,10 +22,6 @@
 #ifndef WINDOWING_FACTORY_H
 #define WINDOWING_FACTORY_H
 
-#pragma once
-
-#include "stdafx.h"
-
 #if defined(_WIN32) && defined(HAS_GL)
 #include "WinSystemWin32GL.h"
 extern CWinSystemWin32GL g_Windowing;
