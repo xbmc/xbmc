@@ -77,6 +77,10 @@ public:
       return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
     return 0;
   }
+  inline void SetPlaneData(int index, int count, BYTE** ppData)
+  {
+    m_pRenderer->SetPlaneData(index, count, ppData);
+  }
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();

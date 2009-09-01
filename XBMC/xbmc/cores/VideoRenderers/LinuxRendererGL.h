@@ -138,6 +138,7 @@ public:
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   RESOLUTION GetResolution();  
 
+  void SetPlaneData(int index, int count, BYTE** ppData);
   // Feature support
   virtual bool SupportsBrightness();
   virtual bool SupportsContrast();
@@ -236,7 +237,7 @@ protected:
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
   YUVBUFFERS m_buffers;
-
+  
   void LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
                 , unsigned width,  unsigned height
                 , int stride, void* data );

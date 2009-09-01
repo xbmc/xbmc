@@ -346,6 +346,7 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     else
       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_2D");
 
+    m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
      // create the yuv textures    
     LoadShaders();
     for (int i = 0 ; i < m_NumYV12Buffers ; i++)
@@ -541,6 +542,13 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
     im.flags |= IMAGE_FLAG_RESERVED;
 
   m_bImageReady = true;
+}
+
+void CLinuxRendererGL::SetPlaneData(int index, int count, BYTE** ppData)
+{
+  YV12Image& image = m_buffers[index].image;
+  for (int i = 0; i < count; i++)
+    image.plane[i] = ppData[i];
 }
 
 void CLinuxRendererGL::LoadPlane( YUVPLANE& plane, int type, unsigned flipindex
@@ -785,13 +793,13 @@ void CLinuxRendererGL::LoadTextures(int source)
     }
     else
     {
-      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
+      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[1], im->plane[1] );
-
-      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, buf.flipindex
-               , im->width >> im->cshift_x, im->height >> im->cshift_y
-               , im->stride[2], im->plane[2] );
+//
+//      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, buf.flipindex
+//               , im->width >> im->cshift_x, im->height >> im->cshift_y
+//               , im->stride[2], im->plane[2] );
     }
   }
   SetEvent(m_eventTexturesDone[source]);
@@ -1975,7 +1983,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
     im.plane[2] = new BYTE[im.stride[2] * ( im.height >> im.cshift_y )];
     */
     im.plane[0] = (BYTE*)_aligned_malloc(im.stride[0] * im.height, 16);
-    im.plane[1] = (BYTE*)_aligned_malloc(im.stride[1] * ( im.height >> im.cshift_y ), 16);
+    im.plane[1] = (BYTE*)_aligned_malloc(im.stride[1] * ( im.height >> im.cshift_y ) * 2, 16);
     im.plane[2] = (BYTE*)_aligned_malloc(im.stride[2] * ( im.height >> im.cshift_y ), 16);
   }
 
@@ -2057,7 +2065,10 @@ bool CLinuxRendererGL::CreateYV12Texture(int index, bool clear)
         else
           CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
-        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        if (p == 1)
+          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
+        else
+          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       }
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

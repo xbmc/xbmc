@@ -756,8 +756,7 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->data[0] = procOut->Ybuff;  // Y plane
   pDvdVideoPicture->data[1] = procOut->UVbuff; // UV packed plane
   pDvdVideoPicture->iLineSize[0] = procOut->PicInfo.width;
-  pDvdVideoPicture->iLineSize[1] = procOut->PicInfo.width/2;
-  pDvdVideoPicture->iLineSize[2] = procOut->PicInfo.width/2;
+  pDvdVideoPicture->iLineSize[1] = procOut->PicInfo.width;
   
   pDvdVideoPicture->iRepeatPicture = 0;
   pDvdVideoPicture->iDuration = 41711.111111;

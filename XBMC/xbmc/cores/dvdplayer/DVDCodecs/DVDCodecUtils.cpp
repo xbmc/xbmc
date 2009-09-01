@@ -172,30 +172,32 @@ bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
 	UINT32	x,y;
   
   //copy luma (Y)
-  BYTE   *pYSrc = pSrc->data[0];
-  BYTE   *pYDst = pImage->plane[0];
-  for (y = pSrc->iHeight; y > 0; y--) {
-    fast_memcpy(pYDst, pYSrc, pSrc->iWidth);
-    pYSrc += pSrc->iLineSize[0];
-    pYDst += pImage->stride[0];
-  }
-
+//  BYTE   *pYSrc = pSrc->data[0];
+//  BYTE   *pYDst = pImage->plane[0];
+//  for (y = pSrc->iHeight; y > 0; y--) {
+//    fast_memcpy(pYDst, pYSrc, pSrc->iWidth);
+//    pYSrc += pSrc->iLineSize[0];
+//    pYDst += pImage->stride[0];
+//  }
+    
+  fast_memcpy(pImage->plane[0], pSrc->data[0], pSrc->iWidth * pSrc->iHeight);
+  fast_memcpy(pImage->plane[1], pSrc->data[1], pSrc->iWidth * pSrc->iHeight/2);
   //copy chroma (UV packed)
-  UINT32 uvdoublet;
-  UINT32 *pUVSrc = (UINT32*)pSrc->data[1];
-  BYTE   *pVDest = pImage->plane[1];
-  BYTE   *pUDest = pImage->plane[2];
-  
-  #pragma prefetch pUVSrc, pVDest, pUDest
-  for (y = pSrc->iHeight >> 1; y > 0; y--) {
-    for (x = pSrc->iWidth >> 2; x > 0; x--) {
-      uvdoublet = *pUVSrc++;
-      *pVDest++ = (BYTE)(uvdoublet);
-      *pVDest++ = (BYTE)(uvdoublet >> 16);
-      *pUDest++ = (BYTE)(uvdoublet >> 8 );
-      *pUDest++ = (BYTE)(uvdoublet >> 24);
-    }
-  }
+//  UINT32 uvdoublet;
+//  UINT32 *pUVSrc = (UINT32*)pSrc->data[1];
+//  BYTE   *pVDest = pImage->plane[1];
+//  BYTE   *pUDest = pImage->plane[2];
+//  
+//  #pragma prefetch pUVSrc, pVDest, pUDest
+//  for (y = pSrc->iHeight >> 1; y > 0; y--) {
+//    for (x = pSrc->iWidth >> 2; x > 0; x--) {
+//      uvdoublet = *pUVSrc++;
+//      *pVDest++ = (BYTE)(uvdoublet);
+//      *pVDest++ = (BYTE)(uvdoublet >> 16);
+//      *pUDest++ = (BYTE)(uvdoublet >> 8 );
+//      *pUDest++ = (BYTE)(uvdoublet >> 24);
+//    }
+//  }
 
   return true;
 }

@@ -750,7 +750,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     }
     else
     {
-      CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
+      //CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
     }
   }
   m_pOverlayContainer->Lock();
@@ -993,6 +993,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if (index < 0)
     return EOS_DROPPED;
 
+  BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
+  g_renderManager.SetPlaneData(index, 3, pPlanes);
   ProcessOverlays(pPicture, &image, pts);
 
   // tell the renderer that we've finished with the image (so it can do any

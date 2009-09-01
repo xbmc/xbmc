@@ -409,48 +409,72 @@ YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned fla
   // seems someone forgot to implement that. (radar: 5632811)"
   // - http://lists.apple.com/archives/mac-opengl/2008/Feb/msg00191.html
 
-  if (flags & CONF_FLAGS_YUV_FULLRANGE)
-  {
-    source ="!!ARBfp1.0\n"
-      "PARAM c[2] = { { 0,           -0.1720674,  0.88599992, -1 },\n"
-      "		             { 0.70099545,  -0.35706902, 0,           2 } };\n"
-      "TEMP R0;\n"
-      "TEMP R1;\n"
-      "TEX R1.x, fragment.texcoord[2], texture[2], "+target+";\n"
-      "TEX R0.x, fragment.texcoord[1], texture[1], "+target+";\n"
-      "MUL R0.z, R0.x, c[1].w;\n"
-      "MUL R0.y, R1.x, c[1].w;\n"
-      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+";\n"
-      "ADD R0.z, R0, c[0].w;\n"
-      "MAD R1.xyz, R0.z, c[0], R0.x;\n"
-      "ADD R0.x, R0.y, c[0].w;\n"
-      "MAD result.color.xyz, R0.x, c[1], R1;\n"
-      "MOV result.color.w, fragment.color.w;\n"
-      "END\n";
-  }
-  else
-  {
+//  if (flags & CONF_FLAGS_YUV_FULLRANGE)
+//  {
+//    source ="!!ARBfp1.0\n"
+//      "PARAM c[2] = { { 0,           -0.1720674,  0.88599992, -1 },\n"
+//      "		             { 0.70099545,  -0.35706902, 0,           2 } };\n"
+//      "TEMP R0;\n"
+//      "TEMP R1;\n"
+//      "TEX R1.x, fragment.texcoord[2], texture[2], "+target+";\n"
+//      "TEX R0.x, fragment.texcoord[1], texture[1], "+target+";\n"
+//      "MUL R0.z, R0.x, c[1].w;\n"
+//      "MUL R0.y, R1.x, c[1].w;\n"
+//      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+";\n"
+//      "ADD R0.z, R0, c[0].w;\n"
+//      "MAD R1.xyz, R0.z, c[0], R0.x;\n"
+//      "ADD R0.x, R0.y, c[0].w;\n"
+//      "MAD result.color.xyz, R0.x, c[1], R1;\n"
+//      "MOV result.color.w, fragment.color.w;\n"
+//      "END\n";
+//  }
+//  else
+//  {
     source = 
-      "!!ARBfp1.0\n"
-      "PARAM c[4] = \n" + BuildYUVMatrix() +
-      "TEMP R0;\n"
-      "TEMP R1;\n"
-      "TEX R1.x, fragment.texcoord[1], texture[1], "+target+"\n;"
-      "ADD R0.z, R1.x, c[0].y;\n"
-      "TEX R0.x, fragment.texcoord[2], texture[2], "+target+"\n;"
-      "ADD R0.x, R0, c[0].y;\n"
-      "MUL R0.y, R0.x, c[0].w;\n"
-      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+"\n;"
-      "ADD R0.x, R0, c[0].y;\n"
-      "MUL R0.z, R0, c[0].w;\n"
-      "MUL R0.x, R0, c[0].z;\n"
-      "ADD R0.z, R0, c[1].x;\n"
-      "MAD R1.xyz, R0.z, c[1].yzww, R0.x;\n"
-      "ADD R0.x, R0.y, c[3];\n"
-      "MAD result.color.xyz, R0.x, c[2], R1;\n"
-      "MOV result.color.w, fragment.color.w;\n"
-      "END\n";
-  }
+    "!!ARBfp1.0\n"
+    "PARAM c[4] = \n"
+    "{{1.0,   -0.0625, 1.1643835, 1.1383928},\n"
+    "{-0.5,    0.0,   -0.187,     1.8556},\n"
+    "{1.5701, -0.4664, 0.0,       0.0},\n"
+    "{ -0.5,   0.0,    0.187,    -1.8556}\n"
+    "};\n"
+    "TEMP T0;\n"
+    "TEMP T1;\n"
+    "TEMP yuv;\n"
+    "TEX T0.x, fragment.texcoord[0], texture[0], RECT;\n"
+    "ADD yuv.x, T0.x, c[0].y;\n" // Y (yuv.x = tex0.x -0.0625)
+    "MUL yuv.x, yuv.x, c[0].z;\n" //  (yuv.x *= 1.1643835)
+    "TEX T0.xw, fragment.texcoord[1], texture[1], RECT;\n"
+    "ADD yuv.z, T0.x, c[0].y;\n" // V (yuv.z = tex1.x - 0.0625)
+    "MUL yuv.z, yuv.z, c[0].w;\n" //  (yuv.z *= 1.1383928)
+    "ADD yuv.z, yuv.z, c[1].x;\n" //  (yuv.z -= 0.5)
+    "ADD yuv.y, T0.w, c[0].y;\n" // U (yuv.y = tex1.w - 0.0625)
+    "MUL yuv.y, yuv.y, c[0].w;\n" //  (yuv.y *= 1.1383928)
+    "ADD yuv.y, yuv.y, c[3].x;\n" //  (yuv.y -= 0.5)
+    "MAD T1.xyz, yuv.z, c[1].yzww, yuv.x;\n"
+    "MAD result.color.xyz, yuv.y, c[2], T1;\n"
+    "MOV result.color.w, fragment.color.w;\n"
+    "END\n";
+//      "!!ARBfp1.0\n"
+//      "PARAM c[4] = \n" + BuildYUVMatrix() +
+//      "TEMP R0;\n"
+//      "TEMP R1;\n"
+//      "TEX R1.x, fragment.texcoord[1], texture[1], "+target+"\n;"
+//      "ADD R0.z, R1.x, c[0].y;\n"
+//      "TEX R0.x, fragment.texcoord[2], texture[2], "+target+"\n;"
+//      "ADD R0.x, R0, c[0].y;\n"
+//      "MUL R0.y, R0.x, c[0].w;\n"
+//      "TEX R0.x, fragment.texcoord[0], texture[0], "+target+"\n;"
+//      "ADD R0.x, R0, c[0].y;\n"
+//      "MUL R0.z, R0, c[0].w;\n"
+//      "MUL R0.x, R0, c[0].z;\n"
+//      "ADD R0.z, R0, c[1].x;\n"
+//      "MAD R1.xyz, R0.z, c[1].yzww, R0.x;\n"
+//      "ADD R0.x, R0.y, c[3];\n"
+//      "MAD result.color.xyz, R0.x, c[2], R1;\n"
+//      "MOV result.color.w, fragment.color.w;\n"
+//      "END\n";
+//  }
   SetPixelShaderSource(source);
 }
 
