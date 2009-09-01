@@ -391,26 +391,24 @@ void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void 
 
 void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTexture)
 {
-  /* DXMERGE - This routine is necessary for reading from XPR's
-
   XB_D3DFORMAT fmt;
   DWORD width, height, pitch, offset;
   ParseTextureHeader(pTex, fmt, width, height, pitch, offset);
 
-#ifdef HAS_DX
-  D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, GetD3DFormat(fmt), D3DPOOL_MANAGED, ppTexture);
-  D3DLOCKED_RECT lr;
-  if (D3D_OK == (*ppTexture)->LockRect(0, &lr, NULL, 0))
-#endif
-#ifdef HAS_SDL
-  *ppTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);
-  if (SDL_LockSurface(*ppTexture) == 0)
-#endif
+  *ppTexture = new CTexture(width, height, 32);
+
+  if (*ppTexture)
   {
+#ifdef HAS_DX
+  D3DLOCKED_RECT lr;
+  if (D3D_OK == (*ppTexture)->GetTextureObject()->LockRect(0, &lr, NULL, 0))
+  {
+#endif
     BYTE *texDataStart = (BYTE *)texData;
     DWORD *color = (DWORD *)texData;
     texDataStart += offset;
 #ifdef HAS_DX
+    BYTE *dstPixels = (BYTE *)lr.pBits;
     DWORD destPitch = lr.Pitch;
     if (fmt == XB_D3DFMT_DXT1)  // Not sure if these are 100% correct, but they seem to work :P
     {
@@ -427,7 +425,8 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
       destPitch /= 4;
     }
 #else
-    DWORD destPitch = (*ppTexture)->pitch;
+    BYTE *dstPixels = (BYTE *)(*ppTexture)->GetPixels();
+    DWORD destPitch = (*ppTexture)->GetPitch();
     if (fmt == XB_D3DFMT_DXT1)
     {
       BYTE *decoded = new BYTE[destPitch * height];
@@ -450,12 +449,6 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
       texDataStart = unswizzled;
     }
 
-#ifdef HAS_DX
-    BYTE *dstPixels = (BYTE *)lr.pBits;
-#else
-    BYTE *dstPixels = (BYTE *)(*ppTexture)->pixels;
-#endif
-
     if (IsPalettedFormat(fmt))
     {
       for (unsigned int y = 0; y < height; y++)
@@ -475,10 +468,10 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
         memcpy(dest, src, std::min((unsigned int)pitch, (unsigned int)destPitch));
       }
     }
-#ifdef HAS_SDL
-    if (IsSwizzledFormat(fmt) || fmt == XB_D3DFMT_DXT1 || fmt == XB_D3DFMT_DXT2 || fmt == XB_D3DFMT_DXT4)
-#else
+#ifdef HAS_DX
     if (IsSwizzledFormat(fmt))
+#else
+    if (IsSwizzledFormat(fmt) || fmt == XB_D3DFMT_DXT1 || fmt == XB_D3DFMT_DXT2 || fmt == XB_D3DFMT_DXT4)
 #endif
     {
       delete[] texDataStart;
@@ -486,8 +479,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
 
 #ifdef HAS_DX
     (*ppTexture)->UnlockRect(0);
-#else
-    SDL_UnlockSurface(*ppTexture);
+    }
 #endif
-  }*/
+  }
 }
