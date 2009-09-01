@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Settings.h"
 #include "VideoReferenceClock.h"
+#include "MathUtils.h"
 #include "DVDPlayer.h"
 #include "DVDPlayerVideo.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
@@ -165,6 +166,9 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
 
+  m_fStableFrameRate = 0.0;
+  m_iFrameRateCount = 0;
+  
   if (hint.vfr)
     m_autosync = 1;
 
@@ -800,6 +804,8 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
 }
 #endif
 
+#define MAXFRAMERATEDIFF 0.0005
+
 int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 {
 #ifdef HAS_VIDEO_PLAYBACK
@@ -872,23 +878,55 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
     limited = true;
 
+  //correct any pattern in the timestamps
+  m_pullupCorrection.Add(pts);
+  pts += m_pullupCorrection.Correction();
+  
+  //see if m_pullupCorrection was able to detect a pattern in the timestamps
+  //and is able to calculate the correct frame duration from it
+  if (m_pullupCorrection.CalcFrameDuration() != DVD_NOPTS_VALUE)
+  {
+    double framerate = DVD_TIME_BASE / m_pullupCorrection.CalcFrameDuration();
+    
+    //store the current calculated framerate if we don't have any yet
+    if (m_iFrameRateCount == 0)
+    {
+      m_fStableFrameRate = framerate;
+      m_iFrameRateCount++;
+    }
+    //check if the current detected framerate matches with the stored ones
+    else if (fabs(1.0 - ((m_fStableFrameRate / m_iFrameRateCount) / framerate)) <= MAXFRAMERATEDIFF)
+    {
+      m_fStableFrameRate += framerate; //store the calculated framerate
+      m_iFrameRateCount++;
+      
+      //if we've measured one second of calculated framerates,
+      if (m_iFrameRateCount >= MathUtils::round_int(framerate))
+      {
+        //store the calculated framerate if it differs too much from m_fFrameRate
+        if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
+          m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
+        
+        //reset the stored framerates
+        m_fStableFrameRate = 0.0;
+        m_iFrameRateCount = 0;
+      }
+    }
+    else //the calculated framerate didn't match, reset the stored ones
+    {
+      m_fStableFrameRate = 0.0;
+      m_iFrameRateCount = 0;
+    }
+  }
+  
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
   // TODO - this should be based on m_fFrameRate, as the timestamps
   //        in the stream matches that better, durations can vary
   int refreshrate = m_pClock->UpdateFramerate(1.0 / (pPicture->iDuration / DVD_TIME_BASE));
   if (refreshrate > 0) //refreshrate of -1 means the videoreferenceclock is not running
-  {
-    //correct any pattern in the timestamps if the videoreferenceclock is running
-    m_pullupCorrection.Add(pts);
-    pts += m_pullupCorrection.Correction();
-    
-    //when using the videoreferenceclock, a frame is always presented one vblank interval too late
+  {//when using the videoreferenceclock, a frame is always presented one vblank interval too late
     pts -= (1.0 / refreshrate) * DVD_TIME_BASE; 
-  }
-  else
-  {
-    m_pullupCorrection.Flush();
   }
   
   //User set delay
