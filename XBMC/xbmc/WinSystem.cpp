@@ -119,12 +119,12 @@ void CWinSystemBase::UpdateResolutions()
 {
   // Set the resolution info for a window
   RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
-  window.iSubtitles = (int)(0.965 * 720);
-  window.iWidth = 1280;
-  window.iHeight = 720;
+  window.iSubtitles = (int)(0.965 * 480);
+  window.iWidth = 720;
+  window.iHeight = 480;
   window.iScreen = 0;
   window.fPixelRatio = 1.0f;
-  window.strMode = "1280x720 (Window)";
+  window.strMode = "Windowed";
   window.fRefreshRate = 0.0f;
   window.Overscan.left = 0;
   window.Overscan.top = 0;

@@ -502,14 +502,11 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
 }
 
-// TODO: Why do we set a pixel ratio of 1.0 if the
-//       user is not running fullscreen?
 float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 {
-  if (!m_bFullScreenRoot)
-    return 1.0f;
-
-  return g_settings.m_ResInfo[iRes].fPixelRatio;
+  if (iRes >= 0 && iRes < g_settings.m_ResInfo.size())
+    return g_settings.m_ResInfo[iRes].fPixelRatio;
+  return 0.0f;
 }
 
 void CGraphicContext::Clear()

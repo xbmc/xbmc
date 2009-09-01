@@ -780,24 +780,19 @@ void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName,
 
 bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile)
 {
-  // reset the calibration to the defaults
-  //g_graphicsContext.SetD3DParameters(NULL, m_ResInfo);
-  //for (int i=0; i<10; i++)
-  //  g_graphicsContext.ResetScreenParameters((RESOLUTION)i);
-
   const TiXmlElement *pRootElement;
   CStdString strTagName = pElement->Value();
-  if (!strcmp(strTagName.c_str(), "calibration"))
+  if (!strcmp(strTagName.c_str(), "resolutions"))
   {
     pRootElement = pElement;
   }
   else
   {
-    pRootElement = pElement->FirstChildElement("calibration");
+    pRootElement = pElement->FirstChildElement("resolutions");
   }
   if (!pRootElement)
   {
-    g_LoadErrorStr.Format("%s Doesn't contain <calibration>", strSettingsFile.c_str());
+    g_LoadErrorStr.Format("%s Doesn't contain <resolutions>", strSettingsFile.c_str());
     return false;
   }
   const TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
@@ -806,31 +801,40 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     // get the data for this resolution
     int iRes;
     CStdString mode;
-    GetInteger(pResolution, "id", iRes, (int)RES_PAL_4x3, RES_HDTV_1080i, (int)g_settings.m_ResInfo.size()); //PAL4x3 as default data
-    // FIXME: Workaround to prevent crash if calibration section contains more items than m_ResInfo
-    if((size_t)iRes >= g_settings.m_ResInfo.size())
+    XMLUtils::GetString(pResolution, "description", mode);
+    // find this resolution in our resolution vector
+    for (unsigned int res = 0; res < g_settings.m_ResInfo.size(); res++)
     {
-      pResolution = pResolution->NextSiblingElement("resolution");
-      continue;
-    }
-    ////
-    GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode.c_str());
-    if(iRes == RES_DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
-    {
-      CLog::Log(LOGDEBUG, "%s - Ignoring desktop resolution \"%s\" that differs from current \"%s\"", __FUNCTION__, mode.c_str(), m_ResInfo[iRes].strMode.c_str());
+      if (g_settings.m_ResInfo[res].strMode == mode)
+      { // found, read in the rest of the information for this item
+        const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
+        if (pOverscan)
+        {
+          GetInteger(pOverscan, "left", m_ResInfo[res].Overscan.left, 0, -m_ResInfo[res].iWidth / 4, m_ResInfo[res].iWidth / 4);
+          GetInteger(pOverscan, "top", m_ResInfo[res].Overscan.top, 0, -m_ResInfo[res].iHeight / 4, m_ResInfo[res].iHeight / 4);
+          GetInteger(pOverscan, "right", m_ResInfo[res].Overscan.right, m_ResInfo[res].iWidth, m_ResInfo[res].iWidth / 2, m_ResInfo[res].iWidth*3 / 2);
+          GetInteger(pOverscan, "bottom", m_ResInfo[res].Overscan.bottom, m_ResInfo[res].iHeight, m_ResInfo[res].iHeight / 2, m_ResInfo[res].iHeight*3 / 2);
+        }
 
-      pResolution = pResolution->NextSiblingElement("resolution");
-      continue;
-    }
+        // get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
+        float fSafe;
+        if (res == RES_PAL_4x3 || res == RES_NTSC_4x3 || res == RES_PAL60_4x3 || res == RES_HDTV_480p_4x3)
+          fSafe = 0.1f;
+        else
+          fSafe = 0.035f;
 
-    // get the appropriate "safe graphics area" = 10% for 4x3, 3.5% for 16x9
-    float fSafe;
-    if (iRes == RES_PAL_4x3 || iRes == RES_NTSC_4x3 || iRes == RES_PAL60_4x3 || iRes == RES_HDTV_480p_4x3)
-      fSafe = 0.1f;
-    else
-      fSafe = 0.035f;
-    GetInteger(pResolution, "subtitles", m_ResInfo[iRes].iSubtitles, (int)((1 - fSafe)*m_ResInfo[iRes].iHeight), m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*5 / 4);
-    GetFloat(pResolution, "pixelratio", m_ResInfo[iRes].fPixelRatio, 128.0f / 117.0f, 0.5f, 2.0f);
+        GetInteger(pResolution, "subtitles", m_ResInfo[res].iSubtitles, (int)((1 - fSafe)*m_ResInfo[res].iHeight), m_ResInfo[res].iHeight / 2, m_ResInfo[res].iHeight*5 / 4);
+        GetFloat(pResolution, "pixelratio", m_ResInfo[res].fPixelRatio, 128.0f / 117.0f, 0.5f, 2.0f);
+    /*    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[res].strMode, m_ResInfo[res].iWidth, m_ResInfo[res].iHeight);
+        CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i)",
+                  m_ResInfo[res].iSubtitles, m_ResInfo[res].fPixelRatio,
+                  m_ResInfo[res].Overscan.left, m_ResInfo[res].Overscan.top,
+                  m_ResInfo[res].Overscan.right, m_ResInfo[res].Overscan.bottom);*/
+      }
+    }
+    // iterate around
+    pResolution = pResolution->NextSiblingElement("resolution");
+
 
 /* Hmm, these stuff shouldn't be releaded, they should be used instead of our internal
    id counter to select what resolution is affected by this settings
@@ -844,51 +848,14 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
     GetFloat(pResolution, "refreshrate", m_ResInfo[iRes].fRefreshRate, 0, 0, 200);
 #endif
 */
-
-    // get the overscan info
-    const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
-    if (pOverscan)
-    {
-      GetInteger(pOverscan, "left", m_ResInfo[iRes].Overscan.left, 0, -m_ResInfo[iRes].iWidth / 4, m_ResInfo[iRes].iWidth / 4);
-      GetInteger(pOverscan, "top", m_ResInfo[iRes].Overscan.top, 0, -m_ResInfo[iRes].iHeight / 4, m_ResInfo[iRes].iHeight / 4);
-      GetInteger(pOverscan, "right", m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iWidth / 2, m_ResInfo[iRes].iWidth*3 / 2);
-      GetInteger(pOverscan, "bottom", m_ResInfo[iRes].Overscan.bottom, m_ResInfo[iRes].iHeight, m_ResInfo[iRes].iHeight / 2, m_ResInfo[iRes].iHeight*3 / 2);
-    }
-
-/*    CLog::Log(LOGDEBUG, "  calibration for %s %ix%i", m_ResInfo[iRes].strMode, m_ResInfo[iRes].iWidth, m_ResInfo[iRes].iHeight);
-    CLog::Log(LOGDEBUG, "    subtitle yposition:%i pixelratio:%03.3f offsets:(%i,%i)->(%i,%i)",
-              m_ResInfo[iRes].iSubtitles, m_ResInfo[iRes].fPixelRatio,
-              m_ResInfo[iRes].Overscan.left, m_ResInfo[iRes].Overscan.top,
-              m_ResInfo[iRes].Overscan.right, m_ResInfo[iRes].Overscan.bottom);*/
-
-    // iterate around
-    pResolution = pResolution->NextSiblingElement("resolution");
   }
   return true;
 }
 
 bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
 {
-  TiXmlElement xmlRootElement("calibration");
+  TiXmlElement xmlRootElement("resolutions");
   TiXmlNode *pRoot = pRootNode->InsertEndChild(xmlRootElement);
-  for (int i = 0; i < 10; i++)
-  {
-    // Write the resolution tag
-    TiXmlElement resElement("resolution");
-    TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
-    // Now write each of the pieces of information we need...
-    XMLUtils::SetString(pNode, "description", m_ResInfo[i].strMode);
-    XMLUtils::SetInt(pNode, "id", i);
-    XMLUtils::SetInt(pNode, "subtitles", m_ResInfo[i].iSubtitles);
-    XMLUtils::SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
-    // create the overscan child
-    TiXmlElement overscanElement("overscan");
-    TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
-    XMLUtils::SetInt(pOverscanNode, "left", m_ResInfo[i].Overscan.left);
-    XMLUtils::SetInt(pOverscanNode, "top", m_ResInfo[i].Overscan.top);
-    XMLUtils::SetInt(pOverscanNode, "right", m_ResInfo[i].Overscan.right);
-    XMLUtils::SetInt(pOverscanNode, "bottom", m_ResInfo[i].Overscan.bottom);
-  }
 
   // save WINDOW, DESKTOP and CUSTOM resolution
   for (size_t i = RES_WINDOW ; i < m_ResInfo.size() ; i++)
@@ -898,7 +865,6 @@ bool CSettings::SaveCalibration(TiXmlNode* pRootNode) const
     TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
     // Now write each of the pieces of information we need...
     XMLUtils::SetString(pNode, "description", m_ResInfo[i].strMode);
-    XMLUtils::SetInt(pNode, "id", i);
     XMLUtils::SetInt(pNode, "subtitles", m_ResInfo[i].iSubtitles);
     XMLUtils::SetFloat(pNode, "pixelratio", m_ResInfo[i].fPixelRatio);
 #ifdef HAS_XRANDR
