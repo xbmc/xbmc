@@ -17,95 +17,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug (SDL)|Win32"
-			OutputDirectory="XBMC\$(ConfigurationName)"
-			IntermediateDirectory="XBMC\$(ConfigurationName)"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/EHa"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib"
-				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;HAS_SDL;NOMINMAX;_USE_32BIT_TIME_T"
-				MinimalRebuild="true"
-				ExceptionHandling="0"
-				BasicRuntimeChecks="0"
-				RuntimeLibrary="1"
-				UsePrecompiledHeader="2"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
-				DisableSpecificWarnings="4996"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /ignore:4254"
-				AdditionalDependencies="SDL.lib opengl32.lib DSound.lib glew32.lib glu32.lib winmm.lib ws2_32.lib Mpr.lib Iphlpapi.lib PowrProf.lib setupapi.lib"
-				OutputFile="$(OutDir)\XBMC.exe"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\lib&quot;"
-				IgnoreDefaultLibraryNames="libc;msvcrt;libcmt"
-				ModuleDefinitionFile=""
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(OutDir)\XBMC.pdb"
-				SubSystem="2"
-				LargeAddressAware="2"
-				EntryPointSymbol=""
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release (SDL)|Win32"
+			Name="Release (OpenGL)|Win32"
 			OutputDirectory="XBMC\$(ConfigurationName)"
 			IntermediateDirectory="XBMC\$(ConfigurationName)"
 			ConfigurationType="1"
@@ -1014,15 +926,7 @@
 								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c"
 								>
 								<FileConfiguration
-									Name="Debug (SDL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (SDL)|Win32"
+									Name="Release (OpenGL)|Win32"
 									>
 									<Tool
 										Name="VCCLCompilerTool"
@@ -1948,15 +1852,7 @@
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_msvcrt.cpp"
 						>
 						<FileConfiguration
-							Name="Debug (SDL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release (SDL)|Win32"
+							Name="Release (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -2043,15 +1939,7 @@
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\getaddrinfo.c"
 							>
 							<FileConfiguration
-								Name="Debug (SDL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (SDL)|Win32"
+								Name="Release (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -2103,15 +1991,7 @@
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\getnameinfo.c"
 							>
 							<FileConfiguration
-								Name="Debug (SDL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (SDL)|Win32"
+								Name="Release (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -2163,15 +2043,7 @@
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c"
 							>
 							<FileConfiguration
-								Name="Debug (SDL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (SDL)|Win32"
+								Name="Release (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -2223,15 +2095,7 @@
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_ntop.c"
 							>
 							<FileConfiguration
-								Name="Debug (SDL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (SDL)|Win32"
+								Name="Release (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -2283,15 +2147,7 @@
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_pton.c"
 							>
 							<FileConfiguration
-								Name="Debug (SDL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (SDL)|Win32"
+								Name="Release (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -2574,15 +2430,7 @@
 				RelativePath="..\..\xbmc\stdafx.cpp"
 				>
 				<FileConfiguration
-					Name="Debug (SDL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (SDL)|Win32"
+					Name="Release (OpenGL)|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3401,15 +3249,7 @@
 					RelativePath="..\..\xbmc\utils\md5.cpp"
 					>
 					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="0"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release (SDL)|Win32"
+						Name="Release (OpenGL)|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4884,15 +4724,7 @@
 						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeYear.cpp"
 						>
 						<FileConfiguration
-							Name="Debug (SDL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release (SDL)|Win32"
+							Name="Release (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -4976,15 +4808,7 @@
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNode.cpp"
 						>
 						<FileConfiguration
-							Name="Debug (SDL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release (SDL)|Win32"
+							Name="Release (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -5064,15 +4888,7 @@
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeGenre.cpp"
 						>
 						<FileConfiguration
-							Name="Debug (SDL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release (SDL)|Win32"
+							Name="Release (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -5152,15 +4968,7 @@
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeOverview.cpp"
 						>
 						<FileConfiguration
-							Name="Debug (SDL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release (SDL)|Win32"
+							Name="Release (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -5240,15 +5048,7 @@
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeRoot.cpp"
 						>
 						<FileConfiguration
-							Name="Debug (SDL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release (SDL)|Win32"
+							Name="Release (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -5360,15 +5160,7 @@
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\QueryParams.cpp"
 						>
 						<FileConfiguration
-							Name="Debug (SDL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								ObjectFile="$(IntDir)/$(InputName)1.obj"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release (SDL)|Win32"
+							Name="Release (OpenGL)|Win32"
 							>
 							<Tool
 								Name="VCCLCompilerTool"
@@ -5645,6 +5437,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\RenderSystemDX.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\RenderSystemDX.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\RenderSystemGL.cpp"
 						>
 					</File>
@@ -5663,30 +5463,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\Picture.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureDX.cpp"
-					>
-					<FileConfiguration
-						Name="Debug (SDL)|Win32"
-						ExcludedFromBuild="true"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureDX.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureGL.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\PictureGL.h"
 					>
 				</File>
 			</Filter>
