@@ -247,15 +247,15 @@ void CExternalPlayer::Process()
   {
     currentStyle = GetWindowLong(m_hwndXbmc, GWL_EXSTYLE);
 
-    if (currentStyle & WS_EX_TOPMOST)
-    {
-      CLog::Log(LOGNOTICE, "%s: Making XBMC window NOTOPMOST", __FUNCTION__);
-      SetWindowPos(m_hwndXbmc,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
-    }
     if (m_hidexbmc && !m_islauncher)
     {
       CLog::Log(LOGNOTICE, "%s: Hiding XBMC window", __FUNCTION__);
       ShowWindow(m_hwndXbmc,SW_HIDE);
+    }
+    else if (currentStyle & WS_EX_TOPMOST)
+    {
+      CLog::Log(LOGNOTICE, "%s: Lowering XBMC window", __FUNCTION__);
+      SetWindowPos(m_hwndXbmc,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
     }
   }
 
@@ -279,20 +279,15 @@ void CExternalPlayer::Process()
 #if defined(_WIN32PC)
   if (m_hwndXbmc)
   {
-    if (m_hidexbmc)
-    {
-      CLog::Log(LOGNOTICE, "%s: Showing XBMC window", __FUNCTION__);
-      ShowWindow(m_hwndXbmc,SW_SHOW);
-    }
     if (currentStyle & WS_EX_TOPMOST)
     {
-      CLog::Log(LOGNOTICE, "%s: Making XBMC window TOPMOST", __FUNCTION__);
-      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+      CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOPMOST", __FUNCTION__);
+      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
     }
     else
     {
-      CLog::Log(LOGNOTICE, "%s: Raising XBMC window to TOP", __FUNCTION__);
-      SetWindowPos(m_hwndXbmc,HWND_TOP,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+      CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOP", __FUNCTION__);
+      SetWindowPos(m_hwndXbmc,HWND_TOP,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
     }
   }
 
