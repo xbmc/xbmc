@@ -25,6 +25,10 @@
 
 #include "GUIWindow.h"
 
+#define TEST_PATTERNS_COUNT 5
+#define TEST_PATTERNS_BOUNCE_SQUARE_SIZE 100
+#define TEST_PATTERNS_BLINK_CYCLE 100
+
 class CGUIWindowTestPattern : public CGUIWindow
 {
 public:
@@ -34,13 +38,15 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
 
-private:
-  void DrawVerticalLines(int top, int left, int bottom, int right);
-  void DrawHorizontalLines(int top, int left, int bottom, int right);
-  void DrawCheckers(int top, int left, int bottom, int right);
-  void DrawBouncingRectangle(int top, int left, int bottom, int right);
-  void DrawContrastBrightnessPattern(int top, int left, int bottom, int right);
-  void DrawCircle(int originX, int originY, int radius);
+protected:
+  virtual void DrawVerticalLines(int top, int left, int bottom, int right) = 0;
+  virtual void DrawHorizontalLines(int top, int left, int bottom, int right) = 0;
+  virtual void DrawCheckers(int top, int left, int bottom, int right) = 0;
+  virtual void DrawBouncingRectangle(int top, int left, int bottom, int right) = 0;
+  virtual void DrawContrastBrightnessPattern(int top, int left, int bottom, int right) = 0;
+  virtual void DrawCircle(int originX, int originY, int radius) = 0;
+  virtual void BeginRender() = 0;
+  virtual void EndRender() = 0;
 
   int m_pattern;
   int m_bounceX;
@@ -49,4 +55,5 @@ private:
   int m_bounceDirectionY;
   int m_blinkFrame;
 };
+
 

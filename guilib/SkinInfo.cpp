@@ -37,8 +37,8 @@ CSkinInfo g_SkinInfo; // global
 
 CSkinInfo::CSkinInfo()
 {
-  m_DefaultResolution = INVALID;
-  m_DefaultResolutionWide = INVALID;
+  m_DefaultResolution = RES_INVALID;
+  m_DefaultResolutionWide = RES_INVALID;
   m_strBaseDir = "";
   m_iNumCreditLines = 0;
   m_effectsSlowDown = 1.0;
@@ -53,8 +53,8 @@ CSkinInfo::~CSkinInfo()
 void CSkinInfo::Load(const CStdString& strSkinDir)
 {
   m_strBaseDir = strSkinDir;
-  m_DefaultResolution = INVALID;  // set to INVALID to denote that there is no default res here
-  m_DefaultResolutionWide = INVALID;
+  m_DefaultResolution = RES_INVALID;  // set to INVALID to denote that there is no default res here
+  m_DefaultResolutionWide = RES_INVALID;
   m_effectsSlowDown = 1.0;
   // Load from skin.xml
   TiXmlDocument xmlDoc;
@@ -74,12 +74,12 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       { // found the defaultresolution tag
         CStdString strDefaultDir = pChild->FirstChild()->Value();
         strDefaultDir = strDefaultDir.ToLower();
-        if (strDefaultDir == "pal") m_DefaultResolution = PAL_4x3;
-        else if (strDefaultDir == "pal16x9") m_DefaultResolution = PAL_16x9;
-        else if (strDefaultDir == "ntsc") m_DefaultResolution = NTSC_4x3;
-        else if (strDefaultDir == "ntsc16x9") m_DefaultResolution = NTSC_16x9;
-        else if (strDefaultDir == "720p") m_DefaultResolution = HDTV_720p;
-        else if (strDefaultDir == "1080i") m_DefaultResolution = HDTV_1080i;
+        if (strDefaultDir == "pal") m_DefaultResolution = RES_PAL_4x3;
+        else if (strDefaultDir == "pal16x9") m_DefaultResolution = RES_PAL_16x9;
+        else if (strDefaultDir == "ntsc") m_DefaultResolution = RES_NTSC_4x3;
+        else if (strDefaultDir == "ntsc16x9") m_DefaultResolution = RES_NTSC_16x9;
+        else if (strDefaultDir == "720p") m_DefaultResolution = RES_HDTV_720p;
+        else if (strDefaultDir == "1080i") m_DefaultResolution = RES_HDTV_1080i;
       }
       CLog::Log(LOGINFO, "Default 4:3 resolution directory is %s", CUtil::AddFileToFolder(m_strBaseDir, GetDirFromRes(m_DefaultResolution)).c_str());
 
@@ -88,12 +88,12 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       { // found the defaultresolution tag
         CStdString strDefaultDir = pChild->FirstChild()->Value();
         strDefaultDir = strDefaultDir.ToLower();
-        if (strDefaultDir == "pal") m_DefaultResolutionWide = PAL_4x3;
-        else if (strDefaultDir == "pal16x9") m_DefaultResolutionWide = PAL_16x9;
-        else if (strDefaultDir == "ntsc") m_DefaultResolutionWide = NTSC_4x3;
-        else if (strDefaultDir == "ntsc16x9") m_DefaultResolutionWide = NTSC_16x9;
-        else if (strDefaultDir == "720p") m_DefaultResolutionWide = HDTV_720p;
-        else if (strDefaultDir == "1080i") m_DefaultResolutionWide = HDTV_1080i;
+        if (strDefaultDir == "pal") m_DefaultResolutionWide = RES_PAL_4x3;
+        else if (strDefaultDir == "pal16x9") m_DefaultResolutionWide = RES_PAL_16x9;
+        else if (strDefaultDir == "ntsc") m_DefaultResolutionWide = RES_NTSC_4x3;
+        else if (strDefaultDir == "ntsc16x9") m_DefaultResolutionWide = RES_NTSC_16x9;
+        else if (strDefaultDir == "720p") m_DefaultResolutionWide = RES_HDTV_720p;
+        else if (strDefaultDir == "1080i") m_DefaultResolutionWide = RES_HDTV_1080i;
       }
       else
         m_DefaultResolutionWide = m_DefaultResolution; // default to same as 4:3
@@ -213,24 +213,24 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   // first try and load from the current resolution's directory
   int height=0;
   *res = g_graphicsContext.GetVideoResolution();
-  if (*res >= WINDOW)
+  if (*res >= RES_WINDOW)
   {
     height = g_settings.m_ResInfo[*res].iHeight;
     if (height>=1080 && (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN))
     {
-      *res = HDTV_1080i;
+      *res = RES_HDTV_1080i;
     }
     else if (height>=720 && (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN))
     {
-      *res = HDTV_720p;
+      *res = RES_HDTV_720p;
     }
     else if (g_settings.m_ResInfo[*res].dwFlags & D3DPRESENTFLAG_WIDESCREEN)
     {
-      *res = PAL_16x9;
+      *res = RES_PAL_16x9;
     }
     else
     {
-      *res = PAL_4x3;
+      *res = RES_PAL_4x3;
     }
   }
   CStdString strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
@@ -238,16 +238,16 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   if (CFile::Exists(strPath))
     return strPath;
   // if we're in 1080i mode, try 720p next
-  if (*res == HDTV_1080i)
+  if (*res == RES_HDTV_1080i)
   {
-    *res = HDTV_720p;
+    *res = RES_HDTV_720p;
     strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
     strPath = CUtil::AddFileToFolder(strPath, strFile);
     if (CFile::Exists(strPath))
       return strPath;
   }
   // that failed - drop to the default widescreen resolution if where in a widemode
-  if (*res == PAL_16x9 || *res == NTSC_16x9 || *res == HDTV_480p_16x9 || *res == HDTV_720p)
+  if (*res == RES_PAL_16x9 || *res == RES_NTSC_16x9 || *res == RES_HDTV_480p_16x9 || *res == RES_HDTV_720p)
   {
     *res = m_DefaultResolutionWide;
     strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
@@ -260,13 +260,13 @@ CStdString CSkinInfo::GetSkinPath(const CStdString& strFile, RESOLUTION *res, co
   strPath = CUtil::AddFileToFolder(strPathToUse, GetDirFromRes(*res));
   strPath = CUtil::AddFileToFolder(strPath, strFile);
   // check if we don't have any subdirectories
-  if (*res == INVALID) *res = PAL_4x3;
+  if (*res == RES_INVALID) *res = RES_PAL_4x3;
   return strPath;
 }
 
 bool CSkinInfo::HasSkinFile(const CStdString &strFile)
 {
-  RESOLUTION res = INVALID;
+  RESOLUTION res = RES_INVALID;
   return CFile::Exists(GetSkinPath(strFile, &res));
 }
 
@@ -275,27 +275,27 @@ CStdString CSkinInfo::GetDirFromRes(RESOLUTION res)
   CStdString strRes;
   switch (res)
   {
-  case PAL_4x3:
+  case RES_PAL_4x3:
     strRes = "PAL";
     break;
-  case PAL_16x9:
+  case RES_PAL_16x9:
     strRes = "PAL16x9";
     break;
-  case NTSC_4x3:
-  case HDTV_480p_4x3:
+  case RES_NTSC_4x3:
+  case RES_HDTV_480p_4x3:
     strRes = "NTSC";
     break;
-  case NTSC_16x9:
-  case HDTV_480p_16x9:
+  case RES_NTSC_16x9:
+  case RES_HDTV_480p_16x9:
     strRes = "ntsc16x9";
     break;
-  case HDTV_720p:
+  case RES_HDTV_720p:
     strRes = "720p";
     break;
-  case HDTV_1080i:
+  case RES_HDTV_1080i:
     strRes = "1080i";
     break;
-  case INVALID:
+  case RES_INVALID:
   default:
     strRes = "";
     break;
@@ -399,6 +399,6 @@ bool CSkinInfo::LoadStartupWindows(const TiXmlElement *startup)
 }
 void CSkinInfo::SetDefaults()
 {
-  m_DefaultResolution = PAL_4x3;
-  m_DefaultResolutionWide = PAL_16x9;
+  m_DefaultResolution = RES_PAL_4x3;
+  m_DefaultResolutionWide = RES_PAL_16x9;
 }

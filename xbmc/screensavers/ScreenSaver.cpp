@@ -52,7 +52,7 @@ void CScreenSaver::Create()
   OutputDebugString(szTmp);
 
   float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
-#ifndef HAS_SDL
+#ifdef HAS_DX
   m_pScr->Create(g_graphicsContext.Get3DDevice(), iWidth, iHeight, m_strScreenSaverName.c_str(), pixelRatio);
 #else
   m_pScr->Create(0, iWidth, iHeight, m_strScreenSaverName.c_str(), pixelRatio);

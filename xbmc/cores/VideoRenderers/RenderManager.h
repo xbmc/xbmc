@@ -21,7 +21,7 @@
  *
  */
 
-#if defined (HAS_SDL_OPENGL)
+#if defined (HAS_GL)
 #include "LinuxRendererGL.h"
 #elif defined(HAS_SDL)
 #include "LinuxRenderer.h"
@@ -107,7 +107,7 @@ public:
     if (m_pRenderer)
       return m_pRenderer->GetResolution();
     else
-      return INVALID;
+      return RES_INVALID;
   }
 
   float GetMaximumFPS();
@@ -122,7 +122,7 @@ public:
 
   CStdString GetVSyncState();
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
@@ -164,5 +164,6 @@ protected:
 };
 
 extern CXBMCRenderManager g_renderManager;
+
 
 

@@ -1,7 +1,7 @@
 #ifndef LINUXRENDERERGL_RENDERER
 #define LINUXRENDERERGL_RENDERER
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 #include "../../../guilib/FrameBufferObject.h"
 #include "../../../guilib/Shader.h"
@@ -9,6 +9,7 @@
 #include "../ffmpeg/DllAvCodec.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
+#include "TextureManager.h"
 #include "GraphicContext.h"
 
 namespace Surface { class CSurface; }
@@ -121,7 +122,7 @@ public:
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
 
-  void CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(CBaseTexture * surface, unsigned int width, unsigned int height);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);

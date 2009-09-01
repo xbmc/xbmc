@@ -2,9 +2,6 @@
 // A simple visualisation example by MrC
 
 #include "../../../visualisations/xbmc_vis.h"
-#ifdef HAS_SDL_OPENGL
-#include <SDL/SDL_opengl.h>
-#endif
 
 char g_visName[512];
 #ifndef HAS_SDL_OPENGL

@@ -29,7 +29,7 @@ class CRemoteControl : CThread
 public:
   CRemoteControl();
   ~CRemoteControl();
-  bool Initialize();
+  void Initialize();
   void Disconnect();
   void Reset();
   void Update();

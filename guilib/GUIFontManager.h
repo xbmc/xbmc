@@ -33,7 +33,7 @@
 
 // Forward
 class CGUIFont;
-class CGUIFontTTF;
+class CGUIFontTTFBase;
 class TiXmlDocument;
 class TiXmlNode;
 
@@ -56,10 +56,10 @@ public:
   virtual ~GUIFontManager(void);
   void Unload(const CStdString& strFontName);
   void LoadFonts(const CStdString& strFontSet);
-  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing = 1.0f, float aspect = 1.0f, RESOLUTION res = INVALID);
+  CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing = 1.0f, float aspect = 1.0f, RESOLUTION res = RES_INVALID);
   CGUIFont* GetFont(const CStdString& strFontName, bool fallback = true);
   void Clear();
-  void FreeFontFile(CGUIFontTTF *pFont);
+  void FreeFontFile(CGUIFontTTFBase *pFont);
 
   bool IsFontSetUnicode() { return m_fontsetUnicode; }
   bool IsFontSetUnicode(const CStdString& strFontSet);
@@ -69,11 +69,11 @@ public:
 
 protected:
   void LoadFonts(const TiXmlNode* fontNode);
-  CGUIFontTTF* GetFontFile(const CStdString& strFontFile);
+  CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
   bool OpenFontFile(TiXmlDocument& xmlDoc);
 
   std::vector<CGUIFont*> m_vecFonts;
-  std::vector<CGUIFontTTF*> m_vecFontFiles;
+  std::vector<CGUIFontTTFBase*> m_vecFontFiles;
   std::vector<OrigFontInfo> m_vecFontInfo;
   bool m_fontsetUnicode;
   RESOLUTION m_skinResolution;

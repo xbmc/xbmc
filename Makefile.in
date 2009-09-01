@@ -402,7 +402,6 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 OBJSXBMC += \
 	xbmc/osx/osx.a \
 	xbmc/lib/libSDL-OSX/libSDL-@ARCH@.a \
-	xbmc/lib/libSDL-OSX/libSDL_image-@ARCH@.a \
 	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
 endif
 
@@ -542,4 +541,5 @@ clean-codecs: clean-dvdpcodecs clean-papcodecs
 
 clean-externals: clean-codecs clean-eventclients clean-xbmctex clean-libs \
 	clean-screensavers clean-visualisations
+
 

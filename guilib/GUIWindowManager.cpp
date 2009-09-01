@@ -29,7 +29,7 @@
 #include "Util.h"
 #include "Settings.h"
 
-#if defined(WIN32) && !defined(HAS_SDL)
+#if defined(WIN32) && !defined(HAS_GL)
 #include "../xbmc/Win32/XBMC_PC.h"
 #endif
 
@@ -557,8 +557,10 @@ void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
     }
     m_pCallback->Render();
 #if defined(WIN32) && !defined(HAS_SDL)
+    /*
     extern CXBMC_PC *g_xbmcPC;
     g_xbmcPC->ProcessMessage(NULL);
+    */
     Sleep(0);
 #endif
   }

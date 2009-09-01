@@ -39,6 +39,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "GUIDialog.h"
+#include "WindowingFactory.h"
 
 #include "PowerManager.h"
 
@@ -53,8 +54,6 @@
 #include "MediaManager.h"
 
 using namespace std;
-
-extern HWND g_hWnd;
 
 CApplicationMessenger::~CApplicationMessenger()
 {
@@ -177,10 +176,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#ifndef HAS_SDL
-        // send the WM_CLOSE window message
-        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
-#endif
+        g_Windowing.DestroyWindow();
         g_powerManager.Powerdown();
         exit(64);
       }
@@ -210,10 +206,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX) && !defined(HAS_SDL)
-        // send the WM_CLOSE window message
-        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
-#endif
+        g_Windowing.DestroyWindow();
         g_powerManager.Reboot();
         exit(66);
       }
@@ -223,10 +216,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX) && !defined(HAS_SDL)
-        // send the WM_CLOSE window message
-        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
-#endif
+        g_Windowing.DestroyWindow();
         g_powerManager.Reboot();
         exit(66);
       }

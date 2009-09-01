@@ -33,6 +33,9 @@
 #if defined(_WIN32PC)
   #include "Windows.h"
 #endif
+#if defined(HAS_LIRC)
+  #include "common/LIRC.h"
+#endif
 
 // If the process ends in less than this time (ms), we assume it's a launcher
 // and wait for manual intervention before continuing

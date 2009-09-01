@@ -12,7 +12,7 @@
 #include "StdString.h"
 
 
-class CGUIFontTTF;
+class CGUIFontTTFBase;
 
 // flags for alignment
 #define XBFONT_LEFT       0x00000000
@@ -87,7 +87,7 @@ private:
 class CGUIFont
 {
 public:
-  CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font);
+  CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTFBase *font);
   virtual ~CGUIFont();
 
   CStdString& GetFontName();
@@ -118,12 +118,12 @@ public:
 
   static SHORT RemapGlyph(SHORT letter);
 
-  CGUIFontTTF* GetFont() const
+  CGUIFontTTFBase* GetFont() const
   {
      return m_font;
   }
 
-  void SetFont(CGUIFontTTF* font)
+  void SetFont(CGUIFontTTFBase* font)
   {
      m_font = font;
   }
@@ -134,7 +134,7 @@ protected:
   DWORD m_shadowColor;
   DWORD m_textColor;
   float m_lineSpacing;
-  CGUIFontTTF *m_font; // the font object has the size information
+  CGUIFontTTFBase *m_font; // the font object has the size information
 
 private:
   bool ClippedRegionIsEmpty(float x, float y, float width, DWORD alignment) const;

@@ -23,7 +23,7 @@
 #include "GUILargeTextureManager.h"
 #include "Picture.h"
 #include "GUISettings.h"
-#include "Surface.h"
+// elis #include "Surface.h"
 #include "FileItem.h"
 
 using namespace std;
@@ -61,7 +61,7 @@ void CGUILargeTextureManager::Process()
     CStdString path = image->GetPath();
     lock.Leave();
     // load the image using our image lib
-    XBMC::TexturePtr texture = NULL;
+    CBaseTexture* texture = NULL;
     CPicture pic;
     CFileItem file(path, false);
     if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
@@ -86,11 +86,7 @@ void CGUILargeTextureManager::Process()
     }
     else
     { // no need for the texture any more
-#ifdef HAS_SDL
-      SDL_FreeSurface(texture);
-#else
-      texture->Release();
-#endif
+      delete(texture);
       texture = NULL;
     }
     if (m_queued.size() == 0)
@@ -122,7 +118,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-bool CGUILargeTextureManager::GetImage(const CStdString &path, CTexture &texture, int &orientation, bool firstRequest)
+bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &texture, int &orientation, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -199,4 +195,5 @@ void CGUILargeTextureManager::QueueImage(const CStdString &path)
   StopThread();
   Create();
 }
+
 

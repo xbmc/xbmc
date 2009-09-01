@@ -25,7 +25,7 @@
 #include "include.h"
 #include <vector>
 #include <string>
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 namespace Shaders {
 

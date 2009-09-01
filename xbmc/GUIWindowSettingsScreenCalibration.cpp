@@ -162,7 +162,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       {
         SET_CONTROL_HIDDEN(CONTROL_VIDEO);
         m_iCurRes = (unsigned int)-1;
-        g_graphicsContext.GetAllowedResolutions(m_Res, true);
+        g_graphicsContext.GetAllowedResolutions(m_Res);
         // find our starting resolution
         RESOLUTION curRes = g_graphicsContext.GetVideoResolution();
         for (UINT i = 0; i < m_Res.size(); i++)
@@ -170,9 +170,9 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
           // If it's a CUSTOM (monitor) resolution, then g_graphicsContext.GetAllowedResolutions()
           // returns just one entry with CUSTOM in it. Update that entry to point to the current
           // CUSTOM resolution.
-          if (curRes>=CUSTOM)
+          if (curRes>=RES_CUSTOM)
           {
-            if (m_Res[i]==CUSTOM)
+            if (m_Res[i]==RES_CUSTOM)
             {
               m_iCurRes = i;
               m_Res[i] = curRes;

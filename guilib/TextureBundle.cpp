@@ -9,7 +9,7 @@
 #include "utils/CharsetConverter.h"
 #include "lib/liblzo/LZO1X.H"
 #else
-#include <lzo1x.h>
+#include <lzo/lzo1x.h>
 #endif
 #include "SkinInfo.h"
 #include "GUISettings.h"
@@ -311,7 +311,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   return hr;
 }
 
-HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr* ppTexture,
+HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
                                      XBMC::PalettePtr* ppPalette)
 {
   DWORD ResDataOffset;
@@ -364,6 +364,8 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
   delete[] pTex;
   delete pPal;
 
+/* DXMERGE - this was previously used to specify the real size
+             of the image - is it actually being used still??
   pInfo->Width = RealSize[0];
   pInfo->Height = RealSize[1];
   pInfo->Depth = 0;
@@ -373,6 +375,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* 
   (*ppTexture)->GetLevelDesc(0, &desc);
   pInfo->Format = desc.Format;
 #endif
+*/
 
   return S_OK;
 
@@ -383,7 +386,7 @@ PackedLoadError:
   return E_FAIL;
 }
 
-int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr** ppTextures,
+int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture** ppTextures,
                               XBMC::PalettePtr* ppPalette, int& nLoops, int** ppDelays)
 {
   DWORD ResDataOffset;
@@ -442,25 +445,27 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, 
   ResDataOffset = ((DWORD)(Next - UnpackedBuf) + 127) & ~127;
   ResData = UnpackedBuf + ResDataOffset;
 
-  *ppTextures = new XBMC::TexturePtr[nTextures];
+  *ppTextures = new CTexture[nTextures];
   for (int i = 0; i < nTextures; ++i)
   {
     if ((ppTex[i]->Common & D3DCOMMON_TYPE_MASK) != D3DCOMMON_TYPE_TEXTURE)
       goto PackedAnimError;
 
-    GetTextureFromData(ppTex[i], ResData, &(*ppTextures)[i]);
+    GetTextureFromData(ppTex[i], ResData, &(ppTextures)[i]);
     delete[] ppTex[i];
   }
 
   delete[] ppTex;
   ppTex = 0;
   delete pPal;
-
+/* DXMERGE - this was previously used to specify the real size
+             of the image - is it actually being used still??
   pInfo->Width = pAnimInfo->RealSize[0];
   pInfo->Height = pAnimInfo->RealSize[1];
   pInfo->Depth = 0;
   pInfo->MipLevels = 1;
   pInfo->Format = D3DFMT_UNKNOWN;
+  */
 
   return nTextures;
 

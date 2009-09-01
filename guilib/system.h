@@ -21,43 +21,110 @@
  *
  */
 
-#undef HAS_XBOX_D3D
-#undef HAS_XFONT
-#undef HAS_FILESYSTEM_CDDA
-#undef HAS_FILESYSTEM_SMB
-#undef HAS_FILESYSTEM_RTV
-#undef HAS_FILESYSTEM_DAAP
-#undef HAS_FILESYSTEM_HTSP
-#undef HAS_FILESYSTEM
-#undef HAS_DVD_DRIVE
-#define HAS_VIDEO_PLAYBACK
-#define HAS_DVDPLAYER
-#undef HAS_AC3_CODEC
-#undef HAS_DTS_CODEC
-#undef HAS_AC3_CDDA_CODEC
-#undef HAS_DTS_CDDA_CODEC
-#undef HAS_AUDIO_PASS_THROUGH
-#undef HAS_FTP_SERVER
-#define HAS_WEB_SERVER
-#undef HAS_TIME_SERVER
-#undef HAS_VISUALISATION
-#define HAS_KARAOKE
-#undef HAS_CREDITS
-#undef HAS_SYSINFO
-#define HAS_SCREENSAVER
-#undef HAS_SECTIONS
-#define HAS_UPNP
-#undef HAS_LCD
-#undef HAS_SECTIONS
-#undef HAS_CDDA_RIPPER
-#define HAS_PYTHON
-#define HAS_AUDIO
-#define HAS_SHOUTCAST
-#define HAS_RAR
-#undef  HAS_LIRC
+/*****************
+ * All platforms
+ *****************/
 
-#ifndef _LINUX
-// additional includes and defines
+#define HAS_SDL
+
+#define HAS_DVD_DRIVE
+#define HAS_DVD_SWSCALE
+#define HAS_DVDPLAYER
+#define HAS_EVENT_SERVER
+#define HAS_KARAOKE
+#define HAS_RAR
+#define HAS_SCREENSAVER
+#define HAS_PYTHON
+#define HAS_SHOUTCAST
+#define HAS_SYSINFO
+#define HAS_UPNP
+#define HAS_VIDEO_PLAYBACK
+#define HAS_VISUALISATION
+#define HAS_WEB_SERVER
+
+#define HAS_AC3_CODEC
+#define HAS_DTS_CODEC
+#define HAS_CDDA_RIPPER
+
+#define HAS_FILESYSTEM
+#define HAS_FILESYSTEM_SMB
+#define HAS_FILESYSTEM_CDDA
+#define HAS_FILESYSTEM_RTV
+#define HAS_FILESYSTEM_DAAP
+#define HAS_FILESYSTEM_SAP
+#define HAS_FILESYSTEM_VTP
+#define HAS_FILESYSTEM_HTSP
+#define HAS_FILESYSTEM_MMS
+#define HAS_CCXSTREAM
+
+/*****************
+ * Win32 Specific
+ *****************/
+
+#ifdef _WIN32
+#define _WIN32PC
+#define HAS_SDL_JOYSTICK
+#define HAS_WIN32_NETWORK
+#define HAS_LIRC
+#define HAS_IRSERVERSUITE // depends on HAS_LIRC define
+#define HAS_AUDIO
+#endif
+
+/*****************
+ * Mac Specific
+ *****************/
+
+#ifdef __APPLE__
+#define HAS_ZEROCONF
+#define HAS_GL
+#define HAS_LINUX_NETWORK
+#define HAS_SDL_AUDIO
+#define HAS_SDL_OPENGL
+#define HAS_SDL_WIN_EVENTS
+#endif
+
+/*****************
+ * Linux Specific
+ *****************/
+
+#if defined(_LINUX) && !defined(__APPLE__)
+#ifdef HAS_AVAHI
+#define HAS_ZEROCONF
+#endif
+#define HAS_LCD
+#define HAS_HAL
+#define HAS_DBUS
+#define HAS_DBUS_SERVER
+#define HAS_GL
+#define HAS_GLX
+#define HAS_LINUX_NETWORK
+#define HAS_SDL_AUDIO
+#define HAS_LIRC
+#define HAS_SDL_OPENGL
+#define HAS_SDL_WIN_EVENTS
+#endif
+
+/*****************
+ * SVN revision
+ *****************/
+
+#ifdef __APPLE__
+#include "../svn_revision.h"
+#endif
+
+#ifndef SVN_REV
+#define SVN_REV "Unknown"
+#endif
+
+#if defined(_LINUX) && !defined(__APPLE__)
+#include "../config.h"
+#endif
+
+/****************************************
+ * Additional platform specific includes
+ ****************************************/
+
+#ifdef _WIN32
 #if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
 #include <winsock2.h>
 #endif
@@ -68,66 +135,15 @@
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
-#undef HAS_CCXSTREAM
-#endif
-
-//zeroconf
-//on osx enabled by default
-//linux only if avahi is present
-#ifdef _LINUX
-#ifdef __APPLE__
-#define HAS_ZEROCONF
-#else 
-#ifdef HAS_AVAHI
-#define HAS_ZEROCONF
-#endif
+#include "../xbmc/win32/PlatformInclude.h"
+#include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
+#include "D3DX9.h"  // or the reference video clock.
+#ifdef HAS_SDL
+#include "SDL\SDL.h"
 #endif
 #endif
 
 #ifdef _LINUX
-#ifndef __APPLE__
-#define HAS_LCD
-#include "../config.h"
-#endif
-#define HAS_KARAOKE
-#define HAS_PYTHON
-#define HAS_WEB_SERVER
-#define HAS_EVENT_SERVER
-#define HAS_UPNP
-#undef  HAS_AUDIO
-#define  HAS_SHOUTCAST
-#define HAS_SDL
-#define HAS_RAR
-#ifndef __APPLE__
-#define HAS_HAL
-#define HAS_DBUS
-#define HAS_DBUS_SERVER
-#endif
-#define HAS_FILESYSTEM_CDDA
-#define HAS_FILESYSTEM_SMB
-#define HAS_FILESYSTEM
-#define HAS_SYSINFO
-#define HAS_VISUALISATION
-#define HAS_DVDPLAYER
-#define HAS_DVD_DRIVE
-#define HAS_CCXSTREAM
-#ifndef __APPLE__
-#define HAS_LIRC
-#endif
-#define HAS_AC3_CODEC
-#define HAS_DTS_CODEC
-#define HAS_CDDA_RIPPER
-#define HAS_FILESYSTEM_RTV
-#define HAS_FILESYSTEM_DAAP
-#define HAS_FILESYSTEM_VTP
-#define HAS_FILESYSTEM_HTSP
-#define HAS_FILESYSTEM_SAP
-#ifndef __APPLE__
-#define HAS_FILESYSTEM_MMS
-#endif
-#undef HAS_PERFORMANCE_SAMPLE
-#define HAS_LINUX_NETWORK
-
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
@@ -140,56 +156,17 @@
 #include "PlatformInclude.h"
 #endif
 
-#ifdef HAS_SDL
-#define HAS_SDL_AUDIO
-#define HAS_DVD_SWSCALE
-#ifndef HAS_SDL_2D
-#define HAS_SDL_OPENGL
-#endif
-#if defined(_LINUX) && !defined(__APPLE__) && defined(HAS_SDL_OPENGL)
-#define HAS_GLX
-#endif
+#ifdef HAS_GL
 #ifdef _WIN32
-#define HAS_SDL_JOYSTICK
-#undef HAS_SDL_AUDIO   // use dsound for audio on win32
+#include "GL/glew.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
+//#include <GL/wglext.h>
+#elif defined(__APPLE__)
+#include <GL/glew.h>
+#include <OpenGL/gl.h>
+#elif defined(_LINUX)
+#include <GL/glew.h>
+#include <GL/gl.h>
 #endif
-#endif
-
-#ifdef _WIN32
-#define _WIN32PC       // precompiler definition for the windows build
-#define HAS_AC3_CODEC
-#define HAS_DTS_CODEC
-#define HAS_CDDA_RIPPER
-#define HAS_DVD_SWSCALE
-#define HAS_FILESYSTEM
-#define HAS_FILESYSTEM_SMB
-#define HAS_FILESYSTEM_CDDA
-#define HAS_FILESYSTEM_RTV
-#define HAS_FILESYSTEM_DAAP
-#define HAS_FILESYSTEM_SAP
-#define HAS_FILESYSTEM_VTP
-#define HAS_FILESYSTEM_HTSP
-#define HAS_FILESYSTEM_MMS
-#define HAS_DVD_DRIVE
-#define HAS_VISUALISATION
-#define HAS_CCXSTREAM
-#define HAS_EVENT_SERVER
-#define HAS_SHOUTCAST
-#define HAS_WIN32_NETWORK
-#define HAS_LIRC
-#define HAS_IRSERVERSUITE // depends on HAS_LIRC define
-#define HAS_SYSINFO
-#define HAS_KARAOKE
-#undef HAS_PERFORMANCE_SAMPLE // no performance sampling
-#undef HAS_LINUX_NETWORK
-
-#include "../xbmc/win32/PlatformInclude.h"
-#endif
-
-#ifdef __APPLE__
-#include "../svn_revision.h"
-#endif
-
-#ifndef SVN_REV
-#define SVN_REV "Unknown"
 #endif

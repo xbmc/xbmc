@@ -37,7 +37,7 @@ GUIFontManager g_fontManager;
 
 GUIFontManager::GUIFontManager(void)
 {
-  m_skinResolution=INVALID;
+  m_skinResolution=RES_INVALID;
   m_fontsetUnicode=false;
 }
 
@@ -55,7 +55,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   if (pFont)
     return pFont;
 
-  if (sourceRes == INVALID) // no source res specified, so assume the skin res
+  if (sourceRes == RES_INVALID) // no source res specified, so assume the skin res
     sourceRes = m_skinResolution;
 
 
@@ -65,7 +65,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   g_graphicsContext.SetScalingResolution(sourceRes, 0, 0, true);
 
   // adjust aspect ratio
-  if (sourceRes == PAL_16x9 || sourceRes == PAL60_16x9 || sourceRes == NTSC_16x9 || sourceRes == HDTV_480p_16x9)
+  if (sourceRes == RES_PAL_16x9 || sourceRes == RES_PAL60_16x9 || sourceRes == RES_NTSC_16x9 || sourceRes == RES_HDTV_480p_16x9)
     aspect *= 0.75f;
 
   aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
@@ -98,7 +98,7 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   CStdString TTFfontName;
   TTFfontName.Format("%s_%f_%f", strFilename, newSize, aspect);
 
-  CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
+  CGUIFontTTFBase* pFontFile = GetFontFile(TTFfontName);
   if (!pFontFile)
   {
     pFontFile = new CGUIFontTTF(TTFfontName);
@@ -143,14 +143,14 @@ void GUIFontManager::ReloadTTFFonts(void)
   {
     CGUIFont* font = m_vecFonts[i];
     OrigFontInfo fontInfo = m_vecFontInfo[i];
-    CGUIFontTTF* currentFontTTF = font->GetFont();
+    CGUIFontTTFBase* currentFontTTF = font->GetFont();
 
     float aspect = fontInfo.aspect;
     int iSize = fontInfo.size;
     CStdString& strPath = fontInfo.fontFilePath;
     CStdString& strFilename = fontInfo.fileName;
 
-    if (m_skinResolution == PAL_16x9 || m_skinResolution == PAL60_16x9 || m_skinResolution == NTSC_16x9 || m_skinResolution == HDTV_480p_16x9)
+    if (m_skinResolution == RES_PAL_16x9 || m_skinResolution == RES_PAL60_16x9 || m_skinResolution == RES_NTSC_16x9 || m_skinResolution == RES_HDTV_480p_16x9)
       aspect *= 0.75f;
 
     aspect *= g_graphicsContext.GetGUIScaleY() / g_graphicsContext.GetGUIScaleX();
@@ -158,7 +158,7 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     CStdString TTFfontName;
     TTFfontName.Format("%s_%f_%f", strFilename, newSize, aspect);
-    CGUIFontTTF* pFontFile = GetFontFile(TTFfontName);
+    CGUIFontTTFBase* pFontFile = GetFontFile(TTFfontName);
     if (!pFontFile)
     {
       pFontFile = new CGUIFontTTF(TTFfontName);
@@ -193,9 +193,9 @@ void GUIFontManager::Unload(const CStdString& strFontName)
   }
 }
 
-void GUIFontManager::FreeFontFile(CGUIFontTTF *pFont)
+void GUIFontManager::FreeFontFile(CGUIFontTTFBase *pFont)
 {
-  for (vector<CGUIFontTTF*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
+  for (vector<CGUIFontTTFBase*>::iterator it = m_vecFontFiles.begin(); it != m_vecFontFiles.end(); ++it)
   {
     if (pFont == *it)
     {
@@ -206,11 +206,11 @@ void GUIFontManager::FreeFontFile(CGUIFontTTF *pFont)
   }
 }
 
-CGUIFontTTF* GUIFontManager::GetFontFile(const CStdString& strFileName)
+CGUIFontTTFBase* GUIFontManager::GetFontFile(const CStdString& strFileName)
 {
   for (int i = 0; i < (int)m_vecFontFiles.size(); ++i)
   {
-    CGUIFontTTF* pFont = m_vecFontFiles[i];
+    CGUIFontTTFBase* pFont = (CGUIFontTTFBase *)m_vecFontFiles[i];
     if (pFont->GetFileName() == strFileName)
       return pFont;
   }

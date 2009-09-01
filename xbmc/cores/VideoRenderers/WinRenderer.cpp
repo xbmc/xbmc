@@ -21,7 +21,7 @@
  
 #include "stdafx.h"
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 
 #include "WinRenderer.h"
 #include "Util.h"
@@ -1195,7 +1195,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
 
 }
 
-void CWinRenderer::CreateThumbnail(LPDIRECT3DSURFACE9 surface, unsigned int width, unsigned int height)
+void CWinRenderer::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
 {
   CSingleLock lock(g_graphicsContext);
 

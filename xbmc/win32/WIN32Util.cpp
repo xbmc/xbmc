@@ -30,11 +30,11 @@
 #include <shlobj.h>
 #include "SpecialProtocol.h"
 #include "my_ntddscsi.h"
-#include "Surface.h"
 #if _MSC_VER > 1400
 #include "Setupapi.h"
 #endif
 #include "MediaManager.h"
+#include "WindowingFactory.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -744,7 +744,7 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   SetThreadExecutionState( sSysParam.dwEsFlags );
 }
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 void CWIN32Util::CheckGLVersion()
 {
   if(CWIN32Util::HasGLDefaultDrivers())
@@ -764,9 +764,10 @@ void CWIN32Util::CheckGLVersion()
 
 bool CWIN32Util::HasGLDefaultDrivers()
 {
-  int a=0,b=0;
-  CStdString strVendor = Surface::CSurface::GetGLVendor();
-  Surface::CSurface::GetGLVersion(a, b);
+  unsigned int a=0,b=0;
+
+  CStdString strVendor = g_Windowing.GetRenderVendor();
+  g_Windowing.GetRenderVersion(a, b);
 
   if(strVendor.find("Microsoft")!=strVendor.npos && a==1 && b==1)
     return true;
@@ -776,8 +777,9 @@ bool CWIN32Util::HasGLDefaultDrivers()
 
 bool CWIN32Util::HasReqGLVersion()
 {
-  int a=0,b=0;
-  Surface::CSurface::GetGLVersion(a, b);
+  unsigned int a=0,b=0;
+
+  g_Windowing.GetRenderVersion(a, b);
   if((a>=2) || (a == 1 && b >= 3))
     return true;
   else

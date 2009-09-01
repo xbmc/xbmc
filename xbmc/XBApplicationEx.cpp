@@ -20,16 +20,12 @@
 
 #include "stdafx.h"
 #include "XBApplicationEx.h"
-#include "Settings.h"
-#include "Application.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
 #endif
-#include "GUIFontManager.h"
 
-/* CXBApplicationEx() constructor */
 CXBApplicationEx::CXBApplicationEx()
 {
   // Variables to perform app timing
@@ -38,9 +34,9 @@ CXBApplicationEx::CXBApplicationEx()
   m_AppFocused = true;
 }
 
-/* CXBApplicationEx() destructor */
 CXBApplicationEx::~CXBApplicationEx()
-{}
+{
+}
 
 /* Create the app */
 HRESULT CXBApplicationEx::Create(HWND hWnd)
@@ -166,201 +162,3 @@ INT CXBApplicationEx::Run()
   CLog::Log(LOGNOTICE, "application stopped..." );
   return 0;
 }
-
-/* Function for handling input */
-void CXBApplicationEx::ReadInput()
-{
-  MEASURE_FUNCTION;
-
-#ifdef HAS_SDL
-#ifndef __APPLE__
-  static RESOLUTION windowres = WINDOW;
-#endif
-
-  // Read the input from the mouse
-  g_Mouse.Update();
-
-  SDL_Event event;
-  bool bProcessNextEvent = true;
-  while (bProcessNextEvent && SDL_PollEvent(&event))
-  {
-    switch(event.type)
-    {
-    case SDL_QUIT:
-      if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
-      break;
-
-    case SDL_VIDEORESIZE:
-#if !defined(__APPLE__) && !defined(_WIN32PC)
-      g_settings.m_ResInfo[WINDOW].iWidth = event.resize.w;
-      g_settings.m_ResInfo[WINDOW].iHeight = event.resize.h;
-      g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[WINDOW]);
-      g_graphicsContext.SetVideoResolution(windowres, FALSE, false);
-      g_Mouse.SetResolution(g_settings.m_ResInfo[WINDOW].iWidth, g_settings.m_ResInfo[WINDOW].iHeight, 1, 1);
-      g_fontManager.ReloadTTFFonts();
-#endif
-      break;
-
-#ifdef HAS_SDL_JOYSTICK
-    case SDL_JOYBUTTONUP:
-    case SDL_JOYBUTTONDOWN:
-    case SDL_JOYAXISMOTION:
-    case SDL_JOYBALLMOTION:
-    case SDL_JOYHATMOTION:
-      g_Joystick.Update(event);
-      break;
-#endif
-    case SDL_KEYDOWN:
-      // process any platform specific shortcuts before handing off to XBMC
-      if (!ProcessOSShortcuts(event))
-      {
-        g_Keyboard.Update(event);
-        // don't handle any more messages in the queue until we've handled keydown,
-        // if a keyup is in the queue it will reset the keypress before it is handled.
-        bProcessNextEvent = false;
-      }
-      break;
-    case SDL_KEYUP:
-      g_Keyboard.Update(event);
-      break;
-    case SDL_ACTIVEEVENT:
-      //If the window was inconified or restored
-      if( event.active.state & SDL_APPACTIVE )
-      {
-        m_AppActive = event.active.gain != 0;
-        if (m_AppActive) g_application.Minimize(false);
-      }
-      if (event.active.state & SDL_APPINPUTFOCUS)
-      {
-        m_AppFocused = event.active.gain != 0;
-        g_graphicsContext.NotifyAppFocusChange(m_AppFocused);
-      }
-      break;
-    case SDL_MOUSEBUTTONDOWN:
-      // mouse scroll wheel.
-      if (event.button.button == 4)
-        g_Mouse.UpdateMouseWheel(1);
-      else if (event.button.button == 5)
-        g_Mouse.UpdateMouseWheel(-1);
-      break;
-    }
-  }
-#else
-  // Read the input from the keyboard
-  g_Keyboard.Update();
-
-  // Read the input from the mouse
-  g_Mouse.Update();
-#endif // HAS_SDL
-
-#ifdef HAS_LIRC
-  // Read the input from a remote
-  g_RemoteControl.Update();
-#endif
-}
-
-/* Functions to handle shortcuts. All depend on SDL */
-#ifdef HAS_SDL
-bool CXBApplicationEx::ProcessOSShortcuts(SDL_Event& event)
-{
-#ifdef __APPLE__
-  return ProcessOSXShortcuts(event);
-#elif defined(_LINUX)
-  return ProcessLinuxShortcuts(event);
-#else
-  return ProcessWin32Shortcuts(event);
-#endif
-}
-
-bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
-{
-  static bool alt = false;
-  static CAction action;
-
-  alt = !!(SDL_GetModState() & (KMOD_LALT | KMOD_RALT));
-
-  if (event.key.type == SDL_KEYDOWN)
-  {
-    if(alt)
-    {
-      switch(event.key.keysym.sym)
-      {
-      case SDLK_F4:  // alt-F4 to quit
-        if (!g_application.m_bStop)
-          g_application.getApplicationMessenger().Quit();
-      case SDLK_RETURN:  // alt-Return to toggle fullscreen
-        {
-          action.wID = ACTION_TOGGLE_FULLSCREEN;
-          g_application.OnAction(action);
-          return true;
-        }
-        return false;
-      default:
-        return false;
-      }
-    }
-  }
-  return false;
-}
-
-bool CXBApplicationEx::ProcessLinuxShortcuts(SDL_Event& event)
-{
-  bool alt = false;
-
-  alt = !!(SDL_GetModState() & (KMOD_LALT  | KMOD_RALT));
-
-  if (alt && event.key.type == SDL_KEYDOWN)
-  {
-    switch(event.key.keysym.sym)
-    {
-      case SDLK_TAB:  // ALT+TAB to minimize/hide
-        g_application.Minimize();
-        return true;
-      default:
-        break;
-    }
-  }
-
-  return false;
-}
-
-bool CXBApplicationEx::ProcessOSXShortcuts(SDL_Event& event)
-{
-  static bool shift = false, cmd = false;
-  static CAction action;
-
-  cmd   = !!(SDL_GetModState() & (KMOD_LMETA  | KMOD_RMETA ));
-  shift = !!(SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT));
-
-  if (cmd && event.key.type == SDL_KEYDOWN)
-  {
-    switch(event.key.keysym.sym)
-    {
-    case SDLK_q:  // CMD-q to quit
-    case SDLK_w:  // CMD-w to quit
-      if (!g_application.m_bStop)
-        g_application.getApplicationMessenger().Quit();
-      return true;
-
-    case SDLK_f: // CMD-f to toggle fullscreen
-      action.wID = ACTION_TOGGLE_FULLSCREEN;
-      g_application.OnAction(action);
-      return true;
-
-    case SDLK_s: // CMD-3 to take a screenshot
-      action.wID = ACTION_TAKE_SCREENSHOT;
-      g_application.OnAction(action);
-      return true;
-
-    case SDLK_h: // CMD-h to hide (but we minimize for now)
-    case SDLK_m: // CMD-m to minimize
-      g_application.getApplicationMessenger().Minimize();
-      return true;
-
-    default:
-      return false;
-    }
-  }
-  return false;
-}
-#endif // HAS_SDL

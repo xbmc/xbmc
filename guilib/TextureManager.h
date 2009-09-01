@@ -27,70 +27,30 @@
 #ifndef GUILIB_TEXTUREMANAGER_H
 #define GUILIB_TEXTUREMANAGER_H
 
-#include "TextureBundle.h"
 #include <vector>
+#include "TextureBundle.h"
 
 #pragma once
 
-#ifdef HAS_SDL_OPENGL
-class CGLTexture
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
+class CTextureArray
 {
 public:
-  CGLTexture(SDL_Surface* surface, bool loadToGPU = true, bool freeSurface = false);
-  ~CGLTexture();
+  CTextureArray(int width, int height, int loops, bool texCoordsArePixels = false);
+  CTextureArray();
 
-  void LoadToGPU();
-  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
-  void Update(SDL_Surface *surface, bool loadToGPU, bool freeSurface);
+  virtual ~CTextureArray();
 
-  int imageWidth;
-  int imageHeight;
-  int textureWidth;
-  int textureHeight;
-  GLuint id;
-private:
-  unsigned char* m_pixels;
-  bool m_loadedToGPU;
-};
-#endif
+  void Reset();
 
-// currently just used as a transport from texture manager to rest of app
-class CTexture
-{
-public:
-  CTexture()
-  {
-    Reset();
-  };
-  void Reset()
-  {
-    m_textures.clear();
-    m_delays.clear();
-    m_palette = NULL;
-    m_width = 0;
-    m_height = 0;
-    m_loops = 0;
-    m_texWidth = 0;
-    m_texHeight = 0;
-    m_texCoordsArePixels = false;
-  };
-  CTexture(int width, int height, int loops,  XBMC::PalettePtr palette = NULL, bool texCoordsArePixels = false);
-#ifdef HAS_SDL_OPENGL
-  void Add(CGLTexture *texture, int delay);
-  void Set(CGLTexture *texture, int width, int height);
-#else
-  void Add(XBMC::TexturePtr texture, int delay);
-  void Set(XBMC::TexturePtr texture, int width, int height);
-#endif
+  void Add(CBaseTexture *texture, int delay);
+  void Set(CBaseTexture *texture, int width, int height);
   void Free();
   unsigned int size() const;
 
-#ifdef HAS_SDL_OPENGL
-  std::vector<CGLTexture*> m_textures;
-#else
-  std::vector<XBMC::TexturePtr> m_textures;
-#endif
-   XBMC::PalettePtr m_palette;
+  std::vector<CBaseTexture* > m_textures;
   std::vector<int> m_delays;
   int m_width;
   int m_height;
@@ -104,18 +64,21 @@ public:
  \ingroup textures
  \brief
  */
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
 class CTextureMap
 {
 public:
   CTextureMap();
+  CTextureMap(const CStdString& textureName, int width, int height, int loops);
   virtual ~CTextureMap();
 
-  CTextureMap(const CStdString& textureName, int width, int height, int loops,  XBMC::PalettePtr palette);
-  void Add(XBMC::TexturePtr pTexture, int delay);
+  void Add(CBaseTexture* texture, int delay);
   bool Release();
 
   const CStdString& GetName() const;
-  const CTexture &GetTexture();
+  const CTextureArray& GetTexture();
   void Dump() const;
   DWORD GetMemoryUsage() const;
   void Flush();
@@ -124,7 +87,7 @@ protected:
   void FreeTexture();
 
   CStdString m_textureName;
-  CTexture m_texture;
+  CTextureArray m_texture;
   unsigned int m_referenceCount;
   DWORD m_memUsage;
 };
@@ -133,6 +96,9 @@ protected:
  \ingroup textures
  \brief
  */
+/************************************************************************/
+/*                                                                      */
+/************************************************************************/
 class CGUITextureManager
 {
 public:
@@ -142,7 +108,7 @@ public:
   bool HasTexture(const CStdString &textureName, CStdString *path = NULL, int *bundle = NULL, int *size = NULL);
   bool CanLoad(const CStdString &texturePath) const; ///< Returns true if the texture manager can load this texture
   int Load(const CStdString& strTextureName, bool checkBundleOnly = false);
-  const CTexture &GetTexture(const CStdString& strTextureName);
+  const CTextureArray& GetTexture(const CStdString& strTextureName);
   void ReleaseTexture(const CStdString& strTextureName);
   void Cleanup();
   void Dump() const;

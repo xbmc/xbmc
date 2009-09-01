@@ -34,7 +34,6 @@
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
 #include "XBAudioConfig.h"
-#include "XBVideoConfig.h"
 #ifdef _LINUX
 #include <dlfcn.h>
 #endif
@@ -316,8 +315,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
           g_audioConfig.Save();
         }
       }
-      if (g_videoConfig.NeedsSave())
-        g_videoConfig.Save();
 
       CheckForUpdates();
       CheckNetworkSettings();
@@ -713,7 +710,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
     }
-#ifdef __APPLE__
+#if defined (__APPLE__) || defined (_WIN32)
     else if (strSetting.Equals("videoscreen.displayblanking"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -722,6 +719,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13132), BLANKING_ALL_DISPLAYS);
       pControl->SetValue(pSettingInt->GetData());
     }
+#endif
+#ifdef __APPLE__
     else if (strSetting.Equals("appleremote.mode"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -919,7 +918,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
       {
-        if ((m_NewResolution != g_guiSettings.m_LookAndFeelResolution) && (m_NewResolution!=INVALID))
+        if ((m_NewResolution != g_guiSettings.m_LookAndFeelResolution) && (m_NewResolution!=RES_INVALID))
           pControl->SetEnabled(true);
         else
           pControl->SetEnabled(false);
@@ -938,7 +937,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(true);
       }
     }
-#ifdef __APPLE__
+#if defined(__APPLE__) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.displayblanking"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -951,6 +950,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(false);
       }
     }
+#endif
+#ifdef __APPLE__
     else if (strSetting.Equals("appleremote.mode"))
     {
       bool cancelled;
@@ -2047,7 +2048,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     // delay change of resolution
     if (m_NewResolution == g_guiSettings.m_LookAndFeelResolution)
     {
-      m_NewResolution = INVALID;
+      m_NewResolution = RES_INVALID;
     }
   }
   else if (strSetting.Equals("videoscreen.vsync"))
@@ -2055,7 +2056,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
     g_graphicsContext.SendMessage(msg);
-    g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
+// DXMERGE: This may be useful
+//    g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
   }
   else if (strSetting.Equals("locale.language"))
   { // new language chosen...
@@ -3165,49 +3167,12 @@ void CGUIWindowSettingsCategory::FillInResolutions(CSetting *pSetting, bool play
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
-  // Find the valid resolutions and add them as necessary
-  vector<RESOLUTION> res;
-  g_graphicsContext.GetAllowedResolutions(res, false);
 
-  /* add the virtual resolutions */
-  res.push_back(AUTORES);
-
-  for (vector<RESOLUTION>::iterator it = res.begin(); it != res.end();it++)
+  pControl->AddLabel(g_settings.m_ResInfo[RES_WINDOW].strMode, RES_WINDOW);  
+  pControl->AddLabel(g_settings.m_ResInfo[RES_DESKTOP].strMode, RES_DESKTOP);
+  for (size_t i = RES_CUSTOM ; i < g_settings.m_ResInfo.size(); i++)
   {
-    RESOLUTION res = *it;
-    if (res == AUTORES)
-    {
-      if (playbackSetting)
-      {
-        if (g_videoConfig.Has1080i() || g_videoConfig.Has720p())
-          pControl->AddLabel(g_localizeStrings.Get(20049) , res); // Best Available
-        else if (g_videoConfig.HasWidescreen())
-          pControl->AddLabel(g_localizeStrings.Get(20050) , res); // Autoswitch between 16x9 and 4x3
-        else
-          continue;   // don't have a choice of resolution (other than 480p vs NTSC, which isn't a choice)
-      }
-      else  // "Auto"
-        pControl->AddLabel(g_localizeStrings.Get(14061), res);
-    }
-#ifdef HAS_SDL
-    else if (res == CUSTOM)
-    {
-      for (int i = 0 ; i<g_videoConfig.GetNumberOfResolutions() ; i++)
-      {
-        RESOLUTION_INFO info;
-        g_videoConfig.GetResolutionInfo(i, info);
-        pControl->AddLabel(info.strMode, res+i);
-      }
-    }
-    else if (res == DESKTOP)
-    {
-      pControl->AddLabel(g_settings.m_ResInfo[DESKTOP].strMode, res);
-    }
-#endif
-    else
-    {
-      pControl->AddLabel(g_settings.m_ResInfo[res].strMode, res);
-    }
+    pControl->AddLabel(g_settings.m_ResInfo[i].strMode, i);
   }
   pControl->SetValue(pSettingInt->GetData());
 }
@@ -3631,7 +3596,7 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   }
   m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
-  m_NewResolution = INVALID;
+  m_NewResolution = RES_INVALID;
   SetupControls();
   CGUIWindow::OnInitWindow();
 }

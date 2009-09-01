@@ -24,11 +24,6 @@
 
 #include <vector>
 
-namespace Surface
-{
-  class CSurface;
-}
-
 // This class encapsulates support for monitor power-saving features (DPMS).
 // An instance is connected to a Surface, provides information on which
 // power-saving features are available for that screen, and it is able to
@@ -46,7 +41,7 @@ public:
 
   // Initializes an instance tied to the specified Surface. The Surface object
   // must be alive for as long as this instance is in use.
-  DPMSSupport(Surface::CSurface* surface);
+  DPMSSupport();
 
   // Whether power-saving is supported on this screen.
   bool IsSupported() const { return !m_supportedModes.empty(); }
@@ -73,7 +68,6 @@ public:
   bool DisablePowerSaving();
 
 private:
-  Surface::CSurface* m_surface;
   std::vector<PowerSavingMode> m_supportedModes;
 
   // Platform-specific code: add new #ifdef'ed implementations in the .cc file.
