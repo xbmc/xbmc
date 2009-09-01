@@ -1,8 +1,3 @@
-#ifndef WINDOW_SYSTEM_OSX_H
-#define WINDOW_SYSTEM_OSX_H
-
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -23,6 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
+#ifndef WINDOW_SYSTEM_OSX_H
+#define WINDOW_SYSTEM_OSX_H
+
 #include "WinSystem.h"
 #include <SDL/SDL_video.h>
 
@@ -35,7 +34,7 @@ public:
   // CWinSystemBase
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
-  virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateNewWindow(CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
   virtual bool DestroyWindow();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop);
