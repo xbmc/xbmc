@@ -712,7 +712,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pT
       if (m_Image[m_iCurrentPic].IsLoaded() && m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
       { // wrong image (ie we finished loading the next image, not the current image)
         delete pTexture;
-        pTexture = NULL;
+        return;
       }
       m_Image[m_iCurrentPic].UpdateTexture(pTexture, iWidth, iHeight);
       m_Image[m_iCurrentPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
