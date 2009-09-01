@@ -804,8 +804,6 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
 }
 #endif
 
-#define MAXFRAMERATEDIFF 0.0005
-
 int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 {
 #ifdef HAS_VIDEO_PLAYBACK
@@ -1061,6 +1059,7 @@ int CDVDPlayerVideo::GetVideoBitrate()
   return (int)m_videoStats.GetBitrate();
 }
 
+#define MAXFRAMERATEDIFF 0.0005
 void CDVDPlayerVideo::CalcFrameRate()
 {
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
