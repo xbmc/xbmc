@@ -29,7 +29,12 @@
 #if (defined USE_EXTERNAL_LIBMAD)
   #include <mad.h>
 #else
-  #include "mad.h"
+  #ifdef _WIN32
+    // TODO: clean this up?
+    #include "MP3Codec/libmad-0.15.1b/msvc++/mad.h"
+  #else
+    #include "mad.h"
+  #endif
 #endif
 
 #include "DynamicDll.h"
