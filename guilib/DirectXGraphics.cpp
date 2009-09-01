@@ -478,7 +478,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
     }
 
 #ifdef HAS_DX
-    (*ppTexture)->UnlockRect(0);
+    (*ppTexture)->GetTextureObject()->UnlockRect(0);
     }
 #endif
   }
