@@ -43,13 +43,12 @@ public:
   virtual ~CDXTexture();
 
   void Delete();
-  bool LoadFromFile(const CStdString& texturePath);
-  bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels);
-  virtual void LoadToGPU() { }
+  void CreateTextureObject();
+  void DestroyTextureObject();
+  virtual void LoadToGPU();
 
 
 protected:
-  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
   CDXTexture(CBaseTexture& texture);
    CBaseTexture& operator = (const CBaseTexture &rhs);
 };

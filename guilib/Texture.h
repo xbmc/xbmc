@@ -31,6 +31,9 @@ class CTexture;
 class CGLTexture;
 class CDXTexture;
 
+#define MAX_PICTURE_WIDTH  2048
+#define MAX_PICTURE_HEIGHT 2048
+
 #pragma once
 
 /*!
@@ -48,24 +51,31 @@ public:
   virtual CBaseTexture& operator = (const CBaseTexture &rhs) = 0;
   virtual void Delete() = 0;
 
-  virtual bool LoadFromFile(const CStdString& texturePath) = 0;
-  virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels) = 0; 
+  virtual bool LoadFromFile(const CStdString& texturePath);
+  virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels);
+  virtual void CreateTextureObject() = 0;
+  virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;
 
   XBMC::TexturePtr GetTextureObject() const { return m_pTexture; }
-  virtual unsigned char* GetPixels() const { return NULL; }
-  virtual unsigned int GetPitch() const { return 0; }
+  virtual unsigned char* GetPixels() const { return m_pPixels; }
+  virtual unsigned int GetPitch() const { return m_nTextureWidth * (m_nBPP / 8); }
   virtual unsigned int GetTextureWidth() const { return m_imageWidth; };
   virtual unsigned int GetTextureHeight() const { return m_imageHeight; };
   unsigned int GetWidth() const { return m_imageWidth; }
   unsigned int GetHeight() const { return m_imageHeight; }
   unsigned int GetBPP() const { return m_nBPP; }
 
-protected:
-  virtual void Allocate(unsigned int width, unsigned int height, unsigned int BPP) = 0;
+  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
+  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
 
+  static DWORD PadPow2(DWORD x);
+
+protected:
   unsigned int m_imageWidth;
   unsigned int m_imageHeight;
+  unsigned int m_nTextureWidth;
+  unsigned int m_nTextureHeight;
   unsigned int m_nBPP;
   XBMC::TexturePtr m_pTexture;
   unsigned char* m_pPixels;

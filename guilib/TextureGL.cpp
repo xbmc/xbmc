@@ -21,26 +21,10 @@
 
 #include "include.h"
 #include "TextureGL.h"
-#include "WindowingFactory.h"
-#include "../xbmc/Picture.h"
 
 #ifdef HAS_GL
 
-#define MAX_PICTURE_WIDTH  2048
-#define MAX_PICTURE_HEIGHT 2048
-
 using namespace std;
-
-DWORD PadPow2(DWORD x) 
-{
-  --x;
-  x |= x >> 1;
-  x |= x >> 2;
-  x |= x >> 4;
-  x |= x >> 8;
-  x |= x >> 16;
-  return ++x;
-}
 
 /************************************************************************/
 /*    CGLTexture                                                       */
@@ -80,25 +64,6 @@ CBaseTexture& CGLTexture::operator = (const CBaseTexture &rhs)
   return *this;
 }
 
-void CGLTexture::Allocate(unsigned int width, unsigned int height, unsigned int BPP)
-{
-  if(BPP != 0)
-    m_nBPP = BPP;
-
-  if (g_Windowing.NeedPower2Texture())
-  {
-    m_nTextureWidth = PadPow2(m_imageWidth);
-    m_nTextureHeight = PadPow2(m_imageHeight);
-  }
-  else
-  {
-    m_nTextureWidth = m_imageWidth;
-    m_nTextureHeight = m_imageHeight;
-  }
-
-  m_pPixels = new unsigned char[m_nTextureWidth * m_nTextureHeight * m_nBPP / 8];
-}
-
 void CGLTexture::Delete()
 {
   m_imageWidth = 0;
@@ -111,35 +76,14 @@ void CGLTexture::Delete()
   }
 }
 
-bool CGLTexture::LoadFromFile(const CStdString& texturePath)
+void CGLTexture::CreateTextureObject()
 {
-  CPicture pic;
-  CBaseTexture* original = pic.Load(texturePath, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT);
-  if (!original)
-  {
-    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
-    return 0;
-  }
-  m_imageWidth = original->GetWidth();
-  m_imageHeight = original->GetHeight();
-  m_nBPP = original->GetBPP();
-
-  Update(original->GetWidth(), original->GetHeight(), original->GetPitch(), original->GetPixels(), false);
-
-  delete original;
-
-  return true;
+   glGenTextures(1, (GLuint*) &m_pTexture);
 }
 
-
-bool CGLTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels)
+void CGLTexture::DestroyTextureObject()
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
-  m_nBPP = BPP;
-  Update(width, height, pitch, pPixels, false);
-
-  return TRUE;
+  glDeleteTextures(1, (GLuint*) &m_pTexture);
 }
 
 void CGLTexture::LoadToGPU()
@@ -154,7 +98,7 @@ void CGLTexture::LoadToGPU()
   {
     // Have OpenGL generate a texture object handle for us
     // this happens only one time - the first time the texture is loaded
-    glGenTextures(1, (GLuint*) &m_pTexture);
+    CreateTextureObject();
   }
 
   // Bind the texture object
@@ -191,70 +135,4 @@ void CGLTexture::LoadToGPU()
 
   m_loadedToGPU = true;   
 }
-
-unsigned int CGLTexture::GetPitch() const
-{
-  return m_nTextureWidth * (m_nBPP / 8);
-}
-
-unsigned int CGLTexture::GetTextureWidth() const
-{
-  return m_nTextureWidth;
-}
-
-unsigned int CGLTexture::GetTextureHeight() const
-{
-  return m_nTextureHeight;
-}
-
-unsigned char* CGLTexture::GetPixels() const
-{
-  return m_pPixels;
-}
-
-void CGLTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) 
-{
-  int tpitch;
-
-  if (m_pPixels)
-  {
-    delete [] m_pPixels;
-    m_pPixels = NULL;
-  }
-
-  Allocate(w, h, 0);
-
-  // Resize texture to POT
-  const unsigned char *src = pixels;
-  tpitch = pitch;
-  unsigned char* resized = m_pPixels;
-
-  for (int y = 0; y < h; y++)
-  {
-    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
-    src += pitch;
-
-    // repeat last column to simulate clamp_to_edge
-    for(unsigned int i = tpitch; i < m_nTextureWidth*4; i+=4)
-      memcpy(resized+i, src-4, 4);
-
-    resized += (m_nTextureWidth * 4);
-  }
-
-  // repeat last row to simulate clamp_to_edge
-  for(unsigned int y = h; y < m_nTextureHeight; y++) 
-  {
-    memcpy(resized, src - tpitch, tpitch);
-
-    // repeat last column to simulate clamp_to_edge
-    for(unsigned int i = tpitch; i < m_nTextureWidth*4; i+=4) 
-      memcpy(resized+i, src-4, 4);
-
-    resized += (m_nTextureWidth * 4);
-  }
-
-  if (loadToGPU)
-    LoadToGPU();
-}
-
 #endif // HAS_GL
