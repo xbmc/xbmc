@@ -74,7 +74,6 @@ void CSettings::Initialize()
   RESOLUTION_INFO res;
   vector<RESOLUTION_INFO>::iterator it = m_ResInfo.begin();
 
-  memset(&res,0,sizeof(res));
   m_ResInfo.insert(it, RES_CUSTOM, res);
 
   for (int i = RES_HDTV_1080i; i <= RES_PAL60_16x9; i++)
@@ -821,10 +820,10 @@ bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& 
       continue;
     }
     ////
-    GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode);
+    GetString(pResolution, "description", mode, m_ResInfo[iRes].strMode.c_str());
     if(iRes == RES_DESKTOP && !mode.Equals(m_ResInfo[iRes].strMode))
     {
-      CLog::Log(LOGDEBUG, "%s - Ignoring desktop resolution \"%s\" that differs from current \"%s\"", __FUNCTION__, mode.c_str(), m_ResInfo[iRes].strMode);
+      CLog::Log(LOGDEBUG, "%s - Ignoring desktop resolution \"%s\" that differs from current \"%s\"", __FUNCTION__, mode.c_str(), m_ResInfo[iRes].strMode.c_str());
 
       pResolution = pResolution->NextSiblingElement("resolution");
       continue;
