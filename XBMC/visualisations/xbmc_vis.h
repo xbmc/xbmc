@@ -53,12 +53,12 @@ vector<VisSetting> m_vecSettings;
 extern "C"
 {
   // exports for d3d hacks
-#ifndef HAS_SDL_OPENGL
+#ifdef HAS_DX
   void d3dSetTextureStageState( int x, DWORD dwY, DWORD dwZ);
   void d3dSetRenderState(DWORD dwY, DWORD dwZ);
 #endif
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #ifndef D3DCOLOR_RGBA
 #define D3DCOLOR_RGBA(r,g,b,a) (r||(g<<8)||(b<<16)||(a<<24))
 #endif

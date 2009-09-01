@@ -24,36 +24,11 @@
 #include "GUIFontManager.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
-#include "Settings.h"
-#include "GUISettings.h"
-#include "XBVideoConfig.h"
-#include "TextureManager.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "GUIAudioManager.h"
-
-#define D3D_CLEAR_STENCIL 0x0l
-
-#ifdef HAS_SDL_OPENGL
-#define GLVALIDATE  { CSingleLock locker(*this); ValidateSurface(); }
-#endif
-#include "Surface.h"
+#include "WindowingFactory.h"
 #include "SkinInfo.h"
-using namespace Surface;
-#ifdef HAS_GLX
-#include <X11/extensions/Xinerama.h>
-#elif defined (__APPLE__)
-#include "CocoaInterface.h"
-#endif
-#ifdef HAS_XRANDR
-#include "XRandR.h"
-#endif
-
-#ifdef HAVE_LIBVDPAU
-#include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
-
 
 using namespace std;
 
@@ -67,66 +42,20 @@ CGraphicContext::CGraphicContext(void)
 {
   m_iScreenWidth = 720;
   m_iScreenHeight = 576;
-#ifndef HAS_SDL
-  m_pd3dDevice = NULL;
-  m_pd3dParams = NULL;
-  m_stateBlock = 0xffffffff;
-#else
-  m_screenSurface = NULL;
-#endif
-#ifdef HAS_SDL_OPENGL
-  m_maxTextureSize = 2048;
-#endif
+  m_iScreenId = 0;
   m_dwID = 0;
   m_strMediaDir = "";
   m_bCalibrating = false;
-  m_Resolution = INVALID;
+  m_Resolution = RES_INVALID;
   m_pCallback = NULL;
   m_guiScaleX = m_guiScaleY = 1.0f;
-  m_windowResolution = INVALID;
+  m_windowResolution = RES_INVALID;
   m_bFullScreenRoot = false;
 }
 
 CGraphicContext::~CGraphicContext(void)
 {
-#ifndef HAS_SDL
-  if (m_stateBlock != 0xffffffff)
-  { // TODO:DIRECTX - replace this with IDirect3DStateBlock9 implementation
-//    Get3DDevice()->DeleteStateBlock(m_stateBlock);
-  }
-#endif
-
-  while (m_viewStack.size())
-  {
-#ifndef HAS_SDL
-    D3DVIEWPORT9 *viewport = m_viewStack.top();
-#elif defined(HAS_SDL_2D)
-    SDL_Rect *viewport = m_viewStack.top();
-#elif defined(HAS_SDL_OPENGL)
-    GLint* viewport = m_viewStack.top();
-#else
-    int *viewport;
-#endif
-    m_viewStack.pop();
-    if (viewport) delete [] viewport;
-  }
-
-  // do not delete m_screenSurface, SDL is already gone and we will
-  // crash on exit in Surface::CSurface::~CSurface at SDL_FreeSurface(m_SDLSurface)
-  //delete m_screenSurface;
 }
-
-#ifndef HAS_SDL
-void CGraphicContext::SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice)
-{
-  m_pd3dDevice = p3dDevice;
-}
-
-void CGraphicContext::SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams)
-{
-  m_pd3dParams = p3dParams;
-}
-#endif
 
 bool CGraphicContext::SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1, DWORD param2)
 {
@@ -146,18 +75,13 @@ void CGraphicContext::setMessageSender(IMsgSenderCallback* pCallback)
   m_pCallback = pCallback;
 }
 
-DWORD CGraphicContext::GetNewID()
-{
-  m_dwID++;
-  return m_dwID;
-}
-
 void CGraphicContext::SetOrigin(float x, float y)
 {
   if (m_origins.size())
     m_origins.push(CPoint(x,y) + m_origins.top());
   else
     m_origins.push(CPoint(x,y));
+  
   AddTransform(TransformMatrix::CreateTranslation(x, y));
 }
 
@@ -173,15 +97,19 @@ bool CGraphicContext::SetClipRegion(float x, float y, float w, float h)
   CPoint origin;
   if (m_origins.size())
     origin = m_origins.top();
+  
   // ok, now intersect with our old clip region
   CRect rect(x, y, x + w, y + h);
   rect += origin;
   if (m_clipRegions.size())
-  { // intersect with original clip region
+  { 
+    // intersect with original clip region
     rect.Intersect(m_clipRegions.top());
   }
+  
   if (rect.IsEmpty())
     return false;
+  
   m_clipRegions.push(rect);
 
   // here we could set the hardware clipping, if applicable
@@ -231,22 +159,10 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
   }
 }
 
-bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious /* = false */)
+bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheight, bool intersectPrevious /* = false */)
 {
-#ifndef HAS_SDL
-  D3DVIEWPORT9 newviewport;
-  D3DVIEWPORT9 *oldviewport = new D3DVIEWPORT9;
-  Get3DDevice()->GetViewport(oldviewport);
-#elif defined(HAS_SDL_2D)
-  SDL_Rect newviewport;
-  SDL_Rect *oldviewport = new SDL_Rect;
-  SDL_GetClipRect(m_screenSurface->SDL(), oldviewport);
-#elif defined(HAS_SDL_OPENGL)
-  GLVALIDATE;
-  GLint newviewport[4];
-  GLint* oldviewport = new GLint[4];
-  glGetIntegerv(GL_SCISSOR_BOX, oldviewport);
-#endif
+  CRect oldviewport;
+  g_Windowing.GetViewPort(oldviewport);
 
   // transform coordinates - we may have a rotation which changes the positioning of the
   // minimal and maximal viewport extents.  We currently go to the maximal extent.
@@ -276,29 +192,12 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   if (intersectPrevious)
   {
     // do the intersection
-#ifndef HAS_SDL
-    int oldLeft = (int)oldviewport->X;
-    int oldTop = (int)oldviewport->Y;
-    int oldRight = (int)oldviewport->X + oldviewport->Width;
-    int oldBottom = (int)oldviewport->Y + oldviewport->Height;
-#elif defined(HAS_SDL_2D)
-    int oldLeft = (int)oldviewport->x;
-    int oldTop = (int)oldviewport->y;
-    int oldRight = (int)oldviewport->x + oldviewport->w;
-    int oldBottom = (int)oldviewport->y + oldviewport->h;
-#elif defined(HAS_SDL_OPENGL)
-    int oldLeft = (int)oldviewport[0];
-    int oldBottom = m_iScreenHeight - oldviewport[1];       // opengl uses bottomleft as origin
-    int oldTop = oldBottom - oldviewport[3];
-    int oldRight = (int)oldviewport[0] + oldviewport[2];
-#endif
+    int oldLeft = (int)oldviewport.x1;
+    int oldTop = (int)oldviewport.y1;
+    int oldRight = (int)oldviewport.x2;
+    int oldBottom = (int)oldviewport.y2;
     if (newLeft >= oldRight || newTop >= oldBottom || newRight <= oldLeft || newBottom <= oldTop)
     { // empty intersection - return false to indicate no rendering should occur
-#if defined(HAS_SDL_OPENGL)
-      delete [] oldviewport;
-#else
-      delete oldviewport;
-#endif
       return false;
     }
     // ok, they intersect, do the intersection
@@ -312,12 +211,6 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
       newTop >= m_iScreenHeight || newLeft >= m_iScreenWidth ||
       newLeft >= newRight || newTop >= newBottom)
   { // no intersection with the screen
-
-#if defined(HAS_SDL_OPENGL)
-   delete [] oldviewport;
-#else
-   delete oldviewport;
-#endif
     return false;
   }
   // intersection with the screen
@@ -329,29 +222,8 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
   ASSERT(newLeft < newRight);
   ASSERT(newTop < newBottom);
 
-#ifndef HAS_SDL
-  newviewport.MinZ = 0.0f;
-  newviewport.MaxZ = 1.0f;
-  newviewport.X = newLeft;
-  newviewport.Y = newTop;
-  newviewport.Width = newRight - newLeft;
-  newviewport.Height = newBottom - newTop;
-  m_pd3dDevice->SetViewport(&newviewport);
-#elif defined(HAS_SDL_2D)
-  newviewport.x = newLeft;
-  newviewport.y = newTop;
-  newviewport.w = newRight - newLeft;
-  newviewport.h = newBottom - newTop;
-  SDL_SetClipRect(m_screenSurface->SDL(), &newviewport);
-#elif defined(HAS_SDL_OPENGL)
-  newviewport[0] = newLeft;
-  newviewport[1] = m_iScreenHeight - newBottom; // opengl uses bottomleft as origin
-  newviewport[2] = newRight - newLeft;
-  newviewport[3] = newBottom - newTop;
-  glScissor(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
-  glViewport(newviewport[0], newviewport[1], newviewport[2], newviewport[3]);
-  VerifyGLState();
-#endif
+  CRect newviewport(newLeft, newTop, newRight, newBottom);
+  g_Windowing.SetViewPort(newviewport);
 
   m_viewStack.push(oldviewport);
 
@@ -362,27 +234,11 @@ bool CGraphicContext::SetViewPort(float fx, float fy , float fwidth, float fheig
 void CGraphicContext::RestoreViewPort()
 {
   if (!m_viewStack.size()) return;
-#ifndef HAS_SDL
-  D3DVIEWPORT9 *oldviewport = (D3DVIEWPORT9*)m_viewStack.top();
-  Get3DDevice()->SetViewport(oldviewport);
-#elif defined(HAS_SDL_2D)
-  SDL_Rect *oldviewport = (SDL_Rect*)m_viewStack.top();
-  SDL_SetClipRect(m_screenSurface->SDL(), oldviewport);
-#elif defined(HAS_SDL_OPENGL)
-  GLVALIDATE;
-  GLint* oldviewport = (GLint*)m_viewStack.top();
-  glScissor(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
-  glViewport(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
-  VerifyGLState();
-#endif
+
+  CRect oldviewport = m_viewStack.top();
+  g_Windowing.SetViewPort(oldviewport);
 
   m_viewStack.pop();
-
-#if defined(HAS_SDL_OPENGL)
-  delete [] oldviewport;
-#else
-  delete oldviewport;
-#endif
 
   UpdateCameraPosition(m_cameras.top());
 }
@@ -391,6 +247,7 @@ const RECT& CGraphicContext::GetViewWindow() const
 {
   return m_videoRect;
 }
+
 void CGraphicContext::SetViewWindow(float left, float top, float right, float bottom)
 {
   if (m_bCalibrating)
@@ -404,25 +261,6 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
     m_videoRect.right = (long)(ScaleFinalXCoord(right, bottom) + 0.5f);
     m_videoRect.bottom = (long)(ScaleFinalYCoord(right, bottom) + 0.5f);
   }
-}
-
-void CGraphicContext::ClipToViewWindow()
-{
-#ifndef HAS_SDL
-  D3DRECT clip = { m_videoRect.left, m_videoRect.top, m_videoRect.right, m_videoRect.bottom };
-  if (m_videoRect.left < 0) clip.x1 = 0;
-  if (m_videoRect.top < 0) clip.y1 = 0;
-  if (m_videoRect.left > m_iScreenWidth - 1) clip.x1 = m_iScreenWidth - 1;
-  if (m_videoRect.top > m_iScreenHeight - 1) clip.y1 = m_iScreenHeight - 1;
-  if (m_videoRect.right > m_iScreenWidth) clip.x2 = m_iScreenWidth;
-  if (m_videoRect.bottom > m_iScreenHeight) clip.y2 = m_iScreenHeight;
-  if (clip.x2 < clip.x1) clip.x2 = clip.x1 + 1;
-  if (clip.y2 < clip.y1) clip.y2 = clip.y1 + 1;
-#else
-#ifdef  __GNUC__
-// TODO: CGraphicContext::ClipToViewWindow not implemented
-#endif
-#endif
 }
 
 void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
@@ -458,421 +296,68 @@ void CGraphicContext::SetCalibrating(bool bOnOff)
 
 bool CGraphicContext::IsValidResolution(RESOLUTION res)
 {
-  return g_videoConfig.IsValidResolution(res);
+  if (res >= RES_WINDOW && (size_t) res <= g_settings.m_ResInfo.size())
+  {
+    return true;
+  }
+  
+  return false;
 }
 
-void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res, bool bAllowPAL60)
-{
-  bool bCanDoWidescreen = g_videoConfig.HasWidescreen();
-  res.clear();
-  if (g_videoConfig.HasPAL())
-  {
-    res.push_back(PAL_4x3);
-    if (bCanDoWidescreen) res.push_back(PAL_16x9);
-    if (bAllowPAL60 && g_videoConfig.HasPAL60())
-    {
-      res.push_back(PAL60_4x3);
-      if (bCanDoWidescreen) res.push_back(PAL60_16x9);
-    }
-  }
-  if (g_videoConfig.HasNTSC())
-  {
-    res.push_back(NTSC_4x3);
-    if (bCanDoWidescreen) res.push_back(NTSC_16x9);
-    if (g_videoConfig.Has480p())
-    {
-      res.push_back(HDTV_480p_4x3);
-      if (bCanDoWidescreen) res.push_back(HDTV_480p_16x9);
-    }
-    if (g_videoConfig.Has720p())
-      res.push_back(HDTV_720p);
-    if (g_videoConfig.Has1080i())
-      res.push_back(HDTV_1080i);
-  }
-#ifdef HAS_SDL
-  if (g_videoConfig.GetNumberOfResolutions())
-  {
-    res.push_back(CUSTOM);
-  }
-  res.push_back(DESKTOP);
-#endif
-}
-
-#ifndef HAS_SDL
-void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
-{
-  if (res == AUTORES)
-  {
-    res = g_videoConfig.GetBestMode();
-  }
-  if (!IsValidResolution(res))
-  { // Choose a failsafe resolution that we can actually display
-    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    res = g_videoConfig.GetSafeMode();
-  }
-
-  if (!m_pd3dParams)
-  {
-    m_Resolution = res;
-    return ;
-  }
-  bool NeedReset = false;
-
-  UINT interval = D3DPRESENT_INTERVAL_ONE;
-  //if( m_bFullScreenVideo )
-  //  interval = D3DPRESENT_INTERVAL_IMMEDIATE;
-
-#ifdef PROFILE
-  interval = D3DPRESENT_INTERVAL_IMMEDIATE;
-#endif
-
-  interval = 0;
-
-  if (interval != m_pd3dParams->PresentationInterval)
-  {
-    m_pd3dParams->PresentationInterval = interval;
-    NeedReset = true;
-  }
-
-
-  if (NeedZ != m_pd3dParams->EnableAutoDepthStencil)
-  {
-    m_pd3dParams->EnableAutoDepthStencil = NeedZ;
-    NeedReset = true;
-  }
-  if (m_Resolution != res)
-  {
-    NeedReset = true;
-    m_pd3dParams->BackBufferWidth = g_settings.m_ResInfo[res].iWidth;
-    m_pd3dParams->BackBufferHeight = g_settings.m_ResInfo[res].iHeight;
-    m_pd3dParams->Flags = g_settings.m_ResInfo[res].dwFlags;
-    m_pd3dParams->Flags |= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
-
-    if (res == HDTV_1080i || res == HDTV_720p || m_bFullScreenVideo)
-      m_pd3dParams->BackBufferCount = 1;
-    else
-      m_pd3dParams->BackBufferCount = 2;
-
-    if (res == PAL60_4x3 || res == PAL60_16x9)
-    {
-      if (m_pd3dParams->BackBufferWidth <= 720 && m_pd3dParams->BackBufferHeight <= 480)
-      {
-        m_pd3dParams->FullScreen_RefreshRateInHz = 60;
-      }
-      else
-      {
-        m_pd3dParams->FullScreen_RefreshRateInHz = 0;
-      }
-    }
-    else
-    {
-      m_pd3dParams->FullScreen_RefreshRateInHz = 0;
-    }
-  }
-  Lock();
-  if (m_pd3dDevice)
-  {
-    if (NeedReset)
-    {
-      CLog::Log(LOGDEBUG, "Setting resolution %i", res);
-      m_pd3dDevice->Reset(m_pd3dParams);
-    }
-
-    /* need to clear and preset, otherwise flicker filters won't take effect */
-    if (NeedReset || forceClear)
-    {
-      m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3D_CLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-      m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-    }
-
-    m_iScreenWidth = m_pd3dParams->BackBufferWidth;
-    m_iScreenHeight = m_pd3dParams->BackBufferHeight;
-    m_bWidescreen = (m_pd3dParams->Flags & D3DPRESENTFLAG_WIDESCREEN) != 0;
-  }
-  if (m_Resolution != INVALID && ((g_settings.m_ResInfo[m_Resolution].iWidth != g_settings.m_ResInfo[res].iWidth) ||
-                                  (g_settings.m_ResInfo[m_Resolution].iHeight != g_settings.m_ResInfo[res].iHeight)))
-  { // set the mouse resolution
-    g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
-    ResetOverscan(g_settings.m_ResInfo[res]);
-  }
-
-  SetFullScreenViewWindow(res);
-
-  m_Resolution = res;
-  if(NeedReset)
-  {
-    CLog::Log(LOGDEBUG, "We set resolution %i", m_Resolution);
-    if (m_Resolution != INVALID)
-      g_fontManager.ReloadTTFFonts();
-  }
-
-  Unlock();
-}
-// SDL (Linux, Apple, Windows)
-#else
 void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
 {
   RESOLUTION lastRes = m_Resolution;
-  if (res == AUTORES)
+  
+  // If the user asked us to guess, go with desktop
+  if (res == RES_AUTORES || !IsValidResolution(res))
   {
-    res = g_videoConfig.GetBestMode();
+    res = RES_DESKTOP;
   }
 
-  if (!IsValidResolution(res))
+  // If we are switching to the same resolution and same window/full-screen, no need to do anything
+  if (res == lastRes && m_bFullScreenRoot == g_advancedSettings.m_fullScreen)
   {
-    // Choose a failsafe resolution that we can actually display
-    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    res = g_videoConfig.GetSafeMode();
+    return;
   }
-#ifndef _WIN32PC
-  // FIXME: see if #5256 works also for Linux and Mac
-  if (res>=DESKTOP || g_advancedSettings.m_startFullScreen)
+  
+  if (res >= RES_DESKTOP || g_advancedSettings.m_startFullScreen)
   {
     g_advancedSettings.m_fullScreen = true;
     m_bFullScreenRoot = true;
-    if (res!=m_Resolution)
-    {
-      if (m_Resolution != INVALID)
-        g_settings.m_ResInfo[WINDOW] = g_settings.m_ResInfo[m_Resolution];
-    }
   }
   else
   {
     g_advancedSettings.m_fullScreen = false;
     m_bFullScreenRoot = false;
-#ifdef HAS_XRANDR
-    g_audioManager.Stop();
-    g_xrandr.RestoreState();
-#endif
   }
 
-  if (res==WINDOW)
+  Lock();
+  
+  m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
+  m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
+  m_iScreenId     = g_settings.m_ResInfo[res].iScreen;
+  m_Resolution    = res;
+  
+  if (g_advancedSettings.m_fullScreen)
   {
-    g_advancedSettings.m_fullScreen = false;
-    m_bFullScreenRoot = false;
+    SetFullScreenRoot(true);
   }
-
-  if (res==WINDOW || (m_Resolution != res))
-#else
-  if ((m_Resolution != res) || (m_bFullScreenRoot != g_advancedSettings.m_fullScreen))
-#endif
+  else if (lastRes >= RES_DESKTOP )
   {
-#if defined(__APPLE__)
-    // In going FullScreen, m_Resolution == DESKTOP but if using multiple displays
-    // the display resolution will be wrong if the windowed display is moved to
-    // a display with a different resolution. So we have to resort to
-    // Hack, hack, hack. The basic problem is the resolution is not linked to the
-    // display so we have to find which display we are going fs on, then search
-    // through the m_ResInfo resolutions to find a matching "Full Screen"
-    // descriptor, then use that index to setup m_Resolution as there are multiple
-    // "DESKTOP" with multiple displays. If the strMode descriptor changes, this
-    // will break but the resolution really need to be linked to a display index.
-    if (m_bFullScreenRoot)
-    {
-      // going to fullscreen desktop but which display if multiple displays?
-      // need to find the m_ResInfo index for that display.
-      int screen_index = Cocoa_GetScreenIndex();
-      char        test_string[256];
-
-      if (screen_index == 1)
-      {
-        strcpy(test_string, "(Full Screen)");
-      }
-      else
-      {
-        sprintf(test_string, "(Full Screen #%d)", screen_index);
-      }
-      for (int i = (int)DESKTOP ; i< (CUSTOM+g_videoConfig.GetNumberOfResolutions()) ; i++)
-      {
-        if (strstr(g_settings.m_ResInfo[i].strMode, test_string) != 0)
-        {
-            res = (RESOLUTION)i;
-            break;
-        }
-      }
-    }
-#endif
-    Lock();
-    m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
-    m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
-    m_Resolution    = res;
-
-#ifdef HAS_SDL_2D
-    int options = SDL_HWSURFACE | SDL_DOUBLEBUF;
-    if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
-    m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, (bool)g_advancedSettings.m_fullScreen);
-#elif defined(HAS_SDL_OPENGL)
-    int options = SDL_RESIZABLE;
-    if (g_advancedSettings.m_fullScreen) options |= SDL_FULLSCREEN;
-
-    // Create a bare root window so that SDL Input handling works
-#ifdef HAS_GLX
-    static SDL_Surface* rootWindow = NULL;
-    if (!rootWindow)
-    {
-#ifdef HAS_XRANDR
-      XOutput out;
-      XMode mode;
-      out.name = g_settings.m_ResInfo[res].strOutput;
-      mode.w = g_settings.m_ResInfo[res].iWidth;
-      mode.h = g_settings.m_ResInfo[res].iHeight;
-      mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
-      g_audioManager.Stop();
-      g_xrandr.SetMode(out, mode);
-      g_renderManager.Recover();
-      SDL_ShowCursor(SDL_ENABLE);
-#endif
-
-      rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
-      // attach a GLX surface to the root window
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, rootWindow, (bool)g_advancedSettings.m_fullScreen);
-      if (g_videoConfig.GetVSyncMode()==VSYNC_ALWAYS)
-        m_screenSurface->EnableVSync();
-
-      if (g_advancedSettings.m_fullScreen)
-      {
-        SetFullScreenRoot(true);
-      }
-    }
-    else
-    {
-      if (!g_advancedSettings.m_fullScreen)
-      {
-        rootWindow = SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0,  options);
-        m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
-      }
-      else
-      {
-        SetFullScreenRoot(true);
-      }
-    }
-
-#elif defined(__APPLE__) || defined(_WIN32PC)
-    // Allow for fullscreen.
-    bool needsResize = (m_screenSurface != 0);
-#if defined(_WIN32PC)
-    // Always resize even the first time because we need to change the attributes on the SDL window and center
-    needsResize = true;
-#endif
-    if (!m_screenSurface)
-      m_screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, 0, 0, 0, g_advancedSettings.m_fullScreen);
-
-    if (g_advancedSettings.m_fullScreen)
-    {
-      // SetFullScreenRoot will call m_screenSurface->ResizeSurface
-      needsResize = false;
-      SetFullScreenRoot(true);
-    }
-#ifndef _WIN32PC
-    else if (lastRes>=DESKTOP )
-#else
-    else if (m_bFullScreenRoot)
-#endif
-    {
-      // SetFullScreenRoot will call m_screenSurface->ResizeSurface
-      needsResize = false;
-      SetFullScreenRoot(false);
-    }
-
-    if (needsResize)
-      m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
-#endif
-
-#if defined(_WIN32PC) && !defined(__APPLE__)
-    if (!g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-    {
-        //get the display frequency
-        DEVMODE devmode;
-        ZeroMemory(&devmode, sizeof(devmode));
-        devmode.dmSize = sizeof(devmode);
-        EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devmode);
-        if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
-            g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency + 1) / 1.001f;
-        else
-            g_settings.m_ResInfo[res].fRefreshRate = (float)(devmode.dmDisplayFrequency);
-    }
-    else
-        if(g_settings.m_ResInfo[res].iSubtitles > g_settings.m_ResInfo[res].iHeight)
-            g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
-#endif
-
-    SDL_WM_SetCaption("XBMC Media Center", NULL);
-
-    {
-      CSingleLock aLock(m_surfaceLock);
-      m_surfaces[GetCurrentThreadId()] = m_screenSurface;
-    }
-
-    glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-
-    {
-      GLint width = 256;
-      glGetError(); // reset any previous GL errors
-
-      // max out at 2^(8+8)
-      for (int i = 0 ; i<8 ; i++)
-      {
-        glTexImage2D(GL_PROXY_TEXTURE_2D, 0, 4, width, width, 0, GL_BGRA,
-                     GL_UNSIGNED_BYTE, NULL);
-        glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_WIDTH,
-                                 &width);
-
-        // GMA950 on OS X sets error instead
-        if (width==0 || (glGetError()!=GL_NO_ERROR) )
-          break;
-        m_maxTextureSize = width;
-        width *= 2;
-        if (width > 65536) // have an upper limit in case driver acts stupid
-        {
-          CLog::Log(LOGERROR, "GL: Could not determine maximum texture width, falling back to 2048");
-          m_maxTextureSize = 2048;
-          break;
-        }
-      }
-      CLog::Log(LOGINFO, "GL: Maximum texture width: %d", m_maxTextureSize);
-    }
-
-    glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
-    glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
-
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_SCISSOR_TEST);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    glOrtho(0.0f, m_iScreenWidth-1, m_iScreenHeight-1, 0.0f, -1.0f, 1.0f);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    glEnable(GL_BLEND);          // Turn Blending On
-    glDisable(GL_DEPTH_TEST);
-    VerifyGLState();
-#endif
-    m_bWidescreen = (res == HDTV_1080i || res == HDTV_720p || res == PAL60_16x9 ||
-                        res == PAL_16x9 || res == NTSC_16x9);
-
-    // set the mouse resolution
-    if ((lastRes == -1) || (g_settings.m_ResInfo[lastRes].iWidth != g_settings.m_ResInfo[res].iWidth) || (g_settings.m_ResInfo[lastRes].iHeight != g_settings.m_ResInfo[res].iHeight))
-    {
-      g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
-      g_fontManager.ReloadTTFFonts();
-    }
-
-    // restore vsync mode
-    g_videoConfig.SetVSyncMode((VSYNC)g_guiSettings.GetInt("videoscreen.vsync"));
-
-    SetFullScreenViewWindow(res);
-
-    m_Resolution = res;
-    Unlock();
+    SetFullScreenRoot(false);
   }
+
+  g_Windowing.ResizeWindow(m_iScreenWidth, m_iScreenHeight, -1, -1);
+
+  // set the mouse resolution
+  g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
+  g_fontManager.ReloadTTFFonts();
+
+  SetFullScreenViewWindow(res);
+  m_Resolution = res;
+
+  Unlock();
 }
-
-#endif
-
 
 RESOLUTION CGraphicContext::GetVideoResolution() const
 {
@@ -893,25 +378,25 @@ void CGraphicContext::ResetOverscan(RESOLUTION res, OVERSCAN &overscan)
   overscan.top = 0;
   switch (res)
   {
-  case HDTV_1080i:
+  case RES_HDTV_1080i:
     overscan.right = 1920;
     overscan.bottom = 1080;
     break;
-  case HDTV_720p:
+  case RES_HDTV_720p:
     overscan.right = 1280;
     overscan.bottom = 720;
     break;
-  case HDTV_480p_16x9:
-  case HDTV_480p_4x3:
-  case NTSC_16x9:
-  case NTSC_4x3:
-  case PAL60_16x9:
-  case PAL60_4x3:
+  case RES_HDTV_480p_16x9:
+  case RES_HDTV_480p_4x3:
+  case RES_NTSC_16x9:
+  case RES_NTSC_4x3:
+  case RES_PAL60_16x9:
+  case RES_PAL60_4x3:
     overscan.right = 720;
     overscan.bottom = 480;
     break;
-  case PAL_16x9:
-  case PAL_4x3:
+  case RES_PAL_16x9:
+  case RES_PAL_4x3:
     overscan.right = 720;
     overscan.bottom = 576;
     break;
@@ -926,12 +411,11 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
 {
   // For now these are all on the first screen.
   g_settings.m_ResInfo[res].iScreen = 0;
-  static const float fOptimalSwitchPoint = 8.0f / (3.0f*sqrt(3.0f)); // see XboxRenderer.cpp
 
   // 1080i
   switch (res)
   {
-  case HDTV_1080i:
+  case RES_HDTV_1080i:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 1080);
     g_settings.m_ResInfo[res].iWidth = 1920;
     g_settings.m_ResInfo[res].iHeight = 1080;
@@ -939,7 +423,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "1080i 16:9");
     break;
-  case HDTV_720p:
+  case RES_HDTV_720p:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 720);
     g_settings.m_ResInfo[res].iWidth = 1280;
     g_settings.m_ResInfo[res].iHeight = 720;
@@ -947,7 +431,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "720p 16:9");
     break;
-  case HDTV_480p_4x3:
+  case RES_HDTV_480p_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
@@ -955,7 +439,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "480p 4:3");
     break;
-  case HDTV_480p_16x9:
+  case RES_HDTV_480p_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
@@ -963,7 +447,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "480p 16:9");
     break;
-  case NTSC_4x3:
+  case RES_NTSC_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
@@ -971,7 +455,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "NTSC 4:3");
     break;
-  case NTSC_16x9:
+  case RES_NTSC_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
@@ -979,7 +463,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "NTSC 16:9");
     break;
-  case PAL_4x3:
+  case RES_PAL_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 576);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 576;
@@ -987,7 +471,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 128.0f / 117.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL 4:3");
     break;
-  case PAL_16x9:
+  case RES_PAL_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 576);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 576;
@@ -995,7 +479,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 128.0f / 117.0f*4.0f / 3.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL 16:9");
     break;
-  case PAL60_4x3:
+  case RES_PAL60_4x3:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.9 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
@@ -1003,7 +487,7 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 4:3");
     break;
-  case PAL60_16x9:
+  case RES_PAL60_16x9:
     g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * 480);
     g_settings.m_ResInfo[res].iWidth = 720;
     g_settings.m_ResInfo[res].iHeight = 480;
@@ -1011,45 +495,16 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
     g_settings.m_ResInfo[res].fPixelRatio = 4320.0f / 4739.0f*4.0f / 3.0f;
     strcpy(g_settings.m_ResInfo[res].strMode, "PAL60 16:9");
     break;
-  case DESKTOP:
-    g_videoConfig.GetCurrentResolution(g_settings.m_ResInfo[res]);
-    g_settings.m_ResInfo[res].iSubtitles = (int)(0.965 * g_settings.m_ResInfo[res].iHeight);
-    if(g_settings.m_ResInfo[res].fRefreshRate)
-      snprintf(g_settings.m_ResInfo[res].strMode
-            , sizeof(g_settings.m_ResInfo[res].strMode)
-            , "%dx%d @ %.2fHz (Full Screen)"
-            , g_settings.m_ResInfo[res].iWidth
-            , g_settings.m_ResInfo[res].iHeight
-            , g_settings.m_ResInfo[res].fRefreshRate);
-    else
-      snprintf(g_settings.m_ResInfo[res].strMode
-            , sizeof(g_settings.m_ResInfo[res].strMode)
-            , "%dx%d (Full Screen)"
-            , g_settings.m_ResInfo[res].iWidth
-            , g_settings.m_ResInfo[res].iHeight);
-    if ((float)g_settings.m_ResInfo[res].iWidth/(float)g_settings.m_ResInfo[res].iHeight >= fOptimalSwitchPoint)
-      g_settings.m_ResInfo[res].dwFlags = D3DPRESENTFLAG_WIDESCREEN;
-    g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
-    break;
-  case WINDOW:
-    {
-      RESOLUTION_INFO info = {};
-      g_videoConfig.GetCurrentResolution(info);
-      g_settings.m_ResInfo[res] = g_settings.m_ResInfo[PAL60_4x3];
-      g_settings.m_ResInfo[res].fPixelRatio = 1.0f;
-      g_settings.m_ResInfo[res].fRefreshRate = info.fRefreshRate;
-    }
-    break;
   default:
     break;
   }
   ResetOverscan(res, g_settings.m_ResInfo[res].Overscan);
 }
 
+// TODO: Why do we set a pixel ratio of 1.0 if the
+//       user is not running fullscreen?
 float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 {
-  // TODO: Why do we set a pixel ratio of 1.0 if the
-  //       user is not running fullscreen?
   if (!m_bFullScreenRoot)
     return 1.0f;
 
@@ -1058,85 +513,24 @@ float CGraphicContext::GetPixelRatio(RESOLUTION iRes) const
 
 void CGraphicContext::Clear()
 {
-#ifndef HAS_SDL
-  if (!m_pd3dDevice) return;
-  //Not trying to clear the zbuffer when there is none is 7 fps faster (pal resolution)
-  if ((!m_pd3dParams) || (m_pd3dParams->EnableAutoDepthStencil == TRUE))
-    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3D_CLEAR_STENCIL, 0x00010001, 1.0f, 0L );
-  else
-    m_pd3dDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, 0x00010001, 1.0f, 0L );
-#elif defined(HAS_SDL_2D)
-  SDL_FillRect(m_screenSurface->SDL(), NULL, 0x00010001);
-#elif defined(HAS_SDL_OPENGL)
-  GLVALIDATE;
-  glClear(GL_COLOR_BUFFER_BIT);
-#endif
+  g_Windowing.ClearBuffers(0, 0, 0, 0);
 }
 
 void CGraphicContext::CaptureStateBlock()
 {
-#ifndef HAS_SDL
-
-#if 0
-  // TODO:DIRECTX
-  if (m_stateBlock != 0xffffffff)
-  { 
-    Get3DDevice()->DeleteStateBlock(m_stateBlock);
-  }
-
-  if (D3D_OK != Get3DDevice()->CreateStateBlock(D3DSBT_PIXELSTATE, &m_stateBlock))
-  {
-    // Creation failure
-    m_stateBlock = 0xffffffff;
-  }
-#endif
-#endif
-#ifdef HAS_SDL_OPENGL
-  glMatrixMode(GL_PROJECTION);
-  glPushMatrix();
-  glMatrixMode(GL_TEXTURE);
-  glPushMatrix();
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
-  if (glActiveTextureARB)
-    glActiveTextureARB(GL_TEXTURE0_ARB);
-  glDisable(GL_TEXTURE_2D);
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glColor3f(1.0, 1.0, 1.0);
-#endif
+  g_Windowing.CaptureStateBlock();
 }
 
 void CGraphicContext::ApplyStateBlock()
 {
-#ifndef HAS_SDL
-  if (m_stateBlock != 0xffffffff)
-  {
-    // TODO:DIRECTX
-    //Get3DDevice()->ApplyStateBlock(m_stateBlock);
-  }
-#endif
-#ifdef HAS_SDL_OPENGL
-  glMatrixMode(GL_PROJECTION);
-  glPopMatrix();
-  glMatrixMode(GL_TEXTURE);
-  glPopMatrix();
-  glMatrixMode(GL_MODELVIEW);
-  glPopMatrix();
-  if (glActiveTextureARB)
-    glActiveTextureARB(GL_TEXTURE0_ARB);
-  glEnable(GL_TEXTURE_2D);
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  glEnable(GL_BLEND);
-  glEnable(GL_SCISSOR_TEST);
-#endif
+  g_Windowing.ApplyStateBlock();
 }
 
 void CGraphicContext::SetScalingResolution(RESOLUTION res, float posX, float posY, bool needsScaling)
 {
   Lock();
   m_windowResolution = res;
-  if (needsScaling && m_Resolution != INVALID)
+  if (needsScaling && m_Resolution != RES_INVALID)
   {
     // calculate necessary scalings
     float fFromWidth;
@@ -1227,7 +621,7 @@ float CGraphicContext::GetScalingPixelRatio() const
     return GetPixelRatio(m_windowResolution);
 
   RESOLUTION checkRes = m_windowResolution;
-  if (checkRes == INVALID)
+  if (checkRes == RES_INVALID)
     checkRes = m_Resolution;
   // resolutions are different - we want to return the aspect ratio of the video resolution
   // but only once it's been corrected for the skin -> screen coordinates scaling
@@ -1248,7 +642,7 @@ void CGraphicContext::SetCameraPosition(const CPoint &camera)
   if (m_origins.size())
     cam += m_origins.top();
 
-  RESOLUTION windowRes = (m_windowResolution == INVALID) ? m_Resolution : m_windowResolution;
+  RESOLUTION windowRes = (m_windowResolution == RES_INVALID) ? m_Resolution : m_windowResolution;
   cam.x *= (float)m_iScreenWidth / g_settings.m_ResInfo[windowRes].iWidth;
   cam.y *= (float)m_iScreenHeight / g_settings.m_ResInfo[windowRes].iHeight;
 
@@ -1263,63 +657,16 @@ void CGraphicContext::RestoreCameraPosition()
   UpdateCameraPosition(m_cameras.top());
 }
 
+// NOTE: This routine is currently called (twice) every time there is a <camera>
+//       tag in the skin.  It actually only has to be called before we render
+//       something, so another option is to just save the camera coordinates
+//       and then have a routine called before every draw that checks whether
+//       the camera has changed, and if so, changes it.  Similarly, it could set
+//       the world transform at that point as well (or even combine world + view
+//       to cut down on one setting)
 void CGraphicContext::UpdateCameraPosition(const CPoint &camera)
 {
-  // NOTE: This routine is currently called (twice) every time there is a <camera>
-  //       tag in the skin.  It actually only has to be called before we render
-  //       something, so another option is to just save the camera coordinates
-  //       and then have a routine called before every draw that checks whether
-  //       the camera has changed, and if so, changes it.  Similarly, it could set
-  //       the world transform at that point as well (or even combine world + view
-  //       to cut down on one setting)
-
-  // and calculate the offset from the screen center
-  CPoint offset = camera - CPoint(m_iScreenWidth*0.5f, m_iScreenHeight*0.5f);
-
-#if defined(HAS_SDL_OPENGL)
-  // grab the viewport dimensions and location
-  GLint viewport[4];
-  BeginPaint();
-  glGetIntegerv(GL_VIEWPORT, viewport);
-
-  float w = (float)viewport[2]*0.5f;
-  float h = (float)viewport[3]*0.5f;
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  glTranslatef(-(viewport[0] + w + offset.x), +(viewport[1] + h + offset.y), 0);
-  gluLookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glFrustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
-  glMatrixMode(GL_MODELVIEW);
-  EndPaint();
-#elif !defined(HAS_SDL)
-  // grab the viewport dimensions and location
-  D3DVIEWPORT9 viewport;
-  m_pd3dDevice->GetViewport(&viewport);
-  float w = viewport.Width*0.5f;
-  float h = viewport.Height*0.5f;
-
-  // world view.  Until this is moved onto the GPU (via a vertex shader for instance), we set it to the identity
-  // here.
-  D3DXMATRIX mtxWorld;
-  D3DXMatrixIdentity(&mtxWorld);
-  m_pd3dDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
-
-  // camera view.  Multiply the Y coord by -1 then translate so that everything is relative to the camera
-  // position.
-  D3DXMATRIX flipY, translate, mtxView;
-  D3DXMatrixScaling(&flipY, 1.0f, -1.0f, 1.0f);
-  D3DXMatrixTranslation(&translate, -(viewport.X + w + offset.x), -(viewport.Y + h + offset.y), 2*h);
-  D3DXMatrixMultiply(&mtxView, &translate, &flipY);
-  m_pd3dDevice->SetTransform(D3DTS_VIEW, &mtxView);
-
-  // projection onto screen space
-  D3DXMATRIX mtxProjection;
-  D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
-  m_pd3dDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
-#endif
+  g_Windowing.SetCameraPosition(camera, m_iScreenWidth, m_iScreenHeight);
 }
 
 bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
@@ -1334,194 +681,21 @@ float CGraphicContext::GetFPS() const
 {
   if (g_settings.m_ResInfo[m_Resolution].fRefreshRate > 0)
     return g_settings.m_ResInfo[m_Resolution].fRefreshRate;
-  if (m_Resolution == PAL_4x3 || m_Resolution == PAL_16x9)
+  if (m_Resolution == RES_PAL_4x3 || m_Resolution == RES_PAL_16x9)
     return 50.0f;
-  if (m_Resolution == HDTV_1080i)
+  if (m_Resolution == RES_HDTV_1080i)
     return 30.0f;
   return 60.0f;
 }
 
-#ifdef HAS_SDL_2D
-int CGraphicContext::BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect)
+void CGraphicContext::BeginPaint(bool lock)
 {
-  return SDL_BlitSurface(src, srcrect, m_screenSurface->SDL(), dstrect);
-}
-#endif
-
-#ifdef HAS_SDL_OPENGL
-#ifdef  __GNUC__
-// TODO: CGraphicContext needs to cleanup unused surfaces
-#endif
-bool CGraphicContext::ValidateSurface(CSurface* dest)
-{
-  CSingleLock aLock(m_surfaceLock);
-  map<Uint32, CSurface*>::iterator iter;
-  uintptr_t tid = GetCurrentThreadId();
-  iter = m_surfaces.find(tid);
-  if (iter==m_surfaces.end()) {
-#if defined(HAS_GLX) || defined(__APPLE__) || defined(_WIN32PC)
-    if (dest==NULL)
-    {
-      CLog::Log(LOGDEBUG, "GL: Sharing screen surface for thread %lu", (unsigned long)tid);
-      CSurface* surface = new CSurface(m_screenSurface);
-      if (!surface->MakeCurrent())
-      {
-        CLog::Log(LOGERROR, "GL: Error making context current");
-        delete surface;
-        return false;
-      }
-      m_surfaces[tid] = surface;
-      return true;
-    }
-    else
-    {
-      m_surfaces[tid] = dest;
-      dest->MakeCurrent();
-    }
-#else
-    CLog::Log(LOGDEBUG, "Creating surface for thread %ul", tid);
-    CSurface* surface = InitializeSurface();
-    if (surface)
-    {
-      m_surfaces[tid] = surface;
-      return true;
-    } else {
-      CLog::Log(LOGERROR, "Did not get surface for thread %ul", tid);
-      return false;
-    }
-#endif
-  } else {
-    (iter->second)->MakeCurrent();
-  }
-  return true;
-}
-
-CSurface* CGraphicContext::InitializeSurface()
-{
-  CSurface* screenSurface = NULL;
-  Lock();
-
-  screenSurface = new CSurface(m_iScreenWidth, m_iScreenHeight, true, m_screenSurface, m_screenSurface);
-  if (!screenSurface || !screenSurface->IsValid())
-  {
-    CLog::Log(LOGERROR, "Surface creation error");
-    delete screenSurface;
-    Unlock();
-    return NULL;
-  }
-  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-
-  glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
-  glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
-  glEnable(GL_TEXTURE_2D);
-  glEnable(GL_SCISSOR_TEST);
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-
-  glOrtho(0.0f, m_iScreenWidth-1, m_iScreenHeight-1, 0.0f, -1.0f, 1.0f);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
-
-  Unlock();
-  return screenSurface;
-}
-
-#endif
-
-void CGraphicContext::ReleaseCurrentContext(Surface::CSurface* ctx)
-{
-#ifdef HAS_SDL_OPENGL
-  if (ctx)
-  {
-    Lock();
-    ctx->ReleaseContext();
-    Unlock();
-    return;
-  }
-  Lock();
-  map<Uint32, CSurface*>::iterator iter;
-  uintptr_t tid = GetCurrentThreadId();
-  CSingleLock aLock(m_surfaceLock);
-  iter = m_surfaces.find(tid);
-  if (iter==m_surfaces.end())
-  {
-    m_screenSurface->ReleaseContext();
-    Unlock();
-    return;
-  }
-  (iter->second)->ReleaseContext();
-  Unlock();
-#endif
-}
-
-void CGraphicContext::DeleteThreadContext() {
-#ifdef HAS_SDL_OPENGL
-  CSingleLock aLock(m_surfaceLock);
-  // FIXME?: DeleteThreadContext get called from different threads and
-  // produces an acces_violation from time to time when doing the find
-  // on an empty m_surfaces
-  if(m_surfaces.empty())
-    return;
-  map<Uint32, CSurface*>::iterator iter;
-  uintptr_t tid = GetCurrentThreadId();
-  iter = m_surfaces.find(tid);
-  if (iter!=m_surfaces.end())
-    m_surfaces.erase(iter);
-#endif
-}
-
-void CGraphicContext::AcquireCurrentContext(Surface::CSurface* ctx)
-{
-#ifdef HAS_SDL_OPENGL
-  if (ctx)
-  {
-    Lock();
-    if (!ctx->MakeCurrent())
-    {
-      CLog::Log(LOGERROR, "Error making context current");
-    }
-    Unlock();
-    return;
-  }
-  Lock();
-  map<Uint32, CSurface*>::iterator iter;
-  uintptr_t tid = GetCurrentThreadId();
-  CSingleLock aLock(m_surfaceLock);
-  iter = m_surfaces.find(tid);
-  if (iter==m_surfaces.end())
-  {
-    Unlock();
-    return;
-  }
-  if (!(iter->second)->MakeCurrent())
-  {
-    CLog::Log(LOGERROR, "Error making context current");
-  }
-  Unlock();
-#endif
-}
-
-void CGraphicContext::BeginPaint(CSurface *dest, bool lock)
-{
-#ifdef HAS_SDL_OPENGL
   if (lock) Lock();
-  ValidateSurface(dest);
-  VerifyGLState();
-#endif
 }
 
-void CGraphicContext::EndPaint(CSurface *dest, bool lock)
+void CGraphicContext::EndPaint(bool lock)
 {
-#ifdef HAS_SDL_OPENGL
   if (lock) Unlock();
-  VerifyGLState();
-#endif
 }
 
 bool CGraphicContext::IsFullScreenRoot () const
@@ -1531,191 +705,52 @@ bool CGraphicContext::IsFullScreenRoot () const
 
 bool CGraphicContext::ToggleFullScreenRoot ()
 {
-#ifndef _WIN32PC
-  // FIXME: see if #5256 works also for Linux and Mac
-  static RESOLUTION desktopres = DESKTOP;
-  static RESOLUTION windowres = WINDOW;
-  static RESOLUTION lastres = INVALID;
+  RESOLUTION newRes;
+  
   if (m_bFullScreenRoot)
   {
-    lastres = GetVideoResolution();
-    SetVideoResolution(windowres);
+    newRes = RES_WINDOW;
   }
   else
   {
-    if (lastres != INVALID)
-    {
-      SetVideoResolution(lastres);
-    }
+    if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
+      newRes = g_guiSettings.m_LookAndFeelResolution;
     else
-    {
-      SetVideoResolution(desktopres);
-    }
+      newRes = RES_DESKTOP;      
   }
+
+  SetVideoResolution(newRes);
+  
   return  m_bFullScreenRoot;
-#else
-  if (m_bFullScreenRoot)
-  {
-    g_advancedSettings.m_fullScreen = false;
-    SetVideoResolution(m_Resolution);
-  }
-  else
-  {
-    g_advancedSettings.m_fullScreen = true;
-    SetVideoResolution(m_Resolution);
-  }
-  return  m_bFullScreenRoot;
-#endif
 }
 
 void CGraphicContext::SetFullScreenRoot(bool fs)
 {
-#ifdef __APPLE__
   int blanking = g_guiSettings.GetInt("videoscreen.displayblanking");
   bool blankOtherDisplays = (blanking == BLANKING_ALL_DISPLAYS);
-#endif
 
   if (fs)
   {
-    // Code from this point on should be platform dependent. The Win32 version could
-    // probably use GetSystemMetrics/EnumDisplayDevices/GetDeviceCaps to query current
-    // resolution on the requested display no. and set 'width' and 'height'
-
     m_iFullScreenWidth = m_iScreenWidth;
     m_iFullScreenHeight = m_iScreenHeight;
-#ifdef HAS_XRANDR
-    XOutput out;
-    XMode mode;
-    RESOLUTION res = m_Resolution;
-    out.name = g_settings.m_ResInfo[res].strOutput;
-    mode.w = g_settings.m_ResInfo[res].iWidth;
-    mode.h = g_settings.m_ResInfo[res].iHeight;
-    mode.hz = g_settings.m_ResInfo[res].fRefreshRate;
-    mode.id = g_settings.m_ResInfo[res].strId;
-    g_audioManager.Stop();
-    g_xrandr.SetMode(out, mode);
-    SDL_ShowCursor(SDL_ENABLE);
-#endif
-#if defined(__APPLE__)
-    Cocoa_GL_SetFullScreen(m_iFullScreenWidth, m_iFullScreenHeight, true, blankOtherDisplays,
-      g_advancedSettings.m_osx_GLFullScreen, g_advancedSettings.m_alwaysOnTop);
-#elif defined(_WIN32PC)
-    DEVMODE settings;
-    settings.dmSize = sizeof(settings);
-    settings.dmDriverExtra = 0;
-    settings.dmBitsPerPel = 32;
-    settings.dmPelsWidth = m_iFullScreenWidth;
-    settings.dmPelsHeight = m_iFullScreenHeight;
-    settings.dmDisplayFrequency = (int)floorf(g_settings.m_ResInfo[m_Resolution].fRefreshRate);
-    settings.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL;
-    if(settings.dmDisplayFrequency)
-      settings.dmFields |= DM_DISPLAYFREQUENCY;
-    if(ChangeDisplaySettings(&settings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-      CLog::Log(LOGERROR, "CGraphicContext::SetFullScreenRoot - failed to change resolution");
-#else
-    SDL_SetVideoMode(m_iFullScreenWidth, m_iFullScreenHeight, 0, SDL_FULLSCREEN);
-#endif
-    if (m_screenSurface)
-    {
-      m_screenSurface->RefreshCurrentContext();
-      m_screenSurface->ResizeSurface(m_iFullScreenWidth, m_iFullScreenHeight);
-    }
-#ifdef HAS_SDL_OPENGL
-    glViewport(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
-    glScissor(0, 0, m_iFullScreenWidth, m_iFullScreenHeight);
-#endif
+
+    g_Windowing.SetFullScreen(true, m_iScreenId, m_iFullScreenWidth, m_iFullScreenHeight, blankOtherDisplays, g_advancedSettings.m_alwaysOnTop);
+    
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
-    g_renderManager.Recover();
   }
   else
   {
-#ifdef __APPLE__
-    Cocoa_GL_SetFullScreen(
-      g_settings.m_ResInfo[m_Resolution].iWidth,
-      g_settings.m_ResInfo[m_Resolution].iHeight,
-      false, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen, g_advancedSettings.m_alwaysOnTop);
-#elif defined(_WIN32PC)
-    ChangeDisplaySettings(NULL, 0);
-#else
-    SDL_SetVideoMode(m_iScreenWidth, m_iScreenHeight, 0, SDL_RESIZABLE);
-#endif
-    if (m_screenSurface)
-    {
-      m_screenSurface->RefreshCurrentContext();
-      m_screenSurface->ResizeSurface(m_iScreenWidth, m_iScreenHeight);
-    }
-#ifdef HAS_SDL_OPENGL
-    glViewport(0, 0, m_iScreenWidth, m_iScreenHeight);
-    glScissor(0, 0, m_iScreenWidth, m_iScreenHeight);
-#endif
+    g_Windowing.SetFullScreen(false, m_iScreenId, m_iFullScreenWidth, m_iFullScreenHeight, blankOtherDisplays, g_advancedSettings.m_alwaysOnTop);
     g_fontManager.ReloadTTFFonts();
     g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
-    g_renderManager.Recover();
   }
+
+  g_renderManager.Recover();
 
   m_bFullScreenRoot = fs;
   g_advancedSettings.m_fullScreen = fs;
   SetFullScreenViewWindow(m_Resolution);
-
-// The _correct_ way to switch to fullscreen in X. Doesn't work now because of the way
-// SDL creates windows. Should be fixed in SDL 1.3 therefore currently disabled.
-#if 0
-  enum
-  {
-    _NET_WM_STATE_REMOVE = 0,
-    _NET_WM_STATE_ADD = 1,
-    _NET_WM_STATE_TOGGLE = 2
-  };
-
-  SDL_SysWMinfo info;
-  SDL_VERSION(&info.version);
-  SDL_GetWMInfo(&info);
-  glXWaitX();
-
-  XEvent xev;
-  Atom stateAtom, fullScreenAtom;
-  Display * pRootDisplay = XOpenDisplay(NULL);
-  int screen = DefaultScreen(pRootDisplay);
-  Window tempwindow, parent, glparent = info.info.x11.window;
-  Window *children = NULL;
-  unsigned int numchildren;
-
-  // get the real parent window
-  Window previousparent;
-  do
-  {
-    XQueryTree(pRootDisplay, glparent, &tempwindow, &parent, &children, &numchildren);
-    if (parent==tempwindow)
-      break;
-    previousparent = glparent;
-    glparent = parent;
-  } while (1);
-
-  glparent = previousparent;
-  stateAtom = XInternAtom(pRootDisplay, "_NET_WM_STATE", False);
-  fullScreenAtom = XInternAtom(pRootDisplay, "_NET_WM_STATE_FULLSCREEN", False);
-
-  xev.xclient.type = ClientMessage;
-  xev.xclient.serial = 0;
-  xev.xclient.send_event = True;
-  xev.xclient.window = glparent;
-  xev.xclient.message_type = stateAtom;
-  xev.xclient.format = 32;
-  xev.xclient.data.l[0] = (fs ? _NET_WM_STATE_ADD : _NET_WM_STATE_REMOVE);
-  xev.xclient.data.l[1] = fullScreenAtom;
-  xev.xclient.data.l[2] = 0;
-
-  XChangeProperty(pRootDisplay, glparent, stateAtom, XA_ATOM, 32, PropModeReplace,
-                  (unsigned char *)&fullScreenAtom, 1);
-  if (XSendEvent(pRootDisplay, DefaultRootWindow(pRootDisplay), False,
-                 SubstructureRedirectMask | SubstructureNotifyMask,
-                 &xev))
-  {
-    m_bFullScreenRoot = fs;
-  }
-  glXWaitX();
-#endif
 }
 
 void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
@@ -1726,45 +761,36 @@ void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)
 
 void CGraphicContext::Flip()
 {
-#ifdef HAS_SDL
-  m_screenSurface->Flip();
-#else
-  if (m_pd3dDevice) m_pd3dDevice->Present( NULL, NULL, NULL, NULL );
-#endif
+  g_Windowing.PresentRender();
 }
 
 void CGraphicContext::ApplyHardwareTransform()
 {
-#ifdef HAS_SDL_OPENGL
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  GLfloat matrix[4][4];
-
-  for(int i=0;i<3;i++)
-    for(int j=0;j<4;j++)
-      matrix[j][i] = m_finalTransform.m[i][j];
-
-  matrix[0][3] = 0.0f;
-  matrix[1][3] = 0.0f;
-  matrix[2][3] = 0.0f;
-  matrix[3][3] = 1.0f;
-
-  glMultMatrixf(&matrix[0][0]);
-#endif
+  g_Windowing.ApplyHardwareTransform(m_finalTransform);
 }
 
 void CGraphicContext::RestoreHardwareTransform()
 {
-#ifdef HAS_SDL_OPENGL
-  glMatrixMode(GL_MODELVIEW);
-  glPopMatrix();
-#endif
+  g_Windowing.RestoreHardwareTransform();
 }
 
 void CGraphicContext::NotifyAppFocusChange(bool bGaining)
 {
-  /* Notification from the Application that we are either becoming the foreground window or are losing focus */
-  if (m_screenSurface)
-    m_screenSurface->NotifyAppFocusChange(bGaining);
+}
+
+void CGraphicContext::ClipToViewWindow()
+{
+}
+
+void CGraphicContext::GetAllowedResolutions(vector<RESOLUTION> &res)
+{
+  res.clear();  
+
+  res.push_back(RES_WINDOW);
+  res.push_back(RES_DESKTOP);
+  for (size_t r = (size_t) RES_CUSTOM; r < g_settings.m_ResInfo.size(); r++)
+  {
+    res.push_back((RESOLUTION) r);
+  }
 }
 

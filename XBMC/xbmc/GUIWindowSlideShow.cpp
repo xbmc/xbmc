@@ -33,6 +33,7 @@
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "WindowingFactory.h"
 
 using namespace DIRECTORY;
 
@@ -88,7 +89,7 @@ void CBackgroundPicLoader::Process()
       {
         CPicture pic;
         DWORD start = timeGetTime();
-        XBMC::TexturePtr pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
+        CBaseTexture* pTexture = pic.Load(m_strFileName, m_maxWidth, m_maxHeight);
         totalTime += timeGetTime() - start;
         count++;
         // tell our parent
@@ -98,10 +99,10 @@ void CBackgroundPicLoader::Process()
           int iSize = pic.GetWidth() * pic.GetHeight() - MAX_PICTURE_SIZE;
           if ((iSize + (int)pic.GetWidth() > 0) || (iSize + (int)pic.GetHeight() > 0))
             bFullSize = true;
-#ifdef HAS_SDL_OPENGL
-          if (!bFullSize && (int)pic.GetWidth() == g_graphicsContext.GetMaxTextureSize())
+#ifdef HAS_GL
+          if (!bFullSize && (int)pic.GetWidth() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
-          if (!bFullSize && (int)pic.GetHeight() == g_graphicsContext.GetMaxTextureSize())
+          if (!bFullSize && (int)pic.GetHeight() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
 #endif
         }
@@ -130,7 +131,7 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
 {
   m_pBackgroundLoader = NULL;
   m_slides = new CFileItemList;
-  m_Resolution = INVALID;
+  m_Resolution = RES_INVALID;
   Reset();
 }
 
@@ -692,7 +693,7 @@ void CGUIWindowSlideShow::Move(float fX, float fY)
   }
 }
 
-void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
+void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize)
 {
   if (!g_guiSettings.GetBool("pictures.useexifrotation"))
     iRotate = 1;
@@ -702,11 +703,7 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, XBMC::TexturePtr
     CSingleLock lock(m_slideSection);
     if (iSlideNumber >= m_slides->Size())
     { // throw this away - we must have cleared the slideshow while we were still loading
-#ifndef HAS_SDL
-      pTexture->Release();
-#else
-      SDL_FreeSurface(pTexture);
-#endif
+      delete pTexture;
       return;
     }
     CLog::Log(LOGDEBUG, "Finished background loading %s", m_slides->Get(iSlideNumber)->m_strPath.c_str());
@@ -714,12 +711,8 @@ void CGUIWindowSlideShow::OnLoadPic(int iPic, int iSlideNumber, XBMC::TexturePtr
     {
       if (m_Image[m_iCurrentPic].IsLoaded() && m_Image[m_iCurrentPic].SlideNumber() != iSlideNumber)
       { // wrong image (ie we finished loading the next image, not the current image)
-#ifndef HAS_SDL
-        pTexture->Release();
-#else
-        SDL_FreeSurface(pTexture);
-#endif
-        return;
+        delete pTexture;
+        pTexture = NULL;
       }
       m_Image[m_iCurrentPic].UpdateTexture(pTexture, iWidth, iHeight);
       m_Image[m_iCurrentPic].SetOriginalSize(iOriginalWidth, iOriginalHeight, bFullSize);
@@ -854,11 +847,12 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   }
   maxWidth = (int)width;
   maxHeight = (int)height;
-  if (maxWidth > g_graphicsContext.GetMaxTextureSize()) maxWidth = g_graphicsContext.GetMaxTextureSize();
-  if (maxHeight > g_graphicsContext.GetMaxTextureSize()) maxHeight = g_graphicsContext.GetMaxTextureSize();
-#elif defined(HAS_SDL_OPENGL)
-  maxWidth = g_graphicsContext.GetMaxTextureSize();
-  maxHeight = g_graphicsContext.GetMaxTextureSize();
+  if (maxWidth > g_Windowing.GetMaxTextureSize()) maxWidth = g_graphicsContext.GetMaxTextureSize();
+  if (maxHeight > g_Windowing.GetMaxTextureSize()) maxHeight = g_graphicsContext.GetMaxTextureSize();
+#elif defined(HAS_GL)
+  maxWidth = g_Windowing.GetMaxTextureSize();
+  maxHeight = g_Windowing.GetMaxTextureSize();
 #endif
 }
+
 

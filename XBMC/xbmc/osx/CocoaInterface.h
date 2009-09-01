@@ -20,6 +20,11 @@
  */
 #ifndef _OSX_INTERFACE_H_
 #define _OSX_INTERFACE_H_
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
   // Pools.
   //
   void* Cocoa_Create_AutoReleasePool(void);
@@ -45,8 +50,14 @@
   void* Cocoa_GL_GetCurrentContext(void);
   void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx);
   void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h);
-  void  Cocoa_GL_SetFullScreen(int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen, bool alwaysOnTop);
+  void  Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen);
   void  Cocoa_GL_EnableVSync(bool enable);
+
+  //
+  // Blanking.
+  //
+  void Cocoa_GL_UnblankDisplays();
+  void Cocoa_GL_BlankOtherDisplays(int screen);
 
   //
   // SDL Hack
@@ -92,5 +103,9 @@
   void  Cocoa_DestroyChildWindow();
 
   const char *Cocoa_Paste() ;  
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

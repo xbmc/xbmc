@@ -20,9 +20,7 @@
  *
  */
 
-#ifdef HAS_SDL_OPENGL
-class CGLTexture;
-#endif
+#include "TextureManager.h"
 
 class CSlideShowPic
 {
@@ -40,8 +38,8 @@ public:
   CSlideShowPic();
   ~CSlideShowPic();
 
-  void SetTexture(int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
-  void UpdateTexture(XBMC::TexturePtr pTexture, int iWidth, int iHeight);
+  void SetTexture(int iSlideNumber, CBaseTexture* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void UpdateTexture(CBaseTexture* pTexture, int iWidth, int iHeight);
 
   bool IsLoaded() const { return m_bIsLoaded;};
   void UnLoad() {m_bIsLoaded = false;};
@@ -76,16 +74,21 @@ public:
 private:
   void Process();
 
-#ifdef HAS_SDL_OPENGL
+  void Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor);
+  CBaseTexture *m_pImage;
+
+  /*
+#ifdef HAS_SDL
   void Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode = GL_FILL);
   CGLTexture *m_pImage;
-#elif defined(HAS_SDL)
-  void Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor);
-  XBMC::TexturePtr m_pImage;
+#elif defined(HAS_GL)
+  void Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor);
+  CBaseTexture* m_pImage;
 #else
-  void Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID);
-  XBMC::TexturePtr m_pImage;
+  void Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID);
+  CBaseTexture* m_pImage;
 #endif
+  */
 
   int m_iOriginalWidth;
   int m_iOriginalHeight;

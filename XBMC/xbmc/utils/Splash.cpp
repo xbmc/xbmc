@@ -23,7 +23,9 @@
 #include "Splash.h"
 #include "GUIImage.h"
 #include "FileSystem/File.h"
-#include "Surface.h"
+// elis #include "Surface.h"
+#include "WindowingFactory.h"
+#include "RenderSystem.h"
 
 using namespace XFILE;
 
@@ -57,7 +59,7 @@ void CSplash::Show()
   image->SetAspectRatio(CAspectRatio::AR_KEEP);
   image->AllocResources();
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
   // Store the old gamma ramp
   g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &oldRamp);
   fade = 0.5f;
@@ -71,7 +73,7 @@ void CSplash::Show()
 #endif
 
   //render splash image
-#if !defined(HAS_XBOX_D3D) && !defined(HAS_SDL)
+#if !defined(HAS_XBOX_D3D) && !defined(HAS_GL)
   g_graphicsContext.Get3DDevice()->BeginScene();
 #endif
 
@@ -80,7 +82,7 @@ void CSplash::Show()
   delete image;
 
   //show it on screen
-#ifndef HAS_SDL
+#ifdef HAS_DX
 #ifdef HAS_XBOX_D3D
   g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
 #else
@@ -88,8 +90,8 @@ void CSplash::Show()
 #endif
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 #elif defined(HAS_SDL_2D)
-  SDL_Flip(g_graphicsContext.getScreenSurface()->SDL());
-#elif defined(HAS_SDL_OPENGL)
+  XBMC_Flip(g_graphicsContext.getScreenSurface()->SDL());
+#elif defined(HAS_GL)
   g_graphicsContext.Flip();
 #endif
   g_graphicsContext.Unlock();
@@ -102,7 +104,7 @@ void CSplash::Hide()
   // fade out
   for (float fadeout = fade - 0.01f; fadeout >= 0.f; fadeout -= 0.01f)
   {
-#ifndef HAS_SDL
+#ifdef HAS_DX
     for (int i = 0; i < 256; i++)
     {
       newRamp.red[i] = (int)((float)oldRamp.red[i] * fadeout);
@@ -115,7 +117,7 @@ void CSplash::Hide()
   }
 
   //restore original gamma ramp
-#ifndef HAS_SDL
+#ifdef HAS_DX
   g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
   g_graphicsContext.Get3DDevice()->SetGammaRamp(0, 0, &oldRamp);
   g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
@@ -133,7 +135,7 @@ void CSplash::Process()
     if (fade <= 1.f)
     {
       Sleep(10);
-#ifndef HAS_SDL
+#ifdef HAS_DX
       for (int i = 0; i < 256; i++)
       {
         newRamp.red[i] = (int)((float)oldRamp.red[i] * fade);

@@ -249,7 +249,8 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   else
     CLog::Log(LOGDEBUG,"Thread %u terminating", GetCurrentThreadId());  
 
-  g_graphicsContext.DeleteThreadContext();
+// DXMERGE - this looks like it might have used to have been useful for something...
+//  g_graphicsContext.DeleteThreadContext();
 
 #ifndef _LINUX
   _endthreadex(123);

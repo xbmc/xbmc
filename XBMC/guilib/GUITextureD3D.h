@@ -31,9 +31,7 @@
 
 #include "GUITexture.h"
 
-#ifndef HAS_SDL
-
-#define CGUITexture CGUITextureD3D
+#ifdef HAS_DX
 
 class CGUITextureD3D : public CGUITextureBase
 {

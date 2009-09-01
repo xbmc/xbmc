@@ -1,7 +1,7 @@
 #ifndef LINUX_RENDERER
 #define LINUX_RENDERER
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #include "LinuxRendererGL.h"
 #else
 
@@ -169,7 +169,7 @@ protected:
 
   // OSD stuff
 #define NUM_BUFFERS 2
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   CGLTexture * m_pOSDYTexture[NUM_BUFFERS];
   CGLTexture * m_pOSDATexture[NUM_BUFFERS];
 #else
@@ -198,7 +198,7 @@ protected:
   SDL_Surface *m_backbuffer; 
   SDL_Surface *m_screenbuffer; 
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   CGLTexture  *m_texture;
 #endif
 #endif

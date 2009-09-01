@@ -27,7 +27,7 @@
 #include <string>
 #include <sstream>
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 using namespace Shaders;
 using namespace std;
@@ -278,4 +278,4 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
 }
 
 
-#endif // HAS_SDL_OPENGL
+#endif // HAS_GL

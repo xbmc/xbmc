@@ -192,16 +192,19 @@ protected:
 
   int m_largeOrientation;   // orientation for large textures
 
-  CTexture m_diffuse;
-  CTexture m_texture;
+  CTextureArray m_diffuse;
+  CTextureArray m_texture;
 };
 
-#ifndef HAS_SDL
-#include "GUITextureD3D.h"
-#elif defined(HAS_SDL_2D)
+
+#if defined(HAS_SDL_2D)
 #include "GUITextureSDL.h"
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
 #include "GUITextureGL.h"
+#define CGUITexture CGUITextureGL
+#elif defined(HAS_DX)
+#include "GUITextureD3D.h"
+#define CGUITexture CGUITextureD3D
 #endif
 
 #endif

@@ -38,7 +38,9 @@
 #ifdef __APPLE__
 #include "Util.h"
 #endif
-
+#ifdef HAS_LIRC
+#include "common/LIRC.h"
+#endif
 
 CApplication g_application;
 

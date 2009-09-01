@@ -44,7 +44,7 @@ private:
 
   float fade;
   CStdString m_ImageName;
-#ifndef HAS_SDL
+#ifdef HAS_DX
   D3DGAMMARAMP newRamp;
   D3DGAMMARAMP oldRamp;
 

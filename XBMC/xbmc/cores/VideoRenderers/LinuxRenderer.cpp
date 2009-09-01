@@ -22,15 +22,14 @@
   #include "config.h"
 #endif
 
-#ifdef HAS_SDL
+#ifdef HAS_GL
 
 #include "LinuxRenderer.h"
 #include "../../Application.h"
 #include "../../Util.h"
-#include "../../XBVideoConfig.h"
 #include "TextureManager.h"
 
-#ifndef HAS_SDL_OPENGL
+#ifdef HAS_DX
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -86,7 +85,7 @@ CLinuxRenderer::CLinuxRenderer()
   m_backbuffer = NULL;
   m_screenbuffer = NULL;
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   m_texture = NULL; 
 #endif
 
@@ -108,7 +107,7 @@ void CLinuxRenderer::DeleteOSDTextures(int index)
   CSingleLock lock(g_graphicsContext);
   if (m_pOSDYTexture[index])
   {
-#if defined (HAS_SDL_OPENGL)
+#if defined (HAS_GL)
     delete m_pOSDYTexture[index];
 #else
     SDL_FreeSurface(m_pOSDYTexture[index]);
@@ -117,7 +116,7 @@ void CLinuxRenderer::DeleteOSDTextures(int index)
   }
   if (m_pOSDATexture[index])
   {
-#if defined (HAS_SDL_OPENGL)
+#if defined (HAS_GL)
     delete m_pOSDATexture[index];
 #else
     SDL_FreeSurface(m_pOSDATexture[index]);
@@ -317,7 +316,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
 
   //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
   //reset these so the gpu doesn't try to block on these
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_GL)
 
   int textureBytesSize = m_pOSDYTexture[iOSDBuffer]->textureWidth * m_pOSDYTexture[iOSDBuffer]->textureHeight * 4; 
   unsigned char *dst = new unsigned char[textureBytesSize];
@@ -383,7 +382,7 @@ void CLinuxRenderer::RenderOSD()
   DRAWRECT osdRect = m_OSDRect;
 
   // Set state to render the image
-#if defined (HAS_SDL_OPENGL)
+#if defined (HAS_GL)
   float osdWidth = m_OSDWidth;
   float osdHeight = m_OSDHeight;
 
@@ -428,7 +427,7 @@ void CLinuxRenderer::RenderOSD()
   }
 
   // Render the image
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_GL)
   pTex = m_pOSDYTexture[iRenderBuffer];
   glBindTexture(GL_TEXTURE_2D, pTex->id);
   glBegin(GL_QUADS);
@@ -642,7 +641,7 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
      SDL_FreeSurface(m_screenbuffer);
      m_screenbuffer=NULL;
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
      if (m_texture)
         delete m_texture;
 
@@ -796,7 +795,7 @@ void CLinuxRenderer::FlipPage(int source)
 
   // copy back buffer to screen buffer
 #ifndef USE_SDL_OVERLAY
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   if (!m_texture)
      m_texture = new CGLTexture(m_backbuffer,false,false);
   else
@@ -913,7 +912,7 @@ void CLinuxRenderer::UnInit()
      m_screenbuffer=NULL;
   }
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   if (m_texture)
     delete m_texture;
 
@@ -1074,7 +1073,7 @@ void CLinuxRenderer::RenderLowMem(DWORD flags)
 
   int nRet = SDL_DisplayYUVOverlay(m_overlay, &rect);
 
-#elif defined (HAS_SDL_OPENGL)
+#elif defined (HAS_GL)
   g_graphicsContext.BeginPaint();
 
   CGLTexture *pTex = m_texture;
@@ -1146,6 +1145,6 @@ void CLinuxRenderer::OnClose()
 {
 }
 
-#endif // HAS_SDL_OPENGL
+#endif // HAS_GL
 
-#endif // HAS_SDL
+#endif // HAS_GL

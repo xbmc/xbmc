@@ -22,9 +22,8 @@
 #include "stdafx.h"
 #ifdef HAVE_LIBVDPAU
 #include <dlfcn.h>
+#include "WindowingFactory.h"
 #include "VDPAU.h"
-#include "Surface.h"
-using namespace Surface;
 #include "vdpau.h"
 #include "TextureManager.h"                         //DAVID-CHECKNEEDED
 #include "cores/VideoRenderers/RenderManager.h"
@@ -74,7 +73,7 @@ CVDPAU::CVDPAU(int width, int height)
   vid_width = vid_height = outWidth = outHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
-  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
+  m_Display = g_Windowing.GetDisplay();
 
   InitVDPAUProcs();
 

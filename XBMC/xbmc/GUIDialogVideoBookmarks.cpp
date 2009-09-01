@@ -244,7 +244,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
   }
   CSingleLock lock(g_graphicsContext);
-#ifndef HAS_SDL
+#ifdef HAS_DX
   LPDIRECT3DTEXTURE9 texture = NULL;
   if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &texture))
   {
@@ -267,14 +267,15 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     surface->Release();
     texture->Release();
   }
-#elif defined(HAS_SDL)
+#elif defined(HAS_SDL_OPENGL)
   SDL_Surface *texture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
                                               RMASK, GMASK, BMASK, AMASK);
   if (texture)
   {
     SDL_LockSurface(texture);
 #ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.CreateThumbnail(texture, width, height);
+    // TBD:: elis please fix
+    //g_renderManager.CreateThumbnail(texture, width, height);
 #endif
     Crc32 crc;
     crc.ComputeFromLowerCase(g_application.CurrentFile());
@@ -353,4 +354,5 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
     }
   }
 }
+
 

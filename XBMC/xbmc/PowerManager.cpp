@@ -25,8 +25,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogMusicScan.h"
-#include "common/Keyboard.h"
-#include "common/Mouse.h"
+#include "KeyboardStat.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -38,6 +37,10 @@
 #include "linux/DBusPowerSyscall.h"
 #elif defined(_WIN32PC)
 #include "win32/Win32PowerSyscall.h"
+#endif
+
+#ifdef HAS_LIRC
+#include "common/LIRC.h"
 #endif
 
 CPowerManager g_powerManager;

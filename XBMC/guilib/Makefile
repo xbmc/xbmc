@@ -64,7 +64,6 @@ SRCS=ActionManager.cpp \
      XMLUtils.cpp \
      GUISound.cpp \
      GUIColorManager.cpp \
-     Surface.cpp \
      FrameBufferObject.cpp \
      Shader.cpp \
      GUIListLabel.cpp \
@@ -72,6 +71,9 @@ SRCS=ActionManager.cpp \
      GUITextLayout.cpp \
      GUIMultiSelectText.cpp \
      GUIInfoColor.cpp \
+     GUIFontTTFGL.cpp \
+     Texture.cpp \
+     TextureGL.cpp \
      GUIControlProfiler.cpp \
 
 LIB=guilib.a
@@ -81,4 +83,5 @@ include ../Makefile.include
 
 try : try.o TextureBundle.o DirectXGraphics.o GUIFontTTF.o
 	g++ -o try try.o TextureBundle.o DirectXGraphics.o GraphicContext.o GUIIncludes.o ../xbmc/utils/CriticalSection.o ../xbmc/XBVideoConfig.o SkinInfo.o tinyXML/tinyxml.a ../xbmc/linux/CriticalSection.o GUIFontTTF.o GUIFontBase.o GUIFontManager.o GUIFont.o XMLUtils.o GUIImage.o GUIControl.o TextureManager.o GUIMessage.o ../xbmc/utils/SingleLock.o VisibleEffect.o GUIWindowManager.o AnimatedGif.o -lSDL_image -lSDL_gfx -lSDL -llzo -lfreetype
+
 

@@ -21,9 +21,6 @@
  
 #include "stdafx.h"
 #include "../DllLoader.h"
-#ifdef HAS_XFONT
-#include <xfont.h>
-#endif
 #ifdef _XBOX
 #include <XGraphics.h>
 #endif
@@ -122,13 +119,6 @@ Export export_xbox_dx8[] =
   { "D3DResource_AddRef@4",                         -1, D3DResource_AddRef,                           NULL },
 
   { "D3DDevice_Release@0",                          -1, D3DDevice_Release,                            NULL },
-
-// XFONT Support
-  { "XFONT_SetTextColor@8",                         -1, XFONT_SetTextColor,                           NULL },
-  { "XFONT_SetBkColor@8",                           -1, XFONT_SetBkColor,                             NULL },
-  { "XFONT_SetBkMode@8",                            -1, XFONT_SetBkMode,                              NULL },
-  { "XFONT_TextOut@24",                             -1, XFONT_TextOut,                                NULL },
-  { "XFONT_OpenDefaultFont@4",                      -1, XFONT_OpenDefaultFont,                        NULL },
 
   { "XGBuffer_Release@4",                           -1, XGBuffer_Release,                             NULL },
   { "XGAssembleShader@44",                          -1, XGAssembleShader,                             NULL },

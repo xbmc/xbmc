@@ -41,7 +41,6 @@
 #include "GUISettings.h"
 #include "Profile.h"
 #include "MediaSource.h"
-#include "XBVideoConfig.h"
 #include "ViewState.h"
 
 #include <vector>

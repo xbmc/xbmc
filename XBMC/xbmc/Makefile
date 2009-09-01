@@ -107,7 +107,6 @@ SRCS=Application.cpp \
      URL.cpp \
      VideoInfoTag.cpp \
      XBAudioConfig.cpp \
-     XBVideoConfig.cpp \
      Database.cpp \
      MusicDatabase.cpp \
      ProgramDatabase.cpp \
@@ -205,6 +204,18 @@ SRCS=Application.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
      ScriptSettings.cpp \
+     PictureGL.cpp \
+     GUIWindowTestPatternGL.cpp \
+     RenderSystem.cpp \
+     RenderSystemGL.cpp \
+     KeyboardStat.cpp \
+     MouseStat.cpp \
+     WinSystem.cpp \
+     WinSystemOSX.cpp \
+     WinSystemOSXGL.cpp \
+     WinSystemX11.cpp \
+     WinSystemX11GL.cpp \
+     WinEventsSDL.cpp
 
 LIB=xbmc.a
 
@@ -212,4 +223,5 @@ DISTCLEAN_FILES=DllPaths_generated.h
 
 include ../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
 

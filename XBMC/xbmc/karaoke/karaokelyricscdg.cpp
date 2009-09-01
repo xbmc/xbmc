@@ -27,14 +27,14 @@ CKaraokeLyricsCDG::CKaraokeLyricsCDG( const CStdString& cdgFile )
   m_cdgFile = cdgFile;
   m_pCdg = 0;
   m_pReader = 0;
-#if defined (HAS_SDL)
+#if defined (HAS_GL)
   m_pCdgTexture = 0;
 #endif
   m_pLoader = 0;
 
   m_fgAlpha = 0xff000000;
 
-#if !defined(HAS_SDL)
+#if !defined(HAS_GL)
   m_pd3dDevice = 0;
 #endif
 }
@@ -53,7 +53,7 @@ static inline TEX_COLOR ConvertColor(CDG_COLOR CdgColor)
   red = ((TEX_COLOR)(((CdgColor & 0x0F00) >> 8) * 17)) << 16;
   alpha = ((TEX_COLOR)(((CdgColor & 0xF000) >> 12) * 17)) << 24;
 
-#if defined(HAS_SDL)
+#if defined(HAS_GL)
   // CGLTexture uses GL_BRGA format
   return alpha | blue | green | red;
 #else
@@ -88,13 +88,6 @@ void CKaraokeLyricsCDG::RenderIntoBuffer( unsigned char *pixels, unsigned int wi
 
 bool CKaraokeLyricsCDG::InitGraphics()
 {
-#ifndef HAS_SDL
-  if (!m_pd3dDevice)
-    m_pd3dDevice = g_graphicsContext.Get3DDevice();
-  if (!m_pd3dDevice)
-    return false;
-#endif
-
   // set the background to be completely transparent if we use visualisations, or completely solid if not
   if ( g_advancedSettings.m_karaokeAlwaysEmptyOnCdgs )
     m_bgAlpha = 0xff000000;
@@ -103,13 +96,16 @@ bool CKaraokeLyricsCDG::InitGraphics()
 
   if (!m_pCdgTexture)
   {
-#if defined(HAS_SDL_OPENGL)
+    m_pCdgTexture = new CTexture(WIDTH, HEIGHT, 32);
+    /*
+#if defined(HAS_SDL)
     m_pCdgTexture = new CGLTexture( SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, RMASK, GMASK, BMASK, AMASK), false, true );
 #elif defined(HAS_SDL_2D)
     m_pCdgTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, WIDTH, HEIGHT, 32, RMASK, GMASK, BMASK, AMASK);
-#else // DirectX
+#elif defined (HAS_DX)
     m_pd3dDevice->CreateTexture(WIDTH, HEIGHT, 0, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &m_pCdgTexture, NULL);
 #endif
+    */
   }
 
   if ( !m_pCdgTexture )
@@ -144,14 +140,8 @@ void CKaraokeLyricsCDG::Shutdown()
 
   if ( m_pCdgTexture )
   {
-#if defined(HAS_SDL_OPENGL)
     delete m_pCdgTexture;
-#elif defined(HAS_SDL_2D)
-    SDL_FreeSurface(m_pCdgTexture);
-#else
-    SAFE_RELEASE(m_pCdgTexture);
-#endif
-    m_pCdgTexture = 0;
+    m_pCdgTexture = NULL;
   }
 
   if ( m_pCdg )
@@ -168,7 +158,7 @@ void CKaraokeLyricsCDG::Render()
   if ( !m_pCdgTexture )
     return;
 
-#if defined(HAS_SDL)
+#if defined(HAS_GL)
   // Calculate sizes
   int textureBytesSize = WIDTH * HEIGHT * 4;
   int texturePitch = WIDTH * 4;
@@ -178,7 +168,8 @@ void CKaraokeLyricsCDG::Render()
   RenderIntoBuffer( buf, WIDTH, HEIGHT, texturePitch );
 
   // Update the texture
-#ifdef HAS_SDL_OPENGL
+  /* elis
+#ifdef HAS_GL
   m_pCdgTexture->Update( WIDTH, HEIGHT, texturePitch, buf, false );
 #else
   if (m_pCdgTexture != NULL && SDL_LockSurface(m_pCdgTexture) == 0)
@@ -186,6 +177,7 @@ void CKaraokeLyricsCDG::Render()
 
   SDL_UnlockSurface(m_pCdgTexture);
 #endif
+  */
 
   delete [] buf;
 
@@ -205,18 +197,18 @@ void CKaraokeLyricsCDG::Render()
   float cdg_top = (float)g_settings.m_ResInfo[res].Overscan.top;
   float cdg_bottom = (float)g_settings.m_ResInfo[res].Overscan.bottom;
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   // Set the active texture
   glActiveTextureARB(GL_TEXTURE0_ARB);
 
   // Load the texture into GPU
-  m_pCdgTexture->LoadToGPU();
+  // elis m_pCdgTexture->LoadToGPU();
 
   // Reset colors
   glColor4f(1.0, 1.0, 1.0, 1.0);
 
   // Select the texture
-  glBindTexture(GL_TEXTURE_2D, m_pCdgTexture->id);
+  glBindTexture(GL_TEXTURE_2D, m_pCdgTexture->GetTextureObject());
 
   // Enable texture mapping
   glEnable(GL_TEXTURE_2D);
@@ -263,7 +255,7 @@ void CKaraokeLyricsCDG::Render()
 
   g_graphicsContext.EndPaint();
 #else
-  SDL_Rect dst;
+  XBMC_Rect dst;
   dst.x = cdg_left;
   dst.y = cdg_top;
   dst.w = cdg_right - cdg_left;
@@ -274,9 +266,9 @@ void CKaraokeLyricsCDG::Render()
 #else
     // Update DirectX structure
   D3DLOCKED_RECT LockedRect;
-  m_pCdgTexture->LockRect(0, &LockedRect, NULL, 0L);
+  m_pCdgTexture->GetTextureObject()->LockRect(0, &LockedRect, NULL, 0L);
   RenderIntoBuffer( (unsigned char *)LockedRect.pBits, WIDTH, HEIGHT, LockedRect.Pitch );
-  m_pCdgTexture->UnlockRect(0);
+  m_pCdgTexture->GetTextureObject()->UnlockRect(0);
 
   m_pd3dDevice->SetFVF( D3DFVF_CUSTOMVERTEX );
   m_pd3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
@@ -291,7 +283,7 @@ void CKaraokeLyricsCDG::Render()
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
   m_pd3dDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-  m_pd3dDevice->SetTexture(0, m_pCdgTexture);
+  m_pd3dDevice->SetTexture(0, m_pCdgTexture->GetTextureObject());
 
 #if 0 // TODO:DIRECTX
   m_pd3dDevice->Begin(D3DPT_QUADLIST);

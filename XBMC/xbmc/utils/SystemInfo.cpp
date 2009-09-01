@@ -31,7 +31,8 @@
 #include "Network.h"
 #include "Application.h"
 #include "GraphicContext.h"
-#include "Surface.h"
+// elis #include "Surface.h"
+#include "WindowingFactory.h"
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()
@@ -194,8 +195,8 @@ CStdString CSysInfo::GetMACAddress()
 
 CStdString CSysInfo::GetVideoEncoder()
 {
-#ifdef HAS_SDL_OPENGL
-  return "GPU: " + g_graphicsContext.getScreenSurface()->GetGLRenderer();
+#ifdef HAS_GL
+  return "GPU: " + g_Windowing.GetRenderRenderer();
 #else // TODO:DIRECTX
   return "GPU: DIRECTX";
 #endif
@@ -638,4 +639,5 @@ bool CSysInfo::IsAppleTV()
   return result;
 }
 #endif
+
 
