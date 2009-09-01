@@ -117,22 +117,11 @@ void CBaseTexture::Update(int w, int h, int pitch, const unsigned char *pixels, 
 bool CBaseTexture::LoadFromFile(const CStdString& texturePath)
 {
   CPicture pic;
-
-  CBaseTexture* original = new CTexture();
-    
-  if(!pic.Load(texturePath, original, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT))
+  if(!pic.Load(texturePath, this, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT))
   {
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
-    return 0;
+    return false;
   }
-  m_imageWidth = original->GetWidth();
-  m_imageHeight = original->GetHeight();
-  m_nBPP = original->GetBPP();
-
-  Update(original->GetWidth(), original->GetHeight(), original->GetPitch(), original->GetPixels(), false);
-
-  delete original;
-
   return true;
 }
 
