@@ -885,8 +885,6 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
-  // TODO - this should be based on m_fFrameRate, as the timestamps
-  //        in the stream matches that better, durations can vary
   int refreshrate = m_pClock->UpdateFramerate(m_fFrameRate);
   if (refreshrate > 0) //refreshrate of -1 means the videoreferenceclock is not running
   {//when using the videoreferenceclock, a frame is always presented one vblank interval too late
