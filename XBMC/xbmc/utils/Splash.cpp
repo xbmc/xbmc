@@ -23,7 +23,6 @@
 #include "Splash.h"
 #include "GUIImage.h"
 #include "FileSystem/File.h"
-// elis #include "Surface.h"
 #include "WindowingFactory.h"
 #include "RenderSystem.h"
 

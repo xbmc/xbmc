@@ -41,10 +41,6 @@
 #define RINT lrint
 #endif
 
-/* elis
-#include "Surface.h"
-using namespace Surface;
-*/
 #include "cores/VideoRenderers/RenderManager.h"
 
 #ifdef HAVE_LIBVDPAU

@@ -55,7 +55,6 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
-// elis #include "Surface.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
 
