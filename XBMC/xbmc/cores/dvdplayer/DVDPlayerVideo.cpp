@@ -882,42 +882,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   m_pullupCorrection.Add(pts);
   pts += m_pullupCorrection.Correction();
   
-  //see if m_pullupCorrection was able to detect a pattern in the timestamps
-  //and is able to calculate the correct frame duration from it
-  if (m_pullupCorrection.CalcFrameDuration() != DVD_NOPTS_VALUE)
-  {
-    double framerate = DVD_TIME_BASE / m_pullupCorrection.CalcFrameDuration();
-    
-    //store the current calculated framerate if we don't have any yet
-    if (m_iFrameRateCount == 0)
-    {
-      m_fStableFrameRate = framerate;
-      m_iFrameRateCount++;
-    }
-    //check if the current detected framerate matches with the stored ones
-    else if (fabs(1.0 - ((m_fStableFrameRate / m_iFrameRateCount) / framerate)) <= MAXFRAMERATEDIFF)
-    {
-      m_fStableFrameRate += framerate; //store the calculated framerate
-      m_iFrameRateCount++;
-      
-      //if we've measured one second of calculated framerates,
-      if (m_iFrameRateCount >= MathUtils::round_int(framerate))
-      {
-        //store the calculated framerate if it differs too much from m_fFrameRate
-        if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
-          m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
-        
-        //reset the stored framerates
-        m_fStableFrameRate = 0.0;
-        m_iFrameRateCount = 0;
-      }
-    }
-    else //the calculated framerate didn't match, reset the stored ones
-    {
-      m_fStableFrameRate = 0.0;
-      m_iFrameRateCount = 0;
-    }
-  }
+  //try to calculate the framerate
+  CalcFrameRate();
   
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
@@ -1095,3 +1061,44 @@ int CDVDPlayerVideo::GetVideoBitrate()
   return (int)m_videoStats.GetBitrate();
 }
 
+void CDVDPlayerVideo::CalcFrameRate()
+{
+  //see if m_pullupCorrection was able to detect a pattern in the timestamps
+  //and is able to calculate the correct frame duration from it
+  double frameduration = m_pullupCorrection.CalcFrameDuration();
+  
+  if (frameduration != DVD_NOPTS_VALUE)
+  {
+    double framerate = DVD_TIME_BASE / frameduration;
+    
+    //store the current calculated framerate if we don't have any yet
+    if (m_iFrameRateCount == 0)
+    {
+      m_fStableFrameRate = framerate;
+      m_iFrameRateCount++;
+    }
+    //check if the current detected framerate matches with the stored ones
+    else if (fabs(1.0 - ((m_fStableFrameRate / m_iFrameRateCount) / framerate)) <= MAXFRAMERATEDIFF)
+    {
+      m_fStableFrameRate += framerate; //store the calculated framerate
+      m_iFrameRateCount++;
+      
+      //if we've measured one second of calculated framerates,
+      if (m_iFrameRateCount >= MathUtils::round_int(framerate))
+      {
+        //store the calculated framerate if it differs too much from m_fFrameRate
+        if (fabs(1.0 - (m_fFrameRate / (m_fStableFrameRate / m_iFrameRateCount))) > MAXFRAMERATEDIFF)
+          m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
+        
+        //reset the stored framerates
+        m_fStableFrameRate = 0.0;
+        m_iFrameRateCount = 0;
+      }
+    }
+    else //the calculated framerate didn't match, reset the stored ones
+    {
+      m_fStableFrameRate = 0.0;
+      m_iFrameRateCount = 0;
+    }
+  }
+}
