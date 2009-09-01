@@ -26,20 +26,68 @@
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
 #include "Util.h"
+#include "Texture.h"
 
 using namespace XFILE;
 
-CPictureBase::CPictureBase(void)
+CPicture::CPicture(void)
 {
   ZeroMemory(&m_info, sizeof(ImageInfo));
 }
 
-CPictureBase::~CPictureBase(void)
+CPicture::~CPicture(void)
 {
 
 }
 
-bool CPictureBase::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
+bool CPicture::Load(const CStdString& strFileName, CBaseTexture* pTexture, int iMaxWidth, int iMaxHeight)
+{
+  if (!m_dll.Load()) return NULL;
+
+  if(pTexture == NULL)
+    return false;
+
+  memset(&m_info, 0, sizeof(ImageInfo));
+
+  if (!m_dll.LoadImage(strFileName.c_str(), iMaxWidth, iMaxHeight, &m_info))
+  {
+    CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
+    return false;
+  }
+
+  pTexture->Allocate(m_info.width, m_info.height, 32);
+
+  if (pTexture)
+  {
+    DWORD destPitch = pTexture->GetPitch();
+    DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
+    BYTE *pixels = (BYTE *)pTexture->GetPixels();
+    for (unsigned int y = 0; y < m_info.height; y++)
+    {
+      BYTE *dst = pixels + y * destPitch;
+      BYTE *src = m_info.texture + (m_info.height - 1 - y) * srcPitch;
+      BYTE *alpha = m_info.alpha + (m_info.height - 1 - y) * m_info.width;
+      for (unsigned int x = 0; x < m_info.width; x++)
+      {
+        *dst++ = *src++;
+        *dst++ = *src++;
+        *dst++ = *src++;
+        *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
+      }
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "%s - failed to create texture while loading image %s", __FUNCTION__, strFileName.c_str());
+    return false;
+  }
+  
+  m_dll.ReleaseImage(&m_info);
+
+  return true;
+}
+
+bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
 {
   // don't create the thumb if it already exists
   if (checkExistence && CFile::Exists(strThumbFileName))
@@ -67,7 +115,7 @@ bool CPictureBase::DoCreateThumbnail(const CStdString& strFileName, const CStdSt
   return true;
 }
 
-bool CPictureBase::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName)
+bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName)
 {
   CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str());
 
@@ -84,7 +132,7 @@ bool CPictureBase::CacheImage(const CStdString& sourceFileName, const CStdString
 #endif
 }
 
-bool CPictureBase::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
+bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
 {
   CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
   if (!m_dll.Load()) return false;
@@ -96,7 +144,7 @@ bool CPictureBase::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, 
   return true;
 }
 
-void CPictureBase::CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail)
+void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail)
 { // we want to mold the thumbs together into one single one
   if (!m_dll.Load()) return;
   CStdString strThumbnails[4];
@@ -119,13 +167,13 @@ void CPictureBase::CreateFolderThumb(const CStdString *strThumbs, const CStdStri
   }
 }
 
-bool CPictureBase::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName)
+bool CPicture::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName)
 {
   if (!pBuffer || !m_dll.Load()) return false;
   return m_dll.CreateThumbnailFromSurface(pBuffer, width, height, stride, strThumbFileName.c_str());
 }
 
-int CPictureBase::ConvertFile(const CStdString &srcFile, const CStdString &destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror)
+int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror)
 {
   if (!m_dll.Load()) return false;
   int ret;
