@@ -98,7 +98,7 @@ void CGLTexture::Allocate(unsigned int width, unsigned int height, unsigned int 
     m_nTextureHeight = m_imageHeight;
   }
 
-  m_pPixels = new unsigned char[m_imageWidth * m_imageHeight * m_nBPP / 8];
+  m_pPixels = new unsigned char[m_nTextureWidth * m_nTextureHeight * m_nBPP / 8];
 }
 
 void CGLTexture::Delete()
