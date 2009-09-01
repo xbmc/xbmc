@@ -399,15 +399,15 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
 
   if (*ppTexture)
   {
-#ifdef HAS_DX
-  D3DLOCKED_RECT lr;
-  if (D3D_OK == (*ppTexture)->GetTextureObject()->LockRect(0, &lr, NULL, 0))
-  {
-#endif
     BYTE *texDataStart = (BYTE *)texData;
     DWORD *color = (DWORD *)texData;
     texDataStart += offset;
-#ifdef HAS_DX
+/* DXMERGE - We should really support DXT1,DXT2 and DXT4 in both renderers
+             Perhaps we should extend CTexture::Update() to support a bunch of different texture types
+             Rather than assuming linear 32bits
+             We could just override, as at least then all the loading code from various texture formats
+             will be in one place
+
     BYTE *dstPixels = (BYTE *)lr.pBits;
     DWORD destPitch = lr.Pitch;
     if (fmt == XB_D3DFMT_DXT1)  // Not sure if these are 100% correct, but they seem to work :P
@@ -424,8 +424,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
       pitch /= 4;
       destPitch /= 4;
     }
-#else
-    BYTE *dstPixels = (BYTE *)(*ppTexture)->GetPixels();
+*/
     DWORD destPitch = (*ppTexture)->GetPitch();
     if (fmt == XB_D3DFMT_DXT1)
     {
@@ -441,7 +440,6 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
       texDataStart = decoded;
       pitch = destPitch;
     }
-#endif
     if (IsSwizzledFormat(fmt))
     { // first we unswizzle
       BYTE *unswizzled = new BYTE[pitch * height];
@@ -449,6 +447,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
       texDataStart = unswizzled;
     }
 
+    BYTE *dstPixels = (*ppTexture)->GetPixels();
     if (IsPalettedFormat(fmt))
     {
       for (unsigned int y = 0; y < height; y++)
@@ -468,18 +467,9 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
         memcpy(dest, src, std::min((unsigned int)pitch, (unsigned int)destPitch));
       }
     }
-#ifdef HAS_DX
-    if (IsSwizzledFormat(fmt))
-#else
     if (IsSwizzledFormat(fmt) || fmt == XB_D3DFMT_DXT1 || fmt == XB_D3DFMT_DXT2 || fmt == XB_D3DFMT_DXT4)
-#endif
     {
       delete[] texDataStart;
     }
-
-#ifdef HAS_DX
-    (*ppTexture)->GetTextureObject()->UnlockRect(0);
-    }
-#endif
   }
 }
