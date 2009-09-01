@@ -36,7 +36,7 @@ CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int BPP
   m_nTextureWidth = 0;
   m_nTextureHeight = 0;
 
-  if(m_imageWidth != 0 && m_imageHeight != 0)
+  if (m_imageWidth != 0 && m_imageHeight != 0)
     Allocate(m_imageWidth, m_imageHeight, m_nBPP);
 }
 
@@ -70,16 +70,13 @@ void CGLTexture::Delete()
   m_imageWidth = 0;
   m_imageHeight = 0;
 
-  if(m_pPixels)
-  {
-    delete [] m_pPixels;
-    m_pPixels = NULL;
-  }
+  delete[] m_pPixels;
+  m_pPixels = NULL;
 }
 
 void CGLTexture::CreateTextureObject()
 {
-   glGenTextures(1, (GLuint*) &m_pTexture);
+  glGenTextures(1, (GLuint*) &m_pTexture);
 }
 
 void CGLTexture::DestroyTextureObject()
