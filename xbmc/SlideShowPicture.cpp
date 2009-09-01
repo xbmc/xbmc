@@ -591,26 +591,8 @@ void CSlideShowPic::Render()
   }
 
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
-  /*
-#ifdef HAS_DX
-  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
-#elif defined(HAS_GL)
-  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, GL_LINE);
-#else
-  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
-#endif
-  */
 }
 
-/*
-#ifdef HAS_DX
-void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
-#elif defined(HAS_GL)
-void CSlideShowPic::Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode)
-#else
-void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor)
-#endif
-*/
 void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor)
 {
 #ifdef HAS_DX
@@ -668,7 +650,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwC
   g_graphicsContext.BeginPaint();
   if (pTexture)
   {
-    // elis pTexture->LoadToGPU();
+    pTexture->LoadToGPU();
     glBindTexture(GL_TEXTURE_2D, pTexture->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
 
@@ -685,14 +667,14 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwC
   }
   else
     glDisable(GL_TEXTURE_2D);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glPolygonMode(GL_FRONT_AND_BACK, pTexture ? GL_FILL : GL_LINE);
 
   glBegin(GL_QUADS);
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
   if (pTexture)
   {
-    u2 = (float)pTexture->GetWidth() / pTexture->GetHeight();
-    v2 = (float)pTexture->GetWidth() / pTexture->GetHeight();
+    u2 = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
+    v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
   }
 
   glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
