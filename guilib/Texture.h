@@ -31,9 +31,6 @@ class CTexture;
 class CGLTexture;
 class CDXTexture;
 
-#define MAX_PICTURE_WIDTH  2048
-#define MAX_PICTURE_HEIGHT 2048
-
 #pragma once
 
 /*!
@@ -51,6 +48,7 @@ public:
   virtual CBaseTexture& operator = (const CBaseTexture &rhs) = 0;
   virtual void Delete() = 0;
 
+  // TODO: Clean up this interface once things have settled down (none of these need to be virtual)
   virtual bool LoadFromFile(const CStdString& texturePath);
   virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels);
   virtual void CreateTextureObject() = 0;
@@ -60,8 +58,8 @@ public:
   XBMC::TexturePtr GetTextureObject() const { return m_pTexture; }
   virtual unsigned char* GetPixels() const { return m_pPixels; }
   virtual unsigned int GetPitch() const { return m_nTextureWidth * (m_nBPP / 8); }
-  virtual unsigned int GetTextureWidth() const { return m_imageWidth; };
-  virtual unsigned int GetTextureHeight() const { return m_imageHeight; };
+  virtual unsigned int GetTextureWidth() const { return m_nTextureWidth; };
+  virtual unsigned int GetTextureHeight() const { return m_nTextureHeight; };
   unsigned int GetWidth() const { return m_imageWidth; }
   unsigned int GetHeight() const { return m_imageHeight; }
   unsigned int GetBPP() const { return m_nBPP; }
