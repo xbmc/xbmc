@@ -55,6 +55,8 @@ public:
   XBMC::TexturePtr GetTextureObject() const { return m_pTexture; }
   virtual unsigned char* GetPixels() const { return NULL; }
   virtual unsigned int GetPitch() const { return 0; }
+  virtual unsigned int GetTextureWidth() const { return m_imageWidth; };
+  virtual unsigned int GetTextureHeight() const { return m_imageHeight; };
   unsigned int GetWidth() const { return m_imageWidth; }
   unsigned int GetHeight() const { return m_imageHeight; }
   unsigned int GetBPP() const { return m_nBPP; }

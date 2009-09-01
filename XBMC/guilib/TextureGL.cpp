@@ -198,6 +198,17 @@ unsigned int CGLTexture::GetPitch() const
 {
   return m_nTextureWidth * (m_nBPP / 8);
 }
+
+unsigned int CGLTexture::GetTextureWidth() const
+{
+  return m_nTextureWidth;
+}
+
+unsigned int CGLTexture::GetTextureHeight() const
+{
+  return m_nTextureHeight;
+}
+
 unsigned char* CGLTexture::GetPixels() const
 {
   return m_pPixels;

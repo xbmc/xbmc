@@ -46,8 +46,10 @@ public:
   bool LoadFromFile(const CStdString& texturePath);
   bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels); 
   void LoadToGPU();
-  unsigned int GetPitch() const;
-  unsigned char* GetPixels() const;
+  virtual unsigned int GetPitch() const;
+  virtual unsigned char* GetPixels() const;
+  virtual unsigned int GetTextureWidth() const;
+  virtual unsigned int GetTextureHeight() const;
 
 protected:
   CGLTexture(CBaseTexture& texture); 
