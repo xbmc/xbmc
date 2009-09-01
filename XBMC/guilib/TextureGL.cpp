@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "TextureGL.h"
+#include "WindowingFactory.h"
 
 #ifdef HAS_GL
 
@@ -110,16 +111,16 @@ void CGLTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  static unsigned int maxSize = MAX_PICTURE_WIDTH;
+  unsigned int maxSize = g_Windowing.GetMaxTextureSize();
   {
     if (m_nTextureHeight > maxSize)
     {
-      CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %d", m_nTextureHeight, (int) maxSize);
+      CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", m_nTextureHeight, maxSize);
       m_nTextureHeight = maxSize;
     }
     if (m_nTextureWidth > maxSize)
     {
-      CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %d", m_nTextureWidth, (int) maxSize);
+      CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", m_nTextureWidth, maxSize);
       glPixelStorei(GL_UNPACK_ROW_LENGTH, m_nTextureWidth);
       m_nTextureWidth = maxSize;
     }

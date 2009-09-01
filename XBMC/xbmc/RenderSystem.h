@@ -74,7 +74,7 @@ public:
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix) = 0;
   virtual void RestoreHardwareTransform() = 0;
     
-  int  GetMaxTextureSize() { return m_maxTextureSize; }
+  unsigned int GetMaxTextureSize() { return m_maxTextureSize; }
   
   virtual bool TestRender() = 0;
 
@@ -82,7 +82,7 @@ protected:
   bool                m_bRenderCreated;
   RenderingSystemType m_enumRenderingSystem;
   bool                m_bVSync;
-  int                 m_maxTextureSize;
+  unsigned int        m_maxTextureSize;
 
   CStdString m_RenderRenderer;
   CStdString m_RenderVendor;

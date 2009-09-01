@@ -396,7 +396,7 @@ void CRenderSystemGL::CalculateMaxTexturesize()
     }
   }
 
-  CLog::Log(LOGINFO, "GL: Maximum texture width: %d", (int) m_maxTextureSize);
+  CLog::Log(LOGINFO, "GL: Maximum texture width: %u", m_maxTextureSize);
 }
 
 void CRenderSystemGL::GetViewPort(CRect& viewPort)
