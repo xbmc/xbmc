@@ -25,7 +25,7 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlay.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "../../Settings.h"
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #include "OverlayRendererGL.h"
 #endif
 
@@ -263,7 +263,7 @@ COverlay* CRenderer::Convert(CDVDOverlay* o)
   if(r)
     return r->Acquire();
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = new COverlayTextureGL((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
