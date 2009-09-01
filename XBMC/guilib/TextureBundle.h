@@ -58,8 +58,8 @@ public:
   HRESULT LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
                        XBMC::PalettePtr* ppPalette);
 
-  int LoadAnim(const CStdString& Filename, CBaseTexture** ppTextures,
-                XBMC::PalettePtr* ppPalette, int& nLoops, int** ppDelays);
+  int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
+                int &width, int &height, int& nLoops, int** ppDelays);
 };
 
 

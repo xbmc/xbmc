@@ -333,21 +333,20 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
 
     if (bundle >= 0)
     {
-      return 0;
-      CBaseTexture *pTextures;
-      int nLoops = 0;
+      CBaseTexture **pTextures;
+      int nLoops = 0, width = 0, height = 0;
       int* Delay;
-      int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &pTextures, &pPal, nLoops, &Delay);
+      int nImages = m_TexBundle[bundle].LoadAnim(strTextureName, &pTextures, width, height, nLoops, &Delay);
       if (!nImages)
       {
         CLog::Log(LOGERROR, "Texture manager unable to load bundled file: %s", strTextureName.c_str());
         return 0;
       }
 
-      pMap = new CTextureMap(strTextureName, pTextures->GetWidth(), pTextures->GetHeight(), nLoops);
+      pMap = new CTextureMap(strTextureName, width, height, nLoops);
       for (int iImage = 0; iImage < nImages; ++iImage)
       {
-        pMap->Add(&pTextures[iImage], Delay[iImage]);
+        pMap->Add(pTextures[iImage], Delay[iImage]);
       }
 
       delete [] pTextures;
