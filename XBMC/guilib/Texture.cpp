@@ -78,8 +78,6 @@ void CBaseTexture::Update(int w, int h, int pitch, const unsigned char *pixels, 
   if (pixels == NULL)
     return;
 
-  delete[] m_pPixels;
-
   Allocate(w, h, 0);
 
   // Resize texture to POT if needed
