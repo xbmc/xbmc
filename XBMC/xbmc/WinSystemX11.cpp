@@ -67,7 +67,7 @@ bool CWinSystemX11::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemX11::CreateNewWindow(CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11::CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
 {
   m_nWidth = width;
   m_nHeight = height;
