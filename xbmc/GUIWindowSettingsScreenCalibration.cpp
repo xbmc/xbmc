@@ -77,7 +77,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
       CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       pDialog->SetHeading(20325);
       CStdString strText;
-      strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode);
+      strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode.c_str());
       pDialog->SetLine(0, strText);
       pDialog->SetLine(1, 20327);
       pDialog->SetChoice(0, 222);
@@ -347,7 +347,7 @@ void CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
   }
   // set the label control correctly
   CStdString strText;
-  strText.Format("%s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode, strStatus.c_str());
+  strText.Format("%s | %s", g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode.c_str(), strStatus.c_str());
   SET_CONTROL_LABEL(CONTROL_LABEL_ROW1, strText);
 }
 

@@ -60,6 +60,10 @@ public:
   OVERSCAN() {
     left = top = right = bottom = 0;
   }
+  OVERSCAN(const OVERSCAN& os) {
+    left = os.left; top = os.top;
+    right = os.right; bottom = os.bottom;
+  }
 };
 
 struct RESOLUTION_INFO
@@ -82,6 +86,14 @@ struct RESOLUTION_INFO
     iScreen = iWidth = iHeight = iSubtitles = dwFlags = 0;
     fPixelRatio = fRefreshRate = 0.f;
   }
+  RESOLUTION_INFO(const RESOLUTION_INFO& res) {
+    Overscan = res.Overscan; bFullScreen = res.bFullScreen;
+    iScreen = res.iScreen; iWidth = res.iWidth; iHeight = res.iHeight;
+    iSubtitles = res.iSubtitles; dwFlags = res.dwFlags;
+    fPixelRatio = res.fPixelRatio; fRefreshRate = res.fRefreshRate;
+    strMode = res.strMode; strOutput = res.strOutput; strId = res.strId;
+  }
+
 };
 
 typedef enum _WindowSystemType

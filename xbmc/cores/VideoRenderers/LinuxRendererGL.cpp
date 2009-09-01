@@ -336,11 +336,11 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
         m_iResolution = (RESOLUTION)i;
     }
 
-    CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+    CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
   }
   else
 #endif
-    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", DisplayRes == RES_AUTORES ? "AUTO" : "USER", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", DisplayRes == RES_AUTORES ? "AUTO" : "USER", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
 }
 
 bool CLinuxRendererGL::ValidateRenderTarget()

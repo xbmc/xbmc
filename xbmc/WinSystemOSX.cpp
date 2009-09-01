@@ -143,7 +143,6 @@ void CWinSystemOSX::UpdateResolutions()
      CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
 
      RESOLUTION_INFO res;
-     memset(&res, 0, sizeof(res));
 
      UpdateDesktopResolution(res, i, w, h, Cocoa_GetScreenRefreshRate(i));
      g_graphicsContext.ResetOverscan(res);

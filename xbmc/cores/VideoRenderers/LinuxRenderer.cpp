@@ -573,12 +573,12 @@ void CLinuxRenderer::ChooseBestResolution(float fps)
   RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
   if ( DisplayRes != AUTORES )
   {
-    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode, DisplayRes);
+    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode.c_str(), DisplayRes);
     m_iResolution = DisplayRes;
     return;
   }
   m_iResolution = g_graphicsContext.GetVideoResolution();
-  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
   return;
 }
 

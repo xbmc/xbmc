@@ -1170,7 +1170,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     strLabel.Format("%ix%i %s %02.2f Hz.",
       g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
       g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode.c_str(),GetFPS());
     return strLabel;
     break;
 
