@@ -31,8 +31,6 @@
 
 using namespace std;
 
-extern "C" void dllprintf( const char *format, ... );
-
 DWORD PadPow2(DWORD x) 
 {
   --x;
@@ -146,13 +144,14 @@ bool CGLTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigne
 
 void CGLTexture::LoadToGPU()
 {
-  if (!m_pPixels) {
+  if (!m_pPixels)
+  {
     // nothing to load - probably same image (no change)
     return;
   }
 
-  //g_graphicsContext.BeginPaint();
-  if (m_pTexture == 0) {
+  if (m_pTexture == 0)
+  {
     // Have OpenGL generate a texture object handle for us
     // this happens only one time - the first time the texture is loaded
     glGenTextures(1, (GLuint*) &m_pTexture);
@@ -187,7 +186,6 @@ void CGLTexture::LoadToGPU()
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
   VerifyGLState();
 
-  //g_graphicsContext.EndPaint();
   delete [] m_pPixels;
   m_pPixels = NULL;
 

@@ -88,10 +88,7 @@ protected:
     {
       assert(!m_texture.size());
       if (texture)
-      {
-        //CBaseTexture* newTexture = new CTexture(*texture);
         m_texture.Set(texture, width, height);
-      }
       m_orientation = orientation;
     };
 

@@ -77,19 +77,6 @@ private:
   void Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor);
   CBaseTexture *m_pImage;
 
-  /*
-#ifdef HAS_SDL
-  void Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode = GL_FILL);
-  CGLTexture *m_pImage;
-#elif defined(HAS_GL)
-  void Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor);
-  CBaseTexture* m_pImage;
-#else
-  void Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID);
-  CBaseTexture* m_pImage;
-#endif
-  */
-
   int m_iOriginalWidth;
   int m_iOriginalHeight;
   int m_iSlideNumber;
