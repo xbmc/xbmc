@@ -32,7 +32,7 @@ static const char *keynames[XBMCK_LAST];	/* Array of keycode names */
 
 static Uint8 XBMC_NoLockKeys;
 
-struct {
+struct _XBMC_KeyRepeat {
   int firsttime;    /* if we check against the delay or repeat value */
   int delay;        /* the delay before we start repeating */
   int interval;     /* the delay between key repeat events */
