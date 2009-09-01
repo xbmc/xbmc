@@ -62,7 +62,6 @@
 		7C779E35104A57E500F444C4 /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E16104A57E500F444C4 /* MouseStat.cpp */; };
 		7C779E36104A57E500F444C4 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */; };
 		7C779E37104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */; };
-		7C779E39104A57E500F444C4 /* PictureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1D104A57E500F444C4 /* PictureGL.cpp */; };
 		7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1F104A57E500F444C4 /* RenderSystem.cpp */; };
 		7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */; };
 		7C779E3C104A57E500F444C4 /* WinEventsSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */; };
@@ -72,7 +71,6 @@
 		7C779E40104A57E500F444C4 /* MouseStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E16104A57E500F444C4 /* MouseStat.cpp */; };
 		7C779E41104A57E500F444C4 /* MusicInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */; };
 		7C779E42104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */; };
-		7C779E44104A57E500F444C4 /* PictureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1D104A57E500F444C4 /* PictureGL.cpp */; };
 		7C779E45104A57E500F444C4 /* RenderSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E1F104A57E500F444C4 /* RenderSystem.cpp */; };
 		7C779E46104A57E500F444C4 /* RenderSystemGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */; };
 		7C779E47104A57E500F444C4 /* WinEventsSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E27104A57E500F444C4 /* WinEventsSDL.cpp */; };
@@ -1863,7 +1861,6 @@
 		7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTag.cpp; sourceTree = "<group>"; };
 		7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MusicInfoTagLoaderFactory.cpp; sourceTree = "<group>"; };
 		7C779E1A104A57E500F444C4 /* MusicInfoTagLoaderFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicInfoTagLoaderFactory.h; sourceTree = "<group>"; };
-		7C779E1D104A57E500F444C4 /* PictureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PictureGL.cpp; sourceTree = "<group>"; };
 		7C779E1F104A57E500F444C4 /* RenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystem.cpp; sourceTree = "<group>"; };
 		7C779E20104A57E500F444C4 /* RenderSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderSystem.h; sourceTree = "<group>"; };
 		7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystemGL.cpp; sourceTree = "<group>"; };
@@ -4299,7 +4296,6 @@
 				7C779E18104A57E500F444C4 /* MusicInfoTag.cpp */,
 				7C779E19104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp */,
 				7C779E1A104A57E500F444C4 /* MusicInfoTagLoaderFactory.h */,
-				7C779E1D104A57E500F444C4 /* PictureGL.cpp */,
 				7C779E1F104A57E500F444C4 /* RenderSystem.cpp */,
 				7C779E20104A57E500F444C4 /* RenderSystem.h */,
 				7C779E21104A57E500F444C4 /* RenderSystemGL.cpp */,
@@ -7952,7 +7948,6 @@
 				7C779E35104A57E500F444C4 /* MouseStat.cpp in Sources */,
 				7C779E36104A57E500F444C4 /* MusicInfoTag.cpp in Sources */,
 				7C779E37104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */,
-				7C779E39104A57E500F444C4 /* PictureGL.cpp in Sources */,
 				7C779E3A104A57E500F444C4 /* RenderSystem.cpp in Sources */,
 				7C779E3B104A57E500F444C4 /* RenderSystemGL.cpp in Sources */,
 				7C779E3C104A57E500F444C4 /* WinEventsSDL.cpp in Sources */,
@@ -8803,7 +8798,6 @@
 				7C779E40104A57E500F444C4 /* MouseStat.cpp in Sources */,
 				7C779E41104A57E500F444C4 /* MusicInfoTag.cpp in Sources */,
 				7C779E42104A57E500F444C4 /* MusicInfoTagLoaderFactory.cpp in Sources */,
-				7C779E44104A57E500F444C4 /* PictureGL.cpp in Sources */,
 				7C779E45104A57E500F444C4 /* RenderSystem.cpp in Sources */,
 				7C779E46104A57E500F444C4 /* RenderSystemGL.cpp in Sources */,
 				7C779E47104A57E500F444C4 /* WinEventsSDL.cpp in Sources */,
