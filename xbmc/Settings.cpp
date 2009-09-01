@@ -778,28 +778,18 @@ void CSettings::SetViewState(TiXmlNode *pRootNode, const CStdString &strTagName,
   }
 }
 
-bool CSettings::LoadCalibration(const TiXmlElement* pElement, const CStdString& strSettingsFile)
+bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& strSettingsFile)
 {
-  const TiXmlElement *pRootElement;
-  CStdString strTagName = pElement->Value();
-  if (!strcmp(strTagName.c_str(), "resolutions"))
-  {
-    pRootElement = pElement;
-  }
-  else
-  {
-    pRootElement = pElement->FirstChildElement("resolutions");
-  }
-  if (!pRootElement)
+  const TiXmlElement *pElement = pRoot->FirstChildElement("resolutions");
+  if (!pElement)
   {
     g_LoadErrorStr.Format("%s Doesn't contain <resolutions>", strSettingsFile.c_str());
     return false;
   }
-  const TiXmlElement *pResolution = pRootElement->FirstChildElement("resolution");
+  const TiXmlElement *pResolution = pElement->FirstChildElement("resolution");
   while (pResolution)
   {
     // get the data for this resolution
-    int iRes;
     CStdString mode;
     XMLUtils::GetString(pResolution, "description", mode);
     // find this resolution in our resolution vector
