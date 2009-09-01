@@ -463,44 +463,15 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
     keysym->mod = (XBMCMod)modstate;
   }
 
-  /*
-  * jk 991215 - Added
-  */
   if(state == XBMC_RELEASED)
-  if ( XBMC_KeyRepeat.timestamp &&
-    XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym ) 
-  {
-    XBMC_KeyRepeat.timestamp = 0;
-  }
-
- /*
-  switch (state) {
-    case XBMC_PRESSED:
-      event.type = XBMC_KEYDOWN;
-      break;
-    case XBMC_RELEASED:
-      event.type = XBMC_KEYUP;
-      
-      if ( XBMC_KeyRepeat.timestamp &&
-        XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym ) 
-      {
-          XBMC_KeyRepeat.timestamp = 0;
-      }
-      break;
-    default:
-      
-      return(0);
-  }
-  */
-
+    if ( XBMC_KeyRepeat.timestamp &&
+      XBMC_KeyRepeat.evt.key.keysym.sym == keysym->sym ) 
+    {
+      XBMC_KeyRepeat.timestamp = 0;
+    }
+  
   if ( keysym->sym != XBMCK_UNKNOWN ) 
   {
-    /* Drop events that don't change state */
-    if ( XBMC_KeyState[keysym->sym] == state ) 
-    {
-      return(0);
-    }
-
     /* Update internal keyboard state */
     XBMC_ModState = (XBMCMod)modstate;
     XBMC_KeyState[keysym->sym] = state;
