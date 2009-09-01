@@ -24,6 +24,7 @@
 #include "Picture.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "Texture.h"
 
 using namespace std;
 
