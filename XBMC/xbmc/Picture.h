@@ -32,7 +32,6 @@ public:
 
   bool CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
-  virtual bool CreateThumbnailFromSwizzledTexture(CBaseTexture* &texture, int width, int height, const CStdString &thumb) = 0;
   int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror=false);
 
   ImageInfo GetInfo() const { return m_info; };
@@ -45,9 +44,6 @@ public:
   void CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail);
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
   bool CacheImage(const CStdString& sourceFileName, const CStdString& destFileName);
-
-  // caches a skin image as a thumbnail image
-  virtual bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile) = 0;
 
 protected:
   DllImageLib m_dll;

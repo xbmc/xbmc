@@ -21,12 +21,7 @@
 
 #include "stdafx.h"
 #include "PictureDX.h"
-#include "TextureManager.h"
-#include "Settings.h"
-#include "FileItem.h"
-#include "FileSystem/File.h"
-#include "FileSystem/FileCurl.h"
-#include "Util.h"
+#include "Texture.h"
 
 #ifdef HAS_DX
 
@@ -54,9 +49,6 @@ CBaseTexture* CPictureDX::Load(const CStdString& strFileName, int iMaxWidth, int
     return NULL;
   }
   CBaseTexture* pTexture = new CTexture(m_info.width,  m_info.height, 32);
-
-  //g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture, NULL);
-
   if (pTexture)
   {
     D3DLOCKED_RECT lr;
@@ -87,60 +79,6 @@ CBaseTexture* CPictureDX::Load(const CStdString& strFileName, int iMaxWidth, int
     CLog::Log(LOGERROR, "%s - failed to create texture while loading image %s", __FUNCTION__, strFileName.c_str());
   m_dll.ReleaseImage(&m_info);
   return pTexture;
-}
-
-// caches a skin image as a thumbnail image
-bool CPictureDX::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
-{
-  int iImages = g_TextureManager.Load(srcFile);
-  if (iImages > 0)
-  {
-    int width = 0, height = 0;
-    bool linear = false;
-    CTextureArray baseTexture = g_TextureManager.GetTexture(srcFile);
-    CBaseTexture* texture = baseTexture.m_textures[0];
-    if (texture && texture->GetTextureObject())
-    {
-      bool success(false);
-      CPicture pic;
-      if (!linear)
-      { // damn, have to copy it to a linear texture first :(
-        return CreateThumbnailFromSwizzledTexture(texture, width, height, destFile);
-      }
-      else
-      {
-        D3DLOCKED_RECT lr;
-        texture->GetTextureObject()->LockRect(0, &lr, NULL, 0);
-        success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, destFile);
-        texture->GetTextureObject()->UnlockRect(0);
-      }
-      g_TextureManager.ReleaseTexture(srcFile);
-      return success;
-    }
-  }
-  return false;
-}
-
-bool CPictureDX::CreateThumbnailFromSwizzledTexture(CBaseTexture* &texture, int width, int height, const CStdString &thumb)
-{
-  LPDIRECT3DTEXTURE9 linTexture = NULL;
-  if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &linTexture))
-  {
-    LPDIRECT3DSURFACE9 source;
-    LPDIRECT3DSURFACE9 dest;
-    texture->GetTextureObject()->GetSurfaceLevel(0, &source);
-    linTexture->GetSurfaceLevel(0, &dest);
-    D3DXLoadSurfaceFromSurface(dest, NULL, NULL, source, NULL, NULL, D3DX_FILTER_NONE, 0);
-    D3DLOCKED_RECT lr;
-    dest->LockRect(&lr, NULL, 0);
-    bool success = CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, thumb);
-    dest->UnlockRect();
-    SAFE_RELEASE(source);
-    SAFE_RELEASE(dest);
-    SAFE_RELEASE(linTexture);
-    return success;
-  }
-  return false;
 }
 
 #endif

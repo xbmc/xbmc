@@ -30,9 +30,5 @@ public:
   CPictureGL(void);
   virtual ~CPictureGL(void);
   virtual CBaseTexture* Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
-  bool CreateThumbnailFromSwizzledTexture(CBaseTexture* &texture, int width, int height, const CStdString &thumb);
-
-  // caches a skin image as a thumbnail image
-  virtual bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
 };
 #endif
