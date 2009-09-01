@@ -32,11 +32,11 @@ CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, 
 
 void CGUITextureGL::Begin()
 {
-  CBaseTexture* texture = (CBaseTexture *)m_texture.m_textures[m_currentFrame];
+  CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   glActiveTextureARB(GL_TEXTURE0_ARB);
   texture->LoadToGPU();
   if (m_diffuse.size())
-    ((CBaseTexture *)m_diffuse.m_textures[0])->LoadToGPU();
+    m_diffuse.m_textures[0]->LoadToGPU();
 
   glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
   glEnable(GL_TEXTURE_2D);
@@ -57,7 +57,7 @@ void CGUITextureGL::Begin()
   if (m_diffuse.size())
   {
     glActiveTextureARB(GL_TEXTURE1_ARB);
-    glBindTexture(GL_TEXTURE_2D, ((CGLTexture *)m_diffuse.m_textures[0])->GetTextureObject());
+    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
