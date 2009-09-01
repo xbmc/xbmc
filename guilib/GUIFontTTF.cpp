@@ -268,7 +268,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   m_textureHeight = 0;
   m_textureWidth = ((m_cellHeight * CHARS_PER_TEXTURE_LINE) & ~63) + 64;
 
-  m_textureWidth = PadPow2(m_textureWidth);
+  m_textureWidth = CBaseTexture::PadPow2(m_textureWidth);
 
   if (m_textureWidth > max_texture_size) m_textureWidth = max_texture_size;
 

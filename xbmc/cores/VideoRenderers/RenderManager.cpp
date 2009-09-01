@@ -1,4 +1,4 @@
-/*
+\/*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
@@ -33,11 +33,11 @@
 #endif
 
 #if defined(HAS_GL)
-#include "LinuxRendererGL.h"
+  #include "LinuxRendererGL.h"
+#elif defined(HAS_DX)
+  #include "WinRenderer.h"
 #elif defined(HAS_SDL)
-#include "LinuxRenderer.h"
-#else
-#include "WinRenderer.h"
+  #include "LinuxRenderer.h"
 #endif
 
 #ifdef HAVE_LIBVDPAU
@@ -237,10 +237,10 @@ unsigned int CXBMCRenderManager::PreInit()
   { 
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
+#elif defined(HAS_DX)
+    m_pRenderer = new CWinRenderer(g_Windowing.Get3DDevice());
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
-#else
-    m_pRenderer = new CWinRenderer(g_graphicsContext.Get3DDevice());
 #endif
   }
 

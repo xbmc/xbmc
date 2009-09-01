@@ -1764,7 +1764,7 @@ CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 void CUtil::InitGamma()
 {
 #ifdef HAS_DX
-  g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &oldramp);
+  g_Windowing.Get3DDevice()->GetGammaRamp(0, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_GetGammaRamp(oldrampRed, oldrampGreen, oldrampBlue);
 #endif
@@ -1773,7 +1773,7 @@ void CUtil::RestoreBrightnessContrastGamma()
 {
   g_graphicsContext.Lock();
 #ifdef HAS_DX
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &oldramp);
+  g_Windowing.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &oldramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(oldrampRed, oldrampGreen, oldrampGreen);
 #endif
@@ -1824,7 +1824,7 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
   // set ramp next v sync
   g_graphicsContext.Lock();
 #ifdef HAS_DX
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
+  g_Windowing.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &ramp);
 #elif defined(HAS_SDL_2D)
   SDL_SetGammaRamp(rampRed, rampGreen, rampBlue);
 #endif
@@ -1863,7 +1863,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   if (bOn)
   {
 #ifdef HAS_DX
-    g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &flashramp);
+    g_Windowing.Get3DDevice()->GetGammaRamp(0, &flashramp);
 #elif defined(HAS_SDL_2D)
     SDL_GetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
 #endif
@@ -1871,7 +1871,7 @@ void CUtil::FlashScreen(bool bImmediate, bool bOn)
   }
   else
 #ifdef HAS_DX
-    g_graphicsContext.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
+    g_Windowing.Get3DDevice()->SetGammaRamp(0, bImmediate ? GAMMA_RAMP_FLAG : 0, &flashramp);
 #elif defined(HAS_SDL_2D)
     SDL_SetGammaRamp(flashrampRed, flashrampGreen, flashrampBlue);
 #endif
@@ -1900,7 +1900,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
     }
     // now take screenshot
     g_application.RenderNoPresent();
-    if (SUCCEEDED(g_graphicsContext.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
+    if (SUCCEEDED(g_Windowing.Get3DDevice()->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &lpSurface)))
     {
       if (FAILED(XGWriteSurfaceToFile(lpSurface, fn)))
       {
@@ -2516,7 +2516,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     if (g_graphicsContext.IsValidResolution(res))
     {
       g_guiSettings.SetInt("videoscreen.resolution", res);
-      //set the gui resolution, if newRes is AUTORES newRes will be set to the highest available resolution
+      //set the gui resolution, if newRes is RES_AUTORES newRes will be set to the highest available resolution
       g_graphicsContext.SetVideoResolution(res, TRUE);
       //set our lookandfeelres to the resolution set in graphiccontext
       g_guiSettings.m_LookAndFeelResolution = res;

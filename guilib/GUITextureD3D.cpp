@@ -20,8 +20,9 @@
  */
 
 #include "include.h"
+#include "Texture.h"
 #include "GUITextureD3D.h"
-#include "GraphicContext.h"
+#include "WindowingFactory.h"
 
 #ifdef HAS_DX
 
@@ -32,9 +33,14 @@ CGUITextureD3D::CGUITextureD3D(float posX, float posY, float width, float height
 
 void CGUITextureD3D::Begin()
 {
-  LPDIRECT3DDEVICE9 p3DDevice = g_graphicsContext.Get3DDevice();
+  CBaseTexture* texture = (CBaseTexture *)m_texture.m_textures[m_currentFrame];
+  LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
+
+  texture->LoadToGPU();
+  if (m_diffuse.size())
+    ((CBaseTexture *)m_diffuse.m_textures[0])->LoadToGPU();
   // Set state to render the image
-  p3DDevice->SetTexture( 0, m_texture.m_textures[m_currentFrame]->GetTextureObject() );
+  p3DDevice->SetTexture( 0, texture->GetTextureObject() );
   p3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
   p3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
   p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
@@ -47,7 +53,7 @@ void CGUITextureD3D::Begin()
   p3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
   if (m_diffuse.size())
   {
-    p3DDevice->SetTexture( 1, m_diffuse.m_textures[0]->GetTextureObject() );
+    p3DDevice->SetTexture( 1, texture->GetTextureObject() );
     p3DDevice->SetSamplerState( 1, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetSamplerState( 1, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
     p3DDevice->SetTextureStageState( 1, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -79,9 +85,9 @@ void CGUITextureD3D::Begin()
 void CGUITextureD3D::End()
 {
   // unset the texture and palette or the texture caching crashes because the runtime still has a reference
-  g_graphicsContext.Get3DDevice()->SetTexture( 0, NULL );
+  g_Windowing.Get3DDevice()->SetTexture( 0, NULL );
   if (m_diffuse.size())
-    g_graphicsContext.Get3DDevice()->SetTexture( 1, NULL );
+    g_Windowing.Get3DDevice()->SetTexture( 1, NULL );
 }
 
 void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
@@ -158,7 +164,7 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   }
   verts[3].color = color;
 
-  g_graphicsContext.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 }
 
 #endif

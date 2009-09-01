@@ -19,8 +19,8 @@
 *
 */
 
-#ifndef RENDER_SYSTEM_DX_H
-#define RENDER_SYSTEM_DX_H
+#ifndef WIN_SYSTEM_WIN32_DX_H
+#define WIN_SYSTEM_WIN32_DX_H
 
 #pragma once
 
@@ -29,51 +29,24 @@
 #include <dxerr9.h>
 #include <dxdiag.h>
 #include "WinSystemWin32.h"
-#include "RenderSystem.h"
+#include "RenderSystemDX.h"
 
 #ifdef HAS_DX
 
-class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemBase
+class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX
 {
 public:
   CWinSystemWin32DX();
   ~CWinSystemWin32DX();
 
-  // CRenderSystem
-  virtual bool InitRenderSystem();
-  virtual bool DestroyRenderSystem();
-  virtual bool ResetRenderSystem(int width, int height);
-
-  virtual bool BeginRender();
-  virtual bool EndRender();
-  virtual bool PresentRender();
-  virtual bool ClearBuffers(DWORD color);
-  virtual bool ClearBuffers(float r, float g, float b, float a);
-  virtual bool IsExtSupported(CStdString strExt);
-
-  virtual void SetVSync(bool vsync);
-
-  virtual void SetViewPort(CRect& viewPort);
-  virtual void GetViewPort(CRect& viewPort);
-
-  virtual bool NeedPower2Texture();
-
-  virtual void CaptureStateBlock();
-  virtual void ApplyStateBlock();
-
-  virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight);
+  virtual bool CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
 
 protected:
- 
 
-private:
-  LPDIRECT3D9 m_pD3D;
-  LPDIRECT3DDEVICE9 m_pD3DDevice;
-  D3DPRESENT_PARAMETERS m_D3DPP;
 };
 
 extern CWinSystemWin32DX g_RenderSystem;
 
 #endif
 
-#endif // RENDER_SYSTEM_H
+#endif // WIN_SYSTEM_WIN32_DX_H

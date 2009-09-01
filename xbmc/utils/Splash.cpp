@@ -60,7 +60,7 @@ void CSplash::Show()
 
 #ifdef HAS_DX
   // Store the old gamma ramp
-  g_graphicsContext.Get3DDevice()->GetGammaRamp(0, &oldRamp);
+  g_Windowing.Get3DDevice()->GetGammaRamp(0, &oldRamp);
   fade = 0.5f;
   for (int i = 0; i < 256; i++)
   {
@@ -68,12 +68,12 @@ void CSplash::Show()
     newRamp.green[i] = (int)((float)oldRamp.red[i] * fade);
     newRamp.blue[i] = (int)((float)oldRamp.red[i] * fade);
   }
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
+  g_Windowing.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
 #endif
 
   //render splash image
 #if !defined(HAS_XBOX_D3D) && !defined(HAS_GL)
-  g_graphicsContext.Get3DDevice()->BeginScene();
+  g_Windowing.Get3DDevice()->BeginScene();
 #endif
 
   image->Render();
@@ -83,11 +83,11 @@ void CSplash::Show()
   //show it on screen
 #ifdef HAS_DX
 #ifdef HAS_XBOX_D3D
-  g_graphicsContext.Get3DDevice()->BlockUntilVerticalBlank();
+  g_Windowing.Get3DDevice()->BlockUntilVerticalBlank();
 #else
-  g_graphicsContext.Get3DDevice()->EndScene();
+  g_Windowing.Get3DDevice()->EndScene();
 #endif
-  g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+  g_Windowing.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 #elif defined(HAS_SDL_2D)
   XBMC_Flip(g_graphicsContext.getScreenSurface()->SDL());
 #elif defined(HAS_GL)
@@ -111,15 +111,15 @@ void CSplash::Hide()
       newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fadeout);
     }
     Sleep(1);
-    g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
+    g_Windowing.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
 #endif
   }
 
   //restore original gamma ramp
 #ifdef HAS_DX
-  g_graphicsContext.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
-  g_graphicsContext.Get3DDevice()->SetGammaRamp(0, 0, &oldRamp);
-  g_graphicsContext.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
+  g_Windowing.Get3DDevice()->Clear(0, NULL, D3DCLEAR_TARGET, 0, 0, 0);
+  g_Windowing.Get3DDevice()->SetGammaRamp(0, 0, &oldRamp);
+  g_Windowing.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 #endif
   g_graphicsContext.Unlock();
 }
@@ -142,7 +142,7 @@ void CSplash::Process()
         newRamp.blue[i] = (int)((float)oldRamp.blue[i] * fade);
       }
       g_graphicsContext.Lock();
-      g_graphicsContext.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
+      g_Windowing.Get3DDevice()->SetGammaRamp(0, GAMMA_RAMP_FLAG, &newRamp);
       g_graphicsContext.Unlock();
 #endif
       fade += 0.01f;

@@ -24,7 +24,6 @@
 #include "GUIFontTTFDX.h"
 #include "GUIFontManager.h"
 #include "Texture.h"
-#include "GraphicContext.h"
 #include "gui3d.h"
 
 // stuff for freetype
@@ -71,7 +70,7 @@ void CGUIFontTTFDX::RenderInternal(SVertex* v)
 
 void CGUIFontTTFDX::Begin()
 {
-   m_pD3DDevice = g_graphicsContext.Get3DDevice();
+   m_pD3DDevice = g_Windowing.Get3DDevice();
 
   if (m_dwNestedBeginCount == 0)
   {
@@ -109,7 +108,7 @@ void CGUIFontTTFDX::Begin()
 
 void CGUIFontTTFDX::End()
 {
-  m_pD3DDevice = g_graphicsContext.Get3DDevice();
+  m_pD3DDevice = g_Windowing.Get3DDevice();
 
   if (m_dwNestedBeginCount == 0)
     return;
@@ -127,6 +126,8 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 
   if(pNewTexture == NULL)
     return NULL;
+
+  pNewTexture->CreateTextureObject();
 
   LPDIRECT3DTEXTURE9 newTexture = pNewTexture->GetTextureObject();
 

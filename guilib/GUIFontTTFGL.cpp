@@ -123,7 +123,7 @@ void CGUIFontTTFGL::End()
 
 CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
-  newHeight = PadPow2(newHeight);
+  newHeight = CBaseTexture::PadPow2(newHeight);
 
   CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, 8);
 /* yuvalt

@@ -46,6 +46,7 @@
 #include "gui3d.h"
 #include "StdString.h"
 
+#include "WindowingFactory.h"
 #include "WinSystem.h"
 
 // forward definitions
