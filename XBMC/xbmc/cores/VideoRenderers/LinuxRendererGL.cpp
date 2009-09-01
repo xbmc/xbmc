@@ -34,6 +34,7 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "WindowingFactory.h"
+#include "Texture.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"

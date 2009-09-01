@@ -29,6 +29,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "WindowingFactory.h"
 #include "SkinInfo.h"
+#include "TextureManager.h"
 
 using namespace std;
 

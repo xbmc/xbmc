@@ -27,7 +27,6 @@
 #ifndef GUILIB_TEXTUREDX_H
 #define GUILIB_TEXTUREDX_H
 
-#include "RenderSystem.h"
 #include "Texture.h"
 
 #pragma once

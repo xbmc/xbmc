@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "TextureManager.h"
+#include "Texture.h"
 #include "AnimatedGif.h"
 #include "GraphicContext.h"
 #include "../xbmc/Picture.h"

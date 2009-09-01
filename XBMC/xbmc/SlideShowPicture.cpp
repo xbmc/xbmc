@@ -21,10 +21,10 @@
 
 #include "stdafx.h"
 #include "SlideShowPicture.h"
+#include "Texture.h"
 #include "cores/ssrc.h"         // for M_PI
 #include "utils/GUIInfoManager.h"
 #include "Settings.h"
-#include "TextureManager.h"
 #include "include.h"
 
 using namespace std;

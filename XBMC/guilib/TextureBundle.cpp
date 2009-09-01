@@ -2,6 +2,7 @@
 
 #include "include.h"
 #include "./TextureBundle.h"
+#include "Texture.h"
 #include "GraphicContext.h"
 #include "DirectXGraphics.h"
 #ifndef _LINUX
