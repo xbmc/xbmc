@@ -21,6 +21,9 @@
 
 #include "include.h"
 #include "Texture.h"
+#include "../xbmc/Picture.h"
+#include "WindowingFactory.h"
+
 
 /************************************************************************/
 /*                                                                      */
@@ -43,4 +46,123 @@ CBaseTexture::~CBaseTexture()
 CBaseTexture::CBaseTexture(const CBaseTexture& texture)
 {
  
+}
+
+void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int BPP)
+{
+  if(BPP != 0)
+    m_nBPP = BPP;
+
+  m_imageWidth = width;
+  m_imageHeight = height;
+
+  if (g_Windowing.NeedPower2Texture())
+  {
+    m_nTextureWidth = PadPow2(m_imageWidth);
+    m_nTextureHeight = PadPow2(m_imageHeight);
+  }
+  else
+  {
+    m_nTextureWidth = m_imageWidth;
+    m_nTextureHeight = m_imageHeight;
+  }
+
+  if (m_pPixels)
+  {
+    delete [] m_pPixels;
+    m_pPixels = NULL;
+  }
+  
+  m_pPixels = new unsigned char[m_nTextureWidth * m_nTextureHeight * m_nBPP / 8];
+}
+
+void CBaseTexture::Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU) 
+{
+  int tpitch;
+
+  if(pixels == NULL)
+    return;
+
+  if (m_pPixels)
+  {
+    delete [] m_pPixels;
+    m_pPixels = NULL;
+  }
+
+  Allocate(w, h, 0);
+
+  // Resize texture to POT
+  const unsigned char *src = pixels;
+  tpitch = pitch;
+  unsigned char* resized = m_pPixels;
+
+  for (int y = 0; y < h; y++)
+  {
+    memcpy(resized, src, tpitch); // make sure pitch is not bigger than our width
+    src += pitch;
+
+    // repeat last column to simulate clamp_to_edge
+    for(unsigned int i = tpitch; i < m_nTextureWidth*4; i+=4)
+      memcpy(resized+i, src-4, 4);
+
+    resized += (m_nTextureWidth * 4);
+  }
+
+  // repeat last row to simulate clamp_to_edge
+  for(unsigned int y = h; y < m_nTextureHeight; y++) 
+  {
+    memcpy(resized, src - tpitch, tpitch);
+
+    // repeat last column to simulate clamp_to_edge
+    for(unsigned int i = tpitch; i < m_nTextureWidth*4; i+=4) 
+      memcpy(resized+i, src-4, 4);
+
+    resized += (m_nTextureWidth * 4);
+  }
+
+  if (loadToGPU)
+    LoadToGPU();
+}
+
+bool CBaseTexture::LoadFromFile(const CStdString& texturePath)
+{
+  CPicture pic;
+
+  CBaseTexture* original = new CTexture();
+    
+  if(!pic.Load(texturePath, original, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT))
+  {
+    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
+    return 0;
+  }
+  m_imageWidth = original->GetWidth();
+  m_imageHeight = original->GetHeight();
+  m_nBPP = original->GetBPP();
+
+  Update(original->GetWidth(), original->GetHeight(), original->GetPitch(), original->GetPixels(), false);
+
+  delete original;
+
+  return true;
+}
+
+bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels)
+{
+  m_imageWidth = width;
+  m_imageHeight = height;
+  m_nBPP = BPP;
+  Update(width, height, pitch, pPixels, false);
+
+  return TRUE;
+}
+
+DWORD CBaseTexture::PadPow2(DWORD x) 
+{
+  --x;
+  x |= x >> 1;
+  x |= x >> 2;
+  x |= x >> 4;
+  x |= x >> 8;
+  x |= x >> 16;
+  return ++x;
 }

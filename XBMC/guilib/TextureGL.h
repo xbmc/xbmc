@@ -43,23 +43,13 @@ public:
   virtual ~CGLTexture();
   
   void Delete();
-  bool LoadFromFile(const CStdString& texturePath);
-  bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels); 
+  void CreateTextureObject();
+  virtual void DestroyTextureObject();
   void LoadToGPU();
-  virtual unsigned int GetPitch() const;
-  virtual unsigned char* GetPixels() const;
-  virtual unsigned int GetTextureWidth() const;
-  virtual unsigned int GetTextureHeight() const;
 
 protected:
   CGLTexture(CBaseTexture& texture); 
   CBaseTexture& operator = (const CBaseTexture &rhs);
-  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
-  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
-
-  unsigned int m_nTextureWidth;
-  unsigned int m_nTextureHeight;
-
 };
 
 #endif
