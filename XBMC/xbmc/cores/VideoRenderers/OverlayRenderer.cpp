@@ -225,7 +225,7 @@ void CRenderer::Render(COverlay* o)
 
       if(align == COverlay::ALIGN_SUBTITLE)
       {
-        state.x += rv.left + (rv.right - rv.left) * 0.5;
+        state.x += rv.left + (rv.right - rv.left) * 0.5f;
         state.y += rv.top  + (res.iSubtitles - res.Overscan.top) * scale_y;
       }
       else

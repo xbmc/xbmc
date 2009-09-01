@@ -535,7 +535,7 @@ case TMSG_POWERDOWN:
         share.strName = share.strPath;
         share.m_ignore = true;
         share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-        g_mediaManager.AddAutoSource(share, (bool)pMsg->dwParam1);
+        g_mediaManager.AddAutoSource(share, pMsg->dwParam1 != 0);
       }
       break; 
 
