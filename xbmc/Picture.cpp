@@ -44,7 +44,7 @@ bool CPicture::Load(const CStdString& strFileName, CBaseTexture* pTexture, int i
 {
   if (!m_dll.Load()) return NULL;
 
-  if(pTexture == NULL)
+  if (pTexture == NULL)
     return false;
 
   memset(&m_info, 0, sizeof(ImageInfo));

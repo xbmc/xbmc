@@ -49,7 +49,7 @@ CBaseTexture& CDXTexture::operator = (const CBaseTexture &rhs)
 {
   if (this != &rhs) 
   {
-    if(rhs.GetTextureObject() == NULL)
+    if (rhs.GetTextureObject() == NULL)
       return *this;
 
     m_pTexture = rhs.GetTextureObject();
@@ -64,27 +64,21 @@ void CDXTexture::CreateTextureObject()
 {
   D3DFORMAT format;
 
-  if(m_nBPP == 8)
+  if (m_nBPP == 8)
     format = D3DFMT_LIN_A8;
-  else if(m_nBPP == 32)
+  else if (m_nBPP == 32)
     format = D3DFMT_LIN_A8R8G8B8;
   else
     return;
 
-  if(m_pTexture)
-  {
-    SAFE_RELEASE(m_pTexture);
-  }
+  SAFE_RELEASE(m_pTexture);
 
   D3DXCreateTexture(g_Windowing.Get3DDevice(), m_nTextureWidth, m_nTextureHeight, 1, 0, format, D3DPOOL_MANAGED , &m_pTexture);
 }
 
 void CDXTexture::DestroyTextureObject()
 {
-  if(m_pTexture)
-  {
-    SAFE_RELEASE(m_pTexture);
-  }
+  SAFE_RELEASE(m_pTexture);
 }
 
 void DestroyTextureObject();
@@ -97,7 +91,7 @@ void CDXTexture::LoadToGPU()
     return;
   }
 
-  if(m_pTexture == NULL)
+  if (m_pTexture == NULL)
   {
     CreateTextureObject();
     if (m_pTexture == NULL)
