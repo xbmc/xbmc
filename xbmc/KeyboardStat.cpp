@@ -20,8 +20,6 @@
 
 CKeyboardStat g_Keyboard;
 
-const unsigned int CKeyboardStat::key_hold_time = 500;  // time in ms before we declare it held
-
 #define XBMC_NLK_CAPS 0x01
 #define XBMC_NLK_NUM  0x02
 
@@ -305,6 +303,7 @@ CKeyboardStat::CKeyboardStat()
   keynames[XBMCK_UNDO] = "undo";
 
   Reset();
+  m_lastKey = XBMCK_UNKNOWN;
 }
 
 CKeyboardStat::~CKeyboardStat()
@@ -335,9 +334,7 @@ void CKeyboardStat::ResetState()
 
 unsigned int CKeyboardStat::KeyHeld() const
 {
-  if (m_keyHoldTime > key_hold_time)
-    return m_keyHoldTime - key_hold_time;
-  return 0;
+  return m_keyHoldTime;
 }
 
 int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
@@ -488,9 +485,11 @@ void CKeyboardStat::Update(XBMC_Event& m_keyEvent)
   if (m_keyEvent.type == XBMC_KEYDOWN)
   {
     DWORD now = timeGetTime();
-    if (memcmp(&m_lastKey, &m_keyEvent, sizeof(XBMC_Event)) == 0)
+    if (m_lastKey == m_keyEvent.key.keysym.sym)
       m_keyHoldTime += now - m_lastKeyTime;
-    m_lastKey = m_keyEvent;
+    else
+      m_keyHoldTime = 0;
+    m_lastKey = m_keyEvent.key.keysym.sym;
     m_lastKeyTime = now;
 
     m_cAscii = 0;
@@ -703,7 +702,7 @@ void CKeyboardStat::Update(XBMC_Event& m_keyEvent)
   else
   { // key up event
     Reset();
-    memset(&m_lastKey, 0, sizeof(m_lastKey));
+    m_lastKey = XBMCK_UNKNOWN;
     m_keyHoldTime = 0;
   }
 }

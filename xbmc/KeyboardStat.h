@@ -53,12 +53,10 @@ private:
   WCHAR m_wUnicode;
   BYTE m_VKey;
 
-  XBMC_Event m_lastKey;
+  XBMCKey m_lastKey;
   DWORD m_lastKeyTime;
   unsigned int m_keyHoldTime;
   bool m_bEvdev;
-
-  static const unsigned int key_hold_time;
 };
 
 extern CKeyboardStat g_Keyboard;
