@@ -168,6 +168,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 
   m_fStableFrameRate = 0.0;
   m_iFrameRateCount = 0;
+  m_bAllowDrop = true;
   
   if (hint.vfr)
     m_autosync = 1;
@@ -944,7 +945,17 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // ask decoder to drop frames next round, as we are very late
   if( (limited == false  && iClockSleep < -DVD_MSEC_TO_TIME(100))
   ||  (limited == true   && iClockSleep < -iFrameDuration*0.5) )
-    result |= EOS_VERYLATE;
+  {
+    if (m_bAllowDrop) //only drop frames here if we calculated a good framerate
+    {
+      result |= EOS_VERYLATE;
+      m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
+    }
+  }
+  else
+  {
+    m_bAllowDrop = false; //we're back in sync so don't drop frames
+  }                       //until we've calculated a good framerate again
 
   if( m_speed < 0 )
   {
@@ -1096,6 +1107,9 @@ void CDVDPlayerVideo::CalcFrameRate()
       //reset the stored framerates
       m_fStableFrameRate = 0.0;
       m_iFrameRateCount = 0;
+      
+      //we're allowed to drop frames because we calculated a good framerate
+      m_bAllowDrop = true;
     }
   }
   else //the calculated framerate didn't match, reset the stored ones

@@ -134,6 +134,7 @@ protected:
   float  m_fFrameRate;
   double m_fStableFrameRate;
   int    m_iFrameRateCount;
+  bool   m_bAllowDrop;
 
   struct SOutputConfiguration
   {
