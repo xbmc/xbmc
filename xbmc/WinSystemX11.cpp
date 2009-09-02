@@ -102,7 +102,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, int width, int heigh
   m_nHeight = height;
   m_bFullScreen = fullScreen;
 
-  if (m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL))
+  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL)))
   {
     RefreshGlxContext();
 
@@ -134,7 +134,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   if (m_bFullScreen)
     options |= SDL_FULLSCREEN;
 
-  if (m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options))
+  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
   {
     RefreshGlxContext();
     return true;
@@ -176,7 +176,7 @@ bool CWinSystemX11::RefreshGlxContext()
     m_glWindow = info.info.x11.window;
 
     // query compatible framebuffers based on double buffered attributes
-    if (fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs))
+    if ((fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
     {
       for (int i = 0; i < availableFBs; i++)
       {
@@ -199,7 +199,7 @@ bool CWinSystemX11::RefreshGlxContext()
         if (m_glContext)
           glXDestroyContext(m_dpy, m_glContext);
 
-        if (m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True))
+        if ((m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
         {
           // make this context current
           glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
