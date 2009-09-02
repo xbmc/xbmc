@@ -49,6 +49,7 @@
 #include "PlayList.h"
 #include "utils/AsyncFileCopy.h"
 #include "MediaManager.h"
+#include "MouseStat.h"
 
 using namespace std;
 using namespace XFILE;

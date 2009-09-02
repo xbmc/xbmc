@@ -23,6 +23,7 @@
 #include "GUICheckMarkControl.h"
 #include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
+#include "MouseStat.h"
 
 using namespace std;
 

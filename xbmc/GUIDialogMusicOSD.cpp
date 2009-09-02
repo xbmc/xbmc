@@ -24,6 +24,7 @@
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
+#include "MouseStat.h"
 
 
 #define CONTROL_VIS_BUTTON       500

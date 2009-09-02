@@ -28,6 +28,7 @@
 #include "utils/GUIInfoManager.h"
 #include "SkinInfo.h"
 #include "GUIControlFactory.h"
+#include "MouseStat.h"
 
 using namespace std;
 

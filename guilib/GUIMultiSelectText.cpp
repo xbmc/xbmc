@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "GUIMultiSelectText.h"
+#include "MouseStat.h"
 
 using namespace std;
 

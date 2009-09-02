@@ -26,6 +26,7 @@
 #include "LocalizeStrings.h"
 #include "GUIWindowManager.h"
 #include "GUIControlProfiler.h"
+#include "MouseStat.h"
 
 using namespace std;
 

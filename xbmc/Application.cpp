@@ -80,6 +80,7 @@
 #include "DPMSSupport.h"
 
 #include "KeyboardStat.h"
+#include "MouseStat.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "FileSystem/FileDAAP.h"

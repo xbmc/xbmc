@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIWindowPointer.h"
+#include "MouseStat.h"
 
 #define ID_POINTER 10
 

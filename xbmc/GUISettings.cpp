@@ -42,6 +42,8 @@ using namespace std;
 #define MASK_KB    14049
 #define MASK_DB    14050
 
+#define MAX_RESOLUTIONS 128
+
 #define TEXT_OFF 351
 
 class CGUISettings g_guiSettings;

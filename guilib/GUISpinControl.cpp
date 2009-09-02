@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GUISpinControl.h"
 #include "utils/CharsetConverter.h"
+#include "MouseStat.h"
 
 using namespace std;
 
