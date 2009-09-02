@@ -1249,11 +1249,13 @@ void CSettings::LoadAdvancedSettings()
   { // read the loglevel setting, so set the setting advanced to hide it in GUI
     // as altering it will do nothing - we don't write to advancedsettings.xml
     XMLUtils::GetInt(pRootElement, "loglevel", g_advancedSettings.m_logLevelHint, LOG_LEVEL_NONE, LOG_LEVEL_MAX);
+    g_advancedSettings.m_logLevel = g_advancedSettings.m_logLevelHint;
     CSettingBool *setting = (CSettingBool *)g_guiSettings.GetSetting("system.debuglogging");
     if (setting)
-    {
-      const char* hide;
-      if (!((hide = pElement->Attribute("hide")) && strnicmp("false", hide, 4) == 0))
+    { // check the hide attribute.  If it doesn't exist, or is set to something other than false
+      // then hide the UI setting
+      const char* hide = pElement->Attribute("hide");
+      if (!hide || strnicmp("false", hide, 4) != 0)
         setting->SetAdvanced();
     }
   }
