@@ -984,6 +984,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
     while(!m_bStop && m_dropbase < m_droptime)             m_dropbase += frametime;
     while(!m_bStop && m_dropbase - frametime > m_droptime) m_dropbase -= frametime;
+    
+    m_bAllowDrop = true;
+    m_pullupCorrection.Flush();
   }
   else
   {
