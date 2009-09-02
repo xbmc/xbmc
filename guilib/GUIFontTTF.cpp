@@ -582,7 +582,7 @@ bool CGUIFontTTFBase::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   ch->top = (float)m_posY + ch->offsetY;
   ch->right = ch->left + bitmap.width;
   ch->bottom = ch->top + bitmap.rows;
-  ch->advance = MathUtils::round_int( (float)m_face->glyph->advance.x / 64 );
+  ch->advance = (float)MathUtils::round_int( (float)m_face->glyph->advance.x / 64 );
 
   // we need only render if we actually have some pixels
   if (bitmap.width * bitmap.rows)
