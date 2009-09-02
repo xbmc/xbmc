@@ -52,6 +52,7 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "MediaManager.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;

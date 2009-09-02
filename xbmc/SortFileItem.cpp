@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "SortFileItem.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"

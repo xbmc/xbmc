@@ -20,14 +20,13 @@
  */
 
 #include "stdafx.h"
-#include "stdafx.h"
 
 #include "Util.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "Cdg.h"
 
 #include "karaokelyrics.h"

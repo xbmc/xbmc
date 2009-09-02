@@ -27,6 +27,7 @@
 #include "GUIBaseContainer.h"
 #include "VideoDatabase.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "Util.h"
 

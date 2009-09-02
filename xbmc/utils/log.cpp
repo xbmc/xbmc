@@ -28,6 +28,7 @@
 #include "SingleLock.h"
 #include "StdString.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 
 XFILE::CFile* CLog::m_file = NULL;
 

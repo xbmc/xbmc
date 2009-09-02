@@ -27,7 +27,7 @@
 #include "VideoInfoTag.h"
 #include "URL.h"
 #include "GUISettings.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 
 extern "C" {

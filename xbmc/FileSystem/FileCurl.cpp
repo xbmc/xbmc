@@ -23,7 +23,8 @@
 #include "FileCurl.h"
 #include "Util.h"
 #include "URL.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "SystemInfo.h"
 #include "File.h"
 

@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "Artist.h"
 #include "XMLUtils.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 

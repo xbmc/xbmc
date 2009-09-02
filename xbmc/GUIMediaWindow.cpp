@@ -36,6 +36,7 @@
 #include "Favourites.h"
 #include "utils/LabelFormatter.h"
 #include "GUIDialogProgress.h"
+#include "AdvancedSettings.h"
 
 #include "GUIImage.h"
 #include "GUIMultiImage.h"

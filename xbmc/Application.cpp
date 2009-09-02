@@ -78,6 +78,7 @@
 #include "WindowingFactory.h"
 #include "PowerManager.h"
 #include "DPMSSupport.h"
+#include "AdvancedSettings.h"
 
 #include "KeyboardStat.h"
 #include "MouseStat.h"

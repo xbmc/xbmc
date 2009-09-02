@@ -42,6 +42,7 @@
 #include "GUIDialogSelect.h"
 #include "FileSystem/File.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "Application.h"
 #ifdef HAS_KARAOKE

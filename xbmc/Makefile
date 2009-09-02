@@ -214,7 +214,8 @@ SRCS=Application.cpp \
      WinSystemOSXGL.cpp \
      WinSystemX11.cpp \
      WinSystemX11GL.cpp \
-     WinEventsSDL.cpp
+     WinEventsSDL.cpp \
+     AdvancedSettings.cpp \
 
 LIB=xbmc.a
 

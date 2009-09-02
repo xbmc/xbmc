@@ -22,7 +22,7 @@
 #include "include.h"
 #include "GUIStandardWindow.h"
 #include "GUIWindowManager.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0, "")
 {

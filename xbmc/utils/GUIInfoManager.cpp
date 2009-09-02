@@ -57,6 +57,7 @@
 #include "TuxBoxUtil.h"
 #include "WindowingFactory.h"
 #include "PowerManager.h"
+#include "AdvancedSettings.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"

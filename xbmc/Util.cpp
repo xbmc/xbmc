@@ -104,6 +104,7 @@
 #include "PlayList.h"
 #include "Crc32.h"
 #include "utils/RssReader.h"
+#include "AdvancedSettings.h"
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif

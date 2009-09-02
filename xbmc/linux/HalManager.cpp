@@ -19,17 +19,18 @@
  *
  */
 
-#include "../../guilib/system.h"
+#include "system.h"
 #ifdef HAS_HAL
 #include "HalManager.h"
 #include "Application.h"
 #include <libhal-storage.h>
 #include "LinuxFileSystem.h"
 #include "SingleLock.h"
-#include "../Util.h"
-#include "../../guilib/LocalizeStrings.h"
+#include "Util.h"
+#include "LocalizeStrings.h"
 #include "GUISettings.h"
 #include "PowerManager.h"
+#include "AdvancedSettings.h"
 
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL/SDL.h>

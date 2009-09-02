@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "MathUtils.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FrameBufferObject.h"
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"

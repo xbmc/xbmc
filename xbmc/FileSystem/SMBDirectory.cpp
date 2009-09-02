@@ -42,7 +42,7 @@
 #include "GUIDialogOK.h"
 #include "Application.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 #ifndef _WIN32PC
 #include <libsmbclient.h>

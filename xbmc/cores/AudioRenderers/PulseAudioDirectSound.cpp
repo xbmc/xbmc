@@ -23,7 +23,7 @@
 #ifdef HAS_PULSEAUDIO
 #include "PulseAudioDirectSound.h"
 #include "AudioContext.h"
-
+#include "AdvancedSettings.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {
