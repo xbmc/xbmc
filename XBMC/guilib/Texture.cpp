@@ -47,19 +47,6 @@ CBaseTexture::~CBaseTexture()
   
 }
 
-CBaseTexture::CBaseTexture(const CBaseTexture& texture)
-{
-  // TODO: Review for correctness
-  m_imageWidth = texture.m_imageWidth;
-  m_imageHeight = texture.m_imageHeight;
-  m_pTexture = texture.m_pTexture;
-  m_pPixels = texture.m_pPixels;
-  m_nBPP = texture.m_nBPP;
-  m_loadedToGPU = texture.m_loadedToGPU;
-  m_nTextureHeight = texture.m_nTextureHeight;
-  m_nTextureWidth = texture.m_nTextureWidth;
-}
-
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int BPP)
 {
   if (BPP != 0)

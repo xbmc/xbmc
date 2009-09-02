@@ -45,26 +45,6 @@ CGLTexture::~CGLTexture()
   Delete();
 }
 
-CGLTexture::CGLTexture(CBaseTexture& texture)
-{
-  m_nTextureWidth = 0;
-  m_nTextureHeight = 0;
-
-  *this = texture;
-}
-
-CBaseTexture& CGLTexture::operator = (const CBaseTexture &rhs)
-{
-  if (this != &rhs) 
-  {
-    m_pTexture = rhs.GetTextureObject();
-    m_imageWidth = rhs.GetWidth();
-    m_imageHeight = rhs.GetHeight();
-  }
-
-  return *this;
-}
-
 void CGLTexture::Delete()
 {
   m_imageWidth = 0;

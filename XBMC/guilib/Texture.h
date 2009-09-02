@@ -46,10 +46,8 @@ class CBaseTexture
 
 public:
   CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
-  CBaseTexture(const CBaseTexture& texture);  
   virtual ~CBaseTexture();
 
-  virtual CBaseTexture& operator = (const CBaseTexture &rhs) = 0;
   virtual void Delete() = 0;
 
   // TODO: Clean up this interface once things have settled down (none of these need to be virtual)
