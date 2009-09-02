@@ -304,6 +304,7 @@ CKeyboardStat::CKeyboardStat()
 
   Reset();
   m_lastKey = XBMCK_UNKNOWN;
+  m_keyHoldTime = 0;
 }
 
 CKeyboardStat::~CKeyboardStat()
@@ -323,7 +324,6 @@ void CKeyboardStat::Reset()
   m_cAscii = '\0';
   m_wUnicode = '\0';
   m_VKey = 0;
-  m_keyHoldTime = 0;
 
   ZeroMemory(&XBMC_KeyState, sizeof(XBMC_KeyState));
 }
