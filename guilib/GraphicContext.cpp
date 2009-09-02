@@ -306,7 +306,7 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
   return false;
 }
 
-void CGraphicContext::SetVideoResolution(RESOLUTION &res, BOOL NeedZ, bool forceClear /* = false */)
+void CGraphicContext::SetVideoResolution(RESOLUTION &res)
 {
   RESOLUTION lastRes = m_Resolution;
   
