@@ -68,10 +68,10 @@ public:
 private:
 
   /* TODO decoder functions */
-  virtual int Decode(void *in, int in_len, void *out, int *out_len, unsigned int out_fmt[8]);
+  virtual int Decode(int *out_len);
   virtual void Flush();
   int madx_init(madx_house* mxhouse);
-  madx_sig madx_read(unsigned char* in_buffer, unsigned char* out_buffer, madx_house *mxhouse, madx_stat* mxstat, int maxwrite, bool discard = false);
+  madx_sig madx_read(madx_house *mxhouse, madx_stat* mxstat, int maxwrite, bool discard = false);
   void madx_deinit(madx_house* mxhouse);
   /* END decoder functions */
 
@@ -80,8 +80,6 @@ private:
   int Read(int size, bool init = false);
 
   /* TODO decoder vars */
-  unsigned char* m_InputBufferInt;
-  unsigned char* m_InputBufferRemain;
   int m_BytesDecoded;
   bool m_HaveData;
   unsigned int m_formatdata[8];

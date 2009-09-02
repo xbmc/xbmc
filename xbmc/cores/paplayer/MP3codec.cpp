@@ -69,8 +69,6 @@ MP3Codec::MP3Codec()
   memset(&mxhouse, 0, sizeof(madx_house));
   memset(&mxstat,  0, sizeof(madx_stat));
   
-  m_InputBufferInt    = NULL;
-  m_InputBufferRemain = NULL;
   m_HaveData = false;
   flushcnt = 0;
   madx_init(&mxhouse);
@@ -89,16 +87,6 @@ MP3Codec::~MP3Codec()
   m_OutputBuffer = NULL;
   
   madx_deinit(&mxhouse);
-  if (m_InputBufferInt)
-  {
-    delete[] m_InputBufferInt;
-    m_InputBufferInt = NULL;
-  }
-  if (m_InputBufferRemain)
-  {
-    delete[] m_InputBufferRemain;
-    m_InputBufferRemain = NULL;
-  }
 }
 
 //Eventhandler if filereader is clearedwe flush the decoder.
@@ -258,16 +246,6 @@ int MP3Codec::Read(int size, bool init)
     {
       m_CallAgainWithSameBuffer = false;
       int outputsize = m_OutputBufferSize - m_OutputBufferPos;
-      //MAD needs padding at the end of the stream to decode the last frame, this doesn't hurt winamps in_mp3.dll
-      int madguard = 0;
-      if (m_eof)
-      {
-        madguard = 8;
-        if (m_InputBufferPos + madguard > m_InputBufferSize)
-          madguard = m_InputBufferSize - m_InputBufferPos;
-        memset(m_InputBuffer + m_InputBufferPos, 0, madguard);
-      }
-
       // See if there is an ID3v2 tag at the beginning of the stream.
       // For file-based internet streams (i.e UPnP/HTTP), it is very likely to happen.
       // If we don't skip it, we may never be able to snyc to the MPEG stream
@@ -290,7 +268,7 @@ int MP3Codec::Read(int size, bool init)
       }
 
       // Now decode data into the vacant frame buffer.
-      result = Decode( m_InputBuffer, m_InputBufferPos + madguard, m_OutputBuffer + m_OutputBufferPos, &outputsize, (unsigned int *)&m_Formatdata);
+      result = Decode(&outputsize);
       if ( result != DECODING_ERROR)
       {
         if (init)
@@ -331,7 +309,7 @@ int MP3Codec::Read(int size, bool init)
           m_CallAgainWithSameBuffer = true;
         else
         { // There are no more complete frames in the input buffer
-          m_InputBufferPos = 0;
+          //m_InputBufferPos = 0;
           // Check for the end of file (as we need to remove data from the end of the track)
           if (m_eof)
           {
@@ -401,39 +379,29 @@ bool MP3Codec::CanSeek()
 }
 
 int MP3Codec::Decode(
-  void        *in,
-  int          in_len,
-  void        *out,
-  int         *out_len, // out_len is read and written to
-  unsigned int out_fmt[8]
+  int         *out_len // out_len is read and written to
 ) {
-  unsigned char* input  = (unsigned char*)in;
-  unsigned char* output = (unsigned char*)out;
-  mxstat.readsize = 0;
   if (!m_HaveData)
   {
     if (!m_dll.IsLoaded())
       m_dll.Load();
-    mxstat.readsize = in_len + mxstat.remaining;
-    if (m_InputBufferInt)
+    
+    //MAD needs padding at the end of the stream to decode the last frame, this doesn't hurt winamps in_mp3.dll
+    int madguard = 0;
+    if (m_eof)
     {
-      delete[] m_InputBufferInt;
-      m_InputBufferInt = NULL;
+      madguard = 8;
+      if (m_InputBufferPos + madguard > m_InputBufferSize)
+        madguard = m_InputBufferSize - m_InputBufferPos;
+      memset(m_InputBuffer + m_InputBufferPos, 0, madguard);
     }
-    m_InputBufferInt = new unsigned char[mxstat.readsize];
-    if (mxstat.remaining)
-    {
-      memcpy(m_InputBufferInt, m_InputBufferRemain, mxstat.remaining);
-    }
-    memcpy(m_InputBufferInt + mxstat.remaining, input, in_len);
-    mxstat.remaining = 0;
-		m_dll.mad_stream_buffer( &mxhouse.stream, m_InputBufferInt, (unsigned long)mxstat.readsize );
+
+		m_dll.mad_stream_buffer( &mxhouse.stream, m_InputBuffer, m_InputBufferPos + madguard );
 		mxhouse.stream.error = (mad_error)0;
     m_dll.mad_stream_sync(&mxhouse.stream);
     if ((mxstat.flushed) && (flushcnt == 2))
     {
       int skip;
-
       skip = 2;
       do {
 	      if (m_dll.mad_frame_decode(&mxhouse.frame, &mxhouse.stream) == 0) {
@@ -452,7 +420,7 @@ int MP3Codec::Decode(
   mxsig = ERROR_OCCURED;
   while ((mxsig != FLUSH_BUFFER) && (*out_len + mxstat.framepcmsize < (size_t)maxtowrite))
   {
-    mxsig = madx_read(m_InputBufferInt, output + *out_len, &mxhouse, &mxstat, maxtowrite);
+    mxsig = madx_read(&mxhouse, &mxstat, maxtowrite);
     switch (mxsig)
     {
     case ERROR_OCCURED: 
@@ -460,24 +428,18 @@ int MP3Codec::Decode(
       m_HaveData = false;
       return -1;
     case MORE_INPUT: 
-      //store remaining bytes for next input....
-      if (m_InputBufferRemain)
-      {
-        delete[] m_InputBufferRemain;
-        m_InputBufferRemain = NULL;
-      }
       if (mxstat.remaining > 0)
       {
-        m_InputBufferRemain = new unsigned char[mxstat.remaining];
-        memcpy(m_InputBufferRemain, mxhouse.stream.next_frame, mxstat.remaining);
+        memcpy(m_InputBuffer, mxhouse.stream.next_frame, mxstat.remaining);
+        m_InputBufferPos = mxstat.remaining;
       }
       m_HaveData = false;
       return 0;
     case FLUSH_BUFFER:
-      out_fmt[2] = mxhouse.synth.pcm.channels;
-      out_fmt[1] = mxhouse.synth.pcm.samplerate;
-      out_fmt[3] = BITSPERSAMPLE;
-      out_fmt[4] = mxhouse.frame.header.bitrate;
+      m_Formatdata[2] = mxhouse.synth.pcm.channels;
+      m_Formatdata[1] = mxhouse.synth.pcm.samplerate;
+      m_Formatdata[3] = BITSPERSAMPLE;
+      m_Formatdata[4] = mxhouse.frame.header.bitrate;
       *out_len += (int)mxstat.write_size;
       mxstat.write_size = 0;
       break;
@@ -504,17 +466,7 @@ void MP3Codec::Flush()
   mxstat.flushed = true;
   if (flushcnt < 2) flushcnt++;
   m_HaveData = false;
-  
-  if (m_InputBufferInt)
-  {
-    delete[] m_InputBufferInt;
-    m_InputBufferInt = NULL;
-  }
-  if (m_InputBufferRemain)
-  {
-    delete[] m_InputBufferRemain;
-    m_InputBufferRemain = NULL;
-  }
+  m_InputBufferPos = 0;
 }
 
 int MP3Codec::madx_init (madx_house *mxhouse )
@@ -531,11 +483,11 @@ int MP3Codec::madx_init (madx_house *mxhouse )
 	return(1);
 }
 
-madx_sig MP3Codec::madx_read (	unsigned char *in_buffer, unsigned char *out_buffer, madx_house *mxhouse, madx_stat *mxstat, int maxwrite, bool discard)
+madx_sig MP3Codec::madx_read(madx_house *mxhouse, madx_stat *mxstat, int maxwrite, bool discard)
 {
   if (!m_dll.IsLoaded())
     m_dll.Load();
-	mxhouse->output_ptr = out_buffer;
+	mxhouse->output_ptr = m_OutputBuffer + m_OutputBufferPos;
 
 	if( m_dll.mad_frame_decode(&mxhouse->frame, &mxhouse->stream) )
 	{
@@ -548,9 +500,9 @@ madx_sig MP3Codec::madx_read (	unsigned char *in_buffer, unsigned char *out_buff
 
 				return(MORE_INPUT);			
 			}
-			else			// Error returned
+			else
 			{
-				printf("(MAD)Unrecoverable frame level error (%s).", m_dll.mad_stream_errorstr(&mxhouse->stream));
+        CLog::Log(LOGERROR, "(MAD)Unrecoverable frame level error (%s).", m_dll.mad_stream_errorstr(&mxhouse->stream));
 				return(ERROR_OCCURED); 
 			}
 		}
@@ -578,7 +530,7 @@ madx_sig MP3Codec::madx_read (	unsigned char *in_buffer, unsigned char *out_buff
       }
 	  }
     // Tell calling code buffer size
-    mxstat->write_size = mxhouse->output_ptr - out_buffer;
+    mxstat->write_size = mxhouse->output_ptr - (m_OutputBuffer + m_OutputBufferPos);
   }
 	return(FLUSH_BUFFER);
 }
