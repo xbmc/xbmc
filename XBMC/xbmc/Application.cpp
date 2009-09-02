@@ -412,6 +412,15 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
         g_application.ProcessMouse();
       }
       break;
+    case XBMC_VIDEORESIZE:
+      {
+        RESOLUTION res = RES_WINDOW;
+        g_settings.m_ResInfo[res].iWidth = newEvent.resize.w;
+        g_settings.m_ResInfo[res].iHeight = newEvent.resize.h;
+        g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[res]); 
+        g_graphicsContext.SetVideoResolution(res, true);
+      }
+      break;
   }
 
   return false;

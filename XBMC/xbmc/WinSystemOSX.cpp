@@ -76,7 +76,7 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, int width, int heigh
   // Enable vertical sync to avoid any tearing.
   SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);  
   
-  m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL);
+  m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL | (m_bFullScreen ? 0 : SDL_RESIZABLE));
   if (!m_SDLSurface)
   {
     return false;
