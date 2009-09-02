@@ -88,22 +88,21 @@ CAnimatedGif::~CAnimatedGif()
 {
   delete [] pbmi;
   delete [] Raster;
+  delete [] Palette;
 }
 
 // Init: Allocates space for raster and palette in GDI-compatible structures.
 void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
 {
-  if (Raster)
-  {
-    delete[] Raster;
-    Raster = NULL;
-  }
+  delete[] Raster;
+  Raster = NULL;
 
-  if (pbmi)
-  {
-    delete[] pbmi;
-    pbmi = NULL;
-  }
+  delete[] pbmi;
+  pbmi = NULL;
+
+  delete[] Palette;
+  Palette = NULL;
+
   // Standard members setup
   Transparent = -1;
   BytesPerRow = Width = iWidth;
@@ -120,8 +119,8 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   }
   else
   {
-    pbmi = (GUIBITMAPINFO*)new char[sizeof(GUIBITMAPINFOHEADER) + (1 << BPP) * sizeof(COLOR)];
-    Palette = (COLOR*)((char*)pbmi + sizeof(GUIBITMAPINFOHEADER));
+    pbmi = (GUIBITMAPINFO*)new char[sizeof(GUIBITMAPINFOHEADER)];
+    Palette = new COLOR[256];
   }
 
   BytesPerRow += (ALIGN - Width % ALIGN) % ALIGN; // Align BytesPerRow
@@ -147,7 +146,7 @@ CAnimatedGif& CAnimatedGif::operator = (CAnimatedGif& rhs)
 {
   Init(rhs.Width, rhs.Height, rhs.BPP); // respects virtualization
   memcpy(Raster, rhs.Raster, BytesPerRow*Height);
-  memcpy((char*)Palette, (char*)rhs.Palette, (1 << BPP)*sizeof(*Palette));
+  memcpy(Palette, rhs.Palette, 256*sizeof(COLOR));
   return *this;
 }
 
