@@ -149,6 +149,19 @@ bool CWinEventsSDL::MessagePump()
 
       return g_application.OnEvent(newEvent);
     }
+    case SDL_VIDEORESIZE:
+    {
+      XBMC_Event newEvent;
+      newEvent.type = XBMC_VIDEORESIZE;
+      newEvent.motion.xrel = event.motion.xrel;
+      newEvent.motion.yrel = event.motion.yrel;
+      newEvent.motion.state = event.motion.state;
+      newEvent.motion.type = event.motion.type;
+      newEvent.motion.which = event.motion.which;
+      newEvent.motion.x = event.motion.x;
+      newEvent.motion.y = event.motion.y;
+      return g_application.OnEvent(newEvent);
+    }
     
     }
   }

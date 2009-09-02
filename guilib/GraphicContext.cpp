@@ -306,7 +306,7 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
   return false;
 }
 
-void CGraphicContext::SetVideoResolution(RESOLUTION &res)
+void CGraphicContext::SetVideoResolution(RESOLUTION &res, bool forceUpdate)
 {
   RESOLUTION lastRes = m_Resolution;
   
@@ -317,7 +317,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res)
   }
 
   // If we are switching to the same resolution and same window/full-screen, no need to do anything
-  if (res == lastRes && m_bFullScreenRoot == g_advancedSettings.m_fullScreen)
+  if (!forceUpdate && res == lastRes && m_bFullScreenRoot == g_advancedSettings.m_fullScreen)
   {
     return;
   }

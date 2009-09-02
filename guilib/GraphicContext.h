@@ -97,7 +97,7 @@ public:
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
   bool IsValidResolution(RESOLUTION res);
-  void SetVideoResolution(RESOLUTION &res);
+  void SetVideoResolution(RESOLUTION &res, bool forceUpdate = false);
   RESOLUTION GetVideoResolution() const;
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
