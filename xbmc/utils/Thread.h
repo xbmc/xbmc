@@ -66,7 +66,7 @@ public:
   void SetName( LPCTSTR szThreadName );
   HANDLE ThreadHandle();
   operator HANDLE();
-  operator const HANDLE() const;
+  operator HANDLE() const;
   bool IsAutoDelete() const;
   virtual void StopThread();
 

@@ -61,7 +61,7 @@ enum EFIELDSYNC
 {
   FS_NONE,
   FS_ODD,
-  FS_EVEN,
+  FS_EVEN
 };
 
 struct YUVRANGE

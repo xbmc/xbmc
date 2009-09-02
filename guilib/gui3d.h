@@ -73,7 +73,7 @@ namespace XBMC
   typedef GLuint TexturePtr;
   typedef void* PalettePtr; // elis change it
   typedef GLint PixelFormat; // elis change it
-};
+}
 
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES

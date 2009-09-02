@@ -45,17 +45,17 @@ CTextureArray::CTextureArray(int width, int height, int loops,  bool texCoordsAr
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
-};
+}
 
 CTextureArray::CTextureArray()
 {
   Reset();
-};
+}
 
 CTextureArray::~CTextureArray()
 {
 
-};
+}
 
 unsigned int CTextureArray::size() const
 {
@@ -73,7 +73,7 @@ void CTextureArray::Reset()
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
-};
+}
 
 void CTextureArray::Add(CBaseTexture *texture, int delay)
 {
