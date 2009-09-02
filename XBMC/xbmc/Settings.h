@@ -98,6 +98,7 @@ public:
 class CSkinBool
 {
 public:
+  CSkinBool() : value(false) {};
   CStdString name;
   bool value;
 };
