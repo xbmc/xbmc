@@ -2305,10 +2305,6 @@
 					Name="Shaders"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\BaseYUV2RGBShader.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\VideoRenderers\VideoShaders\VideoFilterShader.cpp"
 						>
 					</File>

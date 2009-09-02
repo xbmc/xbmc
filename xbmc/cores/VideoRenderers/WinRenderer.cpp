@@ -27,7 +27,6 @@
 #include "Util.h"
 #include "Settings.h"
 
-
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
 YUVRANGE yuv_range_lim =  { 16, 235, 16, 240, 16, 240 };
@@ -67,9 +66,8 @@ CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
   memset(m_pOSDATexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
   memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
 
-  m_lowMemShader = NULL;
   m_iYV12RenderBuffer = 0;
-
+  m_pYUV2RGBEffect = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -829,6 +827,8 @@ unsigned int CWinRenderer::DrawSlice(unsigned char *src[], int stride[], int w, 
 
 unsigned int CWinRenderer::PreInit()
 {
+  HRESULT hr;
+
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
@@ -847,43 +847,73 @@ unsigned int CWinRenderer::PreInit()
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
-  // low memory pixel shader
-  if (!m_lowMemShader)
-  {
-    // lowmem shader (not as accurate, but no need for interleaving of YUV)
-    const char *lowmem =
-      "ps.1.3\n"
-      "def c0, 0      ,0.18664,0.96032,0\n"
-      "def c1, 0.76120,0.38738,0      ,0\n"
-      "def c2, 1,0,1,1\n"
-      "def c3, 0.0625,0.0625,0.0625,0\n"
-      "def c4, 0.58219,0.58219,0.58219,0.5\n"
-      "def c5, 0.03639,0.03639,0.03639,0\n"
-      "tex t0\n"
-      "tex t1\n"
-      "tex t2\n"
-      //"xmma_x2 r0,r1,discard, t1_bias,c0, t2_bias,c1\n"
-      "mul_x2 r0,t1_bias,c0\n"
-      "mul_x2 r1,t2_bias,c1\n"
-      //"xmma discard,discard,r0, r0,c2_bx2, r1,c2_bx2\n"
-      "mul r0, r0,c2_bx2\n"
-      "mad r0, r1, c2_bx2, r0\n"
-      //"xmma_x2 discard,discard,r1, t0,c4, -c3,c4\n"
-      "mul r1, t0,c4\n"
-      "add_x2 r1, r1, -c5\n"
-      "add_sat r0, r0,r1\n";
 
-    LPD3DXBUFFER pShader, pError;
-	  HRESULT hr;
-	  hr = D3DXAssembleShader(lowmem, strlen(lowmem), NULL, NULL, 0, &pShader, &pError);
-	  if (FAILED(hr))
-    {
-      CLog::Log(LOGERROR, "CWinRenderer::PreInit: Call to D3DXAssembleShader failed!" );
-      CLog::Log(LOGERROR,  (char*)pError->GetBufferPointer());
+  CStdString pStrEffect = 
+  "texture g_YTexture;"
+  "texture g_UTexture;"
+  "texture g_VTexture;"
+  "sampler YSampler =" 
+  "sampler_state"
+  "{"
+  "Texture = <g_YTexture>;"
+  "MipFilter = LINEAR;"
+  "MinFilter = LINEAR;"
+  "MagFilter = LINEAR;"
+  "};"
+
+  "sampler USampler = "
+  "sampler_state"
+  "{"
+  "Texture = <g_UTexture>;"
+  "MipFilter = LINEAR;"
+  "MinFilter = LINEAR;"
+  "MagFilter = LINEAR;"
+  "};"
+  "sampler VSampler = "
+  "sampler_state"
+  "{"
+  "Texture = <g_VTexture>;"
+  "MipFilter = LINEAR;"
+  "MinFilter = LINEAR;"
+  "MagFilter = LINEAR;"
+  "};"
+  "struct VS_OUTPUT"
+  "{"
+  "float4 Position   : POSITION;"
+  "float4 Diffuse    : COLOR0;"
+  "float2 TextureUV  : TEXCOORD0;"
+  "};"
+  "struct PS_OUTPUT"
+  "{"
+  "float4 RGBColor : COLOR0;"   
+  "};"
+  "PS_OUTPUT YUV2RGB( VS_OUTPUT In)"
+  "{" 
+  "PS_OUTPUT OUT;"
+  "OUT.RGBColor = In.Diffuse;"
+  "float3 YUV = float3(tex2D (YSampler, In.TextureUV).x - (16.0 / 256.0) ,"
+  "tex2D (USampler, In.TextureUV).x - (128.0 / 256.0), "
+  "tex2D (VSampler, In.TextureUV).x - (128.0 / 256.0)); "
+  "OUT.RGBColor.r = clamp((1.164 * YUV.x + 1.596 * YUV.z),0,255);"
+  "OUT.RGBColor.g = clamp((1.164 * YUV.x - 0.813 * YUV.z - 0.391 * YUV.y), 0,255); "
+  "OUT.RGBColor.b = clamp((1.164 * YUV.x + 2.018 * YUV.y),0,255);" 
+  "OUT.RGBColor.a = 1.0;"
+  "return OUT;"
+  "}"
+  "technique YUV2RGB_T"
+  "{"
+  "pass P0"
+  "{ "         
+  "PixelShader  = compile ps_2_0 YUV2RGB();"
+  "}"
+  "}";
+
+  hr = D3DXCreateEffect(m_pD3DDevice, pStrEffect, pStrEffect.length(), NULL, NULL, 0, NULL, &m_pYUV2RGBEffect, NULL );
+
+  if(hr != S_OK)
+  {
+      CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s", pStrEffect);
       return 1;
-    }
-    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_lowMemShader);
-    pShader->Release();
   }
 
   return 0;
@@ -900,7 +930,7 @@ void CWinRenderer::UnInit()
     DeleteOSDTextures(i);
   }
 
-  SAFE_RELEASE(m_lowMemShader);
+  SAFE_RELEASE(m_pYUV2RGBEffect);
 }
 
 void CWinRenderer::Render(DWORD flags)
@@ -1136,7 +1166,6 @@ void CWinRenderer::RenderLowMem(DWORD flags)
 
   m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
 
-
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
@@ -1144,7 +1173,6 @@ void CWinRenderer::RenderLowMem(DWORD flags)
  
   m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );  // was m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE ); ???
   m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
-  m_pD3DDevice->SetPixelShader( m_lowMemShader );
 
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
@@ -1186,13 +1214,29 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     }
   };
 
-  m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-  m_pD3DDevice->SetTexture(0, NULL);
-  m_pD3DDevice->SetTexture(1, NULL);
-  m_pD3DDevice->SetTexture(2, NULL);
 
+  m_pYUV2RGBEffect->SetTechnique( "YUV2RGB_T" );
+  m_pYUV2RGBEffect->SetTexture( "g_YTexture",  m_YUVTexture[index][0] ) ;
+  m_pYUV2RGBEffect->SetTexture( "g_UTexture",  m_YUVTexture[index][1] ) ;
+  m_pYUV2RGBEffect->SetTexture( "g_VTexture",  m_YUVTexture[index][2] ) ;
+
+  UINT cPasses, iPass;
+  m_pYUV2RGBEffect->Begin( &cPasses, 0 );
+
+  for( iPass = 0; iPass < cPasses; iPass++ )
+  {
+    m_pYUV2RGBEffect->BeginPass( iPass );
+
+    m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+    m_pD3DDevice->SetTexture(0, NULL);
+    m_pD3DDevice->SetTexture(1, NULL);
+    m_pD3DDevice->SetTexture(2, NULL);
+
+    m_pYUV2RGBEffect->EndPass() ;
+  }
+
+  m_pYUV2RGBEffect->End() ;
   m_pD3DDevice->SetPixelShader( NULL );
-
 }
 
 void CWinRenderer::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)

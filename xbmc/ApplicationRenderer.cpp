@@ -212,7 +212,7 @@ void CApplicationRenderer::Process()
               Sleep(1000);
               continue;
           }
-          g_Windowing.Get3DDevice()->BeginScene();
+          g_Windowing.BeginRender();
           //copy dialog background to backbuffer
           const RECT rc = { 0, 0, iWidth, iHeight };
           const RECT rcDest = { iLeft, iTop, iLeft + iWidth, iTop + iHeight };
@@ -234,7 +234,7 @@ void CApplicationRenderer::Process()
           }
           m_pWindow->Render();
 
-          g_Windowing.Get3DDevice()->EndScene();
+          g_Windowing.EndRender();
           //D3DSWAPEFFECT_DISCARD is used so we can't just present the busy rect but can only present the entire screen.
           g_Windowing.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
         }

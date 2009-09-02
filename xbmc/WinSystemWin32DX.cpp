@@ -54,4 +54,20 @@ bool CWinSystemWin32DX::CreateNewWindow(CStdString name, int width, int height, 
   return true;
 }
 
+bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
+{
+  CWinSystemWin32::ResizeWindow(newWidth, newHeight, newLeft, newTop);
+  CRenderSystemDX::ResetRenderSystem(newWidth, newHeight);  
+
+  return true;
+}
+
+bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+{
+  CWinSystemWin32::SetFullScreen(fullScreen, screen, width, height, blankOtherDisplays, alwaysOnTop);
+  CRenderSystemDX::ResetRenderSystem(width, height);  
+
+  return true;
+}
+
 #endif

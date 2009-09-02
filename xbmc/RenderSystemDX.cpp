@@ -39,6 +39,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_nBackBufferHeight = 0;
   m_bFullScreenDevice = 0;
   m_bVSync = true;
+  m_nDeviceStatus = S_OK;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -67,12 +68,22 @@ bool CRenderSystemDX::InitRenderSystem()
 
 bool CRenderSystemDX::ResetRenderSystem(int width, int height)
 {
-  m_width = width;
-  m_height = height;
+  m_nBackBufferWidth = width;
+  m_nBackBufferHeight = height;
 
-  
+  CRect rc;
+  rc.SetRect(0, 0, width, height);
+
+  SetViewPort(rc);
+
+  m_D3DPP.BackBufferWidth = m_nBackBufferWidth;
+  m_D3DPP.BackBufferHeight = m_nBackBufferHeight;
+
+  if(m_pD3DDevice->Reset(&m_D3DPP) == D3DERR_INVALIDCALL)
+  {
+    return false;
+  }
    
-    
   return true;
 }
 
@@ -112,6 +123,10 @@ bool CRenderSystemDX::CreateDevice()
     return false;
 
   D3DDEVTYPE devType = D3DDEVTYPE_HAL;
+
+#if defined(DEBUG_PS) || defined (DEBUG_VS)
+    devType = D3DDEVTYPE_REF
+#endif
 
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   m_D3DPP.Windowed					= !m_bFullScreenDevice;
@@ -201,6 +216,9 @@ bool CRenderSystemDX::PresentRenderImpl()
   if (!m_bRenderCreated)
     return false;
 
+  if(m_nDeviceStatus != S_OK)
+    return false;
+
   hr = m_pD3DDevice->Present( NULL, NULL, 0, NULL );
 
   if( D3DERR_DEVICELOST == hr )
@@ -219,8 +237,35 @@ bool CRenderSystemDX::BeginRender()
   if (!m_bRenderCreated)
     return false;
 
+  if( FAILED( m_nDeviceStatus = m_pD3DDevice->TestCooperativeLevel() ) )
+  {
+    // The device has been lost but cannot be reset at this time. 
+    // Therefore, rendering is not possible and we'll have to return 
+    // and try again at a later time.
+    if( m_nDeviceStatus == D3DERR_DEVICELOST )
+    {
+      CLog::Log(LOGINFO, "D3DERR_DEVICELOST");
+      return false;
+    }
+
+    // The device has been lost but it can be reset at this time. 
+    if( m_nDeviceStatus == D3DERR_DEVICENOTRESET )
+    {
+      m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
+
+      if( FAILED(m_nDeviceStatus ) )
+      {
+        CLog::Log(LOGINFO, "m_pD3DDevice->Reset falied");
+        return false;
+      }
+    }
+  }
+
   if(FAILED (m_pD3DDevice->BeginScene()))
+  {
+    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() falied");
     return false;
+  }
 
   return true;
 }
@@ -230,8 +275,14 @@ bool CRenderSystemDX::EndRender()
   if (!m_bRenderCreated)
     return false;
 
-  if(FAILED (m_pD3DDevice->EndScene()))
+  if(m_nDeviceStatus != S_OK)
     return false;
+
+  if(FAILED (m_pD3DDevice->EndScene()))
+  {
+    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() falied");
+    return false;
+  }
 
   return true;
 }
@@ -327,7 +378,6 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   // projection onto screen space
   D3DXMATRIX mtxProjection;
   D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
-  //D3DXMatrixOrthoLH(&mtxProjection, screenWidth, screenHeight, h, 100*h);
   m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
 }
 
