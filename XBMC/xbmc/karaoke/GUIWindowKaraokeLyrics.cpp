@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
+#include "AdvancedSettings.h"
 
 #include "GUIDialogKaraokeSongSelector.h"
 #include "GUIWindowKaraokeLyrics.h"

@@ -16,6 +16,7 @@
 #include "MathUtils.h"
 #include "Application.h"
 #include "MusicDatabase.h"
+#include "AdvancedSettings.h"
 
 #include "karaokelyrics.h"
 

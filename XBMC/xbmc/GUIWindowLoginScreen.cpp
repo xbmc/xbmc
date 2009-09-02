@@ -39,7 +39,6 @@
 #include "Settings.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#include "Util.h"
 
 using namespace XFILE;
 

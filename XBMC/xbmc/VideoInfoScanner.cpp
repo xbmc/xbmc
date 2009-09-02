@@ -33,7 +33,7 @@
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 
 using namespace std;

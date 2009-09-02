@@ -33,7 +33,7 @@
 #endif
 
 #include "log.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 

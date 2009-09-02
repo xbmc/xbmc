@@ -20,6 +20,8 @@
  */
 
 #include "stdafx.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "Settings.h"
 #include "VideoReferenceClock.h"
 #include "MathUtils.h"

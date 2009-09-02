@@ -29,6 +29,7 @@
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "MouseStat.h"
 
 using namespace MUSIC_INFO;

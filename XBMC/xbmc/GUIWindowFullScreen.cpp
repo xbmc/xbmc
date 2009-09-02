@@ -40,6 +40,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "VideoReferenceClock.h"
+#include "AdvancedSettings.h"
 #include "MouseStat.h"
 
 #include <stdio.h>

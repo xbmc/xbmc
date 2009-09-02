@@ -23,7 +23,8 @@
 #include "include.h"
 #include "../RenderFlags.h"
 #include "YUV2RGBShader.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "TransformMatrix.h"
 #include <string>
 #include <sstream>
 

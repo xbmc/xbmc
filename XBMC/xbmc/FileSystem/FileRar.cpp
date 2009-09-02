@@ -27,7 +27,7 @@
 #include "GUIDialogOK.h"
 #include "FileSystem/Directory.h"
 #include "RarManager.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 
 #ifndef _LINUX

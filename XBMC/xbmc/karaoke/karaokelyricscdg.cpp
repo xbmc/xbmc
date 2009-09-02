@@ -11,6 +11,8 @@
 //
 
 #include "stdafx.h"
+#include "AdvancedSettings.h"
+#include "GraphicContext.h"
 #include "Settings.h"
 #include "Application.h"
 

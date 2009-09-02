@@ -37,6 +37,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace dbiplus;

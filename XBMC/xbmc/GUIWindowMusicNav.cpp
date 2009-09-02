@@ -44,6 +44,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace DIRECTORY;

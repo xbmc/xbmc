@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #ifdef _LINUX

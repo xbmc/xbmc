@@ -52,6 +52,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"
 #include "PlayList.h"
+#include "AdvancedSettings.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"

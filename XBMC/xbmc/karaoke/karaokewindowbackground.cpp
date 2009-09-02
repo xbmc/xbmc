@@ -10,7 +10,7 @@
 //
 //
 #include "stdafx.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "GUIWindowManager.h"
 #include "Application.h"
 #include "GUIVisualisationControl.h"

@@ -8,7 +8,7 @@
 #include "LIRC.h"
 #include "ButtonTranslator.h"
 #include "log.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileSystem/File.h"
 
 #define LIRC_DEVICE "/dev/lircd"

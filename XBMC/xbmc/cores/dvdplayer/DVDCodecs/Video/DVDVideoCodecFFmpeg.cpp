@@ -32,7 +32,8 @@
 #if defined(_LINUX) || defined(_WIN32PC)
 #include "utils/CPUInfo.h"
 #endif
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))

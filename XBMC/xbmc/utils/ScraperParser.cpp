@@ -32,7 +32,7 @@
 #include "ScraperSettings.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 #include <sstream>
 #include <cstring>

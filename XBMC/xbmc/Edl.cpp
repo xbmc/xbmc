@@ -24,7 +24,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/CMythFile.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 extern "C"
 {

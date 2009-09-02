@@ -34,7 +34,8 @@
 #include <libsmbclient.h>
 #endif
 #include "../utils/Network.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 
 using namespace XFILE;
