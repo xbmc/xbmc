@@ -25,6 +25,7 @@
 
 #include "ScreenSaver.h" 
 #include "Settings.h"
+#include "WindowingFactory.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

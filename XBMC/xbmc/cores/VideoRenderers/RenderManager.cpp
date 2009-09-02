@@ -27,6 +27,7 @@
 
 #include "Application.h"
 #include "Settings.h"
+#include "WindowingFactory.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"

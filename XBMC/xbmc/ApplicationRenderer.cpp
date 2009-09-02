@@ -25,6 +25,7 @@
 #include "GUIImage.h"
 #include "Settings.h"
 #include "GUIWindowManager.h"
+#include "WindowingFactory.h"
 
 CApplicationRenderer g_ApplicationRenderer;
 
