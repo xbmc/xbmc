@@ -46,11 +46,6 @@ public:
   void CreateTextureObject();
   void DestroyTextureObject();
   virtual void LoadToGPU();
-
-
-protected:
-  CDXTexture(CBaseTexture& texture);
-   CBaseTexture& operator = (const CBaseTexture &rhs);
 };
 
 #endif

@@ -40,26 +40,6 @@ CDXTexture::~CDXTexture()
   Delete();
 }
 
-CDXTexture::CDXTexture(CBaseTexture& texture)
-{
-  *this = texture;
-}
-
-CBaseTexture& CDXTexture::operator = (const CBaseTexture &rhs)
-{
-  if (this != &rhs) 
-  {
-    if (rhs.GetTextureObject() == NULL)
-      return *this;
-
-    m_pTexture = rhs.GetTextureObject();
-    m_imageWidth = rhs.GetWidth();
-    m_imageHeight = rhs.GetHeight();
-  }
-
-  return *this;
-}
-
 void CDXTexture::CreateTextureObject()
 {
   D3DFORMAT format;

@@ -46,10 +46,6 @@ public:
   void CreateTextureObject();
   virtual void DestroyTextureObject();
   void LoadToGPU();
-
-protected:
-  CGLTexture(CBaseTexture& texture); 
-  CBaseTexture& operator = (const CBaseTexture &rhs);
 };
 
 #endif
