@@ -29,10 +29,25 @@
 #include "Settings.h"
 #include "Texture.h"
 
+static int doubleVisAttributes[] =
+{
+  GLX_RENDER_TYPE, GLX_RGBA_BIT,
+  GLX_RED_SIZE, 8,
+  GLX_GREEN_SIZE, 8,
+  GLX_BLUE_SIZE, 8,
+  GLX_ALPHA_SIZE, 8,
+  GLX_DEPTH_SIZE, 8,
+  GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+  GLX_DOUBLEBUFFER, True,
+  None
+};
+
 CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
-  m_glContext = 0;
+  m_glContext = NULL;
+  m_SDLSurface = NULL;
+  m_dpy = NULL;
 }
 
 CWinSystemX11::~CWinSystemX11()
@@ -42,24 +57,41 @@ CWinSystemX11::~CWinSystemX11()
 
 bool CWinSystemX11::InitWindowSystem()
 {
-  m_dpy = XOpenDisplay(0);
-  if (!m_dpy)
+  if ((m_dpy = XOpenDisplay(NULL)))
   {
-    CLog::Log(LOGERROR, "GLX Error: No Display found");
-    return false;
+
+    SDL_EnableUNICODE(1);
+    // set repeat to 10ms to ensure repeat time < frame time
+    // so that hold times can be reliably detected
+    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
+    
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    // Enable vertical sync to avoid any tearing.
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);  
+
+    return CWinSystemBase::InitWindowSystem();
   }
-
-  SDL_EnableUNICODE(1);
-  // set repeat to 10ms to ensure repeat time < frame time
-  // so that hold times can be reliably detected
-  SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
-
-  return CWinSystemBase::InitWindowSystem();
+  else
+    CLog::Log(LOGERROR, "GLX Error: No Display found");
+  
+  return false;
 }
 
 bool CWinSystemX11::DestroyWindowSystem()
-{  
-  // TODO
+{
+  if (m_dpy)
+  {
+    if (m_glContext)
+      glXDestroyContext(m_dpy, m_glContext);
+    XCloseDisplay(m_dpy);
+  }
+
+  // m_SDLSurface is free()'d by SDL_Quit().
 
   return true;
 }
@@ -70,32 +102,21 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, int width, int heigh
   m_nHeight = height;
   m_bFullScreen = fullScreen;
 
-  SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
-  SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  8);
-  SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-  // Enable vertical sync to avoid any tearing.
-  SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);  
-
-  m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL);
-  if (!m_SDLSurface)
+  if (m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL))
   {
-    return false;
+    RefreshGlxContext();
+
+    CTexture iconTexture;
+    iconTexture.LoadFromFile("special://xbmc/media/icon.png");
+    
+    SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
+    SDL_WM_SetCaption("XBMC Media Center", NULL);
+
+    m_bWindowCreated = true;
+    return true;
   }
 
-  RefreshGlxContext();
-
-  CTexture iconTexture;
-  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
-  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
-
-  SDL_WM_SetCaption("XBMC Media Center", NULL);
-
-  m_bWindowCreated = true;
-
-  return true;
+  return false;
 }
 
 bool CWinSystemX11::DestroyWindow()
@@ -105,24 +126,21 @@ bool CWinSystemX11::DestroyWindow()
     
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
+  int options = SDL_OPENGL;
+
   m_nWidth = newWidth;
   m_nHeight = newHeight;
-
-  int options = SDL_OPENGL;
+  
   if (m_bFullScreen)
-  {
     options |= SDL_FULLSCREEN;
-  }
 
-  m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options);
-  if (!m_SDLSurface)
+  if (m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options))
   {
-    return false;
+    RefreshGlxContext();
+    return true;
   }
-
-  RefreshGlxContext();
-
-  return true;
+  
+  return false;
 }
 
 bool CWinSystemX11::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
@@ -131,9 +149,7 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, int screen, int width, int he
   m_nHeight = height;
   m_bFullScreen = fullScreen;
 
-  ResizeWindow(m_nWidth, m_nHeight, -1, -1);
-
-  return true;
+  return ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 }
 
 void CWinSystemX11::UpdateResolutions()
@@ -149,76 +165,61 @@ void CWinSystemX11::UpdateResolutions()
 
 bool CWinSystemX11::RefreshGlxContext()
 {
+  bool retVal = false;
   SDL_SysWMinfo info;
   SDL_VERSION(&info.version);
-  SDL_GetWMInfo(&info);
-  m_glWindow = info.info.x11.window;
-  
-  GLXFBConfig *fbConfigs = 0;
-  XVisualInfo *vInfo = NULL;
-  int num = 0;
-
-  int doubleVisAttributes[] =
+  if (SDL_GetWMInfo(&info) > 0)
   {
-    GLX_RENDER_TYPE, GLX_RGBA_BIT,
-    GLX_RED_SIZE, 8,
-    GLX_GREEN_SIZE, 8,
-    GLX_BLUE_SIZE, 8,
-    GLX_ALPHA_SIZE, 8,
-    GLX_DEPTH_SIZE, 8,
-    GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-    GLX_DOUBLEBUFFER, True,
-    None
-  };
+    GLXFBConfig *fbConfigs  = NULL;
+    XVisualInfo *vInfo      = NULL;
+    int availableFBs        = 0;
+    m_glWindow = info.info.x11.window;
 
-  // query compatible framebuffers based on double buffered attributes
-  fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &num);
-  if (fbConfigs == NULL)
-  {
-    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
-    return false;
-  }
-
-  for (int i = 0; i < num; i++)
-  {
-    // obtain the xvisual from the first compatible framebuffer
-    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-    // obtain the xvisual from the first compatible framebuffer
-    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-    if (vInfo)
+    // query compatible framebuffers based on double buffered attributes
+    if (fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs))
     {
-      if (vInfo->depth == 24)
+      for (int i = 0; i < availableFBs; i++)
       {
-        CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
-        break;
+        // obtain the xvisual from the first compatible framebuffer
+        vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
+        if (vInfo)
+        {
+          if (vInfo->depth == 24)
+          {
+            CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
+            break;
+          }
+          XFree(vInfo);
+          vInfo = NULL;
+        }
       }
-      XFree(vInfo);
+
+      if (vInfo) 
+      {
+        if (m_glContext)
+          glXDestroyContext(m_dpy, m_glContext);
+
+        if (m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True))
+        {
+          // make this context current
+          glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
+          retVal = true;
+        }
+        else
+          CLog::Log(LOGERROR, "GLX Error: Could not create context");
+        XFree(vInfo);
+      }
+      else
+        CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+      XFree(fbConfigs);
     }
+    else
+      CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
   }
+  else
+    CLog::Log(LOGERROR, "Failed to get window manager info from SDL");
 
-  XFree(fbConfigs);
-
-  if (!vInfo) 
-  {
-    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
-    return false;
-  }
-
-  m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True);
-
-  XFree(vInfo);
-
-  // success?
-  if (!m_glContext)
-  {
-    CLog::Log(LOGERROR, "GLX Error: Could not create context");
-    return false;
-  }
-
-  // make this context current
-  glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
-  
-  return true;
+  return retVal;
 }
 
 #endif
