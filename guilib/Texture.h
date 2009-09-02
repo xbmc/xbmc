@@ -27,6 +27,10 @@
 #ifndef GUILIB_TEXTURE_H
 #define GUILIB_TEXTURE_H
 
+#pragma pack(1)
+struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
+#pragma pack()
+
 class CTexture;
 class CGLTexture;
 class CDXTexture;
@@ -51,6 +55,8 @@ public:
   // TODO: Clean up this interface once things have settled down (none of these need to be virtual)
   virtual bool LoadFromFile(const CStdString& texturePath);
   virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels);
+  bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, const unsigned char *pixels, const COLOR *palette);
+
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
   virtual void LoadToGPU() = 0;

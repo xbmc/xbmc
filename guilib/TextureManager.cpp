@@ -348,45 +348,25 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
       int iWidth = AnimatedGifSet.FrameWidth;
       int iHeight = AnimatedGifSet.FrameHeight;
 
-      int iPaletteSize = (1 << AnimatedGifSet.m_vecimg[0]->BPP);
+      // fixup our palette
+      COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
+      // set the alpha values to fully opaque
+      for (int i = 0; i < 256; i++)
+        palette[i].x = 0xff;
+      // and set the transparent colour
+      if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
+        palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
+
       pMap = new CTextureMap(strTextureName, iWidth, iHeight, AnimatedGifSet.nLoops);
 
       for (int iImage = 0; iImage < iImages; iImage++)
       {
         CTexture *glTexture = new CTexture();
-   
         if (glTexture)
         {
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
-
-          COLOR *palette = AnimatedGifSet.m_vecimg[0]->Palette;
-          // set the alpha values to fully opaque
-          for (int i = 0; i < iPaletteSize; i++)
-            palette[i].x = 0xff;
-          // and set the transparent colour
-          if (AnimatedGifSet.m_vecimg[0]->Transparency && AnimatedGifSet.m_vecimg[0]->Transparent >= 0)
-            palette[AnimatedGifSet.m_vecimg[0]->Transparent].x = 0;
-
-          BYTE* pDest = (BYTE *)malloc(pImage->Width * pImage->Height * 4);
-          if(pDest == NULL)
-            return 0;
-
-          for (int y = 0; y < pImage->Height; y++)
-          {
-            BYTE *dest = pDest + (y * pImage->Width * 4);
-            BYTE *source = (BYTE *)pImage->Raster + y * pImage->BytesPerRow;
-            for (int x = 0; x < pImage->Width; x++)
-            {
-              COLOR col = palette[*source++];
-              *dest++ = col.b;
-              *dest++ = col.g;
-              *dest++ = col.r;
-              *dest++ = col.x;
-            }
-          }
-          glTexture->LoadFromMemory(pImage->Width, pImage->Height, pImage->Width * 4, 32, pDest);
+          glTexture->LoadPaletted(pImage->Width, pImage->Height, pImage->BytesPerRow, (unsigned char *)pImage->Raster, palette);
           pMap->Add(glTexture, pImage->Delay);
-          free(pDest);
         }
       } // of for (int iImage=0; iImage < iImages; iImage++)
     }

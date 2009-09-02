@@ -33,11 +33,10 @@
 // ****************************************************************************
 
 
-
+#include "Texture.h" // for COLOR
 
 #pragma pack(1)
 
-struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #undef ALIGN
 #define ALIGN sizeof(int)         ///< Windows GDI expects all int-aligned
 
