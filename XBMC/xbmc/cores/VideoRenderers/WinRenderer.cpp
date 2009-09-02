@@ -652,6 +652,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
+  ManageTextures();
 
   return true;
 }
@@ -709,8 +710,6 @@ void CWinRenderer::Reset()
 void CWinRenderer::Update(bool bPauseDrawing)
 {
   if (!m_bConfigured) return;
-  
-  CSingleLock lock(g_graphicsContext);
   ManageDisplay();
   ManageTextures();
 }

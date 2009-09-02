@@ -24,6 +24,7 @@
 #if !defined(_LINUX) && !defined(HAS_GL)
 
 #include "GraphicContext.h"
+#include "RenderFlags.h"
 
 //#define MP_DIRECTRENDERING
 
