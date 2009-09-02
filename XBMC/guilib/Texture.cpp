@@ -96,16 +96,12 @@ void CBaseTexture::Update(int w, int h, int pitch, const unsigned char *pixels, 
     resized += (m_nTextureWidth * 4);
   }
 
-  // repeat last row to simulate clamp_to_edge
-  for(unsigned int y = h; y < m_nTextureHeight; y++) 
+  // clamp to edge - repeat last row
+  unsigned char *dest = m_pPixels + h*GetPitch();
+  for (unsigned int y = h; y < m_nTextureHeight; y++)
   {
-    memcpy(resized, src - pitch, pitch);
-
-    // repeat last column to simulate clamp_to_edge
-    for(unsigned int i = pitch; i < m_nTextureWidth*4; i+=4) 
-      memcpy(resized+i, src-4, 4);
-
-    resized += (m_nTextureWidth * 4);
+    memcpy(dest, dest-GetPitch(), GetPitch());
+    dest += GetPitch();
   }
 
   if (loadToGPU)
@@ -131,6 +127,44 @@ bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsig
   Update(width, height, pitch, pPixels, false);
 
   return true;
+}
+
+bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, const unsigned char *pixels, const COLOR *palette)
+{
+  if (pixels == NULL || palette == NULL)
+    return false;
+
+  Allocate(width, height, 32);
+
+  for (unsigned int y = 0; y < height; y++)
+  {
+    unsigned char *dest = m_pPixels + y * GetPitch();
+    const unsigned char *src = pixels + y * pitch;
+    for (unsigned int x = 0; x < width; x++)
+    {
+      COLOR col = palette[*src++];
+      *dest++ = col.b;
+      *dest++ = col.g;
+      *dest++ = col.r;
+      *dest++ = col.x;
+    }
+    // clamp to edge - repeat last column
+    for (unsigned int x = width; x < m_nTextureWidth; x++)
+    {
+      COLOR col = palette[*(src-1)];
+      *dest++ = col.b;
+      *dest++ = col.g;
+      *dest++ = col.r;
+      *dest++ = col.x;
+    }
+  }
+  // clamp to edge - repeat last row
+  unsigned char *dest = m_pPixels + height*GetPitch();
+  for (unsigned int y = height; y < m_nTextureHeight; y++)
+  {
+    memcpy(dest, dest-GetPitch(), GetPitch());
+    dest += GetPitch();
+  }
 }
 
 DWORD CBaseTexture::PadPow2(DWORD x) 

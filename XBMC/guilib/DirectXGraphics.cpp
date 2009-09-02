@@ -400,7 +400,7 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
   if (*ppTexture)
   {
     BYTE *texDataStart = (BYTE *)texData;
-    DWORD *color = (DWORD *)texData;
+    COLOR *color = (COLOR *)texData;
     texDataStart += offset;
 /* DXMERGE - We should really support DXT1,DXT2 and DXT4 in both renderers
              Perhaps we should extend CTexture::Update() to support a bunch of different texture types
@@ -425,20 +425,19 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
       destPitch /= 4;
     }
 */
-    DWORD destPitch = (*ppTexture)->GetPitch();
     if (fmt == XB_D3DFMT_DXT1)
     {
-      BYTE *decoded = new BYTE[destPitch * height];
+      pitch = width * 32;
+      BYTE *decoded = new BYTE[pitch * height];
       ConvertDXT1(texDataStart, width, height, decoded);
       texDataStart = decoded;
-      pitch = destPitch;
     }
     else if (fmt == XB_D3DFMT_DXT2 || fmt == XB_D3DFMT_DXT4)
     {
-      BYTE *decoded = new BYTE[destPitch * height];
+      pitch = width * 32;
+      BYTE *decoded = new BYTE[pitch * height];
       ConvertDXT4(texDataStart, width, height, decoded);
       texDataStart = decoded;
-      pitch = destPitch;
     }
     if (IsSwizzledFormat(fmt))
     { // first we unswizzle
@@ -447,26 +446,11 @@ void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture **ppTextur
       texDataStart = unswizzled;
     }
 
-    BYTE *dstPixels = (*ppTexture)->GetPixels();
     if (IsPalettedFormat(fmt))
-    {
-      for (unsigned int y = 0; y < height; y++)
-      {
-        BYTE *src = texDataStart + y * pitch;
-        DWORD *dest = (DWORD *)(dstPixels + y * destPitch);
-        for (unsigned int x = 0; x < width; x++)
-          *dest++ = color[*src++];
-      }
-    }
+      (*ppTexture)->LoadPaletted(width, height, pitch, texDataStart, color);
     else
-    {
-      for (unsigned int y = 0; y < height; y++)
-      {
-        BYTE *src = texDataStart + y * pitch;
-        BYTE *dest = dstPixels + y * destPitch;
-        memcpy(dest, src, std::min((unsigned int)pitch, (unsigned int)destPitch));
-      }
-    }
+      (*ppTexture)->LoadFromMemory(width, height, pitch, 32, texDataStart);
+
     if (IsSwizzledFormat(fmt) || fmt == XB_D3DFMT_DXT1 || fmt == XB_D3DFMT_DXT2 || fmt == XB_D3DFMT_DXT4)
     {
       delete[] texDataStart;
