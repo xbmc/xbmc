@@ -165,6 +165,7 @@ bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigne
     memcpy(dest, dest-GetPitch(), GetPitch());
     dest += GetPitch();
   }
+  return true;
 }
 
 DWORD CBaseTexture::PadPow2(DWORD x) 
