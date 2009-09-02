@@ -189,8 +189,8 @@ namespace Shaders {
         m_pFP = new CGLSLPixelShader();
         m_pVP = new CGLSLVertexShader();
       }
-    CGLSLShaderProgram(const std::string vert
-                     , const std::string frag)
+    CGLSLShaderProgram(const std::string& vert
+                     , const std::string& frag)
       {
         m_pFP = new CGLSLPixelShader();
         m_pFP->LoadSource(vert);
@@ -224,8 +224,8 @@ namespace Shaders {
         m_pFP = new CARBPixelShader();
         m_pVP = new CARBVertexShader();
       }
-    CARBShaderProgram(const std::string vert
-                    , const std::string frag)
+    CARBShaderProgram(const std::string& vert
+                    , const std::string& frag)
       {
         m_pFP = new CARBPixelShader();
         m_pFP->LoadSource(vert);
