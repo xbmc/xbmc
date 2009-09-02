@@ -103,9 +103,9 @@ void CBackgroundPicLoader::Process()
           if ((iSize + (int)pic.GetWidth() > 0) || (iSize + (int)pic.GetHeight() > 0))
             bFullSize = true;
 #ifdef HAS_GL
-          if (!bFullSize && (int)pic.GetWidth() == g_Windowing.GetMaxTextureSize())
+          if (!bFullSize && pic.GetWidth() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
-          if (!bFullSize && (int)pic.GetHeight() == g_Windowing.GetMaxTextureSize())
+          if (!bFullSize && pic.GetHeight() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
 #endif
         }

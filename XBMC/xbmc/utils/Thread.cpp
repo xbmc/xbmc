@@ -314,7 +314,7 @@ CThread::operator HANDLE()
   return m_ThreadHandle;
 }
 
-CThread::operator const HANDLE() const
+CThread::operator HANDLE() const
 {
   return m_ThreadHandle;
 }

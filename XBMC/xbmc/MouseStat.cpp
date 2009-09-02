@@ -35,13 +35,6 @@
 
 CMouseStat g_Mouse; // global
 
-/* These are static for our mouse handling code */
-static signed short XBMC_MouseX = 0;
-static signed short XBMC_MouseY = 0;
-static signed short XBMC_DeltaX = 0;
-static signed short XBMC_DeltaY = 0;
-static unsigned short  XBMC_ButtonState = 0;
-
 CMouseStat::CMouseStat()
 {
   //m_mouseDevice = NULL;

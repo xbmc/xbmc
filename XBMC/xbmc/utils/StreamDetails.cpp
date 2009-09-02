@@ -195,7 +195,7 @@ CStreamDetail *CStreamDetails::NewStream(CStreamDetail::StreamType type)
   return retVal;
 }
 
-const int CStreamDetails::GetStreamCount(CStreamDetail::StreamType type) const
+int CStreamDetails::GetStreamCount(CStreamDetail::StreamType type) const
 {
   int retVal = 0;
   std::vector<CStreamDetail *>::const_iterator iter;
@@ -205,17 +205,17 @@ const int CStreamDetails::GetStreamCount(CStreamDetail::StreamType type) const
   return retVal;
 }
 
-const int CStreamDetails::GetVideoStreamCount(void) const
+int CStreamDetails::GetVideoStreamCount(void) const
 {
   return GetStreamCount(CStreamDetail::VIDEO);
 }
 
-const int CStreamDetails::GetAudioStreamCount(void) const
+int CStreamDetails::GetAudioStreamCount(void) const
 {
   return GetStreamCount(CStreamDetail::AUDIO);
 }
 
-const int CStreamDetails::GetSubtitleStreamCount(void) const
+int CStreamDetails::GetSubtitleStreamCount(void) const
 {
   return GetStreamCount(CStreamDetail::SUBTITLE);
 }

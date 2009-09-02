@@ -370,7 +370,7 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 ///////////////////////////////////////////////////////////////////////////
 CAtomicSpinLock::CAtomicSpinLock(long& lock) : m_Lock(lock)
 {
-  while (cas(&m_Lock, 0, 1) != 0); // Lock
+  while (cas(&m_Lock, 0, 1) != 0) {} // Lock
 }
 CAtomicSpinLock::~CAtomicSpinLock()
 {
