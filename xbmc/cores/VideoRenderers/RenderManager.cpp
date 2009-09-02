@@ -214,13 +214,13 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (!m_pRenderer)
     return;
 
-#ifdef HAS_GL
+
   if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
    || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
   else
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
-#endif
+
 
   m_overlays.Render();
 }
@@ -239,7 +239,7 @@ unsigned int CXBMCRenderManager::PreInit()
 #if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
 #elif defined(HAS_DX)
-    m_pRenderer = new CWinRenderer(g_Windowing.Get3DDevice());
+    m_pRenderer = new CPixelShaderRenderer(g_Windowing.Get3DDevice());
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
 #endif

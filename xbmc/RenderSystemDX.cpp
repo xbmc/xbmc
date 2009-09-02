@@ -302,8 +302,6 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   if (!m_bRenderCreated)
     return;
 
-  g_graphicsContext.BeginPaint();
-
   // grab the viewport dimensions and location
   D3DVIEWPORT9 viewport;
   m_pD3DDevice->GetViewport(&viewport);
