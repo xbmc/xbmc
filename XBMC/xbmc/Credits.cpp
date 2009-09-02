@@ -1038,7 +1038,7 @@ void RunCredits()
   }
 
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
-  g_graphicsContext.SetVideoResolution(res, TRUE);
+  g_graphicsContext.SetVideoResolution(res);
   float fFrameTime;
   if (res == PAL_4x3 || res == PAL_16x9)
     fFrameTime = 1.0f / 50.0f;
@@ -1054,7 +1054,7 @@ void RunCredits()
   {
     CLog::Log(LOGERROR, "Not enough memory to display credits");
     D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
-    g_graphicsContext.SetVideoResolution(res, TRUE);
+    g_graphicsContext.SetVideoResolution(res);
     g_graphicsContext.Unlock();
     if (NeedUnpause)
       g_application.m_pPlayer->Pause();
@@ -1066,7 +1066,7 @@ void RunCredits()
     CLog::Log(LOGERROR, "Unable to load credits logo");
     D3DDevice::SetGammaRamp(D3DSGR_IMMEDIATE, &StartRamp);
     CleanupLogo();
-    g_graphicsContext.SetVideoResolution(res, TRUE);
+    g_graphicsContext.SetVideoResolution(res);
     g_graphicsContext.Unlock();
     if (NeedUnpause)
       g_application.m_pPlayer->Pause();
@@ -1341,7 +1341,7 @@ void RunCredits()
                g_application.m_DefaultIR_Remote.wButtons == XINPUT_IR_REMOTE_MENU);
 
         // clear screen and exit to gui
-        g_graphicsContext.SetVideoResolution(res, TRUE);
+        g_graphicsContext.SetVideoResolution(res);
         D3DDevice::Clear(0, 0, D3DCLEAR_STENCIL | D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0f, 0);
         D3DDevice::SetGammaRamp(0, &StartRamp);
         D3DDevice::Present(0, 0, 0, 0);

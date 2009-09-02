@@ -590,7 +590,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       //FIXME: Use GUI resolution for now
       if (0 /*m_Resolution != g_guiSettings.m_LookAndFeelResolution && m_Resolution != INVALID && m_Resolution!=AUTORES*/)
       {
-        g_graphicsContext.SetVideoResolution(m_Resolution, TRUE);
+        g_graphicsContext.SetVideoResolution(m_Resolution);
       }
       else
       {
