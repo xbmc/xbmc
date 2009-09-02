@@ -2517,6 +2517,7 @@ bool CApplication::OnAction(CAction &action)
   if (action.wID == ACTION_TOGGLE_FULLSCREEN)
   {
     g_graphicsContext.ToggleFullScreenRoot();
+    ReloadSkin();
     return true;
   }
 
