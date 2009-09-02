@@ -606,7 +606,7 @@ void CCdgReader::Process()
     {
       CStdString strFile = m_pLoader->GetFileName();
       m_pLoader->StopStream();
-      while (m_pLoader->GetCurSubCode());
+      while (m_pLoader->GetCurSubCode()) {}
       m_pLoader->StreamFile(strFile);
       m_uiNumReadSubCodes = 0;
       m_Cdg.ClearDisplay();

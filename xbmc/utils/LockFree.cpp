@@ -78,7 +78,7 @@ lf_node* lf_stack_pop(lf_stack* pStack)
 // Maybe have a minimum number of blocks...
 #define MIN_ALLOC 4096
 
-void lf_heap_init(lf_heap* pHeap, long blockSize, long  initialSize /*= 0*/)
+void lf_heap_init(lf_heap* pHeap, size_t blockSize, size_t initialSize /*= 0*/)
 {
   pHeap->alloc_lock = 0; // Initialize the allocation lock
   pHeap->top_chunk = NULL;
@@ -96,7 +96,7 @@ void lf_heap_init(lf_heap* pHeap, long blockSize, long  initialSize /*= 0*/)
   lf_heap_grow(pHeap, initialSize); // Allocate the first chunk
 }
 
-void lf_heap_grow(lf_heap* pHeap, long size /*= 0*/)
+void lf_heap_grow(lf_heap* pHeap, size_t size /*= 0*/)
 {
   
   long blockSize = pHeap->block_size; // This has already been checked for sanity

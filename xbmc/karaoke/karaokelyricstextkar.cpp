@@ -341,7 +341,7 @@ void CKaraokeLyricsTextKAR::parseMIDI()
             }
             else
             {
-              next_line_flag = (strchr(tempbuf, '\n') || strchr(tempbuf, '\r')) ? CKaraokeLyricsText::LYRICS_NEW_LINE : 0;
+              next_line_flag = (strchr(tempbuf, '\n') || strchr(tempbuf, '\r')) ? CKaraokeLyricsText::LYRICS_NEW_LINE : CKaraokeLyricsText::LYRICS_NONE;
               lyric.text = convertText( tempbuf );
             }
 
