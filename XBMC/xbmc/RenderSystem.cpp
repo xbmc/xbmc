@@ -28,6 +28,9 @@ CRenderSystemBase::CRenderSystemBase()
   m_bRenderCreated = false;
   m_bVSync = true;
   m_maxTextureSize = 2048;
+  m_RenderVerdenVersionMajor = 0;
+  m_RenderVerdenVersionMinor = 0;
+  m_NeedPower2Texture = false;
 }
 
 CRenderSystemBase::~CRenderSystemBase()

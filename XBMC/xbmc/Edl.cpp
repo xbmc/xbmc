@@ -717,7 +717,7 @@ CStdString CEdl::MillisecondsToTimeString(const __int64 iMilliseconds)
   return strTimeString;
 }
 
-bool CEdl::ReadMythCommBreaks(const CURL url, const float fFramesPerSecond)
+bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
 {
   Clear();
 

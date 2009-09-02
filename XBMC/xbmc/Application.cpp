@@ -368,8 +368,7 @@ CApplication::~CApplication(void)
   delete m_currentStack;
 
 #ifdef HAS_KARAOKE
-  if(m_pKaraokeMgr)
-    delete m_pKaraokeMgr;
+  delete m_pKaraokeMgr;
 #endif
 
 #ifdef HAS_SDL
@@ -382,8 +381,7 @@ CApplication::~CApplication(void)
   delete m_dpms;
 
 #ifdef _WIN32PC
-  if( m_SSysParam )
-    delete m_SSysParam;
+  delete m_SSysParam;
 #endif
 }
 
@@ -4612,11 +4610,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       }
       else
       {
-        if (m_pPlayer)
-        {
-          delete m_pPlayer;
-          m_pPlayer = 0;
-        }
+        delete m_pPlayer;
+        m_pPlayer = 0;
       }
 
       if (!IsPlaying())
