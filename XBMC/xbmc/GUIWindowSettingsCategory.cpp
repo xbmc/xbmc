@@ -1514,14 +1514,12 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
     g_graphicsContext.SetVideoResolution(m_NewResolution);
     g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
-    g_application.ReloadSkin();
     bool cancelled = false;
     if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
     {
       g_guiSettings.SetInt("videoscreen.resolution", lastRes);
       g_graphicsContext.SetVideoResolution(lastRes);
       g_guiSettings.m_LookAndFeelResolution = lastRes;
-      g_application.ReloadSkin();
     }
   }
 
