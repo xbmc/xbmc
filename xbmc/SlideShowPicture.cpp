@@ -26,6 +26,7 @@
 #include "utils/GUIInfoManager.h"
 #include "Settings.h"
 #include "include.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 

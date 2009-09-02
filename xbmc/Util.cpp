@@ -107,6 +107,7 @@
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif
+#include "WindowingFactory.h"
 
 using namespace std;
 using namespace DIRECTORY;

@@ -27,6 +27,7 @@
 #include "visualizations/VisualisationTypes.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

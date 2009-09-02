@@ -25,6 +25,7 @@
 #include "GUITextLayout.h"
 #include "Application.h"
 #include "Settings.h"
+#include "WindowingFactory.h"
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
