@@ -102,7 +102,7 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, int width, int heigh
   m_nHeight = height;
   m_bFullScreen = fullScreen;
 
-  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL)))
+  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL | (m_bFullScreen ? 0 : SDL_RESIZABLE))))
   {
     RefreshGlxContext();
 
@@ -126,7 +126,8 @@ bool CWinSystemX11::DestroyWindow()
     
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  int options = SDL_OPENGL;
+  int options = SDL_OPENGL | (m_bFullScreen ? 0 : SDL_RESIZABLE);
+;
 
   m_nWidth = newWidth;
   m_nHeight = newHeight;
