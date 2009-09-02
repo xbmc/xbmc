@@ -483,7 +483,7 @@ install-livedatas:
 install-web:
 	@mkdir -p $(prefix)/share/xbmc/web
 	@cp -r web/Project_Mayhem_III/* $(prefix)/share/xbmc/web
-	@find $(prefix)/share/xbmc/web -regextype posix-extended -iregex ".*svn.*" -delete
+	@find $(prefix)/share/xbmc/web -depth -name .svn -exec rm -rf {} \;
 
 uninstall:
 	@echo "Removing XBMC..."
