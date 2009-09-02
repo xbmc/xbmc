@@ -290,9 +290,6 @@ protected:
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
 
-  DWORD      m_lastActionCode;
-  CStopWatch m_lastActionTimer;
-
   DPMSSupport* m_dpms;
   bool m_dpmsIsActive;
 

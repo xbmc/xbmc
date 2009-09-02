@@ -358,7 +358,6 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bRunResumeJobs = false;
-  m_lastActionCode = 0;
 #ifdef _WIN32PC
   m_SSysParam = new CWIN32Util::SystemParams::SysParam;
 #endif
@@ -2505,12 +2504,6 @@ bool CApplication::OnAction(CAction &action)
   }
 #endif
 
-  if (action.wID == m_lastActionCode)
-    action.holdTime = (unsigned int)m_lastActionTimer.GetElapsedMilliseconds();
-  else
-    m_lastActionTimer.StartZero();
-  m_lastActionCode = action.wID;
-
   // special case for switching between GUI & fullscreen mode.
   if (action.wID == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
@@ -2876,14 +2869,11 @@ void CApplication::FrameMove()
 #endif
   
   // process input actions
-  bool didSomething = CWinEvents::MessagePump();
-  didSomething |= ProcessHTTPApiButtons();
-  didSomething |= ProcessRemote(frameTime);
-  didSomething |= ProcessGamepad(frameTime);
-  didSomething |= ProcessEventServer(frameTime);
-  // reset our previous action code
-  if (!didSomething)
-    m_lastActionCode = 0;
+  CWinEvents::MessagePump();
+  ProcessHTTPApiButtons();
+  ProcessRemote(frameTime);
+  ProcessGamepad(frameTime);
+  ProcessEventServer(frameTime);
 }
 
 bool CApplication::ProcessGamepad(float frameTime)
