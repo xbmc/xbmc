@@ -15,7 +15,7 @@
 
   ;Name and file
   Name "XBMC Media Center"
-  OutFile "XBMCSetup-Rev${xbmc_revision}.exe"
+  OutFile "XBMCSetup-Rev${xbmc_revision}-${xbmc_target}.exe"
 
   XPStyle on
   
