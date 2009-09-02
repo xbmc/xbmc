@@ -308,11 +308,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_SYSKEYDOWN:
     case WM_KEYDOWN: 
     {
-      /* Ignore repeated keys */
-      if ( lParam & REPEATED_KEYMASK ) 
-      {
-        return(0);
-      }
       switch (wParam) 
       {
         case VK_CONTROL:
