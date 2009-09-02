@@ -323,6 +323,7 @@ void CKeyboardStat::Reset()
   m_cAscii = '\0';
   m_wUnicode = '\0';
   m_VKey = 0;
+  m_keyHoldTime = 0;
 
   ZeroMemory(&XBMC_KeyState, sizeof(XBMC_KeyState));
 }
@@ -605,7 +606,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
         else if (event.key.keysym.sym == XBMCK_RSHIFT) m_VKey = 0xa1;
       }
 
-      if (!m_VKey && !m_cAscii && m_bEvdev)
+      if (!m_VKey && !m_cAscii)
       {
         // based on the evdev mapped scancodes in /user/share/X11/xkb/keycodes
         if (event.key.keysym.scancode == 121) m_VKey = 0xad; // Volume mute
@@ -628,7 +629,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
         else if (event.key.keysym.scancode == 216) m_VKey = 0x46; // Forward
         //else if (event.key.keysym.scancode == 167) m_VKey = 0xb3; // Record
       }
-      if (!m_VKey && !m_cAscii && !m_bEvdev)
+      if (!m_VKey && !m_cAscii)
       {
         // following scancode infos are
         // 1. from ubuntu keyboard shortcut (hex) -> predefined

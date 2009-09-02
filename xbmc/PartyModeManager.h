@@ -65,7 +65,6 @@ private:
   bool MovePlaying();
   void SendUpdateMessage();
   void OnError(int iError, const CStdString& strLogMessage);
-  int GetSongCount(int iType);
   void ClearState();
   void UpdateStats();
   std::pair<CStdString,CStdString> GetWhereClauseWithHistory() const;

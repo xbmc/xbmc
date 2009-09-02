@@ -149,6 +149,8 @@ CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
   m_textureScaleX = m_textureScaleY = 0.0;
   m_ellipsesWidth = m_height = 0.0f;
   m_dwColor = 0;
+  m_vertex_count = 0;
+  m_nTexture = 0;
 }
 
 CGUIFontTTFBase::~CGUIFontTTFBase(void)
