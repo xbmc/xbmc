@@ -93,11 +93,11 @@ public:
   static CStdString VideoWidthToResolutionDescription(int iWidth);
   static CStdString VideoAspectToAspectDescription(float fAspect);
   
-  const bool HasItems(void) const { return m_vecItems.size() > 0; };
-  const int GetStreamCount(CStreamDetail::StreamType type) const;
-  const int GetVideoStreamCount(void) const;
-  const int GetAudioStreamCount(void) const;
-  const int GetSubtitleStreamCount(void) const;
+  bool HasItems(void) const { return m_vecItems.size() > 0; };
+  int GetStreamCount(CStreamDetail::StreamType type) const;
+  int GetVideoStreamCount(void) const;
+  int GetAudioStreamCount(void) const;
+  int GetSubtitleStreamCount(void) const;
   const CStreamDetail* GetNthStream(CStreamDetail::StreamType type, int idx) const;
 
   CStdString GetVideoCodec(int idx = 0) const;
