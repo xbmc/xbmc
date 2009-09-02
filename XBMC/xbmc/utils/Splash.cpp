@@ -73,7 +73,7 @@ void CSplash::Show()
 
   //render splash image
 #if !defined(HAS_XBOX_D3D) && !defined(HAS_GL)
-  g_Windowing.Get3DDevice()->BeginScene();
+  g_Windowing.BeginRender();
 #endif
 
   image->Render();
@@ -85,7 +85,7 @@ void CSplash::Show()
 #ifdef HAS_XBOX_D3D
   g_Windowing.Get3DDevice()->BlockUntilVerticalBlank();
 #else
-  g_Windowing.Get3DDevice()->EndScene();
+  g_Windowing.EndRender();
 #endif
   g_Windowing.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 #elif defined(HAS_SDL_2D)

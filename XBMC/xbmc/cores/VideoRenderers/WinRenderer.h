@@ -217,8 +217,7 @@ protected:
   // render device
   LPDIRECT3DDEVICE9 m_pD3DDevice;
 
-  // pixel shader (low memory shader used in all renderers while in GUI)
-  IDirect3DPixelShader9 *m_lowMemShader;
+  ID3DXEffect*  m_pYUV2RGBEffect;
 
   // clear colour for "black" bars
   DWORD m_clearColour;

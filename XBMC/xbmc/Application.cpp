@@ -2093,7 +2093,7 @@ void CApplication::DoRender()
 {
   g_graphicsContext.Lock();
 
-  g_Windowing.BeginRender();
+  //g_Windowing.BeginRender();
 
   m_gWindowManager.UpdateModelessVisibility();
 
@@ -2145,7 +2145,7 @@ void CApplication::DoRender()
 
   RenderScreenSaver();
 
-  g_Windowing.EndRender();
+  //g_Windowing.EndRender();
 
   g_graphicsContext.Unlock();
 
@@ -2300,7 +2300,9 @@ void CApplication::Render()
     lastFrameTime = timeGetTime();
   }
   g_graphicsContext.Lock();
+  g_Windowing.BeginRender();
   RenderNoPresent();
+  g_Windowing.EndRender();
   g_graphicsContext.Flip();
   g_infoManager.UpdateFPS();
   g_graphicsContext.Unlock();

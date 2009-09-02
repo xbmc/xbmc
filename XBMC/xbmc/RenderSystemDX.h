@@ -69,6 +69,7 @@ public:
   virtual void SetDeviceFullScreen(bool bFullScreen){ m_bFullScreenDevice = bFullScreen; };
   virtual LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
+  HRESULT GetDeviceStatus() { return m_nDeviceStatus; }
 
 protected:
   virtual bool CreateResources();
@@ -86,10 +87,9 @@ protected:
   unsigned int m_nBackBufferWidth;
   unsigned int m_nBackBufferHeight;
   bool m_bFullScreenDevice;
+  HRESULT m_nDeviceStatus;
 
   int        m_iVSyncMode;
-  int        m_width;
-  int        m_height;
 };
 
 #endif // RENDER_SYSTEM_DX
