@@ -206,6 +206,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   //  in environment variable?
   CStdStringArray vecEnv;
   StringUtils::SplitString(ENV_PATH, ";", vecEnv);
+  LibraryLoader* pDll = NULL;
 
   for (int i=0; i<(int)vecEnv.size(); ++i)
   {
@@ -218,20 +219,18 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
     strPath+=sName;
 
     // Have we already loaded this dll
-    LibraryLoader* pDll = GetModule(strPath.c_str());
-    if (pDll)
+    if ((pDll = GetModule(strPath.c_str())) != NULL)
       return pDll;
 
     if (CFile::Exists(strPath))
       return LoadDll(strPath.c_str(), bLoadSymbols);
   }
 
-#ifdef _WIN32PC
   // can't find it in any of our paths - could be a system dll
-  return LoadDll(sName, bLoadSymbols);
-#endif
+  if ((pDll = LoadDll(sName, bLoadSymbols)) != NULL)
+    return pDll;
+  
   CLog::Log(LOGDEBUG, "Dll %s was not found in path", sName);
-
   return NULL;
 }
 
