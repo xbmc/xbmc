@@ -96,7 +96,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
     // choose the next resolution in our list
     {
       m_iCurRes = (m_iCurRes+1) % m_Res.size();
-      g_graphicsContext.SetVideoResolution(m_Res[m_iCurRes], TRUE);
+      g_graphicsContext.SetVideoResolution(m_Res[m_iCurRes]);
       ResetControls();
       return true;
     }
@@ -126,7 +126,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       g_graphicsContext.SetCalibrating(false);
       m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       // reset our screen resolution to what it was initially
-      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
       // Inform the player so we can update the resolution
 #ifdef HAS_VIDEO_PLAYBACK
       g_renderManager.Update(false);

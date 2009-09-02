@@ -1512,14 +1512,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     RESOLUTION lastRes = g_graphicsContext.GetVideoResolution();
     g_guiSettings.SetInt("videoscreen.resolution", m_NewResolution);
-    g_graphicsContext.SetVideoResolution(m_NewResolution, TRUE);
+    g_graphicsContext.SetVideoResolution(m_NewResolution);
     g_guiSettings.m_LookAndFeelResolution = m_NewResolution;
     g_application.ReloadSkin();
     bool cancelled = false;
     if (!CGUIDialogYesNo::ShowAndGetInput(13110, 13111, 20022, 20022, -1, -1, cancelled, 10000))
     {
       g_guiSettings.SetInt("videoscreen.resolution", lastRes);
-      g_graphicsContext.SetVideoResolution(lastRes, TRUE);
+      g_graphicsContext.SetVideoResolution(lastRes);
       g_guiSettings.m_LookAndFeelResolution = lastRes;
       g_application.ReloadSkin();
     }
@@ -2130,7 +2130,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("videoscreen.flickerfilter") || strSetting.Equals("videoscreen.soften"))
   { // reset display
-    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
+    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
   }
   else if (strSetting.Equals("screensaver.mode"))
   {

@@ -2518,7 +2518,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       g_guiSettings.SetInt("videoscreen.resolution", res);
       //set the gui resolution, if newRes is RES_AUTORES newRes will be set to the highest available resolution
-      g_graphicsContext.SetVideoResolution(res, TRUE);
+      g_graphicsContext.SetVideoResolution(res);
       //set our lookandfeelres to the resolution set in graphiccontext
       g_guiSettings.m_LookAndFeelResolution = res;
       g_application.ReloadSkin();
