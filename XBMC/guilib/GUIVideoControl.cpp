@@ -22,6 +22,7 @@
 #include "include.h"
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
+#include "MouseStat.h"
 #include "Application.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"

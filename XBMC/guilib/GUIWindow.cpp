@@ -36,6 +36,7 @@
 #include "utils/SingleLock.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
+#include "MouseStat.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"

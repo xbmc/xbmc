@@ -94,6 +94,7 @@
 #include <map>
 #include "ScriptSettings.h"
 #include "GUIDialogPluginSettings.h"
+#include "MouseStat.h"
 
 using namespace std;
 using namespace DIRECTORY;

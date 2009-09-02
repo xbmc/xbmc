@@ -51,10 +51,6 @@
 class IMsgSenderCallback;
 class CGUIMessage;
 
-#define MAX_RESOLUTIONS 128
-
-#include "MouseStat.h"
-
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
                  VIEW_TYPE_ICON,

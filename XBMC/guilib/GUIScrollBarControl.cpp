@@ -21,6 +21,7 @@
 
 #include "include.h"
 #include "GUIScrollBarControl.h"
+#include "MouseStat.h"
 
 #define MIN_NIB_SIZE 4.0f
 

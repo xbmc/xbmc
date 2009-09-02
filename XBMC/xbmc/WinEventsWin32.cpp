@@ -24,6 +24,7 @@
 #include "WinEvents.h"
 #include "Application.h"
 #include "XBMC_vkeys.h"
+#include "MouseStat.h"
 
 #ifdef _WIN32
 

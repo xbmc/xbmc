@@ -30,6 +30,7 @@
 #include "WindowingFactory.h"
 #include "SkinInfo.h"
 #include "TextureManager.h"
+#include "MouseStat.h"
 
 using namespace std;
 

@@ -23,6 +23,7 @@
 #include "GUISelectButtonControl.h"
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
+#include "MouseStat.h"
 
 CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
     float posX, float posY,

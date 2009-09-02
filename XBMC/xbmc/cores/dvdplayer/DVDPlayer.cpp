@@ -56,6 +56,7 @@
 #endif
 #include "Settings.h"
 #include "FileItem.h"
+#include "MouseStat.h"
 
 using namespace std;
 
