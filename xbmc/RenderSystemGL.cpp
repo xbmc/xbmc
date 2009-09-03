@@ -160,6 +160,13 @@ bool CRenderSystemGL::IsExtSupported(CStdString strExt)
   return true;
 }
 
+static __int64 abs(__int64 a)
+{
+  if(a < 0)
+    return -a;
+  return a;
+}
+
 bool CRenderSystemGL::PresentRender()
 {
   if (!m_bRenderCreated)
@@ -191,13 +198,13 @@ bool CRenderSystemGL::PresentRender()
   
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
-    long double curr, diff;
+    __int64 curr, diff;
     QueryPerformanceCounter((LARGE_INTEGER*)&curr);
 
     diff = curr - m_iSwapStamp;
     m_iSwapStamp = curr;
 
-    if (fabs(diff - m_iSwapRate) < fabs(diff))
+    if (abs(diff - m_iSwapRate) < abs(diff))
       CLog::Log(LOGDEBUG, "%s - missed requested swap",__FUNCTION__);
   }
   
