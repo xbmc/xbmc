@@ -106,6 +106,7 @@ void CDXTexture::LoadToGPU()
 
 void CDXTexture::Delete()
 {
+  delete [] m_pPixels;
   DestroyTextureObject();
 
   m_imageWidth = 0;
