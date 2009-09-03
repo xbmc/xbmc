@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #include "Bookmark.h"
 
 CBookmark::CBookmark()

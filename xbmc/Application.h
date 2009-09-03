@@ -57,6 +57,7 @@ class CFileItemList;
 #include "WINMessageHandler.h"
 #endif
 #include "XBMC_events.h"
+#include "Thread.h"
 
 class CWebServer;
 class CXBFileZilla;
