@@ -97,7 +97,7 @@ void CGUIListLabel::Render()
 
 void CGUIListLabel::UpdateInfo(const CGUIListItem *item)
 {
-  if (m_info.IsConstant())
+  if (m_info.IsConstant() && !m_bInvalidated)
     return; // nothing to do
 
   if (item)
@@ -108,7 +108,7 @@ void CGUIListLabel::UpdateInfo(const CGUIListItem *item)
 
 void CGUIListLabel::SetLabel(const CStdString &label)
 {
-  if (m_textLayout.Update(label))
+  if (m_textLayout.Update(label, 0, m_bInvalidated))
   { // needed an update - reset scrolling
     m_scrollInfo.Reset();
     // recalculate our text layout

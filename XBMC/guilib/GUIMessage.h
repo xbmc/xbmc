@@ -87,6 +87,8 @@
 
 #define GUI_MSG_SET_TYPE     33 ///< Instruct a control to set it's type appropriately
 
+#define GUI_MSG_INVALIDATE   34 ///< Instruct all controls to refresh - usually due to sizing changes
+
 #define GUI_MSG_USER         1000
 
 /*!
