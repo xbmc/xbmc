@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+
+#ifdef HAS_FILESYSTEM_MMS
+
 #include "FileItem.h"
 #include "DVDInputStreamMMS.h"
 #include "VideoInfoTag.h"
@@ -91,3 +94,4 @@ bool CDVDInputStreamMMS::NextStream()
   return false;
 }
 
+#endif

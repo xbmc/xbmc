@@ -20,6 +20,10 @@
  *
  */
 
+#include "stdafx.h"
+
+#ifdef HAS_FILESYSTEM_MMS
+
 #include "DVDInputStream.h"
 #include "mms/mmsx.h"
 
@@ -41,3 +45,4 @@ protected:
   mmsx_t* m_mms;
 };
 
+#endif
