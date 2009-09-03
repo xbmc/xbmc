@@ -48,7 +48,6 @@
 
 #ifdef HAS_GL
 
-using namespace Surface;
 using namespace Shaders;
 
 static const GLubyte stipple_weave[] = {
