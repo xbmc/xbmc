@@ -53,9 +53,9 @@ CGUISound::CGUISound()
 
 CGUISound::~CGUISound()
 {
-#ifndef HAS_SDL_AUDIO
+#ifdef _WIN32
   FreeBuffer();
-#else
+#elif defined(HAS_SDL_AUDIO)
   Mix_FreeChunk(m_soundBuffer);
 #endif
 }
@@ -63,7 +63,7 @@ CGUISound::~CGUISound()
 // \brief Loads a wav file by filename
 bool CGUISound::Load(const CStdString& strFile)
 {
-#ifndef HAS_SDL_AUDIO
+#ifdef _WIN32
   LPBYTE pbData=NULL;
   WAVEFORMATEX wfx;
   int size=0;
@@ -78,12 +78,14 @@ bool CGUISound::Load(const CStdString& strFile)
   delete[] pbData;
 
   return bReady;
-#else
+#elif defined(HAS_SDL_AUDIO)
   m_soundBuffer = Mix_LoadWAV(_P(strFile));
   if (!m_soundBuffer)
     return false;
 
   return true;
+#else
+  return false;
 #endif
 }
 
@@ -91,17 +93,19 @@ bool CGUISound::Load(const CStdString& strFile)
 void CGUISound::Play()
 {
   if (m_soundBuffer)
-#if !defined(HAS_SDL_AUDIO)
+  {
+#ifdef _WIN32
     m_soundBuffer->Play(0, 0, 0);
-#else
+#elif defined(HAS_SDL_AUDIO)
     Mix_PlayChannel(GUI_SOUND_CHANNEL, m_soundBuffer, 0);
 #endif
+  }
 }
 
 // \brief returns true if the sound is playing
 bool CGUISound::IsPlaying()
 {
-#ifndef HAS_SDL_AUDIO
+#ifdef _WIN32
   if (m_soundBuffer)
   {
     DWORD dwStatus;
@@ -110,8 +114,10 @@ bool CGUISound::IsPlaying()
   }
 
   return false;
-#else
+#elif defined(HAS_SDL_AUDIO)
   return Mix_Playing(GUI_SOUND_CHANNEL) != 0;
+#else
+  return false;
 #endif
 }
 
@@ -120,9 +126,9 @@ void CGUISound::Stop()
 {
   if (m_soundBuffer)
   {
-#if !defined(HAS_SDL_AUDIO)
+#ifdef _WIN32
     m_soundBuffer->Stop();
-#else
+#elif defined(HAS_SDL_AUDIO)
     Mix_HaltChannel(GUI_SOUND_CHANNEL);
 #endif
 
@@ -134,14 +140,16 @@ void CGUISound::Stop()
 void CGUISound::SetVolume(int level)
 {
   if (m_soundBuffer)
-#ifndef HAS_SDL_AUDIO
+  {
+#ifdef _WIN32
     m_soundBuffer->SetVolume(level);
-#else
+#elif defined(HAS_SDL_AUDIO)
     Mix_Volume(GUI_SOUND_CHANNEL, level);
 #endif
+  }
 }
 
-#ifndef HAS_SDL_AUDIO
+#ifdef _WIN32
 bool CGUISound::CreateBuffer(LPWAVEFORMATEX wfx, int iLength)
 {
   //  Set up DSBUFFERDESC structure
