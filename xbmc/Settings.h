@@ -37,8 +37,6 @@
 #endif // MID
 
 #include "settings/VideoSettings.h"
-#include "StringUtils.h"
-#include "AdvancedSettings.h"
 #include "Profile.h"
 #include "ViewState.h"
 #include "Resolution.h"

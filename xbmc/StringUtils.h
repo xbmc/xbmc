@@ -35,8 +35,6 @@
 #include "StdString.h"
 #include <vector>
 
-typedef std::vector<CStdString> CStdStringArray;
-
 enum TIME_FORMAT { TIME_FORMAT_GUESS = 0,
                    TIME_FORMAT_SS,
                    TIME_FORMAT_MM,

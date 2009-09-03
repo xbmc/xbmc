@@ -24,7 +24,7 @@
 #include "PlayListFactory.h"
 #include "Application.h"
 #include "PartyModeManager.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"

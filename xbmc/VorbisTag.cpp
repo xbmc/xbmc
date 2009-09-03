@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "VorbisTag.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 using namespace MUSIC_INFO;
 
