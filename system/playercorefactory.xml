@@ -34,5 +34,8 @@
 
     <!-- dvdplayer generally plays these better -->
     <rule name="mp4" filetypes="mp4" player="DVDPlayer" />
+
+    <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
+    <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
   </rules>
 </playercorefactory>

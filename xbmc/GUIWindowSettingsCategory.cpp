@@ -124,9 +124,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
 {
   FreeControls();
-
-  if (m_pOriginalEdit)
-    delete m_pOriginalEdit;
+  delete m_pOriginalEdit;
 }
 
 bool CGUIWindowSettingsCategory::OnAction(const CAction &action)

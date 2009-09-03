@@ -105,7 +105,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
     if (pDemuxer)
       delete pDemuxer;
     delete pInputStream;
@@ -272,7 +272,7 @@ void CDVDFileInfo::GetFileMetaData(const CStdString &strPath, CFileItem *pItem)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
     if (pDemuxer)
       delete pDemuxer;
     delete pInputStream;

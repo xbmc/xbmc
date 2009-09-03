@@ -69,6 +69,41 @@ public: \
 
 ///////////////////////////////////////////////////////////
 //
+//  DEFINE_GLOBAL
+//
+//  Defines a global for export from the dll as well as
+//  a function for accessing it (Get_name).
+//
+//  type: The variables type.
+//  name: Name of the variable.
+//
+
+#define DEFINE_GLOBAL_PTR(type, name) \
+  protected: \
+    union { \
+      type* m_##name; \
+      void* m_##name##_ptr; \
+    }; \
+  public: \
+    virtual type* Get_##name (void) \
+    { \
+      return m_##name; \
+    }
+
+#define DEFINE_GLOBAL(type, name) \
+  protected: \
+    union { \
+      type* m_##name; \
+      void* m_##name##_ptr; \
+    }; \
+  public: \
+    virtual type Get_##name (void) \
+    { \
+      return *m_##name; \
+    }
+
+///////////////////////////////////////////////////////////
+//
 //  DEFINE_METHOD_LINKAGE
 //
 //  Defines a function for an export from a dll, if the 

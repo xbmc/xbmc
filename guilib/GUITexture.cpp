@@ -24,7 +24,7 @@
 #include "GraphicContext.h"
 #include "TextureManager.h"
 #include "GUILargeTextureManager.h"
-#include "MathUtils.h"
+#include "Util.h" // for mathutils
 
 using namespace std;
 

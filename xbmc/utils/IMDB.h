@@ -100,7 +100,6 @@ protected:
   IMDB_EPISODELIST  m_episode;
   LOOKUP_STATE      m_state;
   int               m_found;
-  bool              m_retry;
   SScraperInfo      m_info;
 };
 

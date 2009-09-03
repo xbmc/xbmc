@@ -57,6 +57,7 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
 
 CSMB::CSMB()
 {
+  smbc_init(xb_smbc_auth, 0);
   m_context = NULL;
 }
 
@@ -64,6 +65,7 @@ CSMB::~CSMB()
 {
   Deinit();
 }
+
 void CSMB::Deinit()
 {
   CSingleLock lock(*this);

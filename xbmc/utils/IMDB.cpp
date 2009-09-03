@@ -132,7 +132,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     CStdString strTitle;
     if (title && title->FirstChild() && title->FirstChild()->Value())
       strTitle = title->FirstChild()->Value();
-    TiXmlElement* message = doc.RootElement()->FirstChildElement("title");
+    TiXmlElement* message = doc.RootElement()->FirstChildElement("message");
     CStdString strMessage;
     if (message && message->FirstChild() && message->FirstChild()->Value())
       strMessage = message->FirstChild()->Value();
@@ -487,6 +487,7 @@ void CIMDB::Process()
       else
         CLog::Log(LOGERROR, "%s: Error looking up movie %s", __FUNCTION__, m_strMovie.c_str());
     }
+    m_state = DO_NOTHING;
     return;
   }
   else if (m_state == GET_DETAILS)
@@ -505,6 +506,7 @@ void CIMDB::Process()
       CLog::Log(LOGERROR, "%s: Error getting episode details from %s", __FUNCTION__, m_url.m_url[0].m_url.c_str());
   }
   m_found = 1;
+  m_state = DO_NOTHING;
 }
 
 int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUIDialogProgress *pProgress /* = NULL */)
@@ -524,7 +526,7 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
     if (ThreadHandle())
       StopThread();
     Create();
-    while (!m_found)
+    while (m_state != DO_NOTHING)
     {
       pProgress->Progress();
       if (pProgress->IsCanceled())
