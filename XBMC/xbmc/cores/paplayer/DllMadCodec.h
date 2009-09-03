@@ -33,7 +33,7 @@
     // TODO: clean this up!
     #include "../dvdplayer/Codecs/libmad/msvc++/mad.h"
   #else
-    #include "mad.h"
+    #include "cores/dvdplayer/Codecs/libmad/mad.h"
   #endif
 #endif
 
