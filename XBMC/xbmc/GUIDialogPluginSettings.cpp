@@ -37,6 +37,7 @@
 #include "Application.h"
 #include "GUIDialogKeyboard.h"
 #include "FileItem.h"
+#include "Settings.h"
 #include "ScriptSettings.h"
 #include "GUISettings.h"
 

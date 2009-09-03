@@ -32,6 +32,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/ShoutcastDirectory.h"
 #include "FileItem.h"
+#include "Settings.h"
 #include "GUISettings.h"
 
 using namespace std;

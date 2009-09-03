@@ -30,6 +30,7 @@
 #include "infotagmusic.h"
 #include "listitem.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 using namespace MUSIC_INFO;
 

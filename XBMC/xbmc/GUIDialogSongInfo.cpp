@@ -32,6 +32,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
 #include "FileItem.h"
+#include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 

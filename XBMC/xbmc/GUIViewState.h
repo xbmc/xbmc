@@ -23,7 +23,6 @@
 
 #include "utils/LabelFormatter.h"
 #include "SortFileItem.h"
-#include "Settings.h"
 #include "GUIBaseContainer.h"
 #include "MediaSource.h"
 

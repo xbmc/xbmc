@@ -36,6 +36,7 @@
 #include "MediaManager.h"
 #include "FileSystem/Directory.h"
 #include "utils/AsyncFileCopy.h"
+#include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 

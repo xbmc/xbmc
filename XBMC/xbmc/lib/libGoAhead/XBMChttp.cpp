@@ -40,6 +40,7 @@
 #include "MusicInfoTag.h"
 #include "PictureInfoTag.h"
 #include "FileItem.h"
+#include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "FileSystem/FactoryDirectory.h"

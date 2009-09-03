@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "FileItem.h"
 #include "VideoInfoScanner.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
@@ -35,7 +36,7 @@
 #include "GUIDialogProgress.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
-#include "FileItem.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace DIRECTORY;

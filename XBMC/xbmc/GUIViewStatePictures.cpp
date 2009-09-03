@@ -26,6 +26,7 @@
 #include "ViewState.h"
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
+#include "Settings.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "Util.h"

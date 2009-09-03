@@ -33,6 +33,7 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "SkinInfo.h"
+#include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 

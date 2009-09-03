@@ -38,6 +38,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "Settings.h"
 #include "GUISettings.h"
 
 using namespace XFILE;

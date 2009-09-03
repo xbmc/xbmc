@@ -52,6 +52,7 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "MediaManager.h"
+#include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 

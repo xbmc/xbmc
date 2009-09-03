@@ -45,6 +45,7 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 

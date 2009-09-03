@@ -43,6 +43,7 @@
 #include "FileItem.h"
 #include "MediaManager.h"
 #include "utils/AsyncFileCopy.h"
+#include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 
