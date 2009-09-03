@@ -24,6 +24,7 @@
 #include "Application.h"
 #include "Atomics.h"
 #include "GUISettings.h"
+#include "Settings.h"
 #include "Util.h"
 
 long CLastfmScrobbler::m_instanceLock = 0;

@@ -34,7 +34,6 @@ class CFileItemList;
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
-#include "Settings.h"
 
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
@@ -60,6 +59,7 @@ class CFileItemList;
 #include "WINMessageHandler.h"
 #endif
 #include "XBMC_events.h"
+#include "Profile.h"
 
 class CWebServer;
 class CXBFileZilla;

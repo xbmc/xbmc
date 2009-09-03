@@ -28,6 +28,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #include "Application.h"
+#include "Settings.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"

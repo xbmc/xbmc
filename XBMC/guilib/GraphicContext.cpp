@@ -27,6 +27,8 @@
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
 #include "../xbmc/GUISettings.h"
+#include "../xbmc/Settings.h"
+#include "../xbmc/AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "WindowingFactory.h"
 #include "SkinInfo.h"

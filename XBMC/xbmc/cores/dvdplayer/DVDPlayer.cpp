@@ -58,6 +58,7 @@
 #include "FileItem.h"
 #include "MouseStat.h"
 #include "GUISettings.h"
+#include "Settings.h"
 
 using namespace std;
 

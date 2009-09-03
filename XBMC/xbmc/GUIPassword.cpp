@@ -29,6 +29,7 @@
 #include "GUIDialogProfileSettings.h"
 #include "Util.h"
 #include "URL.h"
+#include "Settings.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
