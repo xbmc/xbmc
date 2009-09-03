@@ -76,7 +76,6 @@
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
-using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;
@@ -1313,9 +1312,11 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
     }
     break;
+#ifdef HAS_DVD_DRIVE
   case SYSTEM_DVD_LABEL:
     strLabel = g_mediaManager.GetDiskLabel();
     break;
+#endif
   case SYSTEM_ALARM_POS:
     if (g_alarmClock.GetRemaining("shutdowntimer") == 0.f)
       strLabel = "";
@@ -1669,6 +1670,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = false;
   else if (condition == SYSTEM_MEDIA_DVD)
     bReturn = g_mediaManager.IsDiscInDrive();
+#ifdef HAS_DVD_DRIVE
   else if (condition == SYSTEM_HAS_DRIVE_F)
     bReturn = CIoSupport::DriveExists('F');
   else if (condition == SYSTEM_HAS_DRIVE_G)
@@ -1677,6 +1679,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
     bReturn = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
+#endif
   else if (condition == SYSTEM_CAN_POWERDOWN)
     bReturn = g_powerManager.CanPowerdown();
   else if (condition == SYSTEM_CAN_SUSPEND)

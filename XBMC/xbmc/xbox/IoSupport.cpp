@@ -58,8 +58,6 @@
 #include "XHandle.h"
 #endif
 
-using namespace MEDIA_DETECT;
-
 #define NT_STATUS_OBJECT_NAME_NOT_FOUND long(0xC0000000 | 0x0034)
 #define NT_STATUS_VOLUME_DISMOUNTED     long(0xC0000000 | 0x026E)
 
@@ -267,6 +265,7 @@ void CIoSupport::GetDrive(const char* szPartition, char* cDriveLetter)
 
 HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
 {
+#ifdef HAS_DVD_DRIVE
 #ifdef _WIN32PC
   return CWIN32Util::EjectTray(cDriveLetter);
 #else
@@ -286,11 +285,13 @@ HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
       break;
   }
 #endif
+#endif
   return S_OK;
 }
 
 HRESULT CIoSupport::CloseTray()
 {
+#ifdef HAS_DVD_DRIVE
 #ifdef _XBOX
   HalWriteSMBusValue(0x20, 0x0C, FALSE, 1);  // close tray
 #endif
@@ -309,6 +310,7 @@ HRESULT CIoSupport::CloseTray()
   }
 #elif defined(_WIN32PC)
   return CWIN32Util::CloseTray();
+#endif
 #endif
   return S_OK;
 }
@@ -345,8 +347,9 @@ HRESULT CIoSupport::Shutdown()
 
 HANDLE CIoSupport::OpenCDROM()
 {
-  HANDLE hDevice;
+  HANDLE hDevice = 0;
 
+#ifdef HAS_DVD_DRIVE
 #ifdef _XBOX
   IO_STATUS_BLOCK status;
   ANSI_STRING filename;
@@ -377,6 +380,7 @@ HANDLE CIoSupport::OpenCDROM()
                        NULL, OPEN_EXISTING,
                        FILE_FLAG_RANDOM_ACCESS, NULL );
 
+#endif
 #endif
   return hDevice;
 }

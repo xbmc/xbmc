@@ -95,7 +95,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "multipath") return new CMultiPathFile();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
   else if (strProtocol == "filereader") return new CFileFileReader();
-#ifdef HAS_FILESYSTEM_CDDA
+#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   else if (strProtocol == "cdda") return new CFileCDDA();
 #endif
 #ifdef HAS_FILESYSTEM

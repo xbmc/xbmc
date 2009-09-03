@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "cdioSupport.h"
 #ifndef _LINUX
 #include "lib/libcdio/logging.h"
@@ -1104,4 +1107,6 @@ ULONG CCdIoSupport::CddbDiscId()
 
   return ((n % 0xff) << 24 | t << 8 | m_nNumTracks);
 }
+
+#endif
 

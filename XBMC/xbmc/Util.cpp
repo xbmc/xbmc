@@ -118,7 +118,6 @@ static const __int64 SECS_BETWEEN_EPOCHS = 11644473600LL;
 static const __int64 SECS_TO_100NS = 10000000;
 
 using namespace AUTOPTR;
-using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 
@@ -1166,6 +1165,7 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
 
   if ( IsDVD(strPath) )
   {
+#ifdef HAS_DVD_DRIVE
     CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     //  xbox DVD
     if ( pInfo != NULL && pInfo->IsUDFX( 1 ) )
@@ -1173,18 +1173,21 @@ void CUtil::GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon )
       strIcon = "DefaultXboxDVD.png";
       return ;
     }
+#endif    
     strIcon = "DefaultDVDRom.png";
     return ;
   }
 
   if ( IsISO9660(strPath) )
   {
+#ifdef HAS_DVD_DRIVE    
     CCdInfo* pInfo = g_mediaManager.GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {
       strIcon = "DefaultVCD.png";
       return ;
     }
+#endif    
     strIcon = "DefaultDVDRom.png";
     return ;
   }
@@ -1925,7 +1928,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 
 #endif
 
-#ifdef HAS_GL
+#if defined(HAS_GL)
 
     g_graphicsContext.BeginPaint();
     if (g_application.IsPlayingVideo())
@@ -3012,10 +3015,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("cancelalarm"))
   {
     g_alarmClock.stop(parameter);
-  }
+  }  
   else if (execute.Equals("playdvd"))
   {
+#ifdef HAS_DVD_DRIVE    
     CAutorun::PlayDisc();
+#endif    
   }
   else if (execute.Equals("skin.togglesetting"))
   {

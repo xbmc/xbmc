@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+
+#ifdef HAS_CDDA_RIPPER
+
 #include "CDDARipper.h"
 #include "CDDAReader.h"
 #include "Util.h"
@@ -429,3 +432,5 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, int LegalType)
   track = CUtil::MakeLegalFileName(track, LegalType);
   return track;
 }
+
+#endif

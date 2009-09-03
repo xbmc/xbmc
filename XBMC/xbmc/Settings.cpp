@@ -58,7 +58,6 @@
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
-using namespace MEDIA_DETECT;
 
 struct CSettings::stSettings g_stSettings;
 class CSettings g_settings;
@@ -1237,8 +1236,8 @@ bool CSettings::LoadProfile(int index)
     }
 
     // to set labels - shares are reloaded
-#ifndef _WIN32PC
-    CDetectDVDMedia::UpdateState();
+#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
+    MEDIA_DETECT::CDetectDVDMedia::UpdateState();
 #endif
     // init windows
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WINDOW_RESET);

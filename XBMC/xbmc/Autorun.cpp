@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "Autorun.h"
 #include "Application.h"
 #include "Util.h"
@@ -363,3 +366,4 @@ bool CAutorun::PlayDisc()
   return true;
 }
 
+#endif

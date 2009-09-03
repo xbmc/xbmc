@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "MusicInfoTagLoaderCDDA.h"
 #include "FileSystem/cddb.h"
 #include "MusicInfoTag.h"
@@ -40,6 +43,7 @@ CMusicInfoTagLoaderCDDA::~CMusicInfoTagLoaderCDDA()
 
 bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag& tag)
 {
+#ifdef HAS_DVD_DRIVE
   try
   {
     tag.SetURL(strFileName);
@@ -144,6 +148,11 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
     CLog::Log(LOGERROR, "Tag loader CDDB: exception in file %s", strFileName.c_str());
   }
 
+#endif
+
   tag.SetLoaded(false);
+  
   return false;
 }
+
+#endif

@@ -22,10 +22,14 @@
 
 #include "Settings.h" // for VECSOURCES
 #include <map>
+#ifdef HAS_DVD_DRIVE
 #include "FileSystem/cdioSupport.h"
+#endif
 #include "URL.h"
 
+#ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
+#endif
 
 class CNetworkLocation
 {
@@ -58,8 +62,10 @@ public:
   bool IsAudio(const CStdString& devicePath="");
   CStdString TranslateDevicePath(const CStdString& devicePath, bool bReturnAsDevice=false);
   DWORD GetDriveStatus(const CStdString& devicePath="");
+#ifdef HAS_DVD_DRIVE
   CCdInfo* GetCdInfo(const CStdString& devicePath="");
   bool RemoveCdInfo(const CStdString& devicePath="");
+#endif
   CStdString GetDiskLabel(const CStdString& devicePath="");
   void SetHasOpticalDrive(bool bstatus);
 
@@ -67,7 +73,9 @@ protected:
   std::vector<CNetworkLocation> m_locations;
 
   CCriticalSection m_muAutoSource;
+#ifdef HAS_DVD_DRIVE
   std::map<CStdString,CCdInfo*> m_mapCdInfo;
+#endif
   bool m_bhasoptical;
 
 };

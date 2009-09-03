@@ -107,7 +107,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
-#ifdef HAS_FILESYSTEM_CDDA
+#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   if (strProtocol == "cdda") return new CCDDADirectory();
 #endif
 #ifdef HAS_FILESYSTEM

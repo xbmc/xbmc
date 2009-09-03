@@ -30,10 +30,12 @@
 #include "WIN32Util.h"
 #endif
 #include "GUIWindowManager.h"
+#ifdef HAS_DVD_DRIVE
 #include "FileSystem/cdioSupport.h"
 #ifndef _WIN32PC 
 // TODO: switch all ports to use auto sources
 #include "DetectDVDType.h"
+#endif
 #endif
 #include "Autorun.h"
 
@@ -263,8 +265,10 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage( msg );
 
+#ifdef HAS_DVD_DRIVE  
   if(bAutorun)
     MEDIA_DETECT::CAutorun::ExecuteAutorun();
+#endif  
 }
 
 void CMediaManager::RemoveAutoSource(const CMediaSource &share)
@@ -277,8 +281,10 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
   m_gWindowManager.SendThreadMessage( msg );
 
+#ifdef HAS_DVD_DRIVE  
   // delete cached CdInfo if any
   RemoveCdInfo(TranslateDevicePath(share.strPath, true));
+#endif  
 }
 
 /////////////////////////////////////////////////////////////
@@ -290,9 +296,11 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
   CSingleLock waitLock(m_muAutoSource);
   CStdString strDevice = devicePath;
   // fallback for cdda://local/ and empty devicePath
+#ifdef HAS_DVD_DRIVE  
   if(devicePath.empty() || devicePath.Left(12).Compare("cdda://local")==0)
     strDevice = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
-
+#endif
+  
 #ifdef _WIN32PC
   if(!m_bhasoptical)
     return "";
@@ -309,6 +317,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
 
 bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 {
+#ifdef HAS_DVD_DRIVE
 #ifdef _WIN32PC
   if(!m_bhasoptical)
     return false;
@@ -325,10 +334,14 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   // TODO: switch all ports to use auto sources
   return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();
 #endif
+#else
+  return false;
+#endif  
 }
 
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
+#ifdef HAS_DVD_DRIVE
 #ifdef _WIN32PC
   if(!m_bhasoptical)
     return false;
@@ -344,12 +357,13 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
   if (pInfo != NULL && pInfo->IsAudio(1))
     return true;
 #endif
-
+#endif
   return false;
 }
 
 DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
+#ifdef HAS_DVD_DRIVE
 #ifdef _WIN32PC
   if(!m_bhasoptical)
     return DRIVE_NOT_READY;
@@ -378,8 +392,12 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 #else
   return MEDIA_DETECT::CDetectDVDMedia::DriveReady();
 #endif
+#else
+  return DRIVE_NOT_READY;
+#endif
 }
 
+#ifdef HAS_DVD_DRIVE
 CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
 {
 #ifdef _WIN32PC
@@ -444,6 +462,7 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
 }
+#endif
 
 void CMediaManager::SetHasOpticalDrive(bool bstatus)
 {

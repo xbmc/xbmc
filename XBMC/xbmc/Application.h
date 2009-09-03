@@ -38,7 +38,7 @@ class CFileItemList;
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
-#ifndef _WIN32PC
+#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
 #include "DetectDVDType.h"
 #endif
 #include "Autorun.h"
@@ -212,8 +212,11 @@ public:
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
+#ifdef HAS_DVD_DRIVE  
   MEDIA_DETECT::CAutorun m_Autorun;
-#ifndef _WIN32PC
+#endif
+  
+#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
   CSNTPClient *m_psntpClient;

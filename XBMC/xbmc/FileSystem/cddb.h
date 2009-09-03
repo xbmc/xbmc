@@ -20,6 +20,9 @@
  *
  */
 
+#include "stdafx.h"
+
+#ifdef HAS_DVD_DRIVE
 
 #include <sstream>
 #include <iostream>
@@ -124,3 +127,5 @@ protected:
   CStdString cCacheDir;
 };
 }
+
+#endif
