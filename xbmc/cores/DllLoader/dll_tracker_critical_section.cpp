@@ -25,6 +25,7 @@
 #include "dll.h"
 #include "DllLoader.h"
 #include "exports/emu_kernel32.h"
+#include "utils/SingleLock.h"
 
 extern "C" inline void tracker_critical_section_track(uintptr_t caller, LPCRITICAL_SECTION cs)
 {

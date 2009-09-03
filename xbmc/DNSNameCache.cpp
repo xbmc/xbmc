@@ -23,6 +23,7 @@
 #include "DNSNameCache.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "utils/SingleLock.h"
 
 CDNSNameCache g_DNSCache;
 

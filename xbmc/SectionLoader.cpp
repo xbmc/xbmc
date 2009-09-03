@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 

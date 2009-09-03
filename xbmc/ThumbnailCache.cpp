@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/File.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 using namespace XFILE;

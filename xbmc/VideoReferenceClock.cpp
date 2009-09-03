@@ -22,6 +22,7 @@
 #include <iostream> //for debugging, please remove
 #include "VideoReferenceClock.h"
 #include "MathUtils.h"
+#include "utils/SingleLock.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/extensions/Xrandr.h>

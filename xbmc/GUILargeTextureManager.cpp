@@ -25,6 +25,7 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "Texture.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 

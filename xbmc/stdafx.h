@@ -40,8 +40,6 @@
 #include <queue>
 #include "StdString.h"
 
-#include "utils/CriticalSection.h"
-#include "utils/SingleLock.h"
 #include "utils/Event.h"
 #include "utils/Archive.h"
 #include "utils/log.h"
