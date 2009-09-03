@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "DetectDVDType.h"
 #include "FileSystem/cdioSupport.h"
 #include "FileSystem/iso9660.h"
@@ -581,3 +584,5 @@ const CStdString &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
 }
+
+#endif

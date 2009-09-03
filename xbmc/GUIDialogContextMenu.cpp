@@ -49,7 +49,6 @@
 #endif
 
 using namespace std;
-using namespace MEDIA_DETECT;
 
 #define BACKGROUND_IMAGE       999
 #define BACKGROUND_BOTTOM      998
@@ -347,6 +346,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   // buttons that are available on both sources and autosourced items
   if (!item) return false;
+  
   switch (button)
   {
   case CONTEXT_BUTTON_EJECT_DRIVE:
@@ -358,8 +358,9 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     return false;
 #endif
 
+#ifdef HAS_DVD_DRIVE  
   case CONTEXT_BUTTON_PLAY_DISC:
-    return CAutorun::PlayDisc();
+    return MEDIA_DETECT::CAutorun::PlayDisc();
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32PC
@@ -367,6 +368,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 #else
     CIoSupport::ToggleTray();
 #endif
+#endif  
     return true;
   default:
     break;

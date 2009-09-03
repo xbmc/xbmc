@@ -56,7 +56,6 @@
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
-using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 
 #define ACTION_COPY                     1
@@ -169,8 +168,10 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
     }
     if (action.wID == ACTION_PLAYER_PLAY)
     {
+#ifdef HAS_DVD_DRIVE
       if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
-        return CAutorun::PlayDisc();
+        return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif      
     }
   }
   if (action.wID == ACTION_PREVIOUS_MENU)

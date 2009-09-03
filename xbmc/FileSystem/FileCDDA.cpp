@@ -20,6 +20,9 @@
  */
 
 #include "stdafx.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "FileCDDA.h"
 #include <sys/stat.h>
 #include "Util.h"
@@ -216,3 +219,6 @@ int CFileCDDA::GetChunkSize()
 {
   return SECTOR_COUNT*CDIO_CD_FRAMESIZE_RAW;
 }
+
+#endif
+

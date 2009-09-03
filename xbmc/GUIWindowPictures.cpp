@@ -44,7 +44,6 @@
 #define CONTROL_LABELFILES         12
 
 using namespace std;
-using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace PLAYLIST;
@@ -362,9 +361,11 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
     return false;
   }
 
+#ifdef HAS_DVD_DRIVE  
   if (pItem->IsDVD())
-    return CAutorun::PlayDisc();
-
+    return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif
+  
   if (pItem->m_bIsShareOrDrive)
     return false;
 

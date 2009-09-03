@@ -105,6 +105,7 @@
 #include "AudioContext.h"
 #include "GUIFontTTF.h"
 #include "utils/Network.h"
+#include "xbox/IoSupport.h"
 #include "Zeroconf.h"
 #include "ZeroconfBrowser.h"
 #ifndef _LINUX
@@ -245,7 +246,10 @@
 #include "utils/DbusServer.h"
 #endif
 
+#ifdef HAS_DVD_DRIVE
 #include "lib/libcdio/logging.h"
+#endif
+
 #include "MediaManager.h"
 
 #ifdef _LINUX
@@ -259,7 +263,9 @@
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
+#ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
+#endif
 using namespace PLAYLIST;
 using namespace VIDEO;
 using namespace MUSIC_INFO;
@@ -1070,8 +1076,10 @@ CProfile* CApplication::InitDirectoriesWin32()
 
 HRESULT CApplication::Initialize()
 {
+#ifdef HAS_DVD_DRIVE
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
+#endif
 
   CLog::Log(LOGINFO, "creating subdirectories");
 
@@ -1703,7 +1711,7 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
-#ifndef _WIN32PC
+#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
@@ -1730,7 +1738,7 @@ void CApplication::StopServices()
 {
   m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
-#ifndef _WIN32PC
+#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 #endif
@@ -4861,9 +4869,11 @@ void CApplication::ProcessSlow()
 
   g_largeTextureManager.CleanupUnusedImages();
 
+#ifdef HAS_DVD_DRIVE  
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   m_Autorun.HandleAutorun();
-
+#endif
+  
   // update upnp server/renderer states
   if(CUPnP::IsInstantiated())
     CUPnP::GetInstance()->UpdateState();

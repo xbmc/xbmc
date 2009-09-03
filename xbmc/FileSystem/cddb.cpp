@@ -28,6 +28,9 @@
 //-----------------------------------------------------------------------------
 
 #include "stdafx.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "cddb.h"
 #include "DNSNameCache.h"
 #include "Id3Tag.h"
@@ -1061,6 +1064,5 @@ CStdString Xcddb::GetCacheFile(unsigned int disc_id) const
   return CUtil::AddFileToFolder(cCacheDir, strFileName);
 }
 
-
-
+#endif
 

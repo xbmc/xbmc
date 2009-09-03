@@ -55,7 +55,6 @@ using namespace AUTOPTR;
 using namespace XFILE;
 using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
-using namespace MEDIA_DETECT;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
 #define MUSIC_DATABASE_VERSION        14
@@ -63,7 +62,9 @@ using namespace MEDIA_DETECT;
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
 
+#ifdef HAS_DVD_DRIVE
 using namespace CDDB;
+#endif
 
 CMusicDatabase::CMusicDatabase(void)
 {
@@ -2254,6 +2255,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
 {
+#ifdef HAS_DVD_DRIVE  
   if (!g_guiSettings.GetBool("musicfiles.usecddb"))
     return false;
 
@@ -2371,10 +2373,14 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   // Filling the file items with cddb info happens in CMusicInfoTagLoaderCDDA
 
   return pCdInfo->HasCDDBInfo();
+#else
+  return false;
+#endif  
 }
 
 void CMusicDatabase::DeleteCDDBInfo()
 {
+#ifdef HAS_DVD_DRIVE  
   WIN32_FIND_DATA wfd;
   memset(&wfd, 0, sizeof(wfd));
 
@@ -2449,6 +2455,7 @@ void CMusicDatabase::DeleteCDDBInfo()
     }
     mapCDDBIds.erase(mapCDDBIds.begin(), mapCDDBIds.end());
   }
+#endif  
 }
 
 void CMusicDatabase::Clean()

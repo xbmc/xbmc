@@ -523,6 +523,7 @@ case TMSG_POWERDOWN:
       m_gWindowManager.Render_Internal();
       break;
 
+#ifdef HAS_DVD_DRIVE
     case TMSG_OPTICAL_MOUNT:
       {
         CMediaSource share;
@@ -547,6 +548,7 @@ case TMSG_POWERDOWN:
         g_mediaManager.RemoveAutoSource(share);
       }
       break; 
+#endif
   }
 }
 

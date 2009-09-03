@@ -35,7 +35,6 @@
 #include "GUISettings.h"
 
 using namespace AUTOPTR;
-using namespace MEDIA_DETECT;
 
 #define CONTROL_LABELFILES        12
 
@@ -219,9 +218,11 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
   if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
+#ifdef HAS_DVD_DRIVE  
   if (m_vecItems->Get(iItem)->IsDVD())
-    CAutorun::PlayDisc();
+    MEDIA_DETECT::CAutorun::PlayDisc();
   else
+#endif    
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 

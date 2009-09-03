@@ -415,10 +415,12 @@ bool CDVDPlayer::OpenInputStream()
   ||  filename.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0
   ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
   {
+#ifdef HAS_DVD_DRIVE
 #ifdef _WIN32PC
     m_filename = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4;
 #else
     m_filename = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+#endif
 #endif
   }
 

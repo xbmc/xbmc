@@ -43,7 +43,6 @@
 #include "GUISettings.h"
 
 using namespace std;
-using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEO;
@@ -197,9 +196,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // use play button to add folders of items to temp playlist
         if (iAction == ACTION_PLAYER_PLAY && pItem->m_bIsFolder && !pItem->IsParentFolder())
         {
+#ifdef HAS_DVD_DRIVE          
           if (pItem->IsDVD())
-            return CAutorun::PlayDisc();
-
+            return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif
+          
           if (pItem->m_bIsShareOrDrive)
             return false;
           // if playback is paused or playback speed != 1, return
@@ -321,9 +322,11 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
+#ifdef HAS_DVD_DRIVE  
   if (pItem->IsDVD())
-    return CAutorun::PlayDisc();
-
+    return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif
+  
   if (pItem->m_bIsShareOrDrive)
     return false;
 
