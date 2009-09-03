@@ -40,7 +40,6 @@
 #include "StringUtils.h"
 #include "AdvancedSettings.h"
 #include "Profile.h"
-#include "MediaSource.h"
 #include "ViewState.h"
 #include "Resolution.h"
 #include "GraphicContext.h" //TODO: only due to VIEW_TYPE
@@ -102,6 +101,7 @@ struct VOICE_MASK {
 class CGUISettings;
 class TiXmlElement;
 class TiXmlNode;
+class CMediaSource;
 
 class CSettings
 {
