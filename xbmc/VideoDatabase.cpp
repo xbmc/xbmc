@@ -50,15 +50,6 @@ using namespace VIDEO;
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
-CBookmark::CBookmark()
-{
-  episodeNumber = 0;
-  seasonNumber = 0;
-  timeInSeconds = 0.0f;
-  totalTimeInSeconds = 0.0f;
-  type = STANDARD;
-}
-
 //********************************************************************************************************************************
 CVideoDatabase::CVideoDatabase(void)
 {
