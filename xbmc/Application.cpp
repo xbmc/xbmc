@@ -4749,10 +4749,13 @@ bool CApplication::ExecuteAction(CGUIActionDescriptor action)
   }
   else if (action.m_lang == CGUIActionDescriptor::LANG_PYTHON)
   {
+#ifdef HAS_PYTHON
     // Determine the context of the action, if possible
     g_pythonParser.evalString(action.m_action);
-
     return true;
+#else
+    return false;
+#endif
   }
   return false;
 }
