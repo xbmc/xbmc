@@ -33,6 +33,7 @@
 #include "FileSystem/Directory.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "Settings.h"
 
 using namespace DIRECTORY;
 

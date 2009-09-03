@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "PlayList.h"
 #include "GUISettings.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace DIRECTORY;
