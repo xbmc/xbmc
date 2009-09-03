@@ -43,7 +43,6 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 
-#include "SectionLoader.h"
 #include "ApplicationMessenger.h"
 #include "AutoPtrHandle.h"
 

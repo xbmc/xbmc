@@ -62,6 +62,7 @@
 #include "language.h"
 #include "LangInfo.h"
 #include "PythonSettings.h"
+#include "SectionLoader.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
 

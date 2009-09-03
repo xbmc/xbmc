@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
+#include "SectionLoader.h"
 
 namespace DIRECTORY
 {

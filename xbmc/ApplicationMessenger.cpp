@@ -26,6 +26,7 @@
 #include "TextureManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
+#include "SectionLoader.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif
