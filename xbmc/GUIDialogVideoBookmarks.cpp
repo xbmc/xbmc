@@ -34,6 +34,7 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "Texture.h"
 #include "Crc32.h"
 
 using namespace std;
@@ -244,55 +245,22 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     height = BOOKMARK_THUMB_WIDTH;
     width = (int)(BOOKMARK_THUMB_WIDTH * aspectRatio);
   }
-  CSingleLock lock(g_graphicsContext);
-#ifdef HAS_DX
-  /* elis
-  LPDIRECT3DTEXTURE9 texture = NULL;
-  if (D3D_OK == D3DXCreateTexture(g_Windowing.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &texture))
   {
-    LPDIRECT3DSURFACE9 surface = NULL;
-    texture->GetSurfaceLevel(0, &surface);
+    CSingleLock lock(g_graphicsContext);
+    // we're really just using the CTexture here as a pixel buffer
+    CTexture texture(width, height, 32);
 #ifdef HAS_VIDEO_PLAYBACK
-    g_renderManager.CreateThumbnail(surface, width, height);
-#endif
-    D3DLOCKED_RECT lockedRect;
-    surface->LockRect(&lockedRect, NULL, NULL);
-    // compute the thumb name + create the thumb image
-    Crc32 crc;
-    crc.ComputeFromLowerCase(g_application.CurrentFile());
-    bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
-    bookmark.thumbNailImage = CUtil::AddFileToFolder(g_settings.GetBookmarksThumbFolder(), bookmark.thumbNailImage);
-    CPicture pic;
-    if (!pic.CreateThumbnailFromSurface((BYTE *)lockedRect.pBits, width, height, lockedRect.Pitch, bookmark.thumbNailImage))
-      bookmark.thumbNailImage.Empty();
-    surface->UnlockRect();
-    surface->Release();
-    texture->Release();
-  }
-  */
-#elif defined(HAS_SDL_OPENGL)
-  SDL_Surface *texture = SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 32,
-                                              RMASK, GMASK, BMASK, AMASK);
-  if (texture)
-  {
-    SDL_LockSurface(texture);
-#ifdef HAS_VIDEO_PLAYBACK
-    // TBD:: elis please fix
-    //g_renderManager.CreateThumbnail(texture, width, height);
+    g_renderManager.CreateThumbnail(&texture, width, height);
 #endif
     Crc32 crc;
     crc.ComputeFromLowerCase(g_application.CurrentFile());
     bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
     bookmark.thumbNailImage = CUtil::AddFileToFolder(g_settings.GetBookmarksThumbFolder(), bookmark.thumbNailImage);
     CPicture pic;
-    if (!pic.CreateThumbnailFromSurface((BYTE *)texture->pixels, width, height, texture->pitch,
+    if (!pic.CreateThumbnailFromSurface(texture.GetPixels(), width, height, texture.GetPitch(),
                                         bookmark.thumbNailImage))
       bookmark.thumbNailImage.Empty();
-    SDL_UnlockSurface(texture);
-    SDL_FreeSurface(texture);
   }
-#endif
-  lock.Leave();
   videoDatabase.Open();
   if (tag)
     videoDatabase.AddBookMarkForEpisode(*tag, bookmark);

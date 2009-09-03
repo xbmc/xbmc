@@ -48,7 +48,7 @@ public:
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
-  void CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 

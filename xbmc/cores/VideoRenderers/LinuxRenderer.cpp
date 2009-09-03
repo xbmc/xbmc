@@ -288,7 +288,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
     DeleteOSDTextures(iOSDBuffer);
     m_iOSDTextureHeight[iOSDBuffer] = h;
     // Create osd textures for this buffer with new size
-#if defined(HAS_SDL_OPENGL)
+#if defined(HAS_GL)
     m_pOSDYTexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, RMASK, GMASK, BMASK, AMASK),false,true);
 
     m_pOSDATexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, RMASK, GMASK, BMASK, AMASK),false,true);
@@ -1129,13 +1129,13 @@ void CLinuxRenderer::RenderLowMem(DWORD flags)
 
 }
 
-void CLinuxRenderer::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
+void CLinuxRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
 {
   CSingleLock lock(g_graphicsContext);
 #ifndef USE_SDL_OVERLAY
   // we use backbuffer for the thumbnail cause screen buffer isnt used when opengl is used.
-  if (m_backbuffer && surface) {
-     SDL_BlitSurface(m_backbuffer, NULL, surface, NULL);
+  if (m_backbuffer && texture) {
+     SDL_BlitSurface(m_backbuffer, NULL, texture->GetPixels(), NULL);
   }
 #endif
 }

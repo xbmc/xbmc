@@ -83,6 +83,8 @@ typedef struct YV12Image
 #define CONF_FLAGS_YUV_FULLRANGE 0x08
 #define CONF_FLAGS_FULLSCREEN    0x10
 
+class CBaseTexture;
+
 struct DRAWRECT
 {
   float left;
@@ -132,7 +134,7 @@ public:
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
-  void CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);

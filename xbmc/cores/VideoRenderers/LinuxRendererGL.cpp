@@ -1975,7 +1975,7 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::CreateThumbnail(CBaseTexture* surface, unsigned int width, unsigned int height)
+void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
   // get our screen rect
   const RECT& rv = g_graphicsContext.GetViewWindow();
@@ -1997,7 +1997,7 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* surface, unsigned int width
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
   // read pixels
-  glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, surface->GetPixels());
+  glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, texture->GetPixels());
 
   // revert model view matrix
   glMatrixMode(GL_MODELVIEW);

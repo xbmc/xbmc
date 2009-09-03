@@ -122,7 +122,7 @@ public:
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
 
-  void CreateThumbnail(CBaseTexture * surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
