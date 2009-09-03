@@ -263,6 +263,8 @@ void CGUIFont::End()
 
 void CGUIFont::SetFont(CGUIFontTTFBase *font)
 {
+  if (m_font == font)
+    return; // no need to update the font if we already have it
   if (m_font)
     m_font->RemoveReference();
   m_font = font;
