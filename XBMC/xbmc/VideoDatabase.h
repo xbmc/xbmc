@@ -21,6 +21,7 @@
  */
 #include "Database.h"
 #include "VideoInfoTag.h"
+#include "Bookmark.h"
 
 #include <set>
 
@@ -265,28 +266,6 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strGenre) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iTrack) }
 };
-
-class CBookmark
-{
-public:
-  CBookmark();
-  double timeInSeconds;
-  double totalTimeInSeconds;
-  CStdString thumbNailImage;
-  CStdString playerState;
-  CStdString player;
-  long seasonNumber;
-  long episodeNumber;
-
-  enum EType
-  {
-    STANDARD = 0,
-    RESUME = 1,
-    EPISODE = 2
-  } type;
-};
-
-typedef std::vector<CBookmark> VECBOOKMARKS;
 
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%

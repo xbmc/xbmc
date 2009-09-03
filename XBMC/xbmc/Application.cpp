@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "Util.h"
 #include "Picture.h"

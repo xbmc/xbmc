@@ -42,12 +42,10 @@ class CFileItemList;
 #include "DetectDVDType.h"
 #endif
 #include "Autorun.h"
-#include "utils/Splash.h"
+#include "Bookmark.h"
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "utils/Network.h"
-#include "MusicDatabase.h"
-#include "VideoDatabase.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
@@ -59,7 +57,6 @@ class CFileItemList;
 #include "WINMessageHandler.h"
 #endif
 #include "XBMC_events.h"
-#include "Profile.h"
 
 class CWebServer;
 class CXBFileZilla;
@@ -67,6 +64,8 @@ class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
+class CProfile;
+class CSplash;
 
 class CBackgroundPlayer : public CThread
 {

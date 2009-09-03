@@ -216,6 +216,7 @@ SRCS=Application.cpp \
      WinSystemX11GL.cpp \
      WinEventsSDL.cpp \
      AdvancedSettings.cpp \
+     Bookmark.cpp \
 
 LIB=xbmc.a
 
