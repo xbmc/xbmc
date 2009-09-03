@@ -207,9 +207,6 @@
 /* Define to 1 if you have the `jpeg' library (-ljpeg). */
 #undef HAVE_LIBJPEG
 
-/* Define to 1 if you have the `lzo' library (-llzo). */
-#undef HAVE_LIBLZO
-
 /* Define to 1 if you have the `lzo2' library (-llzo2). */
 #undef HAVE_LIBLZO2
 
@@ -275,9 +272,6 @@
 
 /* Define to 1 if you have the `SDL_gfx' library (-lSDL_gfx). */
 #undef HAVE_LIBSDL_GFX
-
-/* Define to 1 if you have the `SDL_image' library (-lSDL_image). */
-#undef HAVE_LIBSDL_IMAGE
 
 /* Define to 1 if you have the `SDL_mixer' library (-lSDL_mixer). */
 #undef HAVE_LIBSDL_MIXER
@@ -387,6 +381,10 @@
 
 /* Define to 1 if you have the `pow' function. */
 #undef HAVE_POW
+
+/* Define to 1 if your system has a GNU libc compatible `realloc' function,
+   and to 0 otherwise. */
+#undef HAVE_REALLOC
 
 /* Define to 1 if you have the `rmdir' function. */
 #undef HAVE_RMDIR
@@ -584,9 +582,6 @@
 
 /* The size of `int', as computed by sizeof. */
 #undef SIZEOF_INT
-
-/* The size of `size_t', as computed by sizeof. */
-#undef SIZEOF_SIZE_T
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
