@@ -2478,6 +2478,14 @@
 				Name="Settings"
 				>
 				<File
+					RelativePath="..\..\xbmc\AdvancedSettings.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\AdvancedSettings.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\GUIDialogPluginSettings.cpp"
 					>
 				</File>
