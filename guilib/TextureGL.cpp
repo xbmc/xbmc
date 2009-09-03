@@ -23,7 +23,7 @@
 #include "TextureGL.h"
 #include "WindowingFactory.h"
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
 
 using namespace std;
 
@@ -36,7 +36,7 @@ CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int BPP
   m_nTextureWidth = 0;
   m_nTextureHeight = 0;
 
-  if (m_imageWidth != 0 && m_imageHeight != 0)
+  if(m_imageWidth != 0 && m_imageHeight != 0)
     Allocate(m_imageWidth, m_imageHeight, m_nBPP);
 }
 
@@ -50,14 +50,14 @@ void CGLTexture::Delete()
   m_imageWidth = 0;
   m_imageHeight = 0;
 
-  delete[] m_pPixels;
-  m_pPixels = NULL;
-}
+    delete [] m_pPixels;
+    m_pPixels = NULL;
+  }
 
 void CGLTexture::CreateTextureObject()
 {
   glGenTextures(1, (GLuint*) &m_pTexture);
-}
+  }
 
 void CGLTexture::DestroyTextureObject()
 {
@@ -98,14 +98,23 @@ void CGLTexture::LoadToGPU()
     if (m_nTextureWidth > maxSize)
     {
       CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", m_nTextureWidth, maxSize);
+#ifndef HAS_GLES
       glPixelStorei(GL_UNPACK_ROW_LENGTH, m_nTextureWidth);
+#endif
       m_nTextureWidth = maxSize;
     }
   }
   //CLog::Log(LOGNOTICE, "Texture width x height: %d x %d", textureWidth, textureHeight);
+#ifdef HAS_GL
+  GLenum format = GL_BGRA;
+#elif HAS_GLES
+  GLenum format = GL_BGRA_EXT;
+#endif
   glTexImage2D(GL_TEXTURE_2D, 0, 4, m_nTextureWidth, m_nTextureHeight, 0,
-    GL_BGRA, GL_UNSIGNED_BYTE, m_pPixels);
+    format, GL_UNSIGNED_BYTE, m_pPixels);
+#ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
   VerifyGLState();
 
   delete [] m_pPixels;

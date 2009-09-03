@@ -64,7 +64,7 @@ struct D3DPalette
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
 
 namespace XBMC
 {
@@ -97,4 +97,9 @@ typedef uint32_t	Uint32;
 
 #endif // HAS_DX
 
+#ifdef HAS_GLES
+
+#define GLchar char
+
+#endif
 #endif // GUILIB_GUI3D_H
