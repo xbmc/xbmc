@@ -238,8 +238,8 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
-  BaseYUV2RGBShader     *m_pYUVShader;
-  BaseVideoFilterShader *m_pVideoFilterShader;
+  Shaders::BaseYUV2RGBShader     *m_pYUVShader;
+  Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
 
   // clear colour for "black" bars
