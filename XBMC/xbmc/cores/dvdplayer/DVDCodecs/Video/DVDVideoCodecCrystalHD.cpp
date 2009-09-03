@@ -318,7 +318,7 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   CMPCDecodeBuffer* pBuffer = AllocBuffer();
   if (!pBuffer) // No free pre-allocated buffers so make one
   {
-    pBuffer = new CMPCDecodeBuffer(sizeof(  BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
+    pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
     m_BufferCount++;
     LOG_DEBUG("%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, m_BufferCount, pBuffer->GetSize());    
   }
@@ -331,47 +331,28 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   procOut.PicInfo.height = m_OutputHeight;
   procOut.YbuffSz = m_OutputWidth * m_OutputHeight;
   procOut.UVbuffSz = procOut.YbuffSz / 2;
-  if ((procOut.YbuffSz + procOut.UVbuffSz) > pBuffer->GetSize())
-  {
-    LOG_DEBUG("%s: Buffer was too small (%d bytes)...reallocating (%d bytes)", __MODULE_NAME__, procOut.YbuffSz + procOut.UVbuffSz);    
-    delete pBuffer;
-    pBuffer = new CMPCDecodeBuffer(procOut.YbuffSz + procOut.UVbuffSz); // Allocate a new buffer
-  }
-  procOut.Ybuff = (BCM::U8*)pBuffer->GetPtr();
-  procOut.UVbuff =  procOut.Ybuff + procOut.YbuffSz;
-  
+
   // Fetch data from the decoder
   g_OutputTimer.PunchIn();
   
-  BCM::BC_DTS_PROC_OUT procIn;
-  memset(&procIn, 0, sizeof(BCM::BC_DTS_PROC_OUT));
-  procIn.PoutFlags = BCM::BC_POUT_FLAGS_SIZE | BCM::BC_POUT_FLAGS_YV12;
-  procIn.PicInfo.width = m_OutputWidth;
-  procIn.PicInfo.height = m_OutputHeight;
-  procIn.YbuffSz = m_OutputWidth * m_OutputHeight;
-  procIn.UVbuffSz = procOut.YbuffSz / 2;
   BCM::DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
-  ret = BCM::DtsProcOutputNoCopy(m_Device, m_OutputTimeout, &procIn);
-  //if (ret == BCM::BC_STS_SUCCESS) {
-  //  NV12ToYV12(&procOut, &procIn);
-  //}
-  
-  //ret = BCM::DtsProcOutput(m_Device, m_OutputTimeout, &procOut);
-  
+  ret = BCM::DtsProcOutputNoCopy(m_Device, m_OutputTimeout, &procOut);
   g_OutputTimer.PunchOut();
+  
   BCM::U64 time = g_OutputTimer.GetElapsedTime();
   LOG_DEBUG("%s: OutputTimer - %llu exec / %llu interval. %d frames ready (Count: %d Time: %llu PTS: %llu Gap: %d FPS: %0.02f Status: %02x CPU: %0.02f%%)", 
     __MODULE_NAME__, g_OutputTimer.GetExecTime(), g_OutputTimer.GetIntervalTime(), m_ReadyList.Count(), m_PictureCount, time, 
-    procIn.PicInfo.timeStamp/10000, (int32_t)((int64_t)(procIn.PicInfo.timeStamp/10000) - (int64_t)time), (double)m_PictureCount/((double)time/1000.0), 
+    procOut.PicInfo.timeStamp/10000, (int32_t)((int64_t)(procOut.PicInfo.timeStamp/10000) - (int64_t)time), (double)m_PictureCount/((double)time/1000.0), 
     ret, GetRelativeUsage() * 100.0);
+
   switch (ret)
   {
     case BCM::BC_STS_SUCCESS:
-      if (procIn.PicInfo.timeStamp)
+      if (procOut.PicInfo.timeStamp)
       {
         m_PictureCount++;
-        pBuffer->SetPts(procIn.PicInfo.timeStamp);
-        memcpy(pBuffer->GetPtr(), &procIn, sizeof(BCM::BC_DTS_PROC_OUT));
+        pBuffer->SetPts(procOut.PicInfo.timeStamp);
+        memcpy(pBuffer->GetPtr(), &procOut, sizeof(BCM::BC_DTS_PROC_OUT));
         return pBuffer;
       }
       else
@@ -381,10 +362,10 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
     case BCM::BC_STS_NO_DATA:
       break;
     case BCM::BC_STS_FMT_CHANGE:
-      LOG_DEBUG("%s: Format Change Detected. Flags: 0x%08x", __MODULE_NAME__, procIn.PoutFlags); 
-      if ((procIn.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID) && (procIn.PoutFlags & BCM::BC_POUT_FLAGS_FMT_CHANGE))
+      LOG_DEBUG("%s: Format Change Detected. Flags: 0x%08x", __MODULE_NAME__, procOut.PoutFlags); 
+      if ((procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID) && (procOut.PoutFlags & BCM::BC_POUT_FLAGS_FMT_CHANGE))
       {
-        PrintFormat(procIn.PicInfo); 
+        PrintFormat(procOut.PicInfo); 
         m_OutputTimeout = 10000;
         m_PictureCount = 0;
         g_OutputTimer.Start();
@@ -398,98 +379,6 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   }  
   FreeBuffer(pBuffer); // Use it again later
   return NULL;
-}
-bool CMPCOutputThread::NV12ToYV12(BCM::BC_DTS_PROC_OUT *Vout, BCM::BC_DTS_PROC_OUT *Vin)
-{
-	BCM::U32	x,y,lDestStride=0;
-	BCM::U32	dstWidthInPixels, dstHeightInPixels;
-	BCM::U32 srcWidthInPixels, srcHeightInPixels;	
-
-	if(Vout->PoutFlags & BCM::BC_POUT_FLAGS_SIZE)// needs to be optimized.
-	{
-		if(Vout->PoutFlags & BCM::BC_POUT_FLAGS_STRIDE) 
-			lDestStride = Vout->StrideSz;
-		
-		// Use DShow provided size for now
-		dstWidthInPixels = Vout->PicInfo.width;
-		if(Vout->PoutFlags & BCM::BC_POUT_FLAGS_INTERLACED)
-			dstHeightInPixels = Vout->PicInfo.height >> 2;
-		else
-			dstHeightInPixels = Vout->PicInfo.height;
-
-		/* Check for Valid data based on the filter information */
-		if((Vin->YBuffDoneSz < (dstWidthInPixels * dstHeightInPixels / 4)) ||
-			(Vin->UVBuffDoneSz < (dstWidthInPixels * dstHeightInPixels/2 / 4)))
-		{
-			CLog::Log(LOGDEBUG, "DtsCopyYV12[%d x %d]: XFER ERROR %x %x \n",
-				dstWidthInPixels, dstHeightInPixels,
-				Vout->YBuffDoneSz, Vout->UVBuffDoneSz);
-			return FALSE;
-		}
-
-		/* Calculate the appropriate source width and height */
-		if(dstWidthInPixels > 1280) {
-			srcWidthInPixels = 1920;
-			srcHeightInPixels = dstHeightInPixels;
-		} else if(dstWidthInPixels > 720) {
-			srcWidthInPixels = 1280;
-			srcHeightInPixels = dstHeightInPixels;
-		} else {
-			srcWidthInPixels = 720;
-			srcHeightInPixels = dstHeightInPixels;
-		}
-
-    //copy luma
-    BCM::U8 *pYSrc  = Vin->Ybuff;
-    BCM::U8 *pYDest = Vout->Ybuff;;
-		for (y = dstHeightInPixels; y > 0; y--) {
-			fast_memcpy(pYDest, pYSrc, dstWidthInPixels);
-      pYSrc  += srcWidthInPixels;
-      pYDest += dstWidthInPixels + lDestStride;
-    }
-{
-    //copy chroma
-    BCM::U32 uvdoublet;
-    BCM::U32 *pUVSrc = (BCM::U32*)Vin->UVbuff;
-    BCM::U8 *pUDest = Vout->UVbuff;
-    BCM::U8 *pVDest = pUDest + ((dstWidthInPixels + lDestStride) * dstHeightInPixels/4);
-#pragma prefetch pUVSrc, pVDest, pUDest
-		for (y = dstHeightInPixels >> 1; y > 0; y--) {
-			for (x = dstWidthInPixels >> 2; x > 0; x--) {
-        uvdoublet = *pUVSrc++;
-        *pVDest++ = (BCM::U8)(uvdoublet);
-        *pVDest++ = (BCM::U8)(uvdoublet >> 16);
-        *pUDest++ = (BCM::U8)(uvdoublet >> 8 );
-        *pUDest++ = (BCM::U8)(uvdoublet >> 24);
-			}
-		}
-}
-	}
-	else
-	{
-    BCM::U8	*buff=NULL;
-    BCM::U8	*yv12buff = NULL;
-    BCM::U32 uvbase=0;
-
-		/* Y-Buff loop */
-		buff = Vin->Ybuff;
-		yv12buff = Vout->Ybuff;
-		for (BCM::U32 i = 0; i < Vin->YBuffDoneSz*4; i += 2) {
-			yv12buff[i] = buff[i];
-			yv12buff[i+1] = buff[i+1];
-		}
-		
-		/* UV-Buff loop */
-		buff = Vin->UVbuff;
-		yv12buff = Vout->UVbuff;
-		uvbase = (Vin->UVBuffDoneSz * 4/2);
-		for (BCM::U32 i = 0; i < Vin->UVBuffDoneSz*4; i += 2) {
-			yv12buff[i/2] = buff[i+1];
-			yv12buff[uvbase + (i/2)] = buff[i];
-		}
-	}
-
-	return TRUE;
 }
 
 const char* g_DtsStatusText[] = {
@@ -683,11 +572,11 @@ void CDVDVideoCodecCrystalHD::Dispose()
 
 int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
-  int ret = 0;
+  int ret = VC_BUFFER;
   g_ClientTimer.PunchIn();
 
   // Handle Input
-  if (pData)
+  if (pData && iSize > 100)
   {
     // Try to push data to the decoder input thread. We cannot return the data to the caller. 
     // It will be lost if we do not send it.
@@ -724,7 +613,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
     if (g_ClientTimer.GetTimeSincePunchIn() > 35)
     {
       CLog::Log(LOGDEBUG, "%s: Timed-out waiting for picture (Call Time: %llu, Interval %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn(), g_ClientTimer.GetIntervalTime(), m_pInputThread->GetQueueLen());
-      ret = VC_ERROR;
+      //ret = VC_ERROR;
     }
     if (ret)
       break;
@@ -757,6 +646,8 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->data[1] = procOut->UVbuff; // UV packed plane
   pDvdVideoPicture->iLineSize[0] = procOut->PicInfo.width;
   pDvdVideoPicture->iLineSize[1] = procOut->PicInfo.width;
+  CLog::Log(LOGDEBUG, "%s: procOut->Ybuff %p", __MODULE_NAME__, procOut->Ybuff);   
+
   
   pDvdVideoPicture->iRepeatPicture = 0;
   pDvdVideoPicture->iDuration = 41711.111111;
@@ -777,7 +668,7 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
 bool CDVDVideoCodecCrystalHD::ReleasePicture(DVDVideoPicture* pDvdVideoPicture)
 {
-  // Free the last provided picture buffer
+  // Free the last provided picture reference
   if (m_BusyList.Count())
   {
     m_pOutputThread->FreeBuffer(m_BusyList.Pop());

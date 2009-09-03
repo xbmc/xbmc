@@ -40,6 +40,8 @@
 #include <iomanip>
 #include <numeric>
 
+extern void* fast_memcpy(void * to, const void * from, size_t len);
+
 using namespace std;
 
 class CPulldownCorrection
@@ -716,7 +718,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   // remove any overlays that are out of time
   m_pOverlayContainer->CleanUp(min(pts, pts - m_iSubtitleDelay));
 
-  if(pSource->format == DVDVideoPicture::FMT_VDPAU)
+  if(pSource->format != DVDVideoPicture::FMT_YUV420P)
     return;
 
   // rendering spu overlay types directly on video memory costs a lot of processing power.
@@ -744,14 +746,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   }
   else
   {
-    if (pSource->format == DVDVideoPicture::FMT_YUV420P)
-    {
-      CDVDCodecUtils::CopyPicture(pDest, pSource);
-    }
-    else
-    {
-      //CDVDCodecUtils::CopyNV12Picture(pDest, pSource);
-    }
+    CDVDCodecUtils::CopyPicture(pDest, pSource);
   }
   m_pOverlayContainer->Lock();
 
@@ -993,9 +988,17 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if (index < 0)
     return EOS_DROPPED;
 
-  BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
-  g_renderManager.SetPlaneData(index, 3, pPlanes);
+  // Hack, Hack to get pict frame ref'ed as texture
+  //  this will replace the existing pointers and you will die on exit :)
+  //BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
+  //g_renderManager.SetPlaneData(index, 3, pPlanes);
+  
   ProcessOverlays(pPicture, &image, pts);
+  
+  // Copy Y
+  fast_memcpy(image.plane[0], pPicture->data[0], pPicture->iWidth * pPicture->iHeight);
+  // Copy UV
+  fast_memcpy(image.plane[1], pPicture->data[1], pPicture->iWidth * pPicture->iHeight/2);
 
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)

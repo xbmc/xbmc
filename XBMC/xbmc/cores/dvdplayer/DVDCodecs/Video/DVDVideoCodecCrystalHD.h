@@ -141,7 +141,6 @@ protected:
   CMPCDecodeBuffer* AllocBuffer();
   void AddFrame(CMPCDecodeBuffer* pBuffer);
   CMPCDecodeBuffer* GetDecoderOutput();
-  bool NV12ToYV12(BCM::BC_DTS_PROC_OUT *Vout, BCM::BC_DTS_PROC_OUT *Vin);
   
   CSyncPtrQueue<CMPCDecodeBuffer> m_FreeList;
   CSyncPtrQueue<CMPCDecodeBuffer> m_ReadyList;

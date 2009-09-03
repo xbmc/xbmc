@@ -2,6 +2,8 @@
 #include "accum.h"
 #include <string.h>
 
+extern void* fast_memcpy(void * to, const void * from, size_t len);
+
 CPayloadAccumulator::CPayloadAccumulator() :
   m_pData(NULL),
   m_DataLen(0),
@@ -54,7 +56,7 @@ bool CPayloadAccumulator::AddData(unsigned char* pData, unsigned int* bytes)
     {
       unsigned int newLen = 2 * m_BufferLen;
       unsigned char* pNewBuffer = CreateBuffer(newLen);
-      memcpy(pNewBuffer, m_pData, m_DataLen);
+      fast_memcpy(pNewBuffer, m_pData, m_DataLen);
       FreeBuffer(m_pData);
       m_pData = pNewBuffer;
       m_BufferLen = newLen;
@@ -65,7 +67,7 @@ bool CPayloadAccumulator::AddData(unsigned char* pData, unsigned int* bytes)
 
   if (inLen)
   {
-    memcpy(&m_pData[m_DataLen], pData, inLen);
+    fast_memcpy(&m_pData[m_DataLen], pData, inLen);
     m_DataLen += inLen;
     *bytes -= inLen;
   }

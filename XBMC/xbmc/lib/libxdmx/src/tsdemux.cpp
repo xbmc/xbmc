@@ -11,6 +11,8 @@
 #define __TS_MODULE__ "Xdmx Transport Stream Demux"
 
 #define TS_MAX_PIDS 0x2000
+
+extern void* fast_memcpy(void * to, const void * from, size_t len);
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CTSFilter : public IPacketFilter
@@ -260,7 +262,7 @@ void CTSDescriptor::SetData(unsigned char* pData, unsigned int len)
     delete[] m_pRawData;
   m_pRawData = new unsigned char[len];
   m_RawDataLen = len;
-  memcpy(m_pRawData, pData, len);
+  fast_memcpy(m_pRawData, pData, len);
 }
 
 const unsigned char* CTSDescriptor::GetData()
