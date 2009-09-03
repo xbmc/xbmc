@@ -32,6 +32,8 @@
 #include "FileItem.h"
 #include "Album.h"
 #include "Artist.h"
+#include "GUISettings.h"
+
 #include <vector>
 
 using namespace DIRECTORY;

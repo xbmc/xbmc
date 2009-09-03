@@ -33,6 +33,7 @@
 #include "FileSystem/FileCurl.h"
 #include "FileItem.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 using namespace XFILE;
 

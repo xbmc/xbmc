@@ -13,6 +13,7 @@
 #include <math.h>
 
 #include "Settings.h"
+#include "GUISettings.h"
 #include "GUITextLayout.h"
 #include "karaokelyricstext.h"
 #include "Util.h"

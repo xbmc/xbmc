@@ -37,6 +37,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 

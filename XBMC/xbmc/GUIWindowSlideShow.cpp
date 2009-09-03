@@ -32,6 +32,7 @@
 #include "GUIDialogPictureInfo.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "FileItem.h"
 #include "Texture.h"
 #include "WindowingFactory.h"

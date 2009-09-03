@@ -11,6 +11,8 @@
 
 /********************************* Includes ***********************************/
 
+#undef min
+#undef max
 #include "stdafx.h"
 #include "XBMCweb.h"
 #include "Application.h"
@@ -26,6 +28,7 @@
 #include "MusicInfoTag.h"
 #include "FileItem.h"
 #include "PlayList.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace DIRECTORY;

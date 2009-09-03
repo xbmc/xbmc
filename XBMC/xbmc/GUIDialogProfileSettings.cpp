@@ -37,6 +37,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "GUISettings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

@@ -46,6 +46,7 @@
 #include "FileItem.h"
 #include "Application.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

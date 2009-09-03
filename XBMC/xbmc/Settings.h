@@ -39,10 +39,11 @@
 #include "settings/VideoSettings.h"
 #include "StringUtils.h"
 #include "AdvancedSettings.h"
-#include "GUISettings.h"
 #include "Profile.h"
 #include "MediaSource.h"
 #include "ViewState.h"
+#include "Resolution.h"
+#include "GraphicContext.h" //TODO: only due to VIEW_TYPE
 
 #include <vector>
 #include <map>
@@ -97,6 +98,10 @@ struct VOICE_MASK {
   float robotic;
   float whisper;
 };
+
+class CGUISettings;
+class TiXmlElement;
+class TiXmlNode;
 
 class CSettings
 {

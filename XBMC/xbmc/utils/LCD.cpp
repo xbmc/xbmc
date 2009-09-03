@@ -21,8 +21,9 @@
 
 #include "stdafx.h"
 #include "LCD.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "AdvancedSettings.h"
+#include "Settings.h"
 
 using namespace std;
 

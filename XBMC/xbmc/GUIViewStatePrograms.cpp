@@ -24,7 +24,7 @@
 #include "GUIBaseContainer.h"
 #include "FileItem.h"
 #include "ViewState.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "Util.h"

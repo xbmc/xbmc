@@ -31,6 +31,7 @@
 #include "MathUtils.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "FrameBufferObject.h"
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"

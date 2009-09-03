@@ -27,6 +27,7 @@
 #include "GUIDialogMusicScan.h"
 #include "KeyboardStat.h"
 #include "MouseStat.h"
+#include "GUISettings.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"

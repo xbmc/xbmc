@@ -37,6 +37,7 @@
 #include "utils/LabelFormatter.h"
 #include "GUIDialogProgress.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 #include "GUIImage.h"
 #include "GUIMultiImage.h"

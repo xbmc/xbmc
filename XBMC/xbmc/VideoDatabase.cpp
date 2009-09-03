@@ -38,6 +38,7 @@
 #include "GUIDialogYesNo.h"
 #include "FileItem.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace dbiplus;

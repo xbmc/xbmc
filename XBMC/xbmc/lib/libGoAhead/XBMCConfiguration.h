@@ -1,5 +1,10 @@
 #pragma once
 
+#undef min
+#undef max
+#include <algorithm>
+#include "tinyXML/tinyxml.h"
+
 typedef char char_t;
 typedef struct websRec *webs_t;
 

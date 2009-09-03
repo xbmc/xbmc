@@ -26,6 +26,7 @@
 #include "utils/GUIInfoManager.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "include.h"
 #include "WindowingFactory.h"
 

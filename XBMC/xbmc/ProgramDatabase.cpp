@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "GUIWindowFileManager.h"
 #include "FileItem.h"
+#include "GUISettings.h"
 
 using namespace XFILE;
 

@@ -53,6 +53,7 @@
 #include "FileSystem/File.h"
 #include "MediaManager.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace XFILE;
