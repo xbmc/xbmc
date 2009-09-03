@@ -28,27 +28,27 @@
 CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
 {
-  // TODO: Tegra
+  // TODO: OpenGLES
 }
 
 void CGUITextureGLES::Begin()
 {
-  // TODO: Tegra
+  // TODO: OpenGLES
 }
 
 void CGUITextureGLES::End()
 {
-  // TODO: Tegra
+  // TODO: OpenGLES
 }
 
 void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
 {
-  // TODO: Tegra
+  // TODO: OpenGLES
 }
 
 void CGUITextureGLES::DrawQuad(const CRect &rect, DWORD color)
 {
-  // TODO: Tegra 
+  // TODO: OpenGLES 
 }
 
 #endif
