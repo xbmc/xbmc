@@ -12,12 +12,8 @@
 #include "GraphicContext.h"
 
 class CBaseTexture;
-namespace Surface { class CSurface; }
 namespace Shaders { class BaseYUV2RGBShader; }
 namespace Shaders { class BaseVideoFilterShader; }
-
-using namespace Surface;
-using namespace Shaders;
 
 #define NUM_BUFFERS 3
 
