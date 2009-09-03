@@ -301,6 +301,7 @@ void CGUIWindowWeather::SetProperties()
 
 void CGUIWindowWeather::CallPlugin()
 {
+#ifdef HAS_PYTHON
   if (!g_guiSettings.GetString("weather.plugin").IsEmpty())
   {
     // create the full path to the plugin
@@ -333,4 +334,5 @@ void CGUIWindowWeather::CallPlugin()
 
     CLog::Log(LOGDEBUG, "%s - Weather plugin called: %s (%s)", __FUNCTION__, argv[0], argv[1]);
   }
+#endif
 }

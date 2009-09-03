@@ -1735,11 +1735,13 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
+#ifdef HAS_DVD_PLAYER
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
   CFileItem item("dvd://1", false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
   g_application.PlayFile(item);
+#endif
 }
 
 CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
