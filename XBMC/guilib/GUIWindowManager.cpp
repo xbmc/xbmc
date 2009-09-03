@@ -30,10 +30,6 @@
 #include "GUISettings.h"
 #include "Settings.h"
 
-#if defined(WIN32) && !defined(HAS_GL)
-#include "../xbmc/Win32/XBMC_PC.h"
-#endif
-
 using namespace std;
 
 CGUIWindowManager m_gWindowManager;
@@ -557,13 +553,6 @@ void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
       m_pCallback->FrameMove();
     }
     m_pCallback->Render();
-#if defined(WIN32) && !defined(HAS_SDL)
-    /*
-    extern CXBMC_PC *g_xbmcPC;
-    g_xbmcPC->ProcessMessage(NULL);
-    */
-    Sleep(0);
-#endif
   }
 }
 
