@@ -24,6 +24,7 @@
 #include "Settings.h"
 #include <initguid.h>
 #include <Mmreg.h>
+#include "SingleLock.h"
 
 #pragma comment(lib, "dxguid.lib")
 

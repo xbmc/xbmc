@@ -25,6 +25,7 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlay.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "../../Settings.h"
+#include "SingleLock.h"
 #ifdef HAS_GL
 #include "OverlayRendererGL.h"
 #endif

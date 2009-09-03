@@ -28,6 +28,8 @@
 #include "Settings.h"
 #include "Texture.h"
 #include "WindowingFactory.h"
+#include "AdvancedSettings.h"
+#include "SingleLock.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
