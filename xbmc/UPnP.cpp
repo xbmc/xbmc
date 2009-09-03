@@ -47,6 +47,7 @@
 #include "FileSystem/Directory.h"
 #include "URL.h"
 #include "GUISettings.h"
+#include "Settings.h"
 #include "FileItem.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"

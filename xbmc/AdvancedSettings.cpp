@@ -29,6 +29,7 @@
 #include "LangCodeExpander.h"
 #include "Util.h"
 #include "GUISettings.h"
+#include "Settings.h"
 
 using namespace XFILE;
 

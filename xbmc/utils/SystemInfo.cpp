@@ -32,6 +32,8 @@
 #include "Application.h"
 #include "GraphicContext.h"
 #include "WindowingFactory.h"
+#include "Settings.h"
+
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()

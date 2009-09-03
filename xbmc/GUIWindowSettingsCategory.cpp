@@ -94,6 +94,7 @@
 #include <map>
 #include "ScriptSettings.h"
 #include "GUIDialogPluginSettings.h"
+#include "Settings.h"
 #include "AdvancedSettings.h"
 #include "MouseStat.h"
 
