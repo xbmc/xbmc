@@ -187,7 +187,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
+				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
