@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 
+#include "AutoPtrHandle.h"
 #include "FileCache.h"
 #include "utils/Thread.h"
 #include "File.h"

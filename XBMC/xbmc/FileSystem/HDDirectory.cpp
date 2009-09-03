@@ -28,6 +28,7 @@
 #include "URL.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "AutoPtrHandle.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)

@@ -35,6 +35,7 @@
 #include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "AdvancedSettings.h"
+#include "AutoPtrHandle.h"
 #include "ExternalPlayer/ExternalPlayer.h"
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
