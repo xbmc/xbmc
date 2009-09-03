@@ -143,7 +143,6 @@ void GUIFontManager::ReloadTTFFonts(void)
   {
     CGUIFont* font = m_vecFonts[i];
     OrigFontInfo fontInfo = m_vecFontInfo[i];
-    CGUIFontTTFBase* currentFontTTF = font->GetFont();
 
     float aspect = fontInfo.aspect;
     int iSize = fontInfo.size;
