@@ -27,8 +27,6 @@
 #include "RenderSystem.h"
 #include <vector>
 
-using namespace std;
-
 class CRenderSystemDX : public CRenderSystemBase
 {
 public:
@@ -96,7 +94,7 @@ protected:
   bool m_bFullScreenDevice;
   HRESULT m_nDeviceStatus;
 
-  vector<ID3DXEffect*> m_vecEffects;
+  std::vector<ID3DXEffect*> m_vecEffects;
 
   int        m_iVSyncMode;
 };
