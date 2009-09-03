@@ -47,6 +47,7 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;

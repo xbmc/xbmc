@@ -46,6 +46,7 @@
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;

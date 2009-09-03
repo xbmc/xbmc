@@ -29,6 +29,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "StringUtils.h"
 
 extern "C" {
 #include "lib/libcmyth/cmyth.h"

@@ -23,6 +23,7 @@
 #include "PlayListM3U.h"
 #include "FileSystem/File.h"
 #include "Util.h"
+#include "StringUtils.h"
 #include "utils/RegExp.h"
 #ifndef _LINUX
 #include "cores/dllloader/exports/emu_msvcrt.h"

@@ -26,6 +26,7 @@
 #include "Util.h"
 #include "FileCurl.h"
 #include "FileItem.h"
+#include "StringUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

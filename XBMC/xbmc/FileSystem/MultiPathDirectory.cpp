@@ -28,6 +28,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;

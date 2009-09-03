@@ -31,6 +31,7 @@
 #include "dll_tracker.h" // for python unload hack
 #include "FileSystem/File.h"
 #include "Util.h"
+#include "StringUtils.h"
 
 #define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 

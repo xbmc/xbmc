@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "FileItem.h"
+#include "StringUtils.h"
 #include "Util.h"
 #include "Picture.h"
 #include "PlayListFactory.h"

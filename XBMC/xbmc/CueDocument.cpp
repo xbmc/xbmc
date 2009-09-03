@@ -56,6 +56,7 @@
 #include "stdafx.h"
 #include "CueDocument.h"
 #include "Util.h"
+#include "StringUtils.h"
 
 using namespace std;
 

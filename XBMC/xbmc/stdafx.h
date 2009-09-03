@@ -39,7 +39,6 @@
 #include <memory>
 #include <queue>
 #include "StdString.h"
-#include "StringUtils.h"
 
 // guilib internal
 #include "LocalizeStrings.h"

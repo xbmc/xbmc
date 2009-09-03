@@ -27,6 +27,7 @@
 #include "DateTime.h"
 #include "FileItem.h"
 #include "URL.h"
+#include "StringUtils.h"
 
 extern "C"
 {

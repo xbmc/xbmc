@@ -24,6 +24,7 @@
 #ifdef HAS_DVD_DRIVE
 
 #include "DetectDVDType.h"
+#include "StringUtils.h"
 #include "FileSystem/cdioSupport.h"
 #include "FileSystem/iso9660.h"
 #ifdef _LINUX
