@@ -249,10 +249,17 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           {
             iOff = pArc->Tell();
             int Size=pArc->ReadHeader();
+            int Type=pArc->GetHeaderType();
           
-            if (pArc->GetHeaderType() == ENDARC_HEAD)
+            if (Type == ENDARC_HEAD)
               break;
 
+            if (Type != FILE_HEAD)
+            {
+              pArc->SeekToNext();
+              continue;
+            }
+            
             bool Repeat=false;           
             if (!pExtract->ExtractCurrentFile(pCmd.get(),*pArc,Size,Repeat))
             {
