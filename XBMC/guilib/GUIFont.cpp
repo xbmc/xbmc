@@ -220,7 +220,7 @@ bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, DWORD alignme
   if (alignment & XBFONT_CENTER_Y)
     y -= m_font->GetLineHeight(m_lineSpacing);
 
-  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f));
+  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f) * g_graphicsContext.GetGUIScaleY());
 }
 
 float CGUIFont::GetTextWidth( const std::vector<DWORD> &text )
