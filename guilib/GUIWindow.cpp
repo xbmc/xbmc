@@ -645,6 +645,11 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
             control->OnMessage(msg);
           }
         }
+        if (message.GetParam1() == GUI_MSG_INVALIDATE)
+        {
+          SetInvalid();
+          return true;
+        }
       }
     }
     break;

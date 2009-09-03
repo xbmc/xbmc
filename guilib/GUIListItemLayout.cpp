@@ -79,6 +79,7 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
     // let's use a static cast with a virtual base function
     CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : new CFileItem(*item);
     m_isPlaying = g_infoManager.GetBool(LISTITEM_ISPLAYING, parentID, item);
+    m_group.SetInvalid();
     m_group.UpdateInfo(fileItem);
     m_invalidated = false;
     // delete our temporary fileitem

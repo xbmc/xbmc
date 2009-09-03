@@ -165,7 +165,7 @@ void GUIFontManager::ReloadTTFFonts(void)
       if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect))
       {
         delete pFontFile;
-        // font could not b loaded
+        // font could not be loaded
         CLog::Log(LOGERROR, "Couldn't re-load font file:%s", strPath.c_str());
         return;
       }
@@ -175,6 +175,8 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     font->SetFont(pFontFile);
   }
+  // send a message to our controls telling them they need to refresh.
+  g_graphicsContext.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_INVALIDATE);
 }
 
 void GUIFontManager::Unload(const CStdString& strFontName)
