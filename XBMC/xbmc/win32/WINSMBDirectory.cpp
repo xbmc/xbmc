@@ -27,6 +27,7 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "WIN32Util.h"
+#include "AutoPtrHandle.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
