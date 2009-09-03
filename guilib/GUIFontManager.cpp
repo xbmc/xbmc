@@ -162,10 +162,7 @@ void GUIFontManager::ReloadTTFFonts(void)
     if (!pFontFile)
     {
       pFontFile = new CGUIFontTTF(TTFfontName);
-      bool bFontLoaded = pFontFile->Load(strPath, newSize, aspect);
-      pFontFile->CopyReferenceCountFrom(*currentFontTTF);
-
-      if (!bFontLoaded)
+      if (!pFontFile || !pFontFile->Load(strPath, newSize, aspect))
       {
         delete pFontFile;
         // font could not b loaded

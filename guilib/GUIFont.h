@@ -120,13 +120,10 @@ public:
 
   CGUIFontTTFBase* GetFont() const
   {
-     return m_font;
+    return m_font;
   }
 
-  void SetFont(CGUIFontTTFBase* font)
-  {
-     m_font = font;
-  }
+  void SetFont(CGUIFontTTFBase* font);
 
 protected:
   CStdString m_strFontName;
