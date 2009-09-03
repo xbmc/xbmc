@@ -171,9 +171,9 @@ void CGUITextLayout::RenderOutline(float x, float y, DWORD color, DWORD outlineC
   m_font->End();
 }
 
-bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceLTRReadingOrder /*= false*/)
+bool CGUITextLayout::Update(const CStdString &text, float maxWidth, bool forceUpdate /*= false*/, bool forceLTRReadingOrder /*= false*/)
 {
-  if (text == m_lastText)
+  if (text == m_lastText && !forceUpdate)
     return false;
 
   // convert to utf16
