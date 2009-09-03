@@ -31,6 +31,7 @@
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "Util.h"
+#include "GUISettings.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
