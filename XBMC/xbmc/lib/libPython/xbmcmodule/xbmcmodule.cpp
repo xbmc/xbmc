@@ -60,6 +60,7 @@
 #include "GUISettings.h"
 #include "TextureManager.h"
 #include "language.h"
+#include "LangInfo.h"
 #include "PythonSettings.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
