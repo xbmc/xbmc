@@ -132,13 +132,15 @@ CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 
   LPDIRECT3DTEXTURE9 newTexture = pNewTexture->GetTextureObject();
 
+  if(newTexture == NULL)
+    return NULL;
+
   // correct texture sizes
   D3DSURFACE_DESC desc;
   newTexture->GetLevelDesc(0, &desc);
   m_textureHeight = desc.Height;
   m_textureWidth = desc.Width;
 
-  // clear texture, doesn't cost much
   D3DLOCKED_RECT rect;
   newTexture->LockRect(0, &rect, NULL, 0);
   memset(rect.pBits, 0, rect.Pitch * m_textureHeight);

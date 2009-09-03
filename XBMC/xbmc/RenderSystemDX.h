@@ -25,6 +25,9 @@
 #pragma once
 
 #include "RenderSystem.h"
+#include <vector>
+
+using namespace std;
 
 class CRenderSystemDX : public CRenderSystemBase
 {
@@ -70,10 +73,14 @@ public:
   virtual LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
   HRESULT GetDeviceStatus() { return m_nDeviceStatus; }
+  virtual bool CreateEffect(CStdString& name, ID3DXEffect** pEffect);
+  virtual void ReleaseEffect(ID3DXEffect* pEffect);
 
 protected:
   virtual bool CreateResources();
   virtual void DeleteResources();
+  virtual void OnDeviceLost();
+  virtual void OnDeviceReset();
   virtual void SetVSyncImpl(bool enable){};
   virtual bool PresentRenderImpl();
   void CalculateMaxTexturesize();
@@ -88,6 +95,8 @@ protected:
   unsigned int m_nBackBufferHeight;
   bool m_bFullScreenDevice;
   HRESULT m_nDeviceStatus;
+
+  vector<ID3DXEffect*> m_vecEffects;
 
   int        m_iVSyncMode;
 };

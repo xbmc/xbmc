@@ -30,6 +30,7 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/SpecialProtocol.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 
@@ -39,6 +40,7 @@ GUIFontManager::GUIFontManager(void)
 {
   m_skinResolution=RES_INVALID;
   m_fontsetUnicode=false;
+  m_bFontsNeedReloading = false;
 }
 
 GUIFontManager::~GUIFontManager(void)
@@ -137,6 +139,13 @@ void GUIFontManager::ReloadTTFFonts(void)
   if (!m_vecFonts.size())
     return;   // we haven't even loaded fonts in yet
 
+  // check if the device is ready
+  if(g_Windowing.GetDeviceStatus() != S_OK)
+  {
+    m_bFontsNeedReloading = true;
+    return;
+  }
+
   g_graphicsContext.SetScalingResolution(m_skinResolution, 0, 0, true);
 
   for (unsigned int i = 0; i < m_vecFonts.size(); i++)
@@ -174,6 +183,8 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     font->SetFont(pFontFile);
   }
+
+  m_bFontsNeedReloading = false;
   // send a message to our controls telling them they need to refresh.
   g_graphicsContext.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_INVALIDATE);
 }

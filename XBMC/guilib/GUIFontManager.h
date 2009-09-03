@@ -64,6 +64,7 @@ public:
   bool IsFontSetUnicode() { return m_fontsetUnicode; }
   bool IsFontSetUnicode(const CStdString& strFontSet);
   bool GetFirstFontSetUnicode(CStdString& strFontSet);
+  bool FontsNeedReloading() { return m_bFontsNeedReloading; }
 
   void ReloadTTFFonts(void);
 
@@ -77,6 +78,7 @@ protected:
   std::vector<OrigFontInfo> m_vecFontInfo;
   bool m_fontsetUnicode;
   RESOLUTION m_skinResolution;
+  bool m_bFontsNeedReloading;
 };
 
 /*!
