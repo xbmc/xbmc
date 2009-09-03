@@ -27,6 +27,7 @@
 #include "Util.h"
 #include "Settings.h"
 #include "Texture.h"
+#include "WindowingFactory.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -909,12 +910,10 @@ unsigned int CWinRenderer::PreInit()
   "}"
   "}";
 
-  hr = D3DXCreateEffect(m_pD3DDevice, pStrEffect, pStrEffect.length(), NULL, NULL, 0, NULL, &m_pYUV2RGBEffect, NULL );
-
-  if(hr != S_OK)
+  if(!g_Windowing.CreateEffect(pStrEffect, &m_pYUV2RGBEffect))
   {
-      CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s", pStrEffect);
-      return 1;
+    CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s failed", pStrEffect);
+    return 1;
   }
 
   return 0;
@@ -931,7 +930,8 @@ void CWinRenderer::UnInit()
     DeleteOSDTextures(i);
   }
 
-  SAFE_RELEASE(m_pYUV2RGBEffect);
+  g_Windowing.ReleaseEffect(m_pYUV2RGBEffect);
+  m_pYUV2RGBEffect = NULL;
 }
 
 void CWinRenderer::Render(DWORD flags)
@@ -1215,14 +1215,14 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     }
   };
 
-
   m_pYUV2RGBEffect->SetTechnique( "YUV2RGB_T" );
   m_pYUV2RGBEffect->SetTexture( "g_YTexture",  m_YUVTexture[index][0] ) ;
   m_pYUV2RGBEffect->SetTexture( "g_UTexture",  m_YUVTexture[index][1] ) ;
   m_pYUV2RGBEffect->SetTexture( "g_VTexture",  m_YUVTexture[index][2] ) ;
 
   UINT cPasses, iPass;
-  m_pYUV2RGBEffect->Begin( &cPasses, 0 );
+  if(FAILED (m_pYUV2RGBEffect->Begin( &cPasses, 0 )))
+    return;
 
   for( iPass = 0; iPass < cPasses; iPass++ )
   {
@@ -1232,7 +1232,7 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     m_pD3DDevice->SetTexture(0, NULL);
     m_pD3DDevice->SetTexture(1, NULL);
     m_pD3DDevice->SetTexture(2, NULL);
-
+  
     m_pYUV2RGBEffect->EndPass() ;
   }
 

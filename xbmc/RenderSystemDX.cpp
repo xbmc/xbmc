@@ -79,11 +79,9 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height)
   m_D3DPP.BackBufferWidth = m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight = m_nBackBufferHeight;
 
-  if(m_pD3DDevice->Reset(&m_D3DPP) == D3DERR_INVALIDCALL)
-  {
-    return false;
-  }
-   
+  OnDeviceLost();
+  OnDeviceReset();
+  
   return true;
 }
 
@@ -110,6 +108,26 @@ void CRenderSystemDX::DeleteResources()
   
 }
 
+void CRenderSystemDX::OnDeviceLost()
+{
+  // notify all objects
+  for(unsigned int i = 0; i < m_vecEffects.size(); i++)
+  {
+    m_vecEffects[i]->OnLostDevice();
+  }
+}
+
+void CRenderSystemDX::OnDeviceReset()
+{
+  // reset all required resources
+  m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
+
+  for(unsigned int i = 0; i < m_vecEffects.size(); i++)
+  {
+    m_vecEffects[i]->OnResetDevice();
+  }
+}
+
 bool CRenderSystemDX::CreateDevice()
 {
   // Code based on Ogre 3D engine
@@ -129,7 +147,7 @@ bool CRenderSystemDX::CreateDevice()
 #endif
 
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
-  m_D3DPP.Windowed					= !m_bFullScreenDevice;
+  m_D3DPP.Windowed					= true;
   m_D3DPP.SwapEffect				= D3DSWAPEFFECT_DISCARD;
   m_D3DPP.BackBufferCount			= 1;
   m_D3DPP.EnableAutoDepthStencil	= true;
@@ -245,14 +263,14 @@ bool CRenderSystemDX::BeginRender()
     if( m_nDeviceStatus == D3DERR_DEVICELOST )
     {
       CLog::Log(LOGINFO, "D3DERR_DEVICELOST");
+      OnDeviceLost();
       return false;
     }
 
     // The device has been lost but it can be reset at this time. 
     if( m_nDeviceStatus == D3DERR_DEVICENOTRESET )
     {
-      m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
-
+      OnDeviceReset();
       if( FAILED(m_nDeviceStatus ) )
       {
         CLog::Log(LOGINFO, "m_pD3DDevice->Reset falied");
@@ -263,7 +281,7 @@ bool CRenderSystemDX::BeginRender()
 
   if(FAILED (m_pD3DDevice->BeginScene()))
   {
-    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() falied");
+    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() failed");
     return false;
   }
 
@@ -492,6 +510,38 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
   newviewport.Width = (DWORD)(viewPort.x2 - viewPort.x1);
   newviewport.Height = (DWORD)(viewPort.y2 - viewPort.y1);
   m_pD3DDevice->SetViewport(&newviewport);
+}
+
+
+// The rendering system need to knows about effects created since they require
+// reseting when the device is lost
+bool CRenderSystemDX::CreateEffect(CStdString& name, ID3DXEffect** pEffect)
+{
+  HRESULT hr;
+
+  hr = D3DXCreateEffect(m_pD3DDevice, name, name.length(), NULL, NULL, 0, NULL, pEffect, NULL );
+
+  if(hr == S_OK)
+  {
+    m_vecEffects.push_back(*pEffect);
+    return true;
+  }
+
+  return false;
+}
+
+void CRenderSystemDX::ReleaseEffect(ID3DXEffect* pEffect)
+{
+  for (vector<ID3DXEffect *>::iterator iter = m_vecEffects.begin(); 
+    iter != m_vecEffects.end();
+    ++iter)
+  {
+    if(*iter == pEffect)
+    {
+      m_vecEffects.erase(iter);
+      return;
+    }
+  }
 }
 
 #endif

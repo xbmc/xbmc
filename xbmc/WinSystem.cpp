@@ -28,8 +28,8 @@ CWinSystemBase::CWinSystemBase()
 {
   m_nWidth = 0;
   m_nHeight = 0;
-  m_nTop = -1;
-  m_nLeft = -1;
+  m_nTop = 0;
+  m_nLeft = 0;
   m_bWindowCreated = false;
   m_bFullScreen = false;
   m_nScreen = 0;

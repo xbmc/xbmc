@@ -58,6 +58,8 @@ public:
 
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();
+
+  HRESULT GetDeviceStatus() { return S_OK; }
   
   virtual bool TestRender();
   

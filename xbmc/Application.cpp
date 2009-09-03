@@ -425,6 +425,8 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       {
         if (g_application.m_bInitializing)
           return false;
+        if(g_advancedSettings.m_fullScreen)
+          return false;
         RESOLUTION res = RES_WINDOW;
         g_settings.m_ResInfo[res].iWidth = newEvent.resize.w;
         g_settings.m_ResInfo[res].iHeight = newEvent.resize.h;
@@ -2313,7 +2315,14 @@ void CApplication::Render()
     lastFrameTime = timeGetTime();
   }
   g_graphicsContext.Lock();
-  g_Windowing.BeginRender();
+
+  // check if we need font reloading
+  if(g_fontManager.FontsNeedReloading())
+    g_fontManager.ReloadTTFFonts();
+
+  if(!g_Windowing.BeginRender())
+    return;
+
   RenderNoPresent();
   g_Windowing.EndRender();
   g_graphicsContext.Flip();
