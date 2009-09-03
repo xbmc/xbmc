@@ -27,6 +27,8 @@
 #include "Settings.h"
 #include "RenderSystemDX.h"
 
+using namespace std;
+
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_DIRECTX;
