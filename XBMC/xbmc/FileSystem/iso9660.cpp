@@ -52,6 +52,13 @@ class iso9660 m_isoReader;
 
 using namespace std;
 
+#ifndef HAS_DVD_DRIVE
+extern "C"
+{
+  void cdio_warn(const char* msg, ...) { CLog::Log(LOGWARNING, msg); } 
+}
+#endif
+
 //******************************************************************************************************************
 const string iso9660::ParseName(struct iso9660_Directory& isodir)
 {

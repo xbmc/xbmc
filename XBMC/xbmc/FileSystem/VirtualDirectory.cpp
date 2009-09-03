@@ -229,6 +229,7 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
     CUtil::AutoDetectionGetSource(shares);
   }
 
+#ifdef HAS_DVD_DRIVE
   // and update our dvd share
   for (unsigned int i = 0; i < shares.size(); ++i)
   {
@@ -244,6 +245,7 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
         share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
     }
   }
+#endif
 }
 }
 
