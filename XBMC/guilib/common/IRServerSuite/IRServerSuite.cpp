@@ -24,7 +24,7 @@
 #include "IrssMessage.h"
 #include "ButtonTranslator.h"
 #include "log.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 #define IRSS_PORT 24000
 

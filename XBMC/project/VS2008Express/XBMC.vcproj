@@ -3538,6 +3538,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\Bookmark.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\Bookmark.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\Database.cpp"
 					>
 				</File>

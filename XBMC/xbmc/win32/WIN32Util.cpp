@@ -35,6 +35,7 @@
 #endif
 #include "MediaManager.h"
 #include "WindowingFactory.h"
+#include "LocalizeStrings.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
