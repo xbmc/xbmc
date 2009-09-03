@@ -135,9 +135,24 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   glVertex3f(x[3], y[3], z[3]);
 }
 
-void CGUITextureGL::DrawQuad(const CRect &rect, DWORD color)
+void CGUITextureGL::DrawQuad(const CRect &rect, DWORD color, CBaseTexture *texture, const CRect *texCoords)
 {
-  glDisable(GL_TEXTURE_2D);
+  if (texture)
+  {
+    glActiveTextureARB(GL_TEXTURE0_ARB);
+    texture->LoadToGPU();
+    glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+  }
+  else
+    glDisable(GL_TEXTURE_2D);
+
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -155,16 +170,19 @@ void CGUITextureGL::DrawQuad(const CRect &rect, DWORD color)
 
   glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
 
-  glTexCoord2f(0.0f, 0.0f);
+  CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
+  glTexCoord2f(coords.x1, coords.y1);
   glVertex3f(rect.x1, rect.y1, 0);
-  glTexCoord2f(1.0f, 0.0f);
+  glTexCoord2f(coords.x2, coords.y1);
   glVertex3f(rect.x2, rect.y1, 0);
-  glTexCoord2f(1.0f, 1.0f);
+  glTexCoord2f(coords.x2, coords.y2);
   glVertex3f(rect.x2, rect.y2, 0);
-  glTexCoord2f(0.0f, 1.0f);
+  glTexCoord2f(coords.x1, coords.y2);
   glVertex3f(rect.x1, rect.y2, 0);
 
   glEnd();
+  if (texture)
+    glDisable(GL_TEXTURE_2D);
 }
 
 #endif

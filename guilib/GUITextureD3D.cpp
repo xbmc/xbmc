@@ -167,4 +167,59 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 }
 
+void CGUITextureD3D::DrawQuad(const CRect &rect, DWORD color, CBaseTexture *texture, const CRect *texCoords)
+{
+  struct CUSTOMVERTEX {
+      FLOAT x, y, z;
+      DWORD color;
+      FLOAT tu, tv;   // Texture coordinates
+      FLOAT tu2, tv2;
+  };
+
+  LPDIRECT3DDEVICE9 p3DDevice = g_Windowing.Get3DDevice();
+
+  if (texture)
+  {
+    texture->LoadToGPU();
+    // Set state to render the image
+    p3DDevice->SetTexture( 0, texture->GetTextureObject() );
+    p3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    p3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    p3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+    p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+    p3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+    p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+    p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+    p3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+    p3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+    p3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+  }
+
+  p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
+  p3DDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
+  p3DDevice->SetRenderState( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL );
+  p3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+  p3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
+  p3DDevice->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+  p3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+  p3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+  p3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  p3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+  p3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+  p3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
+
+  p3DDevice->SetFVF( D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 );
+
+  CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
+  CUSTOMVERTEX verts[4] = {
+    { rect.x1 - 0.5f, rect.y1 - 0.5f, 0, color, coords.x1, coords.y1, 0, 0 },
+    { rect.x2 - 0.5f, rect.y1 - 0.5f, 0, color, coords.x2, coords.y1, 0, 0 },
+    { rect.x2 - 0.5f, rect.y2 - 0.5f, 0, color, coords.x2, coords.y2, 0, 0 },
+    { rect.x1 - 0.5f, rect.y2 - 0.5f, 0, color, coords.x1, coords.y2, 0, 0 },
+  };
+  p3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+
+  p3DDevice->SetTexture( 0, NULL );
+}
+
 #endif
