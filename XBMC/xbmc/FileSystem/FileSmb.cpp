@@ -36,7 +36,7 @@
 #include "../utils/Network.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
-
+#include "utils/SingleLock.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

@@ -19,6 +19,8 @@
 #include "stdafx.h"
 #include "SAPFile.h"
 #include "SAPDirectory.h"
+#include "utils/SingleLock.h"
+
 #include <sys/stat.h>
 #include <vector>
 

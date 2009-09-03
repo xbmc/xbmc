@@ -39,6 +39,8 @@ extern "C" {
 #endif
 }
 
+#include "utils/SingleLock.h"
+
 class DllAvCodecInterface
 {
 public:

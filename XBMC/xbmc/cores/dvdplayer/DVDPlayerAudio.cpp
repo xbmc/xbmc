@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "utils/SingleLock.h"
 #include "DVDPlayerAudio.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"
 #include "DVDCodecs/DVDCodecs.h"
@@ -27,6 +28,7 @@
 #include "DVDPerformanceCounter.h"
 #include "GUISettings.h"
 #include "VideoReferenceClock.h"
+
 #include <sstream>
 #include <iomanip>
 

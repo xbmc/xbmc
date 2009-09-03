@@ -28,6 +28,7 @@
 #include "FileItem.h"
 #include "URL.h"
 #include "StringUtils.h"
+#include "utils/SingleLock.h"
 
 extern "C"
 {

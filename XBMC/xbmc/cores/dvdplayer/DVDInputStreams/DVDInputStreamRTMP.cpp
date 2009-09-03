@@ -24,6 +24,7 @@
 #include "DVDInputStreamRTMP.h"
 #include "VideoInfoTag.h"
 #include "FileSystem/IFile.h"
+#include "utils/SingleLock.h"
 
 #ifdef _LINUX
   #include <sys/types.h>

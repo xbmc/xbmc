@@ -27,6 +27,8 @@
 #include "Socket.h"
 #include "EventClient.h"
 #include "CriticalSection.h"
+#include "SingleLock.h"
+
 #include <map>
 #include <queue>
 

@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "utils/SingleLock.h"
 #include "DVDAudio.h"
 #include "../../Util.h"
 #include "DVDClock.h"

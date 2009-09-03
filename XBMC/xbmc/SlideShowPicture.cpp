@@ -29,6 +29,7 @@
 #include "GUISettings.h"
 #include "include.h"
 #include "WindowingFactory.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 
