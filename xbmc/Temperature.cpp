@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "LocalizeStrings.h"
 #include "Temperature.h"
 
 

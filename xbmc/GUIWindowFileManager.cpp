@@ -53,6 +53,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "MouseStat.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

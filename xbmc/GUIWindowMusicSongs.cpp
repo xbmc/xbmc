@@ -33,6 +33,7 @@
 #include "MediaManager.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace AUTOPTR;
 

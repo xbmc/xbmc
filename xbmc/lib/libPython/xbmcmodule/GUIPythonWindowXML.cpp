@@ -34,6 +34,7 @@
 #include "TextureManager.h"
 #include "../XBPython.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 

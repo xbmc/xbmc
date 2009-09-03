@@ -59,6 +59,7 @@
 #include "PowerManager.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"

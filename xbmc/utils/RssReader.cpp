@@ -19,10 +19,6 @@
  *
  */
 
-// RssReader.cpp: implementation of the CRssReader class.
-//
-//////////////////////////////////////////////////////////////////////
-
 #include "stdafx.h"
 #include "RssReader.h"
 #include "utils/HTMLUtil.h"
@@ -37,6 +33,7 @@
 #include "CocoaInterface.h"
 #endif
 #include "SystemInfo.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

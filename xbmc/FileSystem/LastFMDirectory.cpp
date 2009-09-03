@@ -34,6 +34,7 @@
 #include "FileItem.h"
 #include "FileCurl.h"
 #include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

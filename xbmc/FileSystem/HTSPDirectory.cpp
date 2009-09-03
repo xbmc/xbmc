@@ -24,6 +24,7 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h"
 
 extern "C" {

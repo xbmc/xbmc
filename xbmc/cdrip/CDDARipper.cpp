@@ -42,6 +42,7 @@
 #include "FileItem.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "MediaManager.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

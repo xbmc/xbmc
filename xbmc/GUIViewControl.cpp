@@ -23,6 +23,7 @@
 #include "GUIViewControl.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 #include "utils/GUIInfoManager.h"
 
 CGUIViewControl::CGUIViewControl(void)

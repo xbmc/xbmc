@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "Util.h"
 #include "Picture.h"

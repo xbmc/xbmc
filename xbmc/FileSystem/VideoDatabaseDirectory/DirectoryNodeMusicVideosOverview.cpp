@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DirectoryNodeMusicVideosOverview.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 

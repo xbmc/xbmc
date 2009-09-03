@@ -27,6 +27,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 CGUIDialogGamepad::CGUIDialogGamepad(void)
     : CGUIDialogBoxBase(WINDOW_DIALOG_GAMEPAD, "DialogGamepad.xml")

@@ -59,6 +59,7 @@
 #include "MouseStat.h"
 #include "GUISettings.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 

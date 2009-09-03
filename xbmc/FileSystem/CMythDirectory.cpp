@@ -30,6 +30,7 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 extern "C" {
 #include "lib/libcmyth/cmyth.h"

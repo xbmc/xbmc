@@ -53,6 +53,7 @@
 #include "CocoaInterface.h"
 #endif
 #include "MediaManager.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 

@@ -28,6 +28,7 @@
 #include "MusicInfoTag.h"
 #include "FileItem.h"
 #include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 using namespace MUSIC_INFO;
 

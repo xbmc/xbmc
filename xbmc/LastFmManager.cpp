@@ -43,6 +43,7 @@
 #include "Crc32.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 
 #include <sstream>
 

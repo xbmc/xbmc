@@ -28,6 +28,7 @@
 #include "FileItem.h"
 #include "Crc32.h"
 #include "TextureManager.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

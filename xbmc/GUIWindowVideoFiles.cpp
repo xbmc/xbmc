@@ -42,6 +42,7 @@
 #include "PlayList.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

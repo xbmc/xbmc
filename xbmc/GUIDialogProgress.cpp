@@ -25,6 +25,7 @@
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 

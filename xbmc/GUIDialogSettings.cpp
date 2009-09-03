@@ -23,6 +23,7 @@
 #include "GUIDialogSettings.h"
 #include "GUIImage.h"
 #include "GUIControlGroupList.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_GROUP_LIST          5
 #define CONTROL_SETTINGS_LABEL      2

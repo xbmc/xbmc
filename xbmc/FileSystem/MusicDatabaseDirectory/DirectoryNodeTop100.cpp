@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DirectoryNodeTop100.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;

@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "LocalizeStrings.h"
 #include "MediaManager.h"
 #include "xbox/IoSupport.h"
 #include "URL.h"

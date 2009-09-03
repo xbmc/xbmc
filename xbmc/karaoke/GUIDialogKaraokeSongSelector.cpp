@@ -23,6 +23,7 @@
 #include "GUIDialogKaraokeSongSelector.h"
 #include "Application.h"
 #include "PlayList.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_LABEL_SONGNUMBER    401
 #define CONTROL_LABEL_SONGNAME      402

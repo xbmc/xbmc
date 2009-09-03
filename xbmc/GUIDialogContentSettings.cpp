@@ -31,6 +31,7 @@
 #include "utils/ScraperParser.h"
 #include "FileItem.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4

@@ -26,6 +26,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 #define FAVOURITES_LIST 450
 
