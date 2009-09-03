@@ -26,6 +26,7 @@
 #include "Crc32.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "AutoPtrHandle.h"
 
 using namespace AUTOPTR;
 using namespace dbiplus;

@@ -44,7 +44,6 @@
 #include "utils/CharsetConverter.h"
 
 #include "ApplicationMessenger.h"
-#include "AutoPtrHandle.h"
 
 // Often used
 #include "GUIUserMessages.h"

@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "AutoPtrHandle.h"
 
 using namespace AUTOPTR;
 

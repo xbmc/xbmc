@@ -34,6 +34,7 @@
 #include "FileItem.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "AutoPtrHandle.h"
 
 using namespace AUTOPTR;
 
