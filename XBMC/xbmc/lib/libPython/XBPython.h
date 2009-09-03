@@ -34,6 +34,8 @@ typedef struct {
   XBPyThread *pyThread;
 }PyElem;
 
+class LibraryLoader;
+
 typedef std::vector<PyElem> PyList;
 typedef std::vector<PVOID> PlayerCallbackList;
 typedef std::vector<LibraryLoader*> PythonExtensionLibraries;

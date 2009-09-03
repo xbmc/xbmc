@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "FileDAAP.h"
+#include "SectionLoader.h"
 #include <sys/stat.h>
 
 #include "lib/libXDAAP/private.h"
