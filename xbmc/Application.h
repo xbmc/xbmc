@@ -213,7 +213,9 @@ protected:
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
 
-
+  DWORD      m_lastActionCode;
+  CStopWatch m_lastActionTimer;
+  
   CFileItemPtr m_itemCurrentFile;
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
