@@ -69,6 +69,7 @@ CSMB::~CSMB()
 {
   Deinit();
 }
+
 void CSMB::Deinit()
 {
   CSingleLock lock(*this);
