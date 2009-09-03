@@ -26,6 +26,7 @@
 #include "IMsgSenderCallback.h"
 #include "../xbmc/utils/SingleLock.h"
 #include "../xbmc/Application.h"
+#include "../xbmc/GUISettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "WindowingFactory.h"
 #include "SkinInfo.h"

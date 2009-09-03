@@ -23,7 +23,7 @@
 #include "DirectoryNodeArtist.h"
 #include "QueryParams.h"
 #include "MusicDatabase.h"
-#include "Settings.h"
+#include "GUISettings.h"
 
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 

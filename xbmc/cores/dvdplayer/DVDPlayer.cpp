@@ -42,21 +42,22 @@
 #include "utils/GUIInfoManager.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
-#include "../../FileSystem/cdioSupport.h"
-#include "../../FileSystem/File.h"
-#include "../../Picture.h"
+#include "FileSystem/cdioSupport.h"
+#include "FileSystem/File.h"
+#include "Picture.h"
 #include "../ffmpeg/DllSwScale.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #ifdef HAS_PERFORMANCE_SAMPLE
-#include "../../xbmc/utils/PerformanceSample.h"
+#include "xbmc/utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
 #endif
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "MouseStat.h"
+#include "GUISettings.h"
 
 using namespace std;
 

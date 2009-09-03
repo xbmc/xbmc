@@ -30,6 +30,7 @@
 #include "GUIWindowManager.h"
 #include "utils/ScraperParser.h"
 #include "FileItem.h"
+#include "GUISettings.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4

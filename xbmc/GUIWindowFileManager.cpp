@@ -50,6 +50,7 @@
 #include "utils/AsyncFileCopy.h"
 #include "MediaManager.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "MouseStat.h"
 
 using namespace std;

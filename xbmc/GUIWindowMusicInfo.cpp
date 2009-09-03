@@ -37,6 +37,7 @@
 #include "FileSystem/Directory.h"
 #include "utils/AsyncFileCopy.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 using namespace XFILE;
 

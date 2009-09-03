@@ -23,7 +23,7 @@
 
 #include "GUIWindow.h"
 #include "SettingsControls.h"
-#include "Settings.h"
+#include "GUISettings.h"
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow

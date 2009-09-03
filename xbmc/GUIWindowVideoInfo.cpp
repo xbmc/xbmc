@@ -44,6 +44,7 @@
 #include "MediaManager.h"
 #include "utils/AsyncFileCopy.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace XFILE;

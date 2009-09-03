@@ -38,6 +38,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileItem.h"
 #include "ScriptSettings.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace DIRECTORY;

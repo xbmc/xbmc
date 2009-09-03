@@ -29,7 +29,7 @@
 #include "MusicInfoTag.h"
 #include "errors.h"
 #include "utils/Atomics.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "XMLUtils.h"
 #include "Application.h"
 #include "SingleLock.h"

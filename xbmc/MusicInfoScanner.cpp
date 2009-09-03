@@ -40,6 +40,7 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/File.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "FileItem.h"
 #include "Picture.h"
 

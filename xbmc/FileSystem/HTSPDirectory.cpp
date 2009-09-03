@@ -23,7 +23,7 @@
 #include "HTSPDirectory.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h"
 
 extern "C" {

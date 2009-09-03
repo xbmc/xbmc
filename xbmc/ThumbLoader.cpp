@@ -27,7 +27,7 @@
 #include "Picture.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "TextureManager.h"
 #include "VideoInfoTag.h"
 

@@ -36,6 +36,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#include "GUISettings.h"
 
 #define CONTROL_BTNVIEWASICONS      2
 #define CONTROL_BTNSORTBY           3

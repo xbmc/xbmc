@@ -24,6 +24,7 @@
 #include "PulseAudioDirectSound.h"
 #include "AudioContext.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {

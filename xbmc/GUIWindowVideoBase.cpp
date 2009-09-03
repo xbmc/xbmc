@@ -53,6 +53,7 @@
 #include "FileSystem/Directory.h"
 #include "PlayList.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"

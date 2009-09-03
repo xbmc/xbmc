@@ -34,6 +34,7 @@
 #include "FileItem.h"
 #include "SkinInfo.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace XFILE;

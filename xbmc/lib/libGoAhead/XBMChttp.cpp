@@ -41,6 +41,7 @@
 #include "PictureInfoTag.h"
 #include "FileItem.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

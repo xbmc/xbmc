@@ -27,7 +27,7 @@
 #include "GUIPassword.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
-#include "Settings.h"
+#include "GUISettings.h"
 
 #if defined(WIN32) && !defined(HAS_GL)
 #include "../xbmc/Win32/XBMC_PC.h"

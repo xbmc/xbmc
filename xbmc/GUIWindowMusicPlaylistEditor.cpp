@@ -32,6 +32,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
 #include "FileItem.h"
+#include "GUISettings.h"
 
 using namespace AUTOPTR;
 using namespace MEDIA_DETECT;

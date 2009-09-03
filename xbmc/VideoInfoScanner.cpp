@@ -34,6 +34,7 @@
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "FileItem.h"
 
 using namespace std;
