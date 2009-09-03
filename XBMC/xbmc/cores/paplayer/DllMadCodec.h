@@ -30,8 +30,8 @@
   #include <mad.h>
 #else
   #ifdef _WIN32
-    // TODO: clean this up?
-    #include "MP3Codec/libmad-0.15.1b/msvc++/mad.h"
+    // TODO: clean this up!
+    #include "cores/dvdplayer/Codecs/libmad/mad.h"
   #else
     #include "mad.h"
   #endif
