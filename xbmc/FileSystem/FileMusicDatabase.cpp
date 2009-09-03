@@ -24,6 +24,7 @@
 #include "MusicDatabase.h"
 #include "Util.h"
 #include "URL.h"
+#include "StringUtils.h"
 
 #include <sys/stat.h>
 

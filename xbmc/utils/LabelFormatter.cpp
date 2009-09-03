@@ -27,6 +27,7 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
+#include "StringUtils.h"
 
 using namespace MUSIC_INFO;
 

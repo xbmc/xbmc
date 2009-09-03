@@ -23,6 +23,7 @@
 #include "PlayListPLS.h"
 #include "PlayListFactory.h"
 #include "Util.h"
+#include "StringUtils.h"
 #include "FileSystem/File.h"
 #include "AdvancedSettings.h"
 #include "MusicInfoTag.h"

@@ -25,6 +25,7 @@
 
 #include "CDDARipper.h"
 #include "CDDAReader.h"
+#include "StringUtils.h"
 #include "Util.h"
 #include "EncoderLame.h"
 #include "EncoderWav.h"

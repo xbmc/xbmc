@@ -33,6 +33,7 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "FileCurl.h"
+#include "StringUtils.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

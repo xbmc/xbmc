@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "utils/RegExp.h"
 #include "AdvancedSettings.h"
+#include "StringUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

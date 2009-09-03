@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "AdvancedSettings.h"
 #include "Album.h"
+#include "StringUtils.h"
 #include "XMLUtils.h"
 
 using namespace std;

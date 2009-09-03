@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Edl.h"
+#include "StringUtils.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/CMythFile.h"

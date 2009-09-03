@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "Id3Tag.h"
 #include "Util.h"
+#include "StringUtils.h"
 #include "Picture.h"
 #include "AdvancedSettings.h"
 

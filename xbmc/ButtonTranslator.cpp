@@ -28,6 +28,8 @@
 #include "File.h"
 #include "Directory.h"
 #include "FileItem.h"
+#include "StringUtils.h"
+
 using namespace std;
 using namespace XFILE;
 
