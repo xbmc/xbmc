@@ -103,7 +103,7 @@ void CBackgroundPicLoader::Process()
           int iSize = pic.GetWidth() * pic.GetHeight() - MAX_PICTURE_SIZE;
           if ((iSize + (int)pic.GetWidth() > 0) || (iSize + (int)pic.GetHeight() > 0))
             bFullSize = true;
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
           if (!bFullSize && pic.GetWidth() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
           if (!bFullSize && pic.GetHeight() == g_Windowing.GetMaxTextureSize())
@@ -853,7 +853,7 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
   maxHeight = (int)height;
   if (maxWidth > g_Windowing.GetMaxTextureSize()) maxWidth = g_graphicsContext.GetMaxTextureSize();
   if (maxHeight > g_Windowing.GetMaxTextureSize()) maxHeight = g_graphicsContext.GetMaxTextureSize();
-#elif defined(HAS_GL)
+#elif defined(HAS_GL) || defined(HAS_GLES)
   maxWidth = g_Windowing.GetMaxTextureSize();
   maxHeight = g_Windowing.GetMaxTextureSize();
 #endif
