@@ -62,16 +62,17 @@ void CGUIAudioManager::Initialize(int iDevice)
   {
     CSingleLock lock(m_cs);
     CLog::Log(LOGDEBUG, "CGUIAudioManager::Initialize");
-#ifndef HAS_SDL_AUDIO
+#ifdef _WIN32
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-#else
+    m_bInitialized = true;
+#elif defined(HAS_SDL_AUDIO)
     Mix_CloseAudio();
     if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
        CLog::Log(LOGERROR, "Unable to open audio mixer");
-#endif
     m_bInitialized = true;
+#endif
   }
 }
 
