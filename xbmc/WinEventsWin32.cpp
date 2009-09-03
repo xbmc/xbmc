@@ -418,6 +418,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       newEvent.button.button = button;
       m_pEventFunc(newEvent);
       return(0);
+    case WM_SIZE:
+      newEvent.type = XBMC_VIDEORESIZE;
+      newEvent.resize.type = XBMC_VIDEORESIZE;
+      newEvent.resize.w = GET_X_LPARAM(lParam);
+      newEvent.resize.h = GET_Y_LPARAM(lParam);
+      if (newEvent.resize.w * newEvent.resize.h)
+      {
+        m_pEventFunc(newEvent);
+        return(0);
+      }
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 }

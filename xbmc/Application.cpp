@@ -415,6 +415,8 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       break;
     case XBMC_VIDEORESIZE:
       {
+        if (g_application.m_bInitializing)
+          return false;
         RESOLUTION res = RES_WINDOW;
         g_settings.m_ResInfo[res].iWidth = newEvent.resize.w;
         g_settings.m_ResInfo[res].iHeight = newEvent.resize.h;
