@@ -98,6 +98,7 @@
 #include "AdvancedSettings.h"
 #include "MouseStat.h"
 #include "LocalizeStrings.h"
+#include "LangInfo.h"
 
 using namespace std;
 using namespace DIRECTORY;

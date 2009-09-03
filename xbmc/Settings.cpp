@@ -47,6 +47,7 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileItem.h"
+#include "LangInfo.h"
 #include "LocalizeStrings.h"
 #ifdef _WIN32PC
 #include "win32/WIN32Util.h"

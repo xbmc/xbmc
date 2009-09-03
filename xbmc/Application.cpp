@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
+#include "LangInfo.h"
 #include "Util.h"
 #include "Picture.h"
 #include "TextureManager.h"

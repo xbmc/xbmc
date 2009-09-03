@@ -40,11 +40,8 @@
 #include <queue>
 #include "StdString.h"
 
-#include "utils/Event.h"
-#include "utils/Archive.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
-#include "LangInfo.h"
 
 #include "SectionLoader.h"
 #include "ApplicationMessenger.h"

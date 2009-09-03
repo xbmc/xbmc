@@ -39,6 +39,7 @@
 #include "utils/LCD.h"
 #endif
 #include "GUIPassword.h"
+#include "LangInfo.h"
 #include "SystemInfo.h"
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
