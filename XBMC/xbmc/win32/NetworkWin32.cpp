@@ -24,6 +24,7 @@
 #include "PlatformDefs.h"
 #include "NetworkWin32.h"
 #include "log.h"
+#include "SingleLock.h"
 
 // undefine if you want to build without the wlan stuff
 // might be needed for VS2003
