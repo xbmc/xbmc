@@ -169,7 +169,7 @@ Both Xcode and Terminal compilation require that build environment be setup
 first. This is a simple step and involves the following:
 
  $ cd $HOME/XBMC
- $ autoconf
+ $ autoreconf -vif
  $ ./configure
  $ make clean
  $ make xcode_depends
