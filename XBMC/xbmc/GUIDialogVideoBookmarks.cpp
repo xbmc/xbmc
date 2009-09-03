@@ -36,6 +36,7 @@
 #include "FileItem.h"
 #include "Texture.h"
 #include "Crc32.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 

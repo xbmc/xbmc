@@ -23,6 +23,7 @@
 #include "LangInfo.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 CLangInfo g_langInfo;
 

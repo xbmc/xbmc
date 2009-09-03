@@ -27,6 +27,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowManager.h"
 #include "Util.h"
+#include "LocalizeStrings.h"
 
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_LOCK_SETTINGS, "LockSettings.xml")

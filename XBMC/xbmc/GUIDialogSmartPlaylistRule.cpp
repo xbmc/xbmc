@@ -29,6 +29,7 @@
 #include "Directory.h"
 #include "FileItem.h"
 #include "GUIEditControl.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16

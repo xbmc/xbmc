@@ -50,6 +50,7 @@
 #endif
 #include "MediaManager.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace AUTOPTR;

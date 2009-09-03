@@ -33,6 +33,7 @@
 #include "GraphicContext.h"
 #include "WindowingFactory.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 
 CSysInfo g_sysinfo;
 

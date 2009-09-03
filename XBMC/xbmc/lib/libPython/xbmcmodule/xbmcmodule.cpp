@@ -62,6 +62,7 @@
 #include "language.h"
 #include "PythonSettings.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 
 // include for constants
 #include "pyutil.h"

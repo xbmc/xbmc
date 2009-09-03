@@ -55,6 +55,7 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

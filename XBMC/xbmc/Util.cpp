@@ -110,6 +110,7 @@
 #include "common/LIRC.h"
 #endif
 #include "WindowingFactory.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace DIRECTORY;

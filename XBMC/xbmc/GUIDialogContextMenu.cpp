@@ -41,6 +41,7 @@
 #include "FileSystem/File.h"
 #include "Picture.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
 #endif

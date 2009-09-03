@@ -81,6 +81,7 @@
 #include "DPMSSupport.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
+#include "LocalizeStrings.h"
 
 #include "KeyboardStat.h"
 #include "MouseStat.h"

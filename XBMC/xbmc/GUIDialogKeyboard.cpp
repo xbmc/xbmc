@@ -33,6 +33,7 @@
 #include "xbox/XKGeneral.h"
 #include "Application.h"
 #include "AdvancedSettings.h"
+#include "LocalizeStrings.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";

@@ -24,6 +24,7 @@
 #include "GUIListContainer.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_LIST           2
 #define CONTROL_PRESETS_LABEL  3

@@ -34,6 +34,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIDialogSelect.h"
 #include "DateTime.h"
+#include "LocalizeStrings.h"
 #include "FileSystem/Directory.h"
 
 using namespace std;

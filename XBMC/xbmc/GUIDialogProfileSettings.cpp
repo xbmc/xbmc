@@ -39,6 +39,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

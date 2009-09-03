@@ -24,6 +24,7 @@
 #include "Weather.h"
 #include "SystemInfo.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
 CBackgroundLoader::CBackgroundLoader(CInfoLoader *callback) : CThread()
 {

@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "AlarmClock.h"
 #include "Application.h"
+#include "LocalizeStrings.h"
 
 CAlarmClock g_alarmClock;
 

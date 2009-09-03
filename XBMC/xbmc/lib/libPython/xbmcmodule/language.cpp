@@ -24,6 +24,7 @@
 #include "pyutil.h"
 #include "Util.h"
 #include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")

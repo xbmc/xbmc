@@ -34,6 +34,7 @@
 #include "FileItem.h"
 #include "Util.h"
 #include "Settings.h"
+#include "LocalizeStrings.h"
 
 using namespace DIRECTORY;
 

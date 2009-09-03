@@ -27,6 +27,7 @@
 #include "GUIDialogKeyboard.h"
 #include "GUISettings.h"
 #include "GUIImage.h"
+#include "LocalizeStrings.h"
 
 CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
 {

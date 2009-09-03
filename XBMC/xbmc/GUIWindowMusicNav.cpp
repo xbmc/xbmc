@@ -46,6 +46,7 @@
 #include "Application.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace DIRECTORY;

@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DirectoryNodeTvShowsOverview.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 

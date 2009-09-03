@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "Crc32.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

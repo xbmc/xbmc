@@ -26,6 +26,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "Util.h"
+#include "LocalizeStrings.h"
 
 long CLibrefmScrobbler::m_instanceLock = 0;
 CLibrefmScrobbler *CLibrefmScrobbler::m_pInstance = NULL;

@@ -97,6 +97,7 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "MouseStat.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace DIRECTORY;

@@ -25,6 +25,7 @@
 #include "AdvancedSettings.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 using namespace std;

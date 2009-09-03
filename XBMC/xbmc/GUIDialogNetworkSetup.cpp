@@ -29,6 +29,7 @@
 #include "GUIEditControl.h"
 #include "Util.h"
 #include "URL.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_PROTOCOL        10
 #define CONTROL_SERVER_ADDRESS  11
