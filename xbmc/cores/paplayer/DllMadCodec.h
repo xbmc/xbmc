@@ -31,7 +31,7 @@
 #else
   #ifdef _WIN32
     // TODO: clean this up!
-    #include "cores/dvdplayer/Codecs/libmad/mad.h"
+    #include "../dvdplayer/Codecs/libmad/msvc++/mad.h"
   #else
     #include "mad.h"
   #endif
