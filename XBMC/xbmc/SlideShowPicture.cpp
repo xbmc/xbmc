@@ -701,6 +701,8 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwC
 
   glEnd();
   g_graphicsContext.EndPaint();
+#elif defined(HAS_GLES)
+  // TODO: GLES
 #else
 // SDL render
   g_Windowing.BlitToScreen(m_pImage, NULL, NULL);
