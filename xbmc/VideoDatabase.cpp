@@ -39,6 +39,7 @@
 #include "FileItem.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace dbiplus;

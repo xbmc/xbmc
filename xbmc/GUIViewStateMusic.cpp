@@ -26,6 +26,7 @@
 #include "VideoDatabase.h"
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
+#include "Settings.h"
 #include "FileItem.h"
 #include "Util.h"
 

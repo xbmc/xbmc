@@ -40,6 +40,7 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "Picture.h"
+#include "Settings.h"
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
 #endif

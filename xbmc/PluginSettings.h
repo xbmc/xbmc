@@ -23,7 +23,6 @@
 
 #include "tinyXML/tinyxml.h"
 #include "URL.h"
-#include "Settings.h"
 
 class CBasicSettings
 {

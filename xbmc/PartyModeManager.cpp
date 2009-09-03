@@ -30,6 +30,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace PLAYLIST;

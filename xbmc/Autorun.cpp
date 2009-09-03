@@ -35,6 +35,7 @@
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
+#include "Settings.h"
 #include "PlayList.h"
 #include "GUIWindowManager.h"
 #include "MediaManager.h"

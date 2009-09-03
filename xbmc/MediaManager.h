@@ -20,7 +20,7 @@
  *
  */
 
-#include "Settings.h" // for VECSOURCES
+#include "MediaSource.h" // for VECSOURCES
 #include <map>
 #ifdef HAS_DVD_DRIVE
 #include "FileSystem/cdioSupport.h"

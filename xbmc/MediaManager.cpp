@@ -38,6 +38,7 @@
 #endif
 #endif
 #include "Autorun.h"
+#include "Settings.h"
 
 using namespace std;
 
@@ -469,3 +470,4 @@ void CMediaManager::SetHasOpticalDrive(bool bstatus)
   CSingleLock waitLock(m_muAutoSource);
   m_bhasoptical = bstatus;
 }
+

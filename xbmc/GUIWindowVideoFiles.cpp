@@ -40,6 +40,7 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#include "Settings.h"
 #include "GUISettings.h"
 
 using namespace std;

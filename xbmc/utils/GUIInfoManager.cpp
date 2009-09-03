@@ -58,6 +58,7 @@
 #include "WindowingFactory.h"
 #include "PowerManager.h"
 #include "AdvancedSettings.h"
+#include "Settings.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"

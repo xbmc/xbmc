@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "ScriptSettings.h"
 #include "GUIDialogPluginSettings.h"
+#include "Settings.h"
 
 using namespace XFILE;
 

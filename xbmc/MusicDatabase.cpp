@@ -49,6 +49,7 @@
 #include "karaoke/karaokelyricsfactory.h"
 #endif
 #include "MediaManager.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace AUTOPTR;

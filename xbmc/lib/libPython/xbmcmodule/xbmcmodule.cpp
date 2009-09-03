@@ -61,6 +61,7 @@
 #include "TextureManager.h"
 #include "language.h"
 #include "PythonSettings.h"
+#include "Settings.h"
 
 // include for constants
 #include "pyutil.h"

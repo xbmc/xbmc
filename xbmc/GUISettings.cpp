@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUISettings.h"
+#include "Settings.h"
 #include "GUIDialogFileBrowser.h"
 #include "XBAudioConfig.h"
 #include "MediaManager.h"

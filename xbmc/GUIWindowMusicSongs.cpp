@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "MediaManager.h"
+#include "Settings.h"
 #include "GUISettings.h"
 
 using namespace AUTOPTR;
