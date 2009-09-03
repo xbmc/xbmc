@@ -23,7 +23,7 @@
 #include "Id3Tag.h"
 #include "Util.h"
 #include "Picture.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

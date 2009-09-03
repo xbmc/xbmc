@@ -32,7 +32,6 @@
 #include <vector>
 #include <limits>
 #include "MediaSource.h"
-#include "StringUtils.h"
 
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0
