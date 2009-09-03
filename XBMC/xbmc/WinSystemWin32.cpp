@@ -250,7 +250,7 @@ bool CWinSystemWin32::ResizeInternal()
   else
   {
     dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |
-      WS_SYSMENU | WS_MINIMIZEBOX;
+      WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME;
     windowAfter = HWND_NOTOPMOST;
 
     if(m_nTop <= 0 || m_nLeft <= 0)
