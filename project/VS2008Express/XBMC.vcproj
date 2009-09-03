@@ -407,10 +407,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\win32\resource.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\win32\Win32PowerSyscall.cpp"
 				>
 			</File>
@@ -472,10 +468,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\XBMC_PC.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\win32\XBMC_PC.h"
 				>
 			</File>
 			<File

@@ -20,121 +20,18 @@
  */
 
 #include "stdafx.h"
-#include "XBMC_PC.h"
 #include "../../xbmc/Application.h"
+#include "../../xbmc/AdvancedSettings.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
 #include "dbghelp.h"
-
-//-----------------------------------------------------------------------------
-// Resource defines
-//-----------------------------------------------------------------------------
-
-#include "resource.h"
-#define IDI_MAIN_ICON          101 // Application icon
-#define IDR_MAIN_ACCEL         113 // Keyboard accelerator
 
 typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(HANDLE hProcess, DWORD dwPid, HANDLE hFile, MINIDUMP_TYPE DumpType,
                                         CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
                                         CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
                                         CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
 
-
-//-----------------------------------------------------------------------------
-// Globals
-//-----------------------------------------------------------------------------
-
 CApplication g_application;
-CXBMC_PC *g_xbmcPC;
-
-CXBMC_PC::CXBMC_PC()
-{
-  g_advancedSettings.m_startFullScreen = false;
-}
-
-CXBMC_PC::~CXBMC_PC()
-{
-  // todo: deinitialization code
-}
-
-HRESULT CXBMC_PC::Create( HINSTANCE hInstance, LPSTR commandLine )
-{
-  m_hInstance = hInstance;
-  HRESULT hr = S_OK;
-
-  CStdStringW strcl(commandLine);
-  LPWSTR *szArglist;
-  int nArgs;
-
-  szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
-  if(szArglist != NULL)
-  {
-    for(int i=0;i<nArgs;i++)
-    {
-      CStdStringW strArgW(szArglist[i]);
-      if(strArgW.Equals(L"-fs"))
-        g_advancedSettings.m_startFullScreen = true;
-      else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
-        g_application.EnablePlatformDirectories(false);
-      else if(strArgW.Equals(L"-d"))
-      {
-        if(++i < nArgs)
-        {
-          int iSleep = _wtoi(szArglist[i]);
-          if(iSleep > 0 && iSleep < 360)
-            Sleep(iSleep*1000);
-          else
-            --i;
-        }
-      }
-    }
-    LocalFree(szArglist);
-  }
-
-  return S_OK;
-}
-
-
-INT CXBMC_PC::Run()
-{
-#ifdef HAS_SDL
-  g_application.Create(NULL);
-#else
-  // Create our window
-  HWND hWnd = NULL;
-  if (hWnd == NULL)
-  {
-    // Register the windows class
-    WNDCLASS wndClass = { 0, DefWindowProc, 0, 0, m_hInstance,
-                          LoadIcon( m_hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON) ),
-                          LoadCursor( NULL, IDC_ARROW ),
-                          (HBRUSH)GetStockObject(WHITE_BRUSH),
-                          NULL, _T("XBMC DirectX") };
-    RegisterClass( &wndClass );
-
-    // Set the window's initial style
-    DWORD dwWindowStyle = WS_OVERLAPPED|WS_CAPTION|WS_SYSMENU|WS_THICKFRAME|
-                          WS_MINIMIZEBOX|WS_MAXIMIZEBOX|WS_VISIBLE;
-    DWORD dwCreationWidth = 640;
-    DWORD dwCreationHeight = 480;
-
-    // Set the window's initial width 
-    RECT rc;
-    SetRect( &rc, 0, 0, dwCreationWidth, dwCreationHeight );
-    AdjustWindowRect( &rc, dwWindowStyle, TRUE );
-
-    // Create the render window
-    hWnd = CreateWindow(_T("XBMC DirectX"), "XBMC DirectX", dwWindowStyle,
-                            0, 0, (rc.right-rc.left), (rc.bottom-rc.top), 0L, NULL , m_hInstance, 0L );
-  }
-  g_application.Create(hWnd);
-#endif
-  // we don't want to see the "no disc in drive" windows message box
-  SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
-
-  g_application.Run();
-  return 0;
-}
 
 // Minidump creation function 
 LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp ) 
@@ -221,10 +118,6 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     return 0;
   }
 
-  CXBMC_PC myApp;
-
-  g_xbmcPC = &myApp;
-
   if(CWIN32Util::GetDesktopColorDepth() < 32)
   {
     //FIXME: replace it by a SDL window for all ports
@@ -232,8 +125,44 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
     return 0;
   }
 
-  if (FAILED(myApp.Create(hInst, commandLine)))
-    return 1;
+  // parse the command line
+  CStdStringW strcl(commandLine);
+  LPWSTR *szArglist;
+  int nArgs;
 
-  return myApp.Run();
+  g_advancedSettings.m_startFullScreen = false;
+  szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
+  if(szArglist != NULL)
+  {
+    for(int i=0;i<nArgs;i++)
+    {
+      CStdStringW strArgW(szArglist[i]);
+      if(strArgW.Equals(L"-fs"))
+        g_advancedSettings.m_startFullScreen = true;
+      else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
+        g_application.EnablePlatformDirectories(false);
+      else if(strArgW.Equals(L"-d"))
+      {
+        if(++i < nArgs)
+        {
+          int iSleep = _wtoi(szArglist[i]);
+          if(iSleep > 0 && iSleep < 360)
+            Sleep(iSleep*1000);
+          else
+            --i;
+        }
+      }
+    }
+    LocalFree(szArglist);
+  }
+
+  // Create and run the app
+  g_application.Create(NULL);
+
+  // we don't want to see the "no disc in drive" windows message box
+  SetErrorMode(SEM_FAILCRITICALERRORS|SEM_NOOPENFILEERRORBOX);
+
+  g_application.Run();
+
+  return 0;
 }
