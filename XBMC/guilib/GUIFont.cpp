@@ -260,3 +260,12 @@ void CGUIFont::End()
   if (!m_font) return;
   m_font->End();
 }
+
+void CGUIFont::SetFont(CGUIFontTTFBase *font)
+{
+  if (m_font)
+    m_font->RemoveReference();
+  m_font = font;
+  if (m_font)
+    m_font->AddReference();
+}

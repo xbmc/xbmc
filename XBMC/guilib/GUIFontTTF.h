@@ -72,7 +72,6 @@ public:
   virtual void End() = 0;
 
   const CStdString& GetFileName() const { return m_strFileName; };
-  void CopyReferenceCountFrom(CGUIFontTTFBase& ttf) { m_referenceCount = ttf.m_referenceCount; }
 
 protected:
   struct Character
