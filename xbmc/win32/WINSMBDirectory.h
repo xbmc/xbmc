@@ -22,7 +22,6 @@
 
 
 #include "IDirectory.h"
-#include "WINFileSMB.h"
 
 namespace DIRECTORY
 {

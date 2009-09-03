@@ -831,8 +831,6 @@ unsigned int CWinRenderer::DrawSlice(unsigned char *src[], int stride[], int w, 
 
 unsigned int CWinRenderer::PreInit()
 {
-  HRESULT hr;
-
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
