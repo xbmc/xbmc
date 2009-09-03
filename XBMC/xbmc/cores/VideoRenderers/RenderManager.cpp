@@ -270,13 +270,11 @@ void CXBMCRenderManager::SetupScreenshot()
     m_pRenderer->SetupScreenshot();
 }
 
-void CXBMCRenderManager::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
+void CXBMCRenderManager::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
 {  
-  /* elis
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
-    m_pRenderer->CreateThumbnail(surface, width, height);
-    */
+    m_pRenderer->CreateThumbnail(texture, width, height);
 }
 
 void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)

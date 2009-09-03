@@ -26,6 +26,7 @@
 #include "WinRenderer.h"
 #include "Util.h"
 #include "Settings.h"
+#include "Texture.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -1239,22 +1240,37 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   m_pD3DDevice->SetPixelShader( NULL );
 }
 
-void CWinRenderer::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
+void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
 {
   CSingleLock lock(g_graphicsContext);
 
-  LPDIRECT3DSURFACE9 oldRT;
-  RECT saveSize = rd;
-  rd.left = rd.top = 0;
-  rd.right = width;
-  rd.bottom = height;
-  m_pD3DDevice->GetRenderTarget(0, &oldRT);
-  m_pD3DDevice->SetRenderTarget(0, surface);
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-  RenderLowMem(0);
-  rd = saveSize;
-  m_pD3DDevice->SetRenderTarget(0, oldRT);
-  oldRT->Release();
+  // create a new render surface to copy out of - note, this may be slow on some hardware
+  // due to the TRUE parameter - you're supposed to use GetRenderTargetData.
+  LPDIRECT3DSURFACE9 surface = NULL;
+  if (D3D_OK == m_pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
+  {
+    LPDIRECT3DSURFACE9 oldRT;
+    RECT saveSize = rd;
+    rd.left = rd.top = 0;
+    rd.right = width;
+    rd.bottom = height;
+    m_pD3DDevice->GetRenderTarget(0, &oldRT);
+    m_pD3DDevice->SetRenderTarget(0, surface);
+    m_pD3DDevice->BeginScene();
+    RenderLowMem(0);
+    m_pD3DDevice->EndScene();
+    rd = saveSize;
+    m_pD3DDevice->SetRenderTarget(0, oldRT);
+    oldRT->Release();
+
+    D3DLOCKED_RECT lockedRect;
+    if (D3D_OK == surface->LockRect(&lockedRect, NULL, NULL))
+    {
+      texture->LoadFromMemory(width, height, lockedRect.Pitch, 32, (unsigned char *)lockedRect.pBits);
+      surface->UnlockRect();
+    }
+    surface->Release();
+  }
 }
 
 //********************************************************************************************************
