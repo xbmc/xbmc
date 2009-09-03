@@ -170,3 +170,9 @@
 #include <GL/gl.h>
 #endif
 #endif
+
+#if HAS_GLES == 2
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#endif
+

@@ -20,34 +20,37 @@
 */
 
 /*!
-\file TextureManager.h
-\brief 
+\file GUIFont.h
+\brief
 */
 
-#ifndef GUILIB_TEXTUREGL_H
-#define GUILIB_TEXTUREGL_H
-
-#include "Texture.h"
-
+#ifndef CGUILIB_GUIFONTTTF_GLES_H
+#define CGUILIB_GUIFONTTTF_GLES_H
 #pragma once
 
-#if defined(HAS_GL) || defined(HAS_GLES)
 
-/************************************************************************/
-/*    CGLTexture                                                       */
-/************************************************************************/
-class CGLTexture : public CBaseTexture
+#include "GUIFontTTF.h"
+
+
+/*!
+ \ingroup textures
+ \brief
+ */
+class CGUIFontTTFGLES : public CGUIFontTTFBase
 {
 public:
-  CGLTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
-  virtual ~CGLTexture();
-  
-  void Delete();
-  void CreateTextureObject();
-  virtual void DestroyTextureObject();
-  void LoadToGPU();
-};
+  CGUIFontTTFGLES(const CStdString& strFileName);
+  virtual ~CGUIFontTTFGLES(void);
 
-#endif
+  virtual void Begin();
+  virtual void End();
+
+protected:
+  virtual CBaseTexture* ReallocTexture(unsigned int& newHeight);
+  virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character *ch);
+  virtual void DeleteHardwareTexture();
+  virtual void RenderInternal(SVertex* v) {}
+  
+};
 
 #endif

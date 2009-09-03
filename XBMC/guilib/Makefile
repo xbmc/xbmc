@@ -47,6 +47,7 @@ SRCS=ActionManager.cpp \
      GUITexture.cpp \
      GUITextureSDL.cpp \
      GUITextureGL.cpp \
+     GUITextureGLES.cpp \
      GUIToggleButtonControl.cpp \
      GUIVideoControl.cpp \
      GUIVisualisationControl.cpp \
@@ -72,6 +73,7 @@ SRCS=ActionManager.cpp \
      GUIMultiSelectText.cpp \
      GUIInfoColor.cpp \
      GUIFontTTFGL.cpp \
+     GUIFontTTFGLES.cpp \
      Texture.cpp \
      TextureGL.cpp \
      GUIControlProfiler.cpp \

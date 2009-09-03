@@ -25,7 +25,7 @@
 #include "include.h"
 #include <vector>
 #include <string>
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
 
 namespace Shaders {
 
@@ -77,12 +77,14 @@ namespace Shaders {
     virtual bool Compile();
   };
 
+#ifndef HAS_GLES
   class CARBVertexShader : public CVertexShader
   {
   public:
     virtual void Free();
     virtual bool Compile();
   };
+#endif
 
 
   //////////////////////////////////////////////////////////////////////
@@ -108,13 +110,14 @@ namespace Shaders {
     virtual bool Compile();
   };
 
+#ifndef HAS_GLES
   class CARBPixelShader : public CPixelShader
   {
   public:
     virtual void Free();
     virtual bool Compile();
   };
-
+#endif
 
   //////////////////////////////////////////////////////////////////////
   // CShaderProgram - the complete shader consisting of both the vertex
@@ -215,6 +218,7 @@ namespace Shaders {
   };
 
 
+#ifndef HAS_GLES
   class CARBShaderProgram 
     : virtual public CShaderProgram
   {
@@ -248,6 +252,7 @@ namespace Shaders {
   protected:
 
   };
+#endif
 
 } // close namespace
 

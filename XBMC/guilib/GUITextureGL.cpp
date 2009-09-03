@@ -23,7 +23,7 @@
 #include "GUITextureGL.h"
 #include "Texture.h"
 
-#ifdef HAS_GL
+#if defined(HAS_GL)
 
 CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
@@ -151,7 +151,7 @@ void CGUITextureGL::DrawQuad(const CRect &rect, DWORD color, CBaseTexture *textu
     glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
   }
   else
-    glDisable(GL_TEXTURE_2D);
+  glDisable(GL_TEXTURE_2D);
 
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
