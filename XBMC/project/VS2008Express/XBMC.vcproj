@@ -471,6 +471,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\XBMC_PC.rc"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\XCriticalSection.cpp"
 				>
 			</File>
