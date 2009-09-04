@@ -25,6 +25,7 @@
 #include "../lib/UnrarXLib/rar.hpp"
 #endif
 #include "Util.h"
+#include "utils/CharsetConverter.h"
 #include "utils/SingleLock.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"

@@ -11,6 +11,7 @@
 //
 #include "stdafx.h"
 
+#include "utils/CharsetConverter.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 

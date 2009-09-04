@@ -38,6 +38,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

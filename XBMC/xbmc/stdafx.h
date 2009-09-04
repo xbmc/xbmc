@@ -41,7 +41,6 @@
 #include "StdString.h"
 
 #include "utils/log.h"
-#include "utils/CharsetConverter.h"
 
 #undef GetFreeSpace
 

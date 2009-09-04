@@ -27,6 +27,7 @@
 #include "FileSystem/File.h"
 #include "AdvancedSettings.h"
 #include "MusicInfoTag.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 using namespace XFILE;

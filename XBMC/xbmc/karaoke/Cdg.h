@@ -24,7 +24,7 @@
 
 #include "utils/Thread.h"
 #include "FileSystem/File.h"
-
+#include "utils/CriticalSection.h"
 
 #define  HEIGHT 216  //CDG display size with overscan border
 #define  WIDTH  300

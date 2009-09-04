@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "utils/CharsetConverter.h"
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")

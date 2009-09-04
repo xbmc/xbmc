@@ -31,6 +31,7 @@
 
 #include "tinyXML/tinyxml.h"
 #include "ScraperSettings.h"
+#include "utils/CharsetConverter.h"
 
 class CVideoInfoTag;
 class CScraperParser;

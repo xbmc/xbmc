@@ -57,6 +57,7 @@
 #include "CueDocument.h"
 #include "Util.h"
 #include "StringUtils.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 

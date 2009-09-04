@@ -46,6 +46,7 @@ class CFileItemList;
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "utils/Network.h"
+#include "utils/CharsetConverter.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
