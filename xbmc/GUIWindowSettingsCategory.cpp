@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"

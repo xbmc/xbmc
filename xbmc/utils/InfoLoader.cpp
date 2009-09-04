@@ -23,6 +23,7 @@
 #include "InfoLoader.h"
 #include "Weather.h"
 #include "SystemInfo.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
 

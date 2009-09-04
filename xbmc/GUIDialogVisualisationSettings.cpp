@@ -23,6 +23,7 @@
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIWindowSettingsCategory.h"
 #include "GUIControlGroupList.h"
+#include "GUIUserMessages.h"
 #include "utils/GUIInfoManager.h"
 #include "LocalizeStrings.h"
 

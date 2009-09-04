@@ -18,6 +18,7 @@
 */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include <string.h>
 #include "SAPDirectory.h"

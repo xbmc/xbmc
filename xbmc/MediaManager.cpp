@@ -39,6 +39,7 @@
 #endif
 #endif
 #include "Autorun.h"
+#include "GUIUserMessages.h"
 #include "Settings.h"
 #include "tinyXML/tinyxml.h"
 

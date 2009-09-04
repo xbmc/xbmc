@@ -69,6 +69,7 @@
 
 #include "GUILabelControl.h"  // for CInfoLabel
 #include "GUITextBox.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 #include "SkinInfo.h"
