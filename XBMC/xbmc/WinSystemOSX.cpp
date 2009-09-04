@@ -28,6 +28,7 @@
 #include "CocoaInterface.h"
 #include "Settings.h"
 #include "Texture.h"
+#include "AdvancedSettings.h"
 
 
 CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
