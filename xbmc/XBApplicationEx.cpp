@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "XBApplicationEx.h"
+#include "utils/log.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else

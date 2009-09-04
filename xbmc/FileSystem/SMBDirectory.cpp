@@ -43,6 +43,7 @@
 #include "Application.h"
 #include "FileItem.h"
 #include "AdvancedSettings.h"
+#include "utils/log.h"
 
 #ifndef _WIN32PC
 #include <libsmbclient.h>

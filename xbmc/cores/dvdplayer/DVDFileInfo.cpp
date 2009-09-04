@@ -26,6 +26,7 @@
 #include "VideoInfoTag.h"
 #include "Util.h"
 #include "FileSystem/StackDirectory.h"
+#include "utils/log.h"
 
 #include "DVDFileInfo.h"
 #include "DVDStreamInfo.h"

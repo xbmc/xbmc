@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "URL.h"
 #include "utils/RegExp.h"
+#include "utils/log.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"

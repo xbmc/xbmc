@@ -19,6 +19,7 @@
 */
 
 #include "stdafx.h"
+#include "utils/log.h"
 /*
  Redbook   : CDDA
  Yellowbook : CDROM

@@ -25,6 +25,7 @@
 #include "tinyXML/tinyxml.h"
 #include "AdvancedSettings.h"
 #include "FileSystem/File.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

@@ -26,6 +26,7 @@
 #include "DetectDVDType.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 #include "FileSystem/cdioSupport.h"
 #include "FileSystem/iso9660.h"
 #ifdef _LINUX

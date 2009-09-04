@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "EncoderVorbis.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 CEncoderVorbis::CEncoderVorbis()
 {

@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "AACcodec.h"
+#include "utils/log.h"
 
 AACCodec::AACCodec()
 {

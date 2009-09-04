@@ -23,6 +23,7 @@
 #ifdef HAS_GLX
 
 #include "WinSystemX11GL.h"
+#include "utils/log.h"
 
 CWinSystemX11GL g_Windowing;
 

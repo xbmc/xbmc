@@ -33,6 +33,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 #include <set>
 

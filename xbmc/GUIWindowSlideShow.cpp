@@ -39,6 +39,7 @@
 #include "WindowingFactory.h"
 #include "Texture.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace DIRECTORY;
 

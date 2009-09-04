@@ -26,6 +26,7 @@
 #include "Application.h"
 
 #include "utils/Network.h"
+#include "utils/log.h"
 #include "UPnP.h"
 #include "FileSystem/UPnPVirtualPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"

@@ -26,6 +26,7 @@
 #include "DirectoryCache.h"
 #include "FileCache.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 #ifndef _LINUX
 #include "utils/Win32Exception.h"

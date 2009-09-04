@@ -25,6 +25,7 @@
 #include "XMemUtils.h"
 #endif
 #include "../../DVDStreamInfo.h"
+#include "utils/log.h"
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {

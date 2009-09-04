@@ -37,6 +37,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

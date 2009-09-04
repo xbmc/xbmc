@@ -26,6 +26,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/CMythFile.h"
 #include "AdvancedSettings.h"
+#include "utils/log.h"
 
 extern "C"
 {

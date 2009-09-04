@@ -13,6 +13,9 @@
 #include "WebServer.h"
 #include "XBMCweb.h"
 #include "FileSystem/SpecialProtocol.h"
+#undef min
+#undef max
+#include "utils/log.h"
 
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"

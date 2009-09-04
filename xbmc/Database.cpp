@@ -27,6 +27,7 @@
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "AutoPtrHandle.h"
+#include "utils/log.h"
 
 using namespace AUTOPTR;
 using namespace dbiplus;

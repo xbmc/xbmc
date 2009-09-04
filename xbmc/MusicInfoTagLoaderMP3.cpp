@@ -25,6 +25,7 @@
 #include "Id3Tag.h"
 #include "AdvancedSettings.h"
 #include "FileSystem/File.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

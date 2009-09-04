@@ -27,6 +27,7 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace MUSIC_INFO;

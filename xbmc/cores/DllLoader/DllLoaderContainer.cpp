@@ -32,6 +32,7 @@
 #include "FileSystem/File.h"
 #include "Util.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 #define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 

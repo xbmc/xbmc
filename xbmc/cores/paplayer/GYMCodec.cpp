@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GYMCodec.h"
 #include "cores/DllLoader/DllLoader.h"
+#include "utils/log.h"
 
 GYMCodec::GYMCodec()
 {

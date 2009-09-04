@@ -26,6 +26,7 @@
 #include "URL.h"
 #include "AdvancedSettings.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 
 #include <sys/stat.h>
 

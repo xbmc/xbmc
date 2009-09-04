@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "emu_kernel32.h"
 #include "emu_dummy.h"
+#include "utils/log.h"
 
 #include "xbox/IoSupport.h"
 

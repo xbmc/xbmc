@@ -28,6 +28,7 @@
 #include "SpecialProtocol.h"
 #include "Settings.h"
 #include "Texture.h"
+#include "utils/log.h"
 
 static int doubleVisAttributes[] =
 {

@@ -16,6 +16,7 @@
 #include "FileSystem/File.h"
 #include "AdvancedSettings.h"
 #include "MathUtils.h"
+#include "utils/log.h"
 
 #include "karaokelyricstextlrc.h"
 

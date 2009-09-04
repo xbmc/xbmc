@@ -27,6 +27,7 @@
 #include "GraphicContext.h"
 #include "AdvancedSettings.h"
 #include "RenderSystemGL.h"
+#include "utils/log.h"
 
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()

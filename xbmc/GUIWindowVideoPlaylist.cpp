@@ -35,6 +35,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace PLAYLIST;
 

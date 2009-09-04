@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "SHNcodec.h"
+#include "utils/log.h"
 
 // Callbacks for file reading
 int Shn_Callback_Read(ShnPlayStream * stream, void * buffer, int bytes, int * bytes_read)
