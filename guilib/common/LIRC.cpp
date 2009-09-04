@@ -30,7 +30,6 @@ CRemoteControl::CRemoteControl()
   m_bLogConnectFailure = true;
   m_lastInitAttempt = -5000;
   m_initRetryPeriod = 5000;
-  CLog::Log(LOGINFO, "LIRC %s: started ", __FUNCTION__);
   Reset();
 }
 
