@@ -26,6 +26,7 @@
 #include "AdvancedSettings.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "AdvancedSettings.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

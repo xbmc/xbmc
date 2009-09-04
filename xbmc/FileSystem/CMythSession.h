@@ -33,6 +33,7 @@ typedef struct cmyth_timestamp *cmyth_timestamp_t;
 
 class DllLibCMyth;
 class CDateTime;
+class CFileItem;
 class CURL;
 
 namespace XFILE
