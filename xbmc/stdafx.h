@@ -30,7 +30,6 @@
 #define DEBUG_MOUSE
 #define DEBUG_KEYBOARD
 #include "system.h"
-#include "gui3d.h"
 
 #include <vector>
 #include <list>
