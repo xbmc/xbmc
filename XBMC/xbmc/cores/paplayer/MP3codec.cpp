@@ -443,6 +443,8 @@ int MP3Codec::Decode(
       *out_len += (int)mxstat.write_size;
       mxstat.write_size = 0;
       break;
+    default:
+      break;
     }
   }
   if (!mxhouse.stream.next_frame || (mxhouse.stream.bufend - mxhouse.stream.next_frame <= 0))
