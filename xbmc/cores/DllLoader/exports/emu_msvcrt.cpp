@@ -368,7 +368,7 @@ extern "C"
 
   int dll_open(const char* szFileName, int iMode)
   {
-    char str[XBMC_MAX_PATH];
+    char str[1024];
     int size = sizeof(str);
     // move to CFile classes
     if (strncmp(szFileName, "\\Device\\Cdrom0", 14) == 0)
@@ -653,7 +653,7 @@ extern "C"
   // should be moved to CFile classes
   intptr_t dll_findfirst(const char *file, struct _finddata_t *data)
   {
-    char str[XBMC_MAX_PATH];
+    char str[1024];
     int size = sizeof(str);
     CURL url(file);
     if (url.IsLocal())
