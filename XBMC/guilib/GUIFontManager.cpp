@@ -110,7 +110,12 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
     {
       delete pFontFile;
 
-      // font could not b loaded
+      // font could not be loaded - try Arial.ttf, which we distribute
+      if (strFilename != "arial.ttf")
+      {
+        CLog::Log(LOGERROR, "Couldn't load font name: %s(%s), trying to substitute arial.ttf", strFontName.c_str(), strFilename.c_str());
+        return LoadTTF(strFontName, "arial.ttf", textColor, shadowColor, iSize, iStyle, lineSpacing, originalAspect);
+      }
       CLog::Log(LOGERROR, "Couldn't load font name:%s file:%s", strFontName.c_str(), strPath.c_str());
 
       return NULL;
