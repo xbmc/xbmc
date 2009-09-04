@@ -401,18 +401,17 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
   switch(newEvent.type)
   {
     case XBMC_QUIT:
-      if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
+      if (!g_application.m_bStop)
+        g_application.getApplicationMessenger().Quit();
       break;
     case XBMC_KEYDOWN:
     case XBMC_KEYUP:
       g_Keyboard.HandleEvent(newEvent);
       g_application.ProcessKeyboard();
       break;
-      
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
-      // mouse scroll wheel.
       if (newEvent.button.button == 4)
         g_Mouse.UpdateMouseWheel(1);
       else if (newEvent.button.button == 5)
@@ -424,11 +423,9 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
     case XBMC_VIDEORESIZE:
+      if (!g_application.m_bInitializing &&
+          !g_advancedSettings.m_fullScreen)
       {
-        if (g_application.m_bInitializing)
-          return false;
-        if(g_advancedSettings.m_fullScreen)
-          return false;
         RESOLUTION res = RES_WINDOW;
         g_settings.m_ResInfo[res].iWidth = newEvent.resize.w;
         g_settings.m_ResInfo[res].iHeight = newEvent.resize.h;
@@ -437,8 +434,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
   }
-
-  return false;
+  return true;
 }
 
 // This function does not return!
