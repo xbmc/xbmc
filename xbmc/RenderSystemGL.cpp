@@ -155,9 +155,9 @@ bool CRenderSystemGL::ClearBuffers(float r, float g, float b, float a)
   return true;
 }
 
-bool CRenderSystemGL::IsExtSupported(CStdString strExt)
+bool CRenderSystemGL::IsExtSupported(const char* extension)
 {
-  return true;
+  return false;
 }
 
 static __int64 abs(__int64 a)

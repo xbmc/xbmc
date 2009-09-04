@@ -336,9 +336,9 @@ bool CRenderSystemDX::ClearBuffers(float r, float g, float b, float a)
   return ClearBuffers((DWORD)color); 
 }
 
-bool CRenderSystemDX::IsExtSupported(CStdString strExt)
+bool CRenderSystemDX::IsExtSupported(const char* extension)
 {
-  return true;
+  return false;
 }
 
 bool CRenderSystemDX::PresentRender()

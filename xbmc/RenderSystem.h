@@ -56,7 +56,7 @@ public:
   virtual bool PresentRender() = 0;
   virtual bool ClearBuffers(DWORD color) = 0;
   virtual bool ClearBuffers(float r, float g, float b, float a) = 0;
-  virtual bool IsExtSupported(CStdString strExt) = 0;
+  virtual bool IsExtSupported(const char* extension) = 0;
 
   virtual void SetVSync(bool vsync) = 0;
   virtual bool GetVSync() { return m_bVSync; }
