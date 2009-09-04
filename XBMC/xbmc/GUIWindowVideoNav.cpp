@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowVideoFiles.h"
 #include "utils/GUIInfoManager.h"

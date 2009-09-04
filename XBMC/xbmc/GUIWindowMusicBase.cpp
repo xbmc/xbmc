@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
 #include "GUIWindowMusicInfo.h"
 #include "FileSystem/ZipManager.h"

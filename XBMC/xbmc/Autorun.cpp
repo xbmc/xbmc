@@ -27,6 +27,7 @@
 #include "Application.h"
 #include "Util.h"
 #include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/StackDirectory.h"
 #include "ProgramDatabase.h"

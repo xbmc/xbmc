@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowOSD.h"
 #include "Application.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "MouseStat.h"
 

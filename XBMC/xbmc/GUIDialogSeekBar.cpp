@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogSeekBar.h"
 #include "GUISliderControl.h"
+#include "GUIUserMessages.h"
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
 

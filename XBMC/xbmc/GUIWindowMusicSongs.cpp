@@ -27,6 +27,7 @@
 #include "CueDocument.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "FileSystem/SpecialProtocol.h"

@@ -27,6 +27,7 @@
 #include "Application.h"
 #include "GUIPassword.h"
 #include "GUISettings.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)

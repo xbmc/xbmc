@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIProgressControl.h"
+#include "GUIUserMessages.h"
 #include "Util.h"
 #include "GUIWindowManager.h"
 #include "GUISettings.h"

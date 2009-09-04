@@ -30,6 +30,7 @@
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/Directory.h"
 #include "GUIDialogPictureInfo.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
 #include "GUISettings.h"

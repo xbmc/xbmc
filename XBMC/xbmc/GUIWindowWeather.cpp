@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowWeather.h"
 #include "GUIImage.h"
 #include "utils/Weather.h"

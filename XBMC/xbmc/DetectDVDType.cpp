@@ -37,6 +37,7 @@
 #endif
 #endif
 #include "AdvancedSettings.h"
+#include "GUIUserMessages.h"
 #include "Util.h"
 #include "Picture.h"
 #if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (__APPLE__)

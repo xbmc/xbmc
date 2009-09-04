@@ -43,9 +43,6 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 
-// Often used
-#include "GUIUserMessages.h"
-
 #undef GetFreeSpace
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
