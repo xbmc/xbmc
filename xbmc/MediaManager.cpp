@@ -40,6 +40,7 @@
 #endif
 #include "Autorun.h"
 #include "Settings.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 
