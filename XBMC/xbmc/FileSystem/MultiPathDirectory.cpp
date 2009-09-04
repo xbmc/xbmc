@@ -29,6 +29,7 @@
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;

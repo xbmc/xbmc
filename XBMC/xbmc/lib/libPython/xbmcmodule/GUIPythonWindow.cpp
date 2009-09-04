@@ -27,6 +27,7 @@
 #include "action.h"
 #include "GUIWindowManager.h"
 #include "../XBPython.h"
+#include "utils/log.h"
 
 using namespace PYXBMC;
 

@@ -23,6 +23,8 @@
 #ifndef REGEXP_H
 #define REGEXP_H
 
+#include "log.h"
+
 #include <stdio.h>
 #include <string>
 

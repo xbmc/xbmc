@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 

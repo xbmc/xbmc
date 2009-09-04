@@ -25,6 +25,7 @@
 #include <math.h>
 #include "MathUtils.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #if defined(_WIN32)
 static void TimeGetTimeFrequency(LARGE_INTEGER* freq){ freq->QuadPart = 1000; }

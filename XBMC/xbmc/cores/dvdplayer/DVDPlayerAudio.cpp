@@ -28,6 +28,7 @@
 #include "DVDPerformanceCounter.h"
 #include "GUISettings.h"
 #include "VideoReferenceClock.h"
+#include "utils/log.h"
 
 #include <sstream>
 #include <iomanip>

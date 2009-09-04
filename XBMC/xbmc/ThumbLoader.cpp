@@ -30,6 +30,7 @@
 #include "GUISettings.h"
 #include "TextureManager.h"
 #include "VideoInfoTag.h"
+#include "utils/log.h"
 
 #include "cores/dvdplayer/DVDFileInfo.h"
 

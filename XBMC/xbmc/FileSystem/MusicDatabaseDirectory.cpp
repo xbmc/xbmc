@@ -29,6 +29,7 @@
 #include "Crc32.h"
 #include "TextureManager.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;

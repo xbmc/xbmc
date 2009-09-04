@@ -40,8 +40,6 @@
 #include <queue>
 #include "StdString.h"
 
-#include "utils/log.h"
-
 #undef GetFreeSpace
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }

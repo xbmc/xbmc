@@ -21,7 +21,7 @@
 
 #include "GUIDialogKaraokeSongSelector.h"
 #include "GUIWindowKaraokeLyrics.h"
-
+#include "utils/log.h"
 
 CKaraokeLyricsManager::CKaraokeLyricsManager()
 {

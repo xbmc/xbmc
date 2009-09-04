@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "ZeroconfBrowser.h"
 #include "Directory.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

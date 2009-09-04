@@ -26,6 +26,7 @@
 #endif
 #include "../utils/Network.h"
 #include "GraphicContext.h"
+#include "log.h"
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 

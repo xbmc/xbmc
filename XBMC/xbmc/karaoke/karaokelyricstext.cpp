@@ -23,6 +23,7 @@
 #include "GUIWindowManager.h"
 #include "SkinInfo.h"
 #include "MathUtils.h"
+#include "utils/log.h"
 
 typedef struct
 {

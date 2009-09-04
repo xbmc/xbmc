@@ -27,6 +27,7 @@
 #include "DVDStreamInfo.h"
 #include "DVDClock.h"
 #include "utils/Win32Exception.h"
+#include "utils/log.h"
 
 CDVDOverlayCodecFFmpeg::CDVDOverlayCodecFFmpeg() : CDVDOverlayCodec("FFmpeg Subtitle Decoder")
 {

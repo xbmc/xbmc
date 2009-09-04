@@ -27,6 +27,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/log.h"
 
 bool CFavourites::Load(CFileItemList &items)
 {

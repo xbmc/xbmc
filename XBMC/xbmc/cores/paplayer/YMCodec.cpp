@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "YMCodec.h"
 #include "cores/DllLoader/DllLoader.h"
+#include "utils/log.h"
 
 YMCodec::YMCodec()
 {

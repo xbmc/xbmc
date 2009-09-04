@@ -28,6 +28,7 @@
 #include "Util.h"
 #include "URL.h"
 #include "MediaManager.h"
+#include "utils/log.h"
 
 using namespace MEDIA_DETECT;
 using namespace XFILE;

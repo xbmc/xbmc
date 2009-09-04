@@ -30,6 +30,7 @@
 #include "Util.h"
 #include "GUISettings.h"
 #include "Settings.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

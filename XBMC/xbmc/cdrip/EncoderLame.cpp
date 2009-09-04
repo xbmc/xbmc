@@ -23,6 +23,7 @@
 #include "EncoderLame.h"
 #include "Id3Tag.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

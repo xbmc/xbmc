@@ -28,6 +28,7 @@
 #include "MusicInfoTag.h"
 #include "Settings.h"
 #include "MediaManager.h"
+#include "utils/log.h"
 
 using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;

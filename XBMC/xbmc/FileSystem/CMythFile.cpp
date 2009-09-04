@@ -25,6 +25,7 @@
 #include "DllLibCMyth.h"
 #include "URL.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 extern "C" {
 #include "lib/libcmyth/cmyth.h"

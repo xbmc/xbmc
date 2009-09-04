@@ -27,6 +27,7 @@
 #include "MusicInfoTag.h"
 #include "LocalizeStrings.h"
 #include "AutoPtrHandle.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace AUTOPTR;

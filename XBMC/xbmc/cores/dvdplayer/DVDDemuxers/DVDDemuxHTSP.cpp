@@ -28,6 +28,7 @@
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 #include "Application.h"
+#include "utils/log.h"
 
 extern "C" {
 #include "lib/libhts/net.h"

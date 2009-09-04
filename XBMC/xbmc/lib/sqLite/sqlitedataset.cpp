@@ -32,6 +32,7 @@
 #include <string>
 
 #include "sqlitedataset.h"
+#include "utils/log.h"
 
 using namespace std;
 

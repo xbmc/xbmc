@@ -30,6 +30,7 @@
 #include "Settings.h"
 #include "Crc32.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;

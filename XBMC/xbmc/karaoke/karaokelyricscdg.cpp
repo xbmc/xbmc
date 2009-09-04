@@ -18,7 +18,7 @@
 #include "GUITexture.h"
 #include "Texture.h"
 #include "karaokelyricscdg.h"
-
+#include "utils/log.h"
 
 #define TEX_COLOR DWORD  //Texture color format is A8R8G8B8
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_TEX1)

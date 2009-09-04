@@ -25,6 +25,7 @@
 #include "VideoInfoTag.h"
 #include "FileSystem/IFile.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #ifdef _LINUX
   #include <sys/types.h>

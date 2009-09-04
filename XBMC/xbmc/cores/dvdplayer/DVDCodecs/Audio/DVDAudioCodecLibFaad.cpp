@@ -23,6 +23,7 @@
 #include "DVDAudioCodecLibFaad.h"
 #include "DVDStreamInfo.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 CDVDAudioCodecLibFaad::CDVDAudioCodecLibFaad() : CDVDAudioCodec()
 {

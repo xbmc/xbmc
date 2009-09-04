@@ -25,6 +25,7 @@
 #include "FileSystem/File.h"
 #include "WindowingFactory.h"
 #include "RenderSystem.h"
+#include "log.h"
 
 using namespace XFILE;
 

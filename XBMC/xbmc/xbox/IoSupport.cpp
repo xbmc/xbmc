@@ -25,6 +25,7 @@
 #include "stdafx.h"
 #include "IoSupport.h"
 #include "Settings.h"
+#include "utils/log.h"
 #ifdef _WIN32PC
 #include "my_ntddcdrm.h"
 #include "WIN32Util.h"

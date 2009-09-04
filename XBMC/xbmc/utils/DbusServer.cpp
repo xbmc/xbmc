@@ -30,6 +30,7 @@
 #include "CriticalSection.h"
 #include "Application.h"
 #include "SingleLock.h"
+#include "log.h"
 #include <map>
 #include <queue>
 

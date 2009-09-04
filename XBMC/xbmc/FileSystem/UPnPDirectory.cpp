@@ -32,6 +32,7 @@
 #include "FileItem.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

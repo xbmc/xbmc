@@ -23,6 +23,7 @@
 #include "OGGcodec.h"
 #include "OggTag.h"
 #include "Util.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "MusicInfoTagLoaderAdplug.h"
 #include "MusicInfoTag.h"
+#include "utils/log.h"
 
 #include <fstream>
 
@@ -54,7 +55,6 @@ bool CMusicInfoTagLoaderAdplug::Load(const CStdString& strFileName, CMusicInfoTa
 
   tag.SetLoaded(false);
   const char* szTitle = m_dll.GetTitle(m_adl); // no alloc
-  CLog::Log(LOGDEBUG,"got title %p %s!",szTitle,szTitle);
   if (szTitle)
     if( strcmp(szTitle,"") )
     {
@@ -63,15 +63,12 @@ bool CMusicInfoTagLoaderAdplug::Load(const CStdString& strFileName, CMusicInfoTa
     }
 
   const char* szArtist = m_dll.GetArtist(m_adl); // no alloc
-  CLog::Log(LOGDEBUG,"got artist %p %s!",szArtist,szArtist);
   if( strcmp(szArtist,"") && tag.Loaded() )
     tag.SetArtist(szArtist);
 
   tag.SetDuration(m_dll.GetLength(m_adl)/1000);
 
-  CLog::Log(LOGDEBUG,"call free!");
   m_dll.FreeADL(m_adl);
-  CLog::Log(LOGDEBUG,"free called!");
   m_adl = 0;
 
   return tag.Loaded();

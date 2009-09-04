@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "DirectoryCache.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;

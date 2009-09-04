@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "DBusPowerSyscall.h"
+#include "utils/log.h"
 
 #ifdef HAS_DBUS
 #include "Application.h"
