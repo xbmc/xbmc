@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-08-11" name="Discogs" content="albums" thumb="discogs.gif">
+<scraper framework="1.1" date="2009-09-04" name="Discogs" content="albums" thumb="discogs.gif" language="en">
 	<include>common/htbackdrops.xml</include>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="\1" dest="3">
@@ -87,13 +87,8 @@
 	</CreateArtistSearchUrl>
 	<GetArtistSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
-			<!-- exact match -->
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 \3&lt;/title&gt;&lt;url&gt;http://www.discogs.com\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-				<!-- artist name variation -->
-				<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.discogs.com\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
-					<expression repeat="yes" clear="yes">&lt;a class=&quot;rollover_link&quot; href=&quot;(/artist[^&quot;]*anv=[^&quot;]*)&quot;&gt;(.+?)&lt;p/&gt;</expression>
-				</RegExp>
-				<expression repeat="yes" clear="no" trim="2,3">&lt;a class=&quot;rollover_link&quot; href=&quot;(/artist[^&quot;]*)&quot;&gt;&lt;span style=&quot;.+?;&quot;&gt;&lt;em&gt;(.+?)[(]artist[)](.*?)&lt;p/&gt;</expression>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.discogs.com/artist/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href=&quot;/artist/([^&quot;]*)&quot; class=&quot;rollover_link&quot;&gt;(.+?)&lt;/a&gt;</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
