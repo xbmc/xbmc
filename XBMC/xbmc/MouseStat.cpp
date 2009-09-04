@@ -32,6 +32,7 @@
 
 #include "Key.h"
 #include "GraphicContext.h"
+#include "WindowingFactory.h"
 
 CMouseStat g_Mouse; // global
 
@@ -228,12 +229,22 @@ void CMouseStat::SetResolution(int maxX, int maxY, float speedX, float speedY)
   // reset the coordinates
   m_mouseState.x = m_maxX / 2;
   m_mouseState.y = m_maxY / 2;
+  m_mouseState.active = true;
+
+  SDL_ShowCursor(!(m_mouseEnabled || g_Windowing.IsFullScreen()));
 }
 
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
 bool CMouseStat::IsActive() const
 {
   return m_mouseState.active && m_mouseEnabled;
+}
+
+void CMouseStat::SetEnabled(bool enabled)
+{
+  m_mouseEnabled = enabled;
+  m_mouseState.active = enabled;
+  SDL_ShowCursor(!(m_mouseEnabled || g_Windowing.IsFullScreen()));
 }
 
 // IsEnabled - returns true if mouse is enabled
