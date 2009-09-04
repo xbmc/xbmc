@@ -265,7 +265,7 @@
   <string id="339">Numérique</string>
   <string id="340">Artistes Divers</string>
   <string id="341">Lire le DVD</string>
-  <string id="342">Séquences</string>
+  <string id="342">Films</string>
   <string id="343">Ajuster le taux de rafraîchissement</string>
   <string id="344">Acteurs</string>
   <string id="345">Année</string>
@@ -396,7 +396,7 @@
   <string id="477">Impossible de charger la sélection</string>
   <string id="478">Réglages écran</string>
   <string id="479">Thème et langue</string>
-  <string id="480">Interface</string>
+  <string id="480">Apparence</string>
   <string id="481">Options Audio</string>
   <string id="482">À propos de XBMC</string>
   <string id="483"></string>
@@ -1200,7 +1200,7 @@
   <string id="14034">Cache DVD - DVDRom</string>
   <string id="14035">- Réseau Local</string>
   <string id="14036">Serveurs</string>
-  <string id="14037">Apparences</string>
+  <string id="14037">Interface</string>
   <string id="14038">Les paramètres réseaux ont été changés</string>
   <string id="14039">Vous venez de modifier les paramètres réseaux</string>
   <string id="14040">Redémarrer XBMC pour appliquer les changements ?</string>
