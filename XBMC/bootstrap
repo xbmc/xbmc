@@ -1,0 +1,6 @@
+#!/bin/sh
+
+autoreconf -vif
+
+echo "Please (re)run configure..."
+
