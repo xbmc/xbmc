@@ -24,6 +24,8 @@
 #include "GUIControl.h"
 #include "cores/IAudioCallback.h"
 
+#include <list>
+
 // forward definitions
 class CVisualisation;
 

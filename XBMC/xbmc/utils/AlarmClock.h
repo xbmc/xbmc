@@ -25,6 +25,8 @@
 #include "CriticalSection.h"
 #include "Thread.h"
 
+#include <map>
+
 struct SAlarmClockEvent
 {
   CStopWatch watch;

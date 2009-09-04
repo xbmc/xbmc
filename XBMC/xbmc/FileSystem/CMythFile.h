@@ -25,6 +25,8 @@
 #include "CMythSession.h"
 #include "VideoInfoTag.h"
 
+#include <queue>
+
 extern "C" {
 #include "lib/libcmyth/cmyth.h"
 }
