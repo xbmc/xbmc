@@ -31,12 +31,25 @@ class CWinSystemX11GL : public CWinSystemX11, public CRenderSystemGL
 public:
   CWinSystemX11GL();
   virtual ~CWinSystemX11GL();
+  virtual bool CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop);
 
+  virtual bool IsExtSupported(const char* extension);
+
 protected:
   virtual bool PresentRenderImpl();
-  virtual void SetVSyncImpl(bool enable);  
+  virtual void SetVSyncImpl(bool enable);
+  
+  CStdString m_glxext;
+
+  int (*m_glXGetVideoSyncSGI)(unsigned int*);
+  int (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
+  int (*m_glXSwapIntervalSGI)(int);
+  int (*m_glXSwapIntervalMESA)(int);
+  
+  Bool    (*m_glXGetSyncValuesOML)(Display* dpy, GLXDrawable drawable, int64_t* ust, int64_t* msc, int64_t* sbc);
+  int64_t (*m_glXSwapBuffersMscOML)(Display* dpy, GLXDrawable drawable, int64_t target_msc, int64_t divisor,int64_t remainder);
 };
 
 #endif // WINDOW_SYSTEM_H

@@ -28,6 +28,12 @@ CWinSystemX11GL g_Windowing;
 
 CWinSystemX11GL::CWinSystemX11GL()
 {
+  m_glXGetVideoSyncSGI   = NULL;
+  m_glXWaitVideoSyncSGI  = NULL;
+  m_glXSwapIntervalSGI   = NULL;
+  m_glXSwapIntervalMESA  = NULL;
+  m_glXGetSyncValuesOML  = NULL;
+  m_glXSwapBuffersMscOML = NULL;
 }
 
 CWinSystemX11GL::~CWinSystemX11GL()
@@ -35,15 +41,75 @@ CWinSystemX11GL::~CWinSystemX11GL()
 }
 
 bool CWinSystemX11GL::PresentRenderImpl()
-{        
+{
   glXSwapBuffers(m_dpy, m_glWindow);
-	  
+
   return true;
 }
 
 void CWinSystemX11GL::SetVSyncImpl(bool enable)
 {
 
+}
+
+bool CWinSystemX11GL::IsExtSupported(const char* extension)
+{
+  if(strncmp(extension, "GLX_", 4) != 0)
+    return CRenderSystemGL::IsExtSupported(extension);
+
+  CStdString name;
+
+  name  = " ";
+  name += extension;
+  name += " ";
+
+  return m_glxext.find(name) != std::string::npos;
+}
+
+bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+{
+  if(!CWinSystemX11::CreateNewWindow(name, width, height, fullScreen, userFunction))
+    return false;
+
+  m_glxext  = " ";
+  m_glxext += (const char*)glXQueryExtensionsString(m_dpy, DefaultScreen(m_dpy));
+  m_glxext += " ";
+
+  CLog::Log(LOGDEBUG, "GLX_EXTENSIONS:%s", m_glxext.c_str());
+
+  /* any time window is recreated we need new pointers */
+  if (IsExtSupported("GLX_OML_sync_control"))
+    m_glXGetSyncValuesOML = (Bool (*)(Display*, GLXDrawable, int64_t*, int64_t*, int64_t*))glXGetProcAddress((const GLubyte*)"glXGetSyncValuesOML");
+  else
+    m_glXGetSyncValuesOML = NULL;
+
+  if (IsExtSupported("GLX_OML_sync_control"))
+    m_glXSwapBuffersMscOML = (int64_t (*)(Display*, GLXDrawable, int64_t, int64_t, int64_t))glXGetProcAddress((const GLubyte*)"glXSwapBuffersMscOML");
+  else
+    m_glXSwapBuffersMscOML = NULL;
+
+  if (IsExtSupported("GLX_SGI_video_sync"))
+    m_glXWaitVideoSyncSGI = (int (*)(int, int, unsigned int*))glXGetProcAddress((const GLubyte*)"glXWaitVideoSyncSGI");
+  else
+    m_glXWaitVideoSyncSGI = NULL;
+
+  if (IsExtSupported("GLX_SGI_video_sync"))
+    m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
+  else
+    m_glXGetVideoSyncSGI = NULL;
+    
+  if (IsExtSupported("GLX_SGI_swap_control") )
+    m_glXSwapIntervalSGI = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalSGI");
+  else
+    m_glXSwapIntervalSGI = NULL;
+
+  if (IsExtSupported("GLX_MESA_swap_control"))
+    m_glXSwapIntervalMESA = (int (*)(int))glXGetProcAddress((const GLubyte*)"glXSwapIntervalMESA");
+  else
+    m_glXSwapIntervalMESA = NULL;
+
+
+  return true;
 }
 
 bool CWinSystemX11GL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
