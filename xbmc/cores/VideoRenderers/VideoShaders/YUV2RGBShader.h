@@ -2,8 +2,11 @@
 #define __YUV2RGB_SHADERS_H__
 
 #ifdef HAS_GL
+
+#ifndef __GNUC__
 #pragma warning( push )
 #pragma warning( disable : 4250 )
+#endif
 
 #include "../../../../guilib/Shader.h"
 
@@ -114,7 +117,9 @@ namespace Shaders {
 
 } // end namespace
 
+#ifndef __GNUC__
 #pragma warning( pop )
+#endif
 #endif
 
 #endif //__YUV2RGB_SHADERS_H__
