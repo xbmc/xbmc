@@ -76,66 +76,15 @@ sudo apt-get install distcc
 -----------------------------------------------------------------------------
 4. How to compile
 -----------------------------------------------------------------------------
-
-To create the XBMC executable manually perform these two steps:
-
-.1  # ./configure <option1> <option2> <etc>
-
-These configure options exist:
-  --enable-debug          enable debugging information (default is yes)
-  --enable-optimizations  enable optimization (default is yes)
-  --enable-gl             enable OpenGL rendering (default is yes)
-  --enable-vdpau          enable VDPAU decoding (default is yes if vdpau installed)
-  --enable-profiling      enable gprof profiling (default is no)
-  --enable-joystick       enable SDL joystick support (default is yes)
-  --enable-xrandr         enable XRandR support (default is yes)
-  --enable-ccache         enable building with ccache feature (default is yes
-                          if ccache is installed)
-  --enable-pulse          enable PulseAudio support (default is yes)
-  --enable-faac           enable FAAC support (default is yes)
-  --enable-dvdcss         enable DVDCSS support (default is yes)
-  --enable-mid            enable MID support (default is no)
-  --disable-avahi         disable Avahi support (default is enabled if libavahi-common and libavahi-client is found)
-
-.2  # make
-
-Tip: by adding -j<number> to the make command, you describe how many
-     concurrent jobs will be used. So for dualcore the command is: 
-
-    # make -j2
-
-.3  # make install
-
-This will install XBMC in the prefix provided in 4.1 as well as a launcher script.
-
-NOTE: You may need to run this with sudo (sudo make install) if your user
-doesn't have write permissions to the prefix you have provided (as in the
-default case, /usr/local).
+See README.linux
 
 -----------------------------------------------------------------------------
-5. How to run
+5. Uninstalling
 -----------------------------------------------------------------------------
-You can now run xbmc by issuing the command "xbmc" in a terminal. You should 
-NEVER run xbmc.bin directly as this will not have platform mode enabled and 
-hence xbmc will not have write access to its home directory (ie. it will 
-probably crash).
-
-If you wish to use VDPAU decoding you will now have to change the Render Method
-in Settings->Videos->Player from "Auto Detect" to "VDPAU".
+$ sudo apt-get remove xbmc*
 
 -----------------------------------------------------------------------------
-6. Uninstalling
------------------------------------------------------------------------------
-Issue "make uninstall"  ("sudo make uninstall" if you user doesn't have write
-permission to the install directory) from your source tree.  If you would like
-to also remove any settings and 3rd party addons (skins, scripts, etc) you 
-should also run "rm -rf ~/.xbmc/".
-
-NOTE: If you have rerun configure with a different prefix, you will need to
-rerun configure with the correct prefix for this step to work correctly.
-
------------------------------------------------------------------------------
-7. Endword
+6. Endword
 -----------------------------------------------------------------------------
 
 Have fun!
