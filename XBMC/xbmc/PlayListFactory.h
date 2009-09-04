@@ -20,6 +20,8 @@
  *
  */
 
+class CFileItem;
+
 namespace PLAYLIST
 {
   class CPlayList;

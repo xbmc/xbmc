@@ -43,8 +43,6 @@
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 
-#include "ApplicationMessenger.h"
-
 // Often used
 #include "GUIUserMessages.h"
 
