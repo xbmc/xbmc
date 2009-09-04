@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include "utils/CriticalSection.h"
+
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;

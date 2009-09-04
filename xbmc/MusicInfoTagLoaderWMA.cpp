@@ -27,6 +27,7 @@
 #include "FileSystem/File.h"
 #include "AdvancedSettings.h"
 #include "AutoPtrHandle.h"
+#include "utils/CharsetConverter.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;

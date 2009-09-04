@@ -40,6 +40,7 @@
 
 #include "DllLibCurl.h"
 #include "FileShoutcast.h"
+#include "utils/CharsetConverter.h"
 
 using namespace XFILE;
 using namespace XCURL;

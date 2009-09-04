@@ -25,6 +25,7 @@
 #include "SectionLoader.h"
 #include "URL.h"
 #include "AdvancedSettings.h"
+#include "utils/CharsetConverter.h"
 
 #include <sys/stat.h>
 

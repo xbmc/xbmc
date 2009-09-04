@@ -21,6 +21,8 @@
  *
  */
 
+#include "utils/CriticalSection.h"
+
 class CFileItem;
 class CGUIDialog;
 

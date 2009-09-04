@@ -28,6 +28,7 @@
 #include "utils/RegExp.h"
 #include "AdvancedSettings.h"
 #include "StringUtils.h"
+#include "utils/CharsetConverter.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

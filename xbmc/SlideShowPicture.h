@@ -20,6 +20,8 @@
  *
  */
 
+#include "utils/CriticalSection.h"
+
 class CBaseTexture;
 
 class CSlideShowPic

@@ -22,6 +22,7 @@
 
 #include "IDirectory.h"
 #include "Directory.h"
+#include "utils/CriticalSection.h"
 
 #include <set>
 

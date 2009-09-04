@@ -12,6 +12,7 @@
 #include "stdafx.h"
 #include <math.h>
 
+#include "utils/CharsetConverter.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "GUITextLayout.h"

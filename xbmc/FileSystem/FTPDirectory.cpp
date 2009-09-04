@@ -27,6 +27,7 @@
 #include "FileCurl.h"
 #include "FileItem.h"
 #include "StringUtils.h"
+#include "utils/CharsetConverter.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

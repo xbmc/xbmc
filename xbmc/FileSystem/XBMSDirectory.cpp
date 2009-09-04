@@ -26,6 +26,7 @@
 #include "SectionLoader.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "utils/CharsetConverter.h"
 
 using namespace DIRECTORY;
 

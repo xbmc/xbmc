@@ -20,6 +20,7 @@
  *
  */
 
+#include "utils/CriticalSection.h"
 #include "utils/Thread.h"
 
 typedef struct cmyth_ringbuf   *cmyth_ringbuf_t;

@@ -20,6 +20,8 @@
  *
  */
 
+#include "utils/CriticalSection.h"
+
 //  forward
 class LibraryLoader;
 

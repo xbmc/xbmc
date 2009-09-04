@@ -31,6 +31,7 @@
  */
 
 #include "StdString.h"
+#include "CriticalSection.h"
 #include "Thread.h"
 
 #include <vector>
