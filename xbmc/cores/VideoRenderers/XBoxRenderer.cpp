@@ -477,6 +477,15 @@ void CXBoxRenderer::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, floa
 
   float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
 
+  // allow a certain error to maximize screen size
+  float fCorrection = fScreenWidth / fScreenHeight / fOutputFrameRatio - 1.0;
+  if(fCorrection >   m_aspecterror)
+    fCorrection = m_aspecterror;
+  if(fCorrection < - m_aspecterror)
+    fCorrection = - m_aspecterror;
+
+  fOutputFrameRatio *= 1.0 + fCorrection;
+
   // maximize the movie width
   float fNewWidth = fScreenWidth;
   float fNewHeight = fNewWidth / fOutputFrameRatio;
@@ -968,6 +977,8 @@ unsigned int CXBoxRenderer::PreInit()
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
+  m_aspecterror = g_guiSettings.GetFloat("videoplayer.aspecterror") * 0.01;
+
   // low memory pixel shader
   if (!m_hLowMemShader)
   {

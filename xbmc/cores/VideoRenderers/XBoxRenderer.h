@@ -233,6 +233,7 @@ protected:
   HANDLE m_eventTexturesDone[NUM_BUFFERS];
   HANDLE m_eventOSDDone[NUM_BUFFERS];
 
+  float m_aspecterror;
 };
 
 #endif
