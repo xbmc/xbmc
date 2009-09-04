@@ -25,15 +25,9 @@
  *
  */
 
-#define XBMC_MAX_PATH 1024 // normal max path is 260, but smb shares and the like can be longer
-
-#define DEBUG_MOUSE
-#define DEBUG_KEYBOARD
 #include "system.h"
 
 #include "StdString.h"
-
-#undef GetFreeSpace
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
 #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
