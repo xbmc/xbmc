@@ -21,6 +21,7 @@
  */
 
 #include "utils/CriticalSection.h"
+#include "gui3d.h"
 
 class CBaseTexture;
 

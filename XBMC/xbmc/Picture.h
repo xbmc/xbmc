@@ -20,6 +20,7 @@
  *
  */
 #include "DllImageLib.h"
+#include "gui3d.h"
 
 class CBaseTexture;
 

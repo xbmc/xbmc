@@ -24,6 +24,8 @@
 #pragma once
 #include "OverlayRenderer.h"
 
+#include <GL/glew.h>
+
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
