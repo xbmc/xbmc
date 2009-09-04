@@ -11,10 +11,10 @@
 
 /********************************* Includes ***********************************/
 
-#undef min
-#undef max
 #include "stdafx.h"
 #include "XBMCweb.h"
+#undef min
+#undef max
 #include "Application.h"
 
 #include "Util.h"

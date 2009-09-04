@@ -20,6 +20,8 @@
  *
  */
 
+#include <map>
+
 class CLangInfo
 {
 public:

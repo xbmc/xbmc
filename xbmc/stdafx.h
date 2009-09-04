@@ -31,12 +31,6 @@
 #define DEBUG_KEYBOARD
 #include "system.h"
 
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <memory>
-#include <queue>
 #include "StdString.h"
 
 #undef GetFreeSpace

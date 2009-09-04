@@ -23,6 +23,8 @@
 
 #include "InfoLoader.h"
 
+#include <map>
+
 class TiXmlElement;
 
 #define WEATHER_LABEL_LOCATION   10

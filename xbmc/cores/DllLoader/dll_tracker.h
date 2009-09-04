@@ -24,6 +24,9 @@
 
 #include "utils/CriticalSection.h"
 
+#include <list>
+#include <map>
+
 class DllLoader;
 
 struct AllocLenCaller

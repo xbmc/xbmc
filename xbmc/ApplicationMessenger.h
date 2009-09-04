@@ -23,6 +23,8 @@
 
 #include "utils/CriticalSection.h"
 
+#include <queue>
+
 class CFileItem;
 class CGUIDialog;
 

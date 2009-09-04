@@ -21,6 +21,8 @@
  *
  */
 
+#include <map>
+
 class CAutoTexBuffer;
 class CBaseTexture;
 

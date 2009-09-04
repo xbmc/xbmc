@@ -26,6 +26,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <map>
 #ifndef _LINUX
 #include <strstream>
 #endif

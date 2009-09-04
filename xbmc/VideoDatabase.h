@@ -23,6 +23,7 @@
 #include "VideoInfoTag.h"
 #include "Bookmark.h"
 
+#include <memory>
 #include <set>
 
 struct SScraperInfo;

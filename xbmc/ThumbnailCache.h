@@ -20,6 +20,8 @@
  *
  */
 
+#include <map>
+
 class CThumbnailCache
 {
 private:
