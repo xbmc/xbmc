@@ -72,9 +72,6 @@ bool CWinSystemX11::InitWindowSystem()
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    // Enable vertical sync to avoid any tearing.
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);  
-
     return CWinSystemBase::InitWindowSystem();
   }
   else
