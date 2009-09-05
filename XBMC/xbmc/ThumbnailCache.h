@@ -24,6 +24,8 @@
 
 #include <map>
 
+class CCriticalSection;
+
 class CThumbnailCache
 {
 private:

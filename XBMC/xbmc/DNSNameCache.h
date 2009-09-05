@@ -25,6 +25,8 @@
 
 #include <vector>
 
+class CCriticalSection;
+
 class CDNSNameCache
 {
 public:
