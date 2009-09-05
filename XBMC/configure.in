@@ -700,7 +700,12 @@ fi
 
 # CrystalHD
 if test "$use_crystalhd" = "yes"; then
-  AC_CHECK_HEADER([crystalhd/bc_ldil_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], [Define to 1 if you have the `crystalhd' library (-lldil).]), use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found))
+  AC_CHECK_LIB([ldil], [main], 
+    LIBS=" -lldil $LIBS";INCLUDES="$INCLUDES -D__LINUX_USER__",
+    use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found))
+  #AC_CHECK_HEADER([crystalhd/bc_ldil_if.h],AC_DEFINE([HAVE_LIBCRYSTALHD], [], 
+  #  [Define to 1 if you have the `crystalhd' library (-lldil).]), 
+  #  use_crystalhd=no;AC_MSG_RESULT($crystalhd_not_found), [#define __LINUX_USER__])
 else
   AC_MSG_NOTICE($crystalhd_disabled)
 fi
