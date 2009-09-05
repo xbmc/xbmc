@@ -30,7 +30,7 @@
 #include "Video/DVDVideoCodecLibMpeg2.h"
 
 
-#if defined(HAVE_CRYSTALHD)
+#if defined(HAVE_LIBCRYSTALHD)
 #include "Video/DVDVideoCodecCrystalHD.h"
 #endif
 
@@ -121,7 +121,7 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
   CDVDVideoCodec* pCodec = NULL;
   CDVDCodecOptions options;
 
-#if defined(HAVE_CRYSTALHD)
+#if defined(HAVE_LIBCRYSTALHD)
   if (hint.codec == CODEC_ID_VC1 || hint.codec == CODEC_ID_H264 || hint.codec == CODEC_ID_MPEG2VIDEO)
   {
     CLog::Log(LOGINFO, "Trying Broadcom Crystal HD Decoder...");

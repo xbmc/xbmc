@@ -11386,7 +11386,10 @@ fi
 { echo "$as_me:$LINENO: result: $ac_cv_lib_ldil_main" >&5
 echo "${ECHO_T}$ac_cv_lib_ldil_main" >&6; }
 if test $ac_cv_lib_ldil_main = yes; then
-  LIBS=" -lldil $LIBS";INCLUDES="$INCLUDES -D__LINUX_USER__"
+  LIBS=" -lldil $LIBS";INCLUDES="$INCLUDES -D__LINUX_USER__";cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBCRYSTALHD 1
+_ACEOF
+
 else
   use_crystalhd=no;{ echo "$as_me:$LINENO: result: $crystalhd_not_found" >&5
 echo "${ECHO_T}$crystalhd_not_found" >&6; }

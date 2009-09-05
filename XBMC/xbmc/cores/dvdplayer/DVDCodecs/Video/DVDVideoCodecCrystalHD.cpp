@@ -19,8 +19,12 @@
  *
  */
 
-#if defined(HAVE_CRYSTALHD)
+//#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+//  #include "config.h"
+//#endif
+
 #include "stdafx.h"
+#if defined(HAVE_LIBCRYSTALHD)
 
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
@@ -371,6 +375,7 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
         g_OutputTimer.Start();
       }
       break;
+    default:
       if (ret > 26)
         LOG_DEBUG("%s: DtsProcOutput returned %d.", __MODULE_NAME__, ret);
       else
@@ -443,10 +448,10 @@ CDVDVideoCodecCrystalHD::CDVDVideoCodecCrystalHD() :
   m_DropPictures(false),
   m_PicturesDecoded(0),
   m_pFormatName(""),
-  m_FramesOut(0),
   m_PacketsIn(0),
-  m_pInputThread(NULL),
-  m_pOutputThread(NULL)
+  m_FramesOut(0),
+  m_pOutputThread(NULL),
+  m_pInputThread(NULL)
 {
 }
 
