@@ -2392,7 +2392,7 @@ void CApplication::RenderMemoryStatus()
 bool CApplication::OnKey(CKey& key)
 {
   // Turn the mouse off, as we've just got a keypress from controller or remote
-  g_Mouse.SetInactive();
+  g_Mouse.SetActive(false);
   CAction action;
 
   // get the current active window
@@ -2936,7 +2936,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       action.fRepeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
-      g_Mouse.SetInactive();
+      g_Mouse.SetActive(false);
       return OnAction(action);
     }
     else
@@ -2976,7 +2976,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       action.fRepeat = 0.0;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
-      g_Mouse.SetInactive();
+      g_Mouse.SetActive(false);
       return OnAction(action);
     }
     else
@@ -2999,7 +2999,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       action.fRepeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
-      g_Mouse.SetInactive();
+      g_Mouse.SetActive(false);
       return OnAction(action);
     }
   }
@@ -3228,7 +3228,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 #ifdef HAS_SDL_JOYSTICK
    g_Joystick.Reset();
 #endif
-   g_Mouse.SetInactive();
+   g_Mouse.SetActive(false);
 
    // Figure out what window we're taking the event for.
    WORD iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;

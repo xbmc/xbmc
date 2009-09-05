@@ -21,28 +21,18 @@
 
 #include "stdafx.h"
 #include "MouseStat.h"
-
-/* elis
-#if defined (HAS_SDL)
-#include "SDLMouse.h"
-#else
-#include "DirectInputMouse.h"
-#endif
-*/
-
 #include "Key.h"
 #include "GraphicContext.h"
 #include "WindowingFactory.h"
 
-CMouseStat g_Mouse; // global
+CMouseStat g_Mouse;
 
 CMouseStat::CMouseStat()
 {
-  //m_mouseDevice = NULL;
   m_exclusiveWindowID = WINDOW_INVALID;
   m_exclusiveControlID = WINDOW_INVALID;
   m_pointerState = MOUSE_STATE_NORMAL;
-  m_mouseEnabled = true;
+  SetEnabled();
   m_speedX = m_speedY = 0;
   m_maxX = m_maxY = 0;
   memset(&m_mouseState, 0, sizeof(m_mouseState));
@@ -54,20 +44,6 @@ CMouseStat::~CMouseStat()
 
 void CMouseStat::Initialize(void *appData)
 {
-#ifdef HAS_SDL_XX 
-  //elis
-  // save the current cursor so it can be restored
-  m_visibleCursor = SDL_GetCursor();
-
-  // create a transparent cursor
-  Uint8 data[8];
-  Uint8 mask[8];
-  memset(data, 0, sizeof(data));
-  memset(mask, 0, sizeof(mask));
-  m_hiddenCursor = SDL_CreateCursor(data, mask, 8, 8, 0, 0);
-  SDL_SetCursor(m_hiddenCursor);
-#endif
-
   // Set the default resolution (PAL)
   SetResolution(720, 576, 1, 1);
   
@@ -75,51 +51,17 @@ void CMouseStat::Initialize(void *appData)
 
 void CMouseStat::Cleanup()
 {
-#ifdef HAS_SDL_XX
-  //elis
-  
-  SDL_SetCursor(m_visibleCursor);
-  if (m_hiddenCursor)
-    SDL_FreeCursor(m_hiddenCursor);
-#endif
 }
 
 void CMouseStat::HandleEvent(XBMC_Event& newEvent)
 {
-  bool bMouseMoved(false);
-  int x=0, y=0;
-#ifdef HAS_SDL_XX
-  //elis
+  int dx = m_mouseState.x - newEvent.motion.x;
+  int dy = m_mouseState.y - newEvent.motion.y;
   
-  if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
-  {
-    bMouseMoved = false;
-    Update(bMouseMoved);
-    return;
-  }
-#endif
-  x = m_mouseState.x - newEvent.motion.x;
-  y = m_mouseState.y - newEvent.motion.y;
-  m_mouseState.dx = (char)x;
-  m_mouseState.dy = (char)y;
-  bMouseMoved = x || y ;
-
-  // Check if we have an update...
-  if (bMouseMoved)
-  {
-    m_mouseState.x = newEvent.motion.x;
-    if (m_mouseState.x < 0)
-      m_mouseState.x = 0;
-
-    m_mouseState.y = newEvent.motion.y;
-    if (m_mouseState.y < 0)
-      m_mouseState.y = 0;
-  }
-  else
-  {
-    m_mouseState.dx = 0;
-    m_mouseState.dy = 0;
-  }
+  m_mouseState.dx = dx;
+  m_mouseState.dy = dy;
+  m_mouseState.x  = std::max(0, std::min(m_maxX, m_mouseState.x - dx));
+  m_mouseState.y  = std::max(0, std::min(m_maxY, m_mouseState.y - dy));
 
   // Fill in the public members
   m_mouseState.button[MOUSE_LEFT_BUTTON] = (newEvent.button.button == XBMC_BUTTON_LEFT && newEvent.button.type == XBMC_MOUSEBUTTONDOWN);
@@ -128,38 +70,18 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
   m_mouseState.button[MOUSE_EXTRA_BUTTON1] = (newEvent.button.button == XBMC_BUTTON_X1 && newEvent.button.type == XBMC_MOUSEBUTTONDOWN);
   m_mouseState.button[MOUSE_EXTRA_BUTTON2] = (newEvent.button.button == XBMC_BUTTON_X2 && newEvent.button.type == XBMC_MOUSEBUTTONDOWN);
 
-  UpdateInternal(bMouseMoved);
+  UpdateInternal();
 }
 
 
-void CMouseStat::UpdateInternal(bool bMouseMoved)
+void CMouseStat::UpdateInternal()
 {
+  uint32_t now = timeGetTime();
   // update our state from the mouse device
-  if (bMouseMoved)
-  {
-    // check our position is not out of bounds
-    if (m_mouseState.x < 0) m_mouseState.x = 0;
-    if (m_mouseState.y < 0) m_mouseState.y = 0;
-    if (m_mouseState.x > m_maxX) m_mouseState.x = m_maxX;
-    if (m_mouseState.y > m_maxY) m_mouseState.y = m_maxY;
-    if (HasMoved())
-    {
-      m_mouseState.active = true;
-      m_lastActiveTime = timeGetTime();
-    }
-  }
-  else
-  {
-    m_mouseState.dx = 0;
-    m_mouseState.dy = 0;
-    m_mouseState.dz = 0;
-    // check how long we've been inactive
-    if (timeGetTime() - m_lastActiveTime > MOUSE_ACTIVE_LENGTH)
-      m_mouseState.active = false;
-  }
+  if (HasMoved())
+    SetActive();
 
   // Perform the click mapping (for single + double click detection)
-  bool bNothingDown = true;
   for (int i = 0; i < 5; i++)
   {
     bClick[i] = false;
@@ -167,24 +89,16 @@ void CMouseStat::UpdateInternal(bool bMouseMoved)
     bHold[i] = false;
     if (m_mouseState.button[i])
     {
-      if (!m_mouseState.active) // wake up mouse on any click
-      {
-        m_mouseState.active = true;
-        m_lastActiveTime = timeGetTime();
-      }
-      bNothingDown = false;
+      SetActive();
       if (m_lastDown[i])
       { // start of hold
         bHold[i] = true;
       }
       else
       {
-        if (timeGetTime() - m_lastClickTime[i] < MOUSE_DOUBLE_CLICK_LENGTH)
+        if (now - m_lastClickTime[i] < MOUSE_DOUBLE_CLICK_LENGTH)
         { // Double click
           bDoubleClick[i] = true;
-        }
-        else
-        { // Mouse down
         }
       }
     }
@@ -192,28 +106,12 @@ void CMouseStat::UpdateInternal(bool bMouseMoved)
     {
       if (m_lastDown[i])
       { // Mouse up
-        bNothingDown = false;
         bClick[i] = true;
-        m_lastClickTime[i] = timeGetTime();
-      }
-      else
-      { // no change
+        m_lastClickTime[i] = now;
       }
     }
     m_lastDown[i] = m_mouseState.button[i];
   }
-  if (bNothingDown)
-  { // reset mouse pointer
-    SetState(MOUSE_STATE_NORMAL);
-  }
-
-  // update our mouse pointer as necessary - we show the default pointer
-  // only if we don't have the mouse on, and the mouse is active
-#ifdef HAS_SDL_XX
-  //elis
-  
-  SDL_SetCursor(m_mouseState.active && !m_mouseEnabled);
-#endif
 }
 
 
@@ -229,34 +127,34 @@ void CMouseStat::SetResolution(int maxX, int maxY, float speedX, float speedY)
   // reset the coordinates
   m_mouseState.x = m_maxX / 2;
   m_mouseState.y = m_maxY / 2;
-  m_mouseState.active = true;
+  SetActive();
+}
 
-  SDL_ShowCursor(!(m_mouseEnabled || g_Windowing.IsFullScreen()));
+void CMouseStat::SetActive(bool active /*=true*/)
+{
+  m_lastActiveTime = timeGetTime();
+  m_mouseState.active = active;
+  SDL_ShowCursor(m_mouseState.active && !(IsEnabled() || g_Windowing.IsFullScreen()));
 }
 
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
-bool CMouseStat::IsActive() const
+bool CMouseStat::IsActive()
 {
-  return m_mouseState.active && m_mouseEnabled;
+  if (m_mouseState.active && (timeGetTime() - m_lastActiveTime > MOUSE_ACTIVE_LENGTH))
+    SetActive(false);
+  return (m_mouseState.active && IsEnabled());
 }
 
 void CMouseStat::SetEnabled(bool enabled)
 {
   m_mouseEnabled = enabled;
-  m_mouseState.active = enabled;
-  SDL_ShowCursor(!(m_mouseEnabled || g_Windowing.IsFullScreen()));
+  SetActive(enabled);
 }
 
 // IsEnabled - returns true if mouse is enabled
 bool CMouseStat::IsEnabled() const
 {
   return m_mouseEnabled;
-}
-
-// turns off mouse activation
-void CMouseStat::SetInactive()
-{
-  m_mouseState.active = false;
 }
 
 bool CMouseStat::HasMoved() const
@@ -273,11 +171,7 @@ void CMouseStat::SetLocation(const CPoint &point, bool activate)
 {
   m_mouseState.x = (int)point.x;
   m_mouseState.y = (int)point.y;
-  if (activate)
-  {
-    m_lastActiveTime = timeGetTime();
-    m_mouseState.active = true;
-  }
+  SetActive();
 }
 
 CPoint CMouseStat::GetLastMove() const
@@ -293,8 +187,7 @@ char CMouseStat::GetWheel() const
 void CMouseStat::UpdateMouseWheel(char dir)
 {
   m_mouseState.dz = dir;
-  m_mouseState.active = true;
-  m_lastActiveTime = timeGetTime();
+  SetActive();
 }
 
 void CMouseStat::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point)
@@ -316,8 +209,4 @@ void CMouseStat::EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID)
 
 void CMouseStat::Acquire()
 {
-  /* elis
-  if (m_mouseDevice)
-    m_mouseDevice->Acquire();
-    */
 }

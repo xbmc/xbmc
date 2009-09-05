@@ -50,8 +50,8 @@ struct MouseState
 {
   int x;            // x location
   int y;            // y location
-  char dx;          // change in x
-  char dy;          // change in y
+  int16_t dx;          // change in x
+  int16_t dy;          // change in y
   char dz;          // change in z (wheel)
   bool button[5];   // true if a button is down
   bool active;      // true if the mouse is active
@@ -69,17 +69,17 @@ public:
   void HandleEvent(XBMC_Event& newEvent);
   void Acquire();
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
-  bool IsActive() const;
+  bool IsActive();
   bool IsEnabled() const;
   bool HasMoved() const;
-  void SetInactive();
+  void SetActive(bool active = true);
   void SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point);
   void EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID);
   DWORD GetExclusiveWindowID() const { return m_exclusiveWindowID; };
   DWORD GetExclusiveControlID() const { return m_exclusiveControlID; };
   const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(DWORD state) { m_pointerState = state; };
-  void SetEnabled(bool enabled);
+  void SetEnabled(bool enabled = true);
   DWORD GetState() const { return m_pointerState; };
   CPoint GetLocation() const;
   void SetLocation(const CPoint &point, bool activate=false);
@@ -90,7 +90,7 @@ public:
 
 private:
  
-  void UpdateInternal(bool bMouseMoved);
+  void UpdateInternal();
  
   // exclusive access to mouse from a control
   DWORD m_exclusiveWindowID;
