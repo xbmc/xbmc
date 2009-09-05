@@ -192,7 +192,7 @@ char* CRegExp::GetReplaceString( const char* sReplaceExp )
   return sReplaceStr;
 }
 
-CStdString CRegExp::GetMatch(int iSub /* = 0 */)
+std::string CRegExp::GetMatch(int iSub /* = 0 */)
 {
   if (iSub < 0 || iSub > m_iMatchCount)
     return "";
@@ -202,9 +202,9 @@ CStdString CRegExp::GetMatch(int iSub /* = 0 */)
   return m_subject.substr(pos, len);
 }
 
-bool CRegExp::GetNamedSubPattern(const char* strName, CStdString& strMatch)
+bool CRegExp::GetNamedSubPattern(const char* strName, std::string& strMatch)
 {
-  strMatch.Empty();
+  strMatch.clear();
   int iSub = pcre_get_stringnumber(m_re, strName);
   if (iSub < 0)
     return false;

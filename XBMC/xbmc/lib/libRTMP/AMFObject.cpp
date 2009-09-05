@@ -27,6 +27,7 @@
 
 #include "AMFObject.h"
 #include "utils/log.h"
+#include "StdString.h"
 #include "rtmp.h"
 
 RTMP_LIB::AMFObjectProperty RTMP_LIB::AMFObject::m_invalidProp;

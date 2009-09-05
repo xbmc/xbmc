@@ -25,6 +25,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "utils/Atomics.h"
+#include "utils/log.h"
 
 /////////////////////////////////////////////////////////////////////////////////
 // CAtomicAllocator: Wrapper class for lf_heap.

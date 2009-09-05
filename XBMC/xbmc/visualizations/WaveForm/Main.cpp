@@ -2,6 +2,7 @@
 // A simple visualisation example by MrC
 
 #include "../../../visualisations/xbmc_vis.h"
+#include "../../../guilib/system.h"
 
 char g_visName[512];
 #ifndef HAS_SDL_OPENGL

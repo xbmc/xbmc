@@ -27,8 +27,9 @@
 #include "SpecialProtocol.h"
 #include "CocoaInterface.h"
 #include "Settings.h"
-#include "Texture.h"
 #include "AdvancedSettings.h"
+#include "Texture.h"
+#include "utils/log.h"
 
 
 CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
