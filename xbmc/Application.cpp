@@ -5277,14 +5277,16 @@ void CApplication::Minimize(bool minimize)
   if (minimize)
   {
     m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
-    if (m_bWasFullScreenBeforeMinimize) g_graphicsContext.SetFullScreenRoot(false);
+    if (m_bWasFullScreenBeforeMinimize)
+      g_graphicsContext.ToggleFullScreenRoot();
 #ifdef HAS_SDL
     SDL_WM_IconifyWindow();
 #endif
   }
   else
   {
-    if (m_bWasFullScreenBeforeMinimize) g_graphicsContext.SetFullScreenRoot(true);
+    if (m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
+      g_graphicsContext.ToggleFullScreenRoot();
   }
 }
 
