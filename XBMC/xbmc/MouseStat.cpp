@@ -82,6 +82,8 @@ void CMouseStat::UpdateInternal()
     SetActive();
 
   // Perform the click mapping (for single + double click detection)
+  bool bNothingDown = true;
+  
   for (int i = 0; i < 5; i++)
   {
     bClick[i] = false;
@@ -89,6 +91,7 @@ void CMouseStat::UpdateInternal()
     bHold[i] = false;
     if (m_mouseState.button[i])
     {
+      bNothingDown = false;
       SetActive();
       if (m_lastDown[i])
       { // start of hold
@@ -106,12 +109,16 @@ void CMouseStat::UpdateInternal()
     {
       if (m_lastDown[i])
       { // Mouse up
+        bNothingDown = false;
         bClick[i] = true;
         m_lastClickTime[i] = now;
       }
     }
     m_lastDown[i] = m_mouseState.button[i];
   }
+
+  if (bNothingDown)
+    SetState(MOUSE_STATE_NORMAL);
 }
 
 
