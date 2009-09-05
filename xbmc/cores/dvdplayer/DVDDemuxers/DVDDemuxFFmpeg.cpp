@@ -69,6 +69,14 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
   strInfo = temp;
 }
 
+void CDemuxStreamDataFFmpeg::GetStreamInfo(std::string& strInfo)
+{
+  if(!m_stream) return;
+  char temp[128];
+  strcpy(temp, "DATA STREAM");
+  strInfo = temp;
+}
+
 // these need to be put somewhere that are compiled, we should have some better place for it
 
 CCriticalSection DllAvCodec::m_critSection;
@@ -1004,8 +1012,8 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_DATA:
       {
-        m_streams[iId] = new CDemuxStream();
-        m_streams[iId]->type = STREAM_DATA;
+        CDemuxStreamData* st = new CDemuxStreamDataFFmpeg(this, pStream);
+        m_streams[iId] = st;
         break;
       }
     case CODEC_TYPE_SUBTITLE:

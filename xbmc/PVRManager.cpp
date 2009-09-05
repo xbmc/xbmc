@@ -897,44 +897,6 @@ bool CPVRManager::UpdateBackendChannel(const CFileItem &item)
 
 
 /************************************************************/
-/** Teletext handling **/
-
-bool CPVRManager::TeletextPagePresent(const CFileItem &item, int Page, int subPage)
-{
-  /* Check if a cPVRChannelInfoTag is inside file item */
-  if (!item.IsTVChannel())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: TeletextPagePresent no TVChannelTag given!");
-    return false;
-  }
-
-  const cPVRChannelInfoTag* tag = item.GetTVChannelInfoTag();
-
-  EnterCriticalSection(&m_critSection);
-  bool ret = m_clients[tag->ClientID()]->TeletextPagePresent(tag->ClientNumber(), Page, subPage);
-  LeaveCriticalSection(&m_critSection);
-  return ret;
-}
-
-bool CPVRManager::GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf)
-{
-  /* Check if a cPVRTimerInfoTag is inside file item */
-  if (!item.IsTVChannel())
-  {
-    CLog::Log(LOGERROR, "CPVRManager: GetTeletextPage no TVChannelTag given!");
-    return false;
-  }
-
-  const cPVRChannelInfoTag* tag = item.GetTVChannelInfoTag();
-
-  EnterCriticalSection(&m_critSection);
-  bool ret = m_clients[tag->ClientID()]->ReadTeletextPage(buf, tag->ClientNumber(), Page, subPage);
-  LeaveCriticalSection(&m_critSection);
-  return ret;
-}
-
-
-/************************************************************/
 /** Live stream handling **/
 
 
@@ -993,7 +955,7 @@ bool CPVRManager::ChannelSwitch(unsigned int iChannel)
   m_timeshiftTimeDiff = 0;
 
   /* Perform Channelswitch */
-  if (!m_clients[channels->at(iChannel-1).ClientID()]->SwitchChannel(channels->at(iChannel-1).ClientNumber()))
+  if (!m_clients[channels->at(iChannel-1).ClientID()]->SwitchChannel(channels->at(iChannel-1)))
   {
     CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
     LeaveCriticalSection(&m_critSection);
@@ -1052,7 +1014,7 @@ bool CPVRManager::ChannelUp(unsigned int *newchannel)
       m_timeshiftTimeDiff = 0;
 
       /* Perform Channelswitch */
-      if (m_clients[channels->at(currentTVChannel-1).ClientID()]->SwitchChannel(channels->at(currentTVChannel-1).ClientNumber()))
+      if (m_clients[channels->at(currentTVChannel-1).ClientID()]->SwitchChannel(channels->at(currentTVChannel-1)))
       {
         /* Update the Playing channel data and the current epg data */
         m_scanStart = timeGetTime();
@@ -1112,7 +1074,7 @@ bool CPVRManager::ChannelDown(unsigned int *newchannel)
       m_timeshiftTimeDiff = 0;
 
       /* Perform Channelswitch */
-      if (m_clients[channels->at(currentTVChannel-1).ClientID()]->SwitchChannel(channels->at(currentTVChannel-1).ClientNumber()))
+      if (m_clients[channels->at(currentTVChannel-1).ClientID()]->SwitchChannel(channels->at(currentTVChannel-1)))
       {
         /* Update the Playing channel data and the current epg data */
         m_scanStart = timeGetTime();

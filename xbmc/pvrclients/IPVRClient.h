@@ -90,7 +90,7 @@ public:
   virtual __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET)=0;
   virtual __int64 LengthLiveStream(void)=0;
   virtual int GetCurrentClientChannel()=0;
-  virtual bool SwitchChannel(unsigned int channel)=0;
+  virtual bool SwitchChannel(const cPVRChannelInfoTag &channelinfo)=0;
 
   virtual bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)=0;
   virtual void CloseRecordedStream(void)=0;
@@ -108,7 +108,4 @@ public:
   virtual demux_packet_t* ReadDemux()=0;
   virtual bool SeekDemuxTime(int time, bool backwords, double* startpts)=0;
   virtual int GetDemuxStreamLength()=0;
-
-  virtual bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)=0;
-  virtual bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage)=0;
 };

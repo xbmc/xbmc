@@ -138,9 +138,6 @@ public:
   /* Recorded stream handling */
   bool RecordChannel(unsigned int channel, bool bOnOff, bool radio = false);
 
-  bool TeletextPagePresent(const CFileItem &item, int Page, int subPage);
-  bool GetTeletextPage(const CFileItem &item, int Page, int subPage, BYTE* buf);
-
   void                SetCurrentPlayingProgram(CFileItem& item);
   void                SyncInfo(); // synchronize InfoManager related stuff
   

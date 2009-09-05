@@ -15,10 +15,12 @@ SRCS=	DVDAudio.cpp \
 	DVDPlayer.cpp \
 	DVDPlayerSubtitle.cpp \
 	DVDPlayerVideo.cpp \
+	DVDPlayerTeletext.cpp \
 	DVDStreamInfo.cpp \
 	DVDFileInfo.cpp \
 	DVDPlayerAudioResampler.cpp \
 	DVDTSCorrection.cpp \
+	hamm.cpp \
 
 LIB=	DVDPlayer.a
 

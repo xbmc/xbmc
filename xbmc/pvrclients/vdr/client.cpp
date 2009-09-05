@@ -359,9 +359,9 @@ extern "C" PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo)
   return g_client->UpdateTimer(timerinfo);
 }
 
-extern "C" bool OpenLiveStream(unsigned int channel)
+extern "C" bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  return g_client->OpenLiveStream(channel);
+  return g_client->OpenLiveStream(channelinfo);
 }
 
 extern "C" void CloseLiveStream()
@@ -389,9 +389,9 @@ extern "C" int GetCurrentClientChannel()
   return g_client->GetCurrentClientChannel();
 }
 
-extern "C" bool SwitchChannel(unsigned int channel)
+extern "C" bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  return g_client->SwitchChannel(channel);
+  return g_client->SwitchChannel(channelinfo);
 }
 
 extern "C" bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo)
@@ -419,17 +419,7 @@ extern "C" __int64 LengthRecordedStream(void)
   return g_client->LengthRecordedStream();
 }
 
-extern "C" bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)
-{
-  return g_client->TeletextPagePresent(channel, Page, subPage);
-}
-
-extern "C" bool ReadTeletextPage(BYTE* buf, unsigned int channel, unsigned int Page, unsigned int subPage)
-{
-  return g_client->ReadTeletextPage(buf, channel, Page, subPage);
-}
-
-extern "C" bool OpenTVDemux(PVRDEMUXHANDLE handle, unsigned int channel)
+extern "C" bool OpenTVDemux(PVRDEMUXHANDLE handle, const PVR_CHANNEL &channelinfo)
 {
   return false;
 }

@@ -34,20 +34,20 @@ extern "C"
   PVR_ERROR DeleteTimer(const PVR_TIMERINFO &timerinfo, bool force);
   PVR_ERROR RenameTimer(const PVR_TIMERINFO &timerinfo, const char *newname);
   PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo);
-  bool OpenLiveStream(unsigned int channel);
+  bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
   void CloseLiveStream();
   int ReadLiveStream(BYTE* buf, int buf_size);
   __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthLiveStream(void);
   int GetCurrentClientChannel();
-  bool SwitchChannel(unsigned int channel);
+  bool SwitchChannel(const PVR_CHANNEL &channelinfo);
   bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);
   void CloseRecordedStream(void);
   int ReadRecordedStream(BYTE* buf, int buf_size);
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthRecordedStream(void);
 
-  bool OpenTVDemux(PVRDEMUXHANDLE handle, unsigned int channel);
+  bool OpenTVDemux(PVRDEMUXHANDLE handle, const PVR_CHANNEL &channelinfo);
   bool OpenRecordingDemux(PVRDEMUXHANDLE handle, const PVR_RECORDINGINFO &recinfo);
   void DisposeDemux();
   void ResetDemux();
@@ -57,9 +57,6 @@ extern "C"
   demux_packet_t* ReadDemux();
   bool SeekDemuxTime(int time, bool backwords, double* startpts);
   int GetDemuxStreamLength();
-    
-  bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
-  bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct PVRClient* pClient)
@@ -102,8 +99,6 @@ extern "C"
     pClient->ReadRecordedStream     = ReadRecordedStream;
     pClient->SeekRecordedStream     = SeekRecordedStream;
     pClient->LengthRecordedStream   = LengthRecordedStream;
-    pClient->TeletextPagePresent    = TeletextPagePresent;
-    pClient->ReadTeletextPage       = ReadTeletextPage;
     pClient->OpenTVDemux            = OpenTVDemux;
     pClient->OpenRecordingDemux     = OpenRecordingDemux;
     pClient->DisposeDemux           = DisposeDemux;

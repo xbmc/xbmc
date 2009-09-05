@@ -251,7 +251,7 @@ protected:
     //   0x01  C11 - Magazine Serial mode
     
     int Lang;
-    // 3-bit language number from header
+    // 3-bit language number from headerz
     
     bool Dirty;    // At least one character is dirty
     bool DirtyAll; // Consider all characters dirty, regardless of flag
