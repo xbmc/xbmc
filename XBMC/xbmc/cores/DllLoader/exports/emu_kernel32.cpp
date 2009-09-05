@@ -121,7 +121,7 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
 // should be moved to CFile! or use CFile::stat
 extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
 {
-  char str[XBMC_MAX_PATH];
+  char str[1024];
 
   if (!strcmp(lpFileName, "\\Device\\Cdrom0")) return (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_DIRECTORY);
 
