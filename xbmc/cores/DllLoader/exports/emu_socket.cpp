@@ -31,6 +31,7 @@
 #else
 #include "xbox\Network.h"
 #endif
+#include "utils/log.h"
 
 using namespace std;
 

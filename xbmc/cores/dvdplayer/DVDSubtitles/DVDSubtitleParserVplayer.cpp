@@ -24,6 +24,8 @@
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
 #include "utils/RegExp.h"
+#include "StdString.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 

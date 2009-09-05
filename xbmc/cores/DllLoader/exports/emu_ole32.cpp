@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "emu_dummy.h"
 #include "emu_ole32.h"
+#include "utils/log.h"
 
 static const CLSID CLSID_MemoryAllocator =  {0x1e651cc0, 0xb199, 0x11d0, {0x82, 0x12, 0x00, 0xc0, 0x4f, 0xc3, 0x2c, 0x45}};
 

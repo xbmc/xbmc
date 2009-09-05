@@ -25,6 +25,8 @@
 #include "DVDClock.h"
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
+#include "StdString.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 

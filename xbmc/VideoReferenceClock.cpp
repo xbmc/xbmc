@@ -20,6 +20,8 @@
  */
 #include "stdafx.h"
 #include <iostream> //for debugging, please remove
+#include <list>
+#include "StdString.h"
 #include "VideoReferenceClock.h"
 #include "MathUtils.h"
 #include "utils/SingleLock.h"

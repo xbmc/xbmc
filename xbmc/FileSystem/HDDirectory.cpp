@@ -30,6 +30,10 @@
 #include "FileItem.h"
 #include "AutoPtrHandle.h"
 
+#ifndef _LINUX
+#include "utils/CharsetConverter.h"
+#endif
+
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
 #endif

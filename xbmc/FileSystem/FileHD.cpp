@@ -32,6 +32,8 @@
 #include <sys/ioctl.h>
 #else
 #include <io.h>
+#include "utils/CharsetConverter.h"
+#include "utils/log.h"
 #endif
 
 using namespace XFILE;

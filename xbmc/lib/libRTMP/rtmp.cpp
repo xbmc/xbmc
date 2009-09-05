@@ -23,6 +23,7 @@
 #include "PlatformInclude.h"
 #include "rtmp.h"
 #include "AMFObject.h"
+#include <assert.h>
 
 #ifdef _LINUX
   #include <sys/types.h>
