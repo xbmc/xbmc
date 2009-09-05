@@ -91,7 +91,6 @@ public:
   void SetFullScreenViewWindow(RESOLUTION &res);
   bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
-  void SetFullScreenRoot(bool fs = true);
   void SetFullScreenVideo(bool bOnOff);
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;
@@ -175,8 +174,6 @@ protected:
   int m_iScreenHeight;
   int m_iScreenWidth;
   int m_iScreenId;
-  int m_iFullScreenHeight;
-  int m_iFullScreenWidth;
   int m_iBackBufferCount;
   DWORD m_dwID;
   bool m_bWidescreen;
