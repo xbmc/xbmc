@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,9 +19,9 @@
  *
  */
 
+#if defined(HAVE_CRYSTALHD)
 #include "stdafx.h"
-#define HAVE_MPCLINK // TODO: Remove this and define in configure/project
-#if defined(HAVE_MPCLINK)
+
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecCrystalHD.h"

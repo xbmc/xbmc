@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,11 +19,7 @@
  *
  */
 
-#ifndef HAVE_MPCLINK
-#define HAVE_MPCLINK
-#endif
-
-#if defined(HAVE_MPCLINK)
+#if defined(HAVE_CRYSTALHD)
 #pragma once
 
 #include "DVDVideoCodec.h"
@@ -32,22 +28,17 @@ namespace BCM
 {
 #if defined(WIN32)
   typedef void		*HANDLE;
-  #include "lib/crystalhd/include/windows/bc_drv_if.h"
   #include "lib/crystalhd/include/bc_dts_defs.h"
+  #include "lib/crystalhd/include/windows/bc_drv_if.h"
 #else
   #ifndef __LINUX_USER__
   #define __LINUX_USER__
-  #endif //__LINUX_USER__
-  #if defined(__APPLE__)
-    #include "bc_dts_types.h" 
-    #include "bc_dts_defs.h" 
-    #include "bc_ldil_if.h" 
-  #else 
-    #include "crystalhd/bc_dts_types.h"
-    #include "crystalhd/bc_dts_defs.h"
-    #include "crystalhd/bc_ldil_if.h"
-  #endif //defined(__APPLE__)
-  #endif //defined(WIN32)
+  #endif
+
+  #include "crystalhd/bc_dts_types.h"
+  #include "crystalhd/bc_dts_defs.h"
+  #include "crystalhd/bc_ldil_if.h"
+#endif //defined(WIN32)
 };
 
 extern const char* g_DtsStatusText[];
