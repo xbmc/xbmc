@@ -50,6 +50,8 @@ protected:
   
   Bool    (*m_glXGetSyncValuesOML)(Display* dpy, GLXDrawable drawable, int64_t* ust, int64_t* msc, int64_t* sbc);
   int64_t (*m_glXSwapBuffersMscOML)(Display* dpy, GLXDrawable drawable, int64_t target_msc, int64_t divisor,int64_t remainder);
+  
+  int m_iVSyncErrors;
 };
 
 #endif // WINDOW_SYSTEM_H
