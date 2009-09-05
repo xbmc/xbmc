@@ -28,6 +28,7 @@
 #include "MediaManager.h"
 #include "LocalizeStrings.h"
 #include "AdvancedSettings.h"
+#include "log.h"
 
 extern HWND g_hWnd;
 WNDPROC g_lpOriginalWndProc=NULL;
