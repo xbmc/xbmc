@@ -19,8 +19,8 @@
  *
  */
 
-#if defined(HAVE_LIBCRYSTALHD)
 #pragma once
+#if defined(HAVE_LIBCRYSTALHD)
 
 #include "DVDVideoCodec.h"
 

@@ -19,13 +19,12 @@
  *
  */
 
-//#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-//  #include "config.h"
-//#endif
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 
 #include "stdafx.h"
 #if defined(HAVE_LIBCRYSTALHD)
-
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
 #include "DVDVideoCodecCrystalHD.h"
