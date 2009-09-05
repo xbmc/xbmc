@@ -134,7 +134,10 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
     options |= SDL_FULLSCREEN;
 
   if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
+  {
+    RefreshGlxContext();
     return true;
+  }
   
   return false;
 }
