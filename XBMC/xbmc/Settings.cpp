@@ -796,6 +796,9 @@ bool CSettings::LoadCalibration(const TiXmlElement* pRoot, const CStdString& str
     // find this resolution in our resolution vector
     for (unsigned int res = 0; res < g_settings.m_ResInfo.size(); res++)
     {
+      if (res == RES_WINDOW)
+        continue;
+      
       if (g_settings.m_ResInfo[res].strMode == mode)
       { // found, read in the rest of the information for this item
         const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
