@@ -31,6 +31,7 @@
 #include "utils/PVRTimers.h"
 
 #include <vector>
+#include <deque>
 
 typedef std::map< long, IPVRClient* >           CLIENTMAP;
 typedef std::map< long, IPVRClient* >::iterator CLIENTMAPITR;
@@ -39,27 +40,40 @@ typedef std::map< long, PVR_SERVERPROPS >       CLIENTPROPS;
 class CPVRTimeshiftRcvr : private CThread
 {
 public:
-  CPVRTimeshiftRcvr(IPVRClient *client);
+  CPVRTimeshiftRcvr();
   ~CPVRTimeshiftRcvr();
 
   /* Thread handling */
   void Process();
   void SetClient(IPVRClient *client);
-  bool StartReceiver();
+  bool StartReceiver(IPVRClient *client);
   void StopReceiver();
   int WriteBuffer(BYTE* buf, int buf_size);
   __int64 GetMaxSize();
-  __int64 GetPosition() { return m_position; }
-  __int64 GetWritten() { return m_written; }
+  __int64 GetWritten();
+  __int64 TimeToPos(DWORD time, DWORD *timeRet, bool *wrapback);
+  DWORD GetDuration();
+  DWORD GetTimeTotal();
+  const char* GetDurationString();
 
 private:
-  IPVRClient         *m_client;         // pointer to a enabled client interface
-  XFILE::CFile       *m_pFile;          // Stream cache file
-  __int64             m_position;       // Current cache file write position
-  __int64             m_written;        // Total Bytes written to cache file
-  __int64             m_MaxSize;        // Maximum size after cache wraparound
-  __int64             m_MaxSizeStatic;  // The maximum size for cache from settings
-  uint8_t             buf[32768];       // temporary buffer for client read
+  typedef struct STimestamp
+  {
+    __int64 pos;
+    DWORD time;
+  } STimestamp;
+
+  std::deque<STimestamp>  m_Timestamps;
+  CRITICAL_SECTION        m_critSection;
+  IPVRClient             *m_client;         // pointer to a enabled client interface
+  XFILE::CFile           *m_pFile;          // Stream cache file
+  __int64                 m_position;       // Current cache file write position
+  __int64                 m_written;        // Total Bytes written to cache file
+  __int64                 m_MaxSize;        // Maximum size after cache wraparound
+  __int64                 m_MaxSizeStatic;  // The maximum size for cache from settings
+  DWORD                   m_Started;
+  CStdString              m_DurationStr;
+  uint8_t                 buf[32768];       // temporary buffer for client read
 };
 
 class CPVRManager : IPVRClientCallback
@@ -94,7 +108,7 @@ public:
   bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
 
-  bool HaveActiveClients();
+
 
   /* Event handling */
   void	      OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
@@ -124,14 +138,8 @@ public:
 
   /* Live stream handling */
     bool PauseLiveStream(bool DoPause, double dTime);
-  int GetCurrentChannel(bool radio = false);
-  bool ChannelSwitch(unsigned int channel);
-  bool ChannelUp(unsigned int *newchannel);
-  bool ChannelDown(unsigned int *newchannel);
-  int GetPreviousChannel();
   int GetTotalTime();
   int GetStartTime();
-  bool UpdateItem(CFileItem& item);
   void SetPlayingGroup(int GroupId);
   int GetPlayingGroup();
 
@@ -140,13 +148,21 @@ public:
 
   void                SetCurrentPlayingProgram(CFileItem& item);
   void                SyncInfo(); // synchronize InfoManager related stuff
-  
-  CFileItem        *GetCurrentChannelItem();
+
+
+
+
+
+
 
 
 
   /* General functions */
-  PVR_SERVERPROPS  *GetCurrentClientProps();
+  PVR_SERVERPROPS *GetCurrentClientProps();
+  CFileItem *GetCurrentPlayingItem();
+  bool GetCurrentChannel(int *number, bool *radio);
+  bool HaveActiveClients();
+  int GetPreviousChannel();
 
   /* Stream reading functions */
   bool OpenLiveStream(unsigned int channel, bool radio = false);
@@ -155,6 +171,10 @@ public:
   int ReadStream(BYTE* buf, int buf_size);
   __int64 SeekStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthStream(void);
+  bool UpdateItem(CFileItem& item);
+  bool ChannelSwitch(unsigned int channel);
+  bool ChannelUp(unsigned int *newchannel);
+  bool ChannelDown(unsigned int *newchannel);
 
   /* Stream demux functions */
   bool OpenDemux(PVRDEMUXHANDLE handle);
@@ -214,13 +234,15 @@ private:
   int                 m_LastChannel;
   
   /*--- Timeshift data ---*/
-  bool                m_timeshiftExt;       /* True if external Timeshift is possible and active */
-  bool                m_timeshiftInt;       /* True if internal Timeshift is possible and active */
-  bool                m_bPaused;            /* True if stream is paused */
-  XFILE::CFile       *m_pTimeshiftFile;     /* File class to read buffer file */
-  CPVRTimeshiftRcvr  *m_TimeshiftReceiver;  /* The Thread based Receiver to fill buffer file */
-  DWORD               m_timeshiftTimePause; /* Time in ms where the stream was paused */
-  int                 m_timeshiftTimeDiff;  /* Difference between current position and true position in sec. */
-  __int64             m_timeshiftDelta;     /* Difference between current position and true position in bytes */
-  __int64             m_timeshiftReaded;    /* Continues bytes readed for this channel */
+  bool                CreateInternalTimeshift();
+  bool                m_timeshiftExt;             /* True if external Timeshift is possible and active */
+  bool                m_timeshiftInt;             /* True if internal Timeshift is possible and active */
+  DWORD               m_playbackStarted;          /* Time where the playback was started */
+  bool                m_bPaused;                  /* True if stream is paused */
+  XFILE::CFile       *m_pTimeshiftFile;           /* File class to read buffer file */
+  CPVRTimeshiftRcvr  *m_TimeshiftReceiver;        /* The Thread based Receiver to fill buffer file */
+  DWORD               m_timeshiftTimePause;       /* Time in ms where the stream was paused */
+  int                 m_timeshiftTimeDiff;        /* Difference between current position and true position in sec. */
+  __int64             m_timeshiftCurrWrapAround;  /* Bytes readed during current wrap around */
+  __int64             m_timeshiftLastWrapAround;  /* Bytes readed during last wrap around */
 };

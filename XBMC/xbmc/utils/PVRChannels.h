@@ -258,6 +258,7 @@ public:
   bool IsHidden(void) const { return m_hide; }
   void SetHidden(bool hide) { m_hide = hide; }
   int GetDuration() const;
+  int GetTime() const;
   void SetDuration(CDateTimeSpan duration) { m_duration = duration; }
   CDateTime StartTime(void) const { return m_startTime; }
   void SetStartTime(CDateTime time) { m_startTime = time; }

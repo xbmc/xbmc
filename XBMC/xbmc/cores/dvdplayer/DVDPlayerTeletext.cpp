@@ -249,7 +249,7 @@ void CDVDTeletextData::Process()
       int pages            = (pPacket->iSize - 1) / 46;
       int chan             = -1;
 
-      const cPVRChannelInfoTag* tag = CPVRManager::GetInstance()->GetCurrentChannelItem()->GetTVChannelInfoTag();
+      const cPVRChannelInfoTag* tag = CPVRManager::GetInstance()->GetCurrentPlayingItem()->GetTVChannelInfoTag();
       if (tag)
         chan = tag->ChannelID();
       

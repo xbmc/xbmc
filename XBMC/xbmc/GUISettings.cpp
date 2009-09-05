@@ -712,6 +712,10 @@ void CGUISettings::Initialize()
   AddInt(2, "pvrplayback.scantime", 18025, 5, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(3, "pvrplayback.sddeinterlace", 18027, false);
   AddInt(4, "pvrplayback.deinterlacemethod", 16023, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, 1, VS_INTERLACEMETHOD_INVERSE_TELECINE, SPIN_CONTROL_TEXT);
+  AddSeparator(5, "pvrplayback.sep1");
+  AddBool(6, "pvrplayback.timeshift", 18107, false);
+  AddInt(7, "pvrplayback.timeshiftcache", 18108, 1024, 128, 128, 16384, SPIN_CONTROL_INT_PLUS, MASK_MB, TEXT_OFF);
+  AddString(8, "pvrplayback.timeshiftpath", 18123, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 //  AddInt(5, "pvrplayback.zaptimeout", 18028, 3, 1, 1, 30, SPIN_CONTROL_INT_PLUS, MASK_SECS);
 
   AddCategory(8,"pvrrecord", 18017);
@@ -720,10 +724,6 @@ void CGUISettings::Initialize()
   AddInt(3, "pvrrecord.defaultlifetime", 18020, 99, 1, 1, 365, SPIN_CONTROL_INT_PLUS, MASK_DAYS);
   AddInt(4, "pvrrecord.marginstart", 18021, 2, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddInt(5, "pvrrecord.marginstop", 18022, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
-  AddSeparator(6, "pvrrecord.sep1");
-  AddBool(7, "pvrrecord.timeshift", 18107, false);
-  AddInt(8, "pvrrecord.timeshiftcache", 18108, 512, 0, 16, 2048, SPIN_CONTROL_INT_PLUS, MASK_MB, TEXT_OFF);
-  AddString(9, "pvrrecord.timeshiftpath", 18123, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 }
 
 CGUISettings::~CGUISettings(void)

@@ -111,6 +111,15 @@ int cPVRChannelInfoTag::GetDuration() const
   return duration;
 }
 
+int cPVRChannelInfoTag::GetTime() const
+{
+  CDateTimeSpan time = CDateTime::GetCurrentDateTime() - StartTime();
+  return time.GetDays()    * 60 * 60 * 24
+       + time.GetHours()   * 60 * 60
+       + time.GetMinutes() * 60
+       + time.GetSeconds();
+}
+
 
 // --- cPVRChannels ---------------------------------------------------------------
 
@@ -420,7 +429,7 @@ void cPVRChannels::HideChannel(unsigned int number)
     }
   }
 
-  if (manager->IsPlayingTV() || manager->IsPlayingRadio() && manager->GetCurrentChannelItem()->GetTVChannelInfoTag()->Number() == number)
+  if (manager->IsPlayingTV() || manager->IsPlayingRadio() && manager->GetCurrentPlayingItem()->GetTVChannelInfoTag()->Number() == number)
   {
     CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
     return;

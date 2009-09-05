@@ -107,17 +107,11 @@ void CGUIDialogTVGuide::Update()
   // empty the list ready for population
   Clear();
 
-  if (CPVRManager::GetInstance()->IsPlayingTV())
-  {
-    int curChannel = CPVRManager::GetInstance()->GetCurrentChannel(false);
-    cPVREpgs::GetEPGChannel(curChannel, m_vecItems, false);
-  }
-  else if (CPVRManager::GetInstance()->IsPlayingRadio())
-  {
-    int curChannel = CPVRManager::GetInstance()->GetCurrentChannel(true);
-    cPVREpgs::GetEPGChannel(curChannel, m_vecItems, true);
-  }
-
+  bool RadioPlaying;
+  int CurrentChannel;
+  CPVRManager::GetInstance()->GetCurrentChannel(&CurrentChannel, &RadioPlaying);
+  cPVREpgs::GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying);
+  
   m_viewControl.SetItems(*m_vecItems);
   g_graphicsContext.Unlock();
 }

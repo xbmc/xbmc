@@ -200,7 +200,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_STEP_BACK:
     {
       CFileItem item(g_application.CurrentFileItem());
-      if (item.HasTVChannelInfoTag())
+      if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
         int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
         current_group = CPVRManager::GetInstance()->GetPrevGroupID(current_group);
@@ -213,8 +213,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       }
       else
       {
-    Seek(false, false);
-    return true;
+        Seek(false, false);
+        return true;
       }
     }
     break;
@@ -222,7 +222,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_STEP_FORWARD:
     {
       CFileItem item(g_application.CurrentFileItem());
-      if (item.HasTVChannelInfoTag())
+      if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
         int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
         current_group = CPVRManager::GetInstance()->GetNextGroupID(current_group);
@@ -235,8 +235,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       }
       else
       {
-    Seek(true, false);
-    return true;
+        Seek(true, false);
+        return true;
       }
     }
     break;
@@ -244,7 +244,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_BIG_STEP_BACK:
     {
       CFileItem item(g_application.CurrentFileItem());
-      if (item.HasTVChannelInfoTag())
+      if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
         CAction action;
         action.wID = ACTION_PREV_ITEM;
@@ -262,7 +262,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_BIG_STEP_FORWARD:
     {
       CFileItem item(g_application.CurrentFileItem());
-      if (item.HasTVChannelInfoTag())
+      if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
         CAction action;
         action.wID = ACTION_NEXT_ITEM;
@@ -644,8 +644,8 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - pause video
     CFileItem item(g_application.CurrentFileItem());
-    if (!item.HasTVChannelInfoTag() || g_guiSettings.GetBool("pvrrecord.timeshift"))
-	{
+    if (!item.HasTVChannelInfoTag() || g_guiSettings.GetBool("pvrplayback.timeshift"))
+  {
     CAction action;
     action.wID = ACTION_PAUSE;
     return g_application.OnAction(action);
