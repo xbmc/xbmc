@@ -21,9 +21,11 @@
 
 #include "stdafx.h"
 #include "ProgramDatabase.h"
+#include "FileSystem/MultiPathDirectory.h"
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #include "GUIWindowFileManager.h"
+#include "VideoInfoScanner.h"
 #include "FileItem.h"
 #include "GUISettings.h"
 #include "Settings.h"
@@ -61,6 +63,15 @@ bool CProgramDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX idxFiles ON files(strFilename)");
     CLog::Log(LOGINFO, "create files - titleid index");
     m_pDS->exec("CREATE INDEX idxTitleIdFiles ON files(titleId)");
+    CLog::Log(LOGINFO, "create titles table");
+
+    m_pDS->exec("CREATE TABLE titles ( idTitle integer primary key, strTitle text, strDescription text, iType integer, strGenre text, strStyle text, strPublisher text, strDateOfRelease text, strYear text, thumbURL text, fanartURL text )\n");
+    CLog::Log(LOGINFO, "create titles index");
+    m_pDS->exec("CREATE INDEX idxTitles ON titles(idTitle)");
+
+    CLog::Log(LOGINFO, "create path table");
+    m_pDS->exec("CREATE TABLE path ( idPath integer primary key, strPath text, strContent text, strScraper text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxPath ON path ( strPath )\n");
   }
   catch (...)
   {
@@ -337,3 +348,249 @@ bool CProgramDatabase::SetDescription(const CStdString& strFileName, const CStdS
 
   return false;
 }
+
+long CProgramDatabase::AddPath(const CStdString& strPath)
+{
+  CStdString strSQL;
+  try
+  {
+    long lPathId;
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    CStdString strPath1(strPath);
+    if (CUtil::IsStack(strPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+      CUtil::GetParentPath(strPath,strPath1);
+
+    CUtil::AddSlashAtEnd(strPath1);
+
+    strSQL=FormatSQL("insert into path (idPath, strPath, strContent, strScraper) values (NULL,'%s','','')", strPath1.c_str());
+    m_pDS->exec(strSQL.c_str());
+    lPathId = (long)sqlite3_last_insert_rowid( m_pDB->getHandle() );
+    return lPathId;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s unable to addpath (%s)", __FUNCTION__, strSQL.c_str());
+  }
+  return -1;
+}
+
+long CProgramDatabase::GetPathId(const CStdString& strPath)
+{
+  CStdString strSQL;
+  try
+  {
+    long lPathId=-1;
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    CStdString strPath1(strPath);
+    if (CUtil::IsStack(strPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+      CUtil::GetParentPath(strPath,strPath1);
+
+    CUtil::AddSlashAtEnd(strPath1);
+
+    strSQL=FormatSQL("select idPath from path where strPath like '%s'",strPath1.c_str());
+    m_pDS->query(strSQL.c_str());
+    if (!m_pDS->eof())
+      lPathId = m_pDS->fv("path.idPath").get_asLong();
+
+    m_pDS->close();
+    return lPathId;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s unable to getpath (%s)", __FUNCTION__, strSQL.c_str());
+  }
+  return -1;
+}
+
+void CProgramDatabase::SetScraperForPath(const CStdString& filePath, const SScraperInfo& info)
+{
+  // if we have a multipath, set scraper for all contained paths too
+  if(CUtil::IsMultiPath(filePath))
+  {
+    std::vector<CStdString> paths;
+    DIRECTORY::CMultiPathDirectory::GetPaths(filePath, paths);
+
+    for(unsigned i=0;i<paths.size();i++)
+      SetScraperForPath(paths[i],info);
+  }
+
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+    long lPathId = GetPathId(filePath);
+    if (lPathId < 0)
+    { // no path found - we have to add one
+      lPathId = AddPath(filePath);
+      if (lPathId < 0) return ;
+    }
+
+    // Update
+    CStdString strSQL=FormatSQL("update path set strContent='%s',strScraper='%s' where idPath=%u", info.strContent.c_str(), info.strPath.c_str(), lPathId);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, filePath.c_str());
+  }
+}
+
+bool CProgramDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& info)
+{
+  try
+  {
+    info.Reset();
+    if (strPath.IsEmpty()) return false;
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strPath1;
+    CUtil::GetDirectory(strPath,strPath1);
+    long lPathId = GetPathId(strPath1);
+
+    // search wheter some of the parent folders has scraper info
+    while (lPathId == -1)
+    {
+      CStdString lastPath = strPath1;
+      CUtil::GetDirectory(strPath1.substr(0, strPath1.length()-1), strPath1);
+      if (strPath1.Equals(lastPath)) break;     
+      lPathId = GetPathId(strPath1);
+    }
+
+    if (lPathId > -1)
+    {
+      CStdString strSQL=FormatSQL("select path.strContent,path.strScraper from path where path.idPath=%u",lPathId);
+      m_pDS->query( strSQL.c_str() );
+    }
+    else
+      return false;
+
+    if (!m_pDS->eof())
+    {
+      info.strContent = m_pDS->fv("path.strContent").get_asString();
+      info.strPath = m_pDS->fv("path.strScraper").get_asString();
+      CScraperParser parser;
+      parser.Load("special://xbmc/system/scrapers/programs/" + info.strPath);
+      info.strLanguage = parser.GetLanguage();
+      info.strTitle = parser.GetName();
+      return true;
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+DWORD CProgramDatabase::AddTitle(CProgramInfoTag program)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+    
+    // insert the new program info
+    CStdString strSQL=FormatSQL("insert into titles(idTitle, iType, strTitle, strDescription, strGenre, strStyle, strPublisher, strDateOfRelease, strYear, thumbURL, fanartURL) values (NULL,'%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
+      program.m_iType, program.m_strTitle.c_str(), program.m_strDescription.c_str(), program.m_strGenre.c_str(), program.m_strStyle.c_str(), program.m_strPublisher.c_str(), program.m_strDateOfRelease.c_str(), program.m_strYear.c_str(), program.m_thumbURL.m_xml.c_str(), program.m_fanart.m_xml.c_str());
+    m_pDS->exec(strSQL.c_str());
+
+    // return the generated id of it
+    return (DWORD) sqlite3_last_insert_rowid( m_pDB->getHandle() );
+   }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, program.m_strTitle.c_str());
+    return 0;
+  }
+}
+
+CProgramInfoTag CProgramDatabase::GetTitle(DWORD titleId)
+{
+  CProgramInfoTag result;
+  try
+  {
+    if (NULL == m_pDB.get()) return result;
+    if (NULL == m_pDS.get()) return result;
+    
+
+    // if doesn't, insert a new one
+    CStdString strSQL=FormatSQL("select idTitle, iType, strTitle, strDescription, strGenre, strStyle, strPublisher, strDateOfRelease, strYear, thumbURL, fanartURL from titles where idTitle=%i", titleId);
+    m_pDS->query(strSQL.c_str());
+
+    if (!m_pDS->eof())
+    {
+      result.m_idProgram = m_pDS->fv("titles.idTitle").get_asLong();
+      result.m_iType = m_pDS->fv("titles.iType").get_asInteger();
+      result.m_strTitle = m_pDS->fv("titles.strTitle").get_asString();
+      result.m_strDescription = m_pDS->fv("titles.strDescription").get_asString();
+      result.m_strGenre = m_pDS->fv("titles.strGenre").get_asString();
+      result.m_strStyle = m_pDS->fv("titles.strStyle").get_asString();
+      result.m_strPublisher = m_pDS->fv("titles.strPublisher").get_asString();
+      result.m_strDateOfRelease = m_pDS->fv("titles.strDateOfRelease").get_asString();
+      result.m_strYear = m_pDS->fv("titles.strYear").get_asString();
+      result.m_thumbURL = CScraperUrl(m_pDS->fv("titles.thumbURL").get_asString());
+      result.m_fanart.m_xml = m_pDS->fv("titles.fanartURL").get_asString();
+      result.m_fanart.Unpack();
+    }
+ }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, titleId);
+  }
+  return result;
+}
+
+void CProgramDatabase::RemoveTitle(DWORD titleId)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+    
+    // if doesn't, insert a new one
+    CStdString strSQL=FormatSQL("delete from titles where idTitle=%i", titleId);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, titleId);
+  }
+}
+
+int CProgramDatabase::GetProgramsCount()
+{
+  return GetProgramsCount((CStdString)"");
+}
+
+int CProgramDatabase::GetProgramsCount(const CStdString& strWhere)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return 0;
+    if (NULL == m_pDS.get()) return 0;
+
+    CStdString strSQL = "select count(idTitle) as NumProgs from titles " + strWhere;
+    if (!m_pDS->query(strSQL.c_str())) return false;
+    if (m_pDS->num_rows() == 0)
+    {
+      m_pDS->close();
+      return 0;
+    }
+
+    int iNumSongs = m_pDS->fv(0).get_asLong();
+    // cleanup
+    m_pDS->close();
+    return iNumSongs;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s(%s) failed", __FUNCTION__, strWhere.c_str());
+  }
+  return 0;
+}
+

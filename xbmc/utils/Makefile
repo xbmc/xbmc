@@ -52,7 +52,10 @@ SRCS=AlarmClock.cpp \
      DbusServer.cpp \
      Atomics.cpp \
      LockFree.cpp \
-     StreamDetails.cpp
+     StreamDetails.cpp \
+     ProgramInfoScraper.cpp \
+     ProgramInfo.cpp \
+
 
 LIB=utils.a
 

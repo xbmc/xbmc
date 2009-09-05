@@ -34,6 +34,7 @@ public:
   virtual ~CGUIWindowPrograms(void);
   virtual bool OnMessage(CGUIMessage& message);
 protected:
+  bool GetProgramInfo(CFileItemPtr item);
   virtual void OnItemLoaded(CFileItem* pItem) {};
   virtual bool Update(const CStdString& strDirectory);
   virtual bool OnPlayMedia(int iItem);

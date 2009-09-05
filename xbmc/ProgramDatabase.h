@@ -20,8 +20,11 @@
  *
  */
 #include "Database.h"
+#include "ProgramInfoTag.h"
+#include <set>
 
 typedef std::vector<CStdString> VECPROGRAMPATHS;
+struct SScraperInfo;
 
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
@@ -55,6 +58,17 @@ public:
 
   DWORD GetProgramInfo(CFileItem *item);
   bool AddProgramInfo(CFileItem *item, unsigned int titleID);
+
+  long AddPath(const CStdString& strPath);
+  long GetPathId(const CStdString& strPath);
+  void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info);
+  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
+
+  DWORD AddTitle(CProgramInfoTag program);
+  CProgramInfoTag GetTitle(DWORD titleId);
+  void RemoveTitle(DWORD titleId);
+  int GetProgramsCount();
+  int GetProgramsCount(const CStdString& strWhere);
 
 protected:
   virtual bool CreateTables();

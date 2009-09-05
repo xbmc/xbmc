@@ -24,6 +24,7 @@
 #include "GUIDialogPluginSettings.h"
 #include "Util.h"
 #include "VideoDatabase.h"
+#include "ProgramDatabase.h"
 #include "VideoInfoScanner.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/MultiPathDirectory.h"
@@ -122,6 +123,11 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
               CreateSettings();
               SetupPage();
               break;
+      case 5: strLabel = g_localizeStrings.Get(350);
+              m_info = FindDefault("programs", g_guiSettings.GetString("programfiles.defaultscraper"));
+              CreateSettings();
+              SetupPage();
+              break;
       }
     }
     if (iControl == CONTROL_SCRAPER_LIST)
@@ -164,6 +170,8 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   CFileItemList items;
   if (m_info.strContent.Equals("albums"))
     CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
+  else if (m_info.strContent.Equals("programs"))
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/programs/",items,".xml",false);
   else
     CDirectory::GetDirectory("special://xbmc/system/scrapers/video/",items,".xml",false);
   for (int i=0;i<items.Size();++i)
@@ -188,7 +196,8 @@ void CGUIDialogContentSettings::OnWindowLoaded()
           info.strContent = content;
           info.settings = m_scraperSettings;
 
-          if ( info.strPath == g_guiSettings.GetString("musiclibrary.defaultscraper")
+          if ( info.strPath == g_guiSettings.GetString("programfiles.defaultscraper")
+            || info.strPath == g_guiSettings.GetString("musiclibrary.defaultscraper")
             || info.strPath == g_guiSettings.GetString("scrapers.moviedefault")
             || info.strPath == g_guiSettings.GetString("scrapers.tvshowdefault")
             || info.strPath == g_guiSettings.GetString("scrapers.musicvideodefault"))
@@ -301,6 +310,18 @@ void CGUIDialogContentSettings::SetupPage()
       CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
     }
   }
+  if (m_scrapers.find("programs") != m_scrapers.end())
+  {
+    msg2.SetLabel(m_strContentType);
+    msg2.SetParam1(5);
+    g_graphicsContext.SendMessage(msg2);
+    if (m_info.strContent.Equals("programs"))
+    {
+      SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,m_strContentType);
+      CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 3);
+    }
+  }
+
   SET_CONTROL_VISIBLE(CONTROL_CONTENT_TYPE);
   // now add them scrapers to the list control
   if (m_info.strContent.IsEmpty() || m_info.strContent.Equals("None"))
@@ -348,6 +369,10 @@ void CGUIDialogContentSettings::CreateSettings()
     AddBool(3,20432,&m_bUpdate);
   }
   if (m_info.strContent.Equals("albums"))
+  {
+    AddBool(1,20345,&m_bRunScan);
+  }
+  if (m_info.strContent.Equals("programs"))
   {
     AddBool(1,20345,&m_bRunScan);
   }
@@ -402,6 +427,8 @@ void CGUIDialogContentSettings::FillListControl()
     item->m_strPath = iter->strPath;
     if (m_info.strContent.Equals("albums"))
       item->SetThumbnailImage("special://xbmc/system/scrapers/music/"+iter->strThumb);
+    else if (m_info.strContent.Equals("programs"))
+      item->SetThumbnailImage("special://xbmc/system/scrapers/programs/"+iter->strThumb);
     else
       item->SetThumbnailImage("special://xbmc/system/scrapers/video/"+iter->strThumb);
     if (iter->strPath.Equals(m_info.strPath))
@@ -436,7 +463,7 @@ CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
   return m_vecItems->Get(item);
 }
 
-bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan)
+bool CGUIDialogContentSettings::ShowForVideoDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan)
 {
   CVideoDatabase database;
   database.Open();
@@ -445,6 +472,19 @@ bool CGUIDialogContentSettings::ShowForDirectory(const CStdString& strDirectory,
   bool bResult = Show(scraper,settings,bRunScan);
   if (bResult)
     database.SetScraperForPath(strDirectory,scraper,settings);
+
+  return bResult;
+}
+
+bool CGUIDialogContentSettings::ShowForProgramsDirectory(const CStdString& strDirectory, SScraperInfo& scraper, bool& bRunScan)
+{
+  CProgramDatabase database;
+  database.Open();
+  if (!database.GetScraperForPath(strDirectory,scraper))
+    scraper.strContent = "programs";
+  bool bResult = Show(scraper,bRunScan);
+  if (bResult)
+    database.SetScraperForPath(strDirectory,scraper);
 
   return bResult;
 }
@@ -522,6 +562,10 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       bRunScan = dialog->m_bRunScan;
     }
     else if (scraper.strContent.Equals("albums"))
+    {
+      bRunScan = dialog->m_bRunScan;
+    }
+    else if (scraper.strContent.Equals("programs"))
     {
       bRunScan = dialog->m_bRunScan;
     }

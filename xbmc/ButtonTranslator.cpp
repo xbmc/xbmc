@@ -941,6 +941,7 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("karaokelargeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
   else if (strWindow.Equals("sliderdialog")) wWindowID = WINDOW_DIALOG_SLIDER;
   else if (strWindow.Equals("songinformation")) wWindowID = WINDOW_DIALOG_SONG_INFO;
+  else if (strWindow.Equals("programlibrary")) wWindowID = WINDOW_PROGRAM_NAV;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 

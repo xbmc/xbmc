@@ -3354,6 +3354,22 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\ProgramInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ProgramInfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ProgramInfoScanner.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\ProgramInfoScraper.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\RegExp.cpp"
 					>
 				</File>
@@ -3567,6 +3583,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\ProgramDatabase.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ProgramInfoTag.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\ProgramInfoTag.h"
 					>
 				</File>
 				<File
@@ -3907,6 +3931,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\GUIWindowPointer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowProgramNav.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\GUIWindowProgramNav.h"
 					>
 				</File>
 				<File
@@ -5217,6 +5249,10 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="ProgramDatabaseDirectory"
+					>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="common"
@@ -5944,6 +5980,14 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\Profile.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\ProgramInfoScanner.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\utils\ProgramInfoScraper.h"
 				>
 			</File>
 			<File

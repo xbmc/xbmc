@@ -52,7 +52,7 @@ public:
   static char FirstDriveFromMask (ULONG unitmask);
   static int GetDriveStatus(const CStdString &strPath);
   static bool PowerManagement(PowerState State);
-  static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
+  static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false, bool bMinimizeBeforeLaunching=true);
   static std::vector<CStdString> GetDiskUsage();
   static CStdString GetResInfoString();
   static int GetDesktopColorDepth();

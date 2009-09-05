@@ -96,10 +96,18 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
         OnCancel();
       else if (iControl == CONTROL_CONTENT)
       {
-        CMediaSource share;
-        share.FromNameAndPaths("video", m_name, GetPaths());
-
-        CGUIDialogContentSettings::ShowForDirectory(share.strPath,m_info,m_settings,m_bRunScan);
+        if (m_type.Equals("video"))
+        {
+          CMediaSource share;
+          share.FromNameAndPaths("video", m_name, GetPaths());
+          CGUIDialogContentSettings::ShowForVideoDirectory(share.strPath,m_info,m_settings,m_bRunScan);
+        }
+        else if (m_type.Equals("programs"))
+        {
+          CMediaSource share;
+          share.FromNameAndPaths("programs", m_name, GetPaths());
+          CGUIDialogContentSettings::ShowForProgramsDirectory(share.strPath,m_info,m_bRunScan);        
+        }
       }
       return true;
     }
@@ -501,6 +509,10 @@ void CGUIDialogMediaSource::UpdateButtons()
   {
     SET_CONTROL_VISIBLE(CONTROL_CONTENT);
     CONTROL_ENABLE_ON_CONDITION(CONTROL_CONTENT, !m_paths->Get(0)->m_strPath.IsEmpty() && !m_name.IsEmpty());
+  }
+  else if (m_type.Equals("programs"))
+  {
+    SET_CONTROL_VISIBLE(CONTROL_CONTENT);
   }
   else
   {

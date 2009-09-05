@@ -39,7 +39,8 @@ public:
 
   static bool Show(SScraperInfo& scraper, bool& bRunScan, int iLabel=-1);
   static bool Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel=-1);
-  static bool ShowForDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
+  static bool ShowForProgramsDirectory(const CStdString& strDirectory, SScraperInfo& scraper, bool& bRunScan);
+  static bool ShowForVideoDirectory(const CStdString& strDirectory, SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 protected:

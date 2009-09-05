@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "ViewState.h"
 #include "GUISettings.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
@@ -69,7 +70,14 @@ CStdString CGUIViewStateWindowPrograms::GetLockType()
 
 CStdString CGUIViewStateWindowPrograms::GetExtensions()
 {
-  return ".xbe|.cut";
+#ifdef _LINUX
+  return "";
+#endif
+#ifdef _WIN32
+    return ".exe|.lnk|.cmd|.bat";
+#else
+    return ".xbe|.cut";
+#endif 
 }
 
 VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
@@ -87,5 +95,42 @@ VECSOURCES& CGUIViewStateWindowPrograms::GetSources()
       g_settings.m_programSources.push_back(share);
   }
   return g_settings.m_programSources;
+}
+
+CGUIViewStateWindowProgramNav::CGUIViewStateWindowProgramNav(const CFileItemList& items) : CGUIViewStateWindowPrograms(items)
+{
+  if (items.IsVirtualDirectoryRoot())
+  {
+    AddSortMethod(SORT_METHOD_NONE, 551, LABEL_MASKS("%F", "%I", "%L", ""));  // Filename, Size | Foldername, empty
+    SetSortMethod(SORT_METHOD_NONE);
+
+    SetViewAsControl(DEFAULT_VIEW_LIST);
+
+    SetSortOrder(SORT_ORDER_NONE);
+  }
+  LoadViewState(items.m_strPath, WINDOW_PROGRAM_NAV);
+}
+
+void CGUIViewStateWindowProgramNav::SaveViewState()
+{
+  SaveViewToDb(m_items.m_strPath, WINDOW_PROGRAM_NAV);
+}
+
+VECSOURCES& CGUIViewStateWindowProgramNav::GetSources()
+{
+  //  Setup shares we want to have
+  m_sources.clear();
+
+  // plugins share
+  if (CPluginDirectory::HasPlugins("programs") && g_advancedSettings.m_bVirtualShares)
+  {
+    CMediaSource share;
+    share.strName = g_localizeStrings.Get(1043);
+    share.strPath = "plugin://programs/";
+    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultProgramPlugins.png");
+    m_sources.push_back(share);
+  }
+ 
+  return m_sources;
 }
 

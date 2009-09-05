@@ -217,6 +217,9 @@ SRCS=Application.cpp \
      WinEventsSDL.cpp \
      AdvancedSettings.cpp \
      Bookmark.cpp \
+     ProgramInfoScanner.cpp \
+     ProgramInfoTag.cpp \
+     GUIWindowProgramNav.cpp \
 
 LIB=xbmc.a
 

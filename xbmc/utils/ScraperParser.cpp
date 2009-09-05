@@ -132,7 +132,8 @@ bool CScraperParser::LoadFromXML()
       if ((0 == stricmp(m_content,"tvshows")) ||
           (0 == stricmp(m_content,"movies")) ||
           (0 == stricmp(m_content,"musicvideos")) ||
-          (0 == stricmp(m_content,"albums")))
+          (0 == stricmp(m_content,"albums")) ||
+          (0 == stricmp(m_content,"programs")))
       {
         TiXmlElement* pChildElement = m_pRootElement->FirstChildElement("CreateSearchUrl");
         if (pChildElement)

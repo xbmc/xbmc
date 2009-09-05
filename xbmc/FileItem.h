@@ -42,6 +42,7 @@ namespace MUSIC_INFO
 }
 class CVideoInfoTag;
 class CPictureInfoTag;
+class CProgramInfoTag;
 
 class CAlbum;
 class CArtist;
@@ -179,6 +180,18 @@ public:
 
   CPictureInfoTag* GetPictureInfoTag();
 
+  bool HasProgramInfoTag() const
+  {
+    return m_programInfoTag != NULL;
+  }
+
+  inline const CProgramInfoTag* GetProgramInfoTag() const
+  {
+    return m_programInfoTag;
+  }
+
+  CProgramInfoTag* GetProgramInfoTag();
+
   // Gets the cached thumb filename (no existence checks)
   CStdString GetCachedVideoThumb() const;
   CStdString GetCachedEpisodeThumb() const;
@@ -267,6 +280,7 @@ private:
   MUSIC_INFO::CMusicInfoTag* m_musicInfoTag;
   CVideoInfoTag* m_videoInfoTag;
   CPictureInfoTag* m_pictureInfoTag;
+  CProgramInfoTag* m_programInfoTag;
 };
 
 /*!

@@ -94,6 +94,7 @@ void CSettings::Initialize()
   g_stSettings.m_bMyVideoPlaylistRepeat = false;
   g_stSettings.m_bMyVideoPlaylistShuffle = false;
   g_stSettings.m_bMyVideoNavFlatten = false;
+  g_stSettings.m_bMyProgramNavFlatten = false;
   g_stSettings.m_bStartVideoWindowed = false;
 
   g_stSettings.m_nVolumeLevel = 0;
@@ -931,6 +932,13 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
       XMLUtils::GetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
     }
   }
+  // myprograms settings
+  pElement = pRootElement->FirstChildElement("myprograms");
+  if (pElement)
+  {
+    GetPath(pElement, "defaultlibview", g_settings.m_defaultProgramLibSource);
+    XMLUtils::GetBoolean(pElement, "flatten", g_stSettings.m_bMyProgramNavFlatten);
+  }
 
   pElement = pRootElement->FirstChildElement("viewstates");
   if (pElement)
@@ -1098,6 +1106,14 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
     XMLUtils::SetBoolean(pChild, "repeat", g_stSettings.m_bMyVideoPlaylistRepeat);
     XMLUtils::SetBoolean(pChild, "shuffle", g_stSettings.m_bMyVideoPlaylistShuffle);
   }
+  
+  // myprograms settings
+  TiXmlElement programsNode("myprograms");
+  pNode = pRoot->InsertEndChild(programsNode);
+  if (!pNode) return false;
+
+  XMLUtils::SetPath(pNode, "defaultlibview", g_settings.m_defaultProgramLibSource);
+  XMLUtils::SetBoolean(pNode, "flatten", g_stSettings.m_bMyProgramNavFlatten);
 
   // view states
   TiXmlElement viewStateNode("viewstates");

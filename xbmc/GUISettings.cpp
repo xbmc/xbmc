@@ -219,6 +219,10 @@ void CGUISettings::Initialize()
 
   AddCategory(1,"programfiles",744);
   AddBool(4, "programfiles.savefolderviews", 583, true);
+  AddString(5, "programfiles.defaultscraper", 20194, "allgame.xml", SPIN_CONTROL_TEXT);
+  AddBool(6, "programfiles.waitforexit",18001 , true);
+  AddBool(7, "programfiles.minimizebeforelaunch",18002, true);
+  AddBool(8, "programfiles.releasesoundbeforelaunch",18003,true);
 
   // My Weather settings
   AddGroup(2, 8);

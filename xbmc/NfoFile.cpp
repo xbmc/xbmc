@@ -78,6 +78,14 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, SScraperInfo& in
     strScraperBasePath = "special://xbmc/system/scrapers/music/";
     CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("musiclibrary.defaultscraper"), strDefault);
   }
+  else if (m_strContent.Equals("programs"))
+  {
+    //CProgram program;
+    //bNfo = GetDetails(program);
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/programs/",items,".xml",false);
+    strScraperBasePath = "special://xbmc/system/scrapers/programs/";
+    CUtil::AddFileToFolder(strScraperBasePath, g_guiSettings.GetString("programfiles.defaultscraper"), strDefault);
+  }
   else if (m_strContent.Equals("artists"))
   {
     CArtist artist;

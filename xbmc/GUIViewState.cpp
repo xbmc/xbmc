@@ -112,6 +112,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId==WINDOW_PROGRAMS)
     return new CGUIViewStateWindowPrograms(items);
+  
+  if (windowId==WINDOW_PROGRAM_NAV)
+    return new CGUIViewStateWindowProgramNav(items);
 
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);

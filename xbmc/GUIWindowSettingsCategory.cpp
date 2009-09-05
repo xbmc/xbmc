@@ -423,6 +423,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
       FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), "music");
     }
+    else if (strSetting.Equals("programfiles.defaultscraper"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("programfiles.defaultscraper"), "programs");
+    }
     else if (strSetting.Equals("scrapers.moviedefault"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
@@ -3662,8 +3667,11 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
   CFileItemList items;
   if (strContent.Equals("music"))
     CDirectory::GetDirectory("special://xbmc/system/scrapers/music",items,".xml",false);
-  else
+  else if (strContent.Equals("programs"))
+    CDirectory::GetDirectory("special://xbmc/system/scrapers/programs",items,".xml",false);
+  else 
     CDirectory::GetDirectory("special://xbmc/system/scrapers/video",items,".xml",false);
+
   int j=0;
   int k=0;
   pControl->Clear();
@@ -3675,13 +3683,15 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
     CScraperParser parser;
     if (parser.Load(items[i]->m_strPath))
     {
-      if (parser.GetContent() != strContent && !strContent.Equals("music"))
+      if (parser.GetContent() != strContent && !strContent.Equals("music") && !strContent.Equals("programs"))
         continue;
 
       if (parser.GetName().Equals(strSelected) || CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
       {
         if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
           g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
+        else if (strContent.Equals("programs"))
+          g_guiSettings.SetString("programfiles.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
         else if (strContent.Equals("movies"))
           g_guiSettings.SetString("scrapers.moviedefault", CUtil::GetFileName(items[i]->m_strPath));
         else if (strContent.Equals("tvshows"))

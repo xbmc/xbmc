@@ -1310,7 +1310,23 @@
   <string id="14078">- Colours</string>
   <string id="14079">Timezone country</string>
   <string id="14080">Timezone</string>
-
+  
+  <string id="14501">Programs - Library</string>
+  <string id="14502">Games</string>
+  <string id="14503">Program info</string>
+  <string id="14504">Game info</string>
+  <string id="14503"></string>
+  <string id="14504"></string>
+  <string id="14503"></string>
+  <string id="14601">Platform</string>
+  <string id="14602">Developer</string>
+  <string id="14603">Publisher</string>
+  <string id="14604">Released</string>
+  <string id="14606">No. of Players</string>
+  <string id="14607">GameStandards Rating</string>
+  <string id="14608">Synopsis</string>
+  <string id="14700"></string>
+   
   <string id="15000"></string>
   <string id="15001"></string>
   <string id="15002"></string>
@@ -1540,6 +1556,10 @@
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
   <string id="17500">Display sleep timeout</string>
+
+  <string id="18001">Suspend XBMC while program is running</string>
+  <string id="18002">Minimize XBMC before program launching</string>
+  <string id="18003">Free sound device before program launching</string>
 
   <string id="20000">CDDA rip folder</string>
   <string id="20001">Use external DVD player</string>
