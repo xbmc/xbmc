@@ -181,6 +181,14 @@ bool CWinSystemX11::RefreshGlxContext()
     return false;
   }
 
+  if(m_glWindow == info.info.x11.window && m_glContext)
+  {
+    CLog::Log(LOGERROR, "GLX: Same window as before, refreshing context");
+    glXMakeCurrent(m_dpy, None, NULL);
+    glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
+    return true;
+  }
+
   GLXFBConfig *fbConfigs  = NULL;
   XVisualInfo *vInfo      = NULL;
   int availableFBs        = 0;
