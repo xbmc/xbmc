@@ -124,14 +124,15 @@ bool CWinSystemX11::DestroyWindow()
     
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  int options = SDL_OPENGL | (m_bFullScreen ? 0 : SDL_RESIZABLE);
-;
+  int options = SDL_OPENGL;
 
   m_nWidth = newWidth;
   m_nHeight = newHeight;
   
   if (m_bFullScreen)
     options |= SDL_FULLSCREEN;
+  else
+    options |= SDL_RESIZABLE;
 
   if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
   {
