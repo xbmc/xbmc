@@ -21,6 +21,7 @@
  *
  */
 
+#include "StdString.h"
 #include "Thread.h"
 
 class CSplash : public CThread

@@ -22,6 +22,8 @@
 #if defined(_LINUX)
 #include "stdafx.h"
 #endif
+#include <locale>
+#include <wchar.h>
 #ifdef _LINUX
 #include "../DllLoaderContainer.h"
 #include "../DllLoader.h"

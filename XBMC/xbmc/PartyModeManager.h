@@ -20,6 +20,8 @@
  *
  */
 
+#include "StdString.h"
+
 #include <boost/shared_ptr.hpp>
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;

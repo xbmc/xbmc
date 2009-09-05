@@ -25,6 +25,8 @@
 
 #include "utils/CriticalSection.h"
 
+#include <vector>
+
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;

@@ -20,6 +20,8 @@
  *
  */
 
+#include "StdString.h"
+
 #include <map>
 
 class CThumbnailCache

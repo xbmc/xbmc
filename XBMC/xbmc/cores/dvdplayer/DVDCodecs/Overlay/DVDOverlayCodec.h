@@ -23,6 +23,8 @@
 
 #include "DVDOverlay.h"
 
+#include <string>
+
 // VC_ messages, messages can be combined
 #define OC_ERROR    0x00000001  // an error occured, no other messages will be returned
 #define OC_BUFFER   0x00000002  // the decoder needs more data

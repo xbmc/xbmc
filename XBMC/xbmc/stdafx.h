@@ -27,8 +27,6 @@
 
 #include "system.h"
 
-#include "StdString.h"
-
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
 #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }

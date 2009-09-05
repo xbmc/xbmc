@@ -21,6 +21,8 @@
  *
  */
 
+#include "StdString.h"
+
 class CDVDInputStream;
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)

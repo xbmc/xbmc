@@ -20,6 +20,7 @@
  *
  */
 
+#include "StdString.h"
 #include "utils/CriticalSection.h"
 
 //  forward
