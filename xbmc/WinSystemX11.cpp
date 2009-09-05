@@ -175,56 +175,58 @@ bool CWinSystemX11::RefreshGlxContext()
   bool retVal = false;
   SDL_SysWMinfo info;
   SDL_VERSION(&info.version);
-  if (SDL_GetWMInfo(&info) > 0)
+  if (SDL_GetWMInfo(&info) <= 0)
   {
-    GLXFBConfig *fbConfigs  = NULL;
-    XVisualInfo *vInfo      = NULL;
-    int availableFBs        = 0;
-    m_glWindow = info.info.x11.window;
+    CLog::Log(LOGERROR, "Failed to get window manager info from SDL");
+    return false;
+  }
 
-    // query compatible framebuffers based on double buffered attributes
-    if ((fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
+  GLXFBConfig *fbConfigs  = NULL;
+  XVisualInfo *vInfo      = NULL;
+  int availableFBs        = 0;
+  m_glWindow = info.info.x11.window;
+
+  // query compatible framebuffers based on double buffered attributes
+  if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
+  {
+    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+    return false;
+  }
+
+  for (int i = 0; i < availableFBs; i++)
+  {
+    // obtain the xvisual from the first compatible framebuffer
+    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
+    if (vInfo)
     {
-      for (int i = 0; i < availableFBs; i++)
+      if (vInfo->depth == 24)
       {
-        // obtain the xvisual from the first compatible framebuffer
-        vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-        if (vInfo)
-        {
-          if (vInfo->depth == 24)
-          {
-            CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
-            break;
-          }
-          XFree(vInfo);
-          vInfo = NULL;
-        }
+        CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
+        break;
       }
+      XFree(vInfo);
+      vInfo = NULL;
+    }
+  }
 
-      if (vInfo) 
-      {
-        if (m_glContext)
-          glXDestroyContext(m_dpy, m_glContext);
+  if (vInfo) 
+  {
+    if (m_glContext)
+      glXDestroyContext(m_dpy, m_glContext);
 
-        if ((m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
-        {
-          // make this context current
-          glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
-          retVal = true;
-        }
-        else
-          CLog::Log(LOGERROR, "GLX Error: Could not create context");
-        XFree(vInfo);
-      }
-      else
-        CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
-      XFree(fbConfigs);
+    if ((m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
+    {
+      // make this context current
+      glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
+      retVal = true;
     }
     else
-      CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+      CLog::Log(LOGERROR, "GLX Error: Could not create context");
+    XFree(vInfo);
   }
   else
-    CLog::Log(LOGERROR, "Failed to get window manager info from SDL");
+    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+  XFree(fbConfigs);
 
   return retVal;
 }
