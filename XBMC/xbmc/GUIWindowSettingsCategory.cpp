@@ -1385,7 +1385,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
-      g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
