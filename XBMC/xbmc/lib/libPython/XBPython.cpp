@@ -54,6 +54,7 @@
 #include "Profile.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/log.h"
 
 XBPython g_pythonParser;
 
