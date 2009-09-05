@@ -581,7 +581,7 @@ int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
   g_ClientTimer.PunchIn();
 
   // Handle Input
-  if (pData && iSize > 100)
+  if (pData)
   {
     // Try to push data to the decoder input thread. We cannot return the data to the caller. 
     // It will be lost if we do not send it.
