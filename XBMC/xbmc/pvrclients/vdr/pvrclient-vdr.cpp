@@ -2480,8 +2480,10 @@ PVR_ERROR PVRClientVDR::UpdateTimer(const PVR_TIMERINFO &timerinfo)
 /************************************************************/
 /** Live stream handling */
 
-bool PVRClientVDR::OpenLiveStream(unsigned int channel)
+bool PVRClientVDR::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
+  unsigned int channel = channelinfo.number;
+
   if (!m_transceiver->IsOpen())
     return false;
 
@@ -2597,8 +2599,10 @@ int PVRClientVDR::GetCurrentClientChannel()
   return m_iCurrentChannel;
 }
 
-bool PVRClientVDR::SwitchChannel(unsigned int channel)
+bool PVRClientVDR::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
+  unsigned int channel = channelinfo.number;
+
   if (!m_transceiver->IsOpen())
     return false;
 
@@ -2822,55 +2826,4 @@ __int64 PVRClientVDR::SeekRecordedStream(__int64 pos, int whence)
 __int64 PVRClientVDR::LengthRecordedStream(void)
 {
   return currentPlayingRecordBytes;
-}
-
-bool PVRClientVDR::TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)
-{
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-  unsigned long  amountReceived;
-
-  if (!m_transceiver->IsOpen() || m_socket_video == INVALID_SOCKET)
-    return 0;
-
-  sprintf(buffer, "LTXT PRESENT %u %u %u", channel, Page, subPage);
-  if (m_transceiver->SendCommand(buffer, code, lines))
-  {
-    vector<string>::iterator it = lines.begin();
-    string& data(*it);
-    if (code == 250 && data == "PAGEPRESENT")
-      return true;
-  }
-
-  return false;
-}
-
-bool PVRClientVDR::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage)
-{
-  vector<string> lines;
-  int            code;
-  char           buffer[1024];
-  unsigned long  amountReceived;
-
-  if (!m_transceiver->IsOpen() || m_socket_video == INVALID_SOCKET)
-    return 0;
-
-  sprintf(buffer, "LTXT GET %u %u %u", channel, Page, subPage);
-  if (!m_transceiver->SendCommand(buffer, code, lines))
-  {
-    return false;
-  }
-
-  vector<string>::iterator it = lines.begin();
-  string& data(*it);
-
-  for (int i = 0; i < 40*24+12; i++)
-  {
-    buf[i] = atol(data.c_str());
-    data.erase(0, data.find(" ")+1);
-    if (data == "ENDDATA")
-      return false;
-  }
-  return true;
 }

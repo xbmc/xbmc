@@ -339,18 +339,14 @@ extern "C" {
     PVR_ERROR (__cdecl* RenameTimer)(const PVR_TIMERINFO &timerinfo, const char *newname);
     PVR_ERROR (__cdecl* UpdateTimer)(const PVR_TIMERINFO &timerinfo);
 
-    /** PVR Teletext Functions **/
-    bool (__cdecl* TeletextPagePresent)(unsigned int channel, unsigned int Page, unsigned int subPage);
-    bool (__cdecl* ReadTeletextPage)(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
-
     /** PVR Live Stream Functions **/
-    bool (__cdecl* OpenLiveStream)(unsigned int channel);
+    bool (__cdecl* OpenLiveStream)(const PVR_CHANNEL &channelinfo);
     void (__cdecl* CloseLiveStream)();
     int (__cdecl* ReadLiveStream)(BYTE* buf, int buf_size);
     __int64 (__cdecl* SeekLiveStream)(__int64 pos, int whence);
     __int64 (__cdecl* LengthLiveStream)(void);
     int (__cdecl* GetCurrentClientChannel)();
-    bool (__cdecl* SwitchChannel)(unsigned int channel);
+    bool (__cdecl* SwitchChannel)(const PVR_CHANNEL &channelinfo);
 
     /** PVR Recording Stream Functions **/
     bool (__cdecl* OpenRecordedStream)(const PVR_RECORDINGINFO &recinfo);
@@ -360,7 +356,7 @@ extern "C" {
     __int64 (__cdecl* LengthRecordedStream)(void);
 
     /** PVR Demux Stream Functions **/
-    bool (__cdecl* OpenTVDemux)(PVRDEMUXHANDLE handle, unsigned int channel);
+    bool (__cdecl* OpenTVDemux)(PVRDEMUXHANDLE handle, const PVR_CHANNEL &channelinfo);
     bool (__cdecl* OpenRecordingDemux)(PVRDEMUXHANDLE handle, const PVR_RECORDINGINFO &recinfo);
     void (__cdecl* DisposeDemux)();
     void (__cdecl* ResetDemux)();

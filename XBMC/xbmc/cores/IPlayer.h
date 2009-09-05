@@ -109,6 +109,10 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName){};
   virtual void SetAudioStream(int iStream){};
 
+  virtual int GetTeletextPageCount() { return 0; }
+  virtual bool GetTeletextPagePresent(int Page, int subPage) { return false; }
+  virtual bool GetTeletextPage(int Page, int subPage, BYTE* buf) { return false; }
+
   virtual int  GetChapterCount()                               { return 0; }
   virtual int  GetChapter()                                    { return -1; }
   virtual void GetChapterName(CStdString& strChapterName)      { return; }

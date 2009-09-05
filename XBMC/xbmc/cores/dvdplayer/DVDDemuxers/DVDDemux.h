@@ -51,7 +51,7 @@ enum StreamType
   STREAM_AUDIO,   // audio stream
   STREAM_VIDEO,   // video stream
   STREAM_DATA,    // data stream
-  STREAM_SUBTITLE // subtitle stream
+  STREAM_SUBTITLE,// subtitle stream
 };
 
 enum StreamSource {
@@ -174,6 +174,14 @@ public:
   int identifier;
 };
 
+class CDemuxStreamData : public CDemuxStream
+{
+public:
+  CDemuxStreamData() : CDemuxStream()
+  {
+    type = STREAM_DATA;
+  }
+};
 
 class CDVDDemux
 {
@@ -272,6 +280,11 @@ public:
   int GetNrOfSubtitleStreams();
 
   /*
+   * return nr of data streams, 0 if none
+   */
+  int GetNrOfDataStreams();
+
+  /*
    * return the audio stream, or NULL if it does not exist
    */
   CDemuxStreamAudio* GetStreamFromAudioId(int iAudioIndex);
@@ -285,6 +298,11 @@ public:
    * return the subtitle stream, or NULL if it does not exist
    */
   CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
+
+  /*
+   * return the subtitle stream, or NULL if it does not exist
+   */
+  CDemuxStreamData* GetStreamFromDataId(int iDataIndex);
 
   /*
    * return a user-presentable codec name of the given stream

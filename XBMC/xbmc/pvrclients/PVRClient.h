@@ -83,7 +83,7 @@ public:
   virtual __int64 SeekLiveStream(__int64 pos, int whence=SEEK_SET);
   virtual __int64 LengthLiveStream(void);
   virtual int GetCurrentClientChannel();
-  virtual bool SwitchChannel(unsigned int channel);
+  virtual bool SwitchChannel(const cPVRChannelInfoTag &channelinfo);
 
   virtual bool OpenRecordedStream(const cPVRRecordingInfoTag &recinfo);
   virtual void CloseRecordedStream(void);
@@ -101,9 +101,6 @@ public:
   virtual demux_packet_t* ReadDemux();
   virtual bool SeekDemuxTime(int time, bool backwords, double* startpts);
   virtual int GetDemuxStreamLength();
-  
-  virtual bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
-  virtual bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
 
 protected:
   std::auto_ptr<struct PVRClient> m_pClient;
@@ -116,6 +113,7 @@ protected:
   CCriticalSection      m_critSection;
 
 private:
+  void WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, PVR_CHANNEL &tag);
   void WriteClientTimerInfo(const cPVRTimerInfoTag &timerinfo, PVR_TIMERINFO &tag);
   void WriteClientRecordingInfo(const cPVRRecordingInfoTag &recordinginfo, PVR_RECORDINGINFO &tag);
   static void PVRTransferEpgEntry(void *userData, const PVRHANDLE handle, const PVR_PROGINFO *epgentry);

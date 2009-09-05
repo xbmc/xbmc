@@ -279,7 +279,6 @@ void cRenderTTPage::ReadTeletextHeader(unsigned char *Header) {
   //   0x04  C9 - Interrupt Sequence
   //   0x02  C9 (Bug?)
   //   0x01  C11 - Magazine Serial mode
-
   Flags=Header[8];
   Lang=Header[9];
 }

@@ -259,17 +259,17 @@ void CGUIDialogTVTeletext::ShowPage()
     SET_CONTROL_VISIBLE(CONTROL_LABEL_STATUS);
     return;
   }
-
+  
   if (m_currentSubPage == 0)
   {
-    if (!CPVRManager::GetInstance()->TeletextPagePresent(*CPVRManager::GetInstance()->GetCurrentChannelItem(), m_currentPage, m_currentSubPage))
+    if (!g_application.m_pPlayer->GetTeletextPagePresent(m_currentPage, m_currentSubPage))
     {
       // There is no subpage 0 so look if there is subpage 1
       m_currentSubPage++;
     } 
   }
 
-  if (CPVRManager::GetInstance()->GetTeletextPage(*CPVRManager::GetInstance()->GetCurrentChannelItem(), m_currentPage, m_currentSubPage, cache))
+  if (g_application.m_pPlayer->GetTeletextPage(m_currentPage, m_currentSubPage, cache))
   {
     cRenderTTPage::ReadTeletextHeader(cache);
 
@@ -415,7 +415,7 @@ bool CGUIDialogTVTeletext::CheckFirstSubPage(int startWith)
 
   do
   {
-    if (CPVRManager::GetInstance()->TeletextPagePresent(*CPVRManager::GetInstance()->GetCurrentChannelItem(), m_currentPage, m_currentSubPage))
+    if (g_application.m_pPlayer->GetTeletextPagePresent(m_currentPage, m_currentSubPage))
        return true;
     m_currentSubPage = nextValidPageNumber(m_currentSubPage, DirectionForward);
 
@@ -485,7 +485,7 @@ void CGUIDialogTVTeletext::ChangeSubPageRelative(Direction direction)
     if (m_currentSubPage > 0x99) m_currentSubPage=0;
     if (m_currentSubPage < 0) m_currentSubPage=0x99;
 
-    if (CPVRManager::GetInstance()->TeletextPagePresent(*CPVRManager::GetInstance()->GetCurrentChannelItem(), m_currentPage, m_currentSubPage))
+    if (g_application.m_pPlayer->GetTeletextPagePresent(m_currentPage, m_currentSubPage))
       return;
   } while (m_currentSubPage != oldsubpage);
 

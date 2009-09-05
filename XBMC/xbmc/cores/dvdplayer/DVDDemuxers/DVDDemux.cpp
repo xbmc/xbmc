@@ -84,6 +84,19 @@ int CDVDDemux::GetNrOfSubtitleStreams()
   return iCounter;
 }
 
+int CDVDDemux::GetNrOfDataStreams()
+{
+  int iCounter = 0;
+
+  for (int i = 0; i < GetNrOfStreams(); i++)
+  {
+    CDemuxStream* pStream = GetStream(i);
+    if (pStream->type == STREAM_DATA) iCounter++;
+  }
+
+  return iCounter;
+}
+
 CDemuxStreamAudio* CDVDDemux::GetStreamFromAudioId(int iAudioIndex)
 {
   int counter = -1;
@@ -122,6 +135,20 @@ CDemuxStreamSubtitle* CDVDDemux::GetStreamFromSubtitleId(int iSubtitleIndex)
     if (pStream->type == STREAM_SUBTITLE) counter++;
     if (iSubtitleIndex == counter)
       return (CDemuxStreamSubtitle*)pStream;
+  }
+  return NULL;
+}
+
+CDemuxStreamData* CDVDDemux::GetStreamFromDataId(int iSubtitleIndex)
+{
+  int counter = -1;
+  for (int i = 0; i < GetNrOfStreams(); i++)
+  {
+    CDemuxStream* pStream = GetStream(i);
+
+    if (pStream->type == STREAM_DATA) counter++;
+    if (iSubtitleIndex == counter)
+      return (CDemuxStreamData*)pStream;
   }
   return NULL;
 }

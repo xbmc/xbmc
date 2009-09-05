@@ -90,11 +90,11 @@ public:
   PVR_ERROR UpdateTimer(const PVR_TIMERINFO &timerinfo);
 
   /* Live stream handling */
-  bool OpenLiveStream(unsigned int channel);
+  bool OpenLiveStream(const PVR_CHANNEL &channelinfo);
   void CloseLiveStream();
   int ReadLiveStream(BYTE* buf, int buf_size);
   int GetCurrentClientChannel();
-  bool SwitchChannel(unsigned int channel);
+  bool SwitchChannel(const PVR_CHANNEL &channelinfo);
 
   /* Record stream handling */
   bool OpenRecordedStream(const PVR_RECORDINGINFO &recinfo);
@@ -102,10 +102,7 @@ public:
   int ReadRecordedStream(BYTE* buf, int buf_size);
   __int64 SeekRecordedStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthRecordedStream(void);
-  
-  bool TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage);
-  bool ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage);
-  
+
   static CVTPTransceiver *GetTransceiver() { return m_transceiver; }
 
 protected:

@@ -1024,7 +1024,9 @@ bool CPVRClient::OpenLiveStream(const cPVRChannelInfoTag &channelinfo)
   {
     try
     {
-      return m_pClient->OpenLiveStream(channelinfo.ClientNumber());
+      PVR_CHANNEL tag;
+      WriteClientChannelInfo(channelinfo, tag);
+      return m_pClient->OpenLiveStream(tag);
     }
     catch (std::exception &e)
     {
@@ -1075,11 +1077,33 @@ int CPVRClient::GetCurrentClientChannel()
   return m_pClient->GetCurrentClientChannel();
 }
 
-bool CPVRClient::SwitchChannel(unsigned int channel)
+bool CPVRClient::SwitchChannel(const cPVRChannelInfoTag &channelinfo)
 {
   CSingleLock lock(m_critSection);
 
-  return m_pClient->SwitchChannel(channel);
+  PVR_CHANNEL tag;
+  WriteClientChannelInfo(channelinfo, tag);
+  return m_pClient->SwitchChannel(tag);
+}
+
+void CPVRClient::WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, PVR_CHANNEL &tag)
+{
+  tag.uid               = channelinfo.UniqueID();
+  tag.number            = channelinfo.ClientNumber();
+  tag.name              = channelinfo.Name().c_str();
+  tag.callsign          = channelinfo.ClientName().c_str();
+  tag.iconpath          = channelinfo.Icon().c_str();
+  tag.encrypted         = channelinfo.IsEncrypted();
+  tag.radio             = channelinfo.IsRadio();
+  tag.hide              = channelinfo.IsHidden();
+  tag.recording         = channelinfo.IsRecording();
+  tag.teletext          = channelinfo.HaveTeletext();
+  tag.bouquet           = 0;
+  tag.multifeed         = false;
+  tag.multifeed_master  = 0;
+  tag.multifeed_number  = 0;
+  tag.stream_url        = channelinfo.Stream();
+  return;
 }
 
 bool CPVRClient::OpenRecordedStream(const cPVRRecordingInfoTag &recinfo)
@@ -1113,21 +1137,6 @@ __int64 CPVRClient::LengthRecordedStream(void)
   return m_pClient->LengthRecordedStream();
 }
 
-bool CPVRClient::TeletextPagePresent(unsigned int channel, unsigned int Page, unsigned int subPage)
-{
-  CSingleLock lock(m_critSection);
-
-  return m_pClient->TeletextPagePresent(channel, Page, subPage);
-}
-
-bool CPVRClient::ReadTeletextPage(BYTE *buf, unsigned int channel, unsigned int Page, unsigned int subPage)
-{
-  CSingleLock lock(m_critSection);
-
-  return m_pClient->ReadTeletextPage(buf, channel, Page, subPage);
-}
-
-
 bool CPVRClient::OpenTVDemux(PVRDEMUXHANDLE handle, const cPVRChannelInfoTag &channelinfo)
 {
   CSingleLock lock(m_critSection);
@@ -1136,7 +1145,9 @@ bool CPVRClient::OpenTVDemux(PVRDEMUXHANDLE handle, const cPVRChannelInfoTag &ch
   {
     try
     {
-      return m_pClient->OpenTVDemux(handle, channelinfo.ClientNumber());
+      PVR_CHANNEL tag;
+      WriteClientChannelInfo(channelinfo, tag);
+      return m_pClient->OpenTVDemux(handle, tag);
     }
     catch (std::exception &e)
     {
