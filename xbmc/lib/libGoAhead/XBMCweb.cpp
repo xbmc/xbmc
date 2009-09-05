@@ -30,6 +30,7 @@
 #include "PlayList.h"
 #include "GUISettings.h"
 #include "Settings.h"
+#include "FileSystem/VirtualDirectory.h"
 
 using namespace std;
 using namespace DIRECTORY;

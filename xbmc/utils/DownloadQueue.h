@@ -21,8 +21,9 @@
  *
  */
 
-#include "Thread.h"
 #include <queue>
+#include "Thread.h"
+#include "StdString.h"
 
 struct TICKET
 {

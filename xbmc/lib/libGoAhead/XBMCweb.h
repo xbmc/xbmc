@@ -9,13 +9,14 @@
  */
 
 /********************************* Includes ***********************************/
-
-#include "FileSystem/VirtualDirectory.h"
+#include <boost/shared_ptr.hpp>
 #include "includes.h"
-#include "boost/shared_ptr.hpp"
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
+namespace DIRECTORY {
+  class CVirtualDirectory;
+}
 
 class CXbmcWeb
 {
