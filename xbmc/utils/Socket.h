@@ -3,6 +3,7 @@
 
 #include <string.h>
 #include <map>
+#include <vector>
 
 namespace SOCKETS
 {

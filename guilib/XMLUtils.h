@@ -21,6 +21,8 @@
  *
  */
 
+#include "StdString.h"
+
 // forward
 class TiXmlDocument;
 class TiXmlNode;

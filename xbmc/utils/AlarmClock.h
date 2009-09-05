@@ -21,6 +21,7 @@
  *
  */
 
+#include "StdString.h"
 #include "Stopwatch.h"
 #include "CriticalSection.h"
 #include "Thread.h"

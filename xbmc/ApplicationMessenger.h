@@ -22,6 +22,7 @@
  */
 
 #include "utils/CriticalSection.h"
+#include "StdString.h"
 
 #include <queue>
 

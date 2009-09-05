@@ -22,6 +22,8 @@
  *
  */
 
+#include "StdString.h"
+
 #define ENC_ARTIST  11
 #define ENC_TITLE   12
 #define ENC_ALBUM   13

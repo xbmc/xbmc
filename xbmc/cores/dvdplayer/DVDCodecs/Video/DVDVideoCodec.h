@@ -21,6 +21,8 @@
  *
  */
 
+#include <vector>
+
 // when modifying these structures, make sure you update all codecs accordingly
 #define FRAME_TYPE_UNDEF 0
 #define FRAME_TYPE_I 1

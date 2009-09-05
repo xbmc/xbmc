@@ -26,6 +26,8 @@
  *
  */
 
+#include "StdString.h"
+
 // forward definitions
 class IAudioDeviceChangedCallback;
 

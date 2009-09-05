@@ -29,6 +29,8 @@
  *
  */
 
+#include "StdString.h"
+
 #include <map>
 
 /*!

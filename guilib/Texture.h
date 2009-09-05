@@ -27,6 +27,8 @@
 #ifndef GUILIB_TEXTURE_H
 #define GUILIB_TEXTURE_H
 
+#include "StdString.h"
+
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
 #pragma pack()
