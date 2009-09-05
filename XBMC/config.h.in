@@ -294,6 +294,9 @@
 /* Define to 1 if you have the `vdpau' library (-lvdpau). */
 #undef HAVE_LIBVDPAU
 
+/* Define to 1 if you have the `crystalhd' library (-lldil). */
+#undef HAVE_LIBCRYSTALHD
+
 /* Define to 1 if you have the `vorbis' library (-lvorbis). */
 #undef HAVE_LIBVORBIS
 
