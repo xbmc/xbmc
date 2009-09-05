@@ -582,7 +582,7 @@ void CVTPTransceiver::AbortStreamLive()
 
   string line;
   int    code;
-  if(!SendCommand("ABRT 0", code, line))
+  if(SendCommand("ABRT 0", code, line))
     return;
   XBMC_log(LOG_ERROR, "CVTPTransceiver::AbortStreamLive - failed");
 }
@@ -594,7 +594,7 @@ void CVTPTransceiver::AbortStreamRecording()
 
   string line;
   int    code;
-  if(!SendCommand("ABRT 1", code, line))
+  if(SendCommand("ABRT 1", code, line))
     return;
   XBMC_log(LOG_ERROR, "CVTPTransceiver::AbortStreamRecording - failed");
 }
@@ -606,7 +606,7 @@ void CVTPTransceiver::AbortStreamData()
 
   string line;
   int    code;
-  if(!SendCommand("ABRT 3", code, line))
+  if(SendCommand("ABRT 3", code, line))
     return;
   XBMC_log(LOG_ERROR, "VTPTransceiver::AbortStreamData - failed");
 }

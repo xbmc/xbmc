@@ -115,9 +115,12 @@ void CGUIDialogTVChannels::Update()
     PVRChannelsRadio.GetChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup());
   }
 
-  m_viewControl.SetItems(*m_vecItems);
+  bool RadioPlaying;
+  int CurrentChannel;
+  CPVRManager::GetInstance()->GetCurrentChannel(&CurrentChannel, &RadioPlaying);
 
-  m_viewControl.SetSelectedItem(CPVRManager::GetInstance()->GetCurrentChannel(CPVRManager::GetInstance()->IsPlayingRadio())-1);
+  m_viewControl.SetItems(*m_vecItems);
+  m_viewControl.SetSelectedItem(CurrentChannel-1);
   g_graphicsContext.Unlock();
 }
 

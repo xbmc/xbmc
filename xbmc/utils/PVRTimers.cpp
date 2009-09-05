@@ -105,7 +105,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
 
   const cPVRChannelInfoTag *channel = NULL;
 
-  CFileItem *curPlayingChannel = CPVRManager::GetInstance()->GetCurrentChannelItem();
+  CFileItem *curPlayingChannel = CPVRManager::GetInstance()->GetCurrentPlayingItem();
   if (curPlayingChannel)
     channel = curPlayingChannel->GetTVChannelInfoTag();
   else

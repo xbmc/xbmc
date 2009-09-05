@@ -1473,10 +1473,10 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
       pSettingString->SetData(time);
       pSettingControl->Update();
     }
-    else if (strSetting.Equals("pvrrecord.timeshiftcache") || strSetting.Equals("pvrrecord.timeshiftpath"))
+    else if (strSetting.Equals("pvrplayback.timeshiftcache") || strSetting.Equals("pvrplayback.timeshiftpath"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrrecord.timeshift"));
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvrplayback.timeshift"));
     }
     else if (strSetting.Equals("pvrmenu.infotimeout"))
     { // only visible if infoswitch is enabled
@@ -2203,7 +2203,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
   }
-  else if ((strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath")) || strSetting.Equals("pvrmenu.iconpath") || strSetting.Equals("pvrrecord.timeshiftpath"))
+  else if ((strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath")) || strSetting.Equals("pvrmenu.iconpath") || strSetting.Equals("pvrplayback.timeshiftpath"))
   {
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CStdString path = g_guiSettings.GetString(strSetting,false);

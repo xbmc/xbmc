@@ -1497,38 +1497,27 @@ void CGUIWindowTV::UpdateGuide()
 
   m_vecItems->Clear();
 
-  bool TVPlaying = CPVRManager::GetInstance()->IsPlayingTV();
-  bool RadioPlaying = CPVRManager::GetInstance()->IsPlayingRadio();
+  bool RadioPlaying;
+  int CurrentChannel;
+  CPVRManager::GetInstance()->GetCurrentChannel(&CurrentChannel, &RadioPlaying);
 
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
   {
     m_guideGrid = NULL;
     CStdString strChannel;
-    int current_channel;
 
     SET_CONTROL_HIDDEN(8002);
     SET_CONTROL_HIDDEN(8003);
     SET_CONTROL_VISIBLE(8001);
 
-    if (TVPlaying)
-    {
-      current_channel = CPVRManager::GetInstance()->GetCurrentChannel(RadioPlaying);
-      strChannel = PVRChannelsTV.GetNameForChannel(current_channel);
-    }
-    else if (RadioPlaying)
-    {
-      current_channel = CPVRManager::GetInstance()->GetCurrentChannel(RadioPlaying);
-      strChannel = PVRChannelsRadio.GetNameForChannel(current_channel);
-    }
+    if (!RadioPlaying)
+      strChannel = PVRChannelsTV.GetNameForChannel(CurrentChannel);
     else
-    {
-      current_channel = 1;
-      strChannel = PVRChannelsTV.GetNameForChannel(current_channel);
-    }
+      strChannel = PVRChannelsRadio.GetNameForChannel(CurrentChannel);
 
     strLabel.Format("%s: %s", g_localizeStrings.Get(18050), strChannel.c_str());
 
-    if (cPVREpgs::GetEPGChannel(current_channel, m_vecItems, RadioPlaying) > 0)
+    if (cPVREpgs::GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying) > 0)
     {
       CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_GUIDE_CHANNEL, 0, 0, m_vecItems);
       g_graphicsContext.SendMessage(msg);
@@ -1776,25 +1765,14 @@ void CGUIWindowTV::UpdateButtons()
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
   {
     CStdString strChannel;
-    int current_channel;
-    bool TVPlaying = CPVRManager::GetInstance()->IsPlayingTV();
-    bool RadioPlaying = CPVRManager::GetInstance()->IsPlayingRadio();
+    bool RadioPlaying;
+    int CurrentChannel;
+    CPVRManager::GetInstance()->GetCurrentChannel(&CurrentChannel, &RadioPlaying);
 
-    if (TVPlaying)
-    {
-      current_channel = CPVRManager::GetInstance()->GetCurrentChannel(RadioPlaying);
-      strChannel = PVRChannelsTV.GetNameForChannel(current_channel);
-    }
-    else if (RadioPlaying)
-    {
-      current_channel = CPVRManager::GetInstance()->GetCurrentChannel(RadioPlaying);
-      strChannel = PVRChannelsRadio.GetNameForChannel(current_channel);
-    }
+    if (!RadioPlaying)
+      strChannel = PVRChannelsTV.GetNameForChannel(CurrentChannel);
     else
-    {
-      current_channel = 1;
-      strChannel = PVRChannelsTV.GetNameForChannel(current_channel);
-    }
+      strChannel = PVRChannelsRadio.GetNameForChannel(CurrentChannel);
 
     strLabel.Format("%s: %s", g_localizeStrings.Get(18050), strChannel.c_str());
   }
