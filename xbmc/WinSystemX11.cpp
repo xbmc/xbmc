@@ -130,11 +130,21 @@ bool CWinSystemX11::DestroyWindow()
     
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  int options = SDL_OPENGL;
+  return CWinSystemX11::SetFullScreen(m_bFullScreen, 0, newWidth, newHeight, false, false);
+}
 
-  m_nWidth = newWidth;
-  m_nHeight = newHeight;
-  
+bool CWinSystemX11::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+{
+  if(m_nWidth      == width
+  && m_nHeight     == height
+  && m_bFullScreen == fullScreen)
+    return true;
+
+  m_nWidth      = width;
+  m_nHeight     = height;
+  m_bFullScreen = fullScreen;
+
+  int options = SDL_OPENGL;
   if (m_bFullScreen)
     options |= SDL_FULLSCREEN;
   else
@@ -145,17 +155,8 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
     RefreshGlxContext();
     return true;
   }
-  
+
   return false;
-}
-
-bool CWinSystemX11::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
-{  
-  m_nWidth = width;
-  m_nHeight = height;
-  m_bFullScreen = fullScreen;
-
-  return ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 }
 
 void CWinSystemX11::UpdateResolutions()
