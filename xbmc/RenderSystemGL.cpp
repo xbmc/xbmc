@@ -233,6 +233,9 @@ void CRenderSystemGL::SetVSync(bool enable)
 
   SetVSyncImpl(enable);
   
+  if (!enable)
+    return;
+
   if (g_advancedSettings.m_ForcedSwapTime != 0.0)
   {
     /* some hardware busy wait on swap/glfinish, so we must manually sleep to avoid 100% cpu */
