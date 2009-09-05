@@ -25,7 +25,6 @@
 #include "GUIDialogSettings.h"
 #include "Addon.h"
 #include "URL.h"
-#include "settings/ISettingsProvider.h"
 
 class CGUIDialogAddonSettings : public CGUIDialogSettings
 {
@@ -55,6 +54,7 @@ private:
   bool TranslateSingleString(const CStdString &strCondition, std::vector<CStdString> &enableVec);
   ADDON::AddonPtr m_addon;
   CStdString m_strHeading;
+  std::map<int, CStdString> m_controls;
   std::map<CStdString,CStdString> m_buttonValues;
   bool m_cancelled;
 };

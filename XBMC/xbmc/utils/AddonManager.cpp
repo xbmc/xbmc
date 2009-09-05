@@ -399,6 +399,10 @@ bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPt
 //TODO remove support
 bool CAddonMgr::GetAddonFromPath(const CStdString &path, AddonPtr &addon)
 {
+  // first remove any filenames from path
+  CStdString dir;
+  CUtil::GetDirectory(path, dir);
+  CUtil::RemoveSlashAtEnd(dir);
   /* iterate through alladdons vec and return matched Addon */
   MAPADDONS::iterator typeItr = m_addons.begin();
   while (typeItr !=  m_addons.end())
@@ -407,7 +411,7 @@ bool CAddonMgr::GetAddonFromPath(const CStdString &path, AddonPtr &addon)
     IVECADDONS adnItr = addons.begin();
     while (adnItr != addons.end())
     {
-      if ((*adnItr).get()->Path() == path)
+      if ((*adnItr).get()->Path() == dir)
       {
         addon = (*adnItr);
         return true;

@@ -46,11 +46,11 @@ public:
   static void RemoveInstance();
   static CPVRManager* GetInstance();
 
-  /* addon specific */
-  bool RequestRestart(const ADDON::IAddon* addon, bool datachanged);
-  bool RequestRemoval(const ADDON::IAddon* addon);
-  ADDON_STATUS SetSetting(const ADDON::IAddon* addon, const char *settingName, const void *settingValue);
-  addon_settings_t GetSettings(const ADDON::IAddon* addon);
+  ///* addon specific */
+  //bool RequestRestart(const ADDON::IAddon* addon, bool datachanged);
+  //bool RequestRemoval(const ADDON::IAddon* addon);
+  //ADDON_STATUS SetSetting(const ADDON::IAddon* addon, const char *settingName, const void *settingValue);
+  //addon_settings_t GetSettings(const ADDON::IAddon* addon);
 
   /* Event Handling */
   bool LoadClients();

@@ -21,8 +21,9 @@
  */
 
 #include "IAddon.h"
-#include "../addons/include/xbmc_addon_types.h"
+#include "../addons/include/libaddon.h"
 #include "FileSystem/PluginDirectory.h"
+#include "Settings.h"
 #include "Util.h"
 #include "URL.h"
 #include "LocalizeStrings.h"

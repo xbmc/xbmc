@@ -206,7 +206,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
     dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%L", "%D"));
 
   // Unload temporary language strings
-  ClearPluginStrings();
+  /*ClearPluginStrings();*/
 
   // set the event to mark that we're done
   SetEvent(dir->m_fetchComplete);

@@ -57,7 +57,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
         {
           int iItem = pList->GetSelectedItem();
           if (m_pVisualisation)
-            m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_LOAD_PRESET, (void *)&iItem);
+            m_pVisualisation->OnAction(VIS_ACTION_LOAD_PRESET, (void *)&iItem);
         }
         return true;
       }
@@ -99,14 +99,14 @@ void CGUIDialogVisualisationPresetList::Render()
   int numPresets = 0;
   int currentPreset = 0;
   bool locked = false;
-  if (m_pVisualisation)
-    m_pVisualisation->GetPresets(&presets, &currentPreset, &numPresets, &locked);
-  if (currentPreset != m_currentPreset)
-  { // current preset changed...
-    m_vecPresets->Get(m_currentPreset)->Select(false);
-    m_currentPreset = currentPreset;
-    m_vecPresets->Get(m_currentPreset)->Select(true);
-  }
+  //if (m_pVisualisation)
+  //  m_pVisualisation->GetPresets(&presets, &currentPreset, &numPresets, &locked);
+  //if (currentPreset != m_currentPreset)
+  //{ // current preset changed...
+  //  m_vecPresets->Get(m_currentPreset)->Select(false);
+  //  m_currentPreset = currentPreset;
+  //  m_vecPresets->Get(m_currentPreset)->Select(true);
+  //}
   CGUIDialog::Render();
 }
 
@@ -119,29 +119,28 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
     //clear filelist
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
     OnMessage(msg);
-    char **presets = NULL;
     int numPresets = 0;
     m_currentPreset = 0;
     bool locked = false;
-    m_pVisualisation->GetPresets(&presets, &m_currentPreset, &numPresets, &locked);
-    if (presets)
-    {
-      //clear filelist
-      CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
-      OnMessage(msg2);
-      m_vecPresets->Clear();
-      for (int i = 0; i < numPresets; i++)
-      {
-        CFileItemPtr pItem(new CFileItem(presets[i]));
-        if (i == m_currentPreset)
-          pItem->Select(true);
-        pItem->RemoveExtension();
-        pItem->SetLabel2(" ");
-        m_vecPresets->Add(pItem);
-        CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, pItem);
-        OnMessage(msg);
-      }
-    }
+    /*m_pVisualisation->GetPresets(&presets, &m_currentPreset, &numPresets, &locked);*/
+    //if (presets)
+    //{
+    //  //clear filelist
+    //  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
+    //  OnMessage(msg2);
+    //  m_vecPresets->Clear();
+    //  for (int i = 0; i < numPresets; i++)
+    //  {
+    //    CFileItemPtr pItem(new CFileItem(presets[i]));
+    //    if (i == m_currentPreset)
+    //      pItem->Select(true);
+    //    pItem->RemoveExtension();
+    //    pItem->SetLabel2(" ");
+    //    m_vecPresets->Add(pItem);
+    //    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_LIST, 0, 0, pItem);
+    //    OnMessage(msg);
+    //  }
+    //}
   }
   // update our settings label
   CStdString strSettings;

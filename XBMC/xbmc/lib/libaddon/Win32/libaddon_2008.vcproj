@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../../../$(ProjectName).dll"
+				OutputFile="../../../../project/VS2008Express/XBMC/Debug (SDL)/$(ProjectName).dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;"
 				IgnoreDefaultLibraryNames=""

@@ -81,7 +81,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
         int currpreset=0, numpresets=0;
         bool locked;
 
-        pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);
+        /*pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);*/
         if (numpresets == 1 || !pPresets)
           return true;
       }

@@ -482,8 +482,6 @@ bool CTVDatabase::GetChannelSettings(DWORD clientID, unsigned int channelID, CVi
       settings.m_CustomPixelRatio     = m_pDS->fv("PixelRatio").get_asFloat();
       settings.m_CustomZoomAmount     = m_pDS->fv("ZoomAmount").get_asFloat();
       settings.m_Gamma                = m_pDS->fv("Gamma").get_asFloat();
-      settings.m_NonInterleaved       = m_pDS->fv("Interleaved").get_asBool();
-      settings.m_NoCache              = m_pDS->fv("NoCache").get_asBool();
       settings.m_SubtitleDelay        = m_pDS->fv("SubtitleDelay").get_asFloat();
       settings.m_SubtitleOn           = m_pDS->fv("SubtitlesOn").get_asBool();
       settings.m_SubtitleStream       = m_pDS->fv("SubtitleStream").get_asInteger();
@@ -537,10 +535,10 @@ bool CTVDatabase::SetChannelSettings(DWORD clientID, unsigned int channelID, con
     {
       m_pDS->close();
       // update the item
-      SQL=FormatSQL("update ChannelSettings set Interleaved=%i,NoCache=%i,Deinterlace=%i,FilmGrain=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
+      SQL=FormatSQL("update ChannelSettings set Deinterlace=%i,FilmGrain=%i,ViewMode=%i,ZoomAmount=%f,PixelRatio=%f,"
                     "AudioStream=%i,SubtitleStream=%i,SubtitleDelay=%f,SubtitlesOn=%i,Brightness=%i,Contrast=%i,Gamma=%i,"
                     "VolumeAmplification=%f,AudioDelay=%f,OutputToAllSpeakers=%i,",
-                    settings.m_NonInterleaved, settings.m_NoCache, settings.m_InterlaceMethod, settings.m_FilmGrain, settings.m_ViewMode,
+                    settings.m_InterlaceMethod, settings.m_ViewMode,
                     settings.m_CustomZoomAmount, settings.m_CustomPixelRatio, settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay,
                     settings.m_SubtitleOn, settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay,
                     settings.m_OutputToAllSpeakers);
@@ -555,11 +553,11 @@ bool CTVDatabase::SetChannelSettings(DWORD clientID, unsigned int channelID, con
     {
       // add the items
       m_pDS->close();
-      SQL=FormatSQL("insert into ChannelSettings ( idChannel,Interleaved,NoCache,Deinterlace,FilmGrain,ViewMode,ZoomAmount,PixelRatio,"
+      SQL=FormatSQL("insert into ChannelSettings ( idChannel,Deinterlace,ViewMode,ZoomAmount,PixelRatio,"
                     "AudioStream,SubtitleStream,SubtitleDelay,SubtitlesOn,Brightness,Contrast,Gamma,"
                     "VolumeAmplification,AudioDelay,OutputToAllSpeakers,ResumeTime,Crop,CropLeft,CropRight,CropTop,CropBottom)"
-                    " values (%i,%i,%i,%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,",
-                    channelID, settings.m_NonInterleaved, settings.m_NoCache, settings.m_InterlaceMethod, settings.m_FilmGrain, settings.m_ViewMode,
+                    " values (%i,%i,%i,%f,%f,%i,%i,%f,%i,%i,%i,%i,%f,%f,",
+                    channelID, settings.m_InterlaceMethod, settings.m_ViewMode,
                     settings.m_CustomZoomAmount, settings.m_CustomPixelRatio, settings.m_AudioStream, settings.m_SubtitleStream, settings.m_SubtitleDelay,
                     settings.m_SubtitleOn, settings.m_Brightness, settings.m_Contrast, settings.m_Gamma, settings.m_VolumeAmplification, settings.m_AudioDelay);
       CStdString SQL2;

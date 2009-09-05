@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="librefmem"
-	ProjectGUID="{25200712-8ABE-11DE-805D-60A756D89593}"
-	RootNamespace="librefmem"
+	Name="libvisualisation"
+	ProjectGUID="{740D4E50-958D-11DE-8A39-0800200C9A66}"
+	RootNamespace="libvisualisation"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -20,9 +20,12 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			UseOfMFC="0"
 			CharacterSet="1"
+			ManagedExtensions="0"
+			WholeProgramOptimization="0"
+			EnableManagedIncrementalBuild="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -41,14 +44,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="../;&quot;$(ProjectDir)Include&quot;"
-				PreprocessorDefinitions="_WIN32PC;_DEBUG;inline=__inline;_CRT_SECURE_NO_WARNINGS"
+				Optimization="0"
+				AdditionalIncludeDirectories="../;../../../addons/include/;../../librefmem/"
+				PreprocessorDefinitions="WIN32;_WIN32PC;_DEBUG;inline=__inline;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				DebugInformationFormat="3"
+				DebugInformationFormat="4"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -60,11 +64,20 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
+				Name="VCLinkerTool"
+				OutputFile="../../../../project/VS2008Express/XBMC/Debug (SDL)/$(ProjectName).dll"
+				LinkIncremental="2"
+				AdditionalLibraryDirectories="&quot;$(OutDir)&quot;"
 				IgnoreDefaultLibraryNames=""
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -74,6 +87,9 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -106,7 +122,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="../;&quot;$(ProjectDir)include&quot;"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				ExceptionHandling="0"
 				RuntimeLibrary="0"
@@ -126,7 +142,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				IgnoreAllDefaultLibraries="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -154,27 +169,23 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\alloc.c"
+				RelativePath="..\..\..\addons\include\libvisualisation.h"
 				>
 			</File>
 			<File
-				RelativePath="..\debug.c"
+				RelativePath="..\preset.c"
 				>
 			</File>
 			<File
-				RelativePath="..\mvp_atomic.h"
+				RelativePath="..\presets.c"
 				>
 			</File>
 			<File
-				RelativePath="..\mvp_debug.h"
+				RelativePath="..\track.c"
 				>
 			</File>
 			<File
-				RelativePath="..\mvp_refmem.h"
-				>
-			</File>
-			<File
-				RelativePath="..\refmem_local.h"
+				RelativePath="..\viz_local.h"
 				>
 			</File>
 		</Filter>

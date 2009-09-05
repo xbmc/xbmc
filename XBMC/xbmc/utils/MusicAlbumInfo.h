@@ -23,14 +23,11 @@
 
 #include "Song.h"
 #include "Album.h"
+#include "Scraper.h"
 #include "ScraperParser.h"
 
 class TiXmlDocument;
 class CScraperUrl;
-namespace ADDON
-{
-  class CScraper;
-}
 
 namespace XFILE { class CFileCurl; }
 

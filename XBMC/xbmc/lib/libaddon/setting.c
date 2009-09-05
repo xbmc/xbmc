@@ -49,9 +49,9 @@
 static void
 addon_setting_destroy(addon_setting_t p)
 {
-  refmem_dbg(MVP_DBG_DEBUG, "%s {\n", __FUNCTION__);
+  refmem_dbg(REFMEM_DEBUG, "%s {\n", __FUNCTION__);
   if (!p) {
-    //refmem_dbg(MVP_DBG_DEBUG, "%s }!a\n", __FUNCTION__);
+    refmem_dbg(REFMEM_DEBUG, "%s }!a\n", __FUNCTION__);
     return;
   }
   if (p->id) {
@@ -66,7 +66,7 @@ addon_setting_destroy(addon_setting_t p)
   if(p->lvalues) {
     refmem_release(p->lvalues);
   }
-  refmem_dbg(MVP_DBG_DEBUG, "%s }\n", __FUNCTION__);
+  refmem_dbg(REFMEM_DEBUG, "%s }\n", __FUNCTION__);
 }
 
 /*
@@ -89,7 +89,7 @@ addon_setting_create(void)
 {
   addon_setting_t ret = refmem_alloc(sizeof(*ret));
 
-  refmem_dbg(MVP_DBG_DEBUG, "%s\n", __FUNCTION__);
+  refmem_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
   if(!ret) {
     return NULL;
   }
@@ -100,7 +100,7 @@ addon_setting_create(void)
   ret->label = NULL;
   ret->enable = NULL;
   ret->lvalues = NULL;
-  ret->valid = 0; // valid
+  ret->valid = 0; // invalid
   return ret;
 }
 
@@ -114,14 +114,14 @@ addon_setting_create(void)
 *
 * Return Value:
 *
-* Sucess: An addon_setting_type_t enum.
+* Success: An addon_setting_type_t enum.
 *
 */
 addon_setting_type_t
 addon_setting_type(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return SETTING_SEP;
   }
@@ -140,21 +140,21 @@ addon_setting_type(addon_setting_t setting)
 *
 * Return Value:
 *
-* Sucess: NULL.
+* Success: Any non-zero integer.
 *
-* Failure: A non-NULL integer
+* Failure: 0
 */
 int
 addon_setting_set_type(addon_setting_t setting, addon_setting_type_t type)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
-    return -1;
+    return 0;
   }
 
   setting->type = type;
-  return 0;
+  return 1;
 }
 
 /*
@@ -179,7 +179,7 @@ char *
 addon_setting_id(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -198,17 +198,17 @@ addon_setting_id(addon_setting_t setting)
 *
 * Return Value:
 *
-* Sucess: NULL.
+* Success: Any non-zero integer.
 *
-* Failure: A non-NULL integer
+* Failure: 0
 */
 int
 addon_setting_set_id(addon_setting_t setting, char *id)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
-    return -1;
+    return 0;
   }
   if(setting->id) {
     refmem_release(setting->id);
@@ -240,7 +240,7 @@ char *
 addon_setting_label(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -259,17 +259,17 @@ addon_setting_label(addon_setting_t setting)
 *
 * Return Value:
 *
-* Sucess: NULL.
+* Success: Any non-zero integer.
 *
-* Failure: A non-NULL integer
+* Failure: 0
 */
 int
 addon_setting_set_label(addon_setting_t setting, char *label)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
-    return -1;
+    return 0;
   }
   if(setting->label) {
     refmem_release(setting->label);
@@ -301,7 +301,7 @@ char *
 addon_setting_enable(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -330,7 +330,7 @@ char *
 addon_setting_lvalues(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -349,17 +349,17 @@ addon_setting_lvalues(addon_setting_t setting)
 *
 * Return Value:
 *
-* Sucess: NULL.
+* Success: Any non-zero integer.
 *
-* Failure: A non-NULL integer
+* Failure: 0
 */
 int
 addon_setting_set_lvalues(addon_setting_t setting, char *lvalues)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
-    return -1;
+    return 0;
   }
   if(setting->lvalues) {
     refmem_release(setting->lvalues);
@@ -377,22 +377,22 @@ addon_setting_set_lvalues(addon_setting_t setting, char *lvalues)
  *
  * Retrieves the 'valid' field of a setting structure
  *
- * Returns a signed interger representing the validity of the setting
+ * Returns a signed integer representing the validity of the setting
  * a non ZERO value signifies invalid
  *
  * Return Value:
  *
- * Sucess: 0
+ * Sucess: Any non-ZERO integer
  *
- * Failure: non ZERO integer
+ * Failure: 0
  */
 int 
 addon_setting_valid(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL setting structure\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
-    return -1;
+    return 0;
   }
   return setting->valid;
 }

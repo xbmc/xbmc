@@ -97,7 +97,7 @@ addon_settings_create(void)
   addon_settings_t ret;
 
  printf("YADS");
- refmem_dbg(MVP_DBG_DEBUG, "%s\n", __FUNCTION__);
+ refmem_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
  ret = refmem_alloc(sizeof(*ret));
  if(!ret) {
    return(NULL);
@@ -118,7 +118,7 @@ addon_settings_create(void)
  * 
  * Retrieve the setting structure found at index 'index' in the list
  * in 'list'. Return the setting structure held. Before forgetting
- * the reference to this setting, caller must call refmem_release().
+ * the reference to this setting, caller must call addon_release().
  *
  * Return Value:
  *
@@ -130,17 +130,17 @@ addon_setting_t
 addon_settings_get_item(addon_settings_t list, int index)
 {
   if (!list) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL settings list\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL settings list\n",
       __FUNCTION__);
     return NULL;
   }
   if(!list->settings_list) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL list\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL list\n",
       __FUNCTION__);
     return NULL;
   }
   if ((index < 0) || (index >= list->settings_count)) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: index %d out of range\n",
+    refmem_dbg(REFMEM_ERROR, "%s: index %d out of range\n",
       __FUNCTION__, index);
     return NULL;
   }
@@ -160,9 +160,9 @@ addon_settings_get_item(addon_settings_t list, int index)
  *
  * Return Value:
  *
- * Success: NULL integer
+ * Success: Any non-zero integer.
  *
- * Failure: A non-NULL integer
+ * Failure: 0
  */
 int
 addon_settings_add_item(addon_settings_t list, addon_setting_t item)
@@ -170,8 +170,8 @@ addon_settings_add_item(addon_settings_t list, addon_setting_t item)
   int c;
 
   if(!list || !item) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL list or item \n", __FUNCTION__);
-    return -1;
+    refmem_dbg(REFMEM_ERROR, "%s: NULL list or item \n", __FUNCTION__);
+    return 0;
   }
 
   c = list->settings_count;
@@ -181,12 +181,12 @@ addon_settings_add_item(addon_settings_t list, addon_setting_t item)
     list->settings_count = c;
   }
   else {
-    refmem_dbg(MVP_DBG_ERROR, "%s: realloc failed for list\n", __FUNCTION__);
+    refmem_dbg(REFMEM_ERROR, "%s: realloc failed for list\n", __FUNCTION__);
     return -1;
   }
 
   list->settings_list[c-1] = item;
-  return 0;
+  return 1;
 }
 
 /*
@@ -203,13 +203,13 @@ addon_settings_add_item(addon_settings_t list, addon_setting_t item)
  *
  * Success: A number >= 0 indicating the number of items in 'list'
  *
- * Failure: -errno
+ * Failure: A number < 0 indicating an error
  */
 int
 addon_settings_get_count(addon_settings_t list)
 {
   if (!list) {
-    refmem_dbg(MVP_DBG_ERROR, "%s: NULL settings list\n",
+    refmem_dbg(REFMEM_ERROR, "%s: NULL settings list\n",
       __FUNCTION__);
     return -EINVAL;
   }

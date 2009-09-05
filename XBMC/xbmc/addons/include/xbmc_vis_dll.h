@@ -1,38 +1,62 @@
 #ifndef __XBMC_VIS_H__
 #define __XBMC_VIS_H__
 
+#include <ctype.h>
 #ifdef HAS_XBOX_HARDWARE
-    #include <xtl.h>
-#elif _LINUX
-#define __cdecl
-#define __declspec(x)
-#elif __APPLE__
-#define __cdecl
-#define __declspec(x)
+#include <xtl.h>
+#else
+#ifdef _LINUX
+#include "../xbmc/linux/PlatformInclude.h"
+#ifndef __APPLE__
+#include <sys/sysinfo.h>
+#endif
 #else
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
 #endif
-
-#include "xbmc_addon_dll.h"               /* Dll related functions available to all AddOn's */
+#include "xbmc_addon_dll.h"
 #include "xbmc_vis_types.h"
+#include "libvisualisation.h"
+#include <sys/stat.h>
+#include <errno.h>
+#endif
+
+int htoi(const char *str) /* Convert hex string to integer */
+{
+  unsigned int digit, number = 0;
+  while (*str)
+  {
+    if (isdigit(*str))
+      digit = *str - '0';
+    else
+      digit = tolower(*str)-'a'+10;
+    number<<=4;
+    number+=digit;
+    str++;
+  }
+  return number;
+}
+
+//#define NEW_STRING(str, ch) { str = new char[strlen(ch) + 1]; strcpy(str, ch); };
+#ifdef HAS_XBOX_HARDWARE
+#pragma comment (lib, "lib/xbox_dx8.lib" )
+#endif
 
 extern "C"
 {
-  // the action commands ( see Visualisation.h )
-  #define VIS_ACTION_NEXT_PRESET       1
-  #define VIS_ACTION_PREV_PRESET       2
-  #define VIS_ACTION_LOAD_PRESET       3
-  #define VIS_ACTION_RANDOM_PRESET     4
-  #define VIS_ACTION_LOCK_PRESET       5
-  #define VIS_ACTION_RATE_PRESET_PLUS  6
-  #define VIS_ACTION_RATE_PRESET_MINUS 7
-  #define VIS_ACTION_UPDATE_ALBUMART   8
-  #define VIS_ACTION_UPDATE_TRACK      9
+  // exports for d3d hacks
+#ifndef HAS_SDL_OPENGL
+  void d3dSetTextureStageState( int x, DWORD dwY, DWORD dwZ);
+  void d3dSetRenderState(DWORD dwY, DWORD dwZ);
+#endif
 
-  #define VIS_ACTION_USER 100
+#ifdef HAS_SDL_OPENGL
+#ifndef D3DCOLOR_RGBA
+#define D3DCOLOR_RGBA(r,g,b,a) (r||(g<<8)||(b<<16)||(a<<24))
+#endif
+#endif
 
   // Functions that your visualisation must implement
   void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName);
@@ -41,7 +65,8 @@ extern "C"
   void Stop();
   bool OnAction(long action, void *param);
   void GetInfo(VIS_INFO* pInfo);
-  void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
+  viz_preset_list_t GetPresets();
+  viz_preset_t GetCurrentPreset();
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_addon(struct Visualisation* pVisz)

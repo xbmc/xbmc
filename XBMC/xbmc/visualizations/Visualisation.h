@@ -31,8 +31,10 @@
 
 #include "stdafx.h"
 #include "Key.h"
-#include "AddonDll.h"
 #include "DllVisualisation.h"
+#include "addons/include/libvisualisation.h"
+#include "addons/include/xbmc_vis_types.h"
+#include "AddonDll.h"
 #include "cores/IAudioCallback.h"
 
 #define AUDIO_BUFFER_SIZE 512 // MUST BE A POWER OF 2!!!
@@ -57,17 +59,6 @@ class CVisualisation : public ADDON::CAddonDll<DllVisualisation, Visualisation, 
                      , public IAudioCallback
 {
 public:
-  enum VIS_ACTION { VIS_ACTION_NONE = 0,
-                    VIS_ACTION_NEXT_PRESET,
-                    VIS_ACTION_PREV_PRESET,
-                    VIS_ACTION_LOAD_PRESET,
-                    VIS_ACTION_RANDOM_PRESET,
-                    VIS_ACTION_LOCK_PRESET,
-                    VIS_ACTION_RATE_PRESET_PLUS,
-                    VIS_ACTION_RATE_PRESET_MINUS,
-                    VIS_ACTION_UPDATE_ALBUMART,
-                    VIS_ACTION_UPDATE_TRACK
-  };
   ~CVisualisation();
 
   CVisualisation(const ADDON::AddonProps &props) : CAddonDll(props) {}
@@ -81,7 +72,6 @@ public:
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
   bool UpdateTrack();
-  void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   void GetCurrentPreset(char **pPreset, bool *locked);
   bool IsLocked();
   char *GetPreset();
@@ -90,11 +80,16 @@ private:
   void CreateBuffers();
   void ClearBuffers();
 
+  bool GetPresets();
+
   // attributes of the viewport we render to
   int m_xPos;
   int m_yPos;
   int m_width;
   int m_height;
+
+  // cached preset list
+  std::vector<CStdString> m_presets;
 
   // audio properties
   int m_iChannels;

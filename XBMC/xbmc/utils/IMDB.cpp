@@ -127,46 +127,23 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
     return 0;
   }
-<<<<<<< .working
-<<<<<<< .working
+  if (stricmp(doc.RootElement()->Value(),"error")==0)
+  {
+    TiXmlElement* title = doc.RootElement()->FirstChildElement("title");
+    CStdString strTitle;
+    if (title && title->FirstChild() && title->FirstChild()->Value())
+      strTitle = title->FirstChild()->Value();
+    TiXmlElement* message = doc.RootElement()->FirstChildElement("message");
+    CStdString strMessage;
+    if (message && message->FirstChild() && message->FirstChild()->Value())
+      strMessage = message->FirstChild()->Value();
+    CGUIDialogOK* dialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    dialog->SetHeading(strTitle);
+    dialog->SetLine(0,strMessage);
+    g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
+    return -1;
+  }
 
-=======
-  if (stricmp(doc.RootElement()->Value(),"error")==0)
-  {
-    TiXmlElement* title = doc.RootElement()->FirstChildElement("title");
-    CStdString strTitle;
-    if (title && title->FirstChild() && title->FirstChild()->Value())
-      strTitle = title->FirstChild()->Value();
-    TiXmlElement* message = doc.RootElement()->FirstChildElement("message");
-    CStdString strMessage;
-    if (message && message->FirstChild() && message->FirstChild()->Value())
-      strMessage = message->FirstChild()->Value();
-    CGUIDialogOK* dialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    dialog->SetHeading(strTitle);
-    dialog->SetLine(0,strMessage);
-    g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
-    return -1;
-  }
-=======
-  if (stricmp(doc.RootElement()->Value(),"error")==0)
-  {
-    TiXmlElement* title = doc.RootElement()->FirstChildElement("title");
-    CStdString strTitle;
-    if (title && title->FirstChild() && title->FirstChild()->Value())
-      strTitle = title->FirstChild()->Value();
-    TiXmlElement* message = doc.RootElement()->FirstChildElement("message");
-    CStdString strMessage;
-    if (message && message->FirstChild() && message->FirstChild()->Value())
-      strMessage = message->FirstChild()->Value();
-    CGUIDialogOK* dialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-    dialog->SetHeading(strTitle);
-    dialog->SetLine(0,strMessage);
-    g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
-    return -1;
-  }
->>>>>>> .merge-right.r22000
- 
->>>>>>> .merge-right.r22000
   TiXmlHandle docHandle( &doc );
 
   TiXmlElement* xurl = doc.RootElement()->FirstChildElement("url");
@@ -506,13 +483,8 @@ void CIMDB::Process()
     if (!(m_found=FindMovie(m_strMovie, m_movieList)))
     {
       // retry without replacing '.' and '-' if searching for a tvshow
-<<<<<<< .working
       if (m_info->Content() == CONTENT_TVSHOWS)
         CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
-=======
-      if (m_info.strContent.Equals("tvshows"))
-        CLog::Log(LOGERROR, "%s: Error looking up tvshow %s", __FUNCTION__, m_strMovie.c_str());
->>>>>>> .merge-right.r22000
       else
         CLog::Log(LOGERROR, "%s: Error looking up movie %s", __FUNCTION__, m_strMovie.c_str());
     }
@@ -543,13 +515,9 @@ int CIMDB::FindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieList, CGUI
   //CLog::Log(LOGDEBUG,"CIMDB::FindMovie(%s)", strMovie.c_str());
 
   // load our scraper xml
-<<<<<<< .working
-  if (!m_parser.Load(m_info))
+  if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info->Path())))
     return 0;
-=======
-  if (!m_parser.Load(CUtil::AddFileToFolder("special://xbmc/system/scrapers/video/", m_info.strPath)))
-    return 0;
->>>>>>> .merge-right.r22000
+
   CScraperParser::ClearCache();
 
   if (pProgress)

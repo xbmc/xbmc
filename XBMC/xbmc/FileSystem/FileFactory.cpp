@@ -58,7 +58,6 @@
 #ifdef HAS_PVRCLIENTS
 #include "PVRFile.h"
 #endif
-#include "FileMMS.h"
 #include "FileZip.h"
 #include "FileRar.h"
 #include "FileMusicDatabase.h"

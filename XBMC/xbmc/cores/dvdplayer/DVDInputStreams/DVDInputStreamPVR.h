@@ -1,6 +1,7 @@
 #pragma once
+
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,15 +21,19 @@
  *
  */
 
+/*
+* for DESCRIPTION see 'DVDInputStreamPVRManager.cpp'
+*/
+
 #include "DVDInputStream.h"
+#include "FileItem.h"
 
 namespace XFILE {
 class IFile;
 class ILiveTVInterface;
+class ITimeshiftTV;
 class IRecordable;
 }
-
-class IDVDPlayer;
 
 class CDVDInputStreamPVR
   : public CDVDInputStream
@@ -37,18 +42,19 @@ class CDVDInputStreamPVR
 public:
   CDVDInputStreamPVR(IDVDPlayer* pPlayer);
   virtual ~CDVDInputStreamPVR();
-  virtual bool    Open(const char* strFile, const std::string &content);
-  virtual void    Close();
-  virtual int     Read(BYTE* buf, int buf_size);
+  virtual bool Open(const char* strFile, const std::string &content);
+  virtual void Close();
+  virtual int Read(BYTE* buf, int buf_size);
   virtual __int64 Seek(__int64 offset, int whence);
-  virtual bool    IsEOF();
+  virtual bool Pause(double dTime);
+  virtual bool IsEOF();
   virtual __int64 GetLength();
 
   virtual bool    NextStream();
 
+  bool            SelectChannel(unsigned int iChannel);
   bool            NextChannel();
   bool            PrevChannel();
-  bool            SelectChannel(unsigned int channel);
 
   int             GetTotalTime();
   int             GetStartTime();
@@ -67,5 +73,7 @@ protected:
   XFILE::IFile*             m_pFile;
   XFILE::ILiveTVInterface*  m_pLiveTV;
   XFILE::IRecordable*       m_pRecordable;
-  bool m_eof;
+  XFILE::ITimeshiftTV*      m_pTimeshift;
+  bool                      m_eof;
+  bool                      m_bPaused;
 };

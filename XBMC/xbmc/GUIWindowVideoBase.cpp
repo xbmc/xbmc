@@ -186,11 +186,8 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
             return false;
 
           CFileItemPtr item = m_vecItems->Get(iItem);
-          if (m_vecItems->IsPlugin())
-            info.strContent = "plugin";
-          else if(m_vecItems->IsLiveTV())
-            info.strContent = "livetv";
-          else
+
+          if(!m_vecItems->IsPlugin() && !m_vecItems->IsLiveTV())
           {
             if (item->IsVideoDb()       &&
                 item->HasVideoInfoTag() &&
@@ -206,7 +203,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
 
             if (!scraper &&
               !(m_database.HasMovieInfo(item->m_strPath) ||
-                m_database.HasTvShowInfo(strDir)                           ||
+                m_database.HasTvShowInfo(strDir)         ||
                 m_database.HasEpisodeInfo(item->m_strPath)))
             {
               // hack
@@ -432,7 +429,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
     if (!item->HasVideoInfoTag())
       return false;
     movieDetails = *item->GetVideoInfoTag();
-    movieDetails.m_strIMDBNumber = "xx" + info.strContent; // disable refresh+get thumb button
+    movieDetails.m_strIMDBNumber = "xx" + ADDON::TranslateContent(content); // disable refresh+get thumb button
 
     bHasInfo = true;
   }
@@ -1853,12 +1850,12 @@ int CGUIWindowVideoBase::GetScraperForItem(CFileItem *item, ADDON::CScraperPtr &
 
   if (m_vecItems->IsPlugin())
   {
-    info.strContent = "plugin";
+    info.reset();
     return 0;
   }
   else if(m_vecItems->IsLiveTV())
   {
-    info.strContent = "livetv";
+    info.reset();
     return 0;
   }
 

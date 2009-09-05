@@ -60,7 +60,7 @@
 #include "Settings.h"
 #include "TextureManager.h"
 #include "language.h"
-//#include "PythonSettings.h"
+#include "PythonSettings.h"
 
 // include for constants
 #include "pyutil.h"
@@ -68,8 +68,6 @@
 
 using namespace std;
 using namespace XFILE;
-
-CLocalizeStrings g_localizeStringsTemp;
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")

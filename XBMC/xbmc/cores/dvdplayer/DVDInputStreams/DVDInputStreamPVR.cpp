@@ -27,16 +27,25 @@
 
 using namespace XFILE;
 
+/************************************************************************
+ * Description: Class constructor, initialize member variables
+ *              public class is CDVDInputStream
+ */
 CDVDInputStreamPVR::CDVDInputStreamPVR(IDVDPlayer* pPlayer) : CDVDInputStream(DVDSTREAM_TYPE_PVR)
 {
   m_pPlayer         = pPlayer;
   m_pFile           = NULL;
   m_pRecordable     = NULL;
   m_pLiveTV         = NULL;
+  m_pTimeshift      = NULL;
   m_pOtherStream    = NULL;
   m_eof             = true;
+  m_bPaused         = false;
 }
 
+/************************************************************************
+ * Description: Class destructor
+ */
 CDVDInputStreamPVR::~CDVDInputStreamPVR()
 {
   Close();
@@ -58,10 +67,11 @@ bool CDVDInputStreamPVR::Open(const char* strFile, const std::string& content)
   m_pFile       = new CPVRFile();
   m_pLiveTV     = ((CPVRFile*)m_pFile)->GetLiveTV();
   m_pRecordable = ((CPVRFile*)m_pFile)->GetRecordable();
+  m_pTimeshift  = ((CPVRFile*)m_pFile)->GetTimeshiftTV();
 
   /*
    * Translate the "pvr://....." entry.
-   * The PVR Client can use http or whatever else is supported by DVDPlayer 
+   * The PVR Client can use http or whatever else is supported by DVDPlayer.
    * to access streams.
    * If after translation the file protocol is still "pvr://" use this class
    * to read the stream data over the CPVRFile class and the PVR Library itself.
@@ -106,7 +116,7 @@ void CDVDInputStreamPVR::Close()
     m_pFile->Close();
     delete m_pFile;
   }
-  
+
   if (m_pOtherStream)
   {
     m_pOtherStream->Close();
@@ -121,6 +131,7 @@ void CDVDInputStreamPVR::Close()
   m_pFile           = NULL;
   m_pLiveTV         = NULL;
   m_pRecordable     = NULL;
+  m_pTimeshift      = NULL;
   m_pOtherStream    = NULL;
   m_eof             = true;
 }
@@ -173,7 +184,6 @@ __int64 CDVDInputStreamPVR::GetLength()
     return m_pFile->GetLength();
 }
 
-
 int CDVDInputStreamPVR::GetTotalTime()
 {
   if (m_pLiveTV)
@@ -205,7 +215,7 @@ bool CDVDInputStreamPVR::PrevChannel()
 bool CDVDInputStreamPVR::SelectChannel(unsigned int channel)
 {
   if (m_pLiveTV)
-    m_pLiveTV->SelectChannel(channel);
+    return m_pLiveTV->SelectChannel(channel);
   return false;
 }
 
@@ -221,14 +231,39 @@ bool CDVDInputStreamPVR::SeekTime(int iTimeInMsec)
   return false;
 }
 
+bool CDVDInputStreamPVR::Pause(double dTime)
+{
+  if (!m_pTimeshift)
+    return false;
+
+  if (m_bPaused)
+  {
+    m_bPaused = false;
+    m_pTimeshift->SendPause(m_bPaused, dTime);
+  }
+  else
+  {
+    m_bPaused = true;
+    m_pTimeshift->SendPause(m_bPaused, dTime);
+  }
+
+  return true;
+};
+
 bool CDVDInputStreamPVR::NextStream()
 {
-//  if(!m_pFile) return false;
-//  if(m_pFile->SkipNext())
-//  {
-//    m_eof = false;
-//    return true;
-//  }
+  if(!m_pFile) return -1;
+
+  if (m_pOtherStream)
+    return m_pOtherStream->NextStream();
+  else
+  {
+    if(m_pFile->SkipNext())
+    {
+      m_eof = false;
+      return true;
+    }
+  }
   return false;
 }
 

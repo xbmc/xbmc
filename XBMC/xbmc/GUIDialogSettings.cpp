@@ -63,7 +63,9 @@ bool CGUIDialogSettings::OnMessage(CGUIMessage &message)
   case GUI_MSG_CLICKED:
     {
       unsigned int iControl = message.GetSenderId();
-      if (iControl >= CONTROL_OKAY_BUTTON && iControl < CONTROL_PAGE)
+      /*if (iControl >= CONTROL_OKAY_BUTTON && iControl < CONTROL_PAGE)*/
+      // we are storing setting identifiers as control ids, also we 
+      // call OnSettingChanged on *ALL* non default controls
         OnClick(iControl);
       return true;
     }
@@ -140,11 +142,11 @@ void CGUIDialogSettings::EnableSettings(unsigned int id, bool enabled)
     m_settings[i].enabled = enabled;
     if (enabled)
     {
-      CONTROL_ENABLE(i + CONTROL_START);
+      CONTROL_ENABLE(id + CONTROL_START);
     }
     else
     {
-      CONTROL_DISABLE(i + CONTROL_START);
+      CONTROL_DISABLE(id + CONTROL_START);
     }
     return;
   }
@@ -248,9 +250,18 @@ void CGUIDialogSettings::OnClick(int iID)
     Close();
     return;
   }
-  unsigned int settingNum = iID - CONTROL_START;
-  if (settingNum >= m_settings.size()) return;
-  SettingInfo &setting = m_settings.at(settingNum);
+  unsigned int settingID = iID - CONTROL_START;
+  bool found(false);
+  unsigned i;
+  for (i = 0; i <m_settings.size(); i++)
+  {
+    if (m_settings[i].id = settingID)
+      found = true;
+  }
+  if (!found)
+    return;
+
+  SettingInfo &setting = m_settings.at(i);
   if (setting.type == SettingInfo::SPIN)
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(iID);
@@ -301,13 +312,13 @@ void CGUIDialogSettings::OnClick(int iID)
 
 void CGUIDialogSettings::FreeControls()
 {
-  // just clear our group list
-  CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
-  if (group)
-  {
-    group->FreeResources();
-    group->ClearAll();
-  }
+  //// just clear our group list
+  //CGUIControlGroupList *group = (CGUIControlGroupList *)GetControl(CONTROL_GROUP_LIST);
+  //if (group)
+  //{
+  //  group->FreeResources();
+  //  group->ClearAll();
+  //}
 }
 
 void CGUIDialogSettings::AddSetting(SettingInfo &setting, float width, int iControlID)

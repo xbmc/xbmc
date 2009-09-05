@@ -23,13 +23,13 @@
 
 #include "Song.h"
 #include "Artist.h"
+#include "Scraper.h"
 #include "ScraperParser.h"
 
 class TiXmlDocument;
 class CScraperUrl;
 namespace ADDON
 {
-  class CScraper;
   class CScraperParser;
 }
 

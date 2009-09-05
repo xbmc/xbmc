@@ -24,6 +24,7 @@
 
 #include "tinyXML/tinyxml.h"
 #include "StdString.h"
+#include "AddonManager.h"
 
 #include <vector>
 

@@ -59,6 +59,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowPrograms.h"
+#include "AddonManager.h"
 #include "MediaManager.h"
 #include "PVRManager.h"
 #include "utils/Network.h"
@@ -94,8 +95,6 @@
 #include "WINDirectSound.h"
 #endif
 #include <map>
-#include "ScriptSettings.h"
-#include "GUIDialogPluginSettings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1440,10 +1439,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("weather.pluginsettings"))
     {
-      // Create our base path
-      CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
+      //// Create our base path
+      //CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
+      //CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      //if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
     }
   }
 }
@@ -1491,14 +1490,6 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("weather.plugin"))
   {
-    g_weatherManager.ResetTimer();
-  }
-  else if (strSetting.Equals("weather.pluginsettings"))
-  {
-    // Create our base path
-    CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
-    CGUIDialogPluginSettings::ShowAndGetInput(basepath);
-    // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
     g_weatherManager.ResetTimer();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
@@ -3460,17 +3451,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     for (unsigned int i = 0; i < addons.size(); i++)
     {
       const AddonPtr addon = addons.at(i);
-// disabled lib checking 
-//      CStdString strFileName = addon->Path() + addon->LibName()
-//#ifdef _LINUX
-//      void *handle = dlopen(_P(strFileName).c_str(), RTLD_LAZY);
-//      if (!handle)
-//      {
-//        CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", strFileName.c_str(), dlerror());
-//        continue;
-//      }
-//      dlclose(handle);
-//#endif
       vecScr.push_back(addon->Name());
     }
   }
@@ -3998,6 +3978,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 
 void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {
+  VECADDONS addons;
   int j=0;
   int k=0;
   pControl->Clear();
@@ -4006,10 +3987,7 @@ void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pContro
 
   //find weather plugins....
   CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
-  VECADDONS addons;
   CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_WEATHER);
-
-  /* Make sure addon's are loaded */
   if (!addons.empty())
   {
     for (unsigned int i = 0; i < addons.size(); i++)

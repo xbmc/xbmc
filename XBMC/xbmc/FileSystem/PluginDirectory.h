@@ -29,7 +29,7 @@
 #include <string>
 #include <vector>
 #include "../utils/CriticalSection.h"
-//#include "../utils/IAddon.h"
+#include "../utils/IAddon.h"
 
 class CURL;
 class CFileItemList;

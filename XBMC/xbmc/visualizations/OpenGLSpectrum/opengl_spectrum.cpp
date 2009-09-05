@@ -152,7 +152,7 @@ extern "C" {
 //-- Create -------------------------------------------------------------------
 // Called on load. Addon should fully initalize or return error status
 //-----------------------------------------------------------------------------
-ADDON_STATUS Create(ADDON_HANDLE hdl, void* props)
+ADDON_STATUS Create(void* hdl, void* props)
 {
   //if (!hdl)
   //  return STATUS_UNKNOWN;
@@ -311,9 +311,9 @@ bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+viz_preset_list_t GetPresets()
 {
-
+  return NULL;
 }
 
 //-- Remove -------------------------------------------------------------------

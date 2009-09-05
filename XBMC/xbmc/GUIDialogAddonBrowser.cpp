@@ -20,7 +20,7 @@
  */
 
 #include "stdafx.h"
-#include "utils/IAddon.h"
+#include "utils/AddonManager.h"
 #include "GUIDialogAddonBrowser.h"
 #include "GUISpinControlEx.h"
 #include "GUIDialogContextMenu.h"

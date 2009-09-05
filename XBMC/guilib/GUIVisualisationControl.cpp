@@ -138,19 +138,19 @@ void CGUIVisualisationControl::Render()
 bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
   if (!m_addon) return false;
-  enum CVisualisation::VIS_ACTION visAction = CVisualisation::VIS_ACTION_NONE;
+  VIS_ACTION visAction = VIS_ACTION_NONE;
   if (action.wID == ACTION_VIS_PRESET_NEXT)
-    visAction = CVisualisation::VIS_ACTION_NEXT_PRESET;
+    visAction = VIS_ACTION_NEXT_PRESET;
   else if (action.wID == ACTION_VIS_PRESET_PREV)
-    visAction = CVisualisation::VIS_ACTION_PREV_PRESET;
+    visAction = VIS_ACTION_PREV_PRESET;
   else if (action.wID == ACTION_VIS_PRESET_LOCK)
-    visAction = CVisualisation::VIS_ACTION_LOCK_PRESET;
+    visAction = VIS_ACTION_LOCK_PRESET;
   else if (action.wID == ACTION_VIS_PRESET_RANDOM)
-    visAction = CVisualisation::VIS_ACTION_RANDOM_PRESET;
+    visAction = VIS_ACTION_RANDOM_PRESET;
   else if (action.wID == ACTION_VIS_RATE_PRESET_PLUS)
-    visAction = CVisualisation::VIS_ACTION_RATE_PRESET_PLUS;
+    visAction = VIS_ACTION_RATE_PRESET_PLUS;
   else if (action.wID == ACTION_VIS_RATE_PRESET_MINUS)
-    visAction = CVisualisation::VIS_ACTION_RATE_PRESET_MINUS;
+    visAction = VIS_ACTION_RATE_PRESET_MINUS;
 
   return m_addon->OnAction(visAction);
 }

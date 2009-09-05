@@ -2585,11 +2585,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       database.Open();
       DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
       DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(item.m_strPath,params);
-      if (params.GetContent() == CONTENT_MOVIES)
+      if (params.GetContentType() == CONTENT_MOVIES)
         database.GetMovieInfo("",*item.GetVideoInfoTag(),params.GetMovieId());
-      if (params.GetContent() == CONTENT_TVSHOWS)
+      if (params.GetContentType() == CONTENT_TVSHOWS)
         database.GetEpisodeInfo("",*item.GetVideoInfoTag(),params.GetEpisodeId());
-      if (params.GetContent() == CONTENT_MUSICVIDEOS)
+      if (params.GetContentType() == CONTENT_MUSICVIDEOS)
         database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     }

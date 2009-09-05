@@ -28,7 +28,7 @@
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
 #include "Settings.h"
-#include "utils/IAddon.h"
+#include "utils/AddonManager.h"
 
 using namespace ADDON;
 
@@ -309,7 +309,7 @@ void CGUIWindowWeather::CallPlugin()
   {
     
     AddonPtr addon;
-    if (!CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, g_guiSettings.GetString("weather.plugin"), addon))
+    if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, g_guiSettings.GetString("weather.plugin"), addon))
       return;
     
     // create the full path to the plugin

@@ -24,6 +24,7 @@
 #include "GUIWindowVideoBase.h"
 #include "utils/fstrcmp.h"
 #include "utils/RegExp.h"
+#include "utils/AddonManager.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
 #include "XMLUtils.h"

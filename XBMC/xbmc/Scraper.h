@@ -33,7 +33,7 @@ namespace ADDON
   class CScraper : public CAddon
   {
   public:
-    CScraper(const AddonProps &props) : CAddon(props) { LoadSettingsXML(Path()); }
+    CScraper(const AddonProps &props) : CAddon(props) { }
     CScraper(const CScraper &scraper);
     virtual ~CScraper() {}
     virtual AddonPtr Clone() const;

@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,25 +18,31 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
-#include "XMLUtils.h"
-#include "ScraperSettings.h"
-#include "FileSystem/File.h"
-#include "FileSystem/Directory.h"
-#include "FileSystem/FileCurl.h"
-#include "utils/ScraperParser.h"
-#include "utils/ScraperUrl.h"
 
-#include <sstream>
+/**
+ * \file addon_local.h
+ * Local definitions which are internal to libaddon
+ */
 
-using namespace std;
+#ifndef __ADDON_LOCAL_H_
+#define __ADDON_LOCAL_H_
 
-CScraperSettings::CScraperSettings()
-{
-}
+#include <xbmc_addon_types.h>
 
-CScraperSettings::~CScraperSettings()
-{
-}
+/* An individual setting */
+struct addon_setting {
+  addon_setting_type_t type;
+  char *id;
+  char *label;
+  char *enable;
+  char *lvalues;
+  int valid;
+};
 
+/* A list of settings */
+struct addon_settings {
+  addon_setting_t *settings_list;
+  long settings_count;
+};
 
+#endif /* __ADDON_LOCAL_H */

@@ -23,7 +23,7 @@
 #ifndef __SCREENSAVER_TYPES_H__
 #define __SCREENSAVER_TYPES_H__
 
-#include "xbmc_addon_types.h"
+#include <libaddon.h>
 
 extern "C"
 {

@@ -172,10 +172,9 @@ void CPowerManager::Resume()
   {
     CLog::Log(LOGNOTICE, "%s: Updating video library on resume", __FUNCTION__);
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
     VIDEO::SScanSettings settings;
     if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("",info,settings,false);
+      scanner->StartScanning("",settings,false);
   }
 
   // update music library

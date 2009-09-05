@@ -25,6 +25,7 @@
 #include "GUIDialog.h"
 #include "Application.h"
 #include "GUIPassword.h"
+#include "utils/AddonManager.h"
 #include "GUIDialogAddonSettings.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"

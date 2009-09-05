@@ -27,23 +27,12 @@
 #ifndef __ADDON_LOCAL_H_
 #define __ADDON_LOCAL_H_
 
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#else
-#ifndef _LINUX
-#include <windows.h>
-#else
-#ifndef __cdecl
-#define __cdecl
-#endif
-#ifndef __declspec
-#define __declspec(x)
-#endif
-#include <time.h>
-#endif
-#endif
-
-#include <xbmc_addon_types.h>
+enum addon_log {
+  REFMEM_DEBUG,
+  REFMEM_INFO,
+  REFMEM_NOTICE,
+  REFMEM_ERROR
+};
 
 /* An individual setting */
 struct addon_setting {

@@ -36,9 +36,9 @@ NODE_TYPE CDirectoryNodeDirector::GetChildType()
 {
   CQueryParams params;
   CollectQueryParams(params);
-  if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
+  if (params.GetContentType() == CONTENT_MOVIES)
     return NODE_TYPE_TITLE_MOVIES;
-  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+  if (params.GetContentType() == CONTENT_MUSICVIDEOS)
     return NODE_TYPE_TITLE_MUSICVIDEOS;
 
   return NODE_TYPE_TITLE_TVSHOWS;

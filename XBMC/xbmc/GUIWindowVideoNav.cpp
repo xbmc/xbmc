@@ -965,15 +965,15 @@ void CGUIWindowVideoNav::OnFinalizeFileItems(CFileItemList& items)
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
   bool filterWatched=false;
-  if (params.GetContent() == CONTENT_TVSHOWS ||
+  if (params.GetContentType() == CONTENT_TVSHOWS ||
        dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
     filterWatched = true;
   if (items.IsPlugin())
     filterWatched = true;
   if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_ALL)
     filterWatched = false;
-  if (params.GetContent() == CONTENT_MOVIES                             ||
-      params.GetContent() == CONTENT_MUSICVIDEOS                        ||
+  if (params.GetContentType() == CONTENT_MOVIES                             ||
+      params.GetContentType() == CONTENT_MUSICVIDEOS                        ||
       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES ||
       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
   { // need to filter no matter to get rid of duplicates - price to pay for not filtering in db
@@ -1014,13 +1014,13 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
   CQueryParams params;
   dir.GetQueryParams(items.m_strPath,params);
   bool filterWatched=false;
-  if (params.GetContent() == CONTENT_TVSHOWS ||
+  if (params.GetContentType() == CONTENT_TVSHOWS ||
        dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_EPISODES)
   {
     filterWatched = true;
   }
-  if (params.GetContent() == CONTENT_MOVIES                             ||
-      params.GetContent() == CONTENT_MUSICVIDEOS                        ||
+  if (params.GetContentType() == CONTENT_MOVIES                             ||
+      params.GetContentType() == CONTENT_MUSICVIDEOS                        ||
       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MOVIES ||
       dir.GetDirectoryChildType(items.m_strPath) == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
     filterWatched = true;
@@ -1052,7 +1052,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
       (filter.IsEmpty() && (!filterWatched               ||
       (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2))))
     {
-      if ((params.GetContent() != CONTENT_MOVIES  && params.GetContent() != CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
+      if ((params.GetContentType() != CONTENT_MOVIES  && params.GetContentType() != CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
       continue;
     }
@@ -1076,7 +1076,7 @@ void CGUIWindowVideoNav::FilterItems(CFileItemList &items)
     if (pos != CStdString::npos &&
        (!filterWatched || (item->GetVideoInfoTag()->m_playCount>0) == (g_stSettings.m_iMyVideoWatchMode==2)))
     {
-      if ((params.GetContent() != CONTENT_MOVIES && params.GetContent() != CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
+      if ((params.GetContentType() != CONTENT_MOVIES && params.GetContentType() != CONTENT_MUSICVIDEOS) || !items.Contains(item->m_strPath))
         items.Add(item);
     }
   }

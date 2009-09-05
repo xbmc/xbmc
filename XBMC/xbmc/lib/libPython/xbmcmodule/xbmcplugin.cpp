@@ -21,7 +21,7 @@
 
 #include "stdafx.h"
 #include "FileSystem/PluginDirectory.h"
-#include "utils/IAddon.h"
+#include "utils/AddonManager.h"
 #include "listitem.h"
 #include "FileItem.h"
 #include "GUIDialogAddonSettings.h"
@@ -570,7 +570,7 @@ namespace PYXBMC
 
     //TODO avoid relying on plugin supplying a URL
     ADDON::AddonPtr addon;
-    CAddonMgr::Get()->GetAddonFromPath(url, addon);
+    ADDON::CAddonMgr::Get()->GetAddonFromPath(url, addon);
     if (!addon->HasSettings())
     {
       PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");

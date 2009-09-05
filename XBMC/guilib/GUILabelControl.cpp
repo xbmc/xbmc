@@ -23,6 +23,7 @@
 #include "GUILabelControl.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/AddonManager.h"
 #include "GUIListItem.h"
 
 #include "LocalizeStrings.h"  // for CGUIInfoLabel

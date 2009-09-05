@@ -109,44 +109,41 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
 bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
 {
-  CGUIDialogAddonSettings* pDialog;
   bool result(false);
 
   if (addon->HasSettings())
-  {
-    // Load language strings temporarily
+  { // Load language strings temporarily
     addon->LoadStrings();
 
     // Create the dialog
+    CGUIDialogAddonSettings* pDialog;
     pDialog = new CGUIDialogAddonSettings();
 
     // Set the heading
     CStdString heading;
-    heading.Format("$LOCALIZE[23000] - %s", addon->Name().c_str());
+    heading.Format("$LOCALIZE[10004] - %s", addon->Name().c_str()); // "Settings - AddonName"
     pDialog->SetHeading(heading);
 
     if (addon->LoadSettings())
     {
-      result = true;
       pDialog->SetAddon(addon);
       pDialog->DoModal();
 
       if (!pDialog->m_cancelled)
-      {
+      { // settings have changed //TODO dialog could have been confirmed with no change
+        result = true;
         addon->SaveSettings();
       }
     }
+    // Remove the temporary dialog
+    delete pDialog;
+    // Unload temporary language strings
+    addon->ClearStrings();
   }
-
-  // Remove the temporary dialog
-  delete pDialog;
-
-  // Unload temporary language strings
-  addon->ClearStrings();
-
-  // addon cannot be configured, inform user
-  if (!result)
+  else
+  { // addon cannot be configured, inform user
     CGUIDialogOK::ShowAndGetInput(18100,0,23081,0);
+  }
 
   return result;
 }
@@ -168,7 +165,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         const char *type = setting->Attribute("type");
         const char *option = setting->Attribute("option");
         const char *source = setting->Attribute("source");
-        CStdString value = m_buttonValues[id];
+        CStdString value/* = m_buttonValues[id]*/;
 
         if (strcmp(type, "text") == 0)
         {
@@ -179,7 +176,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
 
           if (CGUIDialogKeyboard::ShowAndGetInput(value, ((CGUIButtonControl*) control)->GetLabel(), true, bHidden))
           {
-            m_buttonValues[id] = value;
+            //m_buttonValues[id] /*= value*/;
             // if hidden hide input
             if (bHidden)
             {
@@ -193,12 +190,12 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         }
         else if (strcmp(type, "integer") == 0 && CGUIDialogNumeric::ShowAndGetNumber(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
-          m_buttonValues[id] = value;
+          /*m_buttonValues[id] = value;*/
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmp(type, "ipaddress") == 0 && CGUIDialogNumeric::ShowAndGetIPAddress(value, ((CGUIButtonControl*) control)->GetLabel()))
         {
-          m_buttonValues[id] = value;
+          //m_buttonValues[id] = value;
           ((CGUIButtonControl*) control)->SetLabel2(value);
         }
         else if (strcmpi(type, "video") == 0 || strcmpi(type, "music") == 0 ||
@@ -232,7 +229,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, ((CGUIButtonControl*) control)->GetLabel(), value, bWriteOnly))
             {
               ((CGUIButtonControl*) control)->SetLabel2(value);
-              m_buttonValues[id] = value;
+              //m_buttonValues[id] = value;
             }
           }
           else if (strcmpi(type, "pictures") == 0)
@@ -240,7 +237,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, ((CGUIButtonControl*) control)->GetLabel(), value))
             {
               ((CGUIButtonControl*) control)->SetLabel2(value);
-              m_buttonValues[id] = value;
+              //m_buttonValues[id] = value;
             }
           }
           else
@@ -275,7 +272,7 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             if (CGUIDialogFileBrowser::ShowAndGetFile(*shares, strMask, ((CGUIButtonControl*) control)->GetLabel(), value))
             {
               ((CGUIButtonControl*) control)->SetLabel2(value);
-              m_buttonValues[id] = value;
+              //m_buttonValues[id] = value;
             }
           }
         }
@@ -333,7 +330,7 @@ bool CGUIDialogAddonSettings::SaveSettings(void)
       switch (control->GetControlType())
       {
         case CGUIControl::GUICONTROL_BUTTON:
-          value = m_buttonValues[id];
+          //value = m_buttonValues[id];
           break;
         case CGUIControl::GUICONTROL_RADIO:
           value = ((CGUIRadioButtonControl*) control)->IsSelected() ? "true" : "false";
@@ -431,24 +428,17 @@ void CGUIDialogAddonSettings::CreateControls()
         strcmpi(type, "folder") == 0 || strcmpi(type, "programs") == 0 ||
         strcmpi(type, "files") == 0 || strcmpi(type, "action") == 0)
       {
-        pControl = new CGUIButtonControl(*pOriginalButton);
-        if (!pControl) return;
-        ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
-        ((CGUIButtonControl *)pControl)->SetLabel(label);
-        if (id)
+        m_buttonValues[id] = m_addon->GetSetting(id);
+        // get any option to test for hidden
+        const char *option = setting->Attribute("option");
+        if (option && (strcmp(option, "hidden") == 0))
         {
-          m_buttonValues[id] = m_addon->GetSetting(id);
-          // get any option to test for hidden
-          const char *option = setting->Attribute("option");
-          if (option && (strcmp(option, "hidden") == 0))
-          {
-            CStdString hiddenText;
-            hiddenText.append(m_addon->GetSetting(id).size(), L'*');
-            ((CGUIButtonControl *)pControl)->SetLabel2(hiddenText);
-          }
-          else
-            ((CGUIButtonControl *)pControl)->SetLabel2(m_addon->GetSetting(id));
+          CStdString hiddenText;
+          hiddenText.append(m_addon->GetSetting(id).size(), L'*');
+          ((CGUIButtonControl *)pControl)->SetLabel2(hiddenText);
         }
+        else
+          ((CGUIButtonControl *)pControl)->SetLabel2(m_addon->GetSetting(id));
       }
       else if (strcmpi(type, "bool") == 0)
       {
@@ -459,12 +449,8 @@ void CGUIDialogAddonSettings::CreateControls()
       }
       else if (strcmpi(type, "enum") == 0 || strcmpi(type, "labelenum") == 0)
       {
-        vector<CStdString> valuesVec;
-        vector<CStdString> entryVec;
-
-        pControl = new CGUISpinControlEx(*pOriginalSpin);
-        if (!pControl) return;
-        ((CGUISpinControlEx *)pControl)->SetText(label);
+        SETTINGSTRINGS valuesVec;
+        SETTINGSTRINGS entryVec;
 
         if (!lvalues.IsEmpty())
           CUtil::Tokenize(lvalues, valuesVec, "|");

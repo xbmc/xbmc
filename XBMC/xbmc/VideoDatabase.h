@@ -21,13 +21,10 @@
  */
 #include "Database.h"
 #include "VideoInfoTag.h"
+#include "Scraper.h"
 
 #include <set>
 
-namespace ADDON
-{
-  class CScraper;
-}
 class CFileItem;
 class CFileItemList;
 class CVideoSettings;

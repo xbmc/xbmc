@@ -24,6 +24,8 @@
 
 #include "boost/shared_ptr.hpp"
 
+class TiXmlElement;
+
 typedef enum
 {
   CONTENT_PLUGIN          = -2,

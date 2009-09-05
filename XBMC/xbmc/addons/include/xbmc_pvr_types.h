@@ -32,7 +32,7 @@
 //#define __declspec(x)
 #include <string.h>
 #include <time.h>
-#include "xbmc_addon_types.h"
+//#include "xbmc_addon_types.h"
 
 #ifdef __cplusplus
 extern "C" {

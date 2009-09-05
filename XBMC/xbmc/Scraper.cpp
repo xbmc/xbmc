@@ -80,7 +80,7 @@ bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl*
 {
   CScraperParser parser;
   // load our scraper xml
-  if (!parser.Load(Path() + LibName()))
+  if (!parser.Load(UUID()))
     return false;
 
   if (!parser.HasFunction(strFunction))

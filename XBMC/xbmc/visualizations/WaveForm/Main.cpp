@@ -2,6 +2,7 @@
 // A simple visualisation example by MrC
 
 #include "../../addons/include/libaddon.h"
+#include "../../addons/include/libvisualisation.h"
 #include "../../addons/include/xbmc_vis_dll.h"
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
@@ -44,24 +45,22 @@ struct Vertex_t
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-#ifndef HAS_SDL_OPENGL
-extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
-#else
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
-#endif
+extern "C" ADDON_STATUS Create(void* hdl, void* props)
 {
-  //printf("Creating Waveform\n");
-  strcpy(g_visName, szVisualisationName);
-  m_uiVisElements = 0;
-  g_device = pd3dDevice;
-  g_viewport.X = iPosX;
-  g_viewport.Y = iPosY;
-  g_viewport.Width = iWidth;
-  g_viewport.Height = iHeight;
+  if (!props)
+    return STATUS_UNKNOWN;
+
+  VIS_PROPS* properties = (VIS_PROPS*) props;
+  strcpy(g_visName, properties->name);
+  g_device = properties->device;
+  g_viewport.X = properties->x;
+  g_viewport.Y = properties->y;
+  g_viewport.Width = properties->width;
+  g_viewport.Height = properties->height;
   g_viewport.MinZ = 0;
   g_viewport.MaxZ = 1;
+  
+  return STATUS_OK;
 }
 
 //-- Start --------------------------------------------------------------------
@@ -83,7 +82,7 @@ extern "C" void Stop()
 //-- Audiodata ----------------------------------------------------------------
 // Called by XBMC to pass new audio data to the vis
 //-----------------------------------------------------------------------------
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   // Convert the audio data into a floating -1 to +1 range
   int ipos=0;
@@ -136,7 +135,7 @@ extern "C" void Render()
 #ifdef HAS_SDL_OPENGL
   glEnd();
   if ((errcode=glGetError())!=GL_NO_ERROR) {
-    printf("Houston, we have a GL problem: %s\n", gluErrorString(errcode));
+    //printf("Houston, we have a GL problem: %s\n", gluErrorString(errcode));
   }
 #elif !defined(HAS_SDL_OPENGL)
   g_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 255, verts, sizeof(Vertex_t));
@@ -163,7 +162,7 @@ extern "C" void Render()
   glEnable(GL_BLEND);
   glPopMatrix();
   if ((errcode=glGetError())!=GL_NO_ERROR) {
-    printf("Houston, we have a GL problem: %s\n", gluErrorString(errcode));
+    /*printf("Houston, we have a GL problem: %s\n", gluErrorString(errcode));*/
   }
 #elif !defined(HAS_SDL_OPENGL)
   g_device->DrawPrimitiveUP(D3DPT_LINESTRIP, 255, verts, sizeof(Vertex_t));
@@ -192,31 +191,9 @@ extern "C" bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+extern "C" viz_preset_list_t GetPresets()
 {
-
-}
-
-//-- GetSettings --------------------------------------------------------------
-// Return the settings for XBMC to display
-//-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
-{
-  return 0;
-}
-
-extern "C" void FreeSettings()
-{
-  return;
-}
-
-
-//-- UpdateSetting ------------------------------------------------------------
-// Handle setting change request from XBMC
-//-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
-{
-
+  return NULL;
 }
 
 //-- GetSubModules ------------------------------------------------------------

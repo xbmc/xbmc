@@ -295,7 +295,7 @@ void CEPG::UpdateChannelsTask(long clientID)
   else
   {
     // couldn't get channel list
-    CLog::Log(LOG_ERROR, "PVR: client: %ld Error receiving channel list", clientID);
+    CLog::Log(LOGERROR, "PVR: client: %ld Error receiving channel list", clientID);
     return;
   }
 

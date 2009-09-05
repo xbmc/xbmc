@@ -67,7 +67,7 @@ CScraperParser &CScraperParser::operator=(const CScraperParser &parser)
     Clear();
     if (parser.m_document)
     {
-      m_strFile = parser.m_strFile;
+      m_scraper = parser.m_scraper;
       m_document = new TiXmlDocument(*parser.m_document);
       LoadFromXML();
     }
@@ -87,34 +87,25 @@ void CScraperParser::Clear()
 
   m_document = NULL;
   m_name = m_language = m_framework = m_date = NULL;
-  m_strFile.Empty();
+  m_scraper.reset();
 }
 
-bool CScraperParser::Load(const CStdString& strXMLFile)
+bool CScraperParser::Load(const CStdString& strUUID)
 {
-  Clear();
-
-  m_document = new TiXmlDocument(strXMLFile);
-
-  if (!m_document)
+  AddonPtr scraper;
+  if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON_SCRAPER, strUUID, scraper))
     return false;
-
-  m_strFile = strXMLFile;
-
-  if (m_document->LoadFile())
-    return LoadFromXML();
-
-  delete m_document;
-  m_document = NULL;
-  return false;
+  else
+    return Load(scraper);
 }
 
 bool CScraperParser::Load(const AddonPtr &scraper)
 {
+  if (!scraper)
+    return false;
+
   Clear();
   m_scraper = scraper;
-  if (!m_scraper)
-    return false;
 
   m_document = new TiXmlDocument(m_scraper->Path() + m_scraper->LibName());
 
@@ -134,8 +125,7 @@ bool CScraperParser::LoadFromXML()
   if (!m_document)
     return false;
   
-  CStdString strPath;
-  CUtil::GetDirectory(m_strFile,strPath);
+  CStdString strPath = m_scraper->Path();
 
   m_pRootElement = m_document->RootElement();
   CStdString strValue = m_pRootElement->Value();

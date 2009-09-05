@@ -32,6 +32,7 @@ namespace XFILE {
 class CPVRFile
   : public  IFile
   ,         ILiveTVInterface
+  ,         ITimeshiftTV
   ,         IRecordable
 {
 public:
@@ -40,12 +41,12 @@ public:
   virtual bool          Open(const CURL& url);
   virtual __int64       Seek(__int64 pos, int whence=SEEK_SET);
   virtual __int64       GetPosition()                                  { return -1; }
-  virtual __int64       GetLength()                                    { return -1; }
+  virtual __int64       GetLength();
   virtual int           Stat(const CURL& url, struct __stat64* buffer) { return -1; }
   virtual void          Close();
   virtual unsigned int  Read(void* buffer, __int64 size);
   virtual CStdString    GetContent()                                   { return ""; }
-  virtual bool          SkipNext()                                     { return false; }
+  virtual bool          SkipNext()                                     { return true; }
 
   virtual bool          Delete(const CURL& url)                        { return false; }
   virtual bool          Exists(const CURL& url)                        { return false; }
@@ -56,19 +57,25 @@ public:
   virtual bool           PrevChannel();
   virtual bool           SelectChannel(unsigned int channel);
 
-  virtual int            GetTotalTime()              { return 0; }
-  virtual int            GetStartTime()              { return 0; }
-  virtual bool           UpdateItem(CFileItem& item) { return false; }
+  virtual int            GetTotalTime();
+  virtual int            GetStartTime();
+  virtual bool           UpdateItem(CFileItem& item);
 
-  virtual IRecordable*   GetRecordable() {return (IRecordable*)this;}
+  virtual IRecordable* GetRecordable() {return (IRecordable*)this;}
 
   virtual bool           CanRecord();
   virtual bool           IsRecording();
   virtual bool           Record(bool bOnOff);
+  
+  virtual ITimeshiftTV* GetTimeshiftTV() {return (ITimeshiftTV*)this;}
+
+  virtual bool           SendPause(bool DoPause, double dTime);
 
   static CStdString      TranslatePVRFilename(const CStdString& pathFile);
 
 protected:
+  bool            m_isPlayRecording;
+  int             m_playingItem;
 };
 
 }

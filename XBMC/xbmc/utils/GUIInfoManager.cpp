@@ -3909,14 +3909,13 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
       return rating;
     }
     break;
-  }  /* switch (info) */
-  
-  else if (info == ADDON_STAR_RATING)
-  {
-    CStdString rating;
-    //TODO need to check item is an addon
-    rating.Format("rating%d.png", item->GetPropertyInt("Addon.Rating"));
-    return rating;
+  case ADDON_STAR_RATING:
+    {
+      CStdString rating;
+      //TODO need to check item is an addon
+      rating.Format("rating%d.png", item->GetPropertyInt("Addon.Rating"));
+      return rating;
+    }
   }
   return GetItemLabel(item, info);
 }
@@ -4225,7 +4224,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       CVideoDatabase db;
       if (db.Open())
       {
-        m_libraryHasMovies = db.HasContent(VIDEODB_CONTENT_MOVIES) ? 1 : 0;
+        m_libraryHasMovies = db.HasContent(CONTENT_MOVIES) ? 1 : 0;
         db.Close();
       }
     }
@@ -4238,7 +4237,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       CVideoDatabase db;
       if (db.Open())
       {
-        m_libraryHasTVShows = db.HasContent(VIDEODB_CONTENT_TVSHOWS) ? 1 : 0;
+        m_libraryHasTVShows = db.HasContent(CONTENT_TVSHOWS) ? 1 : 0;
         db.Close();
       }
     }
@@ -4251,7 +4250,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       CVideoDatabase db;
       if (db.Open())
       {
-        m_libraryHasMusicVideos = db.HasContent(VIDEODB_CONTENT_MUSICVIDEOS) ? 1 : 0;
+        m_libraryHasMusicVideos = db.HasContent(CONTENT_MUSICVIDEOS) ? 1 : 0;
         db.Close();
       }
     }

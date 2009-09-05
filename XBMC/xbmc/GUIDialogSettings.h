@@ -45,6 +45,7 @@ public:
     data = NULL;
     type = NONE;
     enabled = true;
+    valid = true;
     min = 0;
     max = 0;
     interval = 0;
@@ -60,6 +61,7 @@ public:
   FORMATFUNCTION formatFunction;
   std::vector<CStdString> entry;
   bool enabled;
+  bool valid;
 };
 
 class CGUIDialogSettings :

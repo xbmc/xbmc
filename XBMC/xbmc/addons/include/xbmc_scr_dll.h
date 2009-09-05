@@ -1,18 +1,30 @@
 #ifndef __XBMC_SCR_H__
 #define __XBMC_SCR_H__
 
-#ifndef _LINUX
+#include <ctype.h>
+#ifdef HAS_XBOX_HARDWARE
 #include <xtl.h>
 #else
-#define __cdecl
-#define __declspec(x)
+#ifdef _LINUX
+#include "../xbmc/linux/PlatformInclude.h"
+#ifndef __APPLE__
+#include <sys/sysinfo.h>
 #endif
-
-#include "xbmc_addon_dll.h"               /* Dll related functions available to all AddOn's */
+#else
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#endif
+#include "xbmc_addon_dll.h"  
 #include "xbmc_scr_types.h"
+#include <sys/stat.h>
+#include <errno.h>
+#endif
 
 extern "C"
 {
+
   // Functions that your visualisation must implement
   void Start();
   void Render();

@@ -169,24 +169,26 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
     if ( action == VIS_ACTION_UPDATE_TRACK && param )
     {
       const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
-      VisTrack track;
+      viz_track_t track = viz_track_create();
 
-      track.title       = tag->GetTitle().c_str();
-      track.artist      = tag->GetArtist().c_str();
-      track.album       = tag->GetAlbum().c_str();
-      track.albumArtist = tag->GetAlbumArtist().c_str();
-      track.genre       = tag->GetGenre().c_str();
-      track.comment     = tag->GetComment().c_str();
-      track.lyrics      = tag->GetLyrics().c_str();
-      track.trackNumber = tag->GetTrackNumber();
-      track.discNumber  = tag->GetDiscNumber();
-      track.duration    = tag->GetDuration();
-      track.year        = tag->GetYear();
-      track.rating      = tag->GetRating();
+      viz_track_set_title(track, tag->GetTitle().c_str());
+      viz_track_set_artist(track, tag->GetArtist().c_str());
+      viz_track_set_album(track, tag->GetAlbum().c_str());
+      viz_track_set_albumartist(track, tag->GetAlbumArtist().c_str());
+      viz_track_set_genre(track, tag->GetGenre().c_str());
+      viz_track_set_comment(track, tag->GetComment().c_str());
+      viz_track_set_lyrics(track, tag->GetLyrics().c_str());
+      viz_track_set_tracknum(track, tag->GetTrackNumber());
+      viz_track_set_discnum(track, tag->GetDiscNumber());
+      viz_track_set_duration(track, tag->GetDuration());
+      viz_track_set_year(track, tag->GetYear());
+      viz_track_set_rating(track, tag->GetRating());
 
-      return m_pStruct->OnAction((int)action, (void*)(&track));
+      bool result = m_pStruct->OnAction(action, track);
+      viz_release(track);
+      return result;
     }
-    return m_pStruct->OnAction((int)action, param);
+    return m_pStruct->OnAction(action, NULL);
   }
   return false;
 }
@@ -280,7 +282,7 @@ void CVisualisation::CreateBuffers()
   VIS_INFO info;
   m_pStruct->GetInfo(&info);
   m_iNumBuffers = info.iSyncDelay + 1;
-  m_bWantsFreq = info.bWantsFreq;
+  m_bWantsFreq = (info.bWantsFreq != 0);
   if (m_iNumBuffers > MAX_AUDIO_BUFFERS)
     m_iNumBuffers = MAX_AUDIO_BUFFERS;
   if (m_iNumBuffers < 1)
@@ -321,23 +323,40 @@ bool CVisualisation::UpdateTrack()
     else
       CLog::Log(LOGDEBUG,"Updating visualisation albumart: %s", m_AlbumThumb.c_str());
 
-    // inform the visulisation of the current album art
-    if ( m_pStruct->OnAction( CVisualisation::VIS_ACTION_UPDATE_ALBUMART,
+    // inform the visualisation of the current album art
+    if ( m_pStruct->OnAction( VIS_ACTION_UPDATE_ALBUMART,
       (void*)( m_AlbumThumb.c_str() ) ) )
       handled = true;
 
     // inform the visualisation of the current track's tag information
-    if ( tag && m_pStruct->OnAction( CVisualisation::VIS_ACTION_UPDATE_TRACK,
+    if ( tag && m_pStruct->OnAction( VIS_ACTION_UPDATE_TRACK,
       (void*)tag ) )
       handled = true;
   }
   return handled;
 }
 
-void CVisualisation::GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+bool CVisualisation::GetPresets()
 {
-  if (m_pStruct->GetPresets)
-    m_pStruct->GetPresets(pPresets, currentPreset, numPresets, locked);
+  m_presets.clear();
+  viz_preset_list_t presets = NULL;
+  presets = m_pStruct->GetPresets();
+  int c = viz_preset_list_get_count(presets);
+  if (presets)
+  {
+    for (int i=0; i < c; i++)
+    {
+      viz_preset_t preset = NULL;
+      preset = viz_preset_list_get_item(presets, i);
+      if (preset)
+      {
+        m_presets.push_back(viz_preset_name(preset));
+      }
+      viz_release(preset);
+    }
+    viz_release(presets);
+  }
+  return (!m_presets.empty());
 }
 
 void CVisualisation::GetCurrentPreset(char **pPreset, bool *locked)
@@ -345,13 +364,14 @@ void CVisualisation::GetCurrentPreset(char **pPreset, bool *locked)
   if (!m_initialized)
     return;
 
-  if (pPreset && locked && m_pStruct->GetPresets)
+  if (pPreset && locked && m_pStruct->GetCurrentPreset)
   {
     char **presets = NULL;
     int currentPreset = 0;
     int numPresets = 0;
     *locked = false;
-    m_pStruct->GetPresets(&presets, &currentPreset, &numPresets, locked);
+    viz_preset_list_t list = NULL;
+    list = m_pStruct->GetPresets();
     if (presets && currentPreset < numPresets)
       *pPreset = presets[currentPreset];
   }
