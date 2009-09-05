@@ -25,6 +25,8 @@
 
 #include <sys/stat.h>
 #include <io.h>
+#include "log.h"
+#include "CharsetConverter.h"
 
 using namespace XFILE;
 

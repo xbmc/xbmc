@@ -22,6 +22,7 @@
 
 
 #include "IDirectory.h"
+#include "URL.h"
 
 namespace DIRECTORY
 {
