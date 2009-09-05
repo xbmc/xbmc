@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #define HAVE_MMX2
 #define HAVE_SSE
-#include "fastmemcpy.h"
+#include "utils/fastmemcpy.h"
 #undef HAVE_MMX2
 #undef HAVE_SSE
 #include "DVDCodecUtils.h"
