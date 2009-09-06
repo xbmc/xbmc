@@ -30,8 +30,8 @@
 #ifdef _WIN32
 
 /* Masks for processing the windows KEYDOWN and KEYUP messages */
-#define REPEATED_KEYMASK	(1<<30)
-#define EXTENDED_KEYMASK	(1<<24)
+#define REPEATED_KEYMASK  (1<<30)
+#define EXTENDED_KEYMASK  (1<<24)
 #define EXTKEYPAD(keypad) ((scancode & 0x100)?(mvke):(keypad))
 
 static XBMCKey VK_keymap[XBMCK_LAST];
@@ -44,23 +44,18 @@ PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 
 void DIB_InitOSKeymap()
 {
-  int	i;
-
-  char	current_layout[KL_NAMELENGTH];
+  char current_layout[KL_NAMELENGTH];
 
   GetKeyboardLayoutName(current_layout);
-  //printf("Initial Keyboard Layout Name: '%s'\n", current_layout);
 
   hLayoutUS = LoadKeyboardLayout("00000409", KLF_NOTELLSHELL);
-
-  if (!hLayoutUS) {
-    //printf("Failed to load US keyboard layout. Using current.\n");
+  if (!hLayoutUS)
     hLayoutUS = GetKeyboardLayout(0);
-  }
+
   LoadKeyboardLayout(current_layout, KLF_ACTIVATE);
 
   /* Map the VK keysyms */
-  for ( i=0; i<XBMC_arraysize(VK_keymap); ++i )
+  for (int i = 0; i < XBMC_arraysize(VK_keymap); ++i)
     VK_keymap[i] = XBMCK_UNKNOWN;
 
   VK_keymap[VK_BACK] = XBMCK_BACKSPACE;
@@ -191,43 +186,43 @@ void DIB_InitOSKeymap()
 
 static int XBMC_MapVirtualKey(int scancode, int vkey)
 {
-	int	mvke  = MapVirtualKeyEx(scancode & 0xFF, 1, hLayoutUS);
+  int mvke = MapVirtualKeyEx(scancode & 0xFF, 1, hLayoutUS);
 
-	switch(vkey) {
-		/* These are always correct */
-		case VK_DIVIDE:
-		case VK_MULTIPLY:
-		case VK_SUBTRACT:
-		case VK_ADD:
-		case VK_LWIN:
-		case VK_RWIN:
-		case VK_APPS:
-		/* These are already handled */
-		case VK_LCONTROL:
-		case VK_RCONTROL:
-		case VK_LSHIFT:
-		case VK_RSHIFT:
-		case VK_LMENU:
-		case VK_RMENU:
-		case VK_SNAPSHOT:
-		case VK_PAUSE:
-			return vkey;
-	}	
-	switch(mvke) {
-		/* Distinguish between keypad and extended keys */
-		case VK_INSERT: return EXTKEYPAD(VK_NUMPAD0);
-		case VK_DELETE: return EXTKEYPAD(VK_DECIMAL);
-		case VK_END:    return EXTKEYPAD(VK_NUMPAD1);
-		case VK_DOWN:   return EXTKEYPAD(VK_NUMPAD2);
-		case VK_NEXT:   return EXTKEYPAD(VK_NUMPAD3);
-		case VK_LEFT:   return EXTKEYPAD(VK_NUMPAD4);
-		case VK_CLEAR:  return EXTKEYPAD(VK_NUMPAD5);
-		case VK_RIGHT:  return EXTKEYPAD(VK_NUMPAD6);
-		case VK_HOME:   return EXTKEYPAD(VK_NUMPAD7);
-		case VK_UP:     return EXTKEYPAD(VK_NUMPAD8);
-		case VK_PRIOR:  return EXTKEYPAD(VK_NUMPAD9);
-	}
-	return mvke?mvke:vkey;
+  switch(vkey)
+  { /* These are always correct */
+    case VK_DIVIDE:
+    case VK_MULTIPLY:
+    case VK_SUBTRACT:
+    case VK_ADD:
+    case VK_LWIN:
+    case VK_RWIN:
+    case VK_APPS:
+    /* These are already handled */
+    case VK_LCONTROL:
+    case VK_RCONTROL:
+    case VK_LSHIFT:
+    case VK_RSHIFT:
+    case VK_LMENU:
+    case VK_RMENU:
+    case VK_SNAPSHOT:
+    case VK_PAUSE:
+      return vkey;
+  }
+  switch(mvke)
+  { /* Distinguish between keypad and extended keys */
+    case VK_INSERT: return EXTKEYPAD(VK_NUMPAD0);
+    case VK_DELETE: return EXTKEYPAD(VK_DECIMAL);
+    case VK_END:    return EXTKEYPAD(VK_NUMPAD1);
+    case VK_DOWN:   return EXTKEYPAD(VK_NUMPAD2);
+    case VK_NEXT:   return EXTKEYPAD(VK_NUMPAD3);
+    case VK_LEFT:   return EXTKEYPAD(VK_NUMPAD4);
+    case VK_CLEAR:  return EXTKEYPAD(VK_NUMPAD5);
+    case VK_RIGHT:  return EXTKEYPAD(VK_NUMPAD6);
+    case VK_HOME:   return EXTKEYPAD(VK_NUMPAD7);
+    case VK_UP:     return EXTKEYPAD(VK_NUMPAD8);
+    case VK_PRIOR:  return EXTKEYPAD(VK_NUMPAD9);
+  }
+  return mvke ? mvke : vkey;
 }
 
 static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym, int pressed)
@@ -267,7 +262,6 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
   return(keysym);
 }
 
-
 bool CWinEventsWin32::MessagePump()
 { 
   MSG  msg;
@@ -279,16 +273,13 @@ bool CWinEventsWin32::MessagePump()
   return true;
 }
 
-
 LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
   XBMC_Event newEvent;
-  unsigned char button = 0;
-
   ZeroMemory(&newEvent, sizeof(newEvent));
 
   if (uMsg == WM_CREATE)
-  {	
+  {
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG)(((LPCREATESTRUCT)lParam)->lpCreateParams));
     DIB_InitOSKeymap();
     return 0;
@@ -307,13 +298,13 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       m_pEventFunc(newEvent);
       break;
     case WM_SHOWWINDOW:
-      g_application.m_AppActive = wParam;
+      g_application.m_AppActive = wParam != 0;
       CLog::Log(LOGDEBUG, __FUNCTION__"Window is %s", g_application.m_AppActive ? "shown" : "hidden");
       break;
     case WM_ACTIVATE:
       if (HIWORD(wParam))
       {
-          g_application.m_AppActive = false;
+        g_application.m_AppActive = false;
       }
       else
       {
@@ -338,30 +329,24 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       switch (wParam) 
       {
         case VK_CONTROL:
-        if ( lParam & EXTENDED_KEYMASK )
-          wParam = VK_RCONTROL;
-        else
-          wParam = VK_LCONTROL;
-        break;
+          if ( lParam & EXTENDED_KEYMASK )
+            wParam = VK_RCONTROL;
+          else
+            wParam = VK_LCONTROL;
+          break;
         case VK_SHIFT:
-        /* EXTENDED trick doesn't work here */
-        {
+          /* EXTENDED trick doesn't work here */
           if (GetKeyState(VK_LSHIFT) & 0x8000)
-          {
             wParam = VK_LSHIFT;
-          } 
           else if (GetKeyState(VK_RSHIFT) & 0x8000)
-          {
             wParam = VK_RSHIFT;
-          } 
-        }
-        break;
+          break;
         case VK_MENU:
-        if ( lParam & EXTENDED_KEYMASK )
-          wParam = VK_RMENU;
-        else
-          wParam = VK_LMENU;
-        break;
+          if ( lParam & EXTENDED_KEYMASK )
+            wParam = VK_RMENU;
+          else
+            wParam = VK_LMENU;
+          break;
       }
       XBMC_keysym keysym;
       TranslateKey(wParam, HIWORD(lParam), &keysym, 1);
@@ -378,29 +363,23 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       switch (wParam) 
       {
         case VK_CONTROL:
-        if ( lParam&EXTENDED_KEYMASK )
-          wParam = VK_RCONTROL;
-        else
-          wParam = VK_LCONTROL;
-        break;
+          if ( lParam&EXTENDED_KEYMASK )
+            wParam = VK_RCONTROL;
+          else
+            wParam = VK_LCONTROL;
+          break;
         case VK_SHIFT:
-        {
           if (GetKeyState(VK_LSHIFT) & 0x8000) 
-          {
             wParam = VK_LSHIFT;
-          } 
           else if (GetKeyState(VK_RSHIFT) & 0x8000)
-          {
             wParam = VK_RSHIFT;
-          }
-        }
-        break;
+          break;
         case VK_MENU:
-        if ( lParam&EXTENDED_KEYMASK )
-          wParam = VK_RMENU;
-        else
-          wParam = VK_LMENU;
-        break;
+          if ( lParam&EXTENDED_KEYMASK )
+            wParam = VK_RMENU;
+          else
+            wParam = VK_LMENU;
+          break;
       }
       XBMC_keysym keysym;
       TranslateKey(wParam, HIWORD(lParam), &keysym, 1);
@@ -420,29 +399,27 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_LBUTTONDOWN:
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
-      button = 0;
       newEvent.type = XBMC_MOUSEBUTTONDOWN;
       newEvent.button.state = XBMC_PRESSED;
       newEvent.button.x = GET_X_LPARAM(lParam);
       newEvent.button.y = GET_Y_LPARAM(lParam);
-      if(uMsg == WM_LBUTTONDOWN) button = XBMC_BUTTON_LEFT;
-      else if(uMsg == WM_MBUTTONDOWN) button = XBMC_BUTTON_MIDDLE;
-      else if(uMsg == WM_RBUTTONDOWN) button = XBMC_BUTTON_RIGHT;
-      newEvent.button.button = button;
+      newEvent.button.button = 0;
+      if (uMsg == WM_LBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_LEFT;
+      else if (uMsg == WM_MBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_MIDDLE;
+      else if (uMsg == WM_RBUTTONDOWN) newEvent.button.button = XBMC_BUTTON_RIGHT;
       m_pEventFunc(newEvent);
       return(0);
     case WM_LBUTTONUP:
     case WM_MBUTTONUP:
     case WM_RBUTTONUP:
-      button = 0;
       newEvent.type = XBMC_MOUSEBUTTONUP;
       newEvent.button.state = XBMC_RELEASED;
       newEvent.button.x = GET_X_LPARAM(lParam);
       newEvent.button.y = GET_Y_LPARAM(lParam);
-      if(uMsg == WM_LBUTTONUP) button = XBMC_BUTTON_LEFT;
-      else if(uMsg == WM_MBUTTONUP) button = XBMC_BUTTON_MIDDLE;
-      else if(uMsg == WM_RBUTTONUP) button = XBMC_BUTTON_RIGHT;
-      newEvent.button.button = button;
+      newEvent.button.button = 0;
+      if (uMsg == WM_LBUTTONUP) newEvent.button.button = XBMC_BUTTON_LEFT;
+      else if (uMsg == WM_MBUTTONUP) newEvent.button.button = XBMC_BUTTON_MIDDLE;
+      else if (uMsg == WM_RBUTTONUP) newEvent.button.button = XBMC_BUTTON_RIGHT;
       m_pEventFunc(newEvent);
       return(0);
     case WM_MOUSEWHEEL:
