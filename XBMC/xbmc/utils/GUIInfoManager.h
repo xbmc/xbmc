@@ -412,6 +412,7 @@ class CDateTime;
 #define PVR_IS_PLAYING_TV           1106
 #define PVR_IS_PLAYING_RADIO        1107
 #define PVR_IS_PLAYING_RECORDING    1108
+#define PVR_IS_TIMESHIFTING         1109
 
 #define PVR_NEXT_RECORDING_CHANNEL  1120
 #define PVR_NEXT_RECORDING_DATETIME 1121
@@ -429,6 +430,12 @@ class CDateTime;
 #define PVR_BACKEND_NUMBER          1133
 #define PVR_TOTAL_DISKSPACE         1134
 #define PVR_NEXT_TIMER              1135
+#define PVR_PLAYING_DURATION        1136
+#define PVR_PLAYING_TIME            1137
+#define PVR_PLAYING_PROGRESS        1138
+#define PVR_TIMESHIFT_DURATION      1139
+#define PVR_TIMESHIFT_TIME          1140
+#define PVR_TIMESHIFT_PROGRESS      1141
 
 #define ADDON_STAR_RATING           1200
 

@@ -262,6 +262,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.isplayingtv")) ret = PVR_IS_PLAYING_TV;
     else if (strTest.Equals("pvr.isplayingradio")) ret = PVR_IS_PLAYING_RADIO;
     else if (strTest.Equals("pvr.isplayingrecording")) ret = PVR_IS_PLAYING_RECORDING;
+    else if (strTest.Equals("pvr.istimeshifting")) ret = PVR_IS_TIMESHIFTING;
+    else if (strTest.Equals("pvr.duration")) ret = PVR_PLAYING_DURATION;
+    else if (strTest.Equals("pvr.time")) ret = PVR_PLAYING_TIME;
+    else if (strTest.Equals("pvr.progress")) ret = PVR_PLAYING_PROGRESS;
+    else if (strTest.Equals("pvr.timeshiftduration")) ret = PVR_TIMESHIFT_DURATION;
+    else if (strTest.Equals("pvr.timeshifttime")) ret = PVR_TIMESHIFT_TIME;
+    else if (strTest.Equals("pvr.timeshiftprogress")) ret = PVR_TIMESHIFT_PROGRESS;
   }
   else if (strCategory.Equals("addon"))
   {
@@ -1014,6 +1021,10 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:
+  case PVR_PLAYING_TIME:
+  case PVR_PLAYING_DURATION:
+  case PVR_TIMESHIFT_DURATION:
+  case PVR_TIMESHIFT_TIME:
     strLabel = g_PVRManager.TranslateCharInfo(info);
     break;
   case WEATHER_CONDITIONS:
@@ -1658,6 +1669,9 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
       }
     case SYSTEM_CPU_USAGE:
       return g_cpuInfo.getUsedPercentage();
+    case PVR_TIMESHIFT_PROGRESS:
+    case PVR_PLAYING_PROGRESS:
+      return g_PVRManager.TranslateIntInfo(info);
   }
   return 0;
 }
@@ -1781,8 +1795,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = g_weatherManager.IsFetched();
   else if (condition >= PVR_IS_RECORDING && condition <= PVR_IS_RECORDING+20)
     bReturn = g_PVRManager.TranslateBoolInfo(condition);
-  else if (condition == PVR_HAS_TIMER)
-    bReturn = g_PVRManager.HasTimer();
 
   else if (condition == SYSTEM_INTERNET_STATE)
   {

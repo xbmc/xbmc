@@ -220,52 +220,91 @@
 			</control>
 
 			<!-- progressbar dialog -->
-			<control type="label" id="22">
-				<description>Elapsed Time Label</description>
-				<posx>10</posx>
-				<posy>7</posy>
-				<width>110</width>
-				<height>20</height>
-				<font>font11</font>
-				<textcolor>white</textcolor>
-				<align>left</align>
-				<aligny>center</aligny>
-				<info>Player.Time</info>
-				<visible>!Player.Seeking</visible>
+			<control type="group">
+				<visible>!VideoPlayer.Content(LiveTV) | (VideoPlayer.Content(LiveTV) + !pvr.IsTimeshifting</visible>
+				<control type="label" id="22">
+					<description>Elapsed Time Label</description>
+					<posx>10</posx>
+					<posy>7</posy>
+					<width>110</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>Player.Time</info>
+					<visible>!Player.Seeking</visible>
+				</control>
+				<control type="label" id="22">
+					<description>Seek Time Label</description>
+					<posx>10</posx>
+					<posy>7</posy>
+					<width>110</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>Player.SeekTime</info>
+					<visible>Player.Seeking</visible>
+				</control>
+				<control type="label" id="0">
+					<description>Duration Label</description>
+					<posx>380</posx>
+					<posy>7</posy>
+					<width>130</width>
+					<height>20</height>
+					<label>$INFO[Player.Duration]</label>
+					<font>font11</font>
+					<textcolor>white</textcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="progress" id="23">
+					<description>Progressbar</description>
+					<posx>10</posx>
+					<posy>31</posy>
+					<width>380</width>
+					<height>8</height>
+					<info>Player.Progress</info>
+					<visible>true</visible>
+				</control>
 			</control>
-			<control type="label" id="22">
-				<description>Seek Time Label</description>
-				<posx>10</posx>
-				<posy>7</posy>
-				<width>110</width>
-				<height>20</height>
-				<font>font11</font>
-				<textcolor>white</textcolor>
-				<align>left</align>
-				<aligny>center</aligny>
-				<info>Player.SeekTime</info>
-				<visible>Player.Seeking</visible>
-			</control>
-			<control type="label" id="0">
-				<description>Duration Label</description>
-				<posx>380</posx>
-				<posy>7</posy>
-				<width>130</width>
-				<height>20</height>
-				<label>$INFO[Player.Duration]</label>
-				<font>font11</font>
-				<textcolor>white</textcolor>
-				<align>right</align>
-				<aligny>center</aligny>
-			</control>
-			<control type="progress" id="23">
-				<description>Progressbar</description>
-				<posx>10</posx>
-				<posy>31</posy>
-				<width>380</width>
-				<height>8</height>
-				<info>Player.Progress</info>
-				<visible>true</visible>
+			<control type="group">
+				<visible>VideoPlayer.Content(LiveTV) + pvr.IsTimeshifting</visible>
+				<control type="label" id="22">
+					<description>Elapsed Time Label</description>
+					<posx>10</posx>
+					<posy>7</posy>
+					<width>110</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>white</textcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>pvr.TimeshiftTime</info>
+				</control>
+				<control type="label" id="0">
+					<description>Duration Label</description>
+					<posx>380</posx>
+					<posy>7</posy>
+					<width>130</width>
+					<height>20</height>
+					<label>$INFO[pvr.TimeshiftDuration]</label>
+					<font>font11</font>
+					<textcolor>white</textcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="progress" id="23">
+					<description>Progressbar</description>
+					<posx>10</posx>
+					<posy>31</posy>
+					<width>380</width>
+					<height>8</height>
+					<info>pvr.TimeshiftProgress</info>
+					<visible>true</visible>
+				</control>
 			</control>
 			<control type="progress">
 				<description>Player Caching Progress Bar</description>

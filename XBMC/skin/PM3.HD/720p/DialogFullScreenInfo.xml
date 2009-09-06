@@ -741,11 +741,25 @@
 			</control>
 			<control type="label">
 				<description>time label</description>
+				<visible>!System.GetBool(pvrplayback.timeshift)]</visible>
 				<posx>230</posx>
 				<posy>100</posy>
 				<width>280</width>
 				<height>25</height>
 				<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+			</control>
+			<control type="label">
+				<description>time label</description>
+				<visible>System.GetBool(pvrplayback.timeshift)]</visible>
+				<posx>230</posx>
+				<posy>100</posy>
+				<width>280</width>
+				<height>25</height>
+				<label>$INFO[pvr.Time]$INFO[pvr.Duration, / ] ($INFO[pvr.TimeshiftDuration])</label>
 				<align>left</align>
 				<aligny>center</aligny>
 				<font>font12</font>
@@ -765,11 +779,21 @@
 			</control>
 			<control type="progress">
 				<description>Progressbar</description>
+				<visible>!System.GetBool(pvrplayback.timeshift)]</visible>
 				<posx>230</posx>
 				<posy>130</posy>
 				<width>1020</width>
 				<height>8</height>
 				<info>Player.Progress</info>
+			</control>
+			<control type="progress">
+				<description>Progressbar</description>
+				<visible>System.GetBool(pvrplayback.timeshift)]</visible>
+				<posx>230</posx>
+				<posy>130</posy>
+				<width>1020</width>
+				<height>8</height>
+				<info>pvr.Progress</info>
 			</control>
 			<control type="label">
 				<posx>230</posx>
