@@ -185,7 +185,7 @@ bool CMouseStat::IsEnabled() const
 bool CMouseStat::HasMoved(bool detectAllMoves /* = false */) const
 {
   if (detectAllMoves)
-    return m_mouseState.dx | m_mouseState.dy;
+    return m_mouseState.dx || m_mouseState.dy;
   return (m_mouseState.dx * m_mouseState.dx + m_mouseState.dy * m_mouseState.dy >= MOUSE_MINIMUM_MOVEMENT * MOUSE_MINIMUM_MOVEMENT);
 }
 
