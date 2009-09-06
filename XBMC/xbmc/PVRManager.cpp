@@ -515,34 +515,6 @@ void CPVRManager::GetClientProperties(long clientID)
 }
 
 
-void CPVRManager::Process()
-{
-  DWORD Now = timeGetTime();
-  DWORD LastTVChannelCheck = Now;
-  DWORD LastRadioChannelCheck = Now-CHANNELCHECKDELTA*1000/2;
-  
-  while (!m_bStop)
-  {
-    Now = timeGetTime();
-
-    /* Check for new or updated TV Channels */
-    if (Now - LastTVChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
-    {
-      CLog::Log(LOGDEBUG,"PVR: Updating TV Channel list");
-      PVRChannelsTV.Update();
-      LastTVChannelCheck = Now;
-    }
-    /* Check for new or updated Radio Channels */
-    if (Now - LastRadioChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
-    {
-      CLog::Log(LOGDEBUG,"PVR: Updating Radio Channel list");
-      PVRChannelsRadio.Update();
-      LastRadioChannelCheck = Now;
-    }    
-
-    Sleep(1000);
-  }
-}
 
 
 /************************************************************/
@@ -1120,6 +1092,57 @@ bool CPVRManager::CreateInternalTimeshift()
     return false;
   }
   return true;
+}
+
+
+/*************************************************************/
+/** PVRManager Update and control thread                    **/
+/*************************************************************/
+
+void CPVRManager::Process()
+{
+  DWORD Now = timeGetTime();
+  DWORD LastTVChannelCheck = Now;
+  DWORD LastRadioChannelCheck = Now-CHANNELCHECKDELTA*1000/2;
+  
+  while (!m_bStop)
+  {
+    Now = timeGetTime();
+
+    /* Check for new or updated TV Channels */
+    if (Now - LastTVChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
+    {
+      CLog::Log(LOGDEBUG,"PVR: Updating TV Channel list");
+      PVRChannelsTV.Update();
+      LastTVChannelCheck = Now;
+    }
+    /* Check for new or updated Radio Channels */
+    if (Now - LastRadioChannelCheck > CHANNELCHECKDELTA*1000) // don't do this too often
+    {
+      CLog::Log(LOGDEBUG,"PVR: Updating Radio Channel list");
+      PVRChannelsRadio.Update();
+      LastRadioChannelCheck = Now;
+    }
+    /* Check if we are 10 seconds before the end of the timeshift buffer
+       and using timeshift and playback is paused, if yes start playback 
+       again */
+    if (m_timeshiftInt && g_application.IsPaused())
+    {
+      int time = (__int64)(g_application.GetTime()*1000) -
+                 m_TimeshiftReceiver->GetTimeTotal() +
+                 m_TimeshiftReceiver->GetDuration();
+
+      if (time < 10000)
+      {
+        CLog::Log(LOGINFO,"PVR: Playback is resumed after reaching end of timeshift buffer");
+        CAction action;
+        action.wID = ACTION_PAUSE;
+        g_application.OnAction(action);
+      }
+
+    }
+    Sleep(1000);
+  }
 }
 
 
