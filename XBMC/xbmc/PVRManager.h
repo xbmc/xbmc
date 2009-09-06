@@ -96,7 +96,6 @@ public:
   bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
   void	      OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
-  const char* TranslateInfo(DWORD dwInfo);
   static bool HasTimer() { return m_hasTimers;  }
   static bool IsRecording() { return m_isRecording; }
   int GetGroupList(CFileItemList* results);
@@ -126,8 +125,10 @@ public:
 
 
 
-
-
+  /* GUIInfoManager functions */
+  const char* TranslateCharInfo(DWORD dwInfo);
+  int TranslateIntInfo(DWORD dwInfo);
+  bool TranslateBoolInfo(DWORD dwInfo);
 
   /* General functions */
   bool IsPlayingTV();

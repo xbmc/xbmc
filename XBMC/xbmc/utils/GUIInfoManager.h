@@ -98,6 +98,7 @@ class CDateTime;
 #define PLAYER_SUBTITLE_DELAY        42
 #define PLAYER_AUDIO_DELAY           43
 #define PLAYER_PASSTHROUGH           44
+#define PLAYER_HAS_TELETEXT          45
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -405,25 +406,29 @@ class CDateTime;
 
 #define PVR_IS_RECORDING            1101
 #define PVR_HAS_TIMER               1102
-#define PVR_NEXT_RECORDING_CHANNEL  1103
-#define PVR_NEXT_RECORDING_DATETIME 1104
-#define PVR_NEXT_RECORDING_TITLE    1105
-#define PVR_NOW_RECORDING_CHANNEL   1106
-#define PVR_NOW_RECORDING_DATETIME  1107
-#define PVR_NOW_RECORDING_TITLE     1108
-#define PVR_BACKEND_NAME            1109
-#define PVR_BACKEND_VERSION         1110
-#define PVR_BACKEND_HOST            1111
-#define PVR_BACKEND_DISKSPACE       1112
-#define PVR_BACKEND_CHANNELS        1113
-#define PVR_BACKEND_TIMERS          1114
-#define PVR_BACKEND_RECORDINGS      1115
-#define PVR_BACKEND_NUMBER          1116
-#define PVR_HAS_EPG                 1117
-#define PVR_HAS_TXT                 1118
-#define PVR_HAS_DIRECTOR            1119
-#define PVR_TOTAL_DISKSPACE         1120
-#define PVR_NEXT_TIMER              1121
+#define PVR_HAS_EPG                 1103
+#define PVR_HAS_TXT                 1104
+#define PVR_HAS_DIRECTOR            1105
+#define PVR_IS_PLAYING_TV           1106
+#define PVR_IS_PLAYING_RADIO        1107
+#define PVR_IS_PLAYING_RECORDING    1108
+
+#define PVR_NEXT_RECORDING_CHANNEL  1120
+#define PVR_NEXT_RECORDING_DATETIME 1121
+#define PVR_NEXT_RECORDING_TITLE    1122
+#define PVR_NOW_RECORDING_CHANNEL   1123
+#define PVR_NOW_RECORDING_DATETIME  1124
+#define PVR_NOW_RECORDING_TITLE     1125
+#define PVR_BACKEND_NAME            1126
+#define PVR_BACKEND_VERSION         1127
+#define PVR_BACKEND_HOST            1128
+#define PVR_BACKEND_DISKSPACE       1129
+#define PVR_BACKEND_CHANNELS        1130
+#define PVR_BACKEND_TIMERS          1131
+#define PVR_BACKEND_RECORDINGS      1132
+#define PVR_BACKEND_NUMBER          1133
+#define PVR_TOTAL_DISKSPACE         1134
+#define PVR_NEXT_TIMER              1135
 
 #define ADDON_STAR_RATING           1200
 

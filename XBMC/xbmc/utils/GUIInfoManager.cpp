@@ -225,6 +225,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
     else if (strTest.Equals("player.passthrough")) ret = PLAYER_PASSTHROUGH;
+    else if (strTest.Equals("player.hasteletext")) ret = PLAYER_HAS_TELETEXT;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -258,6 +259,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.hasdirector")) ret = PVR_HAS_DIRECTOR;
     else if (strTest.Equals("pvr.totaldiscspace")) ret = PVR_TOTAL_DISKSPACE;
     else if (strTest.Equals("pvr.nexttimer")) ret = PVR_NEXT_TIMER;
+    else if (strTest.Equals("pvr.isplayingtv")) ret = PVR_IS_PLAYING_TV;
+    else if (strTest.Equals("pvr.isplayingradio")) ret = PVR_IS_PLAYING_RADIO;
+    else if (strTest.Equals("pvr.isplayingrecording")) ret = PVR_IS_PLAYING_RECORDING;
   }
   else if (strCategory.Equals("addon"))
   {
@@ -1010,7 +1014,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:
-    strLabel = g_PVRManager.TranslateInfo(info);
+    strLabel = g_PVRManager.TranslateCharInfo(info);
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
@@ -1775,16 +1779,11 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = g_settings.bUseLoginScreen;
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
-  else if (condition == PVR_IS_RECORDING)
-    bReturn = g_PVRManager.IsRecording();
+  else if (condition >= PVR_IS_RECORDING && condition <= PVR_IS_RECORDING+20)
+    bReturn = g_PVRManager.TranslateBoolInfo(condition);
   else if (condition == PVR_HAS_TIMER)
     bReturn = g_PVRManager.HasTimer();
-//  else if (condition == PVR_HAS_EPG)
-//    bReturn = g_PVRManager.SupportEPG();
-//  else if (condition == PVR_HAS_TXT)
-//    bReturn = g_PVRManager.SupportTeletext();
-//  else if (condition == PVR_HAS_DIRECTOR)
-//    bReturn = g_PVRManager.SupportDirector();
+
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
@@ -1929,6 +1928,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     break;
     case PLAYER_PASSTHROUGH:
       bReturn = g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough();
+      break;
+    case PLAYER_HAS_TELETEXT:
+      bReturn = g_application.m_pPlayer->GetTeletextPageCount() > 0 ? true : false;
       break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
