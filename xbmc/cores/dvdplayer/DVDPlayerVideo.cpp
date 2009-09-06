@@ -42,6 +42,7 @@
 #include <sstream>
 #include <iomanip>
 #include <numeric>
+#include "utils/log.h"
 
 using namespace std;
 

@@ -30,6 +30,7 @@
 #include "WindowingFactory.h"
 #include "AdvancedSettings.h"
 #include "SingleLock.h"
+#include "utils/log.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
