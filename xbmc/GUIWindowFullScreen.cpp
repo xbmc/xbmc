@@ -481,6 +481,22 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     }
     return true;
     break;
+  case ACTION_OSD_TELETEXT:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasTVChannelInfoTag())
+        m_gWindowManager.ActivateWindow(WINDOW_DIALOG_TV_OSD_TELETEXT);
+    }
+    return true;
+    break;
+  case ACTION_OSD_GUIDE:
+    {
+      CFileItem item(g_application.CurrentFileItem());
+      if (item.HasTVChannelInfoTag())
+        m_gWindowManager.ActivateWindow(WINDOW_DIALOG_TV_OSD_GUIDE);
+    }
+    return true;
+    break;
   }
 
   return CGUIWindow::OnAction(action);

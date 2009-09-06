@@ -278,6 +278,9 @@
 #define ACTION_RELOAD_KEYMAPS         204 // reloads CButtonTranslator's keymaps
 #define ACTION_GUIPROFILE_BEGIN       204 // start the GUIControlProfiler running
 
+#define ACTION_OSD_TELETEXT           215
+#define ACTION_OSD_GUIDE              216
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000

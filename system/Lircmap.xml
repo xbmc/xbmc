@@ -35,9 +35,6 @@
                 <mute>Mute</mute>
                 <power>Power</power>
                 <myvideo>Source</myvideo>
-                <mymusic>EPG</mymusic>
-                <mypictures>Text</mypictures>
-                <mytv>Timer</mytv>
                 <one>1</one>
                 <two>2</two>
                 <three>3</three>
@@ -53,6 +50,8 @@
                 <mypictures>Yellow</mypictures>
                 <myvideo>Blue</myvideo>
                 <playlist>TV</playlist>
+                <teletext>Text</teletext>
+                <guide>EPG</guide>
         </remote>
 
         <remote device="Hauppauge_350">
