@@ -26,6 +26,7 @@
 
 #include "Settings.h"
 #include "RenderSystemDX.h"
+#include "utils/log.h"
 
 using namespace std;
 

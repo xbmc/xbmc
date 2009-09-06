@@ -34,6 +34,7 @@
 #endif
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))

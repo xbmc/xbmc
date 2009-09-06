@@ -61,6 +61,7 @@
 #include "GUIUserMessages.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace std;
 
