@@ -412,15 +412,8 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
-      if (newEvent.button.button == 4)
-        g_Mouse.UpdateMouseWheel(1);
-      else if (newEvent.button.button == 5)
-        g_Mouse.UpdateMouseWheel(-1);
-      else
-      {
-        g_Mouse.HandleEvent(newEvent);
-        g_application.ProcessMouse();
-      }
+      g_Mouse.HandleEvent(newEvent);
+      g_application.ProcessMouse();
       break;
     case XBMC_VIDEORESIZE:
       if (!g_application.m_bInitializing &&
