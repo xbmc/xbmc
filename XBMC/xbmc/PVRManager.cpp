@@ -1126,6 +1126,7 @@ void CPVRManager::Process()
     /* Check if we are 10 seconds before the end of the timeshift buffer
        and using timeshift and playback is paused, if yes start playback 
        again */
+    EnterCriticalSection(&m_critSection);
     if (m_timeshiftInt && g_application.IsPaused())
     {
       int time = (__int64)(g_application.GetTime()*1000) -
@@ -1139,8 +1140,9 @@ void CPVRManager::Process()
         action.wID = ACTION_PAUSE;
         g_application.OnAction(action);
       }
-
     }
+    LeaveCriticalSection(&m_critSection);
+
     Sleep(1000);
   }
 }
