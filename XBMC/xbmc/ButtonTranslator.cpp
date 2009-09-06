@@ -746,6 +746,8 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   else if (strAction.Equals("osdvalueplus")) wAction = ACTION_OSD_SHOW_VALUE_PLUS;
   else if (strAction.Equals("osdvalueminus")) wAction = ACTION_OSD_SHOW_VALUE_MIN;
   else if (strAction.Equals("smallstepback")) wAction = ACTION_SMALL_STEP_BACK;
+  else if (strAction.Equals("teletext")) wAction = ACTION_OSD_TELETEXT;
+  else if (strAction.Equals("guide")) wAction = ACTION_OSD_GUIDE;
 
   else if (strAction.Equals("fastforward")) wAction = ACTION_PLAYER_FORWARD;
   else if (strAction.Equals("rewind")) wAction = ACTION_PLAYER_REWIND;
@@ -1048,6 +1050,8 @@ WORD CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("enter")) wButtonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
   else if (strButton.Equals("xbox")) wButtonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
   else if (strButton.Equals("playlist")) wButtonCode = XINPUT_IR_REMOTE_PLAYLIST;
+  else if (strButton.Equals("teletext")) wButtonCode = XINPUT_IR_REMOTE_TELETEXT;
+  else if (strButton.Equals("guide")) wButtonCode = XINPUT_IR_REMOTE_GUIDE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return wButtonCode;
 }
