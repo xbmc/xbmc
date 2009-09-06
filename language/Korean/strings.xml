@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 08/21/2009-->
+<!--Date of translation: 08/26/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1174,7 +1174,7 @@
   <string id="14034">DVD 캐시 - DVD-롬</string>
   <string id="14035">- 로컬 네트워크</string>
   <string id="14036">서버</string>
-  <string id="14037">보기 &amp; 느낌</string>
+  <string id="14037">모양 &amp; 느낌</string>
   <string id="14038">네트워크 설정이 변경되었습니다</string>
   <string id="14039">네트워크 설정을 변경하려면 XBMC</string>
   <string id="14040">재시작이 필요합니다. 지금 재시작 하시겠습니까?</string>
@@ -1209,7 +1209,7 @@
   <string id="14070">변경을 지금 적용</string>
   <string id="14071">파일 이름변경 및 삭제 허용</string>
   <string id="14074">시간대 설정</string>
-  <string id="14075">썸머타임 사용</string>
+  <string id="14075">일광 절약 시간 사용</string>
   <string id="14076">즐겨찾기에 추가</string>
   <string id="14077">즐겨찾기에서 제거</string>
   <string id="14078">- 색깔</string>
@@ -1406,7 +1406,7 @@
   <string id="20044">새로 고침 시작</string>
   <string id="20045">마스터 모드 들어가기</string>
   <string id="20046">마스터 모드 나가기</string>
-  <string id="20047">'%s' 프로파일을 만드시겠습니까?</string>
+  <string id="20047">프로파일 '%s' 을 만드시겠습니까?</string>
   <string id="20048">새로운 설정으로 시작</string>
   <string id="20049">사용가능 최적</string>
   <string id="20050">16x9 와 4x3 자동-변경</string>
@@ -1713,7 +1713,7 @@
   <string id="21369">마우스 사용</string>
   <string id="21370">미디어 재생중 네비게이션 사운드 사용</string>
   <string id="21371">미리보기</string>
-  <string id="21372">기본 DVD 플레이어 지역</string>
+  <string id="21372">강제된 DVD 플레이어 지역</string>
   <string id="21373">비디오 하드웨어</string>
   <string id="21374">비디오 비율</string>
   <string id="21375">보통</string>
@@ -1875,7 +1875,7 @@
   <string id="22011">CPU 온도:</string>
   <string id="22012">전체 메모리</string>
   <string id="22013">프로파일 데이터</string>
-  <string id="22014">비디오 재생때 일시중지되면 흐림 사용</string>
+  <string id="22014">비디오 재생중 일시중지되면 흐림 사용</string>
   <string id="22015">모든 녹음</string>
   <string id="22016">제목별</string>
   <string id="22017">그룹별</string>
@@ -1899,6 +1899,9 @@
   <string id="22043">검정/하양</string>
   <string id="23000">날씨 플러그인</string>
   <string id="23001">- 플러그인 설정</string>
+  <string id="23100">외장 플레이어 활성</string>
+  <string id="23101">플레이어를 종료하려면 예를 누르세요</string>
+  <string id="23104">재생이 끝날때 예를 누르세요</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">쿼티 키보드</string>
   <string id="29802">패스스루 오디오 사용중</string>
@@ -1916,7 +1919,7 @@
   <string id="33010">다운로드 디렉토리 설정</string>
   <string id="33012">짧은</string>
   <string id="33013">긴</string>
-  <string id="33014">정규 플레이어 대신 DVD 플레이어 사용</string>
+  <string id="33014">일반 플레이어 대신 DVD 플레이어 사용</string>
   <string id="33015">비디오 재생전에 다운로드 묻기</string>
   <string id="33016">클립</string>
   <string id="33017">작동하기위해 플러그인 재시작</string>
