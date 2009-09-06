@@ -46,12 +46,6 @@ using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace ADDON;
 
-
-bool CPVRManager::m_hasRecordings                 = false;
-bool CPVRManager::m_isRecording                   = false;
-bool CPVRManager::m_hasTimers                     = false;
-
-
 /**********************************************************************
 /* BEGIN OF CLASS **___ CPVRTimeshiftRcvr ____________________________*
 /**                                                                  **/
@@ -335,6 +329,10 @@ void CPVRTimeshiftRcvr::Process()
 /********************************************************************/
 CPVRManager::CPVRManager()
 {
+  m_hasRecordings = false;
+  m_isRecording   = false;
+  m_hasTimers     = false;
+
   InitializeCriticalSection(&m_critSection);
   CLog::Log(LOGDEBUG,"PVR: created");
 }
@@ -1262,6 +1260,33 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
       return m_nextTimer;
     }
   }
+  else if (dwInfo == PVR_TIMESHIFT_DURATION)
+  {
+    if (m_TimeshiftReceiver)
+      return m_TimeshiftReceiver->GetDurationString();
+  }
+  else if (dwInfo == PVR_TIMESHIFT_TIME)
+  {
+    if (m_TimeshiftReceiver)
+    {
+      int time = (__int64)(g_application.GetTime()*1000) -
+                 m_TimeshiftReceiver->GetTimeTotal() +
+                 m_TimeshiftReceiver->GetDuration();
+
+      StringUtils::SecondsToTimeString(time/1000, m_timeshiftTime, TIME_FORMAT_GUESS);
+      return m_timeshiftTime.c_str();
+    }
+  }
+  else if (dwInfo == PVR_PLAYING_DURATION)
+  {
+    StringUtils::SecondsToTimeString(GetTotalTime()/1000, m_playingDuration, TIME_FORMAT_GUESS);
+    return m_playingDuration.c_str();
+  }
+  else if (dwInfo == PVR_PLAYING_TIME)
+  {
+    StringUtils::SecondsToTimeString(GetStartTime()/1000, m_playingTime, TIME_FORMAT_GUESS);
+    return m_playingTime.c_str();
+  }
   return "";
 }
 
@@ -1272,7 +1297,21 @@ const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
 /********************************************************************/
 int CPVRManager::TranslateIntInfo(DWORD dwInfo)
 {
+  if      (dwInfo == PVR_TIMESHIFT_PROGRESS)
+  {
+    if (!m_currentPlayingChannel || !m_timeshiftInt)
+      return 0.0f;
 
+    int time = (__int64)(g_application.GetTime()*1000) -
+               m_TimeshiftReceiver->GetTimeTotal() +
+               m_TimeshiftReceiver->GetDuration();
+
+    return (float)(((float)time / m_TimeshiftReceiver->GetDuration()) * 100);
+  }
+  else if (dwInfo == PVR_PLAYING_PROGRESS)
+  {
+    return (float)(((float)GetStartTime() / GetTotalTime()) * 100);
+  }
   return 0;
 }
 
@@ -1293,6 +1332,8 @@ bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
     return IsPlayingRadio();
   else if (dwInfo == PVR_IS_PLAYING_RECORDING)
     return IsPlayingRecording();
+  else if (dwInfo == PVR_IS_TIMESHIFTING)
+    return m_timeshiftInt;
 
   return false;
 }
@@ -1339,6 +1380,19 @@ bool CPVRManager::IsPlayingRecording()
     return false;
   else
     return true;
+}
+
+/********************************************************************
+/* CPVRManager IsTimeshifting
+/*
+/* Returns true if timeshift is active
+/********************************************************************/
+bool CPVRManager::IsTimeshifting()
+{
+  if (m_timeshiftInt || m_timeshiftExt)
+    return true;
+  else
+    return false;
 }
 
 /********************************************************************

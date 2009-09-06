@@ -96,8 +96,8 @@ public:
   bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
   void	      OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
-  static bool HasTimer() { return m_hasTimers;  }
-  static bool IsRecording() { return m_isRecording; }
+  bool HasTimer() { return m_hasTimers;  }
+  bool IsRecording() { return m_isRecording; }
   int GetGroupList(CFileItemList* results);
   void AddGroup(const CStdString &newname);
   bool RenameGroup(unsigned int GroupId, const CStdString &newname);
@@ -134,6 +134,7 @@ public:
   bool IsPlayingTV();
   bool IsPlayingRadio();
   bool IsPlayingRecording();
+  bool IsTimeshifting();
   PVR_SERVERPROPS *GetCurrentClientProps();
   CFileItem *GetCurrentPlayingItem();
   bool GetCurrentChannel(int *number, bool *radio);
@@ -169,15 +170,26 @@ public:
 protected:
 
 private:
-  CLIENTMAP             m_clients; // pointer to each enabled client's interface
-  CLIENTPROPS           m_clientsProps; // store the properties of each client locally
-  DWORD                 m_infoToggleStart;
-  unsigned int          m_infoToggleCurrent;
-  CTVDatabase           m_database;
 
-  static bool         m_isRecording;
-  static bool         m_hasRecordings;
-  static bool         m_hasTimers;
+
+  int                 m_CurrentChannelID;
+  int                 m_CurrentGroupID;
+
+  CHANNELGROUPS_DATA  m_channel_group;
+
+
+
+
+
+  /*--- General PVRManager data ---*/
+  CLIENTMAP           m_clients;                /* pointer to each enabled client's interface */
+  CLIENTPROPS         m_clientsProps;           /* store the properties of each client locally */
+  CTVDatabase         m_database;
+  CRITICAL_SECTION    m_critSection;
+
+  /*--- GUIInfoManager information data ---*/
+  DWORD               m_infoToggleStart;        /* Time to toogle pvr infos like in System info */
+  unsigned int        m_infoToggleCurrent;      /* The current item showed by the GUIInfoManager */
 
   CStdString          m_nextRecordingDateTime;
   CStdString          m_nextRecordingChannel;
@@ -194,21 +206,22 @@ private:
   CStdString          m_backendChannels;
   CStdString          m_totalDiskspace;
   CStdString          m_nextTimer;
+  CStdString          m_playingDuration;
+  CStdString          m_playingTime;
+  CStdString          m_timeshiftTime;
+  bool                m_isRecording;
+  bool                m_hasRecordings;
+  bool                m_hasTimers;
 
-  int                 m_CurrentChannelID;
-  int                 m_CurrentGroupID;
-
-  CHANNELGROUPS_DATA  m_channel_group;
-
-  CRITICAL_SECTION    m_critSection;
-
-  DWORD               m_scanStart;
-
-  CFileItem          *m_currentPlayingChannel;
-  CFileItem          *m_currentPlayingRecording;
+  /*--- Previous Channel data ---*/
   int                 m_PreviousChannel[2];
   int                 m_PreviousChannelIndex;
   
+  /*--- Stream playback data ---*/
+  CFileItem          *m_currentPlayingChannel;    /* The current playing channel or NULL */
+  CFileItem          *m_currentPlayingRecording;  /* The current playing recording or NULL */
+  DWORD               m_scanStart;                /* Scan start time to check for non present streams */
+
   /*--- Timeshift data ---*/
   bool                CreateInternalTimeshift();
   bool                m_timeshiftExt;             /* True if external Timeshift is possible and active */

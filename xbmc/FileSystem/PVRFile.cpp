@@ -137,6 +137,9 @@ __int64 CPVRFile::Seek(__int64 pos, int whence)
 
 int CPVRFile::GetTotalTime()
 {
+  if (g_PVRManager.IsTimeshifting())
+    return 0;
+
   return g_PVRManager.GetTotalTime();
 }
 

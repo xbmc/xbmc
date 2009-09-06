@@ -1,0 +1,41 @@
+things to do:
+- Subtitles based upon Teletext stream
+- Handle Multifeed channel
+- Read RDS information from Radio channels
+- RaSS-Radiotext
+- Seeking in timeshift
+- EPG update
+- Timer update
+- Recordings update
+- Jump between Cutmarks in Recordings
+- Cutting of Recordings
+- Fix Timeline view
+- Add Timeline view to Fullscreen view
+- Make groups working again and improve the usage
+- Read channel groups from PVR backend
+- Add Recordings to video view and use scrapers with it
+- Add Pluginsystem for PVR
+- Handle all TV Data streams in DVDPlayer
+- Improve GUIInfoManager listitem to work better with PVR related lists
+- Show small info images like "Timer", "Recording" and so on epg and channel entries
+- Improve client error handling
+- Process Recordings like copy from backend, write to DVD or convert to other format (maybe over Plugin)
+- Add PVR to Webinterface
+- Add support for channel search
+- Add possibilty to read EPG for channel over scrapers instead over client
+- Use Images in EPG info dialog if present
+- Use different channellists for different profiles
+- Add view to show TV stream quality
+- Start last watched channel after XBMC start
+- Show epg infos also if scan is running
+- Fix teletext font for all languages
+- Add extensions to teletext stream
+- Parse Program information from teletext if no epg is present
+- Improve teletext window
+- Add dialog and functionality to change channel setting on client
+- Select TV Window after XBMC start
+- Add Picture in Picture if possible
+- Use Webservices with TV Channels (see IFA 2009)
+
+and a lot more
+
