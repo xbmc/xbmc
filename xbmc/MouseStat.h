@@ -71,7 +71,7 @@ public:
   void SetResolution(int maxX, int maxY, float speedX, float speedY);
   bool IsActive();
   bool IsEnabled() const;
-  bool HasMoved() const;
+  bool HasMoved(bool allMoves = false) const;
   void SetActive(bool active = true);
   void SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point);
   void EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID);

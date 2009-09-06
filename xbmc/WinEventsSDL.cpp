@@ -25,6 +25,7 @@
 #ifdef HAS_SDL_JOYSTICK
 #include "common/SDLJoystick.h"
 #endif
+#include "MouseStat.h"
 
 #ifdef HAS_SDL_WIN_EVENTS
 
@@ -143,6 +144,11 @@ bool CWinEventsSDL::MessagePump()
 
     case SDL_MOUSEMOTION:
     {
+      if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
+      {
+        g_Mouse.SetActive(false);
+        break;
+      }
       XBMC_Event newEvent;
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.xrel = event.motion.xrel;
