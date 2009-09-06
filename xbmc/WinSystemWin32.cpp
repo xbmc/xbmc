@@ -23,6 +23,7 @@
 #include "WinSystemWin32.h"
 #include "WinEventsWin32.h"
 #include "Settings.h"
+#include "resource.h"
 
 #ifdef _WIN32
 
@@ -44,7 +45,11 @@ CWinSystemWin32::CWinSystemWin32()
 
 CWinSystemWin32::~CWinSystemWin32()
 {
-  //Destroy();
+  if (m_hIcon)
+  {
+    DestroyIcon(m_hIcon);
+    m_hIcon = NULL;
+  }
 };
 
 bool CWinSystemWin32::InitWindowSystem()
@@ -67,6 +72,8 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, int width, int hei
   m_nWidth = width;
   m_nHeight = height;
   m_bFullScreen = fullScreen;
+
+  m_hIcon = LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
 
   // Register the windows class
   WNDCLASS wndClass;
