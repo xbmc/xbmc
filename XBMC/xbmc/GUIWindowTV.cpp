@@ -159,7 +159,7 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
 
   if (iMessage == GUI_MSG_WINDOW_INIT)
   {
-    if (!CPVRManager::GetInstance()->HaveActiveClients())
+    if (!g_PVRManager.HaveActiveClients())
     {
       m_gWindowManager.PreviousWindow();
       CGUIDialogOK::ShowAndGetInput(18100,0,18091,18092);
@@ -386,12 +386,12 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
     }
     else if (iControl == CONTROL_BTNCHANNELS_TV)
     {
-      m_iCurrentTVGroup = CPVRManager::GetInstance()->GetNextGroupID(m_iCurrentTVGroup);
+      m_iCurrentTVGroup = g_PVRManager.GetNextGroupID(m_iCurrentTVGroup);
       UpdateChannelsTV();
     }
     else if (iControl == CONTROL_BTNCHANNELS_RADIO)
     {
-      m_iCurrentRadioGroup = CPVRManager::GetInstance()->GetNextGroupID(m_iCurrentRadioGroup);
+      m_iCurrentRadioGroup = g_PVRManager.GetNextGroupID(m_iCurrentRadioGroup);
       UpdateChannelsRadio();
     }
     else if (iControl == CONTROL_LIST_TIMELINE ||
@@ -514,9 +514,9 @@ bool CGUIWindowTV::OnMessage(CGUIMessage& message)
           }
 
           if (iControl == CONTROL_LIST_CHANNELS_TV)
-            CPVRManager::GetInstance()->SetPlayingGroup(m_iCurrentTVGroup);
+            g_PVRManager.SetPlayingGroup(m_iCurrentTVGroup);
           if (iControl == CONTROL_LIST_CHANNELS_RADIO)
-            CPVRManager::GetInstance()->SetPlayingGroup(m_iCurrentRadioGroup);
+            g_PVRManager.SetPlayingGroup(m_iCurrentRadioGroup);
 
           /* Open tv channel by Player and return */
           if (g_guiSettings.GetBool("pvrplayback.playminimized"))
@@ -983,9 +983,9 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       }
 
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_TV)
-        CPVRManager::GetInstance()->SetPlayingGroup(m_iCurrentTVGroup);
+        g_PVRManager.SetPlayingGroup(m_iCurrentTVGroup);
       if (m_iCurrSubTVWindow == TV_WINDOW_CHANNELS_RADIO)
-        CPVRManager::GetInstance()->SetPlayingGroup(m_iCurrentRadioGroup);
+        g_PVRManager.SetPlayingGroup(m_iCurrentRadioGroup);
 
       if (!g_application.PlayFile(*pItem))
       {
@@ -1016,7 +1016,7 @@ bool CGUIWindowTV::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
           return false;
         }
 
-        CPVRManager::GetInstance()->SetPlayingGroup(-1);
+        g_PVRManager.SetPlayingGroup(-1);
         if (!g_application.PlayFile(*channelslist[pItem->GetTVEPGInfoTag()->m_channelNum-1]))
         {
           CGUIDialogOK::ShowAndGetInput(18100,0,18134,0);
@@ -1499,7 +1499,7 @@ void CGUIWindowTV::UpdateGuide()
 
   bool RadioPlaying;
   int CurrentChannel;
-  CPVRManager::GetInstance()->GetCurrentChannel(&CurrentChannel, &RadioPlaying);
+  g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
 
   if (m_iGuideView == GUIDE_VIEW_CHANNEL)
   {
@@ -1631,7 +1631,7 @@ void CGUIWindowTV::UpdateChannelsTV()
   }
   else if (m_iCurrentTVGroup != -1)
   {
-    m_iCurrentTVGroup = CPVRManager::GetInstance()->GetNextGroupID(m_iCurrentTVGroup);
+    m_iCurrentTVGroup = g_PVRManager.GetNextGroupID(m_iCurrentTVGroup);
     UpdateChannelsTV();
     return;
   }
@@ -1644,7 +1644,7 @@ void CGUIWindowTV::UpdateChannelsTV()
   if (m_bShowHiddenChannels)
     strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18051), g_localizeStrings.Get(18151));
   else
-    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18051), CPVRManager::GetInstance()->GetGroupName(m_iCurrentTVGroup));
+    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18051), g_PVRManager.GetGroupName(m_iCurrentTVGroup));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS_TV);
@@ -1678,7 +1678,7 @@ void CGUIWindowTV::UpdateChannelsRadio()
   }
   else if (m_iCurrentRadioGroup != -1)
   {
-    m_iCurrentRadioGroup = CPVRManager::GetInstance()->GetNextGroupID(m_iCurrentRadioGroup);
+    m_iCurrentRadioGroup = g_PVRManager.GetNextGroupID(m_iCurrentRadioGroup);
     UpdateChannelsRadio();
     return;
   }
@@ -1691,7 +1691,7 @@ void CGUIWindowTV::UpdateChannelsRadio()
   if (m_bShowHiddenChannels)
     strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18052), g_localizeStrings.Get(18151));
   else
-    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18052), CPVRManager::GetInstance()->GetGroupName(m_iCurrentTVGroup));
+    strLabel.Format("%s - %s: %s", g_localizeStrings.Get(9), g_localizeStrings.Get(18052), g_PVRManager.GetGroupName(m_iCurrentTVGroup));
   SET_CONTROL_LABEL(CONTROL_LABELHEADER, strLabel);
 
   SET_CONTROL_VISIBLE(CONTROL_LIST_CHANNELS_RADIO);
@@ -1767,7 +1767,7 @@ void CGUIWindowTV::UpdateButtons()
     CStdString strChannel;
     bool RadioPlaying;
     int CurrentChannel;
-    CPVRManager::GetInstance()->GetCurrentChannel(&CurrentChannel, &RadioPlaying);
+    g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
 
     if (!RadioPlaying)
       strChannel = PVRChannelsTV.GetNameForChannel(CurrentChannel);

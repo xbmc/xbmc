@@ -106,18 +106,18 @@ void CGUIDialogTVChannels::Update()
   // empty the list ready for population
   Clear();
 
-  if (CPVRManager::GetInstance()->IsPlayingTV())
+  if (g_PVRManager.IsPlayingTV())
   {
-    PVRChannelsTV.GetChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup());
+    PVRChannelsTV.GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
   }
-  else if (CPVRManager::GetInstance()->IsPlayingRadio())
+  else if (g_PVRManager.IsPlayingRadio())
   {
-    PVRChannelsRadio.GetChannels(m_vecItems, CPVRManager::GetInstance()->GetPlayingGroup());
+    PVRChannelsRadio.GetChannels(m_vecItems, g_PVRManager.GetPlayingGroup());
   }
 
   bool RadioPlaying;
   int CurrentChannel;
-  CPVRManager::GetInstance()->GetCurrentChannel(&CurrentChannel, &RadioPlaying);
+  g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
 
   m_viewControl.SetItems(*m_vecItems);
   m_viewControl.SetSelectedItem(CurrentChannel-1);

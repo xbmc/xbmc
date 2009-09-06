@@ -1895,14 +1895,14 @@ void CApplication::StartPVRManager()
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
     CLog::Log(LOGINFO, "starting PVRManager");
-    CPVRManager::GetInstance()->Start();
+    g_PVRManager.Start();
   }
 }
 
 void CApplication::StopPVRManager()
 {
   CLog::Log(LOGINFO, "stopping PVRManager");
-  CPVRManager::GetInstance()->Stop();
+  g_PVRManager.Stop();
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
@@ -3641,7 +3641,6 @@ HRESULT CApplication::Cleanup()
     CLastfmScrobbler::RemoveInstance();
     CLibrefmScrobbler::RemoveInstance();
     CLastFmManager::RemoveInstance();
-	//StopPVRManager();
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif

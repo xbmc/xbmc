@@ -307,8 +307,7 @@ bool cPVREpgs::Load()
 
 void cPVREpgs::Process()
 {
-  CPVRManager *manager  = CPVRManager::GetInstance();
-  CLIENTMAP   *clients  = manager->Clients();
+  CLIENTMAP   *clients  = g_PVRManager.Clients();
   cPVREpgsLock EpgsLock(true);
   cPVREpgs *s = (cPVREpgs *)EPGs(EpgsLock);
   if (s)

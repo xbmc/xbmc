@@ -70,7 +70,7 @@ public:
 CDVDDemuxPVRManager::CDVDDemuxPVRManager()
   : CDVDDemux()
   , m_pInput(NULL)
-  , m_pManager(CPVRManager::GetInstance())
+  , m_pManager(&g_PVRManager)
 {
 }
 

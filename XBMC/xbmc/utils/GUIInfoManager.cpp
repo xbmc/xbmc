@@ -1010,7 +1010,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case PVR_BACKEND_NUMBER:
   case PVR_TOTAL_DISKSPACE:
   case PVR_NEXT_TIMER:
-    strLabel = CPVRManager::GetInstance()->TranslateInfo(info);
+    strLabel = g_PVRManager.TranslateInfo(info);
     break;
   case WEATHER_CONDITIONS:
     strLabel = g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND);
@@ -1776,15 +1776,15 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   else if (condition == WEATHER_IS_FETCHED)
     bReturn = g_weatherManager.IsFetched();
   else if (condition == PVR_IS_RECORDING)
-    bReturn = CPVRManager::GetInstance()->IsRecording();
+    bReturn = g_PVRManager.IsRecording();
   else if (condition == PVR_HAS_TIMER)
-    bReturn = CPVRManager::GetInstance()->HasTimer();
+    bReturn = g_PVRManager.HasTimer();
 //  else if (condition == PVR_HAS_EPG)
-//    bReturn = CPVRManager::GetInstance()->SupportEPG();
+//    bReturn = g_PVRManager.SupportEPG();
 //  else if (condition == PVR_HAS_TXT)
-//    bReturn = CPVRManager::GetInstance()->SupportTeletext();
+//    bReturn = g_PVRManager.SupportTeletext();
 //  else if (condition == PVR_HAS_DIRECTOR)
-//    bReturn = CPVRManager::GetInstance()->SupportDirector();
+//    bReturn = g_PVRManager.SupportDirector();
   else if (condition == SYSTEM_INTERNET_STATE)
   {
     g_sysinfo.GetInfo(condition);
@@ -3036,7 +3036,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_NEXT:
       return m_currentFile->GetTVChannelInfoTag()->NextTitle();
     case VIDEOPLAYER_GROUP:
-      return CPVRManager::GetInstance()->GetGroupName(CPVRManager::GetInstance()->GetPlayingGroup());
+      return g_PVRManager.GetGroupName(g_PVRManager.GetPlayingGroup());
     case VIDEOPLAYER_STARTTIME:
       return m_currentFile->GetTVChannelInfoTag()->StartTime().GetAsLocalizedTime("", false);
     case VIDEOPLAYER_ENDTIME:

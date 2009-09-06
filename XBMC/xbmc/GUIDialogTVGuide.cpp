@@ -109,7 +109,7 @@ void CGUIDialogTVGuide::Update()
 
   bool RadioPlaying;
   int CurrentChannel;
-  CPVRManager::GetInstance()->GetCurrentChannel(&CurrentChannel, &RadioPlaying);
+  g_PVRManager.GetCurrentChannel(&CurrentChannel, &RadioPlaying);
   cPVREpgs::GetEPGChannel(CurrentChannel, m_vecItems, RadioPlaying);
   
   m_viewControl.SetItems(*m_vecItems);

@@ -135,9 +135,8 @@ cPVRChannels::cPVRChannels(void)
 bool cPVRChannels::Load(bool radio)
 {
   m_bRadio = radio;
-  CPVRManager *manager  = CPVRManager::GetInstance();
-  CTVDatabase *database = manager->GetTVDatabase();
-  CLIENTMAP   *clients  = manager->Clients();
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CLIENTMAP   *clients  = g_PVRManager.Clients();
 
   Clear();
 
@@ -178,9 +177,8 @@ bool cPVRChannels::Load(bool radio)
 
 bool cPVRChannels::Update()
 {
-  CPVRManager *manager  = CPVRManager::GetInstance();
-  CTVDatabase *database = manager->GetTVDatabase();
-  CLIENTMAP   *clients  = manager->Clients();
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
+  CLIENTMAP   *clients  = g_PVRManager.Clients();
   cPVRChannels PVRChannels_tmp;
 
   database->Open();
@@ -330,7 +328,7 @@ int cPVRChannels::GetChannels(CFileItemList* results, int group_id)
       continue;
 
     CFileItemPtr channel(new CFileItem(at(i)));
-    CPVRManager::GetInstance()->SetCurrentPlayingProgram(*channel);
+    g_PVRManager.SetCurrentPlayingProgram(*channel);
 
     results->Add(channel);
     cnt++;
@@ -361,8 +359,7 @@ void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
   if ((newindex == oldindex) || (newindex == 0))
     return;
 
-  CPVRManager *manager  = CPVRManager::GetInstance();
-  CTVDatabase *database = manager->GetTVDatabase();
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
   database->Open();
 
   m_channels_temp.push_back(at(oldindex-1));
@@ -405,8 +402,7 @@ void cPVRChannels::MoveChannel(unsigned int oldindex, unsigned int newindex)
 
 void cPVRChannels::HideChannel(unsigned int number)
 {
-  CPVRManager *manager  = CPVRManager::GetInstance();
-  CTVDatabase *database = manager->GetTVDatabase();
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
 
   for (unsigned int i = 0; i < PVRTimers.size(); i++)
   {
@@ -429,7 +425,7 @@ void cPVRChannels::HideChannel(unsigned int number)
     }
   }
 
-  if (manager->IsPlayingTV() || manager->IsPlayingRadio() && manager->GetCurrentPlayingItem()->GetTVChannelInfoTag()->Number() == number)
+  if (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio() && g_PVRManager.GetCurrentPlayingItem()->GetTVChannelInfoTag()->Number() == number)
   {
     CGUIDialogOK::ShowAndGetInput(18090,18097,0,18098);
     return;
@@ -525,15 +521,14 @@ CStdString cPVRChannels::GetChannelIcon(unsigned int Number)
 
 void cPVRChannels::SetChannelIcon(unsigned int Number, CStdString Icon)
 {
-  CPVRManager *manager  = CPVRManager::GetInstance();
-  CTVDatabase *database = manager->GetTVDatabase();
+  CTVDatabase *database = g_PVRManager.GetTVDatabase();
 
   if (Number > 0 && Number <= size()+1)
     return;
 
   if (at(Number-1).Icon() != Icon)
   {
-    CTVDatabase *database = manager->GetTVDatabase();
+    CTVDatabase *database = g_PVRManager.GetTVDatabase();
     database->Open();
     at(Number-1).SetIcon(Icon);
     database->UpdateDBChannel(at(Number-1));
