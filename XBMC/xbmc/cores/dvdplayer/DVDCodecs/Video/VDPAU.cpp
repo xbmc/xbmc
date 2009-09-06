@@ -29,6 +29,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 CVDPAU*          g_VDPAU;
@@ -149,6 +150,9 @@ bool CVDPAU::MakePixmap(int width, int height)
     None
   };
 
+  int OutWidth = g_graphicsContext.GetWidth();
+  int OutHeight = g_graphicsContext.GetHeight();
+
   int pixmapAttribs[] = {
     GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
     GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
@@ -176,8 +180,8 @@ bool CVDPAU::MakePixmap(int width, int height)
   CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
   m_Pixmap = XCreatePixmap(m_Display,
                            DefaultRootWindow(m_Display),
-                           width,
-                           height,
+                           OutWidth,
+                           OutHeight,
                            wndattribs.depth);
   if (!m_Pixmap)
   {
@@ -213,7 +217,7 @@ bool CVDPAU::MakePixmap(int width, int height)
           status = false;
         }
       }
-    } 
+    }
     else
     {
       CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
@@ -319,15 +323,20 @@ void CVDPAU::CheckFeatures()
 
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+    if (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") == 10)
+      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 + g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel");
+    CLog::Log(LOGNOTICE,"upscalingalgoritm = %i vdpauUpscalingLevel = %i",g_guiSettings.GetInt("videoplayer.upscalingalgorithm"),g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel"));
+#endif
     if (interlaced && tmpDeint)
     {
       CLog::Log(LOGNOTICE, " (VDPAU) Enabling deinterlacing features for the video mixer");
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL;
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL;
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
-    } 
+    }
 
-    VdpStatus vdp_st = VDP_STATUS_ERROR;  
+    VdpStatus vdp_st = VDP_STATUS_ERROR;
     vdp_st = vdp_video_mixer_create(vdp_device,
                                     featuresCount,
                                     features,
@@ -1105,13 +1114,13 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
   if (( outRectVid.x1 != vid_width ) ||
       ( outRectVid.y1 != vid_height ))
   {
+    CSingleLock lock(g_graphicsContext);
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
-    outRectVid.x1 = vid_width;
-    outRectVid.y1 = vid_height;
+    outRectVid.x1 = g_graphicsContext.GetWidth();
+    outRectVid.y1 = g_graphicsContext.GetHeight();
 
-    CSingleLock lock(g_graphicsContext);
-    if(g_graphicsContext.GetViewWindow().right < (long)vid_width)
+    /*if(g_graphicsContext.GetViewWindow().right < (long)vid_width)
       outWidth = vid_width;
     else
       outWidth = g_graphicsContext.GetViewWindow().right;
@@ -1124,6 +1133,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRect.y0 = 0;
     outRect.x1 = outWidth;
     outRect.y1 = outHeight;
+    */
   }
   //CLog::Log(LOGNOTICE,"surfaceNum %i",surfaceNum);
 //  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
@@ -1139,7 +1149,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                   (interlaced && tmpDeint)? &(future) : NULL, //&(future),
                                   NULL,
                                   outputSurface,
-                                  &(outRect),
+                                  &(outRectVid),
                                   &(outRectVid),
                                   0,
                                   NULL);
