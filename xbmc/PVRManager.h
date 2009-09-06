@@ -45,7 +45,6 @@ public:
 
   /* Thread handling */
   void Process();
-  void SetClient(IPVRClient *client);
   bool StartReceiver(IPVRClient *client);
   void StopReceiver();
   int WriteBuffer(BYTE* buf, int buf_size);
@@ -89,36 +88,17 @@ public:
   bool LoadClients();
   void GetClientProperties(); // call GetClientProperties(long clientID) for each client connected
   void GetClientProperties(long clientID); // request the PVR_SERVERPROPS struct from each client
-
-  /* Synchronize Thread */
   virtual void Process();
-
-  /* Manager access */
-  static void RemoveInstance();
-  static void ReleaseInstance();
-  static bool IsInstantiated() { return m_instance != NULL; }
-
-  static CPVRManager* GetInstance();
   unsigned long GetFirstClientID();
-  static CLIENTMAP* Clients() { return &m_clients; }
+  CLIENTMAP* Clients() { return &m_clients; }
   CTVDatabase *GetTVDatabase() { return &m_database; }
-
-  /* addon specific */
   bool RequestRestart(const ADDON::CAddon* addon, bool datachanged);
   bool RequestRemoval(const ADDON::CAddon* addon);
   ADDON_STATUS SetSetting(const ADDON::CAddon* addon, const char *settingName, const void *settingValue);
-
-
-
-  /* Event handling */
   void	      OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg);
   const char* TranslateInfo(DWORD dwInfo);
   static bool HasTimer() { return m_hasTimers;  }
   static bool IsRecording() { return m_isRecording; }
-  bool        IsRecording(unsigned int channel, bool radio = false);
-  static bool IsPlayingTV();
-  static bool IsPlayingRadio();
-
   int GetGroupList(CFileItemList* results);
   void AddGroup(const CStdString &newname);
   bool RenameGroup(unsigned int GroupId, const CStdString &newname);
@@ -128,24 +108,16 @@ public:
   int GetNextGroupID(int current_group_id);
   CStdString GetGroupName(int GroupId);
   int GetFirstChannelForGroupID(int GroupId, bool radio = false);
-
-  /* Backend Channel handling */
   bool AddBackendChannel(const CFileItem &item);
   bool DeleteBackendChannel(unsigned int index);
   bool RenameBackendChannel(unsigned int index, CStdString &newname);
   bool MoveBackendChannel(unsigned int index, unsigned int newindex);
   bool UpdateBackendChannel(const CFileItem &item);
-
-  /* Live stream handling */
-    bool PauseLiveStream(bool DoPause, double dTime);
+  bool PauseLiveStream(bool DoPause, double dTime);
   int GetTotalTime();
   int GetStartTime();
   void SetPlayingGroup(int GroupId);
   int GetPlayingGroup();
-
-  /* Recorded stream handling */
-  bool RecordChannel(unsigned int channel, bool bOnOff, bool radio = false);
-
   void                SetCurrentPlayingProgram(CFileItem& item);
   void                SyncInfo(); // synchronize InfoManager related stuff
 
@@ -158,11 +130,17 @@ public:
 
 
   /* General functions */
+  bool IsPlayingTV();
+  bool IsPlayingRadio();
+  bool IsPlayingRecording();
   PVR_SERVERPROPS *GetCurrentClientProps();
   CFileItem *GetCurrentPlayingItem();
   bool GetCurrentChannel(int *number, bool *radio);
   bool HaveActiveClients();
   int GetPreviousChannel();
+  bool CanInstantRecording();
+  bool IsRecordingOnPlayingChannel();
+  bool StartRecordingOnPlayingChannel(bool bOnOff);
 
   /* Stream reading functions */
   bool OpenLiveStream(unsigned int channel, bool radio = false);
@@ -190,8 +168,7 @@ public:
 protected:
 
 private:
-  static CPVRManager   *m_instance;
-  static CLIENTMAP      m_clients; // pointer to each enabled client's interface
+  CLIENTMAP             m_clients; // pointer to each enabled client's interface
   CLIENTPROPS           m_clientsProps; // store the properties of each client locally
   DWORD                 m_infoToggleStart;
   unsigned int          m_infoToggleCurrent;
@@ -226,12 +203,10 @@ private:
 
   DWORD               m_scanStart;
 
-  static CFileItem   *m_currentPlayingChannel;
-  static CFileItem   *m_currentPlayingRecording;
+  CFileItem          *m_currentPlayingChannel;
+  CFileItem          *m_currentPlayingRecording;
   int                 m_PreviousChannel[2];
   int                 m_PreviousChannelIndex;
-  DWORD               m_LastChannelChanged;
-  int                 m_LastChannel;
   
   /*--- Timeshift data ---*/
   bool                CreateInternalTimeshift();
@@ -246,3 +221,5 @@ private:
   __int64             m_timeshiftCurrWrapAround;  /* Bytes readed during current wrap around */
   __int64             m_timeshiftLastWrapAround;  /* Bytes readed during last wrap around */
 };
+
+extern CPVRManager g_PVRManager;

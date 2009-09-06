@@ -50,7 +50,7 @@ bool CPVRFile::Open(const CURL& url)
     CUtil::RemoveExtension(channel);
     m_playingItem = atoi(channel.c_str());
 
-    if (!CPVRManager::GetInstance()->OpenLiveStream(m_playingItem, false))
+    if (!g_PVRManager.OpenLiveStream(m_playingItem, false))
     {
       return false;
     }
@@ -64,7 +64,7 @@ bool CPVRFile::Open(const CURL& url)
     CUtil::RemoveExtension(channel);
     m_playingItem = atoi(channel.c_str());
 
-    if (!CPVRManager::GetInstance()->OpenLiveStream(m_playingItem, true))
+    if (!g_PVRManager.OpenLiveStream(m_playingItem, true))
     {
       return false;
     }
@@ -78,7 +78,7 @@ bool CPVRFile::Open(const CURL& url)
     CUtil::RemoveExtension(recording);
     m_playingItem = atoi(recording.c_str());
 
-    if (!CPVRManager::GetInstance()->OpenRecordedStream(m_playingItem))
+    if (!g_PVRManager.OpenRecordedStream(m_playingItem))
     {
       return false;
     }
@@ -97,24 +97,24 @@ bool CPVRFile::Open(const CURL& url)
 
 void CPVRFile::Close()
 {
-  CPVRManager::GetInstance()->CloseStream();
+  g_PVRManager.CloseStream();
 }
 
 unsigned int CPVRFile::Read(void* buffer, __int64 size)
 {
-  return CPVRManager::GetInstance()->ReadStream((BYTE*)buffer, size);
+  return g_PVRManager.ReadStream((BYTE*)buffer, size);
 }
 
 __int64 CPVRFile::GetLength()
 {
-  return CPVRManager::GetInstance()->LengthStream();
+  return g_PVRManager.LengthStream();
 }
 
 __int64 CPVRFile::Seek(__int64 pos, int whence)
 {
   if (whence == SEEK_POSSIBLE)
   {
-    __int64 ret = CPVRManager::GetInstance()->SeekStream(pos, whence);
+    __int64 ret = g_PVRManager.SeekStream(pos, whence);
 
     if (ret >= 0)
     {
@@ -122,7 +122,7 @@ __int64 CPVRFile::Seek(__int64 pos, int whence)
     }
     else
     {
-      if (CPVRManager::GetInstance()->LengthStream() && CPVRManager::GetInstance()->SeekStream(0, SEEK_CUR) >= 0)
+      if (g_PVRManager.LengthStream() && g_PVRManager.SeekStream(0, SEEK_CUR) >= 0)
         return 1;
       else
         return 0;
@@ -130,19 +130,19 @@ __int64 CPVRFile::Seek(__int64 pos, int whence)
   }
   else
   {
-    return CPVRManager::GetInstance()->SeekStream(pos, whence);
+    return g_PVRManager.SeekStream(pos, whence);
   }
   return 0;
 }
 
 int CPVRFile::GetTotalTime()
 {
-  return CPVRManager::GetInstance()->GetTotalTime();
+  return g_PVRManager.GetTotalTime();
 }
 
 int CPVRFile::GetStartTime()
 {
-  return CPVRManager::GetInstance()->GetStartTime();
+  return g_PVRManager.GetStartTime();
 }
 
 bool CPVRFile::NextChannel()
@@ -159,7 +159,7 @@ bool CPVRFile::NextChannel()
    * increased by one in a case if next channel is encrypted or we
    * on the beginning or end of the channel list!
    */
-  if (CPVRManager::GetInstance()->ChannelUp(&newchannel))
+  if (g_PVRManager.ChannelUp(&newchannel))
   {
     m_playingItem = newchannel;
     return true;
@@ -184,7 +184,7 @@ bool CPVRFile::PrevChannel()
    * increased by one in a case if next channel is encrypted or we
    * on the beginning or end of the channel list!
    */
-  if (CPVRManager::GetInstance()->ChannelDown(&newchannel))
+  if (g_PVRManager.ChannelDown(&newchannel))
   {
     m_playingItem = newchannel;
     return true;
@@ -206,7 +206,7 @@ bool CPVRFile::SelectChannel(unsigned int channel)
     return true;
   }
 
-  if (CPVRManager::GetInstance()->ChannelSwitch(channel))
+  if (g_PVRManager.ChannelSwitch(channel))
   {
     m_playingItem = channel;
     return true;
@@ -219,12 +219,18 @@ bool CPVRFile::SelectChannel(unsigned int channel)
 
 bool CPVRFile::UpdateItem(CFileItem& item)
 {
-  return CPVRManager::GetInstance()->UpdateItem(item);
+  if (m_isPlayRecording)
+  {
+    /* We are inside a recording, skip item update */
+    return true;
+  }
+
+  return g_PVRManager.UpdateItem(item);
 }
 
 bool CPVRFile::SendPause(bool DoPause, double dTime)
 {
-  return CPVRManager::GetInstance()->PauseLiveStream(DoPause, dTime);
+  return g_PVRManager.PauseLiveStream(DoPause, dTime);
 }
 
 CStdString CPVRFile::TranslatePVRFilename(const CStdString& pathFile)
@@ -267,15 +273,15 @@ bool CPVRFile::CanRecord()
     return false;
   }
 
-  return false;//CPVRManager::GetInstance()->SupportRecording();
+  return g_PVRManager.CanInstantRecording();
 }
 
 bool CPVRFile::IsRecording()
 {
-  return CPVRManager::GetInstance()->IsRecording(m_playingItem);
+  return g_PVRManager.IsRecordingOnPlayingChannel();
 }
 
 bool CPVRFile::Record(bool bOnOff)
 {
-  return CPVRManager::GetInstance()->RecordChannel(m_playingItem, bOnOff);
+  return g_PVRManager.StartRecordingOnPlayingChannel(bOnOff);
 }

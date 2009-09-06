@@ -10,6 +10,7 @@
 
 <lircmap>
         <remote device="Samsung">
+                <play>Play</play>
                 <pause>Pause</pause>
                 <stop>Stop</stop>
                 <forward>Forward</forward>
@@ -23,7 +24,7 @@
                 <pageminus>Ch-</pageminus>
                 <back>Back</back>
                 <menu>Menu</menu>
-                <title>Play</title>
+                <title>Source</title>
                 <info>PIP</info>
                 <skipplus>Next</skipplus>
                 <skipminus>Prev</skipminus>
@@ -34,7 +35,6 @@
                 <volumeminus>Vol-</volumeminus>
                 <mute>Mute</mute>
                 <power>Power</power>
-                <myvideo>Source</myvideo>
                 <one>1</one>
                 <two>2</two>
                 <three>3</three>

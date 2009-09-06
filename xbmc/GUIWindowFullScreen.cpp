@@ -202,13 +202,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CFileItem item(g_application.CurrentFileItem());
       if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
-        int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
-        current_group = CPVRManager::GetInstance()->GetPrevGroupID(current_group);
-        CPVRManager::GetInstance()->SetPlayingGroup(current_group);
+        int current_group = g_PVRManager.GetPlayingGroup();
+        current_group = g_PVRManager.GetPrevGroupID(current_group);
+        g_PVRManager.SetPlayingGroup(current_group);
 
         CAction action;
         action.wID = ACTION_CHANNEL_SWITCH;
-        action.fAmount1 = CPVRManager::GetInstance()->GetFirstChannelForGroupID(current_group);
+        action.fAmount1 = g_PVRManager.GetFirstChannelForGroupID(current_group);
         OnAction(action);
       }
       else
@@ -224,13 +224,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       CFileItem item(g_application.CurrentFileItem());
       if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
-        int current_group = CPVRManager::GetInstance()->GetPlayingGroup();
-        current_group = CPVRManager::GetInstance()->GetNextGroupID(current_group);
-        CPVRManager::GetInstance()->SetPlayingGroup(current_group);
+        int current_group = g_PVRManager.GetPlayingGroup();
+        current_group = g_PVRManager.GetNextGroupID(current_group);
+        g_PVRManager.SetPlayingGroup(current_group);
 
         CAction action;
         action.wID = ACTION_CHANNEL_SWITCH;
-        action.fAmount1 = CPVRManager::GetInstance()->GetFirstChannelForGroupID(current_group);
+        action.fAmount1 = g_PVRManager.GetFirstChannelForGroupID(current_group);
         OnAction(action);
       }
       else
@@ -419,7 +419,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   
         if (action.wID == REMOTE_0)
         {
-          channelNr = CPVRManager::GetInstance()->GetPreviousChannel();
+          channelNr = g_PVRManager.GetPreviousChannel();
         }
         else
         {

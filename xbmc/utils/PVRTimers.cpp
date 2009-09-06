@@ -105,7 +105,7 @@ cPVRTimerInfoTag::cPVRTimerInfoTag(bool Init)
 
   const cPVRChannelInfoTag *channel = NULL;
 
-  CFileItem *curPlayingChannel = CPVRManager::GetInstance()->GetCurrentPlayingItem();
+  CFileItem *curPlayingChannel = g_PVRManager.GetCurrentPlayingItem();
   if (curPlayingChannel)
     channel = curPlayingChannel->GetTVChannelInfoTag();
   else
@@ -322,7 +322,7 @@ void cPVRTimerInfoTag::Reset()
 
   m_Active        = false;
   m_channelNum    = -1;
-  m_clientID      = CPVRManager::GetInstance()->GetFirstClientID();
+  m_clientID      = g_PVRManager.GetFirstClientID();
   m_clientIndex   = -1;
   m_clientNum     = -1;
   m_Radio         = false;
@@ -362,8 +362,7 @@ bool cPVRTimerInfoTag::Add() const
 {
   try
   {
-    CPVRManager *manager = CPVRManager::GetInstance();
-    CLIENTMAP   *clients = manager->Clients();
+    CLIENTMAP *clients = g_PVRManager.Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->AddTimer(*this);
@@ -384,8 +383,7 @@ bool cPVRTimerInfoTag::Delete(bool force) const
 {
   try
   {
-    CPVRManager *manager = CPVRManager::GetInstance();
-    CLIENTMAP   *clients = manager->Clients();
+    CLIENTMAP *clients = g_PVRManager.Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->DeleteTimer(*this, force);
@@ -412,8 +410,7 @@ bool cPVRTimerInfoTag::Rename(CStdString &newname) const
 {
   try
   {
-    CPVRManager *manager = CPVRManager::GetInstance();
-    CLIENTMAP   *clients = manager->Clients();
+    CLIENTMAP *clients = g_PVRManager.Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->RenameTimer(*this, newname);
@@ -438,8 +435,7 @@ bool cPVRTimerInfoTag::Update() const
 {
   try
   {
-    CPVRManager *manager = CPVRManager::GetInstance();
-    CLIENTMAP   *clients = manager->Clients();
+    CLIENTMAP *clients = g_PVRManager.Clients();
 
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->UpdateTimer(*this);
@@ -497,9 +493,8 @@ bool cPVRTimers::Update()
 {
   CSingleLock lock(m_critSection);
 
-  CPVRManager *manager  = CPVRManager::GetInstance();
-  CLIENTMAP   *clients  = manager->Clients();
-  
+  CLIENTMAP *clients  = g_PVRManager.Clients();
+
   Clear();
 
   CLIENTMAPITR itr = clients->begin();
@@ -531,7 +526,7 @@ int cPVRTimers::GetTimers(CFileItemList* results)
     results->Add(timer);
   }
   
-  CPVRManager::GetInstance()->SyncInfo();
+  g_PVRManager.SyncInfo();
 
   return size();
 }
@@ -585,7 +580,7 @@ bool cPVRTimers::AddTimer(const CFileItem &item)
   /* Check if a cPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "cPVRTimers: AddTimer no TVInfoTag given!");
+    CLog::Log(LOGERROR, "cPVRTimers: AddTimer no TimerInfoTag given!");
     return false;
   }
 
@@ -598,12 +593,12 @@ bool cPVRTimers::DeleteTimer(const CFileItem &item, bool force)
   /* Check if a cPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "cPVRTimers: DeleteTimer no TVInfoTag given!");
+    CLog::Log(LOGERROR, "cPVRTimers: DeleteTimer no TimerInfoTag given!");
     return false;
   }
 
   const cPVRTimerInfoTag* tag = item.GetTVTimerInfoTag();
-  return tag->Delete();
+  return tag->Delete(force);
 }
 
 bool cPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
@@ -611,7 +606,7 @@ bool cPVRTimers::RenameTimer(CFileItem &item, CStdString &newname)
   /* Check if a cPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "cPVRTimers: RenameTimer no TVInfoTag given!");
+    CLog::Log(LOGERROR, "cPVRTimers: RenameTimer no TimerInfoTag given!");
     return false;
   }
 
@@ -629,7 +624,7 @@ bool cPVRTimers::UpdateTimer(const CFileItem &item)
   /* Check if a cPVRTimerInfoTag is inside file item */
   if (!item.IsPVRTimer())
   {
-    CLog::Log(LOGERROR, "cPVRTimers: UpdateTimer no TVInfoTag given!");
+    CLog::Log(LOGERROR, "cPVRTimers: UpdateTimer no TimerInfoTag given!");
     return false;
   }
   

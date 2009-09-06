@@ -93,7 +93,7 @@ bool cPVRRecordingInfoTag::operator !=(const cPVRRecordingInfoTag& right) const
 void cPVRRecordingInfoTag::Reset(void)
 {
   m_clientIndex           = -1;
-  m_clientID              = CPVRManager::GetInstance()->GetFirstClientID(); // Temporary until we support multiple backends
+  m_clientID              = g_PVRManager.GetFirstClientID(); // Temporary until we support multiple backends
   m_strChannel            = "";
   m_recordingTime         = NULL;
   m_strFileNameAndPath    = "";
@@ -118,12 +118,11 @@ bool cPVRRecordingInfoTag::Delete(void) const
 {
   try
   {
-    CPVRManager *manager = CPVRManager::GetInstance();
-    CLIENTMAP   *clients = manager->Clients();
-  
+    CLIENTMAP *clients = g_PVRManager.Clients();
+
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->DeleteRecording(*this);
-  
+
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
@@ -140,12 +139,11 @@ bool cPVRRecordingInfoTag::Rename(CStdString &newName) const
 {
   try
   {
-    CPVRManager *manager = CPVRManager::GetInstance();
-    CLIENTMAP   *clients = manager->Clients();
-  
+    CLIENTMAP *clients = g_PVRManager.Clients();
+
     /* and write it to the backend */
     PVR_ERROR err = clients->find(m_clientID)->second->RenameRecording(*this, newName);
-  
+
     if (err != PVR_ERROR_NO_ERROR)
       throw err;
 
@@ -186,9 +184,8 @@ void cPVRRecordings::Process()
 {
   CSingleLock lock(m_critSection);
 
-  CPVRManager *manager  = CPVRManager::GetInstance();
-  CLIENTMAP   *clients  = manager->Clients();
-  
+  CLIENTMAP   *clients  = g_PVRManager.Clients();
+
   Clear();
 
   /* Go thru all clients and receive there Recordings */

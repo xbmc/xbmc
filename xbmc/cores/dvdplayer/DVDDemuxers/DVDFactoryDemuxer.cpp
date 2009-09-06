@@ -66,9 +66,8 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
 
   if (pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
   {
-    CPVRManager      *manager     = CPVRManager::GetInstance();
-    PVR_SERVERPROPS  *properties  = manager->GetCurrentClientProps();
-    
+    PVR_SERVERPROPS  *properties  = g_PVRManager.GetCurrentClientProps();
+
     if (properties->HandleDemuxing)
     {
       auto_ptr<CDVDDemuxPVRManager> demuxer(new CDVDDemuxPVRManager());
