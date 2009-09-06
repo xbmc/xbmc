@@ -430,7 +430,7 @@ bool CGUIWindow::OnMouseAction()
   if (!controlUnderPointer)
     m_focusedControl = 0;
   if (bHandled)
-    g_Mouse.UpdateMouseWheel(0);
+    g_Mouse.ResetMouseWheel();
 
   return bHandled;
 }
