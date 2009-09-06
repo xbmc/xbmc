@@ -418,6 +418,11 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       newEvent.button.button = button;
       m_pEventFunc(newEvent);
       return(0);
+    case WM_MOUSEWHEEL:
+      newEvent.type = XBMC_MOUSEMOTION;
+      newEvent.button.button = GET_Y_LPARAM(wParam) > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
+      m_pEventFunc(newEvent);
+      return(0);
     case WM_SIZE:
       newEvent.type = XBMC_VIDEORESIZE;
       newEvent.resize.type = XBMC_VIDEORESIZE;
