@@ -86,6 +86,7 @@ public:
   CPoint GetLastMove() const;
   char GetWheel() const;
   void UpdateMouseWheel(char dir);
+  void ResetMouseWheel();
   void Update(XBMC_Event& newEvent);
 
 private:
