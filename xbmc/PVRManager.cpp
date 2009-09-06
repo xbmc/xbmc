@@ -550,136 +550,6 @@ void CPVRManager::Process()
 /************************************************************/
 /** Event handling */
 
-#define INFO_TOGGLE_TIME    1500
-const char* CPVRManager::TranslateInfo(DWORD dwInfo)
-{
-  if      (dwInfo == PVR_NOW_RECORDING_TITLE)     return m_nowRecordingTitle;
-  else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)   return m_nowRecordingChannel;
-  else if (dwInfo == PVR_NOW_RECORDING_DATETIME)  return m_nowRecordingDateTime;
-  else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    return m_nextRecordingTitle;
-  else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  return m_nextRecordingChannel;
-  else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_nextRecordingDateTime;
-  else if (dwInfo == PVR_BACKEND_NAME)            return m_backendName;
-  else if (dwInfo == PVR_BACKEND_VERSION)         return m_backendVersion;
-  else if (dwInfo == PVR_BACKEND_HOST)            return m_backendHost;
-  else if (dwInfo == PVR_BACKEND_DISKSPACE)       return m_backendDiskspace;
-  else if (dwInfo == PVR_BACKEND_CHANNELS)        return m_backendChannels;
-  else if (dwInfo == PVR_BACKEND_TIMERS)          return m_backendTimers;
-  else if (dwInfo == PVR_BACKEND_RECORDINGS)      return m_backendRecordings;
-  else if (dwInfo == PVR_BACKEND_NUMBER)
-  {
-    if (m_infoToggleStart == 0)
-    {
-      m_infoToggleStart = timeGetTime();
-      m_infoToggleCurrent = 0;
-    }
-    else
-    {
-      if (timeGetTime() - m_infoToggleStart > INFO_TOGGLE_TIME)
-      {
-        if (m_clients.size() > 0)
-        {
-          m_infoToggleCurrent++;
-          if (m_infoToggleCurrent > m_clients.size()-1)
-            m_infoToggleCurrent = 0;
-
-          CLIENTMAPITR itr = m_clients.begin();
-          for (unsigned int i = 0; i < m_infoToggleCurrent; i++)
-            itr++;
-
-          long long kBTotal = 0;
-          long long kBUsed  = 0;
-          if (m_clients[(*itr).first]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
-          {
-            kBTotal /= 1024; // Convert to MBytes
-            kBUsed /= 1024;  // Convert to MBytes
-            m_backendDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
-          }
-          else
-          {
-            m_backendDiskspace = g_localizeStrings.Get(18074);
-          }
-
-          int NumChannels = m_clients[(*itr).first]->GetNumChannels();
-          if (NumChannels >= 0)
-            m_backendChannels.Format("%i", NumChannels);
-          else
-            m_backendChannels = g_localizeStrings.Get(161);
-
-          int NumTimers = m_clients[(*itr).first]->GetNumTimers();
-          if (NumTimers >= 0)
-            m_backendTimers.Format("%i", NumTimers);
-          else
-            m_backendTimers = g_localizeStrings.Get(161);
-
-          int NumRecordings = m_clients[(*itr).first]->GetNumRecordings();
-          if (NumRecordings >= 0)
-            m_backendRecordings.Format("%i", NumRecordings);
-          else
-            m_backendRecordings = g_localizeStrings.Get(161);
-
-          m_backendName         = m_clients[(*itr).first]->GetBackendName();
-          m_backendVersion      = m_clients[(*itr).first]->GetBackendVersion();
-          m_backendHost         = m_clients[(*itr).first]->GetConnectionString();
-        }
-        else
-        {
-          m_backendName         = "";
-          m_backendVersion      = "";
-          m_backendHost         = "";
-          m_backendDiskspace    = "";
-          m_backendTimers       = "";
-          m_backendRecordings   = "";
-          m_backendChannels     = "";
-        }
-        m_infoToggleStart = timeGetTime();
-      }
-    }
-
-    static CStdString backendClients;
-    if (m_clients.size() > 0)
-      backendClients.Format("%u %s %u",m_infoToggleCurrent+1 ,g_localizeStrings.Get(20163), m_clients.size());
-    else
-      backendClients = g_localizeStrings.Get(14023);
-
-    return backendClients;
-  }
-  else if (dwInfo == PVR_TOTAL_DISKSPACE)
-  {
-    long long kBTotal = 0;
-    long long kBUsed  = 0;
-    CLIENTMAPITR itr = m_clients.begin();
-    while (itr != m_clients.end())
-    {
-      long long clientKBTotal = 0;
-      long long clientKBUsed  = 0;
-
-      if (m_clients[(*itr).first]->GetDriveSpace(&clientKBTotal, &clientKBUsed) == PVR_ERROR_NO_ERROR)
-      {
-        kBTotal += clientKBTotal;
-        kBUsed += clientKBUsed;
-      }
-      itr++;
-    }
-    kBTotal /= 1024; // Convert to MBytes
-    kBUsed /= 1024;  // Convert to MBytes
-    m_totalDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
-    return m_totalDiskspace;
-  }
-  else if (dwInfo == PVR_NEXT_TIMER)
-  {
-    cPVRTimerInfoTag *next = PVRTimers.GetNextActiveTimer();
-    if (next != NULL)
-    {
-      m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(18190)
-                         , next->Start().GetAsLocalizedDate(true)
-                         , g_localizeStrings.Get(18191)
-                         , next->Start().GetAsLocalizedTime("HH:mm", false));
-      return m_nextTimer;
-    }
-  }
-  return "";
-}
 
 void CPVRManager::OnClientMessage(const long clientID, const PVR_EVENT clientEvent, const char* msg)
 {
@@ -1255,6 +1125,179 @@ bool CPVRManager::CreateInternalTimeshift()
 }
 
 
+/*************************************************************/
+/** GUIInfoManager FUNCTIONS                                **/
+/*************************************************************/
+
+/********************************************************************
+/* CPVRManager TranslateCharInfo
+/*
+/* Returns a GUIInfoManager Character String
+/********************************************************************/
+#define INFO_TOGGLE_TIME    1500
+const char* CPVRManager::TranslateCharInfo(DWORD dwInfo)
+{
+  if      (dwInfo == PVR_NOW_RECORDING_TITLE)     return m_nowRecordingTitle;
+  else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)   return m_nowRecordingChannel;
+  else if (dwInfo == PVR_NOW_RECORDING_DATETIME)  return m_nowRecordingDateTime;
+  else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    return m_nextRecordingTitle;
+  else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  return m_nextRecordingChannel;
+  else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) return m_nextRecordingDateTime;
+  else if (dwInfo == PVR_BACKEND_NAME)            return m_backendName;
+  else if (dwInfo == PVR_BACKEND_VERSION)         return m_backendVersion;
+  else if (dwInfo == PVR_BACKEND_HOST)            return m_backendHost;
+  else if (dwInfo == PVR_BACKEND_DISKSPACE)       return m_backendDiskspace;
+  else if (dwInfo == PVR_BACKEND_CHANNELS)        return m_backendChannels;
+  else if (dwInfo == PVR_BACKEND_TIMERS)          return m_backendTimers;
+  else if (dwInfo == PVR_BACKEND_RECORDINGS)      return m_backendRecordings;
+  else if (dwInfo == PVR_BACKEND_NUMBER)
+  {
+    if (m_infoToggleStart == 0)
+    {
+      m_infoToggleStart = timeGetTime();
+      m_infoToggleCurrent = 0;
+    }
+    else
+    {
+      if (timeGetTime() - m_infoToggleStart > INFO_TOGGLE_TIME)
+      {
+        if (m_clients.size() > 0)
+        {
+          m_infoToggleCurrent++;
+          if (m_infoToggleCurrent > m_clients.size()-1)
+            m_infoToggleCurrent = 0;
+
+          CLIENTMAPITR itr = m_clients.begin();
+          for (unsigned int i = 0; i < m_infoToggleCurrent; i++)
+            itr++;
+
+          long long kBTotal = 0;
+          long long kBUsed  = 0;
+          if (m_clients[(*itr).first]->GetDriveSpace(&kBTotal, &kBUsed) == PVR_ERROR_NO_ERROR)
+          {
+            kBTotal /= 1024; // Convert to MBytes
+            kBUsed /= 1024;  // Convert to MBytes
+            m_backendDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
+          }
+          else
+          {
+            m_backendDiskspace = g_localizeStrings.Get(18074);
+          }
+
+          int NumChannels = m_clients[(*itr).first]->GetNumChannels();
+          if (NumChannels >= 0)
+            m_backendChannels.Format("%i", NumChannels);
+          else
+            m_backendChannels = g_localizeStrings.Get(161);
+
+          int NumTimers = m_clients[(*itr).first]->GetNumTimers();
+          if (NumTimers >= 0)
+            m_backendTimers.Format("%i", NumTimers);
+          else
+            m_backendTimers = g_localizeStrings.Get(161);
+
+          int NumRecordings = m_clients[(*itr).first]->GetNumRecordings();
+          if (NumRecordings >= 0)
+            m_backendRecordings.Format("%i", NumRecordings);
+          else
+            m_backendRecordings = g_localizeStrings.Get(161);
+
+          m_backendName         = m_clients[(*itr).first]->GetBackendName();
+          m_backendVersion      = m_clients[(*itr).first]->GetBackendVersion();
+          m_backendHost         = m_clients[(*itr).first]->GetConnectionString();
+        }
+        else
+        {
+          m_backendName         = "";
+          m_backendVersion      = "";
+          m_backendHost         = "";
+          m_backendDiskspace    = "";
+          m_backendTimers       = "";
+          m_backendRecordings   = "";
+          m_backendChannels     = "";
+        }
+        m_infoToggleStart = timeGetTime();
+      }
+    }
+
+    static CStdString backendClients;
+    if (m_clients.size() > 0)
+      backendClients.Format("%u %s %u",m_infoToggleCurrent+1 ,g_localizeStrings.Get(20163), m_clients.size());
+    else
+      backendClients = g_localizeStrings.Get(14023);
+
+    return backendClients;
+  }
+  else if (dwInfo == PVR_TOTAL_DISKSPACE)
+  {
+    long long kBTotal = 0;
+    long long kBUsed  = 0;
+    CLIENTMAPITR itr = m_clients.begin();
+    while (itr != m_clients.end())
+    {
+      long long clientKBTotal = 0;
+      long long clientKBUsed  = 0;
+
+      if (m_clients[(*itr).first]->GetDriveSpace(&clientKBTotal, &clientKBUsed) == PVR_ERROR_NO_ERROR)
+      {
+        kBTotal += clientKBTotal;
+        kBUsed += clientKBUsed;
+      }
+      itr++;
+    }
+    kBTotal /= 1024; // Convert to MBytes
+    kBUsed /= 1024;  // Convert to MBytes
+    m_totalDiskspace.Format("%s %0.f GByte - %s: %0.f GByte", g_localizeStrings.Get(18055), (float) kBTotal / 1024, g_localizeStrings.Get(156), (float) kBUsed / 1024);
+    return m_totalDiskspace;
+  }
+  else if (dwInfo == PVR_NEXT_TIMER)
+  {
+    cPVRTimerInfoTag *next = PVRTimers.GetNextActiveTimer();
+    if (next != NULL)
+    {
+      m_nextTimer.Format("%s %s %s %s", g_localizeStrings.Get(18190)
+                         , next->Start().GetAsLocalizedDate(true)
+                         , g_localizeStrings.Get(18191)
+                         , next->Start().GetAsLocalizedTime("HH:mm", false));
+      return m_nextTimer;
+    }
+  }
+  return "";
+}
+
+/********************************************************************
+/* CPVRManager TranslateIntInfo
+/*
+/* Returns a GUIInfoManager integer value
+/********************************************************************/
+int CPVRManager::TranslateIntInfo(DWORD dwInfo)
+{
+
+  return 0;
+}
+
+/********************************************************************
+/* CPVRManager TranslateBoolInfo
+/*
+/* Returns a GUIInfoManager boolean value
+/********************************************************************/
+bool CPVRManager::TranslateBoolInfo(DWORD dwInfo)
+{
+  if (dwInfo == PVR_IS_RECORDING)
+    return m_isRecording;
+  else if (dwInfo == PVR_HAS_TIMER)
+    return m_hasTimers;
+  else if (dwInfo == PVR_IS_PLAYING_TV)
+    return IsPlayingTV();
+  else if (dwInfo == PVR_IS_PLAYING_RADIO)
+    return IsPlayingRadio();
+  else if (dwInfo == PVR_IS_PLAYING_RECORDING)
+    return IsPlayingRecording();
+
+  return false;
+}
+
+  
 /*************************************************************/
 /** GENERAL FUNCTIONS                                       **/
 /*************************************************************/

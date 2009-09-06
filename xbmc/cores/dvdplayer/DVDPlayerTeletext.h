@@ -31,9 +31,8 @@
 struct PageID 
 {
   PageID() { page=subPage=0; }
-  PageID(int chanId, int p, int s) { set(chanId, p, s); }
-  void set(int chanId, int p, int s) { channelId=chanId; page=p; subPage=s; }
-  int channelId;
+  PageID(int p, int s) { set(p, s); }
+  void set(int p, int s) { page=p; subPage=s; }
   int page;
   int subPage;
 };
@@ -91,7 +90,5 @@ private:
   std::map<long, cTelePage*> m_pageStorage;
   cTelePage *m_TxtPage;
   int m_speed;
-  int m_channel;
   CRITICAL_SECTION m_critSection;
-
 };

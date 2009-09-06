@@ -24,8 +24,6 @@
 #include "DVDPlayer.h"
 #include "DVDPlayerTeletext.h"
 #include "Application.h"
-#include "PVRManager.h"
-#include "PVRChannels.h"
 #include "hamm.h"
 
 using namespace std;
@@ -86,7 +84,6 @@ CDVDTeletextData::CDVDTeletextData()
 , m_messageQueue("teletext")
 , m_TxtPage(NULL)
 {
-  m_channel = -1;
   m_speed = DVD_PLAYSPEED_NORMAL;
 
   InitializeCriticalSection(&m_critSection);
@@ -146,6 +143,9 @@ int CDVDTeletextData::GetTeletextPageCount()
 
 void CDVDTeletextData::ResetTeletextCache()
 {
+  if (m_pageStorage.empty())
+    return;
+
   map<long, cTelePage*>::iterator itr = m_pageStorage.begin();
   while (itr != m_pageStorage.end())
   {
@@ -231,7 +231,10 @@ void CDVDTeletextData::Process()
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, 2000, iPriority);
 
     if (ret == MSGQ_TIMEOUT)
+    {
+      /* Timeout for Teletext is not a bad thing, so we continue without error */
       continue;
+    }
 
     if (MSGQ_IS_ERROR(ret) || ret == MSGQ_ABORT)
     {
@@ -247,17 +250,6 @@ void CDVDTeletextData::Process()
       bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
       uint8_t *Datai       = pPacket->pData;
       int pages            = (pPacket->iSize - 1) / 46;
-      int chan             = -1;
-
-      const cPVRChannelInfoTag* tag = g_PVRManager.GetCurrentPlayingItem()->GetTVChannelInfoTag();
-      if (tag)
-        chan = tag->ChannelID();
-      
-      if (m_channel != chan)
-      {
-        m_channel = chan;
-        ResetTeletextCache();
-      }
   
       /* Is it a ITU-R System B Teletext stream in acc. to EN 300 472 */
       if (Datai[0] >= 0x10 && Datai[0] <= 0x1F) /* data_identifier */
@@ -281,18 +273,28 @@ void CDVDTeletextData::Process()
     {
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
     }
+    else if (pMsg->IsType(CDVDMsg::GENERAL_FLUSH)) // private message sent by (CDVDTeletextData::Flush())
+    {
+      EnterCriticalSection(&m_critSection);
+      ResetTeletextCache();
+      LeaveCriticalSection(&m_critSection);
+    }
     pMsg->Release();
   }
 }
 
 void CDVDTeletextData::OnExit()
 {
-
   CLog::Log(LOGNOTICE, "thread end: data_thread");
 }
 
 void CDVDTeletextData::Flush()
 {
+  /* flush using message as this get's called from dvdplayer thread */
+  /* and any demux packet that has been taken out of queue need to */
+  /* be disposed of before we flush */
+  m_messageQueue.Flush();
+  m_messageQueue.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
 }
 
 void CDVDTeletextData::DecodeTXT(unsigned char* ptr)
@@ -385,7 +387,7 @@ void CDVDTeletextData::DecodeTXT(unsigned char* ptr)
     pgno   = mag8 * 256 + b1;
     subno  = (b2 + b3 * 256) & 0x3f7f;
     
-    m_TxtPage = new cTelePage(PageID(m_channel, pgno, subno), flags, lang, mag);
+    m_TxtPage = new cTelePage(PageID(pgno, subno), flags, lang, mag);
     m_TxtPage->SetLine((int)line,(unsigned char *)ptr);
   }
   else if (line >= 1 && line <= 25)
