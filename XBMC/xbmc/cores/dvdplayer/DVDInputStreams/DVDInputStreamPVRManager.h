@@ -31,7 +31,6 @@
 namespace XFILE {
 class IFile;
 class ILiveTVInterface;
-class ITimeshiftTV;
 class IRecordable;
 }
 
@@ -46,7 +45,7 @@ public:
   virtual void Close();
   virtual int Read(BYTE* buf, int buf_size);
   virtual __int64 Seek(__int64 offset, int whence);
-  virtual bool Pause(double dTime);
+  virtual bool Pause(double dTime) { return false; }
   virtual bool IsEOF();
   virtual __int64 GetLength();
 
@@ -73,7 +72,5 @@ protected:
   XFILE::IFile*             m_pFile;
   XFILE::ILiveTVInterface*  m_pLiveTV;
   XFILE::IRecordable*       m_pRecordable;
-  XFILE::ITimeshiftTV*      m_pTimeshift;
   bool                      m_eof;
-  bool                      m_bPaused;
 };

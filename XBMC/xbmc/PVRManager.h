@@ -112,9 +112,6 @@ public:
   bool RenameBackendChannel(unsigned int index, CStdString &newname);
   bool MoveBackendChannel(unsigned int index, unsigned int newindex);
   bool UpdateBackendChannel(const CFileItem &item);
-  bool PauseLiveStream(bool DoPause, double dTime);
-  int GetTotalTime();
-  int GetStartTime();
   void SetPlayingGroup(int GroupId);
   int GetPlayingGroup();
   void                SetCurrentPlayingProgram(CFileItem& item);
@@ -155,6 +152,8 @@ public:
   bool ChannelSwitch(unsigned int channel);
   bool ChannelUp(unsigned int *newchannel);
   bool ChannelDown(unsigned int *newchannel);
+  int GetTotalTime();
+  int GetStartTime();
 
   /* Stream demux functions */
   bool OpenDemux(PVRDEMUXHANDLE handle);
@@ -227,11 +226,8 @@ private:
   bool                m_timeshiftExt;             /* True if external Timeshift is possible and active */
   bool                m_timeshiftInt;             /* True if internal Timeshift is possible and active */
   DWORD               m_playbackStarted;          /* Time where the playback was started */
-  bool                m_bPaused;                  /* True if stream is paused */
   XFILE::CFile       *m_pTimeshiftFile;           /* File class to read buffer file */
   CPVRTimeshiftRcvr  *m_TimeshiftReceiver;        /* The Thread based Receiver to fill buffer file */
-  DWORD               m_timeshiftTimePause;       /* Time in ms where the stream was paused */
-  int                 m_timeshiftTimeDiff;        /* Difference between current position and true position in sec. */
   __int64             m_timeshiftCurrWrapAround;  /* Bytes readed during current wrap around */
   __int64             m_timeshiftLastWrapAround;  /* Bytes readed during last wrap around */
 };
