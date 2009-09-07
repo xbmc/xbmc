@@ -31,6 +31,8 @@ class CWinEventsWin32 : public CWinEventsBase
 public:
   static bool MessagePump();
   static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+private:
+  static void WindowFromScreenCoords(HWND hWnd, POINT *point);
 };
 
 #endif // WINDOW_EVENTS_WIN32_H

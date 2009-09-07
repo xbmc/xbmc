@@ -56,37 +56,34 @@ void CMouseStat::Cleanup()
 
 void CMouseStat::HandleEvent(XBMC_Event& newEvent)
 {
-  if (newEvent.button.button == XBMC_BUTTON_WHEELUP)
-    UpdateMouseWheel(1);
-  else if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN)
-    UpdateMouseWheel(-1);
-  else
-  {
-    int dx = newEvent.motion.x - m_mouseState.x;
-    int dy = newEvent.motion.y - m_mouseState.y;
-    
-    m_mouseState.dx = dx;
-    m_mouseState.dy = dy;
-    m_mouseState.x  = std::max(0, std::min(m_maxX, m_mouseState.x + dx));
-    m_mouseState.y  = std::max(0, std::min(m_maxY, m_mouseState.y + dy));
+  int dx = newEvent.motion.x - m_mouseState.x;
+  int dy = newEvent.motion.y - m_mouseState.y;
+  
+  m_mouseState.dx = dx;
+  m_mouseState.dy = dy;
+  m_mouseState.x  = std::max(0, std::min(m_maxX, m_mouseState.x + dx));
+  m_mouseState.y  = std::max(0, std::min(m_maxY, m_mouseState.y + dy));
 
-    // Fill in the public members
-    if (newEvent.button.type == XBMC_MOUSEBUTTONDOWN)
-    {
-      if (newEvent.button.button == XBMC_BUTTON_LEFT) m_mouseState.button[MOUSE_LEFT_BUTTON] = true;
-      if (newEvent.button.button == XBMC_BUTTON_RIGHT) m_mouseState.button[MOUSE_RIGHT_BUTTON] = true;
-      if (newEvent.button.button == XBMC_BUTTON_MIDDLE) m_mouseState.button[MOUSE_MIDDLE_BUTTON] = true;
-      if (newEvent.button.button == XBMC_BUTTON_X1) m_mouseState.button[MOUSE_EXTRA_BUTTON1] = true;
-      if (newEvent.button.button == XBMC_BUTTON_X2) m_mouseState.button[MOUSE_EXTRA_BUTTON2] = true;
-    }
-    else if (newEvent.button.type == XBMC_MOUSEBUTTONUP)
-    {
-      if (newEvent.button.button == XBMC_BUTTON_LEFT) m_mouseState.button[MOUSE_LEFT_BUTTON] = false;
-      if (newEvent.button.button == XBMC_BUTTON_RIGHT) m_mouseState.button[MOUSE_RIGHT_BUTTON] = false;
-      if (newEvent.button.button == XBMC_BUTTON_MIDDLE) m_mouseState.button[MOUSE_MIDDLE_BUTTON] = false;
-      if (newEvent.button.button == XBMC_BUTTON_X1) m_mouseState.button[MOUSE_EXTRA_BUTTON1] = false;
-      if (newEvent.button.button == XBMC_BUTTON_X2) m_mouseState.button[MOUSE_EXTRA_BUTTON2] = false;
-    }
+  // Fill in the public members
+  if (newEvent.button.type == XBMC_MOUSEBUTTONDOWN)
+  {
+    if (newEvent.button.button == XBMC_BUTTON_LEFT) m_mouseState.button[MOUSE_LEFT_BUTTON] = true;
+    if (newEvent.button.button == XBMC_BUTTON_RIGHT) m_mouseState.button[MOUSE_RIGHT_BUTTON] = true;
+    if (newEvent.button.button == XBMC_BUTTON_MIDDLE) m_mouseState.button[MOUSE_MIDDLE_BUTTON] = true;
+    if (newEvent.button.button == XBMC_BUTTON_X1) m_mouseState.button[MOUSE_EXTRA_BUTTON1] = true;
+    if (newEvent.button.button == XBMC_BUTTON_X2) m_mouseState.button[MOUSE_EXTRA_BUTTON2] = true;
+    if (newEvent.button.button == XBMC_BUTTON_WHEELUP) m_mouseState.dz = 1;
+    if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN) m_mouseState.dz = -1;
+  }
+  else if (newEvent.button.type == XBMC_MOUSEBUTTONUP)
+  {
+    if (newEvent.button.button == XBMC_BUTTON_LEFT) m_mouseState.button[MOUSE_LEFT_BUTTON] = false;
+    if (newEvent.button.button == XBMC_BUTTON_RIGHT) m_mouseState.button[MOUSE_RIGHT_BUTTON] = false;
+    if (newEvent.button.button == XBMC_BUTTON_MIDDLE) m_mouseState.button[MOUSE_MIDDLE_BUTTON] = false;
+    if (newEvent.button.button == XBMC_BUTTON_X1) m_mouseState.button[MOUSE_EXTRA_BUTTON1] = false;
+    if (newEvent.button.button == XBMC_BUTTON_X2) m_mouseState.button[MOUSE_EXTRA_BUTTON2] = false;
+    if (newEvent.button.button == XBMC_BUTTON_WHEELUP) m_mouseState.dz = 0;
+    if (newEvent.button.button == XBMC_BUTTON_WHEELDOWN) m_mouseState.dz = 0;
   }
   UpdateInternal();
 }
@@ -96,7 +93,7 @@ void CMouseStat::UpdateInternal()
 {
   uint32_t now = timeGetTime();
   // update our state from the mouse device
-  if (HasMoved())
+  if (HasMoved() || m_mouseState.dz)
     SetActive();
 
   // Perform the click mapping (for single + double click detection)
@@ -216,12 +213,6 @@ void CMouseStat::UpdateMouseWheel(char dir)
   m_mouseState.dz = dir;
   SetActive();
 }
-
-void CMouseStat::ResetMouseWheel()
-{
-  m_mouseState.dz = 0;
-}
-
 
 void CMouseStat::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point)
 {
