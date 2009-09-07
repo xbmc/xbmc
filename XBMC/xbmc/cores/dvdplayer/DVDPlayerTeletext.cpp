@@ -99,8 +99,10 @@ CDVDTeletextData::~CDVDTeletextData()
 
 bool CDVDTeletextData::CheckStream(CDVDStreamInfo &hints, int type)
 {
+#if (! defined USE_EXTERNAL_FFMPEG)
   if (hints.codec == CODEC_ID_EBU_TELETEXT && type == DVDPLAYERDATA_TELETEXT)
     return true;
+#endif
 
   return false;
 }
