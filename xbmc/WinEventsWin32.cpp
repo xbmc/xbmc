@@ -453,10 +453,11 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(0);
     case WM_SETCURSOR:
       if (HTCLIENT == LOWORD(lParam))
+      {
         SetCursor(NULL);
-      else
-        SetCursor(LoadCursor(NULL, IDC_ARROW));
-      return(1);
+        return(1);
+      }
+      break;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
