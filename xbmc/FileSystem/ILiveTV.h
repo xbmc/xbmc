@@ -36,13 +36,6 @@ public:
   virtual bool           UpdateItem(CFileItem& item)=0;
 };
 
-class ITimeshiftTV
-{
-public:
-  virtual ~ITimeshiftTV() {}
-  virtual bool SendPause(bool DoPause, double dTime)=0;
-};
-
 class IRecordable
 {
 public:
