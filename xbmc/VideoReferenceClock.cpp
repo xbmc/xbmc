@@ -398,6 +398,8 @@ void CVideoReferenceClock::RunGLX()
         return;
       }
 
+      m_glXGetVideoSyncSGI(&PrevVblankCount);
+      
       IsReset = true;
     }
     PrevVblankCount = VblankCount;
