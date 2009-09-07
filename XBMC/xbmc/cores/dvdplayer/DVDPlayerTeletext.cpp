@@ -108,14 +108,16 @@ bool CDVDTeletextData::CheckStream(CDVDStreamInfo &hints, int type)
 bool CDVDTeletextData::OpenStream(CDVDStreamInfo &hints, int type)
 {
   m_messageQueue.Init();
-  
+
+#if (! defined USE_EXTERNAL_FFMPEG)
   if (hints.codec == CODEC_ID_EBU_TELETEXT && type == DVDPLAYERDATA_TELETEXT)
   {
     CLog::Log(LOGNOTICE, "Creating teletext data thread");
     Create();
     return true;
   }
-  
+#endif
+
   return false;
 }
 

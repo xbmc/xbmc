@@ -3,7 +3,7 @@ things to do:
 - Handle Multifeed channel
 - Read RDS information from Radio channels
 - RaSS-Radiotext
-- Seeking in timeshift
+DONE - Seeking in timeshift
 - EPG update
 - Timer update
 - Recordings update
@@ -36,6 +36,8 @@ things to do:
 - Select TV Window after XBMC start
 - Add Picture in Picture if possible
 - Use Webservices with TV Channels (see IFA 2009)
+- Fix channel switching over HD stream, it crash XBMC
+- Fix playback of recordings if EPG scan is running, XBMC freezes
 
 and a lot more
 

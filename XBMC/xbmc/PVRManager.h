@@ -107,14 +107,8 @@ public:
   int GetNextGroupID(int current_group_id);
   CStdString GetGroupName(int GroupId);
   int GetFirstChannelForGroupID(int GroupId, bool radio = false);
-  bool AddBackendChannel(const CFileItem &item);
-  bool DeleteBackendChannel(unsigned int index);
-  bool RenameBackendChannel(unsigned int index, CStdString &newname);
-  bool MoveBackendChannel(unsigned int index, unsigned int newindex);
-  bool UpdateBackendChannel(const CFileItem &item);
   void SetPlayingGroup(int GroupId);
   int GetPlayingGroup();
-  void                SetCurrentPlayingProgram(CFileItem& item);
   void                SyncInfo(); // synchronize InfoManager related stuff
 
 
@@ -140,12 +134,16 @@ public:
   bool CanInstantRecording();
   bool IsRecordingOnPlayingChannel();
   bool StartRecordingOnPlayingChannel(bool bOnOff);
+  void SetCurrentPlayingProgram(CFileItem& item);
 
   /* Stream reading functions */
   bool OpenLiveStream(unsigned int channel, bool radio = false);
   bool OpenRecordedStream(unsigned int recording);
   void CloseStream();
   int ReadStream(BYTE* buf, int buf_size);
+  bool SeekTimeRequired();
+  int SeekTimeStep(bool bPlus, bool bLargeStep, __int64 curTime);
+  bool SeekTime(int iTimeInMsec, int *iRetTimeInMsec);
   __int64 SeekStream(__int64 pos, int whence=SEEK_SET);
   __int64 LengthStream(void);
   bool UpdateItem(CFileItem& item);

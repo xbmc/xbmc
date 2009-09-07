@@ -1447,9 +1447,11 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   {
     CLog::Log(LOGWARNING, "CDVDPlayer::CheckContinuity - stream forward jump detected (%d)"
                         , current.type);
-    /* normally don't need to sync players since video player will keep playing at normal fps */
-    /* after a discontinuity */
-    //SyncronizePlayers(dts, pts, MSGWAIT_ALL);
+    if (m_dvdPlayerVideo.IsStalled() && m_CurrentVideo.dts != DVD_NOPTS_VALUE)
+      SyncronizePlayers(SYNCSOURCE_VIDEO);
+    else if (m_dvdPlayerAudio.IsStalled() && m_CurrentAudio.dts != DVD_NOPTS_VALUE)
+      SyncronizePlayers(SYNCSOURCE_AUDIO);
+
     m_CurrentAudio.inited = false;
     m_CurrentVideo.inited = false;
     m_CurrentSubtitle.inited = false;
@@ -2071,7 +2073,23 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
   }
 
   __int64 seek;
-  if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
+  bool accurate = false;
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  {
+    CDVDInputStreamPVRManager* pStream = (CDVDInputStreamPVRManager*)m_pInputStream;
+    seek     = GetTime();
+    accurate = true;
+
+    int step = pStream->SeekTimeStep(bPlus, bLargeStep, seek);
+    if (step <= 0)
+      return;
+
+    if (bPlus)
+      seek += step;
+    else
+      seek -= step;
+  }
+  else if (g_advancedSettings.m_videoUseTimeSeeking && GetTotalTime() > 2*g_advancedSettings.m_videoTimeSeekForwardBig)
   {
     if (bLargeStep)
       seek = bPlus ? g_advancedSettings.m_videoTimeSeekForwardBig : g_advancedSettings.m_videoTimeSeekBackwardBig;
@@ -2134,7 +2152,7 @@ void CDVDPlayer::Seek(bool bPlus, bool bLargeStep)
     }
   }
 
-  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, false, restore));
+  m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, !bPlus, true, accurate, restore));
   SyncronizeDemuxer(100);
   m_tmLastSeek = time(NULL);
 }
