@@ -38,9 +38,9 @@ CWinSystemWin32DX::~CWinSystemWin32DX()
 
 }
 
-bool CWinSystemWin32DX::CreateNewWindow(CStdString name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemWin32DX::CreateNewWindow(CStdString name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  CWinSystemWin32::CreateNewWindow(name, width, height, fullScreen, userFunction);
+  CWinSystemWin32::CreateNewWindow(name, fullScreen, res, userFunction);
 
   if(m_hWnd == NULL)
     return false;
@@ -62,9 +62,9 @@ bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
   return true;
 }
 
-bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {
-  CWinSystemWin32::SetFullScreen(fullScreen, screen, width, height, blankOtherDisplays, alwaysOnTop);
+  CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays, alwaysOnTop);
   CRenderSystemDX::ResetRenderSystem(width, height);  
 
   return true;

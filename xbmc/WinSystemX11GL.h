@@ -31,9 +31,9 @@ class CWinSystemX11GL : public CWinSystemX11, public CRenderSystemGL
 public:
   CWinSystemX11GL();
   virtual ~CWinSystemX11GL();
-  virtual bool CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction);
+  virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop);
+  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop);
 
   virtual bool IsExtSupported(const char* extension);
 
