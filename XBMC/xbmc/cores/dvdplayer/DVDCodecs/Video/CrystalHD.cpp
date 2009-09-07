@@ -561,8 +561,19 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   CMPCDecodeBuffer* pBuffer = AllocBuffer();
   if (!pBuffer) // No free pre-allocated buffers so make one
   {
-    pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
-    CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, m_BufferCount, pBuffer->GetSize());    
+    // why are we getting buffer acqumulation?
+    // maybe should throttle demuxer feed into DtsProcInput?
+    // don't let them get more than 6 deep less we overrun DIL DMA buffers (8).
+    while(m_ReadyList.Count() > 6) {
+      AtomicDecrement(&m_BufferCount);
+      delete m_ReadyList.Pop();
+    }
+    pBuffer = AllocBuffer();
+    if (!pBuffer) // No free pre-allocated buffers so make one
+    {
+      pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
+      CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, m_BufferCount, pBuffer->GetSize());    
+    }
   }
 
   // Set-up output struct
