@@ -29,6 +29,7 @@
 #include "FileItem.h"
 #include "GUISettings.h"
 #include "Settings.h"
+#include "log.h"
 
 using namespace XFILE;
 

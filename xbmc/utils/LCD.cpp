@@ -24,6 +24,8 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
+#include "CharsetConverter.h"
+#include "log.h"
 
 using namespace std;
 

@@ -31,6 +31,8 @@ struct SScraperInfo;
 
 #define PROGRAM_DATABASE_NAME "MyPrograms6.db"
 
+class CFileItem;
+
 class CProgramDatabase : public CDatabase
 {
 public:

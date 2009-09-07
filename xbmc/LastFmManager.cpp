@@ -39,6 +39,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "GUISettings.h"
+#include "GUIUserMessages.h"
 #include "PlayList.h"
 #include "Crc32.h"
 #include "AdvancedSettings.h"

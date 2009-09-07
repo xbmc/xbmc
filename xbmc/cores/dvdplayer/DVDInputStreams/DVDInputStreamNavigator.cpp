@@ -27,6 +27,7 @@
 #include "DVDStateSerializer.h"
 #include "GUISettings.h"
 #include "LangInfo.h"
+#include "utils/log.h"
 #ifdef __APPLE__
 #include "CocoaInterface.h"
 #endif

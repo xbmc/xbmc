@@ -22,7 +22,6 @@
  */
 
 #include <stdio.h>
-#include "FileSystem/File.h"
 
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
@@ -46,6 +45,10 @@
 #else
 #define ATTRIB_LOG_FORMAT
 #endif
+
+namespace XFILE {
+  class CFile;
+}
 
 class CLog
 {

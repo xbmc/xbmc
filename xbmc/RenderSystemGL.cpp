@@ -27,6 +27,7 @@
 #include "GraphicContext.h"
 #include "AdvancedSettings.h"
 #include "RenderSystemGL.h"
+#include "utils/log.h"
 
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
@@ -155,9 +156,9 @@ bool CRenderSystemGL::ClearBuffers(float r, float g, float b, float a)
   return true;
 }
 
-bool CRenderSystemGL::IsExtSupported(CStdString strExt)
+bool CRenderSystemGL::IsExtSupported(const char* extension)
 {
-  return true;
+  return false;
 }
 
 static __int64 abs(__int64 a)
@@ -232,6 +233,9 @@ void CRenderSystemGL::SetVSync(bool enable)
 
   SetVSyncImpl(enable);
   
+  if (!enable)
+    return;
+
   if (g_advancedSettings.m_ForcedSwapTime != 0.0)
   {
     /* some hardware busy wait on swap/glfinish, so we must manually sleep to avoid 100% cpu */

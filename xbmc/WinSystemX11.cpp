@@ -28,6 +28,11 @@
 #include "SpecialProtocol.h"
 #include "Settings.h"
 #include "Texture.h"
+#include "utils/log.h"
+#include "linux/XRandR.h"
+#include <vector>
+
+using namespace std;
 
 static int doubleVisAttributes[] =
 {
@@ -71,9 +76,6 @@ bool CWinSystemX11::InitWindowSystem()
     SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    // Enable vertical sync to avoid any tearing.
-    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, 1);  
-
     return CWinSystemBase::InitWindowSystem();
   }
   else
@@ -96,27 +98,19 @@ bool CWinSystemX11::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemX11::CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  m_nWidth = width;
-  m_nHeight = height;
-  m_bFullScreen = fullScreen;
+  if(!SetFullScreen(fullScreen, res, false, false))
+    return false;
 
-  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, SDL_OPENGL | (m_bFullScreen ? 0 : SDL_RESIZABLE))))
-  {
-    RefreshGlxContext();
-
-    CTexture iconTexture;
-    iconTexture.LoadFromFile("special://xbmc/media/icon.png");
+  CTexture iconTexture;
+  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
     
-    SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
-    SDL_WM_SetCaption("XBMC Media Center", NULL);
+  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
+  SDL_WM_SetCaption("XBMC Media Center", NULL);
 
-    m_bWindowCreated = true;
-    return true;
-  }
-
-  return false;
+  m_bWindowCreated = true;
+  return true;
 }
 
 bool CWinSystemX11::DestroyWindow()
@@ -126,39 +120,137 @@ bool CWinSystemX11::DestroyWindow()
     
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  int options = SDL_OPENGL | (m_bFullScreen ? 0 : SDL_RESIZABLE);
-;
+  if(m_nWidth  == newWidth
+  && m_nHeight == newHeight)
+    return true;
 
-  m_nWidth = newWidth;
+  m_nWidth  = newWidth;
   m_nHeight = newHeight;
-  
+
+  int options = SDL_OPENGL;
   if (m_bFullScreen)
     options |= SDL_FULLSCREEN;
+  else
+    options |= SDL_RESIZABLE;
 
   if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
+  {
+    RefreshGlxContext();
     return true;
-  
+  }
+
   return false;
 }
 
-bool CWinSystemX11::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
-{  
-  m_nWidth = width;
-  m_nHeight = height;
+bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
+{
+  m_nWidth      = res.iWidth;
+  m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
-  return ResizeWindow(m_nWidth, m_nHeight, -1, -1);
+#if defined(HAS_XRANDR)
+
+  if(m_bFullScreen)
+  {
+    XOutput out;
+    XMode mode;
+    out.name = res.strOutput;
+    mode.w   = res.iWidth;
+    mode.h   = res.iHeight;
+    mode.hz  = res.fRefreshRate;
+    mode.id  = res.strId;
+    g_xrandr.SetMode(out, mode);
+  }
+  else
+    g_xrandr.RestoreState();
+
+#endif
+
+  int options = SDL_OPENGL;
+  if (m_bFullScreen)
+    options |= SDL_FULLSCREEN;
+  else
+    options |= SDL_RESIZABLE;
+
+  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
+  {
+    RefreshGlxContext();
+    return true;
+  }
+
+  return false;
 }
 
 void CWinSystemX11::UpdateResolutions()
 {
   CWinSystemBase::UpdateResolutions();
 
-  int x11screen = DefaultScreen(m_dpy);
-  int w = DisplayWidth(m_dpy, x11screen);
-  int h = DisplayHeight(m_dpy, x11screen);
-	
-  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0f);
+
+#if defined(HAS_XRANDR)
+  {
+    XOutput out  = g_xrandr.GetCurrentOutput();
+    XMode   mode = g_xrandr.GetCurrentMode(out.name);
+    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
+    g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
+    g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
+  }
+#else
+  {
+    int x11screen = DefaultScreen(m_dpy);
+    int w = DisplayWidth(m_dpy, x11screen);
+    int h = DisplayHeight(m_dpy, x11screen);
+    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0);
+  }
+#endif
+
+
+#if defined(HAS_XRANDR)
+
+  CLog::Log(LOGINFO, "Available videomodes (xrandr):");
+  vector<XOutput>::iterator outiter;
+  vector<XOutput> outs;
+  outs = g_xrandr.GetModes();
+  CLog::Log(LOGINFO, "Number of connected outputs: %"PRIdS"", outs.size());
+  string modename = "";
+
+  for (outiter = outs.begin() ; outiter != outs.end() ; outiter++)
+  {
+    XOutput out = *outiter;
+    vector<XMode>::iterator modeiter;
+    CLog::Log(LOGINFO, "Output '%s' has %"PRIdS" modes", out.name.c_str(), out.modes.size());
+
+    for (modeiter = out.modes.begin() ; modeiter!=out.modes.end() ; modeiter++)
+    {
+      XMode mode = *modeiter;
+      CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
+                mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
+      RESOLUTION_INFO res;
+      res.iWidth  = mode.w;
+      res.iHeight = mode.h;
+      if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
+        res.fPixelRatio = ((float)out.wmm/(float)mode.w) / (((float)out.hmm/(float)mode.h));
+      else
+        res.fPixelRatio = 1.0f;
+
+      CLog::Log(LOGINFO, "Pixel Ratio: %f", res.fPixelRatio);
+
+      res.strMode.Format("%s: %s @ %.2fHz", out.name.c_str(), mode.name.c_str(), mode.hz);
+      res.strOutput    = out.name;
+      res.strId        = mode.id;
+      res.iSubtitles   = (int)(0.95*mode.h);
+      res.fRefreshRate = mode.hz;
+
+      if ((float)mode.w / (float)mode.h >= 1.59)
+        res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+      else
+        res.dwFlags = 0;
+
+      g_graphicsContext.ResetOverscan(res);
+      g_settings.m_ResInfo.push_back(res);
+    }
+  }
+#endif
+
 }
 
 bool CWinSystemX11::RefreshGlxContext()
@@ -166,56 +258,66 @@ bool CWinSystemX11::RefreshGlxContext()
   bool retVal = false;
   SDL_SysWMinfo info;
   SDL_VERSION(&info.version);
-  if (SDL_GetWMInfo(&info) > 0)
+  if (SDL_GetWMInfo(&info) <= 0)
   {
-    GLXFBConfig *fbConfigs  = NULL;
-    XVisualInfo *vInfo      = NULL;
-    int availableFBs        = 0;
-    m_glWindow = info.info.x11.window;
+    CLog::Log(LOGERROR, "Failed to get window manager info from SDL");
+    return false;
+  }
 
-    // query compatible framebuffers based on double buffered attributes
-    if ((fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
+  if(m_glWindow == info.info.x11.window && m_glContext)
+  {
+    CLog::Log(LOGERROR, "GLX: Same window as before, refreshing context");
+    glXMakeCurrent(m_dpy, None, NULL);
+    glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
+    return true;
+  }
+
+  GLXFBConfig *fbConfigs  = NULL;
+  XVisualInfo *vInfo      = NULL;
+  int availableFBs        = 0;
+  m_glWindow = info.info.x11.window;
+
+  // query compatible framebuffers based on double buffered attributes
+  if (!(fbConfigs = glXChooseFBConfig(m_dpy, DefaultScreen(m_dpy), doubleVisAttributes, &availableFBs)))
+  {
+    CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+    return false;
+  }
+
+  for (int i = 0; i < availableFBs; i++)
+  {
+    // obtain the xvisual from the first compatible framebuffer
+    vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
+    if (vInfo)
     {
-      for (int i = 0; i < availableFBs; i++)
+      if (vInfo->depth == 24)
       {
-        // obtain the xvisual from the first compatible framebuffer
-        vInfo = glXGetVisualFromFBConfig(m_dpy, fbConfigs[i]);
-        if (vInfo)
-        {
-          if (vInfo->depth == 24)
-          {
-            CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
-            break;
-          }
-          XFree(vInfo);
-          vInfo = NULL;
-        }
+        CLog::Log(LOGNOTICE, "Using fbConfig[%i]",i);
+        break;
       }
+      XFree(vInfo);
+      vInfo = NULL;
+    }
+  }
 
-      if (vInfo) 
-      {
-        if (m_glContext)
-          glXDestroyContext(m_dpy, m_glContext);
+  if (vInfo) 
+  {
+    if (m_glContext)
+      glXDestroyContext(m_dpy, m_glContext);
 
-        if ((m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
-        {
-          // make this context current
-          glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
-          retVal = true;
-        }
-        else
-          CLog::Log(LOGERROR, "GLX Error: Could not create context");
-        XFree(vInfo);
-      }
-      else
-        CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
-      XFree(fbConfigs);
+    if ((m_glContext = glXCreateContext(m_dpy, vInfo, NULL, True)))
+    {
+      // make this context current
+      glXMakeCurrent(m_dpy, m_glWindow, m_glContext);
+      retVal = true;
     }
     else
-      CLog::Log(LOGERROR, "GLX Error: No compatible framebuffers found");
+      CLog::Log(LOGERROR, "GLX Error: Could not create context");
+    XFree(vInfo);
   }
   else
-    CLog::Log(LOGERROR, "Failed to get window manager info from SDL");
+    CLog::Log(LOGERROR, "GLX Error: vInfo is NULL!");
+  XFree(fbConfigs);
 
   return retVal;
 }

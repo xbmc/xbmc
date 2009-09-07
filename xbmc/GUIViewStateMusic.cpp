@@ -30,6 +30,7 @@
 #include "FileItem.h"
 #include "Util.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 #include "FileSystem/MusicDatabaseDirectory.h"
 #include "FileSystem/VideoDatabaseDirectory.h"

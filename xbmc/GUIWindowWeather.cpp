@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowWeather.h"
 #include "GUIImage.h"
 #include "utils/Weather.h"
@@ -28,6 +29,7 @@
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
 #include "LangInfo.h"
+#include "utils/log.h"
 
 #define CONTROL_BTNREFRESH             2
 #define CONTROL_SELECTLOCATION         3

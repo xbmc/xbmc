@@ -20,7 +20,7 @@
 
 #include "stdafx.h"
 #include "Event.h"
-
+#include "log.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction

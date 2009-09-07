@@ -34,6 +34,7 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace DIRECTORY;
 using namespace std;

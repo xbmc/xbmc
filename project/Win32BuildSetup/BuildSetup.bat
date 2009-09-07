@@ -1,8 +1,10 @@
 @ECHO OFF
 rem ----Usage----
-rem BuildSetup [gl|dx]
+rem BuildSetup [gl|dx] [clean|noclean]
 rem gl for opengl build (default)
 rem dx for directx build
+rem clean to force a full rebuild
+rem noclean to force a build without clean
 CLS
 COLOR 1B
 TITLE XBMC for Windows Build Script
@@ -14,9 +16,12 @@ rem If you get an error that Visual studio was not found, SET your path for VSNE
 rem -------------------------------------------------------------
 rem	CONFIG START
 SET target=gl
+SET buildmode=ask
 FOR %%b in (%1, %2, %3, %4) DO (
 	IF %%b==dx SET target=dx
 	IF %%b==gl SET target=gl
+	IF %%b==clean SET buildmode=clean
+	IF %%b==noclean SET buildmode=noclean
 )
 SET buildconfig=Release (OpenGL)
 IF %target%==dx SET buildconfig=Release (DirectX)
@@ -59,18 +64,10 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   ECHO       ±≤€€€€€€€€€€€€€€€€€€€€€€€€€€€€€≤€≤≤ﬂﬂﬂﬂ
   ECHO        ≤≤€€€€€€€€€€€€€€€€€€≤€≤≤ﬂﬂﬂﬂ
   ECHO         ﬂ≤€€€€≤€≤≤≤ﬂﬂﬂﬂﬂﬂ
-  rem ECHO ------------------------------------------------------------
-  rem ECHO XBMC prepare menu
-  rem ECHO ------------------------------------------------------------
-  rem ECHO [1] Build XBMC XBE     ( for XBOX use )
-  rem ECHO [2] Build XBMC_WIN32   ( for Windows use)
-  rem ECHO ------------------------------------------------------------
-  rem set /P XBMC_COMPILE_ANSWER=Please enter the number you want to build! [1/2]:
-  rem if /I %XBMC_COMPILE_ANSWER% EQU 1 goto XBE_COMPILE
-  rem if /I %XBMC_COMPILE_ANSWER% EQU 2 goto EXE_COMPILE
   goto EXE_COMPILE
 
 :EXE_COMPILE
+  IF %buildmode%==clean goto COMPILE_EXE
   rem ---------------------------------------------
   rem	check for existing xbe
   rem ---------------------------------------------
@@ -80,6 +77,7 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   goto COMPILE_EXE
 
 :EXE_EXIST
+  IF %buildmode%==noclean goto COMPILE_NO_CLEAN_EXE
   ECHO ------------------------------------------------------------
   ECHO Found a previous Compiled WIN32 EXE!
   ECHO [1] a NEW EXE will be compiled for the BUILD_WIN32

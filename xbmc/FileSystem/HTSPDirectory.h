@@ -25,6 +25,7 @@
 #include "utils/Event.h"
 #include "URL.h"
 #include "HTSPSession.h"
+#include "boost/shared_ptr.hpp"
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 

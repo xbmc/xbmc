@@ -20,9 +20,10 @@
  */
 
 #include "stdafx.h"
-#include "../../Util.h"
+#include "Util.h"
 #include "DVDTSCorrection.h"
 #include "DVDClock.h"
+#include "utils/log.h"
 
 using namespace std;
 

@@ -13,9 +13,11 @@
 #include "AdvancedSettings.h"
 #include "GUIWindowManager.h"
 #include "Application.h"
+#include "GUIUserMessages.h"
 #include "GUIVisualisationControl.h"
 #include "GUIImage.h"
 #include "cores/dvdplayer/DVDPlayer.h"
+#include "utils/log.h"
 
 #include "karaokewindowbackground.h"
 

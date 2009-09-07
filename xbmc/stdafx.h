@@ -25,37 +25,8 @@
  *
  */
 
-#define XBMC_MAX_PATH 1024 // normal max path is 260, but smb shares and the like can be longer
-
-#define DEBUG_MOUSE
-#define DEBUG_KEYBOARD
 #include "system.h"
-#include "gui3d.h"
-
-#include <vector>
-#include <list>
-#include <map>
-#include <set>
-#include <memory>
-#include <queue>
-#include "StdString.h"
-
-#include "utils/log.h"
-#include "utils/CharsetConverter.h"
-
-#include "ApplicationMessenger.h"
-
-// Often used
-#include "GUIUserMessages.h"
-
-#undef GetFreeSpace
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
 #define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
-
-#if defined(_MSC_VER) && _MSC_VER < 1500 //vs2008 and up already has strnlen, libsmb needs this function
-extern "C" {
-  size_t strnlen(const char *s, size_t n);
-}
-#endif

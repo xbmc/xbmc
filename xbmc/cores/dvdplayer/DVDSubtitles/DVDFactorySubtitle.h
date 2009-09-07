@@ -21,6 +21,9 @@
  *
  */
 
+#include <string>
+#include <vector>
+
 class CDVDSubtitleParser;
 class CDVDSubtitleStream;
 

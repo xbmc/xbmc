@@ -22,6 +22,9 @@
  */
 
 #include "InfoLoader.h"
+#include "StdString.h"
+
+#include <map>
 
 class TiXmlElement;
 

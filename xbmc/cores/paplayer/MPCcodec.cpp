@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "MPCcodec.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 // Callbacks for file reading

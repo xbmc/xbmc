@@ -21,7 +21,10 @@
  *
  */
 
+#include "StdString.h"
 #include "lib/sqLite/sqlitedataset.h"
+
+#include <memory>
 
 class CDatabase
 {

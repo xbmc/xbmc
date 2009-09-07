@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 08/21/2009-->
+<!--Date of translation: 08/26/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22290-->
+<!--Based on english strings version 22423-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -1944,6 +1944,9 @@
   <string id="22043">μαύρο/άσπρο</string>
   <string id="23000">Επέκταση καιρού</string>
   <string id="23001">- Ρυθμίσεις επέκτασης</string>
+  <string id="23100">Ενεργός εξωτερικός αναπαραγωγέας</string>
+  <string id="23101">Πιέστε το 'Εντάξει' για να τερματίσετε τον αναπαραγωγέα</string>
+  <string id="23104">Πιέστε το 'Εντάξει' όταν η αναπαραγωγή ολοκληρωθεί</string>
   <string id="29800">Λειτουργία συλλογής</string>
   <string id="29801">Διάταξη πληκτρολογίου QWERTY</string>
   <string id="29802">Σε λειτουργία η διέλευση ήχου</string>

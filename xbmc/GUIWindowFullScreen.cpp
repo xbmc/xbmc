@@ -44,6 +44,7 @@
 #include "GUISettings.h"
 #include "MouseStat.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 #include <stdio.h>
 

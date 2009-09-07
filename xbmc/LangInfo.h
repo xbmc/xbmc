@@ -20,6 +20,10 @@
  *
  */
 
+#include "StdString.h"
+
+#include <map>
+
 class CLangInfo
 {
 public:

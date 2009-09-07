@@ -4,6 +4,7 @@
 #include "VTPSession.h"
 #include "Util.h"
 #include "URL.h"
+#include "utils/log.h"
 
 #ifdef _LINUX
 #define SD_BOTH SHUT_RDWR

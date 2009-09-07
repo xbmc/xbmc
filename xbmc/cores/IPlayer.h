@@ -54,6 +54,7 @@ public:
   bool    video_only; /* player is not allowed to play audio streams, video streams only */
 };
 
+class CFileItem;
 
 class IPlayer
 {

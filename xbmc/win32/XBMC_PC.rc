@@ -90,58 +90,6 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (New Zealand) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENZ)
-#ifdef _WIN32
-LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_NZ
-#pragma code_page(1252)
-#endif //_WIN32
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDR_MENU MENU 
-BEGIN
-    POPUP "Skin"
-    BEGIN
-        POPUP "Resolution"
-        BEGIN
-            MENUITEM "PAL 4x3",                     ID_RESOLUTION_PAL4X3
-            MENUITEM "PAL 16x9",                    ID_RESOLUTION_PAL16X9
-            MENUITEM "NTSC 4x3",                    ID_RESOLUTION_NTSC4X3
-            MENUITEM "NTSC 16x9",                   ID_RESOLUTION_NTSC16X9
-            MENUITEM "720p",                        ID_RESOLUTION_720P
-            MENUITEM "1080i",                       ID_RESOLUTION_1080I
-        END
-        MENUITEM SEPARATOR
-        MENUITEM "Reload",                      ID_SKIN_RELOAD
-        MENUITEM "Activate Window...",          ID_SKIN_ACTIVATEWINDOW
-        MENUITEM SEPARATOR
-        POPUP "Resize Window"
-        BEGIN
-            MENUITEM "To pixel size",               ID_RESIZEWINDOW_TOPIXELSIZE
-
-            MENUITEM "To aspect ratio",             ID_RESIZEWINDOW_TOASPECTRATIO
-
-        END
-    END
-    POPUP "Settings"
-    BEGIN
-        MENUITEM "Mouse",                       ID_SETTINGS_MOUSE, CHECKED
-    END
-    POPUP "Execute"
-    BEGIN
-        MENUITEM "Execute Builtin...",          ID_EXECUTE_BUILTIN
-        MENUITEM SEPARATOR
-        MENUITEM "Quit",                        ID_EXECUTE_QUIT
-    END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
 //
 // Icon
 //
@@ -149,44 +97,6 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_MAIN_ICON           ICON                    "xbmc.ico"
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_ACTIVATE_WINDOW DIALOGEX 0, 0, 186, 47
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | 
-    WS_CAPTION | WS_SYSMENU
-CAPTION "Enter Window Name or ID"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,72,26,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,129,26,50,14
-    EDITTEXT        IDC_EDIT1,7,7,172,14,ES_AUTOHSCROLL
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
-BEGIN
-    IDD_ACTIVATE_WINDOW, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 179
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 40
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-#endif    // English (New Zealand) resources
-/////////////////////////////////////////////////////////////////////////////
 
 
 

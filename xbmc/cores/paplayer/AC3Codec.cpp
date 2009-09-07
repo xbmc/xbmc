@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "AC3Codec.h"
+#include "utils/log.h"
 
 #ifdef HAS_AC3_CODEC
 

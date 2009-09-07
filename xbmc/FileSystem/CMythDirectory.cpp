@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 extern "C" {
 #include "lib/libcmyth/cmyth.h"

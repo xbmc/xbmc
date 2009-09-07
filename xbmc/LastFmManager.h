@@ -20,6 +20,7 @@
  *
  */
 
+#include "utils/CriticalSection.h"
 #include "utils/Thread.h"
 #include "PlayListPlayer.h"
 

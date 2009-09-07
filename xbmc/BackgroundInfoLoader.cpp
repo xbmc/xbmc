@@ -24,6 +24,7 @@
 #include "FileItem.h"
 #include "AdvancedSettings.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace std;
 

@@ -20,6 +20,7 @@
 
 #include "stdafx.h"
 #include "CriticalSection.h"
+#include "utils/log.h"
 
 #define SAFELY(expr)                                   \
 {                                                      \

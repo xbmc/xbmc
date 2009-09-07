@@ -20,6 +20,7 @@
  */
  
 #include "stdafx.h"
+#include "utils/log.h"
 #include "dll_util.h"
 
 #ifdef _cplusplus

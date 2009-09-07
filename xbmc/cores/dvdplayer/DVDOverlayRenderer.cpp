@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "utils/log.h"
 #include "DVDOverlayRenderer.h"
 #include "DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"

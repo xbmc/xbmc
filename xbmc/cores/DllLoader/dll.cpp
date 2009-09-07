@@ -27,6 +27,7 @@
 #include "dll_util.h"
 #include <climits>
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/log.h"
 
 #define DEFAULT_DLLPATH "special://xbmc/system/players/mplayer/codecs/"
 #define HIGH_WORD(a) ((uintptr_t)(a) >> 16)

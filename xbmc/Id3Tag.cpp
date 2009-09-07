@@ -26,6 +26,10 @@
 #include "Picture.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
+#include "utils/CharsetConverter.h"
+#include "utils/log.h"
+
+#include <set>
 
 using namespace std;
 using namespace MUSIC_INFO;

@@ -25,6 +25,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;

@@ -26,6 +26,7 @@
 #include "Application.h"
 
 #include "utils/Network.h"
+#include "utils/log.h"
 #include "UPnP.h"
 #include "FileSystem/UPnPVirtualPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
@@ -47,6 +48,7 @@
 #include "FileSystem/Directory.h"
 #include "URL.h"
 #include "GUISettings.h"
+#include "GUIUserMessages.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "GUIWindowManager.h"

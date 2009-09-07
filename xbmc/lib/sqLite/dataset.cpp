@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "dataset.h"
+#include "utils/log.h"
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)

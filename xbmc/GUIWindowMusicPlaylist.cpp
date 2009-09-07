@@ -32,6 +32,7 @@
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIUserMessages.h"
 #include "Favourites.h"
 #include "Settings.h"
 #include "GUISettings.h"

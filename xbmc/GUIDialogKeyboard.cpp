@@ -26,6 +26,7 @@
 #include "GUIButtonControl.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogOK.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "utils/RegExp.h"
 #include "GUIPassword.h"

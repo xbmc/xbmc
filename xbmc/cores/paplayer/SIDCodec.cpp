@@ -26,6 +26,7 @@
 #include "MusicInfoTagLoaderSid.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

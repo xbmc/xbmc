@@ -21,6 +21,10 @@
  *
  */
 
+#include "StdString.h"
+
+#include <map>
+
 class CAutoTexBuffer;
 class CBaseTexture;
 

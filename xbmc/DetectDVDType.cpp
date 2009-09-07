@@ -26,6 +26,7 @@
 #include "DetectDVDType.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 #include "FileSystem/cdioSupport.h"
 #include "FileSystem/iso9660.h"
 #ifdef _LINUX
@@ -37,6 +38,7 @@
 #endif
 #endif
 #include "AdvancedSettings.h"
+#include "GUIUserMessages.h"
 #include "Util.h"
 #include "Picture.h"
 #if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (__APPLE__)

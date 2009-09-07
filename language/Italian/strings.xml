@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: succo-->
 <!--Email: succo69@libero.it-->
-<!--Date of translation: 07/10/2009-->
+<!--Date of translation: 08/26/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 21415-->
+<!--Based on english strings version 22423-->
 <strings>
   <string id="0">Programmi</string>
   <string id="1">Immagini</string>
@@ -34,6 +34,13 @@
   <string id="30">Ottobre</string>
   <string id="31">Novembre</string>
   <string id="32">Dicembre</string>
+  <string id="41">Lun</string>
+  <string id="42">Mar</string>
+  <string id="43">Mer</string>
+  <string id="44">Gio</string>
+  <string id="45">Ven</string>
+  <string id="46">Sab</string>
+  <string id="47">Dom</string>
   <string id="98">Vedi: Auto</string>
   <string id="99">Vedi: Auto grande</string>
   <string id="100">Vedi: Icone</string>
@@ -577,6 +584,7 @@
   <string id="661">Selez. cartella esportazione</string>
   <string id="662">Questo file non è più disponibile.</string>
   <string id="663">Vuoi rimuoverlo dall'archivio?</string>
+  <string id="664">Cerca Script</string>
   <string id="700">Riorganizza l'archivio</string>
   <string id="701">Eliminazione vecchie canzoni dall'archivio</string>
   <string id="702">Questo percorso è già stato esaminato in precedenza.</string>
@@ -964,6 +972,7 @@
   <string id="13012">Esci</string>
   <string id="13013">Riavvia</string>
   <string id="13014">Riduci ad icona</string>
+  <string id="13015">Comportamento tasto power</string>
   <string id="13020">C'è un'altra sessione attiva, forse via SSH?</string>
   <string id="13021">Hard disk rimuovibile montato</string>
   <string id="13022">Rimozione insicura</string>
@@ -1594,7 +1603,7 @@ per questo effetto grafico</string>
   <string id="20044">Nuova partenza</string>
   <string id="20045">Entra in master mode</string>
   <string id="20046">Esci da master mode</string>
-  <string id="20047">Crea profilo '%i' ?</string>
+  <string id="20047">Crea profilo '%s' ?</string>
   <string id="20048">Parti con impostazioni nuove?</string>
   <string id="20049">Migliore disponibile</string>
   <string id="20050">Cambio automatico tra 16x9 and 4x3</string>
@@ -2083,6 +2092,7 @@ per questo effetto grafico</string>
   <string id="22018">Canali TV</string>
   <string id="22019">Registrazioni per titolo</string>
   <string id="22020">Guida</string>
+  <string id="22021">Differenza di proporzioni permessa (%)</string>
   <string id="22030">Carattere</string>
   <string id="22031">- Dimensione</string>
   <string id="22032">- Colore</string>
@@ -2099,8 +2109,12 @@ per questo effetto grafico</string>
   <string id="22043">nero/bianco</string>
   <string id="23000">Plugin meteo</string>
   <string id="23001">- Impostazioni plugin</string>
+  <string id="23100">Player Esterno Attivato</string>
+  <string id="23101">Premi OK per chiudere il player</string>
+  <string id="23104">Premi OK al termine della riproduzione</string>
   <string id="29800">Modo Archivio</string>
   <string id="29801">Tastiera QWERTY</string>
+  <string id="29802">Periferica passthrough utilizzata</string>
   <string id="29999">Applica impostazioni flicker filter ai giochi</string>
   <string id="30011">Durata ricerca</string>
   <string id="33001">Qualità trailer</string>
@@ -2119,5 +2133,53 @@ per questo effetto grafico</string>
   <string id="33015">Richiedi download prima di avviare video</string>
   <string id="33016">Clip</string>
   <string id="33017">Riavvia plugin per abilitarlo</string>
-  <string id="33018">Clip</string>
+  <string id="33018">Stasera</string>
+  <string id="33019">Domani Sera</string>
+  <string id="33020">Condizioni</string>
+  <string id="33021">Precipitazioni</string>
+  <string id="33022">Precip</string>
+  <string id="33023">Unidità</string>
+  <string id="33024">Percepita</string>
+  <string id="33025">Rilevata</string>
+  <string id="33026">Differenza dal normale</string>
+  <string id="33027">Alba</string>
+  <string id="33028">Tramonto</string>
+  <string id="33029">Dettagli</string>
+  <string id="33030">Vista</string>
+  <string id="33031">Coverflow</string>
+  <string id="33032">Traduci testo</string>
+  <string id="33034">36 Ore</string>
+  <string id="33035">Mappe</string>
+  <string id="33036">Orario</string>
+  <string id="33037">Weekend</string>
+  <string id="33038">%s giorni</string>
+  <string id="33049">Allarme</string>
+  <string id="33050">Allarmi</string>
+  <string id="33051">Scegli il Tuo</string>
+  <string id="33052">Controlla</string>
+  <string id="33053">Configura le</string>
+  <string id="33054">Stagioni</string>
+  <string id="33055">Usa il tuo</string>
+  <string id="33056">Guarda i tuoi</string>
+  <string id="33057">Ascolta la</string>
+  <string id="33058">Vedi le tue</string>
+  <string id="33059">Configura</string>
+  <string id="33060">Power</string>
+  <string id="33061">Menu</string>
+  <string id="33062">Avvia il</string>
+  <string id="33063">Opzioni</string>
+  <string id="33065">Editor</string>
+  <string id="33066">Il tuo</string>
+  <string id="33067">Voto con stelle</string>
+  <string id="33068">Sfondo</string>
+  <string id="33069">Sfondi</string>
+  <string id="33070">Sfondo Personalizzato</string>
+  <string id="33071">Sfondi personalizzati</string>
+  <string id="33072">Visualizza Readme</string>
+  <string id="33073">Visualizza Changelog</string>
+  <string id="33074">Questa versione di %s richiede</string>
+  <string id="33075">una versione di XBMC superiore a %s.</string>
+  <string id="33076">Aggiorna XBMC.</string>
+  <string id="33077">Nessun informazione trovata!</string>
+  <string id="33078">Prossima pagina</string>
 </strings>

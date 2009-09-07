@@ -26,6 +26,7 @@
 #include "AdvancedSettings.h"
 #include "GUIWindowManager.h"
 #include "WindowingFactory.h"
+#include "utils/log.h"
 
 CApplicationRenderer g_ApplicationRenderer;
 

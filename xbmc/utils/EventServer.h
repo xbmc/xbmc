@@ -31,6 +31,7 @@
 
 #include <map>
 #include <queue>
+#include <vector>
 
 namespace EVENTSERVER
 {

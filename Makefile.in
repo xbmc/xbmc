@@ -219,7 +219,7 @@ xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDInputStreams
 xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a: force
 	$(MAKE) -C xbmc/cores/dvdplayer/DVDSubtitles
-xbmc/cores/paplayer/paplayer.a: force
+xbmc/cores/paplayer/paplayer.a: force papcodecs
 	$(MAKE) -C xbmc/cores/paplayer
 xbmc/cores/AudioRenderers/audiorenderers.a: force
 	$(MAKE) -C xbmc/cores/AudioRenderers

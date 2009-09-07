@@ -47,6 +47,8 @@
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
 		7C62F22E104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */; };
 		7C62F22F104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */; };
+		7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
+		7C62F24310505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
 		7C779DA6104A4B2E00F444C4 /* GUIControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */; };
 		7C779DA8104A4B2E00F444C4 /* GUIFontTTFGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D99104A4B2E00F444C4 /* GUIFontTTFGL.cpp */; };
 		7C779DA9104A4B2E00F444C4 /* GUIImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D9B104A4B2E00F444C4 /* GUIImage.cpp */; };
@@ -1795,8 +1797,6 @@
 		F5D8F882104CD40B004A11AB /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F880104CD40B004A11AB /* liblzo2.dylib */; };
 		F5D8F88C104CD47D004A11AB /* libmms.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F88B104CD47D004A11AB /* libmms.dylib */; };
 		F5D8F88D104CD47D004A11AB /* libmms.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F88B104CD47D004A11AB /* libmms.dylib */; };
-		F5D8F9C210505036004A11AB /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8F9C010505036004A11AB /* Bookmark.cpp */; };
-		F5D8F9C310505036004A11AB /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8F9C010505036004A11AB /* Bookmark.cpp */; };
 		F5EA021C0F6DA7E8005C2EC5 /* PowerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */; };
 		F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
 		F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
@@ -1854,6 +1854,8 @@
 		7C5608C50F1754930056433A /* ExternalPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExternalPlayer.h; sourceTree = "<group>"; };
 		7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AdvancedSettings.cpp; sourceTree = "<group>"; };
 		7C62F22D104FC8B9002AD2C1 /* AdvancedSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedSettings.h; sourceTree = "<group>"; };
+		7C62F24010505BC7002AD2C1 /* Bookmark.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bookmark.cpp; sourceTree = "<group>"; };
+		7C62F24110505BC7002AD2C1 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
 		7C779D94104A4B2E00F444C4 /* GUIActionDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIActionDescriptor.h; sourceTree = "<group>"; };
 		7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlFactory.cpp; sourceTree = "<group>"; };
 		7C779D96104A4B2E00F444C4 /* GUIControlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlFactory.h; sourceTree = "<group>"; };
@@ -3795,8 +3797,6 @@
 		F5D8F86B104CD1C0004A11AB /* DVDInputStreamMMS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamMMS.cpp; sourceTree = "<group>"; };
 		F5D8F880104CD40B004A11AB /* liblzo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo2.dylib; path = /opt/local/lib/liblzo2.dylib; sourceTree = "<absolute>"; };
 		F5D8F88B104CD47D004A11AB /* libmms.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmms.dylib; path = /opt/local/lib/libmms.dylib; sourceTree = "<absolute>"; };
-		F5D8F9C010505036004A11AB /* Bookmark.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Bookmark.cpp; path = "/Users/Shared/xbmc/xbmc-svn/xbmc/Bookmark.cpp"; sourceTree = "<absolute>"; };
-		F5D8F9C110505036004A11AB /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bookmark.h; path = "/Users/Shared/xbmc/xbmc-svn/xbmc/Bookmark.h"; sourceTree = "<absolute>"; };
 		F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerManager.cpp; path = xbmc/PowerManager.cpp; sourceTree = SOURCE_ROOT; };
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerManager.h; path = xbmc/PowerManager.h; sourceTree = SOURCE_ROOT; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CocoaPowerSyscall.cpp; path = xbmc/osx/CocoaPowerSyscall.cpp; sourceTree = SOURCE_ROOT; };
@@ -4313,6 +4313,8 @@
 		E38E14610D25F9F900618676 /* xbmc */ = {
 			isa = PBXGroup;
 			children = (
+				7C62F24010505BC7002AD2C1 /* Bookmark.cpp */,
+				7C62F24110505BC7002AD2C1 /* Bookmark.h */,
 				7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */,
 				7C62F22D104FC8B9002AD2C1 /* AdvancedSettings.h */,
 				7C779E52104A58F900F444C4 /* KeyboardStat.cpp */,
@@ -4378,8 +4380,6 @@
 				E38E14710D25F9F900618676 /* AutoSwitch.h */,
 				E38E14720D25F9F900618676 /* BackgroundInfoLoader.cpp */,
 				E38E14730D25F9F900618676 /* BackgroundInfoLoader.h */,
-				F5D8F9C010505036004A11AB /* Bookmark.cpp */,
-				F5D8F9C110505036004A11AB /* Bookmark.h */,
 				E38E14760D25F9F900618676 /* BusyIndicator.h */,
 				E38E14770D25F9F900618676 /* ButtonTranslator.cpp */,
 				E38E14780D25F9F900618676 /* ButtonTranslator.h */,
@@ -7999,7 +7999,7 @@
 				7C779E55104A58F900F444C4 /* KeyboardStat.cpp in Sources */,
 				F5D8F86C104CD1C0004A11AB /* DVDInputStreamMMS.cpp in Sources */,
 				7C62F22E104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */,
-				F5D8F9C210505036004A11AB /* Bookmark.cpp in Sources */,
+				7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8855,7 +8855,7 @@
 				7C779E57104A58F900F444C4 /* KeyboardStat.cpp in Sources */,
 				F5D8F86D104CD1C0004A11AB /* DVDInputStreamMMS.cpp in Sources */,
 				7C62F22F104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */,
-				F5D8F9C310505036004A11AB /* Bookmark.cpp in Sources */,
+				7C62F24310505BC7002AD2C1 /* Bookmark.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

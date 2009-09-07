@@ -30,6 +30,7 @@
 #endif
 #include "DllLoader.h"
 #include "SingleLock.h"
+#include "utils/log.h"
 
 #ifdef _cplusplus
 extern "C"

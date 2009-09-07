@@ -21,8 +21,8 @@
 
 #if defined(_LINUX)
 #include "stdafx.h"
-#endif
-#ifdef _LINUX
+#include <locale>
+#include <wchar.h>
 #include "../DllLoaderContainer.h"
 #include "../DllLoader.h"
 #include "emu_msvcrt.h"

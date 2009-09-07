@@ -20,6 +20,10 @@
  *
  */
 
+#include "utils/CriticalSection.h"
+#include "gui3d.h"
+#include "StdString.h"
+
 class CBaseTexture;
 
 class CSlideShowPic

@@ -45,7 +45,8 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
-	 
+#include "utils/log.h"
+
 #include "XBPyThread.h"
 #include "XBPython.h"
 

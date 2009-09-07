@@ -24,6 +24,7 @@
 #include "dll_tracker.h"
 #include "DllLoader.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 struct MSizeCount
 {

@@ -1083,7 +1083,6 @@ AC_SUBST(OUTPUT_FILES)
 AC_DEFUN([XB_CONFIG_MODULE],[
 AC_CONFIG_COMMANDS_POST([
 if [[ $3 != "1" ]]; then
-  if (( 0 )); then
     if [[ -d $1 ]]; then
         pushd $1
         $2
@@ -1096,7 +1095,6 @@ if [[ $3 != "1" ]]; then
     else
         AC_MSG_ERROR([[Submodule $1 doesn't exist]])
     fi
-  fi
 else
     AC_MSG_NOTICE([[Skipping configuration of submodule $1.]])
 fi

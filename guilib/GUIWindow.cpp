@@ -429,6 +429,7 @@ bool CGUIWindow::OnMouseAction()
   // and unfocus everything otherwise
   if (!controlUnderPointer)
     m_focusedControl = 0;
+
   return bHandled;
 }
 
@@ -464,7 +465,7 @@ bool CGUIWindow::HandleMouse(CGUIControl *pControl, const CPoint &point)
   { // Left double click
     return pControl->OnMouseDoubleClick(MOUSE_LEFT_BUTTON, point);
   }
-  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && g_Mouse.HasMoved())
+  else if (g_Mouse.bHold[MOUSE_LEFT_BUTTON] && g_Mouse.HasMoved(true))
   { // Mouse Drag
     return pControl->OnMouseDrag(g_Mouse.GetLastMove(), point);
   }

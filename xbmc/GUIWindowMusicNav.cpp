@@ -41,6 +41,7 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIEditControl.h"
+#include "GUIUserMessages.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Application.h"

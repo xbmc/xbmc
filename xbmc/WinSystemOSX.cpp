@@ -27,7 +27,9 @@
 #include "SpecialProtocol.h"
 #include "CocoaInterface.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "Texture.h"
+#include "utils/log.h"
 
 
 CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
@@ -61,10 +63,10 @@ bool CWinSystemOSX::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemOSX::CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  m_nWidth = width;
-  m_nHeight = height;
+  m_nWidth  = res.iWidth;
+  m_nHeight = res.iHeight;
   m_bFullScreen = fullScreen;
     
   SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
@@ -113,13 +115,13 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   return true;
 }
 
-bool CWinSystemOSX::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {  
-  m_nWidth = width;
-  m_nHeight = height;
+  m_nWidth      = res.iWidth;
+  m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
-  
-  Cocoa_GL_SetFullScreen(screen, width, height, fullScreen, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+
+  Cocoa_GL_SetFullScreen(res.iScreen, m_nWidth, m_nHeight, m_bFullScreen, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
   m_glContext = Cocoa_GL_GetCurrentContext();
   Cocoa_GL_MakeCurrentContext(m_glContext);
   

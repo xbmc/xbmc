@@ -23,6 +23,7 @@
 #include "WinSystemWin32.h"
 #include "WinEventsWin32.h"
 #include "Settings.h"
+#include "resource.h"
 
 #ifdef _WIN32
 
@@ -44,7 +45,11 @@ CWinSystemWin32::CWinSystemWin32()
 
 CWinSystemWin32::~CWinSystemWin32()
 {
-  //Destroy();
+  if (m_hIcon)
+  {
+    DestroyIcon(m_hIcon);
+    m_hIcon = NULL;
+  }
 };
 
 bool CWinSystemWin32::InitWindowSystem()
@@ -60,13 +65,15 @@ bool CWinSystemWin32::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemWin32::CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
   m_hInstance = ( HINSTANCE )GetModuleHandle( NULL );
 
-  m_nWidth = width;
-  m_nHeight = height;
+  m_nWidth  = res.iWidth;
+  m_nHeight = res.iHeight;
   m_bFullScreen = fullScreen;
+
+  m_hIcon = LoadIcon(m_hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
 
   // Register the windows class
   WNDCLASS wndClass;
@@ -207,12 +214,12 @@ bool CWinSystemWin32::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   return true;
 }
 
-bool CWinSystemWin32::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {
   m_bFullScreen = fullScreen;
-  m_nScreen = screen;
-  m_nWidth = width;
-  m_nHeight = height;
+  m_nScreen = res.iScreen;
+  m_nWidth  = res.iWidth;
+  m_nHeight = res.iHeight;
   m_bBlankOtherDisplay = blankOtherDisplays;
 
   ResizeInternal();

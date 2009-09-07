@@ -27,7 +27,8 @@
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
 #include "DynamicDll.h"
-#include "../../Util.h"
+#include "Util.h"
+#include "utils/log.h"
 #ifdef _WIN32PC
 #include "../DllLoader/Win32DllLoader.h"
 #endif

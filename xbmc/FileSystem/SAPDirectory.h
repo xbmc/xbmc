@@ -19,7 +19,7 @@
 */
 #include "IDirectory.h"
 #include "utils/Thread.h"
-
+#include "utils/CriticalSection.h"
 
 
 namespace SDP

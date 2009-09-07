@@ -30,10 +30,12 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIUserMessages.h"
 #include "Favourites.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace PLAYLIST;
 

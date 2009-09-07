@@ -101,6 +101,7 @@
 #endif
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIUserMessages.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "Crc32.h"

@@ -34,6 +34,7 @@
 #include "GUIDialogYesNo.h"
 #include "GUIFontManager.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace std;
 

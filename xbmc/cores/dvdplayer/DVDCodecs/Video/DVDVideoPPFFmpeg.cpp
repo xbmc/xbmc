@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "DVDVideoPPFFmpeg.h"
+#include "utils/log.h"
 
 CDVDVideoPPFFmpeg::CDVDVideoPPFFmpeg(const CStdString& mType)
 {

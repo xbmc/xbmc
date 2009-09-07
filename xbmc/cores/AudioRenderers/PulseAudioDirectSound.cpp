@@ -25,6 +25,7 @@
 #include "AudioContext.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {

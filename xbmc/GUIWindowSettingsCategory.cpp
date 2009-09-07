@@ -20,6 +20,7 @@
  */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
 #include "KeyboardLayoutConfiguration.h"
@@ -707,6 +708,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13117), VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
       pControl->AddLabel(g_localizeStrings.Get(13118), VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
       pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
+      pControl->AddLabel(g_localizeStrings.Get(13120), VS_SCALINGMETHOD_VDPAU_HARDWARE);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("videolibrary.flattentvshows"))
@@ -945,6 +947,22 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(true);
       }
     }
+#ifdef HAVE_LIBVDPAU
+    else if (strSetting.Equals("videoplayer.vdpauUpscalingLevel"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+      {
+        int value1 = g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
+        int value2 = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
+
+        if (value1 == VS_SCALINGMETHOD_VDPAU_HARDWARE && value2 != SOFTWARE_UPSCALING_DISABLED)
+          pControl->SetEnabled(true);
+        else
+          pControl->SetEnabled(false);
+      }
+    }
+#endif
 #if defined(__APPLE__) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.displayblanking"))
     {
@@ -1389,7 +1407,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
-      g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
     }
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {

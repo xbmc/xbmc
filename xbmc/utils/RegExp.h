@@ -23,6 +23,8 @@
 #ifndef REGEXP_H
 #define REGEXP_H
 
+#include "log.h"
+
 #include <stdio.h>
 #include <string>
 
@@ -60,8 +62,8 @@ public:
   int GetSubCount() { return m_iMatchCount - 1; } // PCRE returns the number of sub-patterns + 1
   int GetSubStart(int iSub) { return m_iOvector[iSub*2] - m_iOvector[0]; } // normalized to match old engine
   int GetSubLength(int iSub) { return (m_iOvector[(iSub*2)+1] - m_iOvector[(iSub*2)]); } // correct spelling
-  CStdString GetMatch(int iSub = 0);
-  bool GetNamedSubPattern(const char* strName, CStdString& strMatch);
+  std::string GetMatch(int iSub = 0);
+  bool GetNamedSubPattern(const char* strName, std::string& strMatch);
   void DumpOvector(int iLog = LOGDEBUG);
 
 private:

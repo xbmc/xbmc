@@ -25,6 +25,7 @@
 #include "cores/paplayer/spc/Types.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace MUSIC_INFO;

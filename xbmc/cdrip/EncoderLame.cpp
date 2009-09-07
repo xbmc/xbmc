@@ -23,6 +23,7 @@
 #include "EncoderLame.h"
 #include "Id3Tag.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -34,8 +35,8 @@ using namespace MUSIC_INFO;
 
 CEncoderLame::CEncoderLame()
 {
-  memset(m_inPath, 0, XBMC_MAX_PATH + 1);
-  memset(m_outPath, 0, XBMC_MAX_PATH + 1);
+  memset(m_inPath, 0, 1024 + 1);
+  memset(m_outPath, 0, 1024 + 1);
 }
 
 bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)

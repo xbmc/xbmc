@@ -168,7 +168,8 @@ bool CFileHomeRun::Exists(const CURL& url)
   CStdString path(url.GetFileName());
   
   if(CUtil::GetExtension(path).Equals(".tbn")
-    || CUtil::GetExtension(path).Equals(".jpg"))
+    || CUtil::GetExtension(path).Equals(".jpg")
+    || CUtil::GetExtension(path).Equals(".jpeg"))
       status = false;
   
   return(status);

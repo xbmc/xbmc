@@ -20,7 +20,9 @@
  *
  */
 
+#include "StdString.h"
 #include "BackgroundInfoLoader.h"
+
 class CPictureThumbLoader : public CBackgroundInfoLoader
 {
 public:

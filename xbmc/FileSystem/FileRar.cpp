@@ -29,6 +29,7 @@
 #include "RarManager.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 #ifndef _LINUX
 #include <process.h>

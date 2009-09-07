@@ -24,6 +24,7 @@
 #include "GUISettings.h"
 #include "DVDAudioCodecLiba52.h"
 #include "DVDStreamInfo.h"
+#include "utils/log.h"
 
 #ifndef _LINUX
 typedef __int16 int16_t;

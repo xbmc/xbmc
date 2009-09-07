@@ -33,6 +33,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -463,13 +464,16 @@ void CGUISettings::Initialize()
 #ifdef HAS_GL
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
+  AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
+#ifdef HAVE_LIBVDPAU
+  AddInt(10, "videoplayer.vdpauUpscalingLevel", 13121, 0, 0, 1, 9, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
 #endif
-  AddFloat(9, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
+#endif
+  AddFloat(11, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
 
-  AddSeparator(10, "videoplayer.sep2");
+  AddSeparator(12, "videoplayer.sep2");
   AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(12, "videoplayer.sep3");
+  AddSeparator(13, "videoplayer.sep3");
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
   AddBool(17, "videoplayer.editdecision", 22003, false);

@@ -20,9 +20,12 @@
  */
 #include "stdafx.h"
 #include <iostream> //for debugging, please remove
+#include <list>
+#include "StdString.h"
 #include "VideoReferenceClock.h"
 #include "MathUtils.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/extensions/Xrandr.h>

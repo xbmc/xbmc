@@ -345,17 +345,17 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, bool forceUpdate)
   
   if (g_advancedSettings.m_fullScreen)
   {
-    SetFullScreenRoot(true);
+    bool blankOtherDisplays = g_guiSettings.GetInt("videoscreen.displayblanking")  == BLANKING_ALL_DISPLAYS;
+    g_Windowing.SetFullScreen(true,  g_settings.m_ResInfo[res], blankOtherDisplays, g_advancedSettings.m_alwaysOnTop);
   }
   else if (lastRes >= RES_DESKTOP )
-  {
-    SetFullScreenRoot(false);
-  }
-
-  g_Windowing.ResizeWindow(m_iScreenWidth, m_iScreenHeight, -1, -1);
+    g_Windowing.SetFullScreen(false, g_settings.m_ResInfo[res], false, g_advancedSettings.m_alwaysOnTop);
+  else
+    g_Windowing.ResizeWindow(m_iScreenWidth, m_iScreenHeight, -1, -1);
 
   // set the mouse resolution
-  g_Mouse.SetResolution(g_settings.m_ResInfo[res].iWidth, g_settings.m_ResInfo[res].iHeight, 1, 1);
+  g_renderManager.Recover();
+  g_Mouse.SetResolution(m_iScreenWidth, m_iScreenHeight, 1, 1);
   g_fontManager.ReloadTTFFonts();
 
   SetFullScreenViewWindow(res);
@@ -715,7 +715,9 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
   else
   {
-    if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
+    if (IsFullScreenVideo())
+      newRes = g_renderManager.GetResolution();
+    else if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       newRes = g_guiSettings.m_LookAndFeelResolution;
     else
       newRes = RES_DESKTOP;      
@@ -724,35 +726,6 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   SetVideoResolution(newRes);
   
   return  m_bFullScreenRoot;
-}
-
-void CGraphicContext::SetFullScreenRoot(bool fs)
-{
-  int blanking = g_guiSettings.GetInt("videoscreen.displayblanking");
-  bool blankOtherDisplays = (blanking == BLANKING_ALL_DISPLAYS);
-
-  if (fs)
-  {
-    m_iFullScreenWidth = m_iScreenWidth;
-    m_iFullScreenHeight = m_iScreenHeight;
-
-    g_Windowing.SetFullScreen(true, m_iScreenId, m_iFullScreenWidth, m_iFullScreenHeight, blankOtherDisplays, g_advancedSettings.m_alwaysOnTop);
-    
-    g_fontManager.ReloadTTFFonts();
-    g_Mouse.SetResolution(m_iFullScreenWidth, m_iFullScreenHeight, 1, 1);
-  }
-  else
-  {
-    g_Windowing.SetFullScreen(false, m_iScreenId, m_iFullScreenWidth, m_iFullScreenHeight, blankOtherDisplays, g_advancedSettings.m_alwaysOnTop);
-    g_fontManager.ReloadTTFFonts();
-    g_Mouse.SetResolution(g_settings.m_ResInfo[m_Resolution].iWidth, g_settings.m_ResInfo[m_Resolution].iHeight, 1, 1);
-  }
-
-  g_renderManager.Recover();
-
-  m_bFullScreenRoot = fs;
-  g_advancedSettings.m_fullScreen = fs;
-  SetFullScreenViewWindow(m_Resolution);
 }
 
 void CGraphicContext::SetMediaDir(const CStdString &strMediaDir)

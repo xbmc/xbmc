@@ -31,6 +31,7 @@
 #include "emu_ole32.h"
 
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/log.h"
 
 /*extern HRESULT WINAPI CoGetClassObject(
     REFCLSID rclsid, DWORD dwClsContext, COSERVERINFO *pServerInfo,

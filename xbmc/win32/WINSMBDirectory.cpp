@@ -28,6 +28,8 @@
 #include "FileItem.h"
 #include "WIN32Util.h"
 #include "AutoPtrHandle.h"
+#include "log.h"
+#include "CharsetConverter.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)

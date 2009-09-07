@@ -25,6 +25,7 @@
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #include "MusicDatabase.h"
 #include "GUIWindowMusicBase.h"
 #include "MusicInfoTag.h"

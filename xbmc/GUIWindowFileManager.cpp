@@ -33,6 +33,7 @@
 #include "GUIListContainer.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif

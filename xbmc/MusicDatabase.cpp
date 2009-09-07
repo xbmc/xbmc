@@ -51,6 +51,7 @@
 #include "MediaManager.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
+#include "log.h"
 
 using namespace std;
 using namespace AUTOPTR;

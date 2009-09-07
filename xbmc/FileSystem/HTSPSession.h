@@ -22,7 +22,14 @@
 #pragma once
 #include "deque"
 
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <map>
+
 typedef struct htsmsg htsmsg_t;
+
+class CFileItem;
 
 namespace HTSP
 {

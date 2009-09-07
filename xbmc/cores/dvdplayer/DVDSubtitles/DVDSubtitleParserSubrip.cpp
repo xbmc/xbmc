@@ -23,6 +23,8 @@
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
+#include "StdString.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 

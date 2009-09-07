@@ -402,34 +402,24 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
   switch(newEvent.type)
   {
     case XBMC_QUIT:
-      if (!g_application.m_bStop) g_application.getApplicationMessenger().Quit();
+      if (!g_application.m_bStop)
+        g_application.getApplicationMessenger().Quit();
       break;
     case XBMC_KEYDOWN:
     case XBMC_KEYUP:
       g_Keyboard.HandleEvent(newEvent);
       g_application.ProcessKeyboard();
       break;
-      
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
-      // mouse scroll wheel.
-      if (newEvent.button.button == 4)
-        g_Mouse.UpdateMouseWheel(1);
-      else if (newEvent.button.button == 5)
-        g_Mouse.UpdateMouseWheel(-1);
-      else
-      {
-        g_Mouse.HandleEvent(newEvent);
-        g_application.ProcessMouse();
-      }
+      g_Mouse.HandleEvent(newEvent);
+      g_application.ProcessMouse();
       break;
     case XBMC_VIDEORESIZE:
+      if (!g_application.m_bInitializing &&
+          !g_advancedSettings.m_fullScreen)
       {
-        if (g_application.m_bInitializing)
-          return false;
-        if(g_advancedSettings.m_fullScreen)
-          return false;
         RESOLUTION res = RES_WINDOW;
         g_settings.m_ResInfo[res].iWidth = newEvent.resize.w;
         g_settings.m_ResInfo[res].iHeight = newEvent.resize.h;
@@ -438,8 +428,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       }
       break;
   }
-
-  return false;
+  return true;
 }
 
 // This function does not return!
@@ -663,11 +652,8 @@ HRESULT CApplication::Create(HWND hWnd)
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
   
-  int screenWidth = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
-  int screenHeight = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
-
   bool bFullScreen = g_guiSettings.m_LookAndFeelResolution == RES_DESKTOP;
-  if (!g_Windowing.CreateNewWindow("XBMC", screenWidth, screenHeight, bFullScreen, OnEvent))
+  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return E_FAIL;
@@ -2398,7 +2384,7 @@ void CApplication::RenderMemoryStatus()
 bool CApplication::OnKey(CKey& key)
 {
   // Turn the mouse off, as we've just got a keypress from controller or remote
-  g_Mouse.SetInactive();
+  g_Mouse.SetActive(false);
   CAction action;
 
   // get the current active window
@@ -2942,7 +2928,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       action.fRepeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
-      g_Mouse.SetInactive();
+      g_Mouse.SetActive(false);
       return OnAction(action);
     }
     else
@@ -2982,7 +2968,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       action.fRepeat = 0.0;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
-      g_Mouse.SetInactive();
+      g_Mouse.SetActive(false);
       return OnAction(action);
     }
     else
@@ -3005,7 +2991,7 @@ bool CApplication::ProcessGamepad(float frameTime)
       action.fRepeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
-      g_Mouse.SetInactive();
+      g_Mouse.SetActive(false);
       return OnAction(action);
     }
   }
@@ -3234,7 +3220,7 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 #ifdef HAS_SDL_JOYSTICK
    g_Joystick.Reset();
 #endif
-   g_Mouse.SetInactive();
+   g_Mouse.SetActive(false);
 
    // Figure out what window we're taking the event for.
    WORD iWin = m_gWindowManager.GetActiveWindow() & WINDOW_ID_MASK;
@@ -5284,14 +5270,16 @@ void CApplication::Minimize(bool minimize)
   if (minimize)
   {
     m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
-    if (m_bWasFullScreenBeforeMinimize) g_graphicsContext.SetFullScreenRoot(false);
+    if (m_bWasFullScreenBeforeMinimize)
+      g_graphicsContext.ToggleFullScreenRoot();
 #ifdef HAS_SDL
     SDL_WM_IconifyWindow();
 #endif
   }
   else
   {
-    if (m_bWasFullScreenBeforeMinimize) g_graphicsContext.SetFullScreenRoot(true);
+    if (m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
+      g_graphicsContext.ToggleFullScreenRoot();
   }
 }
 

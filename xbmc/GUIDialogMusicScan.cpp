@@ -27,6 +27,8 @@
 #include "URL.h"
 #include "GUIWindowManager.h"
 #include "GUISettings.h"
+#include "GUIUserMessages.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

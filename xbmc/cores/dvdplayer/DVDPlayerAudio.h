@@ -20,7 +20,7 @@
  */
 
 #pragma once
-#include "../../utils/Thread.h"
+#include "utils/Thread.h"
 
 #include "DVDAudio.h"
 #include "DVDClock.h"
@@ -29,6 +29,9 @@
 #include "DVDStreamInfo.h"
 #include "BitstreamStats.h"
 #include "DVDPlayerAudioResampler.h"
+
+#include <list>
+#include <queue>
 
 class CDVDPlayer;
 class CDVDAudioCodec;

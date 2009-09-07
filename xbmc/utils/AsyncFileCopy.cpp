@@ -23,6 +23,7 @@
 #include "AsyncFileCopy.h"
 #include "GUIDialogProgress.h"
 #include "GUIWindowManager.h"
+#include "log.h"
 
 CAsyncFileCopy::CAsyncFileCopy()
 {

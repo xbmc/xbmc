@@ -29,6 +29,7 @@
 #include "URL.h"
 #include "StringUtils.h"
 #include "utils/SingleLock.h"
+#include "utils/log.h"
 
 extern "C"
 {

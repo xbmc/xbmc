@@ -25,6 +25,7 @@
 #ifdef HAS_SDL_JOYSTICK
 #include "common/SDLJoystick.h"
 #endif
+#include "MouseStat.h"
 
 #ifdef HAS_SDL_WIN_EVENTS
 
@@ -33,6 +34,7 @@ PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 bool CWinEventsSDL::MessagePump()
 { 
   SDL_Event event;
+  bool ret = false;
   
   while (SDL_PollEvent(&event))
   {
@@ -49,7 +51,7 @@ bool CWinEventsSDL::MessagePump()
     case SDL_JOYBALLMOTION:
     case SDL_JOYHATMOTION:
       g_Joystick.Update(event);
-      return true;
+      ret = true;
       break;
 #endif
       
@@ -73,7 +75,8 @@ bool CWinEventsSDL::MessagePump()
 #ifdef __APPLE__      
       if (ProcessOSXShortcuts(event))
       {
-        return true;
+        ret = true;
+        break;
       }
 #endif      
       
@@ -89,7 +92,8 @@ bool CWinEventsSDL::MessagePump()
 
       // don't handle any more messages in the queue until we've handled keydown,
       // if a keyup is in the queue it will reset the keypress before it is handled.
-      return g_application.OnEvent(newEvent);
+      ret |= g_application.OnEvent(newEvent);
+      break;
     }
       
     case SDL_KEYUP:
@@ -104,7 +108,8 @@ bool CWinEventsSDL::MessagePump()
       newEvent.key.type = event.key.type;
       newEvent.key.which = event.key.which;
       
-      return g_application.OnEvent(newEvent);
+      ret |= g_application.OnEvent(newEvent);
+      break;
     }
     
     case SDL_MOUSEBUTTONDOWN:
@@ -118,7 +123,8 @@ bool CWinEventsSDL::MessagePump()
       newEvent.button.x = event.button.x;
       newEvent.button.y = event.button.y;
 
-      return g_application.OnEvent(newEvent);
+      ret |= g_application.OnEvent(newEvent);
+      break;
     }
 
     case SDL_MOUSEBUTTONUP:
@@ -132,11 +138,17 @@ bool CWinEventsSDL::MessagePump()
       newEvent.button.x = event.button.x;
       newEvent.button.y = event.button.y;
 
-      return g_application.OnEvent(newEvent);
+      ret |= g_application.OnEvent(newEvent);
+      break;
     }
 
     case SDL_MOUSEMOTION:
     {
+      if (0 == (SDL_GetAppState() & SDL_APPMOUSEFOCUS))
+      {
+        g_Mouse.SetActive(false);
+        break;
+      }
       XBMC_Event newEvent;
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.xrel = event.motion.xrel;
@@ -147,7 +159,8 @@ bool CWinEventsSDL::MessagePump()
       newEvent.motion.x = event.motion.x;
       newEvent.motion.y = event.motion.y;
 
-      return g_application.OnEvent(newEvent);
+      ret |= g_application.OnEvent(newEvent);
+      break;
     }
     case SDL_VIDEORESIZE:
     {
@@ -156,13 +169,14 @@ bool CWinEventsSDL::MessagePump()
       newEvent.resize.w = event.resize.w;
       newEvent.resize.h = event.resize.h;
       newEvent.resize.type = event.resize.type;
-      return g_application.OnEvent(newEvent);
+      ret |= g_application.OnEvent(newEvent);
     }
     
     }
+    memset(&event, 0, sizeof(XBMC_Event));
   }
   
-  return false;
+  return ret;
 }
 
 #ifdef __APPLE__

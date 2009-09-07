@@ -23,6 +23,7 @@
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIListContainer.h"
 #include "GUISettings.h"
+#include "GUIUserMessages.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"
 

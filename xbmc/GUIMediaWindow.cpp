@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "GUIMediaWindow.h"
+#include "GUIUserMessages.h"
 #include "Util.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"

@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "APEcodec.h"
 #include "APEv2Tag.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

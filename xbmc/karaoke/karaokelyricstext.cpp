@@ -12,6 +12,7 @@
 #include "stdafx.h"
 #include <math.h>
 
+#include "utils/CharsetConverter.h"
 #include "Settings.h"
 #include "GUISettings.h"
 #include "GUITextLayout.h"
@@ -22,6 +23,7 @@
 #include "GUIWindowManager.h"
 #include "SkinInfo.h"
 #include "MathUtils.h"
+#include "utils/log.h"
 
 typedef struct
 {

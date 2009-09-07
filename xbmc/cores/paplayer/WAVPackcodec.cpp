@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "WAVPackcodec.h"
+#include "utils/log.h"
 
 WAVPackCodec::WAVPackCodec()
 {

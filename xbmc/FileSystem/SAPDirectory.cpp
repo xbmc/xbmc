@@ -18,11 +18,13 @@
 */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include <string.h>
 #include "SAPDirectory.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "utils/log.h"
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h" // strnlen
 #endif

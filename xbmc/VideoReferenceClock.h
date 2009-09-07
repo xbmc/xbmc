@@ -22,6 +22,7 @@
 
 #include "stdafx.h"
 #include "Thread.h"
+#include "utils/CriticalSection.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/X.h>

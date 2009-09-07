@@ -25,6 +25,7 @@
 #include "../lib/UnrarXLib/rar.hpp"
 #endif
 #include "Util.h"
+#include "utils/CharsetConverter.h"
 #include "utils/SingleLock.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
@@ -32,6 +33,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 #include <set>
 
