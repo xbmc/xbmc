@@ -58,7 +58,9 @@ public:
   int             GetTotalTime();
   int             GetStartTime();
 
-  bool            SeekTime(int iTimeInMsec);
+  bool            SeekTime(int iTimeInMsec, int *iRetTimeInMsec);
+  bool            SeekTimeRequired();
+  int             SeekTimeStep(bool bPlus, bool bLargeStep, __int64 curTime);
 
   bool            CanRecord();
   bool            IsRecording();

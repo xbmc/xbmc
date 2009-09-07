@@ -38,6 +38,7 @@
 #ifdef HAS_FILESYSTEM_MMS
 #include "DVDInputStreams/DVDInputStreamMMS.h"
 #endif
+#include "DVDInputStreams/DVDInputStreamPVRManager.h"
 #include "DVDInputStreams/DVDInputStreamRTMP.h"
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
@@ -844,6 +845,22 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
     return true;
   }
 #endif
+
+  if (m_pInput->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+  {
+    if (((CDVDInputStreamPVRManager*)m_pInput)->SeekTimeRequired())
+    {
+      int retTime = time;
+      if (!((CDVDInputStreamPVRManager*)m_pInput)->SeekTime(time, &retTime))
+        return false;
+
+      if(startpts)
+        *startpts = DVD_MSEC_TO_TIME(retTime);
+    
+      Flush();
+      return true;
+    }
+  }
 
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_RTMP))
   {

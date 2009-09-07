@@ -221,7 +221,7 @@
 
 			<!-- progressbar dialog -->
 			<control type="group">
-				<visible>!VideoPlayer.Content(LiveTV) | (VideoPlayer.Content(LiveTV) + !pvr.IsTimeshifting</visible>
+				<visible>!VideoPlayer.Content(LiveTV)</visible>
 				<control type="label" id="22">
 					<description>Elapsed Time Label</description>
 					<posx>10</posx>
