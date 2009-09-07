@@ -121,7 +121,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
-  Cocoa_GL_SetFullScreen(screen, m_nWidth, m_nHeight, m_bFullScreen, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
+  Cocoa_GL_SetFullScreen(res.iScreen, m_nWidth, m_nHeight, m_bFullScreen, blankOtherDisplays, g_advancedSettings.m_osx_GLFullScreen);
   m_glContext = Cocoa_GL_GetCurrentContext();
   Cocoa_GL_MakeCurrentContext(m_glContext);
   

@@ -68,7 +68,7 @@ bool CWinSystemOSXGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int
 
 bool CWinSystemOSXGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {
-  CWinSystemOSX::SetFullScreen(fullScreen, res.iScreen, res.iWidth, res.iHeight, blankOtherDisplays, alwaysOnTop);
+  CWinSystemOSX::SetFullScreen(fullScreen, res, blankOtherDisplays, alwaysOnTop);
   CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);  
   
   if (m_bVSync)
