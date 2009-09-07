@@ -887,8 +887,8 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
-                                       vid_width,
-                                       vid_height,
+                                       g_graphicsContext.GetWidth(),
+                                       g_graphicsContext.GetHeight(),
                                        &outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
 
@@ -1111,8 +1111,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     future = render->surface;
   }
 
-  if (( outRectVid.x1 != vid_width ) ||
-      ( outRectVid.y1 != vid_height ))
+  if (( outRectVid.x1 != g_graphicsContext.GetWidth() ) ||
+      ( outRectVid.y1 != g_graphicsContext.GetHeight() ))
   {
     CSingleLock lock(g_graphicsContext);
     outRectVid.x0 = 0;
