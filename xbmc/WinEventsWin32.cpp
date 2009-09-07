@@ -423,9 +423,25 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       m_pEventFunc(newEvent);
       return(0);
     case WM_MOUSEWHEEL:
-      newEvent.type = XBMC_MOUSEMOTION;
-      newEvent.button.button = GET_Y_LPARAM(wParam) > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
-      m_pEventFunc(newEvent);
+      {
+        // SDL, which our events system is based off, sends a MOUSEBUTTONDOWN message
+        // followed by a MOUSEBUTTONUP message.  As this is a momentary event, we just
+        // react on the MOUSEBUTTONUP message, resetting the state after processing.
+        newEvent.type = XBMC_MOUSEBUTTONDOWN;
+        newEvent.button.state = XBMC_PRESSED;
+        // the coordinates in WM_MOUSEWHEEL are screen, not client coordinates
+        POINT point;
+        point.x = GET_X_LPARAM(lParam);
+        point.y = GET_Y_LPARAM(lParam);
+        WindowFromScreenCoords(hWnd, &point);
+        newEvent.button.x = (Uint16)point.x;
+        newEvent.button.y = (Uint16)point.y;
+        newEvent.button.button = GET_Y_LPARAM(wParam) > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
+        m_pEventFunc(newEvent);
+        newEvent.type = XBMC_MOUSEBUTTONUP;
+        newEvent.button.state = XBMC_RELEASED;
+        m_pEventFunc(newEvent);
+      }
       return(0);
     case WM_SIZE:
       newEvent.type = XBMC_VIDEORESIZE;
@@ -443,6 +459,19 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       return(1);
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+}
+
+void CWinEventsWin32::WindowFromScreenCoords(HWND hWnd, POINT *point)
+{
+  if (!point) return;
+  RECT clientRect;
+  GetClientRect(hWnd, &clientRect);
+  POINT windowPos;
+  windowPos.x = clientRect.left;
+  windowPos.y = clientRect.top;
+  ClientToScreen(hWnd, &windowPos);
+  point->x -= windowPos.x;
+  point->y -= windowPos.y;
 }
 
 /*
