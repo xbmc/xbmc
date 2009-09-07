@@ -98,10 +98,10 @@ bool CWinSystemX11::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemX11::CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  m_nWidth = width;
-  m_nHeight = height;
+  m_nWidth  = res.iWidth;
+  m_nHeight = res.iHeight;
   m_bFullScreen = fullScreen;
 
   int options = SDL_OPENGL;  
@@ -134,18 +134,37 @@ bool CWinSystemX11::DestroyWindow()
     
 bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
-  return CWinSystemX11::SetFullScreen(m_bFullScreen, 0, newWidth, newHeight, false, false);
+  if(m_nWidth  == newWidth
+  && m_nHeight == newHeight)
+    return true;
+
+  m_nWidth  = newWidth;
+  m_nHeight = newHeight;
+
+  int options = SDL_OPENGL;
+  if (m_bFullScreen)
+    options |= SDL_FULLSCREEN;
+  else
+    options |= SDL_RESIZABLE;
+
+  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
+  {
+    RefreshGlxContext();
+    return true;
+  }
+
+  return false;
 }
 
-bool CWinSystemX11::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {
-  if(m_nWidth      == width
-  && m_nHeight     == height
+  if(m_nWidth      == res.iWidth
+  && m_nHeight     == res.iHeight
   && m_bFullScreen == fullScreen)
     return true;
 
-  m_nWidth      = width;
-  m_nHeight     = height;
+  m_nWidth      = res.iWidth;
+  m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
 
   int options = SDL_OPENGL;

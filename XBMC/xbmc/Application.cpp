@@ -655,7 +655,7 @@ HRESULT CApplication::Create(HWND hWnd)
   int screenHeight = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
 
   bool bFullScreen = g_guiSettings.m_LookAndFeelResolution == RES_DESKTOP;
-  if (!g_Windowing.CreateNewWindow("XBMC", screenWidth, screenHeight, bFullScreen, OnEvent))
+  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
     return E_FAIL;

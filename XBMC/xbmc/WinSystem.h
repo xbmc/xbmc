@@ -43,10 +43,10 @@ public:
   // windowing interfaces
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem(){ return false; }
-  virtual bool CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction) = 0;
+  virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction) = 0;
   virtual bool DestroyWindow(){ return false; }
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) = 0;
-  virtual bool SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop) = 0;
+  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop) = 0;
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
   virtual bool CenterWindow(){return false;}
   virtual bool IsCreated(){ return m_bWindowCreated; }

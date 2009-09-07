@@ -168,9 +168,9 @@ bool CWinSystemX11GL::IsExtSupported(const char* extension)
   return m_glxext.find(name) != std::string::npos;
 }
 
-bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, int width, int height, bool fullScreen, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11GL::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  if(!CWinSystemX11::CreateNewWindow(name, width, height, fullScreen, userFunction))
+  if(!CWinSystemX11::CreateNewWindow(name, fullScreen, res, userFunction))
     return false;
 
   m_glxext  = " ";
@@ -222,10 +222,10 @@ bool CWinSystemX11GL::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   return true;
 }
 
-bool CWinSystemX11GL::SetFullScreen(bool fullScreen, int screen, int width, int height, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemX11GL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {
-  CWinSystemX11::SetFullScreen(fullScreen, screen, width, height, blankOtherDisplays, alwaysOnTop);
-  CRenderSystemGL::ResetRenderSystem(width, height);  
+  CWinSystemX11::SetFullScreen(fullScreen, res, blankOtherDisplays, alwaysOnTop);
+  CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);  
   
   return true;
 }
