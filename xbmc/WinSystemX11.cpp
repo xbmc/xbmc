@@ -29,6 +29,10 @@
 #include "Settings.h"
 #include "Texture.h"
 #include "utils/log.h"
+#include "linux/XRandR.h"
+#include <vector>
+
+using namespace std;
 
 static int doubleVisAttributes[] =
 {
@@ -166,8 +170,56 @@ void CWinSystemX11::UpdateResolutions()
   int x11screen = DefaultScreen(m_dpy);
   int w = DisplayWidth(m_dpy, x11screen);
   int h = DisplayHeight(m_dpy, x11screen);
-	
+
   UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0f);
+  
+#if defined(HAS_XRANDR)
+  CLog::Log(LOGINFO, "Available videomodes (xrandr):");
+  vector<XOutput>::iterator outiter;
+  vector<XOutput> outs;
+  outs = g_xrandr.GetModes();
+  CLog::Log(LOGINFO, "Number of connected outputs: %"PRIdS"", outs.size());
+  string modename = "";
+
+  for (outiter = outs.begin() ; outiter != outs.end() ; outiter++)
+  {
+    XOutput out = *outiter;
+    vector<XMode>::iterator modeiter;
+    CLog::Log(LOGINFO, "Output '%s' has %"PRIdS" modes", out.name.c_str(), out.modes.size());
+
+    for (modeiter = out.modes.begin() ; modeiter!=out.modes.end() ; modeiter++)
+    {
+      XMode mode = *modeiter;
+      CLog::Log(LOGINFO, "ID:%s Name:%s Refresh:%f Width:%d Height:%d",
+                mode.id.c_str(), mode.name.c_str(), mode.hz, mode.w, mode.h);
+      RESOLUTION_INFO res;
+      res.iWidth  = mode.w;
+      res.iHeight = mode.h;
+      if (mode.h>0 && mode.w>0 && out.hmm>0 && out.wmm>0)
+        res.fPixelRatio = ((float)out.wmm/(float)mode.w) / (((float)out.hmm/(float)mode.h));
+      else
+        res.fPixelRatio = 1.0f;
+
+      CLog::Log(LOGINFO, "Pixel Ratio: %f", res.fPixelRatio);
+
+      res.strMode.Format("%s: %s @ %.2fHz", out.name.c_str(), mode.name.c_str(), mode.hz);
+      res.strOutput    = out.name;
+      res.strId        = mode.id;
+      res.iSubtitles   = (int)(0.95*mode.h);
+      res.fRefreshRate = mode.hz;
+
+      if ((float)mode.w / (float)mode.h >= 1.59)
+        res.dwFlags = D3DPRESENTFLAG_WIDESCREEN;
+      else
+        res.dwFlags = 0;
+
+      g_graphicsContext.ResetOverscan(res);
+      g_settings.m_ResInfo.push_back(res);
+    }
+  }
+#endif
+
+
 }
 
 bool CWinSystemX11::RefreshGlxContext()
