@@ -65,7 +65,7 @@ bool CWinSystemWin32DX::ResizeWindow(int newWidth, int newHeight, int newLeft, i
 bool CWinSystemWin32DX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {
   CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays, alwaysOnTop);
-  CRenderSystemDX::ResetRenderSystem(width, height);  
+  CRenderSystemDX::ResetRenderSystem(res.iWidth, res.iHeight);  
 
   return true;
 }
