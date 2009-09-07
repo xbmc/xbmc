@@ -898,6 +898,8 @@
 		F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */; };
 		F584E1290F257BD800DB26A5 /* FileSpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E1270F257BD800DB26A5 /* FileSpecialProtocol.cpp */; };
 		F584E12E0F257C5100DB26A5 /* HTTPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */; };
+		F595A461105425CB00698EB9 /* CrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F595A460105425CB00698EB9 /* CrystalHD.cpp */; };
+		F595A462105425CB00698EB9 /* CrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F595A460105425CB00698EB9 /* CrystalHD.cpp */; };
 		F59876BC0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59876BA0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp */; };
 		F59876BD0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59876BA0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp */; };
 		F59876C00FBA351D008EF4FB /* VideoReferenceClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F59876BF0FBA351D008EF4FB /* VideoReferenceClock.cpp */; };
@@ -3688,6 +3690,8 @@
 		F584E12C0F257C5100DB26A5 /* HTTPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HTTPDirectory.h; path = xbmc/FileSystem/HTTPDirectory.h; sourceTree = SOURCE_ROOT; };
 		F584E12D0F257C5100DB26A5 /* HTTPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HTTPDirectory.cpp; path = xbmc/FileSystem/HTTPDirectory.cpp; sourceTree = SOURCE_ROOT; };
 		F595A3AD1052F0C500698EB9 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		F595A460105425CB00698EB9 /* CrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CrystalHD.cpp; sourceTree = "<group>"; };
+		F595A47C1054298700698EB9 /* CrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrystalHD.h; sourceTree = "<group>"; };
 		F59876BA0FBA34C0008EF4FB /* DVDPlayerAudioResampler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerAudioResampler.cpp; sourceTree = "<group>"; };
 		F59876BB0FBA34C0008EF4FB /* DVDPlayerAudioResampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerAudioResampler.h; sourceTree = "<group>"; };
 		F59876BE0FBA351D008EF4FB /* VideoReferenceClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoReferenceClock.h; sourceTree = "<group>"; };
@@ -5031,6 +5035,8 @@
 			children = (
 				E38E153B0D25F9F900618676 /* DllLibMpeg2.h */,
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
+				F595A460105425CB00698EB9 /* CrystalHD.cpp */,
+				F595A47C1054298700698EB9 /* CrystalHD.h */,
 				F59D70F11041F01600AD752F /* DVDVideoCodecCrystalHD.cpp */,
 				F59D70F21041F01600AD752F /* DVDVideoCodecCrystalHD.h */,
 				E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */,
@@ -7924,6 +7930,7 @@
 				8309C218102F722C00E0A87D /* xdmx.cpp in Sources */,
 				8309C226102F75E800E0A87D /* DVDDemuxTS.cpp in Sources */,
 				F59D70F31041F01600AD752F /* DVDVideoCodecCrystalHD.cpp in Sources */,
+				F595A461105425CB00698EB9 /* CrystalHD.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8761,6 +8768,7 @@
 				7CDAEA8E1001EBA70040B25F /* PltConstants.cpp in Sources */,
 				7CDAEA8F1001EBA70040B25F /* PltIconsData.cpp in Sources */,
 				F59D70F41041F01600AD752F /* DVDVideoCodecCrystalHD.cpp in Sources */,
+				F595A462105425CB00698EB9 /* CrystalHD.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -319,6 +319,7 @@ void CDVDPlayerVideo::Process()
         picture.iFlags &= ~DVP_FLAG_INTERLACED;
         picture.iFlags |= DVP_FLAG_NOSKIP;
         OutputPicture(&picture, pts);
+        m_pVideoCodec->ReleasePicture(&picture);
         pts+= frametime;
       }
 
@@ -608,7 +609,6 @@ void CDVDPlayerVideo::Process()
           iDecoderState = m_pVideoCodec->Decode(NULL, 0, DVD_NOPTS_VALUE);
         }
 
-
         LeaveCriticalSection(&m_critCodecSection);
       }
       break;
@@ -866,7 +866,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     pts += m_pullupCorrection.Correction();
     
     //when using the videoreferenceclock, a frame is always presented one vblank interval too late
-    pts -= (1.0 / refreshrate) * DVD_TIME_BASE; 
+    pts -= (DVD_TIME_BASE / refreshrate); 
   }
   else
   {
@@ -1022,6 +1022,7 @@ void CDVDPlayerVideo::UpdateMenuPicture()
     {
       picture.iFlags |= DVP_FLAG_NOSKIP;
       OutputPicture(&picture, 0);
+      m_pVideoCodec->ReleasePicture(&picture);
     }
     LeaveCriticalSection(&m_critCodecSection);
   }
