@@ -100,31 +100,17 @@ bool CWinSystemX11::DestroyWindowSystem()
 
 bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  m_nWidth  = res.iWidth;
-  m_nHeight = res.iHeight;
-  m_bFullScreen = fullScreen;
+  if(!SetFullScreen(fullScreen, res, false, false))
+    return false;
 
-  int options = SDL_OPENGL;  
-  if (m_bFullScreen)
-    options |= SDL_FULLSCREEN;
-  else
-    options |= SDL_RESIZABLE;
-
-  if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
-  {
-    RefreshGlxContext();
-
-    CTexture iconTexture;
-    iconTexture.LoadFromFile("special://xbmc/media/icon.png");
+  CTexture iconTexture;
+  iconTexture.LoadFromFile("special://xbmc/media/icon.png");
     
-    SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
-    SDL_WM_SetCaption("XBMC Media Center", NULL);
+  SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), iconTexture.GetBPP(), iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
+  SDL_WM_SetCaption("XBMC Media Center", NULL);
 
-    m_bWindowCreated = true;
-    return true;
-  }
-
-  return false;
+  m_bWindowCreated = true;
+  return true;
 }
 
 bool CWinSystemX11::DestroyWindow()
@@ -158,14 +144,27 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
 bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {
-  if(m_nWidth      == res.iWidth
-  && m_nHeight     == res.iHeight
-  && m_bFullScreen == fullScreen)
-    return true;
-
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
+
+#if defined(HAS_XRANDR)
+
+  if(m_bFullScreen)
+  {
+    XOutput out;
+    XMode mode;
+    out.name = res.strOutput;
+    mode.w   = res.iWidth;
+    mode.h   = res.iHeight;
+    mode.hz  = res.fRefreshRate;
+    mode.id  = res.strId;
+    g_xrandr.SetMode(out, mode);
+  }
+  else
+    g_xrandr.RestoreState();
+
+#endif
 
   int options = SDL_OPENGL;
   if (m_bFullScreen)
@@ -186,13 +185,27 @@ void CWinSystemX11::UpdateResolutions()
 {
   CWinSystemBase::UpdateResolutions();
 
-  int x11screen = DefaultScreen(m_dpy);
-  int w = DisplayWidth(m_dpy, x11screen);
-  int h = DisplayHeight(m_dpy, x11screen);
 
-  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0f);
-  
 #if defined(HAS_XRANDR)
+  {
+    XOutput out  = g_xrandr.GetCurrentOutput();
+    XMode   mode = g_xrandr.GetCurrentMode(out.name);
+    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, mode.w, mode.h, mode.hz);
+    g_settings.m_ResInfo[RES_DESKTOP].strId     = mode.id;
+    g_settings.m_ResInfo[RES_DESKTOP].strOutput = out.name;
+  }
+#else
+  {
+    int x11screen = DefaultScreen(m_dpy);
+    int w = DisplayWidth(m_dpy, x11screen);
+    int h = DisplayHeight(m_dpy, x11screen);
+    UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, 0.0);
+  }
+#endif
+
+
+#if defined(HAS_XRANDR)
+
   CLog::Log(LOGINFO, "Available videomodes (xrandr):");
   vector<XOutput>::iterator outiter;
   vector<XOutput> outs;
@@ -237,7 +250,6 @@ void CWinSystemX11::UpdateResolutions()
     }
   }
 #endif
-
 
 }
 
