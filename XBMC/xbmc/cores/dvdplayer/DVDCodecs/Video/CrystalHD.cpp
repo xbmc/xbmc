@@ -155,6 +155,7 @@ protected:
   double              m_framerate;
 	unsigned int        m_aspectratio_x;
 	unsigned int        m_aspectratio_y;
+  uint64_t            m_old_timestamp;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,7 +285,8 @@ CMPCOutputThread::CMPCOutputThread(BCM::HANDLE device) :
   m_Device(device),
   m_OutputTimeout(20),
   m_BufferCount(0),
-  m_PictureCount(0)
+  m_PictureCount(0),
+  m_old_timestamp(0)
 {
   m_width = 1920;
   m_height = 1080;
@@ -620,10 +622,18 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
     case BCM::BC_STS_SUCCESS:
       if (procOut.PoutFlags & BCM::BC_POUT_FLAGS_PIB_VALID)
       {
-        pBuffer->SetPts(procOut.PicInfo.timeStamp);
-        memcpy(pBuffer->GetPtr(), &procOut, sizeof(BCM::BC_DTS_PROC_OUT));
-        m_PictureCount++;
-        return pBuffer;
+        if (procOut.PicInfo.timeStamp && (procOut.PicInfo.timeStamp != m_old_timestamp))
+        {
+          pBuffer->SetPts(procOut.PicInfo.timeStamp);
+          memcpy(pBuffer->GetPtr(), &procOut, sizeof(BCM::BC_DTS_PROC_OUT));
+          m_old_timestamp = procOut.PicInfo.timeStamp;
+          m_PictureCount++;
+          return pBuffer;
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "%s: Duplicate or no timestamp detected: %llu", __MODULE_NAME__, procOut.PicInfo.timeStamp); 
+        }
       }
     break;
       
@@ -668,7 +678,11 @@ void CMPCOutputThread::Process()
   {
     CMPCDecodeBuffer* pBuffer = GetDecoderOutput(); // Check for output frames
     if (pBuffer)
+    {
       AddFrame(pBuffer);
+      //Sleep(30);
+    }
+    
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
@@ -692,6 +706,9 @@ CCrystalHD::~CCrystalHD()
 
 bool CCrystalHD::InitHardware(void)
 {
+  // driver should NOT download firmware a second time in CCrystalHD::Open
+  // disable this and skip a double firmware downlaad until we figure out why?
+  /*
   BCM::BC_STATUS res;
   BCM::U32 mode = BCM::DTS_LOAD_FILE_PLAY_FW;
   
@@ -712,6 +729,7 @@ bool CCrystalHD::InitHardware(void)
       break;
     }
   } while(false);
+  */
   
   m_Inited = true;
 
@@ -854,6 +872,7 @@ bool CCrystalHD::AddInput(bool *got_picture_ptr, unsigned char *pData, size_t si
     BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pData, size, (uint64_t)(pts * 10), FALSE);
     if (ret == BCM::BC_STS_BUSY)
     {
+      CLog::Log(LOGDEBUG, "%s: ProcInput returned BC_STS_BUSY", __MODULE_NAME__);
       //Sleep(1); // Buffer is full
     }
   }
@@ -901,8 +920,13 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
 
   CMPCDecodeBuffer* pBuffer = m_pOutputThread->GetNext();
   if (!pBuffer)
+  {
+    pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
+    pDvdVideoPicture->iFlags |= DVP_FLAG_DROPPED;
+    pDvdVideoPicture->format = DVDVideoPicture::FMT_NV12;
     return false;
-    
+  }
+
   procOut = (BCM::BC_DTS_PROC_OUT*)pBuffer->GetPtr();
  
   m_interlace = m_pOutputThread->GetInterlace();
@@ -956,6 +980,7 @@ void CCrystalHD::SetDropState(bool bDrop)
     m_drop_state = bDrop;
     if (m_drop_state)
     {
+      //while (m_pOutputThread->GetNext() != NULL);
       BCM::DtsSetFFRate(m_Device, 2);
       //BCM::DtsDropPictures(m_Device, 1);
     }
