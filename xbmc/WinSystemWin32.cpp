@@ -193,7 +193,14 @@ bool CWinSystemWin32::CenterWindow()
   m_nLeft = (DesktopRes.iWidth / 2) - (m_nWidth / 2);
   m_nTop = (DesktopRes.iHeight / 2) - (m_nHeight / 2);
 
-  SetWindowPos(m_hWnd, 0, m_nLeft, m_nTop, 0, 0, SWP_NOSIZE);
+  RECT rc;
+  rc.left = m_nLeft;
+  rc.top = m_nTop;
+  rc.right = rc.left + m_nWidth;
+  rc.bottom = rc.top + m_nHeight;
+  AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, false );
+
+  SetWindowPos(m_hWnd, 0, rc.left, rc.top, 0, 0, SWP_NOSIZE);
 
   return true;
 }
@@ -244,20 +251,22 @@ bool CWinSystemWin32::ResizeInternal()
   DWORD dwStyle = WS_CLIPCHILDREN;
   HWND windowAfter;
 
+  bool bFromFullScreen = false;
+  WINDOWINFO wi;
+  GetWindowInfo(m_hWnd, &wi);
+
   if(m_bFullScreen)
   {
     dwStyle |= WS_POPUP;
     windowAfter = HWND_TOPMOST;
     // save position of window mode
-    RECT oldRC;
-    GetWindowRect(m_hWnd, &oldRC);
-    m_nLeft = oldRC.left;
-    m_nTop = oldRC.top;
+    m_nLeft = wi.rcClient.left;
+    m_nTop = wi.rcClient.top;
   }
   else
   {
-    dwStyle |= WS_OVERLAPPED | WS_BORDER | WS_CAPTION |
-      WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME;
+    bFromFullScreen = (wi.dwStyle & WS_OVERLAPPED) == 0;
+    dwStyle |= WS_OVERLAPPEDWINDOW;
     windowAfter = HWND_NOTOPMOST;
 
     if(m_nTop <= 0 || m_nLeft <= 0)
@@ -270,10 +279,16 @@ bool CWinSystemWin32::ResizeInternal()
     AdjustWindowRect( &rc, WS_OVERLAPPEDWINDOW, false );
   }
 
-  SetWindowRgn(m_hWnd, 0, false);
-  SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
+  RECT wr = wi.rcWindow;
+  if (wr.bottom - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left)
+  {
+    SetWindowRgn(m_hWnd, 0, false);
+    SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
 
-  SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW);
+    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW);
+    if (bFromFullScreen)
+      ValidateRect(NULL, NULL); //validate desktop if we're switching from fullscreen to window
+  }
   return true;
 }
 
