@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-08-11" name="Last.FM" content="albums" thumb="lastfm.gif">
+<scraper framework="1.1" date="2009-09-08" name="Last.FM" content="albums" thumb="lastfm.gif">
 	<include>common/htbackdrops.xml</include>
 	<include>common/lastfm.xml</include>
 	<NfoUrl dest="3">
@@ -78,7 +78,7 @@
 			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="5+">
 				<expression>&lt;content&gt;&lt;!\[CDATA\[(.*?)\]</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb&gt;\2&lt;/thumb&gt;" dest="7">
+			<RegExp input="$$1" output="&lt;thumb&gt;\2&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">&lt;image size=&quot;(extra)?large&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
