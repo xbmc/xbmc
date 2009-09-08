@@ -998,7 +998,7 @@
   <string id="13110">Save resolution?</string>
   <string id="13111">Would you like to keep this resolution?</string>
 
-  <string id="13112">High quality software upscaling</string>
+  <string id="13112">High quality upscaling</string>
   <string id="13113">Disabled</string>
   <string id="13114">Enabled for SD content</string>
   <string id="13115">Always enabled</string>
@@ -1007,8 +1007,8 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-
-  <string id="13120">Strict Pixmap-Texture Binding (requires restart)</string>
+  <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU HQ Upscaling level</string>
 
   <string id="13130">Display blanking</string>
   <string id="13131">Disabled</string>
