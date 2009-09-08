@@ -343,6 +343,10 @@ bool CGUIWindowPictures::OnClick(int iItem)
 
 bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
+  CFileItem item2(m_vecItems->Get(iItem)->m_strPath,false);
+  if (item2.IsVideo())
+    return CGUIMediaWindow::OnPlayMedia(iItem);
+
   return ShowPicture(iItem, false);
 }
 
