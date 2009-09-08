@@ -121,6 +121,8 @@ public:
   void  WaitPresentTime(double presenttime);
 
   CStdString GetVSyncState();
+  
+  void UpdateResolution();
 
 #ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
@@ -150,6 +152,8 @@ protected:
   bool m_bIsStarted;
   CSharedSection m_sharedSection;
 
+  bool m_bReconfigured;
+  
   int m_rendermethod;
 
   double     m_presenttime;
