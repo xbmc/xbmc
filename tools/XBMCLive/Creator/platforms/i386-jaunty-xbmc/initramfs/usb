@@ -207,7 +207,7 @@ mountroot ()
 
     if [ -f $BOOTMEDIAMNTPOINT/config/shadow ]; then
         cp $BOOTMEDIAMNTPOINT/config/shadow ${rootmnt}/etc
-	rm $BOOTMEDIAMNTPOINT/config/fstab
+	rm $BOOTMEDIAMNTPOINT/config/shadow
 	chmod 640 ${rootmnt}/etc/shadow
     fi
 
