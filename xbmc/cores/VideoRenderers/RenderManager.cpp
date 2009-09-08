@@ -99,6 +99,8 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presentstep = 0;
   m_rendermethod = 0;
   m_presentmethod = VS_INTERLACEMETHOD_NONE;
+  
+  m_bReconfigured = false;
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -187,6 +189,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     }
     m_pRenderer->Update(false);
     m_bIsStarted = true;
+    m_bReconfigured = true;
   }
   
   return result;
@@ -483,4 +486,18 @@ void CXBMCRenderManager::Recover()
     g_VDPAU->CheckRecover(true);
   }
 #endif
+}
+
+void CXBMCRenderManager::UpdateResolution()
+{
+  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  if (m_bReconfigured)
+  {
+    if (g_graphicsContext.IsFullScreenVideo() && g_graphicsContext.IsFullScreenRoot())
+    {
+      RESOLUTION res = GetResolution();
+      g_graphicsContext.SetVideoResolution(res);
+    }
+    m_bReconfigured = false;
+  }
 }

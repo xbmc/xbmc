@@ -20,12 +20,12 @@
  */
 #include "stdafx.h"
 #include "ProgramInfo.h"
-#include "ScraperParser.h"
-#include "ScraperSettings.h"
 #include "XMLUtils.h"
-#include "HTMLTable.h"
-#include "HTMLUtil.h"
-#include "Util.h"
+#include "LocalizeStrings.h"
+#include "AdvancedSettings.h"
+#include "ScraperSettings.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
 
 using namespace PROGRAM_GRABBER;
 using namespace std;

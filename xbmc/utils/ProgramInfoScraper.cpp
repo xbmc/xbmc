@@ -26,6 +26,8 @@
 #include "HTMLTable.h"
 #include "Util.h"
 #include "ScraperParser.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
 
 using namespace PROGRAM_GRABBER;
 using namespace HTML;

@@ -2317,8 +2317,9 @@ void CApplication::Render()
   g_Windowing.EndRender();
   g_graphicsContext.Flip();
   g_infoManager.UpdateFPS();
+  g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
-
+  
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
   if(m_frameCount > 0)

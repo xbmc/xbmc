@@ -20,9 +20,11 @@
  */
 
 #include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowProgramNav.h"
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
 #include "GUIPassword.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContentSettings.h"

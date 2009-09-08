@@ -318,6 +318,7 @@ void CVideoReferenceClock::CleanupGLX()
   }
   if (m_Context)
   {
+    glXMakeCurrent(m_Dpy, None, NULL);
     glXDestroyContext(m_Dpy, m_Context);
     m_Context = NULL;
   }
@@ -354,7 +355,7 @@ void CVideoReferenceClock::RunGLX()
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
     m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
     QueryPerformanceCounter(&Now); //get the timestamp of this vblank
-
+    
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
@@ -398,6 +399,8 @@ void CVideoReferenceClock::RunGLX()
         return;
       }
 
+      m_glXGetVideoSyncSGI(&VblankCount);
+      
       IsReset = true;
     }
     PrevVblankCount = VblankCount;
