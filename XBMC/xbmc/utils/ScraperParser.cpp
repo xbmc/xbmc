@@ -246,6 +246,9 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     bool bTrim[MAX_SCRAPER_BUFFERS];
     GetBufferParams(bTrim,pExpression->Attribute("trim"),false);
 
+    bool bEncode[MAX_SCRAPER_BUFFERS];
+    GetBufferParams(bEncode,"encode",false);
+
     int iOptional = -1;
     pExpression->QueryIntAttribute("optional",&iOptional);
 
@@ -260,6 +263,8 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
         InsertToken(strOutput,iBuf+1,"!!!CLEAN!!!");
       if (bTrim[iBuf])
         InsertToken(strOutput,iBuf+1,"!!!TRIM!!!");
+      if (bEncode[iBuf])
+        InsertToken(strOutput,iBuf+1,"!!!ENCODE!!!");
     }
     int i = reg.RegFind(curInput.c_str());
     while (i > -1 && (i < (int)curInput.size() || curInput.size() == 0))
@@ -454,6 +459,21 @@ void CScraperParser::Clean(CStdString& strDirty)
       strDirty.erase(i,i2-i+10);
       strDirty.Insert(i,szTrimmed);
       i += strlen(szTrimmed);
+    }
+    else
+      break;
+  }
+  i=0;
+  while ((i=strDirty.Find("!!!ENCODE!!!",i)) != CStdString::npos)
+  {
+    size_t i2;
+    if ((i2=strDirty.Find("!!!ENCODE!!!",i+12)) != CStdString::npos)
+    {
+      strBuffer = strDirty.substr(i+12,i2-i-12);
+      CUtil::UrlEncode(strBuffer);
+      strDirty.erase(i,i2-i+12);
+      strDirty.Insert(i,strBuffer);
+      i += strlen(strBuffer.size());
     }
     else
       break;
