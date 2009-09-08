@@ -31,8 +31,6 @@
 #include "GUISettings.h"
 #include "WindowingFactory.h"
 
-#include "AdvancedSettings.h"
-
 #ifdef _LINUX
 #include "PlatformInclude.h"
 #endif
