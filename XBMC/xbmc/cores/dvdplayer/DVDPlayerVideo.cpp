@@ -40,7 +40,11 @@
 #include <iomanip>
 #include <numeric>
 
+#if !defined(WIN32)
 extern void* fast_memcpy(void * to, const void * from, size_t len);
+#else
+#define fast_memcpy memcpy
+#endif
 
 using namespace std;
 

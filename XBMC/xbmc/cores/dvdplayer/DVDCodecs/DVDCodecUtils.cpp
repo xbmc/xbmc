@@ -20,11 +20,15 @@
  */
 
 #include "stdafx.h"
+#if !defined(WIN32)
 #define HAVE_MMX2
 #define HAVE_SSE
 #include "utils/fastmemcpy.h"
 #undef HAVE_MMX2
 #undef HAVE_SSE
+#else
+#define fast_memcpy memcpy
+#endif
 #include "DVDCodecUtils.h"
 #include "cores/VideoRenderers/RenderManager.h"
 

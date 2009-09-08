@@ -12,7 +12,11 @@
 
 #define TS_MAX_PIDS 0x2000
 
+#if !defined(WIN32)
 extern void* fast_memcpy(void * to, const void * from, size_t len);
+#else
+#define fast_memcpy memcpy
+#endif
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class CTSFilter : public IPacketFilter

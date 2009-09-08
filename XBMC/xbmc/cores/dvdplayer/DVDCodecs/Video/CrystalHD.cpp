@@ -19,11 +19,12 @@
  *
  */
 
+#include "stdafx.h"
+
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 
-#include "stdafx.h"
 #if defined(HAVE_LIBCRYSTALHD)
 #include "CrystalHD.h"
 #include "DVDClock.h"
@@ -56,7 +57,12 @@ namespace BCM
 
 CCrystalHD*          g_CrystalHD = NULL;
 
+#if !defined(WIN32)
 extern void* fast_memcpy(void * to, const void * from, size_t len);
+#else
+#define fast_memcpy memcpy
+#endif
+
 void PrintFormat(BCM::BC_PIC_INFO_BLOCK &pib);
 
 const char* g_DtsStatusText[] = {
