@@ -86,7 +86,7 @@ struct usplash_theme usplash_theme = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -122,7 +122,7 @@ struct usplash_theme usplash_theme_1920_1080 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -158,7 +158,7 @@ struct usplash_theme usplash_theme_1680_1050 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -194,7 +194,7 @@ struct usplash_theme usplash_theme_1440_900 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -230,7 +230,7 @@ struct usplash_theme usplash_theme_1280_1024 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -266,7 +266,7 @@ struct usplash_theme usplash_theme_1366_768 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -302,7 +302,7 @@ struct usplash_theme usplash_theme_1280_720 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -338,7 +338,7 @@ struct usplash_theme usplash_theme_1024_768 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -374,7 +374,7 @@ struct usplash_theme usplash_theme_800_600 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
@@ -410,7 +410,7 @@ struct usplash_theme usplash_theme_640_480 = {
 	.progressbar_background = 0x00,
 	.progressbar_foreground = 0x1E,
 	.text_background        = 0x01,
-	.text_foreground        = 0x01,
+	.text_foreground        = 0xB9,
 	.text_success           = 0x23,
 	.text_failure           = 0x24,
 
