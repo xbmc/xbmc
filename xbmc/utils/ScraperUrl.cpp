@@ -181,6 +181,9 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
   http.SetReferer(scrURL.m_spoof);
   CStdString strCachePath;
 
+  if (scrURL.m_isgz)
+    http.SetContentEncoding("gzip");
+
   if (!scrURL.m_cache.IsEmpty())
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers/"+scrURL.m_cache,strCachePath);
@@ -216,7 +219,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
 
   strHTML = strHTML1;
 
-  if (scrURL.m_url.Find(".zip") > -1 || scrURL.m_isgz)
+  if (scrURL.m_url.Find(".zip") > -1 )
   {
     XFILE::CFileZip file;
     CStdString strBuffer;

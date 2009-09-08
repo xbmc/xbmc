@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 08/20/2009-->
+<!--Date of translation: 08/26/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22217 -->
+<!--Based on english strings version 22243 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2103,6 +2103,15 @@
   <string id="23000">天气插件</string>
   <string id="23001">- 插件设置</string>
 
+  <!-- strings 23100 thru 23150 reserved for external player -->
+  <string id="23100">外部播放器激活</string>
+  <string id="23101">点 OK 关闭播放器</string>
+  <string id="23102"></string>
+  <string id="23103"></string>
+  <string id="23104">播放完毕时点 OK</string>
+  <string id="23105"></string>
+  <string id="23106"></string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
   <string id="29801">QWERTY 键盘</string>
@@ -2174,4 +2183,11 @@
   <string id="33069">桌面背景集</string>
   <string id="33070">自定义桌面背景</string>
   <string id="33071">自定义桌面背景集</string>
+  <string id="33072">浏览自述文件</string>
+  <string id="33073">浏览更新记录</string>
+  <string id="33074">运行此版本的 %s 需要</string>
+  <string id="33075">XBMC为 %s 或更高版本。</string>
+  <string id="33076">请升级XBMC。</string>
+  <string id="33077">未找到数据！</string>
+  <string id="33078">下一页</string>
 </strings>

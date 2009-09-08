@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!--Date of translation: 14-Jan-2009-->
-<!--Based on $Revision$-->
+<!--Date of translation: 3-Sep-2009-->
+<!--Based on English Revision: 22423-->
 <strings>
   <string id="0">Programmer</string>
   <string id="1">Bilder</string>
@@ -33,6 +33,14 @@
   <string id="31">november</string>
   <string id="32">desember</string>
   
+  <string id="41">Man</string>
+  <string id="42">Tir</string>
+  <string id="43">Ons</string>
+  <string id="44">Tor</string>
+  <string id="45">Fre</string>
+  <string id="46">Lør</string>
+  <string id="47">Søn</string>
+
   <string id="98">Visning: Auto</string>
   <string id="99">Visning: Auto stor</string>
   <string id="100">Viser: Ikoner</string>
@@ -62,7 +70,7 @@
   <string id="124">Flytt disse filene?</string>
   <string id="125">Slett disse filene? Dette kan ikke angres.</string>
   <string id="126">Status</string>
-  <string id="127">Objekter</string>
+  <string id="127">objekter</string>
   <string id="128">Generelt</string>
   <string id="129">Bildevisning</string>
   <string id="130">Systeminformasjon</string>
@@ -171,7 +179,7 @@
   <string id="236">Gaussisk kubisk</string>
   <string id="237">Forminsking</string>
   <string id="238">Forstørring</string>
-  <string id="239">Tøm spilleliste når ferdigspilt</string>
+  <string id="239">Tøm spilleliste når den er ferdigspilt</string>
   <string id="240">Start DVD'er automatisk</string>
   <string id="241">Start VCD/SVCD'er automatisk</string>
   <string id="242">Start musikk-CD'er automatisk</string>
@@ -292,32 +300,32 @@
   <string id="367">Sortering: Kar.</string>
   <string id="368">IMDb</string>
   <string id="369">Tittel</string>
-  <string id="370">Lyn og torden</string>
-  <string id="371">Delvis</string>
-  <string id="372">Stort sett</string>
-  <string id="373">Sol</string>
-  <string id="374">Skyet</string>
-  <string id="375">Snø</string>
-  <string id="376">Regn</string>
-  <string id="377">Lett</string>
-  <string id="378">Formiddag</string>
-  <string id="379">Ettermiddag</string>
-  <string id="380">Byger</string>
-  <string id="381">Få</string>
-  <string id="382">Spredte</string>
-  <string id="383">Vind</string>
-  <string id="384">Sterk</string>
-  <string id="385">Lettskyet</string>
-  <string id="386">Klart</string>
-  <string id="387">Skyer</string>
-  <string id="388">Tidlig</string>
-  <string id="389">Byge</string>
-  <string id="390">Snøbyger</string>
+  <string id="370">lyn og torden</string>
+  <string id="371">delvis</string>
+  <string id="372">stort sett</string>
+  <string id="373">sol</string>
+  <string id="374">skyet</string>
+  <string id="375">snø</string>
+  <string id="376">regn</string>
+  <string id="377">lett</string>
+  <string id="378">formiddag</string>
+  <string id="379">ettermiddag</string>
+  <string id="380">byger</string>
+  <string id="381">få</string>
+  <string id="382">spredte</string>
+  <string id="383">vind</string>
+  <string id="384">sterk</string>
+  <string id="385">lettskyet</string>
+  <string id="386">klart</string>
+  <string id="387">skyer</string>
+  <string id="388">tidlig</string>
+  <string id="389">byge</string>
+  <string id="390">snøbyger</string>
   <string id="391">Lav</string>
   <string id="392">Middels</string>
   <string id="393">Høy</string>
-  <string id="394">Tåke</string>
-  <string id="395">Dis</string>
+  <string id="394">tåke</string>
+  <string id="395">dis</string>
   <string id="396">Velg sted</string>
   <string id="397">Oppdateringsintervall</string>
   <string id="398">Temperaturskala</string>
@@ -564,7 +572,7 @@
   <string id="661">Velg eksportmappe</string>
   <string id="662">Denne fila er ikke lenger tilgjengelig.</string>
   <string id="663">Vil du fjerne den fra biblioteket?</string>
-  <string id="700">Renser bibliotek</string>
+  <string id="664">Let etter script</string>
   <string id="701">Fjerner gamle sanger fra bibliotek</string>
   <string id="702">Denne katalogen har blitt skannet før.</string>
   <string id="705">Nettverk</string>
@@ -762,21 +770,21 @@
   <string id="1257">Ønsker du å koble til det oppdagede systemet?</string>
 
   <string id="1260">Zeroconf publisering</string>  
-  <string id="1396">Forbigående</string>
+  <string id="1396">forbigående</string>
   <string id="1397">og</string>
-  <string id="1398">Kjølig</string>
+  <string id="1398">kjølig</string>
   <string id="1399">Sent</string>
-  <string id="1400">Isolerte</string>
-  <string id="1401">Tordenbyger</string>
-  <string id="1402">Torden</string>
-  <string id="1403">Sol</string>
-  <string id="1404">Tunge</string>
+  <string id="1400">isolerte</string>
+  <string id="1401">tordenbyger</string>
+  <string id="1402">torden</string>
+  <string id="1403">sol</string>
+  <string id="1404">kraftig</string>
   <string id="1405">i</string>
   <string id="1406"> </string>
   <string id="1407">nærheten</string>
-  <string id="1408">Is</string>
+  <string id="1408">is</string>
   <string id="1409">krystaller</string>
-  <string id="1410">Stille</string>
+  <string id="1410">stille</string>
   <string id="1411">med</string>
   <string id="1412">vind</string>
   <string id="1413">yr</string>
@@ -932,7 +940,7 @@
   <string id="12376">Sett som standard for alle filmer</string>
   <string id="12377">Dette vil slette alle tidligere innstillinger</string>
   <string id="12378">Vis hvert bilde i</string>
-  <string id="12379">Bruk effekter med panorering og zooming</string>
+  <string id="12379">Panorér og zoom i overgangene</string>
   <string id="12380">Spill NTSC filmer som PAL</string>
   <string id="12381">Spill PAL filmer som NTSC</string>
   <string id="12382">Spill NTSC filmer som PAL60</string>
@@ -966,7 +974,8 @@
   <string id="13011">Ventemodus</string>
   <string id="13012">Avslutt</string>
   <string id="13013">Omstart</string>
-  <string id="13014">Minimér</string> 
+  <string id="13014">Minimér</string>
+  <string id="13015">Hendelse ved trykk på power-knapp</string>
   <string id="13020">Er en annen sesjon aktiv, eventuelt over ssh?</string>
   <string id="13021">Montert utskiftbar harddisk</string>
   <string id="13022">Usikker enhetsfjerning</string>
@@ -1412,25 +1421,25 @@
   <string id="15265">Største fans av %name%</string>
   <string id="15266">Hør på fans av %name% fra Last.fm</string>
   <string id="15267">Hør på artister som likner på %name% fra Last.fm</string>
-  <string id="15268">Toppartister for bruker %name%</string>
-  <string id="15269">Toppalbum for bruker %name%</string>
-  <string id="15270">Toppspor for bruker %name%</string>
-  <string id="15271">Venner av bruker %name%</string>
-  <string id="15272">Naboer av bruker %name%</string>
+  <string id="15268">Toppartister for %name%</string>
+  <string id="15269">Toppalbum for %name%</string>
+  <string id="15270">Toppspor for %name%</string>
+  <string id="15271">Venner av %name%</string>
+  <string id="15272">Naboer av %name%</string>
   <string id="15273">Ukentlig artistliste for %name%</string>
-  <string id="15274">Ukentlig album liste for %name%</string>
-  <string id="15275">Ukentlig spor liste for %name%</string>
+  <string id="15274">Ukentlig albumliste for %name%</string>
+  <string id="15275">Ukentlig sporliste for %name%</string>
   <string id="15276">Hør på %name%'s nabo fra Last.fm</string>
   <string id="15277">Hør på %name%'s personlige Last.fm</string>
-  <string id="15278">Hør på %name%'s favorittspor Last.fm</string>
+  <string id="15278">Hør på %name%'s favorittspor hos Last.fm</string>
   <string id="15279">Mottar liste fra Last.fm...</string>
   <string id="15280">Kan ikke motta liste fra Last.fm...</string>
   <string id="15281">Skriv inn et artistnavn for å finne relaterte</string>
   <string id="15282">Skriv inn et tag-navn for å finne liknende</string>
   <string id="15283">Spor nylig lyttet til av %name%</string>
-  <string id="15284">Hør på %name%'s anbefalinger for Last.fm radio</string>
+  <string id="15284">Hør på anbefalinger for %name% fra Last.fm radio</string>
   <string id="15285">Toppliste for bruker %name%</string>
-  <string id="15286">Hør på %name%'s spilleliste i Last.fm radio</string>
+  <string id="15286">Hør på %name%'s spilleliste hos Last.fm radio</string>
   <string id="15287">Legge valgte sang til favoritter?</string>
   <string id="15288">Sperre for valgte sang?</string>
   <string id="15289">Lagt til dine favoritter: '%s'.</string>
@@ -1566,7 +1575,7 @@
   <string id="20044">Start på nytt</string>
   <string id="20045">Gå i mastermudus</string>
   <string id="20046">Forlat mastermodus</string>
-  <string id="20047">Lag profil '%s' ?</string>
+  <string id="20047">Lag profil '%s'?</string>
   <string id="20048">Start med nye innstillinger</string>
   <string id="20049">Beste tilgjengelige</string>
   <string id="20050">Bytt automatisk mellom 16x9 og 4x3</string>
@@ -1729,7 +1738,7 @@
   <string id="20301">Webserverkatalog (HTTPS)</string>
   <string id="20302">Kunne ikke skrive til katalog:</string>
   <string id="20303">Vil du ignorere problemet og fortsette?</string>
-  <string id="20304"></string>
+  <string id="20304">RSS strøm</string>
   <string id="20305"></string>
   
   <string id="20306">Ukjent. Vennligst legg til MD5 fra xbmc.log til BiosIDs.ini.</string>
@@ -2065,7 +2074,7 @@
   <string id="22018">Live-kanaler</string>
   <string id="22019">Innspiller på tittel</string>
   <string id="22020">Guide</string>
-
+  <string id="22021">Tillatt avvik i aspektforhold (i prosent)</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Skrifttype for tekst</string>
@@ -2086,10 +2095,19 @@
   <string id="23000">Værplugin</string>
   <string id="23001">- Plugininnstillinger</string>
 
+  <!-- strings 23100 thru 23150 reserved for external player -->
+  <string id="23100">Ekstern spiller aktiv</string>
+  <string id="23101">Trykk OK for å avslutte spilleren</string>
+  <string id="23102"></string>
+  <string id="23103"></string>
+  <string id="23104">Trykk OK når avspilling er ferdig</string>
+  <string id="23105"></string>
+  <string id="23106"></string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Biblioteksmodus</string>
   <string id="29801">QWERTY-tastatur</string>
-  
+  <string id="29802">Passthrough lyd i bruk</string>  
   <string id="29999">Aktivér flimmerfilter på spill</string>
   
   <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
@@ -2114,4 +2132,54 @@
   <string id="33016">Klipp</string> 
   <string id="33017">Restart plugin for å aktivere</string> 
   <string id="33018">Klipp</string> 
+  <string id="33018">I kveld</string> 
+  <string id="33019">I morgen kveld</string> 
+  <string id="33020">Forhold</string>  <!--- was Condition -->
+  <string id="33021">Nedbør</string> 
+  <string id="33022">Nedbør</string> 
+  <string id="33023">Fuktig</string> 
+  <string id="33024">Føles</string> 
+  <string id="33025">Observert</string> 
+  <string id="33026">Avvik fra normal</string> 
+  <string id="33027">Soloppgang</string> 
+  <string id="33028">Solnedgang</string> 
+  <string id="33029">Detaljer</string> 
+  <string id="33030">Utsikter</string> 
+  <string id="33031">Coverflyt</string> 
+  <string id="33032">Oversett tekst</string> 
+  <string id="33033">Kartliste %s kategori</string> 
+  <string id="33034">36 timer</string> 
+  <string id="33035">Kart</string> 
+  <string id="33036">Pr. time</string> 
+  <string id="33037">Helg</string> 
+  <string id="33038">%s dag</string> 
+  <string id="33049">Alarm</string> 
+  <string id="33050">Alarmer</string> 
+  <string id="33051">Velg dine</string> 
+  <string id="33052">Kontrollér</string> 
+  <string id="33053">Konfigurér</string> 
+  <string id="33054">Sesonger</string> 
+  <string id="33055">Bruk din</string> 
+  <string id="33056">Se dine</string> 
+  <string id="33057">Hør på</string> 
+  <string id="33058">Vis dine</string> 
+  <string id="33059">Konfigurér</string> 
+  <string id="33060">Strøm</string> 
+  <string id="33061">Meny</string> 
+  <string id="33062">Spill</string> 
+  <string id="33063">Valg</string> 
+  <string id="33065">Editor</string> 
+  <string id="33066">Om din</string> 
+  <string id="33067">Stjernerangering</string> 
+  <string id="33068">Bakgrunn</string> 
+  <string id="33069">Bakgrunner</string> 
+  <string id="33070">Egen bakgrunn</string> 
+  <string id="33071">Egne bakgrunner</string> 
+  <string id="33072">Vis Readme</string> 
+  <string id="33073">Vis endringslogg</string> 
+  <string id="33074">Denne versjonen av %s krever minst</string> 
+  <string id="33075">versjon av %s XBMC for å kjøre.</string> 
+  <string id="33076">Vennligst oppdatér XBMC.</string> 
+  <string id="33077">Fant ingen data!</string> 
+  <string id="33078">Neste side</string> 
 </strings>

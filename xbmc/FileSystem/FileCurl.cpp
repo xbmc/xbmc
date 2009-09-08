@@ -413,7 +413,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
   else
     g_curlInterface.easy_setopt(h, CURLOPT_FTP_SKIP_PASV_IP, 1);
 
-  // always allow gzip compression
+  // setup Content-Encoding if requested
   if( m_contentencoding.length() > 0 )
     g_curlInterface.easy_setopt(h, CURLOPT_ENCODING, m_contentencoding.c_str());
   
