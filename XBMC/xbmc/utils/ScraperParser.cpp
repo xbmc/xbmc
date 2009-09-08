@@ -470,10 +470,10 @@ void CScraperParser::Clean(CStdString& strDirty)
     if ((i2=strDirty.Find("!!!ENCODE!!!",i+12)) != CStdString::npos)
     {
       strBuffer = strDirty.substr(i+12,i2-i-12);
-      CUtil::UrlEncode(strBuffer);
+      CUtil::URLEncode(strBuffer);
       strDirty.erase(i,i2-i+12);
       strDirty.Insert(i,strBuffer);
-      i += strlen(strBuffer.size());
+      i += strBuffer.size();
     }
     else
       break;
