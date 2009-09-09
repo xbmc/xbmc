@@ -693,10 +693,8 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 
   if (result)
     return false;
-  else
-    return true;
 
-  return false;
+  return true;
 }
 
 void CFileCurl::Cancel()
