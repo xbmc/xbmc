@@ -37,7 +37,7 @@ CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int BPP
 
 CDXTexture::~CDXTexture()
 {
-  Delete();
+  DestroyTextureObject();
 }
 
 void CDXTexture::CreateTextureObject()
@@ -60,8 +60,6 @@ void CDXTexture::DestroyTextureObject()
 {
   SAFE_RELEASE(m_pTexture);
 }
-
-void DestroyTextureObject();
 
 void CDXTexture::LoadToGPU()
 {
@@ -106,11 +104,6 @@ void CDXTexture::LoadToGPU()
 
 void CDXTexture::Delete()
 {
-  delete [] m_pPixels;
-  DestroyTextureObject();
-
-  m_imageWidth = 0;
-  m_imageHeight = 0;
 }
 
 #endif

@@ -42,7 +42,6 @@ public:
   CDXTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
   virtual ~CDXTexture();
 
-  void Delete();
   void CreateTextureObject();
   void DestroyTextureObject();
   virtual void LoadToGPU();

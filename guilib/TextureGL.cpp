@@ -42,26 +42,18 @@ CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int BPP
 
 CGLTexture::~CGLTexture()
 {
-  Delete();
+  DestroyTextureObject();
 }
-
-void CGLTexture::Delete()
-{
-  m_imageWidth = 0;
-  m_imageHeight = 0;
-
-    delete [] m_pPixels;
-    m_pPixels = NULL;
-  }
 
 void CGLTexture::CreateTextureObject()
 {
   glGenTextures(1, (GLuint*) &m_pTexture);
-  }
+}
 
 void CGLTexture::DestroyTextureObject()
 {
-  glDeleteTextures(1, (GLuint*) &m_pTexture);
+  if (m_pTexture)
+    glDeleteTextures(1, (GLuint*) &m_pTexture);
 }
 
 void CGLTexture::LoadToGPU()
@@ -89,22 +81,20 @@ void CGLTexture::LoadToGPU()
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   unsigned int maxSize = g_Windowing.GetMaxTextureSize();
+  if (m_nTextureHeight > maxSize)
   {
-    if (m_nTextureHeight > maxSize)
-    {
-      CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", m_nTextureHeight, maxSize);
-      m_nTextureHeight = maxSize;
-    }
-    if (m_nTextureWidth > maxSize)
-    {
-      CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", m_nTextureWidth, maxSize);
-#ifndef HAS_GLES
-      glPixelStorei(GL_UNPACK_ROW_LENGTH, m_nTextureWidth);
-#endif
-      m_nTextureWidth = maxSize;
-    }
+    CLog::Log(LOGERROR, "GL: Image height %d too big to fit into single texture unit, truncating to %u", m_nTextureHeight, maxSize);
+    m_nTextureHeight = maxSize;
   }
-  //CLog::Log(LOGNOTICE, "Texture width x height: %d x %d", textureWidth, textureHeight);
+  if (m_nTextureWidth > maxSize)
+  {
+    CLog::Log(LOGERROR, "GL: Image width %d too big to fit into single texture unit, truncating to %u", m_nTextureWidth, maxSize);
+#ifndef HAS_GLES
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, m_nTextureWidth);
+#endif
+    m_nTextureWidth = maxSize;
+  }
+
 #ifdef HAS_GL
   GLenum format = GL_BGRA;
 #elif HAS_GLES

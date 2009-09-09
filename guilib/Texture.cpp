@@ -44,7 +44,7 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
 
 CBaseTexture::~CBaseTexture()
 {
-  
+  delete[] m_pPixels;
 }
 
 void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int BPP)

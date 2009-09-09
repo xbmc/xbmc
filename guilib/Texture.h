@@ -50,8 +50,6 @@ public:
   CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
   virtual ~CBaseTexture();
 
-  virtual void Delete() = 0;
-
   // TODO: Clean up this interface once things have settled down (none of these need to be virtual)
   virtual bool LoadFromFile(const CStdString& texturePath);
   virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels);
