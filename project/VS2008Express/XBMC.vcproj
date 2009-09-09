@@ -4701,6 +4701,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSingles.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSingles.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSong.cpp"
 						>
 					</File>

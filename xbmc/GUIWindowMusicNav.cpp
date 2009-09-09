@@ -128,6 +128,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           destPath = "musicdb://2/";
         else if (strDestination.Equals("Albums"))
           destPath = "musicdb://3/";
+        else if (strDestination.Equals("Singles"))
+          destPath = "musicdb://10/";
         else if (strDestination.Equals("Songs"))
           destPath = "musicdb://4/";
         else if (strDestination.Equals("Top100"))
@@ -333,6 +335,8 @@ CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
     return "Compilations";
   else if (strPath.Equals("musicdb://9/"))
     return "Years";
+  else if (strPath.Equals("musicdb://10/"))
+    return "Singles";
   else if (strPath.Equals("special://musicplaylists/"))
     return "Playlists";
   else

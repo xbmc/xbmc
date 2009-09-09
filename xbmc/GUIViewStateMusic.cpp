@@ -263,6 +263,30 @@ CGUIViewStateMusicDatabase::CGUIViewStateMusicDatabase(const CFileItemList& item
       SetSortOrder(SORT_ORDER_NONE);
     }
     break;
+  case NODE_TYPE_SINGLES:
+    {
+      if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      {
+        AddSortMethod(SORT_METHOD_ARTIST_IGNORE_THE, 557, LABEL_MASKS("%A - %T", "%D"));  // Artist, Title, Duration| empty, empty
+        AddSortMethod(SORT_METHOD_TITLE_IGNORE_THE, 556, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
+        AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS(strTrackLeft, strTrackRight));
+      }
+      else
+      {
+        AddSortMethod(SORT_METHOD_ARTIST, 557, LABEL_MASKS("%A - %T", "%D"));  // Artist, Title, Duration| empty, empty
+        AddSortMethod(SORT_METHOD_TITLE, 556, LABEL_MASKS("%T - %A", "%D"));  // Title, Artist, Duration| empty, empty
+        AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS(strTrackLeft, strTrackRight));
+      }
+      AddSortMethod(SORT_METHOD_DURATION, 555, LABEL_MASKS("%T - %A", "%D"));  // Titel, Artist, Duration| empty, empty
+      AddSortMethod(SORT_METHOD_SONG_RATING, 563, LABEL_MASKS("%T - %A", "%R"));  // Title - Artist, Rating
+      
+      SetSortMethod(g_stSettings.m_viewStateMusicNavSongs.m_sortMethod);
+      
+      SetViewAsControl(g_stSettings.m_viewStateMusicNavSongs.m_viewMode);
+      
+      SetSortOrder(g_stSettings.m_viewStateMusicNavSongs.m_sortOrder);
+    }
+    break;
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
   case NODE_TYPE_ALBUM_TOP100_SONGS:
   case NODE_TYPE_YEAR_SONG:
@@ -335,6 +359,7 @@ void CGUIViewStateMusicDatabase::SaveViewState()
     case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
       SaveViewToDb(m_items.m_strPath, WINDOW_MUSIC_NAV);
       break;
+    case NODE_TYPE_SINGLES:
     case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:
     case NODE_TYPE_SONG:
     case NODE_TYPE_YEAR_SONG:
