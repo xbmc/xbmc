@@ -25,6 +25,7 @@
 #include "GUIUserMessages.h"
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
+#include "StringUtils.h"
 
 #define SEEK_BAR_DISPLAY_TIME 2000L
 #define SEEK_BAR_SEEK_TIME     500L

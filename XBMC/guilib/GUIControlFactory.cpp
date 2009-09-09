@@ -63,6 +63,7 @@
 #include "GUIColorManager.h"
 #include "SkinInfo.h"
 #include "Settings.h"
+#include "StringUtils.h"
 
 using namespace std;
 

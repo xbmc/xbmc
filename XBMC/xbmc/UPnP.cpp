@@ -50,6 +50,7 @@
 #include "GUISettings.h"
 #include "GUIUserMessages.h"
 #include "Settings.h"
+#include "StringUtils.h"
 #include "FileItem.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"

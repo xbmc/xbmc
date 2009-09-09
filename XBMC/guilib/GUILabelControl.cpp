@@ -24,6 +24,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIListItem.h"
+#include "StringUtils.h"
 
 #include "LocalizeStrings.h"  // for CGUIInfoLabel
 

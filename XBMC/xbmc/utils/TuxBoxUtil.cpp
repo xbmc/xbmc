@@ -38,6 +38,7 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 using namespace XFILE;
 using namespace std;

@@ -27,12 +27,11 @@
  *
  */
 
-#include "StringUtils.h"
 #include "Temperature.h"
 #include "CriticalSection.h"
-#include "CPUInfo.h"
 #include "IMsgTargetCallback.h"
 #include "inttypes.h"
+#include "DateTime.h"
 
 #include <list>
 #include <map>

@@ -83,6 +83,7 @@
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"
+#include "CPUInfo.h"
 
 #include "KeyboardStat.h"
 #include "MouseStat.h"

@@ -56,6 +56,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"

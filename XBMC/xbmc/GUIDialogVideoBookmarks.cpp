@@ -37,6 +37,7 @@
 #include "Texture.h"
 #include "Crc32.h"
 #include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 using namespace std;
 

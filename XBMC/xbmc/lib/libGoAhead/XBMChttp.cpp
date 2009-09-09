@@ -46,6 +46,7 @@
 #include "GUISettings.h"
 #include "FileSystem/FactoryDirectory.h"
 #include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

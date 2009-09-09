@@ -32,17 +32,9 @@
 #ifndef __STRINGUTILS_H_
 #define __STRINGUTILS_H_
 
+#include "DateTime.h"
 #include "StdString.h"
 #include <vector>
-
-enum TIME_FORMAT { TIME_FORMAT_GUESS = 0,
-                   TIME_FORMAT_SS,
-                   TIME_FORMAT_MM,
-                   TIME_FORMAT_MM_SS,
-                   TIME_FORMAT_HH,
-                   TIME_FORMAT_HH_SS, // not particularly useful, but included so that they can be bit-tested
-                   TIME_FORMAT_HH_MM,
-                   TIME_FORMAT_HH_MM_SS };
 
 class StringUtils
 {

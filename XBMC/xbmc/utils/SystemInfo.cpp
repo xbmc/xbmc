@@ -34,6 +34,7 @@
 #include "WindowingFactory.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
+#include "CPUInfo.h"
 
 CSysInfo g_sysinfo;
 
