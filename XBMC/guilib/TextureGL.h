@@ -42,7 +42,6 @@ public:
   CGLTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
   virtual ~CGLTexture();
   
-  void Delete();
   void CreateTextureObject();
   virtual void DestroyTextureObject();
   void LoadToGPU();
