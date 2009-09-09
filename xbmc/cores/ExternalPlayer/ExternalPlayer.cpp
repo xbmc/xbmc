@@ -30,6 +30,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "RegExp.h"
+#include "StringUtils.h"
 #include "URL.h"
 #if defined(_WIN32PC)
   #include "Windows.h"
