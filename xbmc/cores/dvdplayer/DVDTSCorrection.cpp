@@ -25,6 +25,8 @@
 #include "DVDClock.h"
 #include "utils/log.h"
 
+#define MAXERR 0.01
+
 using namespace std;
 
 CPullupCorrection::CPullupCorrection()
@@ -210,7 +212,6 @@ std::vector<double> CPullupCorrection::BuildPattern(int patternlength)
   return pattern;
 }
 
-#define MAXERR 0.01
 inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
 {
   if (fabs(diff1) < MAXERR && fabs(diff2) < MAXERR)
@@ -221,7 +222,6 @@ inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
   
   return fabs(1.0 - (diff1 / diff2)) <= MAXERR;
 }
-#undef MAXERR
 
 //check if diffs1 is the same as diffs2
 inline bool CPullupCorrection::MatchDifftype(int* diffs1, int* diffs2, int nrdiffs)
@@ -238,7 +238,7 @@ inline bool CPullupCorrection::MatchDifftype(int* diffs1, int* diffs2, int nrdif
 bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 {
   //if no pattern was detected or if the size of the patterns differ we don't have a match
-  if (pattern.size() != m_pattern.size() || pattern.size() < 1)
+  if (pattern.size() != m_pattern.size() || pattern.size() < 1 || (pattern.size() == 1 && pattern[0] <= MAXERR))
   {
     m_pattern = pattern; //save the current pattern
     m_patternpos = 0;    //reset the position
