@@ -2510,7 +2510,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return false;
     }
   }
-  else if (execute.Equals("setfocus") || execute.Equals("control.setfocus") && params.size())
+  else if (execute.Equals("setfocus") || (execute.Equals("control.setfocus") && params.size()))
   {
     int controlID = atol(params[0].c_str());
     int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;

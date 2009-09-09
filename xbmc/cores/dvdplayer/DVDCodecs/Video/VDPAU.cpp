@@ -1111,8 +1111,8 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     future = render->surface;
   }
 
-  if (( outRectVid.x1 != g_graphicsContext.GetWidth() ) ||
-      ( outRectVid.y1 != g_graphicsContext.GetHeight() ))
+  if (( (int)outRectVid.x1 != g_graphicsContext.GetWidth() ) ||
+      ( (int)outRectVid.y1 != g_graphicsContext.GetHeight() ))
   {
     CSingleLock lock(g_graphicsContext);
     outRectVid.x0 = 0;
