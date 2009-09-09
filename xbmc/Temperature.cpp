@@ -387,7 +387,9 @@ void CTemperature::Serialize(CArchive& ar)
   else
   {
     ar>>m_value;
-    ar>>(int&)m_state;
+    int state;
+    ar>>(int&)state;
+    m_state = CTemperature::STATE(state);
   }
 }
 
