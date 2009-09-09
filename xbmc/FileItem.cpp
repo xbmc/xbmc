@@ -441,10 +441,10 @@ bool CFileItem::Exists() const
   }
 
   CStdString strPath = m_strPath;
- 
+
   if (CUtil::IsMultiPath(strPath))
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
- 
+
   if (CUtil::IsStack(strPath))
     strPath = CStackDirectory::GetFirstStackedFile(strPath);
 
@@ -504,8 +504,8 @@ bool CFileItem::IsAudio() const
   if (HasVideoInfoTag()) return false;
   if (HasPictureInfoTag()) return false;
   if (IsCDDA()) return true;
-  if (IsShoutCast() && !m_bIsFolder) return true;
-  if (IsLastFM() && !m_bIsFolder) return true;
+  if (!m_bIsFolder && IsShoutCast()) return true;
+  if (!m_bIsFolder && IsLastFM()) return true;
 
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("audio/") )
@@ -980,7 +980,7 @@ void CFileItem::SetCachedArtistThumb()
 void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
 {
   if (HasThumbnail()) return;
-  
+
   SetCachedMusicThumb();
   if (!HasThumbnail())
     SetUserMusicThumb(alwaysCheckRemote);
@@ -2445,7 +2445,7 @@ CStdString CFileItem::GetUserVideoThumb() const
     else return "";
   }
 
-  if (m_strPath.IsEmpty() 
+  if (m_strPath.IsEmpty()
   || m_bIsShareOrDrive
   || IsInternetStream()
   || CUtil::IsUPnP(m_strPath)
@@ -2517,7 +2517,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 {
   if (IsLabelPreformated())
     return GetLabel();
-  
+
   CStdString strMovieName = m_strPath;
 
   if (IsMultiPath())
@@ -2614,8 +2614,8 @@ CStdString CFileItem::CacheFanart(bool probe) const
   // no local fanart available for these
   if (IsInternetStream()
   || CUtil::IsUPnP(strFile)
-  || IsLiveTV() 
-  || IsPlugin() 
+  || IsLiveTV()
+  || IsPlugin()
   || CUtil::IsFTP(strFile))
     return "";
 
@@ -2640,7 +2640,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
     CStdString strDir;
     CUtil::GetDirectory(strFile, strDir);
     if (strDir.IsEmpty()) return "";
-    
+
     CFileItemList items;
     CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
     CUtil::RemoveExtension(strFile);
@@ -2690,7 +2690,7 @@ CStdString CFileItem::GetCachedFanart() const
       int iShowId = database.GetTvShowId(GetVideoInfoTag()->m_strPath);
       CStdString showPath;
       database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
-      return GetCachedThumb(showPath,g_settings.GetVideoFanartFolder()); 
+      return GetCachedThumb(showPath,g_settings.GetVideoFanartFolder());
     }
     return GetCachedThumb(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
   }
