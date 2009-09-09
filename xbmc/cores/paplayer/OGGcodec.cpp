@@ -147,7 +147,8 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
   //  Seek to the logical bitstream to play
   if (m_TimeOffset>0.0)
   {
-    if (m_dll.ov_time_seek_page(&m_VorbisFile, m_TimeOffset)!=0)
+    int result;
+    if ((result =m_dll.ov_time_seek(&m_VorbisFile, m_TimeOffset))!=0)
     {
       CLog::Log(LOGERROR, "OGGCodec: Can't seek to the bitstream start time (%s)", strFile1.c_str());
       return false;
