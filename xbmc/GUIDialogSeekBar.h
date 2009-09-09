@@ -22,7 +22,7 @@
  */
 
 #include "GUIDialog.h"
-#include "StringUtils.h"
+#include "DateTime.h"
 
 class CGUIDialogSeekBar : public CGUIDialog
 {

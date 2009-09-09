@@ -27,6 +27,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
 #include "SkinInfo.h"
+#include "StringUtils.h"
 #include "GUIControlFactory.h"
 #include "MouseStat.h"
 

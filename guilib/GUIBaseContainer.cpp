@@ -27,6 +27,7 @@
 #include "GUILabelControl.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
+#include "StringUtils.h"
 #include "FileItem.h"
 
 using namespace std;

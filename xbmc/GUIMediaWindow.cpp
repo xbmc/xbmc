@@ -50,6 +50,7 @@
 #include "PlayList.h"
 #include "MediaManager.h"
 #include "Settings.h"
+#include "StringUtils.h"
 #include "LocalizeStrings.h"
 
 #define CONTROL_BTNVIEWASICONS     2

@@ -45,6 +45,7 @@
 #include "FileItem.h"
 #include "Picture.h"
 #include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 #include <algorithm>
 

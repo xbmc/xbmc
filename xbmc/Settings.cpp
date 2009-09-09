@@ -49,6 +49,7 @@
 #include "FileItem.h"
 #include "LangInfo.h"
 #include "LocalizeStrings.h"
+#include "StringUtils.h"
 #ifdef _WIN32PC
 #include "win32/WIN32Util.h"
 #endif

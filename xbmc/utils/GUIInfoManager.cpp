@@ -61,6 +61,8 @@
 #include "AdvancedSettings.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
+#include "CPUInfo.h"
+#include "StringUtils.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"

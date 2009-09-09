@@ -35,6 +35,7 @@
 #include "DNSNameCache.h"
 #include "Id3Tag.h"
 #include "AdvancedSettings.h"
+#include "StringUtils.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "utils/GUIInfoManager.h"

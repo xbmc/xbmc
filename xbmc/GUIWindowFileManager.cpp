@@ -55,6 +55,7 @@
 #include "GUISettings.h"
 #include "MouseStat.h"
 #include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace XFILE;

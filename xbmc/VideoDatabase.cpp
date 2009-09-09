@@ -40,6 +40,7 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "Settings.h"
+#include "StringUtils.h"
 #include "LocalizeStrings.h"
 
 using namespace std;

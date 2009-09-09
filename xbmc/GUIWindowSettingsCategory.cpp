@@ -100,6 +100,7 @@
 #include "MouseStat.h"
 #include "LocalizeStrings.h"
 #include "LangInfo.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;

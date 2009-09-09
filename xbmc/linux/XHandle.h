@@ -29,7 +29,6 @@
 #include <pthread.h>
 
 #include "PlatformDefs.h"
-#include "StringUtils.h"
 #include "XHandlePublic.h"
 #include <list>
 
