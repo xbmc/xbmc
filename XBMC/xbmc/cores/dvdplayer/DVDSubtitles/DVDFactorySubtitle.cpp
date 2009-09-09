@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DVDFactorySubtitle.h"
 
+#include "DVDSubtitleStream.h"
 //#include "DVDSubtitleParserSpu.h"
 #include "DVDSubtitleParserSubrip.h"
 #include "DVDSubtitleParserMicroDVD.h"

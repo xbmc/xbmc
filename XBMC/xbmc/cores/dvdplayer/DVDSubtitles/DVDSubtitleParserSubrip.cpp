@@ -24,7 +24,6 @@
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
 #include "StdString.h"
-#include "utils/CharsetConverter.h"
 
 using namespace std;
 
@@ -46,7 +45,7 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
   char line[1024];
   char* pLineStart;
 
-  while (m_pStream->ReadLine(line, sizeof(line)))
+  while (m_stringstream.getline(line, sizeof(line)))
   {
     pLineStart = line;
 
@@ -73,8 +72,12 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
         pOverlay->iPTSStartTime = ((double)(((hh1 * 60 + mm1) * 60) + ss1) * 1000 + ms1) * (DVD_TIME_BASE / 1000);
         pOverlay->iPTSStopTime  = ((double)(((hh2 * 60 + mm2) * 60) + ss2) * 1000 + ms2) * (DVD_TIME_BASE / 1000);
 
-        while (m_pStream->ReadLine(line, sizeof(line)))
+        while (m_stringstream.getline(line, sizeof(line)))
         {
+
+          if ((strlen(line) > 0) && (line[strlen(line) - 1] == '\r'))
+            line[strlen(line) - 1] = 0;
+
           pLineStart = line;
           // trim
           while (pLineStart[0] == ' ') pLineStart++;
@@ -82,19 +85,8 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
           // empty line, next subtitle is about to start
           if (strlen(pLineStart) <= 0) break;
 
-          CStdStringW strUTF16;
-          CStdStringA strUTF8;
-
-          if (g_charsetConverter.isValidUtf8(line))
-            strUTF8 = line;
-          else
-          {
-            g_charsetConverter.subtitleCharsetToW(line, strUTF16);
-            g_charsetConverter.wToUTF8(strUTF16,strUTF8);
-          }
-
           // add a new text element to our container
-          pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
+          pOverlay->AddElement(new CDVDOverlayText::CElementText(line));
         }
 
         m_collection.Add(pOverlay);
@@ -102,7 +94,6 @@ bool CDVDSubtitleParserSubrip::Open(CDVDStreamInfo &hints)
     }
   }
 
-  m_pStream->Close();
   return true;
 }
 
