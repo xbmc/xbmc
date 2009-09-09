@@ -42,6 +42,7 @@
 #include "DirectoryNodeYear.h"
 #include "DirectoryNodeYearAlbum.h"
 #include "DirectoryNodeYearSong.h"
+#include "DirectoryNodeSingles.h"
 #include "MusicInfoTag.h"
 #include "URL.h"
 #include "AdvancedSettings.h"
@@ -120,6 +121,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeAlbum(strName, pParent);
   case NODE_TYPE_SONG:
     return new CDirectoryNodeSong(strName, pParent);
+  case NODE_TYPE_SINGLES:
+    return new CDirectoryNodeSingles(strName, pParent);
   case NODE_TYPE_TOP100:
     return new CDirectoryNodeTop100(strName, pParent);
   case NODE_TYPE_ALBUM_TOP100:

@@ -49,6 +49,8 @@
 		7C62F22F104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F22C104FC8B9002AD2C1 /* AdvancedSettings.cpp */; };
 		7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
 		7C62F24310505BC7002AD2C1 /* Bookmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F24010505BC7002AD2C1 /* Bookmark.cpp */; };
+		7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */; };
+		7C62F45F1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */; };
 		7C779DA6104A4B2E00F444C4 /* GUIControlFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */; };
 		7C779DA8104A4B2E00F444C4 /* GUIFontTTFGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D99104A4B2E00F444C4 /* GUIFontTTFGL.cpp */; };
 		7C779DA9104A4B2E00F444C4 /* GUIImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779D9B104A4B2E00F444C4 /* GUIImage.cpp */; };
@@ -1848,6 +1850,8 @@
 		7C62F22D104FC8B9002AD2C1 /* AdvancedSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvancedSettings.h; sourceTree = "<group>"; };
 		7C62F24010505BC7002AD2C1 /* Bookmark.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bookmark.cpp; sourceTree = "<group>"; };
 		7C62F24110505BC7002AD2C1 /* Bookmark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bookmark.h; sourceTree = "<group>"; };
+		7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSingles.cpp; sourceTree = "<group>"; };
+		7C62F45D1057A62D002AD2C1 /* DirectoryNodeSingles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSingles.h; sourceTree = "<group>"; };
 		7C779D94104A4B2E00F444C4 /* GUIActionDescriptor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIActionDescriptor.h; sourceTree = "<group>"; };
 		7C779D95104A4B2E00F444C4 /* GUIControlFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControlFactory.cpp; sourceTree = "<group>"; };
 		7C779D96104A4B2E00F444C4 /* GUIControlFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlFactory.h; sourceTree = "<group>"; };
@@ -5568,6 +5572,8 @@
 		E38E170A0D25F9FA00618676 /* MusicDatabaseDirectory */ = {
 			isa = PBXGroup;
 			children = (
+				7C62F45C1057A62D002AD2C1 /* DirectoryNodeSingles.cpp */,
+				7C62F45D1057A62D002AD2C1 /* DirectoryNodeSingles.h */,
 				E38E170B0D25F9FA00618676 /* DirectoryNode.cpp */,
 				E38E170C0D25F9FA00618676 /* DirectoryNode.h */,
 				E38E170D0D25F9FA00618676 /* DirectoryNodeAlbum.cpp */,
@@ -7971,6 +7977,7 @@
 				F5D8F86C104CD1C0004A11AB /* DVDInputStreamMMS.cpp in Sources */,
 				7C62F22E104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */,
 				7C62F24210505BC7002AD2C1 /* Bookmark.cpp in Sources */,
+				7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8823,6 +8830,7 @@
 				F5D8F86D104CD1C0004A11AB /* DVDInputStreamMMS.cpp in Sources */,
 				7C62F22F104FC8B9002AD2C1 /* AdvancedSettings.cpp in Sources */,
 				7C62F24310505BC7002AD2C1 /* Bookmark.cpp in Sources */,
+				7C62F45F1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
