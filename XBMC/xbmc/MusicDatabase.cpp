@@ -767,7 +767,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
   album.idAlbum = pDS->fv(album_idAlbum).get_asLong();
   album.strAlbum = pDS->fv(album_strAlbum).get_asString();
   if (album.strAlbum.IsEmpty())
-    album.strAlbum = "Singles";
+    album.strAlbum = g_localizeStrings.Get(1050);
   album.strArtist = pDS->fv(album_strArtist).get_asString();
   album.strArtist += pDS->fv(album_strExtraArtists).get_asString();
   album.strGenre = pDS->fv(album_strGenre).get_asString();
