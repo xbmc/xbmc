@@ -36,7 +36,7 @@ void CPullupCorrection::Flush()
 {
   m_ringpos = 0;
   m_ptscorrection = 0.0;
-  m_prevpts = 0.0;
+  m_prevpts = DVD_NOPTS_VALUE;
   m_patternpos = 0;
   m_ringfill = 0;
   m_pattern.clear();
@@ -47,7 +47,7 @@ void CPullupCorrection::Flush()
 void CPullupCorrection::Add(double pts)
 {
   //can't get a diff with just one pts
-  if (m_prevpts == 0.0)
+  if (m_prevpts == DVD_NOPTS_VALUE)
   {
     m_prevpts = pts;
     return;
