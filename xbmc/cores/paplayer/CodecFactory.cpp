@@ -205,7 +205,10 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     try
     {
       if (codec->Init(strFile, filecache))
-        return codec;
+      {
+        delete codec; // class can't be inited twice - deinit doesn't properly deinit some members.
+        return new OGGCodec;
+      }
     }
     catch( ... )
     {
