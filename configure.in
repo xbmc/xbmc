@@ -1210,7 +1210,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     ./configure \
       --extra-cflags="-D_XBOX" \
       --disable-static \
-      --disable-altivec \
       --disable-ipv6 \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
