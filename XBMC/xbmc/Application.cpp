@@ -5415,8 +5415,9 @@ bool CApplication::AlwaysProcess(const CAction& action)
   // check if this button is mapped to a built-in function
   if (action.strAction)
   {
-    CStdString builtInFunction, param;
-    CUtil::SplitExecFunction(action.strAction, builtInFunction, param);
+    CStdString builtInFunction;
+    vector<CStdString> params;
+    CUtil::SplitExecFunction(action.strAction, builtInFunction, params);
     builtInFunction.ToLower();
 
     // should this button be handled normally or just cancel the screensaver?
