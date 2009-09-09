@@ -1739,7 +1739,7 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
 
 void CUtil::PlayDVD()
 {
-#ifdef HAS_DVD_PLAYER
+#ifdef HAS_DVDPLAYER
   CIoSupport::Dismount("Cdrom0");
   CIoSupport::RemapDriveLetter('D', "Cdrom0");
   CFileItem item("dvd://1", false);
