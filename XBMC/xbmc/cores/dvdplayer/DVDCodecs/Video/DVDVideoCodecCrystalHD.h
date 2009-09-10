@@ -20,6 +20,7 @@
  */
 
 #pragma once
+#define HAVE_LIBCRYSTALHD
 #if defined(HAVE_LIBCRYSTALHD)
 
 #include "CrystalHD.h"

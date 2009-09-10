@@ -24,6 +24,7 @@
 #endif
 
 #include "stdafx.h"
+#define HAVE_LIBCRYSTALHD
 #if defined(HAVE_LIBCRYSTALHD)
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
@@ -172,25 +173,39 @@ void CDVDVideoCodecCrystalHD::Dispose()
 
 int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
-  bool iGotPicture;
-  
-  int ret = VC_ERROR;
+  int ret = 0;
+  bool inputFull = false;
 
-  // Handle Input
-  if (pData)
+  int maxWait = 40;
+  unsigned int lastTime = GetTickCount();
+  unsigned int maxTime = lastTime + maxWait;
+  while ((lastTime = GetTickCount()) < maxTime)
   {
-    // Push data to the decoder input thread. We cannot return the data to the caller. 
-    // It will be lost if we do not send it.
-    m_Device->AddInput(&iGotPicture, pData, iSize, pts);
-    ret = VC_BUFFER;
+    // Handle Input
+    if (pData)
+    {
+      if (m_Device->AddInput(pData, iSize, pts))
+        pData = NULL;
+      else
+        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
+    }
+      // Handle Output
+    if (m_Device->GetReadyCount())
+      ret |= VC_PICTURE;
+    
+    if (m_Device->GetInputCount() < 10)
+      ret |= VC_BUFFER;
+
+    if (!pData && (ret & VC_PICTURE))
+      break;
   }
 
-  // Handle Output
-  if (iGotPicture)
-  {
-    ret |= VC_PICTURE;
-  }
-  
+  if (lastTime >= maxTime)
+    CLog::Log(LOGDEBUG, "%s: Timeout in CDVDVideoCodecCrystalHD::Decode. ret: 0x%08x pData: %p", __MODULE_NAME__, ret, pData);
+
+  if (!ret)
+    ret = VC_ERROR;
+
   return ret;
 }
 

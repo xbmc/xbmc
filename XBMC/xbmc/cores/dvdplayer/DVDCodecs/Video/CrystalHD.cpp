@@ -25,6 +25,7 @@
   #include "config.h"
 #endif
 
+#define HAVE_LIBCRYSTALHD
 #if defined(HAVE_LIBCRYSTALHD)
 #include "CrystalHD.h"
 #include "DVDClock.h"
@@ -363,9 +364,10 @@ void CMPCOutputThread::AddFrame(CMPCDecodeBuffer* pBuffer)
 
 void CMPCOutputThread::SetFrameRate(uint32_t resolution)
 {
-	m_interlace = FALSE;
+  m_interlace = FALSE;
   
-	switch (resolution) {
+  switch (resolution) 
+  {
     case BCM::vdecRESOLUTION_480p0:
       m_framerate = 60;
     break;
@@ -458,14 +460,14 @@ void CMPCOutputThread::SetFrameRate(uint32_t resolution)
     default:
       m_framerate = 23.976;
     break;
-	}
+  }
   
-	if(m_interlace)  {
-		m_framerate /= 2;
-	}
+  if(m_interlace)
+  {
+    m_framerate /= 2;
+  }
   CLog::Log(LOGDEBUG, "%s: resolution = %x  interlace = %d", __MODULE_NAME__, resolution, m_interlace);
-  
-	return;
+
 }
 
 void CMPCOutputThread::SetAspectRatio(BCM::BC_PIC_INFO_BLOCK *pic_info)
@@ -569,54 +571,18 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   CMPCDecodeBuffer* pBuffer = AllocBuffer();
   if (!pBuffer) // No free pre-allocated buffers so make one
   {
-    // why are we getting buffer acqumulation?
-    // maybe should throttle demuxer feed into DtsProcInput?
-    // don't let them get more than 6 deep less we overrun DIL DMA buffers (8).
-    while(m_ReadyList.Count() > 6) {
-      AtomicDecrement(&m_BufferCount);
-      delete m_ReadyList.Pop();
-    }
-    pBuffer = AllocBuffer();
-    if (!pBuffer) // No free pre-allocated buffers so make one
-    {
-      pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
-      CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, m_BufferCount, pBuffer->GetSize());    
-    }
+    pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
+    CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, m_BufferCount, pBuffer->GetSize());    
   }
 
   // Set-up output struct
   BCM::BC_DTS_PROC_OUT procOut;
   memset(&procOut, 0, sizeof(BCM::BC_DTS_PROC_OUT));
-  procOut.PoutFlags = BCM::BC_POUT_FLAGS_SIZE | BCM::BC_POUT_FLAGS_YV12;
-  procOut.PicInfo.width = m_width;
-  procOut.PicInfo.height = m_height;
-  procOut.YbuffSz = m_width * m_height;
-  procOut.UVbuffSz = procOut.YbuffSz / 2;
 
   // Fetch data from the decoder
   BCM::DtsReleaseOutputBuffs(m_Device, NULL, FALSE);
   ret = BCM::DtsProcOutputNoCopy(m_Device, m_OutputTimeout, &procOut);
 
-/*
-  // Read format data from driver
-  printf("New Format\n----------------------------------\n");
-  printf("\tTimeStamp: %llu\n", procOut.PicInfo.timeStamp);
-  printf("\tPicture Number: %d\n", procOut.PicInfo.picture_number);
-  printf("\tWidth: %d\n", procOut.PicInfo.width);
-  printf("\tHeight: %d\n", procOut.PicInfo.height);
-  printf("\tChroma: 0x%03x\n", procOut.PicInfo.chroma_format);
-  printf("\tPulldown: %d\n", procOut.PicInfo.pulldown);         
-  printf("\tFlags: 0x%08x\n", procOut.PicInfo.flags);        
-  printf("\tFrame Rate/Res: %d\n", procOut.PicInfo.frame_rate);       
-  printf("\tAspect Ratio: %d\n", procOut.PicInfo.aspect_ratio);     
-  printf("\tColor Primaries: %d\n", procOut.PicInfo.colour_primaries);
-  printf("\tMetaData: %d\n", procOut.PicInfo.picture_meta_payload);
-  printf("\tSession Number: %d\n", procOut.PicInfo.sess_num);
-  printf("\tTimeStamp: %d\n", procOut.PicInfo.ycom);
-  printf("\tCustom Aspect: %d\n", procOut.PicInfo.custom_aspect_ratio_width_height);
-  printf("\tFrames to Drop: %d\n", procOut.PicInfo.n_drop);
-  printf("\tH264 Valid Fields: 0x%08x\n", procOut.PicInfo.other.h264.valid);
-*/
   switch (ret)
   {
     case BCM::BC_STS_SUCCESS:
@@ -676,13 +642,14 @@ void CMPCOutputThread::Process()
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
-    CMPCDecodeBuffer* pBuffer = GetDecoderOutput(); // Check for output frames
-    if (pBuffer)
-    {
-      AddFrame(pBuffer);
-      //Sleep(30);
+    if (GetReadyCount() < 2)
+    {  
+      CMPCDecodeBuffer* pBuffer = GetDecoderOutput(); // Check for output frames
+      if (pBuffer)
+        AddFrame(pBuffer);
     }
-    
+    else
+      Sleep(10);    
   }
   CLog::Log(LOGDEBUG, "%s: Output Thread Stopped...", __MODULE_NAME__);
 }
@@ -739,7 +706,7 @@ bool CCrystalHD::InitHardware(void)
 bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
 {
   BCM::BC_STATUS res;
-  BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
+  BCM::U32 mode = BCM::DTS_PLAYBACK_MODE | BCM::DTS_PLAYBACK_DROP_RPT_MODE | DTS_DFLT_RESOLUTION(BCM::vdecRESOLUTION_720p23_976);
   
   if (m_IsConfigured)
   {
@@ -805,8 +772,8 @@ bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
       break;
     }
     
-    //m_pInputThread = new CMPCInputThread(m_Device);
-    //m_pInputThread->Create();
+    m_pInputThread = new CMPCInputThread(m_Device);
+    m_pInputThread->Create();
     m_pOutputThread = new CMPCOutputThread(m_Device);
     m_pOutputThread->Create();
 
@@ -819,14 +786,12 @@ bool CCrystalHD::Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type)
 
 void CCrystalHD::Close(void)
 {
-  /*
   if (m_pInputThread)
   {
     m_pInputThread->StopThread();
     delete m_pInputThread;
     m_pInputThread = NULL;
   }
-  */
 
   if (m_pOutputThread)
   {
@@ -851,7 +816,7 @@ void CCrystalHD::Close(void)
 
 void CCrystalHD::Flush(void)
 {
-  //m_pInputThread->Flush();
+  m_pInputThread->Flush();
   m_pOutputThread->Flush();
 
   // Flush all the decoder buffers, input, decoded and to be decoded.
@@ -863,53 +828,29 @@ void CCrystalHD::Flush(void)
   CLog::Log(LOGDEBUG, "%s: Flush...", __MODULE_NAME__);
 }
 
-bool CCrystalHD::AddInput(bool *got_picture_ptr, unsigned char *pData, size_t size, double pts)
+unsigned int CCrystalHD::GetInputCount()
 {
-  *got_picture_ptr = false;
+  if (m_pInputThread)
+    return m_pInputThread->GetQueueLen();
+  else
+    return false;  
+}
 
-  if (pData)
-  {
-    BCM::BC_STATUS ret = BCM::DtsProcInput(m_Device, pData, size, (uint64_t)(pts * 10), FALSE);
-    if (ret == BCM::BC_STS_BUSY)
-    {
-      CLog::Log(LOGDEBUG, "%s: ProcInput returned BC_STS_BUSY", __MODULE_NAME__);
-      //Sleep(1); // Buffer is full
-    }
-  }
-  // Handle Input
-  /*
-  if (pData)
-  {
-    // Try to push data to the decoder input thread. We cannot return the data to the caller. 
-    // It will be lost if we do not send it.
-    int maxWait = 40;
-    int waitTime = 0;
-    int waitInterval = 10;
-    for (waitTime = 0; waitTime < maxWait; waitTime += waitInterval)
-    {
-      if (m_pInputThread->AddInput(pData, size, (uint64_t)(pts * 10) ))
-      {
-        //CLog::Log(LOGDEBUG, "%s: Added %d bytes to decoder input (Call Time: %llu, Interval %llu, Input Queue Len: %d)", __MODULE_NAME__, iSize, g_ClientTimer.GetTimeSincePunchIn(), g_ClientTimer.GetIntervalTime(), m_pInputThread->GetQueueLen());
-        break;
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "%s: m_pInputThread->AddInput full", __MODULE_NAME__);
-        Sleep(waitInterval);
-      }
-    }
-  }
-  */
+bool CCrystalHD::AddInput(unsigned char *pData, size_t size, double pts)
+{
+  if (m_pInputThread)
+    return m_pInputThread->AddInput(pData, size, (uint64_t)(pts * 10));
+  else
+    return false;
+}
 
-  // Handle Output
-  if (m_pOutputThread->GetReadyCount())
-  {
-    *got_picture_ptr = true;
-    //CLog::Log(LOGDEBUG, "%s: Got a picture (Call Time: %llu, Interval %llu, Input Queue Len: %d)", __MODULE_NAME__, g_ClientTimer.GetTimeSincePunchIn(), g_ClientTimer.GetIntervalTime(), m_pInputThread->GetQueueLen());
-    //ret |= VC_PICTURE;
-  }
 
-  return(true);
+unsigned int CCrystalHD::GetReadyCount()
+{
+  if (m_pOutputThread)
+    return m_pOutputThread->GetReadyCount();
+  else
+    return 0;
 }
 
 bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
@@ -980,13 +921,12 @@ void CCrystalHD::SetDropState(bool bDrop)
     m_drop_state = bDrop;
     if (m_drop_state)
     {
-      //while (m_pOutputThread->GetNext() != NULL);
-      BCM::DtsSetFFRate(m_Device, 2);
+      //BCM::DtsSetFFRate(m_Device, 2);
       //BCM::DtsDropPictures(m_Device, 1);
     }
     else
     {
-      BCM::DtsSetFFRate(m_Device, 1);
+      //BCM::DtsSetFFRate(m_Device, 1);
       //BCM::DtsDropPictures(m_Device, 0);
     }
     

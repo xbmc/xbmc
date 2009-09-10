@@ -19,6 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#define HAVE_LIBCRYSTALHD
 #if defined(HAVE_LIBCRYSTALHD)
 
 #include <deque>
@@ -114,7 +115,9 @@ public:
   bool Open(BCM_STREAM_TYPE stream_type, BCM_CODEC_TYPE codec_type);
   void Close(void);
   void Flush(void);
-  bool AddInput(bool *got_picture_ptr, unsigned char *pData, size_t size, double pts);
+  unsigned int GetInputCount();
+  bool AddInput(unsigned char *pData, size_t size, double pts);
+  unsigned int GetReadyCount();
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
   bool ReleasePicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
