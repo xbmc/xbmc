@@ -24,7 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#ifndef HAS_SDL_2D
+
+#ifdef HAS_GL
 #include <locale.h>
 #include "LinuxRendererGL.h"
 #include "Application.h"
@@ -45,8 +46,6 @@
 #ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
-
-#ifdef HAS_GL
 
 using namespace Shaders;
 
@@ -2240,7 +2239,5 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
 }
-
-#endif
 
 #endif
