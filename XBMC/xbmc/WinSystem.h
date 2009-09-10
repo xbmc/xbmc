@@ -62,10 +62,10 @@ protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate);
   
   WindowSystemType m_eWindowSystem;
-  unsigned int m_nWidth;
-  unsigned int m_nHeight;
-  unsigned int m_nTop;
-  unsigned int m_nLeft;
+  int m_nWidth;
+  int m_nHeight;
+  int m_nTop;
+  int m_nLeft;
   bool m_bWindowCreated;
   bool m_bFullScreen;
   int m_nScreen;
