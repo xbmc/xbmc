@@ -41,36 +41,35 @@ bool CDVDSubtitleParserText::Open()
       return false;
   }
   
-    unsigned char buffer[16384];
-    int size_read = 0;
-    size_read = m_pStream->Read(buffer,3);
-    bool isUTF8 = false;
-    if (buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
-      isUTF8 = true;
-    else
-    {
-      buffer[size_read] = '\0';
-      m_stringstream << buffer;
-    }
-    while( (size_read = m_pStream->Read(buffer, sizeof(buffer)-1) ) > 0 )
-    {
-      buffer[size_read] = '\0';
-      m_stringstream << buffer;
-    }
+  unsigned char buffer[16384];
+  int size_read = 0;
+  size_read = m_pStream->Read(buffer,3);
+  bool isUTF8 = false;
+  if (buffer[0] == 0xEF && buffer[1] == 0xBB && buffer[2] == 0xBF)
+    isUTF8 = true;
+  else
+  {
+    buffer[size_read] = '\0';
+    m_stringstream << buffer;
+  }
+  while( (size_read = m_pStream->Read(buffer, sizeof(buffer)-1) ) > 0 )
+  {
+    buffer[size_read] = '\0';
+    m_stringstream << buffer;
+  }
 
-    // Check whole file of UTF8
-    if (!isUTF8)
-      isUTF8 = g_charsetConverter.isValidUtf8(m_stringstream.str());
+  if (!isUTF8)
+    isUTF8 = g_charsetConverter.isValidUtf8(m_stringstream.str());
 
-    if (!isUTF8)
-    {
-      CStdStringW strUTF16;
-      CStdString strUTF8;
-      g_charsetConverter.subtitleCharsetToW(m_stringstream.str(), strUTF16);
-      g_charsetConverter.wToUTF8(strUTF16,strUTF8);
-      m_stringstream.str("");
-      m_stringstream << strUTF8;
-    }
+  if (!isUTF8)
+  {
+    CStdStringW strUTF16;
+    CStdString strUTF8;
+    g_charsetConverter.subtitleCharsetToW(m_stringstream.str(), strUTF16);
+    g_charsetConverter.wToUTF8(strUTF16,strUTF8);
+    m_stringstream.str("");
+    m_stringstream << strUTF8;
+  }
   
   return true;
 }
