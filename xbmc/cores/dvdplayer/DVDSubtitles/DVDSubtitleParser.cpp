@@ -28,17 +28,19 @@ bool CDVDSubtitleParserText::Open()
 {
   if(m_pStream)
   {
-    if(!m_pStream->Seek(0, SEEK_SET) == 0)
+    if(!(m_pStream->Seek(0, SEEK_SET) == 0))
     {
       m_pStream->Close();
       return false;
     }
   }
   else
-    m_pStream = new CDVDSubtitleStream();
-
-  if (m_pStream->Open(m_filename))
   {
+    m_pStream = new CDVDSubtitleStream();
+    if (!(m_pStream->Open(m_filename)))
+      return false;
+  }
+  
     unsigned char buffer[16384];
     int size_read = 0;
     size_read = m_pStream->Read(buffer,3);
@@ -66,10 +68,9 @@ bool CDVDSubtitleParserText::Open()
       CStdString strUTF8;
       g_charsetConverter.subtitleCharsetToW(m_stringstream.str(), strUTF16);
       g_charsetConverter.wToUTF8(strUTF16,strUTF8);
-      m_stringstream.clear();
+      m_stringstream.str("");
       m_stringstream << strUTF8;
     }
-  }
   
   return true;
 }
