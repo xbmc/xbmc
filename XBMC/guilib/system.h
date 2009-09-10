@@ -24,8 +24,9 @@
 /*****************
  * All platforms
  *****************/
-
+#ifndef HAS_SDL
 #define HAS_SDL
+#endif
 
 #define HAS_DVD_DRIVE
 #define HAS_DVD_SWSCALE
@@ -88,6 +89,9 @@
  *****************/
 
 #if defined(_LINUX) && !defined(__APPLE__)
+#ifndef HAS_SDL_OPENGL
+#define HAS_SDL_OPENGL
+#endif
 #ifdef HAS_AVAHI
 #define HAS_ZEROCONF
 #endif
@@ -100,7 +104,6 @@
 #define HAS_LINUX_NETWORK
 #define HAS_SDL_AUDIO
 #define HAS_LIRC
-#define HAS_SDL_OPENGL
 #define HAS_SDL_WIN_EVENTS
 #endif
 
