@@ -1010,6 +1010,7 @@
   <string id="13119">Sinc</string>
   <string id="13120">VDPAU</string>
   <string id="13121">VDPAU HQ Upscaling level</string>
+  <string id="13122">VDPAU Studio level color conversion</string>
 
   <string id="13130">Display blanking</string>
   <string id="13131">Disabled</string>

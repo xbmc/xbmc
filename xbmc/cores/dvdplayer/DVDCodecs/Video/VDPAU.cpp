@@ -25,7 +25,7 @@
 #include "WindowingFactory.h"
 #include "VDPAU.h"
 #include "vdpau.h"
-#include "TextureManager.h"                         //DAVID-CHECKNEEDED
+#include "TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "Settings.h"
@@ -46,6 +46,13 @@ CVDPAU::Desc decoder_profiles[] = {
 {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Desc);
+
+static float studioCSC[3][4] = 
+{
+    { 1.0f,        0.0f, 1.57480000f,-0.78740000f},
+    { 1.0f,-0.18737736f,-0.46813736f, 0.32775736f},
+    { 1.0f, 1.85556000f,        0.0f,-0.92780000f}
+};
 
 CVDPAU::CVDPAU(int width, int height)
 {
@@ -153,6 +160,7 @@ bool CVDPAU::MakePixmap(int width, int height)
   int OutWidth = g_graphicsContext.GetWidth();
   int OutHeight = g_graphicsContext.GetHeight();
 
+  CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
   int pixmapAttribs[] = {
     GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
     GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
@@ -324,7 +332,8 @@ void CVDPAU::CheckFeatures()
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
 #ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
-    if (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") == 10)
+    if ( (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") == 10) &&
+          (g_guiSettings.GetInt("videoplayer.highqualityupscaling") > 0) )
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 + g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel");
     CLog::Log(LOGNOTICE,"upscalingalgoritm = %i vdpauUpscalingLevel = %i",g_guiSettings.GetInt("videoplayer.upscalingalgorithm"),g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel"));
 #endif
@@ -384,8 +393,16 @@ void CVDPAU::SetColor()
                                    VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
-  void const * pm_CSCMatix[] = { &m_CSCMatrix };
-  vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+  if (g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+  {
+    void const * pm_CSCMatix[] = { &studioCSC };
+    vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+  }
+  else
+  {
+    void const * pm_CSCMatix[] = { &m_CSCMatrix };
+    vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+  }
   CheckStatus(vdp_st, __LINE__);
 }
 
@@ -1061,7 +1078,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
   {
-    CExclusiveLock lock(g_renderManager.GetSection());
+    CSingleLock lock(g_graphicsContext);
     vdp->FiniVDPAUOutput();
     vdp->ConfigVDPAU(s, max_refs);
   }

@@ -464,6 +464,7 @@ void CGUISettings::Initialize()
   AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
 #ifdef HAVE_LIBVDPAU
   AddInt(10, "videoplayer.vdpauUpscalingLevel", 13121, 0, 0, 1, 9, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
 #endif
 #endif
   AddFloat(11, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);

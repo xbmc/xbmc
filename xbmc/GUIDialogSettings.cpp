@@ -24,6 +24,7 @@
 #include "GUIImage.h"
 #include "GUIControlGroupList.h"
 #include "LocalizeStrings.h"
+#include "GUISettings.h"
 #include "utils/log.h"
 
 #define CONTROL_GROUP_LIST          5
