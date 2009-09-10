@@ -1112,6 +1112,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
     InitializeSoftwareUpscaling();
     break;
+
+  default:
+    break;
   }
 }
 
