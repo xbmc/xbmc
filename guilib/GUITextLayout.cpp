@@ -246,7 +246,7 @@ void CGUITextLayout::BidiTransform(vector<CGUIString> &lines, bool forceLTRReadi
         sectionStyle = style;
         sectionText.clear();
       }
-      sectionText.push_back( (DWORD)(*it & 0xffff) );
+      sectionText.push_back( (wchar_t)(*it & 0xFFFF) );
     }
 
     // handle the last section
