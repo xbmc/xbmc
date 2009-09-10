@@ -681,12 +681,15 @@ bool CGraphicContext::RectIsAngled(float x1, float y1, float x2, float y2) const
 
 float CGraphicContext::GetFPS() const
 {
-  if (g_settings.m_ResInfo[m_Resolution].fRefreshRate > 0)
-    return g_settings.m_ResInfo[m_Resolution].fRefreshRate;
-  if (m_Resolution == RES_PAL_4x3 || m_Resolution == RES_PAL_16x9)
-    return 50.0f;
-  if (m_Resolution == RES_HDTV_1080i)
-    return 30.0f;
+  if (m_Resolution != RES_INVALID)
+  {
+    if (g_settings.m_ResInfo[m_Resolution].fRefreshRate > 0)
+      return g_settings.m_ResInfo[m_Resolution].fRefreshRate;
+    if (m_Resolution == RES_PAL_4x3 || m_Resolution == RES_PAL_16x9)
+      return 50.0f;
+    if (m_Resolution == RES_HDTV_1080i)
+      return 30.0f;
+  }
   return 60.0f;
 }
 
