@@ -37,6 +37,7 @@
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
 #include "log.h"
+#include "StringUtils.h"
 
 #define DLL_ENV_PATH "special://xbmc/system/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 

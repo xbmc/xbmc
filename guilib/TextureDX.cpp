@@ -102,8 +102,4 @@ void CDXTexture::LoadToGPU()
   m_loadedToGPU = true;   
 }
 
-void CDXTexture::Delete()
-{
-}
-
 #endif

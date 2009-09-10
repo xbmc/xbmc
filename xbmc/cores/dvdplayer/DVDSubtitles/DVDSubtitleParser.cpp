@@ -19,6 +19,7 @@
  *
  */
 
+#include "stdafx.h"
 #include "DVDSubtitleParser.h"
 #include "DVDSubtitleStream.h"
 #include "utils/CharsetConverter.h"
