@@ -26,9 +26,9 @@
 #include "DVDStreamInfo.h"
 #include "DVDMessageQueue.h"
 #include "DVDDemuxSPU.h"
+#include "DVDSubtitles/DVDSubtitleStream.h"
 
 class CDVDInputStream;
-class CDVDSubtitleStream;
 class CDVDSubtitleParser;
 class CDVDInputStreamNavigator;
 class CDVDOverlayCodec;
