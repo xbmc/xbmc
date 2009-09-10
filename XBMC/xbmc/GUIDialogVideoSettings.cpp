@@ -25,6 +25,7 @@
 #include "GUIPassword.h"
 #include "Util.h"
 #include "MathUtils.h"
+#include "GUISettings.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
@@ -92,9 +93,9 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_stSettings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
 
 #ifdef HAS_VIDEO_PLAYBACK
-  if (g_renderManager.SupportsBrightness())
+  if (g_renderManager.SupportsBrightness() || (g_VDPAU && !(g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))))
     AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_stSettings.m_currentVideoSettings.m_Brightness, 0, 1, 100, FormatInteger);
-  if (g_renderManager.SupportsContrast())
+  if (g_renderManager.SupportsContrast() || (g_VDPAU && !(g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))))
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_stSettings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
   if (g_renderManager.SupportsGamma())
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_stSettings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
