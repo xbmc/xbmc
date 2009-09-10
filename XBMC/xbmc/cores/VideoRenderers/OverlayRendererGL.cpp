@@ -80,15 +80,15 @@ static void LoadTexture(GLenum target
 static uint32_t build_rgba(int a, int r, int g, int b)
 {
 #if USE_PREMULTIPLIED_ALPHA
-    return      a        << 24
-         | (r * a / 255) << 16
-         | (g * a / 255) << 8
-         | (b * a / 255) << 0;
+    return      a        << PIXEL_ASHIFT
+         | (r * a / 255) << PIXEL_RSHIFT
+         | (g * a / 255) << PIXEL_GSHIFT
+         | (b * a / 255) << PIXEL_BSHIFT;
 #else
-    return a << 24
-         | r << 16
-         | g << 8
-         | b << 0;
+    return a << PIXEL_ASHIFT
+         | r << PIXEL_RSHIFT
+         | g << PIXEL_GSHIFT
+         | b << PIXEL_BSHIFT;
 #endif
 }
 
@@ -131,10 +131,10 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
   uint32_t palette[256];
   memset(palette, 0, 256 * sizeof(palette[0]));
   for(int i = 0; i < o->palette_colors; i++)
-    palette[i] = build_rgba((o->palette[i] >> 24) & 0xff
-                          , (o->palette[i] >> 16) & 0xff
-                          , (o->palette[i] >> 8 ) & 0xff
-                          , (o->palette[i] >> 0 ) & 0xff);
+    palette[i] = build_rgba((o->palette[i] >> PIXEL_ASHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_RSHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_GSHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_BSHIFT) & 0xff);
 
   /* convert to bgra, glTexImage2D should be *
    * able to load paletted formats directly, *
