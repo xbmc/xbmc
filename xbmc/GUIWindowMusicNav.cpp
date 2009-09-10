@@ -407,7 +407,9 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       items.SetContent("albums");
     else if (node == NODE_TYPE_ARTIST)
       items.SetContent("artists");
-    else if (node == NODE_TYPE_SONG || node == NODE_TYPE_SONG_TOP100)
+    else if (node == NODE_TYPE_SONG ||
+             node == NODE_TYPE_SONG_TOP100 ||
+             node == NODE_TYPE_SINGLES)
       items.SetContent("songs");
     else if (node == NODE_TYPE_GENRE)
       items.SetContent("genres");
