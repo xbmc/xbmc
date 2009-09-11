@@ -41,6 +41,8 @@ static XBMCKey VK_keymap[XBMCK_LAST];
 static HKL hLayoutUS = NULL;
 static XBMCKey Arrows_keymap[4];
 
+UINT g_uQueryCancelAutoPlay = 0;
+
 int XBMC_TranslateUNICODE = 1;
 
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
@@ -285,12 +287,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
   {
     SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG)(((LPCREATESTRUCT)lParam)->lpCreateParams));
     DIB_InitOSKeymap();
+    g_uQueryCancelAutoPlay = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
     return 0;
   }
 
   m_pEventFunc = (PHANDLE_EVENT_FUNC)GetWindowLongPtr(hWnd, GWLP_USERDATA);
   if (!m_pEventFunc)
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
+
+  if(g_uQueryCancelAutoPlay != 0 && uMsg == g_uQueryCancelAutoPlay)
+    return S_FALSE;
 
   switch (uMsg) 
   {
