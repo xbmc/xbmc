@@ -2218,7 +2218,7 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGL::SupportsBrightness()
 {
-#if HAVE_LIBVDPAU
+#ifdef HAVE_LIBVDPAU
   if(g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
@@ -2229,7 +2229,7 @@ bool CLinuxRendererGL::SupportsBrightness()
 
 bool CLinuxRendererGL::SupportsContrast()
 {
-#if HAVE_LIBVDPAU
+#ifdef HAVE_LIBVDPAU
   if(g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
     return true;
 #endif
