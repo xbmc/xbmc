@@ -26,6 +26,9 @@
 #include "Application.h"
 #include "XBMC_vkeys.h"
 #include "MouseStat.h"
+#include "MediaManager.h"
+#include <dbt.h>
+#include "LocalizeStrings.h"
 
 #ifdef _WIN32
 
@@ -458,6 +461,60 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         return(1);
       }
       break;
+    case WM_DEVICECHANGE:
+      PDEV_BROADCAST_HDR lpdb = (PDEV_BROADCAST_HDR)lParam;
+      switch(wParam)
+      {
+        case DBT_DEVICEARRIVAL:
+           if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
+           {
+              PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
+
+              // Check whether a CD or DVD was inserted into a drive.
+              if (lpdbv -> dbcv_flags & DBTF_MEDIA)
+              {
+                CLog::Log(LOGDEBUG, "%s: Drive %c: Media has arrived.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                CStdString strDevice;
+                strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                g_application.getApplicationMessenger().OpticalMount(strDevice, true);
+              }
+              else
+              {
+                // USB drive inserted
+                CMediaSource share;
+                share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                share.strName.Format("%s (%s)", g_localizeStrings.Get(437), share.strPath);
+                share.m_ignore = true;
+                share.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOVABLE;
+                g_mediaManager.AddAutoSource(share);
+              }
+           }
+           break;
+
+        case DBT_DEVICEREMOVECOMPLETE:
+           if (lpdb -> dbch_devicetype == DBT_DEVTYP_VOLUME)
+           {
+              PDEV_BROADCAST_VOLUME lpdbv = (PDEV_BROADCAST_VOLUME)lpdb;
+          
+              // Check whether a CD or DVD was removed from a drive.
+              if (lpdbv -> dbcv_flags & DBTF_MEDIA)
+              {
+                CLog::Log(LOGDEBUG,"%s: Drive %c: Media was removed.\n", __FUNCTION__, CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                CStdString strDevice;
+                strDevice.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                g_application.getApplicationMessenger().OpticalUnMount(strDevice);
+              }
+              else
+              {
+                // USB drive was removed
+                CMediaSource share;
+                share.strPath.Format("%c:",CWIN32Util::FirstDriveFromMask(lpdbv ->dbcv_unitmask));
+                share.strName.Format("%s (%s)", g_localizeStrings.Get(437), share.strPath);
+                g_mediaManager.RemoveAutoSource(share);
+              }
+           }
+           break;
+      }
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
