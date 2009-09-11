@@ -199,6 +199,7 @@ void CGUISettings::Initialize()
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
+  AddBool(2, "pictures.showvideos", 22022, false);
   AddBool(3, "pictures.savefolderviews", 583, true);
   AddBool(4,"pictures.generatethumbs",13360,true);
   AddSeparator(5,"pictures.sep1");
