@@ -1426,15 +1426,30 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
+    else if (strSetting.Equals("videoplayer.synctype"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videoplayer.usedisplayasclock"));
+    }
     else if (strSetting.Equals("videoplayer.maxspeedadjust"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
+      if (pControl)
+      {
+        bool enabled = (g_guiSettings.GetBool("videoplayer.usedisplayasclock")) && 
+            (g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
+        pControl->SetEnabled(enabled);
+      }
     }      
     else if (strSetting.Equals("videoplayer.resamplequality"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
+      if (pControl)
+      {
+        bool enabled = (g_guiSettings.GetBool("videoplayer.usedisplayasclock")) && 
+            (g_guiSettings.GetInt("videoplayer.synctype") == SYNC_RESAMPLE);
+        pControl->SetEnabled(enabled);
+      }
     }
     else if (strSetting.Equals("weather.pluginsettings"))
     {
