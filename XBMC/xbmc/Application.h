@@ -55,7 +55,6 @@ class CFileItemList;
 #endif
 #ifdef _WIN32PC
 #include "WIN32Util.h"
-#include "WINMessageHandler.h"
 #endif
 #include "XBMC_events.h"
 #include "utils/Thread.h"
@@ -375,7 +374,6 @@ protected:
 #endif
 #ifdef _WIN32PC
   CWIN32Util::SystemParams::SysParam *m_SSysParam;
-  CWINMessageHandler  m_messageHandler;
 #endif
 };
 
