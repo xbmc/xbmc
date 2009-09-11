@@ -2083,6 +2083,7 @@
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
   <string id="22021">Allowed error in aspect ratio (%)</string>
+  <string id="22022">Include video files in listings</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
