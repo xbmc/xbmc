@@ -666,10 +666,12 @@ CCrystalHD::CCrystalHD()
   m_drop_state = false;
   
   InitHardware();
+  g_CrystalHD = this;
 }
 
 CCrystalHD::~CCrystalHD()
 {
+  g_CrystalHD = NULL;
 }
 
 bool CCrystalHD::InitHardware(void)
@@ -698,7 +700,6 @@ bool CCrystalHD::InitHardware(void)
     }
   } while(false);
   */
-  
   m_Inited = true;
 
   return(m_Inited);

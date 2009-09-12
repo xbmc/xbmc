@@ -994,15 +994,15 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   // Hack, Hack to get pict frame ref'ed as texture
   //  this will replace the existing pointers and you will die on exit :)
-  //BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
-  //g_renderManager.SetPlaneData(index, 3, pPlanes);
+  BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
+  g_renderManager.SetPlaneData(index, 3, pPlanes);
   
   ProcessOverlays(pPicture, &image, pts);
   
   // Copy Y
-  fast_memcpy(image.plane[0], pPicture->data[0], pPicture->iWidth * pPicture->iHeight);
+  //fast_memcpy(image.plane[0], pPicture->data[0], pPicture->iWidth * pPicture->iHeight);
   // Copy UV
-  fast_memcpy(image.plane[1], pPicture->data[1], pPicture->iWidth * pPicture->iHeight/2);
+  //fast_memcpy(image.plane[1], pPicture->data[1], pPicture->iWidth * pPicture->iHeight/2);
 
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
