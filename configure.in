@@ -349,6 +349,7 @@ fi
 AC_CHECK_HEADER([mad.h],,            AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([jpeglib.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([samplerate.h],,     AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADERS([libboblight/libboblight.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mad],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ogg],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library))
