@@ -1104,7 +1104,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   }
 #endif
 #ifdef HAVE_LIBCRYSTALHD
-  else if (m_renderMethod & RENDER_VDPAU)
+  else if (m_renderMethod & RENDER_CRYSTALHD)
   {
     RenderCRYSTALHD(renderBuffer, m_currentField);
   }
