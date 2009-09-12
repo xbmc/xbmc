@@ -247,7 +247,7 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     GetBufferParams(bTrim,pExpression->Attribute("trim"),false);
 
     bool bEncode[MAX_SCRAPER_BUFFERS];
-    GetBufferParams(bEncode,"encode",false);
+    GetBufferParams(bEncode,pExpression->Attribute("encode"),false);
 
     int iOptional = -1;
     pExpression->QueryIntAttribute("optional",&iOptional);
@@ -528,9 +528,9 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
   size_t i2=0;
   while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
   {
-    strOutput.Insert(i2,"!!!CLEAN!!!");
-    i2 += 11;
-    strOutput.Insert(i2+2,"!!!CLEAN!!!");
+    strOutput.Insert(i2,token);
+    i2 += strlen(token);
+    strOutput.Insert(i2+2,token);
     i2 += 2;
   }
 }
