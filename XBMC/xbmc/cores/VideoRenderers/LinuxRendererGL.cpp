@@ -1103,6 +1103,12 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     RenderVDPAU(renderBuffer, m_currentField);
   }
 #endif
+#ifdef HAVE_LIBCRYSTALHD
+  else if (m_renderMethod & RENDER_VDPAU)
+  {
+    RenderCRYSTALHD(renderBuffer, m_currentField);
+  }
+#endif
   else
   {
     RenderSoftware(renderBuffer, m_currentField);
@@ -1580,6 +1586,12 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 #endif
 }
 
+void CLinuxRendererGL::RenderCrystalHD(int index, int field)
+{
+#ifdef HAVE_LIBCRYSTAL
+  RenderSinglePass(renderBuffer, m_currentField);
+#endif
+}
 
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
