@@ -146,8 +146,8 @@ public:
   virtual bool SupportsMultiPassRendering();
 
 protected:
-  virtual void Render(DWORD flags, int renderBuffer);
-  virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
+  void Render(DWORD flags, int renderBuffer);
+  void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
   void CalculateFrameAspectRatio(int desired_width, int desired_height);
   void ChooseBestResolution(float fps);
 
@@ -155,17 +155,12 @@ protected:
   bool IsSoftwareUpscaling();
   void InitializeSoftwareUpscaling();
 
-  virtual void ManageDisplay();
-  virtual void ManageTextures();
-  void DeleteYV12Texture(int index);
-  void ClearYV12Texture(int index);
-  virtual bool CreateYV12Texture(int index, bool clear=true);
-  void CopyYV12Texture(int dest);
+  bool ValidateRenderTarget();
+  void ManageDisplay();
+  void ManageTextures();
   int  NextYV12Texture();
-  virtual bool ValidateRenderTarget();
-  virtual void LoadShaders(int field=FIELD_FULL);
-  void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
+  void LoadShaders(int field=FIELD_FULL);
   void UpdateVideoFilter();
 
   // renderers
@@ -173,6 +168,25 @@ protected:
   void RenderSinglePass(int renderBuffer, int field); // single pass glsl renderer
   void RenderSoftware(int renderBuffer, int field);   // single pass s/w yuv2rgb renderer
   void RenderVDPAU(int renderBuffer, int field);      // render using vdpau hardware
+  
+  // textures
+  typedef bool (CLinuxRendererGL::*TextureFuncPtr)(int index);
+
+  TextureFuncPtr LoadTexturesFuncPtr;
+  TextureFuncPtr CreateTextureFuncPtr;
+  TextureFuncPtr DeleteTextureFuncPtr;
+
+  bool LoadYV12Textures(int source);
+  bool CreateYV12Texture(int index);
+  bool DeleteYV12Texture(int index);
+
+  bool LoadVDPAUTextures(int source);
+  bool CreateVDPAUTexture(int index);
+  bool DeleteVDPAUTexture(int index);
+
+  bool LoadCrystalHDTextures(int source);
+  bool CreateCrystalHDTexture(int index);
+  bool DeleteCrystalHDTexture(int index);
 
   CFrameBufferObject m_fbo;
 
