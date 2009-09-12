@@ -113,6 +113,11 @@ CLinuxRendererGL::CLinuxRendererGL()
 
   memset(m_buffers, 0, sizeof(m_buffers));
 
+  // NULL texture handlers, they get setup later
+  LoadTexturesFuncPtr  = NULL;
+  CreateTextureFuncPtr = NULL;
+  DeleteTextureFuncPtr = NULL;
+
   m_rgbBuffer = NULL;
   m_rgbBufferSize = 0;
 
@@ -338,32 +343,6 @@ bool CLinuxRendererGL::ValidateRenderTarget()
 {
   if (!m_bValidated)
   {
-#ifdef HAVE_LIBVDPAU
-    if (m_renderMethod & RENDER_VDPAU)
-    {
-      LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadVDPAUTextures;
-      CreateTextureFuncPtr = &CLinuxRendererGL::CreateVDPAUTexture;
-      DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteVDPAUTexture;
-    }
-  else 
-#endif
-#ifdef HAVE_LIBCRSYTALHD
-    // FIXME: add m_renderMethod for RENDER_CRYSTALHD
-    if (m_renderMethod & RENDER_CRYSTALHD)
-    {
-      LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadCrystalHDTextures;
-      CreateTextureFuncPtr = &CLinuxRendererGL::CreateCrystalHDTexture;
-      DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteCrystalHDTexture;
-    }
-    else
-#endif
-    {
-      // setup default YV12 texture handlers
-      LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
-      CreateTextureFuncPtr = &CLinuxRendererGL::CreateYV12Texture;
-      DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteYV12Texture;
-    }
-  
     if (!glewIsSupported("GL_ARB_texture_non_power_of_two") && glewIsSupported("GL_ARB_texture_rectangle"))
     {
       CLog::Log(LOGNOTICE,"Using GL_TEXTURE_RECTANGLE_ARB");
@@ -375,9 +354,12 @@ bool CLinuxRendererGL::ValidateRenderTarget()
     m_textureTarget = GL_TEXTURE_RECTANGLE_ARB;
      // create the yuv textures    
     LoadShaders();
-    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    if (CreateTextureFuncPtr)
     {
-     (this->*CreateTextureFuncPtr)(i);
+      for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+      {
+        (this->*CreateTextureFuncPtr)(i);
+      }
     }
     m_bValidated = true;
     return true;
@@ -778,6 +760,32 @@ unsigned int CLinuxRendererGL::PreInit()
   UnInit();
   m_iResolution = PAL_4x3;
 
+#ifdef HAVE_LIBVDPAU
+  if (m_renderMethod & RENDER_VDPAU)
+  {
+    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadVDPAUTextures;
+    CreateTextureFuncPtr = &CLinuxRendererGL::CreateVDPAUTexture;
+    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteVDPAUTexture;
+  }
+else 
+#endif
+#ifdef HAVE_LIBCRSYTALHD
+  // FIXME: add m_renderMethod for RENDER_CRYSTALHD
+  if (m_renderMethod & RENDER_CRYSTALHD)
+  {
+    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadCrystalHDTextures;
+    CreateTextureFuncPtr = &CLinuxRendererGL::CreateCrystalHDTexture;
+    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteCrystalHDTexture;
+  }
+  else
+#endif
+  {
+    // setup default YV12 texture handlers
+    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
+    CreateTextureFuncPtr = &CLinuxRendererGL::CreateYV12Texture;
+    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteYV12Texture;
+  }
+  
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
 
@@ -1010,9 +1018,13 @@ void CLinuxRendererGL::UnInit()
     g_VDPAU->ReleasePixmap();
 #endif
   // YV12 textures
-  for (int i = 0; i < NUM_BUFFERS; ++i)
-    (this->*DeleteTextureFuncPtr)(i);
-
+  if (DeleteTextureFuncPtr)
+  {
+    for (int i = 0; i < NUM_BUFFERS; ++i)
+    {
+      (this->*DeleteTextureFuncPtr)(i);
+    }
+  }
   // cleanup framebuffer object if it was in use
   m_fbo.Cleanup();
   m_bValidated = false;
@@ -1055,7 +1067,8 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     m_currentField = FIELD_FULL;
   }
 
-  (this->*LoadTexturesFuncPtr)(renderBuffer);
+  if (LoadTexturesFuncPtr)
+    (this->*LoadTexturesFuncPtr)(renderBuffer);
 
   if (m_renderMethod & RENDER_GLSL)
   {
@@ -1987,7 +2000,8 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   YUVFIELDS &fields = m_buffers[index].fields;
 
   // Delte any old texture
-  (this->*DeleteTextureFuncPtr)(index);
+  if (DeleteTextureFuncPtr)
+    (this->*DeleteTextureFuncPtr)(index);
 
   im.height = m_iSourceHeight;
   im.width  = m_iSourceWidth;
