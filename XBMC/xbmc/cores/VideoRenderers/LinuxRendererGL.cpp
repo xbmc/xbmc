@@ -38,6 +38,12 @@
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
+// FIXME: clean up HAVE_LIBCRYSTALHD later
+#define HAVE_LIBCRYSTALHD
+#ifdef HAVE_LIBCRYSTALHD
+#include "CrystalHD.h"
+#endif
+
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #endif
@@ -881,6 +887,17 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else 
 #endif //HAVE_LIBVDPAU
+#ifdef HAVE_LIBCRYSTALHD
+  /*
+    Default to VDPAU if supported.
+   */
+  if (g_CrystalHD)
+  {
+    CLog::Log(LOGNOTICE, "GL: Using Crystal HD render method");
+    m_renderMethod = RENDER_CRYSTALHD;
+  }
+  else 
+#endif //HAVE_LIBVDPAU
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -1106,7 +1123,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 #ifdef HAVE_LIBCRYSTALHD
   else if (m_renderMethod & RENDER_CRYSTALHD)
   {
-    RenderCRYSTALHD(renderBuffer, m_currentField);
+    RenderCrystalHD(renderBuffer, m_currentField);
   }
 #endif
   else
