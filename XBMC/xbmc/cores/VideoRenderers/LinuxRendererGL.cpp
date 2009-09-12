@@ -393,6 +393,33 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   // frame is loaded after every call to Configure().
   m_bValidated = false;
 
+  // Setup texture function handlers
+#ifdef HAVE_LIBVDPAU
+  if (m_renderMethod & RENDER_VDPAU)
+  {
+    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadVDPAUTextures;
+    CreateTextureFuncPtr = &CLinuxRendererGL::CreateVDPAUTexture;
+    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteVDPAUTexture;
+  }
+else 
+#endif
+#ifdef HAVE_LIBCRSYTALHD
+  // FIXME: add m_renderMethod for RENDER_CRYSTALHD
+  if (m_renderMethod & RENDER_CRYSTALHD)
+  {
+    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadCrystalHDTextures;
+    CreateTextureFuncPtr = &CLinuxRendererGL::CreateCrystalHDTexture;
+    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteCrystalHDTexture;
+  }
+  else
+#endif
+  {
+    // setup default YV12 texture handlers
+    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
+    CreateTextureFuncPtr = &CLinuxRendererGL::CreateYV12Texture;
+    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteYV12Texture;
+  }
+  
   for (int i = 0 ; i<m_NumYV12Buffers ; i++)
     m_buffers[i].image.flags = 0;
 
@@ -760,32 +787,6 @@ unsigned int CLinuxRendererGL::PreInit()
   UnInit();
   m_iResolution = PAL_4x3;
 
-#ifdef HAVE_LIBVDPAU
-  if (m_renderMethod & RENDER_VDPAU)
-  {
-    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadVDPAUTextures;
-    CreateTextureFuncPtr = &CLinuxRendererGL::CreateVDPAUTexture;
-    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteVDPAUTexture;
-  }
-else 
-#endif
-#ifdef HAVE_LIBCRSYTALHD
-  // FIXME: add m_renderMethod for RENDER_CRYSTALHD
-  if (m_renderMethod & RENDER_CRYSTALHD)
-  {
-    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadCrystalHDTextures;
-    CreateTextureFuncPtr = &CLinuxRendererGL::CreateCrystalHDTexture;
-    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteCrystalHDTexture;
-  }
-  else
-#endif
-  {
-    // setup default YV12 texture handlers
-    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
-    CreateTextureFuncPtr = &CLinuxRendererGL::CreateYV12Texture;
-    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteYV12Texture;
-  }
-  
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
 
