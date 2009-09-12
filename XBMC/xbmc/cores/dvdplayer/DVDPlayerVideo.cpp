@@ -992,17 +992,22 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if (index < 0)
     return EOS_DROPPED;
 
-  // Hack, Hack to get pict frame ref'ed as texture
-  //  this will replace the existing pointers and you will die on exit :)
-  BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
-  g_renderManager.SetPlaneData(index, 3, pPlanes);
+  if(pPicture->format == DVDVideoPicture::FMT_NV12)
+  {
+    // Hack, Hack to get NV12 pict frame pointers ref'ed as texture planes
+    BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
+    g_renderManager.SetPlaneData(index, 3, pPlanes);
+
+    // Copy Y
+    //fast_memcpy(pDest->plane[0], pSource->data[0], pSource->iWidth * pPicture->pSource);
+    // Copy UV
+    //fast_memcpy(pDest->plane[1], pSource->data[1], pSource->iWidth * pPicture->pSource/2);
+  }
+  else
+  {
+    ProcessOverlays(pPicture, &image, pts);
+  }
   
-  ProcessOverlays(pPicture, &image, pts);
-  
-  // Copy Y
-  //fast_memcpy(image.plane[0], pPicture->data[0], pPicture->iWidth * pPicture->iHeight);
-  // Copy UV
-  //fast_memcpy(image.plane[1], pPicture->data[1], pPicture->iWidth * pPicture->iHeight/2);
 
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)

@@ -32,6 +32,5 @@ public:
   static void FreePicture(DVDVideoPicture* pPicture);
   static bool CopyPicture(DVDVideoPicture* pDst, DVDVideoPicture* pSrc);
   static bool CopyPicture(YV12Image* pDst, DVDVideoPicture *pSrc);
-  static bool CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc);
 };
 

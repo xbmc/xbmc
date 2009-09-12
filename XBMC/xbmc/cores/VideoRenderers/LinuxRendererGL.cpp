@@ -457,7 +457,6 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
     if (m_imScaled.plane[i])
     {
       _aligned_free( m_imScaled.plane[i] );
-      //delete [] m_imScaled.plane[i];
       m_imScaled.plane[i] = 0;
     }
   }
@@ -468,9 +467,6 @@ void CLinuxRendererGL::InitializeSoftwareUpscaling()
   m_imScaled.plane[0] = (BYTE*)_aligned_malloc(m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16), 16);
   m_imScaled.plane[1] = (BYTE*)_aligned_malloc(m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16), 16);
   m_imScaled.plane[2] = (BYTE*)_aligned_malloc(m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16), 16);
-  //m_imScaled.plane[0] = new BYTE[m_imScaled.stride[0] * ALIGN((m_upscalingHeight)   , 16)];
-  //m_imScaled.plane[1] = new BYTE[m_imScaled.stride[1] * ALIGN((m_upscalingHeight>>1), 16)];
-  //m_imScaled.plane[2] = new BYTE[m_imScaled.stride[2] * ALIGN((m_upscalingHeight>>1), 16)];
   m_imScaled.width = m_upscalingWidth;
   m_imScaled.height = m_upscalingHeight;
   m_imScaled.flags = 0;
@@ -884,8 +880,8 @@ void CLinuxRendererGL::LoadShaders(int field)
     }
 
     // create regular progressive scan shader
-    m_pYUVShader = new YUV2RGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
-    CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB YUV2RGB shader");
+    m_pYUVShader = new NV12ToRGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
+    CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB NV12ToRGB shader");
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
     {
@@ -1977,13 +1973,13 @@ bool CLinuxRendererGL::LoadYV12Textures(int source)
     }
     else
     {
-      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA, buf.flipindex
+      LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE, buf.flipindex
                , im->width >> im->cshift_x, im->height >> im->cshift_y
                , im->stride[1], im->plane[1] );
-//
-//      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, buf.flipindex
-//               , im->width >> im->cshift_x, im->height >> im->cshift_y
-//               , im->stride[2], im->plane[2] );
+
+      LoadPlane( fields[FIELD_FULL][2], GL_LUMINANCE, buf.flipindex
+               , im->width >> im->cshift_x, im->height >> im->cshift_y
+               , im->stride[2], im->plane[2] );
     }
   }
   SetEvent(m_eventTexturesDone[source]);
@@ -2073,13 +2069,9 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
   im.stride[0] = im.width;
   im.stride[1] = im.width >> im.cshift_x;
   im.stride[2] = im.width >> im.cshift_x;
-  /*
-  im.plane[0] = new BYTE[im.stride[0] * im.height];
-  im.plane[1] = new BYTE[im.stride[1] * ( im.height >> im.cshift_y )];
-  im.plane[2] = new BYTE[im.stride[2] * ( im.height >> im.cshift_y )];
-  */
+
   im.plane[0] = (BYTE*)_aligned_malloc(im.stride[0] * im.height, 16);
-  im.plane[1] = (BYTE*)_aligned_malloc(im.stride[1] * ( im.height >> im.cshift_y ) * 2, 16);
+  im.plane[1] = (BYTE*)_aligned_malloc(im.stride[1] * ( im.height >> im.cshift_y ), 16);
   im.plane[2] = (BYTE*)_aligned_malloc(im.stride[2] * ( im.height >> im.cshift_y ), 16);
 
 
@@ -2161,10 +2153,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
         else
           CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
 
-        if (p == 1)
-          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
-        else
-          glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
       }
 
       glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -2255,7 +2244,6 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
       g_CrystalHD->LoadNV12Pointers(im);
   }
   */
-#endif
   YUVBUFFER& buf    = m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
@@ -2266,15 +2254,12 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
     return(true);
   }
 
-  // See if we need to recreate textures.
-  if (m_isSoftwareUpscaling != IsSoftwareUpscaling())
+  if (!im->plane[0] || !im->plane[1])
   {
-    for (int i = 0 ; i < m_NumYV12Buffers ; i++)
-      (this->*CreateTextureFuncPtr)(i);
-
-    im->flags = IMAGE_FLAG_READY;
+    SetEvent(m_eventTexturesDone[source]);
+    return(true);
   }
-
+  
   static int imaging = -1;
   bool deinterlacing;
   if (m_currentField == FIELD_FULL)
@@ -2417,11 +2402,13 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
   }
 
   glDisable(m_textureTarget);
+#endif
   
   return(true);
 }
 bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
 {
+#ifdef HAVE_LIBCRYSTALHD
   // since we also want the field textures, pitch must be texture aligned
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
@@ -2506,10 +2493,12 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
   }
   glDisable(m_textureTarget);
   SetEvent(m_eventTexturesDone[index]);
+#endif
   return(true);
 }
 bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
 {
+#ifdef HAVE_LIBCRYSTALHD
   YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
 
@@ -2543,6 +2532,7 @@ bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
       im.plane[p] = NULL;
     }
   }
+#endif
   return(true);
 }
 

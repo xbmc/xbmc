@@ -170,15 +170,3 @@ bool CDVDCodecUtils::CopyPicture(YV12Image* pImage, DVDVideoPicture *pSrc)
   }
   return true;
 }
-
-bool CDVDCodecUtils::CopyNV12Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
-{
-  // Copy Y
-  fast_memcpy(pImage->plane[0], pSrc->data[0], pSrc->iWidth * pSrc->iHeight);
-  // Copy UV
-  fast_memcpy(pImage->plane[1], pSrc->data[1], pSrc->iWidth * pSrc->iHeight/2);
-
-  return true;
-}
-
-
