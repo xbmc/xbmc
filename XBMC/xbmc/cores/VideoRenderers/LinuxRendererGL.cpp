@@ -41,7 +41,7 @@
 // FIXME: clean up HAVE_LIBCRYSTALHD later
 #define HAVE_LIBCRYSTALHD
 #ifdef HAVE_LIBCRYSTALHD
-#include "CrystalHD.h"
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
 
 #ifdef HAS_SDL_OPENGL

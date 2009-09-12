@@ -103,7 +103,7 @@ enum _BCM_STREAM_TYPE
 typedef uint32_t BCM_CODEC_TYPE;
 typedef uint32_t BCM_STREAM_TYPE;
 ////////////////////////////////////////////////////////////////////////////////////////////
-class Display;
+//class Display;
 class CMPCInputThread;
 class CMPCOutputThread;
 
@@ -130,7 +130,7 @@ protected:
 
   bool      InitHardware(void);
 
-  Display*  m_Display;
+  //Display*  m_Display;
   bool      m_IsConfigured;
   bool      m_Inited;
   bool      m_drop_state;
