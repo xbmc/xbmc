@@ -836,7 +836,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursiv
     {
       AddItems(item->m_strPath, recursivePaths);
     }
-    else if (!CUtil::IsRAR(item->m_strPath) && !CUtil::IsZIP(item->m_strPath))
+    else if (!item->m_bIsFolder && !CUtil::IsRAR(item->m_strPath) && !CUtil::IsZIP(item->m_strPath))
     { // add to the slideshow
       Add(item.get());
     }
