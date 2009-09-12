@@ -623,7 +623,11 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwC
   vertex[3].tv = 1.0f;
 
   // Set state to render the image
-  if (pTexture) g_Windowing.Get3DDevice()->SetTexture( 0, pTexture->GetTextureObject() );
+  if (pTexture)
+  {
+    pTexture->LoadToGPU();
+    g_Windowing.Get3DDevice()->SetTexture( 0, pTexture->GetTextureObject() );
+  }
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
   g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
