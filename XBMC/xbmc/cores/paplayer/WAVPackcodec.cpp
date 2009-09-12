@@ -217,8 +217,13 @@ void WAVPackCodec::FormatSamples (BYTE *dst, int bps, long *src, unsigned long s
     while (samcnt--)
     {
       temp = *src++;
+#ifndef WORDS_BIGENDIAN
       dst [0] = (BYTE)(temp & 0xFF);
       dst [1] = (BYTE)(temp >> 8);
+#else
+      dst [1] = (BYTE)(temp & 0xFF);
+      dst [0] = (BYTE)(temp >> 8);
+#endif
       dst += 2;
     }
 
