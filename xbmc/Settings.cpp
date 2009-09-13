@@ -298,9 +298,7 @@ void CSettings::Initialize()
   g_advancedSettings.m_curllowspeedtime = 5;
   g_advancedSettings.m_curlretries = 3;
 
-#ifdef HAS_GL
   g_advancedSettings.m_fullScreen = g_advancedSettings.m_startFullScreen;
-#endif
 
   g_advancedSettings.m_playlistRetries = 100;
   g_advancedSettings.m_playlistTimeout = 20; // 20 seconds timeout

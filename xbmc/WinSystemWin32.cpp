@@ -111,7 +111,6 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   CreateBlankWindow();
 
   ResizeInternal();
-  CenterWindow();
 
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
@@ -265,7 +264,7 @@ bool CWinSystemWin32::ResizeInternal()
   }
   else
   {
-    bFromFullScreen = (wi.dwStyle & WS_OVERLAPPED) == 0;
+    bFromFullScreen = (wi.dwStyle & WS_CAPTION) == 0;
     dwStyle |= WS_OVERLAPPEDWINDOW;
     windowAfter = HWND_NOTOPMOST;
 
@@ -280,7 +279,8 @@ bool CWinSystemWin32::ResizeInternal()
   }
 
   RECT wr = wi.rcWindow;
-  if (wr.bottom - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left)
+  if (wr.bottom - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left ||
+    (wi.dwStyle & WS_CAPTION) != (dwStyle & WS_CAPTION))
   {
     SetWindowRgn(m_hWnd, 0, false);
     SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);

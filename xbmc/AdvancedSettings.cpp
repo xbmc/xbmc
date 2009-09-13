@@ -209,9 +209,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_curllowspeedtime = 5;
   m_curlretries = 3;
 
-#ifdef HAS_SDL
-  m_fullScreen = m_startFullScreen;
-#endif
+  m_fullScreen = m_startFullScreen = false;
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
