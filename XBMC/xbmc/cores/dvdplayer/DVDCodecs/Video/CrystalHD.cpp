@@ -660,7 +660,7 @@ void CMPCOutputThread::Process()
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
-    if (GetReadyCount() < 2)
+    if (GetReadyCount() < 1)
     {  
       CMPCDecodeBuffer* pBuffer = GetDecoderOutput(); // Check for output frames
       if (pBuffer)
