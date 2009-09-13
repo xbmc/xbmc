@@ -69,7 +69,8 @@ void CBoblightClient::GrabImage()
 void CBoblightClient::Send()
 {
   //tell boblight thread to send input to boblightd
-  m_inputevent.Set();
+  if (m_hasinput)
+    m_inputevent.Set();
 }
 
 void CBoblightClient::Disable()
