@@ -2328,19 +2328,10 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
              , im->stride[1]*2, im->plane[1] );
 
-    LoadPlane( fields[FIELD_ODD][2], GL_LUMINANCE, buf.flipindex
-             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[2]*2, im->plane[2] );
-    
     // Load Odd U & V Fields
     LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE, buf.flipindex
              , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
              , im->stride[1]*2, im->plane[1] + im->stride[1] );
-
-    LoadPlane( fields[FIELD_EVEN][2], GL_LUMINANCE, buf.flipindex
-             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
-             , im->stride[2]*2, im->plane[2] + im->stride[2] );
-    
   }
   else
   {
@@ -2352,9 +2343,9 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
   SetEvent(m_eventTexturesDone[source]);
 
   // calculate the source rectangle
-  for(int field = 0; field < 3; field++)
+  for(int field = 0; field < MAX_FIELDS; field++)
   {
-    for(int plane = 0; plane < 3; plane++)
+    for(int plane = 0; plane < MAX_PLANES-1; plane++)
     {
       YUVPLANE& p = fields[field][plane];
 
@@ -2406,7 +2397,7 @@ bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
 
   glDisable(m_textureTarget);
 #endif
-  
+
   return(true);
 }
 bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
@@ -2427,16 +2418,14 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
 
   im.stride[0] = im.width;
   im.stride[1] = im.width >> im.cshift_x;
-  im.stride[2] = im.width >> im.cshift_x;
 
   im.plane[0] = NULL;
   im.plane[1] = NULL;
-  im.plane[2] = NULL;
 
   glEnable(m_textureTarget);
   for(int f = 0;f<MAX_FIELDS;f++)
   {
-    for(int p = 0;p<MAX_PLANES;p++)
+    for(int p = 0;p<MAX_PLANES-1;p++)
     {
       if (!glIsTexture(fields[f][p].id))
       {
@@ -2457,19 +2446,17 @@ bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
 
     planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
     planes[1].texheight = planes[0].texheight >> im.cshift_y;
-    planes[2].texwidth  = planes[0].texwidth  >> im.cshift_x;
-    planes[2].texheight = planes[0].texheight >> im.cshift_y;
 
     if(m_renderMethod & RENDER_POT)
     {
-      for(int p = 0; p < 3; p++)
+      for(int p = 0; p < MAX_PLANES-1; p++)
       {
         planes[p].texwidth  = NP2(planes[p].texwidth);
         planes[p].texheight = NP2(planes[p].texheight);
       }
     }
 
-    for(int p = 0; p < 3; p++)
+    for(int p = 0; p < MAX_PLANES-1; p++)
     {
       YUVPLANE &plane = planes[p];
       if (plane.texwidth * plane.texheight == 0)
@@ -2513,14 +2500,14 @@ bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
   g_graphicsContext.BeginPaint();  //FIXME
   for(int f = 0;f<MAX_FIELDS;f++)
   {
-    for(int p = 0;p<MAX_PLANES;p++)
+    for(int p = 0;p<MAX_PLANES-1;p++)
     {
       if( fields[f][p].id )
       {
         if (glIsTexture(fields[f][p].id))
         {
           glDeleteTextures(1, &fields[f][p].id);
-          CLog::Log(LOGDEBUG, "GL: Deleting texture field %d plane %d", f+1, p+1);
+          //CLog::Log(LOGDEBUG, "GL: Deleting texture field %d plane %d", f+1, p+1);
         }
         fields[f][p].id = 0;
       }
@@ -2528,14 +2515,12 @@ bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
   }
   g_graphicsContext.EndPaint();
 
-  for(int p = 0;p<MAX_PLANES;p++)
+  for(int p = 0;p<MAX_PLANES-1;p++)
   {
-    if (im.plane[p])
-    {
-      im.plane[p] = NULL;
-    }
+    im.plane[p] = NULL;
   }
 #endif
+
   return(true);
 }
 
