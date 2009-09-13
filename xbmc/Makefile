@@ -218,6 +218,7 @@ SRCS=Application.cpp \
      AdvancedSettings.cpp \
      Bookmark.cpp \
      Boblight.cpp \
+     GUIDialogBoblightSettings.cpp\
 
 LIB=xbmc.a
 
