@@ -502,7 +502,8 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 #if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
   	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   	  {
-        g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+        RESOLUTION res = g_graphicsContext.GetVideoResolution();
+        g_graphicsContext.SetVideoResolution(res);
       }
 #endif
       lock.Leave();
