@@ -124,11 +124,11 @@ bool CBoblightClient::Setup()
   
   //these will be made into gui options
   boblight_setscanrange(m_boblight, 64, 64);
-  boblight_setoption(m_boblight, -1, "interpolation 1");
-  boblight_setoption(m_boblight, -1, "value 10.0");
+  //boblight_setoption(m_boblight, -1, "interpolation 1");
+  //boblight_setoption(m_boblight, -1, "value 10.0");
   boblight_setoption(m_boblight, -1, "saturation 3.0");
-  boblight_setoption(m_boblight, -1, "speed 5.0");
-  boblight_setoption(m_boblight, -1, "threshold 20");
+  //boblight_setoption(m_boblight, -1, "speed 5.0");
+  //boblight_setoption(m_boblight, -1, "threshold 20");*/
   
   CSingleLock lock(m_critsection);
   m_isenabled = true;
@@ -175,9 +175,9 @@ void CBoblightClient::Run()
         {
           int rgb[3];
           
-          rgb[0] = pixels[y * pitch + x + 2];
-          rgb[1] = pixels[y * pitch + x + 1];
-          rgb[2] = pixels[y * pitch + x + 0];
+          rgb[0] = pixels[y * pitch + x + 3];
+          rgb[1] = pixels[y * pitch + x + 2];
+          rgb[2] = pixels[y * pitch + x + 1];
           
           boblight_addpixelxy(m_boblight, x, y, rgb);
         }

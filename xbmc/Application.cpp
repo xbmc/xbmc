@@ -133,6 +133,7 @@
 #include "utils/DbusServer.h"
 #endif
 
+#include "Boblight.h"
 
 // Windows includes
 #include "GUIWindowManager.h"
@@ -2312,12 +2313,23 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
+  if (g_boblight.IsEnabled())
+  {
+    if (m_bPresentFrame && g_graphicsContext.IsFullScreenVideo())
+      g_boblight.GrabImage();
+    else
+      g_boblight.Disable();
+  }
+  
   RenderNoPresent();
   g_Windowing.EndRender();
   g_graphicsContext.Flip();
   g_infoManager.UpdateFPS();
   g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
+  
+  if (g_boblight.IsEnabled() && g_graphicsContext.IsFullScreenVideo())
+    g_boblight.Send();
   
 #ifdef HAS_SDL
   SDL_mutexP(m_frameMutex);
