@@ -27,13 +27,12 @@
 #include <libboblight/libboblight.h>
 
 #include "Util.h"
-#include "cores/VideoRenderers/RenderManager.h"
 
 #define SECTIMEOUT 5
 
 using namespace std;
 
-CBoblightClient::CBoblightClient()
+CBoblightClient::CBoblightClient() : m_texture(64, 64, 32)
 {
   //boblight_loadlibrary returns NULL when the function pointers can be loaded
   //returns dlerror() otherwise
@@ -44,8 +43,6 @@ CBoblightClient::CBoblightClient()
   m_hasinput = false;
   m_boblight = NULL;
   m_priority = 255;
-  
-  m_texture = SDL_CreateRGBSurface(SDL_SWSURFACE, 64, 64, 32, RMASK, GMASK, BMASK, AMASK);
   
   Create();
 }
@@ -66,7 +63,7 @@ void CBoblightClient::GrabImage()
   m_hasinput = true;
   
   //get a thumbnail of 64x64 pixels
-  //g_renderManager.CreateThumbnail(m_texture, 64, 64);
+  g_renderManager.CreateThumbnail(&m_texture, 64, 64);
 }
 
 void CBoblightClient::Send()
@@ -169,15 +166,18 @@ void CBoblightClient::Run()
         lock.Enter();
       }
       
-      for (int y = 0; y < 64; y++)
+      int            pitch  = m_texture.GetPitch();
+      unsigned char* pixels = m_texture.GetPixels();
+      
+      for (int y = 0; y < m_texture.GetWidth(); y++)
       {
-        for (int x = 0; x < 64; x++)
+        for (int x = 0; x < m_texture.GetHeight(); x++)
         {
           int rgb[3];
           
-          rgb[0] = *((unsigned char*)m_texture->pixels + (m_texture->pitch * y) + (m_texture->format->BytesPerPixel * x) + 2);
-          rgb[1] = *((unsigned char*)m_texture->pixels + (m_texture->pitch * y) + (m_texture->format->BytesPerPixel * x) + 1);
-          rgb[2] = *((unsigned char*)m_texture->pixels + (m_texture->pitch * y) + (m_texture->format->BytesPerPixel * x) + 0);
+          rgb[0] = pixels[y * pitch + x + 2];
+          rgb[1] = pixels[y * pitch + x + 1];
+          rgb[2] = pixels[y * pitch + x + 0];
           
           boblight_addpixelxy(m_boblight, x, y, rgb);
         }

@@ -36,6 +36,8 @@
 #include "stdafx.h"
 #include "Thread.h"
 #include "utils/CriticalSection.h"
+#include "cores/VideoRenderers/RenderManager.h"
+#include "Texture.h"
 
 class CBoblightClient : public CThread
 {
@@ -57,7 +59,7 @@ class CBoblightClient : public CThread
     CEvent           m_inputevent;  //set when we receive input and we need to send it to boblightd
     CCriticalSection m_critsection; //lock for the sdl surface
     
-    SDL_Surface*     m_texture;     //where we store the thumbnail
+    CTexture         m_texture;     //where we store the thumbnail
     
     void*            m_boblight;    //handle from boblight_init()
     
