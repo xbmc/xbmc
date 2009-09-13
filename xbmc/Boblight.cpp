@@ -39,7 +39,7 @@ CBoblightClient::CBoblightClient() : m_texture(64, 64, 32)
   char* liberror = boblight_loadlibrary(NULL);
   if (liberror) m_liberror = liberror;
   
-  m_isenabled = false;
+  m_connected = false;
   m_hasinput = false;
   m_boblight = NULL;
   m_priority = 255;
@@ -47,17 +47,17 @@ CBoblightClient::CBoblightClient() : m_texture(64, 64, 32)
   Create();
 }
 
-bool CBoblightClient::IsEnabled()
+bool CBoblightClient::Connected()
 {
   CSingleLock lock(m_critsection);
-  return m_isenabled;
+  return m_connected;
 }
 
 void CBoblightClient::GrabImage()
 {
   CSingleLock lock(m_critsection);
   
-  if (!m_isenabled)
+  if (!m_connected)
     return;
   
   m_hasinput = true;
@@ -132,7 +132,7 @@ bool CBoblightClient::Setup()
   //boblight_setoption(m_boblight, -1, "threshold 20");*/
   
   CSingleLock lock(m_critsection);
-  m_isenabled = true;
+  m_connected = true;
   
   return true;
 }
@@ -146,7 +146,7 @@ void CBoblightClient::Cleanup()
   }
   
   CSingleLock lock(m_critsection);
-  m_isenabled = false;
+  m_connected = false;
   m_priority = 255;
 }
 
@@ -172,9 +172,9 @@ void CBoblightClient::Run()
       unsigned int   bpp    = m_texture.GetBPP();
       unsigned char* pixels = m_texture.GetPixels();
       
-      for (int y = 0; y < m_texture.GetWidth(); y++)
+      for (unsigned int y = 0; y < m_texture.GetWidth(); y++)
       {
-        for (int x = 0; x < m_texture.GetHeight(); x++)
+        for (unsigned int x = 0; x < m_texture.GetHeight(); x++)
         {
           rgb[0] = pixels[y * pitch + x * bpp + 2];
           rgb[1] = pixels[y * pitch + x * bpp + 1];

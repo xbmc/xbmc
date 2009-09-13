@@ -2312,15 +2312,17 @@ void CApplication::Render()
 
   if(!g_Windowing.BeginRender())
     return;
-
-  if (g_boblight.IsEnabled())
-  {
-    if (m_bPresentFrame && g_graphicsContext.IsFullScreenVideo())
-      g_boblight.GrabImage();
-    else
-      g_boblight.Disable();
-  }
   
+  if (g_boblight.Connected() && g_graphicsContext.IsFullScreenVideo())
+  {
+    if (m_bPresentFrame )
+      g_boblight.GrabImage();
+  }
+  else
+  {
+    g_boblight.Disable();
+  }    
+
   RenderNoPresent();
   g_Windowing.EndRender();
   g_graphicsContext.Flip();
@@ -2328,7 +2330,7 @@ void CApplication::Render()
   g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
   
-  if (g_boblight.IsEnabled() && g_graphicsContext.IsFullScreenVideo())
+  if (g_boblight.Connected() && g_graphicsContext.IsFullScreenVideo() && m_bPresentFrame)
     g_boblight.Send();
   
 #ifdef HAS_SDL

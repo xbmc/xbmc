@@ -43,7 +43,7 @@ class CBoblightClient : public CThread
 {
   public:
     CBoblightClient();
-    bool IsEnabled();
+    bool Connected();
     void GrabImage();
     void Send();
     void Disable();
@@ -52,7 +52,7 @@ class CBoblightClient : public CThread
     void Process();
     
     std::string      m_liberror;    //where we store the error from boblight_loadlibrary()
-    bool             m_isenabled;   //if we have a connection to boblightd
+    bool             m_connected;   //if we have a connection to boblightd
     bool             m_hasinput;    //if application is providing us with input
     int              m_priority;    //priority of us as a client of boblightd
     
