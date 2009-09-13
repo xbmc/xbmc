@@ -356,6 +356,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           else
             wParam = VK_LMENU;
           break;
+        case VK_F4:
+          if (GetKeyState(VK_MENU) & 0x8000) //alt-f4, default event quit.
+            return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+          break;
       }
       XBMC_keysym keysym;
       TranslateKey(wParam, HIWORD(lParam), &keysym, 1);
