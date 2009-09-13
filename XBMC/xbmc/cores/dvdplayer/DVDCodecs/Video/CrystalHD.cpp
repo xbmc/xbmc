@@ -588,7 +588,7 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
   if (!pBuffer) // No free pre-allocated buffers so make one
   {
     pBuffer = new CMPCDecodeBuffer( sizeof(BCM::BC_DTS_PROC_OUT) ); // Allocate a new buffer
-    CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, m_BufferCount, pBuffer->GetSize());    
+    CLog::Log(LOGDEBUG, "%s: Added a new Buffer (count=%d). Size: %d", __MODULE_NAME__, (int)m_BufferCount, pBuffer->GetSize());    
   }
 
   // Set-up output struct
@@ -660,7 +660,7 @@ void CMPCOutputThread::Process()
   CLog::Log(LOGDEBUG, "%s: Output Thread Started...", __MODULE_NAME__);
   while (!m_bStop)
   {
-    if (GetReadyCount() < 1)
+    if (GetReadyCount() < 2)
     {  
       CMPCDecodeBuffer* pBuffer = GetDecoderOutput(); // Check for output frames
       if (pBuffer)
