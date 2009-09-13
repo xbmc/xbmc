@@ -127,7 +127,7 @@ bool CBoblightClient::Setup()
   boblight_setscanrange(m_boblight, 64, 64);
   //boblight_setoption(m_boblight, -1, "interpolation 1");
   //boblight_setoption(m_boblight, -1, "value 10.0");
-  boblight_setoption(m_boblight, -1, "saturation 3.0");
+  boblight_setoption(m_boblight, -1, "saturation 5.0");
   //boblight_setoption(m_boblight, -1, "speed 5.0");
   //boblight_setoption(m_boblight, -1, "threshold 20");*/
   
@@ -167,18 +167,18 @@ void CBoblightClient::Run()
         lock.Enter();
       }
       
-      int            pitch  = m_texture.GetPitch();
+      int            rgb[3];
+      unsigned int   pitch  = m_texture.GetPitch();
+      unsigned int   bpp    = m_texture.GetBPP();
       unsigned char* pixels = m_texture.GetPixels();
       
       for (int y = 0; y < m_texture.GetWidth(); y++)
       {
         for (int x = 0; x < m_texture.GetHeight(); x++)
         {
-          int rgb[3];
-          
-          rgb[0] = pixels[y * pitch + x + 3];
-          rgb[1] = pixels[y * pitch + x + 2];
-          rgb[2] = pixels[y * pitch + x + 1];
+          rgb[0] = pixels[y * pitch + x * bpp + 2];
+          rgb[1] = pixels[y * pitch + x * bpp + 1];
+          rgb[2] = pixels[y * pitch + x * bpp + 0];
           
           boblight_addpixelxy(m_boblight, x, y, rgb);
         }
