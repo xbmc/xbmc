@@ -217,6 +217,7 @@ SRCS=Application.cpp \
      WinEventsSDL.cpp \
      AdvancedSettings.cpp \
      Bookmark.cpp \
+     Boblight.cpp \
 
 LIB=xbmc.a
 
