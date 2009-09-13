@@ -2237,18 +2237,21 @@ bool CLinuxRendererGL::DeleteVDPAUTexture(int index)
 bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
 {
 #ifdef HAVE_LIBCRYSTALHD
-  /*if (g_CrystalHD && (m_renderMethod & RENDER_CRYSTALHD))
-  {
-      YUVBUFFER& buf = m_buffers[source];
-      YV12Image* im  = &buf.image;
-      g_CrystalHD->LoadNV12Pointers(im);
-  }
-  */
   YUVBUFFER& buf    = m_buffers[source];
   YV12Image* im     = &buf.image;
   YUVFIELDS& fields =  buf.fields;
 
   if (!(im->flags & IMAGE_FLAG_READY))
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return(true);
+  }
+
+  if (g_CrystalHD)
+  {
+    g_CrystalHD->LoadNV12Pointers(im);
+  }
+  else
   {
     SetEvent(m_eventTexturesDone[source]);
     return(true);

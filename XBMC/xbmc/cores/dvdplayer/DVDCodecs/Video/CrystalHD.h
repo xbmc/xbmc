@@ -103,9 +103,9 @@ enum _BCM_STREAM_TYPE
 typedef uint32_t BCM_CODEC_TYPE;
 typedef uint32_t BCM_STREAM_TYPE;
 ////////////////////////////////////////////////////////////////////////////////////////////
-//class Display;
 class CMPCInputThread;
 class CMPCOutputThread;
+typedef struct YV12Image YV12Image;
 
 class CCrystalHD
 {
@@ -120,14 +120,14 @@ public:
   bool AddInput(unsigned char *pData, size_t size, double pts);
   unsigned int GetReadyCount();
   bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
-  bool ReleasePicture(DVDVideoPicture* pDvdVideoPicture);
   void SetDropState(bool bDrop);
-  void Present(void);
+  
+  bool LoadNV12Pointers(YV12Image* pDest);
 
 protected:
   void*     m_dl_handle;
   void*     m_Device;
-
+  
   bool      InitHardware(void);
 
   //Display*  m_Display;
@@ -141,8 +141,6 @@ protected:
   CMPCOutputThread* m_pOutputThread;
   CMPCInputThread* m_pInputThread;
   CSyncPtrQueue<CMPCDecodeBuffer> m_BusyList;
-  
-  //std::vector<m_render_state*> m_videoSurfaces;
 };
 
 extern CCrystalHD*          g_CrystalHD;

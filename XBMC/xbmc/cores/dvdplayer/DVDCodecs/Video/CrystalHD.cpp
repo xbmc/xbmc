@@ -30,7 +30,8 @@
 #if defined(HAVE_LIBCRYSTALHD)
 #include "CrystalHD.h"
 #include "DVDClock.h"
-#include <utils/Thread.h>
+#include "cores/VideoRenderers/RenderManager.h"
+#include "utils/Thread.h"
 #include "utils/Atomics.h"
 
 namespace BCM
@@ -135,6 +136,7 @@ public:
   bool                GetInterlace(void);
   double              GetFrameRate(void);
   double              GetAspectRatio(void);
+  bool                UpdateNV12Pointers(YV12Image* pDest);
   
 protected:
   void                SetFrameRate(uint32_t resolution);
@@ -158,6 +160,8 @@ protected:
 	unsigned int        m_aspectratio_x;
 	unsigned int        m_aspectratio_y;
   uint64_t            m_old_timestamp;
+  BYTE                *m_y_buffer_ptr;
+  BYTE                *m_uv_buffer_ptr;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +292,9 @@ CMPCOutputThread::CMPCOutputThread(BCM::HANDLE device) :
   m_OutputTimeout(20),
   m_BufferCount(0),
   m_PictureCount(0),
-  m_old_timestamp(0)
+  m_old_timestamp(0),
+  m_y_buffer_ptr(NULL),
+  m_uv_buffer_ptr(NULL)
 {
   m_width = 1920;
   m_height = 1080;
@@ -354,6 +360,15 @@ double CMPCOutputThread::GetFrameRate(void)
 double CMPCOutputThread::GetAspectRatio(void)
 {
   return(m_aspectratio_x/m_aspectratio_y);
+}
+
+bool CMPCOutputThread::UpdateNV12Pointers(YV12Image* pDest)
+{
+  pDest->plane[0]  = m_y_buffer_ptr;
+  pDest->plane[1]  = m_uv_buffer_ptr;
+  pDest->plane[2]  = NULL;
+
+  return(true);
 }
 
 void CMPCOutputThread::AddFrame(CMPCDecodeBuffer* pBuffer)
@@ -595,6 +610,8 @@ CMPCDecodeBuffer* CMPCOutputThread::GetDecoderOutput()
           memcpy(pBuffer->GetPtr(), &procOut, sizeof(BCM::BC_DTS_PROC_OUT));
           m_old_timestamp = procOut.PicInfo.timeStamp;
           m_PictureCount++;
+          m_y_buffer_ptr  = (BYTE*)procOut.Ybuff;  // Y plane
+          m_uv_buffer_ptr = (BYTE*)procOut.UVbuff; // UV packed plane
           return pBuffer;
         }
         else
@@ -902,17 +919,11 @@ bool CCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   return true;
 }
 
-bool CCrystalHD::ReleasePicture(DVDVideoPicture* pDvdVideoPicture)
+bool CCrystalHD::LoadNV12Pointers(YV12Image* pDest)
 {
-  //CLog::Log(LOGDEBUG, "%s: Release decoded picture", __MODULE_NAME__);   
-  // Free the last provided picture reference
-  /*
-  if (m_BusyList.Count())
-  {
-    m_pOutputThread->FreeBuffer(m_BusyList.Pop());
-  }
-  */
-  
+  if (m_pOutputThread)
+    m_pOutputThread->UpdateNV12Pointers(pDest);
+
   return true;
 }
 

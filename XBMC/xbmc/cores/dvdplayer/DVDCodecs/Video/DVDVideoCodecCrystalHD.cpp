@@ -223,15 +223,6 @@ bool CDVDVideoCodecCrystalHD::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   return true;
 }
 
-bool CDVDVideoCodecCrystalHD::ReleasePicture(DVDVideoPicture* pDvdVideoPicture)
-{
-  // Free the last provided picture reference
-  m_Device->ReleasePicture(pDvdVideoPicture);
-  //CLog::Log(LOGDEBUG, "%s: Release decoded picture", __MODULE_NAME__);   
-
-  return true;
-}
-
 void CDVDVideoCodecCrystalHD::SetDropState(bool bDrop)
 {
   m_Device->SetDropState(bDrop);

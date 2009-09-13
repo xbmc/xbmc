@@ -39,7 +39,6 @@ public:
   virtual int  Decode(BYTE* pData, int iSize, double pts);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual bool ReleasePicture(DVDVideoPicture* pDvdVideoPicture);
   virtual void SetDropState(bool bDrop);
   virtual const char* GetName() { return (const char*)m_pFormatName; }
 

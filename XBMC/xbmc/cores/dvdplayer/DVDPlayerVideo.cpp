@@ -323,7 +323,6 @@ void CDVDPlayerVideo::Process()
         picture.iFlags &= ~DVP_FLAG_INTERLACED;
         picture.iFlags |= DVP_FLAG_NOSKIP;
         OutputPicture(&picture, pts);
-        m_pVideoCodec->ReleasePicture(&picture);
         pts+= frametime;
       }
 
@@ -553,7 +552,6 @@ void CDVDPlayerVideo::Process()
                   CLog::Log(LOGERROR, "%s - Exception caught when outputing picture", __FUNCTION__);
                   iResult = EOS_ABORT;
                 }
-                m_pVideoCodec->ReleasePicture(&picture);
 
                 if (iResult == EOS_ABORT) break;
 
@@ -995,8 +993,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if(pPicture->format == DVDVideoPicture::FMT_NV12)
   {
     // Hack, Hack to get NV12 pict frame pointers ref'ed as texture planes
-    BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
-    g_renderManager.SetPlaneData(index, 3, pPlanes);
+    //BYTE* pPlanes[] = {pPicture->data[0], pPicture->data[1], NULL};
+    //g_renderManager.SetPlaneData(index, 3, pPlanes);
 
     // Copy Y
     //fast_memcpy(pDest->plane[0], pSource->data[0], pSource->iWidth * pPicture->pSource);
@@ -1031,7 +1029,6 @@ void CDVDPlayerVideo::UpdateMenuPicture()
     {
       picture.iFlags |= DVP_FLAG_NOSKIP;
       OutputPicture(&picture, 0);
-      m_pVideoCodec->ReleasePicture(&picture);
     }
     LeaveCriticalSection(&m_critCodecSection);
   }

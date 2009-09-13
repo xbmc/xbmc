@@ -34,7 +34,6 @@ public:
   virtual int Decode(BYTE* pData, int iSize, double pts);
   virtual void Reset();
   virtual bool GetPicture(DVDVideoPicture* pDvdVideoPicture);
-  virtual bool ReleasePicture(DVDVideoPicture* pDvdVideoPicture) { return true; };
   virtual bool GetUserData(DVDVideoUserData* pDvdVideoUserData);
 
   virtual void SetDropState(bool bDrop);
