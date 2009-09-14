@@ -20,6 +20,7 @@
  */
 
 #include "Boblight.h"
+#include "MathUtils.h"
 
 #ifdef HAVE_BOBLIGHT
 
@@ -37,13 +38,20 @@ CBoblightClient::CBoblightClient() : m_texture(64, 64, 32)
   //boblight_loadlibrary returns NULL when the function pointers can be loaded
   //returns dlerror() otherwise
   char* liberror = boblight_loadlibrary(NULL);
-  if (liberror) m_liberror = liberror;
-  
+  if (liberror)
+    m_liberror = liberror;
+    
+  m_speed = 100.0;
+  m_interpolation = false;
+  m_saturation = 1.0;
+  m_value = 1.0;
+  m_threshold = 0;
+    
   m_connected = false;
   m_hasinput = false;
   m_boblight = NULL;
   m_priority = 255;
-  
+    
   Create();
 }
 
@@ -166,6 +174,8 @@ void CBoblightClient::Run()
         m_priority = 128;
         lock.Enter();
       }
+            
+      SetOptions();
       
       int            rgb[3];
       unsigned int   pitch  = m_texture.GetPitch();
@@ -215,6 +225,25 @@ void CBoblightClient::Run()
   }
 }
 
+void CBoblightClient::SetOptions()
+{
+  CStdString option;
+  
+  option.Format("speed %f", m_speed);
+  boblight_setoption(m_boblight, -1, option.c_str());
+
+  option.Format("interpolation %i", m_interpolation ? 1 : 0);
+  boblight_setoption(m_boblight, -1, option.c_str());
+
+  option.Format("saturation %f", m_saturation);
+  boblight_setoption(m_boblight, -1, option.c_str());
+
+  option.Format("value %f", m_value);
+  boblight_setoption(m_boblight, -1, option.c_str());
+
+  option.Format("threshold %i", MathUtils::round_int(m_threshold));
+  boblight_setoption(m_boblight, -1, option.c_str());
+}
 
 CBoblightClient g_boblight; //might make this a member of application
 

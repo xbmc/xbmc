@@ -2191,4 +2191,10 @@
   <string id="33076">Please update XBMC.</string>
   <string id="33077">No data found!</string>
   <string id="33078">Next page</string>
+
+  <string id="34000">Speed</string>
+  <string id="34001">Interpolation</string>
+  <string id="34002">Saturation</string>
+  <string id="34003">Value</string>
+  <string id="34004">Threshold</string>
 </strings>

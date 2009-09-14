@@ -34,6 +34,8 @@
 #include "Settings.h"
 #include "SkinInfo.h"
 
+#include "Boblight.h"
+
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
@@ -64,6 +66,12 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 
 #define VIDEO_SETTING_VDPAU_NOISE         19
 #define VIDEO_SETTING_VDPAU_SHARPNESS     20
+
+#define VIDEO_SETTING_BOBLIGHT_SPEED      21
+#define VIDEO_SETTING_BOBLIGHT_INTERPOL   22
+#define VIDEO_SETTING_BOBLIGHT_SATURATION 23
+#define VIDEO_SETTING_BOBLIGHT_VALUE      24
+#define VIDEO_SETTING_BOBLIGHT_THRESHOLD  25
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -108,6 +116,15 @@ void CGUIDialogVideoSettings::CreateSettings()
 #endif
 #endif
   AddSeparator(8);
+  
+  //boblight settings
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SPEED,      34000, &g_boblight.m_speed,      0.0f, 1.0f, 100.0f, FormatFloat);
+  AddBool  (VIDEO_SETTING_BOBLIGHT_INTERPOL,   34001, &g_boblight.m_interpolation);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_SATURATION, 34002, &g_boblight.m_saturation, 0.0f, 0.1f,  20.0f, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_VALUE,      34003, &g_boblight.m_value,      0.0f, 0.1f,  20.0f, FormatFloat);
+  AddSlider(VIDEO_SETTING_BOBLIGHT_THRESHOLD,  34004, &g_boblight.m_threshold,  0.0f, 1.0f, 255.0f, FormatFloat);
+  
+  AddSeparator(9);
   AddButton(VIDEO_SETTINGS_MAKE_DEFAULT, 12376);
   AddButton(VIDEO_SETTINGS_CALIBRATION, 214);
 }

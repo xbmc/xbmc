@@ -48,6 +48,12 @@ class CBoblightClient : public CThread
     void Send();
     void Disable();
     
+    float m_speed;
+    bool  m_interpolation;
+    float m_saturation;
+    float m_value;
+    float m_threshold;
+    
   private:
     void Process();
     
@@ -66,6 +72,7 @@ class CBoblightClient : public CThread
     bool             Setup();       //sets up a connection to boblightd
     void             Cleanup();     //cleans up connection to boblightd
     void             Run();         //waits for input, on a timeout calls boblight_ping to check if boblight is still alive
+    void             SetOptions();  //sends our options to boblightd
 };
 
 extern CBoblightClient g_boblight;
