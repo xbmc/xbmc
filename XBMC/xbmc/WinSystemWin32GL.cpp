@@ -107,9 +107,9 @@ bool CWinSystemWin32GL::ResizeWindow(int newWidth, int newHeight, int newLeft, i
   return true;
 }
 
-bool CWinSystemWin32GL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemWin32GL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays, alwaysOnTop);
+  CWinSystemWin32::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);  
 
   return true;

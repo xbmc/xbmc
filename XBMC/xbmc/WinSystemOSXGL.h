@@ -32,7 +32,7 @@ public:
   CWinSystemOSXGL();
   virtual ~CWinSystemOSXGL();
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop);
+  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
 
 protected:
   virtual bool PresentRenderImpl();
