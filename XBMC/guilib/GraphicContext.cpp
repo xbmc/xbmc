@@ -359,7 +359,6 @@ void CGraphicContext::SetVideoResolution(RESOLUTION &res, bool forceUpdate)
   g_fontManager.ReloadTTFFonts();
 
   SetFullScreenViewWindow(res);
-  m_Resolution = res;
 
   Unlock();
 }
