@@ -5038,8 +5038,8 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  // check our network state every 10 seconds or when net status changes
-  g_network.CheckNetwork(20);
+  // check our network state every 30 seconds or when net status changes
+  g_network.CheckNetwork(60);
   
   // check if we need 2 spin down the harddisk
   CheckNetworkHDSpinDown();
