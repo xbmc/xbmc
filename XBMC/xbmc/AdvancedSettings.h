@@ -148,6 +148,7 @@ class CAdvancedSettings
 
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
+    CStdString m_fanartImages;
 
     bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;

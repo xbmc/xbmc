@@ -2616,49 +2616,49 @@ CStdString CFileItem::CacheFanart(bool probe) const
   || CUtil::IsUPnP(strFile)
   || IsLiveTV()
   || IsPlugin()
-  || CUtil::IsFTP(strFile))
+  || CUtil::IsFTP(strFile)
+  || m_strPath.IsEmpty())
     return "";
 
   CStdString localFanart;
 
-  // special checks for subfolders
-  if(m_bIsFolder)
-  {
-    CStdString strArt;
-    CUtil::AddFileToFolder(strFile, "fanart.jpg", strArt);
-    if(CFile::Exists(strArt))
-      localFanart = strArt;
-
-    CUtil::AddFileToFolder(strFile, "fanart.png", strArt);
-    if(localFanart.IsEmpty() && CFile::Exists(strArt))
-      localFanart = strArt;
-  }
-
   // we don't have a cached image, so let's see if the user has a local image ..
-  if (localFanart.IsEmpty())
+  CStdString strDir;
+  CUtil::GetDirectory(strFile, strDir);
+
+  if (strDir.IsEmpty())
+    return "";
+
+  CFileItemList items;
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
+
+  CStdStringArray fanarts;
+  StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
+
+  CUtil::RemoveExtension(strFile);
+  strFile += "-fanart";
+  fanarts.push_back(CUtil::GetFileName(strFile));
+
+  if (!strFile2.IsEmpty())
+    fanarts.push_back(CUtil::GetFileName(strFile2));
+
+  for (unsigned int i = 0; i < fanarts.size(); ++i)
   {
-    CStdString strDir;
-    CUtil::GetDirectory(strFile, strDir);
-    if (strDir.IsEmpty()) return "";
-
-    CFileItemList items;
-    CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
-    CUtil::RemoveExtension(strFile);
-    strFile += "-fanart";
-    CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
-
-    for (int i = 0; i < items.Size(); i++)
+    for (int j = 0; j < items.Size(); j++)
     {
-      CStdString strCandidate = items[i]->m_strPath;
+      CStdString strCandidate = CUtil::GetFileName(items[j]->m_strPath);
       CUtil::RemoveExtension(strCandidate);
-      if (strCandidate.CompareNoCase(strFile) == 0 ||
-          strCandidate.CompareNoCase(strFile2) == 0 ||
-          strCandidate.CompareNoCase(strFile3) == 0)
+      CStdString strFanart = fanarts[i];
+      CUtil::RemoveExtension(strFanart);
+      if (strCandidate.CompareNoCase(strFanart) == 0)
       {
-        localFanart = items[i]->m_strPath;
+        localFanart = items[j]->m_strPath;
         break;
       }
     }
+    // exit main loop if fanart was found
+    if (!localFanart.IsEmpty())
+      break;
   }
 
   // no local fanart found

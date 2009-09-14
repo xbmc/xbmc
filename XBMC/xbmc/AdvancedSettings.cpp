@@ -167,6 +167,7 @@ CAdvancedSettings::CAdvancedSettings()
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
+  m_fanartImages = "fanart.jpg|fanart.png";
 
   m_bMusicLibraryHideAllItems = false;
   m_bMusicLibraryAllItemsOnBottom = false;
@@ -639,6 +640,11 @@ bool CAdvancedSettings::Load()
   pThumbs = pRootElement->FirstChildElement("dvdthumbs");
   if (pThumbs)
     GetCustomExtensions(pThumbs,m_dvdThumbs);
+
+  // movie fanarts
+  TiXmlElement* pFanarts = pRootElement->FirstChildElement("fanarts");
+  if (pFanarts)
+    GetCustomExtensions(pFanarts,m_fanartImages);
 
   // music filename->tag filters
   TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");
