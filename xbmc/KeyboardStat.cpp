@@ -601,7 +601,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
         else if (event.key.keysym.sym == XBMCK_KP_DIVIDE) m_VKey = 0x6f;
         else if (event.key.keysym.sym == XBMCK_PAGEUP) m_VKey = 0x21;
         else if (event.key.keysym.sym == XBMCK_PAGEDOWN) m_VKey = 0x22;
-        else if ((event.key.keysym.sym == XBMCK_PRINT) || (event.key.keysym.scancode==111) || (event.key.keysym.scancode==105) ) m_VKey = 0x2a;
+        else if (event.key.keysym.sym == XBMCK_PRINT) m_VKey = 0x2a;
         else if (event.key.keysym.sym == XBMCK_LSHIFT) m_VKey = 0xa0;
         else if (event.key.keysym.sym == XBMCK_RSHIFT) m_VKey = 0xa1;
       }
