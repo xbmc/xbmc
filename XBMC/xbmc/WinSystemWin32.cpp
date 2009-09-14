@@ -220,6 +220,12 @@ bool CWinSystemWin32::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   return true;
 }
 
+void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
+{
+  if (m_bFullScreen && bGaining) //bump ourselves to top
+    SetWindowPos(m_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREDRAW);
+}
+
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
 {
   m_bFullScreen = fullScreen;
@@ -257,7 +263,7 @@ bool CWinSystemWin32::ResizeInternal()
   if(m_bFullScreen)
   {
     dwStyle |= WS_POPUP;
-    windowAfter = HWND_TOPMOST;
+    windowAfter = HWND_TOP;
     // save position of window mode
     m_nLeft = wi.rcClient.left;
     m_nTop = wi.rcClient.top;
