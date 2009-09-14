@@ -642,9 +642,9 @@ bool CAdvancedSettings::Load()
     GetCustomExtensions(pThumbs,m_dvdThumbs);
 
   // movie fanarts
-  TiXmlElement* pFanarts = pRootElement->FirstChildElement("fanarts");
-  if (pFanarts)
-    GetCustomExtensions(pFanarts,m_fanartImages);
+  TiXmlElement* pFanart = pRootElement->FirstChildElement("fanart");
+  if (pFanart)
+    GetCustomExtensions(pFanart,m_fanartImages);
 
   // music filename->tag filters
   TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");
