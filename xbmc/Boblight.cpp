@@ -131,13 +131,7 @@ bool CBoblightClient::Setup()
   
   CLog::Log(LOGDEBUG, "CBoblightClient: Connected");
   
-  //these will be made into gui options
   boblight_setscanrange(m_boblight, 64, 64);
-  //boblight_setoption(m_boblight, -1, "interpolation 1");
-  //boblight_setoption(m_boblight, -1, "value 10.0");
-  boblight_setoption(m_boblight, -1, "saturation 5.0");
-  //boblight_setoption(m_boblight, -1, "speed 5.0");
-  //boblight_setoption(m_boblight, -1, "threshold 20");*/
   
   CSingleLock lock(m_critsection);
   m_connected = true;
