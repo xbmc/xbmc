@@ -24,6 +24,7 @@
 #include "WinEventsWin32.h"
 #include "Settings.h"
 #include "resource.h"
+#include "AdvancedSettings.h"
 
 #ifdef _WIN32
 
@@ -272,7 +273,7 @@ bool CWinSystemWin32::ResizeInternal()
   {
     bFromFullScreen = (wi.dwStyle & WS_CAPTION) == 0;
     dwStyle |= WS_OVERLAPPEDWINDOW;
-    windowAfter = HWND_NOTOPMOST;
+    windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
 
     if(m_nTop <= 0 || m_nLeft <= 0)
       CenterWindow();
