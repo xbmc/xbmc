@@ -60,6 +60,7 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop);
   virtual void UpdateResolutions();
   virtual bool CenterWindow();
+  virtual void NotifyAppFocusChange(bool bGaining);
   
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }

@@ -50,6 +50,7 @@ public:
   virtual bool MoveWindow(int topLeft, int topRight){return false;}
   virtual bool CenterWindow(){return false;}
   virtual bool IsCreated(){ return m_bWindowCreated; }
+  virtual void NotifyAppFocusChange(bool bGaining) {};
 
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
