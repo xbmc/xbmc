@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
-<scraper framework="1.1" date="2009-09-13" content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif" language="es">
+<scraper framework="1.1" date="2009-09-14" content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif" language="es">
 	<include>common/tmdb.xml</include>
 	<include>common/movieposterdb.xml</include>
 	<include>common/impa.xml</include>
@@ -177,6 +177,14 @@
 				<expression noclean="1">&lt;a href="/es/evideos.php([^"]+)</expression>
 			</RegExp>
 
+			<RegExp  input="$$1" output="&lt;thumb&gt;http://pics.filmaffinity.com/\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1,2">href="http://pics.filmaffinity.com/([^=]*large.jpg)"</expression>
+			</RegExp>
+
+			<RegExp conditional="!OnlyFilmAffinity" input="$$1" output="&lt;url function=&quot;GetFilmAffinityPosters&quot;&gt;http://www.filmaffinity.com/es/filmimages.php?movie_id=\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1,2">href="/es/filmimages.php.movie_id=([^"]+)</expression>
+			</RegExp>
+
 			<!--URL to Google and IMDB-->
 			<RegExp conditional="!OnlyFilmAffinity" input="$$9" output="&lt;url function=&quot;GoogleToIMDB&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">
 				<RegExp input="$$8" output="+\1" dest="9">
@@ -197,13 +205,6 @@
 				<expression></expression>
 			</RegExp>
 
-			<RegExp conditional="!OnlyFilmAffinity" input="$$1" output="&lt;url function=&quot;GetFilmAffinityPoster&quot;&gt;http://www.filmaffinity.com/es/film\2.html&lt;/url&gt;" dest="5+">
-				<expression noclean="1,2">&lt;img src="http://www.filmaffinity.com/imgs/movies/full/([0-9]*)/([0-9]*).jpg"</expression>
-			</RegExp>
-
-			<RegExp conditional="OnlyFilmAffinity" input="$$1" output="&lt;thumb&gt;\1large.jpg&lt;/thumb&gt;" dest="5+">
-				<expression noclean="1,2"> href="(http://pics.filmaffinity.com/.*-[0-9]*)large.jpg"</expression>
-			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
 	</GetDetails>
@@ -245,7 +246,7 @@
 	</GetCastThumb>
 
 	<SearchTrailerPage dest="5">
-		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer&gt;http://www.yobajo.com/watch?v=\1&lt;/trailer&gt;&lt;/details&gt;" dest="5">
+		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer&gt;http://www.yobajo.com/watch?v=\1&lt;/trailer&gt;&lt;/details&gt;" dest="5+">
 			<expression noclean="1">http://www.youtube.com/v/([^&amp;|^\\]*)</expression>
 		</RegExp>
 	</SearchTrailerPage>
@@ -255,9 +256,9 @@
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">/title/tt([0-9]*)</expression>
 			</RegExp>
-                        <RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt$$6&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5">
-                                <expression></expression>
-                        </RegExp>
+			<RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt$$6&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5">
+				<expression></expression>
+			</RegExp>
 			<RegExp conditional="EnableIMPAwards" output="&lt;url function=&quot;GetIMPALink&quot;cache=&quot;$$2.html&quot;&gt;http://www.imdb.com/title/tt$$6/posters&lt;/url&gt;" dest="5+">
 				<expression></expression>
 			</RegExp>
@@ -271,12 +272,12 @@
 		</RegExp>
 	</GoogleToIMDB>
 
-	<GetFilmAffinityPoster dest="5">
-		<RegExp input="$$10" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
-			<RegExp input="$$1" output="&lt;thumb&gt;http://www.filmaffinity.com/imgs/movies/full/\1/\2.jpg&lt;/thumb&gt;" dest="10+">
-				<expression noclean="1,2">&lt;img src="http://www.filmaffinity.com/imgs/movies/full/([0-9]*)/([0-9]*).jpg"</expression>
+	<GetFilmAffinityPosters dest="5">
+		<RegExp input="$$10" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://pics.filmaffinity.com/\4&lt;/thumb&gt;" dest="10">
+				<expression repeat="yes" noclean="1">,    imgs_([0-9]*):([^']*)'([^']*)', url_l: 'http://pics.filmaffinity.com/([^']*)</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
 		</RegExp>
-	</GetFilmAffinityPoster>
+	</GetFilmAffinityPosters>
 </scraper>
