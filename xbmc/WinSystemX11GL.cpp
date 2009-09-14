@@ -222,9 +222,9 @@ bool CWinSystemX11GL::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   return true;
 }
 
-bool CWinSystemX11GL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemX11GL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CWinSystemX11::SetFullScreen(fullScreen, res, blankOtherDisplays, alwaysOnTop);
+  CWinSystemX11::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);  
   
   return true;
