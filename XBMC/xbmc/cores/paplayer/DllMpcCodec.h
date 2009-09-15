@@ -39,6 +39,7 @@
 #endif
 #include "MPCCodec/src/xbmc_interface.h"
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 // stuff from dll we need
 #define FRAMELEN 1152

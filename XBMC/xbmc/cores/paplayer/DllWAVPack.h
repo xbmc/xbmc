@@ -30,6 +30,7 @@
   #include "WavPackCodec/wavpack.h"
 #endif
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 #if (defined USE_EXTERNAL_LIBWAVPACK)
 

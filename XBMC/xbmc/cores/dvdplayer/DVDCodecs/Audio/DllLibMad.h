@@ -31,6 +31,7 @@
   #include "libmad/mad.h"
 #endif
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 class DllLibMadInterface
 {
