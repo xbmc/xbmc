@@ -94,7 +94,7 @@ CStdString CBasicSettings::Get(const CStdString& key) const
   if (m_userXmlDoc.RootElement())
   {
     // Try to find the setting and return its value
-    TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
+    const TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
     while (setting)
     {
       const char *id = setting->Attribute("id");
@@ -108,7 +108,7 @@ CStdString CBasicSettings::Get(const CStdString& key) const
   if (m_pluginXmlDoc.RootElement())
   {
     // Try to find the setting in the plugin and return its default value
-    TiXmlElement* setting = m_pluginXmlDoc.RootElement()->FirstChildElement("setting");
+    const TiXmlElement* setting = m_pluginXmlDoc.RootElement()->FirstChildElement("setting");
     while (setting)
     {
       const char *id = setting->Attribute("id");
