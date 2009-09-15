@@ -4091,15 +4091,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
 
     }
     if (info.strPath.IsEmpty()) // default fallback
-    {
-      CScraperParser parser;
-      info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-      parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
-      info.strContent = parser.GetContent();
-      info.strTitle = parser.GetName();
-      info.strDate = parser.GetDate();
-      info.strFramework = parser.GetFramework();
-    }
+      GetScraperForPath("musicdb://",info);
 
     m_pDS->close();
     return true;

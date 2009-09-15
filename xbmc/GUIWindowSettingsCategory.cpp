@@ -93,6 +93,7 @@
 #include "WINDirectSound.h"
 #endif
 #include <map>
+#include "ScraperSettings.h"
 #include "ScriptSettings.h"
 #include "GUIDialogPluginSettings.h"
 #include "Settings.h"
@@ -1409,6 +1410,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
     }
+    else if (strSetting.Equals("musiclibrary.scrapersettings"))
+    {
+      CScraperParser parser;
+      bool enabled=false;
+      if (parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper")))
+        enabled = parser.HasFunction("GetSettings");
+
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(enabled);
+    }
     else if (!strSetting.Equals("musiclibrary.enabled")
       && strSetting.Left(13).Equals("musiclibrary."))
     {
@@ -1516,6 +1527,27 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
     CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
+  else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
+  {
+    CMusicDatabase database;
+    database.Open();
+    SScraperInfo info;
+    database.GetScraperForPath("musicdb:/",info);
+    if (!info.strPath.Equals(g_guiSettings.GetString("musiclibrary.defaultscraper")))
+    {
+      CScraperParser parser;
+      parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper"));
+      info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
+      info.strContent = "albums";
+      info.strTitle = parser.GetName();
+    }
+    if (info.settings.GetPluginRoot() || info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/"+info.strPath))
+    {
+      if (strSetting.Equals("musiclibrary.scrapersettings"))
+        CGUIDialogPluginSettings::ShowAndGetInput(info);
+    }
+    database.SetScraperForPath("musicdb://",info);
+  }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't
   // require immediate update
