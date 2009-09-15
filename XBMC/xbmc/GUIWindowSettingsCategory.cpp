@@ -1532,7 +1532,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     CMusicDatabase database;
     database.Open();
     SScraperInfo info;
-    database.GetScraperForPath("musicdb:/",info);
+    database.GetScraperForPath("musicdb://",info);
     if (!info.strPath.Equals(g_guiSettings.GetString("musiclibrary.defaultscraper")))
     {
       CScraperParser parser;
