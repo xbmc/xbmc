@@ -690,6 +690,18 @@ bool CAdvancedSettings::Load()
   return true;
 }
 
+void CAdvancedSettings::Clear()
+{
+  m_videoCleanStringRegExps.clear();
+  m_moviesExcludeFromScanRegExps.clear();
+  m_tvshowExcludeFromScanRegExps.clear();
+  m_videoExcludeFromListingRegExps.clear();
+  m_videoStackRegExps.clear();
+  m_audioExcludeFromScanRegExps.clear();
+  m_audioExcludeFromListingRegExps.clear();
+  m_pictureExcludeFromListingRegExps.clear();
+}
+
 void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings)
 {
   int iAction = 0; // overwrite

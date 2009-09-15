@@ -3405,6 +3405,7 @@ HRESULT CApplication::Cleanup()
     g_playlistPlayer.Clear();
     g_settings.Clear();
     g_guiSettings.Clear();
+    g_advancedSettings.Clear();
     g_Mouse.Cleanup();
 
 #ifdef _LINUX
