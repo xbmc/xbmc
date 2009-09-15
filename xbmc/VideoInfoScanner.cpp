@@ -1128,6 +1128,14 @@ namespace VIDEO
         continue;
       }
 
+      if (episodes.empty())
+      {
+        CLog::Log(LOGERROR,"CVideoInfoScanner::OnProcessSeriesFolder: Asked to lookup episode %s"
+                           " online, but we have no episode guide. Check your tvshow.nfo and make"
+                           " sure the <episodeguide> tag is in place.",file->strPath.c_str());
+        continue;
+      }
+
       std::pair<int,int> key;
       key.first = file->iSeason;
       key.second = file->iEpisode;
