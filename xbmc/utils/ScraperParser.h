@@ -47,7 +47,7 @@ public:
   const CStdString GetFramework() { return m_framework; }
   const CStdString GetDate() { return m_date; }
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
-  const CStdString Parse(const CStdString& strTag, CScraperSettings* pSettings=NULL);
+  const CStdString Parse(const CStdString& strTag, const CScraperSettings* pSettings=NULL);
   bool HasFunction(const CStdString& strTag);
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
@@ -76,7 +76,7 @@ private:
 
   CStdString m_strFile;
 
-  CScraperSettings* m_settings;
+  const CScraperSettings* m_settings;
 };
 
 #endif

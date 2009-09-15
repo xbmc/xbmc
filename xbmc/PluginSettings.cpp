@@ -89,7 +89,7 @@ void CBasicSettings::Set(const CStdString& key, const CStdString& value)
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
 
-CStdString CBasicSettings::Get(const CStdString& key)
+CStdString CBasicSettings::Get(const CStdString& key) const
 {
   if (m_userXmlDoc.RootElement())
   {
