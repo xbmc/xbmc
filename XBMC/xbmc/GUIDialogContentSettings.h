@@ -52,6 +52,7 @@ protected:
   void OnSettingChanged(unsigned int setting);
   virtual void OnSettingChanged(SettingInfo &setting);
   SScraperInfo FindDefault(const CStdString& strType, const CStdString& strDefault);
+  static CStdString GetScraperDirectory(const SScraperInfo& scraper);
 
   bool m_bNeedSave;
 
