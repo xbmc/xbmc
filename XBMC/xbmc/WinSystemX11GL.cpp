@@ -123,7 +123,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
   
   if(!enable)
     return;
-printf("%s\n", m_RenderVendor.c_str());
+  
   if(m_glXGetSyncValuesOML && m_glXSwapBuffersMscOML && !m_iVSyncMode)
   {
     int64_t ust, msc, sbc;
