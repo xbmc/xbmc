@@ -120,7 +120,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
 
   if(!enable)
     return;
-
+printf("%s\n", m_RenderVendor.c_str());
   if(m_glXGetSyncValuesOML && m_glXSwapBuffersMscOML && !m_iVSyncMode)
   {
     int64_t ust, msc, sbc;
@@ -129,7 +129,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     else
       CLog::Log(LOGWARNING, "%s - glXGetSyncValuesOML failed", __FUNCTION__);
   }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && m_RenderVendor.find("nvidia") == std::string::npos)
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && m_RenderVendor.ToLower().find("nvidia") == std::string::npos)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
