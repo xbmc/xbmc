@@ -573,7 +573,6 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
             break;
         }
 
-        int count = 0;
 #ifdef HAS_XBOX_NETWORK
         DWORD dwState = XNET_GET_XNADDR_PENDING;
 
@@ -587,12 +586,10 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
           if (HaveGamepad && AnyButtonDown())
             g_applicationMessenger.Restart();
 
-
           Sleep(50);
-          ++count;
         }
 
-        if( dwState != XNET_GET_XNADDR_PENDING && dwState != XNET_GET_XNADDR_NONE )
+        if (dwState != XNET_GET_XNADDR_PENDING && dwState != XNET_GET_XNADDR_NONE)
         {
           /* yay, we got network */
           NetworkUp = true;
@@ -5038,8 +5035,8 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
-  // check our network state every 30 seconds or when net status changes
-  g_network.CheckNetwork(60);
+  // check our network state every 15 seconds or when net status changes
+  g_network.CheckNetwork(30);
   
   // check if we need 2 spin down the harddisk
   CheckNetworkHDSpinDown();
