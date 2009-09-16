@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-09-04" name="Discogs" content="albums" thumb="discogs.gif" language="en">
+<scraper framework="1.1" date="2009-09-16" name="Discogs" content="albums" thumb="discogs.gif" language="en">
 	<include>common/htbackdrops.xml</include>
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;htbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Grab thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="\1" dest="3">
 			<expression>(http://www.discogs.com/.*)</expression>
@@ -101,13 +112,13 @@
 			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="5+">
 				<expression>Profile:(.*?)URLs:</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetImages&quot;&gt;http://www.discogs.com\1&lt;/url&gt;" dest="5+">
 				<expression>a href=&quot;(/viewimages\?artist=[^&quot;]*)&quot;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbfanart" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<expression noclean="1"/>
