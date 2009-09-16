@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Ydatografida-->
 <!--Email: ydatografida@gmail.com-->
-<!--Date of translation: 08/26/2009-->
+<!--Date of translation: 09/11/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22423-->
+<!--Based on english strings version 22867-->
 <strings>
   <string id="0">Εφαρμογές</string>
   <string id="1">Φωτογραφίες</string>
@@ -713,6 +713,7 @@
   <string id="1047">Άλλα...</string>
   <string id="1048">Όνομα χρήστη διακομιστή ιστού</string>
   <string id="1049">Ρυθμίσεις script</string>
+  <string id="1050">Μεμονωμένα</string>
   <string id="1200">Πελάτης SMB</string>
   <string id="1202">Ομάδα Εργασίας</string>
   <string id="1203">Προεπιλεγμένο όνομα χρήστη</string>
@@ -962,15 +963,17 @@
   <string id="13109">Δοκιμή ανάλυσης</string>
   <string id="13110">Αποθήκευση ανάλυσης;</string>
   <string id="13111">Θέλετε να διατηρήσετε αυτή την ανάλυση;</string>
-  <string id="13112">Λογισμικό βελτιωμένης κλιμάκωσης (Υψηλή Ποιότητα)</string>
+  <string id="13112">Λογισμικό ανακλιμακοθέτησης (Υψηλή Ποιότητα)</string>
   <string id="13113">Ανενεργό</string>
   <string id="13114">Ενεργό για περιεχόμενο SD </string>
   <string id="13115">Πάντα ενεργό</string>
-  <string id="13116">Μέθοδος προσαρμογής ανάλυσης</string>
+  <string id="13116">Μέθοδος ανακλιμακοθέτησης</string>
   <string id="13117">Δικυβική</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-  <string id="13120">Strict Pixmap-Texture Binding (απαιτεί επανεκκίνηση)</string>
+  <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU HQ ανακλιμακοθέτηση</string>
+  <string id="13122">VDPAU Μετατροπή στάθμης χρώματος</string>
   <string id="13130">Display Blanking</string>
   <string id="13131">Ανενεργή</string>
   <string id="13132">Blank displays</string>
@@ -1165,10 +1168,10 @@
   <string id="13503">Χρονισμός βίντεο (εν νέου δειγματοληψία ήχου)</string>
   <string id="13504">Μέγιστο ποσοστό επανάληψης δειγματοληψίας (%)</string>
   <string id="13505">Ποιότητα επανάληψης δειγματοληψίας</string>
-  <string id="13506">Χαμηλή</string>
+  <string id="13506">Χαμηλή (γρήγορη)</string>
   <string id="13507">Μεσαία</string>
   <string id="13508">Υψηλή</string>
-  <string id="13509">Πραγματικά Υψηλή</string>
+  <string id="13509">Πραγματικά υψηλή (αργή)</string>
   <string id="13510">Συγχρονισμός αναπαραγωγής ήχου κατά τη προβολή</string>
   <string id="13600">Apple Remote</string>
   <string id="13601">Κατάσταση</string>
@@ -1928,6 +1931,7 @@
   <string id="22019">Εγγραφές ανά τίτλο</string>
   <string id="22020">Οδηγός</string>
   <string id="22021">Επιτρεπόμενο σφάλμα στο λόγο απεικόνισης (%)</string>
+  <string id="22022">Περιεχόμενα αρχεία βίντεο στις λίστες</string>
   <string id="22030">Γραμματοσειρά</string>
   <string id="22031">- Μέγεθος</string>
   <string id="22032">- Χρώματα</string>
