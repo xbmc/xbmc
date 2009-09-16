@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 08/26/2009-->
+<!--Date of translation: 09/16/2009-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -108,7 +108,7 @@
   <string id="165">디스크 있음</string>
   <string id="166">스킨</string>
   <string id="167">FTP 서버 사용</string>
-  <string id="168">인터넷 시간서버와 동기화 사용</string>
+  <string id="168">인터넷 시간 동기화 사용</string>
   <string id="169">해상도</string>
   <string id="170">새로 고침 비율 조정</string>
   <string id="172">개봉일</string>
@@ -400,7 +400,7 @@
   <string id="491">- 큰 아이콘 사용</string>
   <string id="492">자막 크기변경</string>
   <string id="493">고급 옵션 (전문가만!)</string>
-  <string id="494">전체 오디오 헤드룸</string>
+  <string id="494">전반적인 오디오 헤드룸</string>
   <string id="495">비디오를 GUI 해상도로 올림</string>
   <string id="496">조정</string>
   <string id="497">미디어 확장자 숨김</string>
@@ -684,9 +684,10 @@
   <string id="1044">플러그인 미리보기 설정</string>
   <string id="1045">플러그인 설정</string>
   <string id="1046">액세스 포인트</string>
-  <string id="1047">다른...</string>
+  <string id="1047">기타...</string>
   <string id="1048">웹 서버 사용자명</string>
   <string id="1049">스크립트 설정</string>
+  <string id="1050">단일</string>
   <string id="1200">SMB 클라이언트</string>
   <string id="1202">작업그룹</string>
   <string id="1203">기본 사용자명</string>
@@ -724,7 +725,7 @@
   <string id="1251">시스템 자동-감지</string>
   <string id="1252">닉네임</string>
   <string id="1254">연결 요청</string>
-  <string id="1255">FTP 사용자명 및 비밀번호 전송</string>
+  <string id="1255">FTP 사용자 및 비밀번호 전송</string>
   <string id="1256">핑 간격</string>
   <string id="1257">자동감지된 시스템에 연결 하시겠습니까?</string>
   <string id="1260">제로컨프 게시</string>
@@ -923,7 +924,7 @@
   <string id="13109">해상도 테스트 &amp; 적용</string>
   <string id="13110">해상도를 저장 하시겠습니까?</string>
   <string id="13111">현재 해상도를 유지 하시겠습니까?</string>
-  <string id="13112">고화질 소프트웨어 업스케일링</string>
+  <string id="13112">고품질 업스케일링</string>
   <string id="13113">사용안함</string>
   <string id="13114">SD 컨텐츠 사용함</string>
   <string id="13115">항상 사용함</string>
@@ -931,7 +932,9 @@
   <string id="13117">바이큐빅</string>
   <string id="13118">랑초스</string>
   <string id="13119">싱크</string>
-  <string id="13120">스트릭트 픽스맵-텍스처 바인딩 (재시작 필요)</string>
+  <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU HQ 업스케일링 정도</string>
+  <string id="13122">VDPAU 스튜디오 수준 색온도 변환</string>
   <string id="13130">화면 여백화</string>
   <string id="13131">사용안함</string>
   <string id="13132">여백 표시</string>
@@ -1126,10 +1129,10 @@
   <string id="13503">비디오 클럭 (오디오 리샘플)</string>
   <string id="13504">최대 리샘플 량 (%)</string>
   <string id="13505">리샘플 품질</string>
-  <string id="13506">낮음</string>
+  <string id="13506">낮음(빠름)</string>
   <string id="13507">중간</string>
   <string id="13508">높음</string>
-  <string id="13509">매우 높음</string>
+  <string id="13509">매우 높음(느림!)</string>
   <string id="13510">화면에 재생 동기</string>
   <string id="13600">애플 리모트</string>
   <string id="13601">모드</string>
@@ -1245,7 +1248,7 @@
   <string id="15211">전송중...</string>
   <string id="15212">%i 초 후 전송</string>
   <string id="15213">다른 플레이어로 재생...</string>
-  <string id="15214">부드러운 A/V 싱크 사용</string>
+  <string id="15214">부드러운 A/V 동기화 사용</string>
   <string id="15215">미리보기에서 파일 이름 숨김</string>
   <string id="15216">파티 모드로 재생</string>
   <string id="15217">노래를 Libre.fm 에 전송</string>
@@ -1758,6 +1761,7 @@
   <string id="21414">기본 TV 쇼 자료수집기</string>
   <string id="21415">기본 뮤직비디오 자료수집기</string>
   <string id="21416">자료수집기 언어 기반의 대체 사용</string>
+  <string id="21417">- 자료수집기 설정</string>
   <string id="21420">일치하는 값</string>
   <string id="21421">지능형 재생목록 규칙</string>
   <string id="21422">일치하는 항목</string>
@@ -1883,6 +1887,7 @@
   <string id="22019">제목별 녹음</string>
   <string id="22020">가이드</string>
   <string id="22021">가로세로 비에 허용된 오류 (%)</string>
+  <string id="22022">목록에 비디오 파일 허용</string>
   <string id="22030">글꼴</string>
   <string id="22031">- 크기</string>
   <string id="22032">- 색깔</string>
@@ -1901,7 +1906,7 @@
   <string id="23001">- 플러그인 설정</string>
   <string id="23100">외장 플레이어 활성</string>
   <string id="23101">플레이어를 종료하려면 예를 누르세요</string>
-  <string id="23104">재생이 끝날때 예를 누르세요</string>
+  <string id="23104">재생이 끝났으면 예를 누르세요</string>
   <string id="29800">라이브러리 모드</string>
   <string id="29801">쿼티 키보드</string>
   <string id="29802">패스스루 오디오 사용중</string>
