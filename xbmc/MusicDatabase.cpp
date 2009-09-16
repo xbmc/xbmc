@@ -4090,7 +4090,7 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.strFramework = parser.GetFramework();
 
     }
-    if (info.strPath.IsEmpty()) // default fallback
+    if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback
       GetScraperForPath("musicdb://",info);
 
     m_pDS->close();
