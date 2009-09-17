@@ -660,7 +660,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       int    refreshrate;
       double clockspeed;
       CStdString strClock;
-      
+
       if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
         strClock.Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
                        , refreshrate
