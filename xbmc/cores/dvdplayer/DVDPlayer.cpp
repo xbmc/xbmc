@@ -2347,7 +2347,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
     return false;
 
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
-  if(!pStream && pStream->disabled)
+  if(!pStream || pStream->disabled)
     return false;
   pStream->SetDiscard(AVDISCARD_NONE);
 
