@@ -1180,7 +1180,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     return strLabel;
     break;
 
-  case CONTAINER_FOLDERPATH: 
+  case CONTAINER_FOLDERPATH:
   case CONTAINER_FOLDERNAME:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -2148,7 +2148,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         bReturn = g_cpuInfo.HasCoreId(info.GetData1());
         break;
       case SYSTEM_SETTING:
-        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") ) 
+        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
           bReturn = g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
       case CONTAINER_ON_NEXT:
@@ -3253,7 +3253,7 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
               ret   = 0;
   char        scale = 0;
   FILE        *p    = NULL;
-  
+
   if (cmd.IsEmpty() || !(p = popen(cmd.c_str(), "r")))
     return CTemperature();
 
@@ -3883,7 +3883,7 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     }
     break;
   }  /* switch (info) */
-  
+
   return GetItemLabel(item, info);
 }
 
@@ -4226,7 +4226,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   else if (condition == LIBRARY_HAS_VIDEO)
   {
     return (GetLibraryBool(LIBRARY_HAS_MOVIES) ||
-            GetLibraryBool(LIBRARY_HAS_TVSHOWS) || 
+            GetLibraryBool(LIBRARY_HAS_TVSHOWS) ||
             GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
   }
   return false;
