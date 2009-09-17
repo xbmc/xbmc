@@ -227,7 +227,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   ASSERT(newLeft < newRight);
   ASSERT(newTop < newBottom);
 
-  CRect newviewport(newLeft, newTop, newRight, newBottom);
+  CRect newviewport((float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
   g_Windowing.SetViewPort(newviewport);
 
   m_viewStack.push(oldviewport);

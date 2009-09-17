@@ -249,8 +249,6 @@ bool CRenderSystemDX::PresentRenderImpl()
     return false;
 
   return true;
-
-  return true;
 }
 
 bool CRenderSystemDX::BeginRender()
