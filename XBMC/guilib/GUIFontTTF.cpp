@@ -47,9 +47,9 @@ using namespace std;
 
 // our free type library (debug)
 #if defined(_DEBUG) && !defined(USE_RELEASE_LIBS)
-  #pragma comment (lib,"../../guilib/freetype2/freetype221_D.lib")
+  #pragma comment (lib,"../../guilib/freetype2/freetype239ST_D.lib")
 #elif !defined(__GNUC__)
-  #pragma comment (lib,"../../guilib/freetype2/freetype221.lib")
+  #pragma comment (lib,"../../guilib/freetype2/freetype239ST.lib")
 #endif
 
 
@@ -212,7 +212,7 @@ void CGUIFontTTFBase::Clear()
   if (m_face)
     g_freeTypeLibrary.ReleaseFont(m_face);
   m_face = NULL;
-  
+
   free(m_vertex);
   m_vertex = NULL;
   m_vertex_count = 0;
