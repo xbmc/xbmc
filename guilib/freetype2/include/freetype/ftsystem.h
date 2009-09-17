@@ -82,7 +82,7 @@ FT_BEGIN_HEADER
    *     The size in bytes to allocate.
    *
    * @return:
-   *   Address of new memory block.  0 in case of failure.
+   *   Address of new memory block.  0~in case of failure.
    *
    */
   typedef void*
@@ -133,7 +133,7 @@ FT_BEGIN_HEADER
    *     The block's current address.
    *
    * @return:
-   *   New block address.  0 in case of memory shortage.
+   *   New block address.  0~in case of memory shortage.
    *
    * @note:
    *   In case of error, the old block must still be available.
@@ -152,7 +152,7 @@ FT_BEGIN_HEADER
    *   FT_MemoryRec
    *
    * @description:
-   *   A structure used to describe a given memory manager to FreeType 2.
+   *   A structure used to describe a given memory manager to FreeType~2.
    *
    * @fields:
    *   user ::
@@ -240,7 +240,7 @@ FT_BEGIN_HEADER
    *
    * @note:
    *   This function might be called to perform a seek or skip operation
-   *   with a `count' of 0.
+   *   with a `count' of~0.
    *
    */
   typedef unsigned long
