@@ -27,6 +27,7 @@
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "Application.h"
 
 #ifdef HAS_GL
@@ -326,6 +327,228 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   m_width  = (float)(max_x - min_x);
   m_height = (float)(max_y - min_y);
 }
+
+COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
+{
+  m_quads = NULL;
+
+  m_width  = (float)g_graphicsContext.GetWidth();
+  m_height = (float)g_graphicsContext.GetHeight();
+  m_align  = ALIGN_SCREEN;
+  m_pos    = POSITION_ABSOLUTE;
+  m_x      = (float)0.0f;
+  m_y      = (float)0.0f;
+
+  ass_image_t* images = o->m_libass->RenderImage((int)m_width, (int)m_height, pts);
+  ass_image_t* img;
+
+  m_texture = ~(GLuint)0;
+
+  if (!images)
+    return;
+    
+  // first calculate how many glyph we have and the total x length
+
+  int count = 0;
+  int size_x = 0;
+  int size_y = 0;
+
+  for(img = images; img; img = img->next)
+  {
+    if((img->color & 0xff) == 0xff)
+      continue;
+
+    size_x += img->w;
+    count++;
+  }
+
+  // if we dont have that many glyphs we dont need to split the into more lines
+  if (count > 8)
+    size_x >>= 2;
+
+  size_x++;
+
+  int x = 0; 
+  int y = 0;
+
+  // calculate the y size of the texture
+
+  for(img = images; img; img = img->next)
+  {
+    if((img->color & 0xff) == 0xff)
+      continue;
+
+    // check if we need to split to new line
+
+    if (x + img->w >= size_x)
+    {
+      size_y += y;
+      y = 0;
+      x = 0;
+    }
+
+    x += img->w;
+
+    if (img->h > y)
+      y = img->h;
+  }
+
+  size_y += y + 50;
+
+  // allocate space for the glyph positions and texturedata
+
+  m_count = count;
+  m_quads = (GlyphPosition*)malloc(count * sizeof(GlyphPosition));
+  GlyphPosition* positions = m_quads; 
+
+  uint32_t* rgba = (uint32_t*)malloc(size_x * 2 * size_y * sizeof(uint32_t));
+  uint32_t* rgbaLine = rgba;
+
+  int currentX = 0;
+  int currentY = 0;
+
+  uint32_t* rgbaTemp = rgbaLine;
+
+  float invWidth  = 1.0f / m_width;
+  float invHeight = 1.0f / m_height;
+
+  for(img = images; img; img = img->next)
+  {
+    unsigned int color = img->color;
+    unsigned int alpha = (color & 0xff);
+    if(alpha == 0xff)
+      continue;
+
+    if (currentX + img->w >= size_x)
+    {
+      rgbaLine += y * size_x;
+      rgbaTemp = rgbaLine;
+      currentY += y;
+      currentX = 0;
+      y = 0;
+    }
+
+    unsigned int b = ((color >> 24) & 0xff);
+    unsigned int g = ((color >> 16) & 0xff);
+    unsigned int r = ((color >> 8) & 0xff);
+    unsigned int opacity = 255 - alpha;
+
+    positions->u0 = (float)(currentX);
+    positions->v0 = (float)(currentY);
+    positions->u1 = (float)(currentX + img->w);
+    positions->v1 = (float)(currentY + img->h);
+
+    positions->x0 = (float)(img->dst_x)          * invWidth;
+    positions->y0 = (float)(img->dst_y)          * invHeight;
+    positions->x1 = (float)(img->dst_x + img->w) * invWidth;
+    positions->y1 = (float)(img->dst_y + img->h) * invHeight;
+
+    positions++;
+
+    for(int i=0; i<img->h; i++)
+    {
+      const unsigned char* source = img->bitmap + img->stride * i;
+      uint32_t*            target = rgbaTemp    + size_x      * i;
+
+      for(int j=0; j<img->w; j++)
+        target[j] = build_rgba(opacity * source[j] / 255, r, g, b);
+    }
+
+    if (img->h > y)
+      y = img->h;
+
+    currentX += img->w;
+    rgbaTemp += img->w;
+  }
+  glGenTextures(1, &m_texture);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  LoadTexture(GL_TEXTURE_2D, size_x, size_y, size_x * 4, &m_u, &m_v, GL_RGBA , rgba);
+
+  free(rgba);
+
+  float scale_u = m_u / size_x;
+  float scale_v = m_v / size_y;
+  for(int i=0; i < count; i++)
+  {
+    m_quads[i].u0 *= scale_u;
+    m_quads[i].v0 *= scale_v;
+    m_quads[i].u1 *= scale_u;
+    m_quads[i].v1 *= scale_v;
+  }
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
+}
+
+COverlayGlyphGL::~COverlayGlyphGL()
+{
+  glDeleteTextures(1, &m_texture);
+  free(m_quads);
+}
+
+void COverlayGlyphGL::Render(SRenderState& state)
+{
+  if (m_texture == ~GLuint(0))
+    return;
+
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);
+
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+#if USE_PREMULTIPLIED_ALPHA
+  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+#else
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+#endif
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  VerifyGLState();
+
+  glBegin(GL_QUADS);
+
+  const GlyphPosition* positions = m_quads;
+
+  // temp code to view glpyhtexture
+  for (int i = 0, count = m_count; i < count; i++)
+  {
+    float x0 = (positions->x0 * state.width)  + state.x;
+    float y0 = (positions->y0 * state.height) + state.y;
+
+    float x1 = (positions->x1 * state.width)  + state.x;
+    float y1 = (positions->y1 * state.height) + state.y;
+
+    glTexCoord2f(positions->u0, positions->v0);
+    glVertex2f(x0, y0);
+
+    glTexCoord2f(positions->u1, positions->v0);
+    glVertex2f(x1, y0);
+
+    glTexCoord2f(positions->u1, positions->v1);
+    glVertex2f(x1, y1);
+
+    glTexCoord2f(positions->u0, positions->v1);
+    glVertex2f(x0, y1);
+
+    positions++;
+  }
+
+  glEnd();
+
+  glDisable(GL_BLEND);
+  glDisable(GL_TEXTURE_2D);
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 
 COverlayTextureGL::~COverlayTextureGL()
 {
