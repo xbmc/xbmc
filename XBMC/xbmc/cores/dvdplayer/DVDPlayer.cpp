@@ -793,7 +793,7 @@ void CDVDPlayer::Process()
     else if (m_item.IsMythTV())
       m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
   }
-  
+
   if( m_PlayerOptions.starttime > 0 )
   {
     int starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms

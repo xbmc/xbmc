@@ -826,7 +826,7 @@ bool CDVDDemuxFFmpeg::SeekTime(int time, bool backwords, double *startpts)
       *startpts = DVD_NOPTS_VALUE;
     return true;
   }
- 
+
 #ifdef HAS_FILESYSTEM_MMS 
   if (m_pInput->IsStreamType(DVDSTREAM_TYPE_MMS))
   {
