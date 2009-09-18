@@ -576,12 +576,9 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
 #ifdef HAS_XBOX_NETWORK
         DWORD dwState = XNET_GET_XNADDR_PENDING;
 
-        while(dwState == XNET_GET_XNADDR_PENDING)
+        while (dwState == XNET_GET_XNADDR_PENDING)
         {
           dwState = g_network.UpdateState();
-
-          if( dwState != XNET_GET_XNADDR_PENDING )
-            break;
 
           if (HaveGamepad && AnyButtonDown())
             g_applicationMessenger.Restart();
@@ -589,7 +586,7 @@ void CApplication::FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetw
           Sleep(50);
         }
 
-        if (dwState != XNET_GET_XNADDR_PENDING && dwState != XNET_GET_XNADDR_NONE)
+        if ((dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC) && !(dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT))
         {
           /* yay, we got network */
           NetworkUp = true;

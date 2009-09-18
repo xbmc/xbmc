@@ -200,6 +200,8 @@ static bool TranslateConfig( const struct network_info& networkinfo, TXNetConfig
 bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const char* szLocalSubnet, const char* szLocalGateway, const char* szNameServer)
 {
 #ifdef HAS_XBOX_NETWORK
+  if (IsInited()) return true;
+
   XNetStartupParams xnsp = {};
   WSADATA WsaData = {};
   TXNetConfigParams params = {};
@@ -293,8 +295,6 @@ void CNetwork::NetworkDown()
   m_lastlink = 0;
   m_laststate = 0;
   m_lastlink2 = 0;
-  m_laststate2 = 0;
-  m_netRetryCounter = 0;
   m_networkup = false;
   g_applicationMessenger.NetworkMessage(SERVICES_DOWN, 0);
   m_inited = false;
@@ -360,24 +360,29 @@ DWORD CNetwork::UpdateState()
 bool CNetwork::CheckNetwork(int count)
 {
 #ifdef HAS_XBOX_NETWORK
-  // update our network state
-  DWORD dwState = UpdateState();
-  DWORD dwLink = m_lastlink;
   
   // Check the network status every count itterations
-  if (++m_netRetryCounter>count || m_lastlink2 != dwLink || m_laststate2 != dwState )
+  if (++m_netRetryCounter>count || m_lastlink2 != m_lastlink)
   {
-    m_lastlink2 = dwLink;
-    m_laststate2 = dwState;
-
+    m_lastlink2 = m_lastlink;
     m_netRetryCounter=0;
+    
+    DWORD dwState = UpdateState();
     // In case the network failed, try to set it up again
-    if ((dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || !IsInited()) && IsEthernetConnected() && !(dwState & XNET_GET_XNADDR_PENDING))
+    if (!IsInited() || (dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT))
     {
-      CLog::Log(LOGWARNING, "%s - Network error. Trying re-setup", __FUNCTION__);
-  
-      SetupNetwork();
-      return true;
+      Deinitialize();
+
+      if (IsEthernetConnected())
+      {
+        CLog::Log(LOGWARNING, "%s - Network error. Trying re-setup", __FUNCTION__);
+        SetupNetwork();
+        return true;
+      }
+      else
+      {
+        CLog::Log(LOGWARNING, "%s - Network error. No network link!", __FUNCTION__);
+      }
     }
   }
   return false;
@@ -388,9 +393,6 @@ bool CNetwork::CheckNetwork(int count)
 
 bool CNetwork::SetupNetwork()
 {
-  // Deinit first, just in case
-  Deinitialize();
-  
   // setup network based on our settings
   // network will start its init procedure but ethernet must be connected
   if (IsEthernetConnected())
@@ -402,6 +404,8 @@ bool CNetwork::SetupNetwork()
       g_guiSettings.GetString("network.subnet").c_str(),
       g_guiSettings.GetString("network.gateway").c_str(),
       g_guiSettings.GetString("network.dns").c_str());
+      
+    LogState();
     return true;
   }
   
@@ -422,9 +426,6 @@ bool CNetwork::IsEthernetConnected()
 
 bool CNetwork::WaitForSetup(DWORD timeout)
 {
-//  if( !IsEthernetConnected() )
-//    return false;
-
 #ifdef HAS_XBOX_NETWORK
   // Wait until the net is inited
   DWORD timestamp = GetTickCount() + timeout;
@@ -432,7 +433,7 @@ bool CNetwork::WaitForSetup(DWORD timeout)
   {
     DWORD dwState = UpdateState();
     
-    if (IsInited() && (dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC) && !(dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || dwState & XNET_GET_XNADDR_PENDING))
+    if ((dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC) && !(dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || dwState & XNET_GET_XNADDR_PENDING))
       return true;
     
     Sleep(100);
@@ -452,7 +453,6 @@ CNetwork::CNetwork(void)
   m_lastlink = 0;
   m_laststate = 0;
   m_lastlink2 = 0;
-  m_laststate2 = 0;
   m_netRetryCounter = 0;
   m_networkup = false;
   m_inited = false;
@@ -465,6 +465,8 @@ CNetwork::~CNetwork(void)
 
 void CNetwork::Deinitialize()
 {
+  if (!IsInited()) return;
+  
   if( m_networkup )
     NetworkDown();
 
