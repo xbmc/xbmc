@@ -169,6 +169,12 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
 
+  //if adjust refreshrate is used, or if sync playback to display is on,
+  //we try to calculate the framerate from the pts', because the codec fps
+  //is not always correct
+  m_bGuessFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
+                      g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
+  
   m_fStableFrameRate = 0.0;
   m_iFrameRateCount = 0;
   m_bAllowDrop = true;
@@ -885,7 +891,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   pts += m_pullupCorrection.Correction();
   
   //try to calculate the framerate
-  CalcFrameRate();
+  if (m_bGuessFrameRate)
+    CalcFrameRate();
   
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
@@ -949,7 +956,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if( (limited == false  && iClockSleep < -DVD_MSEC_TO_TIME(100))
   ||  (limited == true   && iClockSleep < -iFrameDuration*0.5) )
   {
-    if (m_bAllowDrop) //only drop frames here if we calculated a good framerate
+    //if we're calculating the framerate,
+    //don't drop frames until we've calculated a stable framerate
+    if (m_bAllowDrop || !m_bGuessFrameRate)
     {
       result |= EOS_VERYLATE;
       m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it
