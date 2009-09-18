@@ -3001,10 +3001,6 @@ bool CApplication::ProcessGamepad(float frameTime)
 
 bool CApplication::ProcessRemote(float frameTime)
 {
-  // run resume jobs if we are coming from suspend/hibernate
-  if (m_bRunResumeJobs)
-    g_powerManager.Resume(); 
-
 #ifdef HAS_LIRC
   if (g_RemoteControl.GetButton())
   {
@@ -4812,6 +4808,10 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
+  // run resume jobs if we are coming from suspend/hibernate
+  if (m_bRunResumeJobs)
+    g_powerManager.Resume(); 
+
   // Store our file state for use on close()
   UpdateFileState();
 
