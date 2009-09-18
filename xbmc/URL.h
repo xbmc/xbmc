@@ -35,6 +35,7 @@ public:
   void SetPassword(const CStdString& strPassword);
   void SetProtocol(const CStdString& strProtocol);
   void SetOptions(const CStdString& strOptions);
+  void SetProtocolOptions(const CStdString& strOptions);
   void SetPort(int port);
   bool HasPort() const;
   int GetPort() const;
@@ -47,6 +48,7 @@ public:
   const CStdString& GetFileType() const;
   const CStdString& GetShareName() const;
   const CStdString& GetOptions() const;
+  const CStdString GetProtocolOptions() const;
   const CStdString  GetFileNameWithoutPath() const; /* return the filename excluding path */
 
   char GetDirectorySeparator() const;
@@ -70,4 +72,5 @@ protected:
   CStdString m_strProtocol;
   CStdString m_strFileType;
   CStdString m_strOptions;
+  CStdString m_strProtocolOptions;
 };
