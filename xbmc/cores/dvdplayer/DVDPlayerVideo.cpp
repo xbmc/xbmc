@@ -731,6 +731,14 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   {
     render = OVERLAY_GPU;
 
+#ifdef _LINUX
+    // for now use cpu for ssa overlays as it currently allocates and 
+    // frees textures for each frame this causes a hugh memory leak
+    // on some mesa intel drivers
+    if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) && pSource->format == DVDVideoPicture::FMT_YUV420P)
+      render = OVERLAY_VID;
+#endif
+
     if(render == OVERLAY_VID)
     {
       if( m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU)
