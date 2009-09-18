@@ -29,6 +29,7 @@
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "Application.h"
+#include "WindowingFactory.h"
 
 #ifdef HAS_GL
 
@@ -349,7 +350,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     
   // first calculate how many glyph we have and the total x length
 
-  int count = 0;
+  int count  = 0;
   int size_x = 0;
   int size_y = 0;
 
@@ -362,14 +363,11 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     count++;
   }
 
-  // if we dont have that many glyphs we dont need to split the into more lines
-  if (count > 8)
-    size_x >>= 2;
+  while(size_x > (int)g_Windowing.GetMaxTextureSize())
+    size_x /= 2;
 
-  size_x++;
-
-  int x = 0; 
-  int y = 0;
+  int curr_x = 0;
+  int curr_y = 0;
 
   // calculate the y size of the texture
 
@@ -379,21 +377,20 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
       continue;
 
     // check if we need to split to new line
-
-    if (x + img->w >= size_x)
+    if (curr_x + img->w >= size_x)
     {
-      size_y += y;
-      y = 0;
-      x = 0;
+      size_y += curr_y + 1;
+      curr_x = 0;
+      curr_y = 0;
     }
 
-    x += img->w;
+    curr_x += img->w + 1;
 
-    if (img->h > y)
-      y = img->h;
+    if (img->h > curr_y)
+      curr_y = img->h;
   }
 
-  size_y += y + 50;
+  size_y += curr_y + 1;
 
   // allocate space for the glyph positions and texturedata
 
@@ -401,13 +398,14 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   m_quads = (GlyphPosition*)malloc(count * sizeof(GlyphPosition));
   GlyphPosition* positions = m_quads; 
 
-  uint32_t* rgba = (uint32_t*)malloc(size_x * 2 * size_y * sizeof(uint32_t));
-  uint32_t* rgbaLine = rgba;
+  uint32_t* rgba = (uint32_t*)calloc(size_x * size_y, sizeof(uint32_t));
+  uint32_t* data = rgba;
 
-  int currentX = 0;
-  int currentY = 0;
+  int x = 0;
+  int y = 0;
 
-  uint32_t* rgbaTemp = rgbaLine;
+  curr_x = 0;
+  curr_y = 0;
 
   float invWidth  = 1.0f / m_width;
   float invHeight = 1.0f / m_height;
@@ -419,13 +417,12 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     if(alpha == 0xff)
       continue;
 
-    if (currentX + img->w >= size_x)
+    if (curr_x + img->w >= size_x)
     {
-      rgbaLine += y * size_x;
-      rgbaTemp = rgbaLine;
-      currentY += y;
-      currentX = 0;
-      y = 0;
+      curr_y += y + 1;
+      curr_x  = 0;
+      y       = 0;
+      data    = rgba + curr_y * size_x;
     }
 
     unsigned int b = ((color >> 24) & 0xff);
@@ -433,10 +430,10 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     unsigned int r = ((color >> 8) & 0xff);
     unsigned int opacity = 255 - alpha;
 
-    positions->u0 = (float)(currentX);
-    positions->v0 = (float)(currentY);
-    positions->u1 = (float)(currentX + img->w);
-    positions->v1 = (float)(currentY + img->h);
+    positions->u0 = (float)(curr_x);
+    positions->v0 = (float)(curr_y);
+    positions->u1 = (float)(curr_x + img->w);
+    positions->v1 = (float)(curr_y + img->h);
 
     positions->x0 = (float)(img->dst_x)          * invWidth;
     positions->y0 = (float)(img->dst_y)          * invHeight;
@@ -448,7 +445,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     for(int i=0; i<img->h; i++)
     {
       const unsigned char* source = img->bitmap + img->stride * i;
-      uint32_t*            target = rgbaTemp    + size_x      * i;
+      uint32_t*            target = data        + size_x      * i;
 
       for(int j=0; j<img->w; j++)
         target[j] = build_rgba(opacity * source[j] / 255, r, g, b);
@@ -457,8 +454,8 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     if (img->h > y)
       y = img->h;
 
-    currentX += img->w;
-    rgbaTemp += img->w;
+    curr_x += img->w + 1;
+    data   += img->w + 1;
   }
   glGenTextures(1, &m_texture);
   glEnable(GL_TEXTURE_2D);
