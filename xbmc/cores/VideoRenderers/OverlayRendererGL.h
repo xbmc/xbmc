@@ -29,6 +29,7 @@
 class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
+class CDVDOverlaySSA;
 
 #ifdef HAS_GL
 
@@ -55,6 +56,33 @@ namespace OVERLAY {
     float  m_u;
     float  m_v;
   };
+
+  class COverlayGlyphGL
+     : public COverlayGL
+  {
+  public:
+   COverlayGlyphGL(CDVDOverlaySSA* o, double pts);
+   ~COverlayGlyphGL();
+
+   void Render(SRenderState& state);
+
+   struct GlyphPosition
+   {
+     float u0, v0;
+     float u1, v1;
+
+     float x0, y0;
+     float x1, y1;
+   };
+
+   GlyphPosition* m_quads;
+   int            m_count;
+
+   GLuint m_texture;
+   float  m_u;
+   float  m_v;
+  }; 
+
 }
 
 #endif

@@ -731,9 +731,6 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   {
     render = OVERLAY_GPU;
 
-    if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA))
-      render = OVERLAY_VID;
-
     if(render == OVERLAY_VID)
     {
       if( m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU)
@@ -791,7 +788,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
     {
       if (render == OVERLAY_GPU)
-        g_renderManager.AddOverlay(pOverlay);
+        g_renderManager.AddOverlay(pOverlay, pts2);
 
       if(pSource->format == DVDVideoPicture::FMT_YUV420P)
       {
