@@ -717,9 +717,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
   else
   {
-    if (IsFullScreenVideo())
-      newRes = g_renderManager.GetResolution();
-    else if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
+    if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       newRes = g_guiSettings.m_LookAndFeelResolution;
     else
       newRes = RES_DESKTOP;      
