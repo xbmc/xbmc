@@ -178,7 +178,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false; // This is so people who don't have the file won't fail, just warn
   }
- 
+
   lircRemotesMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
@@ -187,7 +187,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     g_LoadErrorStr.Format("%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
     return false;
   }
- 
+
   // run through our window groups
   TiXmlNode* pRemote = pRoot->FirstChild();
   while (pRemote)
