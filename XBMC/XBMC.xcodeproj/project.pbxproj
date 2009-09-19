@@ -3699,7 +3699,6 @@
 		F54C51E40F1E787700D46E3C /* karaokelyricstext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstext.cpp; path = xbmc/karaoke/karaokelyricstext.cpp; sourceTree = SOURCE_ROOT; };
 		F55110430F5C3C0000955236 /* DVDDemuxHTSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDDemuxHTSP.h; path = xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.h; sourceTree = SOURCE_ROOT; };
 		F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDDemuxHTSP.cpp; path = xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxHTSP.cpp; sourceTree = SOURCE_ROOT; };
-		F551106B0F5C424700955236 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = xbmc/lib/libhts/config.h; sourceTree = SOURCE_ROOT; };
 		F551106C0F5C424700955236 /* hts_strtab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = hts_strtab.h; path = xbmc/lib/libhts/hts_strtab.h; sourceTree = SOURCE_ROOT; };
 		F551106D0F5C424700955236 /* htsatomic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = htsatomic.c; path = xbmc/lib/libhts/htsatomic.c; sourceTree = SOURCE_ROOT; };
 		F551106E0F5C424700955236 /* htsatomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsatomic.h; path = xbmc/lib/libhts/htsatomic.h; sourceTree = SOURCE_ROOT; };
@@ -3712,7 +3711,6 @@
 		F55110750F5C424700955236 /* htsq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsq.h; path = xbmc/lib/libhts/htsq.h; sourceTree = SOURCE_ROOT; };
 		F55110760F5C424700955236 /* htsstr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = htsstr.c; path = xbmc/lib/libhts/htsstr.c; sourceTree = SOURCE_ROOT; };
 		F55110770F5C424700955236 /* htsstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsstr.h; path = xbmc/lib/libhts/htsstr.h; sourceTree = SOURCE_ROOT; };
-		F55110780F5C424700955236 /* htsthreads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsthreads.h; path = xbmc/lib/libhts/htsthreads.h; sourceTree = SOURCE_ROOT; };
 		F551107A0F5C424700955236 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net.h; path = xbmc/lib/libhts/net.h; sourceTree = SOURCE_ROOT; };
 		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_posix.c; path = xbmc/lib/libhts/net_posix.c; sourceTree = SOURCE_ROOT; };
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = karaokewindowbackground.h; path = karaoke/karaokewindowbackground.h; sourceTree = "<group>"; };
@@ -3769,6 +3767,7 @@
 		F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = eprintf.cpp; sourceTree = "<group>"; };
 		F5AD1EA60F488A1A0065EB5D /* GUIWindowKaraokeLyrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GUIWindowKaraokeLyrics.h; path = karaoke/GUIWindowKaraokeLyrics.h; sourceTree = "<group>"; };
 		F5AD1EA70F488A1A0065EB5D /* GUIWindowKaraokeLyrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GUIWindowKaraokeLyrics.cpp; path = karaoke/GUIWindowKaraokeLyrics.cpp; sourceTree = "<group>"; };
+		F5B413131065900C0035D105 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = SOURCE_ROOT; };
 		F5D879D10EF4BE53007C68A9 /* Cdg.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cdg.cpp; path = karaoke/Cdg.cpp; sourceTree = "<group>"; };
 		F5D879D30EF4BE53007C68A9 /* Cdg.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Cdg.h; path = karaoke/Cdg.h; sourceTree = "<group>"; };
 		F5D8D2A81029256D004A11AB /* GUIControlProfiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIControlProfiler.h; sourceTree = "<group>"; };
@@ -3920,6 +3919,7 @@
 			isa = PBXGroup;
 			children = (
 				6E2FACD20E26E92800DF79EA /* Info.plist */,
+				F5B413131065900C0035D105 /* config.h */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				C6859E96029091FE04C91782 /* Documentation */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
@@ -6879,7 +6879,6 @@
 		F551106A0F5C424700955236 /* libhts */ = {
 			isa = PBXGroup;
 			children = (
-				F551106B0F5C424700955236 /* config.h */,
 				F551106C0F5C424700955236 /* hts_strtab.h */,
 				F551106D0F5C424700955236 /* htsatomic.c */,
 				F551106E0F5C424700955236 /* htsatomic.h */,
@@ -6892,7 +6891,6 @@
 				F55110750F5C424700955236 /* htsq.h */,
 				F55110760F5C424700955236 /* htsstr.c */,
 				F55110770F5C424700955236 /* htsstr.h */,
-				F55110780F5C424700955236 /* htsthreads.h */,
 				F551107A0F5C424700955236 /* net.h */,
 				F551107B0F5C424700955236 /* net_posix.c */,
 				F51CF2CE0F6055A4004F4602 /* sha1.c */,
