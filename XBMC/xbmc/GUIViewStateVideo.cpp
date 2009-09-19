@@ -31,6 +31,7 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "Key.h"
 #include "LocalizeStrings.h"
 
 using namespace DIRECTORY;

@@ -30,6 +30,7 @@
 #include "StringUtils.h"
 #include "FileItem.h"
 #include "tinyXML/tinyxml.h"
+#include "Key.h"
 
 using namespace std;
 

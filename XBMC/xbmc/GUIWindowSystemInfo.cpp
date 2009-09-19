@@ -23,6 +23,7 @@
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
+#include "Key.h"
 #include "LocalizeStrings.h"
 #ifdef HAS_SYSINFO
 #include "SystemInfo.h"

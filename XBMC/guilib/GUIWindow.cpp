@@ -22,6 +22,7 @@
 #include "system.h"
 #include "GUIWindow.h"
 #include "GUIWindowManager.h"
+#include "Key.h"
 #include "LocalizeStrings.h"
 #include "Settings.h"
 #include "GUIControlFactory.h"

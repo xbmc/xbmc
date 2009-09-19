@@ -23,7 +23,6 @@
 #define BUTTON_TRANSLATOR_H
 
 #include <map>
-#include "Key.h"
 #include "tinyXML/tinyxml.h"
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventClient.h"

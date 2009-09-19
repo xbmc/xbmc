@@ -28,6 +28,7 @@
 #include "AdvancedSettings.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Key.h"
 #include "Util.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"

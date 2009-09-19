@@ -24,6 +24,7 @@
 #include "FileSystem/Directory.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "Key.h"
 
 using namespace std;
 using namespace DIRECTORY;
