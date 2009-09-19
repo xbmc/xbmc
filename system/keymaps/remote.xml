@@ -129,6 +129,16 @@
   </MyMusicLibrary>
   <FullscreenVideo>
     <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
       <left>StepBack</left>
       <right>StepForward</right>
       <up>BigStepForward</up>
