@@ -104,6 +104,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   msg->hWaitEvent = message.hWaitEvent;
   msg->lpVoid = message.lpVoid;
   msg->strParam = message.strParam;
+  msg->params = message.params;
 
   CSingleLock lock (m_critSection);
   if (msg->dwMessage == TMSG_DIALOG_DOMODAL ||
@@ -514,7 +515,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
-        m_gWindowManager.ActivateWindow(pMsg->dwParam1, pMsg->strParam, pMsg->dwParam2 > 0);
+        m_gWindowManager.ActivateWindow(pMsg->dwParam1, pMsg->params, pMsg->dwParam2 > 0);
       }
       break;
 
@@ -795,10 +796,10 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::ActivateWindow(int windowID, const CStdString &path, bool swappingWindows)
+void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
-  tMsg.strParam = path;
+  tMsg.params = params;
   SendMessage(tMsg, true);
 }
 
