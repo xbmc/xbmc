@@ -3,9 +3,6 @@
 
 #include <vector>
 #include <ctype.h>
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#else
 #ifdef _LINUX
 #include "../xbmc/linux/PlatformInclude.h"
 #ifndef __APPLE__
@@ -21,7 +18,6 @@
 #include "../xbmc/visualizations/VisualisationTypes.h"
 #include <sys/stat.h>
 #include <errno.h>
-#endif
 
 using namespace std;
 
@@ -40,11 +36,6 @@ int htoi(const char *str) /* Convert hex string to integer */
   }
   return number;
 }
-
-//#define NEW_STRING(str, ch) { str = new char[strlen(ch) + 1]; strcpy(str, ch); };
-#ifdef HAS_XBOX_HARDWARE
-#pragma comment (lib, "lib/xbox_dx8.lib" )
-#endif
 
 // the settings vector
 vector<VisSetting> m_vecSettings;
