@@ -98,7 +98,7 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
         m_vecItems->m_strPath.Empty();
       CGUIWindowMusicBase::OnMessage(message);
 
-      if (!message.GetNumStringParams())
+      if (message.GetNumStringParams())
         LoadPlaylist(message.GetStringParam());
 
       return true;
