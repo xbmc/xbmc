@@ -331,7 +331,7 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
 
 COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 {
-  m_quads = NULL;
+  m_vertex = NULL;
 
   m_width  = (float)g_graphicsContext.GetWidth();
   m_height = (float)g_graphicsContext.GetHeight();
@@ -394,9 +394,9 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 
   // allocate space for the glyph positions and texturedata
 
-  m_count = count;
-  m_quads = (GlyphPosition*)malloc(count * sizeof(GlyphPosition));
-  GlyphPosition* positions = m_quads; 
+  m_count  = count;
+  m_vertex = (SVertex*)calloc(count * 4, sizeof(SVertex));
+  SVertex* v = m_vertex;
 
   uint32_t* rgba = (uint32_t*)calloc(size_x * size_y, sizeof(uint32_t));
   uint32_t* data = rgba;
@@ -429,17 +429,31 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     unsigned int r = ((color >> 8) & 0xff);
     unsigned int opacity = 255 - alpha;
 
-    positions->u0 = (float)(curr_x);
-    positions->v0 = (float)(curr_y);
-    positions->u1 = (float)(curr_x + img->w);
-    positions->v1 = (float)(curr_y + img->h);
+    v[0].u = (float)(curr_x);
+    v[0].v = (float)(curr_y);
 
-    positions->x0 = (float)(img->dst_x)          * invWidth;
-    positions->y0 = (float)(img->dst_y)          * invHeight;
-    positions->x1 = (float)(img->dst_x + img->w) * invWidth;
-    positions->y1 = (float)(img->dst_y + img->h) * invHeight;
+    v[1].u = (float)(curr_x + img->w);
+    v[1].v = (float)(curr_y);
 
-    positions++;
+    v[2].u = (float)(curr_x + img->w);
+    v[2].v = (float)(curr_y + img->h);
+
+    v[3].u = (float)(curr_x);
+    v[3].v = (float)(curr_y + img->h);
+
+    v[0].x = (float)(img->dst_x);
+    v[0].y = (float)(img->dst_y);
+
+    v[1].x = (float)(img->dst_x + img->w);
+    v[1].y = (float)(img->dst_y);
+
+    v[2].x = (float)(img->dst_x + img->w);
+    v[2].y = (float)(img->dst_y + img->h);
+
+    v[3].x = (float)(img->dst_x);
+    v[3].y = (float)(img->dst_y + img->h);
+
+    v += 4;
 
     for(int i=0; i<img->h; i++)
     {
@@ -471,12 +485,10 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 
   float scale_u = m_u / size_x;
   float scale_v = m_v / size_y;
-  for(int i=0; i < count; i++)
+  for(int i=0; i < count * 4; i++)
   {
-    m_quads[i].u0 *= scale_u;
-    m_quads[i].v0 *= scale_v;
-    m_quads[i].u1 *= scale_u;
-    m_quads[i].v1 *= scale_v;
+    m_vertex[i].u *= scale_u;
+    m_vertex[i].v *= scale_v;
   }
 
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -486,7 +498,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 COverlayGlyphGL::~COverlayGlyphGL()
 {
   glDeleteTextures(1, &m_texture);
-  free(m_quads);
+  free(m_vertex);
 }
 
 void COverlayGlyphGL::Render(SRenderState& state)
@@ -506,38 +518,26 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glTranslatef(state.x, state.y, 0.0);
+  glScalef(state.width / m_width, state.height / m_height, 1.0f);
+
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   VerifyGLState();
 
-  glBegin(GL_QUADS);
+  glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
 
-  const GlyphPosition* positions = m_quads;
+  //glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
+  glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
+  glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
+  //glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  glDrawArrays(GL_QUADS, 0, m_count * 4);
+  glPopClientAttrib();
 
-  // temp code to view glpyhtexture
-  for (int i = 0, count = m_count; i < count; i++)
-  {
-    float x0 = (positions->x0 * state.width)  + state.x;
-    float y0 = (positions->y0 * state.height) + state.y;
-
-    float x1 = (positions->x1 * state.width)  + state.x;
-    float y1 = (positions->y1 * state.height) + state.y;
-
-    glTexCoord2f(positions->u0, positions->v0);
-    glVertex2f(x0, y0);
-
-    glTexCoord2f(positions->u1, positions->v0);
-    glVertex2f(x1, y0);
-
-    glTexCoord2f(positions->u1, positions->v1);
-    glVertex2f(x1, y1);
-
-    glTexCoord2f(positions->u0, positions->v1);
-    glVertex2f(x0, y1);
-
-    positions++;
-  }
-
-  glEnd();
+  glPopMatrix();
 
   glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);
