@@ -226,7 +226,6 @@
 		E38E1F210D25F9FD00618676 /* GUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14300D25F9F900618676 /* GUIWindow.cpp */; };
 		E38E1F220D25F9FD00618676 /* GUIWindowManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14320D25F9F900618676 /* GUIWindowManager.cpp */; };
 		E38E1F230D25F9FD00618676 /* GUIWrappingListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14340D25F9F900618676 /* GUIWrappingListContainer.cpp */; };
-		E38E1F240D25F9FD00618676 /* include.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14390D25F9F900618676 /* include.cpp */; };
 		E38E1F250D25F9FD00618676 /* IWindowManagerCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E143B0D25F9F900618676 /* IWindowManagerCallback.cpp */; };
 		E38E1F260D25F9FD00618676 /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E143D0D25F9F900618676 /* Key.cpp */; };
 		E38E1F270D25F9FD00618676 /* LocalizeStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E143F0D25F9F900618676 /* LocalizeStrings.cpp */; };
@@ -1000,7 +999,6 @@
 		F5A1C8AD0F6B06CF00A96ABD /* GUIWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14300D25F9F900618676 /* GUIWindow.cpp */; };
 		F5A1C8AE0F6B06CF00A96ABD /* GUIWindowManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14320D25F9F900618676 /* GUIWindowManager.cpp */; };
 		F5A1C8AF0F6B06CF00A96ABD /* GUIWrappingListContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14340D25F9F900618676 /* GUIWrappingListContainer.cpp */; };
-		F5A1C8B00F6B06CF00A96ABD /* include.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14390D25F9F900618676 /* include.cpp */; };
 		F5A1C8B10F6B06CF00A96ABD /* IWindowManagerCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E143B0D25F9F900618676 /* IWindowManagerCallback.cpp */; };
 		F5A1C8B20F6B06CF00A96ABD /* Key.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E143D0D25F9F900618676 /* Key.cpp */; };
 		F5A1C8B30F6B06CF00A96ABD /* LocalizeStrings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E143F0D25F9F900618676 /* LocalizeStrings.cpp */; };
@@ -2158,8 +2156,6 @@
 		E38E14360D25F9F900618676 /* IAudioDeviceChangedCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAudioDeviceChangedCallback.h; sourceTree = "<group>"; };
 		E38E14370D25F9F900618676 /* IMsgSenderCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMsgSenderCallback.h; sourceTree = "<group>"; };
 		E38E14380D25F9F900618676 /* IMsgTargetCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMsgTargetCallback.h; sourceTree = "<group>"; };
-		E38E14390D25F9F900618676 /* include.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = include.cpp; sourceTree = "<group>"; };
-		E38E143A0D25F9F900618676 /* include.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = include.h; sourceTree = "<group>"; };
 		E38E143B0D25F9F900618676 /* IWindowManagerCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IWindowManagerCallback.cpp; sourceTree = "<group>"; };
 		E38E143C0D25F9F900618676 /* IWindowManagerCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IWindowManagerCallback.h; sourceTree = "<group>"; };
 		E38E143D0D25F9F900618676 /* Key.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Key.cpp; sourceTree = "<group>"; };
@@ -4206,8 +4202,6 @@
 				E38E14360D25F9F900618676 /* IAudioDeviceChangedCallback.h */,
 				E38E14370D25F9F900618676 /* IMsgSenderCallback.h */,
 				E38E14380D25F9F900618676 /* IMsgTargetCallback.h */,
-				E38E14390D25F9F900618676 /* include.cpp */,
-				E38E143A0D25F9F900618676 /* include.h */,
 				E38E143B0D25F9F900618676 /* IWindowManagerCallback.cpp */,
 				E38E143C0D25F9F900618676 /* IWindowManagerCallback.h */,
 				E38E143D0D25F9F900618676 /* Key.cpp */,
@@ -7190,7 +7184,6 @@
 				E38E1F210D25F9FD00618676 /* GUIWindow.cpp in Sources */,
 				E38E1F220D25F9FD00618676 /* GUIWindowManager.cpp in Sources */,
 				E38E1F230D25F9FD00618676 /* GUIWrappingListContainer.cpp in Sources */,
-				E38E1F240D25F9FD00618676 /* include.cpp in Sources */,
 				E38E1F250D25F9FD00618676 /* IWindowManagerCallback.cpp in Sources */,
 				E38E1F260D25F9FD00618676 /* Key.cpp in Sources */,
 				E38E1F270D25F9FD00618676 /* LocalizeStrings.cpp in Sources */,
@@ -8044,7 +8037,6 @@
 				F5A1C8AD0F6B06CF00A96ABD /* GUIWindow.cpp in Sources */,
 				F5A1C8AE0F6B06CF00A96ABD /* GUIWindowManager.cpp in Sources */,
 				F5A1C8AF0F6B06CF00A96ABD /* GUIWrappingListContainer.cpp in Sources */,
-				F5A1C8B00F6B06CF00A96ABD /* include.cpp in Sources */,
 				F5A1C8B10F6B06CF00A96ABD /* IWindowManagerCallback.cpp in Sources */,
 				F5A1C8B20F6B06CF00A96ABD /* Key.cpp in Sources */,
 				F5A1C8B30F6B06CF00A96ABD /* LocalizeStrings.cpp in Sources */,
