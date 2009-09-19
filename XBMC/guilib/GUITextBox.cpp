@@ -19,10 +19,10 @@
  *
  */
 
-#include "include.h"
 #include "GUITextBox.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

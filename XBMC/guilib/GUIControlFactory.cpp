@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIControlFactory.h"
 #include "LocalizeStrings.h"
 #include "GUIButtonControl.h"
@@ -57,6 +56,7 @@
 #include "GUIListGroup.h"
 #include "utils/GUIInfoManager.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "GUIFontManager.h"

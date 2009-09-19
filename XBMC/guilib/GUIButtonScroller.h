@@ -25,6 +25,8 @@
 #include "GUITexture.h"
 #include "GUIActionDescriptor.h"
 
+class TiXmlNode;
+
 class CButton
 {
 public:

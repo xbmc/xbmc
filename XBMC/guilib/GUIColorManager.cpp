@@ -19,11 +19,12 @@
  *
  */
 
-#include "include.h"
 #include "GUIColorManager.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "SkinInfo.h"
+#include "utils/log.h"
+#include "tinyXML/tinyxml.h"
 
 CGUIColorManager g_colorManager;
 

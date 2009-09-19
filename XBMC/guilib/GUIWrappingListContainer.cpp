@@ -19,9 +19,9 @@
  *
  */
 
-#include "include.h"
 #include "GUIWrappingListContainer.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition)
     : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime, preloadItems)

@@ -54,7 +54,6 @@ SRCS=ActionManager.cpp \
      GUIWindow.cpp \
      GUIWindowManager.cpp \
      GUIWrappingListContainer.cpp \
-     include.cpp \
      IWindowManagerCallback.cpp \
      Key.cpp \
      LocalizeStrings.cpp \

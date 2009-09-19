@@ -19,9 +19,9 @@
  *
  */
 
-#include "include.h"
 #include "GUIImage.h"
 #include "TextureManager.h"
+#include "utils/log.h"
 
 using namespace std;
 

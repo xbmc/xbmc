@@ -1,4 +1,3 @@
-#include "include.h"
 #include "GUIVisualisationControl.h"
 #include "GUIUserMessages.h"
 #include "Application.h"
@@ -7,6 +6,7 @@
 #include "visualizations/fft.h"
 #include "Util.h"
 #include "utils/CriticalSection.h"
+#include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "utils/GUIInfoManager.h"
 #include "GUISettings.h"

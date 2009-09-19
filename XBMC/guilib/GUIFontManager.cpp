@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIFontManager.h"
 #include "GraphicContext.h"
 #include "SkinInfo.h"
@@ -30,7 +29,9 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/SpecialProtocol.h"
+#include "utils/log.h"
 #include "WindowingFactory.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

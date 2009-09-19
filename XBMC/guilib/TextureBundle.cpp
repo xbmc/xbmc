@@ -1,10 +1,11 @@
 
 
-#include "include.h"
-#include "./TextureBundle.h"
+#include "system.h"
+#include "TextureBundle.h"
 #include "Texture.h"
 #include "GraphicContext.h"
 #include "DirectXGraphics.h"
+#include "utils/log.h"
 #ifndef _LINUX
 #include <sys/stat.h>
 #include "utils/CharsetConverter.h"

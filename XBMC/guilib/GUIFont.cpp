@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIFont.h"
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"

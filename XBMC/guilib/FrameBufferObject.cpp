@@ -19,13 +19,13 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 
 #ifdef HAS_GL
 #include "../xbmc/Settings.h"
 #include "WindowingFactory.h"
 #include "FrameBufferObject.h"
-
+#include "utils/log.h"
 
 //////////////////////////////////////////////////////////////////////
 // CFrameBufferObject

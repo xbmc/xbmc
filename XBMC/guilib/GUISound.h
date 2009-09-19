@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "StdString.h"
+
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif

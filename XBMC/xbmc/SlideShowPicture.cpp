@@ -27,8 +27,9 @@
 #include "AdvancedSettings.h"
 #include "Settings.h"
 #include "GUISettings.h"
-#include "include.h"
+#include "system.h"
 #include "WindowingFactory.h"
+#include "utils/log.h"
 #include "utils/SingleLock.h"
 
 using namespace std;

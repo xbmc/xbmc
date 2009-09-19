@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIListLabel.h"
 #include "utils/CharsetConverter.h"
 #include <limits>

@@ -22,7 +22,7 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 
 #ifdef HAS_GL
 

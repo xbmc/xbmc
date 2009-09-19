@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIMoverControl.h"
 #include "GUIWindowManager.h"
 #include "ActionManager.h"

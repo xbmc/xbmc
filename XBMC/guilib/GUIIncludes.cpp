@@ -19,10 +19,11 @@
  *
  */
 
-#include "include.h"
 #include "GUIIncludes.h"
 #include "SkinInfo.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

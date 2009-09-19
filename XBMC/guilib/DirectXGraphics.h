@@ -23,6 +23,8 @@
 
 class CBaseTexture;
 
+#include "gui3d.h"
+
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
 void XPhysicalFree(LPVOID lpAddress);
 

@@ -19,16 +19,17 @@
  *
  */
 
-#include "include.h"
 #include "GUIBaseContainer.h"
 #include "GUIControlFactory.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
 #include "GUILabelControl.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 #include "StringUtils.h"
 #include "FileItem.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

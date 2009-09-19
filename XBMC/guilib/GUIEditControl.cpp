@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIEditControl.h"
 #include "utils/CharsetConverter.h"
 #include "GUIDialogKeyboard.h"

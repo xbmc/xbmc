@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUITexture.h"
 #include "GraphicContext.h"
 #include "TextureManager.h"

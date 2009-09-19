@@ -7,6 +7,9 @@
 
 #ifdef HAS_SDL_JOYSTICK
 
+#include <SDL/SDL_joystick.h>
+#include <SDL/SDL_events.h>
+
 #define MAX_AXES 64
 
 #define JACTIVE_BUTTON 0x00000001

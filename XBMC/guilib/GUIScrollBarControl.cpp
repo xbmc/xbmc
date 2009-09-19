@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIScrollBarControl.h"
 #include "MouseStat.h"
 

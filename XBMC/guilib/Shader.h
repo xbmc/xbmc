@@ -22,9 +22,11 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
+
 #include <vector>
 #include <string>
+
 #if defined(HAS_GL) || defined(HAS_GLES)
 
 namespace Shaders {

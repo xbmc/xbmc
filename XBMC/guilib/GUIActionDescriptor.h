@@ -2,6 +2,7 @@
 #define GUI_ACTION_DESCRIPTOR
 
 #include "StdString.h"
+#include "system.h"
 
 class CGUIActionDescriptor
 {

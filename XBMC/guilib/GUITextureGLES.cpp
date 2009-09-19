@@ -19,7 +19,7 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GUITextureGLES.h"
 #include "Texture.h"
 

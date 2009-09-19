@@ -19,13 +19,14 @@
  *
  */
 
-#include "include.h"
 #include "VisibleEffect.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
 #include "SkinInfo.h" // for the effect time adjustments
 #include "StringUtils.h"
 #include "GUIImage.h" // for FRECT
 #include "Tween.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

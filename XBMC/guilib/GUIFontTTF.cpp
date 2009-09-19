@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIFont.h"
 #include "GUIFontTTF.h"
 #include "GUIFontManager.h"
@@ -27,6 +26,8 @@
 #include "GraphicContext.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "MathUtils.h"
+#include "utils/log.h"
+
 #include <math.h>
 
 // stuff for freetype

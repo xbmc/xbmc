@@ -19,10 +19,10 @@
 *
 */
 
-#include "include.h"
 #include "Texture.h"
 #include "Picture.h"
 #include "WindowingFactory.h"
+#include "utils/log.h"
 
 #define MAX_PICTURE_WIDTH  2048
 #define MAX_PICTURE_HEIGHT 2048

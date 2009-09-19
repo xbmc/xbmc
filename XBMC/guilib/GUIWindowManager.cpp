@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIWindowManager.h"
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"

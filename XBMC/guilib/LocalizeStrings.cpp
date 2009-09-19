@@ -19,11 +19,13 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
+#include "tinyXML/tinyxml.h"
 
 CLocalizeStrings g_localizeStrings;
 CLocalizeStrings g_localizeStringsTemp;

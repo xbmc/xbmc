@@ -19,12 +19,12 @@
  *
  */
 
-#include "include.h"
 #include "GUIListGroup.h"
 #include "GUIListLabel.h"
 #include "GUIMultiSelectText.h"
 #include "GUIBorderedImage.h"
 #include "GUIControlProfiler.h"
+#include "utils/log.h"
 
 CGUIListGroup::CGUIListGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
 : CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
