@@ -38,8 +38,6 @@
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
-// FIXME: clean up HAVE_LIBCRYSTALHD later
-#define HAVE_LIBCRYSTALHD
 #ifdef HAVE_LIBCRYSTALHD
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif

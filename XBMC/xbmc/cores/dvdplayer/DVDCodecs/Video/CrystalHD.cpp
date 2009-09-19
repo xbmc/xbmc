@@ -25,8 +25,6 @@
   #include "config.h"
 #endif
 
-// FIXME: clean up HAVE_LIBCRYSTALHD later
-#define HAVE_LIBCRYSTALHD
 #if defined(HAVE_LIBCRYSTALHD)
 #include "CrystalHD.h"
 #include "DVDClock.h"

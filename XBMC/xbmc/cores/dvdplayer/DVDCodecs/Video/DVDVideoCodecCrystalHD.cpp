@@ -24,8 +24,7 @@
 #endif
 
 #include "stdafx.h"
-// FIXME: clean up HAVE_LIBCRYSTALHD later
-#define HAVE_LIBCRYSTALHD
+
 #if defined(HAVE_LIBCRYSTALHD)
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
@@ -175,7 +174,6 @@ void CDVDVideoCodecCrystalHD::Dispose()
 int CDVDVideoCodecCrystalHD::Decode(BYTE* pData, int iSize, double pts)
 {
   int ret = 0;
-  bool inputFull = false;
 
   int maxWait = 40;
   unsigned int lastTime = GetTickCount();

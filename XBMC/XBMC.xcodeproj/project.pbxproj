@@ -3669,7 +3669,6 @@
 		F55110750F5C424700955236 /* htsq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsq.h; path = xbmc/lib/libhts/htsq.h; sourceTree = SOURCE_ROOT; };
 		F55110760F5C424700955236 /* htsstr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = htsstr.c; path = xbmc/lib/libhts/htsstr.c; sourceTree = SOURCE_ROOT; };
 		F55110770F5C424700955236 /* htsstr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsstr.h; path = xbmc/lib/libhts/htsstr.h; sourceTree = SOURCE_ROOT; };
-		F55110780F5C424700955236 /* htsthreads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = htsthreads.h; path = xbmc/lib/libhts/htsthreads.h; sourceTree = SOURCE_ROOT; };
 		F551107A0F5C424700955236 /* net.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = net.h; path = xbmc/lib/libhts/net.h; sourceTree = SOURCE_ROOT; };
 		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_posix.c; path = xbmc/lib/libhts/net_posix.c; sourceTree = SOURCE_ROOT; };
 		F559A97B104395B7002556BF /* libldil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libldil.dylib; path = /crystalhd/broadcom/dil/darwin/libldil.dylib; sourceTree = "<absolute>"; };
@@ -6847,7 +6846,6 @@
 				F55110750F5C424700955236 /* htsq.h */,
 				F55110760F5C424700955236 /* htsstr.c */,
 				F55110770F5C424700955236 /* htsstr.h */,
-				F55110780F5C424700955236 /* htsthreads.h */,
 				F551107A0F5C424700955236 /* net.h */,
 				F551107B0F5C424700955236 /* net_posix.c */,
 				F51CF2CE0F6055A4004F4602 /* sha1.c */,
@@ -8812,7 +8810,6 @@
 					HAS_SDL_JOYSTICK,
 					HAVE_CONFIG_H,
 					HAS_SPC_CODEC,
-					HAVE_LIBCRYSTALHD,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GENERATE_PROFILING_CODE = NO;
@@ -8891,7 +8888,6 @@
 					HAS_SDL_JOYSTICK,
 					HAVE_CONFIG_H,
 					HAS_SPC_CODEC,
-					HAVE_LIBCRYSTALHD,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;

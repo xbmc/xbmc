@@ -19,8 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-// FIXME: clean up HAVE_LIBCRYSTALHD later
-#define HAVE_LIBCRYSTALHD
+
 #if defined(HAVE_LIBCRYSTALHD)
 
 #include <deque>
