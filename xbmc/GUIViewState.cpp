@@ -38,6 +38,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Key.h"
 
 using namespace std;
 

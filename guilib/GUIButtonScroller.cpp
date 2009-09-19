@@ -30,6 +30,7 @@
 #include "GUIControlFactory.h"
 #include "MouseStat.h"
 #include "tinyXML/tinyxml.h"
+#include "Key.h"
 
 using namespace std;
 

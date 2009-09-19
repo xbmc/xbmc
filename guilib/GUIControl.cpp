@@ -27,6 +27,7 @@
 #include "GUIWindowManager.h"
 #include "GUIControlProfiler.h"
 #include "MouseStat.h"
+#include "Key.h"
 
 using namespace std;
 

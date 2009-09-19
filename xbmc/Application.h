@@ -25,7 +25,6 @@
 #include "XBApplicationEx.h"
 
 #include "IMsgTargetCallback.h"
-#include "Key.h"
 
 class CFileItem;
 class CFileItemList;

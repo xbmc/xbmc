@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "GUIWindowSettings.h"
 #include "GUIWindowManager.h"
+#include "Key.h"
 #ifdef HAS_CREDITS
 #include "Credits.h"
 #endif

@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "LocalizeStrings.h"
 #include "utils/GUIInfoManager.h"
+#include "Key.h"
 
 CGUIViewControl::CGUIViewControl(void)
 {
