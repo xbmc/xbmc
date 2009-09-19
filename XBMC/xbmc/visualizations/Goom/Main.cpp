@@ -27,8 +27,9 @@ Goom Visualization Interface for XBMC
 
 */
 
-#include "../../addons/include/libaddon.h"
-#include "../../addons/include/xbmc_vis_dll.h"
+#include <libaddon.h>
+#include <libvisualisation.h>
+#include <xbmc_vis_dll.h>
 extern "C" {
 #include "goom.h"
 }

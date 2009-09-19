@@ -22,8 +22,8 @@
 #ifndef SCRAPER_H
 #define SCRAPER_H
 
-#include "Addon.h"
-#include "ScraperUrl.h"
+#include "utils/Addon.h"
+#include "utils/ScraperUrl.h"
 
 namespace ADDON
 {

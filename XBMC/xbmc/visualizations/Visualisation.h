@@ -61,7 +61,7 @@ class CVisualisation : public ADDON::CAddonDll<DllVisualisation, Visualisation, 
 public:
   ~CVisualisation();
 
-  CVisualisation(const ADDON::AddonProps &props) : CAddonDll(props) {}
+  CVisualisation(const AddonProps &props) : ADDON::CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
   virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
   virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
   bool Create(int x, int y, int w, int h);
@@ -75,6 +75,7 @@ public:
   void GetCurrentPreset(char **pPreset, bool *locked);
   bool IsLocked();
   char *GetPreset();
+  bool GetPresetList(std::vector<CStdString> &vecpresets);
 
 private:
   void CreateBuffers();

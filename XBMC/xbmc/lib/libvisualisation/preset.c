@@ -40,7 +40,7 @@
 * Description
 *
 * Destroy the preset structure pointed to by 'p' ad release
-* it's storage. This should only be called by refmem_release().
+* it's storage. This should only be called by ref_release().
 *
 * Return Value:
 *
@@ -49,15 +49,15 @@
 static void
 viz_preset_destroy(viz_preset_t p)
 {
-  refmem_dbg(REFMEM_DEBUG, "%s {\n", __FUNCTION__);
+  ref_dbg(REFMEM_DEBUG, "%s {\n", __FUNCTION__);
   if (!p) {
-    refmem_dbg(REFMEM_DEBUG, "%s }!a\n", __FUNCTION__);
+    ref_dbg(REFMEM_DEBUG, "%s }!a\n", __FUNCTION__);
     return;
   }
   if (p->name) {
-    refmem_release(p->name);
+    ref_release(p->name);
   }
-  refmem_dbg(REFMEM_DEBUG, "%s }\n", __FUNCTION__);
+  ref_dbg(REFMEM_DEBUG, "%s }\n", __FUNCTION__);
 }
 
 /*
@@ -78,13 +78,13 @@ viz_preset_destroy(viz_preset_t p)
 viz_preset_t
 viz_preset_create(void)
 {
-  viz_preset_t ret = refmem_alloc(sizeof(*ret));
+  viz_preset_t ret = ref_alloc(sizeof(*ret));
 
-  refmem_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
+  ref_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
   if(!ret) {
     return NULL;
   }
-  refmem_set_destroy(ret, (refmem_destroy_t)viz_preset_destroy);
+  ref_set_destroy(ret, (ref_destroy_t)viz_preset_destroy);
 
   ret->name = NULL;
   return ret;
@@ -108,7 +108,7 @@ char *
 viz_preset_name(viz_preset_t preset)
 {
   if (!preset) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
+    ref_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -136,15 +136,15 @@ int
 viz_preset_set_type(viz_preset_t preset, char* name)
 {
   if (!preset) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
+    ref_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
       __FUNCTION__);
     return 0;
   }
 
   if (preset->name) {
-    refmem_release(preset->name);
+    ref_release(preset->name);
   }
 
-  preset->name = refmem_strdup(name);
-  return (int) refmem_hold(preset->name);
+  preset->name = ref_strdup(name);
+  return (int) ref_hold(preset->name);
 }

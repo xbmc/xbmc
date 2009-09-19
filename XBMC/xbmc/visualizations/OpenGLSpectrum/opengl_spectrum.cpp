@@ -32,7 +32,7 @@
  *  Moved to XBMC Add-on framework by alwinus
  */
 
-#include "../../addons/include/xbmc_vis_dll.h"
+#include <xbmc_vis_dll.h>
 #include <math.h>
 #include <GL/glew.h>
 #include <string>

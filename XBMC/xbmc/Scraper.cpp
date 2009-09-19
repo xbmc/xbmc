@@ -173,3 +173,4 @@ CStdString CScraper::GetSettings() const
 }
 
 }; /* namespace ADDON */
+

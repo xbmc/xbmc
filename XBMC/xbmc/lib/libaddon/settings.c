@@ -30,16 +30,16 @@
 #include <mvp_refmem.h>
 #include <mvp_debug.h>
 #include <libaddon.h>
-#include <addon_local.h>
+#include "addon_local.h"
 
 /*
  * addon_release(void* p)
- * calls refmem_release on struct pointed to by p
+ * calls ref_release on struct pointed to by p
  */
 void
 addon_release(void* p)
 {
-  refmem_release(p);
+  ref_release(p);
 }
 
 /*
@@ -49,7 +49,7 @@ addon_release(void* p)
  *
  * Description:
  *
- * Destroy and free a settings list structure. This should only be called by refmem_release().
+ * Destroy and free a settings list structure. This should only be called by ref_release().
  *
  * Return Value:
  *
@@ -66,7 +66,7 @@ addon_settings_destroy(addon_settings_t list)
 
   for (i=0; i < list->settings_count; ++i) {
     if (list->settings_list[i]) {
-      refmem_release(list->settings_list[i]);
+      ref_release(list->settings_list[i]);
     }
     list->settings_list[i] = NULL;
   }
@@ -96,17 +96,16 @@ addon_settings_create(void)
 {
   addon_settings_t ret;
 
- printf("YADS");
- refmem_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
- ret = refmem_alloc(sizeof(*ret));
- if(!ret) {
-   return(NULL);
- }
- refmem_set_destroy(ret, (refmem_destroy_t)addon_settings_destroy);
+  addon_dbg(ADDON_DBG_DEBUG, "%s\n", __FUNCTION__);
+  ret = ref_alloc(sizeof(*ret));
+  if(!ret) {
+    return(NULL);
+  }
+  ref_set_destroy(ret, (ref_destroy_t)addon_settings_destroy);
 
- ret->settings_list = NULL;
- ret->settings_count = 0;
- return ret;
+  ret->settings_list = NULL;
+  ret->settings_count = 0;
+  return ret;
 }
 
 /*
@@ -130,22 +129,22 @@ addon_setting_t
 addon_settings_get_item(addon_settings_t list, int index)
 {
   if (!list) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL settings list\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL settings list\n",
       __FUNCTION__);
     return NULL;
   }
   if(!list->settings_list) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL list\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL list\n",
       __FUNCTION__);
     return NULL;
   }
   if ((index < 0) || (index >= list->settings_count)) {
-    refmem_dbg(REFMEM_ERROR, "%s: index %d out of range\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: index %d out of range\n",
       __FUNCTION__, index);
     return NULL;
   }
 
-  refmem_hold(list->settings_list[index]);
+  ref_hold(list->settings_list[index]);
   return list->settings_list[index];
 }
 
@@ -170,7 +169,7 @@ addon_settings_add_item(addon_settings_t list, addon_setting_t item)
   int c;
 
   if(!list || !item) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL list or item \n", __FUNCTION__);
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL list or item \n", __FUNCTION__);
     return 0;
   }
 
@@ -181,7 +180,7 @@ addon_settings_add_item(addon_settings_t list, addon_setting_t item)
     list->settings_count = c;
   }
   else {
-    refmem_dbg(REFMEM_ERROR, "%s: realloc failed for list\n", __FUNCTION__);
+    addon_dbg(ADDON_DBG_ERROR, "%s: realloc failed for list\n", __FUNCTION__);
     return -1;
   }
 
@@ -209,7 +208,7 @@ int
 addon_settings_get_count(addon_settings_t list)
 {
   if (!list) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL settings list\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL settings list\n",
       __FUNCTION__);
     return -EINVAL;
   }

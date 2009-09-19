@@ -392,8 +392,9 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, Props>::TransferSettings()
   }
 
   if (restart || reportStatus != STATUS_OK)
-    int test = 3;
-    //new CAddonStatusHandler(this, restart ? STATUS_NEED_RESTART : reportStatus, "", true);
+  {
+    //new CAddonStatusHandler(this, restart ? STATUS_NEED_RESTART : reportStatus, "", true);  
+  }
 
   return STATUS_OK;
 }

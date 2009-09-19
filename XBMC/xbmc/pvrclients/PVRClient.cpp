@@ -48,8 +48,8 @@ using namespace ADDON;
  * CPVRClient Class constructor/destructor
  */
 
-CPVRClient::CPVRClient(const ADDON::AddonProps &props)
-                              : CAddonDll(props)
+CPVRClient::CPVRClient(const AddonProps &props)
+                              : CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>(props)
                               , m_ReadyToUse(false)
                               , m_hostName("unknown")
 {

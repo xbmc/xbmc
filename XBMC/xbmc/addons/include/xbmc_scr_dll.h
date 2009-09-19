@@ -6,7 +6,7 @@
 #include <xtl.h>
 #else
 #ifdef _LINUX
-#include "../xbmc/linux/PlatformInclude.h"
+//#include "../xbmc/linux/PlatformInclude.h"
 #ifndef __APPLE__
 #include <sys/sysinfo.h>
 #endif

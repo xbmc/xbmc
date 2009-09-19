@@ -5,16 +5,18 @@ ARCHIVE=$(SO:.so=.a)
 SYSDIR=../../../system
 SLIB=$(SYSDIR)/$(SO)
 DIRS=../librefmem
-SLIBS=../librefmem/refmem.a
+SLIBS=../librefmem/librefmem.a
+OBJS+=setting.o
+OBJS+=settings.o
 
 .PHONY: compile
 
-$(SLIB): $(SLIBS)
-	$(CXX) -shared -o $(SLIB) $(SLIBS)
+$(SLIB): $(OBJS)
+	$(CC) $(OBJS) -shared -o $(SLIB) $(SLIBS)
 
 $(SLIBS): compile
 
-refmem.a:
+librefmem.a:
 	$(MAKE) -C ../librefmem
 
 include ../../../Makefile.include

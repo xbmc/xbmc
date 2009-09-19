@@ -54,7 +54,7 @@ SRCS=Addon.cpp \
      DbusServer.cpp \
      Atomics.cpp \
      LockFree.cpp \
-     StreamDetails.cpp
+     StreamDetails.cpp \
      EPG.cpp \
      TVChannelInfoTag.cpp \
      TVEPGInfoTag.cpp \

@@ -395,7 +395,6 @@ void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
 
 #define _LINUX
-#include "../../../../addons/include/libaddon++.h"
 #include "../../../../addons/include/xbmc_scr_dll.h"
 
 extern "C" {

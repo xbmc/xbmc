@@ -596,7 +596,7 @@ bool CSettings::GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, VECADDO
   else
     return false;
 
-  ADDON::AddonProps props(uuid, type);
+  AddonProps props(uuid, type);
   /*props.uuid = uuid;
   props.type = type;*/
 

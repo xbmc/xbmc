@@ -212,7 +212,7 @@ void CMusicInfoScraper::FindArtistinfo()
   parser.m_param[0] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
 
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', date: '%s', framework: '%s')",
+  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', language: '%s', framework: '%s')",
     __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(), ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->m_strLanguage.c_str()/*, m_scraper->m_strDate.c_str()*/, m_scraper->Version().c_str());
 
   CScraperUrl scrURL;

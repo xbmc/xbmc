@@ -36,12 +36,12 @@
 
 /*
  * viz_release(void *p)
- * calls refmem_release on struct pointed to by p
+ * calls ref_release on struct pointed to by p
  */
 void
 viz_release(void *p)
 {
-  refmem_release(p);
+  ref_release(p);
 }
 
 /*
@@ -51,7 +51,7 @@ viz_release(void *p)
 *
 * Description:
 *
-* Destroy and free a preset list structure. This should only be called by refmem_release().
+* Destroy and free a preset list structure. This should only be called by ref_release().
 *
 * Return Value:
 *
@@ -68,7 +68,7 @@ viz_preset_list_destroy(viz_preset_list_t list)
 
   for (i=0; i < list->count; ++i) {
     if (list->list[i]) {
-      refmem_release(list->list[i]);
+      ref_release(list->list[i]);
     }
     list->list[i] = NULL;
   }
@@ -98,12 +98,12 @@ viz_preset_list_create(void)
 {
   viz_preset_list_t ret;
 
-  refmem_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
-  ret = refmem_alloc(sizeof(*ret));
+  viz_dbg(VIZ_DBG_DEBUG, "%s\n", __FUNCTION__);
+  ret = ref_alloc(sizeof(*ret));
   if(!ret) {
     return(NULL);
   }
-  refmem_set_destroy(ret, (refmem_destroy_t)viz_preset_list_destroy);
+  ref_set_destroy(ret, (ref_destroy_t)viz_preset_list_destroy);
 
   ret->list = NULL;
   ret->count = 0;
@@ -131,22 +131,22 @@ viz_preset_t
 viz_preset_list_get_item(viz_preset_list_t list, int index)
 {
   if (!list) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL preset list\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL preset list\n",
       __FUNCTION__);
     return NULL;
   }
   if(!list->list) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL list\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL list\n",
       __FUNCTION__);
     return NULL;
   }
   if ((index < 0) || (index >= list->count)) {
-    refmem_dbg(REFMEM_ERROR, "%s: index %d out of range\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: index %d out of range\n",
       __FUNCTION__, index);
     return NULL;
   }
 
-  refmem_hold(list->list[index]);
+  ref_hold(list->list[index]);
   return list->list[index];
 }
 
@@ -171,7 +171,7 @@ viz_preset_list_add_item(viz_preset_list_t list, viz_preset_t item)
   int c;
 
   if(!list || !item) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL list or item \n", __FUNCTION__);
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL list or item \n", __FUNCTION__);
     return 0;
   }
 
@@ -182,7 +182,7 @@ viz_preset_list_add_item(viz_preset_list_t list, viz_preset_t item)
     list->count = c;
   }
   else {
-    refmem_dbg(REFMEM_ERROR, "%s: realloc failed for list\n", __FUNCTION__);
+    viz_dbg(VIZ_DBG_ERROR, "%s: realloc failed for list\n", __FUNCTION__);
     return -1;
   }
 
@@ -210,7 +210,7 @@ int
 viz_preset_list_get_count(viz_preset_list_t list)
 {
   if (!list) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL preset_list list\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL preset_list list\n",
       __FUNCTION__);
     return -EINVAL;
   }

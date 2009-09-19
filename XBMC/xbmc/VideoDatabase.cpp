@@ -2636,6 +2636,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(CONTENT_TYPE type, long id)
       break;
     case CONTENT_MUSICVIDEOS:
       GetMusicVideoInfo("", details, id);
+      break;
+    default:
+      break;
   }
 
   return details;
@@ -5285,10 +5288,10 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
         }
         else
         { // use default scraper   
-          ADDON::AddonPtr default;
-          if (ADDON::CAddonMgr::Get()->GetDefaultScraper(default, content))
+          ADDON::AddonPtr defaultScraper;
+          if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, content))
           {
-            scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(default->Clone());
+            scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
             if (scraper)
             {
               scraper->m_pathContent = content;
@@ -5312,11 +5315,11 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
           m_pDS->query(strSQL.c_str());
           if (!m_pDS->eof())
           {
-            ADDON::AddonPtr default;
-            if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, m_pDS->fv("path.strScraper").get_asString(), default))
+            ADDON::AddonPtr defaultScraper;
+            if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, m_pDS->fv("path.strScraper").get_asString(), defaultScraper))
               break;
 
-            scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(default->Clone());
+            scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
             content = ADDON::TranslateContent(m_pDS->fv("path.strContent").get_asString());
             scraper->m_pathContent = content;
             scraper->LoadUserXML(m_pDS->fv("path.strSettings").get_asString());

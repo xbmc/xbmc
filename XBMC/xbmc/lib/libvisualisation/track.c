@@ -49,34 +49,34 @@
 static void
 viz_track_destroy(viz_track_t p)
 {
-  refmem_dbg(REFMEM_DEBUG, "%s {\n", __FUNCTION__);
+  viz_dbg(VIZ_DBG_DEBUG, "%s {\n", __FUNCTION__);
   if (!p) {
-    refmem_dbg(REFMEM_DEBUG, "%s }!a\n", __FUNCTION__);
+    viz_dbg(VIZ_DBG_DEBUG, "%s }!a\n", __FUNCTION__);
     return;
   }
   if (p->title) {
-    refmem_release(p->title);
+    ref_release(p->title);
   }
   if (p->artist) {
-    refmem_release(p->artist);
+    ref_release(p->artist);
   }
   if (p->album) {
-    refmem_release(p->album);
+    ref_release(p->album);
   }
   if (p->albumartist) {
-    refmem_release(p->albumartist);
+    ref_release(p->albumartist);
   }
   if (p->genre) {
-    refmem_release(p->genre);
+    ref_release(p->genre);
   }
   if (p->comment) {
-    refmem_release(p->comment);
+    ref_release(p->comment);
   }
   if (p->lyrics) {
-    refmem_release(p->lyrics);
+    ref_release(p->lyrics);
   }
   p->tracknum = p->discnum = p->duration = p->year = p->rating = 0;
-  refmem_dbg(REFMEM_DEBUG, "%s }\n", __FUNCTION__);
+  viz_dbg(VIZ_DBG_DEBUG, "%s }\n", __FUNCTION__);
 }
 
 /*
@@ -97,13 +97,13 @@ viz_track_destroy(viz_track_t p)
 viz_track_t
 viz_track_create(void)
 {
-  viz_track_t ret = refmem_alloc(sizeof(*ret));
+  viz_track_t ret = ref_alloc(sizeof(*ret));
 
-  refmem_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
+  viz_dbg(VIZ_DBG_DEBUG, "%s\n", __FUNCTION__);
   if(!ret) {
     return NULL;
   }
-  refmem_set_destroy(ret, (refmem_destroy_t)viz_track_destroy);
+  ref_set_destroy(ret, (ref_destroy_t)viz_track_destroy);
 
   ret->title = NULL;
   ret->artist = NULL;
@@ -137,7 +137,7 @@ char *
 viz_track_title(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -162,20 +162,20 @@ viz_track_title(viz_track_t track)
 * Failure: 0
 */
 int
-viz_track_set_title(viz_track_t track, char* title)
+viz_track_set_title(viz_track_t track, const char* title)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
 
   if (track->title) {
-    refmem_release(track->title);
+    ref_release(track->title);
   }
 
-  track->title = refmem_strdup(title);
-  return (int) refmem_hold(track->title);
+  track->title = ref_strdup(title);
+  return (int) ref_hold(track->title);
 }
 
 /*
@@ -196,7 +196,7 @@ char *
 viz_track_artist(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -221,20 +221,20 @@ viz_track_artist(viz_track_t track)
 * Failure: 0
 */
 int
-viz_track_set_artist(viz_track_t track, char* artist)
+viz_track_set_artist(viz_track_t track, const char* artist)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
 
   if (track->artist) {
-    refmem_release(track->artist);
+    ref_release(track->artist);
   }
 
-  track->artist = refmem_strdup(artist);
-  return (int) refmem_hold(track->artist);
+  track->artist = ref_strdup(artist);
+  return (int) ref_hold(track->artist);
 }
 
 /*
@@ -255,7 +255,7 @@ char *
 viz_track_album(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -280,20 +280,20 @@ viz_track_album(viz_track_t track)
 * Failure: 0
 */
 int
-viz_track_set_album(viz_track_t track, char* album)
+viz_track_set_album(viz_track_t track, const char* album)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
 
   if (track->album) {
-    refmem_release(track->album);
+    ref_release(track->album);
   }
 
-  track->album = refmem_strdup(album);
-  return (int) refmem_hold(track->album);
+  track->album = ref_strdup(album);
+  return (int) ref_hold(track->album);
 }
 
 /*
@@ -314,7 +314,7 @@ char *
 viz_track_albumartist(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -339,20 +339,20 @@ viz_track_albumartist(viz_track_t track)
 * Failure: 0
 */
 int
-viz_track_set_albumartist(viz_track_t track, char* albumartist)
+viz_track_set_albumartist(viz_track_t track, const char* albumartist)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
 
   if (track->albumartist) {
-    refmem_release(track->albumartist);
+    ref_release(track->albumartist);
   }
 
-  track->albumartist = refmem_strdup(albumartist);
-  return (int) refmem_hold(track->albumartist);
+  track->albumartist = ref_strdup(albumartist);
+  return (int) ref_hold(track->albumartist);
 }
 
 /*
@@ -373,7 +373,7 @@ char *
 viz_track_genre(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -398,20 +398,20 @@ viz_track_genre(viz_track_t track)
 * Failure: 0
 */
 int
-viz_track_set_genre(viz_track_t track, char* genre)
+viz_track_set_genre(viz_track_t track, const char* genre)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
 
   if (track->genre) {
-    refmem_release(track->genre);
+    ref_release(track->genre);
   }
 
-  track->genre = refmem_strdup(genre);
-  return (int) refmem_hold(track->genre);
+  track->genre = ref_strdup(genre);
+  return (int) ref_hold(track->genre);
 }
 
 /*
@@ -432,7 +432,7 @@ char *
 viz_track_comment(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -457,20 +457,20 @@ viz_track_comment(viz_track_t track)
 * Failure: 0
 */
 int
-viz_track_set_comment(viz_track_t track, char* comment)
+viz_track_set_comment(viz_track_t track, const char* comment)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
 
   if (track->comment) {
-    refmem_release(track->comment);
+    ref_release(track->comment);
   }
 
-  track->comment = refmem_strdup(comment);
-  return (int) refmem_hold(track->comment);
+  track->comment = ref_strdup(comment);
+  return (int) ref_hold(track->comment);
 }
 
 /*
@@ -491,7 +491,7 @@ char *
 viz_track_lyrics(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -516,20 +516,20 @@ viz_track_lyrics(viz_track_t track)
 * Failure: 0
 */
 int
-viz_track_set_lyrics(viz_track_t track, char* lyrics)
+viz_track_set_lyrics(viz_track_t track, const char* lyrics)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
 
   if (track->lyrics) {
-    refmem_release(track->lyrics);
+    ref_release(track->lyrics);
   }
 
-  track->lyrics = refmem_strdup(lyrics);
-  return (int) refmem_hold(track->lyrics);
+  track->lyrics = ref_strdup(lyrics);
+  return (int) ref_hold(track->lyrics);
 }
 
 /*
@@ -549,7 +549,7 @@ int
 viz_track_tracknum(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -577,7 +577,7 @@ int
 viz_track_set_tracknum(viz_track_t track, int tracknum)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
@@ -603,7 +603,7 @@ int
 viz_track_discnum(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -631,7 +631,7 @@ int
 viz_track_set_discnum(viz_track_t track, int discnum)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
@@ -656,7 +656,7 @@ int
 viz_track_duration(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -684,7 +684,7 @@ int
 viz_track_set_duration(viz_track_t track, int duration)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
@@ -710,7 +710,7 @@ int
 viz_track_year(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -738,7 +738,7 @@ int
 viz_track_set_year(viz_track_t track, int year)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }
@@ -764,7 +764,7 @@ char
 viz_track_rating(viz_track_t track)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -787,10 +787,10 @@ viz_track_rating(viz_track_t track)
 * Failure: 0
 */
 int
-viz_track_set_rating(viz_track_t track, char rating)
+viz_track_set_rating(viz_track_t track, const char rating)
 {
   if (!track) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL track structure\n",
+    viz_dbg(VIZ_DBG_ERROR, "%s: NULL track structure\n",
       __FUNCTION__);
     return 0;
   }

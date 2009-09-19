@@ -95,6 +95,7 @@ SRCS=Application.cpp \
      LangCodeExpander.cpp \
      LangInfo.cpp \
      MediaManager.cpp \
+		 Scraper.cpp \
      NfoFile.cpp \
      PartyModeManager.cpp \
      Picture.cpp \
@@ -168,7 +169,6 @@ SRCS=Application.cpp \
      Autorun.cpp \
      Util.cpp \
      GUIWindowSlideShow.cpp \
-     settings/AddonSettings.cpp \
      XBApplicationEx.cpp \
      xbmc.cpp \
      GUIDialogFavourites.cpp \
@@ -192,7 +192,6 @@ SRCS=Application.cpp \
      Edl.cpp \
      GUIDialogAddonSettings.cpp \
      GUIDialogAccessPoints.cpp \
-     ScraperSettings.cpp \
      Artist.cpp \
      Album.cpp \
      MediaSource.cpp \
@@ -207,7 +206,6 @@ SRCS=Application.cpp \
      ZeroconfBrowser.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
-     ScriptSettings.cpp \
 
 LIB=xbmc.a
 

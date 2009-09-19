@@ -33,7 +33,6 @@ d4rk@xbmc.org
 
 */
 
-#include "../../addons/include/libaddon++.h"
 #include "../../addons/include/xbmc_vis_dll.h"
 #include <GL/glew.h>
 #include "libprojectM/ConfigFile.h"
@@ -112,21 +111,20 @@ int check_valid_extension(const struct dirent* ent)
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
+extern "C" ADDON_STATUS Create(void* hdl, void* props)
 {
-  strcpy(g_visName, szVisualisationName);
+  if (!props)
+    return STATUS_UNKNOWN;
 
-  m_vecSettings.clear();
-  m_uiVisElements = 0;
+  VIS_PROPS* visprops = (VIS_PROPS*)props;
+
+  strcpy(g_visName, visprops->name);
 
   /** Initialise projectM */
 
 #ifdef WIN32
-  g_configFile = string(CONFIG_FILE);
   std::string presetsDir = string(PRESETS_DIR);
 #else
-  g_configFile = _P(CONFIG_FILE);
   std::string presetsDir = _P(PRESETS_DIR);
 #endif
 
@@ -134,8 +132,8 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   g_configPM.meshY = gy;
   g_configPM.fps = fps;
   g_configPM.textureSize = texsize;
-  g_configPM.windowWidth = iWidth;
-  g_configPM.windowHeight = iHeight;
+  g_configPM.windowWidth = visprops->width;
+  g_configPM.windowHeight = visprops->height;
   g_configPM.presetURL = presetsDir;
   g_configPM.smoothPresetDuration = 5;
   g_configPM.presetDuration = 15;
@@ -143,8 +141,8 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   g_configPM.aspectCorrection = true;
   g_configPM.easterEgg = 0.0;
   g_configPM.shuffleEnabled = true;
-  g_configPM.windowLeft = iPosX;
-  g_configPM.windowBottom = iPosY;
+  g_configPM.windowLeft = visprops->x;
+  g_configPM.windowBottom = visprops->y;
 
   {
     FILE *f;

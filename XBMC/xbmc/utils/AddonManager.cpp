@@ -194,7 +194,7 @@ void CAddonStatusHandler::Process()
 
     if (m_addon->Type() == ADDON_SKIN)
     {
-      CLog::Log(LOGERROR, "ADDONS: Incompatible type (%s) encountered, %s", ADDON::TranslateType(m_addon->Type()), __FUNCTION__);
+      CLog::Log(LOGERROR, "ADDONS: Incompatible type (%s) encountered", ADDON::TranslateType(m_addon->Type()).c_str());
       return;
     }
 
@@ -426,39 +426,43 @@ bool CAddonMgr::GetAddonFromPath(const CStdString &path, AddonPtr &addon)
 
 bool CAddonMgr::GetDefaultScraper(CScraperPtr &scraper, const CONTENT_TYPE & content)
 { 
-  return GetDefaultScraper(boost::dynamic_pointer_cast<IAddon>(scraper), content);
+  AddonPtr addon = boost::dynamic_pointer_cast<IAddon>(scraper);
+  if (!addon)
+    return false;
+  else
+    return GetDefaultScraper(addon, content);
 }
 bool CAddonMgr::GetDefaultScraper(AddonPtr &scraper, const CONTENT_TYPE &content)
 {
-  CStdString default;
+  CStdString defaultScraper;
   switch (content)
   {
   case CONTENT_MOVIES:
     {
-      default = g_guiSettings.GetString("scrapers.moviedefault");
+      defaultScraper = g_guiSettings.GetString("scrapers.moviedefault");
       break;
     }
   case CONTENT_TVSHOWS:
     {
-      default = g_guiSettings.GetString("scrapers.tvshowdefault");
+      defaultScraper = g_guiSettings.GetString("scrapers.tvshowdefault");
       break;
     }
   case CONTENT_MUSICVIDEOS:
     {
-      default = g_guiSettings.GetString("scrapers.musicvideodefault");
+      defaultScraper = g_guiSettings.GetString("scrapers.musicvideodefault");
       break;
     }
   case CONTENT_ALBUMS:
   case CONTENT_ARTISTS:
   case CONTENT_MUSIC:
     {
-      default = g_guiSettings.GetString("musiclibrary.defaultscraper");
+      defaultScraper = g_guiSettings.GetString("musiclibrary.defaultscraper");
       break;
     }
   default:
     return false;
   }
-  return GetAddon(ADDON_SCRAPER, default, scraper);
+  return GetAddon(ADDON_SCRAPER, defaultScraper, scraper);
 }
 
 CStdString CAddonMgr::GetString(const CStdString &uuid, const int number)

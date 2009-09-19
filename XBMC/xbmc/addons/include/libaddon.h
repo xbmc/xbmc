@@ -24,7 +24,7 @@
 #ifdef WIN32
 #define XBMC_API   __declspec( dllexport )
 #else
-#define XBMC_API extern
+#define XBMC_API
 #endif
 
 #ifdef __cplusplus
@@ -133,7 +133,7 @@ extern "C"
  * \param id char* id
  * \return int error status
  */
- XBMC_API int addon_setting_set_id(addon_setting_t setting, char* id);
+ XBMC_API int addon_setting_set_id(addon_setting_t setting, const char* id);
 
 /**
  * Retrieve the 'label' field of a setting
@@ -148,7 +148,7 @@ extern "C"
  * \param label char* label
  * \return int error status
  */
- XBMC_API int addon_setting_set_label(addon_setting_t setting, char *label);
+ XBMC_API int addon_setting_set_label(addon_setting_t setting, const char *label);
 
 /**
  * Retrieve the 'enable' field of a setting
@@ -178,7 +178,7 @@ extern "C"
  * \param lvalues char* lvalues to set
  * \return int error status
  */
- XBMC_API int addon_setting_set_lvalues(addon_setting_t setting, char *lvalues);
+ XBMC_API int addon_setting_set_lvalues(addon_setting_t setting, const char *lvalues);
 
 /**
  * Retrieve the type of a setting
@@ -210,8 +210,52 @@ extern "C"
  */
  XBMC_API int addon_setting_set_valid(addon_setting_t setting, int isvalid);
 
+/*
+ * -----------------------------------------------------------------
+ * Debug Output Control
+ * -----------------------------------------------------------------
+ */
+
+/*
+ * Debug level constants used to determine the level of debug tracing
+ * to be done and the debug level of any given message.
+ */
+
+#define ADDON_DBG_NONE  -1
+#define ADDON_DBG_ERROR  0
+#define ADDON_DBG_WARN   1
+#define ADDON_DBG_INFO   2
+#define ADDON_DBG_DETAIL 3
+#define ADDON_DBG_DEBUG  4
+#define ADDON_DBG_PROTO  5
+#define ADDON_DBG_ALL    6
+
+/**
+ * Set the libaddon debug level.
+ * \param l level
+ */
+extern void addon_dbg_level(int l);
+
+/**
+ * Turn on all libaddon debugging.
+ */
+extern void addon_dbg_all(void);
+
+/**
+ * Turn off all libaddon debugging.
+ */
+extern void addon_dbg_none(void);
+
+/**
+ * Print a libaddon debug message.
+ * \param level debug level
+ * \param fmt printf style format
+ */
+extern void addon_dbg(int level, char *fmt, ...);
+
 #ifdef __cplusplus
  };
 #endif
 
 #endif /* #ifndef LIB_ADDON_H */
+

@@ -1,9 +1,9 @@
 // Waveform.vis
 // A simple visualisation example by MrC
 
-#include "../../addons/include/libaddon.h"
-#include "../../addons/include/libvisualisation.h"
-#include "../../addons/include/xbmc_vis_dll.h"
+#include <libaddon.h>
+#include <libvisualisation.h>
+#include <xbmc_vis_dll.h>
 #ifdef HAS_SDL_OPENGL
 #include <SDL/SDL_opengl.h>
 #endif

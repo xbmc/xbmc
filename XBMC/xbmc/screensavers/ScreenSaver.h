@@ -33,10 +33,10 @@
 #include "AddonDll.h"
 #include "DllScreenSaver.h"
 
-class CScreenSaver : public ADDON::CAddonDll<DllScreensaver, ScreenSaver, SCR_PROPS>
+class CScreenSaver : public ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>
 {
 public:
-  CScreenSaver(const ADDON::AddonProps &props) : CAddonDll(props) {};
+  CScreenSaver(const AddonProps &props) : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(props) {};
   virtual ~CScreenSaver() {};
 
   // Things that MUST be supplied by the child classes

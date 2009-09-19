@@ -95,10 +95,10 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
 
 void CGUIDialogVisualisationPresetList::Render()
 {
-  char **presets = NULL;
-  int numPresets = 0;
-  int currentPreset = 0;
-  bool locked = false;
+  //char **presets = NULL;
+  //int numPresets = 0;
+  //int currentPreset = 0;
+  //bool locked = false;
   //if (m_pVisualisation)
   //  m_pVisualisation->GetPresets(&presets, &currentPreset, &numPresets, &locked);
   //if (currentPreset != m_currentPreset)
@@ -119,9 +119,9 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
     //clear filelist
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
     OnMessage(msg);
-    int numPresets = 0;
-    m_currentPreset = 0;
-    bool locked = false;
+    //int numPresets = 0;
+    //m_currentPreset = 0;
+    //bool locked = false;
     /*m_pVisualisation->GetPresets(&presets, &m_currentPreset, &numPresets, &locked);*/
     //if (presets)
     //{

@@ -24,37 +24,31 @@
 #ifndef __REFMEM_H
 #define __REFMEM_H
 
-#include <mvp_atomic.h>
-#include <mvp_debug.h>
-
 /*
  * -----------------------------------------------------------------
  * Types
  * -----------------------------------------------------------------
  */
 
-/* Return current number of references outstanding for everything */
-extern int refmem_get_refcount();
-
 /**
  * Release a reference to allocated memory.
  * \param p allocated memory
  */
-extern void refmem_release(void *p);
+extern void ref_release(void *p);
 
 /**
  * Add a reference to allocated memory.
  * \param p allocated memory
  * \return new reference
  */
-extern void *refmem_hold(void *p);
+extern void *ref_hold(void *p);
 
 /**
  * Duplicate a string using reference counted memory.
  * \param str string to duplicate
- * \return reference counted string
+ * \return reference to the duplicated string
  */
-extern char *refmem_strdup(char *str);
+extern char *ref_strdup(char *str);
 
 /**
  * Allocate reference counted memory. (PRIVATE)
@@ -64,7 +58,7 @@ extern char *refmem_strdup(char *str);
  * \param line line number
  * \return reference counted memory
  */
-extern void *__refmem_alloc(size_t len,
+extern void *__ref_alloc(size_t len,
 				 const char *file,
 				 const char *func,
 				 int line);
@@ -75,9 +69,9 @@ extern void *__refmem_alloc(size_t len,
  * \return pointer to reference counted memory block
  */
 #if defined(DEBUG)
-#define refmem_alloc(l) (__refmem_alloc((l), __FILE__, __FUNC__, __LINE__))
+#define ref_alloc(l) (__ref_alloc((l), __FILE__, __FUNC__, __LINE__))
 #else
-#define refmem_alloc(l) (__refmem_alloc((l), (char *)0, (char *)0, 0))
+#define ref_alloc(l) (__ref_alloc((l), (char *)0, (char *)0, 0))
 #endif
 /**
  * Reallocate reference counted memory.
@@ -85,20 +79,20 @@ extern void *__refmem_alloc(size_t len,
  * \param len new allocation size
  * \return reference counted memory
  */
-extern void *refmem_realloc(void *p, size_t len);
+extern void *ref_realloc(void *p, size_t len);
 
-typedef void (*refmem_destroy_t)(void *p);
+typedef void (*ref_destroy_t)(void *p);
 
 /**
  * Add a destroy callback for reference counted memory.
  * \param block allocated memory
  * \param func destroy function
  */
-extern void refmem_set_destroy(void *block, refmem_destroy_t func);
+extern void ref_set_destroy(void *block, ref_destroy_t func);
 
 /**
  * Print allocation information to stdout.
  */
-extern void refmem_alloc_show(void);
+extern void ref_alloc_show(void);
 
 #endif /* __REFMEM_H */

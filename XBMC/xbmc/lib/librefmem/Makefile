@@ -8,8 +8,8 @@ OBJS = debug.o \
 %o : %c
 	$(CC) $(INCLUDES) $(CFLAGS) -c -o $@ $<
 
-refmem.a: $(OBJS)
+librefmem.a: $(OBJS)
 	$(AR) rc $@ $(OBJS)
 
 clean:
-	$(RM) $(OBJS) refmem.a
+	$(RM) $(OBJS) librefmem.a

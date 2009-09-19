@@ -29,7 +29,7 @@
 #include <refmem_local.h>
 
 static mvp_debug_ctx_t refmem_debug_ctx = MVP_DEBUG_CTX_INIT("refmem",
-							     REF_DBG_COUNTERS,
+							     REF_DBG_NONE,
 							     NULL);
 /*
  * refmem_dbg_level(int l)

@@ -172,10 +172,10 @@ void CGUIDialogContentSettings::OnWindowLoaded()
 
   if (m_content != CONTENT_NONE && !m_scraper)
   { // select the default scraper for this contenttype
-    AddonPtr default;
-    if (CAddonMgr::Get()->GetDefaultScraper(default, m_content))
+    AddonPtr defaultScraper;
+    if (CAddonMgr::Get()->GetDefaultScraper(defaultScraper, m_content))
     {
-      m_scraper = boost::dynamic_pointer_cast<CScraper>(default->Clone());
+      m_scraper = boost::dynamic_pointer_cast<CScraper>(defaultScraper->Clone());
     }
   }
 
@@ -302,6 +302,8 @@ void CGUIDialogContentSettings::CreateSettings()
     {
       AddBool(1,20345,&m_bRunScan);
     }
+  default:
+    break;
   }
 }
 
@@ -365,14 +367,14 @@ void CGUIDialogContentSettings::FillContentTypes(const CONTENT_TYPE &content)
   }
 
   AddonPtr addon;
-  CStdString default;
+  CStdString defaultUUID;
   CAddonMgr::Get()->GetDefaultScraper(addon, content);
   if (addon)
-    default = addon->UUID();
+    defaultUUID = addon->UUID();
 
   for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
   {
-    bool isDefault = ((*it)->UUID() == default);
+    bool isDefault = ((*it)->UUID() == defaultUUID);
     map<CONTENT_TYPE,VECADDONS>::iterator iter=m_scrapers.find(content);
     AddonPtr scraper = (*it)->Clone();
     if (iter != m_scrapers.end())

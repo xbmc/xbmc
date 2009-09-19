@@ -28,7 +28,7 @@ class CPVRClient : public IPVRClient,
                    public ADDON::CAddonDll<DllPVRClient, PVRClient, PVR_PROPS>
 {
 public:
-  CPVRClient(const ADDON::AddonProps &props);
+  CPVRClient(const AddonProps &props);
   ~CPVRClient();
 
   // DLL related

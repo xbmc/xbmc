@@ -47,6 +47,8 @@
 
 #include <vector>
 #include <map>
+#include <set>
+#include <list>
 
 #define CACHE_AUDIO 0
 #define CACHE_VIDEO 1
@@ -90,38 +92,35 @@ struct TVShowRegexp
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-namespace ADDON
+struct AddonProps
 {
-  struct AddonProps
-  {
-  public:
-    AddonProps(CStdString uuid, TYPE type) : uuid(uuid)
-                                           , type(type)
-    {}
+public:
+  AddonProps(CStdString uuid, ADDON::TYPE type) : uuid(uuid)
+                                         , type(type)
+  {}
 
-    AddonProps(const AddonPtr &addon) : uuid(addon->UUID())
-                                      , type(addon->Type())
-                                      , parent(addon->Parent())                              
-                                      , name(addon->Name())
-                                      , icon(addon->Icon())
-    {}
-    const CStdString uuid;
-    const TYPE type;
-    std::set<CONTENT_TYPE> contents;
-    CStdString parent;
-    CStdString name;
-    CStdString version;
-    CStdString summary;
-    CStdString description;
-    CStdString path;
-    CStdString libname;
-    CStdString author;
-    CStdString icon;
-    int        stars;
-    CStdString disclaimer;
-  };
-  typedef std::list<const AddonProps> VECADDONPROPS;
-}
+  AddonProps(const ADDON::AddonPtr &addon) : uuid(addon->UUID())
+                                    , type(addon->Type())
+                                    , parent(addon->Parent())                              
+                                    , name(addon->Name())
+                                    , icon(addon->Icon())
+  {}
+  const CStdString uuid;
+  const ADDON::TYPE type;
+  std::set<CONTENT_TYPE> contents;
+  CStdString parent;
+  CStdString name;
+  CStdString version;
+  CStdString summary;
+  CStdString description;
+  CStdString path;
+  CStdString libname;
+  CStdString author;
+  CStdString icon;
+  int        stars;
+  CStdString disclaimer;
+};
+typedef std::list<struct AddonProps> VECADDONPROPS;
 
 
 class CSkinString
@@ -498,8 +497,8 @@ public:
 
   bool SaveSettings(const CStdString& strSettingsFile, CGUISettings *localSettings = NULL) const;
 
-  bool LoadAddonsXML(const ADDON::TYPE& type, ADDON::VECADDONPROPS& addons);
-  bool SaveAddonsXML(const ADDON::TYPE& type, const ADDON::VECADDONPROPS &addons);
+  bool LoadAddonsXML(const ADDON::TYPE& type, VECADDONPROPS& addons);
+  bool SaveAddonsXML(const ADDON::TYPE& type, const VECADDONPROPS &addons);
   bool SaveSources();
 
   void LoadRSSFeeds();
@@ -517,9 +516,9 @@ protected:
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
-  bool SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const ADDON::VECADDONPROPS &addons);
-  void GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type, ADDON::VECADDONPROPS &addons);
-  bool GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, ADDON::VECADDONPROPS &addons);
+  bool SetAddons(TiXmlNode *root, const ADDON::TYPE &type, const VECADDONPROPS &addons);
+  void GetAddons(const TiXmlElement* pRootElement, const ADDON::TYPE &type, VECADDONPROPS &addons);
+  bool GetAddon(const ADDON::TYPE &type, const TiXmlNode *node, VECADDONPROPS &addons);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
 
   // functions for writing xml files

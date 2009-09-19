@@ -40,7 +40,9 @@
  */
 #include <sys/types.h>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <errno.h>
 #include <mvp_refmem.h>
 #include <mvp_atomic.h>
@@ -53,11 +55,8 @@
 #include <assert.h>
 #define ALLOC_MAGIC 0xef37a45d
 #define GUARD_MAGIC 0xe3
-#define GUARD_BYTES 1
 #endif /* DEBUG */
 
-static mvp_atomic_t total_refcount=0;
-static mvp_atomic_t total_bytecount=0;
 /*
  * struct refcounter
  *
@@ -88,12 +87,12 @@ typedef struct refcounter {
 #endif /* DEBUG */
 	mvp_atomic_t refcount;
 	size_t length;
-	refmem_destroy_t destroy;
+	ref_destroy_t destroy;
 } refcounter_t;
 
 #ifdef DEBUG
 typedef struct {
-	unsigned char magic[GUARD_BYTES];
+	unsigned char magic;
 } guard_t;
 #endif /* DEBUG */
 
@@ -101,44 +100,18 @@ typedef struct {
 #define REF_DATA(r) (((unsigned char *)(r)) + sizeof(refcounter_t))
 
 #if defined(DEBUG)
-#define refmem_alloc_BINS	101
-static refcounter_t *ref_list[refmem_alloc_BINS];
+#define REF_ALLOC_BINS	101
+static refcounter_t *ref_list[REF_ALLOC_BINS];
 #endif /* DEBUG */
-
-#ifdef DEBUG
-static inline void
-guard_set(guard_t *guard, unsigned char val)
-{
-	memset(&(guard->magic[0]), val, GUARD_BYTES);
-}
-
-static inline void
-guard_check(guard_t *guard)
-{
-	int i;
-
-	for (i=0; i<GUARD_BYTES; i++) {
-		assert(guard->magic[i] == GUARD_MAGIC);
-	}
-}
-#endif /* DEBUG */
-
-int refmem_get_refcount(char *loc)
-  {
-  /* REF_DBG_COUNTERS does not seem to work - what am I missing? */
-  refmem_dbg(REF_DBG_COUNTERS,"%40.40s Refs: %7d   Bytes: %8d\n",loc,total_refcount,total_bytecount); 
-  fprintf(stderr,",%40.40s Refs: %7d   Bytes: %8d\n",loc,total_refcount,total_bytecount); 
-  return(total_refcount);
-  }
 
 #if defined(DEBUG)
 static inline void
-refmem_remove(refcounter_t *ref)
+ref_remove(refcounter_t *ref)
 {
 	int bin;
 	refcounter_t *r, *p;
 
-	bin = ((unsigned long)ref >> 2) % refmem_alloc_BINS;
+	bin = ((unsigned long)ref >> 2) % REF_ALLOC_BINS;
 
 	r = ref_list[bin];
 	p = NULL;
@@ -158,11 +131,11 @@ refmem_remove(refcounter_t *ref)
 }
 
 static inline void
-refmem_add(refcounter_t *ref)
+ref_add(refcounter_t *ref)
 {
 	int bin;
 
-	bin = ((unsigned long)ref >> 2) % refmem_alloc_BINS;
+	bin = ((unsigned long)ref >> 2) % REF_ALLOC_BINS;
 
 	ref->next = ref_list[bin];
 	ref_list[bin] = ref;
@@ -176,13 +149,13 @@ static struct alloc_type {
 } alloc_list[128];
 
 void
-refmem_alloc_show(void)
+ref_alloc_show(void)
 {
 	int i, j;
 	int types = 0, bytes = 0, count = 0;
 	refcounter_t *r;
 
-	for (i=0; i<refmem_alloc_BINS; i++) {
+	for (i=0; i<REF_ALLOC_BINS; i++) {
 		r = ref_list[i];
 
 		while (r) {
@@ -218,15 +191,15 @@ refmem_alloc_show(void)
 }
 #else
 void
-refmem_alloc_show(void)
+ref_alloc_show(void)
 {
 }
 #endif /* DEBUG */
 
 /*
- * refmem_alloc(size_t len)
+ * ref_alloc(size_t len)
  * 
- * Scope: PRIVATE (mapped to __refmem_alloc)
+ * Scope: PRIVATE (mapped to __ref_alloc)
  *
  * Description
  *
@@ -236,12 +209,12 @@ refmem_alloc_show(void)
  *
  * Success: A non-NULL pointer to  a block of memory at least 'len' bytes long
  *          and safely aligned.  The block is reference counted and can be
- *          released using refmem_release().
+ *          released using ref_release().
  *
  * Failure: A NULL pointer.
  */
 void *
-__refmem_alloc(size_t len, const char *file, const char *func, int line)
+__ref_alloc(size_t len, const char *file, const char *func, int line)
 {
 #ifdef DEBUG
 	void *block = malloc(sizeof(refcounter_t) + len + sizeof(guard_t));
@@ -257,9 +230,6 @@ __refmem_alloc(size_t len, const char *file, const char *func, int line)
 	if (block) {
 		memset(block, 0, sizeof(refcounter_t) + len);
 		mvp_atomic_set(&ref->refcount, 1);
-		mvp_atomic_inc(&total_refcount);
-		total_bytecount += sizeof(refcounter_t) + len;
-
 #ifdef DEBUG
 		ref->magic = ALLOC_MAGIC;
 		ref->file = file;
@@ -267,8 +237,8 @@ __refmem_alloc(size_t len, const char *file, const char *func, int line)
 		ref->line = line;
 		guard = (guard_t*)((unsigned long)block +
 				   sizeof(refcounter_t) + len);
-		guard_set(guard, GUARD_MAGIC);
-		refmem_add(ref);
+		guard->magic = GUARD_MAGIC;
+		ref_add(ref);
 #endif /* DEBUG */
 		ref->destroy = NULL;
 		ref->length = len;
@@ -282,9 +252,9 @@ __refmem_alloc(size_t len, const char *file, const char *func, int line)
 }
 
 /*
- * refmem_realloc(void *p, size_t len)
+ * ref_realloc(void *p, size_t len)
  * 
- * Scope: PRIVATE (mapped to __refmem_realloc)
+ * Scope: PRIVATE (mapped to __ref_realloc)
  *
  * Description
  *
@@ -294,15 +264,15 @@ __refmem_alloc(size_t len, const char *file, const char *func, int line)
  *
  * Success: A non-NULL pointer to  a block of memory at least 'len' bytes long
  *          and safely aligned.  The block is reference counted and can be
- *          released using refmem_release().
+ *          released using ref_release().
  *
  * Failure: A NULL pointer.
  */
 void *
-refmem_realloc(void *p, size_t len)
+ref_realloc(void *p, size_t len)
 {
 	refcounter_t *ref = REF_REFCNT(p);
-	void *ret = refmem_alloc(len);
+	void *ret = ref_alloc(len);
 
 	refmem_dbg(REF_DBG_DEBUG, "%s(%d, ret = %p, ref = %p) {\n",
 		   __FUNCTION__, len, ret, ref);
@@ -311,10 +281,10 @@ refmem_realloc(void *p, size_t len)
 #endif /* DEBUG */
 	if (p && ret) {
 		memcpy(ret, p, ref->length);
-		refmem_set_destroy(ret, ref->destroy);
+		ref_set_destroy(ret, ref->destroy);
 	}
 	if (p) {
-		refmem_release(p);
+		ref_release(p);
 	}
 	refmem_dbg(REF_DBG_DEBUG, "%s(%d, ret = %p, ref = %p) }\n",
 		   __FUNCTION__, len, ret, ref);
@@ -322,24 +292,24 @@ refmem_realloc(void *p, size_t len)
 }
 
 /*
- * refmem_set_destroy(void *block, ref_destroy_t func)
+ * ref_set_destroy(void *block, ref_destroy_t func)
  * 
- * Scope: PRIVATE (mapped to __refmem_set_destroy)
+ * Scope: PRIVATE (mapped to __ref_set_destroy)
  *
  * Description
  *
  * Set the destroy function for a block of data.  The first argument
- * is a pointer to the data block (as returned by refmem_alloc()).  The
+ * is a pointer to the data block (as returned by ref_alloc()).  The
  * second argument is a pointer to the destroy function which, when
  * called, will be passed one argument, the pointer to the block (as
- * returned by refmem_alloc()).  The destroy function is
+ * returned by ref_alloc()).  The destroy function is
  * respsonsible for any cleanup needed prior to finally releasing the
  * memory holding the memory block.
  *
  * Return Value: NONE
  */
 void
-refmem_set_destroy(void *data, refmem_destroy_t func)
+ref_set_destroy(void *data, ref_destroy_t func)
 {
 	void *block = REF_REFCNT(data);
 	refcounter_t *ref = block;
@@ -357,7 +327,7 @@ refmem_set_destroy(void *data, refmem_destroy_t func)
 }
 
 /*
- * refmem_strdup(char *str)
+ * ref_strdup(char *str)
  * 
  * Scope: PUBLIC
  *
@@ -369,12 +339,12 @@ refmem_set_destroy(void *data, refmem_destroy_t func)
  * Return Value: 
  *
  * Success: A non-NULL pointer to  a reference counted string which can be
- *          released using refmem_release().
+ *          released using ref_release().
  *
  * Failure: A NULL pointer.
  */
 char *
-refmem_strdup(char *str)
+ref_strdup(char *str)
 {
 	size_t len;
 	char *ret = NULL;
@@ -383,7 +353,7 @@ refmem_strdup(char *str)
 		   __FUNCTION__, str);
 	if (str) {
 		len = strlen(str) + 1;
-		ret = refmem_alloc(len);
+		ret = ref_alloc(len);
 		if (ret) {
 			strncpy(ret, str, len);
 			ret[len - 1] = '\0';
@@ -397,7 +367,7 @@ refmem_strdup(char *str)
 }
 
 /*
- * refmem_hold(void *p)
+ * ref_hold(void *p)
  * 
  * Scope: PUBLIC
  *
@@ -405,7 +375,7 @@ refmem_strdup(char *str)
  *
  * This is how holders of references to reference counted blocks take
  * additional references.  The argument is a pointer to a structure or
- * string returned from refmem_alloc.  The structure's reference count
+ * string returned from ref_alloc.  The structure's reference count
  * will be incremented and a pointer to that space returned.
  *
  * There is really  no error condition possible, but if a NULL pointer
@@ -413,12 +383,12 @@ refmem_strdup(char *str)
  *
  * NOTE: since this function operates outside of the space that is directly
  *       accessed by  the pointer, if a pointer that was NOT allocated by
- *       refmem_alloc() is provided, negative consequences are likely.
+ *       ref_alloc() is provided, negative consequences are likely.
  *
  * Return Value: A  pointer to the held space
  */
 void *
-refmem_hold(void *p)
+ref_hold(void *p)
 {
 	void *block = REF_REFCNT(p);
 	refcounter_t *ref = block;
@@ -432,17 +402,16 @@ refmem_hold(void *p)
 		assert(ref->magic == ALLOC_MAGIC);
 		guard = (guard_t*)((unsigned long)block +
 				   sizeof(refcounter_t) + ref->length);
-		guard_check(guard);
+		assert(guard->magic == GUARD_MAGIC);
 #endif /* DEBUG */
 		mvp_atomic_inc(&ref->refcount);
-		mvp_atomic_inc(&total_refcount);
 	}
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) }\n", __FUNCTION__, p);
         return p;
 }
 
 /*
- * refmem_release(void *p)
+ * ref_release(void *p)
  * 
  * Scope: PUBLIC
  *
@@ -450,7 +419,7 @@ refmem_hold(void *p)
  *
  * This is how holders of references to reference counted blocks release
  * those references.  The argument is a pointer to a structure or string
- * returned from a librefmem API function (or from refmem_alloc).  The
+ * returned from a librefmem API function (or from ref_alloc).  The
  * structure's reference count will be decremented and, when it reaches zero
  * the structure's destroy function (if any) will be called and then the
  * memory block will be released.
@@ -458,7 +427,7 @@ refmem_hold(void *p)
  * Return Value: NONE
  */
 void
-refmem_release(void *p)
+ref_release(void *p)
 {
 	void *block = REF_REFCNT(p);
 	refcounter_t *ref = block;
@@ -476,12 +445,8 @@ refmem_release(void *p)
 		assert(ref->magic == ALLOC_MAGIC);
 		guard = (guard_t*)((unsigned long)block +
 				   sizeof(refcounter_t) + ref->length);
-		guard_check(guard);
+		assert(guard->magic == GUARD_MAGIC);
 #endif /* DEBUG */
-
-/* Remove a refcount */
-		mvp_atomic_dec(&total_refcount);
-
 		if (mvp_atomic_dec_and_test(&ref->refcount)) {
 			/*
 			 * Last reference, destroy the structure (if
@@ -496,17 +461,12 @@ refmem_release(void *p)
 				   __FILE__, __LINE__, __FUNCTION__);
 #ifdef DEBUG
 			ref->magic = 0;
-			guard_set(guard, 0);
-			refmem_remove(ref);
+			guard->magic = 0;
+			refmem_ref_remove(ref);
 			ref->next = NULL;
 #endif /* DEBUG */
-/* Remove its bytes */
-		        total_bytecount -= ( sizeof(refcounter_t) + ref->length);
 			free(block);
 		}
-		if (ref->refcount < 0)
-			fprintf(stderr, "*** %s(): %p refcount %d ***\n",
-				__FUNCTION__, p, ref->refcount);
 	}
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) }\n", __FUNCTION__, p);
 }

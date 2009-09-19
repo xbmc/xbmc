@@ -30,7 +30,7 @@
 #include <mvp_refmem.h>
 #include <mvp_debug.h>
 #include <libaddon.h>
-#include <addon_local.h>
+#include "addon_local.h"
 
 /*
  * addon_setting_destroy(addon_setting_t p)
@@ -40,7 +40,7 @@
  * Description
  *
  * Destroy the setting structure pointed to by 'p' ad release
- * it's storage. This should only be called by refmem_release().
+ * it's storage. This should only be called by ref_release().
  *
  * Return Value:
  *
@@ -49,24 +49,24 @@
 static void
 addon_setting_destroy(addon_setting_t p)
 {
-  refmem_dbg(REFMEM_DEBUG, "%s {\n", __FUNCTION__);
+  addon_dbg(ADDON_DBG_DEBUG, "%s {\n", __FUNCTION__);
   if (!p) {
-    refmem_dbg(REFMEM_DEBUG, "%s }!a\n", __FUNCTION__);
+    addon_dbg(ADDON_DBG_DEBUG, "%s }!a\n", __FUNCTION__);
     return;
   }
   if (p->id) {
-    refmem_release(p->id);
+    ref_release(p->id);
   }
   if(p->label) {
-    refmem_release(p->label);
+    ref_release(p->label);
   }
   if(p->enable) {
-    refmem_release(p->enable);
+    ref_release(p->enable);
   }
   if(p->lvalues) {
-    refmem_release(p->lvalues);
+    ref_release(p->lvalues);
   }
-  refmem_dbg(REFMEM_DEBUG, "%s }\n", __FUNCTION__);
+  addon_dbg(ADDON_DBG_DEBUG, "%s }\n", __FUNCTION__);
 }
 
 /*
@@ -87,13 +87,13 @@ addon_setting_destroy(addon_setting_t p)
 addon_setting_t
 addon_setting_create(void)
 {
-  addon_setting_t ret = refmem_alloc(sizeof(*ret));
+  addon_setting_t ret = ref_alloc(sizeof(*ret));
 
-  refmem_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
+  addon_dbg(ADDON_DBG_DEBUG, "%s\n", __FUNCTION__);
   if(!ret) {
     return NULL;
   }
-  refmem_set_destroy(ret, (refmem_destroy_t)addon_setting_destroy);
+  ref_set_destroy(ret, (ref_destroy_t)addon_setting_destroy);
 
   ret->type = 0; // Label type
   ret->id = NULL;
@@ -121,7 +121,7 @@ addon_setting_type_t
 addon_setting_type(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return SETTING_SEP;
   }
@@ -148,7 +148,7 @@ int
 addon_setting_set_type(addon_setting_t setting, addon_setting_type_t type)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return 0;
   }
@@ -167,7 +167,7 @@ addon_setting_set_type(addon_setting_t setting, addon_setting_type_t type)
  *
  * Returns a pointer to the string within the setting
  * structure, so it should not be modified by the caller.
- * refmem_release() must be called when you are finished with the pointer.
+ * ref_release() must be called when you are finished with the pointer.
  *
  * Return Value:
  *
@@ -179,11 +179,11 @@ char *
 addon_setting_id(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return NULL;
   }
-  return refmem_hold(setting->id);
+  return ref_hold(setting->id);
 }
 
 /*
@@ -206,16 +206,16 @@ int
 addon_setting_set_id(addon_setting_t setting, char *id)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return 0;
   }
   if(setting->id) {
-    refmem_release(setting->id);
+    ref_release(setting->id);
   }
-  setting->id = refmem_strdup(id);
+  setting->id = ref_strdup(id);
 
-  return (int)refmem_hold(setting->id);
+  return (int)ref_hold(setting->id);
 }
 
 /*
@@ -228,7 +228,7 @@ addon_setting_set_id(addon_setting_t setting, char *id)
  *
  * Returns a pointer to the string within the setting
  * structure, so it should not be modified by the caller.
- * refmem_release() must be called when you are finished with the pointer.
+ * ref_release() must be called when you are finished with the pointer.
  *
  * Return Value:
  *
@@ -240,11 +240,11 @@ char *
 addon_setting_label(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return NULL;
   }
-  return refmem_hold(setting->label);
+  return ref_hold(setting->label);
 }
 
 /*
@@ -267,16 +267,16 @@ int
 addon_setting_set_label(addon_setting_t setting, char *label)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return 0;
   }
   if(setting->label) {
-    refmem_release(setting->label);
+    ref_release(setting->label);
   }
-  setting->label = refmem_strdup(label);
+  setting->label = ref_strdup(label);
 
-  return (int)refmem_hold(setting->label);
+  return (int)ref_hold(setting->label);
 }
 
 /*
@@ -289,7 +289,7 @@ addon_setting_set_label(addon_setting_t setting, char *label)
  *
  * Returns a pointer to the string within the setting
  * structure, so it should not be modified by the caller.
- * refmem_release() must be called when you are finished with the pointer.
+ * ref_release() must be called when you are finished with the pointer.
  *
  * Return Value:
  *
@@ -301,11 +301,11 @@ char *
 addon_setting_enable(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return NULL;
   }
-  return refmem_hold(setting->enable);
+  return ref_hold(setting->enable);
 }
 
 /*
@@ -318,7 +318,7 @@ addon_setting_enable(addon_setting_t setting)
  *
  * Returns a pointer to the string within the setting
  * structure, so it should not be modified by the caller.
- * refmem_release() must be called when you are finished with the pointer.
+ * ref_release() must be called when you are finished with the pointer.
  *
  * Return Value:
  *
@@ -330,11 +330,11 @@ char *
 addon_setting_lvalues(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return NULL;
   }
-  return refmem_hold(setting->lvalues);
+  return ref_hold(setting->lvalues);
 }
 
 /*
@@ -357,16 +357,16 @@ int
 addon_setting_set_lvalues(addon_setting_t setting, char *lvalues)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return 0;
   }
   if(setting->lvalues) {
-    refmem_release(setting->lvalues);
+    ref_release(setting->lvalues);
   }
-  setting->lvalues = refmem_strdup(lvalues);
+  setting->lvalues = ref_strdup(lvalues);
 
-  return (int)refmem_hold(setting->lvalues);
+  return (int)ref_hold(setting->lvalues);
 }
 
 /*
@@ -390,7 +390,7 @@ int
 addon_setting_valid(addon_setting_t setting)
 {
   if (!setting) {
-    refmem_dbg(REFMEM_ERROR, "%s: NULL setting structure\n",
+    addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
       __FUNCTION__);
     return 0;
   }
