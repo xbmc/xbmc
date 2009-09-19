@@ -398,8 +398,8 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   m_vertex = (SVertex*)calloc(count * 4, sizeof(SVertex));
   SVertex* v = m_vertex;
 
-  uint32_t* rgba = (uint32_t*)calloc(size_x * size_y, sizeof(uint32_t));
-  uint32_t* data = rgba;
+  unsigned char* srca = (unsigned char*)calloc(size_x * size_y, 1);
+  unsigned char* data = srca;
 
   int y = 0;
 
@@ -421,13 +421,21 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
       curr_y += y + 1;
       curr_x  = 0;
       y       = 0;
-      data    = rgba + curr_y * size_x;
+      data    = srca + curr_y * size_x;
     }
 
     unsigned int b = ((color >> 24) & 0xff);
     unsigned int g = ((color >> 16) & 0xff);
     unsigned int r = ((color >> 8) & 0xff);
     unsigned int opacity = 255 - alpha;
+
+    for(int i = 0; i < 4; i++)
+    {
+      v[i].a = 255 - alpha;
+      v[i].r = r;
+      v[i].g = g;
+      v[i].b = b;
+    }
 
     v[0].u = (float)(curr_x);
     v[0].v = (float)(curr_y);
@@ -456,13 +464,9 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     v += 4;
 
     for(int i=0; i<img->h; i++)
-    {
-      const unsigned char* source = img->bitmap + img->stride * i;
-      uint32_t*            target = data        + size_x      * i;
-
-      for(int j=0; j<img->w; j++)
-        target[j] = build_rgba(opacity * source[j] / 255, r, g, b);
-    }
+      memcpy(data        + size_x      * i
+           , img->bitmap + img->stride * i
+           , img->w);
 
     if (img->h > y)
       y = img->h;
@@ -479,9 +483,9 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  LoadTexture(GL_TEXTURE_2D, size_x, size_y, size_x * 4, &m_u, &m_v, GL_RGBA , rgba);
+  LoadTexture(GL_TEXTURE_2D, size_x, size_y, size_x, &m_u, &m_v, GL_ALPHA, srca);
 
-  free(rgba);
+  free(srca);
 
   float scale_u = m_u / size_x;
   float scale_v = m_v / size_y;
@@ -510,28 +514,32 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glEnable(GL_BLEND);
 
   glBindTexture(GL_TEXTURE_2D, m_texture);
-#if USE_PREMULTIPLIED_ALPHA
-  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-#else
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-#endif
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+
+  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
   glTranslatef(state.x, state.y, 0.0);
   glScalef(state.width / m_width, state.height / m_height, 1.0f);
 
-  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   VerifyGLState();
 
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
 
-  //glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
+  glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
   glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
   glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
-  //glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   glDrawArrays(GL_QUADS, 0, m_count * 4);
