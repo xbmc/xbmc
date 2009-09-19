@@ -66,17 +66,15 @@ namespace OVERLAY {
 
    void Render(SRenderState& state);
 
-   struct GlyphPosition
+   struct SVertex
    {
-     float u0, v0;
-     float u1, v1;
-
-     float x0, y0;
-     float x1, y1;
+     GLfloat u, v;
+     GLubyte r, g, b, a;    
+     GLfloat x, y, z;
    };
 
-   GlyphPosition* m_quads;
-   int            m_count;
+   SVertex* m_vertex;
+   int      m_count;
 
    GLuint m_texture;
    float  m_u;
