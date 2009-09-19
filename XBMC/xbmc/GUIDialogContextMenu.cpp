@@ -736,7 +736,6 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
       else if (vecTypes[i].Equals(g_localizeStrings.Get(7)))
         iWindow = WINDOW_FILES;
 
-      //m_gWindowManager.ActivateWindow(iWindow, strPath);
       CUtil::ClearFileItemCache();
       m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
       return;
