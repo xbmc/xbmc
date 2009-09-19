@@ -115,9 +115,13 @@ Section "XBMC" SecXBMC
   SetOverwrite on
   
   SetOutPath "$INSTDIR\visualisations"
-  File "${xbmc_root}\Xbmc\visualisations\*_win32.vis"
-  SetOutPath "$INSTDIR\visualisations\projectM"
-  File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\projectM\*.*"
+  !if "${xbmc_target}" == "gl"
+    File "${xbmc_root}\Xbmc\visualisations\*_win32.vis"
+    SetOutPath "$INSTDIR\visualisations\projectM"
+    File /nonfatal /r "${xbmc_root}\Xbmc\visualisations\projectM\*.*"
+  !else
+    File "${xbmc_root}\Xbmc\visualisations\*_win32dx.vis"
+  !endif
   SetOutPath "$INSTDIR\web"
   File /r "${xbmc_root}\Xbmc\web\*.*"
 

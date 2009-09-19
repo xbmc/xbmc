@@ -159,8 +159,12 @@ IF %target%==dx SET buildconfig=Release (DirectX)
   xcopy ..\..\language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   rem screensavers currently are xbox only
   rem xcopy ..\..\screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy ..\..\visualisations\*_win32.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  if %target%==gl (
+    xcopy ..\..\visualisations\*_win32.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
+    xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  ) else (
+    xcopy ..\..\visualisations\*_win32dx.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
+  )
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
