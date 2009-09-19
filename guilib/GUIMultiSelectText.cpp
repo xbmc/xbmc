@@ -19,9 +19,9 @@
  *
  */
 
-#include "include.h"
 #include "GUIMultiSelectText.h"
 #include "MouseStat.h"
+#include "utils/log.h"
 
 using namespace std;
 

@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIResizeControl.h"
 #include "GUIWindowManager.h"
 #include "MouseStat.h"

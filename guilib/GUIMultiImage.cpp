@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIMultiImage.h"
 #include "TextureManager.h"
 #include "FileSystem/Directory.h"

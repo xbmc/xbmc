@@ -33,6 +33,14 @@
  \ingroup textures
  \brief
  */
+
+#include "StdString.h"
+#include "system.h"
+
+#include <map>
+
+class TiXmlDocument;
+
 class CGUIColorManager
 {
 public:

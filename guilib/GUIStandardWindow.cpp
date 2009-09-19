@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIStandardWindow.h"
 #include "GUIWindowManager.h"
 #include "AdvancedSettings.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIMessage.h"
 #include "LocalizeStrings.h"
 

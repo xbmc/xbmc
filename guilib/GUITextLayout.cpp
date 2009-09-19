@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUITextLayout.h"
 #include "GUIFont.h"
 #include "GUIControl.h"

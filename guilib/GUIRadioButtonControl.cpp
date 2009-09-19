@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIRadioButtonControl.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIFontManager.h"

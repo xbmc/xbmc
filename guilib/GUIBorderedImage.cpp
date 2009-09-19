@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIBorderedImage.h"
 
 CGUIBorderedImage::CGUIBorderedImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture, const CTextureInfo& borderTexture, const FRECT &borderSize)

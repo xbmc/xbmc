@@ -1,7 +1,9 @@
-#include "include.h"
+#include "system.h"
 #include "../Key.h"
 #include "SDLJoystick.h"
 #include "ButtonTranslator.h"
+#include "utils/log.h"
+
 #include <math.h>
 
 #ifdef HAS_SDL_JOYSTICK

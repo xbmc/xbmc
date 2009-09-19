@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "DirectXGraphics.h"
 #include "Texture.h"
 #include "FileSystem/File.h"

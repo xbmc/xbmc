@@ -28,6 +28,8 @@
  *
  */
 
+#include "system.h"
+
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
 #define D3DPRESENTFLAG_INTERLACED 1

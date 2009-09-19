@@ -19,12 +19,13 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 
 #if defined(HAS_GL) || HAS_GLES == 2
 #include "../xbmc/Settings.h"
 #include "../xbmc/FileSystem/File.h"
 #include "Shader.h"
+#include "utils/log.h"
 
 #define LOG_SIZE 1024
 

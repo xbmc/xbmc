@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUISettingsSliderControl.h"
 
 CGUISettingsSliderControl::CGUISettingsSliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, const CLabelInfo &labelInfo, int iType)

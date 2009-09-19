@@ -19,7 +19,7 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GUIVideoControl.h"
 #include "GUIWindowManager.h"
 #include "MouseStat.h"

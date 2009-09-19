@@ -22,12 +22,13 @@
  *
  */
 
-#include "include.h"
 #include "Thread.h"
 #include "CriticalSection.h"
 #include "Socket.h"
 #include "EventPacket.h"
 #include "GUISettings.h"
+
+#include <list>
 #include <map>
 #include <queue>
 

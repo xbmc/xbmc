@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUISelectButtonControl.h"
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"

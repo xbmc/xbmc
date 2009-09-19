@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIControlGroup.h"
 #include "GUIControlProfiler.h"
 

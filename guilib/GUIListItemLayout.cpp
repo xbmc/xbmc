@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIListItemLayout.h"
 #include "FileItem.h"
 #include "GUIControlFactory.h"
@@ -27,6 +26,7 @@
 #include "utils/GUIInfoManager.h"
 #include "GUIListLabel.h"
 #include "GUIImage.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

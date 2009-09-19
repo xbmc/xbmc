@@ -19,7 +19,7 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GUIFont.h"
 #include "GUIFontTTFGL.h"
 #include "GUIFontManager.h"

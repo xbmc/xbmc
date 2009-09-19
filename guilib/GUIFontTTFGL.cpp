@@ -19,13 +19,14 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GUIFont.h"
 #include "GUIFontTTFGL.h"
 #include "GUIFontManager.h"
 #include "Texture.h"
 #include "GraphicContext.h"
 #include "gui3d.h"
+#include "utils/log.h"
 
 // stuff for freetype
 #ifndef _LINUX

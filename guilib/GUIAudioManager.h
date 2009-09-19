@@ -23,10 +23,15 @@
 
 #include "IAudioDeviceChangedCallback.h"
 #include "utils/CriticalSection.h"
+#include "utils/log.h"
+#include "StdString.h"
+
+#include <map>
 
 // forward definitions
 class CAction;
 class CGUISound;
+class TiXmlNode;
 
 enum WINDOW_SOUND { SOUND_INIT = 0, SOUND_DEINIT };
 

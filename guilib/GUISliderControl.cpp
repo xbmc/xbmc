@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUISliderControl.h"
 #include "utils/GUIInfoManager.h"
 #include "MouseStat.h"

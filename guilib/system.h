@@ -179,3 +179,11 @@
 #include <GLES2/gl2ext.h>
 #endif
 
+#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
+
+// Useful pixel colour manipulation macros
+#define GET_A(color)            ((color >> 24) & 0xFF)
+#define GET_R(color)            ((color >> 16) & 0xFF)
+#define GET_G(color)            ((color >>  8) & 0xFF)
+#define GET_B(color)            ((color >>  0) & 0xFF)
+

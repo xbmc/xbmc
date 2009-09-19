@@ -20,11 +20,13 @@
 
 
 #include "stdafx.h"
-#include "include.h"
+#include "system.h"
 #include "../RenderFlags.h"
 #include "YUV2RGBShader.h"
 #include "AdvancedSettings.h"
 #include "TransformMatrix.h"
+#include "utils/log.h"
+
 #include <string>
 #include <sstream>
 

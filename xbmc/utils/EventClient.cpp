@@ -33,6 +33,7 @@
 #include <map>
 #include <queue>
 #include "FileSystem/File.h"
+#include "utils/log.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
