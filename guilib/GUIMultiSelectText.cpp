@@ -70,6 +70,10 @@ void CGUIMultiSelectTextControl::UpdateColors()
 
 void CGUIMultiSelectTextControl::Render()
 {
+  // update our information text
+  if (!m_pushedUpdates)
+    UpdateInfo();
+
   // check our selected item is in range
   unsigned int numSelectable = GetNumSelectable();
   if (!numSelectable)

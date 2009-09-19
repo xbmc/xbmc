@@ -64,7 +64,6 @@ public:
 
 protected:
   virtual void UpdateColors();
-  virtual void UpdateInfo(const CGUIListItem *item = NULL);
   void UpdatePageControl();
   void ScrollToOffset(int offset, bool autoScroll = false);
   unsigned int GetRows() const;
