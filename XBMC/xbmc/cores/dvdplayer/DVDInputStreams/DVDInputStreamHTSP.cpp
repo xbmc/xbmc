@@ -182,6 +182,11 @@ bool CDVDInputStreamHTSP::PrevChannel()
   return false;
 }
 
+bool CDVDInputStreamHTSP::SelectChannel(unsigned int channel)
+{
+  return SetChannel(channel);
+}
+
 bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)
 {
   SChannels::iterator it = m_channels.find(m_channel);
