@@ -99,11 +99,10 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
-      CStdStringArray params;
-      StringUtils::SplitString(message.GetStringParam(), ",", params);
-      bool returning = params.size() > 1 && params[1].Equals("return");
+      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
+      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
+      bool returning = strReturn.CompareNoCase("return") == 0;
 
-      CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");

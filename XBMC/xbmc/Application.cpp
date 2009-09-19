@@ -4685,9 +4685,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
     }
     break;
   case GUI_MSG_EXECUTE:
-    if (message.GetStringParam().length() > 0)
+    if (message.GetNumStringParams())
       return ExecuteXBMCAction(message.GetStringParam());
-    else {
+    else
+    {
       CGUIActionDescriptor action = message.GetAction();
       action.m_sourceWindowId = message.GetControlId(); // set source window id, 
       return ExecuteAction(action);

@@ -318,7 +318,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
-        if (message.GetStringParam().size())
+        if (message.GetNumStringParams())
         {
           m_vecItems->m_strPath = message.GetStringParam();
           if (message.GetParam2()) // param2 is used for resetting the history
