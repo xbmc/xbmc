@@ -295,6 +295,7 @@ void CNetwork::NetworkDown()
   m_lastlink = 0;
   m_laststate = 0;
   m_lastlink2 = 0;
+  m_laststate2 = 0;
   m_networkup = false;
   g_applicationMessenger.NetworkMessage(SERVICES_DOWN, 0);
   m_inited = false;
@@ -329,10 +330,6 @@ void CNetwork::NetworkUp()
 DWORD CNetwork::UpdateState()
 {
 #ifdef HAS_XBOX_NETWORK
-
-  if (!IsInited())
-    return XNET_GET_XNADDR_NONE;
-  
   XNADDR xna;
   DWORD dwState = XNetGetTitleXnAddr(&xna);
   DWORD dwLink = XNetGetEthernetLinkStatus();
@@ -360,21 +357,25 @@ DWORD CNetwork::UpdateState()
 bool CNetwork::CheckNetwork(int count)
 {
 #ifdef HAS_XBOX_NETWORK
-  
+  // update our network state
+  DWORD dwState = UpdateState();
+  DWORD dwLink = XNetGetEthernetLinkStatus();
+
   // Check the network status every count itterations
-  if (++m_netRetryCounter>count || m_lastlink2 != m_lastlink)
+  if (++m_netRetryCounter>count || m_lastlink2 != dwLink || m_laststate2 != dwState)
   {
-    m_lastlink2 = m_lastlink;
-    m_netRetryCounter=0;
+    m_lastlink2 = dwLink;
+    m_laststate2 = dwState;
     
-    DWORD dwState = UpdateState();
+    m_netRetryCounter=0;
     // In case the network failed, try to set it up again
-    if (!IsInited() || (dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT))
+    if (!IsInited() || dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT)
     {
       Deinitialize();
 
-      if (IsEthernetConnected())
+      if (dwLink & XNET_ETHERNET_LINK_ACTIVE)
       {
+        LogState();
         CLog::Log(LOGWARNING, "%s - Network error. Trying re-setup", __FUNCTION__);
         SetupNetwork();
         return true;
@@ -405,11 +406,10 @@ bool CNetwork::SetupNetwork()
       g_guiSettings.GetString("network.gateway").c_str(),
       g_guiSettings.GetString("network.dns").c_str());
       
-    LogState();
     return true;
   }
   
-  // Init failed
+  // Setup failed
   CLog::Log(LOGDEBUG, "%s - Not setting up network as ethernet is not connected!", __FUNCTION__);
   return false;
 }
@@ -433,11 +433,11 @@ bool CNetwork::WaitForSetup(DWORD timeout)
   {
     DWORD dwState = UpdateState();
     
-    if ((dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC) && !(dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || dwState & XNET_GET_XNADDR_PENDING))
+    if (IsInited() && (dwState & XNET_GET_XNADDR_DHCP || dwState & XNET_GET_XNADDR_STATIC) && !(dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT || dwState & XNET_GET_XNADDR_PENDING))
       return true;
     
     Sleep(100);
-  } while( GetTickCount() < timestamp );
+  } while (GetTickCount() < timestamp);
 
   CLog::Log(LOGDEBUG, "%s - Waiting for network setup failed!", __FUNCTION__);
   return false;
@@ -453,6 +453,7 @@ CNetwork::CNetwork(void)
   m_lastlink = 0;
   m_laststate = 0;
   m_lastlink2 = 0;
+  m_laststate2 = 0;
   m_netRetryCounter = 0;
   m_networkup = false;
   m_inited = false;

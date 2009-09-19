@@ -75,7 +75,8 @@ protected:
   bool m_inited;      /* true if initalized() has been called */
   DWORD m_laststate;  /* will hold the last state, to notice changes */
   DWORD m_lastlink;   /* will hold the last link, to notice changes */
-  DWORD m_lastlink2;  /* will hold the last link, to notice changes */
+  DWORD m_laststate2; /* will hold the last state, to notice changes */
+  DWORD m_lastlink2;  /* will hold the last link(2), to notice changes */
   int   m_netRetryCounter;
 private:
 
