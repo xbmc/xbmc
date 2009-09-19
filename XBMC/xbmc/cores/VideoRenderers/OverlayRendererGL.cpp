@@ -401,7 +401,6 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   uint32_t* rgba = (uint32_t*)calloc(size_x * size_y, sizeof(uint32_t));
   uint32_t* data = rgba;
 
-  int x = 0;
   int y = 0;
 
   curr_x = 0;
