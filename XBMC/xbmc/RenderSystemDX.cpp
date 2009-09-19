@@ -492,9 +492,9 @@ void CRenderSystemDX::GetViewPort(CRect& viewPort)
   m_pD3DDevice->GetViewport(&d3dviewport);
 
   viewPort.x1 = (float)d3dviewport.X;
-  viewPort.y2 = (float)d3dviewport.Y;
-  viewPort.y1 = (float)d3dviewport.X + d3dviewport.Width;
-  viewPort.x2 = (float)d3dviewport.Y + d3dviewport.Height;
+  viewPort.y1 = (float)d3dviewport.Y;
+  viewPort.x2 = (float)d3dviewport.X + d3dviewport.Width;
+  viewPort.y2 = (float)d3dviewport.Y + d3dviewport.Height;
 }
 
 void CRenderSystemDX::SetViewPort(CRect& viewPort)
