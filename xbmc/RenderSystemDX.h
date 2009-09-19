@@ -93,6 +93,7 @@ protected:
   unsigned int m_nBackBufferHeight;
   bool m_bFullScreenDevice;
   HRESULT m_nDeviceStatus;
+  IDirect3DStateBlock9* m_stateBlock;
 
   std::vector<ID3DXEffect*> m_vecEffects;
 
