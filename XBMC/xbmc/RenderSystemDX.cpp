@@ -43,6 +43,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_bFullScreenDevice = 0;
   m_bVSync = true;
   m_nDeviceStatus = S_OK;
+  m_stateBlock = NULL;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -90,6 +91,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height)
 
 bool CRenderSystemDX::DestroyRenderSystem()
 {
+  SAFE_RELEASE(m_stateBlock);
   SAFE_RELEASE(m_pD3D);
   SAFE_RELEASE(m_pD3DDevice);
 
@@ -359,12 +361,19 @@ void CRenderSystemDX::CaptureStateBlock()
 {
   if (!m_bRenderCreated)
     return;
+  
+  if (m_stateBlock)
+    SAFE_RELEASE(m_stateBlock);
+  m_pD3DDevice->CreateStateBlock(D3DSBT_ALL, &m_stateBlock);
 }
 
 void CRenderSystemDX::ApplyStateBlock()
 {
   if (!m_bRenderCreated)
     return;
+  
+  if (m_stateBlock)
+    m_stateBlock->Apply();
 }
 
 void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
