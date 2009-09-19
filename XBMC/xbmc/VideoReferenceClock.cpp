@@ -1014,8 +1014,16 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
   int RefreshRate;
   
   if (m_glXGetRefreshRateSGI) //get the refreshrate from glXGetRefreshRateSGI when available, it's a cheaper call
-    m_glXGetRefreshRateSGI((unsigned int*)&RefreshRate);
-  else //glXGetRefreshRateSGI not available, use RandR instead
+  {
+    int ReturnV = m_glXGetRefreshRateSGI((unsigned int*)&RefreshRate);
+    if (ReturnV)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI returned %i, using RandR instead", ReturnV);
+      m_glXGetRefreshRateSGI = NULL;
+    }
+  }
+  
+  if (!m_glXGetRefreshRateSGI) //glXGetRefreshRateSGI not available, use RandR instead
     RefreshRate = GetRandRRate();
 
   //just return if the refreshrate didn't change
