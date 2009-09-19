@@ -27,10 +27,10 @@
 namespace XCURL
 {
   #define CURL CURL_HANDLE
-  #ifndef LINUX
-  #include "curl/curl.h"
-  #elif !defined(__APPLE__)
+  #if defined(_LINUX) && !defined(__APPLE__)
   #include <curl/curl.h>
+  #else
+  #include "curl/curl.h"
   #endif
   #undef CURL
 
