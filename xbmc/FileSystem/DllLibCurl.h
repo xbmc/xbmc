@@ -27,7 +27,11 @@
 namespace XCURL
 {
   #define CURL CURL_HANDLE
+  #ifndef LINUX
   #include "curl/curl.h"
+  #elif !defined(__APPLE__)
+  #include <curl/curl.h>
+  #endif
   #undef CURL
 
   class DllLibCurlInterface
