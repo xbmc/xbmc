@@ -25,13 +25,8 @@
 #include "Picture.h"
 #include "FileSystem/File.h"
 #include "utils/log.h"
+#include "utils/EndianSwap.h"
 
-// Use SDL macros to perform byte swapping on big-endian systems
-// This assumes that big-endian systems use SDL
-// SDL_endian.h is already included in PlatformDefs.h
-#ifndef HAS_SDL
-#define SDL_SwapLE32(X) (X)
-#endif
 
 #define BYTES_TO_CHECK_FOR_BAD_TAGS 8192
 
@@ -219,14 +214,14 @@ int CFlacTag::FindFlacHeader(void)
 void CFlacTag::ProcessVorbisComment(const char *pBuffer)
 {
   unsigned int Pos = 0;      // position in the buffer
-  unsigned int I1 = SDL_SwapLE32(*(unsigned int*)(pBuffer + Pos)); // length of vendor string
+  unsigned int I1 = Endian_SwapLE32(*(unsigned int*)(pBuffer + Pos)); // length of vendor string
   Pos += I1 + 4;     // just pass the vendor string
-  unsigned int Count = SDL_SwapLE32(*(unsigned int*)(pBuffer + Pos)); // number of comments
+  unsigned int Count = Endian_SwapLE32(*(unsigned int*)(pBuffer + Pos)); // number of comments
   Pos += 4;    // Start of the first comment
   char C1[CHUNK_SIZE];
   for (unsigned int I2 = 0; I2 < Count; I2++) // Run through the comments
   {
-    I1 = SDL_SwapLE32(*(unsigned int*)(pBuffer + Pos));   // Length of comment
+    I1 = Endian_SwapLE32(*(unsigned int*)(pBuffer + Pos));   // Length of comment
     if (I1 < CHUNK_SIZE)
     {
       strncpy(C1, pBuffer + Pos + 4, I1);

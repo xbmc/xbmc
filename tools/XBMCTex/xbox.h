@@ -19,11 +19,6 @@ typedef void* LPVOID;
 typedef unsigned char BYTE;
 #endif 
 
-// Use SDL macros to perform byte swapping on big-endian systems
-#ifndef HAS_SDL
-#define SDL_SwapLE32(X) (X)
-#endif
-
 struct D3DTexture 
 {
 	DWORD Common;
