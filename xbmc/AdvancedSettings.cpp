@@ -27,6 +27,7 @@
 #include "DNSNameCache.h"
 #include "FileSystem/File.h"
 #include "LangCodeExpander.h"
+#include "LangInfo.h"
 #include "Util.h"
 #include "GUISettings.h"
 #include "Settings.h"
@@ -547,21 +548,8 @@ bool CAdvancedSettings::Load()
   if (pExts)
     GetCustomExtensions(pExts,g_stSettings.m_videoExtensions);
 
-  const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
   m_vecTokens.clear();
-  if (pTokens && !pTokens->NoChildren())
-  {
-    const TiXmlNode *pToken = pTokens->FirstChild("token");
-    while (pToken)
-    {
-      if (pToken->FirstChild() && pToken->FirstChild()->Value())
-      {
-        m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + " ");
-        m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + ".");
-      }
-      pToken = pToken->NextSibling();
-    }
-  }
+  CLangInfo::LoadTokens(pRootElement->FirstChild("sorttokens"),m_vecTokens);
 
   XMLUtils::GetBoolean(pRootElement, "displayremotecodes", m_displayRemoteCodes);
 

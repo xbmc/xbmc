@@ -25,6 +25,8 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 
+using namespace std;
+
 CLangInfo g_langInfo;
 
 #define TEMP_UNIT_STRINGS 20027
@@ -244,21 +246,29 @@ bool CLangInfo::Load(const CStdString& strFileName)
     SetCurrentRegion(strName);
   }
 
-  const TiXmlNode *pTokens = pRootElement->FirstChild("sorttokens");
+  LoadTokens(pRootElement->FirstChild("sorttokens"),g_advancedSettings.m_vecTokens);
+
+  return true;
+}
+
+void CLangInfo::LoadTokens(const TiXmlNode* pTokens, vector<CStdString>& vecTokens)
+{
   if (pTokens && !pTokens->NoChildren())
   {
-    const TiXmlNode *pToken = pTokens->FirstChild("token");
+    CStdString strSep=" ._";
+    const TiXmlElement *pToken = pTokens->FirstChildElement("token");
     while (pToken)
     {
+      if (pToken->Attribute("separators"))
+        strSep = pToken->Attribute("separators");
       if (pToken->FirstChild() && pToken->FirstChild()->Value())
       {
-        g_advancedSettings.m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + " ");
-        g_advancedSettings.m_vecTokens.push_back(CStdString(pToken->FirstChild()->Value()) + ".");
+        for (unsigned int i=0;i<strSep.size();++i)
+          vecTokens.push_back(CStdString(pToken->FirstChild()->Value())+strSep[i]);
       }
-      pToken = pToken->NextSibling();
+      pToken = pToken->NextSiblingElement();
     }
   }
-  return true;
 }
 
 void CLangInfo::SetDefaults()
