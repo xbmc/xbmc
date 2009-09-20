@@ -2150,6 +2150,7 @@ void CApplication::DoRender()
   RenderScreenSaver();
 
   //g_Windowing.EndRender();
+  g_TextureManager.FreeUnusedTextures();
 
   g_graphicsContext.Unlock();
 
@@ -4282,6 +4283,8 @@ void CApplication::DoRenderFullScreen()
     // Render the mouse pointer, if visible...
     if (g_Mouse.IsActive())
       g_application.m_guiPointer.Render();
+    
+    g_TextureManager.FreeUnusedTextures();
   }
 }
 
