@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DownloadQueue.h"
 #include "Util.h"
 #include "FileSystem/File.h"

@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIDialogSeekBar.h"
 #include "GUIMediaWindow.h"
 #include "GUIDialogFileBrowser.h"

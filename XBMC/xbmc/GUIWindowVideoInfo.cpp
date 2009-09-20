@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindow.h"
 #include "GUIWindowVideoInfo.h"
 #include "Util.h"

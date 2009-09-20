@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogAccessPoints.h"
 #include "GUIDialogKeyboard.h"
 #include "NetworkLinux.h"

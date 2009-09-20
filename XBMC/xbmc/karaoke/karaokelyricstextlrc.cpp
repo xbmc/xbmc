@@ -9,7 +9,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "stdafx.h"
+
 #include <math.h>
 
 #include "Util.h"

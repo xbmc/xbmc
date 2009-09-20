@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNodeTitleTvShows.h"
 #include "QueryParams.h"
 #include "VideoDatabase.h"

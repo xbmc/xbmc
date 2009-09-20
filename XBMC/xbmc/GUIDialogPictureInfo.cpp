@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogPictureInfo.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"

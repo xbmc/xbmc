@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIPythonWindowXML.h"
 #include "GUIWindow.h"
 #include "pyutil.h"

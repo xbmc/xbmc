@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDPlayerAudioResampler.h"
 #include "DVDPlayerAudio.h"
 

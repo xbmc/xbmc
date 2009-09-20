@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "RssReader.h"
 #include "utils/HTMLUtil.h"
 #include "../utils/Network.h"

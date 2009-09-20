@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIDialogVideoBookmarks.h"
 #include "VideoDatabase.h"
 #include "Application.h"

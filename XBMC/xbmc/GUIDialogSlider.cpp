@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSlider.h"
 #include "GUISliderControl.h"
 #include "GUIWindowManager.h"

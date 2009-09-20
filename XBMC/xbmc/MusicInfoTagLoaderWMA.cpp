@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderWMA.h"
 #include "Util.h"
 #include "Picture.h"

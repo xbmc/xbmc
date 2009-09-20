@@ -23,6 +23,10 @@
 #ifndef __EMU_FILE_WRAPPER_H__
 #define __EMU_FILE_WRAPPER_H__
 
+#include <stdio.h>
+
+#include "system.h"
+
 class CMutex;
 
 #if defined(_LINUX) && !defined(__APPLE__)

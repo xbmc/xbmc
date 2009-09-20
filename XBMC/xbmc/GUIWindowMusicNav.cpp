@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowMusicNav.h"
 #include "Util.h"
 #include "utils/GUIInfoManager.h"

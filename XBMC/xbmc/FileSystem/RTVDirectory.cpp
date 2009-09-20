@@ -23,7 +23,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "RTVDirectory.h"
 #include "Util.h"
 #include "SectionLoader.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "VorbisTag.h"
 #include "AdvancedSettings.h"
 

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSeekBar.h"
 #include "GUISliderControl.h"
 #include "GUIUserMessages.h"

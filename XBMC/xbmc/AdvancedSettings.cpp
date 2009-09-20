@@ -21,7 +21,7 @@
 
 #include <limits.h>
 
-#include "stdafx.h"
+#include "system.h"
 #include "AdvancedSettings.h"
 #include "Application.h"
 #include "DNSNameCache.h"

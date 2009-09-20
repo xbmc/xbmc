@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewState.h"
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"

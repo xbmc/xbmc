@@ -22,6 +22,7 @@
 #pragma once
 
 #include "StdString.h"
+#include "system.h"
 
 enum RESOLUTION {
   RES_INVALID = -1,

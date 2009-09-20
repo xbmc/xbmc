@@ -19,15 +19,14 @@
  *
  */
  
-#include "stdafx.h"
 #include "emu_dummy.h"
 #include "utils/log.h"
 
-extern "C" void not_implement( LPCSTR debuginfo)
+extern "C" void not_implement( char* debuginfo)
 {
   if (debuginfo)
   {
-    CLog::Log(LOGDEBUG, "%s", debuginfo);
+    CLog::Log(LOGDEBUG, "%s", (char*)debuginfo);
   }
 }
 

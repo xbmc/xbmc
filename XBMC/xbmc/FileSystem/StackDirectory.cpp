@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "StackDirectory.h"
 #include "utils/log.h"
 #include "Util.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileSpecialProtocol.h"
 #include "SpecialProtocol.h"
 #include "URL.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlayListPlayer.h"
 #include "PlayListFactory.h"
 #include "Application.h"

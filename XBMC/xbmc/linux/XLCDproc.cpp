@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlatformInclude.h"
 #include "XLCDproc.h"
 #include "../utils/log.h"

@@ -19,8 +19,6 @@
  *
  */
 
-#include "stdafx.h"
-
 #ifdef __APPLE__
 
 #include "WinSystemOSX.h"

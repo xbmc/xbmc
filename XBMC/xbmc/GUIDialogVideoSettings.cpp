@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIDialogVideoSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIPassword.h"

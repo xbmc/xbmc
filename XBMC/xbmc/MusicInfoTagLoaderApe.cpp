@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderApe.h"
 #include "cores/paplayer/DllMACDll.h"
 #include "MusicInfoTag.h"

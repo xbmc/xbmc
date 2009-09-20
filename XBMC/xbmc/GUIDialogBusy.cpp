@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogBusy.h"
 #include "ApplicationRenderer.h"
 

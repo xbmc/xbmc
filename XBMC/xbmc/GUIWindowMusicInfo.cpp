@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowMusicInfo.h"
 #include "Util.h"
 #include "GUIImage.h"

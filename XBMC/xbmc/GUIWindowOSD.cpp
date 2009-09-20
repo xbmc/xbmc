@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowOSD.h"
 #include "Application.h"
 #include "GUIUserMessages.h"

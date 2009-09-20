@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "AdvancedSettings.h"

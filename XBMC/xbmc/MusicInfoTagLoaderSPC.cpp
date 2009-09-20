@@ -20,7 +20,6 @@
  */
 
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderSPC.h"
 #include "cores/paplayer/spc/Types.h"
 #include "MusicInfoTag.h"

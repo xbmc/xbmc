@@ -23,6 +23,8 @@
 
 extern "C" {
 #define DVDNAV_COMPILE
+ #include <stdint.h>
+ 
  #include "dvdnav/dvdnav.h"
 
  #ifndef WIN32
@@ -32,7 +34,7 @@ extern "C" {
  #ifndef HAVE_CONFIG_H
  #define HAVE_CONFIG_H
  #endif
- 
+
  #include "dvdnav/dvdnav_internal.h"
  #include "dvdnav/vm.h"
  #include "dvdnav/dvd_types.h"

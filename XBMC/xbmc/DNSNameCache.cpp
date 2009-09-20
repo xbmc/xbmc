@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DNSNameCache.h"
 #include "Settings.h"
 #include "GUISettings.h"

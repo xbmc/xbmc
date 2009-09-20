@@ -13,7 +13,6 @@
 // Comment OUT, if not really debugging!!!:
 //#define DEBUG_KEYBOARD_GETCHAR
 
-#include "stdafx.h"
 #include "KeyboardStat.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "XBMC_events.h"

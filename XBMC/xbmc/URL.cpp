@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "URL.h"
 #include "utils/RegExp.h"
 #include "utils/log.h"

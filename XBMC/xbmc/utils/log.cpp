@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "log.h"
 #ifndef _LINUX
 #include <share.h>
@@ -194,14 +194,14 @@ void CLog::DebugLogMemory()
   OutputDebugString(strData.c_str());
 }
 
-void CLog::MemDump(BYTE *pData, int length)
+void CLog::MemDump(char *pData, int length)
 {
   Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
   for (int i = 0; i < length; i+=16)
   {
     CStdString strLine;
     strLine.Format("MEM_DUMP: %04x ", i);
-    BYTE *alpha = pData;
+    char *alpha = pData;
     for (int k=0; k < 4 && i + 4*k < length; k++)
     {
       for (int j=0; j < 4 && i + 4*k + j < length; j++)

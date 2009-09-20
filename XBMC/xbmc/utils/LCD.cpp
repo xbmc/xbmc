@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "LCD.h"
 #include "GUISettings.h"
 #include "AdvancedSettings.h"

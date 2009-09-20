@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDFactorySubtitle.h"
 
 #include "DVDSubtitleStream.h"

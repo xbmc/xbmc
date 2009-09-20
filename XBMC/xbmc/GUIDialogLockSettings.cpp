@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogKeyboard.h"

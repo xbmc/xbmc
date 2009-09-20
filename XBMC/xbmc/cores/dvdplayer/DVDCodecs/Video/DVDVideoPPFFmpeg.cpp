@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDVideoPPFFmpeg.h"
 #include "utils/log.h"
 

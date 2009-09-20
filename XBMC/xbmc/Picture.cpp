@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Picture.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"

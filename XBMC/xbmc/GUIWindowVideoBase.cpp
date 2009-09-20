@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "utils/IMDB.h"

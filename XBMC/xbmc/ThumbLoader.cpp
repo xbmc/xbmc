@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileSystem/StackDirectory.h"
 #include "ThumbLoader.h"
 #include "Util.h"

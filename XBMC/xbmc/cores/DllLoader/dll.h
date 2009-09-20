@@ -1,6 +1,8 @@
 #ifndef __DLL_H_
 #define __DLL_H_ 
 
+#include "system.h"
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org

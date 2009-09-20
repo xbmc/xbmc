@@ -32,6 +32,8 @@
 #include <iostream>
 #include <string>
 
+#include "system.h"
+
 #ifndef _QRYDAT_H
 #define _QRYDAT_H
 

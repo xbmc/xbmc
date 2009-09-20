@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogFavourites.h"
 #include "GUIDialogContextMenu.h"
 #include "Favourites.h"

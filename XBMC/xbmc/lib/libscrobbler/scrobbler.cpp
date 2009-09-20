@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlatformDefs.h"
 #include "scrobbler.h"
 #include "tinyXML/tinyxml.h"

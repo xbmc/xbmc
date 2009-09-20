@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "language.h"
 #include "pyutil.h"
 #include "Util.h"

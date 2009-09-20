@@ -25,6 +25,8 @@
 //#pragma message("including coffldr.h")
 #include "coff.h"
 
+#include <stdio.h>
+
 #ifndef _FILE_DEFINED
 struct _iobuf {
         char *_ptr;

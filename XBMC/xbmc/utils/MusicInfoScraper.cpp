@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "XMLUtils.h"
 #include "MusicInfoScraper.h"
 #include "HTMLUtil.h"

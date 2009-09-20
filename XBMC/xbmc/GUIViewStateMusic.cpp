@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewStateMusic.h"
 #include "PlayListPlayer.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*

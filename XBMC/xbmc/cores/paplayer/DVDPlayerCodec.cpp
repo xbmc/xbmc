@@ -19,9 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDPlayerCodec.h"
-#include "../../Util.h"
+#include "Util.h"
 
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDDemuxers/DVDFactoryDemuxer.h"

@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+#include "system.h"
 // Visualisation.cpp: implementation of the CVisualisation class.
 //
 //////////////////////////////////////////////////////////////////////

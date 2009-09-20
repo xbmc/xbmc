@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewStateVideo.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"

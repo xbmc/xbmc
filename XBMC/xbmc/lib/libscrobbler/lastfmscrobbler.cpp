@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "lastfmscrobbler.h"
 #include "Application.h"
 #include "Atomics.h"

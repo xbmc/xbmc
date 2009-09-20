@@ -19,9 +19,11 @@
  *
  */
  
-#include "stdafx.h"
 #include "utils/log.h"
 #include "dll_util.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef _cplusplus
 extern "C"

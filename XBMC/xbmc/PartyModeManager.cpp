@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"

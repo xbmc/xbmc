@@ -49,6 +49,7 @@ Reason: Prepared for Public Release
 
 #ifndef __GNUC__
 #pragma once
+
 #if defined (_WINDOWS)
  #pragma message ("Compiling for WINDOWS: " __FILE__)
 // #include <afxwin.h>         // MFC core and standard components
@@ -59,6 +60,8 @@ Reason: Prepared for Public Release
  #error ERR: Have to Define _WINDOWS or _XBOX or _LINUX!!
 #endif
 #endif
+
+#include "system.h"
 
 #ifndef FILENAME_MAX
  #define FILENAME_MAX 260

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "LangInfo.h"
 #include "LocalizeStrings.h"
 #include "Temperature.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamStack.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"

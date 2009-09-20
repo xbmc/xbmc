@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "CMythDirectory.h"
 #include "CMythSession.h"
 #include "Util.h"

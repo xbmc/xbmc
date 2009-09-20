@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUISettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUILabelControl.h"

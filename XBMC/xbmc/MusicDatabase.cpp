@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "MusicDatabase.h"
 #include "FileSystem/cddb.h"
 #include "FileSystem/DirectoryCache.h"

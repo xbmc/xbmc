@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "CharsetConverter.h"
 #include "HTMLUtil.h"
 

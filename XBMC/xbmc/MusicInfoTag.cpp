@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTag.h"
 #include "Album.h"
 

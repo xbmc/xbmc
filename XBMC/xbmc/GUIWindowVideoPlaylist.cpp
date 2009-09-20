@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowVideoPlaylist.h"
 #include "PlayListFactory.h"
 #include "Util.h"

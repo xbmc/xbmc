@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderSid.h"
 #include "utils/RegExp.h"
 #include "Util.h"

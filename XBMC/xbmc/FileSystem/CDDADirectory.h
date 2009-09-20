@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "stdafx.h"
+#include "system.h"
 
 #ifdef HAS_DVD_DRIVE
 

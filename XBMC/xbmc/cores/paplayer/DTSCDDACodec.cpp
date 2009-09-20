@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "DTSCDDACodec.h"
 #ifdef HAS_DTS_CODEC
 #include "lib/libcdio/sector.h"

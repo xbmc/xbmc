@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "NullDirectSound.h"
 #include "AudioContext.h"
 #include "Application.h"

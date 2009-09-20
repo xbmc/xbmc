@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MediaSource.h"
 #include "AdvancedSettings.h"
 #include "Util.h"

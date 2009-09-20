@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowManager.h"
 #include "LocalizeStrings.h"

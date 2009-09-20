@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSongInfo.h"
 #include "Util.h"
 #include "Picture.h"

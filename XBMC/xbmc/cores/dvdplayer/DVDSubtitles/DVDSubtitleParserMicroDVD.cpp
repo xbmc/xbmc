@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDSubtitleParserMicroDVD.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DllLibCMyth.h"
 #include "CMythSession.h"
 #include "VideoInfoTag.h"

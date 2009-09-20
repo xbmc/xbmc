@@ -21,6 +21,7 @@
  *
  */
 
+#include "system.h"
 #include "utils/SharedSection.h"
 #include "utils/CriticalSection.h"
 

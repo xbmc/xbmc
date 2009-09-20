@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowSystemInfo.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"

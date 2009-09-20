@@ -22,7 +22,9 @@
  */
 
 #include "StdString.h"
+#include "system.h"
 #include "URL.h"
+
 #include <vector>
 
 class CEdl

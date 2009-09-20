@@ -23,7 +23,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+#include "system.h"
 
 #if defined(HAS_FILESYSTEM_SMB)
 #include "FileSmb.h"

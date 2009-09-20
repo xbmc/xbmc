@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "librefmscrobbler.h"
 #include "Application.h"
 #include "Atomics.h"

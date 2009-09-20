@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif

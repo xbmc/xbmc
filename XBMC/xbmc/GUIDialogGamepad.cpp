@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogGamepad.h"
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"

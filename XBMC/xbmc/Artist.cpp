@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Artist.h"
 #include "StringUtils.h"
 #include "XMLUtils.h"

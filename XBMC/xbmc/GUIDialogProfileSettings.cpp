@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogProfileSettings.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContextMenu.h"

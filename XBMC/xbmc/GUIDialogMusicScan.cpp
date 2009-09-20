@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIProgressControl.h"
 #include "Application.h"

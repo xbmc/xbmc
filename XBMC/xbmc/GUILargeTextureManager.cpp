@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUILargeTextureManager.h"
 #include "Picture.h"
 #include "GUISettings.h"

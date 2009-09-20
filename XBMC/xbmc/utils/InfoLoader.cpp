@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "InfoLoader.h"
 #include "Weather.h"
 #include "SystemInfo.h"

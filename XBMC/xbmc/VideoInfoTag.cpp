@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "VideoInfoTag.h"
 #include "XMLUtils.h"
 #include "LocalizeStrings.h"

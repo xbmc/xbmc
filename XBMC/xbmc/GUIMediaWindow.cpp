@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIMediaWindow.h"
 #include "GUIUserMessages.h"
 #include "Util.h"

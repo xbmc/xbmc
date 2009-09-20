@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "SlideShowPicture.h"
 #include "Texture.h"
 #include "cores/ssrc.h"         // for M_PI

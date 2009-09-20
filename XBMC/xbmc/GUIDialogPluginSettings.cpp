@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogPluginSettings.h"
 #include "FileSystem/PluginDirectory.h"
 #include "GUIDialogNumeric.h"

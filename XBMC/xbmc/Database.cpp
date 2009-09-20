@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Database.h"
 #include "Util.h"
 #include "Settings.h"

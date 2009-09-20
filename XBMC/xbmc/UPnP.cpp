@@ -21,7 +21,6 @@
 */
 
 
-#include "stdafx.h"
 #include "Util.h"
 #include "Application.h"
 

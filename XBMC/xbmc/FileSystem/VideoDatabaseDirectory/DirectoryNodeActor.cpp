@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNodeActor.h"
 #include "QueryParams.h"
 #include "VideoDatabase.h"

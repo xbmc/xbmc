@@ -20,7 +20,7 @@
  */
 
 
-#include "stdafx.h"
+#include "system.h"
 #include "Util.h"
 #include "FactoryFileDirectory.h"
 #ifdef HAS_FILESYSTEM

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNodeAlbumRecentlyAddedSong.h"
 #include "MusicDatabase.h"
 

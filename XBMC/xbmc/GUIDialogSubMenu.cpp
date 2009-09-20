@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSubMenu.h"
 
 CGUIDialogSubMenu::CGUIDialogSubMenu(void)

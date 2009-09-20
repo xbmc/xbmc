@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+#include "system.h"
 #include <iostream> //for debugging, please remove
 #include <list>
 #include "StdString.h"

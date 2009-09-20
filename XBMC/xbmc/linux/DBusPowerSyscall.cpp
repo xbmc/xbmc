@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "DBusPowerSyscall.h"
 #include "utils/log.h"
 

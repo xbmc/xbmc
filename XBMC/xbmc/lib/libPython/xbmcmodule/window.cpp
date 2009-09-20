@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "window.h"
 #include "dialog.h"
 #include "winxml.h"
