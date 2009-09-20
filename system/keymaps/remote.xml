@@ -38,9 +38,6 @@
 <keymap>
   <global>
     <remote>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
       <play>Play</play>
       <pause>Pause</pause>
       <stop>Stop</stop>
@@ -70,6 +67,16 @@
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
       <mytv>XBMC.ActivateWindow(Home)</mytv>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>JumpSMS2</two>
+      <three>JumpSMS3</three>
+      <four>JumpSMS4</four>
+      <five>JumpSMS5</five>
+      <six>JumpSMS6</six>
+      <seven>JumpSMS7</seven>
+      <eight>JumpSMS8</eight>
+      <nine>JumpSMS9</nine>
     </remote>
   </global>
   <Home>
@@ -82,26 +89,13 @@
   </Home>
   <MyFiles>
     <remote>
-      <zero>Delete</zero>
-      <one>Highlight</one>
-      <four>Copy</four>
-      <seven>Move</seven>
       <clear>Delete</clear>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyFiles>
   <MyMusicPlaylist>
     <remote>
       <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
-      <zero>Delete</zero>
-      <two>MoveItemUp</two>
-      <five>MoveItemDown</five>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -113,18 +107,12 @@
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyMusicFiles>
   <MyMusicLibrary>
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyMusicLibrary>
   <FullscreenVideo>
@@ -287,18 +275,12 @@
     <remote>
       <zero>Queue</zero>
       <clear>Delete</clear>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyVideoLibrary>
   <MyVideoFiles>
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyVideoFiles>
   <MyVideoPlaylist>
@@ -306,11 +288,6 @@
       <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
       <zero>Delete</zero>
-      <two>MoveItemUp</two>
-      <five>MoveItemDown</five>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyVideoPlaylist>
   <VirtualKeyboard>
