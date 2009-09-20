@@ -1,5 +1,6 @@
 #include "xbox.h"
 #include "Surface.h"
+#include "EndianSwap.h"
 
 #ifndef min
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
@@ -35,12 +36,12 @@ BOOL IsPaletted(XB_D3DFORMAT format)
 void SetTextureHeader(UINT Width, UINT Height, UINT Levels, UINT Usage, XB_D3DFORMAT Format, D3DTexture *pTexture, UINT Data, UINT Pitch)
 {
   // TODO: No idea what most of this is.
-  // Use SDL_Swap to convert the header on big-endian system
+  // Byte swapping to convert the header on big-endian system
   memset(pTexture, 0, sizeof(D3DTexture));
-  pTexture->Common = SDL_SwapLE32(D3DCOMMON_TYPE_TEXTURE + 1); // what does the 1 give??
+  pTexture->Common = Endian_SwapLE32(D3DCOMMON_TYPE_TEXTURE + 1); // what does the 1 give??
   pTexture->Format |= (Format & 0xFF) << 8;
   pTexture->Format |= 0x10029; // no idea why
-  pTexture->Data = SDL_SwapLE32(Data);    // offset of texture data
+  pTexture->Data = Endian_SwapLE32(Data);    // offset of texture data
   if (IsPowerOf2(Width) && IsPowerOf2(Height))
   {
     pTexture->Format |= (GetLog2(Width) & 0xF) << 20;
@@ -52,8 +53,8 @@ void SetTextureHeader(UINT Width, UINT Height, UINT Levels, UINT Usage, XB_D3DFO
     pTexture->Size |= ((Height - 1) & 0xfff) << 12;
     pTexture->Size |= (((Pitch >> 6) & 0xff) - 1) << 24;
   }
-  pTexture->Format = SDL_SwapLE32(pTexture->Format);
-  pTexture->Size = SDL_SwapLE32(pTexture->Size);
+  pTexture->Format = Endian_SwapLE32(pTexture->Format);
+  pTexture->Size = Endian_SwapLE32(pTexture->Size);
 }
 
 BOOL IsSwizzledFormat(XB_D3DFORMAT format)

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "cmdlineargs.h"
 #include "Surface.h"
+#include "EndianSwap.h"
 
 #ifdef _LINUX
 #ifndef __APPLE__
@@ -114,7 +115,7 @@ void CommitXPR(const char* Filename)
 	// Conversion for big-endian systems
 	// flags is used/updated in different places
 	// so swap it only before to call AddFile
-	*XPRFile.flags = SDL_SwapLE32(*XPRFile.flags);
+	*XPRFile.flags = Endian_SwapLE32(*XPRFile.flags);
 
 	const void* Buffers[2] = { headerBuf, imageData };
 	DWORD Sizes[2] = { headerSize, imageSize };
@@ -179,7 +180,7 @@ void WriteXPRHeader(DWORD* pal, int nImages, DWORD nLoops = 0)
     imageData = (BYTE*)realloc(imageData, 1024);
 
 		*XPRFile.flags |= XPRFLAG_PALETTE;
-		XPRFile.D3DPal->Common = SDL_SwapLE32(1 | (3 << 16));
+		XPRFile.D3DPal->Common = Endian_SwapLE32(1 | (3 << 16));
 		XPRFile.D3DPal->Data = 0;
 		XPRFile.D3DPal->Lock = 0;
 		memcpy(imageData, pal, 1024);
@@ -222,7 +223,7 @@ void AppendXPRImage(CSurface &surface, XB_D3DFORMAT fmt)
 	SetTextureHeader(surface.Width(), surface.Height(), 1, 0, fmt, 
 		&XPRFile.Texture[XPRFile.nImages].D3DTex, imageSize, surface.Pitch());
 	if (!(*XPRFile.flags & XPRFLAG_ANIM))
-                XPRFile.Texture[XPRFile.nImages].RealSize = SDL_SwapLE32((surface.Info().width & 0xffff) | ((surface.Info().height & 0xffff) << 16));
+                XPRFile.Texture[XPRFile.nImages].RealSize = Endian_SwapLE32((surface.Info().width & 0xffff) | ((surface.Info().height & 0xffff) << 16));
 	++XPRFile.nImages;
 
 	imageSize += Size;
@@ -468,8 +469,8 @@ void ConvertAnim(const char* Dir, const char* Filename)
 	WriteXPRHeader((DWORD*)pal, nImages);
 	if (nImages > 1)
 	{
-		XPRFile.AnimInfo->RealSize = SDL_SwapLE32((Anim.FrameWidth & 0xffff) | ((Anim.FrameHeight & 0xffff) << 16));
-		XPRFile.AnimInfo->nLoops = SDL_SwapLE32(Anim.nLoops);
+		XPRFile.AnimInfo->RealSize = Endian_SwapLE32((Anim.FrameWidth & 0xffff) | ((Anim.FrameHeight & 0xffff) << 16));
+		XPRFile.AnimInfo->nLoops = Endian_SwapLE32(Anim.nLoops);
 	}
 
 	int nActualImages = 0;
@@ -489,7 +490,7 @@ void ConvertAnim(const char* Dir, const char* Filename)
 		CAnimatedGif* pGif = Anim.m_vecimg[i];
 
 		if (nImages > 1)
-			XPRFile.Texture[i].RealSize = SDL_SwapLE32(pGif->Delay);
+			XPRFile.Texture[i].RealSize = Endian_SwapLE32(pGif->Delay);
 
 		// generate sha1 hash
 		SHA1((BYTE*)pGif->Raster, pGif->BytesPerRow * pGif->Height, HashBuf[i]);

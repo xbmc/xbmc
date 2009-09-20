@@ -28,6 +28,7 @@
 
 #include "xbox.h"
 #include "AnimatedGif.h"
+#include "EndianSwap.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -46,24 +47,9 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
  #define BI_BITFIELDS  3L
 #endif
 
-// Use SDL macros to swap data endianness
-// This assumes that big endian systems use SDL
-// Macros do not do anything on little endian systems
-#ifdef HAS_SDL
-#include <SDL/SDL_endian.h>
-
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-#define SWAP16(X)    (void)X
-#define SWAP32(X)    (void)X
-#else
-#define SWAP16(X)    X=SDL_Swap16(X)
-#define SWAP32(X)    X=SDL_Swap32(X)
-#endif
-
-#else
-#define SWAP16(X)    (void)X
-#define SWAP32(X)    (void)X
-#endif
+// Macros to swap data endianness
+#define SWAP16(X)    X=Endian_SwapLE16(X)
+#define SWAP32(X)    X=Endian_SwapLE32(X)
 
 // pre-declaration:
 int LZWDecoder (char*, char*, short, int, int, int, const int);

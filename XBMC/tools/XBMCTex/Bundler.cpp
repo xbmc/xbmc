@@ -1,4 +1,5 @@
 #include "Bundler.h"
+#include "EndianSwap.h"
 
 #ifdef _LINUX
 #include <lzo1x.h>
@@ -31,11 +32,11 @@ int CBundler::WriteBundle(const char* Filename, int NoProtect)
 	DWORD headerSize = sizeof(XPR_FILE_HEADER) + FileHeaders.size() * sizeof(FileHeader_t);
 
 	// setup header
-	XPRHeader.dwMagic = SDL_SwapLE32(XPR_MAGIC_HEADER_VALUE | ((2+(NoProtect << 7)) << 24)); // version 2
-	XPRHeader.dwHeaderSize = SDL_SwapLE32(headerSize);
+	XPRHeader.dwMagic = Endian_SwapLE32(XPR_MAGIC_HEADER_VALUE | ((2+(NoProtect << 7)) << 24)); // version 2
+	XPRHeader.dwHeaderSize = Endian_SwapLE32(headerSize);
 
 	headerSize = (headerSize + (ALIGN-1)) & ~(ALIGN-1);
-	XPRHeader.dwTotalSize = SDL_SwapLE32(headerSize + DataSize);
+	XPRHeader.dwTotalSize = Endian_SwapLE32(headerSize + DataSize);
 
 	// create our header in memory
 	BYTE *headerBuf = (BYTE *)malloc(headerSize);
@@ -48,9 +49,9 @@ int CBundler::WriteBundle(const char* Filename, int NoProtect)
 	for (std::list<FileHeader_t>::iterator i = FileHeaders.begin(); i != FileHeaders.end(); ++i)
 	{
 		// Swap values on big-endian systems
-		i->Offset = SDL_SwapLE32(i->Offset + headerSize);
-		i->UnpackedSize = SDL_SwapLE32(i->UnpackedSize);
-		i->PackedSize = SDL_SwapLE32(i->PackedSize);
+		i->Offset = Endian_SwapLE32(i->Offset + headerSize);
+		i->UnpackedSize = Endian_SwapLE32(i->UnpackedSize);
+		i->PackedSize = Endian_SwapLE32(i->PackedSize);
 		memcpy(buf, &(*i), sizeof(FileHeader_t));
 		buf += sizeof(FileHeader_t);
 	}

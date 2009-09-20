@@ -6,7 +6,7 @@
 #UNIVERSAL = -arch ppc -arch i386
 
 DEFINES = -DHAS_SDL -D_LINUX
-INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/ -I/opt/local/include
+INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/ -I../../xbmc/utils -I/opt/local/include
 # To build with shared MacPorts libs
 LIBS = -lSDL -lSDL_image -llzo
 LDFLAGS = -L/opt/local/lib -lSDLmain -framework Foundation -framework Cocoa

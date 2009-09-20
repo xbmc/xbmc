@@ -17,6 +17,7 @@
 #include "GUISettings.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/EndianSwap.h"
 
 #if !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
@@ -27,12 +28,6 @@
 #undef ALIGN
 #define ALIGN (512)
 
-// Use SDL macros to perform byte swapping on big-endian systems
-// (same texture bundle used on little and big-endian systems)
-#ifndef HAS_SDL
-#define SDL_SwapLE32(X) (X)
-#define SDL_SwapLE16(X) (X)
-#endif
 
 enum XPR_FLAGS
 {
@@ -150,7 +145,7 @@ bool CTextureBundle::OpenBundle()
     goto LoadError;
 
   pXPRHeader = (XPR_HEADER*)(BYTE*)HeaderBuf;
-  pXPRHeader->dwMagic = SDL_SwapLE32(pXPRHeader->dwMagic);
+  pXPRHeader->dwMagic = Endian_SwapLE32(pXPRHeader->dwMagic);
   Version = (pXPRHeader->dwMagic >> 24) - '0';
   pXPRHeader->dwMagic -= Version << 24;
   Version &= 0x0f;
@@ -158,7 +153,7 @@ bool CTextureBundle::OpenBundle()
   if (pXPRHeader->dwMagic != XPR_MAGIC_VALUE || Version < 2)
     goto LoadError;
 
-  HeaderSize = SDL_SwapLE32(pXPRHeader->dwHeaderSize);
+  HeaderSize = Endian_SwapLE32(pXPRHeader->dwHeaderSize);
   AlignedSize = (HeaderSize - 1) & ~(ALIGN - 1); // align to sector, but remove the first sector
   HeaderBuf.Resize(AlignedSize + ALIGN);
 
@@ -183,9 +178,9 @@ bool CTextureBundle::OpenBundle()
   {
     std::pair<CStdString, FileHeader_t> entry;
     entry.first = Normalize(FileHeader[i].Name);
-    entry.second.Offset = SDL_SwapLE32(FileHeader[i].Offset);
-    entry.second.UnpackedSize = SDL_SwapLE32(FileHeader[i].UnpackedSize);
-    entry.second.PackedSize = SDL_SwapLE32(FileHeader[i].PackedSize);
+    entry.second.Offset = Endian_SwapLE32(FileHeader[i].Offset);
+    entry.second.UnpackedSize = Endian_SwapLE32(FileHeader[i].UnpackedSize);
+    entry.second.PackedSize = Endian_SwapLE32(FileHeader[i].PackedSize);
     m_FileHeaders.insert(entry);
   }
 
@@ -346,7 +341,7 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** p
 
   BYTE* Next = UnpackedBuf;
 
-  DWORD flags = SDL_SwapLE32(*(DWORD*)Next);
+  DWORD flags = Endian_SwapLE32(*(DWORD*)Next);
   Next += sizeof(DWORD);
   if ((flags & XPRFLAG_ANIM) || (flags >> 16) > 1)
     goto PackedLoadError;
@@ -355,11 +350,11 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** p
     Next += sizeof(D3DPalette);
 
   memcpy(pTex, Next, sizeof(D3DTexture));
-  pTex->Common = SDL_SwapLE32(pTex->Common);
-  pTex->Data = SDL_SwapLE32(pTex->Data);
-  pTex->Lock = SDL_SwapLE32(pTex->Lock);
-  pTex->Format = SDL_SwapLE32(pTex->Format);
-  pTex->Size = SDL_SwapLE32(pTex->Size);
+  pTex->Common = Endian_SwapLE32(pTex->Common);
+  pTex->Data = Endian_SwapLE32(pTex->Data);
+  pTex->Lock = Endian_SwapLE32(pTex->Lock);
+  pTex->Format = Endian_SwapLE32(pTex->Format);
+  pTex->Size = Endian_SwapLE32(pTex->Size);
   Next += sizeof(D3DTexture);
 
   memcpy(RealSize, Next, 4);
@@ -374,8 +369,8 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** p
   GetTextureFromData(pTex, ResData, ppTexture);
   delete[] pTex;
 
-  width = SDL_SwapLE16(RealSize[0]);
-  height = SDL_SwapLE16(RealSize[1]);
+  width = Endian_SwapLE16(RealSize[0]);
+  height = Endian_SwapLE16(RealSize[1]);
 /* DXMERGE - this was previously used to specify the format of the image - probably only affects directx?
 #ifndef HAS_SDL
   D3DSURFACE_DESC desc;
@@ -417,14 +412,14 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextu
 
   BYTE* Next = UnpackedBuf;
 
-  DWORD flags = SDL_SwapLE32(*(DWORD*)Next);
+  DWORD flags = Endian_SwapLE32(*(DWORD*)Next);
   Next += sizeof(DWORD);
   if (!(flags & XPRFLAG_ANIM))
     goto PackedAnimError;
 
   pAnimInfo = (AnimInfo_t*)Next;
   Next += sizeof(AnimInfo_t);
-  nLoops = SDL_SwapLE32(pAnimInfo->nLoops);
+  nLoops = Endian_SwapLE32(pAnimInfo->nLoops);
 
   if (flags & XPRFLAG_PALETTE)
     Next += sizeof(D3DPalette);
@@ -437,14 +432,14 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextu
     ppTex[i] = (D3DTexture *)(new char[sizeof (D3DTexture)+ sizeof (DWORD)]);
 
     memcpy(ppTex[i], Next, sizeof(D3DTexture));
-    ppTex[i]->Common = SDL_SwapLE32(ppTex[i]->Common);
-    ppTex[i]->Data = SDL_SwapLE32(ppTex[i]->Data);
-    ppTex[i]->Lock = SDL_SwapLE32(ppTex[i]->Lock);
-    ppTex[i]->Format = SDL_SwapLE32(ppTex[i]->Format);
-    ppTex[i]->Size = SDL_SwapLE32(ppTex[i]->Size);
+    ppTex[i]->Common = Endian_SwapLE32(ppTex[i]->Common);
+    ppTex[i]->Data = Endian_SwapLE32(ppTex[i]->Data);
+    ppTex[i]->Lock = Endian_SwapLE32(ppTex[i]->Lock);
+    ppTex[i]->Format = Endian_SwapLE32(ppTex[i]->Format);
+    ppTex[i]->Size = Endian_SwapLE32(ppTex[i]->Size);
     Next += sizeof(D3DTexture);
 
-    (*ppDelays)[i] = SDL_SwapLE32(*(int*)Next);
+    (*ppDelays)[i] = Endian_SwapLE32(*(int*)Next);
     Next += sizeof(int);
   }
 
@@ -464,8 +459,8 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextu
   delete[] ppTex;
   ppTex = 0;
 
-  width = SDL_SwapLE16(pAnimInfo->RealSize[0]);
-  height = SDL_SwapLE16(pAnimInfo->RealSize[1]);
+  width = Endian_SwapLE16(pAnimInfo->RealSize[0]);
+  height = Endian_SwapLE16(pAnimInfo->RealSize[1]);
 
   return nTextures;
 
