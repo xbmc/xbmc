@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "WinSystemWin32.h"
 #include "WinEventsWin32.h"
 #include "Settings.h"

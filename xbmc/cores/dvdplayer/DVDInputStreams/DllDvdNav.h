@@ -38,6 +38,10 @@ extern "C" {
  #include "dvdnav/dvdnav_internal.h"
  #include "dvdnav/vm.h"
  #include "dvdnav/dvd_types.h"
+
+ #ifdef WIN32 // WIN32INCLUDES
+ #undef HAVE_CONFIG_H
+ #endif
 }
 #include "DynamicDll.h"
 

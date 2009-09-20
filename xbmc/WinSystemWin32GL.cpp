@@ -25,7 +25,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
 #include "WinSystemWin32GL.h"
 #include "WIN32Util.h"
 

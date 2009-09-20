@@ -20,7 +20,6 @@
 */
 
 
-#include "stdafx.h"
 #include "WinSystemWin32DX.h"
 
 #ifdef HAS_DX

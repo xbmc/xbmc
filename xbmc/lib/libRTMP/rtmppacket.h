@@ -22,6 +22,9 @@
  */
 
 #include <string>
+#ifdef _WIN32
+#include "system.h" // WIN32INCLUDES for BYTE
+#endif
 
 #define RTMP_PACKET_TYPE_AUDIO 0x08
 #define RTMP_PACKET_TYPE_VIDEO 0x09

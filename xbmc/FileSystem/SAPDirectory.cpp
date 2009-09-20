@@ -17,6 +17,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "system.h" // WIN32INCLUDES - not sure why this is needed
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include <string.h>

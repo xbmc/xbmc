@@ -1829,79 +1829,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_kernel32.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_misc.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_msvcrt.cpp"
-						>
-						<FileConfiguration
-							Name="Release (OpenGL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug (DirectX)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release (DirectX)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug (OpenGL)|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Debug|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								UsePrecompiledHeader="0"
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_ole32.cpp"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_python.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_reg.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_socket.cpp"
 						>
 					</File>
 					<Filter

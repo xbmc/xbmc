@@ -20,8 +20,6 @@
 */
 
 
-#include "stdafx.h"
-
 #ifdef HAS_DX
 
 #include "Settings.h"
