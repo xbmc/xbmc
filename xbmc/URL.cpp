@@ -174,7 +174,7 @@ CURL::CURL(const CStdString& strURL1)
     || m_strProtocol.Equals("hdhomerun")
     || m_strProtocol.Equals("rtsp")
     || m_strProtocol.Equals("zip"))
-    sep = "?;#";
+    sep = "?;#|";
   else if(m_strProtocol.Equals("ftp")
        || m_strProtocol.Equals("ftps")
        || m_strProtocol.Equals("ftpx"))
@@ -188,7 +188,14 @@ CURL::CURL(const CStdString& strURL1)
     if (iOptions >= 0 )
     {
       // we keep the initial char as it can be any of the above
-      m_strOptions = strURL.substr(iOptions);
+      int iProto = strURL.find_first_of("|",iOptions);
+      if (iProto >= 0)
+      {
+        m_strProtocolOptions = strURL.substr(iProto+1);
+        m_strOptions = strURL.substr(iOptions,iProto-iOptions);
+      }
+      else
+        m_strOptions = strURL.substr(iOptions);
       iEnd = iOptions;
     }
   }
@@ -351,6 +358,7 @@ CURL& CURL::operator= (const CURL& source)
   m_strProtocol  = source.m_strProtocol;
   m_strFileType  = source.m_strFileType;
   m_strOptions   = source.m_strOptions;
+  m_strProtocolOptions = source.m_strProtocolOptions;
   return *this;
 }
 
@@ -402,11 +410,15 @@ void CURL::SetOptions(const CStdString& strOptions)
   }
 }
 
+void CURL::SetProtocolOptions(const CStdString& strOptions)
+{
+  m_strProtocolOptions = strOptions;
+}
+
 void CURL::SetPort(int port)
 {
   m_iPort = port;
 }
-
 
 bool CURL::HasPort() const
 {
@@ -464,6 +476,11 @@ const CStdString& CURL::GetOptions() const
   return m_strOptions;
 }
 
+const CStdString CURL::GetProtocolOptions() const
+{
+  return m_strProtocolOptions;
+}
+
 const CStdString CURL::GetFileNameWithoutPath() const
 {
   // *.zip and *.rar store the actual zip/rar path in the hostname of the url
@@ -495,6 +512,7 @@ void CURL::GetURL(CStdString& strURL) const
                         + m_strHostName.length()
                         + m_strFileName.length()
                         + m_strOptions.length()
+                        + m_strProtocolOptions.length()
                         + 10;
 
   if( strURL.capacity() < sizeneed )
@@ -510,6 +528,8 @@ void CURL::GetURL(CStdString& strURL) const
 
   if( m_strOptions.length() > 0 )
     strURL += m_strOptions;
+  if (m_strProtocolOptions.length() > 0)
+    strURL += "|"+m_strProtocolOptions;
 }
 
 void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
@@ -537,6 +557,7 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
                         + m_strHostName.length()
                         + m_strFileName.length()
                         + m_strOptions.length()
+                        + m_strProtocolOptions.length()
                         + 10;
 
   if( strURL.capacity() < sizeneed )
@@ -577,6 +598,8 @@ void CURL::GetURLWithoutUserDetails(CStdString& strURL) const
 
   if( m_strOptions.length() > 0 )
     strURL += m_strOptions;
+  if( m_strProtocolOptions.length() > 0 )
+    strURL += "|"+m_strProtocolOptions;
 }
 
 void CURL::GetURLWithoutFilename(CStdString& strURL) const

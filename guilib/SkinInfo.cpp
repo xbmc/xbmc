@@ -19,15 +19,16 @@
  *
  */
 
-#include "include.h"
 #include "SkinInfo.h"
 #include "GUIWindowManager.h"
 #include "GUISettings.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "Key.h"
 #include "Util.h"
 #include "Settings.h"
 #include "StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;

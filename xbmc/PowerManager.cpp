@@ -151,7 +151,7 @@ void CPowerManager::Resume()
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
   g_Mouse.Acquire();
-  g_application.ResetScreenSaverTimer();
+  g_application.ResetScreenSaver();
 
   // restart lirc
 #ifdef HAS_LIRC

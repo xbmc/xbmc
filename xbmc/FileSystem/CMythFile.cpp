@@ -592,6 +592,10 @@ bool CCMythFile::PrevChannel()
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }
 
+bool CCMythFile::SelectChannel(unsigned int channel)
+{
+  return ChangeChannel(CHANNEL_DIRECTION_SAME,""+channel);
+}
 
 bool CCMythFile::CanRecord()
 {

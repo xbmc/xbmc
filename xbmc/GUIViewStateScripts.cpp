@@ -23,6 +23,7 @@
 #include "GUIViewStateScripts.h"
 #include "GUIBaseContainer.h"
 #include "FileItem.h"
+#include "Key.h"
 #include "ViewState.h"
 #include "Settings.h"
 #include "FileSystem/Directory.h"

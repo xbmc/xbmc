@@ -19,10 +19,10 @@
  *
  */
 
-#include "include.h"
 #include "GUILabelControl.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
 #include "GUIListItem.h"
 #include "StringUtils.h"
 

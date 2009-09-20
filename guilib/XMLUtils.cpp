@@ -19,10 +19,10 @@
  *
  */
 
-#include "include.h"
 #include "XMLUtils.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "tinyXML/tinyxml.h"
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue)
 {

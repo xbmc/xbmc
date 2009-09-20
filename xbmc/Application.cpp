@@ -3015,10 +3015,6 @@ bool CApplication::ProcessGamepad(float frameTime)
 
 bool CApplication::ProcessRemote(float frameTime)
 {
-  // run resume jobs if we are coming from suspend/hibernate
-  if (m_bRunResumeJobs)
-    g_powerManager.Resume(); 
-
 #ifdef HAS_LIRC
   if (g_RemoteControl.GetButton())
   {
@@ -4703,9 +4699,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
     }
     break;
   case GUI_MSG_EXECUTE:
-    if (message.GetStringParam().length() > 0)
+    if (message.GetNumStringParams())
       return ExecuteXBMCAction(message.GetStringParam());
-    else {
+    else
+    {
       CGUIActionDescriptor action = message.GetAction();
       action.m_sourceWindowId = message.GetControlId(); // set source window id, 
       return ExecuteAction(action);
@@ -4826,6 +4823,10 @@ void CApplication::Process()
 // We get called every 500ms
 void CApplication::ProcessSlow()
 {
+  // run resume jobs if we are coming from suspend/hibernate
+  if (m_bRunResumeJobs)
+    g_powerManager.Resume(); 
+
   // Store our file state for use on close()
   UpdateFileState();
 

@@ -83,10 +83,10 @@ public:
   unsigned int PreInit();
   void UnInit();
 
-  void AddOverlay(CDVDOverlay* o)
+  void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);
-    m_overlays.AddOverlay(o);
+    m_overlays.AddOverlay(o, pts);
   }
 
   void AddCleanup(OVERLAY::COverlay* o)

@@ -169,6 +169,12 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     m_autosync = 1; // avoid using frame time as we don't know it accurate
   }
 
+  //if adjust refreshrate is used, or if sync playback to display is on,
+  //we try to calculate the framerate from the pts', because the codec fps
+  //is not always correct
+  m_bGuessFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
+                      g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
+  
   m_fStableFrameRate = 0.0;
   m_iFrameRateCount = 0;
   m_bAllowDrop = true;
@@ -725,8 +731,13 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   {
     render = OVERLAY_GPU;
 
-    if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA))
+#ifdef _LINUX
+    // for now use cpu for ssa overlays as it currently allocates and 
+    // frees textures for each frame this causes a hugh memory leak
+    // on some mesa intel drivers
+    if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) && pSource->format == DVDVideoPicture::FMT_YUV420P)
       render = OVERLAY_VID;
+#endif
 
     if(render == OVERLAY_VID)
     {
@@ -785,7 +796,7 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
     {
       if (render == OVERLAY_GPU)
-        g_renderManager.AddOverlay(pOverlay);
+        g_renderManager.AddOverlay(pOverlay, pts2);
 
       if(pSource->format == DVDVideoPicture::FMT_YUV420P)
       {
@@ -885,7 +896,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   pts += m_pullupCorrection.Correction();
   
   //try to calculate the framerate
-  CalcFrameRate();
+  if (m_bGuessFrameRate)
+    CalcFrameRate();
   
   // signal to clock what our framerate is, it may want to adjust it's
   // speed to better match with our video renderer's output speed
@@ -949,7 +961,9 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   if( (limited == false  && iClockSleep < -DVD_MSEC_TO_TIME(100))
   ||  (limited == true   && iClockSleep < -iFrameDuration*0.5) )
   {
-    if (m_bAllowDrop) //only drop frames here if we calculated a good framerate
+    //if we're calculating the framerate,
+    //don't drop frames until we've calculated a stable framerate
+    if (m_bAllowDrop || !m_bGuessFrameRate)
     {
       result |= EOS_VERYLATE;
       m_pullupCorrection.Flush(); //dropped frames mess up the pattern, so just flush it

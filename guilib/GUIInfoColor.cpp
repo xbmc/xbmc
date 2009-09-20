@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIInfoColor.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"

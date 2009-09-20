@@ -21,10 +21,10 @@
  *
  */
 
+#include "system.h"
 #include "XBApplicationEx.h"
 
 #include "IMsgTargetCallback.h"
-#include "Key.h"
 
 class CFileItem;
 class CFileItemList;
@@ -58,6 +58,10 @@ class CFileItemList;
 #endif
 #include "XBMC_events.h"
 #include "utils/Thread.h"
+
+#ifdef HAS_SDL
+#include <SDL/SDL_mutex.h>
+#endif
 
 class CWebServer;
 class CXBFileZilla;

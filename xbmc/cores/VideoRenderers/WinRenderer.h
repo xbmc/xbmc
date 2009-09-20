@@ -174,6 +174,8 @@ protected:
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
 
+  bool LoadEffect();
+
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
   int m_iYV12RenderBuffer;
@@ -201,8 +203,10 @@ protected:
   int m_NumOSDBuffers;
   bool m_OSDRendered;
 
-  typedef LPDIRECT3DTEXTURE9 YUVPLANES[MAX_PLANES];
-  typedef YUVPLANES          YUVBUFFERS[NUM_BUFFERS];
+  typedef LPDIRECT3DTEXTURE9      YUVVIDEOPLANES[MAX_PLANES];
+  typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
+  typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
+  typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
 
   #define PLANE_Y 0
   #define PLANE_U 1
@@ -214,11 +218,13 @@ protected:
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_YUVTexture;
+  // Since DX is single threaded, we will render all video into system memory
+  // We will them copy in into the device when rendering from main thread
+  YUVVIDEOBUFFERS m_YUVVideoTexture;
+  YUVMEMORYBUFFERS m_YUVMemoryTexture;
 
   // render device
   LPDIRECT3DDEVICE9 m_pD3DDevice;
-
   ID3DXEffect*  m_pYUV2RGBEffect;
 
   // clear colour for "black" bars

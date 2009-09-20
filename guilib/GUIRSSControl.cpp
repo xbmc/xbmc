@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIRSSControl.h"
 #include "GUIWindowManager.h"
 #include "GUISettings.h"

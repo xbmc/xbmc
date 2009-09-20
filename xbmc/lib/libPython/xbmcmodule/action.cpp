@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "action.h"
+#include "Key.h"
 #include "pyutil.h"
 
 using namespace std;

@@ -27,6 +27,7 @@
 #ifndef GUILIB_TEXTURE_H
 #define GUILIB_TEXTURE_H
 
+#include "gui3d.h"
 #include "StdString.h"
 
 #pragma pack(1)

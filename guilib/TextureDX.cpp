@@ -19,7 +19,6 @@
 *
 */
 
-#include "include.h"
 #include "TextureDX.h"
 #include "WindowingFactory.h"
 #include "../xbmc/FileSystem/SpecialProtocol.h"

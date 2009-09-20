@@ -35,6 +35,12 @@ typedef enum _RenderingSystemType
   RENDERING_SYSTEM_DIRECTX
 } RenderingSystemType;
 
+/*
+*   CRenderSystemBase interface allows us to create the rendering engine we use.
+*   We currently have two engines: OpenGL and DirectX
+*   This interface is very basic since a lot of the actual details will go in to the derived classes
+*/
+
 
 class CRenderSystemBase
 {
@@ -42,6 +48,7 @@ public:
   CRenderSystemBase();
   virtual ~CRenderSystemBase();
 
+  // Retrieve 
   RenderingSystemType GetRenderingSystemType() { return m_enumRenderingSystem; }
 
   virtual bool InitRenderSystem() = 0;

@@ -19,9 +19,10 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GUITextureGL.h"
 #include "Texture.h"
+#include "utils/log.h"
 
 #if defined(HAS_GL)
 

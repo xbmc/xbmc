@@ -30,6 +30,7 @@
 #include "FileSystem/PluginDirectory.h"
 #include "Util.h"
 #include "LocalizeStrings.h"
+#include "Key.h"
 
 using namespace DIRECTORY;
 

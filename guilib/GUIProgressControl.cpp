@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIProgressControl.h"
 #include "utils/GUIInfoManager.h"
 

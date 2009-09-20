@@ -19,11 +19,12 @@
  *
  */
 
-#include "include.h"
 #include "GUIMessage.h"
 #include "LocalizeStrings.h"
 
 using namespace std;
+
+CStdString CGUIMessage::empty_string;
 
 CGUIMessage::CGUIMessage(DWORD dwMsg, DWORD dwSenderID, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2)
 {
@@ -122,7 +123,7 @@ const CGUIMessage& CGUIMessage::operator = (const CGUIMessage& msg)
   m_lpVoid = msg.m_lpVoid;
   m_strLabel = msg.m_strLabel;
   m_dwSenderID = msg.m_dwSenderID;
-  m_strParam = msg.m_strParam;
+  m_params = msg.m_params;
   m_item = msg.m_item;
   m_action = msg.m_action;
   return *this;
@@ -159,14 +160,28 @@ void CGUIMessage::SetLabel(int iString)
   m_strLabel = g_localizeStrings.Get(iString);
 }
 
-void CGUIMessage::SetStringParam(const string& strParam)
+void CGUIMessage::SetStringParam(const CStdString& strParam)
 {
-  m_strParam = strParam;
+  m_params.clear();
+  if (strParam.size())
+    m_params.push_back(strParam);
 }
 
-const string& CGUIMessage::GetStringParam() const
+void CGUIMessage::SetStringParams(const vector<CStdString> &params)
 {
-  return m_strParam;
+  m_params = params;
+}
+
+const CStdString& CGUIMessage::GetStringParam(size_t param) const
+{
+  if (param >= m_params.size())
+    return empty_string;
+  return m_params[param];
+}
+
+size_t CGUIMessage::GetNumStringParams() const
+{
+  return m_params.size();
 }
 
 void CGUIMessage::SetAction(const CGUIActionDescriptor& action)

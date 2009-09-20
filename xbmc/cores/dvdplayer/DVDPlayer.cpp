@@ -793,7 +793,7 @@ void CDVDPlayer::Process()
     else if (m_item.IsMythTV())
       m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
   }
-  
+
   if( m_PlayerOptions.starttime > 0 )
   {
     int starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
@@ -1844,7 +1844,9 @@ void CDVDPlayer::HandleMessages()
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
       }
-      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) ||
+               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
+               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
       {
         CPlayerSeek m_pause(this);
 
@@ -1852,7 +1854,9 @@ void CDVDPlayer::HandleMessages()
         if(input)
         {
           bool result;
-          if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
+          if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
+            result = input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value);
+          else if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
             result = input->NextChannel();
           else
             result = input->PrevChannel();
@@ -2903,6 +2907,16 @@ bool CDVDPlayer::OnAction(const CAction &action)
         m_messenger.Put(new CDVDMsg(CDVDMsg::PLAYER_CHANNEL_PREV));
         g_infoManager.SetDisplayAfterSeek();
         return true;
+      break;
+
+      case ACTION_CHANNEL_SWITCH:
+      {
+        // Offset from key codes back to button number
+        int channel = action.fAmount1;
+        m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
+        g_infoManager.SetDisplayAfterSeek();
+        return true;
+      }
       break;
     }
   }

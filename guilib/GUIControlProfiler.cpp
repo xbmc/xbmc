@@ -19,8 +19,8 @@
  *
  */
 
-#include "include.h"
 #include "GUIControlProfiler.h"
+#include "tinyXML/tinyxml.h"
 
 bool CGUIControlProfiler::m_bIsRunning = false;
 

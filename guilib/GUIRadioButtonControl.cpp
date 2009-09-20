@@ -19,10 +19,10 @@
  *
  */
 
-#include "include.h"
 #include "GUIRadioButtonControl.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIFontManager.h"
+#include "Key.h"
 
 CGUIRadioButtonControl::CGUIRadioButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,

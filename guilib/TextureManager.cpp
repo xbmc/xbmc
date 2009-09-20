@@ -19,13 +19,13 @@
 *
 */
 
-#include "include.h"
 #include "TextureManager.h"
 #include "Texture.h"
 #include "AnimatedGif.h"
 #include "GraphicContext.h"
 #include "utils/SingleLock.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"

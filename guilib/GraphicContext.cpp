@@ -19,16 +19,16 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GraphicContext.h"
 #include "GUIFontManager.h"
 #include "GUIMessage.h"
 #include "IMsgSenderCallback.h"
-#include "../xbmc/utils/SingleLock.h"
-#include "../xbmc/Application.h"
-#include "../xbmc/GUISettings.h"
-#include "../xbmc/Settings.h"
-#include "../xbmc/AdvancedSettings.h"
+#include "utils/SingleLock.h"
+#include "Application.h"
+#include "GUISettings.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "WindowingFactory.h"
 #include "SkinInfo.h"
@@ -227,7 +227,7 @@ bool CGraphicContext::SetViewPort(float fx, float fy, float fwidth, float fheigh
   ASSERT(newLeft < newRight);
   ASSERT(newTop < newBottom);
 
-  CRect newviewport(newLeft, newTop, newRight, newBottom);
+  CRect newviewport((float)newLeft, (float)newTop, (float)newRight, (float)newBottom);
   g_Windowing.SetViewPort(newviewport);
 
   m_viewStack.push(oldviewport);
@@ -717,9 +717,7 @@ bool CGraphicContext::ToggleFullScreenRoot ()
   }
   else
   {
-    if (IsFullScreenVideo())
-      newRes = g_renderManager.GetResolution();
-    else if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
+    if (g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
       newRes = g_guiSettings.m_LookAndFeelResolution;
     else
       newRes = RES_DESKTOP;      

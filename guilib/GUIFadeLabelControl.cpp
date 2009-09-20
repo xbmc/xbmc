@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIFadeLabelControl.h"
 #include "utils/CharsetConverter.h"
 

@@ -77,11 +77,12 @@ CRenderer::~CRenderer()
     Release(m_buffers[i]);
 }
 
-void CRenderer::AddOverlay(CDVDOverlay* o)
+void CRenderer::AddOverlay(CDVDOverlay* o, double pts)
 {
   CSingleLock lock(m_section);
 
   SElement   e;
+  e.pts = pts;
   if(o->m_overlay)
     e.overlay     = o->m_overlay->Acquire();
   else
@@ -89,11 +90,12 @@ void CRenderer::AddOverlay(CDVDOverlay* o)
   m_buffers[m_decode].push_back(e);
 }
 
-void CRenderer::AddOverlay(COverlay* o)
+void CRenderer::AddOverlay(COverlay* o, double pts)
 {
   CSingleLock lock(m_section);
 
   SElement   e;
+  e.pts = pts;
   e.overlay = o->Acquire();
   m_buffers[m_decode].push_back(e);
 }
@@ -159,7 +161,7 @@ void CRenderer::Render()
     COverlay*& o = it->overlay;
 
     if(!o && it->overlay_dvd)
-      o = Convert(it->overlay_dvd);
+      o = Convert(it->overlay_dvd, it->pts);
 
     if(!o)
       continue;
@@ -258,7 +260,7 @@ void CRenderer::Render(COverlay* o)
   o->Render(state);
 }
 
-COverlay* CRenderer::Convert(CDVDOverlay* o)
+COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
 {
   COverlay* r = o->m_overlay;
   if(r)
@@ -269,9 +271,11 @@ COverlay* CRenderer::Convert(CDVDOverlay* o)
     r = new COverlayTextureGL((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = new COverlayTextureGL((CDVDOverlaySpu*)o);
+  else if(o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
+    r = new COverlayGlyphGL((CDVDOverlaySSA*)o, pts);
 #endif
 
-  if(r)
+  if(r && !o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
     o->m_overlay = r->Acquire();
   return r;
 }

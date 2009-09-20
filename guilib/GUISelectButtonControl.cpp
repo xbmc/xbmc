@@ -19,11 +19,11 @@
  *
  */
 
-#include "include.h"
 #include "GUISelectButtonControl.h"
 #include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "MouseStat.h"
+#include "Key.h"
 
 CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
     float posX, float posY,

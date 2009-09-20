@@ -19,8 +19,10 @@
 */
 
 #include "stdafx.h"
-#include "include.h"
+#include "system.h"
 #include "VideoFilterShader.h"
+#include "utils/log.h"
+
 #include <string>
 #include <math.h>
 

@@ -19,10 +19,10 @@
  *
  */
 
-#include "include.h"
 #include "GUISliderControl.h"
 #include "utils/GUIInfoManager.h"
 #include "MouseStat.h"
+#include "Key.h"
 
 CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
     : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)

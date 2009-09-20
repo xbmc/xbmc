@@ -19,10 +19,10 @@
  *
  */
 
-#include "include.h"
 #include "GUIStandardWindow.h"
 #include "GUIWindowManager.h"
 #include "AdvancedSettings.h"
+#include "Key.h"
 
 CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0, "")
 {

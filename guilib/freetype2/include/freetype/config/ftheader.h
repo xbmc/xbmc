@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    Build macros of the FreeType 2 library.                              */
 /*                                                                         */
-/*  Copyright 1996-2001, 2002, 2003, 2004, 2005, 2006 by                   */
+/*  Copyright 1996-2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008 by       */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -74,7 +74,7 @@
   /*                                                                       */
   /* <Description>                                                         */
   /*    The following macros are defined to the name of specific           */
-  /*    FreeType 2 header files.  They can be used directly in #include    */
+  /*    FreeType~2 header files.  They can be used directly in #include    */
   /*    statements as in:                                                  */
   /*                                                                       */
   /*    {                                                                  */
@@ -85,11 +85,11 @@
   /*                                                                       */
   /*    There are several reasons why we are now using macros to name      */
   /*    public header files.  The first one is that such macros are not    */
-  /*    limited to the infamous 8.3 naming rule required by DOS (and       */
+  /*    limited to the infamous 8.3~naming rule required by DOS (and       */
   /*    `FT_MULTIPLE_MASTERS_H' is a lot more meaningful than `ftmm.h').   */
   /*                                                                       */
-  /*    The second reason is that is allows for more flexibility in the    */
-  /*    way FreeType 2 is installed on a given system.                     */
+  /*    The second reason is that it allows for more flexibility in the    */
+  /*    way FreeType~2 is installed on a given system.                     */
   /*                                                                       */
   /*************************************************************************/
 
@@ -103,7 +103,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing
-   *   FreeType 2 configuration data.
+   *   FreeType~2 configuration data.
    *
    */
 #ifndef FT_CONFIG_CONFIG_H
@@ -118,7 +118,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing
-   *   FreeType 2 interface to the standard C library functions.
+   *   FreeType~2 interface to the standard C library functions.
    *
    */
 #ifndef FT_CONFIG_STANDARD_LIBRARY_H
@@ -133,7 +133,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing
-   *   FreeType 2 project-specific configuration options.
+   *   FreeType~2 project-specific configuration options.
    *
    */
 #ifndef FT_CONFIG_OPTIONS_H
@@ -148,7 +148,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   list of FreeType 2 modules that are statically linked to new library
+   *   list of FreeType~2 modules that are statically linked to new library
    *   instances in @FT_Init_FreeType.
    *
    */
@@ -156,6 +156,7 @@
 #define FT_CONFIG_MODULES_H  <freetype/config/ftmodule.h>
 #endif
 
+  /* */
 
   /* public headers */
 
@@ -166,7 +167,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   base FreeType 2 API.
+   *   base FreeType~2 API.
    *
    */
 #define FT_FREETYPE_H  <freetype/freetype.h>
@@ -179,7 +180,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   list of FreeType 2 error codes (and messages).
+   *   list of FreeType~2 error codes (and messages).
    *
    *   It is included by @FT_FREETYPE_H.
    *
@@ -194,7 +195,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   list of FreeType 2 module error offsets (and messages).
+   *   list of FreeType~2 module error offsets (and messages).
    *
    */
 #define FT_MODULE_ERRORS_H  <freetype/ftmoderr.h>
@@ -207,7 +208,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   FreeType 2 interface to low-level operations (i.e., memory management
+   *   FreeType~2 interface to low-level operations (i.e., memory management
    *   and stream i/o).
    *
    *   It is included by @FT_FREETYPE_H.
@@ -222,7 +223,7 @@
    *   FT_IMAGE_H
    *
    * @description:
-   *   A macro used in #include statements to name the file containing types
+   *   A macro used in #include statements to name the file containing type
    *   definitions related to glyph images (i.e., bitmaps, outlines,
    *   scan-converter parameters).
    *
@@ -239,7 +240,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   basic data types defined by FreeType 2.
+   *   basic data types defined by FreeType~2.
    *
    *   It is included by @FT_FREETYPE_H.
    *
@@ -254,7 +255,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   list management API of FreeType 2.
+   *   list management API of FreeType~2.
    *
    *   (Most applications will never need to include this file.)
    *
@@ -269,7 +270,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   scalable outline management API of FreeType 2.
+   *   scalable outline management API of FreeType~2.
    *
    */
 #define FT_OUTLINE_H  <freetype/ftoutln.h>
@@ -282,7 +283,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   API used to manage multiple @FT_Size objects per face.
+   *   API which manages multiple @FT_Size objects per face.
    *
    */
 #define FT_SIZES_H  <freetype/ftsizes.h>
@@ -295,7 +296,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   module management API of FreeType 2.
+   *   module management API of FreeType~2.
    *
    */
 #define FT_MODULE_H  <freetype/ftmodapi.h>
@@ -308,7 +309,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   renderer module management API of FreeType 2.
+   *   renderer module management API of FreeType~2.
    *
    */
 #define FT_RENDER_H  <freetype/ftrender.h>
@@ -321,7 +322,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   types and API specific to the Type 1 format.
+   *   types and API specific to the Type~1 format.
    *
    */
 #define FT_TYPE1_TABLES_H  <freetype/t1tables.h>
@@ -334,10 +335,9 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   enumeration values used to identify name strings, languages,
-   *   encodings, etc.  This file really contains a _large_ set of constant
-   *   macro definitions, taken from the TrueType and OpenType
-   *   specifications.
+   *   enumeration values which identify name strings, languages, encodings,
+   *   etc.  This file really contains a _large_ set of constant macro
+   *   definitions, taken from the TrueType and OpenType specifications.
    *
    */
 #define FT_TRUETYPE_IDS_H  <freetype/ttnameid.h>
@@ -363,7 +363,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   definitions of TrueType four-byte `tags' used to identify blocks in
+   *   definitions of TrueType four-byte `tags' which identify blocks in
    *   SFNT-based font formats (i.e., TrueType and OpenType).
    *
    */
@@ -377,10 +377,25 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   definitions of an API to access BDF-specific strings from a face.
+   *   definitions of an API which accesses BDF-specific strings from a
+   *   face.
    *
    */
 #define FT_BDF_H  <freetype/ftbdf.h>
+
+
+  /*************************************************************************
+   *
+   * @macro:
+   *   FT_CID_H
+   *
+   * @description:
+   *   A macro used in #include statements to name the file containing the
+   *   definitions of an API which access CID font information from a
+   *   face.
+   *
+   */
+#define FT_CID_H  <freetype/ftcid.h>
 
 
   /*************************************************************************
@@ -390,7 +405,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   definitions of an API to support for gzip-compressed files.
+   *   definitions of an API which supports gzip-compressed files.
    *
    */
 #define FT_GZIP_H  <freetype/ftgzip.h>
@@ -403,7 +418,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   definitions of an API to support for LZW-compressed files.
+   *   definitions of an API which supports LZW-compressed files.
    *
    */
 #define FT_LZW_H  <freetype/ftlzw.h>
@@ -416,7 +431,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   definitions of an API to support Windows FNT files.
+   *   definitions of an API which supports Windows FNT files.
    *
    */
 #define FT_WINFONTS_H   <freetype/ftwinfnt.h>
@@ -468,7 +483,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   API of the optional FreeType 2 cache sub-system.
+   *   API of the optional FreeType~2 cache sub-system.
    *
    */
 #define FT_CACHE_H  <freetype/ftcache.h>
@@ -481,10 +496,10 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   `glyph image' API of the FreeType 2 cache sub-system.
+   *   `glyph image' API of the FreeType~2 cache sub-system.
    *
    *   It is used to define a cache for @FT_Glyph elements.  You can also
-   *   see the API defined in @FT_CACHE_SMALL_BITMAPS_H if you only need to
+   *   use the API defined in @FT_CACHE_SMALL_BITMAPS_H if you only need to
    *   store small glyph bitmaps, as it will use less memory.
    *
    *   This macro is deprecated.  Simply include @FT_CACHE_H to have all
@@ -501,7 +516,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   `small bitmaps' API of the FreeType 2 cache sub-system.
+   *   `small bitmaps' API of the FreeType~2 cache sub-system.
    *
    *   It is used to define a cache for small glyph bitmaps in a relatively
    *   memory-efficient way.  You can also use the API defined in
@@ -522,7 +537,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   `charmap' API of the FreeType 2 cache sub-system.
+   *   `charmap' API of the FreeType~2 cache sub-system.
    *
    *   This macro is deprecated.  Simply include @FT_CACHE_H to have all
    *   charmap-based cache declarations.
@@ -538,7 +553,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   Macintosh-specific FreeType 2 API.  The latter is used to access
+   *   Macintosh-specific FreeType~2 API.  The latter is used to access
    *   fonts embedded in resource forks.
    *
    *   This header file must be explicitly included by client applications
@@ -555,7 +570,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   optional multiple-masters management API of FreeType 2.
+   *   optional multiple-masters management API of FreeType~2.
    *
    */
 #define FT_MULTIPLE_MASTERS_H  <freetype/ftmm.h>
@@ -568,7 +583,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   optional FreeType 2 API used to access embedded `name' strings in
+   *   optional FreeType~2 API which accesses embedded `name' strings in
    *   SFNT-based font formats (i.e., TrueType and OpenType).
    *
    */
@@ -582,7 +597,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   optional FreeType 2 API used to validate OpenType tables (BASE, GDEF,
+   *   optional FreeType~2 API which validates OpenType tables (BASE, GDEF,
    *   GPOS, GSUB, JSTF).
    *
    */
@@ -596,7 +611,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   optional FreeType 2 API used to validate TrueTypeGX/AAT tables (feat,
+   *   optional FreeType~2 API which validates TrueTypeGX/AAT tables (feat,
    *   mort, morx, bsln, just, kern, opbd, trak, prop).
    *
    */
@@ -610,7 +625,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   FreeType 2 API used to access PFR-specific data.
+   *   FreeType~2 API which accesses PFR-specific data.
    *
    */
 #define FT_PFR_H  <freetype/ftpfr.h>
@@ -623,7 +638,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   FreeType 2 API used to stroke outline path.
+   *   FreeType~2 API which provides functions to stroke outline paths.
    */
 #define FT_STROKER_H  <freetype/ftstroke.h>
 
@@ -635,7 +650,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   FreeType 2 API used to perform artificial obliquing and emboldening.
+   *   FreeType~2 API which performs artificial obliquing and emboldening.
    */
 #define FT_SYNTHESIS_H  <freetype/ftsynth.h>
 
@@ -647,7 +662,7 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   FreeType 2 API used to provide functions specific to the XFree86 and
+   *   FreeType~2 API which provides functions specific to the XFree86 and
    *   X.Org X11 servers.
    */
 #define FT_XFREE86_H  <freetype/ftxf86.h>
@@ -660,10 +675,71 @@
    *
    * @description:
    *   A macro used in #include statements to name the file containing the
-   *   FreeType 2 API used to perform trigonometric computations (e.g.,
+   *   FreeType~2 API which performs trigonometric computations (e.g.,
    *   cosines and arc tangents).
    */
 #define FT_TRIGONOMETRY_H  <freetype/fttrigon.h>
+
+
+  /*************************************************************************
+   *
+   * @macro:
+   *   FT_LCD_FILTER_H
+   *
+   * @description:
+   *   A macro used in #include statements to name the file containing the
+   *   FreeType~2 API which performs color filtering for subpixel rendering.
+   */
+#define FT_LCD_FILTER_H  <freetype/ftlcdfil.h>
+
+
+  /*************************************************************************
+   *
+   * @macro:
+   *   FT_UNPATENTED_HINTING_H
+   *
+   * @description:
+   *   A macro used in #include statements to name the file containing the
+   *   FreeType~2 API which performs color filtering for subpixel rendering.
+   */
+#define FT_UNPATENTED_HINTING_H  <freetype/ttunpat.h>
+
+
+  /*************************************************************************
+   *
+   * @macro:
+   *   FT_INCREMENTAL_H
+   *
+   * @description:
+   *   A macro used in #include statements to name the file containing the
+   *   FreeType~2 API which performs color filtering for subpixel rendering.
+   */
+#define FT_INCREMENTAL_H  <freetype/ftincrem.h>
+
+
+  /*************************************************************************
+   *
+   * @macro:
+   *   FT_GASP_H
+   *
+   * @description:
+   *   A macro used in #include statements to name the file containing the
+   *   FreeType~2 API which returns entries from the TrueType GASP table.
+   */
+#define FT_GASP_H  <freetype/ftgasp.h>
+
+
+  /*************************************************************************
+   *
+   * @macro:
+   *   FT_ADVANCES_H
+   *
+   * @description:
+   *   A macro used in #include statements to name the file containing the
+   *   FreeType~2 API which returns individual and ranged glyph advances.
+   */
+#define FT_ADVANCES_H  <freetype/ftadvanc.h>
+
 
   /* */
 

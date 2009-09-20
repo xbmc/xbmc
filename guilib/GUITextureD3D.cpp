@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "Texture.h"
 #include "GUITextureD3D.h"
 #include "WindowingFactory.h"

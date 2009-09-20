@@ -19,10 +19,10 @@
  *
  */
 
-#include "include.h"
 #include "GUISpinControl.h"
 #include "utils/CharsetConverter.h"
 #include "MouseStat.h"
+#include "Key.h"
 
 using namespace std;
 

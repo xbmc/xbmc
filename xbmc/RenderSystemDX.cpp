@@ -43,6 +43,7 @@ CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
   m_bFullScreenDevice = 0;
   m_bVSync = true;
   m_nDeviceStatus = S_OK;
+  m_stateBlock = NULL;
 
   ZeroMemory(&m_D3DPP, sizeof(D3DPRESENT_PARAMETERS));
 }
@@ -90,6 +91,7 @@ bool CRenderSystemDX::ResetRenderSystem(int width, int height)
 
 bool CRenderSystemDX::DestroyRenderSystem()
 {
+  SAFE_RELEASE(m_stateBlock);
   SAFE_RELEASE(m_pD3D);
   SAFE_RELEASE(m_pD3DDevice);
 
@@ -249,8 +251,6 @@ bool CRenderSystemDX::PresentRenderImpl()
     return false;
 
   return true;
-
-  return true;
 }
 
 bool CRenderSystemDX::BeginRender()
@@ -361,12 +361,19 @@ void CRenderSystemDX::CaptureStateBlock()
 {
   if (!m_bRenderCreated)
     return;
+  
+  if (m_stateBlock)
+    SAFE_RELEASE(m_stateBlock);
+  m_pD3DDevice->CreateStateBlock(D3DSBT_ALL, &m_stateBlock);
 }
 
 void CRenderSystemDX::ApplyStateBlock()
 {
   if (!m_bRenderCreated)
     return;
+  
+  if (m_stateBlock)
+    m_stateBlock->Apply();
 }
 
 void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
@@ -494,9 +501,9 @@ void CRenderSystemDX::GetViewPort(CRect& viewPort)
   m_pD3DDevice->GetViewport(&d3dviewport);
 
   viewPort.x1 = (float)d3dviewport.X;
-  viewPort.y2 = (float)d3dviewport.Y;
-  viewPort.y1 = (float)d3dviewport.X + d3dviewport.Width;
-  viewPort.x2 = (float)d3dviewport.Y + d3dviewport.Height;
+  viewPort.y1 = (float)d3dviewport.Y;
+  viewPort.x2 = (float)d3dviewport.X + d3dviewport.Width;
+  viewPort.y2 = (float)d3dviewport.Y + d3dviewport.Height;
 }
 
 void CRenderSystemDX::SetViewPort(CRect& viewPort)

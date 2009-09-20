@@ -19,9 +19,10 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GUIWindow.h"
 #include "GUIWindowManager.h"
+#include "Key.h"
 #include "LocalizeStrings.h"
 #include "Settings.h"
 #include "GUIControlFactory.h"
@@ -33,6 +34,7 @@
 
 #include "SkinInfo.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"

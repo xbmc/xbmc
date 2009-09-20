@@ -19,11 +19,11 @@
  *
  */
 
-#include "include.h"
 #include "GUIMoverControl.h"
 #include "GUIWindowManager.h"
 #include "ActionManager.h"
 #include "MouseStat.h"
+#include "Key.h"
 
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L

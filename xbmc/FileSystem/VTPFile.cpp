@@ -180,3 +180,25 @@ bool CVTPFile::PrevChannel()
   }
   return false;
 }
+
+bool CVTPFile::SelectChannel(unsigned int channel)
+{
+  if(!m_session->CanStreamLive(channel))
+    return false;
+
+  m_session->AbortStreamLive();
+
+  if(m_socket != INVALID_SOCKET)
+  {
+    shutdown(m_socket, SD_BOTH);
+    m_session->AbortStreamLive();
+    closesocket(m_socket);
+  }
+
+  m_channel = channel;
+  m_socket  = m_session->GetStreamLive(m_channel);
+  if(m_socket != INVALID_SOCKET)
+    return true;
+  else
+    return false;
+}
