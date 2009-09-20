@@ -1362,7 +1362,7 @@ void CMPlayer::Process()
         int iRet = mplayer_process();
 
         //Set to notify that we are out of the process loop
-        //can be used to syncronize seeking
+        //can be used to synchronize seeking
         m_evProcessDone.Set();
 
         if (iRet < 0) break;
@@ -1925,12 +1925,12 @@ void CMPlayer::SeekTime(__int64 iTime)
       e.writelog(__FUNCTION__);
       g_applicationMessenger.MediaStop();
     }
-    g_infoManager.m_performingSeek = false;
-    WaitOnCommand();
   }
+  g_infoManager.m_performingSeek = false;
+  WaitOnCommand();
 }
 
-//Time in milleseconds
+//Time in milliseconds
 __int64 CMPlayer::GetTime()
 {
   __int64 time = 0;
