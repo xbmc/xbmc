@@ -39,6 +39,7 @@ public:
   virtual void Render();
 
   virtual void ClearFileItems();
+  virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void OnFinalizeFileItems(CFileItemList &items);
 
 protected:
