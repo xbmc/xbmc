@@ -41,6 +41,7 @@
 #include "musicInfoTag.h"
 #include "PictureInfoTag.h"
 #include "utils/HTTP.h"
+#include "AdvancedSettings.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

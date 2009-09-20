@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 

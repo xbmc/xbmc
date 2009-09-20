@@ -33,6 +33,7 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "SkinInfo.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;

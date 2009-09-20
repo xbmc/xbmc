@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 #include "FileItem.h"
 

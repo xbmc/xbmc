@@ -78,6 +78,7 @@
 
 #include "ScriptSettings.h"
 #include "GUIDialogPluginSettings.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace DIRECTORY;

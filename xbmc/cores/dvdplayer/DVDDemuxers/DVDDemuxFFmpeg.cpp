@@ -27,7 +27,7 @@
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileSystem/File.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)

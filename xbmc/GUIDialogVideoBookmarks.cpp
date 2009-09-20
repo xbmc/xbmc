@@ -32,6 +32,7 @@
 #include "GUIWindowManager.h"
 #include "ViewState.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "Crc32.h"
 

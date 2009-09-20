@@ -31,7 +31,8 @@
 #include "xbox/Network.h"
 #include "utils/Win32Exception.h"
 #include "lib/libsmb/xbLibSmb.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 
 using namespace XFILE;

@@ -29,6 +29,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "AdvancedSettings.h"
 
 
 CApplication g_application;

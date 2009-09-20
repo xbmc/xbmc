@@ -60,6 +60,7 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#include "AdvancedSettings.h"
 
 // stuff for current song
 #ifdef HAS_FILESYSTEM

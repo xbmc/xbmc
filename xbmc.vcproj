@@ -439,6 +439,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 			<Filter
 				Name="Settings"
 				Filter="">
+                <File
+                    RelativePath=".\xbmc\AdvancedSettings.cpp"> 
+ 	            </File> 
+ 	            <File 
+  	                RelativePath=".\xbmc\AdvancedSettings.h"> 
+ 	            </File> 
 				<File
 					RelativePath=".\xbmc\GUIDialogPluginSettings.cpp">
 				</File>

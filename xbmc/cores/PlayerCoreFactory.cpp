@@ -40,7 +40,7 @@
 #include "URL.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 

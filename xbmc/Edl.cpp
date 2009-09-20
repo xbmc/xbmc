@@ -25,6 +25,7 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "Application.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 

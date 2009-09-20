@@ -83,6 +83,7 @@
 #include "FileSystem/RarManager.h"
 #include "PlayList.h"
 #include "utils/DownloadQueueManager.h"
+#include "AdvancedSettings.h"
 
 #ifdef HAS_FILESYSTEM
 #include "FileSystem/FileDAAP.h"

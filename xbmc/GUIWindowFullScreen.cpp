@@ -39,6 +39,7 @@
 #include "GUISliderControl.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "AdvancedSettings.h"
 
 #include <stdio.h>
 

@@ -33,6 +33,7 @@
 #endif
 #include "MediaManager.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 

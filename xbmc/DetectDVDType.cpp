@@ -27,6 +27,7 @@
 #include "xbox/Undocumented.h"
 #endif
 #include "Application.h"
+#include "AdvancedSettings.h"
 #include "Util.h"
 #include "Picture.h"
 #include "GUIWindowManager.h"

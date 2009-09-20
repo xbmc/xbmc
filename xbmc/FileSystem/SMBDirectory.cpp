@@ -40,7 +40,7 @@
 #include "GUIDialogOK.h"
 #include "GUISettings.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 struct CachedDirEntry
 {

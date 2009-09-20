@@ -32,6 +32,7 @@
 #include "utils/md5.h"
 #include "xbox/XKGeneral.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 
 // Symbol mapping (based on MS virtual keyboard - may need improving)
 static char symbol_map[37] = ")!@#$%^&*([]{}-_=+;:\'\",.<>/?\\|`~    ";

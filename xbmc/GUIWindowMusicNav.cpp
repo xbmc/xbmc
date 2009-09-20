@@ -43,6 +43,7 @@
 #include "GUIEditControl.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace DIRECTORY;

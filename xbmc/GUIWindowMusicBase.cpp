@@ -51,6 +51,7 @@
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;

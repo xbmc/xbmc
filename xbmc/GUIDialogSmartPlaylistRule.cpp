@@ -22,7 +22,6 @@
 #include "stdafx.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogFileBrowser.h"
-#include "Util.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
 #include "GUIWindowManager.h"

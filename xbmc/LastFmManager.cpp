@@ -40,6 +40,7 @@
 #include "Settings.h"
 #include "PlayList.h"
 #include "Crc32.h"
+#include "AdvancedSettings.h"
 
 #include <sstream>
 

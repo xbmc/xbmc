@@ -23,7 +23,7 @@
 #include "Application.h"
 #include "ApplicationRenderer.h"
 #include "guiImage.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "GUIWindowManager.h"
 
 CApplicationRenderer g_ApplicationRenderer;

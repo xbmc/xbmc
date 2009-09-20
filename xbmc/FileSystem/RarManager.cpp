@@ -28,7 +28,7 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/SpecialProtocol.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 
 #include <set>

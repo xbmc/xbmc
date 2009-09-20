@@ -26,7 +26,7 @@
 #include "FileCurl.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

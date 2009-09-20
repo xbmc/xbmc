@@ -26,6 +26,7 @@
 #include "SingleLock.h"
 #include "StdString.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "Util.h"
 
 FILE* CLog::fd = NULL;

@@ -44,7 +44,7 @@
 #include "DirectoryNodeYearSong.h"
 #include "MusicInfoTag.h"
 #include "URL.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 
 using namespace std;

@@ -47,6 +47,7 @@
 #include "Favourites.h"
 #include "PlayList.h"
 #include "utils/AsyncFileCopy.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;

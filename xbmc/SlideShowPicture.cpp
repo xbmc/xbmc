@@ -23,6 +23,7 @@
 #include "SlideShowPicture.h"
 #include "cores/ssrc.h"         // for M_PI
 #include "utils/GUIInfoManager.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 
 using namespace std;

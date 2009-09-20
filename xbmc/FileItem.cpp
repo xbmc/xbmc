@@ -50,6 +50,7 @@
 #include "Song.h"
 #include "URL.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;

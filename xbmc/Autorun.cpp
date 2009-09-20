@@ -35,6 +35,7 @@
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
 #include "PlayList.h"
 
 using namespace std;

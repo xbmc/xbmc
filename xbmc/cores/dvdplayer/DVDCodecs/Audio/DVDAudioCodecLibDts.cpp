@@ -20,7 +20,8 @@
  */
  
 #include "stdafx.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "DVDAudioCodecLibDts.h"
 #include "DVDStreamInfo.h"
 

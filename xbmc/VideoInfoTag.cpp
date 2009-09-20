@@ -21,7 +21,7 @@
 #include "VideoInfoTag.h"
 #include "XMLUtils.h"
 #include "LocalizeStrings.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "Picture.h"

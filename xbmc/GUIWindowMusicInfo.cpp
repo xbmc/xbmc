@@ -36,6 +36,7 @@
 #include "MediaManager.h"
 #include "FileSystem/Directory.h"
 #include "utils/AsyncFileCopy.h"
+#include "AdvancedSettings.h"
 
 using namespace XFILE;
 
