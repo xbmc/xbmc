@@ -31,7 +31,6 @@
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
-#include "ActionManager.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #else
@@ -720,10 +719,6 @@ HRESULT CApplication::Create(HWND hWnd)
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   m_gWindowManager.Initialize();
-
-#ifdef HAS_PYTHON
-  g_actionManager.SetScriptActionCallback(&g_pythonParser);
-#endif
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
