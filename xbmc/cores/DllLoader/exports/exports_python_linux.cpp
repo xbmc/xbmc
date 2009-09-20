@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include <sys/types.h>
 #include <utime.h>
 #include <dirent.h>

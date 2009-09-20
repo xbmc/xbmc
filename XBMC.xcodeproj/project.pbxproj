@@ -730,7 +730,6 @@
 		E38E22B90D25F9FE00618676 /* SmartPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0B0D25F9FD00618676 /* SmartPlaylist.cpp */; };
 		E38E22BA0D25F9FE00618676 /* Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0D0D25F9FD00618676 /* Song.cpp */; };
 		E38E22BB0D25F9FE00618676 /* SortFileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0F0D25F9FD00618676 /* SortFileItem.cpp */; };
-		E38E22BC0D25F9FE00618676 /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E110D25F9FD00618676 /* stdafx.cpp */; };
 		E38E22BD0D25F9FE00618676 /* StringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E130D25F9FD00618676 /* StringUtils.cpp */; };
 		E38E22BE0D25F9FE00618676 /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E160D25F9FD00618676 /* Temperature.cpp */; };
 		E38E22BF0D25F9FE00618676 /* ThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */; };
@@ -1502,7 +1501,6 @@
 		F5A1CAB60F6B06CF00A96ABD /* SmartPlaylist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0B0D25F9FD00618676 /* SmartPlaylist.cpp */; };
 		F5A1CAB70F6B06CF00A96ABD /* Song.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0D0D25F9FD00618676 /* Song.cpp */; };
 		F5A1CAB80F6B06CF00A96ABD /* SortFileItem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E0F0D25F9FD00618676 /* SortFileItem.cpp */; };
-		F5A1CAB90F6B06CF00A96ABD /* stdafx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E110D25F9FD00618676 /* stdafx.cpp */; };
 		F5A1CABA0F6B06CF00A96ABD /* StringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E130D25F9FD00618676 /* StringUtils.cpp */; };
 		F5A1CABB0F6B06CF00A96ABD /* Temperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E160D25F9FD00618676 /* Temperature.cpp */; };
 		F5A1CABC0F6B06CF00A96ABD /* ThumbLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E1E180D25F9FD00618676 /* ThumbLoader.cpp */; };
@@ -3270,7 +3268,6 @@
 		E38E1D400D25F9FC00618676 /* sha1.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = sha1.hpp; sourceTree = "<group>"; };
 		E38E1D420D25F9FC00618676 /* smallfn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = smallfn.hpp; sourceTree = "<group>"; };
 		E38E1D430D25F9FC00618676 /* SmartStr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmartStr.h; sourceTree = "<group>"; };
-		E38E1D450D25F9FC00618676 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
 		E38E1D460D25F9FC00618676 /* strfn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = strfn.cpp; sourceTree = "<group>"; };
 		E38E1D470D25F9FC00618676 /* strfn.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = strfn.hpp; sourceTree = "<group>"; };
 		E38E1D480D25F9FC00618676 /* strlist.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = strlist.cpp; sourceTree = "<group>"; };
@@ -3423,8 +3420,6 @@
 		E38E1E0E0D25F9FD00618676 /* Song.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Song.h; sourceTree = "<group>"; };
 		E38E1E0F0D25F9FD00618676 /* SortFileItem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SortFileItem.cpp; sourceTree = "<group>"; };
 		E38E1E100D25F9FD00618676 /* SortFileItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SortFileItem.h; sourceTree = "<group>"; };
-		E38E1E110D25F9FD00618676 /* stdafx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = stdafx.cpp; sourceTree = "<group>"; };
-		E38E1E120D25F9FD00618676 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
 		E38E1E130D25F9FD00618676 /* StringUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StringUtils.cpp; sourceTree = "<group>"; };
 		E38E1E140D25F9FD00618676 /* StringUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringUtils.h; sourceTree = "<group>"; };
 		E38E1E150D25F9FD00618676 /* Tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tag.h; sourceTree = "<group>"; };
@@ -4796,8 +4791,6 @@
 				E38E1E0E0D25F9FD00618676 /* Song.h */,
 				E38E1E0F0D25F9FD00618676 /* SortFileItem.cpp */,
 				E38E1E100D25F9FD00618676 /* SortFileItem.h */,
-				E38E1E110D25F9FD00618676 /* stdafx.cpp */,
-				E38E1E120D25F9FD00618676 /* stdafx.h */,
 				E38E1E130D25F9FD00618676 /* StringUtils.cpp */,
 				E38E1E140D25F9FD00618676 /* StringUtils.h */,
 				E38E1E150D25F9FD00618676 /* Tag.h */,
@@ -6703,7 +6696,6 @@
 				E38E1D400D25F9FC00618676 /* sha1.hpp */,
 				E38E1D420D25F9FC00618676 /* smallfn.hpp */,
 				E38E1D430D25F9FC00618676 /* SmartStr.h */,
-				E38E1D450D25F9FC00618676 /* stdafx.h */,
 				E38E1D460D25F9FC00618676 /* strfn.cpp */,
 				E38E1D470D25F9FC00618676 /* strfn.hpp */,
 				E38E1D480D25F9FC00618676 /* strlist.cpp */,
@@ -7784,7 +7776,6 @@
 				E38E22B90D25F9FE00618676 /* SmartPlaylist.cpp in Sources */,
 				E38E22BA0D25F9FE00618676 /* Song.cpp in Sources */,
 				E38E22BB0D25F9FE00618676 /* SortFileItem.cpp in Sources */,
-				E38E22BC0D25F9FE00618676 /* stdafx.cpp in Sources */,
 				E38E22BD0D25F9FE00618676 /* StringUtils.cpp in Sources */,
 				E38E22BE0D25F9FE00618676 /* Temperature.cpp in Sources */,
 				E38E22BF0D25F9FE00618676 /* ThumbLoader.cpp in Sources */,
@@ -8636,7 +8627,6 @@
 				F5A1CAB60F6B06CF00A96ABD /* SmartPlaylist.cpp in Sources */,
 				F5A1CAB70F6B06CF00A96ABD /* Song.cpp in Sources */,
 				F5A1CAB80F6B06CF00A96ABD /* SortFileItem.cpp in Sources */,
-				F5A1CAB90F6B06CF00A96ABD /* stdafx.cpp in Sources */,
 				F5A1CABA0F6B06CF00A96ABD /* StringUtils.cpp in Sources */,
 				F5A1CABB0F6B06CF00A96ABD /* Temperature.cpp in Sources */,
 				F5A1CABC0F6B06CF00A96ABD /* ThumbLoader.cpp in Sources */,
