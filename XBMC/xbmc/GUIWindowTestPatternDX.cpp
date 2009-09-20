@@ -21,7 +21,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowTestPatternDX.h"
 
 CGUIWindowTestPatternDX::CGUIWindowTestPatternDX(void) : CGUIWindowTestPattern()

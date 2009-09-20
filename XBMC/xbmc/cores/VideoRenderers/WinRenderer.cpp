@@ -19,8 +19,6 @@
  *
  */
  
-#include "stdafx.h"
-
 #ifdef HAS_DX
 
 #include "WinRenderer.h"
@@ -501,7 +499,7 @@ void CWinRenderer::ManageDisplay()
 
 void CWinRenderer::ChooseBestResolution(float fps)
 {
-  return g_graphicsContext.GetVideoResolution();
+  return;
   /* elis
   bool bUsingPAL = g_videoConfig.HasPAL();    // current video standard:PAL or NTSC
   bool bCanDoWidescreen = g_videoConfig.HasWidescreen(); // can widescreen be enabled?

@@ -60,10 +60,14 @@
 # endif
 # include <string.h>
 #endif
-#if defined(HAVE_INTTYPES_H)
-# include <inttypes.h>
-#elif defined(HAVE_STDINT_H)
-# include <stdint.h>
+#if defined(_WIN32) // WIN32INCLUDES
+# include "win32/stdint.h"
+#else
+# if defined(HAVE_INTTYPES_H)
+#  include <inttypes.h>
+# elif defined(HAVE_STDINT_H)
+#  include <stdint.h>
+# endif
 #endif
 #ifdef HAVE_CTYPE_H
 # include <ctype.h>

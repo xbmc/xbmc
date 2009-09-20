@@ -33,8 +33,8 @@
 #include <limits>
 #include <string.h>
 
-#include "MediaSource.h"
 #include "system.h"
+#include "MediaSource.h"
 
 // A list of filesystem types for LegalPath/FileName
 #define LEGAL_NONE            0

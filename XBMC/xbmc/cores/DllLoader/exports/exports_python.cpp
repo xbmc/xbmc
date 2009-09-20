@@ -19,7 +19,6 @@
  *
  */
  
-#include "stdafx.h"
 #ifndef _LINUX
 #include <io.h>
 #include <direct.h>
