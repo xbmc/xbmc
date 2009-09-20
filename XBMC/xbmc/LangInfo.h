@@ -24,6 +24,8 @@
 
 #include <map>
 
+class TiXmlNode;
+
 class CLangInfo
 {
 public:
@@ -93,6 +95,7 @@ public:
   void SetCurrentRegion(const CStdString& strName);
   const CStdString& GetCurrentRegion() const;
 
+  static void LoadTokens(const TiXmlNode* pTokens, std::vector<CStdString>& vecTokens);
 protected:
   void SetDefaults();
 
