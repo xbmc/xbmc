@@ -88,7 +88,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
 
     CLog::Log(LOGINFO, "create settings table");
-    m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool," 
+    m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
                 "ViewMode integer,ZoomAmount float, PixelRatio float, AudioStream integer, SubtitleStream integer,"
                 "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
                 "VolumeAmplification float, AudioDelay float, OutputToAllSpeakers bool, ResumeTime integer, Crop bool, CropLeft integer,"
@@ -1685,17 +1685,17 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
     CVideoInfoTag info = details;
 
     long lFileId = GetFileId(strFilenameAndPath);
-    
+
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
-    
+
     long lMovieId = GetMovieId(strFilenameAndPath);
-    
+
     if (lMovieId > -1)
       DeleteMovie(strFilenameAndPath, true); // true to keep the table entry
-    
+
     BeginTransaction();
-    
+
     lMovieId = AddMovie(strFilenameAndPath);
     if (lMovieId < 0)
     {
@@ -1763,9 +1763,9 @@ long CVideoDatabase::SetDetailsForTvShow(const CStdString& strPath, const CVideo
       CLog::Log(LOGERROR, "%s: called without database open", __FUNCTION__);
       return -1;
     }
-    
+
     BeginTransaction();
-    
+
     long lTvShowId = GetTvShowId(strPath);
     if (lTvShowId < 0)
       lTvShowId = AddTvShow(strPath);
@@ -1890,7 +1890,7 @@ void CVideoDatabase::SetDetailsForMusicVideo(const CStdString& strFilenameAndPat
   try
   {
     BeginTransaction();
-    
+
     long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       lFileId = AddFile(strFilenameAndPath);
@@ -1961,7 +1961,7 @@ void CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details, cons
 {
   // AddFile checks to make sure the file isn't already in the DB first
   long lFileId = AddFile(strFileNameAndPath);
-  if (lFileId < 0) 
+  if (lFileId < 0)
     return;
   SetStreamDetailsForFileId(details, lFileId);
 }
@@ -2190,7 +2190,7 @@ void CVideoDatabase::AddBookMarkToFile(const CStdString& strFilenameAndPath, con
       strSQL=FormatSQL("update bookmark set timeInSeconds = %f, totalTimeInSeconds = %f, thumbNailImage = '%s', player = '%s', playerState = '%s' where idBookmark = %i", bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), idBookmark);
     else
       strSQL=FormatSQL("insert into bookmark (idBookmark, idFile, timeInSeconds, totalTimeInSeconds, thumbNailImage, player, playerState, type) values(NULL,%i,%f,%f,'%s','%s','%s', %i)", lFileId, bookmark.timeInSeconds, bookmark.totalTimeInSeconds, bookmark.thumbNailImage.c_str(), bookmark.player.c_str(), bookmark.playerState.c_str(), (int)type);
-    
+
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
@@ -2530,7 +2530,7 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
     long lFileId = GetFileId(strFilenameAndPath);
     if (lFileId < 0)
       return ;
- 
+
     BeginTransaction();
 
     CStdString strSQL;
@@ -3161,7 +3161,7 @@ void CVideoDatabase::SetScraperForPath(const CStdString& filePath, const SScrape
 bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
   BeginTransaction();
-  
+
   try
   {
     if (iVersion < 4)
@@ -4676,10 +4676,10 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
           g_passwordManager.bMasterUser                                   ||
           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources))
       {
-        CFileItemPtr pItem(new CFileItem(movie));  
-        pItem->m_strPath.Format("%s%ld", strBaseDir.c_str(), movie.m_iDbId);  
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);  
-        items.Add(pItem);  
+        CFileItemPtr pItem(new CFileItem(movie));
+        pItem->m_strPath.Format("%s%ld", strBaseDir.c_str(), movie.m_iDbId);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
+        items.Add(pItem);
       }
       m_pDS->next();
     }
@@ -6255,7 +6255,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     if (NULL == m_pDS.get()) return;
 
     BeginTransaction();
-    
+
     // find all the files
     CStdString sql;
     if (paths)
@@ -6653,8 +6653,8 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     {
       CVideoInfoTag movie = GetDetailsForMovie(m_pDS, true);
       movie.Save(pMain, "movie", !singleFiles);
-    
-      // reset old skip state          
+
+      // reset old skip state
       bool bSkip = false;
 
       if (progress)
@@ -6744,7 +6744,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       CVideoInfoTag movie = GetDetailsForMusicVideo(m_pDS);
       movie.Save(pMain, "musicvideo", !singleFiles);
 
-      // reset old skip state          
+      // reset old skip state
       bool bSkip = false;
 
       if (progress)
@@ -6824,7 +6824,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
       CVideoInfoTag tvshow = GetDetailsForTvShow(m_pDS, true);
       tvshow.Save(pMain, "tvshow", !singleFiles);
 
-      // reset old skip state          
+      // reset old skip state
       bool bSkip = false;
 
       if (progress)
@@ -6957,7 +6957,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
         else
           episode.Save(pMain->LastChild(), "episodedetails", !singleFiles);
 
-        // reset old skip state          
+        // reset old skip state
         bool bSkip = false;
 
         if (singleFiles)
@@ -7071,7 +7071,7 @@ void CVideoDatabase::ExportActorThumbs(const CVideoInfoTag& tag)
       thumbFile.Replace(" ","_");
       thumbFile += ".tbn";
       if (!CFile::Cache(strThumb,CUtil::AddFileToFolder(strDir,thumbFile)))
-        CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')", 
+        CLog::Log(LOGERROR, "%s: Actor thumb export failed! ('%s' -> '%s')",
                   __FUNCTION__, strThumb.c_str(), CUtil::AddFileToFolder(strDir,thumbFile).c_str());
     }
   }
