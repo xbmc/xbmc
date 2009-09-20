@@ -18,7 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
+
+#include "system.h"
 #include "AudioContext.h"
 #include "ExternalPlayer.h"
 #include "GUIDialogOK.h"
