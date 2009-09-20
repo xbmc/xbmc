@@ -22,6 +22,7 @@
 #include "TextureDX.h"
 #include "WindowingFactory.h"
 #include "../xbmc/FileSystem/SpecialProtocol.h"
+#include "utils/log.h"
 
 #ifdef HAS_DX
 
