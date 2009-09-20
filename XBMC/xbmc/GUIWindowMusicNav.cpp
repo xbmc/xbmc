@@ -1069,8 +1069,8 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
     CFileItemPtr item = items[i];
     if (!item->HasMusicInfoTag() || item->HasProperty("fanart_image"))
       continue;
-    map<CStdString, CStdString>::iterator i = artists.find(item->GetMusicInfoTag()->GetArtist());
-    if (i == artists.end())
+    map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
+    if (artist == artists.end())
     {
       CStdString strFanart = item->GetCachedFanart();
       if (XFILE::CFile::Exists(strFanart))
@@ -1080,7 +1080,7 @@ void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
       artists.insert(make_pair(item->GetMusicInfoTag()->GetArtist(), strFanart));
     }
     else
-      item->SetProperty("fanart_image",i->second);
+      item->SetProperty("fanart_image",artist->second);
   }
 }
 
