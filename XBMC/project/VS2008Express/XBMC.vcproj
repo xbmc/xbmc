@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -55,7 +55,7 @@
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
@@ -144,7 +144,7 @@
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
@@ -238,7 +238,7 @@
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
@@ -327,7 +327,7 @@
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				ProgramDataBaseFileName="$(IntDir)\XBMC.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
@@ -2409,58 +2409,6 @@
 			<File
 				RelativePath="..\..\xbmc\CueDocument.cpp"
 				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\stdafx.cpp"
-				>
-				<FileConfiguration
-					Name="Release (OpenGL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug (DirectX)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (DirectX)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug (OpenGL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
 			</File>
 			<Filter
 				Name="Settings"
@@ -5356,6 +5304,14 @@
 						RelativePath="..\..\xbmc\XBMC_keyboard.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\xbmc\XBMC_keysym.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\XBMC_vkeys.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Window System"
@@ -5408,6 +5364,10 @@
 						RelativePath="..\..\xbmc\MouseStat.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\xbmc\XBMC_mouse.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Events"
@@ -5430,6 +5390,14 @@
 					</File>
 					<File
 						RelativePath="..\..\xbmc\WinEventsWin32.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\XBMC_events.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\XBMC_stdinc.h"
 						>
 					</File>
 				</Filter>
@@ -6000,10 +5968,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\utils\Splash.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\stdafx.h"
 				>
 			</File>
 			<File

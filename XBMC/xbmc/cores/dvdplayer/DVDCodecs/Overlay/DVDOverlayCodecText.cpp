@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "DVDOverlayCodecText.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"

@@ -27,7 +27,6 @@
 #include "emu_msvcrt.h"
 
 #else
-
 #include "../DllLoader.h"
 #ifdef _XBOX
 #include <string.h>

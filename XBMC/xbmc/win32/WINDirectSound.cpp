@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "WINDirectSound.h"
 #include "SingleLock.h"
 #include "log.h"

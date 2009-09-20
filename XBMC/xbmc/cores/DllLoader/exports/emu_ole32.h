@@ -22,6 +22,10 @@
  *
  */
 
+#ifdef _WIN32
+#include "system.h" // for WINAPI et. al.
+#endif
+
 extern "C" HRESULT  WINAPI dllCoInitialize();
 extern "C" void     WINAPI dllCoUninitialize();
 extern "C" HRESULT  WINAPI dllCoCreateInstance( REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid, LPVOID * ppv);

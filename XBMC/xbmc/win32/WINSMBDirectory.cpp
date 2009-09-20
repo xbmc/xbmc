@@ -20,7 +20,6 @@
  */
 
 
-#include "stdafx.h"
 #include "WINSMBDirectory.h"
 #include "Util.h"
 #include "URL.h"

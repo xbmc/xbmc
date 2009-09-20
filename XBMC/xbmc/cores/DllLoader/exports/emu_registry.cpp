@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #ifdef _XBOX
 #include <xtl.h>
 #else

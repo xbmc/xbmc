@@ -1,5 +1,4 @@
 
-#include "stdafx.h" 
 /*
  * XBMC Media Center
  * Copyright (c) 2002 Frodo

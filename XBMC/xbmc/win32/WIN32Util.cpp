@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "WIN32Util.h"
 #include "GUISettings.h"
 #include "../Util.h"

@@ -26,7 +26,9 @@
 #define _XBMC_stdinc_h
 
 #ifdef HAVE_CONFIG_H
+#ifndef _WIN32 // HAVE_CONFIG_H is defined somewhere in the dvdplayer stuff, which isn't the config.h we're wanting here
 #include "config.h"
+#endif
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
