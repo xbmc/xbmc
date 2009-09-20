@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "LastFmManager.h"
 #include "Application.h"
 #include "ApplicationRenderer.h"

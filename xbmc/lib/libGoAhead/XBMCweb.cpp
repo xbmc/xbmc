@@ -11,7 +11,7 @@
 
 /********************************* Includes ***********************************/
 
-#include "stdafx.h"
+#include "system.h"
 #include "XBMCweb.h"
 #undef min
 #undef max

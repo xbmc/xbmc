@@ -9,9 +9,6 @@ INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
 
 INCLUDES+=-Ilib/libcdio/libcdio/include
 
-
-PCH=stdafx.h
-
 SRCS=Application.cpp \
      CueDocument.cpp \
      GUISettings.cpp \

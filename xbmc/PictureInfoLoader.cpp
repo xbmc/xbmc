@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PictureInfoLoader.h"
 #include "PictureInfoTag.h"
 #include "GUISettings.h"

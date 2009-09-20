@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "Util.h"
 #include "MusicFileDirectory.h"
 #include "FileItem.h"

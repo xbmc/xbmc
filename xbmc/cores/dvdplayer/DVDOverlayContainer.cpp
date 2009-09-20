@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDOverlayContainer.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 

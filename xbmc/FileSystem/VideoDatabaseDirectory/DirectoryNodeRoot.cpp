@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNodeRoot.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;

@@ -19,23 +19,15 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "ZipManager.h"
 #include "Util.h"
 #include "URL.h"
 #include "FileSystem/File.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "utils/EndianSwap.h"
 
-// All values are stored in little-endian byte order in .zip file
-// Use SDL macros to perform byte swapping on big-endian systems
-// This assumes that big-endian systems use SDL
-// Macros do not do anything on little-endian systems
-// SDL_endian.h is already included in PlatformDefs.h
-#ifndef HAS_SDL
-#define SDL_SwapLE16(X) (X)
-#define SDL_SwapLE32(X) (X)
-#endif
 
 #ifndef min
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
@@ -93,7 +85,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   SZipEntry ze;
   unsigned int hdr;
   mFile.Read(&hdr, 4);
-  if( SDL_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
+  if( Endian_SwapLE32(hdr) != ZIP_LOCAL_HEADER )
   {
     CLog::Log(LOGDEBUG,"ZipManager: not a zip file!");
     mFile.Close();
@@ -128,7 +120,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     mFile.Read(buffer,blockSize+3);
     for (int i=blockSize-1; !found && (i >= 0); i--)
     {
-      if ( SDL_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
+      if ( Endian_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
       {
         // Set current position to start of end of central directory
         mFile.Seek(fileSize-ECDREC_SIZE+1-(blockSize*nb)+i,SEEK_SET);
@@ -144,7 +136,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     mFile.Read(buffer,extraBlockSize+3);
     for (int i=extraBlockSize-1; !found && (i >= 0); i--)
     {
-      if ( SDL_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
+      if ( Endian_SwapLE32(*((unsigned int*)(buffer+i))) == ZIP_END_CENTRAL_HEADER )
       {
         // Set current position to start of end of central directory
         mFile.Seek(fileSize-ECDREC_SIZE+1-searchSize+i,SEEK_SET);
@@ -166,10 +158,10 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   // Get size of the central directory
   mFile.Seek(12,SEEK_CUR);
   mFile.Read(&cdirSize,4);
-  cdirSize = SDL_SwapLE32(cdirSize);  
+  cdirSize = Endian_SwapLE32(cdirSize);  
   // Get Offset of start of central directory with respect to the starting disk number
   mFile.Read(&cdirOffset,4);
-  cdirOffset = SDL_SwapLE32(cdirOffset);
+  cdirOffset = Endian_SwapLE32(cdirOffset);
 
   // Go to the start of central directory
   mFile.Seek(cdirOffset,SEEK_SET);
@@ -201,7 +193,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     // !! local header extra field length != central file header extra field length !!
     mFile.Seek(ze.lhdrOffset+28,SEEK_SET);
     mFile.Read(&(ze.elength),2);
-    ze.elength = SDL_SwapLE16(ze.elength);
+    ze.elength = Endian_SwapLE16(ze.elength);
     
     // Compressed data offset = local header offset + size of local header + filename length + local file header extra field length
     ze.offset = ze.lhdrOffset + LHDR_SIZE + ze.flength + ze.elength;
@@ -286,37 +278,37 @@ void CZipManager::CleanUp(const CStdString& strArchive, const CStdString& strPat
 // Read local file header
 void CZipManager::readHeader(const char* buffer, SZipEntry& info)
 {
-  info.header = SDL_SwapLE32(*(unsigned int*)buffer);
-  info.version = SDL_SwapLE16(*(unsigned short*)(buffer+4));
-  info.flags = SDL_SwapLE16(*(unsigned short*)(buffer+6));
-  info.method = SDL_SwapLE16(*(unsigned short*)(buffer+8));
-  info.mod_time = SDL_SwapLE16(*(unsigned short*)(buffer+10));
-  info.mod_date = SDL_SwapLE16(*(unsigned short*)(buffer+12));
-  info.crc32 = SDL_SwapLE32(*(unsigned int*)(buffer+14));
-  info.csize = SDL_SwapLE32(*(unsigned int*)(buffer+18));
-  info.usize = SDL_SwapLE32(*(unsigned int*)(buffer+22));
-  info.flength = SDL_SwapLE16(*(unsigned short*)(buffer+26));
-  info.elength = SDL_SwapLE16(*(unsigned short*)(buffer+28));
+  info.header = Endian_SwapLE32(*(unsigned int*)buffer);
+  info.version = Endian_SwapLE16(*(unsigned short*)(buffer+4));
+  info.flags = Endian_SwapLE16(*(unsigned short*)(buffer+6));
+  info.method = Endian_SwapLE16(*(unsigned short*)(buffer+8));
+  info.mod_time = Endian_SwapLE16(*(unsigned short*)(buffer+10));
+  info.mod_date = Endian_SwapLE16(*(unsigned short*)(buffer+12));
+  info.crc32 = Endian_SwapLE32(*(unsigned int*)(buffer+14));
+  info.csize = Endian_SwapLE32(*(unsigned int*)(buffer+18));
+  info.usize = Endian_SwapLE32(*(unsigned int*)(buffer+22));
+  info.flength = Endian_SwapLE16(*(unsigned short*)(buffer+26));
+  info.elength = Endian_SwapLE16(*(unsigned short*)(buffer+28));
 }
 
 // Read central file header (from central directory)
 void CZipManager::readCHeader(const char* buffer, SZipEntry& info)
 {
-  info.header = SDL_SwapLE32(*(unsigned int*)buffer);
+  info.header = Endian_SwapLE32(*(unsigned int*)buffer);
   // Skip version made by
-  info.version = SDL_SwapLE16(*(unsigned short*)(buffer+6));
-  info.flags = SDL_SwapLE16(*(unsigned short*)(buffer+8));
-  info.method = SDL_SwapLE16(*(unsigned short*)(buffer+10));
-  info.mod_time = SDL_SwapLE16(*(unsigned short*)(buffer+12));
-  info.mod_date = SDL_SwapLE16(*(unsigned short*)(buffer+14));
-  info.crc32 = SDL_SwapLE32(*(unsigned int*)(buffer+16));
-  info.csize = SDL_SwapLE32(*(unsigned int*)(buffer+20));
-  info.usize = SDL_SwapLE32(*(unsigned int*)(buffer+24));
-  info.flength = SDL_SwapLE16(*(unsigned short*)(buffer+28));
-  info.eclength = SDL_SwapLE16(*(unsigned short*)(buffer+30));
-  info.clength = SDL_SwapLE16(*(unsigned short*)(buffer+32));
+  info.version = Endian_SwapLE16(*(unsigned short*)(buffer+6));
+  info.flags = Endian_SwapLE16(*(unsigned short*)(buffer+8));
+  info.method = Endian_SwapLE16(*(unsigned short*)(buffer+10));
+  info.mod_time = Endian_SwapLE16(*(unsigned short*)(buffer+12));
+  info.mod_date = Endian_SwapLE16(*(unsigned short*)(buffer+14));
+  info.crc32 = Endian_SwapLE32(*(unsigned int*)(buffer+16));
+  info.csize = Endian_SwapLE32(*(unsigned int*)(buffer+20));
+  info.usize = Endian_SwapLE32(*(unsigned int*)(buffer+24));
+  info.flength = Endian_SwapLE16(*(unsigned short*)(buffer+28));
+  info.eclength = Endian_SwapLE16(*(unsigned short*)(buffer+30));
+  info.clength = Endian_SwapLE16(*(unsigned short*)(buffer+32));
   // Skip disk number start, internal/external file attributes
-  info.lhdrOffset = SDL_SwapLE32(*(unsigned int*)(buffer+42));
+  info.lhdrOffset = Endian_SwapLE32(*(unsigned int*)(buffer+42));
   
 }
 

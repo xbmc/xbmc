@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogKeyboard.h"
 #include "Util.h"

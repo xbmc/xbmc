@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicAlbumInfo.h"
 #include "ScraperParser.h"
 #include "ScraperSettings.h"

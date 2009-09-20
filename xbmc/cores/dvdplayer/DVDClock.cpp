@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDClock.h"
 #include "VideoReferenceClock.h"
 #include <math.h>

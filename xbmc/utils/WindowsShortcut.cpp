@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 // WindowsShortcut.cpp: implementation of the CWindowsShortcut class.
 //
 //////////////////////////////////////////////////////////////////////

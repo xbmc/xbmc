@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
 #include "Application.h"

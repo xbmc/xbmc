@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "XBMSDirectory.h"
 #include "Util.h"
 #include "SectionLoader.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderMidi.h"
 #include "Util.h"
 #include "MusicInfoTag.h"

@@ -145,7 +145,6 @@ bool CTextureMap::Release()
   m_referenceCount--;
   if (!m_referenceCount)
   {
-    FreeTexture();
     return true;
   }
   return false;
@@ -440,7 +439,8 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
       if (pMap->Release())
       {
         //CLog::Log(LOGINFO, "  cleanup:%s", strTextureName.c_str());
-        delete pMap;
+        // add to our textures to free
+        m_unusedTextures.push_back(pMap);
         i = m_vecTextures.erase(i);
       }
       return;
@@ -448,6 +448,14 @@ void CGUITextureManager::ReleaseTexture(const CStdString& strTextureName)
     ++i;
   }
   CLog::Log(LOGWARNING, "%s: Unable to release texture %s", __FUNCTION__, strTextureName.c_str());
+}
+
+void CGUITextureManager::FreeUnusedTextures()
+{
+  CSingleLock lock(g_graphicsContext);
+  for (ivecTextures i = m_unusedTextures.begin(); i != m_unusedTextures.end(); ++i)
+    delete *i;
+  m_unusedTextures.clear();
 }
 
 void CGUITextureManager::Cleanup()

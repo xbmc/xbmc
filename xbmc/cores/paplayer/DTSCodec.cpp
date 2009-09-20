@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "utils/log.h"
 #ifdef HAS_DTS_CODEC
 #include "DTSCodec.h"

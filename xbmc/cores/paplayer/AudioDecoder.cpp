@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "AudioDecoder.h"
 #include "CodecFactory.h"
 #include "GUISettings.h"

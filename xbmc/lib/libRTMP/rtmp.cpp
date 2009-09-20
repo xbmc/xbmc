@@ -19,13 +19,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "stdafx.h"
 #include "PlatformInclude.h"
 #include "rtmp.h"
 #include "AMFObject.h"
 #include <assert.h>
 
 #ifdef _LINUX
+  #include <sys/errno.h>
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <netdb.h>

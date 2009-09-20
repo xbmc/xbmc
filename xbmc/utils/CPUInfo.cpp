@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "CPUInfo.h"
 #include <string>
 #include <string.h>

@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
 #include "GUIWindowMusicInfo.h"

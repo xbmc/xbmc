@@ -20,7 +20,6 @@
  */
 
 #if defined(_LINUX)
-#include "stdafx.h"
 #include <locale>
 #include <wchar.h>
 #include "../DllLoaderContainer.h"
@@ -28,7 +27,6 @@
 #include "emu_msvcrt.h"
 
 #else
-
 #include "../DllLoader.h"
 #ifdef _XBOX
 #include <string.h>

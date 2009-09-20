@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileLastFM.h"
 
 namespace XFILE

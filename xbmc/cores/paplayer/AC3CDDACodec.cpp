@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "AC3CDDACodec.h"
 #ifdef HAS_AC3_CDDA_CODEC
 #include "lib/libcdio/sector.h"

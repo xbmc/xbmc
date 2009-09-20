@@ -25,6 +25,8 @@
 //
 // by Bobbin007 in 2003
 
+#include "system.h"
+
 class CMutex
 {
 public:

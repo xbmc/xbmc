@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNodeAlbumCompilations.h"
 #include "QueryParams.h"
 #include "MusicDatabase.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "HTSPSession.h"
 #include "URL.h"
 #include "VideoInfoTag.h"

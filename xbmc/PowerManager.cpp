@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "PowerManager.h"
 #include "Application.h"
 #include "GUIWindowManager.h"

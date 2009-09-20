@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileItem.h"
 #include "VideoInfoScanner.h"
 #include "FileSystem/DirectoryCache.h"

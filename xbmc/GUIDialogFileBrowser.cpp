@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogFileBrowser.h"
 #include "Util.h"
 #include "GUIDialogNetworkSetup.h"

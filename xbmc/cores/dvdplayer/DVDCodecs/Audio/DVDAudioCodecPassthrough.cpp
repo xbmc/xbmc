@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDAudioCodecPassthrough.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"

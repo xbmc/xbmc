@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowMusicNav.h"
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
@@ -1057,6 +1056,31 @@ void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
 
     if (pos != CStdString::npos)
       items.Add(item);
+  }
+}
+
+void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
+{
+  CGUIWindowMusicBase::OnPrepareFileItems(items);
+  // set fanart
+  map<CStdString, CStdString> artists;
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr item = items[i];
+    if (!item->HasMusicInfoTag() || item->HasProperty("fanart_image"))
+      continue;
+    map<CStdString, CStdString>::iterator i = artists.find(item->GetMusicInfoTag()->GetArtist());
+    if (i == artists.end())
+    {
+      CStdString strFanart = item->GetCachedFanart();
+      if (XFILE::CFile::Exists(strFanart))
+        item->SetProperty("fanart_image",strFanart);
+      else
+        strFanart = "";
+      artists.insert(make_pair(item->GetMusicInfoTag()->GetArtist(), strFanart));
+    }
+    else
+      item->SetProperty("fanart_image",i->second);
   }
 }
 

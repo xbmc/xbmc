@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Directory.h"
 #include "FactoryDirectory.h"
 #include "FactoryFileDirectory.h"

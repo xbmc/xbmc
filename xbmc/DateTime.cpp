@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DateTime.h"
 #include "LangInfo.h"
 #include "LocalizeStrings.h"

@@ -19,7 +19,6 @@
  *
  */
  
-#include "stdafx.h"
 #include "EmuFileWrapper.h"
 #include "FileSystem/File.h"
 #include "utils/Mutex.h"

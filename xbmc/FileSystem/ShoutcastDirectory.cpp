@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "ShoutcastDirectory.h"
 #include "Util.h"
 #include "FileCurl.h"

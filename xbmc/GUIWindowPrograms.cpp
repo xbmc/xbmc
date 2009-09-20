@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowPrograms.h"
 #include "Util.h"
 #include "Shortcut.h"

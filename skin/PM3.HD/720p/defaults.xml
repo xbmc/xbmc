@@ -122,8 +122,8 @@
 		<height>42</height>
 		<radiowidth>24</radiowidth>
 		<radioheight>24</radioheight>
-		<textureradiofocus>radiobutton-focus.png</textureradiofocus>
-		<textureradionofocus>radiobutton-nofocus.png</textureradionofocus>
+		<textureradioon>radiobutton-focus.png</textureradioon>
+		<textureradiooff>radiobutton-nofocus.png</textureradiooff>
 		<texturefocus>button-focus.png</texturefocus>
 		<texturenofocus>button-nofocus.png</texturenofocus>
 		<label>215</label>

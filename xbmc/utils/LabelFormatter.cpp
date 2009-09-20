@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "LabelFormatter.h"
 #include "GUISettings.h"
 #include "RegExp.h"

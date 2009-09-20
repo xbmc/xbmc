@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SIDCodec.h"
 #include "cores/DllLoader/DllLoader.h"
 #include "Util.h"

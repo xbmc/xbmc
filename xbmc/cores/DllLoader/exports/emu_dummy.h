@@ -27,7 +27,7 @@ extern "C"
 {
 #endif
 
-  void not_implement( LPCSTR );
+  void not_implement( char* );
 
 #ifdef __cplusplus
 }

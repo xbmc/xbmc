@@ -21,6 +21,7 @@
  */
 
 #include "ImusicInfoTagLoader.h"
+#include "system.h"
 
 namespace MUSIC_INFO
 {

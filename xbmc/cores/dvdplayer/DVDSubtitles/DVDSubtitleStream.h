@@ -21,6 +21,8 @@
  *
  */
 
+#include "system.h"
+
 #include <string>
 
 class CDVDInputStream;

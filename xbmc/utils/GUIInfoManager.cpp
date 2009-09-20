@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIDialogSeekBar.h"
 #include "GUIMediaWindow.h"
 #include "GUIDialogFileBrowser.h"
@@ -3730,10 +3730,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         if( item->m_bIsFolder )
 	  path = item->GetVideoInfoTag()->m_strPath;
         else
-          CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
+          CUtil::GetParentPath(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
       }
       else
-        CUtil::GetDirectory(item->m_strPath, path);
+        CUtil::GetParentPath(item->m_strPath, path);
       CURL url(path);
       url.GetURLWithoutUserDetails(path);
       if (info==CONTAINER_FOLDERNAME)

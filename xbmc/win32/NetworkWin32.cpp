@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include <errno.h>
 #include "PlatformDefs.h"
 #include "NetworkWin32.h"

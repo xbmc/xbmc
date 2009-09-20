@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowScripts.h"
 #include "Util.h"
 #ifdef HAS_PYTHON

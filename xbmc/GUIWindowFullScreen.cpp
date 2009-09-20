@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
 #include "Util.h"
@@ -464,16 +464,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
 
       // switch resolution
-      CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(true);
-#if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
-  	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-      {
-      	RESOLUTION res = g_renderManager.GetResolution();
-      	g_graphicsContext.SetVideoResolution(res);
-      }
-#endif
-      lock.Leave();
 
 #ifdef HAS_VIDEO_PLAYBACK
       // make sure renderer is uptospeed
@@ -522,13 +513,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (g_graphicsContext);
       CUtil::RestoreBrightnessContrastGamma();
       g_graphicsContext.SetFullScreenVideo(false);
-#if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
-  	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-  	  {
-        RESOLUTION res = g_graphicsContext.GetVideoResolution();
-        g_graphicsContext.SetVideoResolution(res);
-      }
-#endif
       lock.Leave();
 
 #ifdef HAS_VIDEO_PLAYBACK

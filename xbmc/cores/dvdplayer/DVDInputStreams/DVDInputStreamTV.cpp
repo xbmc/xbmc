@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamTV.h"
 #include "FileSystem/CMythFile.h"
 #include "FileSystem/VTPFile.h"

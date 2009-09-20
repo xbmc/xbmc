@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamFFmpeg.h"
 
 using namespace XFILE;

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "File.h"
 #include "Favourites.h"
 #include "Util.h"

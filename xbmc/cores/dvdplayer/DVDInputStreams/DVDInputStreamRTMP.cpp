@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileItem.h"
 #include "DVDInputStreamRTMP.h"
 #include "VideoInfoTag.h"

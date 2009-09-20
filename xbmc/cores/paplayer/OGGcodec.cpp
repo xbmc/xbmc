@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "OGGcodec.h"
 #include "OggTag.h"
 #include "Util.h"

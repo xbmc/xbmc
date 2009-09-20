@@ -15,7 +15,6 @@
 // NCSA Telnet FTP server. Has LIST = NLST (and bad NLST for directories).
 //-----------------------------------------------------------------------------------
 
-#include "stdafx.h"
 #include <time.h>
 #include "FTPParse.h"
 

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SIDFileDirectory.h"
 
 using namespace MUSIC_INFO;

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DownloadQueueManager.h"
 
 #include <assert.h>

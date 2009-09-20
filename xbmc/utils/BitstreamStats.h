@@ -26,6 +26,9 @@
 #ifdef _LINUX
 #include "linux/PlatformDefs.h"
 #endif
+#ifdef _WIN32
+#include "system.h" // for LARGE_INTEGER
+#endif
 
 class BitstreamStats
 {

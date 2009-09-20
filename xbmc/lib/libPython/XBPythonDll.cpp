@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "XBPythonDll.h"
 #include "cores/DllLoader/DllLoader.h"
 

@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIButtonControl.h"
 #include "GUIDialogNumeric.h"

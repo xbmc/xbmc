@@ -9,7 +9,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "stdafx.h"
+
+#include "system.h"
 #include "AdvancedSettings.h"
 #include "GUIWindowManager.h"
 #include "Application.h"

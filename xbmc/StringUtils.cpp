@@ -30,8 +30,8 @@
 //------------------------------------------------------------------------
 
 
-#include "stdafx.h"
 #include "StringUtils.h"
+
 #include <math.h>
 #include <sstream>
 

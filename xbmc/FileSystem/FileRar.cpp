@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "FileRar.h"
 #include <sys/stat.h>
 #include "Util.h"

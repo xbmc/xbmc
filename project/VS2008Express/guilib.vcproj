@@ -48,8 +48,8 @@
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="include.h"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
@@ -123,8 +123,8 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="0"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="include.h"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
@@ -192,8 +192,8 @@
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="include.h"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
@@ -267,8 +267,8 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="0"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="include.h"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough=""
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
@@ -313,10 +313,6 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath="..\..\guilib\ActionManager.cpp"
-				>
-			</File>
 			<File
 				RelativePath="..\..\guilib\AnimatedGif.cpp"
 				>
@@ -542,58 +538,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\include.cpp"
-				>
-				<FileConfiguration
-					Name="Release (OpenGL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug (DirectX)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (DirectX)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug (OpenGL)|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="1"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\guilib\IWindowManagerCallback.cpp"
 				>
 			</File>
@@ -683,10 +627,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\..\guilib\ActionManager.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\guilib\AnimatedGif.h"
 				>
@@ -934,30 +874,6 @@
 			<File
 				RelativePath="..\..\guilib\IMsgTargetCallback.h"
 				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\include.h"
-				>
-				<FileConfiguration
-					Name="Release (OpenGL)|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="update_svn_rev.bat&#x0D;&#x0A;"
-						AdditionalDependencies="..\..\.svn\entries"
-						Outputs="..\..\xbmc\win32\svn_rev.h"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release (DirectX)|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="update_svn_rev.bat&#x0D;&#x0A;"
-						AdditionalDependencies="..\..\.svn\entries"
-						Outputs="..\..\xbmc\win32\svn_rev.h"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\guilib\IWindowManagerCallback.h"

@@ -18,7 +18,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "XBApplicationEx.h"
 #include "utils/log.h"
 #ifdef HAS_PERFORMANCE_SAMPLE

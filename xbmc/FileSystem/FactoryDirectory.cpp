@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "FactoryDirectory.h"
 #include "HDDirectory.h"
 #include "SpecialProtocolDirectory.h"

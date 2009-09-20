@@ -19,8 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include <stdio.h>
+#include "system.h"
 //#include <xobjbase.h>
 #ifndef _XBOX
 #include <objbase.h>

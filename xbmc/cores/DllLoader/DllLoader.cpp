@@ -19,7 +19,6 @@
  *
  */
  
-#include "stdafx.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
 #include "FileSystem/SpecialProtocol.h"

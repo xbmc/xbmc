@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "IRServerSuite.h"
 #include "IrssMessage.h"
 #include "ButtonTranslator.h"

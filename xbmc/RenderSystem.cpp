@@ -19,8 +19,6 @@
 *
 */
 
-
-#include "stdafx.h"
 #include "RenderSystem.h"
 
 CRenderSystemBase::CRenderSystemBase()

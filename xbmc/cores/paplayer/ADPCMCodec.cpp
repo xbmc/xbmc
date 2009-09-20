@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "ADPCMCodec.h"
 #include "utils/log.h"
 

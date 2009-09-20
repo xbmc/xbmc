@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUISpinControlEx.h"
 #include "GUIDialogNumeric.h"

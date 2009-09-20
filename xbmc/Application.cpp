@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Application.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
@@ -31,7 +30,6 @@
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
-#include "ActionManager.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #else
@@ -721,10 +719,6 @@ HRESULT CApplication::Create(HWND hWnd)
             g_settings.m_ResInfo[iResolution].iHeight,
             g_settings.m_ResInfo[iResolution].strMode.c_str());
   m_gWindowManager.Initialize();
-
-#ifdef HAS_PYTHON
-  g_actionManager.SetScriptActionCallback(&g_pythonParser);
-#endif
 
   g_Mouse.SetEnabled(g_guiSettings.GetBool("lookandfeel.enablemouse"));
 
@@ -2151,6 +2145,7 @@ void CApplication::DoRender()
   RenderScreenSaver();
 
   //g_Windowing.EndRender();
+  g_TextureManager.FreeUnusedTextures();
 
   g_graphicsContext.Unlock();
 
@@ -4296,6 +4291,8 @@ void CApplication::DoRenderFullScreen()
     // Render the mouse pointer, if visible...
     if (g_Mouse.IsActive())
       g_application.m_guiPointer.Render();
+    
+    g_TextureManager.FreeUnusedTextures();
   }
 }
 

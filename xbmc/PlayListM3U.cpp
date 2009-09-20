@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlayListM3U.h"
 #include "FileSystem/File.h"
 #include "Util.h"

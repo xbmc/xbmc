@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Fanart.h"
 #include "tinyXML/tinyxml.h"
 #include "Util.h"

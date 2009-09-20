@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "AIFFcodec.h"
 
 #define be2le(x) byte_swap((unsigned char *)&x, sizeof(x))

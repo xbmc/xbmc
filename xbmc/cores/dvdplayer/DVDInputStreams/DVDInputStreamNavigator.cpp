@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamNavigator.h"
 #include "Util.h"
 #include "LangCodeExpander.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "VideoDatabaseDirectory.h"
 #include "Util.h"
 #include "VideoDatabaseDirectory/QueryParams.h"

@@ -30,6 +30,7 @@
 #endif
 
 // include as less is possible to prevent dependencies
+#include "system.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageTracker.h"
 

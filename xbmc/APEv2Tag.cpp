@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "APEv2Tag.h"
 
 

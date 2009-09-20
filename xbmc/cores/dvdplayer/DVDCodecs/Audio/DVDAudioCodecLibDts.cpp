@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "DVDAudioCodecLibDts.h"

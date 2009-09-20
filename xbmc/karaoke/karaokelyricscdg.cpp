@@ -10,7 +10,7 @@
 //
 //
 
-#include "stdafx.h"
+#include "system.h"
 #include "AdvancedSettings.h"
 #include "GraphicContext.h"
 #include "Settings.h"

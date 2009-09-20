@@ -133,6 +133,7 @@
 #endif
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
+#include "mmsystem.h"
 #include "DInput.h"
 #include "DSound.h"
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
@@ -179,6 +180,8 @@
 #include <GLES2/gl2ext.h>
 #endif
 
+#define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
+#define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 
 // Useful pixel colour manipulation macros

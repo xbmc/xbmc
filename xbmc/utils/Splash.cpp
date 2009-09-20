@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "Splash.h"
 #include "GUIImage.h"
 #include "FileSystem/File.h"

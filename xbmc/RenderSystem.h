@@ -27,6 +27,7 @@
 #include "Geometry.h"
 #include "TransformMatrix.h"
 #include "StdString.h"
+#include "system.h"
 
 
 typedef enum _RenderingSystemType

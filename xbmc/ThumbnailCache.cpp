@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "ThumbnailCache.h"
 #include "FileSystem/File.h"
 #include "utils/SingleLock.h"

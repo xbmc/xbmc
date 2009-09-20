@@ -24,6 +24,8 @@
 
 #include <map>
 #include "tinyXML/tinyxml.h"
+#include "system.h"
+
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventClient.h"
 #endif

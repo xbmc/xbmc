@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryCache.h"
 #include "Util.h"
 #include "Settings.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "utils/SingleLock.h"
 #include "DVDPlayerAudio.h"
 #include "DVDCodecs/Audio/DVDAudioCodec.h"

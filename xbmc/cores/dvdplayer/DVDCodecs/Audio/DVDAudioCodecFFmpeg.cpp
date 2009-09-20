@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDAudioCodecFFmpeg.h"
 #ifdef _LINUX
 #include "XMemUtils.h"

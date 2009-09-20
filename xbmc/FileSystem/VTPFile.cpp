@@ -1,5 +1,4 @@
 
-#include "stdafx.h"
 #include "VTPFile.h"
 #include "VTPSession.h"
 #include "Util.h"

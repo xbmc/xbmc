@@ -19,15 +19,9 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "WAVcodec.h"
-
-// Use SDL macros to perform byte swapping on big-endian systems
-// SDL_endian.h is already included in PlatformDefs.h
-#ifndef HAS_SDL
-#define SDL_SwapLE16(X) (X)
-#define SDL_SwapLE32(X) (X)
-#endif
+#include "utils/EndianSwap.h"
 
 #if defined(WIN32)
 #include <mmreg.h>
@@ -70,7 +64,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
   // read header
   WAVE_RIFFHEADER riffh;
   m_file.Read(&riffh, sizeof(WAVE_RIFFHEADER));
-  riffh.filesize = SDL_SwapLE32(riffh.filesize);
+  riffh.filesize = Endian_SwapLE32(riffh.filesize);
 
   // file valid?
   if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
@@ -88,7 +82,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
     // always seeking to the start of a chunk
     m_file.Seek(offset + sizeof(WAVE_CHUNK), SEEK_SET);
     m_file.Read(&chunk, sizeof(WAVE_CHUNK));
-    chunk.chunksize = SDL_SwapLE32(chunk.chunksize);
+    chunk.chunksize = Endian_SwapLE32(chunk.chunksize);
 
     if (!strncmp(chunk.chunk_id, "fmt ", 4))
     {
@@ -99,15 +93,15 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
       m_file.Read(&wfx, sizeof(WAVEFORMATEX));
 
       //  Get file info
-      m_SampleRate    = SDL_SwapLE32(wfx.Format.nSamplesPerSec);
-      m_Channels      = SDL_SwapLE16(wfx.Format.nChannels);
-      m_BitsPerSample = SDL_SwapLE16(wfx.Format.wBitsPerSample);
+      m_SampleRate    = Endian_SwapLE32(wfx.Format.nSamplesPerSec);
+      m_Channels      = Endian_SwapLE16(wfx.Format.nChannels);
+      m_BitsPerSample = Endian_SwapLE16(wfx.Format.wBitsPerSample);
 
       //  Is it an extensible wav file
-      if ((SDL_SwapLE16(wfx.Format.wFormatTag) == WAVE_FORMAT_EXTENSIBLE) && (SDL_SwapLE16(wfx.Format.cbSize) >= 22))
+      if ((Endian_SwapLE16(wfx.Format.wFormatTag) == WAVE_FORMAT_EXTENSIBLE) && (Endian_SwapLE16(wfx.Format.cbSize) >= 22))
       {
         m_file.Read(&wfx + sizeof(WAVEFORMATEX), sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX));
-        m_ChannelMask = SDL_SwapLE32(wfx.dwChannelMask);
+        m_ChannelMask = Endian_SwapLE32(wfx.dwChannelMask);
       } else {
         m_ChannelMask = 0;
       }

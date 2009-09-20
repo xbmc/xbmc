@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SPCCodec.h"
 #include "cores/DllLoader/DllLoader.h"
 #include "../DllLoader/SoLoader.h"

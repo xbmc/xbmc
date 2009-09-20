@@ -22,6 +22,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 #include "XBMC_events.h"
+#include "system.h"
 
 class CKeyboardStat
 {

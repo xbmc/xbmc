@@ -20,7 +20,7 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "stdafx.h"
+#include "system.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -214,10 +214,9 @@ void CLinuxRendererGL::CalculateFrameAspectRatio(int desired_width, int desired_
 //Get resolution based on current mode.
 RESOLUTION CLinuxRendererGL::GetResolution()
 {
-  if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
-  {
+  if (g_graphicsContext.IsFullScreenRoot() && (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
     return m_iResolution;
-  }
+
   return g_graphicsContext.GetVideoResolution();
 }
 
@@ -241,7 +240,7 @@ void CLinuxRendererGL::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, f
   // calculate the correct output frame ratio (using the users pixel ratio setting
   // and the output pixel ratio setting)
 
-  float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
+  float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
 
   // allow a certain error to maximize screen size
   float fCorrection = fScreenWidth / fScreenHeight / fOutputFrameRatio - 1.0;
@@ -305,11 +304,9 @@ void CLinuxRendererGL::ManageDisplay()
 
 void CLinuxRendererGL::ChooseBestResolution(float fps)
 {
-  RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
-  if ( DisplayRes == RES_AUTORES )
-    m_iResolution = g_graphicsContext.GetVideoResolution();
-  else
-    m_iResolution = DisplayRes;
+  m_iResolution = g_guiSettings.m_LookAndFeelResolution;
+  if ( m_iResolution == RES_WINDOW )
+    m_iResolution = RES_DESKTOP;
 
   // Adjust refreshrate to match source fps
 #if !defined(__APPLE__)
@@ -340,7 +337,7 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
   }
   else
 #endif
-    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", DisplayRes == RES_AUTORES ? "AUTO" : "USER", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
+    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", m_iResolution == RES_DESKTOP ? "DESKTOP" : "USER", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
 }
 
 bool CLinuxRendererGL::ValidateRenderTarget()

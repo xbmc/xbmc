@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Edl.h"
 #include "StringUtils.h"
 #include "Util.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SHNcodec.h"
 #include "utils/log.h"
 

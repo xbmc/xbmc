@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "AutoSwitch.h"
 #include "GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "Settings.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "ScraperParser.h"
 
 #ifdef _LINUX

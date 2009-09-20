@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "DVDPlayer.h"
 
 #include "DVDInputStreams/DVDInputStream.h"
@@ -1468,10 +1468,9 @@ void CDVDPlayer::CheckAutoSceneSkip()
      */
     __int64 seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
     /*
-     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
-     * to accurate seeking significantly slows done the apparent speed of seeking.
+     * Seeking is flushed and accurate, just like SeekTime()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, GetPlaySpeed() < 0, false, true, false));
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, GetPlaySpeed() < 0, true, true, false));
     /*
      * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
@@ -1487,10 +1486,9 @@ void CDVDPlayer::CheckAutoSceneSkip()
               __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
               CEdl::MillisecondsToTimeString(clock).c_str());
     /*
-     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
-     * to accurate seeking significantly slows done the apparent speed of seeking.
+     * Seeking is flushed and inaccurate, just like Seek()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, false, true, false));
+    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, true, false, false));
     /*
      * Each commercial break is only skipped once so poorly detected commercial breaks can be
      * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
@@ -2064,10 +2062,9 @@ bool CDVDPlayer::SeekScene(bool bPlus)
   if (m_Edl.GetNextSceneMarker(bPlus, clock, &iScenemarker))
   {
     /*
-     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
-     * to accurate seeking significantly slows done the apparent speed of seeking.
+     * Seeking is flushed and inaccurate, just like Seek()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, false, true, false)); 
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, true, false, false)); 
     SyncronizeDemuxer(100);
     return true;
   }

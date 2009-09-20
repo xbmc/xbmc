@@ -280,6 +280,21 @@ void CGraphicContext::SetFullScreenVideo(bool bOnOff)
 {
   Lock();
   m_bFullScreenVideo = bOnOff;
+
+#if defined(HAS_VIDEO_PLAYBACK)
+  if(m_bFullScreenRoot)
+  {
+    if(m_bFullScreenVideo)
+      g_graphicsContext.SetVideoResolution(g_renderManager.GetResolution());
+    else if(g_guiSettings.m_LookAndFeelResolution > RES_DESKTOP)
+      g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+    else
+      g_graphicsContext.SetVideoResolution(RES_DESKTOP);    
+  }
+  else
+    g_graphicsContext.SetVideoResolution(RES_WINDOW);
+#endif
+
   SetFullScreenViewWindow(m_Resolution);
   Unlock();
 }
@@ -309,7 +324,7 @@ bool CGraphicContext::IsValidResolution(RESOLUTION res)
   return false;
 }
 
-void CGraphicContext::SetVideoResolution(RESOLUTION &res, bool forceUpdate)
+void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
 {
   RESOLUTION lastRes = m_Resolution;
   
@@ -721,6 +736,17 @@ bool CGraphicContext::ToggleFullScreenRoot ()
       newRes = g_guiSettings.m_LookAndFeelResolution;
     else
       newRes = RES_DESKTOP;      
+
+#if defined(HAS_VIDEO_PLAYBACK)
+    if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
+    {
+      /* we need to trick renderer that we are fullscreen already so it gives us a valid value */
+      m_bFullScreenRoot = true;
+      newRes = g_renderManager.GetResolution();
+      m_bFullScreenRoot = false;
+    }
+#endif
+
   }
 
   SetVideoResolution(newRes);

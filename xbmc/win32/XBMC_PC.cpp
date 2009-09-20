@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "../../xbmc/Application.h"
 #include "../../xbmc/AdvancedSettings.h"
 #include "WIN32Util.h"

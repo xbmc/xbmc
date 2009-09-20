@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDMessageTracker.h"
 #include "DVDMessage.h"
 

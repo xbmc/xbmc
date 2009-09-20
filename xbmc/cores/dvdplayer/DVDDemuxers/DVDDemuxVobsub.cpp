@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDDemuxVobsub.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"

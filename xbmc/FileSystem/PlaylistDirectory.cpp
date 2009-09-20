@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlaylistDirectory.h"
 #include "PlayListPlayer.h"
 #include "URL.h"
