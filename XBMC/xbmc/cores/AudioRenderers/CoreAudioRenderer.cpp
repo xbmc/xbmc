@@ -20,7 +20,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "CoreAudioRenderer.h"
 #include "GUISettings.h"
 #include "Settings.h"

@@ -18,7 +18,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h" 
 // Screensaver.cpp: implementation of the CScreenSaver class.
 //
 //////////////////////////////////////////////////////////////////////
