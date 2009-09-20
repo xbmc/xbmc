@@ -36,7 +36,7 @@ public:
   void Clear();
 
   void Set(const CStdString& key, const CStdString& value);
-  CStdString Get(const CStdString& key);
+  CStdString Get(const CStdString& key) const;
 
   TiXmlElement* GetPluginRoot();
 protected:

@@ -22,17 +22,20 @@ bool CBundler::StartBundle()
 	return true;
 }
 
+// On big-endian systems, to generate the same bundle on little-endian systems,
+// we need to swap all the values in the header
+
 int CBundler::WriteBundle(const char* Filename, int NoProtect)
 {
 	// calc data offset
 	DWORD headerSize = sizeof(XPR_FILE_HEADER) + FileHeaders.size() * sizeof(FileHeader_t);
 
 	// setup header
-	XPRHeader.dwMagic = XPR_MAGIC_HEADER_VALUE | ((2+(NoProtect << 7)) << 24); // version 2
-	XPRHeader.dwHeaderSize = headerSize;
+	XPRHeader.dwMagic = SDL_SwapLE32(XPR_MAGIC_HEADER_VALUE | ((2+(NoProtect << 7)) << 24)); // version 2
+	XPRHeader.dwHeaderSize = SDL_SwapLE32(headerSize);
 
 	headerSize = (headerSize + (ALIGN-1)) & ~(ALIGN-1);
-	XPRHeader.dwTotalSize = headerSize + DataSize;
+	XPRHeader.dwTotalSize = SDL_SwapLE32(headerSize + DataSize);
 
 	// create our header in memory
 	BYTE *headerBuf = (BYTE *)malloc(headerSize);
@@ -44,7 +47,10 @@ int CBundler::WriteBundle(const char* Filename, int NoProtect)
 
 	for (std::list<FileHeader_t>::iterator i = FileHeaders.begin(); i != FileHeaders.end(); ++i)
 	{
-		i->Offset += headerSize;
+		// Swap values on big-endian systems
+		i->Offset = SDL_SwapLE32(i->Offset + headerSize);
+		i->UnpackedSize = SDL_SwapLE32(i->UnpackedSize);
+		i->PackedSize = SDL_SwapLE32(i->PackedSize);
 		memcpy(buf, &(*i), sizeof(FileHeader_t));
 		buf += sizeof(FileHeader_t);
 	}

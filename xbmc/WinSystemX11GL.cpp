@@ -118,9 +118,12 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
 
   m_iVSyncErrors = 0;
 
+  CStdString strVendor(m_RenderVendor);
+  strVendor.ToLower();
+  
   if(!enable)
     return;
-
+  
   if(m_glXGetSyncValuesOML && m_glXSwapBuffersMscOML && !m_iVSyncMode)
   {
     int64_t ust, msc, sbc;
@@ -129,7 +132,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     else
       CLog::Log(LOGWARNING, "%s - glXGetSyncValuesOML failed", __FUNCTION__);
   }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && m_RenderVendor.find("nvidia") == std::string::npos)
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && strVendor.find("nvidia") == std::string::npos)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
@@ -222,9 +225,9 @@ bool CWinSystemX11GL::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   return true;
 }
 
-bool CWinSystemX11GL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemX11GL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
-  CWinSystemX11::SetFullScreen(fullScreen, res, blankOtherDisplays, alwaysOnTop);
+  CWinSystemX11::SetFullScreen(fullScreen, res, blankOtherDisplays);
   CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);  
   
   return true;

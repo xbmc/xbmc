@@ -57,9 +57,10 @@ public:
   virtual bool DestroyWindowSystem();
   virtual bool CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
-  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop);
+  virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
   virtual bool CenterWindow();
+  virtual void NotifyAppFocusChange(bool bGaining);
   
   // CWinSystemWin32
   HWND GetHwnd() { return m_hWnd; }

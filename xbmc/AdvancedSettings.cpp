@@ -125,7 +125,7 @@ CAdvancedSettings::CAdvancedSettings()
 
   m_videoCleanDateTimeRegExp = "(.+[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])[^0-9]([ _\\,\\.\\(\\)\\[\\]\\-]|$)";
 
-  m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
@@ -167,6 +167,7 @@ CAdvancedSettings::CAdvancedSettings()
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg";
   m_dvdThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG";
+  m_fanartImages = "fanart.jpg|fanart.png";
 
   m_bMusicLibraryHideAllItems = false;
   m_bMusicLibraryAllItemsOnBottom = false;
@@ -209,9 +210,7 @@ CAdvancedSettings::CAdvancedSettings()
   m_curllowspeedtime = 5;
   m_curlretries = 3;
 
-#ifdef HAS_SDL
-  m_fullScreen = m_startFullScreen;
-#endif
+  m_fullScreen = m_startFullScreen = false;
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
@@ -642,6 +641,11 @@ bool CAdvancedSettings::Load()
   if (pThumbs)
     GetCustomExtensions(pThumbs,m_dvdThumbs);
 
+  // movie fanarts
+  TiXmlElement* pFanart = pRootElement->FirstChildElement("fanart");
+  if (pFanart)
+    GetCustomExtensions(pFanart,m_fanartImages);
+
   // music filename->tag filters
   TiXmlElement* filters = pRootElement->FirstChildElement("musicfilenamefilters");
   if (filters)
@@ -684,6 +688,18 @@ bool CAdvancedSettings::Load()
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
 
   return true;
+}
+
+void CAdvancedSettings::Clear()
+{
+  m_videoCleanStringRegExps.clear();
+  m_moviesExcludeFromScanRegExps.clear();
+  m_tvshowExcludeFromScanRegExps.clear();
+  m_videoExcludeFromListingRegExps.clear();
+  m_videoStackRegExps.clear();
+  m_audioExcludeFromScanRegExps.clear();
+  m_audioExcludeFromListingRegExps.clear();
+  m_pictureExcludeFromListingRegExps.clear();
 }
 
 void CAdvancedSettings::GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings)

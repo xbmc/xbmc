@@ -266,7 +266,9 @@ void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
 void CGUIWindowSlideShow::Render()
 {
   // reset the screensaver if we're in a slideshow
-  if (m_bSlideShow) g_application.ResetScreenSaver();
+  // (unless we are the screensaver!)
+  if (m_bSlideShow && !g_application.IsInScreenSaver())
+    g_application.ResetScreenSaver();
   int iSlides = m_slides->Size();
   if (!iSlides) return ;
 

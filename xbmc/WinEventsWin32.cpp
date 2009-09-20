@@ -356,6 +356,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           else
             wParam = VK_LMENU;
           break;
+        case VK_F4:
+          if (GetKeyState(VK_MENU) & 0x8000) //alt-f4, default event quit.
+            return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+          break;
       }
       XBMC_keysym keysym;
       TranslateKey(wParam, HIWORD(lParam), &keysym, 1);
@@ -378,10 +382,15 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             wParam = VK_LCONTROL;
           break;
         case VK_SHIFT:
-          if (GetKeyState(VK_LSHIFT) & 0x8000) 
-            wParam = VK_LSHIFT;
-          else if (GetKeyState(VK_RSHIFT) & 0x8000)
-            wParam = VK_RSHIFT;
+          {
+            uint32_t scanCodeL = MapVirtualKey(VK_LSHIFT, MAPVK_VK_TO_VSC);
+            uint32_t scanCodeR = MapVirtualKey(VK_RSHIFT, MAPVK_VK_TO_VSC);
+            uint32_t keyCode = (uint32_t)((lParam & 0xFF0000) >> 16);
+            if (keyCode == scanCodeL) 
+              wParam = VK_LSHIFT;
+            else if (keyCode == scanCodeR)
+              wParam = VK_RSHIFT;
+          }
           break;
         case VK_MENU:
           if ( lParam&EXTENDED_KEYMASK )

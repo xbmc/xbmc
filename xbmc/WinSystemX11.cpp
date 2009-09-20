@@ -100,7 +100,7 @@ bool CWinSystemX11::DestroyWindowSystem()
 
 bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
-  if(!SetFullScreen(fullScreen, res, false, false))
+  if(!SetFullScreen(fullScreen, res, false))
     return false;
 
   CTexture iconTexture;
@@ -142,7 +142,7 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   return false;
 }
 
-bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
+bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;

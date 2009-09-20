@@ -107,7 +107,7 @@ void CMusicInfoScraper::FindAlbuminfo()
     __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_info.strTitle.c_str(), m_info.strPath.c_str(), m_info.strContent.c_str(), m_info.strDate.c_str(), m_info.strFramework.c_str());
 
   CScraperUrl scrURL;
-  scrURL.ParseString(parser.Parse("CreateAlbumSearchUrl"));
+  scrURL.ParseString(parser.Parse("CreateAlbumSearchUrl",&m_info.settings));
   if (!CScraperUrl::Get(scrURL.m_url[0], strHTML, m_http) || strHTML.size() == 0)
   {
     CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);

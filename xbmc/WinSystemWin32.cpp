@@ -24,6 +24,7 @@
 #include "WinEventsWin32.h"
 #include "Settings.h"
 #include "resource.h"
+#include "AdvancedSettings.h"
 
 #ifdef _WIN32
 
@@ -111,7 +112,6 @@ bool CWinSystemWin32::CreateNewWindow(const CStdString& name, bool fullScreen, R
   CreateBlankWindow();
 
   ResizeInternal();
-  CenterWindow();
 
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
@@ -221,7 +221,13 @@ bool CWinSystemWin32::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   return true;
 }
 
-bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays, bool alwaysOnTop)
+void CWinSystemWin32::NotifyAppFocusChange(bool bGaining)
+{
+  if (m_bFullScreen && bGaining) //bump ourselves to top
+    SetWindowPos(m_hWnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_NOREDRAW);
+}
+
+bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   m_bFullScreen = fullScreen;
   m_nScreen = res.iScreen;
@@ -258,16 +264,16 @@ bool CWinSystemWin32::ResizeInternal()
   if(m_bFullScreen)
   {
     dwStyle |= WS_POPUP;
-    windowAfter = HWND_TOPMOST;
+    windowAfter = HWND_TOP;
     // save position of window mode
     m_nLeft = wi.rcClient.left;
     m_nTop = wi.rcClient.top;
   }
   else
   {
-    bFromFullScreen = (wi.dwStyle & WS_OVERLAPPED) == 0;
+    bFromFullScreen = (wi.dwStyle & WS_CAPTION) == 0;
     dwStyle |= WS_OVERLAPPEDWINDOW;
-    windowAfter = HWND_NOTOPMOST;
+    windowAfter = g_advancedSettings.m_alwaysOnTop ? HWND_TOPMOST : HWND_NOTOPMOST;
 
     if(m_nTop <= 0 || m_nLeft <= 0)
       CenterWindow();
@@ -280,7 +286,8 @@ bool CWinSystemWin32::ResizeInternal()
   }
 
   RECT wr = wi.rcWindow;
-  if (wr.bottom - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left)
+  if (wr.bottom - wr.top != rc.bottom - rc.top || wr.right - wr.left != rc.right - rc.left ||
+    (wi.dwStyle & WS_CAPTION) != (dwStyle & WS_CAPTION))
   {
     SetWindowRgn(m_hWnd, 0, false);
     SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);

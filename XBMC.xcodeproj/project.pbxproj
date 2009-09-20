@@ -8964,6 +8964,7 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_UNROLL_LOOPS = YES;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					guilib,
 					xbmc,

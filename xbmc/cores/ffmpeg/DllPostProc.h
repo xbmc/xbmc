@@ -3,6 +3,7 @@
   #include "config.h"
 #endif
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 extern "C" {
 #define HAVE_MMX

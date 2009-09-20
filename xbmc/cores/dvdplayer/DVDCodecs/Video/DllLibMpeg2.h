@@ -34,6 +34,7 @@ extern "C" {
 #endif
 }
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 class DllLibMpeg2Interface
 {

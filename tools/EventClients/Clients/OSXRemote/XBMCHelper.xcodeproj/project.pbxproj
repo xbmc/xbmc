@@ -241,6 +241,7 @@
 				CONFIGURATION_BUILD_DIR = ../../../osx;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
+				GCC_VERSION = 4.0;
 				INSTALL_PATH = /usr/local/bin;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = XBMCHelper;

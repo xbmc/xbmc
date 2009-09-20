@@ -397,17 +397,14 @@ void CScraperParser::ParseNext(TiXmlElement* element)
   }
 }
 
-const CStdString CScraperParser::Parse(const CStdString& strTag, CScraperSettings* pSettings)
+const CStdString CScraperParser::Parse(const CStdString& strTag, const CScraperSettings* pSettings)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
   if(pChildElement == NULL) return "";
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
   TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
-  if (pSettings)
-    m_settings = pSettings;
-  else
-    m_settings = NULL;
+  m_settings = pSettings;
   ParseNext(pChildStart);
   CStdString tmp = m_param[iResult-1];
 

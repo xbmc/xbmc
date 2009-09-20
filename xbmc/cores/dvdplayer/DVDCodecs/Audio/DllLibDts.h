@@ -32,6 +32,7 @@ extern "C" {
 #endif
 }
 #include "DynamicDll.h"
+#include "utils/log.h"
 #ifndef _LINUX
 typedef unsigned __int32 uint32_t;
 typedef unsigned __int16 uint16_t;

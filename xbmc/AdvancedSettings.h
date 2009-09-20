@@ -44,6 +44,7 @@ class CAdvancedSettings
     CAdvancedSettings();
 
     bool Load();
+    void Clear();
 
     static void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
     static void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
@@ -148,6 +149,7 @@ class CAdvancedSettings
 
     CStdString m_musicThumbs;
     CStdString m_dvdThumbs;
+    CStdString m_fanartImages;
 
     bool m_bMusicLibraryHideAllItems;
     int m_iMusicLibraryRecentlyAddedItems;
