@@ -76,8 +76,8 @@
 			<texturefocus border="5">button-focus.png</texturefocus>
 			<texturenofocus border="5">button-nofocus.png</texturenofocus>
 			<textoffsetx>7</textoffsetx>
-			<textureradiofocus>radiobutton-focus.png</textureradiofocus>
-			<textureradionofocus>radiobutton-nofocus.png</textureradionofocus>
+			<textureradioon>radiobutton-focus.png</textureradioon>
+			<textureradiooff>radiobutton-nofocus.png</textureradiooff>
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>
