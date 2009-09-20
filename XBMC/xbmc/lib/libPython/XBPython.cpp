@@ -474,7 +474,10 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
 {
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
+  {
+    CLog::Log(LOGERROR, "Python script \"%s\" does not exist", src);
     return -1;
+  }
 
   // check if locked
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
