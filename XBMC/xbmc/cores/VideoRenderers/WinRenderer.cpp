@@ -400,10 +400,9 @@ void CWinRenderer::RenderOSD()
 //Get resolution based on current mode.
 RESOLUTION CWinRenderer::GetResolution()
 {
-  if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
-  {
+  if (g_graphicsContext.IsFullScreenRoot() && (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
     return m_iResolution;
-  }
+
   return g_graphicsContext.GetVideoResolution();
 }
 
@@ -502,6 +501,7 @@ void CWinRenderer::ManageDisplay()
 
 void CWinRenderer::ChooseBestResolution(float fps)
 {
+  return g_graphicsContext.GetVideoResolution();
   /* elis
   bool bUsingPAL = g_videoConfig.HasPAL();    // current video standard:PAL or NTSC
   bool bCanDoWidescreen = g_videoConfig.HasWidescreen(); // can widescreen be enabled?
