@@ -9,7 +9,6 @@
 
 /********************************* Includes ***********************************/
 
-#include "stdafx.h"
 #include "Application.h"
 #include "WebServer.h"
 #include "XBMChttp.h"

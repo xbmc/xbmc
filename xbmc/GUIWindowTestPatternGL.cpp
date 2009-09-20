@@ -21,7 +21,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowTestPatternGL.h"
 
 #ifdef HAS_GL

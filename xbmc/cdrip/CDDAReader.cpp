@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 
 #ifdef HAS_CDDA_RIPPER
 

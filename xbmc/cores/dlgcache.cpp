@@ -19,7 +19,6 @@
  *
  */
  
-#include "stdafx.h"
 #include "dlgcache.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"

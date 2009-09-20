@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "VTPSession.h"
 #include "utils/log.h"
 

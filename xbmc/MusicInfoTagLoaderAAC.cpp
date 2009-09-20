@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderAAC.h"
 #include "cores/paplayer/AACcodec.h"
 

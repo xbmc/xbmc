@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowWeather.h"
 #include "GUIImage.h"

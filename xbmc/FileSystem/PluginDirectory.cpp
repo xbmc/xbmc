@@ -20,7 +20,7 @@
  */
 
 
-#include "stdafx.h"
+#include "system.h"
 #include "PluginDirectory.h"
 #include "Util.h"
 #ifdef HAS_PYTHON

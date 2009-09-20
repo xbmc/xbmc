@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogMusicOSD.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"

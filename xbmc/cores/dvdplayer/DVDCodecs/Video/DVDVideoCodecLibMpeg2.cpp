@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDVideoCodecLibMpeg2.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"

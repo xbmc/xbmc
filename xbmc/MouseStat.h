@@ -24,6 +24,7 @@
 
 #include "XBMC_events.h"
 #include "Geometry.h"
+#include "system.h"
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))
 #define XBMC_BUTTON_LEFT		1

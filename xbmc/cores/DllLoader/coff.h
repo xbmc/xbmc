@@ -2,6 +2,8 @@
 #define __COFF_H_
 #pragma once 
 
+#include "system.h"
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org

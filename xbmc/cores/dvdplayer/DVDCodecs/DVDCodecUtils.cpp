@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDCodecUtils.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "utils/log.h"

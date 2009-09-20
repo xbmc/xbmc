@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogVolumeBar.h"
 #include "GUISliderControl.h"
 

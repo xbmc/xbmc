@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNode.h"
 #include "Util.h"
 #include "QueryParams.h"

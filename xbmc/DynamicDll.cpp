@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DynamicDll.h"
 #include "SectionLoader.h"
 #include "FileSystem/File.h"

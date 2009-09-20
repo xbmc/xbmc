@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+#include "system.h"
+
 //#define VTP_STANDALONE
 
 class CVTPSession

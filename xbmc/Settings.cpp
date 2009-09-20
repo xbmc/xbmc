@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "Application.h"

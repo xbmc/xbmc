@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PCMAmplifier.h"
 
 #include <math.h>

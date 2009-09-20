@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "LocalizeStrings.h"
 #include "MediaManager.h"
 #include "xbox/IoSupport.h"

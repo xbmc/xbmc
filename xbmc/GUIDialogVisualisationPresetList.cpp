@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIListContainer.h"
 #include "GUISettings.h"

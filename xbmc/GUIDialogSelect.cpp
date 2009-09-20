@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSelect.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"

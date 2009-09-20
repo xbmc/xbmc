@@ -31,7 +31,7 @@
 * debugging is set to a max of 10 for release builds (see local.h)
 */
 
-#include "stdafx.h"
+#include "system.h"
 
 #if defined(HAS_FILESYSTEM_SMB)
 #include "SMBDirectory.h"

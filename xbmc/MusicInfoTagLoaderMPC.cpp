@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderMPC.h"
 #include "cores/paplayer/MPCcodec.h"
 

@@ -22,6 +22,7 @@
  */
 
 #include "StdString.h"
+#include "system.h"
 
 class CDVDInputStream;
 

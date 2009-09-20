@@ -19,7 +19,6 @@
  *
  */
  
-#include "stdafx.h"
 #include "DllLoaderContainer.h"
 #ifdef _LINUX
 #include "SoLoader.h"

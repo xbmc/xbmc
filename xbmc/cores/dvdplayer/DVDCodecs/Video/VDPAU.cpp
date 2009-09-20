@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #ifdef HAVE_LIBVDPAU
 #include <dlfcn.h>
 #include "WindowingFactory.h"

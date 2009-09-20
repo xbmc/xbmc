@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "ZeroconfDirectory.h"
 #include "URL.h"
 #include "Util.h"

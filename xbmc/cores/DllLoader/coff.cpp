@@ -19,7 +19,6 @@
  *
  */
  
-#include "stdafx.h"
 #include <stdlib.h>
 #include <string.h>
 #include "coff.h" 

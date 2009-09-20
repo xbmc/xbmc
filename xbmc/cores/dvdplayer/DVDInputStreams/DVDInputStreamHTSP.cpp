@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamHTSP.h"
 #include "URL.h"
 #include "VideoInfoTag.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "ProgramDatabase.h"
 #include "utils/fstrcmp.h"
 #include "Util.h"

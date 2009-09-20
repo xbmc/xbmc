@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "dll_tracker_memory.h"
 #include "dll_tracker.h"
 #include "DllLoader.h"

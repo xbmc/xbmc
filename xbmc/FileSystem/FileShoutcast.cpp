@@ -24,7 +24,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+#include "system.h"
 #include "Application.h"
 #include "FileShoutcast.h"
 #include "GUISettings.h"

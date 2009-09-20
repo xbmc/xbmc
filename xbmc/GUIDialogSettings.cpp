@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSettings.h"
 #include "GUIImage.h"
 #include "GUIControlGroupList.h"

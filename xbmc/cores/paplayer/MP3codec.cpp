@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MP3codec.h"
 #include "FileItem.h"
 #include "utils/log.h"

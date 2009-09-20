@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MouseStat.h"
 #include "Key.h"
 #include "GraphicContext.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogYesNo.h"
 #include "GUIWindowManager.h"
 

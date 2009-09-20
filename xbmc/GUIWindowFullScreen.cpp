@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
 #include "Util.h"

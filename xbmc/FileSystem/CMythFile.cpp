@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "CMythFile.h"
 #include "Util.h"
 #include "DllLibCMyth.h"

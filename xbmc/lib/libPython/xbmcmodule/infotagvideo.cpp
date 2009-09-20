@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "infotagvideo.h"
 #include "pyutil.h"
 

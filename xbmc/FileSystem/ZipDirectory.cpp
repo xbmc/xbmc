@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "ZipDirectory.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"

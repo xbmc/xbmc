@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowVideoOverlay.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"

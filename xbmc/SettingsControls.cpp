@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SettingsControls.h"
 #include "GUIDialogNumeric.h"
 #include "Util.h"

@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "HDDirectory.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"

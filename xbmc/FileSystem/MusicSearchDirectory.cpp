@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicSearchDirectory.h"
 #include "MusicDatabase.h"
 #include "URL.h"

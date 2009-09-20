@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+#include "system.h"
 #include "VisualisationFactory.h"
 #include "Util.h"
 #include "FileSystem/File.h"

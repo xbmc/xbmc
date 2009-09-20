@@ -20,7 +20,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "Thread.h"
 #include "utils/CriticalSection.h"
 

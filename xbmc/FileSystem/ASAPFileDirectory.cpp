@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "ASAPFileDirectory.h"
 #include "FileSystem/File.h"
 #include "MusicInfoTagLoaderASAP.h"

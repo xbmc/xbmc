@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowScreensaver.h"
 #ifdef HAS_SCREENSAVER
 #include "screensavers/ScreenSaverFactory.h"

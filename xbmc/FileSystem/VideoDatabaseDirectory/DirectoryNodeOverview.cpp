@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "VideoDatabase.h"
 #include "DirectoryNodeOverview.h"
 #include "AdvancedSettings.h"

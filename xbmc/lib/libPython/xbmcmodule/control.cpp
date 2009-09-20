@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "control.h"
 #include "pyutil.h"
 #include "utils/GUIInfoManager.h"

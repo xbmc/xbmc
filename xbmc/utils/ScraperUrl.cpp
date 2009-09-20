@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "XMLUtils.h"
 #include "ScraperUrl.h"
 #include "AdvancedSettings.h"

@@ -20,7 +20,7 @@
  */
 
 
-#include "stdafx.h"
+#include "system.h"
 #include "FileFactory.h"
 #include "FileHD.h"
 #include "FileCurl.h"

@@ -18,8 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
-#include "../guilib/system.h" //HAS_ZEROCONF define
+#include "system.h" //HAS_ZEROCONF define
 #include "ZeroconfBrowser.h"
 #include "Settings.h"
 #include <stdexcept>

@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 
 #ifdef HAS_DBUS_SERVER
 #ifndef DBUS_API_SUBJECT_TO_CHANGE

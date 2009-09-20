@@ -19,8 +19,6 @@
  *
  */
 
-#include "stdafx.h"
-
 #include "Util.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"

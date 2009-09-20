@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderOgg.h"
 #include "OggTag.h"
 #include "utils/log.h"

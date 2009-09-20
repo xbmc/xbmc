@@ -21,6 +21,8 @@
  *
  */
 
+#include "system.h"
+
 namespace AUTOPTR
 {
 class CAutoPtrHandle

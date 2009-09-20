@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogKaraokeSongSelector.h"
 #include "Application.h"
 #include "PlayList.h"

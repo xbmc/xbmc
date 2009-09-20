@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "SpecialProtocolDirectory.h"
 #include "SpecialProtocol.h"
 #include "Directory.h"

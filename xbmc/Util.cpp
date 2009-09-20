@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+#include "system.h"
 #ifdef __APPLE__
 #include <sys/param.h>
 #include <mach-o/dyld.h>

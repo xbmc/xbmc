@@ -22,7 +22,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+#include "system.h"
 #include "IoSupport.h"
 #include "Settings.h"
 #include "utils/log.h"

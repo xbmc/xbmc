@@ -22,7 +22,7 @@
 //
 // GeminiServer
 //
-#include "stdafx.h"
+
 #include "TuxBoxUtil.h"
 #include "Util.h"
 #include "FileSystem/FileCurl.h"

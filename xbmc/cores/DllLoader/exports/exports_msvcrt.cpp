@@ -20,7 +20,6 @@
  */
 
 #if defined(_LINUX)
-#include "stdafx.h"
 #include <locale>
 #include <wchar.h>
 #include "../DllLoaderContainer.h"

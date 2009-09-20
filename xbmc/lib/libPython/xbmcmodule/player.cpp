@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
 #include "PlayListPlayer.h"

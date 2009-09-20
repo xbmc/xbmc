@@ -19,8 +19,6 @@
  *
  */
 
-#include "stdafx.h"
-
 #include "Settings.h"
 #include "XBMCConfiguration.h"
 #include "Util.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "HTSPDirectory.h"
 #include "URL.h"
 #include "FileItem.h"

@@ -20,7 +20,7 @@
  */
 
 
-#include "stdafx.h"
+#include "system.h"
 #include "VirtualDirectory.h"
 #include "FactoryDirectory.h"
 #include "Settings.h"

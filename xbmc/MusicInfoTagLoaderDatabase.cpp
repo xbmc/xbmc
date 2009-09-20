@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderDatabase.h"
 #include "MusicDatabase.h"
 #include "FileSystem/MusicDatabaseDirectory.h"

@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "MultiPathDirectory.h"
 #include "Directory.h"
 #include "Util.h"

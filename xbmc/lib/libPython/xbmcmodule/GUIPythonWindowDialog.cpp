@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIPythonWindowDialog.h"
 #include "GUIWindowManager.h"
 

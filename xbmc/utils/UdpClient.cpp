@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "UdpClient.h"
 #ifdef _LINUX
 #include <sys/ioctl.h>

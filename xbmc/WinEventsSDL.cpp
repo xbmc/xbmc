@@ -18,7 +18,8 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
-#include "stdafx.h"
+
+#include "system.h"
 #include "WinEvents.h"
 #include "Application.h"
 #include "XBMC_vkeys.h"

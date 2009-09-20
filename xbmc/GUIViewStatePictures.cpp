@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewStatePictures.h"
 #include "GUIBaseContainer.h"
 #include "FileItem.h"

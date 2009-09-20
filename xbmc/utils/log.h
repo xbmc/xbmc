@@ -59,7 +59,7 @@ public:
   static void Close();
   static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
   static void DebugLog(const char *format, ...);
-  static void MemDump(BYTE *pData, int length);
+  static void MemDump(char *pData, int length);
   static void DebugLogMemory();
 };
 

@@ -21,6 +21,8 @@
  *
  */
 
+#include "system.h"
+
 #include <vector>
 
 // when modifying these structures, make sure you update all codecs accordingly

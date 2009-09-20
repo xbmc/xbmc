@@ -180,6 +180,8 @@
 #include <GLES2/gl2ext.h>
 #endif
 
+#define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }
+#define SAFE_DELETE_ARRAY(p) { delete[] (p);   (p)=NULL; }
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=NULL; } }
 
 // Useful pixel colour manipulation macros

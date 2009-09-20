@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Stopwatch.h"
 #if defined(_LINUX) && !defined(__APPLE__)
 #include <sys/sysinfo.h>

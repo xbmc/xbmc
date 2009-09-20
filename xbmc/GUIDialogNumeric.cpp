@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogNumeric.h"
 #include "GUILabelControl.h"
 #include "utils/md5.h"

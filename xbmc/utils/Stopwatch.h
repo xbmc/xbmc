@@ -21,6 +21,8 @@
  *
  */
 
+#include "system.h"
+
 class CStopWatch
 {
 public:

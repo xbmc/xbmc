@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDOverlayCodecText.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"

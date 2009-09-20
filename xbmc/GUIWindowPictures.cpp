@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowPictures.h"
 #include "Util.h"
 #include "Picture.h"

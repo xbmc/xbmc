@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileCurl.h"
 #include "Util.h"
 #include "URL.h"

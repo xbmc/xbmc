@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "HTTPDirectory.h"
 #include "URL.h"
 #include "Util.h"

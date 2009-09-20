@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "Network.h"
 #include "../Application.h"
 #include "../lib/libscrobbler/lastfmscrobbler.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
 #include "DVDAudio.h"

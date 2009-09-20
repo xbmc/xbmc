@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDDemuxSPU.h"
 #include "Util.h"
 #include "DVDClock.h"

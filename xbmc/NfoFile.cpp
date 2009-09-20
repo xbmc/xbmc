@@ -22,7 +22,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "NfoFile.h"
 #include "VideoDatabase.h"
 #include "utils/IMDB.h"

@@ -1,5 +1,3 @@
-
-#include "stdafx.h"
 /*
  * XBMC Media Center
  * Copyright (c) 2002 Frodo
@@ -19,6 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+#include "system.h"
 #include "FileHD.h"
 #include "Util.h"
 #include "URL.h"

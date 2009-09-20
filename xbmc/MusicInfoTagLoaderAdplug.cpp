@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderAdplug.h"
 #include "MusicInfoTag.h"
 #include "utils/log.h"

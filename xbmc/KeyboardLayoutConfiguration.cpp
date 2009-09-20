@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "utils/CharsetConverter.h"
 

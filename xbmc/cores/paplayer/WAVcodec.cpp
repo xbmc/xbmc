@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "WAVcodec.h"
 
 // Use SDL macros to perform byte swapping on big-endian systems

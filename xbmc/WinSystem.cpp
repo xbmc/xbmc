@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "WinSystem.h"
 #include "GraphicContext.h"
 #include "Settings.h"

@@ -23,6 +23,8 @@
 
 #define FILETIME_TO_ULARGE_INTEGER(ularge, filetime) { ularge.u.HighPart = filetime.dwHighDateTime; ularge.u.LowPart = filetime.dwLowDateTime; }
 
+#include "system.h"
+
 class CDVDMessageQueue;
 
 typedef struct stProcessPerformance

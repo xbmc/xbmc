@@ -20,8 +20,6 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-#include "stdafx.h"
 #include "Util.h"
 #include "NptUtils.h"
 #include "UPnPVirtualPathDirectory.h"

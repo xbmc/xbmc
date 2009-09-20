@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "VideoDatabase.h"
 #include "GUIWindowVideoBase.h"
 #include "utils/fstrcmp.h"

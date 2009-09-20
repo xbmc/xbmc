@@ -19,7 +19,6 @@
  *
  */
  
-#include "stdafx.h"
 #include "utils/BitstreamStats.h"
 #include "PlayerCoreFactory.h"
 #include "utils/SingleLock.h"

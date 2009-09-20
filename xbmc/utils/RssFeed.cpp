@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "RssFeed.h"
 #include "Settings.h"
 #include "Util.h"

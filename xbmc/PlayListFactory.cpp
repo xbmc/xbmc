@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlayListFactory.h"
 #include "PlayListM3U.h"
 #include "PlayListPLS.h"
