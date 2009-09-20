@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "AudioContext.h"
 #include "GUIAudioManager.h"
 #include "IAudioDeviceChangedCallback.h"

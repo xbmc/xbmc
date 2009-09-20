@@ -20,6 +20,9 @@
  *
  */
 
+#include "system.h"
+#include "StdString.h"
+
   /// <summary>
   /// Type of message.
   /// </summary>

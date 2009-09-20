@@ -24,6 +24,7 @@
 #include "AudioContext.h"
 #include "Settings.h"
 #include "FileSystem/File.h"
+#include "utils/log.h"
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #include "FileSystem/SpecialProtocol.h"
