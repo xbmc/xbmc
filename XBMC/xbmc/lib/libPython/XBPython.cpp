@@ -49,7 +49,6 @@
 
 #include "XBPython.h"
 #include "XBPythonDll.h"
-#include "ActionManager.h"
 #include "Settings.h"
 #include "Profile.h"
 #include "FileSystem/File.h"
