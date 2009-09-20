@@ -23,7 +23,7 @@
 #ifdef _LINUX
 #include "SoLoader.h"
 #endif
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "Win32DllLoader.h"
 #endif
 #include "DllLoader.h"

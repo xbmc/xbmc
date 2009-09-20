@@ -20,7 +20,6 @@
  */
 
 #include "stdio.h"
-#include "stdafx.h"
 #include "Win32DllLoader.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Win32PowerSyscall.h"
 #ifdef _WIN32PC
 #include "WIN32Util.h"

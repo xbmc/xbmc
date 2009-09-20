@@ -19,13 +19,12 @@
  *
  */
  
-#include "stdafx.h"
 #include "../DllLoaderContainer.h"
 
 #include "DNSNameCache.h"
 #include "emu_dummy.h"
 #include "emu_socket.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "Application.h"
 #include "utils\Network.h"
 #else
