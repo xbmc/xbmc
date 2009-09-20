@@ -120,8 +120,8 @@
 			<texturenofocus>-</texturenofocus>
 			<textoffsetx>12</textoffsetx>
 			<aligny>center</aligny>
-			<textureradiofocus>settings-check-box.png</textureradiofocus>
-			<textureradionofocus>settings-check-boxNF.png</textureradionofocus>
+			<textureradioon>settings-check-box.png</textureradioon>
+			<textureradiooff>settings-check-boxNF.png</textureradiooff>
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>

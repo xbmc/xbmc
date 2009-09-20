@@ -57,8 +57,8 @@
 			<texturefocus>input-focus.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
 			<textoffsetx>7</textoffsetx>
-			<textureradiofocus>settings-check-box.png</textureradiofocus>
-			<textureradionofocus> settings-check-boxNF.png</textureradionofocus>
+			<textureradioon>settings-check-box.png</textureradioon>
+			<textureradiooff> settings-check-boxNF.png</textureradiooff>
 		</control>
 		<control type="spincontrolex" id="5">
 			<description>Default SpinControlex</description>
