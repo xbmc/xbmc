@@ -133,6 +133,7 @@
 #endif
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
+#include "mmsystem.h"
 #include "DInput.h"
 #include "DSound.h"
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
