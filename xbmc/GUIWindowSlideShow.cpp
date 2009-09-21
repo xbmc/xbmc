@@ -259,7 +259,9 @@ void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
 void CGUIWindowSlideShow::Render()
 {
   // reset the screensaver if we're in a slideshow
-  if (m_bSlideShow) g_application.ResetScreenSaver();
+  // (unless we are the screensaver!)
+  if (m_bSlideShow && !g_application.IsInScreenSaver())
+    g_application.ResetScreenSaver();
   int iSlides = m_slides->Size();
   if (!iSlides) return ;
 
@@ -834,7 +836,7 @@ void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursiv
     {
       AddItems(item->m_strPath, recursivePaths);
     }
-    else if (!CUtil::IsRAR(item->m_strPath) && !CUtil::IsZIP(item->m_strPath))
+    else if (!item->m_bIsFolder && !CUtil::IsRAR(item->m_strPath) && !CUtil::IsZIP(item->m_strPath))
     { // add to the slideshow
       Add(item.get());
     }

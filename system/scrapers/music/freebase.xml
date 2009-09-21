@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-08-11" name="Freebase" content="albums" thumb="freebase.png">
+<scraper framework="1.1" date="2009-09-16" name="Freebase" content="albums" thumb="freebase.png">
 	<include>common/htbackdrops.xml</include>
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;htbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Grab thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22name%22:null,%22genre%22:[],%22album%22:[{%22id%22:%22/\2%22,%22/common/topic/article%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22/common/topic/image%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22label%22:[],%22engineer%22:[],%22producer%22:[],%22release_type%22:null,%22artist%22:null,%22name%22:null,%22release_date%22:null,%22track%22:[{%22name%22:null,%22length%22:null,%22index%22:null,%22sort%22:%22index%22,%22optional%22:true}],%22sort%22:%22release_date%22}]}}&lt;/url&gt;" dest="3+">
 			<expression>(http://www.freebase.com/view/)(.*)</expression>
@@ -114,10 +125,10 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">image&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbfanart" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetBiography&quot;&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/url&gt;" dest="5+">

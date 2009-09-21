@@ -196,6 +196,7 @@ void CGUISettings::Initialize()
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
+  AddBool(2, "pictures.showvideos", 22022, false);
   AddBool(3, "pictures.savefolderviews", 583, true);
   AddBool(4,"pictures.generatethumbs",13360,true);
   AddSeparator(5,"pictures.sep1");
@@ -257,12 +258,13 @@ void CGUISettings::Initialize()
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
-  AddBool(7, "musiclibrary.updateonstartup", 22000, false);
+  AddString(7, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
+  AddBool(8, "musiclibrary.updateonstartup", 22000, false);
   AddBool(0, "musiclibrary.backgroundupdate", 22001, false);
-  AddSeparator(8,"musiclibrary.sep2");
-  AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
-  AddString(11, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(9,"musiclibrary.sep2");
+  AddString(10, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
+  AddString(12, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);

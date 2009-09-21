@@ -25,12 +25,11 @@
 #define DEFAULT_SKIN "Project Mayhem III"
 
 #include "settings/VideoSettings.h"
-#include "StringUtils.h"
-#include "AdvancedSettings.h"
 #include "GUISettings.h"
 #include "Profile.h"
 #include "MediaSource.h"
 #include "ViewState.h"
+#include "AdvancedSettings.h"
 
 #include <vector>
 #include <map>

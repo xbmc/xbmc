@@ -2032,6 +2032,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSong.h">
 					</File>
 					<File
+						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSingles.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSingles.h">
+					</File>
+					<File
 						RelativePath=".\xbmc\FileSystem\MusicDatabaseDirectory\DirectoryNodeSongTop100.cpp">
 					</File>
 					<File
@@ -3800,6 +3806,9 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleLineCollection.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.cpp">
 					</File>
 					<File
 						RelativePath=".\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleParser.h">

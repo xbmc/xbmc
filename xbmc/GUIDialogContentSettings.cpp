@@ -133,9 +133,10 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       FillListControl();
       SET_CONTROL_FOCUS(30,0);
     }
+    CStdString scraperPath = GetScraperDirectory(m_info);
     if (iControl == CONTROL_SCRAPER_SETTINGS)
     {
-      if (m_info.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/"+m_info.strPath))
+      if (!scraperPath.IsEmpty() && m_info.settings.LoadSettingsXML(scraperPath + m_info.strPath))
       {
         CGUIDialogPluginSettings::ShowAndGetInput(m_info);
         m_bNeedSave = true;
@@ -146,8 +147,9 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     CScraperParser parser;
     CStdString strPath;
     if (!m_info.strContent.IsEmpty())
-      strPath="special://xbmc/system/scrapers/video/"+m_info.strPath;
-    if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+      strPath=scraperPath;
+    if (!strPath.IsEmpty() && parser.Load(strPath + m_info.strPath)
+        && parser.HasFunction("GetSettings"))
       CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
     else
       CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS);
@@ -161,10 +163,10 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   CGUIDialogSettings::OnWindowLoaded();
   
   CFileItemList items;
-  if (m_info.strContent.Equals("albums"))
-    CDirectory::GetDirectory("special://xbmc/system/scrapers/music/",items,".xml",false);
-  else
-    CDirectory::GetDirectory("special://xbmc/system/scrapers/video/",items,".xml",false);
+  CStdString baseDir = GetScraperDirectory(m_info);
+  if (!baseDir.IsEmpty())
+    CDirectory::GetDirectory(baseDir, items, ".xml", false);
+
   for (int i=0;i<items.Size();++i)
   {
     if (!items[i]->m_bIsFolder)
@@ -232,10 +234,10 @@ void CGUIDialogContentSettings::OnWindowLoaded()
   }
 
   CScraperParser parser;
-  CStdString strPath;
-  if (!m_info.strContent.IsEmpty())
-    strPath="special://xbmc/system/scrapers/video/"+m_info.strPath;
-  if (!strPath.IsEmpty() && parser.Load(strPath) && parser.HasFunction("GetSettings"))
+  CStdString strPath = GetScraperDirectory(m_info);
+
+  if (!m_info.strContent.IsEmpty() && !strPath.IsEmpty() &&
+      parser.Load(strPath + m_info.strPath) && parser.HasFunction("GetSettings"))
     CONTROL_ENABLE(CONTROL_SCRAPER_SETTINGS);
   else
     CONTROL_DISABLE(CONTROL_SCRAPER_SETTINGS);
@@ -399,10 +401,10 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
-    if (m_info.strContent.Equals("albums"))
-      item->SetThumbnailImage("special://xbmc/system/scrapers/music/"+iter->strThumb);
-    else
-      item->SetThumbnailImage("special://xbmc/system/scrapers/video/"+iter->strThumb);
+     CStdString baseDir = GetScraperDirectory(*iter);
+     if (!baseDir.IsEmpty())
+       item->SetThumbnailImage(baseDir + iter->strThumb);
+
     if (iter->strPath.Equals(m_info.strPath))
     {
       CGUIMessage msg2(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_SCRAPER_LIST, iIndex);
@@ -534,9 +536,10 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings
       bRunScan = false;
     }
 
-    if (!scraper.strContent.IsEmpty() && !scraper.strContent.Equals("None") && (!scraper.settings.GetPluginRoot() || scraper.settings.GetSettings().IsEmpty()))
+    CStdString baseDir = GetScraperDirectory(scraper);
+    if (!baseDir.IsEmpty() && (!scraper.settings.GetPluginRoot() || scraper.settings.GetSettings().IsEmpty()))
     { // load default scraper settings
-      scraper.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/"+scraper.strPath);
+      scraper.settings.LoadSettingsXML(baseDir + scraper.strPath);
       scraper.settings.SaveFromDefault();
     }
     
@@ -558,5 +561,16 @@ SScraperInfo CGUIDialogContentSettings::FindDefault(const CStdString& strType, c
   }
   
   return result;
+}
+
+CStdString CGUIDialogContentSettings::GetScraperDirectory(const SScraperInfo &scraper)
+{
+  CStdString dir = "video/";
+
+  if (scraper.strContent.Equals("albums"))
+    dir = "music/";
+  else if (scraper.strContent.Equals("None"))
+    return "";
+  return "special://xbmc/system/scrapers/" + dir;
 }
 

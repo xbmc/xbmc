@@ -1825,14 +1825,6 @@ void CSettings::Clear()
   m_videoSources.clear();
 //  m_vecIcons.clear();
   m_vecProfiles.clear();
-  g_advancedSettings.m_videoCleanStringRegExps.clear();
-  g_advancedSettings.m_moviesExcludeFromScanRegExps.clear();
-  g_advancedSettings.m_tvshowExcludeFromScanRegExps.clear();
-  g_advancedSettings.m_videoExcludeFromListingRegExps.clear();
-  g_advancedSettings.m_videoStackRegExps.clear();
-  g_advancedSettings.m_audioExcludeFromScanRegExps.clear();
-  g_advancedSettings.m_audioExcludeFromListingRegExps.clear();
-  g_advancedSettings.m_pictureExcludeFromListingRegExps.clear();
   m_mapRssUrls.clear();
   m_skinBools.clear();
   m_skinStrings.clear();
@@ -2295,7 +2287,7 @@ void CSettings::CreateProfileFolders()
   CDirectory::Create(GetBookmarksThumbFolder());
   CDirectory::Create(GetProgramsThumbFolder());
   CDirectory::Create(GetPicturesThumbFolder());
-  CLog::Log(LOGINFO, "  thumbnails folder:%s", GetThumbnailsFolder().c_str());
+  CLog::Log(LOGINFO, "thumbnails folder: %s", GetThumbnailsFolder().c_str());
   for (unsigned int hex=0; hex < 16; hex++)
   {
     CStdString strHex;

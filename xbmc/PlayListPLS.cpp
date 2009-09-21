@@ -24,7 +24,7 @@
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "FileSystem/File.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "MusicInfoTag.h"
 
 using namespace std;

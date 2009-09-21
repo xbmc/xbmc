@@ -283,6 +283,7 @@ struct cmyth_proginfo {
 	unsigned long proginfo_audioproperties; /* new in v35 */
 	unsigned long proginfo_videoproperties; /* new in v35 */
 	unsigned long proginfo_subtitletype; /* new in v35 */
+	char *proginfo_prodyear; /* new in v41 */
 };
 
 struct cmyth_proglist {

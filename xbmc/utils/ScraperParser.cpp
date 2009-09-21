@@ -240,29 +240,14 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
       if (stricmp(szClear,"yes") == 0)
         dest=""; // clear no matter if regexp fails
 
-    const char* szNoClean = pExpression->Attribute("noclean");
     bool bClean[MAX_SCRAPER_BUFFERS];
-    for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
-      bClean[iBuf] = true;
-    if (szNoClean)
-    {
-      vector<CStdString> vecBufs;
-      CUtil::Tokenize(szNoClean,vecBufs,",");
-      for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
-        bClean[atoi(vecBufs[nToken].c_str())-1] = false;
-    }
+    GetBufferParams(bClean,pExpression->Attribute("noclean"),true);
 
-    const char* szTrim = pExpression->Attribute("trim");
     bool bTrim[MAX_SCRAPER_BUFFERS];
-    for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
-      bTrim[iBuf] = false;
-    if (szTrim)
-    {
-      vector<CStdString> vecBufs;
-      CUtil::Tokenize(szTrim,vecBufs,",");
-      for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
-        bTrim[atoi(vecBufs[nToken].c_str())-1] = true;
-    }
+    GetBufferParams(bTrim,pExpression->Attribute("trim"),false);
+
+    bool bEncode[MAX_SCRAPER_BUFFERS];
+    GetBufferParams(bEncode,pExpression->Attribute("encode"),false);
 
     int iOptional = -1;
     pExpression->QueryIntAttribute("optional",&iOptional);
@@ -275,31 +260,11 @@ void CScraperParser::ParseExpression(const CStdString& input, CStdString& dest, 
     for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
     {
       if (bClean[iBuf])
-      {
-        char temp[4];
-        sprintf(temp,"\\%i",iBuf+1);
-        size_t i2=0;
-        while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
-        {
-          strOutput.Insert(i2,"!!!CLEAN!!!");
-          i2 += 11;
-          strOutput.Insert(i2+2,"!!!CLEAN!!!");
-          i2 += 2;
-        }
-      }
+        InsertToken(strOutput,iBuf+1,"!!!CLEAN!!!");
       if (bTrim[iBuf])
-      {
-        char temp[4];
-        sprintf(temp,"\\%i",iBuf+1);
-        size_t i2=0;
-        while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
-        {
-          strOutput.Insert(i2,"!!!TRIM!!!");
-          i2 += 10;
-          strOutput.Insert(i2+2,"!!!TRIM!!!");
-          i2 += 2;
-        }
-      }
+        InsertToken(strOutput,iBuf+1,"!!!TRIM!!!");
+      if (bEncode[iBuf])
+        InsertToken(strOutput,iBuf+1,"!!!ENCODE!!!");
     }
     int i = reg.RegFind(curInput.c_str());
     while (i > -1 && (i < (int)curInput.size() || curInput.size() == 0))
@@ -432,17 +397,14 @@ void CScraperParser::ParseNext(TiXmlElement* element)
   }
 }
 
-const CStdString CScraperParser::Parse(const CStdString& strTag, CScraperSettings* pSettings)
+const CStdString CScraperParser::Parse(const CStdString& strTag, const CScraperSettings* pSettings)
 {
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
   if(pChildElement == NULL) return "";
   int iResult = 1; // default to param 1
   pChildElement->QueryIntAttribute("dest",&iResult);
   TiXmlElement* pChildStart = pChildElement->FirstChildElement("RegExp");
-  if (pSettings)
-    m_settings = pSettings;
-  else
-    m_settings = NULL;
+  m_settings = pSettings;
   ParseNext(pChildStart);
   CStdString tmp = m_param[iResult-1];
 
@@ -498,6 +460,21 @@ void CScraperParser::Clean(CStdString& strDirty)
     else
       break;
   }
+  i=0;
+  while ((i=strDirty.Find("!!!ENCODE!!!",i)) != CStdString::npos)
+  {
+    size_t i2;
+    if ((i2=strDirty.Find("!!!ENCODE!!!",i+12)) != CStdString::npos)
+    {
+      strBuffer = strDirty.substr(i+12,i2-i-12);
+      CUtil::URLEncode(strBuffer);
+      strDirty.erase(i,i2-i+12);
+      strDirty.Insert(i,strBuffer);
+      i += strBuffer.size();
+    }
+    else
+      break;
+  }
 }
 
 char* CScraperParser::RemoveWhiteSpace(const char *string2)
@@ -526,5 +503,32 @@ void CScraperParser::ClearCache()
   CUtil::AddFileToFolder(g_advancedSettings.m_cachePath,"scrapers",strCachePath);
   CUtil::WipeDir(strCachePath);
   DIRECTORY::CDirectory::Create(strCachePath);
+}
+
+void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool defvalue)
+{
+  for (int iBuf=0;iBuf<MAX_SCRAPER_BUFFERS;++iBuf)
+    result[iBuf] = defvalue;;
+  if (attribute)
+  {
+    vector<CStdString> vecBufs;
+    CUtil::Tokenize(attribute,vecBufs,",");
+    for (size_t nToken=0; nToken < vecBufs.size(); nToken++)
+      result[atoi(vecBufs[nToken].c_str())-1] = !defvalue;
+  }
+}
+
+void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* token)
+{
+  char temp[4];
+  sprintf(temp,"\\%i",buf);
+  size_t i2=0;
+  while ((i2 = strOutput.Find(temp,i2)) != CStdString::npos)
+  {
+    strOutput.Insert(i2,token);
+    i2 += strlen(token);
+    strOutput.Insert(i2+2,token);
+    i2 += 2;
+  }
 }
 

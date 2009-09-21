@@ -21,11 +21,13 @@
  *
  */
 
-#include "DVDCodecs/Overlay/DVDOverlay.h"
-#include "DVDSubtitleStream.h"
 #include "DVDSubtitleLineCollection.h"
 
+#include <sstream>
+
 class CDVDStreamInfo;
+class CDVDSubtitleStream;
+class CDVDOverlay;
 
 class CDVDSubtitleParser
 {
@@ -65,27 +67,11 @@ public:
     m_pStream  = stream;
   }
 
-  virtual ~CDVDSubtitleParserText()
-  {
-    if(m_pStream)
-      delete m_pStream;
-  }
+  virtual ~CDVDSubtitleParserText();
 
 protected:
-
-  bool Open()
-  {
-    if(m_pStream)
-    {
-      if(m_pStream->Seek(0, SEEK_SET) == 0)
-        return true;
-      m_pStream->Close();
-    }
-    else
-      m_pStream = new CDVDSubtitleStream();
-
-    return m_pStream->Open(m_filename);
-  }
+  bool Open();
 
   CDVDSubtitleStream* m_pStream;
+  std::stringstream m_stringstream;
 };

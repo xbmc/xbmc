@@ -246,7 +246,7 @@ cmyth_get_commbreaklist(cmyth_database_t db, cmyth_conn_t conn, cmyth_proginfo_t
 
         cmyth_timestamp_to_display_string(start_ts_dt, prog->proginfo_rec_start_ts, 0);
 	pthread_mutex_lock(&mutex);
-	if ((r=cmyth_mysql_get_commbreak_list(db, prog->proginfo_chanId, start_ts_dt, breaklist)) < 0) {
+	if ((r=cmyth_mysql_get_commbreak_list(db, prog->proginfo_chanId, start_ts_dt, breaklist, conn->conn_version)) < 0) {
 		cmyth_dbg(CMYTH_DBG_ERROR,
 			"%s: cmyth_mysql_get_commbreak_list() failed (%d)\n",
 			__FUNCTION__, r);

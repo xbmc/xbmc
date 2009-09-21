@@ -1209,7 +1209,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     return g_sysinfo.GetUnits(4);
     break;
 #endif  
-  case CONTAINER_FOLDERPATH: 
+  case CONTAINER_FOLDERPATH:
   case CONTAINER_FOLDERNAME:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
@@ -2186,7 +2186,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         bReturn = g_guiSettings.GetBool(m_stringParameters[info.GetData1()]);
         break;
       case SYSTEM_SETTING:
-        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") ) 
+        if ( m_stringParameters[info.GetData1()].Equals("hidewatched") )
           bReturn = g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED;
         break;
       case CONTAINER_ON_NEXT:
@@ -4186,7 +4186,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   else if (condition == LIBRARY_HAS_VIDEO)
   {
     return (GetLibraryBool(LIBRARY_HAS_MOVIES) ||
-            GetLibraryBool(LIBRARY_HAS_TVSHOWS) || 
+            GetLibraryBool(LIBRARY_HAS_TVSHOWS) ||
             GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
   }
   return false;

@@ -81,6 +81,9 @@ bool CGUIViewStateWindowPictures::UnrollArchives()
 
 CStdString CGUIViewStateWindowPictures::GetExtensions()
 {
+  if (g_guiSettings.GetBool("pictures.showvideos"))
+    return g_stSettings.m_pictureExtensions+"|"+g_stSettings.m_videoExtensions;
+
   return g_stSettings.m_pictureExtensions;
 }
 

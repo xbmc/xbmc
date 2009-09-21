@@ -205,6 +205,9 @@ bool CMusicDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     case NODE_TYPE_ALBUM_TOP100_SONGS:
       strLabel = g_localizeStrings.Get(10505); // Top 100 Albums
       break;
+    case NODE_TYPE_SINGLES:
+      strLabel = g_localizeStrings.Get(1050); // Singles
+      break;
     case NODE_TYPE_SONG:
       strLabel = g_localizeStrings.Get(134); // Songs
       break;
@@ -236,6 +239,7 @@ bool CMusicDatabaseDirectory::ContainsSongs(const CStdString &path)
 {
   MUSICDATABASEDIRECTORY::NODE_TYPE type = GetDirectoryChildType(path);
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SONG) return true;
+  if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_SINGLES) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS) return true;
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS) return true; 
   if (type == MUSICDATABASEDIRECTORY::NODE_TYPE_ALBUM_COMPILATIONS_SONGS) return true;
@@ -285,6 +289,7 @@ CStdString CMusicDatabaseDirectory::GetIcon(const CStdString &strDirectory)
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
   case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
     return "DefaultMusicRecentlyPlayed.png";
+  case NODE_TYPE_SINGLES:
   case NODE_TYPE_SONG:
   case NODE_TYPE_YEAR_SONG:
   case NODE_TYPE_ALBUM_COMPILATIONS_SONGS:

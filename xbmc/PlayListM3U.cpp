@@ -25,7 +25,7 @@
 #include "Util.h"
 #include "utils/RegExp.h"
 #include "cores/dllloader/exports/emu_msvcrt.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "MusicInfoTag.h"
 
 using namespace PLAYLIST;

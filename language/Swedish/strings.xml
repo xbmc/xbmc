@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 08/20/2009-->
+<!--Date of translation: 09/16/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22217-->
+<!--Based on english strings version 22934-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -687,6 +687,7 @@
   <string id="1047">Annan...</string>
   <string id="1048">Webbserver användarnamn</string>
   <string id="1049">Skriptinställningar</string>
+  <string id="1050">Singlar</string>
   <string id="1200">SMB utdelning</string>
   <string id="1202">SMB arbetsgrupp</string>
   <string id="1203">SMB användarnamn</string>
@@ -920,7 +921,7 @@
   <string id="13109">Prova upplösning</string>
   <string id="13110">Spara upplösning?</string>
   <string id="13111">Vill du behålla denna upplösning?</string>
-  <string id="13112">Högkvalitets mjukvaruuppskalning</string>
+  <string id="13112">Högkvalitetsuppskalning</string>
   <string id="13113">Inaktiverad</string>
   <string id="13114">Aktiverad för SD innehåll</string>
   <string id="13115">Alltid aktiverad</string>
@@ -928,7 +929,9 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-  <string id="13120">Strikt Pixmap-Texture Bindning (kräver omstart)</string>
+  <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU HQ uppskalningsnivå</string>
+  <string id="13122">VDPAU studionivåfärgkonvertering</string>
   <string id="13130">Skärmrensning</string>
   <string id="13131">Inaktivera</string>
   <string id="13132">Rensa skärmar</string>
@@ -1121,10 +1124,10 @@
   <string id="13503">Videoklocka (omsamplingsljud)</string>
   <string id="13504">Maximal omsampling (%)</string>
   <string id="13505">Omsamplingskvalitet</string>
-  <string id="13506">Låg</string>
+  <string id="13506">Låg (snabb)</string>
   <string id="13507">Medium</string>
   <string id="13508">Hög</string>
-  <string id="13509">Riktigt hög</string>
+  <string id="13509">Riktigt hög (långsam!)</string>
   <string id="13510">Synkronisera uppspelning till display</string>
   <string id="13600">Apple fjärrkontroll</string>
   <string id="13601">Läge</string>
@@ -1401,7 +1404,7 @@
   <string id="20044">Starta på nytt</string>
   <string id="20045">Starta huvudläge</string>
   <string id="20046">Lämna huvudläge</string>
-  <string id="20047">Skapa profil '%s' ?</string>
+  <string id="20047">Skapa profil '%s'?</string>
   <string id="20048">Starta med nya inställningar</string>
   <string id="20049">Bästa möjliga</string>
   <string id="20050">Autoväxling mellan 16x9 och 4x3</string>
@@ -1753,6 +1756,7 @@
   <string id="21414">Standard TV-serieskrapa</string>
   <string id="21415">Standard musikvideoskrapa</string>
   <string id="21416">Aktivera reträtt baserat på skrap-språk</string>
+  <string id="21417">- Skrapinställningar</string>
   <string id="21420">Värde att matcha</string>
   <string id="21421">Smart spellisteregel</string>
   <string id="21422">Matcha objekt som</string>
@@ -1878,6 +1882,7 @@
   <string id="22019">Inspelningar efter titel</string>
   <string id="22020">Guide</string>
   <string id="22021">Tillåten felmarginal i bildförhållande (%)</string>
+  <string id="22022">Inkludera videofiler i listningar</string>
   <string id="22030">Typsnitt</string>
   <string id="22031">- Storlek</string>
   <string id="22032">- Färg</string>
@@ -1894,6 +1899,9 @@
   <string id="22043">svart/vit</string>
   <string id="23000">Vädertillägg</string>
   <string id="23001">- Tilläggsinställningar</string>
+  <string id="23100">Extern spelare är aktiv</string>
+  <string id="23101">Klicka OK för att avsluta spelaren</string>
+  <string id="23104">Klicka OK när uppspelningen har slutat</string>
   <string id="29800">Biblioteksläge</string>
   <string id="29801">QWERTY tangentbord</string>
   <string id="29802">Ljudgenomströmning används</string>

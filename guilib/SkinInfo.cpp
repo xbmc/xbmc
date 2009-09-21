@@ -27,6 +27,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "Util.h"
 #include "Settings.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -103,16 +104,15 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       pChild = pRootElement->FirstChild("version");
       if (pChild && pChild->FirstChild())
       {
-        m_Version = atof(pChild->FirstChild()->Value());
+        m_Version = StringUtils::GetFloat(pChild->FirstChild()->Value());
         CLog::Log(LOGINFO, "Skin version is: %s", pChild->FirstChild()->Value());
       }
 
       // get the effects slowdown parameter
       pChild = pRootElement->FirstChild("effectslowdown");
       if (pChild && pChild->FirstChild())
-      {
-        m_effectsSlowDown = atof(pChild->FirstChild()->Value());
-      }
+        m_effectsSlowDown = StringUtils::GetFloat(pChild->FirstChild()->Value());
+
       // now load the credits information
       pChild = pRootElement->FirstChild("credits");
       if (pChild)
@@ -137,7 +137,7 @@ void CSkinInfo::Load(const CStdString& strSkinDir)
       // get the skin zoom parameter. it's how much skin should be enlarged to get rid of overscan
       pChild = pRootElement->FirstChild("zoom");
       if (pChild && pChild->FirstChild())
-        m_skinzoom = (float)atof(pChild->FirstChild()->Value());
+        m_skinzoom = StringUtils::GetFloat(pChild->FirstChild()->Value());
       else
         m_skinzoom = 1.0f;
 
@@ -173,8 +173,11 @@ bool CSkinInfo::Check(const CStdString& strSkinDir)
       pChild = pRootElement->FirstChild("version");
       if (pChild)
       {
-        bVersionOK = atof(pChild->FirstChild()->Value()) >= SKIN_MIN_VERSION;
-        CLog::Log(LOGINFO, "Skin version is: %s", pChild->FirstChild()->Value());
+        float parsedVersion;
+        parsedVersion = StringUtils::GetFloat(pChild->FirstChild()->Value());
+        bVersionOK = parsedVersion >= SKIN_MIN_VERSION;
+
+        CLog::Log(LOGINFO, "Skin version is: %s (%f)", pChild->FirstChild()->Value(), parsedVersion);
       }
     }
   }

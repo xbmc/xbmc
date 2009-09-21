@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,35 +19,29 @@
  *
  */
 
-#include "system.h"
+#include "stdafx.h"
+#include "DirectoryNodeSingles.h"
+#include "QueryParams.h"
+#include "MusicDatabase.h"
 
-#include <string>
+using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
 
-class CDVDInputStream;
-
-// buffered class for subtitle reading
-
-class CDVDSubtitleStream
+CDirectoryNodeSingles::CDirectoryNodeSingles(const CStdString& strName, CDirectoryNode* pParent)
+  : CDirectoryNode(NODE_TYPE_SINGLES, strName, pParent)
 {
-public:
-  CDVDSubtitleStream();
-  virtual ~CDVDSubtitleStream();
-  
-  bool Open(const std::string& strFile);
-  void Close();
-  int Read(BYTE* buf, int buf_size);
-  __int64 Seek(__int64 offset, int whence);
 
-  char* ReadLine(char* pBuffer, int iLen);
-  //wchar* ReadLineW(wchar* pBuffer, int iLen) { return NULL; };
-  
-protected:
-  CDVDInputStream* m_pInputStream;
-  BYTE* m_buffer;
-  int   m_iMaxBufferSize;
-  int   m_iBufferSize;
-  int   m_iBufferPos;
-  
-  __int64 m_iStreamPos;
-};
+}
 
+bool CDirectoryNodeSingles::GetContent(CFileItemList& items)
+{
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return false;
+
+  CStdString strBaseDir=BuildPath();
+  bool bSuccess=musicdatabase.GetSongsByWhere(strBaseDir, "where strAlbum=''", items);
+
+  musicdatabase.Close();
+
+  return bSuccess;
+}

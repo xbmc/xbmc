@@ -344,6 +344,9 @@ bool CGUIWindowPictures::OnClick(int iItem)
 
 bool CGUIWindowPictures::OnPlayMedia(int iItem)
 {
+  if (m_vecItems->Get(iItem)->IsVideo())
+    return CGUIMediaWindow::OnPlayMedia(iItem);
+
   return ShowPicture(iItem, false);
 }
 
@@ -379,7 +382,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   for (int i = 0; i < (int)m_vecItems->Size();++i)
   {
     CFileItemPtr pItem = m_vecItems->Get(i);
-    if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)))
+    if (!pItem->m_bIsFolder && !(CUtil::IsRAR(pItem->m_strPath) || CUtil::IsZIP(pItem->m_strPath)) && pItem->IsPicture())
     {
       pSlideShow->Add(pItem.get());
     }

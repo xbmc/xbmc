@@ -3563,6 +3563,7 @@ HRESULT CApplication::Cleanup()
     g_playlistPlayer.Clear();
     g_settings.Clear();
     g_guiSettings.Clear();
+    g_advancedSettings.Clear();
 #endif
 
 #ifdef _CRTDBG_MAP_ALLOC

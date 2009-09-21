@@ -3527,34 +3527,97 @@ const BUILT_IN commands[] = {
 
 bool CUtil::IsBuiltIn(const CStdString& execString)
 {
-  CStdString function, param;
-  SplitExecFunction(execString, function, param);
+  CStdString function;
+  vector<CStdString> parameters;
+  SplitExecFunction(execString, function, parameters);
   for (unsigned int i = 0; i < sizeof(commands)/sizeof(BUILT_IN); i++)
   {
-    if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || !param.IsEmpty()))
+    if (function.CompareNoCase(commands[i].command) == 0 && (!commands[i].needsParameters || parameters.size()))
       return true;
   }
   return false;
 }
 
-void CUtil::SplitExecFunction(const CStdString &execString, CStdString &strFunction, CStdString &strParam)
+void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function, vector<CStdString> &parameters)
 {
-  strParam = "";
-
+  CStdString paramString;
+ 
   int iPos = execString.Find("(");
   int iPos2 = execString.ReverseFind(")");
   if (iPos > 0 && iPos2 > 0)
   {
-    strParam = execString.Mid(iPos + 1, iPos2 - iPos - 1);
-    strFunction = execString.Left(iPos);
+    paramString = execString.Mid(iPos + 1, iPos2 - iPos - 1);
+    function = execString.Left(iPos);
   }
   else
-    strFunction = execString;
+    function = execString;
 
-  //xbmc is the standard prefix.. so allways remove this
-  //all other commands with go through in full
-  if( strFunction.Left(5).Equals("xbmc.", false) )
-    strFunction.Delete(0, 5);
+  // remove any whitespace, and the standard prefix (if it exists)
+  function.Trim();
+  if( function.Left(5).Equals("xbmc.", false) )
+    function.Delete(0, 5);
+
+  // now split up our parameters - we may have quotes to deal with as well as brackets and whitespace
+  bool inQuotes = false;
+  int inFunction = 0;
+  size_t whiteSpacePos = 0;
+  CStdString parameter;
+  parameters.clear();
+  for (size_t pos = 0; pos < paramString.size(); pos++)
+  {
+    char ch = paramString[pos];
+    bool escaped = (pos > 0 && paramString[pos - 1] == '\\');
+    if (inQuotes)
+    { // if we're in a quote, we accept everything until the closing quote
+      if (ch == '\"' && !escaped)
+      { // finished a quote - no need to add the end quote to our string
+        inQuotes = false;
+        continue;
+      }
+    }
+    else
+    { // not in a quote, so check if we should be starting one
+      if (ch == '\"' && !escaped)
+      { // start of quote - no need to add the quote to our string
+        inQuotes = true;
+        continue;
+      }
+      if (inFunction && ch == ')')
+      { // end of a function
+        inFunction--;
+      }
+      if (ch == '(')
+      { // start of function
+        inFunction++;
+      }
+      if (!inFunction && ch == ',')
+      { // not in a function, so a comma signfies the end of this parameter
+        if (whiteSpacePos)
+          parameter = parameter.Left(whiteSpacePos);
+        parameters.push_back(parameter);
+        parameter.Empty();
+        whiteSpacePos = 0;
+        continue;
+      }
+    }
+    // whitespace handling - we skip any whitespace at the left or right of an unquoted parameter
+    if (ch == ' ' && !inQuotes)
+    {
+      if (parameter.IsEmpty()) // skip whitespace on left
+        continue;
+      if (!whiteSpacePos) // make a note of where whitespace starts on the right
+        whiteSpacePos = parameter.size();
+    }
+    else
+      whiteSpacePos = 0;
+    parameter += ch;
+  }
+  if (inFunction || inQuotes)
+    CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, execString.c_str());
+  if (whiteSpacePos)
+    parameter = parameter.Left(whiteSpacePos);
+  if (!parameter.IsEmpty())
+    parameters.push_back(parameter);
 }
 
 void CUtil::GetBuiltInHelp(CStdString &help)
@@ -3572,12 +3635,11 @@ void CUtil::GetBuiltInHelp(CStdString &help)
 int CUtil::ExecBuiltIn(const CStdString& execString)
 {
   // Get the text after the "XBMC."
-  CStdString execute, parameter;
-  SplitExecFunction(execString, execute, parameter);
-  CStdString strParameterCaseIntact = parameter;
-  parameter.ToLower();
+  CStdString execute;
+  vector<CStdString> params;
+  SplitExecFunction(execString, execute, params);
   execute.ToLower();
-
+  CStdString parameter = params.size() ? params[0] : "";
   if (execute.Equals("reboot") || execute.Equals("restart"))  //Will reboot the xbox, aka cold reboot
   {
     g_applicationMessenger.Restart();
@@ -3617,7 +3679,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     for (unsigned int i=0;i<g_settings.m_vecProfiles.size();++i )
     {
-      if (g_settings.m_vecProfiles[i].getName().Equals(strParameterCaseIntact))
+      if (g_settings.m_vecProfiles[i].getName().Equals(parameter))
       {
         g_network.NetworkMessage(CNetwork::SERVICES_DOWN,1);
         g_settings.LoadProfile(i);
@@ -3663,31 +3725,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // get the parameters
     CStdString strWindow;
     CStdString strPath;
+    if (params.size())
+      strWindow = params[0];
+    if (params.size() > 1)
+      strPath = params[1];
 
-    // split the parameter on first comma
-    int iPos = parameter.Find(",");
-    if (iPos == 0)
-    {
-      // error condition missing path
-      // XMBC.ActivateWindow(1,)
-      CLog::Log(LOGERROR, "Activate/ReplaceWindow called with invalid parameter: %s", parameter.c_str());
-      return -7;
-    }
-    else if (iPos < 0)
-    {
-      // no path parameter
-      // XBMC.ActivateWindow(5001)
-      strWindow = strParameterCaseIntact;
-    }
-    else
-    {
-      // path parameter included
-      // XBMC.ActivateWindow(5001,F:\Music\)
-      strWindow = strParameterCaseIntact.Left(iPos);
-      strPath = strParameterCaseIntact.Mid(iPos + 1);
-    }
-    // confirm the window destination is actually a number
-    // before switching
+    // confirm the window destination is valid prior to switching
     int iWindow = CButtonTranslator::TranslateWindowString(strWindow.c_str());
     if (iWindow != WINDOW_INVALID)
     {
@@ -3704,41 +3747,28 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       return false;
     }
   }
-  else if (execute.Equals("setfocus") || execute.Equals("control.setfocus"))
+  else if (execute.Equals("setfocus") || execute.Equals("control.setfocus") && params.size())
   {
-    // see whether we have more than one param
-    vector<CStdString> params;
-    StringUtils::SplitString(parameter,",",params);
-    if (params.size())
-    {
-      int controlID = atol(params[0].c_str());
-      int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
-      CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), controlID, subItem);
-      g_graphicsContext.SendMessage(msg);
-    }
+    int controlID = atol(params[0].c_str());
+    int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
+    CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), controlID, subItem);
+    g_graphicsContext.SendMessage(msg);
   }
-  else if (execute.Equals("runscript"))
+  else if (execute.Equals("runscript") && params.size())
   {
-    vector<CStdString> params;
-    StringUtils::SplitString(strParameterCaseIntact,",",params);
-    if (params.size() > 0)  // we need to construct arguments to pass to python
-    {
-      unsigned int argc = params.size();
-      char ** argv = new char*[argc];
+    unsigned int argc = params.size();
+    char ** argv = new char*[argc];
 
-      vector<CStdString> path;
-      //split the path up to find the filename
-      StringUtils::SplitString(params[0],"\\",path);
-      argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
+    vector<CStdString> path;
+    //split the path up to find the filename
+    StringUtils::SplitString(params[0],"\\",path);
+    argv[0] = path.size() > 0 ? (char*)path[path.size() - 1].c_str() : (char*)params[0].c_str();
 
-      for(unsigned int i = 1; i < argc; i++)
-        argv[i] = (char*)params[i].c_str();
+    for(unsigned int i = 1; i < argc; i++)
+      argv[i] = (char*)params[i].c_str();
 
-      g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
-      delete [] argv;
-    }
-    else
-      g_pythonParser.evalFile(strParameterCaseIntact.c_str());
+    g_pythonParser.evalFile(params[0].c_str(), argc, (const char**)argv);
+    delete [] argv;
   }
   else if (execute.Equals("resolution"))
   {
@@ -3759,21 +3789,16 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       g_application.ReloadSkin();
     }
   }
-  else if (execute.Equals("extract"))
+  else if (execute.Equals("extract") && params.size())
   {
     // Detects if file is zip or zip then extracts
     CStdString strDestDirect = "";
-    vector<CStdString> params;
-    StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() < 2)
       CUtil::GetDirectory(params[0],strDestDirect);
     else
       strDestDirect = params[1];
 
     CUtil::AddSlashAtEnd(strDestDirect);
-
-    if (params.size() < 1)
-      return -1; // No File Selected
 
     if (CUtil::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
@@ -3784,20 +3809,20 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("runxbe"))
   {
-    // only usefull if there is actualy a xbe to execute
-    if (!strParameterCaseIntact.IsEmpty())
+    // only useful if there is actually an XBE to execute
+    if (params.size())
     {
-      CFileItem item(strParameterCaseIntact);
-      item.m_strPath = strParameterCaseIntact;
+      CFileItem item(params[0]);
+      item.m_strPath = params[0];
       if (item.IsShortCut())
-        CUtil::RunShortcut(strParameterCaseIntact);
+        CUtil::RunShortcut(params[0]);
       else if (item.IsXBE())
       {
         int iRegion;
         if (g_guiSettings.GetBool("myprograms.gameautoregion"))
         {
           CXBE xbe;
-          iRegion = xbe.ExtractGameRegion(strParameterCaseIntact);
+          iRegion = xbe.ExtractGameRegion(params[0]);
           if (iRegion < 1 || iRegion > 7)
             iRegion = 0;
           iRegion = xbe.FilterRegion(iRegion);
@@ -3805,7 +3830,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         else
           iRegion = 0;
 
-        CUtil::RunXBE(strParameterCaseIntact.c_str(),NULL,F_VIDEO(iRegion));
+        CUtil::RunXBE(params[0].c_str(),NULL,F_VIDEO(iRegion));
       }
     }
     else
@@ -3815,12 +3840,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("runplugin"))
   {
-    if (!strParameterCaseIntact.IsEmpty())
+    if (params.size())
     {
-      CFileItem item(strParameterCaseIntact);
+      CFileItem item(params[0]);
       if (!item.m_bIsFolder)
       {
-        item.m_strPath = strParameterCaseIntact;
+        item.m_strPath = params[0];
         CPluginDirectory::RunScriptWithParams(item.m_strPath);
       }
     }
@@ -3831,28 +3856,25 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   }
   else if (execute.Equals("playmedia"))
   {
-    if (strParameterCaseIntact.IsEmpty())
+    if (!params.size())
     {
       CLog::Log(LOGERROR, "XBMC.PlayMedia called with empty parameter");
       return -3;
     }
 
-    vector<CStdString> params2;
-    StringUtils::SplitString(strParameterCaseIntact,",",params2);
-
-    CFileItem item(params2[0], false);
+    CFileItem item(params[0], false);
     if (item.IsVideoDb())
     {
       CVideoDatabase database;
       database.Open();
-      DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams params;
-      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(item.m_strPath,params);
-      if (params.GetContentType() == VIDEODB_CONTENT_MOVIES)
-        database.GetMovieInfo("",*item.GetVideoInfoTag(),params.GetMovieId());
-      if (params.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
-        database.GetEpisodeInfo("",*item.GetVideoInfoTag(),params.GetEpisodeId());
-      if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
-        database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),params.GetMVideoId());
+      DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams query;
+      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(item.m_strPath,query);
+      if (query.GetContentType() == VIDEODB_CONTENT_MOVIES)
+        database.GetMovieInfo("",*item.GetVideoInfoTag(),query.GetMovieId());
+      if (query.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
+        database.GetEpisodeInfo("",*item.GetVideoInfoTag(),query.GetEpisodeId());
+      if (query.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+        database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),query.GetMVideoId());
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     }
 
@@ -3868,14 +3890,14 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
 
     // ask if we need to check guisettings to resume
     bool askToResume = true;
-    if ((params2.size() == 2 && params2[1].Equals("resume")) || (params2.size() == 3 && params2[2].Equals("resume")))
+    if ((params.size() == 2 && params[1].Equals("resume")) || (params.size() == 3 && params[2].Equals("resume")))
     {
       // force the item to resume (if applicable) (see CApplication::PlayMedia)
       item.m_lStartOffset = STARTOFFSET_RESUME;
       askToResume = false;
     }
 
-    if ((params2.size() == 2 && params2[1].Equals("noresume")) || (params2.size() == 3 && params2[2].Equals("noresume")))
+    if ((params.size() == 2 && params[1].Equals("noresume")) || (params.size() == 3 && params[2].Equals("noresume")))
     {
       // force the item to start at the beginning (m_lStartOffset is initialized to 0)
       askToResume = false;
@@ -3889,74 +3911,35 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     // play media
     if (!g_application.PlayMedia(item, item.IsAudio() ? PLAYLIST_MUSIC : PLAYLIST_VIDEO))
     {
-      CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", strParameterCaseIntact.c_str());
+      CLog::Log(LOGERROR, "XBMC.PlayMedia could not play media: %s", params[0].c_str());
       return false;
     }
   }
   else if (execute.Equals("slideShow") || execute.Equals("recursiveslideShow"))
   {
-    if (strParameterCaseIntact.IsEmpty())
+    if (!params.size())
     {
       CLog::Log(LOGERROR, "XBMC.SlideShow called with empty parameter");
       return -2;
     }
-    bool bRecursive = false;
-    bool bRandom = false;
-    bool bNotRandom = false;
-    CStdString strDir = strParameterCaseIntact;
-
     // leave RecursiveSlideShow command as-is
+    unsigned int flags = 0;
     if (execute.Equals("RecursiveSlideShow"))
-      bRecursive = true;
+      flags |= 1;
 
-    // SlideShow([recursive],[[not]random],dir)
-    // additional parameters must at the beginning as the dir may contain commas
+    // SlideShow(dir[,recursive][,[not]random])
     else
     {
-      vector<CStdString> results;
-      StringUtils::SplitString(strParameterCaseIntact, ",", results, 2); // max of two split pieces
-      while (results.size() > 0)
-      {
-        // pop off the first item in the vector
-        CStdString strTest = results.front();
-        results.erase(results.begin());
-
-        if (strTest.Equals("recursive"))
-          bRecursive = true;
-        else if (strTest.Equals("random"))
-          bRandom = true;
-        else if (strTest.Equals("notrandom"))
-          bNotRandom = true;
-        else
-        {
-          // not a known parameter, so it must be the directory 
-          // add the test string back to the remainder of the result array
-          // (this means the directory contained a comma)
-          strDir = strTest;
-          if (results.size() > 0)
-            strDir += "," + results.front();
-          break;
-        }
-        // it was a parameter, so we need to split again
-        if (results.size() > 0)
-        {
-          strTest = results.front();
-          StringUtils::SplitString(strTest, ",", results, 2);
-        }
-      }
+      if ((params.size() > 1 && params[1] == "recursive") || (params.size() > 2 && params[2] == "recursive"))
+        flags |= 1;
+      if ((params.size() > 1 && params[1] == "random") || (params.size() > 2 && params[2] == "random"))
+        flags |= 2;
+      if ((params.size() > 1 && params[1] == "notrandom") || (params.size() > 2 && params[2] == "notrandom"))
+        flags |= 4;
     }
 
-    // encode parameters
-    unsigned int iParams = 0;
-    if (bRecursive)
-      iParams += 1;
-    if (bRandom)
-      iParams += 2;
-    if (bNotRandom)
-      iParams += 4;
-
-    CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, iParams);
-    msg.SetStringParam(strDir);
+    CGUIMessage msg(GUI_MSG_START_SLIDESHOW, 0, 0, flags);
+    msg.SetStringParam(params[0]);
     CGUIWindow *pWindow = m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
     if (pWindow) pWindow->OnMessage(msg);
   }
@@ -3975,7 +3958,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.ResetScreenSaver();
     g_application.ResetScreenSaverWindow();
-    if (parameter.IsEmpty())
+    if (!params.size())
     {
       CLog::Log(LOGERROR, "XBMC.PlayerControl called with empty parameter");
       return -3;
@@ -4172,7 +4155,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.SetVolume(atoi(parameter.c_str()));
   }
-  else if (execute.Left(19).Equals("playlist.playoffset"))
+  else if (execute.Equals("playlist.playoffset"))
   {
     // get current playlist
     int pos = atol(parameter.c_str());
@@ -4186,78 +4169,37 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CIoSupport::ToggleTray();
   }
-  else if( execute.Equals("alarmclock") )
+  else if( execute.Equals("alarmclock") && params.size() > 1 )
   {
-    bool bSilent = false;
-    float fSecs = -1.f;
-    CStdString strCommand;
-    CStdString strName;
-    if (!parameter.IsEmpty())
-    {
-      CRegExp reg;
-      if (!reg.RegComp("([^,]*),([^\\(,]*)(\\([^\\)]*\\)?)?,?(.*)?$"))
-        return -1; // whatever
-      if (reg.RegFind(strParameterCaseIntact.c_str()) > -1)
-      {
-        char* szParam = reg.GetReplaceString("\\2\\3");
-        if (szParam)
-        {
-          strCommand = szParam;
-          free(szParam);
-        }
-        szParam = reg.GetReplaceString("\\4");
-        if (szParam)
-        {
-          vector<CStdString> arSplit;
-          StringUtils::SplitString(szParam, ",", arSplit);
-
-          if (arSplit.size() == 2)
-          {
-            if (strlen(arSplit[0]))
-              fSecs = static_cast<float>(atoi(arSplit[0])*60);
-
-            if (arSplit[1].Equals("true"))
-              bSilent = true;
-          }
-          else
-          {
-            if (strlen(szParam))
-              fSecs = static_cast<float>(atoi(szParam)*60);
-          }
-
-          free(szParam);
-        }
-        szParam = reg.GetReplaceString("\\1");
-        if (szParam)
-        {
-          strName = szParam;
-          free(szParam);
-        }
-      }
-    }
-
-    if (fSecs == -1.f)
-    {
-      CStdString strTime;
+    // format is alarmclock(name,command[,seconds,true]);
+    float seconds = 0;
+    bool silent = false;
+    if (params.size() > 2)
+      seconds = static_cast<float>(atoi(params[2].c_str())*60);
+    else
+    { // check if shutdown is specified in particular, and get the time for it
       CStdString strHeading;
-      if (strCommand.Equals("xbmc.shutdown") || strCommand.Equals("xbmc.shutdown()"))
+      CStdString command;
+      vector<CStdString> commandParams;
+      CUtil::SplitExecFunction(params[1], command, commandParams);
+      if (command.CompareNoCase("shutdown") == 0)
         strHeading = g_localizeStrings.Get(20145);
       else
         strHeading = g_localizeStrings.Get(13209);
+      CStdString strTime;
       if( CGUIDialogNumeric::ShowAndGetNumber(strTime, strHeading) )
-        fSecs = static_cast<float>(atoi(strTime.c_str())*60);
-      else
-        return -4;
+        seconds = static_cast<float>(atoi(strTime.c_str())*60);
     }
-    if( g_alarmClock.isRunning() )
-      g_alarmClock.stop(strName);
+    if (params.size() > 3 && params[3].CompareNoCase("true") == 0)
+      silent = true;
 
-    g_alarmClock.start(strName,fSecs,strCommand,bSilent);
+    if( g_alarmClock.isRunning() )
+      g_alarmClock.stop(params[0]);
+
+    g_alarmClock.start(params[0], seconds, params[1], silent);
   }
   else if (execute.Equals("notification"))
   {
-    vector<CStdString> params;
-    StringUtils::SplitString(strParameterCaseIntact,",",params);
     if (params.size() < 2)
       return -1;
     if (params.size() == 4)
@@ -4281,18 +4223,17 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     g_settings.SetSkinBool(setting, !g_settings.GetSkinBool(setting));
     g_settings.Save();
   }
-  else if (execute.Equals("skin.setbool"))
+  else if (execute.Equals("skin.setbool") && params.size())
   {
-    int pos = parameter.Find(",");
-    if (pos >= 0)
+    if (params.size() > 1)
     {
-      int string = g_settings.TranslateSkinBool(parameter.Left(pos));
-      g_settings.SetSkinBool(string, parameter.Mid(pos+1).Equals("true"));
+      int string = g_settings.TranslateSkinBool(params[0]);
+      g_settings.SetSkinBool(string, params[1].CompareNoCase("true") == 0);
       g_settings.Save();
       return 0;
     }
     // default is to set it to true
-    int setting = g_settings.TranslateSkinBool(parameter);
+    int setting = g_settings.TranslateSkinBool(params[0]);
     g_settings.SetSkinBool(setting, true);
     g_settings.Save();
   }
@@ -4358,21 +4299,19 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
            execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric") || execute.Equals("skin.setlargeimage"))
   {
     // break the parameter up if necessary
-    // only search for the first "," and use that to break the string up
-    int pos = strParameterCaseIntact.Find(",");
-    int string;
-    if (pos >= 0)
+    int string = 0;
+    if (params.size() > 1)
     {
-      string = g_settings.TranslateSkinString(strParameterCaseIntact.Left(pos));
+      string = g_settings.TranslateSkinString(params[0]);
       if (execute.Equals("skin.setstring"))
       {
-        g_settings.SetSkinString(string, strParameterCaseIntact.Mid(pos+1));
+        g_settings.SetSkinString(string, params[1]);
         g_settings.Save();
         return 0;
       }
     }
     else
-      string = g_settings.TranslateSkinString(strParameterCaseIntact);
+      string = g_settings.TranslateSkinString(params[0]);
     CStdString value = g_settings.GetSkinString(string);
     VECSOURCES localShares;
     g_mediaManager.GetLocalDrives(localShares);
@@ -4400,14 +4339,11 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     else if (execute.Equals("skin.setfile"))
     {
-      CStdString strMask;
-      if (pos > -1)
-        strMask = strParameterCaseIntact.Mid(pos+1);
-
-      int iEnd=strMask.Find(",");
-      if (iEnd > -1)
+      CStdString strMask = (params.size() > 1) ? params[1] : "";
+    
+      if (params.size() > 2)
       {
-        value = strMask.Mid(iEnd+1);
+        value = params[2];
         CUtil::AddSlashAtEnd(value);
         bool bIsSource;
         if (GetMatchingSource(value,localShares,bIsSource) < 0) // path is outside shares - add it as a separate one
@@ -4417,11 +4353,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           share.strPath = value;
           localShares.push_back(share);
         }
-        CStdString strTemp = strMask;
-        strMask = strTemp.Left(iEnd);
       }
-      else
-        iEnd = strMask.size();
       if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
         g_settings.SetSkinString(string, value);
     }
@@ -4432,21 +4364,18 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     }
     g_settings.Save();
   }
-  else if (execute.Equals("dialog.close"))
+  else if (execute.Equals("dialog.close") && params.size())
   {
-    CStdStringArray arSplit;
-    StringUtils::SplitString(parameter,",", arSplit);
     bool bForce = false;
-    if (arSplit.size() > 1)
-      if (arSplit[1].Equals("true"))
-        bForce = true;
-    if (arSplit[0].Equals("all"))
+    if (params.size() > 1 && params[1].CompareNoCase("true") == 0)
+      bForce = true;
+    if (params[0].CompareNoCase("all") == 0)
     {
       m_gWindowManager.CloseDialogs(bForce);
     }
     else
     {
-      DWORD id = CButtonTranslator::TranslateWindowString(arSplit[0]);
+      DWORD id = CButtonTranslator::TranslateWindowString(params[0]);
       CGUIWindow *window = (CGUIWindow *)m_gWindowManager.GetWindow(id);
       if (window && window->IsDialog())
         ((CGUIDialog *)window)->Close(bForce);
@@ -4519,14 +4448,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetFocusedWindow(), id);
     g_graphicsContext.SendMessage(message);
   }
-  else if (execute.Equals("updatelibrary"))
+  else if (execute.Equals("updatelibrary") && params.size())
   {
-    CStdStringArray param_array;
-    // Use parameter with case intact
-    StringUtils::SplitString(strParameterCaseIntact,",", param_array);
-    if (param_array.size() < 1)
-      return -1;
-    if (param_array[0].Equals("music"))
+    if (params[0].Equals("music"))
     {
       CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
       if (scanner)
@@ -4537,7 +4461,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
           scanner->StartScanning("");
       }
     }
-    if (param_array[0].Equals("video"))
+    if (params[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
       SScraperInfo info;
@@ -4547,7 +4471,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan(param_array.size() > 1 ? param_array[1] : "",info,settings);
+          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
       }
     }
   }
@@ -4559,32 +4483,24 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     CLastFmManager::GetInstance()->Ban(parameter.Equals("false") ? false : true);
   }
-  else if (execute.Equals("control.move"))
+  else if (execute.Equals("control.move") && params.size() > 1)
   {
-    CStdStringArray arSplit;
-    StringUtils::SplitString(parameter,",", arSplit);
-    if (arSplit.size() < 2)
-      return -1;
-    CGUIMessage message(GUI_MSG_MOVE_OFFSET, m_gWindowManager.GetFocusedWindow(), atoi(arSplit[0].c_str()), atoi(arSplit[1].c_str()));
+    CGUIMessage message(GUI_MSG_MOVE_OFFSET, m_gWindowManager.GetFocusedWindow(), atoi(params[0].c_str()), atoi(params[1].c_str()));
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.refresh"))
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
     //       This shouldn't stop a dialog intercepting it though.
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
-    message.SetStringParam(strParameterCaseIntact);
+    message.SetStringParam(parameter);
     g_graphicsContext.SendMessage(message);
   }
-  else if (execute.Equals("container.update"))
+  else if (execute.Equals("container.update") && params.size())
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-    message.SetStringParam(strParameterCaseIntact);
-    int pos = parameter.find_last_of(",");
-    if (pos >= 0 && parameter.Mid(pos+1).Equals("replace"))
-    {
-      message.SetStringParam(strParameterCaseIntact.Left(pos));
+    message.SetStringParam(params[0]);
+    if (params.size() > 1 && params[1].CompareNoCase("replace") == 0)
       message.SetParam2(1); // reset the history
-    }
     g_graphicsContext.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))
@@ -4622,30 +4538,23 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_gWindowManager.GetActiveWindow(), 0, 0);
     g_graphicsContext.SendMessage(message);
   }
-  else if (execute.Equals("control.message"))
+  else if (execute.Equals("control.message") && params.size() >= 2)
   {
-    CStdStringArray params;
-    StringUtils::SplitString(parameter, ",", params);
-    if (params.size() >= 2)
-    {
-      int controlID = atoi(params[0].c_str());
-      int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
-      if (params[1] == "moveup")
-        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
-      else if (params[1] == "movedown")
-        g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, (DWORD)-1);
-      else if (params[1] == "pageup")
-        g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
-      else if (params[1] == "pagedown")
-        g_graphicsContext.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
-      else if (params[1] == "click")
-        g_graphicsContext.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
-    }
+    int controlID = atoi(params[0].c_str());
+    int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
+    if (params[1] == "moveup")
+      g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
+    else if (params[1] == "movedown")
+      g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, (DWORD)-1);
+    else if (params[1] == "pageup")
+      g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
+    else if (params[1] == "pagedown")
+      g_graphicsContext.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
+    else if (params[1] == "click")
+      g_graphicsContext.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
   }
-  else if (execute.Equals("sendclick"))
+  else if (execute.Equals("sendclick") && params.size())
   {
-    CStdStringArray params;
-    StringUtils::SplitString(parameter, ",", params);
     if (params.size() == 2)
     {
       // have a window - convert it
@@ -4653,47 +4562,37 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
       g_graphicsContext.SendMessage(message);
     }
-    else if (params.size() == 1)
+    else
     { // single param - assume you meant the active window
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), m_gWindowManager.GetActiveWindow());
       g_graphicsContext.SendMessage(message);
     }
   }
-  else if (execute.Equals("action"))
+  else if (execute.Equals("action") && params.size())
   {
-    CStdStringArray params;
-    StringUtils::SplitString(parameter, ",", params);
-    if (params.size())
+    // try translating the action from our ButtonTranslator
+    WORD actionID;
+    if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
-      // try translating the action from our ButtonTranslator
-      WORD actionID;
-      if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
-      {
-        CAction action;
-        action.wID = actionID;
-        action.fAmount1 = 1.0f;
-        if (params.size() == 2)
-        { // have a window - convert it and send to it.
-          int windowID = CButtonTranslator::TranslateWindowString(params[1].c_str());
-          CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
-          if (window)
-            window->OnAction(action);
-        }
-        else // send to our app
-          g_application.OnAction(action);
+      CAction action;
+      action.wID = actionID;
+      action.fAmount1 = 1.0f;
+      if (params.size() == 2)
+      { // have a window - convert it and send to it.
+        int windowID = CButtonTranslator::TranslateWindowString(params[1].c_str());
+        CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
+        if (window)
+          window->OnAction(action);
       }
+      else // send to our app
+        g_application.OnAction(action);
     }
   }
-  else if (execute.Equals("setproperty"))
+  else if (execute.Equals("setproperty") && params.size() == 2)
   {
-    CStdStringArray params;
-    StringUtils::SplitString(parameter, ",", params);
-    if (params.size() == 2)
-    {
-      CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
-      if (window)
-        window->SetProperty(params[0],params[1]);
-    }
+    CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    if (window)
+      window->SetProperty(params[0],params[1]);
   }
   else
     return -1;

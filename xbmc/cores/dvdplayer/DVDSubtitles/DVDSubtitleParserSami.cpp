@@ -55,7 +55,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
     return false;
 
   CDVDOverlayText* pOverlay = NULL;
-  while (m_pStream->ReadLine(line, sizeof(line)))
+  while (m_stringstream.getline(line, sizeof(line)))
   {
     int pos = reg.RegFind(line);
     const char* text = line;
@@ -84,13 +84,11 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   if(pOverlay)
     pOverlay->Release();
 
-  m_pStream->Close();
   return true;
 }
 
 void CDVDSubtitleParserSami::AddText(CRegExp& tags, CDVDOverlayText* pOverlay, const char* data, int len)
 {
-  CStdStringW strUTF16;
   CStdStringA strUTF8;
   strUTF8.assign(data, len);
   strUTF8.Replace("\n", "");
@@ -108,8 +106,6 @@ void CDVDSubtitleParserSami::AddText(CRegExp& tags, CDVDOverlayText* pOverlay, c
     strUTF8.erase(pos, tag.length());
   }
 
-  g_charsetConverter.subtitleCharsetToW(strUTF8, strUTF16);
-  g_charsetConverter.wToUTF8(strUTF16, strUTF8);
   if (strUTF8.IsEmpty())
     return;
   // add a new text element to our container

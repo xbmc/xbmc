@@ -35,8 +35,6 @@
 #include "StdString.h"
 #include <vector>
 
-typedef std::vector<CStdString> CStdStringArray;
-
 enum TIME_FORMAT { TIME_FORMAT_GUESS = 0,
                    TIME_FORMAT_SS,
                    TIME_FORMAT_MM,
@@ -63,6 +61,7 @@ public:
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const CStdString &dateString);
   static void WordToDigits(CStdString &word);
+  static float GetFloat(const char* str); // ignores locale
 };
 
 #endif

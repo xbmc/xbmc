@@ -309,7 +309,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
   }
 }
 
-long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const CStdString &extraArtists, const CStdString &strArtist1, long idThumb, long idGenre, const CStdString &extraGenres, long year)
+long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const CStdString &extraArtists, const CStdString &strArtist, long idThumb, long idGenre, const CStdString &extraGenres, long year)
 {
   CStdString strSQL;
   try
@@ -318,19 +318,11 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const
     strAlbum.TrimLeft(" ");
     strAlbum.TrimRight(" ");
 
-    CStdString strArtist=strArtist1;
-
     if (strAlbum.IsEmpty())
     {
-      // album tag is empty, fake an album
-      // with no path and artist and add this
-      // instead of an empty string
-      strAlbum=g_localizeStrings.Get(13205); // Unknown
-      lArtistId=-1;
-      strArtist.Empty();
-      idThumb=AddThumb("");
-      idGenre=-1;
-      year=0;
+      // album tag is empty, so we treat this as a single, or a collection of singles,
+      // so we don't specify a thumb
+      idThumb = AddThumb("");
     }
 
     if (NULL == m_pDB.get()) return -1;
@@ -768,13 +760,10 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
   CAlbum album;
   album.idAlbum = pDS->fv(album_idAlbum).get_asLong();
   album.strAlbum = pDS->fv(album_strAlbum).get_asString();
+  if (album.strAlbum.IsEmpty())
+    album.strAlbum = g_localizeStrings.Get(1050);
   album.strArtist = pDS->fv(album_strArtist).get_asString();
   album.strArtist += pDS->fv(album_strExtraArtists).get_asString();
-  // workaround... the fake "Unknown" album usually has a NULL artist.
-  // since it can contain songs from lots of different artists, lets set
-  // it to "Various Artists" instead
-  if (pDS->fv("artist.idArtist").get_asLong() == -1)
-    album.strArtist = g_localizeStrings.Get(340);
   album.strGenre = pDS->fv(album_strGenre).get_asString();
   album.strGenre += pDS->fv(album_strExtraGenres).get_asString();
   album.iYear = pDS->fv(album_iYear).get_asLong();
@@ -2870,6 +2859,13 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
                           ") "
                           , idArtist, idArtist, idArtist, idArtist);
   }
+  else
+  { // no artist given, so exclude any single albums (aka empty tagged albums)
+    if (strWhere.IsEmpty())
+      strWhere += "where albumview.strAlbum <> ''";
+    else
+      strWhere += "and albumview.strAlbum <> ''";
+  }
 
   bool bResult = GetAlbumsByWhere(strBaseDir, strWhere, "", items);
   if (bResult)
@@ -2891,14 +2887,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
 
   try
   {
-    CStdString sql = "select * from albumview ";
-
-    // block null album names
-    if (where.IsEmpty())
-      sql += "where ";
-    else
-      sql += where + " and ";
-    sql += "albumview.strAlbum != \"\" " + order;
+    CStdString sql = "select * from albumview " + where + order;
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, sql.c_str());
@@ -4103,16 +4092,8 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       info.strFramework = parser.GetFramework();
 
     }
-    if (info.strPath.IsEmpty()) // default fallback
-    {
-      CScraperParser parser;
-      info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-      parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
-      info.strContent = parser.GetContent();
-      info.strTitle = parser.GetName();
-      info.strDate = parser.GetDate();
-      info.strFramework = parser.GetFramework();
-    }
+    if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback
+      GetScraperForPath("musicdb://",info);
 
     m_pDS->close();
     return true;

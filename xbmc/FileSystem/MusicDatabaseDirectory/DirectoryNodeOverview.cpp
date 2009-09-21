@@ -22,6 +22,7 @@
 #include "stdafx.h"
 #include "DirectoryNodeOverview.h"
 #include "FileItem.h"
+#include "MusicDatabase.h"
 
 using namespace std;
 using namespace DIRECTORY::MUSICDATABASEDIRECTORY;
@@ -52,16 +53,28 @@ NODE_TYPE CDirectoryNodeOverview::GetChildType()
     return NODE_TYPE_ALBUM_COMPILATIONS;
   else if (GetName()=="9")
     return NODE_TYPE_YEAR;
+  else if (GetName()=="10")
+    return NODE_TYPE_SINGLES;
   return NODE_TYPE_NONE;
 }
 
 bool CDirectoryNodeOverview::GetContent(CFileItemList& items)
 {
   vector< pair<int, int> > rootItems;
+  CMusicDatabase musicDatabase;
+  bool showSingles = false;
+  if (musicDatabase.Open())
+  {
+    if (musicDatabase.GetSongsCount("where strAlbum=''") > 0)
+      showSingles = true;
+    musicDatabase.Close();
+  }
 
   rootItems.push_back(make_pair(1, 135));
   rootItems.push_back(make_pair(2, 133));
   rootItems.push_back(make_pair(3, 132));
+  if (showSingles)
+    rootItems.push_back(make_pair(10, 1050));
   rootItems.push_back(make_pair(4, 134));
   rootItems.push_back(make_pair(9, 652));
   rootItems.push_back(make_pair(5, 271));

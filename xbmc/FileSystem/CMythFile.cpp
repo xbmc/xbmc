@@ -263,7 +263,7 @@ bool CCMythFile::SetupFile(const CURL& url)
   if(!SetupConnection(url, true, false, false))
     return false;
 
-  m_filename = url.GetFileNameWithoutPath();
+  m_filename = url.GetFileName().Mid(6);
 
   m_file = m_dll->conn_connect_path((char*)m_filename.c_str(), m_control, 16*1024, 4096);
   if(!m_file)

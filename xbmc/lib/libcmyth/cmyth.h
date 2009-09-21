@@ -1029,7 +1029,7 @@ extern int cmyth_mysql_get_guide(cmyth_database_t db, cmyth_program_t **prog, ti
 extern int cmyth_mysql_testdb_connection(cmyth_database_t db,char **message);
 extern int cmyth_schedule_recording(cmyth_conn_t conn, char * msg);
 extern char * cmyth_mysql_escape_chars(cmyth_database_t db, char * string);
-extern int cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_dt, cmyth_commbreaklist_t breaklist);
+extern int cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_dt, cmyth_commbreaklist_t breaklist, int conn_version);
 
 extern int cmyth_mysql_get_prev_recorded(cmyth_database_t db, cmyth_program_t **prog);
 

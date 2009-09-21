@@ -724,22 +724,73 @@ cmyth_get_bookmark_offset(cmyth_database_t db, long chanid, long long mark)
 }
 
 int
-cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_dt, cmyth_commbreaklist_t breaklist) 
+cmyth_mysql_query_commbreak_count(cmyth_database_t db, int chanid, char * start_ts_dt) {
+	MYSQL_RES *res = NULL;
+	int count = 0;
+	char * query_str;
+	query_str = "SELECT * FROM recordedmarkup WHERE chanid = ? AND starttime = ? AND TYPE IN ( 4 )"; 
+	cmyth_mysql_query_t * query;
+
+	query = cmyth_mysql_query_create(db,query_str);
+	if ((cmyth_mysql_query_param_int(query, chanid) < 0
+		|| cmyth_mysql_query_param_str(query, start_ts_dt) < 0
+		)) {
+		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
+		ref_release(query);
+		return -1;
+	}
+	res = cmyth_mysql_query_result(query);
+	ref_release(query);
+	if (res == NULL) {
+		cmyth_dbg(CMYTH_DBG_ERROR,"%s, finalisation/execution of query failed!\n", __FUNCTION__);
+		return -1;
+	}
+	count = mysql_num_rows(res);
+	mysql_free_result(res);
+	return (count);
+} 
+
+int
+cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_dt, cmyth_commbreaklist_t breaklist, int conn_version) 
 {
 	MYSQL_RES *res = NULL;
 	MYSQL_ROW row;
-	const char *query_str = "SELECT m.type AS type, m.mark AS mark, s.offset AS offset FROM recordedmarkup m INNER JOIN recordedseek AS s ON (m.chanid = s.chanid AND m.starttime = s.starttime AND (FLOOR(m.mark / 15) + 1) = s.mark) WHERE m.chanid = ? AND m.starttime = ? AND m.type IN (?, ?) ORDER BY mark;";
+	int resolution = 30;
+	char * query_str;
+	if (conn_version >= 43) {
+		query_str = "SELECT m.type,m.mark,s.mark,s.offset  FROM recordedmarkup m INNER JOIN recordedseek AS s ON m.chanid = s.chanid AND m.starttime = s.starttime  WHERE m.chanid = ? AND m.starttime = ? AND m.type in (?,?) and FLOOR(m.mark/?)=FLOOR(s.mark/?) ORDER BY `m`.`mark` LIMIT 300 ";
+	}
+	else { 
+		query_str = "SELECT m.type AS type, m.mark AS mark, s.offset AS offset FROM recordedmarkup m INNER JOIN recordedseek AS s ON (m.chanid = s.chanid AND m.starttime = s.starttime AND (FLOOR(m.mark / 15) + 1) = s.mark) WHERE m.chanid = ? AND m.starttime = ? AND m.type IN (?, ?) ORDER BY mark;";
+	}
 	int rows = 0;
 	int i;
 	cmyth_mysql_query_t * query;
 	cmyth_commbreak_t commbreak = NULL;
+
+	cmyth_dbg(CMYTH_DBG_ERROR,"%s, query=%s\n", __FUNCTION__,query_str);
+
 	query = cmyth_mysql_query_create(db,query_str);
 
-	if (cmyth_mysql_query_param_int(query, chanid) < 0
+	if ((conn_version >= 43) && ( 
+		cmyth_mysql_query_param_int(query, chanid) < 0
 		|| cmyth_mysql_query_param_str(query, start_ts_dt) < 0
 		|| cmyth_mysql_query_param_int(query, CMYTH_COMMBREAK_START) < 0
 		|| cmyth_mysql_query_param_int(query, CMYTH_COMMBREAK_END) < 0
-		) {
+		|| cmyth_mysql_query_param_int(query, resolution) < 0
+		|| cmyth_mysql_query_param_int(query, resolution) < 0
+		)) {
+		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
+		ref_release(query);
+		return -1;
+	}
+
+	if ((conn_version < 43) && (
+		cmyth_mysql_query_param_int(query, chanid) < 0
+		|| cmyth_mysql_query_param_str(query, start_ts_dt) < 0
+		|| cmyth_mysql_query_param_int(query, CMYTH_COMMBREAK_START) < 0
+		|| cmyth_mysql_query_param_int(query, CMYTH_COMMBREAK_END) < 0
+		)) {
 		cmyth_dbg(CMYTH_DBG_ERROR,"%s, binding of query parameters failed! Maybe we're out of memory?\n", __FUNCTION__);
 		ref_release(query);
 		return -1;
@@ -751,10 +802,14 @@ cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_
 		return -1;
 	}
 
-	breaklist->commbreak_count = mysql_num_rows(res) / 2;
+	if (conn_version >= 43) {
+		breaklist->commbreak_count = cmyth_mysql_query_commbreak_count(db,chanid,start_ts_dt);
+	}
+	else {
+		breaklist->commbreak_count = mysql_num_rows(res) / 2;
+	}
+	breaklist->commbreak_list = malloc(breaklist->commbreak_count * sizeof(cmyth_commbreak_t));
 
-	breaklist->commbreak_list = malloc(breaklist->commbreak_count *
-						sizeof(cmyth_commbreak_t));
 	if (!breaklist->commbreak_list) {
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: malloc() failed for list\n",
 			__FUNCTION__);
@@ -763,31 +818,73 @@ cmyth_mysql_get_commbreak_list(cmyth_database_t db, int chanid, char * start_ts_
 	memset(breaklist->commbreak_list, 0, breaklist->commbreak_count * sizeof(cmyth_commbreak_t));
 
 	i = 0;
-	while ((row = mysql_fetch_row(res))) {
-		if ((i % 2) == 0) {
-			if (safe_atoi(row[0]) != CMYTH_COMMBREAK_START) {
+	long long start_previous = 0;
+	long long end_previous = 0;
+	if (conn_version >= 43) {
+		while ((row = mysql_fetch_row(res))) {
+			if (safe_atoi(row[0]) == CMYTH_COMMBREAK_START) {
+				if (safe_atoll(row[1]) != start_previous) {
+					commbreak = cmyth_commbreak_create();
+					commbreak->start_mark = safe_atoll(row[1]);
+					commbreak->start_offset = safe_atoll(row[3]);
+					start_previous = commbreak->start_mark;
+				}
+				else if (safe_atoll(row[1]) == safe_atoll(row[2])) { 
+					commbreak = cmyth_commbreak_create();
+					commbreak->start_mark = safe_atoll(row[1]);
+					commbreak->start_offset = safe_atoll(row[3]);
+				}
+			} else if (safe_atoi(row[0]) == CMYTH_COMMBREAK_END) {
+				if (safe_atoll(row[1]) != end_previous) {
+					commbreak->end_mark = safe_atoll(row[1]);
+					commbreak->end_offset = safe_atoll(row[3]);
+					breaklist->commbreak_list[rows] = commbreak;
+					end_previous = commbreak->end_mark;
+					rows++;
+				}
+				else if (safe_atoll(row[1]) == safe_atoll(row[2])) {
+					commbreak->end_mark = safe_atoll(row[1]);
+					commbreak->end_offset = safe_atoll(row[3]);
+					breaklist->commbreak_list[rows] = commbreak;
+					if (end_previous != safe_atoll(row[1])) {
+						rows++;
+					}
+				}
+			}
+			else {
+				cmyth_dbg(CMYTH_DBG_ERROR, "%s: Unknown COMMBREAK returned\n", 
+					__FUNCTION__);
 				return -1;
 			}
-
-			commbreak = cmyth_commbreak_create();
-			commbreak->start_mark = safe_atoll(row[1]);
-			commbreak->start_offset = safe_atoll(row[2]);
 			i++;
-		} else {
-			if (safe_atoi(row[0]) != CMYTH_COMMBREAK_END) {
-				return -1;
-			}
-
-			commbreak->end_mark = safe_atoll(row[1]);
-			commbreak->end_offset = safe_atoll(row[2]);
-			breaklist->commbreak_list[rows] = commbreak;
-			i = 0;
-			rows++;
 		}
 	}
 
+	// mythtv protolcol version < 43 
+	else {
+		while ((row = mysql_fetch_row(res))) {
+			if ((i % 2) == 0) {
+				if (safe_atoi(row[0]) != CMYTH_COMMBREAK_START) {
+					return -1;
+				}
+				commbreak = cmyth_commbreak_create();
+				commbreak->start_mark = safe_atoll(row[1]);
+				commbreak->start_offset = safe_atoll(row[2]);
+				i++;
+			} else {
+				if (safe_atoi(row[0]) != CMYTH_COMMBREAK_END) {
+					return -1;
+				}
+				commbreak->end_mark = safe_atoll(row[1]);
+				commbreak->end_offset = safe_atoll(row[2]);
+				breaklist->commbreak_list[rows] = commbreak;
+				i = 0;
+				rows++;
+			}
+		}
+	}
 	mysql_free_result(res);
-	cmyth_dbg(CMYTH_DBG_ERROR, "%s: rows= %d\n", __FUNCTION__, rows);
+	cmyth_dbg(CMYTH_DBG_ERROR, "%s: COMMBREAK rows= %d\n", __FUNCTION__, rows);
 	return rows;
 }
 

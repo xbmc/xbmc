@@ -724,6 +724,7 @@
   <string id="1047">Other...</string>
   <string id="1048">Web server username</string>
   <string id="1049">Script settings</string>
+  <string id="1050">Singles</string>
 
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
@@ -1932,6 +1933,7 @@
   <string id="21414">Default tvshow scraper</string>
   <string id="21415">Default musicvideo scraper</string>
   <string id="21416">Enable fallback based on scraper language</string>
+  <string id="21417">- Scraper settings</string>
 
   <string id="21420">Value to match</string>
   <string id="21421">Smart playlist rule</string>
@@ -2064,6 +2066,7 @@
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
   <string id="22021">Allowed error in aspect ratio (%)</string>
+  <string id="22022">Include video files in listings</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
