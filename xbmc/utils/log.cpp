@@ -30,6 +30,7 @@
 #include "StdString.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
+#include "Thread.h"
 
 XFILE::CFile* CLog::m_file = NULL;
 
@@ -99,11 +100,7 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     CStdString strPrefix, strData;
 
-#ifdef __APPLE__
-    strPrefix.Format("%02.2d:%02.2d:%02.2d T:%lu M:%9ju %7s: ", time.wHour, time.wMinute, time.wSecond, GetCurrentThreadId(), stat.dwAvailPhys, levelNames[loglevel]);
-#else
-    strPrefix.Format("%02.2d:%02.2d:%02.2d T:%lu M:%9u %7s: ", time.wHour, time.wMinute, time.wSecond, GetCurrentThreadId(), stat.dwAvailPhys, levelNames[loglevel]);
-#endif
+    strPrefix.Format("%02.2d:%02.2d:%02.2d T:%"PRIu64" M:%9"PRIu64" %7s: ", time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[loglevel]);
 
     strData.reserve(16384);
     va_list va;

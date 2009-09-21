@@ -86,7 +86,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   if (wait)
   { // check that we're not being called from our application thread, else we'll be waiting
     // forever!
-    if (GetCurrentThreadId() != g_application.GetThreadId())
+    if (!g_application.IsCurrentThread())
       message.hWaitEvent = CreateEvent(NULL, true, false, NULL);
     else
     {

@@ -321,7 +321,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 
 void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
 {
-  if (GetCurrentThreadId() != g_application.GetThreadId())
+  if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
     int nCount = ExitCriticalSection(g_graphicsContext);
@@ -473,7 +473,7 @@ bool CGUIWindowManager::OnAction(const CAction &action)
 
 void CGUIWindowManager::Render()
 {
-  if (GetCurrentThreadId() != g_application.GetThreadId())
+  if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
     int nCount = ExitCriticalSection(g_graphicsContext);
@@ -541,7 +541,7 @@ void CGUIWindowManager::UpdateModelessVisibility()
 
 void CGUIWindowManager::Process(bool renderOnly /*= false*/)
 {
-  if (GetCurrentThreadId() != g_application.GetThreadId())
+  if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
     DWORD locks = ExitCriticalSection(g_graphicsContext);

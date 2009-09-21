@@ -1508,7 +1508,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
 
 void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
 {
-  if(CThread::ThreadId() == GetCurrentThreadId())
+  if(IsCurrentThread())
     return;
   if(!m_messenger.IsInited())
     return;
@@ -2723,7 +2723,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 {
 #define THREAD_ACTION(action) \
   do { \
-    if(GetCurrentThreadId() != CThread::ThreadId()) { \
+    if (!IsCurrentThread()) { \
       m_messenger.Put(new CDVDMsgType<CAction>(CDVDMsg::GENERAL_GUI_ACTION, action)); \
       return true; \
     } \

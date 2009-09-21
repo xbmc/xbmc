@@ -121,7 +121,7 @@ public:
   void StartZeroconf();
   void StopZeroconf();
   void DimLCDOnPlayback(bool dim);
-  DWORD GetThreadId() const { return m_threadID; };
+  bool IsCurrentThread() const;
   void Stop();
   void RestartApp();
   void LoadSkin(const CStdString& strSkin);
@@ -304,7 +304,7 @@ protected:
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
   CSplash* m_splash;
-  DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
+  ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   PLAYERCOREID m_eCurrentPlayer;
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;

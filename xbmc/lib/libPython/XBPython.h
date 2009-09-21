@@ -99,7 +99,7 @@ private:
 
   int               nextid;
   PyThreadState*    mainThreadState;
-  DWORD             dThreadId;
+  ThreadIdentifier  dThreadId;
   bool              m_bInitialized;
   HANDLE            m_hEvent;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll

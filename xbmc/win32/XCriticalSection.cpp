@@ -19,6 +19,7 @@
 */
 
 #include "../utils/CriticalSection.h"
+#include "Thread.h"
 
 //////////////////////////////////////////////////////////////////////
 XCriticalSection::XCriticalSection()
@@ -142,7 +143,7 @@ DWORD XCriticalSection::Exit()
 //////////////////////////////////////////////////////////////////////
 BOOL XCriticalSection::Owning()
 {
-	return (m_criticalSection.OwningThread == (HANDLE)GetCurrentThreadId());
+	return CThread::IsCurrentThread((ThreadIdentifier)m_criticalSection.OwningThread);
 }
 
 //////////////////////////////////////////////////////////////////////
