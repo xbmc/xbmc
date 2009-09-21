@@ -240,7 +240,7 @@ void XBPython::UnloadExtensionLibs()
       DllLoaderContainer::ReleaseModule(*iter);
       iter++;
   }
-
+  m_extensions.clear();
 }
 
 void XBPython::InitializeInterpreter()
@@ -370,6 +370,7 @@ void XBPython::Initialize()
 
       lock.Leave();
       WaitForSingleObject(m_hEvent, INFINITE);
+      lock.Enter();
     }
   }
 }
