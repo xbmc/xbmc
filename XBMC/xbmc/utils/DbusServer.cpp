@@ -294,8 +294,7 @@ void CDbusServer::Run()
   while (!m_bStop)
   {
     // start listening until we timeout
-    dbus_connection_read_write_dispatch(p_conn,0);
-    Sleep(10);
+    dbus_connection_read_write_dispatch(p_conn,1000);
   }
 
   CLog::Log(LOGNOTICE, "DS: DBUS server stopped");
