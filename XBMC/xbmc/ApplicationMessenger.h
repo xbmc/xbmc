@@ -139,7 +139,7 @@ public:
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
 
   void OpticalMount(CStdString device, bool bautorun=false); 
- 	void OpticalUnMount(CStdString device);
+  void OpticalUnMount(CStdString device);
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);
