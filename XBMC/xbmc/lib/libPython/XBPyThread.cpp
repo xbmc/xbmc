@@ -92,6 +92,7 @@ XBPyThread::XBPyThread(XBPython *pExecuter, int id)
 
 XBPyThread::~XBPyThread()
 {
+  stop();
   StopThread();
   CLog::Log(LOGDEBUG,"python thread %d destructed", m_id);
   if (source) delete []source;
@@ -209,15 +210,18 @@ void XBPyThread::Process()
         CLog::Log(LOGERROR, "Scriptresult: Error\n");
         if (PyErr_Occurred()) PyErr_Print();
         
-        CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-        if (pDlgOK)
+        if (!stopping)
         {
-          // TODO: Need to localize this
-          pDlgOK->SetHeading(247); //Scripts
-          pDlgOK->SetLine(0, 257); //ERROR
-          pDlgOK->SetLine(1, "Python script failed:");
-          pDlgOK->SetLine(2, source);
-          pDlgOK->DoModal();
+          CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+          if (pDlgOK)
+          {
+            // TODO: Need to localize this
+            pDlgOK->SetHeading(247); //Scripts
+            pDlgOK->SetLine(0, 257); //ERROR
+            pDlgOK->SetLine(1, "Python script failed:");
+            pDlgOK->SetLine(2, source);
+            pDlgOK->DoModal();
+          }
         }
       }
       else CLog::Log(LOGINFO, "Scriptresult: Success\n");
@@ -305,6 +309,8 @@ bool XBPyThread::isStopping() {
 
 void XBPyThread::stop()
 {
+  stopping = true;
+  
   if (m_threadState)
   {
     PyEval_AcquireLock();
@@ -312,6 +318,4 @@ void XBPyThread::stop()
     m_threadState->use_tracing = 1;
     PyEval_ReleaseLock();
   }
-
-  stopping = true;
 }
