@@ -43,8 +43,10 @@
 #include "XBPythonDll.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIWindowManager.h"
-#include "GUIDialogOK.h"
+#include "GUIDialogKaiToast.h"
+#include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "Util.h"
 
 #include "XBPyThread.h"
 #include "XBPython.h"
@@ -199,57 +201,51 @@ void XBPyThread::Process()
   
   xbp_chdir(sourcedir);
   
+  int retval = -1;
+  
   if (type == 'F')
   {
     // run script from file
     FILE *fp = fopen_utf8(_P(source).c_str(), "r");
     if (fp)
     {
-      if (PyRun_SimpleFile(fp, _P(source).c_str()) == -1)
-      {
-        CLog::Log(LOGERROR, "Scriptresult: Error\n");
-        if (PyErr_Occurred()) PyErr_Print();
-        
-        if (!stopping)
-        {
-          CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-          if (pDlgOK)
-          {
-            // TODO: Need to localize this
-            pDlgOK->SetHeading(247); //Scripts
-            pDlgOK->SetLine(0, 257); //ERROR
-            pDlgOK->SetLine(1, "Python script failed:");
-            pDlgOK->SetLine(2, source);
-            pDlgOK->DoModal();
-          }
-        }
-      }
-      else CLog::Log(LOGINFO, "Scriptresult: Success\n");
+      retval = PyRun_SimpleFile(fp, _P(source).c_str());
       fclose(fp);
     }
-    else CLog::Log(LOGERROR, "%s not found!\n", source);
+    else
+      CLog::Log(LOGERROR, "%s not found!", source);
   }
   else
   {
     //run script
-    if (PyRun_SimpleString(source) == -1)
-    {
-      CLog::Log(LOGERROR, "Scriptresult: Error\n");
-      if (PyErr_Occurred()) PyErr_Print();
-     
-      CGUIDialogOK *pDlgOK = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      if (pDlgOK)
-      {
-        // TODO: Need to localize this
-        pDlgOK->SetHeading(247); //Scripts
-        pDlgOK->SetLine(0, 257); //ERROR
-        pDlgOK->SetLine(1, "Python script failed:");
-        pDlgOK->SetLine(2, source);
-        pDlgOK->DoModal();
-      }
-    }
-    else CLog::Log(LOGINFO, "Scriptresult: Success\n");
+    retval = PyRun_SimpleString(source);
   }
+  if (retval == -1)
+  {
+    CLog::Log(LOGERROR, "Scriptresult: Error");
+    if (PyErr_Occurred())
+      PyErr_Print();
+   
+    CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+    if (pDlgToast)
+    {
+      CStdString desc;
+      CStdString path;
+      CStdString script;
+      CUtil::Split(source, path, script);
+      if (script.Equals("default.py"))
+      {
+        CStdString path2;
+        CUtil::RemoveSlashAtEnd(path);
+        CUtil::Split(path, path2, script);
+      }
+
+      desc.Format(g_localizeStrings.Get(2100), script);
+      pDlgToast->QueueNotification(g_localizeStrings.Get(257), desc);
+    }
+  }
+  else
+    CLog::Log(LOGINFO, "Scriptresult: Success");
 
   PyThreadState_Swap(NULL);
   PyEval_ReleaseLock();
@@ -267,14 +263,14 @@ void XBPyThread::Process()
         "import threading\n"
         "import sys\n"
         "try:\n"
-            "\tthreads = list(threading.enumerate())\n"
+        "\tthreads = list(threading.enumerate())\n"
         "except:\n"
-            "\tprint 'error listing threads'\n"
+        "\tprint 'error listing threads'\n"
         "while threading.activeCount() > 1:\n"
         "\tfor thread in threads:\n"
-            "\t\tif thread <> threading.currentThread():\n"
-            "\t\t\tprint 'waiting for thread - ' + thread.getName()\n"
-            "\t\t\tthread.join(1000)\n"
+        "\t\tif thread <> threading.currentThread():\n"
+        "\t\t\tprint 'waiting for thread - ' + thread.getName()\n"
+        "\t\t\tthread.join(1000)\n"
         );
 
   m_pExecuter->DeInitializeInterpreter();
