@@ -148,7 +148,7 @@ public:
   virtual void         Reset(); /* resets renderer after seek for example */
 
   // TODO:DIRECTX - implement these
-  virtual bool         IsConfigured() { return m_bConfigured; } 
+  virtual bool         IsConfigured() { return false; } 
   virtual bool         SupportsBrightness() { return false; }
   virtual bool         SupportsContrast() { return false; }
   virtual bool         SupportsGamma() { return false; }
