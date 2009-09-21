@@ -3726,9 +3726,10 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     CStdString strWindow;
     CStdString strPath;
     if (params.size())
+    {
       strWindow = params[0];
-    if (params.size() > 1)
-      strPath = params[1];
+      params.erase(params.begin());
+    }
 
     // confirm the window destination is valid prior to switching
     int iWindow = CButtonTranslator::TranslateWindowString(strWindow.c_str());
@@ -3736,10 +3737,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     {
       // disable the screensaver
       g_application.ResetScreenSaverWindow();
-      if (execute.Equals("activatewindow"))
-        m_gWindowManager.ActivateWindow(iWindow, strPath);
-      else  // ReplaceWindow
-        m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
+      m_gWindowManager.ActivateWindow(iWindow, params, !execute.Equals("activatewindow"));
     }
     else
     {

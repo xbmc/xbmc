@@ -171,7 +171,9 @@ void CGUIWindowManager::Add(CGUIWindow* pWindow)
     map<DWORD, CGUIWindow *>::iterator it = m_mapWindows.find(pWindow->GetID() + i);
     if (it != m_mapWindows.end())
     {
-      CLog::Log(LOGERROR, "Error, trying to add a second window with id %lu to the window manager", pWindow->GetID());
+      CLog::Log(LOGERROR, "Error, trying to add a second window with id %u "
+                          "to the window manager",
+                pWindow->GetID());
       return;
     }
     m_mapWindows.insert(pair<DWORD, CGUIWindow *>(pWindow->GetID() + i, pWindow));
@@ -201,7 +203,9 @@ void CGUIWindowManager::Remove(DWORD dwID)
   }
   else
   {
-    CLog::Log(LOGWARNING, "Attempted to remove window %lu from the window manager when it didn't exist", dwID);
+    CLog::Log(LOGWARNING, "Attempted to remove window %u "
+                          "from the window manager when it didn't exist",
+              dwID);
   }
 }
 
@@ -304,12 +308,28 @@ void CGUIWindowManager::RefreshWindow()
 
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)
 {
-  ActivateWindow(newWindow, strPath, true);
+  vector<CStdString> params;
+  if (!strPath.IsEmpty())
+    params.push_back(strPath);
+  ActivateWindow(newWindow, params, true);
 }
 
-void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath, bool swappingWindows)
+void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath)
 {
-  CStdString strPath1 = strPath;
+  vector<CStdString> params;
+  if (!strPath.IsEmpty())
+    params.push_back(strPath);
+  ActivateWindow(iWindowID, params, false);
+}
+
+void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
+{
+  ActivateWindow_Internal(iWindowID, params, swappingWindows);
+}
+
+void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
+{
+  bool passParams = true;
   // translate virtual windows
   // virtual music window which returns the last open music window (aka the music start window)
   if (iWindowID == WINDOW_MUSIC)
@@ -319,7 +339,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     if (iWindowID != WINDOW_MUSIC_NAV)
       iWindowID = WINDOW_MUSIC_FILES;
     // destination path cannot be used with virtual window
-    strPath1 = "";
+    passParams = false;
   }
   // virtual video window which returns the last open video window (aka the video start window)
   if (iWindowID == WINDOW_VIDEOS)
@@ -329,21 +349,19 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
     if (iWindowID != WINDOW_VIDEO_NAV)
       iWindowID = WINDOW_VIDEO_FILES;
     // destination path cannot be used with virtual window
-    strPath1 = "";
+    passParams = false;
   }
   // Is the Library enabled?  If not, go to Files view.
   if (iWindowID == WINDOW_MUSIC_NAV && !g_guiSettings.GetBool("musiclibrary.enabled"))
   {
     iWindowID = WINDOW_MUSIC_FILES;
-    // clear destination path
-    strPath1 = "";
+    passParams = false;
     CLog::Log(LOGDEBUG, "Trying to activate Music Library, but its disabled.  Switching to Files instead.");
   }
   if (iWindowID == WINDOW_VIDEO_NAV && !g_guiSettings.GetBool("videolibrary.enabled"))
   {
     iWindowID = WINDOW_VIDEO_FILES;
-    // clear destination path
-    strPath1 = "";
+    passParams = false;
     CLog::Log(LOGDEBUG, "Trying to activate Video Library, but its disabled.  Switching to Files instead.");
   }
 
@@ -366,7 +384,7 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   else if (pNewWindow->IsDialog())
   { // if we have a dialog, we do a DoModal() rather than activate the window
     if (!pNewWindow->IsDialogRunning())
-      ((CGUIDialog *)pNewWindow)->DoModal(iWindowID, strPath);
+      ((CGUIDialog *)pNewWindow)->DoModal(iWindowID, (passParams && params.size()) ? params[0] : "");
     return;
   }
 
@@ -399,7 +417,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const CStdString& strPath,
   g_audioManager.PlayWindowSound(pNewWindow->GetID(), SOUND_INIT);
   // Send the init message
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, currentWindow, iWindowID);
-  if (!strPath1.IsEmpty()) msg.SetStringParam(strPath1);
+  if (passParams)
+    msg.SetStringParams(params);
   pNewWindow->OnMessage(msg);
 //  g_infoManager.SetPreviousWindow(WINDOW_INVALID);
 }
@@ -448,6 +467,11 @@ bool CGUIWindowManager::OnAction(const CAction &action)
 }
 
 void CGUIWindowManager::Render()
+{
+  Render_Internal();
+}
+
+void CGUIWindowManager::Render_Internal()
 {
   CGUIWindow* pWindow = GetWindow(GetActiveWindow());
   if (pWindow)
@@ -503,6 +527,11 @@ void CGUIWindowManager::UpdateModelessVisibility()
 }
 
 void CGUIWindowManager::Process(bool renderOnly /*= false*/)
+{
+  Process_Internal(renderOnly);
+}
+
+void CGUIWindowManager::Process_Internal(bool renderOnly /*= false*/)
 {
   if (m_pCallback)
   {

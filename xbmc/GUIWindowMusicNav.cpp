@@ -95,11 +95,10 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       // check for valid quickpath parameter
-      CStdStringArray params;
-      StringUtils::SplitString(message.GetStringParam(), ",", params);
-      bool returning = params.size() > 1 && params[1].Equals("return");
+      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
+      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
+      bool returning = strReturn.CompareNoCase("return") == 0;
 
-      CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
@@ -1054,6 +1053,31 @@ void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
 
     if (pos != CStdString::npos)
       items.Add(item);
+  }
+}
+
+void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
+{
+  CGUIWindowMusicBase::OnPrepareFileItems(items);
+  // set fanart
+  map<CStdString, CStdString> artists;
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr item = items[i];
+    if (!item->HasMusicInfoTag() || item->HasProperty("fanart_image"))
+      continue;
+    map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
+    if (artist == artists.end())
+    {
+      CStdString strFanart = item->GetCachedFanart();
+      if (XFILE::CFile::Exists(strFanart))
+        item->SetProperty("fanart_image",strFanart);
+      else
+        strFanart = "";
+      artists.insert(make_pair(item->GetMusicInfoTag()->GetArtist(), strFanart));
+    }
+    else
+      item->SetProperty("fanart_image",artist->second);
   }
 }
 

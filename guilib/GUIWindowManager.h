@@ -55,8 +55,9 @@ public:
   void AddCustomWindow(CGUIWindow* pWindow);
   void Remove(DWORD dwID);
   void Delete(DWORD dwID);
-  void ActivateWindow(int iWindowID, const CStdString& strPath = "", bool swappingWindows = false);
-  void ChangeActiveWindow(int iNewID, const CStdString& strPath = "");
+  void ActivateWindow(int iWindowID, const CStdString &strPath = "");
+  void ChangeActiveWindow(int iNewID, const CStdString &strPath = "");
+  void ActivateWindow(int iWindowID, const std::vector<CStdString>& params, bool swappingWindows = false);
   void PreviousWindow();
   void RefreshWindow();
   void LoadNotOnDemandWindows();
@@ -107,6 +108,12 @@ private:
   void AddToWindowHistory(DWORD newWindowID);
   void ClearWindowHistory();
   CGUIWindow *GetTopMostDialog() const;
+
+  friend class CApplicationMessenger;
+  void ActivateWindow_Internal(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
+  void Process_Internal(bool renderOnly = false);
+  void Render_Internal();
+
   std::map<DWORD, CGUIWindow *> m_mapWindows;
   std::vector <CGUIWindow*> m_vecCustomWindows;
   std::vector <CGUIWindow*> m_activeDialogs;

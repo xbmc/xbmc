@@ -792,8 +792,12 @@ bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPa
 {
   // check whether this folder is a filedirectory - if so, we don't process it's contents
   CFileItem item(strPath, false);
-  if (CFactoryFileDirectory::Create(strPath, &item))
+  IFileDirectory *file = CFactoryFileDirectory::Create(strPath, &item);
+  if (file)
+  {
+    delete file;
     return true;
+  }
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);

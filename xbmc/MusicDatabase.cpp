@@ -2710,9 +2710,6 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       if (CFile::Exists(pItem->GetCachedArtistThumb()))
         pItem->SetThumbnailImage(pItem->GetCachedArtistThumb());
       pItem->SetIconImage("DefaultArtist.png");
-      CStdString strFanart = pItem->GetCachedFanart();
-      if (CFile::Exists(strFanart))
-        pItem->SetProperty("fanart_image",strFanart);
       CArtist artist;
       GetArtistInfo(idArtist,artist,false);
       pItem->SetProperty("instrument",artist.strInstruments);

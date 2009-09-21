@@ -1167,6 +1167,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					RelativePath=".\xbmc\Artist.cpp">
 				</File>
 				<File
+					RelativePath=".\xbmc\Bookmark.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\Bookmark.h">
+				</File>
+				<File
 					RelativePath=".\xbmc\Database.cpp">
 				</File>
 				<File
@@ -2380,6 +2386,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeSeasons.h">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeSets.cpp">
+					</File>
+					<File
+						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeSets.h">
 					</File>
 					<File
 						RelativePath=".\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeStudio.cpp">

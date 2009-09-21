@@ -42,16 +42,16 @@ class CFileItemList;
 #include "PlayListPlayer.h"
 #include "DetectDVDType.h"
 #include "Autorun.h"
-#include "utils/Splash.h"
+#include "Bookmark.h"
 #include "utils/Stopwatch.h"
-#include "MusicDatabase.h"
-#include "VideoDatabase.h"
 
 class CWebServer;
 class CXBFileZilla;
 class CSNTPClient;
 class CCdgParser;
 class CApplicationMessenger;
+class CProfile;
+class CSplash;
 
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {

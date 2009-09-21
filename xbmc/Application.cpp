@@ -21,6 +21,7 @@
 
 #include "stdafx.h"
 #include "Application.h"
+#include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #ifdef HAS_XBOX_HARDWARE
 #include "xbox/XKEEPROM.h"

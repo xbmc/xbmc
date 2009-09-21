@@ -282,8 +282,10 @@ void XBPython::FreeResources()
     // cleanup threads that are still running
     PyList::iterator it = vecPyList.begin();
     while (it != vecPyList.end())
-    {
+    { 
+      LeaveCriticalSection(&m_critSection); //unlock here because the python thread might lock when it exits
       delete it->pyThread;
+      EnterCriticalSection(&m_critSection);
       it = vecPyList.erase(it);
       Finalize();
     }
@@ -343,7 +345,10 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
 {
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
+  {
+    CLog::Log(LOGERROR, "Python script \"%s\" does not exist", src);
     return -1;
+  }
 
   // check if locked
   if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)

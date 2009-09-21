@@ -1859,6 +1859,7 @@
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string>
   <string id="20433">Extract media metadata information</string>
+  <string id="20434">Sets</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

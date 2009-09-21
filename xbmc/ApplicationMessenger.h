@@ -64,7 +64,8 @@ typedef struct
   DWORD dwMessage;
   DWORD dwParam1;
   DWORD dwParam2;
-  std::string strParam;
+  CStdString strParam;
+  std::vector<CStdString> params;
   HANDLE hWaitEvent;
   LPVOID lpVoid;
 }

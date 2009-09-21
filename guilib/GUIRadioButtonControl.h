@@ -40,7 +40,7 @@ public:
                          float posX, float posY, float width, float height,
                          const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                          const CLabelInfo& labelInfo,
-                         const CTextureInfo& radioFocus, const CTextureInfo& radioNoFocus);
+                         const CTextureInfo& radioOn, const CTextureInfo& radioOff);
 
   virtual ~CGUIRadioButtonControl(void);
   virtual CGUIRadioButtonControl *Clone() const { return new CGUIRadioButtonControl(*this); };
@@ -61,8 +61,8 @@ public:
   bool IsSelected() const { return m_bSelected; };
 protected:
   virtual void UpdateColors();
-  CGUITexture m_imgRadioFocus;
-  CGUITexture m_imgRadioNoFocus;
+  CGUITexture m_imgRadioOn;
+  CGUITexture m_imgRadioOff;
   float m_radioPosX;
   float m_radioPosY;
   int m_toggleSelect;

@@ -579,7 +579,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   CTextureInfo textureCheckMark, textureCheckMarkNF;
   CTextureInfo textureFocus, textureNoFocus;
   CTextureInfo textureAltFocus, textureAltNoFocus;
-  CTextureInfo textureRadioFocus, textureRadioNoFocus;
+  CTextureInfo textureRadioOn, textureRadioOff;
   CTextureInfo imageNoFocus, imageFocus;
   CGUIInfoLabel texturePath;
   FRECT borderSize = { 0, 0, 0, 0};
@@ -805,8 +805,10 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "sliderheight", sliderHeight);
   GetTexture(pControlNode, "texturecheckmark", textureCheckMark);
   GetTexture(pControlNode, "texturecheckmarknofocus", textureCheckMarkNF);
-  GetTexture(pControlNode, "textureradiofocus", textureRadioFocus);
-  GetTexture(pControlNode, "textureradionofocus", textureRadioNoFocus);
+  GetTexture(pControlNode, "textureradiofocus", textureRadioOn);    // backward compatibility
+  GetTexture(pControlNode, "textureradionofocus", textureRadioOff);
+  GetTexture(pControlNode, "textureradioon", textureRadioOn);
+  GetTexture(pControlNode, "textureradiooff", textureRadioOff);
 
   GetTexture(pControlNode, "texturesliderbackground", textureBackground);
   GetTexture(pControlNode, "texturesliderbar", textureBar);
@@ -1108,7 +1110,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
       dwParentId, id, posX, posY, width, height,
       textureFocus, textureNoFocus,
       labelInfo,
-      textureRadioFocus, textureRadioNoFocus);
+      textureRadioOn, textureRadioOff);
 
     ((CGUIRadioButtonControl *)control)->SetLabel(strLabel);
     ((CGUIRadioButtonControl *)control)->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);

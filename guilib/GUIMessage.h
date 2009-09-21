@@ -85,6 +85,8 @@
 
 #define GUI_MSG_SET_TYPE     33 ///< Instruct a control to set it's type appropriately
 
+#define GUI_MSG_INVALIDATE   34 ///< Instruct all controls to refresh - usually due to sizing changes
+
 #define GUI_MSG_USER         1000
 
 /*!
@@ -223,7 +225,9 @@ do { \
  SendWindowMessage(msg); \
 } while(0)
 
+#include <vector>
 #include "boost/shared_ptr.hpp"
+#include "StdString.h"
 
 // forwards
 class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
@@ -258,12 +262,14 @@ public:
   void SetLabel(const std::string& strLabel);
   void SetLabel(int iString);               // for convience - looks up in strings.xml
   const std::string& GetLabel() const;
-  void SetStringParam(const std::string& strParam);
-  const std::string& GetStringParam() const;
+  void SetStringParam(const CStdString &strParam);
+  void SetStringParams(const std::vector<CStdString> &params);
+  const CStdString& GetStringParam(size_t param = 0) const;
+  size_t GetNumStringParams() const;
 
 private:
   std::string m_strLabel;
-  std::string m_strParam;
+  std::vector<CStdString> m_params;
   DWORD m_dwSenderID;
   DWORD m_dwControlID;
   DWORD m_dwMessage;
@@ -271,5 +277,7 @@ private:
   DWORD m_dwParam1;
   DWORD m_dwParam2;
   CGUIListItemPtr m_item;
+  
+  static CStdString empty_string;
 };
 #endif

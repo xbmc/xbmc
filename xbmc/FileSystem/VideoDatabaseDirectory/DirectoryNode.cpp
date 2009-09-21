@@ -26,6 +26,7 @@
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
 #include "DirectoryNodeGenre.h"
+#include "DirectoryNodeSets.h"
 #include "DirectoryNodeTitleMovies.h"
 #include "DirectoryNodeTitleTvShows.h"
 #include "DirectoryNodeYear.h"
@@ -113,6 +114,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeOverview(strName, pParent);
   case NODE_TYPE_GENRE:
     return new CDirectoryNodeGenre(strName, pParent);
+  case NODE_TYPE_SETS:
+    return new CDirectoryNodeSets(strName, pParent);
   case NODE_TYPE_YEAR:
     return new CDirectoryNodeYear(strName, pParent);
   case NODE_TYPE_ACTOR:

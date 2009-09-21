@@ -95,6 +95,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   msg->hWaitEvent = message.hWaitEvent;
   msg->lpVoid = message.lpVoid;
   msg->strParam = message.strParam;
+  msg->params = message.params;
 
   CSingleLock lock (m_critSection);
   if (msg->dwMessage == TMSG_DIALOG_DOMODAL ||
