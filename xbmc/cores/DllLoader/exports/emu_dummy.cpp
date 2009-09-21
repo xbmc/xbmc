@@ -22,7 +22,7 @@
 #include "emu_dummy.h"
 #include "utils/log.h"
 
-extern "C" void not_implement( char* debuginfo)
+extern "C" void not_implement( const char* debuginfo)
 {
   if (debuginfo)
   {
