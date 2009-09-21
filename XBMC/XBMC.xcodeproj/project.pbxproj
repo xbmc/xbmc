@@ -256,15 +256,12 @@
 		E38E1F4C0D25F9FD00618676 /* coff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E149E0D25F9F900618676 /* coff.cpp */; };
 		E38E1F4D0D25F9FD00618676 /* dll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A30D25F9F900618676 /* dll.cpp */; };
 		E38E1F4E0D25F9FD00618676 /* dll_tracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A50D25F9F900618676 /* dll_tracker.cpp */; };
-		E38E1F4F0D25F9FD00618676 /* dll_tracker_critical_section.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A70D25F9F900618676 /* dll_tracker_critical_section.cpp */; };
 		E38E1F500D25F9FD00618676 /* dll_tracker_file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A90D25F9F900618676 /* dll_tracker_file.cpp */; };
 		E38E1F510D25F9FD00618676 /* dll_tracker_library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14AB0D25F9F900618676 /* dll_tracker_library.cpp */; };
-		E38E1F520D25F9FD00618676 /* dll_tracker_memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14AD0D25F9F900618676 /* dll_tracker_memory.cpp */; };
 		E38E1F540D25F9FD00618676 /* dll_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B10D25F9F900618676 /* dll_util.cpp */; };
 		E38E1F560D25F9FD00618676 /* DllLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B40D25F9F900618676 /* DllLoader.cpp */; };
 		E38E1F570D25F9FD00618676 /* DllLoaderContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B60D25F9F900618676 /* DllLoaderContainer.cpp */; };
 		E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
-		E38E1F590D25F9FD00618676 /* emu_dx8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BB0D25F9F900618676 /* emu_dx8.cpp */; };
 		E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
 		E38E1F650D25F9FD00618676 /* exports_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D40D25F9F900618676 /* exports_kernel32.cpp */; };
@@ -1027,15 +1024,12 @@
 		F5A1C8CE0F6B06CF00A96ABD /* coff.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E149E0D25F9F900618676 /* coff.cpp */; };
 		F5A1C8CF0F6B06CF00A96ABD /* dll.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A30D25F9F900618676 /* dll.cpp */; };
 		F5A1C8D00F6B06CF00A96ABD /* dll_tracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A50D25F9F900618676 /* dll_tracker.cpp */; };
-		F5A1C8D10F6B06CF00A96ABD /* dll_tracker_critical_section.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A70D25F9F900618676 /* dll_tracker_critical_section.cpp */; };
 		F5A1C8D20F6B06CF00A96ABD /* dll_tracker_file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14A90D25F9F900618676 /* dll_tracker_file.cpp */; };
 		F5A1C8D30F6B06CF00A96ABD /* dll_tracker_library.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14AB0D25F9F900618676 /* dll_tracker_library.cpp */; };
-		F5A1C8D40F6B06CF00A96ABD /* dll_tracker_memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14AD0D25F9F900618676 /* dll_tracker_memory.cpp */; };
 		F5A1C8D50F6B06CF00A96ABD /* dll_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B10D25F9F900618676 /* dll_util.cpp */; };
 		F5A1C8D60F6B06CF00A96ABD /* DllLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B40D25F9F900618676 /* DllLoader.cpp */; };
 		F5A1C8D70F6B06CF00A96ABD /* DllLoaderContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B60D25F9F900618676 /* DllLoaderContainer.cpp */; };
 		F5A1C8D80F6B06CF00A96ABD /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
-		F5A1C8D90F6B06CF00A96ABD /* emu_dx8.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BB0D25F9F900618676 /* emu_dx8.cpp */; };
 		F5A1C8DA0F6B06CF00A96ABD /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		F5A1C8DB0F6B06CF00A96ABD /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
 		F5A1C8DC0F6B06CF00A96ABD /* exports_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D40D25F9F900618676 /* exports_kernel32.cpp */; };
@@ -2227,15 +2221,10 @@
 		E38E14A40D25F9F900618676 /* dll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll.h; sourceTree = "<group>"; };
 		E38E14A50D25F9F900618676 /* dll_tracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dll_tracker.cpp; sourceTree = "<group>"; };
 		E38E14A60D25F9F900618676 /* dll_tracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll_tracker.h; sourceTree = "<group>"; };
-		E38E14A70D25F9F900618676 /* dll_tracker_critical_section.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dll_tracker_critical_section.cpp; sourceTree = "<group>"; };
-		E38E14A80D25F9F900618676 /* dll_tracker_critical_section.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll_tracker_critical_section.h; sourceTree = "<group>"; };
 		E38E14A90D25F9F900618676 /* dll_tracker_file.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dll_tracker_file.cpp; sourceTree = "<group>"; };
 		E38E14AA0D25F9F900618676 /* dll_tracker_file.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll_tracker_file.h; sourceTree = "<group>"; };
 		E38E14AB0D25F9F900618676 /* dll_tracker_library.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dll_tracker_library.cpp; sourceTree = "<group>"; };
 		E38E14AC0D25F9F900618676 /* dll_tracker_library.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll_tracker_library.h; sourceTree = "<group>"; };
-		E38E14AD0D25F9F900618676 /* dll_tracker_memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dll_tracker_memory.cpp; sourceTree = "<group>"; };
-		E38E14AE0D25F9F900618676 /* dll_tracker_memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll_tracker_memory.h; sourceTree = "<group>"; };
-		E38E14B00D25F9F900618676 /* dll_tracker_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll_tracker_socket.h; sourceTree = "<group>"; };
 		E38E14B10D25F9F900618676 /* dll_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dll_util.cpp; sourceTree = "<group>"; };
 		E38E14B20D25F9F900618676 /* dll_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dll_util.h; sourceTree = "<group>"; };
 		E38E14B40D25F9F900618676 /* DllLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DllLoader.cpp; sourceTree = "<group>"; };
@@ -2244,21 +2233,10 @@
 		E38E14B70D25F9F900618676 /* DllLoaderContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLoaderContainer.h; sourceTree = "<group>"; };
 		E38E14B90D25F9F900618676 /* emu_dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_dummy.cpp; sourceTree = "<group>"; };
 		E38E14BA0D25F9F900618676 /* emu_dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_dummy.h; sourceTree = "<group>"; };
-		E38E14BB0D25F9F900618676 /* emu_dx8.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_dx8.cpp; sourceTree = "<group>"; };
-		E38E14BC0D25F9F900618676 /* emu_dx8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_dx8.h; sourceTree = "<group>"; };
 		E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_kernel32.cpp; sourceTree = "<group>"; };
 		E38E14BE0D25F9F900618676 /* emu_kernel32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_kernel32.h; sourceTree = "<group>"; };
-		E38E14C00D25F9F900618676 /* emu_misc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_misc.h; sourceTree = "<group>"; };
 		E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_msvcrt.cpp; sourceTree = "<group>"; };
 		E38E14C20D25F9F900618676 /* emu_msvcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_msvcrt.h; sourceTree = "<group>"; };
-		E38E14C40D25F9F900618676 /* emu_ole32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_ole32.h; sourceTree = "<group>"; };
-		E38E14C60D25F9F900618676 /* emu_registry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_registry.h; sourceTree = "<group>"; };
-		E38E14C80D25F9F900618676 /* addrinfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addrinfo.h; sourceTree = "<group>"; };
-		E38E14C90D25F9F900618676 /* addrsize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = addrsize.h; sourceTree = "<group>"; };
-		E38E14CA0D25F9F900618676 /* bittypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bittypes.h; sourceTree = "<group>"; };
-		E38E14CB0D25F9F900618676 /* emu_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_socket.h; sourceTree = "<group>"; };
-		E38E14D10D25F9F900618676 /* sockstorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sockstorage.h; sourceTree = "<group>"; };
-		E38E14D30D25F9F900618676 /* emu_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_socket.h; sourceTree = "<group>"; };
 		E38E14D40D25F9F900618676 /* exports_kernel32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_kernel32.cpp; sourceTree = "<group>"; };
 		E38E14D60D25F9F900618676 /* exports_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_msvcrt.cpp; sourceTree = "<group>"; };
 		E38E14D90D25F9F900618676 /* exports_python_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_python_linux.cpp; sourceTree = "<group>"; };
@@ -4920,15 +4898,10 @@
 				E38E14A40D25F9F900618676 /* dll.h */,
 				E38E14A50D25F9F900618676 /* dll_tracker.cpp */,
 				E38E14A60D25F9F900618676 /* dll_tracker.h */,
-				E38E14A70D25F9F900618676 /* dll_tracker_critical_section.cpp */,
-				E38E14A80D25F9F900618676 /* dll_tracker_critical_section.h */,
 				E38E14A90D25F9F900618676 /* dll_tracker_file.cpp */,
 				E38E14AA0D25F9F900618676 /* dll_tracker_file.h */,
 				E38E14AB0D25F9F900618676 /* dll_tracker_library.cpp */,
 				E38E14AC0D25F9F900618676 /* dll_tracker_library.h */,
-				E38E14AD0D25F9F900618676 /* dll_tracker_memory.cpp */,
-				E38E14AE0D25F9F900618676 /* dll_tracker_memory.h */,
-				E38E14B00D25F9F900618676 /* dll_tracker_socket.h */,
 				E38E14B10D25F9F900618676 /* dll_util.cpp */,
 				E38E14B20D25F9F900618676 /* dll_util.h */,
 				E38E14B40D25F9F900618676 /* DllLoader.cpp */,
@@ -4961,17 +4934,10 @@
 			children = (
 				E38E14B90D25F9F900618676 /* emu_dummy.cpp */,
 				E38E14BA0D25F9F900618676 /* emu_dummy.h */,
-				E38E14BB0D25F9F900618676 /* emu_dx8.cpp */,
-				E38E14BC0D25F9F900618676 /* emu_dx8.h */,
 				E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */,
 				E38E14BE0D25F9F900618676 /* emu_kernel32.h */,
-				E38E14C00D25F9F900618676 /* emu_misc.h */,
 				E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */,
 				E38E14C20D25F9F900618676 /* emu_msvcrt.h */,
-				E38E14C40D25F9F900618676 /* emu_ole32.h */,
-				E38E14C60D25F9F900618676 /* emu_registry.h */,
-				E38E14C70D25F9F900618676 /* emu_socket */,
-				E38E14D30D25F9F900618676 /* emu_socket.h */,
 				E38E14D40D25F9F900618676 /* exports_kernel32.cpp */,
 				E38E14D60D25F9F900618676 /* exports_msvcrt.cpp */,
 				E38E14D90D25F9F900618676 /* exports_python_linux.cpp */,
@@ -4979,18 +4945,6 @@
 				E38E14E80D25F9F900618676 /* wrapper.c */,
 			);
 			path = exports;
-			sourceTree = "<group>";
-		};
-		E38E14C70D25F9F900618676 /* emu_socket */ = {
-			isa = PBXGroup;
-			children = (
-				E38E14C80D25F9F900618676 /* addrinfo.h */,
-				E38E14C90D25F9F900618676 /* addrsize.h */,
-				E38E14CA0D25F9F900618676 /* bittypes.h */,
-				E38E14CB0D25F9F900618676 /* emu_socket.h */,
-				E38E14D10D25F9F900618676 /* sockstorage.h */,
-			);
-			path = emu_socket;
 			sourceTree = "<group>";
 		};
 		E38E14E20D25F9F900618676 /* util */ = {
@@ -7304,15 +7258,12 @@
 				E38E1F4C0D25F9FD00618676 /* coff.cpp in Sources */,
 				E38E1F4D0D25F9FD00618676 /* dll.cpp in Sources */,
 				E38E1F4E0D25F9FD00618676 /* dll_tracker.cpp in Sources */,
-				E38E1F4F0D25F9FD00618676 /* dll_tracker_critical_section.cpp in Sources */,
 				E38E1F500D25F9FD00618676 /* dll_tracker_file.cpp in Sources */,
 				E38E1F510D25F9FD00618676 /* dll_tracker_library.cpp in Sources */,
-				E38E1F520D25F9FD00618676 /* dll_tracker_memory.cpp in Sources */,
 				E38E1F540D25F9FD00618676 /* dll_util.cpp in Sources */,
 				E38E1F560D25F9FD00618676 /* DllLoader.cpp in Sources */,
 				E38E1F570D25F9FD00618676 /* DllLoaderContainer.cpp in Sources */,
 				E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */,
-				E38E1F590D25F9FD00618676 /* emu_dx8.cpp in Sources */,
 				E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */,
 				E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */,
 				E38E1F650D25F9FD00618676 /* exports_kernel32.cpp in Sources */,
@@ -8155,15 +8106,12 @@
 				F5A1C8CE0F6B06CF00A96ABD /* coff.cpp in Sources */,
 				F5A1C8CF0F6B06CF00A96ABD /* dll.cpp in Sources */,
 				F5A1C8D00F6B06CF00A96ABD /* dll_tracker.cpp in Sources */,
-				F5A1C8D10F6B06CF00A96ABD /* dll_tracker_critical_section.cpp in Sources */,
 				F5A1C8D20F6B06CF00A96ABD /* dll_tracker_file.cpp in Sources */,
 				F5A1C8D30F6B06CF00A96ABD /* dll_tracker_library.cpp in Sources */,
-				F5A1C8D40F6B06CF00A96ABD /* dll_tracker_memory.cpp in Sources */,
 				F5A1C8D50F6B06CF00A96ABD /* dll_util.cpp in Sources */,
 				F5A1C8D60F6B06CF00A96ABD /* DllLoader.cpp in Sources */,
 				F5A1C8D70F6B06CF00A96ABD /* DllLoaderContainer.cpp in Sources */,
 				F5A1C8D80F6B06CF00A96ABD /* emu_dummy.cpp in Sources */,
-				F5A1C8D90F6B06CF00A96ABD /* emu_dx8.cpp in Sources */,
 				F5A1C8DA0F6B06CF00A96ABD /* emu_kernel32.cpp in Sources */,
 				F5A1C8DB0F6B06CF00A96ABD /* emu_msvcrt.cpp in Sources */,
 				F5A1C8DC0F6B06CF00A96ABD /* exports_kernel32.cpp in Sources */,

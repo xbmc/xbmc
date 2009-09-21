@@ -1682,14 +1682,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\DllLoader\dll_tracker_critical_section.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DllLoader\dll_tracker_critical_section.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\DllLoader\dll_tracker_file.cpp"
 					>
 				</File>
@@ -1703,22 +1695,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\DllLoader\dll_tracker_library.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DllLoader\dll_tracker_memory.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DllLoader\dll_tracker_memory.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DllLoader\dll_tracker_socket.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\DllLoader\dll_tracker_socket.h"
 					>
 				</File>
 				<File
@@ -1789,14 +1765,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_misc.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_misc.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_msvcrt.cpp"
 						>
 					</File>
@@ -1805,314 +1773,26 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_ole32.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_ole32.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_registry.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_registry.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket.cpp"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_python.cpp"
+						RelativePath="..\..\xbmc\cores\DllLoader\exports\exports_python_win32.cpp"
 						>
 					</File>
 					<Filter
 						Name="emu_socket"
 						>
 						<File
-							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\addrinfo.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\addrsize.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\bittypes.h"
-							>
-						</File>
-						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\emu_socket.h"
 							>
 						</File>
 						<File
-							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\getaddrinfo.c"
-							>
-							<FileConfiguration
-								Name="Release (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\getnameinfo.c"
-							>
-							<FileConfiguration
-								Name="Release (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-						</File>
-						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c"
 							>
-							<FileConfiguration
-								Name="Release (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_ntop.c"
 							>
-							<FileConfiguration
-								Name="Release (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_pton.c"
-							>
-							<FileConfiguration
-								Name="Release (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release (DirectX)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug (OpenGL)|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Debug|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-							<FileConfiguration
-								Name="Release|Win32"
-								>
-								<Tool
-									Name="VCCLCompilerTool"
-									UsePrecompiledHeader="0"
-								/>
-							</FileConfiguration>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\sockstorage.h"
 							>
 						</File>
 					</Filter>
