@@ -125,7 +125,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     return;
 
   bool vendor_nvidia = strVendor.find("nvidia") == std::string::npos;
-  bool vendor_ati    = strVendor.compare(0, 3, "ATI") == 0;
+  bool vendor_ati    = strVendor.compare(0, 3, "ati") == 0;
 
   if (m_glXSwapIntervalMESA && !m_iVSyncMode && vendor_ati)
   {
