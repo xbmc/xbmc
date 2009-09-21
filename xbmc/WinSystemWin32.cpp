@@ -324,6 +324,8 @@ void CWinSystemWin32::UpdateResolutions()
    
 
   // Secondary
+  if(m_nMonitorsCount < 2)
+    return;
   w = m_MonitorsInfo[m_nSecondary].ScreenWidth;
   h = m_MonitorsInfo[m_nSecondary].ScreenHeight;
   if( (m_MonitorsInfo[m_nSecondary].RefreshRate == 59) || (m_MonitorsInfo[m_nSecondary].RefreshRate == 29) || (m_MonitorsInfo[m_nSecondary].RefreshRate == 23) )
