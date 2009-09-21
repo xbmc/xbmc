@@ -358,7 +358,7 @@ int CoffLoader::LoadSections(FILE *fp)
     SectionData[SctnCnt] = ((char*)hModule + ScnHdr->VirtualAddress);
 
     fseek(fp, ScnHdr->PtrToRawData, SEEK_SET);
-    if (fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp))
+    if (!fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp))
       return 0;
 
 #ifdef DUMPING_DATA
