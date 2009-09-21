@@ -421,7 +421,9 @@ void XBPython::FreeResources()
     PyList::iterator it = vecPyList.begin();
     while (it != vecPyList.end())
     {
+      LeaveCriticalSection(&m_critSection);
       delete it->pyThread;
+      EnterCriticalSection(&m_critSection);
       it = vecPyList.erase(it);
       Finalize();
     }
