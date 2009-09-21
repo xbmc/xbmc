@@ -1137,7 +1137,7 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
     else if (strKey.Equals("forwardslash") || strKey.Equals("questionmark")) wButtonCode = 0xF0BF;
     else if (strKey.Equals("leftquote") || strKey.Equals("tilde")) wButtonCode = 0xF0C0;
     else if (strKey.Equals("opensquarebracket") || strKey.Equals("openbrace")) wButtonCode = 0xF0EB;
-#if defined(__APPLE__) || defined(_WIN32PC)
+#if defined(__APPLE__) || defined(_WIN32)
     // Why are these different. Why did the Linux one have to change???
     else if (strKey.Equals("backslash") || strKey.Equals("pipe")) wButtonCode = 0xF0EC;
 #else

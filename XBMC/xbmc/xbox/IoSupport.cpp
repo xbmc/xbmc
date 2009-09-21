@@ -26,7 +26,7 @@
 #include "IoSupport.h"
 #include "Settings.h"
 #include "utils/log.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "my_ntddcdrm.h"
 #include "WIN32Util.h"
 #endif
@@ -137,7 +137,7 @@ HRESULT CIoSupport::MapDriveLetter(char cDriveLetter, const char* szDevice)
 
   return status;
 #else
-#ifdef _WIN32PC
+#ifdef _WIN32
   // still legacy support (only used in DetectDVDType.cpp)
   if((strnicmp(szDevice, "Harddisk0",9)==0) || (strnicmp(szDevice, "Cdrom",5)==0))
     return S_OK;
@@ -267,7 +267,7 @@ void CIoSupport::GetDrive(const char* szPartition, char* cDriveLetter)
 HRESULT CIoSupport::EjectTray( const bool bEject, const char cDriveLetter )
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32PC
+#ifdef _WIN32
   return CWIN32Util::EjectTray(cDriveLetter);
 #else
   CLibcdio *c_cdio = CLibcdio::GetInstance();
@@ -309,7 +309,7 @@ HRESULT CIoSupport::CloseTray()
       close(fd);
     }
   }
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   return CWIN32Util::CloseTray();
 #endif
 #endif
@@ -318,7 +318,7 @@ HRESULT CIoSupport::CloseTray()
 
 DWORD CIoSupport::GetTrayState()
 {
-#if defined(_LINUX) || defined(_WIN32PC)
+#if defined(_LINUX) || defined(_WIN32)
   return g_mediaManager.GetDriveStatus();
 #else
   return DRIVE_NOT_READY;

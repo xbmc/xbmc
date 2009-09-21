@@ -46,7 +46,7 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 
-#if (!defined _WIN32PC)
+#if (!defined _WIN32)
 #include "config_types.h"
 #else
 #include "config_win32.h"

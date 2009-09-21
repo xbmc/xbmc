@@ -28,7 +28,7 @@
 #include "FileLastFM.h"
 #include "FileFileReader.h"
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WINFileSmb.h"
 #else
 #include "FileSmb.h"
@@ -115,7 +115,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "myth") return new CCMythFile();
     else if (strProtocol == "cmyth") return new CCMythFile();
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32PC
+#ifdef _WIN32
     else if (strProtocol == "smb") return new CWINFileSMB();
 #else
     else if (strProtocol == "smb") return new CFileSMB();

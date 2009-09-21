@@ -31,7 +31,7 @@
 #ifdef _LINUX
 #include "LinuxFileSystem.h"
 #endif
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 
@@ -103,7 +103,7 @@ void CGUIWindowSystemInfo::Render()
     int i = 2;
     if (m_diskUsage.size() == 0)
     {
-#ifdef _WIN32PC
+#ifdef _WIN32
       m_diskUsage = CWIN32Util::GetDiskUsage();
 #else
       m_diskUsage = CLinuxFileSystem::GetDiskUsage();

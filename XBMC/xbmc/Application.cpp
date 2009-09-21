@@ -368,7 +368,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bRunResumeJobs = false;
-#ifdef _WIN32PC
+#ifdef _WIN32
   m_SSysParam = new CWIN32Util::SystemParams::SysParam;
 #endif
 }
@@ -390,7 +390,7 @@ CApplication::~CApplication(void)
 #endif
   delete m_dpms;
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   delete m_SSysParam;
 #endif
 }
@@ -475,7 +475,7 @@ HRESULT CApplication::Create(HWND hWnd)
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CWIN32Util::SystemParams::GetDefaults( m_SSysParam );
   CWIN32Util::SystemParams::SetCustomParams();
 #endif
@@ -723,7 +723,7 @@ HRESULT CApplication::Create(HWND hWnd)
 
   CUtil::InitRandomSeed();
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CWIN32Util::AddRemovableDrives();
 #endif
 
@@ -968,7 +968,7 @@ CProfile* CApplication::InitDirectoriesOSX()
 
 CProfile* CApplication::InitDirectoriesWin32()
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   CProfile* profile = NULL;
   CStdString strExecutablePath;
 
@@ -1698,7 +1698,7 @@ void CApplication::DimLCDOnPlayback(bool dim)
 
 void CApplication::StartServices()
 {
-#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
+#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGNOTICE, "start dvd mediatype detection");
   m_DetectDVDType.Create(false, THREAD_MINSTACKSIZE);
@@ -1725,7 +1725,7 @@ void CApplication::StopServices()
 {
   m_network.NetworkMessage(CNetwork::SERVICES_DOWN, 0);
 
-#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
+#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 #endif
@@ -3430,7 +3430,7 @@ void CApplication::Stop()
     }
 #endif
 
-#ifdef _WIN32PC
+#ifdef _WIN32
     CWIN32Util::SystemParams::SetDefaults( m_SSysParam );
 #endif
 

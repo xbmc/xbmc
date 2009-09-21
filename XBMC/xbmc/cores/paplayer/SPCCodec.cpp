@@ -28,7 +28,7 @@
 #include "DynamicDll.h"
 #include "Util.h"
 #include "utils/log.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "../DllLoader/Win32DllLoader.h"
 #endif
 

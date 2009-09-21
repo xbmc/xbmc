@@ -45,7 +45,7 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
   CFileItem item(file.c_str(), false);
   if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32PC
+#ifdef _WIN32
     file.compare(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4) == 0 )
 #else
     file.compare(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()) == 0 )

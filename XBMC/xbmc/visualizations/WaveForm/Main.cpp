@@ -2,7 +2,7 @@
 // A simple visualisation example by MrC
 
 #include "../../../visualisations/xbmc_vis.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #ifdef HAS_SDL_OPENGL
 #include <GL/glew.h>
 #else
@@ -29,7 +29,7 @@ typedef struct {
   int MinZ;
   int MaxZ;
 } D3DVIEWPORT9;
-#ifdef _WIN32PC
+#ifdef _WIN32
 typedef unsigned long D3DCOLOR;
 #endif
 #endif

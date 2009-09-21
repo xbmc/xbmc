@@ -88,7 +88,7 @@
 #include "Zeroconf.h"
 #include "PowerManager.h"
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 #include "WINDirectSound.h"
 #endif
@@ -1850,7 +1850,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-#if defined(__APPLE__) || defined(_WIN32PC)
+#if defined(__APPLE__) || defined(_WIN32)
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -3825,7 +3825,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
     deviceList.pop_front();
   }
   pControl->SetValue(activeDevice);
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   CWDSound p_dsound;

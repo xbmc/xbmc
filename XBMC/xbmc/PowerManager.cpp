@@ -37,7 +37,7 @@
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/DBusPowerSyscall.h"
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
 #endif
 
@@ -55,7 +55,7 @@ CPowerManager::CPowerManager()
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
   m_instance = new CDBusPowerSyscall();
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
 #endif
 

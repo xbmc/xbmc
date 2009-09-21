@@ -45,7 +45,7 @@ void CBackgroundSystemInfoLoader::GetInformation()
   callback->m_systemuptime = callback->GetSystemUpTime(false);
   callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
-#if defined (_LINUX) || defined(_WIN32PC)
+#if defined (_LINUX) || defined(_WIN32)
   callback->m_videoencoder    = callback->GetVideoEncoder();
   callback->m_xboxversion     = callback->GetXBVerInfo();
   callback->m_cpufrequency    = callback->GetCPUFreqInfo();
@@ -116,7 +116,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
 
   if( !drive.IsEmpty() && !drive.Equals("*") ) 
   { 
-#ifdef _WIN32PC
+#ifdef _WIN32
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
     if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
 #endif
@@ -126,7 +126,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   {
     ULARGE_INTEGER ULTotalTmp= { { 0 } };
     ULARGE_INTEGER ULTotalFreeTmp= { { 0 } };
-#ifdef _WIN32PC 
+#ifdef _WIN32 
     char* pcBuffer= NULL;
     DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
     if( dwStrLength != 0 )
@@ -179,7 +179,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
 
 double CSysInfo::GetCPUFrequency()
 {
-#if defined (_LINUX) || defined(_WIN32PC)
+#if defined (_LINUX) || defined(_WIN32)
   return double (g_cpuInfo.getCPUFrequency());
 #else
   return 0;
@@ -604,7 +604,7 @@ CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   result += "Windows; ";
   result += GetKernelVersion();
 #elif defined(__APPLE__)

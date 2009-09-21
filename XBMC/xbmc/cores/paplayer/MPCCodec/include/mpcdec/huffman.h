@@ -38,7 +38,7 @@
 #ifndef _mpcdec_huffman_h_
 #define _mpcdec_huffman_h_
 
-#if (!defined _WIN32PC)
+#if (!defined _WIN32)
 #include "config_types.h"
 #else
 #include "config_win32.h"

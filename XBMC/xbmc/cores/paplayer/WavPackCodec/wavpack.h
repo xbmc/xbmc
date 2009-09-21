@@ -32,7 +32,7 @@
 
 // This header file contains all the definitions required by WavPack.
 
-#if defined(_WIN32) && !defined(__MINGW32__) && !defined(_WIN32PC)
+#if defined(_WIN32) && !defined(__MINGW32__)
 #include <stdlib.h>
 #include "win32/stdint.h"
 #else

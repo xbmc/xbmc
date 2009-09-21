@@ -50,7 +50,7 @@
 #include "LangInfo.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "win32/WIN32Util.h"
 #endif
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
@@ -1040,7 +1040,7 @@ bool CSettings::LoadProfile(int index)
     }
 
     // to set labels - shares are reloaded
-#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
+#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
     MEDIA_DETECT::CDetectDVDMedia::UpdateState();
 #endif
     // init windows

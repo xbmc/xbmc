@@ -1677,7 +1677,7 @@ extern "C"
         }
       }
     }
-#ifdef _WIN32PC
+#ifdef _WIN32
     // if value not found try the windows system env
     if(value == NULL)
     {
@@ -1715,7 +1715,7 @@ extern "C"
     // the xbox has a NSIG of 23 (+1), problem is when calling signal with 
     // one of the signals below the xbox wil crash. Just return SIG_ERR
     if (sig == SIGILL || sig == SIGFPE || sig == SIGSEGV) return SIG_ERR;
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
     //vs2008 asserts for known signals, return err for everything unknown to windows.
     if (sig == 5 || sig == 7 || sig == 9 || sig == 10 || sig == 12 || sig == 14 || sig == 18 || sig == 19 || sig == 20)
       return SIG_ERR;

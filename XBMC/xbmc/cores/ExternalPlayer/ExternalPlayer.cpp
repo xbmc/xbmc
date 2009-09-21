@@ -32,7 +32,7 @@
 #include "RegExp.h"
 #include "StringUtils.h"
 #include "URL.h"
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   #include "Windows.h"
 #endif
 #if defined(HAS_LIRC)
@@ -177,7 +177,7 @@ void CExternalPlayer::Process()
   // make sure we surround the arguments with quotes where necessary
   CStdString strFName;
   CStdString strFArgs;
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   // W32 batch-file handline
   if (m_filename.Right(4) == ".bat")
   {
@@ -217,7 +217,7 @@ void CExternalPlayer::Process()
 
   m_bIsPlaying = true;
 
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   if (m_warpcursor)
   {
     GetCursorPos(&m_ptCursorpos);
@@ -268,7 +268,7 @@ void CExternalPlayer::Process()
   m_playbackStartTime = timeGetTime();
 
   BOOL ret = TRUE;
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
 #elif defined(_LINUX)
   ret = ExecuteAppLinux(strFArgs.c_str());
@@ -278,7 +278,7 @@ void CExternalPlayer::Process()
   m_bIsPlaying = false;
   CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
 
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   if (m_hwndXbmc)
   {
     if (currentStyle & WS_EX_TOPMOST)
@@ -328,7 +328,7 @@ void CExternalPlayer::Process()
     m_callback.OnPlayBackStopped();
 }
 
-#if defined(_WIN32PC)
+#if defined(_WIN32)
 BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s %s", __FUNCTION__, strPath, strSwitches);
@@ -623,7 +623,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
   XMLUtils::GetBoolean(pConfig, "hidexbmc", m_hidexbmc);
   if (!XMLUtils::GetBoolean(pConfig, "hideconsole", m_hideconsole))
   {
-#ifdef _WIN32PC
+#ifdef _WIN32
     // Default depends on whether player is a batch file
     m_hideconsole = m_filename.Right(4) == ".bat";
 #endif
@@ -654,7 +654,7 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
           m_islauncher ? "true" : "false",
           warpCursor.c_str());
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   m_filenameReplacers.push_back("^smb:// , / , \\\\ , g");
   m_filenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
 #endif

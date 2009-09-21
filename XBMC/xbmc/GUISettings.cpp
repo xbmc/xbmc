@@ -239,7 +239,7 @@ void CGUISettings::Initialize()
   AddCategory(3, "mymusic", 16000);
 #ifdef _LINUX
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
 #endif
   AddSeparator(2, "mymusic.sep1");
@@ -398,7 +398,7 @@ void CGUISettings::Initialize()
   AddString(6, "audiooutput.audiodevice", 545, "default", EDIT_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", EDIT_CONTROL_INPUT);
   AddBool(8, "audiooutput.downmixmultichannel", 548, true);
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #endif
@@ -529,7 +529,7 @@ void CGUISettings::Initialize()
     AddString(8, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
     AddInt(9, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
     AddString(10, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
-#ifndef _WIN32PC
+#ifndef _WIN32
     AddString(11, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
 #endif
     AddSeparator(12, "network.sep1");
@@ -575,7 +575,7 @@ void CGUISettings::Initialize()
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
-#ifndef _WIN32PC
+#ifndef _WIN32
   AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
 #endif

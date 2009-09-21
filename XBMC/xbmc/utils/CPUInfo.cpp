@@ -39,7 +39,7 @@ using namespace std;
 // In seconds
 #define MINIMUM_TIME_BETWEEN_READS 2
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 /* replacement gettimeofday implementation, copy from dvdnav_internal.h */
 #include <sys/timeb.h>
 static inline int _private_gettimeofday( struct timeval *tv, void *tz )
@@ -85,7 +85,7 @@ CCPUInfo::CCPUInfo(void)
     core.m_id = i;
     m_cores[core.m_id] = core;
   }
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   char rgValue [128];
   HKEY hKey;
   DWORD dwSize=128;
@@ -204,7 +204,7 @@ int CCPUInfo::getUsedPercentage()
   systemTicks -= m_systemTicks;
   idleTicks -= m_idleTicks;
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   int result = (int) ((userTicks + systemTicks - idleTicks) * 100 / (userTicks + systemTicks));
 #else
   int result = (int) ((userTicks + niceTicks + systemTicks) * 100 / (userTicks + niceTicks + systemTicks + idleTicks));
@@ -229,7 +229,7 @@ float CCPUInfo::getCPUFrequency()
   if (sysctlbyname("hw.cpufrequency", &hz, &len, NULL, 0) == -1)
     return 0.f;
   return hz / 1000000.0;
-#elif defined _WIN32PC
+#elif defined _WIN32
   HKEY hKey;
   DWORD dwMHz=0;
   DWORD dwSize=sizeof(dwMHz);
@@ -323,7 +323,7 @@ bool CCPUInfo::readProcStat(unsigned long long& user, unsigned long long& nice,
     unsigned long long& system, unsigned long long& idle)
 {
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   FILETIME idleTime;
   FILETIME kernelTime;
   FILETIME userTime;
@@ -398,7 +398,7 @@ CStdString CCPUInfo::GetCoresUsageString() const
   while (iter != m_cores.end())
   {
     CStdString strCore;
-#ifdef _WIN32PC
+#ifdef _WIN32
     // atm we get only the average over all cores
     strCore.Format("CPU %d core(s) average: %3.1f%% ",m_cpuCount, iter->second.m_fPct);
 #else

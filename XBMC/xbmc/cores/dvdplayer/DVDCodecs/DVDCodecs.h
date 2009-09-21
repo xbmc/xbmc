@@ -42,7 +42,7 @@ extern "C" {
 #ifndef __GNUC__
 #pragma warning(disable:4244)
 #endif
-#if (defined USE_EXTERNAL_FFMPEG) || (defined _WIN32PC)
+#if (defined USE_EXTERNAL_FFMPEG) || (defined _WIN32)
   #if (defined HAVE_LIBAVCODEC_AVCODEC_H)
     #include <libavcodec/avcodec.h>
   #else
