@@ -406,9 +406,6 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   curr_x = 0;
   curr_y = 0;
 
-  float invWidth  = 1.0f / m_width;
-  float invHeight = 1.0f / m_height;
-
   for(img = images; img; img = img->next)
   {
     unsigned int color = img->color;
@@ -427,7 +424,6 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     unsigned int b = ((color >> 24) & 0xff);
     unsigned int g = ((color >> 16) & 0xff);
     unsigned int r = ((color >> 8) & 0xff);
-    unsigned int opacity = 255 - alpha;
 
     for(int i = 0; i < 4; i++)
     {
