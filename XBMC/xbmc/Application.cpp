@@ -485,7 +485,7 @@ HRESULT CApplication::Create(HWND hWnd)
 #endif
 
   // Grab a handle to our thread to be used later in identifying the render thread.
-  m_threadID = GetCurrentThreadId();
+  m_threadID = CThread::GetCurrentThreadId();
 
 #ifndef _LINUX
   //floating point precision to 24 bits (faster performance)
@@ -5440,6 +5440,11 @@ bool CApplication::AlwaysProcess(const CAction& action)
 CApplicationMessenger& CApplication::getApplicationMessenger()
 {
    return m_applicationMessenger;
+}
+
+bool CApplication::IsCurrentThread() const
+{
+  return CThread::IsCurrentThread(m_threadID);
 }
 
 bool CApplication::IsPresentFrame()

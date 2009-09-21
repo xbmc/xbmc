@@ -21,7 +21,7 @@
 #include "system.h"
 #include "CriticalSection.h"
 #include "utils/log.h"
-
+#include "Thread.h"
 #define SAFELY(expr)                                   \
 {                                                      \
 	int err = 0;                                         \
@@ -119,7 +119,7 @@ void XCriticalSection::Enter()
 	
 	// Save the owner, bump the count.
 	m_count++;
-	m_ownerThread = GetCurrentThreadId();
+	m_ownerThread = CThread::GetCurrentThreadId();
 	
 	pthread_mutex_unlock(&m_countMutex);
 }
@@ -205,7 +205,7 @@ DWORD XCriticalSection::Exit()
 //////////////////////////////////////////////////////////////////////
 BOOL XCriticalSection::Owning()
 {
-	return (m_ownerThread == GetCurrentThreadId());
+	return CThread::IsCurrentThread(m_ownerThread);
 }
 
 //////////////////////////////////////////////////////////////////////

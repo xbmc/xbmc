@@ -110,7 +110,7 @@ XBPython::XBPython()
   InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, false, false, (char*)"pythonEvent");
   m_globalEvent = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
-  dThreadId = GetCurrentThreadId();
+  dThreadId = CThread::GetCurrentThreadId();
   vecPlayerCallbackList.clear();
   m_iDllScriptCounter = 0;
 }
@@ -290,7 +290,7 @@ void XBPython::Initialize()
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
-    if (dThreadId == GetCurrentThreadId())
+    if (CThread::IsCurrentThread(dThreadId))
     {
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
 

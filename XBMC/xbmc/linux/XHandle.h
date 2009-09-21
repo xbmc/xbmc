@@ -46,11 +46,11 @@ public:
   inline HandleType GetType() { return m_type; }
   void ChangeType(HandleType newType);
 
-  SDL_sem    *m_hSem;
-  pthread_t  m_hThread;
-  bool       m_threadValid;
-  SDL_cond   *m_hCond;
-  std::list<CXHandle*> m_hParents;
+  SDL_sem               *m_hSem;
+  ThreadIdentifier      m_hThread;
+  bool                  m_threadValid;
+  SDL_cond              *m_hCond;
+  std::list<CXHandle*>  m_hParents;
 
 #ifdef __APPLE__
   // Save the Mach thrad port, I don't think it can be obtained from

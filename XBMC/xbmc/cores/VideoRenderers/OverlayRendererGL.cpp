@@ -110,7 +110,7 @@ long COverlayGL::Release()
   long count = InterlockedDecrement(&m_references);
   if (count == 0)
   {
-    if(GetCurrentThreadId() == g_application.GetThreadId())
+    if (g_application.IsCurrentThread())
       delete this;
     else
       g_renderManager.AddCleanup(this);

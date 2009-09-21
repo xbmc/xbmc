@@ -58,12 +58,12 @@ class XCriticalSection
 
  private:
 
-  DWORD           m_ownerThread;
-  pthread_mutex_t m_mutex;
-  pthread_mutex_t m_countMutex;
-  int             m_count;
-  bool            m_isDestroyed;
-  bool            m_isInitialized;
+  ThreadIdentifier  m_ownerThread;
+  pthread_mutex_t   m_mutex;
+  pthread_mutex_t   m_countMutex;
+  int               m_count;
+  bool              m_isDestroyed;
+  bool              m_isInitialized;
 };
 
 // Define the C API.

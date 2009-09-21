@@ -28,7 +28,6 @@
 #endif
 #ifdef _LINUX
 #include "stdint.h"
-#include "linux/XThreadUtils.h"
 #else
 #define INT64_C __int64
 #endif
@@ -45,6 +44,7 @@
 #include "AdvancedSettings.h"
 #include "FileSystem/File.h"
 #include "utils/log.h"
+#include "Thread.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -73,12 +73,12 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
 // these need to be put somewhere that are compiled, we should have some better place for it
 
 CCriticalSection DllAvCodec::m_critSection;
-std::map<DWORD, CStdString> g_logbuffer;
+std::map<uintptr_t, CStdString> g_logbuffer;
 
 void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
 {
   CSingleLock lock(DllAvCodec::m_critSection);
-  DWORD threadId = GetCurrentThreadId();
+  uintptr_t threadId = (uintptr_t)CThread::GetCurrentThreadId();
   CStdString &buffer = g_logbuffer[threadId];
 
   AVClass* avc= ptr ? *(AVClass**)ptr : NULL;
@@ -127,7 +127,7 @@ static void ff_flush_avutil_log_buffers(void)
   /* Loop through the logbuffer list and remove any blank buffers
      If the thread using the buffer is still active, it will just
      add a new buffer next time it writes to the log */
-  std::map<DWORD, CStdString>::iterator it;
+  std::map<uintptr_t, CStdString>::iterator it;
   for (it = g_logbuffer.begin(); it != g_logbuffer.end(); )
     if ((*it).second.IsEmpty())
       g_logbuffer.erase(it++);

@@ -48,8 +48,9 @@ uintptr_t _beginthread(
     void *arglist
 );
 
-
+#if 0 // Deprecated, use CThread::GetCurrentThreadId() instead
 DWORD WINAPI GetCurrentThreadId(void);
+#endif
 
 HANDLE WINAPI GetCurrentThread(void);
 HANDLE WINAPI GetCurrentProcess(void);

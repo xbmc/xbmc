@@ -53,7 +53,7 @@ LONG WINAPI CreateMiniDump( EXCEPTION_POINTERS* pEp )
       {
         // Initialize minidump structure
         MINIDUMP_EXCEPTION_INFORMATION mdei; 
-        mdei.ThreadId           = GetCurrentThreadId(); 
+        mdei.ThreadId           = CThread::GetCurrentThreadId();
         mdei.ExceptionPointers  = pEp; 
         mdei.ClientPointers     = FALSE; 
 

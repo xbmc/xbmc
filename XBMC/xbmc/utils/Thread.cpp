@@ -242,12 +242,12 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 
   if ( pThread->IsAutoDelete() )
   {
-    CLog::Log(LOGDEBUG,"Thread %u terminating (autodelete)", GetCurrentThreadId());
+    CLog::Log(LOGDEBUG,"Thread %"PRIu64" terminating (autodelete)", (uint64_t)CThread::GetCurrentThreadId());
     delete pThread;
     pThread = NULL;
   }
   else
-    CLog::Log(LOGDEBUG,"Thread %u terminating", GetCurrentThreadId());  
+    CLog::Log(LOGDEBUG,"Thread %"PRIu64" terminating", (uint64_t)CThread::GetCurrentThreadId());  
 
 // DXMERGE - this looks like it might have used to have been useful for something...
 //  g_graphicsContext.DeleteThreadContext();
@@ -297,13 +297,13 @@ void CThread::StopThread()
   }
 }
 
-uintptr_t CThread::ThreadId() const
+ThreadIdentifier CThread::ThreadId() const
 {
-#ifndef _LINUX
-  return m_ThreadId;
+#ifdef _LINUX
+  if (m_ThreadHandle && m_ThreadHandle->m_threadValid)
+    return m_ThreadHandle->m_hThread;
 #else
-  if (m_ThreadHandle)
-    return (uintptr_t)m_ThreadHandle->m_hThread;
+  return m_ThreadId;
 #endif
   return 0;
 }
@@ -422,9 +422,34 @@ float CThread::GetRelativeUsage()
   return 0.0f;
 }
 
+bool CThread::IsCurrentThread() const
+{
+  return IsCurrentThread(ThreadId());
+}
+
+
+ThreadIdentifier CThread::GetCurrentThreadId()
+{
+#ifdef _LINUX
+  return pthread_self();
+#else
+  return ::GetCurrentThreadId();
+#endif
+}
+
+bool CThread::IsCurrentThread(const ThreadIdentifier tid)
+{
+#ifdef _LINUX
+  return pthread_equal(pthread_self(), tid);
+#else
+  return (::GetCurrentThreadId() == tid);
+#endif
+}
+
+
 DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10 && GetCurrentThreadId() == m_ThreadId)
+  if(dwMilliseconds > 10 && IsCurrentThread())
   {
     HANDLE handles[2] = {hHandle, m_StopEvent};
     DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
@@ -449,7 +474,7 @@ DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWai
 
 void CThread::Sleep(DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10 && GetCurrentThreadId() == m_ThreadId)
+  if(dwMilliseconds > 10 && IsCurrentThread())
     ::WaitForSingleObject(m_StopEvent, dwMilliseconds);
   else
     ::Sleep(dwMilliseconds);
