@@ -123,7 +123,18 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
   
   if(!enable)
     return;
-  
+
+  bool vendor_nvidia = strVendor.find("nvidia") == std::string::npos;
+  bool vendor_ati    = strVendor.compare(0, 3, "ATI") == 0;
+
+  if (m_glXSwapIntervalMESA && !m_iVSyncMode && vendor_ati)
+  {
+    if(m_glXSwapIntervalMESA(1) == 0)
+      m_iVSyncMode = 2;
+    else
+      CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
+  }
+
   if(m_glXGetSyncValuesOML && m_glXSwapBuffersMscOML && !m_iVSyncMode)
   {
     int64_t ust, msc, sbc;
@@ -132,7 +143,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     else
       CLog::Log(LOGWARNING, "%s - glXGetSyncValuesOML failed", __FUNCTION__);
   }
-  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && strVendor.find("nvidia") == std::string::npos)
+  if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_iVSyncMode && !vendor_nvidia)
   {
     unsigned int count;
     if(m_glXGetVideoSyncSGI(&count) == 0)
@@ -147,7 +158,7 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
     else
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalSGI failed", __FUNCTION__);
   }
-  if (m_glXSwapIntervalMESA && !m_iVSyncMode)
+  if (m_glXSwapIntervalMESA && !m_iVSyncMode && !vendor_ati)
   {
     if(m_glXSwapIntervalMESA(1) == 0)
       m_iVSyncMode = 2;
