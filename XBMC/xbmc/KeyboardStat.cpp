@@ -17,6 +17,11 @@
 #include "KeyboardLayoutConfiguration.h"
 #include "XBMC_events.h"
 
+#if defined(_LINUX) && !defined(__APPLE__)
+#include <X11/Xlib.h>
+#include <X11/XKBlib.h>
+#endif
+
 CKeyboardStat g_Keyboard;
 
 #define XBMC_NLK_CAPS 0x01
@@ -48,6 +53,163 @@ int XBMC_EnableKeyRepeat(int delay, int interval)
   XBMC_KeyRepeat.interval = interval;
   XBMC_KeyRepeat.timestamp = 0;
   return(0);
+}
+
+struct XBMC_KeyMapping
+{
+  int   source;
+  BYTE  VKey;
+  char  Ascii;
+  WCHAR Unicode;
+};
+
+// based on the evdev mapped scancodes in /user/share/X11/xkb/keycodes
+static XBMC_KeyMapping g_mapping_evdev[] =
+{ { 121, 0xad } // Volume mute
+, { 122, 0xae } // Volume down
+, { 123, 0xaf } // Volume up
+, { 135, 0x5d } // Right click
+, { 136, 0xb2 } // Stop
+, { 138, 0x49 } // Info
+, { 166, 0xa6 } // Browser back
+, { 167, 0xa7 } // Browser forward
+, { 171, 0xb0 } // Next track
+, { 172, 0xb3 } // Play_Pause
+, { 173, 0xb1 } // Prev track
+, { 174, 0xb2 } // Stop
+, { 176, 0x52 } // Rewind
+, { 180, 0xac } // Browser home
+, { 181, 0xa8 } // Browser refresh
+, { 214, 0x1B } // Close
+, { 215, 0xb3 } // Play_Pause
+, { 216, 0x46 } // Forward
+//, {167, 0xb3 } // Record
+};
+
+// following scancode infos are
+// 1. from ubuntu keyboard shortcut (hex) -> predefined
+// 2. from unix tool xev and my keyboards (decimal)
+// m_VKey infos from CharProbe tool
+// Can we do the same for XBoxKeyboard and DirectInputKeyboard? Can we access the scancode of them? By the way how does SDL do it? I can't find it. (Automagically? But how exactly?)
+// Some pairs of scancode and virtual keys are only known half
+
+// special "keys" above F1 till F12 on my MS natural keyboard mapped to virtual keys "F13" till "F24"):
+static XBMC_KeyMapping g_mapping_ubuntu[] =
+{ { 0xf5, 0x7c } // F13 Launch help browser
+, { 0x87, 0x7d } // F14 undo
+, { 0x8a, 0x7e } // F15 redo
+, { 0x89, 0x7f } // F16 new
+, { 0xbf, 0x80 } // F17 open
+, { 0xaf, 0x81 } // F18 close
+, { 0xe4, 0x82 } // F19 reply
+, { 0x8e, 0x83 } // F20 forward
+, { 0xda, 0x84 } // F21 send
+//, { 0x, 0x85 } // F22 check spell (doesn't work for me with ubuntu)
+, { 0xd5, 0x86 } // F23 save
+, { 0xb9, 0x87 } // 0x2a?? F24 print
+        // end of special keys above F1 till F12
+
+, { 234, 0xa6 } // Browser back
+, { 233, 0xa7 } // Browser forward
+, { 231, 0xa8 } // Browser refresh
+//, { , 0xa9 } // Browser stop
+, { 122, 0xaa } // Browser search
+, { 0xe5, 0xaa } // Browser search
+, { 230, 0xab } // Browser favorites
+, { 130, 0xac } // Browser home
+, { 0xa0, 0xad } // Volume mute
+, { 0xae, 0xae } // Volume down
+, { 0xb0, 0xaf } // Volume up
+, { 0x99, 0xb0 } // Next track
+, { 0x90, 0xb1 } // Prev track
+, { 0xa4, 0xb2 } // Stop
+, { 0xa2, 0xb3 } // Play_Pause
+, { 0xec, 0xb4 } // Launch mail
+, { 129, 0xb5 } // Launch media_select
+, { 198, 0xb6 } // Launch App1/PC icon
+, { 0xa1, 0xb7 } // Launch App2/Calculator
+, { 34, 0xba } // OEM 1: [ on us keyboard
+, { 51, 0xbf } // OEM 2: additional key on european keyboards between enter and ' on us keyboards
+, { 47, 0xc0 } // OEM 3: ; on us keyboards
+, { 20, 0xdb } // OEM 4: - on us keyboards (between 0 and =)
+, { 49, 0xdc } // OEM 5: ` on us keyboards (below ESC)
+, { 21, 0xdd } // OEM 6: =??? on us keyboards (between - and backspace)
+, { 48, 0xde } // OEM 7: ' on us keyboards (on right side of ;)
+//, { 0, 0xdf } // OEM 8
+, { 94, 0xe2 } // OEM 102: additional key on european keyboards between left shift and z on us keyboards
+//, { 0xb2, 0x } // Ubuntu default setting for launch browser
+//, { 0x76, 0x } // Ubuntu default setting for launch music player
+//, { 0xcc, 0x } // Ubuntu default setting for eject
+, { 117, 0x5d } // right click
+};
+
+// OSX defines unicode values for non-printing keys which breaks the key parser, set m_wUnicode
+static XBMC_KeyMapping g_mapping_npc[] =
+{ { XBMCK_BACKSPACE, 0x08 }
+, { XBMCK_TAB, 0x09 }
+, { XBMCK_RETURN, 0x0d }
+, { XBMCK_ESCAPE, 0x1b }
+, { XBMCK_SPACE, 0x20 }
+, { XBMCK_MENU, 0x5d }
+, { XBMCK_KP0, 0x60 }
+, { XBMCK_KP1, 0x61 }
+, { XBMCK_KP2, 0x62 }
+, { XBMCK_KP3, 0x63 }
+, { XBMCK_KP4, 0x64 }
+, { XBMCK_KP5, 0x65 }
+, { XBMCK_KP6, 0x66 }
+, { XBMCK_KP7, 0x67 }
+, { XBMCK_KP8, 0x68 }
+, { XBMCK_KP9, 0x69 }
+, { XBMCK_KP_ENTER, 0x6C }
+, { XBMCK_UP, 0x26 }
+, { XBMCK_DOWN, 0x28 }
+, { XBMCK_LEFT, 0x25 }
+, { XBMCK_RIGHT, 0x27 }
+, { XBMCK_INSERT, 0x2D }
+, { XBMCK_DELETE, 0x2E }
+, { XBMCK_HOME, 0x24 }
+, { XBMCK_END, 0x23 }
+, { XBMCK_F1, 0x70 }
+, { XBMCK_F2, 0x71 }
+, { XBMCK_F3, 0x72 }
+, { XBMCK_F4, 0x73 }
+, { XBMCK_F5, 0x74 }
+, { XBMCK_F6, 0x75 }
+, { XBMCK_F7, 0x76 }
+, { XBMCK_F8, 0x77 }
+, { XBMCK_F9, 0x78 }
+, { XBMCK_F10, 0x79 }
+, { XBMCK_F11, 0x7a }
+, { XBMCK_F12, 0x7b }
+, { XBMCK_KP_PERIOD, 0x6e }
+, { XBMCK_KP_MULTIPLY, 0x6a }
+, { XBMCK_KP_MINUS, 0x6d }
+, { XBMCK_KP_PLUS, 0x6b }
+, { XBMCK_KP_DIVIDE, 0x6f }
+, { XBMCK_PAGEUP, 0x21 }
+, { XBMCK_PAGEDOWN, 0x22 }
+, { XBMCK_PRINT, 0x2a }
+, { XBMCK_LSHIFT, 0xa0 }
+, { XBMCK_RSHIFT, 0xa1 }
+};
+
+static bool LookupKeyMapping(BYTE* VKey, char* Ascii, WCHAR* Unicode, int source, XBMC_KeyMapping* map, int count)
+{
+  for(int i = 0; i < count; i++)
+  {
+    if(source == map[i].source)
+    {
+      if(VKey)
+        *VKey    = map[i].VKey;
+      if(Ascii)
+        *Ascii   = map[i].Ascii;
+      if(Unicode)
+        *Unicode = map[i].Unicode;
+      return true;
+    }
+  }
+  return false;
 }
 
 CKeyboardStat::CKeyboardStat()
@@ -304,6 +466,7 @@ CKeyboardStat::CKeyboardStat()
   Reset();
   m_lastKey = XBMCK_UNKNOWN;
   m_keyHoldTime = 0;
+  m_bEvdev = true;
 }
 
 CKeyboardStat::~CKeyboardStat()
@@ -312,6 +475,37 @@ CKeyboardStat::~CKeyboardStat()
 
 void CKeyboardStat::Initialize()
 {
+/* this stuff probably doesn't belong here  *
+ * but in some x11 specific WinEvents file  *
+ * but for some reason the code to map keys *
+ * to specific xbmc vkeys is here           */
+#if defined(_LINUX) && !defined(__APPLE__)
+  Display* dpy = XOpenDisplay(NULL);
+  if (!dpy)
+    return;
+
+  XkbDescPtr desc;
+  char* symbols;
+
+  desc = XkbGetKeyboard(dpy, XkbAllComponentsMask, XkbUseCoreKbd);
+  if(!desc)
+  {
+    XCloseDisplay(dpy);
+    return;
+  }
+
+  symbols = XGetAtomName(dpy, desc->names->symbols);
+  if(symbols)
+  {
+    CLog::Log(LOGDEBUG, "CKeyboardStat::Initialize - XKb symbols %s", symbols);
+    if(strstr(symbols, "(evdev)"))
+      m_bEvdev = true;
+  }
+
+  XFree(symbols);
+  XkbFreeKeyboard(desc, XkbAllComponentsMask, True);
+  XCloseDisplay(dpy);
+#endif
 }
 
 void CKeyboardStat::Reset()
@@ -553,138 +747,31 @@ void CKeyboardStat::Update(XBMC_Event& event)
       else if (event.key.keysym.unicode == ']') { m_VKey = 0xed; m_cAscii = ']'; } // 0xed is not defined by MS. Why is it assigned here?
       else if (event.key.keysym.unicode == '"') { m_VKey = 0xee; m_cAscii = '"'; }
       else if (event.key.keysym.unicode == '\'') { m_VKey = 0xee; m_cAscii = '\''; }
-      if (!m_VKey && !m_cAscii) // split block due to ms compiler complaints about nested code depth
-      {
-        // OSX defines unicode values for non-printing keys which breaks the key parser, set m_wUnicode
-        if (event.key.keysym.sym == XBMCK_BACKSPACE) { m_VKey = 0x08; m_wUnicode=0x08; }
-        else if (event.key.keysym.sym == XBMCK_TAB) m_VKey = 0x09;
-        else if (event.key.keysym.sym == XBMCK_RETURN) m_VKey = 0x0d;
-        else if (event.key.keysym.sym == XBMCK_ESCAPE) m_VKey = 0x1b;
-        else if (event.key.keysym.sym == XBMCK_SPACE) m_VKey = 0x20;
-        else if (event.key.keysym.sym == XBMCK_MENU) m_VKey = 0x5d;
-        else if (event.key.keysym.sym == XBMCK_KP0) m_VKey = 0x60;
-        else if (event.key.keysym.sym == XBMCK_KP1) m_VKey = 0x61;
-        else if (event.key.keysym.sym == XBMCK_KP2) m_VKey = 0x62;
-        else if (event.key.keysym.sym == XBMCK_KP3) m_VKey = 0x63;
-        else if (event.key.keysym.sym == XBMCK_KP4) m_VKey = 0x64;
-        else if (event.key.keysym.sym == XBMCK_KP5) m_VKey = 0x65;
-        else if (event.key.keysym.sym == XBMCK_KP6) m_VKey = 0x66;
-        else if (event.key.keysym.sym == XBMCK_KP7) m_VKey = 0x67;
-        else if (event.key.keysym.sym == XBMCK_KP8) m_VKey = 0x68;
-        else if (event.key.keysym.sym == XBMCK_KP9) m_VKey = 0x69;
-        else if (event.key.keysym.sym == XBMCK_KP_ENTER) m_VKey = 0x6C;
-        else if (event.key.keysym.sym == XBMCK_UP)  { m_VKey = 0x26; m_wUnicode = 0; }
-        else if (event.key.keysym.sym == XBMCK_DOWN) { m_VKey = 0x28; m_wUnicode = 0; }
-        else if (event.key.keysym.sym == XBMCK_LEFT) { m_VKey = 0x25; m_wUnicode = 0; }
-        else if (event.key.keysym.sym == XBMCK_RIGHT) { m_VKey = 0x27; m_wUnicode = 0; }
-        else if (event.key.keysym.sym == XBMCK_INSERT) m_VKey = 0x2D;
-        else if (event.key.keysym.sym == XBMCK_DELETE) { m_VKey = 0x2E; m_wUnicode = 0; }
-        else if (event.key.keysym.sym == XBMCK_HOME) m_VKey = 0x24;
-        else if (event.key.keysym.sym == XBMCK_END) m_VKey = 0x23;
-        else if (event.key.keysym.sym == XBMCK_F1) m_VKey = 0x70;
-        else if (event.key.keysym.sym == XBMCK_F2) m_VKey = 0x71;
-        else if (event.key.keysym.sym == XBMCK_F3) m_VKey = 0x72;
-        else if (event.key.keysym.sym == XBMCK_F4) m_VKey = 0x73;
-        else if (event.key.keysym.sym == XBMCK_F5) m_VKey = 0x74;
-        else if (event.key.keysym.sym == XBMCK_F6) m_VKey = 0x75;
-        else if (event.key.keysym.sym == XBMCK_F7) m_VKey = 0x76;
-        else if (event.key.keysym.sym == XBMCK_F8) m_VKey = 0x77;
-        else if (event.key.keysym.sym == XBMCK_F9) m_VKey = 0x78;
-        else if (event.key.keysym.sym == XBMCK_F10) m_VKey = 0x79;
-        else if (event.key.keysym.sym == XBMCK_F11) m_VKey = 0x7a;
-        else if (event.key.keysym.sym == XBMCK_F12) m_VKey = 0x7b;
-        else if (event.key.keysym.sym == XBMCK_KP_PERIOD) m_VKey = 0x6e;
-        else if (event.key.keysym.sym == XBMCK_KP_MULTIPLY) m_VKey = 0x6a;
-        else if (event.key.keysym.sym == XBMCK_KP_MINUS) m_VKey = 0x6d;
-        else if (event.key.keysym.sym == XBMCK_KP_PLUS) m_VKey = 0x6b;
-        else if (event.key.keysym.sym == XBMCK_KP_DIVIDE) m_VKey = 0x6f;
-        else if (event.key.keysym.sym == XBMCK_PAGEUP) m_VKey = 0x21;
-        else if (event.key.keysym.sym == XBMCK_PAGEDOWN) m_VKey = 0x22;
-        else if (event.key.keysym.sym == XBMCK_PRINT) m_VKey = 0x2a;
-        else if (event.key.keysym.sym == XBMCK_LSHIFT) m_VKey = 0xa0;
-        else if (event.key.keysym.sym == XBMCK_RSHIFT) m_VKey = 0xa1;
-      }
+
+
+      /* Check for standard non printable keys */
+      if (!m_VKey && !m_cAscii)
+        LookupKeyMapping(&m_VKey, NULL, &m_wUnicode
+                       , event.key.keysym.sym
+                       , g_mapping_npc
+                       , sizeof(g_mapping_npc)/sizeof(g_mapping_npc[0]));
+
 
       if (!m_VKey && !m_cAscii)
       {
-        // based on the evdev mapped scancodes in /user/share/X11/xkb/keycodes
-        if (event.key.keysym.scancode == 121) m_VKey = 0xad; // Volume mute
-        else if (event.key.keysym.scancode == 122) m_VKey = 0xae; // Volume down
-        else if (event.key.keysym.scancode == 123) m_VKey = 0xaf; // Volume up
-        else if (event.key.keysym.scancode == 135) m_VKey = 0x5d; // Right click
-        else if (event.key.keysym.scancode == 136) m_VKey = 0xb2; // Stop
-        else if (event.key.keysym.scancode == 138) m_VKey = 0x49; // Info
-        else if (event.key.keysym.scancode == 166) m_VKey = 0xa6; // Browser back
-        else if (event.key.keysym.scancode == 167) m_VKey = 0xa7; // Browser forward
-        else if (event.key.keysym.scancode == 171) m_VKey = 0xb0; // Next track
-        else if (event.key.keysym.scancode == 172) m_VKey = 0xb3; // Play_Pause
-        else if (event.key.keysym.scancode == 173) m_VKey = 0xb1; // Prev track
-        else if (event.key.keysym.scancode == 174) m_VKey = 0xb2; // Stop
-        else if (event.key.keysym.scancode == 176) m_VKey = 0x52; // Rewind
-        else if (event.key.keysym.scancode == 180) m_VKey = 0xac; // Browser home
-        else if (event.key.keysym.scancode == 181) m_VKey = 0xa8; // Browser refresh
-        else if (event.key.keysym.scancode == 214) m_VKey = 0x1B; // Close
-        else if (event.key.keysym.scancode == 215) m_VKey = 0xb3; // Play_Pause
-        else if (event.key.keysym.scancode == 216) m_VKey = 0x46; // Forward
-        //else if (event.key.keysym.scancode == 167) m_VKey = 0xb3; // Record
+        /* Check for linux defined non printable keys */
+        if(m_bEvdev)
+          LookupKeyMapping(&m_VKey, NULL, NULL
+                         , event.key.keysym.scancode
+                         , g_mapping_evdev
+                         , sizeof(g_mapping_evdev)/sizeof(g_mapping_evdev[0]));
+        else
+          LookupKeyMapping(&m_VKey, NULL, NULL
+                         , event.key.keysym.scancode
+                         , g_mapping_evdev
+                         , sizeof(g_mapping_ubuntu)/sizeof(g_mapping_ubuntu[0]));
       }
-      if (!m_VKey && !m_cAscii)
-      {
-        // following scancode infos are
-        // 1. from ubuntu keyboard shortcut (hex) -> predefined
-        // 2. from unix tool xev and my keyboards (decimal)
-        // m_VKey infos from CharProbe tool
-        // Can we do the same for XBoxKeyboard and DirectInputKeyboard? Can we access the scancode of them? By the way how does SDL do it? I can't find it. (Automagically? But how exactly?)
-        // Some pairs of scancode and virtual keys are only known half
 
-        // special "keys" above F1 till F12 on my MS natural keyboard mapped to virtual keys "F13" till "F24"):
-        if (event.key.keysym.scancode == 0xf5) m_VKey = 0x7c; // F13 Launch help browser
-        else if (event.key.keysym.scancode == 0x87) m_VKey = 0x7d; // F14 undo
-        else if (event.key.keysym.scancode == 0x8a) m_VKey = 0x7e; // F15 redo
-        else if (event.key.keysym.scancode == 0x89) m_VKey = 0x7f; // F16 new
-        else if (event.key.keysym.scancode == 0xbf) m_VKey = 0x80; // F17 open
-        else if (event.key.keysym.scancode == 0xaf) m_VKey = 0x81; // F18 close
-        else if (event.key.keysym.scancode == 0xe4) m_VKey = 0x82; // F19 reply
-        else if (event.key.keysym.scancode == 0x8e) m_VKey = 0x83; // F20 forward
-        else if (event.key.keysym.scancode == 0xda) m_VKey = 0x84; // F21 send
-        //      else if (event.key.keysym.scancode == 0x) m_VKey = 0x85; // F22 check spell (doesn't work for me with ubuntu)
-        else if (event.key.keysym.scancode == 0xd5) m_VKey = 0x86; // F23 save
-        else if (event.key.keysym.scancode == 0xb9) m_VKey = 0x87; // 0x2a?? F24 print
-        // end of special keys above F1 till F12
-
-        else if (event.key.keysym.scancode == 234) m_VKey = 0xa6; // Browser back
-        else if (event.key.keysym.scancode == 233) m_VKey = 0xa7; // Browser forward
-        else if (event.key.keysym.scancode == 231) m_VKey = 0xa8; // Browser refresh
-        //      else if (event.key.keysym.scancode == ) m_VKey = 0xa9; // Browser stop
-        else if (event.key.keysym.scancode == 122) m_VKey = 0xaa; // Browser search
-        else if (event.key.keysym.scancode == 0xe5) m_VKey = 0xaa; // Browser search
-        else if (event.key.keysym.scancode == 230) m_VKey = 0xab; // Browser favorites
-        else if (event.key.keysym.scancode == 130) m_VKey = 0xac; // Browser home
-        else if (event.key.keysym.scancode == 0xa0) m_VKey = 0xad; // Volume mute
-        else if (event.key.keysym.scancode == 0xae) m_VKey = 0xae; // Volume down
-        else if (event.key.keysym.scancode == 0xb0) m_VKey = 0xaf; // Volume up
-        else if (event.key.keysym.scancode == 0x99) m_VKey = 0xb0; // Next track
-        else if (event.key.keysym.scancode == 0x90) m_VKey = 0xb1; // Prev track
-        else if (event.key.keysym.scancode == 0xa4) m_VKey = 0xb2; // Stop
-        else if (event.key.keysym.scancode == 0xa2) m_VKey = 0xb3; // Play_Pause
-        else if (event.key.keysym.scancode == 0xec) m_VKey = 0xb4; // Launch mail
-        else if (event.key.keysym.scancode == 129) m_VKey = 0xb5; // Launch media_select
-        else if (event.key.keysym.scancode == 198) m_VKey = 0xb6; // Launch App1/PC icon
-        else if (event.key.keysym.scancode == 0xa1) m_VKey = 0xb7; // Launch App2/Calculator
-        else if (event.key.keysym.scancode == 34) m_VKey = 0xba; // OEM 1: [ on us keyboard
-        else if (event.key.keysym.scancode == 51) m_VKey = 0xbf; // OEM 2: additional key on european keyboards between enter and ' on us keyboards
-        else if (event.key.keysym.scancode == 47) m_VKey = 0xc0; // OEM 3: ; on us keyboards
-        else if (event.key.keysym.scancode == 20) m_VKey = 0xdb; // OEM 4: - on us keyboards (between 0 and =)
-        else if (event.key.keysym.scancode == 49) m_VKey = 0xdc; // OEM 5: ` on us keyboards (below ESC)
-        else if (event.key.keysym.scancode == 21) m_VKey = 0xdd; // OEM 6: =??? on us keyboards (between - and backspace)
-        else if (event.key.keysym.scancode == 48) m_VKey = 0xde; // OEM 7: ' on us keyboards (on right side of ;)
-        //       else if (event.key.keysym.scancode == ) m_VKey = 0xdf; // OEM 8
-        else if (event.key.keysym.scancode == 94) m_VKey = 0xe2; // OEM 102: additional key on european keyboards between left shift and z on us keyboards
-        //      else if (event.key.keysym.scancode == 0xb2) m_VKey = 0x; // Ubuntu default setting for launch browser
-        //       else if (event.key.keysym.scancode == 0x76) m_VKey = 0x; // Ubuntu default setting for launch music player
-        //       else if (event.key.keysym.scancode == 0xcc) m_VKey = 0x; // Ubuntu default setting for eject
-        else if (event.key.keysym.scancode==117) m_VKey = 0x5d; // right click
-      }
       if (!m_VKey && !m_cAscii)
       {
         if (event.key.keysym.mod & XBMCKMOD_LSHIFT) m_VKey = 0xa0;

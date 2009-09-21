@@ -57,6 +57,7 @@ private:
   XBMCKey m_lastKey;
   DWORD m_lastKeyTime;
   unsigned int m_keyHoldTime;
+  bool m_bEvdev;
 };
 
 extern CKeyboardStat g_Keyboard;
