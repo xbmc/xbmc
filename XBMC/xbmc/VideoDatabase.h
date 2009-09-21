@@ -312,6 +312,7 @@ public:
 
   void GetFilePathById(long id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
   bool GetGenreById(long id, CStdString& strGenre);
+  bool GetSetById(long id, CStdString& strSet);
   long GetTvShowForEpisode(long idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lMovieId = -1);
@@ -420,9 +421,10 @@ public:
   bool GetDirectorsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetWritersNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
+  bool GetSetsNav(const CStdString& strBaseDir, CFileItemList& items, long idContent=-1);
   bool GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idArtist);
 
-  bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1);
+  bool GetMoviesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1, long idSet=-1);
   bool GetTvShowsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idStudio=-1);
   bool GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& items, long idActor=-1, long idDirector=-1, long idGenre=-1, long idYear=-1, long idShow=-1);
   bool GetEpisodesNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre=-1, long idYear=-1, long idActor=-1, long idDirector=-1, long idShow=-1, long idSeason=-1);
@@ -434,6 +436,7 @@ public:
 
   bool HasContent();
   bool HasContent(VIDEODB_CONTENT_TYPE type);
+  bool HasSets() const;
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<long>* paths=NULL);
 
@@ -464,6 +467,7 @@ protected:
   long AddPath(const CStdString& strPath);
   long AddGenre(const CStdString& strGenre1);
   long AddActor(const CStdString& strActor, const CStdString& strThumb);
+  long AddSet(const CStdString& strSet);
   long AddStudio(const CStdString& strStudio1);
   long AddTvShow(const CStdString& strPath);
   long AddMusicVideo(const CStdString& strFilenameAndPath);
@@ -471,6 +475,8 @@ protected:
   // link functions - these two do all the work
   void AddLinkToActor(const char *table, long actorID, const char *secondField, long secondID, const CStdString &role);
   void AddToLinkTable(const char *table, const char *firstField, long firstID, const char *secondField, long secondID);
+
+  void AddSetToMovie(long lMovieId, long lSetId);
 
   void AddActorToMovie(long lMovieId, long lActorId, const CStdString& strRole);
   void AddActorToTvShow(long lTvShowId, long lActorId, const CStdString& strRole);

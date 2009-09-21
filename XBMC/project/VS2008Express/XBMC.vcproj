@@ -4673,6 +4673,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeSets.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeSets.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\xbmc\FileSystem\VideoDatabaseDirectory\DirectoryNodeStudio.cpp"
 						>
 					</File>

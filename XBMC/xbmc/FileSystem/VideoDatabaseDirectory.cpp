@@ -156,6 +156,13 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
     strLabel += strTemp;
   }
 
+  // get set
+  if (params.GetSetId() != -1)
+  {
+    videodatabase.GetSetById(params.GetSetId(), strTemp);
+    strLabel += strTemp;
+  }
+
   // get year
   if (params.GetYear() != -1)
   {
@@ -181,6 +188,8 @@ bool CVideoDatabaseDirectory::GetLabel(const CStdString& strDirectory, CStdStrin
       strLabel = g_localizeStrings.Get(562); break;
     case NODE_TYPE_DIRECTOR: // Director
       strLabel = g_localizeStrings.Get(20348); break;
+    case NODE_TYPE_SETS: // Sets
+      strLabel = g_localizeStrings.Get(20434); break;
     case NODE_TYPE_MOVIES_OVERVIEW: // Movies
       strLabel = g_localizeStrings.Get(342); break;
     case NODE_TYPE_TVSHOWS_OVERVIEW: // TV Shows
@@ -236,6 +245,8 @@ CStdString CVideoDatabaseDirectory::GetIcon(const CStdString &strDirectory)
     return "DefaultActor.png";
   case NODE_TYPE_GENRE: // Genres
     return "DefaultGenre.png";
+  case NODE_TYPE_SETS: // Sets
+    return "DefaultSets.png";
   case NODE_TYPE_YEAR: // Year
     return "DefaultYear.png";
   case NODE_TYPE_DIRECTOR: // Director

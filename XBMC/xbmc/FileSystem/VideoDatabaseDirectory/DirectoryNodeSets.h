@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -19,31 +20,21 @@
  *
  */
 
-#include "DirectoryNodeTitleMovies.h"
-#include "QueryParams.h"
-#include "VideoDatabase.h"
+#include "DirectoryNode.h"
 
-using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
-
-CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const CStdString& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TITLE_MOVIES, strName, pParent)
+namespace DIRECTORY
 {
-
+  namespace VIDEODATABASEDIRECTORY
+  {
+    class CDirectoryNodeSets : public CDirectoryNode
+    {
+    public:
+      CDirectoryNodeSets(const CStdString& strName, CDirectoryNode* pParent);
+    protected:
+      virtual NODE_TYPE GetChildType();
+      virtual bool GetContent(CFileItemList& items);
+    };
+  }
 }
 
-bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items)
-{
-  CVideoDatabase videodatabase;
-  if (!videodatabase.Open())
-    return false;
 
-  CQueryParams params;
-  CollectQueryParams(params);
-
-  CStdString strBaseDir=BuildPath();
-  bool bSuccess=videodatabase.GetMoviesNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(),params.GetStudioId(),params.GetSetId());
-
-  videodatabase.Close();
-
-  return bSuccess;
-}

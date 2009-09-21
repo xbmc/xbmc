@@ -19,19 +19,26 @@
  *
  */
 
-#include "DirectoryNodeTitleMovies.h"
+#include "DirectoryNodeSets.h"
 #include "QueryParams.h"
 #include "VideoDatabase.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
-CDirectoryNodeTitleMovies::CDirectoryNodeTitleMovies(const CStdString& strName, CDirectoryNode* pParent)
-  : CDirectoryNode(NODE_TYPE_TITLE_MOVIES, strName, pParent)
+CDirectoryNodeSets::CDirectoryNodeSets(const CStdString& strName, CDirectoryNode* pParent)
+  : CDirectoryNode(NODE_TYPE_SETS, strName, pParent)
 {
 
 }
 
-bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items)
+NODE_TYPE CDirectoryNodeSets::GetChildType()
+{
+  CQueryParams params;
+  CollectQueryParams(params);
+  return NODE_TYPE_TITLE_MOVIES;
+}
+
+bool CDirectoryNodeSets::GetContent(CFileItemList& items)
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())
@@ -40,8 +47,7 @@ bool CDirectoryNodeTitleMovies::GetContent(CFileItemList& items)
   CQueryParams params;
   CollectQueryParams(params);
 
-  CStdString strBaseDir=BuildPath();
-  bool bSuccess=videodatabase.GetMoviesNav(strBaseDir, items, params.GetGenreId(), params.GetYear(), params.GetActorId(), params.GetDirectorId(),params.GetStudioId(),params.GetSetId());
+  bool bSuccess=videodatabase.GetSetsNav(BuildPath(), items, params.GetContentType());
 
   videodatabase.Close();
 
