@@ -1,6 +1,7 @@
 #!/bin/sh
 
 autoreconf -vif
+autoreconf -vif xbmc/lib/libass
 
 echo "Please (re)run configure..."
 
