@@ -179,20 +179,17 @@ int CoffLoader::LoadCoffHModule(FILE *fp)
   char Sig[4];
   rewind(fp);
   memset(Sig, 0, sizeof(Sig));
-  fread(Sig, 1, 2, fp);
-  if (strncmp(Sig, "MZ", 2) != 0)
+  if (!fread(Sig, 1, 2, fp) || strncmp(Sig, "MZ", 2) != 0)
     return 0;
 
   int Offset = 0;
   fseek(fp, 0x3c, SEEK_SET);
-  fread(&Offset, sizeof(int), 1, fp);
-  if (Offset <= 0)
+  if (!fread(&Offset, sizeof(int), 1, fp) || (Offset <= 0))
     return 0;
 
   fseek(fp, Offset, SEEK_SET);
   memset(Sig, 0, sizeof(Sig));
-  fread(Sig, 1, 4, fp);
-  if (strncmp(Sig, "PE\0\0", 4) != 0)
+  if (!fread(Sig, 1, 4, fp) || strncmp(Sig, "PE\0\0", 4) != 0)
     return 0;
 
   Offset += 4;
@@ -292,7 +289,8 @@ int CoffLoader::LoadSymTable(FILE *fp)
     printf("Could not allocate memory for symbol table!\n");
     return 0;
   }
-  fread((void *)tmp, CoffFileHeader->NumberOfSymbols, sizeof(SymbolTable_t), fp);
+  if (!fread((void *)tmp, CoffFileHeader->NumberOfSymbols, sizeof(SymbolTable_t), fp))
+    return 0;
   NumberOfSymbols = CoffFileHeader->NumberOfSymbols;
   SymTable = tmp;
   fseek(fp, Offset, SEEK_SET);
@@ -312,7 +310,8 @@ int CoffLoader::LoadStringTable(FILE *fp)
         CoffFileHeader->NumberOfSymbols * sizeof(SymbolTable_t),
         SEEK_SET);
 
-  fread(&StringTableSize, 1, sizeof(int), fp);
+  if (!fread(&StringTableSize, 1, sizeof(int), fp))
+    return 0;
   StringTableSize -= 4;
   if (StringTableSize != 0)
   {
@@ -322,7 +321,8 @@ int CoffLoader::LoadStringTable(FILE *fp)
       printf("Could not allocate memory for string table\n");
       return 0;
     }
-    fread((void *)tmp, StringTableSize, sizeof(char), fp);
+    if (!fread((void *)tmp, StringTableSize, sizeof(char), fp))
+      return 0;
   }
   SizeOfStringTable = StringTableSize;
   StringTable = tmp;
@@ -358,7 +358,8 @@ int CoffLoader::LoadSections(FILE *fp)
     SectionData[SctnCnt] = ((char*)hModule + ScnHdr->VirtualAddress);
 
     fseek(fp, ScnHdr->PtrToRawData, SEEK_SET);
-    fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp);
+    if (fread(SectionData[SctnCnt], 1, ScnHdr->SizeOfRawData, fp))
+      return 0;
 
 #ifdef DUMPING_DATA
     //debug blocks

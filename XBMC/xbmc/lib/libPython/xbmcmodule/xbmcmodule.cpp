@@ -79,6 +79,10 @@ using namespace XFILE;
 #pragma const_seg("PY_RDATA")
 #endif
 
+#if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
