@@ -38,7 +38,7 @@
 #include "Application.h"
 
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WINSMBDirectory.h"
 #else
 #include "SMBDirectory.h"
@@ -135,7 +135,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();
     if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32PC
+#ifdef _WIN32
     if (strProtocol == "smb") return new CWINSMBDirectory();
 #else
     if (strProtocol == "smb") return new CSMBDirectory();

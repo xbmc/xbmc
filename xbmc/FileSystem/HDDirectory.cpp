@@ -36,7 +36,7 @@
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
 #endif
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 typedef WIN32_FIND_DATAW LOCAL_WIN32_FIND_DATA;
 #define LocalFindFirstFile FindFirstFileW
 #define LocalFindNextFile FindNextFileW

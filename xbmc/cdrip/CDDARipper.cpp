@@ -253,7 +253,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   int LegalType = LEGAL_NONE;
   if (ripPath.IsSmb())
     LegalType=LEGAL_WIN32_COMPAT;
-#ifdef _WIN32PC  
+#ifdef _WIN32  
   if (ripPath.IsHD())
     LegalType=LEGAL_WIN32_COMPAT;
 #endif
@@ -340,7 +340,7 @@ bool CCDDARipper::RipCD()
     int LegalType=LEGAL_NONE;
     if (ripPath.IsSmb())
       LegalType=LEGAL_WIN32_COMPAT;
-#ifdef _WIN32PC
+#ifdef _WIN32
     if (ripPath.IsHD())
       LegalType=LEGAL_WIN32_COMPAT;
 #endif

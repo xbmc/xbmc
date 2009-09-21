@@ -35,7 +35,7 @@
 #endif
 #include "File.h"
 #include "FileItem.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 

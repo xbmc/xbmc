@@ -36,7 +36,7 @@
 #include <cmath>
 #include "BeatDetect.hpp"
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 #define DLLEXPORT
 #endif
 

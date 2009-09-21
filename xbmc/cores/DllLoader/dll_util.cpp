@@ -22,6 +22,7 @@
 #include "utils/log.h"
 #include "dll_util.h"
 
+#include <windows.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -100,7 +101,7 @@ uintptr_t create_dummy_function(const char* strDllName, const char* strFunctionN
 
 uintptr_t get_win_function_address(const char* strDllName, const char* strFunctionName)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   HMODULE handle = GetModuleHandle(strDllName);
   if(handle == NULL)
   {

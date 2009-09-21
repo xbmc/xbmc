@@ -82,7 +82,7 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
   
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
   static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
 #endif
@@ -103,7 +103,7 @@ private:
   int m_time;
   CStdString m_launchFilename;
   HWND m_hwndXbmc; 
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   POINT m_ptCursorpos;
 #endif 
   CGUIDialogOK* m_dialog;

@@ -95,7 +95,7 @@
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include <shlobj.h>
 #include "WIN32Util.h"
 #endif
@@ -684,7 +684,7 @@ void CUtil::GetHomePath(CStdString& strPath)
   strPath = getenv("XBMC_HOME");
   if (strPath != NULL && !strPath.IsEmpty())
   {
-#ifdef _WIN32PC
+#ifdef _WIN32
     //expand potential relative path to full path
     if(GetFullPathName(strPath, 1024, szXBEFileName, 0) != 0)
     {
@@ -806,7 +806,7 @@ bool CUtil::IsRemote(const CStdString& strFile)
 
 bool CUtil::IsOnDVD(const CStdString& strFile)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   if (strFile.Mid(1,1) == ":")
     return (GetDriveType(strFile.Left(2)) == DRIVE_CDROM);
 #else
@@ -894,7 +894,7 @@ bool CUtil::IsDVD(const CStdString& strFile)
 {
   CStdString strFileLow = strFile;
   strFileLow.MakeLower();
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   if((GetDriveType(strFile.c_str()) == DRIVE_CDROM) || strFile.Left(6).Equals("dvd://"))
     return true;
 #else

@@ -192,7 +192,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 }
 
 /////  Add other platforms here.
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
 void DPMSSupport::PlatformSpecificInit()
 {
   // Assume we support DPMS. Is there a way to test it?

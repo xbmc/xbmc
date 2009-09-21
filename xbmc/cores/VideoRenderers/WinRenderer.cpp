@@ -716,6 +716,7 @@ void CWinRenderer::Update(bool bPauseDrawing)
 
 void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
+  if (!m_bConfigured) return;
   ManageTextures();
 
   if (!m_YUVMemoryTexture[m_iYV12RenderBuffer][0]) 
@@ -870,6 +871,7 @@ void CWinRenderer::UnInit()
 
   g_Windowing.ReleaseEffect(m_pYUV2RGBEffect);
   m_pYUV2RGBEffect = NULL;
+  m_bConfigured = false;
 }
 
 bool CWinRenderer::LoadEffect()

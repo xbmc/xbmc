@@ -47,7 +47,7 @@
 #include "linux/HalManager.h"
 #endif
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 
@@ -355,7 +355,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   case CONTEXT_BUTTON_EJECT_DRIVE:
 #ifdef HAS_HAL
     return g_HalManager.Eject(item->m_strPath);
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
     return CWIN32Util::EjectDrive(item->m_strPath[0]);
 #else
     return false;
@@ -366,7 +366,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     return MEDIA_DETECT::CAutorun::PlayDisc();
 
   case CONTEXT_BUTTON_EJECT_DISC:
-#ifdef _WIN32PC
+#ifdef _WIN32
     CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->m_strPath)[0]);
 #else
     CIoSupport::ToggleTray();

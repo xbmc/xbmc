@@ -38,7 +38,7 @@ class CFileItemList;
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
-#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
+#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "DetectDVDType.h"
 #endif
 #include "Autorun.h"
@@ -53,7 +53,7 @@ class CFileItemList;
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
 #endif
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 #include "XBMC_events.h"
@@ -220,7 +220,7 @@ public:
   MEDIA_DETECT::CAutorun m_Autorun;
 #endif
   
-#if !defined(_WIN32PC) && defined(HAS_DVD_DRIVE)
+#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
   CSNTPClient *m_psntpClient;
@@ -376,7 +376,7 @@ protected:
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
-#ifdef _WIN32PC
+#ifdef _WIN32
   CWIN32Util::SystemParams::SysParam *m_SSysParam;
 #endif
 };

@@ -27,13 +27,13 @@
 #include "Util.h"
 #ifdef _LINUX
 #include "LinuxFileSystem.h"
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
 #include "WIN32Util.h"
 #endif
 #include "GUIWindowManager.h"
 #ifdef HAS_DVD_DRIVE
 #include "FileSystem/cdioSupport.h"
-#ifndef _WIN32PC 
+#ifndef _WIN32 
 // TODO: switch all ports to use auto sources
 #include "DetectDVDType.h"
 #endif
@@ -118,7 +118,7 @@ bool CMediaManager::SaveSources()
 void CMediaManager::GetLocalDrives(VECSOURCES &localDrives, bool includeQ)
 {
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CMediaSource share;
   if (includeQ)
   {
@@ -306,7 +306,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
     strDevice = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
 #endif
   
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(!m_bhasoptical)
     return "";
 
@@ -323,7 +323,7 @@ CStdString CMediaManager::TranslateDevicePath(const CStdString& devicePath, bool
 bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(!m_bhasoptical)
     return false;
 
@@ -347,7 +347,7 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
 bool CMediaManager::IsAudio(const CStdString& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(!m_bhasoptical)
     return false;
 
@@ -369,7 +369,7 @@ bool CMediaManager::IsAudio(const CStdString& devicePath)
 DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 {
 #ifdef HAS_DVD_DRIVE
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(!m_bhasoptical)
     return DRIVE_NOT_READY;
 
@@ -405,7 +405,7 @@ DWORD CMediaManager::GetDriveStatus(const CStdString& devicePath)
 #ifdef HAS_DVD_DRIVE
 CCdInfo* CMediaManager::GetCdInfo(const CStdString& devicePath)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(!m_bhasoptical)
     return NULL;
 
@@ -451,7 +451,7 @@ bool CMediaManager::RemoveCdInfo(const CStdString& devicePath)
 
 CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(!m_bhasoptical)
     return "";
 

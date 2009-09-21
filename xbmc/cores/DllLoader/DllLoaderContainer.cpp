@@ -216,7 +216,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
       || strstr(sName, ".mvis") != NULL)
     pLoader = new SoLoader(sName, bLoadSymbols);
   else
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   if (1)
     pLoader = new Win32DllLoader(sName);
   else
