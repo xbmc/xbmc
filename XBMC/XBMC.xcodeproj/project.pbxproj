@@ -264,8 +264,6 @@
 		E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
 		E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
-		E38E1F650D25F9FD00618676 /* exports_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D40D25F9F900618676 /* exports_kernel32.cpp */; };
-		E38E1F670D25F9FD00618676 /* exports_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D60D25F9F900618676 /* exports_msvcrt.cpp */; };
 		E38E1F6A0D25F9FD00618676 /* exports_python_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D90D25F9F900618676 /* exports_python_linux.cpp */; };
 		E38E1F6F0D25F9FD00618676 /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		E38E1F710D25F9FD00618676 /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E80D25F9F900618676 /* wrapper.c */; };
@@ -1032,8 +1030,6 @@
 		F5A1C8D80F6B06CF00A96ABD /* emu_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14B90D25F9F900618676 /* emu_dummy.cpp */; };
 		F5A1C8DA0F6B06CF00A96ABD /* emu_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14BD0D25F9F900618676 /* emu_kernel32.cpp */; };
 		F5A1C8DB0F6B06CF00A96ABD /* emu_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */; };
-		F5A1C8DC0F6B06CF00A96ABD /* exports_kernel32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D40D25F9F900618676 /* exports_kernel32.cpp */; };
-		F5A1C8DD0F6B06CF00A96ABD /* exports_msvcrt.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D60D25F9F900618676 /* exports_msvcrt.cpp */; };
 		F5A1C8DE0F6B06CF00A96ABD /* exports_python_linux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14D90D25F9F900618676 /* exports_python_linux.cpp */; };
 		F5A1C8DF0F6B06CF00A96ABD /* EmuFileWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */; };
 		F5A1C8E00F6B06CF00A96ABD /* wrapper.c in Sources */ = {isa = PBXBuildFile; fileRef = E38E14E80D25F9F900618676 /* wrapper.c */; };
@@ -2237,8 +2233,6 @@
 		E38E14BE0D25F9F900618676 /* emu_kernel32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_kernel32.h; sourceTree = "<group>"; };
 		E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = emu_msvcrt.cpp; sourceTree = "<group>"; };
 		E38E14C20D25F9F900618676 /* emu_msvcrt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = emu_msvcrt.h; sourceTree = "<group>"; };
-		E38E14D40D25F9F900618676 /* exports_kernel32.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_kernel32.cpp; sourceTree = "<group>"; };
-		E38E14D60D25F9F900618676 /* exports_msvcrt.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_msvcrt.cpp; sourceTree = "<group>"; };
 		E38E14D90D25F9F900618676 /* exports_python_linux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = exports_python_linux.cpp; sourceTree = "<group>"; };
 		E38E14E30D25F9F900618676 /* EmuFileWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EmuFileWrapper.cpp; sourceTree = "<group>"; };
 		E38E14E40D25F9F900618676 /* EmuFileWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuFileWrapper.h; sourceTree = "<group>"; };
@@ -4938,8 +4932,6 @@
 				E38E14BE0D25F9F900618676 /* emu_kernel32.h */,
 				E38E14C10D25F9F900618676 /* emu_msvcrt.cpp */,
 				E38E14C20D25F9F900618676 /* emu_msvcrt.h */,
-				E38E14D40D25F9F900618676 /* exports_kernel32.cpp */,
-				E38E14D60D25F9F900618676 /* exports_msvcrt.cpp */,
 				E38E14D90D25F9F900618676 /* exports_python_linux.cpp */,
 				E38E14E20D25F9F900618676 /* util */,
 				E38E14E80D25F9F900618676 /* wrapper.c */,
@@ -7266,8 +7258,6 @@
 				E38E1F580D25F9FD00618676 /* emu_dummy.cpp in Sources */,
 				E38E1F5A0D25F9FD00618676 /* emu_kernel32.cpp in Sources */,
 				E38E1F5C0D25F9FD00618676 /* emu_msvcrt.cpp in Sources */,
-				E38E1F650D25F9FD00618676 /* exports_kernel32.cpp in Sources */,
-				E38E1F670D25F9FD00618676 /* exports_msvcrt.cpp in Sources */,
 				E38E1F6A0D25F9FD00618676 /* exports_python_linux.cpp in Sources */,
 				E38E1F6F0D25F9FD00618676 /* EmuFileWrapper.cpp in Sources */,
 				E38E1F710D25F9FD00618676 /* wrapper.c in Sources */,
@@ -8114,8 +8104,6 @@
 				F5A1C8D80F6B06CF00A96ABD /* emu_dummy.cpp in Sources */,
 				F5A1C8DA0F6B06CF00A96ABD /* emu_kernel32.cpp in Sources */,
 				F5A1C8DB0F6B06CF00A96ABD /* emu_msvcrt.cpp in Sources */,
-				F5A1C8DC0F6B06CF00A96ABD /* exports_kernel32.cpp in Sources */,
-				F5A1C8DD0F6B06CF00A96ABD /* exports_msvcrt.cpp in Sources */,
 				F5A1C8DE0F6B06CF00A96ABD /* exports_python_linux.cpp in Sources */,
 				F5A1C8DF0F6B06CF00A96ABD /* EmuFileWrapper.cpp in Sources */,
 				F5A1C8E00F6B06CF00A96ABD /* wrapper.c in Sources */,
