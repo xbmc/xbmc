@@ -24,6 +24,7 @@
 #include "XBPyThread.h"
 #include "IMsgSenderCallback.h"
 #include "cores/IPlayer.h"
+#include "utils/CriticalSection.h"
 
 #include <vector>
 
@@ -108,7 +109,7 @@ private:
   //Vector with list of threads used for running scripts
   PyList vecPyList;
   PlayerCallbackList vecPlayerCallbackList;
-  CRITICAL_SECTION	m_critSection;
+  CCriticalSection	m_critSection;
   LibraryLoader*    m_pDll;
 
   // any global events that scripts should be using
