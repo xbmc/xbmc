@@ -172,6 +172,8 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
 
 void DllLoaderContainer::ReleaseModule(LibraryLoader*& pDll)
 {
+  if (!pDll)
+    return;
   if (pDll->IsSystemDll())
   {
     CLog::Log(LOGFATAL, "%s is a system dll and should never be released", pDll->GetName());
