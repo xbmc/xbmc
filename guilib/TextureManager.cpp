@@ -29,6 +29,7 @@
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/File.h"
 #include "../xbmc/FileSystem/Directory.h"
+#include <assert.h>
 
 using namespace std;
 
