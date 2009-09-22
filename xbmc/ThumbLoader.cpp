@@ -133,38 +133,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   if (!pItem->HasThumbnail())
   {
     pItem->SetUserVideoThumb();
-    if (!CFile::Exists(cachedThumb))
-    {
-      CStdString strPath, strFileName;
-      CUtil::Split(cachedThumb, strPath, strFileName);
-
-      // create unique thumb for auto generated thumbs
-      cachedThumb = strPath + "auto-" + strFileName;
-      if (pItem->IsVideo() && !pItem->IsInternetStream() && !pItem->IsPlayList() && !CFile::Exists(cachedThumb) && !pItem->m_bIsFolder)
-      {
-        CStreamDetails details;
-        if (pItem->IsStack())
-        {
-          CStackDirectory stack;
-          CVideoThumbLoader::ExtractThumb(stack.GetFirstStackedFile(pItem->m_strPath), cachedThumb, &details);
-        }
-        else
-        {
-          CVideoThumbLoader::ExtractThumb(pItem->m_strPath, cachedThumb, &details);
-        }
-
-        if (details.HasItems() && m_pStreamDetailsObs)
-          m_pStreamDetailsObs->OnStreamDetails(details, pItem->m_strPath, -1);
-      }
-
-      if (CFile::Exists(cachedThumb))
-      {
-        pItem->SetProperty("HasAutoThumb", "1");
-        pItem->SetProperty("AutoThumbImage", cachedThumb);
-        pItem->SetThumbnailImage(cachedThumb);
-        retVal = true;
-      }
-    }
   }
   else
     LoadRemoteThumb(pItem);
@@ -175,20 +143,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     if (CFile::Exists(pItem->GetCachedFanart()))
     {
       pItem->SetProperty("fanart_image",pItem->GetCachedFanart());
-      retVal = true;
-    }
-  }
-
-  if (!pItem->m_bIsFolder && !pItem->IsInternetStream() && 
-       pItem->HasVideoInfoTag() && 
-       g_guiSettings.GetBool("myvideos.extractflags")   &&
-       !pItem->GetVideoInfoTag()->HasStreamDetails())
-  {
-    if (CDVDFileInfo::GetFileStreamDetails(pItem) && m_pStreamDetailsObs)
-    {
-      CVideoInfoTag *info = pItem->GetVideoInfoTag();
-      m_pStreamDetailsObs->OnStreamDetails(info->m_streamDetails, "", info->m_iFileId);
-      pItem->SetInvalid();
       retVal = true;
     }
   }
