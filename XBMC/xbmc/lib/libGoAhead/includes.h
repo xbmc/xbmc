@@ -28,7 +28,7 @@
 #define __NO_CGI_BIN
 #endif
 
-#define SOCK_DFT_SVC_TIME	20
+#define SOCK_DFT_SVC_TIME	1000
 #undef SPYCE_SUPPORT
 
 #ifdef __cplusplus
