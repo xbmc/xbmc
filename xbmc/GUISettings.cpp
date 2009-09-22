@@ -34,6 +34,7 @@
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
 #include "utils/log.h"
+#include "tinyxml/tinyxml.h"
 
 using namespace std;
 
@@ -695,32 +696,32 @@ CGUISettings::~CGUISettings(void)
   Clear();
 }
 
-void CGUISettings::AddGroup(DWORD dwGroupID, DWORD dwLabelID)
+void CGUISettings::AddGroup(int groupID, int labelID)
 {
-  CSettingsGroup *pGroup = new CSettingsGroup(dwGroupID, dwLabelID);
+  CSettingsGroup *pGroup = new CSettingsGroup(groupID, labelID);
   if (pGroup)
     settingsGroups.push_back(pGroup);
 }
 
-void CGUISettings::AddCategory(DWORD dwGroupID, const char *strSetting, DWORD dwLabelID)
+void CGUISettings::AddCategory(int groupID, const char *strSetting, int labelID)
 {
   for (unsigned int i = 0; i < settingsGroups.size(); i++)
   {
-    if (settingsGroups[i]->GetGroupID() == dwGroupID)
-      settingsGroups[i]->AddCategory(CStdString(strSetting).ToLower(), dwLabelID);
+    if (settingsGroups[i]->GetGroupID() == groupID)
+      settingsGroups[i]->AddCategory(CStdString(strSetting).ToLower(), labelID);
   }
 }
 
-CSettingsGroup *CGUISettings::GetGroup(DWORD dwGroupID)
+CSettingsGroup *CGUISettings::GetGroup(int groupID)
 {
   for (unsigned int i = 0; i < settingsGroups.size(); i++)
   {
-    if (settingsGroups[i]->GetGroupID() == dwGroupID)
+    if (settingsGroups[i]->GetGroupID() == groupID)
       return settingsGroups[i];
   }
-  CLog::Log(LOGDEBUG, "Error: Requested setting group (%u) was not found.  "
+  CLog::Log(LOGDEBUG, "Error: Requested setting group (%i) was not found.  "
                       "It must be case-sensitive",
-            dwGroupID);
+            groupID);
   return NULL;
 }
 

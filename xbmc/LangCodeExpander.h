@@ -21,8 +21,9 @@
  */
 
 #include "StdString.h"
-#include "tinyXML/tinyxml.h"
 #include <map>
+
+class TiXmlElement;
 
 class CLangCodeExpander
 {
@@ -44,6 +45,6 @@ protected:
 
   bool LookupInDb(CStdString& desc, const CStdString& code);
   bool LookupInMap(CStdString& desc, const CStdString& code);
-  };
+};
 
 extern CLangCodeExpander g_LangCodeExpander;

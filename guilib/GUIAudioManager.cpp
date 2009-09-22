@@ -29,6 +29,7 @@
 #include "utils/SingleLock.h"
 #include "../xbmc/Util.h"
 #include "../xbmc/FileSystem/Directory.h"
+#include "tinyxml/tinyxml.h"
 #ifdef HAS_SDL_AUDIO
 #include <SDL/SDL_mixer.h>
 #endif

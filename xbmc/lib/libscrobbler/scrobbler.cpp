@@ -21,7 +21,6 @@
 
 #include "PlatformDefs.h"
 #include "scrobbler.h"
-#include "tinyXML/tinyxml.h"
 #include "utils/md5.h"
 #include "utils/log.h"
 #include "Util.h"

@@ -31,7 +31,6 @@
 #include "../xbmc/FileSystem/SpecialProtocol.h"
 #include "utils/log.h"
 #include "WindowingFactory.h"
-#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

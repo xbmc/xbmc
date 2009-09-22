@@ -29,6 +29,7 @@
 #include "GUIDialogProgress.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "tinyxml/tinyxml.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

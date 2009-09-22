@@ -19,7 +19,6 @@
  *
  */
 
-#include "tinyXML/tinyxml.h"
 #include "PlayListXML.h"
 #include "FileSystem/File.h"
 #include "Util.h"

@@ -21,6 +21,7 @@
 
 #include "LangCodeExpander.h"
 #include "SectionLoader.h"
+#include "tinyxml/tinyxml.h"
 
 #define MAKECODE(a, b, c, d) ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 typedef struct LCENTRY
