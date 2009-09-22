@@ -32,6 +32,7 @@
 #include "RegExp.h"
 #include "StringUtils.h"
 #include "URL.h"
+#include "XMLUtils.h"
 #if defined(_WIN32)
   #include "Windows.h"
 #endif

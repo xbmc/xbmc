@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "StringUtils.h"
 #include "utils/log.h"
+#include "tinyxml/tinyxml.h"
 
 using namespace std;
 using namespace XFILE;

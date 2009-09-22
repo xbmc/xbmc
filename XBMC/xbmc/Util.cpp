@@ -80,6 +80,7 @@
 #endif
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
+#include "tinyxml/tinyxml.h"
 
 using namespace std;
 using namespace DIRECTORY;

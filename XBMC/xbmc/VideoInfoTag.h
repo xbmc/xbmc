@@ -21,13 +21,14 @@
  */
 
 
-#include "../guilib/system.h"
-#include "utils/Archive.h"
+#include <vector>
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 #include "utils/StreamDetails.h"
 
-#include <vector>
+class CArchive;
+class TiXmlNode;
+class TiXmlElement;
 
 struct SActorInfo
 {

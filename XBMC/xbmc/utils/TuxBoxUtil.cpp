@@ -39,6 +39,7 @@
 #include "FileItem.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "tinyxml/tinyxml.h"
 
 using namespace XFILE;
 using namespace std;

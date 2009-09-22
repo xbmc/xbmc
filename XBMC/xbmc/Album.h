@@ -31,6 +31,8 @@
 #include "Song.h"
 #include "utils/ScraperUrl.h"
 
+class TiXmlNode;
+
 class CAlbum
 {
 public:
