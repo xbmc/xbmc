@@ -42,7 +42,7 @@ public:
   virtual void OnWindowLoaded();
   void RenderFullScreen();
   bool NeedRenderFullScreen();
-  void ChangetheTimeCode(DWORD remote);
+  void ChangetheTimeCode(int remote);
 
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:

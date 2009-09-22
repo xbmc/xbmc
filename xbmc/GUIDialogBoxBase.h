@@ -27,7 +27,7 @@ class CGUIDialogBoxBase :
       public CGUIDialog
 {
 public:
-  CGUIDialogBoxBase(DWORD dwID, const CStdString &xmlFile);
+  CGUIDialogBoxBase(int id, const CStdString &xmlFile);
   virtual ~CGUIDialogBoxBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   bool IsConfirmed() const;

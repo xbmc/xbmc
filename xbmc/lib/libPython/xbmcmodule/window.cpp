@@ -173,12 +173,12 @@ namespace PYXBMC
       li = ((CGUIButtonControl *)pGUIControl)->GetLabelInfo();
 
       // note: conversion from infocolors -> plain colors here
-      ((ControlButton*)pControl)->dwDisabledColor = li.disabledColor;
-      ((ControlButton*)pControl)->dwFocusedColor  = li.focusedColor;
-      ((ControlButton*)pControl)->dwTextColor  = li.textColor;
-      ((ControlButton*)pControl)->dwShadowColor   = li.shadowColor;
+      ((ControlButton*)pControl)->disabledColor = li.disabledColor;
+      ((ControlButton*)pControl)->focusedColor  = li.focusedColor;
+      ((ControlButton*)pControl)->textColor  = li.textColor;
+      ((ControlButton*)pControl)->shadowColor   = li.shadowColor;
       if (li.font) ((ControlButton*)pControl)->strFont = li.font->GetFontName();
-      ((ControlButton*)pControl)->dwAlign = li.align;
+      ((ControlButton*)pControl)->align = li.align;
       break;
     case CGUIControl::GUICONTROL_CHECKMARK:
       pControl = (Control*)ControlCheckMark_Type.tp_alloc(&ControlCheckMark_Type, 0);
@@ -190,11 +190,11 @@ namespace PYXBMC
       li = ((CGUICheckMarkControl *)pGUIControl)->GetLabelInfo();
 
       // note: conversion to plain colors from infocolors.
-      ((ControlCheckMark*)pControl)->dwDisabledColor = li.disabledColor;
-      //((ControlCheckMark*)pControl)->dwShadowColor = li.shadowColor;
-      ((ControlCheckMark*)pControl)->dwTextColor  = li.textColor;
+      ((ControlCheckMark*)pControl)->disabledColor = li.disabledColor;
+      //((ControlCheckMark*)pControl)->shadowColor = li.shadowColor;
+      ((ControlCheckMark*)pControl)->textColor  = li.textColor;
       if (li.font) ((ControlCheckMark*)pControl)->strFont = li.font->GetFontName();
-      ((ControlCheckMark*)pControl)->dwAlign = li.align;
+      ((ControlCheckMark*)pControl)->align = li.align;
       break;
     case CGUIControl::GUICONTROL_LABEL:
       pControl = (Control*)ControlLabel_Type.tp_alloc(&ControlLabel_Type, 0);
@@ -265,12 +265,12 @@ namespace PYXBMC
       li = ((CGUIRadioButtonControl *)pGUIControl)->GetLabelInfo();
 
       // note: conversion from infocolors -> plain colors here
-      ((ControlRadioButton*)pControl)->dwDisabledColor = li.disabledColor;
-      ((ControlRadioButton*)pControl)->dwFocusedColor  = li.focusedColor;
-      ((ControlRadioButton*)pControl)->dwTextColor  = li.textColor;
-      ((ControlRadioButton*)pControl)->dwShadowColor   = li.shadowColor;
+      ((ControlRadioButton*)pControl)->disabledColor = li.disabledColor;
+      ((ControlRadioButton*)pControl)->focusedColor  = li.focusedColor;
+      ((ControlRadioButton*)pControl)->textColor  = li.textColor;
+      ((ControlRadioButton*)pControl)->shadowColor   = li.shadowColor;
       if (li.font) ((ControlRadioButton*)pControl)->strFont = li.font->GetFontName();
-      ((ControlRadioButton*)pControl)->dwAlign = li.align;
+      ((ControlRadioButton*)pControl)->align = li.align;
       break;
     default:
       break;

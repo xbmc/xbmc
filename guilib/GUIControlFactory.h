@@ -46,7 +46,7 @@ public:
   CGUIControlFactory(void);
   virtual ~CGUIControlFactory(void);
   static CStdString GetType(const TiXmlElement *pControlNode);
-  CGUIControl* Create(DWORD dwParentId, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer = false);
+  CGUIControl* Create(int parentID, const FRECT &rect, TiXmlElement* pControlNode, bool insideContainer = false);
   void ScaleElement(TiXmlElement *element, RESOLUTION fileRes, RESOLUTION destRes);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
   static bool GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& value);
@@ -66,7 +66,7 @@ public:
   static void GetRectFromString(const CStdString &string, FRECT &rect);
   static bool GetAction(const TiXmlElement* pElement, CGUIActionDescriptor &action);
 private:
-  bool GetNavigation(const TiXmlElement *node, const char *tag, DWORD &direction, std::vector<CGUIActionDescriptor> &actions);
+  bool GetNavigation(const TiXmlElement *node, const char *tag, int &direction, std::vector<CGUIActionDescriptor> &actions);
   bool GetCondition(const TiXmlNode *control, const char *tag, int &condition);
   static bool GetConditionalVisibility(const TiXmlNode* control, int &condition, CGUIInfoBool &allowHiddenFocus);
   bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strString);

@@ -45,7 +45,7 @@
 #include "AdvancedSettings.h"
 #include "StringUtils.h"
 #include "utils/log.h"
-#include "SingleLock.h"
+#include "utils/SingleLock.h"
 
 #ifndef _WIN32PC
 #include <libsmbclient.h>

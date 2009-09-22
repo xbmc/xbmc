@@ -22,8 +22,8 @@
 #include "GUIPythonWindowXMLDialog.h"
 #include "GUIWindowManager.h"
 
-CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(DWORD dwId, CStdString strXML, CStdString strFallBackPath)
-: CGUIPythonWindowXML(dwId,strXML,strFallBackPath)
+CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(int id, CStdString strXML, CStdString strFallBackPath)
+: CGUIPythonWindowXML(id,strXML,strFallBackPath)
 {
   m_bRunning = false;
   m_loadOnDemand = false;
@@ -33,7 +33,7 @@ CGUIPythonWindowXMLDialog::~CGUIPythonWindowXMLDialog(void)
 {
 }
 
-void CGUIPythonWindowXMLDialog::Activate(DWORD dwParentId)
+void CGUIPythonWindowXMLDialog::Activate(int parentId)
 {
   m_gWindowManager.RouteToWindow(this);
 

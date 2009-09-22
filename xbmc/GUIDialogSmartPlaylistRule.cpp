@@ -319,7 +319,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     type = CGUIEditControl::INPUT_TYPE_NUMBER;
     break;
   }
-  SendMessage(GUI_MSG_SET_TYPE, CONTROL_VALUE, (DWORD)type, 21420);
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_VALUE, type, 21420);
 }
 
 void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CSmartPlaylistRule::SEARCH_OPERATOR op)

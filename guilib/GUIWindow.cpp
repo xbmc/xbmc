@@ -46,11 +46,11 @@
 
 using namespace std;
 
-CGUIWindow::CGUIWindow(DWORD dwID, const CStdString &xmlFile)
+CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
 {
-  SetID(dwID);
+  SetID(id);
   m_xmlFile = xmlFile;
-  m_dwIDRange = 1;
+  m_idRange = 1;
   m_lastControlID = 0;
   m_bRelativeCoords = false;
   m_overlayState = OVERLAY_STATE_PARENT_WINDOW;   // Use parent or previous window's state
@@ -885,7 +885,7 @@ void CGUIWindow::OnEditChanged(int id, CStdString &text)
   text = msg.GetLabel();
 }
 
-bool CGUIWindow::SendMessage(DWORD message, DWORD id, DWORD param1 /* = 0*/, DWORD param2 /* = 0*/)
+bool CGUIWindow::SendMessage(int message, int id, int param1 /* = 0*/, int param2 /* = 0*/)
 {
   CGUIMessage msg(message, GetID(), id, param1, param2);
   return OnMessage(msg);

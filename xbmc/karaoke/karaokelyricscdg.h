@@ -13,9 +13,11 @@
 #define KARAOKELYRICSCDG_H
 
 
-class CBaseTexture;
 #include "karaokelyrics.h"
 #include "Cdg.h"
+
+class CBaseTexture;
+typedef uint32_t color_t;
 
 class CKaraokeLyricsCDG : public CKaraokeLyrics
 {
@@ -65,8 +67,8 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
 
     //! Rendering stuff
     CBaseTexture* m_pCdgTexture;
-    DWORD  m_bgAlpha;  //!< background alpha
-    DWORD  m_fgAlpha;  //!< foreground alpha
+    color_t  m_bgAlpha;  //!< background alpha
+    color_t  m_fgAlpha;  //!< foreground alpha
 };
 
 #endif

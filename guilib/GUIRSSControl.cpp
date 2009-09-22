@@ -29,8 +29,8 @@
 
 using namespace std;
 
-CGUIRSSControl::CGUIRSSControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, CStdString& strRSSTags, int scrollSpeed)
-: CGUIControl(dwParentID, dwControlId, posX, posY, width, height),
+CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoColor &channelColor, const CGUIInfoColor &headlineColor, CStdString& strRSSTags, int scrollSpeed)
+: CGUIControl(parentID, controlID, posX, posY, width, height),
   m_scrollInfo(0,0,scrollSpeed,"")
 {
   m_label = labelInfo;

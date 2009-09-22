@@ -1744,7 +1744,7 @@ void CApplication::CancelDelayLoadSkin()
 
 void CApplication::ReloadSkin()
 {
-  CGUIMessage msg(GUI_MSG_LOAD_SKIN, (DWORD) -1, m_gWindowManager.GetActiveWindow());
+  CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, m_gWindowManager.GetActiveWindow());
   g_graphicsContext.SendMessage(msg);
   // Reload the skin, restoring the previously focused control.  We need this as
   // the window unload will reset all control states.
@@ -1793,7 +1793,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
 
   // save the current window details
   int currentWindow = m_gWindowManager.GetActiveWindow();
-  vector<DWORD> currentModelessWindows;
+  vector<int> currentModelessWindows;
   m_gWindowManager.GetActiveModelessWindows(currentModelessWindows);
 
   CLog::Log(LOGINFO, "  delete old skin...");
@@ -2186,7 +2186,7 @@ void CApplication::RenderScreenSaver()
   }
   if (draw)
   {
-    DWORD color = ((DWORD)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
+    color_t color = ((color_t)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
     CGUITexture::DrawQuad(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()), color);
   }
 }
@@ -4520,9 +4520,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       { // we've started a previously queued item
         CFileItemPtr item = g_playlistPlayer.GetPlaylist(g_playlistPlayer.GetCurrentPlaylist())[m_nextPlaylistItem];
         // update the playlist manager
-        WORD currentSong = g_playlistPlayer.GetCurrentSong();
-        DWORD dwParam = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
-        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), dwParam, item);
+        int currentSong = g_playlistPlayer.GetCurrentSong();
+        int param = ((currentSong & 0xffff) << 16) | (m_nextPlaylistItem & 0xffff);
+        CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, g_playlistPlayer.GetCurrentPlaylist(), param, item);
         m_gWindowManager.SendThreadMessage(msg);
         g_playlistPlayer.SetCurrentSong(m_nextPlaylistItem);
         *m_itemCurrentFile = *item;

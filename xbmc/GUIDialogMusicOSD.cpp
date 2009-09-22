@@ -88,8 +88,8 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
-      if (message.GetLPVOID())
-        m_pVisualisation = (CVisualisation *)message.GetLPVOID();
+      if (message.GetPointer())
+        m_pVisualisation = (CVisualisation *)message.GetPointer();
     }
   }
   return CGUIDialog::OnMessage(message);

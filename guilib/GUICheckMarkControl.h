@@ -40,7 +40,7 @@
 class CGUICheckMarkControl: public CGUIControl
 {
 public:
-  CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureCheckMark, const CTextureInfo& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo);
+  CGUICheckMarkControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureCheckMark, const CTextureInfo& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo);
   virtual ~CGUICheckMarkControl(void);
   virtual CGUICheckMarkControl *Clone() const { return new CGUICheckMarkControl(*this); };
 
@@ -56,7 +56,7 @@ public:
   const CLabelInfo& GetLabelInfo() const { return m_label; };
   void SetSelected(bool bOnOff);
   bool GetSelected() const;
-  bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  bool OnMouseClick(int button, const CPoint &point);
 
   void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor);
   void PythonSetDisabledColor(color_t disabledColor);

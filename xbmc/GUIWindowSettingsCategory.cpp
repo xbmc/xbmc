@@ -132,7 +132,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_pOriginalImage = NULL;
   m_pOriginalEdit = NULL;
   // set the correct ID range...
-  m_dwIDRange = 8;
+  m_idRange = 8;
   m_iScreen = 0;
   // set the network settings so that we don't reset them unnecessarily
   m_iNetworkAssignment = -1;
@@ -193,9 +193,9 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
   case GUI_MSG_FOCUSED:
     {
       CGUIWindow::OnMessage(message);
-      DWORD focusedControl = GetFocusedControlID();
-      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (DWORD) (CONTROL_START_BUTTONS + m_vecSections.size()) &&
-          focusedControl - CONTROL_START_BUTTONS != (DWORD) m_iSection)
+      int focusedControl = GetFocusedControlID();
+      if (focusedControl >= CONTROL_START_BUTTONS && focusedControl < (int)(CONTROL_START_BUTTONS + m_vecSections.size()) &&
+          focusedControl - CONTROL_START_BUTTONS != m_iSection)
       {
         // changing section, check for updates
         CheckForUpdates();
@@ -3474,10 +3474,10 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
   return NULL;
 }
 
-void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, const CStdString &section)
+void CGUIWindowSettingsCategory::JumpToSection(int windowId, const CStdString &section)
 {
   // grab our section
-  CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(dwWindowId - WINDOW_SETTINGS_MYPICTURES);
+  CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(windowId - WINDOW_SETTINGS_MYPICTURES);
   if (!pSettingsGroup) return;
   // get the categories we need
   vecSettingsCategory categories;
@@ -3497,7 +3497,7 @@ void CGUIWindowSettingsCategory::JumpToSection(DWORD dwWindowId, const CStdStrin
 
   m_iSection=iSection;
   m_lastControlID=CONTROL_START_CONTROL;
-  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, dwWindowId);
+  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, windowId);
   OnMessage(msg1);
   for (unsigned int i=0; i<m_vecSections.size(); ++i)
     CONTROL_DISABLE(CONTROL_START_BUTTONS+i);

@@ -156,11 +156,11 @@ int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
   if (!pButton) return 0;
   // set the button's ID and position
   m_iNumButtons++;
-  DWORD dwID = BUTTON_TEMPLATE + m_iNumButtons;
-  pButton->SetID(dwID);
+  int id = BUTTON_TEMPLATE + m_iNumButtons;
+  pButton->SetID(id);
   pButton->SetPosition(pButtonTemplate->GetXPosition(), (m_iNumButtons - 1)*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
   pButton->SetVisible(true);
-  pButton->SetNavigation(dwID - 1, dwID + 1, dwID, dwID);
+  pButton->SetNavigation(id - 1, id + 1, id, id);
   pButton->SetLabel(strLabel);
   AddControl(pButton);
   // and update the size of our menu

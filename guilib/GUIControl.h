@@ -93,7 +93,7 @@ class CGUIControl
 {
 public:
   CGUIControl();
-  CGUIControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
+  CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height);
   virtual ~CGUIControl(void);
   virtual CGUIControl *Clone() const=0;
 
@@ -125,9 +125,9 @@ public:
   /// \brief Called when the mouse is dragging over the control.  Default implementation does nothing.
   virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point) { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point) { return false; };
+  virtual bool OnMouseClick(int button, const CPoint &point) { return false; };
   /// \brief Called when the left mouse button is pressed on the control.  Default implementation does nothing.
-  virtual bool OnMouseDoubleClick(DWORD dwButton, const CPoint &point) { return false; };
+  virtual bool OnMouseDoubleClick(int button, const CPoint &point) { return false; };
   /// \brief Called when the mouse wheel has moved whilst over the control.  Default implementation does nothing
   virtual bool OnMouseWheel(char wheel, const CPoint &point) { return false; };
   /// \brief Used to test whether the pointer location (fPosX, fPosY) is inside the control.  For mouse events.
@@ -138,11 +138,11 @@ public:
   virtual void UnfocusFromPoint(const CPoint &point);
 
   virtual bool OnMessage(CGUIMessage& message);
-  virtual DWORD GetID(void) const;
-  void SetID(DWORD dwID) { m_dwControlID = dwID; };
-  virtual bool HasID(DWORD dwID) const;
-  virtual bool HasVisibleID(DWORD dwID) const;
-  DWORD GetParentID() const;
+  virtual int GetID(void) const;
+  void SetID(int id) { m_controlID = id; };
+  virtual bool HasID(int id) const;
+  virtual bool HasVisibleID(int id) const;
+  int GetParentID() const;
   virtual bool HasFocus() const;
   virtual void AllocResources();
   virtual void FreeResources();
@@ -161,16 +161,16 @@ public:
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
   virtual float GetHeight() const;
-  virtual void SetNavigation(DWORD dwUp, DWORD dwDown, DWORD dwLeft, DWORD dwRight);
-  virtual void SetTabNavigation(DWORD dwNext, DWORD dwPrev);
+  virtual void SetNavigation(int up, int down, int left, int right);
+  virtual void SetTabNavigation(int next, int prev);
   virtual void SetNavigationActions(const std::vector<CGUIActionDescriptor> &up, const std::vector<CGUIActionDescriptor> &down,
                                     const std::vector<CGUIActionDescriptor> &left, const std::vector<CGUIActionDescriptor> &right);
   void ExecuteActions(const std::vector<CGUIActionDescriptor> &actions);
-  DWORD GetControlIdUp() const { return m_dwControlUp;};
-  DWORD GetControlIdDown() const { return m_dwControlDown;};
-  DWORD GetControlIdLeft() const { return m_dwControlLeft;};
-  DWORD GetControlIdRight() const { return m_dwControlRight;};
-  virtual DWORD GetNextControl(int direction) const;
+  int GetControlIdUp() const { return m_controlUp;};
+  int GetControlIdDown() const { return m_controlDown;};
+  int GetControlIdLeft() const { return m_controlLeft;};
+  int GetControlIdRight() const { return m_controlRight;};
+  virtual int GetNextControl(int direction) const;
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
@@ -264,12 +264,12 @@ protected:
   bool SendWindowMessage(CGUIMessage &message);
 
   // navigation
-  DWORD m_dwControlLeft;
-  DWORD m_dwControlRight;
-  DWORD m_dwControlUp;
-  DWORD m_dwControlDown;
-  DWORD m_dwControlNext;
-  DWORD m_dwControlPrev;
+  int m_controlLeft;
+  int m_controlRight;
+  int m_controlUp;
+  int m_controlDown;
+  int m_controlNext;
+  int m_controlPrev;
   
   std::vector<CGUIActionDescriptor> m_leftActions;
   std::vector<CGUIActionDescriptor> m_rightActions;
@@ -284,8 +284,8 @@ protected:
   float m_width;
   CRect m_hitRect;
   CGUIInfoColor m_diffuseColor;
-  DWORD m_dwControlID;
-  DWORD m_dwParentID;
+  int m_controlID;
+  int m_parentID;
   bool m_bHasFocus;
   bool m_bInvalidated;
   bool m_bAllocated;

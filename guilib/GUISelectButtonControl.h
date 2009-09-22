@@ -88,7 +88,7 @@
 class CGUISelectButtonControl : public CGUIButtonControl
 {
 public:
-  CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
+  CGUISelectButtonControl(int parentID, int controlID,
                           float posX, float posY,
                           float width, float height,
                           const CTextureInfo& buttonFocus, const CTextureInfo& button,
@@ -105,7 +105,7 @@ public:
   virtual void OnRight();
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
 
   virtual void AllocResources();

@@ -39,7 +39,7 @@
 class CGUIButtonControl : public CGUIControl
 {
 public:
-  CGUIButtonControl(DWORD dwParentID, DWORD dwControlId,
+  CGUIButtonControl(int parentID, int controlID,
                     float posX, float posY, float width, float height,
                     const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus,
                     const CLabelInfo &label);
@@ -49,7 +49,7 @@ public:
 
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void AllocResources();
   virtual void FreeResources();

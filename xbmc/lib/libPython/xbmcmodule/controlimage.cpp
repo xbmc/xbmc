@@ -88,8 +88,8 @@ namespace PYXBMC
 
     // check if filename exists
     self->strFileName = cImage;
-    if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
-    else self->strColorDiffuse = 0;
+    if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->colorDiffuse);
+    else self->colorDiffuse = 0;
 
     return (PyObject*)self;
   }
@@ -109,8 +109,8 @@ namespace PYXBMC
     if (pControl->pGUIControl && pControl->aspectRatio <= CAspectRatio::AR_KEEP)
       ((CGUIImage *)pControl->pGUIControl)->SetAspectRatio((CAspectRatio::ASPECT_RATIO)pControl->aspectRatio);
 
-    if (pControl->pGUIControl && pControl->strColorDiffuse)
-      ((CGUIImage *)pControl->pGUIControl)->SetColorDiffuse(pControl->strColorDiffuse);
+    if (pControl->pGUIControl && pControl->colorDiffuse)
+      ((CGUIImage *)pControl->pGUIControl)->SetColorDiffuse(pControl->colorDiffuse);
 
     return pControl->pGUIControl;
   }
@@ -155,12 +155,12 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, (char*)"s", &cColorDiffuse)) return NULL;
 
-    if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
-    else self->strColorDiffuse = 0;
+    if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->colorDiffuse);
+    else self->colorDiffuse = 0;
 
     PyGUILock();
     if (self->pGUIControl)
-      ((CGUIImage *)self->pGUIControl)->SetColorDiffuse(self->strColorDiffuse);
+      ((CGUIImage *)self->pGUIControl)->SetColorDiffuse(self->colorDiffuse);
 
     PyGUIUnlock();
     Py_INCREF(Py_None);

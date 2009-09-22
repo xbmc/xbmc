@@ -771,7 +771,7 @@ void CGUIDialogKeyboard::SetControlLabel(int id, const CStdString &label)
   message.SetLabel(label);
   for (unsigned int i = 0; i < m_children.size(); i++)
   {
-    if (m_children[i]->GetID() == (DWORD) id || m_children[i]->IsGroup())
+    if (m_children[i]->GetID() == id || m_children[i]->IsGroup())
       m_children[i]->OnMessage(message);
   }
 }

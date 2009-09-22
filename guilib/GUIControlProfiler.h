@@ -36,7 +36,7 @@ public:
   CGUIControl *m_pControl;
   std::vector<CGUIControlProfilerItem *> m_vecChildren;
   CStdString m_strDescription;
-  DWORD m_dwControlID;
+  int m_controlID;
   CGUIControl::GUICONTROLTYPES m_ControlType;
   DWORD m_dwVisTime;
   DWORD m_dwRenderTime;

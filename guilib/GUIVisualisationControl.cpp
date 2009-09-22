@@ -71,8 +71,8 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
 }
 
-CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
 {
   m_pVisualisation = NULL;
   m_bInitialized = false;
@@ -395,7 +395,7 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_GET_VISUALISATION)
   {
-    message.SetLPVOID(GetVisualisation());
+    message.SetPointer(GetVisualisation());
     return true;
   }
   else if (message.GetMessage() == GUI_MSG_VISUALISATION_ACTION)

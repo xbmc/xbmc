@@ -30,8 +30,8 @@
 #include "cores/DummyVideoPlayer.h"
 #endif
 
-CGUIVideoControl::CGUIVideoControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIVideoControl::CGUIVideoControl(int parentID, int controlID, float posX, float posY, float width, float height)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
 {
   ControlType = GUICONTROL_VIDEO;
 }
@@ -67,17 +67,17 @@ void CGUIVideoControl::Render()
   CGUIControl::Render();
 }
 
-bool CGUIVideoControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUIVideoControl::OnMouseClick(int button, const CPoint &point)
 { // mouse has clicked in the video control
   // switch to fullscreen video
   if (!g_application.IsPlayingVideo()) return false;
-  if (dwButton == MOUSE_LEFT_BUTTON)
+  if (button == MOUSE_LEFT_BUTTON)
   {
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());
     g_graphicsContext.SendMessage(message);
     return true;
   }
-  if (dwButton == MOUSE_RIGHT_BUTTON)
+  if (button == MOUSE_RIGHT_BUTTON)
   { // toggle the playlist window
     if (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
       m_gWindowManager.PreviousWindow();

@@ -48,7 +48,6 @@ CGraphicContext::CGraphicContext(void)
   m_iScreenWidth = 720;
   m_iScreenHeight = 576;
   m_iScreenId = 0;
-  m_dwID = 0;
   m_strMediaDir = "";
   m_bCalibrating = false;
   m_Resolution = RES_INVALID;
@@ -62,7 +61,7 @@ CGraphicContext::~CGraphicContext(void)
 {
 }
 
-bool CGraphicContext::SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1, DWORD param2)
+bool CGraphicContext::SendMessage(int message, int senderID, int destID, int param1, int param2)
 {
   if (!m_pCallback) return false;
   CGUIMessage msg(message, senderID, destID, param1, param2);

@@ -24,8 +24,8 @@
 
 using namespace std;
 
-CGUIFadeLabelControl::CGUIFadeLabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, DWORD timeToDelayAtEnd, bool resetOnLabelChange)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX, scrollSpeed)
+CGUIFadeLabelControl::CGUIFadeLabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, DWORD timeToDelayAtEnd, bool resetOnLabelChange)
+    : CGUIControl(parentID, controlID, posX, posY, width, height), m_scrollInfo(50, labelInfo.offsetX, scrollSpeed)
     , m_textLayout(labelInfo.font, false)
 {
   m_label = labelInfo;
@@ -99,7 +99,7 @@ void CGUIFadeLabelControl::Render()
   if (m_currentLabel >= m_infoLabels.size() )
     m_currentLabel = 0;
 
-  if (m_textLayout.Update(m_infoLabels[m_currentLabel].GetLabel(m_dwParentID)))
+  if (m_textLayout.Update(m_infoLabels[m_currentLabel].GetLabel(m_parentID)))
   { // changed label - update our suffix based on length of available text
     float width, height;
     m_textLayout.GetTextExtent(width, height);
@@ -183,7 +183,7 @@ void CGUIFadeLabelControl::Render()
         if (label >= m_infoLabels.size())
           label = 0;
       }
-      while (label != m_currentLabel && m_infoLabels[label].GetLabel(m_dwParentID).IsEmpty());
+      while (label != m_currentLabel && m_infoLabels[label].GetLabel(m_parentID).IsEmpty());
       m_currentLabel = label;
       m_scrollInfo.Reset();
       m_fadeAnim->QueueAnimation(ANIM_PROCESS_REVERSE);

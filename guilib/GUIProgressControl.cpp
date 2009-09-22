@@ -22,7 +22,7 @@
 #include "GUIProgressControl.h"
 #include "utils/GUIInfoManager.h"
 
-CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId,
+CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
                                          float posX, float posY, float width,
                                          float height, const CTextureInfo& backGroundTexture,
                                          const CTextureInfo& leftTexture,
@@ -30,7 +30,7 @@ CGUIProgressControl::CGUIProgressControl(DWORD dwParentID, DWORD dwControlId,
                                          const CTextureInfo& rightTexture,
                                          const CTextureInfo& overlayTexture, float min, float max,
                                          bool reveal)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_guiBackground(posX, posY, width, height, backGroundTexture)
     , m_guiLeft(posX, posY, width, height, leftTexture)
     , m_guiMid(posX, posY, width, height, midTexture)

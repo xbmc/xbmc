@@ -2044,19 +2044,19 @@ void CXbmcHttp::ResetKey()
 
 int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
 {
-  DWORD dwButtonCode=0;
-  BYTE bLeftTrigger=0, bRightTrigger=0;
+  int buttonCode=0;
+  uint8_t leftTrigger=0, rightTrigger=0;
   float fLeftThumbX=0.0f, fLeftThumbY=0.0f, fRightThumbX=0.0f, fRightThumbY=0.0f ;
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing parameters");
     
   else
   {
-    dwButtonCode=(DWORD) strtol(paras[0], NULL, 0);
+    buttonCode=(int) strtol(paras[0], NULL, 0);
     if (numParas>1) {
-      bLeftTrigger=(BYTE) atoi(paras[1]) ;
+      leftTrigger=(uint8_t) atoi(paras[1]) ;
       if (numParas>2) {
-        bRightTrigger=(BYTE) atoi(paras[2]) ;
+        rightTrigger=(uint8_t) atoi(paras[2]) ;
         if (numParas>3) {
           fLeftThumbX=(float) atof(paras[3]) ;
           if (numParas>4) {
@@ -2070,7 +2070,7 @@ int CXbmcHttp::xbmcSetKey(int numParas, CStdString paras[])
         }
       }
     }
-    CKey tempKey(dwButtonCode, bLeftTrigger, bRightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
+    CKey tempKey(buttonCode, leftTrigger, rightTrigger, fLeftThumbX, fLeftThumbY, fRightThumbX, fRightThumbY) ;
     tempKey.SetFromHttpApi(true);
     key = tempKey;
     lastKey = key;

@@ -25,7 +25,7 @@
 #include "MouseStat.h"
 #include "Key.h"
 
-CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwControlId,
+CGUISelectButtonControl::CGUISelectButtonControl(int parentID, int controlID,
     float posX, float posY,
     float width, float height,
     const CTextureInfo& buttonFocus,
@@ -37,7 +37,7 @@ CGUISelectButtonControl::CGUISelectButtonControl(DWORD dwParentID, DWORD dwContr
     const CTextureInfo& selectArrowRight,
     const CTextureInfo& selectArrowRightFocus
                                                 )
-    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, buttonFocus, button, labelInfo)
+    : CGUIButtonControl(parentID, controlID, posX, posY, width, height, buttonFocus, button, labelInfo)
     , m_imgBackground(posX, posY, width, height, selectBackground)
     , m_imgLeft(posX, posY, 16, 16, selectArrowLeft)
     , m_imgLeftFocus(posX, posY, 16, 16, selectArrowLeftFocus)
@@ -349,9 +349,9 @@ bool CGUISelectButtonControl::OnMouseOver(const CPoint &point)
   return ret;
 }
 
-bool CGUISelectButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUISelectButtonControl::OnMouseClick(int button, const CPoint &point)
 { // only left click handled
-  if (dwButton != MOUSE_LEFT_BUTTON) return false;
+  if (button != MOUSE_LEFT_BUTTON) return false;
   if (m_bShowSelect && m_imgLeft.HitTest(point))
   { // move left
     OnLeft();
@@ -362,7 +362,7 @@ bool CGUISelectButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
   }
   else
   { // normal select
-    CGUIButtonControl::OnMouseClick(dwButton, point);
+    CGUIButtonControl::OnMouseClick(button, point);
   }
   return true;
 }

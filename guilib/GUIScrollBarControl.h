@@ -40,7 +40,7 @@ class CGUIScrollBar :
       public CGUIControl
 {
 public:
-  CGUIScrollBar(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
+  CGUIScrollBar(int parentID, int controlID, float posX, float posY,
                        float width, float height,
                        const CTextureInfo& backGroundTexture,
                        const CTextureInfo& barTexture, const CTextureInfo& barTextureFocus,
@@ -59,7 +59,7 @@ public:
   void SetValue(int value);
   int GetValue() const;
   virtual bool HitTest(const CPoint &point) const;
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;

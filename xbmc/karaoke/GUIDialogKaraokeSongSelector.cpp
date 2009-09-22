@@ -31,8 +31,8 @@
 static const unsigned int MAX_SONG_ID = 100000;
 
 
-CGUIDialogKaraokeSongSelector::CGUIDialogKaraokeSongSelector( DWORD dwID, const char *xmlFile )
-  : CGUIDialog( dwID, xmlFile  )
+CGUIDialogKaraokeSongSelector::CGUIDialogKaraokeSongSelector( int id, const char *xmlFile )
+  : CGUIDialog( id, xmlFile  )
 {
   m_selectedNumber = 0;
   m_songSelected = false;

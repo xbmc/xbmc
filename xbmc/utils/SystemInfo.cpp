@@ -55,32 +55,32 @@ void CBackgroundSystemInfoLoader::GetInformation()
 #endif
 }
 
-const char *CSysInfo::TranslateInfo(DWORD dwInfo)
+const char *CSysInfo::TranslateInfo(int info)
 {
-  switch(dwInfo)
+  switch(info)
   {
   case SYSTEM_VIDEO_ENCODER_INFO:
     if (m_bRequestDone) return m_videoencoder;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case NETWORK_MAC_ADDRESS:
     if (m_bRequestDone) return m_macadress;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_KERNEL_VERSION:
     if (m_bRequestDone) return m_kernelversion;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_CPUFREQUENCY:
     if (m_bRequestDone) return m_cpufrequency;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_UPTIME:
     if (!m_systemuptime.IsEmpty()) return m_systemuptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_TOTALUPTIME:
      if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_INTERNET_STATE:
     if (!m_InternetState.IsEmpty())return m_InternetState;
     else return g_localizeStrings.Get(503); //Busy text

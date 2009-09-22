@@ -38,8 +38,8 @@ PyXBMCAction::~PyXBMCAction() {
      pObject = NULL;
 }
 
-CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
-: CGUIWindow(dwId, "")
+CGUIPythonWindow::CGUIPythonWindow(int id)
+: CGUIWindow(id, "")
 {
 #ifdef _LINUX
   PyInitPendingCalls();

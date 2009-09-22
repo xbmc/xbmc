@@ -65,7 +65,7 @@ namespace PYXBMC
     static const char *keywords[] = {
       "x", "y", "width", "height", "label",
       "focusTexture", "noFocusTexture",
-      "textXOffset", "textYOffset", "alignment",
+      "textOffsetX", "textOffsetY", "alignment",
       "font", "textColor", "disabledColor", "angle", "shadowColor", "focusedColor", NULL };
     ControlButton *self;
     char* cFont = NULL;
@@ -87,15 +87,15 @@ namespace PYXBMC
     new(&self->strTextureNoFocus) string(); 
     
     // set up default values in case they are not supplied
-    self->dwTextXOffset = CONTROL_TEXT_OFFSET_X;
-    self->dwTextYOffset = CONTROL_TEXT_OFFSET_Y;
-    self->dwAlign = (XBFONT_LEFT | XBFONT_CENTER_Y);
+    self->textOffsetX = CONTROL_TEXT_OFFSET_X;
+    self->textOffsetY = CONTROL_TEXT_OFFSET_Y;
+    self->align = (XBFONT_LEFT | XBFONT_CENTER_Y);
     self->strFont = "font13";
-    self->dwTextColor = 0xffffffff;
-    self->dwDisabledColor = 0x60ffffff;
+    self->textColor = 0xffffffff;
+    self->disabledColor = 0x60ffffff;
     self->iAngle = 0;
-    self->dwShadowColor = 0;
-    self->dwFocusedColor = 0xffffffff;
+    self->shadowColor = 0;
+    self->focusedColor = 0xffffffff;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
@@ -109,9 +109,9 @@ namespace PYXBMC
       &pObjectText,
       &cTextureFocus,
       &cTextureNoFocus,
-      &self->dwTextXOffset,
-      &self->dwTextYOffset,
-      &self->dwAlign,
+      &self->textOffsetX,
+      &self->textOffsetY,
+      &self->align,
       &cFont,
       &cTextColor,
       &cDisabledColor,
@@ -139,10 +139,10 @@ namespace PYXBMC
       PyGetDefaultImage((char*)"button", (char*)"texturenofocus", (char*)"button-nofocus.jpg");
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf( cTextColor, "%x", &self->dwTextColor );
-    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-    if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
-    if (cFocusedColor) sscanf( cFocusedColor, "%x", &self->dwFocusedColor );
+    if (cTextColor) sscanf( cTextColor, "%x", &self->textColor );
+    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->disabledColor );
+    if (cShadowColor) sscanf( cShadowColor, "%x", &self->shadowColor );
+    if (cFocusedColor) sscanf( cFocusedColor, "%x", &self->focusedColor );
     return (PyObject*)self;
   }
 
@@ -160,13 +160,13 @@ namespace PYXBMC
   {
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = pControl->dwTextColor;
-    label.disabledColor = pControl->dwDisabledColor;
-    label.shadowColor = pControl->dwShadowColor;
-    label.focusedColor = pControl->dwFocusedColor;
-    label.align = pControl->dwAlign;
-    label.offsetX = (float)pControl->dwTextXOffset;
-    label.offsetY = (float)pControl->dwTextYOffset;
+    label.textColor = pControl->textColor;
+    label.disabledColor = pControl->disabledColor;
+    label.shadowColor = pControl->shadowColor;
+    label.focusedColor = pControl->focusedColor;
+    label.align = pControl->align;
+    label.offsetX = (float)pControl->textOffsetX;
+    label.offsetY = (float)pControl->textOffsetY;
     label.angle = (float)-pControl->iAngle;
     pControl->pGUIControl = new CGUIButtonControl(
       pControl->iParentId,
@@ -205,12 +205,12 @@ namespace PYXBMC
 
     // ControlButton *pControl = (ControlButton*)self;
 
-    if (cDisabledColor) sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
+    if (cDisabledColor) sscanf(cDisabledColor, "%x", &self->disabledColor);
 
     PyGUILock();
     if (self->pGUIControl)
     {
-      ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
+      ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->disabledColor);
     }
     PyGUIUnlock();
 
@@ -273,18 +273,18 @@ namespace PYXBMC
     if (pObjectText) PyGetUnicodeString(self->strText, pObjectText, 1);
     if (pObjectText2) PyGetUnicodeString(self->strText2, pObjectText2, 1);
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-    if (cShadowColor) sscanf(cShadowColor, "%x", &self->dwShadowColor);
-    if (cFocusedColor) sscanf(cFocusedColor, "%x", &self->dwFocusedColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->textColor);
+    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->disabledColor );
+    if (cShadowColor) sscanf(cShadowColor, "%x", &self->shadowColor);
+    if (cFocusedColor) sscanf(cFocusedColor, "%x", &self->focusedColor);
 
     PyGUILock();
     if (self->pGUIControl)
     {
       ((CGUIButtonControl*)self->pGUIControl)->PythonSetLabel(
-        self->strFont, self->strText, self->dwTextColor, self->dwShadowColor, self->dwFocusedColor);
+        self->strFont, self->strText, self->textColor, self->shadowColor, self->focusedColor);
       ((CGUIButtonControl*)self->pGUIControl)->SetLabel2(self->strText2);
-      ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
+      ((CGUIButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->disabledColor);
     }
     PyGUIUnlock();
 
@@ -342,7 +342,7 @@ namespace PYXBMC
   PyDoc_STRVAR(controlButton__doc__,
     "ControlButton class.\n"
     "\n"
-    "ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, textXOffset, textYOffset,\n"
+    "ControlButton(x, y, width, height, label[, focusTexture, noFocusTexture, textOffsetX, textOffsetY,\n"
     "              alignment, font, textColor, disabledColor, angle, shadowColor, focusedColor])\n"
     "\n"
     "x              : integer - x coordinate of control.\n"
@@ -352,8 +352,8 @@ namespace PYXBMC
     "label          : string or unicode - text string.\n"
     "focusTexture   : [opt] string - filename for focus texture.\n"
     "noFocusTexture : [opt] string - filename for no focus texture.\n"
-    "textXOffset    : [opt] integer - x offset of label.\n"
-    "textYOffset    : [opt] integer - y offset of label.\n"
+    "textOffsetX    : [opt] integer - x offset of label.\n"
+    "textOffsetY    : [opt] integer - y offset of label.\n"
     "alignment      : [opt] integer - alignment of label - *Note, see xbfont.h\n"
     "font           : [opt] string - font used for label text. (e.g. 'font13')\n"
     "textColor      : [opt] hexstring - color of enabled button's label. (e.g. '0xFFFFFFFF')\n"

@@ -45,7 +45,7 @@ struct SScraperInfo;
 class CGUIWindowMusicBase : public CGUIMediaWindow
 {
 public:
-  CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile);
+  CGUIWindowMusicBase(int id, const CStdString &xmlFile);
   virtual ~CGUIWindowMusicBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction& action);

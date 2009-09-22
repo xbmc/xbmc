@@ -213,10 +213,10 @@ void CMouseStat::UpdateMouseWheel(char dir)
   SetActive();
 }
 
-void CMouseStat::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point)
+void CMouseStat::SetExclusiveAccess(int controlID, int windowID, const CPoint &point)
 {
-  m_exclusiveControlID = dwControlID;
-  m_exclusiveWindowID = dwWindowID;
+  m_exclusiveControlID = controlID;
+  m_exclusiveWindowID = windowID;
   // convert posX, posY to screen coords...
   // NOTE: This relies on the window resolution having been set correctly beforehand in CGUIWindow::OnMouseAction()
   CPoint mouseCoords(GetLocation());
@@ -224,9 +224,9 @@ void CMouseStat::SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const C
   m_exclusiveOffset = point - mouseCoords;
 }
 
-void CMouseStat::EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID)
+void CMouseStat::EndExclusiveAccess(int controlID, int windowID)
 {
-  if (m_exclusiveControlID == dwControlID && m_exclusiveWindowID == dwWindowID)
+  if (m_exclusiveControlID == controlID && m_exclusiveWindowID == windowID)
     SetExclusiveAccess(WINDOW_INVALID, WINDOW_INVALID, CPoint(0, 0));
 }
 

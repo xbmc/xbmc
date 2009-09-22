@@ -94,7 +94,7 @@ class CSysInfo : public CInfoLoader
     void Reset();
 
 protected:
-    virtual const char *TranslateInfo(DWORD dwInfo);
+    virtual const char *TranslateInfo(int info);
     virtual DWORD TimeToNextRefreshInMs();
 };
 

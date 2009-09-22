@@ -37,8 +37,8 @@ using namespace std;
 #define SCROLL_SPEED 6.0f
 #define ANALOG_SCROLL_START 0.8f
 
-CGUIButtonScroller::CGUIButtonScroller(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIButtonScroller::CGUIButtonScroller(int parentID, int controlID, float posX, float posY, float width, float height, float gap, int iSlots, int iDefaultSlot, int iMovementRange, bool bHorizontal, int iAlpha, bool bWrapAround, bool bSmoothScrolling, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgFocus(posX, posY, width, height, textureFocus)
     , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
 {
@@ -563,7 +563,7 @@ void CGUIButtonScroller::OnUp()
     CGUIControl::OnUp();
   else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == 0)
   {
-    if (m_dwControlUp != GetID())
+    if (m_controlUp != GetID())
       CGUIControl::OnUp();  // not wrapping around, and we're up the top + our next control is different
     else
       SetActiveButton((int)m_vecButtons.size() - 1);   // move to the last button in the list
@@ -578,7 +578,7 @@ void CGUIButtonScroller::OnDown()
     CGUIControl::OnDown();
   else if (!m_bWrapAround && (unsigned int) (m_iOffset + m_iCurrentSlot) == m_vecButtons.size() - 1)
   {
-    if (m_dwControlUp != GetID())
+    if (m_controlUp != GetID())
       CGUIControl::OnDown();  // not wrapping around, and we're down the bottom + our next control is different
     else
       SetActiveButton(0);   // move to the first button in the list
@@ -591,7 +591,7 @@ void CGUIButtonScroller::OnLeft()
 {
   if (!m_bHorizontal)
     CGUIControl::OnLeft();
-  else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == 0 && m_dwControlLeft != GetID())
+  else if (!m_bWrapAround && m_iOffset + m_iCurrentSlot == 0 && m_controlLeft != GetID())
     CGUIControl::OnLeft();  // not wrapping around, and we're at the left + our next control is different
   else
     DoUp();
@@ -601,7 +601,7 @@ void CGUIButtonScroller::OnRight()
 {
   if (!m_bHorizontal)
     CGUIControl::OnRight();
-  else if (!m_bWrapAround && (unsigned int) (m_iOffset + m_iCurrentSlot) == m_vecButtons.size() - 1 && m_dwControlRight != GetID())
+  else if (!m_bWrapAround && (unsigned int) (m_iOffset + m_iCurrentSlot) == m_vecButtons.size() - 1 && m_controlRight != GetID())
     CGUIControl::OnRight();  // not wrapping around, and we're at the right + our next control is different
   else
     DoDown();
@@ -715,13 +715,13 @@ void CGUIButtonScroller::RenderItem(float &posX, float &posY, int &iOffset, bool
                                 // as any shadow colour will not be rendered transparent if
                                 // it's defined in the font class
     if (fAlpha > 255) fAlpha = 255.0f;
-    DWORD dwAlpha = (DWORD)(fAlpha + 0.5f);
-    DWORD color = (m_label.focusedColor && iOffset == GetActiveButton()) ? m_label.focusedColor : m_label.textColor;
-    DWORD alpha = (dwAlpha * ((color & 0xff000000) >> 24)) / 255;
-    DWORD dwColor = (alpha << 24) | (color & 0xFFFFFF);
-    alpha = (dwAlpha * ((m_label.shadowColor & 0xff000000) >> 24)) / 255;
-    DWORD dwShadowColor = (alpha << 24) | (m_label.shadowColor & 0xFFFFFF);
-    CGUITextLayout::DrawText(m_label.font, fPosX, fPosY, dwColor, dwShadowColor, label, m_label.align);
+    color_t alpha = (color_t)(fAlpha + 0.5f);
+    color_t color = (m_label.focusedColor && iOffset == GetActiveButton()) ? m_label.focusedColor : m_label.textColor;
+    color_t blendedAlpha = (alpha * ((color & 0xff000000) >> 24)) / 255;
+    color_t blendedColor = (blendedAlpha << 24) | (color & 0xFFFFFF);
+    blendedAlpha = (alpha * ((m_label.shadowColor & 0xff000000) >> 24)) / 255;
+    color_t shadowColor = (alpha << 24) | (m_label.shadowColor & 0xFFFFFF);
+    CGUITextLayout::DrawText(m_label.font, fPosX, fPosY, blendedColor, shadowColor, label, m_label.align);
   }
   else
   {
@@ -880,9 +880,9 @@ bool CGUIButtonScroller::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIButtonScroller::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUIButtonScroller::OnMouseClick(int button, const CPoint &point)
 {
-  if (dwButton != MOUSE_LEFT_BUTTON && dwButton != MOUSE_RIGHT_BUTTON) return false;
+  if (button != MOUSE_LEFT_BUTTON && button != MOUSE_RIGHT_BUTTON) return false;
   // check if we are in the clickable button zone
   float fStartAlpha, fEndAlpha;
   GetScrollZone(fStartAlpha, fEndAlpha);
@@ -892,9 +892,9 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton, const CPoint &point)
     { // click the appropriate item
       m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
       CAction action;
-      if (dwButton == MOUSE_LEFT_BUTTON)
+      if (button == MOUSE_LEFT_BUTTON)
         action.id = ACTION_SELECT_ITEM;
-      if (dwButton == MOUSE_RIGHT_BUTTON)
+      if (button == MOUSE_RIGHT_BUTTON)
         action.id = ACTION_CONTEXT_MENU;
       OnAction(action);
       return true;
@@ -906,9 +906,9 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton, const CPoint &point)
     {
       m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
       CAction action;
-      if (dwButton == MOUSE_LEFT_BUTTON)
+      if (button == MOUSE_LEFT_BUTTON)
         action.id = ACTION_SELECT_ITEM;
-      if (dwButton == MOUSE_RIGHT_BUTTON)
+      if (button == MOUSE_RIGHT_BUTTON)
         action.id = ACTION_CONTEXT_MENU;
       OnAction(action);
       return true;

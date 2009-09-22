@@ -45,8 +45,8 @@ using namespace std;
 
 using namespace PYXBMC;
 
-CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath)
-: CGUIMediaWindow(dwId, strXML)
+CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString strFallBackPath)
+: CGUIMediaWindow(id, strXML)
 {
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);

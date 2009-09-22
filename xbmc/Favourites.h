@@ -29,10 +29,10 @@ class CFavourites
 public:
   static bool Load(CFileItemList& items);
   static bool LoadFavourites(CStdString& strPath, CFileItemList& items);
-  static bool AddOrRemove(CFileItem *item, DWORD contextWindow);
+  static bool AddOrRemove(CFileItem *item, int contextWindow);
   static bool Save(const CFileItemList& items);
-  static bool IsFavourite(CFileItem *item, DWORD contextWindow);
+  static bool IsFavourite(CFileItem *item, int contextWindow);
 
 private:
-  static CStdString GetExecutePath(const CFileItem *item, DWORD contextWindow);
+  static CStdString GetExecutePath(const CFileItem *item, int contextWindow);
 };

@@ -27,8 +27,8 @@
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L
 
-CGUIMoverControl::CGUIMoverControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIMoverControl::CGUIMoverControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgFocus(posX, posY, width, height, textureFocus)
     , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
 {
@@ -142,9 +142,9 @@ bool CGUIMoverControl::OnMouseDrag(const CPoint &offset, const CPoint &point)
   return true;
 }
 
-bool CGUIMoverControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUIMoverControl::OnMouseClick(int button, const CPoint &point)
 {
-  if (dwButton != MOUSE_LEFT_BUTTON) return false;
+  if (button != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.EndExclusiveAccess(GetID(), GetParentID());
   return true;
 }

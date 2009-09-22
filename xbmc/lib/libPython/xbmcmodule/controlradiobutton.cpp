@@ -65,7 +65,7 @@ namespace PYXBMC
     static const char *keywords[] = {
       "x", "y", "width", "height", "label",
       "focusTexture", "noFocusTexture",
-      "textXOffset", "textYOffset", "alignment",
+      "textOffsetX", "textOffsetY", "alignment",
       "font", "textColor", "disabledColor", "angle", "shadowColor", "focusedColor",
       "TextureRadioFocus", "TextureRadioNoFocus", NULL };
     ControlRadioButton *self;
@@ -91,15 +91,15 @@ namespace PYXBMC
     new(&self->strTextureRadioNoFocus) string(); 
     
     // set up default values in case they are not supplied
-    self->dwTextXOffset = CONTROL_TEXT_OFFSET_X;
-    self->dwTextYOffset = CONTROL_TEXT_OFFSET_Y;
-    self->dwAlign = (XBFONT_LEFT | XBFONT_CENTER_Y);
+    self->textOffsetX = CONTROL_TEXT_OFFSET_X;
+    self->textOffsetY = CONTROL_TEXT_OFFSET_Y;
+    self->align = (XBFONT_LEFT | XBFONT_CENTER_Y);
     self->strFont = "font13";
-    self->dwTextColor = 0xffffffff;
-    self->dwDisabledColor = 0x60ffffff;
+    self->textColor = 0xffffffff;
+    self->disabledColor = 0x60ffffff;
     self->iAngle = 0;
-    self->dwShadowColor = 0;
-    self->dwFocusedColor = 0xffffffff;
+    self->shadowColor = 0;
+    self->focusedColor = 0xffffffff;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
@@ -113,9 +113,9 @@ namespace PYXBMC
       &pObjectText,
       &cTextureFocus,
       &cTextureNoFocus,
-      &self->dwTextXOffset,
-      &self->dwTextYOffset,
-      &self->dwAlign,
+      &self->textOffsetX,
+      &self->textOffsetY,
+      &self->align,
       &cFont,
       &cTextColor,
       &cDisabledColor,
@@ -150,10 +150,10 @@ namespace PYXBMC
       PyGetDefaultImage((char*)"radiobutton", (char*)"textureradionofocus", (char*)"radiobutton-nofocus.jpg");
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf( cTextColor, "%x", &self->dwTextColor );
-    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-    if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
-    if (cFocusedColor) sscanf( cFocusedColor, "%x", &self->dwFocusedColor );
+    if (cTextColor) sscanf( cTextColor, "%x", &self->textColor );
+    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->disabledColor );
+    if (cShadowColor) sscanf( cShadowColor, "%x", &self->shadowColor );
+    if (cFocusedColor) sscanf( cFocusedColor, "%x", &self->focusedColor );
     return (PyObject*)self;
   }
 
@@ -172,13 +172,13 @@ namespace PYXBMC
   {
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = pControl->dwTextColor;
-    label.disabledColor = pControl->dwDisabledColor;
-    label.shadowColor = pControl->dwShadowColor;
-    label.focusedColor = pControl->dwFocusedColor;
-    label.align = pControl->dwAlign;
-    label.offsetX = (float)pControl->dwTextXOffset;
-    label.offsetY = (float)pControl->dwTextYOffset;
+    label.textColor = pControl->textColor;
+    label.disabledColor = pControl->disabledColor;
+    label.shadowColor = pControl->shadowColor;
+    label.focusedColor = pControl->focusedColor;
+    label.align = pControl->align;
+    label.offsetX = (float)pControl->textOffsetX;
+    label.offsetY = (float)pControl->textOffsetY;
     label.angle = (float)-pControl->iAngle;
     pControl->pGUIControl = new CGUIRadioButtonControl(
       pControl->iParentId,
@@ -314,17 +314,17 @@ namespace PYXBMC
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
-    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
-    if (cShadowColor) sscanf(cShadowColor, "%x", &self->dwShadowColor);
-    if (cFocusedColor) sscanf(cFocusedColor, "%x", &self->dwFocusedColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->textColor);
+    if (cDisabledColor) sscanf( cDisabledColor, "%x", &self->disabledColor );
+    if (cShadowColor) sscanf(cShadowColor, "%x", &self->shadowColor);
+    if (cFocusedColor) sscanf(cFocusedColor, "%x", &self->focusedColor);
 
     PyGUILock();
     if (self->pGUIControl)
     {
       ((CGUIRadioButtonControl*)self->pGUIControl)->PythonSetLabel(
-        self->strFont, self->strText, self->dwTextColor, self->dwShadowColor, self->dwFocusedColor );
-      ((CGUIRadioButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->dwDisabledColor);
+        self->strFont, self->strText, self->textColor, self->shadowColor, self->focusedColor );
+      ((CGUIRadioButtonControl*)self->pGUIControl)->PythonSetDisabledColor(self->disabledColor);
     }
     PyGUIUnlock();
 
@@ -390,7 +390,7 @@ namespace PYXBMC
   PyDoc_STRVAR(ControlRadioButton__doc__,
     "ControlRadioButton class.\n"
     "\n"
-    "ControlRadioButton(x, y, width, height, label[, focusTexture, noFocusTexture, textXOffset, textYOffset,\n"
+    "ControlRadioButton(x, y, width, height, label[, focusTexture, noFocusTexture, textOffsetX, textOffsetY,\n"
     "              alignment, font, textColor, disabledColor, angle, shadowColor, focusedColor,\n"
     "              radioFocusTexture, noRadioFocusTexture])\n"
     "\n"
@@ -401,8 +401,8 @@ namespace PYXBMC
     "label               : string or unicode - text string.\n"
     "focusTexture        : [opt] string - filename for focus texture.\n"
     "noFocusTexture      : [opt] string - filename for no focus texture.\n"
-    "textXOffset         : [opt] integer - x offset of label.\n"
-    "textYOffset         : [opt] integer - y offset of label.\n"
+    "textOffsetX         : [opt] integer - x offset of label.\n"
+    "textOffsetY         : [opt] integer - y offset of label.\n"
     "alignment           : [opt] integer - alignment of label - *Note, see xbfont.h\n"
     "font                : [opt] string - font used for label text. (e.g. 'font13')\n"
     "textColor           : [opt] hexstring - color of enabled radio button's label. (e.g. '0xFFFFFFFF')\n"
