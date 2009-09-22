@@ -1523,7 +1523,7 @@ void CApplication::StartEventServer()
 #endif
 }
 
-bool CApplication::StopEventServer(bool promptuser)
+bool CApplication::StopEventServer(bool bWait, bool promptuser)
 {
 #ifdef HAS_EVENT_SERVER
   CEventServer* server = CEventServer::GetInstance();
@@ -1546,12 +1546,17 @@ bool CApplication::StopEventServer(bool promptuser)
       }
     }
     CLog::Log(LOGNOTICE, "ES: Stopping event server with confirmation");
+    
+    CEventServer::GetInstance()->StopServer(true);
   }
   else
   {
-    CLog::Log(LOGNOTICE, "ES: Stopping event server");
+    if (!bWait)
+      CLog::Log(LOGNOTICE, "ES: Stopping event server");
+    
+    CEventServer::GetInstance()->StopServer(bWait);
   }
-  CEventServer::GetInstance()->StopServer();
+  
   return true;
 #endif
 }

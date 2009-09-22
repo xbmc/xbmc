@@ -114,7 +114,7 @@ public:
   void StartUPnPServer();
   void StopUPnPServer();
   void StartEventServer();
-  bool StopEventServer(bool promptuser=false);
+  bool StopEventServer(bool bWait, bool promptuser);
   void RefreshEventServer();
   void StartDbusServer();
   bool StopDbusServer(bool bWait);
