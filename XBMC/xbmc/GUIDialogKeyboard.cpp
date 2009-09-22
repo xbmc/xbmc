@@ -136,9 +136,9 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   {
     OnRemoteNumberClick(action.id);
   }
-  else if (action.id >= (WORD)KEY_VKEY && action.id < (WORD)KEY_ASCII)
+  else if (action.id >= KEY_VKEY && action.id < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
-    BYTE b = action.id & 0xFF;
+    uint8_t b = action.id & 0xFF;
     if (b == 0x25) // left
     {
       if (g_advancedSettings.m_bNavVKeyboard)

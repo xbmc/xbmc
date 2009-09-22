@@ -40,6 +40,8 @@
 
 class TiXmlDocument;
 
+typedef uint32_t color_t;
+
 class CGUIColorManager
 {
 public:
@@ -48,16 +50,16 @@ public:
 
   void Load(const CStdString &colorFile);
 
-  uint32_t GetColor(const CStdString &color) const;
+  color_t GetColor(const CStdString &color) const;
 
   void Clear();
 
 protected:
   bool LoadXML(TiXmlDocument &xmlDoc);
 
-  std::map<CStdString, uint32_t> m_colors;
-  typedef std::map<CStdString, uint32_t>::iterator iColor;
-  typedef std::map<CStdString, uint32_t>::const_iterator icColor;
+  std::map<CStdString, color_t> m_colors;
+  typedef std::map<CStdString, color_t>::iterator iColor;
+  typedef std::map<CStdString, color_t>::const_iterator icColor;
 };
 
 /*!
