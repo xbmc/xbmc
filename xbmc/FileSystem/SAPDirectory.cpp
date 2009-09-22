@@ -282,7 +282,7 @@ CSAPSessions::~CSAPSessions()
   StopThread();
 }
 
-void CSAPSessions::StopThread(bool bJoin /*= true*/)
+void CSAPSessions::StopThread(bool bWait /*= true*/)
 {
   if(m_socket != INVALID_SOCKET)
   {
@@ -292,7 +292,7 @@ void CSAPSessions::StopThread(bool bJoin /*= true*/)
     closesocket(m_socket);
 #endif
   }
-  CThread::StopThread(bJoin);
+  CThread::StopThread(bWait);
 }
 
 bool CSAPSessions::ParseAnnounce(char* data, int len)

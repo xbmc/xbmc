@@ -285,11 +285,11 @@ bool CThread::IsAutoDelete() const
   return m_bAutoDelete;
 }
 
-void CThread::StopThread(bool bJoin /*= true*/)
+void CThread::StopThread(bool bWait /*= true*/)
 {
   m_bStop = true;
   SetEvent(m_StopEvent);
-  if (m_ThreadHandle && bJoin)
+  if (m_ThreadHandle && bWait)
   {
     WaitForThreadExit(INFINITE);
     CloseHandle(m_ThreadHandle);
