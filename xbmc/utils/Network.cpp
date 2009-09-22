@@ -161,9 +161,6 @@ void CNetwork::StopServices(bool bWait)
 #ifdef HAS_TIME_SERVER
     g_application.StopTimeServer();
 #endif
-#ifdef HAS_WEB_SERVER
-    g_application.StopWebServer();
-#endif
 #ifdef HAS_FTP_SERVER
     g_application.StopFtpServer();
 #endif
@@ -183,6 +180,9 @@ void CNetwork::StopServices(bool bWait)
     g_rssManager.Stop();
   }
 
+#ifdef HAS_WEB_SERVER
+  g_application.StopWebServer(bWait);
+#endif
 #ifdef HAS_DBUS_SERVER
   g_application.StopDbusServer(bWait);
 #endif
