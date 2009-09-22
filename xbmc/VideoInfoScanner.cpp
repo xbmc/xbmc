@@ -412,15 +412,15 @@ namespace VIDEO
       if (info2.strContent.Equals("None")) // skip
         continue;
 
-    if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
-    {
-      CScraperParser parser;
-      if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
+      if (!info2.settings.GetPluginRoot() && info2.settings.GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
       {
-        info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
-        info2.settings.SaveFromDefault();
+        CScraperParser parser;
+        if (parser.Load("special://xbmc/system/scrapers/video/"+info2.strPath) && parser.HasFunction("GetSettings"))
+        {
+          info2.settings.LoadSettingsXML("special://xbmc/system/scrapers/video/" + info2.strPath);
+          info2.settings.SaveFromDefault();
+        }
       }
-    }
 
       // we might override scraper
       if (info2.strContent == info.strContent)
@@ -505,7 +505,7 @@ namespace VIDEO
           }
           continue;
         }
-        }
+      }
 
       if (!pItem->m_bIsFolder || info2.strContent.Equals("tvshows"))
       {
@@ -1032,24 +1032,24 @@ namespace VIDEO
       }
     }
 
-      CStdString strCheck=pItem->m_strPath;
-      CStdString strDirectory;
-      if (pItem->IsStack())
-        strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
+    CStdString strCheck=pItem->m_strPath;
+    CStdString strDirectory;
+    if (pItem->IsStack())
+      strCheck = CStackDirectory::GetFirstStackedFile(pItem->m_strPath);
 
-      CUtil::GetDirectory(strCheck,strDirectory);
-      if (CUtil::IsInRAR(strCheck))
-      {
-        CStdString strPath=strDirectory;
-        CUtil::GetParentPath(strPath,strDirectory);
-      }
-      if (pItem->IsStack())
-      {
-        strCheck = strDirectory;
-        CUtil::RemoveSlashAtEnd(strCheck);
-        if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
-          CUtil::GetDirectory(strCheck,strDirectory);
-      }
+    CUtil::GetDirectory(strCheck,strDirectory);
+    if (CUtil::IsInRAR(strCheck))
+    {
+      CStdString strPath=strDirectory;
+      CUtil::GetParentPath(strPath,strDirectory);
+    }
+    if (pItem->IsStack())
+    {
+      strCheck = strDirectory;
+      CUtil::RemoveSlashAtEnd(strCheck);
+      if (CUtil::GetFileName(strCheck).size() == 3 && CUtil::GetFileName(strCheck).Left(2).Equals("cd"))
+        CUtil::GetDirectory(strCheck,strDirectory);
+    }
     if (bApplyToDir && !strThumb.IsEmpty())
       ApplyIMDBThumbToFolder(strDirectory,strThumb);
 
@@ -1408,9 +1408,9 @@ namespace VIDEO
           pic.DoCreateThumbnail(strLocal,strThumb);
         }
         else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
-        CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
+          CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
+      }
     }
-  }
   }
 
   CNfoFile::NFOResult CVideoInfoScanner::CheckForNFOFile(CFileItem* pItem, bool bGrabAny, SScraperInfo& info, CScraperUrl& scrUrl)

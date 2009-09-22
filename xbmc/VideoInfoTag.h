@@ -23,6 +23,7 @@
 #include "utils/Archive.h"
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
+#include "utils/StreamDetails.h"
 
 #include <vector>
 
@@ -42,6 +43,7 @@ public:
   bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true);
   virtual void Serialize(CArchive& ar);
   const CStdString GetCast(bool bIncludeRole = false) const;
+  bool HasStreamDetails() const;
 
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
@@ -79,7 +81,7 @@ public:
   int m_iYear;
   int m_iSeason;
   int m_iEpisode;
-  int m_iDbId;
+  int m_iDbId; 
   long m_iFileId; 
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
@@ -87,6 +89,8 @@ public:
   float m_fRating;
   int m_iBookmarkId;
   CFanart m_fanart;
+  CStreamDetails m_streamDetails;
+
 private:
   void ParseNative(const TiXmlElement* movie);
   void ParseMyMovies(const TiXmlElement* movie);

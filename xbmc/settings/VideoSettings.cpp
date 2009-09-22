@@ -46,9 +46,11 @@ CVideoSettings::CVideoSettings()
   m_SubtitleDelay = 0.0f;
   m_SubtitleOn = true;
   m_SubtitleCached = false;
-  m_Brightness = 50;
-  m_Contrast = 50;
-  m_Gamma = 20;
+  m_Brightness = 50.0f;
+  m_Contrast = 50.0f;
+  m_Gamma = 20.0f;
+  m_Sharpness = 0.0f;
+  m_NoiseReduction = 0;
   m_VolumeAmplification = 0;
   m_AudioDelay = 0.0f;
   m_OutputToAllSpeakers = false;

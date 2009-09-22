@@ -34,6 +34,8 @@
 
 #include "DVDCodecs/DVDCodecs.h"
 
+#include "DVDFileInfo.h"
+
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
 #include "Application.h"
@@ -3014,6 +3016,52 @@ bool CDVDPlayer::Record(bool bOnOff)
     return true;
   }
   return false;
+}
+
+int CDVDPlayer::GetChannels()
+{
+  if (m_pDemuxer && (m_CurrentAudio.id != -1))
+  {
+    CDemuxStreamAudio* stream = static_cast<CDemuxStreamAudio*>(m_pDemuxer->GetStream(m_CurrentAudio.id));
+    if (stream)
+      return stream->iChannels;
+  }
+  return -1;
+}
+
+CStdString CDVDPlayer::GetAudioCodecName()
+{
+  CStdString retVal;
+  if (m_pDemuxer && (m_CurrentAudio.id != -1))
+    m_pDemuxer->GetStreamCodecName(m_CurrentAudio.id, retVal);
+  return retVal;
+}
+
+CStdString CDVDPlayer::GetVideoCodecName()
+{
+  CStdString retVal;
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+    m_pDemuxer->GetStreamCodecName(m_CurrentVideo.id, retVal);
+  return retVal;
+}
+
+int CDVDPlayer::GetPictureWidth()
+{
+  if (m_pDemuxer && (m_CurrentVideo.id != -1))
+  {
+    CDemuxStreamVideo* stream = static_cast<CDemuxStreamVideo*>(m_pDemuxer->GetStream(m_CurrentVideo.id));
+    if (stream)
+      return stream->iWidth;
+  }
+  return 0;
+}
+
+bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
+{
+  if (m_pDemuxer)
+    return CDVDFileInfo::DemuxerToStreamDetails(m_pDemuxer, details);
+  else
+    return false;
 }
 
 CDVDPlayer::CPlayerSeek::CPlayerSeek(CDVDPlayer* player)

@@ -23,7 +23,9 @@
 #include "FileItem.h"
 #include "AdvancedSettings.h"
 #include "Picture.h"
-
+#include "VideoInfoTag.h"
+#include "Util.h"
+#include "FileSystem/StackDirectory.h"
 
 #include "DVDFileInfo.h"
 #include "DVDStreamInfo.h"
@@ -66,7 +68,7 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
     return false;
 }
 
-bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget)
+bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails)
 {
   int nTime = timeGetTime();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
@@ -111,6 +113,9 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
     delete pInputStream;
     return false;
   }
+
+  if (pStreamDetails)
+    DemuxerToStreamDetails(pDemuxer, *pStreamDetails);
 
   CDemuxStream* pStream = NULL;
   int nVideoStream = -1;
@@ -308,3 +313,97 @@ void CDVDFileInfo::GetFileMetaData(const CStdString &strPath, CFileItem *pItem)
   delete pInputStream;
   
 }
+
+/**
+ * \brief Open the item pointed to by pItem and extact streamdetails
+ * \return true if the stream details have changed
+ */
+bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
+{
+  if (!pItem)
+    return false;
+
+  CStdString strFileNameAndPath;
+  if (pItem->HasVideoInfoTag())
+  {
+    strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;
+    if (CUtil::IsStack(strFileNameAndPath))
+      strFileNameAndPath = DIRECTORY::CStackDirectory::GetFirstStackedFile(strFileNameAndPath);
+  }
+  else
+    return false;
+
+  CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strFileNameAndPath, "");
+  if (!pInputStream)
+    return false;
+
+  if (pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || !pInputStream->Open(strFileNameAndPath.c_str(), ""))
+  {
+    delete pInputStream;
+    return false;
+  }
+
+  CDVDDemux *pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream);
+  if (pDemuxer)
+  {
+    bool retVal = DemuxerToStreamDetails(pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails);
+    delete pDemuxer;
+    delete pInputStream;
+    return retVal;
+  }
+  else
+  {
+    delete pInputStream;
+    return false;
+  }
+}
+
+/* returns true if details have been added */
+bool CDVDFileInfo::DemuxerToStreamDetails(CDVDDemux *pDemux, CStreamDetails &details)
+{
+  bool retVal = false;
+  details.Reset();
+
+  for (int iStream=0; iStream<pDemux->GetNrOfStreams(); iStream++)
+  {
+    CDemuxStream *stream = pDemux->GetStream(iStream);
+    if (stream->type == STREAM_VIDEO)
+    {
+      CStreamDetailVideo *p = new CStreamDetailVideo();
+      p->m_iWidth = ((CDemuxStreamVideo *)stream)->iWidth;
+      p->m_iHeight = ((CDemuxStreamVideo *)stream)->iHeight;
+      p->m_fAspect = ((CDemuxStreamVideo *)stream)->fAspect;
+      if (p->m_fAspect == 0.0f)
+        p->m_fAspect = (float)p->m_iWidth / p->m_iHeight;
+      pDemux->GetStreamCodecName(iStream, p->m_strCodec);
+      details.AddStream(p);
+      retVal = true;
+    }
+
+    else if (stream->type == STREAM_AUDIO)
+    {
+      CStreamDetailAudio *p = new CStreamDetailAudio();
+      p->m_iChannels = ((CDemuxStreamAudio *)stream)->iChannels;
+      if (stream->language)
+        p->m_strLanguage = stream->language;
+      pDemux->GetStreamCodecName(iStream, p->m_strCodec);
+      details.AddStream(p);
+      retVal = true;
+    }
+
+    else if (stream->type == STREAM_SUBTITLE)
+    {
+      if (stream->language)
+      {
+        CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+        p->m_strLanguage = stream->language;
+        details.AddStream(p);
+        retVal = true;
+      }
+    }
+  }  /* for iStream */
+
+  details.DetermineBestStreams();
+  return retVal;
+}
+

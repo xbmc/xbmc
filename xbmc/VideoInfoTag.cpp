@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+
 #include "VideoInfoTag.h"
 #include "XMLUtils.h"
 #include "LocalizeStrings.h"
@@ -71,6 +72,7 @@ void CVideoInfoTag::Reset()
   m_fanart.m_xml = "";
   m_strRuntime = "";
   m_lastPlayed = "";
+  m_streamDetails.Reset();
   m_playCount = 0;
 }
 
@@ -149,6 +151,38 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
   XMLUtils::SetString(movie, "studio", m_strStudio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
+
+  if (m_streamDetails.HasItems())
+  {
+    // it goes fileinfo/streamdetails/[video|audio|subtitle]
+    TiXmlElement fileinfo("fileinfo");
+    TiXmlElement streamdetails("streamdetails");
+    for (int iStream=1; iStream<=m_streamDetails.GetVideoStreamCount(); iStream++)
+    {
+      TiXmlElement stream("video");
+      XMLUtils::SetString(&stream, "codec", m_streamDetails.GetVideoCodec(iStream));
+      XMLUtils::SetFloat(&stream, "aspect", m_streamDetails.GetVideoAspect(iStream));
+      XMLUtils::SetInt(&stream, "width", m_streamDetails.GetVideoWidth(iStream));
+      XMLUtils::SetInt(&stream, "height", m_streamDetails.GetVideoHeight(iStream));
+      streamdetails.InsertEndChild(stream);
+    }
+    for (int iStream=1; iStream<=m_streamDetails.GetAudioStreamCount(); iStream++)
+    {
+      TiXmlElement stream("audio");
+      XMLUtils::SetString(&stream, "codec", m_streamDetails.GetAudioCodec(iStream));
+      XMLUtils::SetString(&stream, "language", m_streamDetails.GetAudioLanguage(iStream));
+      XMLUtils::SetInt(&stream, "channels", m_streamDetails.GetAudioChannels(iStream));
+      streamdetails.InsertEndChild(stream);
+    }
+    for (int iStream=1; iStream<=m_streamDetails.GetSubtitleStreamCount(); iStream++)
+    {
+      TiXmlElement stream("subtitle");
+      XMLUtils::SetString(&stream, "language", m_streamDetails.GetSubtitleLanguage(iStream));
+      streamdetails.InsertEndChild(stream);
+    }
+    fileinfo.InsertEndChild(streamdetails);
+    movie->InsertEndChild(fileinfo);
+  }  /* if has stream details */
 
   // cast
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
@@ -244,6 +278,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
     ar << m_iTrack;
+    ar << m_streamDetails;
   }
   else
   {
@@ -305,6 +340,7 @@ void CVideoInfoTag::Serialize(CArchive& ar)
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
+    ar >> m_streamDetails;
   }
 }
 
@@ -421,6 +457,48 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     node = node->NextSiblingElement("artist");
   }
 
+  m_streamDetails.Reset();
+  node = movie->FirstChildElement("fileinfo");
+  if (node)
+  {
+    // Try to pull from fileinfo/streamdetails/[video|audio|subtitle] 
+    const TiXmlNode *nodeStreamDetails = node->FirstChild("streamdetails");
+    if (nodeStreamDetails)
+    {
+      const TiXmlNode *nodeDetail = NULL;
+      while ((nodeDetail = nodeStreamDetails->IterateChildren("audio", nodeDetail)))
+      {
+        CStreamDetailAudio *p = new CStreamDetailAudio();
+        XMLUtils::GetString(nodeDetail, "codec", p->m_strCodec);
+        XMLUtils::GetString(nodeDetail, "language", p->m_strLanguage);
+        XMLUtils::GetInt(nodeDetail, "channels", p->m_iChannels);
+        p->m_strCodec.MakeLower();
+        p->m_strLanguage.MakeLower();
+        m_streamDetails.AddStream(p);
+      }
+      nodeDetail = NULL;
+      while ((nodeDetail = nodeStreamDetails->IterateChildren("video", nodeDetail)))
+      {
+        CStreamDetailVideo *p = new CStreamDetailVideo();
+        XMLUtils::GetString(nodeDetail, "codec", p->m_strCodec);
+        XMLUtils::GetFloat(nodeDetail, "aspect", p->m_fAspect);
+        XMLUtils::GetInt(nodeDetail, "width", p->m_iWidth);
+        XMLUtils::GetInt(nodeDetail, "height", p->m_iHeight);
+        p->m_strCodec.MakeLower();
+        m_streamDetails.AddStream(p);
+      }
+      nodeDetail = NULL;
+      while ((nodeDetail = nodeStreamDetails->IterateChildren("subtitle", nodeDetail)))
+      {
+        CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
+        XMLUtils::GetString(nodeDetail, "language", p->m_strLanguage);
+        p->m_strLanguage.MakeLower();
+        m_streamDetails.AddStream(p);
+      }
+    }
+    m_streamDetails.DetermineBestStreams();
+  }  /* if fileinfo */
+
   const TiXmlElement *epguide = movie->FirstChildElement("episodeguide");
   if (epguide)
   {
@@ -474,7 +552,7 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
     {
       strTemp = front->FirstChild()->Value();
       if (!strTemp.IsEmpty())
-        m_strPictureURL.ParseString(strTemp); 
+        m_strPictureURL.ParseString(strTemp);
     }
     node = node->NextSibling("Covers");
   }
@@ -521,7 +599,7 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
       strTemp = studio->FirstChild()->Value();
       if (m_strStudio.IsEmpty())
         m_strStudio = strTemp;
-        else 
+      else
         m_strStudio += g_advancedSettings.m_videoItemSeparator+strTemp;
     }
     node = node->NextSibling("Studios");
@@ -558,4 +636,8 @@ void CVideoInfoTag::ParseMyMovies(const TiXmlElement *movie)
   }
 }
 
+bool CVideoInfoTag::HasStreamDetails() const
+{
+  return m_streamDetails.HasItems();
+}
 

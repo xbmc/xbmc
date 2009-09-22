@@ -550,7 +550,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
     else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
     else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
-	else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
+    else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
+    else if (strTest.Equals("videoplayer.videocodec")) return VIDEOPLAYER_VIDEO_CODEC;
+    else if (strTest.Equals("videoplayer.videoresolution")) return VIDEOPLAYER_VIDEO_RESOLUTION;
+    else if (strTest.Equals("videoplayer.videoaspect")) return VIDEOPLAYER_VIDEO_ASPECT;
+    else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
+    else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -902,6 +907,13 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("trailer")) return LISTITEM_TRAILER;
   else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
   else if (info.Equals("sortletter")) return LISTITEM_SORT_LETTER;
+  else if (info.Equals("videocodec")) return LISTITEM_VIDEO_CODEC;
+  else if (info.Equals("videoresolution")) return LISTITEM_VIDEO_RESOLUTION;
+  else if (info.Equals("videoaspect")) return LISTITEM_VIDEO_ASPECT;
+  else if (info.Equals("audiocodec")) return LISTITEM_AUDIO_CODEC;
+  else if (info.Equals("audiochannels")) return LISTITEM_AUDIO_CHANNELS;
+  else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
+  else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -1080,6 +1092,30 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case VIDEOPLAYER_TRAILER:
     strLabel = GetVideoLabel(info);
   break;
+  case VIDEOPLAYER_VIDEO_CODEC:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = g_application.m_pPlayer->GetVideoCodecName();
+    break;
+  case VIDEOPLAYER_VIDEO_RESOLUTION:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      return CStreamDetails::VideoWidthToResolutionDescription(g_application.m_pPlayer->GetPictureWidth());
+    break;
+  case VIDEOPLAYER_AUDIO_CODEC:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel = g_application.m_pPlayer->GetAudioCodecName();
+    break;
+  case VIDEOPLAYER_VIDEO_ASPECT:
+    if (g_application.IsPlaying() && g_application.m_pPlayer)
+    {
+      float aspect;
+      g_application.m_pPlayer->GetVideoAspectRatio(aspect);
+      strLabel = CStreamDetails::VideoAspectToAspectDescription(aspect);
+    }
+    break;
+  case VIDEOPLAYER_AUDIO_CHANNELS:
+    if(g_application.IsPlaying() && g_application.m_pPlayer)
+      strLabel.Format("%i", g_application.m_pPlayer->GetChannels());
+    break;
   case PLAYLIST_LENGTH:
   case PLAYLIST_POSITION:
   case PLAYLIST_RANDOM:
@@ -1094,7 +1130,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
   case MUSICPM_RANDOMSONGSPICKED:
     strLabel = GetMusicPartyModeLabel(info);
   break;
-  
+
   case SYSTEM_FREE_SPACE:
   case SYSTEM_FREE_SPACE_C:
   case SYSTEM_FREE_SPACE_E:
@@ -2872,7 +2908,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   case MUSICPLAYER_CODEC:
     {
       CStdString strCodec;
-      strCodec.Format("%s", g_application.m_pPlayer->GetCodecName().c_str());
+      strCodec.Format("%s", g_application.m_pPlayer->GetAudioCodecName().c_str());
       return strCodec;
     }
     break;
@@ -3524,7 +3560,7 @@ const CStdString &CorrectAllItemsSortHack(const CStdString &item)
   return item;
 }
 
-CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
 {
   if (!item) return "";
 
@@ -3816,34 +3852,76 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info ) const
       return letter;
     }
     break;
+  case LISTITEM_VIDEO_CODEC:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_streamDetails.GetVideoCodec();
+    break;
+  case LISTITEM_VIDEO_RESOLUTION:
+    if (item->HasVideoInfoTag())
+      return CStreamDetails::VideoWidthToResolutionDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoWidth());
+    break;
+  case LISTITEM_VIDEO_ASPECT:
+    if (item->HasVideoInfoTag())
+      return CStreamDetails::VideoAspectToAspectDescription(item->GetVideoInfoTag()->m_streamDetails.GetVideoAspect());
+    break;
+  case LISTITEM_AUDIO_CODEC:
+    if (item->HasVideoInfoTag())
+    {
+      return item->GetVideoInfoTag()->m_streamDetails.GetAudioCodec();
+    }
+    break;
+  case LISTITEM_AUDIO_CHANNELS:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      int iChannels = item->GetVideoInfoTag()->m_streamDetails.GetAudioChannels();
+      if (iChannels > -1)
+        strResult.Format("%i", iChannels);
+      return strResult;
+    }
+    break;
+  case LISTITEM_AUDIO_LANGUAGE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_streamDetails.GetAudioLanguage();
+    break;
+  case LISTITEM_SUBTITLE_LANGUAGE:
+    if (item->HasVideoInfoTag())
+      return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
+    break;
   }
   return "";
 }
 
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
 {
-  if (info == LISTITEM_RATING)
-  { // old song rating format
-    CStdString rating;
-    if (item->HasMusicInfoTag())
+  switch (info)
+  {
+  case LISTITEM_RATING:  // old song rating format
     {
-      rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
+      CStdString rating;
+      if (item->HasMusicInfoTag())
+      {
+        rating.Format("songrating%c.png", item->GetMusicInfoTag()->GetRating());
+        return rating;
+      }
+    }
+    break;
+  case LISTITEM_STAR_RATING:
+    {
+      CStdString rating;
+      if (item->HasVideoInfoTag())
+      { // rating for videos is assumed 0..10, so convert to 0..5
+        rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
+      }
+      else if (item->HasMusicInfoTag())
+      { // song rating.
+        rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
+      }
       return rating;
     }
-  }
-  else if (info == LISTITEM_STAR_RATING)
-  {
-    CStdString rating;
-    if (item->HasVideoInfoTag())
-    { // rating for videos is assumed 0..10, so convert to 0..5
-      rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
-    }
-    else if (item->HasMusicInfoTag())
-    { // song rating.
-      rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
-    }
-    return rating;
-  }
+    break;
+  }  /* switch (info) */
+
   return GetItemLabel(item, info);
 }
 
@@ -3861,7 +3939,7 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     if (item->IsFileItem() && !m_currentFile->m_strPath.IsEmpty())
     {
       if (!g_application.m_strPlayListFile.IsEmpty())
-      { 
+      {
         //playlist file that is currently playing or the playlistitem that is currently playing.
         return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->m_strPath) || m_currentFile->IsSamePath((const CFileItem *)item);
       }
@@ -3903,7 +3981,7 @@ bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result)
 {
   // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
   // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
- 
+
   CSingleLock lock(m_critInfo);
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
   map<int, bool>::const_iterator it = m_boolCache.find(hash);
@@ -4054,6 +4132,60 @@ void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
   m_currentFile->m_lStartOffset = 0;
 }
 
+CStdString CGUIInfoManager::VideoWidthToResolutionDescription(int iWidth) const
+{
+  if (iWidth == 0)
+    return "";
+
+  else if (iWidth < 721)
+    return "480";
+  // 960x540
+  else if (iWidth < 961)
+    return "540";
+  // 1280x720
+  else if (iWidth < 1281)
+    return "720";
+  // 1920x1080
+  else 
+    return "1080";
+}
+
+CStdString CGUIInfoManager::VideoAspectToAspectDescription(float fAspect) const
+{
+  const float VIDEOASPECT_EPSILON = 0.025f;
+  if (fAspect == 0.0f)
+    return "";
+
+  // With the epsilon method some of the ranges slightly overlap
+  // so go in increasing size order to minimize the impact
+  // of a growing tolerance value
+  float fTolerance = (fAspect * VIDEOASPECT_EPSILON);
+
+  // 4:3 video standard
+  if (fabs(fAspect - 1.33f) < fTolerance)
+    return "1.33";
+  // 1.66:1 35mm European flat
+  if (fabs(fAspect - 1.66f) < fTolerance)
+    return "1.66";
+  // 16:9 video widescreen 
+  if (fabs(fAspect - 1.77f) < fTolerance)
+    return "1.78";
+  // 1.85:1 35mm US flat (theatrical widescreen)
+  if (fabs(fAspect - 1.85f) < fTolerance)
+    return "1.85";
+  // 2.20:1 70m standard
+  if (fabs(fAspect - 2.20f) < fTolerance)
+    return "2.20";
+  // 2.35:1 anamorphic wide - included are both true 2.35 (pre 1970s) and new
+  // 2.39 as the industry convetion is to call the new standard 2.35 anyway
+  if (fabs(fAspect - 2.35f) < fTolerance)
+    return "2.35";
+  if (fabs(fAspect - 2.39f) < fTolerance)
+    return "2.35";
+
+  return "";
+}
+
 const CFileItem& CGUIInfoManager::GetCurrentSlide() const
 { 
   return *m_currentSlide; 
@@ -4068,7 +4200,7 @@ const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const
 }
 
 const CVideoInfoTag* CGUIInfoManager::GetCurrentMovieTag() const
-{ 
+{
   if (m_currentFile->HasVideoInfoTag())
     return m_currentFile->GetVideoInfoTag(); 
 

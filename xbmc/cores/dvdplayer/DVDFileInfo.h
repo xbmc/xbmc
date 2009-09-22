@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -23,13 +23,21 @@
 #include "StdString.h"
 
 class CFileItem;
+class CDVDDemux;
+class CStreamDetails;
+
 class CDVDFileInfo
 {
 public:
-  static bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget);
+  // Extract a thumbnail immage from the media at strPath an image file in strTarget, optionally populating a streamdetails class with the data
+  static bool ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails);
   
   // GetFileMetaData will fill pItem's properties according to what can be extracted from the file.
   static void GetFileMetaData(const CStdString &strPath, CFileItem *pItem); 
+  
+  // Probe the files streams and store the info in the VideoInfoTag
+  static bool GetFileStreamDetails(CFileItem *pItem);
+  static bool DemuxerToStreamDetails(CDVDDemux *pDemux, CStreamDetails &details);
 
   static bool GetFileDuration(const CStdString &path, int &duration);
 };

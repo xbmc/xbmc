@@ -82,6 +82,7 @@ CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
     : CGUIMediaWindow(dwID, xmlFile)
 {
   m_thumbLoader.SetObserver(this);
+  m_thumbLoader.SetStreamDetailsObserver(this);
 }
 
 CGUIWindowVideoBase::~CGUIWindowVideoBase()
@@ -985,6 +986,21 @@ void CGUIWindowVideoBase::OnResumeItem(int iItem)
     CGUIMediaWindow::OnClick(iItem);
 }
 
+void CGUIWindowVideoBase::OnStreamDetails(const CStreamDetails &details, const CStdString &strFileName, long lFileId)
+{
+  m_bStreamDetailsChanged = true;
+
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    if (lFileId < 0)
+      db.SetStreamDetailsForFile(details, strFileName);
+    else
+      db.SetStreamDetailsForFileId(details, lFileId);
+
+    db.Close();
+  }
+}
 
 void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
 {

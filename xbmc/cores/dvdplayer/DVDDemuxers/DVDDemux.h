@@ -56,6 +56,7 @@ public:
     iId = 0;
     iPhysicalId = 0;
     codec = (CodecID)0; // CODEC_ID_NONE
+    codec_fourcc = 0;
     type = STREAM_NONE;
     source = STREAM_SOURCE_NONE;
     iDuration = 0;
@@ -81,6 +82,7 @@ public:
   int iId;         // most of the time starting from 0
   int iPhysicalId; // id
   CodecID codec;
+  unsigned int codec_fourcc; // if available
   StreamType type;
   int source;
 
@@ -276,4 +278,8 @@ public:
    */
   CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
   
+  /*
+   * return a user-presentable codec name of the given stream
+   */
+  virtual void GetStreamCodecName(int iStreamId, CStdString &strName) {};
 };

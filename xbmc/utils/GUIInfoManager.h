@@ -1,6 +1,6 @@
 /*!
 \file GUIInfoManager.h
-\brief 
+\brief
 */
 
 #ifndef GUIINFOMANAGER_H_
@@ -137,7 +137,7 @@ class CDateTime;
 #define SYSTEM_HAS_DRIVE_F          139
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
-#define SYSTEM_TRAYOPEN	            142
+#define SYSTEM_TRAYOPEN             142
 #define SYSTEM_ALARM_POS            144
 #define SYSTEM_LOGGEDON             145
 #define SYSTEM_PROFILENAME          146
@@ -240,7 +240,11 @@ class CDateTime;
 #define VIDEOPLAYER_HAS_INFO          282
 #define VIDEOPLAYER_TOP250            283
 #define VIDEOPLAYER_RATING_AND_VOTES  284
-#define VIDEOPLAYER_TRAILER			  285
+#define VIDEOPLAYER_TRAILER           285
+#define VIDEOPLAYER_VIDEO_CODEC       286
+#define VIDEOPLAYER_VIDEO_RESOLUTION  287
+#define VIDEOPLAYER_AUDIO_CODEC       288
+#define VIDEOPLAYER_AUDIO_CHANNELS    289
 #define VIDEOPLAYER_VIDEO_ASPECT      290
 
 #define AUDIOSCROBBLER_ENABLED      300
@@ -305,7 +309,7 @@ class CDateTime;
 #define VISUALISATION_ENABLED       403
 
 #define STRING_IS_EMPTY             410
-#define STRING_COMPARE	            411
+#define STRING_COMPARE              411
 #define STRING_STR                  412
 
 #define SKIN_HAS_THEME_START        500
@@ -476,6 +480,13 @@ class CDateTime;
 #define LISTITEM_SORT_LETTER        (LISTITEM_START + 43)
 #define LISTITEM_ALBUM_ARTIST       (LISTITEM_START + 44)
 #define LISTITEM_FOLDERNAME         (LISTITEM_START + 45)
+#define LISTITEM_VIDEO_CODEC        (LISTITEM_START + 46)
+#define LISTITEM_VIDEO_RESOLUTION   (LISTITEM_START + 47)
+#define LISTITEM_VIDEO_ASPECT       (LISTITEM_START + 48)
+#define LISTITEM_AUDIO_CODEC        (LISTITEM_START + 49)
+#define LISTITEM_AUDIO_CHANNELS     (LISTITEM_START + 50)
+#define LISTITEM_AUDIO_LANGUAGE     (LISTITEM_START + 51)
+#define LISTITEM_SUBTITLE_LANGUAGE  (LISTITEM_START + 52)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -525,7 +536,7 @@ private:
 
 /*!
  \ingroup strings
- \brief 
+ \brief
  */
 class CGUIInfoManager : public IMsgTargetCallback
 {
@@ -579,7 +590,7 @@ public:
   CStdString GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
   CStdString GetVersion();
   CStdString GetBuild();
-  
+
   bool GetDisplayAfterSeek() const;
   void SetDisplayAfterSeek(DWORD TimeOut = 2500);
   void SetSeeking(bool seeking) { m_playerSeeking = seeking; };
@@ -627,6 +638,8 @@ protected:
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
   bool GetItemBool(const CGUIListItem *item, int condition) const;
+  CStdString VideoWidthToResolutionDescription(int iWidth) const;
+  CStdString VideoAspectToAspectDescription(float fAspect) const;
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -644,7 +657,7 @@ protected:
   std::vector<std::string> m_listitemProperties;
 
   CStdString m_currentMovieDuration;
-  
+
   // Current playing stuff
   CFileItem* m_currentFile;
   CStdString m_currentMovieThumb;
@@ -658,7 +671,7 @@ protected:
   int m_fanSpeed;
   CTemperature m_gpuTemp;
   CTemperature m_cpuTemp;
-  
+
   //Fullscreen OSD Stuff
   DWORD m_AfterSeekTimeout;
   bool m_playerSeeking;
@@ -709,7 +722,7 @@ protected:
 
 /*!
  \ingroup strings
- \brief 
+ \brief
  */
 extern CGUIInfoManager g_infoManager;
 #endif

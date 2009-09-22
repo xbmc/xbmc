@@ -290,6 +290,7 @@ public:
     int numEpisodes;
     int numWatched;
   };
+
   CVideoDatabase(void);
   virtual ~CVideoDatabase(void);
 
@@ -317,6 +318,7 @@ public:
   void GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, long lTvShowId = -1);
   bool GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long lEpisodeId = -1);
   void GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, long idMVideo=-1);
+  bool GetStreamDetailsForFileId(CStreamDetails& details, long lFileId) const;
 
   long GetPathId(const CStdString& strPath);
   long GetTvShowId(const CStdString& strPath);
@@ -328,6 +330,8 @@ public:
   long SetDetailsForTvShow(const CStdString& strPath, const CVideoInfoTag& details);
   long SetDetailsForEpisode(const CStdString& strFilenameAndPath, const CVideoInfoTag& details, long idShow, long lEpisodeId=-1);
   void SetDetailsForMusicVideo(const CStdString& strFilenameAndPath, const CVideoInfoTag& details);
+  void SetStreamDetailsForFile(const CStreamDetails& details, const CStdString &strFileNameAndPath);
+  void SetStreamDetailsForFileId(const CStreamDetails& details, long lFileId);
 
   void DeleteMovie(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false);
   void DeleteTvShow(const CStdString& strPath, bool bKeepId = false, bool bKeepThumb = false);

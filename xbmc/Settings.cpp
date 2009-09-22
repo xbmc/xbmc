@@ -100,7 +100,7 @@ void CSettings::Initialize()
 
   g_stSettings.m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2";
   g_stSettings.m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adplug|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml";
-  g_stSettings.m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml";
+  g_stSettings.m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv";
   // internal music extensions
   g_stSettings.m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
@@ -290,7 +290,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
     // this nasty block of code is needed as we have to
     // call getlocaldrives after localize strings has been loaded
     bool bAdded=false;
-    for (unsigned int i=0;i<g_settings.m_fileSources.size();++i) 
+    for (unsigned int i=0;i<g_settings.m_fileSources.size();++i)
     {
       if (g_settings.m_fileSources[i].m_ignore)
       {
@@ -303,7 +303,7 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
       VECSOURCES shares;
       g_mediaManager.GetLocalDrives(shares, true);  // true to include Q
       m_fileSources.insert(m_fileSources.end(),shares.begin(),shares.end());
-      
+
       CMediaSource source;
       source.strName = g_localizeStrings.Get(22013);
       source.m_ignore = true;
@@ -806,6 +806,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     GetFloat(pElement, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio, 1.0f, 0.5f, 2.0f);
     GetFloat(pElement, "volumeamplification", g_stSettings.m_defaultVideoSettings.m_VolumeAmplification, VOLUME_DRC_MINIMUM * 0.01f, VOLUME_DRC_MINIMUM * 0.01f, VOLUME_DRC_MAXIMUM * 0.01f);
+    GetFloat(pElement, "noisereduction", g_stSettings.m_defaultVideoSettings.m_NoiseReduction, 0.0f, 0.0f, 1.0f);
+    GetFloat(pElement, "sharpness", g_stSettings.m_defaultVideoSettings.m_Sharpness, 0.0f, -1.0f, 1.0f);
     XMLUtils::GetBoolean(pElement, "outputtoallspeakers", g_stSettings.m_defaultVideoSettings.m_OutputToAllSpeakers);
     XMLUtils::GetBoolean(pElement, "showsubtitles", g_stSettings.m_defaultVideoSettings.m_SubtitleOn);
     GetFloat(pElement, "brightness", g_stSettings.m_defaultVideoSettings.m_Brightness, 50, 0, 100);
@@ -840,9 +842,9 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   g_guiSettings.LoadXML(pRootElement);
   LoadSkinSettings(pRootElement);
 
-  // Configure the PlayerCoreFactory 
-  LoadPlayerCoreFactorySettings("special://xbmc/system/playercorefactory.xml", true); 
-  LoadPlayerCoreFactorySettings(g_settings.GetUserDataItem("playercorefactory.xml"), false); 
+  // Configure the PlayerCoreFactory
+  LoadPlayerCoreFactorySettings("special://xbmc/system/playercorefactory.xml", true);
+  LoadPlayerCoreFactorySettings(g_settings.GetUserDataItem("playercorefactory.xml"), false);
 
   // Advanced settings
   g_advancedSettings.Load();
@@ -1142,6 +1144,8 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   if (!pNode) return false;
   XMLUtils::SetInt(pNode, "interlacemethod", g_stSettings.m_defaultVideoSettings.m_InterlaceMethod);
   XMLUtils::SetFloat(pNode, "filmgrain", g_stSettings.m_defaultVideoSettings.m_FilmGrain);
+  XMLUtils::SetFloat(pNode, "noisereduction", g_stSettings.m_defaultVideoSettings.m_NoiseReduction);
+  XMLUtils::SetFloat(pNode, "sharpness", g_stSettings.m_defaultVideoSettings.m_Sharpness);
   XMLUtils::SetInt(pNode, "viewmode", g_stSettings.m_defaultVideoSettings.m_ViewMode);
   XMLUtils::SetFloat(pNode, "zoomamount", g_stSettings.m_defaultVideoSettings.m_CustomZoomAmount);
   XMLUtils::SetFloat(pNode, "pixelratio", g_stSettings.m_defaultVideoSettings.m_CustomPixelRatio);
@@ -1209,16 +1213,19 @@ bool CSettings::LoadProfile(int index)
 
     // Load the langinfo to have user charset <-> utf-8 conversion
     CStdString strLanguage = g_guiSettings.GetString("locale.language");
+    strLanguage[0] = toupper(strLanguage[0]);
 
     CStdString strLangInfoPath;
     strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strLanguage.c_str());
     CLog::Log(LOGINFO, "load language info file:%s", strLangInfoPath.c_str());
     g_langInfo.Load(strLangInfoPath);
 
+#ifdef _XBOX
     CStdString strKeyboardLayoutConfigurationPath;
     strKeyboardLayoutConfigurationPath.Format("special://xbmc/language/%s/keyboardmap.xml", strLanguage.c_str());
     CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
     g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
+#endif
 
     CStdString strLanguagePath;
     strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strLanguage.c_str());
@@ -1551,8 +1558,8 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
       xmlType = TiXmlElement("video");
     if (k==2)
       xmlType = TiXmlElement("pictures");
-    
-    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);  
+
+    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);
 
     for (unsigned int j=0;j<(*pShares)[k].size();++j)
     {
@@ -1646,7 +1653,7 @@ bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldN
   return false;
 }
 
-bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath)
+bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource)
 {
   VECSOURCES *pShares = GetSourcesFromType(strType);
   if (!pShares) return false;
@@ -1664,7 +1671,7 @@ bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName
     }
   }
 
-  if (strType.Find("upnp") > -1)
+  if (virtualSource || strType.Find("upnp") > -1)
     return found;
 
   return SaveSources();
@@ -1698,7 +1705,7 @@ bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
   }
   pShares->push_back(shareToAdd);
 
-  if (type.Find("upnp") < 0)
+  if (!share.m_ignore || type.Find("upnp") < 0)
   {
     return SaveSources();
   }
@@ -1752,7 +1759,7 @@ bool CSettings::SetSources(TiXmlNode *root, const char *section, const VECSOURCE
         XMLUtils::SetPath(&source, "thumbnail", share.m_strThumbnailImage);
 
       sectionNode->InsertEndChild(source);
-    } 
+    }
   }
   return true;
 }
@@ -1965,7 +1972,7 @@ void CSettings::LoadUserFolderLayout()
   CStdString strDir = g_guiSettings.GetString("system.playlistspath");
   if (strDir == "set default")
   {
-    strDir = "P:\\playlists\\";
+    strDir = "special://profile/playlists/";
     g_guiSettings.SetString("system.playlistspath",strDir.c_str());
   }
   CDirectory::Create(strDir);

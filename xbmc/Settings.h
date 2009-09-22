@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2008 Team XBMC
  *      http://xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -84,6 +84,10 @@ struct VOICE_MASK {
   float whisper;
 };
 
+class CGUISettings;
+class TiXmlElement;
+class TiXmlNode;
+
 class CSettings
 {
 public:
@@ -107,7 +111,7 @@ public:
   CStdString GetDefaultSourceFromType(const CStdString &type);
 
   bool UpdateSource(const CStdString &strType, const CStdString strOldName, const CStdString &strUpdateChild, const CStdString &strUpdateValue);
-  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath);
+  bool DeleteSource(const CStdString &strType, const CStdString strName, const CStdString strPath, bool virtualSource = false);
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
@@ -181,8 +185,8 @@ public:
     char szOnlineArenaPassword[32]; // private arena password
     char szOnlineArenaDescription[64]; // private arena description
 
-	  int m_HttpApiBroadcastPort;
-	  int m_HttpApiBroadcastLevel;
+    int m_HttpApiBroadcastPort;
+    int m_HttpApiBroadcastLevel;
     int m_nVolumeLevel;                     // measured in milliBels -60dB -> 0dB range.
     int m_dynamicRangeCompressionLevel;     // measured in milliBels  0dB -> 30dB range.
     int m_iPreMuteVolumeLevel;    // save the m_nVolumeLevel for proper restore
@@ -255,7 +259,7 @@ public:
 
   bool LoadUPnPXml(const CStdString& strSettingsFile);
   bool SaveUPnPXml(const CStdString& strSettingsFile) const;
-  
+
   bool LoadProfiles(const CStdString& strSettingsFile);
   bool SaveProfiles(const CStdString& strSettingsFile) const;
 
@@ -286,7 +290,7 @@ protected:
 //  bool SaveSettings(const CStdString& strSettingsFile) const;
 
   bool LoadPlayerCoreFactorySettings(const CStdString& fileStr, bool clear);
-  
+
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;

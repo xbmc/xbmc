@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="7,10"
 	Name="xbmc"
 	ProjectGUID="{31103E92-4EE8-4F94-B67A-092C7CEFDB3D}"
 	RootNamespace="xbmc"
@@ -1089,6 +1089,12 @@ bundler xbelogo\saveimage.rdf -o xbelogo\saveimage.xbx
 				</File>
 				<File
 					RelativePath=".\xbmc\utils\Stopwatch.h">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\StreamDetails.cpp">
+				</File>
+				<File
+					RelativePath=".\xbmc\utils\StreamDetails.h">
 				</File>
 				<File
 					RelativePath=".\xbmc\StringUtils.cpp">
