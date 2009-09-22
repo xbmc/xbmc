@@ -29,6 +29,7 @@
 #include "utils/log.h"
 #include "FileSystem/cdioSupport.h"
 #include "FileSystem/iso9660.h"
+#include "SingleLock.h"
 #ifdef _LINUX
 #include <sys/types.h>
 #include <sys/ioctl.h>

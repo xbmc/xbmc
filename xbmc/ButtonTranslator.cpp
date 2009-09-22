@@ -557,7 +557,7 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &st
   {
     CLog::Log(LOGDEBUG, "%s: Trying Hardy keycode for %#04x", __FUNCTION__, code);
     code &= ~0x0F00;
-    buttonMap::iterator it2 = (*it).second.find(wKey);
+    buttonMap::iterator it2 = (*it).second.find(code);
     while (it2 != (*it).second.end())
     {
       action = (*it2).second.id;
