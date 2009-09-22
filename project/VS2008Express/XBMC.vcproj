@@ -2618,6 +2618,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\Builtins.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Builtins.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\ButtonTranslator.cpp"
 					>
 				</File>
