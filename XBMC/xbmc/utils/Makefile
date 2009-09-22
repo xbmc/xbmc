@@ -2,6 +2,7 @@ INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
+     Builtins.cpp \
      CharsetConverter.cpp \
      CriticalSection.cpp \
      Event.cpp \

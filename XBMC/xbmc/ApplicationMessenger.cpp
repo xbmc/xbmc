@@ -34,6 +34,7 @@
 #ifdef HAS_WEB_SERVER
 #include "lib/libGoAhead/XBMChttp.h"
 #endif
+#include "utils/Builtins.h"
 #include "utils/Network.h"
 #include "GUIWindowManager.h"
 #include "GUIWindowManager.h"
@@ -454,7 +455,7 @@ case TMSG_POWERDOWN:
       break;
 
     case TMSG_EXECUTE_BUILT_IN:
-      CUtil::ExecBuiltIn(pMsg->strParam.c_str());
+      CBuiltins::Execute(pMsg->strParam.c_str());
       break;
 
     case TMSG_PLAYLISTPLAYER_PLAY:

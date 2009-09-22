@@ -23,6 +23,7 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
+#include "utils/Builtins.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
@@ -185,7 +186,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
          }*/
       for (unsigned int i = 0; i < m_vecSettings.size(); i++)
       {
-        if (m_vecSettings[i]->GetID() == iControl)
+        if (m_vecSettings[i]->GetID() == (int)iControl)
           OnClick(m_vecSettings[i]);
       }
     }
@@ -1526,7 +1527,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.ResetTimer();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
+    CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
   else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
   {
     CMusicDatabase database;
