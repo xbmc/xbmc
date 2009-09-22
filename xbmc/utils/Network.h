@@ -109,7 +109,7 @@ public:
    void NetworkMessage(EMESSAGE message, DWORD dwParam);
    
    void StartServices();
-   void StopServices();
+   void StopServices(bool bWait);
 
    static int ParseHex(char *str, unsigned char *addr);
 };

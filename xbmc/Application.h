@@ -117,7 +117,7 @@ public:
   bool StopEventServer(bool promptuser=false);
   void RefreshEventServer();
   void StartDbusServer();
-  bool StopDbusServer();
+  bool StopDbusServer(bool bWait);
   void StartZeroconf();
   void StopZeroconf();
   void DimLCDOnPlayback(bool dim);
