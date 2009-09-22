@@ -203,7 +203,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const vecColors &colors, colo
 }
 
 // remaps unsupported font glpyhs to other suitable ones
-uint16_t CGUIFont::RemapGlyph(uint16_t letter)
+wchar_t CGUIFont::RemapGlyph(wchar_t letter)
 {
   if (letter == 0x2019 || letter == 0x2018) return 0x0027;  // single quotes
   else if (letter == 0x201c || letter == 0x201d) return 0x0022;

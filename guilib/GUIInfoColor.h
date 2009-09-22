@@ -46,22 +46,24 @@ private:
   bool m_value;
 };
 
+typedef uint32_t color_t;
+
 class CGUIInfoColor
 {
 public:
-  CGUIInfoColor(uint32_t color = 0);
+  CGUIInfoColor(color_t color = 0);
 
   const CGUIInfoColor &operator=(const CGUIInfoColor &color);
-  const CGUIInfoColor &operator=(uint32_t color);
-  operator uint32_t() const { return m_color; };
+  const CGUIInfoColor &operator=(color_t color);
+  operator color_t() const { return m_color; };
 
   void Update();
   void Parse(const CStdString &label);
 
 private:
-  uint32_t GetColor() const;
-  int      m_info;
-  uint32_t m_color;
+  color_t GetColor() const;
+  int     m_info;
+  color_t m_color;
 };
 
 #endif
