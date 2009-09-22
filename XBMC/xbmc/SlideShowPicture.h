@@ -24,6 +24,8 @@
 #include "gui3d.h"
 #include "StdString.h"
 
+typedef uint32_t color_t;
+
 class CBaseTexture;
 
 class CSlideShowPic
@@ -78,7 +80,7 @@ public:
 private:
   void Process();
 
-  void Render(float *x, float *y, CBaseTexture* pTexture, DWORD dwColor);
+  void Render(float *x, float *y, CBaseTexture* pTexture, color_t color);
   CBaseTexture *m_pImage;
 
   int m_iOriginalWidth;
@@ -90,7 +92,7 @@ private:
   CStdString m_strFileName;
   float m_fWidth;
   float m_fHeight;
-  DWORD m_dwAlpha;
+  color_t m_alpha;
   // stuff relative to middle position
   float m_fPosX;
   float m_fPosY;

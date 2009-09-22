@@ -29,13 +29,13 @@ CGUIControlProfilerItem::CGUIControlProfilerItem(CGUIControlProfiler *pProfiler,
 {
   if (m_pControl)
   {
-    m_dwControlID = m_pControl->GetID();
+    m_controlID = m_pControl->GetID();
     m_ControlType = m_pControl->GetControlType();
     m_strDescription = m_pControl->GetDescription();
   }
   else 
   {
-    m_dwControlID = 0;
+    m_controlID = 0;
     m_ControlType = CGUIControl::GUICONTROL_UNKNOWN;
   }
 }
@@ -47,7 +47,7 @@ CGUIControlProfilerItem::~CGUIControlProfilerItem(void)
 
 void CGUIControlProfilerItem::Reset(CGUIControlProfiler *pProfiler)
 {
-  m_dwControlID = 0;
+  m_controlID = 0;
   m_ControlType = CGUIControl::GUICONTROL_UNKNOWN;
   m_pControl = NULL;
 
@@ -172,10 +172,10 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
 
   if (lpszType)
     xmlControl->SetAttribute("type", lpszType);
-  if (m_dwControlID != 0)  
+  if (m_controlID != 0)  
   {
     CStdString str;
-    str.Format("%u", m_dwControlID);
+    str.Format("%u", m_controlID);
     xmlControl->SetAttribute("id", str.c_str());
   }
 

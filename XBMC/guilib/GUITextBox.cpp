@@ -26,9 +26,9 @@
 
 using namespace std;
 
-CGUITextBox::CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, float width, float height,
                          const CLabelInfo& labelInfo, int scrollTime)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , CGUITextLayout(labelInfo.font, true)
 {
   m_offset = 0;
@@ -114,7 +114,7 @@ void CGUITextBox::UpdateColors()
 void CGUITextBox::UpdateInfo(const CGUIListItem *item)
 {
   m_textColor = m_label.textColor;
-  if (!CGUITextLayout::Update(item ? m_info.GetItemLabel(item) : m_info.GetLabel(m_dwParentID), m_width))
+  if (!CGUITextLayout::Update(item ? m_info.GetItemLabel(item) : m_info.GetLabel(m_parentID), m_width))
     return; // nothing changed
 
   // needed update, so reset to the top of the textbox and update our sizing/page control
@@ -133,7 +133,7 @@ void CGUITextBox::Render()
   // update our auto-scrolling as necessary
   if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
   {
-    if (!m_autoScrollCondition || g_infoManager.GetBool(m_autoScrollCondition, m_dwParentID))
+    if (!m_autoScrollCondition || g_infoManager.GetBool(m_autoScrollCondition, m_parentID))
     {
       if (m_lastRenderTime)
         m_autoScrollDelayTime += m_renderTime - m_lastRenderTime;
@@ -266,7 +266,7 @@ bool CGUITextBox::CanFocus() const
   return false;
 }
 
-void CGUITextBox::SetPageControl(DWORD pageControl)
+void CGUITextBox::SetPageControl(int pageControl)
 {
   m_pageControl = pageControl;
 }

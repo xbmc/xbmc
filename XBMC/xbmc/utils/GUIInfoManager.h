@@ -537,11 +537,11 @@ public:
   virtual bool OnMessage(CGUIMessage &message);
 
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition, DWORD dwContextWindow = 0, const CGUIListItem *item=NULL);
-  int GetInt(int info, DWORD contextWindow = 0) const;
-  CStdString GetLabel(int info, DWORD contextWindow = 0);
+  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
+  int GetInt(int info, int contextWindow = 0) const;
+  CStdString GetLabel(int info, int contextWindow = 0);
 
-  CStdString GetImage(int info, DWORD contextWindow);
+  CStdString GetImage(int info, int contextWindow);
 
   CStdString GetTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
   CStdString GetLcdTime( int _eInfo ) const;
@@ -617,10 +617,10 @@ public:
 protected:
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
-  CGUIWindow *GetWindowWithCondition(DWORD contextWindow, int condition) const;
+  CGUIWindow *GetWindowWithCondition(int contextWindow, int condition) const;
 
-  bool GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow = 0, const CGUIListItem *item = NULL);
-  CStdString GetMultiInfoLabel(const GUIInfo &info, DWORD dwContextWindow = 0) const;
+  bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
+  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
   int TranslateSingleString(const CStdString &strCondition);
   int TranslateListItem(const CStdString &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
@@ -685,13 +685,13 @@ protected:
 
   int GetOperator(const char ch);
   int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CGUIListItem *item=NULL);
+  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, int contextWindow, const CGUIListItem *item=NULL);
 
   std::vector<CCombinedValue> m_CombinedValues;
 
   // routines for caching the bool results
-  bool IsCached(int condition, DWORD contextWindow, bool &result) const;
-  void CacheBool(int condition, DWORD contextWindow, bool result, bool persistent=false);
+  bool IsCached(int condition, int contextWindow, bool &result) const;
+  void CacheBool(int condition, int contextWindow, bool result, bool persistent=false);
   std::map<int, bool> m_boolCache;
 
   // persistent cache

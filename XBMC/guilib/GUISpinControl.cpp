@@ -29,8 +29,8 @@ using namespace std;
 #define SPIN_BUTTON_DOWN 1
 #define SPIN_BUTTON_UP   2
 
-CGUISpinControl::CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo &labelInfo, int iType)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUISpinControl::CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo &labelInfo, int iType)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgspinUp(posX, posY, width, height, textureUp)
     , m_imgspinDown(posX, posY, width, height, textureDown)
     , m_imgspinUpFocus(posX, posY, width, height, textureUpFocus)
@@ -867,9 +867,9 @@ bool CGUISpinControl::OnMouseOver(const CPoint &point)
   return true;
 }
 
-bool CGUISpinControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUISpinControl::OnMouseClick(int button, const CPoint &point)
 { // only left button handled
-  if (dwButton != MOUSE_LEFT_BUTTON) return false;
+  if (button != MOUSE_LEFT_BUTTON) return false;
   if (m_imgspinUpFocus.HitTest(point))
   {
     MoveUp();

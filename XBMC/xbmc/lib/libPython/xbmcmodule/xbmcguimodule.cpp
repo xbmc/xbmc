@@ -107,9 +107,9 @@ namespace PYXBMC
   PyObject* XBMCGUI_GetCurrentWindowId(PyObject *self, PyObject *args)
   {
     PyGUILock();
-    DWORD dwId = m_gWindowManager.GetActiveWindow();
+    int id = m_gWindowManager.GetActiveWindow();
     PyGUIUnlock();
-    return Py_BuildValue((char*)"l", dwId);
+    return Py_BuildValue((char*)"l", id);
   }
 
   // getCurrentWindowDialogId() method
@@ -122,9 +122,9 @@ namespace PYXBMC
   PyObject* XBMCGUI_GetCurrentWindowDialogId(PyObject *self, PyObject *args)
   {
     PyGUILock();
-    DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
+    int id = m_gWindowManager.GetTopMostModalDialogID();
     PyGUIUnlock();
-    return Py_BuildValue((char*)"l", dwId);
+    return Py_BuildValue((char*)"l", id);
   }
 
   // define c functions to be used in python here

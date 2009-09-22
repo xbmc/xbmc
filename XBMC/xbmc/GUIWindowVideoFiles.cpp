@@ -562,7 +562,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistvideo://");
     // activate the playlist window if its not activated yet
-    if (GetID() == (DWORD) m_gWindowManager.GetActiveWindow() && iSize > 1)
+    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
       m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     }

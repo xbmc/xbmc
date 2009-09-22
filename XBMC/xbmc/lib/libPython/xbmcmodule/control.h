@@ -93,10 +93,10 @@
     int dwPosY;					\
     int dwWidth;				\
     int dwHeight;				\
-    DWORD iControlUp;			\
-    DWORD iControlDown;		\
-    DWORD iControlLeft;		\
-    DWORD iControlRight;	\
+    int iControlUp;			\
+    int iControlDown;		\
+    int iControlLeft;		\
+    int iControlRight;	\
     CGUIControl* pGUIControl;
 
 #ifdef __cplusplus
@@ -111,7 +111,7 @@ namespace PYXBMC
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
-    DWORD dwColor;
+    color_t color;
     std::string strTextureUp;
     std::string strTextureDown;
     std::string strTextureUpFocus;
@@ -122,9 +122,9 @@ namespace PYXBMC
     PyObject_HEAD_XBMC_CONTROL
     std::string strFont;
     std::string strText;
-    DWORD dwTextColor;
-    DWORD dwDisabledColor;
-    DWORD dwAlign;
+    color_t textColor;
+    color_t disabledColor;
+    uint32_t align;
     bool bHasPath;
     int iAngle;
   } ControlLabel;
@@ -133,22 +133,22 @@ namespace PYXBMC
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
     std::string strFont;
-    DWORD dwTextColor;
+    color_t textColor;
     std::vector<std::string> vecLabels;
-    DWORD dwAlign;
+    uint32_t align;
   } ControlFadeLabel;
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
     std::string strFont;
-    DWORD dwTextColor;
+    color_t textColor;
   } ControlTextBox;
 
   typedef struct {
     PyObject_HEAD_XBMC_CONTROL
     std::string strFileName;
-    DWORD aspectRatio;
-    DWORD strColorDiffuse;
+    int aspectRatio;
+    color_t colorDiffuse;
   } ControlImage;
 
   typedef struct {
@@ -158,9 +158,8 @@ namespace PYXBMC
     std::string strTextureRight;
     std::string strTextureBg;
     std::string strTextureOverlay;
-    DWORD strColorKey;
-    DWORD aspectRatio;
-    DWORD strColorDiffuse;
+    int aspectRatio;
+    color_t colorDiffuse;
   } ControlProgress;
 
   typedef struct {
@@ -170,14 +169,14 @@ namespace PYXBMC
     std::string strText2;
     std::string strTextureFocus;
     std::string strTextureNoFocus;
-    DWORD dwTextColor;
-    DWORD dwDisabledColor;
-    DWORD dwTextXOffset;
-    DWORD dwTextYOffset;
-    DWORD dwAlign;
+    color_t textColor;
+    color_t disabledColor;
+    int textOffsetX;
+    int textOffsetY;
+    color_t align;
     int iAngle;
-    DWORD dwShadowColor;
-    DWORD dwFocusedColor;
+    int shadowColor;
+    int focusedColor;
   } ControlButton;
 
   typedef struct {
@@ -186,11 +185,11 @@ namespace PYXBMC
     std::string strText;
     std::string strTextureFocus;
     std::string strTextureNoFocus;
-    DWORD dwTextColor;
-    DWORD dwDisabledColor;
-    DWORD dwCheckWidth;
-    DWORD dwCheckHeight;
-    DWORD dwAlign;
+    color_t textColor;
+    color_t disabledColor;
+    int checkWidth;
+    int checkHeight;
+    uint32_t align;
   } ControlCheckMark;
 
   typedef struct {
@@ -199,19 +198,19 @@ namespace PYXBMC
     std::string strFont;
     ControlSpin* pControlSpin;
 
-    DWORD dwTextColor;
-    DWORD dwSelectedColor;
+    color_t textColor;
+    color_t selectedColor;
     std::string strTextureButton;
     std::string strTextureButtonFocus;
 
-    DWORD dwImageHeight;
-    DWORD dwImageWidth;
-    DWORD dwItemHeight;
-    DWORD dwSpace;
+    int imageHeight;
+    int imageWidth;
+    int itemHeight;
+    int space;
 
-    int dwItemTextXOffset;
-    int dwItemTextYOffset;
-    DWORD dwAlignmentY;
+    int itemTextOffsetX;
+    int itemTextOffsetY;
+    uint32_t alignmentY;
   } ControlList;
 
   typedef struct {
@@ -226,14 +225,14 @@ namespace PYXBMC
     std::string strTextureNoFocus;
     std::string strTextureRadioFocus;
     std::string strTextureRadioNoFocus;
-    DWORD dwTextColor;
-    DWORD dwDisabledColor;
-    DWORD dwTextXOffset;
-    DWORD dwTextYOffset;
-    DWORD dwAlign;
+    color_t textColor;
+    color_t disabledColor;
+    int textOffsetX;
+    int textOffsetY;
+    uint32_t align;
     int iAngle;
-    DWORD dwShadowColor;
-    DWORD dwFocusedColor;
+    color_t shadowColor;
+    color_t focusedColor;
   } ControlRadioButton;
 
   extern void Control_Dealloc(Control* self);

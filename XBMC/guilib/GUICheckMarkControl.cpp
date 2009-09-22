@@ -27,8 +27,8 @@
 
 using namespace std;
 
-CGUICheckMarkControl::CGUICheckMarkControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureCheckMark, const CTextureInfo& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUICheckMarkControl::CGUICheckMarkControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureCheckMark, const CTextureInfo& textureCheckMarkNF, float checkWidth, float checkHeight, const CLabelInfo &labelInfo)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgCheckMark(posX, posY, checkWidth, checkHeight, textureCheckMark)
     , m_imgCheckMarkNoFocus(posX, posY, checkWidth, checkHeight, textureCheckMarkNF)
     , m_textLayout(labelInfo.font, false)
@@ -48,7 +48,7 @@ void CGUICheckMarkControl::Render()
 
   float fTextHeight, fTextWidth;
   m_textLayout.GetTextExtent(fTextWidth, fTextHeight);
-  m_width = (DWORD)fTextWidth + 5 + m_imgCheckMark.GetWidth();
+  m_width = fTextWidth + 5 + m_imgCheckMark.GetWidth();
   m_height = m_imgCheckMark.GetHeight();
 
   float textPosX = m_posX;
@@ -137,9 +137,9 @@ bool CGUICheckMarkControl::GetSelected() const
   return m_bSelected;
 }
 
-bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUICheckMarkControl::OnMouseClick(int button, const CPoint &point)
 {
-  if (dwButton != MOUSE_LEFT_BUTTON) return false;
+  if (button != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   CAction action;
   action.id = ACTION_SELECT_ITEM;

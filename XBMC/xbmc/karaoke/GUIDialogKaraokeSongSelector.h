@@ -29,7 +29,7 @@
 class CGUIDialogKaraokeSongSelector: public CGUIDialog
 {
 public:
-  CGUIDialogKaraokeSongSelector( DWORD dwID, const char *xmlFile );
+  CGUIDialogKaraokeSongSelector( int id, const char *xmlFile );
   virtual ~CGUIDialogKaraokeSongSelector(void);
 
 protected:

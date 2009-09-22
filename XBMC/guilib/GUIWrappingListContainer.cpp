@@ -24,8 +24,8 @@
 #include "Key.h"
 #include "utils/log.h"
 
-CGUIWrappingListContainer::CGUIWrappingListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition)
-    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIWrappingListContainer::CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
 {
   m_cursor = fixedPosition;
   ControlType = GUICONTAINER_WRAPLIST;

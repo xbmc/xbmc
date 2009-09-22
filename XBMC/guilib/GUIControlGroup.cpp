@@ -34,8 +34,8 @@ CGUIControlGroup::CGUIControlGroup()
   ControlType = GUICONTROL_GROUP;
 }
 
-CGUIControlGroup::CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
-: CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIControlGroup::CGUIControlGroup(int parentID, int controlID, float posX, float posY, float width, float height)
+: CGUIControl(parentID, controlID, posX, posY, width, height)
 {
   m_defaultControl = 0;
   m_defaultAlways = false;
@@ -394,28 +394,28 @@ void CGUIControlGroup::UnfocusFromPoint(const CPoint &point)
   CGUIControl::UnfocusFromPoint(point);
 }
 
-bool CGUIControlGroup::HasID(DWORD dwID) const
+bool CGUIControlGroup::HasID(int id) const
 {
-  if (CGUIControl::HasID(dwID)) return true;
+  if (CGUIControl::HasID(id)) return true;
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->HasID(dwID))
+    if (child->HasID(id))
       return true;
   }
   return false;
 }
 
-bool CGUIControlGroup::HasVisibleID(DWORD dwID) const
+bool CGUIControlGroup::HasVisibleID(int id) const
 {
   // call base class first as the group may be the requested control
-  if (CGUIControl::HasVisibleID(dwID)) return true;
+  if (CGUIControl::HasVisibleID(id)) return true;
   // if the group isn't visible, then none of it's children can be
   if (!IsVisible()) return false;
   for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *child = *it;
-    if (child->HasVisibleID(dwID))
+    if (child->HasVisibleID(id))
       return true;
   }
   return false;

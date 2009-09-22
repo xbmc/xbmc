@@ -79,7 +79,7 @@ public:
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
   bool SendMessage(CGUIMessage& message);
-  bool SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1 = 0, DWORD param2 = 0);
+  bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
   void setMessageSender(IMsgSenderCallback* pCallback);
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
   void SetMediaDir(const CStdString& strMediaDir);
@@ -175,7 +175,6 @@ protected:
   int m_iScreenWidth;
   int m_iScreenId;
   int m_iBackBufferCount;
-  DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
   RECT m_videoRect;

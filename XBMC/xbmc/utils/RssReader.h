@@ -105,13 +105,13 @@ public:
   void Reset();
   bool IsActive() { return m_bActive; }
 
-  bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
+  bool GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader);
 
 private:
   struct READERCONTROL
   {
-    DWORD controlID;
-    DWORD windowID;
+    int controlID;
+    int windowID;
     CRssReader *reader;
   };
 

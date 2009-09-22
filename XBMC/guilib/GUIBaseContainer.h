@@ -41,7 +41,7 @@ typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CGUIBaseContainer : public CGUIControl
 {
 public:
-  CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
+  CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
   virtual ~CGUIBaseContainer(void);
 
   virtual bool OnAction(const CAction &action);
@@ -50,8 +50,8 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
-  virtual bool OnMouseDoubleClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
+  virtual bool OnMouseDoubleClick(int button, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
@@ -64,7 +64,7 @@ public:
   virtual bool HasNextPage() const;
   virtual bool HasPreviousPage() const;
 
-  void SetPageControl(DWORD id);
+  void SetPageControl(int id);
 
   virtual CStdString GetDescription() const;
   virtual void SaveStates(std::vector<CControlState> &states);
@@ -90,7 +90,7 @@ public:
   virtual void DumpTextureUse();
 #endif
 protected:
-  bool OnClick(DWORD actionID);
+  bool OnClick(int actionID);
   virtual bool SelectItemFromPoint(const CPoint &point);
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
@@ -128,7 +128,7 @@ protected:
   typedef std::vector<CGUIListItemPtr> ::iterator iItems;
   CGUIListItem *m_lastItem;
 
-  DWORD m_pageControl;
+  int m_pageControl;
 
   DWORD m_renderTime;
 

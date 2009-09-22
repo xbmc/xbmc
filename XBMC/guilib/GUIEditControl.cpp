@@ -36,10 +36,10 @@ using namespace std;
 extern HWND g_hWnd;
 #endif
 
-CGUIEditControl::CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
+CGUIEditControl::CGUIEditControl(int parentID, int controlID, float posX, float posY,
                                  float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
                                  const CLabelInfo& labelInfo, const std::string &text)
-    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
+    : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
   ControlType = GUICONTROL_EDIT;
   m_textOffset = 0;

@@ -38,9 +38,9 @@ CGUIMultiSelectTextControl::CSelectableString::CSelectableString(CGUIFont *font,
   m_text.GetTextExtent(m_length, height);
 }
 
-CGUIMultiSelectTextControl::CGUIMultiSelectTextControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo, const CGUIInfoLabel &content)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
-    , m_button(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
+CGUIMultiSelectTextControl::CGUIMultiSelectTextControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo, const CGUIInfoLabel &content)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
+    , m_button(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
 {
   m_info = content;
   m_label = labelInfo;
@@ -151,7 +151,7 @@ void CGUIMultiSelectTextControl::UpdateInfo(const CGUIListItem *item)
   if (item)
     UpdateText(m_info.GetItemLabel(item));
   else
-    UpdateText(m_info.GetLabel(m_dwParentID));
+    UpdateText(m_info.GetLabel(m_parentID));
 }
 
 bool CGUIMultiSelectTextControl::OnAction(const CAction &action)
@@ -172,13 +172,13 @@ bool CGUIMultiSelectTextControl::OnAction(const CAction &action)
     }
     if (!clickAction.IsEmpty())
     { // have a click action -> perform it
-      CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
+      CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
       message.SetStringParam(clickAction);
       g_graphicsContext.SendMessage(message);
     }
     else
     { // no click action, just send a message to the window
-      CGUIMessage msg(GUI_MSG_CLICKED, m_dwControlID, m_dwParentID, m_selectedItem);
+      CGUIMessage msg(GUI_MSG_CLICKED, m_controlID, m_parentID, m_selectedItem);
       SendWindowMessage(msg);
     }
     return true;
@@ -205,7 +205,7 @@ bool CGUIMultiSelectTextControl::MoveLeft()
 {
   if (m_selectedItem > 0)
     ScrollToItem(m_selectedItem - 1);
-  else if (GetNumSelectable() && m_dwControlLeft && m_dwControlLeft == m_dwControlID)
+  else if (GetNumSelectable() && m_controlLeft && m_controlLeft == m_controlID)
     ScrollToItem(GetNumSelectable() - 1);
   else
     return false;
@@ -216,7 +216,7 @@ bool CGUIMultiSelectTextControl::MoveRight()
 {
   if (GetNumSelectable() && m_selectedItem < GetNumSelectable() - 1)
     ScrollToItem(m_selectedItem + 1);
-  else if (m_dwControlRight && m_dwControlRight == m_dwControlID)
+  else if (m_controlRight && m_controlRight == m_controlID)
     ScrollToItem(0);
   else
     return false;
@@ -246,9 +246,9 @@ bool CGUIMultiSelectTextControl::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIMultiSelectTextControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUIMultiSelectTextControl::OnMouseClick(int button, const CPoint &point)
 {
-  if (dwButton == MOUSE_LEFT_BUTTON)
+  if (button == MOUSE_LEFT_BUTTON)
   {
     m_selectedItem = GetItemFromPoint(point);
     g_Mouse.SetState(MOUSE_STATE_CLICK);
@@ -362,7 +362,7 @@ CStdString CGUIMultiSelectTextControl::GetDescription() const
 {
   // We currently just return the entire string - should we bother returning the
   // particular subitems of this?
-  CStdString strLabel(m_info.GetLabel(m_dwParentID));
+  CStdString strLabel(m_info.GetLabel(m_parentID));
   return strLabel;
 }
 

@@ -42,7 +42,7 @@
 class PyXBMCAction
 {
 public:
-  DWORD dwParam;
+  int param;
   PyObject* pCallbackWindow;
   PyObject* pObject;
   int controlId; // for XML window
@@ -50,7 +50,7 @@ public:
   int type; // 0=Action, 1=Control;
 #endif
 
-  PyXBMCAction(): dwParam(0), pCallbackWindow(NULL), pObject(NULL), controlId(0), type(0) { }
+  PyXBMCAction(): param(0), pCallbackWindow(NULL), pObject(NULL), controlId(0), type(0) { }
   virtual ~PyXBMCAction() ;
 };
 
@@ -60,7 +60,7 @@ int Py_XBMC_Event_OnControl(void* arg);
 class CGUIPythonWindow : public CGUIWindow
 {
 public:
-  CGUIPythonWindow(DWORD dwId);
+  CGUIPythonWindow(int id);
   virtual ~CGUIPythonWindow(void);
   virtual bool    OnMessage(CGUIMessage& message);
   virtual bool    OnAction(const CAction &action);

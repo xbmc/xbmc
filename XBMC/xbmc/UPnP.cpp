@@ -1619,7 +1619,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
     PLT_MediaObject* object = CUPnPServer::BuildObject(item, file_path, false);
     if (object) {
         // fetch the path to the thumbnail
-        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, (DWORD)-1); //TODO: Only audio for now
+        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1); //TODO: Only audio for now
 
         NPT_String ip;
         if (g_application.getNetwork().GetFirstConnectedInterface()) {

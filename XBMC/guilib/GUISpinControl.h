@@ -45,7 +45,7 @@
 class CGUISpinControl : public CGUIControl
 {
 public:
-  CGUISpinControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo& labelInfo, int iType);
+  CGUISpinControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureUp, const CTextureInfo& textureDown, const CTextureInfo& textureUpFocus, const CTextureInfo& textureDownFocus, const CLabelInfo& labelInfo, int iType);
   virtual ~CGUISpinControl(void);
   virtual CGUISpinControl *Clone() const { return new CGUISpinControl(*this); };
 
@@ -55,7 +55,7 @@ public:
   virtual void OnRight();
   virtual bool HitTest(const CPoint &point) const;
   virtual bool OnMouseOver(const CPoint &point);
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void AllocResources();

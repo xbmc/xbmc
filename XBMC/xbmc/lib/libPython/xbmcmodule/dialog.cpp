@@ -111,11 +111,11 @@ namespace PYXBMC
 
   PyObject* Dialog_OK(PyObject *self, PyObject *args)
   {
-    const DWORD dWindow = WINDOW_DIALOG_OK;
+    const int window = WINDOW_DIALOG_OK;
     PyObject* unicodeLine[4];
     for (int i = 0; i < 4; i++) unicodeLine[i] = NULL;
 
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(dWindow);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     // get lines, last 2 lines are optional.
@@ -133,7 +133,7 @@ namespace PYXBMC
     pDialog->SetLine(2, utf8Line[3]);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     return Py_BuildValue((char*)"b", pDialog->IsConfirmed());
@@ -288,10 +288,10 @@ namespace PYXBMC
 
   PyObject* Dialog_YesNo(PyObject *self, PyObject *args)
   {
-    const DWORD dWindow = WINDOW_DIALOG_YES_NO;
+    const int window = WINDOW_DIALOG_YES_NO;
     PyObject* unicodeLine[6];
     for (int i = 0; i < 6; i++) unicodeLine[i] = NULL;
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(dWindow);
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     // get lines, last 4 lines are optional.
@@ -313,7 +313,7 @@ namespace PYXBMC
       pDialog->SetChoice(1,utf8Line[5]);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     return Py_BuildValue((char*)"b", pDialog->IsConfirmed());
@@ -333,14 +333,14 @@ namespace PYXBMC
 
   PyObject* Dialog_Select(PyObject *self, PyObject *args)
   {
-    const DWORD dWindow = WINDOW_DIALOG_SELECT;
+    const int window = WINDOW_DIALOG_SELECT;
     PyObject *heading = NULL;
     PyObject *list = NULL;
 
     if (!PyArg_ParseTuple(args, (char*)"OO", &heading, &list))  return NULL;
     if (!PyList_Check(list)) return NULL;
 
-    CGUIDialogSelect* pDialog= (CGUIDialogSelect*)m_gWindowManager.GetWindow(dWindow);
+    CGUIDialogSelect* pDialog= (CGUIDialogSelect*)m_gWindowManager.GetWindow(window);
     if (PyWindowIsNull(pDialog)) return NULL;
 
     pDialog->Reset();
@@ -358,7 +358,7 @@ namespace PYXBMC
     }
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, dWindow, ACTIVE_WINDOW};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, window, ACTIVE_WINDOW};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     return Py_BuildValue((char*)"i", pDialog->GetSelectedLabel());

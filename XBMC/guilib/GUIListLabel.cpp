@@ -23,8 +23,8 @@
 #include "utils/CharsetConverter.h"
 #include <limits>
 
-CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll, int scrollSpeed)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIListLabel::CGUIListLabel(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll, int scrollSpeed)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_textLayout(labelInfo.font, false)
     , m_scrollInfo(50, 0, scrollSpeed)
     , m_renderRect()
@@ -35,7 +35,7 @@ CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, fl
   m_info = info;
   m_textWidth = width;
   if (m_info.IsConstant())
-    SetLabel(m_info.GetLabel(m_dwParentID, true));
+    SetLabel(m_info.GetLabel(m_parentID, true));
   ControlType = GUICONTROL_LISTLABEL;
 }
 
@@ -102,7 +102,7 @@ void CGUIListLabel::UpdateInfo(const CGUIListItem *item)
   if (item)
     SetLabel(m_info.GetItemLabel(item));
   else
-    SetLabel(m_info.GetLabel(m_dwParentID, true));
+    SetLabel(m_info.GetLabel(m_parentID, true));
 }
 
 void CGUIListLabel::SetLabel(const CStdString &label)

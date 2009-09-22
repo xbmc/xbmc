@@ -74,10 +74,10 @@ public:
   bool IsEnabled() const;
   bool HasMoved(bool allMoves = false) const;
   void SetActive(bool active = true);
-  void SetExclusiveAccess(DWORD dwControlID, DWORD dwWindowID, const CPoint &point);
-  void EndExclusiveAccess(DWORD dwControlID, DWORD dwWindowID);
-  DWORD GetExclusiveWindowID() const { return m_exclusiveWindowID; };
-  DWORD GetExclusiveControlID() const { return m_exclusiveControlID; };
+  void SetExclusiveAccess(int controlID, int windowID, const CPoint &point);
+  void EndExclusiveAccess(int controlID, int windowID);
+  int GetExclusiveWindowID() const { return m_exclusiveWindowID; };
+  int GetExclusiveControlID() const { return m_exclusiveControlID; };
   const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
   void SetState(DWORD state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
@@ -94,8 +94,8 @@ private:
   void UpdateInternal();
  
   // exclusive access to mouse from a control
-  DWORD m_exclusiveWindowID;
-  DWORD m_exclusiveControlID;
+  int m_exclusiveWindowID;
+  int m_exclusiveControlID;
   CPoint m_exclusiveOffset;
 
   // state of the mouse

@@ -26,8 +26,8 @@
 #include "GUIControlProfiler.h"
 #include "utils/log.h"
 
-CGUIListGroup::CGUIListGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
-: CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
+CGUIListGroup::CGUIListGroup(int parentID, int controlID, float posX, float posY, float width, float height)
+: CGUIControlGroup(parentID, controlID, posX, posY, width, height)
 {
   m_item = NULL;
   ControlType = GUICONTROL_LISTGROUP;

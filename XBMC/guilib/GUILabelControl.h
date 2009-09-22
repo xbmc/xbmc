@@ -41,7 +41,7 @@ public:
   CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "");
 
   void SetLabel(const CStdString &label, const CStdString &fallback);
-  CStdString GetLabel(DWORD contextWindow, bool preferImage = false) const;
+  CStdString GetLabel(int contextWindow, bool preferImage = false) const;
   CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false) const;
   bool IsConstant() const;
   bool IsEmpty() const;
@@ -73,7 +73,7 @@ class CGUILabelControl :
       public CGUIControl
 {
 public:
-  CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath);
+  CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath);
   virtual ~CGUILabelControl(void);
   virtual CGUILabelControl *Clone() const { return new CGUILabelControl(*this); };
 

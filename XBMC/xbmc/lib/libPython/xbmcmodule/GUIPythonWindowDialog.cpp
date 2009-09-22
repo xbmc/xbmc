@@ -22,8 +22,8 @@
 #include "GUIPythonWindowDialog.h"
 #include "GUIWindowManager.h"
 
-CGUIPythonWindowDialog::CGUIPythonWindowDialog(DWORD dwId)
-:CGUIPythonWindow(dwId)
+CGUIPythonWindowDialog::CGUIPythonWindowDialog(int id)
+:CGUIPythonWindow(id)
 {
   m_bRunning = false;
   m_loadOnDemand = false;
@@ -33,7 +33,7 @@ CGUIPythonWindowDialog::~CGUIPythonWindowDialog(void)
 {
 }
 
-void CGUIPythonWindowDialog::Activate(DWORD dwParentId)
+void CGUIPythonWindowDialog::Activate(int parentId)
 {
   m_gWindowManager.RouteToWindow(this);
 

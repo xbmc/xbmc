@@ -100,7 +100,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const vecColors &colors, colo
   float spaceWidth = GetCharWidth(L' ');
   // max chars on screen + extra margin chars
   vecText::size_type maxChars =
-    std::min<std::vector<DWORD>::size_type>(
+    std::min<vecText::size_type>(
       (text.size() + (vecText::size_type)scrollInfo.suffix.size()),
       (vecText::size_type)((maxWidth * 1.05f) / spaceWidth));
 

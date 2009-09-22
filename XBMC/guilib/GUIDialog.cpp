@@ -26,8 +26,8 @@
 #include "utils/SingleLock.h"
 #include "Application.h"
 
-CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
-    : CGUIWindow(dwID, xmlFile)
+CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
+    : CGUIWindow(id, xmlFile)
 {
   m_bModal = true;
   m_bRunning = false;

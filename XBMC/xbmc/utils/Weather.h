@@ -79,8 +79,8 @@ public:
   day_forcast m_dfForcast[NUM_DAYS];
   bool m_bImagesOkay;
 protected:
-  virtual const char *TranslateInfo(DWORD dwInfo);
-  virtual const char *BusyInfo(DWORD dwInfo);
+  virtual const char *TranslateInfo(int info);
+  virtual const char *BusyInfo(int info);
   virtual DWORD TimeToNextRefreshInMs();
 
   void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue);
@@ -90,8 +90,8 @@ protected:
   void LocalizeDay(char *szDay);
   void LoadLocalizedToken();
   int ConvertSpeed(int speed);
-  std::map<CStdString, DWORD> m_localizedTokens;
-  typedef std::map<CStdString, DWORD>::const_iterator ilocalizedTokens;
+  std::map<CStdString, int> m_localizedTokens;
+  typedef std::map<CStdString, int>::const_iterator ilocalizedTokens;
 
   char m_szLocation[3][100];
 

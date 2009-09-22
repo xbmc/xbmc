@@ -45,7 +45,7 @@ void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback
   Parse(label);
 }
 
-CStdString CGUIInfoLabel::GetLabel(DWORD contextWindow, bool preferImage) const
+CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage) const
 {
   CStdString label;
   for (unsigned int i = 0; i < m_info.size(); i++)
@@ -197,8 +197,8 @@ CStdString CGUIInfoLabel::GetLabel(const CStdString &label, bool preferImage)
   return info.GetLabel(0, preferImage);
 }
 
-CGUILabelControl::CGUILabelControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine)
+CGUILabelControl::CGUILabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool wrapMultiLine, bool bHasPath)
+    : CGUIControl(parentID, controlID, posX, posY, width, height), m_textLayout(labelInfo.font, wrapMultiLine)
 {
   m_bHasPath = bHasPath;
   m_iCursorPos = 0;
@@ -221,7 +221,7 @@ void CGUILabelControl::ShowCursor(bool bShow)
 
 void CGUILabelControl::SetCursorPos(int iPos)
 {
-  CStdString label = m_infoLabel.GetLabel(m_dwParentID);
+  CStdString label = m_infoLabel.GetLabel(m_parentID);
   if (iPos > (int)label.length()) iPos = label.length();
   if (iPos < 0) iPos = 0;
   m_iCursorPos = iPos;
@@ -240,7 +240,7 @@ void CGUILabelControl::UpdateColors()
 
 void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
 {
-  CStdString label(m_infoLabel.GetLabel(m_dwParentID));
+  CStdString label(m_infoLabel.GetLabel(m_parentID));
 
   if (m_bShowCursor)
   { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
@@ -420,5 +420,5 @@ void CGUILabelControl::SetHighlight(unsigned int start, unsigned int end)
 
 CStdString CGUILabelControl::GetDescription() const
 {
-  return m_infoLabel.GetLabel(m_dwParentID);
+  return m_infoLabel.GetLabel(m_parentID);
 }

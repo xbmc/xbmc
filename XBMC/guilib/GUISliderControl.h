@@ -44,7 +44,7 @@ class CGUISliderControl :
       public CGUIControl
 {
 public:
-  CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType);
+  CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& mibTexture, const CTextureInfo& nibTextureFocus, int iType);
   virtual ~CGUISliderControl(void);
   virtual CGUISliderControl *Clone() const { return new CGUISliderControl(*this); };
 
@@ -66,7 +66,7 @@ public:
   void SetFloatInterval(float fInterval);
   void SetType(int iType) { m_iType = iType; };
   virtual bool HitTest(const CPoint &point) const;
-  virtual bool OnMouseClick(DWORD dwButton, const CPoint &point);
+  virtual bool OnMouseClick(int button, const CPoint &point);
   virtual bool OnMouseDrag(const CPoint &offset, const CPoint &point);
   virtual bool OnMouseWheel(char wheel, const CPoint &point);
   virtual CStdString GetDescription() const;
