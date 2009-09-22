@@ -63,7 +63,6 @@
  *****************/
 
 #ifdef _WIN32
-#define _WIN32PC
 #define HAS_SDL_JOYSTICK
 #define HAS_WIN32_NETWORK
 #define HAS_LIRC
@@ -139,7 +138,7 @@
 #define DSSPEAKER_USE_DEFAULT DSSPEAKER_STEREO
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
-#include "../xbmc/win32/PlatformInclude.h"
+#include "PlatformInclude.h"
 #include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
 #include "D3DX9.h"  // or the reference video clock.
 #ifdef HAS_SDL
