@@ -41,7 +41,7 @@ namespace XFILE
     // CThread methods
     virtual void Process();
     virtual void OnExit();
-    virtual void StopThread();
+    virtual void StopThread(bool bJoin = true);
 
     // IFIle methods
     virtual bool          Open(const CURL& url);

@@ -356,12 +356,12 @@ ICacheInterface* CFileCache::GetCache()
   return NULL;
 }
 
-void CFileCache::StopThread()
+void CFileCache::StopThread(bool bJoin /*= true*/)
 {
   m_bStop = true;
   //Process could be waiting for seekEvent
   m_seekEvent.Set();
-  CThread::StopThread();
+  CThread::StopThread(bJoin);
 }
 
 CStdString CFileCache::GetContent()
