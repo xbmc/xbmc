@@ -167,9 +167,6 @@ void CNetwork::StopServices(bool bWait)
 #ifdef HAS_UPNP
     g_application.StopUPnP();
 #endif
-#ifdef HAS_EVENT_SERVER
-    g_application.StopEventServer();
-#endif
 #ifdef HAS_ZEROCONF
     g_application.StopZeroconf();
 #endif      
@@ -182,6 +179,9 @@ void CNetwork::StopServices(bool bWait)
 
 #ifdef HAS_WEB_SERVER
   g_application.StopWebServer(bWait);
+#endif
+#ifdef HAS_EVENT_SERVER
+  g_application.StopEventServer(bWait, false);
 #endif
 #ifdef HAS_DBUS_SERVER
   g_application.StopDbusServer(bWait);

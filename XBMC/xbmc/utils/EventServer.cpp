@@ -111,10 +111,10 @@ void CEventServer::StartServer()
   CThread::SetName("EventServer");
 }
 
-void CEventServer::StopServer()
+void CEventServer::StopServer(bool bWait)
 {
   CZeroconf::GetInstance()->RemoveService("servers.eventserver");
-  StopThread();
+  StopThread(bWait);
 }
 
 void CEventServer::Cleanup()

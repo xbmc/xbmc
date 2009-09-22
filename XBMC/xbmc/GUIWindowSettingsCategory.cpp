@@ -2355,7 +2355,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartEventServer();
     else
     {
-      if (!g_application.StopEventServer(true))
+      if (!g_application.StopEventServer(true, true))
       {
         g_guiSettings.SetBool("remoteevents.enabled", true);
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -2369,7 +2369,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #ifdef HAS_EVENT_SERVER
     if (g_guiSettings.GetBool("remoteevents.enabled"))
     {
-      if (g_application.StopEventServer(true))
+      if (g_application.StopEventServer(true, true))
         g_application.StartEventServer();
       else
       {
