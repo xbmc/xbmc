@@ -221,6 +221,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   CVideoDatabase videoDatabase;
   CBookmark bookmark;
   bookmark.timeInSeconds = (int)g_application.GetTime();
+  bookmark.totalTimeInSeconds = (int)g_application.GetTotalTime();
 
   if( g_application.m_pPlayer )
     bookmark.playerState = g_application.m_pPlayer->GetPlayerState();
