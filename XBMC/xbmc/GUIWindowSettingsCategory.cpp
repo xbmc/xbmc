@@ -1911,7 +1911,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
     }
 #ifdef HAS_WEB_SERVER
-    g_application.StopWebServer();
+    g_application.StopWebServer(true);
     if (g_guiSettings.GetBool("servers.webserver"))
     {
       g_application.StartWebServer();

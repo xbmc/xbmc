@@ -1371,19 +1371,26 @@ void CApplication::StartWebServer()
 #endif
 }
 
-void CApplication::StopWebServer()
+void CApplication::StopWebServer(bool bWait)
 {
 #ifdef HAS_WEB_SERVER
   if (m_pWebServer)
   {
-    CLog::Log(LOGNOTICE, "Webserver: Stopping...");
-    m_pWebServer->Stop();
-    delete m_pWebServer;
-    m_pWebServer = NULL;
-    CSectionLoader::Unload("LIBHTTP");
-    CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-    CZeroconf::GetInstance()->RemoveService("servers.webserver");
-    CZeroconf::GetInstance()->RemoveService("servers.webapi");
+    if (!bWait)
+    {
+      CLog::Log(LOGNOTICE, "Webserver: Stopping...");
+      m_pWebServer->Stop(false);
+    }
+    else
+    {
+      m_pWebServer->Stop(true);
+      delete m_pWebServer;
+      m_pWebServer = NULL;
+      CSectionLoader::Unload("LIBHTTP");
+      CLog::Log(LOGNOTICE, "Webserver: Stopped...");
+      CZeroconf::GetInstance()->RemoveService("servers.webserver");
+      CZeroconf::GetInstance()->RemoveService("servers.webapi");
+    }
   }
 #endif
 }

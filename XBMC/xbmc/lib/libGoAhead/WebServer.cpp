@@ -151,11 +151,11 @@ bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, 
   return true;
 }
 
-void CWebServer::Stop()
+void CWebServer::Stop(bool bWait)
 {
   m_bFinished = true;
   
-  StopThread();
+  StopThread(bWait);
 }
 
 

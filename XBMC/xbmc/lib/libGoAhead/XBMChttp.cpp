@@ -3008,7 +3008,7 @@ int CXbmcHttp::xbmcWebServerStatus(int numParas, CStdString paras[])
         return SetResponse(openTag+"Already off");
       else
       {
-        g_application.StopWebServer();
+        g_application.StopWebServer(true);
         return SetResponse(openTag+"OK");
       }
     else

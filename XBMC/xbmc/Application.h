@@ -100,7 +100,7 @@ public:
   void StartServices();
   void StopServices();
   void StartWebServer();
-  void StopWebServer();
+  void StopWebServer(bool bWait);
   void StartFtpServer();
   void StopFtpServer();
   void StartTimeServer();
