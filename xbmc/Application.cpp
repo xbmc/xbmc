@@ -20,6 +20,7 @@
  */
 
 #include "Application.h"
+#include "utils/Builtins.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
@@ -2562,7 +2563,7 @@ bool CApplication::OnAction(CAction &action)
   // built in functions : execute the built-in
   if (action.id == ACTION_BUILT_IN_FUNCTION)
   {
-    CUtil::ExecBuiltIn(action.strAction);
+    CBuiltins::Execute(action.strAction);
     m_navigationTimer.StartZero();
     return true;
   }
@@ -4712,8 +4713,8 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
       CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, actionStr.c_str());
 
       // user has asked for something to be executed
-      if (CUtil::IsBuiltIn(actionStr))
-        CUtil::ExecBuiltIn(actionStr);
+      if (CBuiltins::HasCommand(actionStr))
+        CBuiltins::Execute(actionStr);
       else
       {
         // try translating the action from our ButtonTranslator

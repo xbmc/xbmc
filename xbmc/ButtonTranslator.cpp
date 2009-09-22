@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "utils/Builtins.h"
 #include "ButtonTranslator.h"
 #include "Util.h"
 #include "Settings.h"
@@ -816,7 +817,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   action = ACTION_NONE;
   CStdString strAction = szAction;
   strAction.ToLower();
-  if (CUtil::IsBuiltIn(strAction)) action = ACTION_BUILT_IN_FUNCTION;
+  if (CBuiltins::HasCommand(strAction)) action = ACTION_BUILT_IN_FUNCTION;
 
   if (strAction.Equals("noop"))
     return true;
