@@ -2100,7 +2100,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_PAUSE;
+        action.id = ACTION_PAUSE;
         pSlideShow->OnAction(action);    
       }
     }
@@ -2113,7 +2113,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_STOP;
+        action.id = ACTION_STOP;
         pSlideShow->OnAction(action);    
       }
     }
@@ -2127,7 +2127,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_NEXT_PICTURE;
+        action.id = ACTION_NEXT_PICTURE;
         pSlideShow->OnAction(action);
       }
     }
@@ -2140,7 +2140,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_PREV_PICTURE;
+        action.id = ACTION_PREV_PICTURE;
         pSlideShow->OnAction(action);    
       }
     }
@@ -2154,7 +2154,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
       if (pSlideShow) {
         CAction action;
-        action.wID = ACTION_ROTATE_PICTURE;
+        action.id = ACTION_ROTATE_PICTURE;
         pSlideShow->OnAction(action);  
         return SetResponse(openTag+"OK");
       }
@@ -2171,9 +2171,9 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
       if (pSlideShow) {
         if (numParas>1) {
           CAction action;
-          action.wID = ACTION_ANALOG_MOVE;
-          action.fAmount1=(float) atof(paras[0]);
-          action.fAmount2=(float) atof(paras[1]);
+          action.id = ACTION_ANALOG_MOVE;
+          action.amount1=(float) atof(paras[0]);
+          action.amount2=(float) atof(paras[1]);
           pSlideShow->OnAction(action);    
           return SetResponse(openTag+"OK");
         }
@@ -2194,7 +2194,7 @@ int CXbmcHttp::xbmcAction(int numParas, CStdString paras[], int theAction)
         if (numParas>0)
         {
           CAction action;
-          action.wID = ACTION_ZOOM_LEVEL_NORMAL+atoi(paras[0]);
+          action.id = ACTION_ZOOM_LEVEL_NORMAL+atoi(paras[0]);
           pSlideShow->OnAction(action);    
           return SetResponse(openTag+"OK");
         }
@@ -2948,8 +2948,8 @@ int CXbmcHttp::xbmcOnAction(int numParas, CStdString paras[])
   else
   {
     CAction action;
-    action.wID = atoi(paras[0]);
-    action.fAmount1 = 1; // digital button (could change this for repeat acceleration)
+    action.id = atoi(paras[0]);
+    action.amount1 = 1; // digital button (could change this for repeat acceleration)
     g_application.OnAction(action);
     return SetResponse(openTag+"OK");
   }

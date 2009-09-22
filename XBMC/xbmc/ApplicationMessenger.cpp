@@ -55,6 +55,7 @@
 #endif
 #include "MediaManager.h"
 #include "LocalizeStrings.h"
+#include "SingleLock.h"
 
 using namespace std;
 

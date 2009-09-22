@@ -117,12 +117,12 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
   if (list >= 0 && list <= 1)
   {
     // the non-contextual menu can be called at any time
-    if (action.wID == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
+    if (action.id == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
     {
       OnPopupMenu(list,-1, false);
       return true;
     }
-    if (action.wID == ACTION_DELETE_ITEM)
+    if (action.id == ACTION_DELETE_ITEM)
     {
       if (CanDelete(list))
       {
@@ -132,7 +132,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.wID == ACTION_COPY_ITEM)
+    if (action.id == ACTION_COPY_ITEM)
     {
       if (CanCopy(list))
       {
@@ -142,7 +142,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.wID == ACTION_MOVE_ITEM)
+    if (action.id == ACTION_MOVE_ITEM)
     {
       if (CanMove(list))
       {
@@ -152,7 +152,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.wID == ACTION_RENAME_ITEM)
+    if (action.id == ACTION_RENAME_ITEM)
     {
       if (CanRename(list))
       {
@@ -162,7 +162,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.wID == ACTION_PARENT_DIR)
+    if (action.id == ACTION_PARENT_DIR)
     {
       if (m_vecItems[list]->IsVirtualDirectoryRoot())
         m_gWindowManager.PreviousWindow();
@@ -170,7 +170,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
         GoParentFolder(list);
       return true;
     }
-    if (action.wID == ACTION_PLAYER_PLAY)
+    if (action.id == ACTION_PLAYER_PLAY)
     {
 #ifdef HAS_DVD_DRIVE
       if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
@@ -178,7 +178,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 #endif      
     }
   }
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;

@@ -42,6 +42,7 @@
 #include "GUIUserMessages.h"
 #include "Settings.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/SingleLock.h"
 #include "utils/log.h"
 
 using namespace std;

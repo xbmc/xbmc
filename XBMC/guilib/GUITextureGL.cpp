@@ -84,7 +84,7 @@ void CGUITextureGL::End()
   glDisable(GL_TEXTURE_2D);
 }
 
-void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
+void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
 {
   GLubyte a = (GLubyte)GET_A(color);
   GLubyte r = (GLubyte)GET_R(color);
@@ -136,7 +136,7 @@ void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, con
   glVertex3f(x[3], y[3], z[3]);
 }
 
-void CGUITextureGL::DrawQuad(const CRect &rect, DWORD color, CBaseTexture *texture, const CRect *texCoords)
+void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
 {
   if (texture)
   {

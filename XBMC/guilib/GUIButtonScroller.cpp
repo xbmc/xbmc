@@ -115,7 +115,7 @@ CGUIButtonScroller::~CGUIButtonScroller(void)
 
 bool CGUIButtonScroller::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     // send the appropriate message to the parent window
     vector<CGUIActionDescriptor> actions = m_vecButtons[GetActiveButton()]->clickActions;
@@ -128,15 +128,15 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     }
     return true;
   }
-  if (action.wID == ACTION_CONTEXT_MENU)
+  if (action.id == ACTION_CONTEXT_MENU)
   { // send a click message to our parent
-    SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.wID);
+    SEND_CLICK_MESSAGE(GetID(), GetParentID(), action.id);
     return true;
   }
   // smooth scrolling (for analog controls)
-  if (action.wID == ACTION_SCROLL_UP)
+  if (action.id == ACTION_SCROLL_UP)
   {
-    m_fAnalogScrollSpeed += action.fAmount1 * action.fAmount1;
+    m_fAnalogScrollSpeed += action.amount1 * action.amount1;
     bool handled = false;
     while (m_fAnalogScrollSpeed > ANALOG_SCROLL_START)
     {
@@ -148,9 +148,9 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
     }
     return handled;
   }
-  if (action.wID == ACTION_SCROLL_DOWN)
+  if (action.id == ACTION_SCROLL_DOWN)
   {
-    m_fAnalogScrollSpeed += action.fAmount1 * action.fAmount1;
+    m_fAnalogScrollSpeed += action.amount1 * action.amount1;
     bool handled = false;
     while (m_fAnalogScrollSpeed > ANALOG_SCROLL_START)
     {
@@ -893,9 +893,9 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton, const CPoint &point)
       m_iCurrentSlot = (int)((point.x - m_posX) / (m_imgFocus.GetWidth() + m_buttonGap));
       CAction action;
       if (dwButton == MOUSE_LEFT_BUTTON)
-        action.wID = ACTION_SELECT_ITEM;
+        action.id = ACTION_SELECT_ITEM;
       if (dwButton == MOUSE_RIGHT_BUTTON)
-        action.wID = ACTION_CONTEXT_MENU;
+        action.id = ACTION_CONTEXT_MENU;
       OnAction(action);
       return true;
     }
@@ -907,9 +907,9 @@ bool CGUIButtonScroller::OnMouseClick(DWORD dwButton, const CPoint &point)
       m_iCurrentSlot = (int)((point.y - m_posY) / (m_imgFocus.GetHeight() + m_buttonGap));
       CAction action;
       if (dwButton == MOUSE_LEFT_BUTTON)
-        action.wID = ACTION_SELECT_ITEM;
+        action.id = ACTION_SELECT_ITEM;
       if (dwButton == MOUSE_RIGHT_BUTTON)
-        action.wID = ACTION_CONTEXT_MENU;
+        action.id = ACTION_CONTEXT_MENU;
       OnAction(action);
       return true;
     }

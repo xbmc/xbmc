@@ -75,7 +75,7 @@ public:
   void SetReverse(bool bOnOff);
   int GetMaximum() const;
   int GetMinimum() const;
-  void SetSpinAlign(DWORD align, float offsetX) { m_label.align = align; m_label.offsetX = offsetX; };
+  void SetSpinAlign(uint32_t align, float offsetX) { m_label.align = align; m_label.offsetX = offsetX; };
   void SetType(int iType) { m_iType = iType; };
   float GetSpinWidth() const { return m_imgspinUp.GetWidth(); };
   float GetSpinHeight() const { return m_imgspinUp.GetHeight(); };

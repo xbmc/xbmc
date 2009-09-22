@@ -59,65 +59,65 @@ CGUIFontTTFDX::~CGUIFontTTFDX(void)
 void CGUIFontTTFDX::RenderInternal(SVertex* v)
 {
   CUSTOMVERTEX verts[4] =  {
-  { v[0].x-0.5f, v[0].y-0.5f, v[0].z, m_dwColor, v[0].u, v[0].v},
-  { v[1].x-0.5f, v[1].y-0.5f, v[1].z, m_dwColor, v[1].u, v[1].v},
-  { v[2].x-0.5f, v[2].y-0.5f, v[2].z, m_dwColor, v[2].u, v[2].v},
-  { v[3].x-0.5f, v[3].y-0.5f, v[3].z, m_dwColor, v[3].u, v[3].v}
+  { v[0].x-0.5f, v[0].y-0.5f, v[0].z, m_color, v[0].u, v[0].v},
+  { v[1].x-0.5f, v[1].y-0.5f, v[1].z, m_color, v[1].u, v[1].v},
+  { v[2].x-0.5f, v[2].y-0.5f, v[2].z, m_color, v[2].u, v[2].v},
+  { v[3].x-0.5f, v[3].y-0.5f, v[3].z, m_color, v[3].u, v[3].v}
   };
 
-  m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+  g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 }
 
 void CGUIFontTTFDX::Begin()
 {
-   m_pD3DDevice = g_Windowing.Get3DDevice();
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-  if (m_dwNestedBeginCount == 0)
+  if (m_nestedBeginCount == 0)
   {
     // just have to blit from our texture.
-    m_pD3DDevice->SetTexture( 0, m_texture->GetTextureObject() );
+    pD3DDevice->SetTexture( 0, m_texture->GetTextureObject() );
 
-    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-    m_pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    m_pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+    pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+    pD3DDevice->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+    pD3DDevice->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+    pD3DDevice->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
+    pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_SELECTARG1 ); // only use diffuse
+    pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+    pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+    pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    pD3DDevice->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
     // no other texture stages needed
-    m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+    pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 
-    m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
-    m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
-    m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
-    m_pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-    m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-    m_pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-    m_pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-    m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
+    pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
+    pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
+    pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+    pD3DDevice->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+    pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+    pD3DDevice->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+    pD3DDevice->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+    pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE);
 
-    m_pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
+    pD3DDevice->SetFVF(D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1);
   }
   // Keep track of the nested begin/end calls.
   m_vertex_count = 0;
-  m_dwNestedBeginCount++;
+  m_nestedBeginCount++;
 }
 
 void CGUIFontTTFDX::End()
 {
-  m_pD3DDevice = g_Windowing.Get3DDevice();
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
-  if (m_dwNestedBeginCount == 0)
+  if (m_nestedBeginCount == 0)
     return;
 
-  if (--m_dwNestedBeginCount > 0)
+  if (--m_nestedBeginCount > 0)
     return;
 
-  m_pD3DDevice->SetTexture(0, NULL);
-  m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+  pD3DDevice->SetTexture(0, NULL);
+  pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
 }
 
 CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)

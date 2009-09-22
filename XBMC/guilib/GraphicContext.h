@@ -123,9 +123,9 @@ public:
 
   inline float GetGUIScaleX() const XBMC_FORCE_INLINE { return m_guiScaleX; }
   inline float GetGUIScaleY() const XBMC_FORCE_INLINE { return m_guiScaleY; }
-  inline DWORD MergeAlpha(DWORD color) const XBMC_FORCE_INLINE
+  inline color_t MergeAlpha(color_t color) const XBMC_FORCE_INLINE
   {
-    DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
+    color_t alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
     if (alpha > 255) alpha = 255;
     return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
   }

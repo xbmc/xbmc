@@ -68,11 +68,11 @@ public:
   virtual CStdString GetDescription() const;
   void SetAlpha(unsigned char alpha);
 
-  void PythonSetLabel(const CStdString &strFont, const std::string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor);
-  void PythonSetDisabledColor(DWORD dwDisabledColor);
+  void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor, color_t shadowColor, color_t focusedColor);
+  void PythonSetDisabledColor(color_t disabledColor);
 
-  void RAMSetTextColor(DWORD dwTextColor);
-  void SettingsCategorySetTextAlign(DWORD dwAlign);
+  void RAMSetTextColor(color_t textColor);
+  void SettingsCategorySetTextAlign(uint32_t align);
 
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.size() > 0; };

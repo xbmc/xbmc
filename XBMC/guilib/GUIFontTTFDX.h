@@ -50,8 +50,6 @@ protected:
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character *ch);
   virtual void DeleteHardwareTexture();
   virtual void RenderInternal(SVertex* v);
-
-  LPDIRECT3DDEVICE9 m_pD3DDevice;
 };
 
 #endif

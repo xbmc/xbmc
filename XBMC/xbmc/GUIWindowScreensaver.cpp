@@ -29,6 +29,7 @@
 #include "GUISettings.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
+#include "utils/SingleLock.h"
 
 CGUIWindowScreensaver::CGUIWindowScreensaver(void)
     : CGUIWindow(WINDOW_SCREENSAVER, "")

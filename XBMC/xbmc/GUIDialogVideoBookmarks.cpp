@@ -38,6 +38,7 @@
 #include "Crc32.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 

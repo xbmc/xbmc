@@ -39,6 +39,7 @@
 #include "WindowingFactory.h"
 #include "Texture.h"
 #include "LocalizeStrings.h"
+#include "utils/SingleLock.h"
 #include "utils/log.h"
 
 using namespace DIRECTORY;
@@ -457,7 +458,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     return true;
   }
 
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_SHOW_CODEC:
     {
@@ -540,10 +541,10 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   case ACTION_ZOOM_LEVEL_7:
   case ACTION_ZOOM_LEVEL_8:
   case ACTION_ZOOM_LEVEL_9:
-    Zoom((action.wID - ACTION_ZOOM_LEVEL_NORMAL) + 1);
+    Zoom((action.id - ACTION_ZOOM_LEVEL_NORMAL) + 1);
     break;
   case ACTION_ANALOG_MOVE:
-    Move(action.fAmount1*PICTURE_MOVE_AMOUNT_ANALOG, -action.fAmount2*PICTURE_MOVE_AMOUNT_ANALOG);
+    Move(action.amount1*PICTURE_MOVE_AMOUNT_ANALOG, -action.amount2*PICTURE_MOVE_AMOUNT_ANALOG);
     break;
   default:
     return CGUIWindow::OnAction(action);

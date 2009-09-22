@@ -135,7 +135,7 @@ void CGUIFadeLabelControl::Render()
   bool moveToNextLabel = false;
   if (!m_scrollOut)
   {
-    vector<DWORD> text;
+    vector<uint32_t> text;
     m_textLayout.GetFirstText(text);
     if (m_scrollInfo.characterPos && m_scrollInfo.characterPos < text.size())
       text.erase(text.begin(), text.begin() + min((int)m_scrollInfo.characterPos - 1, (int)text.size()));

@@ -63,7 +63,7 @@ void CGUIToggleButtonControl::Render()
 
 bool CGUIToggleButtonControl::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
   }

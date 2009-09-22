@@ -18,6 +18,7 @@
 #include "GUIVisualisationControl.h"
 #include "GUIImage.h"
 #include "cores/dvdplayer/DVDPlayer.h"
+#include "utils/SingleLock.h"
 #include "utils/log.h"
 
 #include "karaokewindowbackground.h"

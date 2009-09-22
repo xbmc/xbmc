@@ -33,6 +33,7 @@
 #endif
 #include "SystemInfo.h"
 #include "LocalizeStrings.h"
+#include "GUIRSSControl.h"
 
 using namespace std;
 using namespace XFILE;
@@ -200,7 +201,7 @@ void CRssReader::Process()
   UpdateObserver();
 }
 
-void CRssReader::getFeed(vector<DWORD> &text)
+void CRssReader::getFeed(vecText &text)
 {
   text.clear();
   // double the spaces at the start of the set
@@ -219,7 +220,7 @@ void CRssReader::getFeed(vector<DWORD> &text)
   }
 }
 
-void CRssReader::AddTag(const CStdString aString)
+void CRssReader::AddTag(const CStdString &aString)
 {
   m_tagSet.push_back(aString);
 }
@@ -411,7 +412,7 @@ void CRssReader::SetObserver(IRssObserver *observer)
 void CRssReader::UpdateObserver()
 {
   if (!m_pObserver) return;
-  vector<DWORD> feed;
+  vecText feed;
   getFeed(feed);
   if (feed.size() > 0)
   {

@@ -126,19 +126,19 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
 bool CGUIDialogSongInfo::OnAction(const CAction &action)
 {
   char rating = m_song->GetMusicInfoTag()->GetRating();
-  if (action.wID == ACTION_INCREASE_RATING)
+  if (action.id == ACTION_INCREASE_RATING)
   {
     if (rating < '5')
       SetRating(rating + 1);
     return true;
   }
-  else if (action.wID == ACTION_DECREASE_RATING)
+  else if (action.id == ACTION_DECREASE_RATING)
   {
     if (rating > '0')
       SetRating(rating - 1);
     return true;
   }
-  else if (action.wID == ACTION_PREVIOUS_MENU)
+  else if (action.id == ACTION_PREVIOUS_MENU)
     m_cancelled = true;
   return CGUIDialog::OnAction(action);
 }

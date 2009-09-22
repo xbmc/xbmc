@@ -258,8 +258,8 @@ void CGUILabelControl::UpdateInfo(const CGUIListItem *item)
   else if (m_startHighlight || m_endHighlight)
   { // this is only used for times/dates, so working in ascii (utf8) is fine
     CStdString colorLabel;
-    colorLabel.Format("[COLOR %x]%s[/COLOR]%s[COLOR %x]%s[/COLOR]", (DWORD)m_label.disabledColor, label.Left(m_startHighlight),
-                 label.Mid(m_startHighlight, m_endHighlight - m_startHighlight), (DWORD)m_label.disabledColor, label.Mid(m_endHighlight));
+    colorLabel.Format("[COLOR %x]%s[/COLOR]%s[COLOR %x]%s[/COLOR]", (color_t)m_label.disabledColor, label.Left(m_startHighlight),
+                 label.Mid(m_startHighlight, m_endHighlight - m_startHighlight), (color_t)m_label.disabledColor, label.Mid(m_endHighlight));
     label = colorLabel;
   }
 
@@ -333,7 +333,7 @@ void CGUILabelControl::SetWidthControl(bool bScroll, int scrollSpeed)
   m_ScrollInfo.Reset();
 }
 
-void CGUILabelControl::SetAlignment(DWORD align)
+void CGUILabelControl::SetAlignment(uint32_t align)
 {
   m_label.align = align;
 }

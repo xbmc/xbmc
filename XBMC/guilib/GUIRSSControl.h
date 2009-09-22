@@ -30,7 +30,21 @@
  */
 
 #include "GUIControl.h"
-#include "utils/RssReader.h"
+
+typedef uint32_t character_t;
+typedef uint32_t color_t;
+typedef std::vector<character_t> vecText;
+typedef std::vector<color_t> vecColors;
+
+class CRssReader;
+
+class IRssObserver
+{
+public:
+  virtual void OnFeedUpdate(const vecText &feed) = 0;
+  virtual void OnFeedRelease() = 0;
+  virtual ~IRssObserver() {}
+};
 
 /*!
 \ingroup controls
@@ -45,7 +59,7 @@ public:
   virtual CGUIRSSControl *Clone() const { return new CGUIRSSControl(*this); };
 
   virtual void Render();
-  virtual void OnFeedUpdate(const std::vector<DWORD> &feed);
+  virtual void OnFeedUpdate(const vecText &feed);
   virtual void OnFeedRelease();
   virtual bool CanFocus() const { return false; };
 
@@ -58,7 +72,7 @@ protected:
   CCriticalSection m_criticalSection;
 
   CRssReader* m_pReader;
-  std::vector<DWORD> m_feed;
+  vecText m_feed;
 
   CStdString m_strRSSTags;
 

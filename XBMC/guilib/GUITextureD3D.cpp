@@ -89,7 +89,7 @@ void CGUITextureD3D::End()
     g_Windowing.Get3DDevice()->SetTexture( 1, NULL );
 }
 
-void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
+void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
 {
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -166,7 +166,7 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 }
 
-void CGUITextureD3D::DrawQuad(const CRect &rect, DWORD color, CBaseTexture *texture, const CRect *texCoords)
+void CGUITextureD3D::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
 {
   struct CUSTOMVERTEX {
       FLOAT x, y, z;

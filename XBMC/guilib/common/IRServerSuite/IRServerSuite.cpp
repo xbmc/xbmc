@@ -80,7 +80,7 @@ void CRemoteControl::Initialize()
 
 void CRemoteControl::Process()
 {
-  DWORD iTries = 1;
+  int iTries = 1;
   DWORD iMsRetryDelay = 5000;
   DWORD time = timeGetTime() - iMsRetryDelay;
   // try to connect 6 times @ a 5 second interval (30 seconds)

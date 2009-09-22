@@ -56,7 +56,7 @@ CGUIFontTTFGL::~CGUIFontTTFGL(void)
 
 void CGUIFontTTFGL::Begin()
 {
-  if (m_dwNestedBeginCount == 0)
+  if (m_nestedBeginCount == 0)
   {
     if (!m_bTextureLoaded)
     {
@@ -99,15 +99,15 @@ void CGUIFontTTFGL::Begin()
     m_vertex_count = 0;
   }
   // Keep track of the nested begin/end calls.
-  m_dwNestedBeginCount++;
+  m_nestedBeginCount++;
 }
 
 void CGUIFontTTFGL::End()
 {
-  if (m_dwNestedBeginCount == 0)
+  if (m_nestedBeginCount == 0)
     return;
 
-  if (--m_dwNestedBeginCount > 0)
+  if (--m_nestedBeginCount > 0)
     return;
 
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);

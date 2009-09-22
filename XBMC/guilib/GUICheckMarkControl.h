@@ -58,8 +58,8 @@ public:
   bool GetSelected() const;
   bool OnMouseClick(DWORD dwButton, const CPoint &point);
 
-  void PythonSetLabel(const CStdString &strFont, const std::string &strText, DWORD dwTextColor);
-  void PythonSetDisabledColor(DWORD dwDisabledColor);
+  void PythonSetLabel(const CStdString &strFont, const std::string &strText, color_t textColor);
+  void PythonSetDisabledColor(color_t disabledColor);
 
 protected:
   virtual void UpdateColors();

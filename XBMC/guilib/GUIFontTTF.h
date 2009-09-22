@@ -40,7 +40,11 @@ typedef struct FT_FaceRec_ *FT_Face;
 typedef struct FT_LibraryRec_ *FT_Library;
 typedef struct FT_GlyphSlotRec_ *FT_GlyphSlot;
 typedef struct FT_BitmapGlyphRec_ *FT_BitmapGlyph;
-  
+
+typedef uint32_t character_t;
+typedef uint32_t color_t;
+typedef std::vector<character_t> vecText;
+typedef std::vector<color_t> vecColors;
 
 /*!
  \ingroup textures
@@ -79,23 +83,23 @@ protected:
     short offsetX, offsetY;
     float left, top, right, bottom;
     float advance;
-    DWORD letterAndStyle;
+    character_t letterAndStyle;
   };
   void AddReference();
   void RemoveReference();
 
-  float GetTextWidthInternal(std::vector<DWORD>::const_iterator start, std::vector<DWORD>::const_iterator end);
-  float GetCharWidthInternal(DWORD ch);
+  float GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end);
+  float GetCharWidthInternal(character_t ch);
   float GetTextHeight(float lineSpacing, int numLines) const;
   float GetLineHeight(float lineSpacing) const;
 
-  void DrawTextInternal(float x, float y, const std::vector<DWORD> &colors, const std::vector<DWORD> &text,
-                            DWORD alignment, float maxPixelWidth, bool scrolling);
+  void DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text,
+                            uint32_t alignment, float maxPixelWidth, bool scrolling);
 
-  void DrawTextInternal(float x, float y, DWORD color, const std::vector<DWORD> &text,
-                            DWORD alignment, float maxPixelWidth, bool scrolling)
+  void DrawTextInternal(float x, float y, color_t color, const vecText &text,
+                            uint32_t alignment, float maxPixelWidth, bool scrolling)
   {
-    std::vector<DWORD> colors;
+    vecColors colors;
     colors.push_back(color);
     DrawTextInternal(x, y, colors, text, alignment, maxPixelWidth, scrolling);
   }
@@ -104,9 +108,9 @@ protected:
   CStdString m_strFilename;
 
   // Stuff for pre-rendering for speed
-  inline Character *GetCharacter(DWORD letter);
-  bool CacheCharacter(WCHAR letter, DWORD style, Character *ch);
-  void RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX);
+  inline Character *GetCharacter(character_t letter);
+  bool CacheCharacter(wchar_t letter, uint32_t style, Character *ch);
+  void RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX);
   void ClearCharacterCache();
 
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
@@ -125,7 +129,7 @@ protected:
   int m_posX;                        // current position in the texture
   int m_posY;
 
-  DWORD m_dwColor;
+  color_t m_color;
 
   Character *m_char;                 // our characters
   Character *m_charquick[256*4];     // ascii chars (4 styles) here
@@ -137,7 +141,7 @@ protected:
   unsigned int m_cellBaseLine;
   unsigned int m_cellHeight;
 
-  DWORD m_dwNestedBeginCount;             // speedups
+  unsigned int m_nestedBeginCount;             // speedups
 
   // freetype stuff
   FT_Face    m_face;

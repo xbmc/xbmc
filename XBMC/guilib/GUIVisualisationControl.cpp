@@ -345,17 +345,17 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
   if (!m_pVisualisation) return false;
   enum CVisualisation::VIS_ACTION visAction = CVisualisation::VIS_ACTION_NONE;
-  if (action.wID == ACTION_VIS_PRESET_NEXT)
+  if (action.id == ACTION_VIS_PRESET_NEXT)
     visAction = CVisualisation::VIS_ACTION_NEXT_PRESET;
-  else if (action.wID == ACTION_VIS_PRESET_PREV)
+  else if (action.id == ACTION_VIS_PRESET_PREV)
     visAction = CVisualisation::VIS_ACTION_PREV_PRESET;
-  else if (action.wID == ACTION_VIS_PRESET_LOCK)
+  else if (action.id == ACTION_VIS_PRESET_LOCK)
     visAction = CVisualisation::VIS_ACTION_LOCK_PRESET;
-  else if (action.wID == ACTION_VIS_PRESET_RANDOM)
+  else if (action.id == ACTION_VIS_PRESET_RANDOM)
     visAction = CVisualisation::VIS_ACTION_RANDOM_PRESET;
-  else if (action.wID == ACTION_VIS_RATE_PRESET_PLUS)
+  else if (action.id == ACTION_VIS_RATE_PRESET_PLUS)
     visAction = CVisualisation::VIS_ACTION_RATE_PRESET_PLUS;
-  else if (action.wID == ACTION_VIS_RATE_PRESET_MINUS)
+  else if (action.id == ACTION_VIS_RATE_PRESET_MINUS)
     visAction = CVisualisation::VIS_ACTION_RATE_PRESET_MINUS;
 
   return m_pVisualisation->OnAction(visAction);
@@ -401,7 +401,7 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
   else if (message.GetMessage() == GUI_MSG_VISUALISATION_ACTION)
   {
     CAction action;
-    action.wID = (WORD)message.GetParam1();
+    action.id = (int)message.GetParam1();
     return OnAction(action);
   }
   else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)

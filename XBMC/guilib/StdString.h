@@ -3,8 +3,7 @@
 #include <stdint.h>
 #include <vector>
 #if !defined(_LINUX)
-#include <windows.h>
-#include "win32/PlatformDefs.h"
+#include "win32/PlatformDefs.h" // for va_copy
 #endif
 
 // =============================================================================

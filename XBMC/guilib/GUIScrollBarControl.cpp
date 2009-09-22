@@ -90,7 +90,7 @@ bool CGUIScrollBar::OnMessage(CGUIMessage& message)
 
 bool CGUIScrollBar::OnAction(const CAction &action)
 {
-  switch ( action.wID )
+  switch ( action.id )
   {
   case ACTION_MOVE_LEFT:
     if (m_orientation == HORIZONTAL)

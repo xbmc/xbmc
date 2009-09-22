@@ -58,7 +58,7 @@ void CGUIVideoControl::Render()
     g_graphicsContext.SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
 
 #ifdef HAS_VIDEO_PLAYBACK
-    DWORD alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
+    color_t alpha = g_graphicsContext.MergeAlpha(0xFF000000) >> 24;
     g_renderManager.RenderUpdate(false, 0, alpha);
 #else
     ((CDummyVideoPlayer *)g_application.m_pPlayer)->Render();

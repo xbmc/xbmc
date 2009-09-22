@@ -135,7 +135,7 @@ void CGUIButtonControl::RenderText()
 
 bool CGUIButtonControl::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     OnClick();
     return true;
@@ -237,7 +237,7 @@ bool CGUIButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
   {
     g_Mouse.SetState(MOUSE_STATE_CLICK);
     CAction action;
-    action.wID = ACTION_SELECT_ITEM;
+    action.id = ACTION_SELECT_ITEM;
     OnAction(action);
     return true;
   }
@@ -256,28 +256,28 @@ CStdString CGUIButtonControl::GetLabel2() const
   return strLabel;
 }
 
-void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor)
+void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, color_t textColor, color_t shadowColor, color_t focusedColor)
 {
   m_label.font = g_fontManager.GetFont(strFont);
-  m_label.textColor = dwTextColor;
-  m_label.focusedColor = dwFocusedColor;
-  m_label.shadowColor = dwShadowColor;
+  m_label.textColor = textColor;
+  m_label.focusedColor = focusedColor;
+  m_label.shadowColor = shadowColor;
   SetLabel(strText);
 }
 
-void CGUIButtonControl::PythonSetDisabledColor(DWORD dwDisabledColor)
+void CGUIButtonControl::PythonSetDisabledColor(color_t disabledColor)
 {
-  m_label.disabledColor = dwDisabledColor;
+  m_label.disabledColor = disabledColor;
 }
 
-void CGUIButtonControl::RAMSetTextColor(DWORD dwTextColor)
+void CGUIButtonControl::RAMSetTextColor(color_t textColor)
 {
-  m_label.textColor = dwTextColor;
+  m_label.textColor = textColor;
 }
 
-void CGUIButtonControl::SettingsCategorySetTextAlign(DWORD dwAlign)
+void CGUIButtonControl::SettingsCategorySetTextAlign(uint32_t align)
 {
-  m_label.align = dwAlign;
+  m_label.align = align;
 }
 
 void CGUIButtonControl::OnClick()

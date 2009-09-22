@@ -91,7 +91,7 @@ public:
   void SetInfo(const CGUIInfoLabel&labelInfo);
   void SetWidthControl(bool bScroll, int scrollSpeed);
   void SetTruncate(bool bTruncate);
-  void SetAlignment(DWORD align);
+  void SetAlignment(uint32_t align);
   void SetHighlight(unsigned int start, unsigned int end);
 
 protected:
@@ -104,7 +104,7 @@ protected:
   bool m_bHasPath;
   bool m_bShowCursor;
   int m_iCursorPos;
-  DWORD m_dwCounter;
+  unsigned int m_dwCounter;
   // stuff for scrolling
   bool m_ScrollInsteadOfTruncate;
   CScrollInfo m_ScrollInfo;

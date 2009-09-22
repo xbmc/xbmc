@@ -132,7 +132,7 @@ CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
   m_texture = NULL;
   m_char = NULL;
   m_maxChars = 0;
-  m_dwNestedBeginCount = 0;
+  m_nestedBeginCount = 0;
 
   m_bTextureLoaded = false;
   m_vertex_size   = 4*1024;
@@ -149,7 +149,7 @@ CGUIFontTTFBase::CGUIFontTTFBase(const CStdString& strFileName)
   m_textureHeight = m_textureWidth = 0;
   m_textureScaleX = m_textureScaleY = 0.0;
   m_ellipsesWidth = m_height = 0.0f;
-  m_dwColor = 0;
+  m_color = 0;
   m_vertex_count = 0;
   m_nTexture = 0;
 }
@@ -208,7 +208,7 @@ void CGUIFontTTFBase::Clear()
   m_numChars = 0;
   m_posX = 0;
   m_posY = 0;
-  m_dwNestedBeginCount = 0;
+  m_nestedBeginCount = 0;
 
   if (m_face)
     g_freeTypeLibrary.ReleaseFont(m_face);
@@ -286,7 +286,7 @@ bool CGUIFontTTFBase::Load(const CStdString& strFilename, float height, float as
   return true;
 }
 
-void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vector<DWORD> &colors, const vector<DWORD> &text, DWORD alignment, float maxPixelWidth, bool scrolling)
+void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vecColors &colors, const vecText &text, uint32_t alignment, float maxPixelWidth, bool scrolling)
 {
   Begin();
 
@@ -330,7 +330,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vector<DWORD> &co
     // first compute the size of the text to render in both characters and pixels
     unsigned int lineChars = 0;
     float linePixels = 0;
-    for (vector<DWORD>::const_iterator pos = text.begin(); pos != text.end(); pos++)
+    for (vecText::const_iterator pos = text.begin(); pos != text.end(); pos++)
     {
       Character *ch = GetCharacter(*pos);
       if (ch)
@@ -344,11 +344,11 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vector<DWORD> &co
   }
   float cursorX = 0; // current position along the line
 
-  for (vector<DWORD>::const_iterator pos = text.begin(); pos != text.end(); pos++)
+  for (vecText::const_iterator pos = text.begin(); pos != text.end(); pos++)
   {
     // If starting text on a new line, determine justification effects
     // Get the current letter in the CStdString
-    DWORD color = (*pos & 0xff0000) >> 16;
+    color_t color = (*pos & 0xff0000) >> 16;
     if (color >= colors.size())
       color = 0;
     color = colors[color];
@@ -395,7 +395,7 @@ void CGUIFontTTFBase::DrawTextInternal(float x, float y, const vector<DWORD> &co
 }
 
 // this routine assumes a single line (i.e. it was called from GUITextLayout)
-float CGUIFontTTFBase::GetTextWidthInternal(vector<DWORD>::const_iterator start, vector<DWORD>::const_iterator end)
+float CGUIFontTTFBase::GetTextWidthInternal(vecText::const_iterator start, vecText::const_iterator end)
 {
   float width = 0;
   while (start != end)
@@ -406,7 +406,7 @@ float CGUIFontTTFBase::GetTextWidthInternal(vector<DWORD>::const_iterator start,
   return width;
 }
 
-float CGUIFontTTFBase::GetCharWidthInternal(DWORD ch)
+float CGUIFontTTFBase::GetCharWidthInternal(character_t ch)
 {
   Character *c = GetCharacter(ch);
   if (c) return c->advance;
@@ -425,10 +425,10 @@ float CGUIFontTTFBase::GetLineHeight(float lineSpacing) const
   return 0.0f;
 }
 
-CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(DWORD chr)
+CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(character_t chr)
 {
-  WCHAR letter = (WCHAR)(chr & 0xffff);
-  DWORD style = (chr & 0x3000000) >> 24;
+  wchar_t letter = (wchar_t)(chr & 0xffff);
+  character_t style = (chr & 0x3000000) >> 24;
 
   // ignore linebreaks
   if (letter == L'\r')
@@ -437,13 +437,13 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(DWORD chr)
   // quick access to ascii chars
   if (letter < 255)
   {
-    DWORD ch = (style << 8) | letter;
+    character_t ch = (style << 8) | letter;
     if (m_charquick[ch])
       return m_charquick[ch];
   }
 
   // letters are stored based on style and letter
-  DWORD ch = (style << 16) | letter;
+  character_t ch = (style << 16) | letter;
 
   int low = 0;
   int high = m_numChars - 1;
@@ -480,9 +480,9 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(DWORD chr)
   }
   // render the character to our texture
   // must End() as we can't render text to our texture during a Begin(), End() block
-  DWORD dwNestedBeginCount = m_dwNestedBeginCount;
-  m_dwNestedBeginCount = 1;
-  if (dwNestedBeginCount) End();
+  unsigned int nestedBeginCount = m_nestedBeginCount;
+  m_nestedBeginCount = 1;
+  if (nestedBeginCount) End();
   if (!CacheCharacter(letter, style, m_char + low))
   { // unable to cache character - try clearing them all out and starting over
     CLog::Log(LOGDEBUG, "GUIFontTTF::GetCharacter: Unable to cache character.  Clearing character cache of %i characters", m_numChars);
@@ -491,13 +491,13 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(DWORD chr)
     if (!CacheCharacter(letter, style, m_char + low))
     {
       CLog::Log(LOGERROR, "GUIFontTTF::GetCharacter: Unable to cache character (out of memory?)");
-      if (dwNestedBeginCount) Begin();
-      m_dwNestedBeginCount = dwNestedBeginCount;
+      if (nestedBeginCount) Begin();
+      m_nestedBeginCount = nestedBeginCount;
       return NULL;
     }
   }
-  if (dwNestedBeginCount) Begin();
-  m_dwNestedBeginCount = dwNestedBeginCount;
+  if (nestedBeginCount) Begin();
+  m_nestedBeginCount = nestedBeginCount;
 
   // fixup quick access
   memset(m_charquick, 0, sizeof(m_charquick));
@@ -505,7 +505,7 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(DWORD chr)
   {
     if ((m_char[i].letterAndStyle & 0xffff) < 255)
     {
-      DWORD ch = ((m_char[i].letterAndStyle & 0xffff0000) >> 8) | (m_char[i].letterAndStyle & 0xff);
+      character_t ch = ((m_char[i].letterAndStyle & 0xffff0000) >> 8) | (m_char[i].letterAndStyle & 0xff);
       m_charquick[ch] = m_char+i;
     }
   }
@@ -513,7 +513,7 @@ CGUIFontTTFBase::Character* CGUIFontTTFBase::GetCharacter(DWORD chr)
   return m_char + low;
 }
 
-bool CGUIFontTTFBase::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
+bool CGUIFontTTFBase::CacheCharacter(wchar_t letter, uint32_t style, Character *ch)
 {
   int glyph_index = FT_Get_Char_Index( m_face, letter );
 
@@ -604,7 +604,7 @@ bool CGUIFontTTFBase::CacheCharacter(WCHAR letter, DWORD style, Character *ch)
   return true;
 }
 
-void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *ch, D3DCOLOR dwColor, bool roundX)
+void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *ch, color_t color, bool roundX)
 {
   // actual image width isn't same as the character width as that is
   // just baseline width and height should include the descent
@@ -673,15 +673,15 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     m_vertex       = (SVertex*)realloc(m_vertex, m_vertex_size * sizeof(SVertex));
   }
 
-  m_dwColor = dwColor;
+  m_color = color;
   SVertex* v = m_vertex + m_vertex_count;
 
   for(int i = 0; i < 4; i++)
   {
-    v[i].r = GET_R(dwColor);
-    v[i].g = GET_G(dwColor);
-    v[i].b = GET_B(dwColor);
-    v[i].a = GET_A(dwColor);
+    v[i].r = GET_R(color);
+    v[i].g = GET_G(color);
+    v[i].b = GET_B(color);
+    v[i].a = GET_A(color);
   }
 
   v[0].u = tl;
