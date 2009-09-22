@@ -45,7 +45,7 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace VIDEO;
 
-#define VIDEO_DATABASE_VERSION 34
+#define VIDEO_DATABASE_VERSION 33
 #define VIDEO_DATABASE_OLD_VERSION 3.f
 #define VIDEO_DATABASE_NAME "MyVideos34.db"
 
@@ -3622,7 +3622,7 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
                                          "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED);
       m_pDS->exec(episodeview.c_str());
     }
-    if (iVersion < 34) // = 28 on Linuxport!
+    if (iVersion < 33) // = 28 on Linuxport!
     {
       m_pDS->exec("DROP TABLE streamdetails");
       m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
