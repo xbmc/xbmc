@@ -1572,7 +1572,7 @@ void CApplication::StartDbusServer()
 #endif
 }
 
-bool CApplication::StopDbusServer()
+bool CApplication::StopDbusServer(bool bWait)
 {
 #ifdef HAS_DBUS_SERVER
   CDbusServer* serverDbus = CDbusServer::GetInstance();
@@ -1581,7 +1581,7 @@ bool CApplication::StopDbusServer()
     CLog::Log(LOGERROR, "DS: Out of memory");
     return false;
   }
-  CDbusServer::GetInstance()->StopServer();
+  CDbusServer::GetInstance()->StopServer(bWait);
 #endif
   return true;
 }

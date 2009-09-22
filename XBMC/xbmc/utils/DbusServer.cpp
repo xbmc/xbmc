@@ -274,16 +274,16 @@ void CDbusServer::StartServer(CApplication *parent)
   m_pThread->SetName("DbusServer");
 }
 
-void CDbusServer::StopServer()
+void CDbusServer::StopServer(bool bWait)
 {
   m_bStop = true;
-  if (m_pThread)
+  if (m_pThread && bWait)
   {
     m_pThread->WaitForThreadExit(2000);
     dbus_connection_unref( p_conn );
     delete m_pThread;
+    m_pThread = NULL;
   }
-  m_pThread = NULL;
 }
 
 void CDbusServer::Run()
