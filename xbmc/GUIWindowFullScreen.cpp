@@ -46,6 +46,7 @@
 #include "GUISettings.h"
 #include "MouseStat.h"
 #include "LocalizeStrings.h"
+#include "utils/SingleLock.h"
 #include "utils/log.h"
 
 #include <stdio.h>
@@ -189,7 +190,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
     return true;
 
-  switch (action.wID)
+  switch (action.id)
   {
 
   case ACTION_SHOW_GUI:
@@ -302,13 +303,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SUBTITLE_DELAY:
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(22006), g_stSettings.m_currentVideoSettings.m_SubtitleDelay,
                                                                    -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.wID);
+                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.id);
     return true;
     break;
   case ACTION_AUDIO_DELAY:
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(297), g_stSettings.m_currentVideoSettings.m_AudioDelay,
                                                                  -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
-                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.wID);
+                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.id);
     return true;
     break;
   case ACTION_AUDIO_DELAY_MIN:
@@ -361,21 +362,21 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         int channelNr = -1;
 
         CStdString strChannel;
-        strChannel.Format("%i", action.wID - REMOTE_0);
+        strChannel.Format("%i", action.id - REMOTE_0);
         if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
           channelNr = atoi(strChannel.c_str());
 
         if (channelNr > 0)
         {
           CAction action;
-          action.wID = ACTION_CHANNEL_SWITCH;
-          action.fAmount1 = channelNr;
+          action.id = ACTION_CHANNEL_SWITCH;
+          action.amount1 = (float)channelNr;
           OnAction(action);
         }
       }
       else
       {
-        ChangetheTimeCode(action.wID);
+        ChangetheTimeCode(action.id);
       }
       return true;
     }
@@ -546,14 +547,14 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
     CAction action;
-    action.wID = ACTION_SHOW_GUI;
+    action.id = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - pause video
     CAction action;
-    action.wID = ACTION_PAUSE;
+    action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
   if (g_Mouse.HasMoved())
@@ -569,8 +570,8 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   { // Mouse wheel
     int wheel = abs(g_Mouse.GetWheel());
     CAction action;
-    action.fAmount1 = 0.5f * (float)wheel;
-    action.wID = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    action.amount1 = 0.5f * (float)wheel;
+    action.id = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
     return g_application.OnAction(action);
   }
   return true;

@@ -26,6 +26,7 @@
 #include "GUIWindowManager.h"
 #include "AdvancedSettings.h"
 #include "Cdg.h"
+#include "utils/SingleLock.h"
 
 #include "karaokelyrics.h"
 

@@ -584,7 +584,7 @@ CAnimation *CAnimation::CreateFader(float start, float end, unsigned int delay, 
   return anim;
 }
 
-void CAnimation::UpdateCondition(DWORD contextWindow, const CGUIListItem *item)
+void CAnimation::UpdateCondition(int contextWindow, const CGUIListItem *item)
 {
   bool condition = g_infoManager.GetBool(m_condition, contextWindow, item);
   if (condition && !m_lastCondition)
@@ -599,7 +599,7 @@ void CAnimation::UpdateCondition(DWORD contextWindow, const CGUIListItem *item)
   m_lastCondition = condition;
 }
 
-void CAnimation::SetInitialCondition(DWORD contextWindow)
+void CAnimation::SetInitialCondition(int contextWindow)
 {
   m_lastCondition = g_infoManager.GetBool(m_condition, contextWindow);
   if (m_lastCondition)

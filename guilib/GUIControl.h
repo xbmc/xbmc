@@ -65,7 +65,7 @@ public:
   CGUIInfoColor selectedColor;
   CGUIInfoColor disabledColor;
   CGUIInfoColor focusedColor;
-  DWORD align;
+  uint32_t align;
   float offsetX;
   float offsetY;
   float width;

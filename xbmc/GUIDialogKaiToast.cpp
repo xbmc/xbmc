@@ -23,6 +23,7 @@
 #include "GUISliderControl.h"
 #include "GUIImage.h"
 #include "GUIAudioManager.h"
+#include "SingleLock.h"
 
 #define POPUP_ICON                400
 #define POPUP_CAPTION_TEXT        401

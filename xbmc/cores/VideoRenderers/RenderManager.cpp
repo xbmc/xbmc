@@ -24,6 +24,7 @@
 #include "utils/CriticalSection.h"
 #include "VideoReferenceClock.h"
 #include "MathUtils.h"
+#include "utils/SingleLock.h"
 #include "utils/log.h"
 
 #include "Application.h"

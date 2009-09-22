@@ -672,7 +672,7 @@ void CKaraokeLyricsText::rescanLyrics()
 float CKaraokeLyricsText::getStringWidth(const CStdString & text)
 {
   CStdStringW utf16;
-  std::vector<DWORD> utf32;
+  vecText utf32;
 
   g_charsetConverter.utf8ToW(text, utf16);
 

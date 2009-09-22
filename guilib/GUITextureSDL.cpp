@@ -50,7 +50,7 @@ void CGUITextureSDL::Free()
   m_cachedTextures.clear();
 }
 
-void CGUITextureSDL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
+void CGUITextureSDL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
 {
   SDL_Surface* surface = m_texture.m_textures[m_currentFrame]; 
   float u[2] = { texture.x1, texture.x2 };
@@ -113,7 +113,7 @@ void CGUITextureSDL::GetTexel(float tu, float tv, SDL_Surface *src, BYTE *texel)
 #define MODULATE(a,b) (b ? ((int)a*(b+1)) >> 8 : 0)
 #define ALPHA_BLEND(a,b,c) (c ? ((int)a*(c+1) + b*(255-c)) >> 8 : b)
 
-void CGUITextureSDL::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst)
+void CGUITextureSDL::RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, color_t *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst)
 {
   // renders the surface from u[0],v[0] -> u[1],v[1] into the parallelogram defined by x[0],y[0]...x[3],y[3]
   // we create a new surface of the appropriate size, and render into it the resized and rotated texture,

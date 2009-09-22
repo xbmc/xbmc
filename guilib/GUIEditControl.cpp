@@ -88,7 +88,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
   // TODO: We shouldn't really need to test for ACTION_PARENT_DIR here
   //       but it may currently be useful as we can't map specific to an
   //       edit control other than the keyboard (which doesn't use this block)
-  if (action.wID == ACTION_BACKSPACE || action.wID == ACTION_PARENT_DIR)
+  if (action.id == ACTION_BACKSPACE || action.id == ACTION_PARENT_DIR)
   {
     // backspace
     if (m_cursorPos)
@@ -98,7 +98,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     }
     return true;
   }
-  else if (action.wID == ACTION_MOVE_LEFT)
+  else if (action.id == ACTION_MOVE_LEFT)
   {
     if (m_cursorPos > 0)
     {
@@ -107,7 +107,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.wID == ACTION_MOVE_RIGHT)
+  else if (action.id == ACTION_MOVE_RIGHT)
   {
     if ((unsigned int) m_cursorPos < m_text2.size())
     { 
@@ -116,7 +116,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.wID == ACTION_PASTE)
+  else if (action.id == ACTION_PASTE)
   {
 #ifdef __APPLE__
     const char *szStr = Cocoa_Paste();
@@ -146,10 +146,10 @@ bool CGUIEditControl::OnAction(const CAction &action)
     }
 #endif
   }
-  else if (action.wID >= KEY_VKEY && action.wID < KEY_ASCII)
+  else if (action.id >= KEY_VKEY && action.id < KEY_ASCII)
   {
     // input from the keyboard (vkey, not ascii)
-    BYTE b = action.wID & 0xFF;
+    BYTE b = action.id & 0xFF;
     if (b == 0x25 && m_cursorPos > 0)
     { // left
       m_cursorPos--;
@@ -181,7 +181,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.wID >= KEY_ASCII)
+  else if (action.id >= KEY_ASCII)
   {
     // input from the keyboard
     switch (action.unicode)
@@ -220,11 +220,11 @@ bool CGUIEditControl::OnAction(const CAction &action)
     OnTextChanged();
     return true;
   }
-  else if (action.wID >= REMOTE_2 && action.wID <= REMOTE_9)
+  else if (action.id >= REMOTE_2 && action.id <= REMOTE_9)
   { // input from the remote
     if (m_inputType == INPUT_TYPE_FILTER)
     { // filtering - use single number presses
-      m_text2.insert(m_text2.begin() + m_cursorPos, L'0' + (action.wID - REMOTE_0));
+      m_text2.insert(m_text2.begin() + m_cursorPos, L'0' + (action.id - REMOTE_0));
       m_cursorPos++;
       OnTextChanged();
       return true;
@@ -351,7 +351,7 @@ void CGUIEditControl::RenderText()
   // start by rendering the normal text
   float posX = m_posX + m_label.offsetX;
   float posY = m_posY;
-  DWORD align = m_label.align & XBFONT_CENTER_Y;
+  uint32_t align = m_label.align & XBFONT_CENTER_Y;
 
   if (m_label.align & XBFONT_CENTER_Y)
     posY += m_height*0.5f;

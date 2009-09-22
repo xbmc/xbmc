@@ -260,20 +260,20 @@ void CGUIControlFactory::GetRectFromString(const CStdString &string, FRECT &rect
   }
 }
 
-bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
+bool CGUIControlFactory::GetAlignment(const TiXmlNode* pRootNode, const char* strTag, uint32_t& alignment)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag);
   if (!pNode || !pNode->FirstChild()) return false;
 
   CStdString strAlign = pNode->FirstChild()->Value();
-  if (strAlign == "right" || strAlign == "bottom") dwAlignment = XBFONT_RIGHT;
-  else if (strAlign == "center") dwAlignment = XBFONT_CENTER_X;
-  else if (strAlign == "justify") dwAlignment = XBFONT_JUSTIFIED;
-  else dwAlignment = XBFONT_LEFT;
+  if (strAlign == "right" || strAlign == "bottom") alignment = XBFONT_RIGHT;
+  else if (strAlign == "center") alignment = XBFONT_CENTER_X;
+  else if (strAlign == "justify") alignment = XBFONT_JUSTIFIED;
+  else alignment = XBFONT_LEFT;
   return true;
 }
 
-bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwAlignment)
+bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* strTag, uint32_t& alignment)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild())
@@ -283,10 +283,10 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
 
   CStdString strAlign = pNode->FirstChild()->Value();
 
-  dwAlignment = 0;
+  alignment = 0;
   if (strAlign == "center")
   {
-    dwAlignment = XBFONT_CENTER_Y;
+    alignment = XBFONT_CENTER_Y;
   }
 
   return true;
@@ -401,7 +401,7 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
   return false;
 }
 
-bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, DWORD &value)
+bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, color_t &value)
 {
   const TiXmlElement* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())
@@ -555,9 +555,9 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   DWORD left = 0, right = 0, up = 0, down = 0, next = 0, prev = 0;
   vector<CGUIActionDescriptor> leftActions, rightActions, upActions, downActions, nextActions, prevActions;
 
-  DWORD pageControl = 0;
+  int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
-  DWORD defaultControl = 0;
+  int defaultControl = 0;
   bool  defaultAlways = false;
   CStdString strTmp;
   int singleInfo = 0;
@@ -614,8 +614,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   vector<CGUIActionDescriptor> textChangeActions;
   CStdString strTitle = "";
   CStdString strRSSTags = "";
-
-  DWORD dwThumbAlign = 0;
 
   float thumbXPos = 4;
   float thumbYPos = 10;
@@ -729,13 +727,13 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (!GetNavigation(pControlNode, "onnext", next, nextActions)) next = id;
   if (!GetNavigation(pControlNode, "onprev", prev, prevActions)) prev = id;
 
-  if (XMLUtils::GetDWORD(pControlNode, "defaultcontrol", defaultControl))
+  if (XMLUtils::GetInt(pControlNode, "defaultcontrol", defaultControl))
   {
     const char *always = pControlNode->FirstChildElement("defaultcontrol")->Attribute("always");
     if (always && strnicmp(always, "true", 4) == 0)
       defaultAlways = true;
   }
-  XMLUtils::GetDWORD(pControlNode, "pagecontrol", pageControl);
+  XMLUtils::GetInt(pControlNode, "pagecontrol", pageControl);
 
   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse);
 
@@ -763,7 +761,7 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   if (XMLUtils::GetString(pControlNode, "font", strFont))
     labelInfo.font = g_fontManager.GetFont(strFont);
   GetAlignment(pControlNode, "align", labelInfo.align);
-  DWORD alignY = 0;
+  uint32_t alignY = 0;
   if (GetAlignmentY(pControlNode, "aligny", alignY))
     labelInfo.align |= alignY;
   if (GetFloat(pControlNode, "textwidth", labelInfo.width))
@@ -887,8 +885,6 @@ CGUIControl* CGUIControlFactory::Create(DWORD dwParentId, const FRECT &rect, TiX
   GetFloat(pControlNode, "thumbheight", thumbHeight);
   GetFloat(pControlNode, "thumbposx", thumbXPos);
   GetFloat(pControlNode, "thumbposy", thumbYPos);
-
-  GetAlignment(pControlNode, "thumbalign", dwThumbAlign);
 
   GetFloat(pControlNode, "thumbwidthbig", thumbWidthBig);
   GetFloat(pControlNode, "thumbheightbig", thumbHeightBig);

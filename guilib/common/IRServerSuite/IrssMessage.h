@@ -20,7 +20,6 @@
  *
  */
 
-#include "system.h"
 #include "StdString.h"
 
   /// <summary>

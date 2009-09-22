@@ -247,7 +247,7 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
 
 #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
 
-  DWORD color = m_diffuseColor;
+  color_t color = m_diffuseColor;
   if (m_alpha != 0xFF) color = MIX_ALPHA(m_alpha, m_diffuseColor);
   color = g_graphicsContext.MergeAlpha(color);
 
@@ -485,7 +485,7 @@ void CGUITextureBase::SetAlpha(unsigned char alpha)
   m_alpha = alpha;
 }
 
-void CGUITextureBase::SetDiffuseColor(DWORD color)
+void CGUITextureBase::SetDiffuseColor(color_t color)
 {
   m_diffuseColor = color;
 }

@@ -2463,19 +2463,19 @@ bool CApplication::OnKey(CKey& key)
       if (key.GetFromHttpApi())
       {
         if (key.GetButtonCode() != KEY_INVALID)
-          action.wID = (WORD) key.GetButtonCode();
+          action.id = (WORD) key.GetButtonCode();
         action.unicode = (WCHAR)key.GetUnicode();
       }
       else
       { // see if we've got an ascii key
         if (g_Keyboard.GetUnicode())
         {
-          action.wID = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+          action.id = (WORD)g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
           action.unicode = g_Keyboard.GetUnicode();
         }
         else
         {
-          action.wID = (WORD)g_Keyboard.GetVKey() | KEY_VKEY;
+          action.id = (WORD)g_Keyboard.GetVKey() | KEY_VKEY;
           action.unicode = 0;
         }
       }
@@ -2490,7 +2490,7 @@ bool CApplication::OnKey(CKey& key)
     {
       if (key.GetButtonCode() != KEY_INVALID)
       {
-        action.wID = (WORD) key.GetButtonCode();
+        action.id = (WORD) key.GetButtonCode();
         CButtonTranslator::GetInstance().GetAction(iWin, key, action);
       }
     }
@@ -2498,7 +2498,7 @@ bool CApplication::OnKey(CKey& key)
       CButtonTranslator::GetInstance().GetAction(iWin, key, action);
   }
   if (!key.IsAnalogButton())
-    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.wID);
+    CLog::Log(LOGDEBUG, "%s: %i pressed, action is %i", __FUNCTION__, (int) key.GetButtonCode(), action.id);
 
   //  Play a sound based on the action
   g_audioManager.PlayActionSound(action);
@@ -2515,13 +2515,13 @@ bool CApplication::OnAction(CAction &action)
   if (m_pXbmcHttp && g_stSettings.m_HttpApiBroadcastLevel>=2)
   {
     CStdString tmp;
-    tmp.Format("%i",action.wID);
+    tmp.Format("%i",action.id);
     getApplicationMessenger().HttpApi("broadcastlevel; OnAction:"+tmp+";2");
   }
 #endif
 
   // special case for switching between GUI & fullscreen mode.
-  if (action.wID == ACTION_SHOW_GUI)
+  if (action.id == ACTION_SHOW_GUI)
   { // Switch to fullscreen mode if we can
     if (SwitchToFullScreen())
     {
@@ -2530,7 +2530,7 @@ bool CApplication::OnAction(CAction &action)
     }
   }
 
-  if (action.wID == ACTION_TOGGLE_FULLSCREEN)
+  if (action.id == ACTION_TOGGLE_FULLSCREEN)
   {
     g_graphicsContext.ToggleFullScreenRoot();
     return true;
@@ -2547,13 +2547,13 @@ bool CApplication::OnAction(CAction &action)
   // handle extra global presses
 
   // screenshot : take a screenshot :)
-  if (action.wID == ACTION_TAKE_SCREENSHOT)
+  if (action.id == ACTION_TAKE_SCREENSHOT)
   {
     CUtil::TakeScreenshot();
     return true;
   }
   // built in functions : execute the built-in
-  if (action.wID == ACTION_BUILT_IN_FUNCTION)
+  if (action.id == ACTION_BUILT_IN_FUNCTION)
   {
     CUtil::ExecBuiltIn(action.strAction);
     m_navigationTimer.StartZero();
@@ -2561,27 +2561,27 @@ bool CApplication::OnAction(CAction &action)
   }
 
   // reload keymaps
-  if (action.wID == ACTION_RELOAD_KEYMAPS)
+  if (action.id == ACTION_RELOAD_KEYMAPS)
   {
     CButtonTranslator::GetInstance().Clear();
     CButtonTranslator::GetInstance().Load();
   }
 
   // show info : Shows the current video or song information
-  if (action.wID == ACTION_SHOW_INFO)
+  if (action.id == ACTION_SHOW_INFO)
   {
     g_infoManager.ToggleShowInfo();
     return true;
   }
 
   // codec info : Shows the current song, video or picture codec information
-  if (action.wID == ACTION_SHOW_CODEC)
+  if (action.id == ACTION_SHOW_CODEC)
   {
     g_infoManager.ToggleShowCodec();
     return true;
   }
 
-  if ((action.wID == ACTION_INCREASE_RATING || action.wID == ACTION_DECREASE_RATING) && IsPlayingAudio())
+  if ((action.id == ACTION_INCREASE_RATING || action.id == ACTION_DECREASE_RATING) && IsPlayingAudio())
   {
     const CMusicInfoTag *tag = g_infoManager.GetCurrentSongTag();
     if (tag)
@@ -2589,12 +2589,12 @@ bool CApplication::OnAction(CAction &action)
       *m_itemCurrentFile->GetMusicInfoTag() = *tag;
       char rating = tag->GetRating();
       bool needsUpdate(false);
-      if (rating > '0' && action.wID == ACTION_DECREASE_RATING)
+      if (rating > '0' && action.id == ACTION_DECREASE_RATING)
       {
         m_itemCurrentFile->GetMusicInfoTag()->SetRating(rating - 1);
         needsUpdate = true;
       }
-      else if (rating < '5' && action.wID == ACTION_INCREASE_RATING)
+      else if (rating < '5' && action.id == ACTION_INCREASE_RATING)
       {
         m_itemCurrentFile->GetMusicInfoTag()->SetRating(rating + 1);
         needsUpdate = true;
@@ -2616,14 +2616,14 @@ bool CApplication::OnAction(CAction &action)
   }
 
   // stop : stops playing current audio song
-  if (action.wID == ACTION_STOP)
+  if (action.id == ACTION_STOP)
   {
     StopPlaying();
     return true;
   }
 
   // previous : play previous song from playlist
-  if (action.wID == ACTION_PREV_ITEM)
+  if (action.id == ACTION_PREV_ITEM)
   {
     // first check whether we're within 3 seconds of the start of the track
     // if not, we just revert to the start of the track
@@ -2640,7 +2640,7 @@ bool CApplication::OnAction(CAction &action)
   }
 
   // next : play next song from playlist
-  if (action.wID == ACTION_NEXT_ITEM)
+  if (action.id == ACTION_NEXT_ITEM)
   {
     if (IsPlaying() && m_pPlayer->SkipNext())
       return true;
@@ -2653,7 +2653,7 @@ bool CApplication::OnAction(CAction &action)
   if ( IsPlaying())
   {
     // OSD toggling
-    if (action.wID == ACTION_SHOW_OSD)
+    if (action.id == ACTION_SHOW_OSD)
     {
       if (IsPlayingVideo() && IsPlayingFullScreenVideo())
       {
@@ -2670,7 +2670,7 @@ bool CApplication::OnAction(CAction &action)
     }
 
     // pause : pauses current audio song
-    if (action.wID == ACTION_PAUSE && m_iPlaySpeed == 1)
+    if (action.id == ACTION_PAUSE && m_iPlaySpeed == 1)
     {
       m_pPlayer->Pause();
 #ifdef HAS_KARAOKE
@@ -2688,7 +2688,7 @@ bool CApplication::OnAction(CAction &action)
     {
       // if we do a FF/RW in my music then map PLAY action togo back to normal speed
       // if we are playing at normal speed, then allow play to pause
-      if (action.wID == ACTION_PLAYER_PLAY || action.wID == ACTION_PAUSE)
+      if (action.id == ACTION_PLAYER_PLAY || action.id == ACTION_PAUSE)
       {
         if (m_iPlaySpeed != 1)
         {
@@ -2700,19 +2700,19 @@ bool CApplication::OnAction(CAction &action)
         }
         return true;
       }
-      if (action.wID == ACTION_PLAYER_FORWARD || action.wID == ACTION_PLAYER_REWIND)
+      if (action.id == ACTION_PLAYER_FORWARD || action.id == ACTION_PLAYER_REWIND)
       {
         int iPlaySpeed = m_iPlaySpeed;
-        if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
+        if (action.id == ACTION_PLAYER_REWIND && iPlaySpeed == 1) // Enables Rewinding
           iPlaySpeed *= -2;
-        else if (action.wID == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
+        else if (action.id == ACTION_PLAYER_REWIND && iPlaySpeed > 1) //goes down a notch if you're FFing
           iPlaySpeed /= 2;
-        else if (action.wID == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
+        else if (action.id == ACTION_PLAYER_FORWARD && iPlaySpeed < 1) //goes up a notch if you're RWing
           iPlaySpeed /= 2;
         else
           iPlaySpeed *= 2;
 
-        if (action.wID == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
+        if (action.id == ACTION_PLAYER_FORWARD && iPlaySpeed == -1) //sets iSpeed back to 1 if -1 (didn't plan for a -1)
           iPlaySpeed = 1;
         if (iPlaySpeed > 32 || iPlaySpeed < -32)
           iPlaySpeed = 1;
@@ -2720,13 +2720,13 @@ bool CApplication::OnAction(CAction &action)
         SetPlaySpeed(iPlaySpeed);
         return true;
       }
-      else if ((action.fAmount1 || GetPlaySpeed() != 1) && (action.wID == ACTION_ANALOG_REWIND || action.wID == ACTION_ANALOG_FORWARD))
+      else if ((action.amount1 || GetPlaySpeed() != 1) && (action.id == ACTION_ANALOG_REWIND || action.id == ACTION_ANALOG_FORWARD))
       {
         // calculate the speed based on the amount the button is held down
-        int iPower = (int)(action.fAmount1 * MAX_FFWD_SPEED + 0.5f);
+        int iPower = (int)(action.amount1 * MAX_FFWD_SPEED + 0.5f);
         // returns 0 -> MAX_FFWD_SPEED
         int iSpeed = 1 << iPower;
-        if (iSpeed != 1 && action.wID == ACTION_ANALOG_REWIND)
+        if (iSpeed != 1 && action.id == ACTION_ANALOG_REWIND)
           iSpeed = -iSpeed;
         g_application.SetPlaySpeed(iSpeed);
         if (iSpeed == 1)
@@ -2737,7 +2737,7 @@ bool CApplication::OnAction(CAction &action)
     // allow play to unpause
     else
     {
-      if (action.wID == ACTION_PLAYER_PLAY)
+      if (action.id == ACTION_PLAYER_PLAY)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
@@ -2749,13 +2749,13 @@ bool CApplication::OnAction(CAction &action)
       }
     }
   }
-  if (action.wID == ACTION_MUTE)
+  if (action.id == ACTION_MUTE)
   {
     Mute();
     return true;
   }
 
-  if (action.wID == ACTION_TOGGLE_DIGITAL_ANALOG)
+  if (action.id == ACTION_TOGGLE_DIGITAL_ANALOG)
   {
     if(g_guiSettings.GetInt("audiooutput.mode")==AUDIO_DIGITAL)
       g_guiSettings.SetInt("audiooutput.mode", AUDIO_ANALOG);
@@ -2771,7 +2771,7 @@ bool CApplication::OnAction(CAction &action)
   }
 
   // Check for global volume control
-  if (action.fAmount1 && (action.wID == ACTION_VOLUME_UP || action.wID == ACTION_VOLUME_DOWN))
+  if (action.amount1 && (action.id == ACTION_VOLUME_UP || action.id == ACTION_VOLUME_DOWN))
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
@@ -2780,25 +2780,25 @@ bool CApplication::OnAction(CAction &action)
 
       // calculate speed so that a full press will equal 1 second from min to max
       float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
-      if( action.fRepeat )
-        speed *= action.fRepeat;
+      if( action.repeat )
+        speed *= action.repeat;
       else
         speed /= 50; //50 fps
       if (g_stSettings.m_bMute)
       {
         // only unmute if volume is to be increased, otherwise leave muted
-        if (action.wID == ACTION_VOLUME_DOWN)
+        if (action.id == ACTION_VOLUME_DOWN)
           return true;
         Mute();
         return true;
       }
-      if (action.wID == ACTION_VOLUME_UP)
+      if (action.id == ACTION_VOLUME_UP)
       {
-        volume += (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+        volume += (int)((float)fabs(action.amount1) * action.amount1 * speed);
       }
       else
       {
-        volume -= (int)((float)fabs(action.fAmount1) * action.fAmount1 * speed);
+        volume -= (int)((float)fabs(action.amount1) * action.amount1 * speed);
       }
 
       SetHardwareVolume(volume);
@@ -2814,13 +2814,13 @@ bool CApplication::OnAction(CAction &action)
     return true;
   }
   // Check for global seek control
-  if (IsPlaying() && action.fAmount1 && (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK))
+  if (IsPlaying() && action.amount1 && (action.id == ACTION_ANALOG_SEEK_FORWARD || action.id == ACTION_ANALOG_SEEK_BACK))
   {
     if (!m_pPlayer->CanSeek()) return false;
     m_guiDialogSeekBar.OnAction(action);
     return true;
   }
-  if (action.wID == ACTION_GUIPROFILE_BEGIN)
+  if (action.id == ACTION_GUIPROFILE_BEGIN)
   {
     CGUIControlProfiler::Instance().SetOutputFile(_P("special://home/guiprofiler.xml"));
     CGUIControlProfiler::Instance().Start();
@@ -2917,10 +2917,10 @@ bool CApplication::ProcessGamepad(float frameTime)
     CAction action;
     bool fullrange;
     string jname = g_Joystick.GetJoystick();
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_BUTTON, action.id, action.strAction, fullrange))
     {
-      action.fAmount1 = 1.0f;
-      action.fRepeat = 0.0f;
+      action.amount1 = 1.0f;
+      action.repeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
       g_Mouse.SetActive(false);
@@ -2937,13 +2937,13 @@ bool CApplication::ProcessGamepad(float frameTime)
     bool fullrange;
 
     string jname = g_Joystick.GetJoystick();
-    action.fAmount1 = g_Joystick.GetAmount();
+    action.amount1 = g_Joystick.GetAmount();
 
-    if (action.fAmount1<0)
+    if (action.amount1<0)
     {
       bid = -bid;
     }
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_AXIS, action.id, action.strAction, fullrange))
     {
       ResetScreenSaver();
       if (WakeUpScreenSaverAndDPMS())
@@ -2953,14 +2953,14 @@ bool CApplication::ProcessGamepad(float frameTime)
 
       if (fullrange)
       {
-        action.fAmount1 = (action.fAmount1+1.0f)/2.0f;
+        action.amount1 = (action.amount1+1.0f)/2.0f;
       }
       else
       {
-        action.fAmount1 = fabs(action.fAmount1);
+        action.amount1 = fabs(action.amount1);
       }
-      action.fAmount2 = 0.0;
-      action.fRepeat = 0.0;
+      action.amount2 = 0.0;
+      action.repeat = 0.0;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
       g_Mouse.SetActive(false);
@@ -2980,10 +2980,10 @@ bool CApplication::ProcessGamepad(float frameTime)
     string jname = g_Joystick.GetJoystick();
     bid = position<<16|bid;
 
-    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.wID, action.strAction, fullrange))
+    if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, jname.c_str(), bid, JACTIVE_HAT, action.id, action.strAction, fullrange))
     {
-      action.fAmount1 = 1.0f;
-      action.fRepeat = 0.0f;
+      action.amount1 = 1.0f;
+      action.repeat = 0.0f;
       g_audioManager.PlayActionSound(action);
       g_Joystick.Reset();
       g_Mouse.SetActive(false);
@@ -3026,9 +3026,9 @@ bool CApplication::ProcessMouse()
 
   // call OnAction with ACTION_MOUSE
   CAction action;
-  action.wID = ACTION_MOUSE;
-  action.fAmount1 = (float) m_guiPointer.GetXPosition();
-  action.fAmount2 = (float) m_guiPointer.GetYPosition();
+  action.id = ACTION_MOUSE;
+  action.amount1 = (float) m_guiPointer.GetXPosition();
+  action.amount2 = (float) m_guiPointer.GetYPosition();
 
   return m_gWindowManager.OnAction(action);
 }
@@ -3086,14 +3086,14 @@ bool CApplication::ProcessHTTPApiButtons()
       if (keyHttp.GetButtonCode() == KEY_VMOUSE) //virtual mouse
       {
         CAction action;
-        action.wID = ACTION_MOUSE;
+        action.id = ACTION_MOUSE;
         g_Mouse.SetLocation(CPoint(keyHttp.GetLeftThumbX(), keyHttp.GetLeftThumbY()));
         if (keyHttp.GetLeftTrigger()!=0)
           g_Mouse.bClick[keyHttp.GetLeftTrigger()-1]=true;
         if (keyHttp.GetRightTrigger()!=0)
           g_Mouse.bDoubleClick[keyHttp.GetRightTrigger()-1]=true;
-        action.fAmount1 = keyHttp.GetLeftThumbX();
-        action.fAmount2 = keyHttp.GetLeftThumbY();
+        action.amount1 = keyHttp.GetLeftThumbX();
+        action.amount2 = keyHttp.GetLeftThumbY();
         m_gWindowManager.OnAction(action);
       }
       else
@@ -3183,12 +3183,12 @@ bool CApplication::ProcessEventServer(float frameTime)
 
   {
     CAction action;
-    action.wID = ACTION_MOUSE;
-    if (es->GetMousePos(action.fAmount1, action.fAmount2) && g_Mouse.IsEnabled())
+    action.id = ACTION_MOUSE;
+    if (es->GetMousePos(action.amount1, action.amount2) && g_Mouse.IsEnabled())
     {
       CPoint point;
-      point.x = action.fAmount1;
-      point.y = action.fAmount2;
+      point.x = action.amount1;
+      point.y = action.amount2;
       g_Mouse.SetLocation(point, true);
 
       return m_gWindowManager.OnAction(action);
@@ -3229,15 +3229,15 @@ bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKe
 
    bool fullRange = false;
    CAction action;
-   action.fAmount1 = fAmount;
+   action.amount1 = fAmount;
 
-   //if (action.fAmount1 < 0.0)
+   //if (action.amount1 < 0.0)
    // wKeyID = -wKeyID;
 
    // Translate using regular joystick translator.
-   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.wID, action.strAction, fullRange))
+   if (CButtonTranslator::GetInstance().TranslateJoystickString(iWin, joystickName.c_str(), wKeyID, isAxis ? JACTIVE_AXIS : JACTIVE_BUTTON, action.id, action.strAction, fullRange))
    {
-     action.fRepeat = 0.0f;
+     action.repeat = 0.0f;
      g_audioManager.PlayActionSound(action);
      return OnAction(action);
    }
@@ -4710,12 +4710,12 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
       else
       {
         // try translating the action from our ButtonTranslator
-        WORD actionID;
+        int actionID;
         if (CButtonTranslator::TranslateActionString(actionStr.c_str(), actionID))
         {
           CAction action;
-          action.wID = actionID;
-          action.fAmount1 = 1.0f;
+          action.id = actionID;
+          action.amount1 = 1.0f;
           OnAction(action);
           return true;
         }

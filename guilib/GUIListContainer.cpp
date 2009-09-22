@@ -37,7 +37,7 @@ CGUIListContainer::~CGUIListContainer(void)
 
 bool CGUIListContainer::OnAction(const CAction &action)
 {
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_PAGE_UP:
     {
@@ -68,7 +68,7 @@ bool CGUIListContainer::OnAction(const CAction &action)
     // smooth scrolling (for analog controls)
   case ACTION_SCROLL_UP:
     {
-      m_analogScrollCount += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
       while (m_analogScrollCount > 0.4)
       {
@@ -88,7 +88,7 @@ bool CGUIListContainer::OnAction(const CAction &action)
     break;
   case ACTION_SCROLL_DOWN:
     {
-      m_analogScrollCount += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
       while (m_analogScrollCount > 0.4)
       {

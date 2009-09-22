@@ -24,6 +24,7 @@
 #include "GUISettings.h"
 #include "utils/CriticalSection.h"
 #include "utils/SingleLock.h"
+#include "utils/RssReader.h"
 #include "StringUtils.h"
 
 using namespace std;
@@ -114,7 +115,7 @@ void CGUIRSSControl::Render()
 
     if (m_label.font)
     {
-      vector<DWORD> colors;
+      vecColors colors;
       colors.push_back(m_label.textColor);
       colors.push_back(m_headlineColor);
       colors.push_back(m_channelColor);
@@ -130,7 +131,7 @@ void CGUIRSSControl::Render()
   CGUIControl::Render();
 }
 
-void CGUIRSSControl::OnFeedUpdate(const vector<DWORD> &feed)
+void CGUIRSSControl::OnFeedUpdate(const vecText &feed)
 {
   CSingleLock lock(m_criticalSection);
   m_feed = feed;

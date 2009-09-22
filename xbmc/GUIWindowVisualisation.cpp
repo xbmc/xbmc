@@ -54,7 +54,7 @@ CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_SHOW_INFO:
     {
@@ -120,10 +120,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
     case ACTION_ANALOG_FORWARD:
     // calculate the speed based on the amount the button is held down
-    if (action.fAmount1)
+    if (action.amount1)
     {
       float AVDelay = g_application.m_CdgParser.GetAVDelay();
-      g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1 / 4.0f);
+      g_application.m_CdgParser.SetAVDelay(AVDelay - action.amount1 / 4.0f);
       return true;
     }
     break;*/
@@ -209,14 +209,14 @@ bool CGUIWindowVisualisation::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
     CAction action;
-    action.wID = ACTION_SHOW_GUI;
+    action.id = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - toggle the track INFO
     CAction action;
-    action.wID = ACTION_PAUSE;
+    action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
   if (g_Mouse.HasMoved())

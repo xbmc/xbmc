@@ -82,10 +82,10 @@ void CGUICheckMarkControl::Render()
 
 bool CGUICheckMarkControl::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
-    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.wID);
+    CGUIMessage msg(GUI_MSG_CLICKED, GetID(), GetParentID(), action.id);
     SendWindowMessage(msg);
     return true;
   }
@@ -142,7 +142,7 @@ bool CGUICheckMarkControl::OnMouseClick(DWORD dwButton, const CPoint &point)
   if (dwButton != MOUSE_LEFT_BUTTON) return false;
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   CAction action;
-  action.wID = ACTION_SELECT_ITEM;
+  action.id = ACTION_SELECT_ITEM;
   OnAction(action);
   return true;
 }
@@ -152,17 +152,17 @@ void CGUICheckMarkControl::SetLabel(const string &label)
   m_strLabel = label;
 }
 
-void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor)
+void CGUICheckMarkControl::PythonSetLabel(const CStdString &strFont, const string &strText, color_t textColor)
 {
   m_label.font = g_fontManager.GetFont(strFont);
-  m_label.textColor = dwTextColor;
-  m_label.focusedColor = dwTextColor;
+  m_label.textColor = textColor;
+  m_label.focusedColor = textColor;
   m_strLabel = strText;
 }
 
-void CGUICheckMarkControl::PythonSetDisabledColor(DWORD dwDisabledColor)
+void CGUICheckMarkControl::PythonSetDisabledColor(color_t disabledColor)
 {
-  m_label.disabledColor = dwDisabledColor;
+  m_label.disabledColor = disabledColor;
 }
 
 void CGUICheckMarkControl::UpdateColors()

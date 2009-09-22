@@ -20,6 +20,7 @@
 
 #include "GUIDialogKaraokeSongSelector.h"
 #include "GUIWindowKaraokeLyrics.h"
+#include "utils/SingleLock.h"
 #include "utils/log.h"
 
 CKaraokeLyricsManager::CKaraokeLyricsManager()

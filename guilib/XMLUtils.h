@@ -22,7 +22,6 @@
  */
 
 #include "StdString.h"
-#include "system.h"
 
 // forward
 class TiXmlDocument;
@@ -33,8 +32,8 @@ class XMLUtils
 public:
   static bool HasUTF8Declaration(const CStdString &strXML);
 
-  static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwHexValue);
-  static bool GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD& dwDWORDValue);
+  static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwHexValue);
+  static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue);
   static bool GetLong(const TiXmlNode* pRootNode, const char* strTag, long& lLongValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value);
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue);
@@ -50,7 +49,7 @@ public:
   static void SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
   static void SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
-  static void SetHex(TiXmlNode* pRootNode, const char *strTag, DWORD value);
+  static void SetHex(TiXmlNode* pRootNode, const char *strTag, uint32_t value);
   static void SetPath(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
   static void SetLong(TiXmlNode* pRootNode, const char *strTag, long iValue);
 };

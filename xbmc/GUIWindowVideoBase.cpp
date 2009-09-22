@@ -92,13 +92,13 @@ CGUIWindowVideoBase::~CGUIWindowVideoBase()
 
 bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SHOW_PLAYLIST)
+  if (action.id == ACTION_SHOW_PLAYLIST)
   {
     OutputDebugString("activate guiwindowvideoplaylist!\n");
     m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return true;
   }
-  if (action.wID == ACTION_SCAN_ITEM)
+  if (action.id == ACTION_SCAN_ITEM)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
 
   return CGUIMediaWindow::OnAction(action);

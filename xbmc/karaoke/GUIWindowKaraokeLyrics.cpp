@@ -27,6 +27,7 @@
 #include "GUIWindowKaraokeLyrics.h"
 #include "karaokelyrics.h"
 #include "karaokewindowbackground.h"
+#include "utils/SingleLock.h"
 
 
 CGUIWindowKaraokeLyrics::CGUIWindowKaraokeLyrics(void)
@@ -53,7 +54,7 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
   CGUIDialogKaraokeSongSelectorSmall * songSelector = (CGUIDialogKaraokeSongSelectorSmall *)
                                       m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
 
-  switch(action.wID)
+  switch(action.id)
   {
     case REMOTE_0:
     case REMOTE_1:
@@ -67,7 +68,7 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
     case REMOTE_9:
       // Offset from key codes back to button number
       if ( songSelector && !songSelector->IsActive() )
-        songSelector->DoModal( action.wID - REMOTE_0 );
+        songSelector->DoModal( action.id - REMOTE_0 );
       break;
 
     case ACTION_SUBTITLE_DELAY_MIN:

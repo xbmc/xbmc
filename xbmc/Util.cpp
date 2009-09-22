@@ -2751,13 +2751,13 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
     else if (parameter.Equals("next"))
     {
       CAction action;
-      action.wID = ACTION_NEXT_ITEM;
+      action.id = ACTION_NEXT_ITEM;
       g_application.OnAction(action);
     }
     else if (parameter.Equals("previous"))
     {
       CAction action;
-      action.wID = ACTION_PREV_ITEM;
+      action.id = ACTION_PREV_ITEM;
       g_application.OnAction(action);
     }
     else if (parameter.Equals("bigskipbackward"))
@@ -2785,9 +2785,9 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
       if( g_application.IsPlaying() && g_application.m_pPlayer )
       {
         CAction action;
-        action.fAmount1 = action.fAmount2 = action.fRepeat = 0.0;
-        action.m_dwButtonCode = 0;
-        action.wID = ACTION_SHOW_VIDEOMENU;
+        action.amount1 = action.amount2 = action.repeat = 0.0;
+        action.buttonCode = 0;
+        action.id = ACTION_SHOW_VIDEOMENU;
         g_application.m_pPlayer->OnAction(action);
       }
     }
@@ -2894,7 +2894,7 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   {
     g_application.m_eForcedNextPlayer = CPlayerCoreFactory::GetPlayerCore(parameter);
     CAction action;
-    action.wID = ACTION_PLAYER_PLAY;
+    action.id = ACTION_PLAYER_PLAY;
     g_application.OnAction(action);
   }
   else if (execute.Equals("mute"))
@@ -3286,12 +3286,12 @@ int CUtil::ExecBuiltIn(const CStdString& execString)
   else if (execute.Equals("action") && params.size())
   {
     // try translating the action from our ButtonTranslator
-    WORD actionID;
+    int actionID;
     if (CButtonTranslator::TranslateActionString(params[0].c_str(), actionID))
     {
       CAction action;
-      action.wID = actionID;
-      action.fAmount1 = 1.0f;
+      action.id = actionID;
+      action.amount1 = 1.0f;
       if (params.size() == 2)
       { // have a window - convert it and send to it.
         int windowID = CButtonTranslator::TranslateWindowString(params[1].c_str());

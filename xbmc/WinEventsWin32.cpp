@@ -568,7 +568,7 @@ bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
           g_application.getApplicationMessenger().Quit();
       case SDLK_RETURN:  // alt-Return to toggle fullscreen
         {
-          action.wID = ACTION_TOGGLE_FULLSCREEN;
+          action.id = ACTION_TOGGLE_FULLSCREEN;
           g_application.OnAction(action);
           return true;
         }

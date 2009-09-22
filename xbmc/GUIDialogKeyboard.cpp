@@ -103,19 +103,19 @@ void CGUIDialogKeyboard::OnInitWindow()
 bool CGUIDialogKeyboard::OnAction(const CAction &action)
 {
   bool handled(true);
-  if (action.wID == ACTION_BACKSPACE)
+  if (action.id == ACTION_BACKSPACE)
   {
     Backspace();
   }
-  else if (action.wID == ACTION_ENTER)
+  else if (action.id == ACTION_ENTER)
   {
     OnOK();
   }
-  else if (action.wID == ACTION_CURSOR_LEFT)
+  else if (action.id == ACTION_CURSOR_LEFT)
   {
     MoveCursor( -1);
   }
-  else if (action.wID == ACTION_CURSOR_RIGHT)
+  else if (action.id == ACTION_CURSOR_RIGHT)
   {
     if ((unsigned int) GetCursorPos() == m_strEdit.size() && (m_strEdit.size() == 0 || m_strEdit[m_strEdit.size() - 1] != ' '))
     { // add a space
@@ -124,27 +124,27 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else
       MoveCursor(1);
   }
-  else if (action.wID == ACTION_SHIFT)
+  else if (action.id == ACTION_SHIFT)
   {
     OnShift();
   }
-  else if (action.wID == ACTION_SYMBOLS)
+  else if (action.id == ACTION_SYMBOLS)
   {
     OnSymbols();
   }
-  else if (action.wID >= REMOTE_0 && action.wID <= REMOTE_9)
+  else if (action.id >= REMOTE_0 && action.id <= REMOTE_9)
   {
-    OnRemoteNumberClick(action.wID);
+    OnRemoteNumberClick(action.id);
   }
-  else if (action.wID >= (WORD)KEY_VKEY && action.wID < (WORD)KEY_ASCII)
+  else if (action.id >= (WORD)KEY_VKEY && action.id < (WORD)KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
-    BYTE b = action.wID & 0xFF;
+    BYTE b = action.id & 0xFF;
     if (b == 0x25) // left
     {
       if (g_advancedSettings.m_bNavVKeyboard)
       {
         CAction action;
-        action.wID = ACTION_MOVE_LEFT;
+        action.id = ACTION_MOVE_LEFT;
         return OnAction(action);
       }
       else
@@ -153,7 +153,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else if (b == 0x26 && g_advancedSettings.m_bNavVKeyboard)
     {
       CAction action;
-      action.wID = ACTION_MOVE_UP;
+      action.id = ACTION_MOVE_UP;
       return OnAction(action);
     }
     else if (b == 0x27) // right
@@ -161,7 +161,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       if (g_advancedSettings.m_bNavVKeyboard)
       {
         CAction action;
-        action.wID = ACTION_MOVE_RIGHT;
+        action.id = ACTION_MOVE_RIGHT;
         return OnAction(action);
       }
       else
@@ -170,7 +170,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else if (b == 0x28 && g_advancedSettings.m_bNavVKeyboard)
     {
       CAction action;
-      action.wID = ACTION_MOVE_DOWN;
+      action.id = ACTION_MOVE_DOWN;
       return OnAction(action);
     }
     else if (b == 0x0D) // enter
@@ -178,7 +178,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       if (g_advancedSettings.m_bNavVKeyboard)
       {
         CAction action;
-        action.wID = ACTION_SELECT_ITEM;
+        action.id = ACTION_SELECT_ITEM;
         return OnAction(action);
       }
       else
@@ -188,9 +188,9 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
     else if (b == 0x1B) Close();        // escape
     else if (b == 0x20) Character(b);   // space
   }
-  else if (action.wID >= KEY_ASCII)
+  else if (action.id >= KEY_ASCII)
   { // input from the keyboard
-    //char ch = action.wID & 0xFF;
+    //char ch = action.id & 0xFF;
     switch (action.unicode)
     {
     case 13:  // enter
@@ -198,7 +198,7 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
       if (g_advancedSettings.m_bNavVKeyboard)
       {
         CAction action;
-        action.wID = ACTION_SELECT_ITEM;
+        action.id = ACTION_SELECT_ITEM;
         return OnAction(action);
       }
       else

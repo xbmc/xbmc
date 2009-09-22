@@ -30,7 +30,6 @@
  */
 
 #include "StdString.h"
-#include "system.h"
 
 #include <map>
 
@@ -46,22 +45,22 @@ public:
   bool Load(const CStdString& strFileName, const CStdString& strFallbackFileName="special://xbmc/language/english/strings.xml");
   bool LoadSkinStrings(const CStdString& path, const CStdString& fallbackPath);
   void ClearSkinStrings();
-  const CStdString& Get(DWORD dwCode) const;
+  const CStdString& Get(uint32_t code) const;
   void Clear();
-  DWORD LoadBlock(const CStdString &id, const CStdString &path, const CStdString &fallbackPath);
+  uint32_t LoadBlock(const CStdString &id, const CStdString &path, const CStdString &fallbackPath);
   void ClearBlock(const CStdString &id);
 protected:
-  void Clear(DWORD start, DWORD end);
-  bool LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, DWORD offset = 0);
+  void Clear(uint32_t start, uint32_t end);
+  bool LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, uint32_t offset = 0);
   CStdString ToUTF8(const CStdString &encoding, const CStdString &str);
-  std::map<DWORD, CStdString> m_strings;
-  typedef std::map<DWORD, CStdString>::const_iterator ciStrings;
-  typedef std::map<DWORD, CStdString>::iterator       iStrings;
+  std::map<uint32_t, CStdString> m_strings;
+  typedef std::map<uint32_t, CStdString>::const_iterator ciStrings;
+  typedef std::map<uint32_t, CStdString>::iterator       iStrings;
 
-  static const DWORD block_start = 0xf000000;
-  static const DWORD block_size = 4096;
-  std::map<CStdString, DWORD> m_blocks;
-  typedef std::map<CStdString, DWORD>::iterator iBlocks;
+  static const uint32_t block_start = 0xf000000;
+  static const uint32_t block_size = 4096;
+  std::map<CStdString, uint32_t> m_blocks;
+  typedef std::map<CStdString, uint32_t>::iterator iBlocks;
 };
 
 /*!

@@ -85,21 +85,21 @@ void CGUIMoverControl::Render()
 
 bool CGUIMoverControl::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     // button selected - send message to parent
     CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID());
     SendWindowMessage(message);
     return true;
   }
-  if (action.wID == ACTION_ANALOG_MOVE)
+  if (action.id == ACTION_ANALOG_MOVE)
   {
     //  if (m_dwAllowedDirections == ALLOWED_DIRECTIONS_UPDOWN)
-    //   Move(0, (int)(-m_fAnalogSpeed*action.fAmount2));
+    //   Move(0, (int)(-m_fAnalogSpeed*action.amount2));
     //  else if (m_dwAllowedDirections == ALLOWED_DIRECTIONS_LEFTRIGHT)
-    //   Move((int)(m_fAnalogSpeed*action.fAmount1), 0);
+    //   Move((int)(m_fAnalogSpeed*action.amount1), 0);
     //  else // ALLOWED_DIRECTIONS_ALL
-    Move((int)(m_fAnalogSpeed*action.fAmount1), (int)( -m_fAnalogSpeed*action.fAmount2));
+    Move((int)(m_fAnalogSpeed*action.amount1), (int)( -m_fAnalogSpeed*action.amount2));
     return true;
   }
   // base class

@@ -49,7 +49,7 @@ GUIFontManager::~GUIFontManager(void)
   Clear();
 }
 
-CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, DWORD textColor, DWORD shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes)
+CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing, float aspect, RESOLUTION sourceRes)
 {
   float originalAspect = aspect;
 
@@ -333,8 +333,8 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
       if (pNode)
       {
         CStdString strFontName = pNode->FirstChild()->Value();
-        DWORD shadowColor = 0;
-        DWORD textColor = 0;
+        color_t shadowColor = 0;
+        color_t textColor = 0;
         CGUIControlFactory::GetColor(fontNode, "shadow", shadowColor);
         CGUIControlFactory::GetColor(fontNode, "color", textColor);
         const TiXmlNode *pNode = fontNode->FirstChild("filename");

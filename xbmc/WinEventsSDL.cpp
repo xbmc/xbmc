@@ -200,12 +200,12 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
       return true;
 
     case SDLK_f: // CMD-f to toggle fullscreen
-      action.wID = ACTION_TOGGLE_FULLSCREEN;
+      action.id = ACTION_TOGGLE_FULLSCREEN;
       g_application.OnAction(action);
       return true;
 
     case SDLK_s: // CMD-3 to take a screenshot
-      action.wID = ACTION_TAKE_SCREENSHOT;
+      action.id = ACTION_TAKE_SCREENSHOT;
       g_application.OnAction(action);
       return true;
 
