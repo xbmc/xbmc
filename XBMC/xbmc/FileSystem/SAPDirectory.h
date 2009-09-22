@@ -107,7 +107,7 @@ public:
   CSAPSessions();
   ~CSAPSessions();
 
-  void StopThread();
+  void StopThread(bool bJoin = true);
 
 protected:
   friend class DIRECTORY::CSAPDirectory;
