@@ -2058,7 +2058,7 @@ bool CDVDPlayer::SeekScene(bool bPlus)
   if (!bPlus && clock > 5 * 1000) // 5 seconds
     clock -= 5 * 1000;
 
-  __int64 iScenemarker;
+  int64_t iScenemarker;
   if (m_Edl.GetNextSceneMarker(bPlus, clock, &iScenemarker))
   {
     /*
