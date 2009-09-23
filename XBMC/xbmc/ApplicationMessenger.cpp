@@ -495,7 +495,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_NETWORKMESSAGE:
       {
-        g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
+        g_application.getNetwork().NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, (int)pMsg->dwParam2);
       }
       break;
 
