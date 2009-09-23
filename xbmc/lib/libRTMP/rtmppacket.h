@@ -22,9 +22,6 @@
  */
 
 #include <string>
-#ifdef _WIN32
-#include "system.h" // WIN32INCLUDES for BYTE
-#endif
 
 #define RTMP_PACKET_TYPE_AUDIO 0x08
 #define RTMP_PACKET_TYPE_VIDEO 0x09
@@ -48,9 +45,9 @@ namespace RTMP_LIB
       inline bool IsReady() { return m_nBytesRead == m_nBodySize; }
       void Dump();
 
-      BYTE           m_headerType;
-      BYTE           m_packetType;
-      BYTE           m_nChannel;
+      unsigned char  m_headerType;
+      unsigned char  m_packetType;
+      unsigned char  m_nChannel;
       int            m_nInfoField1; // 3 first bytes
       int            m_nInfoField2; // last 4 bytes in a long header
       bool           m_hasAbsTimestamp; // timestamp absolute or relative?

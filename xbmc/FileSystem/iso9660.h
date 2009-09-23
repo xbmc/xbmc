@@ -24,7 +24,7 @@
 #include <vector>
 #include <string>
 #include "xbox/IoSupport.h"
-#include "system.h"
+#include "system.h" // for win32 types
 
 #ifdef _WIN32
 // Ideally we should just be including iso9660.h, but it's not win32-ified at this point,

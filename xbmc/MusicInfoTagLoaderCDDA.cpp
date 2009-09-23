@@ -19,10 +19,7 @@
  *
  */
 
-#include "system.h"
-
-#ifdef HAS_DVD_DRIVE
-
+#include "system.h" // for HAS_DVD_DRIVE
 #include "MusicInfoTagLoaderCDDA.h"
 #include "FileSystem/cddb.h"
 #include "MusicInfoTag.h"
@@ -155,5 +152,3 @@ bool CMusicInfoTagLoaderCDDA::Load(const CStdString& strFileName, CMusicInfoTag&
   
   return false;
 }
-
-#endif

@@ -22,7 +22,7 @@
  */
 
 #include "StdString.h"
-#include "system.h"
+#include "system.h" // for SYSTEMTIME
 
 namespace XFILE
 {
@@ -82,7 +82,7 @@ protected:
   void FlushBuffer();
   XFILE::CFile* m_pFile;
   int m_iMode;
-  LPBYTE m_pBuffer;
+  uint8_t *m_pBuffer;
   int m_BufferPos;
 };
 

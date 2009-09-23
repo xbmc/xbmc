@@ -20,11 +20,9 @@
  *
  */
 
+#include <math.h>
 #include "ImusicInfoTagLoader.h"
 #include "cores/paplayer/ReplayGain.h"
-#include "system.h"
-
-#include <math.h>
 
 namespace MUSIC_INFO
 {
@@ -46,7 +44,7 @@ public:
       delete[] m_SeekOffset;
   };
 
-  __int64 GetByteOffset(float fTime)
+  int64_t GetByteOffset(float fTime)
   {
     if (!m_iSeekOffsets) return 0;  // no seek info
     if (fTime > m_fTotalDuration)
@@ -56,10 +54,10 @@ public:
     if (iOffset > m_iSeekOffsets-1) iOffset = m_iSeekOffsets - 1;
     float fa = m_SeekOffset[iOffset];
     float fb = m_SeekOffset[iOffset + 1];
-    return (__int64)(fa + (fb - fa) * (fOffset - iOffset));
+    return (int64_t)(fa + (fb - fa) * (fOffset - iOffset));
   };
 
-  __int64 GetTimeOffset(__int64 iBytes)
+  int64_t GetTimeOffset(int64_t iBytes)
   {
     if (!m_iSeekOffsets) return 0;  // no seek info
     float fBytes = (float)iBytes;
@@ -74,7 +72,7 @@ public:
     // iOffset will be the last of the two offsets and will be bigger than 1.
     float fTimeOffset = (float)iOffset - 1 + (fBytes - m_SeekOffset[iOffset - 1])/(m_SeekOffset[iOffset] - m_SeekOffset[iOffset - 1]);
     float fTime = fTimeOffset / m_iSeekOffsets * m_fTotalDuration;
-    return (__int64)(fTime * 1000.0f);
+    return (int64_t)(fTime * 1000.0f);
   };
 
   void SetDuration(float fDuration) { m_fTotalDuration = fDuration; };
@@ -123,7 +121,7 @@ public:
   static unsigned int IsID3v2Header(unsigned char* pBuf, size_t bufLen);
 protected:
   virtual int ReadDuration(const CStdString& strFileName);
-  bool ReadLAMETagInfo(BYTE *p);
+  bool ReadLAMETagInfo(unsigned char *p);
   int IsMp3FrameHeader(unsigned long head);
   virtual bool PrioritiseAPETags() const;
 

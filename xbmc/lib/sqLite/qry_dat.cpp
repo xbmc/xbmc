@@ -31,6 +31,7 @@
  **********************************************************************/
 
 #include "qry_dat.h"
+#include "system.h" // for PRId64
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)

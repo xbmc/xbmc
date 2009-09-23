@@ -28,7 +28,6 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "system.h"
 #include "URL.h"
 
 #include <stdio.h>
