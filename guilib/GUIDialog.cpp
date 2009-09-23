@@ -212,12 +212,12 @@ void CGUIDialog::Show_Internal()
 
 void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
 {
-  g_application.getApplicationMessenger().DoModal(this, iWindowID, param);
+  DoModal_Internal(iWindowID, param);
 }
 
 void CGUIDialog::Show()
 {
-  g_application.getApplicationMessenger().Show(this);
+  Show_Internal();
 }
 
 bool CGUIDialog::RenderAnimation(DWORD time)
