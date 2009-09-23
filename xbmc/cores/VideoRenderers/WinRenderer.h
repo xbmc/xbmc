@@ -146,9 +146,9 @@ public:
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
+  virtual bool         IsConfigured() { return m_bConfigured; }
 
   // TODO:DIRECTX - implement these
-  virtual bool         IsConfigured() { return false; } 
   virtual bool         SupportsBrightness() { return false; }
   virtual bool         SupportsContrast() { return false; }
   virtual bool         SupportsGamma() { return false; }
