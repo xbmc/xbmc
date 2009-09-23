@@ -27,7 +27,7 @@ character itself should NOT be typed as part of the command.
 
    # sudo apt-get install subversion
    # cd $HOME
-   # svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
+   # svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk
 
 -----------------------------------------------------------------------------
 3. Installing the required Ubuntu packages
