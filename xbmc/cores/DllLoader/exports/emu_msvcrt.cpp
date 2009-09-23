@@ -42,7 +42,7 @@
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
-#ifdef __APPLE__
+#ifdef _LINUX
 #include "PlatformDefs.h" // for __stat64
 #endif
 #include "Util.h"
