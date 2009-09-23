@@ -145,7 +145,7 @@ void GUIFontManager::ReloadTTFFonts(void)
     return;   // we haven't even loaded fonts in yet
 
   // check if the device is ready
-  if(g_Windowing.GetDeviceStatus() != S_OK)
+  if (!g_Windowing.IsDeviceReady())
   {
     m_bFontsNeedReloading = true;
     return;

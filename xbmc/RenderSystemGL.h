@@ -59,7 +59,7 @@ public:
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix);
   virtual void RestoreHardwareTransform();
 
-  HRESULT GetDeviceStatus() { return S_OK; }
+  bool IsDeviceReady() const { return true; };
   
   virtual bool TestRender();
   
@@ -70,9 +70,9 @@ protected:
   
   int        m_iVSyncMode;
   int        m_iVSyncErrors;
-  __int64    m_iSwapStamp;
-  __int64    m_iSwapRate;
-  __int64    m_iSwapTime;
+  int64_t    m_iSwapStamp;
+  int64_t    m_iSwapRate;
+  int64_t    m_iSwapTime;
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
