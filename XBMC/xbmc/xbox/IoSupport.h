@@ -25,7 +25,7 @@
 #if !defined(AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_)
 #define AFX_IOSUPPORT_H__F084A488_BD6E_49D5_8CD3_0BE62149DB40__INCLUDED_
 
-#include "system.h"
+#include "system.h" // for Win32 types
 
 #if _MSC_VER > 1000
 #pragma once

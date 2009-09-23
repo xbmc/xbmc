@@ -61,7 +61,7 @@ Reason: Prepared for Public Release
 #endif
 #endif
 
-#include "system.h"
+#include "system.h" // for WIN32 types
 
 #ifndef FILENAME_MAX
  #define FILENAME_MAX 260

@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include "rtmppacket.h"
+#include "system.h" // for INVALID_SOCKET
 
 namespace RTMP_LIB
 {

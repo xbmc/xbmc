@@ -1,4 +1,4 @@
-
+#include "system.h" // WIN32INCLUDES - this is for SD_BOTH primarily, and must be included prior to VTPFile.h for some reason
 #include "VTPFile.h"
 #include "VTPSession.h"
 #include "Util.h"
