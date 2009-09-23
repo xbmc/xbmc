@@ -171,9 +171,9 @@ public:
 
     DWORD m_dwStartBlock;
     DWORD m_dwCurrentBlock;    // Current being read Block
-    __int64 m_dwFilePos;
+    int64_t m_dwFilePos;
     BYTE* m_pBuffer;
-    __int64 m_dwFileSize;
+    int64_t m_dwFileSize;
   };
   iso9660( );
   virtual ~iso9660( );
@@ -182,9 +182,9 @@ public:
   int FindNextFile( HANDLE szLocalFolder, WIN32_FIND_DATA *wfdFile );
   bool FindClose( HANDLE szLocalFolder );
   DWORD SetFilePointer(HANDLE hFile, LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod );
-  __int64 GetFileSize(HANDLE hFile);
-  __int64 GetFilePosition(HANDLE hFile);
-  __int64 Seek(HANDLE hFile, __int64 lOffset, int whence);
+  int64_t GetFileSize(HANDLE hFile);
+  int64_t GetFilePosition(HANDLE hFile);
+  int64_t Seek(HANDLE hFile, int64_t lOffset, int whence);
   HANDLE OpenFile( const char* filename );
   long ReadFile(HANDLE fd, byte *pBuffer, long lSize);
   void CloseFile(HANDLE hFile);
@@ -226,9 +226,9 @@ protected:
 
    DWORD    m_dwStartBlock;
    DWORD    m_dwCurrentBlock;    // Current being read Block
-   __int64   m_dwFilePos;
+   int64_t   m_dwFilePos;
    BYTE*       m_pBuffer;
-   __int64   m_dwFileSize;
+   int64_t   m_dwFileSize;
   */
 
 };

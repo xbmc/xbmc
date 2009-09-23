@@ -150,7 +150,7 @@ private:
   CStdString encodeFileToBase64(const CStdString &inFilename, int linesize );
   void decodeblock( unsigned char in[4], unsigned char out[3] );
   bool decodeBase64ToFile( const CStdString &inString, const CStdString &outfilename, bool append = false );
-  __int64 fileSize(const CStdString &filename);
+  int64_t fileSize(const CStdString &filename);
   void resetTags();
   CStdString procMask(CStdString mask);
   int splitParameter(const CStdString &parameter, CStdString& command, CStdString paras[], const CStdString &sep);

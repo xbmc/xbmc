@@ -133,9 +133,9 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     if (!strFile.Equals(".") && !strFile.Equals("..")
       && aDir.type != SMBC_PRINTER_SHARE && aDir.type != SMBC_IPC_SHARE)
     {
-     __int64 iSize = 0;
+     int64_t iSize = 0;
       bool bIsDir = true;
-      __int64 lTimeDate = 0;
+      int64_t lTimeDate = 0;
       bool hidden = false;
 
       if(strFile.Right(1).Equals("$") && aDir.type == SMBC_FILE_SHARE )

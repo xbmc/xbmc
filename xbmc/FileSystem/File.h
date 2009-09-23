@@ -68,13 +68,13 @@ public:
 
   bool Open(const CStdString& strFileName, unsigned int flags = 0);
   bool OpenForWrite(const CStdString& strFileName, bool bOverWrite = false);
-  unsigned int Read(void* lpBuf, __int64 uiBufSize);
+  unsigned int Read(void* lpBuf, int64_t uiBufSize);
   bool ReadString(char *szLine, int iLineLength);
-  int Write(const void* lpBuf, __int64 uiBufSize);
+  int Write(const void* lpBuf, int64_t uiBufSize);
   void Flush();
-  __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
-  __int64 GetPosition();
-  __int64 GetLength();
+  int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
+  int64_t GetPosition();
+  int64_t GetLength();
   void Close();
   int GetChunkSize() {if (m_pFile) return m_pFile->GetChunkSize(); return 0;}
   bool SkipNext(){if (m_pFile) return m_pFile->SkipNext(); return false;}
@@ -136,7 +136,7 @@ public:
   bool Open(const CURL& filename);
   void Close();
 
-  __int64 GetLength();
+  int64_t GetLength();
 private:
   CFileStreamBuffer m_buffer;
   IFile*            m_file;

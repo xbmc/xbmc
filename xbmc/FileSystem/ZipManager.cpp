@@ -59,7 +59,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   map<CStdString,vector<SZipEntry> >::iterator it = mZipMap.find(strFile);
   if (it != mZipMap.end()) // already listed, just return it if not changed, else release and reread
   {
-    map<CStdString,__int64>::iterator it2=mZipDate.find(strFile);
+    map<CStdString,int64_t>::iterator it2=mZipDate.find(strFile);
     if (CFile::Stat(strFile,&m_StatData))
 #ifndef _LINUX
       CLog::Log(LOGDEBUG,"statdata: %i, new: %i",it2->second,m_StatData.st_mtime);
@@ -100,7 +100,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
   // Zipfile comment may be up to 65535 bytes
   // End of central directory record is 22 bytes (ECDREC_SIZE)
   // -> need to check the last 65557 bytes
-  __int64 fileSize = mFile.GetLength();
+  int64_t fileSize = mFile.GetLength();
   // Don't need to look in the last 18 bytes (ECDREC_SIZE-4)
   // But as we need to do overlapping between blocks (3 bytes),
   // we start the search at ECDREC_SIZE-1 from the end of file
@@ -187,7 +187,7 @@ bool CZipManager::GetZipList(const CStdString& strPath, vector<SZipEntry>& items
     strncpy(ze.name, strName.c_str(), strName.size()>254 ? 254 : strName.size());
     
     // Save the current position
-    __int64 savePos = mFile.GetPosition();
+    int64_t savePos = mFile.GetPosition();
     
     // Go to the local file header to get the extra field length
     // !! local header extra field length != central file header extra field length !!
@@ -318,7 +318,7 @@ void CZipManager::release(const CStdString& strPath)
   map<CStdString,vector<SZipEntry> >::iterator it= mZipMap.find(url.GetHostName());
   if (it != mZipMap.end())
   {
-    map<CStdString,__int64>::iterator it2=mZipDate.find(url.GetHostName());
+    map<CStdString,int64_t>::iterator it2=mZipDate.find(url.GetHostName());
     mZipMap.erase(it);
     mZipDate.erase(it2);
   }

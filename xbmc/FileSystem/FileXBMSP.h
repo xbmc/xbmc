@@ -44,13 +44,13 @@ class CFileXBMSP : public IFile
 public:
   CFileXBMSP();
   virtual ~CFileXBMSP();
-  virtual __int64 GetPosition();
-  virtual __int64 GetLength();
+  virtual int64_t GetPosition();
+  virtual int64_t GetLength();
   virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
-  virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
-  virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
+  virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
 protected:
   UINT64 m_fileSize;

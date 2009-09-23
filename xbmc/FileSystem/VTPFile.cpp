@@ -73,7 +73,7 @@ bool CVTPFile::Open(const CURL& url2)
   return true;
 }
 
-unsigned int CVTPFile::Read(void* buffer, __int64 size)
+unsigned int CVTPFile::Read(void* buffer, int64_t size)
 {
   if(m_socket == INVALID_SOCKET)
     return 0;
@@ -116,7 +116,7 @@ unsigned int CVTPFile::Read(void* buffer, __int64 size)
   return res;
 }
 
-__int64 CVTPFile::Seek(__int64 pos, int whence)
+int64_t CVTPFile::Seek(int64_t pos, int whence)
 {
   CLog::Log(LOGDEBUG, "CVTPFile::Seek - seek to pos %"PRId64", whence %d", pos, whence);
 

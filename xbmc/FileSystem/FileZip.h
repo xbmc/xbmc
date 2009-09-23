@@ -37,15 +37,15 @@ namespace XFILE
     CFileZip();
     virtual ~CFileZip();
 
-    virtual __int64 GetPosition();
-    virtual __int64 GetLength();
+    virtual int64_t GetPosition();
+    virtual int64_t GetLength();
     virtual bool Open(const CURL& url);
     virtual bool Exists(const CURL& url);
     virtual int Stat(struct __stat64* buffer);
     virtual int Stat(const CURL& url, struct __stat64* buffer);
-    virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
+    virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
     //virtual bool ReadString(char *szLine, int iLineLength);
-    virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
+    virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
     virtual void Close();
 
     int UnpackFromMemory(std::string& strDest, const std::string& strInput, bool isGZ=false);
@@ -55,8 +55,8 @@ namespace XFILE
     void DestroyBuffer(void* lpBuffer, int iBufSize);
     CFile mFile;
     SZipEntry mZipItem;
-    __int64 m_iFilePos; // position in _uncompressed_ data read
-    __int64 m_iZipFilePos; // position in _compressed_ data
+    int64_t m_iFilePos; // position in _uncompressed_ data read
+    int64_t m_iZipFilePos; // position in _compressed_ data
     int m_iAvailBuffer;
     z_stream m_ZStream;
     char m_szBuffer[65535];     // 64k buffer for compressed data

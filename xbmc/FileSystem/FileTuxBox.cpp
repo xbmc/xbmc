@@ -32,12 +32,12 @@ CFileTuxBox::~CFileTuxBox()
 {
 }
 
-__int64 CFileTuxBox::GetPosition()
+int64_t CFileTuxBox::GetPosition()
 {
   return 0;
 }
 
-__int64 CFileTuxBox::GetLength()
+int64_t CFileTuxBox::GetLength()
 {
   return 0;
 }
@@ -47,12 +47,12 @@ bool CFileTuxBox::Open(const CURL& url)
   return true;
 }
 
-unsigned int CFileTuxBox::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CFileTuxBox::Read(void* lpBuf, int64_t uiBufSize)
 {
   return 0;
 }
 
-__int64 CFileTuxBox::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileTuxBox::Seek(int64_t iFilePosition, int iWhence)
 {
   return 0;
 }

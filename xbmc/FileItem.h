@@ -246,7 +246,7 @@ public:
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
-  __int64 m_dwSize;             ///< file size (0 for folders)
+  int64_t m_dwSize;             ///< file size (0 for folders)
   CStdString m_strDVDLabel;
   CStdString m_strTitle;
   int m_iprogramCount;

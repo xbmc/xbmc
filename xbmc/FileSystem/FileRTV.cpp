@@ -112,7 +112,7 @@ bool CFileRTV::Open(const CURL& url)
 
 
 //*********************************************************************************************
-unsigned int CFileRTV::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CFileRTV::Read(void *lpBuf, int64_t uiBufSize)
 {
   size_t lenread;
 
@@ -154,7 +154,7 @@ void CFileRTV::Close()
 }
 
 //*********************************************************************************************
-__int64 CFileRTV::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileRTV::Seek(int64_t iFilePosition, int iWhence)
 {
   UINT64 newpos;
 
@@ -204,14 +204,14 @@ __int64 CFileRTV::Seek(__int64 iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-__int64 CFileRTV::GetLength()
+int64_t CFileRTV::GetLength()
 {
   if (!m_bOpened) return 0;
   return m_fileSize;
 }
 
 //*********************************************************************************************
-__int64 CFileRTV::GetPosition()
+int64_t CFileRTV::GetPosition()
 {
   if (!m_bOpened) return 0;
   return m_filePos;

@@ -42,14 +42,14 @@ class CFileRTV : public IFile
 public:
   CFileRTV();
   virtual ~CFileRTV();
-  virtual __int64 GetPosition();
-  virtual __int64 GetLength();
+  virtual int64_t GetPosition();
+  virtual int64_t GetLength();
   virtual bool Open(const CURL& url);
   bool Open(const char* strHostName, const char* strFileName, int iport);
   virtual bool Exists(const CURL& url) { return true;};
   virtual int Stat(const CURL& url, struct __stat64* buffer) { errno = ENOENT; return -1; };
-  virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
-  virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
+  virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
 protected:
   UINT64 m_fileSize;

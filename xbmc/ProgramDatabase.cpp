@@ -201,7 +201,7 @@ DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
       {
         CStdString strPath;
         CUtil::GetDirectory(item->m_strPath,strPath);
-        __int64 iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
+        int64_t iSize = CGUIWindowFileManager::CalculateFolderSize(strPath);
         CStdString strSQL=FormatSQL("update files set iSize=%I64u where strFileName like '%s'",iSize,item->m_strPath.c_str());
         m_pDS->exec(strSQL.c_str());
       }
@@ -240,7 +240,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     // special case - programs in root of sources
     bool bIsShare=false;
     CUtil::GetMatchingSource(strPath,g_settings.m_programSources,bIsShare);
-    __int64 iSize=0;
+    int64_t iSize=0;
     if (bIsShare || !item->IsDefaultXBE())
     {
       struct __stat64 stat;

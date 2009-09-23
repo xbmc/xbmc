@@ -52,7 +52,7 @@ public:
   static bool MoveItem(const CFileItem *pItem, const CStdString& strDest, bool bSilent=false, CGUIDialogProgress* pProgress = NULL);
 
   void ResetProgressBar(bool showProgress = true);
-  static __int64 CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
+  static int64_t CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress = NULL);
 protected:
   virtual void OnInitWindow();
   void SetInitialPath(const CStdString &path);

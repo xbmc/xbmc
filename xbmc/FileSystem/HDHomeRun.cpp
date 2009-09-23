@@ -175,7 +175,7 @@ bool CFileHomeRun::Exists(const CURL& url)
   return(status);
 }
 
-__int64 CFileHomeRun::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileHomeRun::Seek(int64_t iFilePosition, int iWhence)
 { 
   return -1;
 }
@@ -185,12 +185,12 @@ int CFileHomeRun::Stat(const CURL& url, struct __stat64* buffer)
   return 0;
 }
 
-__int64 CFileHomeRun::GetPosition()
+int64_t CFileHomeRun::GetPosition()
 {
   return 0;
 }
 
-__int64 CFileHomeRun::GetLength()
+int64_t CFileHomeRun::GetLength()
 {
   return 0;
 }
@@ -222,7 +222,7 @@ bool CFileHomeRun::Open(const CURL &url)
   return true;
 }
 
-unsigned int CFileHomeRun::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
 {
   unsigned int datasize;
   // for now, let it it time out after 5 seconds,

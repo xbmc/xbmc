@@ -1987,7 +1987,7 @@ void CUtil::StatToStatI64(struct _stati64 *result, struct stat *stat)
   result->st_uid = stat->st_uid;
   result->st_gid = stat->st_gid;
   result->st_rdev = stat->st_rdev;
-  result->st_size = (__int64)stat->st_size;
+  result->st_size = (int64_t)stat->st_size;
 
 #ifndef _LINUX
   result->st_atime = (long)(stat->st_atime & 0xFFFFFFFF);

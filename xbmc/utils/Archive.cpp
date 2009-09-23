@@ -109,9 +109,9 @@ CArchive& CArchive::operator<<(unsigned int i)
   return *this;
 }
 
-CArchive& CArchive::operator<<(__int64 i64)
+CArchive& CArchive::operator<<(int64_t i64)
 {
-  int size = sizeof(__int64);
+  int size = sizeof(int64_t);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
@@ -252,9 +252,9 @@ CArchive& CArchive::operator>>(unsigned int& i)
   return *this;
 }
 
-CArchive& CArchive::operator>>(__int64& i64)
+CArchive& CArchive::operator>>(int64_t& i64)
 {
-  m_pFile->Read((void*)&i64, sizeof(__int64));
+  m_pFile->Read((void*)&i64, sizeof(int64_t));
 
   return *this;
 }

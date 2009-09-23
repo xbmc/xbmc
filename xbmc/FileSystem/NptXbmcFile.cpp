@@ -67,7 +67,7 @@ protected:
 NPT_Result
 NPT_XbmcFileStream::Seek(NPT_Position offset)
 {
-    __int64 result;
+    int64_t result;
 
     result = m_FileReference->Seek(offset, SEEK_SET)    ;
     if (result >= 0) {
@@ -83,7 +83,7 @@ NPT_XbmcFileStream::Seek(NPT_Position offset)
 NPT_Result
 NPT_XbmcFileStream::Tell(NPT_Position& offset)
 {
-    __int64 result = m_FileReference->GetPosition();
+    int64_t result = m_FileReference->GetPosition();
     if (result >= 0) {
         offset = (NPT_Position)result;
         return NPT_SUCCESS;
@@ -173,7 +173,7 @@ NPT_XbmcFileInputStream::GetSize(NPT_LargeSize& size)
 NPT_Result
 NPT_XbmcFileInputStream::GetAvailable(NPT_LargeSize& available)
 {
-    __int64 offset = m_FileReference->GetPosition();
+    int64_t offset = m_FileReference->GetPosition();
     NPT_LargeSize size = 0;
 
     if (NPT_SUCCEEDED(GetSize(size)) && offset >= 0 && (NPT_LargeSize)offset <= size) {

@@ -68,7 +68,7 @@ CRarManager::~CRarManager()
   ClearCache(true);
 }
 
-bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE  bOptions, const CStdString& strDir, const __int64 iSize)
+bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath, const CStdString& strPathInRar, BYTE  bOptions, const CStdString& strDir, const int64_t iSize)
 {
 #ifdef HAS_RAR
   CSingleLock lock(m_CritSection);
@@ -151,7 +151,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 #endif
   //g_charsetConverter.unknownToUTF8(strPath);
 
-  __int64 iOffset = -1;
+  int64_t iOffset = -1;
   if (iRes != 2)
   {
     if (pFile)
@@ -451,7 +451,7 @@ void CRarManager::ExtractArchive(const CStdString& strArchive, const CStdString&
 #endif
 }
 
-__int64 CRarManager::CheckFreeSpace(const CStdString& strDrive)
+int64_t CRarManager::CheckFreeSpace(const CStdString& strDrive)
 {
   ULARGE_INTEGER lTotalFreeBytes;
   if (GetDiskFreeSpaceEx(_P(strDrive.c_str()), NULL, NULL, &lTotalFreeBytes))

@@ -232,7 +232,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file, bool checkCrossFading)
 
   // check if we can handle this file at all
   int decoder = 1 - m_currentDecoder;
-  __int64 seekOffset = (file.m_lStartOffset * 1000) / 75;
+  int64_t seekOffset = (file.m_lStartOffset * 1000) / 75;
   if (!m_decoder[decoder].Create(file, seekOffset, m_crossFading))
   {
     m_bQueueFailed = true;

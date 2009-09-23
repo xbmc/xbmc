@@ -131,12 +131,12 @@ int CFileMusicDatabase::Stat(const CURL& url, struct __stat64* buffer)
  return m_file.Stat(song.strFileName, buffer);
 }
 
-unsigned int CFileMusicDatabase::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CFileMusicDatabase::Read(void* lpBuf, int64_t uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);
 }
 
-__int64 CFileMusicDatabase::Seek(__int64 iFilePosition, int iWhence /*=SEEK_SET*/)
+int64_t CFileMusicDatabase::Seek(int64_t iFilePosition, int iWhence /*=SEEK_SET*/)
 {
   return m_file.Seek(iFilePosition, iWhence);
 }
@@ -146,12 +146,12 @@ void CFileMusicDatabase::Close()
   m_file.Close();
 }
 
-__int64 CFileMusicDatabase::GetPosition()
+int64_t CFileMusicDatabase::GetPosition()
 {
   return m_file.GetPosition();
 }
 
-__int64 CFileMusicDatabase::GetLength()
+int64_t CFileMusicDatabase::GetLength()
 {
   return m_file.GetLength();
 }

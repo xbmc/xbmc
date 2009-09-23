@@ -28,11 +28,11 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "system.h" // for __int64
 #include "URL.h"
 
 #include <stdio.h>
 #include <errno.h>
+#include <stdint.h>
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
@@ -57,13 +57,13 @@ public:
     errno = ENOENT;
     return -1;
   }
-  virtual unsigned int Read(void* lpBuf, __int64 uiBufSize) = 0;
-  virtual int Write(const void* lpBuf, __int64 uiBufSize) { return -1;};
+  virtual unsigned int Read(void* lpBuf, int64_t uiBufSize) = 0;
+  virtual int Write(const void* lpBuf, int64_t uiBufSize) { return -1;};
   virtual bool ReadString(char *szLine, int iLineLength)
   {
     if(Seek(0, SEEK_CUR) < 0) return false;
 
-    __int64 iFilePos = GetPosition();
+    int64_t iFilePos = GetPosition();
     int iBytesRead = Read( (unsigned char*)szLine, iLineLength - 1);
     if (iBytesRead <= 0)
       return false;
@@ -105,10 +105,10 @@ public:
     }
     return true;
   }
-  virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET) = 0;
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET) = 0;
   virtual void Close() = 0;
-  virtual __int64 GetPosition() = 0;
-  virtual __int64 GetLength() = 0;
+  virtual int64_t GetPosition() = 0;
+  virtual int64_t GetLength() = 0;
   virtual void Flush() { }
   virtual int  GetChunkSize() {return 0;}
   virtual bool SkipNext(){return false;}

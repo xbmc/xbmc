@@ -256,7 +256,7 @@ int CFileXBMSP::Stat(const CURL& url, struct __stat64* buffer)
 }
 
 //*********************************************************************************************
-unsigned int CFileXBMSP::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CFileXBMSP::Read(void *lpBuf, int64_t uiBufSize)
 {
   unsigned char *buf = NULL;
   size_t buflen = 0;
@@ -299,7 +299,7 @@ void CFileXBMSP::Close()
 }
 
 //*********************************************************************************************
-__int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileXBMSP::Seek(int64_t iFilePosition, int iWhence)
 {
   UINT64 newpos;
 
@@ -385,14 +385,14 @@ __int64 CFileXBMSP::Seek(__int64 iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-__int64 CFileXBMSP::GetLength()
+int64_t CFileXBMSP::GetLength()
 {
   if (!m_bOpened) return 0;
   return m_fileSize;
 }
 
 //*********************************************************************************************
-__int64 CFileXBMSP::GetPosition()
+int64_t CFileXBMSP::GetPosition()
 {
   if (!m_bOpened) return 0;
   return m_filePos;

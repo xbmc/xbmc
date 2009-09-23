@@ -68,13 +68,13 @@ class CFileDAAP : public IFile
 public:
   CFileDAAP();
   virtual ~CFileDAAP();
-  virtual __int64 GetPosition();
-  virtual __int64 GetLength();
+  virtual int64_t GetPosition();
+  virtual int64_t GetLength();
   virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
-  virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
-  virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
+  virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
 
 protected:
@@ -82,8 +82,8 @@ protected:
   bool StartStreaming();
   bool StopStreaming();
 
-  __int64 m_fileSize; //holds full size
-  __int64 m_filePos; //holds current position in file
+  int64_t m_fileSize; //holds full size
+  int64_t m_filePos; //holds current position in file
 
 
   DAAP_SClient *m_thisClient;

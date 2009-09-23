@@ -67,19 +67,19 @@ namespace XFILE
     CFileRar();
     CFileRar(bool bSeekable); // used for caching files
     virtual ~CFileRar();
-    virtual __int64        GetPosition();
-    virtual __int64        GetLength();
+    virtual int64_t        GetPosition();
+    virtual int64_t        GetLength();
     virtual bool          Open(const CURL& url);
     virtual bool          Exists(const CURL& url);
     virtual int            Stat(const CURL& url, struct __stat64* buffer);
-    virtual unsigned int  Read(void* lpBuf, __int64 uiBufSize);
-    virtual int            Write(const void* lpBuf, __int64 uiBufSize);
-    virtual __int64        Seek(__int64 iFilePosition, int iWhence=SEEK_SET);
+    virtual unsigned int  Read(void* lpBuf, int64_t uiBufSize);
+    virtual int            Write(const void* lpBuf, int64_t uiBufSize);
+    virtual int64_t        Seek(int64_t iFilePosition, int iWhence=SEEK_SET);
     virtual void          Close();
     virtual void          Flush();
 
     virtual bool          OpenForWrite(const CURL& url);
-    unsigned int          Write(void *lpBuf, __int64 uiBufSize);
+    unsigned int          Write(void *lpBuf, int64_t uiBufSize);
 
   protected:
     CStdString  m_strCacheDir;
@@ -94,8 +94,8 @@ namespace XFILE
     bool OpenInArchive();
     void CleanUp();
 
-    __int64 m_iFilePosition;
-    __int64 m_iFileSize;
+    int64_t m_iFilePosition;
+    int64_t m_iFileSize;
     // rar stuff
     bool m_bUseFile;
     bool m_bOpen;
@@ -110,8 +110,8 @@ namespace XFILE
     int m_iSize; // header size
     byte* m_szBuffer;
     byte* m_szStartOfBuffer;
-    __int64 m_iDataInBuffer;
-    __int64 m_iBufferStart;
+    int64_t m_iDataInBuffer;
+    int64_t m_iBufferStart;
   };
 
 }

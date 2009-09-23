@@ -42,13 +42,13 @@ public:
 
     virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
     virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
-    virtual __int64 WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
+    virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
-    virtual __int64 Seek(__int64 iFilePosition, int iWhence) ;
-    virtual void Reset(__int64 iSourcePosition) ;
+    virtual int64_t Seek(int64_t iFilePosition, int iWhence) ;
+    virtual void Reset(int64_t iSourcePosition) ;
 
 protected:
-    __int64 m_nStartPosition;
+    int64_t m_nStartPosition;
     CRingBuffer m_buffer;
     CRingBuffer m_HistoryBuffer;
     CRingBuffer m_forwardBuffer; // for seek cases, to store data already read
