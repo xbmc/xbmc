@@ -89,7 +89,7 @@ bool CProgramDatabase::UpdateOldVersion(int version)
   return true;
 }
 
-DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
+uint32_t CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
 {
   if (NULL == m_pDB.get()) return 0;
   if (NULL == m_pDS.get()) return 0;
@@ -106,7 +106,7 @@ DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
       m_pDS->close();
       return 0;
     }
-    DWORD dwTitleId = m_pDS->fv("files.TitleId").get_asLong();
+    uint32_t dwTitleId = m_pDS->fv("files.TitleId").get_asLong();
     m_pDS->close();
     return dwTitleId;
   }
@@ -117,7 +117,7 @@ DWORD CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
   return 0;
 }
 
-bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId)
+bool CProgramDatabase::SetTitleId(const CStdString& strFileName, uint32_t dwTitleId)
 {
   try
   {
@@ -151,7 +151,7 @@ bool CProgramDatabase::SetTitleId(const CStdString& strFileName, DWORD dwTitleId
   return false;
 }
 
-bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename)
+bool CProgramDatabase::GetXBEPathByTitleId(const uint32_t titleId, CStdString& strPathAndFilename)
 {
   try
   {
@@ -178,9 +178,9 @@ bool CProgramDatabase::GetXBEPathByTitleId(const DWORD titleId, CStdString& strP
   return false;
 }
 
-DWORD CProgramDatabase::GetProgramInfo(CFileItem *item)
+uint32_t CProgramDatabase::GetProgramInfo(CFileItem *item)
 {
-  DWORD titleID = 0;
+  uint32_t titleID = 0;
   try
   {
     if (NULL == m_pDB.get()) return false;
@@ -243,7 +243,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
     int64_t iSize=0;
     if (bIsShare || !item->IsDefaultXBE())
     {
-      struct __stat64 stat;
+      struct stat64 stat;
       if (CFile::Stat(item->m_strPath,&stat) == 0)
         iSize = stat.st_size;
     }
@@ -262,7 +262,7 @@ bool CProgramDatabase::AddProgramInfo(CFileItem *item, unsigned int titleID)
   return true;
 }
 
-FILETIME CProgramDatabase::TimeStampToLocalTime( unsigned __int64 timeStamp )
+FILETIME CProgramDatabase::TimeStampToLocalTime(uint64_t timeStamp )
 {
   FILETIME fileTime;
   ::FileTimeToLocalFileTime( (const FILETIME *)&timeStamp, &fileTime);

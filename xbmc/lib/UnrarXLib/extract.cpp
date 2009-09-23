@@ -1,5 +1,9 @@
 #include "rar.hpp"
 #include "Util.h"
+#ifdef _LINUX
+#include "XSyncUtils.h"
+#include "XEventUtils.h"
+#endif
 
 CmdExtract::CmdExtract()
 {

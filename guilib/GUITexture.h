@@ -31,6 +31,7 @@
 
 #include "TextureManager.h"
 #include "Geometry.h"
+#include "system.h" // HAS_GL, HAS_DX, etc
 
 typedef uint32_t color_t;
 
@@ -78,29 +79,9 @@ public:
 class CTextureInfo
 {
 public:
-  CTextureInfo()
-  {
-    memset(&border, 0, sizeof(FRECT));
-    orientation = 0;
-    useLarge = false;
-  };
-
-  CTextureInfo(const CStdString &file)
-  {
-    memset(&border, 0, sizeof(FRECT));
-    orientation = 0;
-    useLarge = false;
-    filename = file;
-  }
-
-  void operator=(const CTextureInfo &right)
-  {
-    memcpy(&border, &right.border, sizeof(FRECT));
-    orientation = right.orientation;
-    diffuse = right.diffuse;
-    filename = right.filename;
-    useLarge = right.useLarge;
-  };
+  CTextureInfo();
+  CTextureInfo(const CStdString &file);
+  void operator=(const CTextureInfo &right);
   bool       useLarge;
   FRECT      border;      // scaled  - unneeded if we get rid of scale on load
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
@@ -179,7 +160,7 @@ protected:
   // animations
   int m_currentLoop;
   unsigned int m_currentFrame;
-  DWORD m_frameCounter;
+  uint32_t m_frameCounter;
 
   float m_diffuseU, m_diffuseV;           // size of the diffuse frame (in tex coords)
   float m_diffuseScaleU, m_diffuseScaleV; // scale factor of the diffuse frame (from texture coords to diffuse tex coords)

@@ -23,6 +23,9 @@
 #include "Util.h"
 #include "ViewState.h"
 #include "utils/log.h"
+#ifdef _LINUX
+#include "linux/ConvUtils.h" // GetLastError()
+#endif
 
 #define VIEW_DATABASE_VERSION 3
 

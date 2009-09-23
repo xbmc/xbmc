@@ -85,7 +85,7 @@ protected:
 
   CGUITexture m_imgFocus;
   CGUITexture m_imgNoFocus;
-  DWORD m_dwFocusCounter;
+  uint32_t m_dwFocusCounter;
   unsigned char m_alpha;
 
   CGUIInfoLabel  m_info;

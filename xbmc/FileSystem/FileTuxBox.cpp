@@ -20,6 +20,7 @@
  */
 
 #include "FileTuxBox.h"
+#include <errno.h>
 
 //Reserved for TuxBox Recording!
 
@@ -61,4 +62,14 @@ void CFileTuxBox::Close()
 {
 }
 
+bool CFileTuxBox::Exists(const CURL& url)
+{
+  return true;
+}
+
+int CFileTuxBox::Stat(const CURL& url, struct stat64* buffer)
+{
+  errno = ENOENT;
+  return -1;
+}
 

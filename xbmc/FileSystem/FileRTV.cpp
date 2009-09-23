@@ -27,7 +27,7 @@
 #include "SectionLoader.h"
 #include "URL.h"
 #include "utils/log.h"
-
+#include <errno.h>
 #include <sys/stat.h>
 extern "C"
 {
@@ -110,6 +110,16 @@ bool CFileRTV::Open(const CURL& url)
   return Open(url.GetHostName(), url.GetFileName(), url.GetPort());
 }
 
+bool CFileRTV::Exists(const CURL& url)
+{
+  return true;
+}
+
+int CFileRTV::Stat(const CURL& url, struct stat64* buffer)
+{
+  errno = ENOENT;
+  return -1;
+}
 
 //*********************************************************************************************
 unsigned int CFileRTV::Read(void *lpBuf, int64_t uiBufSize)

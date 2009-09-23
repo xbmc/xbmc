@@ -27,6 +27,30 @@
 
 using namespace std;
 
+CTextureInfo::CTextureInfo()
+  {
+    memset(&border, 0, sizeof(FRECT));
+    orientation = 0;
+    useLarge = false;
+  };
+
+CTextureInfo::CTextureInfo(const CStdString &file)
+  {
+    memset(&border, 0, sizeof(FRECT));
+    orientation = 0;
+    useLarge = false;
+    filename = file;
+  }
+
+void CTextureInfo::operator=(const CTextureInfo &right)
+  {
+    memcpy(&border, &right.border, sizeof(FRECT));
+    orientation = right.orientation;
+    diffuse = right.diffuse;
+    filename = right.filename;
+    useLarge = right.useLarge;
+  };
+
 CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float height, const CTextureInfo& texture)
 {
   m_posX = posX;

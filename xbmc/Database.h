@@ -45,7 +45,7 @@ public:
   static CStdString FormatSQL(CStdString strStmt, ...);
 protected:
   void Split(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName);
-  DWORD ComputeCRC(const CStdString &text);
+  uint32_t ComputeCRC(const CStdString &text);
 
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);

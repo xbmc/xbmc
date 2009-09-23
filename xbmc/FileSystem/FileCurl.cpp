@@ -27,7 +27,6 @@
 #include "SystemInfo.h"
 #include "File.h"
 
-#include <sys/stat.h>
 #include <vector>
 #include <climits>
 

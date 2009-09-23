@@ -30,6 +30,10 @@
 
 #include "IFile.h"
 
+#ifdef _LINUX
+#include "PlatformDefs.h" // SOCKET
+#endif
+
 extern "C"
 {
 #include "lib/libXBMS/ccincludes.h"
@@ -53,8 +57,8 @@ public:
   virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
 protected:
-  UINT64 m_fileSize;
-  UINT64 m_filePos;
+  uint64_t m_fileSize;
+  uint64_t m_filePos;
   SOCKET m_socket;
 private:
   CcXstreamServerConnection m_connection;

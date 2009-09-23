@@ -28,6 +28,7 @@
 
 #include "dataset.h"
 #include "utils/log.h"
+#include <cstring>
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)

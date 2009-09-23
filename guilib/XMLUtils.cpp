@@ -112,7 +112,7 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdStr
   if (pNode != NULL)
   {
     strStringValue = pNode->Value();
-    if (encoded && stricmp(encoded,"yes") == 0)
+    if (encoded && strcasecmp(encoded,"yes") == 0)
       CUtil::UrlDecode(strStringValue);
     return true;
   }
@@ -133,7 +133,7 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
       bResult = true;
       strTemp = node->FirstChild()->Value();
       const char* clear=node->Attribute("clear");
-      if (strStringValue.IsEmpty() || (clear && stricmp(clear,"true")==0))
+      if (strStringValue.IsEmpty() || (clear && strcasecmp(clear,"true")==0))
         strStringValue = strTemp;
       else
         strStringValue += strSeparator+strTemp;
@@ -188,7 +188,7 @@ bool XMLUtils::GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdStrin
   if (pNode != NULL)
   {
     strStringValue = pNode->Value();
-    if (encoded && stricmp(encoded,"yes") == 0)
+    if (encoded && strcasecmp(encoded,"yes") == 0)
       CUtil::UrlDecode(strStringValue);
     strStringValue = CSpecialProtocol::ReplaceOldPath(strStringValue, pathVersion);
     return true;
