@@ -26,7 +26,7 @@
 #include "FileSystem/CMythFile.h"
 #include "AdvancedSettings.h"
 #include "utils/log.h"
-#include "tinyxml/tinyxml.h"
+#include "tinyXML/tinyxml.h"
 
 extern "C"
 {
