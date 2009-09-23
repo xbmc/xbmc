@@ -1500,6 +1500,15 @@ bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CSt
   return bFoundSubs;
 }
 
+int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
+{
+  int64_t n;
+  n = high;
+  n <<= 32;
+  n += low;
+  return n;
+}
+
 bool CUtil::IsDOSPath(const CStdString &path)
 {
   if (path.size() > 1 && path[1] == ':' && isalpha(path[0]))
