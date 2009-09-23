@@ -25,6 +25,7 @@
 #include "FileItem.h"
 #include "Texture.h"
 #include "utils/SingleLock.h"
+#include "guilib/GraphicContext.h"
 
 using namespace std;
 
