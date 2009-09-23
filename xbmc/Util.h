@@ -129,6 +129,7 @@ public:
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback = NULL);
   static bool CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt="");
   static void ClearSubtitles();
+  static int64_t ToInt64(uint32_t high, uint32_t low);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile)
   {
