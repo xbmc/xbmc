@@ -80,7 +80,6 @@
 #endif
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
-#include "tinyXML/tinyxml.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1187,19 +1186,6 @@ void CUtil::RemoveTempFiles()
       CFile::Delete(CUtil::AddFileToFolder(g_settings.GetDatabaseFolder(), wfd.cFileName));
   }
   while (FindNextFile(hFind, &wfd));
-}
-
-void CUtil::DeleteGUISettings()
-{
-  // Load in master code first to ensure it's setting isn't reset
-  TiXmlDocument doc;
-  if (doc.LoadFile(g_settings.GetSettingsFile()))
-  {
-    g_guiSettings.LoadMasterLock(doc.RootElement());
-  }
-  // delete the settings file only
-  CLog::Log(LOGINFO, "  DeleteFile(%s)", g_settings.GetSettingsFile().c_str());
-  CFile::Delete(g_settings.GetSettingsFile());
 }
 
 bool CUtil::IsHD(const CStdString& strFileName)
