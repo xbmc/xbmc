@@ -39,7 +39,7 @@ distribution.
 #include <assert.h>
 
 // Help out windows (but don't mess up OSX):
-#if defined( _WIN32PC) || defined( _WIN32 ) || defined(WIN32)
+#if defined( _WIN32 ) || defined(WIN32)
 #if defined( _DEBUG ) && !defined( DEBUG )
 #define DEBUG
 #endif
@@ -64,7 +64,7 @@ distribution.
 #endif
 
 #ifdef HAS_ICONV
-#if defined( _WIN32PC) || defined( _WIN32 ) || defined(WIN32)
+#if defined( _WIN32 ) || defined(WIN32)
 #include "lib/libiconv/iconv.h"
 #else
 #include <iconv.h>

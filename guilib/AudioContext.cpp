@@ -26,7 +26,7 @@
 #include "Settings.h"
 #include "GUISettings.h"
 #include "XBAudioConfig.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WINDirectSound.h"
 #endif
 extern HWND g_hWnd;
@@ -74,7 +74,7 @@ CAudioContext::~CAudioContext()
 void CAudioContext::SetActiveDevice(int iDevice)
 {
   /* if device is the same, no need to bother */
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(m_iDevice == iDevice && g_guiSettings.GetString("audiooutput.audiodevice").Equals(m_strDevice))
   {
     if (iDevice != NONE && m_pDirectSoundDevice)
@@ -113,7 +113,7 @@ void CAudioContext::SetActiveDevice(int iDevice)
   ||  iDevice==DIRECTSOUND_DEVICE_DIGITAL)
   {
     LPGUID guid = NULL;
-#ifdef _WIN32PC
+#ifdef _WIN32
     CWDSound p_dsound;
     std::vector<DSDeviceInfo > deviceList = p_dsound.GetSoundDevices();
     std::vector<DSDeviceInfo >::const_iterator iter = deviceList.begin();
