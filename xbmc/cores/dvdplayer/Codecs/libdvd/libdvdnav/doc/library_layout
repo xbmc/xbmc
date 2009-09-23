@@ -1,0 +1,53 @@
+This is information on what the various files in libdvdnav/src are for:
+
+public API
+----------
+
+dvdnav.h		main public header
+dvdnav_events.h		events returned by get_next_block()
+dvd_types.h		some additional convenience types, mostly unused yet
+
+dvd_reader.h		libdvdread API
+ifo_types.h		IFO structures translated into C
+ifo_read.h		reading and parsing of IFO structures
+nav_types.h		NAV structures translated into C
+nav_read.h		reading and parsing of NAV structures
+nav_print.h		print NAV structures in a human readable form
+
+client interaction
+------------------
+
+dvdnav.c		the big get_next_block() function and some basic housekeeping
+dvdnav_internal.h	internal structure of libdvdnav library handle
+navigation.c		basic Title/Part navigation
+searching.c		PGC/PG navigation and seeking, position reporting
+highlight.c		DVD menu highlight handling
+settings.c		libdvdnav customizing
+remap.[ch]		user defined reorganization of VOBU playback order
+
+DVD virtual machine (subdirectory vm)
+-------------------
+
+vm.[ch]			the logic surrounding the DVD VM
+decoder.[ch]		decodes and executes DVD VM commands
+
+DVD reading (subdirectory dvdread, a modified copy of libdvdread)
+-----------
+
+dvd_reader.c		reading data from DVD sources
+dvd_udf.[ch]		handles the UDF filesystem
+dvd_input.[ch]		lowlevel input abstraction, libdvdcss glue code
+md5.[ch]		md5 hashing to provide unique disc IDs
+
+ifo_read.c		reading and parsing of IFO structures
+nav_read.c		reading and parsing of NAV structures
+nav_print.c		output NAV structures in a human readable form
+
+read_cache.[ch]		caching
+
+debugging and utilities
+-----------------------
+
+bswap.h			endianness helper macros
+dvdread_internal.h	CHECK_VALUE() helper macro
+vmcmd.[ch]		print DVD VM commands and registers in a human readable form

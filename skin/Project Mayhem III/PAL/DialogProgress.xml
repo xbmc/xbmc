@@ -1,0 +1,69 @@
+﻿<window id="101">
+	<defaultcontrol>10</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>165</posx>
+			<posy>205</posy>
+			<width>390</width>
+			<height>190</height>
+			<texture>dialog-panel.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>dialog Heading</description>
+			<posx>190</posx>
+			<posy>218</posy>
+			<label>-</label>
+			<font>special13</font>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="label" id="2">
+			<description>dialog line 1</description>
+			<posx>190</posx>
+			<posy>260</posy>
+			<haspath>yes</haspath>
+			<label>-</label>
+			<font>font10</font>
+		</control>
+		<control type="label" id="3">
+			<description>dialog line 2</description>
+			<posx>190</posx>
+			<posy>280</posy>
+			<haspath>yes</haspath>
+			<label>-</label>
+			<font>font10</font>
+		</control>
+		<control type="label" id="4">
+			<description>dialog line 3</description>
+			<posx>190</posx>
+			<posy>300</posy>
+			<haspath>yes</haspath>
+			<label>-</label>
+			<font>font10</font>
+		</control>
+		<control type="progress" id="20">
+			<description>progress control</description>
+			<posx>190</posx>
+			<posy>346</posy>
+			<width>261</width>
+			<height>13</height>
+			<texturebg>progress_back2.png</texturebg>
+		</control>
+		<control type="button" id="10">
+			<description>Cancel button</description>
+			<posx>463</posx>
+			<posy>335</posy>
+			<width>77</width>
+			<height>32</height>
+			<label>222</label>
+			<font>font10</font>
+			<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+			<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+			<onleft>10</onleft>
+			<align>center</align>
+			<onright>10</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,40 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websGetRequestFlags -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websGetRequestFlags</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p> Return the flags word 
+associated with a browser request.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ int <b>websGetRequestFlags</b>(webs_t wp); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="3%">wp <TD WIDTH="97%"> Web server connection handle.</TD></TR></table><h2>Description</h2><P>The 
+websGetRequestFlags procedure returns the flags word for a given browser request. 
+</P><P> The following flags are defined: </P><table border=0 width=100% ALIGN="CENTER" CELLPADDING="0" CELLSPACING="0"> 
+<tr><td WIDTH="24%">WEBS_LOCAL_PAGE</td><td WIDTH="76%">Request for local webs 
+page.</td></tr> <tr><td WIDTH="24%">WEBS_KEEP_ALIVE</td><td WIDTH="76%">HTTP/1.1 
+keep alive.</td></tr> <tr><td WIDTH="24%">WEBS_DONT_USE_CACHE</td><td WIDTH="76%">Not 
+implemented cache support.</td></tr> <tr><td WIDTH="24%">WEBS_COOKIE</td><td WIDTH="76%">Cookie 
+supplied in request.</td></tr> <tr><td WIDTH="24%">WEBS_IF_MODIFIED</td><td WIDTH="76%">If-modified-since 
+in request.</td></tr> <tr><td WIDTH="24%">WEBS_POST_REQUEST</td><td WIDTH="76%">Post 
+request operation.</td></tr> <tr><td WIDTH="24%">WEBS_LOCAL_REQUEST</td><td WIDTH="76%">Request 
+from this system.</td></tr> <tr><td WIDTH="24%">WEBS_HOME_PAGE</td><td WIDTH="76%">Request 
+for the home page.</td></tr> <tr><td WIDTH="24%">WEBS_ASP</td><td WIDTH="76%">ASP 
+request.</td></tr> <tr><td WIDTH="24%">WEBS_HEAD_REQUEST</td><td WIDTH="76%">Head 
+request.</td></tr> <tr><td WIDTH="24%">WEBS_CLEN</td><td WIDTH="76%">Request had 
+a content length.</td></tr> <tr><td WIDTH="24%">WEBS_FORM</td><td WIDTH="76%">Request 
+is a form.</td></tr> <tr><td WIDTH="24%">WEBS_REQUEST_DONE</td><td WIDTH="76%">Request 
+complete.</td></tr> <tr><td WIDTH="24%">WEBS_POST_DATA</td><td WIDTH="76%">Already 
+appended post data.</td></tr> <tr><td WIDTH="24%">WEBS_HEADER_DONE</td><td WIDTH="76%">Already 
+output the HTTP header.</td></tr> </table><h2>Return Value</h2><p> Integer containing 
+the request flags.</p><h2>Example</h2><pre> websSetRequestFlags(wp, websGetRequestFlags(wp, flags) | WEBS_HEADER_DONE)); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p> <A href="websSetRequestBytes.htm">websSetRequestBytes</A>, <A href="websSetRequestFlags.htm">websSetRequestFlags</A> 
+</p></td></tr></table>
+</body>
+</html>

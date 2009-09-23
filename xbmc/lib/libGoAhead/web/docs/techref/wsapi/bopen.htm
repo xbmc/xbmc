@@ -1,0 +1,51 @@
+<html>
+
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>bopen - basic</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<table border="0" width="100%" cellspacing="0" cellpadding="0" CLASS="apiTitle">
+  <tr>
+    <td class="titleLeft" align=left width="33%"><b>bopen</b></td><td class="titleCenter" align=center width="33%"><b>basic</b></td><td class="titleRight" align=right width="33%"><b>EMF</b></td></tr>
+</table><hr>
+
+<h2>Synopsis</h2><p>Initialize the GoAhead block memory allocator.</p><h2>Prototypes</h2><pre>
+ #include &quot;webs.h&quot; 
+
+ int <b>bopen</b>(char *buf, int bufsize, int flags);
+</pre><h2>Parameters</h2><table width="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+  <tr>
+    <td>buf </td><td>Pointer to buffer to use for initial memory allocation.</td></tr>
+  <tr>
+    <td>bufsize </td><td>Size of buf. </td></tr>
+  <tr>
+    <td>flags </td><td>Open mode flags.</td></tr>
+</table><h2>Description</h2><p>The bopen procedure initializes the GoAhead block memory allocator. The block 
+  allocator is a very efficient memory allocator that uses binary queues to store 
+  blocks of memory. It does not do block coalescing, nor does it attempt to eliminate 
+  fragmentation. Once released by bfree, memory is not actually freed to the operating 
+  system, but is kept on the relevant binary queue for future use by the application.</p><p></p><p>The goal of the block allocator is to provide guaranteed, rapid allocation. 
+  By calling bopen with the application memory requirements, memory can be defined 
+  or allocated upfront and subsequent calls to <a href="balloc.htm">balloc</a> 
+  are more likely to succeed. The block allocator is not perfect; you can still 
+  get free memory of one class queue while memory requests for a large size cannot 
+  be satisfied. However, in practice, many embedded applications tend to allocate 
+  memory in a pattern and the balloc memory allocator works well in such environments. 
+  The memory usage of the GoAhead WebServer has been optimized to allocate from 
+  the fixed pool defined by bopen and it should be very predictable in its requirements. 
+  The bstats procedure may be used to print out current memory statistics, including 
+  per file usage information.</p><p></p><p>If you wish to supply a static buffer for the block allocator to use, set the 
+  <em>buf </em>argument to a buffer of your choice and set <em>bufsize to </em>specify 
+  the size of the buffer. You must also set <em>flags </em>to be B_USER_BUF. The 
+  block allocated can also use the operating system's <em>malloc </em>call to 
+  get memory if the <em>flags</em> argument is set to B_USE_MALLOC.</p><h2>Return Value</h2><p>Returns 0 on success.  Returns -1 if memory cannot be provided.</p><h2>Example</h2><pre>
+if (bopen(NULL, B_DEFAULT_MEM, 0) < 0) {
+	return NULL;
+	}
+</pre><h2>Stability Classification</h2><p>Stable.</p><h2></h2><h2></h2><h2>See Also</h2><p><a href="balloc.htm">balloc</a>, <a href="bfree.htm">bfree</a></p></td></tr></table>
+</body>
+</html>

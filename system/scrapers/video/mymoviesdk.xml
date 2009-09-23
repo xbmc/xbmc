@@ -1,0 +1,188 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<scraper framework="1.1" date="2009-08-11" name="MyMovies.dk" content="movies" thumb="mymoviesdk.png" language="en" requiressettings="true">
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<!--Username-->
+			<RegExp input="$$1" output="&lt;setting label=&quot;Username&quot; type=&quot;text&quot; id=&quot;username&quot; default=&quot;&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<!--Password-->
+			<RegExp input="$$1" output="&lt;setting label=&quot;Password&quot; type=&quot;text&quot; option=&quot;hidden&quot; id=&quot;password&quot; default=&quot;&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<!--- -->
+			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<!--Fanart-->
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<!--Trailer-->
+			<RegExp input="$$1" output="&lt;setting label=&quot;Preferred trailer bitrate&quot; type=&quot;labelenum&quot; values=&quot;2048|1024|512|256|128&quot; id=&quot;trailerbitrate&quot; default=&quot;2048&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<!--Preferred language-->
+			<RegExp input="$$1" output="&lt;setting label=&quot;Preferred language&quot; type=&quot;labelenum&quot; values=&quot;Arabic|Bulgarian|Cantonese|Mandarin|Czech|Croatian|Danish|Dutch|English|Estonian|Faroese|Farsi|Finnish|Flemish|French|German|Greek|Hebrew|Hindi|Hungarian|Icelandic|Indonesian|Italian|Japanese|Korean|Lithuanian|Norwegian|Polish|Portuguese|Romanian|Russian|Serbian|Slovakian|Slovene|Spanish|Swedish|Tagalog|Thai|Turkish|Malay|Latvian|Ukrainian|Tamil|Catalan|Telugu|Malayalam|Kannada|Bengali|Serbo-Croatian|Gujarati|Esperanto|Vietnamese|Kazakh|Ancient Greek|Mandar|Braj|Macedonian|Zulu|Twi|Volapük|Albanian|Khmer|Basque&quot; id=&quot;language&quot; default=&quot;English&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<!--Include adult movies-->
+			<RegExp input="$$1" output="&lt;setting label=&quot;Include adult movies&quot; type=&quot;bool&quot; id=&quot;includeadult&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting type=&quot;sep&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=SearchMovieByTitle&amp;amp;title=\1&amp;amp;username=$INFO[username]&amp;amp;password=$INFO[password]&amp;amp;PrimaryLanguage=$INFO[language]&amp;amp;includeadult=$INFO[includeadult]&amp;amp;locale=1033&lt;/url&gt;" dest="3">
+			<RegExp input="$$2" output="%20(\1)" dest="4">
+				<expression clear="yes">(.+)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</CreateSearchUrl>
+
+	<GetSearchResults dest="8">
+		<RegExp input="$$3" output="&lt;results sorted=&quot;Yes&quot;&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;id&gt;\1&lt;/id&gt;&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=LoadMovieById&amp;amp;titleid=\1&amp;amp;username=$INFO[username]&amp;amp;password=$INFO[password]&amp;amp;PrimaryLanguage=$INFO[language]&amp;amp;maxtrailerbitrate=$INFO[trailerbitrate]&amp;amp;locale=1033&amp;amp;client=xbmcbased&lt;/url&gt;&lt;/entity&gt;" dest="3">
+				<expression repeat="yes">id="(.*?)".*? title="(.*?)"[^&lt;]*year="(.*?)" thumb</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+		<RegExp input="$$4" output="&lt;error&gt;\1&lt;/error&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;title&gt;Error returned from MyMovies.dk&lt;/title&gt;&lt;message&gt;\1&lt;/message&gt;" dest="4">
+				<expression repeat="no">&lt;response status="failed"&gt;(.*?)&lt;/response&gt;</expression>
+			</RegExp>
+			<expression noclean="1">(.+)</expression>
+		</RegExp>
+	</GetSearchResults>
+
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=LoadMovieByIMDBId&amp;imdbid=tt\2&amp;username=$INFO[username]&amp;password=$INFO[password]&amp;PrimaryLanguage=$INFO[language]&amp;includeadult=$INFO[includeadult]&amp;maxtrailerbitrate=$INFO[trailerbitrate]&amp;locale=1033&lt;/url&gt;" dest="3">
+			<expression>(imdb.com/title/tt)([0-9]*)</expression>
+		</RegExp>
+		<RegExp input="$$1" output="&lt;url&gt;https://api.mymovies.dk/Default.aspx?command=LoadMovieByIMDBId&amp;imdbid=tt\2&amp;username=$INFO[username]&amp;password=$INFO[password]&amp;PrimaryLanguage=$INFO[language]&amp;includeadult=$INFO[includeadult]&amp;maxtrailerbitrate=$INFO[trailerbitrate]&amp;locale=1033&lt;/url&gt;" dest="3+">
+			<expression>(imdb.com/)Title\?([0-9]+)</expression>
+		</RegExp>
+	</NfoUrl>
+
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<!--Title-->
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression>&lt;LocalTitle&gt;([^&lt;]*)&lt;/LocalTitle&gt;</expression>
+			</RegExp>
+			<!--SortTitle-->
+			<RegExp input="$$1" output="&lt;sorttitle&gt;\1&lt;/sorttitle&gt;" dest="5+">
+				<expression>&lt;SortTitle&gt;([^&lt;]*)&lt;/SortTitle&gt;</expression>
+			</RegExp>
+			<!--Year-->
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>&lt;ProductionYear&gt;([0-9]+)&lt;/ProductionYear&gt;</expression>
+			</RegExp>
+			<!--Thumb-->
+			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1&quot;&gt;\2&lt;/thumb&gt;" dest="5+">
+				<expression repeat="yes">&lt;Poster FileThumb="([^"]*)" File="([^"]*)" Hash=</expression>
+			</RegExp>
+			<!--IMDB-->
+			<RegExp input="$$1" output="&lt;id&gt;\1&lt;/id&gt;" dest="5+">
+				<expression>&lt;IMDB&gt;([^&lt;]*)&lt;/IMDB&gt;</expression>
+			</RegExp>
+			<!--Runtime-->
+			<RegExp input="$$1" output="&lt;runtime&gt;\1 min&lt;/runtime&gt;" dest="5+">
+				<expression>&lt;RunningTime&gt;([^&lt;]*)&lt;/RunningTime&gt;</expression>
+			</RegExp>
+			<!--Rating-->
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
+				<expression>&lt;Rating&gt;([^&lt;]*)&lt;/Rating&gt;</expression>
+			</RegExp>
+			<!--Votes-->
+			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
+				<expression>&lt;RatingVotes&gt;([^&lt;]*)&lt;/RatingVotes&gt;</expression>
+			</RegExp>
+			<!--Studio-->
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression repeat="yes">&lt;Studio&gt;([^&lt;]*)&lt;/Studio&gt;</expression>
+			</RegExp>
+			<!--Genre-->
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">&lt;Genre&gt;([^&lt;]*)&lt;/Genre&gt;</expression>
+			</RegExp>
+			<!--Plot-->
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>&lt;Description&gt;[^&lt;]*&lt;!\[CDATA\[([^&lt;]*)\]\][^&lt;]*&lt;/Description&gt;</expression>
+			</RegExp>
+			<!--Plot Outline-->
+			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;" dest="5+">
+				<expression>&lt;Overview&gt;([^&lt;]*)&lt;/Overview&gt;</expression>
+			</RegExp>
+			<!--MPAA-->
+			<RegExp input="$$4" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
+				<RegExp input="$$1" output="None" dest="4">
+					<expression>&lt;ParentalRating[^.]*?&lt;Value&gt;-1&lt;/Value&gt;[^.]*?&lt;Description&gt;</expression>
+				</RegExp>
+				<RegExp input="$$1" output="Unrated" dest="4">
+					<expression>&lt;ParentalRating[^.]*?&lt;Value&gt;0&lt;/Value&gt;[^.]*?&lt;Description&gt;</expression>
+				</RegExp>
+				<RegExp input="$$1" output="G" dest="4">
+					<expression>&lt;ParentalRating[^.]*?&lt;Value&gt;(1|2)&lt;/Value&gt;[^.]*?&lt;Description&gt;</expression>
+				</RegExp>
+				<RegExp input="$$1" output="PG" dest="4">
+					<expression>&lt;ParentalRating[^.]*?&lt;Value&gt;3&lt;/Value&gt;[^.]*?&lt;Description&gt;</expression>
+				</RegExp>
+				<RegExp input="$$1" output="PG-13" dest="4">
+					<expression>&lt;ParentalRating[^.]*?&lt;Value&gt;(4|5)&lt;/Value&gt;[^.]*?&lt;Description&gt;</expression>
+				</RegExp>
+				<RegExp input="$$1" output="R" dest="4">
+					<expression>&lt;ParentalRating[^.]*?&lt;Value&gt;6&lt;/Value&gt;[^.]*?&lt;Description&gt;</expression>
+				</RegExp>
+				<RegExp input="$$1" output="NC-17" dest="4">
+					<expression>&lt;ParentalRating[^.]*?&lt;Value&gt;7&lt;/Value&gt;[^.]*?&lt;Description&gt;</expression>
+				</RegExp>
+				<RegExp input="$$1" output="NC-17" dest="4">
+					<expression>&lt;ParentalRating[^.]*?&lt;Value&gt;8&lt;/Value&gt;[^.]*?&lt;Description&gt;</expression>
+				</RegExp>
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<!--Tagline-->
+			<RegExp input="$$1" output="&lt;tagline&gt;\1&lt;/tagline&gt;" dest="5+">
+				<expression>&lt;TagLine&gt;([^&lt;]*)&lt;/TagLine&gt;</expression>
+			</RegExp>
+			<!--Director-->
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression repeat="yes">&lt;Person Type="2"[^$]*?&lt;Name&gt;([^&lt;]*)&lt;/Name&gt;</expression>
+			</RegExp>
+			<!--Writer-->
+			<RegExp input="$$1" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
+				<expression repeat="yes">&lt;Person Type="3"[^$]*?&lt;Name&gt;([^&lt;]*)&lt;/Name&gt;</expression>
+			</RegExp>
+			<!--Actor-->
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">&lt;Person Type="1"[^.]*?&lt;Photo /&gt;[^.]*?&lt;Name&gt;([^&lt;]*)&lt;/Name&gt;[^.]*?&lt;Role&gt;([^&lt;]*)&lt;/Role&gt;</expression>
+			</RegExp>
+			<!--Actor with thumb-->
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;thumb&gt;\1&lt;/thumb&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">&lt;Person Type="1"[^.]*?&lt;Photo&gt;([^&lt;]*)&lt;/Photo&gt;[^.]*?&lt;Name&gt;([^&lt;]*)&lt;/Name&gt;[^.]*?&lt;Role&gt;([^&lt;]*)&lt;/Role&gt;</expression>
+			</RegExp>
+			<!--Fanart-->
+			<RegExp conditional="fanart" input="$$4" output="&lt;fanart&gt;\1&lt;/fanart&gt;" dest="5+">
+				<RegExp input="$$1" output="&lt;thumb preview=&quot;\1&quot; dim=&quot;1920x1080&quot;&gt;\2&lt;/thumb&gt;" dest="4">
+					<expression repeat="yes">FileThumb="([^"]*)" F[^&lt;]*File1080P="([^"]*)" Hash1080p="[^"]+"</expression>
+				</RegExp>
+				<RegExp input="$$1" output="&lt;thumb preview=&quot;\1&quot; dim=&quot;1280x720&quot;&gt;\2&lt;/thumb&gt;" dest="4+">
+					<expression repeat="yes">FileThumb="([^"]*)" File720P="([^"]*)" Hash720p[^&lt;]*File1080P=""</expression>
+				</RegExp>
+				<expression noclean="1">(.+)</expression>
+			</RegExp>
+			<!--Trailer - filmtrailer.com-->
+			<RegExp input="$$1" output="&lt;trailer&gt;\1&lt;/trailer&gt;" dest="5+">
+				<expression>&lt;Trailer[^&gt;]*&gt;([^&lt;]*)&lt;/Trailer&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+</scraper>

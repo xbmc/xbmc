@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <!-- Translator: Mika Pirinen -->
+  <!-- Date of translation: 29/6/2009 -->
+  <!-- Finnish strings based on English strings version 20978 -->
+<strings>
+  <string id="31000">Ääni vaimennettu</string>
+  <string id="31001"></string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">FANITAIDE[CR]KUVAA[CR]EI OLE[CR]SAATAVILLA</string>
+  <string id="31011">JAKSON[CR]KUVAA[CR]EI OLE[CR]SAATAVILLA</string>
+  <string id="31012">JAKSON[CR]KUVAA[CR]EI OLE[CR]SAATAVILLA</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Luvun otsake</string>
+  <string id="31021">Video - Tiedostot</string>
+  <string id="31022">Musiikki - Tiedostot</string>
+  <string id="31023"></string>
+  <string id="31024">Sivu</string>
+  <string id="31025">Kohdetta</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">DVD:n pienoiskuvat</string>
+  <string id="31029">DVD-luettelo</string>
+  <string id="31030">Fanitaide</string>
+  <string id="31031">Luettelo</string>
+  <string id="31032">Kansivirta</string>
+  <string id="31033">Kuvien pienoiskuvat</string>
+  <string id="31034">Leveät kuvakkeet</string>
+
+  <string id="31040">Nykyinen elokuvan[CR]fanitaide kuva[CR][CR]klikkaa vaihtaaksesi</string>
+  <string id="31041">Nykyinen TV-ohjelman[CR]fanitaide kuva[CR][CR]klikkaa vaihtaaksesi</string>
+  <string id="31042">TOISTETAAN</string>
+  <string id="31043">TAUKO</string>
+  <string id="31044">KELAUS ETEENPÄIN</string>
+  <string id="31045">KELAUS TAAKSEPÄIN</string>
+  <string id="31046">Tervetuloa XBMC:iin - Kirjaudu sisään</string>
+  <string id="31047">Viimeksi kirjautunut</string>
+  <string id="31048">Nykyinen esittäjän[CR]fanitaide kuva[CR][CR]klikkaa vaihtaaksesi</string>
+
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">xbmc Lyrics</string>
+  <string id="31054">Valitse kappale luettelosta</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Avaa soittolista</string>
+  <string id="31056">Tallenna soittolista</string>
+  <string id="31057">Sulje soittolista</string>
+  <string id="31058">Järjestelmän musiikkitiedostot</string>
+  <string id="31059">Nykyinen soittolista</string>
+  <string id="31060">Tämä tiedosto on pinottu, valitse osa jonka haluat toistaa.</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Tausta-asetukset</string>
+  <string id="31101">Päävalikon asetukset</string>
+  <string id="31102">Taustat</string>
+  <string id="31103">Näytä "Tauko" kuvaesityksessä</string>
+  <string id="31104">Sammutusvalikko - Käytä valmiustilan sijaan horrostilaa</string>
+  <string id="31105">Näytä median nimet taustahaussa</string>
+  <string id="31106">Yleiset asetukset</string>
+  <string id="31107">Poista pyyhkäisyviivat taustasta</string>
+  <string id="31108">Poista pyyhkäisyviivat taustasta videon toiston aikana</string>
+  <string id="31109">Taustakuvien asetukset</string>
+  <string id="31110">painikkeen omat taustat käytössä</string>
+  <string id="31111">Näytä musiikin tiedot käytettäessä Lyrics-skriptiä</string>
+  <string id="31112">Näytä median nimet "Leveät kuvakkeet"-näkymässä</string>
+  <string id="31113">Yksittäinen kuva</string>
+  <string id="31114">Vaihtuva kuva</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Skripti asetukset</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Painikkeen teksti</string>
+  <string id="31204">Polku</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">Näytä Lyrics-skriptin painike OSD:ssä</string>
+  <string id="31209">Skriptin pikakäynnistyspainike valikkoon -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Näytä näyttelijät</string>
+</strings>

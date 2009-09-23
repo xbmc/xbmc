@@ -1,0 +1,1388 @@
+<?xml version='1.0'?>
+<!DOCTYPE rfc SYSTEM 'rfc2629.dtd'>
+<?rfc toc="yes" ?>
+<?rfc compact='yes'?>
+
+<rfc ipr="full3978" docName="RTP Payload Format for Vorbis Encoded Audio">
+
+<front>
+<title>draft-ietf-avt-rtp-vorbis-06</title>
+
+<author initials="L" surname="Barbato" fullname="Luca Barbato">
+<organization>Xiph.Org</organization>
+<address>
+<email>lu_zero@gentoo.org</email>
+<uri>http://www.xiph.org/</uri>
+</address>
+</author>
+
+<date day="25" month="Jun" year="2007" />
+
+<area>General</area>
+<workgroup>AVT Working Group</workgroup>
+<keyword>I-D</keyword>
+
+<keyword>Internet-Draft</keyword>
+<keyword>Vorbis</keyword>
+<keyword>RTP</keyword>
+
+<abstract>
+
+<t>
+This document describes an RTP payload format for transporting Vorbis encoded
+audio. It details the RTP encapsulation mechanism for raw Vorbis data and 
+details the delivery mechanisms for the decoder probability model, referred to
+as a codebook and other setup information.
+</t>
+
+<t>
+Also included within this memo are media type registrations, and the details
+necessary for the use of Vorbis with the Session Description Protocol (SDP).
+</t>
+
+</abstract>
+
+<note title="Editors Note">
+<t>
+All references to RFC XXXX are to be replaced by references to the RFC number
+of this memo, when published.
+</t>
+</note>
+
+</front>
+
+<middle>
+
+<section anchor="Introduction" title="Introduction">
+
+<t>
+Vorbis is a general purpose perceptual audio codec intended to allow 
+maximum encoder flexibility, thus allowing it to scale competitively 
+over an exceptionally wide range of bitrates. At the high 
+quality/bitrate end of the scale (CD or DAT rate stereo, 16/24 bits), it 
+is in the same league as AAC.
+Vorbis is also intended for lower and higher sample rates (from 
+8kHz telephony to 192kHz digital masters) and a range of channel 
+representations (monaural, polyphonic, stereo, quadraphonic, 5.1, 
+ambisonic, or up to 255 discrete channels).
+</t>
+
+<t>
+Vorbis encoded audio is generally encapsulated within an Ogg format bitstream
+<xref target="rfc3533"></xref>, which provides framing and synchronization.
+For the purposes of RTP transport, this layer is unnecessary, and so raw Vorbis
+packets are used in the payload.
+</t>
+
+<section anchor="Terminology" title="Terminology">
+
+<t>
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" 
+in this document are to be interpreted as described in RFC 2119 <xref target="rfc2119"></xref>.
+</t>
+
+</section>
+</section>
+
+<section anchor="Payload Format" title="Payload Format">
+
+<t>
+For RTP based transport of Vorbis encoded audio the standard RTP header is
+followed by a 4 octets payload header, then the payload data. The payload
+headers are used to associate the Vorbis data with its associated decoding
+codebooks as well as indicating if the following packet contains fragmented
+Vorbis data and/or the number of whole Vorbis data frames. The payload data
+contains the raw Vorbis bitstream information. There are 3 types of Vorbis
+payload data, an RTP packet MUST contain just one of them at a time.
+</t>
+
+<section anchor="RTP Header" title="RTP Header">
+
+<t>
+The format of the RTP header is specified in <xref target="rfc3550"></xref>
+and shown in Figure <xref target="RTP Header Figure"/>.  This payload format
+uses the fields of the header in a manner consistent with that specification.
+</t>
+
+<t>
+<figure anchor="RTP Header Figure" title="RTP Header">
+<artwork><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |V=2|P|X|  CC   |M|     PT      |       sequence number         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                           timestamp                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           synchronization source (SSRC) identifier            |
+   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+   |            contributing source (CSRC) identifiers             |
+   |                              ...                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+</t>
+
+<t>
+The RTP header begins with an octet of fields (V, P, X, and CC) to support
+specialized RTP uses (see <xref target="rfc3550"></xref> and 
+<xref target="rfc3551"></xref> for details). For Vorbis RTP, the following
+values are used.
+</t>
+
+<t>
+Version (V): 2 bits</t>
+<t>
+This field identifies the version of RTP. The version used by this
+specification is two (2).
+</t>
+
+<t>
+Padding (P): 1 bit</t>
+<t>
+Padding MAY be used with this payload format according to section 5.1 of
+<xref target="rfc3550"></xref>.
+</t>
+
+<t>
+Extension (X): 1 bit</t>
+<t>
+The Extension bit is used in accordance with <xref target="rfc3550"></xref>.
+</t>
+
+<t>
+CSRC count (CC): 4 bits</t>
+<t>
+The CSRC count is used in accordance with <xref target="rfc3550"></xref>.
+</t>
+
+<t>
+Marker (M): 1 bit</t>
+<t>
+Set to zero.  Audio silence suppression not used.  This conforms to section 4.1
+of <xref target="vorbis-spec-ref"></xref>.
+</t>
+
+<t>
+Payload Type (PT): 7 bits</t>
+<t>
+An RTP profile for a class of applications is expected to assign a payload type
+for this format, or a dynamically allocated payload type SHOULD be chosen which
+designates the payload as Vorbis.
+</t>
+
+<t>
+Sequence number: 16 bits</t>
+<t>
+The sequence number increments by one for each RTP data packet sent, and may be
+used by the receiver to detect packet loss and to restore packet sequence. This
+field is detailed further in <xref target="rfc3550"></xref>.
+</t>
+
+<t>
+Timestamp: 32 bits</t>
+<t>
+A timestamp representing the sampling time of the first sample of the first
+Vorbis packet in the RTP packet. The clock frequency MUST be set to the sample
+rate of the encoded audio data and is conveyed out-of-band (e.g. as a SDP parameter).
+</t>
+
+<t>
+SSRC/CSRC identifiers: </t>
+<t>
+These two fields, 32 bits each with one SSRC field and a maximum of 16 CSRC
+fields, are as defined in <xref target="rfc3550">
+</xref>.  
+</t>
+
+</section>
+
+<section anchor="Payload Header" title="Payload Header">
+
+<t>
+The 4 octets following the RTP Header section are the Payload Header. This
+header is split into a number of bitfields detailing the format of the
+following payload data packets.
+</t>
+
+<figure anchor="Payload Header Figure" title="Payload Header">
+<artwork><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                     Ident                     | F |VDT|# pkts.|
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>
+Ident: 24 bits</t>
+<t>
+This 24 bit field is used to associate the Vorbis data to a decoding
+Configuration. It is stored as network byte order integer.
+</t>
+
+<t>
+Fragment type (F): 2 bits</t>
+<t>
+This field is set according to the following list
+</t>
+<vspace blankLines="1" />
+<list style="empty">
+<t>      0 = Not Fragmented</t>
+<t>      1 = Start Fragment</t>
+<t>      2 = Continuation Fragment</t>
+<t>      3 = End Fragment</t>
+</list>
+
+<t>
+Vorbis Data Type (VDT): 2 bits</t>
+<t>
+This field specifies the kind of Vorbis data stored in this RTP packet. There
+are currently three different types of Vorbis payloads. Each packet MUST contain only a single type of Vorbis payload (e.g. you MUST not aggregate configuration and comment payload in the same packet)
+</t>
+
+<vspace blankLines="1" />
+<list style="empty">
+<t>      0 = Raw Vorbis payload</t>
+<t>      1 = Vorbis Packed Configuration payload</t>
+<t>      2 = Legacy Vorbis Comment payload</t>
+<t>      3 = Reserved</t>
+</list>
+
+<t> The packets with a VDT of value 3 MUST be ignored </t>
+
+<t>
+The last 4 bits represent the number of complete packets in this payload. This
+provides for a maximum number of 15 Vorbis packets in the payload. If the
+packet contains fragmented data the number of packets MUST be set to 0.
+</t>
+
+</section>
+
+<section anchor="Payload Data" title="Payload Data">
+
+<t>
+Raw Vorbis packets are currently unbounded in length, application profiles will
+likely define a practical limit. Typical Vorbis packet sizes range from very
+small (2-3 bytes) to quite large (8-12 kilobytes). The reference implementation
+<xref target="libvorbis"></xref> typically produces packets less than ~800
+bytes, except for the setup header packets which are ~4-12 kilobytes. Within an
+RTP context, to avoid fragmentation, the Vorbis data packet size SHOULD be kept
+sufficiently small so that after adding the RTP and payload headers, the
+complete RTP packet is smaller than the path MTU.
+</t>
+
+<figure anchor="Payload Data Figure" title="Payload Data Header">
+<artwork><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |            length             |       vorbis packet data     ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>
+Each Vorbis payload packet starts with a two octet length header, which is used
+to represent the size in bytes of the following data payload, followed by the
+raw Vorbis data padded to the nearest byte boundary, as explained by the <xref target="vorbis-spec-ref">vorbis specification</xref>. The length value is stored
+as network byte order integer.
+</t>
+
+<t>
+For payloads which consist of multiple Vorbis packets the payload data consists
+of the packet length followed by the packet data for each of the Vorbis packets
+in the payload.
+</t>
+
+<t>
+The Vorbis packet length header is the length of the Vorbis data block only and
+does not count the length field.
+</t>
+
+<t>
+The payload packing of the Vorbis data packets MUST follow the guidelines
+set-out in <xref target="rfc3551"></xref> where the oldest packet occurs
+immediately after the RTP packet header. Subsequent packets, if any, MUST
+follow in temporal order.
+</t>
+
+<t>
+Channel mapping of the audio is in accordance with the
+<xref target="vorbis-spec-ref">Vorbis I Specification</xref>.
+</t>
+
+</section>
+
+<section anchor="Example RTP Packet" title="Example RTP Packet">
+
+<t>
+Here is an example RTP packet containing two Vorbis packets.
+</t>
+
+<t>
+RTP Packet Header:
+</t>
+
+<figure anchor="Example Raw Vorbis Packet" title="Example Raw Vorbis Packet">
+<artwork><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   | 2 |0|0|  0    |0|      PT     |       sequence number         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |               timestamp (in sample rate units)                |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           synchronisation source (SSRC) identifier            |
+   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+   |            contributing source (CSRC) identifiers             |
+   |                              ...                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                     Ident                     | 0 | 0 | 2 pks |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |            length             |          vorbis data         ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        vorbis data                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |            length             |   next vorbis packet data    ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        vorbis data                          ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..               vorbis data                    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>
+The payload data section of the RTP packet begins with the 24 bit Ident field
+followed by the one octet bitfield header, which has the number of Vorbis
+frames set to 2.  Each of the Vorbis data frames is prefixed by the two octets
+length field. The Packet Type and Fragment Type are set to 0. The Configuration
+that will be used to decode the packets is the one indexed by the ident value.
+</t>
+
+</section>
+</section>
+
+
+
+<section anchor="Configuration Headers" title="Configuration Headers">
+
+<t>
+Unlike other mainstream audio codecs Vorbis has no statically 
+configured probability model. Instead, it packs all entropy decoding 
+configuration, Vector Quantization and Huffman models into a data block
+that must be transmitted to the decoder along with the compressed data.
+A decoder also requires information detailing the number of audio 
+channels, bitrates and similar information to configure itself for a 
+particular compressed data stream. These two blocks of information are 
+often referred to collectively as the "codebooks" for a Vorbis stream,
+and are nominally included as special "header" packets at the start 
+of the compressed data. In addition,
+the <xref target="vorbis-spec-ref">Vorbis I specification</xref>
+requires the presence of a comment header packet which gives simple
+metadata about the stream, but this information is not required for 
+decoding the frame sequence.
+</t>
+
+<t>
+Thus these two codebook header packets must be received by the decoder before
+any audio data can be interpreted. These requirements pose problems in RTP,
+which is often used over unreliable transports.
+</t>
+
+<t>
+Since this information must be transmitted reliably and, as the RTP 
+stream may change certain configuration data mid-session, there are 
+different methods for delivering this configuration data to a 
+client, both in-band and out-of-band which is detailed below. SDP 
+delivery is typically used to set up an initial state for the client 
+application. The changes may be due to different codebooks as well as 
+different bitrates of the stream.
+</t>
+
+<t>
+The delivery vectors in use can be specified by an SDP attribute to indicate the
+method and the optional URI where the Vorbis
+<xref target="Packed Configuration">Packed Configuration</xref> Packets could
+be fetched. Different delivery methods MAY be advertised for the same session.
+The in-band Configuration delivery SHOULD be considered as baseline,
+out-of-band delivery methods that don't use RTP will not be described in this
+document. For non chained streams, the Configuration recommended delivery
+method is inline the <xref target="Packed Configuration">Packed Configuration</xref> in the SDP as explained in the <xref target="Mapping Media Type Parameters into SDP"> IANA considerations</xref>.
+</t>
+
+<t>
+The 24 bit Ident field is used to map which Configuration will be used to
+decode a packet. When the Ident field changes, it indicates that a change in
+the stream has taken place. The client application MUST have in advance the
+correct configuration and if the client detects a change in the Ident value and
+does not have this information it MUST NOT decode the raw Vorbis data
+associated until it fetches the correct Configuration.
+</t>
+
+<section anchor="In-band Header Transmission" title="In-band Header Transmission">
+
+<t>
+The <xref target="Packed Configuration">Packed Configuration</xref> Payload is
+sent in-band with the packet type bits set to match the Vorbis Data Type.
+Clients MUST be capable of dealing with fragmentation and periodic
+re-transmission of the configuration headers.
+</t>
+
+<section anchor="Packed Configuration" title="Packed Configuration">
+
+<t>
+A Vorbis Packed Configuration is indicated with the Vorbis Data Type field set
+to 1. Of the three headers defined in the
+<xref target="vorbis-spec-ref">Vorbis I specification</xref>, the
+identification and the setup MUST be packed as they are, while the comment header MAY be replaced with a dummy one. The packed configuration follows a generic way to store xiph codec configurations: The first field stores the number of the following packets minus one (count field), the next ones represent the size of the headers (length fields), the headers immediately follow the list of length fields. The size of the last header is implicit.
+The count and the length fields are encoded using the following logic: the data is in network order, every byte has the most significant bit used as flag and the following 7 used to store the value. The first N bit are to be taken, where N is number of bits representing the value modulo 7, and stored in the first byte.
+If there are more bits, the flag bit is set to 1 and the subsequent 7bit are stored in the following byte, if there are remaining bits set the flag to 1 and the same procedure is repeated. The ending byte has the flag bit set to 0. In order to decode it is enough to iterate over the bytes until the flag bit set to 0, for every byte the data is added to the accumulated value multiplied by 128.
+The headers are packed in the same order they are present in ogg: identification, comment, setup.</t>
+
+<figure anchor="Packed Configuration Figure" title="Packed Configuration Figure">
+<artwork><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |V=2|P|X|  CC   |M|     PT      |             xxxx              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                             xxxxx                             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           synchronization source (SSRC) identifier            |
+   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+   |            contributing source (CSRC) identifiers             |
+   |                              ...                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                      Ident                    | 1 | 0 |      0|
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           length              | n. of headers |    length1    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |    length2    |                  Identification              ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        Identification                       ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        Identification                       ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        Identification                       ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..               Identification                 |    Comment   ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                            Comment                          ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                            Comment                          ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                            Comment                          ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..           Comment            |             Setup            ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                            Setup                            ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                            Setup                            ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>The Ident field is set with the value that will be used by the Raw Payload
+Packets to address this Configuration. The Fragment type is set to 0 since the
+packet bears the full Packed configuration, the number of packet is set to 1.</t>
+</section>
+</section>
+
+<section anchor="Out of Band Transmission" title="Out of Band Transmission">
+
+<t>
+This section, as stated above, does not cover all the possible out-of-band
+delivery methods since they rely on different protocols and are linked to
+specific applications. The following packet definition SHOULD be used in
+out-of-band delivery and MUST be used when Configuration is inlined in the SDP.
+</t>
+
+<section anchor="Packed Headers" title="Packed Headers"> 
+
+<t>
+As mentioned above the RECOMMENDED delivery vector for Vorbis configuration
+data is via a retrieval method that can be performed using a reliable transport
+protocol. As the RTP headers are not required for this method of delivery the
+structure of the configuration data is slightly different. The packed header
+starts with a 32 bit (network ordered) count field which details the number of
+packed headers that are contained in the bundle. Next is the Packed header
+payload for each chained Vorbis stream.
+</t>
+
+<figure anchor="Packed Headers Overview Figure" title="Packed Headers Overview">
+<artwork><![CDATA[
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                     Number of packed headers                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                          Packed header                        |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                          Packed header                        |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>
+Since the Configuration Ident and the Identification Header are fixed length
+there is only a 2 byte length tag to define the length of the packed headers.
+</t>
+
+<figure anchor="Packed Headers Detail Figure" title="Packed Headers Detail">
+<artwork><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                   Ident                       |    length    ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..              | n. of headers |    length1    |    length2   ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..              |             Identification Header            ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   .................................................................
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..              |         Comment Header                       ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   .................................................................
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        Comment Header                        |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                          Setup Header                        ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   .................................................................
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                         Setup Header                         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+<t>
+The key difference between the in-band format and this one, is that there is no
+need for the payload header octet. In this figure the comment has a size bigger
+than 127 bytes.
+</t>
+</section>
+
+</section>
+
+<section anchor="Loss of Configuration Headers" title="Loss of Configuration Headers"> 
+
+<t>
+Unlike the loss of raw Vorbis payload data, loss of a configuration header can
+lead to a situation where it will not be possible to successfully decode the
+stream.
+</t>
+
+<t>
+Loss of Configuration Packet results in the halting of stream decoding.
+</t>
+
+</section>
+
+</section>
+
+<section anchor="Comment Headers" title="Comment Headers">
+
+<t>
+With the Vorbis Data Type flag set to 2, this indicates that the packet contain
+the comment metadata, such as artist name, track title and so on. These
+metadata messages are not intended to be fully descriptive but to offer basic
+track/song information. Clients MAY ignore it completely. The details on the
+format of the comments can be found in the <xref target="vorbis-spec-ref">Vorbis documentation</xref>.
+</t>
+<figure anchor="Comment Packet Figure" title="Comment Packet">
+<artwork><![CDATA[
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |V=2|P|X|  CC   |M|     PT      |             xxxx              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                             xxxxx                             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           synchronization source (SSRC) identifier            |
+   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+   |            contributing source (CSRC) identifiers             |
+   |                              ...                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                      Ident                    | 0 | 2 |      1|
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |            length             |            Comment           ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                           Comment                           ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                           Comment                            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>
+The 2 bytes length field is necessary since this packet could be fragmented.
+</t>
+
+</section>
+<section anchor="Frame Packetization" title="Frame Packetization">
+
+<t>
+Each RTP packet contains either one Vorbis packet fragment, or an integer
+number of complete Vorbis packets (up to a maximum of 15 packets, since the
+number of packets is defined by a 4 bit value).
+</t>
+
+<t>
+Any Vorbis data packet that is less than path MTU SHOULD be bundled in the RTP
+packet with as many Vorbis packets as will fit, up to a maximum of 15, except
+when such bundling would exceed an application's desired transmission latency.
+Path MTU is detailed in <xref target="rfc1191"></xref> and <xref target="rfc1981"></xref>.
+</t>
+
+<t>
+A fragmented packet has a zero in the last four bits of the payload header.
+The first fragment will set the Fragment type to 1. Each fragment after the
+first will set the Fragment type to 2 in the payload header.  The RTP packet
+containing the last fragment of the Vorbis packet will have the Fragment type
+set to 3.  To maintain the correct sequence for fragmented packet reception
+the timestamp field of fragmented packets MUST be the same as the first packet
+sent, with the sequence number incremented as normal for the subsequent RTP
+packets. The length field shows the fragment length.
+</t>
+
+<section anchor="Example Fragmented Vorbis Packet" title="Example Fragmented Vorbis Packet">
+
+<t>
+Here is an example fragmented Vorbis packet split over three RTP packets.
+Each packet contains the standard RTP headers as well as the 4 octets Vorbis
+headers.
+</t>
+
+<figure anchor="Example Fragmented Packet (Packet 1)" title="Example Fragmented Packet (Packet 1)">
+<artwork><![CDATA[
+   Packet 1:
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |V=2|P|X|  CC   |M|     PT      |           1000                |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                            12345                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           synchronization source (SSRC) identifier            |
+   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+   |            contributing source (CSRC) identifiers             |
+   |                              ...                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                       Ident                   | 1 | 0 |      0|
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |             length            |            vorbis data       ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        vorbis data                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>
+In this packet the initial sequence number is 1000 and the timestamp is 12345.  The Fragment type is set to 1, the number of packets field is set to 0, and as
+the payload is raw Vorbis data the VDT field is set to 0.
+</t>
+
+<figure anchor="Example Fragmented Packet (Packet 2)" title="Example Fragmented Packet (Packet 2)">
+<artwork><![CDATA[
+   Packet 2:
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |V=2|P|X|  CC   |M|     PT      |           1001                |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                             12345                             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           synchronization source (SSRC) identifier            |
+   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+   |            contributing source (CSRC) identifiers             |
+   |                              ...                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                       Ident                   | 2 | 0 |      0|
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |             length            |          vorbis data         ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        vorbis data                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>
+The Fragment type field is set to 2 and the number of packets field is set to 0.
+For large Vorbis fragments there can be several of these type of payload 
+packets. The maximum packet size SHOULD be no greater than the path MTU,
+including all RTP and payload headers. The sequence number has been incremented
+by one but the timestamp field remains the same as the initial packet.
+</t>
+
+<figure anchor="Example Fragmented Packet (Packet 3)" title="Example Fragmented Packet (Packet 3)">
+<artwork><![CDATA[
+   Packet 3:
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |V=2|P|X|  CC   |M|     PT      |           1002                |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                             12345                             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |           synchronization source (SSRC) identifier            |
+   +=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+   |            contributing source (CSRC) identifiers             |
+   |                              ...                              |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                      Ident                    | 3 | 0 |      0|
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |             length            |          vorbis data         ..
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   ..                        vorbis data                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+]]></artwork>
+</figure>
+
+<t>
+This is the last Vorbis fragment packet.  The Fragment type is set to 3 and the
+packet count remains set to 0. As in the previous packets the timestamp remains
+set to the first packet in the sequence and the sequence number has been
+incremented.
+</t>
+</section>
+
+<section anchor="Packet Loss" title="Packet Loss">
+
+<t>
+As there is no error correction within the Vorbis stream, packet loss will
+result in a loss of signal. Packet loss is more of an issue for fragmented
+Vorbis packets as the client will have to cope with the handling of the
+Fragment Type. In case of loss of fragments the client MUST discard all the
+remaining fragments and decode the incomplete packet. If we use the fragmented
+Vorbis packet example above and the first packet is lost the client MUST detect
+that the next packet has the packet count field set to 0 and the Fragment type
+2 and MUST drop it. The next packet, which is the final fragmented packet, MUST
+be dropped in the same manner. If the missing packet is the last, the received
+two fragments will be kept and the incomplete vorbis packet decoded.
+</t>
+
+<t>
+Loss of any of the Configuration fragment will result in the loss of the full
+Configuration packet with the result detailed in the <xref target="Loss of Configuration Headers">Loss of Configuration Headers</xref> section.
+</t>
+
+</section>
+</section>
+<section anchor="IANA Considerations" title="IANA Considerations"> 
+
+<vspace blankLines="1" />
+<list style="hanging">
+<t hangText="Type name:"> audio </t>
+<vspace blankLines="1" />
+
+<t hangText="Subtype name:"> vorbis </t>
+<vspace blankLines="1" />
+
+<t hangText="Required parameters:">
+
+<vspace blankLines="1" />
+
+<list style="hanging">
+<t hangText="rate:"> indicates the RTP timestamp clock rate as described in <xref target="rfc3551">RTP Profile for Audio and Video Conferences with Minimal Control.</xref>
+</t>
+<vspace blankLines="1" />
+
+<t hangText="channels:"> indicates the number of audio channels as described in <xref target="rfc3551">RTP Profile for Audio and Video Conferences with Minimal Control.</xref>
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="delivery-method:"> indicates the delivery methods in use, the possible values are: inline, in_band, out_band, MAY be included multiple times
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="configuration:"> the <xref target="rfc3548">base64</xref> representation of the <xref target="Packed Headers">Packed Headers</xref>. It MUST follow the associated delivery-method parameter ("inline").
+</t>
+</list>
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Optional parameters:">
+
+<vspace blankLines="1" />
+
+<list style="hanging">
+<t hangText="configuration-uri:"> the <xref target="rfc3986">URI</xref> of
+the configuration headers in case of out of band transmission.
+In the form of "protocol://path/to/resource/", depending on the specific
+method, a single configuration packet could be retrived by its Ident number, or
+multiple packets could be aggregated in a single stream. 
+Such aggregates MAY be compressed using either
+<xref target="BZ2">bzip2</xref> or <xref target="rfc1952">gzip</xref>.
+A <xref target="FIPS180">sha1</xref> checksum MAY be provided for aggregates.
+In this latter case the URI will end with the aggregate name, followed by its
+compressed extension if applies, a "!" and the <xref target="rfc3548">base64</xref> representation of the sha1hash of the above mentioned compressed aggregated
+as in: "protocol://path/to/resource/aggregated.bz2!sha1hash".
+The trailing '/' discriminates which of two methods are in use.
+The configuration-uri MUST follow the associated delivery method parameter ("out_band").
+Non hierarchical protocols and protocols using for special purposes the '!' separator MAY point just to a resource aggregate using their specific syntax.
+</t>
+</list>
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Encoding considerations:">
+<vspace blankLines="1" />
+This media type is framed and contains binary data.
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Security considerations:">
+<vspace blankLines="1" />
+See Section 10 of RFC XXXX.</t>
+
+<vspace blankLines="1" />
+<t hangText="Interoperability considerations:">
+<vspace blankLines="1" />
+None</t>
+
+<vspace blankLines="1" />
+<t hangText="Published specification:">
+
+<vspace blankLines="1" />
+RFC XXXX [RFC Editor: please replace by the RFC number of  this memo, when published]
+<vspace blankLines="1" />
+Ogg Vorbis I specification:  Codec setup and packet decode. Available from the Xiph website, http://www.xiph.org
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Applications which use this media type:">
+<vspace blankLines="1"/>
+Audio streaming and conferencing tools </t>
+
+<vspace blankLines="1" />
+
+<t hangText="Additional information:">
+<vspace blankLines="1" />
+None </t>
+
+<vspace blankLines="1" />
+
+<t hangText="Person &amp; email address to contact for further information:">
+
+<vspace blankLines="1" />
+
+Luca Barbato: &lt;lu_zero@gentoo.org&gt;<br/>
+IETF Audio/Video Transport Working Group
+
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Intended usage:">
+<vspace blankLines="1" />
+COMMON</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Restriction on usage:">
+<vspace blankLines="1" />
+This media type depends on RTP framing, and hence is only defined for transfer via <xref target="rfc3550">RTP</xref></t>
+
+<vspace blankLines="1" />
+
+<t hangText="Author:">
+<vspace blankLines="1"/>Luca Barbato</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Change controller:">
+<vspace blankLines="1"/>IETF AVT Working Group delegated from the IESG</t>
+
+<vspace blankLines="1" />
+</list>
+
+<section anchor="Packed Headers IANA Considerations" title="Packed Headers IANA Considerations"> 
+
+<t>
+The following IANA considerations MUST only be applied to the packed headers.
+</t>
+
+<vspace blankLines="1" />
+
+<list style="hanging">
+<t hangText="Type name:"> audio </t>
+
+<vspace blankLines="1" />
+
+<t hangText="Subtype name:"> vorbis-config </t>
+
+<vspace blankLines="1" />
+
+<t hangText="Required parameters:">
+<vspace blankLines="1" />
+None
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Optional parameters:">
+<vspace blankLines="1" />
+None
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Encoding considerations:">
+<vspace blankLines="1" />
+This media type contains binary data.
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Security considerations:">
+<vspace blankLines="1" />
+See Section 10 of RFC XXXX.
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Interoperability considerations:">
+<vspace blankLines="1" />
+None
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Published specification:">
+<vspace blankLines="1" />
+RFC XXXX [RFC Editor: please replace by the RFC number of  this memo,
+       when published]
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Applications which use this media type:">
+<vspace blankLines="1" />
+Vorbis encoded audio, configuration data.
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Additional information:"> 
+<vspace blankLines="1" />
+None
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Person &amp; email address to contact for further information:">
+<vspace blankLines="1" />
+Luca Barbato: &lt;lu_zero@gentoo.org&gt;
+<vspace blankLines="0" />
+IETF Audio/Video Transport Working Group
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Intended usage:">
+COMMON
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Restriction on usage:">
+<vspace blankLines="1" />
+This media type doesn't depend on the transport.
+</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Author:">
+<vspace blankLines="1" />
+Luca Barbato</t>
+
+<vspace blankLines="1" />
+
+<t hangText="Change controller:">
+<vspace blankLines="1" />
+IETF AVT Working Group delegated from the IESG</t>
+</list>
+
+</section>
+
+</section>
+
+<section anchor="SDP related considerations" title="SDP related considerations">
+<t>
+The following paragraphs defines the mapping of the parameters described in the IANA considerations section and their usage in the <xref target="rfc3264">Offer/Answer Model</xref>.
+</t>
+
+<section anchor="Mapping Media Type Parameters into SDP" title="Mapping Media Type Parameters into SDP"> 
+
+<t>
+The information carried in the Media Type media type specification has a
+specific mapping to fields in the <xref target="rfc4566">Session Description
+Protocol (SDP)</xref>, which is commonly used to describe RTP sessions.
+When SDP is used to specify sessions the mapping are as follows:
+</t>
+
+<vspace blankLines="1" />
+<list style="symbols">
+
+<t>The type name ("audio") goes in SDP "m=" as the media name.</t>
+<vspace blankLines="1" />
+
+<t>The subtype name ("vorbis") goes in SDP "a=rtpmap" as the encoding name.</t>
+<vspace blankLines="1" />
+
+<t>The parameter "rate" also goes in "a=rtpmap" as clock rate.</t>
+<vspace blankLines="1" />
+
+<t>The parameter "channels" also goes in "a=rtpmap" as channel count.</t>
+<vspace blankLines="1" />
+
+<t>The mandated parameters "delivery-method" and "configuration" MUST be
+included in the SDP "a=fmtp" attribute.</t>
+<vspace blankLines="1" />
+
+<t>The optional parameter "configuration-uri", when present, MUST be included
+in the SDP "a=fmtp" attribute and MUST follow the delivery-method that applies.</t>
+
+</list>
+
+<t>
+If the stream comprises chained Vorbis files and all of them are known in
+advance, the Configuration Packet for each file SHOULD be passed to the client
+using the configuration attribute.
+</t>
+
+<t>
+The URI specified in the configuration-uri attribute MUST point to a location
+where all of the Configuration Packets needed for the life of the session
+reside.
+</t>
+
+<t>
+The port value is specified by the server application bound to the address
+specified in the c= line. The bitrate value and channels specified in the
+rtpmap attribute MUST match the Vorbis sample rate value.  An example is found
+below.
+</t>
+
+<section anchor="SDP Example" title="SDP Example">
+<t>The following example shows a basic SDP single stream. The first
+configuration packet is inlined in the sdp, other configurations could be
+fetched at any time from the first provided uri using or all the known
+configuration could be downloaded using the second uri. The inline
+<xref target="rfc3548">base64</xref> configuration string is omitted because of
+the length.</t>
+
+<list style="empty">
+<t>c=IN IP4 192.0.2.1</t>
+<t>m=audio  RTP/AVP 98</t>
+<t>a=rtpmap:98 vorbis/44100/2</t>
+<t>a=fmtp:98 delivery-method=inline; configuration=base64string; delivery-method=out_band; configuration-uri=rtsp://path/to/the/resource; delivery-method=out_band; configuration-uri=http://another/path/to/resource/aggregate.bz2!8b6237eb5154a0ea12811a94e8e2697b3312bc6c;</t>
+</list>
+</section>
+
+
+<t>
+Note that the payload format (encoding) names are commonly shown in upper case.
+Media Type subtypes are commonly shown in lower case. These names are
+case-insensitive in both places.  Similarly, parameter names are
+case-insensitive both in Media Type types and in the default mapping to the SDP
+a=fmtp attribute. The exception regarding case sensitivity is the
+configuration-uri URI which MUST be regarded as being case sensitive. The
+a=fmtp line is a single line even if it is presented broken because of clarity.
+</t>
+
+</section>
+
+<section anchor="Usage with the SDP Offer/Answer Mode" title="Usage with the SDP Offer/Answer Model">
+
+<t>
+The only paramenter negotiable is the delivery method. All the others are
+declarative: the offer, as described in <xref target="rfc3264">An Offer/Answer
+Model Session Description Protocol</xref>, may contain a large number of
+delivery methods per single fmtp attribute, the answerer MUST remove every
+delivery-method and configuration-uri not supported. All the parameters MUST
+not be altered on answer otherwise.
+</t>
+
+</section>
+
+</section>
+
+<section anchor="Congestion Control" title="Congestion Control"> 
+
+<t>
+Vorbis clients SHOULD send regular receiver reports detailing congestion. A
+mechanism for dynamically downgrading the stream, known as bitrate peeling,
+will allow for a graceful backing off of the stream bitrate. This feature is
+not available at present so an alternative would be to redirect the client to
+a lower bitrate stream if one is available.
+</t>
+
+</section> 
+
+<section anchor="Examples" title="Examples">
+
+<t>
+The following examples are common usage patterns that MAY be applied in such
+situations, the main scope of this section is to explain better usage of the
+transmission vectors.
+</t>
+
+<section anchor="Stream Radio" title="Stream Radio">
+
+<t>This is one of the most common situation: one single server streaming
+content in multicast, the clients may start a session at random time. The
+content itself could be a mix of live stream, as the wj's voice, and stored
+streams as the music she plays.</t>
+
+<t>In this situation we don't know in advance how many codebooks we will use.
+The clients can join anytime and users expect to start listening to the content
+in a short time.</t>
+
+<t>On join the client will receive the current Configuration necessary to
+decode the current stream inlined in the SDP so that the decoding will start
+immediately after.</t>
+
+<t>When the streamed content changes the new Configuration is sent in-band
+before the actual stream, and the Configuration that has to be sent inline in
+the SDP updated. Since the in-band method is unreliable, an out of band
+fallback is provided.</t>
+
+<t>The client could choose to fetch the Configuration from the alternate source
+as soon as it discovers a Configuration packet got lost in-band or use
+<xref target="RFC3611">selective retransmission</xref>, if the server supports
+the feature.</t>
+
+<t>A serverside optimization would be to keep an hash list of the
+Configurations per session to avoid packing all of them and send the same
+Configuration with different Ident tags</t>
+
+<t>A clientside optimization would be to keep a tag list of the Configurations
+per session and don't process configuration packets already known.</t>
+
+</section>
+</section>
+
+<section anchor="Security Considerations" title="Security Considerations"> 
+<t>
+RTP packets using this payload format are subject to the security
+considerations discussed in the RTP specification 
+<xref target="rfc3550"></xref>.  This implies that the confidentiality of the
+media stream is achieved by using encryption. Because the data compression used
+with this payload format is applied end-to-end, encryption may be performed on
+the compressed data. Additional care MAY be needed for delivery methods that
+point to external resources, using secure protocols to fetch the configuration
+payloads. Where the size of a data block is set, care MUST be taken to prevent
+buffer overflows in the client applications.
+</t>
+
+</section> 
+
+<section anchor="Acknowledgments" title="Acknowledgments"> 
+
+<t>
+This document is a continuation of draft-moffitt-vorbis-rtp-00.txt and
+draft-kerr-avt-vorbis-rtp-04.txt.  The Media Type type section is a
+continuation of draft-short-avt-rtp-vorbis-mime-00.txt.
+</t>
+
+<t>
+Thanks to the AVT, Ogg Vorbis Communities / Xiph.org including Steve Casner,
+Aaron Colwell, Ross Finlayson, Fluendo, Ramon Garcia, Pascal Hennequin, Ralph
+Giles, Tor-Einar Jarnbjo, Colin Law, John Lazzaro, Jack Moffitt, Christopher
+Montgomery,  Colin Perkins, Barry Short, Mike Smith, Phil Kerr, Michael Sparks,
+Magnus Westerlund, David Barrett, Silvia Pfeiffer, Stefan Ehmann, Alessandro
+Salvatori. Politecnico di Torino (LS)³/IMG Group in particular Federico
+Ridolfo, Francesco Varano, Giampaolo Mancini, Dario Gallucci, Juan Carlos De Martin.
+</t>
+
+</section> 
+
+</middle>
+
+<back>
+
+<references title="Normative References">
+
+<reference anchor="rfc2119">
+<front>
+<title>Key words for use in RFCs to Indicate Requirement Levels </title>
+<author initials="S." surname="Bradner" fullname="Scott Bradner"></author>
+</front>
+<seriesInfo name="RFC" value="2119" />
+</reference>   
+
+<reference anchor="rfc3550">
+<front>
+<title>RTP: A Transport Protocol for real-time applications</title>
+<author initials="H." surname="Schulzrinne" fullname=""></author>
+<author initials="S." surname="Casner" fullname=""></author>
+<author initials="R." surname="Frederick" fullname=""></author>
+<author initials="V." surname="Jacobson" fullname=""></author>
+</front>
+<seriesInfo name="RFC" value="3550" />
+</reference> 
+
+<reference anchor="rfc3551">
+<front>
+<title>RTP Profile for Audio and Video Conferences with Minimal Control.</title>
+<author initials="H." surname="Schulzrinne" fullname=""></author>
+<author initials="S." surname="Casner" fullname=""></author>
+</front>
+<date month="July" year="2003" />
+<seriesInfo name="RFC" value="3551" />
+</reference> 
+
+<reference anchor='rfc3986'>
+<front>
+<title abbrev='URI Generic Syntax'>Uniform Resource Identifier (URI): Generic Syntax</title>
+<author initials='T.' surname='Berners-Lee' fullname='Tim Berners-Lee'>
+</author>
+<author initials='R.' surname='Fielding' fullname='Roy T. Fielding'>
+</author>
+<author initials='L.' surname='Masinter' fullname='Larry Masinter'>
+</author>
+</front>
+<date year='2005' month='January' />
+<seriesInfo name='RFC' value='3986' />
+</reference>
+
+<reference anchor='rfc4566'>
+
+<front>
+<title>SDP: Session Description Protocol</title>
+<author initials='M.' surname='Handley' fullname='M. Handley'>
+<organization /></author>
+<author initials='V.' surname='Jacobson' fullname='V. Jacobson'>
+<organization /></author>
+<author initials='C.' surname='Perkins' fullname='C. Perkins'>
+<organization /></author>
+<date year='2006' month='July' />
+</front>
+
+<seriesInfo name='RFC' value='4566' />
+<format type='TXT' octets='108820' target='ftp://ftp.isi.edu/in-notes/rfc4566.txt' />
+</reference>
+
+<reference anchor='rfc1191'>
+
+<front>
+<title>Path MTU discovery</title>
+<author initials='J.' surname='Mogul' fullname='Jeffrey Mogul'>
+<organization>Digital Equipment Corporation (DEC) , Western Research Laboratory</organization>
+<address>
+<email>mogul@decwrl.dec.com</email></address></author>
+<author initials='S.' surname='Deering' fullname='Steve Deering'>
+<organization>Xerox Palo Alto Research Center</organization>
+<address>
+<email>deering@xerox.com</email></address></author>
+<date year='1990' day='1' month='November' />
+</front>
+
+<seriesInfo name='RFC' value='1191' />
+<format type='TXT' octets='47936' target='ftp://ftp.isi.edu/in-notes/rfc1191.txt' />
+</reference>
+
+<reference anchor="rfc1981">
+<front>
+<title>Path MTU Discovery for IP version 6</title>
+<author initials="J." surname="McCann et al." fullname="J. McCann et al."></author>
+</front>
+<seriesInfo name="RFC" value="1981" />
+</reference>   
+
+<reference anchor="rfc3264">
+<front>
+<title>An Offer/Answer Model with Session Description Protocol (SDP)</title>
+<author initials="J." surname="Rosenberg" fullname="Jonathan Rosenberg"></author>
+<author initials="H." surname="Schulzrinne" fullname="Henning Schulzrinne"></author>
+</front>
+<seriesInfo name="RFC" value="3264" />
+</reference>   
+
+<reference anchor="rfc3548">
+<front>
+<title>The Base16, Base32, and Base64 Data Encodings</title>
+<author initials="S." surname="Josefsson" fullname="Simon Josefsson"></author>
+</front>
+<seriesInfo name="RFC" value="3548" />
+</reference>
+<reference anchor="FIPS180">
+<front>
+<title>Secure Hash Standard</title>
+<author>
+<organization>National Institute of Standards and Technology</organization>
+</author>
+<date month="May" year="1993"/>
+</front>
+</reference>
+</references>
+
+<references title="Informative References">
+
+<reference anchor="rfc3533">
+<front>
+<title>The Ogg Encapsulation Format Version 0</title>
+<author initials="S." surname="Pfeiffer" fullname="Silvia Pfeiffer"></author>
+</front>
+<seriesInfo name="RFC" value="3533" />
+</reference>
+
+<reference anchor="libvorbis">
+<front>
+<title>libvorbis: Available from the Xiph website, http://www.xiph.org</title>
+</front>
+</reference>   
+
+<reference anchor="vorbis-spec-ref">
+<front>
+<title>Ogg Vorbis I specification:  Codec setup and packet decode.  Available from the Xiph website, http://www.xiph.org</title>
+</front>
+</reference>   
+
+<reference anchor="rfc1952">
+<front>
+<title>GZIP file format specification version 4.3</title>
+<author initials="P" surname="Deutsch" fullname="L. Peter Deutsch"></author>
+</front>
+<seriesInfo name="RFC" value="1952" />
+</reference>
+
+<reference anchor="RFC3611">
+<front>
+<title>RTP Control Protocol Extended Reports (RTCP XR)</title>
+<author initials="T." surname="Friedman" fullname="T. Friedman" />
+<author initials="R." surname="Caceres" fullname="R. Caceres" />
+<author initials="A." surname="Clark" fullname="A. Clark" />
+<date year="2003" month="November"/>
+</front>
+<seriesInfo name="RFC" value="3611"/>
+</reference>
+<reference anchor="BZ2">
+<front>
+
+<title>libbz2 and bzip2</title>
+<author initials="J" surname="Seward" fullname="Julian Seward" />
+</front>
+</reference>
+</references>
+</back>
+</rfc>

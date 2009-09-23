@@ -1,0 +1,15 @@
+#
+# GNU makefile
+#
+
+topdir = ../../..
+
+LIB_NAME = libreplaygain_analysis
+INCLUDES = -I$(topdir)/include/share
+
+SRCS_C = \
+	replaygain_analysis.c
+
+include $(topdir)/build/lib.mk
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.

@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wavpackdll", "wavpackdll.vcproj", "{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}.Debug.ActiveCfg = Debug|Win32
+		{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}.Debug.Build.0 = Debug|Win32
+		{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}.Release.ActiveCfg = Release|Win32
+		{CDC43FFE-1BED-44C6-BAB9-5A7E84D6D9FE}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

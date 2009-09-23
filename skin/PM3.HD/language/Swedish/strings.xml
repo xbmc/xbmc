@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Language file translated with Team XBMC Translator-->
+<!--Translator: blittan-->
+<!--Email: blittan@xbmc.org-->
+<!--Date of translation: 05/16/2009-->
+<!--$Revision$-->
+<strings>
+  <string id="31000">Volym avstängd</string>
+  <string id="31001">Upptagen...</string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">FANKONST[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
+  <string id="31011">AVSNITTS[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
+  <string id="31012">AVSNITTS[CR]BILD[CR]INTE[CR]TILLGÄNGLIG</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+  <string id="31020">Kapiteltitel</string>
+  <string id="31021">Video - Filer</string>
+  <string id="31022">Musik - Filer</string>
+  <string id="31023"></string>
+  <string id="31024">Sida</string>
+  <string id="31025">Objekt</string>
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">DVD miniatyrer</string>
+  <string id="31029">DVD lista</string>
+  <string id="31030">Fankonst</string>
+  <string id="31031">Full lista</string>
+  <string id="31032">Omslagsflöde</string>
+  <string id="31033">Bildminiatyrer</string>
+  <string id="31034">Bredikoner</string>
+  <string id="31040">Nuvarande film[CR]Fankonst-bild[CR][CR]Klicka för att ändra</string>
+  <string id="31041">Nuvarande TV-serie[CR]Fankonst-bild[CR][CR]Klicka för att ändra</string>
+  <string id="31042">SPELAR</string>
+  <string id="31043">PAUSAD</string>
+  <string id="31044">FRAMÅTSPOLNING</string>
+  <string id="31045">TILLBAKASPOLNING</string>
+  <string id="31046">Välkommen till XBMC - Var god logga in</string>
+  <string id="31047">Senast inloggad</string>
+  <string id="31048">Nuvarande artists[CR]Fankonstsbild[CR][CR]Klicka för att ändra</string>
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+  <string id="31053">XBMC SÅNGTEXTER</string>
+  <string id="31054">Välj din låt från listan</string>
+  <string id="31055">Öppna spellista</string>
+  <string id="31056">Spara spellista</string>
+  <string id="31057">Stäng spellista</string>
+  <string id="31058">System-musikfiler</string>
+  <string id="31059">Nuvarande spellista</string>
+  <string id="31060">Denna fil är sammanslagen, välj den del du vill spela från.</string>
+  <string id="31100">Bakgrundsval</string>
+  <string id="31101">Hemskärmsval</string>
+  <string id="31102">Bakgrunder</string>
+  <string id="31103">Visa "Pausad" i bildspelet</string>
+  <string id="31104">Avstängningsmeny - Använd viloläge istället för vänteläge</string>
+  <string id="31105">Visa mediatitlar i bakgrundsskannern</string>
+  <string id="31106">Blandade val</string>
+  <string id="31107">Ta bort skannlinjer fråm bakgrunden</string>
+  <string id="31108">Ta bort skannlinjer från bakgrunden under filmuppspelning</string>
+  <string id="31109">Hemskärmsbakgrunder</string>
+  <string id="31110">knapp - Aktivera egna bakgrunder</string>
+  <string id="31111">Visa alltid musikinfo vid sångtexter</string>
+  <string id="31112">Visa mediatitlar i "Bredikon" visningen</string>
+  <string id="31113">Enstaka bild</string>
+  <string id="31114">Multibild</string>
+  <string id="31200">Egna skriptval</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Ange knappetikett</string>
+  <string id="31204">Skriptsökväg</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">Visa sångtexts-skriptsknappen i OSD</string>
+  <string id="31209">Aktivera snabbstarta skriptknapp för -</string>
+  <string id="31300">Visa rollsättning</string>
+</strings>

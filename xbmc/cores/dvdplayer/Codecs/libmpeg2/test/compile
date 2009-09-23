@@ -1,0 +1,58 @@
+#!/bin/sh
+
+if test x"$srcdir" != x""; then
+    builddir="."	# running from make check, but it does not define that
+else
+    srcdir=`echo "$0" | sed s,[^/]*$,,`
+    test "$srcdir" = "$0" && srcdir=.
+    test -z "$srcdir" && srcdir=.
+    builddir="$srcdir"	# running manually, have to assume
+fi
+
+srcdir=`cd $srcdir;pwd`
+builddir=`cd $builddir;pwd`
+
+basedir=".."
+cd $srcdir; if [ ! -d $basedir -o ! -f $basedir/src/mpeg2dec.c -o \
+    ! -f $basedir/mpeg2dec-*.tar.gz ]; then
+    cd ..; if [ ! -d $basedir -o ! -f $basedir/src/mpeg2dec.c -o \
+	! -f $basedir/mpeg2dec-*.tar.gz ]; then
+	exit 77
+    fi
+fi
+basedir=`cd $basedir;pwd`
+
+cd $builddir
+rm -fr compile_test
+
+for compiler in cc gcc gcc272 gcc-2.95 gcc-3.0 gcc-3.1 gcc-3.2 gcc-3.3 \
+		gcc-3.4 gcc-4.0 gcc-4.1 gcc-4.2 c89 \
+		c++ g++ g++-2.95 g++-3.0 g++-3.1 g++-3.2 g++-3.3 g++-3.4 \
+		g++-4.0 g++-4.1 g++-4.2 \
+		ccmalloc-gcc bgcc checkergcc tendracc icc \
+		i586-mingw32msvc-gcc; do
+    compiler_path=`which $compiler`
+    if test x"$compiler_path" = x""; then continue; fi
+
+    mkdir compile_test
+    cd compile_test; tar xzpf $basedir/mpeg2dec-*.tar.gz; cd mpeg2dec-*
+    case "$compiler" in
+	i586-mingw32msvc-gcc)
+	    opts="--host=i586-mingw32msvc --enable-warnings --disable-sdl"
+	    if test -f "/usr/local/opt/ddraw/ddraw.h"; then
+		opts="$opts --with-directx=/usr/local/opt/ddraw"
+	    fi;;
+	c89)		opts="";;
+	ccmalloc-gcc)	opts="--enable-warnings --enable-debug";;
+	tcc-*)		opts="--enable-warnings --disable-sdl";;
+	checkergcc)	opts="--disable-largefile";;
+	gcc272|*-2.95)	opts="";;
+	*)		opts="--enable-warnings";;
+    esac
+    error=1; CC=$compiler ./configure $opts && make && error=0
+    if test x"$error" != x"0"; then exit 1; fi
+    cd ../..
+    rm -fr compile_test
+done
+
+exit 0

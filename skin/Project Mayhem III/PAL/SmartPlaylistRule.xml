@@ -1,0 +1,147 @@
+<window id="129">
+	<defaultcontrol>15</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>165</posx>
+		<posy>200</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>-165</posx>
+			<posy>-200</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="0">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>390</width>
+			<height>200</height>
+			<texture>dialog-panel.png</texture>
+		</control>
+		<control type="label">
+			<description>heading label</description>
+			<posx>25</posx>
+			<posy>13</posy>
+			<width>480</width>
+			<align>left</align>
+			<font>special13</font>
+			<label>21421</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="label" id="0">
+			<description>Rule match label</description>
+			<posx>20</posx>
+			<posy>40</posy>
+			<width>480</width>
+			<font>font12</font>
+			<label>21422</label>
+		</control>
+		<control type="group" id="9001">
+			<control type="spincontrolex" id="15">
+				<description>Rule Field</description>
+				<posx>20</posx>
+				<posy>65</posy>
+				<width>175</width>
+				<font>font12</font>
+				<texturefocus border="1">input-focus.png</texturefocus>
+				<texturenofocus  border="1">input-nofocus.png</texturenofocus>
+				<onright>16</onright>
+				<onleft>16</onleft>
+				<onup>9000</onup>
+				<ondown>17</ondown>
+			</control>
+			<control type="spincontrolex" id="16">
+				<description>Rule operator</description>
+				<posx>200</posx>
+				<posy>65</posy>
+				<width>180</width>
+				<font>font12</font>
+				<texturefocus border="1">input-focus.png</texturefocus>
+				<texturenofocus  border="1">input-nofocus.png</texturenofocus>
+				<font>font12</font>
+				<onright>15</onright>
+				<onleft>15</onleft>
+				<onup>9000</onup>
+				<ondown>17</ondown>
+			</control>
+		</control>
+		<control type="button" id="17">
+			<description>Value Button</description>
+			<posx>20</posx>
+			<posy>105</posy>
+			<width>265</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<textwidth>255</textwidth>
+			<aligny>center</aligny>
+			<texturefocus border="1">input-focus.png</texturefocus>
+			<texturenofocus border="1">input-nofocus.png</texturenofocus>
+			<label>-</label>
+			<onup>9001</onup>
+			<onleft>20</onleft>
+			<onright>20</onright>
+			<ondown>9000</ondown>
+		</control>
+		<control type="button" id="20">
+			<description>Browse Button</description>
+			<posx>290</posx>
+			<posy>105</posy>
+			<width>90</width>
+			<height>32</height>
+			<font>font12</font>
+			<textoffsetx>12</textoffsetx>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturefocus border="1">input-focus.png</texturefocus>
+			<texturenofocus border="1">input-nofocus.png</texturenofocus>
+			<label>1024</label>
+			<onup>9001</onup>
+			<onleft>17</onleft>
+			<onright>17</onright>
+			<ondown>9000</ondown>
+		</control>
+		<control type="group" id="9000">
+			<control type="button" id="18">
+				<description>Ok Button</description>
+				<posx>180</posx>
+				<posy>145</posy>
+				<width>90</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<label>186</label>
+				<onup>17</onup>
+				<onleft>19</onleft>
+				<onright>19</onright>
+				<ondown>9001</ondown>
+			</control>
+			<control type="button" id="19">
+				<description>Cancel Button</description>
+				<posx>280</posx>
+				<posy>145</posy>
+				<width>90</width>
+				<height>32</height>
+				<font>font12</font>
+				<textoffsetx>12</textoffsetx>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus>keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus>keyboard-btn-backspace-focus.png</texturefocus>
+				<label>222</label>
+				<onup>17</onup>
+				<onleft>18</onleft>
+				<onright>19</onright>
+				<ondown>9001</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,42 @@
+body { 
+	font-family: Arial, Helvetica, sans-serif; font-size: 9pt; 
+; margin-right: 5px; margin-left: 10px
+} 
+p { 
+; margin-left: 30px
+; font-family: Arial, Helvetica, sans-serif; color: #333333
+; font-size: 9pt
+} 
+h3 { 
+	font-size: 10pt; font-weight: bold; 
+; margin-top: 8pt
+; font-family: Arial, Helvetica, sans-serif; color: #0066CC
+} 
+h2 { 
+	font-size: 11pt; font-weight: bold; 
+; margin-top: 8pt
+; font-family: Arial, Helvetica, sans-serif; color: #0066CC
+} 
+h1 { 
+	font-size: 16pt; font-weight: bold; 
+; font-family: Arial, Helvetica, sans-serif; color: #0066CC
+} 
+pre {
+	background-color: #EEEEEE;
+; color: #0A0A8C; font-family: "Courier New", Courier, mono; font-size: 9pt
+; padding-left: 31px
+; padding-top: 5px; padding-right: 20px; padding-bottom: 5px
+}
+li {
+; font-family: Arial, Helvetica, sans-serif; color: #333333
+; margin-left: 30px
+; font-size: 9pt
+}
+td {  font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: #333333; vertical-align: top}
+
+ul { ; font-family: Arial, Helvetica, sans-serif; color: #333333; margin-left: 30px; font-size: 9pt }
+.titleLeft {  font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; width: 33%; color: #0066CC; text-align: left}
+.titleCenter { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; width: 33%; color: #0066CC; text-align: center}
+.titleRight { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; width: 33%; color: #0066CC; text-align: right}
+table {  padding-left: 30px}
+.apiTitle {  padding-left: 0px}

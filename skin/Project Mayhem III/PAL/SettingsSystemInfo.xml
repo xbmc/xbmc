@@ -1,0 +1,218 @@
+<window id="7">
+	<defaultcontrol>9000</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-settings.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="label">
+			<description>XBMC label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>9</label>
+			<font>special12</font>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="label">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>10007</label>
+			<font>special13</font>
+			<textcolor>white</textcolor>
+		</control>
+		<include>contentpanel</include>
+		<control type="grouplist" id="9000">
+			<posx>20</posx>
+			<posy>100</posy>
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<include>buttonpanelslide</include>
+			<control type="button" id="95">
+				<description>Button Default Values</description>
+				<posx>-</posx>
+				<posy>-</posy>
+				<label>128</label>
+				<font>font13</font>
+				<align>Left</align>
+			</control>
+			<control type="button" id="94">
+				<description>Button Storage</description>
+				<posx>-</posx>
+				<posy>-</posy>
+				<label>13277</label>
+				<font>font13</font>
+				<align>Left</align>
+			</control>
+			<control type="button" id="92">
+				<description>Button HDD</description>
+				<posx>-</posx>
+				<posy>-</posy>
+				<label>13275</label>
+				<font>font13</font>
+				<align>Left</align>
+				<visible>System.Platform.Xbox</visible>
+			</control>
+			<control type="button" id="93">
+				<description>Button DVD</description>
+				<posx>-</posx>
+				<posy>-</posy>
+				<label>13276</label>
+				<font>font13</font>
+				<align>Left</align>
+				<visible>System.Platform.Xbox</visible>
+			</control>
+			<control type="button" id="96">
+				<description>Button Network</description>
+				<posx>-</posx>
+				<posy>-</posy>
+				<label>13279</label>
+				<font>font13</font>
+				<align>Left</align>
+			</control>
+			<control type="button" id="97">
+				<description>Button Video</description>
+				<posx>-</posx>
+				<posy>-</posy>
+				<label>13280</label>
+				<font>font13</font>
+				<align>Left</align>
+			</control>
+			<control type="button" id="98">
+				<description>Button Hardware</description>
+				<posx>-</posx>
+				<posy>-</posy>
+				<label>13281</label>
+				<font>font13</font>
+				<align>Left</align>
+			</control>
+		</control>
+		<control type="group">
+			<description>Default Contents</description>
+			<include>contentpanelslide</include>
+			<control type="label" id="40">
+				<description>Section Label</description>
+				<posx>190</posx>
+				<posy>100</posy>
+				<font>font13</font>
+				<label>-</label>
+			</control>
+			<control type="label" id="2">
+				<description>Label 2</description>
+				<posx>190</posx>
+				<posy>130</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="3">
+				<description>Label 3</description>
+				<posx>190</posx>
+				<posy>158</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="4">
+				<description>Label 4</description>
+				<posx>190</posx>
+				<posy>186</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="5">
+				<description>Label 5</description>
+				<posx>190</posx>
+				<posy>214</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="6">
+				<description>Label 6</description>
+				<posx>190</posx>
+				<posy>242</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="7">
+				<description>Label 7</description>
+				<posx>190</posx>
+				<posy>270</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="8">
+				<description>Label 8</description>
+				<posx>190</posx>
+				<posy>298</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="9">
+				<description>Label 9</description>
+				<posx>190</posx>
+				<posy>326</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="10">
+				<description>Label 10</description>
+				<posx>190</posx>
+				<posy>354</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="11">
+				<description>Label 11</description>
+				<posx>190</posx>
+				<posy>382</posy>
+				<label>-</label>
+				<font>font13</font>
+				<textcolor>grey</textcolor>
+			</control>
+		</control>
+		<control type="group">
+			<description>Misc Values</description>
+			<include>contentpanelslide</include>
+			<control type="label" id="52">
+				<description>XBMC BUILD Version</description>
+				<posx>190</posx>
+				<posy>470</posy>
+				<label>144</label>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label" id="53">
+				<description>Mplayer DLL Version</description>
+				<posx>190</posx>
+				<posy>495</posy>
+				<label>144</label>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<visible>System.Platform.Xbox</visible>
+			</control>
+		</control>
+	</controls>
+</window>

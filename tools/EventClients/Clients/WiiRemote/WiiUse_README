@@ -1,0 +1,18 @@
+There are two ways to make the WiiUse_WiiRemote event client.
+
+1) Compile manually. Requires the wiiuse library to be installed already (http://sourceforge.net/project/showfiles.php?group_id=187194)
+g++ -lwiiuse WiiUse_WiiRemote.cpp -o WiiUse_WiiRemote
+ 
+2) Use the Makefile. Will make the wiiuse_v0.12 library from source. Executable must be run from this directory due to relative linking to the built library.
+make
+
+Both methods will create a WiiUse_WiiRemote executable containing the event client.
+
+
+The WiiUse_WiiRemote.h file contains the button number mappings for the Wii Remote (prefixed with KEYCODE).
+
+
+TODO:
+Add IR pointer support
+
+TheUni

@@ -1,0 +1,18 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umUserCanAccessURL -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE BORDER=0 WIDTH=100% CELLSPACING=0 CELLPADDING=0 CLASS="apiTitle"> <TR> 
+<TD CLASS="titleLeft" ALIGN=left WIDTH="33%">umUserCanAccessURL</TD><TD CLASS="titleCenter" ALIGN=center WIDTH="33%"><B>GoAhead 
+WebServer API</B></TD><TD CLASS="titleRight" ALIGN=right WIDTH="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B></H2><P>	Determine if the user is allowed to access URL.</P><H2><B>Prototype</B></H2><PRE> #include &quot;um.h&quot;
+
+ bool_t umUserCanAccessURL(char_t * user, char_t * url);</PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="75%" BORDER="0"><TR><TD WIDTH="20%">user</TD><TD WIDTH="80%">user ID</TD></TR><TR><TD WIDTH="20%">url</TD><TD WIDTH="80%">URL name</TD></TR></TABLE><H2><B>Description</B></H2><P>bool_t umUserCanAccessURL(char_t * user, char_t * url);</P><H2><B>Return Value</B></H2><P>	umUserCanAccessURL returns TRUE if successful, allowing   the user to access the URL, or FALSE if otherwise.</P><H2><B>Example</B></H2><PRE>bool_t bOK = umUserCanAccessURL(T(&quot;squiggy&quot;), T(&quot;adminform.exe&quot;));</PRE><H2><B>See Also</B></H2><P>	<A HREF="umAddAccessLimit.htm">umAddAccessLimit</A>(), <A HREF="umAddUser.htm">umAddUser</A>()</P><H2>&nbsp;</H2><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

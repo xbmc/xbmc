@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<strings>
+  <string id="31000">Volumen silenciado</string>
+  <string id="31001"></string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">FANART[CR]IMAGEN[CR]NO[CR]DISPONIBLE</string>
+  <string id="31011">EPISODIO[CR]IMAGEN[CR]NO[CR]DISPONIBLE</string>
+  <string id="31012">EPISODIO[CR]IMAGEN[CR]NO[CR]DISPONIBLE</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Título de capítulo</string>
+  <string id="31021">Video - Archivos</string>
+  <string id="31022">Music - Archivos</string>
+  <string id="31023"></string>
+  <string id="31024">Página</string>
+  <string id="31025">Elementos</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">Miniaturas DVD</string>
+  <string id="31029">Lista DVD</string>
+  <string id="31030">Fanart</string>
+  <string id="31031">Lista completa</string>
+  <string id="31032">Flujo de portada</string>
+  <string id="31033">Miniaturas de imágenes</string>
+  <string id="31034">Iconos anchos</string>
+
+  <string id="31040">Película actual[CR]Imagen Fanart[CR][CR]Click para cambiar</string>
+  <string id="31041">Serie actual[CR]Imagen Fanart[CR][CR]Click para cambiar</string>
+  <string id="31042">REPRODUCIENDO</string>
+  <string id="31043">PAUSADO</string>
+  <string id="31044">AVANZAR RÁPIDO</string>
+  <string id="31045">REBOBINAR</string>
+  <string id="31046">Bienvenido a XBMC - Por favor identifíquese</string>
+  <string id="31047">Identificado por última vez en</string>
+  <string id="31048">Artista actual[CR]Imagen Fanart[CR][CR]Click para cambiar</string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">Letras XBMC</string>
+  <string id="31054">Elija su canción de la lista</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Abrir playlist</string>
+  <string id="31056">Salvar playlist</string>
+  <string id="31057">Cerrar playlist</string>
+  <string id="31058">Archivos de música del sistema</string>
+  <string id="31059">Playlist actual</string>
+  <string id="31060">Éste archivo está apilado, seleccione la parte desde la que quiere reproducir</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">Opciones de fondo</string>
+  <string id="31101">Opciones de Home Screen</string>
+  <string id="31102">Fondos</string>
+  <string id="31103">Mostrar "pausado" en presentación de imágenes</string>
+  <string id="31104">Menú de apagado - Hibernar en lugar de Suspender</string>
+  <string id="31105">Mostrar títulos en escáner de segundo plano</string>
+  <string id="31106">Opciones de miscelánea</string>
+  <string id="31107">Eliminar líneas de escaneado en segundo plano</string>
+  <string id="31108">Eliminar líneas de escaneado mientras se reproduce vídeo</string>
+  <string id="31109">Fondo de Home screen</string>
+  <string id="31110">Botón - Habilitar fondo personalizado</string>
+  <string id="31111">Mostrar siempre inf. de música en letras</string>
+  <string id="31112">Mostrar títulos en la vista de "iconos anchos"</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Opciones personalizadas de script</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Ajustar etiqueta de botón</string>
+  <string id="31204">Ruta de script</string>
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">Mostrar botón de script de letras en OSD</string>
+  <string id="31209">Habilitar botón de lanzado de script rápido para -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Mostrar reparto</string>
+</strings>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<language>
+  <charsets>
+    <gui unicodefont="true">CP1254</gui>
+    <subtitle>CP1254</subtitle>
+  </charsets>
+  <dvd>
+    <menu>tr</menu>
+    <audio>tr</audio>
+    <subtitle>tr</subtitle>
+  </dvd>
+  <regions>
+    <region name="Turkiye">
+      <dateshort>DD.MM.YYYY</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">HH:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+  </regions>
+</language>

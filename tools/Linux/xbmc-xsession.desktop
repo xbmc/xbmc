@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=XSession
+Exec=xbmc-standalone
+TryExec=xbmc-standalone
+Name=XBMC

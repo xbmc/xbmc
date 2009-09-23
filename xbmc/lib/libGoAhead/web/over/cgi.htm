@@ -1,0 +1,41 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>Standard CGI Implementation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../style/normal_ws.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD><H2>Standard CGI Implementation<A NAME="CGI"></A> </H2><P>The Common Gateway Interface (CGI) is a standard for interfacing external applications with information servers, such as HTTP or Web servers. A plain HTML document retrieved by  a Web daemon   is a static  text file that doesn't change. A CGI program, on the other hand, is executed in real-time and able to  output dynamic content.</P><P> CGI script are written in any language that can read STDIN, write to STDOUT, and read environment variables. This means that virtually any programming language can be used, including C, Perl, or even shell scripting. </P><P><B>Note:</B> this WebServer documentation does not  provide instructions  on how to  write  CGI scripts for processing Web forms; however,    numerous books and Websites are readily available that do an excellent job in covering  this basic  information. </P><P>In  WebServer  2.0, GoForms CGI processing was accomplished by instructing the webs module to treat all URLs beginning with &quot;/goform&quot;  as  <A HREF="goforms.htm">GoForms</A>.   Using a similar mechanism, WebServer 2.1 has   a new "handler" that is  called when URL requests are received for URLs beginning with <BR>&quot;/cgi-bin&quot;.  CGI executable processes must be located in the WebServer's  <FONT FACE="Courier New, Courier, mono">cgi-bin</FONT> subdirectory.  Separate processes will be created for each CGI request.
+</P><H3>CGI for VxWorks<A NAME="cgi"></A></H3><P>CGI's standard implementation requires that standalone processes be executed and  their outputs   returned to the browser via the WebServer.  In VxWorks, processes are not  implemented, but rather tasks are.  In addition to  understanding the mechanisms used in the implementation of VxWorks CGI tasks, developers of CGI processes must  be aware of the differences between processes on other operating systems  and tasks on VxWorks.</P><OL><OL><LI>VxWorks tasks can be spawned using code already loaded in memory.  On VxWorks systems with no file system, the CGI task code can be included in the OS image and is not necessarily contained in a file.</LI><LI>If the CGI code is contained in a file, a browser request  for it will cause it to be loaded into memory prior to its execution.  It will be unloaded and reloaded each time it is invoked, which allows the  upgrading to a new version between invocation.</LI><LI>The  VxWorks taskSpawn API is used to spawn the CGI  task.</LI><LI>An entry point symbol name must be used to spawn the task.  The request for the CGI process can define this entry point name in the request by including the query string keyword=value pair &quot;cgientry=symbolname&quot;,  where symbolname is a function name in the CGI code that is to be executed.  If cgientry is not defined in this way, a default entry name will be searched for in the loaded code.  The default name is &quot;basename_cgientry&quot;,  where basename is the name of the requested CGI process minus any file extension or path info (e.g.,  if the request is for &quot;cgi-bin/cgitest.out&quot;, the default entry point symbol name will be &quot;cgitest_cgientry&quot;).  If the entry point symbol name is not found or if the requested module cannot be loaded, the CGI request will fail.</LI><LI>The priority of the spawned task will be the same priority at which    WebServer is running. </LI><LI>The stack size of the spawned task is 20,000 bytes.</LI><LI>The task name will be the same as the entry point name.</LI><LI>The standard CGI environment variables are copied to the task environment.  They can be retrieved/modified by the getenv/putenv APIs.</LI><LI>Command line arguments (if any) are passed to the user's entry point via an (int argc, char **argv) standard convention, where argc is the number of arguments and argv is an array of strings.</LI><LI>As   in standard CGI processes, the VxWorks CGI task can retrieve additional POST data from standard input device and must write any output to be returned to the client to the standard output device.  These devices are actually temporary files where  stdin and stdout have been redirected.</LI><LI>User-defined CGI task codes should always be terminated with  a  return rather than an  exit API. This allows environment space and redirected I/O files used by the task to be cleaned up and released back to the operating system appropriately.   </LI></OL></OL><P></P><H3>Environment Variables</H3><P>Input to Standard CGIs is   accomplished mainly through these environment variables:</P><P>
+
+SERVER_SOFTWARE<BR>  The name and version of the information server software answering the request (and running the gateway). <BR>Format: name/version 
+</P><P>SERVER_NAME<BR>  The server's hostname, DNS alias, or IP address as it would appear in self-referencing URLs.</P><P> 
+GATEWAY_INTERFACE<BR>The revision of the CGI specification used by this server. <BR>Format: CGI/revision 
+</P><P>SERVER_PROTOCOL<BR>The name and revision of the information protocol used by this request. <BR>Format: protocol/revision 
+</P><P>SERVER_PORT<BR>The port number receiving  the request. 
+</P><P>REQUEST_METHOD<BR>The method used to make  the request. For HTTP, this is "GET", "HEAD", "POST", etc. 
+</P><P>PATH_INFO<BR>The extra path information, as given by the client. In other words, scripts can be accessed by their virtual pathname, followed by extra information at the end of this path. The extra information is sent as PATH_INFO. The server  decodes  this information  before it is passed to the CGI script. 
+</P><P>PATH_TRANSLATED<BR>The server provides a translated version of PATH_INFO, which completes a  virtual-to-physical mapping of the path as required. 
+</P><P>SCRIPT_NAME<BR>A virtual path to the script being executed for self-referencing URLs. 
+</P><P>QUERY_STRING<BR>The information which follows the "?" in the URL which referenced this script. This is the query information. It is not   decoded in any fashion. This variable is always   set when there is query information, regardless of command line decoding. 
+</P><P>REMOTE_HOST<BR>The hostname making the request. If the server does not have this information, it will set REMOTE_ADDR and leave this unset. 
+</P><P>REMOTE_ADDR<BR>The IP address of the remote host making the request. 
+</P><P>AUTH_TYPE<BR>If  the script is protected, this is the protocol-specific authentication method used to validate the user. 
+</P><P>REMOTE_USER<BR>If  the script is protected, this is the authenticated username. 
+</P><P>REMOTE_IDENT<BR>This variable is set to the remote user name retrieved from the server. Use of this variable should be limited to logging only. 
+</P><P>CONTENT_TYPE<BR>For queries having  attached information, such as HTTP POST and PUT, this identifies  the content type of the data. 
+</P><P>CONTENT_LENGTH<BR>The length of the said content as given by the client. 
+
+</P><P>HTTP_ACCEPT<BR>The MIME types accepted by the  client, as given by HTTP headers. Other protocols may need to receive this information from elsewhere. Each item in this list should be separated by commas as specified by  HTTP. <BR>Format: type/subtype, type/subtype. 
+</P><P>HTTP_USER_AGENT<BR>The browser being used by the  client  to send the request. General format: software/version library/version. 
+</P><H3>Standard CGI Implementation Data Structures</H3><P>
+
+ 
+
+The data structures provided  for GoForms  function  for standard CGI  implementation.</P></TD></TR></TABLE>
+
+</body>
+</html>

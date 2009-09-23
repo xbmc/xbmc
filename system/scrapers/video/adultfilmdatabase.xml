@@ -1,0 +1,61 @@
+<scraper framework="1.0" date="2009-05-22" name="adultfilm database" content="movies" thumb="AdultFilmdatabase.gif" language="en">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.adultfilmdatabase.com/video.cfm?videoid=\1&lt;url&gt;"  dest="3">
+			<expression noclean="1">adultfilmdatabase.com/video.cfm?videoid=([0-9]*)</expression>
+		</RegExp>	
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url spoof=&quot;http://www.adultfilmdatabase.com&quot; post=&quot;true&quot;&gt;http://www.adultfilmdatabase.com/lookup.cfm?SearchType=Video&amp;amp;Action=Lookup&amp;amp;Find=\1&lt;/url&gt;" dest="3">
+			<expression noclean="1"></expression>
+		</RegExp>	
+	</CreateSearchUrl>
+	<GetSearchResults dest="6">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="6">
+			<RegExp input="$$1" output="\1" dest="4">
+				<expression>&lt;h2&gt;([^&lt;]*)&lt;/h2&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;$$4&lt;/title&gt;&lt;url&gt;http://www.adultfilmdatabase.com/video.cfm?videoid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5">
+				<expression>/Front/([0-9]*)\.jpg</expression>
+			</RegExp>			
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.adultfilmdatabase.com/video.cfm?videoid=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;a HREF=&quot;/video\.cfm\?videoid=([0-9]*)&quot;&gt;&lt;U&gt;([^&lt;]*)&lt;/U&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.adultfilmdatabase.com\1&lt;/thumb&gt;" dest="5">
+				<expression>(/Graphics/Boxes/[0-9]*/Front/$$2\.jpg)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression trim="1" noclean="1">&lt;h2&gt;([^&lt;]*)&lt;/h2&gt;</expression>
+			</RegExp>					
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">&lt;a HREF=&quot;/actor\.cfm\?actorid=[0-9]*&quot;&gt;&lt;U&gt;([^&lt;]*)&lt;/U&gt;&lt;/a&gt;&lt;br&gt;</expression>
+			</RegExp>				
+			<RegExp input="$$1" output="&lt;runtime&gt;\1 min&lt;/runtime&gt;" dest="5+">
+				<expression trim="1">Length:&lt;/td&gt;&lt;td STYLE=&quot;font-size:11px;padding-left: 3px;&quot; WIDTH=&quot;100%&quot;&gt;([0-9]+)&lt;/td&gt;</expression>
+			</RegExp>			
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>Year:&lt;/td&gt;&lt;td STYLE=&quot;font-size:11px;padding-left: 3px;&quot; WIDTH=&quot;100%&quot;&gt;([0-9]+)&lt;/td&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;Adult&lt;/genre&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression trim="1">Genres:&lt;/td&gt;[^&lt;]*&lt;td STYLE=&quot;font-size:11px;padding-left: 3px;&quot; WIDTH=&quot;100%&quot;&gt;([^&lt;]*)&lt;/td&gt;</expression>
+				</RegExp>	
+				<expression repeat="yes" trim="1">([a-zA-Z ]+)</expression>
+			</RegExp>			
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>&lt;tr&gt;&lt;td STYLE=&quot;font-size:9pt;&quot; COLSPAN=&quot;2&quot;&gt;&lt;BR&gt;([^&lt;]*)&lt;/td&gt;&lt;/tr&gt;</expression>
+			</RegExp>				
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression>/director\.cfm\?directorid=281&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>				
+			<expression noclean="1"></expression>
+		</RegExp>			
+	</GetDetails>		
+</scraper>

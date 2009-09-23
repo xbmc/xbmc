@@ -1,0 +1,67 @@
+<html>
+
+<head>
+<title>libogg - function - ogg_sync_buffer</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>libogg documentation</p></td>
+<td align=right><p class=tiny>libogg release 1.0 - 20000615</p></td>
+</tr>
+</table>
+
+<h1>ogg_sync_buffer</h1>
+
+<p><i>declared in "ogg/ogg.h";</i></p>
+
+<p>This function is used to provide a properly-sized buffer for writing.
+<p>Buffer space which has already been returned is cleared, and the buffer is extended as necessary by the size plus some additional bytes.  Within the current implementation, an extra 4096 bytes are allocated, but applications should not rely on this additional buffer space.
+<p>The buffer exposed by this function is empty internal storage from the <a href="ogg_sync_state.html">ogg_sync_state</a> struct, beginning at the fill mark within the struct.
+<p>A pointer to this buffer is returned to be used by the calling application.
+
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+char *ogg_sync_buffer(ogg_sync_state *oy, long size);
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>oy</i></dt>
+<dd>Pointer to a previously declared <a href="ogg_sync_state.html">ogg_sync_state</a> struct.</dd>
+<dt><i>size</i></dt>
+<dd>Size of the desired buffer.  The actual size of the buffer returned will be this size plus some extra bytes (currently 4096).
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<li>
+Returns a pointer to the newly allocated buffer.</li>
+</blockquote>
+<p>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2000 xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@xiph.org">team@xiph.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>libogg documentation</p></td>
+<td align=right><p class=tiny>libogg release 1.0 - 20000615</p></td>
+</tr>
+</table>
+
+
+</body>
+
+</html>

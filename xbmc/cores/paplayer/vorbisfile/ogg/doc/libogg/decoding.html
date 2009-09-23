@@ -1,0 +1,100 @@
+<html>
+
+<head>
+<title>libogg - Decoding</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>libogg documentation</p></td>
+<td align=right><p class=tiny>libogg release 1.0 - 20000615</p></td>
+</tr>
+</table>
+
+<h1>Decoding</h1>
+<p>Libogg contains a set of functions used in the decoding process.
+<p>
+All the <b>libogg</b> specific functions are declared in "ogg/ogg.h".
+<p>
+<p>Decoding is based around the ogg synchronization layer.  The <a href="ogg_sync_state.html">ogg_sync_state</a> struct coordinates between incoming data and the decoder.  We read data into the synchronization layer, submit the data to the stream, and output raw packets to the decoder.
+<p>Decoding through the Ogg layer follows a specific logical sequence.  A read loop follows these logical steps:
+<ul>
+<li>Expose a buffer using <a href="ogg_sync_buffer.html">ogg_sync_buffer()</a>.
+<li>Read data into the buffer, using fread() or a similar function.
+<li>Call <a href="ogg_sync_wrote.html">ogg_sync_wrote()</a> to tell the synchronization layer how many bytes you wrote into the buffer.
+<li>Write out the data using <a href="ogg_sync_pageout.html">ogg_sync_pageout</a>.
+<li>Submit the completed page to the streaming layer with <a href="ogg_stream_pagein.html">ogg_stream_pagein</a>.
+<li>Output a packet of data to the codec-specific decoding layer using <a href="ogg_stream_packetout.html">ogg_stream_packetout</a>.
+</ul>
+<p>In practice, streams are more complex, and Ogg also must handle headers, incomplete or dropped pages, and other errors in input.
+<br><br>
+
+<table border=1 color=black width=50% cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td><b>function</b></td>
+	<td><b>purpose</b></td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_sync_init.html">ogg_sync_init</a></td>
+	<td>Initializes an Ogg bitstream.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_sync_clear.html">ogg_sync_clear</a></td>
+	<td>Clears the status information from the synchronization struct.<td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_sync_reset.html">ogg_sync_reset</a></td>
+	<td>Resets the synchronization status to initial values.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_sync_destroy.html">ogg_sync_destroy</a></td>
+	<td>Frees the synchronization struct.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_sync_buffer.html">ogg_sync_buffer</a></td>
+	<td>Exposes a buffer from the synchronization layer in order to read data.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_sync_wrote.html">ogg_sync_wrote</a></td>
+	<td>Tells the synchronization layer how many bytes were written into the buffer.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_sync_pageseek.html">ogg_sync_pageseek</a></td>
+	<td>Finds the borders of pages and resynchronizes the stream.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_sync_pageout.html">ogg_sync_pageout</a></td>
+	<td>Outputs a page from the synchronization layer.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_stream_pagein.html">ogg_stream_pagein</a></td>
+	<td>Submits a complete page to the stream layer.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_stream_packetout.html">ogg_stream_packetout</a></td>
+	<td>Outputs a packet to the codec-specific decoding engine.</td>
+</tr>
+<tr valign=top>
+<td><a href="ogg_stream_packetpeek.html">ogg_stream_packetpeek</a></td>
+	<td>Provides access to the next packet in the bitstream without
+advancing decoding.</td>
+</tr>
+</table>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2000 xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a><br><a href="mailto:team@xiph.org">team@xiph.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>libogg documentation</p></td>
+<td align=right><p class=tiny>libogg release 1.0 - 20000615</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

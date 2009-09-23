@@ -1,0 +1,119 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+	# TODO: What's the purpose of this line? As I see it, if 'xbmc' can't
+	# get a console session going, we're in trouble anyway. ceros
+	sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
+
+	# Add the 'xbmc' user
+	if ! getent passwd xbmc >/dev/null; then
+            adduser \
+                --gecos "XBMC Live User" \
+                --disabled-password \
+                xbmc >/dev/null
+	fi
+	# Add 'xbmc' user to the appropriate groups
+	# TODO: this probably isn't necessary anymore as PolicyKit is now being
+	# used
+	# For reading system logs (still not sure why xbmc needs this though)
+	if ! getent group adm | grep xbmc > /dev/null; then
+		adduser xbmc adm || true
+	fi
+	# For optical disc drive access
+	if ! getent group cdrom | grep xbmc > /dev/null; then
+		adduser xbmc cdrom || true
+	fi
+	# For floppy drive access
+	if ! getent group floppy | grep xbmc > /dev/null; then
+		adduser xbmc floppy || true
+	fi
+	# For audio device access
+	if ! getent group audio | grep xbmc > /dev/null; then
+		adduser xbmc audio || true
+	fi
+	# For video device access
+	if ! getent group video | grep xbmc > /dev/null; then
+		adduser xbmc video || true
+	fi
+	# To enable automatic notifications of new devices
+	if ! getent group plugdev | grep xbmc > /dev/null; then
+		adduser xbmc plugdev || true
+	fi
+	# For managing network connections via NetworkManager
+	if ! getent group netdev | grep xbmc > /dev/null; then
+		adduser xbmc netdev || true
+	fi
+	# To be able to hibernate/suspend
+	if ! getent group powerdev | grep xbmc > /dev/null; then
+		adduser xbmc powerdev || true
+	fi
+	# To be able to mount filesystems as normal user
+	if ! getent group fuse | grep xbmc > /dev/null; then
+		adduser xbmc fuse || true
+	fi
+
+	# Our set of PolicyKit actions
+
+	# This is a list of actions that the 'xbmc' user should be allowed to
+	# do. If we missed one, or we have one that's not necessary, please
+	# submit a bug report.
+	POLKIT_ACTIONS="org.freedesktop.hal.dockstation.undock
+		org.freedesktop.hal.wol.enabled
+		org.freedesktop.hal.wol.enable
+		org.freedesktop.hal.wol.supported
+		org.freedesktop.hal.leds.brightness
+		org.freedesktop.hal.device-access.audio-player
+		org.freedesktop.hal.device-access.camera
+		org.freedesktop.hal.device-access.cdrom
+		org.freedesktop.hal.device-access.dvb
+		org.freedesktop.hal.device-access.fingerprint-reader
+		org.freedesktop.hal.device-access.floppy
+		org.freedesktop.hal.device-access.ieee1394-avc
+		org.freedesktop.hal.device-access.ieee1394-iidc
+		org.freedesktop.hal.device-access.joystick
+		org.freedesktop.hal.device-access.mouse
+		org.freedesktop.hal.device-access.obex
+		org.freedesktop.hal.device-access.pda
+		org.freedesktop.hal.device-access.printer
+		org.freedesktop.hal.device-access.scanner
+		org.freedesktop.hal.device-access.sound
+		org.freedesktop.hal.device-access.video
+		org.freedesktop.hal.device-access.video4linux
+		org.freedesktop.hal.lock
+		org.freedesktop.hal.killswitch.bluetooth
+		org.freedesktop.hal.killswitch.wlan
+		org.freedesktop.hal.killswitch.wwan
+		org.freedesktop.hal.storage.mount-removable
+		org.freedesktop.hal.storage.eject
+		org.freedesktop.hal.storage.crypto-setup-removable
+		org.freedesktop.hal.power-management.shutdown
+		org.freedesktop.hal.power-management.reboot
+		org.freedesktop.hal.power-management.set-powersave
+		org.freedesktop.hal.power-management.suspend
+		org.freedesktop.hal.power-management.hibernate
+		org.freedesktop.hal.power-management.cpufreq
+		org.freedesktop.hal.power-management.lcd-panel
+		org.freedesktop.hal.power-management.light-sensor
+		org.freedesktop.hal.power-management.keyboard-backlight"
+
+	# Grant the 'xbmc' user each action from the list
+	for ACTION in $POLKIT_ACTIONS; do
+		polkit-auth --user xbmc --grant $ACTION || true
+	done
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+#DEBHELPER#
+
+exit 0

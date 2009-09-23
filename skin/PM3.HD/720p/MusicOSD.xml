@@ -1,0 +1,281 @@
+<window type="dialog" id="120">
+	<defaultcontrol>213</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>30</posx>
+		<posy>320</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+			<posx>80r</posx>
+			<posy>-320</posy>
+			<width>36</width>
+			<height>32</height>
+			<visible>system.getbool(lookandfeel.enablemouse)</visible>
+			<control type="image">
+				<description>Button background image</description>
+				<posx>-5</posx>
+				<posy>0</posy>
+				<width>42</width>
+				<height>32</height>
+				<texture border="3">black-back2.png</texture>
+			</control>
+			<control type="button">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>32</width>
+				<height>28</height>
+				<label>-</label>
+				<texturefocus>PlayerControls-FullScreenFO.png</texturefocus>
+				<texturenofocus>PlayerControls-FullScreenNF.png</texturenofocus>
+				<onleft>603</onleft>
+				<onright>600</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<onclick>Dialog.Close(MusicOSD,true)</onclick>
+				<onclick>FullScreen</onclick>
+			</control>
+		</control>
+		<control type="button" id="208">
+			<description>REC button</description>
+			<posx>10</posx>
+			<posy>40</posy>
+			<width>128</width>
+			<height>128</height>
+			<texturefocus>osd_button_rec.png</texturefocus>
+			<texturenofocus>osd_button_recNF.png</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>210</onleft>
+			<onright>500</onright>
+			<onup>500</onup>
+			<ondown>210</ondown>
+			<onclick>XBMC.PlayerControl(record)</onclick>
+			<visible>Player.CanRecord</visible>
+		</control>
+		<control type="button" id="209">
+			<description>REC button 2</description>
+			<posx>10</posx>
+			<posy>40</posy>
+			<width>128</width>
+			<height>128</height>
+			<texturefocus>-</texturefocus>
+			<texturenofocus>osd_button_rec2.png</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>211</onleft>
+			<onright>920</onright>
+			<onup>920</onup>
+			<ondown>211</ondown>
+			<onclick>XBMC.PlayerControl(record)</onclick>
+			<visible>Player.CanRecord + Player.Recording</visible>
+		</control>
+		<control type="image" id="1">
+			<description>Panel</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>379</height>
+			<width>373</width>
+			<texture>osd_panel_audio.png</texture>
+			<visible>yes</visible>
+		</control>
+		<control type="image">
+			<description>Lyrics Button</description>
+			<posx>138</posx>
+			<posy>15</posy>
+			<width>74</width>
+			<height>66</height>
+			<texture>osd_button_lyrics.png</texture>
+			<visible>Skin.HasSetting(LyricScript_Enable)</visible>
+		</control>
+		<control type="button" id="210">
+			<description>Skip Bwd</description>
+			<posx>32</posx>
+			<posy>158</posy>
+			<width>77</width>
+			<height>79</height>
+			<texturefocus>osd_button_skip_minusFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onclick>XBMC.PlayerControl(Previous)</onclick>
+			<label>-</label>
+			<font>-</font>
+			<onleft>215</onleft>
+			<onright>211</onright>
+			<onup>208</onup>
+			<ondown>919</ondown>
+		</control>
+		<control type="togglebutton" id="211">
+			<description>Rewind</description>
+			<posx>95</posx>
+			<posy>149</posy>
+			<width>71</width>
+			<height>79</height>
+			<texturefocus>osd_button_rewFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<usealttexture>Player.Rewinding</usealttexture>
+			<alttexturefocus>osd_button_rewFO.png</alttexturefocus>
+			<alttexturenofocus>osd_button_rewSELNF.png</alttexturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>210</onleft>
+			<onright>213</onright>
+			<onup>209</onup>
+			<ondown>921</ondown>
+			<onclick>XBMC.PlayerControl(Rewind)</onclick>
+		</control>
+		<control type="togglebutton" id="213">
+			<description>Play</description>
+			<posx>153</posx>
+			<posy>123</posy>
+			<width>100</width>
+			<height>98</height>
+			<texturefocus>osd_button_pauseFO.png</texturefocus>
+			<texturenofocus>osd_button_pauseNF.png</texturenofocus>
+			<usealttexture>Player.Paused | Player.Forwarding | Player.Rewinding</usealttexture>
+			<alttexturefocus>osd_button_playFO.png</alttexturefocus>
+			<alttexturenofocus>osd_button_playNF.png</alttexturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>211</onleft>
+			<onright>214</onright>
+			<onup>920</onup>
+			<ondown>921</ondown>
+			<onclick>XBMC.PlayerControl(Play)</onclick>
+		</control>
+		<control type="togglebutton" id="214">
+			<description>Fast Forward</description>
+			<posx>241</posx>
+			<posy>122</posy>
+			<width>64</width>
+			<height>75</height>
+			<texturefocus>osd_button_ffFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<usealttexture>Player.Forwarding</usealttexture>
+			<alttexturefocus>osd_button_ffFO.png</alttexturefocus>
+			<alttexturenofocus>osd_button_ffSELNF.png</alttexturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>213</onleft>
+			<onright>215</onright>
+			<onup>920</onup>
+			<ondown>921</ondown>
+			<onclick>XBMC.PlayerControl(Forward)</onclick>
+		</control>
+		<control type="button" id="215">
+			<description>Skip Fwd</description>
+			<posx>287</posx>
+			<posy>112</posy>
+			<width>71</width>
+			<height>72</height>
+			<texturefocus>osd_button_skip_plusFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onclick>XBMC.PlayerControl(Next)</onclick>
+			<label>-</label>
+			<font>-</font>
+			<onleft>214</onleft>
+			<onright>210</onright>
+			<onup>500</onup>
+			<ondown>919</ondown>
+		</control>
+		<control type="button" id="500">
+			<description>Popup Vis Select Button</description>
+			<posx>138</posx>
+			<posy>15</posy>
+			<width>74</width>
+			<height>66</height>
+			<texturefocus>osd_button_visFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<label>-</label>
+			<font>-</font>
+			<onleft>208</onleft>
+			<onright>215</onright>
+			<onup>919</onup>
+			<ondown>920</ondown>
+			<visible>!Skin.HasSetting(LyricScript_Enable)</visible>
+		</control>
+		<control type="button" id="500">
+			<description>Lyrics Button</description>
+			<posx>138</posx>
+			<posy>15</posy>
+			<width>74</width>
+			<height>66</height>
+			<texturefocus>osd_button_lyricsFO.png</texturefocus>
+			<texturenofocus>osd_button_lyrics.png</texturenofocus>
+			<onclick>XBMC.RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>
+			<label>-</label>
+			<font>-</font>
+			<onleft>208</onleft>
+			<onright>215</onright>
+			<onup>919</onup>
+			<ondown>920</ondown>
+			<visible>Skin.HasSetting(LyricScript_Enable)</visible>
+		</control>
+		<control type="togglebutton" id="920">
+			<description>Popup Vis Preset List</description>
+			<posx>147</posx>
+			<posy>71</posy>
+			<width>75</width>
+			<height>62</height>
+			<texturefocus>osd_button_presetsFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<usealttexture>Window.IsActive(122)</usealttexture>
+			<alttexturefocus>osd_button_presetsSELNF.png</alttexturefocus>
+			<alttexturenofocus>-</alttexturenofocus>
+			<onclick>XBMC.ActivateWindow(122)</onclick>
+			<label>-</label>
+			<font>-</font>
+			<onleft>211</onleft>
+			<onright>214</onright>
+			<onup>500</onup>
+			<ondown>213</ondown>
+		</control>
+		<control type="button" id="921">
+			<description>Stop</description>
+			<posx>180</posx>
+			<posy>214</posy>
+			<width>83</width>
+			<height>69</height>
+			<texturefocus>osd_button_stopFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<onclick>XBMC.PlayerControl(Stop)</onclick>
+			<label>-</label>
+			<font>-</font>
+			<onleft>211</onleft>
+			<onright>214</onright>
+			<onup>213</onup>
+			<ondown>919</ondown>
+		</control>
+		<control type="togglebutton" id="919">
+			<description>Popup Vis Settings</description>
+			<posx>195</posx>
+			<posy>268</posy>
+			<width>84</width>
+			<height>78</height>
+			<texturefocus>osd_button_vizsettingsFO.png</texturefocus>
+			<texturenofocus>-</texturenofocus>
+			<usealttexture>Window.IsActive(121)</usealttexture>
+			<alttexturefocus>osd_button_vizsettingsSELNF.png</alttexturefocus>
+			<alttexturenofocus>-</alttexturenofocus>
+			<onclick>XBMC.ActivateWindow(121)</onclick>
+			<label>-</label>
+			<font>-</font>
+			<onleft>210</onleft>
+			<onright>215</onright>
+			<onup>921</onup>
+			<ondown>500</ondown>
+		</control>
+		<control type="selectbutton" id="503">
+			<posx>460</posx>
+			<posy>15</posy>
+			<description>Visualisation Select Button</description>
+			<texturebg border="5">Barground2.png</texturebg>
+			<onleft>503</onleft>
+			<onright>503</onright>
+			<onup>500</onup>
+			<ondown>500</ondown>
+			<visible>!Skin.HasSetting(LyricScript_Enable)</visible>
+			<include>VisibleFadeEffect</include>
+		</control>
+	</controls>
+</window>

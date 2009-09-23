@@ -1,0 +1,109 @@
+<window id="2004">
+	<defaultcontrol>60</defaultcontrol>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>88</height>
+			<texture>background-apps.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>488</height>
+			<texture>background-bottom.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>-64</posx>
+			<posy>88</posy>
+			<width>64</width>
+			<height>510</height>
+			<texture>contentpanel_left.png</texture>
+			<animation effect="slide" time="200" start="204,0" end="0,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" start="0,0" end="204,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>0</posx>
+			<posy>88</posy>
+			<width>720</width>
+			<height>510</height>
+			<texture>contentpanel.png</texture>
+			<animation effect="slide" time="200" start="204,0" end="0,0" acceleration="-1" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="slide" time="200" start="0,0" end="204,0" acceleration="1.1" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+		<control type="label">
+			<description>XBMC label</description>
+			<posx>200</posx>
+			<posy>43</posy>
+			<align>right</align>
+			<label>9</label>
+			<font>special12</font>
+		</control>
+		<control type="label">
+			<description>description label</description>
+			<posx>207</posx>
+			<posy>43</posy>
+			<align>left</align>
+			<label>262</label>
+			<font>special13</font>
+		</control>
+		<control type="textbox" id="5">
+			<description>textarea</description>
+			<posx>30</posx>
+			<posy>100</posy>
+			<width>640</width>
+			<height>425</height>
+			<font>font12</font>
+			<spinposx>600</spinposx>
+			<spinposy>445</spinposy>
+			<pagecontrol>60</pagecontrol>
+			<onleft>60</onleft>
+			<onright>60</onright>
+			<onup>5</onup>
+			<ondown>5</ondown>
+			<animation effect="fade" start="0" end="100" delay="200" time="100" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" delay="0" time="100" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+		</control>
+		<control type="button">
+			<posx>680</posx>
+			<posy>100</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageUp(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="button">
+			<posx>680</posx>
+			<posy>500</posy>
+			<include>scrollbar_width</include>
+			<height>20</height>
+			<onclick>PageDown(60)</onclick>
+			<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+			<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+			<visible>Control.IsVisible(60)</visible>
+		</control>
+		<control type="scrollbar" id="60">
+			<posx>680</posx>
+			<posy>120</posy>
+			<include>scrollbar_width</include>
+			<height>380</height>
+			<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+			<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+			<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+			<textureslidernib>-</textureslidernib>
+			<textureslidernibfocus>-</textureslidernibfocus>
+			<onleft>60</onleft>
+			<onright>60</onright>
+			<showonepage>true</showonepage>
+			<orientation>vertical</orientation>
+		</control>
+	</controls>
+</window>

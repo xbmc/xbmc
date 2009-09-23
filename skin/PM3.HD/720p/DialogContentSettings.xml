@@ -1,0 +1,236 @@
+<window id="132">
+	<defaultcontrol>3</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>240</posx>
+		<posy>55</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>800</width>
+			<height>610</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>800</width>
+			<height>610</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>heading label</description>
+			<posx>40</posx>
+			<posy>40</posy>
+			<width>720</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font18</font>
+			<label>20333</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>78</posy>
+			<width>720</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="spincontrolex" id="3">
+			<description>Content Picker</description>
+			<posx>40</posx>
+			<posy>85</posy>
+			<width>720</width>
+			<height>35</height>
+			<texturefocus border="5">button-focus.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<font>font12</font>
+			<label>20344</label>
+			<aligny>center</aligny>
+			<reverse>yes</reverse>
+			<onup>28</onup>
+			<ondown>4</ondown>
+			<onleft>3</onleft>
+			<onright>3</onright>
+		</control>
+		<control type="image">
+			<description>scraper image</description>
+			<posx>450</posx>
+			<posy>125</posy>
+			<width>310</width>
+			<height>200</height>
+			<aspectratio>keep</aspectratio>
+			<info>ListItem.Icon</info>
+		</control>
+		<control type="list" id="4">
+			<posx>40</posx>
+			<posy>125</posy>
+			<width>400</width>
+			<height>200</height>
+			<onup>3</onup>
+			<onleft>5</onleft>
+			<onright>5</onright>
+			<ondown>5</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>400</width>
+					<height>35</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>4</posy>
+					<width>35</width>
+					<height>27</height>
+					<texture>$INFO[Listitem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>50</posx>
+					<posy>0</posy>
+					<width>340</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>grey2</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>400</width>
+					<height>35</height>
+					<visible>!Control.HasFocus(4)</visible>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>400</width>
+					<height>35</height>
+					<visible>Control.HasFocus(4)</visible>
+					<texture border="5">button-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>4</posy>
+					<width>35</width>
+					<height>27</height>
+					<texture>$INFO[Listitem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>50</posx>
+					<posy>0</posy>
+					<width>340</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>333</posy>
+			<width>720</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="grouplist" id="5">
+			<description>control area</description>
+			<posx>40</posx>
+			<posy>345</posy>
+			<width>720</width>
+			<height>160</height>
+			<itemgap>5</itemgap>
+			<onup>4</onup>
+			<ondown>28</ondown>
+			<onleft>5</onleft>
+			<onright>5</onright>
+		</control>
+		<control type="button" id="7">
+			<description>Default Button</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>35</height>
+			<font>font12</font>
+			<texturefocus border="5">button-focus.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+		</control>
+		<control type="radiobutton" id="8">
+			<description>Default RadioButton</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<height>35</height>
+			<font>font12</font>
+			<texturefocus border="5">button-focus.png</texturefocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+		</control>
+		<control type="group" id="9001">
+			<control type="button" id="28">
+				<description>OK Button</description>
+				<posx>300</posx>
+				<posy>525</posy>
+				<width>200</width>
+				<height>35</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
+				<label>186</label>
+				<onleft>6</onleft>
+				<onright>29</onright>
+				<onup>30</onup>
+				<ondown>3</ondown>
+			</control>
+			<control type="button" id="29">
+				<description>Cancel Button</description>
+				<posx>510</posx>
+				<posy>525</posy>
+				<width>200</width>
+				<height>35</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
+				<label>222</label>
+				<onleft>28</onleft>
+				<onright>6</onright>
+				<onup>30</onup>
+				<ondown>3</ondown>
+			</control>
+			<control type="button" id="6">
+				<description>Settings Button</description>
+				<posx>90</posx>
+				<posy>525</posy>
+				<width>200</width>
+				<height>35</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturenofocus border="3">button-nofocus.png</texturenofocus>
+				<texturefocus border="3">button-focus2.png</texturefocus>
+				<label>5</label>
+				<onleft>29</onleft>
+				<onright>28</onright>
+				<onup>30</onup>
+				<ondown>3</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,209 @@
+<window id="115">
+	<defaultcontrol>1</defaultcontrol>
+	<include>dialogeffect</include>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | Window.IsActive(VideoOSD) | Window.IsActive(MusicOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+	<controls>
+		<!-- playstate images -->
+		<control type="image" id="0">
+			<description>pause image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Paused</visible>
+			<texture>video-pause.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>2x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding2x</visible>
+			<texture>video-2x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>4x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding4x</visible>
+			<texture>video-4x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>8x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding8x</visible>
+			<texture>video-8x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>16x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding16x</visible>
+			<texture>video-16x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>32x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Forwarding32x</visible>
+			<texture>video-32x.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-2x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding2x</visible>
+			<texture>video-2xr.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-4x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding4x</visible>
+			<texture>video-4xr.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-8x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding8x</visible>
+			<texture>video-8xr.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-16x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding16x</visible>
+			<texture>video-16xr.png</texture>
+		</control>
+		<control type="image" id="0">
+			<description>-32x image</description>
+			<align>right</align>
+			<posx>410</posx>
+			<posy>15</posy>
+			<height>60</height>
+			<width>115</width>
+			<visible>Player.Rewinding32x</visible>
+			<texture>video-32xr.png</texture>
+		</control>
+		<!-- progressbar dialog -->
+		<control type="image" id="23">
+			<description>Popup Seek Dialog Background</description>
+			<posx>475</posx>
+			<posy>22</posy>
+			<width>185</width>
+			<height>75</height>
+			<texture border="16,13,10,19">voulume-panel-bg.png</texture>
+		</control>
+		<control type="label" id="22">
+			<description>Elapsed Time Label</description>
+			<posx>563</posx>
+			<posy>40</posy>
+			<font>font10</font>
+			<align>right</align>
+			<info>Player.Time</info>
+			<width>100</width>
+			<height>16</height>
+			<visible>!Player.Seeking</visible>
+		</control>
+		<control type="label" id="22">
+			<description>Seek Time Label</description>
+			<posx>563</posx>
+			<posy>40</posy>
+			<font>font10</font>
+			<align>right</align>
+			<info>Player.SeekTime</info>
+			<width>100</width>
+			<height>16</height>
+			<visible>Player.Seeking</visible>
+		</control>
+		<control type="label" id="0">
+			<description>Duration Label</description>
+			<posx>568</posx>
+			<posy>40</posy>
+			<label>$INFO[Player.Duration,/ ]</label>
+			<font>font10</font>
+			<align>left</align>
+			<width>100</width>
+			<height>16</height>
+		</control>
+		<control type="progress" id="23">
+			<description>Progressbar</description>
+			<posx>501</posx>
+			<posy>63</posy>
+			<width>138</width>
+			<height>5</height>
+			<info>Player.Progress</info>
+			<texturebg>progress_back.png</texturebg>
+			<lefttexture>progress_left.png</lefttexture>
+			<midtexture>progress_mid.png</midtexture>
+			<righttexture>progress_right.png</righttexture>
+			<overlaytexture>-</overlaytexture>
+			<visible>true</visible>
+		</control>
+		<control type="slider" id="401">
+			<description>Seek Slider</description>
+			<posx>501</posx>
+			<posy>62</posy>
+			<width>138</width>
+			<height>6</height>
+			<texturesliderbar>seekslider.png</texturesliderbar>
+			<textureslidernib>slider_nibFO.png</textureslidernib>
+			<textureslidernibfocus>slider_nibFO.png</textureslidernibfocus>
+			<visible>true</visible>
+			<onup>1</onup>
+			<ondown>1</ondown>
+			<onleft>1</onleft>
+			<onright>1</onright>
+		</control>
+		<control type="image" id="1">
+			<description>media info background image</description>
+			<posx>60</posx>
+			<posy>40</posy>
+			<width>160</width>
+			<height>40</height>
+			<texture>osd_menu_bg.png</texture>
+			<visible>player.chaptercount</visible>
+		</control>
+		<control type="label" id="1">
+			<description>Chapter Pos No</description>
+			<width>150</width>
+			<posx>65</posx>
+			<posy>60</posy>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>$INFO[player.chapter,$LOCALIZE[21396] ]$INFO[player.chaptercount, / ]</label>
+			<visible>player.chaptercount</visible>
+			<align>right</align>
+			<font>font13</font>
+		</control>
+	</controls>
+</window>

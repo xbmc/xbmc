@@ -1,0 +1,11 @@
+prefix=c:/progra~1/FreeType
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: FreeType 2
+Description: A free, high-quality, and portable font engine.
+Version: 9.16.3
+Requires:
+Libs: -L${libdir} -lfreetype -lz 
+Cflags: -I${includedir}/freetype2 -I${includedir}

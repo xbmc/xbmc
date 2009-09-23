@@ -1,0 +1,23 @@
+This is free software; see the source for copying conditions.
+There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.
+__________________________________
+ISO-9660 Information
+/:
+  d [LSN     28]      2048 Oct 22 2004 22:44:59  .
+  d [LSN     28]      2048 Oct 22 2004 22:44:59  ..
+  d [LSN     29]      2048 Oct 22 2004 22:44:59  libcdio
+
+/libcdio/:
+  d [LSN     29]      2048 Oct 22 2004 22:44:59  .
+  d [LSN     28]      2048 Oct 22 2004 22:44:59  ..
+  - [LSN     34]     17992 Mar 12 2004 07:18:03  copying
+  - [LSN     43]      2156 Jun 26 2004 10:01:09  readme
+  - [LSN     45]      2849 Aug 12 2004 09:22:23  readme.libcdio
+  d [LSN     30]      2048 Oct 22 2004 22:44:59  test
+
+/libcdio/test/:
+  d [LSN     30]      2048 Oct 22 2004 22:44:59  .
+  d [LSN     29]      2048 Oct 22 2004 22:44:59  ..
+  - [LSN     47]        74 Jul 25 2004 09:52:32  isofs_m1.cue
+

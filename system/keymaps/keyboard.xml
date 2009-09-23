@@ -1,0 +1,497 @@
+<!-- This file contains the mapping of keys (gamepad, remote, and keyboard) to actions within XBMC -->
+<!-- The <global> section is a fall through - they will only be used if the button is not          -->
+<!-- used in the current window's section.  Note that there is only handling                       -->
+<!-- for a single action per button at this stage.                                                 -->
+<!-- For joystick/gamepad configuration under linux/win32, see below as it differs from xbox       -->
+<!-- gamepads.                                                                                     -->
+
+<!-- The format is:                      -->
+<!--    <device>                         -->
+<!--      <button>action</button>        -->
+<!--    </device>                        -->
+
+<!-- To map keys from other remotes using the RCA protocol, you may add <universalremote> blocks -->
+<!-- In this case, the tags used are <obc#> where # is the original button code (OBC) of the key -->
+<!-- You set it up by adding a <universalremote> block to the window or <global> section:       -->
+<!--    <universalremote>             -->
+<!--       <obc45>Stop</obc45>         -->
+<!--    </universalremote>            -->
+<!-- To find out the OBC's of your remote, try enabling the <displayremotecodes> tag in AdvancedSettings.xml -->
+
+<!-- Note that the action can be a built-in function.                 -->
+<!--  eg <B>XBMC.ActivateWindow(MyMusic)</B>                         -->
+<!-- would automatically go to My Music on the press of the B button. -->
+
+<!-- Joysticks / Gamepads:                                                                    -->
+<!--   See the sample PS3 controller configuration below for the format.                      -->
+<!--                                                                                          -->
+<!--  Joystick Name:                                                                          -->
+<!--   Do 'cat /proc/bus/input/devices' or see your xbmc log file  to find the names of       -->
+<!--   detected joysticks. The name used in the configuration should match the detected name. -->
+<!--                                                                                          -->
+<!--  Button Ids:                                                                             -->
+<!--   'id' is the button ID used by SDL. Joystick button ids of connected joysticks appear   -->
+<!--   in xbmc.log when they are pressed. Use your log to map custom buttons to actions.      -->
+<!--                                                                                          -->
+<!--  Axis Ids / Analog Controls                                                              -->
+<!--   Coming soon.                                                                           -->
+<keymap>
+  <global>
+    <keyboard>
+      <p>Play</p>
+      <q>Queue</q>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <left>Left</left>
+      <right>Right</right>
+      <up>Up</up>
+      <down>Down</down>
+      <pageup>PageUp</pageup>
+      <pagedown>PageDown</pagedown>
+      <return>Select</return>
+      <enter>Select</enter>
+      <backspace>ParentDir</backspace>
+      <m>ActivateWindow(PlayerControls)</m>
+      <s>ActivateWindow(shutdownmenu)</s>
+      <escape>PreviousMenu</escape>
+      <i>Info</i>
+      <menu>ContextMenu</menu>
+      <c>ContextMenu</c>
+      <space>Pause</space>
+      <x>Stop</x>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <tab>FullScreen</tab>
+      <printscreen>Screenshot</printscreen>
+      <minus>VolumeDown</minus>
+      <plus>VolumeUp</plus>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
+      <backslash>ToggleFullScreen</backslash>
+      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
+      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <browser_refresh/>
+      <browser_search/>
+      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
+      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
+      <play_pause>Pause</play_pause>
+      <stop>Stop</stop>
+      <volume_up>VolumeUp</volume_up>
+      <volume_mute>Mute</volume_mute>
+      <volume_down>VolumeDown</volume_down>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <launch_mail/>
+      <key id='61620'/>      <!-- same as above, launch_mail, but using button code (based on vkey id) -->
+      <home>FirstPage</home>
+      <end>LastPage</end>
+      <key id='65446'>ParentDir</key>
+      <key id='65459'>Play</key>
+    </keyboard>
+  </global>
+  <Home>
+    <keyboard>
+      <i>info</i>
+      <end>XBMC.ShutDown()</end>
+    </keyboard>
+  </Home>
+  <MyFiles>
+    <keyboard>
+      <space>Highlight</space>
+      <delete>Delete</delete>
+      <m>Move</m>
+      <r>Rename</r>
+    </keyboard>
+  </MyFiles>
+  <MyMusicPlaylist>
+    <keyboard>
+      <space>Playlist</space>      <!-- Close playlist -->
+      <delete>Delete</delete>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
+      <backspace>Playlist</backspace>      <!-- Close playlist -->
+    </keyboard>
+  </MyMusicPlaylist>
+  <MyMusicPlaylistEditor>
+    <keyboard>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
+      <delete>Delete</delete>
+    </keyboard>
+  </MyMusicPlaylistEditor>
+  <MyMusicFiles>
+    <keyboard>
+      <space>Playlist</space>
+      <q>Queue</q>
+    </keyboard>
+  </MyMusicFiles>
+  <MyMusicLibrary>
+    <keyboard>
+      <space>Playlist</space>
+      <q>Queue</q>
+    </keyboard>
+  </MyMusicLibrary>
+  <FullscreenVideo>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>StepForward</period>
+      <comma>StepBack</comma>
+      <backspace>Fullscreen</backspace>
+      <quote>SmallStepBack</quote>
+      <opensquarebracket>BigStepForward</opensquarebracket>
+      <closesquarebracket>BigStepBack</closesquarebracket>
+      <return>OSD</return>
+      <enter>OSD</enter>
+      <m>OSD</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
+      <z>AspectRatio</z>
+      <t>ShowSubtitles</t>
+      <l>NextSubtitle</l>
+      <left>StepBack</left>
+      <right>StepForward</right>
+      <up>BigStepForward</up>
+      <down>BigStepBack</down>
+      <a>AudioDelay</a>
+      <escape>Fullscreen</escape>
+    </keyboard>
+  </FullscreenVideo>
+  <FullscreenInfo>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>StepForward</period>
+      <backspace>Close</backspace>
+      <o>CodecInfo</o>
+      <i>Close</i>
+      <m>OSD</m>
+    </keyboard>
+  </FullscreenInfo>
+  <PlayerControls>
+    <keyboard>
+      <escape>Close</escape>
+      <m>close</m>
+    </keyboard>
+  </PlayerControls>
+  <Visualisation>
+    <keyboard>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <return>ActivateWindow(MusicOSD)</return>
+      <enter>ActivateWindow(MusicOSD)</enter>
+      <m>ActivateWindow(MusicOSD)</m>
+      <i>Info</i>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>ActivateWindow(VisualisationSettings)</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+      <left>SkipPrevious</left>
+      <right>SkipNext</right>
+      <up>IncreaseRating</up>
+      <down>DecreaseRating</down>      <!--<back>NextPreset</back>!-->
+      <o>CodecInfo</o>
+      <l>LockPreset</l>
+      <escape>FullScreen</escape>
+    </keyboard>
+  </Visualisation>
+  <MusicOSD>
+    <keyboard>
+      <escape>Close</escape>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>ActivateWindow(VisualisationSettings)</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+    </keyboard>
+  </MusicOSD>
+  <VisualisationSettings>
+    <keyboard>
+      <escape>Close</escape>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
+      <p>ActivateWindow(VisualisationPresetList)</p>
+      <v>Close</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+    </keyboard>
+  </VisualisationSettings>
+  <VisualisationPresetList>
+    <keyboard>
+      <escape>Close</escape>
+      <f>FastForward</f>
+      <r>Rewind</r>
+      <period>SkipNext</period>
+      <comma>SkipPrevious</comma>
+      <m>Close</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
+      <p>Close</p>
+      <v>Close</v>
+      <n>ActivateWindow(MusicPlaylist)</n>
+    </keyboard>
+  </VisualisationPresetList>
+  <SlideShow>
+    <keyboard>
+      <zero>ZoomNormal</zero>
+      <one>ZoomLevel1</one>
+      <two>ZoomLevel2</two>
+      <three>ZoomLevel3</three>
+      <four>ZoomLevel4</four>
+      <five>ZoomLevel5</five>
+      <six>ZoomLevel6</six>
+      <seven>ZoomLevel7</seven>
+      <eight>ZoomLevel8</eight>
+      <nine>ZoomLevel9</nine>
+      <i>Info</i>
+      <o>CodecInfo</o>
+      <period>NextPicture</period>
+      <comma>PreviousPicture</comma>
+      <plus>ZoomIn</plus>
+      <minus>ZoomOut</minus>
+      <r>Rotate</r>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </SlideShow>
+  <ScreenCalibration>
+    <keyboard>
+      <return>NextCalibration</return>
+      <enter>NextCalibration</enter>
+      <d>ResetCalibration</d>
+      <r>NextResolution</r>
+    </keyboard>
+  </ScreenCalibration>
+  <GUICalibration>
+    <keyboard>
+      <return>NextCalibration</return>
+      <enter>NextCalibration</enter>
+      <d>ResetCalibration</d>
+    </keyboard>
+  </GUICalibration>
+  <SelectDialog>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </SelectDialog>
+  <VideoOSD>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+      <m>Close</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
+    </keyboard>
+  </VideoOSD>
+  <VideoMenu>
+    <keyboard>
+      <opensquarebracket>BigStepForward</opensquarebracket>
+      <closesquarebracket>BigStepBack</closesquarebracket>
+      <m>OSD</m>
+      <i>Info</i>
+      <o>CodecInfo</o>
+      <z>AspectRatio</z>
+      <t>ShowSubtitles</t>
+      <l>NextSubtitle</l>
+      <a>AudioDelay</a>
+      <escape>Fullscreen</escape>
+      <return>Select</return>
+      <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </VideoMenu>
+  <OSDVideoSettings>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+      <i>Info</i>
+      <o>CodecInfo</o>
+    </keyboard>
+  </OSDVideoSettings>
+  <OSDAudioSettings>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+      <i>Info</i>
+      <o>CodecInfo</o>
+    </keyboard>
+  </OSDAudioSettings>
+  <VideoBookmarks>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </VideoBookmarks>
+  <MyVideoLibrary>
+    <keyboard>
+      <delete>Delete</delete>
+      <space>Playlist</space>
+      <w>ToggleWatched</w>
+    </keyboard>
+  </MyVideoLibrary>
+  <MyVideoFiles>
+    <keyboard>
+      <space>Playlist</space>
+      <q>Queue</q>
+    </keyboard>
+  </MyVideoFiles>
+  <MyVideoPlaylist>
+    <keyboard>
+      <backspace>Playlist</backspace>      <!-- Close playlist -->
+      <space>Playlist</space>      <!-- Close playlist -->
+      <delete>Delete</delete>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
+    </keyboard>
+  </MyVideoPlaylist>
+  <ContextMenu>
+    <keyboard>
+      <c>Close</c>
+      <menu>Close</menu>
+      <backspace>Close</backspace>
+    </keyboard>
+  </ContextMenu>
+  <FileStackingDialog>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </FileStackingDialog>
+  <Scripts>
+    <keyboard>
+      <i>XBMC.ActivateWindow(ScriptsDebugInfo)</i>
+    </keyboard>
+  </Scripts>
+  <ScriptsDebugInfo>
+    <keyboard>
+      <i>Info</i>      <!-- clears debug python info -->
+    </keyboard>
+  </ScriptsDebugInfo>
+  <Weather>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+      <key id='65446'>PreviousMenu</key>
+    </keyboard>
+  </Weather>
+  <Settings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </Settings>
+  <MyPicturesSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </MyPicturesSettings>
+  <MyProgramsSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </MyProgramsSettings>
+  <MyWeatherSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </MyWeatherSettings>
+  <MyMusicSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </MyMusicSettings>
+  <SystemSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </SystemSettings>
+  <MyVideosSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </MyVideosSettings>
+  <NetworkSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </NetworkSettings>
+  <AppearanceSettings>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </AppearanceSettings>
+  <Profiles>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </Profiles>
+  <systeminfo>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </systeminfo>
+  <shutdownmenu>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </shutdownmenu>
+  <submenu>
+    <keyboard>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </submenu>
+  <MusicInformation>
+    <keyboard>
+      <backspace>Close</backspace>
+      <key id='65446'>Close</key>
+    </keyboard>
+  </MusicInformation>
+  <MovieInformation>
+    <keyboard>
+      <backspace>Close</backspace>
+      <key id='65446'>Close</key>
+    </keyboard>
+  </MovieInformation>
+  <LockSettings>
+    <keyboard>
+      <escape>Close</escape>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </LockSettings>
+  <ProfileSettings>
+    <keyboard>
+      <escape>Close</escape>
+      <backspace>PreviousMenu</backspace>
+    </keyboard>
+  </ProfileSettings>
+  <PictureInfo>
+    <keyboard>
+      <period>NextPicture</period>
+      <comma>PreviousPicture</comma>
+      <i>Close</i>
+      <o>Close</o>
+      <backspace>Close</backspace>
+      <space>Pause</space>
+    </keyboard>
+  </PictureInfo>
+  <Favourites>
+    <keyboard>
+      <backspace>Close</backspace>
+    </keyboard>
+  </Favourites>
+</keymap>

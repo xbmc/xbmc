@@ -1,0 +1,44 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {goFullScreen = id; setFrameRate = id; setHighQuality = id; }; 
+            CLASS = AppController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                FPSCounter = NSTextField; 
+                GLView = MainOpenGLView; 
+                HQButton = NSButton; 
+                PrefWin = NSWindow; 
+                QEWarning = NSTextField; 
+                TabView = NSTabView; 
+                myGoom = Goom; 
+            }; 
+            SUPERCLASS = NSResponder; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = Goom; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                clientStorage = id; 
+                frameRate = id; 
+                rectTextures = id; 
+                setFullscreen = id; 
+                textureHint = id; 
+                textureRange = id; 
+            }; 
+            CLASS = MainOpenGLView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {StartingView = NSView; myGoom = Goom; sizeField = NSTextField; }; 
+            SUPERCLASS = NSOpenGLView; 
+        }, 
+        {CLASS = MyApplication; LANGUAGE = ObjC; SUPERCLASS = NSApplication; }, 
+        {
+            ACTIONS = {changeAudioDevice = id; changeAudioVolume = id; }; 
+            CLASS = SoundSampler; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {ODeviceList = NSPopUpButton; OSoundVolume = NSSlider; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

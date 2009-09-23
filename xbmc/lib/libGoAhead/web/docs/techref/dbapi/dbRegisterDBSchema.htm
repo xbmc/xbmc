@@ -1,0 +1,30 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>dbRegisterDBSchema -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">dbRegisterDBSchema</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B></H2><P>	Add a schema to the module-internal schema database.</P><H2><B>Prototype</B></H2><PRE> #include &quot;emfdb.h&quot;
+
+ int dbRegisterDBSchema(char_t * tablename, schemaTable_t * sTable);</PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="63%" BORDER="0"><TR><TD WIDTH="16%">tablename</TD><TD WIDTH="84%">name of the table to add to the database</TD></TR><TR><TD WIDTH="16%">sTable</TD><TD WIDTH="84%">schema for the table being added</TD></TR></TABLE><H2><B>Description</B></H2><P>	This function creates an empty table in the web server database module.  Tables are defined by means of   the following schema structure:</P><PRE>
+typedef struct schemaTable_s {
+	 int	 nColumns;
+	 char_t	 **columnNames;
+	 int	 *columnTypes;
+	 int	 nRows;
+	 int	 **rows;
+} schemaTable_t;</PRE><P>	nColumns -	the number of columns in the table<BR>	columnName -	a list of strings defining the column names<BR>	columnTypes -	a list of integers defining the column type (can be T_STRING or T_INT)<BR>	nRows -		indicates the number of rows in the table.  Initialized to 0.<BR>	rows -		a list of pointers to a number (nColumns) of data items</P><P>This function does NOT exist in the EMF database module.</P><H2><B>Return Value</B></H2><P>	dbRegisterDBSchema returns 0 if successful, or -1 on error.</P><H2><B>Example</B></H2><PRE>schemaTable_t	stable;
+sTable.nColumns = 3;
+sTable.columnNames = {T(&quot;USERID&quot;), T(&quot;PASSWORD&quot;), T(&quot;GROUP&quot;)};
+sTable.columnTypes = {T_STRING, T_STRING, T_INT};
+/* The remaining elements of the schema table are not used */
+nCheck = dbRegisterSchema(T(&quot;USERS&quot;), &amp;sTable);
+	</PRE><H2><B>See Also</B></H2><P>	<A HREF="dbOpen.htm">dbOpen()</A>, <A HREF="dbClose.htm">dbClose</A>(), <A HREF="dbLoad.htm">dbLoad</A>(), <A HREF="dbSave.htm">dbSave</A>()</P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></td></tr></table>
+</body>
+</html>

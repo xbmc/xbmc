@@ -1,0 +1,65 @@
+#
+# $Id: makefile.dj,v 1.11 2007-02-27 15:44:25 giva Exp $
+#
+#  Adapted for djgpp2 / Watt-32 / DOS by
+#  Gisle Vanem <giva@bgnett.no>
+#
+
+DEPEND_PREREQ = config.h hugehelp.c
+
+top_srcdir = ..
+TOPDIR = ..
+
+include ../packages/DOS/common.dj
+include Makefile.inc
+
+CSOURCES = $(CURL_SOURCES)
+
+ifeq ($(USE_SSL),1)
+  EX_LIBS += $(OPENSSL_ROOT)/lib/libssl.a $(OPENSSL_ROOT)/lib/libcrypt.a
+endif
+
+ifeq ($(USE_ARES),1)
+  EX_LIBS += $(ARES_ROOT)/libcares.a
+endif
+
+ifeq ($(USE_ZLIB),1)
+  EX_LIBS += $(ZLIB_ROOT)/libz.a
+  CFLAGS  += -DUSE_MANUAL
+endif
+
+ifeq ($(USE_IDNA),1)
+  EX_LIBS += $(LIBIDN_ROOT)/lib/dj_obj/libidn.a -liconv
+endif
+
+EX_LIBS += $(WATT32_ROOT)/lib/libwatt.a
+
+CFLAGS += -DUSE_ENVIRONMENT
+
+PROGRAM  = curl.exe
+OBJECTS += $(addprefix $(OBJ_DIR)/, $(CSOURCES:.c=.o))
+
+all: $(OBJ_DIR) config.h $(PROGRAM)
+	@echo Welcome to cURL
+
+$(PROGRAM): $(OBJECTS) ../lib/libcurl.a
+	$(CC) -o $@ $^ $(LDFLAGS) $(EX_LIBS)
+
+config.h:
+	@echo '#include "../lib/config.dos"' > $@
+
+#
+# groff 1.18+ requires "-P -c"
+#
+hugehelp.c: ../docs/MANUAL ../docs/curl.1 mkhelp.pl
+	groff -Tascii -man ../docs/curl.1 | \
+	perl -w mkhelp.pl ../docs/MANUAL > $@
+
+clean:
+	- rm -f $(OBJECTS) config.h
+
+realclean vclean: clean
+	- rm -f $(PROGRAM) hugehelp.c depend.dj
+
+-include depend.dj
+

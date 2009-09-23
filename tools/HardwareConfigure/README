@@ -1,0 +1,12 @@
+The HardwareConfigure is meant to look up known LIRC devices and copy the needed configure files for it. It will need root privelieges and it is only meant to be run at startup, no hotplugging.
+
+to compile it:
+./build.sh
+
+to run it:
+./HardwareConfigure PathToLIRC
+PathToLIRC in ubuntu is /etc/lirc/
+
+How to expand it:
+Add the usb.vendor_id and usb.product_id tag in AvailableRemotes along with a FriendlyName, FriendlyName udi (ie mceusb2 would be: mceusb2 mceusb2 1137 2069), these can be found in ie gnome-device-manager.
+Add friendlyname.hardware.conf and friendlyname.lircd.conf in the folder of HardwareConfigure and it will copy it if it finds the Hardware. also it's optional to add a friendlyname.sh that will be run at the time of configuration.

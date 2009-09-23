@@ -1,0 +1,230 @@
+<window id="126">
+	<defaultcontrol always="true">450</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="1">
+			<description>background image</description>
+			<posx>25</posx>
+			<posy>35</posy>
+			<width>670</width>
+			<height>535</height>
+			<texture>dialog-panel2.png</texture>
+		</control>
+		<control type="label" id="411">
+			<description>heading label</description>
+			<posx>55</posx>
+			<posy>50</posy>
+			<width>600</width>
+			<align>left</align>
+			<font>special13</font>
+			<label>1023</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="label" id="412">
+			<description>path label control</description>
+			<posx>55</posx>
+			<posy>80</posy>
+			<width>600</width>
+			<align>left</align>
+			<font>font12</font>
+			<haspath>true</haspath>
+			<scroll>true</scroll>
+		</control>
+		<control type="group">
+			<posx>660</posx>
+			<posy>105</posy>
+			<control type="button">
+				<posx>0</posx>
+				<posy>0</posy>
+				<include>scrollbar_width</include>
+				<height>20</height>
+				<colordiffuse>99FFFFFF</colordiffuse>
+				<onclick>PageUp(60)</onclick>
+				<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+				<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+				<visible>Control.IsVisible(60)</visible>
+			</control>
+			<control type="button">
+				<posx>0</posx>
+				<posy>397</posy>
+				<include>scrollbar_width</include>
+				<height>20</height>
+				<colordiffuse>99FFFFFF</colordiffuse>
+				<onclick>PageDown(60)</onclick>
+				<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+				<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+				<visible>Control.IsVisible(60)</visible>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>0</posx>
+				<posy>20</posy>
+				<include>scrollbar_width</include>
+				<height>377</height>
+				<colordiffuse>99FFFFFF</colordiffuse>
+				<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+				<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>-</textureslidernib>
+				<textureslidernibfocus>-</textureslidernibfocus>
+				<onleft>450</onleft>
+				<onright>9000</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+		<control type="list" id="450">
+			<posx>265</posx>
+			<posy>105</posy>
+			<width>390</width>
+			<height>417</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>450</onup>
+			<ondown>450</ondown>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="32">
+				<control type="image">
+					<width>390</width>
+					<height>30</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<texture>input-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>4</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>0</posy>
+					<width>355</width>
+					<height>32</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+			</itemlayout>
+			<focusedlayout height="32">
+				<control type="image">
+					<width>390</width>
+					<height>30</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>!Control.HasFocus(450)</visible>
+					<texture>input-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<width>390</width>
+					<height>30</height>
+					<posx>0</posx>
+					<posy>0</posy>
+					<visible>Control.HasFocus(450)</visible>
+					<texture>input-focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>5</posx>
+					<posy>4</posy>
+					<width>22</width>
+					<height>22</height>
+					<info>ListItem.Icon</info>
+				</control>
+				<control type="label">
+					<posx>30</posx>
+					<posy>0</posy>
+					<width>355</width>
+					<height>32</height>
+					<font>font13</font>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<info>ListItem.Label</info>
+					<visible>!Container.Sort(SongRating)</visible>
+				</control>
+			</focusedlayout>
+		</control>
+		<include>FileBrowser_ThumbView</include>
+		<control type="image">
+			<posx>55</posx>
+			<posy>105</posy>
+			<height>310</height>
+			<width>200</width>
+			<texture border="10">keyboard-btn-backspace.png</texture>
+		</control>
+		<control type="image">
+			<posx>60</posx>
+			<posy>110</posy>
+			<height>300</height>
+			<width>190</width>
+			<info>ListItem.Icon</info>
+			<aspectratio align="center" aligny="center">keep</aspectratio>
+		</control>
+		<control type="group" id="9000">
+			<posy>420</posy>
+			<posx>55</posx>
+			<control type="button" id="413">
+				<description>OK button</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>200</width>
+				<height>32</height>
+				<align>center</align>
+				<label>186</label>
+				<font>font10</font>
+				<texturenofocus border="10">keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus border="10">keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>450</onleft>
+				<onright>450</onright>
+				<onup>450</onup>
+				<ondown>414</ondown>
+			</control>
+			<control type="button" id="414">
+				<description>Cancel button</description>
+				<posx>0</posx>
+				<posy>35</posy>
+				<width>200</width>
+				<height>32</height>
+				<align>center</align>
+				<label>222</label>
+				<font>font10</font>
+				<texturenofocus border="10">keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus border="10">keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>450</onleft>
+				<onright>450</onright>
+				<onup>413</onup>
+				<ondown>415</ondown>
+			</control>
+			<control type="button" id="415">
+				<description>Create folder button</description>
+				<posx>0</posx>
+				<posy>70</posy>
+				<width>200</width>
+				<height>32</height>
+				<align>center</align>
+				<label>119</label>
+				<font>font10</font>
+				<texturenofocus border="10">keyboard-btn-backspace.png</texturenofocus>
+				<texturefocus border="10">keyboard-btn-backspace-focus.png</texturefocus>
+				<onleft>450</onleft>
+				<onright>450</onright>
+				<onup>414</onup>
+				<ondown>450</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

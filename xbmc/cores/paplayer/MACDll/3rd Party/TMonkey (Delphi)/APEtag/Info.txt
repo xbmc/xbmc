@@ -1,0 +1,18 @@
+APEtag.pas
+Tested with Borland Delphi 3,4,5,6
+
+{ *************************************************************************** }
+{                                                                             }
+{ Audio Tools Library (Freeware)                                              }
+{ Class TAPEtag - for manipulating with APE tags                              }
+{                                                                             }
+{ Copyright (c) 2001,2002 by Jurgen Faul                                      }
+{ E-mail: jfaul@gmx.de                                                        }
+{ http://jfaul.de/atl                                                         }
+{                                                                             }
+{ Version 1.0 (21 April 2002)                                                 }
+{   - Reading & writing support for APE 1.0 tags                              }
+{   - Reading support for APE 2.0 tags (UTF-8 decoding)                       }
+{   - Tag info: title, artist, album, track, year, genre, comment, copyright  }
+{                                                                             }
+{ *************************************************************************** }

@@ -1,0 +1,1060 @@
+\section{\module{codecs} ---
+         Codec registry and base classes}
+
+\declaremodule{standard}{codecs}
+\modulesynopsis{Encode and decode data and streams.}
+\moduleauthor{Marc-Andre Lemburg}{mal@lemburg.com}
+\sectionauthor{Marc-Andre Lemburg}{mal@lemburg.com}
+\sectionauthor{Martin v. L\"owis}{martin@v.loewis.de}
+
+\index{Unicode}
+\index{Codecs}
+\indexii{Codecs}{encode}
+\indexii{Codecs}{decode}
+\index{streams}
+\indexii{stackable}{streams}
+
+
+This module defines base classes for standard Python codecs (encoders
+and decoders) and provides access to the internal Python codec
+registry which manages the codec and error handling lookup process.
+
+It defines the following functions:
+
+\begin{funcdesc}{register}{search_function}
+Register a codec search function. Search functions are expected to
+take one argument, the encoding name in all lower case letters, and
+return a tuple of functions \code{(\var{encoder}, \var{decoder}, \var{stream_reader},
+\var{stream_writer})} taking the following arguments:
+
+  \var{encoder} and \var{decoder}: These must be functions or methods
+  which have the same interface as the
+  \method{encode()}/\method{decode()} methods of Codec instances (see
+  Codec Interface). The functions/methods are expected to work in a
+  stateless mode.
+
+  \var{stream_reader} and \var{stream_writer}: These have to be
+  factory functions providing the following interface:
+
+        \code{factory(\var{stream}, \var{errors}='strict')}
+
+  The factory functions must return objects providing the interfaces
+  defined by the base classes \class{StreamWriter} and
+  \class{StreamReader}, respectively. Stream codecs can maintain
+  state.
+
+  Possible values for errors are \code{'strict'} (raise an exception
+  in case of an encoding error), \code{'replace'} (replace malformed
+  data with a suitable replacement marker, such as \character{?}),
+  \code{'ignore'} (ignore malformed data and continue without further
+  notice), \code{'xmlcharrefreplace'} (replace with the appropriate XML
+  character reference (for encoding only)) and \code{'backslashreplace'}
+  (replace with backslashed escape sequences (for encoding only)) as
+  well as any other error handling name defined via
+  \function{register_error()}.
+
+In case a search function cannot find a given encoding, it should
+return \code{None}.
+\end{funcdesc}
+
+\begin{funcdesc}{lookup}{encoding}
+Looks up a codec tuple in the Python codec registry and returns the
+function tuple as defined above.
+
+Encodings are first looked up in the registry's cache. If not found,
+the list of registered search functions is scanned. If no codecs tuple
+is found, a \exception{LookupError} is raised. Otherwise, the codecs
+tuple is stored in the cache and returned to the caller.
+\end{funcdesc}
+
+To simplify access to the various codecs, the module provides these
+additional functions which use \function{lookup()} for the codec
+lookup:
+
+\begin{funcdesc}{getencoder}{encoding}
+Look up the codec for the given encoding and return its encoder
+function.
+
+Raises a \exception{LookupError} in case the encoding cannot be found.
+\end{funcdesc}
+
+\begin{funcdesc}{getdecoder}{encoding}
+Look up the codec for the given encoding and return its decoder
+function.
+
+Raises a \exception{LookupError} in case the encoding cannot be found.
+\end{funcdesc}
+
+\begin{funcdesc}{getreader}{encoding}
+Look up the codec for the given encoding and return its StreamReader
+class or factory function.
+
+Raises a \exception{LookupError} in case the encoding cannot be found.
+\end{funcdesc}
+
+\begin{funcdesc}{getwriter}{encoding}
+Look up the codec for the given encoding and return its StreamWriter
+class or factory function.
+
+Raises a \exception{LookupError} in case the encoding cannot be found.
+\end{funcdesc}
+
+\begin{funcdesc}{register_error}{name, error_handler}
+Register the error handling function \var{error_handler} under the
+name \var{name}. \var{error_handler} will be called during encoding
+and decoding in case of an error, when \var{name} is specified as the
+errors parameter.
+
+For encoding \var{error_handler} will be called with a
+\exception{UnicodeEncodeError} instance, which contains information about
+the location of the error. The error handler must either raise this or
+a different exception or return a tuple with a replacement for the
+unencodable part of the input and a position where encoding should
+continue. The encoder will encode the replacement and continue encoding
+the original input at the specified position. Negative position values
+will be treated as being relative to the end of the input string. If the
+resulting position is out of bound an IndexError will be raised.
+
+Decoding and translating works similar, except \exception{UnicodeDecodeError}
+or \exception{UnicodeTranslateError} will be passed to the handler and
+that the replacement from the error handler will be put into the output
+directly.
+\end{funcdesc}
+
+\begin{funcdesc}{lookup_error}{name}
+Return the error handler previously register under the name \var{name}.
+
+Raises a \exception{LookupError} in case the handler cannot be found.
+\end{funcdesc}
+
+\begin{funcdesc}{strict_errors}{exception}
+Implements the \code{strict} error handling.
+\end{funcdesc}
+
+\begin{funcdesc}{replace_errors}{exception}
+Implements the \code{replace} error handling.
+\end{funcdesc}
+
+\begin{funcdesc}{ignore_errors}{exception}
+Implements the \code{ignore} error handling.
+\end{funcdesc}
+
+\begin{funcdesc}{xmlcharrefreplace_errors_errors}{exception}
+Implements the \code{xmlcharrefreplace} error handling.
+\end{funcdesc}
+
+\begin{funcdesc}{backslashreplace_errors_errors}{exception}
+Implements the \code{backslashreplace} error handling.
+\end{funcdesc}
+
+To simplify working with encoded files or stream, the module
+also defines these utility functions:
+
+\begin{funcdesc}{open}{filename, mode\optional{, encoding\optional{,
+                       errors\optional{, buffering}}}}
+Open an encoded file using the given \var{mode} and return
+a wrapped version providing transparent encoding/decoding.
+
+\note{The wrapped version will only accept the object format
+defined by the codecs, i.e.\ Unicode objects for most built-in
+codecs.  Output is also codec-dependent and will usually be Unicode as
+well.}
+
+\var{encoding} specifies the encoding which is to be used for the
+file.
+
+\var{errors} may be given to define the error handling. It defaults
+to \code{'strict'} which causes a \exception{ValueError} to be raised
+in case an encoding error occurs.
+
+\var{buffering} has the same meaning as for the built-in
+\function{open()} function.  It defaults to line buffered.
+\end{funcdesc}
+
+\begin{funcdesc}{EncodedFile}{file, input\optional{,
+                              output\optional{, errors}}}
+Return a wrapped version of file which provides transparent
+encoding translation.
+
+Strings written to the wrapped file are interpreted according to the
+given \var{input} encoding and then written to the original file as
+strings using the \var{output} encoding. The intermediate encoding will
+usually be Unicode but depends on the specified codecs.
+
+If \var{output} is not given, it defaults to \var{input}.
+
+\var{errors} may be given to define the error handling. It defaults to
+\code{'strict'}, which causes \exception{ValueError} to be raised in case
+an encoding error occurs.
+\end{funcdesc}
+
+The module also provides the following constants which are useful
+for reading and writing to platform dependent files:
+
+\begin{datadesc}{BOM}
+\dataline{BOM_BE}
+\dataline{BOM_LE}
+\dataline{BOM_UTF8}
+\dataline{BOM_UTF16}
+\dataline{BOM_UTF16_BE}
+\dataline{BOM_UTF16_LE}
+\dataline{BOM_UTF32}
+\dataline{BOM_UTF32_BE}
+\dataline{BOM_UTF32_LE}
+These constants define various encodings of the Unicode byte order mark
+(BOM) used in UTF-16 and UTF-32 data streams to indicate the byte order
+used in the stream or file and in UTF-8 as a Unicode signature.
+\constant{BOM_UTF16} is either \constant{BOM_UTF16_BE} or
+\constant{BOM_UTF16_LE} depending on the platform's native byte order,
+\constant{BOM} is an alias for \constant{BOM_UTF16}, \constant{BOM_LE}
+for \constant{BOM_UTF16_LE} and \constant{BOM_BE} for \constant{BOM_UTF16_BE}.
+The others represent the BOM in UTF-8 and UTF-32 encodings.
+\end{datadesc}
+
+
+\subsection{Codec Base Classes \label{codec-base-classes}}
+
+The \module{codecs} module defines a set of base classes which define the
+interface and can also be used to easily write you own codecs for use
+in Python.
+
+Each codec has to define four interfaces to make it usable as codec in
+Python: stateless encoder, stateless decoder, stream reader and stream
+writer. The stream reader and writers typically reuse the stateless
+encoder/decoder to implement the file protocols.
+
+The \class{Codec} class defines the interface for stateless
+encoders/decoders.
+
+To simplify and standardize error handling, the \method{encode()} and
+\method{decode()} methods may implement different error handling
+schemes by providing the \var{errors} string argument.  The following
+string values are defined and implemented by all standard Python
+codecs:
+
+\begin{tableii}{l|l}{code}{Value}{Meaning}
+  \lineii{'strict'}{Raise \exception{UnicodeError} (or a subclass);
+                    this is the default.}
+  \lineii{'ignore'}{Ignore the character and continue with the next.}
+  \lineii{'replace'}{Replace with a suitable replacement character;
+                     Python will use the official U+FFFD REPLACEMENT
+                     CHARACTER for the built-in Unicode codecs on
+                     decoding and '?' on encoding.}
+  \lineii{'xmlcharrefreplace'}{Replace with the appropriate XML
+                     character reference (only for encoding).}
+  \lineii{'backslashreplace'}{Replace with backslashed escape sequences
+                     (only for encoding).}
+\end{tableii}
+
+The set of allowed values can be extended via \method{register_error}.
+
+
+\subsubsection{Codec Objects \label{codec-objects}}
+
+The \class{Codec} class defines these methods which also define the
+function interfaces of the stateless encoder and decoder:
+
+\begin{methoddesc}{encode}{input\optional{, errors}}
+  Encodes the object \var{input} and returns a tuple (output object,
+  length consumed).  While codecs are not restricted to use with Unicode, in
+  a Unicode context, encoding converts a Unicode object to a plain string
+  using a particular character set encoding (e.g., \code{cp1252} or
+  \code{iso-8859-1}).
+
+  \var{errors} defines the error handling to apply. It defaults to
+  \code{'strict'} handling.
+
+  The method may not store state in the \class{Codec} instance. Use
+  \class{StreamCodec} for codecs which have to keep state in order to
+  make encoding/decoding efficient.
+
+  The encoder must be able to handle zero length input and return an
+  empty object of the output object type in this situation.
+\end{methoddesc}
+
+\begin{methoddesc}{decode}{input\optional{, errors}}
+  Decodes the object \var{input} and returns a tuple (output object,
+  length consumed).  In a Unicode context, decoding converts a plain string
+  encoded using a particular character set encoding to a Unicode object.
+
+  \var{input} must be an object which provides the \code{bf_getreadbuf}
+  buffer slot.  Python strings, buffer objects and memory mapped files
+  are examples of objects providing this slot.
+
+  \var{errors} defines the error handling to apply. It defaults to
+  \code{'strict'} handling.
+
+  The method may not store state in the \class{Codec} instance. Use
+  \class{StreamCodec} for codecs which have to keep state in order to
+  make encoding/decoding efficient.
+
+  The decoder must be able to handle zero length input and return an
+  empty object of the output object type in this situation.
+\end{methoddesc}
+
+The \class{StreamWriter} and \class{StreamReader} classes provide
+generic working interfaces which can be used to implement new
+encodings submodules very easily. See \module{encodings.utf_8} for an
+example of how this is done.
+
+
+\subsubsection{StreamWriter Objects \label{stream-writer-objects}}
+
+The \class{StreamWriter} class is a subclass of \class{Codec} and
+defines the following methods which every stream writer must define in
+order to be compatible with the Python codec registry.
+
+\begin{classdesc}{StreamWriter}{stream\optional{, errors}}
+  Constructor for a \class{StreamWriter} instance. 
+
+  All stream writers must provide this constructor interface. They are
+  free to add additional keyword arguments, but only the ones defined
+  here are used by the Python codec registry.
+
+  \var{stream} must be a file-like object open for writing (binary)
+  data.
+
+  The \class{StreamWriter} may implement different error handling
+  schemes by providing the \var{errors} keyword argument. These
+  parameters are predefined:
+
+  \begin{itemize}
+    \item \code{'strict'} Raise \exception{ValueError} (or a subclass);
+                          this is the default.
+    \item \code{'ignore'} Ignore the character and continue with the next.
+    \item \code{'replace'} Replace with a suitable replacement character
+    \item \code{'xmlcharrefreplace'} Replace with the appropriate XML
+                     character reference
+    \item \code{'backslashreplace'} Replace with backslashed escape sequences.
+  \end{itemize}
+
+  The \var{errors} argument will be assigned to an attribute of the
+  same name. Assigning to this attribute makes it possible to switch
+  between different error handling strategies during the lifetime
+  of the \class{StreamWriter} object.
+
+  The set of allowed values for the \var{errors} argument can
+  be extended with \function{register_error()}.
+\end{classdesc}
+
+\begin{methoddesc}{write}{object}
+  Writes the object's contents encoded to the stream.
+\end{methoddesc}
+
+\begin{methoddesc}{writelines}{list}
+  Writes the concatenated list of strings to the stream (possibly by
+  reusing the \method{write()} method).
+\end{methoddesc}
+
+\begin{methoddesc}{reset}{}
+  Flushes and resets the codec buffers used for keeping state.
+
+  Calling this method should ensure that the data on the output is put
+  into a clean state, that allows appending of new fresh data without
+  having to rescan the whole stream to recover state.
+\end{methoddesc}
+
+In addition to the above methods, the \class{StreamWriter} must also
+inherit all other methods and attributes from the underlying stream.
+
+
+\subsubsection{StreamReader Objects \label{stream-reader-objects}}
+
+The \class{StreamReader} class is a subclass of \class{Codec} and
+defines the following methods which every stream reader must define in
+order to be compatible with the Python codec registry.
+
+\begin{classdesc}{StreamReader}{stream\optional{, errors}}
+  Constructor for a \class{StreamReader} instance. 
+
+  All stream readers must provide this constructor interface. They are
+  free to add additional keyword arguments, but only the ones defined
+  here are used by the Python codec registry.
+
+  \var{stream} must be a file-like object open for reading binary
+  data.
+
+  The \class{StreamReader} may implement different error handling
+  schemes by providing the \var{errors} keyword argument. These
+  parameters are defined:
+
+  \begin{itemize}
+    \item \code{'strict'} Raise \exception{ValueError} (or a subclass);
+                          this is the default.
+    \item \code{'ignore'} Ignore the character and continue with the next.
+    \item \code{'replace'} Replace with a suitable replacement character.
+  \end{itemize}
+
+  The \var{errors} argument will be assigned to an attribute of the
+  same name. Assigning to this attribute makes it possible to switch
+  between different error handling strategies during the lifetime
+  of the \class{StreamReader} object.
+
+  The set of allowed values for the \var{errors} argument can
+  be extended with \function{register_error()}.
+\end{classdesc}
+
+\begin{methoddesc}{read}{\optional{size\optional{, chars, \optional{firstline}}}}
+  Decodes data from the stream and returns the resulting object.
+
+  \var{chars} indicates the number of characters to read from the
+  stream. \function{read()} will never return more than \var{chars}
+  characters, but it might return less, if there are not enough
+  characters available.
+
+  \var{size} indicates the approximate maximum number of bytes to read
+  from the stream for decoding purposes. The decoder can modify this
+  setting as appropriate. The default value -1 indicates to read and
+  decode as much as possible.  \var{size} is intended to prevent having
+  to decode huge files in one step.
+
+  \var{firstline} indicates that it would be sufficient to only return
+  the first line, if there are decoding errors on later lines.
+
+  The method should use a greedy read strategy meaning that it should
+  read as much data as is allowed within the definition of the encoding
+  and the given size, e.g.  if optional encoding endings or state
+  markers are available on the stream, these should be read too.
+
+  \versionchanged[\var{chars} argument added]{2.4}
+  \versionchanged[\var{firstline} argument added]{2.4.2}
+\end{methoddesc}
+
+\begin{methoddesc}{readline}{\optional{size\optional{, keepends}}}
+  Read one line from the input stream and return the
+  decoded data.
+
+  \var{size}, if given, is passed as size argument to the stream's
+  \method{readline()} method.
+
+  If \var{keepends} is false line-endings will be stripped from the
+  lines returned.
+
+  \versionchanged[\var{keepends} argument added]{2.4}
+\end{methoddesc}
+
+\begin{methoddesc}{readlines}{\optional{sizehint\optional{, keepends}}}
+  Read all lines available on the input stream and return them as a list
+  of lines.
+
+  Line-endings are implemented using the codec's decoder method and are
+  included in the list entries if \var{keepends} is true.
+
+  \var{sizehint}, if given, is passed as the \var{size} argument to the
+  stream's \method{read()} method.
+\end{methoddesc}
+
+\begin{methoddesc}{reset}{}
+  Resets the codec buffers used for keeping state.
+
+  Note that no stream repositioning should take place.  This method is
+  primarily intended to be able to recover from decoding errors.
+\end{methoddesc}
+
+In addition to the above methods, the \class{StreamReader} must also
+inherit all other methods and attributes from the underlying stream.
+
+The next two base classes are included for convenience. They are not
+needed by the codec registry, but may provide useful in practice.
+
+
+\subsubsection{StreamReaderWriter Objects \label{stream-reader-writer}}
+
+The \class{StreamReaderWriter} allows wrapping streams which work in
+both read and write modes.
+
+The design is such that one can use the factory functions returned by
+the \function{lookup()} function to construct the instance.
+
+\begin{classdesc}{StreamReaderWriter}{stream, Reader, Writer, errors}
+  Creates a \class{StreamReaderWriter} instance.
+  \var{stream} must be a file-like object.
+  \var{Reader} and \var{Writer} must be factory functions or classes
+  providing the \class{StreamReader} and \class{StreamWriter} interface
+  resp.
+  Error handling is done in the same way as defined for the
+  stream readers and writers.
+\end{classdesc}
+
+\class{StreamReaderWriter} instances define the combined interfaces of
+\class{StreamReader} and \class{StreamWriter} classes. They inherit
+all other methods and attributes from the underlying stream.
+
+
+\subsubsection{StreamRecoder Objects \label{stream-recoder-objects}}
+
+The \class{StreamRecoder} provide a frontend - backend view of
+encoding data which is sometimes useful when dealing with different
+encoding environments.
+
+The design is such that one can use the factory functions returned by
+the \function{lookup()} function to construct the instance.
+
+\begin{classdesc}{StreamRecoder}{stream, encode, decode,
+                                 Reader, Writer, errors}
+  Creates a \class{StreamRecoder} instance which implements a two-way
+  conversion: \var{encode} and \var{decode} work on the frontend (the
+  input to \method{read()} and output of \method{write()}) while
+  \var{Reader} and \var{Writer} work on the backend (reading and
+  writing to the stream).
+
+  You can use these objects to do transparent direct recodings from
+  e.g.\ Latin-1 to UTF-8 and back.
+
+  \var{stream} must be a file-like object.
+
+  \var{encode}, \var{decode} must adhere to the \class{Codec}
+  interface. \var{Reader}, \var{Writer} must be factory functions or
+  classes providing objects of the \class{StreamReader} and
+  \class{StreamWriter} interface respectively.
+
+  \var{encode} and \var{decode} are needed for the frontend
+  translation, \var{Reader} and \var{Writer} for the backend
+  translation.  The intermediate format used is determined by the two
+  sets of codecs, e.g. the Unicode codecs will use Unicode as the 
+  intermediate encoding.
+
+  Error handling is done in the same way as defined for the
+  stream readers and writers.
+\end{classdesc}
+
+\class{StreamRecoder} instances define the combined interfaces of
+\class{StreamReader} and \class{StreamWriter} classes. They inherit
+all other methods and attributes from the underlying stream.
+
+\subsection{Standard Encodings\label{standard-encodings}}
+
+Python comes with a number of codecs built-in, either implemented as C
+functions or with dictionaries as mapping tables. The following table
+lists the codecs by name, together with a few common aliases, and the
+languages for which the encoding is likely used. Neither the list of
+aliases nor the list of languages is meant to be exhaustive. Notice
+that spelling alternatives that only differ in case or use a hyphen
+instead of an underscore are also valid aliases.
+
+Many of the character sets support the same languages. They vary in
+individual characters (e.g. whether the EURO SIGN is supported or
+not), and in the assignment of characters to code positions. For the
+European languages in particular, the following variants typically
+exist:
+
+\begin{itemize}
+\item an ISO 8859 codeset
+\item a Microsoft Windows code page, which is typically derived from
+      a 8859 codeset, but replaces control characters with additional
+      graphic characters
+\item an IBM EBCDIC code page
+\item an IBM PC code page, which is \ASCII{} compatible
+\end{itemize}
+
+\begin{longtableiii}{l|l|l}{textrm}{Codec}{Aliases}{Languages}
+
+\lineiii{ascii}
+        {646, us-ascii}
+        {English}
+
+\lineiii{big5}
+        {big5-tw, csbig5}
+        {Traditional Chinese}
+
+\lineiii{big5hkscs}
+        {big5-hkscs, hkscs}
+        {Traditional Chinese}
+
+\lineiii{cp037}
+        {IBM037, IBM039}
+        {English}
+
+\lineiii{cp424}
+        {EBCDIC-CP-HE, IBM424}
+        {Hebrew}
+
+\lineiii{cp437}
+        {437, IBM437}
+        {English}
+
+\lineiii{cp500}
+        {EBCDIC-CP-BE, EBCDIC-CP-CH, IBM500}
+        {Western Europe}
+
+\lineiii{cp737}
+        {}
+        {Greek}
+
+\lineiii{cp775}
+        {IBM775}
+        {Baltic languages}
+
+\lineiii{cp850}
+        {850, IBM850}
+        {Western Europe}
+
+\lineiii{cp852}
+        {852, IBM852}
+        {Central and Eastern Europe}
+
+\lineiii{cp855}
+        {855, IBM855}
+        {Bulgarian, Byelorussian, Macedonian, Russian, Serbian}
+
+\lineiii{cp856}
+        {}
+        {Hebrew}
+
+\lineiii{cp857}
+        {857, IBM857}
+        {Turkish}
+
+\lineiii{cp860}
+        {860, IBM860}
+        {Portuguese}
+
+\lineiii{cp861}
+        {861, CP-IS, IBM861}
+        {Icelandic}
+
+\lineiii{cp862}
+        {862, IBM862}
+        {Hebrew}
+
+\lineiii{cp863}
+        {863, IBM863}
+        {Canadian}
+
+\lineiii{cp864}
+        {IBM864}
+        {Arabic}
+
+\lineiii{cp865}
+        {865, IBM865}
+        {Danish, Norwegian}
+
+\lineiii{cp866}
+        {866, IBM866}
+        {Russian}
+
+\lineiii{cp869}
+        {869, CP-GR, IBM869}
+        {Greek}
+
+\lineiii{cp874}
+        {}
+        {Thai}
+
+\lineiii{cp875}
+        {}
+        {Greek}
+
+\lineiii{cp932}
+        {932, ms932, mskanji, ms-kanji}
+        {Japanese}
+
+\lineiii{cp949}
+        {949, ms949, uhc}
+        {Korean}
+
+\lineiii{cp950}
+        {950, ms950}
+        {Traditional Chinese}
+
+\lineiii{cp1006}
+        {}
+        {Urdu}
+
+\lineiii{cp1026}
+        {ibm1026}
+        {Turkish}
+
+\lineiii{cp1140}
+        {ibm1140}
+        {Western Europe}
+
+\lineiii{cp1250}
+        {windows-1250}
+        {Central and Eastern Europe}
+
+\lineiii{cp1251}
+        {windows-1251}
+        {Bulgarian, Byelorussian, Macedonian, Russian, Serbian}
+
+\lineiii{cp1252}
+        {windows-1252}
+        {Western Europe}
+
+\lineiii{cp1253}
+        {windows-1253}
+        {Greek}
+
+\lineiii{cp1254}
+        {windows-1254}
+        {Turkish}
+
+\lineiii{cp1255}
+        {windows-1255}
+        {Hebrew}
+
+\lineiii{cp1256}
+        {windows1256}
+        {Arabic}
+
+\lineiii{cp1257}
+        {windows-1257}
+        {Baltic languages}
+
+\lineiii{cp1258}
+        {windows-1258}
+        {Vietnamese}
+
+\lineiii{euc_jp}
+        {eucjp, ujis, u-jis}
+        {Japanese}
+
+\lineiii{euc_jis_2004}
+        {jisx0213, eucjis2004}
+        {Japanese}
+
+\lineiii{euc_jisx0213}
+        {eucjisx0213}
+        {Japanese}
+
+\lineiii{euc_kr}
+        {euckr, korean, ksc5601, ks_c-5601, ks_c-5601-1987, ksx1001, ks_x-1001}
+        {Korean}
+
+\lineiii{gb2312}
+        {chinese, csiso58gb231280, euc-cn, euccn, eucgb2312-cn, gb2312-1980,
+         gb2312-80, iso-ir-58}
+        {Simplified Chinese}
+
+\lineiii{gbk}
+        {936, cp936, ms936}
+        {Unified Chinese}
+
+\lineiii{gb18030}
+        {gb18030-2000}
+        {Unified Chinese}
+
+\lineiii{hz}
+        {hzgb, hz-gb, hz-gb-2312}
+        {Simplified Chinese}
+
+\lineiii{iso2022_jp}
+        {csiso2022jp, iso2022jp, iso-2022-jp}
+        {Japanese}
+
+\lineiii{iso2022_jp_1}
+        {iso2022jp-1, iso-2022-jp-1}
+        {Japanese}
+
+\lineiii{iso2022_jp_2}
+        {iso2022jp-2, iso-2022-jp-2}
+        {Japanese, Korean, Simplified Chinese, Western Europe, Greek}
+
+\lineiii{iso2022_jp_2004}
+        {iso2022jp-2004, iso-2022-jp-2004}
+        {Japanese}
+
+\lineiii{iso2022_jp_3}
+        {iso2022jp-3, iso-2022-jp-3}
+        {Japanese}
+
+\lineiii{iso2022_jp_ext}
+        {iso2022jp-ext, iso-2022-jp-ext}
+        {Japanese}
+
+\lineiii{iso2022_kr}
+        {csiso2022kr, iso2022kr, iso-2022-kr}
+        {Korean}
+
+\lineiii{latin_1}
+        {iso-8859-1, iso8859-1, 8859, cp819, latin, latin1, L1}
+        {West Europe}
+
+\lineiii{iso8859_2}
+        {iso-8859-2, latin2, L2}
+        {Central and Eastern Europe}
+
+\lineiii{iso8859_3}
+        {iso-8859-3, latin3, L3}
+        {Esperanto, Maltese}
+
+\lineiii{iso8859_4}
+        {iso-8859-4, latin4, L4}
+        {Baltic languagues}
+
+\lineiii{iso8859_5}
+        {iso-8859-5, cyrillic}
+        {Bulgarian, Byelorussian, Macedonian, Russian, Serbian}
+
+\lineiii{iso8859_6}
+        {iso-8859-6, arabic}
+        {Arabic}
+
+\lineiii{iso8859_7}
+        {iso-8859-7, greek, greek8}
+        {Greek}
+
+\lineiii{iso8859_8}
+        {iso-8859-8, hebrew}
+        {Hebrew}
+
+\lineiii{iso8859_9}
+        {iso-8859-9, latin5, L5}
+        {Turkish}
+
+\lineiii{iso8859_10}
+        {iso-8859-10, latin6, L6}
+        {Nordic languages}
+
+\lineiii{iso8859_13}
+        {iso-8859-13}
+        {Baltic languages}
+
+\lineiii{iso8859_14}
+        {iso-8859-14, latin8, L8}
+        {Celtic languages}
+
+\lineiii{iso8859_15}
+        {iso-8859-15}
+        {Western Europe}
+
+\lineiii{johab}
+        {cp1361, ms1361}
+        {Korean}
+
+\lineiii{koi8_r}
+        {}
+        {Russian}
+
+\lineiii{koi8_u}
+        {}
+        {Ukrainian}
+
+\lineiii{mac_cyrillic}
+        {maccyrillic}
+        {Bulgarian, Byelorussian, Macedonian, Russian, Serbian}
+
+\lineiii{mac_greek}
+        {macgreek}
+        {Greek}
+
+\lineiii{mac_iceland}
+        {maciceland}
+        {Icelandic}
+
+\lineiii{mac_latin2}
+        {maclatin2, maccentraleurope}
+        {Central and Eastern Europe}
+
+\lineiii{mac_roman}
+        {macroman}
+        {Western Europe}
+
+\lineiii{mac_turkish}
+        {macturkish}
+        {Turkish}
+
+\lineiii{ptcp154}
+        {csptcp154, pt154, cp154, cyrillic-asian}
+        {Kazakh}
+
+\lineiii{shift_jis}
+        {csshiftjis, shiftjis, sjis, s_jis}
+        {Japanese}
+
+\lineiii{shift_jis_2004}
+        {shiftjis2004, sjis_2004, sjis2004}
+        {Japanese}
+
+\lineiii{shift_jisx0213}
+        {shiftjisx0213, sjisx0213, s_jisx0213}
+        {Japanese}
+
+\lineiii{utf_16}
+        {U16, utf16}
+        {all languages}
+
+\lineiii{utf_16_be}
+        {UTF-16BE}
+        {all languages (BMP only)}
+
+\lineiii{utf_16_le}
+        {UTF-16LE}
+        {all languages (BMP only)}
+
+\lineiii{utf_7}
+        {U7}
+        {all languages}
+
+\lineiii{utf_8}
+        {U8, UTF, utf8}
+        {all languages}
+
+\end{longtableiii}
+
+A number of codecs are specific to Python, so their codec names have
+no meaning outside Python. Some of them don't convert from Unicode
+strings to byte strings, but instead use the property of the Python
+codecs machinery that any bijective function with one argument can be
+considered as an encoding.
+
+For the codecs listed below, the result in the ``encoding'' direction
+is always a byte string. The result of the ``decoding'' direction is
+listed as operand type in the table.
+
+\begin{tableiv}{l|l|l|l}{textrm}{Codec}{Aliases}{Operand type}{Purpose}
+
+\lineiv{base64_codec}
+         {base64, base-64}
+         {byte string}
+         {Convert operand to MIME base64}
+
+\lineiv{bz2_codec}
+         {bz2}
+         {byte string}
+         {Compress the operand using bz2}
+
+\lineiv{hex_codec}
+         {hex}
+         {byte string}
+         {Convert operand to hexadecimal representation, with two
+          digits per byte}
+
+\lineiv{idna}
+         {}
+         {Unicode string}
+         {Implements \rfc{3490}.
+          \versionadded{2.3}
+          See also \refmodule{encodings.idna}}
+
+\lineiv{mbcs}
+         {dbcs}
+         {Unicode string}
+         {Windows only: Encode operand according to the ANSI codepage (CP_ACP)}
+
+\lineiv{palmos}
+         {}
+         {Unicode string}
+         {Encoding of PalmOS 3.5}
+
+\lineiv{punycode}
+         {}
+         {Unicode string}
+         {Implements \rfc{3492}.
+          \versionadded{2.3}}
+
+\lineiv{quopri_codec}
+         {quopri, quoted-printable, quotedprintable}
+         {byte string}
+         {Convert operand to MIME quoted printable}
+
+\lineiv{raw_unicode_escape}
+         {}
+         {Unicode string}
+         {Produce a string that is suitable as raw Unicode literal in
+          Python source code}
+
+\lineiv{rot_13}
+         {rot13}
+         {Unicode string}
+         {Returns the Caesar-cypher encryption of the operand}
+
+\lineiv{string_escape}
+         {}
+         {byte string}
+         {Produce a string that is suitable as string literal in
+          Python source code}
+
+\lineiv{undefined}
+         {}
+         {any}
+         {Raise an exception for all conversion. Can be used as the
+          system encoding if no automatic coercion between byte and
+          Unicode strings is desired.} 
+
+\lineiv{unicode_escape}
+         {}
+         {Unicode string}
+         {Produce a string that is suitable as Unicode literal in
+          Python source code}
+
+\lineiv{unicode_internal}
+         {}
+         {Unicode string}
+         {Return the internal representation of the operand}
+
+\lineiv{uu_codec}
+         {uu}
+         {byte string}
+         {Convert the operand using uuencode}
+
+\lineiv{zlib_codec}
+         {zip, zlib}
+         {byte string}
+         {Compress the operand using gzip}
+
+\end{tableiv}
+
+\subsection{\module{encodings.idna} ---
+            Internationalized Domain Names in Applications}
+
+\declaremodule{standard}{encodings.idna}
+\modulesynopsis{Internationalized Domain Names implementation}
+% XXX The next line triggers a formatting bug, so it's commented out
+% until that can be fixed.
+%\moduleauthor{Martin v. L\"owis}
+
+\versionadded{2.3}
+
+This module implements \rfc{3490} (Internationalized Domain Names in
+Applications) and \rfc{3492} (Nameprep: A Stringprep Profile for
+Internationalized Domain Names (IDN)). It builds upon the
+\code{punycode} encoding and \refmodule{stringprep}.
+
+These RFCs together define a protocol to support non-\ASCII{} characters
+in domain names. A domain name containing non-\ASCII{} characters (such
+as ``www.Alliancefran\c caise.nu'') is converted into an
+\ASCII-compatible encoding (ACE, such as
+``www.xn--alliancefranaise-npb.nu''). The ACE form of the domain name
+is then used in all places where arbitrary characters are not allowed
+by the protocol, such as DNS queries, HTTP \mailheader{Host} fields, and so
+on. This conversion is carried out in the application; if possible
+invisible to the user: The application should transparently convert
+Unicode domain labels to IDNA on the wire, and convert back ACE labels
+to Unicode before presenting them to the user.
+
+Python supports this conversion in several ways: The \code{idna} codec
+allows to convert between Unicode and the ACE. Furthermore, the
+\refmodule{socket} module transparently converts Unicode host names to
+ACE, so that applications need not be concerned about converting host
+names themselves when they pass them to the socket module. On top of
+that, modules that have host names as function parameters, such as
+\refmodule{httplib} and \refmodule{ftplib}, accept Unicode host names
+(\refmodule{httplib} then also transparently sends an IDNA hostname in
+the \mailheader{Host} field if it sends that field at all). 
+
+When receiving host names from the wire (such as in reverse name
+lookup), no automatic conversion to Unicode is performed: Applications
+wishing to present such host names to the user should decode them to
+Unicode.
+
+The module \module{encodings.idna} also implements the nameprep
+procedure, which performs certain normalizations on host names, to
+achieve case-insensitivity of international domain names, and to unify
+similar characters. The nameprep functions can be used directly if
+desired.
+
+\begin{funcdesc}{nameprep}{label}
+Return the nameprepped version of \var{label}. The implementation
+currently assumes query strings, so \code{AllowUnassigned} is
+true.
+\end{funcdesc}
+
+\begin{funcdesc}{ToASCII}{label}
+Convert a label to \ASCII, as specified in \rfc{3490}.
+\code{UseSTD3ASCIIRules} is assumed to be false.
+\end{funcdesc}
+
+\begin{funcdesc}{ToUnicode}{label}
+Convert a label to Unicode, as specified in \rfc{3490}.
+\end{funcdesc}

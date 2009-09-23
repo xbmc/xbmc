@@ -1,0 +1,163 @@
+# The Lord of the Rings: Fellowship of the Ring (Widescreen Theatrical Release)
+domain 8, title 1, program 1, start 0x0000, end 0x1f0a   # Introduction
+
+# history of middle earth
+#domain 2, title 1, program 1, start 0x9cba, end 0xcea4   # violence/war
+#domain 2, title 1, program 1, start 0xf018, end 0x1272c  # violence/war
+domain 2, title 1, program 1, start 0x11ff3, end 0x1272c # gore
+#domain 2, title 1, program 1, start 0x173f1, end 0x185d6 # violence/death
+
+# hobbiton 
+domain 2, title 1, program 2, start 0x30373, end 0x31946 # vices/smoking
+domain 2, title 1, program 2, start 0x32942, end 0x34426 # vices/smoking
+domain 2, title 1, program 2, start 0x34895, end 0x34ad1 # vices/smoking
+domain 2, title 1, program 2, start 0x3965c, end 0x39d7c # vices/smoking
+
+# bag end
+domain 2, title 1, program 3, start 0x40288, end 0x412de # vices/drinking/talk
+domain 2, title 1, program 3, start 0x4cfbe, end 0x4f955 # vices/smoking
+
+# party
+domain 2, title 1, program 4, start 0x53ee0, end 0x54396 # vices/drinking
+domain 2, title 1, program 4, start 0x58851, end 0x5ae3d # imitative/theft
+domain 2, title 1, program 4, start 0x5cd0a, end 0x5e216 # jump 
+
+# gandalf departs
+domain 2, title 1, program 6, start 0x7f05d, end 0x7f1b3 # jump
+domain 2, title 1, program 6, start 0x7f51a, end 0x834a7 # vices/smoking
+
+# research
+domain 2, title 1, program 7, start 0x8e6e8, end 0x8e9d7 # vices/smoking
+
+# hobbiton
+domain 2, title 1, program 8, start 0x98f49, end 0x990ba # jump
+domain 2, title 1, program 8, start 0xa0ad1, end 0xa17ac # jump
+domain 2, title 1, program 8, start 0xa9e32, end 0xaaa70 # violence/torture
+domain 2, title 1, program 8, start 0xabc6c, end 0xabd92 # violence
+
+# orthanc
+domain 2, title 1, program 9, start 0xd50b7, end 0xd87f9 # violence
+domain 2, title 1, program 9, start 0xd8e49, end 0xda611 # violence
+
+# farmer maggot
+domain 2, title 1, program 10, start 0xde856, end 0xdeb07 # jump
+domain 2, title 1, program 10, start 0xe4cfe, end 0xe50b3 # gore/excrement
+domain 2, title 1, program 10, start 0xebba3, end 0xebf93 # gore/blood
+domain 2, title 1, program 10, start 0xed222, end 0xeda7e # gore/insects
+
+# buckleberry ferry
+domain 2, title 1, program 11, start 0xf6d77, end 0xf83f8 # jump
+
+# prancing pony in bree
+domain 2, title 1, program 12, start 0x10945e, end 0x10a2f2 # vices/drinking/rolemodel
+domain 2, title 1, program 12, start 0x10c103, end 0x10c417 # vices/smoking
+domain 2, title 1, program 12, start 0x10c934, end 0x10cb44 # vices/smoking
+# 10c934
+# 10c9b4
+# 10ca3c
+# 10cad6
+# 10cb44
+# 10cbb4
+domain 2, title 1, program 12, start 0x10ddab, end 0x10e0f2 # vices/smoking
+domain 2, title 1, program 12, start 0x10e1df, end 0x10e411 # vices/drinking
+
+# ring wraiths in bree
+domain 2, title 1, program 13, start 0x117853, end 0x117f6e # violence
+domain 2, title 1, program 13, start 0x117853, end 0x117f6e # gore/crushing
+domain 2, title 1, program 13, start 0x11b2b3, end 0x11bffc # violence
+
+# weathertop
+#domain 2, title 1, program 15, start 0x13b85b, end 0x141b38 # violence
+domain 2, title 1, program 15, start 0x14093a, end 0x141063 # gore/stabbing
+domain 2, title 1, program 15, start 0x142555, end 0x1466e9 # violence
+
+# isengard
+domain 2, title 1, program 16, start 0x152a28, end 0x1549fb # violence
+domain 2, title 1, program 16, start 0x152a28, end 0x1549fb # gore
+
+# the ford
+domain 2, title 1, program 17, start 0x173dbe, end 0x1748a6 # violence
+
+# rivendell
+domain 2, title 1, program 18, start 0x179793, end 0x17a667 # vices/smoking
+domain 2, title 1, program 18, start 0x17c452, end 0x17eab6 # violence
+
+# rivendell
+domain 2, title 1, program 20, start 0x19caaf, end 0x19db12 # violence
+
+# tomb of isildur
+domain 2, title 1, program 21, start 0x1a69ae, end 0x1a6a3d # gore/blood
+
+# rivendell
+domain 2, title 1, program 22, start 0x1b298b, end 0x1b2bae # kiss
+
+# rivendell
+domain 2, title 1, program 24, start 0x1d8253, end 0x1d8f5d # horror/posession
+
+# on the road south
+domain 2, title 1, program 25, start 0x1e2fc2, end 0x1e31b8 # vices/smoking
+
+# at the entrance to moria
+domain 2, title 1, program 27, start 0x214bdd, end 0x214fcc # gore/skeletons
+domain 2, title 1, program 27, start 0x2157d9, end 0x216731 # gore/skeletons
+domain 2, title 1, program 27, start 0x217ba6, end 0x21cdb4 # violence
+
+# moria
+#domain 2, title 1, program 28, start 0x22173d, end 0x221e58 # gore/skeletons
+#domain 2, title 1, program 28, start 0x222e0b, end 0x223345 # gore/skeletons
+domain 2, title 1, program 28, start 0x22173d, end 0x223345 # gore/skeletons
+domain 2, title 1, program 28, start 0x2239e2, end 0x223e8c # gore/skeletons
+domain 2, title 1, program 28, start 0x22589f, end 0x2259bf # vices/smoking
+
+# balin's tomb
+domain 2, title 1, program 29, start 0x234abb, end 0x234dd0 # gore/skeletons
+domain 2, title 1, program 29, start 0x2352ed, end 0x2361d7 # gore/skeletons
+domain 2, title 1, program 29, start 0x23898b, end 0x23955c # gore/skeletons
+domain 2, title 1, program 29, start 0x23b467, end 0x23db2b # gore/skeletons
+#domain 2, title 1, program 29, start 0x247360, end 0x25e24b # violence
+domain 2, title 1, program 29, start 0x2483b6, end 0x248b62 # gore/impalement
+domain 2, title 1, program 29, start 0x24a606, end 0x24a9f3 # gore/headshot
+domain 2, title 1, program 29, start 0x24acd8, end 0x24ae7e # gore/decapitation
+domain 2, title 1, program 29, start 0x24d708, end 0x24d88f # gore/bashing
+domain 2, title 1, program 29, start 0x25013a, end 0x250501 # gore/impalement
+domain 2, title 1, program 29, start 0x2540a0, end 0x254507 # jump
+domain 2, title 1, program 29, start 0x2560b3, end 0x256423 # gore/impalement
+domain 2, title 1, program 29, start 0x258152, end 0x258459 # gore/impalement
+domain 2, title 1, program 29, start 0x258152, end 0x258459 # gore/impalement
+
+# the bridge
+#domain 2, title 1, program 30, start 0x274235, end 0x275e59 # violence
+domain 2, title 1, program 30, start 0x2744c6, end 0x274a5e # gore/headshot
+domain 2, title 1, program 30, start 0x275661, end 0x275e59 # violence/death
+domain 2, title 1, program 30, start 0x289d2a, end 0x28a066 # gore/falling
+
+# lothlorien
+domain 2, title 1, program 32, start 0x2be304, end 0x2beb1d # violence
+domain 2, title 1, program 32, start 0x2c5d59, end 0x2c9a40 # horror/posession
+#domain 2, title 1, program 32, start 0x2c5d59, end 0x2c9e41 # horror/posession
+
+# parth galen
+domain 2, title 1, program 36, start 0x2fa317, end 0x2fb0b0 # violence
+
+# parth galen w/ orcs
+domain 2, title 1, program 37, start 0x30c8cb, end 0x313054 # violence
+domain 2, title 1, program 37, start 0x310428, end 0x313054 # gore/impalement
+#domain 2, title 1, program 37, start 0x317f45, end 0x332a52 # violence
+domain 2, title 1, program 37, start 0x322d8b, end 0x328f4d # gore/impalement
+domain 2, title 1, program 37, start 0x32f2a4, end 0x330731 # gore/impalement
+domain 2, title 1, program 37, start 0x330b3b, end 0x330c4d # gore/blood
+domain 2, title 1, program 37, start 0x331c4e, end 0x332a52 # gore/dismemberment
+domain 2, title 1, program 37, start 0x331c4e, end 0x332a52 # gore/decapitation
+
+# death of boromir
+domain 2, title 1, program 38, start 0x33322f, end 0x33c10c # gore/bodies
+domain 2, title 1, program 38, start 0x33b558, end 0x33c10c # horror/death
+
+# to the eastern shore
+domain 2, title 1, program 39, start 0x34a25b, end 0x34c1e3 # horror/drowning
+
+
+
+
+
+

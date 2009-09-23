@@ -1,0 +1,50 @@
+﻿<window id="110">
+	<defaultcontrol>0</defaultcontrol>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image" id="0">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>720</width>
+			<height>576</height>
+			<texture>black.png</texture>
+			<animation effect="fade" time="2000">WindowOpen</animation>
+		</control>
+		<control type="image" id="0">
+			<posx>165</posx>
+			<posy>205</posy>
+			<width>390</width>
+			<height>190</height>
+			<texture>dialog-panel.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>dialog Heading</description>
+			<posx>190</posx>
+			<posy>218</posy>
+			<label>12325</label>
+			<font>special13</font>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="label" id="2">
+			<description>dialog line 1</description>
+			<posx>190</posx>
+			<posy>260</posy>
+			<label>12330</label>
+			<font>font10</font>
+		</control>
+		<control type="label" id="3">
+			<description>dialog line 2</description>
+			<posx>190</posx>
+			<posy>280</posy>
+			<label>12331</label>
+			<font>font10</font>
+		</control>
+		<control type="label" id="4">
+			<description>dialog line 3</description>
+			<posx>190</posx>
+			<posy>320</posy>
+			<label>12323</label>
+			<font>font13</font>
+		</control>
+	</controls>
+</window>

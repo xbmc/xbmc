@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language>
+  <charsets>
+    <gui unicodefont="false">CP1250</gui>
+    <subtitle>CP1250</subtitle>
+  </charsets>
+  <dvd>
+    <menu>hr</menu>
+    <audio>hr</audio>
+    <subtitle>hr</subtitle>
+  </dvd>
+  <regions>
+    <region name="CRO">
+      <dateshort>YYYY-MM-DD</dateshort>
+      <datelong>DDDD, D MMMM YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+  </regions>
+</language>

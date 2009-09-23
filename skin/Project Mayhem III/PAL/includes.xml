@@ -1,0 +1,163 @@
+<includes>
+	<include file="defaults.xml" />
+	<include file="CommonViewTypes.xml" />
+	<include file="CommonViewTypes_Library.xml" />
+	<include file="CommonViewTypes_Dialogs.xml" />
+	<include file="3D_CoverView.xml" />
+
+	<include name="homebuttonanimation">
+		<animation effect="fade" time="500" delay="400">VisibleChange</animation>
+		<animation effect="rotate" time="300" start="-120" end="0" center="-20,-60" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+		<animation effect="rotate" time="300" start="0" end="-120" center="-20,-60" acceleration="1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+	</include>
+	<include name="contentpanelslide">
+		<animation effect="slide" time="300" start="600,0" end="0,0" acceleration="-1" condition="[!Skin.HasSetting(animated) + !Skin.HasSetting(tween_animated)]">WindowOpen</animation>
+		<animation effect="slide" time="200" start="0,0" end="600,0" acceleration="1.1" condition="[!Skin.HasSetting(animated) + !Skin.HasSetting(tween_animated)]">WindowClose</animation>
+		<animation effect="slide" tween="bounce" time="1200" start="600,0" end="0,0" acceleration="-1" condition="[!Skin.HasSetting(animated) + Skin.HasSetting(tween_animated)]">WindowOpen</animation>
+		<animation effect="slide" tween="bounce" time="800" start="0,0" end="600,0" acceleration="1.1" condition="[!Skin.HasSetting(animated) + Skin.HasSetting(tween_animated)]">WindowClose</animation>
+	</include>
+	<include name="buttonpanelslide">
+		<animation effect="slide" time="300" start="-300,0" end="0,0" acceleration="-1.1" condition="[!Skin.HasSetting(animated) + !Skin.HasSetting(tween_animated)]">WindowOpen</animation>
+		<animation effect="slide" time="200" start="0,0" end="-300,0" acceleration="1.1" condition="[!Skin.HasSetting(animated) + !Skin.HasSetting(tween_animated)]">WindowClose</animation>
+		<animation effect="slide" tween="elastic" time="1200" start="-300,0" end="0,0" acceleration="-1.1" condition="[!Skin.HasSetting(animated) + Skin.HasSetting(tween_animated)]">WindowOpen</animation>
+		<animation effect="slide" tween="elastic" time="800" start="0,0" end="-300,0" acceleration="1.1" condition="[!Skin.HasSetting(animated) + Skin.HasSetting(tween_animated)]">WindowClose</animation>
+	</include>
+	<include name="windowswitchtransition">
+		<control type="group">
+			<visible>!Skin.HasSetting(animated) + !Window.Previous(2999)</visible>
+			<animation effect="fade" start="0" end="0" time="1">VisibleChange</animation>
+			<animation effect="fade" start="100" end="0" time="300" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+			<animation effect="fade" start="0" end="100" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>720</width>
+				<height>88</height>
+				<texture>background-plain.png</texture>
+			</control>
+			<control type="image">
+				<description>background image</description>
+				<posx>0</posx>
+				<posy>88</posy>
+				<width>720</width>
+				<height>488</height>
+				<texture>background-bottom.png</texture>
+			</control>
+		</control>
+	</include>
+	<include name="homemediainfo">
+		<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)</visible>
+		<animation effect="fade" time="200">VisibleChange</animation>
+		<animation effect="slide" time="500" start="600,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+		<animation effect="slide" time="500" start="0,0" end="600,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+	</include>
+	<include name="homevideoinfo">
+		<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)</visible>
+		<animation effect="fade" time="200">VisibleChange</animation>
+		<animation effect="slide" time="500" start="600,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+		<animation effect="slide" time="500" start="0,0" end="600,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+	</include>
+	<include name="homestatsinfo">
+		<animation effect="fade" time="200">VisibleChange</animation>
+		<animation effect="slide" time="0" start="0,0" end="0,-250" condition="[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)]">Conditional</animation>
+		<animation effect="slide" time="500" start="600,0" end="0,0" acceleration="-1.1" delay="0" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+		<animation effect="slide" time="500" start="0,0" end="600,0" acceleration="-1.3" delay="0" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+	</include>
+	<include name="homemisc">
+		<animation effect="fade" time="1000">VisibleChange</animation>
+		<animation effect="fade" time="200" condition="!Skin.HasSetting(animated)">WindowOpen</animation>
+		<animation effect="fade" time="200" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+	</include>
+	<include name="mediaoverlay">
+		<visible>!Window.Next(Home)+!Window.IsVisible(2700)</visible>
+		<animation effect="fade" time="300">WindowOpen</animation>
+		<animation effect="fade" time="300">VisibleChange</animation>
+	</include>
+	<include name="dialogeffect">
+		<animation effect="fade" time="200">WindowOpen</animation>
+		<animation effect="fade" time="200">WindowClose</animation>
+	</include>
+	<include name="shutdownmenu">
+		<animation effect="zoom" tween="bounce" start="600" center="175,288" time="1400" condition="[!Skin.HasSetting(animated) + Skin.HasSetting(tween_animated)]">WindowOpen</animation>
+		<animation effect="zoom" start="600" center="175,288" time="700" condition="[!Skin.HasSetting(animated) + !Skin.HasSetting(tween_animated)]">WindowOpen</animation>
+		<animation effect="slide" end="0,-600" acceleration="2" time="700" condition="!Skin.HasSetting(animated)">WindowClose</animation>
+	</include>
+	<include name="contentpanel">
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>140</posx>
+			<posy>88</posy>
+			<width>64</width>
+			<height>510</height>
+			<texture>contentpanel_left.png</texture>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice</description>
+			<posx>204</posx>
+			<posy>88</posy>
+			<width>516</width>
+			<height>510</height>
+			<texture>contentpanel.png</texture>
+			<include>contentpanelslide</include>
+		</control>
+		<control type="image" id="0">
+			<description>contentpanel slice Custom background</description>
+			<posx>180</posx>
+			<posy>88</posy>
+			<width>540</width>
+			<height>449</height>
+			<aspectratio scalediffuse="false">scale</aspectratio>
+			<texture diffuse="Content_Panel_Diffuse.png" />
+			<info>Skin.String(Custom_Background)</info>
+			<include>contentpanelslide</include>
+			<visible>Skin.HasSetting(Use_Custom_Background)</visible>
+			<visible>![!IsEmpty(Fanart.Image) + Skin.HasSetting(ShowFanart)]</visible>
+		</control>
+	</include>
+	<include name="ScrollOffsetLabel">
+                <control type="group">
+			<visible>Container.Scrolling</visible>
+			<animation effect="fade" time="100">Visible</animation>
+			<animation effect="fade" time="300">Hidden</animation>
+			<animation effect="slide" end="0,80" time="0" condition="[Window.IsVisible(MusicFiles) | Window.IsVisible(Musiclibrary)] + Control.IsVisible(57)">Conditional</animation>
+			<animation effect="slide" end="-60,-90" time="0" condition="[Window.IsVisible(VideoLibrary) | Window.IsVisible(Musiclibrary)] + Control.IsVisible(51)">Conditional</animation>
+			<animation effect="slide" end="0,-70" time="0" condition="[Window.IsVisible(Musiclibrary)] + Control.IsVisible(58)">Conditional</animation>
+			<posx>400</posx>
+			<posy>270</posy>
+			<width>330</width>
+			<height>232</height>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>70</width>
+				<height>70</height>
+				<texture border="10">osd_menu_bg.png</texture>
+			</control>
+			<control type="label">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>70</width>
+				<height>70</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.SortLetter]</label>
+				<textcolor>white</textcolor>
+				<font>special13</font>
+			</control>
+                </control>
+	</include>
+	<include name="autoscrollslow">
+	         <align>justify</align>
+	         <autoscroll time="3000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+	</include>
+	<include name="autoscrollmedium">
+	         <align>justify</align>
+	         <autoscroll time="2000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+	</include>
+	<include name="autoscrollfast">
+	         <align>justify</align>
+	         <autoscroll time="1000" delay="3000">Skin.HasSetting(AutoScroll)</autoscroll>
+	</include>
+</includes>

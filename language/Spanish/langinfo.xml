@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<language>
+  <charsets>
+    <gui>CP1252</gui>
+    <subtitle>CP1252</subtitle>
+  </charsets>
+
+  <dvd>
+    <menu>es</menu>
+    <audio>es</audio>
+    <subtitle>es</subtitle>
+  </dvd>
+
+  <regions>
+    <region>
+      <dateshort>D/M/YYYY</dateshort>
+      <datelong>DDD, DD' de 'MMMM' de 'YYYY</datelong>
+      <time symbolAM="" symbolPM="">H:mm:ss</time>
+      <tempunit>C</tempunit>
+      <speedunit>kmh</speedunit>
+    </region>
+  </regions>
+
+  <sorttokens>
+    <token>The</token>
+  </sorttokens>
+</language>

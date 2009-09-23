@@ -1,0 +1,114 @@
+<window id="2007">
+	<defaultcontrol>2</defaultcontrol>
+	<controls>
+		<control type="group" id="13">
+			<posx>130r</posx>
+			<posy>10</posy>
+			<visible>!Skin.HasSetting(Show_SlideShow_Paused)</visible>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>120</width>
+				<height>35</height>
+				<texture>black-back.png</texture>
+				<bordertexture border="3">NoCover_1.png</bordertexture>
+				<bordersize>5</bordersize>
+			</control>
+			<control type="label">
+				<description>paused label</description>
+				<posx>10</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>35</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font10</font>
+				<textcolor>white</textcolor>
+				<label>31043</label>
+			</control>
+		</control>
+		<!-- media infos -->
+		<control type="group">
+			<posx>20</posx>
+			<posy>630</posy>
+			<visible>Player.ShowInfo + Player.HasMedia</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>500</width>
+				<height>80</height>
+				<texture>black-back.png</texture>
+				<bordertexture border="3">NoCover_1.png</bordertexture>
+				<bordersize>5</bordersize>
+			</control>
+			<control type="image">
+				<posx>9</posx>
+				<posy>9</posy>
+				<width>64</width>
+				<height>64</height>
+				<texture>$INFO[MusicPlayer.Cover]</texture>
+			</control>
+			<control type="label">
+				<posx>90</posx>
+				<posy>9</posy>
+				<width>400</width>
+				<height>20</height>
+				<label>$INFO[MusicPlayer.Title]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font11</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>90</posx>
+				<posy>30</posy>
+				<width>400</width>
+				<height>20</height>
+				<label>$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, - ]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font11</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+			</control>
+			<control type="label">
+				<posx>150</posx>
+				<posy>51</posy>
+				<width>70</width>
+				<height>20</height>
+				<label>$INFO[MusicPlayer.Time]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font11</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+			</control>
+			<control type="progress" id="403">
+				<description>progress control</description>
+				<posx>155</posx>
+				<posy>58</posy>
+				<width>260</width>
+				<height>8</height>
+				<info>Player.progress</info>
+			</control>
+			<control type="label">
+				<posx>420</posx>
+				<posy>51</posy>
+				<width>70</width>
+				<height>20</height>
+				<label>$INFO[MusicPlayer.Duration]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font11</font>
+				<textcolor>grey</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+			</control>
+		</control>
+	</controls>
+</window>

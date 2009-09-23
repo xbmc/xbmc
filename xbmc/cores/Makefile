@@ -1,0 +1,12 @@
+INCLUDES=-I. -I../ -Iffmpeg -I../linux -I../../guilib -I../utils -Idvdplayer
+
+SRCS=DummyVideoPlayer.cpp \
+     PlayerCoreFactory.cpp \
+     ssrc.cpp \
+     dlgcache.cpp \
+     PlayerSelectionRule.cpp
+
+LIB=cores.a
+
+include ../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

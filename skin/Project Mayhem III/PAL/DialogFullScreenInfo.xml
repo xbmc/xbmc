@@ -1,0 +1,291 @@
+<window type="dialog" id="142">
+ <defaultcontrol always="true">1</defaultcontrol>
+	<controls>
+		<control type="group">
+			<posx>-10</posx>
+			<posy>410</posy>
+			<control type="image">
+				<description>media info background image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>740</width>
+				<height>120</height>
+				<texture>osd_menu_bg.png</texture>
+			</control>
+			<control type="button" id ="1">
+				<description>Main Info</description>
+				<posx>20</posx>
+				<posy>0</posy>
+				<width>10</width>
+				<height>120</height>
+				<label>-</label>
+				<font>font10</font>
+				<align>center</align>
+				<texturenofocus>video-info-button-nofocus.png</texturenofocus>
+				<texturefocus>video-info-button-focus.png</texturefocus>
+				<onleft>2</onleft>
+				<onright>2</onright>
+				<onup>1</onup>
+				<ondown>1</ondown>
+				<pulseonselect>no</pulseonselect>
+				<visible>!IsEmpty(VideoPlayer.Plot)</visible>
+			</control>
+			<control type="togglebutton" id ="2">
+				<description>Plot Info</description>
+				<posx>20r</posx>
+				<posy>0</posy>
+				<width>10</width>
+				<height>120</height>
+				<label>-</label>
+				<font>font10</font>
+				<align>center</align>
+				<usealttexture>Control.HasFocus(61)</usealttexture>
+				<texturenofocus>video-info-button-nofocus.png</texturenofocus>
+				<texturefocus>video-info-button-focus.png</texturefocus>
+				<alttexturenofocus>video-info-button-focus.png</alttexturenofocus>
+				<alttexturefocus>video-info-button-focus.png</alttexturefocus>
+				<onleft>61</onleft>
+				<onright>1</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+				<pulseonselect>no</pulseonselect>
+				<visible>!IsEmpty(VideoPlayer.Plot)</visible>
+			</control>
+			<control type="image">
+				<description>cover image</description>
+				<posx>50</posx>
+				<posy>0</posy>
+				<width>100</width>
+				<height>120</height>
+				<info>videoplayer.cover</info>
+				<aspectratio>keep</aspectratio>
+			</control>
+			<control type="label">
+				<description>Current System Time label</description>
+				<width>100</width>
+				<posx>680</posx>
+				<posy>5</posy>
+				<info>System.Time</info>
+				<align>right</align>
+				<textcolor>green</textcolor>
+				<font>special13</font>
+				<visible>!Control.HasFocus(2) + !Control.HasFocus(61)</visible>
+			</control>
+			<control type="group">
+				<visible>Control.HasFocus(2) | Control.HasFocus(61)</visible>
+				<control type="textbox">
+					<description>Textbox for Plot info</description>
+					<posx>160</posx>
+					<posy>5</posy>
+					<width>520</width>
+					<height>90</height>
+					<font>font13</font>
+					<pagecontrol>61</pagecontrol>
+					<label>$INFO[VideoPlayer.Plot]</label>
+					<align>justify</align>
+				</control>
+				<control type="button">
+					<posx>685</posx>
+					<posy>10</posy>
+					<include>scrollbar_width</include>
+					<height>20</height>
+					<onclick>PageUp(50)</onclick>
+					<texturefocus border="4">scrollbar_arrow_up_focus.png</texturefocus>
+					<texturenofocus border="4">scrollbar_arrow_up.png</texturenofocus>
+					<visible>Control.IsVisible(61)</visible>
+				</control>
+				<control type="button">
+					<posx>685</posx>
+					<posy>80</posy>
+					<include>scrollbar_width</include>
+					<height>20</height>
+					<onclick>PageDown(61)</onclick>
+					<texturefocus border="4">scrollbar_arrow_down_focus.png</texturefocus>
+					<texturenofocus border="4">scrollbar_arrow_down.png</texturenofocus>
+					<visible>Control.IsVisible(61)</visible>
+				</control>
+				<control type="scrollbar" id="61">
+					<posx>685</posx>
+					<posy>30</posy>
+					<include>scrollbar_width</include>
+					<height>50</height>
+					<texturesliderbackground border="4">scrollbar_background.png</texturesliderbackground>
+					<texturesliderbar border="4">scrollbar_bar.png</texturesliderbar>
+					<texturesliderbarfocus border="4">scrollbar_bar_focus.png</texturesliderbarfocus>
+					<textureslidernib>-</textureslidernib>
+					<textureslidernibfocus>-</textureslidernibfocus>
+					<onleft>1</onleft>
+					<onright>2</onright>
+					<showonepage>false</showonepage>
+					<orientation>vertical</orientation>
+				</control>
+			</control>
+			<control type="group">
+				<visible>!videoplayer.content(episodes) + !videoplayer.content(musicvideos) + !videoplayer.content(livetv) + !Control.HasFocus(2) + !Control.HasFocus(61)</visible>
+				<control type="label">
+					<description>current_event_name</description>
+					<width>420</width>
+					<posx>160</posx>
+					<posy>5</posy>
+					<info>VideoPlayer.Title</info>
+					<align>left</align>
+					<font>special13</font>
+				</control>
+				<control type="label">
+					<description>current_event_description</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>30</posy>
+					<info>VideoPlayer.Genre</info>
+					<align>left</align>
+					<font>special12</font>
+				</control>
+				<control type="label">
+					<description>current_event_details</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>60</posy>
+					<info>VideoPlayer.Director</info>
+					<align>left</align>
+					<font>font10</font>
+				</control>
+				<control type="label">
+					<description>current_event_details</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>60</posy>
+					<info>videoplayer.studio</info>
+					<align>left</align>
+					<font>font10</font>
+					<visible>IsEmpty(VideoPlayer.Director)</visible>
+				</control>
+			</control>
+			<control type="group">
+				<visible>videoplayer.content(livetv) + !Control.HasFocus(2) + !Control.HasFocus(61)</visible>
+				<control type="label">
+					<description>current_event_name</description>
+					<width>420</width>
+					<posx>160</posx>
+					<posy>5</posy>
+					<info>VideoPlayer.genre</info>
+					<align>left</align>
+					<font>special12</font>
+				</control>
+				<control type="label">
+					<description>TV current_event_description</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>30</posy>
+					<info>VideoPlayer.Title</info>
+					<align>left</align>
+					<font>special13</font>
+				</control>
+			</control>
+			<control type="group">
+				<visible>videoplayer.content(episodes) + !Control.HasFocus(2) + !Control.HasFocus(61)</visible>
+				<control type="label">
+					<description>current_event_name</description>
+					<width>420</width>
+					<posx>160</posx>
+					<posy>5</posy>
+					<info>VideoPlayer.tvshowtitle</info>
+					<align>left</align>
+					<font>special12</font>
+				</control>
+				<control type="label">
+					<description>TV current_event_description</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>30</posy>
+					<info>VideoPlayer.Title</info>
+					<align>left</align>
+					<font>special13</font>
+				</control>
+				<control type="label">
+					<description>TV current_event_details</description>
+					<width>520</width>
+					<posx>160</posx>
+					<posy>60</posy>
+					<label>$LOCALIZE[20373] $INFO[VideoPlayer.Season] - $LOCALIZE[20359] $INFO[VideoPlayer.episode]</label>
+					<align>left</align>
+					<font>font10</font>
+				</control>
+			</control>
+			<control type="group">
+				<visible>videoplayer.content(musicvideos) + !Control.HasFocus(2) + !Control.HasFocus(61)</visible>
+				<control type="label">
+					<description>Artist label</description>
+					<width>400</width>
+					<posx>160</posx>
+					<posy>5</posy>
+					<info>VideoPlayer.Artist</info>
+					<align>left</align>
+					<font>special12</font>
+				</control>
+				<control type="label">
+					<description>Title label</description>
+					<width>500</width>
+					<posx>160</posx>
+					<posy>30</posy>
+					<info>VideoPlayer.Title</info>
+					<align>left</align>
+					<font>special13</font>
+				</control>
+				<control type="fadelabel">
+					<description>Album label</description>
+					<width>380</width>
+					<posx>160</posx>
+					<posy>60</posy>
+					<info>VideoPlayer.Album</info>
+					<align>left</align>
+					<font>font10</font>
+				</control>
+			</control>
+			<control type="label">
+				<description>time label</description>
+				<width>200</width>
+				<posx>160</posx>
+				<posy>80</posy>
+				<label>$INFO[VideoPlayer.Time]$INFO[Player.Duration, / ]</label>
+				<align>left</align>
+				<font>font10</font>
+				<visible>!Control.HasFocus(2) + !Control.HasFocus(61)</visible>
+			</control>
+			<control type="label">
+				<description>Chapter Pos No</description>
+				<width>200</width>
+				<posx>680</posx>
+				<posy>80</posy>
+				<label>$INFO[player.chapter,$LOCALIZE[21396] ]$INFO[player.chaptercount, / ]</label>
+				<visible>player.chaptercount + !Control.HasFocus(2) + !Control.HasFocus(61)</visible>
+				<align>right</align>
+				<font>font10</font>
+				<animation effect="slide" end="0,-20" time="0" condition="!IsEmpty(player.chaptername)">Conditional</animation>
+			</control>
+			<control type="label">
+				<description>Chapter Name</description>
+				<width>400</width>
+				<posx>680</posx>
+				<posy>80</posy>
+				<label>$INFO[player.chaptername]</label>
+				<visible>player.chaptercount + !Control.HasFocus(2) + !Control.HasFocus(61) + !IsEmpty(player.chaptername)</visible>
+				<align>right</align>
+				<font>font10</font>
+			</control>
+			<control type="progress">
+				<description>Progressbar</description>
+				<posx>160</posx>
+				<posy>105</posy>
+				<width>520</width>
+				<height>5</height>
+				<info>Player.Progress</info>
+				<texturebg>progress_back.png</texturebg>
+				<lefttexture>progress_left.png</lefttexture>
+				<midtexture>progress_mid.png</midtexture>
+				<righttexture>progress_right.png</righttexture>
+				<overlaytexture>-</overlaytexture>
+				<visible>true</visible>
+			</control>
+		</control>
+	</controls>
+</window>

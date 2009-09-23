@@ -1,0 +1,14 @@
+# ogg pkg-config file
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: ogg
+Description: ogg is a library for manipulating ogg bitstreams
+Version: @VERSION@
+Requires:
+Conflicts:
+Libs: -L${libdir} -logg
+Cflags: -I${includedir}

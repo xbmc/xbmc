@@ -1,0 +1,80 @@
+<html><head>
+<title>curl_formget man page</title>
+<meta name="generator" content="roffit 0.7">
+<STYLE type="text/css">
+P.level0 {
+ padding-left: 2em;
+}
+
+P.level1 {
+ padding-left: 4em;
+}
+
+P.level2 {
+ padding-left: 6em;
+}
+
+span.emphasis {
+ font-style: italic;
+}
+
+span.bold {
+ font-weight: bold;
+}
+
+span.manpage {
+ font-weight: bold;
+}
+
+h2.nroffsh {
+ background-color: #e0e0e0;
+}
+
+span.nroffip {
+ font-weight: bold;
+ font-size: 120%;
+ font-family: monospace;
+}
+
+p.roffit {
+ text-align: center;
+ font-size: 80%;
+}
+</STYLE>
+</head><body>
+
+<p class="level0"><a name="NAME"></a><h2 class="nroffsh">NAME</h2>
+<p class="level0">curl_formget - serialize a previously build multipart/formdata HTTP POST chain <a name="SYNOPSIS"></a><h2 class="nroffsh">SYNOPSIS</h2>
+<p class="level0"><span Class="bold">#include &lt;curl/curl.h&gt;</span> 
+<p class="level0"><span Class="bold">void curl_formget(struct curl_httppost * form,  void * arg,</span> <span Class="bold"> curl_formget_callback  append );</span> 
+<p class="level0"><a name="DESCRIPTION"></a><h2 class="nroffsh">DESCRIPTION</h2>
+<p class="level0">curl_formget() is used to serialize data previously built/appended with <a class="emphasis" href="./curl_formadd.html">curl_formadd(3)</a>. Accepts a void pointer as second argument which will be passed to the curl_formget_callback function. 
+<p class="level0"><span Class="bold">typedef size_t (*curl_formget_callback)(void * arg,  const char * buf,</span> <span Class="bold"> size_t  len );</span> <pre>
+<p class="level0"><p class="level0">The curl_formget_callback will be executed for each part of the HTTP POST
+ chain. The void *arg pointer will be the one passed as second argument to
+ curl_formget(). The character buffer passed to it must not be freed. The 
+ callback should return the buffer length passed to it on success.
+ </pre>
+<a name="RETURN"></a><h2 class="nroffsh">RETURN VALUE</h2>
+<p class="level0">0 means everything was ok, non-zero means an error occurred <a name="EXAMPLE"></a><h2 class="nroffsh">EXAMPLE</h2>
+<p class="level0"><pre>
+<p class="level0"><p class="level0">&nbsp;size_t print_httppost_callback(void *arg, const char *buf, size_t len)
+ &nbsp;{
+ &nbsp;  fwrite(buf, len, 1, stdout);
+ &nbsp;  (*(size_t *) arg) += len;
+ &nbsp;  return len;
+ &nbsp;}
+ &nbsp;size_t print_httppost(struct curl_httppost *post)
+ &nbsp;{
+ &nbsp;  size_t total_size = 0;
+ &nbsp;  if(curl_formget(post, &total_size, print_httppost_callback)) {
+ &nbsp;    return (size_t) -1;
+ &nbsp;  }
+ &nbsp;  return total_size;
+ &nbsp;}
+ </pre>
+<a name="AVAILABILITY"></a><h2 class="nroffsh">AVAILABILITY</h2>
+<p class="level0">This function was added in libcurl 7.15.5 <a name="SEE"></a><h2 class="nroffsh">SEE ALSO</h2>
+<p class="level0"><a class="manpage" href="./curl_formadd.html">curl_formadd (3) </a> <p class="roffit">
+ This HTML page was made with <a href="http://daniel.haxx.se/projects/roffit/">roffit</a>.
+</body></html>

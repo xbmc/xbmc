@@ -1,0 +1,47 @@
+<HTML>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<TITLE>WebServer Architecture</TITLE>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" HREF="../style/normal_ws.css">
+<BODY BGCOLOR="#FFFFFF">
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<H1>GoAhead WebServer Architecture<A NAME="top"></A></H1><P>The  following diagram is provided to illustrate  major WebServer functionality, showing   function relationships  and identifying associated files. Refer to the list following this illustration for   <A HREF="#descriptions">descriptions</A> of these files.   </P><P><IMG SRC="webs_block.jpg" WIDTH="534" HEIGHT="520" BORDER="0" USEMAP="#wsblock"></P><BLOCKQUOTE><BLOCKQUOTE><BLOCKQUOTE><BLOCKQUOTE><P><B>WebServer Architecture</B> (<A HREF="blockdiagram.htm">large view</A>) </P><BLOCKQUOTE><BLOCKQUOTE><P>&nbsp;</P></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE><H2><B>WebServer File Descriptions<A NAME="descriptions"></A></B></H2><TABLE WIDTH="92%" BORDER="0">
+
+<TR><TD WIDTH="21%">asp.c <A NAME="asp"></A></TD><TD WIDTH="79%">active server page support </TD></TR>
+
+<TR><TD WIDTH="21%">cgi.c<A NAME="cgi"></A></TD><TD WIDTH="79%">standard CGI support</TD></TR>
+
+<TR><TD WIDTH="21%">ejlex.c<A NAME="ejlex"></A></TD><TD WIDTH="79%">embedded JavaScript lexical analyser</TD></TR>
+
+<TR><TD WIDTH="21%">ejparse.c <A NAME="ejparse"></A></TD><TD WIDTH="79%">embedded JavaScript parser and API </TD></TR>
+
+<TR><TD WIDTH="21%">emfdb.c<A NAME="emfdb"></A></TD><TD WIDTH="79%">WebServer database</TD></TR>
+
+<TR><TD WIDTH="21%">form.c<A NAME="form"></A></TD><TD WIDTH="79%">in-memory forms processor with GCI support</TD></TR>
+
+<TR><TD WIDTH="21%">handler.c<A NAME="handler"></A></TD><TD WIDTH="79%">URL handler support</TD></TR>
+
+<TR><TD WIDTH="21%">main.c<A NAME="main"></A></TD><TD WIDTH="79%">main program and startup for operating system</TD></TR>
+
+<TR><TD WIDTH="21%">rom.c<A NAME="rom"></A></TD><TD WIDTH="79%">ROM web pages access module when not using a file system.</TD></TR>
+
+<TR><TD WIDTH="21%">security.c<A NAME="security"></A></TD><TD WIDTH="79%">security URL handler. Implements a basic security policy</TD></TR>
+
+<TR><TD WIDTH="21%">sock.c<A NAME="sock"></A></TD><TD WIDTH="79%">generic socket support</TD></TR>
+
+<TR><TD WIDTH="21%">sockGen.c<A NAME="sockGen"></A></TD><TD WIDTH="79%">platform-independent socket support</TD></TR>
+
+<TR><TD WIDTH="21%">um.c<A NAME="umc"></A></TD><TD WIDTH="79%">user management</TD></TR>
+
+<TR><TD WIDTH="21%">webs.c<A NAME="webs"></A></TD><TD WIDTH="79%">primary GoAhead WebServer code. Includes state machine.</TD></TR>
+
+
+
+</TABLE><P><A HREF="#top">return  to top</A></P><P>Refer to<A HREF="../docs/files21.txt"> files21.txt</A> for a complete file list. </P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;		                </P><P>&nbsp;</P><P>&nbsp;</P><P>&nbsp;</P><MAP NAME="wsblock"><AREA SHAPE="rect" COORDS="411,438,465,462" HREF="#asp"><AREA SHAPE="rect" COORDS="271,439,326,459" HREF="#rom"><AREA SHAPE="rect" COORDS="481,150,533,170" HREF="#emfdb"><AREA SHAPE="rect" COORDS="476,450,535,460" HREF="#ejparse"><AREA SHAPE="rect" COORDS="475,436,532,450" HREF="#ejlex"><AREA SHAPE="rect" COORDS="324,323,378,348" HREF="#webs"><AREA SHAPE="rect" COORDS="323,240,377,260" HREF="#cgi"><AREA SHAPE="rect" COORDS="412,70,459,95" HREF="#umc"><AREA SHAPE="rect" COORDS="324,137,378,160" HREF="#form"><AREA SHAPE="rect" COORDS="324,36,379,61" HREF="#security"><AREA SHAPE="rect" COORDS="200,40,265,61" HREF="#handler"><AREA SHAPE="rect" COORDS="103,237,161,259" HREF="#sockGen"><AREA SHAPE="rect" COORDS="51,237,98,259" HREF="#sock"><AREA SHAPE="rect" COORDS="37,6,136,27" HREF="#main"></MAP>
+
+</TD></TR></TABLE>
+
+
+
+</HTML>

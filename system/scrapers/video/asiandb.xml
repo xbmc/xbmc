@@ -1,0 +1,103 @@
+<scraper framework="1.0" date="2009-05-22" name="AsianDB" content="movies" thumb="asiandb.gif" language="en">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://www.asiandb.com/browse/movie_detail.pfm?code=\1&lt;url&gt;"  dest="3">
+			<expression noclean="1">asiandb.com/browse/movie_detail.pfm?code=([0-9]*)</expression>
+		</RegExp>	
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url spoof=&quot;http://www.asiandb.com/browse/advanced.pfm&quot; post=&quot;true&quot;&gt;http://www.asiandb.com/browse/advanced.pfm?text=\1&amp;amp;x=0&amp;amp;y=0&amp;amp;part=movie&lt;/url&gt;" dest="3">
+			<expression noclean="1"></expression>
+		</RegExp>	
+	</CreateSearchUrl>
+
+<GetSearchResults dest="3">
+    <RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="3">
+        <RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.asiandb.com/browse/movie_detail.pfm?code=\1&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5">
+            <expression repeat="yes">&lt;a href=/browse/movie_detail.pfm\?code=([0-9]+)&gt;&lt;font class=e3b&gt;(.[^&lt;]*)&lt;/font&gt;</expression>
+        </RegExp>
+        <expression noclean="1"></expression>
+    </RegExp>
+</GetSearchResults>
+
+<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+
+<!--Title -->
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression trim="1" noclean="1">&lt;td valign=top&gt;&lt;font class=e5b&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+
+<!--Original Title
+			<RegExp input="$$1" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="5">
+				<expression>Titolo originale.[^z]*ze=&quot;2&quot;&gt;([^)&lt;]*)</expression>
+			</RegExp> -->
+			
+<!--Year Film-->
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>&lt;font class=e3&gt;\(([0-9]+)\)</expression>
+			</RegExp>
+			
+<!--Director-->
+			<RegExp input="$$7" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression trim="1" noclean="1">&lt;font class=h0b color=white&gt;Crew&lt;/font&gt;(.*)</expression>
+				</RegExp>
+				<expression repeat="yes">&lt;b&gt;Director: &lt;/b[^\n]*&gt;([A-Za-z][^&lt;]*)&lt;</expression>
+			</RegExp>
+
+<!--Runtime Film-->
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
+				<expression>&lt;b&gt;Runtime:&lt;/b&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+
+<!--Thumbnail -->
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.asiandb.com\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">(/data/title/mini/[^&quot; ]*)</expression>
+			</RegExp>			
+						
+<!--User rating-->
+			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;" dest="5+">
+				<expression>&gt;Users&lt;/td&gt;.*img src=/images/rate/[0-9]+.gif&gt;\(([0-9]+)/10\)</expression>
+			</RegExp>
+
+<!--Vote count-->
+			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
+				<expression>&lt;font class=e2&gt;&amp;nbsp;\[([0-9]+)\]&amp;nbsp;&amp;nbsp;&lt;/font&gt;</expression>
+			</RegExp>
+
+<!--Genre Film-->
+			<RegExp input="$$7" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression trim="1" noclean="1">&lt;b&gt;Genre:(.*)&lt;b&gt;Production:</expression>
+				</RegExp>
+				<expression repeat="yes">/browse/search.pfm\?mode=genre&amp;query=[^&gt;]*&gt;([^&lt;]*)&lt;</expression>
+			</RegExp>
+
+<!--Actors -->
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression trim="1" noclean="1">&lt;b&gt;Starring&lt;/b&gt;:(.*)&lt;b&gt;Director:&lt;/b&gt;</expression>
+				</RegExp>
+				<expression repeat="yes">&quot;&gt;([^&lt;]+)&lt;/a&gt;</expression>
+			</RegExp>
+
+
+<!--Writer-->
+			<RegExp input="$$7" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression trim="1" noclean="1">&lt;font class=h0b color=white&gt;Crew&lt;/font&gt;(.*)</expression>
+				</RegExp>
+				<expression repeat="yes">&lt;b&gt;Writer: &lt;/b[^\n]*&gt;([A-Za-z][^&lt;]*)&lt;</expression>
+			</RegExp>
+<!--Plot -->
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression trim="1">Synopsis&lt;/td&gt;&lt;/table&gt;&lt;div[^&gt;]*&gt;&lt;table[^&gt;]*&gt;&lt;td[^&gt;]*&gt;&lt;img[^&gt;]*&gt;(.*)&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;&lt;p&gt;</expression>
+            </RegExp>
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression trim="1">Introduction&lt;/td&gt;&lt;/table&gt;&lt;div[^&gt;]*&gt;&lt;table[^&gt;]*&gt;&lt;td[^&gt;]*&gt;&lt;img[^&gt;]*&gt;(.*)&lt;/td&gt;&lt;/table&gt;&lt;/div&gt;&lt;p&gt;</expression>
+            </RegExp>
+
+			<expression noclean="1"></expression>
+		</RegExp>
+ </GetDetails>	
+</scraper>

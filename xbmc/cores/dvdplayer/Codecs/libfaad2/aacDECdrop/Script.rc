@@ -1,0 +1,214 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_TF01                BITMAP                  "resource/AAC01.bmp"
+IDB_TF02                BITMAP                  "resource/AAC02.bmp"
+IDB_TF03                BITMAP                  "resource/AAC03.bmp"
+IDB_TF04                BITMAP                  "resource/AAC04.bmp"
+IDB_TF05                BITMAP                  "resource/AAC05.bmp"
+IDB_TF06                BITMAP                  "resource/AAC06.bmp"
+IDB_TF07                BITMAP                  "resource/AAC07.bmp"
+IDB_TF08                BITMAP                  "resource/AAC08.bmp"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU 
+BEGIN
+    POPUP "Menu"
+    BEGIN
+        MENUITEM "&Decoder Options",            IDM_VOLUME
+        MENUITEM "&Stop Decoding",              IDM_STOP_DEC
+        MENUITEM "&About",                      IDM_ABOUT
+        MENUITEM SEPARATOR
+        MENUITEM "&Errors to Log File",         IDM_LOGERR
+        MENUITEM "&Always on Top",              IDM_ONTOP
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit\tAlt+F4",               IDM_QUIT
+    END
+    MENUITEM SEPARATOR
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON                    "resource/AAC01.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_VOLUME DIALOGEX 0, 0, 255, 257
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Decoder Options V1.2"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Decoding Settings",IDC_STATIC,7,7,241,23
+    CONTROL         "Playback",IDC_PLAYBACK,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,15,17,55,10
+    CONTROL         "Decode to File",IDC_DECODE,"Button",BS_AUTORADIOBUTTON,
+                    125,17,65,10
+    GROUPBOX        "Output Format Settings",IDC_STATIC,7,31,241,50
+    CONTROL         "Microsoft WAV",IDC_WAV,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,15,45,65,10
+    CONTROL         "Apple/SGI AIFF",IDC_AIFF,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,125,45,65,10
+    CONTROL         "Sun/NeXT AU",IDC_SUNAU,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,15,60,65,10
+    CONTROL         "DEC AU",IDC_DECAU,"Button",BS_AUTORADIOBUTTON | 
+                    WS_DISABLED,125,60,65,10
+    GROUPBOX        "Output Sample Format Settings",IDC_STATIC,7,82,241,91
+    CONTROL         "16 bit PCM",IDC_16BIT,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP,15,96,65,10
+    CONTROL         "24 bit PCM",IDC_24BIT,"Button",BS_AUTORADIOBUTTON,125,
+                    96,65,10
+    CONTROL         "32 bit PCM",IDC_32BIT,"Button",BS_AUTORADIOBUTTON,15,
+                    111,65,10
+    CONTROL         "32 bit floats",IDC_FLOATS,"Button",BS_AUTORADIOBUTTON,
+                    125,111,65,10
+    CONTROL         "16 bit PCM - Dithered",IDC_16BIT_DITHER,"Button",
+                    BS_AUTORADIOBUTTON,15,126,83,10
+    CONTROL         "16 bit PCM - Dithered with",IDC_16BIT_L_SHAPE,"Button",
+                    BS_AUTORADIOBUTTON,125,126,98,10
+    CONTROL         "16 bit PCM - Dithered with",IDC_16BIT_M_SHAPE,"Button",
+                    BS_AUTORADIOBUTTON,15,146,98,10
+    CONTROL         "16 bit PCM - Dithered with",IDC_16BIT_H_SHAPE,"Button",
+                    BS_AUTORADIOBUTTON,125,146,98,10
+    LTEXT           "LIGHT Noise Shaping",IDC_STATIC,138,136,70,8
+    LTEXT           "HEAVY Noise Shaping",IDC_STATIC,138,156,73,8
+    LTEXT           "MEDIUM Noise Shaping",IDC_STATIC,28,156,78,8
+    GROUPBOX        "Object Type Settings",IDC_STATIC,7,174,241,50
+    CONTROL         "Main",IDC_MAIN,"Button",BS_AUTORADIOBUTTON | WS_GROUP,
+                    15,188,65,10
+    CONTROL         "Low Complexity",IDC_LC,"Button",BS_AUTORADIOBUTTON,125,
+                    188,65,10
+    CONTROL         "Long Term Prediction",IDC_LTP,"Button",
+                    BS_AUTORADIOBUTTON,15,203,85,10
+    CONTROL         "Low Delay",IDC_LD,"Button",BS_AUTORADIOBUTTON,125,203,
+                    65,10
+    DEFPUSHBUTTON   "Accept",IDC_BUTTON1,102,233,50,16
+END
+
+IDD_ABOUT DIALOGEX 0, 0, 255, 194
+STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "About aacDECdrop V1.22"
+FONT 8, "MS Sans Serif", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "",IDC_STATIC,7,5,241,157
+    CTEXT           "A decoder to decode/playback aac/Mpeg4 files.",
+                    IDC_STATIC,70,13,155,8
+    CTEXT           "Copyright 2002 John Edwards.",IDC_STATIC,70,30,97,8
+    CTEXT           "Utilises standard libfaad2 from Menno Bakker.",
+                    IDC_STATIC,70,46,145,8
+    LTEXT           "This program is free software; you can redistribute it and/or modify it",
+                    IDC_STATIC,13,62,212,8
+    LTEXT           "under the terms of the GNU Public Licence as published by the Free",
+                    IDC_STATIC,13,72,215,8
+    LTEXT           "Software Foundation; either version 2 of the Licence, or (at your option)",
+                    IDC_STATIC,13,82,224,8
+    LTEXT           "any later version.",IDC_STATIC,13,92,54,8
+    LTEXT           "This program is distributed in the hope that it will be useful, but",
+                    IDC_STATIC,13,112,195,8
+    LTEXT           "WITHOUT ANY WARRANTY; without even the implied warranty of",
+                    IDC_STATIC,13,122,213,8
+    LTEXT           "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+                    IDC_STATIC,13,132,218,8
+    LTEXT           "See the GNU General Public Licence for more details.",
+                    IDC_STATIC,13,142,170,8
+    DEFPUSHBUTTON   "OK",IDC_BUTTON6,102,171,50,16
+    CONTROL         112,IDC_STATIC,"Static",SS_BITMAP | SS_SUNKEN,12,13,43,
+                    40
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_VOLUME, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 256
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

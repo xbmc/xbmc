@@ -1,0 +1,160 @@
+<window id="122">
+	<defaultcontrol>2</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>400</posx>
+		<posy>55</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>800</width>
+			<height>610</height>
+			<colordiffuse>DDFFFFFF</colordiffuse>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>800</width>
+			<height>610</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="label" id="3">
+			<description>heading label</description>
+			<posx>40</posx>
+			<posy>40</posy>
+			<width>720</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font18</font>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>731</posx>
+			<posy>35</posy>
+			<width>35</width>
+			<height>25</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>Dialog.Close(122)</onclick>
+			<texturefocus>close-windowFO.png</texturefocus>
+			<texturenofocus>close-window.png</texturenofocus>
+			<onleft>2</onleft>
+			<onright>2</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<visible>system.getbool(lookandfeel.enablemouse)</visible>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>78</posy>
+			<width>720</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="label" id="4">
+			<description>No Presets at all label</description>
+			<posx>40</posx>
+			<posy>200</posy>
+			<width>720</width>
+			<height>30</height>
+			<label>13389</label>
+			<align>center</align>
+			<font>font13</font>
+			<textcolor>white</textcolor>
+		</control>
+		<control type="list" id="2">
+			<posx>45</posx>
+			<posy>85</posy>
+			<width>710</width>
+			<height>440</height>
+			<onleft>61</onleft>
+			<onright>61</onright>
+			<onup>2</onup>
+			<ondown>2</ondown>
+			<pagecontrol>61</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>710</width>
+					<height>35</height>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>690</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="40">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>710</width>
+					<height>35</height>
+					<visible>!Control.HasFocus(2)</visible>
+					<texture border="5">button-nofocus.png</texture>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>710</width>
+					<height>35</height>
+					<visible>Control.HasFocus(2)</visible>
+					<texture border="5">button-focus.png</texture>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>690</width>
+					<height>35</height>
+					<font>font12</font>
+					<align>left</align>
+					<aligny>center</aligny>
+					<selectedcolor>green</selectedcolor>
+					<info>ListItem.Label</info>
+				</control>
+			</focusedlayout>
+		</control>
+		<control type="label">
+			<description>number of files/pages in list text label</description>
+			<posx>750</posx>
+			<posy>535</posy>
+			<width>700</width>
+			<font>font12b</font>
+			<align>right</align>
+			<scroll>true</scroll>
+			<textcolor>white</textcolor>
+			<label>($INFO[Container(2).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(2).CurrentPage]/$INFO[Container(2).NumPages])</label>
+			<animation effect="slide" time="0" end="-75,0" condition="Control.IsVisible(61)">Conditional</animation>
+		</control>
+		<control type="spincontrol" id="61">
+			<description>Next page button</description>
+			<posx>690</posx>
+			<posy>538</posy>
+			<subtype>page</subtype>
+			<font>font12b</font>
+			<onleft>2</onleft>
+			<onright>2</onright>
+			<ondown>2</ondown>
+			<onup>2</onup>
+			<textcolor>-</textcolor>
+			<showonepage>false</showonepage>
+		</control>
+	</controls>
+</window>

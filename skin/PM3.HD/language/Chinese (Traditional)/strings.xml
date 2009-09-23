@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <string id="31000">靜音</string>
+  <string id="31001"></string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">同人作品[CR]圖像[CR]不[CR]存在</string>
+  <string id="31011">影集[CR]圖像[CR]不[CR]存在</string>
+  <string id="31012"></string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">章節標題</string>
+  <string id="31021">影片 - 檔案</string>
+  <string id="31022">音樂 - 檔案</string>
+  <string id="31023"></string>
+  <string id="31024">頁</string>
+  <string id="31025">項</string>
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">DVD 縮圖</string>
+  <string id="31029">DVD 列表</string>
+  <string id="31030">同人作品</string>
+  <string id="31031">完整列表</string>
+  <string id="31032">-</string>
+  <string id="31033">圖片縮圖</string>
+  <string id="31034">寬圖示</string>
+
+  <string id="31040">目前電影[CR]同人作品圖像[CR][CR]點擊更改</string>
+  <string id="31041">目前電視節目[CR]同人作品圖像[CR][CR]點擊更改</string>
+  <string id="31042">播放中</string>
+  <string id="31043">暫停</string>
+  <string id="31044">快轉</string>
+  <string id="31045">倒轉</string>
+  <string id="31046">歡迎使用 XBMC - 請登錄</string>
+  <string id="31047">最後登錄</string>
+  <string id="31048"></string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">XBMC 歌詞</string>
+  <string id="31054">從列表選擇歌曲</string>
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">打開播放列表</string>
+  <string id="31056">保存播放列表</string>
+  <string id="31057">關閉播放列表</string>
+  <string id="31058">系統音樂檔案</string>
+  <string id="31059">目前播放列表</string>
+  <string id="31060">這是堆疊檔案，選擇要播放的部分</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100">背景選項</string>
+  <string id="31101">主頁選項</string>
+  <string id="31102">背景</string>
+  <string id="31103">顯示「暫停」在圖片幻燈片秀</string>
+  <string id="31104">關機選單 - 使用休眠取代待機</string>
+  <string id="31105">顯示媒體標題在背景掃瞄時</string>
+  <string id="31106">其他選項</string>
+  <string id="31107">去除背景掃瞄線</string>
+  <string id="31108">去除影片播放時背景掃瞄線</string>
+  <string id="31109">主頁背景</string>
+  <string id="31110">按鈕 - 啟用自定義背景</string>
+  <string id="31111">顯示音樂資訊在播放歌詞時</string>
+  <string id="31112">顯示媒體標題在「寬圖示」瀏覽</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">自定義腳本選項</string>
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">設置按鈕標籤</string>
+  <string id="31204">腳本路徑</string>
+  <string id="31205">/string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">顯示歌詞腳本按鈕在主選單</string>
+  <string id="31209">啟用快速啟動腳本按鈕為 -</string>
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">顯示演員表</string>
+</strings>

@@ -1,0 +1,117 @@
+Install Instructions for libsamplerate
+======================================
+
+The following instructions explain how to install libsamplerate under
+Linux and other Unix like systems including Mac OSX. (For windows,
+see http://www.mega-nerd.com/SRC/win32.html).
+
+Preliminaries
+-------------
+1) Included with libsamplerate is a command line program named
+   sndfile-resample which uses libnsdile:
+
+        http://www.mega-nerd.com/libsndfile/
+
+   for file I/O. If you want to use sndfile-resample you need to
+   ensure that libsndfile is correctly installed first. If it is, the
+   command "pkg-config --cflags --libs sndfile" should print out
+   something like this:
+
+     -lsndfile
+
+   If pkg-config doesn't exist you will need need to install it. If
+   pkg-config cannot find libsndfile you may need install it. If you
+   install from from a Linux distribution package, make sure you also
+   install the libsndfile-devel package which contains the header files.
+
+   If libsndfile is installed, you may need to set the PKG_CONFIG_PATH
+   environment variable. If libsndfile is installed in /usr/local/lib,
+   you will need to set PKG_CONFIG_PATH using:
+
+       export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+
+   Pkg-config should now work. If it doesn't you need to fix it if you
+   want to use sndfile-resample.
+
+2) The included tests suite for libsamplerate needs libfftw3 which is
+   available here:
+
+       http://www.fftw.org/
+
+   If FFTW3 is not available, libsamplerate should still compile and
+   install without problems but the test suite will not be as
+   comprehensive as it normally is.
+
+Building
+--------
+Building and verifying libsamplerate is a four or five step process.
+
+1) The first step is to run configure
+
+        ./configure
+
+   which should print out something like the following:
+
+       checking build system type...
+       ...
+       ...
+       -=-=-=-=-=-=-=-=-= Configuration Complete =-=-=-=-=-=-=-=-=-=-
+
+         Configuration summary :
+
+           Version : ..................... X.Y.Z
+           Enable debugging : ............ no
+
+         Tools :
+
+           Compiler is GCC : ............. yes
+           GCC major version : ........... 3
+
+         Extra tools required for testing and examples :
+
+           Use FFTW : .................... yes
+           Have libsndfile : ............. yes
+
+         Installation directories :
+
+           Library directory : ........... /usr/local/lib
+           Program directory : ........... /usr/local/bin
+           Pkgconfig directory : ......... /usr/local/lib/pkgconfig
+
+       Compiling some other packages against libsamplerate may require
+       the addition of "/usr/local/lib/pkgconfig" to the
+       PKG_CONFIG_PATH environment variable.
+
+   There are a number of configure options. See the output of
+   configure when run with the --help command line option.
+
+2) If all goes well with the above then compiling the library can be
+   done with
+
+       make
+
+3) When that has finished, the test suite can be run using:
+
+       make check
+
+4) The final step is to install the library. This step needs to be
+   carried out as the root user (or with sudo):
+
+       make install
+
+   This command will by default install the library in the directory
+   /usr/local/lib. It can in installed in other location by using the
+   --prefix option in step 1).
+
+5) On linux, one more step is required, the registering of the library
+   with the system. This is done by running the following command
+   (also as the root user):
+
+        ldconfig -v
+
+As a final test, you can run
+
+        sndfile-resample
+
+to make sure everything is installed correctly.
+

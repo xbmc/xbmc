@@ -1,0 +1,29 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websSetEnv -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websSetEnv</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Set the Form variable 
+environment for a request.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+ 
+ void <b>websSetEnv</b>(webs_t wp); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="5%">wp <TD WIDTH="95%">Web server connection handle.</TD></TR></table><h2>Description</h2><P>The 
+websSetEnv procedure creates the Form variable environment for a request. It is 
+called automatically by the URL handler manager before calling the URL handlers. 
+URL handlers may wish to call websSetEnv after modifying certain request values. 
+For example, after modifying the request path via <A href="websSetRequestPath.htm">websSetPath</A>, 
+websSetEnv must be called to redfine the PATH_INFO variable.</P><p>See <A href="websExpand.htm">websExpand</A> 
+for a list of form environment variables.</p><h2>Return Value</h2><p> None</p><h2>Example</h2><pre> 
+websSetEnv(wp); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See Also</h2><p> 
+<A href="websExpand.htm">Standard form variables</A>, <A href="websGetVar.htm">websGetVar</A>, 
+<A href="websSetVar.htm">websSetVar</A>, <A href="websTestVar.htm">websTestVar</A> 
+</p></td></tr></table>
+</body>
+</html>

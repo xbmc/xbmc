@@ -1,0 +1,73 @@
+[preset00]
+fRating=3.000000
+fGammaAdj=1.504000
+fDecay=1.000000
+fVideoEchoZoom=2.987781
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=0
+nWaveMode=3
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=1
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=100.000000
+fWaveScale=0.049629
+fWaveSmoothing=0.900000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.500000
+fModWaveAlphaEnd=1.000000
+fWarpAnimSpeed=0.010000
+fWarpScale=1.000154
+fZoomExponent=1.028415
+fShader=0.800000
+zoom=0.999999
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=0.999999
+sy=1.000000
+wave_r=0.500000
+wave_g=1.000000
+wave_b=1.000000
+wave_x=0.500000
+wave_y=0.015000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.500000
+ob_a=0.100000
+ib_size=0.000000
+ib_r=1.000000
+ib_g=1.000000
+ib_b=0.250000
+ib_a=0.200000
+nMotionVectorsX=6.400000
+nMotionVectorsY=4.800000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=3.500000
+mv_r=0.000000
+mv_g=0.000000
+mv_b=1.000000
+mv_a=0.040000
+per_frame_1=q8 = oldq8 +0.003*(((pow(1.2*bass+0.4*bass_att+0.1*treb+0.1*treb_att+0.1*mid+0.1*mid_att,6)/fps) + (pow(1.2*bass+0.4*bass_att+0.1*treb+0.1*treb_att+0.1*mid+0.1*mid_att,5)/fps) + (pow(1.2*bass+0.4*bass_att+0.1*treb+0.1*treb_att+0.1*mid+0.1*mid_att,4)/fps) + (pow(1.2*bass+0.4*bass_att+0.1*treb+0.1*treb_att+0.1*mid+0.1*mid_att,3)/fps) + (pow(1.2*bass+0.4*bass_att+0.1*treb+0.1*treb_att+0.1*mid+0.1*mid_att,2)/fps) +(1.2*bass+0.4*bass_att+0.1*treb+0.1*treb_att+0.1*mid+0.1*mid_att)/fps));
+per_frame_2=oldq8 = q8;
+per_frame_3=wave_x = wave_x +(0.48*sin(4*bass*treb*mid))*sin(q8/bass);
+per_frame_4=wave_r = if(above((time*20)%2,0),0,wave_r + 0.5*sin(time));
+per_frame_5=wave_b=if(above((time*20)%2,0),1,0);
+per_frame_6=rot = rot + 0.0*sin(time);
+per_frame_7=dy = dy - 0.01- 0.01*sin(0.1*q8);
+per_frame_8=ob_r = .1 + if(above(.2*sin(time*.444),0),.3*sin(time*.444),0);
+per_frame_9=ob_g =.1 + if(above(.2*sin(time*.777),0),.3*sin(time*.777),0);
+per_pixel_1=warp = warp + if (below(y, 0.5), if(below(rad,0.9), +0.5 + 0.5*sin(0.613*q8), 0), +0.1);

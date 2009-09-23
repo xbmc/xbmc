@@ -1,0 +1,71 @@
+README for libdvdcss, a portable abstraction library for DVD decryption
+$Id$
+
+
+Introduction
+============
+
+libdvdcss is part of the VideoLAN project, a full MPEG2 client/server
+solution. The VideoLAN Client can also be used as a standalone program
+to play MPEG2 streams from a hard disk or a DVD.
+
+
+Building and Installing libdvdcss
+=================================
+
+See the INSTALL or INSTALL.libdvdcss file for this.
+
+Running lidvdcss
+================
+
+The behaviourof the library can be affected by changing two environment
+variables:
+  DVDCSS_METHOD={title|disc|key}: method for key decryption
+    title: decrypted title key is guessed from the encrypted sectors of
+           the stream. Thus it should work with a file as well as the
+           DVD device. But it sometimes takes much time to decrypt a title
+           key and may even fail. With this method, the key is only checked
+           at the beginning of each title, so it won't work if the key
+           changes in the middle of a title.
+    disc: the disc key is first cracked ; then all title keys can be
+           decrypted instantly, which allows us to check them often,
+    key: the same as "disc" if you don't have a file with player keys at
+           compilation time. If you do, the decryption of the disc key
+           will be faster with this method. It is the one that was used by
+           libcss.
+           This is the default method,
+  DVDCSS_VERBOSE={0|1|2}: libdvdcss verbosity
+    0: no error messages, no debug messages (this is the default)
+    1: only error messages
+    2: error and debug messages
+
+
+Troubleshooting
+===============
+
+A mailing-list has been set up for support and discussion about
+libdvdcss. Its address is :
+
+   <libdvdcss@videolan.org>
+
+To subscribe, send a mail to <listar@videolan.org> with the following
+words in the mail body :
+
+   subscribe libdvdcss
+
+To unsubscribe, do the same with the words :
+
+   unsubscribe libdvdcss
+
+
+When reporting bugs, try to be as precise as possible (which OS, which
+distribution, what plugins you were trying, and so on).
+
+
+Resources
+=========
+
+The VideoLAN web site at http://www.videolan.org/ is a good start for
+information about MPEG and DVD playing. Have a look at the documentation
+section, as well as the bookmarks.
+

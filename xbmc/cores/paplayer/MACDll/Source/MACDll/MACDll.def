@@ -1,0 +1,39 @@
+LIBRARY MACDll
+
+EXPORTS
+
+	; basic functions
+	CompressFile
+	DecompressFile
+	ConvertFile
+	VerifyFile
+
+	; interface wrappers
+	c_APEDecompress_Create
+	c_APEDecompress_Destroy
+	c_APEDecompress_GetData
+	c_APEDecompress_Seek
+	c_APEDecompress_GetInfo
+
+	c_APECompress_Create
+	c_APECompress_Destroy
+	c_APECompress_Start
+	c_APECompress_AddData
+	c_APECompress_GetBufferBytesAvailable
+	c_APECompress_LockBuffer
+	c_APECompress_UnlockBuffer
+	c_APECompress_Finish
+	c_APECompress_Kill
+
+	; helpers / miscellaneous
+	GetVersionNumber
+	GetInterfaceCompatibility
+	ShowFileInfoDialog
+	RemoveTag
+	TagFileSimple
+	GetID3Tag
+	FillWaveHeader
+	FillWaveFormatEx
+	c_GetAPETag
+	c_GetAPEDuration
+

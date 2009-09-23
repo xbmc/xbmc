@@ -1,0 +1,103 @@
+********************************************************************
+*                                                                  *
+* THIS FILE IS PART OF THE OggVorbis SOFTWARE CODEC SOURCE CODE.   *
+* USE, DISTRIBUTION AND REPRODUCTION OF THIS LIBRARY SOURCE IS     *
+* GOVERNED BY A BSD-STYLE SOURCE LICENSE INCLUDED WITH THIS SOURCE *
+* IN 'COPYING'. PLEASE READ THESE TERMS BEFORE DISTRIBUTING.       *
+*                                                                  *
+* THE OggVorbis SOURCE CODE IS (C) COPYRIGHT 1994-2002             *
+* by the Xiph.Org Foundation http://www.xiph.org/                  *
+*                                                                  *
+********************************************************************
+
+WHAT'S HERE:
+
+This source distribution includes libogg and nothing else.  Other modules 
+(eg, the modules vorbis, vorbis-tools and vorbis-plugins for the Vorbis 
+codec) contain the codec libraries for use with Ogg bitstreams.
+
+Directory:
+
+./src  		The source for libogg, a BSD-license inplementation of 
+		the public domain Ogg bitstream format
+
+./include       Library API headers and codebooks
+
+./debian        Rules/spec files for building Debian .deb packages
+
+./doc           Ogg specification documents
+
+./win32		Win32 projects and build automation
+
+./mac		MacOS 9 projects and build automation
+
+WHAT IS OGG?:
+
+Ogg project codecs use the Ogg bitstream format to arrange the raw,
+compressed bitstream into a more robust, useful form.  For example,
+the Ogg bitstream makes seeking, time stamping and error recovery
+possible, as well as mixing several sepearate, concurrent media
+streams into a single physical bitstream.
+
+CONTACT:
+
+The Ogg homepage is located at 'http://www.xiph.org/ogg/'.
+Up to date technical documents, contact information, source code and
+pre-built utilities may be found there.
+
+BUILDING FROM REPOSITORY SOURCE:
+
+A standard svn build should consist of nothing more than:
+
+./autogen.sh
+make 
+
+and as root if desired :
+
+make install
+
+This will install the Ogg libraries (static and shared) into
+/usr/local/lib, includes into /usr/local/include and API manpages
+(once we write some) into /usr/local/man.
+
+BUILDING FROM TARBALL DISTRIBUTIONS:
+
+./configure
+make
+
+and optionally (as root):
+make install
+
+BUILDING RPMS:
+
+RPMs may be built by:
+
+make dist
+rpm -ta libogg-<version>.tar.gz
+
+BUILDING ON WIN32:
+
+Use the project file in the win32 directory.  It should compile out of the box.
+You can also run one of the batch files from the commandline.
+
+E.g.: build_ogg_dynamic
+
+BUILDING ON MACOS 9:
+
+Ogg on MacOS 9 is built using CodeWarrior 5.3.  To build it, first
+open ogg/mac/libogg.mcp, switch to the "Targets" pane, select
+everything, and make the project.  In ogg/mac/Output you will now have
+both debug and final versions of Ogg shared libraries to link your
+projects against.
+
+To build a project using Ogg, add access paths to your CodeWarrior
+project for the ogg/include and ogg/mac/Output folders.  Be sure that
+"interpret DOS and Unix paths" is turned on in your project; it can be
+found in the "access paths" pane in your project settings.  Now simply
+add the shared libraries you need to your project (OggLib at least)
+and #include "ogg/ogg.h" wherever you need to acces Ogg functionality.
+
+(Build instructions for Ogg codecs such as vorbis are similar and may
+be found in those source modules' README files)
+
+$Id: README 10478 2005-11-28 04:23:35Z giles $

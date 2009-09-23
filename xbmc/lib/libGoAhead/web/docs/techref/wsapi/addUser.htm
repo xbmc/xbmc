@@ -1,0 +1,36 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>addUser -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">addUser</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR> <H2><B>Synopsis
+	</B></H2><BLOCKQUOTE><P>   Persist a user to the user database.
+
+</P></BLOCKQUOTE><H2><B>Prototype</B>
+	</H2><PRE>Int AddUser(char_t * user, char_t * password, char_t * group, 
+     char_t * dir, int prot, int enable)  </PRE><H2><B>Parameters</B>	</H2><TABLE WIDTH=100% BORDER=0 CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">User </TD><TD WIDTH="87%"> User ID </TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">Password </TD><TD WIDTH="87%">password </TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">Group  </TD><TD WIDTH="87%">user group </TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">Dir </TD><TD WIDTH="87%">home directory </TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">Prot </TD><TD WIDTH="87%">protection </TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="13%">Enable </TD><TD WIDTH="87%">enabled </TD></TR> 
+</TABLE><H2><B>Description</B>
+	</H2><P>User added.  Password is passed in clear text, then XOR encrypted before persisting.
+
+</P><H2><B>Return Valu</B>e
+	</H2><P>0 if successful; 	-1 if  error.  </P><H2><B>Example</B>
+	</H2><PRE>nCheck = AddUser("misterripley", "talented", 
+     "superusers", "/home/ripley", 1, 1); 	 </PRE><H2><B>See Also</B>
+	</H2><BLOCKQUOTE><P><A HREF="../umapi/umDeleteUser.htm">deleteUser
+
+</A></P></BLOCKQUOTE></td></tr></table>
+</body>
+</html>

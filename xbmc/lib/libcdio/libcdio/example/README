@@ -1,0 +1,86 @@
+$Id: README,v 1.28 2007/08/12 00:56:10 rocky Exp $
+
+This directory contains some simple examples of the use of the libcdio
+library.
+
+One might also possibly find useful C code among the regression tests
+(directory test), e.g. testbincue.c, testdefault.c, testiso9660.c, 
+testparanoia.c, or testtoc.c 
+
+Larger more-complicated examples are the cd-drive, cd-info, cd-read,
+cdda-player, iso-info and iso-read programs in the src directory. 
+
+And going further there's the cd-paranoia program (in
+src/cd-paranoia), and "real-world' code in the xine VCD plugin, or the
+vlc CD-DA plugin which are part of those distributions.
+
+Descriptions of the programs in this example directory are as follows...
+
+audio.c:     Sample program to show audio controls.
+
+cdchange.c:  A program to test if a CD has been changed since the last
+	     change test.
+
+cdio-eject.c: a stripped-down "eject" command to open or close a CDROM
+             tray
+
+cdtext.c:    A program to show CD-Text and CD disc mode info.
+
+drives.c:    A program to show drivers installed and what the default
+	     CD-ROM drive is and what CD drives are available.
+
+eject.c:     A program eject a CD from a CD-ROM drive and then close the door
+	     again.
+
+isofile.c:   A program to show using libiso9660 to extract a file from an
+	     ISO-9660 image.
+
+isofile2.c:  A program to show using libiso9660 to extract a file
+	     from a CDRWIN cue/bin CD image.
+
+isofuzzy.c : A program showing fuzzy ISO-9660 detection/reading.
+
+isolist.c:   A program to show using libiso9660 to list files in a
+	     directory of an ISO-9660 image and give basic iso9660 
+	     information.
+
+isolsn.c:    A program to show using libiso9660 to get the file 
+	     path for a given LSN.
+
+mmc1.c:      A program to show issuing a simple MMC command (INQUIRY).
+
+mmc2.c:      A more involved MMC command to list features from 
+	     a MMC GET_CONFIGURATION command.
+
+mmc2a.c:     Show MODE_SENSE page 2A paramaters:
+	     CD/DVD Capabilities and Mechanical Status Page
+
+paranoia:    A program to show using CD-DA paranoia (a library for jitter
+	     detection and audio-read error correction). This program uses
+	     an interface compatible (mostly) with cdparanoia.
+
+paranoia2:   Another program to show using CD-DA paranoia using a more
+	     libcdio-oriented initialization. Probably more suited to
+	     things that otherwise use libcdio such as media players 
+	     (e.g. for getting CDDB or CD-Text info)
+
+sample2.c:   A simple program to show drivers installed and what the
+	     default CD-ROM drive is.
+
+sample3.c:   A simple program to show the use of cdio_guess_cd_type().
+             Figure out the kind of CD image we've got.
+
+sample4.c:   A slightly improved sample3 program: we handle cdio logging
+             and take an optional CD-location.
+
+tracks.c:    A program to list track numbers and logical sector
+	     numbers of a Compact Disc using libcdio.
+
+udf1.c:      A program to show using libudf to list files in a directory of
+	     an UDF image.
+
+udf2.c:      A program to show using libudf to extract a file from
+	     an UDF image.
+
+Many of the above programs can be compiled in C++. See that directory
+for C++ examples which include some of the above.

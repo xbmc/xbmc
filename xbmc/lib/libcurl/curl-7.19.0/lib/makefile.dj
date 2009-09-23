@@ -1,0 +1,37 @@
+#
+#  Adapted for djgpp2 / Watt-32 / DOS by
+#  Gisle Vanem <giva@bgnett.no>
+#
+# $Id: makefile.dj,v 1.13 2008-08-21 13:51:07 giva Exp $
+
+DEPEND_PREREQ = config.h
+TOPDIR = ..
+
+include ../packages/DOS/common.dj
+
+# Makefile.inc provides the CSOURCES and HHEADERS defines
+include Makefile.inc
+
+OBJECTS := $(patsubst %.c,$(OBJ_DIR)/%.o,$(strip $(CSOURCES)))
+
+CURL_LIB = libcurl.a
+
+all: $(OBJ_DIR) ../include/curl/curlbuild.h config.h $(CURL_LIB)
+
+$(CURL_LIB): $(OBJECTS)
+	ar rs $@ $?
+
+config.h: config.dos
+	cp $^ $@
+
+../include/curl/curlbuild.h: ../include/curl/curlbuild.h.dist
+	cp $^ $@
+
+clean:
+	- rm -f $(OBJECTS)
+
+realclean vclean: clean
+	- rm -f config.h depend.dj $(CURL_LIB)
+
+-include depend.dj
+

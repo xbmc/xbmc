@@ -1,0 +1,501 @@
+# live-initramfs helper functions, used by live-initramfs on boot and by live-snapshot
+
+if [ ! -x "/bin/fstype" ]
+then
+	# klibc not in path -> not in initramfs
+	export PATH="${PATH}:/usr/lib/klibc/bin"
+fi
+
+# handle upgrade path from old udev (using udevinfo) to
+# recent versions of udev (using udevadm info)
+if [ -x /sbin/udevadm ]
+then
+	udevinfo='/sbin/udevadm info'
+else
+	udevinfo='udevinfo'
+fi
+
+# handle cases with partial udev (Ubuntu)
+if [ -x /lib/udev/vol_id ]
+then
+	volume_label='/lib/udev/vol_id -l'
+	volume_fstype='/lib/udev/vol_id -t'
+else
+	volume_label='/lib/udev/blkid -s LABEL -o value'
+	volume_fstype='/lib/udev/blkid -s TYPE -o value'
+fi
+
+!(wc --version > /dev/null 2>&1) || wcIsAvailable=1
+
+wordCount()
+{
+	cmdLine=${1}
+	if [ -n "${wcIsAvailable}" ];
+	then
+		num=$($cmdLine | wc -w)
+	else
+		num=0
+		for word in $($cmdLine);
+		do
+			num=$(( $num + 1 ))
+		done
+	fi
+	echo $num
+}
+
+
+sys2dev ()
+{
+	sysdev=${1#/sys}
+	echo "/dev/$($udevinfo -q name -p ${sysdev} 2>/dev/null|| echo ${sysdev##*/})"
+}
+
+subdevices ()
+{
+	sysblock=${1}
+	r=""
+
+	for dev in "${sysblock}" "${sysblock}"/*
+	do
+		if [ -e "${dev}/dev" ]
+		then
+			r="${r} ${dev}"
+		fi
+	done
+
+	echo ${r}
+}
+
+is_supported_fs ()
+{
+	fstype="${1}"
+
+	# Validate input first
+	if [ -z "${fstype}" ]
+	then
+		return 1
+	fi
+
+	# Try to look if it is already supported by the kernel
+	if grep -q ${fstype} /proc/filesystems
+	then
+		return 0
+	else
+		# Then try to add support for it the gentle way using the initramfs capabilities
+		modprobe ${fstype}
+		if grep -q ${fstype} /proc/filesystems
+		then
+			return 0
+		# Then try the hard way if /root is already reachable
+		else
+			kmodule="/root/lib/modules/`uname -r`/${fstype}/${fstype}.ko"
+			if [ -e "${kmodule}" ]
+			then
+				insmod "${kmodule}"
+				if grep -q ${fstype} /proc/filesystems
+				then
+					return 0
+				fi
+			fi
+		fi
+	fi
+
+	return 1
+}
+
+get_fstype ()
+{
+	local FSTYPE
+	local FSSIZE
+
+	# fstype misreports LUKS devices
+	if is_luks "${1}"
+	then
+	    $volume_fstype ${1} 2>/dev/null
+	    return
+	fi
+
+
+	eval $(fstype ${1} 2>/dev/null)
+
+	if [ "${FSTYPE}" != "unknown" ]
+	then
+		echo ${FSTYPE}
+		return 0
+	fi
+
+	$volume_fstype ${1}
+}
+
+where_is_mounted ()
+{
+	device=${1}
+
+	if grep -q "^${device} " /proc/mounts
+	then
+		# return the first found
+		grep -m1 "^${device} " /proc/mounts | cut -f2 -d ' '
+	fi
+}
+
+lastline ()
+{
+	while read lines
+	do
+		line=${lines}
+	done
+
+	echo "${line}"
+}
+
+base_path ()
+{
+	testpath="${1}"
+	mounts="$(awk '{print $2}' /proc/mounts)"
+	testpath="$(busybox realpath ${testpath})"
+
+	while true
+	do
+		if echo "${mounts}" | grep -qs "^${testpath}"
+		then
+			set -- $(echo "${mounts}" | grep "^${testpath}" | lastline)
+			echo ${1}
+			break
+		else
+			testpath=$(dirname $testpath)
+		fi
+	done
+}
+
+fs_size ()
+{
+	# Returns used/free fs kbytes + 5% more
+	# You could pass a block device as ${1} or the mount point as ${2}
+
+	dev="${1}"
+	mountp="${2}"
+	used="${3}"
+
+	if [ -z "${mountp}" ]
+	then
+		mountp="$(where_is_mounted ${dev})"
+
+		if [ -z "${mountp}" ]
+		then
+			mountp="/mnt/tmp_fs_size"
+
+			mkdir -p "${mountp}"
+			mount -t $(get_fstype "${dev}") -o ro "${dev}" "${mountp}" || log_warning_msg "cannot mount -t $(get_fstype ${dev}) -o ro ${dev} ${mountp}"
+
+			doumount=1
+		fi
+	fi
+
+	if [ "${used}" = "used" ]
+	then
+		size=$(du -ks ${mountp} | cut -f1)
+		size=$(expr ${size} + ${size} / 20 ) # FIXME: 5% more to be sure
+	else
+		# free space
+		size="$(df -k | grep -s ${mountp} | awk '{print $4}')"
+	fi
+
+	if [ -n "${doumount}" ]
+	then
+		umount "${mountp}" || log_warning_msg "cannot umount ${mountp}"
+		rmdir "${mountp}"
+	fi
+
+	echo "${size}"
+}
+
+load_keymap ()
+{
+	# Load custom keymap
+	if [ -x /bin/loadkeys -a -r /etc/boottime.kmap.gz ]
+	then
+		loadkeys /etc/boottime.kmap.gz
+	fi
+}
+
+setup_loop ()
+{
+	local fspath=${1}
+	local module=${2}
+	local pattern=${3}
+	local offset=${4}
+	local encryption=${5}
+	local readonly=${6}
+
+	modprobe -q -b "${module}"
+
+	if [ -x /sbin/udevadm ]
+	then
+		# lenny
+		udevadm settle
+	else
+		# etch
+		udevsettle
+	fi
+
+	for loopdev in ${pattern}
+	do
+		if [ "$(cat ${loopdev}/size)" -eq 0 ]
+		then
+			dev=$(sys2dev "${loopdev}")
+			options=''
+
+			if [ -n "${readonly}" ]
+			then
+				if losetup --help 2>&1 | grep -q -- "-r\b"
+				then
+					options="${options} -r"
+				fi
+			fi
+
+			if [ 0 -lt "${offset}" ]
+			then
+				options="${options} -o ${offset}"
+			fi
+
+			if [ -z "${encryption}" ]
+			then
+				losetup ${options} "${dev}" "${fspath}"
+			else
+				# Loop AES encryption
+				while true
+				do
+					load_keymap
+
+					echo -n "Enter passphrase for root filesystem: " >&6
+					read -s passphrase
+					echo "${passphrase}" > /tmp/passphrase
+					unset passphrase
+					exec 9</tmp/passphrase
+					/sbin/losetup ${options} -e "${encryption}" -p 9 "${dev}" "${fspath}"
+					error=${?}
+					exec 9<&-
+					rm -f /tmp/passphrase
+
+					if [ 0 -eq ${error} ]
+					then
+						unset error
+						break
+					fi
+
+					echo
+					echo -n "There was an error decrypting the root filesystem ... Retry? [Y/n] " >&6
+					read answer
+
+					if [ "$(echo "${answer}" | cut -b1 | tr A-Z a-z)" = "n" ]
+					then
+						unset answer
+						break
+					fi
+				done
+			fi
+
+			echo "${dev}"
+			return 0
+		fi
+	done
+
+	panic "No loop devices available"
+}
+
+try_mount ()
+{
+	dev="${1}"
+	mountp="${2}"
+	opts="${3}"
+	fstype="${4}"
+
+	old_mountp="$(where_is_mounted ${dev})"
+
+	if [ -n "${old_mountp}" ]
+	then
+		if [ "${opts}" != "ro" ]
+		then
+			mount -o remount,"${opts}" "${dev}" "${old_mountp}" || panic "Remounting ${dev} ${opts} on ${old_mountp} failed"
+		fi
+
+		mount -o bind "${old_mountp}" "${mountp}" || panic "Cannot bind-mount ${old_mountp} on ${mountp}"
+	else
+		if [ -z "${fstype}" ]
+		then
+			fstype=$(get_fstype "${dev}")
+		fi
+		mount -t "${fstype}" -o "${opts}" "${dev}" "${mountp}" || panic "Cannot mount ${dev} on ${mountp}, fstype=${fstype}, options=${opts}"
+	fi
+}
+
+find_cow_device ()
+{
+	# Returns a device containing a partition labeled "${pers_label}" or containing a file named the same way
+	#  in the latter case the partition containing the file is left mounted
+	#  if is not in black_listed_devices
+	pers_label="${1}"
+	cow_backing="/${pers_label}-backing"
+	black_listed_devices="${2}"
+
+	if [ -z "${PERSISTENT_PATH}" ]
+	then
+		pers_fpath=${cow_backing}/${pers_label}
+	else
+		pers_fpath=${cow_backing}/${PERSISTENT_PATH}/${pers_label}
+	fi
+
+	for sysblock in $(echo /sys/block/* | tr ' ' '\n' | grep -v loop | grep -v ram | grep -v fd)
+	do
+		for dev in $(subdevices "${sysblock}")
+		do
+			devname=$(sys2dev "${dev}")
+
+			if echo "${black_listed_devices}" | grep -q "${devname}"
+			then
+				# skip this device enterely
+				break
+			fi
+
+			# Checking for a luks device
+			if [ -e /sbin/cryptsetup ] && /sbin/cryptsetup isLuks ${devname}
+			then
+				while true
+				do
+					load_keymap
+
+					/lib/cryptsetup/askpass "Enter passphrase for ${pers_label} on ${devname}: " /sbin/cryptsetup -T 1 luksOpen ${devname} $(basename ${devname}) --key-file=-
+					error=${?}
+
+					devname="/dev/mapper/$(basename ${devname})"
+
+					if [ 0 -eq ${error} ]
+					then
+						unset error
+						break
+					fi
+
+					echo
+					echo -n "There was an error decrypting ${devname} ... Retry? [Y/n] " >&6
+					read answer
+
+					if [ "$(echo "${answer}" | cut -b1 | tr A-Z a-z)" = "n" ]
+					then
+						unset answer
+						break
+					fi
+				done
+			fi
+
+			if [ "$($volume_label -l ${devname} 2>/dev/null)" = "${pers_label}" ]
+			then
+				echo "${devname}"
+				return 0
+			fi
+
+			if [ "${PERSISTENT}" = "nofiles" ]
+			then
+				# do not mount the device to find for image files
+				# just skip this
+				break
+			fi
+
+			case "$(get_fstype ${devname})" in
+				vfat|ext2|ext3|ext4|jffs2)
+					mkdir -p "${cow_backing}"
+					if ! try_mount "${devname}" "${cow_backing}" "rw"
+					then
+						break
+					fi
+
+					if [ -f "${pers_fpath}" ]
+					then
+						echo $(setup_loop "${pers_fpath}" "loop" "/sys/block/loop*")
+						return 0
+					else
+						umount ${cow_backing}
+					fi
+					;;
+				*)
+					;;
+			esac
+		done
+	done
+	return 1
+}
+
+find_files ()
+{
+	# return the a string composed by device name, mountpoint an the first of ${filenames} found on a supported partition
+	# FIXME: merge with above function
+
+	filenames="${1}"
+	snap_backing="/snap-backing"
+	black_listed_devices="${2}"
+
+	for sysblock in $(echo /sys/block/* | tr ' ' '\n' | grep -v loop | grep -v ram | grep -v fd)
+	do
+		for dev in $(subdevices "${sysblock}")
+		do
+			devname=$(sys2dev "${dev}")
+			devfstype="$(get_fstype ${devname})"
+
+			if echo "${black_listed_devices}" | grep -q "${devname}"
+			then
+				# skip this device enterely
+				break
+			fi
+
+			if is_supported_fs ${devfstype}
+			then
+				mkdir -p "${snap_backing}"
+
+				if try_mount "${devname}" "${snap_backing}" "ro" "${devfstype}"
+				then
+					for filename in ${filenames}
+					do
+						if [ -f "${snap_backing}/${filename}" ]
+						then
+							echo "${devname} ${snap_backing} ${filename}"
+							umount ${snap_backing}
+							return 0
+						fi
+					done
+				fi
+
+				umount ${snap_backing}
+			fi
+		done
+	done
+}
+
+get_mac ()
+{
+	mac=""
+
+	for adaptor in /sys/class/net/*
+	do
+		status="$(cat ${adaptor}/iflink)"
+
+		if [ "${status}" -eq 2 ]
+		then
+			mac="$(cat ${adaptor}/address)"
+			mac="$(echo ${mac} | sed 's/:/-/g' | tr '[a-z]' '[A-Z]')"
+		fi
+	done
+
+	echo ${mac}
+}
+
+is_luks()
+{
+    devname="${1}"
+    if [ -x /sbin/cryptsetup ]
+    then
+	/sbin/cryptsetup isLuks "${devname}" 2>/dev/null || ret=${?}
+	return ${ret}
+    else
+	return 1
+    fi
+
+}

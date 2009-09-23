@@ -1,0 +1,96 @@
+#
+#  Watcom / OpenWatcom / Win32 makefile for cURL.
+#  G. Vanem <gvanem@broadpark.no>
+#
+# $Id: Makefile.Watcom,v 1.12 2008-08-13 07:30:21 giva Exp $
+
+CC = wcc386
+
+CFLAGS = -3r -mf -d3 -hc -zff -zgf -zq -zm -s -fr=con -w2 -fpi -oilrtfm &
+         -bt=nt -d+ -dWIN32 -dHAVE_STRTOLL -dCURLDEBUG -dENABLE_IPV6    &
+         -dHAVE_WINSOCK2_H -I..\include -I..\lib
+
+OBJ_DIR = WC_Win32.obj
+
+OBJS = $(OBJ_DIR)\getpass.obj  $(OBJ_DIR)\homedir.obj $(OBJ_DIR)\hugehelp.obj &
+       $(OBJ_DIR)\main.obj     $(OBJ_DIR)\urlglob.obj $(OBJ_DIR)\writeenv.obj &
+       $(OBJ_DIR)\writeout.obj $(OBJ_DIR)\curlutil.obj
+
+RESOURCE = $(OBJ_DIR)\curl.res
+
+all: hugehelp.c $(OBJ_DIR) curl.exe .SYMBOLIC
+	@echo Welcome to cURL
+
+hugehelp.c: hugehelp.c.cvs
+	copy hugehelp.c.cvs hugehelp.c
+
+$(OBJ_DIR):
+	mkdir $(OBJ_DIR)
+
+curl.exe: $(OBJS) $(RESOURCE)
+	wlink name $@ system nt file { $(OBJS) }                   &
+	  option quiet, map, caseexact, eliminate, res=$(RESOURCE) &
+	  libpath $(%watcom)\lib386;$(%watcom)\lib386\nt           &
+	  library ..\lib\libcurl_wc_imp.lib, clib3r.lib, ws2_32.lib
+
+clean: .SYMBOLIC
+	- rm -f $(OBJS) $(RESOURCE)
+
+vclean realclean: clean .SYMBOLIC
+ 	- rm -f curl.exe curl.map hugehelp.c
+	- rmdir $(OBJ_DIR)
+
+$(RESOURCE): curl.rc
+	wrc -dCURLDEBUG=1 -q -r -zm -I..\include -fo=$@ curl.rc
+
+.ERASE
+.c{$(OBJ_DIR)}.obj:
+	$(CC) $[@ $(CFLAGS) -fo=$@
+
+#
+# Dependencies based on "gcc -MM .."
+#
+$(OBJ_DIR)\getpass.obj: getpass.c setup.h config-win32.h ..\lib\setup_once.h getpass.h &
+  ..\lib\memdebug.h ..\lib\setup.h ..\lib\config-win32.h &
+  ..\include\curl\curlbuild.h ..\include\curl\curlrules.h &
+  ..\include\curl\curl.h ..\include\curl\curlver.h &
+  ..\include\curl\curlrules.h ..\include\curl\easy.h &
+  ..\include\curl\multi.h ..\include\curl\curl.h
+
+$(OBJ_DIR)\homedir.obj: homedir.c setup.h config-win32.h ..\lib\setup_once.h homedir.h &
+  ..\lib\memdebug.h ..\lib\setup.h ..\lib\config-win32.h &
+  ..\include\curl\curlbuild.h ..\include\curl\curlrules.h &
+  ..\include\curl\curl.h ..\include\curl\curlver.h &
+  ..\include\curl\curlrules.h ..\include\curl\easy.h &
+  ..\include\curl\multi.h ..\include\curl\curl.h
+
+$(OBJ_DIR)\hugehelp.obj: hugehelp.c
+
+$(OBJ_DIR)\main.obj: main.c setup.h config-win32.h ..\lib\setup_once.h &
+  ..\include\curl\curl.h ..\include\curl\curlver.h &
+  ..\include\curl\curlbuild.h ..\include\curl\curlrules.h &
+  ..\include\curl\easy.h ..\include\curl\multi.h ..\include\curl\curl.h &
+  urlglob.h writeout.h getpass.h homedir.h curlutil.h hugehelp.h &
+  version.h ..\include\curl\curlver.h ..\lib\curlx.h &
+  ..\include\curl\mprintf.h ..\lib\strequal.h ..\lib\strtoofft.h &
+  ..\lib\setup.h ..\lib\config-win32.h ..\include\curl\curlbuild.h &
+  ..\include\curl\curlrules.h ..\lib\timeval.h ..\lib\memdebug.h
+
+$(OBJ_DIR)\urlglob.obj: urlglob.c setup.h config-win32.h ..\lib\setup_once.h &
+  ..\include\curl\curl.h ..\include\curl\curlver.h &
+  ..\include\curl\curlbuild.h ..\include\curl\curlrules.h &
+  ..\include\curl\easy.h ..\include\curl\multi.h ..\include\curl\curl.h &
+  ..\include\curl\mprintf.h urlglob.h ..\lib\memdebug.h ..\lib\setup.h &
+  ..\lib\config-win32.h ..\include\curl\curlbuild.h &
+  ..\include\curl\curlrules.h
+
+$(OBJ_DIR)\writeenv.obj: writeenv.c setup.h config-win32.h ..\lib\setup_once.h
+
+$(OBJ_DIR)\writeout.obj: writeout.c setup.h config-win32.h ..\lib\setup_once.h &
+  ..\include\curl\curl.h ..\include\curl\curlver.h &
+  ..\include\curl\curlbuild.h ..\include\curl\curlrules.h &
+  ..\include\curl\easy.h ..\include\curl\multi.h ..\include\curl\curl.h &
+  ..\include\curl\mprintf.h writeout.h
+
+$(OBJ_DIR)\curlutil.obj: curlutil.c setup.h config-win32.h ..\lib\setup_once.h &
+  curlutil.h

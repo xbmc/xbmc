@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.1" date="2009-09-16" name="Freebase" content="albums" thumb="freebase.png">
+	<include>common/htbackdrops.xml</include>
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;htbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Grab thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22name%22:null,%22genre%22:[],%22album%22:[{%22id%22:%22/\2%22,%22/common/topic/article%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22/common/topic/image%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22label%22:[],%22engineer%22:[],%22producer%22:[],%22release_type%22:null,%22artist%22:null,%22name%22:null,%22release_date%22:null,%22track%22:[{%22name%22:null,%22length%22:null,%22index%22:null,%22sort%22:%22index%22,%22optional%22:true}],%22sort%22:%22release_date%22}]}}&lt;/url&gt;" dest="3+">
+			<expression>(http://www.freebase.com/view/)(.*)</expression>
+		</RegExp>
+	</NfoUrl>
+
+	<CreateAlbumSearchUrl dest="3">
+		<RegExp input="$$1" output="http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22name~=%22:%22$$2%22,%22album%22:[{%22guid%22:null,%22artist%22:null,%22name%22:null,%22name~=%22:%22\1%22}]}}" dest="3">
+			<expression/>
+		</RegExp>
+	</CreateAlbumSearchUrl>
+
+	<GetAlbumSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;artist&gt;\1&lt;/artist&gt;&lt;title&gt;\3&lt;/title&gt;&lt;url&gt;http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22name%22:null,%22genre%22:[],%22album%22:[{%22id%22:%22/guid/\2%22,%22/common/topic/article%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22/common/topic/image%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22label%22:[],%22engineer%22:[],%22producer%22:[],%22release_type%22:null,%22artist%22:null,%22name%22:null,%22release_date%22:null,%22track%22:[{%22name%22:null,%22length%22:null,%22index%22:null,%22sort%22:%22index%22,%22optional%22:true}],%22sort%22:%22release_date%22}]}}&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&quot;artist&quot;: &quot;([^&quot;]*)&quot;.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;.*?&quot;name&quot;: &quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>		
+	</GetAlbumSearchResults>
+
+	<GetAlbumDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5">
+				<expression noclean="1">&quot;artist&quot;: &quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression noclean="1">&quot;name&quot;: &quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression trim="1">&quot;label&quot;: (.*?)\]</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;label&gt;\1&lt;/label&gt;" dest="5+">
+				<expression noclean="1" repeat="yes">&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;type&gt;\1&lt;/type&gt;" dest="5+">
+				<expression noclean="1">&quot;release_type&quot;: &quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;releasedate&gt;\1&lt;/releasedate&gt;" dest="5+">
+				<expression noclean="1">&quot;release_date&quot;: &quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression noclean="1">&quot;release_date&quot;: &quot;([0-9]+)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6+">
+				<expression trim="1">&quot;genre&quot;: (.*?)\]</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression noclean="1" repeat="yes">&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;track&gt;&lt;position&gt;\1&lt;/position&gt;&lt;title&gt;\3&lt;/title&gt;&lt;duration&gt;\2&lt;/duration&gt;&lt;/track&gt;" dest="5+">
+				<expression repeat="yes">&quot;index&quot;: ([0-9]+).*?&quot;length&quot;: ([0-9]+).*?&quot;name&quot;: &quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">image&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetAlbumReview&quot;&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1">article&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetAlbumDetails>
+
+	<GetAlbumReview dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="2">
+				<expression noclean="1">&lt;p&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetAlbumReview>
+
+	<CreateArtistSearchUrl dest="3">
+		<RegExp input="$$1" output="http://www.freebase.com/api/service/search?query=\1&type=/music/artist&indent=1" dest="3">
+			<expression/>
+		</RegExp>
+	</CreateArtistSearchUrl>
+
+	<GetArtistSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://api.freebase.com/api/service/mqlread?query={%22query%22:{%22type%22:%22/music/artist%22,%22id%22:%22/guid/\1%22,%22/common/topic/article%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22/common/topic/image%22:[{%22guid%22:null,%22optional%22:true,%22limit%22:1}],%22name%22:null,%22genre%22:[],%22album%22:[],%22active_start%22:null,%22active_end%22:null,%22instruments_played%22:[]}}&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&quot;guid&quot;: &quot;#([^&quot;]*)&quot;.*?&quot;name&quot;: &quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistSearchResults>
+
+	<GetArtistDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
+				<expression noclean="1">&quot;name&quot;: &quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;formed&gt;\1&lt;/formed&gt;" dest="5+">
+				<expression noclean="1">&quot;active_start&quot;: &quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;disbanded&gt;\1&lt;/disbanded&gt;" dest="5+">
+				<expression noclean="1">&quot;active_end&quot;: &quot;([^&quot;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression trim="1">&quot;genre&quot;: (.*?)\]</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="\1" dest="6">
+				<expression trim="1">&quot;album&quot;: (.*?)\]</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;album&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/album&gt;" dest="5+">
+				<expression noclean="1" repeat="yes">&quot;([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">image&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$2" conditional="htbfanart" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetBiography&quot;&gt;http://www.freebase.com/api/trans/raw/guid/\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1">article&quot;:.*?&quot;guid&quot;: &quot;#([^&quot;]*)&quot;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistDetails>
+
+	<GetBiography dest="5">
+		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="2">
+				<expression noclean="1">&lt;p&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetBiography>
+</scraper>

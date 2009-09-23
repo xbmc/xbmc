@@ -1,0 +1,49 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>ejSetResult -- GoAhead Embedded JavaScript</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle">
+<TR>
+	<td class="titleLeft" align=left width="33%">ejSetResult</TD><td class="titleCenter" align=center width="33%"><b>GoAhead JavaScript API</b></TD><td class="titleRight" align=right><B>GoAhead EMF</B></TD></TR>
+</TABLE><HR>
+
+<h2>Synopsis</h2><p>Set the value of a JavaScript return variable.</p><h2>Prototype</h2><pre>
+#include &quot;ej.h&quot;
+
+void <b>ejSetResult</b>(int eid, char_t *s)
+</pre><h2>Parameters</h2><TABLE WIDTH=100% BORDER="0" CELLPADDING="0" CELLSPACING="0">
+    <TR>
+        <TD VALIGN="TOP" WIDTH="5%">eid</TD><TD WIDTH="95%">JavaScript interpreter handle.</TD></TR><TR>
+        <TD VALIGN="TOP" WIDTH="5%">s</TD><TD WIDTH="95%">String representing the EJ function return.</TD></TR>
+</TABLE><h2>Description</h2><P>The ejSetResult procedure is used for C functions which have been mapped as 
+  an ej function returning some value. By making this call, the corresponding 
+  ej function will be passed to the result. All JavaScript variables are stored 
+  as strings. </P><h2>Return Value</h2><p>
+	None
+</p><h2>EJ Example</h2><pre>
+	Color = getColor();
+</pre><h2>C Example</h2><pre>
+init
+ ...
+	ejSetGlobalFunction(eid, T("getColor"), ejGetColor);
+
+
+
+int ejGetColor(int eid, void *handle, int argc, char_t **argv)
+{
+
+	...
+	ejSetResult(eid, "blue");
+	...
+	return 0;
+}
+</pre><h2>See Also</h2><p> <A href="../../../over/ejs.htm">JavaScript</A>, <A href="../../../over/asp.htm">Active 
+  Server Pages</A>, <A href="ejGetVar.htm">ejGetVar</A>, <A href="ejEval.htm">ejEval</A> 
+</p></td></tr></table> 
+</body>
+</html>

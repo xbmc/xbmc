@@ -1,0 +1,146 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+
+<HEAD>
+	<TITLE>
+	Secret Rabbit Code (aka libsamplerate)
+	</TITLE>
+	<META NAME="Author"      CONTENT="Erik de Castro Lopo (erikd AT mega-nerd DOT com)">
+    <META NAME="Version"     CONTENT="libsamplerate-0.1.7">
+	<META NAME="Description" CONTENT="The Secret Rabbit Code Home Page">
+	<META NAME="Keywords"    CONTENT="libsamplerate sound resample audio dsp Linux">
+	<LINK REL=StyleSheet HREF="SRC.css" TYPE="text/css" MEDIA="all">
+</HEAD>
+
+<BODY TEXT="#FFFFFF" BGCOLOR="#000000" LINK="#FB1465" VLINK="#FB1465" ALINK="#FB1465">
+<!-- pepper -->
+<CENTER>
+	<IMG SRC="SRC.png" HEIGHT=100 WIDTH=760 ALT="SRC.png">
+</CENTER>
+<!-- pepper -->
+<BR>
+<!-- pepper -->
+<TABLE ALIGN="center" WIDTH="98%">
+<TR>
+<TD VALIGN="top">
+<BR>
+<DIV CLASS="nav">
+	<BR>
+	<A HREF="index.html">Home</A><BR>
+	<BR>
+	<A HREF="api_simple.html">Simple API</A><BR>
+	<A HREF="api_full.html">Full API</A><BR>
+	<A HREF="api_callback.html">Callback API</A><BR>
+	<A HREF="api_misc.html">Miscellaneous</A><BR>
+	<A HREF="api_misc.html#ErrorReporting">Error Handling</A><BR>
+<BR>
+<DIV CLASS="block">
+Author :<BR>Erik de Castro Lopo
+<!-- pepper -->
+<BR><BR>
+<!-- pepper -->
+
+</DIV>
+	<IMG SRC=
+	"/cgi-bin/Count.cgi?ft=6|frgb=55;55;55|tr=0|md=6|dd=B|st=1|sh=1|df=src_api.dat" 
+	HEIGHT=30 WIDTH=100 ALT="counter.gif">
+</DIV>
+
+</TD>
+<!-- pepper -->
+<!-- ######################################################################## -->
+<!-- pepper -->
+<TD VALIGN="top">
+<DIV CLASS="block">
+
+<H1><B>Simple API</B></H1>
+
+<P>
+<B>Important Note:</B>
+The simple API is not designed to work on small chunks of a larger piece of
+audio. 
+If you attempt to use it this way you are doing it wrong and will not get the
+results you want.
+For processing audio data in chunks you <b>must</b> use the
+	<a href="api_full.html">full api</a>
+or the
+	<a href="api_callback.html">callback based api</a>.
+</P>
+
+<br/><br/>
+
+<P>
+The simple API consists of a single function :
+</P>
+<PRE>
+      int src_simple (SRC_DATA *data, int converter_type, int channels) ;
+</PRE>
+<P>
+The use of this function rather than the more fully featured API requires the caller
+to know the total length of the input data before hand and that all input and output 
+data can be held in the system's memory at once. 
+It also assumes that there is a single constant ratio between input and output sample
+rates.
+<!--
+If these conditions cannot be met, the full featured API should be used instead.
+In addition, this documentation is complemented by this 
+<A HREF="ex_simple.html">example code</A>. -->
+</P>
+
+<P>
+Dealing with the easy stuff first, the <B>converter_type</B> parameter should be 
+one of the values defined in <B>samplerate.h</B> and documented  
+<A HREF="api_misc.html#Converters">here</A> while the <b>channels</b> parameter 
+specifies the number of interleaved channels that the sample rate converter
+is being asked to process (number of input channels and output channels is always 
+equal). 
+There is no hard upper limit on the number of channels; it is limited purely
+by the amount of memory available.
+</P>
+
+
+<P>
+The first parameter to <B>src_simple</B> is a pointer to an <B>SRC_DATA</B> struct
+(more info <A HREF="api_misc.html#SRC_DATA">here</A>) defined as follows:
+</P>
+<PRE>
+      typedef struct
+      {   float  *data_in, *data_out ;
+
+          long   input_frames, output_frames ;
+          long   input_frames_used, output_frames_gen ;
+
+          int    end_of_input ;
+
+          double src_ratio ;
+      } SRC_DATA ;
+</PRE>
+<P>
+The fields of this struct which must be filled in by the caller are:
+</P>
+<PRE>
+      data_in       : A pointer to the input data samples.
+      input_frames  : The number of frames of data pointed to by data_in.
+      data_out      : A pointer to the output data samples.
+      output_frames : Maximum number of frames pointer to by data_out.
+      src_ratio     : Equal to output_sample_rate / input_sample_rate.
+</PRE>
+<P>
+When the <B>src_simple</B> function returns <B>output_frames_gen</B> will be 
+set to the number of output frames generated and <B>input_frames_used</B> will 
+be set to the number of input frames used to generate the provided number of 
+output frames.
+</P>
+<P>
+The <B>src_simple</B> function returns a non-zero value when an error occurs. 
+See <A HREF="api_misc.html#ErrorReporting">here</A> for how to convert the error value into
+a text string.
+</P>
+
+</DIV>
+</TD></TR>
+</TABLE>
+
+</BODY>
+</HTML>
+

@@ -1,0 +1,47 @@
+<scraper framework="1.0" date="2009-05-22" name="Jaded Video" content="movies" thumb="jaded.jpg" language="en">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="http://jadedvideo.com/\1"  dest="3">
+			<expression noclean="1">jadedvideo\.com/(.*)</expression>
+		</RegExp>	
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="&lt;url&gt;http://jadedvideo.com/Search?q=\1&lt;/url&gt;" dest="3">
+			<expression noclean="1"></expression>
+		</RegExp>
+
+	</CreateSearchUrl>
+
+	<GetSearchResults dest="6">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="6">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\3&lt;/title&gt;&lt;url&gt;http://jadedvideo.com/\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&quot;jadedcatprodtitle&quot;&gt;&lt;a href=&quot;http://jadedvideo\.com/([^&quot;]*)&quot;&gt;&lt;em&gt;([^&gt;]*)&lt;/em&gt; ([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+		<expression noclean="1"></expression>
+		</RegExp>
+
+	</GetSearchResults>
+
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;thumb&gt;http://jadedvideo.com/images/CoverFront/320x480/\1.jpg&lt;/thumb&gt;" dest="5">
+				<expression>320x480/([0-9]*).jpg&quot;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression>jadedprodtitle&quot;&gt;([^&lt;]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+				<expression repeat="yes">&lt;a[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;,</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression>Category&lt;/strong&gt;: &lt;a[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>											
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>Date&lt;/strong&gt;[^&lt;]* ([0-9]*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;studio&gt;\1&lt;/studio&gt;" dest="5+">
+				<expression>Studio&lt;/strong&gt;: &lt;[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+</scraper>

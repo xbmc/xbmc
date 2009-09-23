@@ -1,0 +1,18 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websCalcNonce -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">websCalcNonce</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B></H2><P>	Generate a nonce string for digest authentication purposes.</P><H2><B>Prototype</B></H2><PRE> #include &quot;websda.h&quot;
+
+ char_t alcNonce(webs_t wp);</PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="75%" BORDER="0"><TR><TD>wp</TD><TD>pointer to a websRec data structure</TD></TR></TABLE><H2><B>Description</B></H2><P>	The returned string must be deleted  using  <A HREF="../wsapi/bfree.htm">bfree</A>.</P><H2><B>Return Value</B></H2><P>	websCalcNonce returns a pointer to a new copy of a nonce string, or a NULL on an error.</P><H2><B>Example</B></H2><PRE>char_t * nonce = websCalcNonce(wp);</PRE><H2><B>See Also</B></H2><P>	<A HREF="websCalcOpaque.htm">websCalcOpaque</A>(), <A HREF="websCalcDigest.htm">websCalcDigest</A>(), <A HREF="../wsapi/bfree.htm">bfree</A>()</P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></td></tr></table>
+</body>
+</html>

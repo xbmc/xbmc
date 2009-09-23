@@ -1,0 +1,30 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websSetRequestFlags -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websSetRequestFlags</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Return the flags word 
+associated with a browser request.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ void <b>websSetRequestFlags</b>(webs_t wp, int flags); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="4%">wp <TD WIDTH="96%">Web server connection handle 
+. <TR> <TD VALIGN="TOP" WIDTH="4%">flags <TD WIDTH="96%"> Flags to define.</TD></TR></table><h2>Description</h2><P>The 
+websSetRequestFlags procedure modifies the flags word for a given browser request. 
+You must be very careful when defining the flags word for a request. If you need 
+to modify a particular flag value, use <A href="websGetRequestFlags.htm">websGetRequestFlags</A> 
+to retrieve the current flags word and clear or set specific bits.</P><p>See <A href="websGetRequestFlags.htm">websGetRequestFlags</A> 
+for a list of all available flags which are defined in webs.h.</p><h2>Return Value</h2><p> 
+None</p><h2>Example</h2><pre>
+websSetRequestFlags(wp,
+        websGetRequestFlags(wp,  flags) | WEBS_HEADER_DONE));
+</pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p> <A href="websGetRequestFlags.htm">websGetRequestFlags</A> </p></td></tr></table>
+</body>
+</html>

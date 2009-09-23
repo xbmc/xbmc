@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<screensaver name="rs-fieldlines" _label="Really Slick Fieldlines">
+	<command arg="-root" />
+	
+	<number id="ions"
+		type="spinbutton"
+		arg="-ions %"
+		_label="Ions"
+		low="1"
+		high="10"
+		default="4"
+	/>
+	<number id="speed"
+		type="slider"
+		arg="-speed %"
+		_low-label="Slow"
+		_high-label="Fast"
+		low="1.0"
+		high="100.0"
+		default="10.0"
+	/>
+	<number id="width"
+		type="slider"
+		arg="-width %"
+		_label="Lines"
+		_low-label="Thin"
+		_high-label="Thick"
+		low="1.0"
+		high="100.0"
+		default="30.0"
+	/>
+	<hgroup>
+		<boolean id="constant"
+			_label="Constant-width"
+			arg-set="-constant"
+		/>
+		<select id="electric">
+			<option id="fieldlines"
+				_label="Fieldlines"
+			/>
+			<option id="electricsparks"
+				_label="Electric sparks"
+				arg-set="-electric"
+			/>
+		</select>
+	</hgroup>
+	<number id="segsize"
+		type="slider"
+		arg="-segsize %"
+		_label="Line segments"
+		_low-label="Short"
+		_high-label="Long"
+		low="1.0"
+		high="100.0"
+		default="15.0"
+	/>
+	<number id="maxsegs"
+		type="slider"
+		arg="-maxsegs %"
+		_low-label="Few"
+		_high-label="Lots"
+		low="1"
+		high="1000"
+		default="100"
+	/>
+
+	<_description>
+Field Lines is a good example of the beauty of physics. It is an accurate
+representation of the field lines between positively and negatively charged
+particles. The only real artistic license that I took was in my choice of
+colors for the lines.
+	-- Terry Welsh, Really Slick Screensavers (http://www.reallyslick.com/)
+
+This version by Michael Chapman &lt;foonly@users.sourceforge.net&gt;.
+	</_description>
+</screensaver>

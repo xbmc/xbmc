@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>Goom2</name>
+  <program_name>goom2</program_name>
+  <directory></directory>
+  <source_directory>gtk-gui</source_directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
+  <gnome_support>False</gnome_support>
+  <gettext_support>True</gettext_support>
+  <use_widget_names>True</use_widget_names>
+  <output_main_file>False</output_main_file>
+  <main_source_file>gtk-interface.c</main_source_file>
+  <main_header_file>gtk-interface.h</main_header_file>
+  <handler_source_file>gtk-callbacks.c</handler_source_file>
+  <handler_header_file>gtk-callbacks.h</handler_header_file>
+  <support_source_file>gtk-support.c</support_source_file>
+  <support_header_file>gtk-support.h</support_header_file>
+</project>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>config_window</name>
+  <signal>
+    <name>destroy_event</name>
+    <handler>on_config_window_destroy_event</handler>
+    <last_modification_time>Fri, 23 May 2003 09:08:30 GMT</last_modification_time>
+  </signal>
+  <signal>
+    <name>delete_event</name>
+    <handler>on_config_window_delete_event</handler>
+    <last_modification_time>Fri, 23 May 2003 09:09:21 GMT</last_modification_time>
+  </signal>
+  <title>Goom Control Center</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox1</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>GtkToolbar</class>
+      <name>toolbar1</name>
+      <border_width>3</border_width>
+      <orientation>GTK_ORIENTATION_HORIZONTAL</orientation>
+      <type>GTK_TOOLBAR_TEXT</type>
+      <space_size>8</space_size>
+      <space_style>GTK_TOOLBAR_SPACE_LINE</space_style>
+      <relief>GTK_RELIEF_NORMAL</relief>
+      <tooltips>True</tooltips>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<child_name>Toolbar:button</child_name>
+	<name>b_open_config</name>
+	<label>Open...</label>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<child_name>Toolbar:button</child_name>
+	<name>b_save_config</name>
+	<label>Save...</label>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkNotebook</class>
+      <name>notebook1</name>
+      <can_focus>True</can_focus>
+      <show_tabs>True</show_tabs>
+      <show_border>True</show_border>
+      <tab_pos>GTK_POS_LEFT</tab_pos>
+      <scrollable>False</scrollable>
+      <tab_hborder>2</tab_hborder>
+      <tab_vborder>2</tab_vborder>
+      <popup_enable>False</popup_enable>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkScrolledWindow</class>
+	<name>scrolledwindow1</name>
+	<hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+	<vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+	<hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+	<vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+	<widget>
+	  <class>GtkText</class>
+	  <name>text1</name>
+	  <width>400</width>
+	  <height>300</height>
+	  <can_focus>True</can_focus>
+	  <editable>False</editable>
+	  <text>What a GOOM!! v2
+
+copyright 2000-2003, by J.C. Hoelt &lt;jeko@free.fr&gt;
+
+This is my first visual plugins for XMMS, and I
+think that it's the best I have ever done !
+
+---
+
+This dialog will help you to configure goom.
+Many options here will seem strange to you,
+anyway, just try things and look what happen !
+
+Enjoy,
+
+	Jeko</text>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>Notebook:tab</child_name>
+	<name>goom_control</name>
+	<label>About goom...</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkStatusbar</class>
+      <name>statusbar1</name>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>False</fill>
+      </child>
+    </widget>
+  </widget>
+</widget>
+
+</GTK-Interface>

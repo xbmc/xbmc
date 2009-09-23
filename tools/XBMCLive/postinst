@@ -1,0 +1,129 @@
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    configure)
+	sed -i.bak-xbmc-live s/allowed_users=console/allowed_users=anybody/ /etc/X11/Xwrapper.config
+
+	# Add the 'xbmc' user
+	if ! getent passwd xbmc >/dev/null; then
+            adduser \
+                --gecos "XBMC Live User" \
+                xbmc
+	fi
+	# Add 'xbmc' user to the appropriate groups
+	# Below is a listing of groups and their purpose
+	# adm - For reading system logs (minimal systems may have this user only)
+	# sudo - allow optional passwordless sudo (with trivial intervention on /etc/sudoers)
+	# cdrom - optical disc drive access
+	# floppy - floppy drive access
+	# audio - audio device access
+	# video - video device access
+	# plugdev - enable automatic notifications of new devices
+	# netdev - managing network connections via NetworkManager
+	# powerdev - to be able to hibernate/suspend
+	# fuse - to be able to mount filesystems as normal user
+	GROUPS="adm
+		sudo
+		cdrom
+		floppy
+		audio
+		video
+		plugdev
+		netdev
+		powerdev
+		fuse"
+
+	# TODO: this probably isn't necessary anymore as PolicyKit is now being
+	# used
+	for GROUP in $GROUPS; do
+		if getent group $GROUP >/dev/null && \
+			! getent group $GROUP | grep -q xbmc; then
+			adduser xbmc $GROUP
+		fi
+	done
+
+	# Add xbmc to the sudoers file
+	echo "#" >> /etc/sudoers
+	echo "# XBMC-specific configuration" >> /etc/sudoers
+	echo "#" >> /etc/sudoers
+	echo "Cmnd_Alias SHUTDOWN_CMDS = /sbin/shutdown, /sbin/reboot, /sbin/halt"  >> /etc/sudoers
+	echo "Cmnd_Alias MOUNT_CMDS = /bin/mount, /bin/umount"  >> /etc/sudoers
+	echo "xbmc ALL=(ALL) ALL" >> /etc/sudoers
+	echo "xbmc ALL=NOPASSWD: SHUTDOWN_CMDS, MOUNT_CMDS" >> /etc/sudoers
+
+	# Our set of PolicyKit actions
+
+	# This is a list of actions that the 'xbmc' user should be allowed to
+	# do. If we missed one, or we have one that's not necessary, please
+	# submit a bug report.
+	POLKIT_ACTIONS="org.freedesktop.hal.dockstation.undock
+		org.freedesktop.hal.wol.enabled
+		org.freedesktop.hal.wol.enable
+		org.freedesktop.hal.wol.supported
+		org.freedesktop.hal.leds.brightness
+		org.freedesktop.hal.device-access.audio-player
+		org.freedesktop.hal.device-access.camera
+		org.freedesktop.hal.device-access.cdrom
+		org.freedesktop.hal.device-access.dvb
+		org.freedesktop.hal.device-access.fingerprint-reader
+		org.freedesktop.hal.device-access.floppy
+		org.freedesktop.hal.device-access.ieee1394-avc
+		org.freedesktop.hal.device-access.ieee1394-iidc
+		org.freedesktop.hal.device-access.joystick
+		org.freedesktop.hal.device-access.mouse
+		org.freedesktop.hal.device-access.obex
+		org.freedesktop.hal.device-access.pda
+		org.freedesktop.hal.device-access.printer
+		org.freedesktop.hal.device-access.scanner
+		org.freedesktop.hal.device-access.sound
+		org.freedesktop.hal.device-access.video
+		org.freedesktop.hal.device-access.video4linux
+		org.freedesktop.hal.lock
+		org.freedesktop.hal.killswitch.bluetooth
+		org.freedesktop.hal.killswitch.wlan
+		org.freedesktop.hal.killswitch.wwan
+		org.freedesktop.hal.storage.mount-removable
+		org.freedesktop.hal.storage.eject
+		org.freedesktop.hal.storage.crypto-setup-removable
+		org.freedesktop.hal.power-management.shutdown
+		org.freedesktop.hal.power-management.reboot
+		org.freedesktop.hal.power-management.set-powersave
+		org.freedesktop.hal.power-management.suspend
+		org.freedesktop.hal.power-management.hibernate
+		org.freedesktop.hal.power-management.cpufreq
+		org.freedesktop.hal.power-management.lcd-panel
+		org.freedesktop.hal.power-management.light-sensor
+		org.freedesktop.hal.power-management.keyboard-backlight"
+
+	# Grant the 'xbmc' user each action from the list if not done already
+	for ACTION in $POLKIT_ACTIONS; do
+		if polkit-auth --user xbmc --show-obtainable | \
+			grep -q $ACTION; then
+			polkit-auth --user xbmc --grant $ACTION
+		fi
+	done
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac
+
+# Automatically added by dh_installinit
+if [ -x "/etc/init.d/xbmc-live" ]; then
+       update-rc.d xbmc-live defaults >/dev/null
+       if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+               invoke-rc.d xbmc-live start || exit $?
+       else
+               /etc/init.d/xbmc-live start || exit $?
+       fi
+fi
+# End automatically added section
+
+exit 0

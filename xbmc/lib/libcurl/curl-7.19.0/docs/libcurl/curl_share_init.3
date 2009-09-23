@@ -1,0 +1,25 @@
+.\" $Id: curl_share_init.3,v 1.4 2004/03/24 21:40:45 bagder Exp $
+.\"
+.TH curl_share_init 3 "8 Aug 2003" "libcurl 7.10.7" "libcurl Manual"
+.SH NAME
+curl_share_init - Create a shared object
+.SH SYNOPSIS
+.B #include <curl/curl.h>
+.sp
+.BI "CURLSH *curl_share_init( );"
+.ad
+.SH DESCRIPTION
+This function returns a CURLSH handle to be used as input to all the other
+share-functions, sometimes referred to as a share handle on some places in the
+documentation. This init call MUST have a corresponding call to
+\fIcurl_share_cleanup\fP when all operations using the share are complete.
+
+This \fIshare handle\fP is what you pass to curl using the \fICURLOPT_SHARE\fP
+option with \fIcurl_easy_setopt(3)\fP, to make that specific curl handle use
+the data in this share.
+.SH RETURN VALUE
+If this function returns NULL, something went wrong (out of memory, etc.)
+and therefore the share object was not created.
+.SH "SEE ALSO"
+.BR curl_share_cleanup "(3), " curl_share_setopt "(3)"
+

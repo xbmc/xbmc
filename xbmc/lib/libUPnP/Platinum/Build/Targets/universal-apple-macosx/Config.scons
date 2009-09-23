@@ -1,0 +1,10 @@
+LoadTool('gcc-generic', env)
+
+### Special for the MAC: universal flags
+universal_flags =  [('-arch', 'ppc'), ('-arch', 'i386'), ('-isysroot', '/Developer/SDKs/MacOSX10.4u.sdk'), '-mmacosx-version-min=10.4']
+env.AppendUnique(CCFLAGS   = universal_flags + ['-fno-common'])
+env.AppendUnique(LINKFLAGS = universal_flags)
+
+### Neptune System Files
+env['NPT_SYSTEM_SOURCES']={'System/StdC':'*.cpp', 'System/Bsd':'*.cpp', 'System/Posix':'*.cpp', 'System/Null':'NptNullSerialPort.cpp'}
+

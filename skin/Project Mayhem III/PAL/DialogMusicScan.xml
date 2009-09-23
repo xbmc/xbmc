@@ -1,0 +1,47 @@
+<window id="112">
+	<defaultcontrol>402</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>30</posx>
+		<posy>10</posy>
+	</coordinates>
+	<controls>
+		<control type="group">
+		<animation effect="slide" end="0,-150" time="200" condition="Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)">conditional</animation>
+			<control type="image" id="1">
+				<description>Popup Music Scan Dialog Background</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>80</height>
+				<texture border="17,13,9,19">scan-panel-bg.png</texture>
+			</control>
+			<control type="label" id="401">
+				<description>Caption Label</description>
+				<posx>20</posx>
+				<posy>13</posy>
+				<font>font12</font>
+				<align>left</align>
+				<width>370</width>
+				<height>20</height>
+			</control>
+			<control type="label" id="402">
+				<description>Current Directory Label</description>
+				<posx>20</posx>
+				<posy>33</posy>
+				<width>370</width>
+				<haspath>yes</haspath>
+				<font>font10</font>
+			</control>
+			<control type="progress" id="403">
+				<description>progress control</description>
+				<posx>15</posx>
+				<posy>57</posy>
+				<width>375</width>
+				<height>4</height>
+				<overlaytexture>-</overlaytexture>
+			</control>
+		</control>
+	</controls>
+</window>

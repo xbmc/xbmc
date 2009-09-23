@@ -1,0 +1,100 @@
+Never assume the API of libav* to be stable unless at least 1 week has passed since
+the last major version increase.
+The last version increases were:
+libavcodec:  ?
+libavdevice: ?
+libavfilter: ?
+libavformat: ?
+libpostproc: ?
+libswscale:  ?
+libavutil:   2009-03-08
+
+
+API changes, most recent first:
+
+2009-06-22 - r19250 - lavf 52.34.1 - AVFormatContext.packet_size
+  This is now an unsigned int instead of a signed int.
+
+2009-06-19 - r19222 - lavc 52.32.0 - AVSubtitle.pts
+  Added a pts field to AVSubtitle which gives the subtitle's packet
+  PTS in AV_TIME_BASE. Some subtitle de-/encoders (e.g. XSUB) will
+  not work right without this.
+
+2009-06-03 - r19078 - lavc 52.30.2 - AV_PKT_FLAG_KEY
+  PKT_FLAG_KEY has been deprecated and will be dropped for the next
+  major version. Use AV_PKT_FLAG_KEY instead.
+
+2009-06-01 - r19025 - lavc 52.30.0 - av_lockmgr_register()
+  av_lockmgr_register() can be used to register a callback function
+  that lavc (and in the future, libraries that depend on lavc) can use
+  to implement mutexes. The application should provide a callback function
+  the implements the AV_LOCK_* operations described in avcodec.h.
+  When the lock manager is registered FFmpeg is guaranteed to behave
+  correct also in a multi-threaded application.
+
+2009-04-30 - r18719 - lavc 52.28.0 - av_free_packet
+  av_free_packet() is no longer an inline function. It is now exported.
+
+2009-04-11 - r18431 - lavc 52.25.0 - deprecate av_destruct_packet_nofree
+  Please use NULL instead. This has been supported since r16506
+  (lavf > 52.23.1, lavc > 52.10.0).
+
+2009-04-07 - r18351 - lavc 52.23.0 - avcodec_decode_video/audio/subtitle
+  The old decoding functions are deprecated, all new code should use the
+  new functions avcodec_decode_video2(), avcodec_decode_audio3() and
+  avcodec_decode_subtitle2(). These new functions take an AVPacket *pkt
+  argument instead of a const uint8_t *buf / int buf_size pair.
+
+2009-04-03 - r18321 - lavu 50.3.0 - av_fifo_space
+  Introduce the av_fifo_space() function.
+
+2009-04-02 - r18317 - lavc 52.23.0 - AVPacket
+  Move AVPacket declaration from libavformat/avformat.h to
+  libavcodec/avcodec.h.
+
+2009-03-22 - r18163 - lavu 50.2.0 - RGB32 pixel formats
+  Make the pixel formats: PIX_FMT_ARGB, PIX_FMT_RGBA, PIX_FMT_ABGR,
+  PIX_FMT_BGRA, which were defined as macros, defined as enum
+  PixelFormat values, and viceversa make PIX_FMT_RGB32,
+  PIX_FMT_RGB32_1, PIX_FMT_BGR32, PIX_FMT_BGR32_1 defined as macros.
+  Also make avcodec_get_pix_fmt() recognize the "rgb32" and "bgr32"
+  aliases.
+  Re-sort the enum PixelFormat list accordingly.
+  This change breaks API/ABI backward compatibility.
+
+2009-03-22 - r18133 - lavu 50.1.0 - PIX_FMT_RGB5X5 endian variants
+  Add the enum PixelFormat values:
+  PIX_FMT_RGB565BE, PIX_FMT_RGB565LE, PIX_FMT_RGB555BE, PIX_FMT_RGB555LE,
+  PIX_FMT_BGR565BE, PIX_FMT_BGR565LE, PIX_FMT_BGR555BE, PIX_FMT_BGR555LE.
+
+2009-03-21 - r18116 - lavu 50.0.0  - av_random*
+  The Mersenne Twister PRNG implemented through the av_random* functions
+  was removed. Use the lagged Fibonacci PRNG through the av_lfg* functions
+  instead.
+
+2009-03-08 - r17869 - lavu 50.0.0  - AVFifoBuffer
+  av_fifo_init, av_fifo_read, av_fifo_write and av_fifo_realloc were dropped
+  and replaced by av_fifo_alloc, av_fifo_generic_read, av_fifo_generic_write
+  and av_fifo_realloc2.
+  In addition, the order of the function arguments of av_fifo_generic_read
+  were changed to match av_fifo_generic_write.
+  The AVFifoBuffer/struct AVFifoBuffer may only be used in an opaque way by
+  applications, they may not use sizeof() or directly access members.
+
+2009-03-01 - r17682 - lavf 52.31.0 - Generic metadata API
+  Introduce a new metadata API (see av_metadata_get() and friends).
+  The old API is now deprecated and should not be used anymore. This especially
+  includes the following structure fields:
+    - AVFormatContext.title
+    - AVFormatContext.author
+    - AVFormatContext.copyright
+    - AVFormatContext.comment
+    - AVFormatContext.album
+    - AVFormatContext.year
+    - AVFormatContext.track
+    - AVFormatContext.genre
+    - AVStream.language
+    - AVStream.filename
+    - AVProgram.provider_name
+    - AVProgram.name
+    - AVChapter.title

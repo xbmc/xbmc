@@ -1,0 +1,182 @@
+<window id="7">
+	<defaultcontrol>95</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="group">
+			<include>Window_OpenClose_Left_Panel_Animation</include>
+			<include>CommonNowPlaying</include>
+			<control type="grouplist" id="9000">
+				<posx>0</posx>
+				<posy>130</posy>
+				<itemgap>1</itemgap>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<control type="button" id="95">
+					<description>Button Default Values</description>
+					<include>ButtonCommonValues</include>
+					<label>13278</label>
+				</control>
+				<control type="button" id="94">
+					<description>Button Storage</description>
+					<include>ButtonCommonValues</include>
+					<label>13277</label>
+				</control>
+				<control type="button" id="92">
+					<description>Button HDD</description>
+					<include>ButtonCommonValues</include>
+					<label>13275</label>
+					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="93">
+					<description>Button DVD</description>
+					<include>ButtonCommonValues</include>
+					<label>13276</label>
+					<visible>System.Platform.Xbox</visible>
+				</control>
+				<control type="button" id="96">
+					<description>Button Network</description>
+					<include>ButtonCommonValues</include>
+					<label>13279</label>
+				</control>
+				<control type="button" id="97">
+					<description>Button Video</description>
+					<include>ButtonCommonValues</include>
+					<label>13280</label>
+				</control>
+				<control type="button" id="98">
+					<description>Button Hardware</description>
+					<include>ButtonCommonValues</include>
+					<label>13281</label>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Right_Panel_Animation</include>
+			<include>ContentPanel</include>
+			<control type="label" id="40">
+				<description>fake filter text label</description>
+				<posx>410</posx>
+				<posy>115</posy>
+				<width>790</width>
+				<height>30</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>-</label>
+				<font>font18</font>
+			</control>
+			<control type="image">
+				<posx>410</posx>
+				<posy>150</posy>
+				<width>790</width>
+				<height>2</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="group">
+				<posx>300</posx>
+				<posy>170</posy>
+				<control type="label" id="2">
+					<description>Label 2</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="3">
+					<description>Label 3</description>
+					<posx>0</posx>
+					<posy>37</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="4">
+					<description>Label 4</description>
+					<posx>0</posx>
+					<posy>70</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="5">
+					<description>Label 5</description>
+					<posx>0</posx>
+					<posy>105</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="6">
+					<description>Label 6</description>
+					<posx>0</posx>
+					<posy>140</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="7">
+					<description>Label 7</description>
+					<posx>0</posx>
+					<posy>175</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="8">
+					<description>Label 8</description>
+					<posx>0</posx>
+					<posy>210</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="9">
+					<description>Label 9</description>
+					<posx>0</posx>
+					<posy>245</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="10">
+					<description>Label 10</description>
+					<posx>0</posx>
+					<posy>280</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="11">
+					<description>Label 11</description>
+					<posx>0</posx>
+					<posy>315</posy>
+					<width>910</width>
+					<label>-</label>
+					<font>font12</font>
+				</control>
+				<control type="label" id="52">
+					<description>XBMC XBE BUILD Version</description>
+					<posx>0</posx>
+					<posy>370</posy>
+					<width>910</width>
+					<label>144</label>
+					<textcolor>green</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<font>font12</font>
+				</control>
+			</control>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>128</height>
+			<texture>Header.png</texture>
+		</control>
+		<control type="label">
+			<include>WindowTitleCommons</include>
+			<label>$LOCALIZE[9] - $LOCALIZE[130]</label>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,28 @@
+
+ libid3tag - ID3 tag manipulation library
+ Copyright (C) 2000-2004 Underbit Technologies, Inc.
+
+ $Id: CREDITS,v 1.2 2004/01/23 09:41:32 rob Exp $
+
+===============================================================================
+
+AUTHOR
+
+  Except where otherwise noted, all code was authored by:
+
+      Robert Leslie <rob@underbit.com>
+
+CONTRIBUTORS
+
+  Significant contributions have been incorporated with thanks to:
+
+      Mark Malson <mark@mmalson.com>
+        2002/10/09: frame.c
+          - Reported problem reading ID3v2.2 tag frames.
+
+      Brett Paterson <brett@fmod.org>
+        2001/10/28: global.h
+          - Reported missing <assert.h> et al. under MS Embedded Visual C.
+
+===============================================================================
+

@@ -1,0 +1,382 @@
+<html>
+
+<head>
+<title>libvorbisenc - API Overview</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>libvorbisenc documentation</p></td>
+<td align=right><p class=tiny>libvorbisenc release 1.1 - 20040709</p></td>
+</tr>
+</table>
+
+<h1>Libvorbisenc API Overview</h1>
+
+<p>Libvorbisenc is an encoding convenience library intended to
+encapsulate the elaborate setup that libvorbis requires for encoding.
+Libvorbisenc gives easy access to all high-level adjustments an
+application may require when encoding and also exposes some low-level
+tuning parameters to allow applications to make detailed adjustments
+to the encoding process. <p>
+
+All the <b>libvorbisenc</b> routines are declared in "vorbis/vorbisenc.h".
+
+<em>Note: libvorbis and libvorbisenc always
+encode in a single pass. Thus, all possible encoding setups will work
+properly with live input and produce streams that decode properly when
+streamed.  See the subsection titled <a href="#BBR">"managed bitrate
+modes"</a> for details on setting limits on bitrate usage when Vorbis
+streams are used in a limited-bandwidth environment.</em>
+
+<h2>workflow</h2>
+
+<p>Libvorbisenc is used only during encoder setup; its function
+is to automate initialization of a multitude of settings in a
+<tt>vorbis_info</tt> structure which libvorbis then uses as a reference
+during the encoding process.  Libvorbisenc plays no part in the
+encoding process after setup.
+
+<p>Encode setup using libvorbisenc consists of three steps: 
+
+<ol>
+<li>high-level initialization of a <tt>vorbis_info</tt> structure by
+calling one of <a
+href="vorbis_encode_setup_vbr.html">vorbis_encode_setup_vbr()</a> or <a
+href="vorbis_encode_setup_managed.html">vorbis_encode_setup_managed()</a>
+with the basic input audio parameters (rate and channels) and the
+basic desired encoded audio output parameters (VBR quality or ABR/CBR
+bitrate)<p>
+
+<li>optional adjustment of the basic setup defaults using <a
+href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a><p>
+
+<li>calling <a
+href="vorbis_encode_setup_init.html">vorbis_encode_setup_init()</a> to
+finalize the high-level setup into the detailed low-level reference
+values needed by libvorbis to encode audio. The <tt>vorbis_info</tt>
+structure is then ready to use for encoding by libvorbis.<p>
+
+</ol>
+
+These three steps can be collapsed into a single call by using <a
+href="vorbis_encode_init_vbr.html">vorbis_encode_init_vbr</a> to set up a
+quality-based VBR stream or <a
+href="vorbis_encode_init.html">vorbis_encode_init</a> to set up a managed
+bitrate (ABR or CBR) stream.<p>
+
+<h2>adjustable encoding parameters</h2>
+
+<h3>input audio parameters</h3>
+
+<p>
+<table border=1 color=black width=50% cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td><b>parameter</b></td>
+	<td><b>description</b></td>
+</tr>
+<tr valign=top>
+<td>sampling rate</td>
+<td>
+The sampling rate (in samples per second) of the input audio.  Common examples are 8000 for telephony, 44100 for CD audio and 48000 for DAT.  Note that a mono sample (one center value) and a stereo sample (one left value and one right value) both are a single sample.
+
+</td>
+</tr>
+<tr valign=top>
+<td>channels</td>
+<td>
+
+The number of channels encoded in each input sample.  By default,
+stereo input modes (two channels) are 'coupled' by Vorbis 1.1 such
+that the stereo relationship between the samples is taken into account
+when encoding.  Stereo coupling my be disabled by using <a
+href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> with <a
+href="vorbis_encode_ctl.html#OV_ECTL_COUPLE_SET">OV_ECTL_COUPLE_SET</a>.
+
+</td>
+</tr>
+</table>
+
+<h3>quality and VBR modes</h3>
+
+Vorbis is natively a VBR codec; a user requests a given constant
+<em>quality</em> and the encoder keeps the encoding quality constant
+while allowing the bitrate to vary.  'Quality' modes (Variable BitRate)
+will always produce the most consistent encoding results as well as
+the highest quality for the amount of bits used.
+
+<p>
+<table border=1 color=black width=50% cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td><b>parameter</b></td>
+	<td><b>description</b></td>
+</tr>
+<tr valign=top>
+<td>quality</td>
+<td>
+A decimal float value requesting a desired quality.  Libvorbisenc 1.1 allows quality requests in the range of -0.1 (lowest quality, smallest files) through +1.0 (highest-quality, largest files). Quality -0.1 is intended as an ultra-low setting in which low bitrate is much more important than quality consistency.  Quality settings 0.0 and above are intended to produce consistent results at all times.  
+
+</td>
+</tr>
+</table>
+
+<a name="BBR">
+<h3>managed bitrate modes</h3>
+
+Although the Vorbis codec is natively VBR, libvorbis includes
+infrastructure for 'managing' the bitrate of streams by setting
+minimum and maximum usage constraints, as well as functionality for
+nudging a stream toward a desired average value.  These features
+should <em>only</em> be used when there is a requirement to limit
+bitrate in some way.  Although the difference is usually slight,
+managed bitrate modes will always produce output inferior to VBR
+(given equal bitrate usage). Setting overly or impossibly tight
+bitrate management requirements can affect output quality dramatically
+for the worse.<p>
+
+Beginning in libvorbis 1.1, bitrate management is implemented using a
+<em>bit-reservoir</em> algorithm. The encoder has a fixed-size
+reservoir used as a 'savings account' in encoding.  When a frame is
+smaller than the target rate, the unused bits go into the reservoir so
+that they may be used by future frames.  When a frame is larger than
+target bitrate, it draws 'banked' bits out of the reservoir.  Encoding
+is managed so that the reservoir never goes negative (when a maximum
+bitrate is specified) or fills beyond a fixed limit (when a minimum
+bitrate is specified).  An 'average bitrate' request is used as the
+set-point in a long-range bitrate tracker which adjusts the encoder's
+aggressiveness up or down depending on whether or not frames are coming
+in larger or smaller than the requested average point.
+
+<p>
+<table border=1 color=black width=50% cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td><b>parameter</b></td>
+	<td><b>description</b></td>
+</tr>
+<tr valign=top>
+<td>maximum bitrate</td> <td> The maximum allowed bitrate, set in bits
+per second.  If the bitrate would otherwise rise such that oversized
+frames would underflow the bit-reservoir by consuming banked bits,
+bitrate management will force the encoder to use fewer bits per frame
+by encoding with a more aggressive psychoacoustic model.<p> This
+setting is a hard limit; the bitstream will never be allowed, under
+any circumstances, to increase above the specified bitrate over the
+average period set by the reservoir; it may momentarily rise over if
+inspected on a granularity much finer than the average period across
+the reservoir.  Normally, the encoder will conserve bits gracefully by
+using more aggressive psychoacoustics to shrink a frame when forced
+to.  However, if the encoder runs out of means of gracefully shrinking
+a frame, it will simply take the smallest frame it can otherwise
+generate and truncate it to the maximum allowed length.  Note that
+this is not an error and although it will obviously adversely affect
+audio quality, a Vorbis decoder will be able to decode a truncated
+frame into audio.
+
+</td>
+</tr>
+
+<tr valign=top>
+<td>average bitrate</td> 
+
+<td>
+
+The average desired bitrate of a stream, set
+in bits per second.  Average bitrate is tracked via a reservoir like
+minimum and maximum bitrate, however the averaging reservior does not
+impose a hard limit; it is used to nudge the bitrate toward the
+desired average by slowly adjusting the psychoacoustic aggressiveness.
+As such, the reservoir size does not affect the average bitrate
+behavior.  Because this setting alone is not used to impose hard
+bitrate limits, the bitrate of a stream produced using only the
+<tt>average bitrate</tt> constraint will track the average over time
+but not necessarily adhere strictly to that average for any given
+period.  Should a strict localized average be required, <tt>average
+bitrate</tt> should be used along with <tt>minimum bitrate</tt> and
+<tt>maximum bitrate</tt>.
+</td>
+
+</tr>
+
+<tr valign=top>
+<td>minimum bitrate</td>
+<td> 
+ The minimum allowed bitrate, set in bits per second.  If
+the bitrate would otherwise fall such that undersized frames would
+overflow the bit-reservoir with unused bits, bitrate management will
+force the encoder to use more bits per frame by encoding with a less
+aggressive psychoacoustic model.<p> This setting is a hard limit; the
+bitstream will never be allowed, under any circumstances, to drop
+below the specified bitrate over the average period set by the
+reservoir; it may momentarily fall under if inspected on a granularity
+much finer than the average period across the reservoir.  Normally,
+the encoder will fill out undersided frames with additional useful
+coding information by increasing the perceived quality of the stream.
+If the encoder runs out of useful ways to consume more bits, it will
+pad frames out with zeroes.
+</td>
+</tr>
+
+<tr valign=top>
+<td>reservoir size</td> <td> The size of the minimum/maximum bitrate
+tracking reservoir, set in bits.  The reservoir is used as a 'bit
+bank' to average out localized surges and dips in bitrate while
+providing predictable, guaranteed buffering behavior for streams to be
+used in situations with constrained transport bandwidth.  The default
+setting is two seconds of average bitrate.<p>
+
+When a single frame is larger than the maximum allowed overall
+bitrate, the bits are 'borrowed' from the bitrate reservoir; if the
+reservoir contains insufficient bits to cover the defecit, the encoder
+must find some way to reduce the frame size. <p>
+
+When a frame is under the minimum limit, the surplus bits are placed
+into the reservoir, banking them for future use.  If the reservoir is
+already full of banked bits, the encoder is forced to find some way to
+make the frame larger.<p>
+
+If the frame size is between the minimum and maximum rates (thus
+implying the minimum and maximum allowed rates are different), the
+reservoir gravitates toward a fill point configured by the
+<tt>reservoir bias</tt> setting described next.  If the reservoir is
+fuller than the fill point (a 'surplus of surplus'), the encoder will
+consume a number bits from the reservoir equal to the number of the
+bits by which the frame exceeds minimum size.  If the reservoir is
+emptier than the fillpoint (a 'surplus of defecit'), bits are returned
+to the reservoir equaling the current frame's number of bits under the
+maximum frame size.  The idea of the fill point is to buffer against
+both underruns and overruns, by trying to hold the reservoir to a
+middle course.
+</td>
+</tr>
+
+<tr valign=top>
+<td>reservoir bias</td>
+
+<td>
+
+Reservoir bias is a setting between 0.0 and 1.0 that biases bitrate
+management toward smoothing bitrate spikes (0.0) or bitrate peaks
+(1.0); the default setting is 0.1.<p>
+
+Using settings toward 0.0 causes the bitrate manager to hoard bits in
+the bit reservoir such that there is a large pool of banked surplus to
+draw upon during short spikes in bitrate.  As a result, the encoder
+will react less aggressively and less drastically to curtail framesize
+during brief surges in bitrate.<p>
+
+Using settings toward 1.0 causes the bitrate manager to empty the bit
+reservoir such that there is a large buffer available to store surplus
+bits during sudden drops in bitrate.  As a result, the encoder will
+react less aggressively and less drastically to support minimum frame
+sizes during drops in bitrate and will tend not to store any extra
+bits in the reservoir for future bitrate spikes.<p>
+
+</td>
+</tr>
+
+<tr valign=top>
+<td>average track damping</td>
+<td> 
+
+A decimal value, in seconds, that controls how quickly the average
+bitrate tracker is allowed to slew from enforcing minimum frame sizes
+to maximum framesizes and vice versa.  Default value is 1.5
+seconds.<p>
+
+When the 'average bitrate' setting is in use, the average bitrate
+tracker uses an unbounded reservoir to track overall bitrate-to-date
+in the stream.  When bitrates are too low, the tracker will try to
+nudge bitrates up and when the bitrate is too high, nudge it down.
+The damping value regulates the maximum strength of the nudge; it
+describes, in seconds, how quickly the tracker may transition from an
+extreme nudge in one direction to an extreme nudge in the other.<p>
+
+</td>
+</tr>
+
+</table>
+
+<h3>encoding model adjustments</h3>
+
+The <a href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> call provides
+a generalized interface for making encoding setup adjustments to the
+basic high-level setup provided by <a
+href="vorbis_encode_setup_vbr.html">vorbis_encode_setup_vbr()</a> or <a
+href="vorbis_encode_setup_managed.html">vorbis_encode_setup_managed()</a>.
+In reality, these two calls use <a
+href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> internally, and <a
+href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> can be used to adjust
+most of the parameters set by other calls.<p>
+
+In Vorbis 1.1, <a href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> can
+adjust the following additional parameters not described elsewhere:
+
+<p>
+<table border=1 color=black width=50% cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td><b>parameter</b></td>
+	<td><b>description</b></td>
+</tr>
+<tr valign=top>
+<td>management mode</td> <td> Configures whether or not bitrate
+management is in use or not.  Normally, this value is set implicitly
+during encoding setup; however, the supported means of selecting a
+quality mode by bitrate (that is, requesting a true VBR stream, but
+doing so by asking for an approximate bitrate) is to use <a
+href="vorbis_encode_setup_managed.html">vorbis_encode_setup_managed()</a>
+and then to explicitly turn off bitrate management by calling <a
+href="vorbis_encode_ctl.html">vorbis_encode_ctl()</a> with <a
+href="vorbis_encode_ctl.html#OV_ECTL_RATEMANAGE2_SET">OV_ECTL_RATEMANAGE2_SET</a>
+</td>
+</tr>
+
+<tr valign=top>
+<td>coupling</td> <td> Stereo encoding (and in the future, surround
+encodings) are normally encoded assuming the channels form a stereo
+image and that lossy-stereo modelling is appropriate; this is called
+'coupling'.  Stereo coupling may be explicitly enabled or disabled.
+</td>
+</tr>
+<tr valign=top>
+<td>lowpass</td> <td> Sets the hard lowpass of a given encoding mode;
+this may be used to conserve a few bits in high-rate audio that has
+limited bandwidth, or in testing of the encoder's acoustic model.  The
+encoder is generally already configured with ideal lowpasses (if any
+at all) for given modes; use of this parameter is strongly discouraged
+if the point is to try to 'improve' a given encoding mode for general
+encoding.
+</td>
+</tr>
+
+<tr valign=top>
+<td>impulse coding aggressiveness</td> <td>By default, libvorbis
+attempts to compromise between preventing wide bitrate swings and
+high-resolution impulse coding (which is required for the crispest
+possible attacks, but also requires a relatively large momentary
+bitrate increase).  This parameter allows an application to tune the
+compromise or eliminate it; A value of 0.0 indicates normal behavior
+while a value of -15.0 requests maximum possible impulse
+resolution.</td>
+</tr>
+
+</table>
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2004 Vorbis team</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@vorbis.org">team@vorbis.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>libvorbisenc documentation</p></td>
+<td align=right><p class=tiny>libvorbisenc release 1.1 - 20040709</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>
+

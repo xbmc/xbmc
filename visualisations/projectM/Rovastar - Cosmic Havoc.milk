@@ -1,0 +1,78 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=1.700000
+fDecay=0.902000
+fVideoEchoZoom=0.999606
+fVideoEchoAlpha=0.000000
+nVideoEchoOrientation=0
+nWaveMode=6
+bAdditiveWaves=1
+bWaveDots=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bMotionVectorsOn=0
+bRedBlueStereo=0
+nMotionVectorsX=12
+nMotionVectorsY=9
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=4.099998
+fWaveScale=0.099694
+fWaveSmoothing=0.630000
+fWaveParam=0.899900
+fModWaveAlphaStart=0.710000
+fModWaveAlphaEnd=1.300000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.331000
+fZoomExponent=0.999995
+fShader=1.000000
+zoom=0.999513
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000000
+dy=0.000000
+warp=0.010000
+sx=0.999997
+sy=0.999999
+wave_r=0.650000
+wave_g=0.650000
+wave_b=0.650000
+wave_x=0.000000
+wave_y=0.500000
+ob_size=0.500000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=0.000000
+ib_size=0.260000
+ib_r=0.250000
+ib_g=0.250000
+ib_b=0.250000
+ib_a=0.000000
+per_frame_1=bass_thresh = above(bass_att,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.4)*0.85+1.4);
+per_frame_2=treb_thresh = above(treb_att,treb_thresh)*2 + (1-above(treb_att,treb_thresh))*((treb_thresh-1.5)*0.75+1.5);
+per_frame_3=bass_on = above(bass_thresh,1.8);
+per_frame_4=treb_on = above(treb_thresh,1.9);
+per_frame_5=swapcolour = bass_on - treb_on;
+per_frame_6=red_aim = if(equal(swapcolour,1),1,if(equal(swapcolour,0),1,0));
+per_frame_7=green_aim = if(equal(swapcolour,1),0,if(equal(swapcolour,0),0.5,0.25));
+per_frame_8=blue_aim = if(equal(swapcolour,1),0,if(equal(swapcolour,0),0,1));
+per_frame_9=red = red + (red_aim - red)*if(equal(swapcolour,1),0.55+abs(sin(time/2)/10),0.45);
+per_frame_10=green = green + (green_aim - green)*0.5;
+per_frame_11=blue = blue + (blue_aim - blue)*if(equal(swapcolour,1),0.35,0.7);
+per_frame_12=wave_r= red-green;
+per_frame_13=wave_b = blue;
+per_frame_14=wave_g= green;
+per_frame_15=mybass= if(above((bass+bass_att),2.1),bass+bass_att,0);
+per_frame_16=mytreb = if(below(treb,1),(1-treb)*3+2,0);
+per_frame_17=q1 = if(above(mytreb+mybass,4),1, 0);
+per_frame_18=wave_mystery= if(equal(q1,0),1,0);
+per_pixel_1=effect1 = 0.32+(bass + bass_att*2)/20;
+per_pixel_2=effect2 = 0.32+(mid + mid_att*2)/20;
+per_pixel_3=dx =if(equal(q1,0), if(above(x,effect1),sin(effect1-x)/5, log10(1/x)/15),0);
+per_pixel_4=dy = if(equal(q1,1),if(above(y,effect2),sin(effect2-y)/4, log10(1/y)/12),0);

@@ -1,0 +1,32 @@
+.\" You can view this file with:
+.\" nroff -man [file]
+.\" $Id: curl_global_cleanup.3,v 1.4 2006-02-17 13:31:49 bagder Exp $
+.\"
+.TH curl_global_cleanup 3 "17 Feb 2006" "libcurl 7.8" "libcurl Manual"
+.SH NAME
+curl_global_cleanup - global libcurl cleanup
+.SH SYNOPSIS
+.B #include <curl/curl.h>
+.sp
+.BI "void curl_global_cleanup(void);"
+.ad
+.SH DESCRIPTION
+This function releases resources acquired by \fBcurl_global_init(3)\fP.
+
+You should call \fIcurl_global_cleanup(3)\fP once for each call you make to
+\fIcurl_global_init(3)\fP, after you are done using libcurl.
+
+\fBThis function is not thread safe.\fP You must not call it when any other
+thread in the program (i.e. a thread sharing the same memory) is running.
+This doesn't just mean no other thread that is using libcurl.  Because
+\fBcurl_global_cleanup(3)\fP calls functions of other libraries that are
+similarly thread unsafe, it could conflict with any other thread that uses
+these other libraries.
+
+See the description in \fBlibcurl(3)\fP of global environment requirements for
+details of how to use this function.
+
+.SH "SEE ALSO"
+.BR curl_global_init "(3), "
+.BR libcurl "(3), "
+

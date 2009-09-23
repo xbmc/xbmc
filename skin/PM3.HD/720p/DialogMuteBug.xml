@@ -1,0 +1,38 @@
+<window id="113">
+	<defaultcontrol>-</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>530</posx>
+		<posy>15</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>220</width>
+			<height>45</height>
+			<colordiffuse>DDFFFFFF</colordiffuse>
+			<texture>black-back.png</texture>
+			<bordertexture border="3">NoCover_1.png</bordertexture>
+			<bordersize>4</bordersize>
+		</control>
+		<control type="image">
+			<posx>10</posx>
+			<posy>5</posy>
+			<width>35</width>
+			<height>35</height>
+			<texture>VolumeIcon-Mute.png</texture>
+		</control>
+		<control type="label" id="0">
+			<description>Label</description>
+			<posx>60</posx>
+			<posy>0</posy>
+			<width>150</width>
+			<height>45</height>
+			<label>31000</label>
+			<font>font11</font>
+			<align>left</align>
+			<aligny>center</aligny>
+		</control>
+	</controls>
+</window>

@@ -1,0 +1,399 @@
+<window id="503">
+	<defaultcontrol allways="true">6</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonBackground</include>
+		<control type="group">
+			<posy>70</posy>
+			<include>Window_OpenClose_Animation</include>
+			<visible>Control.HasFocus(50) | Control.HasFocus(100)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="image">
+				<posx>445</posx>
+				<posy>40</posy>
+				<width>390</width>
+				<height>400</height>
+				<colordiffuse>BBFFFFFF</colordiffuse>
+				<texture>black-back.png</texture>
+			</control>
+			<control type="group">
+				<visible>Control.HasFocus(50)</visible>
+				<control type="image">
+					<posx>465</posx>
+					<posy>60</posy>
+					<width>350</width>
+					<height>200</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[Container(50).ListItem.Icon]</texture>
+				</control>
+				<control type="textbox">
+					<posx>465</posx>
+					<posy>270</posy>
+					<width>350</width>
+					<height>160</height>
+					<font>font11</font>
+					<align>center</align>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<pagecontrol>9999999999</pagecontrol>
+					<label>$INFO[Container(50).ListItem.Title,[COLOR=grey2]$LOCALIZE[556]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.Artist,[COLOR=grey2]$LOCALIZE[557]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.Album,[COLOR=grey2]$LOCALIZE[558]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.Duration,[COLOR=grey2]$LOCALIZE[555]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.TrackNumber,[COLOR=grey2]$LOCALIZE[554]:[/COLOR] ,[CR]]$INFO[Container(50).ListItem.Genre,[COLOR=grey2]$LOCALIZE[515]:[/COLOR] ,[CR]]</label>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.HasFocus(100)</visible>
+				<control type="image">
+					<posx>465</posx>
+					<posy>60</posy>
+					<width>350</width>
+					<height>200</height>
+					<aspectratio>keep</aspectratio>
+					<texture>$INFO[Container(100).ListItem.Icon]</texture>
+				</control>
+				<control type="textbox">
+					<posx>465</posx>
+					<posy>270</posy>
+					<width>350</width>
+					<height>160</height>
+					<font>font11</font>
+					<align>center</align>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<pagecontrol>9999999999</pagecontrol>
+					<label>$INFO[Container(100).ListItem.Title,[COLOR=grey2]$LOCALIZE[556]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.Artist,[COLOR=grey2]$LOCALIZE[557]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.Album,[COLOR=grey2]$LOCALIZE[558]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.Duration,[COLOR=grey2]$LOCALIZE[555]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.TrackNumber,[COLOR=grey2]$LOCALIZE[554]:[/COLOR] ,[CR]]$INFO[Container(100).ListItem.Genre,[COLOR=grey2]$LOCALIZE[515]:[/COLOR] ,[CR]]</label>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<animation effect="slide" start="-480,0" end="0,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" end="-480,0" start="0,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>100</posy>
+				<width>480</width>
+				<height>580</height>
+				<texture border="0,0,50,45">Panel2.png</texture>
+			</control>
+			<control type="label">
+				<posx>20</posx>
+				<posy>125</posy>
+				<width>400</width>
+				<height>30</height>
+				<font>font18</font>
+				<textcolor>green</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>31058</label>
+			</control>
+			<control type="image">
+				<posx>10</posx>
+				<posy>60</posy>
+				<width>420</width>
+				<height>8</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="label">
+				<description>number of files/pages in left list text label</description>
+				<posx>20</posx>
+				<posy>38r</posy>
+				<width>562</width>
+				<font>font12b</font>
+				<align>left</align>
+				<scroll>true</scroll>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>($INFO[Container(50).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(50).CurrentPage]/$INFO[Container(50).NumPages])</label>
+			</control>
+			<control type="scrollbar" id="30">
+				<posx>15</posx>
+				<posy>160</posy>
+				<width>20</width>
+				<height>480</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>31</onleft>
+				<onright>50</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="list" id="50">
+				<posx>40</posx>
+				<posy>160</posy>
+				<width>400</width>
+				<height>485</height>
+				<onleft>30</onleft>
+				<onright>9000</onright>
+				<onup>50</onup>
+				<ondown>50</ondown>
+				<viewtype label="31029">list</viewtype>
+				<pagecontrol>30</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="30" width="400">
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>380</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>395</posx>
+						<posy>0</posy>
+						<width>360</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="30" width="400">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>400</width>
+						<height>30</height>
+						<colordiffuse>AAFFFFFF</colordiffuse>
+						<texture border="7">list-focus.png</texture>
+						<visible>Control.HasFocus(50)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>380</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>395</posx>
+						<posy>0</posy>
+						<width>360</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+		<control type="group">
+			<animation effect="slide" start="480,0" end="0,0" time="500" tween="quadratic" easing="out">WindowOpen</animation>
+			<animation effect="slide" end="480,0" start="0,0" time="500" tween="quadratic" easing="out">WindowClose</animation>
+			<posx>800</posx>
+			<control type="image">
+				<posx>0</posx>
+				<posy>100</posy>
+				<width>480</width>
+				<height>580</height>
+				<texture border="50,0,0,45">Panel.png</texture>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>125</posy>
+				<width>400</width>
+				<height>30</height>
+				<font>font18</font>
+				<textcolor>green</textcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>31059</label>
+			</control>
+			<control type="image">
+				<posx>50</posx>
+				<posy>60</posy>
+				<width>420</width>
+				<height>8</height>
+				<texture>separator.png</texture>
+			</control>
+			<control type="label">
+				<description>Page Count Label</description>
+				<posx>445</posx>
+				<posy>38r</posy>
+				<width>300</width>
+				<height>20</height>
+				<font>font12b</font>
+				<textcolor>white</textcolor>
+				<scroll>false</scroll>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>($INFO[Container(100).NumItems]) $LOCALIZE[31025] - $LOCALIZE[31024] ($INFO[Container(100).CurrentPage]/$INFO[Container(100).NumPages])</label>
+			</control>
+			<control type="scrollbar" id="31">
+				<posx>445</posx>
+				<posy>160</posy>
+				<width>20</width>
+				<height>480</height>
+				<texturesliderbackground border="2,2,2,2">scrollbar_bar_back.png</texturesliderbackground>
+				<texturesliderbar border="2,16,2,16">scrollbar_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="2,16,2,16">scrollbar_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>scrollbar_nib.png</textureslidernib>
+				<textureslidernibfocus>scrollbar_nib.png</textureslidernibfocus>
+				<onleft>100</onleft>
+				<onright>30</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="list" id="100">
+				<posx>40</posx>
+				<posy>160</posy>
+				<width>400</width>
+				<height>485</height>
+				<onleft>9000</onleft>
+				<onright>31</onright>
+				<onup>100</onup>
+				<ondown>100</ondown>
+				<viewtype label="31029">list</viewtype>
+				<pagecontrol>31</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="30" width="400">
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>380</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>395</posx>
+						<posy>0</posy>
+						<width>360</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label2</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="30" width="400">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>400</width>
+						<height>30</height>
+						<colordiffuse>AAFFFFFF</colordiffuse>
+						<texture border="7">list-focus.png</texture>
+						<visible>Control.HasFocus(100)</visible>
+						<include>VisibleFadeEffect</include>
+					</control>
+					<control type="label">
+						<posx>5</posx>
+						<posy>0</posy>
+						<width>380</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>left</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label</info>
+					</control>
+					<control type="label">
+						<posx>395</posx>
+						<posy>0</posy>
+						<width>360</width>
+						<height>30</height>
+						<font>font12</font>
+						<textcolor>white</textcolor>
+						<selectedcolor>green</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<info>ListItem.Label2</info>
+					</control>
+				</focusedlayout>
+			</control>
+		</control>
+		<control type="group" id="9000">
+			<posx>457</posx>
+			<posy>495</posy>
+			<include>Window_OpenClose_Animation</include>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>365</width>
+				<height>240</height>
+				<texture border="40">DialogBack.png</texture>
+			</control>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>365</width>
+				<height>240</height>
+				<texture border="40">DialogFront.png</texture>
+			</control>
+			<control type="button" id="6">
+				<description>Open Button</description>
+				<posx>40</posx>
+				<posy>50</posy>
+				<label>31055</label>
+				<align>center</align>
+				<include>ButtonCommonValues</include>
+				<onleft>50</onleft>
+				<onright>100</onright>
+				<onup>8</onup>
+				<ondown>7</ondown>
+			</control>
+			<control type="button" id="7">
+				<description>Save Button</description>
+				<posx>40</posx>
+				<posy>95</posy>
+				<label>31056</label>
+				<align>center</align>
+				<include>ButtonCommonValues</include>
+				<onleft>50</onleft>
+				<onright>100</onright>
+				<onup>6</onup>
+				<ondown>8</ondown>
+			</control>
+			<control type="button" id="8">
+				<description>Clear button</description>
+				<posx>40</posx>
+				<posy>140</posy>
+				<label>31057</label>
+				<align>center</align>
+				<include>ButtonCommonValues</include>
+				<onleft>50</onleft>
+				<onright>100</onright>
+				<onup>7</onup>
+				<ondown>6</ondown>
+			</control>
+		</control>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1280</width>
+			<height>128</height>
+			<texture>Header.png</texture>
+		</control>
+		<control type="label">
+			<include>WindowTitleCommons</include>
+			<label>$LOCALIZE[9] - $LOCALIZE[10503]</label>
+		</control>
+	</controls>
+</window>

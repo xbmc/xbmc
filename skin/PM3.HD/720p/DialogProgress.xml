@@ -1,0 +1,116 @@
+<window id="101">
+	<defaultcontrol>10</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>290</posx>
+		<posy>210</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+	<controls>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>700</width>
+			<height>300</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>700</width>
+			<height>300</height>
+			<texture border="40">DialogFront.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>heading label</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>0</width>
+			<height>0</height>
+			<font>-</font>
+			<visible>false</visible>
+		</control>
+		<control type="label">
+			<description>heading label</description>
+			<posx>40</posx>
+			<posy>40</posy>
+			<width>620</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<font>font18</font>
+			<label>$INFO[Control.GetLabel(1)] $INFO[System.Progressbar,- ,%]</label>
+			<textcolor>dialogheader</textcolor>
+		</control>
+		<control type="image">
+			<posx>40</posx>
+			<posy>78</posy>
+			<width>620</width>
+			<height>2</height>
+			<texture>separator.png</texture>
+		</control>
+		<control type="label" id="2">
+			<description>dialog line 1</description>
+			<posx>40</posx>
+			<posy>85</posy>
+			<width>620</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>-</label>
+			<font>font12</font>
+		</control>
+		<control type="label" id="3">
+			<description>dialog line 2</description>
+			<posx>40</posx>
+			<posy>115</posy>
+			<width>620</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>-</label>
+			<font>font12</font>
+			<haspath>yes</haspath>
+		</control>
+		<control type="label" id="4">
+			<description>dialog line 3</description>
+			<posx>40</posx>
+			<posy>145</posy>
+			<width>620</width>
+			<height>30</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>-</label>
+			<font>font12</font>
+			<haspath>yes</haspath>
+		</control>
+		<control type="progress">
+			<description>Progressbar</description>
+			<posx>40</posx>
+			<posy>184</posy>
+			<width>620</width>
+			<height>10</height>
+			<info>System.Progressbar</info>
+		</control>
+		<control type="button" id="10">
+			<description>Cancel button</description>
+			<posx>250</posx>
+			<posy>215</posy>
+			<width>200</width>
+			<height>35</height>
+			<label>222</label>
+			<font>font13</font>
+			<textcolor>grey2</textcolor>
+			<focusedcolor>white</focusedcolor>
+			<align>center</align>
+			<texturenofocus border="3">button-nofocus.png</texturenofocus>
+			<texturefocus border="3">button-focus2.png</texturefocus>
+			<onleft>10</onleft>
+			<onright>10</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>
+		</control>
+	</controls>
+</window>

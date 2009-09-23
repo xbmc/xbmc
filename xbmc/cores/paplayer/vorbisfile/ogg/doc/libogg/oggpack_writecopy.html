@@ -1,0 +1,69 @@
+<html>
+
+<head>
+<title>libogg - function - oggpack_writecopy</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>libogg documentation</p></td>
+<td align=right><p class=tiny>libogg release 1.0 - 20020719</p></td>
+</tr>
+</table>
+
+<h1>oggpack_writecopy</h1>
+
+<p><i>declared in "ogg/ogg.h";</i></p>
+
+<p>This function copies a sequence of bits from a source buffer into an
+<a href="oggpack_buffer.html">oggpack_buffer</a>.</p>
+<p>The oggpack_buffer must already be initialized for writing using <a href="oggpack_writeinit.html">oggpack_writeinit</a>.</p>
+<p>Only 32 bits can be written at a time.</p>
+
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+void  oggpack_writecopy(oggpack_buffer *b, void *source, long bits);
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>b</i></dt>
+<dd>Buffer to be used for writing.</dd>
+<dt><i>source</i></dt>
+<dd>A pointer to the data to be written into the buffer.</dd>
+<dt><i>bits</i></dt>
+<dd>The number of bits to be copied into the buffer.</dd>
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<li>
+No values are returned.</li>
+</blockquote>
+<p>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2002 Xiph.org Foundation</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/index.html">Ogg Vorbis</a><br><a href="mailto:team@xiph.org">team@xiph.org</a></p></td>
+</tr><tr>
+<td><p class=tiny>libogg documentation</p></td>
+<td align=right><p class=tiny>libogg release 1.0 - 20020719</p></td>
+</tr>
+</table>
+
+
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+[preset00]
+fRating=2
+fGammaAdj=2
+fDecay=0.985
+fVideoEchoZoom=1
+fVideoEchoAlpha=0.5
+nVideoEchoOrientation=3
+nWaveMode=4
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=0
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=1
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=1
+fWaveScale=0.040271
+fWaveSmoothing=0.75
+fWaveParam=0
+fModWaveAlphaStart=0.85
+fModWaveAlphaEnd=1.95
+fWarpAnimSpeed=1
+fWarpScale=1
+fZoomExponent=1
+fShader=0
+zoom=1
+rot=0
+cx=-0.19
+cy=-0.1
+dx=0
+dy=0
+warp=1
+sx=1
+sy=1
+wave_r=0.4
+wave_g=0.4
+wave_b=0.4
+wave_x=0.5
+wave_y=0.5
+ob_size=0.005
+ob_r=0
+ob_g=0
+ob_b=0
+ob_a=1
+ib_size=0
+ib_r=0
+ib_g=0
+ib_b=0
+ib_a=0
+nMotionVectorsX=12
+nMotionVectorsY=9
+mv_dx=0
+mv_dy=0
+mv_l=0.9
+mv_r=1
+mv_g=1
+mv_b=1
+mv_a=0
+per_frame_1=warp=0;
+per_frame_2=wave_x = 0.01*rand(100);
+per_frame_3=wave_r = 1 + sin(-wave_x*3.1415);
+per_frame_4=wave_g = abs(sin(2*wave_x*3.1415));
+per_frame_5=wave_b = sin(wave_x*3.1415);
+per_frame_6=treb_effect = if(above(treb_att,1.4),pow(0.99,treb_att),1);
+per_frame_7=net_effect = if(above(bass_att,0.8*treb_att),1,treb_effect);
+per_frame_8=zoom = net_effect;
+per_frame_9=rot = rot + rot_residual;
+per_frame_10=bass_thresh = above(bass_att,bass_thresh)*2 + (1-above(bass_att,bass_thresh))*((bass_thresh-1.3)*0.96+1.3);
+per_frame_11=shift = (tan(time*7)) -0.05;
+per_frame_12=shift = if(above(shift,0),0,if(below(shift,-0.1),-0.1,shift));
+per_frame_13=rot_residual = if(equal(bass_thresh,2),shift,rot_residual);
+per_pixel_1=rot = rot + if(equal(sin(ang), 0), -rot, 0.05*sin(rad*4*sin(time*.8)));
+per_pixel_2=zoom=zoom+rot*sin(time*2);

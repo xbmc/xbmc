@@ -1,0 +1,76 @@
+These are the formatting rules for mpeg2dec code. Please try to follow
+these for any new contributions:
+
+* Code should not be wider than 79 columns.
+
+* A tab character should be displayed as 8 columns wide.
+
+* Indentations are 4 columns wide.
+
+* Braces are never alone on a line, instead they are on the same line
+  as their associated control flow (if/then/else/while/for)
+  statement. Functions are a special case, their opening and ending
+  braces are alone on their own line, in the leftmost column. This is
+  all standard K&R coding style.
+
+* Braces are optional. It's ok to skip them if there is only one
+  statement in the block you'd put the braces around.
+
+* There is always a space separating the function name and the
+  associated argument list i.e. f ()
+
+* There is always a space separating an if/while/for control flow
+  statement and the associated conditions i.e. if (x)
+
+* Function argument lists are of the form f (a, b, c) i.e. there is
+  always a space between the arguments.
+
+* Pointers are declared with spaces both before and after the star.
+
+* There are no parenthesis around a return expression i.e. return x;
+
+* Non-static functions have names of the form mpeg2_*
+
+Here is a short example for reference:
+
+static int foo (int bar, int baz, int * quux)
+{
+    if (bar == baz)
+	return *quux;
+    else do {
+	bar += *quux;
+	quux++;
+    } while (bar != baz);
+    return *quux + bar;
+}
+
+* For xemacs users, this is what I use:
+
+(defconst mpeg2-c-style '("gnu"
+                         (c-basic-offset . 4)
+                         (c-label-minimum-indentation . 0)
+                         (c-offsets-alist . (
+                                             (knr-argdecl-intro . +)
+                                             (topmost-intro-cont . +)
+                                             ))
+                         ))
+(c-add-style "mpeg2" mpeg2-c-style)
+
+Then to use that coding style, type M-x c-set-style mpeg2
+
+* For emacs users, the following should work:
+
+(defun mpeg2-c-mode ()
+  "C mode with adjusted defaults for use with mpeg2dec."
+  (interactive)
+  (c-mode)
+  (c-set-style "gnu")
+  (setq c-basic-offset 4))
+
+Then to use that coding style, type M-x mpeg2-c-mode
+
+* For vim users, the following might help:
+
+set noexpandtab
+set tabstop=8
+set shiftwidth=4

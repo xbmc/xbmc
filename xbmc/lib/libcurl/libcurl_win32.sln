@@ -1,0 +1,68 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yassl", "yassl-1.9.2\yassl.vcproj", "{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1} = {F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "taocrypt", "yassl-1.9.2\taocrypt\taocrypt.vcproj", "{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "curllib", "curl-7.19.0\lib\curllib.vcproj", "{429A304A-C1DA-43D6-9704-35BB82BAF43C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4} = {9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1} = {F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		DLL Debug = DLL Debug
+		DLL Release = DLL Release
+		LIB Debug = LIB Debug
+		LIB Release = LIB Release
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.Debug.ActiveCfg = Debug|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.Debug.Build.0 = Debug|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.DLL Debug.ActiveCfg = Debug|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.DLL Debug.Build.0 = Debug|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.DLL Release.ActiveCfg = Release|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.DLL Release.Build.0 = Release|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.LIB Debug.ActiveCfg = Debug|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.LIB Debug.Build.0 = Debug|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.LIB Release.ActiveCfg = Release|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.LIB Release.Build.0 = Release|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.Release.ActiveCfg = Release|Win32
+		{9FCF877E-5FDC-4F0E-B50B-F8696765CDE4}.Release.Build.0 = Release|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.Debug.ActiveCfg = Debug|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.Debug.Build.0 = Debug|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.DLL Debug.ActiveCfg = Debug|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.DLL Debug.Build.0 = Debug|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.DLL Release.ActiveCfg = Release|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.DLL Release.Build.0 = Release|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.LIB Debug.ActiveCfg = Debug|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.LIB Debug.Build.0 = Debug|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.LIB Release.ActiveCfg = Release|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.LIB Release.Build.0 = Release|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.Release.ActiveCfg = Release|Win32
+		{F5586A95-6ADD-4CF4-9AAE-B2B1FB7172E1}.Release.Build.0 = Release|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.Debug.ActiveCfg = DLL Debug|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.Debug.Build.0 = DLL Debug|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.DLL Debug.ActiveCfg = DLL Debug|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.DLL Debug.Build.0 = DLL Debug|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.DLL Release.ActiveCfg = DLL Release|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.DLL Release.Build.0 = DLL Release|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.LIB Debug.ActiveCfg = LIB Debug|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.LIB Debug.Build.0 = LIB Debug|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.LIB Release.ActiveCfg = LIB Release|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.LIB Release.Build.0 = LIB Release|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.Release.ActiveCfg = LIB Release|Win32
+		{429A304A-C1DA-43D6-9704-35BB82BAF43C}.Release.Build.0 = LIB Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

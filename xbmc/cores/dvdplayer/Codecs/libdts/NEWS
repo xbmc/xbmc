@@ -1,0 +1,12 @@
+libdts-0.0.2 Sun Feb 29 12:45:21 CET 2004
+
+Support for high frequencies vector quantization.
+Improved build system.
+Debian packaging files.
+
+dtsdec-0.0.1 Sun Feb 8 21:49:17 CET 2004
+
+First public release of libdts, a DTS Coherent Acoustics decoder based
+on the publicly available ETSI specification (ETSI 102 114 v1.2.1).
+
+Code based on a52dec-0.7.4

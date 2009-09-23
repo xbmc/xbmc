@@ -1,0 +1,17 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>WebServer Architecture</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../style/normal_ws.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+<h1>Digest Access Authentication</h1><p>WebServer 2.1 supports digest access authentication (DAA), which is  an authentication scheme for HTTP that is more secure than the   basic access authentication scheme.  The primary advantage of DAA is, unlike basic access authentication, passwords are never transmitted across the Internet in an unencrypted form. </p><P>The web browser presentation for DAA  is essentially the same as for basic access authentication. The user typically is prompted for a user ID and password before being allowed  access to a URL. In basic access,  passwords are sent as clear text.  In  digest access, the user ID and password are encrypted using  the RSA Data Security, Inc. MD5 Message-Digest Algorithm before being sent. </P><P> The following shows   the    interaction going on between the <B>client</B>  (browser) and <B>server</B> (web) using DAA.	</P><TABLE WIDTH="89%" BORDER="0"><TR><TD WIDTH="86"><DIV ALIGN="CENTER"><B>Sequence</B></DIV></TD><TD WIDTH="579"><B></B></TD><TD WIDTH="2">&nbsp;</TD></TR>
+<TR><TD BORDERCOLOR="#000000" BGCOLOR="#CCCCCC"><DIV ALIGN="CENTER"><B>1</B></DIV></TD><TD BORDERCOLOR="#000000" BGCOLOR="#CCCCCC"><B>Client</B> requests a page.</TD><TD WIDTH="2">&nbsp;</TD></TR><TR  valign=top><TD WIDTH="86"> <DIV ALIGN="CENTER"><B>2</B> </DIV></TD><TD WIDTH="579"><B>Server</B> checks if page is password protected (by accessing the AccessLimit file), and if DAA is required.  If so, responds with 401 and WWW-Authenticate Response header, which includes a portion of data to be encrypted, the "realm-value", the encryption algorithm to use, and a timed "nonce".</TD><TD WIDTH="2">&nbsp;</TD></TR><TR valign=top><TD WIDTH="86" BGCOLOR="#CCCCCC"><DIV ALIGN="CENTER"><B>3</B></DIV></TD><TD WIDTH="579" BGCOLOR="#CCCCCC"><B>Client</B> prompts user for id and password, then sends the user name and encrypted digest to the server.  Digest is calculated with User ID password and realm-value.  Returns to the server an Authorization Request Header which contains the user id, the digest, the requested page, and the "nonce".</TD><TD WIDTH="2">&nbsp;</TD></TR>
+<TR  valign=top><TD WIDTH="86"><DIV ALIGN="CENTER"><B>4</B></DIV></TD><TD WIDTH="579"><DIV ALIGN="LEFT"><B>Server</B> retrieves  User ID record  from storage, which contains the password.  Digest is calculated, and compared to client's version.  Nonce is also evaluated.  If successful, an Authentication Info header is sent, which contains the next "nonce" value so that the client can continue to access protected pages without prompting the user. </DIV></TD><TD WIDTH="2">&nbsp;</TD></TR><TR>
+<TD WIDTH="86" BGCOLOR="#CCCCCC"><DIV ALIGN="CENTER"><B>5</B></DIV></TD><TD WIDTH="579" BGCOLOR="#CCCCCC"><DIV ALIGN="LEFT"><B>Client</B> receives requested page.</DIV></TD></TR>
+</TABLE><H4>&nbsp;</H4></td></tr></table>
+</body>
+</html>

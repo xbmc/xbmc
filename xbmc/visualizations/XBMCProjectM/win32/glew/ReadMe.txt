@@ -1,0 +1,1 @@
+Downloaded from http://glew.sourceforge.net/index.html and compiled in our mingw environment.

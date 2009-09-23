@@ -1,0 +1,29 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websSetVar -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websSetVar</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Set the value of a 
+Form variable.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ void <b>websSetVar</b>(webs_t wp, char_t *var, char_t *value); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="6%">wp <TD WIDTH="94%">Web server connection handle.</TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="6%">var <TD WIDTH="94%">The Form variable.</TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="6%">value <TD WIDTH="94%">The value for setting the 
+variable. </TD></TR> </table><h2>Description</h2><P>The websSetVar procedure defines 
+the value of a Form variable. If the variable is already defined, the value is 
+updated. The variable is defined only for this web browser connection and its 
+<EM>value</EM> must be non-NULL. Values are stored in a fast access symbol table 
+using a hash lookup mechanism.</P><h2>Return Value</h2><p>None</p><h2>Example</h2><pre> 
+websSetVar(wp, &quot;Name&quot;, &quot;Peter Smith&quot;); </pre><h2>Stability 
+Classification</h2><p>Stable.</p><h2>See Also</h2><p> <A href="websGetVar.htm">websGetVar</A>, 
+<A href="websTestVar.htm">websTestVar</A> </p></td></tr></table>
+</body>
+</html>

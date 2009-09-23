@@ -1,0 +1,53 @@
+<window id="112">
+	<defaultcontrol>402</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>850</posx>
+		<posy>10</posy>
+		<origin x="30" y="10">Window.IsVisible(seekbar)</origin>
+	</coordinates>
+	<controls>
+		<control type="group">
+		<animation effect="slide" end="0,-150" time="200" condition="Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)">conditional</animation>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>400</width>
+				<height>60</height>
+				<colordiffuse>DDFFFFFF</colordiffuse>
+				<texture>black-back.png</texture>
+				<bordertexture border="3">NoCover_1.png</bordertexture>
+				<bordersize>4</bordersize>
+			</control>
+			<control type="label" id="401">
+				<description>Caption Label</description>
+				<posx>10</posx>
+				<posy>4</posy>
+				<width>380</width>
+				<height>18</height>
+				<font>font10</font>
+				<textcolor>green</textcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="label" id="402">
+				<description>Current Directory Label</description>
+				<posx>10</posx>
+				<posy>20</posy>
+				<width>380</width>
+				<height>20</height>
+				<font>font10</font>
+				<align>left</align>
+				<aligny>center</aligny>
+			</control>
+			<control type="progress" id="403">
+				<description>progress control</description>
+				<posx>10</posx>
+				<posy>44</posy>
+				<width>380</width>
+				<height>6</height>
+			</control>
+		</control>
+	</controls>
+</window>

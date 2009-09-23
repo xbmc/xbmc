@@ -1,0 +1,15 @@
+freetype6.dll, libexpat.dll and libfontconfig-1.dll are downloaded from http://www.gtk.org/download-windows.html
+
+packages are:
+
+http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/freetype-2.3.6.zip
+
+http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/fontconfig-2.4.2-tml-20071015.zip
+
+http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/expat-2.0.0.zip
+
+If you start a movie with ssa/ass subtitles the first time on your PC, fontconfig will cache some config files,
+XBMC does not react in this time ~30 sec., wait until playback starts !! -> Note this is only for the first time
+
+
+

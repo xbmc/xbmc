@@ -1,0 +1,186 @@
+# $Id: check_common_fn.in,v 1.12 2007/09/05 11:17:37 rocky Exp $
+#
+#    Copyright (C) 2003, 2004, 2005, 2007 Rocky Bernstein <rocky@gnu.org>
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+# Common routines and setup for regression testing.
+SKIP_TEST_EXITCODE=77
+
+# Some output changes depending on TZ and locale. Set this so we get known
+# results
+TZ=CUT
+LC_TIME='en_US'
+export TZ LC_TIME
+
+check_result() {
+  RC=$1
+  shift
+  msg=$1
+  shift
+  cmdline=$*
+  if test $RC -ne 0 ; then 
+    if test $RC -ne $SKIP_TEST_EXITCODE ; then
+      echo "$0: $msg failed in comparing output."
+      if test -n "$cmdline" ; then 
+        echo "$0: failed command:"
+        echo "	$cmdline"
+      fi
+      exit $RC
+    else 
+      echo "$0: $msg skipped."
+    fi
+  else 
+    echo "$0: $msg ok."
+  fi
+}
+
+test_cdinfo() {
+
+  opts="$1"
+  outfile="$2"
+  rightfile="$3"
+
+  CD_INFO="../src/cd-info"
+
+  if [ ! -x ${CD_INFO} ]; then
+    echo "$0: No ${CD_INFO}"
+    return 1
+  fi
+
+  if ${CD_INFO} --no-header ${opts} >${outfile} 2>&1 ; then 
+    if test "@DIFF@" != no; then
+      if @DIFF@ @DIFF_OPTS@ ${outfile} ${rightfile} ; then
+	rm -f $outfile
+	return 0
+      else
+	return 3
+      fi
+    else
+      echo "$0: No diff(1) or cmp(1) found - cannot test ${CD_INFO}"
+      rm -f $outfile
+      return 77
+    fi
+  else
+    echo "$0 failed running: ${CD_INFO} ${opts}"
+    return 2
+  fi
+
+}
+
+test_iso_info() {
+
+  opts="$1"
+  outfile="$2"
+  rightfile="$3"
+
+  ISO_INFO="../src/iso-info"
+
+  if [ ! -x ${ISO_INFO} ]; then
+    echo "$0: No ${ISO_INFO}"
+    return 1
+  fi
+
+  cmdline="${ISO_INFO} --no-header ${opts}"
+  if $cmdline  >${outfile} 2>&1 ; then 
+    if test "/usr/bin/diff" != no; then
+      if @DIFF@ @DIFF_OPTS@ ${outfile} ${rightfile} ; then
+	rm -f $outfile
+	return 0
+      else
+	return 3
+      fi
+    else
+      echo "$0: No diff(1) or cmp(1 found - cannot test ${ISO_INFO}"
+      rm -f $outfile
+      return 77
+    fi
+  else
+    echo "$0 failed running: $cmdline"
+    return 2
+  fi
+
+}
+
+test_iso_read() {
+
+  opts="$1"
+  outfile="$2"
+  rightfile="$3"
+
+  ISO_READ="../src/iso-read"
+
+  if [ ! -x ${ISO_READ} ]; then
+    echo "$0: No ${ISO_READ}"
+    return 1
+  fi
+
+  if ${ISO_READ} ${opts} -o ${outfile} 2>&1 ; then 
+    if test "@DIFF@" != no; then
+      if @DIFF@ @DIFF_OPTS@ ${outfile} ${rightfile} ; then
+	rm -f $outfile
+	return 0
+      else
+	return 3
+      fi
+    else
+      echo "$0: No diff(1) or cmp(1 found - cannot test ${ISO_READ}"
+      rm -f $outfile
+      return 77
+    fi
+  else
+    echo "$0 failed running: ${ISO_READ} ${opts} -o ${outfile}"
+    return 2
+  fi
+
+}
+
+test_cd_read() {
+
+  opts="$1"
+  outfile="$2"
+  rightfile="$3"
+
+  CD_READ="../src/cd-read"
+
+  if [ ! -x ${CD_READ} ]; then
+    echo "$0: No ${CD_READ}"
+    return 1
+  fi
+
+  if ${CD_READ} --no-header ${opts} >${outfile} 2>&1 ; then 
+    if test "@DIFF@" != no; then
+      if @DIFF@ @DIFF_OPTS@ ${outfile} ${rightfile} ; then
+	rm -f $outfile
+	return 0
+      else
+	return 3
+      fi
+    else
+      echo "$0: No diff(1) or cmp(1 found - cannot test ${CD_READ}"
+      rm -f $outfile
+      return 77
+    fi
+  else
+    echo "$0 failed running: ${CD_READ} ${opts}"
+    return 2
+  fi
+
+}
+
+#;;; Local Variables: ***
+#;;; mode:shell-script ***
+#;;; eval: (sh-set-shell "bash") ***
+#;;; End: ***

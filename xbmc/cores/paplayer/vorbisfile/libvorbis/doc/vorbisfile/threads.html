@@ -1,0 +1,50 @@
+<html>
+
+<head>
+<title>Vorbisfile - Thread Safety</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+<h1>Thread Safety</h1>
+
+Vorbisfile's libvorbisfile may be used safely in a threading environment
+so long as thread access to individual <a
+href="OggVorbis_File.html">OggVorbis_File</a> instances is serialized.  
+<ul>
+
+<li>Only one thread at a time may enter a function that takes a given <a
+href="OggVorbis_File.html">OggVorbis_File</a> instance, even if the
+functions involved appear to be read-only.<p>
+
+<li>Multiple threads may enter
+libvorbisfile at a given time, so long as each thread's function calls
+are using different <a href="OggVorbis_File.html">OggVorbis_File</a>
+instances. <p>
+
+<li>Any one <a
+href="OggVorbis_File.html">OggVorbis_File</a> instance may be used safely from multiple threads so long as only one thread at a time is making calls using that instance.<p>
+</ul>
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2007 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

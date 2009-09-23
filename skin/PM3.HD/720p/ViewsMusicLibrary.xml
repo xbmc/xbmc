@@ -1,0 +1,201 @@
+<includes>
+	<include name="AlbumSongsFanartView">
+		<control type="list" id="55">
+			<visible>Container.Content(Albums)</visible>
+			<posx>300</posx>
+			<posy>130</posy>
+			<width>400</width>
+			<height>510</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>55</onup>
+			<ondown>55</ondown>
+			<viewtype label="31030">list</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="30" width="390">
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>370</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="30" width="390">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>390</width>
+					<height>30</height>
+					<texture border="7">list-focus.png</texture>
+					<visible>Control.HasFocus(55)</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>370</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<include name="AlbumSongsFanartView_Extras">
+		<control type="group">
+			<visible>Control.IsVisible(55)</visible>
+			<animation effect="fade" time="600" delay="400">Visible</animation>
+			<animation effect="fade" time="200">Hidden</animation>
+			<control type="image">
+				<posx>35</posx>
+				<posy>465</posy>
+				<width>240</width>
+				<height>240</height>
+				<aspectratio aligny="bottom" align="right">keep</aspectratio>
+				<texture fallback="defaultAlbumCover.png">$INFO[Listitem.thumb]</texture>
+				<fadetime>IconCrossfadeTime</fadetime>
+				<bordertexture border="16">poster-shadow.png</bordertexture>
+				<bordersize>16</bordersize>
+			</control>
+			<control type="label">
+				<posx>280</posx>
+				<posy>595</posy>
+				<width>550</width>
+				<height>30</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label2]</label>
+			</control>
+			<control type="label">
+				<posx>280</posx>
+				<posy>625</posy>
+				<width>550</width>
+				<height>30</height>
+				<font>font18</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="label">
+				<posx>280</posx>
+				<posy>660</posy>
+				<width>550</width>
+				<height>30</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Genre]</label>
+			</control>
+		</control>
+	</include>
+	<include name="ArtistFanartView">
+		<control type="list" id="56">
+			<visible>Container.Content(Artists)</visible>
+			<posx>300</posx>
+			<posy>130</posy>
+			<width>400</width>
+			<height>510</height>
+			<onleft>9000</onleft>
+			<onright>60</onright>
+			<onup>56</onup>
+			<ondown>56</ondown>
+			<viewtype label="31030">list</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="30" width="390">
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>370</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<info>ListItem.Label</info>
+				</control>
+			</itemlayout>
+			<focusedlayout height="30" width="390">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>390</width>
+					<height>30</height>
+					<texture border="7">list-focus.png</texture>
+					<visible>Control.HasFocus(56)</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+				<control type="label">
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>370</width>
+					<height>30</height>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<selectedcolor>green</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+	<include name="ArtistFanartView_Extras">
+		<control type="group">
+			<visible>Control.IsVisible(56) + Container.Content(Artists)</visible>
+			<animation effect="fade" time="600" delay="400">Visible</animation>
+			<animation effect="fade" time="200">Hidden</animation>
+			<control type="label">
+				<posx>25</posx>
+				<posy>570</posy>
+				<width>790</width>
+				<height>30</height>
+				<font>font18</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Artist]</label>
+			</control>
+		</control>
+		<control type="textbox">
+			<description>Description Value for Artist</description>
+			<posx>25</posx>
+			<posy>610</posy>
+			<width>790</width>
+			<height>90</height>
+			<font>font11</font>
+			<align>justify</align>
+			<textcolor>white</textcolor>
+			<pagecontrol>9999999999</pagecontrol>
+			<label>$INFO[ListItem.Property(Description)]</label>
+			<autoscroll time="2000" delay="3000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+			<visible>Control.IsVisible(56) + Container.Content(Artists)</visible>
+			<animation effect="fade" time="600" delay="400">Visible</animation>
+			<animation effect="fade" time="200">Hidden</animation>
+		</control>
+	</include>
+</includes>

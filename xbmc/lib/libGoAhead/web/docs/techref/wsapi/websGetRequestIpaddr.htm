@@ -1,0 +1,27 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websGetRequestIpaddr -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websGetRequestIpaddr</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Return the IP address 
+of the requesting browser.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ char_t *<b>websGetRequestIpaddr</b>(webs_t wp); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="4%">wp <TD WIDTH="96%">Web server connection handle.</TD></TR></table><h2>Description</h2><P>The 
+websGetRequestIpaddr procedure returns the IP address of the requesting browser.</P><h2>Return 
+Value</h2><p> Pointer to a statically allocated string containing the IP address. 
+Do not call <A href="../basicapi/bfree.htm">bfree</A>.</p><h2>Example</h2><pre> 
+char_t *ipaddr; 
+ipaddr = websGetRequestIpaddr(wp); </pre><h2>Stability Classification</h2><p>Stable.</p><h2>See 
+Also</h2><p> <A href="websGetRequestDir.htm">websGetRequestDir</A>, <A href="websGetRequestPassword.htm">websGetRequestPassword</A>, 
+<A href="websGetRequestPath.htm">websGetRequestPath</A>, <A href="websGetRequestType.htm">websGetRequestType</A> 
+</p></td></tr></table>
+</body>
+</html>

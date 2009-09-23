@@ -1,0 +1,72 @@
+<project default="jar" name="JXBMCEventClient">
+    <description description="JXBMCEventClient"/>
+    <target name="init">
+        <tstamp/>
+        <property name="srcdir"       value="${basedir}/src"/>
+        <property name="classdir"     value="${basedir}/classes"/>
+        <property name="apidir"       value="${basedir}/doc/api"/>
+        <property name="libdir"       value="/usr/local/share/java/classes"/>
+        <property name="projectname"  value="JXBMCEventClient"/>
+        <property name="jarfile"      value="${projectname}.jar"/>
+        <property name="distdir"      value="${basedir}/../dist"/>
+        <fileset id="eventclient.files"       dir="${classdir}" includes="**/*"/>
+        <path id="classpath">
+            <pathelement location="${libdir}/junit.jar" />
+        </path>
+    </target>
+
+
+    <target name="jar" depends="compile">
+        <jar jarfile="${jarfile}"  index="true">
+            <fileset refid="eventclient.files"/>
+        </jar>
+    </target>
+
+    <target name="dist" depends="jar, javadoc">
+        <fail unless="version">use: ant dist -Dversion=x.x</fail>
+        <mkdir  dir="${distdir}"/>
+        <copy todir="${distdir}/doc">
+        	<fileset dir="${apidir}"/>
+        </copy>
+        <property name="filename" value="${projectname}-${version}"/>
+        <copy file="${jarfile}" tofile="${distdir}/${projectname}-${version}.jar" />
+        <tar destfile="${distdir}/${filename}.tar.gz" compression="gzip">
+            <tarfileset dir="${basedir}" prefix="${filename}">
+                <exclude name="classes/**"/>
+                <exclude name="**/CVS"/>
+                <exclude name="**/.*"/>
+                <exclude name="${jarfile}"/>
+                <exclude name="doc/**"/>
+            </tarfileset>
+        </tar>
+    </target>
+
+    <target name="compile" depends="init" description="Compiles all classes">
+        <mkdir dir="${classdir}"/>
+        <javac debug="yes" deprecation="true" destdir="${classdir}" srcdir="${srcdir}" classpathref="classpath"/>
+    </target>
+
+    <target name="javadoc" depends="init">
+        <mkdir dir="${apidir}"/>
+        <javadoc
+            packagenames="org.xbmc.eventclient.*"
+            sourcepath="${srcdir}"
+            defaultexcludes="yes"
+            destdir="${apidir}"
+            author="true"
+            version="true"
+            use="true"
+            private="false"
+            windowtitle="${projectname} API"
+            classpathref="classpath">
+            <link href="http://java.sun.com/j2se/1.4.2/docs/api/"/>
+        </javadoc>
+    </target>
+
+    <target name="clean" depends="init" description="cleans all classes and jars">
+        <delete dir="${classdir}"/>
+        <delete dir="${apidir}"/>
+        <delete file="${jarfile}"/>
+    </target>
+
+</project>

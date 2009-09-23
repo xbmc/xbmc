@@ -1,0 +1,9 @@
+cdio_paranoia_init
+cdio_paranoia_free
+cdio_paranoia_modeset
+cdio_paranoia_seek
+cdio_paranoia_read
+cdio_paranoia_read_limited
+cdio_paranoia_overlapset
+cdio_paranoia_set_range
+paranoia_cb_mode2str

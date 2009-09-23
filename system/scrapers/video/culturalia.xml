@@ -1,0 +1,115 @@
+﻿<scraper framework="1.0" date="2009-05-22" name="Culturalia.es" content="movies" thumb="culturalia.gif" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" language="es">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="http://www.culturalianet.com/art/ver.php?art=\1" dest="3">
+			<expression noclean="1">art/ver\.php\?art=([0-9]*)</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="http://www.culturalianet.com/bus/resu.php?texto=\1&amp;donde=1" dest="3">
+			<expression noclean="1"/>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;&apos;\2&apos; de \3 (\4)&lt;/title&gt;&lt;url&gt;http://www.culturalianet.com/art/ver.php?art=\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">&lt;a href=&apos;../art/ver.php\?art=([0-9]*)&apos; target=&apos;_top&apos;&gt;(.[^&lt;]*)\.&lt;/a&gt;.[^\(]*\. De (.[^\(]*) \(([0-9]*)\)</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<!-- Titulos y año de producción !-->
+			<RegExp input="$$1" output="&lt;title&gt;\1 (\3)&lt;/title&gt;&lt;originaltitle&gt;\3&lt;/originaltitle&gt;&lt;year&gt;\2&lt;/year&gt;" dest="5">
+				<expression trim="1" noclean="1">&apos;titulo2&apos;&gt;(.[^\&lt;]*)\. \(([0-9]*)\)&lt;/font&gt;&lt;/u&gt;&lt;br&gt;&lt;br&gt;&lt;i&gt;(.[^&lt;]*)&lt;/i&gt;</expression>
+			</RegExp>
+			<!-- DIRECTOR !-->
+			<RegExp input="$$1" output="\1" dest="7">
+				<!-- Ponemos la cadena de Directores (sin limpiar en $$7) !-->
+				<expression noclean="1">Director:&lt;/font&gt;([^:]*)&lt;br&gt;&lt;br&gt;&lt;font class = &apos;titulo3&apos;&gt;</expression>
+			</RegExp>
+			<!-- Ahora hay que extraer cada director ke pueden estar en 2 formatos
+						<br><a ref=url>Nombre</a>	(Cuando tienen ficha de datos)
+						<br>Nombre</br>			(Cuando no tienen ficha de datos)
+						La forma que se me ocurre es extraer en 2 pasadas distintas dejando un formato comun
+						Esto reordenará los directores en la ficha. !-->
+			<RegExp input="$$6" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<RegExp input="$$7" output=" /JUR\1/JAR" dest="6">
+					<expression repeat="yes">&lt;br&gt;&lt;a href=[^0-9]*[0-9]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+				</RegExp>
+				<RegExp input="$$7" output=" /JUR\1/JAR" dest="6+">
+					<expression repeat="yes">&lt;br&gt;([^&lt;]*)</expression>
+				</RegExp>
+				<expression repeat="yes">/JUR([^/]*)/JAR</expression>
+			</RegExp>
+			<!-- GUION - CREDITS !-->
+			<RegExp input="$$1" output="\1" dest="7">
+				<!-- Ponemos la cadena de Directores (sin limpiar en $$7) !-->
+				<expression noclean="1">Gui.n:&lt;/font&gt;([^:]*)&lt;br&gt;&lt;br&gt;&lt;font class = &apos;titulo3&apos;&gt;</expression>
+			</RegExp>
+			<!-- Ahora hay que extraer cada nombre ke pueden estar en 2 formatos
+						<br><a ref=url>Nombre</a>	(Cuando tienen ficha de datos)
+						<br>Nombre</br>			(Cuando no tienen ficha de datos)
+						La forma que se me ocurre es extraer en 2 pasadas distintas dejando un formato comun
+						Esto reordenará los nombres en la ficha. !-->
+			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="5+">
+				<RegExp input="$$7" output=" /JUR\1/JAR" dest="6">
+					<expression repeat="yes">&lt;br&gt;&lt;a href=[^0-9]*[0-9]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+				</RegExp>
+				<RegExp input="$$7" output=" /JUR\1/JAR" dest="6+">
+					<expression repeat="yes">&lt;br&gt;([^&lt;]*)</expression>
+				</RegExp>
+				<expression repeat="yes">/JUR([^/]*)/JAR</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>Sinopsis:&lt;/b&gt;[ ]*&lt;br&gt;([^=]*)&lt;br&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="5+">
+				<expression>moral:&lt;/font&gt; ([^&lt;]*)&lt;br&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
+				<expression>Duraci.n:&lt;/font&gt; ([^&lt;]*)\.&lt;br&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;rating&gt;\2&lt;/rating&gt;&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
+				<expression>tulo3&apos;&gt;([0-9]*)&lt;/font&gt; votos. Puntuaci.n: &lt;font class = &apos;titulo3&apos;&gt;([^&lt;]*)&lt;/font&gt; / ([^&lt;]*)\.&lt;/a&gt;</expression>
+			</RegExp>
+			<!-- GENEROS - GENRES !-->
+			<RegExp input="$$1" output="\1 /" dest="7">
+				<expression>nero:&lt;/font&gt;&lt;br&gt;([^&lt;]*)&lt;br&gt;</expression>
+			</RegExp>
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<RegExp input="$$7" output=" / \1" dest="6">
+					<expression repeat="yes">([^/]*) /</expression>
+				</RegExp>
+				<expression> / (.*)</expression>
+			</RegExp>
+			<RegExp input="$$1" output="http://www.culturalianet.com/imatges/articulos/\1-1.jpg" dest="7">
+				<expression>imatges/articulos/([0-9]*)-</expression>
+			</RegExp>
+			<RegExp input="$$7" output="&lt;thumb&gt;\1&lt;/thumb&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<!-- ACTORES !-->
+			<RegExp input="$$1" output="\1" dest="7">
+				<!-- Ponemos la cadena de actores (sin limpiar en $$7) !-->
+				<expression noclean="1">Actores:&lt;/font&gt;([^:]*)&lt;br&gt;&lt;br&gt;&lt;font class = &apos;titulo3&apos;&gt;</expression>
+			</RegExp>
+			<!-- Ahora hay que extraer cada actor ke pueden estar en 2 formatos
+						<br><a ref=url>Nombre Actor</a>	(Cuando tienen ficha de datos)
+						<br>Nombre actor</br>					(Cuando no tienen ficha de datos)
+						La forma que se me ocurre es extraer en 2 pasadas distintas dejando un formato comun
+						Esto reordenará los actores en la ficha. Pero no me parece mal puesto que pondra primero
+						los actores con ficha (los mas importantes, no?)				!-->
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+				<RegExp input="$$7" output=" /JUR\1/JAR" dest="6">
+					<expression repeat="yes">&lt;br&gt;&lt;a href=[^0-9]*[0-9]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+				</RegExp>
+				<RegExp input="$$7" output=" /JUR\1/JAR" dest="6+">
+					<expression repeat="yes">&lt;br&gt;([^&lt;]*)</expression>
+				</RegExp>
+				<expression repeat="yes">/JUR([^/]*)/JAR</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetDetails>
+</scraper>

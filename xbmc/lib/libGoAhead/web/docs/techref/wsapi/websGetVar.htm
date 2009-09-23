@@ -1,0 +1,31 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websGetVar -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websGetVar</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p>Return the value of 
+a Form variable.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ char_t *<b>websGetVar</b>(webs_t wp, char_t *var, char_t *default); </pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="6%">wp <TD WIDTH="94%">Web server connection handle.</TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="6%">var <TD WIDTH="94%">The form variable to be returned.</TD></TR> 
+<TR> <TD VALIGN="TOP" WIDTH="6%">default <TD WIDTH="94%">The variable to be returned 
+if none is defined in var.</TD></TR> </table><h2>Description</h2><P>The websGetVar 
+procedure looks up <i>var</i> in the Form table of variables. If the variable 
+is not defined, the value of the default is returned. If default is NULL and the 
+variable is not found, NULL will be returned. Form variables are created for each 
+&lt;input&gt; form tag. The <A href="websExpand.htm">standard form variables</A> 
+are also defined.</P><h2>Return Value</h2><p> Returns a pointer to a statically 
+allocated string. Do not call <A href="../basicapi/bfree.htm">bfree</A>.</p><h2>Example</h2><pre> 
+name = websGetVar(wp, &quot;Name&quot;, &quot;Peter Smith&quot;); </pre><h2>Stability 
+Classification</h2><p>Stable.</p><h2>See Also</h2><p> <A href="websSetVar.htm">websSetVar</A>, 
+<A href="websTestVar.htm">websTestVar</A> </p></td></tr></table>
+</body>
+</html>

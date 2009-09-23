@@ -1,0 +1,156 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+
+<HEAD>
+	<TITLE>
+	Secret Rabbit Code (aka libsamplerate)
+	</TITLE>
+	<META NAME="Author"      CONTENT="Erik de Castro Lopo (erikd AT mega-nerd DOT com)">
+    <META NAME="Version"     CONTENT="libsamplerate-0.1.7">
+	<META NAME="Description" CONTENT="The Secret Rabbit Code Home Page">
+	<META NAME="Keywords"    CONTENT="libsamplerate sound resample audio dsp Linux">
+	<LINK REL=StyleSheet HREF="SRC.css" TYPE="text/css" MEDIA="all">
+</HEAD>
+
+<BODY TEXT="#FFFFFF" BGCOLOR="#000000" LINK="#FB1465" VLINK="#FB1465" ALINK="#FB1465">
+<!-- pepper -->
+<CENTER>
+	<IMG SRC="SRC.png" HEIGHT=100 WIDTH=760 ALT="SRC.png">
+</CENTER>
+<!-- pepper -->
+<BR>
+<!-- pepper -->
+<TABLE ALIGN="center" WIDTH="98%">
+<TR>
+<TD VALIGN="top">
+<BR>
+<DIV CLASS="nav">
+	<BR>
+	<A HREF="index.html">Home</A><BR>
+	<A HREF="license.html">License</A><BR>
+	<A HREF="history.html">History</A><BR>
+	<A HREF="download.html">Download</A><BR>
+	<A HREF="quality.html">Quality</A><BR>
+	<A HREF="api.html">API</A><BR>
+	<A HREF="bugs.html">Bug Reporting</A><BR>
+	<A HREF="win32.html">On Win32</A><BR>
+	<A HREF="faq.html">FAQ</A><BR>
+	<A HREF="lists.html">Mailing Lists</A><BR>
+	<A HREF="ChangeLog">ChangeLog</A><BR>
+<BR>
+<DIV CLASS="block">
+Author :<BR>Erik de Castro Lopo
+<!-- pepper -->
+<BR><BR>
+<!-- pepper -->
+
+</DIV>
+	<IMG SRC=
+	"/cgi-bin/Count.cgi?ft=6|frgb=55;55;55|tr=0|md=6|dd=B|st=1|sh=1|df=src_win32.dat"
+	HEIGHT=30 WIDTH=100 ALT="counter.gif">
+</DIV>
+
+</TD>
+<!-- pepper -->
+<!-- ######################################################################## -->
+<!-- pepper -->
+<TD VALIGN="top">
+<DIV CLASS="block">
+
+<H1><B>Compiling on Win32.</B></H1>
+<P>
+For Win32 there is a Microsoft Visual C++ compatible makefile in the <B>Win32\</B>
+directory and a MSDOS batch file in the top level directory of the distribution. 
+</P>
+<P>
+To build the examples programs you will need to download and compile
+	<A HREF="http://www.mega-nerd.com/libsndfile/">libsndfile</A>
+and there are instructions for compiling it on Win32
+	<A HREF="http://www.mega-nerd.com/libsndfile/win32.html">here</A>.
+This is optional as SecretRabbitCode can be compiled and used with installing 
+libsndfile.
+</P>
+<P>
+Making the libsamplerate DLL on Win32 involves the following:
+</P>
+<OL>
+	<LI> Using WinZip in the GUI, open the libsamplerate-0.X.Y.tar.gz file and 
+			extract the files into a directory. The following example assumes 
+		<B>C:\</B>.
+	<LI> In the directory containing the extracted files, find the file 
+	    	<B>Win32\Makefile.msvc</B> and open it in a text editor (ie Notepad or 
+			similar). 
+	<LI> Find the line which starts with <B>MSVCDir</B> and modify the directory
+		    path to point to the location of MSVC++ on your machine. This allows the
+			makefile to inform the compiler of the location of the standard header
+			files.
+    <LI> Copy <B>libsndfile.dll</B> and <B>libsndfile.lib</B> from the directory
+			libsndfile was compiled in to the the directory containing libsamplerate.
+    <LI> Copy the header file <B>Win32/sndfile.h</B> to the <B>Win32</B> directory
+			under the libsamplerate directory.
+	<LI> Open a DOS window (Win9X) or Command Shell (WinNT and WinXP?) and cd into 
+			the libsamplerate-0.X.Y directory.
+	<LI> Make sure that the program <B>nmake</B> (which is part of the MSCV++ 
+			package) is in a directory which is part of your <B>PATH</B> variable.
+	<LI> Type in the command 
+		<PRE>    C:\libsamplerate-0.X.Y> make
+		</PRE>
+			and press &lt;return&gt;. You should now see a a large number of compile
+			commands as libsamplerate.dll is built. 
+	<LI> To check that the built DLL has been compiled correctly type in and run the
+			command
+		<PRE>    C:\libsamplerate-0.X.Y> make check
+		</PRE>
+			which will compile a set of test programs and run them. 
+			If any of the programs fail the error message will be help in debugging 
+			the problem.
+			(Note that some of the tests require libsndfile or libfftw/librfftw and
+			are not able to run on Win32).
+</OL>
+<P>
+At the end of the above procedure, you will find the DLL, <B>libsamplerate.dll</B>, a
+LIB file <B>libsamplerate.lib</B> in the current directory. These two files, along
+with the header file <B>samplerate.h</B> (in the <B>src\</B> directory) are all that 
+you need to copy to your project in order to use libsamplerate.
+</P>
+
+<H2><BR>Compile Problems</H2>
+<P>
+If you run into compile problems using the above procedure, you should 
+	<A HREF="lists.html"> join the main mailing list </A>
+and post your problem and/or questions there. 
+Please include any error messages generated during step 6 above.
+</P>
+
+<P>
+If you are using some other method to compile the libsamplerate DLL you are 
+probably on your own.
+</P>
+<BR>
+
+<!--
+
+From here:
+
+	http://www.gimp.org/~tml/gimp/win32/downloads.html
+
+Download these files:
+
+	gettext-runtime-0.13.1.zip
+	glib-2.4.5-20040903.zip
+	libiconv-1.9.1.bin.woe32.zip
+	pkgconfig-0.15.zip
+
+and install them.
+
+-->
+
+<!-- <A HREF="mailto:aldel@mega-nerd.com">For the spam bots</A> -->
+
+</DIV>
+</TD></TR>
+</TABLE>
+
+</BODY>
+</HTML>
+

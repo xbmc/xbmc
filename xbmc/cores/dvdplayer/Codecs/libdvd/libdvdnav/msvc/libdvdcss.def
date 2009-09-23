@@ -1,0 +1,12 @@
+;------------------------------------------------------------
+; LIBDVDCSS DLL DEFINITIONS FILE
+
+EXPORTS
+
+dvdcss_interface_2
+dvdcss_open
+dvdcss_error
+dvdcss_seek
+dvdcss_read
+dvdcss_close
+dvdcss_title

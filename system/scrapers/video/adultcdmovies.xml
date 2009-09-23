@@ -1,0 +1,67 @@
+<scraper framework="1.0" date="2009-05-22" name="Adult CD Movies" content="movies" thumb="adultcdmovies.jpg" language="en">
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="http://www.adultcdmovies.net/\1.aspx"  dest="3">
+			<expression noclean="1">adultcdmovies.net/(.*).aspx</expression>
+		</RegExp>	
+	</NfoUrl>
+	<CreateSearchUrl dest="2">
+		<RegExp input="$$1" output="http://www.adultcdmovies.net/e-pmsearch.aspx?SearchType=0&amp;SearchTerm=\1" dest="2">
+			<expression noclean="1"></expression>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.adultcdmovies.net/\1.aspx?&lt;/url&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">&lt;/td&gt;&lt;td&gt;&lt;a href=&quot;(adult-dvd-[^genre].[^\.]*)\.aspx\?&quot;&gt;(.[^/]*)&lt;/a&gt;&lt;/td&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSearchResults>
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression>&lt;title&gt;(.*)&lt;/title&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>Movie Year: ([0-9]+)</expression>
+			</RegExp>	
+			<RegExp input="$$1" output="&lt;director&gt;\1 \2&lt;/director&gt;" dest="5+">
+				<expression>Director:&lt;.[^&gt;]*&gt;(.[^/]*)&lt;/a&gt;</expression>
+			</RegExp>						
+			<RegExp input="$$1" output="&lt;manufacturer&gt;\1 \2&lt;/manufacturer&gt;" dest="5+">
+				<expression>Studio:       &lt;.[^&gt;]*&gt;(.[^/]*)&lt;/a&gt;</expression>
+			</RegExp>									
+			<RegExp input="$$1" output="&lt;genre&gt;Adult&lt;/genre&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>		
+			<RegExp input="$$1" output="\1" dest="8">
+				<expression noclean="1">Categories &amp;amp; Genres:(.*)Starring</expression>
+			</RegExp>
+			<RegExp input="$$8" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<expression repeat="yes">&lt;a href=&quot;adult-dvd-genre[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;</expression>
+			</RegExp>							
+			<RegExp input="$$1" output="&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>&lt;/div&gt;&lt;hr style=&quot;clear:both&quot; /&gt;([^&lt;]*)&lt;p align=&quot;left&quot;&gt;</expression>
+			</RegExp>											
+			<RegExp input="$$1" output="&lt;thumb spoof=&quot;http://www.adultcdmovies.net&quot;&gt;http://www.adultcdmovies.net/images/Product/medium/\1.jpg&lt;/thumb&gt;&lt;thumb spoof=&quot;http://www.adultcdmovies.net&quot;&gt;http://www.adultcdmovies.net/images/Product/large/\1.jpg&lt;/thumb&gt;" dest="5+">
+				<expression>images/Product/medium/([0-9]+)\.jpg</expression>
+			</RegExp>	
+			<RegExp input="$$7" output="&lt;genre&gt;Adult\1&lt;/genre&gt;" dest="5+">
+				<RegExp input="$$6" output=" / \1" dest="7">
+					<RegExp input="$$1" output="\1" dest="6">
+						<expression>Categories &amp;amp; Genres:(.*)Director:</expression>
+					</RegExp>		
+					<expression repeat="yes">&lt;a href=&quot;.[^&quot;]*&quot;&gt;(.[^/]*) DVD&lt;/a&gt;</expression>
+				</RegExp>
+				<expression></expression>
+			</RegExp>	
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression clear="yes">Starring:(.*)E-mail this movie to a friend</expression>
+				</RegExp>
+				<expression repeat="yes">\?&quot;&gt;(.[^/]*)&lt;/a&gt;</expression>
+			</RegExp>		
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>
+</scraper>

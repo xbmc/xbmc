@@ -1,0 +1,18 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>umSetAccessLimitMethod -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">umSetAccessLimitMethod</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B></H2><P>	Set the access method for the URL.</P><H2><B>Prototype</B></H2><PRE> #include &quot;um.h&quot;
+
+ int umSetAccessLimitMethod(char_t * url, accessMeth_t am);</PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="75%" BORDER="0"><TR><TD>url</TD><TD>URL name</TD></TR><TR><TD>am</TD><TD>access method as described below</TD></TR></TABLE><H2><B>Description</B></H2><P>	Access method can be one of:<BR>		AM_NONE  -	 URL may not be accessed<BR>		AM_FULL -	no authorization is required for the URL<BR>		AM_BASIC - 	URL requires at least basic authentication,<BR>		AM_DIGEST - 	URL requires at least digest authentication,<BR>		AM_INVALID - 	not a valid access method</P><H2><B>Return Value</B></H2><P>	umSetAccessLimitMethod returns 0 if successful, or -1 on error.</P><H2><B>Example</B></H2><PRE>int nCheck = umSetAccessLimitMethod(T(&quot;picture.gif&quot;), AM_NONE);</PRE><H2><B>See Also</B></H2><P>	<A HREF="umGetAccessLimitMethod.htm">umGetAccessLimitMethod</A>()</P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></TD></TR></TABLE>
+</body>
+</html>

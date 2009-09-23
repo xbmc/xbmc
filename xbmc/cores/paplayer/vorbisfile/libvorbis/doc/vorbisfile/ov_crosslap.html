@@ -1,0 +1,100 @@
+<html>
+
+<head>
+<title>Vorbisfile - function - ov_crosslap</title>
+<link rel=stylesheet href="style.css" type="text/css">
+</head>
+
+<body bgcolor=white text=black link="#5555ff" alink="#5555ff" vlink="#5555ff">
+<table border=0 width=100%>
+<tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+<h1>ov_crosslap()</h1>
+
+<p><i>declared in "vorbis/vorbisfile.h";</i></p>
+
+<p>ov_crosslap overlaps and blends the boundary at a transition
+between two separate streams represented by separate <a
+href="OggVorbis_File.html">OggVorbis_File</a> structures.  For lapping
+transitions due to seeking within a single stream represented by a
+single <a href="OggVorbis_File.html">OggVorbis_File</a> structure,
+consider using the lapping versions of the <a
+href="seeking.html">vorbisfile seeking functions</a> instead.
+
+<p>ov_crosslap is used between the last (usually ov_read) call on
+the old stream and the first ov_read from the new stream.  Any
+desired positioning of the new stream must occur before the call to
+ov_crosslap() as a seek dumps all prior lapping information from a
+stream's decode state.  Crosslapping does not introduce or remove any
+extraneous samples; positioning works exactly as if ov_crosslap was not
+called.
+
+<p>ov_crosslap will lap between streams of differing numbers of
+channels. Any extra channels from the old stream are ignored; playback
+of these channels simply ends. Extra channels in the new stream are
+lapped from silence.  ov_crosslap will also lap between streams links
+of differing sample rates.  In this case, the sample rates are ignored
+(no implicit resampling is done to match playback). It is up to the
+application developer to decide if this behavior makes any sense in a
+given context; in practical use, these default behaviors perform
+sensibly.
+
+<br><br>
+<table border=0 color=black cellspacing=0 cellpadding=7>
+<tr bgcolor=#cccccc>
+	<td>
+<pre><b>
+long ov_crosslap(<a href="OggVorbis_File.html">OggVorbis_File</a> *old, <a href="OggVorbis_File.html">OggVorbis_File</a> *new);
+
+</b></pre>
+	</td>
+</tr>
+</table>
+
+<h3>Parameters</h3>
+<dl>
+<dt><i>old</i></dt>
+<dd>A pointer to the OggVorbis_File structure representing the origin stream from which to transition playback.</dd>
+
+<dt><i>new</i></dt>
+<dd>A pointer to the OggVorbis_File structure representing the stream with which playback continues.</dd>
+</dl>
+
+
+<h3>Return Values</h3>
+<blockquote>
+<dl>
+<dt>OV_EINVAL</dt>
+  <dd>crosslap called with an OggVorbis_File structure that isn't open.</dd>
+<dt>OV_EFAULT</dt>
+  <dd>internal error; implies a library bug or external heap corruption.</dd>
+<dt>OV_EREAD</dt>
+  <dd> A read from media returned an error.</dd>
+<dt>OV_EOF</dt>
+  <dd>indicates stream <tt>vf2</tt> is at end of file, or that <tt>vf1</tt> is at end of file immediately after a seek (making crosslap impossible as there's no preceding decode state to crosslap).</dd>
+<dt><i>0</i></dt>
+  <dd>success.</dd>
+</dl>
+</blockquote>
+
+
+
+<br><br>
+<hr noshade>
+<table border=0 width=100%>
+<tr valign=top>
+<td><p class=tiny>copyright &copy; 2007 Xiph.org</p></td>
+<td align=right><p class=tiny><a href="http://www.xiph.org/ogg/vorbis/">Ogg Vorbis</a></p></td>
+</tr><tr>
+<td><p class=tiny>Vorbisfile documentation</p></td>
+<td align=right><p class=tiny>vorbisfile version 1.2.0 - 20070723</p></td>
+</tr>
+</table>
+
+</body>
+
+</html>

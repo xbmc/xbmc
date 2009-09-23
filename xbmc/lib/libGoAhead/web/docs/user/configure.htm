@@ -1,0 +1,101 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>Configuring WebServer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" href="../../style/normal_ws.css">
+</head>
+
+<body bgcolor="#FFFFFF">
+<TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD>
+
+<h1>Configuring GoAhead WebServer</h1><p>To change the default settings and configuration of GoAhead WebServer, 
+  you will need to modify the Makefile and main program file (main.c) for 
+  your target operating system (OS). To find out the name of the Makefile 
+  for your target OS, read your operating system's  compile instructions provided in <A HREF="install.htm">Installing GoAhead WebServer</A>. The table below outlines the settings 
+  and configuration operations available in  the current release, as well as 
+  the file you need to edit to make the change. When editing source files, set your tab stop setting to 4.</p><TABLE WIDTH="550" BORDER="0"  ALIGN=Left>
+  <TR BGCOLOR="#0066CC" ALIGN="NONE"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B><FONT COLOR='#FFFFFF'>Item</FONT></B></TD><TD WIDTH="66%"><B><FONT COLOR='#FFFFFF'>Description</FONT></B></TD><TD WIDTH="12%"><B><FONT COLOR='#FFFFFF'>File</FONT></B></TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Document Root Directory</B></TD><TD WIDTH="66%">The directory on the server in which Web documents will 
+      be stored. For example, if you define /web/doc/ as the directory, and 
+      the URL http://www.yourhost.com/myfile.htm is requested, the Web server 
+      will return the file myfile.htm located in /web/doc/ (unless the file 
+      does not exist).</TD><TD WIDTH="12%">main.c</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Default Server Home Page</B></TD><TD WIDTH="66%">The Web page that is returned when the server is accessed 
+      by its hostname (e.g., http://www.yourhost.com).</TD><TD WIDTH="12%">main.c</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Default Directory Index File</B></TD><TD WIDTH="66%">The name of the file that will be returned by default 
+      when the URL requested is a directory path. For example, if the index 
+      file is home.htm and the URL requested is http://www.yourhost.com/directory, 
+      the server will return the file /directory/home.htm.</TD><TD WIDTH="12%">main.c</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Password</B></TD><TD WIDTH="66%">The password required to access your server</TD><TD WIDTH="12%">main.c</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Port</B></TD><TD WIDTH="66%">The port that the server will run on.</TD><TD WIDTH="12%">main.c</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Retries</B></TD><TD WIDTH="66%">The number of times the system will try a different port 
+      if the specified port is not available.</TD><TD WIDTH="12%">main.c</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Retrieve from ROM</B></TD><TD WIDTH="66%">Forces GoAhead WebServer to retrieve files from ROM.</TD><TD WIDTH="12%">Makefile</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Enable Access Logging</B></TD><TD WIDTH="66%">Enables logging of access to your server.</TD><TD WIDTH="12%">Makefile</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Enable Keep-Alive</B></TD><TD WIDTH="66%">Enables the HTTP 1.1 Keep-Alive feature (persistent connections)</TD><TD WIDTH="12%">Makefile</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Enable If-Modified-Since</B></TD><TD WIDTH="66%">Enables the HTTP If-Modified-Since request header field.</TD><TD WIDTH="12%">Makefile</TD></TR>
+  <TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Enable Memory Leak Logging</B></TD><TD WIDTH="66%">Enables logging of memory and stack statistics for debugging 
+      purposes. </TD><TD WIDTH="12%">Makefile</TD></TR>
+<TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>User Management </B></TD><TD WIDTH="66%">Enables enhanced password and security features.</TD><TD WIDTH="12%">Makefile</TD></TR>
+<TR BGCOLOR="#FFFFCA" VALIGN="TOP"> 
+    <TD WIDTH="22%" ALIGN="NONE"><B>Digest Access Authentication</B></TD><TD WIDTH="66%">Enables the use of Digest Access Authentication.</TD><TD WIDTH="12%">Makefile</TD></TR>
+</TABLE></td></tr> </table><TABLE WIDTH="550" BORDER="0" BORDERCOLOR="#FFFFFF" BGCOLOR="#FFFFFF"><TR BORDERCOLOR="#FFFFFF"><TD><H2>User Management </H2><P>To enable  the User Management API, which provides the  user and security database, set the following compiler define in the Makefile for your target operating system.</P><BLOCKQUOTE><BLOCKQUOTE><P>USER_MANAGEMENT_SUPPORT</P></BLOCKQUOTE></BLOCKQUOTE><P>The code for the user management functions reside in these files: </P><BLOCKQUOTE><P>Um.c, um.h:  User management API<BR>Emfdb.c emfdb.h: Database routines</P></BLOCKQUOTE><H2>Digest Access Authentication</H2><P>To enable the use of Digest Access Authentication, which provides  encrypted password authentication, set the following compiler define in the Makefile for your target operating system:</P><BLOCKQUOTE><P>DIGEST_ACCESS_SUPPORT</P></BLOCKQUOTE><P>The source code files, websda.c and md5c.c, contain the digest calculation routines.  The files, webs.c,  webs.h and security.c contain code that is  activated when this compiler switch is defined. </P><H2>Document Root Directory</H2><P>The GoAhead WebServer default document root directory is &quot;web&quot;, which is 
+  created under webserver/ when GoAhead WebServer is installed and compiled. To change 
+  the directory, edit the following portion of code in the Web server's main program 
+  file (main.c).</P><PRE>     *rootWeb = T(&quot;web&quot;);</PRE><P>Change <TT>web</TT> to the new directory name.</P><H2>Default Server Home Page</H2><P>The GoAhead WebServer default home page is &quot;home.asp&quot;. To change the page, 
+  edit the following portion of code in the Home page handler function located 
+  in the server's main program file (main.c):</P><PRE>     websRedirect(wp, T(&quot;home.asp&quot;));</PRE><P>Change <TT>home.asp</TT> to the name of file you want to use as the home page 
+  and make sure to save the file in the document root directory.</P><H2>Default Directory Index File</H2><P>The GoAhead WebServer default directory index file is set to &quot;default.asp&quot;. 
+  To change the file, edit the following portion of code in the Home page handler 
+  function located in the server's main program file (main.c):</P><PRE>     websSetDefaultPage(T(&quot;default.asp&quot;));</PRE><P>Change <TT>default.asp</TT> to the file name you want to use. Note that, if 
+  a &quot;default.asp&quot; is not found in the directory requested by the browser, 
+  the server will return a 404 Document Not Found error.</P><H2>Password</H2><P>The default GoAhead WebServer password is blank. In other words, no password is required 
+  to access the server. To password-protect your server, edit the following portion 
+  of code in the Home page handler function located in the server's main program 
+  file (main.c):</P><PRE>     *password = T(&quot;&quot;);</PRE><P>Insert the password you want to use inside the quotation marks.</P><H2>Port</H2><P>GoAhead WebServer runs on port 80 by default. To change the server port, edit the following 
+  portion of code in the Home page handler function located in the server's main 
+  program file (main.c):</P><PRE>      port = 80;</PRE><H2>Retries</H2><P>By default, GoAhead WebServer retries five times to find an alternative port when the 
+  default port is not available. To change the number of retries, edit the following 
+  portion of code in the Home page handler function located in the server's main 
+  program file (main.c):</P><PRE>     retries = 5;</PRE><H2>Retrieve From ROM</H2><P>By default, GoAhead WebServer retrieves Web pages from a file system. To force GoAhead WebServer 
+  to retrieve Web pages from ROM, set the following compiler define in the Makefile 
+  for your target operating system.</P><PRE>     WEBS_PAGE_ROM</PRE><P><B>Note:</B> This release of GoAhead GoAhead WebServer includes WebCompiler, which 
+  creates ROMable C source code for a set of Web documents. See the Readme (readme.txt) 
+  for information on using the compiler.</P><H2>Enable Access Logging</H2><P>To enable logging of access to your server, set the following compiler define 
+  in the Makefile of your target operating system.</P><PRE>     WEBS_LOG_SUPPORT</PRE><P><B>Note:</B> The content and format of the information logged is found in a 
+  gsnprintf function call within the function websLog located in webs.c.</P><H2>Enable Keep-Alive</H2><P>To enable HTTP 1.1 Keep-Alive support, set the following compiler define in 
+  the Makefile for your target operating system.</P><PRE>     WEBS_KEEP_ALIVE_SUPPORT</PRE><P>The code for this feature has not been fully tested in this release so it may 
+  required some debugging.</P><H2>Enable If-Modified-Since</H2><P>To enable support for the HTTP If-Modified-Since request header field, set 
+  the following compiler define in the Makefile for your target operating system.</P><PRE>     WEBS_IF_MODIFIED_SUPPORT</PRE><H2>Enable Memory Leak Logging</H2><P>To enable the logging of memory and stack statistics for debugging purposes, 
+  set the following compiler define in the Makefile for your target operating 
+  system.</P><PRE>     B_STATS</PRE><P>If B_STATS is defined, the memLeaks function, when called, will output the 
+  balloc (basic allocation) statistics to a file called &quot;leak.txt&quot; in 
+  the directory from which the GoAhead WebServer executable was launched (webs). In the 
+  current release, the only call to memLeaks occurs in the main program (main.c) 
+  when the program does a normal exit. Developers can add the function to other 
+  appropriate locations to aid in the debugging process.</P><H2>Additional Configuration Notes</H2><H3>UEMF Symbolic Constant</H3><P>Make sure the symbolic constant UEMF is defined in the command line arguments 
+  to the compiler in the Makefile of the target operating system.</P><H3>Windows CE and UNICODE</H3><P>The symbolic constant UNICODE needs to be defined in the Makefile for Windows 
+  CE compilations or any other builds that need to use unicoded character strings.</P><H3>Windows 95/98/NT</H3><P>When you run GoAhead WebServer, an icon is added to your Windows Taskbar. You can set 
+  the title and name of the icon's window by modifying the following two portions 
+  of code in the main program (main.c).</P><PRE>     *title = T(&quot;GoAhead GoAhead WebServer&quot;);
+     *name = T(&quot;gowebs&quot;);</PRE><H3>VXWORKS</H3><P>You may need to change the CC (compiler), AR (archiver) and LD (linker/loader) 
+  definitions in the VXWORKS Makefile if you are using a different BSP (Board 
+  Support Package).</P><P>You will need to change the variable ROOT_DIR in the main program (main.c) 
+  to reflect the name of the root directory for your file system.</P><P>&nbsp;</P></td></tr><TR BORDERCOLOR="#FFFFFF"><TD>&nbsp;</td></tr> </table>
+
+</body>
+</html>

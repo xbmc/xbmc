@@ -1,0 +1,23 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>dbSearchStr -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%">dbSearchStr</TD><td class="titleCenter" align=center width="33%"><b>GoAhead 
+WebServer API</b></TD><td class="titleRight" align=right width="33%"><B>GoAhead 
+EMF</B></TD></TR> </TABLE><HR><H2><B>Synopsis</B></H2><P>Search for a string in a given column.</P><H2><B>Prototype</B></H2><PRE>
+ #include &quot;emfdb.h&quot;
+
+ int dbSearchStr(int did, 
+     char_t* table, 
+     char_t* column, 
+     char_t* value, 
+     int flags); 
+</PRE><H2><B>Parameters</B></H2><p><TABLE WIDTH="80%" BORDER="0"><TR><TD WIDTH="16%">did</TD><TD WIDTH="84%">database identifier</TD></TR><TR><TD WIDTH="16%">table</TD><TD WIDTH="84%">name of the table</TD></TR><TR><TD WIDTH="16%">column</TD><TD WIDTH="84%">name of the column of the table to search</TD></TR><TR><TD WIDTH="16%">value</TD><TD WIDTH="84%">string to search for</TD></TR><TR><TD WIDTH="16%">flags</TD><TD WIDTH="84%">unused, provided for compatibility with earlier versions</TD></TR></TABLE><H2><B>Description</B></H2><P>	The row id returned by this function can be used by the various dbRead and dbWrite functions.</P><H2><B>Return Value</B></H2><P>	dbSearchStr returns the row id of the found record if successful, or -1 if an  error.</P><H2><B>Example</B></H2><PRE>int nCheck = dbSearchStr(0, T(&quot;USERS&quot;), T(&quot;USER&quot;), T(&quot;misterripley&quot;), 0); </PRE><H2><B>See Also</B></H2><P>	<A HREF="dbReadStr.htm">dbReadStr</A>(), <A HREF="dbWriteStr.htm">dbWriteStr</A>()</P><H2>&nbsp;</H2><BLOCKQUOTE>&nbsp;</BLOCKQUOTE></td></tr></table>
+</body>
+</html>

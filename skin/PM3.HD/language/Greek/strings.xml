@@ -1,0 +1,99 @@
+﻿  <?xml version="1.0" encoding="utf-8" standalone="yes"?> 
+<strings>
+  <string id="31000">Σίγαση ήχου</string> 
+  <string id="31001">Απασχολημένο...</string>
+  <string id="31002"></string>
+  <string id="31003"></string>
+  <string id="31004"></string>
+  <string id="31005"></string>
+  <string id="31006"></string>
+  <string id="31007"></string>
+  <string id="31008"></string>
+  <string id="31009"></string>
+  <string id="31010">Η ΕΙΚΟΝΑ[CR]ΤΟΥ FANART[CR]ΔΕΝ ΕΙΝΑΙ[CR]ΔΙΑΘΕΣΙΜΗ</string> 
+  <string id="31011">Η ΕΙΚΟΝΑ[CR]ΤΟΥ ΕΠΕΙΣΟΔΙΟΥ[CR]ΔΕΝ ΕΙΝΑΙ[CR]ΔΙΑΘΕΣΙΜΗ</string> 
+  <string id="31012">Η ΕΙΚΟΝΑ[CR]ΤΟΥ ΕΠΕΙΣΟΔΙΟΥ[CR]ΔΕΝ ΕΙΝΑΙ[CR]ΔΙΑΘΕΣΙΜΗ</string>
+  <string id="31013"></string>
+  <string id="31014"></string>
+  <string id="31015"></string>
+  <string id="31016"></string>
+  <string id="31017"></string>
+  <string id="31018"></string>
+  <string id="31019"></string>
+
+  <string id="31020">Τίτλος κεφαλαίου</string> 
+  <string id="31021">Αρχεία βίντεο</string> 
+  <string id="31022">Αρχεία μουσικής</string> 
+  <string id="31023"></string>
+  <string id="31024">Σελίδα</string> 
+  <string id="31025">Αντικείμενα</string> 
+
+  <string id="31026"></string>
+  <string id="31027"></string>
+  <string id="31028">Εικονίδια DVD</string> 
+  <string id="31029">Λίστα DVD</string> 
+  <string id="31030">Fanart</string> 
+  <string id="31031">Πλήρης λίστα</string> 
+  <string id="31032">Ροή εξώφυλλων</string> 
+  <string id="31033">Μικρογραφίες</string> 
+  <string id="31034">Ευρείες εικόνες</string> 
+
+  <string id="31040">Εικόνα Fanart[CR]Τρέχουσας ταινίας[CR][CR]Επιλέξτε για Αλλαγή</string> 
+  <string id="31041">Εικόνα Fanart[CR]Τρέχουσας τηλεοπτικής σειράς[CR][CR]Επιλέξτε για αλλαγή</string> 
+  <string id="31042">ΑΝΑΠΑΡΑΓΩΓΗ</string> 
+  <string id="31043">ΠΑΥΣΗ</string> 
+  <string id="31044">ΠΡΟΩΘΗΣΗ ΜΠΡΟΣΤΑ</string> 
+  <string id="31045">ΠΡΟΩΘΗΣΗ ΠΙΣΩ</string> 
+  <string id="31046">Καλωσορίσατε στο XBMC – Παρακαλώ, εισέλθετε</string> 
+  <string id="31047">Πρόσφατη είσοδος</string> 
+  <string id="31048">Εικόνα Fanart[CR]Παρόντος καλλιτέχνη[CR][CR]Επιλέξτε για αλλαγή</string>
+
+  <string id="31050"></string>
+  <string id="31051"></string>
+  <string id="31052"></string>
+
+  <!-- Lyrics Script Extra labels -->
+  <string id="31053">ΣΤΟΙΧΟΙ XBMC</string> 
+  <string id="31054">Επιλέξτε τραγούδι από την λίστα</string> 
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Άνοιγμα λίστας αναπαραγωγής</string> 
+  <string id="31056">Αποθήκευση λίστας αναπαραγωγής</string> 
+  <string id="31057">Κλείσιμο λίστας αναπαραγωγής</string> 
+  <string id="31058">Αρχεία μουσικής συστήματος</string> 
+  <string id="31059">Τρέχουσα λίστα αναπαραγωγής</string> 
+  <string id="31060">Αυτό το αρχείο είναι στοιβαγμένο, επιλέξτε το κομμάτι που επιθυμείτε για αναπαραγωγή.</string> 
+
+  <!-- Skin Settings labels -->
+  <string id="31100">Επιλογές υπόβαθρου</string> 
+  <string id="31101">Επιλογές αρχικής οθόνης</string> 
+  <string id="31102">Υπόβαθρα</string> 
+  <string id="31103">Εμφάνιση "ΠΑΥΣΗ" κατά την παρουσίαση φωτογραφιών</string> 
+  <string id="31104">Επιλογές τερματισμού – Χρήση αδρανοποίησης αντί της ύπνωσης</string> 
+  <string id="31105">Εμφάνιση τίτλων πολυμέσων κατά τον έλεγχο υπόβαθρου</string> 
+  <string id="31106">Σύνθετες επιλογές</string> 
+  <string id="31107">Απομάκρυνση διακριτών γραμμών από το υπόβαθρο</string> 
+  <string id="31108">Απομάκρυνση διακριτών γραμμών από το υπόβαθρο κατά την αναπαραγωγή βίντεο</string> 
+  <string id="31109">Υπόβαθρα αρχικής οθόνης</string> 
+  <string id="31110">- Ενεργοποίηση τροποποιημένων υπόβαθρων</string> 
+  <string id="31111">Εμφάνιση πάντα των πληροφοριών τραγουδιού κατά την προβολή των στοίχων</string> 
+  <string id="31112">Εμφάνιση τίτλων πολυμέσων στη προβολή “Ευρείες εικόνες”</string>  
+  <string id="31113">Μία εικόνα</string>
+  <string id="31114">Πολλαπλές εικόνες</string>
+
+  <!-- Script Settings labels -->
+  <string id="31200">Επιλογές τροποποιημένου Script</string> 
+  <string id="31201"></string>
+  <string id="31202"></string>
+  <string id="31203">Ορισμός ετικέτας πλήκτρου</string> 
+  <string id="31204">Διαδρομή Script</string> 
+  <string id="31205"></string>
+  <string id="31206"></string>
+  <string id="31207"></string>
+  <string id="31208">Εμφάνιση πλήκτρου στοίχων στις "Aπεικόνισεις οθόνης (OSD)"</string> 
+  <string id="31209">Ενεργοποίηση πλήκτρου γρήγορης έναρξης -</string> 
+
+  <!-- AMT Script Extra labels -->
+  <string id="31300">Εμφάνιση συντελεστών</string> 
+  </strings>
+  

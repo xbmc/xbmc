@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XBMCTex", "XBMCTex.vcproj", "{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Debug SDL = Debug SDL
+		Release = Release
+		Release SDL = Release SDL
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}.Debug.ActiveCfg = Debug|Win32
+		{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}.Debug.Build.0 = Debug|Win32
+		{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}.Debug SDL.ActiveCfg = Debug SDL|Win32
+		{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}.Debug SDL.Build.0 = Debug SDL|Win32
+		{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}.Release.ActiveCfg = Release|Win32
+		{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}.Release.Build.0 = Release|Win32
+		{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}.Release SDL.ActiveCfg = Release SDL|Win32
+		{AF7F7513-4425-4A27-B5B9-4CF68F01B5C6}.Release SDL.Build.0 = Release SDL|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

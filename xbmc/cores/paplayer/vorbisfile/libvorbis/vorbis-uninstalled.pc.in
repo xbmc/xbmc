@@ -1,0 +1,14 @@
+# vorbis uninstalled pkg-config file
+
+prefix=
+exec_prefix=
+libdir=${pcfiledir}/lib
+includedir=${pcfiledir}/include
+
+Name: vorbis
+Description: vorbis is the primary Ogg Vorbis library (uninstalled)
+Version: @VERSION@
+Requires: ogg
+Conflicts:
+Libs: @VORBIS_LIBS@ ${libdir}/libvorbis.la
+Cflags: -I${includedir}

@@ -1,0 +1,44 @@
+<html>
+<head>
+<!- Copyright (c) Go Ahead Software Inc., 1995-2000. All Rights Reserved. ->
+<title>websSecurityHandler -- GoAhead WebServer API</title>
+<link rel="stylesheet" href="../../../style/doc.css" type="text/css">
+</head>
+
+<body>
+<table width="550"> <tr><td>
+<TABLE border=0 width=100% cellspacing=0 cellpadding=0 CLASS="apiTitle"> <TR> 
+<td class="titleLeft" align=left width="33%"><b>websSecurityHandler</b></TD><td class="titleCenter" align=center width="33%"><b> 
+GoAhead WebServer API</b></TD><td class="titleRight" align=right width="33%"><B> 
+GoAhead EMF</B></TD></TR> </TABLE><HR> <h2>Synopsis</h2><p> URL handler for the 
+default security policy.</p><h2>Prototype</h2><pre> #include &quot;webs.h&quot; 
+
+ int <b>websSecurityHandler</b>(webs_t wp, char_t *url, char_t *path, char_t *query); 
+</pre><h2>Parameters</h2><table width=100% BORDER="0" CELLPADDING="0" CELLSPACING="0"> 
+<TR> <TD VALIGN="TOP" WIDTH="5%">wp <TD WIDTH="95%">Web server connection handle. 
+<TR> <TD VALIGN="TOP" WIDTH="5%">url <TD WIDTH="95%">Request URL. <TR> <TD VALIGN="TOP" WIDTH="5%">path 
+<TD WIDTH="95%">Request path portion of the URL. <TR> <TD VALIGN="TOP" WIDTH="5%">query 
+<TD WIDTH="95%">Query string portion of the URL.</TD></TR></table><h2>Description</h2><P>websSecurityHandler 
+implements the default security policy. It operates as a URL handler and is installed 
+to run as the very first URL handler. If you require a replacement security policy, 
+delete the websSecurityHandler and install your own with <A href="websUrlHandlerDefine.htm">websUrlHandlerDefine</A>.</P><P> 
+The <A href="websSetPassword.htm">websSetPassword</a> procedure defines the security 
+password. The security handler will require all non-local requests (those from 
+a remote system) to supply this password. The user name is ignored. To use the 
+password feature, the <A href="websSecurityHandler.htm" >Security Handler</A> 
+must be installed by calling <A href="websUrlHandlerDefine.htm" >websHandlerDefine</A> 
+for websSecurityHandler. This in done automatically in the GoAhead EMF. If you 
+are using the GoAhead WebServer, this should be done in your main program. See 
+main.c for examples.</P><P>The security handler should return 0 if the request 
+is acceptable. It should return 1 to deny the request. When websSecurityHandler 
+denies a request, it first returns a 401 response code to cause the user's browser 
+to prompt for a username and password.</P><p> <p>Use <A href="websGetRequestPassword.htm">websGetRequestPassword</A> 
+to get the password supplied with the current request.</p><h2>Return Value</h2><p> 
+Returns 0 if the request is acceptable. Returns 1 if the request is denied.</p><h2>Example</h2><p>The 
+following code will install a new security handler:</p><pre> websSecurityDelete(); 
+websUrlHandlerDefine(&quot;&quot;, mySecurityHandler, WEBS_HANDLER_FIRST); </pre><h2>Stability 
+Classification</h2><p>Stable.</p><h2>See Also</h2><p> <A href="websGetRequestFlags.htm">websGetRequestFlags</A>, 
+<A href="websGetRequestIpaddr.htm">websGetRequestIpaddr</A>, <A href="websGetRequestPassword.htm">websGetRequestPassword</A>, 
+<A href="websGetRequestType.htm">websGetRequestType</A> </p></td></tr></table>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<html>
+<link rel="stylesheet" href="yassl.css" type="text/css" />
+
+<body bgcolor="black">
+&nbsp;
+<table align="center" width="859" height="700" border="0" cellspacing="0" cellpadding="0" bgcolor="#E6F3FF">
+<td width="2%" valign="top">
+<td width="96%" valign="top">
+<br />
+
+<span class="pageName">
+<h2>Hash Functions</h2>
+</span>
+<span class="bodyText">
+All TaoCrypt Hash functions are derived from the HASH Class which provides two
+very useful virtual functions:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; virtual void Update(const byte*, word32) = 0;
+<br> &nbsp;&nbsp;&nbsp;&nbsp; virtual void Final(byte*)                = 0; 
+</span>
+
+<p>Most Hashing needs can be fulfilled using these two functions, e.g.,
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte md5sum[MD5::DIGEST_SIZE]; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte buffer[1024]; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; // fill buffer 
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; MD5  hash;
+<br> &nbsp;&nbsp;&nbsp;&nbsp; hash.Update(buffer, 1024);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; // continue updating if needed 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; hash.Final(md5sum);
+</span>
+
+<p><b>md5sum </b> now contains the digest of the hashed data. The same code can
+be used for MD2, MD5, SHA-1, or RIPEMD.  Using the base class can abstract
+away the differences:
+
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; void GetDigest(byte* digest, HASH& hash, const
+       byte* input, word32 sz) { 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; hash.Update(input, sz);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; hash.Final(digest);
+<br> &nbsp;&nbsp;&nbsp;&nbsp;  }
+</span>
+
+<p>Please see test.cpp for complete examples and test vectors.
+</span>
+
+
+<span class="pageName">
+<h2>Message Digests</h2>
+</span>
+<span class="bodyText">
+TaoCrypt currently provides HMAC for message digest needs. <b>Update()</b>
+and <b>Final()</b> are provided, just like the hashing functions, but an
+additional function is needed for keying:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; void SetKey(const byte*, word32);
+</span>
+
+<p>HMAC is as easy to use as the hashes, just provide a hashing
+function and a key:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte digest[SHA::DIGEST_SIZE]; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte buffer[1024]; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte key[16]; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; // fill buffer and key
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; HMAC&lt;SHA>  hmac;
+<br> &nbsp;&nbsp;&nbsp;&nbsp; hmac.SetKey(key, 16);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; hmac.Update(buffer, 1024);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; hmac.Final(digest);
+</span>
+</span>
+
+<span class="pageName">
+<h2>Block Ciphers</h2>
+</span>
+<span class="bodyText">
+TaoCrypt provides DES, 3DES, and AES for block cipher needs.  Currently, ECB 
+and CBC modes are supported (only what SSL and TLS require). Some typedefs are
+provided in the headers for these ciphers:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; typedef BlockCipher&lt;ENCRYPTION, DES, ECB> DES_ECB_Encryption; 
+</span>
+
+<p>The Block Ciphers rely on one function for encrypting and decrypting:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; void Process(byte*, const byte*, word32);
+</span>
+
+<p>Keying is simple:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; void SetKey(const byte*, word32);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; void SetKey(const byte*, word32, const byte*);
+</span>
+
+<p>The second version is used when an initialization vector is needed.
+Usage is trivial, to encrypt:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte key[8] = { // some key }; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte buffer[24] = { // some plain text }; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte cipherText[24]; 
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; DES_ECB_Encryption enc; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; enc.SetKey(key, 8); 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; enc.Process(cipherText, buffer, 24); 
+</span>
+
+<p>Decrypting is simple as well: 
+
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte plainText[24]; 
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; DES_ECB_Decryption dec; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; dec.SetKey(key, 8); 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; dec.Process(plainText, cipherText, 24); 
+</span>
+
+<p>3DES and AES are used the same way, please see test.cpp for complete examples.
+</span>
+
+<span class="pageName">
+<h2>Stream Ciphers</h2>
+</span>
+<span class="bodyText">
+TaoCrypt provides ARC4 for stream cipher needs. Like BlockCipher, ARC4 can be
+used with just two functions:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; void SetKey(const byte*, word32);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; void Process(byte*, const byte*, word32);
+</span>
+
+<p>Typdefs are also provided in the header for encryption and decryption needs.
+Here is a simple example that encrypts:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte key[16] = { // some key }; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte buffer[100] = { // some plain text }; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte cipherText[100]; 
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; ARC4::Encryption enc; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; enc.SetKey(key, 16); 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; enc.Process(cipherText, buffer, 100); 
+</span>
+
+<p>Decrypting is analogous:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte plainText[100]; 
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; ARC4::Decryption dec; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; dec.SetKey(key, 16); 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; dec.Process(plainText, cipherText, 100); 
+</span>
+
+
+<p>Please see test.cpp for a complete example and test vectors.
+</span>
+
+<span class="pageName">
+<h2>Public Key Cryptography</h2>
+</span>
+<span class="bodyText">
+TaoCrypt provides RSA and DSA for Public Key Cryptography.
+
+
+<h3>RSA</h3>
+
+There are public and private RSA keys, <b>RSA_PublicKey</b> and
+<b>RSA_PrivateKey</b>. Typically, they are initialized with a <b>Source</b>
+object, which is usually constructed with a byte array or a file:
+
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte           privKey[64] = { // some key }; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; Source         privSrc(privKey, 64);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; RSA_PrivateKey rsaPriv(privSrc);
+</span>
+
+<p>A public key can also be constructed from a private key:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; RSA_PublicKey rsaPub(rsaPriv);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; // or a file source example
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; Source fSrc;
+<br> &nbsp;&nbsp;&nbsp;&nbsp; FileSource("./rsaPublic.dat", fSrc); 
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; RSA_PublicKey rsaPub(fSrc);
+</span>
+
+<p>Once you have a public key, you can perform public encryption:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte buffer[64] = { // plain Text };
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte cipher[64];
+<br> &nbsp;&nbsp;&nbsp;&nbsp; RandomNumberGenerator rng;
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; RSAES_Encryptor enc(rsaPub);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; enc.Encrypt(buffer, 64, cipher, rng);
+</span>
+
+<p><b>RSAES_Encryptor</b> is a typedef for:
+
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; typedef RSA_Encryptor&lt;> RSAES_Encryptor;
+</span>
+
+<p>Where the default template argument is RSA_BlockType2, a 
+padding scheme. Decrypting requires a private key:
+
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte plain[64];
+<br> &nbsp;&nbsp;&nbsp;&nbsp; RSAES_Decryptor dec(rsaPriv);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; dec.Decrypt(cipher, 64, plain, rng);
+</span>
+
+<p>TaoCrypt can also do RSA sign and verify operations, including the SSL type
+which require RSA_BlockType1 padding.  The member functions <b>SSL_Sign()</b>
+and <b>SSL_Verify()</b> handle these and are used with the same arguments as
+encryption and decryption.  TaoCrypt handles inversing the keys transparently. 
+Please see test.cpp for a complete example.
+
+
+<h3>DSA</h3>
+
+There are public and private DSA keys, <b>DSA_PublicKey</b> and
+<b>DSA_PrivateKey</b>. Typically, they are initialized with a <b>Source</b>
+object, which is usually constructed with a byte array or a file:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte           privKey[128] = { // some key }; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; Source         privSrc(privKey, 128);
+<br> &nbsp;&nbsp;&nbsp;&nbsp; DSA_PrivateKey dsaPriv(privSrc);
+</span>
+
+<p>Once you have a private DSA key, you can sign a message, usually an SHA digest:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; RandomNumberGenerator rng;
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte message[SHA::DIGEST_SIZE] = { // a hash }; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte signature[40]; 
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; DSA_Signer signer(dsaPriv); 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; signer.Sign(message, signature, rng); 
+</span>
+
+<p>Verifying is a simple operation as well:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; DSA_Verifier verifier(dsaPriv);  // or Public Key
+<br> &nbsp;&nbsp;&nbsp;&nbsp; bool result = verifier.Verify(message, signautre); 
+</span>
+
+
+<p>Please see test.cpp for a complete example.
+</span>
+
+<span class="pageName">
+<h2>Key Agreement</h2>
+</span>
+<span class="bodyText">
+
+
+TaoCrypt provides Diffie-Hellman (DH) for key agreement arrangements.
+The DH class is generally constructed from a <b>Source</b> object to initialize
+<b>p</b> and <b>g</b>.
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte key[80] = { // contains p and g };
+<br> &nbsp;&nbsp;&nbsp;&nbsp; Source keySrc(key, 80); 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; DH self(keySrc); 
+</span>
+
+<p>Once you have a DH object, you generate a key pair:
+
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte pub[128];
+<br> &nbsp;&nbsp;&nbsp;&nbsp; byte priv[128];
+<br> &nbsp;&nbsp;&nbsp;&nbsp; RandomNumberGenerator rng; 
+<br> &nbsp;&nbsp;&nbsp;&nbsp; self.GenerateKeyPair(rng, priv, pub); 
+</span>
+
+<p>Then you can send someone your public key and obtain their public one.  Using
+your private key and their public key you can generate an agreement:
+
+<span class="smallText">
+<p>  &nbsp;&nbsp;&nbsp;&nbsp; byte agree[128];
+<br> &nbsp;&nbsp;&nbsp;&nbsp; self.Agree(agree, priv, otherPublicKey); 
+</span>
+
+<p>The other person will get the same agreement.  Please see test.cpp for a 
+complete example.
+</span>
+
+
+<p><a href="http://yassl.com/">Home</a>
+<br />
+&nbsp;
+
+<td width="2%" valign="top">
+
+</td>
+</table>
+</body>
+
+
+</html>
+

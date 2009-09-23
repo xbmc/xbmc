@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnrarXLib", "UnrarXLib.vcproj", "{FE0A91C0-E30A-47CD-8A92-A508C9292452}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug.ActiveCfg = Debug|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Debug.Build.0 = Debug|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile.ActiveCfg = Profile|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile.Build.0 = Profile|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release.ActiveCfg = Release|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release.Build.0 = Release|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{FE0A91C0-E30A-47CD-8A92-A508C9292452}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

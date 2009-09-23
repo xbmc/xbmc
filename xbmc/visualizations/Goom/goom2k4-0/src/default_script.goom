@@ -1,0 +1,34 @@
+/*
+ * specify here high-level properties of a flash.
+ */
+
+flash_occurs when (Sound.Goom_Detection > 50%) and (Sound.Sound_Speed > 14%);
+
+max_flash = 200%;
+slow_down_coef = 96%;
+
+/*
+ * Here you have the fx's state machin behaviour.
+ */
+
+(locked) ? locked--;
+
+(not locked) and (flash_occurs) ?
+{
+    cur_power = Sound_Speed.Goom_Detection;
+    start flashing_up;
+}
+
+(not locked) and (flashing_up) ?
+{
+    factor += cur_power * 2 * (speedvar / 4 + 0.95);
+    if (factor > max_flash) factor = max_flash;
+
+    (not flash_occurs) ?
+    {
+        locked = 200;
+        stop flashing_up;
+    }
+}
+
+factor *= slow_down_coef;

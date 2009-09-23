@@ -1,0 +1,85 @@
+<scraper framework="1.0" date="2009-05-22" name="FilmUP.it" content="movies" thumb="filmup.gif" language="it">
+	<NfoUrl dest="3">
+    	<RegExp input="$$1" output="&lt;url&gt;http://filmup.leonardo.it/sc_\1.htm&lt;/url&gt;"  dest="3">
+			<expression noclean="1">sc_([a-z0-9__]*)\.htm</expression>
+    	</RegExp>
+	</NfoUrl> 
+	<CreateSearchUrl dest="3">
+		<RegExp input="$$1" output="http://filmup.leonardo.it/cgi-bin/search.cgi?ps=10&amp;fmt=long&amp;q=\1&amp;ul=%25%2Fsc_%25&amp;m=all&amp;wf=222210&amp;o=0&amp;ps=50" dest="3">
+			<expression noclean="1"></expression>
+		</RegExp>
+	</CreateSearchUrl>
+	<GetSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
+		<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://filmup.leonardo.it/sc_\1.htm&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;" dest="5">
+				<expression repeat="yes">&lt;a class=&quot;filmup&quot; href=&quot;http.[^sc_]*sc_([0-9a-z_]*)\.htm&quot;[^&gt;]*&gt;[^:]*: (.[^\n]*[^&gt;]*)&gt;</expression>
+
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+		</GetSearchResults>
+	
+
+	<GetDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+
+			<!--Title -->
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">
+				<expression trim="1" noclean="1">&lt;title&gt;FilmUP - Scheda: ([^&lt;]*)&lt;</expression>
+			</RegExp>
+
+			<!--Original Title
+			<RegExp input="$$1" output="&lt;originaltitle&gt;\1&lt;/originaltitle&gt;" dest="5">
+				<expression>Titolo originale.[^z]*ze=&quot;2&quot;&gt;([^)&lt;]*)</expression>
+			</RegExp> -->
+			
+			<!--Year Film-->
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression>Anno.[^z]*ze=&quot;2&quot;&gt;([0-9]*)&lt;</expression>
+			</RegExp>
+
+			<!--Director-->
+			<RegExp input="$$1" output="&lt;director&gt;\1&lt;/director&gt;" dest="5+">
+				<expression>Regia.[^z]*ze=&quot;2&quot;&gt;([^\n]*)&lt;/font&gt;</expression>
+			</RegExp>			
+			
+
+			
+			<!--Runtime Film-->
+			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
+				<expression>Durata.[^z]*ze=&quot;2&quot;&gt;([^)&lt;]*)</expression>
+			</RegExp>
+
+			<!--Genre Film-->
+			<RegExp input="$$6" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="6">
+					<expression>Genere.[^z]*ze=&quot;2&quot;&gt;([^)&lt;]*)</expression>
+				</RegExp>
+				<expression repeat="yes">([a-zA-Z][^,]*)</expression>
+			</RegExp>			
+			
+			<!--Plot outline -->
+			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
+				<expression>Trama:&lt;br&gt;([^&lt;]*)</expression>
+			</RegExp>
+			
+			<!--Thumbnail -->
+			<RegExp input="$$1" output="&lt;thumb&gt;http://filmup.leonardo.it/locand/\1&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">src=&quot;locan[^/]*/(.[^&quot;]*)</expression>
+			</RegExp>			
+			
+			<!--Actors -->
+			<RegExp input="$$7" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="5+">
+				<RegExp input="$$1" output="\1" dest="7">
+					<expression trim="1">Cast.[^z]*ze=&quot;2&quot;&gt;([^\n]*)&lt;/td&gt;</expression>
+				</RegExp>
+				<expression repeat="yes">([a-zA-Z][^,]*)</expression>
+			</RegExp>
+			
+
+			
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetDetails>	
+</scraper>
+

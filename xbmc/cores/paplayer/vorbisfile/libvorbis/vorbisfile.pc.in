@@ -1,0 +1,14 @@
+# libvorbisfile pkg-config source file
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: vorbisfile
+Description: vorbisfile is a library that provides a convenient high-level API for decoding and basic manipulation of all Vorbis I audio streams
+Version: @VERSION@
+Requires: vorbis
+Conflicts:
+Libs: -L${libdir} -lvorbisfile
+Cflags: -I${includedir}

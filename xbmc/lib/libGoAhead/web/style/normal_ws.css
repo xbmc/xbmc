@@ -1,0 +1,37 @@
+body {
+	font-family: Arial, Helvetica, sans-serif; font-size: 9pt;
+}
+p {
+	font-size: 9pt; 
+; margin-left: 10px
+; font-family: Arial, Helvetica, sans-serif; color: #333333
+}
+h1 {
+	font-size: 14pt; font-weight: bold;
+; margin-left: 10px
+; font-family: Arial, Helvetica, sans-serif; color: #0066CC
+}
+h2 {
+	font-size: 12pt; font-weight: bold;
+; margin-left: 10px
+; font-family: Arial, Helvetica, sans-serif; color: #0066CC
+}
+h3 {
+	font-size: 10pt; font-weight: bold;
+; margin-left: 10px
+; font-family: Arial, Helvetica, sans-serif; color: #0066CC
+}
+pre {
+line-height: normal;
+; color: #0A0A8C
+; font-family: "Courier New", Courier, mono; font-size: 9pt; margin-left: 10px; background-color: #EEEEEE; padding-left: 20px
+; padding-top: 5px; padding-bottom: 5px; padding-right: 20px
+}
+td {
+	font-size: 9pt; 
+; font-family: Arial, Helvetica, sans-serif; color: #333333
+}
+table {  margin-left: 10px}
+ol {  margin-left: 40px; color: #333333; font-family: Arial, Helvetica, sans-serif; font-size: 9pt}
+ul { font-size: 9pt; ; margin-left: 30px; font-family: Arial, Helvetica, sans-serif; color: #333333}
+h4 { font-size: 9pt; font-weight: bold; ; margin-left: 10px ; font-family: Arial, Helvetica, sans-serif; color: #0066CC}

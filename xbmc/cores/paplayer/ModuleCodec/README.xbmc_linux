@@ -1,0 +1,4 @@
+To compile for XBMC:
+
+1. configure
+2. Run make

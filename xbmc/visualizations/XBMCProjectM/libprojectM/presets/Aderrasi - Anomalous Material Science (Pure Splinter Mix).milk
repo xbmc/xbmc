@@ -1,0 +1,77 @@
+[preset00]
+fRating=2.000000
+fGammaAdj=1.490000
+fDecay=1.000000
+fVideoEchoZoom=1.000000
+fVideoEchoAlpha=0.500000
+nVideoEchoOrientation=3
+nWaveMode=3
+bAdditiveWaves=0
+bWaveDots=0
+bWaveThick=1
+bModWaveAlphaByVolume=0
+bMaximizeWaveColor=0
+bTexWrap=0
+bDarkenCenter=0
+bRedBlueStereo=0
+bBrighten=0
+bDarken=0
+bSolarize=0
+bInvert=0
+fWaveAlpha=100.000000
+fWaveScale=0.972362
+fWaveSmoothing=0.500000
+fWaveParam=0.000000
+fModWaveAlphaStart=0.500000
+fModWaveAlphaEnd=1.000000
+fWarpAnimSpeed=1.000000
+fWarpScale=1.000000
+fZoomExponent=0.999998
+fShader=0.000000
+zoom=0.999998
+rot=0.000000
+cx=0.500000
+cy=0.500000
+dx=0.000010
+dy=0.000010
+warp=0.010000
+sx=1.000000
+sy=1.000000
+wave_r=0.500000
+wave_g=0.500000
+wave_b=0.500000
+wave_x=0.500000
+wave_y=0.500000
+ob_size=0.005000
+ob_r=0.000000
+ob_g=0.000000
+ob_b=0.000000
+ob_a=1.000000
+ib_size=0.000000
+ib_r=0.000000
+ib_g=0.000000
+ib_b=0.000000
+ib_a=0.000000
+nMotionVectorsX=64.000000
+nMotionVectorsY=48.000000
+mv_dx=0.000000
+mv_dy=0.000000
+mv_l=1.050000
+mv_r=0.000000
+mv_g=0.000000
+mv_b=0.800000
+mv_a=0.000000
+per_frame_1=wave_r = wave_r + 0.4*(0.25*sin(1.4*time)) + 0.25*sin(7.25*time);
+per_frame_2=wave_g = wave_g + 0.34*(0.25*sin(1.7*time)) + 0.25*sin(6.11*time);
+per_frame_3=wave_b = wave_b + 0.3*(0.25*sin(1.84*time)) + 0.25*sin(9.3*time);
+per_frame_4=warp = 0;
+per_pixel_1=thresh = above(bass_att,thresh)*2+(1-above(bass_att,thresh))*((thresh-1.3)*0.96+1.3);
+per_pixel_2=dx_r = equal(thresh,2)*0.025*sin(5*time)+(1-equal(thresh,2))*dx_r;
+per_pixel_3=dy_r = equal(thresh,2)*0.025*sin(6*time)+(1-equal(thresh,2))*dy_r;
+per_pixel_4=
+per_pixel_5=dx = dx + dx_r*(above(x,0.45+0.45*sin(1.5*time))*below(x,0.55+0.45*sin(1.5*time)));
+per_pixel_6=dy = dy + dy_r*(above(y,0.45+0.45*cos(1.25*time))*below(y,0.55+0.45*cos(1.25*time)));
+per_pixel_7=cx = cx + bass*(above(x,0.35+0.45*sin(1.05*time))*below(x,0.65+0.45*sin(1.05*time)));
+per_pixel_8=cy = cy + bass*(above(y,0.35+0.45*cos(1.75*time))*below(y,0.65+0.45*cos(1.75*time)));
+per_pixel_9=rot = rot + 0.15*((0.43*rad)*(5*cos(dx*dy-bass_att+(0.5-rad))*2-rad))*abs(0.5*(2*sin(0.2*time)));
+per_pixel_10=zoom = zoom - 0.02*(abs(cos(12*ang))+0.4*rad);

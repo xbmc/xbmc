@@ -1,0 +1,47 @@
+<window id="2004">
+	<defaultcontrol>2</defaultcontrol>
+	<animation effect="fade" time="500">WindowOpen</animation>
+	<animation effect="fade" time="500" condition="!Window.IsActive(Home)">WindowClose</animation>
+	<controls>
+		<control type="image" id="0">
+			<description>video rectangle</description>
+			<posx>30</posx>
+			<posy>395</posy>
+			<width>140</width>
+			<height>118</height>
+			<texture>blue_rectangle_video.png</texture>
+			<include>mediaoverlay</include>
+			<visible>![Window.IsVisible(myvideolibrary) + system.haslocks]</visible>
+		</control>
+		<control type="videowindow" id="1">
+			<description>video preview window</description>
+			<posx>35</posx>
+			<posy>400</posy>
+			<width>130</width>
+			<height>107</height>
+			<include>mediaoverlay</include>
+			<visible>![Window.IsVisible(myvideolibrary) + system.haslocks]</visible>
+		</control>
+		<control type="label" id="0">
+			<description>play time label</description>
+			<posx>35</posx>
+			<posy>515</posy>
+			<width>135</width>
+			<label>$INFO[VideoPlayer.Time]$INFO[VideoPlayer.Duration, / ]</label>
+			<align>left</align>
+			<font>font13</font>
+			<include>mediaoverlay</include>
+		</control>
+		<control type="fadelabel" id="0">
+			<description>album/artist/genre etc info label</description>
+			<posx>35</posx>
+			<posy>540</posy>
+			<width>135</width>
+			<font>font10</font>
+			<scrollout>false</scrollout>
+			<pauseatend>2000</pauseatend>
+			<label>$INFO[VideoPlayer.Title]$INFO[VideoPlayer.Year, | ]$INFO[VideoPlayer.Director, | ]$INFO[VideoPlayer.Genre, | ]</label>
+			<include>mediaoverlay</include>
+		</control>
+	</controls>
+</window>
