@@ -372,14 +372,14 @@ void CGUIWindowSettingsCategory::SetupControls()
   int j=0;
   for (unsigned int i = 0; i < m_vecSections.size(); i++)
   {
-    if (m_vecSections[i]->m_dwLabelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
+    if (m_vecSections[i]->m_labelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
       continue;
     CGUIButtonControl *pButton = NULL;
     if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
       pButton = new CGUIToggleButtonControl(*(CGUIToggleButtonControl *)m_pOriginalCategoryButton);
     else
       pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
-    pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
+    pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_labelID));
     pButton->SetID(CONTROL_START_BUTTONS + j);
     pButton->SetVisible(true);
     pButton->AllocResources();

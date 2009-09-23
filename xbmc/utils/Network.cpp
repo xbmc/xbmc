@@ -105,7 +105,7 @@ CNetworkInterface* CNetwork::GetInterfaceByName(CStdString& name)
    return NULL;
 }
 
-void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
+void CNetwork::NetworkMessage(EMESSAGE message, int param)
 {
   switch( message )
   {

@@ -21,8 +21,8 @@
 
 #pragma once
 
+#include <stdint.h>
 #include "StdString.h"
-#include "system.h"
 
 enum RESOLUTION {
   RES_INVALID = -1,
@@ -75,7 +75,7 @@ struct RESOLUTION_INFO
   int iWidth;
   int iHeight;
   int iSubtitles;
-  DWORD dwFlags;
+  uint32_t dwFlags;
   float fPixelRatio;
   float fRefreshRate;
   CStdString strMode;
