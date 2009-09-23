@@ -135,7 +135,7 @@ bool CRenderSystemGL::EndRender()
   return true;
 }
 
-bool CRenderSystemGL::ClearBuffers(DWORD color)
+bool CRenderSystemGL::ClearBuffers(color_t color)
 {
   if (!m_bRenderCreated)
     return false;

@@ -21,7 +21,7 @@
 
 #pragma once
 #include "deque"
-#include "system.h"
+#include "system.h" // for SOCKET
 
 #include <algorithm>
 #include <string>

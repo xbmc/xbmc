@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h" // for LARGE_INTEGER, QueryPerformanceCounter etc.
 #include "Stopwatch.h"
 #if defined(_LINUX) && !defined(__APPLE__)
 #include <sys/sysinfo.h>
@@ -80,8 +81,8 @@ void CStopWatch::Reset()
 
 float CStopWatch::GetElapsedSeconds() const
 {
-  LONGLONG totalTicks = m_isRunning ? (GetTicks() - m_startTick) : 0;
-  return (FLOAT)totalTicks * m_timerPeriod;
+  int64_t totalTicks = m_isRunning ? (GetTicks() - m_startTick) : 0;
+  return (float)totalTicks * m_timerPeriod;
 }
 
 float CStopWatch::GetElapsedMilliseconds() const
@@ -89,7 +90,7 @@ float CStopWatch::GetElapsedMilliseconds() const
   return GetElapsedSeconds() * 1000.0f;
 }
 
-LONGLONG CStopWatch::GetTicks() const
+int64_t CStopWatch::GetTicks() const
 {
 #ifndef _LINUX
   LARGE_INTEGER currTicks;

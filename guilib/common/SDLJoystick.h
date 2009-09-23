@@ -1,7 +1,7 @@
 #ifndef SDL_JOYSTICK_H
 #define SDL_JOYSTICK_H
 
-#include "../system.h"
+#include "../system.h" // for HAS_SDL_JOYSTICK
 #include <vector>
 #include <string>
 

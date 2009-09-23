@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h" // needed prior to Util.h due to include order issues
 #include "Util.h"
 #include "URL.h"
 #include "FileItem.h"

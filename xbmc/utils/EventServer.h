@@ -22,7 +22,6 @@
  *
  */
 
-#include "system.h"
 #include "Thread.h"
 #include "Socket.h"
 #include "EventClient.h"

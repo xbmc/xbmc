@@ -246,16 +246,13 @@ void CTextureBundle::GetTexturesFromPath(const CStdString &path, std::vector<CSt
   }
 }
 
-HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf)
+bool CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf)
 {
-  if (Filename == "-")
-    return 0;
-
   CStdString name = Normalize(Filename);
 
   std::map<CStdString, FileHeader_t>::iterator file = m_FileHeaders.find(name);
   if (file == m_FileHeaders.end())
-    return E_FAIL;
+    return false;
 
   // found texture - allocate the necessary buffers
   DWORD ReadSize = (file->second.PackedSize + (ALIGN - 1)) & ~(ALIGN - 1);
@@ -280,7 +277,7 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
               info.totalram);
 #endif
     free(buffer);
-    return E_OUTOFMEMORY;
+    return false;
   }
 
   // read the file into our buffer
@@ -291,17 +288,17 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
   {
     CLog::Log(LOGERROR, "Error loading texture: %s: %s", Filename.c_str(), strerror(ferror(m_hFile)));
     free(buffer);
-    return E_FAIL;
+    return false;
   }
 
   // allocate a buffer for our unpacked texture
   lzo_uint s = file->second.UnpackedSize;
-  HRESULT hr = S_OK;
+  bool success = true;
   if (lzo1x_decompress(buffer, file->second.PackedSize, UnpackedBuf, &s, NULL) != LZO_E_OK ||
       s != file->second.UnpackedSize)
   {
     CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", Filename.c_str());
-    hr = E_FAIL;
+    success = false;
   }
 
   try
@@ -313,19 +310,18 @@ HRESULT CTextureBundle::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
     CLog::Log(LOGERROR, "Error freeing preload buffer.");
   }
 
-  return hr;
+  return success;
 }
 
-HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
+bool CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
                                      int &width, int &height)
 {
   DWORD ResDataOffset;
   *ppTexture = NULL;
 
   CAutoTexBuffer UnpackedBuf;
-  HRESULT r = LoadFile(Filename, UnpackedBuf);
-  if (r != S_OK)
-    return r;
+  if (!LoadFile(Filename, UnpackedBuf))
+    return false;
 
   D3DTexture *pTex = (D3DTexture *)(new char[sizeof (D3DTexture)]);
   D3DPalette* pPal = 0;
@@ -378,13 +374,13 @@ HRESULT CTextureBundle::LoadTexture(const CStdString& Filename, CBaseTexture** p
   pInfo->Format = desc.Format;
 #endif
 */
-  return S_OK;
+  return true;
 
 PackedLoadError:
   CLog::Log(LOGERROR, "Error loading texture: %s: Invalid data", Filename.c_str());
   delete[] pTex;
   delete pPal;
-  return E_FAIL;
+  return false;
 }
 
 int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,

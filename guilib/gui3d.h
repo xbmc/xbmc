@@ -28,7 +28,7 @@
  *
  */
 
-#include "system.h"
+#include "system.h" // for WIN32 types
 
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 

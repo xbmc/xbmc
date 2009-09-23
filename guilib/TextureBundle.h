@@ -22,8 +22,7 @@
  */
 
 #include "StdString.h"
-#include "system.h"
-
+#include <stdint.h>
 #include <map>
 
 class CAutoTexBuffer;
@@ -33,9 +32,9 @@ class CTextureBundle
 {
   struct FileHeader_t
   {
-    DWORD Offset;
-    DWORD UnpackedSize;
-    DWORD PackedSize;
+    uint32_t Offset;
+    uint32_t UnpackedSize;
+    uint32_t PackedSize;
   };
 
   FILE*  m_hFile;
@@ -47,7 +46,7 @@ class CTextureBundle
   bool m_themeBundle;
 
   bool OpenBundle();
-  HRESULT LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf);
+  bool LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf);
 
 public:
   CTextureBundle(void);
@@ -60,7 +59,7 @@ public:
   void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
   static CStdString Normalize(const CStdString &name);
 
-  HRESULT LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
+  bool LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
                        int &width, int &height);
 
   int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
