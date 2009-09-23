@@ -61,11 +61,11 @@ void CDatabase::Split(const CStdString& strFileNameAndPath, CStdString& strPath,
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i);
 }
 
-DWORD CDatabase::ComputeCRC(const CStdString &text)
+uint32_t CDatabase::ComputeCRC(const CStdString &text)
 {
   Crc32 crc;
   crc.ComputeFromLowerCase(text);
-  return (DWORD)crc;
+  return crc;
 }
 
 CStdString CDatabase::FormatSQL(CStdString strStmt, ...)
