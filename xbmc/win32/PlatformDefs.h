@@ -39,6 +39,7 @@ typedef unsigned long ThreadIdentifier;
 #define snprintf _snprintf
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
+#define strcasecmp strcmpi
 
 #ifndef PRIdS
 #define PRIdS "Id"
@@ -85,6 +86,7 @@ typedef unsigned long ThreadIdentifier;
 #define llrint(x) ((x) >= 0 ? ((__int64)((x) + 0.5)) : ((__int64)((x) - 0.5)))
 
 extern "C" char * strptime(const char *buf, const char *fmt, struct tm *tm);
+
 #endif // _WIN32
 
 #endif //__PLATFORM_DEFS_H__
