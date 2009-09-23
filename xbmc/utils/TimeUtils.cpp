@@ -23,7 +23,7 @@
 #ifdef _LINUX
 #include "linux/XTimeUtils.h" // for timeGetTime
 #elif defined(_WIN32)
-#include <Mmsystem.h> // for timeGetTime
+#include <windows.h> // for timeGetTime
 #endif
 
 unsigned int CTimeUtils::frameTime = 0;
