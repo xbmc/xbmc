@@ -69,7 +69,8 @@ void CPullupCorrection::Add(double pts)
   m_ringfill = DIFFRINGSIZE;
   
   //get the current pattern in the ringbuffer
-  vector<double> pattern = GetPattern();
+  vector<double> pattern;
+  GetPattern(pattern);
   
   //check if the pattern is the same as the saved pattern
   //and if it is actually a pattern
@@ -116,12 +117,14 @@ inline double CPullupCorrection::GetDiff(int diffnr)
 }
 
 //calculate the current pattern in the ringbuffer
-std::vector<double> CPullupCorrection::GetPattern()
+void CPullupCorrection::GetPattern(std::vector<double>& pattern)
 {
-  vector<double> difftypes = GetDifftypes(); //get the difftypes
-  vector<double> pattern; //where we store the pattern
   int difftypesbuff[DIFFRINGSIZE]; //difftypes of the diffs, difftypesbuff[0] is the last added diff,
                                    //difftypesbuff[1] the one added before that etc
+  
+  //get the difftypes
+  vector<double> difftypes;
+  GetDifftypes(difftypes);
   
   //mark each diff with what difftype it is
   for (int i = 0; i < DIFFRINGSIZE; i++)
@@ -160,19 +163,15 @@ std::vector<double> CPullupCorrection::GetPattern()
     
     if (hasmatch)
     {
-      pattern = BuildPattern(i);
+      BuildPattern(pattern, i);
       break;
     }
   }
-  
-  return pattern;
 }
 
 //calculate the different types of diffs we have
-vector<double> CPullupCorrection::GetDifftypes()
+void CPullupCorrection::GetDifftypes(vector<double>& difftypes)
 {
-  vector<double> difftypes;
-  
   for (int i = 0; i < DIFFRINGSIZE; i++)
   {
     bool hasmatch = false;
@@ -189,15 +188,11 @@ vector<double> CPullupCorrection::GetDifftypes()
     if (!hasmatch)
       difftypes.push_back(GetDiff(i));
   }
-  
-  return difftypes;
 }
 
 //builds a pattern of timestamps in the ringbuffer
-std::vector<double> CPullupCorrection::BuildPattern(int patternlength)
+void CPullupCorrection::BuildPattern(std::vector<double>& pattern, int patternlength)
 {
-  std::vector<double> pattern;
-  
   for (int i = 0; i < patternlength; i++)
   {
     double avgdiff = 0.0;
@@ -208,7 +203,6 @@ std::vector<double> CPullupCorrection::BuildPattern(int patternlength)
     avgdiff /= DIFFRINGSIZE / patternlength;
     pattern.push_back(avgdiff);
   }
-  return pattern;
 }
 
 inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
