@@ -116,7 +116,7 @@ CURL::CURL(const CStdString& strURL1)
       }
       iPos += extLen + 1;
       CStdString archiveName = strURL.Left(iPos);
-      struct stat64 s;
+      struct __stat64 s;
       if (XFILE::CFile::Stat(archiveName, &s) == 0)
       {
 #ifdef _LINUX

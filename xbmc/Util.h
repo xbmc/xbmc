@@ -158,9 +158,9 @@ public:
   static void InitGamma();
   static void ClearCache();
   static void StatToStatI64(struct _stati64 *result, struct stat *stat);
-  static void Stat64ToStatI64(struct _stati64 *result, struct stat64 *stat);
-  static void StatI64ToStat64(struct stat64 *result, struct _stati64 *stat);
-  static void Stat64ToStat(struct stat *result, struct stat64 *stat);
+  static void Stat64ToStatI64(struct _stati64 *result, struct __stat64 *stat);
+  static void StatI64ToStat64(struct __stat64 *result, struct _stati64 *stat);
+  static void Stat64ToStat(struct stat *result, struct __stat64 *stat);
   static bool CreateDirectoryEx(const CStdString& strPath);
 
 #ifdef _WIN32

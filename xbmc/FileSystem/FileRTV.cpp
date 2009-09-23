@@ -115,7 +115,7 @@ bool CFileRTV::Exists(const CURL& url)
   return true;
 }
 
-int CFileRTV::Stat(const CURL& url, struct stat64* buffer)
+int CFileRTV::Stat(const CURL& url, struct __stat64* buffer)
 {
   errno = ENOENT;
   return -1;

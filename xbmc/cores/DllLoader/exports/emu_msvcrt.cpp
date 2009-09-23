@@ -42,6 +42,9 @@
 #include <fcntl.h>
 #include <time.h>
 #include <signal.h>
+#ifdef __APPLE__
+#include "PlatformDefs.h" // for __stat64
+#endif
 #include "Util.h"
 #include "FileSystem/IDirectory.h"
 #include "FileSystem/FactoryDirectory.h"

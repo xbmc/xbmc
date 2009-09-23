@@ -28,6 +28,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#ifdef _LINUX
+#include "PlatformDefs.h" // for __stat64
+#endif
+
 #include "URL.h"
 
 #include <stdio.h>
@@ -50,8 +54,8 @@ public:
   virtual bool Open(const CURL& url) = 0;
   virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false) { return false; };
   virtual bool Exists(const CURL& url) = 0;
-  virtual int Stat(const CURL& url, struct stat64* buffer) = 0;
-  virtual int Stat(struct stat64* buffer);
+  virtual int Stat(const CURL& url, struct __stat64* buffer) = 0;
+  virtual int Stat(struct __stat64* buffer);
   virtual unsigned int Read(void* lpBuf, int64_t uiBufSize) = 0;
   virtual int Write(const void* lpBuf, int64_t uiBufSize) { return -1;};
   virtual bool ReadString(char *szLine, int iLineLength);
