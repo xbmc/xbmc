@@ -392,8 +392,7 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextu
   *ppTextures = NULL; *ppDelays = NULL;
 
   CAutoTexBuffer UnpackedBuf;
-  HRESULT r = LoadFile(Filename, UnpackedBuf);
-  if (r != S_OK)
+  if (!LoadFile(Filename, UnpackedBuf))
     return 0;
 
   struct AnimInfo_t
