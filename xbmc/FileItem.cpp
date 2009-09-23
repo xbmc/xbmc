@@ -405,7 +405,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
     int lockmode;
-    ar >> (int &)lockmode;
+    ar >> lockmode;
     m_iLockMode = (LockType)lockmode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;

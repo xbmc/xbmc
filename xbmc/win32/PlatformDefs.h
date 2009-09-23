@@ -39,7 +39,9 @@ typedef unsigned long ThreadIdentifier;
 #define snprintf _snprintf
 #define ftello64 _ftelli64
 #define fseeko64 _fseeki64
+#ifndef strcasecmp
 #define strcasecmp strcmpi
+#endif
 
 #ifndef PRIdS
 #define PRIdS "Id"
