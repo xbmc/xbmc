@@ -22,7 +22,7 @@
  */
 
 #include "StdString.h"
-#include "tinyxml/tinyxml.h" // no use forwarding these, as this class is the main workhorse anyway,
+#include "tinyXML/tinyxml.h" // no use forwarding these, as this class is the main workhorse anyway,
                              // thus it simplifies the include patterns
 
 class XMLUtils

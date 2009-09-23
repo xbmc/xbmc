@@ -29,7 +29,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "utils/log.h"
-#include "tinyxml/tinyxml.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 using namespace XFILE;
