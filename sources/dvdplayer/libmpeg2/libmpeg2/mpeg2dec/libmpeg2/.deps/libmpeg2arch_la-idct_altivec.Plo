@@ -1,4 +1,0 @@
-libmpeg2arch_la-idct_altivec.lo libmpeg2arch_la-idct_altivec.o:  \
- idct_altivec.c ../include/config.h
-
-../include/config.h:

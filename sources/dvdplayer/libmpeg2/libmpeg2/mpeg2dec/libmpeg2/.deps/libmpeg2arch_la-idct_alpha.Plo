@@ -1,4 +1,0 @@
-libmpeg2arch_la-idct_alpha.lo libmpeg2arch_la-idct_alpha.o: idct_alpha.c \
-  ../include/config.h
-
-../include/config.h:

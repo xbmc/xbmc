@@ -1,4 +1,0 @@
-libmpeg2arch_la-motion_comp_alpha.lo libmpeg2arch_la-motion_comp_alpha.o:  \
- motion_comp_alpha.c ../include/config.h
-
-../include/config.h:

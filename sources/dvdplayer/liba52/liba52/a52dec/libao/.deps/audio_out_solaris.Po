@@ -1,4 +1,0 @@
-audio_out_solaris.o audio_out_solaris.o: audio_out_solaris.c \
-  ../include/config.h
-
-../include/config.h:

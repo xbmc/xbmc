@@ -1,3 +1,0 @@
-video_out_dx.o video_out_dx.o: video_out_dx.c ../include/config.h
-
-../include/config.h:

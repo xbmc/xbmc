@@ -1,6 +1,0 @@
-Known bugs and problems:
-------------------------
-- Some files (especially SA2) may sound distorted through the emulator. This is
-  a well-known "problem" with software mixing, hearable when the composer plays
-  the same sound on multiple channels. Hardware mixing is unaffected by this
-  issue.
