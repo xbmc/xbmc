@@ -174,7 +174,7 @@ protected:
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
   virtual bool OnMouseAction();
-  virtual bool RenderAnimation(DWORD time);
+  virtual bool RenderAnimation(unsigned int time);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
 
   CAnimation *GetAnimation(ANIMATION_TYPE animType, bool checkConditions = true);

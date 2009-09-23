@@ -56,13 +56,13 @@ private:
   void UnloadDialog(unsigned int windowID);
 
   bool m_bShowViewModeInfo;
-  DWORD m_dwShowViewModeTimeout;
+  unsigned int m_dwShowViewModeTimeout;
 
   bool m_bShowCurrentTime;
   bool m_bLastRender;
 
   bool m_timeCodeShow;
-  DWORD m_timeCodeTimeout;
+  unsigned int m_timeCodeTimeout;
   int m_timeCodeStamp[5];
   int m_timeCodePosition;
 

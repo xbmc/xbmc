@@ -16,6 +16,7 @@
 #include "KeyboardStat.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "XBMC_events.h"
+#include "utils/TimeUtils.h"
 
 #if defined(_LINUX) && !defined(__APPLE__)
 #include <X11/Xlib.h>
@@ -678,7 +679,7 @@ void CKeyboardStat::Update(XBMC_Event& event)
 {
   if (event.type == XBMC_KEYDOWN)
   {
-    DWORD now = timeGetTime();
+    unsigned int now = CTimeUtils::GetFrameTime();
     if (m_lastKey == event.key.keysym.sym)
       m_keyHoldTime += now - m_lastKeyTime;
     else

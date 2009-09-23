@@ -172,7 +172,7 @@ void CTextureMap::Dump() const
   OutputDebugString(strLog.c_str());
 }
 
-DWORD CTextureMap::GetMemoryUsage() const
+unsigned int CTextureMap::GetMemoryUsage() const
 {
   return m_memUsage;
 }
@@ -512,9 +512,9 @@ void CGUITextureManager::Flush()
   }
 }
 
-DWORD CGUITextureManager::GetMemoryUsage() const
+unsigned int CGUITextureManager::GetMemoryUsage() const
 {
-  DWORD memUsage = 0;
+  unsigned int memUsage = 0;
   for (int i = 0; i < (int)m_vecTextures.size(); ++i)
   {
     memUsage += m_vecTextures[i]->GetMemoryUsage();

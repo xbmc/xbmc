@@ -36,7 +36,7 @@ CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, fl
 {
   m_bSelected = false;
   m_alpha = 255;
-  m_dwFocusCounter = 0;
+  m_focusCounter = 0;
   m_label = labelInfo;
   ControlType = GUICONTROL_BUTTON;
 }
@@ -60,20 +60,20 @@ void CGUIButtonControl::Render()
   {
     if (m_pulseOnSelect)
     {
-      DWORD dwAlphaCounter = m_dwFocusCounter + 2;
-      DWORD dwAlphaChannel;
-      if ((dwAlphaCounter % 128) >= 64)
-        dwAlphaChannel = dwAlphaCounter % 64;
+      unsigned int alphaCounter = m_focusCounter + 2;
+      unsigned int alphaChannel;
+      if ((alphaCounter % 128) >= 64)
+        alphaChannel = alphaCounter % 64;
       else
-        dwAlphaChannel = 63 - (dwAlphaCounter % 64);
+        alphaChannel = 63 - (alphaCounter % 64);
 
-      dwAlphaChannel += 192;
-      dwAlphaChannel = (DWORD)((float)m_alpha * (float)dwAlphaChannel / 255.0f);
-      m_imgFocus.SetAlpha((unsigned char)dwAlphaChannel);
+      alphaChannel += 192;
+      alphaChannel = (unsigned int)((float)m_alpha * (float)alphaChannel / 255.0f);
+      m_imgFocus.SetAlpha((unsigned char)alphaChannel);
     }
     m_imgFocus.SetVisible(true);
     m_imgNoFocus.SetVisible(false);
-    m_dwFocusCounter++;
+    m_focusCounter++;
   }
   else
   {
@@ -175,7 +175,7 @@ bool CGUIButtonControl::OnMessage(CGUIMessage& message)
 void CGUIButtonControl::AllocResources()
 {
   CGUIControl::AllocResources();
-  m_dwFocusCounter = 0;
+  m_focusCounter = 0;
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
   if (!m_width)

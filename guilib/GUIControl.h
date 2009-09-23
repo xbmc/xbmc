@@ -97,7 +97,7 @@ public:
   virtual ~CGUIControl(void);
   virtual CGUIControl *Clone() const=0;
 
-  virtual void DoRender(DWORD currentTime);
+  virtual void DoRender(unsigned int currentTime);
   virtual void Render();
   bool HasRendered() const { return m_hasRendered; };
 
@@ -258,7 +258,7 @@ public:
 #endif
 protected:
   virtual void UpdateColors();
-  virtual void Animate(DWORD currentTime);
+  virtual void Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);

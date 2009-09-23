@@ -25,11 +25,64 @@
 #include "FileItem.h"
 #include "Texture.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 #include "GraphicContext.h"
 
 using namespace std;
 
 CGUILargeTextureManager g_largeTextureManager;
+
+CGUILargeTextureManager::CLargeTexture::CLargeTexture(const CStdString &path)
+{
+  m_path = path;
+  m_orientation = 0;
+  m_refCount = 1;
+  m_timeToDelete = 0;
+};
+
+CGUILargeTextureManager::CLargeTexture::~CLargeTexture()
+{
+  assert(m_refCount == 0);
+  m_texture.Free();
+}
+
+void CGUILargeTextureManager::CLargeTexture::AddRef()
+{
+  m_refCount++;
+}
+
+bool CGUILargeTextureManager::CLargeTexture::DecrRef(bool deleteImmediately)
+{
+  assert(m_refCount);
+  m_refCount--;
+  if (m_refCount == 0)
+  {
+    if (deleteImmediately)
+      delete this;
+    else
+      m_timeToDelete = CTimeUtils::GetFrameTime() + TIME_TO_DELETE;
+    return true;
+  }
+  return false;
+}
+
+bool CGUILargeTextureManager::CLargeTexture::DeleteIfRequired()
+{
+  if (m_refCount == 0 && m_timeToDelete < CTimeUtils::GetFrameTime())
+  {
+    delete this;
+    return true;
+  }
+  return false;
+}
+
+void CGUILargeTextureManager::CLargeTexture::SetTexture(CBaseTexture* texture, int width, int height, int orientation)
+{
+  assert(!m_texture.size());
+  if (texture)
+    m_texture.Set(texture, width, height);
+  m_orientation = orientation;
+}
 
 CGUILargeTextureManager::CGUILargeTextureManager()
 {

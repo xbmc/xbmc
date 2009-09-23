@@ -21,17 +21,13 @@
  *
  */
 
-#include "GUIDialog.h"
+#include <stdint.h>
 
-class CGUIDialogVolumeBar : public CGUIDialog
+class CTimeUtils
 {
 public:
-  CGUIDialogVolumeBar(void);
-  virtual ~CGUIDialogVolumeBar(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void Render();
-  void ResetTimer();
-protected:
-  unsigned int m_timer;
+  static void UpdateFrameTime();      ///< update the frame time.  Not threadsafe
+  static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
+private:
+  static unsigned int frameTime;
 };

@@ -55,9 +55,9 @@ public:
 
 protected:
 
-  DWORD m_dwTimer;
+  unsigned int m_timer;
 
-  DWORD m_toastDisplayTime;
+  unsigned int m_toastDisplayTime;
 
   CStdString m_defaultIcon;
 

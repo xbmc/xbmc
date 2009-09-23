@@ -30,7 +30,7 @@ public:
   
   CStdString m_action;
   ActionLang m_lang;
-  DWORD m_sourceWindowId; // the id of the window that was a source of an action
+  int m_sourceWindowId; // the id of the window that was a source of an action
 };
 
 #endif

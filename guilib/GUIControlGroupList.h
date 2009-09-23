@@ -65,7 +65,7 @@ protected:
 
   float m_scrollSpeed;
   float m_scrollOffset;
-  DWORD m_scrollTime;
+  unsigned int m_scrollTime;
 
   bool m_useControlPositions;
   ORIENTATION m_orientation;

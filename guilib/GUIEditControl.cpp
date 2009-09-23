@@ -394,7 +394,7 @@ void CGUIEditControl::RenderText()
     { // cursor location assumes utf16 text, so deal with that (inefficient, but it's not as if it's a high-use area
       // virtual keyboard only)
       CStdStringW col;
-      if ((m_dwFocusCounter % 64) > 32)
+      if ((m_focusCounter % 64) > 32)
         col.Format(L"|");
       else
         col.Format(L"[COLOR %x]|[/COLOR]", 0x1000000);

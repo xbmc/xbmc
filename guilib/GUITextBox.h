@@ -48,7 +48,7 @@ public:
   virtual ~CGUITextBox(void);
   virtual CGUITextBox *Clone() const { return new CGUITextBox(*this); };
 
-  virtual void DoRender(DWORD currentTime);
+  virtual void DoRender(unsigned int currentTime);
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -77,16 +77,16 @@ protected:
   int   m_scrollTime;
   unsigned int m_itemsPerPage;
   float m_itemHeight;
-  DWORD m_renderTime;
-  DWORD m_lastRenderTime;
+  unsigned int m_renderTime;
+  unsigned int m_lastRenderTime;
 
   CLabelInfo m_label;
 
   // autoscrolling
-  int   m_autoScrollCondition;
-  int   m_autoScrollTime;      // time to scroll 1 line (ms)
-  int   m_autoScrollDelay;     // delay before scroll (ms)
-  DWORD m_autoScrollDelayTime; // current offset into the delay
+  int          m_autoScrollCondition;
+  int          m_autoScrollTime;      // time to scroll 1 line (ms)
+  int          m_autoScrollDelay;     // delay before scroll (ms)
+  unsigned int m_autoScrollDelayTime; // current offset into the delay
   CAnimation *m_autoScrollRepeatAnim;
 
   int m_pageControl;

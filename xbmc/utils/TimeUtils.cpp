@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,17 +19,19 @@
  *
  */
 
-#include "GUIDialog.h"
+#include "TimeUtils.h"
+#ifdef _LINUX
+#include "linux/XTimeUtils.h" // for timeGetTime
+#endif
 
-class CGUIDialogVolumeBar : public CGUIDialog
+unsigned int CTimeUtils::frameTime = 0;
+
+void CTimeUtils::UpdateFrameTime()
 {
-public:
-  CGUIDialogVolumeBar(void);
-  virtual ~CGUIDialogVolumeBar(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void Render();
-  void ResetTimer();
-protected:
-  unsigned int m_timer;
-};
+  frameTime = timeGetTime();
+}
+
+unsigned int CTimeUtils::GetFrameTime()
+{
+  return frameTime;
+}

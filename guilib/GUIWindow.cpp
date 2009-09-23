@@ -36,6 +36,7 @@
 #include "utils/GUIInfoManager.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "MouseStat.h"
@@ -328,7 +329,7 @@ void CGUIWindow::Render()
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
-  DWORD currentTime = timeGetTime();
+  unsigned int currentTime = CTimeUtils::GetFrameTime();
   // render our window animation - returns false if it needs to stop rendering
   if (!RenderAnimation(currentTime))
     return;
@@ -750,7 +751,7 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
   return CGUIControlGroup::IsAnimating(animType);
 }
 
-bool CGUIWindow::RenderAnimation(DWORD time)
+bool CGUIWindow::RenderAnimation(unsigned int time)
 {
   g_graphicsContext.ResetWindowTransform();
   if (m_animationsEnabled)

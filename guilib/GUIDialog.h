@@ -56,7 +56,7 @@ public:
 
   void SetAutoClose(unsigned int timeoutMs);
 protected:
-  virtual bool RenderAnimation(DWORD time);
+  virtual bool RenderAnimation(unsigned int time);
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
 
@@ -68,6 +68,6 @@ protected:
   bool m_bModal;
   bool m_dialogClosing;
   bool m_autoClosing;
-  DWORD m_showStartTime;
-  DWORD m_showDuration;
+  unsigned int m_showStartTime;
+  unsigned int m_showDuration;
 };

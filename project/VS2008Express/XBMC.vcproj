@@ -3018,6 +3018,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\TimeUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TimeUtils.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\utils\TuxBoxUtil.cpp"
 					>
 				</File>

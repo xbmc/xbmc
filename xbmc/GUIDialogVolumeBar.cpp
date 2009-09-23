@@ -21,6 +21,7 @@
 
 #include "GUIDialogVolumeBar.h"
 #include "GUISliderControl.h"
+#include "utils/TimeUtils.h"
 
 #define VOLUME_BAR_DISPLAY_TIME 1000L
 
@@ -68,7 +69,7 @@ bool CGUIDialogVolumeBar::OnMessage(CGUIMessage& message)
 
 void CGUIDialogVolumeBar::ResetTimer()
 {
-  m_dwTimer = timeGetTime();
+  m_timer = CTimeUtils::GetFrameTime();
 }
 
 void CGUIDialogVolumeBar::Render()
@@ -76,7 +77,7 @@ void CGUIDialogVolumeBar::Render()
   // and render the controls
   CGUIDialog::Render();
   // now check if we should exit
-  if (timeGetTime() - m_dwTimer > VOLUME_BAR_DISPLAY_TIME)
+  if (CTimeUtils::GetFrameTime() - m_timer > VOLUME_BAR_DISPLAY_TIME)
   {
     Close();
   }

@@ -124,7 +124,7 @@ bool CGUIControlFactory::GetFloat(const TiXmlNode* pRootNode, const char* strTag
   return g_SkinInfo.ResolveConstant(pNode->FirstChild()->Value(), value);
 }
 
-bool CGUIControlFactory::GetDWORD(const TiXmlNode* pRootNode, const char* strTag, DWORD &value)
+bool CGUIControlFactory::GetUnsigned(const TiXmlNode* pRootNode, const char* strTag, unsigned int &value)
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
@@ -646,9 +646,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 
   bool bScrollLabel = false;
   bool bPulse = true;
-  DWORD timePerImage = 0;
-  DWORD fadeTime = 0;
-  DWORD timeToPauseAtEnd = 0;
+  unsigned int timePerImage = 0;
+  unsigned int fadeTime = 0;
+  unsigned int timeToPauseAtEnd = 0;
   bool randomized = false;
   bool loop = true;
   bool wrapMultiLine = false;
@@ -930,9 +930,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const FRECT &rect, TiXmlEl
 
   GetInfoTexture(pControlNode, "imagepath", texture, texturePath);
 
-  GetDWORD(pControlNode,"timeperimage", timePerImage);
-  GetDWORD(pControlNode,"fadetime", fadeTime);
-  GetDWORD(pControlNode,"pauseatend", timeToPauseAtEnd);
+  GetUnsigned(pControlNode,"timeperimage", timePerImage);
+  GetUnsigned(pControlNode,"fadetime", fadeTime);
+  GetUnsigned(pControlNode,"pauseatend", timeToPauseAtEnd);
   XMLUtils::GetBoolean(pControlNode, "randomize", randomized);
   XMLUtils::GetBoolean(pControlNode, "loop", loop);
   XMLUtils::GetBoolean(pControlNode, "scrollout", scrollOut);
