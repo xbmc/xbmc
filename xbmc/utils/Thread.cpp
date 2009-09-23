@@ -105,7 +105,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     pThread->OnStartup();
   }
-  
+#ifndef _LINUX
   catch (const win32_exception &e) 
   {
     e.writelog(__FUNCTION__);
@@ -116,13 +116,16 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
       return 0;
     }
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread startup, aborting. auto delete: %d", __FUNCTION__, pThread->IsAutoDelete());
     if( pThread->IsAutoDelete() )
     {
       delete pThread;
+#ifndef _LINUX
       _endthreadex(123);
+#endif
       return 0;
     }
   }
@@ -131,7 +134,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     pThread->Process();
   }
-  
+#ifndef _LINUX
   catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
@@ -140,6 +143,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread process, attemping cleanup in OnExit", __FUNCTION__);
@@ -149,7 +153,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     pThread->OnExit();
   }
-  
+#ifndef _LINUX
   catch (const access_violation &e)
   {
     e.writelog(__FUNCTION__);
@@ -158,6 +162,7 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   {
     e.writelog(__FUNCTION__);
   }
+#endif
   catch(...)
   {
     CLog::Log(LOGERROR, "%s - Unhandled exception caught in thread exit", __FUNCTION__);
@@ -165,11 +170,15 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 
   if ( pThread->IsAutoDelete() )
   {
-//    CLog::Log(LOGDEBUG,"%s, deleting thread object", __FUNCTION__);
+//    CLog::Log(LOGDEBUG,"Thread %"PRIu64" terminating (autodelete)", (uint64_t)CThread::GetCurrentThreadId());
     delete pThread;
     pThread = NULL;
   }
+//  else
+//    CLog::Log(LOGDEBUG,"Thread %"PRIu64" terminating", (uint64_t)CThread::GetCurrentThreadId());  
+#ifndef _LINUX
   _endthreadex(123);
+#endif
   return 0;
 }
 
@@ -195,11 +204,11 @@ bool CThread::IsAutoDelete() const
   return m_bAutoDelete;
 }
 
-void CThread::StopThread()
+void CThread::StopThread(bool bWait /*= true*/)
 {
   m_bStop = true;
   SetEvent(m_StopEvent);
-  if (m_ThreadHandle)
+  if (m_ThreadHandle && bWait)
   {
     WaitForThreadExit(INFINITE);
     CloseHandle(m_ThreadHandle);
@@ -218,7 +227,7 @@ CThread::operator HANDLE()
   return m_ThreadHandle;
 }
 
-CThread::operator const HANDLE() const
+CThread::operator HANDLE() const
 {
   return m_ThreadHandle;
 }
@@ -244,7 +253,7 @@ void CThread::SetName( LPCTSTR szThreadName )
   info.szName = szThreadName;
   info.dwThreadID = m_ThreadId;
   info.dwFlags = 0;
-  
+#ifndef _LINUX
   try
   {
     RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
@@ -252,6 +261,7 @@ void CThread::SetName( LPCTSTR szThreadName )
   catch(...)
   {
   }
+#endif
 }
 
 bool CThread::WaitForThreadExit(DWORD dwMilliseconds)
@@ -313,9 +323,34 @@ float CThread::GetRelativeUsage()
   return 0.0f;
 }
 
+bool CThread::IsCurrentThread() const
+{
+  return IsCurrentThread(ThreadId());
+}
+
+
+ThreadIdentifier CThread::GetCurrentThreadId()
+{
+#ifdef _LINUX
+  return pthread_self();
+#else
+  return ::GetCurrentThreadId();
+#endif
+}
+
+bool CThread::IsCurrentThread(const ThreadIdentifier tid)
+{
+#ifdef _LINUX
+  return pthread_equal(pthread_self(), tid);
+#else
+  return (::GetCurrentThreadId() == tid);
+#endif
+}
+
+
 DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10 && GetCurrentThreadId() == m_ThreadId)
+  if(dwMilliseconds > 10 && IsCurrentThread())
   {
     HANDLE handles[2] = {hHandle, m_StopEvent};
     DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
@@ -340,7 +375,7 @@ DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWai
 
 void CThread::Sleep(DWORD dwMilliseconds)
 {
-  if(dwMilliseconds > 10 && GetCurrentThreadId() == m_ThreadId)
+  if(dwMilliseconds > 10 && IsCurrentThread())
     ::WaitForSingleObject(m_StopEvent, dwMilliseconds);
   else
     ::Sleep(dwMilliseconds);

@@ -2119,7 +2119,7 @@ void CMPlayer::WaitOnCommand()
 {
   //We are in the normal mplayer thread, return as otherwise we would
   //hardlock waiting for those events
-  if( GetCurrentThreadId() == ThreadId() ) return;
+  if( IsCurrentThread() ) return;
 
   //If we hold graphiccontext, this may stall mplayer process
   if( OwningCriticalSection(g_graphicsContext) ) return;

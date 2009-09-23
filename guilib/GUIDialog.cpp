@@ -136,7 +136,7 @@ void CGUIDialog::Close(bool forceClose /*= false*/)
   OnMessage(msg);
 }
 
-void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
+void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param /* = "" */)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
@@ -182,7 +182,7 @@ void CGUIDialog::DoModalThreadSafe()
   RestoreCriticalSection(g_graphicsContext, numLocks);
 }
 
-void CGUIDialog::Show()
+void CGUIDialog::Show_Internal()
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
   //maybe we should have a critical section per window instead??
@@ -208,6 +208,16 @@ void CGUIDialog::Show()
   OnMessage(msg);
 
 //  m_bRunning = true;
+}
+
+void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
+{
+  g_application.getApplicationMessenger().DoModal(this, iWindowID, param);
+}
+
+void CGUIDialog::Show()
+{
+  g_application.getApplicationMessenger().Show(this);
 }
 
 bool CGUIDialog::RenderAnimation(DWORD time)

@@ -44,6 +44,7 @@ class CFileItemList;
 #include "Autorun.h"
 #include "Bookmark.h"
 #include "utils/Stopwatch.h"
+#include "ApplicationMessenger.h"
 
 class CWebServer;
 class CXBFileZilla;
@@ -90,6 +91,7 @@ public:
   void RefreshEventServer();
   void StartLEDControl(bool switchoff = false);
   void DimLCDOnPlayback(bool dim);
+  bool IsCurrentThread() const;
   void PrintXBEToLCD(const char* xbePath);
   void CheckDate();
   DWORD GetThreadId() const { return m_threadID; };
@@ -163,6 +165,7 @@ public:
   void RestoreMusicScanSettings();
   void CheckMusicPlaylist();
   
+  CApplicationMessenger& getApplicationMessenger();
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
@@ -262,6 +265,7 @@ protected:
   void SaveCurrentFileSettings();
   
   void InitDirectoriesXbox();
+  CApplicationMessenger m_applicationMessenger;
   
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;

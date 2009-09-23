@@ -491,6 +491,36 @@ case TMSG_POWERDOWN:
         g_network.NetworkMessage((CNetwork::EMESSAGE)pMsg->dwParam1, pMsg->dwParam2);
       }
       break;
+
+    case TMSG_GUI_DO_MODAL:
+      {
+        CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
+        if (pDialog)
+          pDialog->DoModal_Internal((int)pMsg->dwParam1, pMsg->strParam);
+      }
+      break;
+
+    case TMSG_GUI_SHOW:
+      {
+        CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
+        if (pDialog)
+          pDialog->Show_Internal();
+      }
+      break;
+
+    case TMSG_GUI_ACTIVATE_WINDOW:
+      {
+        m_gWindowManager.ActivateWindow(pMsg->dwParam1, pMsg->params, pMsg->dwParam2 > 0);
+      }
+      break;
+
+    case TMSG_GUI_WIN_MANAGER_PROCESS:
+      m_gWindowManager.Process_Internal(0 != pMsg->dwParam1);
+      break;
+
+    case TMSG_GUI_WIN_MANAGER_RENDER:
+      m_gWindowManager.Render_Internal();
+      break;
   }
 }
 
@@ -701,4 +731,40 @@ void CApplicationMessenger::SwitchToFullscreen()
   */
   ThreadMessage tMsg = {TMSG_SWITCHTOFULLSCREEN};
   SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param)
+{
+  ThreadMessage tMsg = {TMSG_GUI_DO_MODAL};
+  tMsg.lpVoid = pDialog;
+  tMsg.dwParam1 = (DWORD)iWindowID;
+  tMsg.strParam = param;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::Show(CGUIDialog *pDialog)
+{
+  ThreadMessage tMsg = {TMSG_GUI_SHOW};
+  tMsg.lpVoid = pDialog;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)
+{
+  ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
+  tMsg.params = params;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::WindowManagerProcess(bool renderOnly)
+{
+  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_PROCESS};
+  tMsg.dwParam1 = (DWORD)renderOnly;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::Render()
+{
+  ThreadMessage tMsg = {TMSG_GUI_WIN_MANAGER_RENDER};
+  SendMessage(tMsg, true);
 }

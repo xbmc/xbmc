@@ -43,7 +43,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual void Render();
 
-  virtual void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
+  void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void DoModalThreadSafe(); // threadsafe version of DoModal
   void Show(); // modeless
 
@@ -59,6 +59,10 @@ protected:
   virtual bool RenderAnimation(DWORD time);
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
+
+  friend class CApplicationMessenger;
+  void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
+  void Show_Internal(); // modeless
 
   bool m_bRunning;
   bool m_bModal;

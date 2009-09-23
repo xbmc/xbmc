@@ -5624,6 +5624,16 @@ void CApplication::SaveCurrentFileSettings()
   }
 }
 
+CApplicationMessenger& CApplication::getApplicationMessenger()
+{
+   return m_applicationMessenger;
+}
+
+bool CApplication::IsCurrentThread() const
+{
+  return CThread::IsCurrentThread(m_threadID);
+}
+
 void CApplication::InitDirectoriesXbox()
 {  
   // Set installation path. Use Q as ie. F doesn't exist yet!!!

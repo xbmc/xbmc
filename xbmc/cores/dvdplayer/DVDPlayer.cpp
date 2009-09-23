@@ -1101,7 +1101,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckPlayerInit(m_CurrentVideo, DVDPLAYER_VIDEO))
     drop = true;
 
-  if (CheckSceneSkip(m_CurrentAudio))
+  if (CheckSceneSkip(m_CurrentVideo))
     drop = true;
 
   m_dvdPlayerVideo.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
@@ -1131,7 +1131,7 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if (CheckPlayerInit(m_CurrentSubtitle, DVDPLAYER_SUBTITLE))
     drop = true;
 
-  if (CheckSceneSkip(m_CurrentAudio))
+  if (CheckSceneSkip(m_CurrentSubtitle))
     drop = true;
 
   m_dvdPlayerSubtitle.SendMessage(new CDVDMsgDemuxerPacket(pPacket, drop));
@@ -1381,7 +1381,7 @@ bool CDVDPlayer::CheckSceneSkip(CCurrentStream& current)
 
 void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
 {
-  if(CThread::ThreadId() == GetCurrentThreadId())
+  if(IsCurrentThread())
     return;
   if(!m_messenger.IsInited())
     return;
@@ -2531,7 +2531,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 {
 #define THREAD_ACTION(action) \
   do { \
-    if(GetCurrentThreadId() != CThread::ThreadId()) { \
+    if (!IsCurrentThread()) { \
       m_messenger.Put(new CDVDMsgType<CAction>(CDVDMsg::GENERAL_GUI_ACTION, action)); \
       return true; \
     } \
