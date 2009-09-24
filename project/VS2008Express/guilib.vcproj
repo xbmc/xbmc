@@ -48,12 +48,13 @@
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -123,12 +124,13 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="0"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -192,12 +194,13 @@
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -267,12 +270,13 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				EnableEnhancedInstructionSet="0"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -548,6 +552,42 @@
 			<File
 				RelativePath="..\..\guilib\LocalizeStrings.cpp"
 				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\pch.cpp"
+				>
+				<FileConfiguration
+					Name="Release (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\guilib\Shader.cpp"
@@ -888,6 +928,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\pch.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\PlatformInclude.h"
 				>
 				<FileConfiguration
@@ -895,7 +939,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="update_svn_rev.bat"
+						CommandLine="update_svn_rev.bat&#x0D;&#x0A;"
 						AdditionalDependencies="..\..\svn\entries"
 						Outputs="..\..\xbmc\win32\svn_rev.h"
 					/>
