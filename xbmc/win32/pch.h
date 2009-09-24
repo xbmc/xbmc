@@ -19,3 +19,6 @@
 #include "D3DX9.h"
 #include "boost/shared_ptr.hpp"
 #include "SDL\SDL.h"
+// anything below here should be headers that very rarely (hopefully never)
+// change yet are included almost everywhere.
+#include "StdString.h"
