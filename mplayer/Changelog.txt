@@ -1,0 +1,114 @@
+*************************************************************************************************************
+*************************************************************************************************************
+                                      MPlayer Core CHANGELOG
+************************************************************************************************************* 
+*************************************************************************************************************
+
+added/fixed: (dd-mm-yyyy) (please specify date in CET)
+  - 15-11-2006 fixed: rewind would not always display any frames during rewind.
+  - 07-11-2006 fixed: some files would indicate inf a/v sync in mplayer and thus not keep sync, (due to missing input bps).
+  - 24-09-2006 fixed: choppy playback in dvr-ms files for asf demuxer (update from mplayerhq)
+  - 17-09-2006 fixed: better handling of mpegs that don't have a start pts of 0
+  - 17-09-2006 fixed: some video's would not return current time, even thou they had total time and current percentage
+  - 17-09-2006 fixed: rewind on some movies would just lock picture untill a fastforward request was made
+  - 17-09-2006 added: support for udp:// protocol, can only be used for targeted streaming directly to the xbox
+  - 04-09-2006 fixed: mplayer would crash if total time was requested from an avi where decoding of video had failed
+  - 13-08-2006 added: demux_aac.c from mplayerhq and content-type detection for shoutcast streams
+  - 13-08-2006 updated: libfaad2, demux_aac to mplayerhq version (aac+)
+  - 08-08-2006 updated: demux_asf to mplayerhq version, allows dvr-ms files to be played in a better way
+  - 05-04-2006 fixed: odml index wouldn't be read for > 2.0gb files (http://thread.gmane.org/gmane.comp.video.mplayer.devel/31404)
+  - 26-03-2006 fixed: dts frames with uneven data size would play garbled using hwdts output
+  - 25-03-2006 added: ability to cancel vobsub parsing
+  - 25-03-2006 fixed: switching from srt -> vobsub wouldn't reset spudec, nor osd
+  - 06-02-2006 fixed: http.c authentication fix
+  - 03-02-2006 added: support for slave command sub_load/sub_remove. supports loading any text subtitle format after start
+  - 02-02-2006 fixed: audio stream in some avi's wouldn't be detected. mplayerhq:asfheader.c:1.43
+  - 09-01-2006 added: additional fourcc codes in codec.conf
+  - 09-01-2006 added: ffmpeg data padding patch ( malloc padding to avoid access beyond allocated memory ) , hopefully fixes fast wmv's. 
+  - 09-01-2006 changed: explicitly disabled gif and jpeg instead of relying on autodetection
+  - 09-01-2006 fixed: xbmc wasn't compilable with mingw5, due to missing sleep function
+  - 01-01-2006 updated: libmp3 to mplayerhq cvs version as of now. fixes some mpegs that where only playing static audio
+  - 04-10-2005 updated: ffmpeg to mplayerhq cvs version as of now. fixes a few avi's that where causing problems + a few other stuff
+  - 06-09-2005 reverted: when resuming normal playback speed, video would jump ahead a couple of seconds. didn't work well
+  - 22-08-2005 updated: libvorbis interface to mplayer cvs (ad_libvorbis.c:1.18), fixes vorbis decoding in both matroska and ogm containers
+  - 22-08-2005 updated: matroska demuxer to mplayerhq cvs (demux_mkv.c:1.45)
+  - 17-08-2005 fixed: mplayer would crash if no video decoder was found for a media that did contain video, instead of just playing the audio
+  - 16-08-2005 added: display progress when parsing vobsubs
+  - 12-08-2005 fixed: when resuming normal playback speed, video would jump ahead a couple of seconds
+  - 12-08-2005 changed: detection of interlaced material somewhat improved
+  - 12-08-2005 changed: made rewind search for the right time pos after a seek by dropping frames after seek untill at righ position
+  - 07-08-2005 updated codec.conf [ 1252569 ]
+  - 06-08-2005 fixed: OGG files often crashed on exit or failed on open. Updated demux_ogg from mplayerhq cvs.
+  - 25-06-2005 added: better way to detect if an mpeg sequence is progressive or not
+  - 25-06-2005 fixed: made sure mplayer begins with uniting the caching thread, so as later crashes won't let that keep running
+  - 25-06-2005 fixed: made mplayer set interlaced flag on mpeg2 video when decoding using libmpeg2
+  - 25-06-2005 updated: ffmpeg to latest cvs as of now
+  - 25-06-2005 added: [ 1236234 ] mplayer_GetAudioInfo returns wrong audio bitrate
+  - 14-06-2005 added: readded a couple of other filters and fixed playback with noise filter
+  - 14-06-2005 fixed: readded volume filter, was actually in use
+  - 10-06-2005 fixed: playback using mplayer.dll without libavformat would never start, load of dll failed.
+  - 10-06-2005 fixed: made libavformat conditional, just run configurexbmc --disable-libavformat
+  - 10-06-2005 fixed: chipmunk playback caused by removal of dummy audio filter
+  - 08-06-2005 updated: fixed two linking errors so that mplayer.dll can be compiled without the last of libavcodecs encoders.
+  - 08-06-2005 updated: system headers to use with mingw 3.4.4 (USE GCC 3.4.4 OR HIGHER 3.4.x SERIES FROM NOW)
+  - 08-06-2005 removed: unneeded video/audio filters
+  - 08-06-2005 moved: xbmc hookup for audio into ao_directx instead of win32
+  - 05-06-2005 fixed: player was resetting audio on each seak during ff/rw.. caused slowdowns
+  - 22-05-2005 fixed: too fast playback immidiatly after resume from pause when autosync enabled.
+  - 18-05-2005 fixed: subtitles didn't display in dvdimages if ttf subtitle fonts where selected in xbmc
+  - 09-04-2005 new: support for returning amount of filled buffer to xbmc, and detect when buffer runs empty.
+  - 09-04-2005 new: support for sending slave commands from xbmc to mplayer.
+  - 09-04-2005 changed: made sure seeking didn't display progressbar of osd was turned of.
+  - 02-04-2005 fixed: seeking and time reporting in mpg/vob files which has timecodes that doesn't start from zero
+  - 27-03-2005 fixed: threading issue wich caused video to revert back to start when resuming from rewind
+  - 17-03-2005 changed: reverted parts of last, syncing after ff/rw is now again done using a small seek. too many problems with it. Some other things tuned.
+  - 08-03-2005 changed: reworked FF/RW, no skiping when returning to normal playback anymore. AV sync might be abit of, but should correct itself in a sec or two
+  - 05-03-2005 changed: disbled ff/rw in files/streams that can't be seeked as this causes audio/video desync
+  - 03-03-2005 fixed: using autosync cuaeses propblems when resuming from pause. (needs xbmc to call mplayer_ToFFRW(1))
+  - 03-03-2005 fixed: using autosync=30(or any value !=0) would cause invalid behaviour on short movies
+  - 03-03-2005 changed: use same fix for real as mplayerhq, needs somewhat less mem
+  - 27-02-2005 fixed: flac playback with large headers (new attempt at fixing flac completely.)
+  - 27-02-2005 added: [ 1122901 ] / [ 1122894 ] patch file for bug 1122894 (fix for RV10 crash)
+  - 24-02-2005 fixed: Longstanding vobsubs bug.  Some long-ish (2 lines normally) subs weren't displayed.
+  - 21-02-2005 fixed: read_font_desc() returned non-NULL when it should have been NULL.  Caused crash on exit of mplayer (particularly flac)
+  - 21-02-2005 added: mplayer bugfix/patch for flac.c: http://www1.mplayerhq.hu/cgi-bin/cvsweb.cgi/ffmpeg/libavcodec/flac.c?cvsroot=FFMpeg&sortby=date
+  - 10-02-2005 improved: ff/rw should now work even better. needs testing. 
+  - 07-02-2005 fixed: seeking in mpg's type video's sometimes reverted to beginning.
+  - 01-02-2005 fixed: flac playback works sometimes but most times not
+  - 01-02-2005 added: mplayer support for new system\players directory structure, enable Alternate mplayer core in settings to use it.
+                      Requires new compiled mplayer.dll, old dll's still needs to be in old mplayer dir.
+  - 28-01-2005 changed: using xbox highresolution timers for timing. Possibly better sync.
+  - 28-01-2005 added: mpng playback support, usefull for testing video quality. (libpng-1.2.8)
+  - 17-01-2005 fixed: playback failes if Output to all Speakers is selected and a AC3 2.0 stream is found.
+  - 16-01-2004 fixed: avi's > 2GB stackoverflow crash
+                      patch from Bugzilla Bug 86, avi_idx_quicksort overflows stack on >2GB ODML file, http://bugzilla.mplayerhq.hu/show_bug.cgi?id=86
+                      xbmc: [ 1103426 ] aviheader.c bug - transcoded AVIs don't play
+  - 14-01-2005 changed: improved FF/RW in video's, should display 2fps during 8x-32x modes. 
+                        still some problems when decoding using ffmpeg, ff/rw work, but no picture.
+  - 14-01-2005 fixed: FF/RW in mp3/wma
+  - 02-01-2005 new: initial pre6 import, some bugs still remain
+  - 25-12-2004 changed: dvd subtitles sould now be allocated nomatter settings in mplayer.conf
+  - 25-12-2004 fixed: srt subtitles wouldn't auto load properly
+  - 25-12-2004 fixed: huge memleak in vobsub loader code, fixes large vobsubs and decreases footprint of vobsubs
+  - 20-12-2004 added: support for multiple subtitles, with language extension ie: filename.eng.sub
+  - 20-12-2004 changed: new subtitle name interface for xbmc
+  - 29-10-2004 added: display and switching of audiostreams in matroska
+  - 29-10-2004 fixed: DTS in matroska container where not being detected
+  - 12-10-2004 fixed: multi Channel DTS decoding should be full functional
+  - 12-10-2004 changed/fixed: decss code. should now decrypt instead of cracking encryption on all DVD-drives [ 1011174 ]
+  - 20-09-2004 added: new commandline option limitedhwac3, disables hwac3 for 2ch streams to let a52 decode it.
+  - 21-08-2004 fixed: shoutcast streams
+  - 20-08-2004 fixed: allow percentage seeking in realmedia
+  - 20-08-2004 fixed: disable fflush in mp_msg.c for now, to allow mplayerdebug
+  - 20-08-2004 added: void mplayer_setTimeMs(__int64 iTime), for more precision
+  - 20-08-2004 changed: only use alternative way of calculating progressbar as a fallback
+  - 19-08-2004 fixed: vobsubs should really be fixed now
+  - 19-08-2004 changed: updated XviD libraries from 1.0.0 to 1.0.1
+  - 19-08-2004 fixed: playdvd should work in xbmc now
+  - 19-08-2004 fixed: play dvd was not working in xbmc
+  - 18-08-2004 fixed: current time not showing in xbmc
+  - 18-08-2004 fixed: some libraries that were commited as ascii
+  - 18-08-2004 added: libdts 0.0.2 lib and header file
+  - 17-08-2004 fixed: vobsub.c with butcher's fixes
+  - 17-08-2004 added: libdts 0.0.2 for DTS decoding
+  - 17-08-2004 added: pre5 sources to main branch.

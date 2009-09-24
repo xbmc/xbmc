@@ -1,0 +1,6 @@
+EXPORTS
+	pf_seek @ 1 ; 
+	pf_write @ 2 ; 
+	pf_read @ 3 ; 
+	pf_open @ 4 ; 
+	pf_close @ 5 ; 

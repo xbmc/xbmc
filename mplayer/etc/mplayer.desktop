@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=MPlayer
+GenericName=Multimedia Player
+Comment=Multimedia Player
+Comment[de]=Multimedia Player
+Comment[es]=Reproductor multimedia
+Comment[fr]=Lecteur multimedia
+Comment[it]=Lettore multimediale
+Icon=mplayer-desktop.xpm
+TryExec=gmplayer
+Exec=gmplayer
+Terminal=0
+Categories=GNOME;KDE;GTK;Application;Multimedia;AudioVideo;Video;Player;

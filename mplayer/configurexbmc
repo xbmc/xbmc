@@ -1,0 +1,68 @@
+#!/bin/sh
+###################################################################################################
+echo -n "[ Creating xbox cpuinfo script ] ... "
+###################################################################################################
+echo "\
+#!/bin/sh
+# return hardcoded cpuinfo for XBOX (i removed "mtrr" from flags)
+cat <<EOF
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 8
+stepping	: 10
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep pge mca cmov pat pse36 mmx fxsr sse
+cpu MHz		: 733.332
+model name	: Celeron (Coppermine)
+EOF
+" > TOOLS/cpuinfo && chmod +x TOOLS/cpuinfo && echo "done!" || (echo "[ Creating xbox cpuinfo script failed! ]" && exit)
+###################################################################################################
+echo "[ Running configure script for XBMC ]"
+###################################################################################################
+chmod +x configure && ./configure \
+--prefix='Q:\\system\\' \
+--bindir='Q:\\system\\players\\mplayer' \
+--datadir='Q:\\system\\players\\mplayer' \
+--confdir='Q:\\system\\players\\mplayer' \
+--libdir='Q:\\system\\players\\mplayer' \
+--disable-mencoder \
+--disable-sighandler \
+--disable-live \
+--disable-gl \
+--disable-tv \
+--disable-vidix \
+--disable-inet6 \
+--disable-termcap \
+--disable-freetype \
+--disable-x264 \
+--disable-libdv \
+--disable-win32waveout \
+--disable-mad \
+--disable-xvid \
+--disable-sdl \
+--disable-xvmc \
+--disable-x11 \
+--enable-edl \
+--enable-iconv \
+--enable-enca \
+--enable-libdts \
+--enable-largefiles \
+--enable-winsock2 \
+--enable-fribidi \
+--enable-vorbis \
+--enable-directx \
+--enable-internal-faad \
+--disable-tga \
+--disable-pnm \
+--disable-md5sum \
+--disable-gif \
+--disable-jpeg \
+--with-codecsdir='Q:\\system\\players\\mplayer\\codecs' \
+--with-reallibdir='Q:\\system\\players\\mplayer\\codecs' \
+--with-fribidi-config=$PWD/xbmcsys/fribidi/fribidi-config \
+--with-freetype-config=$PWD/xbmcsys/freetype/freetype-config \
+--with-extraincdir="$PWD/xbmcsys -I$PWD/xbmcsys/xbmc_vobsub -D_XBOX -DXBMC_VOBSUB" \
+--with-extralibdir="$PWD/xbmcsys/lib -L$PWD/xbmcsys/xbmc_vobsub" \
+$@
+
+
+

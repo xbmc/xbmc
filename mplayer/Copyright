@@ -1,0 +1,106 @@
+
+MPlayer was originally written by Árpád Gereöffy and has been extended and
+worked on by many more since then, see the AUTHORS file for an (incomplete)
+list. You are free to use it under the terms of the GNU General Public License,
+as described in the LICENSE file.
+
+MPlayer as a whole is copyrighted by the MPlayer team. Individual copyright
+notices can be found in the file headers. Furthermore, MPlayer includes code
+from several external sources:
+
+Name:       FFmpeg
+Version:    CVS snapshot
+Homepage:   http://www.ffmpeg.org
+Directory:  libavcodec, libavformat
+License:    GNU Lesser General Public License, some parts GNU General Public
+            License, GNU General Public License when combined
+
+Name:       FAAD2
+Version:    2.1 beta (20040712 CVS snapshot) + portability patches
+Homepage:   http://www.audiocoding.com
+Directory:  libfaad2
+License:    GNU General Public License
+
+Name:       GSM 06.10 library
+Version:    patchlevel 10
+Homepage:   http://kbs.cs.tu-berlin.de/~jutta/toast.html
+Directory:  libmpcodecs/native/
+License:    permissive, see libmpcodecs/native/xa_gsm.c
+
+Name:       liba52
+Version:    0.7.1b + patches
+Homepage:   http://liba52.sourceforge.net/
+Directory:  liba52
+License:    GNU General Public License
+
+Name:       libdvdcss
+Version:    1.2.8
+Homepage:   http://developers.videolan.org/libdvdcss/
+Directory:  libmpdvdkit2
+License:    GNU General Public License
+
+Name:       libdvdread
+Version:    0.9.3 + patches
+Homepage:   http://www.dtek.chalmers.se/groups/dvd/development.shtml
+Directory:  libmpdvdkit2
+License:    GNU General Public License
+
+Name:       libmpeg2
+Version:    0.4.0b + patches
+Homepage:   http://libmpeg2.sourceforge.net/
+Directory:  libmpeg2
+License:    GNU General Public License
+
+Name:       mpglib (part of mpg123)
+Version:    0.59s
+Homepage:   http://www.mpg123.de/
+Directory:  mp3lib
+License:    GNU Lesser General Public License
+
+Name:       LRMI - Linux Real Mode Interface
+Version:    unknown, taken from svgalib
+Homepage:   http://www.svgalib.org/
+Directory:  osdep/lrmi.[ch]
+License:    permissive, see file header
+
+Name:       avifile DLL loader
+Version:    0.47 + patches + CVS updates
+Homepage:   http://avifile.sourceforge.net/
+Directory:  loader/
+License:    GNU General Public License
+
+Name:       dvbstream
+Version:    0.4.3-pre3 (cvs checkout)
+Homepage:   http://www.linuxstb.org/dvbstream/
+Directory:  libmpdemux
+License:    GNU General Public License
+
+Name:       realrtsp
+Version:    xine CVS 2003/04/17 + patches
+Homepage:   http://www.xinehq.de
+Directory:  libmpdemux/realrtsp/
+License:    GNU General Public License
+
+Name:       id3edit
+Version:    1.9 + patches
+Homepage:   http://id3edit.sourceforge.net/
+Directory:  libmpdemux/genres.h
+License:    GNU General Public License
+
+Name:       matroxset
+Version:    0.3
+Homepage:   ftp://platan.vc.cvut.cz/pub/linux/matrox-latest/
+Directory:  TOOLS/TVout/matroxset
+License:    GNU General Public License
+
+Name:       unrarlib
+Version:    0.4.0 + patches
+Homepage:   http://www.unrarlib.org/
+Directory:  unrarlib.[ch]
+License:    GNU General Public License / UniquE RAR File Library License
+
+Name:       uCIFS library
+Version:    development files as of september 2004
+Homepage:   http://ubiqx.org/libcifs/
+Directory:  libvo/md5sum.[ch]
+License:    GNU Lesser General Public License
