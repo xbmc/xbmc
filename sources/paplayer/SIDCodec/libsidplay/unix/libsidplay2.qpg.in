@@ -1,0 +1,108 @@
+<QPG:Generation>
+   <QPG:Options>
+      <QPG:User unattended="yes" verbosity="0" listfiles="yes"/>
+      <QPG:Defaults type="qnx_package"/>
+      <QPG:Source></QPG:Source>
+      <QPG:Release date="today" number="+"/>
+      <QPG:Build></QPG:Build>
+      <QPG:FileSorting strip="yes"/>
+      <QPG:Package targets="standart"/>
+      <QPG:Repository generate="yes"/>
+      <QPG:FinalDir></QPG:FinalDir>
+      <QPG:Cleanup></QPG:Cleanup>
+   </QPG:Options>
+
+   <QPG:Responsible>
+      <QPG:Company>QNX.ORG.RU Community</QPG:Company>
+      <QPG:Department></QPG:Department>
+      <QPG:Group></QPG:Group>
+      <QPG:Team>QNX.ORG.RU Team</QPG:Team>
+      <QPG:Employee>Mike Gorchak</QPG:Employee>
+      <QPG:EmailAddress>mike@malva.ua</QPG:EmailAddress>
+   </QPG:Responsible>
+
+   <QPG:Values>
+      <QPG:Files>
+         <QPG:Add file="../COPYING" install="LicenseUrl/" handling="repdata"/>
+         <QPG:Add permissions="0755" file="../src/.libs/libsidplay2.so.1" install="/opt/lib/"/>
+         <QPG:Add filetype="symlink" file="libsidplay2.so" install="/opt/lib/" linkto="libsidplay2.so.1"/>
+         <QPG:Add permissions="0644" file="../src/.libs/libsidplay2.lai" install="/opt/lib/libsidplay2.la"/>
+         <QPG:Add permissions="0644" file="../src/.libs/libsidplay2.a" install="/opt/lib/"/>
+         <QPG:Add permissions="0644" file="../AUTHORS" install="/usr/doc/libsidplay2/"/>
+         <QPG:Add permissions="0644" file="../COPYING" install="/usr/doc/libsidplay2/"/>
+         <QPG:Add permissions="0644" file="../ChangeLog" install="/usr/doc/libsidplay2/"/>
+         <QPG:Add permissions="0644" file="../INSTALL" install="/usr/doc/libsidplay2/"/>
+         <QPG:Add permissions="0644" file="../README" install="/usr/doc/libsidplay2/"/>
+         <QPG:Add permissions="0644" file="../TODO" install="/usr/doc/libsidplay2/"/>
+         <QPG:Add permissions="0644" file="../doc/en/sidplay2.1" install="/opt/man/man1/"/>
+         <QPG:Add permissions="0644" file="../unix/libsidplay2.pc" install="/opt/lib/pkgconfig/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/Buffer.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/SidTune.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/SmartPtr.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/c64env.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/component.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/event.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/sid2types.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/sidbuilder.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/sidendian.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/sidplay2.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/sidtypes.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="../include/sidplay/sidusage.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="./sidconfig.h" install="/opt/include/sidplay/"/>
+         <QPG:Add permissions="0644" file="./sidint.h" install="/opt/include/sidplay/"/>
+      </QPG:Files>
+      <QPG:PackageFilter>
+         <QPM:PackageManifest>
+            <QPM:PackageDescription>
+               <QPM:PackageType>Library</QPM:PackageType>
+               <QPM:PackageName>libsidplay2</QPM:PackageName>
+               <QPM:PackageReleaseNumber>1</QPM:PackageReleaseNumber>
+               <QPM:PackageRepository>http://qnx.org.ru/repository</QPM:PackageRepository>
+               <QPM:FileVersion>2.0</QPM:FileVersion>
+            </QPM:PackageDescription>
+            <QPM:ProductDescription>
+               <QPM:ProductName>libsidplay2</QPM:ProductName>
+               <QPM:ProductIdentifier>libsidplay2</QPM:ProductIdentifier>
+               <QPM:ProductEmail>sidplay2@yahoo.com</QPM:ProductEmail>
+               <QPM:VendorName>public</QPM:VendorName>
+               <QPM:VendorInstallName>public</QPM:VendorInstallName>
+               <QPM:VendorURL>http://sidplay2.sourceforge.net</QPM:VendorURL>
+               <QPM:VendorEmbedURL/>
+               <QPM:VendorEmail>sidplay2@yahoo.com</QPM:VendorEmail>
+               <QPM:AuthorName>Simon White</QPM:AuthorName>
+               <QPM:AuthorURL>http://sidplay2.sourceforge.net</QPM:AuthorURL>
+               <QPM:AuthorEmbedURL/>
+               <QPM:AuthorEmail>sidplay2@yahoo.com</QPM:AuthorEmail>
+               <QPM:ProductIconSmall/>
+               <QPM:ProductIconLarge/>
+               <QPM:ProductDescriptionShort>LibSIDPlay2 is a C64 music player library.</QPM:ProductDescriptionShort>
+               <QPM:ProductDescriptionLong>LibSIDPlay2 is a C64 music player library which integrates the reSID SID chip emulation into a cycle-based emulator environment.</QPM:ProductDescriptionLong>
+               <QPM:ProductDescriptionURL>http://sidplay2.sourceforge.net</QPM:ProductDescriptionURL>
+               <QPM:ProductDescriptionEmbedURL/>
+            </QPM:ProductDescription>
+            <QPM:ReleaseDescription>
+               <QPM:ReleaseVersion>@VERSION@</QPM:ReleaseVersion>
+               <QPM:ReleaseUrgency>Medium</QPM:ReleaseUrgency>
+               <QPM:ReleaseStability>Stable</QPM:ReleaseStability>
+               <QPM:ReleaseNoteMinor/>
+               <QPM:ReleaseNoteMajor/>
+               <QPM:ReleaseBuild>1</QPM:ReleaseBuild>
+               <QPM:CountryExclude/>
+               <QPM:ReleaseCopyright>GNU General Public License</QPM:ReleaseCopyright>
+            </QPM:ReleaseDescription>
+            <QPM:ContentDescription>
+               <QPM:ContentTopic>Software Development/Libraries and Extensions/C++ Libraries</QPM:ContentTopic>
+               <QPM:ContentKeyword>FM, SID, C64, Tracker, Music</QPM:ContentKeyword>
+               <QPM:Processor/>
+               <QPM:TargetProcessor/>
+               <QPM:DisplayEnvironment>Console</QPM:DisplayEnvironment>
+               <QPM:TargetAudience>Developer</QPM:TargetAudience>
+            </QPM:ContentDescription>
+            <QPM:LicenseUrl>repdata://LicenseUrl/COPYING</QPM:LicenseUrl>
+            <QPM:ProductInstallationDependencies>
+               <QPM:ProductRequirements/>
+            </QPM:ProductInstallationDependencies>
+         </QPM:PackageManifest>
+      </QPG:PackageFilter>
+   </QPG:Values>
+</QPG:Generation>

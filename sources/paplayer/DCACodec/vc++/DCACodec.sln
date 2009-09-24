@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libdts", "DCACodec.vcproj", "{5F191F9A-893D-478E-BBA2-9A5E47D55B09}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{5F191F9A-893D-478E-BBA2-9A5E47D55B09}.Debug.ActiveCfg = Debug|Win32
+		{5F191F9A-893D-478E-BBA2-9A5E47D55B09}.Debug.Build.0 = Debug|Win32
+		{5F191F9A-893D-478E-BBA2-9A5E47D55B09}.Release.ActiveCfg = Release|Win32
+		{5F191F9A-893D-478E-BBA2-9A5E47D55B09}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

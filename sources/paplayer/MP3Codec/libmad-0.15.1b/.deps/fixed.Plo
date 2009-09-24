@@ -1,0 +1,7 @@
+fixed.lo fixed.o: fixed.c config.h global.h fixed.h
+
+config.h:
+
+global.h:
+
+fixed.h:

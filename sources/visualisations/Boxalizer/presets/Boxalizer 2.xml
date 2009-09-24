@@ -1,0 +1,38 @@
+<visualisation>
+
+ <!-- sync delay -->
+ <syncdelay>0</syncdelay>
+
+ <!-- number of frequency bars to display -->
+ <bars>24</bars>
+
+ <!-- frequency range (in Hz) -->
+ <freqmin>80</freqmin>
+ <freqmax>22050</freqmax>
+
+ <!-- how long to spend on each row before moving on (in msec) DANGER :) -->
+ <lingertime>500</lingertime>
+
+ <!-- depth of each row -->
+ <rowdepth>1.5</rowdepth>
+
+ <!-- camera X position - default 0.0 - blocks drawn between -12 and +12 -->
+ <camposx>36.0</camposx>
+
+ <!-- camera Y position - default 10.0 bottom of blocks is 0.0 -->
+ <camposy>10.0</camposy>
+
+ <!-- camera X look at - default 0.0 -->
+ <camlookx>-12.0</camlookx>
+
+ <!-- camera Y look at - default 0.0 -->
+ <camlooky>0.0</camlooky>
+
+ <!-- only draw 1 row and dont move the camera -->
+ <!-- (case sensitive TRUE or anything else for false) -->
+ <staticcam>FALSE</staticcam>
+
+ <!-- name of a bitmap texture in the vis directory (blank for red green blue white blend) -->
+ <texture>logo31a.bmp</texture>
+
+</visualisation>

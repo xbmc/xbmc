@@ -1,0 +1,252 @@
+<visualisation>
+	<!-- maximum number of particles to diplay on screen at once (this affects framerate) -->
+	<MaxParticles>750</MaxParticles>
+
+	<!-- number of frequency bars that the visualization is based on -->
+	<bars>12</bars>
+
+	<!-- frequency scale can be log or linear -->
+	<freqscale>log</freqscale>
+
+	<!-- frequency range (in Hz) -->
+	<freqmin>200</freqmin>
+	<freqmax>22050</freqmax>
+
+	<!-- level range (in dB - 0dB refers to a sine wave at minimum possible level, 96dB is highest possible) -->
+	<levelmin>0</levelmin>
+	<levelmax>96</levelmax>
+
+	<!-- if this is true, the particle systems will be cycled in order -->
+	<!-- if this is false, a random system will be chosen at the beginning of each song -->
+	<!-- (this parameter is only effective if you have more than 3 systems) -->
+	<CycleParticleSystems>true</CycleParticleSystems>
+
+	<!-- Particle Systems -->
+	<!-- You can have up to 64 of these sections. (Any above that will be ignored) -->
+	<ParticleSystem>
+		<!-- speed to rotate (set this to 0 to disable rotation) -->
+		<RotationSpeed>0.01</RotationSpeed>
+
+		<!-- sensitivity to rotation direction changes (set to a value above 1 to disable changes) -->
+		<RotationSensitivity>0.15</RotationSensitivity>
+		
+		<!-- frequency bar that affects rotation to release (valid values are 1 through whatever you set for the bars tag) -->
+		<RotationBar>6</RotationBar>
+		
+		<!-- Color is stored in HSV (Hue Saturation Value) Format -->
+		<Color>
+			<Hue>
+				<!-- hue min, max, modifier, and variation are all set in degrees (0 - 360) -->
+				<!-- min hue for the particles -->
+				<Min>0.0</Min>
+
+				<!-- max hue for the particles -->
+				<Max>360.0></Max>
+
+				<!-- speed at which hue will shift on its own -->
+				<ShiftRate>0.1</ShiftRate>
+
+				<!-- how much to allow music to affect particle color -->
+				<!-- basically this is the maximum that the music could adjust the hue -->
+				<!-- of a given particle positively or negatively -->
+				<!-- hint (if you disable shift rate and variation, this setting can -->
+				<!-- serve as an immediately obvious single bar spectrum) -->
+				<Modifier>360.0</Modifier>
+								
+				<!-- How much the hue of a given particle can be randomly offset. -->
+				<!-- This allows for some color variation on even a steady tone. -->
+				<Variation>45.0</Variation>
+
+				<!-- frequency bar that affects hue -->
+				<Bar>6</Bar>
+			</Hue>
+			<Saturation>
+				<!-- saturation min, max, modifier, and variation should be set between 0 and 1 -->
+				<Min>1.0</Min>
+				<Max>1.0></Max>
+				<ShiftRate>0.0</ShiftRate>
+				<Modifier>0.0</Modifier>
+				<Bar>6</Bar>
+			</Saturation>
+			<Value>
+				<!-- value min, max, modifier, and variation should be set between 0 and 1 -->
+				<Min>0.2</Min>
+				<Max>0.6></Max>
+				<ShiftRate>0.005</ShiftRate>
+				<Modifier>0.0</Modifier>
+				<Variation>0.3</Modifier>
+				<Bar>6</Bar>
+			</Value>
+		</Color>
+		
+		<!-- Whether particles encounter air resistance -->
+		<AirResistance>true</AirResistance>
+
+		<!-- Number of particles to release together -->
+		<NumToRelease>4</NumToRelease>
+
+		<!-- how much to allow music to affect number of particles to release -->
+		<!-- set this to 0 to disable it -->
+		<NumToReleaseModifier>2</NumToReleaseModifier>
+
+		<!-- frequency bar that affects num to release (valid values are 1 through whatever you set for the bars tag) -->
+		<NumToReleaseBar>2</NumToReleaseBar>
+
+		<!-- How long particles live before disappearing -->
+		<LifeCycle>3.0</LifeCycle>
+
+		<!-- How long to wait between particle releases -->
+		<ReleaseInterval>0.0</ReleaseInterval>
+
+		<!-- Size of the particles -->
+		<Size>0.4</Size>
+
+		<!-- Acceleration of the particles -->
+		<VelocityVar>1.5</VelocityVar>
+
+		<!-- position from which the particles emerge (0,0,0 is the center of the screen) -->
+		<Position>
+			<X>0.01</X>
+			<Y>0.01</Y>
+			<Z>0</Z>
+			
+			<!-- amount music affects position. Set this to 0 to disable it. -->
+			<Modifier>0</Modifier>
+
+			<!--The ModificationMode tag affects how modifications are calculated. -->
+			<!--Possible values are linear and exponential. If set to linear, changes are simply -->
+			<!--multiplied by the modifier. If set to exponential, changes are raised to -->
+			<!--the power of the modifier.-->
+			<ModificationMode>linear</ModificationMode>
+
+			<!-- The invert tag control's how audio changes affect world. -->
+			<!-- If invert is set to false, smaller changes have larger impacts and vice versa, -->
+			<!-- so less dynamic music should appear to create a more random visualisation -->
+			<!-- while more dynamic music stick closer to your predefined settings. -->
+			<Invert>false</Invert>
+
+			<!-- The mode tag also controls how audio changes affect world. -->
+			<!-- If mode is set to "difference", changes are dynamics based (i.e. the amount -->
+			<!-- of change between the current sample and the previous sample determines how much to -->
+			<!-- vary the visualization. -->
+			<!-- If mode is set to "level", the level of the current sample determines how much to -->
+			<!-- vary the visualization. -->
+			<!-- The third option, "both, combines the two previous methods. -->
+			<Mode>both</Mode>
+
+			<!-- the vis is backed by a frequency spectrum. Use the settings below to tell -->
+			<!-- which bar affects position x, y, and z respectively. -->
+			<!-- Valid values are 1 through whatever you set in the bars tag -->
+			<XBar>1</XBar>
+			<YBar>2</YBar>
+			<ZBar>3</ZBar>
+		</Position>
+
+		<!-- direction and speed at which the particles emerge -->
+		<Velocity>
+			<X>-1.0</X>
+			<Y>1.0</Y>
+			<Z>0.0</Z>
+
+			<Modifier>4</Modifier>
+			<ModificationMode>exponential</ModificationMode>
+
+			<Invert>false</Invert>
+			<Mode>both</Mode>
+
+			<XBar>4</XBar>
+			<YBar>5</YBar>
+			<ZBar>6</ZBar>
+		</Velocity>
+
+		<!-- direction and speed of gravity -->
+		<Gravity>
+			<X>0</X>
+			<Y>0</Y>
+			<Z>-15.0</Z>
+
+			<Modifier>0</Modifier>
+			<ModificationMode>linear</ModificationMode>
+
+			<Invert>false</Invert>
+			<Mode>both</Mode>
+
+			<XBar>7</XBar>
+			<YBar>8</YBar>
+			<ZBar>9</ZBar>
+		</Gravity>
+
+		<!-- direction and speed of any wind that would affect the particles -->
+		<Wind>
+			<X>1.0</X>
+			<Y>-1.0</Y>
+			<Z>0.0</Z>
+
+			<Modifier>2</Modifier>
+			<ModificationMode>linear</ModificationMode>
+
+			<Invert>false</Invert>
+			<Mode>both</Mode>
+
+			<XBar>10</XBar>
+			<YBar>11</YBar>
+			<ZBar>12</ZBar>
+		</Wind>
+	</ParticleSystem>
+	<ParticleSystem>
+		<RotationSpeed>0.01</RotationSpeed>
+		<RotationSensitivity>0.15</RotationSensitivity>
+		<Color>
+			<Hue>
+				<Min>0.0</Min>
+				<Max>360.0></Max>
+				<Variation>45.0</Variation>
+				<ShiftRate>0.1</ShiftRate>
+				<Modifier>360.0</Modifier>
+			</Hue>
+			<Saturation>
+				<Min>1.0</Min>
+				<Max>1.0></Max>
+				<ShiftRate>0.0</ShiftRate>
+				<Modifier>0.0</Modifier>
+			</Saturation>
+			<Value>
+				<Min>0.2</Min>
+				<Max>0.6></Max>
+				<ShiftRate>0.005</ShiftRate>
+				<Modifier>0.3</Modifier>
+			</Value>
+		</Color>
+		<AirResistance>false</AirResistance>
+		<NumToRelease>25</NumToRelease>
+		<NumToReleaseModifier>1</NumToReleaseModifier>
+		<LifeCycle>4.0</LifeCycle>
+		<ReleaseInterval>0.1</ReleaseInterval>
+		<Size>1</Size>
+		<VelocityVar>2.0</VelocityVar>
+		<Position>
+			<X>0.01</X>
+			<Y>0.01</Y>
+			<Z>0.01</Z>
+			<Modifier>500</Modifier>
+		</Position>
+		<Velocity>
+			<X>0.1</X>
+			<Y>0</Y>
+			<Z>0</Z>
+			<Modifier>100</Modifier>
+		</Velocity>
+		<Gravity>
+			<X>0</X>
+			<Y>0</Y>
+			<Z>0</Z>
+			<Modifier>0</Modifier>
+		</Gravity>
+		<Wind>
+			<X>-0.1</X>
+			<Y>0.0</Y>
+			<Z>0.0</Z>
+			<Modifier>100</Modifier>
+		</Wind>
+	</ParticleSystem>
+</visualisation>

@@ -1,0 +1,136 @@
+pcm.c:		pcm->ch[0].infile=pcm->ch[1].infile=NULL;
+pcm.c:		pcm->ch[0].infile = fopen(inputfile,"rw");
+pcm.c:		if (!pcm->ch[0].infile) // error opening file
+pcm.c:	} else if (pcm->ch[0].type!=type_rsdpcm) return 1; // we don't have the file name to recheck
+pcm.c:	pcm->ch[1].infile=pcm->ch[0].infile;
+pcm.c:	ReadFile(pcm->ch[0].infile,readbuf,0x50,&l,NULL);
+pcm.c:  l = fread(readbuf,0x50,1,pcm->ch[0].infile);
+pcm.c:  fseek(pcm->ch[0].infile,0,SEEK_END);
+pcm.c:  pcm->file_length=ftell(pcm->ch[0].infile);
+pcm.c:		pcm->NCH = get32bitL(readbuf+8); // I think
+pcm.c:		pcm->ch[0].sample_rate = get32bitL(readbuf+0x10);
+pcm.c:		pcm->ch[0].chanstart = get32bitL(readbuf+0x18);
+pcm.c:		pcm->ch[0].num_samples = (ftell(pcm->ch[0].infile)-pcm->ch[0].chanstart)/(2*pcm->NCH);
+pcm.c:		pcm->ch[0].loop_flag=0;
+pcm.c:		pcm->ch[0].type = type_rsdpcm;
+pcm.c:	} else if (!memcmp(readbuf, "STRM",4) && pcm->file_length-0x40 == get32bit(readbuf+4) && !memcmp(readbuf+0x40,"BLCK",4) && !memcmp(readbuf+0x48,"\0\0\0\0\0\0\0\0",8)) {
+pcm.c:		pcm->NCH = 2; // 'cause dat's all I gots
+pcm.c:		pcm->ch[0].sample_rate = get32bit(readbuf+0x10);
+pcm.c:		pcm->ch[0].chanstart = 0x40;
+pcm.c:		pcm->ch[1].chanstart = 0x40;
+pcm.c:		pcm->ch[0].num_samples = get32bit(readbuf+0x14);
+pcm.c:		pcm->ch[0].loop_flag = get16bit(readbuf+0xe);
+pcm.c:		pcm->ch[0].sa = get32bit(readbuf+0x18);
+pcm.c:		pcm->ch[0].ea = get32bit(readbuf+0x1c);
+pcm.c:		pcm->samplesdone = 0;
+pcm.c:		pcm->nexthalp=0x40;
+pcm.c:		pcm->halpsize=0;
+pcm.c:		pcm->loophalpsize=-1;
+pcm.c:		pcm->ch[0].type = type_astpcm;
+pcm.c:    pcm->ch[1].infile = fopen(inputfile,"rb");
+pcm.c:	    pcm->NCH = get32bit(readbuf+0x1C); // I think
+pcm.c:	    pcm->ch[0].sample_rate = get32bit(readbuf+0xc);
+pcm.c:	    pcm->ch[0].offs=pcm->ch[0].chanstart = 0x30;
+pcm.c:	    if (pcm->NCH==2) {
+pcm.c:		pcm->ch[0].interleave = 0x8000;
+pcm.c:		pcm->ch[1].offs=pcm->ch[1].chanstart = 0x30+0x8000;
+pcm.c:		pcm->ch[0].interleave = 0;
+pcm.c:	    pcm->ch[0].num_samples = (ftell(pcm->ch[0].infile)-pcm->ch[0].chanstart)/(2*pcm->NCH);
+pcm.c:	    pcm->ch[0].loop_flag=0;
+pcm.c:	    pcm->ch[0].type=type_whdpcm;
+pcm.c:		fclose(pcm->ch[0].infile);
+pcm.c:		pcm->ch[0].infile=NULL;
+pcm.c:	if (!pcm->ch[0].loop_flag) pcm->nrsamples = pcm->ch[0].num_samples;
+pcm.c:	else pcm->nrsamples=pcm->ch[0].sa+looptimes*(pcm->ch[0].ea-pcm->ch[0].sa)+(fadelength+fadedelay)*pcm->ch[0].sample_rate;
+pcm.c:	pcm->ch[0].readloc=pcm->ch[1].readloc=pcm->ch[0].writeloc=pcm->ch[1].writeloc=0;
+pcm.c:  fseek(pcm->ch[0].infile,pcm->ch[0].chanstart,SEEK_SET);
+pcm.c:  if ((signed long)ftell(pcm->ch[0].infile)>= pcm->file_length) {
+pcm.c:		pcm->ch[0].readloc=pcm->ch[1].readloc=pcm->ch[0].writeloc-1;
+pcm.c:    l = fread(PCMbuf,1,pcm->NCH*2,pcm->ch[0].infile);
+pcm.c:    if (l<pcm->NCH*2) return;
+pcm.c:		for (i=0;i<pcm->NCH;i++) {
+pcm.c:			pcm->ch[i].chanbuf[pcm->ch[i].writeloc]=get16bit(PCMbuf+i*2);
+pcm.c:			pcm->ch[i].writeloc++;
+pcm.c:			if (pcm->ch[i].writeloc>=0x8000/8*14) pcm->ch[i].writeloc=0;
+pcm.c:	} while (pcm->ch[0].writeloc != pcm->ch[0].readloc);
+pcm.c:  if ((signed long)ftell(pcm->ch[0].infile) >= pcm->file_length) {
+pcm.c:		pcm->ch[0].readloc=pcm->ch[1].readloc=pcm->ch[0].writeloc-1;
+pcm.c:		for (i=0;i<pcm->NCH;i++) {
+pcm.c:      fseek(pcm->ch[0].infile,pcm->ch[i].offs,SEEK_SET);
+pcm.c:      l = fread(PCMbuf,2,1,pcm->ch[0].infile);
+pcm.c:			pcm->ch[i].chanbuf[pcm->ch[i].writeloc]=get16bit(PCMbuf);
+pcm.c:			pcm->ch[i].offs+=2;
+pcm.c:			if (pcm->ch[0].interleave && !((pcm->ch[i].offs-pcm->ch[i].chanstart)%pcm->ch[0].interleave)) {
+pcm.c:			    pcm->ch[i].offs+=pcm->ch[0].interleave;
+pcm.c:          fseek(pcm->ch[0].infile,pcm->ch[i].offs,SEEK_SET);
+pcm.c:			pcm->ch[i].writeloc++;
+pcm.c:			if (pcm->ch[i].writeloc>=0x8000/8*14) pcm->ch[i].writeloc=0;
+pcm.c:		    } while (pcm->ch[i].writeloc != pcm->ch[i].readloc);
+pcm.c:	if (pcm->halpsize==0 && (long)pcm->nexthalp == 0) pcm->ch[0].readloc=pcm->ch[1].readloc=pcm->ch[0].writeloc-1;
+pcm.c:			if (pcm->halpsize==0) {
+pcm.c:				if ((long)pcm->nexthalp == 0) return;
+pcm.c:				pcm->ch[0].offs=pcm->nexthalp+0x20;
+pcm.c:				SetFilePointer(pcm->ch[0].infile, pcm->nexthalp,0,FILE_BEGIN);
+pcm.c:				ReadFile(pcm->ch[0].infile, PCMbuf1, 8, &l, NULL);
+pcm.c:				pcm->halpsize=get32bit(PCMbuf1+4)*2; // interleave amount (this whole BLCK is 2x)
+pcm.c:				pcm->ch[1].offs=pcm->nexthalp+0x20+get32bit(PCMbuf1+4);
+pcm.c:				pcm->nexthalp+=get32bit(PCMbuf1+4)*2+0x20;
+pcm.c:			SetFilePointer(pcm->ch[0].infile, pcm->ch[0].offs,0,FILE_BEGIN);
+pcm.c:			ReadFile(pcm->ch[0].infile, PCMbuf1, 8, &l, NULL);
+pcm.c:			SetFilePointer(pcm->ch[0].infile, pcm->ch[1].offs,0,FILE_BEGIN);
+pcm.c:			ReadFile(pcm->ch[0].infile, PCMbuf2, 8, &l, NULL);			
+pcm.c:			pcm->ch[0].offs+=8;
+pcm.c:			pcm->ch[1].offs+=8;
+pcm.c:			pcm->halpsize-=0x10;
+pcm.c:			if (pcm->halpsize<0x10) pcm->halpsize=0;
+pcm.c:		pcm->ch[0].chanbuf[pcm->ch[0].writeloc++]=get16bit(PCMbuf1+c);
+pcm.c:		pcm->ch[1].chanbuf[pcm->ch[1].writeloc++]=get16bit(PCMbuf2+c);
+pcm.c:		pcm->samplesdone++;
+pcm.c:		if (pcm->ch[0].loop_flag && pcm->loophalpsize < 0 && pcm->samplesdone >= (int)pcm->ch[0].sa) {
+pcm.c:			pcm->loophalpsize = pcm->halpsize-2*c;
+pcm.c:			pcm->loopnexthalp = pcm->nexthalp;
+pcm.c:			pcm->ch[0].loopoffs = pcm->ch[0].offs-8+c;
+pcm.c:			pcm->ch[1].loopoffs = pcm->ch[1].offs-8+c;
+pcm.c:		} else if (pcm->ch[0].loop_flag && pcm->samplesdone >= (int)pcm->ch[0].ea) {
+pcm.c:			pcm->halpsize = pcm->loophalpsize;
+pcm.c:			pcm->nexthalp = pcm->loopnexthalp;
+pcm.c:			pcm->ch[0].offs = pcm->ch[0].loopoffs;
+pcm.c:			pcm->ch[1].offs = pcm->ch[1].loopoffs;
+pcm.c:			pcm->samplesdone = pcm->ch[0].sa;
+pcm.c:		if (pcm->ch[0].writeloc>=0x8000/8*14) pcm->ch[0].writeloc=0;
+pcm.c:		if (pcm->ch[1].writeloc>=0x8000/8*14) pcm->ch[1].writeloc=0;
+pcm.c:	} while (pcm->ch[0].writeloc != pcm->ch[0].readloc);
+pcm.c:	if (pcm->halpsize==0 && (long)pcm->nexthalp == 0) pcm->ch[0].readloc=pcm->ch[1].readloc=pcm->ch[0].writeloc-1;
+pcm.c:			if (pcm->halpsize==0) {
+pcm.c:				if ((long)pcm->nexthalp == 0) return;
+pcm.c:				pcm->ch[0].offs=pcm->nexthalp+0x20;
+pcm.c:				fseek(pcm->ch[0].infile, pcm->nexthalp,SEEK_SET);
+pcm.c:				l = fread(PCMbuf1, 16, 1, pcm->ch[0].infile);
+pcm.c:				pcm->halpsize=get32bit(PCMbuf1+4)*2; // interleave amount (this whole BLCK is 2x)
+pcm.c:				pcm->ch[1].offs=pcm->nexthalp+0x20+get32bit(PCMbuf1+4);
+pcm.c:				pcm->nexthalp+=get32bit(PCMbuf1+4)*2+0x20;
+pcm.c:			fseek(pcm->ch[0].infile, pcm->ch[0].offs,SEEK_SET);
+pcm.c:			l = fread(PCMbuf1, 2, 1, pcm->ch[0].infile);
+pcm.c:			fseek(pcm->ch[1].infile, pcm->ch[1].offs,SEEK_SET);
+pcm.c:			fread(PCMbuf2, 2, 1, pcm->ch[1].infile);			
+pcm.c:			pcm->ch[0].offs+=2;
+pcm.c:			pcm->ch[1].offs+=2;
+pcm.c:			pcm->halpsize-=4;
+pcm.c:			if (pcm->halpsize<4) pcm->halpsize=0;
+pcm.c:			pcm->samplesdone++;
+pcm.c:			if (pcm->loophalpsize < 0 && pcm->samplesdone >= (int)pcm->ch[0].sa) {
+pcm.c:				pcm->loophalpsize = pcm->halpsize;
+pcm.c:				pcm->loopnexthalp = pcm->nexthalp;
+pcm.c:				pcm->ch[0].loopoffs = pcm->ch[0].offs;
+pcm.c:				pcm->ch[1].loopoffs = pcm->ch[1].offs;
+pcm.c:			if (pcm->samplesdone >= (int)pcm->ch[0].ea) {
+pcm.c:				pcm->halpsize = pcm->loophalpsize;
+pcm.c:				pcm->nexthalp = pcm->loopnexthalp;
+pcm.c:				pcm->ch[0].offs = pcm->ch[0].loopoffs;
+pcm.c:				pcm->ch[1].offs = pcm->ch[1].loopoffs;
+pcm.c:				pcm->samplesdone = pcm->ch[0].sa;
+pcm.c:			pcm->ch[0].chanbuf[pcm->ch[0].writeloc++]=get16bit(PCMbuf1);
+pcm.c:			pcm->ch[1].chanbuf[pcm->ch[1].writeloc++]=get16bit(PCMbuf2);
+pcm.c:			if (pcm->ch[0].writeloc>=0x8000/8*14) pcm->ch[0].writeloc=0;
+pcm.c:			if (pcm->ch[1].writeloc>=0x8000/8*14) pcm->ch[1].writeloc=0;
+pcm.c:	} while (pcm->ch[0].writeloc != pcm->ch[0].readloc);

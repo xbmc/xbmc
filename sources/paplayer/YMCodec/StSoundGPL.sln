@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StSoundLibrary", "StSoundLibrary\StSoundLibrary.vcproj", "{FF5E0C74-AFDE-4987-9F02-20A827B3EF8E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{FF5E0C74-AFDE-4987-9F02-20A827B3EF8E}.Debug.ActiveCfg = Debug|Win32
+		{FF5E0C74-AFDE-4987-9F02-20A827B3EF8E}.Debug.Build.0 = Debug|Win32
+		{FF5E0C74-AFDE-4987-9F02-20A827B3EF8E}.Release.ActiveCfg = Release|Win32
+		{FF5E0C74-AFDE-4987-9F02-20A827B3EF8E}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

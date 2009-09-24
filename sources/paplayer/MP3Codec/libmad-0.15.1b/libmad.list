@@ -1,0 +1,21 @@
+# libmad.list.  Generated from libmad.list.in by configure.
+
+# Directories...
+$prefix=/usr/local
+$exec_prefix=${prefix}
+$srcdir=.
+
+# Product information
+%product libmad
+%copyright GPL
+%vendor Underbit Technologies, Inc. <info@underbit.com>
+%license ./COPYING
+%readme ./README
+%description libmad is an MPEG audio decoder library.
+%version 0.15.1b
+%packager Giuseppe "Cowo" Corbelli <cowo@lugbs.linux.it>
+
+%system all
+f 0755 root root ${exec_prefix}/lib/libmad.la .libs/libmad.lai
+f 0644 root root ${exec_prefix}/lib/libmad.a .libs/libmad.a
+f 0644 root root ${prefix}/include/mad.h mad.h

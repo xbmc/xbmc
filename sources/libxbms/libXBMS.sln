@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libXBMS", "libXBMS.vcproj", "{99DAF33B-4EB3-4816-B583-44E8B0758FC9}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Profile = Profile
+		Profile_FastCap = Profile_FastCap
+		Release = Release
+		Release_LTCG = Release_LTCG
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Debug.ActiveCfg = Debug|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Debug.Build.0 = Debug|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Profile.ActiveCfg = Profile|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Profile.Build.0 = Profile|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Profile_FastCap.ActiveCfg = Profile_FastCap|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Profile_FastCap.Build.0 = Profile_FastCap|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Release.ActiveCfg = Release|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Release.Build.0 = Release|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Release_LTCG.ActiveCfg = Release_LTCG|Xbox
+		{99DAF33B-4EB3-4816-B583-44E8B0758FC9}.Release_LTCG.Build.0 = Release_LTCG|Xbox
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

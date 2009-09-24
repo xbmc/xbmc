@@ -1,0 +1,20 @@
+synth.lo synth.o: synth.c config.h global.h fixed.h frame.h timer.h \
+  stream.h bit.h synth.h D.dat
+
+config.h:
+
+global.h:
+
+fixed.h:
+
+frame.h:
+
+timer.h:
+
+stream.h:
+
+bit.h:
+
+synth.h:
+
+D.dat:

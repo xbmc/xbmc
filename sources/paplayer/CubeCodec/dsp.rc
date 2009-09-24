@@ -1,0 +1,116 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CONFIG DIALOG DISCARDABLE  0, 0, 186, 94
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "GC Stream Player Config"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,129,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,24,50,14
+    EDITTEXT        IDC_LOOPS,52,7,39,14,ES_AUTOHSCROLL
+    LTEXT           "Loop Count",IDC_STATIC,7,10,44,12
+    LTEXT           "0 = infinite",IDC_STATIC,93,9,34,12
+    LTEXT           "Fade Length",IDC_STATIC,7,25,41,8
+    EDITTEXT        IDC_FADELEN,52,23,39,14,ES_AUTOHSCROLL
+    LTEXT           "seconds",IDC_STATIC,93,24,29,11
+    CONTROL         "Low Volume (prevent clipping)",IDC_LOWVOL,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,12,73,108,10
+    LTEXT           "Fade Delay",IDC_STATIC,7,41,37,8
+    EDITTEXT        IDC_FADEDELAY,52,38,39,14,ES_AUTOHSCROLL
+    LTEXT           "seconds",IDC_STATIC,93,39,29,11
+    CONTROL         "Only play channel #",IDC_ONECHAN,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,12,62,77,10
+    EDITTEXT        IDC_CHANNUM,89,60,29,12,ES_AUTOHSCROLL
+    GROUPBOX        "ADX",IDC_STATIC,7,53,117,34
+    CONTROL         "Slider1",IDC_PRISLIDER,"msctls_trackbar32",
+                    TBS_AUTOTICKS | WS_TABSTOP,124,48,58,10
+    CTEXT           "DATARIFIC",IDC_CPUPRI,125,62,54,25
+    LTEXT           "Thread Priority",IDC_STATIC,128,40,46,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CONFIG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

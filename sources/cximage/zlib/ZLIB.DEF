@@ -1,0 +1,46 @@
+LIBRARY		"zlib"
+
+DESCRIPTION	'"""zlib data compression library"""'
+
+EXETYPE		NT
+
+SUBSYSTEM	WINDOWS
+
+STUB		'WINSTUB.EXE'
+
+VERSION		1.14
+
+CODE		 EXECUTE READ
+
+DATA		 READ WRITE
+
+HEAPSIZE	1048576,4096
+
+EXPORTS
+		zlibVersion
+		deflate
+		deflateEnd
+		inflate
+		inflateEnd
+		deflateSetDictionary
+		deflateCopy
+		deflateReset
+		deflateParams
+		inflateSetDictionary
+		inflateSync
+		inflateReset
+		compress
+		uncompress
+		gzopen
+		gzdopen
+		gzread
+		gzwrite
+		gzflush
+		gzclose
+		gzerror
+		adler32
+		crc32
+		deflateInit_
+		inflateInit_
+		deflateInit2_
+		inflateInit2_
