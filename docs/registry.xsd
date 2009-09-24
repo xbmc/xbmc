@@ -1,0 +1,32 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:complexType name="registryType">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="key" type="keyType" maxOccurs="unbounded" minOccurs="0" />
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:complexType name="keyType">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="value" type="valueType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="key" type="keyType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:choice>
+		<xsd:attribute name="path" type="xsd:string" />
+	</xsd:complexType>
+	<xsd:element name="registry" type="registryType">
+	</xsd:element>
+	<xsd:complexType name="valueType">
+		<xsd:complexContent>
+			<xsd:extension base="xsd:anyType">
+				<xsd:attribute name="id" type="xsd:string" use="required" />
+				<xsd:attribute name="type" type="typeType" default="string" use="optional" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:simpleType name="typeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="string" />
+			<xsd:enumeration value="dword" />
+			<xsd:enumeration value="binary" />
+			<xsd:enumeration value="qword" />
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>
