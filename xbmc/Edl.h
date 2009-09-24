@@ -23,6 +23,7 @@
 
 
 #include <vector>
+#include <stdint.h>
 #include "StdString.h"
 #include "URL.h"
 
@@ -42,8 +43,8 @@ public:
 
   struct Cut
   {
-    long long start; // ms
-    long long end;   // ms
+    int64_t start; // ms
+    int64_t end;   // ms
     Action action;
   };
 
@@ -55,21 +56,21 @@ public:
   bool HasCut();
   bool HasSceneMarker();
   CStdString GetInfo();
-  long long GetTotalCutTime();
-  long long RemoveCutTime(long long iSeek);
-  long long RestoreCutTime(long long iClock);
+  int64_t GetTotalCutTime();
+  int64_t RemoveCutTime(int64_t iSeek);
+  int64_t RestoreCutTime(int64_t iClock);
 
-  bool InCut(long long iSeek, Cut *pCut = NULL);
+  bool InCut(int64_t iSeek, Cut *pCut = NULL);
 
-  bool GetNextSceneMarker(bool bPlus, const long long iClock, long long *iSceneMarker);
+  bool GetNextSceneMarker(bool bPlus, const int64_t iClock, int64_t *iSceneMarker);
 
-  static CStdString MillisecondsToTimeString(const long long iMilliseconds);
+  static CStdString MillisecondsToTimeString(const int64_t iMilliseconds);
 
 protected:
 private:
-  long long m_iTotalCutTime; // ms
+  int64_t m_iTotalCutTime; // ms
   std::vector<Cut> m_vecCuts;
-  std::vector<long long> m_vecSceneMarkers;
+  std::vector<int64_t> m_vecSceneMarkers;
 
   bool ReadEdl(const CStdString& strMovie);
   bool ReadComskip(const CStdString& strMovie, const float fFramesPerSecond);
@@ -77,7 +78,7 @@ private:
   bool ReadBeyondTV(const CStdString& strMovie);
 
   bool AddCut(const Cut& NewCut);
-  bool AddSceneMarker(const long long sceneMarker);
+  bool AddSceneMarker(const int64_t sceneMarker);
 
   bool WriteMPlayerEdl();
 
