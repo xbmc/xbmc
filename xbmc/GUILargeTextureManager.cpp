@@ -126,7 +126,11 @@ void CGUILargeTextureManager::Process()
         loadPath = g_TextureManager.GetTexturePath(path);
       }
       texture = new CTexture();
-      pic.Load(loadPath, texture, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080));
+      if(!pic.Load(loadPath, texture, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080)))
+      {
+        delete(texture);
+        texture = NULL;
+      }
     }
     // and add to our allocated list
     lock.Enter();

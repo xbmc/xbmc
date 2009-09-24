@@ -402,7 +402,8 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
     g_charsetConverter.utf8ToStringCharset(strPath, texturePath);
 
     pTexture = new CTexture();
-    pTexture->LoadFromFile(texturePath);
+    if(!pTexture->LoadFromFile(texturePath))
+      return 0;
     width = pTexture->GetWidth();
     height = pTexture->GetHeight();
   }
