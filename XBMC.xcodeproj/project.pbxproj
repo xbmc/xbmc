@@ -919,7 +919,6 @@
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
 		F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
-		F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */; };
@@ -1706,7 +1705,6 @@
 		F5A1CB910F6B06CF00A96ABD /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F5A1CB920F6B06CF00A96ABD /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
 		F5A1CB930F6B06CF00A96ABD /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
-		F5A1CB940F6B06CF00A96ABD /* GUITextureSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */; };
 		F5A1CB950F6B06CF00A96ABD /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
 		F5A1CB960F6B06CF00A96ABD /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
 		F5A1CB970F6B06CF00A96ABD /* DVDDemuxHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */; };
@@ -3689,10 +3687,8 @@
 		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokewindowbackground.cpp; path = karaoke/karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F56A08DE0F4D3C20003F9F87 /* GUITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITexture.h; sourceTree = "<group>"; };
 		F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITexture.cpp; sourceTree = "<group>"; };
-		F56A08E10F4D3C2E003F9F87 /* GUITextureSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextureSDL.h; sourceTree = "<group>"; };
 		F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextureGL.cpp; sourceTree = "<group>"; };
 		F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextureGL.h; sourceTree = "<group>"; };
-		F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextureSDL.cpp; sourceTree = "<group>"; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F584E0FA0F25427500DB26A5 /* MusicInfoTagLoaderMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MusicInfoTagLoaderMidi.h; path = xbmc/MusicInfoTagLoaderMidi.h; sourceTree = SOURCE_ROOT; };
@@ -3986,8 +3982,6 @@
 				7C779D9F104A4B2E00F444C4 /* GUITextureD3D.h */,
 				F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */,
 				F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */,
-				F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */,
-				F56A08E10F4D3C2E003F9F87 /* GUITextureSDL.h */,
 				7C779DA0104A4B2E00F444C4 /* Texture.cpp */,
 				7C779DA1104A4B2E00F444C4 /* Texture.h */,
 				7C779DA2104A4B2E00F444C4 /* TextureDX.cpp */,
@@ -7943,7 +7937,6 @@
 				F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */,
 				F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */,
 				F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */,
-				F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */,
 				F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */,
 				F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */,
 				F55110450F5C3C0100955236 /* DVDDemuxHTSP.cpp in Sources */,
@@ -8792,7 +8785,6 @@
 				F5A1CB910F6B06CF00A96ABD /* karaokewindowbackground.cpp in Sources */,
 				F5A1CB920F6B06CF00A96ABD /* GUITexture.cpp in Sources */,
 				F5A1CB930F6B06CF00A96ABD /* GUITextureGL.cpp in Sources */,
-				F5A1CB940F6B06CF00A96ABD /* GUITextureSDL.cpp in Sources */,
 				F5A1CB950F6B06CF00A96ABD /* DTSCodec.cpp in Sources */,
 				F5A1CB960F6B06CF00A96ABD /* DTSCDDACodec.cpp in Sources */,
 				F5A1CB970F6B06CF00A96ABD /* DVDDemuxHTSP.cpp in Sources */,
