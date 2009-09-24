@@ -1247,18 +1247,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="SDL"
-				>
-				<File
-					RelativePath="..\..\guilib\GUITextureSDL.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\guilib\GUITextureSDL.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
