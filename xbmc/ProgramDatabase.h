@@ -66,5 +66,5 @@ protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
 
-  FILETIME TimeStampToLocalTime( unsigned __int64 timeStamp );
+  FILETIME TimeStampToLocalTime( uint64_t timeStamp );
 };

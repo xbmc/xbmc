@@ -228,8 +228,8 @@ bool CEdl::ReadComskip(const CStdString& strMovie, const float fFramesPerSecond)
     if (sscanf(szBuffer, "%lf %lf", &dStartFrame, &dEndFrame) == 2)
     {
       Cut cut;
-      cut.start = (__int64)(dStartFrame / fFrameRate * 1000);
-      cut.end = (__int64)(dEndFrame / fFrameRate * 1000);
+      cut.start = (long long)(dStartFrame / fFrameRate * 1000);
+      cut.end = (long long)(dEndFrame / fFrameRate * 1000);
       cut.action = COMM_BREAK;
       bValid = AddCut(cut);
     }
@@ -306,8 +306,8 @@ bool CEdl::ReadVideoReDo(const CStdString& strMovie)
          *  Times need adjusting by 1/10,000 to get ms.
          */
         Cut cut;
-        cut.start = (__int64)(dStart / 10000);
-        cut.end = (__int64)(dEnd / 10000);
+        cut.start = (long long)(dStart / 10000);
+        cut.end = (long long)(dEnd / 10000);
         cut.action = CUT;
         bValid = AddCut(cut);
       }
@@ -402,8 +402,8 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
        * GetText() returns 0 if there were any problems and will subsequently be rejected in AddCut().
        */
       Cut cut;
-      cut.start = (__int64)(atof(pStart->GetText()) / 10000);
-      cut.end = (__int64)(atof(pEnd->GetText()) / 10000);
+      cut.start = (long long)(atof(pStart->GetText()) / 10000);
+      cut.end = (long long)(atof(pEnd->GetText()) / 10000);
       cut.action = COMM_BREAK;
       bValid = AddCut(cut);
     }
@@ -510,7 +510,7 @@ bool CEdl::AddCut(const Cut& cut)
   return true;
 }
 
-bool CEdl::AddSceneMarker(const __int64 iSceneMarker)
+bool CEdl::AddSceneMarker(const long long iSceneMarker)
 {
   Cut cut;
 
@@ -565,17 +565,17 @@ bool CEdl::HasCut()
   return !m_vecCuts.empty();
 }
 
-__int64 CEdl::GetTotalCutTime()
+long long CEdl::GetTotalCutTime()
 {
   return m_iTotalCutTime; // ms
 }
 
-__int64 CEdl::RemoveCutTime(__int64 iSeek)
+long long CEdl::RemoveCutTime(long long iSeek)
 {
   if (!HasCut())
     return iSeek;
 
-  __int64 iCutTime = 0;
+  long long iCutTime = 0;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (m_vecCuts[i].action == CUT)
@@ -589,12 +589,12 @@ __int64 CEdl::RemoveCutTime(__int64 iSeek)
   return iSeek - iCutTime;
 }
 
-__int64 CEdl::RestoreCutTime(__int64 iClock)
+long long CEdl::RestoreCutTime(long long iClock)
 {
   if (!HasCut())
     return iClock;
 
-  __int64 iSeek = iClock;
+  long long iSeek = iClock;
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
     if (m_vecCuts[i].action == CUT && iSeek >= m_vecCuts[i].start)
@@ -647,7 +647,7 @@ CStdString CEdl::GetInfo()
   return strInfo.IsEmpty() ? "-" : strInfo;
 }
 
-bool CEdl::InCut(const __int64 iSeek, Cut *pCut)
+bool CEdl::InCut(const long long iSeek, Cut *pCut)
 {
   for (int i = 0; i < (int)m_vecCuts.size(); i++)
   {
@@ -665,14 +665,14 @@ bool CEdl::InCut(const __int64 iSeek, Cut *pCut)
   return false;
 }
 
-bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneMarker)
+bool CEdl::GetNextSceneMarker(bool bPlus, const long long iClock, long long *iSceneMarker)
 {
   if (!HasSceneMarker())
     return false;
 
-  __int64 iSeek = RestoreCutTime(iClock);
+  long long iSeek = RestoreCutTime(iClock);
 
-  __int64 iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
+  long long iDiff = 10 * 60 * 60 * 1000; // 10 hours to ms.
   bool bFound = false;
 
   if (bPlus) // Find closest scene forwards
@@ -711,7 +711,7 @@ bool CEdl::GetNextSceneMarker(bool bPlus, const __int64 iClock, __int64 *iSceneM
   return bFound;
 }
 
-CStdString CEdl::MillisecondsToTimeString(const __int64 iMilliseconds)
+CStdString CEdl::MillisecondsToTimeString(const long long iMilliseconds)
 {
   CStdString strTimeString = "";
   StringUtils::SecondsToTimeString((long)(iMilliseconds / 1000), strTimeString, TIME_FORMAT_HH_MM_SS); // milliseconds to seconds

@@ -109,7 +109,7 @@ field_value::field_value(const double d) {
   is_null = false;
 }
   
-field_value::field_value(const int64_t i) {
+field_value::field_value(const long long i) {
   int64_value = i; 
   field_type = ft_Int64;
   is_null = false;
@@ -556,34 +556,34 @@ double field_value::get_asDouble() const {
     }
   }
 
-int64_t field_value::get_asInt64() const {
+long long field_value::get_asInt64() const {
     switch (field_type) {
     case ft_String: {
       return _atoi64(str_value.c_str());
     }
     case ft_Boolean:{
-      return (int64_t)bool_value;
+      return (long long)bool_value;
     }
     case ft_Char: {
-      return (int64_t)char_value;
+      return (long long)char_value;
     }
     case ft_Short: {
-       return (int64_t)short_value;
+       return (long long)short_value;
     }
     case ft_UShort: {
-       return (int64_t)ushort_value;
+       return (long long)ushort_value;
     }
     case ft_Long: {
-      return (int64_t)long_value;
+      return (long long)long_value;
     }
     case ft_ULong: {
-      return (int64_t)ulong_value;
+      return (long long)ulong_value;
     }
     case ft_Float: {
-      return (int64_t)float_value;
+      return (long long)float_value;
     }
     case ft_Double: {
-      return (int64_t)double_value;
+      return (long long)double_value;
     }
     case ft_Int64: {
       return int64_value;
@@ -705,7 +705,7 @@ void field_value::set_asDouble(const double d) {
   double_value = d; 
   field_type = ft_Double;}
 
-void field_value::set_asInt64(const int64_t i) {
+void field_value::set_asInt64(const long long i) {
   int64_value = i; 
   field_type = ft_Int64;}
   
