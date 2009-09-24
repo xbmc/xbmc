@@ -21,7 +21,6 @@
  *
  */
 
-#include "GUILabelControl.h"  // for CInfoPortion
 #include "GUIButtonControl.h"
 
 /*!

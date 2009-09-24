@@ -30,7 +30,8 @@
  */
 
 #include "GUITexture.h"
-#include "GUILabelControl.h"  // for CInfoPortion
+#include "GUITextLayout.h"
+#include "GUIControl.h"
 
 /*!
  \ingroup controls

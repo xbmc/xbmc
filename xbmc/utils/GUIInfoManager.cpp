@@ -42,6 +42,7 @@
 #include "LangInfo.h"
 #include "SystemInfo.h"
 #include "GUIButtonScroller.h"
+#include "GUITextBox.h"
 #include "GUIInfoManager.h"
 #include <stack>
 #include "../utils/Network.h"
@@ -69,8 +70,6 @@
 #include "MusicInfoLoader.h"
 #include "LabelFormatter.h"
 
-#include "GUILabelControl.h"  // for CInfoLabel
-#include "GUITextBox.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"

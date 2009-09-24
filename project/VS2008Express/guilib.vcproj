@@ -362,7 +362,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GuiControlFactory.cpp"
+				RelativePath="..\..\guilib\GUIControlFactory.cpp"
 				>
 			</File>
 			<File
@@ -402,7 +402,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\guiImage.cpp"
+				RelativePath="..\..\guilib\GUIImage.cpp"
 				>
 			</File>
 			<File
@@ -410,7 +410,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIInfoColor.cpp"
+				RelativePath="..\..\guilib\GUIInfoTypes.cpp"
 				>
 			</File>
 			<File
@@ -688,7 +688,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GuiControlFactory.h"
+				RelativePath="..\..\guilib\GUIControlFactory.h"
 				>
 			</File>
 			<File
@@ -728,7 +728,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\guiImage.h"
+				RelativePath="..\..\guilib\GUIImage.h"
 				>
 			</File>
 			<File
@@ -736,7 +736,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\guilib\GUIInfoColor.h"
+				RelativePath="..\..\guilib\GUIInfoTypes.h"
 				>
 			</File>
 			<File

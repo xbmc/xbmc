@@ -25,7 +25,6 @@
 #include "utils/GUIInfoManager.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "GUILabelControl.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 #include "StringUtils.h"

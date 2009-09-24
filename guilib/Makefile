@@ -69,7 +69,7 @@ SRCS=AnimatedGif.cpp \
      GUIBorderedImage.cpp \
      GUITextLayout.cpp \
      GUIMultiSelectText.cpp \
-     GUIInfoColor.cpp \
+     GUIInfoTypes.cpp \
      GUIFontTTFGL.cpp \
      GUIFontTTFGLES.cpp \
      Texture.cpp \

@@ -29,8 +29,8 @@
  *
  */
 
-#include "GUILabelControl.h"
 #include "GUITextLayout.h"
+#include "GUIControl.h"
 
 /*!
  \ingroup controls

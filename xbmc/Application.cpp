@@ -33,9 +33,6 @@
 #include "Autorun.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
-#else
-#include "GUILabelControl.h"  // needed for CInfoLabel
-#include "GUIImage.h"
 #endif
 #include "GUIControlProfiler.h"
 #include "LangCodeExpander.h"
@@ -43,6 +40,7 @@
 #include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
+#include "GUITextLayout.h"
 #include "SkinInfo.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
