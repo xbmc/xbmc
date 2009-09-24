@@ -2338,7 +2338,6 @@
 		E38E15640D25F9FA00618676 /* DVDInputStreamMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamMemory.h; sourceTree = "<group>"; };
 		E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamNavigator.cpp; sourceTree = "<group>"; };
 		E38E15660D25F9FA00618676 /* DVDInputStreamNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamNavigator.h; sourceTree = "<group>"; };
-		E38E15680D25F9FA00618676 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		E38E15690D25F9FA00618676 /* decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decoder.h; sourceTree = "<group>"; };
 		E38E156A0D25F9FA00618676 /* dvd_reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dvd_reader.h; sourceTree = "<group>"; };
 		E38E156B0D25F9FA00618676 /* dvd_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dvd_types.h; sourceTree = "<group>"; };
@@ -2910,7 +2909,6 @@
 		E38E18650D25F9FA00618676 /* cdda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdda.h; sourceTree = "<group>"; };
 		E38E18660D25F9FA00618676 /* cdio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdio.h; sourceTree = "<group>"; };
 		E38E18670D25F9FA00618676 /* cdtext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdtext.h; sourceTree = "<group>"; };
-		E38E18680D25F9FA00618676 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		E38E18690D25F9FA00618676 /* device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = device.h; sourceTree = "<group>"; };
 		E38E186A0D25F9FA00618676 /* disc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = disc.h; sourceTree = "<group>"; };
 		E38E186B0D25F9FA00618676 /* ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ds.h; sourceTree = "<group>"; };
@@ -5203,7 +5201,6 @@
 		E38E15670D25F9FA00618676 /* dvdnav */ = {
 			isa = PBXGroup;
 			children = (
-				E38E15680D25F9FA00618676 /* config.h */,
 				E38E15690D25F9FA00618676 /* decoder.h */,
 				E38E156A0D25F9FA00618676 /* dvd_reader.h */,
 				E38E156B0D25F9FA00618676 /* dvd_types.h */,
@@ -5758,7 +5755,6 @@
 				E38E18650D25F9FA00618676 /* cdda.h */,
 				E38E18660D25F9FA00618676 /* cdio.h */,
 				E38E18670D25F9FA00618676 /* cdtext.h */,
-				E38E18680D25F9FA00618676 /* config.h */,
 				E38E18690D25F9FA00618676 /* device.h */,
 				E38E186A0D25F9FA00618676 /* disc.h */,
 				E38E186B0D25F9FA00618676 /* ds.h */,

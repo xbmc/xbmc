@@ -32,7 +32,11 @@
 
 #include "IFile.h"
 #include "StdString.h"
+
+// prevent inclusion of config.h from libshout
+#define __SRCONFIG_H__
 #include "lib/libshout/rip_manager.h"
+#undef __SRCONFIG_H__
 
 namespace MUSIC_INFO
 {

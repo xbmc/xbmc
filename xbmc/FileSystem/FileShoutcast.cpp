@@ -36,8 +36,12 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+// prevent inclusion of config.h from libshout
+#define __SRCONFIG_H__
 #include "lib/libshout/rip_manager.h"
 #include "lib/libshout/filelib.h"
+#undef __SRCONFIG_H__
+
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
 #include "utils/GUIInfoManager.h"
