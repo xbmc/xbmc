@@ -125,7 +125,9 @@ extern "C"
       result->gymPos = result->gym;
       while (iRead < result->gymSize)
       {
-        fread(result->gym,1,result->gymSize,f);
+        if (fread(result->gym,1,result->gymSize,f) != 1)
+          break;
+
         int iCurrRead = fread(result->gymPos,1,16384,f);
         if (iCurrRead > 0)
         {
