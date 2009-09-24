@@ -955,6 +955,26 @@
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayText.h"
 							>
 						</File>
+						<Filter
+							Name="libspucc"
+							>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c"
+								>
+								<FileConfiguration
+									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+							</File>
+							<File
+								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.h"
+								>
+							</File>
+						</Filter>
 					</Filter>
 				</Filter>
 				<Filter
@@ -1774,6 +1794,42 @@
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\emu_socket.h"
 							>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c"
+							>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_ntop.c"
+							>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+						</File>
+						<File
+							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_pton.c"
+							>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 					<Filter

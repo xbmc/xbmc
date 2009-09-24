@@ -50,6 +50,10 @@
 #include <stdio.h>
 #include <errno.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  *
  */
@@ -219,3 +223,8 @@ inet_ntop(int af, const void *src, char *dst, size_t size)
 	return NULL;
     }
 }
+
+#ifdef __cplusplus
+}
+#endif
+

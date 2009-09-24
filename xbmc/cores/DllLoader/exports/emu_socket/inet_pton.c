@@ -48,14 +48,22 @@
 #include "emu_socket.h"
 #include <errno.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 extern int inet_aton(const char *cp, struct in_addr *addr);
 
 int
 inet_pton(int af, const char *src, void *dst)
 {
-    if (af != AF_INET) {
-	errno = EAFNOSUPPORT;
-	return -1;
-    }
-    return inet_aton (src, dst);
+  if (af != AF_INET)
+  {
+    errno = EAFNOSUPPORT;
+    return -1;
+  }
+  return inet_aton (src, (struct in_addr *)dst);
 }
+#ifdef __cplusplus
+}
+#endif
+
