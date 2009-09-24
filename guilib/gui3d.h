@@ -95,8 +95,6 @@ namespace XBMC
 
 #define DELETE_TEXTURE(texture) texture->Release()
 
-typedef uint32_t	Uint32;
-
 #endif // HAS_DX
 
 #ifdef HAS_GLES

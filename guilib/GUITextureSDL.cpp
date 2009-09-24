@@ -68,7 +68,7 @@ void CGUITextureSDL::Draw(float *x, float *y, float *z, const CRect &texture, co
   }
   if (cached.surface)
   {
-    SDL_Rect dst = { (Sint16)b[0], (Sint16)b[1], 0, 0 };
+    SDL_Rect dst = { (int16_t)b[0], (int16_t)b[1], 0, 0 };
     g_graphicsContext.BlitToScreen(cached.surface, NULL, &dst);
   }
 }

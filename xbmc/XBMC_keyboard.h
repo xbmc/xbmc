@@ -48,7 +48,7 @@ typedef struct XBMC_keysym {
 	unsigned char scancode;			/* hardware specific scancode */
 	XBMCKey sym;			/* SDL virtual keysym */
 	XBMCMod mod;			/* current key modifiers */
-	Uint16 unicode;			/* translated character */
+	uint16_t unicode;			/* translated character */
 } XBMC_keysym;
 
 /* This is the mask which refers to all hotkey bindings */

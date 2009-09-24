@@ -29,17 +29,17 @@ CKeyboardStat g_Keyboard;
 #define XBMC_NLK_NUM  0x02
 
 /* Global keystate information */
-static Uint8  XBMC_KeyState[XBMCK_LAST];
+static uint8_t  XBMC_KeyState[XBMCK_LAST];
 static XBMCMod XBMC_ModState;
 static const char *keynames[XBMCK_LAST];	/* Array of keycode names */
 
-static Uint8 XBMC_NoLockKeys;
+static uint8_t XBMC_NoLockKeys;
 
 struct _XBMC_KeyRepeat {
   int firsttime;    /* if we check against the delay or repeat value */
   int delay;        /* the delay before we start repeating */
   int interval;     /* the delay between key repeat events */
-  Uint32 timestamp; /* the time the first keydown event occurred */
+  uint32_t timestamp; /* the time the first keydown event occurred */
 
   XBMC_Event evt;    /* the event we are supposed to repeat */
 } XBMC_KeyRepeat;
@@ -535,11 +535,11 @@ unsigned int CKeyboardStat::KeyHeld() const
 int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
 {
   int repeatable;
-  Uint16 modstate;
+  uint16_t modstate;
 
   /* Set up the keysym */
   XBMC_keysym *keysym = &newEvent.key.keysym;
-  modstate = (Uint16)XBMC_ModState;
+  modstate = (uint16_t)XBMC_ModState;
 
   repeatable = 0;
 

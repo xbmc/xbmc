@@ -95,12 +95,12 @@ using namespace PLAYLIST;
 #ifdef HAS_DX
 static D3DGAMMARAMP oldramp, flashramp;
 #elif defined(HAS_SDL_2D)
-static Uint16 oldrampRed[256];
-static Uint16 oldrampGreen[256];
-static Uint16 oldrampBlue[256];
-static Uint16 flashrampRed[256];
-static Uint16 flashrampGreen[256];
-static Uint16 flashrampBlue[256];
+static uint16_t oldrampRed[256];
+static uint16_t oldrampGreen[256];
+static uint16_t oldrampBlue[256];
+static uint16_t flashrampRed[256];
+static uint16_t flashrampGreen[256];
+static uint16_t flashrampBlue[256];
 #endif
 
 XBOXDETECTION v_xboxclients;
@@ -1766,9 +1766,9 @@ void CUtil::SetBrightnessContrastGamma(float Brightness, float Contrast, float G
 #ifdef HAS_DX
   D3DGAMMARAMP ramp;
 #elif defined(HAS_SDL_2D)
-  Uint16 rampRed[256];
-  Uint16 rampGreen[256];
-  Uint16 rampBlue[256];
+  uint16_t rampRed[256];
+  uint16_t rampGreen[256];
+  uint16_t rampBlue[256];
 #endif
 
   Gamma = 1.0f / Gamma;

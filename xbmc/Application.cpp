@@ -567,7 +567,7 @@ HRESULT CApplication::Create(HWND hWnd)
   /* Clean up on exit, exit on window close and interrupt */
   atexit(SDL_Quit);
 
-  Uint32 sdlFlags = 0;
+  uint32_t sdlFlags = 0;
   
 #ifdef HAS_SDL_OPENGL
   sdlFlags |= SDL_INIT_VIDEO;

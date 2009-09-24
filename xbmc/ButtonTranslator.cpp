@@ -475,7 +475,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
           string position;
           if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
           {
-            Uint32 hatID = id|0xFFF00000;
+            uint32_t hatID = id|0xFFF00000;
             if (position.compare("up")==0)
             {
               hatMap[(SDL_HAT_UP<<16)|hatID] = string(szAction);

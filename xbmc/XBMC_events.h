@@ -62,7 +62,7 @@ typedef enum {
        /* Events XBMC_USEREVENT through XBMC_MAXEVENTS-1 are for your use */
        XBMC_USEREVENT = 24,
        /* This last event is only for bounding internal arrays
-	  It is the number of bits in the event mask datatype -- Uint32
+	  It is the number of bits in the event mask datatype -- uint32_t
         */
        XBMC_NUMEVENTS = 32
 } XBMC_EventType;
@@ -118,9 +118,9 @@ typedef struct XBMC_MouseMotionEvent {
 	unsigned char type;	/* XBMC_MOUSEMOTION */
 	unsigned char which;	/* The mouse device index */
 	unsigned char state;	/* The current button state */
-	Uint16 x, y;	/* The X/Y coordinates of the mouse */
-	Sint16 xrel;	/* The relative motion in the X direction */
-	Sint16 yrel;	/* The relative motion in the Y direction */
+	uint16_t x, y;	/* The X/Y coordinates of the mouse */
+	int16_t xrel;	/* The relative motion in the X direction */
+	int16_t yrel;	/* The relative motion in the Y direction */
 } XBMC_MouseMotionEvent;
 
 /* Mouse button event structure */
@@ -129,7 +129,7 @@ typedef struct XBMC_MouseButtonEvent {
 	unsigned char which;	/* The mouse device index */
 	unsigned char button;	/* The mouse button index */
 	unsigned char state;	/* XBMC_PRESSED or XBMC_RELEASED */
-	Uint16 x, y;	/* The X/Y coordinates of the mouse at press time */
+	uint16_t x, y;	/* The X/Y coordinates of the mouse at press time */
 } XBMC_MouseButtonEvent;
 
 /* Joystick axis motion event structure */
@@ -137,7 +137,7 @@ typedef struct XBMC_JoyAxisEvent {
 	unsigned char type;	/* XBMC_JOYAXISMOTION */
 	unsigned char which;	/* The joystick device index */
 	unsigned char axis;	/* The joystick axis index */
-	Sint16 value;	/* The axis value (range: -32768 to 32767) */
+	int16_t value;	/* The axis value (range: -32768 to 32767) */
 } XBMC_JoyAxisEvent;
 
 /* Joystick trackball motion event structure */
@@ -145,8 +145,8 @@ typedef struct XBMC_JoyBallEvent {
 	unsigned char type;	/* XBMC_JOYBALLMOTION */
 	unsigned char which;	/* The joystick device index */
 	unsigned char ball;	/* The joystick trackball index */
-	Sint16 xrel;	/* The relative motion in the X direction */
-	Sint16 yrel;	/* The relative motion in the Y direction */
+	int16_t xrel;	/* The relative motion in the X direction */
+	int16_t yrel;	/* The relative motion in the Y direction */
 } XBMC_JoyBallEvent;
 
 /* Joystick hat position change event structure */

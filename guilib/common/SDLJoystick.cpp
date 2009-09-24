@@ -131,7 +131,7 @@ void CJoystick::Update()
     int numax = SDL_JoystickNumAxes(joy);
     numax = (numax>MAX_AXES)?MAX_AXES:numax;
     int axisval;
-    Uint8 hatval;
+    uint8_t hatval;
 
     // get button states first, they take priority over axis
     for (int b = 0 ; b<numb ; b++)
@@ -300,9 +300,9 @@ bool CJoystick::GetHat(int &id, int &position,bool consider_repeat)
   if (!consider_repeat)
     return true;
 
-  static Uint32 lastPressTicks = 0;
-  static Uint32 lastTicks = 0;
-  static Uint32 nowTicks = 0;
+  static uint32_t lastPressTicks = 0;
+  static uint32_t lastTicks = 0;
+  static uint32_t nowTicks = 0;
 
   if ((m_HatId>=0) && m_pressTicksHat)
   {
@@ -334,9 +334,9 @@ bool CJoystick::GetButton(int &id, bool consider_repeat)
     return true;
   }
 
-  static Uint32 lastPressTicks = 0;
-  static Uint32 lastTicks = 0;
-  static Uint32 nowTicks = 0;
+  static uint32_t lastPressTicks = 0;
+  static uint32_t lastTicks = 0;
+  static uint32_t nowTicks = 0;
 
   if ((m_ButtonId>=0) && m_pressTicksButton)
   {
