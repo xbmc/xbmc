@@ -3624,7 +3624,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     }
     if (iVersion < 33) // = 28 on Linuxport!
     {
-      m_pDS->exec("DROP TABLE streamdetails");
       m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
                   "strVideoCodec text, fVideoAspect real, iVideoWidth integer, iVideoHeight integer, "
                   "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, strSubtitleLanguage text)\n");
