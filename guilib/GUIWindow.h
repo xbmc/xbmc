@@ -107,7 +107,7 @@ public:
   void SetIDRange(int range) { m_idRange = range; };
   int GetIDRange() const { return m_idRange; };
   int GetPreviousWindow() { return m_previousWindow; };
-  FRECT GetScaledBounds() const;
+  CRect GetScaledBounds() const;
   virtual void ClearAll();
   virtual void AllocResources(bool forceLoad = false);
   virtual void FreeResources(bool forceUnLoad = false);
