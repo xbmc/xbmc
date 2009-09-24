@@ -23,7 +23,6 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
-#include "GUILabelControl.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif

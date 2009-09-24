@@ -22,12 +22,12 @@
  */
 
 #include "GUIDialog.h"
-#include "GUISpinControlEx.h"
-#include "GUIRadioButtonControl.h"
-#include "GUIButtonControl.h"
-#include "GUISettingsSliderControl.h"
 #include "GUIDialogSlider.h"
 
+class CGUISpinControlEx;
+class CGUIButtonControl;
+class CGUIRadioButtonControl;
+class CGUISettingsSliderControl;
 class CGUIImage;
 
 typedef CStdString (*FORMATFUNCTION) (float value, float min);

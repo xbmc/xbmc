@@ -25,8 +25,6 @@
 
 #include <queue>
 
-class CGUIImage;
-
 #define TOAST_DISPLAY_TIME   5000L  // default 5 seconds
 #define TOAST_MESSAGE_TIME   1000L  // minimal message time 1 second
 

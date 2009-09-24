@@ -26,6 +26,7 @@
 #include "GUIControlGroupList.h"
 #include "Util.h"
 #include "MediaManager.h"
+#include "GUILabelControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUISpinControlEx.h"
 #include "GUIImage.h"

@@ -20,6 +20,9 @@
  */
 
 #include "GUIDialogSettings.h"
+#include "GUISpinControlEx.h"
+#include "GUIRadioButtonControl.h"
+#include "GUISettingsSliderControl.h"
 #include "GUIImage.h"
 #include "GUIControlGroupList.h"
 #include "LocalizeStrings.h"

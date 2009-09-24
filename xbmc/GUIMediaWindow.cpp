@@ -39,8 +39,6 @@
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 
-#include "GUIImage.h"
-#include "GUIMultiImage.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogPluginSettings.h"
 #include "PluginSettings.h"

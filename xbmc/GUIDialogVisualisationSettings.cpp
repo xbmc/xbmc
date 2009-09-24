@@ -21,6 +21,8 @@
 
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIWindowSettingsCategory.h"
+#include "GUISpinControlEx.h"
+#include "GUIRadioButtonControl.h"
 #include "GUIControlGroupList.h"
 #include "GUIUserMessages.h"
 #include "utils/GUIInfoManager.h"
