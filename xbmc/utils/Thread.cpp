@@ -331,20 +331,12 @@ bool CThread::IsCurrentThread() const
 
 ThreadIdentifier CThread::GetCurrentThreadId()
 {
-#ifdef _LINUX
-  return pthread_self();
-#else
   return ::GetCurrentThreadId();
-#endif
 }
 
 bool CThread::IsCurrentThread(const ThreadIdentifier tid)
 {
-#ifdef _LINUX
-  return pthread_equal(pthread_self(), tid);
-#else
   return (::GetCurrentThreadId() == tid);
-#endif
 }
 
 

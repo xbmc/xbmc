@@ -139,7 +139,7 @@ int CIMDB::InternalFindMovie(const CStdString &strMovie, IMDB_MOVIELIST& movieli
     CGUIDialogOK* dialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
     dialog->SetHeading(strTitle);
     dialog->SetLine(0,strMessage);
-    g_application.getApplicationMessenger().DoModal(dialog,WINDOW_DIALOG_OK);
+    dialog->DoModal(); 
     return -1;
   }
  
