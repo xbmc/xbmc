@@ -262,6 +262,7 @@ void XBPython::Finalize()
   m_iDllScriptCounter--;
   if (m_iDllScriptCounter == 0 && m_bInitialized)
   {
+    m_bInitialized = false;
     CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
     PyEval_AcquireLock();
     PyThreadState_Swap(mainThreadState);
@@ -270,7 +271,6 @@ void XBPython::Finalize()
     DllLoaderContainer::UnloadPythonDlls();
     m_hModule = NULL;
     mainThreadState = NULL;
-    m_bInitialized = false;
   }
 }
 
