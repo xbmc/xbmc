@@ -23,6 +23,9 @@
 #include "Util.h"
 #include "FileSystem/Directory.h"
 #include "utils/log.h"
+#ifdef _WIN32
+#include "PlatformDefs.h" //for strcasecmp
+#endif
 
 CScriptSettings::CScriptSettings()
 {

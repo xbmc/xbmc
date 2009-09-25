@@ -29,6 +29,9 @@
 #include "utils/log.h"
 #include <errno.h>
 #include <sys/stat.h>
+#ifdef _WIN32
+#include "PlatformDefs.h" //for PRIdS
+#endif
 extern "C"
 {
 #include "lib/libRTV/interface.h"
