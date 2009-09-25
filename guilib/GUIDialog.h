@@ -60,7 +60,6 @@ protected:
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
 
-  friend class CApplicationMessenger;
   void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void Show_Internal(); // modeless
 

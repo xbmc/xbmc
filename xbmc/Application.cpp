@@ -5624,11 +5624,6 @@ void CApplication::SaveCurrentFileSettings()
   }
 }
 
-CApplicationMessenger& CApplication::getApplicationMessenger()
-{
-   return m_applicationMessenger;
-}
-
 bool CApplication::IsCurrentThread() const
 {
   return CThread::IsCurrentThread(m_threadID);
