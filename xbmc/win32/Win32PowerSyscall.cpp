@@ -19,9 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "Win32PowerSyscall.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 CWin32PowerSyscall::CWin32PowerSyscall()
 {

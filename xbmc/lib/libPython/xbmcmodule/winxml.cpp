@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -120,7 +119,7 @@ namespace PYXBMC
 
       skinInfo.Load(basePath);
       // if no skin.xml file exists default to PAL_4x3 and PAL_16x9
-      if (skinInfo.GetDefaultResolution() == INVALID)
+      if (skinInfo.GetDefaultResolution() == RES_INVALID)
         skinInfo.SetDefaults();
       strSkinPath = skinInfo.GetSkinPath(strXMLname, &res, basePath);
 
@@ -458,4 +457,5 @@ namespace PYXBMC
 #ifdef __cplusplus
 }
 #endif
+
 

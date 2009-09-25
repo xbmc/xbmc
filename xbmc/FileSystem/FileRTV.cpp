@@ -23,9 +23,10 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "FileRTV.h"
+#include "SectionLoader.h"
 #include "URL.h"
+#include "utils/log.h"
 
 #include <sys/stat.h>
 extern "C"

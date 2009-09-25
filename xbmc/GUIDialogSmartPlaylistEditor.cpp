@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogKeyboard.h"
 #include "Util.h"
@@ -29,6 +28,7 @@
 #include "GUISettings.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 
@@ -79,7 +79,7 @@ CGUIDialogSmartPlaylistEditor::~CGUIDialogSmartPlaylistEditor()
 
 bool CGUIDialogSmartPlaylistEditor::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
     m_cancelled = true;
   return CGUIDialog::OnAction(action);
 }

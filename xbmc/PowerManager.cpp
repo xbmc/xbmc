@@ -19,14 +19,15 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "PowerManager.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogMusicScan.h"
-#include "common/Keyboard.h"
-#include "common/Mouse.h"
+#include "KeyboardStat.h"
+#include "MouseStat.h"
+#include "GUISettings.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -36,8 +37,12 @@
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/DBusPowerSyscall.h"
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
+#endif
+
+#ifdef HAS_LIRC
+#include "common/LIRC.h"
 #endif
 
 CPowerManager g_powerManager;
@@ -50,7 +55,7 @@ CPowerManager::CPowerManager()
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
   m_instance = new CDBusPowerSyscall();
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
 #endif
 
@@ -146,7 +151,7 @@ void CPowerManager::Resume()
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
   g_Mouse.Acquire();
-  g_application.ResetScreenSaverTimer();
+  g_application.ResetScreenSaver();
 
   // restart lirc
 #ifdef HAS_LIRC

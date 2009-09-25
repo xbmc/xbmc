@@ -41,7 +41,7 @@
 #endif
 
 #if !defined(_XBOX)
-#include "include.h"
+#include "system.h"
 #include <prsht.h>
 #elif defined(_LINUX)
 #include "PlatformDefs.h"

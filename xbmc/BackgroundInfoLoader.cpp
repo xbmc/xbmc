@@ -19,10 +19,11 @@
  *
  */
 
-#include "stdafx.h"
 #include "BackgroundInfoLoader.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace std;
 

@@ -19,11 +19,16 @@
  *
  */
 
-#include "stdafx.h"
 #include "Id3Tag.h"
 #include "Util.h"
+#include "StringUtils.h"
 #include "Picture.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "LocalizeStrings.h"
+#include "utils/CharsetConverter.h"
+#include "utils/log.h"
+
+#include <set>
 
 using namespace std;
 using namespace MUSIC_INFO;

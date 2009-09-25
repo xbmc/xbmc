@@ -19,13 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "AddonSettings.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "utils/Addon.h"
+#include "utils/log.h"
 
 using namespace DIRECTORY;
 using namespace ADDON;
@@ -86,12 +86,12 @@ void CAddonSettings::Set(const CStdString& key, const CStdString& value)
   m_userXmlDoc.RootElement()->InsertEndChild(nodeSetting);
 }
 
-CStdString CAddonSettings::Get(const CStdString& key)
+CStdString CAddonSettings::Get(const CStdString& key) const
 {
   if (m_userXmlDoc.RootElement())
   {
     // Try to find the setting and return its value
-    TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
+    const TiXmlElement *setting = m_userXmlDoc.RootElement()->FirstChildElement("setting");
     while (setting)
     {
       const char *id = setting->Attribute("id");
@@ -105,7 +105,7 @@ CStdString CAddonSettings::Get(const CStdString& key)
   if (m_addonXmlDoc.RootElement())
   {
     // Try to find the setting in the addon and return its default value
-    TiXmlElement* setting = m_addonXmlDoc.RootElement()->FirstChildElement("setting");
+    const TiXmlElement* setting = m_addonXmlDoc.RootElement()->FirstChildElement("setting");
     while (setting)
     {
       const char *id = setting->Attribute("id");

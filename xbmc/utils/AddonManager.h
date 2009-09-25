@@ -20,6 +20,7 @@
  *
  */
 
+#include "StringUtils.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/Thread.h"
 #include "../addons/include/xbmc_addon_types.h"

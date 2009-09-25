@@ -22,9 +22,9 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 //
 // CFrameBufferObject

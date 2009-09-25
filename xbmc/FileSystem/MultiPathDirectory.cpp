@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "MultiPathDirectory.h"
 #include "Directory.h"
 #include "Util.h"
@@ -28,6 +26,8 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
+#include "StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;

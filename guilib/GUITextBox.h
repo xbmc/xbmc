@@ -42,7 +42,7 @@ class TiXmlNode;
 class CGUITextBox : public CGUIControl, public CGUITextLayout
 {
 public:
-  CGUITextBox(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+  CGUITextBox(int parentID, int controlID, float posX, float posY, float width, float height,
               const CLabelInfo &labelInfo, int scrollTime = 200);
   CGUITextBox(const CGUITextBox &from);
   virtual ~CGUITextBox(void);
@@ -52,7 +52,7 @@ public:
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
 
-  void SetPageControl(DWORD pageControl);
+  void SetPageControl(int pageControl);
 
   virtual bool CanFocus() const;
   void SetInfo(const CGUIInfoLabel &info);
@@ -89,7 +89,7 @@ protected:
   DWORD m_autoScrollDelayTime; // current offset into the delay
   CAnimation *m_autoScrollRepeatAnim;
 
-  DWORD m_pageControl;
+  int m_pageControl;
 
   CGUIInfoLabel m_info;
 };

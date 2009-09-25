@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "SystemInfo.h"
 #ifndef _LINUX
 #include <conio.h>
@@ -31,7 +31,11 @@
 #include "Network.h"
 #include "Application.h"
 #include "GraphicContext.h"
-#include "Surface.h"
+#include "WindowingFactory.h"
+#include "Settings.h"
+#include "LocalizeStrings.h"
+#include "CPUInfo.h"
+
 CSysInfo g_sysinfo;
 
 void CBackgroundSystemInfoLoader::GetInformation()
@@ -41,7 +45,7 @@ void CBackgroundSystemInfoLoader::GetInformation()
   callback->m_systemuptime = callback->GetSystemUpTime(false);
   callback->m_systemtotaluptime = callback->GetSystemUpTime(true);
   callback->m_InternetState = callback->GetInternetState();
-#if defined (_LINUX) || defined(_WIN32PC)
+#if defined (_LINUX) || defined(_WIN32)
   callback->m_videoencoder    = callback->GetVideoEncoder();
   callback->m_xboxversion     = callback->GetXBVerInfo();
   callback->m_cpufrequency    = callback->GetCPUFreqInfo();
@@ -51,32 +55,32 @@ void CBackgroundSystemInfoLoader::GetInformation()
 #endif
 }
 
-const char *CSysInfo::TranslateInfo(DWORD dwInfo)
+const char *CSysInfo::TranslateInfo(int info)
 {
-  switch(dwInfo)
+  switch(info)
   {
   case SYSTEM_VIDEO_ENCODER_INFO:
     if (m_bRequestDone) return m_videoencoder;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case NETWORK_MAC_ADDRESS:
     if (m_bRequestDone) return m_macadress;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_KERNEL_VERSION:
     if (m_bRequestDone) return m_kernelversion;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_CPUFREQUENCY:
     if (m_bRequestDone) return m_cpufrequency;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
     break;
   case SYSTEM_UPTIME:
     if (!m_systemuptime.IsEmpty()) return m_systemuptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_TOTALUPTIME:
      if (!m_systemtotaluptime.IsEmpty()) return m_systemtotaluptime;
-    else return CInfoLoader::BusyInfo(dwInfo);
+    else return CInfoLoader::BusyInfo(info);
   case SYSTEM_INTERNET_STATE:
     if (!m_InternetState.IsEmpty())return m_InternetState;
     else return g_localizeStrings.Get(503); //Busy text
@@ -112,7 +116,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
 
   if( !drive.IsEmpty() && !drive.Equals("*") ) 
   { 
-#ifdef _WIN32PC
+#ifdef _WIN32
     UINT uidriveType = GetDriveType(( drive + ":\\" ));
     if(uidriveType != DRIVE_UNKNOWN && uidriveType != DRIVE_NO_ROOT_DIR)
 #endif
@@ -122,7 +126,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
   {
     ULARGE_INTEGER ULTotalTmp= { { 0 } };
     ULARGE_INTEGER ULTotalFreeTmp= { { 0 } };
-#ifdef _WIN32PC 
+#ifdef _WIN32 
     char* pcBuffer= NULL;
     DWORD dwStrLength= GetLogicalDriveStrings( 0, pcBuffer );
     if( dwStrLength != 0 )
@@ -175,7 +179,7 @@ bool CSysInfo::GetDiskSpace(const CStdString drive,int& iTotal, int& iTotalFree,
 
 double CSysInfo::GetCPUFrequency()
 {
-#if defined (_LINUX) || defined(_WIN32PC)
+#if defined (_LINUX) || defined(_WIN32)
   return double (g_cpuInfo.getCPUFrequency());
 #else
   return 0;
@@ -194,8 +198,8 @@ CStdString CSysInfo::GetMACAddress()
 
 CStdString CSysInfo::GetVideoEncoder()
 {
-#ifdef HAS_SDL_OPENGL
-  return "GPU: " + g_graphicsContext.getScreenSurface()->GetGLRenderer();
+#ifdef HAS_GL
+  return "GPU: " + g_Windowing.GetRenderRenderer();
 #else // TODO:DIRECTX
   return "GPU: DIRECTX";
 #endif
@@ -600,7 +604,7 @@ CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   result += "Windows; ";
   result += GetKernelVersion();
 #elif defined(__APPLE__)
@@ -638,4 +642,5 @@ bool CSysInfo::IsAppleTV()
   return result;
 }
 #endif
+
 

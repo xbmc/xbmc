@@ -19,13 +19,14 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "ApplicationMessenger.h"
 #include "Application.h"
 
 #include "TextureManager.h"
 #include "PlayListPlayer.h"
 #include "Util.h"
+#include "SectionLoader.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif
@@ -37,24 +38,26 @@
 #include "GUIWindowManager.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "FileItem.h"
 #include "GUIDialog.h"
+#include "WindowingFactory.h"
 
 #include "PowerManager.h"
 
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
-#elif defined _WIN32PC
+#elif defined _WIN32
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined __APPLE__
 #include "CocoaInterface.h"
 #endif
 #include "MediaManager.h"
+#include "LocalizeStrings.h"
+#include "SingleLock.h"
 
 using namespace std;
-
-extern HWND g_hWnd;
 
 CApplicationMessenger::~CApplicationMessenger()
 {
@@ -84,7 +87,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   if (wait)
   { // check that we're not being called from our application thread, else we'll be waiting
     // forever!
-    if (GetCurrentThreadId() != g_application.GetThreadId())
+    if (!g_application.IsCurrentThread())
       message.hWaitEvent = CreateEvent(NULL, true, false, NULL);
     else
     {
@@ -102,6 +105,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   msg->hWaitEvent = message.hWaitEvent;
   msg->lpVoid = message.lpVoid;
   msg->strParam = message.strParam;
+  msg->params = message.params;
 
   CSingleLock lock (m_critSection);
   if (msg->dwMessage == TMSG_DIALOG_DOMODAL ||
@@ -177,10 +181,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#ifndef HAS_SDL
-        // send the WM_CLOSE window message
-        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
-#endif
+        g_Windowing.DestroyWindow();
         g_powerManager.Powerdown();
         exit(64);
       }
@@ -210,10 +211,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX) && !defined(HAS_SDL)
-        // send the WM_CLOSE window message
-        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
-#endif
+        g_Windowing.DestroyWindow();
         g_powerManager.Reboot();
         exit(66);
       }
@@ -223,10 +221,7 @@ case TMSG_POWERDOWN:
       {
         g_application.Stop();
         Sleep(200);
-#if !defined(_LINUX) && !defined(HAS_SDL)
-        // send the WM_CLOSE window message
-        ::SendMessage( g_hWnd, WM_CLOSE, 0, 0 );
-#endif
+        g_Windowing.DestroyWindow();
         g_powerManager.Reboot();
         exit(66);
       }
@@ -234,7 +229,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_RESTARTAPP:
       {
-#ifdef _WIN32PC
+#ifdef _WIN32
         g_application.Stop();
         Sleep(200);
 #endif
@@ -413,7 +408,7 @@ case TMSG_POWERDOWN:
     case TMSG_EXECUTE_OS:
 #if defined( _LINUX) && !defined(__APPLE__)
       CUtil::RunCommandLine(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
       CWIN32Util::XBMCShellExecute(pMsg->strParam.c_str(), (pMsg->dwParam1 == 1));
 #endif
       break;
@@ -521,7 +516,7 @@ case TMSG_POWERDOWN:
 
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
-        m_gWindowManager.ActivateWindow(pMsg->dwParam1, pMsg->strParam, pMsg->dwParam2 > 0);
+        m_gWindowManager.ActivateWindow(pMsg->dwParam1, pMsg->params, pMsg->dwParam2 > 0);
       }
       break;
 
@@ -533,6 +528,7 @@ case TMSG_POWERDOWN:
       m_gWindowManager.Render_Internal();
       break;
 
+#ifdef HAS_DVD_DRIVE
     case TMSG_OPTICAL_MOUNT:
       {
         CMediaSource share;
@@ -545,7 +541,7 @@ case TMSG_POWERDOWN:
         share.strName = share.strPath;
         share.m_ignore = true;
         share.m_iDriveType = CMediaSource::SOURCE_TYPE_DVD;
-        g_mediaManager.AddAutoSource(share, (bool)pMsg->dwParam1);
+        g_mediaManager.AddAutoSource(share, pMsg->dwParam1 != 0);
       }
       break; 
 
@@ -557,6 +553,7 @@ case TMSG_POWERDOWN:
         g_mediaManager.RemoveAutoSource(share);
       }
       break; 
+#endif
   }
 }
 
@@ -800,10 +797,10 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::ActivateWindow(int windowID, const CStdString &path, bool swappingWindows)
+void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString> &params, bool swappingWindows)
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
-  tMsg.strParam = path;
+  tMsg.params = params;
   SendMessage(tMsg, true);
 }
 

@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowMusicPlaylistEditor.h"
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
@@ -32,9 +32,12 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
 #include "FileItem.h"
+#include "GUISettings.h"
+#include "GUIUserMessages.h"
+#include "LocalizeStrings.h"
+#include "AutoPtrHandle.h"
 
 using namespace AUTOPTR;
-using namespace MEDIA_DETECT;
 
 #define CONTROL_LABELFILES        12
 
@@ -60,12 +63,12 @@ CGUIWindowMusicPlaylistEditor::~CGUIWindowMusicPlaylistEditor(void)
 
 bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.id == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
   { // don't go to parent folder unless we're on the list in question
     m_gWindowManager.PreviousWindow();
     return true;
   }
-  if (action.wID == ACTION_CONTEXT_MENU && GetFocusedControlID() == CONTROL_PLAYLIST)
+  if (action.id == ACTION_CONTEXT_MENU && GetFocusedControlID() == CONTROL_PLAYLIST)
   {
     int item = GetCurrentPlaylistItem();
     if (item >= 0)
@@ -95,7 +98,7 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
         m_vecItems->m_strPath.Empty();
       CGUIWindowMusicBase::OnMessage(message);
 
-      if (!message.GetStringParam().size() == 0)
+      if (message.GetNumStringParams())
         LoadPlaylist(message.GetStringParam());
 
       return true;
@@ -218,9 +221,11 @@ void CGUIWindowMusicPlaylistEditor::PlayItem(int iItem)
   if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
+#ifdef HAS_DVD_DRIVE  
   if (m_vecItems->Get(iItem)->IsDVD())
-    CAutorun::PlayDisc();
+    MEDIA_DETECT::CAutorun::PlayDisc();
   else
+#endif    
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 

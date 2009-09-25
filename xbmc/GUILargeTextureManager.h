@@ -23,9 +23,6 @@
 
 #include "utils/Thread.h"
 #include "utils/CriticalSection.h"
-#ifdef HAS_SDL
-#include "SDL/SDL.h"
-#endif
 #include "TextureManager.h"
 
 #include <assert.h>
@@ -38,7 +35,7 @@ public:
 
   virtual void Process();
 
-  bool GetImage(const CStdString &path, CTexture &texture, int &orientation, bool firstRequest);
+  bool GetImage(const CStdString &path, CTextureArray &texture, int &orientation, bool firstRequest);
   void ReleaseImage(const CStdString &path, bool immediately = false);
 
   void CleanupUnusedImages();
@@ -87,20 +84,16 @@ protected:
       return false;
     };
 
-    void SetTexture(XBMC::TexturePtr texture, int width, int height, int orientation)
+    void SetTexture(CBaseTexture* texture, int width, int height, int orientation)
     {
       assert(!m_texture.size());
       if (texture)
-#ifdef HAS_SDL_OPENGL
-        m_texture.Set(new CGLTexture(texture, false, true), width, height);
-#else
         m_texture.Set(texture, width, height);
-#endif
       m_orientation = orientation;
     };
 
     const CStdString &GetPath() const { return m_path; };
-    const CTexture &GetTexture() const { return m_texture; };
+    const CTextureArray &GetTexture() const { return m_texture; };
     int GetOrientation() const { return m_orientation; };
 
   private:
@@ -108,7 +101,7 @@ protected:
 
     unsigned int m_refCount;
     CStdString m_path;
-    CTexture m_texture;
+    CTextureArray m_texture;
     int m_orientation;
     unsigned int m_timeToDelete;
   };
@@ -126,4 +119,5 @@ private:
 };
 
 extern CGUILargeTextureManager g_largeTextureManager;
+
 

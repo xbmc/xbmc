@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -55,6 +54,10 @@
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
+
+#if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif
 
 #ifdef __cplusplus
@@ -104,9 +107,9 @@ namespace PYXBMC
   PyObject* XBMCGUI_GetCurrentWindowId(PyObject *self, PyObject *args)
   {
     PyGUILock();
-    DWORD dwId = m_gWindowManager.GetActiveWindow();
+    int id = m_gWindowManager.GetActiveWindow();
     PyGUIUnlock();
-    return Py_BuildValue((char*)"l", dwId);
+    return Py_BuildValue((char*)"l", id);
   }
 
   // getCurrentWindowDialogId() method
@@ -119,9 +122,9 @@ namespace PYXBMC
   PyObject* XBMCGUI_GetCurrentWindowDialogId(PyObject *self, PyObject *args)
   {
     PyGUILock();
-    DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
+    int id = m_gWindowManager.GetTopMostModalDialogID();
     PyGUIUnlock();
-    return Py_BuildValue((char*)"l", dwId);
+    return Py_BuildValue((char*)"l", id);
   }
 
   // define c functions to be used in python here

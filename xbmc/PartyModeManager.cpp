@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "MusicDatabase.h"
@@ -27,9 +26,11 @@
 #include "GUIWindowMusicPlaylist.h"
 #include "SmartPlaylist.h"
 #include "GUIDialogProgress.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
+#include "Settings.h"
 
 using namespace std;
 using namespace PLAYLIST;

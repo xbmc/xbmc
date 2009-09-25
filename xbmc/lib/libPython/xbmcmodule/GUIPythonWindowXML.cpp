@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIPythonWindowXML.h"
 #include "GUIWindow.h"
 #include "pyutil.h"
@@ -33,6 +32,9 @@
 #include "FileSystem/File.h"
 #include "TextureManager.h"
 #include "../XBPython.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -43,13 +45,13 @@ using namespace std;
 
 using namespace PYXBMC;
 
-CGUIPythonWindowXML::CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath)
-: CGUIMediaWindow(dwId, strXML)
+CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString strFallBackPath)
+: CGUIMediaWindow(id, strXML)
 {
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
-  m_coordsRes = PAL_4x3;
+  m_coordsRes = RES_PAL_4x3;
   m_scriptPath = strFallBackPath;
 }
 
@@ -187,7 +189,7 @@ bool CGUIPythonWindowXML::OnMessage(CGUIMessage& message)
           else if (controlClicked->IsContainer() && message.GetParam1() == ACTION_MOUSE_RIGHT_CLICK)
           {
             CAction action;
-            action.wID = ACTION_CONTEXT_MENU;
+            action.id = ACTION_CONTEXT_MENU;
 
             PyXBMCAction* inf = new PyXBMCAction;
             inf->pObject = Action_FromAction(action);
@@ -436,4 +438,5 @@ void CGUIPythonWindowXML::ClearScriptStrings()
   // Unload temporary language strings
   g_localizeStrings.ClearBlock(m_scriptPath);
 }
+
 

@@ -20,6 +20,8 @@
  *
  */
 
+#include "StdString.h"
+
 #include <boost/shared_ptr.hpp>
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
@@ -65,7 +67,6 @@ private:
   bool MovePlaying();
   void SendUpdateMessage();
   void OnError(int iError, const CStdString& strLogMessage);
-  int GetSongCount(int iType);
   void ClearState();
   void UpdateStats();
   std::pair<CStdString,CStdString> GetWhereClauseWithHistory() const;

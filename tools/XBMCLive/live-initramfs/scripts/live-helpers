@@ -25,6 +25,24 @@ else
 	volume_fstype='/lib/udev/blkid -s TYPE -o value'
 fi
 
+!(wc --version > /dev/null 2>&1) || wcIsAvailable=1
+
+wordCount()
+{
+	cmdLine=${1}
+	if [ -n "${wcIsAvailable}" ];
+	then
+		num=$($cmdLine | wc -w)
+	else
+		num=0
+		for word in $($cmdLine);
+		do
+			num=$(( $num + 1 ))
+		done
+	fi
+	echo $num
+}
+
 
 sys2dev ()
 {
@@ -346,15 +364,8 @@ find_cow_device ()
 				do
 					load_keymap
 
-					echo -n "Enter passphrase for ${pers_label} on ${devname}: " >&6
-					read -s passphrase
-					echo "${passphrase}" > /tmp/passphrase
-					unset passphrase
-					exec 9</tmp/passphrase
-					/sbin/cryptsetup luksOpen ${devname} $(basename ${devname})
+					/lib/cryptsetup/askpass "Enter passphrase for ${pers_label} on ${devname}: " /sbin/cryptsetup -T 1 luksOpen ${devname} $(basename ${devname}) --key-file=-
 					error=${?}
-					exec 9<&-
-					rm -f /tmp/passphrase
 
 					devname="/dev/mapper/$(basename ${devname})"
 

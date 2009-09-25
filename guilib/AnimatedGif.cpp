@@ -26,9 +26,9 @@
 //
 // ****************************************************************************
 
-#include "include.h"
 #include "AnimatedGif.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/EndianSwap.h"
 
 #ifdef _WIN32PC
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -47,24 +47,9 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
  #define BI_BITFIELDS  3L
 #endif
 
-// Use SDL macros to swap data endianness
-// This assumes that big endian systems use SDL
-// Macros do not do anything on little endian systems
-#ifdef HAS_SDL
-#include <SDL/SDL_endian.h>
-
-#if SDL_BYTEORDER == SDL_LIL_ENDIAN
-#define SWAP16(X)    (void)X
-#define SWAP32(X)    (void)X
-#else
-#define SWAP16(X)    X=SDL_Swap16(X)
-#define SWAP32(X)    X=SDL_Swap32(X)
-#endif
-
-#else
-#define SWAP16(X)    (void)X
-#define SWAP32(X)    (void)X
-#endif
+// Macros to swap data endianness
+#define SWAP16(X)    X=Endian_SwapLE16(X)
+#define SWAP32(X)    X=Endian_SwapLE32(X)
 
 // pre-declaration:
 int LZWDecoder (char*, char*, short, int, int, int, const int);
@@ -88,22 +73,21 @@ CAnimatedGif::~CAnimatedGif()
 {
   delete [] pbmi;
   delete [] Raster;
+  delete [] Palette;
 }
 
 // Init: Allocates space for raster and palette in GDI-compatible structures.
 void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
 {
-  if (Raster)
-  {
-    delete[] Raster;
-    Raster = NULL;
-  }
+  delete[] Raster;
+  Raster = NULL;
 
-  if (pbmi)
-  {
-    delete[] pbmi;
-    pbmi = NULL;
-  }
+  delete[] pbmi;
+  pbmi = NULL;
+
+  delete[] Palette;
+  Palette = NULL;
+
   // Standard members setup
   Transparent = -1;
   BytesPerRow = Width = iWidth;
@@ -120,8 +104,8 @@ void CAnimatedGif::Init(int iWidth, int iHeight, int iBPP, int iLoops)
   }
   else
   {
-    pbmi = (GUIBITMAPINFO*)new char[sizeof(GUIBITMAPINFOHEADER) + (1 << BPP) * sizeof(COLOR)];
-    Palette = (COLOR*)((char*)pbmi + sizeof(GUIBITMAPINFOHEADER));
+    pbmi = (GUIBITMAPINFO*)new char[sizeof(GUIBITMAPINFOHEADER)];
+    Palette = new COLOR[256];
   }
 
   BytesPerRow += (ALIGN - Width % ALIGN) % ALIGN; // Align BytesPerRow
@@ -147,7 +131,7 @@ CAnimatedGif& CAnimatedGif::operator = (CAnimatedGif& rhs)
 {
   Init(rhs.Width, rhs.Height, rhs.BPP); // respects virtualization
   memcpy(Raster, rhs.Raster, BytesPerRow*Height);
-  memcpy((char*)Palette, (char*)rhs.Palette, (1 << BPP)*sizeof(*Palette));
+  memcpy(Palette, rhs.Palette, 256*sizeof(COLOR));
   return *this;
 }
 

@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"
 

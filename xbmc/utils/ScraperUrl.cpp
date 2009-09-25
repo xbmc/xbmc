@@ -19,10 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "XMLUtils.h"
 #include "ScraperUrl.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "URL.h"

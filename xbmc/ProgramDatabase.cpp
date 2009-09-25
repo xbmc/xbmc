@@ -19,12 +19,14 @@
  *
  */
 
-#include "stdafx.h"
 #include "ProgramDatabase.h"
 #include "utils/fstrcmp.h"
 #include "Util.h"
 #include "GUIWindowFileManager.h"
 #include "FileItem.h"
+#include "GUISettings.h"
+#include "Settings.h"
+#include "log.h"
 
 using namespace XFILE;
 

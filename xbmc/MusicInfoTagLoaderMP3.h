@@ -22,6 +22,8 @@
 
 #include "ImusicInfoTagLoader.h"
 #include "cores/paplayer/ReplayGain.h"
+#include "system.h"
+
 #include <math.h>
 
 namespace MUSIC_INFO

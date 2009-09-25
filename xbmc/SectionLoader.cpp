@@ -19,9 +19,11 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace std;
 

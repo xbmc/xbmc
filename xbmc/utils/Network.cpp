@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "Network.h"
 #include "../Application.h"
 #include "../lib/libscrobbler/lastfmscrobbler.h"
@@ -112,63 +112,78 @@ void CNetwork::NetworkMessage(EMESSAGE message, DWORD dwParam)
     case SERVICES_UP:
     {
       CLog::Log(LOGDEBUG, "%s - Starting network services",__FUNCTION__);
-#ifdef HAS_TIME_SERVER
-      g_application.StartTimeServer();
-#endif
-#ifdef HAS_WEB_SERVER
-      g_application.StartWebServer();
-#endif
-#ifdef HAS_FTP_SERVER
-      g_application.StartFtpServer();
-#endif
-#ifdef HAS_UPNP
-      g_application.StartUPnP();
-#endif
-#ifdef HAS_EVENT_SERVER
-      g_application.StartEventServer();
-#endif
-#ifdef HAS_DBUS_SERVER
-      g_application.StartDbusServer();
-#endif
-#ifdef HAS_ZEROCONF
-      g_application.StartZeroconf();
-#endif
-      CLastfmScrobbler::GetInstance()->Init();
-      CLibrefmScrobbler::GetInstance()->Init();
-      g_rssManager.Start();
+      StartServices();
     }
     break;
     case SERVICES_DOWN:
     {
-      CLog::Log(LOGDEBUG, "%s - Stopping network services",__FUNCTION__);
-#ifdef HAS_TIME_SERVER
-      g_application.StopTimeServer();
-#endif
-#ifdef HAS_WEB_SERVER
-      g_application.StopWebServer();
-#endif
-#ifdef HAS_FTP_SERVER
-      g_application.StopFtpServer();
-#endif
-#ifdef HAS_UPNP
-      g_application.StopUPnP();
-#endif
-#ifdef HAS_EVENT_SERVER
-      g_application.StopEventServer();
-#endif
-#ifdef HAS_DBUS_SERVER
-      g_application.StopDbusServer();
-#endif
-#ifdef HAS_ZEROCONF
-      g_application.StopZeroconf();
-#endif      
-      CLastfmScrobbler::GetInstance()->Term();
-      CLibrefmScrobbler::GetInstance()->Term();
-      // smb.Deinit(); if any file is open over samba this will break.
-
-      g_rssManager.Stop();
+      CLog::Log(LOGDEBUG, "%s - Signaling network services to stop",__FUNCTION__);
+      StopServices(false); //tell network services to stop, but don't wait for them yet
+      CLog::Log(LOGDEBUG, "%s - Waiting for network services to stop",__FUNCTION__);
+      StopServices(true); //wait for network services to stop
     }
     break;
   }
 }
 
+void CNetwork::StartServices()
+{
+#ifdef HAS_TIME_SERVER
+  g_application.StartTimeServer();
+#endif
+#ifdef HAS_WEB_SERVER
+  g_application.StartWebServer();
+#endif
+#ifdef HAS_FTP_SERVER
+  g_application.StartFtpServer();
+#endif
+#ifdef HAS_UPNP
+  g_application.StartUPnP();
+#endif
+#ifdef HAS_EVENT_SERVER
+  g_application.StartEventServer();
+#endif
+#ifdef HAS_DBUS_SERVER
+  g_application.StartDbusServer();
+#endif
+#ifdef HAS_ZEROCONF
+  g_application.StartZeroconf();
+#endif
+  CLastfmScrobbler::GetInstance()->Init();
+  CLibrefmScrobbler::GetInstance()->Init();
+  g_rssManager.Start();
+}
+
+void CNetwork::StopServices(bool bWait)
+{
+  if (bWait)
+  {
+#ifdef HAS_TIME_SERVER
+    g_application.StopTimeServer();
+#endif
+#ifdef HAS_FTP_SERVER
+    g_application.StopFtpServer();
+#endif
+#ifdef HAS_UPNP
+    g_application.StopUPnP();
+#endif
+#ifdef HAS_EVENT_SERVER
+    g_application.StopEventServer();
+#endif
+#ifdef HAS_ZEROCONF
+    g_application.StopZeroconf();
+#endif      
+    CLastfmScrobbler::GetInstance()->Term();
+    CLibrefmScrobbler::GetInstance()->Term();
+    // smb.Deinit(); if any file is open over samba this will break.
+  
+    g_rssManager.Stop();
+  }
+
+#ifdef HAS_WEB_SERVER
+  g_application.StopWebServer(bWait);
+#endif
+#ifdef HAS_DBUS_SERVER
+  g_application.StopDbusServer(bWait);
+#endif
+}

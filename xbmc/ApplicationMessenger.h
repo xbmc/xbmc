@@ -21,6 +21,11 @@
  *
  */
 
+#include "utils/CriticalSection.h"
+#include "StdString.h"
+
+#include <queue>
+
 class CFileItem;
 class CGUIDialog;
 
@@ -74,7 +79,8 @@ typedef struct
   DWORD dwMessage;
   DWORD dwParam1;
   DWORD dwParam2;
-  std::string strParam;
+  CStdString strParam;
+  std::vector<CStdString> params;
   HANDLE hWaitEvent;
   LPVOID lpVoid;
 }
@@ -130,10 +136,10 @@ public:
   void Show(CGUIDialog *pDialog);
   void WindowManagerProcess(bool renderOnly = false); // will call m_gWindowManager.Process on the rendering thread
   void Render(); // will call m_gWindowManager.Render on the rendering thread
-  void ActivateWindow(int windowID, const CStdString &path, bool swappingWindows);
+  void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
 
   void OpticalMount(CStdString device, bool bautorun=false); 
- 	void OpticalUnMount(CStdString device);
+  void OpticalUnMount(CStdString device);
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);

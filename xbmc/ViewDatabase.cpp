@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "ViewDatabase.h"
 #include "Util.h"
 #include "ViewState.h"
+#include "utils/log.h"
 
 #define VIEW_DATABASE_VERSION 3
 

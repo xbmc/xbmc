@@ -42,6 +42,7 @@ namespace DIRECTORY
       long GetEpisodeId() const { return m_idEpisode; }
       long GetStudioId() const { return m_idStudio; }
       long GetMVideoId() const { return m_idMVideo; }
+      long GetSetId() const { return m_idSet; }
 
     protected:
       void SetQueryParam(NODE_TYPE NodeType, const CStdString& strNodeName);
@@ -60,6 +61,7 @@ namespace DIRECTORY
       long m_idStudio;
       long m_idMVideo;
       long m_idAlbum;
+      long m_idSet;
     };
   }
 }

@@ -22,10 +22,12 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
+
 #include <vector>
 #include <string>
-#ifdef HAS_SDL_OPENGL
+
+#if defined(HAS_GL) || defined(HAS_GLES)
 
 namespace Shaders {
 
@@ -42,8 +44,8 @@ namespace Shaders {
     virtual bool Compile() = 0;
     virtual void Free() = 0;
     virtual GLuint Handle() = 0;
-    virtual void SetSource(string& src) { m_source = src; }
-    virtual void SetSource(const char* src) { m_source = src; }
+    virtual void SetSource(const string& src) { m_source = src; }
+    virtual bool LoadSource(const string& filename, const string& prefix = "");
     bool OK() { return m_compiled; }
 
   protected:
@@ -77,12 +79,14 @@ namespace Shaders {
     virtual bool Compile();
   };
 
+#ifndef HAS_GLES
   class CARBVertexShader : public CVertexShader
   {
   public:
     virtual void Free();
     virtual bool Compile();
   };
+#endif
 
 
   //////////////////////////////////////////////////////////////////////
@@ -108,13 +112,14 @@ namespace Shaders {
     virtual bool Compile();
   };
 
+#ifndef HAS_GLES
   class CARBPixelShader : public CPixelShader
   {
   public:
     virtual void Free();
     virtual bool Compile();
   };
-
+#endif
 
   //////////////////////////////////////////////////////////////////////
   // CShaderProgram - the complete shader consisting of both the vertex
@@ -170,14 +175,6 @@ namespace Shaders {
     virtual bool OnEnabled() { return true; }
     virtual void OnDisabled() { }
 
-    // sets the vertex shader's source (in GLSL)
-    virtual void SetVertexShaderSource(const char* src) { m_pVP->SetSource(src); }
-    virtual void SetVertexShaderSource(string& src) { m_pVP->SetSource(src); }
-
-    // sets the pixel shader's source (in GLSL)
-    virtual void SetPixelShaderSource(const char* src) { m_pFP->SetSource(src); }
-    virtual void SetPixelShaderSource(string& src) { m_pFP->SetSource(src); }
-
     virtual GLuint ProgramHandle() { return m_shaderProgram; }
 
   protected:
@@ -188,13 +185,22 @@ namespace Shaders {
   };
 
 
-  class CGLSLShaderProgram : public CShaderProgram
+  class CGLSLShaderProgram 
+    : virtual public CShaderProgram
   {
   public:
     CGLSLShaderProgram()
       {
         m_pFP = new CGLSLPixelShader();
         m_pVP = new CGLSLVertexShader();
+      }
+    CGLSLShaderProgram(const std::string& vert
+                     , const std::string& frag)
+      {
+        m_pFP = new CGLSLPixelShader();
+        m_pFP->LoadSource(vert);
+        m_pVP = new CGLSLVertexShader();
+        m_pVP->LoadSource(vert);
       }
 
     // enable the shader
@@ -214,13 +220,23 @@ namespace Shaders {
   };
 
 
-  class CARBShaderProgram : public CShaderProgram
+#ifndef HAS_GLES
+  class CARBShaderProgram 
+    : virtual public CShaderProgram
   {
   public:
     CARBShaderProgram()
       {
         m_pFP = new CARBPixelShader();
         m_pVP = new CARBVertexShader();
+      }
+    CARBShaderProgram(const std::string& vert
+                    , const std::string& frag)
+      {
+        m_pFP = new CARBPixelShader();
+        m_pFP->LoadSource(vert);
+        m_pVP = new CARBVertexShader();
+        m_pVP->LoadSource(vert);
       }
 
     // enable the shader
@@ -238,6 +254,7 @@ namespace Shaders {
   protected:
 
   };
+#endif
 
 } // close namespace
 

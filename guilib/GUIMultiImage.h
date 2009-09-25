@@ -39,7 +39,7 @@
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
+  CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
   CGUIMultiImage(const CGUIMultiImage &from);
   virtual ~CGUIMultiImage(void);
   virtual CGUIMultiImage *Clone() const { return new CGUIMultiImage(*this); };

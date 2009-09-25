@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "LibraryLoader.h"
 #include <string.h>
 #include <stdlib.h>
+#include "utils/log.h"
 
 LibraryLoader::LibraryLoader(const char* libraryFile)
 {

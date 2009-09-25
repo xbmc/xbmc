@@ -19,6 +19,7 @@
  *
  */
 
+#include "system.h"
 #include "PerformanceSample.h"
 
 #ifdef _LINUX
@@ -107,6 +108,7 @@ double CPerformanceSample::GetEstimatedError()
 
   return (elapsed / 100000.0) * 2.0; // one measure at start time and another when done.
 }
+
 
 
 

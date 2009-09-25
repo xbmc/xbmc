@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderMP3.h"
 #include "APEv2Tag.h"
 #include "Id3Tag.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileSystem/File.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

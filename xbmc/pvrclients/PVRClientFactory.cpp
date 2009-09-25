@@ -19,7 +19,9 @@
  *
  */
 
-#include "stdafx.h"
+#include "StringUtils.h"
+#include "utils/log.h"
+#include "FileItem.h"
 #include "PVRClientFactory.h"
 #include "DllPVRClient.h"
 #include "Util.h"

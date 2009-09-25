@@ -12,13 +12,12 @@
 #ifndef KARAOKELYRICSCDG_H
 #define KARAOKELYRICSCDG_H
 
-#if defined(HAS_SDL_OPENGL)
-  #include "TextureManager.h"
-#endif
-
 
 #include "karaokelyrics.h"
 #include "Cdg.h"
+
+class CBaseTexture;
+typedef uint32_t color_t;
 
 class CKaraokeLyricsCDG : public CKaraokeLyrics
 {
@@ -67,16 +66,9 @@ class CKaraokeLyricsCDG : public CKaraokeLyrics
     errCode      m_FileState;
 
     //! Rendering stuff
-#if defined(HAS_SDL_OPENGL)
-    CGLTexture * m_pCdgTexture;
-#elif defined(HAS_SDL_2D)
-    XBMC::TexturePtr m_pCdgTexture;
-#else
-    LPDIRECT3DDEVICE9 m_pd3dDevice;
-    XBMC::TexturePtr m_pCdgTexture;
-#endif
-    DWORD  m_bgAlpha;  //!< background alpha
-    DWORD  m_fgAlpha;  //!< foreground alpha
+    CBaseTexture* m_pCdgTexture;
+    color_t  m_bgAlpha;  //!< background alpha
+    color_t  m_fgAlpha;  //!< foreground alpha
 };
 
 #endif

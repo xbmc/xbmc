@@ -19,15 +19,16 @@
  *
  */
  
-#include "stdafx.h"
-
-#ifndef HAS_SDL
+#ifdef HAS_DX
 
 #include "WinRenderer.h"
 #include "Util.h"
-#include "XBVideoConfig.h"
 #include "Settings.h"
-
+#include "Texture.h"
+#include "WindowingFactory.h"
+#include "AdvancedSettings.h"
+#include "SingleLock.h"
+#include "utils/log.h"
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -63,14 +64,14 @@ CWinRenderer::CWinRenderer(LPDIRECT3DDEVICE9 pDevice)
 {
   m_pD3DDevice = pDevice;
   m_fSourceFrameRatio = 1.0f;
-  m_iResolution = PAL_4x3;
+  m_iResolution = RES_PAL_4x3;
   memset(m_pOSDYTexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
   memset(m_pOSDATexture,0,sizeof(LPDIRECT3DTEXTURE9)*NUM_BUFFERS);
-  memset(m_YUVTexture, 0, sizeof(m_YUVTexture));
+  memset(m_YUVMemoryTexture, 0, sizeof(m_YUVMemoryTexture));
+  memset(m_YUVVideoTexture, 0, sizeof(m_YUVVideoTexture));
 
-  m_lowMemShader = NULL;
   m_iYV12RenderBuffer = 0;
-
+  m_pYUV2RGBEffect = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -397,10 +398,9 @@ void CWinRenderer::RenderOSD()
 //Get resolution based on current mode.
 RESOLUTION CWinRenderer::GetResolution()
 {
-  if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
-  {
+  if (g_graphicsContext.IsFullScreenRoot() && (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
     return m_iResolution;
-  }
+
   return g_graphicsContext.GetVideoResolution();
 }
 
@@ -499,6 +499,8 @@ void CWinRenderer::ManageDisplay()
 
 void CWinRenderer::ChooseBestResolution(float fps)
 {
+  return;
+  /* elis
   bool bUsingPAL = g_videoConfig.HasPAL();    // current video standard:PAL or NTSC
   bool bCanDoWidescreen = g_videoConfig.HasWidescreen(); // can widescreen be enabled?
   bool bWideScreenMode = false;
@@ -537,14 +539,14 @@ void CWinRenderer::ChooseBestResolution(float fps)
   // it's a PAL setting, whereby we use the above setting to autoswitch to PAL60
   // if appropriate
   RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
-  if ( DisplayRes != AUTORES )
+  if ( DisplayRes != RES_AUTORES )
   {
     if (bPal60)
     {
-      if (DisplayRes == PAL_16x9) DisplayRes = PAL60_16x9;
-      if (DisplayRes == PAL_4x3) DisplayRes = PAL60_4x3;
+      if (DisplayRes == RES_PAL_16x9) DisplayRes = PAL60_16x9;
+      if (DisplayRes == RES_PAL_4x3) DisplayRes = RES_PAL60_4x3;
     }
-    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode, DisplayRes);
+    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode.c_str(), DisplayRes);
     m_iResolution = DisplayRes;
     return;
   }
@@ -566,16 +568,16 @@ void CWinRenderer::ChooseBestResolution(float fps)
     if (bPal60)
     {
       if (bWideScreenMode)
-        m_iResolution = PAL60_16x9;
+        m_iResolution = RES_PAL60_16x9;
       else
-        m_iResolution = PAL60_4x3;
+        m_iResolution = RES_PAL60_4x3;
     }
     else    // PAL50
     {
       if (bWideScreenMode)
-        m_iResolution = PAL_16x9;
+        m_iResolution = RES_PAL_16x9;
       else
-        m_iResolution = PAL_4x3;
+        m_iResolution = RES_PAL_4x3;
     }
   }
   else      // NTSC resolutions
@@ -587,20 +589,20 @@ void CWinRenderer::ChooseBestResolution(float fps)
       // If the TV has no HD support widescreen mode is chossen according to video AR
 
       if (g_videoConfig.Has1080i())     // Widescreen TV with 1080i res
-        m_iResolution = HDTV_1080i;
+        m_iResolution = RES_HDTV_1080i;
       else if (g_videoConfig.Has720p()) // Widescreen TV with 720p res
-        m_iResolution = HDTV_720p;
+        m_iResolution = RES_HDTV_720p;
       else if (g_videoConfig.Has480p()) // Widescreen TV with 480p
       {
         if (bWideScreenMode) // Choose widescreen mode according to video AR
-          m_iResolution = HDTV_480p_16x9;
+          m_iResolution = RES_HDTV_480p_16x9;
         else
-          m_iResolution = HDTV_480p_4x3;
+          m_iResolution = RES_HDTV_480p_4x3;
     }
       else if (bWideScreenMode)         // Standard 16:9 TV set with no HD
-        m_iResolution = NTSC_16x9;
+        m_iResolution = RES_NTSC_16x9;
       else
-        m_iResolution = NTSC_4x3;
+        m_iResolution = RES_NTSC_4x3;
     }
     else
     { // The TV set has a 4:3 aspect ratio
@@ -612,36 +614,38 @@ void CWinRenderer::ChooseBestResolution(float fps)
         // The video fits best into widescreen modes so they are
         // the first choices
         if (g_videoConfig.Has1080i())
-          m_iResolution = HDTV_1080i;
+          m_iResolution = RES_HDTV_1080i;
         else if (g_videoConfig.Has720p())
-          m_iResolution = HDTV_720p;
+          m_iResolution = RES_HDTV_720p;
         else if (g_videoConfig.Has480p())
-          m_iResolution = HDTV_480p_4x3;
+          m_iResolution = RES_HDTV_480p_4x3;
         else
-          m_iResolution = NTSC_4x3;
+          m_iResolution = RES_NTSC_4x3;
       }
       else
       {
         // The video fits best into 4:3 modes so 480p
         // is the first choice
         if (g_videoConfig.Has480p())
-          m_iResolution = HDTV_480p_4x3;
+          m_iResolution = RES_HDTV_480p_4x3;
         else if (g_videoConfig.Has1080i())
-          m_iResolution = HDTV_1080i;
+          m_iResolution = RES_HDTV_1080i;
         else if (g_videoConfig.Has720p())
-          m_iResolution = HDTV_720p;
+          m_iResolution = RES_HDTV_720p;
         else
-          m_iResolution = NTSC_4x3;
+          m_iResolution = RES_NTSC_4x3;
       }
     }
   }
 
-  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
+  */
 }
 
 bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   m_fps = fps;
+
   m_iSourceWidth = width;
   m_iSourceHeight = height;
 
@@ -657,7 +661,10 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 
 int CWinRenderer::NextYV12Texture()
 {
-  return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
+  if(m_NumYV12Buffers)
+    return (m_iYV12RenderBuffer + 1) % m_NumYV12Buffers;
+  else
+    return -1;
 }
 
 int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
@@ -669,7 +676,7 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   if( source < 0 )
     return -1;
 
-  YUVPLANES &planes = m_YUVTexture[source];
+  YUVMEMORYPLANES &planes = m_YUVMemoryTexture[source];
 
   image->cshift_x = 1;
   image->cshift_y = 1;
@@ -680,7 +687,11 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
   D3DLOCKED_RECT rect;
   for(int i=0;i<3;i++)
   {
-    planes[i]->LockRect(0, &rect, NULL, 0);
+    rect.pBits = planes[i];
+    if(i == 0)
+      rect.Pitch = m_iSourceWidth;
+    else
+      rect.Pitch = m_iSourceWidth / 2;
     image->stride[i] = rect.Pitch;
     image->plane[i] = (BYTE*)rect.pBits;
   }
@@ -690,15 +701,7 @@ int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
 
 void CWinRenderer::ReleaseImage(int source, bool preserve)
 {
-  if( source == AUTOSOURCE )
-    source = NextYV12Texture();
-
-  if( source < 0 )
-    return;
-
-  YUVPLANES &planes = m_YUVTexture[source];
-  for(int i=0;i<3;i++)
-    planes[i]->UnlockRect(0);
+  // no need to release anything here since we're using system memory
 }
 
 void CWinRenderer::Reset()
@@ -708,20 +711,20 @@ void CWinRenderer::Reset()
 void CWinRenderer::Update(bool bPauseDrawing)
 {
   if (!m_bConfigured) return;
-  
-  CSingleLock lock(g_graphicsContext);
   ManageDisplay();
-  ManageTextures();
 }
 
 void CWinRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 {
-  if (!m_YUVTexture[m_iYV12RenderBuffer][0]) return ;
+  ManageTextures();
+
+  if (!m_YUVMemoryTexture[m_iYV12RenderBuffer][0]) 
+    return ;
   
   CSingleLock lock(g_graphicsContext);
 
   ManageDisplay();
-  ManageTextures();
+ 
   if (clear)
     m_pD3DDevice->Clear( 0L, NULL, D3DCLEAR_TARGET, m_clearColour, 1.0f, 0L );
 
@@ -760,6 +763,7 @@ void CWinRenderer::FlipPage(int source)
 
 unsigned int CWinRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
 {
+  /*
   BYTE *s;
   BYTE *d;
   int i, p;
@@ -823,6 +827,7 @@ unsigned int CWinRenderer::DrawSlice(unsigned char *src[], int stride[], int w, 
     d += rect.Pitch;
   }
   planes[p]->UnlockRect(0);
+  */
 
   return 0;
 }
@@ -832,7 +837,7 @@ unsigned int CWinRenderer::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
-  m_iResolution = PAL_4x3;
+  m_iResolution = RES_PAL_4x3;
 
   m_iOSDRenderBuffer = 0;
   m_iYV12RenderBuffer = 0;
@@ -847,47 +852,10 @@ unsigned int CWinRenderer::PreInit()
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
-  // low memory pixel shader
-  if (!m_lowMemShader)
-  {
-    // lowmem shader (not as accurate, but no need for interleaving of YUV)
-    const char *lowmem =
-      "ps.1.3\n"
-      "def c0, 0      ,0.18664,0.96032,0\n"
-      "def c1, 0.76120,0.38738,0      ,0\n"
-      "def c2, 1,0,1,1\n"
-      "def c3, 0.0625,0.0625,0.0625,0\n"
-      "def c4, 0.58219,0.58219,0.58219,0.5\n"
-      "def c5, 0.03639,0.03639,0.03639,0\n"
-      "tex t0\n"
-      "tex t1\n"
-      "tex t2\n"
-      //"xmma_x2 r0,r1,discard, t1_bias,c0, t2_bias,c1\n"
-      "mul_x2 r0,t1_bias,c0\n"
-      "mul_x2 r1,t2_bias,c1\n"
-      //"xmma discard,discard,r0, r0,c2_bx2, r1,c2_bx2\n"
-      "mul r0, r0,c2_bx2\n"
-      "mad r0, r1, c2_bx2, r0\n"
-      //"xmma_x2 discard,discard,r1, t0,c4, -c3,c4\n"
-      "mul r1, t0,c4\n"
-      "add_x2 r1, r1, -c5\n"
-      "add_sat r0, r0,r1\n";
-
-    LPD3DXBUFFER pShader, pError;
-	  HRESULT hr;
-	  hr = D3DXAssembleShader(lowmem, strlen(lowmem), NULL, NULL, 0, &pShader, &pError);
-	  if (FAILED(hr))
-    {
-      CLog::Log(LOGERROR, "CWinRenderer::PreInit: Call to D3DXAssembleShader failed!" );
-      CLog::Log(LOGERROR,  (char*)pError->GetBufferPointer());
-      return 1;
-    }
-    m_pD3DDevice->CreatePixelShader((D3DPIXELSHADERDEF*)pShader->GetBufferPointer(), &m_lowMemShader);
-    pShader->Release();
-  }
 
   return 0;
 }
+
 
 void CWinRenderer::UnInit()
 {
@@ -900,7 +868,79 @@ void CWinRenderer::UnInit()
     DeleteOSDTextures(i);
   }
 
-  SAFE_RELEASE(m_lowMemShader);
+  g_Windowing.ReleaseEffect(m_pYUV2RGBEffect);
+  m_pYUV2RGBEffect = NULL;
+}
+
+bool CWinRenderer::LoadEffect()
+{
+  CStdString pStrEffect = 
+    "texture g_YTexture;"
+    "texture g_UTexture;"
+    "texture g_VTexture;"
+    "sampler YSampler =" 
+    "sampler_state"
+    "{"
+    "Texture = <g_YTexture>;"
+    "MipFilter = LINEAR;"
+    "MinFilter = LINEAR;"
+    "MagFilter = LINEAR;"
+    "};"
+
+    "sampler USampler = "
+    "sampler_state"
+    "{"
+    "Texture = <g_UTexture>;"
+    "MipFilter = LINEAR;"
+    "MinFilter = LINEAR;"
+    "MagFilter = LINEAR;"
+    "};"
+    "sampler VSampler = "
+    "sampler_state"
+    "{"
+    "Texture = <g_VTexture>;"
+    "MipFilter = LINEAR;"
+    "MinFilter = LINEAR;"
+    "MagFilter = LINEAR;"
+    "};"
+    "struct VS_OUTPUT"
+    "{"
+    "float4 Position   : POSITION;"
+    "float4 Diffuse    : COLOR0;"
+    "float2 TextureUV  : TEXCOORD0;"
+    "};"
+    "struct PS_OUTPUT"
+    "{"
+    "float4 RGBColor : COLOR0;"   
+    "};"
+    "PS_OUTPUT YUV2RGB( VS_OUTPUT In)"
+    "{" 
+    "PS_OUTPUT OUT;"
+    "OUT.RGBColor = In.Diffuse;"
+    "float3 YUV = float3(tex2D (YSampler, In.TextureUV).x - (16.0 / 256.0) ,"
+    "tex2D (USampler, In.TextureUV).x - (128.0 / 256.0), "
+    "tex2D (VSampler, In.TextureUV).x - (128.0 / 256.0)); "
+    "OUT.RGBColor.r = clamp((1.164 * YUV.x + 1.596 * YUV.z),0,255);"
+    "OUT.RGBColor.g = clamp((1.164 * YUV.x - 0.813 * YUV.z - 0.391 * YUV.y), 0,255); "
+    "OUT.RGBColor.b = clamp((1.164 * YUV.x + 2.018 * YUV.y),0,255);" 
+    "OUT.RGBColor.a = 1.0;"
+    "return OUT;"
+    "}"
+    "technique YUV2RGB_T"
+    "{"
+    "pass P0"
+    "{ "         
+    "PixelShader  = compile ps_2_0 YUV2RGB();"
+    "}"
+    "}";
+
+  if(!g_Windowing.CreateEffect(pStrEffect, &m_pYUV2RGBEffect))
+  {
+    CLog::Log(LOGERROR, "D3DXCreateEffectFromFile %s failed", pStrEffect);
+    return false;
+  }
+
+  return true;
 }
 
 void CWinRenderer::Render(DWORD flags)
@@ -956,7 +996,7 @@ void CWinRenderer::SetViewMode(int iViewMode)
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
   { // stretch image to 4:3 ratio
     g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
+    if (m_iResolution == RES_PAL_4x3 || m_iResolution == RES_PAL60_4x3 || m_iResolution == RES_NTSC_4x3 || m_iResolution == RES_HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
       g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
@@ -989,7 +1029,7 @@ void CWinRenderer::SetViewMode(int iViewMode)
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
   { // stretch image to 16:9 ratio
     g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
+    if (m_iResolution == RES_PAL_4x3 || m_iResolution == RES_PAL60_4x3 || m_iResolution == RES_NTSC_4x3 || m_iResolution == RES_HDTV_480p_4x3)
     { // now we need to set g_stSettings.m_fPixelRatio so that
       // fOutputFrameRatio = 16:9.
       g_stSettings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
@@ -1021,7 +1061,7 @@ void CWinRenderer::SetViewMode(int iViewMode)
 
 void CWinRenderer::AutoCrop(bool bCrop)
 {
-  if (!m_YUVTexture[0][PLANE_Y]) return ;
+  if (!m_YUVMemoryTexture[0][PLANE_Y]) return ;
 
   if (bCrop)
   {
@@ -1032,7 +1072,9 @@ void CWinRenderer::AutoCrop(bool bCrop)
     int min_detect = 8;                                // reasonable amount (what mplayer uses)
     int detect = (min_detect + 16)*m_iSourceWidth;     // luminance should have minimum 16
     D3DLOCKED_RECT lr;
-    m_YUVTexture[0][PLANE_Y]->LockRect(0, &lr, NULL, 0);
+    lr.pBits = m_YUVMemoryTexture[0][PLANE_Y];
+    lr.Pitch = m_iSourceWidth;
+   
     int total;
     // Crop top
     BYTE *s = (BYTE *)lr.pBits;
@@ -1094,7 +1136,6 @@ void CWinRenderer::AutoCrop(bool bCrop)
         break;
       }
     }
-    m_YUVTexture[0][PLANE_Y]->UnlockRect(0);
   }
   else
   { // reset to defaults
@@ -1108,6 +1149,12 @@ void CWinRenderer::AutoCrop(bool bCrop)
 
 void CWinRenderer::RenderLowMem(DWORD flags)
 {
+  if(m_pYUV2RGBEffect == NULL)
+    LoadEffect();
+
+  static byte test = 0;
+  test++;
+
   CSingleLock lock(g_graphicsContext);
 
   int index = m_iYV12RenderBuffer;
@@ -1117,15 +1164,33 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     g_graphicsContext.ClipToViewWindow();
   }
 
+  // copy memory textures to video textures
+  D3DLOCKED_RECT rect;
+  LPDIRECT3DSURFACE9 videoSurface;
+  D3DSURFACE_DESC desc;
+  for(unsigned int i = 0; i < 3; i++)
+  {
+    BYTE* src = (BYTE *)m_YUVMemoryTexture[index][i];
+    m_YUVVideoTexture[index][i]->GetSurfaceLevel(0, &videoSurface);
+    videoSurface->GetDesc(&desc);
+    if(videoSurface->LockRect(&rect, NULL, 0) == D3D_OK)
+    {
+      for(unsigned int j = 0; j < desc.Height; j++)
+      {
+        memcpy((BYTE *)rect.pBits + (j * rect.Pitch), src + (j * desc.Width), rect.Pitch);
+      }
+      videoSurface->UnlockRect();
+    }
+  }
+
   for (int i = 0; i < 3; ++i)
   {
-    m_pD3DDevice->SetTexture(i, m_YUVTexture[index][i]);
+    m_pD3DDevice->SetTexture(i, m_YUVVideoTexture[index][i]);
     m_pD3DDevice->SetSamplerState( i, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
     m_pD3DDevice->SetSamplerState( i, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
     m_pD3DDevice->SetSamplerState( i, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
     m_pD3DDevice->SetSamplerState( i, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
   }
-
 
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
   m_pD3DDevice->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
@@ -1136,7 +1201,6 @@ void CWinRenderer::RenderLowMem(DWORD flags)
 
   m_pD3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
 
-
   m_pD3DDevice->SetRenderState( D3DRS_ZENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FOGENABLE, FALSE );
   m_pD3DDevice->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
@@ -1144,7 +1208,6 @@ void CWinRenderer::RenderLowMem(DWORD flags)
  
   m_pD3DDevice->SetRenderState( D3DRS_LIGHTING, FALSE );  // was m_pD3DDevice->SetRenderState( D3DRS_YUVENABLE, FALSE ); ???
   m_pD3DDevice->SetFVF( D3DFVF_XYZRHW | D3DFVF_TEX3 );
-  m_pD3DDevice->SetPixelShader( m_lowMemShader );
 
   //See RGB renderer for comment on this
   #define CHROMAOFFSET_HORIZ 0.25f
@@ -1186,31 +1249,62 @@ void CWinRenderer::RenderLowMem(DWORD flags)
     }
   };
 
-  m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
-  m_pD3DDevice->SetTexture(0, NULL);
-  m_pD3DDevice->SetTexture(1, NULL);
-  m_pD3DDevice->SetTexture(2, NULL);
+  m_pYUV2RGBEffect->SetTechnique( "YUV2RGB_T" );
+  m_pYUV2RGBEffect->SetTexture( "g_YTexture",  m_YUVVideoTexture[index][0] ) ;
+  m_pYUV2RGBEffect->SetTexture( "g_UTexture",  m_YUVVideoTexture[index][1] ) ;
+  m_pYUV2RGBEffect->SetTexture( "g_VTexture",  m_YUVVideoTexture[index][2] ) ;
 
+  UINT cPasses, iPass;
+  if(FAILED (m_pYUV2RGBEffect->Begin( &cPasses, 0 )))
+    return;
+
+  for( iPass = 0; iPass < cPasses; iPass++ )
+  {
+    m_pYUV2RGBEffect->BeginPass( iPass );
+
+    m_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
+    m_pD3DDevice->SetTexture(0, NULL);
+    m_pD3DDevice->SetTexture(1, NULL);
+    m_pD3DDevice->SetTexture(2, NULL);
+  
+    m_pYUV2RGBEffect->EndPass() ;
+  }
+
+  m_pYUV2RGBEffect->End() ;
   m_pD3DDevice->SetPixelShader( NULL );
-
 }
 
-void CWinRenderer::CreateThumbnail(LPDIRECT3DSURFACE9 surface, unsigned int width, unsigned int height)
+void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
 {
   CSingleLock lock(g_graphicsContext);
 
-  LPDIRECT3DSURFACE9 oldRT;
-  RECT saveSize = rd;
-  rd.left = rd.top = 0;
-  rd.right = width;
-  rd.bottom = height;
-  m_pD3DDevice->GetRenderTarget(0, &oldRT);
-  m_pD3DDevice->SetRenderTarget(0, surface);
-  m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
-  RenderLowMem(0);
-  rd = saveSize;
-  m_pD3DDevice->SetRenderTarget(0, oldRT);
-  oldRT->Release();
+  // create a new render surface to copy out of - note, this may be slow on some hardware
+  // due to the TRUE parameter - you're supposed to use GetRenderTargetData.
+  LPDIRECT3DSURFACE9 surface = NULL;
+  if (D3D_OK == m_pD3DDevice->CreateRenderTarget(width, height, D3DFMT_LIN_A8R8G8B8, D3DMULTISAMPLE_NONE, 0, TRUE, &surface, NULL))
+  {
+    LPDIRECT3DSURFACE9 oldRT;
+    RECT saveSize = rd;
+    rd.left = rd.top = 0;
+    rd.right = width;
+    rd.bottom = height;
+    m_pD3DDevice->GetRenderTarget(0, &oldRT);
+    m_pD3DDevice->SetRenderTarget(0, surface);
+    m_pD3DDevice->BeginScene();
+    RenderLowMem(0);
+    m_pD3DDevice->EndScene();
+    rd = saveSize;
+    m_pD3DDevice->SetRenderTarget(0, oldRT);
+    oldRT->Release();
+
+    D3DLOCKED_RECT lockedRect;
+    if (D3D_OK == surface->LockRect(&lockedRect, NULL, NULL))
+    {
+      texture->LoadFromMemory(width, height, lockedRect.Pitch, 32, (unsigned char *)lockedRect.pBits);
+      surface->UnlockRect();
+    }
+    surface->Release();
+  }
 }
 
 //********************************************************************************************************
@@ -1219,35 +1313,45 @@ void CWinRenderer::CreateThumbnail(LPDIRECT3DSURFACE9 surface, unsigned int widt
 void CWinRenderer::DeleteYV12Texture(int index)
 {
   CSingleLock lock(g_graphicsContext);
-  YUVPLANES &planes = m_YUVTexture[index];
+  YUVVIDEOPLANES &videoPlanes = m_YUVVideoTexture[index];
+  YUVMEMORYPLANES &memoryPlanes = m_YUVMemoryTexture[index];
 
-  if (planes[0] || planes[1] || planes[2])
+  if (videoPlanes[0] || videoPlanes[1] || videoPlanes[2])
     CLog::Log(LOGDEBUG, "Deleted YV12 texture (%i)", index);
 
-  if (planes[0])
-    SAFE_RELEASE(planes[0]);
-  if (planes[1])
-    SAFE_RELEASE(planes[1]);
-  if (planes[2])
-    SAFE_RELEASE(planes[2]);  
+  if (videoPlanes[0])
+    SAFE_RELEASE(videoPlanes[0]);
+  if (videoPlanes[1])
+    SAFE_RELEASE(videoPlanes[1]);
+  if (videoPlanes[2])
+    SAFE_RELEASE(videoPlanes[2]);
+
+  if (memoryPlanes[0])
+    SAFE_DELETE_ARRAY(memoryPlanes[0]);
+  if (memoryPlanes[1])
+    SAFE_DELETE_ARRAY(memoryPlanes[1]);
+  if (memoryPlanes[2])
+    SAFE_DELETE_ARRAY(memoryPlanes[2]);
+
+  m_NumYV12Buffers = 0;
 }
 
 void CWinRenderer::ClearYV12Texture(int index)
 {  
-  YUVPLANES &planes = m_YUVTexture[index];
+  YUVMEMORYPLANES &planes = m_YUVMemoryTexture[index];
   D3DLOCKED_RECT rect;
   
-  planes[0]->LockRect(0, &rect, NULL, D3DLOCK_DISCARD);
+  rect.pBits = planes[0];
+  rect.Pitch = m_iSourceWidth;
   memset(rect.pBits, 0,   rect.Pitch * m_iSourceHeight);
-  planes[0]->UnlockRect(0);
 
-  planes[1]->LockRect(0, &rect, NULL, D3DLOCK_DISCARD);
+  rect.pBits = planes[1];
+  rect.Pitch = m_iSourceWidth / 2;
   memset(rect.pBits, 128, rect.Pitch * m_iSourceHeight>>1);
-  planes[1]->UnlockRect(0);
 
-  planes[2]->LockRect(0, &rect, NULL, D3DLOCK_DISCARD);
+  rect.pBits = planes[2];
+  rect.Pitch = m_iSourceWidth / 2;
   memset(rect.pBits, 128, rect.Pitch * m_iSourceHeight>>1);
-  planes[2]->UnlockRect(0);
 }
 
 
@@ -1259,13 +1363,23 @@ bool CWinRenderer::CreateYV12Texture(int index)
   CSingleLock lock(g_graphicsContext);
   DeleteYV12Texture(index);
   if (
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][0], NULL) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][1], NULL) ||
-    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVTexture[index][2], NULL))
+    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth, m_iSourceHeight, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][0], NULL) ||
+    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][1], NULL) ||
+    D3D_OK != m_pD3DDevice->CreateTexture(m_iSourceWidth / 2, m_iSourceHeight / 2, 1, 0, D3DFMT_L8, D3DPOOL_MANAGED, &m_YUVVideoTexture[index][2], NULL))
   {
-    CLog::Log(LOGERROR, "Unable to create YV12 texture %i", index);
+    CLog::Log(LOGERROR, "Unable to create YV12 video texture %i", index);
     return false;
   }
+
+  if (
+    NULL == (m_YUVMemoryTexture[index][0] = new BYTE[m_iSourceWidth * m_iSourceHeight]) ||
+    NULL == (m_YUVMemoryTexture[index][1] = new BYTE[m_iSourceWidth / 2 * m_iSourceHeight / 2]) ||
+    NULL == (m_YUVMemoryTexture[index][2] = new BYTE[m_iSourceWidth / 2* m_iSourceHeight / 2]))
+  {
+    CLog::Log(LOGERROR, "Unable to create YV12 memory texture %i", index);
+    return false;
+  }
+
   ClearYV12Texture(index);
   CLog::Log(LOGDEBUG, "created yv12 texture %i", index);
   return true;

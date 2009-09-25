@@ -19,19 +19,21 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "RarManager.h"
 #ifdef HAS_RAR
 #include "../lib/UnrarXLib/rar.hpp"
 #endif
 #include "Util.h"
+#include "utils/CharsetConverter.h"
 #include "utils/SingleLock.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/SpecialProtocol.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 #include <set>
 

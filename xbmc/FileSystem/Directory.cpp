@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Directory.h"
 #include "FactoryDirectory.h"
 #include "FactoryFileDirectory.h"
@@ -28,7 +27,8 @@
 #endif
 #include "FileItem.h"
 #include "DirectoryCache.h"
-#include "Settings.h"
+#include "GUISettings.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;

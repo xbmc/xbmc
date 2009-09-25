@@ -9,10 +9,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "stdafx.h"
 
+#include "utils/CharsetConverter.h"
 #include "FileSystem/File.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
 #include "karaokelyricstextkar.h"
 
@@ -341,7 +342,7 @@ void CKaraokeLyricsTextKAR::parseMIDI()
             }
             else
             {
-              next_line_flag = (strchr(tempbuf, '\n') || strchr(tempbuf, '\r')) ? CKaraokeLyricsText::LYRICS_NEW_LINE : 0;
+              next_line_flag = (strchr(tempbuf, '\n') || strchr(tempbuf, '\r')) ? CKaraokeLyricsText::LYRICS_NEW_LINE : CKaraokeLyricsText::LYRICS_NONE;
               lyric.text = convertText( tempbuf );
             }
 

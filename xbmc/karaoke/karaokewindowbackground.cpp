@@ -9,13 +9,17 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "stdafx.h"
-#include "Settings.h"
+
+#include "system.h"
+#include "AdvancedSettings.h"
 #include "GUIWindowManager.h"
 #include "Application.h"
+#include "GUIUserMessages.h"
 #include "GUIVisualisationControl.h"
 #include "GUIImage.h"
 #include "cores/dvdplayer/DVDPlayer.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #include "karaokewindowbackground.h"
 
@@ -111,7 +115,7 @@ bool CKaraokeWindowBackground::OnMessage(CGUIMessage & message)
 
   case GUI_MSG_GET_VISUALISATION:
       if ( m_currentMode == BACKGROUND_VISUALISATION )
-        message.SetLPVOID( m_VisControl->GetVisualisation() );
+        message.SetPointer( m_VisControl->GetVisualisation() );
     break;
 
   case GUI_MSG_VISUALISATION_ACTION:

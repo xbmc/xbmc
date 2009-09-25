@@ -19,14 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUISettings.h"
+#include "Settings.h"
 #include "GUIDialogFileBrowser.h"
 #include "XBAudioConfig.h"
-#include "XBVideoConfig.h"
-#ifdef HAS_XFONT
-#include <xfont.h>
-#endif
 #include "MediaManager.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
@@ -34,6 +30,10 @@
 #include "utils/Network.h"
 #include "Application.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "AdvancedSettings.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -48,6 +48,8 @@ using namespace std;
 #define MASK_MB    17997
 #define MASK_KB    14049
 #define MASK_DB    14050
+
+#define MAX_RESOLUTIONS 128
 
 #define TEXT_OFF 351
 
@@ -199,14 +201,15 @@ void CGUISettings::Initialize()
   // Pictures settings
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
+  AddBool(2, "pictures.showvideos", 22022, false);
   AddBool(3, "pictures.savefolderviews", 583, true);
   AddBool(4,"pictures.generatethumbs",13360,true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
   AddBool(7, "pictures.usetags", 258, true);
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
-  //AddInt(8, "pictures.displayresolution", 169, (int)AUTORES, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddInt(0, "pictures.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  //AddInt(8, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
+  AddInt(0, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
   AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
@@ -239,7 +242,7 @@ void CGUISettings::Initialize()
   AddCategory(3, "mymusic", 16000);
 #ifdef _LINUX
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
 #endif
   AddSeparator(2, "mymusic.sep1");
@@ -256,12 +259,13 @@ void CGUISettings::Initialize()
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
-  AddBool(7, "musiclibrary.updateonstartup", 22000, false);
+  AddString(7, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
+  AddBool(8, "musiclibrary.updateonstartup", 22000, false);
   AddBool(0, "musiclibrary.backgroundupdate", 22001, false);
-  AddSeparator(8,"musiclibrary.sep2");
-  AddString(9, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
-  AddString(10, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
-  AddString(11, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(9,"musiclibrary.sep2");
+  AddString(10, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
+  AddString(11, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
+  AddString(12, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
@@ -397,7 +401,7 @@ void CGUISettings::Initialize()
   AddString(6, "audiooutput.audiodevice", 545, "default", EDIT_CONTROL_INPUT);
   AddString(7, "audiooutput.passthroughdevice", 546, "iec958", EDIT_CONTROL_INPUT);
   AddBool(8, "audiooutput.downmixmultichannel", 548, true);
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #endif
@@ -456,23 +460,27 @@ void CGUISettings::Initialize()
   AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_SOFTWARE, SPIN_CONTROL_TEXT);
 #endif
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
-  //AddInt(5, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddInt(0, "videoplayer.displayresolution", 169, (int)AUTORES, (int)AUTORES, 1, (int)AUTORES, SPIN_CONTROL_TEXT);
+  //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
+  AddInt(0, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddBool(5, "videoplayer.adjustrefreshrate", 170, false);
 #ifdef HAVE_LIBVDPAU
   AddBool(0, "videoplayer.strictbinding", 13120, false);
   AddBool(0, "videoplayer.vdpau_allow_xrandr", 13122, false);
 #endif
-#ifdef HAS_SDL
+#ifdef HAS_GL
   AddSeparator(7, "videoplayer.sep1.5");
   AddInt(8, "videoplayer.highqualityupscaling", 13112, SOFTWARE_UPSCALING_DISABLED, SOFTWARE_UPSCALING_DISABLED, 1, SOFTWARE_UPSCALING_ALWAYS, SPIN_CONTROL_TEXT);
-  AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_SINC_SOFTWARE, SPIN_CONTROL_TEXT);
+  AddInt(9, "videoplayer.upscalingalgorithm", 13116, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, VS_SCALINGMETHOD_BICUBIC_SOFTWARE, 1, VS_SCALINGMETHOD_VDPAU_HARDWARE, SPIN_CONTROL_TEXT);
+#ifdef HAVE_LIBVDPAU
+  AddInt(10, "videoplayer.vdpauUpscalingLevel", 13121, 0, 0, 1, 9, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
+  AddBool(11, "videoplayer.vdpaustudiolevel", 13122, true);
 #endif
-  AddFloat(9, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
+#endif
+  AddFloat(11, "videoplayer.aspecterror", 22021, 3.0f, 0.0f, 1.0f, 20.0f);
 
-  AddSeparator(10, "videoplayer.sep2");
+  AddSeparator(12, "videoplayer.sep2");
   AddString(0, "videoplayer.jumptocache", 439, "", BUTTON_CONTROL_STANDARD);
-  AddSeparator(12, "videoplayer.sep3");
+  AddSeparator(13, "videoplayer.sep3");
   AddInt(15, "videoplayer.dvdplayerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(16, "videoplayer.dvdautomenu", 21882, false);
   AddBool(17, "videoplayer.editdecision", 22003, false);
@@ -529,7 +537,7 @@ void CGUISettings::Initialize()
     AddString(8, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
     AddInt(9, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
     AddString(10, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
-#ifndef _WIN32PC
+#ifndef _WIN32
     AddString(11, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
 #endif
     AddSeparator(12, "network.sep1");
@@ -575,7 +583,7 @@ void CGUISettings::Initialize()
   AddCategory(6, "smb", 1200);
   AddString(1, "smb.username",    1203,   "", EDIT_CONTROL_INPUT, true, 1203);
   AddString(2, "smb.password",    1204,   "", EDIT_CONTROL_HIDDEN_INPUT, true, 1204);
-#ifndef _WIN32PC
+#ifndef _WIN32
   AddString(3, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(4, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
 #endif
@@ -645,11 +653,10 @@ void CGUISettings::Initialize()
 #endif
 
   AddCategory(7, "videoscreen", 131);
-  int DefaultResolution = g_application.IsStandAlone() ? (int)DESKTOP : (int)AUTORES;
-  AddInt(1, "videoscreen.resolution",169, DefaultResolution, (int)HDTV_1080i, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
+  AddInt(1, "videoscreen.resolution",169, (int)RES_DESKTOP, (int)RES_WINDOW, 1, (int)RES_CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
 
-#ifdef __APPLE__
+#if defined (__APPLE__) || defined(_WIN32)
   AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);
 #endif
 
@@ -1070,19 +1077,19 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
     SetInt("videoscreen.vsync", VSYNC_ALWAYS);
   }
 #endif
-  g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
+ // DXMERGE: This might have been useful?
+ // g_videoConfig.SetVSyncMode((VSYNC)GetInt("videoscreen.vsync"));
   CLog::Log(LOGNOTICE, "Checking resolution %i", g_guiSettings.m_LookAndFeelResolution);
-  g_videoConfig.PrintInfo();
   if (
-    (g_guiSettings.m_LookAndFeelResolution == AUTORES) ||
+    (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES) ||
     (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   )
   {
-    RESOLUTION newRes = g_videoConfig.GetSafeMode();
-    if (g_guiSettings.m_LookAndFeelResolution == AUTORES)
+    RESOLUTION newRes = RES_DESKTOP;
+    if (g_guiSettings.m_LookAndFeelResolution == RES_AUTORES)
     {
-      //"videoscreen.resolution" will stay at AUTORES, m_LookAndFeelResolution will be the real mode
-      CLog::Log(LOGNOTICE, "Setting autoresolution mode %i", newRes);
+      //"videoscreen.resolution" will stay at RES_AUTORES, m_LookAndFeelResolution will be the real mode
+      CLog::Log(LOGNOTICE, "Setting RES_AUTORESolution mode %i", newRes);
       g_guiSettings.m_LookAndFeelResolution = newRes;
     }
     else

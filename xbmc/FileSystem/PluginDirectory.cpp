@@ -20,7 +20,7 @@
  */
 
 
-#include "stdafx.h"
+#include "system.h"
 #include "PluginDirectory.h"
 #include "Util.h"
 #include "utils/Addon.h"
@@ -34,6 +34,8 @@
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace DIRECTORY;
 using namespace std;

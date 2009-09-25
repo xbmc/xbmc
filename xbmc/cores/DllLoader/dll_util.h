@@ -1,6 +1,8 @@
 #ifndef _DLL_UTIL_H_
 #define _DLL_UTIL_H_ 
 
+#include <stdint.h>
+
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org

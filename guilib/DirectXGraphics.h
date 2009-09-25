@@ -21,7 +21,9 @@
  *
  */
 
-#include "GraphicContext.h"
+class CBaseTexture;
+
+#include "gui3d.h"
 
 LPVOID XPhysicalAlloc(SIZE_T s, DWORD ulPhysicalAddress, DWORD ulAlignment, DWORD flProtect);
 void XPhysicalFree(LPVOID lpAddress);
@@ -161,7 +163,7 @@ typedef struct {
 } BMPHEAD;
 #pragma pack(pop)
 
-#ifndef HAS_SDL
+#ifdef HAS_DX
 HRESULT XGWriteSurfaceToFile(LPDIRECT3DSURFACE9 pSurface, const char *fileName);
 #else
 HRESULT XGWriteSurfaceToFile(void* pixels, int width, int height, const char *fileName);
@@ -171,20 +173,4 @@ void DXT1toARGB(const void *src, void *dest, unsigned int destWidth);
 void DXT4toARGB(const void *src, void *dest, unsigned int destWidth);
 void ConvertDXT1(const void *src, unsigned int width, unsigned int height, void *dest);
 void ConvertDXT4(const void *src, unsigned int width, unsigned int height, void *dest);
-void GetTextureFromData(D3DTexture *pTex, void *texData, XBMC::TexturePtr *ppTexture);
-
-#ifndef HAS_SDL
-class CXBPackedResource
-{
-public:
-  CXBPackedResource();
-  ~CXBPackedResource();
-
-  HRESULT Create(const char *fileName, int unused, void *unusedVoid);
-
-  LPDIRECT3DTEXTURE9 GetTexture(UINT offset);
-
-private:
-  BYTE *m_buffer;
-};
-#endif
+void GetTextureFromData(D3DTexture *pTex, void *texData, CBaseTexture** ppTexture);

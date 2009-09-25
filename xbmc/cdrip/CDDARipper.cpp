@@ -19,9 +19,13 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
+
+#ifdef HAS_CDDA_RIPPER
+
 #include "CDDARipper.h"
 #include "CDDAReader.h"
+#include "StringUtils.h"
 #include "Util.h"
 #include "EncoderLame.h"
 #include "EncoderWav.h"
@@ -38,6 +42,8 @@
 #include "FileItem.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "MediaManager.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;
@@ -247,7 +253,7 @@ bool CCDDARipper::RipTrack(CFileItem* pItem)
   int LegalType = LEGAL_NONE;
   if (ripPath.IsSmb())
     LegalType=LEGAL_WIN32_COMPAT;
-#ifdef _WIN32PC  
+#ifdef _WIN32  
   if (ripPath.IsHD())
     LegalType=LEGAL_WIN32_COMPAT;
 #endif
@@ -334,7 +340,7 @@ bool CCDDARipper::RipCD()
     int LegalType=LEGAL_NONE;
     if (ripPath.IsSmb())
       LegalType=LEGAL_WIN32_COMPAT;
-#ifdef _WIN32PC
+#ifdef _WIN32
     if (ripPath.IsHD())
       LegalType=LEGAL_WIN32_COMPAT;
 #endif
@@ -429,3 +435,5 @@ CStdString CCDDARipper::GetTrackName(CFileItem *item, int LegalType)
   track = CUtil::MakeLegalFileName(track, LegalType);
   return track;
 }
+
+#endif

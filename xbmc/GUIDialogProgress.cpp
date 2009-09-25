@@ -19,12 +19,14 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogProgress.h"
 #include "GUIProgressControl.h"
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -136,7 +138,7 @@ bool CGUIDialogProgress::OnMessage(CGUIMessage& message)
 
 bool CGUIDialogProgress::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU)
   {
     if (m_bCanCancel)
     {

@@ -30,6 +30,7 @@
   #include "FLACCodec/flac-1.2.1/include/FLAC/stream_decoder.h"
 #endif
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 class DllLibFlacInterface
 {

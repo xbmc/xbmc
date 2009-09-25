@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "DVDFactoryInputStream.h"
 #include "DVDInputStream.h"
 #include "DVDInputStreamFile.h"
@@ -45,10 +45,14 @@ CDVDInputStream* CDVDFactoryInputStream::CreateInputStream(IDVDPlayer* pPlayer, 
 {
   CFileItem item(file.c_str(), false);
   if (item.IsDVDFile(false, true) || item.IsDVDImage() ||
-#ifdef _WIN32PC
+#ifdef HAS_DVD_DRIVE
+#ifdef _WIN32
     file.compare(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4) == 0 )
 #else
     file.compare(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()) == 0 )
+#endif
+#else
+  0 )
 #endif
   {
     return (new CDVDInputStreamNavigator(pPlayer));

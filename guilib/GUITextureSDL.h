@@ -41,24 +41,23 @@ class CCachedTexture
     SDL_Surface *surface;
     int          width;
     int          height;
-    DWORD        diffuseColor;
+    color_t        diffuseColor;
 };
 
-#define CGUITexture CGUITextureSDL
 
 class CGUITextureSDL : public CGUITextureBase
 {
 public:
   CGUITextureSDL(float posX, float posY, float width, float height, const CTextureInfo& texture);
-  static void DrawQuad(const CRect &rect, DWORD color) {};
+  static void DrawQuad(const CRect &rect, color_t color) {};
 protected:
-  void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation);
+  void Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation);
   virtual void Allocate();
   virtual void Free();
 
   void CalcBoundingBox(float *x, float *y, int n, int *b);
   void GetTexel(float u, float v, SDL_Surface *src, BYTE *texel);
-  void RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, DWORD *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst);
+  void RenderWithEffects(SDL_Surface *src, float *x, float *y, float *u, float *v, color_t *c, SDL_Surface *diffuse, float diffuseScaleU, float diffuseScaleV, CCachedTexture &dst);
 
   std::vector <CCachedTexture> m_cachedTextures;
 };

@@ -20,6 +20,10 @@
  *
  */
 
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "ImusicInfoTagLoader.h"
 
 namespace MUSIC_INFO
@@ -35,3 +39,4 @@ public:
 };
 }
 
+#endif

@@ -19,9 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "ZipDirectory.h"
 #include "utils/log.h"
+#include "utils/CharsetConverter.h"
 #include "Util.h"
 #include "lib/zlib/zlib.h"
 #include "URL.h"

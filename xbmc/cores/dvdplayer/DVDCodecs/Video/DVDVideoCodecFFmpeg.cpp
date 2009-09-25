@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -29,10 +29,12 @@
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "../../../../utils/Win32Exception.h"
-#if defined(_LINUX) || defined(_WIN32PC)
+#if defined(_LINUX) || defined(_WIN32)
 #include "utils/CPUInfo.h"
 #endif
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "utils/log.h"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -41,8 +43,6 @@
 #define RINT lrint
 #endif
 
-#include "Surface.h"
-using namespace Surface;
 #include "cores/VideoRenderers/RenderManager.h"
 
 #ifdef HAVE_LIBVDPAU
@@ -66,7 +66,7 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
 #ifdef HAVE_LIBVDPAU
-  CExclusiveLock lock(g_renderManager.GetSection());
+  CSingleLock lock(g_graphicsContext);
   if (g_VDPAU && !m_UsingSoftware) {
     delete g_VDPAU;
     g_VDPAU = NULL;
@@ -108,7 +108,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   if(pCodec && !hints.software)
   {
-    CExclusiveLock lock(g_renderManager.GetSection());
+    CSingleLock lock(g_graphicsContext);
     CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i)",hints.width, hints.height);
     g_VDPAU = new CVDPAU(hints.width, hints.height);
     if(!g_VDPAU->GetVdpDevice())
@@ -195,7 +195,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_dllAvCodec.av_set_string(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str());
   }
 
-#if defined(_LINUX) || defined(_WIN32PC)
+#if defined(_LINUX) || defined(_WIN32)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if( num_threads > 1
 #ifdef HAVE_LIBVDPAU

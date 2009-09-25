@@ -29,6 +29,10 @@
 //
 //
 
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "FileSystem/FactoryDirectory.h"
 
 namespace MEDIA_DETECT
@@ -53,3 +57,5 @@ protected:
   bool m_bEnable;
 };
 }
+
+#endif

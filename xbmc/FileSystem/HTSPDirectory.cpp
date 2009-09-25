@@ -19,12 +19,14 @@
  *
  */
 
-#include "stdafx.h"
 #include "HTSPDirectory.h"
 #include "URL.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
 #include "cores/dvdplayer/DVDInputStreams/DVDInputStreamHTSP.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 extern "C" {
 #include "lib/libhts/htsmsg.h"

@@ -36,11 +36,22 @@ do_start()
 		esac
 	done
 
-	XBMC_BOOTTORAM="$(echo $XBMC_PARAMS | grep boottoram)"
-	if [ -n "$XBMC_BOOTTORAM" ]; then
-		eject /dev/scd0 &> /dev/null
-		eject /dev/scd1 &> /dev/null
-		eject /dev/scd2 &> /dev/null
+	# Relies on init scripts to mount boot device on a specified directory
+	# TODO hardcode the already mounted directories (speed)
+	# XBMC Live V2 
+	BOOTMEDIADIRECTORY="image"
+	BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
+	if [ ! -n "$BOOTMEDIAMOUNTPOINT" ]; then
+		# XBMC Live V1
+		BOOTMEDIADIRECTORY="bootMedia"
+		BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
+	fi
+
+	# copy xorg.conf from "Config" directory
+	if [ -n "$BOOTMEDIAMOUNTPOINT" ]; then
+		if [ -f $BOOTMEDIAMNTPOINT/config/xorg.conf ]; then
+			cp $BOOTMEDIAMNTPOINT/config/xorg.conf /etc/X11
+		fi
 	fi
 
 	INSTALL="$( echo $XBMC_PARAMS | grep install)"
@@ -81,18 +92,8 @@ do_start()
 			if [ ! -n "$BOOTFROMCD" ]; then
 				NOREDIR="$(echo $XBMC_PARAMS | grep noredir)"
 				if [ ! -n "$NOREDIR" ]; then
-					log_warning_msg "Redirect XBMC home folder and logfile to usb flash..."
-
-					# Relies on init scripts to mount boot device on a specified directory
-					BOOTMEDIADIRECTORY="bootMedia"
-					BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
-					if [ ! -n "$BOOTMEDIAMOUNTPOINT" ]; then
-						# live-initramfs compatibility
-						BOOTMEDIADIRECTORY="image"
-						BOOTMEDIAMOUNTPOINT="$(mount | grep $BOOTMEDIADIRECTORY | cut -f 3 -d ' ')"
-					fi
-
 					if [ -n "$BOOTMEDIAMOUNTPOINT" ]; then
+						log_warning_msg "Redirect XBMC home folder and logfile to usb flash..."
 						if [ ! -d $BOOTMEDIAMOUNTPOINT/dotXBMC ]; then
 							mkdir $BOOTMEDIAMOUNTPOINT/dotXBMC
 						fi

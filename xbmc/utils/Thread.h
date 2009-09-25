@@ -57,7 +57,6 @@ public:
   CThread(IRunnable* pRunnable);
   virtual ~CThread();
   void Create(bool bAutoDelete = false, unsigned stacksize = 0);
-  uintptr_t ThreadId() const;
   bool WaitForThreadExit(DWORD dwMilliseconds);
   DWORD WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds);
   DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds);
@@ -66,13 +65,14 @@ public:
   void SetName( LPCTSTR szThreadName );
   HANDLE ThreadHandle();
   operator HANDLE();
-  operator const HANDLE() const;
+  operator HANDLE() const;
   bool IsAutoDelete() const;
-  virtual void StopThread();
+  virtual void StopThread(bool bWait = true);
+  float GetRelativeUsage();  // returns the relative cpu usage of this thread since last call
+  bool IsCurrentThread() const;
 
-  // returns the relative cpu usage of this thread since last call
-  float GetRelativeUsage();
-
+  static bool IsCurrentThread(const ThreadIdentifier tid);
+  static ThreadIdentifier GetCurrentThreadId();
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
@@ -87,6 +87,7 @@ protected:
   HANDLE m_ThreadHandle;
 
 private:
+  ThreadIdentifier ThreadId() const;
   bool m_bAutoDelete;
   HANDLE m_StopEvent;
   unsigned m_ThreadId; // This value is unreliable on platforms using pthreads

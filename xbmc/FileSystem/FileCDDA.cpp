@@ -19,12 +19,16 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "FileCDDA.h"
 #include <sys/stat.h>
 #include "Util.h"
 #include "URL.h"
 #include "MediaManager.h"
+#include "utils/log.h"
 
 using namespace MEDIA_DETECT;
 using namespace XFILE;
@@ -54,7 +58,7 @@ bool CFileCDDA::Open(const CURL& url)
   // Open the dvd drive
 #ifdef _LINUX
   m_pCdIo = m_cdio->cdio_open(g_mediaManager.TranslateDevicePath(strURL), DRIVER_UNKNOWN);
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   m_pCdIo = m_cdio->cdio_open_win32(g_mediaManager.TranslateDevicePath(strURL, true));
 #else
   m_pCdIo = m_cdio->cdio_open_win32("D:");
@@ -216,3 +220,6 @@ int CFileCDDA::GetChunkSize()
 {
   return SECTOR_COUNT*CDIO_CD_FRAMESIZE_RAW;
 }
+
+#endif
+

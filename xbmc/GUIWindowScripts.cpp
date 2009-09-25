@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowScripts.h"
 #include "Util.h"
 #ifdef HAS_PYTHON
@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "ScriptSettings.h"
 #include "GUIDialogAddonSettings.h"
+#include "Settings.h"
 
 using namespace XFILE;
 
@@ -52,7 +53,7 @@ CGUIWindowScripts::~CGUIWindowScripts()
 
 bool CGUIWindowScripts::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SHOW_INFO)
+  if (action.id == ACTION_SHOW_INFO)
   {
     OnInfo();
     return true;

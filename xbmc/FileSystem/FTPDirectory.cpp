@@ -19,13 +19,14 @@
  *
  */
 
-#include "stdafx.h"
 #include "FTPDirectory.h"
 #include "FTPParse.h"
 #include "URL.h"
 #include "Util.h"
 #include "FileCurl.h"
 #include "FileItem.h"
+#include "StringUtils.h"
+#include "utils/CharsetConverter.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

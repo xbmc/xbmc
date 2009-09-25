@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "HDDirectory.h"
 #include "Util.h"
 #include "xbox/IoSupport.h"
@@ -28,12 +26,17 @@
 #include "URL.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "AutoPtrHandle.h"
+
+#ifndef _LINUX
+#include "utils/CharsetConverter.h"
+#endif
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)
 #endif
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 typedef WIN32_FIND_DATAW LOCAL_WIN32_FIND_DATA;
 #define LocalFindFirstFile FindFirstFileW
 #define LocalFindNextFile FindNextFileW

@@ -19,15 +19,15 @@
  *
  */
  
-#include "stdafx.h"
 #include "DllLoader.h"
 #include "DllLoaderContainer.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "dll_tracker.h"
 #include "dll_util.h"
 #include <limits>
+#include "utils/log.h"
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
 #define fopen_utf8 fopen

@@ -29,6 +29,10 @@
 //
 //
 
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "xbox/IoSupport.h"
 #include "FileSystem/cdioSupport.h"
 #include "utils/CriticalSection.h"
@@ -87,3 +91,5 @@ private:
   CLibcdio* m_cdio;
 };
 }
+
+#endif

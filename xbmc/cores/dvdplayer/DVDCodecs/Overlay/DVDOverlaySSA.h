@@ -21,8 +21,9 @@
  *
  */
 
+#include "system.h" // for SAFE_RELEASE
 #include "DVDOverlay.h"
-#include "DVDSubtitles/DVDSubtitlesLibass.h"
+#include "../../DVDSubtitles/DVDSubtitlesLibass.h"
 
 class CDVDOverlaySSA : public CDVDOverlay
 {

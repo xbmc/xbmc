@@ -44,7 +44,7 @@ public:
 
   bool            NextChannel();
   bool            PrevChannel();
-  bool            SelectChannel(unsigned int channel) { return false; }
+  bool            SelectChannel(unsigned int channel);
   bool            UpdateItem(CFileItem& item);
 
   bool            CanRecord()         { return false; }

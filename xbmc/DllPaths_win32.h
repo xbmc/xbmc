@@ -19,7 +19,7 @@
 #define DLL_PATH_DCA_CODEC     "special://xbmc/system/players/paplayer/dcacodec.dll"
 #define DLL_PATH_FLAC_CODEC    "special://xbmc/system/players/paplayer/libFLAC.dll"
 #define DLL_PATH_GYM_CODEC     "special://xbmc/system/players/paplayer/gensapu.dll"
-#define DLL_PATH_MAD_CODEC     "special://xbmc/system/players/paplayer/MADCodec.dll"
+#define DLL_PATH_MAD_CODEC     "special://xbmc/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_MID_CODEC     "special://xbmc/system/players/paplayer/timidity.dll"
 #define DLL_PATH_MODULE_CODEC  "special://xbmc/system/players/paplayer/dumb.dll"
 #define DLL_PATH_MPC_CODEC     "special://xbmc/system/players/paplayer/libmpcdec.dll"

@@ -21,7 +21,11 @@
 #ifndef ISO9660_H
 #define ISO9660_H
 #pragma once
+#include <vector>
+#include <string>
 #include "xbox/IoSupport.h"
+#include "system.h"
+
 #ifdef _WIN32
 // Ideally we should just be including iso9660.h, but it's not win32-ified at this point,
 // and these are all we need

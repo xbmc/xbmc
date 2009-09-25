@@ -724,6 +724,7 @@
   <string id="1047">Other...</string>
   <string id="1048">Web server username</string>
   <string id="1049">Script settings</string>
+  <string id="1050">Singles</string>
 
   <string id="1200">SMB client</string>
   <string id="1202">Workgroup</string>
@@ -804,6 +805,8 @@
   <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Runtime</string>
+
+  <string id="2100">Script failed! : %s</string>
 
   <string id="4501">LCD type</string>
 
@@ -998,7 +1001,7 @@
   <string id="13110">Save resolution?</string>
   <string id="13111">Would you like to keep this resolution?</string>
 
-  <string id="13112">High quality software upscaling</string>
+  <string id="13112">High quality upscaling</string>
   <string id="13113">Disabled</string>
   <string id="13114">Enabled for SD content</string>
   <string id="13115">Always enabled</string>
@@ -1007,8 +1010,9 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
-
-  <string id="13120">Strict Pixmap-Texture Binding (requires restart)</string>
+  <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU HQ Upscaling level</string>
+  <string id="13122">VDPAU Studio level color conversion</string>
 
   <string id="13130">Display blanking</string>
   <string id="13131">Disabled</string>
@@ -1213,10 +1217,10 @@
   <string id="13503">Video clock (Resample audio)</string>
   <string id="13504">Maximum resample amount (%)</string>
   <string id="13505">Resample quality</string>
-  <string id="13506">Low</string>
+  <string id="13506">Low(fast)</string>
   <string id="13507">Medium</string>
   <string id="13508">High</string>
-  <string id="13509">Really high</string>
+  <string id="13509">Really high(slow!)</string>
   <string id="13510">Sync playback to display</string>
 
   <string id="13600">Apple Remote</string>
@@ -1541,7 +1545,6 @@
   <string id="16314">Inverse Telecine</string>
   <string id="17500">Display sleep timeout</string>
 
-
   <string id="17997">%i MByte</string>
   <string id="17998">%i hours</string>
   <string id="17999">%i days</string>
@@ -1642,7 +1645,6 @@
   <string id="18106">PVR-Server is not compatible!</string>
   <string id="18107">Activate Timeshifted TV</string>
   <string id="18108">Timshift Cache</string>
-  <string id="18109">Switch to channel</string>
   <string id="18110">Movie/Drama</string>
   <string id="18111">News/Current Affairs</string>
   <string id="18112">Show</string>
@@ -1745,6 +1747,8 @@
   <string id="18813">Please adjust settings.</string>
   <string id="18814">Timer already set for this event</string>
 
+  <string id="19000">Switch to channel</string>
+
   <string id="20000">CDDA rip folder</string>
   <string id="20001">Use external DVD player</string>
   <string id="20002">External DVD player</string>
@@ -1785,7 +1789,7 @@
   <string id="20044">Start fresh</string>
   <string id="20045">Enter master mode</string>
   <string id="20046">Leave master mode</string>
-  <string id="20047">Create profile '%s' ?</string>
+  <string id="20047">Create profile '%s'?</string>
   <string id="20048">Start with fresh settings</string>
   <string id="20049">Best available</string>
   <string id="20050">Auto-switch between 16x9 and 4x3</string>
@@ -2079,6 +2083,7 @@
   <string id="20431">Overwrite old files?</string>
   <string id="20432">Exclude path from library updates</string>
   <string id="20433">Extract media metadata information</string>
+  <string id="20434">Sets</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2153,6 +2158,7 @@
   <string id="21414">Default tvshow scraper</string>
   <string id="21415">Default musicvideo scraper</string>
   <string id="21416">Enable fallback based on scraper language</string>
+  <string id="21417">- Scraper settings</string>
 
   <string id="21420">Value to match</string>
   <string id="21421">Smart playlist rule</string>
@@ -2285,6 +2291,7 @@
   <string id="22019">Recordings by title</string>
   <string id="22020">Guide</string>
   <string id="22021">Allowed error in aspect ratio (%)</string>
+  <string id="22022">Include video files in listings</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">Font</string>
@@ -2332,6 +2339,7 @@
   <string id="23027">Weather Add-on</string>
   <string id="23028">Audio DSP Add-on</string>
 
+<<<<<<< .working
   <string id="23030">Weather plugin</string>
   <string id="23031">- Plugin settings</string>
 
@@ -2378,6 +2386,17 @@
   <string id="23082">Lock Add-on manager</string>
   <string id="23083">Use this Add-on again</string>
 
+=======
+  <!-- strings 23100 thru 23150 reserved for external player -->
+  <string id="23100">External Player Active</string>
+  <string id="23101">Click OK to terminate the player</string>
+  <string id="23102"></string>
+  <string id="23103"></string>
+  <string id="23104">Click OK when playback has ended</string>
+  <string id="23105"></string>
+  <string id="23106"></string>
+
+>>>>>>> .merge-rechts.r23079
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>

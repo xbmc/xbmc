@@ -9,7 +9,6 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "stdafx.h"
 
 #include "Util.h"
 #include "FileSystem/File.h"

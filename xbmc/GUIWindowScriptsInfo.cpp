@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowScriptsInfo.h"
 
 
@@ -34,7 +33,7 @@ CGUIWindowScriptsInfo::~CGUIWindowScriptsInfo(void)
 
 bool CGUIWindowScriptsInfo::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SHOW_INFO)
+  if (action.id == ACTION_SHOW_INFO)
   {
     // erase debug screen
     strInfo = "";

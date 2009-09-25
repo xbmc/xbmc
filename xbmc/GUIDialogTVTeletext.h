@@ -21,14 +21,8 @@
  */
 
 #include "GUIDialog.h"
-#include "GUITeletextBox.h"
-#include "GUIViewControl.h"
-#include "utils/TeletextRender.h"
-#include "utils/Thread.h"
 
 class CGUIDialogTVTeletext : public CGUIDialog
-                           , public cRenderTTPage
-                           , private CThread 
 {
 public:
   CGUIDialogTVTeletext(void);
@@ -37,37 +31,4 @@ public:
 
 protected:
   virtual bool OnAction(const CAction& action);
-  virtual void OnWindowLoaded();
-  virtual void OnWindowUnload();
-  void Clear();
-  void Update();
-  virtual void Process();
-    
-private:
-  enum Direction { DirectionForward, DirectionBackward };
-  void SetNumber(int i);
-  bool CheckFirstSubPage(int startWith);
-  void SetPreviousPage(int oldPage, int oldSubPage, int newPage);
-  int nextValidPageNumber(int start, Direction direction);
-  void ShowPageNumber();
-  void ShowPage();
-  void DrawDisplay();
-  void ChangePageRelative(Direction direction);
-  void ChangeSubPageRelative(Direction direction);
-  bool CheckPage();
-
-  int m_currentPage;
-  int m_currentSubPage;
-  int m_cursorPos;
-  int m_previousPage;
-  int m_previousSubPage;
-  int m_pageBeforeNumberInput;
-  int m_CurrentChannel;
-  int m_TeletextSupported;
-  bool m_pageFound;
-  bool m_Boxed;     // Page is 'boxed mode' transparent
-  bool m_Blinked;   // Blinking text internal state
-  bool m_Concealed; // Hidden text internal state
-  DWORD m_updateStart;
-
 };

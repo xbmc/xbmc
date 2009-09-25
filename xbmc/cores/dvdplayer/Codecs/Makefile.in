@@ -134,7 +134,7 @@ $(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER_OSX) liba52/liba52/liba52.la
 $(SYSDIR)/libao-$(ARCH).so: $(WRAPPER_OSX) liba52/libao/libao.a
 	ld -bundle -flat_namespace -undefined suppress -o $@ \
 		liba52/libao/libao.a $(BUNDLE1_O)
-	$(WRAPPER_OSX) $@;mv output.so $@
+	#$(WRAPPER_OSX) $@;mv output.so $@
 
 $(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER_OSX) libmpeg2/libmpeg2/libmpeg2.la
 	ld -bundle -flat_namespace -undefined suppress -o $@ \

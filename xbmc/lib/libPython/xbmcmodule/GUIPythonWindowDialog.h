@@ -26,10 +26,10 @@
 class CGUIPythonWindowDialog : public CGUIPythonWindow
 {
 public:
-  CGUIPythonWindowDialog(DWORD dwId);
+  CGUIPythonWindowDialog(int id);
   virtual ~CGUIPythonWindowDialog(void);
   virtual bool    OnMessage(CGUIMessage& message);
-  void             Activate(DWORD dwParentId);
+  void             Activate(int parentId);
   virtual void    Close();
   virtual bool    IsDialogRunning() const { return m_bRunning; }
   virtual bool    IsDialog() const { return true;};

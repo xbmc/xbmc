@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderMod.h"
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/log.h"
 
 #include <fstream>
 

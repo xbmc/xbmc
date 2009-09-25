@@ -24,6 +24,7 @@
 #include "XBPyThread.h"
 #include "IMsgSenderCallback.h"
 #include "cores/IPlayer.h"
+#include "utils/CriticalSection.h"
 
 #include <vector>
 
@@ -33,6 +34,8 @@ typedef struct {
   std::string strFile;
   XBPyThread *pyThread;
 }PyElem;
+
+class LibraryLoader;
 
 typedef std::vector<PyElem> PyList;
 typedef std::vector<PVOID> PlayerCallbackList;
@@ -97,7 +100,7 @@ private:
 
   int               nextid;
   PyThreadState*    mainThreadState;
-  DWORD             dThreadId;
+  ThreadIdentifier  dThreadId;
   bool              m_bInitialized;
   HANDLE            m_hEvent;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
@@ -106,7 +109,7 @@ private:
   //Vector with list of threads used for running scripts
   PyList vecPyList;
   PlayerCallbackList vecPlayerCallbackList;
-  CRITICAL_SECTION	m_critSection;
+  CCriticalSection	m_critSection;
   LibraryLoader*    m_pDll;
 
   // any global events that scripts should be using

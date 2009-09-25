@@ -28,6 +28,8 @@ typedef std::vector<CStdString> VECPROGRAMPATHS;
 
 #define PROGRAM_DATABASE_NAME "MyPrograms6.db"
 
+class CFileItem;
+
 class CProgramDatabase : public CDatabase
 {
 public:

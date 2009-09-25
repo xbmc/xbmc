@@ -24,9 +24,13 @@
 #include "IPlayer.h"
 #include "utils/Thread.h"
 
+class CGUIDialogOK;
+
 class CExternalPlayer : public IPlayer, public CThread
 {
 public:
+  enum WARP_CURSOR { WARP_NONE = 0, WARP_TOP_LEFT, WARP_TOP_RIGHT, WARP_BOTTOM_RIGHT, WARP_BOTTOM_LEFT, WARP_CENTER };
+
   CExternalPlayer(IPlayerCallback& callback);
   virtual ~CExternalPlayer();
   virtual bool Initialize(TiXmlElement* pConfig);
@@ -78,7 +82,7 @@ public:
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
   
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   virtual BOOL ExecuteAppW32(const char* strPath, const char* strSwitches);
   static void CALLBACK AppFinished(void* closure, BOOLEAN TimerOrWaitFired);
 #endif
@@ -91,24 +95,25 @@ private:
   void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
   virtual void Process();
 
+  bool m_bIsPlaying;
   bool m_paused;
-  __int64 m_clock;
-  DWORD m_lastTime;
+  DWORD m_playbackStartTime;
   int m_speed;
+  int m_totalTime;
+  int m_time;
   CStdString m_launchFilename;
   HWND m_hwndXbmc; 
-#if defined(_WIN32PC)
+#if defined(_WIN32)
   POINT m_ptCursorpos;
 #endif 
+  CGUIDialogOK* m_dialog;
   int m_xPos;
   int m_yPos;
   CStdString m_filename;
   CStdString m_args;
-  bool m_forceontop;
   bool m_hideconsole;
-  bool m_hidecursor;
   bool m_hidexbmc;
-  int m_startupTime; // time in ms between launching player and locking the graphicscontext
+  bool m_islauncher;
+  WARP_CURSOR m_warpcursor;
   CStdStringArray m_filenameReplacers;
 };
-

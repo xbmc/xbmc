@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogEpgScan.h"
 #include "GUISliderControl.h"
 #include "GUIProgressControl.h"
+#include "utils/SingleLock.h"
 
 #define CONTROL_CHANNELNAME       31
 #define CONTROL_PROGRESS          32
@@ -92,7 +92,7 @@ void CGUIDialogEpgScan::SetProgress(int currentItem, int itemCount)
 void CGUIDialogEpgScan::UpdateState()
 {
   CSingleLock lock (m_critical);
-  
+
   SET_CONTROL_LABEL(CONTROL_CHANNELNAME, m_strTitle);
 
   if (m_fPercentDone>-1.0f)

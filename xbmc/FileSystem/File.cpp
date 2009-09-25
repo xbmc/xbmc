@@ -18,7 +18,6 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
 #include "File.h"
 #include "FileFactory.h"
 #include "Application.h"
@@ -26,6 +25,7 @@
 #include "DirectoryCache.h"
 #include "FileCache.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 #ifndef _LINUX
 #include "utils/Win32Exception.h"

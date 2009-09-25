@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNodeRecentlyAddedMovies.h"
 #include "QueryParams.h"
 #include "VideoDatabase.h"

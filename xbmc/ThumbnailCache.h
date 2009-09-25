@@ -20,6 +20,12 @@
  *
  */
 
+#include "StdString.h"
+
+#include <map>
+
+class CCriticalSection;
+
 class CThumbnailCache
 {
 private:

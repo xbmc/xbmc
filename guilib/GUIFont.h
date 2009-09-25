@@ -7,12 +7,15 @@
 #define CGUILIB_GUIFONT_H
 #pragma once
 
-#include "GraphicContext.h"
-#include "utils/SingleLock.h"
 #include "StdString.h"
+#include <assert.h>
 
+typedef uint32_t character_t;
+typedef uint32_t color_t;
+typedef std::vector<character_t> vecText;
+typedef std::vector<color_t> vecColors;
 
-class CGUIFontTTF;
+class CGUIFontTTFBase;
 
 // flags for alignment
 #define XBFONT_LEFT       0x00000000
@@ -26,7 +29,6 @@ class CGUIFontTTF;
 #define FONT_STYLE_BOLD         1
 #define FONT_STYLE_ITALICS      2
 #define FONT_STYLE_BOLD_ITALICS 3
-
 
 class CScrollInfo
 {
@@ -55,7 +57,7 @@ public:
     m_averageFrameTime = 1000.f / abs(defaultSpeed);
     m_lastFrameTime = 0;
   }
-  DWORD GetCurrentChar(const std::vector<DWORD> &text) const
+  uint32_t GetCurrentChar(const vecText &text) const
   {
     assert(text.size());
     if (characterPos < text.size())
@@ -77,7 +79,7 @@ public:
   static const int defaultSpeed = 60;
 private:
   float m_averageFrameTime;
-  DWORD m_lastFrameTime;
+  uint32_t m_lastFrameTime;
 };
 
 /*!
@@ -87,57 +89,54 @@ private:
 class CGUIFont
 {
 public:
-  CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font);
+  CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor, color_t shadowColor, float lineSpacing, CGUIFontTTFBase *font);
   virtual ~CGUIFont();
 
   CStdString& GetFontName();
 
-  void DrawText( float x, float y, DWORD color, DWORD shadowColor,
-                 const std::vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
+  void DrawText( float x, float y, color_t color, color_t shadowColor,
+                 const vecText &text, uint32_t alignment, float maxPixelWidth)
   {
-    std::vector<DWORD> colors;
+    vecColors colors;
     colors.push_back(color);
     DrawText(x, y, colors, shadowColor, text, alignment, maxPixelWidth);
   };
 
-  void DrawText( float x, float y, const std::vector<DWORD> &colors, DWORD shadowColor,
-                 const std::vector<DWORD> &text, DWORD alignment, float maxPixelWidth);
+  void DrawText( float x, float y, const vecColors &colors, color_t shadowColor,
+                 const vecText &text, uint32_t alignment, float maxPixelWidth);
 
-  void DrawScrollingText( float x, float y, const std::vector<DWORD> &colors, DWORD shadowColor,
-                 const std::vector<DWORD> &text, DWORD alignment, float maxPixelWidth, CScrollInfo &scrollInfo);
+  void DrawScrollingText( float x, float y, const vecColors &colors, color_t shadowColor,
+                 const vecText &text, uint32_t alignment, float maxPixelWidth, CScrollInfo &scrollInfo);
 
-  float GetTextWidth( const std::vector<DWORD> &text );
-  float GetCharWidth( DWORD ch );
+  float GetTextWidth( const vecText &text );
+  float GetCharWidth( character_t ch );
   float GetTextHeight(int numLines) const;
   float GetLineHeight() const;
 
   void Begin();
   void End();
 
-  DWORD GetStyle() const { return m_style; };
+  uint32_t GetStyle() const { return m_style; };
 
-  static SHORT RemapGlyph(SHORT letter);
+  static wchar_t RemapGlyph(wchar_t letter);
 
-  CGUIFontTTF* GetFont() const
+  CGUIFontTTFBase* GetFont() const
   {
-     return m_font;
+    return m_font;
   }
 
-  void SetFont(CGUIFontTTF* font)
-  {
-     m_font = font;
-  }
+  void SetFont(CGUIFontTTFBase* font);
 
 protected:
   CStdString m_strFontName;
-  DWORD m_style;
-  DWORD m_shadowColor;
-  DWORD m_textColor;
+  uint32_t m_style;
+  color_t m_shadowColor;
+  color_t m_textColor;
   float m_lineSpacing;
-  CGUIFontTTF *m_font; // the font object has the size information
+  CGUIFontTTFBase *m_font; // the font object has the size information
 
 private:
-  bool ClippedRegionIsEmpty(float x, float y, float width, DWORD alignment) const;
+  bool ClippedRegionIsEmpty(float x, float y, float width, uint32_t alignment) const;
 };
 
 #endif

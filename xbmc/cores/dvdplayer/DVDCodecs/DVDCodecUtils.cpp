@@ -19,9 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDCodecUtils.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "utils/log.h"
 
 // allocate a new picture (PIX_FMT_YUV420P)
 DVDVideoPicture* CDVDCodecUtils::AllocatePicture(int iWidth, int iHeight)

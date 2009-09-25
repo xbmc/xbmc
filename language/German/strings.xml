@@ -1530,7 +1530,6 @@
   <string id="18106">PVR-Server ist nicht kompatibel!</string>
   <string id="18107">Aktiviere zeitverseztes Fernsehen</string>
   <string id="18108">Zwischenspeicher Größe</string>
-  <string id="18109">Zum Kanal schalten</string>
   <string id="18110">Film/Drama</string>
   <string id="18111">Aktuelles/Nachrichten</string>
   <string id="18112">Show</string>
@@ -1631,6 +1630,8 @@
   <string id="18811">Konnte Aufnahme nicht löschen!</string>
   <string id="18812">Kein Ordner für Logos definiert!</string>
   <string id="18813">Bitte aktualisieren sie ihre Einstellungen.</string>
+
+  <string id="19000">Zum Kanal schalten</string>
 
   <string id="20000">Ordner für CD-Kopien</string>
   <string id="20001">Externen DVD-Player verwenden</string>

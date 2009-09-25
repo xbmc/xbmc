@@ -19,8 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
 #include "Util.h"
 #include "Picture.h"
 #include "PlayListFactory.h"
@@ -53,6 +54,8 @@
 #include "Album.h"
 #include "Song.h"
 #include "URL.h"
+#include "GUISettings.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 
 using namespace std;
@@ -637,10 +640,10 @@ bool CFileItem::Exists() const
   }
 
   CStdString strPath = m_strPath;
- 
+
   if (CUtil::IsMultiPath(strPath))
     strPath = CMultiPathDirectory::GetFirstPath(strPath);
- 
+
   if (CUtil::IsStack(strPath))
     strPath = CStackDirectory::GetFirstStackedFile(strPath);
 
@@ -724,8 +727,8 @@ bool CFileItem::IsAudio() const
   if (HasVideoInfoTag()) return false;
   if (HasPictureInfoTag()) return false;
   if (IsCDDA()) return true;
-  if (IsShoutCast() && !m_bIsFolder) return true;
-  if (IsLastFM() && !m_bIsFolder) return true;
+  if (!m_bIsFolder && IsShoutCast()) return true;
+  if (!m_bIsFolder && IsLastFM()) return true;
 
   /* check preset content type */
   if( m_contenttype.Left(6).Equals("audio/") )
@@ -1205,7 +1208,7 @@ void CFileItem::SetCachedArtistThumb()
 void CFileItem::SetMusicThumb(bool alwaysCheckRemote /* = true */)
 {
   if (HasThumbnail()) return;
-  
+
   SetCachedMusicThumb();
   if (!HasThumbnail())
     SetUserMusicThumb(alwaysCheckRemote);
@@ -2678,7 +2681,7 @@ CStdString CFileItem::GetUserVideoThumb() const
     else return "";
   }
 
-  if (m_strPath.IsEmpty() 
+  if (m_strPath.IsEmpty()
   || m_bIsShareOrDrive
   || IsInternetStream()
   || CUtil::IsUPnP(m_strPath)
@@ -2750,7 +2753,7 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 {
   if (IsLabelPreformated())
     return GetLabel();
-  
+
   CStdString strMovieName = m_strPath;
 
   if (IsMultiPath())
@@ -2847,51 +2850,51 @@ CStdString CFileItem::CacheFanart(bool probe) const
   // no local fanart available for these
   if (IsInternetStream()
   || CUtil::IsUPnP(strFile)
-  || IsLiveTV() 
-  || IsPlugin() 
-  || CUtil::IsFTP(strFile))
+  || IsLiveTV()
+  || IsPlugin()
+  || CUtil::IsFTP(strFile)
+  || m_strPath.IsEmpty())
     return "";
 
   CStdString localFanart;
 
-  // special checks for subfolders
-  if(m_bIsFolder)
-  {
-    CStdString strArt;
-    CUtil::AddFileToFolder(strFile, "fanart.jpg", strArt);
-    if(CFile::Exists(strArt))
-      localFanart = strArt;
-
-    CUtil::AddFileToFolder(strFile, "fanart.png", strArt);
-    if(localFanart.IsEmpty() && CFile::Exists(strArt))
-      localFanart = strArt;
-  }
-
   // we don't have a cached image, so let's see if the user has a local image ..
-  if (localFanart.IsEmpty())
-  {
-    CStdString strDir;
-    CUtil::GetDirectory(strFile, strDir);
-    if (strDir.IsEmpty()) return "";
-    
-    CFileItemList items;
-    CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
-    CUtil::RemoveExtension(strFile);
-    strFile += "-fanart";
-    CStdString strFile3 = CUtil::AddFileToFolder(strDir, "fanart");
+  CStdString strDir;
+  CUtil::GetDirectory(strFile, strDir);
 
-    for (int i = 0; i < items.Size(); i++)
+  if (strDir.IsEmpty())
+    return "";
+
+  CFileItemList items;
+  CDirectory::GetDirectory(strDir, items, g_stSettings.m_pictureExtensions, false, false, DIR_CACHE_ALWAYS, false);
+
+  CStdStringArray fanarts;
+  StringUtils::SplitString(g_advancedSettings.m_fanartImages, "|", fanarts);
+
+  CUtil::RemoveExtension(strFile);
+  strFile += "-fanart";
+  fanarts.push_back(CUtil::GetFileName(strFile));
+
+  if (!strFile2.IsEmpty())
+    fanarts.push_back(CUtil::GetFileName(strFile2));
+
+  for (unsigned int i = 0; i < fanarts.size(); ++i)
+  {
+    for (int j = 0; j < items.Size(); j++)
     {
-      CStdString strCandidate = items[i]->m_strPath;
+      CStdString strCandidate = CUtil::GetFileName(items[j]->m_strPath);
       CUtil::RemoveExtension(strCandidate);
-      if (strCandidate.CompareNoCase(strFile) == 0 ||
-          strCandidate.CompareNoCase(strFile2) == 0 ||
-          strCandidate.CompareNoCase(strFile3) == 0)
+      CStdString strFanart = fanarts[i];
+      CUtil::RemoveExtension(strFanart);
+      if (strCandidate.CompareNoCase(strFanart) == 0)
       {
-        localFanart = items[i]->m_strPath;
+        localFanart = items[j]->m_strPath;
         break;
       }
     }
+    // exit main loop if fanart was found
+    if (!localFanart.IsEmpty())
+      break;
   }
 
   // no local fanart found
@@ -2923,7 +2926,7 @@ CStdString CFileItem::GetCachedFanart() const
       int iShowId = database.GetTvShowId(GetVideoInfoTag()->m_strPath);
       CStdString showPath;
       database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
-      return GetCachedThumb(showPath,g_settings.GetVideoFanartFolder()); 
+      return GetCachedThumb(showPath,g_settings.GetVideoFanartFolder());
     }
     return GetCachedThumb(m_bIsFolder ? GetVideoInfoTag()->m_strPath : GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
   }

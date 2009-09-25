@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderShn.h"
 #include "cores/paplayer/SHNcodec.h"
 #include "MusicInfoTag.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

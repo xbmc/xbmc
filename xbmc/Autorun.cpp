@@ -19,17 +19,23 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "Autorun.h"
 #include "Application.h"
 #include "Util.h"
 #include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/StackDirectory.h"
 #include "ProgramDatabase.h"
 #include "GUIDialogYesNo.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
+#include "GUISettings.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 #include "PlayList.h"
 #include "GUIWindowManager.h"
@@ -126,7 +132,7 @@ void CAutorun::RunISOMedia(bool bypassSettings)
 {
   int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
-#ifdef _WIN32PC
+#ifdef _WIN32
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4 ));
   bool bPlaying = RunDisc(pDir.get(), MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4, nAddedToPlaylist, true, bypassSettings);
 #else
@@ -326,7 +332,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 
 void CAutorun::HandleAutorun()
 {
-#ifndef _WIN32PC
+#ifndef _WIN32
   if (!m_bEnable)
   {
     CDetectDVDMedia::m_evAutorun.Reset();
@@ -362,3 +368,4 @@ bool CAutorun::PlayDisc()
   return true;
 }
 
+#endif

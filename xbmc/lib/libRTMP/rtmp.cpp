@@ -19,12 +19,13 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "stdafx.h"
 #include "PlatformInclude.h"
 #include "rtmp.h"
 #include "AMFObject.h"
+#include <assert.h>
 
 #ifdef _LINUX
+  #include <sys/errno.h>
   #include <sys/types.h>
   #include <sys/socket.h>
   #include <netdb.h>
@@ -78,6 +79,11 @@ void CRTMP::SetPageUrl(const std::string &strPageUrl)
 void CRTMP::SetPlayPath(const std::string &strPlayPath)
 {
   m_strPlayPath = strPlayPath;
+}
+
+void CRTMP::SetTcUrl(const std::string &strTcUrl)
+{
+  m_strTcUrl = strTcUrl;
 }
 
 void CRTMP::SetLive()
@@ -328,9 +334,18 @@ bool CRTMP::SendConnectPacket()
     if( pos_slash != CStdString::npos )
       app = app.Left(pos_slash);
   }
+  
   CStdString tcURL;
-  url.GetURLWithoutFilename(tcURL);
-  tcURL += app;
+  if (m_strTcUrl.empty())
+  {
+    url.GetURLWithoutFilename(tcURL);
+    tcURL += app;
+  }
+  else
+  {
+    tcURL = m_strTcUrl;
+  }
+  
 	
   RTMPPacket packet;
   packet.m_nChannel = 0x03;   // control channel (invoke)

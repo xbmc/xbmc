@@ -19,15 +19,17 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewStatePrograms.h"
 #include "GUIBaseContainer.h"
 #include "FileItem.h"
 #include "ViewState.h"
+#include "GUISettings.h"
 #include "Settings.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "Util.h"
+#include "LocalizeStrings.h"
+#include "Key.h"
 
 using namespace DIRECTORY;
 

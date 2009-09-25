@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SharedSection.h"
 
 #define MAXSHAREDACCESSES 5000

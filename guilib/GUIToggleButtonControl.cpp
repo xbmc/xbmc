@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIToggleButtonControl.h"
 #include "GUIWindowManager.h"
 #include "GUIDialog.h"
@@ -28,9 +27,9 @@
 
 using namespace std;
 
-CGUIToggleButtonControl::CGUIToggleButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo)
-    : CGUIButtonControl(dwParentID, dwControlId, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
-    , m_selectButton(dwParentID, dwControlId, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo)
+CGUIToggleButtonControl::CGUIToggleButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CTextureInfo& altTextureFocus, const CTextureInfo& altTextureNoFocus, const CLabelInfo &labelInfo)
+    : CGUIButtonControl(parentID, controlID, posX, posY, width, height, textureFocus, textureNoFocus, labelInfo)
+    , m_selectButton(parentID, controlID, posX, posY, width, height, altTextureFocus, altTextureNoFocus, labelInfo)
 {
   m_toggleSelect = 0;
   ControlType = GUICONTROL_TOGGLEBUTTON;
@@ -44,7 +43,7 @@ void CGUIToggleButtonControl::Render()
 {
   // ask our infoManager whether we are selected or not...
   if (m_toggleSelect)
-    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_dwParentID);
+    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
 
   if (m_bSelected)
   {
@@ -64,7 +63,7 @@ void CGUIToggleButtonControl::Render()
 
 bool CGUIToggleButtonControl::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
   }

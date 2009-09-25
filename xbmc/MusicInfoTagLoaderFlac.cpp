@@ -19,9 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderFlac.h"
 #include "FlacTag.h"
+#include "utils/log.h"
 
 
 using namespace MUSIC_INFO;

@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+#include "system.h"
 // Visualisation.cpp: implementation of the CVisualisation class.
 //
 //////////////////////////////////////////////////////////////////////
@@ -27,6 +27,7 @@
 #include "visualizations/VisualisationTypes.h"
 #include "MusicInfoTag.h"
 #include "Settings.h"
+#include "WindowingFactory.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -58,9 +59,9 @@ void CVisualisation::Create(int posx, int posy, int width, int height)
   OutputDebugString(szTmp);
 
   float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
-#ifndef HAS_SDL
+#ifdef HAS_DX
   // TODO LINUX this is obviously not good, but until we have visualization sorted out, this will have to do
-  m_pVisz->Create (g_graphicsContext.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(),
+  m_pVisz->Create (g_Windowing.Get3DDevice(), posx, posy, width, height, m_strVisualisationName.c_str(),
                    pixelRatio, m_strSubModuleName=="" ? NULL : m_strSubModuleName.c_str() );
 #else
   m_pVisz->Create (0, posx, posy, width, height, m_strVisualisationName.c_str(), pixelRatio,

@@ -19,14 +19,14 @@
  *
  */
 
-#include "stdafx.h"
 #include "Picture.h"
-#include "TextureManager.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
 #include "Util.h"
+#include "Texture.h"
 
 using namespace XFILE;
 
@@ -40,68 +40,51 @@ CPicture::~CPicture(void)
 
 }
 
-XBMC::TexturePtr CPicture::Load(const CStdString& strFileName, int iMaxWidth, int iMaxHeight)
+bool CPicture::Load(const CStdString& strFileName, CBaseTexture* pTexture, int iMaxWidth, int iMaxHeight)
 {
   if (!m_dll.Load()) return NULL;
 
+  if (pTexture == NULL)
+    return false;
+
   memset(&m_info, 0, sizeof(ImageInfo));
+
   if (!m_dll.LoadImage(strFileName.c_str(), iMaxWidth, iMaxHeight, &m_info))
   {
     CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
-    return NULL;
+    return false;
   }
-  XBMC::TexturePtr pTexture = NULL;
-#ifndef HAS_SDL
-  g_graphicsContext.Get3DDevice()->CreateTexture(m_info.width, m_info.height, 1, 0, D3DFMT_LIN_A8R8G8B8 , D3DPOOL_MANAGED, &pTexture, NULL);
-#else
-#ifdef HAS_SDL_OPENGL
-  pTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
-#else
-  pTexture = SDL_CreateRGBSurface(SDL_HWSURFACE, m_info.width, m_info.height, 32, RMASK, GMASK, BMASK, AMASK);
-#endif
-#endif
+
+  pTexture->Allocate(m_info.width, m_info.height, 32);
+
   if (pTexture)
   {
-#ifndef HAS_SDL
-    D3DLOCKED_RECT lr;
-    if ( D3D_OK == pTexture->LockRect( 0, &lr, NULL, 0 ))
+    DWORD destPitch = pTexture->GetPitch();
+    DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
+    BYTE *pixels = (BYTE *)pTexture->GetPixels();
+    for (unsigned int y = 0; y < m_info.height; y++)
     {
-      DWORD destPitch = lr.Pitch;
-      // CxImage aligns rows to 4 byte boundaries
-      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
-      BYTE *pixels = (BYTE *)lr.pBits;
-#else
-    if (SDL_LockSurface(pTexture) == 0)
-    {
-      DWORD destPitch = pTexture->pitch;
-      DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
-      BYTE *pixels = (BYTE *)pTexture->pixels;
-#endif
-      for (unsigned int y = 0; y < m_info.height; y++)
+      BYTE *dst = pixels + y * destPitch;
+      BYTE *src = m_info.texture + (m_info.height - 1 - y) * srcPitch;
+      BYTE *alpha = m_info.alpha + (m_info.height - 1 - y) * m_info.width;
+      for (unsigned int x = 0; x < m_info.width; x++)
       {
-        BYTE *dst = pixels + y * destPitch;
-        BYTE *src = m_info.texture + (m_info.height - 1 - y) * srcPitch;
-        BYTE *alpha = m_info.alpha + (m_info.height - 1 - y) * m_info.width;
-        for (unsigned int x = 0; x < m_info.width; x++)
-        {
-          *dst++ = *src++;
-          *dst++ = *src++;
-          *dst++ = *src++;
-          *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
-        }
+        *dst++ = *src++;
+        *dst++ = *src++;
+        *dst++ = *src++;
+        *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
       }
-
-#ifndef HAS_SDL
-      pTexture->UnlockRect( 0 );
-#else
-      SDL_UnlockSurface(pTexture);
-#endif
     }
   }
   else
+  {
     CLog::Log(LOGERROR, "%s - failed to create texture while loading image %s", __FUNCTION__, strFileName.c_str());
+    return false;
+  }
+  
   m_dll.ReleaseImage(&m_info);
-  return pTexture;
+
+  return true;
 }
 
 bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
@@ -201,77 +184,4 @@ int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile,
     return ret;
   }
   return ret;
-}
-
-// caches a skin image as a thumbnail image
-bool CPicture::CacheSkinImage(const CStdString &srcFile, const CStdString &destFile)
-{
-  int iImages = g_TextureManager.Load(srcFile);
-  if (iImages > 0)
-  {
-    int width = 0, height = 0;
-    bool linear = false;
-    CTexture baseTexture = g_TextureManager.GetTexture(srcFile);
-#ifdef HAS_SDL_OPENGL
-#ifdef __GNUC__
-// TODO: fix this code to support OpenGL
-#endif
-    XBMC::TexturePtr texture = NULL;
-#else
-    XBMC::TexturePtr texture = baseTexture.m_textures[0];
-#endif
-    if (texture)
-    {
-      bool success(false);
-      CPicture pic;
-      if (!linear)
-      { // damn, have to copy it to a linear texture first :(
-        return CreateThumbnailFromSwizzledTexture(texture, width, height, destFile);
-      }
-      else
-      {
-#ifndef HAS_SDL
-        D3DLOCKED_RECT lr;
-        texture->LockRect(0, &lr, NULL, 0);
-        success = pic.CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, destFile);
-        texture->UnlockRect(0);
-#else
-        SDL_LockSurface(texture);
-        success = pic.CreateThumbnailFromSurface((BYTE *)texture->pixels, width, height, texture->pitch, destFile);
-        SDL_UnlockSurface(texture);
-#endif
-      }
-      g_TextureManager.ReleaseTexture(srcFile);
-      return success;
-    }
-  }
-  return false;
-}
-
-bool CPicture::CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb)
-{
-#ifndef HAS_SDL
-  LPDIRECT3DTEXTURE9 linTexture = NULL;
-  if (D3D_OK == D3DXCreateTexture(g_graphicsContext.Get3DDevice(), width, height, 1, 0, D3DFMT_LIN_A8R8G8B8, D3DPOOL_MANAGED, &linTexture))
-  {
-    LPDIRECT3DSURFACE9 source;
-    LPDIRECT3DSURFACE9 dest;
-    texture->GetSurfaceLevel(0, &source);
-    linTexture->GetSurfaceLevel(0, &dest);
-    D3DXLoadSurfaceFromSurface(dest, NULL, NULL, source, NULL, NULL, D3DX_FILTER_NONE, 0);
-    D3DLOCKED_RECT lr;
-    dest->LockRect(&lr, NULL, 0);
-    bool success = CreateThumbnailFromSurface((BYTE *)lr.pBits, width, height, lr.Pitch, thumb);
-    dest->UnlockRect();
-    SAFE_RELEASE(source);
-    SAFE_RELEASE(dest);
-    SAFE_RELEASE(linTexture);
-    return success;
-  }
-#else
-#ifdef __GNUC__
-// FIXME: CPicture::CreateThumbnailFromSwizzledTexture not implemented
-#endif
-#endif
-  return false;
 }

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SPCCodec.h"
 #include "cores/DllLoader/DllLoader.h"
 #include "../DllLoader/SoLoader.h"
@@ -27,8 +26,9 @@
 #include "MusicInfoTag.h"
 #include "FileSystem/File.h"
 #include "DynamicDll.h"
-#include "../../Util.h"
-#ifdef _WIN32PC
+#include "Util.h"
+#include "utils/log.h"
+#ifdef _WIN32
 #include "../DllLoader/Win32DllLoader.h"
 #endif
 

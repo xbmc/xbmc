@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNodeAlbumTop100.h"
 #include "MusicDatabase.h"
 #include "FileItem.h"

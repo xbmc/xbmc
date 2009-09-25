@@ -19,22 +19,40 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
+#if defined(HAS_GL) || HAS_GLES == 2
 #include "../xbmc/Settings.h"
+#include "../xbmc/FileSystem/File.h"
 #include "Shader.h"
+#include "utils/log.h"
 
 #define LOG_SIZE 1024
 
 using namespace Shaders;
+using namespace XFILE;
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////
 // CShader
 //////////////////////////////////////////////////////////////////////
+bool CShader::LoadSource(const string& filename, const string& prefix)
+{
+  if(filename.empty())
+    return true;
 
+  CFileStream file;
+
+  if(!file.Open("special://xbmc/system/shaders/" + filename))
+  {
+    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file %s", filename.c_str());
+    return false;
+  }
+
+  getline(file, m_source, '\0');
+  m_source.insert(0, prefix);
+  return true;
+}
 
 //////////////////////////////////////////////////////////////////////
 // CGLSLVertexShader
@@ -46,11 +64,13 @@ bool CGLSLVertexShader::Compile()
 
   Free();
 
+#ifdef HAS_GL  
   if(!GLEW_VERSION_2_0)
   {
     CLog::Log(LOGERROR, "GL: GLSL vertex shaders not supported");
     return false;
   }
+#endif  
 
   /*
      Workaround for locale bug in nVidia's shader compiler.
@@ -89,14 +109,17 @@ bool CGLSLVertexShader::Compile()
 
 void CGLSLVertexShader::Free()
 {
+#ifdef HAS_GL  
   if(!GLEW_VERSION_2_0)
     return;
+#endif  
 
   if (m_vertexShader)
     glDeleteShader(m_vertexShader);
   m_vertexShader = 0;
 }
 
+#ifndef HAS_GLES
 
 //////////////////////////////////////////////////////////////////////
 // CARBVertexShader
@@ -148,19 +171,21 @@ void CARBVertexShader::Free()
     glDeleteProgramsARB(1, &m_vertexShader);
   m_vertexShader = 0;
 }
-
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // CGLSLPixelShader
 //////////////////////////////////////////////////////////////////////
 bool CGLSLPixelShader::Compile()
 {
+#ifdef HAS_GL  
   if(!GLEW_VERSION_2_0)
   {
     CLog::Log(LOGERROR, "GL: GLSL pixel shaders not supported");
     return false;
   }
-
+#endif
+  
   GLint params[4];
 
   Free();
@@ -208,13 +233,16 @@ bool CGLSLPixelShader::Compile()
 
 void CGLSLPixelShader::Free()
 {
+#ifdef HAS_GL  
   if(!GLEW_VERSION_2_0)
     return;
-
+#endif
   if (m_pixelShader)
     glDeleteShader(m_pixelShader);
   m_pixelShader = 0;
 }
+
+#ifndef HAS_GLES
 
 //////////////////////////////////////////////////////////////////////
 // CARBPixelShader
@@ -267,15 +295,17 @@ void CARBPixelShader::Free()
   m_pixelShader = 0;
 }
 
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // CGLSLShaderProgram
 //////////////////////////////////////////////////////////////////////
 void CGLSLShaderProgram::Free()
 {
+#ifdef HAS_GL  
   if(!GLEW_VERSION_2_0)
     return;
-
+#endif
   m_pVP->Free();
   VerifyGLState();
   m_pFP->Free();
@@ -291,13 +321,15 @@ void CGLSLShaderProgram::Free()
 
 bool CGLSLShaderProgram::CompileAndLink()
 {
+#ifdef HAS_GL  
   // check that we support shaders
   if(!GLEW_VERSION_2_0)
   {
     CLog::Log(LOGERROR, "GL: GLSL shaders not supported");
     return false;
   }
-
+#endif
+  
   GLint params[4];
 
   // free resources
@@ -376,9 +408,11 @@ bool CGLSLShaderProgram::CompileAndLink()
 
 bool CGLSLShaderProgram::Enable()
 {
+#ifdef HAS_GL  
   if(!GLEW_VERSION_2_0)
     return false;
-
+#endif
+  
   if (OK())
   {
     glUseProgram(m_shaderProgram);
@@ -399,15 +433,19 @@ bool CGLSLShaderProgram::Enable()
 
 void CGLSLShaderProgram::Disable()
 {
+#ifdef HAS_GL  
   if(!GLEW_VERSION_2_0)
     return;
-
+#endif
+  
   if (OK())
   {
     glUseProgram(0);
     OnDisabled();
   }
 }
+
+#ifndef HAS_GLES
 
 //////////////////////////////////////////////////////////////////////
 // CARBShaderProgram
@@ -490,5 +528,7 @@ void CARBShaderProgram::Disable()
     OnDisabled();
   }
 }
+
+#endif
 
 #endif

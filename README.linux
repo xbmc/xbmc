@@ -77,7 +77,9 @@ version on the PPA).
 4. How to compile
 -----------------------------------------------------------------------------
 
-To create the XBMC executable manually perform these two steps:
+To create the XBMC executable manually perform these steps:
+
+.0  $ ./bootstrap
 
 .1  $ ./configure <option1> <option2> ...
 

@@ -23,6 +23,10 @@
 #ifndef __EMU_FILE_WRAPPER_H__
 #define __EMU_FILE_WRAPPER_H__
 
+#include <stdio.h>
+
+#include "system.h"
+
 class CMutex;
 
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -32,6 +36,11 @@ class CMutex;
 #define MAX_EMULATED_FILES    50
 #define FILE_WRAPPER_OFFSET   0x00000100
 
+namespace XFILE
+{
+  class CFile;
+}
+
 typedef struct stEmuFileObject
 {
   bool    used;
@@ -39,7 +48,7 @@ typedef struct stEmuFileObject
   XFILE::CFile*  file_xbmc;
   CMutex *file_lock;
 } EmuFileObject;
-  
+
 class CEmuFileWrapper
 {
 public:

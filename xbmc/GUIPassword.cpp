@@ -19,8 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #include "Application.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
@@ -30,9 +30,12 @@
 #include "Util.h"
 #include "URL.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 CGUIPassword g_passwordManager;
 

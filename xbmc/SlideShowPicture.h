@@ -20,9 +20,13 @@
  *
  */
 
-#ifdef HAS_SDL_OPENGL
-class CGLTexture;
-#endif
+#include "utils/CriticalSection.h"
+#include "gui3d.h"
+#include "StdString.h"
+
+typedef uint32_t color_t;
+
+class CBaseTexture;
 
 class CSlideShowPic
 {
@@ -40,8 +44,8 @@ public:
   CSlideShowPic();
   ~CSlideShowPic();
 
-  void SetTexture(int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
-  void UpdateTexture(XBMC::TexturePtr pTexture, int iWidth, int iHeight);
+  void SetTexture(int iSlideNumber, CBaseTexture* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect = EFFECT_RANDOM, TRANSISTION_EFFECT transEffect = FADEIN_FADEOUT);
+  void UpdateTexture(CBaseTexture* pTexture, int iWidth, int iHeight);
 
   bool IsLoaded() const { return m_bIsLoaded;};
   void UnLoad() {m_bIsLoaded = false;};
@@ -76,16 +80,8 @@ public:
 private:
   void Process();
 
-#ifdef HAS_SDL_OPENGL
-  void Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode = GL_FILL);
-  CGLTexture *m_pImage;
-#elif defined(HAS_SDL)
-  void Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor);
-  XBMC::TexturePtr m_pImage;
-#else
-  void Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor, _D3DFILLMODE fillmode = D3DFILL_SOLID);
-  XBMC::TexturePtr m_pImage;
-#endif
+  void Render(float *x, float *y, CBaseTexture* pTexture, color_t color);
+  CBaseTexture *m_pImage;
 
   int m_iOriginalWidth;
   int m_iOriginalHeight;
@@ -96,7 +92,7 @@ private:
   CStdString m_strFileName;
   float m_fWidth;
   float m_fHeight;
-  DWORD m_dwAlpha;
+  color_t m_alpha;
   // stuff relative to middle position
   float m_fPosX;
   float m_fPosY;

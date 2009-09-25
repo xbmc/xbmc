@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSongInfo.h"
 #include "Util.h"
 #include "Picture.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #include "MusicDatabase.h"
 #include "GUIWindowMusicBase.h"
 #include "MusicInfoTag.h"
@@ -32,6 +32,10 @@
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
 #include "FileItem.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace XFILE;
 
@@ -122,19 +126,19 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
 bool CGUIDialogSongInfo::OnAction(const CAction &action)
 {
   char rating = m_song->GetMusicInfoTag()->GetRating();
-  if (action.wID == ACTION_INCREASE_RATING)
+  if (action.id == ACTION_INCREASE_RATING)
   {
     if (rating < '5')
       SetRating(rating + 1);
     return true;
   }
-  else if (action.wID == ACTION_DECREASE_RATING)
+  else if (action.id == ACTION_DECREASE_RATING)
   {
     if (rating > '0')
       SetRating(rating - 1);
     return true;
   }
-  else if (action.wID == ACTION_PREVIOUS_MENU)
+  else if (action.id == ACTION_PREVIOUS_MENU)
     m_cancelled = true;
   return CGUIDialog::OnAction(action);
 }
@@ -268,9 +272,9 @@ void CGUIDialogSongInfo::OnGetThumb()
   CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_song->GetMusicInfoTag()->GetAlbum(), m_song->GetMusicInfoTag()->GetArtist()));
 
   if (result == "thumb://None")
-  { // cache the default thumb
-    CPicture pic;
-    pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
+  {
+    CFile::Delete(cachedThumb);
+    cachedThumb = "";
   }
   else if (result == "thumb://allmusic.com")
     CFile::Cache(thumbFromWeb, cachedThumb);

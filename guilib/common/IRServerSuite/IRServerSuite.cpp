@@ -19,12 +19,11 @@
  *
  */
 
-#include "include.h"
 #include "IRServerSuite.h"
 #include "IrssMessage.h"
 #include "ButtonTranslator.h"
 #include "log.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 
 #define IRSS_PORT 24000
 
@@ -72,17 +71,16 @@ void CRemoteControl::Reset()
   m_button = 0;
 }
 
-bool CRemoteControl::Initialize()
+void CRemoteControl::Initialize()
 {
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
   SetName("CRemoteControl");
-  return true;
 }
 
 void CRemoteControl::Process()
 {
-  DWORD iTries = 1;
+  int iTries = 1;
   DWORD iMsRetryDelay = 5000;
   DWORD time = timeGetTime() - iMsRetryDelay;
   // try to connect 6 times @ a 5 second interval (30 seconds)

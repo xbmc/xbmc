@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -77,9 +76,9 @@ namespace PYXBMC
 
     // set up default values in case they are not supplied
     self->strFont = "font13";
-    self->dwTextColor = 0xffffffff;
-    self->dwDisabledColor = 0x60ffffff;
-    self->dwAlign = XBFONT_LEFT;
+    self->textColor = 0xffffffff;
+    self->disabledColor = 0x60ffffff;
+    self->align = XBFONT_LEFT;
     self->iAngle = 0;
 
     if (!PyArg_ParseTupleAndKeywords(
@@ -95,7 +94,7 @@ namespace PYXBMC
       &cFont,
       &cTextColor,
       &cDisabledColor,
-      &self->dwAlign,
+      &self->align,
       &bHasPath,
       &self->iAngle))
     {
@@ -110,10 +109,10 @@ namespace PYXBMC
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->textColor);
     if (cDisabledColor)
     {
-      sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+      sscanf( cDisabledColor, "%x", &self->disabledColor );
     }
 
     return (PyObject*)self;
@@ -130,9 +129,9 @@ namespace PYXBMC
   {
     CLabelInfo label;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = label.focusedColor = pControl->dwTextColor;
-    label.disabledColor = pControl->dwDisabledColor;
-    label.align = pControl->dwAlign;
+    label.textColor = label.focusedColor = pControl->textColor;
+    label.disabledColor = pControl->disabledColor;
+    label.align = pControl->align;
     label.angle = (float)-pControl->iAngle;
     pControl->pGUIControl = new CGUILabelControl(
       pControl->iParentId,

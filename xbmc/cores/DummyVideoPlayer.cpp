@@ -19,12 +19,14 @@
  *
  */
  
-#include "stdafx.h"
+#include "system.h"
 #include "DummyVideoPlayer.h"
 #include "GUIFontManager.h"
 #include "GUITextLayout.h"
 #include "Application.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "WindowingFactory.h"
+#include "utils/log.h"
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -83,16 +85,16 @@ void CDummyVideoPlayer::Process()
     g_graphicsContext.Lock();
     if (g_graphicsContext.IsFullScreenVideo())
     {
-#ifndef HAS_SDL	
-      g_graphicsContext.Get3DDevice()->BeginScene();
+#ifdef HAS_DX	
+      g_Windowing.Get3DDevice()->BeginScene();
 #endif
       g_graphicsContext.Clear();
       g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetVideoResolution(), 0, 0, false);
       Render();
       if (g_application.NeedRenderFullScreen())
         g_application.RenderFullScreen();
-#ifndef HAS_SDL     
-      g_graphicsContext.Get3DDevice()->EndScene();
+#ifdef HAS_DX     
+      g_Windowing.Get3DDevice()->EndScene();
 #endif      
     }
     g_graphicsContext.Unlock();
@@ -258,10 +260,10 @@ bool CDummyVideoPlayer::SetPlayerState(CStdString state)
 void CDummyVideoPlayer::Render()
 {
   RECT vw = g_graphicsContext.GetViewWindow();
-#ifndef HAS_SDL
+#ifdef HAS_DX
   D3DVIEWPORT9 newviewport;
   D3DVIEWPORT9 oldviewport;
-  g_graphicsContext.Get3DDevice()->GetViewport(&oldviewport);
+  g_Windowing.Get3DDevice()->GetViewport(&oldviewport);
   newviewport.MinZ = 0.0f;
   newviewport.MaxZ = 1.0f;
   newviewport.X = vw.left;
@@ -286,7 +288,7 @@ void CDummyVideoPlayer::Render()
     float posY = (vw.top + vw.bottom) * 0.5f;
     CGUITextLayout::DrawText(font, posX, posY, 0xffffffff, 0, currentTime, XBFONT_CENTER_X | XBFONT_CENTER_Y);
   }
-#ifndef HAS_SDL
+#ifdef HAS_DX
   g_graphicsContext.RestoreClipRegion();
 #else
   g_graphicsContext.RestoreViewPort();

@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "StdString.h"
+
 class Crc32
 {
 public:

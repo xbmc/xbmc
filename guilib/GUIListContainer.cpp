@@ -19,13 +19,13 @@
  *
  */
 
-#include "include.h"
 #include "GUIListContainer.h"
 #include "GUIListItem.h"
 #include "GUIInfoManager.h"
+#include "Key.h"
 
-CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
-    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
 {
   ControlType = GUICONTAINER_LIST;
   m_type = VIEW_TYPE_LIST;
@@ -37,7 +37,7 @@ CGUIListContainer::~CGUIListContainer(void)
 
 bool CGUIListContainer::OnAction(const CAction &action)
 {
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_PAGE_UP:
     {
@@ -68,7 +68,7 @@ bool CGUIListContainer::OnAction(const CAction &action)
     // smooth scrolling (for analog controls)
   case ACTION_SCROLL_UP:
     {
-      m_analogScrollCount += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
       while (m_analogScrollCount > 0.4)
       {
@@ -88,7 +88,7 @@ bool CGUIListContainer::OnAction(const CAction &action)
     break;
   case ACTION_SCROLL_DOWN:
     {
-      m_analogScrollCount += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
       while (m_analogScrollCount > 0.4)
       {
@@ -244,17 +244,17 @@ void CGUIListContainer::SelectItem(int item)
   }
 }
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-CGUIListContainer::CGUIListContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height,
+CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height,
                                  const CLabelInfo& labelInfo, const CLabelInfo& labelInfo2,
                                  const CTextureInfo& textureButton, const CTextureInfo& textureButtonFocus,
                                  float textureHeight, float itemWidth, float itemHeight, float spaceBetweenItems)
-: CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, VERTICAL, 200, 0)
+: CGUIBaseContainer(parentID, controlID, posX, posY, width, height, VERTICAL, 200, 0)
 {
   CGUIListItemLayout layout;
   layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);
   m_layouts.push_back(layout);
   CStdString condition;
-  condition.Format("control.hasfocus(%i)", dwControlId);
+  condition.Format("control.hasfocus(%i)", controlID);
   CStdString condition2 = "!" + condition;
   CGUIListItemLayout focusLayout;
   focusLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, g_infoManager.TranslateString(condition2), g_infoManager.TranslateString(condition));

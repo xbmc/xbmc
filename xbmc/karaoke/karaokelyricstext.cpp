@@ -9,10 +9,12 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "stdafx.h"
+
 #include <math.h>
 
+#include "utils/CharsetConverter.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "GUITextLayout.h"
 #include "karaokelyricstext.h"
 #include "Util.h"
@@ -21,6 +23,7 @@
 #include "GUIWindowManager.h"
 #include "SkinInfo.h"
 #include "MathUtils.h"
+#include "utils/log.h"
 
 typedef struct
 {
@@ -669,7 +672,7 @@ void CKaraokeLyricsText::rescanLyrics()
 float CKaraokeLyricsText::getStringWidth(const CStdString & text)
 {
   CStdStringW utf16;
-  std::vector<DWORD> utf32;
+  vecText utf32;
 
   g_charsetConverter.utf8ToW(text, utf16);
 

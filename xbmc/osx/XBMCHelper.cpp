@@ -29,7 +29,7 @@
 
 #include "log.h"
 #include "system.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "SystemInfo.h"
 
 XBMCHelper g_xbmcHelper;

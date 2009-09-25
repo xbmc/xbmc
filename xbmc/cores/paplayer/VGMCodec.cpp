@@ -19,10 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "VGMCodec.h"
 #include "Util.h"
-
+#include "utils/log.h"
 
 VGMCodec::VGMCodec()
 {

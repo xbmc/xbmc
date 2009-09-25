@@ -21,9 +21,11 @@
  *
  */
 
-class CDVDInputStream;
-
+#include "StdString.h"
+#include "system.h"
 #include "DVDDemuxPacket.h"
+
+class CDVDInputStream;
 
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
@@ -43,6 +45,7 @@ extern "C" {
 #endif
 }
 #endif
+
 enum AVDiscard;
 
 enum StreamType

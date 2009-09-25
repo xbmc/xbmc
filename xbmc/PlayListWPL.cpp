@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlayListWPL.h"
 #include "Util.h"
 #include "tinyXML/tinyxml.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileSystem/File.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace PLAYLIST;

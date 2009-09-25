@@ -22,6 +22,7 @@
  */
 
 #include "settings/AddonSettings.h"
+#include "StdString.h"
 
 class CScraperUrl;
 

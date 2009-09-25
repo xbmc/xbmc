@@ -19,10 +19,11 @@
  *
  */
  
-#include "stdafx.h"
 #include "dll_tracker_file.h"
 #include "dll_tracker.h"
 #include "DllLoader.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #ifdef _LINUX
 #define dll_open open

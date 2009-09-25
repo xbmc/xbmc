@@ -12,6 +12,7 @@ SRCS = \
 	CocoaPowerSyscall.cpp \
 	OSXGNUReplacements.c \
 	ZeroconfOSX.cpp \
+	ZeroconfBrowserOSX.cpp \
 	
 LIB=osx.a
 

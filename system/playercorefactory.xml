@@ -30,5 +30,8 @@
 
     <!-- Only dvdplayer can handle these normally -->
     <rule name="sdp/asf" filetypes="sdp|asf" player="DVDPlayer" />
+
+    <!-- Pass these to dvdplayer as we do not know if they are audio or video -->
+    <rule name="nsv" filetypes="nsv" player="DVDPlayer" />
   </rules>
 </playercorefactory>

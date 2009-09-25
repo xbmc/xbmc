@@ -24,6 +24,8 @@
 #include "GUIControl.h"
 #include "cores/IAudioCallback.h"
 
+#include <list>
+
 // forward definitions
 class CVisualisation;
 
@@ -47,7 +49,7 @@ class CGUIVisualisationControl :
       public CGUIControl, public IAudioCallback
 {
 public:
-  CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
+  CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIVisualisationControl(const CGUIVisualisationControl &from);
   virtual ~CGUIVisualisationControl(void);
   virtual CGUIVisualisationControl *Clone() const { return new CGUIVisualisationControl(*this); };

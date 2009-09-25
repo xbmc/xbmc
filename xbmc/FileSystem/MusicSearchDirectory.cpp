@@ -19,11 +19,11 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicSearchDirectory.h"
 #include "MusicDatabase.h"
 #include "URL.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

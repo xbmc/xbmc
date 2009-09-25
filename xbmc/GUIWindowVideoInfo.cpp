@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindow.h"
 #include "GUIWindowVideoInfo.h"
 #include "Util.h"
@@ -43,6 +42,10 @@
 #include "FileItem.h"
 #include "MediaManager.h"
 #include "utils/AsyncFileCopy.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

@@ -19,12 +19,14 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 
 #ifdef HAS_EVENT_SERVER
 
 #include "EventPacket.h"
 #include "Socket.h"
+#include "utils/log.h"
+
 #ifdef _XBOX
 #include "lib/libcdio/inttypes.h"
 #endif

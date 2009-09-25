@@ -50,7 +50,7 @@ public:
                     INPUT_TYPE_FILTER
                   };
 
-  CGUIEditControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY,
+  CGUIEditControl(int parentID, int controlID, float posX, float posY,
                   float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
                   const CLabelInfo& labelInfo, const std::string &text);
   CGUIEditControl(const CGUIButtonControl &button);

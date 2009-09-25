@@ -19,18 +19,19 @@
  *
  */
  
-#include "stdafx.h"
 #include "DllLoaderContainer.h"
 #ifdef _LINUX
 #include "SoLoader.h"
 #endif
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "Win32DllLoader.h"
 #endif
 #include "DllLoader.h"
 #include "dll_tracker.h" // for python unload hack
 #include "FileSystem/File.h"
 #include "Util.h"
+#include "StringUtils.h"
+#include "utils/log.h"
 
 #define ENV_PATH "special://xbmc/system/;special://xbmc/system/players/mplayer/;special://xbmc/system/players/dvdplayer/;special://xbmc/system/players/paplayer/;special://xbmc/system/python/"
 
@@ -44,71 +45,6 @@ LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
 int        DllLoaderContainer::m_iNrOfDlls = 0;
 bool       DllLoaderContainer::m_bTrack = true;
 
-#ifdef _XBOX
-Export export_advapi32[];
-Export export_ole32[];
-Export export_winmm[];
-Export export_user32[];
-Export export_msdmo[];
-Export export_xbmc_vobsub[];
-Export export_kernel32[];
-Export export_wsock32[];
-Export export_ws2_32[];
-Export export_xbox_dx8[];
-Export export_xbox___dx8[];
-Export export_version[];
-Export export_comdlg32[];
-Export export_gdi32[];
-Export export_ddraw[];
-Export export_comctl32[];
-Export export_msvcrt[];
-#ifndef _XBOX
-Export export_msvcr71[];
-#endif
-Export export_pncrt[];
-Export export_iconvx[];
-Export export_xbp[];
-Export export_zlib[];
-Export export_opengl32[];
-Export export_glew32[];
-
-DllLoader kernel32("kernel32.dll",        false, true, false, export_kernel32);
-DllLoader msvcr80("msvcr80.dll",          false, true, false, export_msvcrt);
-#ifdef _XBOX
-DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcrt);
-#else
-DllLoader msvcr71("msvcr71.dll",          false, true, false, export_msvcr71);
-#endif
-DllLoader msvcrt("msvcrt.dll",            false, true, false, export_msvcrt);
-DllLoader wsock32("wsock32.dll",          false, true, false, export_wsock32);
-DllLoader ws2_32("ws2_32.dll",            false, true, false, export_ws2_32);
-DllLoader user32("user32.dll",            false, true, false, export_user32);
-DllLoader ddraw("ddraw.dll",              false, true, false, export_ddraw);
-DllLoader wininet("wininet.dll",          false, true, false, NULL);
-DllLoader advapi32("advapi32.dll",        false, true, false, export_advapi32);
-DllLoader ole32("ole32.dll",              false, true, false, export_ole32);
-DllLoader oleaut32("oleaut32.dll",        false, true, false, NULL);
-DllLoader xbp("xbp.dll",                  false, true, false, export_xbp);
-DllLoader winmm("winmm.dll",              false, true, false, export_winmm);
-DllLoader msdmo("msdmo.dll",              false, true, false, export_msdmo);
-DllLoader xbmc_vobsub("xbmc_vobsub.dll",  false, true, false, export_xbmc_vobsub);
-DllLoader xbox_dx8("xbox_dx8.dll",        false, true, false, export_xbox_dx8);
-DllLoader version("version.dll",          false, true, false, export_version);
-DllLoader comdlg32("comdlg32.dll",        false, true, false, export_comdlg32);
-DllLoader gdi32("gdi32.dll",              false, true, false, export_gdi32);
-DllLoader comctl32("comctl32.dll",        false, true, false, export_comctl32);
-DllLoader pncrt("pncrt.dll",              false, true, false, export_pncrt);
-DllLoader iconvx("iconv.dll",             false, true, false, export_iconvx);
-DllLoader zlib("zlib1.dll",               false, true, false, export_zlib);
-DllLoader opengl32("opengl32.dll",        false, true, false, export_opengl32);
-DllLoader glew32("glew32.dll",            false, true, false, export_glew32);
-#else
-extern Export export_kernel32[];
-extern Export export_msvcrt[];
-extern Export export_msvcr71[];
-extern Export export_pncrt[];
-#endif
-  
 void DllLoaderContainer::Clear()
 {
 }
@@ -206,6 +142,7 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
   //  in environment variable?
   CStdStringArray vecEnv;
   StringUtils::SplitString(ENV_PATH, ";", vecEnv);
+  LibraryLoader* pDll = NULL;
 
   for (int i=0; i<(int)vecEnv.size(); ++i)
   {
@@ -218,25 +155,25 @@ LibraryLoader* DllLoaderContainer::FindModule(const char* sName, const char* sCu
     strPath+=sName;
 
     // Have we already loaded this dll
-    LibraryLoader* pDll = GetModule(strPath.c_str());
-    if (pDll)
+    if ((pDll = GetModule(strPath.c_str())) != NULL)
       return pDll;
 
     if (CFile::Exists(strPath))
       return LoadDll(strPath.c_str(), bLoadSymbols);
   }
 
-#ifdef _WIN32PC
   // can't find it in any of our paths - could be a system dll
-  return LoadDll(sName, bLoadSymbols);
-#endif
+  if ((pDll = LoadDll(sName, bLoadSymbols)) != NULL)
+    return pDll;
+  
   CLog::Log(LOGDEBUG, "Dll %s was not found in path", sName);
-
   return NULL;
 }
 
 void DllLoaderContainer::ReleaseModule(LibraryLoader*& pDll)
 {
+  if (!pDll)
+    return;
   if (pDll->IsSystemDll())
   {
     CLog::Log(LOGFATAL, "%s is a system dll and should never be released", pDll->GetName());
@@ -281,7 +218,7 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
       || strstr(sName, ".mvis") != NULL || strstr(sName, ".pvr") != NULL)
     pLoader = new SoLoader(sName, bLoadSymbols);
   else
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
   if (1)
     pLoader = new Win32DllLoader(sName);
   else

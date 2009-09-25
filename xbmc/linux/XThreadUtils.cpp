@@ -83,10 +83,12 @@ HANDLE WINAPI CreateThread(
 }
 
 
+#if 0 // Deprecated, use CThread::GetCurrentThreadId() instead
 DWORD WINAPI GetCurrentThreadId(void) {
   // WARNING:  This can truncate thread IDs on x86_64.
   return (DWORD)pthread_self();
 }
+#endif
 
 HANDLE WINAPI GetCurrentThread(void) {
   return (HANDLE)-1; // -1 a special value - pseudo handle

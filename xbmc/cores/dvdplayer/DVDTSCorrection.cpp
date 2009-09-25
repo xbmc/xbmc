@@ -19,9 +19,12 @@
  *
  */
 
-#include "stdafx.h"
-#include "../../Util.h"
+#include "Util.h"
 #include "DVDTSCorrection.h"
+#include "DVDClock.h"
+#include "utils/log.h"
+
+#define MAXERR 0.01
 
 using namespace std;
 
@@ -34,7 +37,7 @@ void CPullupCorrection::Flush()
 {
   m_ringpos = 0;
   m_ptscorrection = 0.0;
-  m_prevpts = 0.0;
+  m_prevpts = DVD_NOPTS_VALUE;
   m_patternpos = 0;
   m_ringfill = 0;
   m_pattern.clear();
@@ -45,7 +48,7 @@ void CPullupCorrection::Flush()
 void CPullupCorrection::Add(double pts)
 {
   //can't get a diff with just one pts
-  if (m_prevpts == 0.0)
+  if (m_prevpts == DVD_NOPTS_VALUE)
   {
     m_prevpts = pts;
     return;
@@ -120,10 +123,6 @@ std::vector<double> CPullupCorrection::GetPattern()
   int difftypesbuff[DIFFRINGSIZE]; //difftypes of the diffs, difftypesbuff[0] is the last added diff,
                                    //difftypesbuff[1] the one added before that etc
   
-  //less than 2 difftypes is not a pattern
-  if (difftypes.size() < 2)
-    return pattern;
-  
   //mark each diff with what difftype it is
   for (int i = 0; i < DIFFRINGSIZE; i++)
   {
@@ -137,8 +136,8 @@ std::vector<double> CPullupCorrection::GetPattern()
     }
   }
   
-  //we check from patterns of 2 to DIFFRINGSIZE / 3
-  for (int i = 2; i <= DIFFRINGSIZE / 3; i++)
+  //we check for patterns to the length of DIFFRINGSIZE / 3
+  for (int i = 1; i <= DIFFRINGSIZE / 3; i++)
   {
     bool hasmatch = true;
     for (int j = 1; j <= DIFFRINGSIZE / i; j++)
@@ -212,7 +211,6 @@ std::vector<double> CPullupCorrection::BuildPattern(int patternlength)
   return pattern;
 }
 
-#define MAXERR 0.01
 inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
 {
   if (fabs(diff1) < MAXERR && fabs(diff2) < MAXERR)
@@ -223,7 +221,6 @@ inline bool CPullupCorrection::MatchDiff(double diff1, double diff2)
   
   return fabs(1.0 - (diff1 / diff2)) <= MAXERR;
 }
-#undef MAXERR
 
 //check if diffs1 is the same as diffs2
 inline bool CPullupCorrection::MatchDifftype(int* diffs1, int* diffs2, int nrdiffs)
@@ -239,9 +236,8 @@ inline bool CPullupCorrection::MatchDifftype(int* diffs1, int* diffs2, int nrdif
 //check if our current detected pattern is the same as the one we saved
 bool CPullupCorrection::CheckPattern(std::vector<double>& pattern)
 {
-  //if the size of the patterns differ we don't have a match
-  //a pattern with a size less than 2 is not something we want to correct
-  if (pattern.size() != m_pattern.size() || pattern.size() < 2)
+  //if no pattern was detected or if the size of the patterns differ we don't have a match
+  if (pattern.size() != m_pattern.size() || pattern.size() < 1 || (pattern.size() == 1 && pattern[0] <= MAXERR))
   {
     m_pattern = pattern; //save the current pattern
     m_patternpos = 0;    //reset the position
@@ -274,11 +270,16 @@ double CPullupCorrection::CalcFrameDuration()
 {
   double frameduration = 0.0;
   
-  for (unsigned int i = 0; i < m_pattern.size(); i++)
+  if (m_haspattern)
   {
-    frameduration += m_pattern[i];
+    for (unsigned int i = 0; i < m_pattern.size(); i++)
+    {
+      frameduration += m_pattern[i];
+    }
+    return frameduration / m_pattern.size();
   }
-  return frameduration / m_pattern.size();
+  
+  return DVD_NOPTS_VALUE;
 }
 
 //looks pretty in the log

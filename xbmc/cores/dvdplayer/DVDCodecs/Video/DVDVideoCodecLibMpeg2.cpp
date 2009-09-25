@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDVideoCodecLibMpeg2.h"
 #include "DVDClock.h"
 #include "DVDStreamInfo.h"
+#include "utils/log.h"
 
 /* I really don't want to include ffmpeg headers here, could */
 /* potentially interfere with libmpeg2's, so let's just define this */

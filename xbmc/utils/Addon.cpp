@@ -19,11 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "Application.h"
 #include "Addon.h"
 #include "Settings.h"
 #include "settings/AddonSettings.h"
+#include "utils/log.h"
+#include "LocalizeStrings.h"
+#include "GUISettings.h"
 #include "Util.h"
 
 using namespace std;

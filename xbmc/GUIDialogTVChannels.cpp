@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogTVChannels.h"
 #include "PVRManager.h"
 #include "Application.h"

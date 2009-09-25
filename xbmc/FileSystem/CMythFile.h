@@ -25,6 +25,8 @@
 #include "CMythSession.h"
 #include "VideoInfoTag.h"
 
+#include <queue>
+
 extern "C" {
 #include "lib/libcmyth/cmyth.h"
 }
@@ -61,7 +63,7 @@ public:
 
   virtual bool           NextChannel();
   virtual bool           PrevChannel();
-  virtual bool           SelectChannel(unsigned int channel) { return false; }
+  virtual bool           SelectChannel(unsigned int channel);
 
   virtual int            GetTotalTime();
   virtual int            GetStartTime();

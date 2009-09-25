@@ -27,8 +27,9 @@
 //   - xbfilezilla : doesnt support section loading yet
 //
 
-#include "stdafx.h"
+#include "system.h"
 #include "Application.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #ifdef _LINUX
@@ -38,7 +39,9 @@
 #ifdef __APPLE__
 #include "Util.h"
 #endif
-
+#ifdef HAS_LIRC
+#include "common/LIRC.h"
+#endif
 
 CApplication g_application;
 
@@ -123,7 +126,12 @@ int main(int argc, char* argv[])
   }
 
   g_application.Preflight();
-  g_application.Create(NULL);
+  if (g_application.Create(NULL) != S_OK)
+  {
+    fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
+    return -1;
+  }
+
   if (playlist.Size() > 0)
   {
     g_playlistPlayer.Add(0,playlist);
@@ -142,8 +150,8 @@ int main(int argc, char* argv[])
   }
   catch(...)
   {
-    printf("********ERROR- exception caught on main loop. exiting");
-  return -1;
+    fprintf(stderr, "ERROR: Exception caught on main loop. Exiting\n");
+    return -1;
   }
 
   return 0;
@@ -151,7 +159,6 @@ int main(int argc, char* argv[])
 
 extern "C"
 {
-
   void mp_msg( int x, int lev, const char *format, ... )
   {
     va_list va;

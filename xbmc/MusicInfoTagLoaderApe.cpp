@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderApe.h"
 #include "cores/paplayer/DllMACDll.h"
 #include "MusicInfoTag.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

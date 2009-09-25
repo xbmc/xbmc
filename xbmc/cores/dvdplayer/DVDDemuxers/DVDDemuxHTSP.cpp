@@ -20,7 +20,6 @@
  */
 
 
-#include "stdafx.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamHTSP.h"
@@ -28,6 +27,7 @@
 #include "DVDDemuxUtils.h"
 #include "DVDClock.h"
 #include "Application.h"
+#include "utils/log.h"
 
 extern "C" {
 #include "lib/libhts/net.h"

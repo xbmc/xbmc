@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "VirtualPathDirectory.h"
 #include "Directory.h"
 #include "Settings.h"
@@ -29,6 +27,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace DIRECTORY;

@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIFont.h"
 #include "GUIFontTTF.h"
 #include "GraphicContext.h"
@@ -46,7 +45,7 @@ float CScrollInfo::GetPixelsPerFrame()
   return pixelSpeed * m_averageFrameTime;
 }
 
-CGUIFont::CGUIFont(const CStdString& strFontName, DWORD style, DWORD textColor, DWORD shadowColor, float lineSpacing, CGUIFontTTF *font)
+CGUIFont::CGUIFont(const CStdString& strFontName, uint32_t style, color_t textColor, color_t shadowColor, float lineSpacing, CGUIFontTTFBase *font)
 {
   m_strFontName = strFontName;
   m_style = style & 3;
@@ -70,8 +69,8 @@ CStdString& CGUIFont::GetFontName()
   return m_strFontName;
 }
 
-void CGUIFont::DrawText( float x, float y, const std::vector<DWORD> &colors, DWORD shadowColor,
-                const std::vector<DWORD> &text, DWORD alignment, float maxPixelWidth)
+void CGUIFont::DrawText( float x, float y, const vecColors &colors, color_t shadowColor,
+                const vecText &text, uint32_t alignment, float maxPixelWidth)
 {
   if (!m_font) return;
 
@@ -80,7 +79,7 @@ void CGUIFont::DrawText( float x, float y, const std::vector<DWORD> &colors, DWO
     return;
 
   maxPixelWidth = ROUND(maxPixelWidth / g_graphicsContext.GetGUIScaleX());
-  std::vector<DWORD> renderColors;
+  vecColors renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
   if (!shadowColor) shadowColor = m_shadowColor;
@@ -92,18 +91,18 @@ void CGUIFont::DrawText( float x, float y, const std::vector<DWORD> &colors, DWO
     g_graphicsContext.RestoreClipRegion();
 }
 
-void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &colors, DWORD shadowColor,
-                const std::vector<DWORD> &text, DWORD alignment, float maxWidth, CScrollInfo &scrollInfo)
+void CGUIFont::DrawScrollingText(float x, float y, const vecColors &colors, color_t shadowColor,
+                const vecText &text, uint32_t alignment, float maxWidth, CScrollInfo &scrollInfo)
 {
   if (!m_font) return;
   if (!shadowColor) shadowColor = m_shadowColor;
 
   float spaceWidth = GetCharWidth(L' ');
   // max chars on screen + extra margin chars
-  std::vector<DWORD>::size_type maxChars =
-    std::min<std::vector<DWORD>::size_type>(
-      (text.size() + (std::vector<DWORD>::size_type)scrollInfo.suffix.size()),
-      (std::vector<DWORD>::size_type)((maxWidth * 1.05f) / spaceWidth));
+  vecText::size_type maxChars =
+    std::min<vecText::size_type>(
+      (text.size() + (vecText::size_type)scrollInfo.suffix.size()),
+      (vecText::size_type)((maxWidth * 1.05f) / spaceWidth));
 
   if (!text.size() || ClippedRegionIsEmpty(x, y, maxWidth, alignment))
     return; // nothing to render
@@ -177,9 +176,9 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
 
   // Now rotate our string as needed, only take a slightly larger then visible part of the text.
   unsigned int pos = scrollInfo.characterPos;
-  std::vector<DWORD> renderText;
+  vecText renderText;
   renderText.reserve(maxChars);
-  for (std::vector<DWORD>::size_type i = 0; i < maxChars; i++)
+  for (vecText::size_type i = 0; i < maxChars; i++)
   {
     if (pos >= text.size() + scrollInfo.suffix.size())
       pos = 0;
@@ -190,7 +189,7 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
     pos++;
   }
 
-  std::vector<DWORD> renderColors;
+  vecColors renderColors;
   for (unsigned int i = 0; i < colors.size(); i++)
     renderColors.push_back(g_graphicsContext.MergeAlpha(colors[i] ? colors[i] : m_textColor));
 
@@ -204,14 +203,14 @@ void CGUIFont::DrawScrollingText(float x, float y, const std::vector<DWORD> &col
 }
 
 // remaps unsupported font glpyhs to other suitable ones
-SHORT CGUIFont::RemapGlyph(SHORT letter)
+wchar_t CGUIFont::RemapGlyph(wchar_t letter)
 {
   if (letter == 0x2019 || letter == 0x2018) return 0x0027;  // single quotes
   else if (letter == 0x201c || letter == 0x201d) return 0x0022;
   return 0; // no decent character map
 }
 
-bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, DWORD alignment) const
+bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, uint32_t alignment) const
 {
   if (alignment & XBFONT_CENTER_X)
     x -= width * 0.5f;
@@ -220,17 +219,17 @@ bool CGUIFont::ClippedRegionIsEmpty(float x, float y, float width, DWORD alignme
   if (alignment & XBFONT_CENTER_Y)
     y -= m_font->GetLineHeight(m_lineSpacing);
 
-  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f));
+  return !g_graphicsContext.SetClipRegion(x, y, width, m_font->GetLineHeight(2.0f) * g_graphicsContext.GetGUIScaleY());
 }
 
-float CGUIFont::GetTextWidth( const std::vector<DWORD> &text )
+float CGUIFont::GetTextWidth( const vecText &text )
 {
   if (!m_font) return 0;
   CSingleLock lock(g_graphicsContext);
   return m_font->GetTextWidthInternal(text.begin(), text.end()) * g_graphicsContext.GetGUIScaleX();
 }
 
-float CGUIFont::GetCharWidth( DWORD ch )
+float CGUIFont::GetCharWidth( character_t ch )
 {
   if (!m_font) return 0;
   CSingleLock lock(g_graphicsContext);
@@ -259,4 +258,15 @@ void CGUIFont::End()
 {
   if (!m_font) return;
   m_font->End();
+}
+
+void CGUIFont::SetFont(CGUIFontTTFBase *font)
+{
+  if (m_font == font)
+    return; // no need to update the font if we already have it
+  if (m_font)
+    m_font->RemoveReference();
+  m_font = font;
+  if (m_font)
+    m_font->AddReference();
 }

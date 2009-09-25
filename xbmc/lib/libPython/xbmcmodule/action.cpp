@@ -19,8 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "action.h"
+#include "Key.h"
 #include "pyutil.h"
 
 using namespace std;
@@ -66,11 +66,11 @@ namespace PYXBMC
     
     if (pyAction)
     {
-      pyAction->id = action.wID;
-      pyAction->buttonCode = action.m_dwButtonCode;
-      pyAction->fAmount1 = action.fAmount1;
-      pyAction->fAmount2 = action.fAmount2;
-      pyAction->fRepeat = action.fRepeat;
+      pyAction->id = action.id;
+      pyAction->buttonCode = action.buttonCode;
+      pyAction->fAmount1 = action.amount1;
+      pyAction->fAmount2 = action.amount2;
+      pyAction->fRepeat = action.repeat;
       pyAction->strAction = action.strAction.c_str();
     }
 

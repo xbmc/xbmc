@@ -18,7 +18,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Crc32.h"
 
 

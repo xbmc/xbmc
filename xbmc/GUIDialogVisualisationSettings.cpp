@@ -19,11 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogVisualisationSettings.h"
 #include "GUIWindowSettingsCategory.h"
 #include "GUIControlGroupList.h"
+#include "GUIUserMessages.h"
 #include "utils/GUIInfoManager.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_SETTINGS_LABEL      2
 #define CONTROL_NONE_AVAILABLE      3
@@ -71,7 +72,7 @@ bool CGUIDialogVisualisationSettings::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_VISUALISATION_LOADED:
     {
-      SetVisualisation((CVisualisation *)message.GetLPVOID());
+      SetVisualisation((CVisualisation *)message.GetPointer());
       SetupPage();
       SET_CONTROL_FOCUS(CONTROL_START, 0);
     }
@@ -211,7 +212,7 @@ void CGUIDialogVisualisationSettings::OnInitWindow()
   // set our visualisation
   CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
   g_graphicsContext.SendMessage(msg);
-  SetVisualisation((CVisualisation *)msg.GetLPVOID());
+  SetVisualisation((CVisualisation *)msg.GetPointer());
 
   SetupPage();
   // reset the default control

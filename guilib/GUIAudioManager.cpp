@@ -19,7 +19,7 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GUIAudioManager.h"
 #include "Key.h"
 #include "AudioContext.h"
@@ -62,16 +62,17 @@ void CGUIAudioManager::Initialize(int iDevice)
   {
     CSingleLock lock(m_cs);
     CLog::Log(LOGDEBUG, "CGUIAudioManager::Initialize");
-#ifndef HAS_SDL_AUDIO
+#ifdef _WIN32
     bool bAudioOnAllSpeakers=false;
     g_audioContext.SetupSpeakerConfig(2, bAudioOnAllSpeakers);
     g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
-#else
+    m_bInitialized = true;
+#elif defined(HAS_SDL_AUDIO)
     Mix_CloseAudio();
     if (Mix_OpenAudio(44100, AUDIO_S16, 2, 4096))
        CLog::Log(LOGERROR, "Unable to open audio mixer");
-#endif
     m_bInitialized = true;
+#endif
   }
 }
 
@@ -173,7 +174,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 
   CSingleLock lock(m_cs);
 
-  actionSoundMap::iterator it=m_actionSoundMap.find(action.wID);
+  actionSoundMap::iterator it=m_actionSoundMap.find(action.id);
   if (it==m_actionSoundMap.end())
     return;
 
@@ -196,7 +197,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
 
 // \brief Play a sound associated with a window and its event
 // Events: SOUND_INIT, SOUND_DEINIT
-void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
+void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
 {
   // it's not possible to play gui sounds when passthrough is active
   if (!m_bInitialized || !m_bEnabled || g_audioContext.IsPassthroughActive())
@@ -204,7 +205,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
 
   CSingleLock lock(m_cs);
 
-  windowSoundMap::iterator it=m_windowSoundMap.find((WORD)(dwID & 0xffff));
+  windowSoundMap::iterator it=m_windowSoundMap.find(id);
   if (it==m_windowSoundMap.end())
     return;
 
@@ -224,7 +225,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
     return;
 
   //  One sound buffer for each window
-  windowSoundsMap::iterator itsb=m_windowSounds.find(dwID);
+  windowSoundsMap::iterator itsb=m_windowSounds.find(id);
   if (itsb!=m_windowSounds.end())
   {
     CGUISound* sound=itsb->second;
@@ -241,7 +242,7 @@ void CGUIAudioManager::PlayWindowSound(DWORD dwID, WINDOW_SOUND event)
     return;
   }
 
-  m_windowSounds.insert(pair<DWORD, CGUISound*>(dwID, sound));
+  m_windowSounds.insert(pair<int, CGUISound*>(id, sound));
   sound->Play();
 }
 
@@ -335,10 +336,10 @@ bool CGUIAudioManager::Load()
     while (pAction)
     {
       TiXmlNode* pIdNode = pAction->FirstChild("name");
-      WORD wID = 0;    // action identity
+      int id = 0;    // action identity
       if (pIdNode && pIdNode->FirstChild())
       {
-        CButtonTranslator::TranslateActionString(pIdNode->FirstChild()->Value(), wID);
+        CButtonTranslator::TranslateActionString(pIdNode->FirstChild()->Value(), id);
       }
 
       TiXmlNode* pFileNode = pAction->FirstChild("file");
@@ -346,8 +347,8 @@ bool CGUIAudioManager::Load()
       if (pFileNode && pFileNode->FirstChild())
         strFile+=pFileNode->FirstChild()->Value();
 
-      if (wID > 0 && !strFile.IsEmpty())
-        m_actionSoundMap.insert(pair<WORD, CStdString>(wID, strFile));
+      if (id > 0 && !strFile.IsEmpty())
+        m_actionSoundMap.insert(pair<int, CStdString>(id, strFile));
 
       pAction = pAction->NextSibling();
     }
@@ -361,21 +362,21 @@ bool CGUIAudioManager::Load()
 
     while (pWindow)
     {
-      WORD wID = 0;
+      int id = 0;
 
       TiXmlNode* pIdNode = pWindow->FirstChild("name");
       if (pIdNode)
       {
         if (pIdNode->FirstChild())
-          wID = CButtonTranslator::TranslateWindowString(pIdNode->FirstChild()->Value());
+          id = CButtonTranslator::TranslateWindowString(pIdNode->FirstChild()->Value());
       }
 
       CWindowSounds sounds;
       LoadWindowSound(pWindow, "activate", sounds.strInitFile);
       LoadWindowSound(pWindow, "deactivate", sounds.strDeInitFile);
 
-      if (wID > 0)
-        m_windowSoundMap.insert(pair<WORD, CWindowSounds>(wID, sounds));
+      if (id > 0)
+        m_windowSoundMap.insert(pair<int, CWindowSounds>(id, sounds));
 
       pWindow = pWindow->NextSibling();
     }

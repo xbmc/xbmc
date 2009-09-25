@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogAccessPoints.h"
 #include "GUIDialogKeyboard.h"
 #include "NetworkLinux.h"
 #include "Application.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_ACCESS_POINTS 3
 
@@ -38,7 +38,7 @@ CGUIDialogAccessPoints::~CGUIDialogAccessPoints(void)
 
 bool CGUIDialogAccessPoints::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_ACCESS_POINTS);
     OnMessage(msg);

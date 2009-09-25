@@ -24,6 +24,8 @@
 */
 #pragma once
 
+#include "StdString.h"
+
 #include <map>
 #include <vector>
 

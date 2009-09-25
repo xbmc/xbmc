@@ -20,9 +20,13 @@
  *
  */
 
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
 
 #include <sstream>
 #include <iostream>
+#include <map>
 #ifndef _LINUX
 #include <strstream>
 #endif
@@ -124,3 +128,5 @@ protected:
   CStdString cCacheDir;
 };
 }
+
+#endif

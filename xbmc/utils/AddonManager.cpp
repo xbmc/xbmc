@@ -19,12 +19,11 @@
  *
  */
 
-#include "stdafx.h"
-#include "AddonManager.h"
 #include "Addon.h"
 #include "Application.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "StringUtils.h"
 #include "utils/RegExp.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
@@ -34,6 +33,11 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "Profile.h"
+#include "utils/log.h"
+#include "LocalizeStrings.h"
+#include "GUISettings.h"
+#include "AddonManager.h"
+#include "utils/SingleLock.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

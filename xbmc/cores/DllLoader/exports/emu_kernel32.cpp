@@ -19,9 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "emu_kernel32.h"
 #include "emu_dummy.h"
+#include "utils/log.h"
 
 #include "xbox/IoSupport.h"
 
@@ -120,7 +120,7 @@ extern "C" HANDLE WINAPI dllFindFirstFileA(LPCTSTR lpFileName, LPWIN32_FIND_DATA
 // should be moved to CFile! or use CFile::stat
 extern "C" DWORD WINAPI dllGetFileAttributesA(LPCSTR lpFileName)
 {
-  char str[XBMC_MAX_PATH];
+  char str[1024];
 
   if (!strcmp(lpFileName, "\\Device\\Cdrom0")) return (FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_DIRECTORY);
 
@@ -286,7 +286,7 @@ extern "C" int WINAPI dllDuplicateHandle(HANDLE hSourceProcessHandle,   // handl
 
 extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HMODULE h)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return DisableThreadLibraryCalls(h);
 #endif
   not_implement("kernel32.dll fake function DisableThreadLibraryCalls called\n"); //warning
@@ -314,7 +314,7 @@ extern "C" void WINAPI dllGetSystemInfo(LPSYSTEM_INFO lpSystemInfo)
 #ifdef API_DEBUG
   CLog::Log(LOGDEBUG, "GetSystemInfo(0x%x) =>", lpSystemInfo);
 #endif
-#ifdef _WIN32PC
+#ifdef _WIN32
   // VS 2003 complains about x even so it's defined
   lpSystemInfo->wProcessorArchitecture = 0; //#define PROCESSOR_ARCHITECTURE_INTEL 0
 #else
@@ -497,7 +497,7 @@ extern "C" HANDLE WINAPI dllGetCurrentProcess()
 #if !defined (_XBOX) && !defined(_LINUX)
   return GetCurrentProcess();
 #else
-#ifdef _WIN32PC
+#ifdef _WIN32
   return GetCurrentProcess();
 #endif
 #ifdef API_DEBUG
@@ -589,7 +589,7 @@ static const char ch_envs[] =
 
 extern "C" LPVOID WINAPI dllGetEnvironmentStrings()
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return GetEnvironmentStrings();
 #endif
 #ifdef API_DEBUG
@@ -600,7 +600,7 @@ extern "C" LPVOID WINAPI dllGetEnvironmentStrings()
 
 extern "C" LPVOID WINAPI dllGetEnvironmentStringsW()
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return GetEnvironmentStringsW();
 #endif
   return 0;
@@ -608,7 +608,7 @@ extern "C" LPVOID WINAPI dllGetEnvironmentStringsW()
 
 extern "C" int WINAPI dllGetEnvironmentVariableA(LPCSTR lpName, LPSTR lpBuffer, DWORD nSize)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return GetEnvironmentVariableA(lpName, lpBuffer, nSize);
 #endif
   if (lpBuffer) lpBuffer[0] = 0;
@@ -671,7 +671,7 @@ extern "C" BOOL WINAPI dllSetPriorityClass(HANDLE hProcess, DWORD dwPriorityClas
 
 extern "C" DWORD WINAPI dllFormatMessageA(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId, LPTSTR lpBuffer, DWORD nSize, va_list* Arguments)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return FormatMessageA(dwFlags, lpSource, dwMessageId, dwLanguageId, lpBuffer, nSize, Arguments);
 #else
   not_implement("kernel32.dll fake function FormatMessage called\n"); //warning
@@ -702,7 +702,7 @@ extern "C" DWORD WINAPI dllGetFullPathNameA(LPCTSTR lpFileName, DWORD nBufferLen
 
 extern "C" DWORD WINAPI dllExpandEnvironmentStringsA(LPCTSTR lpSrc, LPTSTR lpDst, DWORD nSize)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return ExpandEnvironmentStringsA(lpSrc, lpDst, nSize);
 #else
   not_implement("kernel32.dll fake function ExpandEnvironmentStringsA called\n"); //warning
@@ -1051,7 +1051,7 @@ extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWS
 
 extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine, BOOL Add)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return SetConsoleCtrlHandler(HandlerRoutine, Add);
 #else
   // no consoles exists on the xbox, do nothing
@@ -1248,7 +1248,7 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
       p++;
     if (p == (BYTE *)lpBuffer + numChecked)
     { // fully NULL block - reread
-#ifdef _WIN32PC
+#ifdef _WIN32
       LONG low = 0;
       LONG high = 0;
 #else
@@ -1273,7 +1273,7 @@ extern "C" BOOL WINAPI dllDVDReadFileLayerChangeHack(HANDLE hFile, LPVOID lpBuff
 
 extern "C" LPVOID WINAPI dllLockResource(HGLOBAL hResData)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return LockResource(hResData);
 #else
   not_implement("kernel32.dll fake function LockResource called\n"); //warning
@@ -1283,7 +1283,7 @@ extern "C" LPVOID WINAPI dllLockResource(HGLOBAL hResData)
 
 extern "C" SIZE_T WINAPI dllGlobalSize(HGLOBAL hMem)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return GlobalSize(hMem);
 #else
   not_implement("kernel32.dll fake function GlobalSize called\n"); //warning
@@ -1293,7 +1293,7 @@ extern "C" SIZE_T WINAPI dllGlobalSize(HGLOBAL hMem)
 
 extern "C" DWORD WINAPI dllSizeofResource(HMODULE hModule, HRSRC hResInfo)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   return SizeofResource(hModule, hResInfo);
 #else
   not_implement("kernel32.dll fake function SizeofResource called\n"); //warning

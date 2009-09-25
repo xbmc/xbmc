@@ -19,13 +19,12 @@
  *
  */
 
-#include "include.h"
 #include "GUIListLabel.h"
 #include "utils/CharsetConverter.h"
 #include <limits>
 
-CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll, int scrollSpeed)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIListLabel::CGUIListLabel(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, const CGUIInfoLabel &info, bool alwaysScroll, int scrollSpeed)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_textLayout(labelInfo.font, false)
     , m_scrollInfo(50, 0, scrollSpeed)
     , m_renderRect()
@@ -36,7 +35,7 @@ CGUIListLabel::CGUIListLabel(DWORD dwParentID, DWORD dwControlId, float posX, fl
   m_info = info;
   m_textWidth = width;
   if (m_info.IsConstant())
-    SetLabel(m_info.GetLabel(m_dwParentID, true));
+    SetLabel(m_info.GetLabel(m_parentID, true));
   ControlType = GUICONTROL_LISTLABEL;
 }
 
@@ -71,14 +70,14 @@ void CGUIListLabel::UpdateColors()
 
 void CGUIListLabel::Render()
 {
-  DWORD color = m_selected ? m_label.selectedColor : m_label.textColor;
+  color_t color = m_selected ? m_label.selectedColor : m_label.textColor;
   bool needsToScroll = (m_renderRect.Width() + 0.5f < m_textWidth); // 0.5f to deal with floating point rounding issues
   if (m_scrolling && needsToScroll)
     m_textLayout.RenderScrolling(m_renderRect.x1, m_renderRect.y1, m_label.angle, color, m_label.shadowColor, 0, m_renderRect.Width(), m_scrollInfo);
   else
   {
     float posX = m_renderRect.x1;
-    DWORD align = 0;
+    uint32_t align = 0;
     if (!needsToScroll)
     { // hack for right and centered multiline text, as GUITextLayout::Render() treats posX as the right hand
       // or center edge of the text (see GUIFontTTF::DrawTextInternal), and this has already been taken care of
@@ -97,18 +96,18 @@ void CGUIListLabel::Render()
 
 void CGUIListLabel::UpdateInfo(const CGUIListItem *item)
 {
-  if (m_info.IsConstant())
+  if (m_info.IsConstant() && !m_bInvalidated)
     return; // nothing to do
 
   if (item)
     SetLabel(m_info.GetItemLabel(item));
   else
-    SetLabel(m_info.GetLabel(m_dwParentID, true));
+    SetLabel(m_info.GetLabel(m_parentID, true));
 }
 
 void CGUIListLabel::SetLabel(const CStdString &label)
 {
-  if (m_textLayout.Update(label))
+  if (m_textLayout.Update(label, 0, m_bInvalidated))
   { // needed an update - reset scrolling
     m_scrollInfo.Reset();
     // recalculate our text layout

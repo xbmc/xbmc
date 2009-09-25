@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDFactoryInputStream.h"
 #include "DVDInputStreamPVRManager.h"
 #include "FileSystem/PVRFile.h"

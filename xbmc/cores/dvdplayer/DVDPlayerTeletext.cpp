@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Settings.h"
 #include "DVDPlayer.h"
 #include "DVDPlayerTeletext.h"

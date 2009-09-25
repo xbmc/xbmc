@@ -19,16 +19,18 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowVisualisation.h"
 #include "GUIVisualisationControl.h"
 #include "Application.h"
 #include "GUIDialogMusicOSD.h"
+#include "GUIUserMessages.h"
 #include "utils/GUIInfoManager.h"
 #include "ButtonTranslator.h"
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIWindowManager.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
+#include "MouseStat.h"
 
 using namespace MUSIC_INFO;
 
@@ -52,7 +54,7 @@ CGUIWindowVisualisation::~CGUIWindowVisualisation(void)
 
 bool CGUIWindowVisualisation::OnAction(const CAction &action)
 {
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_SHOW_INFO:
     {
@@ -74,9 +76,9 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
     { // show the locked icon + fall through so that the vis handles the locking
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
       g_graphicsContext.SendMessage(msg);
-      if (msg.GetLPVOID())
+      if (msg.GetPointer())
       {
-        CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
+        CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
         char** pPresets=NULL;
         int currpreset=0, numpresets=0;
         bool locked;
@@ -118,10 +120,10 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
 
     case ACTION_ANALOG_FORWARD:
     // calculate the speed based on the amount the button is held down
-    if (action.fAmount1)
+    if (action.amount1)
     {
       float AVDelay = g_application.m_CdgParser.GetAVDelay();
-      g_application.m_CdgParser.SetAVDelay(AVDelay - action.fAmount1 / 4.0f);
+      g_application.m_CdgParser.SetAVDelay(AVDelay - action.amount1 / 4.0f);
       return true;
     }
     break;*/
@@ -149,7 +151,7 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
 //      message.SetControlID(CONTROL_VIS);
       CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
       if (pVisControl)
-        message.SetLPVOID(pVisControl->GetVisualisation());
+        message.SetPointer(pVisControl->GetVisualisation());
       return true;
     }
     break;
@@ -207,14 +209,14 @@ bool CGUIWindowVisualisation::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
     CAction action;
-    action.wID = ACTION_SHOW_GUI;
+    action.id = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // no control found to absorb this click - toggle the track INFO
     CAction action;
-    action.wID = ACTION_PAUSE;
+    action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
   if (g_Mouse.HasMoved())

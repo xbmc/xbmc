@@ -316,7 +316,7 @@ static void setupWindowMenu(void)
 {
   // calling into c++ code, need to use autorelease pools
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
+  //NSString *devicePath = [[note userInfo] objectForKey:@"NSDevicePath"];
   //NSLog(@"Device did unmount: %@", devicePath);
   //const CStdString strDrive = [devicePath cString];
   //MEDIA_DETECT::CDetectDVDMedia::GetInstance()->RemoveMedia(strDrive);

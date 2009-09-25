@@ -20,11 +20,14 @@
  */
 
 /* Standart includes */
-#include "stdafx.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
 #include "URL.h"
 #include "MediaManager.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
+#include "GUISettings.h"
+#include "Settings.h"
 
 /* Dialog windows includes */
 #include "GUIDialogFileBrowser.h"
@@ -114,7 +117,7 @@ CGUIWindowTV::~CGUIWindowTV()
  */
 bool CGUIWindowTV::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_RIGHT)
+  if (action.id == ACTION_MOVE_LEFT || action.id == ACTION_MOVE_RIGHT)
   {
     if (GetFocusedControlID() == CONTROL_BTNGUIDE)
     {
@@ -138,7 +141,7 @@ bool CGUIWindowTV::OnAction(const CAction &action)
       return true;
     }
   }
-  else if (action.wID == ACTION_PREVIOUS_MENU)
+  else if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;

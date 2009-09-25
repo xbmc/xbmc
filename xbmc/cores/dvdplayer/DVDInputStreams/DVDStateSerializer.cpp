@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DllDvdNav.h"
 #include "tinyXML/tinyxml.h"
 

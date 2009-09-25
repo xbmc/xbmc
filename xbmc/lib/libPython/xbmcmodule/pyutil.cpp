@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h" 
 #include "pyutil.h"
 #include <wchar.h>
 #include <vector>
 #include "SkinInfo.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/CharsetConverter.h"
 
 using namespace std;
 

@@ -1,7 +1,9 @@
-#include "include.h"
+#include "system.h"
 #include "../Key.h"
 #include "SDLJoystick.h"
 #include "ButtonTranslator.h"
+#include "utils/log.h"
+
 #include <math.h>
 
 #ifdef HAS_SDL_JOYSTICK
@@ -56,7 +58,7 @@ void CJoystick::Initialize(HWND hWnd)
       // On OS X, the 360 controllers are handled externally, since the SDL code is
       // really buggy and doesn't handle disconnects.
       //
-      if (std::string(SDL_JoystickName(i)).find("360") != -1)
+      if (std::string(SDL_JoystickName(i)).find("360") != std::string::npos)
       {
         CLog::Log(LOGNOTICE, "Ignoring joystick: %s", SDL_JoystickName(i));
         continue;

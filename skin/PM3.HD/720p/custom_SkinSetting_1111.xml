@@ -34,7 +34,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(Animate_Skin)</onclick>
 					<selected>!Skin.HasSetting(Animate_Skin)</selected>
 				</control>
@@ -52,7 +52,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(ShutdownUseHibernate)</onclick>
 					<selected>Skin.HasSetting(ShutdownUseHibernate)</selected>
 				</control>
@@ -65,7 +65,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(AutoScroll)</onclick>
 					<selected>Skin.HasSetting(AutoScroll)</selected>
 				</control>
@@ -78,7 +78,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(Show_SlideShow_Paused)</onclick>
 					<selected>!Skin.HasSetting(Show_SlideShow_Paused)</selected>
 				</control>
@@ -91,7 +91,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(No_Media_Titles_In_Scanner)</onclick>
 					<selected>!Skin.HasSetting(No_Media_Titles_In_Scanner)</selected>
 				</control>
@@ -109,7 +109,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(Media_Titles_WideIcons)</onclick>
 					<selected>!Skin.HasSetting(Media_Titles_WideIcons)</selected>
 				</control>
@@ -127,7 +127,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(Use_Startup_Playlist)</onclick>
 					<selected>Skin.HasSetting(Use_Startup_Playlist)</selected>
 				</control>
@@ -177,7 +177,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
 				<control type="image" id="202">
 					<width>950</width>
@@ -196,7 +196,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
 				<control type="radiobutton" id="204">
 					<description>Show Scan Lines in home during Media</description>
@@ -210,7 +210,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<enable>Skin.HasSetting(Remove_Scan_Lines)</enable>
 				</control>
 				<control type="image" id="205">
@@ -244,7 +244,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
 				<control type="radiobutton" id="208">
 					<description>enable music info</description>
@@ -258,7 +258,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
 				<control type="radiobutton" id="209">
 					<description>enable weather info</description>
@@ -272,7 +272,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
 				<control type="radiobutton" id="210">
 					<description>enable System info</description>
@@ -286,7 +286,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 				</control>
 			</control>
 			<control type="group">
@@ -925,7 +925,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(LyricScript_Enable)</onclick>
 					<selected>Skin.HasSetting(LyricScript_Enable)</selected>
 				</control>
@@ -939,7 +939,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.SetFile(LyricScript_Path,.py)</onclick>
 					<enable>Skin.HasSetting(LyricScript_Enable)</enable>
 				</control>
@@ -957,7 +957,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.ToggleSetting(WeatherScript_Enable)</onclick>
 					<selected>Skin.HasSetting(WeatherScript_Enable)</selected>
 				</control>
@@ -971,7 +971,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.SetString(WeatherScript_Label)</onclick>
 					<enable>Skin.HasSetting(WeatherScript_Enable)</enable>
 				</control>
@@ -985,7 +985,7 @@
 					<focusedcolor>white</focusedcolor>
 					<texturefocus border="7">list-focus.png</texturefocus>
 					<texturenofocus>-</texturenofocus>
-					<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+					<textureradioon>radiobutton-focus-2.png</textureradioon>
 					<onclick>Skin.SetFile(WeatherScript_Path,.py)</onclick>
 					<enable>Skin.HasSetting(WeatherScript_Enable)</enable>
 				</control>

@@ -17,12 +17,15 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
+#include "system.h" // WIN32INCLUDES - not sure why this is needed
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include <string.h>
 #include "SAPDirectory.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h" // strnlen
 #endif
@@ -279,7 +282,7 @@ CSAPSessions::~CSAPSessions()
   StopThread();
 }
 
-void CSAPSessions::StopThread()
+void CSAPSessions::StopThread(bool bWait /*= true*/)
 {
   if(m_socket != INVALID_SOCKET)
   {
@@ -289,7 +292,7 @@ void CSAPSessions::StopThread()
     closesocket(m_socket);
 #endif
   }
-  CThread::StopThread();
+  CThread::StopThread(bWait);
 }
 
 bool CSAPSessions::ParseAnnounce(char* data, int len)

@@ -35,7 +35,7 @@ extern "C" {
 #include "goom_config.h"
 #include <GL/glew.h>
 #include <string>
-#ifdef _WIN32PC
+#ifdef _WIN32
 #ifndef _MINGW
 #include "win32-dirent.h"
 #endif
@@ -46,7 +46,7 @@ extern "C" {
 #include <dirent.h>
 #endif
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 #define PRESETS_DIR "visualisations\\goom"
 #define CONFIG_FILE "visualisations\\goom.conf"
 #define strcasecmp  stricmp
@@ -72,7 +72,7 @@ short          g_audio_data[2][512];
 std::string    g_configFile;
 
 // case-insensitive alpha sort from projectM's win32-dirent.cc
-#ifndef _WIN32PC
+#ifndef _WIN32
 int alphasort(const void* lhs, const void* rhs) 
 {
   const struct dirent* lhs_ent = *(struct dirent**)lhs;
@@ -131,7 +131,7 @@ extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int i
   g_window_xpos = iPosX;
   g_window_ypos = iPosY;
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 #ifndef _MINGW
   g_configFile = string(getenv("XBMC_PROFILE_USERDATA")) + "\\" + CONFIG_FILE;
   std::string presetsDir = string(getenv("XBMC_HOME")) + "\\" + PRESETS_DIR;

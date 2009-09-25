@@ -19,10 +19,17 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "DetectDVDType.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
+#include "utils/log.h"
 #include "FileSystem/cdioSupport.h"
 #include "FileSystem/iso9660.h"
+#include "SingleLock.h"
 #ifdef _LINUX
 #include <sys/types.h>
 #include <sys/ioctl.h>
@@ -31,7 +38,8 @@
 #include <linux/cdrom.h>
 #endif
 #endif
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUIUserMessages.h"
 #include "Util.h"
 #include "Picture.h"
 #if defined (LIBCDIO_VERSION_NUM) && (LIBCDIO_VERSION_NUM > 77) || defined (__APPLE__)
@@ -581,3 +589,5 @@ const CStdString &CDetectDVDMedia::GetDVDPath()
 {
   return m_diskPath;
 }
+
+#endif

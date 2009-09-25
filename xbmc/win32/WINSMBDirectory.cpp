@@ -20,13 +20,15 @@
  */
 
 
-#include "stdafx.h"
 #include "WINSMBDirectory.h"
 #include "Util.h"
 #include "URL.h"
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "WIN32Util.h"
+#include "AutoPtrHandle.h"
+#include "log.h"
+#include "CharsetConverter.h"
 
 #ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES ((DWORD) -1)

@@ -26,12 +26,11 @@
  *
  **********************************************************************/
 
-
-#include "stdafx.h"
 #include <iostream>
 #include <string>
 
 #include "sqlitedataset.h"
+#include "utils/log.h"
 
 using namespace std;
 

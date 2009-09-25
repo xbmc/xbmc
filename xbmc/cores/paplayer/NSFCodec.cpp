@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Util.h"
 #include "utils/RegExp.h"
 #include "NSFCodec.h"

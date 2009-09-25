@@ -21,10 +21,12 @@
  *
  */
 
+#include "StdString.h"
 #include "Thread.h"
 
 class CURL;
 class TiXmlElement;
+class CFileItem;
 class CFileItemList;
 
 #define TS_STREAM_PORT 31339

@@ -19,12 +19,13 @@
  *
  */
 
-#include "include.h"
 #include "GUISliderControl.h"
 #include "utils/GUIInfoManager.h"
+#include "MouseStat.h"
+#include "Key.h"
 
-CGUISliderControl::CGUISliderControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUISliderControl::CGUISliderControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, int iType)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_guiBackground(posX, posY, width, height, backGroundTexture)
     , m_guiMid(posX, posY, width, height, nibTexture)
     , m_guiMidFocus(posX, posY, width, height, nibTextureFocus)
@@ -128,7 +129,7 @@ bool CGUISliderControl::OnMessage(CGUIMessage& message)
 
 bool CGUISliderControl::OnAction(const CAction &action)
 {
-  switch ( action.wID )
+  switch ( action.id )
   {
   case ACTION_MOVE_LEFT:
     //case ACTION_OSD_SHOW_VALUE_MIN:
@@ -303,7 +304,7 @@ void CGUISliderControl::SetFromPosition(const CPoint &point)
   SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 }
 
-bool CGUISliderControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUISliderControl::OnMouseClick(int button, const CPoint &point)
 {
   g_Mouse.SetState(MOUSE_STATE_CLICK);
   // turn off any exclusive access, if it's on...

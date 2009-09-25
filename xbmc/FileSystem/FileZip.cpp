@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileZip.h"
 #include "URL.h"
 #include "Util.h"

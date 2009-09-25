@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogAddonSettings.h"
 #include "utils/Addon.h"
 #include "utils/AddonHelpers.h"
@@ -41,6 +40,9 @@
 #include "GUIDialogKeyboard.h"
 #include "FileItem.h"
 #include "ScriptSettings.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
+#include "GUISettings.h"
 
 using namespace std;
 using namespace DIRECTORY;

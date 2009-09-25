@@ -19,12 +19,6 @@
  *
  */
 
-
-// IMDB.cpp: implementation of the CIMDB class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#include "stdafx.h"
 #include "IMDB.h"
 #include "Util.h"
 #include "HTMLUtil.h"
@@ -38,6 +32,7 @@
 #include "GUIDialogOK.h"
 #include "Application.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
 using namespace HTML;
 using namespace std;

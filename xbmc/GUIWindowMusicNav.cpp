@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowMusicNav.h"
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
@@ -41,9 +40,14 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIEditControl.h"
+#include "GUIUserMessages.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -94,11 +98,10 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
-      CStdStringArray params;
-      StringUtils::SplitString(message.GetStringParam(), ",", params);
-      bool returning = params.size() > 1 && params[1].Equals("return");
+      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
+      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
+      bool returning = strReturn.CompareNoCase("return") == 0;
 
-      CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");
@@ -124,6 +127,8 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           destPath = "musicdb://2/";
         else if (strDestination.Equals("Albums"))
           destPath = "musicdb://3/";
+        else if (strDestination.Equals("Singles"))
+          destPath = "musicdb://10/";
         else if (strDestination.Equals("Songs"))
           destPath = "musicdb://4/";
         else if (strDestination.Equals("Top100"))
@@ -282,7 +287,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicNav::OnAction(const CAction& action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
+  if (action.id == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
     {
@@ -290,7 +295,7 @@ bool CGUIWindowMusicNav::OnAction(const CAction& action)
       return true;
     }
   }
-  if (action.wID == ACTION_SCAN_ITEM)
+  if (action.id == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
     CMusicDatabaseDirectory dir;
@@ -329,6 +334,8 @@ CStdString CGUIWindowMusicNav::GetQuickpathName(const CStdString& strPath) const
     return "Compilations";
   else if (strPath.Equals("musicdb://9/"))
     return "Years";
+  else if (strPath.Equals("musicdb://10/"))
+    return "Singles";
   else if (strPath.Equals("special://musicplaylists/"))
     return "Playlists";
   else
@@ -398,7 +405,9 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       items.SetContent("albums");
     else if (node == NODE_TYPE_ARTIST)
       items.SetContent("artists");
-    else if (node == NODE_TYPE_SONG || node == NODE_TYPE_SONG_TOP100)
+    else if (node == NODE_TYPE_SONG ||
+             node == NODE_TYPE_SONG_TOP100 ||
+             node == NODE_TYPE_SINGLES)
       items.SetContent("songs");
     else if (node == NODE_TYPE_GENRE)
       items.SetContent("genres");
@@ -1047,6 +1056,31 @@ void CGUIWindowMusicNav::FilterItems(CFileItemList &items)
 
     if (pos != CStdString::npos)
       items.Add(item);
+  }
+}
+
+void CGUIWindowMusicNav::OnPrepareFileItems(CFileItemList &items)
+{
+  CGUIWindowMusicBase::OnPrepareFileItems(items);
+  // set fanart
+  map<CStdString, CStdString> artists;
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr item = items[i];
+    if (!item->HasMusicInfoTag() || item->HasProperty("fanart_image"))
+      continue;
+    map<CStdString, CStdString>::iterator artist = artists.find(item->GetMusicInfoTag()->GetArtist());
+    if (artist == artists.end())
+    {
+      CStdString strFanart = item->GetCachedFanart();
+      if (XFILE::CFile::Exists(strFanart))
+        item->SetProperty("fanart_image",strFanart);
+      else
+        strFanart = "";
+      artists.insert(make_pair(item->GetMusicInfoTag()->GetArtist(), strFanart));
+    }
+    else
+      item->SetProperty("fanart_image",artist->second);
   }
 }
 

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "BitstreamStats.h"
 #ifdef _LINUX
 #include "linux/XTimeUtils.h"

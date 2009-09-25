@@ -105,6 +105,10 @@ bool WINAPI ReleaseMutex( HANDLE hMutex ) {
   return bOk;
 }
 
+#if defined(_LINUX) && !defined(__APPLE__)
+static FILE* procMeminfoFP = NULL;
+#endif
+
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 {
   if (!lpBuffer)
@@ -153,16 +157,15 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
   }
 #else
   struct sysinfo info;
-  FILE* fp = NULL;
   char name[32];
   unsigned val;
-  if ((fp = fopen("/proc/meminfo", "r")) == NULL)
+  if (!procMeminfoFP && (procMeminfoFP = fopen("/proc/meminfo", "r")) == NULL)
     sysinfo(&info);
   else
   {
     memset(&info, 0, sizeof(struct sysinfo));
     info.mem_unit = 4096;
-    while (fscanf(fp, "%31s %u%*[^\n]\n", name, &val) != EOF)
+    while (fscanf(procMeminfoFP, "%31s %u%*[^\n]\n", name, &val) != EOF)
     {
       if (strncmp("MemTotal:", name, 9) == 0)
         info.totalram = val/4;
@@ -181,7 +184,8 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
       else if (strncmp("HighFree:", name, 9) == 0)
         info.freehigh = val/4;
     }
-    fclose(fp);
+    rewind(procMeminfoFP);
+    fflush(procMeminfoFP);
   }
   lpBuffer->dwLength        = sizeof(MEMORYSTATUS);
   lpBuffer->dwAvailPageFile = (info.freeswap * info.mem_unit);

@@ -31,6 +31,9 @@
 #include "Key.h"
 #include "DllVisualisation.h"
 
+#include <map>
+#include <memory>
+
 class CVisualisation
 {
 public:

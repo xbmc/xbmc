@@ -19,9 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "DynamicDll.h"
+#include "SectionLoader.h"
 #include "FileSystem/File.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 

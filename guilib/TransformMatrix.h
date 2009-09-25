@@ -23,6 +23,8 @@
 
 #include <math.h>
 #include <memory>
+#include <string.h>
+#include <stdint.h>
 
 #ifdef __GNUC__
 // under gcc, inline will only take place if optimizations are applied (-O). this will force inline even whith optimizations.
@@ -30,6 +32,8 @@
 #else
 #define XBMC_FORCE_INLINE
 #endif
+
+typedef uint32_t color_t;
 
 class TransformMatrix
 {
@@ -226,9 +230,9 @@ public:
     return m[2][0] * x + m[2][1] * y + m[2][2] * z + m[2][3];
   }
 
-  inline unsigned int TransformAlpha(unsigned int colour) const XBMC_FORCE_INLINE
+  inline color_t TransformAlpha(color_t colour) const XBMC_FORCE_INLINE
   {
-    return (unsigned int)(colour * alpha);
+    return (color_t)(colour * alpha);
   }
 
   float m[3][4];

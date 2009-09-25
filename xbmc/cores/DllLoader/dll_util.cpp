@@ -19,8 +19,14 @@
  *
  */
  
-#include "stdafx.h"
+#include "utils/log.h"
 #include "dll_util.h"
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+#include <stdlib.h>
+#include <string.h>
 
 #ifdef _cplusplus
 extern "C"
@@ -97,7 +103,7 @@ uintptr_t create_dummy_function(const char* strDllName, const char* strFunctionN
 
 uintptr_t get_win_function_address(const char* strDllName, const char* strFunctionName)
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   HMODULE handle = GetModuleHandle(strDllName);
   if(handle == NULL)
   {

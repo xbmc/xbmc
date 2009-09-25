@@ -19,7 +19,6 @@
  *
  */
  
-#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -93,16 +92,16 @@ namespace PYXBMC
 
     // initialize default values
     self->strFont = "font13";
-    self->dwTextColor = 0xe0f0f0f0;
-    self->dwSelectedColor = 0xffffffff;
-    self->dwImageHeight = 10;
-    self->dwImageWidth = 10;
-    self->dwItemHeight = 27;
-    self->dwSpace = 2;
-    self->dwItemTextXOffset = CONTROL_TEXT_OFFSET_X;
-    self->dwItemTextYOffset = CONTROL_TEXT_OFFSET_Y;
-    self->dwAlignmentY = XBFONT_CENTER_Y;
-    //self->dwShadowColor = NULL;
+    self->textColor = 0xe0f0f0f0;
+    self->selectedColor = 0xffffffff;
+    self->imageHeight = 10;
+    self->imageWidth = 10;
+    self->itemHeight = 27;
+    self->space = 2;
+    self->itemTextOffsetX = CONTROL_TEXT_OFFSET_X;
+    self->itemTextOffsetY = CONTROL_TEXT_OFFSET_Y;
+    self->alignmentY = XBFONT_CENTER_Y;
+    //self->shadowColor = NULL;
 
     if (!PyArg_ParseTupleAndKeywords(
       args,
@@ -118,13 +117,13 @@ namespace PYXBMC
       &cTextureButton,
       &cTextureButtonFocus,
       &cSelectedColor,
-      &self->dwImageWidth,
-      &self->dwImageHeight,
-      &self->dwItemTextXOffset,
-      &self->dwItemTextYOffset,
-      &self->dwItemHeight,
-      &self->dwSpace,
-      &self->dwAlignmentY//,
+      &self->imageWidth,
+      &self->imageHeight,
+      &self->itemTextOffsetX,
+      &self->itemTextOffsetY,
+      &self->itemHeight,
+      &self->space,
+      &self->alignmentY//,
       ))//&cShadowColor))
     {
       Py_DECREF( self );
@@ -135,13 +134,13 @@ namespace PYXBMC
     if (cFont) self->strFont = cFont;
     if (cTextColor)
     {
-      sscanf( cTextColor, "%x", &self->dwTextColor );
+      sscanf( cTextColor, "%x", &self->textColor );
     }
     if (cSelectedColor)
     {
-      sscanf( cSelectedColor, "%x", &self->dwSelectedColor );
+      sscanf( cSelectedColor, "%x", &self->selectedColor );
     }
-    //if (cShadowColor) sscanf( cShadowColor, "%x", &self->dwShadowColor );
+    //if (cShadowColor) sscanf( cShadowColor, "%x", &self->shadowColor );
 
     self->strTextureButton = cTextureButton ? cTextureButton :
       PyGetDefaultImage((char*)"listcontrol", (char*)"texturenofocus", (char*)"list-nofocus.png");
@@ -181,13 +180,13 @@ namespace PYXBMC
   CGUIControl* ControlList_Create(ControlList* pControl)
   {
     CLabelInfo label;
-    label.align = pControl->dwAlignmentY;
+    label.align = pControl->alignmentY;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.textColor = label.focusedColor = pControl->dwTextColor;
-    //label.shadowColor = pControl->dwShadowColor;
-    label.selectedColor = pControl->dwSelectedColor;
-    label.offsetX = (float)pControl->dwItemTextXOffset;
-    label.offsetY = (float)pControl->dwItemTextYOffset;
+    label.textColor = label.focusedColor = pControl->textColor;
+    //label.shadowColor = pControl->shadowColor;
+    label.selectedColor = pControl->selectedColor;
+    label.offsetX = (float)pControl->itemTextOffsetX;
+    label.offsetY = (float)pControl->itemTextOffsetY;
     // Second label should have the same font, alignment, and colours as the first, but
     // the offsets should be 0.
     CLabelInfo label2 = label;
@@ -204,9 +203,9 @@ namespace PYXBMC
       label, label2,
       (CStdString)pControl->strTextureButton,
       (CStdString)pControl->strTextureButtonFocus,
-      (float)pControl->dwItemHeight,
-      (float)pControl->dwImageWidth, (float)pControl->dwImageHeight,
-      (float)pControl->dwSpace);
+      (float)pControl->itemHeight,
+      (float)pControl->imageWidth, (float)pControl->imageHeight,
+      (float)pControl->space);
 
     return pControl->pGUIControl;
   }
@@ -420,7 +419,7 @@ PyDoc_STRVAR(addItems__doc__,
 
   PyObject* ControlList_SetImageDimensions(ControlList *self, PyObject *args)
   {
-    if (!PyArg_ParseTuple(args, (char*)"ll", &self->dwImageWidth, &self->dwImageHeight))
+    if (!PyArg_ParseTuple(args, (char*)"ll", &self->imageWidth, &self->imageHeight))
     {
       return NULL;
     }
@@ -449,7 +448,7 @@ PyDoc_STRVAR(addItems__doc__,
 
   PyObject* ControlList_SetItemHeight(ControlList *self, PyObject *args)
   {
-    if (!PyArg_ParseTuple(args, (char*)"l", &self->dwItemHeight)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"l", &self->itemHeight)) return NULL;
 
     /*
     PyGUILock();
@@ -504,7 +503,7 @@ PyDoc_STRVAR(addItems__doc__,
 
   PyObject* ControlList_SetSpace(ControlList *self, PyObject *args)
   {
-    if (!PyArg_ParseTuple(args, (char*)"l", &self->dwSpace)) return NULL;
+    if (!PyArg_ParseTuple(args, (char*)"l", &self->space)) return NULL;
 
     /*
     PyGUILock();
@@ -628,7 +627,7 @@ PyDoc_STRVAR(addItems__doc__,
 
   PyObject* ControlList_GetItemHeight(ControlList *self)
 	{
-		return Py_BuildValue((char*)"l", self->dwItemHeight);
+		return Py_BuildValue((char*)"l", self->itemHeight);
 	}
 
   // getSpace() Method
@@ -640,7 +639,7 @@ PyDoc_STRVAR(addItems__doc__,
 
   PyObject* ControlList_GetSpace(ControlList *self)
 	{
-		return Py_BuildValue((char*)"l", self->dwSpace);
+		return Py_BuildValue((char*)"l", self->space);
 	}
 
 PyDoc_STRVAR(setStaticContent__doc__,

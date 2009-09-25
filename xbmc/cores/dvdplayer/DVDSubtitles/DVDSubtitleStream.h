@@ -21,6 +21,10 @@
  *
  */
 
+#include "system.h"
+
+#include <string>
+
 class CDVDInputStream;
 
 // buffered class for subtitle reading

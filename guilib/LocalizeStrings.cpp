@@ -19,11 +19,13 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
+#include "utils/log.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "XMLUtils.h"
+#include "tinyXML/tinyxml.h"
 
 CLocalizeStrings g_localizeStrings;
 CLocalizeStrings g_localizeStringsTemp;
@@ -73,7 +75,7 @@ bool CLocalizeStrings::LoadSkinStrings(const CStdString& path, const CStdString&
   return true;
 }
 
-bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, DWORD offset /* = 0 */)
+bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding, CStdString &error, uint32_t offset /* = 0 */)
 {
   TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(PTH_IC(filename)))
@@ -101,9 +103,9 @@ bool CLocalizeStrings::LoadXML(const CStdString &filename, CStdString &encoding,
     const char* attrId=pChild->Attribute("id");
     if (attrId && !pChild->NoChildren())
     {
-      DWORD dwID = atoi(attrId) + offset;
-      if (m_strings.find(dwID) == m_strings.end())
-        m_strings[dwID] = ToUTF8(encoding, pChild->FirstChild()->Value());
+      int id = atoi(attrId) + offset;
+      if (m_strings.find(id) == m_strings.end())
+        m_strings[id] = ToUTF8(encoding, pChild->FirstChild()->Value());
     }
     pChild = pChild->NextSiblingElement("string");
   }
@@ -160,7 +162,7 @@ bool CLocalizeStrings::Load(const CStdString& strFileName, const CStdString& str
 
 static CStdString szEmptyString = "";
 
-const CStdString& CLocalizeStrings::Get(DWORD dwCode) const
+const CStdString& CLocalizeStrings::Get(uint32_t dwCode) const
 {
   ciStrings i = m_strings.find(dwCode);
   if (i == m_strings.end())
@@ -175,7 +177,7 @@ void CLocalizeStrings::Clear()
   m_strings.clear();
 }
 
-void CLocalizeStrings::Clear(DWORD start, DWORD end)
+void CLocalizeStrings::Clear(uint32_t start, uint32_t end)
 {
   iStrings it = m_strings.begin();
   while (it != m_strings.end())
@@ -187,14 +189,14 @@ void CLocalizeStrings::Clear(DWORD start, DWORD end)
   }
 }
 
-DWORD CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &path, const CStdString &fallbackPath)
+uint32_t CLocalizeStrings::LoadBlock(const CStdString &id, const CStdString &path, const CStdString &fallbackPath)
 {
   iBlocks it = m_blocks.find(id);
   if (it != m_blocks.end())
     return it->second;  // already loaded
 
   // grab a new block
-  DWORD offset = block_start + m_blocks.size()*block_size;
+  uint32_t offset = block_start + m_blocks.size()*block_size;
   m_blocks.insert(make_pair(id, offset));
 
   // load the strings

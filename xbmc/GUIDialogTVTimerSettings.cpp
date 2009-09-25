@@ -19,13 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogTVTimerSettings.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogNumeric.h"
 #include "GUISettings.h"
 #include "PVRManager.h"
 #include "utils/PVRTimers.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 

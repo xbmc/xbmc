@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "AutoPtrHandle.h"
 #include "DVDOverlayCodecSSA.h"
 #include "DVDOverlaySSA.h"

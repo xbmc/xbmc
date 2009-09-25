@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIDialogSeekBar.h"
 #include "GUIMediaWindow.h"
 #include "GUIDialogFileBrowser.h"
@@ -40,6 +40,7 @@
 #include "utils/LCD.h"
 #endif
 #include "GUIPassword.h"
+#include "LangInfo.h"
 #include "SystemInfo.h"
 #include "GUIButtonScroller.h"
 #include "GUIInfoManager.h"
@@ -58,8 +59,13 @@
 #include "FileSystem/File.h"
 #include "PlayList.h"
 #include "TuxBoxUtil.h"
-#include "Surface.h"
+#include "WindowingFactory.h"
 #include "PowerManager.h"
+#include "AdvancedSettings.h"
+#include "Settings.h"
+#include "LocalizeStrings.h"
+#include "CPUInfo.h"
+#include "StringUtils.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"
@@ -68,7 +74,7 @@
 
 #include "GUILabelControl.h"  // for CInfoLabel
 #include "GUITextBox.h"
-#include "GUITeletextBox.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 #include "SkinInfo.h"
@@ -79,7 +85,6 @@
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
-using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
 
 CGUIInfoManager g_infoManager;
@@ -225,7 +230,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
     else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
     else if (strTest.Equals("player.passthrough")) ret = PLAYER_PASSTHROUGH;
-    else if (strTest.Equals("player.hasteletext")) ret = PLAYER_HAS_TELETEXT;
   }
   else if (strCategory.Equals("weather"))
   {
@@ -982,7 +986,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   return TIME_FORMAT_GUESS;
 }
 
-CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
+CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 {
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
@@ -1244,7 +1248,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     strLabel.Format("%ix%i %s %02.2f Hz.",
       g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth,
       g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight,
-      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode,GetFPS());
+      g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].strMode.c_str(),GetFPS());
     return strLabel;
     break;
 
@@ -1386,9 +1390,11 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
       }
     }
     break;
+#ifdef HAS_DVD_DRIVE
   case SYSTEM_DVD_LABEL:
     strLabel = g_mediaManager.GetDiskLabel();
     break;
+#endif
   case SYSTEM_ALARM_POS:
     if (g_alarmClock.GetRemaining("shutdowntimer") == 0.f)
       strLabel = "";
@@ -1524,9 +1530,9 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     {
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
       g_graphicsContext.SendMessage(msg);
-      if (msg.GetLPVOID())
+      if (msg.GetPointer())
       {
-        CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
+        CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
         char *preset = pVis->GetPreset();
         if (preset)
         {
@@ -1575,15 +1581,15 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
     }
     break;
   case SYSTEM_OPENGL_VENDOR:
-    strLabel = Surface::CSurface::GetGLVendor();
+    strLabel = g_Windowing.GetRenderVendor();
     break;
   case SYSTEM_OPENGL_RENDERER:
-    strLabel = Surface::CSurface::GetGLRenderer();
+    strLabel = g_Windowing.GetRenderRenderer();
     break;
   case SYSTEM_OPENGL_VERSION:
   {
-    int major, minor;
-    Surface::CSurface::GetGLVersion(major, minor);
+    unsigned int major, minor;
+    g_Windowing.GetRenderVersion(major, minor);
     strLabel.Format("%d.%d", major, minor);
     break;
   }
@@ -1593,7 +1599,7 @@ CStdString CGUIInfoManager::GetLabel(int info, DWORD contextWindow)
 }
 
 // tries to get a integer value for use in progressbars/sliders and such
-int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
+int CGUIInfoManager::GetInt(int info, int contextWindow) const
 {
   switch( info )
   {
@@ -1677,11 +1683,11 @@ int CGUIInfoManager::GetInt(int info, DWORD contextWindow) const
 }
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
-bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIListItem *item)
+bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListItem *item)
 {
   // check our cache
   bool bReturn = false;
-  if (!item && IsCached(condition1, dwContextWindow, bReturn)) // never use cache for list items
+  if (!item && IsCached(condition1, contextWindow, bReturn)) // never use cache for list items
     return bReturn;
 
   int condition = abs(condition1);
@@ -1689,7 +1695,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   if(condition >= COMBINED_VALUES_START && (condition - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
   {
     const CCombinedValue &comb = m_CombinedValues[condition - COMBINED_VALUES_START];
-    if (!EvaluateBooleanExpression(comb, bReturn, dwContextWindow, item))
+    if (!EvaluateBooleanExpression(comb, bReturn, contextWindow, item))
       bReturn = false;
   }
   else if (item && condition >= LISTITEM_START && condition < LISTITEM_END)
@@ -1745,6 +1751,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = false;
   else if (condition == SYSTEM_MEDIA_DVD)
     bReturn = g_mediaManager.IsDiscInDrive();
+#ifdef HAS_DVD_DRIVE
   else if (condition == SYSTEM_HAS_DRIVE_F)
     bReturn = CIoSupport::DriveExists('F');
   else if (condition == SYSTEM_HAS_DRIVE_G)
@@ -1753,6 +1760,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     bReturn = g_mediaManager.GetDriveStatus() != DRIVE_NOT_READY;
   else if (condition == SYSTEM_TRAYOPEN)
     bReturn = g_mediaManager.GetDriveStatus() == DRIVE_OPEN;
+#endif
   else if (condition == SYSTEM_CAN_POWERDOWN)
     bReturn = g_powerManager.CanPowerdown();
   else if (condition == SYSTEM_CAN_SUSPEND)
@@ -1778,9 +1786,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
     // cache return value
-    bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], dwContextWindow, item);
+    bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
     if (!item)
-      CacheBool(condition1, dwContextWindow, result);
+      CacheBool(condition1, contextWindow, result);
     return result;
   }
   else if (condition == SYSTEM_HASLOCKS)
@@ -1813,7 +1821,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   }
   else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
   {
-    CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
     {
       const CFileItemList& items=((CGUIMediaWindow*)pWindow)->CurrentDirectory();
@@ -1835,13 +1843,13 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   }
   else if (condition == CONTAINER_STACKED)
   {
-    CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().GetProperty("isstacked")=="1";
   }
   else if (condition == CONTAINER_HAS_THUMB)
   {
-    CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
   }
@@ -1851,7 +1859,7 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   {
     // no parameters, so we assume it's just requested for a media window.  It therefore
     // can only happen if the list has focus.
-    CGUIWindow *pWindow = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
     {
       map<int,int>::const_iterator it = m_containerMoves.find(pWindow->GetViewContainerID());
@@ -1941,9 +1949,6 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
     case PLAYER_PASSTHROUGH:
       bReturn = g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough();
       break;
-    case PLAYER_HAS_TELETEXT:
-      bReturn = g_application.m_pPlayer->GetTeletextPageCount() > 0 ? true : false;
-      break;
     case MUSICPM_ENABLED:
       bReturn = g_partyModeManager.IsEnabled();
     break;
@@ -2007,9 +2012,9 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
         g_graphicsContext.SendMessage(msg);
-        if (msg.GetLPVOID())
+        if (msg.GetPointer())
         {
-          CVisualisation *pVis = (CVisualisation *)msg.GetLPVOID();
+          CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
           bReturn = pVis->IsLocked();
         }
       }
@@ -2025,13 +2030,13 @@ bool CGUIInfoManager::GetBool(int condition1, DWORD dwContextWindow, const CGUIL
   if (condition1 < 0) bReturn = !bReturn;
 
   if (!item) // don't cache item properties
-    CacheBool(condition1, dwContextWindow, bReturn);
+    CacheBool(condition1, contextWindow, bReturn);
 
   return bReturn;
 }
 
 /// \brief Examines the multi information sent and returns true or false accordingly.
-bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindow, const CGUIListItem *item)
+bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, const CGUIListItem *item)
 {
   bool bReturn = false;
   int condition = abs(info.m_info);
@@ -2045,13 +2050,13 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     int data1 = info.GetData1();
     if (!data1) // No container specified, so we lookup the current view container
     {
-      window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
       if (window && window->IsMediaWindow())
         data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
     }
 
     if (!window) // If we don't have a window already (from lookup above), get one
-      window = GetWindowWithCondition(dwContextWindow, 0);
+      window = GetWindowWithCondition(contextWindow, 0);
 
     if (window)
     {
@@ -2085,13 +2090,13 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
           bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).IsEmpty();
         else
-          bReturn = GetImage(info.GetData1(), dwContextWindow).IsEmpty();
+          bReturn = GetImage(info.GetData1(), contextWindow).IsEmpty();
         break;
       case STRING_COMPARE:
         if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
           bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
         else
-          bReturn = GetImage(info.GetData1(), dwContextWindow).Equals(m_stringParameters[info.GetData2()]);
+          bReturn = GetImage(info.GetData1(), contextWindow).Equals(m_stringParameters[info.GetData2()]);
         break;
       case STRING_STR:
           {
@@ -2102,7 +2107,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
             if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
               label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
             else
-              label = GetImage(info.GetData1(), dwContextWindow).ToLower();
+              label = GetImage(info.GetData1(), contextWindow).ToLower();
             if (compare.Right(5).Equals(",left"))
               bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
             else if (compare.Right(6).Equals(",right"))
@@ -2126,14 +2131,14 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
     break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
             bReturn = window->ControlGroupHasFocus(info.GetData1(), info.GetData2());
         }
         break;
       case CONTROL_IS_VISIBLE:
         {
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
           {
             // Note: This'll only work for unique id's
@@ -2145,7 +2150,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case CONTROL_IS_ENABLED:
         {
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
           {
             // Note: This'll only work for unique id's
@@ -2157,14 +2162,14 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case CONTROL_HAS_FOCUS:
         {
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
             bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
         }
         break;
       case BUTTON_SCROLLER_HAS_ICON:
         {
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
           {
             CGUIControl *pControl = window->GetFocusedControl();
@@ -2235,7 +2240,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       case CONTAINER_CONTENT:
         {
           CStdString content;
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
           {
             if (window->GetID() == WINDOW_MUSIC_INFO)
@@ -2245,7 +2250,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           }
           if (content.IsEmpty())
           {
-            window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+            window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
               content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
           }
@@ -2263,13 +2268,13 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
           const CGUIControl *control = NULL;
           if (info.GetData1())
           { // container specified
-            CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+            CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
             if (window)
               control = window->GetControl(info.GetData1());
           }
           else
           { // no container specified - assume a mediawindow
-            CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+            CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
             if (window)
               control = window->GetControl(window->GetViewContainerID());
           }
@@ -2279,7 +2284,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case CONTAINER_HAS_FOCUS:
         { // grab our container
-          CGUIWindow *window = GetWindowWithCondition(dwContextWindow, 0);
+          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
           {
             const CGUIControl *control = window->GetControl(info.GetData1());
@@ -2310,7 +2315,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
         break;
       case CONTAINER_SORT_METHOD:
       {
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
         if (window)
         {
           const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
@@ -2321,7 +2326,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
       }
       case CONTAINER_SORT_DIRECTION:
       {
-        CGUIWindow *window = GetWindowWithCondition(dwContextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+        CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
         if (window)
         {
           const CGUIViewState *viewState = ((CGUIMediaWindow*)window)->GetViewState();
@@ -2376,7 +2381,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, DWORD dwContextWindo
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
-CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD contextWindow) const
+CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow) const
 {
   if (info.m_info == SKIN_STRING)
   {
@@ -2476,8 +2481,6 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
         return ((CGUIBaseContainer *)control)->GetLabel(info.m_info);
       else if (control->GetControlType() == CGUIControl::GUICONTROL_TEXTBOX)
         return ((CGUITextBox *)control)->GetLabel(info.m_info);
-      else if (control->GetControlType() == CGUIControl::GUICONTROL_TELETEXTBOX)
-        return ((CGUITeletextBox *)control)->GetLabel(info.m_info);
     }
   }
   else if (info.m_info == SYSTEM_GET_CORE_USAGE)
@@ -2532,7 +2535,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, DWORD context
 }
 
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
-CStdString CGUIInfoManager::GetImage(int info, DWORD contextWindow)
+CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
@@ -3463,7 +3466,7 @@ int CGUIInfoManager::GetOperator(const char ch)
     return 0;
 }
 
-bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, DWORD dwContextWindow, const CGUIListItem *item)
+bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, int contextWindow, const CGUIListItem *item)
 {
   // stack to save our bool state as we go
   stack<bool> save;
@@ -3493,7 +3496,7 @@ bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression
       save.push(left || right);
     }
     else  // operator
-      save.push(GetBool(expr, dwContextWindow, item));
+      save.push(GetBool(expr, contextWindow, item));
   }
   if (save.size() != 1) return false;
   result = save.top();
@@ -3880,10 +3883,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
         if( item->m_bIsFolder )
 	  path = item->GetVideoInfoTag()->m_strPath;
         else
-          CUtil::GetDirectory(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
+          CUtil::GetParentPath(CorrectAllItemsSortHack(item->GetVideoInfoTag()->m_strFileNameAndPath), path);
       }
       else
-        CUtil::GetDirectory(item->m_strPath, path);
+        CUtil::GetParentPath(item->m_strPath, path);
       CURL url(path);
       url.GetURLWithoutUserDetails(path);
       if (info==CONTAINER_FOLDERNAME)
@@ -4102,7 +4105,7 @@ void CGUIInfoManager::ResetPersistentCache()
   m_persistentBoolCache.clear();
 }
 
-inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool result, bool persistent)
+inline void CGUIInfoManager::CacheBool(int condition, int contextWindow, bool result, bool persistent)
 {
   // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
   // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
@@ -4114,7 +4117,7 @@ inline void CGUIInfoManager::CacheBool(int condition, DWORD contextWindow, bool 
     m_boolCache.insert(pair<int, bool>(hash, result));
 }
 
-bool CGUIInfoManager::IsCached(int condition, DWORD contextWindow, bool &result) const
+bool CGUIInfoManager::IsCached(int condition, int contextWindow, bool &result) const
 {
   // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
   // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
@@ -4237,7 +4240,7 @@ bool CGUIInfoManager::CheckWindowCondition(CGUIWindow *window, int condition) co
   return true;
 }
 
-CGUIWindow *CGUIInfoManager::GetWindowWithCondition(DWORD contextWindow, int condition) const
+CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condition) const
 {
   CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
   if (CheckWindowCondition(window, condition))

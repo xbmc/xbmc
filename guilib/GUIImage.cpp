@@ -19,14 +19,14 @@
  *
  */
 
-#include "include.h"
 #include "GUIImage.h"
 #include "TextureManager.h"
+#include "utils/log.h"
 
 using namespace std;
 
-CGUIImage::CGUIImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIImage::CGUIImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_texture(posX, posY, width, height, texture)
 {
   m_crossFadeTime = 0;
@@ -74,7 +74,7 @@ void CGUIImage::UpdateInfo(const CGUIListItem *item)
   if (item)
     SetFileName(m_info.GetItemLabel(item, true));
   else
-    SetFileName(m_info.GetLabel(m_dwParentID, true));
+    SetFileName(m_info.GetLabel(m_parentID, true));
 }
 
 void CGUIImage::AllocateOnDemand()

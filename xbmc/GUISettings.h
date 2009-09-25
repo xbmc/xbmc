@@ -39,11 +39,11 @@
 #define SOFTWARE_UPSCALING_SD_CONTENT 1
 #define SOFTWARE_UPSCALING_ALWAYS     2
 
-#ifdef __APPLE__
-
 // Display blanking options.
 #define BLANKING_DISABLED     0
 #define BLANKING_ALL_DISPLAYS 1
+
+#ifdef __APPLE__
 
 // Apple Remote options.
 #define APPLE_REMOTE_DISABLED     0
@@ -427,7 +427,7 @@ public:
   void LoadMasterLock(TiXmlElement *pRootElement);
 
   //m_LookAndFeelResolution holds the real gui resolution,
-  //also when g_guiSettings.GetInt("videoscreen.resolution") is set to AUTORES
+  //also when g_guiSettings.GetInt("videoscreen.resolution") is set to RES_AUTORES
   RESOLUTION m_LookAndFeelResolution;
   ReplayGainSettings m_replayGain;
 

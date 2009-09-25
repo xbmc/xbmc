@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "Settings.h"
+#include "MediaSource.h"
 
 namespace DIRECTORY
 {

@@ -57,6 +57,10 @@
 #define GUARD_MAGIC 0xe3
 #endif /* DEBUG */
 
+#if __APPLE_CC__ == 5490
+#pragma GCC optimization_level 0
+#endif
+
 /*
  * struct refcounter
  *
@@ -470,3 +474,7 @@ ref_release(void *p)
 	}
 	refmem_dbg(REF_DBG_DEBUG, "%s(%p) }\n", __FUNCTION__, p);
 }
+
+#if __APPLE_CC__ == 5490
+#pragma GCC optimization_level reset
+#endif

@@ -21,9 +21,10 @@
  *
  */
 
-#if !defined(_LINUX) && !defined(HAS_SDL)
+#if !defined(_LINUX) && !defined(HAS_GL)
 
 #include "GraphicContext.h"
+#include "RenderFlags.h"
 
 //#define MP_DIRECTRENDERING
 
@@ -82,6 +83,8 @@ typedef struct YV12Image
 #define CONF_FLAGS_YUV_FULLRANGE 0x08
 #define CONF_FLAGS_FULLSCREEN    0x10
 
+class CBaseTexture;
+
 struct DRAWRECT
 {
   float left;
@@ -131,7 +134,7 @@ public:
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
-  void CreateThumbnail(LPDIRECT3DSURFACE9 surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
@@ -171,6 +174,8 @@ protected:
   void CopyYV12Texture(int dest);
   int  NextYV12Texture();
 
+  bool LoadEffect();
+
   // low memory renderer (default PixelShaderRenderer)
   void RenderLowMem(DWORD flags);
   int m_iYV12RenderBuffer;
@@ -198,8 +203,10 @@ protected:
   int m_NumOSDBuffers;
   bool m_OSDRendered;
 
-  typedef LPDIRECT3DTEXTURE9 YUVPLANES[MAX_PLANES];
-  typedef YUVPLANES          YUVBUFFERS[NUM_BUFFERS];
+  typedef LPDIRECT3DTEXTURE9      YUVVIDEOPLANES[MAX_PLANES];
+  typedef BYTE*                   YUVMEMORYPLANES[MAX_PLANES];
+  typedef YUVVIDEOPLANES          YUVVIDEOBUFFERS[NUM_BUFFERS];
+  typedef YUVMEMORYPLANES         YUVMEMORYBUFFERS[NUM_BUFFERS];
 
   #define PLANE_Y 0
   #define PLANE_U 1
@@ -211,13 +218,14 @@ protected:
 
   // YV12 decoder textures
   // field index 0 is full image, 1 is odd scanlines, 2 is even scanlines
-  YUVBUFFERS m_YUVTexture;
+  // Since DX is single threaded, we will render all video into system memory
+  // We will them copy in into the device when rendering from main thread
+  YUVVIDEOBUFFERS m_YUVVideoTexture;
+  YUVMEMORYBUFFERS m_YUVMemoryTexture;
 
   // render device
   LPDIRECT3DDEVICE9 m_pD3DDevice;
-
-  // pixel shader (low memory shader used in all renderers while in GUI)
-  IDirect3DPixelShader9 *m_lowMemShader;
+  ID3DXEffect*  m_pYUV2RGBEffect;
 
   // clear colour for "black" bars
   DWORD m_clearColour;
@@ -237,4 +245,5 @@ protected:
 #else
 #include "LinuxRenderer.h"
 #endif
+
 

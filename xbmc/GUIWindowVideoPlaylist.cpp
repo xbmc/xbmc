@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowVideoPlaylist.h"
 #include "PlayListFactory.h"
 #include "Util.h"
@@ -30,7 +29,12 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIUserMessages.h"
 #include "Favourites.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace PLAYLIST;
 
@@ -188,23 +192,23 @@ bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowVideoPlaylist::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
+  if (action.id == ACTION_PARENT_DIR)
   {
     // Playlist has no parent dirs
     return true;
   }
-  if (action.wID == ACTION_SHOW_PLAYLIST)
+  if (action.id == ACTION_SHOW_PLAYLIST)
   {
     m_gWindowManager.PreviousWindow();
     return true;
   }
-  if ((action.wID == ACTION_MOVE_ITEM_UP) || (action.wID == ACTION_MOVE_ITEM_DOWN))
+  if ((action.id == ACTION_MOVE_ITEM_UP) || (action.id == ACTION_MOVE_ITEM_DOWN))
   {
     int iItem = -1;
     int iFocusedControl = GetFocusedControlID();
     if (m_viewControl.HasControl(iFocusedControl))
       iItem = m_viewControl.GetSelectedItem();
-    OnMove(iItem, action.wID);
+    OnMove(iItem, action.id);
     return true;
   }
   return CGUIWindowVideoBase::OnAction(action);

@@ -35,7 +35,7 @@
 class CGUIPanelContainer : public CGUIBaseContainer
 {
 public:
-  CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
+  CGUIPanelContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
   virtual ~CGUIPanelContainer(void);
   virtual CGUIPanelContainer *Clone() const { return new CGUIPanelContainer(*this); };
 

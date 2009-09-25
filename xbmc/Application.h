@@ -21,10 +21,10 @@
  *
  */
 
+#include "system.h"
 #include "XBApplicationEx.h"
 
 #include "IMsgTargetCallback.h"
-#include "Key.h"
 
 class CFileItem;
 class CFileItemList;
@@ -34,30 +34,33 @@ class CFileItemList;
 #include "GUIDialogVolumeBar.h"
 #include "GUIDialogMuteBug.h"
 #include "GUIWindowPointer.h"   // Mouse pointer
-#include "Settings.h"
 
 #include "cores/IPlayer.h"
 #include "cores/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
-#ifndef _WIN32PC
+#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "DetectDVDType.h"
 #endif
 #include "Autorun.h"
-#include "utils/Splash.h"
+#include "Bookmark.h"
 #include "utils/Stopwatch.h"
 #include "ApplicationMessenger.h"
 #include "utils/Network.h"
-#include "MusicDatabase.h"
-#include "VideoDatabase.h"
+#include "utils/CharsetConverter.h"
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
 #endif
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
-#include "WINMessageHandler.h"
+#endif
+#include "XBMC_events.h"
+#include "utils/Thread.h"
+
+#ifdef HAS_SDL
+#include <SDL/SDL_mutex.h>
 #endif
 
 class CWebServer;
@@ -66,6 +69,8 @@ class CSNTPClient;
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
+class CProfile;
+class CSplash;
 
 class CBackgroundPlayer : public CThread
 {
@@ -95,7 +100,7 @@ public:
   void StartServices();
   void StopServices();
   void StartWebServer();
-  void StopWebServer();
+  void StopWebServer(bool bWait);
   void StartFtpServer();
   void StopFtpServer();
   void StartTimeServer();
@@ -114,11 +119,11 @@ public:
   bool StopEventServer(bool promptuser=false);
   void RefreshEventServer();
   void StartDbusServer();
-  bool StopDbusServer();
+  bool StopDbusServer(bool bWait);
   void StartZeroconf();
   void StopZeroconf();
   void DimLCDOnPlayback(bool dim);
-  DWORD GetThreadId() const { return m_threadID; };
+  bool IsCurrentThread() const;
   void Stop();
   void RestartApp();
   void LoadSkin(const CStdString& strSkin);
@@ -192,6 +197,9 @@ public:
   bool ExecuteXBMCAction(std::string action);
   bool ExecuteAction(CGUIActionDescriptor action);
 
+  static bool OnEvent(XBMC_Event& newEvent);
+  
+
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();
@@ -210,8 +218,11 @@ public:
   CGUIDialogMuteBug m_guiDialogMuteBug;
   CGUIWindowPointer m_guiPointer;
 
+#ifdef HAS_DVD_DRIVE  
   MEDIA_DETECT::CAutorun m_Autorun;
-#ifndef _WIN32PC
+#endif
+  
+#if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia m_DetectDVDType;
 #endif
   CSNTPClient *m_psntpClient;
@@ -278,13 +289,6 @@ protected:
   // screensaver
   bool m_bScreenSave;
   CStdString m_screenSaverMode;
-#ifndef HAS_SDL
-  D3DGAMMARAMP m_OldRamp;
-#else
-  Uint16 m_OldRampRed[256];
-  Uint16 m_OldRampGreen[256];
-  Uint16 m_OldRampBlue[256];
-#endif
 
   // timer information
   CStopWatch m_idleTimer;
@@ -295,9 +299,6 @@ protected:
   CStopWatch m_screenSaverTimer;
   CStopWatch m_shutdownTimer;
 
-  DWORD      m_lastActionCode;
-  CStopWatch m_lastActionTimer;
-
   DPMSSupport* m_dpms;
   bool m_dpmsIsActive;
 
@@ -305,7 +306,7 @@ protected:
   CFileItemList* m_currentStack;
   CStdString m_prevMedia;
   CSplash* m_splash;
-  DWORD m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
+  ThreadIdentifier m_threadID;       // application thread ID.  Used in applicationMessanger to know where we are firing a thread with delay from.
   PLAYERCOREID m_eCurrentPlayer;
   bool m_bXboxMediacenterLoaded;
   bool m_bSettingsLoaded;
@@ -335,8 +336,7 @@ protected:
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
-  void FatalErrorHandler(bool InitD3D, bool MapDrives, bool InitNetwork);
-  void InitBasicD3D();
+  void FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork);
 
   bool PlayStack(const CFileItem& item, bool bRestart);
   bool SwitchToFullScreen();
@@ -378,9 +378,8 @@ protected:
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
-#ifdef _WIN32PC
+#ifdef _WIN32
   CWIN32Util::SystemParams::SysParam *m_SSysParam;
-  CWINMessageHandler  m_messageHandler;
 #endif
 };
 

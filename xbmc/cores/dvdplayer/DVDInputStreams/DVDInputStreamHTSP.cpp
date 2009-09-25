@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamHTSP.h"
 #include "URL.h"
 #include "VideoInfoTag.h"
@@ -180,6 +179,11 @@ bool CDVDInputStreamHTSP::PrevChannel()
       return SetChannel(it->first);
   }
   return false;
+}
+
+bool CDVDInputStreamHTSP::SelectChannel(unsigned int channel)
+{
+  return SetChannel(channel);
 }
 
 bool CDVDInputStreamHTSP::UpdateItem(CFileItem& item)

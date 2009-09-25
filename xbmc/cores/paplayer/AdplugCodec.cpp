@@ -19,8 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "AdplugCodec.h"
+#include "utils/log.h"
 
 AdplugCodec::AdplugCodec()
 {

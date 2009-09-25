@@ -19,11 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDAudioCodecPassthrough.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDStreamInfo.h"
+#include "GUISettings.h"
 #include "Settings.h"
+#include "utils/log.h"
 
 #undef  MAX
 #define MAX(a, b)  (((a) > (b)) ? (a) : (b))

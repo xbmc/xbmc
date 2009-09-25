@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Win32Exception.h"
 #ifndef _LINUX
 #include "eh.h"

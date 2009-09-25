@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "LastFMDirectory.h"
 #include "DirectoryCache.h"
 #include "Util.h"
@@ -33,6 +31,8 @@
 #include "GUISettings.h"
 #include "FileItem.h"
 #include "FileCurl.h"
+#include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

@@ -20,17 +20,19 @@
  *
  */
 #include "DllImageLib.h"
+#include "gui3d.h"
+
+class CBaseTexture;
 
 class CPicture
 {
 public:
   CPicture(void);
   virtual ~CPicture(void);
-  XBMC::TexturePtr Load(const CStdString& strFilename, int iMaxWidth = 128, int iMaxHeight = 128);
+  virtual bool Load(const CStdString& strFilename, CBaseTexture* texture, int iMaxWidth = 128, int iMaxHeight = 128);
 
   bool CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName);
   bool CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName);
-  bool CreateThumbnailFromSwizzledTexture(XBMC::TexturePtr &texture, int width, int height, const CStdString &thumb);
   int ConvertFile(const CStdString& srcFile, const CStdString& destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror=false);
 
   ImageInfo GetInfo() const { return m_info; };
@@ -44,23 +46,7 @@ public:
   bool DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence = false);
   bool CacheImage(const CStdString& sourceFileName, const CStdString& destFileName);
 
-  // caches a skin image as a thumbnail image
-  bool CacheSkinImage(const CStdString &srcFile, const CStdString &destFile);
-
 protected:
-
-private:
-#ifndef HAS_SDL
-  struct VERTEX
-  {
-    D3DXVECTOR4 p;
-    D3DCOLOR col;
-    FLOAT tu, tv;
-  };
-  static const DWORD FVF_VERTEX = D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1;
-#endif
-
   DllImageLib m_dll;
-
   ImageInfo m_info;
 };

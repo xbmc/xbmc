@@ -19,17 +19,17 @@
  *
  */
 
-#include "include.h"
 #include "GUIButtonControl.h"
 #include "GUIWindowManager.h"
 #include "GUIDialog.h"
 #include "utils/CharsetConverter.h"
 #include "GUIFontManager.h"
+#include "MouseStat.h"
 
 using namespace std;
 
-CGUIButtonControl::CGUIButtonControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIButtonControl::CGUIButtonControl(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& textureFocus, const CTextureInfo& textureNoFocus, const CLabelInfo& labelInfo)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
     , m_imgFocus(posX, posY, width, height, textureFocus)
     , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
     , m_textLayout(labelInfo.font, false), m_textLayout2(labelInfo.font, false)
@@ -90,7 +90,7 @@ void CGUIButtonControl::Render()
 
 void CGUIButtonControl::RenderText()
 {
-  m_textLayout.Update(m_info.GetLabel(m_dwParentID));
+  m_textLayout.Update(m_info.GetLabel(m_parentID));
 
   float fPosX = m_posX + m_label.offsetX;
   float fPosY = m_posY + m_label.offsetY;
@@ -112,7 +112,7 @@ void CGUIButtonControl::RenderText()
     m_textLayout.Render( fPosX, fPosY, m_label.angle, m_label.textColor, m_label.shadowColor, m_label.align, m_label.width);
 
   // render the second label if it exists
-  CStdString label2(m_info2.GetLabel(m_dwParentID));
+  CStdString label2(m_info2.GetLabel(m_parentID));
   if (!label2.IsEmpty())
   {
     float textWidth, textHeight;
@@ -122,7 +122,7 @@ void CGUIButtonControl::RenderText()
     float width = m_width - 2 * m_label.offsetX - textWidth - 5;
     if (width < 0) width = 0;
     fPosX = m_posX + m_width - m_label.offsetX;
-    DWORD dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED;
+    uint32_t dwAlign = XBFONT_RIGHT | (m_label.align & XBFONT_CENTER_Y) | XBFONT_TRUNCATED;
 
     if (IsDisabled() )
       m_textLayout2.Render( fPosX, fPosY, m_label.angle, m_label.disabledColor, m_label.shadowColor, dwAlign, width, true);
@@ -135,7 +135,7 @@ void CGUIButtonControl::RenderText()
 
 bool CGUIButtonControl::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     OnClick();
     return true;
@@ -231,13 +231,13 @@ void CGUIButtonControl::UpdateColors()
   m_imgNoFocus.SetDiffuseColor(m_diffuseColor);
 }
 
-bool CGUIButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUIButtonControl::OnMouseClick(int button, const CPoint &point)
 {
-  if (dwButton == MOUSE_LEFT_BUTTON)
+  if (button == MOUSE_LEFT_BUTTON)
   {
     g_Mouse.SetState(MOUSE_STATE_CLICK);
     CAction action;
-    action.wID = ACTION_SELECT_ITEM;
+    action.id = ACTION_SELECT_ITEM;
     OnAction(action);
     return true;
   }
@@ -246,55 +246,55 @@ bool CGUIButtonControl::OnMouseClick(DWORD dwButton, const CPoint &point)
 
 CStdString CGUIButtonControl::GetDescription() const
 {
-  CStdString strLabel(m_info.GetLabel(m_dwParentID));
+  CStdString strLabel(m_info.GetLabel(m_parentID));
   return strLabel;
 }
 
 CStdString CGUIButtonControl::GetLabel2() const
 {
-  CStdString strLabel(m_info2.GetLabel(m_dwParentID));
+  CStdString strLabel(m_info2.GetLabel(m_parentID));
   return strLabel;
 }
 
-void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, DWORD dwTextColor, DWORD dwShadowColor, DWORD dwFocusedColor)
+void CGUIButtonControl::PythonSetLabel(const CStdString &strFont, const string &strText, color_t textColor, color_t shadowColor, color_t focusedColor)
 {
   m_label.font = g_fontManager.GetFont(strFont);
-  m_label.textColor = dwTextColor;
-  m_label.focusedColor = dwFocusedColor;
-  m_label.shadowColor = dwShadowColor;
+  m_label.textColor = textColor;
+  m_label.focusedColor = focusedColor;
+  m_label.shadowColor = shadowColor;
   SetLabel(strText);
 }
 
-void CGUIButtonControl::PythonSetDisabledColor(DWORD dwDisabledColor)
+void CGUIButtonControl::PythonSetDisabledColor(color_t disabledColor)
 {
-  m_label.disabledColor = dwDisabledColor;
+  m_label.disabledColor = disabledColor;
 }
 
-void CGUIButtonControl::RAMSetTextColor(DWORD dwTextColor)
+void CGUIButtonControl::RAMSetTextColor(color_t textColor)
 {
-  m_label.textColor = dwTextColor;
+  m_label.textColor = textColor;
 }
 
-void CGUIButtonControl::SettingsCategorySetTextAlign(DWORD dwAlign)
+void CGUIButtonControl::SettingsCategorySetTextAlign(uint32_t align)
 {
-  m_label.align = dwAlign;
+  m_label.align = align;
 }
 
 void CGUIButtonControl::OnClick()
 {
   // Save values, as the click message may deactivate the window
-  DWORD dwControlID = GetID();
-  DWORD dwParentID = GetParentID();
+  int controlID = GetID();
+  int parentID = GetParentID();
   vector<CGUIActionDescriptor> clickActions = m_clickActions;
 
   // button selected, send a message
-  CGUIMessage msg(GUI_MSG_CLICKED, dwControlID, dwParentID, 0);
+  CGUIMessage msg(GUI_MSG_CLICKED, controlID, parentID, 0);
   SendWindowMessage(msg);
 
   // and execute our actions
   for (unsigned int i = 0; i < clickActions.size(); i++)
   {
-    CGUIMessage message(GUI_MSG_EXECUTE, dwControlID, dwParentID);
+    CGUIMessage message(GUI_MSG_EXECUTE, controlID, parentID);
     message.SetAction(clickActions[i]);
     g_graphicsContext.SendMessage(message);
   }
@@ -304,7 +304,7 @@ void CGUIButtonControl::OnFocus()
 {
   for (unsigned int i = 0; i < m_focusActions.size(); i++)
   {
-    CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
+    CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetAction(m_focusActions[i]);
     m_gWindowManager.SendThreadMessage(message);
   }
@@ -314,7 +314,7 @@ void CGUIButtonControl::OnUnFocus()
 {
   for (unsigned int i = 0; i < m_unfocusActions.size(); i++)
   {
-    CGUIMessage message(GUI_MSG_EXECUTE, m_dwControlID, m_dwParentID);
+    CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetAction(m_unfocusActions[i]);
     m_gWindowManager.SendThreadMessage(message);
   }

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogButtonMenu.h"
 #include "GUILabelControl.h"
 #include "GUIButtonControl.h"

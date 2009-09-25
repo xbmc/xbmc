@@ -21,6 +21,7 @@
  *
  */
 
+#include <map>
 #include <vector>
 #include "StdString.h"
 

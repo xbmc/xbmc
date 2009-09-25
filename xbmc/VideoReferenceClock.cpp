@@ -18,10 +18,14 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+#include "system.h"
 #include <iostream> //for debugging, please remove
+#include <list>
+#include "StdString.h"
 #include "VideoReferenceClock.h"
 #include "MathUtils.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/extensions/Xrandr.h>
@@ -158,7 +162,7 @@ bool CVideoReferenceClock::SetupGLX()
   };
 
   int ReturnV, SwaMask;
-  unsigned int VblankCount;
+  unsigned int GlxTest;
   XSetWindowAttributes Swa;
 
   m_Dpy = NULL;
@@ -223,7 +227,7 @@ bool CVideoReferenceClock::SetupGLX()
     return false;
   }
 
-  ReturnV = m_glXWaitVideoSyncSGI(2, 0, &VblankCount);
+  ReturnV = m_glXWaitVideoSyncSGI(2, 0, &GlxTest);
   if (ReturnV)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
@@ -231,19 +235,39 @@ bool CVideoReferenceClock::SetupGLX()
   }
 
   m_glXGetVideoSyncSGI = (int (*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetVideoSyncSGI");
-  if (!m_glXWaitVideoSyncSGI)
+  if (!m_glXGetVideoSyncSGI)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI not found");
     return false;
   }
 
-  ReturnV = m_glXGetVideoSyncSGI(&VblankCount);
+  ReturnV = m_glXGetVideoSyncSGI(&GlxTest);
   if (ReturnV)
   {
     CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetVideoSyncSGI returned %i", ReturnV);
     return false;
   }
 
+  m_glXGetRefreshRateSGI = (int(*)(unsigned int*))glXGetProcAddress((const GLubyte*)"glXGetRefreshRateSGI");
+  if (!m_glXGetRefreshRateSGI)
+  {
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI not found");
+  }
+  else
+  {
+    ReturnV = m_glXGetRefreshRateSGI(&GlxTest);
+    if (ReturnV)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI returned %i", ReturnV);
+      m_glXGetRefreshRateSGI = NULL;
+    }
+  }
+  
+  if (m_glXGetRefreshRateSGI)
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: using glXGetRefreshRateSGI to detect refreshrate changes");
+  else
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: using RandR to detect refreshrate changes");
+  
   XRRSizes(m_Dpy, m_vInfo->screen, &ReturnV);
   if (ReturnV == 0)
   {
@@ -303,6 +327,18 @@ bool CVideoReferenceClock::ParseNvSettings(int& RefreshRate)
   return true;
 }
 
+int CVideoReferenceClock::GetRandRRate()
+{
+  int RefreshRate;
+  XRRScreenConfiguration *CurrInfo;
+  
+  CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
+  RefreshRate = XRRConfigCurrentRate(CurrInfo);
+  XRRFreeScreenConfigInfo(CurrInfo);
+  
+  return RefreshRate;
+}
+
 void CVideoReferenceClock::CleanupGLX()
 {
   CLog::Log(LOGDEBUG, "CVideoReferenceClock: Cleaning up GLX");
@@ -314,6 +350,7 @@ void CVideoReferenceClock::CleanupGLX()
   }
   if (m_Context)
   {
+    glXMakeCurrent(m_Dpy, None, NULL);
     glXDestroyContext(m_Dpy, m_Context);
     m_Context = NULL;
   }
@@ -350,7 +387,7 @@ void CVideoReferenceClock::RunGLX()
     ReturnV = m_glXWaitVideoSyncSGI(2, (VblankCount + 1) % 2, &VblankCount);
     m_glXGetVideoSyncSGI(&VblankCount); //the vblank count returned by glXWaitVideoSyncSGI is not always correct
     QueryPerformanceCounter(&Now); //get the timestamp of this vblank
-
+    
     if(ReturnV)
     {
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXWaitVideoSyncSGI returned %i", ReturnV);
@@ -394,6 +431,8 @@ void CVideoReferenceClock::RunGLX()
         return;
       }
 
+      m_glXGetVideoSyncSGI(&VblankCount);
+      
       IsReset = true;
     }
     PrevVblankCount = VblankCount;
@@ -971,40 +1010,54 @@ bool CVideoReferenceClock::UpdateRefreshrate(bool Forced /*= false*/)
     m_LastRefreshTime = m_CurrTime;
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
-  XRRScreenConfiguration *CurrInfo;
-  CurrInfo = XRRGetScreenInfo(m_Dpy, RootWindow(m_Dpy, m_vInfo->screen));
-  int RRRefreshRate = XRRConfigCurrentRate(CurrInfo);
-  XRRFreeScreenConfigInfo(CurrInfo);
+  
+  int RefreshRate;
+  
+  if (m_glXGetRefreshRateSGI) //get the refreshrate from glXGetRefreshRateSGI when available, it's a cheaper call
+  {
+    int ReturnV = m_glXGetRefreshRateSGI((unsigned int*)&RefreshRate);
+    if (ReturnV)
+    {
+      CLog::Log(LOGDEBUG, "CVideoReferenceClock: glXGetRefreshRateSGI returned %i, using RandR instead", ReturnV);
+      m_glXGetRefreshRateSGI = NULL;
+    }
+  }
+  
+  if (!m_glXGetRefreshRateSGI) //glXGetRefreshRateSGI not available, use RandR instead
+    RefreshRate = GetRandRRate();
 
-  //just return if the refreshrate given by RandR didn't change
-  if (RRRefreshRate == m_PrevRefreshRate && !Forced)
+  //just return if the refreshrate didn't change
+  if (RefreshRate == m_PrevRefreshRate && !Forced)
     return false;
 
-  //the refreshrate from RandR can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
+  m_PrevRefreshRate = RefreshRate; //save the current refreshrate so we can detect if it changes again
+  
+  //the refreshrate can be wrong on nvidia drivers, so read it from nvidia-settings when it's available
   if (m_UseNvSettings || Forced)
   {
-    int RefreshRate;
-    m_UseNvSettings = ParseNvSettings(RefreshRate); //if this fails we can't get the refreshrate from nvidia-settings
+    int NvRefreshRate;
+    //if this fails we can't get the refreshrate from nvidia-settings
+    m_UseNvSettings = ParseNvSettings(NvRefreshRate);
 
-    if (!m_UseNvSettings)
+    if (m_UseNvSettings)
     {
-       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
-       CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)RRRefreshRate);
-       RefreshRate = RRRefreshRate;
+      CSingleLock SingleLock(m_CritSection);
+      m_RefreshRate = NvRefreshRate;
+      return true;
     }
-
-    CSingleLock SingleLock(m_CritSection);
-    m_RefreshRate = RefreshRate;
-    m_PrevRefreshRate = RRRefreshRate; //save the refreshrate from RandR,
-                                       //which does not have to be same as the refreshrate nvidia-settings gave us
+    
+    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Using RandR for refreshrate detection");
   }
+    
+  CSingleLock SingleLock(m_CritSection);
+  
+  if (m_glXGetRefreshRateSGI) //we want the refreshrate from RandR if we didn't get it yet
+    m_RefreshRate = GetRandRRate();
   else
-  {
-    CSingleLock SingleLock(m_CritSection);
-    m_RefreshRate = RRRefreshRate;
-    m_PrevRefreshRate = RRRefreshRate;
-    CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
-  }
+    m_RefreshRate = RefreshRate;
+  
+  CLog::Log(LOGDEBUG, "CVideoReferenceClock: Detected refreshrate: %i hertz", (int)m_RefreshRate);
+  
   return true;
 
 #elif defined(_WIN32)

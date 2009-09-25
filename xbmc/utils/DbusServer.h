@@ -129,7 +129,7 @@ namespace DBUSSERVER
 
     // start / stop server
     void StartServer(CApplication* );
-    void StopServer();
+    void StopServer(bool bWait);
 
     // get events
     bool ExecuteNextAction();

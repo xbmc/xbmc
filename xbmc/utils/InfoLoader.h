@@ -21,6 +21,7 @@
  *
  */
 
+#include "StdString.h"
 #include "Thread.h"
 
 class CInfoLoader;
@@ -44,13 +45,13 @@ class CInfoLoader
 public:
   CInfoLoader(const char *type);
   virtual ~CInfoLoader();
-  const char *GetInfo(DWORD dwInfo);
+  const char *GetInfo(int info);
   void Refresh();
   void LoaderFinished();
   void ResetTimer();
 protected:
-  virtual const char *TranslateInfo(DWORD dwInfo);
-  virtual const char *BusyInfo(DWORD dwInfo);
+  virtual const char *TranslateInfo(int info);
+  virtual const char *BusyInfo(int info);
   virtual DWORD TimeToNextRefreshInMs() { return 300000; }; // default to 5 minutes
 private:
   DWORD m_refreshTime;

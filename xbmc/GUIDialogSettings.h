@@ -65,7 +65,7 @@ class CGUIDialogSettings :
       public CGUIDialog, public ISliderCallback
 {
 public:
-  CGUIDialogSettings(DWORD id, const char *xmlFile);
+  CGUIDialogSettings(int id, const char *xmlFile);
   virtual ~CGUIDialogSettings(void);
   virtual bool OnMessage(CGUIMessage &message);
 

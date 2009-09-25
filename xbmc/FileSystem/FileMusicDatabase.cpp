@@ -19,11 +19,11 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileMusicDatabase.h"
 #include "MusicDatabase.h"
 #include "Util.h"
 #include "URL.h"
+#include "StringUtils.h"
 
 #include <sys/stat.h>
 

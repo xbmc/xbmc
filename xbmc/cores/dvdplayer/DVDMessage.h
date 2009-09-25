@@ -30,6 +30,7 @@
 #endif
 
 // include as less is possible to prevent dependencies
+#include "system.h"
 #include "DVDDemuxers/DVDDemux.h"
 #include "DVDMessageTracker.h"
 
@@ -67,7 +68,7 @@ public:
 
     PLAYER_CHANNEL_NEXT,            // switches to next playback channel
     PLAYER_CHANNEL_PREV,            // switches to previous playback channel
-    PLAYER_CHANNEL,                 // switches to given playback channel
+    PLAYER_CHANNEL_SELECT,          // switches to given playback channel
 
     // demuxer related messages
 

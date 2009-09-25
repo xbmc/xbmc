@@ -4,7 +4,7 @@
 /*                                                                         */
 /*    FreeType error codes (specification).                                */
 /*                                                                         */
-/*  Copyright 2002, 2004, 2006 by                                          */
+/*  Copyright 2002, 2004, 2006, 2007 by                                    */
 /*  David Turner, Robert Wilhelm, and Werner Lemberg.                      */
 /*                                                                         */
 /*  This file is part of the FreeType project, and may only be used,       */
@@ -230,6 +230,10 @@
                 "`BBX' field missing" )
   FT_ERRORDEF_( Bbx_Too_Big,                                 0xB7, \
                 "`BBX' too big" )
+  FT_ERRORDEF_( Corrupted_Font_Header,                       0xB8, \
+                "Font header corrupted or missing fields" )
+  FT_ERRORDEF_( Corrupted_Font_Glyphs,                       0xB9, \
+                "Font glyphs corrupted or missing fields" )
 
 
 /* END */

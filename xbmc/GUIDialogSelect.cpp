@@ -19,9 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSelect.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_HEADING       1
 #define CONTROL_LIST          3

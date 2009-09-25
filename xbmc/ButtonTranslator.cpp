@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "ButtonTranslator.h"
 #include "Util.h"
 #include "Settings.h"
@@ -28,10 +28,163 @@
 #include "File.h"
 #include "Directory.h"
 #include "FileItem.h"
+#include "StringUtils.h"
+#include "utils/log.h"
+
 using namespace std;
 using namespace XFILE;
 
 extern CStdString g_LoadErrorStr;
+
+typedef struct
+{
+  char name[32];
+  int action;
+} ActionMapping;
+
+// remember the fixed length names (hence max 31 char)!
+static const ActionMapping actions[] =
+       {{"left"              , ACTION_MOVE_LEFT },
+        {"right"             , ACTION_MOVE_RIGHT},
+        {"up"                , ACTION_MOVE_UP   },
+        {"down"              , ACTION_MOVE_DOWN },
+        {"pageup"            , ACTION_PAGE_UP   },
+        {"pagedown"          , ACTION_PAGE_DOWN},
+        {"select"            , ACTION_SELECT_ITEM},
+        {"highlight"         , ACTION_HIGHLIGHT_ITEM},
+        {"parentdir"         , ACTION_PARENT_DIR},
+        {"previousmenu"      , ACTION_PREVIOUS_MENU},
+        {"info"              , ACTION_SHOW_INFO},
+        {"pause"             , ACTION_PAUSE},
+        {"stop"              , ACTION_STOP},
+        {"skipnext"          , ACTION_NEXT_ITEM},
+        {"skipprevious"      , ACTION_PREV_ITEM},
+        {"fullscreen"        , ACTION_SHOW_GUI},
+        {"aspectratio"       , ACTION_ASPECT_RATIO},
+        {"stepforward"       , ACTION_STEP_FORWARD},
+        {"stepback"          , ACTION_STEP_BACK},
+        {"bigstepforward"    , ACTION_BIG_STEP_FORWARD},
+        {"bigstepback"       , ACTION_BIG_STEP_BACK},
+        {"osd"               , ACTION_SHOW_OSD},
+        {"showsubtitles"     , ACTION_SHOW_SUBTITLES},
+        {"nextsubtitle"      , ACTION_NEXT_SUBTITLE},
+        {"codecinfo"         , ACTION_SHOW_CODEC},
+        {"nextpicture"       , ACTION_NEXT_PICTURE},
+        {"previouspicture"   , ACTION_PREV_PICTURE},
+        {"zoomout"           , ACTION_ZOOM_OUT},
+        {"zoomin"            , ACTION_ZOOM_IN},
+        {"playlist"          , ACTION_SHOW_PLAYLIST},
+        {"queue"             , ACTION_QUEUE_ITEM},
+        {"zoomnormal"        , ACTION_ZOOM_LEVEL_NORMAL},
+        {"zoomlevel1"        , ACTION_ZOOM_LEVEL_1},
+        {"zoomlevel2"        , ACTION_ZOOM_LEVEL_2},
+        {"zoomlevel3"        , ACTION_ZOOM_LEVEL_3},
+        {"zoomlevel4"        , ACTION_ZOOM_LEVEL_4},
+        {"zoomlevel5"        , ACTION_ZOOM_LEVEL_5},
+        {"zoomlevel6"        , ACTION_ZOOM_LEVEL_6},
+        {"zoomlevel7"        , ACTION_ZOOM_LEVEL_7},
+        {"zoomlevel8"        , ACTION_ZOOM_LEVEL_8},
+        {"zoomlevel9"        , ACTION_ZOOM_LEVEL_9},
+        {"nextcalibration"   , ACTION_CALIBRATE_SWAP_ARROWS},
+        {"resetcalibration"  , ACTION_CALIBRATE_RESET},
+        {"analogmove"        , ACTION_ANALOG_MOVE},
+        {"rotate"            , ACTION_ROTATE_PICTURE},
+        {"close"             , ACTION_CLOSE_DIALOG},
+        {"subtitledelayminus", ACTION_SUBTITLE_DELAY_MIN},
+        {"subtitledelay"     , ACTION_SUBTITLE_DELAY},
+        {"subtitledelayplus" , ACTION_SUBTITLE_DELAY_PLUS},
+        {"audiodelayminus"   , ACTION_AUDIO_DELAY_MIN},
+        {"audiodelay"        , ACTION_AUDIO_DELAY},
+        {"audiodelayplus"    , ACTION_AUDIO_DELAY_PLUS},
+        {"audionextlanguage" , ACTION_AUDIO_NEXT_LANGUAGE},
+        {"nextresolution"    , ACTION_CHANGE_RESOLUTION},
+        {"audiotoggledigital", ACTION_TOGGLE_DIGITAL_ANALOG},
+        {"number0"           , REMOTE_0},
+        {"number1"           , REMOTE_1},
+        {"number2"           , REMOTE_2},
+        {"number3"           , REMOTE_3},
+        {"number4"           , REMOTE_4},
+        {"number5"           , REMOTE_5},
+        {"number6"           , REMOTE_6},
+        {"number7"           , REMOTE_7},
+        {"number8"           , REMOTE_8},
+        {"number9"           , REMOTE_9},
+        {"osdleft"           , ACTION_OSD_SHOW_LEFT},
+        {"osdright"          , ACTION_OSD_SHOW_RIGHT},
+        {"osdup"             , ACTION_OSD_SHOW_UP},
+        {"osddown"           , ACTION_OSD_SHOW_DOWN},
+        {"osdselect"         , ACTION_OSD_SHOW_SELECT},
+        {"osdvalueplus"      , ACTION_OSD_SHOW_VALUE_PLUS},
+        {"osdvalueminus"     , ACTION_OSD_SHOW_VALUE_MIN},
+        {"smallstepback"     , ACTION_SMALL_STEP_BACK},
+        {"fastforward"       , ACTION_PLAYER_FORWARD},
+        {"rewind"            , ACTION_PLAYER_REWIND},
+        {"play"              , ACTION_PLAYER_PLAY},
+        {"delete"            , ACTION_DELETE_ITEM},
+        {"copy"              , ACTION_COPY_ITEM},
+        {"move"              , ACTION_MOVE_ITEM},
+        {"mplayerosd"        , ACTION_SHOW_MPLAYER_OSD},
+        {"hidesubmenu"       , ACTION_OSD_HIDESUBMENU},
+        {"screenshot"        , ACTION_TAKE_SCREENSHOT},
+        {"rename"            , ACTION_RENAME_ITEM},
+        {"togglewatched"     , ACTION_TOGGLE_WATCHED},
+        {"scanitem"          , ACTION_SCAN_ITEM},
+        {"reloadkeymaps"     , ACTION_RELOAD_KEYMAPS},
+        {"volumeup"          , ACTION_VOLUME_UP},
+        {"volumedown"        , ACTION_VOLUME_DOWN},
+        {"mute"              , ACTION_MUTE},
+        {"backspace"         , ACTION_BACKSPACE},
+        {"scrollup"          , ACTION_SCROLL_UP},
+        {"scrolldown"        , ACTION_SCROLL_DOWN},
+        {"analogfastforward" , ACTION_ANALOG_FORWARD},
+        {"analogrewind"      , ACTION_ANALOG_REWIND},
+        {"moveitemup"        , ACTION_MOVE_ITEM_UP},
+        {"moveitemdown"      , ACTION_MOVE_ITEM_DOWN},
+        {"contextmenu"       , ACTION_CONTEXT_MENU},
+        {"shift"             , ACTION_SHIFT},
+        {"symbols"           , ACTION_SYMBOLS},
+        {"cursorleft"        , ACTION_CURSOR_LEFT},
+        {"cursorright"       , ACTION_CURSOR_RIGHT},
+        {"showtime"          , ACTION_SHOW_OSD_TIME},
+        {"analogseekforward" , ACTION_ANALOG_SEEK_FORWARD},
+        {"analogseekback"    , ACTION_ANALOG_SEEK_BACK},
+        {"showpreset"        , ACTION_VIS_PRESET_SHOW},
+        {"presetlist"        , ACTION_VIS_PRESET_LIST},
+        {"nextpreset"        , ACTION_VIS_PRESET_NEXT},
+        {"previouspreset"    , ACTION_VIS_PRESET_PREV},
+        {"lockpreset"        , ACTION_VIS_PRESET_LOCK},
+        {"randompreset"      , ACTION_VIS_PRESET_RANDOM},
+        {"increasevisrating" , ACTION_VIS_RATE_PRESET_PLUS},
+        {"decreasevisrating" , ACTION_VIS_RATE_PRESET_MINUS},
+        {"showvideomenu"     , ACTION_SHOW_VIDEOMENU},
+        {"enter"             , ACTION_ENTER},
+        {"increaserating"    , ACTION_INCREASE_RATING},
+        {"decreaserating"    , ACTION_DECREASE_RATING},
+        {"togglefullscreen"  , ACTION_TOGGLE_FULLSCREEN},
+        {"nextscene"         , ACTION_NEXT_SCENE},
+        {"previousscene"     , ACTION_PREV_SCENE},
+        {"nextletter"        , ACTION_NEXT_LETTER},
+        {"prevletter"        , ACTION_PREV_LETTER},
+        {"jumpsms2"          , ACTION_JUMP_SMS2},
+        {"jumpsms3"          , ACTION_JUMP_SMS3},
+        {"jumpsms4"          , ACTION_JUMP_SMS4},
+        {"jumpsms5"          , ACTION_JUMP_SMS5},
+        {"jumpsms6"          , ACTION_JUMP_SMS6},
+        {"jumpsms7"          , ACTION_JUMP_SMS7},
+        {"jumpsms8"          , ACTION_JUMP_SMS8},
+        {"jumpsms9"          , ACTION_JUMP_SMS9},
+        {"filterclear"       , ACTION_FILTER_CLEAR},
+        {"filtersms2"        , ACTION_FILTER_SMS2},
+        {"filtersms3"        , ACTION_FILTER_SMS3},
+        {"filtersms4"        , ACTION_FILTER_SMS4},
+        {"filtersms5"        , ACTION_FILTER_SMS5},
+        {"filtersms6"        , ACTION_FILTER_SMS6},
+        {"filtersms7"        , ACTION_FILTER_SMS7},
+        {"filtersms8"        , ACTION_FILTER_SMS8},
+        {"filtersms9"        , ACTION_FILTER_SMS9},
+        {"firstpage"         , ACTION_FIRST_PAGE},
+        {"lastpage"          , ACTION_LAST_PAGE},
+        {"guiprofile"        , ACTION_GUIPROFILE_BEGIN}};
 
 CButtonTranslator& CButtonTranslator::GetInstance()
 {
@@ -141,16 +294,16 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   {
     if (pWindow->Type() == TiXmlNode::ELEMENT)
     {
-      WORD wWindowID = WINDOW_INVALID;
+      int windowID = WINDOW_INVALID;
       const char *szWindow = pWindow->Value();
       if (szWindow)
       {
         if (strcmpi(szWindow, "global") == 0)
-          wWindowID = (WORD) -1;
+          windowID = -1;
         else
-          wWindowID = TranslateWindowString(szWindow);
+          windowID = TranslateWindowString(szWindow);
       }
-      MapWindowActions(pWindow, wWindowID);
+      MapWindowActions(pWindow, windowID);
     }
     pWindow = pWindow->NextSibling();
   }
@@ -176,7 +329,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     g_LoadErrorStr.Format("%s, Line %d\n%s", lircmapPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
     return false; // This is so people who don't have the file won't fail, just warn
   }
- 
+
   lircRemotesMap.clear();
   TiXmlElement* pRoot = xmlDoc.RootElement();
   CStdString strValue = pRoot->Value();
@@ -185,7 +338,7 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
     g_LoadErrorStr.Format("%sl Doesn't contain <%s>", lircmapPath.c_str(), REMOTEMAPTAG);
     return false;
   }
- 
+
   // run through our window groups
   TiXmlNode* pRemote = pRoot->FirstChild();
   while (pRemote)
@@ -224,7 +377,7 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
   lircRemotesMap[szDevice] = buttons;
 }
 
-WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
+int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
 {
   // Find the device
   map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
@@ -245,7 +398,7 @@ WORD CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const ch
 #endif
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
+void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
 {
   string joyname = "_xbmc_"; // default global map name
   vector<string> joynames;
@@ -366,17 +519,17 @@ void CButtonTranslator::MapJoystickActions(WORD wWindowID, TiXmlNode *pJoystick)
   vector<string>::iterator it = joynames.begin();
   while (it!=joynames.end())
   {
-    m_joystickButtonMap[*it][wWindowID] = buttonMap;
-    m_joystickAxisMap[*it][wWindowID] = axisMap;
-    m_joystickHatMap[*it][wWindowID] = hatMap;
-//    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", wWindowID, it->c_str());
+    m_joystickButtonMap[*it][windowID] = buttonMap;
+    m_joystickAxisMap[*it][windowID] = axisMap;
+    m_joystickHatMap[*it][windowID] = hatMap;
+//    CLog::Log(LOGDEBUG, "Found Joystick map for window %d using %s", windowID, it->c_str());
     it++;
   }
 
   return;
 }
 
-bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevice, int id, short inputType, WORD& action, CStdString& strAction, bool &fullrange)
+bool CButtonTranslator::TranslateJoystickString(int window, const char* szDevice, int id, short inputType, int& action, CStdString& strAction, bool &fullrange)
 {
   bool found = false;
 
@@ -414,7 +567,7 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
   map<int, string> globalbmap;
   map<int, string>::iterator it3;
 
-  it2 = wmap.find(wWindow);
+  it2 = wmap.find(window);
 
   // first try local window map
   if (it2!=wmap.end())
@@ -445,7 +598,7 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
   // if not found, try global map
   if (!found)
   {
-    it2 = wmap.find((WORD)-1);
+    it2 = wmap.find(-1);
     if (it2 != wmap.end())
     {
       globalbmap = it2->second;
@@ -481,116 +634,117 @@ bool CButtonTranslator::TranslateJoystickString(WORD wWindow, const char* szDevi
 }
 #endif
 
-void CButtonTranslator::GetAction(WORD wWindow, const CKey &key, CAction &action)
+void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action)
 {
   CStdString strAction;
   // try to get the action from the current window
-  WORD wAction = GetActionCode(wWindow, key, strAction);
+  int actionID = GetActionCode(window, key, strAction);
   // if it's invalid, try to get it from the global map
-  if (wAction == 0)
-    wAction = GetActionCode( (WORD) -1, key, strAction);
+  if (actionID == 0)
+    actionID = GetActionCode( -1, key, strAction);
   // Now fill our action structure
-  action.wID = wAction;
+  action.id = actionID;
   action.strAction = strAction;
-  action.fAmount1 = 1; // digital button (could change this for repeat acceleration)
-  action.fAmount2 = 0;
-  action.fRepeat = key.GetRepeat();
-  action.m_dwButtonCode = key.GetButtonCode();
+  action.amount1 = 1; // digital button (could change this for repeat acceleration)
+  action.amount2 = 0;
+  action.repeat = key.GetRepeat();
+  action.buttonCode = key.GetButtonCode();
   action.holdTime = key.GetHeld();
   // get the action amounts of the analog buttons
   if (key.GetButtonCode() == KEY_BUTTON_LEFT_ANALOG_TRIGGER)
   {
-    action.fAmount1 = (float)key.GetLeftTrigger() / 255.0f;
+    action.amount1 = (float)key.GetLeftTrigger() / 255.0f;
   }
   else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_ANALOG_TRIGGER)
   {
-    action.fAmount1 = (float)key.GetRightTrigger() / 255.0f;
+    action.amount1 = (float)key.GetRightTrigger() / 255.0f;
   }
   else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK)
   {
-    action.fAmount1 = key.GetLeftThumbX();
-    action.fAmount2 = key.GetLeftThumbY();
+    action.amount1 = key.GetLeftThumbX();
+    action.amount2 = key.GetLeftThumbY();
   }
   else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK)
   {
-    action.fAmount1 = key.GetRightThumbX();
-    action.fAmount2 = key.GetRightThumbY();
+    action.amount1 = key.GetRightThumbX();
+    action.amount2 = key.GetRightThumbY();
   }
   else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_UP)
-    action.fAmount1 = key.GetLeftThumbY();
+    action.amount1 = key.GetLeftThumbY();
   else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_DOWN)
-    action.fAmount1 = -key.GetLeftThumbY();
+    action.amount1 = -key.GetLeftThumbY();
   else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_LEFT)
-    action.fAmount1 = -key.GetLeftThumbX();
+    action.amount1 = -key.GetLeftThumbX();
   else if (key.GetButtonCode() == KEY_BUTTON_LEFT_THUMB_STICK_RIGHT)
-    action.fAmount1 = key.GetLeftThumbX();
+    action.amount1 = key.GetLeftThumbX();
   else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_UP)
-    action.fAmount1 = key.GetRightThumbY();
+    action.amount1 = key.GetRightThumbY();
   else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_DOWN)
-    action.fAmount1 = -key.GetRightThumbY();
+    action.amount1 = -key.GetRightThumbY();
   else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_LEFT)
-    action.fAmount1 = -key.GetRightThumbX();
+    action.amount1 = -key.GetRightThumbX();
   else if (key.GetButtonCode() == KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT)
-    action.fAmount1 = key.GetRightThumbX();
+    action.amount1 = key.GetRightThumbX();
 }
 
-WORD CButtonTranslator::GetActionCode(WORD wWindow, const CKey &key, CStdString &strAction)
+int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction)
 {
-  WORD wKey = (WORD)key.GetButtonCode();
-  map<WORD, buttonMap>::iterator it = translatorMap.find(wWindow);
+  int code = key.GetButtonCode();
+  map<int, buttonMap>::iterator it = translatorMap.find(window);
   if (it == translatorMap.end())
     return 0;
-  buttonMap::iterator it2 = (*it).second.find(wKey);
-  WORD wAction = 0;
+  buttonMap::iterator it2 = (*it).second.find(code);
+  int action = 0;
   while (it2 != (*it).second.end())
   {
-    wAction = (*it2).second.wID;
+    action = (*it2).second.id;
     strAction = (*it2).second.strID;
     it2 = (*it).second.end();
   }
 #ifdef _LINUX
   // Some buttoncodes changed in Hardy
-  if (wAction == 0 && (wKey & KEY_VKEY) == KEY_VKEY && (wKey & (DWORD)0x0F00)) {
-    CLog::Log(LOGDEBUG, "%s: Trying Hardy keycode for %#04x", __FUNCTION__, wKey);
-    wKey &= ~(DWORD)0x0F00;
-    buttonMap::iterator it2 = (*it).second.find(wKey);
+  if (action == 0 && (code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
+  {
+    CLog::Log(LOGDEBUG, "%s: Trying Hardy keycode for %#04x", __FUNCTION__, code);
+    code &= ~0x0F00;
+    buttonMap::iterator it2 = (*it).second.find(code);
     while (it2 != (*it).second.end())
     {
-      wAction = (*it2).second.wID;
+      action = (*it2).second.id;
       strAction = (*it2).second.strID;
       it2 = (*it).second.end();
     }
   }
 #endif
-  return wAction;
+  return action;
 }
 
-void CButtonTranslator::MapAction(WORD wButtonCode, const char *szAction, buttonMap &map)
+void CButtonTranslator::MapAction(int buttonCode, const char *szAction, buttonMap &map)
 {
-  WORD wAction = ACTION_NONE;
-  if (!TranslateActionString(szAction, wAction) || !wButtonCode)
+  int action = ACTION_NONE;
+  if (!TranslateActionString(szAction, action) || !buttonCode)
     return;   // no valid action, or an invalid buttoncode
   // have a valid action, and a valid button - map it.
   // check to see if we've already got this (button,action) pair defined
-  buttonMap::iterator it = map.find(wButtonCode);
-  if (it == map.end() || (*it).second.wID != wAction || (*it).second.strID != szAction)
+  buttonMap::iterator it = map.find(buttonCode);
+  if (it == map.end() || (*it).second.id != action || (*it).second.strID != szAction)
   {
     // NOTE: This multimap is only being used as a normal map at this point (no support
     //       for multiple actions per key)
     if (it != map.end())
       map.erase(it);
     CButtonAction button;
-    button.wID = wAction;
+    button.id = action;
     button.strID = szAction;
-    map.insert(pair<WORD, CButtonAction>(wButtonCode, button));
+    map.insert(pair<int, CButtonAction>(buttonCode, button));
   }
 }
 
-void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
+void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 {
-  if (!pWindow || wWindowID == WINDOW_INVALID) return;
+  if (!pWindow || windowID == WINDOW_INVALID) return;
   buttonMap map;
-  std::map<WORD, buttonMap>::iterator it = translatorMap.find(wWindowID);
+  std::map<int, buttonMap>::iterator it = translatorMap.find(windowID);
   if (it != translatorMap.end())
   {
     map = it->second;
@@ -602,9 +756,9 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      WORD wButtonCode = TranslateGamepadString(pButton->Value());
+      int buttonCode = TranslateGamepadString(pButton->Value());
       if (pButton->FirstChild())
-        MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
+        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }
   }
@@ -613,9 +767,9 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      WORD wButtonCode = TranslateRemoteString(pButton->Value());
+      int buttonCode = TranslateRemoteString(pButton->Value());
       if (pButton->FirstChild())
-        MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
+        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }
   }
@@ -624,9 +778,9 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      WORD wButtonCode = TranslateUniversalRemoteString(pButton->Value());
+      int buttonCode = TranslateUniversalRemoteString(pButton->Value());
       if (pButton->FirstChild())
-        MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
+        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }
   }
@@ -635,9 +789,9 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      WORD wButtonCode = TranslateKeyboardButton(pButton);
+      int buttonCode = TranslateKeyboardButton(pButton);
       if (pButton->FirstChild())
-        MapAction(wButtonCode, pButton->FirstChild()->Value(), map);
+        MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
     }
   }
@@ -647,186 +801,36 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, WORD wWindowID)
     // map joystick actions
     while (pDevice)
     {
-      MapJoystickActions(wWindowID, pDevice);
+      MapJoystickActions(windowID, pDevice);
       pDevice = pDevice->NextSibling("joystick");
     }
   }
 #endif
   // add our map to our table
   if (map.size() > 0)
-    translatorMap.insert(pair<WORD, buttonMap>( wWindowID, map));
+    translatorMap.insert(pair<int, buttonMap>( windowID, map));
 }
 
-bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wAction)
+bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
 {
-  wAction = ACTION_NONE;
+  action = ACTION_NONE;
   CStdString strAction = szAction;
   strAction.ToLower();
-  if (CUtil::IsBuiltIn(strAction)) wAction = ACTION_BUILT_IN_FUNCTION;
-  else if (strAction.Equals("left")) wAction = ACTION_MOVE_LEFT;
-  else if (strAction.Equals("right")) wAction = ACTION_MOVE_RIGHT;
-  else if (strAction.Equals("up")) wAction = ACTION_MOVE_UP;
-  else if (strAction.Equals("down")) wAction = ACTION_MOVE_DOWN;
-  else if (strAction.Equals("pageup")) wAction = ACTION_PAGE_UP;
-  else if (strAction.Equals("pagedown")) wAction = ACTION_PAGE_DOWN;
-  else if (strAction.Equals("select")) wAction = ACTION_SELECT_ITEM;
-  else if (strAction.Equals("highlight")) wAction = ACTION_HIGHLIGHT_ITEM;
-  else if (strAction.Equals("parentdir")) wAction = ACTION_PARENT_DIR;
-  else if (strAction.Equals("previousmenu")) wAction = ACTION_PREVIOUS_MENU;
-  else if (strAction.Equals("info")) wAction = ACTION_SHOW_INFO;
-  else if (strAction.Equals("pause")) wAction = ACTION_PAUSE;
-  else if (strAction.Equals("stop")) wAction = ACTION_STOP;
-  else if (strAction.Equals("skipnext")) wAction = ACTION_NEXT_ITEM;
-  else if (strAction.Equals("skipprevious")) wAction = ACTION_PREV_ITEM;
-//  else if (strAction.Equals("fastforward")) wAction = ACTION_FORWARD;
-//  else if (strAction.Equals("rewind")) wAction = ACTION_REWIND;
-  else if (strAction.Equals("fullscreen")) wAction = ACTION_SHOW_GUI;
-  else if (strAction.Equals("aspectratio")) wAction = ACTION_ASPECT_RATIO;
-  else if (strAction.Equals("stepforward")) wAction = ACTION_STEP_FORWARD;
-  else if (strAction.Equals("stepback")) wAction = ACTION_STEP_BACK;
-  else if (strAction.Equals("bigstepforward")) wAction = ACTION_BIG_STEP_FORWARD;
-  else if (strAction.Equals("bigstepback")) wAction = ACTION_BIG_STEP_BACK;
-  else if (strAction.Equals("osd")) wAction = ACTION_SHOW_OSD;
+  if (CUtil::IsBuiltIn(strAction)) action = ACTION_BUILT_IN_FUNCTION;
 
-  else if (strAction.Equals("showsubtitles")) wAction = ACTION_SHOW_SUBTITLES;
-  else if (strAction.Equals("nextsubtitle")) wAction = ACTION_NEXT_SUBTITLE;
-  else if (strAction.Equals("codecinfo")) wAction = ACTION_SHOW_CODEC;
-  else if (strAction.Equals("nextpicture")) wAction = ACTION_NEXT_PICTURE;
-  else if (strAction.Equals("previouspicture")) wAction = ACTION_PREV_PICTURE;
-  else if (strAction.Equals("zoomout")) wAction = ACTION_ZOOM_OUT;
-  else if (strAction.Equals("zoomin")) wAction = ACTION_ZOOM_IN;
-//  else if (strAction.Equals("togglesource")) wAction = ACTION_TOGGLE_SOURCE_DEST;
-  else if (strAction.Equals("playlist")) wAction = ACTION_SHOW_PLAYLIST;
-  else if (strAction.Equals("queue")) wAction = ACTION_QUEUE_ITEM;
-//  else if (strAction.Equals("remove")) wAction = ACTION_REMOVE_ITEM;
-//  else if (strAction.Equals("fullscreen")) wAction = ACTION_SHOW_FULLSCREEN;
-  else if (strAction.Equals("zoomnormal")) wAction = ACTION_ZOOM_LEVEL_NORMAL;
-  else if (strAction.Equals("zoomlevel1")) wAction = ACTION_ZOOM_LEVEL_1;
-  else if (strAction.Equals("zoomlevel2")) wAction = ACTION_ZOOM_LEVEL_2;
-  else if (strAction.Equals("zoomlevel3")) wAction = ACTION_ZOOM_LEVEL_3;
-  else if (strAction.Equals("zoomlevel4")) wAction = ACTION_ZOOM_LEVEL_4;
-  else if (strAction.Equals("zoomlevel5")) wAction = ACTION_ZOOM_LEVEL_5;
-  else if (strAction.Equals("zoomlevel6")) wAction = ACTION_ZOOM_LEVEL_6;
-  else if (strAction.Equals("zoomlevel7")) wAction = ACTION_ZOOM_LEVEL_7;
-  else if (strAction.Equals("zoomlevel8")) wAction = ACTION_ZOOM_LEVEL_8;
-  else if (strAction.Equals("zoomlevel9")) wAction = ACTION_ZOOM_LEVEL_9;
+  if (strAction.Equals("noop"))
+    return true;
 
-  else if (strAction.Equals("nextcalibration")) wAction = ACTION_CALIBRATE_SWAP_ARROWS;
-  else if (strAction.Equals("resetcalibration")) wAction = ACTION_CALIBRATE_RESET;
-  else if (strAction.Equals("analogmove")) wAction = ACTION_ANALOG_MOVE;
-  else if (strAction.Equals("rotate")) wAction = ACTION_ROTATE_PICTURE;
-  else if (strAction.Equals("close")) wAction = ACTION_CLOSE_DIALOG;
-  else if (strAction.Equals("subtitledelayminus")) wAction = ACTION_SUBTITLE_DELAY_MIN;
-  else if (strAction.Equals("subtitledelay")) wAction = ACTION_SUBTITLE_DELAY;
-  else if (strAction.Equals("subtitledelayplus")) wAction = ACTION_SUBTITLE_DELAY_PLUS;
-  else if (strAction.Equals("audiodelayminus")) wAction = ACTION_AUDIO_DELAY_MIN;
-  else if (strAction.Equals("audiodelay")) wAction = ACTION_AUDIO_DELAY;
-  else if (strAction.Equals("audiodelayplus")) wAction = ACTION_AUDIO_DELAY_PLUS;
-  else if (strAction.Equals("audionextlanguage")) wAction = ACTION_AUDIO_NEXT_LANGUAGE;
-  else if (strAction.Equals("nextresolution")) wAction = ACTION_CHANGE_RESOLUTION;
-  else if (strAction.Equals("audiotoggledigital")) wAction = ACTION_TOGGLE_DIGITAL_ANALOG;
+  for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
+  {
+    if (strAction.Equals(actions[index].name))
+    {
+      action = actions[index].action;
+      break;
+    }
+  }
 
-  else if (strAction.Equals("number0")) wAction = REMOTE_0;
-  else if (strAction.Equals("number1")) wAction = REMOTE_1;
-  else if (strAction.Equals("number2")) wAction = REMOTE_2;
-  else if (strAction.Equals("number3")) wAction = REMOTE_3;
-  else if (strAction.Equals("number4")) wAction = REMOTE_4;
-  else if (strAction.Equals("number5")) wAction = REMOTE_5;
-  else if (strAction.Equals("number6")) wAction = REMOTE_6;
-  else if (strAction.Equals("number7")) wAction = REMOTE_7;
-  else if (strAction.Equals("number8")) wAction = REMOTE_8;
-  else if (strAction.Equals("number9")) wAction = REMOTE_9;
-
-//  else if (strAction.Equals("play")) wAction = ACTION_PLAY;
-  else if (strAction.Equals("osdleft")) wAction = ACTION_OSD_SHOW_LEFT;
-  else if (strAction.Equals("osdright")) wAction = ACTION_OSD_SHOW_RIGHT;
-  else if (strAction.Equals("osdup")) wAction = ACTION_OSD_SHOW_UP;
-  else if (strAction.Equals("osddown")) wAction = ACTION_OSD_SHOW_DOWN;
-  else if (strAction.Equals("osdselect")) wAction = ACTION_OSD_SHOW_SELECT;
-  else if (strAction.Equals("osdvalueplus")) wAction = ACTION_OSD_SHOW_VALUE_PLUS;
-  else if (strAction.Equals("osdvalueminus")) wAction = ACTION_OSD_SHOW_VALUE_MIN;
-  else if (strAction.Equals("smallstepback")) wAction = ACTION_SMALL_STEP_BACK;
-  else if (strAction.Equals("teletext")) wAction = ACTION_OSD_TELETEXT;
-  else if (strAction.Equals("guide")) wAction = ACTION_OSD_GUIDE;
-
-  else if (strAction.Equals("fastforward")) wAction = ACTION_PLAYER_FORWARD;
-  else if (strAction.Equals("rewind")) wAction = ACTION_PLAYER_REWIND;
-  else if (strAction.Equals("play")) wAction = ACTION_PLAYER_PLAY;
-
-  else if (strAction.Equals("delete")) wAction = ACTION_DELETE_ITEM;
-  else if (strAction.Equals("copy")) wAction = ACTION_COPY_ITEM;
-  else if (strAction.Equals("move")) wAction = ACTION_MOVE_ITEM;
-  else if (strAction.Equals("mplayerosd")) wAction = ACTION_SHOW_MPLAYER_OSD;
-  else if (strAction.Equals("hidesubmenu")) wAction = ACTION_OSD_HIDESUBMENU;
-  else if (strAction.Equals("screenshot")) wAction = ACTION_TAKE_SCREENSHOT;
-  else if (strAction.Equals("rename")) wAction = ACTION_RENAME_ITEM;
-  else if (strAction.Equals("togglewatched")) wAction = ACTION_TOGGLE_WATCHED;
-  else if (strAction.Equals("scanitem")) wAction = ACTION_SCAN_ITEM;
-  else if (strAction.Equals("reloadkeymaps")) wAction = ACTION_RELOAD_KEYMAPS;
-
-  else if (strAction.Equals("volumeup")) wAction = ACTION_VOLUME_UP;
-  else if (strAction.Equals("volumedown")) wAction = ACTION_VOLUME_DOWN;
-  else if (strAction.Equals("mute")) wAction = ACTION_MUTE;
-
-  else if (strAction.Equals("backspace")) wAction = ACTION_BACKSPACE;
-  else if (strAction.Equals("scrollup")) wAction = ACTION_SCROLL_UP;
-  else if (strAction.Equals("scrolldown")) wAction = ACTION_SCROLL_DOWN;
-  else if (strAction.Equals("analogfastforward")) wAction = ACTION_ANALOG_FORWARD;
-  else if (strAction.Equals("analogrewind")) wAction = ACTION_ANALOG_REWIND;
-  else if (strAction.Equals("moveitemup")) wAction = ACTION_MOVE_ITEM_UP;
-  else if (strAction.Equals("moveitemdown")) wAction = ACTION_MOVE_ITEM_DOWN;
-  else if (strAction.Equals("contextmenu")) wAction = ACTION_CONTEXT_MENU;
-
-  else if (strAction.Equals("shift")) wAction = ACTION_SHIFT;
-  else if (strAction.Equals("symbols")) wAction = ACTION_SYMBOLS;
-  else if (strAction.Equals("cursorleft")) wAction = ACTION_CURSOR_LEFT;
-  else if (strAction.Equals("cursorright")) wAction = ACTION_CURSOR_RIGHT;
-
-  else if (strAction.Equals("showtime")) wAction = ACTION_SHOW_OSD_TIME;
-  else if (strAction.Equals("analogseekforward")) wAction = ACTION_ANALOG_SEEK_FORWARD;
-  else if (strAction.Equals("analogseekback")) wAction = ACTION_ANALOG_SEEK_BACK;
-
-  else if (strAction.Equals("showpreset")) wAction = ACTION_VIS_PRESET_SHOW;
-  else if (strAction.Equals("presetlist")) wAction = ACTION_VIS_PRESET_LIST;
-  else if (strAction.Equals("nextpreset")) wAction = ACTION_VIS_PRESET_NEXT;
-  else if (strAction.Equals("previouspreset")) wAction = ACTION_VIS_PRESET_PREV;
-  else if (strAction.Equals("lockpreset")) wAction = ACTION_VIS_PRESET_LOCK;
-  else if (strAction.Equals("randompreset")) wAction = ACTION_VIS_PRESET_RANDOM;
-  else if (strAction.Equals("increasevisrating")) wAction = ACTION_VIS_RATE_PRESET_PLUS;
-  else if (strAction.Equals("decreasevisrating")) wAction = ACTION_VIS_RATE_PRESET_MINUS;
-  else if (strAction.Equals("showvideomenu")) wAction = ACTION_SHOW_VIDEOMENU;
-  else if (strAction.Equals("enter")) wAction = ACTION_ENTER;
-  else if (strAction.Equals("increaserating")) wAction = ACTION_INCREASE_RATING;
-  else if (strAction.Equals("decreaserating")) wAction = ACTION_DECREASE_RATING;
-  else if (strAction.Equals("togglefullscreen")) wAction = ACTION_TOGGLE_FULLSCREEN;
-  else if (strAction.Equals("nextscene")) wAction = ACTION_NEXT_SCENE;
-  else if (strAction.Equals("previousscene")) wAction = ACTION_PREV_SCENE;
-  else if (strAction.Equals("nextletter")) wAction = ACTION_NEXT_LETTER;
-  else if (strAction.Equals("prevletter")) wAction = ACTION_PREV_LETTER;
-  // break if else block (MSVC 2k3 complains otherwise)
-  if (strAction.Equals("jumpsms2")) wAction = ACTION_JUMP_SMS2;
-  else if (strAction.Equals("jumpsms3")) wAction = ACTION_JUMP_SMS3;
-  else if (strAction.Equals("jumpsms4")) wAction = ACTION_JUMP_SMS4;
-  else if (strAction.Equals("jumpsms5")) wAction = ACTION_JUMP_SMS5;
-  else if (strAction.Equals("jumpsms6")) wAction = ACTION_JUMP_SMS6;
-  else if (strAction.Equals("jumpsms7")) wAction = ACTION_JUMP_SMS7;
-  else if (strAction.Equals("jumpsms8")) wAction = ACTION_JUMP_SMS8;
-  else if (strAction.Equals("jumpsms9")) wAction = ACTION_JUMP_SMS9;
-  else if (strAction.Equals("filterclear")) wAction = ACTION_FILTER_CLEAR;
-  else if (strAction.Equals("filtersms2")) wAction = ACTION_FILTER_SMS2;
-  else if (strAction.Equals("filtersms3")) wAction = ACTION_FILTER_SMS3;
-  else if (strAction.Equals("filtersms4")) wAction = ACTION_FILTER_SMS4;
-  else if (strAction.Equals("filtersms5")) wAction = ACTION_FILTER_SMS5;
-  else if (strAction.Equals("filtersms6")) wAction = ACTION_FILTER_SMS6;
-  else if (strAction.Equals("filtersms7")) wAction = ACTION_FILTER_SMS7;
-  else if (strAction.Equals("filtersms8")) wAction = ACTION_FILTER_SMS8;
-  else if (strAction.Equals("filtersms9")) wAction = ACTION_FILTER_SMS9;
-  else if (strAction.Equals("firstpage")) wAction = ACTION_FIRST_PAGE;
-  else if (strAction.Equals("lastpage")) wAction = ACTION_LAST_PAGE;
-  else if (strAction.Equals("guiprofile")) wAction = ACTION_GUIPROFILE_BEGIN;
-  else if (strAction.Equals("noop")) return true;
-
-  if (wAction == ACTION_NONE)
+  if (action == ACTION_NONE)
   {
     CLog::Log(LOGERROR, "Keymapping error: no such action '%s' defined", strAction.c_str());
     return false;
@@ -835,11 +839,11 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, WORD &wActio
   return true;
 }
 
-WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
+int CButtonTranslator::TranslateWindowString(const char *szWindow)
 {
-  WORD wWindowID = WINDOW_INVALID;
+  int windowID = WINDOW_INVALID;
   CStdString strWindow = szWindow;
-  if (strWindow.IsEmpty()) return wWindowID;
+  if (strWindow.IsEmpty()) return windowID;
   strWindow.ToLower();
   // eliminate .xml
   if (strWindow.Mid(strWindow.GetLength() - 4) == ".xml" )
@@ -855,222 +859,224 @@ WORD CButtonTranslator::TranslateWindowString(const char *szWindow)
     // allow a full window id or a delta id
     int iWindow = atoi(strWindow.c_str());
     if (iWindow > WINDOW_INVALID)
-      wWindowID = iWindow;
+      windowID = iWindow;
     else
-      wWindowID = WINDOW_HOME + iWindow;
+      windowID = WINDOW_HOME + iWindow;
   }
-  else if (strWindow.Equals("home")) wWindowID = WINDOW_HOME;
-  else if (strWindow.Equals("programs")) wWindowID = WINDOW_PROGRAMS;
-  else if (strWindow.Equals("pictures")) wWindowID = WINDOW_PICTURES;
-  else if (strWindow.Equals("files") || strWindow.Equals("filemanager")) wWindowID = WINDOW_FILES;
-  else if (strWindow.Equals("settings")) wWindowID = WINDOW_SETTINGS_MENU;
-  else if (strWindow.Equals("music")) wWindowID = WINDOW_MUSIC;
-  else if (strWindow.Equals("musicfiles")) wWindowID = WINDOW_MUSIC_FILES;
-  else if (strWindow.Equals("musiclibrary")) wWindowID = WINDOW_MUSIC_NAV;
-  else if (strWindow.Equals("musicplaylist")) wWindowID = WINDOW_MUSIC_PLAYLIST;
-  else if (strWindow.Equals("musicplaylisteditor")) wWindowID = WINDOW_MUSIC_PLAYLIST_EDITOR;
-  else if (strWindow.Equals("musicinformation")) wWindowID = WINDOW_MUSIC_INFO;
-  else if (strWindow.Equals("video") || strWindow.Equals("videos")) wWindowID = WINDOW_VIDEOS;
-  else if (strWindow.Equals("videofiles")) wWindowID = WINDOW_VIDEO_FILES;
-  else if (strWindow.Equals("videolibrary")) wWindowID = WINDOW_VIDEO_NAV;
-  else if (strWindow.Equals("videoplaylist")) wWindowID = WINDOW_VIDEO_PLAYLIST;
-  else if (strWindow.Equals("tv")) wWindowID = WINDOW_TV;
-  else if (strWindow.Equals("tvosdchannels")) wWindowID = WINDOW_DIALOG_TV_OSD_CHANNELS;
-  else if (strWindow.Equals("tvosdguide")) wWindowID = WINDOW_DIALOG_TV_OSD_GUIDE;
-  else if (strWindow.Equals("tvosdteletext")) wWindowID = WINDOW_DIALOG_TV_OSD_TELETEXT;
-  else if (strWindow.Equals("tvosddirector")) wWindowID = WINDOW_DIALOG_TV_OSD_DIRECTOR;
-  else if (strWindow.Equals("systeminfo")) wWindowID = WINDOW_SYSTEM_INFORMATION;
-  else if (strWindow.Equals("guicalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
-  else if (strWindow.Equals("screencalibration")) wWindowID = WINDOW_SCREEN_CALIBRATION;
-  else if (strWindow.Equals("testpattern")) wWindowID = WINDOW_TEST_PATTERN;
-  else if (strWindow.Equals("picturessettings")) wWindowID = WINDOW_SETTINGS_MYPICTURES;
-  else if (strWindow.Equals("programssettings")) wWindowID = WINDOW_SETTINGS_MYPROGRAMS;
-  else if (strWindow.Equals("weathersettings")) wWindowID = WINDOW_SETTINGS_MYWEATHER;
-  else if (strWindow.Equals("musicsettings")) wWindowID = WINDOW_SETTINGS_MYMUSIC;
-  else if (strWindow.Equals("systemsettings")) wWindowID = WINDOW_SETTINGS_SYSTEM;
-  else if (strWindow.Equals("videossettings")) wWindowID = WINDOW_SETTINGS_MYVIDEOS;
-  else if (strWindow.Equals("tvsettings")) wWindowID = WINDOW_SETTINGS_MYTV;
-  else if (strWindow.Equals("networksettings")) wWindowID = WINDOW_SETTINGS_NETWORK;
-  else if (strWindow.Equals("appearancesettings")) wWindowID = WINDOW_SETTINGS_APPEARANCE;
-  else if (strWindow.Equals("scripts")) wWindowID = WINDOW_SCRIPTS;
-  else if (strWindow.Equals("profiles")) wWindowID = WINDOW_SETTINGS_PROFILES;
-  else if (strWindow.Equals("yesnodialog")) wWindowID = WINDOW_DIALOG_YES_NO;
-  else if (strWindow.Equals("progressdialog")) wWindowID = WINDOW_DIALOG_PROGRESS;
-  else if (strWindow.Equals("virtualkeyboard")) wWindowID = WINDOW_DIALOG_KEYBOARD;
-  else if (strWindow.Equals("volumebar")) wWindowID = WINDOW_DIALOG_VOLUME_BAR;
-  else if (strWindow.Equals("epgscan")) wWindowID = WINDOW_DIALOG_EPG_SCAN;
-  else if (strWindow.Equals("submenu")) wWindowID = WINDOW_DIALOG_SUB_MENU;
-  else if (strWindow.Equals("favourites")) wWindowID = WINDOW_DIALOG_FAVOURITES;
-  else if (strWindow.Equals("contextmenu")) wWindowID = WINDOW_DIALOG_CONTEXT_MENU;
-  else if (strWindow.Equals("infodialog")) wWindowID = WINDOW_DIALOG_KAI_TOAST;
-  else if (strWindow.Equals("numericinput")) wWindowID = WINDOW_DIALOG_NUMERIC;
-  else if (strWindow.Equals("gamepadinput")) wWindowID = WINDOW_DIALOG_GAMEPAD;
-  else if (strWindow.Equals("shutdownmenu")) wWindowID = WINDOW_DIALOG_BUTTON_MENU;
-  else if (strWindow.Equals("scandialog")) wWindowID = WINDOW_DIALOG_MUSIC_SCAN;
-  else if (strWindow.Equals("mutebug")) wWindowID = WINDOW_DIALOG_MUTE_BUG;
-  else if (strWindow.Equals("playercontrols")) wWindowID = WINDOW_DIALOG_PLAYER_CONTROLS;
-  else if (strWindow.Equals("seekbar")) wWindowID = WINDOW_DIALOG_SEEK_BAR;
-  else if (strWindow.Equals("musicosd")) wWindowID = WINDOW_DIALOG_MUSIC_OSD;
-  else if (strWindow.Equals("visualisationsettings")) wWindowID = WINDOW_DIALOG_VIS_SETTINGS;
-  else if (strWindow.Equals("visualisationpresetlist")) wWindowID = WINDOW_DIALOG_VIS_PRESET_LIST;
-  else if (strWindow.Equals("osdvideosettings")) wWindowID = WINDOW_DIALOG_VIDEO_OSD_SETTINGS;
-  else if (strWindow.Equals("osdaudiosettings")) wWindowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
-  else if (strWindow.Equals("videobookmarks")) wWindowID = WINDOW_DIALOG_VIDEO_BOOKMARKS;
-  else if (strWindow.Equals("profilesettings")) wWindowID = WINDOW_DIALOG_PROFILE_SETTINGS;
-  else if (strWindow.Equals("locksettings")) wWindowID = WINDOW_DIALOG_LOCK_SETTINGS;
-  else if (strWindow.Equals("contentsettings")) wWindowID = WINDOW_DIALOG_CONTENT_SETTINGS;
-  else if (strWindow.Equals("networksetup")) wWindowID = WINDOW_DIALOG_NETWORK_SETUP;
-  else if (strWindow.Equals("mediasource")) wWindowID = WINDOW_DIALOG_MEDIA_SOURCE;
-  else if (strWindow.Equals("smartplaylisteditor")) wWindowID = WINDOW_DIALOG_SMART_PLAYLIST_EDITOR;
-  else if (strWindow.Equals("smartplaylistrule")) wWindowID = WINDOW_DIALOG_SMART_PLAYLIST_RULE;
-  else if (strWindow.Equals("selectdialog")) wWindowID = WINDOW_DIALOG_SELECT;
-  else if (strWindow.Equals("okdialog")) wWindowID = WINDOW_DIALOG_OK;
-  else if (strWindow.Equals("movieinformation")) wWindowID = WINDOW_VIDEO_INFO;
-  else if (strWindow.Equals("scriptsdebuginfo")) wWindowID = WINDOW_SCRIPTS_INFO;
-  else if (strWindow.Equals("fullscreenvideo")) wWindowID = WINDOW_FULLSCREEN_VIDEO;
-  else if (strWindow.Equals("visualisation")) wWindowID = WINDOW_VISUALISATION;
-  else if (strWindow.Equals("slideshow")) wWindowID = WINDOW_SLIDESHOW;
-  else if (strWindow.Equals("filestackingdialog")) wWindowID = WINDOW_DIALOG_FILESTACKING;
-  else if (strWindow.Equals("weather")) wWindowID = WINDOW_WEATHER;
-  else if (strWindow.Equals("screensaver")) wWindowID = WINDOW_SCREENSAVER;
-  else if (strWindow.Equals("videoosd")) wWindowID = WINDOW_OSD;
-  else if (strWindow.Equals("videomenu")) wWindowID = WINDOW_VIDEO_MENU;
-  else if (strWindow.Equals("filebrowser")) wWindowID = WINDOW_DIALOG_FILE_BROWSER;
-  else if (strWindow.Equals("startup")) wWindowID = WINDOW_STARTUP;
-  else if (strWindow.Equals("startwindow")) wWindowID = g_SkinInfo.GetStartWindow();
-  else if (strWindow.Equals("loginscreen")) wWindowID = WINDOW_LOGIN_SCREEN;
-  else if (strWindow.Equals("musicoverlay")) wWindowID = WINDOW_MUSIC_OVERLAY;
-  else if (strWindow.Equals("videooverlay")) wWindowID = WINDOW_VIDEO_OVERLAY;
-  else if (strWindow.Equals("pictureinfo")) wWindowID = WINDOW_DIALOG_PICTURE_INFO;
-  else if (strWindow.Equals("pluginsettings") || strWindow.Equals("addonsettings")) wWindowID = WINDOW_DIALOG_ADDON_SETTINGS;
-  else if (strWindow.Equals("fullscreeninfo")) wWindowID = WINDOW_DIALOG_FULLSCREEN_INFO;
-  else if (strWindow.Equals("karaokeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
-  else if (strWindow.Equals("karaokelargeselector")) wWindowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
-  else if (strWindow.Equals("sliderdialog")) wWindowID = WINDOW_DIALOG_SLIDER;
-  else if (strWindow.Equals("songinformation")) wWindowID = WINDOW_DIALOG_SONG_INFO;
+  else if (strWindow.Equals("home")) windowID = WINDOW_HOME;
+  else if (strWindow.Equals("programs")) windowID = WINDOW_PROGRAMS;
+  else if (strWindow.Equals("pictures")) windowID = WINDOW_PICTURES;
+  else if (strWindow.Equals("files") || strWindow.Equals("filemanager")) windowID = WINDOW_FILES;
+  else if (strWindow.Equals("settings")) windowID = WINDOW_SETTINGS_MENU;
+  else if (strWindow.Equals("music")) windowID = WINDOW_MUSIC;
+  else if (strWindow.Equals("musicfiles")) windowID = WINDOW_MUSIC_FILES;
+  else if (strWindow.Equals("musiclibrary")) windowID = WINDOW_MUSIC_NAV;
+  else if (strWindow.Equals("musicplaylist")) windowID = WINDOW_MUSIC_PLAYLIST;
+  else if (strWindow.Equals("musicplaylisteditor")) windowID = WINDOW_MUSIC_PLAYLIST_EDITOR;
+  else if (strWindow.Equals("musicinformation")) windowID = WINDOW_MUSIC_INFO;
+  else if (strWindow.Equals("video") || strWindow.Equals("videos")) windowID = WINDOW_VIDEOS;
+  else if (strWindow.Equals("videofiles")) windowID = WINDOW_VIDEO_FILES;
+  else if (strWindow.Equals("videolibrary")) windowID = WINDOW_VIDEO_NAV;
+  else if (strWindow.Equals("videoplaylist")) windowID = WINDOW_VIDEO_PLAYLIST;
+  else if (strWindow.Equals("tv")) windowID = WINDOW_TV;
+  else if (strWindow.Equals("tvosdchannels")) windowID = WINDOW_DIALOG_TV_OSD_CHANNELS;
+  else if (strWindow.Equals("tvosdguide")) windowID = WINDOW_DIALOG_TV_OSD_GUIDE;
+  else if (strWindow.Equals("tvosdteletext")) windowID = WINDOW_DIALOG_TV_OSD_TELETEXT;
+  else if (strWindow.Equals("tvosddirector")) windowID = WINDOW_DIALOG_TV_OSD_DIRECTOR;
+  else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
+  else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
+  else if (strWindow.Equals("screencalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
+  else if (strWindow.Equals("testpattern")) windowID = WINDOW_TEST_PATTERN;
+  else if (strWindow.Equals("picturessettings")) windowID = WINDOW_SETTINGS_MYPICTURES;
+  else if (strWindow.Equals("programssettings")) windowID = WINDOW_SETTINGS_MYPROGRAMS;
+  else if (strWindow.Equals("weathersettings")) windowID = WINDOW_SETTINGS_MYWEATHER;
+  else if (strWindow.Equals("musicsettings")) windowID = WINDOW_SETTINGS_MYMUSIC;
+  else if (strWindow.Equals("systemsettings")) windowID = WINDOW_SETTINGS_SYSTEM;
+  else if (strWindow.Equals("videossettings")) windowID = WINDOW_SETTINGS_MYVIDEOS;
+  else if (strWindow.Equals("tvsettings")) windowID = WINDOW_SETTINGS_MYTV;
+  else if (strWindow.Equals("networksettings")) windowID = WINDOW_SETTINGS_NETWORK;
+  else if (strWindow.Equals("appearancesettings")) windowID = WINDOW_SETTINGS_APPEARANCE;
+  else if (strWindow.Equals("scripts")) windowID = WINDOW_SCRIPTS;
+  else if (strWindow.Equals("profiles")) windowID = WINDOW_SETTINGS_PROFILES;
+  else if (strWindow.Equals("yesnodialog")) windowID = WINDOW_DIALOG_YES_NO;
+  else if (strWindow.Equals("progressdialog")) windowID = WINDOW_DIALOG_PROGRESS;
+  else if (strWindow.Equals("virtualkeyboard")) windowID = WINDOW_DIALOG_KEYBOARD;
+  else if (strWindow.Equals("volumebar")) windowID = WINDOW_DIALOG_VOLUME_BAR;
+  else if (strWindow.Equals("epgscan")) windowID = WINDOW_DIALOG_EPG_SCAN;
+  else if (strWindow.Equals("submenu")) windowID = WINDOW_DIALOG_SUB_MENU;
+  else if (strWindow.Equals("favourites")) windowID = WINDOW_DIALOG_FAVOURITES;
+  else if (strWindow.Equals("contextmenu")) windowID = WINDOW_DIALOG_CONTEXT_MENU;
+  else if (strWindow.Equals("infodialog")) windowID = WINDOW_DIALOG_KAI_TOAST;
+  else if (strWindow.Equals("numericinput")) windowID = WINDOW_DIALOG_NUMERIC;
+  else if (strWindow.Equals("gamepadinput")) windowID = WINDOW_DIALOG_GAMEPAD;
+  else if (strWindow.Equals("shutdownmenu")) windowID = WINDOW_DIALOG_BUTTON_MENU;
+  else if (strWindow.Equals("scandialog")) windowID = WINDOW_DIALOG_MUSIC_SCAN;
+  else if (strWindow.Equals("mutebug")) windowID = WINDOW_DIALOG_MUTE_BUG;
+  else if (strWindow.Equals("playercontrols")) windowID = WINDOW_DIALOG_PLAYER_CONTROLS;
+  else if (strWindow.Equals("seekbar")) windowID = WINDOW_DIALOG_SEEK_BAR;
+  else if (strWindow.Equals("musicosd")) windowID = WINDOW_DIALOG_MUSIC_OSD;
+  else if (strWindow.Equals("visualisationsettings")) windowID = WINDOW_DIALOG_VIS_SETTINGS;
+  else if (strWindow.Equals("visualisationpresetlist")) windowID = WINDOW_DIALOG_VIS_PRESET_LIST;
+  else if (strWindow.Equals("osdvideosettings")) windowID = WINDOW_DIALOG_VIDEO_OSD_SETTINGS;
+  else if (strWindow.Equals("osdaudiosettings")) windowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
+  else if (strWindow.Equals("videobookmarks")) windowID = WINDOW_DIALOG_VIDEO_BOOKMARKS;
+  else if (strWindow.Equals("profilesettings")) windowID = WINDOW_DIALOG_PROFILE_SETTINGS;
+  else if (strWindow.Equals("locksettings")) windowID = WINDOW_DIALOG_LOCK_SETTINGS;
+  else if (strWindow.Equals("contentsettings")) windowID = WINDOW_DIALOG_CONTENT_SETTINGS;
+  else if (strWindow.Equals("networksetup")) windowID = WINDOW_DIALOG_NETWORK_SETUP;
+  else if (strWindow.Equals("mediasource")) windowID = WINDOW_DIALOG_MEDIA_SOURCE;
+  else if (strWindow.Equals("smartplaylisteditor")) windowID = WINDOW_DIALOG_SMART_PLAYLIST_EDITOR;
+  else if (strWindow.Equals("smartplaylistrule")) windowID = WINDOW_DIALOG_SMART_PLAYLIST_RULE;
+  else if (strWindow.Equals("selectdialog")) windowID = WINDOW_DIALOG_SELECT;
+  else if (strWindow.Equals("okdialog")) windowID = WINDOW_DIALOG_OK;
+  else if (strWindow.Equals("movieinformation")) windowID = WINDOW_VIDEO_INFO;
+  else if (strWindow.Equals("scriptsdebuginfo")) windowID = WINDOW_SCRIPTS_INFO;
+  else if (strWindow.Equals("fullscreenvideo")) windowID = WINDOW_FULLSCREEN_VIDEO;
+  else if (strWindow.Equals("visualisation")) windowID = WINDOW_VISUALISATION;
+  else if (strWindow.Equals("slideshow")) windowID = WINDOW_SLIDESHOW;
+  else if (strWindow.Equals("filestackingdialog")) windowID = WINDOW_DIALOG_FILESTACKING;
+  else if (strWindow.Equals("weather")) windowID = WINDOW_WEATHER;
+  else if (strWindow.Equals("screensaver")) windowID = WINDOW_SCREENSAVER;
+  else if (strWindow.Equals("videoosd")) windowID = WINDOW_OSD;
+  else if (strWindow.Equals("videomenu")) windowID = WINDOW_VIDEO_MENU;
+  else if (strWindow.Equals("filebrowser")) windowID = WINDOW_DIALOG_FILE_BROWSER;
+  else if (strWindow.Equals("startup")) windowID = WINDOW_STARTUP;
+  else if (strWindow.Equals("startwindow")) windowID = g_SkinInfo.GetStartWindow();
+  else if (strWindow.Equals("loginscreen")) windowID = WINDOW_LOGIN_SCREEN;
+  else if (strWindow.Equals("musicoverlay")) windowID = WINDOW_MUSIC_OVERLAY;
+  else if (strWindow.Equals("videooverlay")) windowID = WINDOW_VIDEO_OVERLAY;
+  else if (strWindow.Equals("pictureinfo")) windowID = WINDOW_DIALOG_PICTURE_INFO;
+  else if (strWindow.Equals("pluginsettings")) windowID = WINDOW_DIALOG_ADDON_SETTINGS;
+  else if (strWindow.Equals("addonsettings")) windowID = WINDOW_DIALOG_ADDON_SETTINGS;
+  else if (strWindow.Equals("fullscreeninfo")) windowID = WINDOW_DIALOG_FULLSCREEN_INFO;
+  else if (strWindow.Equals("karaokeselector")) windowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
+  else if (strWindow.Equals("karaokelargeselector")) windowID = WINDOW_DIALOG_KARAOKE_SELECTOR;
+  else if (strWindow.Equals("sliderdialog")) windowID = WINDOW_DIALOG_SLIDER;
+  else if (strWindow.Equals("songinformation")) windowID = WINDOW_DIALOG_SONG_INFO;
   else
     CLog::Log(LOGERROR, "Window Translator: Can't find window %s", strWindow.c_str());
 
-  //CLog::Log(LOGDEBUG,"CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, wWindowID);
-  return wWindowID;
+  //CLog::Log(LOGDEBUG,"CButtonTranslator::TranslateWindowString(%s) returned Window ID (%i)", szWindow, windowID);
+  return windowID;
 }
 
-WORD CButtonTranslator::TranslateGamepadString(const char *szButton)
+int CButtonTranslator::TranslateGamepadString(const char *szButton)
 {
   if (!szButton) return 0;
-  WORD wButtonCode = 0;
+  int buttonCode = 0;
   CStdString strButton = szButton;
   strButton.ToLower();
-  if (strButton.Equals("a")) wButtonCode = KEY_BUTTON_A;
-  else if (strButton.Equals("b")) wButtonCode = KEY_BUTTON_B;
-  else if (strButton.Equals("x")) wButtonCode = KEY_BUTTON_X;
-  else if (strButton.Equals("y")) wButtonCode = KEY_BUTTON_Y;
-  else if (strButton.Equals("white")) wButtonCode = KEY_BUTTON_WHITE;
-  else if (strButton.Equals("black")) wButtonCode = KEY_BUTTON_BLACK;
-  else if (strButton.Equals("start")) wButtonCode = KEY_BUTTON_START;
-  else if (strButton.Equals("back")) wButtonCode = KEY_BUTTON_BACK;
-  else if (strButton.Equals("leftthumbbutton")) wButtonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
-  else if (strButton.Equals("rightthumbbutton")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
-  else if (strButton.Equals("leftthumbstick")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK;
-  else if (strButton.Equals("leftthumbstickup")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
-  else if (strButton.Equals("leftthumbstickdown")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
-  else if (strButton.Equals("leftthumbstickleft")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
-  else if (strButton.Equals("leftthumbstickright")) wButtonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
-  else if (strButton.Equals("rightthumbstick")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
-  else if (strButton.Equals("rightthumbstickup")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
-  else if (strButton.Equals("rightthumbstickdown")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
-  else if (strButton.Equals("rightthumbstickleft")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
-  else if (strButton.Equals("rightthumbstickright")) wButtonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
-  else if (strButton.Equals("lefttrigger")) wButtonCode = KEY_BUTTON_LEFT_TRIGGER;
-  else if (strButton.Equals("righttrigger")) wButtonCode = KEY_BUTTON_RIGHT_TRIGGER;
-  else if (strButton.Equals("leftanalogtrigger")) wButtonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
-  else if (strButton.Equals("rightanalogtrigger")) wButtonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
-  else if (strButton.Equals("dpadleft")) wButtonCode = KEY_BUTTON_DPAD_LEFT;
-  else if (strButton.Equals("dpadright")) wButtonCode = KEY_BUTTON_DPAD_RIGHT;
-  else if (strButton.Equals("dpadup")) wButtonCode = KEY_BUTTON_DPAD_UP;
-  else if (strButton.Equals("dpaddown")) wButtonCode = KEY_BUTTON_DPAD_DOWN;
+  if (strButton.Equals("a")) buttonCode = KEY_BUTTON_A;
+  else if (strButton.Equals("b")) buttonCode = KEY_BUTTON_B;
+  else if (strButton.Equals("x")) buttonCode = KEY_BUTTON_X;
+  else if (strButton.Equals("y")) buttonCode = KEY_BUTTON_Y;
+  else if (strButton.Equals("white")) buttonCode = KEY_BUTTON_WHITE;
+  else if (strButton.Equals("black")) buttonCode = KEY_BUTTON_BLACK;
+  else if (strButton.Equals("start")) buttonCode = KEY_BUTTON_START;
+  else if (strButton.Equals("back")) buttonCode = KEY_BUTTON_BACK;
+  else if (strButton.Equals("leftthumbbutton")) buttonCode = KEY_BUTTON_LEFT_THUMB_BUTTON;
+  else if (strButton.Equals("rightthumbbutton")) buttonCode = KEY_BUTTON_RIGHT_THUMB_BUTTON;
+  else if (strButton.Equals("leftthumbstick")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK;
+  else if (strButton.Equals("leftthumbstickup")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_UP;
+  else if (strButton.Equals("leftthumbstickdown")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_DOWN;
+  else if (strButton.Equals("leftthumbstickleft")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_LEFT;
+  else if (strButton.Equals("leftthumbstickright")) buttonCode = KEY_BUTTON_LEFT_THUMB_STICK_RIGHT;
+  else if (strButton.Equals("rightthumbstick")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK;
+  else if (strButton.Equals("rightthumbstickup")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_UP;
+  else if (strButton.Equals("rightthumbstickdown")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_DOWN;
+  else if (strButton.Equals("rightthumbstickleft")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_LEFT;
+  else if (strButton.Equals("rightthumbstickright")) buttonCode = KEY_BUTTON_RIGHT_THUMB_STICK_RIGHT;
+  else if (strButton.Equals("lefttrigger")) buttonCode = KEY_BUTTON_LEFT_TRIGGER;
+  else if (strButton.Equals("righttrigger")) buttonCode = KEY_BUTTON_RIGHT_TRIGGER;
+  else if (strButton.Equals("leftanalogtrigger")) buttonCode = KEY_BUTTON_LEFT_ANALOG_TRIGGER;
+  else if (strButton.Equals("rightanalogtrigger")) buttonCode = KEY_BUTTON_RIGHT_ANALOG_TRIGGER;
+  else if (strButton.Equals("dpadleft")) buttonCode = KEY_BUTTON_DPAD_LEFT;
+  else if (strButton.Equals("dpadright")) buttonCode = KEY_BUTTON_DPAD_RIGHT;
+  else if (strButton.Equals("dpadup")) buttonCode = KEY_BUTTON_DPAD_UP;
+  else if (strButton.Equals("dpaddown")) buttonCode = KEY_BUTTON_DPAD_DOWN;
   else CLog::Log(LOGERROR, "Gamepad Translator: Can't find button %s", strButton.c_str());
-  return wButtonCode;
+  return buttonCode;
 }
 
-WORD CButtonTranslator::TranslateRemoteString(const char *szButton)
+int CButtonTranslator::TranslateRemoteString(const char *szButton)
 {
   if (!szButton) return 0;
-  WORD wButtonCode = 0;
+  int buttonCode = 0;
   CStdString strButton = szButton;
   strButton.ToLower();
-  if (strButton.Equals("left")) wButtonCode = XINPUT_IR_REMOTE_LEFT;
-  else if (strButton.Equals("right")) wButtonCode = XINPUT_IR_REMOTE_RIGHT;
-  else if (strButton.Equals("up")) wButtonCode = XINPUT_IR_REMOTE_UP;
-  else if (strButton.Equals("down")) wButtonCode = XINPUT_IR_REMOTE_DOWN;
-  else if (strButton.Equals("select")) wButtonCode = XINPUT_IR_REMOTE_SELECT;
-  else if (strButton.Equals("back")) wButtonCode = XINPUT_IR_REMOTE_BACK;
-  else if (strButton.Equals("menu")) wButtonCode = XINPUT_IR_REMOTE_MENU;
-  else if (strButton.Equals("info")) wButtonCode = XINPUT_IR_REMOTE_INFO;
-  else if (strButton.Equals("display")) wButtonCode = XINPUT_IR_REMOTE_DISPLAY;
-  else if (strButton.Equals("title")) wButtonCode = XINPUT_IR_REMOTE_TITLE;
-  else if (strButton.Equals("play")) wButtonCode = XINPUT_IR_REMOTE_PLAY;
-  else if (strButton.Equals("pause")) wButtonCode = XINPUT_IR_REMOTE_PAUSE;
-  else if (strButton.Equals("reverse")) wButtonCode = XINPUT_IR_REMOTE_REVERSE;
-  else if (strButton.Equals("forward")) wButtonCode = XINPUT_IR_REMOTE_FORWARD;
-  else if (strButton.Equals("skipplus")) wButtonCode = XINPUT_IR_REMOTE_SKIP_PLUS;
-  else if (strButton.Equals("skipminus")) wButtonCode = XINPUT_IR_REMOTE_SKIP_MINUS;
-  else if (strButton.Equals("stop")) wButtonCode = XINPUT_IR_REMOTE_STOP;
-  else if (strButton.Equals("zero")) wButtonCode = XINPUT_IR_REMOTE_0;
-  else if (strButton.Equals("one")) wButtonCode = XINPUT_IR_REMOTE_1;
-  else if (strButton.Equals("two")) wButtonCode = XINPUT_IR_REMOTE_2;
-  else if (strButton.Equals("three")) wButtonCode = XINPUT_IR_REMOTE_3;
-  else if (strButton.Equals("four")) wButtonCode = XINPUT_IR_REMOTE_4;
-  else if (strButton.Equals("five")) wButtonCode = XINPUT_IR_REMOTE_5;
-  else if (strButton.Equals("six")) wButtonCode = XINPUT_IR_REMOTE_6;
-  else if (strButton.Equals("seven")) wButtonCode = XINPUT_IR_REMOTE_7;
-  else if (strButton.Equals("eight")) wButtonCode = XINPUT_IR_REMOTE_8;
-  else if (strButton.Equals("nine")) wButtonCode = XINPUT_IR_REMOTE_9;
+  if (strButton.Equals("left")) buttonCode = XINPUT_IR_REMOTE_LEFT;
+  else if (strButton.Equals("right")) buttonCode = XINPUT_IR_REMOTE_RIGHT;
+  else if (strButton.Equals("up")) buttonCode = XINPUT_IR_REMOTE_UP;
+  else if (strButton.Equals("down")) buttonCode = XINPUT_IR_REMOTE_DOWN;
+  else if (strButton.Equals("select")) buttonCode = XINPUT_IR_REMOTE_SELECT;
+  else if (strButton.Equals("back")) buttonCode = XINPUT_IR_REMOTE_BACK;
+  else if (strButton.Equals("menu")) buttonCode = XINPUT_IR_REMOTE_MENU;
+  else if (strButton.Equals("info")) buttonCode = XINPUT_IR_REMOTE_INFO;
+  else if (strButton.Equals("display")) buttonCode = XINPUT_IR_REMOTE_DISPLAY;
+  else if (strButton.Equals("title")) buttonCode = XINPUT_IR_REMOTE_TITLE;
+  else if (strButton.Equals("play")) buttonCode = XINPUT_IR_REMOTE_PLAY;
+  else if (strButton.Equals("pause")) buttonCode = XINPUT_IR_REMOTE_PAUSE;
+  else if (strButton.Equals("reverse")) buttonCode = XINPUT_IR_REMOTE_REVERSE;
+  else if (strButton.Equals("forward")) buttonCode = XINPUT_IR_REMOTE_FORWARD;
+  else if (strButton.Equals("skipplus")) buttonCode = XINPUT_IR_REMOTE_SKIP_PLUS;
+  else if (strButton.Equals("skipminus")) buttonCode = XINPUT_IR_REMOTE_SKIP_MINUS;
+  else if (strButton.Equals("stop")) buttonCode = XINPUT_IR_REMOTE_STOP;
+  else if (strButton.Equals("zero")) buttonCode = XINPUT_IR_REMOTE_0;
+  else if (strButton.Equals("one")) buttonCode = XINPUT_IR_REMOTE_1;
+  else if (strButton.Equals("two")) buttonCode = XINPUT_IR_REMOTE_2;
+  else if (strButton.Equals("three")) buttonCode = XINPUT_IR_REMOTE_3;
+  else if (strButton.Equals("four")) buttonCode = XINPUT_IR_REMOTE_4;
+  else if (strButton.Equals("five")) buttonCode = XINPUT_IR_REMOTE_5;
+  else if (strButton.Equals("six")) buttonCode = XINPUT_IR_REMOTE_6;
+  else if (strButton.Equals("seven")) buttonCode = XINPUT_IR_REMOTE_7;
+  else if (strButton.Equals("eight")) buttonCode = XINPUT_IR_REMOTE_8;
+  else if (strButton.Equals("nine")) buttonCode = XINPUT_IR_REMOTE_9;
   // additional keys from the media center extender for xbox remote
-  else if (strButton.Equals("power")) wButtonCode = XINPUT_IR_REMOTE_POWER;
-  else if (strButton.Equals("mytv")) wButtonCode = XINPUT_IR_REMOTE_MY_TV;
-  else if (strButton.Equals("mymusic")) wButtonCode = XINPUT_IR_REMOTE_MY_MUSIC;
-  else if (strButton.Equals("mypictures")) wButtonCode = XINPUT_IR_REMOTE_MY_PICTURES;
-  else if (strButton.Equals("myvideo")) wButtonCode = XINPUT_IR_REMOTE_MY_VIDEOS;
-  else if (strButton.Equals("record")) wButtonCode = XINPUT_IR_REMOTE_RECORD;
-  else if (strButton.Equals("start")) wButtonCode = XINPUT_IR_REMOTE_START;
-  else if (strButton.Equals("volumeplus")) wButtonCode = XINPUT_IR_REMOTE_VOLUME_PLUS;
-  else if (strButton.Equals("volumeminus")) wButtonCode = XINPUT_IR_REMOTE_VOLUME_MINUS;
-  else if (strButton.Equals("channelplus")) wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
-  else if (strButton.Equals("channelminus")) wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
-  else if (strButton.Equals("pageplus")) wButtonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
-  else if (strButton.Equals("pageminus")) wButtonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
-  else if (strButton.Equals("mute")) wButtonCode = XINPUT_IR_REMOTE_MUTE;
-  else if (strButton.Equals("recordedtv")) wButtonCode = XINPUT_IR_REMOTE_RECORDED_TV;
-  else if (strButton.Equals("livetv")) wButtonCode = XINPUT_IR_REMOTE_LIVE_TV;
-  else if (strButton.Equals("star")) wButtonCode = XINPUT_IR_REMOTE_STAR;
-  else if (strButton.Equals("hash")) wButtonCode = XINPUT_IR_REMOTE_HASH;
-  else if (strButton.Equals("clear")) wButtonCode = XINPUT_IR_REMOTE_CLEAR;
-  else if (strButton.Equals("enter")) wButtonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
-  else if (strButton.Equals("xbox")) wButtonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
-  else if (strButton.Equals("playlist")) wButtonCode = XINPUT_IR_REMOTE_PLAYLIST;
-  else if (strButton.Equals("teletext")) wButtonCode = XINPUT_IR_REMOTE_TELETEXT;
-  else if (strButton.Equals("guide")) wButtonCode = XINPUT_IR_REMOTE_GUIDE;
+  else if (strButton.Equals("power")) buttonCode = XINPUT_IR_REMOTE_POWER;
+  else if (strButton.Equals("mytv")) buttonCode = XINPUT_IR_REMOTE_MY_TV;
+  else if (strButton.Equals("mymusic")) buttonCode = XINPUT_IR_REMOTE_MY_MUSIC;
+  else if (strButton.Equals("mypictures")) buttonCode = XINPUT_IR_REMOTE_MY_PICTURES;
+  else if (strButton.Equals("myvideo")) buttonCode = XINPUT_IR_REMOTE_MY_VIDEOS;
+  else if (strButton.Equals("record")) buttonCode = XINPUT_IR_REMOTE_RECORD;
+  else if (strButton.Equals("start")) buttonCode = XINPUT_IR_REMOTE_START;
+  else if (strButton.Equals("volumeplus")) buttonCode = XINPUT_IR_REMOTE_VOLUME_PLUS;
+  else if (strButton.Equals("volumeminus")) buttonCode = XINPUT_IR_REMOTE_VOLUME_MINUS;
+  else if (strButton.Equals("channelplus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
+  else if (strButton.Equals("channelminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
+  else if (strButton.Equals("pageplus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_PLUS;
+  else if (strButton.Equals("pageminus")) buttonCode = XINPUT_IR_REMOTE_CHANNEL_MINUS;
+  else if (strButton.Equals("mute")) buttonCode = XINPUT_IR_REMOTE_MUTE;
+  else if (strButton.Equals("recordedtv")) buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
+  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_TITLE;   // same as title
+  else if (strButton.Equals("livetv")) buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
+  else if (strButton.Equals("star")) buttonCode = XINPUT_IR_REMOTE_STAR;
+  else if (strButton.Equals("hash")) buttonCode = XINPUT_IR_REMOTE_HASH;
+  else if (strButton.Equals("clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;
+  else if (strButton.Equals("enter")) buttonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
+  else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
+  else if (strButton.Equals("playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
+  else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
+  else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
-  return wButtonCode;
+  return buttonCode;
 }
 
-WORD CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
+int CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 {
   if (!szButton || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) return 0;
   const char *szCode = szButton + 3;
   // Button Code is 255 - OBC (Original Button Code) of the button
-  WORD wButtonCode = 255 - (WORD)atol(szCode);
-  if (wButtonCode > 255) wButtonCode = 0;
-  return wButtonCode;
+  int buttonCode = 255 - atol(szCode);
+  if (buttonCode > 255) buttonCode = 0;
+  return buttonCode;
 }
 
-WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
+int CButtonTranslator::TranslateKeyboardString(const char *szButton)
 {
-  WORD wButtonCode = 0;
+  int buttonCode = 0;
   if (strlen(szButton) == 1)
   { // single character
-    wButtonCode = (WORD)toupper(szButton[0]) | KEY_VKEY;
+    buttonCode = (int)toupper(szButton[0]) | KEY_VKEY;
     // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)?
     // FIXME support unicode: additional parameter necessary since unicode can not be embedded into key/action-ID.
   }
@@ -1079,101 +1085,101 @@ WORD CButtonTranslator::TranslateKeyboardString(const char *szButton)
     CStdString strKey = szButton;
     strKey.ToLower();
 
-    if (strKey.Equals("return")) wButtonCode = 0xF00D;
-    else if (strKey.Equals("enter")) wButtonCode = 0xF06C;
-    else if (strKey.Equals("escape")) wButtonCode = 0xF01B;
-    else if (strKey.Equals("esc")) wButtonCode = 0xF01B;
-    else if (strKey.Equals("tab")) wButtonCode = 0xF009;
-    else if (strKey.Equals("space")) wButtonCode = 0xF020;
-    else if (strKey.Equals("left")) wButtonCode = 0xF025;
-    else if (strKey.Equals("right")) wButtonCode = 0xF027;
-    else if (strKey.Equals("up")) wButtonCode = 0xF026;
-    else if (strKey.Equals("down")) wButtonCode = 0xF028;
-    else if (strKey.Equals("insert")) wButtonCode = 0xF02D;
-    else if (strKey.Equals("delete")) wButtonCode = 0xF02E;
-    else if (strKey.Equals("home")) wButtonCode = 0xF024;
-    else if (strKey.Equals("end")) wButtonCode = 0xF023;
-    else if (strKey.Equals("f1")) wButtonCode = 0xF070;
-    else if (strKey.Equals("f2")) wButtonCode = 0xF071;
-    else if (strKey.Equals("f3")) wButtonCode = 0xF072;
-    else if (strKey.Equals("f4")) wButtonCode = 0xF073;
-    else if (strKey.Equals("f5")) wButtonCode = 0xF074;
-    else if (strKey.Equals("f6")) wButtonCode = 0xF075;
-    else if (strKey.Equals("f7")) wButtonCode = 0xF076;
-    else if (strKey.Equals("f8")) wButtonCode = 0xF077;
-    else if (strKey.Equals("f9")) wButtonCode = 0xF078;
-    else if (strKey.Equals("f10")) wButtonCode = 0xF079;
-    else if (strKey.Equals("f11")) wButtonCode = 0xF07A;
-    else if (strKey.Equals("f12")) wButtonCode = 0xF07B;
-    else if (strKey.Equals("numpadzero") || strKey.Equals("zero")) wButtonCode = 0xF060;
-    else if (strKey.Equals("numpadone") || strKey.Equals("one")) wButtonCode = 0xF061;
-    else if (strKey.Equals("numpadtwo") || strKey.Equals("two")) wButtonCode = 0xF062;
-    else if (strKey.Equals("numpadthree") || strKey.Equals("three")) wButtonCode = 0xF063;
-    else if (strKey.Equals("numpadfour") || strKey.Equals("four")) wButtonCode = 0xF064;
-    else if (strKey.Equals("numpadfive") || strKey.Equals("five")) wButtonCode = 0xF065;
-    else if (strKey.Equals("numpadsix") || strKey.Equals("six")) wButtonCode = 0xF066;
-    else if (strKey.Equals("numpadseven") || strKey.Equals("seven")) wButtonCode = 0xF067;
-    else if (strKey.Equals("numpadeight") || strKey.Equals("eight")) wButtonCode = 0xF068;
-    else if (strKey.Equals("numpadnine") || strKey.Equals("nine")) wButtonCode = 0xF069;
-    else if (strKey.Equals("numpadtimes")) wButtonCode = 0xF06A;
-    else if (strKey.Equals("numpadplus")) wButtonCode = 0xF06B;
-    else if (strKey.Equals("numpadminus")) wButtonCode = 0xF06D;
-    else if (strKey.Equals("numpadperiod")) wButtonCode = 0xF06E;
-    else if (strKey.Equals("numpaddivide")) wButtonCode = 0xF06F;
-    else if (strKey.Equals("pageup")) wButtonCode = 0xF021;
-    else if (strKey.Equals("pagedown")) wButtonCode = 0xF022;
-    else if (strKey.Equals("printscreen")) wButtonCode = 0xF02A;
-    else if (strKey.Equals("backspace")) wButtonCode = 0xF008;
-    else if (strKey.Equals("menu")) wButtonCode = 0xF05D;
-    else if (strKey.Equals("pause")) wButtonCode = 0xF013;
-    else if (strKey.Equals("leftshift")) wButtonCode = 0xF0A0;
-    else if (strKey.Equals("rightshift")) wButtonCode = 0xF0A1;
-    else if (strKey.Equals("leftctrl")) wButtonCode = 0xF0A2;
-    else if (strKey.Equals("rightctrl")) wButtonCode = 0xF0A3;
-    else if (strKey.Equals("leftalt")) wButtonCode = 0xF0A4;
-    else if (strKey.Equals("rightalt")) wButtonCode = 0xF0A5;
-    else if (strKey.Equals("leftwindows")) wButtonCode = 0xF05B;
-    else if (strKey.Equals("rightwindows")) wButtonCode = 0xF05C;
-    else if (strKey.Equals("capslock")) wButtonCode = 0xF020;
-    else if (strKey.Equals("numlock")) wButtonCode = 0xF090;
-    else if (strKey.Equals("scrolllock")) wButtonCode = 0xF091;
-    else if (strKey.Equals("semicolon") || strKey.Equals("colon")) wButtonCode = 0xF0BA;
-    else if (strKey.Equals("equals") || strKey.Equals("plus")) wButtonCode = 0xF0BB;
-    else if (strKey.Equals("comma") || strKey.Equals("lessthan")) wButtonCode = 0xF0BC;
-    else if (strKey.Equals("minus") || strKey.Equals("underline")) wButtonCode = 0xF0BD;
-    else if (strKey.Equals("period") || strKey.Equals("greaterthan")) wButtonCode = 0xF0BE;
-    else if (strKey.Equals("forwardslash") || strKey.Equals("questionmark")) wButtonCode = 0xF0BF;
-    else if (strKey.Equals("leftquote") || strKey.Equals("tilde")) wButtonCode = 0xF0C0;
-    else if (strKey.Equals("opensquarebracket") || strKey.Equals("openbrace")) wButtonCode = 0xF0EB;
-#if defined(__APPLE__) || defined(_WIN32PC)
+    if (strKey.Equals("return")) buttonCode = 0xF00D;
+    else if (strKey.Equals("enter")) buttonCode = 0xF06C;
+    else if (strKey.Equals("escape")) buttonCode = 0xF01B;
+    else if (strKey.Equals("esc")) buttonCode = 0xF01B;
+    else if (strKey.Equals("tab")) buttonCode = 0xF009;
+    else if (strKey.Equals("space")) buttonCode = 0xF020;
+    else if (strKey.Equals("left")) buttonCode = 0xF025;
+    else if (strKey.Equals("right")) buttonCode = 0xF027;
+    else if (strKey.Equals("up")) buttonCode = 0xF026;
+    else if (strKey.Equals("down")) buttonCode = 0xF028;
+    else if (strKey.Equals("insert")) buttonCode = 0xF02D;
+    else if (strKey.Equals("delete")) buttonCode = 0xF02E;
+    else if (strKey.Equals("home")) buttonCode = 0xF024;
+    else if (strKey.Equals("end")) buttonCode = 0xF023;
+    else if (strKey.Equals("f1")) buttonCode = 0xF070;
+    else if (strKey.Equals("f2")) buttonCode = 0xF071;
+    else if (strKey.Equals("f3")) buttonCode = 0xF072;
+    else if (strKey.Equals("f4")) buttonCode = 0xF073;
+    else if (strKey.Equals("f5")) buttonCode = 0xF074;
+    else if (strKey.Equals("f6")) buttonCode = 0xF075;
+    else if (strKey.Equals("f7")) buttonCode = 0xF076;
+    else if (strKey.Equals("f8")) buttonCode = 0xF077;
+    else if (strKey.Equals("f9")) buttonCode = 0xF078;
+    else if (strKey.Equals("f10")) buttonCode = 0xF079;
+    else if (strKey.Equals("f11")) buttonCode = 0xF07A;
+    else if (strKey.Equals("f12")) buttonCode = 0xF07B;
+    else if (strKey.Equals("numpadzero") || strKey.Equals("zero")) buttonCode = 0xF060;
+    else if (strKey.Equals("numpadone") || strKey.Equals("one")) buttonCode = 0xF061;
+    else if (strKey.Equals("numpadtwo") || strKey.Equals("two")) buttonCode = 0xF062;
+    else if (strKey.Equals("numpadthree") || strKey.Equals("three")) buttonCode = 0xF063;
+    else if (strKey.Equals("numpadfour") || strKey.Equals("four")) buttonCode = 0xF064;
+    else if (strKey.Equals("numpadfive") || strKey.Equals("five")) buttonCode = 0xF065;
+    else if (strKey.Equals("numpadsix") || strKey.Equals("six")) buttonCode = 0xF066;
+    else if (strKey.Equals("numpadseven") || strKey.Equals("seven")) buttonCode = 0xF067;
+    else if (strKey.Equals("numpadeight") || strKey.Equals("eight")) buttonCode = 0xF068;
+    else if (strKey.Equals("numpadnine") || strKey.Equals("nine")) buttonCode = 0xF069;
+    else if (strKey.Equals("numpadtimes")) buttonCode = 0xF06A;
+    else if (strKey.Equals("numpadplus")) buttonCode = 0xF06B;
+    else if (strKey.Equals("numpadminus")) buttonCode = 0xF06D;
+    else if (strKey.Equals("numpadperiod")) buttonCode = 0xF06E;
+    else if (strKey.Equals("numpaddivide")) buttonCode = 0xF06F;
+    else if (strKey.Equals("pageup")) buttonCode = 0xF021;
+    else if (strKey.Equals("pagedown")) buttonCode = 0xF022;
+    else if (strKey.Equals("printscreen")) buttonCode = 0xF02A;
+    else if (strKey.Equals("backspace")) buttonCode = 0xF008;
+    else if (strKey.Equals("menu")) buttonCode = 0xF05D;
+    else if (strKey.Equals("pause")) buttonCode = 0xF013;
+    else if (strKey.Equals("leftshift")) buttonCode = 0xF0A0;
+    else if (strKey.Equals("rightshift")) buttonCode = 0xF0A1;
+    else if (strKey.Equals("leftctrl")) buttonCode = 0xF0A2;
+    else if (strKey.Equals("rightctrl")) buttonCode = 0xF0A3;
+    else if (strKey.Equals("leftalt")) buttonCode = 0xF0A4;
+    else if (strKey.Equals("rightalt")) buttonCode = 0xF0A5;
+    else if (strKey.Equals("leftwindows")) buttonCode = 0xF05B;
+    else if (strKey.Equals("rightwindows")) buttonCode = 0xF05C;
+    else if (strKey.Equals("capslock")) buttonCode = 0xF020;
+    else if (strKey.Equals("numlock")) buttonCode = 0xF090;
+    else if (strKey.Equals("scrolllock")) buttonCode = 0xF091;
+    else if (strKey.Equals("semicolon") || strKey.Equals("colon")) buttonCode = 0xF0BA;
+    else if (strKey.Equals("equals") || strKey.Equals("plus")) buttonCode = 0xF0BB;
+    else if (strKey.Equals("comma") || strKey.Equals("lessthan")) buttonCode = 0xF0BC;
+    else if (strKey.Equals("minus") || strKey.Equals("underline")) buttonCode = 0xF0BD;
+    else if (strKey.Equals("period") || strKey.Equals("greaterthan")) buttonCode = 0xF0BE;
+    else if (strKey.Equals("forwardslash") || strKey.Equals("questionmark")) buttonCode = 0xF0BF;
+    else if (strKey.Equals("leftquote") || strKey.Equals("tilde")) buttonCode = 0xF0C0;
+    else if (strKey.Equals("opensquarebracket") || strKey.Equals("openbrace")) buttonCode = 0xF0EB;
+#if defined(__APPLE__) || defined(_WIN32)
     // Why are these different. Why did the Linux one have to change???
-    else if (strKey.Equals("backslash") || strKey.Equals("pipe")) wButtonCode = 0xF0EC;
+    else if (strKey.Equals("backslash") || strKey.Equals("pipe")) buttonCode = 0xF0EC;
 #else
-    else if (strKey.Equals("backslash") || strKey.Equals("pipe")) wButtonCode = 0xFFEC;
+    else if (strKey.Equals("backslash") || strKey.Equals("pipe")) buttonCode = 0xFFEC;
 #endif
-    else if (strKey.Equals("closesquarebracket") || strKey.Equals("closebrace")) wButtonCode = 0xF0ED;
-    else if (strKey.Equals("quote") || strKey.Equals("doublequote")) wButtonCode = 0xF0EE;
-    else if (strKey.Equals("launch_mail")) wButtonCode = 0xF0B4;
-    else if (strKey.Equals("browser_home")) wButtonCode = 0xF0AC;
-    else if (strKey.Equals("browser_favorites")) wButtonCode = 0xF0AB;
-    else if (strKey.Equals("browser_refresh")) wButtonCode = 0xF0A8;
-    else if (strKey.Equals("browser_search")) wButtonCode = 0xF0AA;
-    else if (strKey.Equals("launch_app1_pc_icon")) wButtonCode = 0xF0B6;
-    else if (strKey.Equals("launch_media_select")) wButtonCode = 0xF0B5;
-    else if (strKey.Equals("play_pause")) wButtonCode = 0xF0B3;
-    else if (strKey.Equals("stop")) wButtonCode = 0xF0B2;
-    else if (strKey.Equals("volume_up")) wButtonCode = 0xF0AF;
-    else if (strKey.Equals("volume_mute")) wButtonCode = 0xF0AD;
-    else if (strKey.Equals("volume_down")) wButtonCode = 0xF0AE;
-    else if (strKey.Equals("prev_track")) wButtonCode = 0xF0B1;
-    else if (strKey.Equals("next_track")) wButtonCode = 0xF0B0;
+    else if (strKey.Equals("closesquarebracket") || strKey.Equals("closebrace")) buttonCode = 0xF0ED;
+    else if (strKey.Equals("quote") || strKey.Equals("doublequote")) buttonCode = 0xF0EE;
+    else if (strKey.Equals("launch_mail")) buttonCode = 0xF0B4;
+    else if (strKey.Equals("browser_home")) buttonCode = 0xF0AC;
+    else if (strKey.Equals("browser_favorites")) buttonCode = 0xF0AB;
+    else if (strKey.Equals("browser_refresh")) buttonCode = 0xF0A8;
+    else if (strKey.Equals("browser_search")) buttonCode = 0xF0AA;
+    else if (strKey.Equals("launch_app1_pc_icon")) buttonCode = 0xF0B6;
+    else if (strKey.Equals("launch_media_select")) buttonCode = 0xF0B5;
+    else if (strKey.Equals("play_pause")) buttonCode = 0xF0B3;
+    else if (strKey.Equals("stop")) buttonCode = 0xF0B2;
+    else if (strKey.Equals("volume_up")) buttonCode = 0xF0AF;
+    else if (strKey.Equals("volume_mute")) buttonCode = 0xF0AD;
+    else if (strKey.Equals("volume_down")) buttonCode = 0xF0AE;
+    else if (strKey.Equals("prev_track")) buttonCode = 0xF0B1;
+    else if (strKey.Equals("next_track")) buttonCode = 0xF0B0;
     else
       CLog::Log(LOGERROR, "Keyboard Translator: Can't find button %s", strKey.c_str());
   }
-  return wButtonCode;
+  return buttonCode;
 }
 
-WORD CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
+int CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 {
   const char *szButton = pButton->Value();
 

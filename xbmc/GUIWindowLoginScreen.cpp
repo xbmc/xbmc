@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "Application.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowSettingsProfile.h"
@@ -37,9 +37,10 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#include "Util.h"
+#include "LocalizeStrings.h"
 
 using namespace XFILE;
 
@@ -124,7 +125,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 #ifdef HAS_PYTHON
             g_pythonParser.bLogin = true;
 #endif
-            RESOLUTION res=INVALID;
+            RESOLUTION res=RES_INVALID;
             CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);
             int startWindow = g_guiSettings.GetInt("lookandfeel.startupwindow");
             // test for a startup window, and activate that instead of home
@@ -151,7 +152,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
     break;
     case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -169,7 +170,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
 {
   // don't allow any built in actions to act here.
   // this forces only navigation type actions to be performed.
-  if (action.wID == ACTION_BUILT_IN_FUNCTION)
+  if (action.id == ACTION_BUILT_IN_FUNCTION)
     return true;  // pretend we handled it
   return CGUIWindow::OnAction(action);
 }

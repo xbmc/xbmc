@@ -23,9 +23,7 @@
 #define LIBRARY_LOADER
 
 #ifndef _LINUX
-#ifndef _WINDEF_
-typedef unsigned long HMODULE;
-#endif // _WINDEF_
+#include "system.h" // WIN32INCLUDES - needed for HMODULE
 #else
 #include "PlatformDefs.h"
 #endif

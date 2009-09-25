@@ -87,15 +87,17 @@
 
 #define GUI_MSG_SET_TYPE     33 ///< Instruct a control to set it's type appropriately
 
+#define GUI_MSG_INVALIDATE   34 ///< Instruct all controls to refresh - usually due to sizing changes
+
 #define GUI_MSG_USER         1000
 
 /*!
  \ingroup winmsg
  \brief
  */
-#define CONTROL_SELECT(dwControlID) \
+#define CONTROL_SELECT(controlID) \
 do { \
- CGUIMessage msg(GUI_MSG_SELECTED, GetID(), dwControlID); \
+ CGUIMessage msg(GUI_MSG_SELECTED, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -103,30 +105,9 @@ do { \
  \ingroup winmsg
  \brief
  */
-#define CONTROL_DESELECT(dwControlID) \
+#define CONTROL_DESELECT(controlID) \
 do { \
- CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), dwControlID); \
- OnMessage(msg); \
-} while(0)
-
-
-/*!
- \ingroup winmsg
- \brief
- */
-#define CONTROL_ENABLE(dwControlID) \
-do { \
- CGUIMessage msg(GUI_MSG_ENABLED, GetID(), dwControlID); \
- OnMessage(msg); \
-} while(0)
-
-/*!
- \ingroup winmsg
- \brief
- */
-#define CONTROL_DISABLE(dwControlID) \
-do { \
- CGUIMessage msg(GUI_MSG_DISABLED, GetID(), dwControlID); \
+ CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -135,9 +116,19 @@ do { \
  \ingroup winmsg
  \brief
  */
-#define CONTROL_ENABLE_ON_CONDITION(dwControlID, bCondition) \
+#define CONTROL_ENABLE(controlID) \
 do { \
- CGUIMessage msg(bCondition ? GUI_MSG_ENABLED:GUI_MSG_DISABLED, GetID(), dwControlID); \
+ CGUIMessage msg(GUI_MSG_ENABLED, GetID(), controlID); \
+ OnMessage(msg); \
+} while(0)
+
+/*!
+ \ingroup winmsg
+ \brief
+ */
+#define CONTROL_DISABLE(controlID) \
+do { \
+ CGUIMessage msg(GUI_MSG_DISABLED, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -146,9 +137,20 @@ do { \
  \ingroup winmsg
  \brief
  */
-#define CONTROL_SELECT_ITEM(dwControlID,iItem) \
+#define CONTROL_ENABLE_ON_CONDITION(controlID, bCondition) \
 do { \
- CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), dwControlID,iItem); \
+ CGUIMessage msg(bCondition ? GUI_MSG_ENABLED:GUI_MSG_DISABLED, GetID(), controlID); \
+ OnMessage(msg); \
+} while(0)
+
+
+/*!
+ \ingroup winmsg
+ \brief
+ */
+#define CONTROL_SELECT_ITEM(controlID,iItem) \
+do { \
+ CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), controlID,iItem); \
  OnMessage(msg); \
 } while(0)
 
@@ -156,9 +158,9 @@ do { \
  \ingroup winmsg
  \brief Set the label of the current control
  */
-#define SET_CONTROL_LABEL(dwControlID,label) \
+#define SET_CONTROL_LABEL(controlID,label) \
 do { \
- CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), dwControlID); \
+ CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), controlID); \
  msg.SetLabel(label); \
  OnMessage(msg); \
 } while(0)
@@ -167,9 +169,9 @@ do { \
  \ingroup winmsg
  \brief Set the second label of the current control
  */
-#define SET_CONTROL_LABEL2(dwControlID,label) \
+#define SET_CONTROL_LABEL2(controlID,label) \
 do { \
- CGUIMessage msg(GUI_MSG_LABEL2_SET, GetID(), dwControlID); \
+ CGUIMessage msg(GUI_MSG_LABEL2_SET, GetID(), controlID); \
  msg.SetLabel(label); \
  OnMessage(msg); \
 } while(0)
@@ -178,9 +180,9 @@ do { \
  \ingroup winmsg
  \brief
  */
-#define SET_CONTROL_HIDDEN(dwControlID) \
+#define SET_CONTROL_HIDDEN(controlID) \
 do { \
- CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), dwControlID); \
+ CGUIMessage msg(GUI_MSG_HIDDEN, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -188,9 +190,9 @@ do { \
  \ingroup winmsg
  \brief
  */
-#define SET_CONTROL_FOCUS(dwControlID, dwParam) \
+#define SET_CONTROL_FOCUS(controlID, dwParam) \
 do { \
- CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), dwControlID, dwParam); \
+ CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), controlID, dwParam); \
  OnMessage(msg); \
 } while(0)
 
@@ -198,15 +200,15 @@ do { \
  \ingroup winmsg
  \brief
  */
-#define SET_CONTROL_VISIBLE(dwControlID) \
+#define SET_CONTROL_VISIBLE(controlID) \
 do { \
- CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), dwControlID); \
+ CGUIMessage msg(GUI_MSG_VISIBLE, GetID(), controlID); \
  OnMessage(msg); \
 } while(0)
 
-#define SET_CONTROL_SELECTED(dwSenderId, dwControlID, bSelect) \
+#define SET_CONTROL_SELECTED(dwSenderId, controlID, bSelect) \
 do { \
- CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, dwControlID); \
+ CGUIMessage msg(bSelect?GUI_MSG_SELECTED:GUI_MSG_DESELECTED, dwSenderId, controlID); \
  OnMessage(msg); \
 } while(0)
 
@@ -219,13 +221,15 @@ do { \
 \ingroup winmsg
 \brief Click message sent from controls to windows.
  */
-#define SEND_CLICK_MESSAGE(dwID, dwParentID, dwAction) \
+#define SEND_CLICK_MESSAGE(id, parentID, action) \
 do { \
- CGUIMessage msg(GUI_MSG_CLICKED, dwID, dwParentID, dwAction); \
+ CGUIMessage msg(GUI_MSG_CLICKED, id, parentID, action); \
  SendWindowMessage(msg); \
 } while(0)
 
+#include <vector>
 #include "boost/shared_ptr.hpp"
+#include "StdString.h"
 
 // forwards
 class CGUIListItem; typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
@@ -239,42 +243,46 @@ class CVisualisation;
 class CGUIMessage
 {
 public:
-  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1 = 0, DWORD dwParam2 = 0);
-  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CFileItemList* item);
-  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, const CGUIListItemPtr &item);
-  CGUIMessage(DWORD dwMsg, DWORD dwSenderId, DWORD dwControlID, DWORD dwParam1, DWORD dwParam2, CVisualisation* vis);
+  CGUIMessage(int dwMsg, int senderID, int controlID, int param1 = 0, int param2 = 0);
+  CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, CFileItemList* item);
+  CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, const CGUIListItemPtr &item);
+  CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, CVisualisation* vis);
   CGUIMessage(const CGUIMessage& msg);
   virtual ~CGUIMessage(void);
   const CGUIMessage& operator = (const CGUIMessage& msg);
 
-  DWORD GetControlId() const ;
-  DWORD GetMessage() const;
-  void* GetLPVOID() const;
+  int GetControlId() const ;
+  int GetMessage() const;
+  void* GetPointer() const;
   CGUIListItemPtr GetItem() const;
-  DWORD GetParam1() const;
-  DWORD GetParam2() const;
-  DWORD GetSenderId() const;
-  void SetParam1(DWORD dwParam1);
-  void SetParam2(DWORD dwParam2);
-  void SetLPVOID(void* lpVoid);
+  int GetParam1() const;
+  int GetParam2() const;
+  int GetSenderId() const;
+  void SetParam1(int param1);
+  void SetParam2(int param2);
+  void SetPointer(void* pointer);
   void SetLabel(const std::string& strLabel);
   void SetLabel(int iString);               // for convience - looks up in strings.xml
   const std::string& GetLabel() const;
-  void SetStringParam(const std::string& strParam);
-  const std::string& GetStringParam() const;
+  void SetStringParam(const CStdString &strParam);
+  void SetStringParams(const std::vector<CStdString> &params);
+  const CStdString& GetStringParam(size_t param = 0) const;
+  size_t GetNumStringParams() const;
   void SetAction(const CGUIActionDescriptor& action);
   const CGUIActionDescriptor& GetAction() const;
 
 private:
   std::string m_strLabel;
-  std::string m_strParam;
+  std::vector<CStdString> m_params;
   CGUIActionDescriptor m_action;
-  DWORD m_dwSenderID;
-  DWORD m_dwControlID;
-  DWORD m_dwMessage;
-  void* m_lpVoid;
-  DWORD m_dwParam1;
-  DWORD m_dwParam2;
+  int m_senderID;
+  int m_controlID;
+  int m_message;
+  void* m_pointer;
+  int m_param1;
+  int m_param2;
   CGUIListItemPtr m_item;
+  
+  static CStdString empty_string;
 };
 #endif

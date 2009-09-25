@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PictureThumbLoader.h"
 #include "Picture.h"
 #include "URL.h"

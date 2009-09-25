@@ -21,6 +21,8 @@
  *
  */
 
+#include <string>
+
 class CDVDInputStream;
 class IDVDPlayer;
 

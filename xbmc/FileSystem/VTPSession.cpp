@@ -1,5 +1,5 @@
-#include "stdafx.h"
 #include "VTPSession.h"
+#include "utils/log.h"
 
 #include <stdlib.h>
 #include <stdio.h>

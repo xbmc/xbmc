@@ -1,5 +1,4 @@
 
-#include "stdafx.h" 
 /*
  * XBMC Media Center
  * Copyright (c) 2002 Frodo
@@ -25,6 +24,8 @@
 
 #include <sys/stat.h>
 #include <io.h>
+#include "log.h"
+#include "CharsetConverter.h"
 
 using namespace XFILE;
 

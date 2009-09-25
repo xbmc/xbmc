@@ -35,7 +35,7 @@
 class CGUIListGroup : public CGUIControlGroup
 {
 public:
-  CGUIListGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
+  CGUIListGroup(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIListGroup(const CGUIListGroup &right);
   virtual ~CGUIListGroup(void);
   virtual CGUIListGroup *Clone() const { return new CGUIListGroup(*this); };

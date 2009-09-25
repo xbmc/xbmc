@@ -1,5 +1,3 @@
-
-#include "stdafx.h"
 /*
  * XBMC Media Center
  * Copyright (c) 2002 Frodo
@@ -19,6 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+#include "system.h"
 #include "FileHD.h"
 #include "Util.h"
 #include "URL.h"
@@ -32,6 +32,8 @@
 #include <sys/ioctl.h>
 #else
 #include <io.h>
+#include "utils/CharsetConverter.h"
+#include "utils/log.h"
 #endif
 
 using namespace XFILE;
@@ -82,7 +84,7 @@ bool CFileHD::Open(const CURL& url)
 {
   CStdString strFile = GetLocal(url);
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   m_hFile.attach(CreateFileW(strWFile.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL));
@@ -102,7 +104,7 @@ bool CFileHD::Exists(const CURL& url)
   struct __stat64 buffer;
   CStdString strFile = GetLocal(url);
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return (_wstat64(strWFile.c_str(), &buffer)==0);
@@ -131,7 +133,7 @@ int CFileHD::Stat(const CURL& url, struct __stat64* buffer)
 {
   CStdString strFile = GetLocal(url);
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CStdStringW strWFile;
   // win32 can only stat root drives with a slash at the end
   if(strFile.length() == 2 && strFile[1] ==':')
@@ -160,7 +162,7 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bOverWrite)
   }
 #endif
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CStdStringW strWPath;
   g_charsetConverter.utf8ToW(strPath, strWPath, false);
   m_hFile.attach(CreateFileW(strWPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL, bOverWrite ? CREATE_ALWAYS : OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL));
@@ -267,7 +269,7 @@ bool CFileHD::Delete(const CURL& url)
 {
   CStdString strFile=GetLocal(url);
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   return ::DeleteFileW(strWFile.c_str()) ? true : false;
@@ -281,7 +283,7 @@ bool CFileHD::Rename(const CURL& url, const CURL& urlnew)
   CStdString strFile=GetLocal(url);
   CStdString strNewFile=GetLocal(urlnew);
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   CStdStringW strWFile;
   CStdStringW strWNewFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);

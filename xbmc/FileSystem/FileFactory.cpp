@@ -20,7 +20,7 @@
  */
 
 
-#include "stdafx.h"
+#include "system.h"
 #include "FileFactory.h"
 #include "FileHD.h"
 #include "FileCurl.h"
@@ -28,7 +28,7 @@
 #include "FileLastFM.h"
 #include "FileFileReader.h"
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WINFileSmb.h"
 #else
 #include "FileSmb.h"
@@ -98,7 +98,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (strProtocol == "multipath") return new CMultiPathFile();
   else if (strProtocol == "file" || strProtocol.IsEmpty()) return new CFileHD();
   else if (strProtocol == "filereader") return new CFileFileReader();
-#ifdef HAS_FILESYSTEM_CDDA
+#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   else if (strProtocol == "cdda") return new CFileCDDA();
 #endif
 #ifdef HAS_FILESYSTEM
@@ -118,7 +118,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "myth") return new CCMythFile();
     else if (strProtocol == "cmyth") return new CCMythFile();
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32PC
+#ifdef _WIN32
     else if (strProtocol == "smb") return new CWINFileSMB();
 #else
     else if (strProtocol == "smb") return new CFileSMB();

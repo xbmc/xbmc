@@ -19,12 +19,12 @@
  *
  */
  
-#include "stdafx.h"
 #include "DVDSubtitleParserMPL2.h"
 #include "DVDCodecs/Overlay/DVDOverlayText.h"
 #include "DVDClock.h"
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
+#include "StdString.h"
 
 using namespace std;
 
@@ -51,15 +51,9 @@ bool CDVDSubtitleParserMPL2::Open(CDVDStreamInfo &hints)
 
   CRegExp reg;
   if (!reg.RegComp("\\[([0-9]+)\\]\\[([0-9]+)\\](\\{C:\\$[0-9a-f]+\\})?/?([^|]*?)(\\|/?([^|]*?))?$"))
-  {
-    m_pStream->Close();
     return false;
-  }
 
-  CStdStringW strUTF16;
-  CStdStringA strUTF8;
-
-  while (m_pStream->ReadLine(line, sizeof(line)))
+  while (m_stringstream.getline(line, sizeof(line)))
   {
     if (reg.RegFind(line) > -1)
     {
@@ -76,19 +70,8 @@ bool CDVDSubtitleParserMPL2::Open(CDVDStreamInfo &hints)
       pOverlay->iPTSStopTime  = m_framerate * atoi(endFrame);
 
       for(int i=0;i<3 && lines[i] && *lines[i];i++)
-      {
-        if (g_charsetConverter.isValidUtf8(lines[i]))
-          // simply add UTF-8 valid text element to our container
-          pOverlay->AddElement(new CDVDOverlayText::CElementText(lines[i]));
-        else
-        {
-          g_charsetConverter.subtitleCharsetToW(lines[i], strUTF16);
-          g_charsetConverter.wToUTF8(strUTF16, strUTF8);
-          if (!strUTF8.IsEmpty())
-            // add a new text element to our container
-            pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
-        }
-      }
+        pOverlay->AddElement(new CDVDOverlayText::CElementText(lines[i]));
+
       free(lines[0]);
       free(lines[1]);
       free(lines[2]);
@@ -98,7 +81,7 @@ bool CDVDSubtitleParserMPL2::Open(CDVDStreamInfo &hints)
       m_collection.Add(pOverlay);
     }
   }
-  m_pStream->Close();
+
   return true;
 }
 

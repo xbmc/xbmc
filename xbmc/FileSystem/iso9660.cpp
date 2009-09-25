@@ -18,7 +18,8 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
+#include "system.h"
+#include "utils/log.h"
 /*
  Redbook   : CDDA
  Yellowbook : CDROM
@@ -40,6 +41,7 @@ ISO9660
 
 */
 #include "iso9660.h"
+#include "utils/CharsetConverter.h"
 
 #include "DetectDVDType.h"  // for MODE2_DATA_SIZE etc.
 #include "lib/libcdio/bytesex.h" // for from_723 & from_733
@@ -51,6 +53,13 @@ class iso9660 m_isoReader;
 #define RET_ERR -1
 
 using namespace std;
+
+#ifndef HAS_DVD_DRIVE
+extern "C"
+{
+  void cdio_warn(const char* msg, ...) { CLog::Log(LOGWARNING, msg); } 
+}
+#endif
 
 //******************************************************************************************************************
 const string iso9660::ParseName(struct iso9660_Directory& isodir)

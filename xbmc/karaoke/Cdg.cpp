@@ -19,16 +19,14 @@
  *
  */
 
-#include "stdafx.h"
-#include "stdafx.h"
-
 #include "Util.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
 #include "GUIWindowManager.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "Cdg.h"
+#include "utils/SingleLock.h"
 
 #include "karaokelyrics.h"
 
@@ -606,7 +604,7 @@ void CCdgReader::Process()
     {
       CStdString strFile = m_pLoader->GetFileName();
       m_pLoader->StopStream();
-      while (m_pLoader->GetCurSubCode());
+      while (m_pLoader->GetCurSubCode()) {}
       m_pLoader->StreamFile(strFile);
       m_uiNumReadSubCodes = 0;
       m_Cdg.ClearDisplay();

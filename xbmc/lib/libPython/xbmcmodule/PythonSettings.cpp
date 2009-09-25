@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PythonSettings.h"
 #include "pyutil.h"
 #include "GUIDialogAddonSettings.h"

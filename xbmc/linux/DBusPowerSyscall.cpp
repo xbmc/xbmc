@@ -19,11 +19,13 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "DBusPowerSyscall.h"
+#include "utils/log.h"
 
 #ifdef HAS_DBUS
 #include "Application.h"
+#include "LocalizeStrings.h"
 #include <dbus/dbus.h>
 #include <stdlib.h>
 

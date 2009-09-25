@@ -19,17 +19,19 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlayListM3U.h"
 #include "FileSystem/File.h"
 #include "Util.h"
+#include "StringUtils.h"
+#include "utils/CharsetConverter.h"
 #include "utils/RegExp.h"
 #ifndef _LINUX
 #include "cores/dllloader/exports/emu_msvcrt.h"
 #endif
 
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "MusicInfoTag.h"
+#include "AdvancedSettings.h"
 
 using namespace PLAYLIST;
 using namespace XFILE;

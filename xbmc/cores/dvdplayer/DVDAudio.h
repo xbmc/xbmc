@@ -45,6 +45,8 @@ extern "C" {
 #endif
 typedef struct stDVDAudioFrame DVDAudioFrame;
 
+class CSingleLock;
+
 class CDVDAudio
 {
 public:

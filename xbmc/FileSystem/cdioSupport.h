@@ -31,6 +31,10 @@
 
 #pragma once
 
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "xbox/IoSupport.h"
 
 #ifndef _LINUX
@@ -356,3 +360,5 @@ private:
 };
 
 }
+
+#endif

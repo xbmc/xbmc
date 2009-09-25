@@ -19,11 +19,11 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileCurl.h"
 #include "Util.h"
 #include "URL.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "SystemInfo.h"
 #include "File.h"
 
@@ -39,6 +39,7 @@
 
 #include "DllLibCurl.h"
 #include "FileShoutcast.h"
+#include "utils/CharsetConverter.h"
 
 using namespace XFILE;
 using namespace XCURL;
@@ -607,6 +608,40 @@ void CFileCurl::ParseAndCorrectUrl(CURL &url2)
       }
       CLog::Log(LOGDEBUG, "Using proxy %s", m_proxy.c_str());
     }
+    // handle any protocol options
+    CStdString options = url2.GetProtocolOptions();
+    options.TrimRight('/'); // hack for trailing slashes being added from source
+    if (options.length() > 0)
+    {
+      // clear protocol options
+      url2.SetProtocolOptions("");
+      // set xbmc headers
+      CStdStringArray array;
+      CUtil::Tokenize(options, array, "&");
+      for(CStdStringArray::iterator it = array.begin(); it != array.end(); it++)
+      {
+        // parse name, value
+        CStdString name, value;
+        int pos = it->Find('=');
+        if(pos >= 0)
+        {
+          name = it->Left(pos);
+          value = it->Mid(pos+1, it->size());
+        }
+        else
+        {
+          name = (*it);
+          value = "";
+        }
+        // url decode value
+        CUtil::UrlDecode(value);
+        // set headers
+        if (name.Equals("User-Agent"))
+          SetUserAgent(value);
+        else
+          SetRequestHeader(name, value);
+      }
+    }
   }
 }
 
@@ -691,10 +726,8 @@ bool CFileCurl::IsInternet(bool checkDNS /* = true */)
 
   if (result)
     return false;
-  else
-    return true;
 
-  return false;
+  return true;
 }
 
 void CFileCurl::Cancel()

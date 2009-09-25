@@ -34,9 +34,11 @@
  * internals.
  */
 
-#include "stdafx.h"
 #include <vector>
-
+#include "../utils/SingleLock.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
+#include "FileItem.h"
 #include "PVRClient.h"
 #include "PVRManager.h"
 #include "URL.h"

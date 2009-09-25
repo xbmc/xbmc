@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SettingsControls.h"
 #include "GUIDialogNumeric.h"
 #include "Util.h"
@@ -27,18 +26,19 @@
 #include "GUIDialogKeyboard.h"
 #include "GUISettings.h"
 #include "GUIImage.h"
+#include "LocalizeStrings.h"
 
-CBaseSettingControl::CBaseSettingControl(DWORD dwID, CSetting *pSetting)
+CBaseSettingControl::CBaseSettingControl(int id, CSetting *pSetting)
 {
-  m_dwID = dwID;
+  m_id = id;
   m_pSetting = pSetting;
 }
 
-CRadioButtonSettingControl::CRadioButtonSettingControl(CGUIRadioButtonControl *pRadioButton, DWORD dwID, CSetting *pSetting)
-    : CBaseSettingControl(dwID, pSetting)
+CRadioButtonSettingControl::CRadioButtonSettingControl(CGUIRadioButtonControl *pRadioButton, int id, CSetting *pSetting)
+    : CBaseSettingControl(id, pSetting)
 {
   m_pRadioButton = pRadioButton;
-  m_pRadioButton->SetID(dwID);
+  m_pRadioButton->SetID(id);
   Update();
 }
 
@@ -56,11 +56,11 @@ void CRadioButtonSettingControl::Update()
   m_pRadioButton->SetSelected(((CSettingBool *)m_pSetting)->GetData());
 }
 
-CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, DWORD dwID, CSetting *pSetting)
-    : CBaseSettingControl(dwID, pSetting)
+CSpinExSettingControl::CSpinExSettingControl(CGUISpinControlEx *pSpin, int id, CSetting *pSetting)
+    : CBaseSettingControl(id, pSetting)
 {
   m_pSpin = pSpin;
-  m_pSpin->SetID(dwID);
+  m_pSpin->SetID(id);
   if (pSetting->GetControlType() == SPIN_CONTROL_FLOAT)
   {
     CSettingFloat *pSettingFloat = (CSettingFloat *)pSetting;
@@ -135,11 +135,11 @@ void CSpinExSettingControl::Update()
   }
 }
 
-CButtonSettingControl::CButtonSettingControl(CGUIButtonControl *pButton, DWORD dwID, CSetting *pSetting)
-    : CBaseSettingControl(dwID, pSetting)
+CButtonSettingControl::CButtonSettingControl(CGUIButtonControl *pButton, int id, CSetting *pSetting)
+    : CBaseSettingControl(id, pSetting)
 {
   m_pButton = pButton;
-  m_pButton->SetID(dwID);
+  m_pButton->SetID(id);
   Update();
 }
 
@@ -167,12 +167,12 @@ void CButtonSettingControl::Update()
   m_pButton->SetLabel2(strText);
 }
 
-CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, DWORD dwID, CSetting *pSetting)
-    : CBaseSettingControl(dwID, pSetting)
+CEditSettingControl::CEditSettingControl(CGUIEditControl *pEdit, int id, CSetting *pSetting)
+    : CBaseSettingControl(id, pSetting)
 {
   m_needsUpdate = false;
   m_pEdit = pEdit;
-  m_pEdit->SetID(dwID);
+  m_pEdit->SetID(id);
   int heading = ((CSettingString *)m_pSetting)->m_iHeadingString;
   if (heading < 0) heading = 0;
   if (pSetting->GetControlType() == EDIT_CONTROL_HIDDEN_INPUT)
@@ -267,11 +267,11 @@ bool CEditSettingControl::IsValidIPAddress(const CStdString &strIP)
   return legalFormat;
 }
 
-CSeparatorSettingControl::CSeparatorSettingControl(CGUIImage *pImage, DWORD dwID, CSetting *pSetting)
-    : CBaseSettingControl(dwID, pSetting)
+CSeparatorSettingControl::CSeparatorSettingControl(CGUIImage *pImage, int id, CSetting *pSetting)
+    : CBaseSettingControl(id, pSetting)
 {
   m_pImage = pImage;
-  m_pImage->SetID(dwID);
+  m_pImage->SetID(id);
 }
 
 CSeparatorSettingControl::~CSeparatorSettingControl()

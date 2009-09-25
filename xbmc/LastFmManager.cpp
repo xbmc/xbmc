@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "LastFmManager.h"
 #include "Application.h"
 #include "ApplicationRenderer.h"
@@ -38,9 +37,14 @@
 #include "GUIDialogProgress.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
-#include "Settings.h"
+#include "GUISettings.h"
+#include "GUIUserMessages.h"
 #include "PlayList.h"
 #include "Crc32.h"
+#include "AdvancedSettings.h"
+#include "Settings.h"
+#include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 #include <sstream>
 

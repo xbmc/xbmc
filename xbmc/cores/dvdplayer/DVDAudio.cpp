@@ -19,9 +19,10 @@
  *
  */
 
-#include "stdafx.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 #include "DVDAudio.h"
-#include "../../Util.h"
+#include "Util.h"
 #include "DVDClock.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"

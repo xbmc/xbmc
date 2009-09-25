@@ -22,7 +22,7 @@
 //
 // GeminiServer
 //
-#include "stdafx.h"
+
 #include "TuxBoxUtil.h"
 #include "Util.h"
 #include "FileSystem/FileCurl.h"
@@ -35,8 +35,10 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
 #include "URL.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 using namespace XFILE;
 using namespace std;

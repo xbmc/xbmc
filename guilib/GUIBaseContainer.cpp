@@ -19,23 +19,26 @@
  *
  */
 
-#include "include.h"
 #include "GUIBaseContainer.h"
 #include "GUIControlFactory.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
 #include "GUILabelControl.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
+#include "StringUtils.h"
 #include "FileItem.h"
+#include "tinyXML/tinyxml.h"
+#include "Key.h"
 
 using namespace std;
 
 #define HOLD_TIME_START 1000
 #define HOLD_TIME_END   4000
 
-CGUIBaseContainer::CGUIBaseContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
 {
   m_cursor = 0;
   m_offset = 0;
@@ -171,7 +174,7 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
           subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
-      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
     }
     m_lastItem = item;
   }
@@ -185,22 +188,22 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
       item->SetLayout(layout);
     }
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
     else if (item->GetLayout())
-      item->GetLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetLayout()->Render(item, m_parentID, m_renderTime);
   }
   g_graphicsContext.RestoreOrigin();
 }
 
 bool CGUIBaseContainer::OnAction(const CAction &action)
 {
-  if (action.wID >= KEY_ASCII)
+  if (action.id >= KEY_ASCII)
   {
-    OnJumpLetter((char)(action.wID & 0xff));
+    OnJumpLetter((char)(action.id & 0xff));
     return true;
   }
 
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_MOVE_LEFT:
   case ACTION_MOVE_RIGHT:
@@ -209,15 +212,15 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
     {
       if (!HasFocus()) return false;
       if (action.holdTime > HOLD_TIME_START &&
-        ((m_orientation == VERTICAL && (action.wID == ACTION_MOVE_UP || action.wID == ACTION_MOVE_DOWN)) ||
-         (m_orientation == HORIZONTAL && (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_RIGHT))))
+        ((m_orientation == VERTICAL && (action.id == ACTION_MOVE_UP || action.id == ACTION_MOVE_DOWN)) ||
+         (m_orientation == HORIZONTAL && (action.id == ACTION_MOVE_LEFT || action.id == ACTION_MOVE_RIGHT))))
       { // action is held down - repeat a number of times
         float speed = std::min(1.0f, (float)(action.holdTime - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
         unsigned int itemsPerFrame = 1;
         if (m_lastHoldTime) // number of rows/10 items/second max speed
           itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (timeGetTime() - m_lastHoldTime)));
         m_lastHoldTime = timeGetTime();
-        if (action.wID == ACTION_MOVE_LEFT || action.wID == ACTION_MOVE_UP)
+        if (action.id == ACTION_MOVE_LEFT || action.id == ACTION_MOVE_UP)
           while (itemsPerFrame--) MoveUp(false);
         else
           while (itemsPerFrame--) MoveDown(false);
@@ -261,15 +264,15 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_JUMP_SMS8:
   case ACTION_JUMP_SMS9:
     {
-      OnJumpSMS(action.wID - ACTION_JUMP_SMS2 + 2);
+      OnJumpSMS(action.id - ACTION_JUMP_SMS2 + 2);
       return true;
     }
     break;
 
   default:
-    if (action.wID)
+    if (action.id)
     {
-      return OnClick(action.wID);
+      return OnClick(action.id);
     }
   }
   return false;
@@ -281,10 +284,10 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
   {
     if (!m_staticContent)
     {
-      if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetLPVOID())
+      if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
       { // bind our items
         Reset();
-        CFileItemList *items = (CFileItemList *)message.GetLPVOID();
+        CFileItemList *items = (CFileItemList *)message.GetPointer();
         for (int i = 0; i < items->Size(); i++)
           m_items.push_back(items->Get(i));
         UpdateLayout(true); // true to refresh all items
@@ -348,7 +351,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
 
 void CGUIBaseContainer::OnUp()
 {
-  bool wrapAround = m_dwControlUp == GetID() || !(m_dwControlUp || m_upActions.size());
+  bool wrapAround = m_controlUp == GetID() || !(m_controlUp || m_upActions.size());
   if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
@@ -357,7 +360,7 @@ void CGUIBaseContainer::OnUp()
 
 void CGUIBaseContainer::OnDown()
 {
-  bool wrapAround = m_dwControlDown == GetID() || !(m_dwControlDown || m_downActions.size());
+  bool wrapAround = m_controlDown == GetID() || !(m_controlDown || m_downActions.size());
   if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
@@ -366,7 +369,7 @@ void CGUIBaseContainer::OnDown()
 
 void CGUIBaseContainer::OnLeft()
 {
-  bool wrapAround = m_dwControlLeft == GetID() || !(m_dwControlLeft || m_leftActions.size());
+  bool wrapAround = m_controlLeft == GetID() || !(m_controlLeft || m_leftActions.size());
   if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
     return;
   else if (m_orientation == VERTICAL)
@@ -380,7 +383,7 @@ void CGUIBaseContainer::OnLeft()
 
 void CGUIBaseContainer::OnRight()
 {
-  bool wrapAround = m_dwControlRight == GetID() || !(m_dwControlRight || m_rightActions.size());
+  bool wrapAround = m_controlRight == GetID() || !(m_controlRight || m_rightActions.size());
   if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
     return;
   else if (m_orientation == VERTICAL)
@@ -580,27 +583,27 @@ bool CGUIBaseContainer::OnMouseOver(const CPoint &point)
   return CGUIControl::OnMouseOver(point);
 }
 
-bool CGUIBaseContainer::OnMouseClick(DWORD dwButton, const CPoint &point)
+bool CGUIBaseContainer::OnMouseClick(int button, const CPoint &point)
 {
   if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
   { // send click message to window
-    OnClick(ACTION_MOUSE_CLICK + dwButton);
+    OnClick(ACTION_MOUSE_CLICK + button);
     return true;
   }
   return false;
 }
 
-bool CGUIBaseContainer::OnMouseDoubleClick(DWORD dwButton, const CPoint &point)
+bool CGUIBaseContainer::OnMouseDoubleClick(int button, const CPoint &point)
 {
   if (SelectItemFromPoint(point - CPoint(m_posX, m_posY)))
   { // send double click message to window
-    OnClick(ACTION_MOUSE_DOUBLE_CLICK + dwButton);
+    OnClick(ACTION_MOUSE_DOUBLE_CLICK + button);
     return true;
   }
   return false;
 }
 
-bool CGUIBaseContainer::OnClick(DWORD actionID)
+bool CGUIBaseContainer::OnClick(int actionID)
 {
   int subItem = 0;
   if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
@@ -671,7 +674,7 @@ void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
   states.push_back(CControlState(GetID(), GetSelectedItem()));
 }
 
-void CGUIBaseContainer::SetPageControl(DWORD id)
+void CGUIBaseContainer::SetPageControl(int id)
 {
   m_pageControl = id;
 }

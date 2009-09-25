@@ -19,7 +19,8 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowWeather.h"
 #include "GUIImage.h"
 #include "utils/Weather.h"
@@ -27,6 +28,8 @@
 #include "GUIWindowManager.h"
 #include "Util.h"
 #include "lib/libPython/XBPython.h"
+#include "LangInfo.h"
+#include "utils/log.h"
 
 #define CONTROL_BTNREFRESH             2
 #define CONTROL_SELECTLOCATION         3
@@ -75,7 +78,7 @@ CGUIWindowWeather::~CGUIWindowWeather(void)
 
 bool CGUIWindowWeather::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;
@@ -301,6 +304,7 @@ void CGUIWindowWeather::SetProperties()
 
 void CGUIWindowWeather::CallPlugin()
 {
+#ifdef HAS_PYTHON
   if (!g_guiSettings.GetString("weather.plugin").IsEmpty())
   {
     // create the full path to the plugin
@@ -333,4 +337,5 @@ void CGUIWindowWeather::CallPlugin()
 
     CLog::Log(LOGDEBUG, "%s - Weather plugin called: %s (%s)", __FUNCTION__, argv[0], argv[1]);
   }
+#endif
 }
