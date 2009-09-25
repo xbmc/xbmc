@@ -962,7 +962,31 @@
 								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c"
 								>
 								<FileConfiguration
+									Name="Release (OpenGL)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
 									Name="Debug (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Release (DirectX)|Win32"
+									>
+									<Tool
+										Name="VCCLCompilerTool"
+										CompileAs="2"
+									/>
+								</FileConfiguration>
+								<FileConfiguration
+									Name="Debug (OpenGL)|Win32"
 									>
 									<Tool
 										Name="VCCLCompilerTool"
@@ -1799,7 +1823,31 @@
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c"
 							>
 							<FileConfiguration
+								Name="Release (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -1811,7 +1859,31 @@
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_ntop.c"
 							>
 							<FileConfiguration
+								Name="Release (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
@@ -1823,7 +1895,31 @@
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_pton.c"
 							>
 							<FileConfiguration
+								Name="Release (OpenGL)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
 								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Release (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
+							<FileConfiguration
+								Name="Debug (OpenGL)|Win32"
 								>
 								<Tool
 									Name="VCCLCompilerTool"
