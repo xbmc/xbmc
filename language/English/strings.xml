@@ -803,6 +803,8 @@
 
   <string id="2050">Runtime</string>
 
+  <string id="2100">Script failed! : %s</string>
+
   <string id="4501">LCD type</string>
 
   <string id="10000">Home</string>
@@ -893,7 +895,7 @@
   <string id="12022">Resume from %s</string>
   <string id="12023">Validating existing trainers...</string>
   <string id="12024">Automatically generate thumbs for videos with no cover art</string>
-
+  
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
