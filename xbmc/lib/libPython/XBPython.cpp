@@ -60,10 +60,9 @@ XBPython::XBPython()
   bLogin = false;
   nextid = 0;
   mainThreadState = NULL;
-  InitializeCriticalSection(&m_critSection);
   m_hEvent = CreateEvent(NULL, false, false, (char*)"pythonEvent");
   m_globalEvent = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
-  dThreadId = GetCurrentThreadId();
+  dThreadId = CThread::GetCurrentThreadId();
   vecPlayerCallbackList.clear();
   m_iDllScriptCounter = 0;
 }
@@ -83,6 +82,7 @@ void XBPython::OnPlayBackEnded()
 {
   if (m_bInitialized)
   {
+    CSingleLock lock (m_critSection);
     PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
     while (it != vecPlayerCallbackList.end())
     {
@@ -97,6 +97,7 @@ void XBPython::OnPlayBackStarted()
 {
   if (m_bInitialized)
   {
+    CSingleLock lock (m_critSection);
     PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
     while (it != vecPlayerCallbackList.end())
     {
@@ -111,6 +112,7 @@ void XBPython::OnPlayBackStopped()
 {
   if (m_bInitialized)
   {
+    CSingleLock lock (m_critSection);
     PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
     while (it != vecPlayerCallbackList.end())
     {
@@ -122,11 +124,13 @@ void XBPython::OnPlayBackStopped()
 
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
+  CSingleLock lock (m_critSection);
   vecPlayerCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
+  CSingleLock lock (m_critSection);
   PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
   while (it != vecPlayerCallbackList.end())
   {
@@ -159,7 +163,7 @@ bool XBPython::FileExist(const char* strFile)
 void XBPython::Initialize()
 {
   CLog::Log(LOGINFO, "initializing python engine. ");
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
@@ -171,7 +175,6 @@ void XBPython::Initialize()
       {
         CLog::Log(LOGFATAL, "Python: error loading python24.dll");
         Finalize();
-        LeaveCriticalSection(&m_critSection);
         return;
       }
 
@@ -187,7 +190,6 @@ void XBPython::Initialize()
       {
         CLog::Log(LOGERROR, "Python: Missing files, unable to execute script");
         Finalize();
-        LeaveCriticalSection(&m_critSection);
         return;
       }
 
@@ -244,12 +246,11 @@ void XBPython::Initialize()
       m_iDllScriptCounter--;
       bThreadInitialize = true;
 
-      LeaveCriticalSection(&m_critSection);
+      lock.Leave();
       WaitForSingleObject(m_hEvent, INFINITE);
-      EnterCriticalSection(&m_critSection);
+      lock.Enter();
     }
   }
-  LeaveCriticalSection(&m_critSection);
 }
 
 /**
@@ -257,7 +258,7 @@ void XBPython::Initialize()
 */
 void XBPython::Finalize()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   m_iDllScriptCounter--;
   if (m_iDllScriptCounter == 0 && m_bInitialized)
   {
@@ -271,31 +272,27 @@ void XBPython::Finalize()
     mainThreadState = NULL;
     m_bInitialized = false;
   }
-  LeaveCriticalSection(&m_critSection);
 }
 
 void XBPython::FreeResources()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (m_bInitialized)
   {
     // cleanup threads that are still running
     PyList::iterator it = vecPyList.begin();
     while (it != vecPyList.end())
     { 
-      LeaveCriticalSection(&m_critSection); //unlock here because the python thread might lock when it exits
+      lock.Leave(); //unlock here because the python thread might lock when it exits
       delete it->pyThread;
-      EnterCriticalSection(&m_critSection);
+      lock.Enter();
       it = vecPyList.erase(it);
       Finalize();
     }
   }
-  LeaveCriticalSection(&m_critSection);
 
   if (m_hEvent)
     CloseHandle(m_hEvent);
-
-  DeleteCriticalSection(&m_critSection);
 }
 
 void XBPython::Process()
@@ -310,17 +307,18 @@ void XBPython::Process()
     // We need to make sure the network is up in case the start scripts require network
     g_network.WaitForSetup(10000);
     
-    if (evalFile("Q:\\scripts\\autoexec.py") < 0)
+    if (evalFile("special://home/scripts/autoexec.py") < 0)
       evalFile("special://xbmc/scripts/autoexec.py");
   }
 
   if (bLogin)
   {
     bLogin = false;
-    evalFile("P:\\scripts\\autoexec.py");
+    evalFile("special://profile/scripts/autoexec.py");
   }
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
+
   if (m_bInitialized)
   {
     PyList::iterator it = vecPyList.begin();
@@ -336,7 +334,6 @@ void XBPython::Process()
       else ++it;
     }
   }
-  LeaveCriticalSection(&m_critSection );
 }
 
 int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
@@ -370,16 +367,15 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   inf.strFile = src;
   inf.pyThread = pyThread;
 
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   vecPyList.push_back(inf);
-  LeaveCriticalSection(&m_critSection);
 
   return nextid;
 }
 
 void XBPython::setDone(int id)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
   {
@@ -393,24 +389,21 @@ void XBPython::setDone(int id)
     }
     ++it;
   }
-  LeaveCriticalSection(&m_critSection);
 }
 
 void XBPython::stopScript(int id)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
   {
     if (it->id == id) {
       CLog::Log(LOGINFO, "Stopping script with id: %i", id);
       it->pyThread->stop();
-      LeaveCriticalSection(&m_critSection);
       return;
     }
     ++it;
   }
-  LeaveCriticalSection(&m_critSection );
 }
 
 PyThreadState *XBPython::getMainThreadState()
@@ -420,27 +413,21 @@ PyThreadState *XBPython::getMainThreadState()
 
 int XBPython::ScriptsSize()
 {
-  int iSize = 0;
-  
-  EnterCriticalSection(&m_critSection);
-  iSize = vecPyList.size();
-  LeaveCriticalSection(&m_critSection);
-
-  return iSize;
+  CSingleLock lock(m_critSection);
+  return vecPyList.size();
 }
 
 const char* XBPython::getFileName(int scriptId)
 {
   const char* cFileName = NULL;
   
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
   {
     if (it->id == scriptId) cFileName = it->strFile.c_str();
     ++it;
   }
-  LeaveCriticalSection(&m_critSection);
 
   return cFileName;
 }
@@ -449,14 +436,14 @@ int XBPython::getScriptId(const char* strFile)
 {
   int iId = -1;
   
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
+
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
   {
     if (!stricmp(it->strFile.c_str(), strFile)) iId = it->id;
     ++it;
   }
-  LeaveCriticalSection(&m_critSection);
   
   return iId;
 }
@@ -464,15 +451,14 @@ int XBPython::getScriptId(const char* strFile)
 bool XBPython::isRunning(int scriptId)
 {
   bool bRunning = false;
+  CSingleLock lock(m_critSection); 
   
-  EnterCriticalSection(&m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
   {
     if (it->id == scriptId)	bRunning = true;
     ++it;
   }
-  LeaveCriticalSection(&m_critSection);
   
   return bRunning;
 }
@@ -481,27 +467,21 @@ bool XBPython::isStopping(int scriptId)
 {
   bool bStopping = false;
   
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   PyList::iterator it = vecPyList.begin();
   while (it != vecPyList.end())
   {
     if (it->id == scriptId) bStopping = it->pyThread->isStopping();
     ++it;
   }
-  LeaveCriticalSection(&m_critSection);
   
   return bStopping;
 }
 
 int XBPython::GetPythonScriptId(int scriptPosition)
 {
-  int iId = -1;
-
-  EnterCriticalSection(&m_critSection);
-  iId = (int)vecPyList[scriptPosition].id;
-  LeaveCriticalSection(&m_critSection);
-
-  return iId;
+  CSingleLock lock(m_critSection);
+  return (int)vecPyList[scriptPosition].id;
 }
 
 void XBPython::PulseGlobalEvent()

@@ -27,7 +27,6 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogKaiToast.h"
-#include "LocalizeStrings.h"
 #include "Util.h"
 
 #include "XBPyThread.h"
@@ -92,8 +91,8 @@ XBPyThread::~XBPyThread()
   if (argv)
   {
     for (unsigned int i = 0; i < argc; i++)
-      delete argv[i];
-    delete argv;
+      delete [] argv[i];
+    delete [] argv;
   }
 }
 
@@ -251,6 +250,7 @@ bool XBPyThread::isStopping() {
 
 void XBPyThread::stop()
 {
+  stopping = true;
   PyEval_AcquireLock();
   //PyErr_SetInterrupt();
 
@@ -263,5 +263,5 @@ void XBPyThread::stop()
 
   PyEval_ReleaseLock();
 
-  stopping = true;
+  
 }

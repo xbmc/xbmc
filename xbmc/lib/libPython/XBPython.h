@@ -52,33 +52,33 @@ public:
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();
   virtual void OnQueueNextItem() {};
-  void	RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
-  void	UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
-  void	Initialize();
-  void	Finalize();
-  void	FreeResources();
-  void	Process();
+  void  RegisterPythonPlayerCallBack(IPlayerCallback* pCallback);
+  void  UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback);
+  void  Initialize();
+  void  Finalize();
+  void  FreeResources();
+  void  Process();
 
-  void PulseGlobalEvent();
-  void WaitForEvent(HANDLE hEvent, DWORD timeout);
+  void  PulseGlobalEvent();
+  void  WaitForEvent(HANDLE hEvent, DWORD timeout);
 
-  int	ScriptsSize();
-  int	GetPythonScriptId(int scriptPosition);
+  int   ScriptsSize();
+  int   GetPythonScriptId(int scriptPosition);
   int   evalFile(const char *);
   int   evalFile(const char *, const unsigned int, const char **);
 
-  bool	isRunning(int scriptId);
+  bool  isRunning(int scriptId);
   bool  isStopping(int scriptId);
-  void	setDone(int id);
+  void  setDone(int id);
 
   //only should be called from thread which is running the script
   void  stopScript(int scriptId);
 
   // returns NULL if script doesn't exist or if script doesn't have a filename
-  const char*	getFileName(int scriptId);
+  const char* getFileName(int scriptId);
 
   // returns -1 if no scripts exist with specified filename
-  int		getScriptId(const char* strFile);
+  int  getScriptId(const char* strFile);
 
   PyThreadState *getMainThreadState();
 
@@ -87,18 +87,18 @@ public:
 private:
   bool              FileExist(const char* strFile);
 
-  int								nextid;
-  PyThreadState*		mainThreadState;
-  DWORD							dThreadId;
-  bool							m_bInitialized;
-  bool							bThreadInitialize;
-  HANDLE						m_hEvent;
+  int               nextid;
+  PyThreadState*    mainThreadState;
+  ThreadIdentifier  dThreadId;
+  bool              m_bInitialized;
+  bool              bThreadInitialize;
+  HANDLE            m_hEvent;
   int               m_iDllScriptCounter; // to keep track of the total scripts running that need the dll
   HMODULE           m_hModule;
   //Vector with list of threads used for running scripts
   PyList vecPyList;
   PlayerCallbackList vecPlayerCallbackList;
-  CRITICAL_SECTION	m_critSection;
+  CCriticalSection  m_critSection;
 
   // any global events that scripts should be using
   HANDLE m_globalEvent;
