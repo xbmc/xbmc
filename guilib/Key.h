@@ -428,7 +428,7 @@ public:
   virtual ~CKey(void);
   const CKey& operator=(const CKey& key);
   uint32_t GetButtonCode() const; // for backwards compatibility only
-  uint32_t GetUnicode() const; // http api does not really support unicode till now. It only simulates unicode when ascii codes are available:
+  wchar_t GetUnicode() const; // http api does not really support unicode till now. It only simulates unicode when ascii codes are available:
   uint8_t GetLeftTrigger() const;
   uint8_t GetRightTrigger() const;
   float GetLeftThumbX() const;
