@@ -691,7 +691,7 @@ void CButtonTranslator::GetAction(int window, const CKey &key, CAction &action)
 
 int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction)
 {
-  int code = key.GetButtonCode();
+  uint32_t code = key.GetButtonCode();
   map<int, buttonMap>::iterator it = translatorMap.find(window);
   if (it == translatorMap.end())
     return 0;
@@ -721,7 +721,7 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &st
   return action;
 }
 
-void CButtonTranslator::MapAction(int buttonCode, const char *szAction, buttonMap &map)
+void CButtonTranslator::MapAction(uint32_t buttonCode, const char *szAction, buttonMap &map)
 {
   int action = ACTION_NONE;
   if (!TranslateActionString(szAction, action) || !buttonCode)
@@ -738,7 +738,7 @@ void CButtonTranslator::MapAction(int buttonCode, const char *szAction, buttonMa
     CButtonAction button;
     button.id = action;
     button.strID = szAction;
-    map.insert(pair<int, CButtonAction>(buttonCode, button));
+    map.insert(pair<uint32_t, CButtonAction>(buttonCode, button));
   }
 }
 
@@ -758,7 +758,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      int buttonCode = TranslateGamepadString(pButton->Value());
+      uint32_t buttonCode = TranslateGamepadString(pButton->Value());
       if (pButton->FirstChild())
         MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
@@ -769,7 +769,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      int buttonCode = TranslateRemoteString(pButton->Value());
+      uint32_t buttonCode = TranslateRemoteString(pButton->Value());
       if (pButton->FirstChild())
         MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
@@ -780,7 +780,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      int buttonCode = TranslateUniversalRemoteString(pButton->Value());
+      uint32_t buttonCode = TranslateUniversalRemoteString(pButton->Value());
       if (pButton->FirstChild())
         MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
@@ -791,7 +791,7 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     TiXmlElement *pButton = pDevice->FirstChildElement();
     while (pButton)
     {
-      int buttonCode = TranslateKeyboardButton(pButton);
+      uint32_t buttonCode = TranslateKeyboardButton(pButton);
       if (pButton->FirstChild())
         MapAction(buttonCode, pButton->FirstChild()->Value(), map);
       pButton = pButton->NextSiblingElement();
@@ -954,10 +954,10 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   return windowID;
 }
 
-int CButtonTranslator::TranslateGamepadString(const char *szButton)
+uint32_t CButtonTranslator::TranslateGamepadString(const char *szButton)
 {
   if (!szButton) return 0;
-  int buttonCode = 0;
+  uint32_t buttonCode = 0;
   CStdString strButton = szButton;
   strButton.ToLower();
   if (strButton.Equals("a")) buttonCode = KEY_BUTTON_A;
@@ -992,10 +992,10 @@ int CButtonTranslator::TranslateGamepadString(const char *szButton)
   return buttonCode;
 }
 
-int CButtonTranslator::TranslateRemoteString(const char *szButton)
+uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
 {
   if (!szButton) return 0;
-  int buttonCode = 0;
+  uint32_t buttonCode = 0;
   CStdString strButton = szButton;
   strButton.ToLower();
   if (strButton.Equals("left")) buttonCode = XINPUT_IR_REMOTE_LEFT;
@@ -1052,22 +1052,22 @@ int CButtonTranslator::TranslateRemoteString(const char *szButton)
   return buttonCode;
 }
 
-int CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
+uint32_t CButtonTranslator::TranslateUniversalRemoteString(const char *szButton)
 {
   if (!szButton || strlen(szButton) < 4 || strnicmp(szButton, "obc", 3)) return 0;
   const char *szCode = szButton + 3;
   // Button Code is 255 - OBC (Original Button Code) of the button
-  int buttonCode = 255 - atol(szCode);
+  uint32_t buttonCode = 255 - atol(szCode);
   if (buttonCode > 255) buttonCode = 0;
   return buttonCode;
 }
 
-int CButtonTranslator::TranslateKeyboardString(const char *szButton)
+uint32_t CButtonTranslator::TranslateKeyboardString(const char *szButton)
 {
-  int buttonCode = 0;
+  uint32_t buttonCode = 0;
   if (strlen(szButton) == 1)
   { // single character
-    buttonCode = (int)toupper(szButton[0]) | KEY_VKEY;
+    buttonCode = (uint32_t)toupper(szButton[0]) | KEY_VKEY;
     // FIXME It is a printable character, printable should be ASCII not VKEY! Till now it works, but how (long)?
     // FIXME support unicode: additional parameter necessary since unicode can not be embedded into key/action-ID.
   }
@@ -1170,7 +1170,7 @@ int CButtonTranslator::TranslateKeyboardString(const char *szButton)
   return buttonCode;
 }
 
-int CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
+uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 {
   const char *szButton = pButton->Value();
 
@@ -1180,7 +1180,7 @@ int CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
   {
     int id = 0;
     if (pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS)
-      return id;
+      return (uint32_t)id;
     else
       CLog::Log(LOGERROR, "Keyboard Translator: `key' button has no id");
   }
