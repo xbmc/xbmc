@@ -40,11 +40,10 @@ extern CStdString g_LoadErrorStr;
 
 typedef struct
 {
-  char name[32];
+  const char* name;
   int action;
 } ActionMapping;
 
-// remember the fixed length names (hence max 31 char)!
 static const ActionMapping actions[] = 
        {{"left"              , ACTION_MOVE_LEFT },
         {"right"             , ACTION_MOVE_RIGHT},

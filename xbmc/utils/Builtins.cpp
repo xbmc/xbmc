@@ -73,9 +73,9 @@ using namespace MEDIA_DETECT;
 
 typedef struct
 {
-  char command[32];
+  const char* command;
   bool needsParameters;
-  char description[128];
+  const char* description;
 } BUILT_IN;
 
 const BUILT_IN commands[] = {
