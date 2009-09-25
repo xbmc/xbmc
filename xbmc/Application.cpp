@@ -1262,7 +1262,7 @@ HRESULT CApplication::Initialize()
   }
 
 #ifdef HAS_PYTHON
-  g_pythonParser.bStartup = true;
+  g_pythonParser.m_bStartup = true;
 #endif
   g_sysinfo.Refresh();
 

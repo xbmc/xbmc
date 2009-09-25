@@ -81,15 +81,14 @@ int xbTrace(PyObject *obj, _frame *frame, int what, PyObject *arg)
 XBPyThread::XBPyThread(XBPython *pExecuter, int id)
 {
   CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
-  m_pExecuter = pExecuter;
+  m_pExecuter   = pExecuter;
   m_threadState = NULL;
-  m_id = id;
-
-  done = false;
-  stopping = false;
-  argv = NULL;
-  source = NULL;
-  argc = 0;
+  m_id          = id;
+  m_done        = false;
+  m_stopping    = false;
+  m_argv        = NULL;
+  m_source      = NULL;
+  m_argc        = 0;
 }
 
 XBPyThread::~XBPyThread()
@@ -97,29 +96,29 @@ XBPyThread::~XBPyThread()
   stop();
   StopThread();
   CLog::Log(LOGDEBUG,"python thread %d destructed", m_id);
-  if (source) delete []source;
-  if (argv)
+  delete [] m_source;
+  if (m_argv)
   {
-    for (unsigned int i = 0; i < argc; i++)
-      delete [] argv[i];
-    delete [] argv;
+    for (unsigned int i = 0; i < m_argc; i++)
+      delete [] m_argv[i];
+    delete [] m_argv;
   }
 }
 
 int XBPyThread::evalFile(const char *src)
 {
-  type = 'F';
-  source = new char[strlen(src)+1];
-  strcpy(source, src);
+  m_type    = 'F';
+  m_source  = new char[strlen(src)+1];
+  strcpy(m_source, src);
   Create();
   return 0;
 }
 
 int XBPyThread::evalString(const char *src)
 {
-  type = 'S';
-  source = new char[strlen(src)+1];
-  strcpy(source, src);
+  m_type    = 'S';
+  m_source  = new char[strlen(src)+1];
+  strcpy(m_source, src);
   Create();
   return 0;
 }
@@ -128,12 +127,12 @@ int XBPyThread::setArgv(unsigned int src_argc, const char **src)
 {
   if (src == NULL)
     return 1;
-  argc = src_argc;
-  argv = new char*[argc];
-  for(unsigned int i = 0; i < argc; i++)
+  m_argc = src_argc;
+  m_argv = new char*[m_argc];
+  for(unsigned int i = 0; i < m_argc; i++)
   {
-    argv[i] = new char[strlen(src[i])+1];
-    strcpy(argv[i], src[i]);
+    m_argv[i] = new char[strlen(src[i])+1];
+    strcpy(m_argv[i], src[i]);
   }
   return 0;
 }
@@ -167,15 +166,15 @@ void XBPyThread::Process()
 
   m_pExecuter->InitializeInterpreter();
   
-  CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, source);
+  CLog::Log(LOGDEBUG, "%s - The source file to load is %s", __FUNCTION__, m_source);
 
   // get path from script file name and add python path's
   // this is used for python so it will search modules from script path first
-  strcpy(sourcedir, _P(source));
+  strcpy(sourcedir, _P(m_source));
 
   char *p = strrchr(sourcedir, PATH_SEPARATOR_CHAR);
   *p = PY_PATH_SEP;
-  *++p = 0;
+  *++p = '\0';
 
   strcpy(path, sourcedir);
 
@@ -186,10 +185,8 @@ void XBPyThread::Process()
 #endif
 
   // set current directory and python's path.
-  if (argv != NULL)
-  {
-    PySys_SetArgv(argc, argv);
-  }
+  if (m_argv != NULL)
+    PySys_SetArgv(m_argc, m_argv);
 
   CLog::Log(LOGDEBUG, "%s - Setting the Python path to %s", __FUNCTION__, path);
 
@@ -203,22 +200,22 @@ void XBPyThread::Process()
   
   int retval = -1;
   
-  if (type == 'F')
+  if (m_type == 'F')
   {
     // run script from file
-    FILE *fp = fopen_utf8(_P(source).c_str(), "r");
+    FILE *fp = fopen_utf8(_P(m_source).c_str(), "r");
     if (fp)
     {
-      retval = PyRun_SimpleFile(fp, _P(source).c_str());
+      retval = PyRun_SimpleFile(fp, _P(m_source).c_str());
       fclose(fp);
     }
     else
-      CLog::Log(LOGERROR, "%s not found!", source);
+      CLog::Log(LOGERROR, "%s not found!", m_source);
   }
   else
   {
     //run script
-    retval = PyRun_SimpleString(source);
+    retval = PyRun_SimpleString(m_source);
   }
   if (retval == -1)
   {
@@ -232,7 +229,7 @@ void XBPyThread::Process()
       CStdString desc;
       CStdString path;
       CStdString script;
-      CUtil::Split(source, path, script);
+      CUtil::Split(m_source, path, script);
       if (script.Equals("default.py"))
       {
         CStdString path2;
@@ -282,13 +279,13 @@ void XBPyThread::Process()
 
 void XBPyThread::OnExit()
 {
-  done = true;
+  m_done = true;
   m_pExecuter->setDone(m_id);
 }
 
 void XBPyThread::OnException()
 {
-  done = true;
+  m_done        = true;
   m_threadState = NULL;
   CLog::Log(LOGERROR,"%s, abnormally terminating python thread", __FUNCTION__);
   PyEval_ReleaseLock();
@@ -296,16 +293,16 @@ void XBPyThread::OnException()
 }
 
 bool XBPyThread::isDone() {
-  return done;
+  return m_done;
 }
 
 bool XBPyThread::isStopping() {
-  return stopping;
+  return m_stopping;
 }
 
 void XBPyThread::stop()
 {
-  stopping = true;
+  m_stopping = true;
   
   if (m_threadState)
   {
