@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamMemory.h"
 
 CDVDInputStreamMemory::CDVDInputStreamMemory() : CDVDInputStream(DVDSTREAM_TYPE_MEMORY)

@@ -19,13 +19,15 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlayListPLS.h"
 #include "PlayListFactory.h"
 #include "Util.h"
+#include "StringUtils.h"
 #include "FileSystem/File.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "MusicInfoTag.h"
+#include "utils/CharsetConverter.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;

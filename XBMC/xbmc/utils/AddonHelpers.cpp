@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Application.h"
 #include "AddonHelpers.h"
 #include "Settings.h"
@@ -47,6 +46,11 @@
 #include "Crc32.h"
 #include "xbox/IoSupport.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDDemuxUtils.h"
+#include "utils/log.h"
+#include "LocalizeStrings.h"
+#include "GUISettings.h"
+#include "SectionLoader.h"
+#include "LangInfo.h"
 
 using namespace std;
 using namespace XFILE;

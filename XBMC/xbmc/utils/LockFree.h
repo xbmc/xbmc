@@ -22,9 +22,10 @@
 #ifndef __LOCK_FREE_H__
 #define __LOCK_FREE_H__
 
+#include <cstring>
 #include "Atomics.h"
 
-#define SPINLOCK_ACQUIRE(l) while(cas(&l, 0, 1))
+#define SPINLOCK_ACQUIRE(l) while(cas(&l, 0, 1)) {} 
 #define SPINLOCK_RELEASE(l) l = 0
 
 // A unique-valued pointer. Version is incremented with each write.
@@ -37,10 +38,10 @@ struct atomic_ptr
 };
 
 #if defined(__ppc__) || defined(__powerpc__)
-  #define atomic_ptr_to_long(p) (long) *((long*)&p)
+  #define atomic_ptr_to_long(p) (long) ((long*)&p)
 #else
   // This is ugly but correct as long as sizeof(void*) == sizeof(long)...
-  #define atomic_ptr_to_long_long(p) (long long) *((long long*)&p)
+  #define atomic_ptr_to_long_long(p) (long long) ((long long*)&p)
 #endif
 
 struct lf_node
@@ -82,8 +83,8 @@ struct lf_heap
 };
 
 
-void lf_heap_init(lf_heap* pHeap, long blockSize, long initialSize = 0);
-void lf_heap_grow(lf_heap* pHeap, long size = 0);
+void lf_heap_init(lf_heap* pHeap, size_t blockSize, size_t initialSize = 0);
+void lf_heap_grow(lf_heap* pHeap, size_t size = 0);
 void lf_heap_deinit(lf_heap* pHeap);
 void* lf_heap_alloc(lf_heap* pHeap);
 void lf_heap_free(lf_heap* pHeap, void* p);

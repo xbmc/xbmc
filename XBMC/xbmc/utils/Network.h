@@ -107,6 +107,9 @@ public:
 
    // callback from application controlled thread to handle any setup
    void NetworkMessage(EMESSAGE message, DWORD dwParam);
+   
+   void StartServices();
+   void StopServices(bool bWait);
 
    static int ParseHex(char *str, unsigned char *addr);
 };

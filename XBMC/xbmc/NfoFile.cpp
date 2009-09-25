@@ -22,7 +22,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "NfoFile.h"
 #include "VideoDatabase.h"
 #include "utils/IMDB.h"
@@ -32,6 +31,8 @@
 #include "FileItem.h"
 #include "Album.h"
 #include "Artist.h"
+#include "GUISettings.h"
+
 #include <vector>
 
 using namespace DIRECTORY;

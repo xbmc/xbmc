@@ -29,7 +29,7 @@
 struct audio_slice
 {
   struct _tag_header{
-    unsigned __int64 timestamp; // Currently not used
+    uint64_t timestamp; // Currently not used
     size_t data_len;
   } header;
   unsigned int data[1];

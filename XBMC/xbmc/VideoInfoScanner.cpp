@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "FileItem.h"
 #include "VideoInfoScanner.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
@@ -33,8 +33,11 @@
 #include "utils/GUIInfoManager.h"
 #include "FileSystem/File.h"
 #include "GUIDialogProgress.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "Settings.h"
-#include "FileItem.h"
+#include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -826,11 +829,20 @@ namespace VIDEO
       return false;
     }
 
-    CLog::Log(LOGDEBUG,"found episode based match %s (s%se%s) [%s]",strLabel.c_str(),season,episode,regexp.c_str());
     SEpisode myEpisode;
     myEpisode.strPath = item->m_strPath;
-    myEpisode.iSeason = atoi(season);
-    myEpisode.iEpisode = atoi(episode);
+    if (strlen(season) > 0 && strlen(episode) == 0)
+    { // no episode specification -> assume season 1
+      myEpisode.iSeason = 1;
+      myEpisode.iEpisode = atoi(season);
+      CLog::Log(LOGDEBUG,"found episode based match with forced season 1 %s (e%i) [%s]",strLabel.c_str(),myEpisode.iEpisode,regexp.c_str());
+    }
+    else
+    { // season and episode specified
+      myEpisode.iSeason = atoi(season);
+      myEpisode.iEpisode = atoi(episode);
+      CLog::Log(LOGDEBUG,"found episode based match %s (s%ie%i) [%s]",strLabel.c_str(),myEpisode.iSeason,myEpisode.iEpisode,regexp.c_str());
+    }
     myEpisode.cDate.SetValid(false);
     episodeList.push_back(myEpisode);
     free(season);
@@ -1112,6 +1124,14 @@ namespace VIDEO
           m_pObserver->OnSetTitle(strTitle);
         }
         AddMovieAndGetThumb(&item,"tvshows",episodeDetails,lShowId);
+        continue;
+      }
+
+      if (episodes.empty())
+      {
+        CLog::Log(LOGERROR,"CVideoInfoScanner::OnProcessSeriesFolder: Asked to lookup episode %s"
+                           " online, but we have no episode guide. Check your tvshow.nfo and make"
+                           " sure the <episodeguide> tag is in place.",file->strPath.c_str());
         continue;
       }
 

@@ -19,8 +19,9 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "WAVcodec.h"
+#include "utils/EndianSwap.h"
 
 #if defined(WIN32)
 #include <mmreg.h>
@@ -63,6 +64,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
   // read header
   WAVE_RIFFHEADER riffh;
   m_file.Read(&riffh, sizeof(WAVE_RIFFHEADER));
+  riffh.filesize = Endian_SwapLE32(riffh.filesize);
 
   // file valid?
   if (strncmp(riffh.riff, "RIFF", 4)!=0 && strncmp(riffh.rifftype, "WAVE", 4)!=0)
@@ -80,6 +82,7 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
     // always seeking to the start of a chunk
     m_file.Seek(offset + sizeof(WAVE_CHUNK), SEEK_SET);
     m_file.Read(&chunk, sizeof(WAVE_CHUNK));
+    chunk.chunksize = Endian_SwapLE32(chunk.chunksize);
 
     if (!strncmp(chunk.chunk_id, "fmt ", 4))
     {
@@ -90,15 +93,15 @@ bool WAVCodec::Init(const CStdString &strFile, unsigned int filecache)
       m_file.Read(&wfx, sizeof(WAVEFORMATEX));
 
       //  Get file info
-      m_SampleRate    = wfx.Format.nSamplesPerSec;
-      m_Channels      = wfx.Format.nChannels;
-      m_BitsPerSample = wfx.Format.wBitsPerSample;
+      m_SampleRate    = Endian_SwapLE32(wfx.Format.nSamplesPerSec);
+      m_Channels      = Endian_SwapLE16(wfx.Format.nChannels);
+      m_BitsPerSample = Endian_SwapLE16(wfx.Format.wBitsPerSample);
 
       //  Is it an extensible wav file
-      if ((wfx.Format.wFormatTag == WAVE_FORMAT_EXTENSIBLE) && (wfx.Format.cbSize >= 22))
+      if ((Endian_SwapLE16(wfx.Format.wFormatTag) == WAVE_FORMAT_EXTENSIBLE) && (Endian_SwapLE16(wfx.Format.cbSize) >= 22))
       {
         m_file.Read(&wfx + sizeof(WAVEFORMATEX), sizeof(WAVEFORMATEXTENSIBLE) - sizeof(WAVEFORMATEX));
-        m_ChannelMask = wfx.dwChannelMask;
+        m_ChannelMask = Endian_SwapLE32(wfx.dwChannelMask);
       } else {
         m_ChannelMask = 0;
       }

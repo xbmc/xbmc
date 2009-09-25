@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIButtonControl.h"
 #include "GUIDialogNumeric.h"
@@ -27,10 +27,12 @@
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowVideoFiles.h"
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "Util.h"
+#include "GUISettings.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogLockSettings.h"
 #include "MediaManager.h"
@@ -39,16 +41,17 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "Picture.h"
+#include "Settings.h"
+#include "LocalizeStrings.h"
 #ifdef HAS_HAL
 #include "linux/HalManager.h"
 #endif
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 
 using namespace std;
-using namespace MEDIA_DETECT;
 
 #define BACKGROUND_IMAGE       999
 #define BACKGROUND_BOTTOM      998
@@ -153,11 +156,11 @@ int CGUIDialogContextMenu::AddButton(const CStdString &strLabel)
   if (!pButton) return 0;
   // set the button's ID and position
   m_iNumButtons++;
-  DWORD dwID = BUTTON_TEMPLATE + m_iNumButtons;
-  pButton->SetID(dwID);
+  int id = BUTTON_TEMPLATE + m_iNumButtons;
+  pButton->SetID(id);
   pButton->SetPosition(pButtonTemplate->GetXPosition(), (m_iNumButtons - 1)*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
   pButton->SetVisible(true);
-  pButton->SetNavigation(dwID - 1, dwID + 1, dwID, dwID);
+  pButton->SetNavigation(id - 1, id + 1, id, id);
   pButton->SetLabel(strLabel);
   AddControl(pButton);
   // and update the size of our menu
@@ -346,26 +349,29 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   // buttons that are available on both sources and autosourced items
   if (!item) return false;
+  
   switch (button)
   {
   case CONTEXT_BUTTON_EJECT_DRIVE:
 #ifdef HAS_HAL
     return g_HalManager.Eject(item->m_strPath);
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
     return CWIN32Util::EjectDrive(item->m_strPath[0]);
 #else
     return false;
 #endif
 
+#ifdef HAS_DVD_DRIVE  
   case CONTEXT_BUTTON_PLAY_DISC:
-    return CAutorun::PlayDisc();
+    return MEDIA_DETECT::CAutorun::PlayDisc();
 
   case CONTEXT_BUTTON_EJECT_DISC:
-#ifdef _WIN32PC
+#ifdef _WIN32
     CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->m_strPath)[0]);
 #else
     CIoSupport::ToggleTray();
 #endif
+#endif  
     return true;
   default:
     break;
@@ -730,7 +736,6 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
       else if (vecTypes[i].Equals(g_localizeStrings.Get(7)))
         iWindow = WINDOW_FILES;
 
-      //m_gWindowManager.ActivateWindow(iWindow, strPath);
       CUtil::ClearFileItemCache();
       m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
       return;

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "LabelFormatter.h"
 #include "GUISettings.h"
 #include "RegExp.h"
@@ -27,6 +26,8 @@
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
+#include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 using namespace MUSIC_INFO;
 

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderWavPack.h"
 #include "cores/paplayer/WAVPackcodec.h"
 

@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 08/20/2009-->
+<!--Date of translation: 09/09/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22217 -->
+<!--Based on english strings version 22833 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -727,7 +727,8 @@
   <string id="1047">其它...</string> 
   <string id="1048">Web 服务器用户名</string>
   <string id="1049">脚本设置</string>
-   
+  <string id="1050">单曲</string>
+
   <string id="1200">SMB 共享设置</string>
   <string id="1202">工作组</string>
   <string id="1203">默认账号</string>
@@ -1001,7 +1002,7 @@
   <string id="13110">保存此分辨率?</string>
   <string id="13111">是否保存此分辨率?</string>
 
-  <string id="13112">高品质软件倍线</string>
+  <string id="13112">高品质倍线</string>
   <string id="13113">关闭</string>
   <string id="13114">普通清晰度内容时打开</string>
   <string id="13115">始终打开</string>
@@ -1010,9 +1011,9 @@
   <string id="13117">Bicubic</string>
   <string id="13118">Lanczos</string>
   <string id="13119">Sinc</string>
+  <string id="13120">VDPAU</string>
+  <string id="13121">VDPAU 高品质倍线等级</string>
 
-  <string id="13120">严格象素映射贴图(需要重启)</string>
-  
   <string id="13130">显示空白</string>
   <string id="13131">禁止</string>
   <string id="13132">空白显示</string>
@@ -1215,10 +1216,10 @@
   <string id="13503">视频时钟(重采样音频)</string>
   <string id="13504">最高重采样率(%)</string>
   <string id="13505">重采样质量</string>
-  <string id="13506">低</string>
+  <string id="13506">低（快）</string>
   <string id="13507">中</string>
   <string id="13508">高</string>
-  <string id="13509">极高</string>
+  <string id="13509">极高（慢）</string>
   <string id="13510">同步回放显示</string>
 
   <string id="13600">Apple 遥控器</string>
@@ -2103,6 +2104,15 @@
   <string id="23000">天气插件</string>
   <string id="23001">- 插件设置</string>
 
+  <!-- strings 23100 thru 23150 reserved for external player -->
+  <string id="23100">外部播放器激活</string>
+  <string id="23101">点 OK 关闭播放器</string>
+  <string id="23102"></string>
+  <string id="23103"></string>
+  <string id="23104">播放完毕时点 OK</string>
+  <string id="23105"></string>
+  <string id="23106"></string>
+
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">资料库模式</string>
   <string id="29801">QWERTY 键盘</string>
@@ -2174,4 +2184,11 @@
   <string id="33069">桌面背景集</string>
   <string id="33070">自定义桌面背景</string>
   <string id="33071">自定义桌面背景集</string>
+  <string id="33072">浏览自述文件</string>
+  <string id="33073">浏览更新记录</string>
+  <string id="33074">运行此版本的 %s 需要</string>
+  <string id="33075">XBMC为 %s 或更高版本。</string>
+  <string id="33076">请升级XBMC。</string>
+  <string id="33077">未找到数据！</string>
+  <string id="33078">下一页</string>
 </strings>

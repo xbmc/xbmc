@@ -20,6 +20,7 @@
  *
  */
 
+#include "StdString.h"
 
 class CFileItemList;
 

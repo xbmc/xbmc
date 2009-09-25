@@ -1,8 +1,8 @@
 ARCH=@ARCH@
 
-INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/
+INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/ -I../../xbmc/utils
 DEFINES = -DHAS_SDL
-LIBS = @LIBS@
+LIBS = @LIBS@ -lSDL_image
 OBJS = \
 	AnimatedGif.o \
 	Bundler.o \

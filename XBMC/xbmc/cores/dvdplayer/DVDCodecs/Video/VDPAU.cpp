@@ -19,17 +19,17 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #ifdef HAVE_LIBVDPAU
 #include <dlfcn.h>
+#include "WindowingFactory.h"
 #include "VDPAU.h"
-#include "Surface.h"
-using namespace Surface;
 #include "vdpau.h"
-#include "TextureManager.h"                         //DAVID-CHECKNEEDED
+#include "TextureManager.h"
 #include "cores/VideoRenderers/RenderManager.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "Settings.h"
+#include "GUISettings.h"
 #define ARSIZE(x) (sizeof(x) / sizeof((x)[0]))
 
 CVDPAU*          g_VDPAU;
@@ -46,6 +46,13 @@ CVDPAU::Desc decoder_profiles[] = {
 {"VC1_ADVANCED", VDP_DECODER_PROFILE_VC1_ADVANCED},
 };
 const size_t decoder_profile_count = sizeof(decoder_profiles)/sizeof(CVDPAU::Desc);
+
+static float studioCSC[3][4] = 
+{
+    { 1.0f,        0.0f, 1.57480000f,-0.78740000f},
+    { 1.0f,-0.18737736f,-0.46813736f, 0.32775736f},
+    { 1.0f, 1.85556000f,        0.0f,-0.92780000f}
+};
 
 CVDPAU::CVDPAU(int width, int height)
 {
@@ -74,7 +81,7 @@ CVDPAU::CVDPAU(int width, int height)
   vid_width = vid_height = outWidth = outHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
-  m_Display = g_graphicsContext.getScreenSurface()->GetDisplay();
+  m_Display = g_Windowing.GetDisplay();
 
   InitVDPAUProcs();
 
@@ -150,6 +157,10 @@ bool CVDPAU::MakePixmap(int width, int height)
     None
   };
 
+  int OutWidth = g_graphicsContext.GetWidth();
+  int OutHeight = g_graphicsContext.GetHeight();
+
+  CLog::Log(LOGNOTICE,"Creating %ix%i pixmap", OutWidth, OutHeight);
   int pixmapAttribs[] = {
     GLX_TEXTURE_TARGET_EXT, GLX_TEXTURE_2D_EXT,
     GLX_TEXTURE_FORMAT_EXT, GLX_TEXTURE_FORMAT_RGBA_EXT,
@@ -177,8 +188,8 @@ bool CVDPAU::MakePixmap(int width, int height)
   CLog::Log(LOGDEBUG, "Using fbconfig index %d.", fbConfigIndex);
   m_Pixmap = XCreatePixmap(m_Display,
                            DefaultRootWindow(m_Display),
-                           width,
-                           height,
+                           OutWidth,
+                           OutHeight,
                            wndattribs.depth);
   if (!m_Pixmap)
   {
@@ -214,7 +225,7 @@ bool CVDPAU::MakePixmap(int width, int height)
           status = false;
         }
       }
-    } 
+    }
     else
     {
       CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
@@ -320,15 +331,21 @@ void CVDPAU::CheckFeatures()
 
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_NOISE_REDUCTION;
     features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_SHARPNESS;
+#ifdef VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1
+    if ( (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") == 10) &&
+          (g_guiSettings.GetInt("videoplayer.highqualityupscaling") > 0) )
+      features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_HIGH_QUALITY_SCALING_L1 + g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel");
+    CLog::Log(LOGNOTICE,"upscalingalgoritm = %i vdpauUpscalingLevel = %i",g_guiSettings.GetInt("videoplayer.upscalingalgorithm"),g_guiSettings.GetInt("videoplayer.vdpauUpscalingLevel"));
+#endif
     if (interlaced && tmpDeint)
     {
       CLog::Log(LOGNOTICE, " (VDPAU) Enabling deinterlacing features for the video mixer");
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL;
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL;
       features[featuresCount++] = VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE;
-    } 
+    }
 
-    VdpStatus vdp_st = VDP_STATUS_ERROR;  
+    VdpStatus vdp_st = VDP_STATUS_ERROR;
     vdp_st = vdp_video_mixer_create(vdp_device,
                                     featuresCount,
                                     features,
@@ -376,8 +393,16 @@ void CVDPAU::SetColor()
                                    VDP_COLOR_STANDARD_ITUR_BT_709,
                                    &m_CSCMatrix);
   VdpVideoMixerAttribute attributes[] = { VDP_VIDEO_MIXER_ATTRIBUTE_CSC_MATRIX };
-  void const * pm_CSCMatix[] = { &m_CSCMatrix };
-  vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+  if (g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+  {
+    void const * pm_CSCMatix[] = { &studioCSC };
+    vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+  }
+  else
+  {
+    void const * pm_CSCMatix[] = { &m_CSCMatrix };
+    vdp_st = vdp_video_mixer_set_attribute_values(videoMixer, ARSIZE(attributes), attributes, pm_CSCMatix);
+  }
   CheckStatus(vdp_st, __LINE__);
 }
 
@@ -879,8 +904,8 @@ int CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   {
     vdp_st = vdp_output_surface_create(vdp_device,
                                        VDP_RGBA_FORMAT_B8G8R8A8,
-                                       vid_width,
-                                       vid_height,
+                                       g_graphicsContext.GetWidth(),
+                                       g_graphicsContext.GetHeight(),
                                        &outputSurfaces[i]);
     CheckStatus(vdp_st, __LINE__);
 
@@ -1053,7 +1078,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   || vdp->vdpauConfigured == false
   || vdp->max_references < max_refs)
   {
-    CExclusiveLock lock(g_renderManager.GetSection());
+    CSingleLock lock(g_graphicsContext);
     vdp->FiniVDPAUOutput();
     vdp->ConfigVDPAU(s, max_refs);
   }
@@ -1103,16 +1128,16 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     future = render->surface;
   }
 
-  if (( outRectVid.x1 != vid_width ) ||
-      ( outRectVid.y1 != vid_height ))
+  if (( (int)outRectVid.x1 != g_graphicsContext.GetWidth() ) ||
+      ( (int)outRectVid.y1 != g_graphicsContext.GetHeight() ))
   {
+    CSingleLock lock(g_graphicsContext);
     outRectVid.x0 = 0;
     outRectVid.y0 = 0;
-    outRectVid.x1 = vid_width;
-    outRectVid.y1 = vid_height;
+    outRectVid.x1 = g_graphicsContext.GetWidth();
+    outRectVid.y1 = g_graphicsContext.GetHeight();
 
-    CSingleLock lock(g_graphicsContext);
-    if(g_graphicsContext.GetViewWindow().right < (long)vid_width)
+    /*if(g_graphicsContext.GetViewWindow().right < (long)vid_width)
       outWidth = vid_width;
     else
       outWidth = g_graphicsContext.GetViewWindow().right;
@@ -1125,6 +1150,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
     outRect.y0 = 0;
     outRect.x1 = outWidth;
     outRect.y1 = outHeight;
+    */
   }
   //CLog::Log(LOGNOTICE,"surfaceNum %i",surfaceNum);
 //  vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
@@ -1140,7 +1166,7 @@ void CVDPAU::PrePresent(AVCodecContext *avctx, AVFrame *pFrame)
                                   (interlaced && tmpDeint)? &(future) : NULL, //&(future),
                                   NULL,
                                   outputSurface,
-                                  &(outRect),
+                                  &(outRectVid),
                                   &(outRectVid),
                                   0,
                                   NULL);

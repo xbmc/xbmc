@@ -23,7 +23,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
+#include "system.h"
 
 #if defined(HAS_FILESYSTEM_SMB)
 #include "FileSmb.h"
@@ -34,8 +34,10 @@
 #include <libsmbclient.h>
 #endif
 #include "../utils/Network.h"
-#include "Settings.h"
-
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -60,6 +62,7 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
 
 CSMB::CSMB()
 {
+  smbc_init(xb_smbc_auth, 0);
   m_context = NULL;
 }
 
@@ -67,6 +70,7 @@ CSMB::~CSMB()
 {
   Deinit();
 }
+
 void CSMB::Deinit()
 {
   CSingleLock lock(*this);

@@ -19,14 +19,16 @@
  *
  */
 
-#include "stdafx.h"
 #include "DllLibCMyth.h"
 #include "CMythSession.h"
 #include "VideoInfoTag.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "DateTime.h"
 #include "FileItem.h"
 #include "URL.h"
+#include "StringUtils.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 extern "C"
 {

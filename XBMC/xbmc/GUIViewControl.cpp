@@ -19,11 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewControl.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 #include "utils/GUIInfoManager.h"
+#include "Key.h"
 
 CGUIViewControl::CGUIViewControl(void)
 {
@@ -219,7 +220,7 @@ bool CGUIViewControl::HasControl(int viewControlID) const
   // run through our controls, checking for the id
   for (ciViews it = m_allViews.begin(); it != m_allViews.end(); it++)
   {
-    if ((*it)->GetID() == (DWORD) viewControlID)
+    if ((*it)->GetID() == viewControlID)
       return true;
   }
   return false;
@@ -251,7 +252,7 @@ int CGUIViewControl::GetViewModeByID(int id) const
   for (unsigned int i = 0; i < m_visibleViews.size(); ++i)
   {
     CGUIBaseContainer *view = (CGUIBaseContainer *)m_visibleViews[i];
-    if (view->GetID() == (DWORD)id)
+    if (view->GetID() == id)
       return (view->GetType() << 16) | view->GetID();
   }
   return 0;  // no view modes :(
@@ -283,7 +284,7 @@ int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
   for (int i = 0; i < (int)m_visibleViews.size(); i++)
   {
     CGUIBaseContainer *view = (CGUIBaseContainer *)m_visibleViews[i];
-    if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == (DWORD) id))
+    if ((type == VIEW_TYPE_NONE || type == view->GetType()) && (!id || view->GetID() == id))
       return i;
   }
   return -1;

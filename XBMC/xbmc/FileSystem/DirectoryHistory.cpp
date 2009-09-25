@@ -19,9 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryHistory.h"
 #include "Util.h"
+#include "utils/log.h"
 
 using namespace std;
 

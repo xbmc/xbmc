@@ -28,7 +28,7 @@
 #include "xbmc_vis.h"
 #include <GL/glew.h>
 #include <string>
-#ifdef _WIN32PC
+#ifdef _WIN32
 #ifndef _MINGW
 #include "win32-dirent.h"
 #endif

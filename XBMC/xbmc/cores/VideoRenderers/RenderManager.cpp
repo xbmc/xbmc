@@ -19,30 +19,29 @@
  *
  */
  
-#include "stdafx.h"
+#include "system.h"
 #include "RenderManager.h"
 #include "utils/CriticalSection.h"
 #include "VideoReferenceClock.h"
 #include "MathUtils.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #include "Application.h"
 #include "Settings.h"
+#include "GUISettings.h"
+#include "WindowingFactory.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
 #endif
 
-#ifdef HAS_XBOX_D3D
-#include "PixelShaderRenderer.h"
-#include "ComboRenderer.h"
-#include "RGBRenderer.h"
-#include "RGBRendererV2.h"
-#elif defined(HAS_SDL_OPENGL)
-#include "LinuxRendererGL.h"
+#if defined(HAS_GL)
+  #include "LinuxRendererGL.h"
+#elif defined(HAS_DX)
+  #include "WinRenderer.h"
 #elif defined(HAS_SDL)
-#include "LinuxRenderer.h"
-#else
-#include "WinRenderer.h"
+  #include "LinuxRenderer.h"
 #endif
 
 #ifdef HAVE_LIBVDPAU
@@ -54,22 +53,12 @@
 
 CXBMCRenderManager g_renderManager;
 
-
 #define MAXPRESENTDELAY 0.500
 
 /* at any point we want an exclusive lock on rendermanager */
 /* we must make sure we don't have a graphiccontext lock */
 /* these two functions allow us to step out from that lock */
 /* and reaquire it after having the exclusive lock */
-
-#ifdef HAS_XBOX_D3D // TODO:DIRECTX
-//VBlank information
-HANDLE g_eventVBlank=NULL;
-void VBlankCallback(D3DVBLANKDATA *pData)
-{
-  PulseEvent(g_eventVBlank);
-}
-#endif
 
 template<class T>
 class CRetakeLock
@@ -111,6 +100,8 @@ CXBMCRenderManager::CXBMCRenderManager()
   m_presentstep = 0;
   m_rendermethod = 0;
   m_presentmethod = VS_INTERLACEMETHOD_NONE;
+  
+  m_bReconfigured = false;
 }
 
 CXBMCRenderManager::~CXBMCRenderManager()
@@ -199,6 +190,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     }
     m_pRenderer->Update(false);
     m_bIsStarted = true;
+    m_bReconfigured = true;
   }
   
   return result;
@@ -228,13 +220,13 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (!m_pRenderer)
     return;
 
-#ifdef HAS_SDL_OPENGL
+
   if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
    || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
   else
     m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
-#endif
+
 
   m_overlays.Render();
 }
@@ -243,15 +235,6 @@ unsigned int CXBMCRenderManager::PreInit()
 {
   CRetakeLock<CExclusiveLock> lock(m_sharedSection);
 
-#ifdef HAS_XBOX_D3D // TODO:DIRECTX
-  if(!g_eventVBlank)
-  {
-    //Only do this on first run
-    g_eventVBlank = CreateEvent(NULL,FALSE,FALSE,NULL);
-    D3DDevice::SetVerticalBlankCallback((D3DVBLANKCALLBACK)VBlankCallback);
-  }
-#endif
-
   m_presentcorr = 0.0;
   m_presenterr  = 0.0;
 
@@ -259,35 +242,12 @@ unsigned int CXBMCRenderManager::PreInit()
   m_bPauseDrawing = false;
   if (!m_pRenderer)
   { 
-#ifdef HAS_XBOX_D3D
-    // no renderer
-    m_rendermethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-    if (m_rendermethod == RENDER_OVERLAYS)
-    {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Selected Overlay-Renderer");
-      m_pRenderer = new CComboRenderer(g_graphicsContext.Get3DDevice());
-    }
-    else if (m_rendermethod == RENDER_HQ_RGB_SHADER)
-    {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer");
-      m_pRenderer = new CRGBRenderer(g_graphicsContext.Get3DDevice());
-    }
-    else if (m_rendermethod == RENDER_HQ_RGB_SHADERV2)
-    {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Selected RGB-Renderer V2");
-      m_pRenderer = new CRGBRendererV2(g_graphicsContext.Get3DDevice());
-    }
-    else // if (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_LQ_RGB_SHADER)
-    {
-      CLog::Log(LOGDEBUG, __FUNCTION__" - Selected LQShader-Renderer");
-      m_pRenderer = new CPixelShaderRenderer(g_graphicsContext.Get3DDevice());
-    }
-#elif defined(HAS_SDL_OPENGL)
+#if defined(HAS_GL)
     m_pRenderer = new CLinuxRendererGL();
+#elif defined(HAS_DX)
+    m_pRenderer = new CPixelShaderRenderer(g_Windowing.Get3DDevice());
 #elif defined(HAS_SDL)
     m_pRenderer = new CLinuxRenderer();
-#else
-    m_pRenderer = new CWinRenderer(g_graphicsContext.Get3DDevice());
 #endif
   }
 
@@ -315,11 +275,11 @@ void CXBMCRenderManager::SetupScreenshot()
     m_pRenderer->SetupScreenshot();
 }
 
-void CXBMCRenderManager::CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height)
-{
+void CXBMCRenderManager::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
+{  
   CSharedLock lock(m_sharedSection);
   if (m_pRenderer)
-    m_pRenderer->CreateThumbnail(surface, width, height);
+    m_pRenderer->CreateThumbnail(texture, width, height);
 }
 
 void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0LL*/, int source /*= -1*/, EFIELDSYNC sync /*= FS_NONE*/)
@@ -380,25 +340,13 @@ float CXBMCRenderManager::GetMaximumFPS()
 {
   float fps;
 
-  if (g_videoConfig.GetVSyncMode() != VSYNC_DISABLED)
+  if (g_guiSettings.GetInt("videoscreen.vsync") != VSYNC_DISABLED)
   {
     fps = (float)g_VideoReferenceClock.GetRefreshRate();
     if (fps <= 0) fps = g_graphicsContext.GetFPS();
   }
   else
     fps = 1000.0f;
-
-#ifdef HAS_XBOX_D3D
-  if( m_rendermethod == RENDER_HQ_RGB_SHADER
-   || m_rendermethod == RENDER_HQ_RGB_SHADERV2)
-  {
-    EINTERLACEMETHOD method = g_stSettings.m_currentVideoSettings.m_InterlaceMethod;
-
-    if((method == VS_INTERLACEMETHOD_AUTO && m_presentfield != FS_NONE)
-    ||  method == VS_INTERLACEMETHOD_RENDER_BOB )
-      fps *= 0.5;
-  }
-#endif
   
   return fps;
 }
@@ -477,10 +425,6 @@ void CXBMCRenderManager::PresentSingle()
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, 0, 255);
-
-#ifdef HAS_XBOX_D3D // TODO:DIRECTX
-  D3DDevice::Present( NULL, NULL, NULL, NULL );
-#endif
 }
 
 /* new simpler method of handling interlaced material, *
@@ -506,9 +450,6 @@ void CXBMCRenderManager::PresentBob()
       m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD, 255);
     m_presentstep = 0;
   }
-#ifdef HAS_XBOX_D3D // TODO:DIRECTX
-  D3DDevice::Present( NULL, NULL, NULL, NULL );
-#endif
 }
 
 void CXBMCRenderManager::PresentBlend()
@@ -525,10 +466,6 @@ void CXBMCRenderManager::PresentBlend()
     m_pRenderer->RenderUpdate(true, RENDER_FLAG_ODD | RENDER_FLAG_NOOSD, 255);
     m_pRenderer->RenderUpdate(false, RENDER_FLAG_EVEN, 128);
   }
-
-#ifdef HAS_XBOX_D3D // TODO:DIRECTX
-  D3DDevice::Present( NULL, NULL, NULL, NULL );
-#endif
 }
 
 /* renders the two fields as one, but doing fieldbased *
@@ -538,25 +475,6 @@ void CXBMCRenderManager::PresentWeave()
   CSingleLock lock(g_graphicsContext);
 
   m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOTH, 255);
-
-#ifdef HAS_XBOX_D3D // TODO:DIRECTX
-  //If we have interlaced video, we have to sync to only render on even fields
-  D3DFIELD_STATUS mStatus;
-  D3DDevice::GetDisplayFieldStatus(&mStatus);
-
-#ifdef PROFILE
-  m_presentfield = FS_NONE;
-#endif
-
-  //If this was not the correct field. we have to wait for the next one.. damn
-  if( (mStatus.Field == D3DFIELD_EVEN && m_presentfield == FS_EVEN) ||
-      (mStatus.Field == D3DFIELD_ODD && m_presentfield == FS_ODD) )
-  {
-    if( WaitForSingleObject(g_eventVBlank, 500) == WAIT_TIMEOUT )
-      CLog::Log(LOGERROR, __FUNCTION__" - Waiting for vertical-blank timed out");
-  }
-  D3DDevice::Present( NULL, NULL, NULL, NULL );
-#endif
 }
 
 void CXBMCRenderManager::Recover()
@@ -569,4 +487,18 @@ void CXBMCRenderManager::Recover()
     g_VDPAU->CheckRecover(true);
   }
 #endif
+}
+
+void CXBMCRenderManager::UpdateResolution()
+{
+  CRetakeLock<CExclusiveLock> lock(m_sharedSection);
+  if (m_bReconfigured)
+  {
+    if (g_graphicsContext.IsFullScreenVideo() && g_graphicsContext.IsFullScreenRoot())
+    {
+      RESOLUTION res = GetResolution();
+      g_graphicsContext.SetVideoResolution(res);
+    }
+    m_bReconfigured = false;
+  }
 }

@@ -25,6 +25,10 @@
 
 #include "SDL_platform.h"
 
+// XBMC - WIN32INCLUDES
+#undef HAVE_STRINGS_H
+// XBMC
+
 /* This is a set of defines to configure the SDL features */
 
 #if defined(__GNUC__) || defined(__DMC__)

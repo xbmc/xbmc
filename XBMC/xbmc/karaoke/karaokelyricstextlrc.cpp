@@ -9,16 +9,16 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "stdafx.h"
+
 #include <math.h>
 
 #include "Util.h"
 #include "FileSystem/File.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "MathUtils.h"
+#include "utils/log.h"
 
 #include "karaokelyricstextlrc.h"
-
 
 CKaraokeLyricsTextLRC::CKaraokeLyricsTextLRC( const CStdString & lyricsFile )
   : CKaraokeLyricsText()

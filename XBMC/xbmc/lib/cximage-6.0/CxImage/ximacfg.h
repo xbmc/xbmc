@@ -3,7 +3,6 @@
 
 #ifdef _WIN32
 #define XBMC // even though defined in the project file it doesn't work
-#define _WIN32PC
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -17,7 +16,7 @@
 
 #define CXIMAGE_SUPPORT_DECODE	1
 #define CXIMAGE_SUPPORT_ENCODE	1		//<vho><T.Peck>
-#ifdef _WIN32PC
+#ifdef _WIN32
 #define CXIMAGE_SUPPORT_WINDOWS 1
 #else
 #define CXIMAGE_SUPPORT_WINDOWS 0

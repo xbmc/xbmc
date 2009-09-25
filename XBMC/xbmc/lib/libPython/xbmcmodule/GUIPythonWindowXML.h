@@ -31,7 +31,7 @@ int Py_XBMC_Event_OnInit(void* arg);
 class CGUIPythonWindowXML : public CGUIMediaWindow
 {
 public:
-  CGUIPythonWindowXML(DWORD dwId, CStdString strXML, CStdString strFallBackPath);
+  CGUIPythonWindowXML(int id, CStdString strXML, CStdString strFallBackPath);
   virtual ~CGUIPythonWindowXML(void);
   virtual bool      OnMessage(CGUIMessage& message);
   virtual bool      OnAction(const CAction &action);

@@ -26,6 +26,7 @@
 #endif
 #if (defined USE_EXTERNAL_LIBVORBIS)
   #include <vorbis/vorbisfile.h>
+  #include "utils/log.h"
 #else
   #include "ogg/vorbisfile.h"
 #endif

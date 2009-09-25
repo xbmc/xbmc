@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "PVRFile.h"
 #include "Util.h"
 #include "PVRManager.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace std;

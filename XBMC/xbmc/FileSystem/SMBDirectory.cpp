@@ -31,7 +31,7 @@
 * debugging is set to a max of 10 for release builds (see local.h)
 */
 
-#include "stdafx.h"
+#include "system.h"
 
 #if defined(HAS_FILESYSTEM_SMB)
 #include "SMBDirectory.h"
@@ -42,7 +42,10 @@
 #include "GUIDialogOK.h"
 #include "Application.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "StringUtils.h"
+#include "utils/log.h"
+#include "utils/SingleLock.h"
 
 #ifndef _WIN32PC
 #include <libsmbclient.h>

@@ -19,7 +19,7 @@
 */
 #include "IDirectory.h"
 #include "utils/Thread.h"
-
+#include "utils/CriticalSection.h"
 
 
 namespace SDP
@@ -107,7 +107,7 @@ public:
   CSAPSessions();
   ~CSAPSessions();
 
-  void StopThread();
+  void StopThread(bool bWait = true);
 
 protected:
   friend class DIRECTORY::CSAPDirectory;

@@ -19,15 +19,18 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "log.h"
 #ifndef _LINUX
 #include <share.h>
 #endif
 #include "CriticalSection.h"
 #include "SingleLock.h"
+#include "FileSystem/File.h"
 #include "StdString.h"
 #include "Settings.h"
+#include "AdvancedSettings.h"
+#include "Thread.h"
 
 XFILE::CFile* CLog::m_file = NULL;
 
@@ -36,7 +39,7 @@ static CCriticalSection critSec;
 static char levelNames[][8] =
 {"DEBUG", "INFO", "NOTICE", "WARNING", "ERROR", "SEVERE", "FATAL", "NONE"};
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 #define LINE_ENDING "\r\n"
 #else
 #define LINE_ENDING "\n"
@@ -97,11 +100,7 @@ void CLog::Log(int loglevel, const char *format, ... )
 
     CStdString strPrefix, strData;
 
-#ifdef __APPLE__
-    strPrefix.Format("%02.2d:%02.2d:%02.2d T:%lu M:%9ju %7s: ", time.wHour, time.wMinute, time.wSecond, GetCurrentThreadId(), stat.dwAvailPhys, levelNames[loglevel]);
-#else
-    strPrefix.Format("%02.2d:%02.2d:%02.2d T:%lu M:%9u %7s: ", time.wHour, time.wMinute, time.wSecond, GetCurrentThreadId(), stat.dwAvailPhys, levelNames[loglevel]);
-#endif
+    strPrefix.Format("%02.2d:%02.2d:%02.2d T:%"PRIu64" M:%9"PRIu64" %7s: ", time.wHour, time.wMinute, time.wSecond, (uint64_t)CThread::GetCurrentThreadId(), (uint64_t)stat.dwAvailPhys, levelNames[loglevel]);
 
     strData.reserve(16384);
     va_list va;
@@ -192,14 +191,14 @@ void CLog::DebugLogMemory()
   OutputDebugString(strData.c_str());
 }
 
-void CLog::MemDump(BYTE *pData, int length)
+void CLog::MemDump(char *pData, int length)
 {
   Log(LOGDEBUG, "MEM_DUMP: Dumping from %p", pData);
   for (int i = 0; i < length; i+=16)
   {
     CStdString strLine;
     strLine.Format("MEM_DUMP: %04x ", i);
-    BYTE *alpha = pData;
+    char *alpha = pData;
     for (int k=0; k < 4 && i + 4*k < length; k++)
     {
       for (int j=0; j < 4 && i + 4*k + j < length; j++)
@@ -228,7 +227,7 @@ void CLog::MemDump(BYTE *pData, int length)
 
 
 void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
-#if defined(HAS_SDL_OPENGL) && defined(_DEBUG)
+#if defined(HAS_GL) && defined(_DEBUG)
 #define printMatrix(matrix)                                             \
   {                                                                     \
     for (int ixx = 0 ; ixx<4 ; ixx++)                                   \
@@ -266,7 +265,7 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 
 void LogGraphicsInfo()
 {
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   const GLubyte *s;
 
   s = glGetString(GL_VENDOR);
@@ -292,10 +291,11 @@ void LogGraphicsInfo()
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = %s", s);
   else
     CLog::Log(LOGNOTICE, "GL_EXTENSIONS = NULL");
-#else /* !HAS_SDL_OPENGL */
+#else /* !HAS_GL */
   CLog::Log(LOGNOTICE,
             "Please define LogGraphicsInfo for your chosen graphics libary");
-#endif /* !HAS_SDL_OPENGL */
+#endif /* !HAS_GL */
 }
+
 
 

@@ -19,10 +19,13 @@
  *
  */
 
-#include "stdafx.h"
+#include "CharsetConverter.h"
 #include "Util.h"
 #include "ArabicShaping.h"
 #include "GUISettings.h"
+#include "LangInfo.h"
+#include "SingleLock.h"
+#include "log.h"
 
 #ifndef _LINUX
 #include "lib/libiconv/iconv.h"

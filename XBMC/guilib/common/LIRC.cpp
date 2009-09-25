@@ -8,7 +8,7 @@
 #include "LIRC.h"
 #include "ButtonTranslator.h"
 #include "log.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileSystem/File.h"
 
 #define LIRC_DEVICE "/dev/lircd"
@@ -30,7 +30,6 @@ CRemoteControl::CRemoteControl()
   m_bLogConnectFailure = true;
   m_lastInitAttempt = -5000;
   m_initRetryPeriod = 5000;
-  CLog::Log(LOGINFO, "LIRC %s: started ", __FUNCTION__);
   Reset();
 }
 

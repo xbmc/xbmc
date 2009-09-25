@@ -20,34 +20,33 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "stdafx.h"
+#include "system.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#ifndef HAS_SDL_2D
+
+#ifdef HAS_GL
 #include <locale.h>
 #include "LinuxRendererGL.h"
 #include "Application.h"
 #include "MathUtils.h"
 #include "Settings.h"
-#include "XBVideoConfig.h"
-#include "guilib/Surface.h"
-#include "guilib/FrameBufferObject.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "FrameBufferObject.h"
+#include "VideoShaders/YUV2RGBShader.h"
+#include "VideoShaders/VideoFilterShader.h"
+#include "WindowingFactory.h"
+#include "Texture.h"
 
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
-#endif
 #ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
 
-#ifdef HAS_SDL_OPENGL
-
-using namespace Surface;
 using namespace Shaders;
 
 static const GLubyte stipple_weave[] = {
@@ -90,7 +89,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
   m_fSourceFrameRatio = 1.0f;
-  m_iResolution = PAL_4x3;
+  m_iResolution = RES_PAL_4x3;
   for (int i = 0; i < NUM_BUFFERS; i++)
     m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
 
@@ -215,10 +214,9 @@ void CLinuxRendererGL::CalculateFrameAspectRatio(int desired_width, int desired_
 //Get resolution based on current mode.
 RESOLUTION CLinuxRendererGL::GetResolution()
 {
-  if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
-  {
+  if (g_graphicsContext.IsFullScreenRoot() && (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating()))
     return m_iResolution;
-  }
+
   return g_graphicsContext.GetVideoResolution();
 }
 
@@ -242,7 +240,7 @@ void CLinuxRendererGL::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, f
   // calculate the correct output frame ratio (using the users pixel ratio setting
   // and the output pixel ratio setting)
 
-  float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
+  float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
 
   // allow a certain error to maximize screen size
   float fCorrection = fScreenWidth / fScreenHeight / fOutputFrameRatio - 1.0;
@@ -306,18 +304,16 @@ void CLinuxRendererGL::ManageDisplay()
 
 void CLinuxRendererGL::ChooseBestResolution(float fps)
 {
-  RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
-  if ( DisplayRes == AUTORES )
-    m_iResolution = g_graphicsContext.GetVideoResolution();
-  else
-    m_iResolution = DisplayRes;
+  m_iResolution = g_guiSettings.m_LookAndFeelResolution;
+  if ( m_iResolution == RES_WINDOW )
+    m_iResolution = RES_DESKTOP;
 
   // Adjust refreshrate to match source fps
 #if !defined(__APPLE__)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
     // Find closest refresh rate
-    for (int i = (int)CUSTOM; i<(CUSTOM+g_videoConfig.GetNumberOfResolutions()) ; i++)
+    for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
     {
       RESOLUTION_INFO &curr = g_settings.m_ResInfo[m_iResolution];
       RESOLUTION_INFO &info = g_settings.m_ResInfo[i];
@@ -337,11 +333,11 @@ void CLinuxRendererGL::ChooseBestResolution(float fps)
         m_iResolution = (RESOLUTION)i;
     }
 
-    CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+    CLog::Log(LOGNOTICE, "Display resolution ADJUST : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
   }
   else
 #endif
-    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", DisplayRes == AUTORES ? "AUTO" : "USER", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+    CLog::Log(LOGNOTICE, "Display resolution %s : %s (%d)", m_iResolution == RES_DESKTOP ? "DESKTOP" : "USER", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
 }
 
 bool CLinuxRendererGL::ValidateRenderTarget()
@@ -673,8 +669,8 @@ void CLinuxRendererGL::LoadTextures(int source)
     }
     else
     {
-      int maj=0, min=0;
-      g_graphicsContext.getScreenSurface()->GetGLVersion(maj, min);
+      unsigned int maj=0, min=0;
+      g_Windowing.GetRenderVersion(maj, min);
       if (maj>=2)
       {
         imaging = 1;
@@ -1034,7 +1030,7 @@ unsigned int CLinuxRendererGL::PreInit()
   m_bConfigured = false;
   m_bValidated = false;
   UnInit();
-  m_iResolution = PAL_4x3;
+  m_iResolution = RES_PAL_4x3;
 
   m_iYV12RenderBuffer = 0;
   m_NumYV12Buffers = 2;
@@ -1112,6 +1108,9 @@ void CLinuxRendererGL::UpdateVideoFilter()
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
     InitializeSoftwareUpscaling();
     break;
+
+  default:
+    break;
   }
 }
 
@@ -1144,27 +1143,9 @@ void CLinuxRendererGL::LoadShaders(int field)
       m_pYUVShader = NULL;
     }
 
-    if (field & (FIELD_ODD|FIELD_EVEN))
-    {
-      if (m_renderQuality == RQ_SINGLEPASS)
-      {
-        // create regular progressive scan shader
-        m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
-        CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
-      }
-      else if (m_renderQuality == RQ_MULTIPASS)
-      {
-        // create bob deinterlacing shader
-        m_pYUVShader = new YUV2RGBBobShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
-        CLog::Log(LOGNOTICE, "GL: Selecting Multipass Pass YUV 2 RGB shader");
-      }
-    }
-    else
-    {
-      // create regular progressive scan shader
-      m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
-      CLog::Log(LOGNOTICE, "GL: Selecting YUV 2 RGB Progressive Shader");
-    }
+    // create regular progressive scan shader
+    m_pYUVShader = new YUV2RGBProgressiveShader(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
+    CLog::Log(LOGNOTICE, "GL: Selecting Single Pass YUV 2 RGB shader");
 
     if (m_pYUVShader && m_pYUVShader->CompileAndLink())
     {
@@ -1283,17 +1264,11 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
 {
   // obtain current field, if interlaced
   if( flags & RENDER_FLAG_ODD)
-  {
-    if (m_currentField == FIELD_FULL)
-      m_reloadShaders = 1;
     m_currentField = FIELD_ODD;
-  } // even field
+
   else if (flags & RENDER_FLAG_EVEN)
-  {
-    if (m_currentField == FIELD_FULL)
-      m_reloadShaders = 1;
     m_currentField = FIELD_EVEN;
-  }
+
   else if (flags & RENDER_FLAG_LAST)
   {
     switch(m_currentField)
@@ -1308,11 +1283,7 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
     }
   }
   else
-  {
-    if (m_currentField != FIELD_FULL)
-      m_reloadShaders = 1;
     m_currentField = FIELD_FULL;
-  }
 
   LoadTextures(renderBuffer);
 
@@ -1400,7 +1371,7 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
   { // stretch image to 4:3 ratio
     g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
+    if (m_iResolution == RES_PAL_4x3 || m_iResolution == RES_PAL60_4x3 || m_iResolution == RES_NTSC_4x3 || m_iResolution == RES_HDTV_480p_4x3)
     { // stretch to the limits of the 4:3 screen.
       // incorrect behaviour, but it's what the users want, so...
       g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
@@ -1433,7 +1404,7 @@ void CLinuxRendererGL::SetViewMode(int iViewMode)
   else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
   { // stretch image to 16:9 ratio
     g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
+    if (m_iResolution == RES_PAL_4x3 || m_iResolution == RES_PAL60_4x3 || m_iResolution == RES_NTSC_4x3 || m_iResolution == RES_HDTV_480p_4x3)
     { // now we need to set g_stSettings.m_fPixelRatio so that
       // fOutputFrameRatio = 16:9.
       g_stSettings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
@@ -1623,6 +1594,7 @@ void CLinuxRendererGL::AutoCrop(bool bCrop)
 
 void CLinuxRendererGL::RenderSinglePass(int index, int field)
 {
+  YV12Image &im     = m_buffers[index].image;
   YUVFIELDS &fields = m_buffers[index].fields;
   YUVPLANES &planes = fields[field];
 
@@ -1656,13 +1628,14 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
   VerifyGLState();
 
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetVTexture(2);
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
+    m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
+    m_pYUVShader->SetField(0);
 
   m_pYUVShader->Enable();
 
@@ -1774,15 +1747,14 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   m_fbo.BeginRender();
   VerifyGLState();
 
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetVTexture(2);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetWidth(im.width);
-  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetHeight(im.height);
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
   if     (field == FIELD_ODD)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
+    m_pYUVShader->SetField(1);
   else if(field == FIELD_EVEN)
-    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
+    m_pYUVShader->SetField(0);
 
   VerifyGLState();
 
@@ -2001,7 +1973,7 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
   VerifyGLState();
 }
 
-void CLinuxRendererGL::CreateThumbnail(SDL_Surface* surface, unsigned int width, unsigned int height)
+void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
   // get our screen rect
   const RECT& rv = g_graphicsContext.GetViewWindow();
@@ -2023,7 +1995,7 @@ void CLinuxRendererGL::CreateThumbnail(SDL_Surface* surface, unsigned int width,
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
   // read pixels
-  glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);
+  glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, texture->GetPixels());
 
   // revert model view matrix
   glMatrixMode(GL_MODELVIEW);
@@ -2243,12 +2215,24 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
 
 bool CLinuxRendererGL::SupportsBrightness()
 {
-  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+#ifdef HAVE_LIBVDPAU
+  if(g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+    return true;
+#endif
+  return m_renderMethod == RENDER_GLSL
+      || m_renderMethod == RENDER_ARB
+      || (m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
 }
 
 bool CLinuxRendererGL::SupportsContrast()
 {
-  return glewIsSupported("GL_ARB_imaging") == GL_TRUE;
+#ifdef HAVE_LIBVDPAU
+  if(g_VDPAU && !g_guiSettings.GetBool("videoplayer.vdpaustudiolevel"))
+    return true;
+#endif
+  return m_renderMethod == RENDER_GLSL
+      || m_renderMethod == RENDER_ARB
+      || (m_renderMethod == RENDER_SW && glewIsSupported("GL_ARB_imaging") == GL_TRUE);
 }
 
 bool CLinuxRendererGL::SupportsGamma()
@@ -2260,7 +2244,5 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
 {
   return glewIsSupported("GL_EXT_framebuffer_object") && glCreateProgram;
 }
-
-#endif
 
 #endif

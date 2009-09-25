@@ -19,8 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIMediaWindow.h"
+#include "GUIUserMessages.h"
 #include "Util.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/ZipManager.h"
@@ -36,6 +36,8 @@
 #include "Favourites.h"
 #include "utils/LabelFormatter.h"
 #include "GUIDialogProgress.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 
 #include "GUIImage.h"
 #include "GUIMultiImage.h"
@@ -46,6 +48,9 @@
 #include "GUIDialogOK.h"
 #include "PlayList.h"
 #include "MediaManager.h"
+#include "Settings.h"
+#include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -55,7 +60,7 @@
 
 using namespace std;
 
-CGUIMediaWindow::CGUIMediaWindow(DWORD id, const char *xmlFile)
+CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
 {
   m_vecItems = new CFileItemList;
@@ -132,7 +137,7 @@ CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
+  if (action.id == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
       m_gWindowManager.PreviousWindow();
@@ -141,21 +146,21 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;
   }
 
   // the non-contextual menu can be called at any time
-  if (action.wID == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
+  if (action.id == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
   {
     OnPopupMenu(-1);
     return true;
   }
 
   // live filtering
-  if (action.wID == ACTION_FILTER_CLEAR)
+  if (action.id == ACTION_FILTER_CLEAR)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
     message.SetStringParam("");
@@ -163,17 +168,17 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.wID == ACTION_BACKSPACE)
+  if (action.id == ACTION_BACKSPACE)
   {
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 2); // 2 for delete
     OnMessage(message);
     return true;
   }
 
-  if (action.wID >= ACTION_FILTER_SMS2 && action.wID <= ACTION_FILTER_SMS9)
+  if (action.id >= ACTION_FILTER_SMS2 && action.id <= ACTION_FILTER_SMS9)
   {
     CStdString filter;
-    filter.Format("%i", (int)(action.wID - ACTION_FILTER_SMS2 + 2));
+    filter.Format("%i", (int)(action.id - ACTION_FILTER_SMS2 + 2));
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS, 1); // 1 for append
     message.SetStringParam(filter);
     OnMessage(message);
@@ -256,7 +261,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;
@@ -312,7 +317,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1()==GUI_MSG_UPDATE && IsActive())
       {
-        if (message.GetStringParam().size())
+        if (message.GetNumStringParams())
         {
           m_vecItems->m_strPath = message.GetStringParam();
           if (message.GetParam2()) // param2 is used for resetting the history

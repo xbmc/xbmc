@@ -30,6 +30,7 @@
   #include "libfaad/neaacdec.h"
 #endif
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 #if (defined HAVE_LIBFAAD_DEBIAN_ABI)
   #define FAAD_SAMPLERATE_TYPE uint32_t

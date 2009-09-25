@@ -19,10 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogFileBrowser.h"
-#include "Util.h"
 #include "MusicDatabase.h"
 #include "VideoDatabase.h"
 #include "GUIWindowManager.h"
@@ -30,6 +28,7 @@
 #include "Directory.h"
 #include "FileItem.h"
 #include "GUIEditControl.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_FIELD           15
 #define CONTROL_OPERATOR        16
@@ -52,7 +51,7 @@ CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule()
 
 bool CGUIDialogSmartPlaylistRule::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
     m_cancelled = true;
   return CGUIDialog::OnAction(action);
 }
@@ -320,7 +319,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
     type = CGUIEditControl::INPUT_TYPE_NUMBER;
     break;
   }
-  SendMessage(GUI_MSG_SET_TYPE, CONTROL_VALUE, (DWORD)type, 21420);
+  SendMessage(GUI_MSG_SET_TYPE, CONTROL_VALUE, type, 21420);
 }
 
 void CGUIDialogSmartPlaylistRule::AddOperatorLabel(CSmartPlaylistRule::SEARCH_OPERATOR op)

@@ -19,14 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogBoxBase.h"
 #include "GUIWindowManager.h"
 
 using namespace std;
 
-CGUIDialogBoxBase::CGUIDialogBoxBase(DWORD dwID, const CStdString &xmlFile)
-    : CGUIDialog(dwID, xmlFile)
+CGUIDialogBoxBase::CGUIDialogBoxBase(int id, const CStdString &xmlFile)
+    : CGUIDialog(id, xmlFile)
 {
   m_bConfirmed = false;
 }

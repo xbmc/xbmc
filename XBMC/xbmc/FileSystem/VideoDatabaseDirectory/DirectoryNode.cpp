@@ -19,13 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNode.h"
 #include "Util.h"
 #include "QueryParams.h"
 #include "DirectoryNodeRoot.h"
 #include "DirectoryNodeOverview.h"
 #include "DirectoryNodeGenre.h"
+#include "DirectoryNodeSets.h"
 #include "DirectoryNodeTitleMovies.h"
 #include "DirectoryNodeTitleTvShows.h"
 #include "DirectoryNodeYear.h"
@@ -44,9 +44,11 @@
 #include "DirectoryNodeMusicVideoAlbum.h"
 #include "VideoInfoTag.h"
 #include "URL.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "FileSystem/File.h"
+#include "StringUtils.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
@@ -113,6 +115,8 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
     return new CDirectoryNodeOverview(strName, pParent);
   case NODE_TYPE_GENRE:
     return new CDirectoryNodeGenre(strName, pParent);
+  case NODE_TYPE_SETS:
+    return new CDirectoryNodeSets(strName, pParent);
   case NODE_TYPE_YEAR:
     return new CDirectoryNodeYear(strName, pParent);
   case NODE_TYPE_ACTOR:

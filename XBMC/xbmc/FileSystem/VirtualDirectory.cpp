@@ -20,9 +20,10 @@
  */
 
 
-#include "stdafx.h"
+#include "system.h"
 #include "VirtualDirectory.h"
 #include "FactoryDirectory.h"
+#include "Settings.h"
 #include "Util.h"
 #include "Profile.h"
 #include "Directory.h"
@@ -34,7 +35,7 @@
 #endif
 #include "File.h"
 #include "FileItem.h"
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 
@@ -229,6 +230,7 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
     CUtil::AutoDetectionGetSource(shares);
   }
 
+#ifdef HAS_DVD_DRIVE
   // and update our dvd share
   for (unsigned int i = 0; i < shares.size(); ++i)
   {
@@ -244,6 +246,7 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
         share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
     }
   }
+#endif
 }
 }
 

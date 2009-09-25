@@ -19,11 +19,12 @@
  *
  */
 
-#include "include.h"
 #include "GUIColorManager.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "SkinInfo.h"
+#include "utils/log.h"
+#include "tinyXML/tinyxml.h"
 
 CGUIColorManager g_colorManager;
 
@@ -83,7 +84,7 @@ bool CGUIColorManager::LoadXML(TiXmlDocument &xmlDoc)
   {
     if (color->FirstChild() && color->Attribute("name"))
     {
-      DWORD value = 0xffffffff;
+      color_t value = 0xffffffff;
       sscanf(color->FirstChild()->Value(), "%x", (unsigned int*) &value);
       CStdString name = color->Attribute("name");
       iColor it = m_colors.find(name);
@@ -98,7 +99,7 @@ bool CGUIColorManager::LoadXML(TiXmlDocument &xmlDoc)
 }
 
 // lookup a color and return it's hex value
-DWORD CGUIColorManager::GetColor(const CStdString &color) const
+color_t CGUIColorManager::GetColor(const CStdString &color) const
 {
   // look in our color map
   CStdString trimmed(color);
@@ -108,7 +109,7 @@ DWORD CGUIColorManager::GetColor(const CStdString &color) const
     return (*it).second;
 
   // try converting hex directly
-  DWORD value = 0;
+  color_t value = 0;
   sscanf(trimmed.c_str(), "%x", &value);
   return value;
 }

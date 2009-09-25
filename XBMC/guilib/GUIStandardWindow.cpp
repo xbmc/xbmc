@@ -19,10 +19,10 @@
  *
  */
 
-#include "include.h"
 #include "GUIStandardWindow.h"
 #include "GUIWindowManager.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "Key.h"
 
 CGUIStandardWindow::CGUIStandardWindow(void) : CGUIWindow(0, "")
 {
@@ -34,13 +34,13 @@ CGUIStandardWindow::~CGUIStandardWindow(void)
 
 bool CGUIStandardWindow::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;
   }
 
-  if (action.wID == ACTION_PARENT_DIR && g_advancedSettings.m_bUseEvilB)
+  if (action.id == ACTION_PARENT_DIR && g_advancedSettings.m_bUseEvilB)
   {
     m_gWindowManager.PreviousWindow();
     return true;

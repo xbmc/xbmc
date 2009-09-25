@@ -35,7 +35,7 @@ done
 make_current_tarball() {
     # We do a checkout of the external-libraries-support branch at a specified
     # revision
-    svn co -r$SVN_REVISION https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC xbmc-$XBMC_VERSION
+    svn co -r$SVN_REVISION http://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC xbmc-$XBMC_VERSION
 
     # Take out the .svn directories
     echo "Removing .svn directories"

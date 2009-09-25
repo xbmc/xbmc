@@ -28,12 +28,9 @@
  *
  */
 
-#define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
+#include "system.h"
 
-#ifndef _LINUX
-#include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
-#include "D3DX9.h"  // or the reference video clock.
-#endif
+#define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
 #define D3DPRESENTFLAG_INTERLACED 1
 #define D3DPRESENTFLAG_WIDESCREEN 2
@@ -69,27 +66,42 @@ struct D3DPalette
 
 typedef D3DPalette* LPDIRECT3DPALETTE8;
 
-#ifdef HAS_SDL
-#include <SDL/SDL.h>
+#if defined(HAS_GL) || defined(HAS_GLES)
+
 namespace XBMC
 {
-  typedef SDL_Surface* SurfacePtr;
-  typedef SDL_Surface* TexturePtr;
-  typedef SDL_Palette* PalettePtr;
-};
-#ifdef HAS_SDL_OPENGL
+  typedef void*  DevicePtr;
+  typedef GLuint SurfacePtr;
+  typedef GLuint TexturePtr;
+  typedef void* PalettePtr; // elis change it
+  typedef GLint PixelFormat; // elis change it
+}
+
 #if defined(_LINUX) && !defined(GL_GLEXT_PROTOTYPES)
 #define GL_GLEXT_PROTOTYPES
 #endif
-#include <GL/glew.h>
-#endif
-#else
+
+#endif // HAS_GL
+
+#ifdef HAS_DX
+
 namespace XBMC
 {
-  typedef LPDIRECT3DSURFACE9 SurfacePtr;
+  typedef LPDIRECT3DDEVICE9  DevicePtr;
   typedef LPDIRECT3DTEXTURE9 TexturePtr;
+  typedef LPDIRECT3DSURFACE9 SurfacePtr;
   typedef LPDIRECT3DPALETTE8 PalettePtr;
 };
-#endif
+
+#define DELETE_TEXTURE(texture) texture->Release()
+
+typedef uint32_t	Uint32;
+
+#endif // HAS_DX
+
+#ifdef HAS_GLES
+
+#define GLchar char
 
 #endif
+#endif // GUILIB_GUI3D_H

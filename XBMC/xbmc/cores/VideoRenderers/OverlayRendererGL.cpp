@@ -20,14 +20,18 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+#include "system.h"
 #include "OverlayRenderer.h"
 #include "OverlayRendererGL.h"
 #include "LinuxRendererGL.h"
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
+#include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "Application.h"
+#include "WindowingFactory.h"
+
+#ifdef HAS_GL
 
 #define USE_PREMULTIPLIED_ALPHA 1
 
@@ -78,15 +82,15 @@ static void LoadTexture(GLenum target
 static uint32_t build_rgba(int a, int r, int g, int b)
 {
 #if USE_PREMULTIPLIED_ALPHA
-    return      a        << 24
-         | (r * a / 255) << 16
-         | (g * a / 255) << 8
-         | (b * a / 255) << 0;
+    return      a        << PIXEL_ASHIFT
+         | (r * a / 255) << PIXEL_RSHIFT
+         | (g * a / 255) << PIXEL_GSHIFT
+         | (b * a / 255) << PIXEL_BSHIFT;
 #else
-    return a << 24
-         | r << 16
-         | g << 8
-         | b << 0;
+    return a << PIXEL_ASHIFT
+         | r << PIXEL_RSHIFT
+         | g << PIXEL_GSHIFT
+         | b << PIXEL_BSHIFT;
 #endif
 }
 
@@ -106,7 +110,7 @@ long COverlayGL::Release()
   long count = InterlockedDecrement(&m_references);
   if (count == 0)
   {
-    if(GetCurrentThreadId() == g_application.GetThreadId())
+    if (g_application.IsCurrentThread())
       delete this;
     else
       g_renderManager.AddCleanup(this);
@@ -129,10 +133,10 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o)
   uint32_t palette[256];
   memset(palette, 0, 256 * sizeof(palette[0]));
   for(int i = 0; i < o->palette_colors; i++)
-    palette[i] = build_rgba((o->palette[i] >> 24) & 0xff
-                          , (o->palette[i] >> 16) & 0xff
-                          , (o->palette[i] >> 8 ) & 0xff
-                          , (o->palette[i] >> 0 ) & 0xff);
+    palette[i] = build_rgba((o->palette[i] >> PIXEL_ASHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_RSHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_GSHIFT) & 0xff
+                          , (o->palette[i] >> PIXEL_BSHIFT) & 0xff);
 
   /* convert to bgra, glTexImage2D should be *
    * able to load paletted formats directly, *
@@ -325,6 +329,227 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   m_height = (float)(max_y - min_y);
 }
 
+COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
+{
+  m_vertex = NULL;
+
+  m_width  = (float)g_graphicsContext.GetWidth();
+  m_height = (float)g_graphicsContext.GetHeight();
+  m_align  = ALIGN_SCREEN;
+  m_pos    = POSITION_ABSOLUTE;
+  m_x      = (float)0.0f;
+  m_y      = (float)0.0f;
+
+  ass_image_t* images = o->m_libass->RenderImage((int)m_width, (int)m_height, pts);
+  ass_image_t* img;
+
+  m_texture = ~(GLuint)0;
+
+  if (!images)
+    return;
+    
+  // first calculate how many glyph we have and the total x length
+
+  int count  = 0;
+  int size_x = 0;
+  int size_y = 0;
+
+  for(img = images; img; img = img->next)
+  {
+    if((img->color & 0xff) == 0xff)
+      continue;
+
+    size_x += img->w;
+    count++;
+  }
+
+  while(size_x > (int)g_Windowing.GetMaxTextureSize())
+    size_x /= 2;
+
+  int curr_x = 0;
+  int curr_y = 0;
+
+  // calculate the y size of the texture
+
+  for(img = images; img; img = img->next)
+  {
+    if((img->color & 0xff) == 0xff)
+      continue;
+
+    // check if we need to split to new line
+    if (curr_x + img->w >= size_x)
+    {
+      size_y += curr_y + 1;
+      curr_x = 0;
+      curr_y = 0;
+    }
+
+    curr_x += img->w + 1;
+
+    if (img->h > curr_y)
+      curr_y = img->h;
+  }
+
+  size_y += curr_y + 1;
+
+  // allocate space for the glyph positions and texturedata
+
+  m_count  = count;
+  m_vertex = (SVertex*)calloc(count * 4, sizeof(SVertex));
+  SVertex* v = m_vertex;
+
+  unsigned char* srca = (unsigned char*)calloc(size_x * size_y, 1);
+  unsigned char* data = srca;
+
+  int y = 0;
+
+  curr_x = 0;
+  curr_y = 0;
+
+  for(img = images; img; img = img->next)
+  {
+    unsigned int color = img->color;
+    unsigned int alpha = (color & 0xff);
+    if(alpha == 0xff)
+      continue;
+
+    if (curr_x + img->w >= size_x)
+    {
+      curr_y += y + 1;
+      curr_x  = 0;
+      y       = 0;
+      data    = srca + curr_y * size_x;
+    }
+
+    unsigned int b = ((color >> 24) & 0xff);
+    unsigned int g = ((color >> 16) & 0xff);
+    unsigned int r = ((color >> 8) & 0xff);
+
+    for(int i = 0; i < 4; i++)
+    {
+      v[i].a = 255 - alpha;
+      v[i].r = r;
+      v[i].g = g;
+      v[i].b = b;
+    }
+
+    v[0].u = (float)(curr_x);
+    v[0].v = (float)(curr_y);
+
+    v[1].u = (float)(curr_x + img->w);
+    v[1].v = (float)(curr_y);
+
+    v[2].u = (float)(curr_x + img->w);
+    v[2].v = (float)(curr_y + img->h);
+
+    v[3].u = (float)(curr_x);
+    v[3].v = (float)(curr_y + img->h);
+
+    v[0].x = (float)(img->dst_x);
+    v[0].y = (float)(img->dst_y);
+
+    v[1].x = (float)(img->dst_x + img->w);
+    v[1].y = (float)(img->dst_y);
+
+    v[2].x = (float)(img->dst_x + img->w);
+    v[2].y = (float)(img->dst_y + img->h);
+
+    v[3].x = (float)(img->dst_x);
+    v[3].y = (float)(img->dst_y + img->h);
+
+    v += 4;
+
+    for(int i=0; i<img->h; i++)
+      memcpy(data        + size_x      * i
+           , img->bitmap + img->stride * i
+           , img->w);
+
+    if (img->h > y)
+      y = img->h;
+
+    curr_x += img->w + 1;
+    data   += img->w + 1;
+  }
+  glGenTextures(1, &m_texture);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  LoadTexture(GL_TEXTURE_2D, size_x, size_y, size_x, &m_u, &m_v, GL_ALPHA, srca);
+
+  free(srca);
+
+  float scale_u = m_u / size_x;
+  float scale_v = m_v / size_y;
+  for(int i=0; i < count * 4; i++)
+  {
+    m_vertex[i].u *= scale_u;
+    m_vertex[i].v *= scale_v;
+  }
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
+}
+
+COverlayGlyphGL::~COverlayGlyphGL()
+{
+  glDeleteTextures(1, &m_texture);
+  free(m_vertex);
+}
+
+void COverlayGlyphGL::Render(SRenderState& state)
+{
+  if (m_texture == ~GLuint(0))
+    return;
+
+  glEnable(GL_TEXTURE_2D);
+  glEnable(GL_BLEND);
+
+  glBindTexture(GL_TEXTURE_2D, m_texture);
+  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+
+  glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_TEXTURE0);
+  glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_PRIMARY_COLOR);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+  glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glTranslatef(state.x, state.y, 0.0);
+  glScalef(state.width / m_width, state.height / m_height, 1.0f);
+
+  VerifyGLState();
+
+  glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
+
+  glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
+  glVertexPointer  (3, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
+  glTexCoordPointer(2, GL_FLOAT        , sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
+  glEnableClientState(GL_COLOR_ARRAY);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  glDrawArrays(GL_QUADS, 0, m_count * 4);
+  glPopClientAttrib();
+
+  glPopMatrix();
+
+  glDisable(GL_BLEND);
+  glDisable(GL_TEXTURE_2D);
+
+  glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+
 COverlayTextureGL::~COverlayTextureGL()
 {
   glDeleteTextures(1, &m_texture);
@@ -382,3 +607,5 @@ void COverlayTextureGL::Render(SRenderState& state)
 
   glBindTexture(GL_TEXTURE_2D, 0);
 }
+
+#endif // HAS_GL

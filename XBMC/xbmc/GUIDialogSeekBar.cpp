@@ -19,12 +19,14 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSeekBar.h"
 #include "GUISliderControl.h"
+#include "GUIUserMessages.h"
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
+#include "StringUtils.h"
 #include "FileItem.h"
+#include "GUISettings.h"
 
 #define SEEK_BAR_DISPLAY_TIME 2000L
 #define SEEK_BAR_SEEK_TIME     500L
@@ -46,7 +48,7 @@ CGUIDialogSeekBar::~CGUIDialogSeekBar(void)
 
 bool CGUIDialogSeekBar::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_ANALOG_SEEK_FORWARD || action.wID == ACTION_ANALOG_SEEK_BACK)
+  if (action.id == ACTION_ANALOG_SEEK_FORWARD || action.id == ACTION_ANALOG_SEEK_BACK)
   {
     if (!m_bRequireSeek)
     { // start of seeking
@@ -66,15 +68,15 @@ bool CGUIDialogSeekBar::OnAction(const CAction &action)
     {
       //100% over 1 second.
       float speed = 100.0f;
-      if( action.fRepeat )
-        speed *= action.fRepeat;
+      if( action.repeat )
+        speed *= action.repeat;
       else
         speed /= g_infoManager.GetFPS();
 
-      if (action.wID == ACTION_ANALOG_SEEK_FORWARD)
-        m_fSeekPercentage += action.fAmount1 * action.fAmount1 * speed;
+      if (action.id == ACTION_ANALOG_SEEK_FORWARD)
+        m_fSeekPercentage += action.amount1 * action.amount1 * speed;
       else
-        m_fSeekPercentage -= action.fAmount1 * action.fAmount1 * speed;
+        m_fSeekPercentage -= action.amount1 * action.amount1 * speed;
       if (m_fSeekPercentage > 100.0f) m_fSeekPercentage = 100.0f;
       if (m_fSeekPercentage < 0.0f) m_fSeekPercentage = 0.0f;
       CGUISliderControl *pSlider = (CGUISliderControl*)GetControl(POPUP_SEEK_SLIDER);

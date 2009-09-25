@@ -21,7 +21,13 @@
  *
  */
 
+#include "StdString.h"
+#include "system.h"
+
+#include <map>
+
 class CAutoTexBuffer;
+class CBaseTexture;
 
 class CTextureBundle
 {
@@ -54,10 +60,11 @@ public:
   void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
   static CStdString Normalize(const CStdString &name);
 
-  HRESULT LoadTexture(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr* ppTexture,
-                       XBMC::PalettePtr* ppPalette);
+  HRESULT LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
+                       int &width, int &height);
 
-  int LoadAnim(const CStdString& Filename, D3DXIMAGE_INFO* pInfo, XBMC::TexturePtr** ppTextures,
-                XBMC::PalettePtr* ppPalette, int& nLoops, int** ppDelays);
+  int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
+                int &width, int &height, int& nLoops, int** ppDelays);
 };
+
 

@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "OGGFileDirectory.h"
 #include "OggTag.h"
 

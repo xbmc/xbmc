@@ -19,13 +19,14 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamNavigator.h"
-#include "../../../Util.h"
-#include "../../../LangCodeExpander.h"
+#include "Util.h"
+#include "LangCodeExpander.h"
 #include "DVDDemuxSPU.h"
 #include "DVDStateSerializer.h"
 #include "GUISettings.h"
+#include "LangInfo.h"
+#include "utils/log.h"
 #ifdef __APPLE__
 #include "CocoaInterface.h"
 #endif

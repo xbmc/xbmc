@@ -19,10 +19,11 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowOSD.h"
 #include "Application.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
+#include "MouseStat.h"
 
 CGUIWindowOSD::CGUIWindowOSD(void)
     : CGUIDialog(WINDOW_OSD, "VideoOSD.xml")
@@ -59,10 +60,10 @@ void CGUIWindowOSD::Render()
 bool CGUIWindowOSD::OnAction(const CAction &action)
 {
   // keyboard or controller movement should prevent autoclosing
-  if (action.wID != ACTION_MOUSE && m_autoClosing)
+  if (action.id != ACTION_MOUSE && m_autoClosing)
     SetAutoClose(3000);
 
-  if (action.wID == ACTION_NEXT_ITEM || action.wID == ACTION_PREV_ITEM)
+  if (action.id == ACTION_NEXT_ITEM || action.id == ACTION_PREV_ITEM)
   {
     // these could indicate next chapter if video supports it
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
@@ -78,14 +79,14 @@ bool CGUIWindowOSD::OnMouse(const CPoint &point)
   { // Mouse wheel
     int wheel = abs(g_Mouse.GetWheel());
     CAction action;
-    action.fAmount1 = 0.5f * (float)wheel;
-    action.wID = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    action.amount1 = 0.5f * (float)wheel;
+    action.id = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
     return g_application.OnAction(action);
   }
   if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
   { // pause
     CAction action;
-    action.wID = ACTION_PAUSE;
+    action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
 

@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "NullDirectSound.h"
 #include "AudioContext.h"
 #include "Application.h"
+#include "utils/log.h"
 
 #define BUFFER CHUNKLEN * 20
 #define CHUNKLEN 512

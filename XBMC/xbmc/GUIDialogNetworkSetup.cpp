@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogNetworkSetup.h"
 #include "GUISpinControlEx.h"
 #include "GUIDialogNumeric.h"
@@ -29,6 +28,7 @@
 #include "GUIEditControl.h"
 #include "Util.h"
 #include "URL.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_PROTOCOL        10
 #define CONTROL_SERVER_ADDRESS  11
@@ -53,7 +53,7 @@ CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
 
 bool CGUIDialogNetworkSetup::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
     m_confirmed = false;
   return CGUIDialog::OnAction(action);
 }

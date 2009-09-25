@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -57,10 +56,14 @@
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/SpecialProtocol.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "TextureManager.h"
 #include "language.h"
+#include "LangInfo.h"
 #include "PythonSettings.h"
+#include "SectionLoader.h"
+#include "Settings.h"
+#include "LocalizeStrings.h"
 
 // include for constants
 #include "pyutil.h"
@@ -74,6 +77,10 @@ using namespace XFILE;
 #pragma data_seg("PY_DATA")
 #pragma bss_seg("PY_BSS")
 #pragma const_seg("PY_RDATA")
+#endif
+
+#if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
+#pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif
 
 #ifdef __cplusplus
@@ -593,12 +600,12 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     PyGUILock();
-    DWORD dwId = m_gWindowManager.GetTopMostModalDialogID();
-    if (dwId == WINDOW_INVALID) dwId = m_gWindowManager.GetActiveWindow();
+    int id = m_gWindowManager.GetTopMostModalDialogID();
+    if (id == WINDOW_INVALID) id = m_gWindowManager.GetActiveWindow();
     PyGUIUnlock();
 
     int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue((char*)"b", g_infoManager.GetBool(ret,dwId));
+    return Py_BuildValue((char*)"b", g_infoManager.GetBool(ret,id));
   }
 
   // getGlobalIdleTime() method

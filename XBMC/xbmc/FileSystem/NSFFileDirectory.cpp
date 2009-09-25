@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "NSFFileDirectory.h"
 #include "MusicInfoTagLoaderNSF.h"
 #include "MusicInfoTag.h"

@@ -20,6 +20,10 @@
  *
  */
 
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "IFile.h"
 #include "cdioSupport.h"
 
@@ -53,3 +57,6 @@ protected:
   MEDIA_DETECT::CLibcdio* m_cdio;
 };
 }
+
+#endif
+

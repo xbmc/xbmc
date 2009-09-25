@@ -125,6 +125,7 @@ Then install the following port packages (order is very important):
  $ sudo port install libtool yasm cmake gmake pkgconfig
 
  $ sudo port install lzo +universal
+ $ sudo port install lzo2 +universal
  $ sudo port install bzip2 +universal
  $ sudo port install fontconfig +universal
  $ sudo port install boost +universal
@@ -136,6 +137,7 @@ Then install the following port packages (order is very important):
  $ sudo port install libvorbis +universal
  $ sudo port install libmad macosx_deployment_target=10.4
  $ sudo port install fribidi +universal
+ $ sudo port install libmms +universal
 
  $ sudo port install glew +universal
  $ sudo port install libcdio +universal
@@ -167,7 +169,7 @@ Both Xcode and Terminal compilation require that build environment be setup
 first. This is a simple step and involves the following:
 
  $ cd $HOME/XBMC
- $ autoconf
+ $ ./bootstrap
  $ ./configure
  $ make clean
  $ make xcode_depends

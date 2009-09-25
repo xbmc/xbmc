@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "DVDPlayer.h"
 
 #include "DVDInputStreams/DVDInputStream.h"
@@ -45,20 +45,26 @@
 #include "GUIDialogFullScreenInfo.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
-#include "../../FileSystem/cdioSupport.h"
-#include "../../FileSystem/File.h"
-#include "../../Picture.h"
+#include "FileSystem/cdioSupport.h"
+#include "FileSystem/File.h"
+#include "Picture.h"
 #include "../ffmpeg/DllSwScale.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
 #ifdef HAS_PERFORMANCE_SAMPLE
-#include "../../xbmc/utils/PerformanceSample.h"
+#include "xbmc/utils/PerformanceSample.h"
 #else
 #define MEASURE_FUNCTION
 #endif
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "MouseStat.h"
+#include "GUISettings.h"
+#include "GUIUserMessages.h"
+#include "Settings.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -420,10 +426,12 @@ bool CDVDPlayer::OpenInputStream()
   ||  filename.CompareNoCase("d:\\video_ts\\video_ts.ifo") == 0
   ||  filename.CompareNoCase("iso9660://video_ts/video_ts.ifo") == 0)
   {
-#ifdef _WIN32PC
+#ifdef HAS_DVD_DRIVE
+#ifdef _WIN32
     m_filename = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName()+4;
 #else
     m_filename = MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName();
+#endif
 #endif
   }
 
@@ -498,7 +506,7 @@ bool CDVDPlayer::OpenDemuxStream()
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "%s - Exception thrown when opeing demuxer", __FUNCTION__);
+    CLog::Log(LOGERROR, "%s - Exception thrown when opening demuxer", __FUNCTION__);
     return false;
   }
 
@@ -808,7 +816,7 @@ void CDVDPlayer::Process()
     else if (m_item.IsMythTV())
       m_Edl.ReadMythCommBreaks(m_item.GetAsUrl(), fFramesPerSecond);
   }
-  
+
   if( m_PlayerOptions.starttime > 0 )
   {
     int starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
@@ -1530,10 +1538,9 @@ void CDVDPlayer::CheckAutoSceneSkip()
      */
     __int64 seek = GetPlaySpeed() >= 0 ? cut.end : cut.start;
     /*
-     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
-     * to accurate seeking significantly slows done the apparent speed of seeking.
+     * Seeking is flushed and accurate, just like SeekTime()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, GetPlaySpeed() < 0, false, true, false));
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)seek, GetPlaySpeed() < 0, true, true, false));
     /*
      * Seek doesn't always work reliably. Last physical seek time is recorded to prevent looping
      * if there was an error with seeking and it landed somewhere unexpected, perhaps back in the
@@ -1549,10 +1556,9 @@ void CDVDPlayer::CheckAutoSceneSkip()
               __FUNCTION__, CEdl::MillisecondsToTimeString(cut.start).c_str(), CEdl::MillisecondsToTimeString(cut.end).c_str(),
               CEdl::MillisecondsToTimeString(clock).c_str());
     /*
-     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
-     * to accurate seeking significantly slows done the apparent speed of seeking.
+     * Seeking is flushed and inaccurate, just like Seek()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, false, true, false));
+    m_messenger.Put(new CDVDMsgPlayerSeek(cut.end + 1, false, true, false, false));
     /*
      * Each commercial break is only skipped once so poorly detected commercial breaks can be
      * manually re-entered. Start and end are recorded to prevent looping and to allow seeking back
@@ -1572,7 +1578,7 @@ void CDVDPlayer::CheckAutoSceneSkip()
 
 void CDVDPlayer::SyncronizeDemuxer(DWORD timeout)
 {
-  if(CThread::ThreadId() == GetCurrentThreadId())
+  if(IsCurrentThread())
     return;
   if(!m_messenger.IsInited())
     return;
@@ -1915,28 +1921,9 @@ void CDVDPlayer::HandleMessages()
         if(m_pDemuxer)
           m_pDemuxer->SetSpeed(speed);
       }
-      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL))
-      {
-        CPlayerSeek m_pause(this);
-
-        CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-        if(input)
-        {
-          bool result = input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value);
-          if(result)
-          {
-            FlushBuffers(false);
-#ifdef HAVE_LIBVDPAU
-            if (!g_VDPAU)
-#endif
-            CloseVideoStream(false);
-            CloseAudioStream(false);
-            CloseSubtitleStream(false);
-            SAFE_DELETE(m_pDemuxer);
-          }
-        }
-      }
-      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
+      else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) ||
+               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV) ||
+               pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
       {
         CPlayerSeek m_pause(this);
 
@@ -1944,7 +1931,9 @@ void CDVDPlayer::HandleMessages()
         if(input)
         {
           bool result;
-          if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
+          if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT))
+            result = input->SelectChannel(static_cast<CDVDMsgInt*>(pMsg)->m_value);
+          else if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
             result = input->NextChannel();
           else
             result = input->PrevChannel();
@@ -2174,10 +2163,9 @@ bool CDVDPlayer::SeekScene(bool bPlus)
   if (m_Edl.GetNextSceneMarker(bPlus, clock, &iScenemarker))
   {
     /*
-     * TODO: Flushed, inaccurate seeks appears to provide the best performance. Resync's caused due
-     * to accurate seeking significantly slows done the apparent speed of seeking.
+     * Seeking is flushed and inaccurate, just like Seek()
      */
-    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, false, true, false)); 
+    m_messenger.Put(new CDVDMsgPlayerSeek((int)iScenemarker, !bPlus, true, false, false)); 
     SyncronizeDemuxer(100);
     return true;
   }
@@ -2187,15 +2175,15 @@ bool CDVDPlayer::SeekScene(bool bPlus)
 void CDVDPlayer::GetAudioInfo(CStdString& strAudioInfo)
 {
   CSingleLock lock(m_StateSection);
-  strAudioInfo.Format("D( %s ) P( %s )", m_State.demux_audio.c_str()
-                                       , m_dvdPlayerAudio.GetPlayerInfo().c_str());
+  strAudioInfo.Format("D(%s) P(%s)", m_State.demux_audio.c_str()
+                                   , m_dvdPlayerAudio.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetVideoInfo(CStdString& strVideoInfo)
 {
   CSingleLock lock(m_StateSection);
-  strVideoInfo.Format("D( %s ) P( %s )", m_State.demux_video.c_str()
-                                       , m_dvdPlayerVideo.GetPlayerInfo().c_str());
+  strVideoInfo.Format("D(%s) P(%s)", m_State.demux_video.c_str()
+                                   , m_dvdPlayerVideo.GetPlayerInfo().c_str());
 }
 
 void CDVDPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
@@ -2485,7 +2473,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
     return false;
 
   CDemuxStream* pStream = m_pDemuxer->GetStream(iStream);
-  if(!pStream && pStream->disabled)
+  if(!pStream || pStream->disabled)
     return false;
   pStream->SetDiscard(AVDISCARD_NONE);
 
@@ -2923,7 +2911,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 {
 #define THREAD_ACTION(action) \
   do { \
-    if(GetCurrentThreadId() != CThread::ThreadId()) { \
+    if (!IsCurrentThread()) { \
       m_messenger.Put(new CDVDMsgType<CAction>(CDVDMsg::GENERAL_GUI_ACTION, action)); \
       return true; \
     } \
@@ -2936,7 +2924,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
     if( m_dvd.state == DVDSTATE_STILL && m_dvd.iDVDStillTime != 0 && pStream->GetTotalButtons() == 0 )
     {
-      switch(action.wID)
+      switch(action.id)
       {
         case ACTION_NEXT_ITEM:
         case ACTION_MOVE_RIGHT:
@@ -2954,7 +2942,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
 
 
-    switch (action.wID)
+    switch (action.id)
     {
     case ACTION_PREV_ITEM:  // SKIP-:
       {
@@ -2989,7 +2977,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
     if (pStream->IsInMenu())
     {
-      switch (action.wID)
+      switch (action.id)
       {
       case ACTION_PREVIOUS_MENU:
         {
@@ -3031,23 +3019,23 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           // check the action
           CAction action2 = action;
-          action2.m_dwButtonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
-          action2.fAmount1 = g_Mouse.GetLocation().x;
-          action2.fAmount2 = g_Mouse.GetLocation().y;
+          action2.buttonCode = g_Mouse.bClick[MOUSE_LEFT_BUTTON] ? 1 : 0;
+          action2.amount1 = g_Mouse.GetLocation().x;
+          action2.amount2 = g_Mouse.GetLocation().y;
 
           RECT rs, rd;
           GetVideoRect(rs, rd);
-          if (action2.fAmount1 < rd.left || action2.fAmount1 > rd.right ||
-              action2.fAmount2 < rd.top || action2.fAmount2 > rd.bottom)
+          if (action2.amount1 < rd.left || action2.amount1 > rd.right ||
+              action2.amount2 < rd.top || action2.amount2 > rd.bottom)
             return false; // out of bounds
           THREAD_ACTION(action2);
           // convert to video coords...
-          CPoint pt(action2.fAmount1, action2.fAmount2);
+          CPoint pt(action2.amount1, action2.amount2);
           pt -= CPoint(rd.left, rd.top);
           pt.x *= (float)(rs.right - rs.left) / (rd.right - rd.left);
           pt.y *= (float)(rs.bottom - rs.top) / (rd.bottom - rd.top);
           pt += CPoint(rs.left, rs.top);
-          if (action2.m_dwButtonCode)
+          if (action2.buttonCode)
             return pStream->OnMouseClick(pt);
           return pStream->OnMouseMove(pt);
         }
@@ -3075,7 +3063,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         {
           THREAD_ACTION(action);
           // Offset from key codes back to button number
-          int button = action.wID - REMOTE_0;
+          int button = action.id - REMOTE_0;
           CLog::Log(LOGDEBUG, " - button pressed %d", button);
           pStream->SelectButton(button);
         }
@@ -3090,7 +3078,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
   if (dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream))
   {
-    switch (action.wID)
+    switch (action.id)
     {
       case ACTION_MOVE_UP:
       case ACTION_NEXT_ITEM:
@@ -3135,8 +3123,8 @@ bool CDVDPlayer::OnAction(const CAction &action)
       case ACTION_CHANNEL_SWITCH:
       {
         // Offset from key codes back to button number
-        int channel = action.fAmount1;
-        m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL, channel));
+        int channel = action.amount1;
+        m_messenger.Put(new CDVDMsgInt(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
         g_infoManager.SetDisplayAfterSeek();
         if (g_guiSettings.GetBool("pvrmenu.infoswitch"))
         {
@@ -3156,7 +3144,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
     }
   }
 
-  switch (action.wID)
+  switch (action.id)
   {
     case ACTION_NEXT_ITEM:
     case ACTION_PAGE_UP:

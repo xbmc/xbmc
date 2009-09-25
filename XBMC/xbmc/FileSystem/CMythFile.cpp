@@ -19,11 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "CMythFile.h"
 #include "Util.h"
 #include "DllLibCMyth.h"
 #include "URL.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 extern "C" {
 #include "lib/libcmyth/cmyth.h"
@@ -255,7 +256,7 @@ bool CCMythFile::SetupFile(const CURL& url)
   if(!SetupConnection(url, true, false, false))
     return false;
 
-  m_filename = url.GetFileNameWithoutPath();
+  m_filename = url.GetFileName().Mid(6);
 
   m_file = m_dll->conn_connect_path((char*)m_filename.c_str(), m_control, 16*1024, 4096);
   if(!m_file)
@@ -590,6 +591,10 @@ bool CCMythFile::PrevChannel()
   return ChangeChannel(CHANNEL_DIRECTION_DOWN, "");
 }
 
+bool CCMythFile::SelectChannel(unsigned int channel)
+{
+  return ChangeChannel(CHANNEL_DIRECTION_SAME,""+channel);
+}
 
 bool CCMythFile::CanRecord()
 {

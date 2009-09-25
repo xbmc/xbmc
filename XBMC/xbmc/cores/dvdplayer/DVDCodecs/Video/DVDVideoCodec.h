@@ -21,6 +21,10 @@
  *
  */
 
+#include "system.h"
+
+#include <vector>
+
 // when modifying these structures, make sure you update all codecs accordingly
 #define FRAME_TYPE_UNDEF 0
 #define FRAME_TYPE_I 1
@@ -52,7 +56,7 @@ struct DVDVideoPicture
 
   enum EFormat {
     FMT_YUV420P = 0,
-    FMT_VDPAU,
+    FMT_VDPAU
   } format;
 };
 

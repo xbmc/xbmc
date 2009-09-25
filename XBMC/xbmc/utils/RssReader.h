@@ -31,6 +31,7 @@
  */
 
 #include "StdString.h"
+#include "CriticalSection.h"
 #include "Thread.h"
 
 #include <vector>
@@ -42,13 +43,10 @@
 #define RSS_COLOR_HEADLINE 1
 #define RSS_COLOR_CHANNEL 2
 
-class IRssObserver
-{
-public:
-  virtual void OnFeedUpdate(const std::vector<DWORD> &feed) = 0;
-  virtual void OnFeedRelease() = 0;
-  virtual ~IRssObserver() {}
-};
+typedef uint32_t character_t;
+typedef std::vector<character_t> vecText;
+
+class IRssObserver;
 
 class CRssReader : public CThread, 
                    public CCriticalSection
@@ -59,8 +57,8 @@ public:
 
   void Create(IRssObserver* aObserver, const std::vector<std::string>& aUrl, const std::vector<int>& times, int spacesBetweenFeeds);
   bool Parse(LPSTR szBuffer, int iFeed);
-  void getFeed(std::vector<DWORD> &text);
-  void AddTag(const CStdString addTag);
+  void getFeed(vecText &text);
+  void AddTag(const CStdString &addTag);
   void AddToQueue(int iAdd);
   void UpdateObserver();
   void SetObserver(IRssObserver* observer);
@@ -107,13 +105,13 @@ public:
   void Reset();
   bool IsActive() { return m_bActive; }
 
-  bool GetReader(DWORD controlID, DWORD windowID, IRssObserver* observer, CRssReader *&reader);
+  bool GetReader(int controlID, int windowID, IRssObserver* observer, CRssReader *&reader);
 
 private:
   struct READERCONTROL
   {
-    DWORD controlID;
-    DWORD windowID;
+    int controlID;
+    int windowID;
     CRssReader *reader;
   };
 

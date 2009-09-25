@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIDialogAudioSubtitleSettings.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIPassword.h"
@@ -33,6 +33,10 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "SkinInfo.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;

@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowFileManager.h"
 #include "Application.h"
 #include "Util.h"
@@ -33,6 +33,7 @@
 #include "GUIListContainer.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIPassword.h"
+#include "GUIUserMessages.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
 #endif
@@ -49,11 +50,16 @@
 #include "PlayList.h"
 #include "utils/AsyncFileCopy.h"
 #include "MediaManager.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "MouseStat.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
-using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 
 #define ACTION_COPY                     1
@@ -111,12 +117,12 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
   if (list >= 0 && list <= 1)
   {
     // the non-contextual menu can be called at any time
-    if (action.wID == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
+    if (action.id == ACTION_CONTEXT_MENU && m_vecItems[list]->Size() == 0)
     {
       OnPopupMenu(list,-1, false);
       return true;
     }
-    if (action.wID == ACTION_DELETE_ITEM)
+    if (action.id == ACTION_DELETE_ITEM)
     {
       if (CanDelete(list))
       {
@@ -126,7 +132,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.wID == ACTION_COPY_ITEM)
+    if (action.id == ACTION_COPY_ITEM)
     {
       if (CanCopy(list))
       {
@@ -136,7 +142,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.wID == ACTION_MOVE_ITEM)
+    if (action.id == ACTION_MOVE_ITEM)
     {
       if (CanMove(list))
       {
@@ -146,7 +152,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.wID == ACTION_RENAME_ITEM)
+    if (action.id == ACTION_RENAME_ITEM)
     {
       if (CanRename(list))
       {
@@ -156,7 +162,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.wID == ACTION_PARENT_DIR)
+    if (action.id == ACTION_PARENT_DIR)
     {
       if (m_vecItems[list]->IsVirtualDirectoryRoot())
         m_gWindowManager.PreviousWindow();
@@ -164,13 +170,15 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
         GoParentFolder(list);
       return true;
     }
-    if (action.wID == ACTION_PLAYER_PLAY)
+    if (action.id == ACTION_PLAYER_PLAY)
     {
+#ifdef HAS_DVD_DRIVE
       if (m_vecItems[list]->Get(GetSelectedItem(list))->IsDVD())
-        return CAutorun::PlayDisc();
+        return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif      
     }
   }
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;
@@ -782,8 +790,12 @@ bool CGUIWindowFileManager::DoProcessFolder(int iAction, const CStdString& strPa
 {
   // check whether this folder is a filedirectory - if so, we don't process it's contents
   CFileItem item(strPath, false);
-  if (CFactoryFileDirectory::Create(strPath, &item))
+  IFileDirectory *file = CFactoryFileDirectory::Create(strPath, &item);
+  if (file)
+  {
+    delete file;
     return true;
+  }
   CLog::Log(LOGDEBUG,"FileManager, processing folder: %s",strPath.c_str());
   CFileItemList items;
   //m_rootDir.GetDirectory(strPath, items);

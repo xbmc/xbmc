@@ -3,6 +3,7 @@
   #include "config.h"
 #endif
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 extern "C" {
 #ifndef HAVE_MMX
@@ -38,6 +39,8 @@ extern "C" {
   #include "audioconvert.h"
 #endif
 }
+
+#include "utils/SingleLock.h"
 
 class DllAvCodecInterface
 {

@@ -18,13 +18,14 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
-#include "include.h"
+#include "system.h"
 #include "VideoFilterShader.h"
+#include "utils/log.h"
+
 #include <string>
 #include <math.h>
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 using namespace Shaders;
 using namespace std;
@@ -53,7 +54,7 @@ BaseVideoFilterShader::BaseVideoFilterShader()
     "gl_Position = ftransform();"
     "gl_FrontColor = gl_Color;"
     "}";
-  SetVertexShaderSource(shaderv);
+  VertexShader()->SetSource(shaderv);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -109,7 +110,7 @@ BicubicFilterShader::BicubicFilterShader(float B, float C)
     "gl_FragColor = cubicFilter(f.y, t0, t1, t2, t3) ;"    
     "gl_FragColor.a = gl_Color.a;"
     "}";
-  SetPixelShaderSource(shaderf);
+  PixelShader()->SetSource(shaderf);
   m_kernelTex1 = 0;
   m_B = B;
   m_C = C;

@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIListItemLayout.h"
 #include "FileItem.h"
 #include "GUIControlFactory.h"
@@ -27,6 +26,7 @@
 #include "utils/GUIInfoManager.h"
 #include "GUIListLabel.h"
 #include "GUIImage.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 
@@ -71,7 +71,7 @@ float CGUIListItemLayout::Size(ORIENTATION orientation) const
   return (orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
+void CGUIListItemLayout::Render(CGUIListItem *item, int parentID, DWORD time)
 {
   if (m_invalidated)
   { // need to update our item
@@ -79,6 +79,7 @@ void CGUIListItemLayout::Render(CGUIListItem *item, DWORD parentID, DWORD time)
     // let's use a static cast with a virtual base function
     CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : new CFileItem(*item);
     m_isPlaying = g_infoManager.GetBool(LISTITEM_ISPLAYING, parentID, item);
+    m_group.SetInvalid();
     m_group.UpdateInfo(fileItem);
     m_invalidated = false;
     // delete our temporary fileitem

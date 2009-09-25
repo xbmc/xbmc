@@ -18,12 +18,12 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
 #include "FileDAAP.h"
 #include "DAAPDirectory.h"
 #include "Util.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
+#include "SectionLoader.h"
 
 namespace DIRECTORY
 {

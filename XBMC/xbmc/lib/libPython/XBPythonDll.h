@@ -24,11 +24,7 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
-#if !defined(_LINUX) && !defined(_WIN32PC)
-#define DATA_OBJECT(data) unsigned long pointer_##data
-#else
 #define DATA_OBJECT(data) unsigned long pointer_##data;
-#endif
 
 #define _Py_NoneStruct (*((PyObject*)pointer__Py_NoneStruct))
 #define _Py_NotImplementedStruct (*((PyObject*)pointer__Py_NotImplementedStruct))

@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowMusicSongs.h"
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
@@ -27,13 +27,17 @@
 #include "CueDocument.h"
 #include "GUIPassword.h"
 #include "GUIDialogMusicScan.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "MediaManager.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
+#include "AutoPtrHandle.h"
 
 using namespace AUTOPTR;
-using namespace MEDIA_DETECT;
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -220,7 +224,7 @@ bool CGUIWindowMusicSongs::OnMessage(CGUIMessage& message)
 
 bool CGUIWindowMusicSongs::OnAction(const CAction& action)
 {
-  if (action.wID == ACTION_SCAN_ITEM)
+  if (action.id == ACTION_SCAN_ITEM)
   {
     int item = m_viewControl.GetSelectedItem();
     if (item > -1 && m_vecItems->Get(item)->m_bIsFolder)
@@ -369,6 +373,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     {
       // get the usual music shares, and anything for all media windows
       CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
+#ifdef HAS_DVD_DRIVE      
       // enable Rip CD an audio disc
       if (g_mediaManager.IsDiscInDrive() && item->IsCDDA())
       {
@@ -377,6 +382,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_CD, 600);
       }
+#endif      
       CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
     }
     else
@@ -398,6 +404,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         }
       }
 
+#ifdef HAS_DVD_DRIVE      
       // enable Rip CD Audio or Track button if we have an audio disc
       if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA())
       {
@@ -406,6 +413,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
         if (pCdInfo->IsAudio(1) || pCdInfo->IsCDExtra(1) || pCdInfo->IsMixedMode(1))
           buttons.Add(CONTEXT_BUTTON_RIP_TRACK, 610);
       }
+#endif      
 
       // enable CDDB lookup if the current dir is CDDA
       if (g_mediaManager.IsDiscInDrive() && m_vecItems->IsCDDA() &&
@@ -539,9 +547,11 @@ void CGUIWindowMusicSongs::PlayItem(int iItem)
   if (m_vecItems->IsVirtualDirectoryRoot() && !m_vecItems->Get(iItem)->IsDVD())
     return;
 
+#ifdef HAS_DVD_DRIVE  
   if (m_vecItems->Get(iItem)->IsDVD())
-    CAutorun::PlayDisc();
+    MEDIA_DETECT::CAutorun::PlayDisc();
   else
+#endif    
     CGUIWindowMusicBase::PlayItem(iItem);
 }
 

@@ -18,8 +18,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
-#include "stdafx.h"
+
+#include "system.h"
 #include "AudioContext.h"
 #include "ExternalPlayer.h"
 #include "GUIDialogOK.h"
@@ -30,27 +30,38 @@
 #include "Settings.h"
 #include "FileItem.h"
 #include "RegExp.h"
-#if defined(_WIN32PC)
+#include "StringUtils.h"
+#include "URL.h"
+#if defined(_WIN32)
   #include "Windows.h"
 #endif
+#if defined(HAS_LIRC)
+  #include "common/LIRC.h"
+#endif
+
+// If the process ends in less than this time (ms), we assume it's a launcher
+// and wait for manual intervention before continuing
+#define LAUNCHER_PROCESS_TIME 2000
+// Time (ms) we give a process we sent a WM_QUIT to close before terminating
+#define PROCESS_GRACE_TIME 3000
 
 CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
       CThread()
 {
+  m_bIsPlaying = false;
   m_paused = false;
-  m_clock = 0;
-  m_lastTime = 0;
+  m_playbackStartTime = 0;
   m_speed = 1;
-  m_filename = "";
-  m_args = "";
-  m_launchFilename = "";
+  m_totalTime = 1000;
+  m_time = 0;
 
-  m_forceontop = false;
   m_hideconsole = false;
-  m_hidecursor = false;
+  m_warpcursor = WARP_NONE;
   m_hidexbmc = false;
-  m_startupTime = 2000;
+  m_islauncher = false;
+
+  m_dialog = NULL;
 }
 
 CExternalPlayer::~CExternalPlayer()
@@ -65,64 +76,8 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
     m_launchFilename = file.m_strPath;
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_launchFilename.c_str());
 
-    if (m_filenameReplacers.size() > 0) 
-    {
-      CRegExp regExp;
-      for (unsigned int i = 0; i < m_filenameReplacers.size(); i++)
-      {
-        std::vector<CStdString> vecSplit;
-        StringUtils::SplitString(m_filenameReplacers[i], " , ", vecSplit);
-
-        // something is wrong, go to next substitution
-        if (vecSplit.size() != 4)
-          continue;
-
-        CStdString strMatch = vecSplit[0];
-        strMatch.Replace(",,",",");
-        //bool bCaseless = vecSplit[3].Find('i') > -1;
-        //if (bCaseless)
-        //  regExp.m_iOptions |= PCRE_CASELESS;
-        //else
-        //  regExp.m_iOptions &= ^PCRE_CASELESS;
-
-        if (!regExp.RegComp(strMatch.c_str()))
-        { // invalid regexp - complain in logs
-          CLog::Log(LOGERROR, "%s: Invalid RegExp:'%s'", __FUNCTION__, strMatch.c_str());
-          continue;
-        }
-
-        if (regExp.RegFind(m_launchFilename) > -1) 
-        {
-          CStdString strPat = vecSplit[1];
-          strPat.Replace(",,",",");
-
-          if (!regExp.RegComp(strPat.c_str()))
-          { // invalid regexp - complain in logs
-            CLog::Log(LOGERROR, "%s: Invalid RegExp:'%s'", __FUNCTION__, strPat.c_str());
-            continue;
-          }
-          
-          CStdString strRep = vecSplit[2];
-          strRep.Replace(",,",",");
-          bool bGlobal = vecSplit[3].Find('g') > -1;
-          bool bStop = vecSplit[3].Find('s') > -1;
-          int iStart = 0;
-          while ((iStart = regExp.RegFind(m_launchFilename, iStart)) > -1)
-          {
-            int iLength = regExp.GetFindLen();
-            m_launchFilename = m_launchFilename.Left(iStart) + regExp.GetReplaceString(strRep.c_str()) + m_launchFilename.Mid(iStart+iLength);
-            if (!bGlobal)
-              break;
-          }
-          CLog::Log(LOGINFO, "%s: File matched:'%s' (RE='%s',Rep='%s') new filename:'%s'.", __FUNCTION__, strMatch.c_str(), strPat.c_str(), strRep.c_str(), m_launchFilename.c_str());
-          if (bStop) break;
-        }
-      }
-    }
-
     Create();
-    if( options.starttime > 0 )
-      SeekTime( (__int64)(options.starttime * 1000) );
+
     return true;
   }
   catch(...)
@@ -140,81 +95,210 @@ bool CExternalPlayer::CloseFile()
 
 bool CExternalPlayer::IsPlaying() const
 {
-  return !m_bStop;
+  return m_bIsPlaying;
 }
 
 void CExternalPlayer::Process()
 {
-  m_clock = 0;
-  m_lastTime = timeGetTime();
+  SetName("CExternalPlayer");
 
-  CLog::Log(LOGNOTICE, "%s: Player: %s", __FUNCTION__, m_filename.c_str());
-  CLog::Log(LOGNOTICE, "%s: File: %s", __FUNCTION__, m_launchFilename.c_str());
-  CLog::Log(LOGNOTICE, "%s: Args: %s", __FUNCTION__, m_args.c_str());
+  CStdString mainFile = m_launchFilename;
+  CStdString archiveContent = "";
+
+  if (m_args.find("{0}") == std::string::npos)
+  {
+    // Unwind archive names
+    CURL url(m_launchFilename);
+    CStdString protocol = url.GetProtocol();
+    if (protocol == "zip" || protocol == "rar"/* || protocol == "iso9660" ??*/)
+    {
+      mainFile = url.GetHostName();
+      archiveContent = url.GetFileName();
+    }
+  }
+
+  if (m_filenameReplacers.size() > 0) 
+  {
+    for (unsigned int i = 0; i < m_filenameReplacers.size(); i++)
+    {
+      std::vector<CStdString> vecSplit;
+      StringUtils::SplitString(m_filenameReplacers[i], " , ", vecSplit);
+
+      // something is wrong, go to next substitution
+      if (vecSplit.size() != 4)
+        continue;
+
+      CStdString strMatch = vecSplit[0];
+      strMatch.Replace(",,",",");
+      bool bCaseless = vecSplit[3].Find('i') > -1;
+      CRegExp regExp(bCaseless);
+
+      if (!regExp.RegComp(strMatch.c_str()))
+      { // invalid regexp - complain in logs
+        CLog::Log(LOGERROR, "%s: Invalid RegExp:'%s'", __FUNCTION__, strMatch.c_str());
+        continue;
+      }
+
+      if (regExp.RegFind(mainFile) > -1) 
+      {
+        CStdString strPat = vecSplit[1];
+        strPat.Replace(",,",",");
+
+        if (!regExp.RegComp(strPat.c_str()))
+        { // invalid regexp - complain in logs
+          CLog::Log(LOGERROR, "%s: Invalid RegExp:'%s'", __FUNCTION__, strPat.c_str());
+          continue;
+        }
+        
+        CStdString strRep = vecSplit[2];
+        strRep.Replace(",,",",");
+        bool bGlobal = vecSplit[3].Find('g') > -1;
+        bool bStop = vecSplit[3].Find('s') > -1;
+        int iStart = 0;
+        while ((iStart = regExp.RegFind(mainFile, iStart)) > -1)
+        {
+          int iLength = regExp.GetFindLen();
+          mainFile = mainFile.Left(iStart) + regExp.GetReplaceString(strRep.c_str()) + mainFile.Mid(iStart+iLength);
+          if (!bGlobal)
+            break;
+        }
+        CLog::Log(LOGINFO, "%s: File matched:'%s' (RE='%s',Rep='%s') new filename:'%s'.", __FUNCTION__, strMatch.c_str(), strPat.c_str(), strRep.c_str(), mainFile.c_str());
+        if (bStop) break;
+      }
+    }
+  }
+
+  CLog::Log(LOGNOTICE, "%s: Player : %s", __FUNCTION__, m_filename.c_str());
+  CLog::Log(LOGNOTICE, "%s: File   : %s", __FUNCTION__, mainFile.c_str());
+  CLog::Log(LOGNOTICE, "%s: Content: %s", __FUNCTION__, archiveContent.c_str());
+  CLog::Log(LOGNOTICE, "%s: Args   : %s", __FUNCTION__, m_args.c_str());
   CLog::Log(LOGNOTICE, "%s: Start", __FUNCTION__);
 
   // make sure we surround the arguments with quotes where necessary
-  CStdString strFName = m_filename;
-  CStdString strFArgs = "\"";
+  CStdString strFName;
+  CStdString strFArgs;
+#if defined(_WIN32)
+  // W32 batch-file handline
+  if (m_filename.Right(4) == ".bat")
+  {
+    // MSDN says you just need to do this, but cmd's handing of spaces and
+    // quotes is soo broken it seems to work much better if you just omit
+    // lpApplicationName and enclose the module in lpCommandLine in quotes
+    //strFName = "cmd.exe";
+    //strFArgs = "/c ";
+  }
+  else
+#endif
+    strFName = m_filename;
+
+  strFArgs.append("\"");
   strFArgs.append(m_filename);
   strFArgs.append("\" ");
   strFArgs.append(m_args);
-  
-  if (strFArgs.Find("{0}") != -1)
-    strFArgs.Replace("{0}", m_launchFilename);
-  else
+
+  int nReplaced = strFArgs.Replace("{0}", mainFile);
+
+  if (!nReplaced)
+    nReplaced = strFArgs.Replace("{1}", mainFile) + strFArgs.Replace("{2}", archiveContent);
+     
+  if (!nReplaced)
   {
     strFArgs.append(" \"");
-    strFArgs.append(m_launchFilename);
+    strFArgs.append(mainFile);
     strFArgs.append("\"");
   }
- 
-  int iActiveDevice = g_audioContext.GetActiveDevice();
-  g_audioContext.SetActiveDevice(CAudioContext::NONE);
 
-  BOOL ret = TRUE;
-#if defined(_WIN32PC)
-  if (m_hidecursor)
+  int iActiveDevice = g_audioContext.GetActiveDevice();
+  if (iActiveDevice != CAudioContext::NONE)
   {
-    CLog::Log(LOGNOTICE, "%s: Hiding cursor", __FUNCTION__);
+    CLog::Log(LOGNOTICE, "%s: Releasing audio device %d", __FUNCTION__, iActiveDevice);
+    g_audioContext.SetActiveDevice(CAudioContext::NONE);
+  }
+
+  m_bIsPlaying = true;
+
+#if defined(_WIN32)
+  if (m_warpcursor)
+  {
     GetCursorPos(&m_ptCursorpos);
-    SetCursorPos(GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN));
+    int x = 0;
+    int y = 0;
+    switch (m_warpcursor)
+    {
+      case WARP_BOTTOM_RIGHT:
+        x = GetSystemMetrics(SM_CXSCREEN);
+      case WARP_BOTTOM_LEFT:
+        y = GetSystemMetrics(SM_CYSCREEN);
+        break;
+      case WARP_TOP_RIGHT:
+        x = GetSystemMetrics(SM_CXSCREEN);
+        break;
+      case WARP_CENTER:
+        x = GetSystemMetrics(SM_CXSCREEN) / 2;
+        y = GetSystemMetrics(SM_CYSCREEN) / 2;
+        break;
+    }
+    CLog::Log(LOGNOTICE, "%s: Warping cursor to (%d,%d)", __FUNCTION__, x, y);
+    SetCursorPos(x,y);
   }
   
   m_hwndXbmc = GetForegroundWindow();
 
-  if (m_forceontop && m_hwndXbmc)
+  LONG currentStyle;
+  if (m_hwndXbmc)
   {
-    CLog::Log(LOGNOTICE, "%s: Making XBMC window NOTOPMOST", __FUNCTION__);
-    SetWindowPos(m_hwndXbmc,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
-  }  
-  if (m_hidexbmc && m_hwndXbmc)
-  {
-    CLog::Log(LOGNOTICE, "%s: Hiding XBMC window", __FUNCTION__);
-    ShowWindow(m_hwndXbmc,SW_HIDE);
+    currentStyle = GetWindowLong(m_hwndXbmc, GWL_EXSTYLE);
+
+    if (m_hidexbmc && !m_islauncher)
+    {
+      CLog::Log(LOGNOTICE, "%s: Hiding XBMC window", __FUNCTION__);
+      ShowWindow(m_hwndXbmc,SW_HIDE);
+    }
+    else if (currentStyle & WS_EX_TOPMOST)
+    {
+      CLog::Log(LOGNOTICE, "%s: Lowering XBMC window", __FUNCTION__);
+      SetWindowPos(m_hwndXbmc,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOREDRAW);
+    }
   }
 
+  CLog::Log(LOGDEBUG, "%s: Unlocking foreground window", __FUNCTION__);
   LockSetForegroundWindow(LSFW_UNLOCK);
+#endif
 
+  m_playbackStartTime = timeGetTime();
+
+  BOOL ret = TRUE;
+#if defined(_WIN32)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
+#elif defined(_LINUX)
+  ret = ExecuteAppLinux(strFArgs.c_str());
+#endif
 
-  if ((m_forceontop || m_hidexbmc) && m_hwndXbmc)
+  m_time = m_totalTime;
+  m_bIsPlaying = false;
+  CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
+
+#if defined(_WIN32)
+  if (m_hwndXbmc)
   {
-    if (m_hidexbmc)
+    if (currentStyle & WS_EX_TOPMOST)
     {
-      CLog::Log(LOGNOTICE, "%s: Showing XBMC window", __FUNCTION__);
-      ShowWindow(m_hwndXbmc,SW_SHOW);
+      CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOPMOST", __FUNCTION__);
+      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
     }
-    if (m_forceontop)
+    else
     {
-      CLog::Log(LOGNOTICE, "%s: Making XBMC window TOPMOST", __FUNCTION__);
-      SetWindowPos(m_hwndXbmc,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE);
+      CLog::Log(LOGNOTICE, "%s: Showing XBMC window TOP", __FUNCTION__);
+      SetWindowPos(m_hwndXbmc,HWND_TOP,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
     }
   }
+
+  CLog::Log(LOGDEBUG, "%s: Focus XBMC window and lock foreground window", __FUNCTION__);
   SetFocus(m_hwndXbmc);
   SetForegroundWindow(m_hwndXbmc);
   LockSetForegroundWindow(LSFW_LOCK);
-  if (m_hidecursor)
+
+  if (m_warpcursor)
   {
     m_xPos = 0;
     m_yPos = 0;
@@ -223,51 +307,28 @@ void CExternalPlayer::Process()
       m_xPos = (m_ptCursorpos.x);
       m_yPos = (m_ptCursorpos.y);
     }
+    CLog::Log(LOGNOTICE, "%s: Restoring cursor to (%d,%d)", __FUNCTION__, m_xPos, m_yPos);
     SetCursorPos(m_xPos,m_yPos);
   }
 #endif
 
-#if defined(_LINUX)
-  ret = ExecuteAppLinux(strFArgs.c_str());
-#endif
-
-  CLog::Log(LOGNOTICE, "%s: Stop", __FUNCTION__);
-
   // We don't want to come back to an active screensaver
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();
-  g_audioContext.SetActiveDevice(iActiveDevice);
+
+  if (iActiveDevice != CAudioContext::NONE)
+  {
+    CLog::Log(LOGNOTICE, "%s: Reclaiming audio device %d", __FUNCTION__, iActiveDevice);
+    g_audioContext.SetActiveDevice(iActiveDevice);
+  }
 
   if (ret) 
-  {
-    // Deactivate any library window, we reactivate it later in order to refresh the
-    // watched-state of the item.
-    DWORD activeWindow = m_gWindowManager.GetActiveWindow();
-    if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED &&
-        (activeWindow == WINDOW_VIDEO_NAV || activeWindow == WINDOW_MUSIC_NAV))
-    {
-      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, activeWindow);
-      m_gWindowManager.SendThreadMessage(msg, activeWindow);
-    }
-
     m_callback.OnPlayBackEnded();
-
-    // Re-activate any library window in order to refresh the watched-state of the item.
-    // This isn't exactly quick, but is the same as when you use the builtin player.
-    if (g_stSettings.m_iMyVideoWatchMode == VIDEO_SHOW_UNWATCHED &&
-        (activeWindow == WINDOW_VIDEO_NAV || activeWindow == WINDOW_MUSIC_NAV))
-    {
-      CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, activeWindow);
-      msg.SetStringParam(",return");
-      m_gWindowManager.SendThreadMessage(msg, activeWindow);
-    }
-  }
   else
     m_callback.OnPlayBackStopped();
-
 }
 
-#if defined(_WIN32PC)
+#if defined(_WIN32)
 BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s %s", __FUNCTION__, strPath, strSwitches);
@@ -278,100 +339,106 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   memset(&pi, 0, sizeof(pi));
   si.cb = sizeof(si);
   si.dwFlags = STARTF_USESHOWWINDOW;
-  if (m_hideconsole)
-  {
-    si.wShowWindow=SW_HIDE;
-  }
-  else
-  {
-    si.wShowWindow=SW_SHOW;
-  }
+  si.wShowWindow = m_hideconsole ? SW_HIDE : SW_SHOW;
 
   CStdStringW WstrPath, WstrSwitches;
   g_charsetConverter.utf8ToW(strPath, WstrPath);
   g_charsetConverter.utf8ToW(strSwitches, WstrSwitches);
 
-  BOOL ret = CreateProcessW(WstrPath.c_str(), (LPWSTR) WstrSwitches.c_str(), NULL, NULL, FALSE, NULL, 
-                          NULL, NULL, &si, &pi);
+  m_dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+  m_dialog->SetHeading(23100);
+
+  BOOL ret = CreateProcessW(WstrPath.IsEmpty() ? NULL : WstrPath.c_str(),
+                            (LPWSTR) WstrSwitches.c_str(), NULL, NULL, FALSE, NULL, 
+                            NULL, NULL, &si, &pi);
+
   if (ret == FALSE)
   {
-    CLog::Log(LOGNOTICE, "%s - Failure: %d", __FUNCTION__, ret);
+    DWORD lastError = GetLastError(); 
+    CLog::Log(LOGNOTICE, "%s - Failure: %d", __FUNCTION__, lastError);
   }
   else
   {
-    if (m_startupTime > 0) 
+    m_playbackStartTime = timeGetTime();
+    BOOL bIsLauncher = m_islauncher;
+
+    if (m_hidexbmc && !m_islauncher)
     {
-      int res = WaitForSingleObject(pi.hProcess, m_startupTime);
-      if (res == WAIT_TIMEOUT) 
+      int res = WaitForSingleObject(pi.hProcess, INFINITE);
+      if (timeGetTime() - m_playbackStartTime < LAUNCHER_PROCESS_TIME)
       {
-        // Hopefully by now the player window is now visible above ours; time to lock the GraphicsContext to save CPU cycles,
-        g_graphicsContext.Lock();
-        // wait for the player to finish
-        res = WaitForSingleObject(pi.hProcess, INFINITE);
-        g_application.ResetScreenSaverTimer();
-        // and unlock it again
-        g_graphicsContext.Unlock();
-      }
-      switch (res) 
-      {
-        case WAIT_OBJECT_0:
-          CLog::Log(LOGNOTICE, "%s: WAIT_OBJECT_0", __FUNCTION__);
-          break;
-        case WAIT_ABANDONED:
-          CLog::Log(LOGNOTICE, "%s: WAIT_ABANDONED", __FUNCTION__);
-          break;
-        case WAIT_FAILED:
-          CLog::Log(LOGNOTICE, "%s: WAIT_FAILED (%d)", __FUNCTION__, GetLastError());
-          break;
+        CLog::Log(LOGNOTICE, "%s: External player process ended too quickly, assuming it's a launcher process", __FUNCTION__);
+        bIsLauncher = true;
+
+        if (m_hwndXbmc && m_hidexbmc)
+        {
+          CLog::Log(LOGNOTICE, "%s: XBMC cannot stay hidden for a launcher process", __FUNCTION__);
+          SetWindowPos(m_hwndXbmc,HWND_BOTTOM,0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_SHOWWINDOW);
+        }
       }
     }
-    else
+
+    if (!m_hidexbmc || bIsLauncher)
     {
-      CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
-      dialog->SetHeading("External Player Active");
-      dialog->SetLine(0, "Click OK to terminate player,");
-      dialog->SetLine(1, "only if you cannot close it normally");
-
+      BOOL waiting = false;
       HANDLE hWait;
-      BOOL waiting = RegisterWaitForSingleObject(&hWait, pi.hProcess, AppFinished, dialog, INFINITE, WT_EXECUTEDEFAULT|WT_EXECUTEONLYONCE);
-
-      if (!waiting) 
-        CLog::Log(LOGERROR,"%s: Failed to register wait callback (%d)", __FUNCTION__, GetLastError());
-
-      dialog->DoModal();
-
-      if (dialog->IsConfirmed())
+      if (!bIsLauncher)
       {
-        if (waiting)
-          UnregisterWait(hWait);
+        waiting = RegisterWaitForSingleObject(&hWait, pi.hProcess, AppFinished, this, INFINITE, WT_EXECUTEDEFAULT|WT_EXECUTEONLYONCE);
 
+        if (!waiting) 
+          CLog::Log(LOGERROR,"%s: Failed to register wait callback (%d)", __FUNCTION__, GetLastError());
+      }
+
+      if (waiting)
+      {
+        m_dialog->SetLine(1, 23101);
+        m_dialog->SetLine(2, 23102);
+        m_dialog->SetLine(3, 23103);
+      }
+      else
+      {
+        m_dialog->SetLine(1, 23104);
+        m_dialog->SetLine(2, 23105);
+        m_dialog->SetLine(3, 23106);
+      }
+
+      // Carry on if we failed to register the wait callback,
+      // the user will have to manually dismiss the dialog
+      m_dialog->DoModal();
+
+      if (waiting)
+        UnregisterWait(hWait);
+
+      if (m_dialog->IsConfirmed())
         // Post a message telling the player to stop
         PostThreadMessage(pi.dwThreadId, WM_QUIT, 0, 0);
-
-        // and wait a short while for it to do so
-        int res = WaitForSingleObject(pi.hProcess, 3000);
-        switch (res) 
-        {
-          case WAIT_OBJECT_0:
-            CLog::Log(LOGNOTICE, "%s: WAIT_OBJECT_0", __FUNCTION__);
-            break;
-          case WAIT_ABANDONED:
-            CLog::Log(LOGNOTICE, "%s: WAIT_ABANDONED", __FUNCTION__);
-            break;
-          case WAIT_TIMEOUT:
-            CLog::Log(LOGNOTICE, "%s: WAIT_TIMEOUT, terminating process", __FUNCTION__);
-            // The player hasn't stopped gracefully, kill it
-            TerminateProcess(pi.hProcess, 1);
-            break;
-          case WAIT_FAILED:
-            CLog::Log(LOGNOTICE, "%s: WAIT_FAILED (%d), terminating process", __FUNCTION__, GetLastError());
-            // The wait failed, give the player a few seconds to stop gracefully before killing it
-            Sleep(3000);
-            TerminateProcess(pi.hProcess, 1);
-            break;
-        }
-      } // else the process exited normally and we closed the dialog programatically
     }
+
+    // In case we've just posted a WM_QUIT we'll give the process a short while
+    // to comply before using TerminateProcess
+    int res = WaitForSingleObject(pi.hProcess, PROCESS_GRACE_TIME);
+    switch (res)
+    {
+      case WAIT_OBJECT_0:
+        CLog::Log(LOGNOTICE, "%s: WAIT_OBJECT_0", __FUNCTION__);
+        break;
+      case WAIT_ABANDONED:
+        CLog::Log(LOGNOTICE, "%s: WAIT_ABANDONED", __FUNCTION__);
+        break;
+      case WAIT_TIMEOUT:
+        CLog::Log(LOGNOTICE, "%s: WAIT_TIMEOUT, terminating process", __FUNCTION__);
+        // The player hasn't stopped gracefully, kill it
+        TerminateProcess(pi.hProcess, 1);
+        break;
+      case WAIT_FAILED:
+        CLog::Log(LOGNOTICE, "%s: WAIT_FAILED (%d), terminating process", __FUNCTION__, GetLastError());
+        // The wait failed, give the player a few seconds to stop gracefully before killing it
+        Sleep(PROCESS_GRACE_TIME);
+        TerminateProcess(pi.hProcess, 1);
+        break;
+    }
+    // else the process exited normally and we closed the dialog programatically
 
     CloseHandle(pi.hThread);
     CloseHandle(pi.hProcess);
@@ -382,8 +449,17 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 
 void CALLBACK CExternalPlayer::AppFinished(void* closure, BOOLEAN TimerOrWaitFired)
 {
-    CGUIDialogOK *dialog = (CGUIDialogOK *)closure;
-    dialog->Close();
+  CExternalPlayer *player = (CExternalPlayer *)closure;
+  if (timeGetTime() - player->m_playbackStartTime < LAUNCHER_PROCESS_TIME)
+  {
+    CLog::Log(LOGNOTICE, "%s: Process ran for <%dms, probably a launcher, not closing dialog", __FUNCTION__, LAUNCHER_PROCESS_TIME);
+  }
+  else
+  {
+    CLog::Log(LOGNOTICE, "%s: Process ended, closing dialog", __FUNCTION__);
+    if (player->m_dialog->IsActive())
+      player->m_dialog->Close();
+  }
 }
 #endif
 
@@ -423,7 +499,7 @@ bool CExternalPlayer::IsPaused() const
 
 bool CExternalPlayer::HasVideo() const
 {
-  return false;
+  return true;
 }
 
 bool CExternalPlayer::HasAudio() const
@@ -473,7 +549,7 @@ void CExternalPlayer::SeekPercentage(float iPercent)
 
 float CExternalPlayer::GetPercentage()
 {
-  return 0.0f;
+  return (m_totalTime * 100.0f) / m_time;
 }
 
 void CExternalPlayer::SetAVDelay(float fValue)
@@ -500,12 +576,12 @@ void CExternalPlayer::SeekTime(__int64 iTime)
 
 __int64 CExternalPlayer::GetTime()
 {
-  return 0;
+  return m_time;
 }
 
 int CExternalPlayer::GetTotalTime()
 {
-  return 1000;
+  return m_totalTime;
 }
 
 void CExternalPlayer::ToFFRW(int iSpeed)
@@ -542,23 +618,43 @@ bool CExternalPlayer::Initialize(TiXmlElement* pConfig)
     return false;
   }
 
-  XMLUtils::GetString(pConfig, "args", m_args); 
-  XMLUtils::GetBoolean(pConfig, "forceontop", m_forceontop); 
-  XMLUtils::GetBoolean(pConfig, "hideconsole", m_hideconsole); 
-  XMLUtils::GetBoolean(pConfig, "hidecursor", m_hidecursor); 
-  XMLUtils::GetBoolean(pConfig, "hidexbmc", m_hidexbmc); 
-  XMLUtils::GetInt(pConfig,"startuptime", m_startupTime); 
-  if (m_startupTime < 0 || m_startupTime > 5000) 
-    m_startupTime = 2000;
+  XMLUtils::GetString(pConfig, "args", m_args);
+  XMLUtils::GetBoolean(pConfig, "islauncher", m_islauncher);
+  XMLUtils::GetBoolean(pConfig, "hidexbmc", m_hidexbmc);
+  if (!XMLUtils::GetBoolean(pConfig, "hideconsole", m_hideconsole))
+  {
+#ifdef _WIN32
+    // Default depends on whether player is a batch file
+    m_hideconsole = m_filename.Right(4) == ".bat";
+#endif
+  }
 
-  CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: Forceontop (%s), Hideconsole (%s), Hidecursor (%s), Hidexbmc (%s), StartupTime (%d)", 
-          m_forceontop ? "true" : "false",
+  bool bHideCursor;
+  if (XMLUtils::GetBoolean(pConfig, "hidecursor", bHideCursor) && bHideCursor)
+    m_warpcursor = WARP_BOTTOM_RIGHT;
+
+  CStdString warpCursor;
+  if (XMLUtils::GetString(pConfig, "warpcursor", warpCursor))
+  {
+    if (warpCursor == "bottomright") m_warpcursor = WARP_BOTTOM_RIGHT;
+    else if (warpCursor == "bottomleft") m_warpcursor = WARP_BOTTOM_LEFT;
+    else if (warpCursor == "topleft") m_warpcursor = WARP_TOP_LEFT;
+    else if (warpCursor == "topright") m_warpcursor = WARP_TOP_RIGHT;
+    else if (warpCursor == "center") m_warpcursor = WARP_CENTER;
+    else
+    {
+      warpCursor = "none";
+      CLog::Log(LOGWARNING, "ExternalPlayer: invalid value for warpcursor: %s", warpCursor.c_str());
+    }
+  }
+
+  CLog::Log(LOGNOTICE, "ExternalPlayer Tweaks: hideconsole (%s), hidexbmc (%s), islauncher (%s), warpcursor (%s)", 
           m_hideconsole ? "true" : "false",
-          m_hidecursor ? "true" : "false",
           m_hidexbmc ? "true" : "false",
-          m_startupTime);
+          m_islauncher ? "true" : "false",
+          warpCursor.c_str());
 
-#ifdef _WIN32PC
+#ifdef _WIN32
   m_filenameReplacers.push_back("^smb:// , / , \\\\ , g");
   m_filenameReplacers.push_back("^smb:\\\\\\\\ , smb:(\\\\\\\\[^\\\\]*\\\\) , \\1 , ");
 #endif

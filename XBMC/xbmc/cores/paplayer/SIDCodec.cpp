@@ -19,13 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "SIDCodec.h"
 #include "cores/DllLoader/DllLoader.h"
 #include "Util.h"
 #include "MusicInfoTagLoaderSid.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

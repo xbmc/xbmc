@@ -19,14 +19,14 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "stdafx.h"
 #ifdef _LINUX
   #include <arpa/inet.h>
   #include "linux/PlatformInclude.h"
 #endif
 
-#include "AMFObject.h"
 #include "utils/log.h"
+#include "StdString.h"
+#include "AMFObject.h"
 #include "rtmp.h"
 
 RTMP_LIB::AMFObjectProperty RTMP_LIB::AMFObject::m_invalidProp;

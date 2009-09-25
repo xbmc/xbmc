@@ -19,13 +19,18 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "SlideShowPicture.h"
+#include "Texture.h"
 #include "cores/ssrc.h"         // for M_PI
 #include "utils/GUIInfoManager.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
-#include "TextureManager.h"
-#include "include.h"
+#include "GUISettings.h"
+#include "system.h"
+#include "WindowingFactory.h"
+#include "utils/log.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 
@@ -59,18 +64,7 @@ void CSlideShowPic::Close()
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
   {
-#ifndef HAS_SDL
-    m_pImage->Release();
-#elif defined(HAS_SDL_OPENGL)
-    g_graphicsContext.BeginPaint();
-    if (glIsTexture(m_pImage->id)) {
-      glDeleteTextures(1, &m_pImage->id);
-    }
-    g_graphicsContext.EndPaint();
     delete m_pImage;
-#else
-    SDL_FreeSurface(m_pImage);
-#endif
     m_pImage = NULL;
   }
   m_bIsLoaded = false;
@@ -79,7 +73,7 @@ void CSlideShowPic::Close()
   m_bTransistionImmediately = false;
 }
 
-void CSlideShowPic::SetTexture(int iSlideNumber, XBMC::TexturePtr pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   Close();
@@ -87,16 +81,8 @@ void CSlideShowPic::SetTexture(int iSlideNumber, XBMC::TexturePtr pTexture, int 
   m_bNoEffect = false;
   m_bTransistionImmediately = false;
   m_iSlideNumber = iSlideNumber;
-#ifdef HAS_SDL_OPENGL
-  // lock the graphics context, as opengl does not allow
-  // creating of textures during a glBegin(), glEnd() block
-  // and this is called from a different thread
-  //g_graphicsContext.Lock();
-  m_pImage = new CGLTexture(pTexture, false, true);
-  //g_graphicsContext.Unlock();
-#else
+
   m_pImage = pTexture;
-#endif
   m_fWidth = (float)iWidth;
   m_fHeight = (float)iHeight;
   // reset our counter
@@ -181,33 +167,15 @@ int CSlideShowPic::GetOriginalHeight()
     return m_iOriginalHeight;
 }
 
-void CSlideShowPic::UpdateTexture(XBMC::TexturePtr pTexture, int iWidth, int iHeight)
+void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture, int iWidth, int iHeight)
 {
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
   {
-#ifndef HAS_SDL
-    m_pImage->Release();
-#elif defined(HAS_SDL_OPENGL)
-     // release the lock since destructor locks graphics context. avoid dead locks with rendering loop
-    CGLTexture *pTemp = m_pImage;
+    delete m_pImage;
     m_pImage = NULL;
-    lock.Leave();
-    delete pTemp;
-    lock.Enter();
-#else
-    SDL_FreeSurface(m_pImage);
-#endif
   }
-#ifdef HAS_SDL_OPENGL
-  // avoid deadlock with graphicscontext
-  lock.Leave();
-  CGLTexture *pTemp = new CGLTexture(pTexture, false, true);
-  lock.Enter();
-  m_pImage = pTemp;
-#else
   m_pImage = pTexture;
-#endif
   m_fWidth = (float)iWidth;
   m_fHeight = (float)iHeight;
 }
@@ -219,16 +187,16 @@ void CSlideShowPic::Process()
   { // do start transistion
     if (m_transistionStart.type == CROSSFADE)
     { // fade in at 1x speed
-      m_dwAlpha = (DWORD)((float)m_iCounter / (float)m_transistionStart.length * 255.0f);
+      m_alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f);
     }
     else if (m_transistionStart.type == FADEIN_FADEOUT)
     { // fade in at 2x speed, then keep solid
-      m_dwAlpha = (DWORD)((float)m_iCounter / (float)m_transistionStart.length * 255.0f * 2);
-      if (m_dwAlpha > 255) m_dwAlpha = 255;
+      m_alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f * 2);
+      if (m_alpha > 255) m_alpha = 255;
     }
     else // m_transistionEffect == TRANSISTION_NONE
     {
-      m_dwAlpha = 0xFF; // opaque
+      m_alpha = 0xFF; // opaque
     }
   }
   bool bPaused = m_bPause | (m_fZoomAmount != 1.0f);
@@ -322,16 +290,16 @@ void CSlideShowPic::Process()
     m_bDrawNextImage = true;
     if (m_transistionEnd.type == CROSSFADE)
     { // fade out at 1x speed
-      m_dwAlpha = 255 - (DWORD)((float)(m_iCounter - m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f);
+      m_alpha = 255 - (color_t)((float)(m_iCounter - m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f);
     }
     else if (m_transistionEnd.type == FADEIN_FADEOUT)
     { // keep solid, then fade out at 2x speed
-      m_dwAlpha = (DWORD)((float)(m_transistionEnd.length - m_iCounter + m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f * 2);
-      if (m_dwAlpha > 255) m_dwAlpha = 255;
+      m_alpha = (color_t)((float)(m_transistionEnd.length - m_iCounter + m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f * 2);
+      if (m_alpha > 255) m_alpha = 255;
     }
     else // m_transistionEffect == TRANSISTION_NONE
     {
-      m_dwAlpha = 0xFF; // opaque
+      m_alpha = 0xFF; // opaque
     }
   }
   if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transistionStart.length || m_iCounter >= m_transistionEnd.start || (m_iCounter >= m_transistionTemp.start && m_iCounter < m_transistionTemp.start + m_transistionTemp.length))
@@ -548,7 +516,7 @@ void CSlideShowPic::Render()
     y[i] += m_fPosY * m_fHeight * fScale;
   }
   // and render
-  Render(x, y, m_pImage, (m_dwAlpha << 24) | 0xFFFFFF);
+  Render(x, y, m_pImage, (m_alpha << 24) | 0xFFFFFF);
 
   // now render the image in the top right corner if we're zooming
   if (m_fZoomAmount == 1 || m_bIsComic) return ;
@@ -626,24 +594,13 @@ void CSlideShowPic::Render()
     if (oy[i] < fSmallY) oy[i] = fSmallY;
     if (oy[i] > fSmallY + fSmallHeight) oy[i] = fSmallY + fSmallHeight;
   }
-#ifndef HAS_SDL
-  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, D3DFILL_WIREFRAME);
-#elif defined(HAS_SDL_OPENGL)
-  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR, GL_LINE);
-#else
+
   Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
-#endif
 }
 
-#ifndef HAS_SDL
-void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor, _D3DFILLMODE fillmode)
-#elif defined(HAS_SDL_OPENGL)
-void CSlideShowPic::Render(float *x, float *y, CGLTexture *pTexture, DWORD dwColor, GLenum fillmode)
-#else
-void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD dwColor)
-#endif
+void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t color)
 {
-#ifndef HAS_SDL
+#ifdef HAS_DX
   struct VERTEX
   {
     D3DXVECTOR4 p;
@@ -659,7 +616,7 @@ void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD 
     vertex[i].p = D3DXVECTOR4( x[i], y[i], 0, 1.0f);
     vertex[i].tu = 0;
     vertex[i].tv = 0;
-    vertex[i].col = dwColor;
+    vertex[i].col = color;
   }
   vertex[1].tu = 1.0f;
   vertex[2].tu = 1.0f;
@@ -667,39 +624,43 @@ void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD 
   vertex[3].tv = 1.0f;
 
   // Set state to render the image
-  if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture( 0, pTexture );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
-  g_graphicsContext.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
-  g_graphicsContext.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-  g_graphicsContext.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-  g_graphicsContext.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, fillmode );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-  g_graphicsContext.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-  g_graphicsContext.Get3DDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
-  g_graphicsContext.Get3DDevice()->SetFVF( FVF_VERTEX );
+  if (pTexture)
+  {
+    pTexture->LoadToGPU();
+    g_Windowing.Get3DDevice()->SetTexture( 0, pTexture->GetTextureObject() );
+  }
+  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
+  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
+  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
+  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_MODULATE );
+  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
+  g_Windowing.Get3DDevice()->SetTextureStageState( 0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE );
+  g_Windowing.Get3DDevice()->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE );
+  g_Windowing.Get3DDevice()->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE );
+  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
+  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
+  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR /*g_stSettings.m_minFilter*/ );
+  g_Windowing.Get3DDevice()->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR /*g_stSettings.m_maxFilter*/ );
+  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_ZENABLE, FALSE );
+  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FOGENABLE, FALSE );
+  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FOGTABLEMODE, D3DFOG_NONE );
+  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_FILLMODE, D3DFILL_SOLID );
+  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+  g_Windowing.Get3DDevice()->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+  g_Windowing.Get3DDevice()->SetRenderState(D3DRS_LIGHTING, FALSE);
+  g_Windowing.Get3DDevice()->SetFVF( FVF_VERTEX );
   // Render the image
-  g_graphicsContext.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
-  if (pTexture) g_graphicsContext.Get3DDevice()->SetTexture(0, NULL);
+  g_Windowing.Get3DDevice()->DrawPrimitiveUP( D3DPT_TRIANGLEFAN, 2, vertex, sizeof(VERTEX) );
+  if (pTexture) g_Windowing.Get3DDevice()->SetTexture(0, NULL);
 
-#elif defined(HAS_SDL_OPENGL)
+#elif defined(HAS_GL)
   g_graphicsContext.BeginPaint();
   if (pTexture)
   {
     pTexture->LoadToGPU();
-    glBindTexture(GL_TEXTURE_2D, pTexture->id);
+    glBindTexture(GL_TEXTURE_2D, pTexture->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
 
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -715,39 +676,41 @@ void CSlideShowPic::Render(float *x, float *y, XBMC::TexturePtr pTexture, DWORD 
   }
   else
     glDisable(GL_TEXTURE_2D);
-  glPolygonMode(GL_FRONT_AND_BACK, fillmode);
+  glPolygonMode(GL_FRONT_AND_BACK, pTexture ? GL_FILL : GL_LINE);
 
   glBegin(GL_QUADS);
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
   if (pTexture)
   {
-    u2 = (float)pTexture->imageWidth / pTexture->textureWidth;
-    v2 = (float)pTexture->imageHeight / pTexture->textureHeight;
+    u2 = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
+    v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
   }
 
-  glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
+  glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
   glTexCoord2f(u1, v1);
   glVertex3f(x[0], y[0], 0);
 
   // Bottom-left vertex (corner)
-  glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
+  glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
   glTexCoord2f(u2, v1);
   glVertex3f(x[1], y[1], 0);
 
   // Bottom-right vertex (corner)
-  glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
+  glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
   glTexCoord2f(u2, v2);
   glVertex3f(x[2], y[2], 0);
 
   // Top-right vertex (corner)
-  glColor4ub((GLubyte)GET_R(dwColor), (GLubyte)GET_G(dwColor), (GLubyte)GET_B(dwColor), (GLubyte)GET_A(dwColor));
+  glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
   glTexCoord2f(u1, v2);
   glVertex3f(x[3], y[3], 0);
 
   glEnd();
   g_graphicsContext.EndPaint();
+#elif defined(HAS_GLES)
+  // TODO: GLES
 #else
 // SDL render
-  g_graphicsContext.BlitToScreen(m_pImage, NULL, NULL);
+  g_Windowing.BlitToScreen(m_pImage, NULL, NULL);
 #endif
 }

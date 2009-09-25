@@ -25,6 +25,31 @@
 #include "MusicInfoTagLoaderMP3.h"
 #include "DllMadCodec.h"
 
+enum madx_sig {
+	ERROR_OCCURED,
+	MORE_INPUT,
+	FLUSH_BUFFER,
+	CALL_AGAIN,
+  SKIP_FRAME
+};
+
+struct madx_house {
+  struct mad_stream stream;
+  struct mad_frame  frame;
+  struct mad_synth  synth;
+  mad_timer_t       timer;
+  unsigned long     frame_cnt;
+  unsigned char*    output_ptr;
+};
+
+struct madx_stat {
+  size_t 		     write_size;
+  size_t		     readsize;
+  size_t		     remaining;
+  size_t 		     framepcmsize;
+  bool           flushed;
+};
+
 class MP3Codec : public CachingCodec
 {
 public:
@@ -41,14 +66,33 @@ public:
   virtual bool SkipNext();
   virtual bool HasFloatData() const { return m_BitsPerSampleInternal == 32; };
 private:
+
+  /* TODO decoder functions */
+  virtual int Decode(int *out_len);
+  virtual void Flush();
+  int madx_init(madx_house* mxhouse);
+  madx_sig madx_read(madx_house *mxhouse, madx_stat* mxstat, int maxwrite, bool discard = false);
+  void madx_deinit(madx_house* mxhouse);
+  /* END decoder functions */
+
   void OnFileReaderClearEvent();
   void FlushDecoder();
   int Read(int size, bool init = false);
 
+  /* TODO decoder vars */
+  int m_BytesDecoded;
+  bool m_HaveData;
+  unsigned int m_formatdata[8];
+  unsigned char  flushcnt;
+
+  madx_house mxhouse;
+  madx_stat  mxstat;
+  madx_sig   mxsig;
+  /* END decoder vars */
+
   // Decoding variables
   __int64 m_lastByteOffset;
   bool    m_eof;
-  IAudioDecoder* m_pDecoder;    // handle to the codec.
   bool    m_Decoding;
   bool    m_CallAgainWithSameBuffer;
 

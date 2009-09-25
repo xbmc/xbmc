@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDSubtitlesLibass.h"
 #include "DVDClock.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/log.h"
 
 using namespace std;
 
@@ -88,10 +88,8 @@ CDVDSubtitlesLibass::~CDVDSubtitlesLibass()
 {
   if(m_dll.IsLoaded())
   {
-    // renderer_done will destroy the freetype lib which is used in library_done. so we need to do library_done first
-    // renderer_done does not use the library handle so we should be fine...
-    m_dll.ass_library_done(m_library);
     m_dll.ass_renderer_done(m_renderer);
+    m_dll.ass_library_done(m_library);
     m_dll.Unload();
   }
 }

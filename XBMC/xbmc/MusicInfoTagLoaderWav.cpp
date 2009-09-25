@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderWav.h"
 #include "cores/paplayer/WAVcodec.h"
 #include "MusicInfoTag.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

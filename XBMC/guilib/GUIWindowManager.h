@@ -48,15 +48,16 @@ public:
   CGUIWindowManager(void);
   virtual ~CGUIWindowManager(void);
   bool SendMessage(CGUIMessage& message);
-  bool SendMessage(CGUIMessage& message, DWORD dwWindow);
+  bool SendMessage(CGUIMessage& message, int window);
   void Initialize();
   void Add(CGUIWindow* pWindow);
   void AddUniqueInstance(CGUIWindow *window);
   void AddCustomWindow(CGUIWindow* pWindow);
-  void Remove(DWORD dwID);
-  void Delete(DWORD dwID);
-  void ActivateWindow(int iWindowID, const CStdString& strPath = "", bool swappingWindows = false);
-  void ChangeActiveWindow(int iNewID, const CStdString& strPath = "");
+  void Remove(int id);
+  void Delete(int id);
+  void ActivateWindow(int iWindowID, const CStdString &strPath = "");
+  void ChangeActiveWindow(int iNewID, const CStdString &strPath = "");
+  void ActivateWindow(int iWindowID, const std::vector<CStdString>& params, bool swappingWindows = false);
   void PreviousWindow();
   void RefreshWindow();
   void LoadNotOnDemandWindows();
@@ -71,18 +72,18 @@ public:
 
   void Render();
   void RenderDialogs();
-  CGUIWindow* GetWindow(DWORD dwID) const;
+  CGUIWindow* GetWindow(int id) const;
   void Process(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
 
   void RouteToWindow(CGUIWindow* dialog);
   void AddModeless(CGUIWindow* dialog);
-  void RemoveDialog(DWORD dwID);
+  void RemoveDialog(int id);
   int GetTopMostModalDialogID() const;
 
   void SendThreadMessage(CGUIMessage& message);
-  void SendThreadMessage(CGUIMessage& message, DWORD dwWindow);
+  void SendThreadMessage(CGUIMessage& message, int window);
   void DispatchThreadMessages();
   void AddMsgTarget( IMsgTargetCallback* pMsgTarget );
   int GetActiveWindow() const;
@@ -90,30 +91,31 @@ public:
   bool HasModalDialog() const;
   bool HasDialogOnScreen() const;
   void UpdateModelessVisibility();
-  bool IsWindowActive(DWORD dwID, bool ignoreClosing = true) const;
-  bool IsWindowVisible(DWORD id) const;
-  bool IsWindowTopMost(DWORD id) const;
+  bool IsWindowActive(int id, bool ignoreClosing = true) const;
+  bool IsWindowVisible(int id) const;
+  bool IsWindowTopMost(int id) const;
   bool IsWindowActive(const CStdString &xmlFile, bool ignoreClosing = true) const;
   bool IsWindowVisible(const CStdString &xmlFile) const;
   bool IsWindowTopMost(const CStdString &xmlFile) const;
   bool IsOverlayAllowed() const;
   void ShowOverlay(CGUIWindow::OVERLAY_STATE state);
-  void GetActiveModelessWindows(std::vector<DWORD> &ids);
+  void GetActiveModelessWindows(std::vector<int> &ids);
 #ifdef _DEBUG
   void DumpTextureUse();
 #endif
 private:
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
-  void AddToWindowHistory(DWORD newWindowID);
+  void AddToWindowHistory(int newWindowID);
   void ClearWindowHistory();
   CGUIWindow *GetTopMostDialog() const;
 
   friend class CApplicationMessenger;
-  void ActivateWindow_Internal(int windowID, const CStdString &strPath, bool swappingWindows);
+  void ActivateWindow_Internal(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
   void Process_Internal(bool renderOnly = false);
   void Render_Internal();
 
-  std::map<DWORD, CGUIWindow *> m_mapWindows;
+  typedef std::map<int, CGUIWindow *> WindowMap;
+  WindowMap m_mapWindows;
   std::vector <CGUIWindow*> m_vecCustomWindows;
   std::vector <CGUIWindow*> m_activeDialogs;
   typedef std::vector<CGUIWindow*>::iterator iDialog;
@@ -121,10 +123,10 @@ private:
   typedef std::vector<CGUIWindow*>::reverse_iterator rDialog;
   typedef std::vector<CGUIWindow*>::const_reverse_iterator crDialog;
 
-  std::stack<DWORD> m_windowHistory;
+  std::stack<int> m_windowHistory;
 
   IWindowManagerCallback* m_pCallback;
-  std::vector < std::pair<CGUIMessage*,DWORD> > m_vecThreadMessages;
+  std::vector < std::pair<CGUIMessage*,int> > m_vecThreadMessages;
   CRITICAL_SECTION m_critSection;
   std::vector <IMsgTargetCallback*> m_vecMsgTargets;
 

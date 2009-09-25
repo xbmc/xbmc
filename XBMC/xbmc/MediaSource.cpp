@@ -19,9 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "MediaSource.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "Util.h"
 #include "URL.h"
 #include "FileSystem/MultiPathDirectory.h"
@@ -31,7 +30,7 @@ using namespace DIRECTORY;
 
 bool CMediaSource::isWritable() const
 {
-#ifdef _WIN32PC
+#ifdef _WIN32
   if(CUtil::IsDOSPath(strPath) && !CUtil::IsDVD(strPath))
 #else
   if (strPath[1] == ':' && (strPath[0] != 'D' && strPath[0] != 'd'))

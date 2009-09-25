@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowSettingsProfile.h"
 #include "GUIWindowFileManager.h"
 #include "Profile.h"
@@ -33,6 +32,8 @@
 #include "FileSystem/Directory.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "Settings.h"
+#include "LocalizeStrings.h"
 
 using namespace DIRECTORY;
 
@@ -50,7 +51,7 @@ CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
 
 bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_gWindowManager.PreviousWindow();
     return true;

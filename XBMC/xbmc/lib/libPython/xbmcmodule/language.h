@@ -42,6 +42,8 @@
 extern "C" {
 #endif
 
+class CLocalizeStrings;
+
 namespace PYXBMC
 {
   typedef struct {

@@ -19,15 +19,14 @@
  *
  */
 
-#include "include.h"
 #include "GUIControlGroupList.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIControlProfiler.h"
 
 #define TIME_TO_SCROLL 200;
 
-CGUIControlGroupList::CGUIControlGroupList(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, float itemGap, DWORD pageControl, ORIENTATION orientation, bool useControlPositions, DWORD alignment)
-: CGUIControlGroup(dwParentID, dwControlId, posX, posY, width, height)
+CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment)
+: CGUIControlGroup(parentID, controlID, posX, posY, width, height)
 {
   m_itemGap = itemGap;
   m_pageControl = pageControl;
@@ -74,9 +73,9 @@ void CGUIControlGroupList::Render()
   ValidateOffset();
   if (m_pageControl)
   {
-    CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, (DWORD)m_height, (DWORD)m_totalSize);
+    CGUIMessage message(GUI_MSG_LABEL_RESET, GetParentID(), m_pageControl, (int)m_height, (int)m_totalSize);
     SendWindowMessage(message);
-    CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (DWORD)m_offset);
+    CGUIMessage message2(GUI_MSG_ITEM_SELECT, GetParentID(), m_pageControl, (int)m_offset);
     SendWindowMessage(message2);
   }
   // we run through the controls, rendering as we go
@@ -224,8 +223,8 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
 
   if (control)
   { // set the navigation of items so that they form a list
-    DWORD beforeID = (m_orientation == VERTICAL) ? GetControlIdUp() : GetControlIdLeft();
-    DWORD afterID = (m_orientation == VERTICAL) ? GetControlIdDown() : GetControlIdRight();
+    int beforeID = (m_orientation == VERTICAL) ? GetControlIdUp() : GetControlIdLeft();
+    int afterID = (m_orientation == VERTICAL) ? GetControlIdDown() : GetControlIdRight();
     if (m_children.size())
     {
       // we're inserting at the given position, so grab the items above and below and alter

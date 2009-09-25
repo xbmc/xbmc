@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDDemuxPVRManager.h"

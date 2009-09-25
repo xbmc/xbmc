@@ -26,6 +26,7 @@
 #endif
 #if (defined USE_EXTERNAL_LIBOGG)
   #include <ogg/ogg.h>
+  #include "utils/log.h"
 #else
   #include "oggvorbis/ogg.h"
 #endif

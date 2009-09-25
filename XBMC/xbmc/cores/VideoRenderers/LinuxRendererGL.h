@@ -1,22 +1,19 @@
 #ifndef LINUXRENDERERGL_RENDERER
 #define LINUXRENDERERGL_RENDERER
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 
 #include "../../../guilib/FrameBufferObject.h"
 #include "../../../guilib/Shader.h"
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
-#include "VideoShaders/YUV2RGBShader.h"
-#include "VideoShaders/VideoFilterShader.h"
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "GraphicContext.h"
 
-namespace Surface { class CSurface; }
-
-using namespace Surface;
-using namespace Shaders;
+class CBaseTexture;
+namespace Shaders { class BaseYUV2RGBShader; }
+namespace Shaders { class BaseVideoFilterShader; }
 
 #define NUM_BUFFERS 3
 
@@ -60,7 +57,7 @@ enum EFIELDSYNC
 {
   FS_NONE,
   FS_ODD,
-  FS_EVEN,
+  FS_EVEN
 };
 
 struct YUVRANGE
@@ -121,7 +118,7 @@ public:
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
 
-  void CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
   virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
@@ -241,8 +238,8 @@ protected:
                 , unsigned width,  unsigned height
                 , int stride, void* data );
 
-  CShaderProgram        *m_pYUVShader;
-  BaseVideoFilterShader *m_pVideoFilterShader;
+  Shaders::BaseYUV2RGBShader     *m_pYUVShader;
+  Shaders::BaseVideoFilterShader *m_pVideoFilterShader;
   ESCALINGMETHOD m_scalingMethod;
 
   // clear colour for "black" bars

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "Application.h"
 #include "utils/GUIInfoManager.h"
 #include "PlayListPlayer.h"
@@ -30,6 +29,7 @@
 #include "infotagmusic.h"
 #include "listitem.h"
 #include "FileItem.h"
+#include "Settings.h"
 
 using namespace MUSIC_INFO;
 

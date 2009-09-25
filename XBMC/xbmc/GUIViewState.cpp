@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewState.h"
 #include "GUIViewStateMusic.h"
 #include "GUIViewStateVideo.h"
@@ -35,8 +34,10 @@
 #include "AutoSwitch.h"
 #include "GUIWindowManager.h"
 #include "ViewState.h"
+#include "GUISettings.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "Key.h"
 
 using namespace std;
 

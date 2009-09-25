@@ -20,6 +20,7 @@
  *
  */
 
+#include "utils/CriticalSection.h"
 #include "utils/Thread.h"
 
 typedef struct cmyth_ringbuf   *cmyth_ringbuf_t;
@@ -33,6 +34,7 @@ typedef struct cmyth_timestamp *cmyth_timestamp_t;
 
 class DllLibCMyth;
 class CDateTime;
+class CFileItem;
 class CURL;
 
 namespace XFILE

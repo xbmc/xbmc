@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowVideoBase.h"
 #include "Util.h"
 #include "utils/IMDB.h"
@@ -52,6 +52,11 @@
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/Directory.h"
 #include "PlayList.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 #include "SkinInfo.h"
 #include "MediaManager.h"
@@ -59,7 +64,6 @@
 using namespace std;
 using namespace XFILE;
 using namespace DIRECTORY;
-using namespace MEDIA_DETECT;
 using namespace PLAYLIST;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace VIDEO;
@@ -75,8 +79,8 @@ using namespace VIDEO;
 #define CONTROL_BTNSCAN            8
 #define CONTROL_IMDB               9
 
-CGUIWindowVideoBase::CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile)
-    : CGUIMediaWindow(dwID, xmlFile)
+CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const CStdString &xmlFile)
+    : CGUIMediaWindow(id, xmlFile)
 {
   m_thumbLoader.SetObserver(this);
   m_thumbLoader.SetStreamDetailsObserver(this);
@@ -88,13 +92,13 @@ CGUIWindowVideoBase::~CGUIWindowVideoBase()
 
 bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SHOW_PLAYLIST)
+  if (action.id == ACTION_SHOW_PLAYLIST)
   {
     OutputDebugString("activate guiwindowvideoplaylist!\n");
     m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     return true;
   }
-  if (action.wID == ACTION_SCAN_ITEM)
+  if (action.id == ACTION_SCAN_ITEM)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
 
   return CGUIMediaWindow::OnAction(action);
@@ -117,7 +121,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // save current window, unless the current window is the video playlist window
-      if (GetID() != WINDOW_VIDEO_PLAYLIST && (DWORD)g_stSettings.m_iVideoStartWindow != GetID())
+      if (GetID() != WINDOW_VIDEO_PLAYLIST && g_stSettings.m_iVideoStartWindow != GetID())
       {
         g_stSettings.m_iVideoStartWindow = GetID();
         g_settings.Save();
@@ -152,7 +156,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           break;
         }
 
-        if ((DWORD) nNewWindow != GetID())
+        if (nNewWindow != GetID())
         {
           g_stSettings.m_iVideoStartWindow = nNewWindow;
           g_settings.Save();
@@ -718,6 +722,7 @@ void CGUIWindowVideoBase::OnManualIMDB()
 
 bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, const CStdString& strDVDLabel)
 {
+#ifdef HAS_DVD_DRIVE  
   CCdInfo* pCdInfo = g_mediaManager.GetCdInfo();
   if (pCdInfo == NULL)
     return false;
@@ -728,9 +733,11 @@ bool CGUIWindowVideoBase::IsCorrectDiskInDrive(const CStdString& strFileName, co
   int iLabelDB = strDVDLabel.GetLength();
   if (iLabelDB < iLabelCD)
     return false;
-  CStdString dbLabel = strDVDLabel.Left(iLabelCD);
-
+  CStdString dbLabel = strDVDLabel.Left(iLabelCD); 
   return (dbLabel == label);
+#else
+  return false;
+#endif
 }
 
 bool CGUIWindowVideoBase::CheckMovie(const CStdString& strFileName)

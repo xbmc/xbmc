@@ -31,7 +31,6 @@ to maintain a single distribution point for the source code.
 
 /////////////////////////////////  Includes  //////////////////////////////////
 
-#include "stdafx.h"
 #ifndef _INC_MATH
 #include <math.h>
 #endif

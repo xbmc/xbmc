@@ -19,15 +19,15 @@
  *
  */
 
-#include "include.h"
 #include "GUIPanelContainer.h"
 #include "GUIListItem.h"
 #include "utils/GUIInfoManager.h"
+#include "Key.h"
 
 using namespace std;
 
-CGUIPanelContainer::CGUIPanelContainer(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
-    : CGUIBaseContainer(dwParentID, dwControlId, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIPanelContainer::CGUIPanelContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
 {
   ControlType = GUICONTAINER_PANEL;
   m_type = VIEW_TYPE_ICON;
@@ -119,7 +119,7 @@ void CGUIPanelContainer::Render()
 
 bool CGUIPanelContainer::OnAction(const CAction &action)
 {
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_PAGE_UP:
     {
@@ -150,7 +150,7 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
     // smooth scrolling (for analog controls)
   case ACTION_SCROLL_UP:
     {
-      m_analogScrollCount += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
       while (m_analogScrollCount > AnalogScrollSpeed())
       {
@@ -170,7 +170,7 @@ bool CGUIPanelContainer::OnAction(const CAction &action)
     break;
   case ACTION_SCROLL_DOWN:
     {
-      m_analogScrollCount += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
       while (m_analogScrollCount > AnalogScrollSpeed())
       {
@@ -212,7 +212,7 @@ bool CGUIPanelContainer::OnMessage(CGUIMessage& message)
 
 void CGUIPanelContainer::OnLeft()
 {
-  bool wrapAround = m_dwControlLeft == GetID() || !(m_dwControlLeft || m_leftActions.size());
+  bool wrapAround = m_controlLeft == GetID() || !(m_controlLeft || m_leftActions.size());
   if (m_orientation == VERTICAL && MoveLeft(wrapAround))
     return;
   if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
@@ -222,7 +222,7 @@ void CGUIPanelContainer::OnLeft()
 
 void CGUIPanelContainer::OnRight()
 {
-  bool wrapAround = m_dwControlRight == GetID() || !(m_dwControlRight || m_rightActions.size());
+  bool wrapAround = m_controlRight == GetID() || !(m_controlRight || m_rightActions.size());
   if (m_orientation == VERTICAL && MoveRight(wrapAround))
     return;
   if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
@@ -232,7 +232,7 @@ void CGUIPanelContainer::OnRight()
 
 void CGUIPanelContainer::OnUp()
 {
-  bool wrapAround = m_dwControlUp == GetID() || !(m_dwControlUp || m_upActions.size());
+  bool wrapAround = m_controlUp == GetID() || !(m_controlUp || m_upActions.size());
   if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
   if (m_orientation == HORIZONTAL && MoveLeft(wrapAround))
@@ -242,7 +242,7 @@ void CGUIPanelContainer::OnUp()
 
 void CGUIPanelContainer::OnDown()
 {
-  bool wrapAround = m_dwControlDown == GetID() || !(m_dwControlDown || m_downActions.size());
+  bool wrapAround = m_controlDown == GetID() || !(m_controlDown || m_downActions.size());
   if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
   if (m_orientation == HORIZONTAL && MoveRight(wrapAround))

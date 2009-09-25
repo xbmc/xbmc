@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?fileVersion 4.0.0?>
 
 <cproject>
@@ -42,6 +42,7 @@
 <option id="gnu.cpp.compiler.option.preprocessor.def.1419763403" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL=1"/>
 <listOptionValue builtIn="false" value="HAS_SDL=1"/>
+<listOptionValue builtIn="false" value="HAS_GLX"/>
 </option>
 <option id="gnu.cpp.compiler.option.include.paths.980820199" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 <listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
@@ -57,15 +58,7 @@
 <listOptionValue builtIn="false" value="/opt/local/include"/>
 <listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
-<option id="gnu.cpp.compiler.option.preprocessor.undef.1738532239" name="Undefined symbols (-U)" superClass="gnu.cpp.compiler.option.preprocessor.undef" valueType="undefDefinedSymbols">
-<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
-<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS"/>
-<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
-<listOptionValue builtIn="false" value="_DEBUG"/>
-<listOptionValue builtIn="false" value="_REENTRANT"/>
-<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
-</option>
+<option id="gnu.cpp.compiler.option.preprocessor.undef.1738532239" name="Undefined symbols (-U)" superClass="gnu.cpp.compiler.option.preprocessor.undef" valueType="undefDefinedSymbols"/>
 <inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1570287588" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
 <tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug">
@@ -74,100 +67,75 @@
 <option id="gnu.c.compiler.option.preprocessor.def.symbols.582675919" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="HAS_SDL_OPENGL=1"/>
 <listOptionValue builtIn="false" value="HAS_SDL=1"/>
+<listOptionValue builtIn="false" value="HAS_GLX"/>
 </option>
-<option id="gnu.c.compiler.option.preprocessor.undef.symbol.759674984" superClass="gnu.c.compiler.option.preprocessor.undef.symbol" valueType="undefDefinedSymbols">
-<listOptionValue builtIn="false" value="__SSE2_MATH__"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
-<listOptionValue builtIn="false" value="__FLT_MIN_10_EXP__"/>
-<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS"/>
-<listOptionValue builtIn="false" value="__LDBL_MIN__"/>
-<listOptionValue builtIn="false" value="__FLT_HAS_QUIET_NAN__"/>
-<listOptionValue builtIn="false" value="__strong"/>
-<listOptionValue builtIn="false" value="__LDBL_DIG__"/>
-<listOptionValue builtIn="false" value="__INTMAX_MAX__"/>
-<listOptionValue builtIn="false" value="__STDC_HOSTED__"/>
-<listOptionValue builtIn="false" value="__LDBL_DENORM_MIN__"/>
-<listOptionValue builtIn="false" value="__NO_INLINE__"/>
-<listOptionValue builtIn="false" value="__DBL_MIN_10_EXP__"/>
-<listOptionValue builtIn="false" value="__LDBL_MANT_DIG__"/>
-<listOptionValue builtIn="false" value="__LDBL_HAS_QUIET_NAN__"/>
-<listOptionValue builtIn="false" value="__FLT_MAX_10_EXP__"/>
-<listOptionValue builtIn="false" value="__INT_MAX__"/>
-<listOptionValue builtIn="false" value="__INTMAX_TYPE__"/>
-<listOptionValue builtIn="false" value="__LONG_LONG_MAX__"/>
-<listOptionValue builtIn="false" value="__LDBL_MAX__"/>
-<listOptionValue builtIn="false" value="__REGISTER_PREFIX__"/>
-<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
-<listOptionValue builtIn="false" value="__DBL_MAX_EXP__"/>
-<listOptionValue builtIn="false" value="SILENT"/>
-<listOptionValue builtIn="false" value="__FLT_EPSILON__"/>
-<listOptionValue builtIn="false" value="HAS_VIDEO_PLAYBACK"/>
-<listOptionValue builtIn="false" value="__DBL_MIN_EXP__"/>
-<listOptionValue builtIn="false" value="__APPLE_CC__"/>
-<listOptionValue builtIn="false" value="__WINT_TYPE__"/>
-<listOptionValue builtIn="false" value="__PIC__"/>
-<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__"/>
-<listOptionValue builtIn="false" value="__VERSION__"/>
-<listOptionValue builtIn="false" value="__LDBL_HAS_INFINITY__"/>
-<listOptionValue builtIn="false" value="__FLT_DIG__"/>
-<listOptionValue builtIn="false" value="__STDC_CONSTANT_MACROS"/>
-<listOptionValue builtIn="false" value="__FLT_MAX__"/>
-<listOptionValue builtIn="false" value="__WCHAR_MAX__"/>
-<listOptionValue builtIn="false" value="__FLT_RADIX__"/>
-<listOptionValue builtIn="false" value="__LDBL_EPSILON__"/>
-<listOptionValue builtIn="false" value="__DYNAMIC__"/>
-<listOptionValue builtIn="false" value="i386"/>
-<listOptionValue builtIn="false" value="__FLT_DENORM_MIN__"/>
-<listOptionValue builtIn="false" value="_DEBUG"/>
-<listOptionValue builtIn="false" value="__SHRT_MAX__"/>
-<listOptionValue builtIn="false" value="__FLT_MAX_EXP__"/>
-<listOptionValue builtIn="false" value="__LONG_MAX__"/>
-<listOptionValue builtIn="false" value="__DECIMAL_DIG__"/>
-<listOptionValue builtIn="false" value="__DBL_DIG__"/>
-<listOptionValue builtIn="false" value="__USER_LABEL_PREFIX__"/>
-<listOptionValue builtIn="false" value="__weak"/>
-<listOptionValue builtIn="false" value="__FLT_MIN_EXP__"/>
-<listOptionValue builtIn="false" value="__LDBL_MAX_EXP__"/>
-<listOptionValue builtIn="false" value="__i386"/>
-<listOptionValue builtIn="false" value="__SSE2__"/>
-<listOptionValue builtIn="false" value="__DBL_HAS_INFINITY__"/>
-<listOptionValue builtIn="false" value="__PTRDIFF_TYPE__"/>
-<listOptionValue builtIn="false" value="__UINTMAX_TYPE__"/>
-<listOptionValue builtIn="false" value="__LITTLE_ENDIAN__"/>
-<listOptionValue builtIn="false" value="__MACH__"/>
-<listOptionValue builtIn="false" value="__GXX_ABI_VERSION"/>
-<listOptionValue builtIn="false" value="__SIZE_TYPE__"/>
-<listOptionValue builtIn="false" value="_REENTRANT"/>
+<option id="gnu.c.compiler.option.preprocessor.undef.symbol.759674984" name="Undefined symbols (-U)" superClass="gnu.c.compiler.option.preprocessor.undef.symbol" valueType="undefDefinedSymbols">
 <listOptionValue builtIn="false" value="__FLT_EVAL_METHOD__"/>
-<listOptionValue builtIn="false" value="__DBL_MAX_10_EXP__"/>
+<listOptionValue builtIn="false" value="__INTMAX_TYPE__"/>
+<listOptionValue builtIn="false" value="__FLT_DIG__"/>
+<listOptionValue builtIn="false" value="__FLT_EPSILON__"/>
+<listOptionValue builtIn="false" value="__FLT_MAX_EXP__"/>
+<listOptionValue builtIn="false" value="__LDBL_MIN_EXP__"/>
 <listOptionValue builtIn="false" value="__DBL_MIN__"/>
-<listOptionValue builtIn="false" value="__GNUC__"/>
-<listOptionValue builtIn="false" value="__LDBL_MAX_10_EXP__"/>
-<listOptionValue builtIn="false" value="__DBL_MANT_DIG__"/>
+<listOptionValue builtIn="false" value="__LDBL_EPSILON__"/>
 <listOptionValue builtIn="false" value="__SCHAR_MAX__"/>
-<listOptionValue builtIn="false" value="OBJC_NEW_PROPERTIES"/>
-<listOptionValue builtIn="false" value="__FINITE_MATH_ONLY__"/>
-<listOptionValue builtIn="false" value="__APPLE__"/>
-<listOptionValue builtIn="false" value="__CONSTANT_CFSTRINGS__"/>
-<listOptionValue builtIn="false" value="__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__"/>
-<listOptionValue builtIn="false" value="__GNUC_MINOR__"/>
-<listOptionValue builtIn="false" value="__FLT_MIN__"/>
+<listOptionValue builtIn="false" value="__DBL_MIN_10_EXP__"/>
+<listOptionValue builtIn="false" value="__INT_MAX__"/>
+<listOptionValue builtIn="false" value="__LONG_LONG_MAX__"/>
+<listOptionValue builtIn="false" value="__DBL_DENORM_MIN__"/>
+<listOptionValue builtIn="false" value="__DBL_HAS_INFINITY__"/>
+<listOptionValue builtIn="false" value="__REGISTER_PREFIX__"/>
+<listOptionValue builtIn="false" value="__SHRT_MAX__"/>
+<listOptionValue builtIn="false" value="__DBL_MAX_10_EXP__"/>
+<listOptionValue builtIn="false" value="__FLT_HAS_QUIET_NAN__"/>
+<listOptionValue builtIn="false" value="__LDBL_MIN__"/>
+<listOptionValue builtIn="false" value="__NO_INLINE__"/>
+<listOptionValue builtIn="false" value="__GNUC__"/>
+<listOptionValue builtIn="false" value="__LDBL_HAS_QUIET_NAN__"/>
+<listOptionValue builtIn="false" value="__FLT_MIN_EXP__"/>
+<listOptionValue builtIn="false" value="__LDBL_MANT_DIG__"/>
+<listOptionValue builtIn="false" value="__FLT_DENORM_MIN__"/>
+<listOptionValue builtIn="false" value="__INTMAX_MAX__"/>
+<listOptionValue builtIn="false" value="__LDBL_DIG__"/>
+<listOptionValue builtIn="false" value="__LDBL_DENORM_MIN__"/>
+<listOptionValue builtIn="false" value="__VERSION__"/>
+<listOptionValue builtIn="false" value="i386"/>
+<listOptionValue builtIn="false" value="__USER_LABEL_PREFIX__"/>
+<listOptionValue builtIn="false" value="__LONG_MAX__"/>
+<listOptionValue builtIn="false" value="__FLT_MIN_10_EXP__"/>
+<listOptionValue builtIn="false" value="__PTRDIFF_TYPE__"/>
+<listOptionValue builtIn="false" value="__CHAR_BIT__"/>
+<listOptionValue builtIn="false" value="__WCHAR_MAX__"/>
 <listOptionValue builtIn="false" value="__i386__"/>
 <listOptionValue builtIn="false" value="__GNUC_PATCHLEVEL__"/>
-<listOptionValue builtIn="false" value="__DBL_MAX__"/>
-<listOptionValue builtIn="false" value="__LDBL_MIN_EXP__"/>
-<listOptionValue builtIn="false" value="__DBL_EPSILON__"/>
-<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
-<listOptionValue builtIn="false" value="__SSE__"/>
-<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="__DBL_HAS_QUIET_NAN__"/>
-<listOptionValue builtIn="false" value="__FLT_MANT_DIG__"/>
-<listOptionValue builtIn="false" value="__MMX__"/>
-<listOptionValue builtIn="false" value="__DBL_DENORM_MIN__"/>
-<listOptionValue builtIn="false" value="__SSE_MATH__"/>
+<listOptionValue builtIn="false" value="__GXX_ABI_VERSION"/>
+<listOptionValue builtIn="false" value="__DBL_MAX_EXP__"/>
+<listOptionValue builtIn="false" value="__WINT_TYPE__"/>
+<listOptionValue builtIn="false" value="__DBL_MIN_EXP__"/>
+<listOptionValue builtIn="false" value="__FLT_MAX_10_EXP__"/>
+<listOptionValue builtIn="false" value="__LDBL_HAS_INFINITY__"/>
+<listOptionValue builtIn="false" value="__DBL_MANT_DIG__"/>
+<listOptionValue builtIn="false" value="__FLT_MAX__"/>
+<listOptionValue builtIn="false" value="__LDBL_MIN_10_EXP__"/>
+<listOptionValue builtIn="false" value="__i386"/>
+<listOptionValue builtIn="false" value="__SIZE_TYPE__"/>
 <listOptionValue builtIn="false" value="__FLT_HAS_INFINITY__"/>
-<listOptionValue builtIn="false" value="__CHAR_BIT__"/>
+<listOptionValue builtIn="false" value="__STDC_HOSTED__"/>
+<listOptionValue builtIn="false" value="__DECIMAL_DIG__"/>
+<listOptionValue builtIn="false" value="__LDBL_MAX_10_EXP__"/>
+<listOptionValue builtIn="false" value="__FLT_MIN__"/>
+<listOptionValue builtIn="false" value="__DBL_MAX__"/>
+<listOptionValue builtIn="false" value="__UINTMAX_TYPE__"/>
+<listOptionValue builtIn="false" value="__DBL_EPSILON__"/>
+<listOptionValue builtIn="false" value="__LDBL_MAX__"/>
+<listOptionValue builtIn="false" value="__FINITE_MATH_ONLY__"/>
+<listOptionValue builtIn="false" value="__LDBL_MAX_EXP__"/>
+<listOptionValue builtIn="false" value="__DBL_DIG__"/>
 <listOptionValue builtIn="false" value="__WCHAR_TYPE__"/>
+<listOptionValue builtIn="false" value="__FLT_MANT_DIG__"/>
+<listOptionValue builtIn="false" value="__GNUC_MINOR__"/>
+<listOptionValue builtIn="false" value="__FLT_RADIX__"/>
 </option>
 <inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.916105654" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
@@ -209,21 +177,21 @@
 </tool>
 </toolChain>
 </folderInfo>
-<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.643967003" name="/" resourcePath="xbmc/cores/DllLoader">
-<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1734765344" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
+<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.170851026" name="/" resourcePath="xbmc/lib/UnrarXLib">
+<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1271468311" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
-<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1979556041" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173"/>
-<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.986787272" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875"/>
-<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.833592423" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1794289768">
-<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1164190729" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.461961223" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173"/>
+<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.464820511" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875"/>
+<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.2046303719" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1794289768">
+<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1967010553" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1942199706" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1308334469"/>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.591922786" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.65441666">
-<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.1240764958" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.83648616" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.option.preprocessor.def.684325808" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.991037695" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1308334469"/>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.864504005" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.65441666">
+<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.1929724833" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.1437239494" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.option.preprocessor.def.930016596" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="_DEBUG"/>
-<listOptionValue builtIn="false" value="API_DEBUG"/>
+<listOptionValue builtIn="false" value="SILENT"/>
 <listOptionValue builtIn="false" value="_LINUX"/>
 <listOptionValue builtIn="false" value="_REENTRANT"/>
 <listOptionValue builtIn="false" value="_FILE_DEFINED"/>
@@ -231,42 +199,85 @@
 <listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
 </option>
-<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.2045638600" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1310329132" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.907902063" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526">
-<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.124736836" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
-<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.1632737144" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1699992470" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.1727159323" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526">
+<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.1047846560" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
+<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.1754809956" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1950409522" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 </toolChain>
 </folderInfo>
-<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.919238836" name="/" resourcePath="xbmc/cores/DllLoader/exports">
-<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1237365591" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
+<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.356548846" name="/" resourcePath="xbmc/lib/libUPnP">
+<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.2012337279" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
-<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1047209358" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1979556041"/>
-<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.288617395" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.986787272"/>
-<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1068019392" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.833592423">
-<inputType id="cdt.managedbuild.tool.gnu.assembler.input.713501646" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1316166915" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173"/>
+<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.896232824" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875"/>
+<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1669692608" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1794289768">
+<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2031504877" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.366482976" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1942199706"/>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.1841251975" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.591922786">
-<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.267213578" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.1089716219" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.option.preprocessor.def.1815424215" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
-<listOptionValue builtIn="false" value="_DEBUG"/>
-<listOptionValue builtIn="false" value="_LINUX"/>
-<listOptionValue builtIn="false" value="_REENTRANT"/>
-<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
-<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
-<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
-<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1215299429" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1308334469"/>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.919985893" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.65441666">
+<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.55887864" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.794874135" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.option.include.paths.1095698845" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
 </option>
-<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1642113994" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1898344904" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.17570680" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.907902063">
-<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.1073864500" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
-<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.943491841" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1349353172" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.794980876" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526">
+<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.953270789" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
+<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.1774148998" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1429314286" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+</tool>
+</toolChain>
+</folderInfo>
+<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.1172416896" name="/" resourcePath="xbmc/linux">
+<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1253052677" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
+<targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
+<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1449402387" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173"/>
+<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.585661234" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875"/>
+<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.657713" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1794289768">
+<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1782640178" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1173916412" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1308334469"/>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.1742031004" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.65441666">
+<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.1755940124" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.719009541" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.option.include.paths.1118560904" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/FileSystem}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
+<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
+<listOptionValue builtIn="false" value="/opt/local/include"/>
+<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
+</option>
+<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1392017867" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+</tool>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.133972198" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526">
+<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.511779787" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
+<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.400045418" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.672356654" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 </toolChain>
 </folderInfo>
@@ -363,94 +374,21 @@
 </tool>
 </toolChain>
 </folderInfo>
-<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.1172416896" name="/" resourcePath="xbmc/linux">
-<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1253052677" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
+<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.643967003" name="/" resourcePath="xbmc/cores/DllLoader">
+<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1734765344" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
 <targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
-<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1449402387" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173"/>
-<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.585661234" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875"/>
-<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.657713" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1794289768">
-<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1782640178" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1979556041" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173"/>
+<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.986787272" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875"/>
+<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.833592423" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1794289768">
+<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1164190729" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 </tool>
-<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1173916412" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1308334469"/>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.1742031004" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.65441666">
-<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.1755940124" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.719009541" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.option.include.paths.1118560904" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/FileSystem}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
-<listOptionValue builtIn="false" value="/opt/local/include"/>
-<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
-</option>
-<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1392017867" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-</tool>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.133972198" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526">
-<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.511779787" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
-<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.400045418" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.672356654" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
-</tool>
-</toolChain>
-</folderInfo>
-<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.356548846" name="/" resourcePath="xbmc/lib/libUPnP">
-<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.2012337279" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
-<targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
-<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1316166915" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173"/>
-<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.896232824" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875"/>
-<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1669692608" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1794289768">
-<inputType id="cdt.managedbuild.tool.gnu.assembler.input.2031504877" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
-</tool>
-<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1215299429" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1308334469"/>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.919985893" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.65441666">
-<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.55887864" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.794874135" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.option.include.paths.1095698845" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libportaudio}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaServer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Devices/MediaRenderer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/lib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core/}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/utils}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/ffmpeg}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/cores/dvdplayer}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/xbmc/linux}&quot;"/>
-<listOptionValue builtIn="false" value="&quot;${workspace_loc:/XBMC/guilib}&quot;"/>
-<listOptionValue builtIn="false" value="/opt/local/include"/>
-<listOptionValue builtIn="false" value="/opt/local/include/freetype2"/>
-</option>
-<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1898344904" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
-</tool>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.794980876" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526">
-<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.953270789" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
-<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.1774148998" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1429314286" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
-</tool>
-</toolChain>
-</folderInfo>
-<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.170851026" name="/" resourcePath="xbmc/lib/UnrarXLib">
-<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1271468311" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
-<targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
-<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.461961223" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1750093173"/>
-<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.464820511" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.835214875"/>
-<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.2046303719" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1794289768">
-<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1967010553" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
-</tool>
-<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.991037695" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1308334469"/>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.864504005" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.65441666">
-<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.1929724833" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.1437239494" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-<option id="gnu.cpp.compiler.option.preprocessor.def.930016596" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.1942199706" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1308334469"/>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.591922786" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.65441666">
+<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.1240764958" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.83648616" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.option.preprocessor.def.684325808" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 <listOptionValue builtIn="false" value="_DEBUG"/>
-<listOptionValue builtIn="false" value="SILENT"/>
+<listOptionValue builtIn="false" value="API_DEBUG"/>
 <listOptionValue builtIn="false" value="_LINUX"/>
 <listOptionValue builtIn="false" value="_REENTRANT"/>
 <listOptionValue builtIn="false" value="_FILE_DEFINED"/>
@@ -458,12 +396,42 @@
 <listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
 <listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
 </option>
-<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1310329132" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.2045638600" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 </tool>
-<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.1727159323" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526">
-<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.1047846560" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
-<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.1754809956" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1950409522" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.907902063" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.2086201526">
+<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.124736836" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
+<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.1632737144" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1699992470" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
+</tool>
+</toolChain>
+</folderInfo>
+<folderInfo id="cdt.managedbuild.config.gnu.macosx.exe.debug.277492429.919238836" name="/" resourcePath="xbmc/cores/DllLoader/exports">
+<toolChain errorParsers="" id="cdt.managedbuild.toolchain.gnu.macosx.exe.debug.1237365591" name="MacOSX GCC" superClass="cdt.managedbuild.toolchain.gnu.macosx.exe.debug" unusedChildren="">
+<targetPlatform id="cdt.managedbuild.target.gnu.platform.macosx.exe.debug" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.macosx.exe.debug"/>
+<tool id="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1047209358" name="MacOS X C Linker" superClass="cdt.managedbuild.tool.macosx.c.linker.macosx.exe.debug.1979556041"/>
+<tool id="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.288617395" name="MacOS X C++ Linker" superClass="cdt.managedbuild.tool.macosx.cpp.linker.macosx.exe.debug.986787272"/>
+<tool errorParsers="org.eclipse.cdt.core.GASErrorParser" id="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.1068019392" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.macosx.exe.debug.833592423">
+<inputType id="cdt.managedbuild.tool.gnu.assembler.input.713501646" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
+</tool>
+<tool id="cdt.managedbuild.tool.gnu.archiver.macosx.base.366482976" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.macosx.base.1942199706"/>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.1841251975" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.macosx.exe.debug.591922786">
+<option id="gnu.cpp.compilermacosx.exe.debug.option.optimization.level.267213578" name="Optimization Level" superClass="gnu.cpp.compilermacosx.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level.1089716219" name="Debug Level" superClass="gnu.cpp.compiler.macosx.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+<option id="gnu.cpp.compiler.option.preprocessor.def.1815424215" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
+<listOptionValue builtIn="false" value="_DEBUG"/>
+<listOptionValue builtIn="false" value="_LINUX"/>
+<listOptionValue builtIn="false" value="_REENTRANT"/>
+<listOptionValue builtIn="false" value="_FILE_DEFINED"/>
+<listOptionValue builtIn="false" value="_FILE_OFFSET_BITS=64"/>
+<listOptionValue builtIn="false" value="_LARGEFILE64_SOURCE"/>
+<listOptionValue builtIn="false" value="HAS_SDL_JOYSTICK"/>
+</option>
+<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1642113994" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
+</tool>
+<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.17570680" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.macosx.exe.debug.907902063">
+<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.macosx.exe.debug.option.optimization.level.1073864500" name="Optimization Level" superClass="gnu.c.compiler.macosx.exe.debug.option.optimization.level" valueType="enumerated"/>
+<option id="gnu.c.compiler.macosx.exe.debug.option.debugging.level.943491841" name="Debug Level" superClass="gnu.c.compiler.macosx.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
+<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1349353172" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 </tool>
 </toolChain>
 </folderInfo>

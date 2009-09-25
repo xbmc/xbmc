@@ -19,8 +19,6 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "CacheStrategy.h"
 #ifdef _LINUX
 #include "PlatformInclude.h"

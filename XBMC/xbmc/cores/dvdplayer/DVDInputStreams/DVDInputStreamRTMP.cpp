@@ -19,11 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileItem.h"
 #include "DVDInputStreamRTMP.h"
 #include "VideoInfoTag.h"
 #include "FileSystem/IFile.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #ifdef _LINUX
   #include <sys/types.h>
@@ -94,6 +95,7 @@ bool CDVDInputStreamRTMP::Open(const char* strFile, const std::string& content)
   m_rtmp->SetPlayer(m_item.GetProperty("SWFPlayer"));
   m_rtmp->SetPageUrl(m_item.GetProperty("PageURL"));
   m_rtmp->SetPlayPath(m_item.GetProperty("PlayPath"));
+  m_rtmp->SetTcUrl(m_item.GetProperty("TcUrl"));
   if (!m_item.GetProperty("IsLive").compare("true"))
     m_rtmp->SetLive();
   m_rtmp->SetBufferMS(20000);

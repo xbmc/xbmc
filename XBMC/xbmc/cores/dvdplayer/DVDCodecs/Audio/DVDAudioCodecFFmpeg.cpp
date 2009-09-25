@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDAudioCodecFFmpeg.h"
 #ifdef _LINUX
 #include "XMemUtils.h"
 #endif
 #include "../../DVDStreamInfo.h"
+#include "utils/log.h"
 
 CDVDAudioCodecFFmpeg::CDVDAudioCodecFFmpeg() : CDVDAudioCodec()
 {

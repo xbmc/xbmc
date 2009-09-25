@@ -32,6 +32,7 @@ extern "C" {
 #endif
 }
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 #ifdef HAS_DTS_CODEC
 #ifndef _LINUX

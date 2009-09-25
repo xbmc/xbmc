@@ -366,26 +366,24 @@ AC_CHECK_LIB([png12],       [main],, AC_MSG_ERROR($missing_library)) # check for
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([lzo2],        [__lzo_init_v2],,
-  AC_CHECK_LIB([lzo],       [__lzo_init2],, AC_MSG_ERROR(ERROR: Could not find either liblzo or liblzo2 - one of these must be present))
-  )
+AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([cdio],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([samplerate],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([mms],       [main],, AC_MSG_ERROR($missing_library))
 else
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL],       [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([SDL_image], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([enca],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([mms],       [main],, AC_MSG_ERROR($missing_library))
-
   AC_CHECK_LIB([Xt],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xtst],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([Xmu],       [main],, AC_MSG_ERROR($missing_library))
@@ -393,9 +391,7 @@ else
   AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([hal],       [main],
-    INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal",
-    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([HAL], [hal], [INCLUDES+=" $HAL_CFLAGS"], AC_MSG_ERROR([$missing_library]))
 fi
 
 # PulseAudio
@@ -591,8 +587,8 @@ if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"
   # We need libass >= 0.9.7.
   AC_CHECK_LIB([ass], [ass_set_message_cb],
   [AC_CHECK_LIB([ass], [main],,)
-   AC_MSG_NOTICE($external_libass_enabled)
-   USE_EXTERNAL_LIBASS=1
+  AC_MSG_NOTICE($external_libass_enabled)
+  USE_EXTERNAL_LIBASS=1
    AC_DEFINE([USE_EXTERNAL_LIBASS], [1], [Whether to use external libass library.])],
   [AC_MSG_WARN(== Need libass >= 0.9.7. Disabling external libass. ==)
    USE_EXTERNAL_LIBASS=0])
@@ -694,7 +690,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($vdpau_disabled)
 else
   if test "$use_vdpau" = "yes"; then
-    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the `vdpau' library (-lvdpau).]),
+    AC_CHECK_HEADER([vdpau/vdpau.h],AC_DEFINE([HAVE_LIBVDPAU], [], [Define to 1 if you have the 'vdpau' library (-lvdpau).]),
       use_vdpau=no;AC_MSG_RESULT($vdpau_not_found))
   else
     AC_MSG_NOTICE($vdpau_disabled)
@@ -764,6 +760,7 @@ AC_TYPE_UINT8_T
 AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
+AC_C_BIGENDIAN
 
 # Checks for library functions.
 AC_FUNC_ALLOCA
@@ -777,7 +774,9 @@ AC_FUNC_LSTAT_FOLLOWS_SLASHED_SYMLINK
 AC_FUNC_MEMCMP
 AC_FUNC_MKTIME
 AC_FUNC_MMAP
-AC_FUNC_REALLOC
+# Boxee is apparently having compile problems
+# if HAVE_REALLOC is defined.  Sort this later.
+#AC_FUNC_REALLOC
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_SETVBUF_REVERSED
 AC_TYPE_SIGNAL
@@ -791,7 +790,6 @@ AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd g
 
 # Check for various sizes
 AC_CHECK_SIZEOF([int])
-AC_CHECK_SIZEOF([size_t])
 
 dashes="------------------------"
 final_message="\n  XBMC Configuration:"
@@ -1006,6 +1004,54 @@ else
   fi
 fi
 
+OUTPUT_FILES="Makefile \
+             Makefile.include \
+             xbmc/cores/dvdplayer/Codecs/Makefile \
+             xbmc/cores/dvdplayer/Codecs/libdvd/Makefile \
+             xbmc/cores/AudioRenderers/Makefile \
+             xbmc/cores/paplayer/Makefile \
+             xbmc/cores/paplayer/MACDll/Makefile \
+             xbmc/cores/paplayer/timidity/Makefile \
+             xbmc/cores/paplayer/AACCodec/Makefile \
+             xbmc/cores/paplayer/AC3Codec/Makefile \
+             xbmc/cores/paplayer/ADPCMCodec/Makefile \
+             xbmc/cores/paplayer/FLACCodec/Makefile \
+             xbmc/cores/paplayer/ModuleCodec/Makefile \
+             xbmc/cores/paplayer/GYMCodec/Makefile \
+             xbmc/cores/paplayer/MPCCodec/xbmc/Makefile \
+             xbmc/cores/paplayer/NSFCodec/Makefile \
+             xbmc/cores/paplayer/SIDCodec/Makefile \
+             xbmc/cores/paplayer/vgmstream/Makefile \
+             xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile \
+             xbmc/cores/paplayer/vorbisfile/Makefile \
+             xbmc/cores/paplayer/WavPackCodec/Makefile \
+             xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile \
+             guilib/common/Makefile \
+             xbmc/lib/libass/xbmc/Makefile \
+             xbmc/lib/libXBMS/Makefile \
+             xbmc/lib/libRTV/Makefile \
+             xbmc/lib/libexif/Makefile \
+             xbmc/lib/libXDAAP/Makefile \
+             xbmc/lib/libhdhomerun/Makefile \
+             xbmc/lib/libGoAhead/Makefile \
+             xbmc/lib/libshout/Makefile \
+             xbmc/lib/libid3tag/Makefile \
+             xbmc/lib/cximage-6.0/Makefile \
+             xbmc/lib/libPython/linux/Makefile \
+             xbmc/lib/libUPnP/Makefile \
+             xbmc/DllPaths_generated.h \
+             xbmc/linux/Makefile \
+             xbmc/screensavers/Makefile \
+             xbmc/screensavers/rsxs-0.9/xbmc/Makefile \
+             xbmc/visualizations/XBMCProjectM/Makefile \
+             xbmc/visualizations/Goom/Makefile \
+             xbmc/visualizations/OpenGLSpectrum/Makefile \
+             xbmc/visualizations/WaveForm/Makefile \
+             xbmc/visualizations/iTunes/Makefile \
+             tools/Linux/xbmc.sh \
+             tools/XBMCTex/Makefile \
+             tools/EventClients/Clients/OSXRemote/Makefile"
+AC_CONFIG_FILES([${OUTPUT_FILES}])
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
@@ -1030,55 +1076,7 @@ AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(USE_PYTHON2_6)
 AC_SUBST(USE_PYTHON2_5)
 AC_SUBST(USE_PYTHON2_4)
-AC_CONFIG_FILES([Makefile Makefile.include]
-                [xbmc/cores/dvdplayer/Codecs/Makefile]
-                [xbmc/cores/dvdplayer/Codecs/libdvd/Makefile]
-                [xbmc/cores/AudioRenderers/Makefile]
-                [xbmc/cores/paplayer/Makefile]
-                [xbmc/cores/paplayer/MACDll/Makefile]
-                [xbmc/cores/paplayer/timidity/Makefile]
-                [xbmc/cores/paplayer/AACCodec/Makefile]
-                [xbmc/cores/paplayer/AC3Codec/Makefile]
-                [xbmc/cores/paplayer/ADPCMCodec/Makefile]
-                [xbmc/cores/paplayer/FLACCodec/Makefile]
-                [xbmc/cores/paplayer/ModuleCodec/Makefile]
-                [xbmc/cores/paplayer/GYMCodec/Makefile]
-                [xbmc/cores/paplayer/MP3Codec/Makefile]
-                [xbmc/cores/paplayer/MPCCodec/xbmc/Makefile]
-                [xbmc/cores/paplayer/NSFCodec/Makefile]
-                [xbmc/cores/paplayer/SIDCodec/Makefile]
-                [xbmc/cores/paplayer/vgmstream/Makefile]
-                [xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile]
-                [xbmc/cores/paplayer/vorbisfile/Makefile]
-                [xbmc/cores/paplayer/WavPackCodec/Makefile]
-                [xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile]
-                [guilib/common/Makefile]
-                [xbmc/lib/libass/xbmc/Makefile]
-                [xbmc/lib/libXBMS/Makefile]
-                [xbmc/lib/libRTV/Makefile]
-                [xbmc/lib/libexif/Makefile]
-                [xbmc/lib/libXDAAP/Makefile]
-                [xbmc/lib/libhdhomerun/Makefile]
-                [xbmc/lib/libGoAhead/Makefile]
-                [xbmc/lib/libshout/Makefile]
-                [xbmc/lib/libid3tag/Makefile]
-                [xbmc/lib/cximage-6.0/Makefile]
-                [xbmc/lib/libPython/linux/Makefile]
-                [xbmc/lib/libUPnP/Makefile]
-                [xbmc/DllPaths_generated.h]
-                [xbmc/linux/Makefile]
-                [xbmc/screensavers/Makefile]
-                [xbmc/screensavers/rsxs-0.9/xbmc/Makefile]
-                [xbmc/visualizations/XBMCProjectM/Makefile]
-                [xbmc/visualizations/Goom/Makefile]
-                [xbmc/visualizations/OpenGLSpectrum/Makefile]
-                [xbmc/visualizations/WaveForm/Makefile]
-                [xbmc/visualizations/iTunes/Makefile]
-                [tools/Linux/xbmc.sh]
-                [tools/XBMCTex/Makefile]
-                [tools/EventClients/Clients/OSXRemote/Makefile]
-)
-
+AC_SUBST(OUTPUT_FILES)
 # Function to run the configure scripts in our submodules
 # Consists of three paramaters, the path to the submodule, the configure command
 # with appropriate arguments, and a third parameter set to 1 if we are to skip
@@ -1213,7 +1211,6 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
     ./configure \
       --extra-cflags="-D_XBOX" \
       --disable-static \
-      --disable-altivec \
       --disable-ipv6 \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \

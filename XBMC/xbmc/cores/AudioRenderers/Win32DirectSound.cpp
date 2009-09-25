@@ -18,12 +18,14 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
+#include "system.h" // WIN32INCLUDES needed for the directsound stuff below
 #include "Win32DirectSound.h"
 #include "AudioContext.h"
 #include "Settings.h"
 #include <initguid.h>
 #include <Mmreg.h>
+#include "SingleLock.h"
+#include "utils/log.h"
 
 #pragma comment(lib, "dxguid.lib")
 

@@ -24,6 +24,10 @@
 #include <string>
 #include <vector>
 
+#ifdef _WIN32
+#undef GetObject // WIN32INCLUDES defined in WinGDI.h which appears to be included from _somewhere_
+#endif
+
 namespace RTMP_LIB
 {
   typedef enum {AMF_INVALID, AMF_NUMBER, AMF_BOOLEAN, AMF_STRING, AMF_OBJECT, AMF_NULL } AMFDataType;

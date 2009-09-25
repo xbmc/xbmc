@@ -24,7 +24,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "FileItem.h"
 #include "PVREpg.h"
 #include "PVRChannels.h"
 #include "GUISettings.h"
@@ -33,6 +33,8 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 /**
  * Create a blank unmodified channel tag

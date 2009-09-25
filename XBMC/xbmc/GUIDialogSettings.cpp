@@ -19,10 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSettings.h"
 #include "GUIImage.h"
 #include "GUIControlGroupList.h"
+#include "LocalizeStrings.h"
+#include "GUISettings.h"
+#include "utils/log.h"
 
 #define CONTROL_GROUP_LIST          5
 #define CONTROL_SETTINGS_LABEL      2
@@ -39,7 +41,7 @@
 #define CONTROL_START              30
 #define CONTROL_PAGE               60
 
-CGUIDialogSettings::CGUIDialogSettings(DWORD id, const char *xmlFile)
+CGUIDialogSettings::CGUIDialogSettings(int id, const char *xmlFile)
     : CGUIDialog(id, xmlFile)
 {
   m_pOriginalEdit = NULL;
@@ -225,7 +227,7 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
 
 bool CGUIDialogSettings::OnAction(const CAction& action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     OnCancel();
     Close();

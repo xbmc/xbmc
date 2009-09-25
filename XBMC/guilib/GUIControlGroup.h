@@ -36,7 +36,7 @@ class CGUIControlGroup : public CGUIControl
 {
 public:
   CGUIControlGroup();
-  CGUIControlGroup(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height);
+  CGUIControlGroup(int parentID, int controlID, float posX, float posY, float width, float height);
   CGUIControlGroup(const CGUIControlGroup &from);
   virtual ~CGUIControlGroup(void);
   virtual CGUIControlGroup *Clone() const { return new CGUIControlGroup(*this); };
@@ -64,8 +64,9 @@ public:
   virtual void ResetAnimation(ANIMATION_TYPE anim);
   virtual void ResetAnimations();
 
-  virtual bool HasID(DWORD dwID) const;
-  virtual bool HasVisibleID(DWORD dwID) const;
+  virtual bool HasID(int id) const;
+  virtual bool HasVisibleID(int id) const;
+  virtual void SetInvalid();
 
   int GetFocusedControlID() const;
   CGUIControl *GetFocusedControl() const;
@@ -77,7 +78,7 @@ public:
   bool InsertControl(CGUIControl *control, const CGUIControl *insertPoint);
   virtual bool RemoveControl(const CGUIControl *control);
   virtual void ClearAll();
-  void SetDefaultControl(DWORD id, bool always) { m_defaultControl = id; m_defaultAlways = always; };
+  void SetDefaultControl(int id, bool always) { m_defaultControl = id; m_defaultAlways = always; };
   void SetRenderFocusedLast(bool renderLast) { m_renderFocusedLast = renderLast; };
 
   virtual void SaveStates(std::vector<CControlState> &states);

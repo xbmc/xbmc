@@ -27,14 +27,20 @@
 //
 //-----------------------------------------------------------------------------
 
-#include "stdafx.h"
+#include "system.h"
+
+#ifdef HAS_DVD_DRIVE
+
 #include "cddb.h"
 #include "DNSNameCache.h"
 #include "Id3Tag.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "StringUtils.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/CharsetConverter.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1061,6 +1067,5 @@ CStdString Xcddb::GetCacheFile(unsigned int disc_id) const
   return CUtil::AddFileToFolder(cCacheDir, strFileName);
 }
 
-
-
+#endif
 

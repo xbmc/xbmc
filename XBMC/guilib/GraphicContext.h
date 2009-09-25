@@ -42,54 +42,14 @@
 #include <map>
 #include "utils/CriticalSection.h"  // base class
 #include "TransformMatrix.h"        // for the members m_guiTransform etc.
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
-#endif
 #include "Geometry.h"               // for CRect/CPoint
 #include "gui3d.h"
 #include "StdString.h"
-
-namespace Surface { class CSurface; }
+#include "Resolution.h"
 
 // forward definitions
 class IMsgSenderCallback;
 class CGUIMessage;
-
-#if defined(HAS_SDL)
-#include "common/Mouse.h"
-//#include "common/SDLMouse.h"
-#else
-#include "common/DirectInputMouse.h"
-#endif
-
-/*!
- \ingroup graphics
- \brief
- */
-enum RESOLUTION {
-  INVALID = -1,
-  HDTV_1080i = 0,
-  HDTV_720p = 1,
-  HDTV_480p_4x3 = 2,
-  HDTV_480p_16x9 = 3,
-  NTSC_4x3 = 4,
-  NTSC_16x9 = 5,
-  PAL_4x3 = 6,
-  PAL_16x9 = 7,
-  PAL60_4x3 = 8,
-  PAL60_16x9 = 9,
-  AUTORES = 10,
-  WINDOW = 11,
-  DESKTOP = 12,
-  CUSTOM = 13
-};
-
-enum VSYNC {
-  VSYNC_DISABLED = 0,
-  VSYNC_VIDEO = 1,
-  VSYNC_ALWAYS = 2,
-  VSYNC_DRIVER = 3
-};
 
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
@@ -103,78 +63,24 @@ enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_AUTO,
                  VIEW_TYPE_MAX };
 
-/*!
- \ingroup graphics
- \brief
- */
-struct OVERSCAN
-{
-  int left;
-  int top;
-  int right;
-  int bottom;
-};
 
-/*!
- \ingroup graphics
- \brief
- */
-struct RESOLUTION_INFO
-{
-  OVERSCAN Overscan;
-  int iScreen;
-  int iWidth;
-  int iHeight;
-  int iSubtitles;
-  DWORD dwFlags;
-  float fPixelRatio;
-  float fRefreshRate;
-  char strMode[48];
-  char strOutput[32];
-  char strId[16];
-};
-
-/*!
- \ingroup graphics
- \brief
- */
 class CGraphicContext : public CCriticalSection
 {
 public:
   CGraphicContext(void);
   virtual ~CGraphicContext(void);
-#ifndef HAS_SDL
-  LPDIRECT3DDEVICE9 Get3DDevice() { return m_pd3dDevice; }
-  void SetD3DDevice(LPDIRECT3DDEVICE9 p3dDevice);
-  //  void         GetD3DParameters(D3DPRESENT_PARAMETERS &params);
-  void SetD3DParameters(D3DPRESENT_PARAMETERS *p3dParams);
-  int GetBackbufferCount() const { return (m_pd3dParams)?m_pd3dParams->BackBufferCount:0; }
-#endif
-  inline void setScreenSurface(Surface::CSurface* surface) XBMC_FORCE_INLINE { m_screenSurface = surface; }
-  inline Surface::CSurface* getScreenSurface() XBMC_FORCE_INLINE { return m_screenSurface; }
-#ifdef HAS_SDL_2D
-  int BlitToScreen(SDL_Surface *src, SDL_Rect *srcrect, SDL_Rect *dstrect);
-#endif
-#ifdef HAS_SDL_OPENGL
-  bool ValidateSurface(Surface::CSurface* dest=NULL);
-  Surface::CSurface* InitializeSurface();
-  void ReleaseThreadSurface();
-#endif
+
   // the following two functions should wrap any
   // GL calls to maintain thread safety
-  void BeginPaint(Surface::CSurface* dest=NULL, bool lock=true);
-  void EndPaint(Surface::CSurface* dest=NULL, bool lock=true);
-  void ReleaseCurrentContext(Surface::CSurface* dest=NULL);
-  void AcquireCurrentContext(Surface::CSurface* dest=NULL);
-  void DeleteThreadContext();
+  void BeginPaint(bool lock=true);
+  void EndPaint(bool lock=true);
 
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
   bool SendMessage(CGUIMessage& message);
-  bool SendMessage(DWORD message, DWORD senderID, DWORD destID, DWORD param1 = 0, DWORD param2 = 0);
+  bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
   void setMessageSender(IMsgSenderCallback* pCallback);
-  DWORD GetNewID();
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
   void SetMediaDir(const CStdString& strMediaDir);
   bool IsWidescreen() const { return m_bWidescreen; }
@@ -185,15 +91,12 @@ public:
   void SetFullScreenViewWindow(RESOLUTION &res);
   bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
-  void SetFullScreenRoot(bool fs = true);
-  void ClipToViewWindow();
   void SetFullScreenVideo(bool bOnOff);
   bool IsFullScreenVideo() const;
   bool IsCalibrating() const;
   void SetCalibrating(bool bOnOff);
-  void GetAllowedResolutions(std::vector<RESOLUTION> &res, bool bAllowPAL60 = false);
   bool IsValidResolution(RESOLUTION res);
-  void SetVideoResolution(RESOLUTION &res, BOOL NeedZ = FALSE, bool forceClear = false);
+  void SetVideoResolution(RESOLUTION res, bool forceUpdate = false);
   RESOLUTION GetVideoResolution() const;
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
@@ -204,6 +107,7 @@ public:
   void CaptureStateBlock();
   void ApplyStateBlock();
   void Clear();
+  void GetAllowedResolutions(std::vector<RESOLUTION> &res);
 
   // output scaling
   void SetRenderingResolution(RESOLUTION res, float posX, float posY, bool needsScaling);  ///< Sets scaling up for rendering
@@ -219,9 +123,9 @@ public:
 
   inline float GetGUIScaleX() const XBMC_FORCE_INLINE { return m_guiScaleX; }
   inline float GetGUIScaleY() const XBMC_FORCE_INLINE { return m_guiScaleY; }
-  inline DWORD MergeAlpha(DWORD color) const XBMC_FORCE_INLINE
+  inline color_t MergeAlpha(color_t color) const XBMC_FORCE_INLINE
   {
-    DWORD alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
+    color_t alpha = m_finalTransform.TransformAlpha((color >> 24) & 0xff);
     if (alpha > 255) alpha = 255;
     return ((alpha << 24) & 0xff000000) | (color & 0xffffff);
   }
@@ -236,6 +140,7 @@ public:
   void RestoreHardwareTransform();
   void NotifyAppFocusChange(bool bGaining);
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
+  void ClipToViewWindow();
   inline void ResetWindowTransform()
   {
     while (m_groupTransform.size())
@@ -262,31 +167,14 @@ public:
       UpdateFinalTransform(TransformMatrix());
   }
 
-  int GetMaxTextureSize() const { return m_maxTextureSize; };
 protected:
   IMsgSenderCallback* m_pCallback;
-#ifndef HAS_SDL
-  LPDIRECT3DDEVICE9 m_pd3dDevice;
-  D3DPRESENT_PARAMETERS* m_pd3dParams;
-  std::stack<D3DVIEWPORT9*> m_viewStack;
-  DWORD m_stateBlock;
-#endif
-  Surface::CSurface* m_screenSurface;
-#ifdef HAS_SDL_2D
-  std::stack<SDL_Rect*> m_viewStack;
-#endif
-#ifdef HAS_SDL_OPENGL
-  std::stack<GLint*> m_viewStack;
-  std::map<Uint32, Surface::CSurface*> m_surfaces;
-  CCriticalSection m_surfaceLock;
-#endif
+  std::stack<CRect> m_viewStack;
 
   int m_iScreenHeight;
   int m_iScreenWidth;
-  int m_iFullScreenHeight;
-  int m_iFullScreenWidth;
+  int m_iScreenId;
   int m_iBackBufferCount;
-  DWORD m_dwID;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
   RECT m_videoRect;
@@ -308,11 +196,6 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
-#ifdef HAS_SDL_OPENGL
-  GLint m_maxTextureSize;
-#else
-  int   m_maxTextureSize;
-#endif
 };
 
 /*!

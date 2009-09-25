@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PAPlayer.h"
 #include "CodecFactory.h"
 #include "../../utils/GUIInfoManager.h"
@@ -27,6 +26,8 @@
 #include "../../FileSystem/FileShoutcast.h"
 #include "../../Application.h"
 #include "FileItem.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "Settings.h"
 #include "MusicInfoTag.h"
 #include "../AudioRenderers/AudioRendererFactory.h"

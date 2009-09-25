@@ -30,9 +30,10 @@
 //------------------------------------------------------------------------
 
 
-#include "stdafx.h"
 #include "StringUtils.h"
+
 #include <math.h>
+#include <sstream>
 
 using namespace std;
 
@@ -380,4 +381,15 @@ void StringUtils::WordToDigits(CStdString &word)
       word[i] = ' ';  // replace everything else with a space
     }
   }
+}
+
+float StringUtils::GetFloat(const char* str)
+{
+  istringstream converter;
+  converter.imbue(locale("C"));
+  converter.str(str);
+  float result;
+  converter >> result;
+
+  return result;
 }

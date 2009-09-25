@@ -20,6 +20,8 @@
  *
  */
 
+#include "StdString.h"
+
 class CDirectoryHistory
 {
 public:

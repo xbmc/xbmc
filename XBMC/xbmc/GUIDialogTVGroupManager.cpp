@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogTVGroupManager.h"
 #include "PVRManager.h"
 #include "Application.h"
@@ -33,6 +32,7 @@
 #include "ViewState.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 

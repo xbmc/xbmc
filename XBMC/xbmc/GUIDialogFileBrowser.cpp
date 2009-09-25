@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogFileBrowser.h"
 #include "Util.h"
 #include "GUIDialogNetworkSetup.h"
@@ -34,10 +33,14 @@
 #include "GUIDialogOK.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogKeyboard.h"
+#include "GUIUserMessages.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "FileSystem/MultiPathDirectory.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -75,12 +78,12 @@ CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
 
 bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
+  if (action.id == ACTION_PARENT_DIR)
   {
     GoParentFolder();
     return true;
   }
-  if ((action.wID == ACTION_CONTEXT_MENU || action.wID == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
+  if ((action.id == ACTION_CONTEXT_MENU || action.id == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())
   {
     int iItem = m_viewControl.GetSelectedItem();
     if ((!m_addSourceType.IsEmpty() && iItem != m_vecItems->Size()-1))
@@ -227,7 +230,7 @@ bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
     break;
   case GUI_MSG_SETFOCUS:
     {
-      if (m_viewControl.HasControl(message.GetControlId()) && (DWORD) m_viewControl.GetCurrentControl() != message.GetControlId())
+      if (m_viewControl.HasControl(message.GetControlId()) && m_viewControl.GetCurrentControl() != message.GetControlId())
       {
         m_viewControl.SetFocused();
         return true;

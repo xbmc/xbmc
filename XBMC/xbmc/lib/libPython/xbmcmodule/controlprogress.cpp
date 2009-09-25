@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -99,8 +98,8 @@ namespace PYXBMC
     self->strTextureRight = cTextureRight ? cTextureRight : PyGetDefaultImage((char*)"progress", (char*)"righttexture", (char*)"progress_right.png");
     self->strTextureOverlay = cTextureOverLay ? cTextureOverLay : PyGetDefaultImage((char*)"progress", (char*)"overlaytexture", (char*)"progress_over.png");
 
-    //if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->strColorDiffuse);
-    //else self->strColorDiffuse = 0;
+    //if (cColorDiffuse) sscanf(cColorDiffuse, "%x", &self->colorDiffuse);
+    //else self->colorDiffuse = 0;
 
     return (PyObject*)self;
   }
@@ -123,8 +122,8 @@ namespace PYXBMC
       (CStdString)pControl->strTextureMid,(CStdString)pControl->strTextureRight,
       (CStdString)pControl->strTextureOverlay, 0, 0);
 
-    if (pControl->pGUIControl && pControl->strColorDiffuse)
-        ((CGUIProgressControl *)pControl->pGUIControl)->SetColorDiffuse(pControl->strColorDiffuse);
+    if (pControl->pGUIControl && pControl->colorDiffuse)
+        ((CGUIProgressControl *)pControl->pGUIControl)->SetColorDiffuse(pControl->colorDiffuse);
 
     return pControl->pGUIControl;
   }

@@ -19,12 +19,13 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
+#ifdef HAS_GL
 #include "../xbmc/Settings.h"
+#include "WindowingFactory.h"
 #include "FrameBufferObject.h"
+#include "utils/log.h"
 
 //////////////////////////////////////////////////////////////////////
 // CFrameBufferObject
@@ -41,7 +42,7 @@ CFrameBufferObject::CFrameBufferObject()
 
 bool CFrameBufferObject::IsSupported()
 {
-  if (glewIsSupported("GL_EXT_framebuffer_object"))
+  if(g_Windowing.IsExtSupported("GL_EXT_framebuffer_object"))
     m_supported = true;
   else
     m_supported = false;

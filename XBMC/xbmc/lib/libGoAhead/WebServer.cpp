@@ -9,10 +9,10 @@
  * See the file "license.txt" for usage and redistribution license requirements
  */
 
-#include "stdafx.h"
 #include "WebServer.h"
 #include "XBMCweb.h"
 #include "FileSystem/SpecialProtocol.h"
+#include "utils/log.h"
 
 #ifdef SPYCE_SUPPORT
 #include "SpyceModule.h"
@@ -151,11 +151,11 @@ bool CWebServer::Start(const char *szLocalAddress, int port, const char_t* web, 
   return true;
 }
 
-void CWebServer::Stop()
+void CWebServer::Stop(bool bWait)
 {
   m_bFinished = true;
   
-  StopThread();
+  StopThread(bWait);
 }
 
 

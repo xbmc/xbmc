@@ -21,6 +21,9 @@
  *
  */
 
+#undef min
+#undef max
+
 #include "tinyXML/tinyxml.h"
 #include "XMLUtils.h"
 #include "IPlayer.h"

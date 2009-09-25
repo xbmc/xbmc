@@ -19,13 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "ZeroconfDirectory.h"
 #include "URL.h"
 #include "Util.h"
 #include "FileItem.h"
 #include "ZeroconfBrowser.h"
 #include "Directory.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

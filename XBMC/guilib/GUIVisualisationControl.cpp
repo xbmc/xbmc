@@ -1,4 +1,3 @@
-#include "include.h"
 #include "GUIVisualisationControl.h"
 #include "GUIUserMessages.h"
 #include "Application.h"
@@ -7,6 +6,7 @@
 #include "visualizations/fft.h"
 #include "Util.h"
 #include "utils/CriticalSection.h"
+#include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "utils/GUIInfoManager.h"
 #include "GUISettings.h"
@@ -71,8 +71,8 @@ void CAudioBuffer::Set(const unsigned char* psBuffer, int iSize, int iBitsPerSam
   for (int i = iSize; i < m_iLen;++i) m_pBuffer[i] = 0;
 }
 
-CGUIVisualisationControl::CGUIVisualisationControl(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height)
+CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, float posX, float posY, float width, float height)
+    : CGUIControl(parentID, controlID, posX, posY, width, height)
 {
   m_pVisualisation = NULL;
   m_bInitialized = false;
@@ -345,17 +345,17 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
   if (!m_pVisualisation) return false;
   enum CVisualisation::VIS_ACTION visAction = CVisualisation::VIS_ACTION_NONE;
-  if (action.wID == ACTION_VIS_PRESET_NEXT)
+  if (action.id == ACTION_VIS_PRESET_NEXT)
     visAction = CVisualisation::VIS_ACTION_NEXT_PRESET;
-  else if (action.wID == ACTION_VIS_PRESET_PREV)
+  else if (action.id == ACTION_VIS_PRESET_PREV)
     visAction = CVisualisation::VIS_ACTION_PREV_PRESET;
-  else if (action.wID == ACTION_VIS_PRESET_LOCK)
+  else if (action.id == ACTION_VIS_PRESET_LOCK)
     visAction = CVisualisation::VIS_ACTION_LOCK_PRESET;
-  else if (action.wID == ACTION_VIS_PRESET_RANDOM)
+  else if (action.id == ACTION_VIS_PRESET_RANDOM)
     visAction = CVisualisation::VIS_ACTION_RANDOM_PRESET;
-  else if (action.wID == ACTION_VIS_RATE_PRESET_PLUS)
+  else if (action.id == ACTION_VIS_RATE_PRESET_PLUS)
     visAction = CVisualisation::VIS_ACTION_RATE_PRESET_PLUS;
-  else if (action.wID == ACTION_VIS_RATE_PRESET_MINUS)
+  else if (action.id == ACTION_VIS_RATE_PRESET_MINUS)
     visAction = CVisualisation::VIS_ACTION_RATE_PRESET_MINUS;
 
   return m_pVisualisation->OnAction(visAction);
@@ -395,13 +395,13 @@ bool CGUIVisualisationControl::OnMessage(CGUIMessage &message)
 {
   if (message.GetMessage() == GUI_MSG_GET_VISUALISATION)
   {
-    message.SetLPVOID(GetVisualisation());
+    message.SetPointer(GetVisualisation());
     return true;
   }
   else if (message.GetMessage() == GUI_MSG_VISUALISATION_ACTION)
   {
     CAction action;
-    action.wID = (WORD)message.GetParam1();
+    action.id = message.GetParam1();
     return OnAction(action);
   }
   else if (message.GetMessage() == GUI_MSG_PLAYBACK_STARTED)

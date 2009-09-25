@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "IrssMessage.h"
 
 CIrssMessage::CIrssMessage()

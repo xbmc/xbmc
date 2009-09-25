@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-08-11" name="Allmusic" content="albums" thumb="allmusic.gif">
+<scraper framework="1.1" date="2009-09-20" name="Allmusic" content="albums" thumb="allmusic.gif" language="en">
 	<include>common/htbackdrops.xml</include>
 	<include>common/allmusic.xml</include>
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;htbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Grab thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="\1" dest="3">
 			<expression>(http://www.allmusic.com/cg/.*)</expression>
@@ -17,7 +28,7 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/entity&gt;" dest="5">
 				<expression repeat="yes" noclean="1">&lt;TITLE&gt;allmusic[ (]+ ([^&gt;]*) &gt; Overview</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;year&gt;\1&lt;/year&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url cache=&quot;allmusic-album.html&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;SQL=\3&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;year&gt;\1&lt;/year&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\4&lt;/title&gt;&lt;url cache=&quot;am-\2-\4-album.html&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;SQL=\3&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes" noclean="1,2,3">&gt;([0-9]+)&lt;/.*?&gt;([a-zA-Z0-9].*?)&lt;.*?sql=([0-9:a-z]*)&quot;&gt;(.*?)&lt;.</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -25,10 +36,10 @@
 	</GetAlbumSearchResults>
 	<GetAlbumDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$1" output="&lt;url cache=&quot;allmusic-album.html&quot; function=&quot;ParseAMGAlbum&quot;&gt;placeholder&lt;/url&gt;" dest="5+">
-				<expression/>
+			<RegExp input="$$1" output="&lt;url cache=&quot;am-$$2-album.html&quot; function=&quot;ParseAMGAlbum&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1">sql=([^&quot;]*)&quot;&gt;Overview</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;GetAMGReview&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url cache=&quot;am-$$2-album.html&quot; function=&quot;GetAMGReview&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
 				<expression noclean="1">sql=([^&quot;]*)&quot;&gt;Review</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -44,7 +55,7 @@
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/entity&gt;" dest="5">
 				<expression repeat="yes" noclean="1">&lt;TITLE&gt;allmusic[ (]+ ([^&gt;]*) &gt; Overview</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;genre&gt;\3&lt;/genre&gt;&lt;year&gt;\5&lt;/year&gt;&lt;url cache=&quot;allmusic-artist.html&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;SQL=\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;genre&gt;\3&lt;/genre&gt;&lt;year&gt;\5&lt;/year&gt;&lt;url cache=&quot;am-\2-artist.html&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;SQL=\1&lt;/url&gt;&lt;/entity&gt;" dest="5+">
 				<expression repeat="yes" noclean="1,2">style=&quot;[^=]*&lt;a href=&quot;[^&quot;]*sql=([^&quot;]*)&quot;&gt;([^&lt;]*)&lt;/a&gt;[^-]*[^&gt;]*&gt;([^&lt;]*)&lt;/TD&gt;[^&gt;]*&gt;(&amp;nbsp;)?([^&lt;]*)&lt;/td&gt;</expression>
 			</RegExp>
 			<expression noclean="1"></expression>
@@ -52,19 +63,19 @@
 	</GetArtistSearchResults>
 	<GetArtistDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
-			<RegExp input="$$2" output="&lt;url cache=&quot;allmusic-artist.html&quot; function=&quot;ParseAMGArtist&quot;&gt;test&lt;/url&gt;" dest="5">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
-				<expression/>
-			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;GetAMGBiography&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$1" output="&lt;url cache=&quot;am-$$2-artist.html&quot; function=&quot;ParseAMGArtist&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5">
 				<expression noclean="1">sql=([^&quot;]*)&quot;&gt;Biography</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;url function=&quot;GetAMGDiscography&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$2" conditional="htbfanart" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url cache=&quot;am-$$2-artist.html&quot; function=&quot;GetAMGBiography&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
+				<expression noclean="1">sql=([^&quot;]*)&quot;&gt;Biography</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url cache=&quot;am-$$2-discog.html&quot; function=&quot;GetAMGDiscography&quot;&gt;http://www.allmusic.com/cg/amg.dll?p=amg&amp;amp;sql=\1&lt;/url&gt;" dest="5+">
 				<expression noclean="1">sql=([^&quot;]*)&quot;&gt;Discography</expression>
 			</RegExp>
 			<expression noclean="1"></expression>

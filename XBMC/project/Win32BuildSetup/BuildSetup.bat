@@ -1,4 +1,10 @@
 @ECHO OFF
+rem ----Usage----
+rem BuildSetup [gl|dx] [clean|noclean]
+rem gl for opengl build (default)
+rem dx for directx build
+rem clean to force a full rebuild
+rem noclean to force a build without clean
 CLS
 COLOR 1B
 TITLE XBMC for Windows Build Script
@@ -7,11 +13,19 @@ rem - Create a working XBMC build with a single click
 rem -------------------------------------------------------------
 rem Config
 rem If you get an error that Visual studio was not found, SET your path for VSNET main executable.
-rem ONLY needed if you have a very old bios, SET the path for xbepatch. Not needed otherwise.
-rem If Winrar isn't installed under standard programs, SET the path for WinRAR's (freeware) rar.exe
-rem and finally set the options for the final rar.
 rem -------------------------------------------------------------
 rem	CONFIG START
+SET target=gl
+SET buildmode=ask
+FOR %%b in (%1, %2, %3, %4) DO (
+	IF %%b==dx SET target=dx
+	IF %%b==gl SET target=gl
+	IF %%b==clean SET buildmode=clean
+	IF %%b==noclean SET buildmode=noclean
+)
+SET buildconfig=Release (OpenGL)
+IF %target%==dx SET buildconfig=Release (DirectX)
+
 	IF "%VS90COMNTOOLS%"=="" (
 	  set NET="%ProgramFiles%\Microsoft Visual Studio 9.0 Express\Common7\IDE\VCExpress.exe"
 	) ELSE (
@@ -21,9 +35,9 @@ rem	CONFIG START
 	  set DIETEXT=Visual Studio .NET 2008 Express was not found.
 	  goto DIE
 	) 
-    set OPTS_EXE="..\VS2008Express\XBMC for Windows.sln" /build "Release (SDL)"
-	set CLEAN_EXE="..\VS2008Express\XBMC for Windows.sln" /clean "Release (SDL)"
-	set EXE= "..\VS2008Express\XBMC\Release (SDL)\XBMC.exe"
+    set OPTS_EXE="..\VS2008Express\XBMC for Windows.sln" /build "%buildconfig%"
+	set CLEAN_EXE="..\VS2008Express\XBMC for Windows.sln" /clean "%buildconfig%"
+	set EXE= "..\VS2008Express\XBMC\%buildconfig%\XBMC.exe"
 	
   rem	CONFIG END
   rem -------------------------------------------------------------
@@ -50,18 +64,10 @@ rem	CONFIG START
   ECHO       ±²ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ²Û²²ßßßß
   ECHO        ²²ÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛÛ²Û²²ßßßß
   ECHO         ß²ÛÛÛÛ²Û²²²ßßßßßß
-  rem ECHO ------------------------------------------------------------
-  rem ECHO XBMC prepare menu
-  rem ECHO ------------------------------------------------------------
-  rem ECHO [1] Build XBMC XBE     ( for XBOX use )
-  rem ECHO [2] Build XBMC_WIN32   ( for Windows use)
-  rem ECHO ------------------------------------------------------------
-  rem set /P XBMC_COMPILE_ANSWER=Please enter the number you want to build! [1/2]:
-  rem if /I %XBMC_COMPILE_ANSWER% EQU 1 goto XBE_COMPILE
-  rem if /I %XBMC_COMPILE_ANSWER% EQU 2 goto EXE_COMPILE
   goto EXE_COMPILE
 
 :EXE_COMPILE
+  IF %buildmode%==clean goto COMPILE_EXE
   rem ---------------------------------------------
   rem	check for existing xbe
   rem ---------------------------------------------
@@ -71,6 +77,7 @@ rem	CONFIG START
   goto COMPILE_EXE
 
 :EXE_EXIST
+  IF %buildmode%==noclean goto COMPILE_NO_CLEAN_EXE
   ECHO ------------------------------------------------------------
   ECHO Found a previous Compiled WIN32 EXE!
   ECHO [1] a NEW EXE will be compiled for the BUILD_WIN32
@@ -88,7 +95,7 @@ rem	CONFIG START
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\Release (SDL)\BuildLog.htm for details."
+  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\%buildconfig%\BuildLog.htm for details."
   	goto DIE
   )
   ECHO Done!
@@ -101,7 +108,7 @@ rem	CONFIG START
   ECHO Compiling Solution...
   %NET% %OPTS_EXE%
   IF NOT EXIST %EXE% (
-  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\Release (SDL)\BuildLog\BuildLog.htm for details."
+  	set DIETEXT="XBMC.EXE failed to build!  See ..\vs2008express\XBMC\%buildconfig%\BuildLog\BuildLog.htm for details."
   	goto DIE
   )
   ECHO Done!
@@ -152,12 +159,16 @@ rem	CONFIG START
   xcopy ..\..\language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   rem screensavers currently are xbox only
   rem xcopy ..\..\screensavers BUILD_WIN32\Xbmc\screensavers /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy ..\..\visualisations\*_win32.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  if %target%==gl (
+    xcopy ..\..\visualisations\*_win32.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
+    xcopy ..\..\visualisations\projectM BUILD_WIN32\Xbmc\visualisations\projectM /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  ) else (
+    xcopy ..\..\visualisations\*_win32dx.vis BUILD_WIN32\Xbmc\visualisations /Q /I /Y /EXCLUDE:exclude.txt > NUL
+  )
   xcopy ..\..\system BUILD_WIN32\Xbmc\system /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\media BUILD_WIN32\Xbmc\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   xcopy ..\..\sounds BUILD_WIN32\Xbmc\sounds /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy "..\..\web\Project Mayhem III" BUILD_WIN32\Xbmc\web /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy "..\..\web\Project_Mayhem_III" BUILD_WIN32\Xbmc\web /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   
   SET skinpath=%CD%\Add_skins
   SET scriptpath=%CD%\Add_scripts
@@ -188,7 +199,7 @@ rem	CONFIG START
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
   FOR /F "Tokens=2* Delims=]" %%R IN ('FIND /v /n "&_&_&_&" "..\..\.svn\entries" ^| FIND "[11]"') DO SET XBMC_REV=%%R
-  SET XBMC_SETUPFILE=XBMCSetup-Rev%XBMC_REV%.exe
+  SET XBMC_SETUPFILE=XBMCSetup-Rev%XBMC_REV%-%target%.exe
   ECHO Creating installer %XBMC_SETUPFILE%...
   IF EXIST %XBMC_SETUPFILE% del %XBMC_SETUPFILE% > NUL
   rem get path to makensis.exe from registry, first try tab delim
@@ -208,7 +219,7 @@ rem	CONFIG START
   )
 
   SET NSISExe=%NSISExePath%\makensis.exe
-  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dxbmc_root="%CD%\BUILD_WIN32" /Dxbmc_revision="%XBMC_REV%" "XBMC for Windows.nsi"
+  "%NSISExe%" /V1 /X"SetCompressor /FINAL lzma" /Dxbmc_root="%CD%\BUILD_WIN32" /Dxbmc_revision="%XBMC_REV%" /Dxbmc_target="%target%" "XBMC for Windows.nsi"
   IF NOT EXIST "%XBMC_SETUPFILE%" (
 	  set DIETEXT=Failed to create %XBMC_SETUPFILE%.
 	  goto DIE
@@ -230,10 +241,10 @@ rem	CONFIG START
   ECHO ------------------------------------------------------------
 
 :VIEWLOG_EXE
-  IF NOT EXIST "%CD%\..\vs2008express\XBMC\Release (SDL)\" BuildLog.htm" goto END
+  IF NOT EXIST "%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm" goto END
   set /P XBMC_BUILD_ANSWER=View the build log in your HTML browser? [y/n]
   if /I %XBMC_BUILD_ANSWER% NEQ y goto END
-  start /D"%CD%\..\vs2008express\XBMC\Release (SDL)\" BuildLog.htm"
+  start /D"%CD%\..\vs2008express\XBMC\%buildconfig%\" BuildLog.htm"
   goto END
 
 :END

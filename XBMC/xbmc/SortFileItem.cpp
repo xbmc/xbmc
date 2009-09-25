@@ -19,9 +19,9 @@
  *
  */
 
-#include "stdafx.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "SortFileItem.h"
+#include "StringUtils.h"
 #include "VideoInfoTag.h"
 #include "MusicInfoTag.h"
 #include "FileItem.h"

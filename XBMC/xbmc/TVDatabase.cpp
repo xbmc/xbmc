@@ -18,9 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+
 #include "TVDatabase.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/log.h"
 
 using namespace std;
 

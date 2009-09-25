@@ -19,12 +19,14 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderMP4.h"
 #include "Util.h"
 #include "Picture.h"
 #include "id3v1genre.h"
 #include "MusicInfoTag.h"
+#include "LocalizeStrings.h"
+#include "AutoPtrHandle.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 using namespace AUTOPTR;

@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "FactoryDirectory.h"
 #include "HDDirectory.h"
 #include "SpecialProtocolDirectory.h"
@@ -38,7 +38,7 @@
 #include "Application.h"
 
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32PC
+#ifdef _WIN32
 #include "WINSMBDirectory.h"
 #else
 #include "SMBDirectory.h"
@@ -110,7 +110,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 
   if (strProtocol.size() == 0 || strProtocol == "file") return new CHDDirectory();
   if (strProtocol == "special") return new CSpecialProtocolDirectory();
-#ifdef HAS_FILESYSTEM_CDDA
+#if defined(HAS_FILESYSTEM_CDDA) && defined(HAS_DVD_DRIVE)
   if (strProtocol == "cdda") return new CCDDADirectory();
 #endif
 #ifdef HAS_FILESYSTEM
@@ -138,7 +138,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();
     if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
 #ifdef HAS_FILESYSTEM_SMB
-#ifdef _WIN32PC
+#ifdef _WIN32
     if (strProtocol == "smb") return new CWINSMBDirectory();
 #else
     if (strProtocol == "smb") return new CSMBDirectory();

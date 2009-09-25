@@ -19,11 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "InfoLoader.h"
 #include "Weather.h"
 #include "SystemInfo.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
+#include "log.h"
 
 CBackgroundLoader::CBackgroundLoader(CInfoLoader *callback) : CThread()
 {
@@ -93,7 +95,7 @@ void CInfoLoader::LoaderFinished()
   m_busy = false;
 }
 
-const char *CInfoLoader::GetInfo(DWORD dwInfo)
+const char *CInfoLoader::GetInfo(int info)
 {
   // Refresh if need be
   if (m_refreshTime < timeGetTime())
@@ -102,18 +104,18 @@ const char *CInfoLoader::GetInfo(DWORD dwInfo)
   }
   if (m_busy && (m_type != "sysinfo") )
   {
-    return BusyInfo(dwInfo);
+    return BusyInfo(info);
   }
-  return TranslateInfo(dwInfo);
+  return TranslateInfo(info);
 }
 
-const char *CInfoLoader::BusyInfo(DWORD dwInfo)
+const char *CInfoLoader::BusyInfo(int info)
 {
   m_busyText = g_localizeStrings.Get(503);
   return m_busyText.c_str();
 }
 
-const char *CInfoLoader::TranslateInfo(DWORD dwInfo)
+const char *CInfoLoader::TranslateInfo(int info)
 {
   return "";
 }

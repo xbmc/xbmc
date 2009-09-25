@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 
 #ifdef HAS_DBUS_SERVER
 #ifndef DBUS_API_SUBJECT_TO_CHANGE
@@ -30,6 +30,7 @@
 #include "CriticalSection.h"
 #include "Application.h"
 #include "SingleLock.h"
+#include "log.h"
 #include <map>
 #include <queue>
 
@@ -273,16 +274,16 @@ void CDbusServer::StartServer(CApplication *parent)
   m_pThread->SetName("DbusServer");
 }
 
-void CDbusServer::StopServer()
+void CDbusServer::StopServer(bool bWait)
 {
   m_bStop = true;
-  if (m_pThread)
+  if (m_pThread && bWait)
   {
     m_pThread->WaitForThreadExit(2000);
     dbus_connection_unref( p_conn );
     delete m_pThread;
+    m_pThread = NULL;
   }
-  m_pThread = NULL;
 }
 
 void CDbusServer::Run()
@@ -293,8 +294,7 @@ void CDbusServer::Run()
   while (!m_bStop)
   {
     // start listening until we timeout
-    dbus_connection_read_write_dispatch(p_conn,0);
-    Sleep(10);
+    dbus_connection_read_write_dispatch(p_conn,1000);
   }
 
   CLog::Log(LOGNOTICE, "DS: DBUS server stopped");

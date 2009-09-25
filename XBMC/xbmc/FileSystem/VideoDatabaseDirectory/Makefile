@@ -5,6 +5,7 @@ SRCS=DirectoryNodeActor.cpp \
      DirectoryNodeDirector.cpp \
      DirectoryNodeEpisodes.cpp \
      DirectoryNodeGenre.cpp \
+     DirectoryNodeSets.cpp \
      DirectoryNodeMoviesOverview.cpp \
      DirectoryNodeOverview.cpp \
      DirectoryNodeRoot.cpp \

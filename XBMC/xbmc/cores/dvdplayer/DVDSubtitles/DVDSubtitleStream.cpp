@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDSubtitleStream.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
@@ -40,15 +39,16 @@ char* strnchr(char *s, size_t len, char c)
 
 char* strnrchr(const char *sp, int c, size_t n)
 {
-	const char *r = 0;
+  const char *r = 0;
 
-	while (n-- > 0 && *sp)
-	{
-		if (*sp == c)	r = sp;
-		sp++;
-	}
+  while (n-- > 0 && *sp)
+  {
+    if (*sp == c)
+      r = sp;
+    sp++;
+  }
 
-	return ((char *)r);
+  return ((char *)r);
 }
 
 
@@ -121,10 +121,7 @@ int CDVDSubtitleStream::Read(BYTE* buf, int buf_size)
       }
     }
 
-    int iBytesLeft = m_iBufferSize - m_iBufferPos;
-    int iBytesToRead = buf_size;
-
-    if (iBytesToRead > iBytesLeft) iBytesToRead = iBytesLeft;
+    int iBytesToRead = min(buf_size,m_iBufferSize);
 
     memcpy(buf, m_buffer + m_iBufferPos, iBytesToRead);
     m_iBufferPos += iBytesToRead;

@@ -19,7 +19,7 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "AudioContext.h"
 #include "GUIAudioManager.h"
 #include "IAudioDeviceChangedCallback.h"
@@ -254,7 +254,7 @@ void CAudioContext::SetupSpeakerConfig(int iChannels, bool& bAudioOnAllSpeakers,
   if(m_pDirectSoundDevice)
   {
     m_pDirectSoundDevice->GetSpeakerConfig(&spconfig_old);
-    spconfig_old = DSSPEAKER_USE_DEFAULT;
+    spconfig_old = DSSPEAKER_CONFIG(spconfig_old);
   }
 
   /* speaker config identical, no need to do anything */

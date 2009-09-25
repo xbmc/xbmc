@@ -20,7 +20,7 @@
  */
 
 
-#include "stdafx.h"
+#include "system.h"
 #include "Util.h"
 #include "FactoryFileDirectory.h"
 #ifdef HAS_FILESYSTEM
@@ -40,7 +40,8 @@
 #include "FileSystem/File.h"
 #include "FileSystem/RarManager.h"
 #include "FileSystem/ZipManager.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "FileItem.h"
 
 using namespace XFILE;

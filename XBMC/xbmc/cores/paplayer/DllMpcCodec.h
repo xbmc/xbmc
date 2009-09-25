@@ -29,7 +29,7 @@
   #include <mpcdec/reader.h>
   #include <mpcdec/streaminfo.h>
 #else
-  #if (defined _WIN32PC)
+  #if (defined _WIN32)
     #include "MPCCodec/include/mpcdec/config_win32.h"
   #else
     #include "MPCCodec/include/mpcdec/config_types.h"
@@ -39,6 +39,7 @@
 #endif
 #include "MPCCodec/src/xbmc_interface.h"
 #include "DynamicDll.h"
+#include "utils/log.h"
 
 // stuff from dll we need
 #define FRAMELEN 1152

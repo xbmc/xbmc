@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
 #include "Util.h"
@@ -37,11 +37,19 @@
 #include "GUIDialogFullScreenInfo.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogAudioSubtitleSettings.h"
+#include "GUIDialogNumeric.h"
 #include "GUISliderControl.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "PVRManager.h"
 #include "VideoReferenceClock.h"
+#include "AdvancedSettings.h"
+#include "CPUInfo.h"
+#include "GUISettings.h"
+#include "MouseStat.h"
+#include "LocalizeStrings.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #include <stdio.h>
 
@@ -98,7 +106,7 @@
 static CLinuxResourceCounter m_resourceCounter;
 #endif
 
-static DWORD color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
+static color_t color[6] = { 0xFFFFFF00, 0xFFFFFFFF, 0xFF0099FF, 0xFF00FF00, 0xFFCCFF00, 0xFF00FFFF };
 
 CGUIWindowFullScreen::CGUIWindowFullScreen(void)
     : CGUIWindow(WINDOW_FULLSCREEN_VIDEO, "VideoFullScreen.xml")
@@ -184,7 +192,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
     return true;
 
-  switch (action.wID)
+  switch (action.id)
   {
 
   case ACTION_SHOW_GUI:
@@ -207,8 +215,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_PVRManager.SetPlayingGroup(current_group);
 
         CAction action;
-        action.wID = ACTION_CHANNEL_SWITCH;
-        action.fAmount1 = g_PVRManager.GetFirstChannelForGroupID(current_group);
+        action.id = ACTION_CHANNEL_SWITCH;
+        action.amount1 = g_PVRManager.GetFirstChannelForGroupID(current_group);
         OnAction(action);
       }
       else
@@ -229,8 +237,8 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_PVRManager.SetPlayingGroup(current_group);
 
         CAction action;
-        action.wID = ACTION_CHANNEL_SWITCH;
-        action.fAmount1 = g_PVRManager.GetFirstChannelForGroupID(current_group);
+        action.id = ACTION_CHANNEL_SWITCH;
+        action.amount1 = g_PVRManager.GetFirstChannelForGroupID(current_group);
         OnAction(action);
       }
       else
@@ -247,7 +255,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
         CAction action;
-        action.wID = ACTION_PREV_ITEM;
+        action.id = ACTION_PREV_ITEM;
         OnAction(action);
         return true;
       }
@@ -265,7 +273,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (!g_guiSettings.GetBool("pvrplayback.timeshift") && item.HasTVChannelInfoTag())
       {
         CAction action;
-        action.wID = ACTION_NEXT_ITEM;
+        action.id = ACTION_NEXT_ITEM;
         OnAction(action);
         return true;
       }
@@ -358,13 +366,13 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case ACTION_SUBTITLE_DELAY:
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(22006), g_stSettings.m_currentVideoSettings.m_SubtitleDelay,
                                                                    -g_advancedSettings.m_videoSubsDelayRange, 0.1f,
-                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.wID);
+                                                                    g_advancedSettings.m_videoSubsDelayRange, this, (void *)&action.id);
     return true;
     break;
   case ACTION_AUDIO_DELAY:
     CGUIDialogSlider::ShowAndGetInput(g_localizeStrings.Get(297), g_stSettings.m_currentVideoSettings.m_AudioDelay,
                                                                  -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
-                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.wID);
+                                                                  g_advancedSettings.m_videoAudioDelayRange, this, (void *)&action.id);
     return true;
     break;
   case ACTION_AUDIO_DELAY_MIN:
@@ -412,35 +420,26 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
   case REMOTE_8:
   case REMOTE_9:
     {
-      CFileItem item(g_application.CurrentFileItem());
-      if (item.HasTVChannelInfoTag())
+      if (g_application.CurrentFileItem().IsLiveTV())
       {
         int channelNr = -1;
-  
-        if (action.wID == REMOTE_0)
-        {
-          channelNr = g_PVRManager.GetPreviousChannel();
-        }
-        else
-        {
-          CStdString strChannel;
-          strChannel.Format("%i", action.wID - REMOTE_0);
-          if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(18109)))
-          {
-            channelNr = atoi(strChannel.c_str());
-          }
-        }
+
+        CStdString strChannel;
+        strChannel.Format("%i", action.id - REMOTE_0);
+        if (CGUIDialogNumeric::ShowAndGetNumber(strChannel, g_localizeStrings.Get(19000)))
+          channelNr = atoi(strChannel.c_str());
 
         if (channelNr > 0)
         {
           CAction action;
-          action.wID = ACTION_CHANNEL_SWITCH;
-          action.fAmount1 = channelNr;
+          action.id = ACTION_CHANNEL_SWITCH;
+          action.amount1 = (float)channelNr;
           OnAction(action);
         }
       }
-      else {
-        ChangetheTimeCode(action.wID);
+      else
+      {
+        ChangetheTimeCode(action.id);
       }
       return true;
     }
@@ -556,16 +555,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CUtil::SetBrightnessContrastGammaPercent(g_stSettings.m_currentVideoSettings.m_Brightness, g_stSettings.m_currentVideoSettings.m_Contrast, g_stSettings.m_currentVideoSettings.m_Gamma, false);
 
       // switch resolution
-      CSingleLock lock (g_graphicsContext);
       g_graphicsContext.SetFullScreenVideo(true);
-#if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
-  	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-      {
-      	RESOLUTION res = g_renderManager.GetResolution();
-      	g_graphicsContext.SetVideoResolution(res, false, false);
-      }
-#endif
-      lock.Leave();
 
 #ifdef HAS_VIDEO_PLAYBACK
       // make sure renderer is uptospeed
@@ -585,9 +575,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
 
         // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
         // it doesn't preserve aspect, however, so make sure we choose aspect as 1/scalingpixelratio
-        g_graphicsContext.SetScalingResolution(PAL_4x3, 0, 0, true);
+        g_graphicsContext.SetScalingResolution(RES_PAL_4x3, 0, 0, true);
         float aspect = 1.0f / g_graphicsContext.GetScalingPixelRatio();
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, aspect, PAL_4x3);
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), 1.0f, aspect, RES_PAL_4x3);
         if (!subFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
         else
@@ -614,12 +604,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       CSingleLock lock (g_graphicsContext);
       CUtil::RestoreBrightnessContrastGamma();
       g_graphicsContext.SetFullScreenVideo(false);
-#if defined(HAS_VIDEO_PLAYBACK) && !defined(__APPLE)
-  	  if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
-  	  {
-        g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution, TRUE);
-      }
-#endif
       lock.Leave();
 
 #ifdef HAS_VIDEO_PLAYBACK
@@ -653,7 +637,7 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
   { // no control found to absorb this click - go back to GUI
     CAction action;
-    action.wID = ACTION_SHOW_GUI;
+    action.id = ACTION_SHOW_GUI;
     OnAction(action);
     return true;
   }
@@ -663,7 +647,7 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
     if (!item.HasTVChannelInfoTag() || g_guiSettings.GetBool("pvrplayback.timeshift"))
   {
     CAction action;
-    action.wID = ACTION_PAUSE;
+    action.id = ACTION_PAUSE;
     return g_application.OnAction(action);
   }
   }
@@ -680,8 +664,8 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   { // Mouse wheel
     int wheel = abs(g_Mouse.GetWheel());
     CAction action;
-    action.fAmount1 = 0.5f * (float)wheel;
-    action.wID = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
+    action.amount1 = 0.5f * (float)wheel;
+    action.id = g_Mouse.GetWheel() > 0 ? ACTION_ANALOG_SEEK_FORWARD : ACTION_ANALOG_SEEK_BACK;
     return g_application.OnAction(action);
   }
   return true;
@@ -778,7 +762,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       int    refreshrate;
       double clockspeed;
       CStdString strClock;
-      
+
       if (g_VideoReferenceClock.GetClockInfo(missedvblanks, clockspeed, refreshrate))
         strClock.Format("S( refresh:%i missed:%i speed:%+.3f%% %s )"
                        , refreshrate
@@ -836,7 +820,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
       strStatus.Format("%s %ix%i@%.2fHz %s",
         g_localizeStrings.Get(13287), g_settings.m_ResInfo[iResolution].iWidth,
         g_settings.m_ResInfo[iResolution].iHeight, g_settings.m_ResInfo[iResolution].fRefreshRate,
-        g_settings.m_ResInfo[iResolution].strMode);
+        g_settings.m_ResInfo[iResolution].strMode.c_str());
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW3);
       msg.SetLabel(strStatus);
       OnMessage(msg);
@@ -928,7 +912,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       g_graphicsContext.SetRenderingResolution(res, 0, 0, false);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
-      m_subsLayout->Update(subtitleText, maxWidth * 0.9f, true); // true to force LTR reading order (most Hebrew subs are this format)
+      m_subsLayout->Update(subtitleText, maxWidth * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
 
       float textWidth, textHeight;
       m_subsLayout->GetTextExtent(textWidth, textHeight);
@@ -940,7 +924,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
   }
 }
 
-void CGUIWindowFullScreen::ChangetheTimeCode(DWORD remote)
+void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
 {
   if (remote >= 58 && remote <= 67) //Make sure it's only for the remote
   {
@@ -997,12 +981,12 @@ void CGUIWindowFullScreen::OnSliderChange(void *data, CGUISliderControl *slider)
   slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
   if (data && g_application.m_pPlayer)
   {
-    if (*(WORD *)data == ACTION_AUDIO_DELAY)
+    if (*(int *)data == ACTION_AUDIO_DELAY)
     {
       g_stSettings.m_currentVideoSettings.m_AudioDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
     }
-    else if (*(WORD *)data == ACTION_SUBTITLE_DELAY)
+    else if (*(int *)data == ACTION_SUBTITLE_DELAY)
     {
       g_stSettings.m_currentVideoSettings.m_SubtitleDelay = slider->GetFloatValue();
       g_application.m_pPlayer->SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);

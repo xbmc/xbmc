@@ -19,14 +19,15 @@
  *
  */
 
-#include "stdafx.h"
 #include "HTTPDirectory.h"
 #include "URL.h"
 #include "Util.h"
 #include "FileCurl.h"
 #include "FileItem.h"
 #include "utils/RegExp.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "StringUtils.h"
+#include "utils/CharsetConverter.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

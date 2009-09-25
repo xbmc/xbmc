@@ -19,9 +19,9 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoTagLoaderNSF.h"
 #include "MusicInfoTag.h"
+#include "utils/log.h"
 
 #include <fstream>
 

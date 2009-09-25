@@ -37,6 +37,8 @@ extern "C"
 }
 #endif
 
+#include <memory>
+
 class CScreenSaver
 {
 public:

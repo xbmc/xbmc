@@ -43,6 +43,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
   protected:
     enum
     {
+      LYRICS_NONE = 0,
       LYRICS_NEW_LINE = 0x0001,
       LYRICS_NEW_PARAGRAPH = 0x0002,
       LYRICS_CONVERT_UTF8 = 0x0010,
@@ -118,7 +119,7 @@ class CKaraokeLyricsText : public CKaraokeLyrics
       STATE_END_PARAGRAPH,
 
       //!< the song is completed, there are no more lyrics to show. This state is finita la comedia.
-      STATE_END_SONG,
+      STATE_END_SONG
     };
 
     typedef struct

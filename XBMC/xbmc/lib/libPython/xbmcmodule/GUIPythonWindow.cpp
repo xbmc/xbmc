@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIPythonWindow.h"
 #include "pyutil.h"
 #include "window.h"
@@ -27,6 +26,7 @@
 #include "action.h"
 #include "GUIWindowManager.h"
 #include "../XBPython.h"
+#include "utils/log.h"
 
 using namespace PYXBMC;
 
@@ -38,8 +38,8 @@ PyXBMCAction::~PyXBMCAction() {
      pObject = NULL;
 }
 
-CGUIPythonWindow::CGUIPythonWindow(DWORD dwId)
-: CGUIWindow(dwId, "")
+CGUIPythonWindow::CGUIPythonWindow(int id)
+: CGUIWindow(id, "")
 {
 #ifdef _LINUX
   PyInitPendingCalls();
@@ -62,7 +62,7 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
   // workaround - for scripts which try to access the active control (focused) when there is none.
   // for example - the case when the mouse enters the screen.
   CGUIControl *pControl = GetFocusedControl();
-  if (action.wID == ACTION_MOUSE && !pControl)
+  if (action.id == ACTION_MOUSE && !pControl)
      return ret;
 
   if(pCallbackWindow)
@@ -104,8 +104,8 @@ bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
         PyXBMCAction* inf = new PyXBMCAction;
         inf->pObject = NULL;
         // find python control object with same iControl
-        std::vector<Control*>::iterator it = ((Window*)pCallbackWindow)->vecControls.begin();
-        while (it != ((Window*)pCallbackWindow)->vecControls.end())
+        std::vector<Control*>::iterator it = ((PYXBMC::Window*)pCallbackWindow)->vecControls.begin();
+        while (it != ((PYXBMC::Window*)pCallbackWindow)->vecControls.end())
         {
           Control* pControl = *it;
           if (pControl->iControlId == iControl)

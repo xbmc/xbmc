@@ -29,6 +29,8 @@
  *
  */
 
+#include "StdString.h"
+
 class CGUIListItem;
 
 class CGUIInfoBool
@@ -37,29 +39,31 @@ public:
   CGUIInfoBool(bool value = false);
   operator bool() const { return m_value; };
 
-  void Update(DWORD parentID = 0, const CGUIListItem *item = NULL);
+  void Update(int parentID = 0, const CGUIListItem *item = NULL);
   void Parse(const CStdString &info);
 private:
   int m_info;
   bool m_value;
 };
 
+typedef uint32_t color_t;
+
 class CGUIInfoColor
 {
 public:
-  CGUIInfoColor(DWORD color = 0);
+  CGUIInfoColor(color_t color = 0);
 
   const CGUIInfoColor &operator=(const CGUIInfoColor &color);
-  const CGUIInfoColor &operator=(DWORD color);
-  operator DWORD() const { return m_color; };
+  const CGUIInfoColor &operator=(color_t color);
+  operator color_t() const { return m_color; };
 
   void Update();
   void Parse(const CStdString &label);
 
 private:
-  DWORD GetColor() const;
-  int m_info;
-  DWORD m_color;
+  color_t GetColor() const;
+  int     m_info;
+  color_t m_color;
 };
 
 #endif

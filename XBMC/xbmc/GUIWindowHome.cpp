@@ -19,8 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowHome.h"
+#include "Key.h"
 
 CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
 {

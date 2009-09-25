@@ -1,25 +1,19 @@
 #ifndef LINUX_RENDERER
 #define LINUX_RENDERER
 
-#ifdef HAS_SDL_OPENGL
-#include "LinuxRendererGL.h"
-#else
+#ifdef HAS_SDL_2D
 
 #include <SDL/SDL.h>
 #include "GraphicContext.h"
 #ifdef _LINUX
 #include "PlatformDefs.h"
 #endif
-#include "TextureManager.h"
 
 #include "../ffmpeg/DllSwScale.h"
 #include "../ffmpeg/DllAvCodec.h"
 
 #define MAX_PLANES 3
 #define MAX_FIELDS 3
-
-// this is how xdk defines it - not sure about other platforms though
-#define D3DTEXTURE_ALIGNMENT 128
 
 #define ALIGN(value, alignment) (((value)+((alignment)-1))&~((alignment)-1))
 #define CLAMP(a, min, max) ((a) > (max) ? (max) : ( (a) < (min) ? (min) : a ))
@@ -116,7 +110,7 @@ public:
   virtual void SetupScreenshot() {};
   virtual void SetViewMode(int iViewMode);
 
-  void CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
   virtual bool 	       Configure(unsigned int width, 
@@ -169,13 +163,8 @@ protected:
 
   // OSD stuff
 #define NUM_BUFFERS 2
-#ifdef HAS_SDL_OPENGL
-  CGLTexture * m_pOSDYTexture[NUM_BUFFERS];
-  CGLTexture * m_pOSDATexture[NUM_BUFFERS];
-#else
   SDL_Surface * m_pOSDYTexture[NUM_BUFFERS];
   SDL_Surface * m_pOSDATexture[NUM_BUFFERS];
-#endif
 
   float m_OSDWidth;
   float m_OSDHeight;
@@ -197,10 +186,6 @@ protected:
 #else
   SDL_Surface *m_backbuffer; 
   SDL_Surface *m_screenbuffer; 
-
-#ifdef HAS_SDL_OPENGL
-  CGLTexture  *m_texture;
-#endif
 #endif
 
   // clear colour for "black" bars
@@ -212,4 +197,5 @@ protected:
 };
 
 #endif
+
 #endif

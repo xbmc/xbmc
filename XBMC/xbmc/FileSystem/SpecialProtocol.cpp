@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "SpecialProtocol.h"
 #include "URL.h"
 #include "Util.h"
 #include "GUISettings.h"
 #include "Settings.h"
+#include "utils/log.h"
 
 #ifdef _LINUX
 #include <dirent.h>

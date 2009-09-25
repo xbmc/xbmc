@@ -19,13 +19,14 @@
 *
 */
 
-#include "include.h"
-#include "stdafx.h"
+#include "Key.h"
 #include "GUIEPGGridContainer.h"
 #include "PVRManager.h"
 #include "GUIControlFactory.h"
 #include "GUIListItem.h"
 #include "GUIFontManager.h"
+#include "utils/log.h"
+#include "LocalizeStrings.h"
 
 #define SHORTGAP     5 // how many blocks is considered a short-gap in nav logic
 #define MINSPERBLOCK 5 /// would be nice to offer zooming of busy schedules /// performance cost to increase resolution 5 fold?
@@ -67,7 +68,7 @@ CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 
 bool CGUIEPGGridContainer::OnAction(const CAction &action)
 {
-  switch (action.wID)
+  switch (action.id)
   {
   case ACTION_MOVE_LEFT:
   case ACTION_MOVE_RIGHT:
@@ -112,7 +113,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
     // smooth scrolling (for analog controls)
   case ACTION_SCROLL_UP: // left horizontal scrolling
     {
-      m_analogScrollCount += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
 
       while (m_analogScrollCount > 0.4)
@@ -136,7 +137,7 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
     break;
   case ACTION_SCROLL_DOWN: // right horizontal scrolling
     {
-      m_analogScrollCount += action.fAmount1 * action.fAmount1;
+      m_analogScrollCount += action.amount1 * action.amount1;
       bool handled = false;
 
       while (m_analogScrollCount > 0.4)
@@ -161,9 +162,9 @@ bool CGUIEPGGridContainer::OnAction(const CAction &action)
 
   default:
 
-    if (action.wID)
+    if (action.id)
     {
-      return OnClick(action.wID);
+      return OnClick(action.id);
     }
   }
 
@@ -179,11 +180,11 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       message.SetParam1(GetSelectedItem());
       return true;
     }
-    else if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetLPVOID())
+    else if (message.GetMessage() == GUI_MSG_LABEL_BIND && message.GetPointer())
     {
       // bind our items
       Reset();
-      CFileItemList *items = (CFileItemList *)message.GetLPVOID();
+      CFileItemList *items = (CFileItemList *)message.GetPointer();
 
       for (int i = 0; i < items->Size(); i++)
       {
@@ -243,7 +244,7 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
 
-      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
     }
 
     m_lastItem = item;
@@ -260,9 +261,9 @@ void CGUIEPGGridContainer::RenderItem(float posX, float posY, CGUIListItem *item
     }
 
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
     else if (item->GetLayout())
-      item->GetLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetLayout()->Render(item, m_parentID, m_renderTime);
   }
 
   g_graphicsContext.RestoreOrigin();
@@ -305,7 +306,7 @@ void CGUIEPGGridContainer::RenderChannel(float posX, float posY, CGUIListItem *i
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
 
-      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
     }
 
     m_lastChannel = item;
@@ -322,9 +323,9 @@ void CGUIEPGGridContainer::RenderChannel(float posX, float posY, CGUIListItem *i
     }
 
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
     else if (item->GetLayout())
-      item->GetLayout()->Render(item, m_dwParentID, m_renderTime);
+      item->GetLayout()->Render(item, m_parentID, m_renderTime);
   }
 
   g_graphicsContext.RestoreOrigin();
@@ -539,7 +540,7 @@ void CGUIEPGGridContainer::RenderRuler(float horzDrawOffset, int blockOffset)
     // set the origin
     g_graphicsContext.SetOrigin(posX, m_posY);
     // render the item
-    item->GetLayout()->Render(item.get(), m_dwParentID, m_renderTime);
+    item->GetLayout()->Render(item.get(), m_parentID, m_renderTime);
     // restore the origin
     g_graphicsContext.RestoreOrigin();
     // increment our X position

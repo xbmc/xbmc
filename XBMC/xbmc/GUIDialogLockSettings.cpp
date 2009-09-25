@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogLockSettings.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogKeyboard.h"
@@ -27,6 +26,7 @@
 #include "GUIDialogContextMenu.h"
 #include "GUIWindowManager.h"
 #include "Util.h"
+#include "LocalizeStrings.h"
 
 CGUIDialogLockSettings::CGUIDialogLockSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_LOCK_SETTINGS, "LockSettings.xml")

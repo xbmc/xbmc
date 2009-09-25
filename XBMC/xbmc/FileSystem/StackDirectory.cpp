@@ -19,12 +19,11 @@
  *
  */
 
-
-#include "stdafx.h"
 #include "StackDirectory.h"
 #include "utils/log.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "StringUtils.h"
 
 #define PRE_2_1_STACK_COMPATIBILITY
 

@@ -21,12 +21,12 @@
  *
  */
 
-#if defined (HAS_SDL_OPENGL)
-#include "LinuxRendererGL.h"
+#if defined (HAS_GL)
+  #include "LinuxRendererGL.h"
+#elif defined(HAS_DX)
+  #include "WinRenderer.h"
 #elif defined(HAS_SDL)
-#include "LinuxRenderer.h"
-#elif defined(WIN32)
-#include "WinRenderer.h"
+  #include "LinuxRenderer.h"
 #endif
 
 #include "utils/SharedSection.h"
@@ -48,7 +48,7 @@ public:
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
   void SetupScreenshot();
 
-  void CreateThumbnail(XBMC::SurfacePtr surface, unsigned int width, unsigned int height);
+  void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
@@ -83,10 +83,10 @@ public:
   unsigned int PreInit();
   void UnInit();
 
-  void AddOverlay(CDVDOverlay* o)
+  void AddOverlay(CDVDOverlay* o, double pts)
   {
     CSharedLock lock(m_sharedSection);
-    m_overlays.AddOverlay(o);
+    m_overlays.AddOverlay(o, pts);
   }
 
   void AddCleanup(OVERLAY::COverlay* o)
@@ -107,7 +107,7 @@ public:
     if (m_pRenderer)
       return m_pRenderer->GetResolution();
     else
-      return INVALID;
+      return RES_INVALID;
   }
 
   float GetMaximumFPS();
@@ -121,15 +121,18 @@ public:
   void  WaitPresentTime(double presenttime);
 
   CStdString GetVSyncState();
+  
+  void UpdateResolution();
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
+#elif defined(HAS_DX)
+  CWinRenderer *m_pRenderer;
 #elif defined(HAS_SDL)
   CLinuxRenderer *m_pRenderer;
 #elif defined(HAS_XBOX_D3D)
   CXBoxRenderer *m_pRenderer;
-#else
-  CWinRenderer *m_pRenderer;
+  
 #endif
 
   void Present();
@@ -149,6 +152,8 @@ protected:
   bool m_bIsStarted;
   CSharedSection m_sharedSection;
 
+  bool m_bReconfigured;
+  
   int m_rendermethod;
 
   double     m_presenttime;
@@ -164,5 +169,6 @@ protected:
 };
 
 extern CXBMCRenderManager g_renderManager;
+
 
 

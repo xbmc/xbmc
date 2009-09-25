@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowVideoFiles.h"
 #include "Util.h"
 #include "Picture.h"
@@ -40,9 +40,11 @@
 #include "GUIDialogYesNo.h"
 #include "FileSystem/File.h"
 #include "PlayList.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
-using namespace MEDIA_DETECT;
 using namespace XFILE;
 using namespace PLAYLIST;
 using namespace VIDEO;
@@ -196,9 +198,11 @@ bool CGUIWindowVideoFiles::OnMessage(CGUIMessage& message)
         // use play button to add folders of items to temp playlist
         if (iAction == ACTION_PLAYER_PLAY && pItem->m_bIsFolder && !pItem->IsParentFolder())
         {
+#ifdef HAS_DVD_DRIVE          
           if (pItem->IsDVD())
-            return CAutorun::PlayDisc();
-
+            return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif
+          
           if (pItem->m_bIsShareOrDrive)
             return false;
           // if playback is paused or playback speed != 1, return
@@ -320,9 +324,11 @@ bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
+#ifdef HAS_DVD_DRIVE  
   if (pItem->IsDVD())
-    return CAutorun::PlayDisc();
-
+    return MEDIA_DETECT::CAutorun::PlayDisc();
+#endif
+  
   if (pItem->m_bIsShareOrDrive)
     return false;
 
@@ -556,7 +562,7 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistvideo://");
     // activate the playlist window if its not activated yet
-    if (GetID() == (DWORD) m_gWindowManager.GetActiveWindow() && iSize > 1)
+    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
       m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     }

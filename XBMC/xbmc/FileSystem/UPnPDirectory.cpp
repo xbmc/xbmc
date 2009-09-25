@@ -20,8 +20,6 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-#include "stdafx.h"
 #include "Util.h"
 #include "UPnPDirectory.h"
 #include "UPnP.h"
@@ -32,6 +30,7 @@
 #include "FileItem.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 using namespace DIRECTORY;

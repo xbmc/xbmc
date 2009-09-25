@@ -27,6 +27,7 @@
  */
 
 #include "GUIWindow.h"
+#include "Key.h"
 
 /*!
  \ingroup winmsg
@@ -36,7 +37,7 @@ class CGUIDialog :
       public CGUIWindow
 {
 public:
-  CGUIDialog(DWORD dwID, const CStdString &xmlFile);
+  CGUIDialog(int id, const CStdString &xmlFile);
   virtual ~CGUIDialog(void);
 
   virtual bool OnAction(const CAction &action);

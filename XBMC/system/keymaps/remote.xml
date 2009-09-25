@@ -38,16 +38,6 @@
 <keymap>
   <global>
     <remote>
-      <zero>number0</zero>
-      <one>number1</one>
-      <two>number2</two>
-      <three>number3</three>
-      <four>number4</four>
-      <five>number5</five>
-      <six>number6</six>
-      <seven>number7</seven>
-      <eight>number8</eight>
-      <nine>number9</nine>
       <play>Play</play>
       <pause>Pause</pause>
       <stop>Stop</stop>
@@ -78,6 +68,16 @@
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
       <mytv>XBMC.ActivateWindow(MyTV)</mytv>
       <playlist>Playlist</playlist>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>JumpSMS2</two>
+      <three>JumpSMS3</three>
+      <four>JumpSMS4</four>
+      <five>JumpSMS5</five>
+      <six>JumpSMS6</six>
+      <seven>JumpSMS7</seven>
+      <eight>JumpSMS8</eight>
+      <nine>JumpSMS9</nine>
     </remote>
   </global>
   <Home>
@@ -90,26 +90,13 @@
   </Home>
   <MyFiles>
     <remote>
-      <zero>Delete</zero>
-      <one>Highlight</one>
-      <four>Copy</four>
-      <seven>Move</seven>
       <clear>Delete</clear>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyFiles>
   <MyMusicPlaylist>
     <remote>
       <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
-      <zero>Delete</zero>
-      <two>MoveItemUp</two>
-      <five>MoveItemDown</five>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -121,22 +108,26 @@
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyMusicFiles>
   <MyMusicLibrary>
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyMusicLibrary>
   <FullscreenVideo>
     <remote>
+      <zero>Number0</zero>
+      <one>Number1</one>
+      <two>Number2</two>
+      <three>Number3</three>
+      <four>Number4</four>
+      <five>Number5</five>
+      <six>Number6</six>
+      <seven>Number7</seven>
+      <eight>Number8</eight>
+      <nine>Number9</nine>
       <left>StepBack</left>
       <right>StepForward</right>
       <up>BigStepForward</up>
@@ -287,18 +278,12 @@
     <remote>
       <zero>Queue</zero>
       <clear>Delete</clear>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyVideoLibrary>
   <MyVideoFiles>
     <remote>
       <zero>Queue</zero>
       <star>Queue</star>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyVideoFiles>
   <MyVideoPlaylist>
@@ -306,11 +291,6 @@
       <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
       <zero>Delete</zero>
-      <two>MoveItemUp</two>
-      <five>MoveItemDown</five>
-      <three>VolumeUp</three>
-      <six>VolumeDown</six>
-      <nine>Mute</nine>
     </remote>
   </MyVideoPlaylist>
   <VirtualKeyboard>

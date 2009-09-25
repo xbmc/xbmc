@@ -18,8 +18,8 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
 #include "../utils/CriticalSection.h"
+#include "Thread.h"
 
 //////////////////////////////////////////////////////////////////////
 XCriticalSection::XCriticalSection()
@@ -143,7 +143,7 @@ DWORD XCriticalSection::Exit()
 //////////////////////////////////////////////////////////////////////
 BOOL XCriticalSection::Owning()
 {
-	return (m_criticalSection.OwningThread == (HANDLE)GetCurrentThreadId());
+	return CThread::IsCurrentThread((ThreadIdentifier)m_criticalSection.OwningThread);
 }
 
 //////////////////////////////////////////////////////////////////////

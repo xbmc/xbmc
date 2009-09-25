@@ -19,13 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "UdpClient.h"
 #ifdef _LINUX
 #include <sys/ioctl.h>
 #endif
 #include "../utils/Network.h"
 #include "GraphicContext.h"
+#include "log.h"
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
 

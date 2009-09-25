@@ -19,26 +19,27 @@
  *
  */
 
-#include "include.h"
+#include "system.h"
 #include "GUITextureGL.h"
-#include "GraphicContext.h"
-#ifdef HAS_SDL_OPENGL
-#include <GL/glew.h>
+#include "Texture.h"
+#include "utils/log.h"
 
-CGUITexture::CGUITexture(float posX, float posY, float width, float height, const CTextureInfo &texture)
+#if defined(HAS_GL)
+
+CGUITextureGL::CGUITextureGL(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
 {
 }
 
-void CGUITexture::Begin()
+void CGUITextureGL::Begin()
 {
-  CGLTexture* texture = m_texture.m_textures[m_currentFrame];
+  CBaseTexture* texture = m_texture.m_textures[m_currentFrame];
   glActiveTextureARB(GL_TEXTURE0_ARB);
   texture->LoadToGPU();
   if (m_diffuse.size())
     m_diffuse.m_textures[0]->LoadToGPU();
 
-  glBindTexture(GL_TEXTURE_2D, texture->id);
+  glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
   glEnable(GL_TEXTURE_2D);
   
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -57,7 +58,7 @@ void CGUITexture::Begin()
   if (m_diffuse.size())
   {
     glActiveTextureARB(GL_TEXTURE1_ARB);
-    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->id);
+    glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
     glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
@@ -72,7 +73,7 @@ void CGUITexture::Begin()
   glBegin(GL_QUADS);
 }
 
-void CGUITexture::End()
+void CGUITextureGL::End()
 {
   glEnd();
   if (m_diffuse.size())
@@ -83,7 +84,7 @@ void CGUITexture::End()
   glDisable(GL_TEXTURE_2D);
 }
 
-void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
+void CGUITextureGL::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, color_t color, int orientation)
 {
   GLubyte a = (GLubyte)GET_A(color);
   GLubyte r = (GLubyte)GET_R(color);
@@ -135,9 +136,24 @@ void CGUITexture::Draw(float *x, float *y, float *z, const CRect &texture, const
   glVertex3f(x[3], y[3], z[3]);
 }
 
-void CGUITexture::DrawQuad(const CRect &rect, DWORD color)
+void CGUITextureGL::DrawQuad(const CRect &rect, color_t color, CBaseTexture *texture, const CRect *texCoords)
 {
+  if (texture)
+  {
+    glActiveTextureARB(GL_TEXTURE0_ARB);
+    texture->LoadToGPU();
+    glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
+    glEnable(GL_TEXTURE_2D);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
+    glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+  }
+  else
   glDisable(GL_TEXTURE_2D);
+
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -151,22 +167,23 @@ void CGUITexture::DrawQuad(const CRect &rect, DWORD color)
   glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
   VerifyGLState();
 
-//  glEnable(GL_TEXTURE_2D);
-  
   glBegin(GL_QUADS);
 
   glColor4ub((GLubyte)GET_R(color), (GLubyte)GET_G(color), (GLubyte)GET_B(color), (GLubyte)GET_A(color));
 
-  glTexCoord2f(0.0f, 0.0f);
+  CRect coords = texCoords ? *texCoords : CRect(0.0f, 0.0f, 1.0f, 1.0f);
+  glTexCoord2f(coords.x1, coords.y1);
   glVertex3f(rect.x1, rect.y1, 0);
-  glTexCoord2f(1.0f, 0.0f);
+  glTexCoord2f(coords.x2, coords.y1);
   glVertex3f(rect.x2, rect.y1, 0);
-  glTexCoord2f(1.0f, 1.0f);
+  glTexCoord2f(coords.x2, coords.y2);
   glVertex3f(rect.x2, rect.y2, 0);
-  glTexCoord2f(0.0f, 1.0f);
+  glTexCoord2f(coords.x1, coords.y2);
   glVertex3f(rect.x1, rect.y2, 0);
 
   glEnd();
+  if (texture)
+    glDisable(GL_TEXTURE_2D);
 }
 
 #endif

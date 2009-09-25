@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowVideoNav.h"
 #include "GUIWindowVideoFiles.h"
 #include "utils/GUIInfoManager.h"
@@ -45,6 +45,11 @@
 #include "FileSystem/File.h"
 #include "FileItem.h"
 #include "Application.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -84,7 +89,7 @@ CGUIWindowVideoNav::~CGUIWindowVideoNav(void)
 
 bool CGUIWindowVideoNav::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PARENT_DIR)
+  if (action.id == ACTION_PARENT_DIR)
   {
     if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
     {
@@ -92,7 +97,7 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
       return true;
     }
   }
-  if (action.wID == ACTION_TOGGLE_WATCHED)
+  if (action.id == ACTION_TOGGLE_WATCHED)
   {
     CFileItemPtr pItem = m_vecItems->Get(m_viewControl.GetSelectedItem());
     if (pItem && pItem->GetVideoInfoTag()->m_playCount == 0)
@@ -119,11 +124,10 @@ bool CGUIWindowVideoNav::OnMessage(CGUIMessage& message)
 /* We don't want to show Autosourced items (ie removable pendrives, memorycards) in Library mode */
       m_rootDir.AllowNonLocalSources(false);
       // check for valid quickpath parameter
-      CStdStringArray params;
-      StringUtils::SplitString(message.GetStringParam(), ",", params);
-      bool returning = params.size() > 1 && params[1].Equals("return");
+      CStdString strDestination = message.GetNumStringParams() ? message.GetStringParam(0) : "";
+      CStdString strReturn = message.GetNumStringParams() > 1 ? message.GetStringParam(1) : "";
+      bool returning = strReturn.CompareNoCase("return") == 0;
 
-      CStdString strDestination = params.size() ? params[0] : "";
       if (!strDestination.IsEmpty())
       {
         message.SetStringParam("");

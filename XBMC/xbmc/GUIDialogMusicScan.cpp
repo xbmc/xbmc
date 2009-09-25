@@ -19,13 +19,16 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogMusicScan.h"
 #include "GUIProgressControl.h"
 #include "Application.h"
 #include "Util.h"
 #include "URL.h"
 #include "GUIWindowManager.h"
+#include "GUISettings.h"
+#include "GUIUserMessages.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 using namespace MUSIC_INFO;
 

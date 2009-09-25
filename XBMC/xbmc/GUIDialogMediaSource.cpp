@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogMediaSource.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogFileBrowser.h"
@@ -32,6 +31,9 @@
 #include "FileSystem/File.h"
 #include "FileSystem/ShoutcastDirectory.h"
 #include "FileItem.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -59,7 +61,7 @@ CGUIDialogMediaSource::~CGUIDialogMediaSource()
 
 bool CGUIDialogMediaSource::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     m_confirmed = false;
   }

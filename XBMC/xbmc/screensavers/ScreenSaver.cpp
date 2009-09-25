@@ -18,13 +18,13 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h" 
 // Screensaver.cpp: implementation of the CScreenSaver class.
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "ScreenSaver.h" 
 #include "Settings.h"
+#include "WindowingFactory.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -52,8 +52,8 @@ void CScreenSaver::Create()
   OutputDebugString(szTmp);
 
   float pixelRatio = g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].fPixelRatio;
-#ifndef HAS_SDL
-  m_pScr->Create(g_graphicsContext.Get3DDevice(), iWidth, iHeight, m_strScreenSaverName.c_str(), pixelRatio);
+#ifdef HAS_DX
+  m_pScr->Create(g_Windowing.Get3DDevice(), iWidth, iHeight, m_strScreenSaverName.c_str(), pixelRatio);
 #else
   m_pScr->Create(0, iWidth, iHeight, m_strScreenSaverName.c_str(), pixelRatio);
 #endif

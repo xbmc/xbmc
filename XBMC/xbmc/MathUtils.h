@@ -20,7 +20,9 @@
  *
  */
 
+#include <cassert>
 #include <climits>
+#include <cmath>
 
 namespace MathUtils
 {

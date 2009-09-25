@@ -22,6 +22,8 @@
 
 #include "IFileDirectory.h"
 
+class CFileItem;
+
 namespace DIRECTORY
 {
 class CFactoryFileDirectory

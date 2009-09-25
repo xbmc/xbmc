@@ -20,8 +20,9 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "Thread.h"
+#include "utils/CriticalSection.h"
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
   #include <X11/X.h>
@@ -90,17 +91,18 @@ class CVideoReferenceClock : public CThread
     void RunGLX();
     void CleanupGLX();
     bool ParseNvSettings(int& RefreshRate);
+    int  GetRandRRate();
 
-    int  (*m_glXWaitVideoSyncSGI)(int, int, unsigned int*);
-    int  (*m_glXGetVideoSyncSGI)(unsigned int*);
+    int  (*m_glXWaitVideoSyncSGI) (int, int, unsigned int*);
+    int  (*m_glXGetVideoSyncSGI)  (unsigned int*);
+    int  (*m_glXGetRefreshRateSGI)(unsigned int*);
 
     Display*     m_Dpy;
-    GLXFBConfig *m_fbConfigs;
     XVisualInfo *m_vInfo;
     Window       m_Window;
     GLXContext   m_Context;
 
-    bool     m_UseNvSettings;
+    bool         m_UseNvSettings;
 
 #elif defined(_WIN32)
     bool   CreateHiddenWindow();

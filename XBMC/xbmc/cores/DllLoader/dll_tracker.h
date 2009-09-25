@@ -22,6 +22,14 @@
  *
  */
 
+#include "utils/CriticalSection.h"
+#ifdef _WIN32
+#include "system.h" // for SOCKET
+#endif
+
+#include <list>
+#include <map>
+
 class DllLoader;
 
 struct AllocLenCaller

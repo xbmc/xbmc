@@ -19,7 +19,7 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "GUIWindowPrograms.h"
 #include "Util.h"
 #include "Shortcut.h"
@@ -37,6 +37,8 @@
 #include "FileSystem/File.h"
 #include "FileSystem/RarManager.h"
 #include "FileItem.h"
+#include "Settings.h"
+#include "LocalizeStrings.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -307,9 +309,11 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
     return false;
   }
 
+#ifdef HAS_DVD_DRIVE  
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDisc();
-
+#endif
+  
   if (pItem->m_bIsFolder) return false;
 
   return false;

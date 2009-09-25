@@ -19,12 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "Edl.h"
+#include "StringUtils.h"
 #include "Util.h"
 #include "FileSystem/File.h"
 #include "FileSystem/CMythFile.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "utils/log.h"
 
 extern "C"
 {
@@ -717,7 +718,7 @@ CStdString CEdl::MillisecondsToTimeString(const __int64 iMilliseconds)
   return strTimeString;
 }
 
-bool CEdl::ReadMythCommBreaks(const CURL url, const float fFramesPerSecond)
+bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
 {
   Clear();
 

@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "control.h"
 #include "pyutil.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIControlFactory.h"
 #include "GUITexture.h"
+#include "StringUtils.h"
 #include "tinyXML/tinyxml.h"
 
 using namespace std;

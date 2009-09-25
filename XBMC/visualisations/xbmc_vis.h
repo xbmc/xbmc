@@ -3,9 +3,6 @@
 
 #include <vector>
 #include <ctype.h>
-#ifdef HAS_XBOX_HARDWARE
-#include <xtl.h>
-#else
 #ifdef _LINUX
 #include "../xbmc/linux/PlatformInclude.h"
 #ifndef __APPLE__
@@ -21,7 +18,6 @@
 #include "../xbmc/visualizations/VisualisationTypes.h"
 #include <sys/stat.h>
 #include <errno.h>
-#endif
 
 using namespace std;
 
@@ -41,11 +37,6 @@ int htoi(const char *str) /* Convert hex string to integer */
   return number;
 }
 
-//#define NEW_STRING(str, ch) { str = new char[strlen(ch) + 1]; strcpy(str, ch); };
-#ifdef HAS_XBOX_HARDWARE
-#pragma comment (lib, "lib/xbox_dx8.lib" )
-#endif
-
 // the settings vector
 vector<VisSetting> m_vecSettings;
 
@@ -53,12 +44,12 @@ vector<VisSetting> m_vecSettings;
 extern "C"
 {
   // exports for d3d hacks
-#ifndef HAS_SDL_OPENGL
+#ifdef HAS_DX
   void d3dSetTextureStageState( int x, DWORD dwY, DWORD dwZ);
   void d3dSetRenderState(DWORD dwY, DWORD dwZ);
 #endif
 
-#ifdef HAS_SDL_OPENGL
+#ifdef HAS_GL
 #ifndef D3DCOLOR_RGBA
 #define D3DCOLOR_RGBA(r,g,b,a) (r||(g<<8)||(b<<16)||(a<<24))
 #endif

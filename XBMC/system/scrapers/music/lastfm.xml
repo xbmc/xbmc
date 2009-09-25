@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-08-11" name="Last.FM" content="albums" thumb="lastfm.gif">
+<scraper framework="1.1" date="2009-09-16" name="Last.FM" content="albums" thumb="lastfm.gif">
 	<include>common/htbackdrops.xml</include>
 	<include>common/lastfm.xml</include>
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;htbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Grab thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
 	<NfoUrl dest="3">
 		<RegExp input="$$1" output="http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;album=\2&amp;artist=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b" dest="3">
 			<expression>(http://www.last.fm/music/([^/]*)/(.*))</expression>
@@ -78,13 +89,13 @@
 			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="5+">
 				<expression>&lt;content&gt;&lt;!\[CDATA\[(.*?)\]</expression>
 			</RegExp>
-			<RegExp input="$$1" output="&lt;thumb&gt;\2&lt;/thumb&gt;" dest="7">
+			<RegExp input="$$1" output="&lt;thumb&gt;\2&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1">&lt;image size=&quot;(extra)?large&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
-			<RegExp input="$$2" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+			<RegExp input="$$2" conditional="htbfanart" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
 				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;url function=&quot;GetGenres&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">

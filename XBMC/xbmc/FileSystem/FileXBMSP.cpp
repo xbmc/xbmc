@@ -18,12 +18,14 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "stdafx.h"
 #include "FileXBMSP.h"
 #include "Util.h"
 #include "FileSystem/Directory.h"
+#include "SectionLoader.h"
 #include "URL.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "utils/CharsetConverter.h"
+#include "utils/log.h"
 
 #include <sys/stat.h>
 

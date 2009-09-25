@@ -19,10 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogSlider.h"
 #include "GUISliderControl.h"
 #include "GUIWindowManager.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_HEADING 10
 #define CONTROL_SLIDER  11
@@ -41,7 +41,7 @@ CGUIDialogSlider::~CGUIDialogSlider(void)
 
 bool CGUIDialogSlider::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_SELECT_ITEM)
+  if (action.id == ACTION_SELECT_ITEM)
   {
     Close();
     return true;

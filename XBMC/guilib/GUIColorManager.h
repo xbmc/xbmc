@@ -33,6 +33,15 @@
  \ingroup textures
  \brief
  */
+
+#include "StdString.h"
+
+#include <map>
+
+class TiXmlDocument;
+
+typedef uint32_t color_t;
+
 class CGUIColorManager
 {
 public:
@@ -41,16 +50,16 @@ public:
 
   void Load(const CStdString &colorFile);
 
-  DWORD GetColor(const CStdString &color) const;
+  color_t GetColor(const CStdString &color) const;
 
   void Clear();
 
 protected:
   bool LoadXML(TiXmlDocument &xmlDoc);
 
-  std::map<CStdString, DWORD> m_colors;
-  typedef std::map<CStdString, DWORD>::iterator iColor;
-  typedef std::map<CStdString, DWORD>::const_iterator icColor;
+  std::map<CStdString, color_t> m_colors;
+  typedef std::map<CStdString, color_t>::iterator iColor;
+  typedef std::map<CStdString, color_t>::const_iterator icColor;
 };
 
 /*!

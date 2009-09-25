@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+
 #include "MusicInfoTagLoaderASAP.h"
 #include "Util.h"
 #include "MusicInfoTag.h"

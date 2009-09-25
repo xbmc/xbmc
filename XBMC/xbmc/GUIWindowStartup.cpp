@@ -19,8 +19,8 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowStartup.h"
+#include "Key.h"
 
 CGUIWindowStartup::CGUIWindowStartup(void)
     : CGUIWindow(WINDOW_STARTUP, "Startup.xml")

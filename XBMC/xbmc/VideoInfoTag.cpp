@@ -19,11 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "VideoInfoTag.h"
 #include "XMLUtils.h"
 #include "LocalizeStrings.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
 #include "Picture.h"
@@ -46,6 +45,7 @@ void CVideoInfoTag::Reset()
   m_strSortTitle = "";
   m_strVotes = "";
   m_cast.clear();
+  m_strSet = "";
   m_strFile = "";
   m_strPath = "";
   m_strIMDBNumber = "";
@@ -142,6 +142,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
 
   XMLUtils::SetString(movie, "id", m_strIMDBNumber);
   XMLUtils::SetString(movie, "genre", m_strGenre);
+  XMLUtils::SetString(movie, "set", m_strSet);
   XMLUtils::SetString(movie, "credits", m_strWritingCredits);
   XMLUtils::SetString(movie, "director", m_strDirector);
   XMLUtils::SetString(movie, "premiered", m_strPremiered);
@@ -247,7 +248,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       ar << m_cast[i].strRole;
       ar << m_cast[i].thumbUrl.m_xml;
     }
-
+    
+    ar << m_strSet;
     ar << m_strRuntime;
     ar << m_strFile;
     ar << m_strPath;
@@ -308,6 +310,8 @@ void CVideoInfoTag::Serialize(CArchive& ar)
       info.thumbUrl.ParseString(strXml);
       m_cast.push_back(info);
     }
+    
+    ar >> m_strSet;
     ar >> m_strRuntime;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -430,8 +434,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     }
     node = node->NextSiblingElement("actor");
   }
-
-  // studios
+  XMLUtils::GetAdditiveString(movie,"set",g_advancedSettings.m_videoItemSeparator,m_strSet);
   XMLUtils::GetAdditiveString(movie,"studio",g_advancedSettings.m_videoItemSeparator,m_strStudio);
   // artists
   node = movie->FirstChildElement("artist");

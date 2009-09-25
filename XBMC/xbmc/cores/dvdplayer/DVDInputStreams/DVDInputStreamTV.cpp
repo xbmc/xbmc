@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "DVDInputStreamTV.h"
 #include "FileSystem/CMythFile.h"
 #include "FileSystem/VTPFile.h"
@@ -141,6 +140,12 @@ bool CDVDInputStreamTV::PrevChannel()
 {
   if(!m_pLiveTV) return false;
   return m_pLiveTV->PrevChannel();
+}
+
+bool CDVDInputStreamTV::SelectChannel(unsigned int channel)
+{
+  if(!m_pLiveTV) return false;
+  return m_pLiveTV->SelectChannel(channel);
 }
 
 bool CDVDInputStreamTV::UpdateItem(CFileItem& item)

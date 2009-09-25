@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -79,12 +78,12 @@ namespace PYXBMC
     new(&self->strTextureNoFocus) string();    
 
     // set up default values in case they are not supplied
-    self->dwCheckWidth = 30;
-    self->dwCheckHeight = 30;
-    self->dwAlign = XBFONT_RIGHT;
+    self->checkWidth = 30;
+    self->checkHeight = 30;
+    self->align = XBFONT_RIGHT;
     self->strFont = "font13";
-    self->dwTextColor = 0xffffffff;
-    self->dwDisabledColor = 0x60ffffff;
+    self->textColor = 0xffffffff;
+    self->disabledColor = 0x60ffffff;
 
     // parse arguments to constructor
     if (!PyArg_ParseTupleAndKeywords(
@@ -99,9 +98,9 @@ namespace PYXBMC
       &pObjectText,
       &cTextureFocus,
       &cTextureNoFocus,
-      &self->dwCheckWidth,
-      &self->dwCheckHeight,
-      &self->dwAlign,
+      &self->checkWidth,
+      &self->checkHeight,
+      &self->align,
       &cFont,
       &cTextColor,
       &cDisabledColor ))
@@ -116,10 +115,10 @@ namespace PYXBMC
     }
 
     if (cFont) self->strFont = cFont;
-    if (cTextColor) sscanf(cTextColor, "%x", &self->dwTextColor);
+    if (cTextColor) sscanf(cTextColor, "%x", &self->textColor);
     if (cDisabledColor)
     {
-      sscanf( cDisabledColor, "%x", &self->dwDisabledColor );
+      sscanf( cDisabledColor, "%x", &self->disabledColor );
     }
     self->strTextureFocus = cTextureFocus ?
       cTextureFocus :
@@ -143,10 +142,10 @@ namespace PYXBMC
   CGUIControl* ControlCheckMark_Create(ControlCheckMark* pControl)
   {
     CLabelInfo label;
-    label.disabledColor = pControl->dwDisabledColor;
-    label.textColor = label.focusedColor = pControl->dwTextColor;
+    label.disabledColor = pControl->disabledColor;
+    label.textColor = label.focusedColor = pControl->textColor;
     label.font = g_fontManager.GetFont(pControl->strFont);
-    label.align = pControl->dwAlign;
+    label.align = pControl->align;
     CTextureInfo imageFocus(pControl->strTextureFocus);
     CTextureInfo imageNoFocus(pControl->strTextureNoFocus);
     pControl->pGUIControl = new CGUICheckMarkControl(
@@ -157,8 +156,8 @@ namespace PYXBMC
       (float)pControl->dwWidth,
       (float)pControl->dwHeight,
       imageFocus, imageNoFocus,
-      (float)pControl->dwCheckWidth,
-      (float)pControl->dwCheckHeight,
+      (float)pControl->checkWidth,
+      (float)pControl->checkHeight,
       label );
 
     CGUICheckMarkControl* pGuiCheckMarkControl = (CGUICheckMarkControl*)pControl->pGUIControl;
@@ -184,13 +183,13 @@ namespace PYXBMC
 
     if (cDisabledColor)
     {
-      sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
+      sscanf(cDisabledColor, "%x", &self->disabledColor);
     }
 
     PyGUILock();
     if (self->pGUIControl)
     {
-      ((CGUICheckMarkControl*)self->pGUIControl)->PythonSetDisabledColor( self->dwDisabledColor );
+      ((CGUICheckMarkControl*)self->pGUIControl)->PythonSetDisabledColor( self->disabledColor );
     }
     PyGUIUnlock();
 
@@ -229,11 +228,11 @@ namespace PYXBMC
     if (cFont) self->strFont = cFont;
     if (cTextColor)
     {
-      sscanf(cTextColor, "%x", &self->dwTextColor);
+      sscanf(cTextColor, "%x", &self->textColor);
     }
     if (cDisabledColor)
     {
-      sscanf(cDisabledColor, "%x", &self->dwDisabledColor);
+      sscanf(cDisabledColor, "%x", &self->disabledColor);
     }
 
     PyGUILock();
@@ -242,9 +241,9 @@ namespace PYXBMC
       ((CGUICheckMarkControl*)self->pGUIControl)->PythonSetLabel(
         self->strFont,
         self->strText,
-        self->dwTextColor );
+        self->textColor );
       ((CGUICheckMarkControl*)self->pGUIControl)->PythonSetDisabledColor(
-        self->dwDisabledColor );
+        self->disabledColor );
     }
     PyGUIUnlock();
 

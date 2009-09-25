@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIWindowMusicInfo.h"
 #include "Util.h"
 #include "GUIImage.h"
@@ -36,6 +35,11 @@
 #include "MediaManager.h"
 #include "FileSystem/Directory.h"
 #include "utils/AsyncFileCopy.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 using namespace XFILE;
 
@@ -543,8 +547,8 @@ void CGUIWindowMusicInfo::OnGetThumb()
   }
   if (result == "thumb://None")
   { // cache the default thumb
-    CPicture pic;
-    pic.CacheSkinImage("DefaultAlbumCover.png", cachedThumb);
+    CFile::Delete(cachedThumb);
+    cachedThumb = "";
   }
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);

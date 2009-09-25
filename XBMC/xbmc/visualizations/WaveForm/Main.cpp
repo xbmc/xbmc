@@ -2,13 +2,19 @@
 // A simple visualisation example by MrC
 
 #include "../../../visualisations/xbmc_vis.h"
+#ifdef _WIN32
 #ifdef HAS_SDL_OPENGL
-#include <SDL/SDL_opengl.h>
+#include <GL/glew.h>
+#else
+#include <D3D9.h>
+#endif
+#else
+#include "../../../guilib/system.h"
 #endif
 
 char g_visName[512];
 #ifndef HAS_SDL_OPENGL
-LPDIRECT3DDEVICE8 g_device;
+LPDIRECT3DDEVICE9 g_device;
 #else
 void* g_device;
 #endif
@@ -22,13 +28,13 @@ typedef struct {
   int Height;
   int MinZ;
   int MaxZ;
-} D3DVIEWPORT8;
-#ifdef _WIN32PC
+} D3DVIEWPORT9;
+#ifdef _WIN32
 typedef unsigned long D3DCOLOR;
 #endif
 #endif
 
-D3DVIEWPORT8  g_viewport;
+D3DVIEWPORT9  g_viewport;
 
 struct Vertex_t
 {
@@ -43,18 +49,17 @@ struct Vertex_t
 //-- Create -------------------------------------------------------------------
 // Called once when the visualisation is created by XBMC. Do any setup here.
 //-----------------------------------------------------------------------------
-#ifndef HAS_SDL_OPENGL
-extern "C" void Create(LPDIRECT3DDEVICE8 pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
-#else
 extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
                        float fPixelRatio, const char *szSubModuleName)
-#endif
 {
   //printf("Creating Waveform\n");
   strcpy(g_visName, szVisualisationName);
   m_uiVisElements = 0;
+#ifndef HAS_SDL_OPENGL  
+  g_device = (LPDIRECT3DDEVICE9)pd3dDevice;
+#else
   g_device = pd3dDevice;
+#endif
   g_viewport.X = iPosX;
   g_viewport.Y = iPosY;
   g_viewport.Width = iWidth;
@@ -107,7 +112,7 @@ extern "C" void Render()
   Vertex_t  verts[512];
 
 #ifndef HAS_SDL_OPENGL
-  g_device->SetVertexShader(VERTEX_FORMAT);
+  g_device->SetFVF(VERTEX_FORMAT);
   g_device->SetPixelShader(NULL);
 #endif
 

@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoScanner.h"
 #include "MusicDatabase.h"
 #include "MusicInfoTagLoaderFactory.h"
@@ -39,9 +38,13 @@
 #include "GUIDialogSelect.h"
 #include "GUIDialogKeyboard.h"
 #include "FileSystem/File.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "Picture.h"
+#include "LocalizeStrings.h"
+#include "StringUtils.h"
 
 #include <algorithm>
 
@@ -699,8 +702,8 @@ bool CMusicInfoScanner::HasSingleAlbum(const VECSONGS &songs, CStdString &album,
   for (unsigned int i = 0; i < songs.size(); i++)
   {
     const CSong &song = songs[i];
-    // don't bother with empty album tags - they're unlikely to have an embedded thumb anyway,
-    // and if one is not tagged correctly, how can we know whether there is only one album?
+    // don't bother with empty album tags - they're treated as singles, and there's no way to determine
+    // whether more than one track in the folder is supposed to mean they belong to an "album"
     if (song.strAlbum.IsEmpty())
       return false;
 

@@ -35,11 +35,13 @@
  *
  */
 
-#include "stdafx.h"
+#include "FileItem.h"
 #include "PVRRecordings.h"
 #include "PVRManager.h"
 #include "GUIDialogOK.h"
-
+#include "LocalizeStrings.h"
+#include "utils/log.h"
+#include "utils/SingleLock.h"
 
 /**
  * Create a blank unmodified recording tag

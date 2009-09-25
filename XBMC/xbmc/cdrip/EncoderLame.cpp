@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "EncoderLame.h"
 #include "Id3Tag.h"
 #include "GUISettings.h"
+#include "utils/log.h"
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
 #define fopen_utf8 fopen
@@ -32,44 +32,10 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 
 using namespace MUSIC_INFO;
 
-// taken from Lame from main.c
-int CEncoderLame::parse_args_from_string(lame_global_flags * const gfp, const char *p,
-                            char *inPath, char *outPath)
-{                       /* Quick & very Dirty */
-  char *q;
-  char *f;
-  char *r[128];
-  int c = 0;
-  int ret;
-
-  CLog::Log(LOGINFO, "Encoder: Encoding with %s", p);
-  if (p == NULL || *p == '\0')
-    return 0;
-
-  f = q = (char*)malloc(strlen(p) + 1);
-  strcpy(q, p);
-
-  r[c++] = (char*)"lhama";
-  while (1)
-  {
-    r[c++] = q;
-    while (*q != ' ' && *q != '\0')
-      q++;
-    if (*q == '\0')
-      break;
-    *q++ = '\0';
-  }
-  r[c] = NULL;
-
-  ret = m_dll.parse_args(gfp, c, r, inPath, outPath, NULL, NULL);
-  free(f);
-  return ret;
-}
-
 CEncoderLame::CEncoderLame()
 {
-  memset(m_inPath, 0, XBMC_MAX_PATH + 1);
-  memset(m_outPath, 0, XBMC_MAX_PATH + 1);
+  memset(m_inPath, 0, 1024 + 1);
+  memset(m_outPath, 0, 1024 + 1);
 }
 
 bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int iInBits)
@@ -94,24 +60,32 @@ bool CEncoderLame::Init(const char* strFile, int iInChannels, int iInRate, int i
   // setup parmaters, see lame.h for possibilities
   if (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR)
   {
+    int bitrate = g_guiSettings.GetInt("cddaripper.bitrate");
     // use cbr and specified bitrate from settings
-    CStdString strSettings;
-    strSettings.Format("%s%i", "--preset cbr ", g_guiSettings.GetInt("cddaripper.bitrate"));
-    parse_args_from_string(m_pGlobalFlags, strSettings.c_str(), m_inPath, m_outPath);
-    //lame_set_mode(pGlobalFlags, JOINT_STEREO);
-    //lame_set_brate(pGlobalFlags, g_stSettings.m_iRipBitRate);
+    CLog::Log(LOGDEBUG, "Lame setting CBR bitrate %d", bitrate);
+    m_dll.lame_set_brate(m_pGlobalFlags, bitrate);
   }
   else
   {
     // use presets (VBR)
     CStdString strSettings;
+    int preset;
     switch (g_guiSettings.GetInt("cddaripper.quality"))
     {
-    case CDDARIP_QUALITY_MEDIUM: { strSettings = "--preset fast medium"; break;}  // 150-180kbps
-    case CDDARIP_QUALITY_STANDARD: { strSettings = "--preset fast standard"; break;}  // 170-210kbps
-    case CDDARIP_QUALITY_EXTREME: { strSettings = "--preset fast extreme"; break;} // 200-240kbps
+    case CDDARIP_QUALITY_MEDIUM:
+      preset = MEDIUM;
+      break;
+    case CDDARIP_QUALITY_STANDARD:
+      preset = STANDARD;
+      break;
+    case CDDARIP_QUALITY_EXTREME:
+      preset = EXTREME;
+      break;
+    default:
+      preset = STANDARD;
     }
-    parse_args_from_string(m_pGlobalFlags, strSettings.c_str(), m_inPath, m_outPath);
+    CLog::Log(LOGDEBUG, "Lame setting preset %d", preset);
+    m_dll.lame_set_preset(m_pGlobalFlags, preset);
   }
 
   m_dll.lame_set_asm_optimizations(m_pGlobalFlags, MMX, 1);

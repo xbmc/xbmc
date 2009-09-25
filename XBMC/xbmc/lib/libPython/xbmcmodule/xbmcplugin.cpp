@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "FileSystem/PluginDirectory.h"
 #include "listitem.h"
 #include "settings/AddonSettings.h"

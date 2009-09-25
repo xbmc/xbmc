@@ -20,7 +20,6 @@
  */
 
 
-#include "stdafx.h"
 #include "DirectoryTuxBox.h"
 #include "DirectoryCache.h"
 #include "Util.h"
@@ -31,7 +30,7 @@
 #include "GUIWindowManager.h"
 #include "GUIDialogProgress.h"
 #include "tinyXML/tinyxml.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
 
 using namespace XFILE;

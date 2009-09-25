@@ -19,10 +19,11 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogKaraokeSongSelector.h"
 #include "Application.h"
 #include "PlayList.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 #define CONTROL_LABEL_SONGNUMBER    401
 #define CONTROL_LABEL_SONGNAME      402
@@ -30,8 +31,8 @@
 static const unsigned int MAX_SONG_ID = 100000;
 
 
-CGUIDialogKaraokeSongSelector::CGUIDialogKaraokeSongSelector( DWORD dwID, const char *xmlFile )
-  : CGUIDialog( dwID, xmlFile  )
+CGUIDialogKaraokeSongSelector::CGUIDialogKaraokeSongSelector( int id, const char *xmlFile )
+  : CGUIDialog( id, xmlFile  )
 {
   m_selectedNumber = 0;
   m_songSelected = false;
@@ -89,8 +90,8 @@ void CGUIDialogKaraokeSongSelector::OnButtonSelect()
 
 bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
 {
-  CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnAction %d" , action.wID);
-  switch(action.wID)
+  CLog::Log( LOGDEBUG, "CGUIDialogKaraokeSongSelector::OnAction %d" , action.id);
+  switch(action.id)
   {
     case REMOTE_0:
     case REMOTE_1:
@@ -102,7 +103,7 @@ bool CGUIDialogKaraokeSongSelector::OnAction(const CAction & action)
     case REMOTE_7:
     case REMOTE_8:
     case REMOTE_9:
-      OnButtonNumeric( action.wID - REMOTE_0 );
+      OnButtonNumeric( action.id - REMOTE_0 );
       return true;
 
     case ACTION_SELECT_ITEM:

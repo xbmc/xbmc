@@ -21,6 +21,8 @@
  *
  */
 
+#include <vector>
+
 class CDVDVideoCodec;
 class CDVDAudioCodec;
 class CDVDOverlayCodec;

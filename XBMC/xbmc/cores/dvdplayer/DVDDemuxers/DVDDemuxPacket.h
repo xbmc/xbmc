@@ -20,8 +20,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
- 
- typedef struct DemuxPacket
+
+#include "system.h"
+
+typedef struct DemuxPacket
 {
   BYTE* pData;   // data
   int iSize;     // data size

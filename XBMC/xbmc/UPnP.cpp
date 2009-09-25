@@ -21,11 +21,11 @@
 */
 
 
-#include "stdafx.h"
 #include "Util.h"
 #include "Application.h"
 
 #include "utils/Network.h"
+#include "utils/log.h"
 #include "UPnP.h"
 #include "FileSystem/UPnPVirtualPathDirectory.h"
 #include "FileSystem/MusicDatabaseDirectory.h"
@@ -46,7 +46,10 @@
 #include "MusicInfoTag.h"
 #include "FileSystem/Directory.h"
 #include "URL.h"
+#include "GUISettings.h"
+#include "GUIUserMessages.h"
 #include "Settings.h"
+#include "StringUtils.h"
 #include "FileItem.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"
@@ -1616,7 +1619,7 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
     PLT_MediaObject* object = CUPnPServer::BuildObject(item, file_path, false);
     if (object) {
         // fetch the path to the thumbnail
-        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, (DWORD)-1); //TODO: Only audio for now
+        CStdString thumb = g_infoManager.GetImage(MUSICPLAYER_COVER, -1); //TODO: Only audio for now
 
         NPT_String ip;
         if (g_application.getNetwork().GetFirstConnectedInterface()) {

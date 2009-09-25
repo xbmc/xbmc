@@ -29,7 +29,7 @@
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver, public IStreamDetailsObserver
 {
 public:
-  CGUIWindowVideoBase(DWORD dwID, const CStdString &xmlFile);
+  CGUIWindowVideoBase(int id, const CStdString &xmlFile);
   virtual ~CGUIWindowVideoBase(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);

@@ -19,11 +19,13 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #ifdef HAS_PULSEAUDIO
 #include "PulseAudioDirectSound.h"
 #include "AudioContext.h"
-
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "utils/log.h"
 
 static const char *ContextStateToString(pa_context_state s)
 {

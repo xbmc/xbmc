@@ -19,12 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicArtistInfo.h"
 #include "ScraperParser.h"
 #include "ScraperSettings.h"
 #include "XMLUtils.h"
 #include "Settings.h"
+#include "CharsetConverter.h"
+#include "log.h"
 
 using namespace MUSIC_GRABBER;
 using namespace std;
@@ -104,7 +105,7 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const SScraperInfo& info, co
 
   m_parser.m_param[strHTML.size()] = m_strSearch;
 
-  CStdString strXML = m_parser.Parse(strFunction);
+  CStdString strXML = m_parser.Parse(strFunction,&info.settings);
   CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
   if (strXML.IsEmpty())
   {

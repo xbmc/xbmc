@@ -19,12 +19,12 @@
  *
  */
 
-#include "stdafx.h"
 #include "Fanart.h"
 #include "tinyXML/tinyxml.h"
 #include "Util.h"
 #include "Picture.h"
 #include "FileSystem/FileCurl.h"
+#include "StringUtils.h"
 
 #ifdef RESAMPLE_CACHED_IMAGES
 #include "FileSystem/File.h"

@@ -21,12 +21,17 @@
  */
 
 #include "DynamicDll.h"
+#include "utils/CriticalSection.h"
 
 /* put types of curl in namespace to avoid namespace pollution */
 namespace XCURL
 {
   #define CURL CURL_HANDLE
+  #if defined(_LINUX) && !defined(__APPLE__)
+  #include <curl/curl.h>
+  #else
   #include "curl/curl.h"
+  #endif
   #undef CURL
 
   class DllLibCurlInterface

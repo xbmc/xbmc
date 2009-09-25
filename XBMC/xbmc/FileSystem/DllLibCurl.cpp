@@ -19,8 +19,10 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
 #include "DllLibCurl.h"
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 #include <assert.h>
 

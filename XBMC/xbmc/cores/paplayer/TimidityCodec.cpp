@@ -19,13 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "TimidityCodec.h"
 #include "../DllLoader/LibraryLoader.h"
 #include "../DllLoader/SoLoader.h"
 #include "../DllLoader/DllLoader.h"
-#include "../../Util.h"
-#ifdef _WIN32PC
+#include "Util.h"
+#include "utils/log.h"
+#ifdef _WIN32
 #include "../DllLoader/Win32DllLoader.h"
 #endif
 

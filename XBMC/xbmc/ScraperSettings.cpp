@@ -18,12 +18,13 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
+
 #include "XMLUtils.h"
 #include "ScraperSettings.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/FileCurl.h"
+#include "utils/CharsetConverter.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
 

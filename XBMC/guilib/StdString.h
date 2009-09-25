@@ -1,9 +1,9 @@
 #pragma once
 #include <string>
 #include <stdint.h>
+#include <vector>
 #if !defined(_LINUX)
-#include <windows.h>
-#include "win32/PlatformDefs.h"
+#include "win32/PlatformDefs.h" // for va_copy
 #endif
 
 // =============================================================================
@@ -4329,5 +4329,7 @@ struct StdStringEqualsNoCaseA
     #pragma option pop  // Turn back on inline function warnings
 //  #pragma warn +inl   // Turn back on inline function warnings
 #endif
+
+typedef std::vector<CStdString> CStdStringArray;
 
 #endif  // #ifndef STDSTRING_H

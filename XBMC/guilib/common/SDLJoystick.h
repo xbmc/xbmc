@@ -7,6 +7,9 @@
 
 #ifdef HAS_SDL_JOYSTICK
 
+#include <SDL/SDL_joystick.h>
+#include <SDL/SDL_events.h>
+
 #define MAX_AXES 64
 
 #define JACTIVE_BUTTON 0x00000001
@@ -63,7 +66,7 @@ private:
   int m_SafeRange; // dead zone
   Uint32 m_pressTicksButton;
   Uint32 m_pressTicksHat;
-  WORD m_ActiveFlags;
+  Uint8 m_ActiveFlags;
   std::vector<SDL_Joystick*> m_Joysticks;
   std::vector<std::string> m_JoystickNames;
 };

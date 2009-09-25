@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "PlatformDefs.h"
 #include "scrobbler.h"
 #include "tinyXML/tinyxml.h"
@@ -29,10 +28,11 @@
 #include "MusicInfoTag.h"
 #include "errors.h"
 #include "utils/Atomics.h"
-#include "Settings.h"
+#include "GUISettings.h"
 #include "XMLUtils.h"
 #include "Application.h"
 #include "SingleLock.h"
+#include "LocalizeStrings.h"
 
 #define SCROBBLER_CLIENT              "xbm"
 //#define SCROBBLER_CLIENT              "tst"     // For testing ONLY!

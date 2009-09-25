@@ -19,7 +19,8 @@
  *
  */
 
-#include "stdafx.h"
+#include "system.h"
+#include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
 #include "GUIWindowMusicInfo.h"
 #include "FileSystem/ZipManager.h"
@@ -52,6 +53,10 @@
 #include "FileItem.h"
 #include "FileSystem/File.h"
 #include "MediaManager.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "GUISettings.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -59,7 +64,6 @@ using namespace DIRECTORY;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;
-using namespace MEDIA_DETECT;
 using namespace MUSIC_INFO;
 
 #define CONTROL_BTNVIEWASICONS  2
@@ -67,8 +71,8 @@ using namespace MUSIC_INFO;
 #define CONTROL_BTNSORTASC      4
 #define CONTROL_BTNTYPE         5
 
-CGUIWindowMusicBase::CGUIWindowMusicBase(DWORD dwID, const CStdString &xmlFile)
-    : CGUIMediaWindow(dwID, xmlFile)
+CGUIWindowMusicBase::CGUIWindowMusicBase(int id, const CStdString &xmlFile)
+    : CGUIMediaWindow(id, xmlFile)
 {
 
 }
@@ -81,7 +85,7 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 /// \param action Action that can be reacted on.
 bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
-  if (action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_PREVIOUS_MENU)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && !musicScan->IsDialogRunning())
@@ -91,7 +95,7 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     }
   }
 
-  if (action.wID == ACTION_SHOW_PLAYLIST)
+  if (action.id == ACTION_SHOW_PLAYLIST)
   {
     m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     return true;
@@ -146,7 +150,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
 
       // save current window, unless the current window is the music playlist window
       if (GetID() != WINDOW_MUSIC_PLAYLIST &&
-         (DWORD) g_stSettings.m_iMyMusicStartWindow != GetID())
+          g_stSettings.m_iMyMusicStartWindow != GetID())
       {
         g_stSettings.m_iMyMusicStartWindow = GetID();
         g_settings.Save();
@@ -172,7 +176,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_BTNTYPE);
         m_gWindowManager.SendMessage(msg);
 
-        DWORD nWindow = WINDOW_MUSIC_FILES + msg.GetParam1();
+        int nWindow = WINDOW_MUSIC_FILES + msg.GetParam1();
 
         if (nWindow == GetID())
           return true;
@@ -1098,7 +1102,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
 
     // activate the playlist window if its not activated yet
-    if (bIsDAAPplaylist && GetID() == (DWORD) m_gWindowManager.GetActiveWindow())
+    if (bIsDAAPplaylist && GetID() == m_gWindowManager.GetActiveWindow())
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
 
     // play!
@@ -1142,7 +1146,7 @@ void CGUIWindowMusicBase::LoadPlayList(const CStdString& strPlayList)
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistmusic://");
     // activate the playlist window if its not activated yet
-    if (GetID() == (DWORD) m_gWindowManager.GetActiveWindow() && iSize > 1)
+    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
     {
       m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
     }

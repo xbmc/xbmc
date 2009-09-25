@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "SmartPlaylist.h"
 #include "utils/log.h"
 #include "StringUtils.h"
@@ -31,6 +30,7 @@
 #include "VideoDatabase.h"
 #include "Util.h"
 #include "DateTime.h"
+#include "LocalizeStrings.h"
 
 using namespace std;
 using namespace DIRECTORY;

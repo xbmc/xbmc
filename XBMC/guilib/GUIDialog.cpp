@@ -19,7 +19,6 @@
  *
  */
 
-#include "include.h"
 #include "GUIDialog.h"
 #include "GUIWindowManager.h"
 #include "GUILabelControl.h"
@@ -27,8 +26,8 @@
 #include "utils/SingleLock.h"
 #include "Application.h"
 
-CGUIDialog::CGUIDialog(DWORD dwID, const CStdString &xmlFile)
-    : CGUIWindow(dwID, xmlFile)
+CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
+    : CGUIWindow(id, xmlFile)
 {
   m_bModal = true;
   m_bRunning = false;
@@ -68,7 +67,7 @@ void CGUIDialog::OnWindowLoaded()
 
 bool CGUIDialog::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CLOSE_DIALOG || action.wID == ACTION_PREVIOUS_MENU)
+  if (action.id == ACTION_CLOSE_DIALOG || action.id == ACTION_PREVIOUS_MENU)
   {
     Close();
     return true;

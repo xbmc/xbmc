@@ -53,9 +53,12 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////
 
-#include "stdafx.h"
 #include "CueDocument.h"
 #include "Util.h"
+#include "StringUtils.h"
+#include "utils/CharsetConverter.h"
+
+#include <set>
 
 using namespace std;
 

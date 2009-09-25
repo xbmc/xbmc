@@ -1,9 +1,9 @@
 
-#include "stdafx.h"
 #include "VTPFile.h"
 #include "VTPSession.h"
 #include "Util.h"
 #include "URL.h"
+#include "utils/log.h"
 
 #ifdef _LINUX
 #define SD_BOTH SHUT_RDWR
@@ -178,4 +178,26 @@ bool CVTPFile::PrevChannel()
       return true;
   }
   return false;
+}
+
+bool CVTPFile::SelectChannel(unsigned int channel)
+{
+  if(!m_session->CanStreamLive(channel))
+    return false;
+
+  m_session->AbortStreamLive();
+
+  if(m_socket != INVALID_SOCKET)
+  {
+    shutdown(m_socket, SD_BOTH);
+    m_session->AbortStreamLive();
+    closesocket(m_socket);
+  }
+
+  m_channel = channel;
+  m_socket  = m_session->GetStreamLive(m_channel);
+  if(m_socket != INVALID_SOCKET)
+    return true;
+  else
+    return false;
 }

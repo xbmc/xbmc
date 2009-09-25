@@ -17,20 +17,17 @@
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "stdafx.h"
+#include "system.h"
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
 
-#ifdef HAS_SDL
+#ifdef HAS_SDL_2D
 
 #include "LinuxRenderer.h"
 #include "../../Application.h"
 #include "../../Util.h"
-#include "../../XBVideoConfig.h"
 #include "TextureManager.h"
-
-#ifndef HAS_SDL_OPENGL
 
 // http://www.martinreddy.net/gfx/faqs/colorconv.faq
 
@@ -85,12 +82,6 @@ CLinuxRenderer::CLinuxRenderer()
 #else
   m_backbuffer = NULL;
   m_screenbuffer = NULL;
-
-#ifdef HAS_SDL_OPENGL
-  m_texture = NULL; 
-#endif
-
-
 #endif
 
   m_image.flags = 0;
@@ -108,20 +99,12 @@ void CLinuxRenderer::DeleteOSDTextures(int index)
   CSingleLock lock(g_graphicsContext);
   if (m_pOSDYTexture[index])
   {
-#if defined (HAS_SDL_OPENGL)
-    delete m_pOSDYTexture[index];
-#else
     SDL_FreeSurface(m_pOSDYTexture[index]);
-#endif
     m_pOSDYTexture[index] = NULL;
   }
   if (m_pOSDATexture[index])
   {
-#if defined (HAS_SDL_OPENGL)
-    delete m_pOSDATexture[index];
-#else
     SDL_FreeSurface(m_pOSDATexture[index]);
-#endif
     m_pOSDATexture[index] = NULL;
     CLog::Log(LOGDEBUG, "Deleted OSD textures (%i)", index);
   }
@@ -289,13 +272,6 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
     DeleteOSDTextures(iOSDBuffer);
     m_iOSDTextureHeight[iOSDBuffer] = h;
     // Create osd textures for this buffer with new size
-#if defined(HAS_SDL_OPENGL)
-    m_pOSDYTexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, RMASK, GMASK, BMASK, AMASK),false,true);
-
-    m_pOSDATexture[iOSDBuffer] = new CGLTexture(SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 32, RMASK, GMASK, BMASK, AMASK),false,true);
-
-    if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL) 
-#else
     m_pOSDYTexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer], 
 		32, RMASK, GMASK, BMASK, AMASK);
 
@@ -303,7 +279,6 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
 		32, RMASK, GMASK, BMASK, AMASK);
 
     if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL) 
-#endif
     {
       CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
       DeleteOSDTextures(iOSDBuffer);
@@ -317,35 +292,6 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
 
   //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
   //reset these so the gpu doesn't try to block on these
-#if defined(HAS_SDL_OPENGL)
-
-  int textureBytesSize = m_pOSDYTexture[iOSDBuffer]->textureWidth * m_pOSDYTexture[iOSDBuffer]->textureHeight * 4; 
-  unsigned char *dst = new unsigned char[textureBytesSize];
-  unsigned char *dsta = new unsigned char[textureBytesSize];
-
-  //clear the textures
-  memset(dst, 0, textureBytesSize);
-  memset(dsta, 0, textureBytesSize);
-  
-   //draw the osd/subs
-  int dstPitch = m_pOSDYTexture[iOSDBuffer]->textureWidth * 4;
-  CopyAlpha(w, h, src, srca, stride, dst, dsta, dstPitch);
-
-  m_pOSDYTexture[iOSDBuffer]->Update(m_pOSDYTexture[iOSDBuffer]->textureWidth,
-				     m_pOSDYTexture[iOSDBuffer]->textureHeight,
-				     dstPitch,
-				     dst,
-				     false);
-
-  m_pOSDATexture[iOSDBuffer]->Update(m_pOSDATexture[iOSDBuffer]->textureWidth,
-				     m_pOSDATexture[iOSDBuffer]->textureHeight,
-				     dstPitch,
-				     dst,
-				     false);
-  delete [] dst;
-  delete [] dsta;
-
-#else
   if (SDL_LockSurface(m_pOSDYTexture[iOSDBuffer]) == 0 &&
       SDL_LockSurface(m_pOSDATexture[iOSDBuffer]) == 0) 
   {
@@ -358,7 +304,6 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   }
   SDL_UnlockSurface(m_pOSDYTexture[iOSDBuffer]);
   SDL_UnlockSurface(m_pOSDATexture[iOSDBuffer]);
-#endif
 
   //set module variables to calculated values
   m_OSDRect = osdRect;
@@ -383,43 +328,6 @@ void CLinuxRenderer::RenderOSD()
   DRAWRECT osdRect = m_OSDRect;
 
   // Set state to render the image
-#if defined (HAS_SDL_OPENGL)
-  float osdWidth = m_OSDWidth;
-  float osdHeight = m_OSDHeight;
-
-  CGLTexture *pTex = m_pOSDYTexture[iRenderBuffer];
-  pTex->LoadToGPU();
-  glBindTexture(GL_TEXTURE_2D, pTex->id);
-  glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-  glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-
-  pTex = m_pOSDATexture[iRenderBuffer];
-  pTex->LoadToGPU();
-  glBindTexture(GL_TEXTURE_2D, pTex->id);
-  glEnable(GL_TEXTURE_2D);
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE1);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-  glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PREVIOUS);
-  glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-#endif
 
   // clip the output if we are not in FSV so that zoomed subs don't go all over the GUI
   if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
@@ -428,38 +336,12 @@ void CLinuxRenderer::RenderOSD()
   }
 
   // Render the image
-#if defined(HAS_SDL_OPENGL)
-  pTex = m_pOSDYTexture[iRenderBuffer];
-  glBindTexture(GL_TEXTURE_2D, pTex->id);
-  glBegin(GL_QUADS);
-
-  float u1 = 0; 
-  float u2 = (float)pTex->imageWidth / pTex->textureWidth;
-  float v1 = 0;
-  float v2 = (float)pTex->imageHeight / pTex->textureHeight;
-
-  glTexCoord2f( u1, v1 );
-  glVertex2f( osdRect.left, osdRect.top );
-
-  glTexCoord2f( u2, v1 );
-  glVertex2f( osdRect.right, osdRect.top );
-
-  glTexCoord2f( u2, v2 );
-  glVertex2f( osdRect.right, osdRect.bottom );
-
-  glTexCoord2f( u1, v2 );
-  glVertex2f( osdRect.left, osdRect.bottom );
- 
-  glEnd();
-
-#else
   SDL_Rect rect;
   rect.x = osdRect.left;
   rect.y = osdRect.top;
   rect.w = osdRect.right - osdRect.left;
   rect.h = osdRect.bottom - osdRect.top; 
   g_graphicsContext.BlitToScreen(m_pOSDYTexture[iRenderBuffer],NULL,&rect);
-#endif
 
 }
 
@@ -574,12 +456,12 @@ void CLinuxRenderer::ChooseBestResolution(float fps)
   RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
   if ( DisplayRes != AUTORES )
   {
-    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode, DisplayRes);
+    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode.c_str(), DisplayRes);
     m_iResolution = DisplayRes;
     return;
   }
   m_iResolution = g_graphicsContext.GetVideoResolution();
-  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode, m_iResolution);
+  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
   return;
 }
 
@@ -641,13 +523,6 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
   if (m_screenbuffer && (m_screenbuffer->w != (int)width || m_screenbuffer->h != (int)height)) {
      SDL_FreeSurface(m_screenbuffer);
      m_screenbuffer=NULL;
-
-#ifdef HAS_SDL_OPENGL
-     if (m_texture)
-        delete m_texture;
-
-     m_texture=NULL;
-#endif
   }
 
   if (m_backbuffer == NULL)  
@@ -796,17 +671,9 @@ void CLinuxRenderer::FlipPage(int source)
 
   // copy back buffer to screen buffer
 #ifndef USE_SDL_OVERLAY
-#ifdef HAS_SDL_OPENGL
-  if (!m_texture)
-     m_texture = new CGLTexture(m_backbuffer,false,false);
-  else
-     m_texture->Update(m_backbuffer,false,false);
-
-#else
   if (m_screenbuffer) {
      SDL_BlitSurface(m_backbuffer, NULL, m_screenbuffer, NULL);
   }
-#endif
 #endif
 
   return;
@@ -912,14 +779,6 @@ void CLinuxRenderer::UnInit()
      SDL_FreeSurface(m_screenbuffer);
      m_screenbuffer=NULL;
   }
-
-#ifdef HAS_SDL_OPENGL
-  if (m_texture)
-    delete m_texture;
-
-  m_texture = NULL;
-#endif
-
 #endif
 
   for (int p=0; p<MAX_PLANES;p++) {
@@ -1073,70 +932,25 @@ void CLinuxRenderer::RenderLowMem(DWORD flags)
   rect.h = rs.bottom - rs.top;
 
   int nRet = SDL_DisplayYUVOverlay(m_overlay, &rect);
-
-#elif defined (HAS_SDL_OPENGL)
-  g_graphicsContext.BeginPaint();
-
-  CGLTexture *pTex = m_texture;
-  if (pTex) {
-     pTex->LoadToGPU();
-     glBindTexture(GL_TEXTURE_2D, pTex->id);
-     glEnable(GL_TEXTURE_2D);
-     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-     //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-     //glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-     //glEnable(GL_BLEND);          // Turn Blending On
-     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-     //glTexEnvf(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-     //glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_TEXTURE0);
-     //glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-     //glTexEnvf(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_PRIMARY_COLOR);
-     //glTexEnvf(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
-
-     glBegin(GL_QUADS);
-
-     float u1 = 0;
-     float u2 = (float)pTex->imageWidth / pTex->textureWidth;
-     float v1 = 0;
-     float v2 = (float)pTex->imageHeight / pTex->textureHeight;
-
-     glTexCoord2f( u1, v1 );
-     glVertex2f( rs.left, rs.top );
-
-     glTexCoord2f( u2, v1 );
-     glVertex2f( rs.right, rs.top );
-
-     glTexCoord2f( u2, v2 );
-     glVertex2f( rs.right, rs.bottom );
-
-     glTexCoord2f( u1, v2 );
-     glVertex2f( rs.left, rs.bottom );
-
-     glEnd();
-  }
-
-  g_graphicsContext.BeginPaint();
 #else
+
   SDL_Rect rect;
   rect.x = rs.left;
   rect.y = rs.top;
   rect.w = rs.right - rs.left;
   rect.h = rs.bottom - rs.top; 
   g_graphicsContext.BlitToScreen(m_screenbuffer,NULL,&rect);
-#endif
 
+#endif
 }
 
-void CLinuxRenderer::CreateThumbnail(SDL_Surface * surface, unsigned int width, unsigned int height)
+void CLinuxRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height)
 {
   CSingleLock lock(g_graphicsContext);
 #ifndef USE_SDL_OVERLAY
   // we use backbuffer for the thumbnail cause screen buffer isnt used when opengl is used.
-  if (m_backbuffer && surface) {
-     SDL_BlitSurface(m_backbuffer, NULL, surface, NULL);
+  if (m_backbuffer && texture) {
+     SDL_BlitSurface(m_backbuffer, NULL, texture->GetPixels(), NULL);
   }
 #endif
 }
@@ -1146,6 +960,4 @@ void CLinuxRenderer::OnClose()
 {
 }
 
-#endif // HAS_SDL_OPENGL
-
-#endif // HAS_SDL
+#endif // HAS_SDL_2D

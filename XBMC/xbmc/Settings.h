@@ -37,12 +37,10 @@
 #endif // MID
 
 #include "settings/VideoSettings.h"
-#include "StringUtils.h"
-#include "GUISettings.h"
 #include "Profile.h"
-#include "MediaSource.h"
-#include "XBVideoConfig.h"
 #include "ViewState.h"
+#include "Resolution.h"
+#include "GraphicContext.h" //TODO: only due to VIEW_TYPE
 
 #include <vector>
 #include <map>
@@ -76,19 +74,6 @@
    like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
 
-struct TVShowRegexp
-{
-  bool byDate;
-  CStdString regexp;
-  TVShowRegexp(bool d, const CStdString& r)
-  {
-    byDate = d;
-    regexp = r;
-  }
-};
-
-typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
-
 class CSkinString
 {
 public:
@@ -99,6 +84,7 @@ public:
 class CSkinBool
 {
 public:
+  CSkinBool() : value(false) {};
   CStdString name;
   bool value;
 };
@@ -109,6 +95,11 @@ struct VOICE_MASK {
   float robotic;
   float whisper;
 };
+
+class CGUISettings;
+class TiXmlElement;
+class TiXmlNode;
+class CMediaSource;
 
 class CSettings
 {
@@ -147,183 +138,6 @@ public:
 
   void ResetSkinSetting(const CStdString &setting);
   void ResetSkinSettings();
-
-  struct AdvancedSettings
-  {
-public:
-    // multipath testing
-    bool m_useMultipaths;
-
-    int m_audioHeadRoom;
-    float m_ac3Gain;
-    CStdString m_audioDefaultPlayer;
-    float m_audioPlayCountMinimumPercent;
-
-    float m_videoSubsDelayRange;
-    float m_videoAudioDelayRange;
-    int m_videoSmallStepBackSeconds;
-    int m_videoSmallStepBackTries;
-    int m_videoSmallStepBackDelay;
-    bool m_videoUseTimeSeeking;
-    int m_videoTimeSeekForward;
-    int m_videoTimeSeekBackward;
-    int m_videoTimeSeekForwardBig;
-    int m_videoTimeSeekBackwardBig;
-    int m_videoPercentSeekForward;
-    int m_videoPercentSeekBackward;
-    int m_videoPercentSeekForwardBig;
-    int m_videoPercentSeekBackwardBig;
-    CStdString m_videoPPFFmpegType;
-    bool m_musicUseTimeSeeking;
-    int m_musicTimeSeekForward;
-    int m_musicTimeSeekBackward;
-    int m_musicTimeSeekForwardBig;
-    int m_musicTimeSeekBackwardBig;
-    int m_musicPercentSeekForward;
-    int m_musicPercentSeekBackward;
-    int m_musicPercentSeekForwardBig;
-    int m_musicPercentSeekBackwardBig;
-    int m_musicResample;
-    int m_videoBlackBarColour;
-    int m_videoIgnoreAtStart;
-    int m_videoIgnoreAtEnd;
-    CStdString m_audioHost;
-    bool m_audioApplyDrc;
-
-    CStdString m_videoDefaultPlayer;
-    CStdString m_videoDefaultDVDPlayer;
-    float m_videoPlayCountMinimumPercent;
-
-    float m_slideshowBlackBarCompensation;
-    float m_slideshowZoomAmount;
-    float m_slideshowPanAmount;
-
-    int m_lcdRows;
-    int m_lcdColumns;
-    int m_lcdAddress1;
-    int m_lcdAddress2;
-    int m_lcdAddress3;
-    int m_lcdAddress4;
-    bool m_lcdHeartbeat;
-    int m_lcdScrolldelay;
-
-    int m_autoDetectPingTime;
-
-    int m_songInfoDuration;
-    int m_busyDialogDelay;
-    int m_logLevel;
-    int m_logLevelHint;
-    CStdString m_cddbAddress;
-#ifdef HAS_HAL
-    bool m_useHalMount;
-#endif
-    bool m_fullScreenOnMovieStart;
-    bool m_noDVDROM;
-    CStdString m_cachePath;
-    bool m_displayRemoteCodes;
-    CStdString m_videoCleanDateTimeRegExp;
-    CStdStringArray m_videoCleanStringRegExps;
-    CStdStringArray m_videoExcludeFromListingRegExps;
-    CStdStringArray m_moviesExcludeFromScanRegExps;
-    CStdStringArray m_tvshowExcludeFromScanRegExps;
-    CStdStringArray m_audioExcludeFromListingRegExps;
-    CStdStringArray m_audioExcludeFromScanRegExps;
-    CStdStringArray m_pictureExcludeFromListingRegExps;
-    CStdStringArray m_videoStackRegExps;
-    SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
-    CStdString m_tvshowMultiPartStackRegExp;
-    CStdStringArray m_pathSubstitutions;
-    int m_remoteRepeat;
-    float m_controllerDeadzone;
-
-    bool m_playlistAsFolders;
-    bool m_detectAsUdf;
-
-    int m_thumbSize;
-
-    int m_sambaclienttimeout;
-    CStdString m_sambadoscodepage;
-    bool m_sambastatfiles;
-
-    bool m_bHTTPDirectoryStatFilesize;
-
-    CStdString m_musicThumbs;
-    CStdString m_dvdThumbs;
-
-    bool m_bMusicLibraryHideAllItems;
-    int m_iMusicLibraryRecentlyAddedItems;
-    bool m_bMusicLibraryAllItemsOnBottom;
-    bool m_bMusicLibraryAlbumsSortByArtistThenYear;
-    CStdString m_strMusicLibraryAlbumFormat;
-    CStdString m_strMusicLibraryAlbumFormatRight;
-    bool m_prioritiseAPEv2tags;
-    CStdString m_musicItemSeparator;
-    CStdString m_videoItemSeparator;
-    std::vector<CStdString> m_musicTagsFromFileFilters;
-
-    bool m_bVideoLibraryHideAllItems;
-    bool m_bVideoLibraryAllItemsOnBottom;
-    int m_iVideoLibraryRecentlyAddedItems;
-    bool m_bVideoLibraryHideRecentlyAddedItems;
-    bool m_bVideoLibraryHideEmptySeries;
-    bool m_bVideoLibraryCleanOnUpdate;
-    bool m_bVideoLibraryExportAutoThumbs;
-    bool m_bVideoLibraryMyMoviesCategoriesToGenres;
-
-    bool m_bUseEvilB;
-    std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
-    //TuxBox
-    bool m_bTuxBoxSubMenuSelection;
-    int m_iTuxBoxDefaultSubMenu;
-    int m_iTuxBoxDefaultRootMenu;
-    bool m_bTuxBoxAudioChannelSelection;
-    bool m_bTuxBoxPictureIcon;
-    int m_iTuxBoxEpgRequestTime;
-    int m_iTuxBoxZapWaitTime;
-    bool m_bTuxBoxSendAllAPids;
-
-    int m_iMythMovieLength;         // minutes
-
-    // EDL Commercial Break
-    bool m_bEdlMergeShortCommBreaks;
-    int m_iEdlMaxCommBreakLength;   // seconds
-    int m_iEdlMinCommBreakLength;   // seconds
-    int m_iEdlMaxCommBreakGap;      // seconds
-
-    bool m_bFirstLoop;
-    int m_curlconnecttimeout;
-    int m_curllowspeedtime;
-    int m_curlretries;
-
-    int m_iPVREPGBlockSize;
-
-    bool m_fullScreen;
-    bool m_startFullScreen;
-    bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
-    int m_playlistRetries;
-    int m_playlistTimeout;
-    bool m_GLRectangleHack;
-    int m_iSkipLoopFilter;
-    float m_ForcedSwapTime; /* if nonzero, set's the explicit time in ms to allocate for buffer swap */
-
-    bool m_osx_GLFullScreen;
-    bool m_bVirtualShares;
-    bool m_bNavVKeyboard; // if true we navigate the virtual keyboard using cursor keys
-
-    float m_karaokeSyncDelayCDG; // seems like different delay is needed for CDG and MP3s
-    float m_karaokeSyncDelayLRC;
-    bool m_karaokeChangeGenreForKaraokeSongs;
-    bool m_karaokeKeepDelay; // store user-changed song delay in the database
-    int m_karaokeStartIndex; // auto-assign numbering start from this value
-    bool m_karaokeAlwaysEmptyOnCdgs; // always have empty background on CDG files
-    bool m_karaokeUseSongSpecificBackground; // use song-specific video or image if available instead of default
-    CStdString m_karaokeDefaultBackgroundType; // empty string or "vis", "image" or "video"
-    CStdString m_karaokeDefaultBackgroundFilePath; // only for "image" or "video" types above
-
-    CStdString m_cpuTempCmd;
-    CStdString m_gpuTempCmd;
-    int m_bgInfoLoaderMaxThreads;
-  };
 
   struct stSettings
   {
@@ -464,18 +278,13 @@ public:
   bool SaveSources();
 
   void LoadRSSFeeds();
-protected:
-  void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
-  void GetCustomTVRegexps(TiXmlElement *pRootElement, SETTINGS_TVSHOWLIST& settings);
-  void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
-  void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
-
   bool GetInteger(const TiXmlElement* pRootElement, const char *strTagName, int& iValue, const int iDefault, const int iMin, const int iMax);
   bool GetFloat(const TiXmlElement* pRootElement, const char *strTagName, float& fValue, const float fDefault, const float fMin, const float fMax);
-  bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
-  bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
+  static bool GetPath(const TiXmlElement* pRootElement, const char *tagName, CStdString &strValue);
+  static bool GetString(const TiXmlElement* pRootElement, const char *strTagName, CStdString& strValue, const CStdString& strDefaultValue);
   bool GetString(const TiXmlElement* pRootElement, const char *strTagName, char *szValue, const CStdString& strDefaultValue);
   bool GetSource(const CStdString &category, const TiXmlNode *source, CMediaSource &share);
+protected:
   void GetSources(const TiXmlElement* pRootElement, const CStdString& strTagName, VECSOURCES& items, CStdString& strDefault);
   bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const char *defaultPath);
   void GetViewState(const TiXmlElement* pRootElement, const CStdString& strTagName, CViewState &viewState, SORT_METHOD defaultSort = SORT_METHOD_LABEL, int defaultView = DEFAULT_VIEW_LIST);
@@ -495,12 +304,8 @@ protected:
   void LoadSkinSettings(const TiXmlElement* pElement);
   void SaveSkinSettings(TiXmlNode *pElement) const;
 
-  // Advanced settings
-  void LoadAdvancedSettings();
-
   void LoadUserFolderLayout();
 };
 
 extern class CSettings g_settings;
 extern struct CSettings::stSettings g_stSettings;
-extern struct CSettings::AdvancedSettings g_advancedSettings;

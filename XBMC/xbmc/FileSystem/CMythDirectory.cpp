@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "CMythDirectory.h"
 #include "CMythSession.h"
 #include "Util.h"
@@ -27,8 +26,11 @@
 #include "VideoInfoTag.h"
 #include "URL.h"
 #include "GUISettings.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
 #include "FileItem.h"
+#include "StringUtils.h"
+#include "LocalizeStrings.h"
+#include "utils/log.h"
 
 extern "C" {
 #include "lib/libcmyth/cmyth.h"
@@ -237,6 +239,15 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       }
 
       CURL url(base);
+      /*
+       * The base is the URL used to connect to the master server. The hostname in this may not
+       * appropriate for all items as MythTV supports multiple backends (master + slaves).
+       *
+       * The appropriate host for playback is contained in the program information sent back from
+       * the master. The same username and password are used in the URL as for the master.
+       */
+      url.SetHostName(GetValue(m_dll->proginfo_host(program)));
+
       CStdString path = CUtil::GetFileName(GetValue(m_dll->proginfo_pathname(program)));
       CStdString name = GetValue(m_dll->proginfo_title(program));
       
@@ -419,6 +430,10 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
   }
 
   CURL url(base);
+  /*
+   * The content of the cmyth_proginfo_t struct retrieved and stored in channels[] above does not
+   * contain the host so the URL cannot be modified to support both master and slave servers.
+   */
 
   for(unsigned i=0;i<channels.size();i++)
   {

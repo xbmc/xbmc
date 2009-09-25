@@ -9,10 +9,10 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "stdafx.h"
 
 #include "Application.h"
 #include "GUIWindowManager.h"
+#include "GUISettings.h"
 
 #include "karaokelyrics.h"
 #include "karaokelyricsfactory.h"
@@ -20,7 +20,8 @@
 
 #include "GUIDialogKaraokeSongSelector.h"
 #include "GUIWindowKaraokeLyrics.h"
-
+#include "utils/SingleLock.h"
+#include "utils/log.h"
 
 CKaraokeLyricsManager::CKaraokeLyricsManager()
 {

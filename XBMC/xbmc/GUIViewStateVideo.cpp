@@ -19,16 +19,19 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewStateVideo.h"
 #include "PlayListPlayer.h"
 #include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "GUIBaseContainer.h"
 #include "VideoDatabase.h"
+#include "GUISettings.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "Util.h"
+#include "Key.h"
+#include "LocalizeStrings.h"
 
 using namespace DIRECTORY;
 using namespace VIDEODATABASEDIRECTORY;
@@ -201,6 +204,19 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         SetSortOrder(g_stSettings.m_viewStateVideoNavGenres.m_sortOrder);
       }
       break;
+    case NODE_TYPE_SETS:
+      {
+        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+          AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%T","%R"));  // Filename, Duration | Foldername, empty
+        else
+          AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+        SetSortMethod(SORT_METHOD_LABEL_IGNORE_THE);
+
+        SetViewAsControl(g_stSettings.m_viewStateVideoNavGenres.m_viewMode);
+
+        SetSortOrder(g_stSettings.m_viewStateVideoNavGenres.m_sortOrder);
+      }
+      break;
     case NODE_TYPE_EPISODES:
       {
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
@@ -241,13 +257,25 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       }
     case NODE_TYPE_TITLE_MOVIES:
       {
-        if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-          AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-        else
-          AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551, LABEL_MASKS("%T", "%R"));
+        if (params.GetSetId() > -1) // Is this a listing within a set?
+        {
+          AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
 
-        AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
-        AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
+          if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+            AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+          else
+            AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551, LABEL_MASKS("%T", "%R"));
+        }
+        else
+        {
+          if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+            AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE, 551, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+          else
+            AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551, LABEL_MASKS("%T", "%R"));
+
+          AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
+          AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
+        }
         SetSortMethod(g_stSettings.m_viewStateVideoNavTitles.m_sortMethod);
 
         SetViewAsControl(g_stSettings.m_viewStateVideoNavTitles.m_viewMode);

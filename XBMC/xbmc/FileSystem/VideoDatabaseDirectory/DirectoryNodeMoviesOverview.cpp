@@ -19,9 +19,10 @@
  *
  */
 
-#include "stdafx.h"
 #include "DirectoryNodeMoviesOverview.h"
 #include "FileItem.h"
+#include "LocalizeStrings.h"
+#include "VideoDatabase.h"
 
 using namespace DIRECTORY::VIDEODATABASEDIRECTORY;
 
@@ -45,6 +46,8 @@ NODE_TYPE CDirectoryNodeMoviesOverview::GetChildType()
     return NODE_TYPE_DIRECTOR;
   else if (GetName()=="6")
     return NODE_TYPE_STUDIO;
+  else if (GetName()=="7")
+    return NODE_TYPE_SETS;
 
   return NODE_TYPE_NONE;
 }
@@ -58,6 +61,13 @@ bool CDirectoryNodeMoviesOverview::GetContent(CFileItemList& items)
   vecRoot.push_back(g_localizeStrings.Get(344));  // Actors
   vecRoot.push_back(g_localizeStrings.Get(20348));  // Directors
   vecRoot.push_back(g_localizeStrings.Get(20388));  // Studios
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    if (db.HasSets())
+      vecRoot.push_back(g_localizeStrings.Get(20434)); // Sets
+    db.Close();
+  }
 
   for (int i = 0; i < (int)vecRoot.size(); ++i)
   {

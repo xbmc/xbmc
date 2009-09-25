@@ -19,13 +19,14 @@
 *
 */
 
-#include "stdafx.h"
+#include "FileItem.h"
 #include "PVREpg.h"
 #include "PVRChannels.h"
 #include "PVRManager.h"
 #include "GUISettings.h"
 #include "GUIDialogEpgScan.h"
 #include "GUIWindowManager.h"
+#include "utils/log.h"
 
 using namespace std;
 

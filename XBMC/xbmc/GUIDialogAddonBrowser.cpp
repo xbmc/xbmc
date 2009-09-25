@@ -19,7 +19,8 @@
  *
  */
 
-#include "stdafx.h"
+#include "StringUtils.h"
+#include "utils/log.h"
 #include "utils/Addon.h"
 #include "GUIDialogAddonBrowser.h"
 #include "GUISpinControlEx.h"
@@ -34,6 +35,7 @@
 #include "URL.h"
 #include "FileItem.h"
 #include "ScraperSettings.h"
+#include "LocalizeStrings.h"
 
 #define CONTROL_LIST            450
 #define CONTROL_HEADING_LABEL   411
@@ -59,7 +61,7 @@ CGUIDialogAddonBrowser::~CGUIDialogAddonBrowser()
 
 bool CGUIDialogAddonBrowser::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CONTEXT_MENU || action.wID == ACTION_MOUSE_RIGHT_CLICK)
+  if (action.id == ACTION_CONTEXT_MENU || action.id == ACTION_MOUSE_RIGHT_CLICK)
   {
     int iItem = m_viewControl.GetSelectedItem();
     return OnContextMenu(iItem);

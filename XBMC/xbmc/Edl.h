@@ -22,7 +22,9 @@
  */
 
 #include "StdString.h"
+#include "system.h"
 #include "URL.h"
+
 #include <vector>
 
 class CEdl
@@ -49,7 +51,7 @@ public:
   bool ReadFiles(const CStdString& strMovie, const float fFramesPerSecond);
   void Clear();
 
-  bool ReadMythCommBreaks(const CURL url, const float fFramesPerSecond);
+  bool ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond);
 
   bool HasCut();
   bool HasSceneMarker();

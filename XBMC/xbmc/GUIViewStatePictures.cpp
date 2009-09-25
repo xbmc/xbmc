@@ -19,15 +19,18 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIViewStatePictures.h"
 #include "GUIBaseContainer.h"
 #include "FileItem.h"
 #include "ViewState.h"
+#include "GUISettings.h"
+#include "AdvancedSettings.h"
 #include "Settings.h"
 #include "FileSystem/Directory.h"
 #include "FileSystem/PluginDirectory.h"
 #include "Util.h"
+#include "LocalizeStrings.h"
+#include "Key.h"
 
 using namespace DIRECTORY;
 
@@ -80,6 +83,9 @@ bool CGUIViewStateWindowPictures::UnrollArchives()
 
 CStdString CGUIViewStateWindowPictures::GetExtensions()
 {
+  if (g_guiSettings.GetBool("pictures.showvideos"))
+    return g_stSettings.m_pictureExtensions+"|"+g_stSettings.m_videoExtensions;
+
   return g_stSettings.m_pictureExtensions;
 }
 

@@ -19,13 +19,14 @@
  *
  */
 
-#include "stdafx.h"
-#include <assert.h>
-#include <string>
+#include "system.h"
 #include "DPMSSupport.h"
 #include "system.h"
 #include "utils/log.h"
-#include "Surface.h"
+#include "WindowingFactory.h"
+
+#include <assert.h>
+#include <string>
 
 //////// Generic, non-platform-specific code
 
@@ -48,9 +49,8 @@ const char* DPMSSupport::GetModeName(PowerSavingMode mode)
   return MODE_NAMES[mode];
 }
 
-DPMSSupport::DPMSSupport(Surface::CSurface* surface)
+DPMSSupport::DPMSSupport()
 {
-  m_surface = surface;
   PlatformSpecificInit();
 
   if (!m_supportedModes.empty())
@@ -130,8 +130,7 @@ static const CARD16 X_DPMS_MODES[] =
 
 void DPMSSupport::PlatformSpecificInit()
 {
-  if (m_surface == NULL) return;
-  Display* dpy = m_surface->GetDisplay();
+  Display* dpy = g_Windowing.GetDisplay();
   if (dpy == NULL) return;
 
   int event_base, error_base;   // we ignore these
@@ -154,8 +153,7 @@ void DPMSSupport::PlatformSpecificInit()
 
 bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 {
-  if (m_surface == NULL) return false;
-  Display* dpy = m_surface->GetDisplay();
+  Display* dpy = g_Windowing.GetDisplay();
   if (dpy == NULL) return false;
 
   // This is not needed on my ATI Radeon, but the docs say that DPMSForceLevel
@@ -170,8 +168,7 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 {
-  if (m_surface == NULL) return false;
-  Display* dpy = m_surface->GetDisplay();
+  Display* dpy = g_Windowing.GetDisplay();
   if (dpy == NULL) return false;
 
   DPMSForceLevel(dpy, DPMSModeOn);
@@ -181,9 +178,9 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
   // DPMS, presumably due to being OpenGL. There is something magical about
   // window expose events (involving the window manager) that solves this
   // without fail.
-  XUnmapWindow(dpy, m_surface->GetWindow());
+  XUnmapWindow(dpy, g_Windowing.GetWindow());
   XFlush(dpy);
-  XMapWindow(dpy, m_surface->GetWindow());
+  XMapWindow(dpy, g_Windowing.GetWindow());
   XFlush(dpy);
   // Send fake key event (shift) to make sure the screen
   // unblanks on keypresses other than keyboard.
@@ -195,7 +192,7 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 }
 
 /////  Add other platforms here.
-#elif defined(_WIN32PC)
+#elif defined(_WIN32)
 void DPMSSupport::PlatformSpecificInit()
 {
   // Assume we support DPMS. Is there a way to test it?
@@ -291,4 +288,5 @@ bool DPMSSupport::PlatformSpecificDisablePowerSaving()
 }
 
 #endif  // platform ifdefs
+
 

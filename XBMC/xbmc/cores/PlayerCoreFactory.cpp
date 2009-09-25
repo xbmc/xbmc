@@ -19,9 +19,9 @@
  *
  */
  
-#include "stdafx.h"
 #include "utils/BitstreamStats.h"
 #include "PlayerCoreFactory.h"
+#include "utils/SingleLock.h"
 #include "dvdplayer/DVDPlayer.h"
 #include "paplayer/PAPlayer.h"
 #include "paplayer/DVDPlayerCodec.h"
@@ -33,10 +33,12 @@
 #include "URL.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
-#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "AutoPtrHandle.h"
 #include "ExternalPlayer/ExternalPlayer.h"
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
+#include "LocalizeStrings.h"
 
 using namespace AUTOPTR;
 

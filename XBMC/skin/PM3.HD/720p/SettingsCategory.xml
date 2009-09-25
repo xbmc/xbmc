@@ -59,7 +59,7 @@
 			<font>font12</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<textureradiofocus>radiobutton-focus-2.png</textureradiofocus>
+			<textureradioon>radiobutton-focus-2.png</textureradioon>
 			<texturefocus border="7">list-focus.png</texturefocus>
 			<texturenofocus>-</texturenofocus>
 		</control>

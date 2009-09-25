@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "MusicInfoLoader.h"
 #include "MusicDatabase.h"
 #include "MusicInfoTagLoaderFactory.h"
@@ -31,6 +30,7 @@
 #include "FileSystem/File.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include "utils/log.h"
 
 using namespace std;
 using namespace XFILE;

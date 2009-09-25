@@ -32,19 +32,9 @@
 #ifndef __STRINGUTILS_H_
 #define __STRINGUTILS_H_
 
+#include "DateTime.h"
 #include "StdString.h"
 #include <vector>
-
-typedef std::vector<CStdString> CStdStringArray;
-
-enum TIME_FORMAT { TIME_FORMAT_GUESS = 0,
-                   TIME_FORMAT_SS,
-                   TIME_FORMAT_MM,
-                   TIME_FORMAT_MM_SS,
-                   TIME_FORMAT_HH,
-                   TIME_FORMAT_HH_SS, // not particularly useful, but included so that they can be bit-tested
-                   TIME_FORMAT_HH_MM,
-                   TIME_FORMAT_HH_MM_SS };
 
 class StringUtils
 {
@@ -63,6 +53,7 @@ public:
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);
   static int DateStringToYYYYMMDD(const CStdString &dateString);
   static void WordToDigits(CStdString &word);
+  static float GetFloat(const char* str); // ignores locale
 };
 
 #endif

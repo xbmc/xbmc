@@ -19,18 +19,18 @@
  *
  */
 
-#include "include.h"
 #include "GUIMultiImage.h"
 #include "TextureManager.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
 #include "FileItem.h"
+#include "Key.h"
 
 using namespace std;
 using namespace DIRECTORY;
 
-CGUIMultiImage::CGUIMultiImage(DWORD dwParentID, DWORD dwControlId, float posX, float posY, float width, float height, const CTextureInfo& texture, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
-    : CGUIControl(dwParentID, dwControlId, posX, posY, width, height),
+CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
+    : CGUIControl(parentID, controlID, posX, posY, width, height),
       m_image(0, 0, posX, posY, width, height, texture)
 {
   m_currentImage = 0;
@@ -92,7 +92,7 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
   // alloc as this can free our resources
   if (!m_texturePath.IsConstant())
   {
-    CStdString texturePath(m_texturePath.GetLabel(m_dwParentID));
+    CStdString texturePath(m_texturePath.GetLabel(m_parentID));
     if (texturePath != m_currentPath && !texturePath.IsEmpty())
     {
       // a new path - set our current path and tell ourselves to load our directory

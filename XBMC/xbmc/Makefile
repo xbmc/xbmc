@@ -9,9 +9,6 @@ INCLUDES+=-Ilib/libUPnP/Platinum/ThirdParty/Neptune/Source/Core \
 
 INCLUDES+=-Ilib/libcdio/libcdio/include
 
-
-PCH=stdafx.h
-
 SRCS=Application.cpp \
      CueDocument.cpp \
      GUISettings.cpp \
@@ -107,7 +104,6 @@ SRCS=Application.cpp \
      URL.cpp \
      VideoInfoTag.cpp \
      XBAudioConfig.cpp \
-     XBVideoConfig.cpp \
      Database.cpp \
      MusicDatabase.cpp \
      ProgramDatabase.cpp \
@@ -216,6 +212,19 @@ SRCS=Application.cpp \
      PVRManager.cpp \
      TVDatabase.cpp \
      ScriptSettings.cpp \
+     GUIWindowTestPatternGL.cpp \
+     RenderSystem.cpp \
+     RenderSystemGL.cpp \
+     KeyboardStat.cpp \
+     MouseStat.cpp \
+     WinSystem.cpp \
+     WinSystemOSX.cpp \
+     WinSystemOSXGL.cpp \
+     WinSystemX11.cpp \
+     WinSystemX11GL.cpp \
+     WinEventsSDL.cpp \
+     AdvancedSettings.cpp \
+     Bookmark.cpp \
 
 LIB=xbmc.a
 
@@ -223,4 +232,5 @@ DISTCLEAN_FILES=DllPaths_generated.h
 
 include ../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
+
 
