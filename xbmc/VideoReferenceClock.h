@@ -67,7 +67,7 @@ class CVideoReferenceClock : public CThread
     bool    UpdateRefreshrate(bool Forced = false);
     void    SendVblankSignal();
     void    UpdateClock(int NrVBlanks, bool CheckMissed);
-    int64_t TimeOfNextVblank(int64_t Now);
+    int64_t TimeOfNextVblank();
 
     int64_t m_CurrTime;          //the current time of the clock when using vblank as clock source
     int64_t m_AdjustedFrequency; //the frequency of the clock set by dvdplayer
