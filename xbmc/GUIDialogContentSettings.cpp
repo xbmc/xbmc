@@ -357,7 +357,9 @@ void CGUIDialogContentSettings::CreateSettings()
 void CGUIDialogContentSettings::OnSettingChanged(unsigned int num)
 {
   // setting has changed - update anything that needs it
-  if (num >= m_settings.size()) return;
+  if (num >= m_settings.size())
+    return;
+
   SettingInfo &setting = m_settings.at(num);
   OnSettingChanged(setting);
 }
@@ -401,9 +403,9 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
-     CStdString baseDir = GetScraperDirectory(*iter);
-     if (!baseDir.IsEmpty())
-       item->SetThumbnailImage(baseDir + iter->strThumb);
+    CStdString baseDir = GetScraperDirectory(*iter);
+    if (!baseDir.IsEmpty())
+      item->SetThumbnailImage(baseDir + iter->strThumb);
 
     if (iter->strPath.Equals(m_info.strPath))
     {
@@ -431,7 +433,10 @@ CFileItemPtr CGUIDialogContentSettings::GetCurrentListItem(int offset)
       break;
     }
   }
-  if (currentItem == -1) return CFileItemPtr();
+
+  if (currentItem == -1)
+    return CFileItemPtr();
+
   int item = (currentItem + offset) % m_vecItems->Size();
   if (item < 0) item += m_vecItems->Size();
   return m_vecItems->Get(item);
@@ -463,7 +468,8 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, int 
 bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel)
 {
   CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
-  if (!dialog) return false;
+  if (!dialog)
+    return false;
 
   dialog->m_info = scraper;
   if (iLabel != -1) // to switch between albums and artists
