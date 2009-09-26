@@ -87,7 +87,7 @@ XBPyThread::~XBPyThread()
 // Don't call StopThread for now as it hangs XBMC at shutdown:
 //  StopThread();
   CLog::Log(LOGDEBUG,"python thread %d destructed", this->id);
-  if (source) delete []source;
+  delete [] source;
   if (argv)
   {
     for (unsigned int i = 0; i < argc; i++)
@@ -157,9 +157,7 @@ void XBPyThread::Process()
 
   // set current directory and python's path.
   if (argv != NULL)
-  {
     PySys_SetArgv(argc, argv);
-  }
 
   CLog::Log(LOGDEBUG, "%s - Setting the Python path to %s", __FUNCTION__, path);
 
