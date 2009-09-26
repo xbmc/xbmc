@@ -116,12 +116,12 @@ bool CFileZip::InitDecompress()
   return true;
 }
 
-__int64 CFileZip::GetLength()
+int64_t CFileZip::GetLength()
 {
   return mZipItem.usize;
 }
 
-__int64 CFileZip::GetPosition()
+int64_t CFileZip::GetPosition()
 {
   if (m_bCached)
     return mFile.GetPosition();
@@ -129,13 +129,13 @@ __int64 CFileZip::GetPosition()
   return m_iFilePos;
 }
 
-__int64 CFileZip::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileZip::Seek(int64_t iFilePosition, int iWhence)
 {
   if (m_bCached)
     return mFile.Seek(iFilePosition,iWhence);
   if (mZipItem.method == 0) // this is easy
   {
-    __int64 iResult;
+    int64_t iResult;
     switch (iWhence)
     {
     case SEEK_SET:
@@ -283,7 +283,7 @@ int CFileZip::Stat(const CURL& url, struct __stat64* buffer)
   return 0;
 }
 
-unsigned int CFileZip::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CFileZip::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (m_bCached)
     return mFile.Read(lpBuf,uiBufSize);

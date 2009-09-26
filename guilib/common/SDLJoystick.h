@@ -1,7 +1,7 @@
 #ifndef SDL_JOYSTICK_H
 #define SDL_JOYSTICK_H
 
-#include "../system.h"
+#include "../system.h" // for HAS_SDL_JOYSTICK
 #include <vector>
 #include <string>
 
@@ -59,14 +59,14 @@ private:
   int m_DefaultAmount[MAX_AXES];
   int m_AxisId;
   int m_ButtonId;
-  Uint8 m_HatState;
+  uint8_t m_HatState;
  	int m_HatId; 
   int m_JoyId;
   int m_NumAxes;
   int m_SafeRange; // dead zone
-  Uint32 m_pressTicksButton;
-  Uint32 m_pressTicksHat;
-  Uint8 m_ActiveFlags;
+  uint32_t m_pressTicksButton;
+  uint32_t m_pressTicksHat;
+  uint8_t m_ActiveFlags;
   std::vector<SDL_Joystick*> m_Joysticks;
   std::vector<std::string> m_JoystickNames;
 };

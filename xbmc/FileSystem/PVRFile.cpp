@@ -100,21 +100,21 @@ void CPVRFile::Close()
   g_PVRManager.CloseStream();
 }
 
-unsigned int CPVRFile::Read(void* buffer, __int64 size)
+unsigned int CPVRFile::Read(void* buffer, int64_t size)
 {
   return g_PVRManager.ReadStream((BYTE*)buffer, size);
 }
 
-__int64 CPVRFile::GetLength()
+int64_t CPVRFile::GetLength()
 {
   return g_PVRManager.LengthStream();
 }
 
-__int64 CPVRFile::Seek(__int64 pos, int whence)
+int64_t CPVRFile::Seek(int64_t pos, int whence)
 {
   if (whence == SEEK_POSSIBLE)
   {
-    __int64 ret = g_PVRManager.SeekStream(pos, whence);
+    int64_t ret = g_PVRManager.SeekStream(pos, whence);
 
     if (ret >= 0)
     {

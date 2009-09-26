@@ -27,8 +27,8 @@
  */
 
 #include "GUIControl.h"
+#include "GUITextLayout.h"
 
-#include "GUILabelControl.h"  // for CLabelInfo
 /*!
  \ingroup controls
  \brief

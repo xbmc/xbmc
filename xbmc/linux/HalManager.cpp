@@ -23,6 +23,7 @@
 #ifdef HAS_HAL
 #include "HalManager.h"
 #include "Application.h"
+#include "utils/Builtins.h"
 #include <libhal-storage.h>
 #include "LinuxFileSystem.h"
 #include "SingleLock.h"
@@ -81,7 +82,7 @@ void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const cha
     switch (g_guiSettings.GetInt("system.powerbuttonaction"))
     {
       case POWERSTATE_ASK:
-        CUtil::ExecBuiltIn("XBMC.ActivateWindow(ShutdownMenu)");
+        CBuiltins::Execute("XBMC.ActivateWindow(ShutdownMenu)");
         break;
       case POWERSTATE_SHUTDOWN:
         g_powerManager.Powerdown();

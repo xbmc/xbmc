@@ -306,7 +306,7 @@ bool CRenderSystemDX::EndRender()
   return true;
 }
 
-bool CRenderSystemDX::ClearBuffers(DWORD color)
+bool CRenderSystemDX::ClearBuffers(color_t color)
 {
    HRESULT hr;
 

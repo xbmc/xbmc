@@ -35,6 +35,7 @@
 #include "DateTime.h"
 #include "StdString.h"
 #include <vector>
+#include <stdint.h>
 
 class StringUtils
 {
@@ -47,7 +48,7 @@ public:
   static void RemoveCRLF(CStdString& strLine);
   static void SecondsToTimeString( long lSeconds, CStdString& strHMS, TIME_FORMAT format = TIME_FORMAT_GUESS);
   static bool IsNaturalNumber(const CStdString& str);
-  static CStdString SizeToString(__int64 size);
+  static CStdString SizeToString(int64_t size);
   static const CStdString EmptyString;
   static size_t FindWords(const char *str, const char *wordLowerCase);
   static int FindEndBracket(const CStdString &str, char opener, char closer, int startPos = 0);

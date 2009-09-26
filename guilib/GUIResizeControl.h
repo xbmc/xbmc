@@ -73,8 +73,8 @@ protected:
   void Resize(float x, float y);
   CGUITexture m_imgFocus;
   CGUITexture m_imgNoFocus;
-  DWORD m_dwFrameCounter;
-  DWORD m_dwLastMoveTime;
+  unsigned int m_frameCounter;
+  unsigned int m_lastMoveTime;
   int m_nDirection;
   float m_fSpeed;
   float m_fAnalogSpeed;

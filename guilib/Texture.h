@@ -72,7 +72,7 @@ public:
   void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
   void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
 
-  static DWORD PadPow2(DWORD x);
+  static unsigned int PadPow2(unsigned int x);
 
 protected:
   unsigned int m_imageWidth;

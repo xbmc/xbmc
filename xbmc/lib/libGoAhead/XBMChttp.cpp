@@ -221,7 +221,7 @@ bool CXbmcHttp::decodeBase64ToFile( const CStdString &inString, const CStdString
   return ret;
 }
 
-__int64 CXbmcHttp::fileSize(const CStdString &filename)
+int64_t CXbmcHttp::fileSize(const CStdString &filename)
 {
   if (CFile::Exists(filename))
   {
@@ -2420,7 +2420,7 @@ int CXbmcHttp::xbmcFileSize(int numParas, CStdString paras[])
     return SetResponse(openTag+"Error:Missing parameter");
   else
   {
-    __int64 filesize=fileSize(paras[0]);
+    int64_t filesize=fileSize(paras[0]);
     if (filesize>-1)
     {
       CStdString tmp;

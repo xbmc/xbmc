@@ -985,7 +985,7 @@ bool TiXmlDocument::LoadFile( const char* _filename, TiXmlEncoding encoding )
 
 	// Get the file size, so we can pre-allocate the string. HUGE speed impact.
 	long length = -1;
-	__int64 filelen = file.GetLength();
+	int64_t filelen = file.GetLength();
 	if (filelen > 0)
 		length = (long)filelen;
 

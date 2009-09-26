@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "system.h"
+#include "system.h" // for SOCKET
 
 //#define VTP_STANDALONE
 

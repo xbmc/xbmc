@@ -25,6 +25,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIControlGroupList.h"
+#include "GUILabelControl.h"
 #include "GUIDialogOK.h"
 #include "Util.h"
 #include "MediaManager.h"

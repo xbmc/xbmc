@@ -605,7 +605,7 @@ void CFileItem::Serialize(CArchive& ar)
     ar >> m_lStartOffset;
     ar >> m_lEndOffset;
     int lockmode;
-    ar >> (int &)lockmode;
+    ar >> lockmode;
     m_iLockMode = (LockType)lockmode;
     ar >> m_strLockCode;
     ar >> m_iBadPwdCount;
@@ -2299,7 +2299,7 @@ void CFileItemList::Stack()
     {
       vector<int> stack;
       stack.push_back(i);
-      __int64 size = item->m_dwSize;
+      int64_t size = item->m_dwSize;
 
       int j = i + 1;
       while (j < Size())

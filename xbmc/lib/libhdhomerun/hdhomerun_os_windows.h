@@ -90,7 +90,9 @@ typedef HANDLE pthread_mutex_t;
 #endif
 #define atoll _atoi64
 #define strdup _strdup
+#ifndef strcasecmp
 #define strcasecmp _stricmp
+#endif
 #define snprintf _snprintf
 #define fseeko _fseeki64
 #define ftello _ftelli64

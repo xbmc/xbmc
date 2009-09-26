@@ -21,6 +21,10 @@
  */
 #include "Database.h"
 
+#ifdef _LINUX
+#include "PlatformDefs.h" // FILETIME
+#endif
+
 typedef std::vector<CStdString> VECPROGRAMPATHS;
 
 #define COMPARE_PERCENTAGE     0.90f // 90%
@@ -49,18 +53,18 @@ public:
   int GetRegion(const CStdString& strFilenameAndPath);
   bool SetRegion(const CStdString& strFilenameAndPath, int iRegion=-1);
 
-  DWORD GetTitleId(const CStdString& strFilenameAndPath);
-  bool SetTitleId(const CStdString& strFilenameAndPath, DWORD dwTitleId);
+  uint32_t GetTitleId(const CStdString& strFilenameAndPath);
+  bool SetTitleId(const CStdString& strFilenameAndPath, uint32_t dwTitleId);
   bool IncTimesPlayed(const CStdString& strFileName1);
   bool SetDescription(const CStdString& strFileName1, const CStdString& strDescription);
-  bool GetXBEPathByTitleId(const DWORD titleId, CStdString& strPathAndFilename);
+  bool GetXBEPathByTitleId(const uint32_t titleId, CStdString& strPathAndFilename);
 
-  DWORD GetProgramInfo(CFileItem *item);
+  uint32_t GetProgramInfo(CFileItem *item);
   bool AddProgramInfo(CFileItem *item, unsigned int titleID);
 
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
 
-  FILETIME TimeStampToLocalTime( unsigned __int64 timeStamp );
+  FILETIME TimeStampToLocalTime( uint64_t timeStamp );
 };

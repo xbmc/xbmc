@@ -22,12 +22,10 @@
  *
  */
 
-#include "tinyXML/tinyxml.h"
+#include <vector>
 #include "StdString.h"
 
-
-#include <vector>
-
+class TiXmlElement;
 namespace XFILE { class CFileCurl; }
 
 class CScraperUrl

@@ -80,11 +80,4 @@
 #define XBMC_arraysize(array)	(sizeof(array)/sizeof(array[0]))
 #define XBMC_TABLESIZE(table)	XBMC_arraysize(table)
 
-typedef int8_t		Sint8;
-typedef uint8_t		Uint8;
-typedef int16_t		Sint16;
-typedef uint16_t	Uint16;
-typedef int32_t		Sint32;
-typedef uint32_t	Uint32;
-
 #endif /* _SDL_stdinc_h */

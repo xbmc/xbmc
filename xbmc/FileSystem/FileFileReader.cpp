@@ -72,13 +72,13 @@ bool CFileFileReader::OpenForWrite(const CURL& url, bool bOverWrite)
 }
 
 //*********************************************************************************************
-unsigned int CFileFileReader::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CFileFileReader::Read(void *lpBuf, int64_t uiBufSize)
 {
   return m_reader.Read(lpBuf,uiBufSize);
 }
 
 //*********************************************************************************************
-int CFileFileReader::Write(const void *lpBuf, __int64 uiBufSize)
+int CFileFileReader::Write(const void *lpBuf, int64_t uiBufSize)
 {
   return 0;
 }
@@ -90,19 +90,19 @@ void CFileFileReader::Close()
 }
 
 //*********************************************************************************************
-__int64 CFileFileReader::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileFileReader::Seek(int64_t iFilePosition, int iWhence)
 {
   return m_reader.Seek(iFilePosition,iWhence);
 }
 
 //*********************************************************************************************
-__int64 CFileFileReader::GetLength()
+int64_t CFileFileReader::GetLength()
 {
   return m_reader.GetLength();
 }
 
 //*********************************************************************************************
-__int64 CFileFileReader::GetPosition()
+int64_t CFileFileReader::GetPosition()
 {
   return m_reader.GetPosition();
 }

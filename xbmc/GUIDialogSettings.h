@@ -22,13 +22,13 @@
  */
 
 #include "GUIDialog.h"
-#include "GUIEditControl.h"
-#include "GUISpinControlEx.h"
-#include "GUIRadioButtonControl.h"
-#include "GUIButtonControl.h"
-#include "GUISettingsSliderControl.h"
 #include "GUIDialogSlider.h"
 
+class CGUISpinControlEx;
+class CGUIButtonControl;
+class CGUIRadioButtonControl;
+class CGUISettingsSliderControl;
+class CGUIEditControl;
 class CGUIImage;
 
 typedef std::vector<CStdString> SETTINGSTRINGS;

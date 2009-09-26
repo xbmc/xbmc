@@ -16,7 +16,7 @@
 #include "cores/IPlayer.h"
 
 class CGUIWindow;
-class CGUImage;
+class CGUIImage;
 class CGUIVisualisationControl;
 class CDVDPlayer;
 

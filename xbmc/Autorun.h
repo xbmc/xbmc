@@ -29,7 +29,7 @@
 //
 //
 
-#include "system.h"
+#include "system.h" // for HAS_DVD_DRIVE
 
 #ifdef HAS_DVD_DRIVE
 

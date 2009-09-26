@@ -483,7 +483,7 @@ int CFile::Stat(const CStdString& strFileName, struct __stat64* buffer)
   return -1;
 }
 
-unsigned int CFile::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (!m_pFile)
     return 0;
@@ -590,7 +590,7 @@ void CFile::Flush()
 }
 
 //*********************************************************************************************
-__int64 CFile::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
 {
   if (!m_pFile)
     return -1;
@@ -609,7 +609,7 @@ __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
   {
     if(iWhence == SEEK_POSSIBLE)
     {
-      __int64 ret = m_pFile->Seek(iFilePosition, iWhence);
+      int64_t ret = m_pFile->Seek(iFilePosition, iWhence);
       if(ret >= 0)
         return ret;
       else
@@ -637,7 +637,7 @@ __int64 CFile::Seek(__int64 iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-__int64 CFile::GetLength()
+int64_t CFile::GetLength()
 {
   try
   {
@@ -658,7 +658,7 @@ __int64 CFile::GetLength()
 }
 
 //*********************************************************************************************
-__int64 CFile::GetPosition()
+int64_t CFile::GetPosition()
 {
   if (!m_pFile)
     return -1;
@@ -750,7 +750,7 @@ bool CFile::ReadString(char *szLine, int iLineLength)
   return false;
 }
 
-int CFile::Write(const void* lpBuf, __int64 uiBufSize)
+int CFile::Write(const void* lpBuf, int64_t uiBufSize)
 {
   try
   {
@@ -939,7 +939,7 @@ CFileStreamBuffer::pos_type CFileStreamBuffer::seekoff(
   setg(0,0,0);
   setp(0,0);
 
-  __int64 position = -1;
+  int64_t position = -1;
 #ifndef _LINUX
   try
   {
@@ -1006,7 +1006,7 @@ bool CFileStream::Open(const CURL& filename)
   return false;
 }
 
-__int64 CFileStream::GetLength()
+int64_t CFileStream::GetLength()
 {
   return m_file->GetLength();
 }

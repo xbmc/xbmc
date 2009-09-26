@@ -71,7 +71,7 @@ protected:
   CStdString m_strComment;
   CStdString m_strLyrics;
   CReplayGain m_replayGain;
-  __int64 m_nDuration;
+  int64_t m_nDuration;
   char m_rating;
 
   DllMACDll m_dll;

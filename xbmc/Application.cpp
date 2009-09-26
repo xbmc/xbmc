@@ -20,6 +20,7 @@
  */
 
 #include "Application.h"
+#include "utils/Builtins.h"
 #include "Splash.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "LangInfo.h"
@@ -32,9 +33,6 @@
 #include "Autorun.h"
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
-#else
-#include "GUILabelControl.h"  // needed for CInfoLabel
-#include "GUIImage.h"
 #endif
 #include "GUIControlProfiler.h"
 #include "LangCodeExpander.h"
@@ -42,6 +40,7 @@
 #include "PlayListFactory.h"
 #include "GUIFontManager.h"
 #include "GUIColorManager.h"
+#include "GUITextLayout.h"
 #include "SkinInfo.h"
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
@@ -69,6 +68,7 @@
 #endif
 #include "utils/TuxBoxUtil.h"
 #include "utils/SystemInfo.h"
+#include "utils/TimeUtils.h"
 #include "ApplicationRenderer.h"
 #include "GUILargeTextureManager.h"
 #include "LastFmManager.h"
@@ -344,7 +344,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_dpms = NULL;
   m_dpmsIsActive = false;
   m_iScreenSaveLock = 0;
-  m_dwSkinTime = 0;
+  m_skinReloadTime = 0;
   m_bInitializing = true;
   m_eForcedNextPlayer = EPC_NONE;
   m_strPlayListFile = "";
@@ -577,7 +577,7 @@ HRESULT CApplication::Create(HWND hWnd)
   /* Clean up on exit, exit on window close and interrupt */
   atexit(SDL_Quit);
 
-  Uint32 sdlFlags = 0;
+  uint32_t sdlFlags = 0;
   
 #ifdef HAS_SDL_OPENGL
   sdlFlags |= SDL_INIT_VIDEO;
@@ -1616,7 +1616,7 @@ void CApplication::StartEventServer()
 #endif
 }
 
-bool CApplication::StopEventServer(bool promptuser)
+bool CApplication::StopEventServer(bool bWait, bool promptuser)
 {
 #ifdef HAS_EVENT_SERVER
   CEventServer* server = CEventServer::GetInstance();
@@ -1639,12 +1639,17 @@ bool CApplication::StopEventServer(bool promptuser)
       }
     }
     CLog::Log(LOGNOTICE, "ES: Stopping event server with confirmation");
+    
+    CEventServer::GetInstance()->StopServer(true);
   }
   else
   {
-    CLog::Log(LOGNOTICE, "ES: Stopping event server");
+    if (!bWait)
+      CLog::Log(LOGNOTICE, "ES: Stopping event server");
+    
+    CEventServer::GetInstance()->StopServer(bWait);
   }
-  CEventServer::GetInstance()->StopServer();
+  
   return true;
 #endif
 }
@@ -1849,13 +1854,13 @@ void CApplication::StopServices()
 
 void CApplication::DelayLoadSkin()
 {
-  m_dwSkinTime = timeGetTime() + 2000;
+  m_skinReloadTime = CTimeUtils::GetFrameTime() + 2000;
   return ;
 }
 
 void CApplication::CancelDelayLoadSkin()
 {
-  m_dwSkinTime = 0;
+  m_skinReloadTime = 0;
 }
 
 void CApplication::ReloadSkin()
@@ -1900,7 +1905,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   // close the music and video overlays (they're re-opened automatically later)
   CSingleLock lock(g_graphicsContext);
 
-  m_dwSkinTime = 0;
+  m_skinReloadTime = 0;
 
   CStdString strHomePath;
   CStdString strSkinPath = g_settings.GetSkinFolder(strSkin);
@@ -2426,6 +2431,7 @@ void CApplication::Render()
   RenderNoPresent();
   g_Windowing.EndRender();
   g_graphicsContext.Flip();
+  CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
   g_renderManager.UpdateResolution();
   g_graphicsContext.Unlock();
@@ -2671,7 +2677,7 @@ bool CApplication::OnAction(CAction &action)
   // built in functions : execute the built-in
   if (action.id == ACTION_BUILT_IN_FUNCTION)
   {
-    CUtil::ExecBuiltIn(action.strAction);
+    CBuiltins::Execute(action.strAction);
     m_navigationTimer.StartZero();
     return true;
   }
@@ -3381,7 +3387,7 @@ bool CApplication::ProcessKeyboard()
       keyID = vkey | KEY_VKEY;
     else
       keyID = KEY_UNICODE;
-    //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", timeGetTime(), vkey);
+    //  CLog::Log(LOGDEBUG,"Keyboard: time=%i key=%i", CTimeUtils::GetFrameTime(), vkey);
     CKey key(keyID);
     key.SetHeld(g_Keyboard.KeyHeld());
     return OnKey(key);
@@ -3565,7 +3571,7 @@ void CApplication::Stop()
 #endif
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
-    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(timeGetTime() / 60000);
+    g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
 
     // Update the settings information (volume, uptime etc. need saving)
     if (CFile::Exists(g_settings.GetSettingsFile()))
@@ -4835,8 +4841,8 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
       CLog::Log(LOGDEBUG,"%s : To %s", __FUNCTION__, actionStr.c_str());
 
       // user has asked for something to be executed
-      if (CUtil::IsBuiltIn(actionStr))
-        CUtil::ExecBuiltIn(actionStr);
+      if (CBuiltins::HasCommand(actionStr))
+        CBuiltins::Execute(actionStr);
       else
       {
         // try translating the action from our ButtonTranslator
@@ -4891,7 +4897,7 @@ void CApplication::Process()
   MEASURE_FUNCTION;
 
   // check if we need to load a new skin
-  if (m_dwSkinTime && timeGetTime() >= m_dwSkinTime)
+  if (m_skinReloadTime && CTimeUtils::GetFrameTime() >= m_skinReloadTime)
   {
     ReloadSkin();
   }

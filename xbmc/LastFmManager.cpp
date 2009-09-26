@@ -45,6 +45,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "tinyXML/tinyxml.h"
 
 #include <sstream>
 

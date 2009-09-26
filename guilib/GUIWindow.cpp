@@ -36,6 +36,7 @@
 #include "utils/GUIInfoManager.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
 #include "MouseStat.h"
@@ -172,7 +173,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
-      FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
+      CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
       CAnimation anim;
       anim.Create(pChild, rect);
       m_animations.push_back(anim);
@@ -249,13 +250,13 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
   // get control type
   CGUIControlFactory factory;
 
-  FRECT rect = { 0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight };
+  CRect rect(0, 0, (float)g_settings.m_ResInfo[m_coordsRes].iWidth, (float)g_settings.m_ResInfo[m_coordsRes].iHeight);
   if (pGroup)
   {
-    rect.left = pGroup->GetXPosition();
-    rect.top = pGroup->GetYPosition();
-    rect.right = rect.left + pGroup->GetWidth();
-    rect.bottom = rect.top + pGroup->GetHeight();
+    rect.x1 = pGroup->GetXPosition();
+    rect.y1 = pGroup->GetYPosition();
+    rect.x2 = rect.x1 + pGroup->GetWidth();
+    rect.y2 = rect.y2 + pGroup->GetHeight();
   }
   CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
   if (pGUIControl)
@@ -328,7 +329,7 @@ void CGUIWindow::Render()
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
 
-  DWORD currentTime = timeGetTime();
+  unsigned int currentTime = CTimeUtils::GetFrameTime();
   // render our window animation - returns false if it needs to stop rendering
   if (!RenderAnimation(currentTime))
     return;
@@ -750,7 +751,7 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
   return CGUIControlGroup::IsAnimating(animType);
 }
 
-bool CGUIWindow::RenderAnimation(DWORD time)
+bool CGUIWindow::RenderAnimation(unsigned int time)
 {
   g_graphicsContext.ResetWindowTransform();
   if (m_animationsEnabled)
@@ -867,14 +868,14 @@ void CGUIWindow::SetDefaults()
   m_animationsEnabled = true;
 }
 
-FRECT CGUIWindow::GetScaledBounds() const
+CRect CGUIWindow::GetScaledBounds() const
 {
   CSingleLock lock(g_graphicsContext);
   g_graphicsContext.SetScalingResolution(m_coordsRes, m_posX, m_posY, m_needsScaling);
-  FRECT rect = {0, 0, m_width, m_height};
+  CRect rect(0, 0, m_width, m_height);
   float z = 0;
-  g_graphicsContext.ScaleFinalCoords(rect.left, rect.top, z);
-  g_graphicsContext.ScaleFinalCoords(rect.right, rect.bottom, z);
+  g_graphicsContext.ScaleFinalCoords(rect.x1, rect.y1, z);
+  g_graphicsContext.ScaleFinalCoords(rect.x2, rect.y2, z);
   return rect;
 }
 

@@ -38,6 +38,7 @@
 #include "GUISettings.h"
 #include "AddonManager.h"
 #include "utils/SingleLock.h"
+#include "XMLUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;

@@ -23,13 +23,12 @@
 #include "GUIControlFactory.h"
 #include "utils/CharsetConverter.h"
 #include "utils/GUIInfoManager.h"
+#include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "GUILabelControl.h"
 #include "XMLUtils.h"
 #include "SkinInfo.h"
 #include "StringUtils.h"
 #include "FileItem.h"
-#include "tinyXML/tinyxml.h"
 #include "Key.h"
 
 using namespace std;
@@ -218,8 +217,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
         float speed = std::min(1.0f, (float)(action.holdTime - HOLD_TIME_START) / (HOLD_TIME_END - HOLD_TIME_START));
         unsigned int itemsPerFrame = 1;
         if (m_lastHoldTime) // number of rows/10 items/second max speed
-          itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (timeGetTime() - m_lastHoldTime)));
-        m_lastHoldTime = timeGetTime();
+          itemsPerFrame = std::max((unsigned int)1, (unsigned int)(speed * 0.0001f * GetRows() * (CTimeUtils::GetFrameTime() - m_lastHoldTime)));
+        m_lastHoldTime = CTimeUtils::GetFrameTime();
         if (action.id == ACTION_MOVE_LEFT || action.id == ACTION_MOVE_UP)
           while (itemsPerFrame--) MoveUp(false);
         else
@@ -683,7 +682,7 @@ void CGUIBaseContainer::ValidateOffset()
 {
 }
 
-void CGUIBaseContainer::DoRender(DWORD currentTime)
+void CGUIBaseContainer::DoRender(unsigned int currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);
@@ -762,10 +761,10 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     Reset();
     bool updateItems = false;
     if (!m_staticUpdateTime)
-      m_staticUpdateTime = timeGetTime();
-    if (timeGetTime() - m_staticUpdateTime > 1000)
+      m_staticUpdateTime = CTimeUtils::GetFrameTime();
+    if (CTimeUtils::GetFrameTime() - m_staticUpdateTime > 1000)
     {
-      m_staticUpdateTime = timeGetTime();
+      m_staticUpdateTime = CTimeUtils::GetFrameTime();
       updateItems = true;
     }
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)

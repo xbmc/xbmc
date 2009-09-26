@@ -23,7 +23,6 @@
  */
 
 #include "StdString.h"
-#include "system.h"
 
 #define ENC_ARTIST  11
 #define ENC_TITLE   12
@@ -43,7 +42,7 @@ public:
   CEncoder();
   virtual ~CEncoder();
   virtual bool Init(const char* strFile, int iInChannels, int iInRate, int iInBits) = 0;
-  virtual int Encode(int nNumBytesRead, BYTE* pbtStream) = 0;
+  virtual int Encode(int nNumBytesRead, uint8_t* pbtStream) = 0;
   virtual bool Close() = 0;
 
   void SetComment(const char* str) { m_strComment = str; }
@@ -57,9 +56,9 @@ public:
 protected:
   bool FileCreate(const char* filename);
   bool FileClose();
-  int FileWrite(LPCVOID pBuffer, DWORD iBytes);
+  int FileWrite(const void *pBuffer, uint32_t iBytes);
 
-  int WriteStream(LPCVOID pBuffer, DWORD iBytes);
+  int WriteStream(const void *pBuffer, uint32_t iBytes);
   int FlushStream();
 
   // tag info
@@ -78,8 +77,8 @@ protected:
   int m_iInSampleRate;
   int m_iInBitsPerSample;
 
-  BYTE m_btWriteBuffer[WRITEBUFFER_SIZE]; // 128k buffer for writing to disc
-  DWORD m_dwWriteBufferPointer;
+  uint8_t m_btWriteBuffer[WRITEBUFFER_SIZE]; // 128k buffer for writing to disc
+  uint32_t m_dwWriteBufferPointer;
 };
 
 #endif // _ENCODER_H

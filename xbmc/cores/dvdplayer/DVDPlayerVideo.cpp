@@ -737,6 +737,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     // on some mesa intel drivers
     if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) && pSource->format == DVDVideoPicture::FMT_YUV420P)
       render = OVERLAY_VID;
+#elif defined(HAS_DX)
+    // fixme: GPU overlay disabled for now until it's implemented
+    render = OVERLAY_VID;
 #endif
 
     if(render == OVERLAY_VID)

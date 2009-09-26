@@ -63,13 +63,28 @@ static __inline__ uint32_t Endian_Swap32(uint32_t x) {
 }
 #endif
 
+static __inline__ uint64_t Endian_Swap64(uint64_t x) {
+        uint32_t hi, lo;
+
+        /* Separate into high and low 32-bit values and swap them */
+        lo = (uint32_t)(x&0xFFFFFFFF);
+        x >>= 32;
+        hi = (uint32_t)(x&0xFFFFFFFF);
+        x = Endian_Swap32(lo);
+        x <<= 32;
+        x |= Endian_Swap32(hi);
+        return(x);
+
+}
 
 #ifndef WORDS_BIGENDIAN
 #define Endian_SwapLE16(X) (X)
 #define Endian_SwapLE32(X) (X)
+#define Endian_SwapLE64(X) (X)
 #else
 #define Endian_SwapLE16(X) Endian_Swap16(X)
 #define Endian_SwapLE32(X) Endian_Swap32(X)
+#define Endian_SwapLE64(X) Endian_Swap64(X)
 #endif
 
 /* Ends C function definitions when using C++ */

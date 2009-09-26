@@ -27,7 +27,7 @@
 #include "Geometry.h"
 #include "TransformMatrix.h"
 #include "StdString.h"
-#include "system.h"
+#include <stdint.h>
 
 
 typedef enum _RenderingSystemType
@@ -42,6 +42,7 @@ typedef enum _RenderingSystemType
 *   This interface is very basic since a lot of the actual details will go in to the derived classes
 */
 
+typedef uint32_t color_t;
 
 class CRenderSystemBase
 {
@@ -62,7 +63,7 @@ public:
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;
   virtual bool PresentRender() = 0;
-  virtual bool ClearBuffers(DWORD color) = 0;
+  virtual bool ClearBuffers(color_t color) = 0;
   virtual bool ClearBuffers(float r, float g, float b, float a) = 0;
   virtual bool IsExtSupported(const char* extension) = 0;
 

@@ -25,6 +25,7 @@
 
 #include "Autorun.h"
 #include "Application.h"
+#include "utils/Builtins.h"
 #include "Util.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -225,7 +226,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           bPlaying = true;
           CStdString strExec;
           strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->m_strPath.c_str());
-          CUtil::ExecBuiltIn(strExec);
+          CBuiltins::Execute(strExec);
           return true;
         }
       }
@@ -301,7 +302,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         bPlaying = true;
         CStdString strExec;
         strExec.Format("XBMC.RecursiveSlideShow(%s)", strDrive.c_str());
-        CUtil::ExecBuiltIn(strExec);
+        CBuiltins::Execute(strExec);
         break;
       }
     }

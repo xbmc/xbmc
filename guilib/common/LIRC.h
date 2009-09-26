@@ -21,22 +21,22 @@ public:
   bool IsInitialized() const { return m_bInitialized; }
 
 private:
-  int   m_fd;
-  int   m_inotify_fd;
-  int   m_inotify_wd;
-  int   m_lastInitAttempt;
-  int   m_initRetryPeriod;
-  FILE* m_file;
-  bool  m_isHolding;
-  WORD  m_button;
-  char  m_buf[128];
-  bool  m_bInitialized;
-  bool  m_skipHold;
-  bool  m_used;
-  bool  m_bLogConnectFailure;
-  Uint32 m_firstClickTime;
-  CStdString m_deviceName;
-  bool CheckDevice();
+  int     m_fd;
+  int     m_inotify_fd;
+  int     m_inotify_wd;
+  int     m_lastInitAttempt;
+  int     m_initRetryPeriod;
+  FILE*   m_file;
+  bool    m_isHolding;
+  int32_t m_button;
+  char    m_buf[128];
+  bool    m_bInitialized;
+  bool    m_skipHold;
+  bool    m_used;
+  bool    m_bLogConnectFailure;
+  uint32_t    m_firstClickTime;
+  CStdString  m_deviceName;
+  bool        CheckDevice();
 };
 
 extern CRemoteControl g_RemoteControl;

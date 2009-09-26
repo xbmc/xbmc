@@ -282,7 +282,7 @@ bool CGUIControlGroup::CanFocus() const
   return false;
 }
 
-void CGUIControlGroup::DoRender(DWORD currentTime)
+void CGUIControlGroup::DoRender(unsigned int currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);

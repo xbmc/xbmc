@@ -23,6 +23,7 @@
 #ifndef XFILECACHESTRATEGY_H
 #define XFILECACHESTRATEGY_H
 
+#include <stdint.h>
 #ifdef _LINUX
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
@@ -59,10 +60,10 @@ public:
 
   virtual int WriteToCache(const char *pBuffer, size_t iSize) = 0;
   virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) = 0;
-  virtual __int64 WaitForData(unsigned int iMinAvail, unsigned int iMillis) = 0;
+  virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) = 0;
 
-  virtual __int64 Seek(__int64 iFilePosition, int iWhence) = 0;
-  virtual void Reset(__int64 iSourcePosition) = 0;
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence) = 0;
+  virtual void Reset(int64_t iSourcePosition) = 0;
 
   virtual void EndOfInput(); // mark the end of the input stream so that Read will know when to return EOF
   virtual bool IsEndOfInput();
@@ -77,30 +78,30 @@ protected:
 */
 class CSimpleFileCache : public CCacheStrategy, ICacheInterface {
 public:
-    CSimpleFileCache();
-    virtual ~CSimpleFileCache();
+  CSimpleFileCache();
+  virtual ~CSimpleFileCache();
 
   virtual int Open() ;
   virtual int Close() ;
 
   virtual int WriteToCache(const char *pBuffer, size_t iSize) ;
   virtual int ReadFromCache(char *pBuffer, size_t iMaxSize) ;
-  virtual __int64 WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
+  virtual int64_t WaitForData(unsigned int iMinAvail, unsigned int iMillis) ;
 
-  virtual __int64 Seek(__int64 iFilePosition, int iWhence);
-  virtual void Reset(__int64 iSourcePosition);
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence);
+  virtual void Reset(int64_t iSourcePosition);
   virtual void EndOfInput();
   virtual ICacheInterface* GetInterface() { return (ICacheInterface*)this; }
 
-  __int64  GetAvailableRead();
+  int64_t  GetAvailableRead();
 
 protected:
   HANDLE  m_hCacheFileRead;
   HANDLE  m_hCacheFileWrite;
   HANDLE  m_hDataAvailEvent;
-  volatile __int64 m_nStartPosition;
-  volatile __int64 m_nWritePosition;
-  volatile __int64 m_nReadPosition;
+  volatile int64_t m_nStartPosition;
+  volatile int64_t m_nWritePosition;
+  volatile int64_t m_nReadPosition;
 };
 
 }

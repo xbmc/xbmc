@@ -35,7 +35,7 @@ character itself should NOT be typed as part of the command.
 -----------------------------------------------------------------------------
 
  $ cd $HOME
- $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
+ $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk
 
 -----------------------------------------------------------------------------
 3.0 Install XCODE

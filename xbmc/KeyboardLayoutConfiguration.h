@@ -36,7 +36,8 @@
 #include <map>
 #include "utils/log.h"
 #include "../guilib/StdString.h"
-#include "../guilib/tinyXML/tinyxml.h"
+
+class TiXmlElement;
 
 class CKeyboardLayoutConfiguration
 {

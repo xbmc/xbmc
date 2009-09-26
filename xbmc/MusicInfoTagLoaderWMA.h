@@ -21,7 +21,6 @@
  */
 
 #include "ImusicInfoTagLoader.h"
-#include "system.h"
 
 namespace MUSIC_INFO
 {
@@ -36,8 +35,8 @@ public:
 
 protected:
   void SetTagValueString(const CStdString& strFrameName, const CStdString& strValue, CMusicInfoTag& tag);
-  void SetTagValueDWORD(const CStdString& strFrameName, DWORD dwValue, CMusicInfoTag& tag);
-  void SetTagValueBinary(const CStdString& strFrameName, const LPBYTE pValue, CMusicInfoTag& tag);
-  void SetTagValueBool(const CStdString& strFrameName, BOOL bValue, CMusicInfoTag& tag);
+  void SetTagValueUnsigned(const CStdString& strFrameName, uint32_t value, CMusicInfoTag& tag);
+  void SetTagValueBinary(const CStdString& strFrameName, const unsigned char *pValue, CMusicInfoTag& tag);
+  void SetTagValueBool(const CStdString& strFrameName, bool bValue, CMusicInfoTag& tag);
 };
 }

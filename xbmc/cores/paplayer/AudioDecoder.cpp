@@ -23,6 +23,7 @@
 #include "CodecFactory.h"
 #include "GUISettings.h"
 #include "FileItem.h"
+#include <math.h>
 
 #define INTERNAL_BUFFER_LENGTH  sizeof(float)*2*44100       // float samples, 2 channels, 44100 samples per sec = 1 second
 

@@ -1,11 +1,3 @@
-/*!
-\file GUIInfoColor.h
-\brief
-*/
-
-#ifndef GUILIB_GUIINFOCOLOR_H
-#define GUILIB_GUIINFOCOLOR_H
-
 #pragma once
 
 /*
@@ -31,39 +23,11 @@
 
 #include "StdString.h"
 
-class CGUIListItem;
-
-class CGUIInfoBool
+class CBuiltins
 {
 public:
-  CGUIInfoBool(bool value = false);
-  operator bool() const { return m_value; };
-
-  void Update(int parentID = 0, const CGUIListItem *item = NULL);
-  void Parse(const CStdString &info);
-private:
-  int m_info;
-  bool m_value;
+  static bool HasCommand(const CStdString& execString);
+  static void GetHelp(CStdString &help);
+  static int Execute(const CStdString& execString);
 };
 
-typedef uint32_t color_t;
-
-class CGUIInfoColor
-{
-public:
-  CGUIInfoColor(color_t color = 0);
-
-  const CGUIInfoColor &operator=(const CGUIInfoColor &color);
-  const CGUIInfoColor &operator=(color_t color);
-  operator color_t() const { return m_color; };
-
-  void Update();
-  void Parse(const CStdString &label);
-
-private:
-  color_t GetColor() const;
-  int     m_info;
-  color_t m_color;
-};
-
-#endif

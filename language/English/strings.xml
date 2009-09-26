@@ -2339,7 +2339,6 @@
   <string id="23027">Weather Add-on</string>
   <string id="23028">Audio DSP Add-on</string>
 
-<<<<<<< .working
   <string id="23030">Weather plugin</string>
   <string id="23031">- Plugin settings</string>
 
@@ -2386,7 +2385,6 @@
   <string id="23082">Lock Add-on manager</string>
   <string id="23083">Use this Add-on again</string>
 
-=======
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">External Player Active</string>
   <string id="23101">Click OK to terminate the player</string>
@@ -2396,7 +2394,6 @@
   <string id="23105"></string>
   <string id="23106"></string>
 
->>>>>>> .merge-rechts.r23079
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>
   <string id="29801">QWERTY keyboard</string>

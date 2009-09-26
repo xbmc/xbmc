@@ -135,7 +135,7 @@ bool CRenderSystemGL::EndRender()
   return true;
 }
 
-bool CRenderSystemGL::ClearBuffers(DWORD color)
+bool CRenderSystemGL::ClearBuffers(color_t color)
 {
   if (!m_bRenderCreated)
     return false;
@@ -161,7 +161,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   return false;
 }
 
-static __int64 abs(__int64 a)
+static int64_t abs(int64_t a)
 {
   if(a < 0)
     return -a;
@@ -175,7 +175,7 @@ bool CRenderSystemGL::PresentRender()
 
   if (m_iVSyncMode != 0 && m_iSwapRate != 0) 
   {
-    __int64 curr, diff, freq;
+    int64_t curr, diff, freq;
     QueryPerformanceCounter((LARGE_INTEGER*)&curr);
     QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
 
@@ -199,7 +199,7 @@ bool CRenderSystemGL::PresentRender()
   
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
-    __int64 curr, diff;
+    int64_t curr, diff;
     QueryPerformanceCounter((LARGE_INTEGER*)&curr);
 
     diff = curr - m_iSwapStamp;
@@ -247,10 +247,10 @@ void CRenderSystemGL::SetVSync(bool enable)
     }
     else
     {
-      __int64 freq;
+      int64_t freq;
       QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
-      m_iSwapRate   = (__int64)((double)freq / rate);
-      m_iSwapTime   = (__int64)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
+      m_iSwapRate   = (int64_t)((double)freq / rate);
+      m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
       m_iSwapStamp  = 0;
       CLog::Log(LOGINFO, "GL: Using artificial vsync sleep with rate %f", rate);
       if(!m_iVSyncMode)

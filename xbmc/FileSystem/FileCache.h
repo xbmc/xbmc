@@ -50,11 +50,11 @@ namespace XFILE
     virtual bool          Exists(const CURL& url);
     virtual int           Stat(const CURL& url, struct __stat64* buffer);
 
-    virtual unsigned int  Read(void* lpBuf, __int64 uiBufSize);
+    virtual unsigned int  Read(void* lpBuf, int64_t uiBufSize);
 
-    virtual __int64       Seek(__int64 iFilePosition, int iWhence);
-    virtual __int64       GetPosition();
-    virtual __int64       GetLength();
+    virtual int64_t       Seek(int64_t iFilePosition, int iWhence);
+    virtual int64_t       GetPosition();
+    virtual int64_t       GetLength();
 
     virtual ICacheInterface* GetCache();
     IFile *GetFileImp();
@@ -73,9 +73,9 @@ namespace XFILE
     CEvent      m_seekEnded;
     int        m_nBytesToBuffer;
     time_t      m_tmLastBuffering;
-    __int64      m_nSeekResult;
-    __int64      m_seekPos;
-    __int64      m_readPos;
+    int64_t      m_nSeekResult;
+    int64_t      m_seekPos;
+    int64_t      m_readPos;
     CCriticalSection m_sync;
   };
 

@@ -165,7 +165,7 @@ bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigne
   return true;
 }
 
-DWORD CBaseTexture::PadPow2(DWORD x) 
+unsigned int CBaseTexture::PadPow2(unsigned int x) 
 {
   --x;
   x |= x >> 1;

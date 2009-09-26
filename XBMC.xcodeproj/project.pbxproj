@@ -41,7 +41,6 @@
 		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
 		43248C510FBE224C00B88866 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		43248C520FBE224E00B88866 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
-		6E97BDBE0DA2B5D8003A2A89 /* GUIInfoColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */; };
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
@@ -91,6 +90,10 @@
 		7C779E57104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
 		7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
 		7CCF7E731067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
+		7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
+		7CCF7F1E1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
+		7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
+		7CCF7FCA106A0DF500992676 /* TimeUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */; };
 		7CDAE9050FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAE9060FFCA3520040B25F /* DVDTSCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */; };
 		7CDAEA7D1001CD6E0040B25F /* karaokelyricstextustar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */; };
@@ -916,7 +919,6 @@
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
 		F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
-		F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */; };
 		F57E213F0E3C3AB300700C9D /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E213E0E3C3AB200700C9D /* libiconv.dylib */; };
 		F57E21410E3C3AD400700C9D /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F57E21400E3C3AD400700C9D /* libz.dylib */; };
 		F584E0FC0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F584E0FB0F25427500DB26A5 /* MusicInfoTagLoaderMidi.cpp */; };
@@ -1638,7 +1640,6 @@
 		F5A1CB4D0F6B06CF00A96ABD /* ScraperUrl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */; };
 		F5A1CB4E0F6B06CF00A96ABD /* MusicArtistInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */; };
 		F5A1CB4F0F6B06CF00A96ABD /* Fanart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E36C29E90DA72486001F0C9D /* Fanart.cpp */; };
-		F5A1CB500F6B06CF00A96ABD /* GUIInfoColor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */; };
 		F5A1CB510F6B06CF00A96ABD /* MediaSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE4B0DC223FF00E26B71 /* MediaSource.cpp */; };
 		F5A1CB520F6B06CF00A96ABD /* MusicFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 880DBE530DC224A100E26B71 /* MusicFileDirectory.cpp */; };
 		F5A1CB530F6B06CF00A96ABD /* ASAPFileDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 88ACB0190DCF40800083CFDF /* ASAPFileDirectory.cpp */; };
@@ -1704,7 +1705,6 @@
 		F5A1CB910F6B06CF00A96ABD /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F5A1CB920F6B06CF00A96ABD /* GUITexture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */; };
 		F5A1CB930F6B06CF00A96ABD /* GUITextureGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */; };
-		F5A1CB940F6B06CF00A96ABD /* GUITextureSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */; };
 		F5A1CB950F6B06CF00A96ABD /* DTSCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52880F58504F003EEAA4 /* DTSCodec.cpp */; };
 		F5A1CB960F6B06CF00A96ABD /* DTSCDDACodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AC52900F58525B003EEAA4 /* DTSCDDACodec.cpp */; };
 		F5A1CB970F6B06CF00A96ABD /* DVDDemuxHTSP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F55110440F5C3C0000955236 /* DVDDemuxHTSP.cpp */; };
@@ -1789,6 +1789,8 @@
 		F5EA05C20F733812005C2EC5 /* CocoaInterface.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */; };
 		F5EA08850F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5EA08840F78B1E7005C2EC5 /* libcdio.dylib */; };
 		F5EA08860F78B1E7005C2EC5 /* libcdio.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5EA08840F78B1E7005C2EC5 /* libcdio.dylib */; };
+		F5EEB973106B07910019B552 /* GUIInfoTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EEB971106B07910019B552 /* GUIInfoTypes.cpp */; };
+		F5EEB974106B07910019B552 /* GUIInfoTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EEB971106B07910019B552 /* GUIInfoTypes.cpp */; };
 		F5F2EF4B0E593E0D0092C37F /* DVDFileInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */; };
 		F5F8E1DA0E427E8000A8E96F /* VGMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1D90E427E8000A8E96F /* VGMCodec.cpp */; };
 		F5F8E1E80E427F6700A8E96F /* md5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5F8E1E60E427F6700A8E96F /* md5.cpp */; };
@@ -1823,8 +1825,6 @@
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		436B38F3106628850049AB3B /* EndianSwap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EndianSwap.h; path = xbmc/utils/EndianSwap.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
-		6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoColor.cpp; sourceTree = "<group>"; };
-		6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoColor.h; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
 		6E97BDC10DA2B620003A2A89 /* EventServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventServer.h; sourceTree = "<group>"; };
@@ -1891,6 +1891,10 @@
 		7C779E53104A58F900F444C4 /* KeyboardStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardStat.h; sourceTree = "<group>"; };
 		7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSets.cpp; sourceTree = "<group>"; };
 		7CCF7E711067643800992676 /* DirectoryNodeSets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSets.h; sourceTree = "<group>"; };
+		7CCF7F1B1069F3AE00992676 /* Builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Builtins.cpp; sourceTree = "<group>"; };
+		7CCF7F1C1069F3AE00992676 /* Builtins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Builtins.h; sourceTree = "<group>"; };
+		7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeUtils.cpp; sourceTree = "<group>"; };
+		7CCF7FC8106A0DF500992676 /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
 		7CDAE9030FFCA3520040B25F /* DVDTSCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDTSCorrection.cpp; sourceTree = "<group>"; };
 		7CDAE9040FFCA3520040B25F /* DVDTSCorrection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDTSCorrection.h; sourceTree = "<group>"; };
 		7CDAEA7B1001CD6E0040B25F /* karaokelyricstextustar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokelyricstextustar.cpp; path = karaoke/karaokelyricstextustar.cpp; sourceTree = "<group>"; };
@@ -2332,7 +2336,6 @@
 		E38E15640D25F9FA00618676 /* DVDInputStreamMemory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamMemory.h; sourceTree = "<group>"; };
 		E38E15650D25F9FA00618676 /* DVDInputStreamNavigator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamNavigator.cpp; sourceTree = "<group>"; };
 		E38E15660D25F9FA00618676 /* DVDInputStreamNavigator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDInputStreamNavigator.h; sourceTree = "<group>"; };
-		E38E15680D25F9FA00618676 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		E38E15690D25F9FA00618676 /* decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decoder.h; sourceTree = "<group>"; };
 		E38E156A0D25F9FA00618676 /* dvd_reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dvd_reader.h; sourceTree = "<group>"; };
 		E38E156B0D25F9FA00618676 /* dvd_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dvd_types.h; sourceTree = "<group>"; };
@@ -2904,7 +2907,6 @@
 		E38E18650D25F9FA00618676 /* cdda.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdda.h; sourceTree = "<group>"; };
 		E38E18660D25F9FA00618676 /* cdio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdio.h; sourceTree = "<group>"; };
 		E38E18670D25F9FA00618676 /* cdtext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdtext.h; sourceTree = "<group>"; };
-		E38E18680D25F9FA00618676 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		E38E18690D25F9FA00618676 /* device.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = device.h; sourceTree = "<group>"; };
 		E38E186A0D25F9FA00618676 /* disc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = disc.h; sourceTree = "<group>"; };
 		E38E186B0D25F9FA00618676 /* ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ds.h; sourceTree = "<group>"; };
@@ -3685,10 +3687,8 @@
 		F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = karaokewindowbackground.cpp; path = karaoke/karaokewindowbackground.cpp; sourceTree = "<group>"; };
 		F56A08DE0F4D3C20003F9F87 /* GUITexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITexture.h; sourceTree = "<group>"; };
 		F56A08DF0F4D3C20003F9F87 /* GUITexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITexture.cpp; sourceTree = "<group>"; };
-		F56A08E10F4D3C2E003F9F87 /* GUITextureSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextureSDL.h; sourceTree = "<group>"; };
 		F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextureGL.cpp; sourceTree = "<group>"; };
 		F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUITextureGL.h; sourceTree = "<group>"; };
-		F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUITextureSDL.cpp; sourceTree = "<group>"; };
 		F57E213E0E3C3AB200700C9D /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /opt/local/lib/libiconv.dylib; sourceTree = "<absolute>"; };
 		F57E21400E3C3AD400700C9D /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F584E0FA0F25427500DB26A5 /* MusicInfoTagLoaderMidi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MusicInfoTagLoaderMidi.h; path = xbmc/MusicInfoTagLoaderMidi.h; sourceTree = SOURCE_ROOT; };
@@ -3760,6 +3760,8 @@
 		F5EA05C00F733812005C2EC5 /* CocoaInterface.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = CocoaInterface.mm; path = xbmc/osx/CocoaInterface.mm; sourceTree = SOURCE_ROOT; };
 		F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CocoaInterface.h; path = xbmc/osx/CocoaInterface.h; sourceTree = SOURCE_ROOT; };
 		F5EA08840F78B1E7005C2EC5 /* libcdio.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcdio.dylib; path = /opt/local/lib/libcdio.dylib; sourceTree = "<absolute>"; };
+		F5EEB971106B07910019B552 /* GUIInfoTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIInfoTypes.cpp; sourceTree = "<group>"; };
+		F5EEB972106B07910019B552 /* GUIInfoTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIInfoTypes.h; sourceTree = "<group>"; };
 		F5F2EF490E593E0D0092C37F /* DVDFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = DVDFileInfo.h; sourceTree = "<group>"; };
 		F5F2EF4A0E593E0D0092C37F /* DVDFileInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = DVDFileInfo.cpp; sourceTree = "<group>"; };
 		F5F8E1D80E427E8000A8E96F /* VGMCodec.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = VGMCodec.h; sourceTree = "<group>"; };
@@ -3980,8 +3982,6 @@
 				7C779D9F104A4B2E00F444C4 /* GUITextureD3D.h */,
 				F56A08E20F4D3C2E003F9F87 /* GUITextureGL.cpp */,
 				F56A08E30F4D3C2E003F9F87 /* GUITextureGL.h */,
-				F56A08E40F4D3C2E003F9F87 /* GUITextureSDL.cpp */,
-				F56A08E10F4D3C2E003F9F87 /* GUITextureSDL.h */,
 				7C779DA0104A4B2E00F444C4 /* Texture.cpp */,
 				7C779DA1104A4B2E00F444C4 /* Texture.h */,
 				7C779DA2104A4B2E00F444C4 /* TextureDX.cpp */,
@@ -4180,8 +4180,6 @@
 			children = (
 				E38E13D20D25F9F900618676 /* GUIColorManager.cpp */,
 				E38E13D30D25F9F900618676 /* GUIColorManager.h */,
-				6E97BDBC0DA2B5D8003A2A89 /* GUIInfoColor.cpp */,
-				6E97BDBD0DA2B5D8003A2A89 /* GUIInfoColor.h */,
 			);
 			name = Colors;
 			sourceTree = "<group>";
@@ -4276,6 +4274,8 @@
 		E38E13890D25F9F900618676 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
+				F5EEB971106B07910019B552 /* GUIInfoTypes.cpp */,
+				F5EEB972106B07910019B552 /* GUIInfoTypes.h */,
 				7CCF7D2D10661A8700992676 /* Audio */,
 				7CCF7DF21066214600992676 /* Colors */,
 				7CCF7D2C106619B000992676 /* Containers */,
@@ -5195,7 +5195,6 @@
 		E38E15670D25F9FA00618676 /* dvdnav */ = {
 			isa = PBXGroup;
 			children = (
-				E38E15680D25F9FA00618676 /* config.h */,
 				E38E15690D25F9FA00618676 /* decoder.h */,
 				E38E156A0D25F9FA00618676 /* dvd_reader.h */,
 				E38E156B0D25F9FA00618676 /* dvd_types.h */,
@@ -5750,7 +5749,6 @@
 				E38E18650D25F9FA00618676 /* cdda.h */,
 				E38E18660D25F9FA00618676 /* cdio.h */,
 				E38E18670D25F9FA00618676 /* cdtext.h */,
-				E38E18680D25F9FA00618676 /* config.h */,
 				E38E18690D25F9FA00618676 /* device.h */,
 				E38E186A0D25F9FA00618676 /* disc.h */,
 				E38E186B0D25F9FA00618676 /* ds.h */,
@@ -6743,6 +6741,10 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
+				7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */,
+				7CCF7FC8106A0DF500992676 /* TimeUtils.h */,
+				7CCF7F1B1069F3AE00992676 /* Builtins.cpp */,
+				7CCF7F1C1069F3AE00992676 /* Builtins.h */,
 				83A72B950FBC8E3B00171871 /* LockFree.cpp */,
 				83A72B960FBC8E3B00171871 /* LockFree.h */,
 				83E0B2470F7C95FF0091643F /* Atomics.h */,
@@ -7870,7 +7872,6 @@
 				E36C29EA0DA72486001F0C9D /* ScraperUrl.cpp in Sources */,
 				E36C29EB0DA72486001F0C9D /* MusicArtistInfo.cpp in Sources */,
 				E36C29EC0DA72486001F0C9D /* Fanart.cpp in Sources */,
-				6E97BDBE0DA2B5D8003A2A89 /* GUIInfoColor.cpp in Sources */,
 				880DBE4E0DC223FF00E26B71 /* MediaSource.cpp in Sources */,
 				880DBE550DC224A100E26B71 /* MusicFileDirectory.cpp in Sources */,
 				88ACB01B0DCF40800083CFDF /* ASAPFileDirectory.cpp in Sources */,
@@ -7936,7 +7937,6 @@
 				F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */,
 				F56A08E00F4D3C20003F9F87 /* GUITexture.cpp in Sources */,
 				F56A08E50F4D3C2E003F9F87 /* GUITextureGL.cpp in Sources */,
-				F56A08E60F4D3C2E003F9F87 /* GUITextureSDL.cpp in Sources */,
 				F5AC52890F58504F003EEAA4 /* DTSCodec.cpp in Sources */,
 				F5AC52910F58525B003EEAA4 /* DTSCDDACodec.cpp in Sources */,
 				F55110450F5C3C0100955236 /* DVDDemuxHTSP.cpp in Sources */,
@@ -8012,6 +8012,9 @@
 				7C62F45E1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
 				7C62F4D510587E4F002AD2C1 /* DVDSubtitleParser.cpp in Sources */,
 				7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */,
+				7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */,
+				7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */,
+				F5EEB973106B07910019B552 /* GUIInfoTypes.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8717,7 +8720,6 @@
 				F5A1CB4D0F6B06CF00A96ABD /* ScraperUrl.cpp in Sources */,
 				F5A1CB4E0F6B06CF00A96ABD /* MusicArtistInfo.cpp in Sources */,
 				F5A1CB4F0F6B06CF00A96ABD /* Fanart.cpp in Sources */,
-				F5A1CB500F6B06CF00A96ABD /* GUIInfoColor.cpp in Sources */,
 				F5A1CB510F6B06CF00A96ABD /* MediaSource.cpp in Sources */,
 				F5A1CB520F6B06CF00A96ABD /* MusicFileDirectory.cpp in Sources */,
 				F5A1CB530F6B06CF00A96ABD /* ASAPFileDirectory.cpp in Sources */,
@@ -8783,7 +8785,6 @@
 				F5A1CB910F6B06CF00A96ABD /* karaokewindowbackground.cpp in Sources */,
 				F5A1CB920F6B06CF00A96ABD /* GUITexture.cpp in Sources */,
 				F5A1CB930F6B06CF00A96ABD /* GUITextureGL.cpp in Sources */,
-				F5A1CB940F6B06CF00A96ABD /* GUITextureSDL.cpp in Sources */,
 				F5A1CB950F6B06CF00A96ABD /* DTSCodec.cpp in Sources */,
 				F5A1CB960F6B06CF00A96ABD /* DTSCDDACodec.cpp in Sources */,
 				F5A1CB970F6B06CF00A96ABD /* DVDDemuxHTSP.cpp in Sources */,
@@ -8859,6 +8860,9 @@
 				7C62F45F1057A62D002AD2C1 /* DirectoryNodeSingles.cpp in Sources */,
 				7C62F4D610587E4F002AD2C1 /* DVDSubtitleParser.cpp in Sources */,
 				7CCF7E731067643800992676 /* DirectoryNodeSets.cpp in Sources */,
+				7CCF7F1E1069F3AE00992676 /* Builtins.cpp in Sources */,
+				7CCF7FCA106A0DF500992676 /* TimeUtils.cpp in Sources */,
+				F5EEB974106B07910019B552 /* GUIInfoTypes.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

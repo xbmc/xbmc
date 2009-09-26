@@ -26,17 +26,14 @@
  *
  **********************************************************************/
 
+#ifndef _QRYDAT_H
+#define _QRYDAT_H
 
 #include <map>
 #include <vector>
 #include <iostream>
 #include <string>
-
-#include "system.h"
-
-#ifndef _QRYDAT_H
-#define _QRYDAT_H
-
+#include <stdint.h>
 
 namespace dbiplus {
 
@@ -72,7 +69,7 @@ private:
     unsigned long  ulong_value;
     float  float_value;
     double double_value;
-    __int64 int64_value;
+    long long int64_value;
     void   *object_value;
   } ;
 
@@ -90,7 +87,7 @@ public:
   field_value(const int i);
   field_value(const float f);
   field_value(const double d);
-  field_value(const __int64 i);
+  field_value(const long long i);
   field_value(const field_value & fv);
   ~field_value();
   
@@ -107,7 +104,7 @@ public:
   unsigned long get_asULong() const;
   float get_asFloat() const;
   double get_asDouble() const;
-  __int64 get_asInt64() const;
+  long long get_asInt64() const;
 
   field_value& operator= (const char *s)
     {set_asString(s); return *this;}
@@ -129,7 +126,7 @@ public:
     {set_asFloat(f); return *this;}
   field_value& operator= (const double d)
     {set_asDouble(d); return *this;}
-  field_value& operator= (const __int64 i)
+  field_value& operator= (const long long i)
     {set_asInt64(i); return *this;}
   field_value& operator= (const field_value & fv);
   
@@ -195,7 +192,7 @@ public:
   void set_asULong(const unsigned long l);
   void set_asFloat(const float f);
   void set_asDouble(const double d);
-  void set_asInt64(const __int64 i);
+  void set_asInt64(const long long i);
 
   fType get_field_type();
   std::string gft();

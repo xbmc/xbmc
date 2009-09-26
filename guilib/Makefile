@@ -45,7 +45,6 @@ SRCS=AnimatedGif.cpp \
      GUIStandardWindow.cpp \
      GUITextBox.cpp \
      GUITexture.cpp \
-     GUITextureSDL.cpp \
      GUITextureGL.cpp \
      GUITextureGLES.cpp \
      GUIToggleButtonControl.cpp \
@@ -70,7 +69,7 @@ SRCS=AnimatedGif.cpp \
      GUIBorderedImage.cpp \
      GUITextLayout.cpp \
      GUIMultiSelectText.cpp \
-     GUIInfoColor.cpp \
+     GUIInfoTypes.cpp \
      GUIFontTTFGL.cpp \
      GUIFontTTFGLES.cpp \
      Texture.cpp \

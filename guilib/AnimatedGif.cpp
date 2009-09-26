@@ -30,7 +30,7 @@
 #include "FileSystem/SpecialProtocol.h"
 #include "utils/EndianSwap.h"
 
-#ifdef _WIN32PC
+#ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #else
 #define fopen_utf8 fopen

@@ -21,6 +21,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "PlatformDefs.h" // UINT DWORD LPCSTR LPSTR LPBOOL ...
 
 int WideCharToMultiByte(
   UINT CodePage,

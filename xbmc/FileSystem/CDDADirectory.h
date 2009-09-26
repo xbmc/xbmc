@@ -21,10 +21,6 @@
 
 #pragma once
 
-#include "system.h"
-
-#ifdef HAS_DVD_DRIVE
-
 #include "IDirectory.h"
 
 namespace DIRECTORY
@@ -39,6 +35,3 @@ public:
   virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
 };
 }
-
-#endif
-

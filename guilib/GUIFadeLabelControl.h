@@ -30,8 +30,7 @@
  */
 
 #include "GUIControl.h"
-
-#include "GUILabelControl.h"  // for CInfoPortion
+#include "GUITextLayout.h"
 
 /*!
  \ingroup controls
@@ -40,12 +39,12 @@
 class CGUIFadeLabelControl : public CGUIControl
 {
 public:
-  CGUIFadeLabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, DWORD timeToDelayAtEnd, bool resetOnLabelChange);
+  CGUIFadeLabelControl(int parentID, int controlID, float posX, float posY, float width, float height, const CLabelInfo& labelInfo, bool scrollOut, int scrollSpeed, unsigned int timeToDelayAtEnd, bool resetOnLabelChange);
   CGUIFadeLabelControl(const CGUIFadeLabelControl &from);
   virtual ~CGUIFadeLabelControl(void);
   virtual CGUIFadeLabelControl *Clone() const { return new CGUIFadeLabelControl(*this); };
 
-  virtual void DoRender(DWORD currentTime);
+  virtual void DoRender(unsigned int currentTime);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
@@ -68,7 +67,7 @@ protected:
   CScrollInfo m_scrollInfo;
   CGUITextLayout m_textLayout;
   CAnimation *m_fadeAnim;
-  DWORD m_renderTime;
+  unsigned int m_renderTime;
   unsigned int m_scrollSpeed;
   bool m_resetOnLabelChange;
 };
