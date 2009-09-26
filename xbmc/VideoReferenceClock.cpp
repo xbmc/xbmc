@@ -965,15 +965,13 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
     int64_t NextVblank;
     LARGE_INTEGER Now;
     
-    while(1)
+    QueryPerformanceCounter(&Now);               //get current system time
+    NextVblank = TimeOfNextVblank(Now.QuadPart); //get time when the next vblank should happen
+    
+    while(Now.QuadPart >= NextVblank) //keep looping until the next vblank is in the future
     {
-      QueryPerformanceCounter(&Now);               //get current system time
+      UpdateClock(1, false);                       //update clock when next vblank should have happened already
       NextVblank = TimeOfNextVblank(Now.QuadPart); //get time when the next vblank should happen
-      
-      if (Now.QuadPart >= NextVblank)              //if the vblank should have alread happened, update the clock
-        UpdateClock(1, false);
-      else
-        break;
     }
     
     ptime->QuadPart = m_CurrTime;
