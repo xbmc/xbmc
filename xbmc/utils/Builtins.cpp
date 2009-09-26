@@ -1102,9 +1102,11 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("lirc.stop"))
   {
     g_RemoteControl.Disconnect();
+    g_RemoteControl.setUsed(false);
   }
   else if (execute.Equals("lirc.start"))
   {
+    g_RemoteControl.setUsed(true);
     g_RemoteControl.Initialize();
   }
 #endif
