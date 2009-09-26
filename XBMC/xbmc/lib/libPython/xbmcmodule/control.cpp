@@ -298,7 +298,7 @@ namespace PYXBMC
 
     //bool ret = xmlDoc.SaveFile("special://profile/test.txt");
 
-    const FRECT animRect = { (float)self->dwPosX, (float)self->dwPosY, (float)self->dwWidth, (float)self->dwHeight };
+    const CRect animRect((float)self->dwPosX, (float)self->dwPosY, (float)self->dwPosX + self->dwWidth, (float)self->dwPosY + self->dwHeight);
     PyGUILock();
     if (self->pGUIControl)
     {

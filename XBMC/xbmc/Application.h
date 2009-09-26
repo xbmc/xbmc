@@ -21,7 +21,7 @@
  *
  */
 
-#include "system.h"
+#include "system.h" // for HAS_DVD_DRIVE et. al.
 #include "XBApplicationEx.h"
 
 #include "IMsgTargetCallback.h"
@@ -116,7 +116,7 @@ public:
   void StartPVRManager();
   void StopPVRManager();
   void StartEventServer();
-  bool StopEventServer(bool promptuser=false);
+  bool StopEventServer(bool bWait, bool promptuser);
   void RefreshEventServer();
   void StartDbusServer();
   bool StopDbusServer(bool bWait);
@@ -233,7 +233,7 @@ public:
   inline bool IsInScreenSaver() { return m_bScreenSave; };
   int m_iScreenSaveLock; // spiff: are we checking for a lock? if so, ignore the screensaver state, if -1 we have failed to input locks
 
-  DWORD m_dwSkinTime;
+  unsigned int m_skinReloadTime;
   bool m_bIsPaused;
   bool m_bPlaybackStarting;
 

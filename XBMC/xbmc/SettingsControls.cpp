@@ -20,6 +20,9 @@
  */
 
 #include "SettingsControls.h"
+#include "GUIRadioButtonControl.h"
+#include "GUISpinControlEx.h"
+#include "GUIEditControl.h"
 #include "GUIDialogNumeric.h"
 #include "Util.h"
 #include "GUIDialogOK.h"

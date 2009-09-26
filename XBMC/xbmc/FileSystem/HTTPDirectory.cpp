@@ -110,7 +110,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
             else if (strUnit == "G")
               Size = Size * 1000 * 1024;
 
-            pItem->m_dwSize = (__int64)(Size * 1024);
+            pItem->m_dwSize = (int64_t)(Size * 1024);
           }
         }
 

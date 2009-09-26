@@ -32,8 +32,8 @@
 #include <vector>
 #include <limits>
 #include <string.h>
+#include <stdint.h>
 
-#include "system.h"
 #include "MediaSource.h"
 
 // A list of filesystem types for LegalPath/FileName
@@ -83,9 +83,6 @@ public:
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static bool IsDOSPath(const CStdString &path);
   static bool IsHD(const CStdString& strFileName);
-  static bool IsBuiltIn(const CStdString& execString);
-  static void GetBuiltInHelp(CStdString &help);
-  static int ExecBuiltIn(const CStdString& execString);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
   static void GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename);
   static void RunShortcut(const char* szPath);
@@ -129,12 +126,11 @@ public:
   static bool IsUPnP(const CStdString& strFile);
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
-  static void DeleteGUISettings();
 
   static void CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback = NULL);
   static bool CacheRarSubtitles(std::vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt="");
   static void ClearSubtitles();
-  static __int64 ToInt64(DWORD dwHigh, DWORD dwLow);
+  static int64_t ToInt64(uint32_t high, uint32_t low);
   static void AddFileToFolder(const CStdString& strFolder, const CStdString& strFile, CStdString& strResult);
   static CStdString AddFileToFolder(const CStdString &strFolder, const CStdString &strFile)
   {

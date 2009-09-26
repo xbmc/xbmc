@@ -22,12 +22,13 @@
  *
  */
 
-#include "tinyXML/tinyxml.h"
+#include <vector>
 #include "StdString.h"
 
-#include <vector>
-
 #define MAX_SCRAPER_BUFFERS 20
+
+class TiXmlElement;
+class TiXmlDocument;
 
 class CScraperSettings;
 

@@ -21,7 +21,7 @@
  *
  */
 
-#include "system.h"
+#include <stdint.h>
 
 class CStopWatch
 {
@@ -38,8 +38,8 @@ public:
   float GetElapsedSeconds() const;
   float GetElapsedMilliseconds() const;
 private:
-  __int64 GetTicks() const;
+  int64_t GetTicks() const;
   float m_timerPeriod;        // to save division in GetElapsed...()
-  __int64 m_startTick;
+  int64_t m_startTick;
   bool m_isRunning;
 };

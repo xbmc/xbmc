@@ -70,7 +70,7 @@ public:
   virtual void SaveStates(std::vector<CControlState> &states);
   virtual int GetSelectedItem() const;
 
-  virtual void DoRender(DWORD currentTime);
+  virtual void DoRender(unsigned int currentTime);
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
 
@@ -130,7 +130,7 @@ protected:
 
   int m_pageControl;
 
-  DWORD m_renderTime;
+  unsigned int m_renderTime;
 
   std::vector<CGUIListItemLayout> m_layouts;
   std::vector<CGUIListItemLayout> m_focusedLayouts;
@@ -141,15 +141,15 @@ protected:
   virtual void ScrollToOffset(int offset);
   void UpdateScrollOffset();
 
-  DWORD m_scrollLastTime;
-  int   m_scrollTime;
-  float m_scrollOffset;
+  unsigned int m_scrollLastTime;
+  int          m_scrollTime;
+  float        m_scrollOffset;
 
   VIEW_TYPE m_type;
   CStdString m_label;
 
   bool m_staticContent;
-  DWORD m_staticUpdateTime;
+  unsigned int m_staticUpdateTime;
   std::vector<CGUIListItemPtr> m_staticItems;
   bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
                     // us to make sure we don't tell the infomanager that we've been moving when

@@ -5,6 +5,11 @@
 #include <string.h>
 #include <ctype.h>
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "cc_decoder.h"
 
 #define LOG_DEBUG 3
@@ -100,26 +105,26 @@ static void build_char_table(void)
 }
 
 /*
-static int ccbuf_has_displayable(cc_buffer_t *this)
+static int ccbuf_has_displayable(cc_buffer_t *buf)
 {
   int i;
   int found = 0;
   for (i = 0; !found && i < CC_ROWS; i++) {
-    if (this->rows[i].num_chars > 0)
+    if (buf->rows[i].num_chars > 0)
       found = 1;
   }
   return found;
 }
 */
 
-static void ccbuf_add_char(cc_buffer_t *this, uint8_t c)
+static void ccbuf_add_char(cc_buffer_t *buf, uint8_t c)
 {
-  cc_row_t *rowbuf = &this->rows[this->rowpos];
+  cc_row_t *rowbuf = &buf->rows[buf->rowpos];
   int pos = rowbuf->pos;
   int left_displayable = (pos > 0) && (pos <= rowbuf->num_chars);
 
 #if LOG_DEBUG > 2
-  printf("cc_decoder: ccbuf_add_char: %c @ %d/%d\n", c, this->rowpos, pos);
+  printf("cc_decoder: ccbuf_add_char: %c @ %d/%d\n", c, buf->rowpos, pos);
 #endif
 
   if (pos >= CC_COLUMNS) {
@@ -155,10 +160,10 @@ static void ccbuf_add_char(cc_buffer_t *this, uint8_t c)
 }
 
 
-static void ccbuf_set_cursor(cc_buffer_t *this, int row, int column, 
+static void ccbuf_set_cursor(cc_buffer_t *buf, int row, int column, 
 			     int underline, int italics, int color)
 {
-  cc_row_t *rowbuf = &this->rows[row];
+  cc_row_t *rowbuf = &buf->rows[row];
   cc_attribute_t attr;
 
   attr.italic = italics;
@@ -169,27 +174,27 @@ static void ccbuf_set_cursor(cc_buffer_t *this, int row, int column,
   rowbuf->pac_attr = attr;
   rowbuf->pac_attr_chg = 1;
 
-  this->rowpos = row; 
+  buf->rowpos = row; 
   rowbuf->pos = column;
   rowbuf->attr_chg = 0;
 }
 
 
-static void ccbuf_apply_attribute(cc_buffer_t *this, cc_attribute_t *attr)
+static void ccbuf_apply_attribute(cc_buffer_t *buf, cc_attribute_t *attr)
 {
-  cc_row_t *rowbuf = &this->rows[this->rowpos];
+  cc_row_t *rowbuf = &buf->rows[buf->rowpos];
   int pos = rowbuf->pos;
   
   rowbuf->attr_chg = 1;
   rowbuf->cells[pos].attributes = *attr;
   /* A midrow attribute always counts as a space */
-  ccbuf_add_char(this, chartbl[(unsigned int) ' ']);
+  ccbuf_add_char(buf, chartbl[(unsigned int) ' ']);
 }
 
 
-static void ccbuf_tab(cc_buffer_t *this, int tabsize)
+static void ccbuf_tab(cc_buffer_t *buf, int tabsize)
 {
-  cc_row_t *rowbuf = &this->rows[this->rowpos];
+  cc_row_t *rowbuf = &buf->rows[buf->rowpos];
   rowbuf->pos += tabsize;
   if (rowbuf->pos > CC_COLUMNS) {
 #ifdef LOG_DEBUG
@@ -203,64 +208,64 @@ static void ccbuf_tab(cc_buffer_t *this, int tabsize)
 
 /*----------------- cc_memory_t methods --------------------------------*/
 
-static void ccmem_clear(cc_memory_t *this)
+static void ccmem_clear(cc_memory_t *buf)
 {
 #ifdef LOG_DEBUG
   printf("cc_decoder.c: ccmem_clear: Clearing CC memory\n");
 #endif
-  memset(this, 0, sizeof (cc_memory_t));
+  memset(buf, 0, sizeof (cc_memory_t));
 }
 
 
-static void ccmem_init(cc_memory_t *this)
+static void ccmem_init(cc_memory_t *buf)
 {
-  ccmem_clear(this);
+  ccmem_clear(buf);
 }
 
 
-static void ccmem_exit(cc_memory_t *this)
+static void ccmem_exit(cc_memory_t *buf)
 {
 /*FIXME: anything to deallocate?*/
 }
 
 /*----------------- cc_decoder_t methods --------------------------------*/
 
-static void cc_set_channel(cc_decoder_t *this, int channel)
+static void cc_set_channel(cc_decoder_t *dec, int channel)
 {
-  (*this->active)->channel_no = channel;
+  (*dec->active)->channel_no = channel;
 #ifdef LOG_DEBUG
   printf("cc_decoder: cc_set_channel: selecting channel %d\n", channel);
 #endif
 }
 
 
-static cc_buffer_t *active_ccbuffer(cc_decoder_t *this)
+static cc_buffer_t *active_ccbuffer(cc_decoder_t *dec)
 {
-  cc_memory_t *mem = *this->active;
+  cc_memory_t *mem = *dec->active;
   return &mem->channel[mem->channel_no];
 }
 
-static void cc_swap_buffers(cc_decoder_t *this)
+static void cc_swap_buffers(cc_decoder_t *dec)
 {
   cc_memory_t *temp;
 
   /* hide caption in displayed memory */
-  /* cc_hide_displayed(this); */
+  /* cc_hide_displayed(dec); */
 
 #ifdef LOG_DEBUG
   printf("cc_decoder: cc_swap_buffers: swapping caption memory\n");
 #endif
-  temp = this->on_buf;
-  this->on_buf = this->off_buf;
-  this->off_buf = temp;
+  temp = dec->on_buf;
+  dec->on_buf = dec->off_buf;
+  dec->off_buf = temp;
 
   /* show new displayed memory */
-  /* cc_show_displayed(this); */
+  /* cc_show_displayed(dec); */
 }
 
-static void cc_decode_standard_char(cc_decoder_t *this, uint8_t c1, uint8_t c2)
+static void cc_decode_standard_char(cc_decoder_t *dec, uint8_t c1, uint8_t c2)
 {
-  cc_buffer_t *buf = active_ccbuffer(this);
+  cc_buffer_t *buf = active_ccbuffer(dec);
   /* c1 always is a valid character */
   ccbuf_add_char(buf, chartbl[c1]);
   /* c2 might not be a printable character, even if c1 was */
@@ -269,7 +274,7 @@ static void cc_decode_standard_char(cc_decoder_t *this, uint8_t c1, uint8_t c2)
 }
 
 
-static void cc_decode_PAC(cc_decoder_t *this, int channel,
+static void cc_decode_PAC(cc_decoder_t *dec, int channel,
 			  uint8_t c1, uint8_t c2)
 {
   cc_buffer_t *buf;
@@ -280,8 +285,8 @@ static void cc_decode_PAC(cc_decoder_t *this, int channel,
   if (c1 == 0x10 && c2 > 0x5f)
     return;
 
-  cc_set_channel(this, channel);
-  buf = active_ccbuffer(this);
+  cc_set_channel(dec, channel);
+  buf = active_ccbuffer(dec);
 
   row = rowdata[((c1 & 0x07) << 1) | ((c2 & 0x20) >> 5)];
   if (c2 & 0x10) {
@@ -305,20 +310,20 @@ static void cc_decode_PAC(cc_decoder_t *this, int channel,
 }
 
 
-static void cc_decode_ext_attribute(cc_decoder_t *this, int channel,
+static void cc_decode_ext_attribute(cc_decoder_t *dec, int channel,
 				    uint8_t c1, uint8_t c2)
 {
-  cc_set_channel(this, channel);
+  cc_set_channel(dec, channel);
 }
 
 
-static void cc_decode_special_char(cc_decoder_t *this, int channel,
+static void cc_decode_special_char(cc_decoder_t *dec, int channel,
 				   uint8_t c1, uint8_t c2)
 {
   cc_buffer_t *buf;
 
-  cc_set_channel(this, channel);
-  buf = active_ccbuffer(this);
+  cc_set_channel(dec, channel);
+  buf = active_ccbuffer(dec);
 #ifdef LOG_DEBUG
   printf("cc_decoder: cc_decode_special_char: Mapping %x to %x\n", c2, specialchar[c2 & 0xf]);
 #endif
@@ -326,14 +331,14 @@ static void cc_decode_special_char(cc_decoder_t *this, int channel,
 }
 
 
-static void cc_decode_midrow_attr(cc_decoder_t *this, int channel,
+static void cc_decode_midrow_attr(cc_decoder_t *dec, int channel,
 				  uint8_t c1, uint8_t c2)
 {
   cc_buffer_t *buf;
   cc_attribute_t attr;
 
-  cc_set_channel(this, channel);
-  buf = active_ccbuffer(this);
+  cc_set_channel(dec, channel);
+  buf = active_ccbuffer(dec);
   if (c2 < 0x2e) {
     attr.italic = 0;
     attr.foreground = (c2 & 0xe) >> 1;
@@ -354,14 +359,14 @@ static void cc_decode_midrow_attr(cc_decoder_t *this, int channel,
 }
 
 
-static void cc_decode_misc_control_code(cc_decoder_t *this, int channel,
+static void cc_decode_misc_control_code(cc_decoder_t *dec, int channel,
 					uint8_t c1, uint8_t c2)
 {
 #ifdef LOG_DEBUG
   printf("cc_decoder: decode_misc: decoding %x %x\n", c1, c2);
 #endif
 
-  cc_set_channel(this, channel);
+  cc_set_channel(dec, channel);
 
   switch (c2) {          /* 0x20 <= c2 <= 0x2f */
 
@@ -399,36 +404,36 @@ static void cc_decode_misc_control_code(cc_decoder_t *this, int channel,
     break;
 
   case 0x2c:             /* EDM - erase displayed memory */
-    /* cc_hide_displayed(this); */
-    ccmem_clear(this->on_buf);
+    /* cc_hide_displayed(dec); */
+    ccmem_clear(dec->on_buf);
     break;
 
   case 0x2d:             /* carriage return */
     break;
 
   case 0x2e:             /* ENM - erase non-displayed memory */
-    ccmem_clear(this->off_buf);
+    ccmem_clear(dec->off_buf);
     break;
 
   case 0x2f:             /* EOC - swap displayed and non displayed memory */
-    cc_swap_buffers(this);
+    cc_swap_buffers(dec);
     break;
   }
 }
 
 
-static void cc_decode_tab(cc_decoder_t *this, int channel,
+static void cc_decode_tab(cc_decoder_t *dec, int channel,
 			  uint8_t c1, uint8_t c2)
 {
   cc_buffer_t *buf;
 
-  cc_set_channel(this, channel);
-  buf = active_ccbuffer(this);
+  cc_set_channel(dec, channel);
+  buf = active_ccbuffer(dec);
   ccbuf_tab(buf, c2 & 0x3);
 }
 
 
-static void cc_decode_EIA608(cc_decoder_t *this, uint16_t data)
+static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
 {
   uint8_t c1 = data & 0x7f;
   uint8_t c2 = (data >> 8) & 0x7f;
@@ -438,7 +443,7 @@ static void cc_decode_EIA608(cc_decoder_t *this, uint16_t data)
 #endif
 
   if (c1 & 0x60) {             /* normal character, 0x20 <= c1 <= 0x7f */
-    cc_decode_standard_char(this, c1, c2);
+    cc_decode_standard_char(dec, c1, c2);
   }
   else if (c1 & 0x10) {        /* control code or special character */
                                /* 0x10 <= c1 <= 0x1f */
@@ -447,35 +452,35 @@ static void cc_decode_EIA608(cc_decoder_t *this, uint16_t data)
 
     /* control sequences are often repeated. In this case, we should */
     /* evaluate it only once. */
-    if (data != this->lastcode) {
+    if (data != dec->lastcode) {
 
       if (c2 & 0x40) {         /* preamble address code: 0x40 <= c2 <= 0x7f */
-	cc_decode_PAC(this, channel, c1, c2);
+	cc_decode_PAC(dec, channel, c1, c2);
       }
       else {
 	switch (c1) {
 	  
 	case 0x10:             /* extended background attribute code */
-	  cc_decode_ext_attribute(this, channel, c1, c2);
+	  cc_decode_ext_attribute(dec, channel, c1, c2);
 	  break;
 
 	case 0x11:             /* attribute or special character */
 	  if ((c2 & 0x30) == 0x30) { /* special char: 0x30 <= c2 <= 0x3f  */
-	    cc_decode_special_char(this, channel, c1, c2);
+	    cc_decode_special_char(dec, channel, c1, c2);
 	  }
 	  else if (c2 & 0x20) {     /* midrow attribute: 0x20 <= c2 <= 0x2f */
-	    cc_decode_midrow_attr(this, channel, c1, c2);
+	    cc_decode_midrow_attr(dec, channel, c1, c2);
 	  }
 	  break;
 
 	case 0x14:             /* possibly miscellaneous control code */
-	  cc_decode_misc_control_code(this, channel, c1, c2);
+	  cc_decode_misc_control_code(dec, channel, c1, c2);
 	  break;
 
 	case 0x17:            /* possibly misc. control code TAB offset */
 	                      /* 0x21 <= c2 <= 0x23 */
 	  if (c2 >= 0x21 && c2 <= 0x23) {
-	    cc_decode_tab(this, channel, c1, c2);
+	    cc_decode_tab(dec, channel, c1, c2);
 	  }
 	  break;
 	}
@@ -483,11 +488,11 @@ static void cc_decode_EIA608(cc_decoder_t *this, uint16_t data)
     }
   }
   
-  this->lastcode = data;
+  dec->lastcode = data;
 }
 
 
-void decode_cc(cc_decoder_t *this, uint8_t *buffer, uint32_t buf_len)
+void decode_cc(cc_decoder_t *dec, uint8_t *buffer, uint32_t buf_len)
 {
   /* The first number may denote a channel number. I don't have the
    * EIA-708 standard, so it is hard to say.
@@ -551,7 +556,7 @@ void decode_cc(cc_decoder_t *this, uint8_t *buffer, uint32_t buf_len)
     case 0xff:
       /* expect EIA-608 CC1/CC2 encoding */
       if (good_parity(data1 | (data2 << 8))) {
-	cc_decode_EIA608(this, data1 | (data2 << 8));
+	cc_decode_EIA608(dec, data1 | (data2 << 8));
 
       }
       skip = 5;
@@ -586,30 +591,30 @@ void decode_cc(cc_decoder_t *this, uint8_t *buffer, uint32_t buf_len)
 
 cc_decoder_t *cc_decoder_open()
 {
-  cc_decoder_t *this = (cc_decoder_t *) calloc(1, sizeof (cc_decoder_t));
+  cc_decoder_t *dec = (cc_decoder_t *) calloc(1, sizeof (cc_decoder_t));
 
-  ccmem_init(&this->buffer[0]);
-  ccmem_init(&this->buffer[1]);
-  this->on_buf = &this->buffer[0];
-  this->off_buf = &this->buffer[1];
-  this->active = &this->off_buf;
+  ccmem_init(&dec->buffer[0]);
+  ccmem_init(&dec->buffer[1]);
+  dec->on_buf = &dec->buffer[0];
+  dec->off_buf = &dec->buffer[1];
+  dec->active = &dec->off_buf;
 
-  this->lastcode = 0;
-  this->capid = 0;
+  dec->lastcode = 0;
+  dec->capid = 0;
 
 #ifdef LOG_DEBUG
   printf("spucc: cc_decoder_open\n");
 #endif
-  return this;
+  return dec;
 }
 
 
-void cc_decoder_close(cc_decoder_t *this)
+void cc_decoder_close(cc_decoder_t *dec)
 {
-  ccmem_exit(&this->buffer[0]);
-  ccmem_exit(&this->buffer[1]);
+  ccmem_exit(&dec->buffer[0]);
+  ccmem_exit(&dec->buffer[1]);
 
-  free(this);
+  free(dec);
 
 #ifdef LOG_DEBUG
   printf("spucc: cc_decoder_close\n");
@@ -624,3 +629,8 @@ void cc_decoder_init(void)
   build_parity_table();
   build_char_table();
 }
+
+#ifdef __cplusplus
+}
+#endif
+

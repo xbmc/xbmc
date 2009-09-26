@@ -115,7 +115,7 @@ int CFileCDDA::Stat(const CURL& url, struct __stat64* buffer)
   return -1;
 }
 
-unsigned int CFileCDDA::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CFileCDDA::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (!m_pCdIo || !g_mediaManager.IsDiscInDrive())
     return 0;
@@ -140,7 +140,7 @@ unsigned int CFileCDDA::Read(void* lpBuf, __int64 uiBufSize)
   return iSectorCount*CDIO_CD_FRAMESIZE_RAW;
 }
 
-__int64 CFileCDDA::Seek(__int64 iFilePosition, int iWhence /*=SEEK_SET*/)
+int64_t CFileCDDA::Seek(int64_t iFilePosition, int iWhence /*=SEEK_SET*/)
 {
   if (!m_pCdIo)
     return -1;
@@ -177,7 +177,7 @@ void CFileCDDA::Close()
   }
 }
 
-__int64 CFileCDDA::GetPosition()
+int64_t CFileCDDA::GetPosition()
 {
   if (!m_pCdIo)
     return 0;
@@ -185,7 +185,7 @@ __int64 CFileCDDA::GetPosition()
   return ((m_lsnCurrent -m_lsnStart)*CDIO_CD_FRAMESIZE_RAW);
 }
 
-__int64 CFileCDDA::GetLength()
+int64_t CFileCDDA::GetLength()
 {
   if (!m_pCdIo)
     return 0;

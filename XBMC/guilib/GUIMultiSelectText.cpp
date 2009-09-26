@@ -58,7 +58,7 @@ CGUIMultiSelectTextControl::~CGUIMultiSelectTextControl(void)
 {
 }
 
-void CGUIMultiSelectTextControl::DoRender(DWORD currentTime)
+void CGUIMultiSelectTextControl::DoRender(unsigned int currentTime)
 {
   m_renderTime = currentTime;
   CGUIControl::DoRender(currentTime);

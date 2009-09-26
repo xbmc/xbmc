@@ -21,7 +21,6 @@
  *
  */
 
-#include "GUILabelControl.h"  // for CInfoPortion
 #include "GUIButtonControl.h"
 
 /*!
@@ -38,7 +37,7 @@ public:
   virtual ~CGUIMultiSelectTextControl(void);
   virtual CGUIMultiSelectTextControl *Clone() const { return new CGUIMultiSelectTextControl(*this); };
 
-  virtual void DoRender(DWORD currentTime);
+  virtual void DoRender(unsigned int currentTime);
   virtual void Render();
 
   virtual bool OnAction(const CAction &action);
@@ -85,14 +84,14 @@ protected:
   CLabelInfo m_label;
   CGUIInfoLabel  m_info;
   CStdString m_oldText;
-  DWORD      m_renderTime;
+  unsigned int m_renderTime;
 
   // scrolling
-  float      m_totalWidth;
-  float      m_offset;
-  float      m_scrollOffset;
-  float      m_scrollSpeed;
-  DWORD      m_scrollLastTime;
+  float        m_totalWidth;
+  float        m_offset;
+  float        m_scrollOffset;
+  float        m_scrollSpeed;
+  unsigned int m_scrollLastTime;
 
   // buttons
   CGUIButtonControl m_button;

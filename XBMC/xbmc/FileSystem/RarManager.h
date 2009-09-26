@@ -49,7 +49,7 @@ public:
   CStdString m_strPathInRar;
   bool  m_bAutoDel;
   int m_iUsed;
-  __int64 m_iOffset;
+  int64_t m_iOffset;
 
   bool m_bIsCanceled()
   {
@@ -71,7 +71,7 @@ public:
   ~CRarManager();
   bool CacheRarredFile(CStdString& strPathInCache, const CStdString& strRarPath,
                        const CStdString& strPathInRar, BYTE bOptions = EXFILE_AUTODELETE,
-                       const CStdString& strDir =RAR_DEFAULT_CACHE, const __int64 iSize=-1);
+                       const CStdString& strDir =RAR_DEFAULT_CACHE, const int64_t iSize=-1);
   bool GetPathInCache(CStdString& strPathInCache, const CStdString& strRarPath,
                       const CStdString& strPathInRar = "");
   bool GetFilesInRar(CFileItemList& vecpItems, const CStdString& strRarPath,
@@ -88,7 +88,7 @@ protected:
   std::map<CStdString, std::pair<ArchiveList_struct*,std::vector<CFileInfo> > > m_ExFiles;
   CCriticalSection m_CritSection;
 
-  __int64 CheckFreeSpace(const CStdString& strDrive);
+  int64_t CheckFreeSpace(const CStdString& strDrive);
 
   bool m_bWipe;
 };

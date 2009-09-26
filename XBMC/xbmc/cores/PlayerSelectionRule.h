@@ -20,11 +20,12 @@
  *
  */
 
-#include "tinyXML/tinyxml.h"
 #include "XMLUtils.h"
 #include "RegExp.h"
 #include "FileItem.h"
 #include "PlayerCoreFactory.h"
+
+class TiXmlElement;
 
 class CPlayerSelectionRule
 {

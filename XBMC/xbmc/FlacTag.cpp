@@ -181,7 +181,7 @@ int CFlacTag::ReadFlacHeader(void)
   m_file->Seek(iPos + 14, SEEK_SET);  // seek to the frequency and duration data
   m_file->Read(buffer, 8);    // read 64 bits of data
   int iFreq = (buffer[0] << 12) | (buffer[1] << 4) | (buffer[2] >> 4);
-  __int64 iNumSamples = ( (__int64) (buffer[3] & 0x0F) << 32) | ( (__int64) buffer[4] << 24) | (buffer[5] << 16) | (buffer[6] << 8) | buffer[7];
+  int64_t iNumSamples = ( (int64_t) (buffer[3] & 0x0F) << 32) | ( (int64_t) buffer[4] << 24) | (buffer[5] << 16) | (buffer[6] << 8) | buffer[7];
   m_musicInfoTag.SetDuration((int)((iNumSamples) / iFreq));
   return iPos + 38;
 }

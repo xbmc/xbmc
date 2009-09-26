@@ -22,7 +22,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 #include "XBMC_events.h"
-#include "system.h"
+#include "system.h" // for DWORD
 
 class CKeyboardStat
 {
@@ -39,8 +39,8 @@ public:
   bool GetAlt() { return m_bAlt;};
   bool GetRAlt() { return m_bRAlt;};
   char GetAscii();// { return m_cAscii;}; // FIXME should be replaced completly by GetUnicode()
-  WCHAR GetUnicode();// { return m_wUnicode;};
-  BYTE GetVKey() { return m_VKey;};
+  wchar_t GetUnicode();// { return m_wUnicode;};
+  uint8_t GetVKey() { return m_VKey;};
   unsigned int KeyHeld() const;
   
   int HandleEvent(XBMC_Event& newEvent);
@@ -51,8 +51,8 @@ private:
   bool m_bAlt;
   bool m_bRAlt;
   char m_cAscii;
-  WCHAR m_wUnicode;
-  BYTE m_VKey;
+  wchar_t m_wUnicode;
+  uint8_t m_VKey;
 
   XBMCKey m_lastKey;
   DWORD m_lastKeyTime;

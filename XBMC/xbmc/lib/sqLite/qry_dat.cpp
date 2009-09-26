@@ -31,6 +31,7 @@
  **********************************************************************/
 
 #include "qry_dat.h"
+#include "system.h" // for PRId64
 
 #ifndef __GNUC__
 #pragma warning (disable:4800)
@@ -108,7 +109,7 @@ field_value::field_value(const double d) {
   is_null = false;
 }
   
-field_value::field_value(const __int64 i) {
+field_value::field_value(const long long i) {
   int64_value = i; 
   field_type = ft_Int64;
   is_null = false;
@@ -555,34 +556,34 @@ double field_value::get_asDouble() const {
     }
   }
 
-__int64 field_value::get_asInt64() const {
+long long field_value::get_asInt64() const {
     switch (field_type) {
     case ft_String: {
       return _atoi64(str_value.c_str());
     }
     case ft_Boolean:{
-      return (__int64)bool_value;
+      return (long long)bool_value;
     }
     case ft_Char: {
-      return (__int64)char_value;
+      return (long long)char_value;
     }
     case ft_Short: {
-       return (__int64)short_value;
+       return (long long)short_value;
     }
     case ft_UShort: {
-       return (__int64)ushort_value;
+       return (long long)ushort_value;
     }
     case ft_Long: {
-      return (__int64)long_value;
+      return (long long)long_value;
     }
     case ft_ULong: {
-      return (__int64)ulong_value;
+      return (long long)ulong_value;
     }
     case ft_Float: {
-      return (__int64)float_value;
+      return (long long)float_value;
     }
     case ft_Double: {
-      return (__int64)double_value;
+      return (long long)double_value;
     }
     case ft_Int64: {
       return int64_value;
@@ -704,7 +705,7 @@ void field_value::set_asDouble(const double d) {
   double_value = d; 
   field_type = ft_Double;}
 
-void field_value::set_asInt64(const __int64 i) {
+void field_value::set_asInt64(const long long i) {
   int64_value = i; 
   field_type = ft_Int64;}
   

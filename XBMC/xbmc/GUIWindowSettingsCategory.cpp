@@ -23,11 +23,13 @@
 #include "GUIUserMessages.h"
 #include "GUIWindowSettingsCategory.h"
 #include "Application.h"
+#include "utils/Builtins.h"
 #include "KeyboardLayoutConfiguration.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
-#include "GUILabelControl.h"
-#include "GUICheckMarkControl.h"
+#include "GUISpinControlEx.h"
+#include "GUIRadioButtonControl.h"
+#include "GUIEditControl.h"
 #include "GUIImage.h"
 #include "utils/Weather.h"
 #include "MusicDatabase.h"
@@ -186,7 +188,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
          }*/
       for (unsigned int i = 0; i < m_vecSettings.size(); i++)
       {
-        if (m_vecSettings[i]->GetID() == iControl)
+        if (m_vecSettings[i]->GetID() == (int)iControl)
           OnClick(m_vecSettings[i]);
       }
     }
@@ -372,14 +374,14 @@ void CGUIWindowSettingsCategory::SetupControls()
   int j=0;
   for (unsigned int i = 0; i < m_vecSections.size(); i++)
   {
-    if (m_vecSections[i]->m_dwLabelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
+    if (m_vecSections[i]->m_labelID == 12360 && g_settings.m_iLastLoadedProfileIndex != 0)
       continue;
     CGUIButtonControl *pButton = NULL;
     if (m_pOriginalCategoryButton->GetControlType() == CGUIControl::GUICONTROL_TOGGLEBUTTON)
       pButton = new CGUIToggleButtonControl(*(CGUIToggleButtonControl *)m_pOriginalCategoryButton);
     else
       pButton = new CGUIButtonControl(*m_pOriginalCategoryButton);
-    pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_dwLabelID));
+    pButton->SetLabel(g_localizeStrings.Get(m_vecSections[i]->m_labelID));
     pButton->SetID(CONTROL_START_BUTTONS + j);
     pButton->SetVisible(true);
     pButton->AllocResources();
@@ -1567,7 +1569,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     g_weatherManager.ResetTimer();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
-    CUtil::ExecBuiltIn("RunScript(special://home/scripts/RssTicker/default.py)");
+    CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
   else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
   {
     CMusicDatabase database;
@@ -2399,7 +2401,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.StartEventServer();
     else
     {
-      if (!g_application.StopEventServer(true))
+      if (!g_application.StopEventServer(true, true))
       {
         g_guiSettings.SetBool("remoteevents.enabled", true);
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -2413,7 +2415,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #ifdef HAS_EVENT_SERVER
     if (g_guiSettings.GetBool("remoteevents.enabled"))
     {
-      if (g_application.StopEventServer(true))
+      if (g_application.StopEventServer(true, true))
         g_application.StartEventServer();
       else
       {

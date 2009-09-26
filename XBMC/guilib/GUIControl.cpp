@@ -136,7 +136,7 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 // 1. animate and set the animation transform
 // 2. if visible, paint
 // 3. reset the animation transform
-void CGUIControl::DoRender(DWORD currentTime)
+void CGUIControl::DoRender(unsigned int currentTime)
 {
   Animate(currentTime);
   if (m_hasCamera)
@@ -739,7 +739,7 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
   }
 }
 
-void CGUIControl::Animate(DWORD currentTime)
+void CGUIControl::Animate(unsigned int currentTime)
 {
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;

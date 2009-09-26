@@ -20,6 +20,7 @@
  */
 
 #include "system.h"
+#include "utils/Builtins.h"
 #include "ButtonTranslator.h"
 #include "Util.h"
 #include "Settings.h"
@@ -30,6 +31,7 @@
 #include "FileItem.h"
 #include "StringUtils.h"
 #include "utils/log.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 using namespace XFILE;
@@ -473,7 +475,7 @@ void CButtonTranslator::MapJoystickActions(int windowID, TiXmlNode *pJoystick)
           string position;
           if (pButton->QueryValueAttribute("position", &position) == TIXML_SUCCESS)
           {
-            Uint32 hatID = id|0xFFF00000;
+            uint32_t hatID = id|0xFFF00000;
             if (position.compare("up")==0)
             {
               hatMap[(SDL_HAT_UP<<16)|hatID] = string(szAction);
@@ -816,11 +818,11 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   action = ACTION_NONE;
   CStdString strAction = szAction;
   strAction.ToLower();
-  if (CUtil::IsBuiltIn(strAction)) action = ACTION_BUILT_IN_FUNCTION;
+  if (CBuiltins::HasCommand(strAction)) action = ACTION_BUILT_IN_FUNCTION;
 
   if (strAction.Equals("noop"))
     return true;
-
+  
   for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
   {
     if (strAction.Equals(actions[index].name))

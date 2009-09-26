@@ -22,10 +22,8 @@
  */
 
 #include "StdString.h"
-
-// forward
-class TiXmlDocument;
-class TiXmlNode;
+#include "tinyXML/tinyxml.h" // no use forwarding these, as this class is the main workhorse anyway,
+                             // thus it simplifies the include patterns
 
 class XMLUtils
 {

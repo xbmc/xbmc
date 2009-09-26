@@ -28,7 +28,7 @@
  *
  */
 
-#include "system.h"
+#include "system.h" // for WIN32 types
 
 #define GAMMA_RAMP_FLAG  D3DSGR_CALIBRATE
 
@@ -94,8 +94,6 @@ namespace XBMC
 };
 
 #define DELETE_TEXTURE(texture) texture->Release()
-
-typedef uint32_t	Uint32;
 
 #endif // HAS_DX
 

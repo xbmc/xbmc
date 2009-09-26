@@ -526,7 +526,7 @@ int CMusicInfoTagLoaderMP3::ReadDuration(const CStdString& strFileName)
         if (ReadLAMETagInfo(xing - 0x24))
         {
           // calculate new (more accurate) duration:
-          __int64 lastSample = (__int64)frame_count * (__int64)tpfbs[layer] - m_seekInfo.GetFirstSample() - m_seekInfo.GetLastSample();
+          int64_t lastSample = (int64_t)frame_count * (int64_t)tpfbs[layer] - m_seekInfo.GetFirstSample() - m_seekInfo.GetLastSample();
           m_seekInfo.SetDuration((float)lastSample / frequency);
         }
       }

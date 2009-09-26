@@ -25,8 +25,6 @@
 
 #include <queue>
 
-class CGUIImage;
-
 #define TOAST_DISPLAY_TIME   5000L  // default 5 seconds
 #define TOAST_MESSAGE_TIME   1000L  // minimal message time 1 second
 
@@ -55,9 +53,9 @@ public:
 
 protected:
 
-  DWORD m_dwTimer;
+  unsigned int m_timer;
 
-  DWORD m_toastDisplayTime;
+  unsigned int m_toastDisplayTime;
 
   CStdString m_defaultIcon;
 

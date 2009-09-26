@@ -269,18 +269,17 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
         {
-          BYTE* pValue = (BYTE*)(pData.get() + iOffset); // Raw data
+          unsigned char* pValue = (unsigned char*)(pData.get() + iOffset); // Raw data
           SetTagValueBinary(strFrameName, pValue, tag);
         }
         else if (iFrameType == WMT_TYPE_BOOL && iValueSize > 0)
         {
-          BOOL bValue = (BOOL)pData[iOffset];
-          SetTagValueBool(strFrameName, bValue, tag);
+          SetTagValueBool(strFrameName, pData[iOffset] != 0, tag);
         }
         else if (iFrameType == WMT_TYPE_DWORD && iValueSize > 0)
         {
-          DWORD dwValue = pData[iOffset] + pData[iOffset + 1] * 0x100 + pData[iOffset + 2] * 0x10000 + pData[iOffset + 3] * 0x1000000;
-          SetTagValueDWORD(strFrameName, dwValue, tag);
+          uint32_t value = pData[iOffset] + pData[iOffset + 1] * 0x100 + pData[iOffset + 2] * 0x10000 + pData[iOffset + 3] * 0x1000000;
+          SetTagValueUnsigned(strFrameName, value, tag);
         }
         else if (iFrameType == WMT_TYPE_QWORD && iValueSize > 0)
         {
@@ -344,18 +343,17 @@ bool CMusicInfoTagLoaderWMA::Load(const CStdString& strFileName, CMusicInfoTag& 
         }
         else if (iFrameType == WMT_TYPE_BINARY && iValueSize > 0)
         {
-          BYTE* pValue = (BYTE*)(pData.get() + iOffset); // Raw data
+          unsigned char* pValue = (unsigned char*)(pData.get() + iOffset); // Raw data
           SetTagValueBinary(strFrameName, pValue, tag);
         }
         else if (iFrameType == WMT_TYPE_BOOL && iValueSize > 0)
         {
-          BOOL bValue = (BOOL)pData[iOffset];
-          SetTagValueBool(strFrameName, bValue, tag);
+          SetTagValueBool(strFrameName, pData[iOffset] != 0, tag);
         }
         else if (iFrameType == WMT_TYPE_DWORD && iValueSize > 0)
         {
-          DWORD dwValue = pData[iOffset] + pData[iOffset + 1] * 0x100 + pData[iOffset + 2] * 0x10000 + pData[iOffset + 3] * 0x1000000;
-          SetTagValueDWORD(strFrameName, dwValue, tag);
+          uint32_t value = pData[iOffset] + pData[iOffset + 1] * 0x100 + pData[iOffset + 2] * 0x10000 + pData[iOffset + 3] * 0x1000000;
+          SetTagValueUnsigned(strFrameName, value, tag);
         }
         else if (iFrameType == WMT_TYPE_QWORD && iValueSize > 0)
         {
@@ -457,16 +455,16 @@ void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, c
   //}
 }
 
-void CMusicInfoTagLoaderWMA::SetTagValueDWORD(const CStdString& strFrameName, DWORD dwValue, CMusicInfoTag& tag)
+void CMusicInfoTagLoaderWMA::SetTagValueUnsigned(const CStdString& strFrameName, uint32_t value, CMusicInfoTag& tag)
 {
   if (strFrameName == "WM/TrackNumber")
   {
     if (tag.GetTrackNumber() <= 0)
-      tag.SetTrackNumber(dwValue);
+      tag.SetTrackNumber(value);
   }
 }
 
-void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, const LPBYTE pValue, CMusicInfoTag& tag)
+void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, const unsigned char* pValue, CMusicInfoTag& tag)
 {
   if (strFrameName == "WM/Picture")
   {
@@ -492,7 +490,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
     iPicOffset += (picture.pwszDescription.length() * 2);
     iPicOffset += 2;
 
-    picture.pbData = (pValue + iPicOffset);
+    picture.pbData = (BYTE *)(pValue + iPicOffset);
 
     // many wma's don't have the bPictureType specified.  For now, just take
     // Cover Front (3) or Other (0) as the cover.
@@ -534,7 +532,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
   }
 }
 
-void CMusicInfoTagLoaderWMA::SetTagValueBool(const CStdString& strFrameName, BOOL bValue, CMusicInfoTag& tag)
+void CMusicInfoTagLoaderWMA::SetTagValueBool(const CStdString& strFrameName, bool bValue, CMusicInfoTag& tag)
 {
   //else if (strFrameName=="isVBR")
   //{

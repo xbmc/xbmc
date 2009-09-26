@@ -179,7 +179,7 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bOverWrite)
 }
 
 //*********************************************************************************************
-unsigned int CFileHD::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CFileHD::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (!m_hFile.isValid()) return 0;
   DWORD nBytesRead;
@@ -192,7 +192,7 @@ unsigned int CFileHD::Read(void *lpBuf, __int64 uiBufSize)
 }
 
 //*********************************************************************************************
-int CFileHD::Write(const void *lpBuf, __int64 uiBufSize)
+int CFileHD::Write(const void *lpBuf, int64_t uiBufSize)
 {
   if (!m_hFile.isValid())
     return 0;
@@ -211,13 +211,13 @@ void CFileHD::Close()
 }
 
 //*********************************************************************************************
-__int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileHD::Seek(int64_t iFilePosition, int iWhence)
 {
   LARGE_INTEGER lPos, lNewPos;
   lPos.QuadPart = iFilePosition;
   int bSuccess;
 
-  __int64 length = GetLength();
+  int64_t length = GetLength();
 
   switch (iWhence)
   {
@@ -252,7 +252,7 @@ __int64 CFileHD::Seek(__int64 iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-__int64 CFileHD::GetLength()
+int64_t CFileHD::GetLength()
 {
   LARGE_INTEGER i64Size;
   GetFileSizeEx((HANDLE)m_hFile, &i64Size);
@@ -260,7 +260,7 @@ __int64 CFileHD::GetLength()
 }
 
 //*********************************************************************************************
-__int64 CFileHD::GetPosition()
+int64_t CFileHD::GetPosition()
 {
   return m_i64FilePos;
 }

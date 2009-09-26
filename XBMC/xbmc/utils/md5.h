@@ -40,7 +40,7 @@
 #ifndef _MD5_H_
 #define _MD5_H_ 1
 
-#include "system.h"
+#include <stdint.h>
 #include "StdString.h"
 
 /* typedef a 32 bit type */

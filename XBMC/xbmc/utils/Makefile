@@ -5,6 +5,7 @@ SRCS=Addon.cpp \
      AddonManager.cpp \
      AlarmClock.cpp \
      Archive.cpp \
+     Builtins.cpp \
      CharsetConverter.cpp \
      CriticalSection.cpp \
      Event.cpp \
@@ -59,7 +60,8 @@ SRCS=Addon.cpp \
      PVRChannels.cpp \
      PVRRecordings.cpp \
      TeletextRender.cpp \
-     StreamDetails.cpp
+     StreamDetails.cpp \
+     TimeUtils.cpp
 
 LIB=utils.a
 

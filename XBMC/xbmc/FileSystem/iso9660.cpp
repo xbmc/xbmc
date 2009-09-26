@@ -902,7 +902,7 @@ long iso9660::ReadFile(HANDLE hFile, byte *pBuffer, long lSize)
   while (lSize > 0 && pContext->m_dwFilePos <= pContext->m_dwFileSize)
   {
     pContext->m_dwCurrentBlock = (DWORD) (pContext->m_dwFilePos / sectorSize);
-    __int64 iOffsetInBuffer = pContext->m_dwFilePos - (sectorSize * pContext->m_dwCurrentBlock);
+    int64_t iOffsetInBuffer = pContext->m_dwFilePos - (sectorSize * pContext->m_dwCurrentBlock);
     pContext->m_dwCurrentBlock += pContext->m_dwStartBlock;
 
     //char szBuf[256];
@@ -940,12 +940,12 @@ long iso9660::ReadFile(HANDLE hFile, byte *pBuffer, long lSize)
   return iBytesRead;
 }
 //************************************************************************************
-__int64 iso9660::Seek(HANDLE hFile, __int64 lOffset, int whence)
+int64_t iso9660::Seek(HANDLE hFile, int64_t lOffset, int whence)
 {
   iso9660::isofile* pContext = GetFileContext(hFile);
   if (!pContext) return -1;
 
-  __int64 dwFilePos = pContext->m_dwFilePos;
+  int64_t dwFilePos = pContext->m_dwFilePos;
   switch (whence)
   {
   case SEEK_SET:
@@ -975,7 +975,7 @@ __int64 iso9660::Seek(HANDLE hFile, __int64 lOffset, int whence)
 
 
 //************************************************************************************
-__int64 iso9660::GetFileSize(HANDLE hFile)
+int64_t iso9660::GetFileSize(HANDLE hFile)
 {
   iso9660::isofile* pContext = GetFileContext(hFile);
   if (!pContext) return -1;
@@ -983,7 +983,7 @@ __int64 iso9660::GetFileSize(HANDLE hFile)
 }
 
 //************************************************************************************
-__int64 iso9660::GetFilePosition(HANDLE hFile)
+int64_t iso9660::GetFilePosition(HANDLE hFile)
 {
   iso9660::isofile* pContext = GetFileContext(hFile);
   if (!pContext) return -1;

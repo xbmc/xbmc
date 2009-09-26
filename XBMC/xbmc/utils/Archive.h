@@ -22,7 +22,7 @@
  */
 
 #include "StdString.h"
-#include "system.h"
+#include "system.h" // for SYSTEMTIME
 
 namespace XFILE
 {
@@ -48,7 +48,7 @@ public:
   CArchive& operator<<(double d);
   CArchive& operator<<(int i);
   CArchive& operator<<(unsigned int i);
-  CArchive& operator<<(__int64 i64);
+  CArchive& operator<<(long long i64);
   CArchive& operator<<(long l);
   CArchive& operator<<(bool b);
   CArchive& operator<<(char c);
@@ -62,7 +62,7 @@ public:
   CArchive& operator>>(double& d);
   CArchive& operator>>(int& i);
   CArchive& operator>>(unsigned int& i);
-  CArchive& operator>>(__int64& i64);
+  CArchive& operator>>(long long& i64);
   CArchive& operator>>(long& l);
   CArchive& operator>>(bool& b);
   CArchive& operator>>(char& c);
@@ -82,7 +82,7 @@ protected:
   void FlushBuffer();
   XFILE::CFile* m_pFile;
   int m_iMode;
-  LPBYTE m_pBuffer;
+  uint8_t *m_pBuffer;
   int m_BufferPos;
 };
 

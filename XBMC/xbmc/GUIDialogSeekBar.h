@@ -36,7 +36,7 @@ public:
   float GetPercentage() {return m_fSeekPercentage;};
   CStdString GetSeekTimeLabel(TIME_FORMAT format = TIME_FORMAT_GUESS);
 protected:
-  DWORD m_dwTimer;
+  unsigned int m_timer;
   float m_fSeekPercentage;
   bool m_bRequireSeek;
 };

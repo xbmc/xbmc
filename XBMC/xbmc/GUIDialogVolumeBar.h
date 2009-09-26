@@ -33,5 +33,5 @@ public:
   virtual void Render();
   void ResetTimer();
 protected:
-  DWORD m_dwTimer;
+  unsigned int m_timer;
 };

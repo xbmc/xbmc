@@ -29,7 +29,7 @@
 using namespace std;
 using namespace DIRECTORY;
 
-CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd)
+CGUIMultiImage::CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd)
     : CGUIControl(parentID, controlID, posX, posY, width, height),
       m_image(0, 0, posX, posY, width, height, texture)
 {
@@ -116,7 +116,7 @@ void CGUIMultiImage::Render()
     if (nextImage != m_currentImage)
     {
       // check if we should be loading a new image yet
-      DWORD timeToShow = m_timePerImage;
+      unsigned int timeToShow = m_timePerImage;
       if (0 == nextImage) // last image should be paused for a bit longer if that's what the skinner wishes.
         timeToShow += m_timeToPauseAtEnd;
       if (m_imageTimer.IsRunning() && m_imageTimer.GetElapsedMilliseconds() > timeToShow)

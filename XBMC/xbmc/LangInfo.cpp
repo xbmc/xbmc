@@ -24,6 +24,7 @@
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

@@ -23,6 +23,11 @@
 #include "Id3Tag.h"
 #include "GUISettings.h"
 
+// prevent inclusion of config.h from libshout
+#define __SRCONFIG_H__
+#include "lib/libshout/rip_manager.h"
+#undef __SRCONFIG_H__
+
 using namespace MUSIC_INFO;
 
 #define MAX_RECORDED_TRACKS 999
@@ -39,7 +44,13 @@ extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
 #define fopen_utf8 fopen
 #endif
 
+namespace SHOUTCAST
+{
+// prevent inclusion of config.h from libshout
+#define __SRCONFIG_H__
 #include "lib/libshout/rip_manager.h"
+#undef __SRCONFIG_H__
+}
 
 CShoutcastRipFile::CShoutcastRipFile()
 {

@@ -21,9 +21,9 @@
  */
 
 #include <vector>
-
-#include "tinyXML/tinyxml.h"
 #include "StdString.h"
+
+class TiXmlElement;
 
 struct TVShowRegexp
 {

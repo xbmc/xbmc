@@ -54,7 +54,7 @@ bool CScriptSettings::Load(const CStdString& strPath)
 
   // Make sure that the script XML has the settings element
   TiXmlElement *setting = m_addonXmlDoc.RootElement();
-  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+  if (!setting || strcasecmp(setting->Value(), "settings") != 0)
   {
     CLog::Log(LOGERROR, "Error loading Settings %s: cannot find root element 'settings'", scriptFileName.c_str());
     return false;
@@ -116,7 +116,7 @@ bool CScriptSettings::SettingsExist(const CStdString& strPath)
 
   // Make sure that the script XML has the settings element
   TiXmlElement *setting = xmlDoc.RootElement();
-  if (!setting || strcmpi(setting->Value(), "settings") != 0)
+  if (!setting || strcasecmp(setting->Value(), "settings") != 0)
     return false;
 
   return true;

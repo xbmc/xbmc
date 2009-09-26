@@ -22,7 +22,6 @@
 #include "system.h"
 #include "Application.h"
 #include "ApplicationRenderer.h"
-#include "GUIImage.h"
 #include "AdvancedSettings.h"
 #include "GUIWindowManager.h"
 #include "WindowingFactory.h"
@@ -98,13 +97,13 @@ void CApplicationRenderer::Process()
         }
 
         SAFE_RELEASE(m_lpSurface);
-        FRECT rect = m_pWindow->GetScaledBounds();
+        CRect rect = m_pWindow->GetScaledBounds();
         m_pWindow->ClearAll(); //unload
 
-        iLeft = (int)floor(rect.left);
-        iTop =  (int)floor(rect.top);
-        iWidth = (int)ceil(rect.right - rect.left);
-        iHeight = (int)ceil(rect.bottom - rect.top);
+        iLeft = (int)floor(rect.x1);
+        iTop =  (int)floor(rect.y1);
+        iWidth = (int)ceil(rect.Width());
+        iHeight = (int)ceil(rect.Height());
         m_Resolution = g_graphicsContext.GetVideoResolution();
       }
     }

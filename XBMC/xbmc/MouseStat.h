@@ -24,7 +24,7 @@
 
 #include "XBMC_events.h"
 #include "Geometry.h"
-#include "system.h"
+#include "system.h" // for DWORD
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))
 #define XBMC_BUTTON_LEFT		1
@@ -79,9 +79,9 @@ public:
   int GetExclusiveWindowID() const { return m_exclusiveWindowID; };
   int GetExclusiveControlID() const { return m_exclusiveControlID; };
   const CPoint &GetExclusiveOffset() const { return m_exclusiveOffset; };
-  void SetState(DWORD state) { m_pointerState = state; };
+  void SetState(MOUSE_STATE state) { m_pointerState = state; };
   void SetEnabled(bool enabled = true);
-  DWORD GetState() const { return m_pointerState; };
+  MOUSE_STATE GetState() const { return m_pointerState; };
   CPoint GetLocation() const;
   void SetLocation(const CPoint &point, bool activate=false);
   CPoint GetLastMove() const;
@@ -99,7 +99,7 @@ private:
   CPoint m_exclusiveOffset;
 
   // state of the mouse
-  DWORD m_pointerState;
+  MOUSE_STATE m_pointerState;
   MouseState m_mouseState;
   bool m_mouseEnabled;
   bool m_lastDown[5];

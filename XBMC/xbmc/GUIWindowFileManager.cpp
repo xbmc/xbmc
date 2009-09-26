@@ -402,8 +402,8 @@ void CGUIWindowFileManager::UpdateItemCounts()
   {
     unsigned int selectedCount = 0;
     unsigned int totalCount = 0;
-    __int64 selectedSize = 0;
-    __int64 totalSize = 0;
+    int64_t selectedSize = 0;
+    int64_t totalSize = 0;
     for (int j = 0; j < m_vecItems[i]->Size(); j++)
     {
       CFileItemPtr item = m_vecItems[i]->Get(j);
@@ -1365,7 +1365,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
         CFileItemPtr pItem2=m_vecItems[list]->Get(i);
         if (pItem2->m_bIsFolder && pItem2->IsSelected())
         {
-          __int64 folderSize = CalculateFolderSize(pItem2->m_strPath, progress);
+          int64_t folderSize = CalculateFolderSize(pItem2->m_strPath, progress);
           if (folderSize >= 0)
           {
             pItem2->m_dwSize = folderSize;
@@ -1419,7 +1419,7 @@ bool CGUIWindowFileManager::SelectItem(int list, int &item)
 }
 
 // recursively calculates the selected folder size
-__int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress)
+int64_t CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirectory, CGUIDialogProgress *pProgress)
 {
   if (pProgress)
   { // update our progress control
@@ -1429,7 +1429,7 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
       return -1;
   }
   // start by calculating the size of the files in this folder...
-  __int64 totalSize = 0;
+  int64_t totalSize = 0;
   CFileItemList items;
   CVirtualDirectory rootDir;
   rootDir.SetSources(g_settings.m_fileSources);
@@ -1438,7 +1438,7 @@ __int64 CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   {
     if (items[i]->m_bIsFolder && !items[i]->IsParentFolder()) // folder
     {
-      __int64 folderSize = CalculateFolderSize(items[i]->m_strPath, pProgress);
+      int64_t folderSize = CalculateFolderSize(items[i]->m_strPath, pProgress);
       if (folderSize < 0) return -1;
       totalSize += folderSize;
     }

@@ -204,7 +204,7 @@ bool CXBMSDirectory::GetDirectory(const CStdString& strPathUtf8, CFileItemList &
       pstrModificationStart += strlen("<MODIFICATION>");
       strncpy(szModification, pstrModificationStart, pstrModificationEnd - pstrModificationStart);
       szModification[pstrModificationEnd - pstrModificationStart] = 0;
-      __int64 lTimeDate = _atoi64(szModification);
+      int64_t lTimeDate = _atoi64(szModification);
 
       FILETIME fileTime, localTime;
       LONGLONG ll = Int32x32To64(lTimeDate, 10000000) + 116444736000000000LL;

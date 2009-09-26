@@ -38,7 +38,7 @@ private:
   unsigned int ReadUnsignedInt( const char* pData );
   void ParseTag( unsigned int metaKey, const char* pMetaData, int metaSize, CMusicInfoTag& tag);
   int GetILSTOffset( const char* pBuffer, int bufferSize );
-  int ParseAtom( __int64 startOffset, __int64 stopOffset, CMusicInfoTag& tag );
+  int ParseAtom( int64_t startOffset, int64_t stopOffset, CMusicInfoTag& tag );
 
   unsigned int m_thumbSize;
   BYTE *m_thumbData;

@@ -98,12 +98,12 @@ int CMultiPathFile::Stat(const CURL& url, struct __stat64* buffer)
   return -1;
 }
 
-unsigned int CMultiPathFile::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CMultiPathFile::Read(void* lpBuf, int64_t uiBufSize)
 {
   return m_file.Read(lpBuf, uiBufSize);
 }
 
-__int64 CMultiPathFile::Seek(__int64 iFilePosition, int iWhence /*=SEEK_SET*/)
+int64_t CMultiPathFile::Seek(int64_t iFilePosition, int iWhence /*=SEEK_SET*/)
 {
   return m_file.Seek(iFilePosition, iWhence);
 }
@@ -113,12 +113,12 @@ void CMultiPathFile::Close()
   m_file.Close();
 }
 
-__int64 CMultiPathFile::GetPosition()
+int64_t CMultiPathFile::GetPosition()
 {
   return m_file.GetPosition();
 }
 
-__int64 CMultiPathFile::GetLength()
+int64_t CMultiPathFile::GetLength()
 {
   return m_file.GetLength();
 }

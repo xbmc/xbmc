@@ -41,7 +41,7 @@ public:
   virtual bool BeginRender();
   virtual bool EndRender();
   virtual bool PresentRender();
-  virtual bool ClearBuffers(DWORD color);
+  virtual bool ClearBuffers(color_t color);
   virtual bool ClearBuffers(float r, float g, float b, float a);
   virtual bool IsExtSupported(const char* extension);
 
@@ -70,7 +70,7 @@ public:
   virtual void SetDeviceFullScreen(bool bFullScreen){ m_bFullScreenDevice = bFullScreen; };
   virtual LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
-  HRESULT GetDeviceStatus() { return m_nDeviceStatus; }
+  bool IsDeviceReady() const { return m_nDeviceStatus == S_OK; }
   virtual bool CreateEffect(CStdString& name, ID3DXEffect** pEffect);
   virtual void ReleaseEffect(ID3DXEffect* pEffect);
 

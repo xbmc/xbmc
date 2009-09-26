@@ -43,6 +43,7 @@
 #include "LangInfo.h"
 #include "SystemInfo.h"
 #include "GUIButtonScroller.h"
+#include "GUITextBox.h"
 #include "GUIInfoManager.h"
 #include <stack>
 #include "../utils/Network.h"
@@ -72,13 +73,12 @@
 #include "MusicInfoLoader.h"
 #include "LabelFormatter.h"
 
-#include "GUILabelControl.h"  // for CInfoLabel
-#include "GUITextBox.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoInfo.h"
 #include "GUIWindowMusicInfo.h"
 #include "SkinInfo.h"
 #include "MediaManager.h"
+#include "TimeUtils.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -2878,11 +2878,11 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
     break;
   case MUSICPLAYER_BITRATE:
     {
-      float fTimeSpan = (float)(timeGetTime() - m_lastMusicBitrateTime);
+      float fTimeSpan = (float)(CTimeUtils::GetFrameTime() - m_lastMusicBitrateTime);
       if (fTimeSpan >= 500.0f)
       {
         m_MusicBitrate = g_application.m_pPlayer->GetAudioBitrate();
-        m_lastMusicBitrateTime = timeGetTime();
+        m_lastMusicBitrateTime = CTimeUtils::GetFrameTime();
       }
       CStdString strBitrate = "";
       if (m_MusicBitrate > 0)
@@ -3343,9 +3343,9 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 
 string CGUIInfoManager::GetSystemHeatInfo(int info)
 {
-  if (timeGetTime() - m_lastSysHeatInfoTime >= SYSHEATUPDATEINTERVAL)
+  if (CTimeUtils::GetFrameTime() - m_lastSysHeatInfoTime >= SYSHEATUPDATEINTERVAL)
   { // update our variables
-    m_lastSysHeatInfoTime = timeGetTime();
+    m_lastSysHeatInfoTime = CTimeUtils::GetFrameTime();
 #if defined(_LINUX)
     m_cpuTemp = g_cpuInfo.getTemperature();
     m_gpuTemp = GetGPUTemperature();
@@ -3419,14 +3419,14 @@ CStdString CGUIInfoManager::GetBuild()
 void CGUIInfoManager::SetDisplayAfterSeek(DWORD dwTimeOut)
 {
   if(dwTimeOut>0)
-    m_AfterSeekTimeout = timeGetTime() +  dwTimeOut;
+    m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  dwTimeOut;
   else
     m_AfterSeekTimeout = 0;
 }
 
 bool CGUIInfoManager::GetDisplayAfterSeek() const
 {
-  return (timeGetTime() < m_AfterSeekTimeout);
+  return (CTimeUtils::GetFrameTime() < m_AfterSeekTimeout);
 }
 
 CStdString CGUIInfoManager::GetAudioScrobblerLabel(int item)
@@ -3593,7 +3593,7 @@ void CGUIInfoManager::Clear()
 void CGUIInfoManager::UpdateFPS()
 {
   m_frameCounter++;
-  unsigned int curTime = timeGetTime();
+  unsigned int curTime = CTimeUtils::GetFrameTime();
 
   float fTimeSpan = (float)(curTime - m_lastFPSTime);
   if (fTimeSpan >= 1000.0f)

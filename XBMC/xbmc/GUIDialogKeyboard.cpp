@@ -30,6 +30,7 @@
 #include "utils/RegExp.h"
 #include "GUIPassword.h"
 #include "utils/md5.h"
+#include "utils/TimeUtils.h"
 #include "xbox/XKGeneral.h"
 #include "Application.h"
 #include "AdvancedSettings.h"
@@ -313,7 +314,7 @@ void CGUIDialogKeyboard::Render()
 {
   // reset the hide state of the label when the remote
   // sms style input times out
-  if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY < timeGetTime())
+  if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY < CTimeUtils::GetFrameTime())
   {
     // finished inputting a sms style character - turn off our shift and symbol states
     ResetShiftAndSymbols();
@@ -330,7 +331,7 @@ void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one
     if (m_hiddenInput)
     { // convert to *'s
       edit.Empty();
-      if (m_lastRemoteClickTime + REMOTE_SMS_DELAY > timeGetTime() && m_strEdit.size())
+      if (m_lastRemoteClickTime + REMOTE_SMS_DELAY > CTimeUtils::GetFrameTime() && m_strEdit.size())
       { // using the remove to input, so display the last key input
         edit.append(m_strEdit.size() - 1, L'*');
         edit.append(1, m_strEdit[m_strEdit.size() - 1]);
@@ -343,7 +344,7 @@ void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one
     g_charsetConverter.wToUTF8(edit, utf8Edit);
     pEdit->SetLabel(utf8Edit);
     // Send off a search message
-    DWORD now = timeGetTime();
+    unsigned int now = CTimeUtils::GetFrameTime();
     // don't send until the REMOTE_SMS_DELAY has passed
     if (m_lastRemoteClickTime && m_lastRemoteClickTime + REMOTE_SMS_DELAY >= now)
       return;
@@ -394,7 +395,7 @@ void CGUIDialogKeyboard::OnClickButton(int iButtonControl)
 
 void CGUIDialogKeyboard::OnRemoteNumberClick(int key)
 {
-  DWORD now = timeGetTime();
+  unsigned int now = CTimeUtils::GetFrameTime();
 
   if (m_lastRemoteClickTime)
   { // a remote key has been pressed

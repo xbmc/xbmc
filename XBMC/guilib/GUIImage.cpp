@@ -22,6 +22,7 @@
 #include "GUIImage.h"
 #include "TextureManager.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -107,7 +108,7 @@ void CGUIImage::Render()
 
     // compute the frame time
     unsigned int frameTime = 0;
-    unsigned int currentTime = timeGetTime();
+    unsigned int currentTime = CTimeUtils::GetFrameTime();
     if (m_lastRenderTime)
       frameTime = currentTime - m_lastRenderTime;
     m_lastRenderTime = currentTime;

@@ -28,7 +28,7 @@ You will have to grab the source code of course. First install the subversion
 package provided by your distribution. Then from a terminal, type:
 
    $ cd $HOME
-   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/branches/linuxport/XBMC
+   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk
 
 -----------------------------------------------------------------------------
 3. Installing the required libraries and headers

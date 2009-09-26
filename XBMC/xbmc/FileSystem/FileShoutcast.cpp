@@ -36,8 +36,12 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
+// prevent inclusion of config.h from libshout
+#define __SRCONFIG_H__
 #include "lib/libshout/rip_manager.h"
 #include "lib/libshout/filelib.h"
+#undef __SRCONFIG_H__
+
 #include "RingBuffer.h"
 #include "ShoutcastRipFile.h"
 #include "utils/GUIInfoManager.h"
@@ -194,12 +198,12 @@ void CFileShoutcast::StopRecording()
 }
 
 
-__int64 CFileShoutcast::GetPosition()
+int64_t CFileShoutcast::GetPosition()
 {
   return 0;
 }
 
-__int64 CFileShoutcast::GetLength()
+int64_t CFileShoutcast::GetLength()
 {
   return 0;
 }
@@ -364,7 +368,7 @@ bool CFileShoutcast::Open(const CURL& url)
   return true;
 }
 
-unsigned int CFileShoutcast::Read(void* lpBuf, __int64 uiBufSize)
+unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
 {
   if (m_fileState.bRipDone)
   {
@@ -394,7 +398,7 @@ void CFileShoutcast::outputTimeoutMessage(const char* message)
   Sleep(1500);
 }
 
-__int64 CFileShoutcast::Seek(__int64 iFilePosition, int iWhence)
+int64_t CFileShoutcast::Seek(int64_t iFilePosition, int iWhence)
 {
   return -1;
 }

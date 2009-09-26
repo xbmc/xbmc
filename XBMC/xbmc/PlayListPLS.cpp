@@ -28,6 +28,7 @@
 #include "MusicInfoTag.h"
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 using namespace XFILE;

@@ -29,6 +29,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "utils/log.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 using namespace XFILE;
@@ -344,12 +345,12 @@ bool CSkinInfo::ResolveConstant(const CStdString &constant, float &value)
   return m_includes.ResolveConstant(constant, value);
 }
 
-bool CSkinInfo::ResolveConstant(const CStdString &constant, DWORD &value)
+bool CSkinInfo::ResolveConstant(const CStdString &constant, unsigned int &value)
 {
   float fValue;
   if (m_includes.ResolveConstant(constant, fValue))
   {
-    value = (DWORD)fValue;
+    value = (unsigned int)fValue;
     return true;
   }
   return false;

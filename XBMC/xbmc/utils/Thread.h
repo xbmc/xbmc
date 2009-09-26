@@ -30,7 +30,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "system.h"
+#include "system.h" // for HANDLE
 #ifdef _LINUX
 #include "PlatformInclude.h"
 #endif

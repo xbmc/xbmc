@@ -111,7 +111,7 @@ int CSAPFile::Stat(const CURL& url, struct __stat64* buffer)
 }
 
 
-unsigned int CSAPFile::Read(void *lpBuf, __int64 uiBufSize)
+unsigned int CSAPFile::Read(void *lpBuf, int64_t uiBufSize)
 {
   return m_stream.readsome((char*)lpBuf, (streamsize)uiBufSize);
 }
@@ -121,7 +121,7 @@ void CSAPFile::Close()
 }
 
 //*********************************************************************************************
-__int64 CSAPFile::Seek(__int64 iFilePosition, int iWhence)
+int64_t CSAPFile::Seek(int64_t iFilePosition, int iWhence)
 {
   switch (iWhence)
   {
@@ -143,13 +143,13 @@ __int64 CSAPFile::Seek(__int64 iFilePosition, int iWhence)
 }
 
 //*********************************************************************************************
-__int64 CSAPFile::GetLength()
+int64_t CSAPFile::GetLength()
 {
   return m_len;
 }
 
 //*********************************************************************************************
-__int64 CSAPFile::GetPosition()
+int64_t CSAPFile::GetPosition()
 {
   return m_stream.tellg();
 }

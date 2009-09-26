@@ -194,7 +194,7 @@ void CRemoteControl::Update()
   if (!CheckDevice())
     return;
 
-  Uint32 now = SDL_GetTicks();
+  uint32_t now = SDL_GetTicks();
 
   // Read a line from the socket
   while (fgets(m_buf, sizeof(m_buf), m_file) != NULL)
@@ -231,7 +231,7 @@ void CRemoteControl::Update()
       m_skipHold = true;
       return;
     }
-    else if (now - m_firstClickTime >= (Uint32) g_advancedSettings.m_remoteRepeat && !m_skipHold)
+    else if (now - m_firstClickTime >= (uint32_t) g_advancedSettings.m_remoteRepeat && !m_skipHold)
     {
       m_isHolding = true;
     }

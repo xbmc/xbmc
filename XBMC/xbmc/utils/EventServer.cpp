@@ -29,7 +29,7 @@
 #include "Socket.h"
 #include "CriticalSection.h"
 #include "Application.h"
-#include "Util.h"
+#include "Builtins.h"
 #include "ButtonTranslator.h"
 #include "SingleLock.h"
 #include "Zeroconf.h"
@@ -111,10 +111,10 @@ void CEventServer::StartServer()
   CThread::SetName("EventServer");
 }
 
-void CEventServer::StopServer()
+void CEventServer::StopServer(bool bWait)
 {
   CZeroconf::GetInstance()->RemoveService("servers.eventserver");
-  StopThread();
+  StopThread(bWait);
 }
 
 void CEventServer::Cleanup()
@@ -339,7 +339,7 @@ bool CEventServer::ExecuteNextAction()
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:
-        CUtil::ExecBuiltIn(actionEvent.actionName);
+        CBuiltins::Execute(actionEvent.actionName);
         break;
 
       case AT_BUTTON:

@@ -22,7 +22,6 @@
  *
  */
 
-#include "system.h"
 #include "Thread.h"
 #include "Socket.h"
 #include "EventClient.h"
@@ -62,7 +61,7 @@ namespace EVENTSERVER
 
     // start / stop server
     void StartServer();
-    void StopServer();
+    void StopServer(bool bWait);
 
     // get events
     unsigned short GetButtonCode(std::string& strMapName, bool& isAxis, float& amount);

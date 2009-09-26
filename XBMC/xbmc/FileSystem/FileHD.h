@@ -39,15 +39,15 @@ class CFileHD : public IFile
 public:
   CFileHD();
   virtual ~CFileHD();
-  virtual __int64 GetPosition();
-  virtual __int64 GetLength();
+  virtual int64_t GetPosition();
+  virtual int64_t GetLength();
   virtual bool Open(const CURL& url);
   virtual bool Exists(const CURL& url);
   virtual int Stat(const CURL& url, struct __stat64* buffer);
   virtual int Stat(struct __stat64* buffer);
-  virtual unsigned int Read(void* lpBuf, __int64 uiBufSize);
-  virtual int Write(const void* lpBuf, __int64 uiBufSize);
-  virtual __int64 Seek(__int64 iFilePosition, int iWhence = SEEK_SET);
+  virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
+  virtual int Write(const void* lpBuf, int64_t uiBufSize);
+  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
   virtual void Close();
   virtual void Flush();
 
@@ -59,7 +59,7 @@ public:
 protected:
   CStdString GetLocal(const CURL &url); /* crate a properly format path from an url */
   AUTOPTR::CAutoPtrHandle m_hFile;
-  __int64 m_i64FilePos;
+  int64_t m_i64FilePos;
 };
 
 }

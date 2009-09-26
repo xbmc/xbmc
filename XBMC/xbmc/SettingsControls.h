@@ -20,11 +20,13 @@
  *
  */
 
-#include "GUISpinControlEx.h"
-#include "GUIEditControl.h"
-#include "GUIRadioButtonControl.h"
+#include "StdString.h"
 
 class CGUIImage;
+class CGUISpinControlEx;
+class CGUIEditControl;
+class CGUIButtonControl;
+class CGUIRadioButtonControl;
 
 class CSetting;
 

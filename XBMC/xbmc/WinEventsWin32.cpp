@@ -40,7 +40,7 @@ static XBMCKey VK_keymap[XBMCK_LAST];
 static HKL hLayoutUS = NULL;
 static XBMCKey Arrows_keymap[4];
 
-UINT g_uQueryCancelAutoPlay = 0;
+uint32_t g_uQueryCancelAutoPlay = 0;
 
 int XBMC_TranslateUNICODE = 1;
 
@@ -248,8 +248,8 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
 
   if ( pressed && XBMC_TranslateUNICODE ) {
 
-    BYTE	keystate[256];
-    Uint16	wchars[2];
+    uint8_t   keystate[256];
+    uint16_t  wchars[2];
 
     GetKeyboardState(keystate);
     /* Numlock isn't taken into account in ToUnicode,
@@ -451,8 +451,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         point.x = GET_X_LPARAM(lParam);
         point.y = GET_Y_LPARAM(lParam);
         WindowFromScreenCoords(hWnd, &point);
-        newEvent.button.x = (Uint16)point.x;
-        newEvent.button.y = (Uint16)point.y;
+        newEvent.button.x = (uint16_t)point.x;
+        newEvent.button.y = (uint16_t)point.y;
         newEvent.button.button = GET_Y_LPARAM(wParam) > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
         m_pEventFunc(newEvent);
         newEvent.type = XBMC_MOUSEBUTTONUP;

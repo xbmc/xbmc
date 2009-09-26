@@ -57,7 +57,7 @@ public:
 
   virtual void SetInitialVisibility();
 
-  virtual void DoRender(DWORD currentTime);
+  virtual void DoRender(unsigned int currentTime);
   virtual bool IsAnimating(ANIMATION_TYPE anim);
   virtual bool HasAnimation(ANIMATION_TYPE anim);
   virtual void QueueAnimation(ANIMATION_TYPE anim);
@@ -108,6 +108,6 @@ protected:
   bool m_renderFocusedLast;
 
   // render time
-  DWORD m_renderTime;
+  unsigned int m_renderTime;
 };
 

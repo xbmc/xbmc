@@ -71,7 +71,7 @@ float CGUIListItemLayout::Size(ORIENTATION orientation) const
   return (orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-void CGUIListItemLayout::Render(CGUIListItem *item, int parentID, DWORD time)
+void CGUIListItemLayout::Render(CGUIListItem *item, int parentID, unsigned int time)
 {
   if (m_invalidated)
   { // need to update our item
@@ -135,7 +135,7 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
 {
   if (!group) return;
 
-  FRECT rect = { group->GetXPosition(), group->GetYPosition(), group->GetXPosition() + group->GetWidth(), group->GetYPosition() + group->GetHeight() };
+  CRect rect(group->GetXPosition(), group->GetYPosition(), group->GetXPosition() + group->GetWidth(), group->GetYPosition() + group->GetHeight());
 
   CGUIControlFactory factory;
   CGUIControl *control = factory.Create(0, rect, child, true);  // true indicating we're inside a list for the

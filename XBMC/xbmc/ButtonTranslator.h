@@ -22,14 +22,10 @@
 #ifndef BUTTON_TRANSLATOR_H
 #define BUTTON_TRANSLATOR_H
 
-#include <map>
-#include "tinyXML/tinyxml.h"
-#include "system.h"
-
-#ifdef HAS_EVENT_SERVER
-#include "utils/EventClient.h"
-#endif
 #pragma once
+
+#include <map>
+#include "system.h" // for HAS_EVENT_SERVER, HAS_SDL_JOYSTICK, HAS_LIRC
 
 #ifdef HAS_EVENT_SERVER
 #include "utils/EventClient.h"

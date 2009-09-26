@@ -23,6 +23,7 @@
 #include "GUIWindowManager.h"
 #include "MouseStat.h"
 #include "Key.h"
+#include "utils/TimeUtils.h"
 
 // time to reset accelerated cursors (digital movement)
 #define MOVE_TIME_OUT 500L
@@ -32,8 +33,8 @@ CGUIResizeControl::CGUIResizeControl(int parentID, int controlID, float posX, fl
     , m_imgFocus(posX, posY, width, height, textureFocus)
     , m_imgNoFocus(posX, posY, width, height, textureNoFocus)
 {
-  m_dwFrameCounter = 0;
-  m_dwLastMoveTime = 0;
+  m_frameCounter = 0;
+  m_lastMoveTime = 0;
   m_fSpeed = 1.0;
   m_fAnalogSpeed = 2.0f; // TODO: implement correct analog speed
   m_fAcceleration = 0.2f; // TODO: implement correct computation of acceleration
@@ -57,18 +58,18 @@ void CGUIResizeControl::Render()
   }
   if (HasFocus())
   {
-    DWORD dwAlphaCounter = m_dwFrameCounter + 2;
-    DWORD dwAlphaChannel;
-    if ((dwAlphaCounter % 128) >= 64)
-      dwAlphaChannel = dwAlphaCounter % 64;
+    unsigned int alphaCounter = m_frameCounter + 2;
+    unsigned int alphaChannel;
+    if ((alphaCounter % 128) >= 64)
+      alphaChannel = alphaCounter % 64;
     else
-      dwAlphaChannel = 63 - (dwAlphaCounter % 64);
+      alphaChannel = 63 - (alphaCounter % 64);
 
-    dwAlphaChannel += 192;
-    SetAlpha( (unsigned char)dwAlphaChannel );
+    alphaChannel += 192;
+    SetAlpha( (unsigned char)alphaChannel );
     m_imgFocus.SetVisible(true);
     m_imgNoFocus.SetVisible(false);
-    m_dwFrameCounter++;
+    m_frameCounter++;
   }
   else
   {
@@ -140,12 +141,12 @@ bool CGUIResizeControl::OnMouseClick(int button, const CPoint &point)
 
 void CGUIResizeControl::UpdateSpeed(int nDirection)
 {
-  if (timeGetTime() - m_dwLastMoveTime > MOVE_TIME_OUT)
+  if (CTimeUtils::GetFrameTime() - m_lastMoveTime > MOVE_TIME_OUT)
   {
     m_fSpeed = 1;
     m_nDirection = DIRECTION_NONE;
   }
-  m_dwLastMoveTime = timeGetTime();
+  m_lastMoveTime = CTimeUtils::GetFrameTime();
   if (nDirection == m_nDirection)
   { // accelerate
     m_fSpeed += m_fAcceleration;
@@ -161,7 +162,7 @@ void CGUIResizeControl::UpdateSpeed(int nDirection)
 void CGUIResizeControl::AllocResources()
 {
   CGUIControl::AllocResources();
-  m_dwFrameCounter = 0;
+  m_frameCounter = 0;
   m_imgFocus.AllocResources();
   m_imgNoFocus.AllocResources();
   m_width = m_imgFocus.GetWidth();

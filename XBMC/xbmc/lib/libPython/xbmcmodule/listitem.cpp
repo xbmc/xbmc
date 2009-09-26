@@ -387,7 +387,7 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
           self->item->GetVideoInfoTag()->m_fRating = (float)PyFloat_AsDouble(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
+          self->item->m_dwSize = (int64_t)PyLong_AsLongLong(value);
         else if (strcmpi(PyString_AsString(key), "watched") == 0) // backward compat - do we need it?
           self->item->GetVideoInfoTag()->m_playCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "playcount") == 0)
@@ -465,7 +465,7 @@ namespace PYXBMC
         else if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
+          self->item->m_dwSize = (int64_t)PyLong_AsLongLong(value);
         else if (strcmpi(PyString_AsString(key), "duration") == 0)
           self->item->GetMusicInfoTag()->SetDuration(PyInt_AsLong(value));
         else
@@ -494,7 +494,7 @@ namespace PYXBMC
         if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "size") == 0)
-          self->item->m_dwSize = (__int64)PyLong_AsLongLong(value);
+          self->item->m_dwSize = (int64_t)PyLong_AsLongLong(value);
         else
         {
           if (!PyGetUnicodeString(tmp, value, 1)) continue;

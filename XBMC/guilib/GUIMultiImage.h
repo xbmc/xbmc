@@ -39,7 +39,7 @@
 class CGUIMultiImage : public CGUIControl
 {
 public:
-  CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, DWORD timePerImage, DWORD fadeTime, bool randomized, bool loop, DWORD timeToPauseAtEnd);
+  CGUIMultiImage(int parentID, int controlID, float posX, float posY, float width, float height, const CTextureInfo& texture, unsigned int timePerImage, unsigned int fadeTime, bool randomized, bool loop, unsigned int timeToPauseAtEnd);
   CGUIMultiImage(const CGUIMultiImage &from);
   virtual ~CGUIMultiImage(void);
   virtual CGUIMultiImage *Clone() const { return new CGUIMultiImage(*this); };
@@ -65,8 +65,8 @@ protected:
   CStdString m_currentPath;
   unsigned int m_currentImage;
   CStopWatch m_imageTimer;
-  DWORD m_timePerImage;
-  DWORD m_timeToPauseAtEnd;
+  unsigned int m_timePerImage;
+  unsigned int m_timeToPauseAtEnd;
   bool m_randomized;
   bool m_loop;
 

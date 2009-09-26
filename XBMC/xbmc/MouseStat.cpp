@@ -24,6 +24,7 @@
 #include "GraphicContext.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 CMouseStat g_Mouse;
 
@@ -90,7 +91,7 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
 
 void CMouseStat::UpdateInternal()
 {
-  uint32_t now = timeGetTime();
+  uint32_t now = CTimeUtils::GetFrameTime();
   // update our state from the mouse device
   if (HasMoved() || m_mouseState.dz)
     SetActive();
@@ -153,7 +154,7 @@ void CMouseStat::SetResolution(int maxX, int maxY, float speedX, float speedY)
 
 void CMouseStat::SetActive(bool active /*=true*/)
 {
-  m_lastActiveTime = timeGetTime();
+  m_lastActiveTime = CTimeUtils::GetFrameTime();
   m_mouseState.active = active;
   SDL_ShowCursor(m_mouseState.active && !(IsEnabled() || g_Windowing.IsFullScreen()));
 }
@@ -161,7 +162,7 @@ void CMouseStat::SetActive(bool active /*=true*/)
 // IsActive - returns true if we have been active in the last MOUSE_ACTIVE_LENGTH period
 bool CMouseStat::IsActive()
 {
-  if (m_mouseState.active && (timeGetTime() - m_lastActiveTime > MOUSE_ACTIVE_LENGTH))
+  if (m_mouseState.active && (CTimeUtils::GetFrameTime() - m_lastActiveTime > MOUSE_ACTIVE_LENGTH))
     SetActive(false);
   return (m_mouseState.active && IsEnabled());
 }

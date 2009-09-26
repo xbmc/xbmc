@@ -1,4 +1,7 @@
 #include "rar.hpp"
+#ifdef _LINUX
+#include "XFileUtils.h"
+#endif
 
 
 void SetDirTime(const char *Name,RarTime *ftm,RarTime *ftc,RarTime *fta)

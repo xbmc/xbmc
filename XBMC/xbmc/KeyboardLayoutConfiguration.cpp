@@ -21,6 +21,7 @@
 
 #include "KeyboardLayoutConfiguration.h"
 #include "utils/CharsetConverter.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 CKeyboardLayoutConfiguration g_keyboardLayoutConfiguration;

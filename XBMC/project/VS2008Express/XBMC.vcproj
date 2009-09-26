@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -55,11 +55,14 @@
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -144,11 +147,14 @@
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -238,11 +244,14 @@
 				BufferSecurityCheck="false"
 				EnableFunctionLevelLinking="false"
 				EnableEnhancedInstructionSet="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="0"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -327,12 +336,15 @@
 				ExceptionHandling="0"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
-				UsePrecompiledHeader="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="pch.h"
 				ProgramDataBaseFileName="$(IntDir)\XBMC.pdb"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4996"
+				ForcedIncludeFiles="pch.h"
+				ShowIncludes="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -396,6 +408,46 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\win32\NetworkWin32.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\pch.cpp"
+				>
+				<FileConfiguration
+					Name="Release (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release (DirectX)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug (OpenGL)|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\pch.h"
 				>
 			</File>
 			<File
@@ -914,51 +966,11 @@
 								RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c"
 								>
 								<FileConfiguration
-									Name="Release (OpenGL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
 									Name="Debug (DirectX)|Win32"
 									>
 									<Tool
 										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release (DirectX)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug (OpenGL)|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Debug|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
-									/>
-								</FileConfiguration>
-								<FileConfiguration
-									Name="Release|Win32"
-									>
-									<Tool
-										Name="VCCLCompilerTool"
-										UsePrecompiledHeader="0"
+										CompileAs="2"
 									/>
 								</FileConfiguration>
 							</File>
@@ -1810,14 +1822,38 @@
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_aton.c"
 							>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_ntop.c"
 							>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
 						</File>
 						<File
 							RelativePath="..\..\xbmc\cores\DllLoader\exports\emu_socket\inet_pton.c"
 							>
+							<FileConfiguration
+								Name="Debug (DirectX)|Win32"
+								>
+								<Tool
+									Name="VCCLCompilerTool"
+									CompileAs="2"
+								/>
+							</FileConfiguration>
 						</File>
 					</Filter>
 					<Filter
@@ -2666,6 +2702,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\Builtins.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Builtins.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\ButtonTranslator.cpp"
 					>
 				</File>
@@ -3059,6 +3103,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\ThumbnailCache.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TimeUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\TimeUtils.h"
 					>
 				</File>
 				<File
