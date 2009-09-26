@@ -469,7 +469,9 @@ BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
 #ifdef HAS_LIRC
+  bool remoteused = g_RemoteControl.IsInUse();
   g_RemoteControl.Disconnect();
+  g_RemoteControl.setUsed(false);
 #endif
   g_graphicsContext.Lock();
 
@@ -477,6 +479,7 @@ BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 
   g_graphicsContext.Unlock();
 #ifdef HAS_LIRC
+  g_RemoteControl.setUsed(remoteused);
   g_RemoteControl.Initialize();
 #endif
 
