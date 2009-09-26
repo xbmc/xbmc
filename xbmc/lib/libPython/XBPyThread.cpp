@@ -286,9 +286,10 @@ void XBPyThread::OnExit()
 void XBPyThread::OnException()
 {
   m_done        = true;
+  PyEval_AcquireLock();
   m_threadState = NULL;
-  CLog::Log(LOGERROR,"%s, abnormally terminating python thread", __FUNCTION__);
   PyEval_ReleaseLock();
+  CLog::Log(LOGERROR,"%s, abnormally terminating python thread", __FUNCTION__);
   m_pExecuter->setDone(m_id);
 }
 
