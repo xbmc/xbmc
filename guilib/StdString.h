@@ -2,8 +2,9 @@
 #include <string>
 #include <stdint.h>
 #include <vector>
-#if !defined(_LINUX)
-#include "win32/PlatformDefs.h" // for va_copy
+
+#if defined(_WIN32) && !defined(va_copy)
+#define va_copy(dst, src) ((dst) = (src))
 #endif
 
 // =============================================================================

@@ -1351,7 +1351,7 @@ HRESULT CApplication::Initialize()
   }
 
 #ifdef HAS_PYTHON
-  g_pythonParser.bStartup = true;
+  g_pythonParser.m_bStartup = true;
 #endif
   g_sysinfo.Refresh();
 
@@ -3377,12 +3377,12 @@ bool CApplication::ProcessKeyboard()
   MEASURE_FUNCTION;
 
   // process the keyboard buttons etc.
-  BYTE vkey = g_Keyboard.GetVKey();
-  WCHAR unicode = g_Keyboard.GetUnicode();
+  uint8_t vkey = g_Keyboard.GetVKey();
+  wchar_t unicode = g_Keyboard.GetUnicode();
   if (vkey || unicode)
   {
     // got a valid keypress - convert to a key code
-    int keyID;
+    uint32_t keyID;
     if (vkey) // FIXME, every ascii has a vkey so vkey would always and ascii would never be processed, but fortunately OnKey uses wkeyID only to detect keyboard use and the real key is recalculated correctly.
       keyID = vkey | KEY_VKEY;
     else

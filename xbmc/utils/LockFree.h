@@ -38,10 +38,10 @@ struct atomic_ptr
 };
 
 #if defined(__ppc__) || defined(__powerpc__)
-  #define atomic_ptr_to_long(p) (long) ((long*)&p)
+  #define atomic_ptr_to_long(p) (long) *((long*)&p)
 #else
   // This is ugly but correct as long as sizeof(void*) == sizeof(long)...
-  #define atomic_ptr_to_long_long(p) (long long) ((long long*)&p)
+  #define atomic_ptr_to_long_long(p) (long long) *((long long*)&p)
 #endif
 
 struct lf_node

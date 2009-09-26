@@ -26,6 +26,9 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#ifdef _WIN32
+#include "PlatformDefs.h" //for PRIdS, PRId64
+#endif
 
 namespace XFILE {
 

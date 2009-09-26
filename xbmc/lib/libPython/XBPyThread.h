@@ -58,12 +58,12 @@ protected:
   XBPython      *m_pExecuter;
   PyThreadState *m_threadState;
 
-  char type;
-  char *source;
-  char **argv;
-  unsigned int  argc;
-  bool done;
-  bool stopping;
+  char m_type;
+  char *m_source;
+  char **m_argv;
+  unsigned int  m_argc;
+  bool m_done;
+  bool m_stopping;
   int  m_id;
 
   virtual void OnStartup();

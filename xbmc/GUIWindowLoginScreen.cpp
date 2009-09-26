@@ -123,7 +123,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
             g_weatherManager.Refresh();
 #ifdef HAS_PYTHON
-            g_pythonParser.bLogin = true;
+            g_pythonParser.m_bLogin = true;
 #endif
             RESOLUTION res=RES_INVALID;
             CStdString startupPath = g_SkinInfo.GetSkinPath("Startup.xml", &res);

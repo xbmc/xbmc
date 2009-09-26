@@ -103,16 +103,16 @@ extern "C" {
 
 XBPython::XBPython()
 {
-  m_bInitialized = false;
-  bStartup = false;
-  bLogin = false;
-  nextid = 0;
-  mainThreadState = NULL;
-  m_hEvent = CreateEvent(NULL, false, false, (char*)"pythonEvent");
-  m_globalEvent = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
-  dThreadId = CThread::GetCurrentThreadId();
-  vecPlayerCallbackList.clear();
+  m_bInitialized      = false;
+  m_bStartup          = false;
+  m_bLogin            = false;
+  m_nextid            = 0;
+  m_mainThreadState   = NULL;
+  m_hEvent            = CreateEvent(NULL, false, false, (char*)"pythonEvent");
+  m_globalEvent       = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
+  m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
+  m_vecPlayerCallbackList.clear();
 }
 
 XBPython::~XBPython()
@@ -130,8 +130,8 @@ void XBPython::OnPlayBackEnded()
 {
   if (m_bInitialized)
   {
-    PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
-    while (it != vecPlayerCallbackList.end())
+    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+    while (it != m_vecPlayerCallbackList.end())
     {
       ((IPlayerCallback*)(*it))->OnPlayBackEnded();
       it++;
@@ -144,8 +144,8 @@ void XBPython::OnPlayBackStarted()
 {
   if (m_bInitialized)
   {
-    PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
-    while (it != vecPlayerCallbackList.end())
+    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+    while (it != m_vecPlayerCallbackList.end())
     {
       ((IPlayerCallback*)(*it))->OnPlayBackStarted();
       it++;
@@ -158,8 +158,8 @@ void XBPython::OnPlayBackStopped()
 {
   if (m_bInitialized)
   {
-    PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
-    while (it != vecPlayerCallbackList.end())
+    PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+    while (it != m_vecPlayerCallbackList.end())
     {
       ((IPlayerCallback*)(*it))->OnPlayBackStopped();
       it++;
@@ -169,19 +169,18 @@ void XBPython::OnPlayBackStopped()
 
 void XBPython::RegisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
-  vecPlayerCallbackList.push_back(pCallback);
+  m_vecPlayerCallbackList.push_back(pCallback);
 }
 
 void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 {
-  PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
-  while (it != vecPlayerCallbackList.end())
+  PlayerCallbackList::iterator it = m_vecPlayerCallbackList.begin();
+  while (it != m_vecPlayerCallbackList.end())
   {
     if (*it == pCallback)
-    {
-      it = vecPlayerCallbackList.erase(it);
-    }
-    else it++;
+      it = m_vecPlayerCallbackList.erase(it);
+    else
+      it++;
   }
 }
 
@@ -190,7 +189,8 @@ void XBPython::UnregisterPythonPlayerCallBack(IPlayerCallback* pCallback)
 */
 bool XBPython::FileExist(const char* strFile)
 {
-  if (!strFile) return false;
+  if (!strFile)
+    return false;
 
   if (!XFILE::CFile::Exists(strFile))
   {
@@ -287,7 +287,7 @@ void XBPython::Initialize()
   m_iDllScriptCounter++;
   if (!m_bInitialized)
   {
-    if (CThread::IsCurrentThread(dThreadId))
+    if (CThread::IsCurrentThread(m_ThreadId))
     {
       m_pDll = DllLoaderContainer::LoadModule(PYTHON_DLL, NULL, true);
 
@@ -315,6 +315,10 @@ void XBPython::Initialize()
       }
 #endif        
 
+
+      // Info about interesting python envvars available 
+      // at http://docs.python.org/using/cmdline.html#environment-variables
+
 #if (!defined USE_EXTERNAL_PYTHON)
 #ifdef _LINUX
       // Required for python to find optimized code (pyo) files
@@ -326,9 +330,6 @@ void XBPython::Initialize()
 #else
       setenv("PYTHONPATH", _P("special://xbmc/system/python/python24.zip").c_str(), 1);
 #endif /* __APPLE__ */
-      //setenv("PYTHONDEBUG", "1", 1);
-      //setenv("PYTHONINSPECT", "1", 1);
-      //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1);
       CLog::Log(LOGDEBUG, "Python wrapper library linked with internal Python library");
 #endif /* _LINUX */
@@ -337,10 +338,6 @@ void XBPython::Initialize()
          Reason for this is because we cannot be sure what version of Python
          was used to compile the various Python object files (i.e. .pyo,
          .pyc, etc.). */
-      //setenv("PYTHONOPTIMIZE", "1", 1);
-      //setenv("PYTHONDEBUG", "1", 1);
-      //setenv("PYTHONINSPECT", "1", 1);
-      //setenv("PYTHONVERBOSE", "1", 1);
       setenv("PYTHONCASEOK", "1", 1); //This line should really be removed
       CLog::Log(LOGDEBUG, "Python wrapper library linked with system Python library");
 #endif /* USE_EXTERNAL_PYTHON */
@@ -355,7 +352,7 @@ void XBPython::Initialize()
       InitGUITypes();
       InitPluginTypes();
 
-      mainThreadState = PyThreadState_Get();
+      m_mainThreadState = PyThreadState_Get();
 
       // release the lock
       PyEval_ReleaseLock();
@@ -387,7 +384,7 @@ void XBPython::Finalize()
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
     PyEval_AcquireLock();
-    PyThreadState_Swap(mainThreadState);
+    PyThreadState_Swap(m_mainThreadState);
     Py_Finalize();
 
     UnloadExtensionLibs();
@@ -399,9 +396,9 @@ void XBPython::Finalize()
     // The implementation for linux and os x needs looking at - UnloadPythonDlls() currently only searches for "python24.dll"
     DllLoaderContainer::ReleaseModule(m_pDll);
 #endif
-    m_hModule = NULL;
-    mainThreadState = NULL;
-    m_bInitialized = false;
+    m_hModule         = NULL;
+    m_mainThreadState = NULL;
+    m_bInitialized    = false;
   }
 }
 
@@ -411,13 +408,13 @@ void XBPython::FreeResources()
   if (m_bInitialized)
   {
     // cleanup threads that are still running
-    PyList::iterator it = vecPyList.begin();
-    while (it != vecPyList.end())
+    PyList::iterator it = m_vecPyList.begin();
+    while (it != m_vecPyList.end())
     { 
       lock.Leave(); //unlock here because the python thread might lock when it exits
       delete it->pyThread;
       lock.Enter();
-      it = vecPyList.erase(it);
+      it = m_vecPyList.erase(it);
       Finalize();
     }
   }
@@ -428,16 +425,16 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
-  if (bStartup)
+  if (m_bStartup)
   {
-    bStartup = false;
+    m_bStartup = false;
     if (evalFile("special://home/scripts/autoexec.py") < 0)
       evalFile("special://xbmc/scripts/autoexec.py");
   }
 
-  if (bLogin)
+  if (m_bLogin)
   {
-    bLogin = false;
+    m_bLogin = false;
     evalFile("special://profile/scripts/autoexec.py");
   }
 
@@ -445,14 +442,14 @@ void XBPython::Process()
 
   if (m_bInitialized)
   {
-    PyList::iterator it = vecPyList.begin();
-    while (it != vecPyList.end())
+    PyList::iterator it = m_vecPyList.begin();
+    while (it != m_vecPyList.end())
     {
       //delete scripts which are done
       if (it->bDone)
       {
         delete it->pyThread;
-        it = vecPyList.erase(it);
+        it = m_vecPyList.erase(it);
         Finalize();
       }
       else ++it;
@@ -472,7 +469,9 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   }
 
   // check if locked
-  if (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].programsLocked() && g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
+  int profile = g_settings.m_iLastLoadedProfileIndex;
+  if (g_settings.m_vecProfiles[profile].programsLocked() &&
+      g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE)
     if (!g_passwordManager.IsMasterLockUnlocked(true))
       return -1;
 
@@ -480,28 +479,28 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
 
   if (!m_bInitialized) return -1;
 
-  nextid++;
-  XBPyThread *pyThread = new XBPyThread(this, nextid);
+  m_nextid++;
+  XBPyThread *pyThread = new XBPyThread(this, m_nextid);
   if (argv != NULL)
     pyThread->setArgv(argc, argv);
   pyThread->evalFile(src);
   PyElem inf;
-  inf.id = nextid;
-  inf.bDone = false;
-  inf.strFile = src;
-  inf.pyThread = pyThread;
+  inf.id        = m_nextid;
+  inf.bDone     = false;
+  inf.strFile   = src;
+  inf.pyThread  = pyThread;
 
   CSingleLock lock(m_critSection);
-  vecPyList.push_back(inf);
+  m_vecPyList.push_back(inf);
 
-  return nextid;
+  return m_nextid;
 }
 
 void XBPython::setDone(int id)
 {
   CSingleLock lock(m_critSection);
-  PyList::iterator it = vecPyList.begin();
-  while (it != vecPyList.end())
+  PyList::iterator it = m_vecPyList.begin();
+  while (it != m_vecPyList.end())
   {
     if (it->id == id)
     {
@@ -518,8 +517,8 @@ void XBPython::setDone(int id)
 void XBPython::stopScript(int id)
 {
   CSingleLock lock(m_critSection);
-  PyList::iterator it = vecPyList.begin();
-  while (it != vecPyList.end())
+  PyList::iterator it = m_vecPyList.begin();
+  while (it != m_vecPyList.end())
   {
     if (it->id == id) {
       CLog::Log(LOGINFO, "Stopping script with id: %i", id);
@@ -532,13 +531,13 @@ void XBPython::stopScript(int id)
 
 PyThreadState *XBPython::getMainThreadState()
 {
-  return mainThreadState;
+  return m_mainThreadState;
 }
 
 int XBPython::ScriptsSize()
 {
   CSingleLock lock(m_critSection);
-  return vecPyList.size();
+  return m_vecPyList.size();
 }
 
 const char* XBPython::getFileName(int scriptId)
@@ -546,10 +545,11 @@ const char* XBPython::getFileName(int scriptId)
   const char* cFileName = NULL;
  
   CSingleLock lock(m_critSection);
-  PyList::iterator it = vecPyList.begin();
-  while (it != vecPyList.end())
+  PyList::iterator it = m_vecPyList.begin();
+  while (it != m_vecPyList.end())
   {
-    if (it->id == scriptId) cFileName = it->strFile.c_str();
+    if (it->id == scriptId)
+      cFileName = it->strFile.c_str();
     ++it;
   }
 
@@ -562,10 +562,11 @@ int XBPython::getScriptId(const char* strFile)
   
   CSingleLock lock(m_critSection);
 
-  PyList::iterator it = vecPyList.begin();
-  while (it != vecPyList.end())
+  PyList::iterator it = m_vecPyList.begin();
+  while (it != m_vecPyList.end())
   {
-    if (!stricmp(it->strFile.c_str(), strFile)) iId = it->id;
+    if (!stricmp(it->strFile.c_str(), strFile))
+      iId = it->id;
     ++it;
   }
   
@@ -577,10 +578,11 @@ bool XBPython::isRunning(int scriptId)
   bool bRunning = false;
   CSingleLock lock(m_critSection); 
 
-  PyList::iterator it = vecPyList.begin();
-  while (it != vecPyList.end())
+  PyList::iterator it = m_vecPyList.begin();
+  while (it != m_vecPyList.end())
   {
-    if (it->id == scriptId)	bRunning = true;
+    if (it->id == scriptId)
+      bRunning = true;
     ++it;
   }
   
@@ -592,10 +594,11 @@ bool XBPython::isStopping(int scriptId)
   bool bStopping = false;
   
   CSingleLock lock(m_critSection);
-  PyList::iterator it = vecPyList.begin();
-  while (it != vecPyList.end())
+  PyList::iterator it = m_vecPyList.begin();
+  while (it != m_vecPyList.end())
   {
-    if (it->id == scriptId) bStopping = it->pyThread->isStopping();
+    if (it->id == scriptId)
+      bStopping = it->pyThread->isStopping();
     ++it;
   }
   
@@ -605,7 +608,7 @@ bool XBPython::isStopping(int scriptId)
 int XBPython::GetPythonScriptId(int scriptPosition)
 {
   CSingleLock lock(m_critSection);
-  return (int)vecPyList[scriptPosition].id;
+  return (int)m_vecPyList[scriptPosition].id;
 }
 
 void XBPython::PulseGlobalEvent()
@@ -635,20 +638,20 @@ int XBPython::evalString(const char *src, const unsigned int argc, const char **
   }
 
   // Previous implementation would create a new thread for every script
-  nextid++;
-  XBPyThread *pyThread = new XBPyThread(this, nextid);
+  m_nextid++;
+  XBPyThread *pyThread = new XBPyThread(this, m_nextid);
   if (argv != NULL)
     pyThread->setArgv(argc, argv);
   pyThread->evalString(src);
   
   PyElem inf;
-  inf.id = nextid;
-  inf.bDone = false;
-  inf.strFile = "<string>";
-  inf.pyThread = pyThread;
+  inf.id        = m_nextid;
+  inf.bDone     = false;
+  inf.strFile   = "<string>";
+  inf.pyThread  = pyThread;
 
   CSingleLock lock(m_critSection);
-  vecPyList.push_back(inf);
+  m_vecPyList.push_back(inf);
 
-  return nextid;
+  return m_nextid;
 }
