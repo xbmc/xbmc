@@ -80,9 +80,9 @@ bool XBPython::SendMessage(CGUIMessage& message)
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {
+  CSingleLock lock (m_critSection);
   if (m_bInitialized)
   {
-    CSingleLock lock (m_critSection);
     PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
     while (it != vecPlayerCallbackList.end())
     {
@@ -95,9 +95,9 @@ void XBPython::OnPlayBackEnded()
 // message all registered callbacks that we started playing
 void XBPython::OnPlayBackStarted()
 {
+  CSingleLock lock (m_critSection);
   if (m_bInitialized)
   {
-    CSingleLock lock (m_critSection);
     PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
     while (it != vecPlayerCallbackList.end())
     {
@@ -110,9 +110,9 @@ void XBPython::OnPlayBackStarted()
 // message all registered callbacks that user stopped playing
 void XBPython::OnPlayBackStopped()
 {
+  CSingleLock lock (m_critSection);
   if (m_bInitialized)
   {
-    CSingleLock lock (m_critSection);
     PlayerCallbackList::iterator it = vecPlayerCallbackList.begin();
     while (it != vecPlayerCallbackList.end())
     {
