@@ -388,9 +388,9 @@ void XBPython::Finalize()
     
     PyEval_AcquireLock();
     PyThreadState_Swap(m_mainThreadState);
-    PyEval_ReleaseLock();
     
     Py_Finalize();
+    PyEval_ReleaseLock();
 
     UnloadExtensionLibs();
 
