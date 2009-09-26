@@ -935,13 +935,19 @@ void CVideoReferenceClock::VblankHandler(int64_t nowtime, double fps)
 //this is called from the vblank run function and from CVideoReferenceClock::Wait in case of a late update
 void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 {
-  if (CheckMissed) //set to true from the vblank run function
+  if (CheckMissed) //set to true from the vblank run function, set to false from Wait and GetTime
   {
     if (NrVBlanks < m_MissedVblanks) //if this is true the vblank detection in the run function is wrong
       CLog::Log(LOGDEBUG, "CVideoReferenceClock: detected %i vblanks, missed %i", NrVBlanks, m_MissedVblanks);
     
     NrVBlanks -= m_MissedVblanks; //subtract the vblanks we missed
     m_MissedVblanks = 0;
+  }
+  else
+  {
+    m_MissedVblanks += NrVBlanks;      //tell the vblank clock how many vblanks it missed
+    m_TotalMissedVblanks += NrVBlanks; //for the codec information screen
+    m_VblankTime += m_SystemFrequency * (int64_t)NrVBlanks / m_RefreshRate; //set the vblank time forward
   }
 
   if (NrVBlanks > 0) //update the clock with the adjusted frequency if we have any vblanks
@@ -952,17 +958,32 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
 {
   CSingleLock SingleLock(m_CritSection);
+  
   //when using vblank, get the time from that, otherwise use the systemclock
   if (m_UseVblank)
   {
+    int64_t NextVblank;
+    LARGE_INTEGER Now;
+    
+    while(1)
+    {
+      QueryPerformanceCounter(&Now);               //get current system time
+      NextVblank = TimeOfNextVblank(Now.QuadPart); //get time when the next vblank should happen
+      
+      if (Now.QuadPart >= NextVblank)              //if the vblank should have alread happened, update the clock
+        UpdateClock(1, false);
+      else
+        break;
+    }
+    
     ptime->QuadPart = m_CurrTime;
   }
   else
   {
-    int64_t ClockOffset = m_ClockOffset;
+    int64_t ClockOffset = m_ClockOffset; //get offset of clock
     SingleLock.Leave();
-    QueryPerformanceCounter(ptime);
-    ptime->QuadPart += ClockOffset;
+    QueryPerformanceCounter(ptime);      //get time of systemclock
+    ptime->QuadPart += ClockOffset;      //add offset
   }
 }
 
@@ -1127,7 +1148,6 @@ int CVideoReferenceClock::GetRefreshRate()
     return -1;
 }
 
-#define MAXDELAY 1200
 
 //this is called from CDVDClock::WaitAbsoluteClock, which is called from CXBMCRenderManager::WaitPresentTime
 //it waits until a certain timestamp has passed, used for displaying videoframes at the correct moment
@@ -1144,10 +1164,9 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
   {
     while (m_CurrTime < Target)
     {
-      //calculate when the next vblank will happen, based on when the last one happened and what the refreshrate is
-      //then advance that value by 20% of a vblank period, if the vblank clock doesn't update by that time we know it's late
+      //calculate how long to sleep before we should have gotten a signal that a vblank happened
       QueryPerformanceCounter(&Now);
-      NextVblank = m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXDELAY / 1000);
+      NextVblank = TimeOfNextVblank(Now.QuadPart);
       SleepTime = (int)((NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency);
 
       int64_t CurrTime = m_CurrTime; //save current value of the clock
@@ -1174,9 +1193,6 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
         // actually checking for vdpau enabled is too messy to be used in this routine. 
         CLog::Log(LOGDEBUG, "CVideoReferenceClock: vblank clock was late: SleepTime %i", SleepTime);
 #endif
-        m_MissedVblanks++; //tell the vblank clock how many vblanks it missed
-        m_TotalMissedVblanks++; //for the codec information screen
-        m_VblankTime += m_SystemFrequency / m_RefreshRate; //set the vblank time one vblank period forward
         UpdateClock(1, false); //update the clock by 1 vblank
       }
     }
@@ -1197,6 +1213,21 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
   }
 }
 
+
+void CVideoReferenceClock::SendVblankSignal()
+{
+  m_VblankEvent.Set();
+}
+
+#define MAXVBLANKDELAY 1200
+//guess when the next vblank should happen,
+//based on the refreshrate and when the previous one happened
+//increase that by 20% to allow for errors
+int64_t CVideoReferenceClock::TimeOfNextVblank(int64_t Now)
+{
+  return m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXVBLANKDELAY / 1000);
+}
+
 //for the codec information screen
 bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, int& RefreshRate)
 {
@@ -1208,11 +1239,6 @@ bool CVideoReferenceClock::GetClockInfo(int& MissedVblanks, double& ClockSpeed, 
     return true;
   }
   return false;
-}
-
-void CVideoReferenceClock::SendVblankSignal()
-{
-  m_VblankEvent.Set();
 }
 
 CVideoReferenceClock g_VideoReferenceClock;

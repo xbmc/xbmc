@@ -22,6 +22,9 @@
 #include "XMLUtils.h"
 #include "Util.h"
 #include "FileSystem/SpecialProtocol.h"
+#ifdef _WIN32
+#include "PlatformDefs.h" //for strcasecmp
+#endif
 
 bool XMLUtils::GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& hexValue)
 {
