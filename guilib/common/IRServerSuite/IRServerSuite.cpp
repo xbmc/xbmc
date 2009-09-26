@@ -447,3 +447,7 @@ bool CRemoteControl::IsHolding()
 {
   return m_isHolding;
 }
+
+void CRemoteControl::setUsed(bool value)
+{
+}
