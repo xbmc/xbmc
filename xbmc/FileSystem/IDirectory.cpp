@@ -102,7 +102,7 @@ void IDirectory::SetAllowPrompting(bool allowPrompting)
 
 /*!
  \brief Set whether the directory should be cached by our directory cache.
- \param cacheDirectory Set DIR_CACHE_ONCE or DIR_CACHE_ALWAYS to enable caching (default is DIR_CACHE_NEVER).
+ \param cacheDirectory Set DIR_CACHE_NEVER or DIR_CACHE_ALWAYS to enable or disable caching (default is DIR_CACHE_ONCE).
  */
 
 void IDirectory::SetCacheDirectory(DIR_CACHE_TYPE cacheDirectory)
