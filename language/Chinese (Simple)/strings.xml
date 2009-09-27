@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 09/09/2009-->
+<!--Date of translation: 09/27/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22833 -->
+<!--Based on english strings version 23054 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -809,6 +809,8 @@
 
   <string id="2050">影片长度</string>
 
+  <string id="2100">脚本错误！：%s</string>
+
   <string id="4501">LCD 类型</string>
 
   <string id="10000">首页</string>
@@ -1013,6 +1015,7 @@
   <string id="13119">Sinc</string>
   <string id="13120">VDPAU</string>
   <string id="13121">VDPAU 高品质倍线等级</string>
+  <string id="13122">VDPAU 演播室级色彩转换</string>
 
   <string id="13130">显示空白</string>
   <string id="13131">禁止</string>
@@ -1544,6 +1547,8 @@
   <string id="16314">帧率逆转换</string>
   <string id="17500">显示睡眠时间</string>
 
+  <string id="19000">切换到频道</string>
+
   <string id="20000">音乐 CD 抓取目录</string>
   <string id="20001">使用外部 DVD 播放程序</string>
   <string id="20002">外部 DVD 播放程序</string>
@@ -1878,6 +1883,7 @@
   <string id="20431">覆盖原文件？</string>
   <string id="20432">资料库更新时排除的路径</string>
   <string id="20433">提取媒体元数据信息</string>
+  <string id="20434">影片集</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -1952,6 +1958,7 @@
   <string id="21414">默认电视节目刮削器</string>
   <string id="21415">默认音乐视频刮削器</string>
   <string id="21416">启用基于刮削器语言的回送</string>
+  <string id="21417">- 刮削器设置</string>
 
   <string id="21420">等于</string>
   <string id="21421">智能播放列表规则</string>
@@ -2084,6 +2091,7 @@
   <string id="22019">录音的标题</string>
   <string id="22020">节目表</string>
   <string id="22021">高宽比允许误差 (%)</string>
+  <string id="22022">列表包含视频文件</string>
 
   <!-- strings 22030 thru 22060 reserved for karaoke -->
   <string id="22030">字体</string>
