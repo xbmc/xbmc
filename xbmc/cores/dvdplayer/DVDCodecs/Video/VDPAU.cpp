@@ -71,7 +71,6 @@ CVDPAU::CVDPAU(int width, int height)
   m_glPixmapTexture = 0;
   m_Pixmap = 0;
   m_glContext = 0;
-  m_pixmapBound = false;
   if (!glXBindTexImageEXT)
     glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
   if (!glXReleaseTexImageEXT)
@@ -243,28 +242,18 @@ bool CVDPAU::MakePixmap(int width, int height)
 
 void CVDPAU::BindPixmap()
 {
-  if (!m_pixmapBound)
-  {
-    //CLog::Log(LOGDEBUG,"glXBindTexImageEXT");
-    CSingleLock lock(g_graphicsContext);
-    XLockDisplay(m_Display);
-    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
-    glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
-    VerifyGLState();
-    XUnlockDisplay(m_Display);
-    m_pixmapBound = true;
-  }
+  CSingleLock lock(g_graphicsContext);
+  XLockDisplay(m_Display);
+  glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+  glXBindTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT, NULL);
+  VerifyGLState();
+  XUnlockDisplay(m_Display);
 }
 
 void CVDPAU::ReleasePixmap()
 {
-  if (m_pixmapBound)
-  {
-    //CLog::Log(LOGDEBUG,"glXReleaseTexImageEXT");
-    glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
-    VerifyGLState();
-  }
-  m_pixmapBound = false;
+  glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
+  VerifyGLState();
 }
 
 void CVDPAU::Create(int width, int height)
