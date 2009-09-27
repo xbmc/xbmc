@@ -10,8 +10,8 @@ SRCS=	DVDFactorySubtitle.cpp \
 	DVDSubtitleParserSami.cpp \
 	DVDSubtitlesLibass.cpp \
 	DVDSubtitleParserSSA.cpp \
-  DVDSubtitleParser.cpp \
-  SamiTagConvertor.cpp \
+	DVDSubtitleParser.cpp \
+	SamiTagConvertor.cpp \
 
 LIB=	DVDSubtitles.a
 
