@@ -427,16 +427,23 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Left(14).Equals("stringcompare("))
   {
     int pos = strTest.Find(",");
-    int skinOffset = TranslateString(strTest.Mid(14, pos-14));
+    int info = TranslateString(strTest.Mid(14, pos-14));
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-    return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, skinOffset, compareString));
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
+  }
+  else if (strTest.Left(18).Equals("integergreaterthan("))
+  {
+    int pos = strTest.Find(",");
+    int info = TranslateString(strTest.Mid(18, pos-18));
+    int compareInt = atoi(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)).c_str());
+    return AddMultiInfo(GUIInfo(bNegate ? -INTEGER_GREATER_THAN: INTEGER_GREATER_THAN, info, compareInt));
   }
   else if (strTest.Left(10).Equals("substring("))
   {
     int pos = strTest.Find(",");
-    int skinOffset = TranslateString(strTest.Mid(10, pos-10));
+    int info = TranslateString(strTest.Mid(10, pos-10));
     int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-    return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, skinOffset, compareString));
+    return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, info, compareString));
   }
   else if (strCategory.Equals("lcd"))
   {
@@ -2019,6 +2026,12 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = GetItemImage((const CFileItem *)item, info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
         else
           bReturn = GetImage(info.GetData1(), contextWindow).Equals(m_stringParameters[info.GetData2()]);
+        break;
+      case INTEGER_GREATER_THAN:
+        if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+          bReturn = atoi(GetItemImage((const CFileItem *)item, info.GetData1()).c_str()) > info.GetData2();
+        else
+          bReturn = atoi(GetImage(info.GetData1(), contextWindow).c_str()) > info.GetData2();
         break;
       case STRING_STR:
           {
