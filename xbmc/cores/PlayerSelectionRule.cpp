@@ -1,5 +1,8 @@
 #include "URL.h"
 #include "PlayerSelectionRule.h"
+#include "VideoInfoTag.h"
+#include "StreamDetails.h"
+#include "GUISettings.h"
 
 CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 {
@@ -30,6 +33,20 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
   m_mimeTypes = pRule->Attribute("mimetypes");
   m_fileName = pRule->Attribute("filename");
 
+  m_audioCodec = pRule->Attribute("audiocodec");
+  m_audioChannels = pRule->Attribute("audiochannels");
+  m_videoCodec = pRule->Attribute("videocodec");
+  m_videoResolution = pRule->Attribute("videoresolution");
+  m_videoAspect = pRule->Attribute("videoaspect");
+
+  m_bStreamDetails = m_audioCodec.length() > 0 || m_audioChannels.length() > 0 ||
+    m_videoCodec.length() > 0 || m_videoResolution.length() > 0 || m_videoAspect.length() > 0;
+
+  if (m_bStreamDetails && !g_guiSettings.GetBool("myvideos.extractflags"))
+  {
+      CLog::Log(LOGWARNING, "CPlayerSelectionRule::Initialize: rule: %s needs media flagging, which is disabled", m_name.c_str());
+  }
+
   m_playerName = pRule->Attribute("player");
   m_playerCoreId = 0;
 
@@ -51,10 +68,21 @@ int CPlayerSelectionRule::GetTristate(const char* szValue) const
   return -1;
 }
 
+bool CPlayerSelectionRule::CompileRegExp(const CStdString str, CRegExp& regExp) const
+{
+  return str && str.length() > 0 && regExp.RegComp(str.c_str());
+}
+
+bool CPlayerSelectionRule::MatchesRegExp(const CStdString str, CRegExp& regExp) const
+{
+  return regExp.RegFind(str, 0) == 0;
+}
+
 void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vecCores)
 {
   CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: considering rule: %s", m_name.c_str());
 
+  if (m_bStreamDetails && !item.HasVideoInfoTag()) return;
   if (m_tAudio >= 0 && (m_tAudio > 0) != item.IsAudio()) return;
   if (m_tVideo >= 0 && (m_tVideo > 0) != item.IsVideo()) return;
   if (m_tInternetStream >= 0 && (m_tInternetStream > 0) != item.IsInternetStream()) return;
@@ -63,20 +91,38 @@ void CPlayerSelectionRule::GetPlayers(const CFileItem& item, VECPLAYERCORES &vec
   if (m_tDVDFile >= 0 && (m_tDVDFile > 0) != item.IsDVDFile()) return;
   if (m_tDVDImage >= 0 && (m_tDVDImage > 0) != item.IsDVDImage()) return;
 
+  CRegExp regExp;
+
+  if (m_bStreamDetails)
+  {
+    if (!item.GetVideoInfoTag()->HasStreamDetails())
+    {
+      CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: cannot check rule: %s, no StreamDetails", m_name.c_str());
+      return;
+    }
+
+    CStreamDetails streamDetails = item.GetVideoInfoTag()->m_streamDetails;
+
+    if (CompileRegExp(m_audioCodec, regExp) && !MatchesRegExp(streamDetails.GetAudioCodec(), regExp)) return;
+
+    if (CompileRegExp(m_videoCodec, regExp) && !MatchesRegExp(streamDetails.GetVideoCodec(), regExp)) return;
+
+    if (CompileRegExp(m_videoResolution, regExp) &&
+        !MatchesRegExp(CStreamDetails::VideoWidthToResolutionDescription(streamDetails.GetVideoWidth()), regExp)) return;
+
+    if (CompileRegExp(m_videoAspect, regExp) &&
+        !MatchesRegExp(CStreamDetails::VideoAspectToAspectDescription(streamDetails.GetVideoAspect()),  regExp)) return;
+  }
+
   CURL url(item.m_strPath);
 
-  CRegExp regExp;
-  if (m_fileTypes && m_fileTypes.length() > 0 && regExp.RegComp(m_fileTypes.c_str()))
-    if (regExp.RegFind(url.GetFileType(), 0) != 0) return;
+  if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return;
   
-  if (m_protocols && m_protocols.length() > 0 && regExp.RegComp(m_protocols.c_str()) &&
-      regExp.RegFind(url.GetProtocol(), 0) != 0) return;
+  if (CompileRegExp(m_protocols, regExp) && !MatchesRegExp(url.GetProtocol(), regExp)) return;
   
-  if (m_mimeTypes && m_mimeTypes.length() > 0 && regExp.RegComp(m_mimeTypes.c_str()) &&
-      regExp.RegFind(item.GetContentType(), 0) != 0) return;
+  if (CompileRegExp(m_mimeTypes, regExp) && !MatchesRegExp(item.GetContentType(), regExp)) return;
 
-  if (m_fileName && m_fileName.length() > 0 && regExp.RegComp(m_fileName.c_str()) &&
-      regExp.RegFind(item.m_strPath, 0) != 0) return;
+  if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.m_strPath, regExp)) return;
 
   CLog::Log(LOGDEBUG, "CPlayerSelectionRule::GetPlayers: matches rule: %s", m_name.c_str());
 
