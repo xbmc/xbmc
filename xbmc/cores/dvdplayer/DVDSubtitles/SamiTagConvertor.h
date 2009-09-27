@@ -20,6 +20,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include <stdio.h>
 
 class CDVDOverlayText;
 class CRegExp;
