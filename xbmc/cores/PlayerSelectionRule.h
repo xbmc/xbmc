@@ -39,8 +39,8 @@ public:
 
 private:
   int GetTristate(const char* szValue) const;
-  bool CompileRegExp(const CStdString str, CRegExp& regExp) const;
-  bool MatchesRegExp(const CStdString str, CRegExp& regExp) const;
+  bool CompileRegExp(const CStdString& str, CRegExp& regExp) const;
+  bool MatchesRegExp(const CStdString& str, CRegExp& regExp) const;
   void Initialize(TiXmlElement* pRule);
   PLAYERCOREID GetPlayerCore();
 

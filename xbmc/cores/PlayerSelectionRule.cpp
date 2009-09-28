@@ -68,12 +68,12 @@ int CPlayerSelectionRule::GetTristate(const char* szValue) const
   return -1;
 }
 
-bool CPlayerSelectionRule::CompileRegExp(const CStdString str, CRegExp& regExp) const
+bool CPlayerSelectionRule::CompileRegExp(const CStdString& str, CRegExp& regExp) const
 {
-  return str && str.length() > 0 && regExp.RegComp(str.c_str());
+  return str.length() > 0 && regExp.RegComp(str.c_str());
 }
 
-bool CPlayerSelectionRule::MatchesRegExp(const CStdString str, CRegExp& regExp) const
+bool CPlayerSelectionRule::MatchesRegExp(const CStdString& str, CRegExp& regExp) const
 {
   return regExp.RegFind(str, 0) == 0;
 }
