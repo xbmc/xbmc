@@ -765,9 +765,9 @@ def main():
 			print ""
 			print "The selected disk is too small."
 			if removableDiskSelected:
-				print "The miminum requirements for removable disks are: " + str(gMinSizeMB) + " MB of disk size"
+				print "The minimum requirements for removable disks are: " + str(gMinSizeMB) + " MB of disk size"
 			else:
-				print "The miminum requirements for fixed disks are: " + str(gFixedDiskMinSizeMB) + " MB of disk size"
+				print "The minimum requirements for fixed disks are: " + str(gFixedDiskMinSizeMB) + " MB of disk size"
 			print
 			print "The selected disk has only " + str(diskSizeMB) + " MB of disk space."
 			print ""
