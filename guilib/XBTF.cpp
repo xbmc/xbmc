@@ -30,90 +30,90 @@ CXBTFFrame::CXBTFFrame()
   m_offset = 0;
 }
 
-unsigned int CXBTFFrame::GetWidth() const
+uint32_t CXBTFFrame::GetWidth() const
 {
   return m_width;
 }
 
-void CXBTFFrame::SetWidth(unsigned int width)
+void CXBTFFrame::SetWidth(uint32_t width)
 {
   m_width = width;
 }
 
-unsigned int CXBTFFrame::GetHeight() const
+uint32_t CXBTFFrame::GetHeight() const
 {
   return m_height;
 }
 
-void CXBTFFrame::SetHeight(unsigned int height)
+void CXBTFFrame::SetHeight(uint32_t height)
 {
   m_height = height;
 }
 
-unsigned long long CXBTFFrame::GetPackedSize() const
+uint64_t CXBTFFrame::GetPackedSize() const
 {
   return m_packedSize;
 }
 
-void CXBTFFrame::SetPackedSize(unsigned long long size)
+void CXBTFFrame::SetPackedSize(uint64_t size)
 {
   m_packedSize = size;
 }
 
-unsigned long long CXBTFFrame::GetUnpackedSize() const
+uint64_t CXBTFFrame::GetUnpackedSize() const
 {
   return m_unpackedSize;
 }
 
-void CXBTFFrame::SetUnpackedSize(unsigned long long size)
+void CXBTFFrame::SetUnpackedSize(uint64_t size)
 {
   m_unpackedSize = size;
 }
 
-void CXBTFFrame::SetX(unsigned int x)
+void CXBTFFrame::SetX(uint32_t x)
 {
   m_x = x;
 }
 
-unsigned int CXBTFFrame::GetX() const
+uint32_t CXBTFFrame::GetX() const
 {
   return m_x;
 }
 
-void CXBTFFrame::SetY(unsigned int y)
+void CXBTFFrame::SetY(uint32_t y)
 {
   m_y = y;
 }
 
-unsigned int CXBTFFrame::GetY() const
+uint32_t CXBTFFrame::GetY() const
 {
   return m_y;
 }
 
-unsigned long long CXBTFFrame::GetOffset() const
+uint64_t CXBTFFrame::GetOffset() const
 {
   return m_offset;
 }
 
-void CXBTFFrame::SetOffset(unsigned long long offset)
+void CXBTFFrame::SetOffset(uint64_t offset)
 {
   m_offset = offset;
 }
 
-unsigned int CXBTFFrame::GetDuration() const
+uint32_t CXBTFFrame::GetDuration() const
 {
   return m_duration;
 }
 
-void CXBTFFrame::SetDuration(unsigned int duration)
+void CXBTFFrame::SetDuration(uint32_t duration)
 {
   m_duration = duration;
 }
 
 
-unsigned long long CXBTFFrame::GetHeaderSize() const
+uint64_t CXBTFFrame::GetHeaderSize() const
 {
-  unsigned long long result = 
+  uint64_t result = 
     sizeof(m_width) +
     sizeof(m_height) +
     sizeof(m_x) +
@@ -128,7 +128,7 @@ unsigned long long CXBTFFrame::GetHeaderSize() const
 
 CXBTFFile::CXBTFFile()
 {
-  bzero(m_path, sizeof(m_path));
+  memset(m_path, 0, sizeof(m_path));
   m_loop = 0;
   m_format = XB_FMT_UNKNOWN;  
 }
@@ -148,26 +148,26 @@ char* CXBTFFile::GetPath()
 
 void CXBTFFile::SetPath(const std::string& path)
 {
-  bzero(m_path, sizeof(m_path));
+  memset(m_path, 0, sizeof(m_path));
   strncpy(m_path, path.c_str(), sizeof(m_path) - 1);
 }
 
-int CXBTFFile::GetLoop() const
+uint32_t CXBTFFile::GetLoop() const
 {
   return m_loop;
 }
 
-void CXBTFFile::SetLoop(int loop)
+void CXBTFFile::SetLoop(uint32_t loop)
 {
   m_loop = loop;
 }
 
-unsigned int CXBTFFile::GetFormat() const
+uint32_t CXBTFFile::GetFormat() const
 {
   return m_format;
 }
 
-void CXBTFFile::SetFormat(unsigned int format)
+void CXBTFFile::SetFormat(uint32_t format)
 {
   m_format = format;
 }
@@ -177,13 +177,13 @@ std::vector<CXBTFFrame>& CXBTFFile::GetFrames()
   return m_frames;
 }
 
-unsigned long long CXBTFFile::GetHeaderSize() const
+uint64_t CXBTFFile::GetHeaderSize() const
 {
-  unsigned long long result = 
+  uint64_t result = 
     sizeof(m_path) +
     sizeof(m_loop) +
     sizeof(m_format) +    
-    sizeof(unsigned int); /* Number of frames */
+    sizeof(uint32_t); /* Number of frames */
   
   for (size_t i = 0; i < m_frames.size(); i++)
   {
@@ -197,12 +197,12 @@ CXBTF::CXBTF()
 {
 }
 
-unsigned long long CXBTF::GetHeaderSize() const
+uint64_t CXBTF::GetHeaderSize() const
 {
-  unsigned long long result = 
+  uint64_t result = 
     4 /* Magic */ + 
     1 /* Vesion */ +
-    sizeof(unsigned int) /* Number of Files */;
+    sizeof(uint32_t) /* Number of Files */;
   
   for (size_t i = 0; i < m_files.size(); i++)
   {

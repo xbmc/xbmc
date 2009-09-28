@@ -19,7 +19,7 @@
  *
  */
 
-#include "squish.h"
+#include "lib/libsquish/squish.h"
 #include "system.h"
 #include "TextureBundleXBT.h"
 #include "Texture.h"
@@ -40,6 +40,7 @@
 
 #if !defined(__GNUC__)
 #pragma comment(lib,"../../xbmc/lib/liblzo/lzo.lib")
+#pragma comment (lib,"../../xbmc/lib/libsquish/lib/squish.lib")
 #endif
 
 CTextureBundleXBT::CTextureBundleXBT(void)
@@ -199,7 +200,7 @@ int CTextureBundleXBT::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTe
 bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame& frame, int format, CBaseTexture** ppTexture)
 {
   // found texture - allocate the necessary buffers
-  unsigned char* PackedBuf = (unsigned char*) malloc(frame.GetPackedSize());
+  unsigned char* PackedBuf = (unsigned char*) malloc((size_t)frame.GetPackedSize());
   if (PackedBuf == NULL)
   {
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %llu bytes)", name.c_str(), frame.GetPackedSize());
@@ -227,8 +228,8 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const CStdString& name, CXBTFFrame
     
     if (format == XB_FMT_LZO)
     {
-      lzo_uint s = frame.GetUnpackedSize();
-      if (lzo1x_decompress(PackedBuf, frame.GetPackedSize(), UnpackedBuf, &s, NULL) != LZO_E_OK ||
+      lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
+      if (lzo1x_decompress(PackedBuf, (lzo_uint)frame.GetPackedSize(), UnpackedBuf, &s, NULL) != LZO_E_OK ||
           s != frame.GetUnpackedSize())
       {
         CLog::Log(LOGERROR, "Error loading texture: %s: Decompression error", name.c_str());

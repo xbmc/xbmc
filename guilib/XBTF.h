@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include <stdint.h>
 
 #define XBTF_MAGIC "XBTF"
 #define XBTF_VERSION "1"
@@ -40,33 +41,33 @@ class CXBTFFrame
 {
 public:  
   CXBTFFrame();
-  unsigned int GetWidth() const;
-  void SetWidth(unsigned int width);
-  unsigned int GetX() const;
-  void SetX(unsigned int x);
-  unsigned int GetY() const;
-  void SetY(unsigned int y);
-  unsigned int GetHeight() const;
-  void SetHeight(unsigned int height);
-  unsigned long long GetUnpackedSize() const;
-  void SetUnpackedSize(unsigned long long size);
-  unsigned long long GetPackedSize() const;
-  void SetPackedSize(unsigned long long size);
-  unsigned long long GetOffset() const;
-  void SetOffset(unsigned long long offset);
-  unsigned long long GetHeaderSize() const;
-  unsigned int GetDuration() const;
-  void SetDuration(unsigned int duration);
+  uint32_t GetWidth() const;
+  void SetWidth(uint32_t width);
+  uint32_t GetX() const;
+  void SetX(uint32_t x);
+  uint32_t GetY() const;
+  void SetY(uint32_t y);
+  uint32_t GetHeight() const;
+  void SetHeight(uint32_t height);
+  uint64_t GetUnpackedSize() const;
+  void SetUnpackedSize(uint64_t size);
+  uint64_t GetPackedSize() const;
+  void SetPackedSize(uint64_t size);
+  uint64_t GetOffset() const;
+  void SetOffset(uint64_t offset);
+  uint64_t GetHeaderSize() const;
+  uint32_t GetDuration() const;
+  void SetDuration(uint32_t duration);
 
 private:
-  unsigned int       m_width;
-  unsigned int       m_height;
-  unsigned int       m_x;
-  unsigned int       m_y;
-  unsigned long long m_packedSize;
-  unsigned long long m_unpackedSize;
-  unsigned long long m_offset;
-  unsigned int       m_duration;
+  uint32_t m_width;
+  uint32_t m_height;
+  uint32_t m_x;
+  uint32_t m_y;
+  uint64_t m_packedSize;
+  uint64_t m_unpackedSize;
+  uint64_t m_offset;
+  uint32_t m_duration;
 };
 
 class CXBTFFile
@@ -76,18 +77,18 @@ public:
   CXBTFFile(const CXBTFFile& ref);
   char* GetPath();
   void SetPath(const std::string& path);
-  int GetLoop() const;
-  void SetLoop(int loop);
-  unsigned int GetFormat() const;
-  void SetFormat(unsigned int format);  
+  uint32_t GetLoop() const;
+  void SetLoop(uint32_t loop);
+  uint32_t GetFormat() const;
+  void SetFormat(uint32_t format);  
   
   std::vector<CXBTFFrame>& GetFrames();  
   unsigned long long GetHeaderSize() const;
   
 private:
   char         m_path[256];
-  int          m_loop;
-  unsigned int m_format;    
+  uint32_t     m_loop;
+  uint32_t     m_format;    
   std::vector<CXBTFFrame> m_frames;
 };
 
@@ -95,7 +96,7 @@ class CXBTF
 {
 public:
   CXBTF();
-  unsigned long long GetHeaderSize() const;
+  uint64_t GetHeaderSize() const;
   std::vector<CXBTFFile>& GetFiles();  
   
 private:

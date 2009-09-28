@@ -23,6 +23,10 @@
 #include "XBTFReader.h"
 #include "EndianSwap.h"
 #include "CharsetConverter.h"
+#ifdef _WIN32
+#include "FileSystem/SpecialProtocol.h"
+#include "PlatformDefs.h" //for PRIdS, PRId64
+#endif
 
 #define READ_STR(str, size, file) fread(str, size, 1, file)
 #define READ_U32(i, file) fread(&i, 4, 1, file); i = Endian_SwapLE32(i);
@@ -42,7 +46,7 @@ bool CXBTFReader::Open(const CStdString& fileName)
 {
   m_fileName = fileName;
   
-#ifndef _LINUX
+#ifdef _WIN32
   CStdStringW strPathW;
   g_charsetConverter.utf8ToW(_P(m_fileName), strPathW, false);
   m_file = _wfopen(strPathW.c_str(), L"rb");
@@ -181,12 +185,12 @@ bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer)
     return false;
   }
   
-  if (fseek(m_file, frame.GetOffset(), SEEK_SET) == -1)
+  if (fseeko64(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)
   {
     return false;
   }
   
-  if (fread(buffer, 1, frame.GetPackedSize(), m_file) != frame.GetPackedSize())
+  if (fread(buffer, 1, (size_t)frame.GetPackedSize(), m_file) != frame.GetPackedSize())
   {
     return false;
   }
