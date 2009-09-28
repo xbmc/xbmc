@@ -41,6 +41,16 @@
 		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
 		43248C510FBE224C00B88866 /* CoreAudio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B920FBC8DFF00171871 /* CoreAudio.cpp */; };
 		43248C520FBE224E00B88866 /* CoreAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B8E0FBC8DB000171871 /* CoreAudioRenderer.cpp */; };
+		43352CD21071520C00706B8A /* TextureBundleXBT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CCA1071520C00706B8A /* TextureBundleXBT.cpp */; };
+		43352CD31071520C00706B8A /* TextureBundleXPR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CCC1071520C00706B8A /* TextureBundleXPR.cpp */; };
+		43352CD41071520C00706B8A /* XBTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CCE1071520C00706B8A /* XBTF.cpp */; };
+		43352CD51071520C00706B8A /* XBTFReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CD01071520C00706B8A /* XBTFReader.cpp */; };
+		43352CD61071520C00706B8A /* TextureBundleXBT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CCA1071520C00706B8A /* TextureBundleXBT.cpp */; };
+		43352CD71071520C00706B8A /* TextureBundleXPR.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CCC1071520C00706B8A /* TextureBundleXPR.cpp */; };
+		43352CD81071520C00706B8A /* XBTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CCE1071520C00706B8A /* XBTF.cpp */; };
+		43352CD91071520C00706B8A /* XBTFReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CD01071520C00706B8A /* XBTFReader.cpp */; };
+		43352CEE1071634600706B8A /* libsquish-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish-x86-osx.a */; };
+		43352CF01071639400706B8A /* libsquish-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */; };
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
@@ -1825,6 +1835,17 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		43352CCA1071520C00706B8A /* TextureBundleXBT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextureBundleXBT.cpp; path = guilib/TextureBundleXBT.cpp; sourceTree = "<group>"; };
+		43352CCB1071520C00706B8A /* TextureBundleXBT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureBundleXBT.h; path = guilib/TextureBundleXBT.h; sourceTree = "<group>"; };
+		43352CCC1071520C00706B8A /* TextureBundleXPR.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextureBundleXPR.cpp; path = guilib/TextureBundleXPR.cpp; sourceTree = "<group>"; };
+		43352CCD1071520C00706B8A /* TextureBundleXPR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureBundleXPR.h; path = guilib/TextureBundleXPR.h; sourceTree = "<group>"; };
+		43352CCE1071520C00706B8A /* XBTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XBTF.cpp; path = guilib/XBTF.cpp; sourceTree = "<group>"; };
+		43352CCF1071520C00706B8A /* XBTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XBTF.h; path = guilib/XBTF.h; sourceTree = "<group>"; };
+		43352CD01071520C00706B8A /* XBTFReader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = XBTFReader.cpp; path = guilib/XBTFReader.cpp; sourceTree = "<group>"; };
+		43352CD11071520C00706B8A /* XBTFReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XBTFReader.h; path = guilib/XBTFReader.h; sourceTree = "<group>"; };
+		43352CE61071545C00706B8A /* squish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = squish.h; path = xbmc/lib/libsquish/squish.h; sourceTree = "<group>"; };
+		43352CED1071634600706B8A /* libsquish-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-x86-osx.a"; path = "xbmc/lib/libsquish/libsquish-x86-osx.a"; sourceTree = "<group>"; };
+		43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-powerpc-osx.a"; path = "xbmc/lib/libsquish/libsquish-powerpc-osx.a"; sourceTree = "<group>"; };
 		436B38F3106628850049AB3B /* EndianSwap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EndianSwap.h; path = xbmc/utils/EndianSwap.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
@@ -3835,6 +3856,7 @@
 				E4907BF80FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */,
 				F5D8F881104CD40B004A11AB /* liblzo2.dylib in Frameworks */,
 				F5D8F88C104CD47D004A11AB /* libmms.dylib in Frameworks */,
+				43352CEE1071634600706B8A /* libsquish-x86-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3883,6 +3905,7 @@
 				E4907BF90FDAC38B00E2F075 /* libmysqlclient.dylib in Frameworks */,
 				F5D8F882104CD40B004A11AB /* liblzo2.dylib in Frameworks */,
 				F5D8F88D104CD47D004A11AB /* libmms.dylib in Frameworks */,
+				43352CF01071639400706B8A /* libsquish-powerpc-osx.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3905,6 +3928,15 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				43352CE61071545C00706B8A /* squish.h */,
+				43352CCA1071520C00706B8A /* TextureBundleXBT.cpp */,
+				43352CCB1071520C00706B8A /* TextureBundleXBT.h */,
+				43352CCC1071520C00706B8A /* TextureBundleXPR.cpp */,
+				43352CCD1071520C00706B8A /* TextureBundleXPR.h */,
+				43352CCE1071520C00706B8A /* XBTF.cpp */,
+				43352CCF1071520C00706B8A /* XBTF.h */,
+				43352CD01071520C00706B8A /* XBTFReader.cpp */,
+				43352CD11071520C00706B8A /* XBTFReader.h */,
 				436B38F3106628850049AB3B /* EndianSwap.h */,
 				E38E13890D25F9F900618676 /* guilib */,
 				E38E14610D25F9F900618676 /* xbmc */,
@@ -7003,6 +7035,7 @@
 		F5A1C8690F6B047D00A96ABD /* ppc */ = {
 			isa = PBXGroup;
 			children = (
+				43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */,
 				F5A1CC010F6B1FB600A96ABD /* librtv-powerpc-osx.a */,
 				F5A1CC050F6B203100A96ABD /* libxbms-powerpc-osx.a */,
 				F5A1CC070F6B209400A96ABD /* libxdaap-powerpc-osx.a */,
@@ -7017,6 +7050,7 @@
 		F5A1C86A0F6B048000A96ABD /* x86 */ = {
 			isa = PBXGroup;
 			children = (
+				43352CED1071634600706B8A /* libsquish-x86-osx.a */,
 				E38E256C0D263A1C00618676 /* librtv-x86-osx.a */,
 				81F0640F0E9B5FE400C203A6 /* libxbms-x86-osx.a */,
 				E38E25680D2639F100618676 /* libxdaap-x86-osx.a */,
@@ -8022,6 +8056,10 @@
 				7CCF7FC9106A0DF500992676 /* TimeUtils.cpp in Sources */,
 				F5EEB973106B07910019B552 /* GUIInfoTypes.cpp in Sources */,
 				F5EEBA87107015070019B552 /* SamiTagConvertor.cpp in Sources */,
+				43352CD21071520C00706B8A /* TextureBundleXBT.cpp in Sources */,
+				43352CD31071520C00706B8A /* TextureBundleXPR.cpp in Sources */,
+				43352CD41071520C00706B8A /* XBTF.cpp in Sources */,
+				43352CD51071520C00706B8A /* XBTFReader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8871,6 +8909,10 @@
 				7CCF7FCA106A0DF500992676 /* TimeUtils.cpp in Sources */,
 				F5EEB974106B07910019B552 /* GUIInfoTypes.cpp in Sources */,
 				F5EEBA88107015070019B552 /* SamiTagConvertor.cpp in Sources */,
+				43352CD61071520C00706B8A /* TextureBundleXBT.cpp in Sources */,
+				43352CD71071520C00706B8A /* TextureBundleXPR.cpp in Sources */,
+				43352CD81071520C00706B8A /* XBTF.cpp in Sources */,
+				43352CD91071520C00706B8A /* XBTFReader.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8954,6 +8996,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
@@ -8962,6 +9005,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libtsci2/tsc-i2lib/.libs\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/xbmc/lib/libsmb\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/xbmc/lib/libsquish\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -9036,6 +9080,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
@@ -9043,6 +9088,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/xbmc/lib/libsmb\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/xbmc/lib/libsquish\"";
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = XBMC;
@@ -9177,6 +9223,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libshout\"";
@@ -9185,6 +9232,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)/xbmc/lib/libPython/Python\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16 = "\"$(SRCROOT)/xbmc/lib/libsquish\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
@@ -9276,6 +9324,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libGoAhead\"";
@@ -9283,6 +9332,7 @@
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13 = "\"$(SRCROOT)/xbmc/lib/libPython/Python\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14 = "\"$(SRCROOT)\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15 = "\"$(SRCROOT)/xbmc/lib/libsquish\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/system/players/dvdplayer\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";

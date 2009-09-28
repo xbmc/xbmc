@@ -1035,6 +1035,7 @@ OUTPUT_FILES="Makefile \
              xbmc/lib/libhdhomerun/Makefile \
              xbmc/lib/libGoAhead/Makefile \
              xbmc/lib/libshout/Makefile \
+             xbmc/lib/libsquish/Makefile \
              xbmc/lib/libid3tag/Makefile \
              xbmc/lib/cximage-6.0/Makefile \
              xbmc/lib/libPython/linux/Makefile \
@@ -1050,6 +1051,7 @@ OUTPUT_FILES="Makefile \
              xbmc/visualizations/iTunes/Makefile \
              tools/Linux/xbmc.sh \
              tools/XBMCTex/Makefile \
+             tools/XBMCTexXBT/Makefile \
              tools/EventClients/Clients/OSXRemote/Makefile"
 AC_CONFIG_FILES([${OUTPUT_FILES}])
 AC_SUBST(CFLAGS)
