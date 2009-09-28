@@ -23,7 +23,7 @@ gBootPartitionSizeMB = 4096
 gSwapPartitionSizeMB = 512
 
 gPermStorageFilename = "ext3fs.img"
-gShapshotStorageFilename = "live-sn.cpio.tz"
+gShapshotStorageFilename = "live-sn.cpio.gz"
 gBootPartMountPoint = "/tmp/bootPart"
 gLivePartMountPoint = "/tmp/livePart"
 
