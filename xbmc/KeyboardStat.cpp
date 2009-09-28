@@ -677,7 +677,7 @@ int CKeyboardStat::HandleEvent(XBMC_Event& newEvent)
 
 void CKeyboardStat::Update(XBMC_Event& event)
 {
-  if ((event.type == XBMC_KEYDOWN) || (event.key.keysym.sym == XBMCK_PRINT))
+  if (event.type == XBMC_KEYDOWN)
   {
     unsigned int now = CTimeUtils::GetFrameTime();
     if (m_lastKey == event.key.keysym.sym)
