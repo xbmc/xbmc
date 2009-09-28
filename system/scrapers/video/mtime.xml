@@ -47,7 +47,7 @@
 				<expression></expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
-				<expression repeat="yes">href=&quot;/movie/section/genre/[^&gt;]*&gt;([^&lt;]*)&&nbsp</expression>
+				<expression repeat="yes">href=&quot;/movie/section/genre/[^&gt;]*&gt;([^&lt;]*).nbsp</expression>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;outline&gt;\1&lt;/outline&gt;&lt;plot&gt;\1&lt;/plot&gt;" dest="5+">
 				<expression>&lt;!-- 剧情介绍 --&gt;.*?&lt;p &gt;(.*?)\t&lt;/p&gt;</expression>
@@ -92,11 +92,8 @@
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression clear="yes" noclean="1">演员 Actor：(.*?)&lt;/ul&gt;</expression>
 			</RegExp>
-			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1.jpg&lt;/thumb&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\3&lt;/role&gt;&lt;/actor&gt;" dest="7">
-				<expression clear="yes" repeat="yes" noclean="1" trim="2,3">&lt;img alt=&quot;[^&quot;]*&quot; src=&quot;([^_]*)_22X22.jpg&quot;/&gt;&lt;/a&gt;&lt;a href=&quot;/person/[0-9]+/&quot;&gt;([^&lt;]*)&lt;/a&gt;(.*?)&lt;/li&gt;</expression>
-			</RegExp>
-			<RegExp input="$$7" output="&lt;actor&gt;\1&lt;role&gt;\2&lt;/role&gt;&lt;/actor&gt;" dest="2">
-				<expression clear="yes" repeat="yes" noclean="1,2">&lt;actor&gt;(.*?)&lt;role&gt;[^&lt;]*\.\.\.\.([^&lt;]*)&lt;/role&gt;&lt;/actor&gt;</expression>
+			<RegExp input="$$6" output="&lt;actor&gt;&lt;thumb&gt;\1.jpg&lt;/thumb&gt;&lt;name&gt;\2&lt;/name&gt;&lt;role&gt;\4&lt;/role&gt;&lt;/actor&gt;" dest="2">
+				<expression clear="yes" repeat="yes" noclean="1" trim="2,4">&lt;img alt=&quot;[^&quot;]*&quot; src=&quot;([^_]*)_22X22.jpg&quot;/&gt;&lt;/a&gt;&lt;a href=&quot;/person/[0-9]+/&quot;&gt;([^&lt;]*)&lt;/a&gt;([^\.]*\.\.\.\.([^&lt;]*)&lt;/em&gt;|.*?)&lt;/li&gt;</expression>
 			</RegExp>
 			<RegExp input="$$1" output="\1" dest="8">
 				<expression clear="yes" noclean="1">导演 Director：(.*?)&lt;/ul&gt;</expression>
