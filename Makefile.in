@@ -454,7 +454,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	# hack this for now
 	$(MAKE) -C tools/XBMCTex -f Makefile.osx
 else
- 	$(MAKE) -C tools/XBMCTex/
+	$(MAKE) -C tools/XBMCTex/
 endif
 
 tools/XBMCTexXBT/XBMCTexXBT:
