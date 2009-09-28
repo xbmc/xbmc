@@ -71,7 +71,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
   height = pPicture->height;
   width = pPicture->width;
 
-  ass_image_t* img = pOverlay->m_libass->RenderImage(width, height, pts);
+  ASS_Image* img = pOverlay->m_libass->RenderImage(width, height, pts);
 
   while(img)
   {
@@ -84,7 +84,7 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
       continue;
     }
 
-    //ass_image colors are RGBA
+    //ASS_Image colors are RGBA
     double b = ((color >> 24) & 0xff) / 255.0;
     double g = ((color >> 16) & 0xff) / 255.0;
     double r = ((color >> 8 ) & 0xff) / 255.0;

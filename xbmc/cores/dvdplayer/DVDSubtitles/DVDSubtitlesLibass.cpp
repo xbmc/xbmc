@@ -166,7 +166,7 @@ long CDVDSubtitlesLibass::GetNrOfReferences()
   return m_references;
 }
 
-ass_image_t* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, double pts)
+ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, double pts)
 {
   if(!m_renderer || !m_track)
   {
@@ -178,7 +178,7 @@ ass_image_t* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, d
   return m_dll.ass_render_frame(m_renderer, m_track, DVD_TIME_TO_MSEC(pts), NULL);
 }
 
-ass_event_t* CDVDSubtitlesLibass::GetEvents()
+ASS_Event* CDVDSubtitlesLibass::GetEvents()
 {
   if(!m_track)
   {

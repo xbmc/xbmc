@@ -340,8 +340,8 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   m_x      = (float)0.0f;
   m_y      = (float)0.0f;
 
-  ass_image_t* images = o->m_libass->RenderImage((int)m_width, (int)m_height, pts);
-  ass_image_t* img;
+  ASS_Image* images = o->m_libass->RenderImage((int)m_width, (int)m_height, pts);
+  ASS_Image* img;
 
   m_texture = ~(GLuint)0;
 
