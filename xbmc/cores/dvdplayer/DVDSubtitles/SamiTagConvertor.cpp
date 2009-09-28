@@ -25,10 +25,8 @@
 
 SamiTagConvertor::~SamiTagConvertor()
 {
-  if (m_tags)
-    delete m_tags;
-  if (m_tagOptions)
-    delete m_tagOptions;
+  delete m_tags;
+  delete m_tagOptions;
 }
 
 bool SamiTagConvertor::Init()
