@@ -2906,6 +2906,18 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\JobManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\JobManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\Job.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\KeyboardLayoutConfiguration.cpp"
 					>
 				</File>

@@ -54,7 +54,8 @@ SRCS=AlarmClock.cpp \
      Atomics.cpp \
      LockFree.cpp \
      StreamDetails.cpp \
-     TimeUtils.cpp
+     TimeUtils.cpp \
+     JobManager.cpp
 
 LIB=utils.a
 
