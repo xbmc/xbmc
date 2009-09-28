@@ -31,21 +31,20 @@
 
 namespace squish {
 
-ClusterFit::ClusterFit( ColourSet const* colours, int flags ) 
+ClusterFit::ClusterFit( ColourSet const* colours, int flags, float* metric ) 
   : ColourFit( colours, flags )
 {
 	// set the iteration count
 	m_iterationCount = ( m_flags & kColourIterativeClusterFit ) ? kMaxIterations : 1;
 
-	// initialise the best error
-	m_besterror = VEC4_CONST( FLT_MAX );
-
-	// initialise the metric
-	bool perceptual = ( ( m_flags & kColourMetricPerceptual ) != 0 );
-	if( perceptual )
-		m_metric = Vec4( 0.2126f, 0.7152f, 0.0722f, 0.0f );
+	// initialise the metric (old perceptual = 0.2126f, 0.7152f, 0.0722f)
+	if( metric )
+		m_metric = Vec4( metric[0], metric[1], metric[2], 1.0f );
 	else
 		m_metric = VEC4_CONST( 1.0f );	
+
+	// initialise the best error
+	m_besterror = VEC4_CONST( FLT_MAX );
 
 	// cache some values
 	int const count = m_colours->GetCount();

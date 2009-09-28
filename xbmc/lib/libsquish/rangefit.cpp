@@ -30,15 +30,14 @@
 
 namespace squish {
 
-RangeFit::RangeFit( ColourSet const* colours, int flags ) 
+RangeFit::RangeFit( ColourSet const* colours, int flags, float* metric ) 
   : ColourFit( colours, flags )
 {
-	// initialise the metric
-	bool perceptual = ( ( m_flags & kColourMetricPerceptual ) != 0 );
-	if( perceptual )
-		m_metric = Vec3( 0.2126f, 0.7152f, 0.0722f );
+	// initialise the metric (old perceptual = 0.2126f, 0.7152f, 0.0722f)
+	if( metric )
+		m_metric = Vec3( metric[0], metric[1], metric[2] );
 	else
-		m_metric = Vec3( 1.0f );
+		m_metric = Vec3( 1.0f );	
 
 	// initialise the best error
 	m_besterror = FLT_MAX;

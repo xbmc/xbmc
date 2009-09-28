@@ -27,6 +27,7 @@
 #define SQUISH_COLOURFIT_H
 
 #include <squish.h>
+#include <limits.h>
 #include "maths.h"
 
 namespace squish {
@@ -37,6 +38,7 @@ class ColourFit
 {
 public:
 	ColourFit( ColourSet const* colours, int flags );
+	virtual ~ColourFit();
 
 	void Compress( void* block );
 

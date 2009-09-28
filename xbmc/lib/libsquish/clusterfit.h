@@ -37,7 +37,7 @@ namespace squish {
 class ClusterFit : public ColourFit
 {
 public:
-	ClusterFit( ColourSet const* colours, int flags );
+	ClusterFit( ColourSet const* colours, int flags, float* metric );
 	
 private:
 	bool ConstructOrdering( Vec3 const& axis, int iteration );

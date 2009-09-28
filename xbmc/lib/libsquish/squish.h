@@ -56,12 +56,6 @@ enum
 	//! Use a fast but low quality colour compressor.
 	kColourRangeFit	= ( 1 << 4 ),
 	
-	//! Use a perceptual metric for colour error (the default).
-	kColourMetricPerceptual = ( 1 << 5 ),
-
-	//! Use a uniform metric for colour error.
-	kColourMetricUniform = ( 1 << 6 ),
-	
 	//! Weight the colour by alpha during cluster fit (disabled by default).
 	kWeightColourByAlpha = ( 1 << 7 )
 };
@@ -71,42 +65,10 @@ enum
 /*! @brief Compresses a 4x4 block of pixels.
 
 	@param rgba		The rgba values of the 16 source pixels.
-	@param block	Storage for the compressed DXT block.
-	@param flags	Compression flags.
-	
-	The source pixels should be presented as a contiguous array of 16 rgba
-	values, with each component as 1 byte each. In memory this should be:
-	
-		{ r1, g1, b1, a1, .... , r16, g16, b16, a16 }
-	
-	The flags parameter should specify either kDxt1, kDxt3 or kDxt5 compression, 
-	however, DXT1 will be used by default if none is specified. When using DXT1 
-	compression, 8 bytes of storage are required for the compressed DXT block. 
-	DXT3 and DXT5 compression require 16 bytes of storage per block.
-	
-	The flags parameter can also specify a preferred colour compressor and 
-	colour error metric to use when fitting the RGB components of the data. 
-	Possible colour compressors are: kColourClusterFit (the default), 
-	kColourRangeFit or kColourIterativeClusterFit. Possible colour error metrics 
-	are: kColourMetricPerceptual (the default) or kColourMetricUniform. If no 
-	flags are specified in any particular category then the default will be 
-	used. Unknown flags are ignored.
-	
-	When using kColourClusterFit, an additional flag can be specified to
-	weight the colour of each pixel by its alpha value. For images that are
-	rendered using alpha blending, this can significantly increase the 
-	perceived quality.
-*/
-void Compress( u8 const* rgba, void* block, int flags );
-
-// -----------------------------------------------------------------------------
-
-/*! @brief Compresses a 4x4 block of pixels.
-
-	@param rgba		The rgba values of the 16 source pixels.
 	@param mask		The valid pixel mask.
 	@param block	Storage for the compressed DXT block.
 	@param flags	Compression flags.
+	@param metric	An optional perceptual metric.
 	
 	The source pixels should be presented as a contiguous array of 16 rgba
 	values, with each component as 1 byte each. In memory this should be:
@@ -125,20 +87,68 @@ void Compress( u8 const* rgba, void* block, int flags );
 	compression, 8 bytes of storage are required for the compressed DXT block. 
 	DXT3 and DXT5 compression require 16 bytes of storage per block.
 	
-	The flags parameter can also specify a preferred colour compressor and 
-	colour error metric to use when fitting the RGB components of the data. 
-	Possible colour compressors are: kColourClusterFit (the default), 
-	kColourRangeFit or kColourIterativeClusterFit. Possible colour error metrics 
-	are: kColourMetricPerceptual (the default) or kColourMetricUniform. If no 
-	flags are specified in any particular category then the default will be 
-	used. Unknown flags are ignored.
+	The flags parameter can also specify a preferred colour compressor to use 
+	when fitting the RGB components of the data. Possible colour compressors 
+	are: kColourClusterFit (the default), kColourRangeFit (very fast, low 
+	quality) or kColourIterativeClusterFit (slowest, best quality).
+		
+	When using kColourClusterFit or kColourIterativeClusterFit, an additional 
+	flag can be specified to weight the importance of each pixel by its alpha 
+	value. For images that are rendered using alpha blending, this can 
+	significantly increase the perceived quality.
 	
-	When using kColourClusterFit, an additional flag can be specified to
-	weight the colour of each pixel by its alpha value. For images that are
-	rendered using alpha blending, this can significantly increase the 
-	perceived quality.
+	The metric parameter can be used to weight the relative importance of each
+	colour channel, or pass NULL to use the default uniform weight of 
+	{ 1.0f, 1.0f, 1.0f }. This replaces the previous flag-based control that 
+	allowed either uniform or "perceptual" weights with the fixed values
+	{ 0.2126f, 0.7152f, 0.0722f }. If non-NULL, the metric should point to a 
+	contiguous array of 3 floats.
 */
-void CompressMasked( u8 const* rgba, int mask, void* block, int flags );
+void CompressMasked( u8 const* rgba, int mask, void* block, int flags, float* metric = 0 );
+
+// -----------------------------------------------------------------------------
+
+/*! @brief Compresses a 4x4 block of pixels.
+
+	@param rgba		The rgba values of the 16 source pixels.
+	@param block	Storage for the compressed DXT block.
+	@param flags	Compression flags.
+	@param metric	An optional perceptual metric.
+	
+	The source pixels should be presented as a contiguous array of 16 rgba
+	values, with each component as 1 byte each. In memory this should be:
+	
+		{ r1, g1, b1, a1, .... , r16, g16, b16, a16 }
+	
+	The flags parameter should specify either kDxt1, kDxt3 or kDxt5 compression, 
+	however, DXT1 will be used by default if none is specified. When using DXT1 
+	compression, 8 bytes of storage are required for the compressed DXT block. 
+	DXT3 and DXT5 compression require 16 bytes of storage per block.
+	
+	The flags parameter can also specify a preferred colour compressor to use 
+	when fitting the RGB components of the data. Possible colour compressors 
+	are: kColourClusterFit (the default), kColourRangeFit (very fast, low 
+	quality) or kColourIterativeClusterFit (slowest, best quality).
+		
+	When using kColourClusterFit or kColourIterativeClusterFit, an additional 
+	flag can be specified to weight the importance of each pixel by its alpha 
+	value. For images that are rendered using alpha blending, this can 
+	significantly increase the perceived quality.
+	
+	The metric parameter can be used to weight the relative importance of each
+	colour channel, or pass NULL to use the default uniform weight of 
+	{ 1.0f, 1.0f, 1.0f }. This replaces the previous flag-based control that 
+	allowed either uniform or "perceptual" weights with the fixed values
+	{ 0.2126f, 0.7152f, 0.0722f }. If non-NULL, the metric should point to a 
+	contiguous array of 3 floats.
+	
+	This method is an inline that calls CompressMasked with a mask of 0xffff, 
+	provided for compatibility with older versions of squish.
+*/
+inline void Compress( u8 const* rgba, void* block, int flags, float* metric = 0 )
+{
+	CompressMasked( rgba, 0xffff, block, flags, metric );
+}
 
 // -----------------------------------------------------------------------------
 
@@ -186,6 +196,7 @@ int GetStorageRequirements( int width, int height, int flags );
 	@param height	The height of the source image.
 	@param blocks	Storage for the compressed output.
 	@param flags	Compression flags.
+	@param metric	An optional perceptual metric.
 	
 	The source pixels should be presented as a contiguous array of width*height
 	rgba values, with each component as 1 byte each. In memory this should be:
@@ -197,24 +208,29 @@ int GetStorageRequirements( int width, int height, int flags );
 	compression, 8 bytes of storage are required for each compressed DXT block. 
 	DXT3 and DXT5 compression require 16 bytes of storage per block.
 	
-	The flags parameter can also specify a preferred colour compressor and 
-	colour error metric to use when fitting the RGB components of the data. 
-	Possible colour compressors are: kColourClusterFit (the default), 
-	kColourRangeFit or kColourIterativeClusterFit. Possible colour error metrics 
-	are: kColourMetricPerceptual (the default) or kColourMetricUniform. If no 
-	flags are specified in any particular category then the default will be 
-	used. Unknown flags are ignored.
+	The flags parameter can also specify a preferred colour compressor to use 
+	when fitting the RGB components of the data. Possible colour compressors 
+	are: kColourClusterFit (the default), kColourRangeFit (very fast, low 
+	quality) or kColourIterativeClusterFit (slowest, best quality).
+		
+	When using kColourClusterFit or kColourIterativeClusterFit, an additional 
+	flag can be specified to weight the importance of each pixel by its alpha 
+	value. For images that are rendered using alpha blending, this can 
+	significantly increase the perceived quality.
 	
-	When using kColourClusterFit, an additional flag can be specified to
-	weight the colour of each pixel by its alpha value. For images that are
-	rendered using alpha blending, this can significantly increase the 
-	perceived quality.
+	The metric parameter can be used to weight the relative importance of each
+	colour channel, or pass NULL to use the default uniform weight of 
+	{ 1.0f, 1.0f, 1.0f }. This replaces the previous flag-based control that 
+	allowed either uniform or "perceptual" weights with the fixed values
+	{ 0.2126f, 0.7152f, 0.0722f }. If non-NULL, the metric should point to a 
+	contiguous array of 3 floats.
 	
-	Internally this function calls squish::Compress for each block. To see how
-	much memory is required in the compressed image, use
-	squish::GetStorageRequirements.
+	Internally this function calls squish::CompressMasked for each block, which 
+	allows for pixels outside the image to take arbitrary values. The function 
+	squish::GetStorageRequirements can be called to compute the amount of memory
+	to allocate for the compressed output.
 */
-void CompressImage( u8 const* rgba, int width, int height, void* blocks, int flags );
+void CompressImage( u8 const* rgba, int width, int height, void* blocks, int flags, float* metric = 0 );
 
 // -----------------------------------------------------------------------------
 
