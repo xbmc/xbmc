@@ -74,6 +74,7 @@ public:
   virtual void GetViewPort(CRect& viewPort) = 0;
 
   virtual bool NeedPower2Texture() = 0;
+  virtual bool SupportsCompressedTextures() = 0;
   
   virtual void CaptureStateBlock() = 0;
   virtual void ApplyStateBlock() = 0;

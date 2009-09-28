@@ -52,6 +52,7 @@ public:
   virtual void GetViewPort(CRect& viewPort);
   
   virtual bool NeedPower2Texture() { return m_NeedPower2Texture; }
+  virtual bool SupportsCompressedTextures() { return false; /* TODO: temporary until we add support for compressed textures in DX */ }  
 
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();

@@ -29,10 +29,10 @@
 /************************************************************************/
 /*    CDXTexture                                                       */
 /************************************************************************/
-CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int BPP)
-: CBaseTexture(width, height, BPP)
+CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int BPP, unsigned int format)
+: CBaseTexture(width, height, BPP, format)
 {
-  Allocate(m_imageWidth, m_imageHeight, m_nBPP);
+  Allocate(m_imageWidth, m_imageHeight, m_nBPP, m_format);
 }
 
 CDXTexture::~CDXTexture()

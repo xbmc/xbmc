@@ -31,14 +31,14 @@ using namespace std;
 /************************************************************************/
 /*    CGLTexture                                                       */
 /************************************************************************/
-CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int BPP)
-: CBaseTexture(width, height, BPP)
+CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int BPP, unsigned int format)
+: CBaseTexture(width, height, BPP, format)
 {
   m_nTextureWidth = 0;
   m_nTextureHeight = 0;
 
   if(m_imageWidth != 0 && m_imageHeight != 0)
-    Allocate(m_imageWidth, m_imageHeight, m_nBPP);
+    Allocate(m_imageWidth, m_imageHeight, m_nBPP, m_format);
 }
 
 CGLTexture::~CGLTexture()
@@ -96,13 +96,42 @@ void CGLTexture::LoadToGPU()
     m_nTextureWidth = maxSize;
   }
 
+  GLenum format;
+  
+  switch (m_format)
+  {
+  case XB_FMT_DXT1: 
+    format = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+    break; 
+  case XB_FMT_DXT3: 
+    format = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+    break;     
+  case XB_FMT_DXT5: 
+    format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+    break; 
+  case XB_FMT_R8G8B8A8: 
+    format = GL_RGBA;
+    break;
+  default:
 #ifdef HAS_GL
-  GLenum format = GL_BGRA;
+    format = GL_BGRA;
 #elif HAS_GLES
-  GLenum format = GL_BGRA_EXT;
+    format = GL_BGRA_EXT;
 #endif
-  glTexImage2D(GL_TEXTURE_2D, 0, 4, m_nTextureWidth, m_nTextureHeight, 0,
-    format, GL_UNSIGNED_BYTE, m_pPixels);
+    break;
+  }
+  
+  if ((m_format & XB_FMT_DXT_MASK) == 0)
+  {
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, m_nTextureWidth, m_nTextureHeight, 0,
+      format, GL_UNSIGNED_BYTE, m_pPixels);
+  }
+  else
+  {
+    glCompressedTexImage2D(GL_TEXTURE_2D, 0, format, 
+      m_nTextureWidth, m_nTextureHeight, 0, m_bufferSize, m_pPixels);    
+  }
+  
 #ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif

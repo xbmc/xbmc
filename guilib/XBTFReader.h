@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,33 +19,32 @@
  *
  */
 
-#include "StdString.h"
-#include "TextureBundleXPR.h"
-#include "TextureBundleXBT.h"
+#ifndef XBTFREADER_H_
+#define XBTFREADER_H_
 
-class CTextureBundle
+#include <vector>
+#include <map>
+#include "StdString.h"
+#include "XBTF.h"
+
+class CXBTFReader
 {
 public:
-  CTextureBundle(void);
-  ~CTextureBundle(void);
-
-  void Cleanup();
-
-  void SetThemeBundle(bool themeBundle);
-  bool HasFile(const CStdString& Filename);
-  void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
-  static CStdString Normalize(const CStdString &name);
-
-  bool LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture, int &width, int &height);
-
-  int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures, int &width, int &height, int& nLoops, int** ppDelays);
+  CXBTFReader();
+  bool IsOpen() const;
+  bool Open(const CStdString& fileName);
+  void Close();
+  time_t GetLastModificationTimestamp();
+  bool Exists(const CStdString& name, int formatMask);
+  CXBTFFile* Find(const CStdString& name, int formatMask);
+  bool Load(const CXBTFFrame& frame, unsigned char* buffer);
+  std::vector<CXBTFFile>&  GetFiles();
   
 private:
-  CTextureBundleXPR m_tbXPR;
-  CTextureBundleXBT m_tbXBT;
-  
-  bool m_useXPR;
-  bool m_useXBT;
+  CXBTF      m_xbtf;
+  CStdString m_fileName;
+  FILE*      m_file;
+  std::map<std::pair<CStdString, unsigned int>, CXBTFFile> m_filesMap;
 };
 
-
+#endif

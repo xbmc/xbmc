@@ -40,6 +40,7 @@ BIN_DIRS=	\
 	xbmc/lib/libXDAAP \
 	xbmc/lib/sqLite \
 	xbmc/lib/UnrarXLib \
+	xbmc/lib/libsquish \
 	xbmc/visualizations \
 	xbmc/screensavers \
 	xbmc/utils \
@@ -52,7 +53,8 @@ EC_DIRS= \
 	tools/EventClients
 
 XBMCTEX_DIRS= \
-	tools/XBMCTex
+	tools/XBMCTex \
+	tools/XBMCTexXBT
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
@@ -181,7 +183,7 @@ configure: configure.in
 	@false
 
 # skin textures
-skins: tools/XBMCTex/XBMCTex force
+skins: tools/XBMCTex/XBMCTex tools/XBMCTexXBT/XBMCTexXBT force
 	 $(MAKE) -C $(PM3_MEDIA)
 	 $(MAKE) -C $(PM3HD_MEDIA)
 
@@ -265,6 +267,8 @@ xbmc/lib/sqLite/sqllite.a: force
 	$(MAKE) -C xbmc/lib/sqLite
 xbmc/lib/UnrarXLib/UnrarXLib.a: force
 	$(MAKE) -C xbmc/lib/UnrarXLib
+xbmc/lib/libsquish/libsquish.a: force
+	$(MAKE) -C xbmc/lib/libsquish
 xbmc/linux/linux.a: force
 	$(MAKE) -C xbmc/linux
 xbmc/screensavers/screensaver.a: force
@@ -401,6 +405,7 @@ OBJSXBMC=	\
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \
 	xbmc/lib/sqLite/sqllite.a \
 	xbmc/lib/UnrarXLib/UnrarXLib.a \
+	xbmc/lib/libsquish/libsquish.a \
 	xbmc/linux/linux.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
@@ -449,8 +454,11 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	# hack this for now
 	$(MAKE) -C tools/XBMCTex -f Makefile.osx
 else
-	$(MAKE) -C tools/XBMCTex/
+ 	$(MAKE) -C tools/XBMCTex/
 endif
+
+tools/XBMCTexXBT/XBMCTexXBT:
+	$(MAKE) -C tools/XBMCTexXBT/
 
 install-bin: xbmc.bin # developement convenience target
 	sudo install -D xbmc.bin $(prefix)/share/xbmc
