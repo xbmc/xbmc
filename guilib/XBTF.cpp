@@ -18,7 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include <strings.h>
+#include <string.h>
 #include "XBTF.h"
 
 CXBTFFrame::CXBTFFrame()
