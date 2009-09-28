@@ -120,7 +120,7 @@ bool CXBTFReader::Open(const CStdString& fileName)
   // Sanity check
   fpos_t pos;
   fgetpos(m_file, &pos);
-  if ((unsigned int) pos.__pos != m_xbtf.GetHeaderSize())
+  if ((unsigned int) pos != m_xbtf.GetHeaderSize())
   {
     printf("Expected header size (%llu) != actual size (%llu)\n", m_xbtf.GetHeaderSize(), pos);
     return false;
