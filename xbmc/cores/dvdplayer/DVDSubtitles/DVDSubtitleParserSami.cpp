@@ -83,9 +83,6 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       TagConv.ConvertLine(pOverlay, text, strlen(text));
   }
 
-  if(pOverlay)
-    pOverlay->Release();
-
   return true;
 }
 
