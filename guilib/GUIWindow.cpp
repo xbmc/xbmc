@@ -256,7 +256,7 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
     rect.x1 = pGroup->GetXPosition();
     rect.y1 = pGroup->GetYPosition();
     rect.x2 = rect.x1 + pGroup->GetWidth();
-    rect.y2 = rect.y2 + pGroup->GetHeight();
+    rect.y2 = rect.y1 + pGroup->GetHeight();
   }
   CGUIControl* pGUIControl = factory.Create(GetID(), rect, pControl);
   if (pGUIControl)
