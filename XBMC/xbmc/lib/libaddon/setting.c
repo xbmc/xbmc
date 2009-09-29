@@ -203,7 +203,7 @@ addon_setting_id(addon_setting_t setting)
 * Failure: 0
 */
 int
-addon_setting_set_id(addon_setting_t setting, char *id)
+addon_setting_set_id(addon_setting_t setting, const char *id)
 {
   if (!setting) {
     addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
@@ -264,7 +264,7 @@ addon_setting_label(addon_setting_t setting)
 * Failure: 0
 */
 int
-addon_setting_set_label(addon_setting_t setting, char *label)
+addon_setting_set_label(addon_setting_t setting, const char *label)
 {
   if (!setting) {
     addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",
@@ -354,7 +354,7 @@ addon_setting_lvalues(addon_setting_t setting)
 * Failure: 0
 */
 int
-addon_setting_set_lvalues(addon_setting_t setting, char *lvalues)
+addon_setting_set_lvalues(addon_setting_t setting, const char *lvalues)
 {
   if (!setting) {
     addon_dbg(ADDON_DBG_ERROR, "%s: NULL setting structure\n",

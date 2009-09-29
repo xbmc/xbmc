@@ -15,7 +15,6 @@
 #endif
 #endif
 
-#include "xbmc_addon_types.h"
 #include "libaddon.h"
 
 extern "C"

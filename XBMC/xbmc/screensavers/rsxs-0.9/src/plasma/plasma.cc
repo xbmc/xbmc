@@ -320,7 +320,6 @@ void Hack::pointerEnter() {}
 void Hack::pointerLeave() {}
 
 #define _LINUX
-#include "../../../../addons/include/xbmc_addon_lib++.h"
 #include "../../../../addons/include/xbmc_scr_dll.h"
 
 extern "C" {
