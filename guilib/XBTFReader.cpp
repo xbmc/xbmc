@@ -80,7 +80,7 @@ bool CXBTFReader::Open(const CStdString& fileName)
   {
     CXBTFFile file;
     unsigned int u32;
-    unsigned long long u64;
+    uint64_t u64;
     
     READ_STR(file.GetPath(), 256, m_file);
     READ_U32(u32, m_file);

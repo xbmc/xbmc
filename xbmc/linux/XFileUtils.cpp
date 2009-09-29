@@ -413,8 +413,8 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
 
   // Read and write chunks of 16K
   char buf[16384];
-  long long bytesRead = 1;
-  long long bytesWritten = 1;
+  int64_t bytesRead = 1;
+  int64_t bytesWritten = 1;
 
   while (bytesRead > 0 && bytesWritten > 0)
   {

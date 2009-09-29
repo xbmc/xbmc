@@ -83,7 +83,7 @@ public:
   void SetFormat(uint32_t format);  
   
   std::vector<CXBTFFrame>& GetFrames();  
-  unsigned long long GetHeaderSize() const;
+  uint64_t GetHeaderSize() const;
   
 private:
   char         m_path[256];
