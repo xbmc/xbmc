@@ -22,6 +22,7 @@
 #include "DVDPlayerAudioResampler.h"
 #include "DVDPlayerAudio.h"
 #include "utils/log.h"
+#include "MathUtils.h"
 
 CDVDPlayerResampler::CDVDPlayerResampler()
 {
@@ -122,7 +123,8 @@ bool CDVDPlayerResampler::Retreive(DVDAudioFrame &audioframe, double &pts)
   {
     for (int j = 0; j < m_nrchannels; j++)
     {
-      int value = (int)Clamp(m_buffer[i * m_nrchannels + j] * scale, scale * -1.0f, scale - 1.0f);
+      double sample = Clamp(m_buffer[i * m_nrchannels + j] * scale, scale * -1.0f, scale - 1.0f);
+      int    value = MathUtils::round_int(sample);
       for (int k = 0; k < bytes; k++)
       {
         audioframe.data[i * m_nrchannels * bytes + j * bytes + k] = (BYTE)((value >> (k * 8)) & 0xFF);
