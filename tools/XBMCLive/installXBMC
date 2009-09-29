@@ -548,29 +548,38 @@ def modifyGrubMenuV1(menuFName, isaRemovableDrive, bootPartition):
 	writeFile(menuFName, content)
 
 def modifyGrubMenuV2(menuFName, isaRemovableDrive, bootPartition):
-	if not isaRemovableDrive:
+	if isaRemovableDrive:
+		content = readFile(menuFName)
+		content = re.sub("hd96", "hd0,1", content)
+	else
 		content = ""
 		content += ("set default=0" + "\n")
 		content += ("set root=(hd0,1)" + "\n")
 		content += ("\n")
-		content += ("if font /usr/share/grub/unicode.pff ; then" + "\n")
-		content += (" set gfxmode=640x480" + "\n")
+		content += ("insmod video" + "\n")
+		content += ("insmod vbe" + "\n")
+		content += ("insmod font" + "\n")
+		content += ("if loadfont (hd0,1)/boot/grub/unicode.pf2 ; then" + "\n")
+		content += (" set gfxmode=800x600" + "\n")
+		content += ("# set gfxpayload=keep" + "\n")
 		content += (" insmod gfxterm" + "\n")
-		content += (" insmod vbe" + "\n")
-		content += (" terminal gfxterm" + "\n")
+		content += (" if terminal_output gfxterm ; then true ; else" + "\n")
+		content += ("  # For backward compatibility with versions of terminal.mod that don't understand terminal_output" + "\n")
+		content += ("  terminal gfxterm" + "\n")
+		content += (" fi" + "\n")
 		content += ("fi" + "\n")
 		content += ("\n")
-		content += ("insmod png" + "\n")
-		content += ("if background_image /boot/xbmc.png ; then" + "\n")
-		content += (" set color_normal=black/black" + "\n")
-		content += (" set color_highlight=magenta/black" + "\n")
+		content += ("insmod tga" + "\n")
+		content += ("if background_image (hd0,1)/boot/grub/xbmc.tga ; then" + "\n")
+		content += (" set color_normal=white/black" + "\n")
+		content += (" set color_highlight=cyan/black" + "\n")
 		content += ("else" + "\n")
 		content += (" set menu_color_normal=cyan/blue" + "\n")
 		content += (" set menu_color_highlight=white/blue" + "\n")
 		content += ("fi" + "\n")
 		content += ("\n")
 		content += ('echo -n "Press ESC to enter the menu... "' + "\n")
-		content += ("if sleep --verbose --interruptible 5 ; then" + "\n")
+		content += ("if sleep --verbose --interruptible 2 ; then" + "\n")
 		content += (" set timeout=0" + "\n")
 		content += ("else" + "\n")
 		content += (" set timeout=-1" + "\n")
@@ -586,7 +595,7 @@ def modifyGrubMenuV2(menuFName, isaRemovableDrive, bootPartition):
 		content += (" initrd /initrd.img" + "\n")
 		content += ("}" + "\n")
 		content += ("\n")
-		writeFile(menuFName, content)
+	writeFile(menuFName, content)
 
 def changePasswords(liveRootDir):
 	# Lock root account
