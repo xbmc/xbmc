@@ -56,6 +56,7 @@ bool CRenderSystemDX::InitRenderSystem()
   m_bVSync = true;
   m_iVSyncMode = 0;
   m_maxTextureSize = 8192;
+  D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   m_pD3D = NULL;
 
@@ -64,6 +65,9 @@ bool CRenderSystemDX::InitRenderSystem()
     return false;
 
   CreateResources();
+
+  if(m_pD3D->GetAdapterIdentifier(0, 0, &AIdentifier) == D3D_OK)
+    m_RenderRenderer = (const char*)AIdentifier.Description;
   
   return true;
 }

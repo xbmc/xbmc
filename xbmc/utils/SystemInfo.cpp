@@ -198,11 +198,7 @@ CStdString CSysInfo::GetMACAddress()
 
 CStdString CSysInfo::GetVideoEncoder()
 {
-#ifdef HAS_GL
   return "GPU: " + g_Windowing.GetRenderRenderer();
-#else // TODO:DIRECTX
-  return "GPU: DIRECTX";
-#endif
 }
 
 CStdString CSysInfo::GetXBVerInfo()
