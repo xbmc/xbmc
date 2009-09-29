@@ -65,7 +65,7 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
   //output buffer starts at the place where the buffer doesn't hold samples
   m_converterdata.data_out = m_buffer + m_bufferfill * m_nrchannels;
   //intput buffer is a block of data at the end of the buffer
-  m_converterdata.data_in = m_buffer + (m_buffersize - nrframes) * m_nrchannels;
+  m_converterdata.data_in =  m_converterdata.data_out + m_converterdata.output_frames * m_nrchannels;
   
   //add samples to the resample input buffer
   for (int i = 0; i < nrframes; i++)
