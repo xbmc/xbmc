@@ -22,14 +22,14 @@
  
 #include <samplerate.h>
 
-#define MAXCONVSAMPLES 100000
-#define RINGSIZE 1000000
+#define MAXCONVSAMPLES  100000
+#define RINGSIZE       1000000
 
 #define PROPORTIONAL 20.0
-#define PROPREF 0.01
-#define PROPDIVMIN 2.0
-#define PROPDIVMAX 40.0
-#define INTEGRAL 200.0
+#define PROPREF       0.01
+#define PROPDIVMIN    2.0
+#define PROPDIVMAX   40.0
+#define INTEGRAL    200.0
 
 //forward declaration of struct stDVDAudioFrame
 typedef struct stDVDAudioFrame DVDAudioFrame;
@@ -44,20 +44,20 @@ class CDVDPlayerResampler
     bool Retreive(DVDAudioFrame &audioframe, double &pts);
     void SetRatio(double ratio);
     void Flush();
-    void SetQuality(int Quality);
+    void SetQuality(int quality);
     void Clean();
   
   private:
   
-    int m_NrChannels;
-    int m_Quality;
-    SRC_STATE* m_Converter;
-    SRC_DATA m_ConverterData;
+    int        m_nrchannels;
+    int        m_quality;
+    SRC_STATE* m_converter;
+    SRC_DATA   m_converterdata;
   
-    float*  m_RingBuffer;  //ringbuffer for the audiosamples
-    int     m_RingBufferPos;  //where we are in the ringbuffer
-    int     m_RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
-    double *m_PtsRingBuffer;  //ringbuffer for the pts value, each sample gets its own pts
+    float*     m_ringbuffer;     //ringbuffer for the audiosamples
+    int        m_ringbufferpos;  //where we are in the ringbuffer
+    int        m_ringbufferfill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
+    double*    m_ptsringbuffer;  //ringbuffer for the pts value, each sample gets its own pts
   
     void CheckResampleBuffers(int channels);
     
