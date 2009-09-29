@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
   "XBMC Live" installer
-  V1.002 - 20090924
+  V1.003 - 20090929
   Luigi Capriotti @2009
 
 """ 
@@ -414,7 +414,7 @@ def copySystemFilesV2(srcDirectory, dstDirectory, bIsRemovableDisk, skipLargeFil
 		for root, dirs, files in os.walk(srcDirectory):
 			for file in files:
 				# Do not copy storage file
-				if file == gShapshotStorageFilename:
+				if file == gPermStorageFilename:
 					continue
 
 				writeLog("Copying file: " + file)
@@ -545,8 +545,8 @@ def modifyGrubMenuV1(menuFName, isaRemovableDrive, bootPartition):
 def modifyGrubMenuV2(menuFName, isaRemovableDrive, bootPartition):
 	if isaRemovableDrive:
 		content = readFile(menuFName)
-		content = re.sub("hd96", "hd0,1", content)
-	else
+		content = re.sub("hd[0-9]*", "hd0,1", content)
+	else:
 		content = ""
 		content += ("set default=0" + "\n")
 		content += ("set root=(hd0,1)" + "\n")
@@ -850,7 +850,7 @@ def main():
 		if gbIsLiveV2 == False:
 			modifyGrubMenuV1(gLivePartMountPoint + "/boot/grub/menu.lst", removableDiskSelected, availableDisks[diskIndex] + "1")
 		else:
-			modifyGrubMenuV2(gLivePartMountPoint + "/boot/grub/menu.lst", removableDiskSelected, availableDisks[diskIndex] + "1")
+			modifyGrubMenuV2(gLivePartMountPoint + "/boot/grub/grub.cfg", removableDiskSelected, availableDisks[diskIndex] + "1")
 
 		if not removableDiskSelected:
 			print "Applying system changes..."
