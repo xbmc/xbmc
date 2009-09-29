@@ -94,7 +94,7 @@ void CBaseTexture::Update(int w, int h, int pitch, unsigned int format, const un
 
   Allocate(w, h, 0, format);
 
-  if (m_imageHeight != m_nTextureHeight && m_imageWidth != m_nTextureWidth)
+  if (m_imageHeight != m_nTextureHeight || m_imageWidth != m_nTextureWidth)
   {
     // Resize texture to POT if needed
     const unsigned char *src = pixels;
