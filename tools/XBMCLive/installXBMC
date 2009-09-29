@@ -23,7 +23,7 @@ gBootPartitionSizeMB = 4096
 gSwapPartitionSizeMB = 512
 
 gPermStorageFilename = "ext3fs.img"
-gShapshotStorageFilename = "live-sn.cpio.gz"
+gPermStorageFilenameV2 = "live-rw"
 gBootPartMountPoint = "/tmp/bootPart"
 gLivePartMountPoint = "/tmp/livePart"
 
@@ -506,11 +506,6 @@ def createPermanentStorageFile(aFileFName, aSizeMB):
 	runSilent("mkfs.ext3 -F " + aFileFName)
 	return
 
-def createSnapshotFile(aFileFName):
-	aCmdLine = "touch " + aFileFName
-	runSilent(aCmdLine)
-	return
-
 def findUUID(aPartition):
 	cmdLine = 'blkid -s UUID | grep ' + aPartition + ' | cut -d " " -f 2 | cut -d "=" -f 2 | sed \'s/"//g' + "'"
 	anUUID, retCode = runSilent(cmdLine)
@@ -684,7 +679,7 @@ def main():
 	global gBootPartitionSizeMB
 	global gSwapPartitionSizeMB
 	global gPermStorageFilename
-	global gShapshotStorageFilename
+	global gPermStorageFilenameV2
 	global gBootPartMountPoint
 	global gLivePartMountPoint
 	global gInstallerLogFileName
@@ -734,6 +729,7 @@ def main():
 	bootMedia = getKernelParameter('boot')
 	if bootMedia == 'live':
 		gbIsLiveV2 = True
+		gPermStorageFilename = gPermStorageFilenameV2
 
 	while True:
 		os.system('clear')
@@ -844,15 +840,12 @@ def main():
 				print " changes to system configuration are lost when rebooting."
 				print ""
 				if not userChoice("Do you want to create a permanent system storage file (Y/N)? ","Yy","Nn") == 0:
-					if gbIsLiveV2:
-						createSnapshotFile(gLivePartMountPoint + "/" + gShapshotStorageFilename)
-					else:
-						availSpace = freeSpaceMB(availableDisks[diskIndex] + "1")
-						storageSize = (availSpace/10)*7
-						if storageSize > 4000:
-							storageSize = 4000
-						print "Permanent system storage size = " + str(storageSize) + " MB, Please wait..."
-						createPermanentStorageFile(gLivePartMountPoint + "/" + gPermStorageFilename, storageSize)
+					availSpace = freeSpaceMB(availableDisks[diskIndex] + "1")
+					storageSize = (availSpace/10)*7
+					if storageSize > 4000:
+						storageSize = 4000
+					print "Permanent system storage size = " + str(storageSize) + " MB, Please wait..."
+					createPermanentStorageFile(gLivePartMountPoint + "/" + gPermStorageFilename, storageSize)
 
 		if gbIsLiveV2 == False:
 			modifyGrubMenuV1(gLivePartMountPoint + "/boot/grub/menu.lst", removableDiskSelected, availableDisks[diskIndex] + "1")
