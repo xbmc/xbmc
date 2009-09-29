@@ -7,8 +7,8 @@
 #define TEMP_SIZE (10*1024*1024)
 
 #define WRITE_STR(str, size, file) fwrite(str, size, 1, file)
-#define WRITE_U32(i, file) { unsigned long _n = i; _n = Endian_SwapLE32(i); fwrite(&_n, 4, 1, file); }
-#define WRITE_U64(i, file) { unsigned long long _n = i; _n = Endian_SwapLE64(i); fwrite(&_n, 8, 1, file); }
+#define WRITE_U32(i, file) { uint32_t _n = Endian_SwapLE32(i); fwrite(&_n, 4, 1, file); }
+#define WRITE_U64(i, file) { uint64_t _n = i; _n = Endian_SwapLE64(i); fwrite(&_n, 8, 1, file); }
 
 CXBTFWriter::CXBTFWriter(CXBTF& xbtf, const std::string outputFile) : m_xbtf(xbtf)
 {
@@ -80,7 +80,7 @@ bool CXBTFWriter::UpdateHeader()
     return false;
   }
   
-  unsigned long long offset = m_xbtf.GetHeaderSize();
+  uint64_t offset = m_xbtf.GetHeaderSize();
   
   WRITE_STR(XBTF_MAGIC, 4, m_file);
   WRITE_STR(XBTF_VERSION, 1, m_file);

@@ -29,6 +29,9 @@
 #include "XBTFWriter.h"
 #include "SDL_anigif.h"
 #include "cmdlineargs.h"
+#ifdef _WIN32
+#define strncasecmp strnicmp
+#endif
 
 #define DIR_SEPARATOR "/"
 #define DIR_SEPARATOR_CHAR '/'
@@ -119,7 +122,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, unsigned int
 {
   // Convert to RGBA
   SDL_PixelFormat rgbaFormat;
-  bzero(&rgbaFormat, sizeof(SDL_PixelFormat));
+  memset(&rgbaFormat, 0, sizeof(SDL_PixelFormat));
   rgbaFormat.BitsPerPixel = 32;
   rgbaFormat.BytesPerPixel = 4;
  
