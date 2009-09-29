@@ -133,7 +133,7 @@ bool CDVDPlayerResampler::Retreive(DVDAudioFrame &audioframe, double &pts)
   
   //shift old data to the beginning of the buffer
   memmove(m_buffer, m_buffer + (nrframes * m_nrchannels), m_bufferfill * m_nrchannels * sizeof(float));
-  memmove(m_ptsbuffer, m_ptsbuffer + nrframes, m_bufferfill * sizeof(float));
+  memmove(m_ptsbuffer, m_ptsbuffer + nrframes, m_bufferfill * sizeof(double));
   
   return true;
 }
