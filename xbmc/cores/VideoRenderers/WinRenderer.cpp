@@ -1154,9 +1154,6 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   if(m_pYUV2RGBEffect == NULL)
     LoadEffect();
 
-  static byte test = 0;
-  test++;
-
   CSingleLock lock(g_graphicsContext);
 
   int index = m_iYV12RenderBuffer;

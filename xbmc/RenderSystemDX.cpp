@@ -274,7 +274,7 @@ bool CRenderSystemDX::BeginRender()
       OnDeviceReset();
       if( FAILED(m_nDeviceStatus ) )
       {
-        CLog::Log(LOGINFO, "m_pD3DDevice->Reset falied");
+        CLog::Log(LOGINFO, "m_pD3DDevice->Reset failed");
         return false;
       }
     }
@@ -299,7 +299,7 @@ bool CRenderSystemDX::EndRender()
 
   if(FAILED (m_pD3DDevice->EndScene()))
   {
-    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() falied");
+    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() failed");
     return false;
   }
 
@@ -550,6 +550,20 @@ void CRenderSystemDX::ReleaseEffect(ID3DXEffect* pEffect)
       return;
     }
   }
+}
+
+bool CRenderSystemDX::SupportsCompressedTextures()
+{
+  return false;
+
+  HRESULT hr = m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
+    D3DDEVTYPE_HAL,
+    D3DFMT_X8R8G8B8,
+    0,
+    D3DRTYPE_TEXTURE,
+    D3DFMT_DXT5);
+
+  return SUCCEEDED( hr );
 }
 
 #endif
