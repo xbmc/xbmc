@@ -1021,7 +1021,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
       if (CUtil::IsStack(path))
       {
-        vector<long> times;
+        vector<int> times;
         if (m_database.GetStackTimes(path,times))
           buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
       }
@@ -1106,7 +1106,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       {
         if (btn2 > 1)
         {
-          vector<long> times;
+          vector<int> times;
           if (m_database.GetStackTimes(path,times))
             item->m_lStartOffset = times[btn2-2]*75; // wtf?
         }
@@ -1323,7 +1323,7 @@ void CGUIWindowVideoBase::PlayMovie(const CFileItem *item)
         m_database.Open();
 
         /* figure out what file this time offset is */
-        vector<long> times;
+        vector<int> times;
         m_database.GetStackTimes(item->m_strPath, times);
         long totaltime = 0;
         for (unsigned i = 0; i < times.size(); i++)

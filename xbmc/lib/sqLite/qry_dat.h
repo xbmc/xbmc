@@ -97,8 +97,7 @@ public:
   char get_asChar() const;
   short get_asShort() const;
   unsigned short get_asUShort() const;
-  int get_asLong() const;
-  int get_asInteger() const;
+  int get_asInt() const;
   unsigned int get_asUInt() const;
   float get_asFloat() const;
   double get_asDouble() const;
@@ -150,7 +149,7 @@ public:
       break;
     }
     case ft_Int: {
-      return os << fv.get_asInteger();
+      return os << fv.get_asInt();
       break;
     }
     case ft_UInt: {

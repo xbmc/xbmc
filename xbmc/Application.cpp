@@ -3616,7 +3616,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   //       Also, this is really just a hack for the slow load up times we have
   //       A much better solution is a fast reader of FPS and fileLength
   //       that we can use on a file to get it's time.
-  vector<long> times;
+  vector<int> times;
   bool haveTimes(false);
   CVideoDatabase dbs;
   if (dbs.Open())

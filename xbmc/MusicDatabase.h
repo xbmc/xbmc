@@ -62,12 +62,6 @@ typedef std::set<CStdString> SETPATHES;
  */
 typedef std::set<CStdString>::iterator ISETPATHES;
 
-/*!
- \ingroup music
- \brief A vector of longs for iDs, used for CMusicDatabase's multiple artist/genre capability
- */
-typedef std::vector<long> VECLONGS;
-
 class CGUIDialogProgress;
 class CFileItemList;
 
@@ -89,29 +83,29 @@ class CMusicDatabase : public CDatabase
   class CArtistCache
   {
   public:
-    long idArtist;
+    int idArtist;
     CStdString strArtist;
   };
 
   class CPathCache
   {
   public:
-    long idPath;
+    int idPath;
     CStdString strPath;
   };
 
   class CGenreCache
   {
   public:
-    long idGenre;
+    int idGenre;
     CStdString strGenre;
   };
 
   class CAlbumCache : public CAlbum
   {
   public:
-    long idAlbum;
-    long idArtist;
+    int idAlbum;
+    int idArtist;
   };
 
 public:
@@ -126,22 +120,22 @@ public:
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();
   void AddSong(const CSong& song, bool bCheck = true);
-  long SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
-  bool DeleteAlbumInfo(long idArtist);
-  long SetArtistInfo(long idArtist, const CArtist& artist);
-  bool DeleteArtistInfo(long idArtist);
-  bool GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs);
-  bool HasAlbumInfo(long idAlbum);
-  bool GetArtistInfo(long idArtist, CArtist &info, bool needAll=true);
+  int SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction=true);
+  bool DeleteAlbumInfo(int idArtist);
+  int SetArtistInfo(int idArtist, const CArtist& artist);
+  bool DeleteArtistInfo(int idArtist);
+  bool GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs);
+  bool HasAlbumInfo(int idAlbum);
+  bool GetArtistInfo(int idArtist, CArtist &info, bool needAll=true);
   bool GetSongByFileName(const CStdString& strFileName, CSong& song);
-  long GetAlbumIdByPath(const CStdString& path);
-  bool GetSongById(long idSong, CSong& song);
-  bool GetSongByKaraokeNumber( long number, CSong& song );
-  bool SetKaraokeSongDelay( long idSong, int delay );
+  int GetAlbumIdByPath(const CStdString& path);
+  bool GetSongById(int idSong, CSong& song);
+  bool GetSongByKaraokeNumber( int number, CSong& song );
+  bool SetKaraokeSongDelay( int idSong, int delay );
   bool GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap = false);
   bool Search(const CStdString& search, CFileItemList &items);
 
-  bool GetAlbumFromSong(long idSong, CAlbum &album);
+  bool GetAlbumFromSong(int idSong, CAlbum &album);
   bool GetAlbumFromSong(const CSong &song, CAlbum &album);
 
   bool GetArbitraryQuery(const CStdString& strQuery, const CStdString& strOpenRecordSet, const CStdString& strCloseRecordSet,
@@ -163,31 +157,31 @@ public:
   bool GetPathHash(const CStdString &path, CStdString &hash);
   bool GetGenresNav(const CStdString& strBaseDir, CFileItemList& items);
   bool GetYearsNav(const CStdString& strBaseDir, CFileItemList& items);
-  bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, bool albumArtistsOnly);
-  bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist);
-  bool GetAlbumsByYear(const CStdString &strBaseDir, CFileItemList& items, long year);
-  bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum);
-  bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, long year);
+  bool GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, bool albumArtistsOnly);
+  bool GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist);
+  bool GetAlbumsByYear(const CStdString &strBaseDir, CFileItemList& items, int year);
+  bool GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum);
+  bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
-  bool GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere);
+  bool GetRandomSong(CFileItem* item, int& lSongId, const CStdString& strWhere);
   int GetKaraokeSongsCount();
   int GetSongsCount(const CStdString& strWhere = "");
-  unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,long> > &songIDs);
+  unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);
 
-  bool GetAlbumPath(long idAlbum, CStdString &path);
-  bool SaveAlbumThumb(long idAlbum, const CStdString &thumb);
-  bool GetAlbumThumb(long idAlbum, CStdString &thumb);
-  bool GetArtistPath(long idArtist, CStdString &path);
+  bool GetAlbumPath(int idAlbum, CStdString &path);
+  bool SaveAlbumThumb(int idAlbum, const CStdString &thumb);
+  bool GetAlbumThumb(int idAlbum, CStdString &thumb);
+  bool GetArtistPath(int idArtist, CStdString &path);
 
-  bool GetGenreById(long idGenre, CStdString& strGenre);
-  bool GetArtistById(long idArtist, CStdString& strArtist);
-  bool GetAlbumById(long idAlbum, CStdString& strAlbum);
+  bool GetGenreById(int idGenre, CStdString& strGenre);
+  bool GetArtistById(int idArtist, CStdString& strArtist);
+  bool GetAlbumById(int idAlbum, CStdString& strAlbum);
 
-  long GetArtistByName(const CStdString& strArtist);
-  long GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist="");
-  long GetGenreByName(const CStdString& strGenre);
-  long GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
+  int GetArtistByName(const CStdString& strArtist);
+  int GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist="");
+  int GetGenreByName(const CStdString& strGenre);
+  int GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle);
 
   bool GetVariousArtistsAlbums(const CStdString& strBaseDir, CFileItemList& items);
   bool GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, CFileItemList& items);
@@ -209,17 +203,17 @@ protected:
   std::map<CStdString, int /*CPathCache*/> m_thumbCache;
   std::map<CStdString, CAlbumCache> m_albumCache;
   virtual bool CreateTables();
-  long AddAlbum(const CStdString& strAlbum1, long lArtistId, const CStdString &extraArtists, const CStdString &strArtist1, long idThumb, long idGenre, const CStdString &extraGenres, long year);
-  long AddGenre(const CStdString& strGenre);
-  long AddArtist(const CStdString& strArtist);
-  long AddPath(const CStdString& strPath);
-  long AddThumb(const CStdString& strThumb1);
-  void AddExtraAlbumArtists(const CStdStringArray& vecArtists, long lAlbumId);
-  void AddExtraSongArtists(const CStdStringArray& vecArtists, long lSongId, bool bCheck = true);
+  int AddAlbum(const CStdString& strAlbum1, int lArtistId, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
+  int AddGenre(const CStdString& strGenre);
+  int AddArtist(const CStdString& strArtist);
+  int AddPath(const CStdString& strPath);
+  int AddThumb(const CStdString& strThumb1);
+  void AddExtraAlbumArtists(const CStdStringArray& vecArtists, int lAlbumId);
+  void AddExtraSongArtists(const CStdStringArray& vecArtists, int lSongId, bool bCheck = true);
   void AddKaraokeData(const CSong& song);
-  void AddExtraGenres(const CStdStringArray& vecGenres, long lSongId, long lAlbumId, bool bCheck = true);
-  bool SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs);
-  bool GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs);
+  void AddExtraGenres(const CStdStringArray& vecGenres, int lSongId, int lAlbumId, bool bCheck = true);
+  bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
+  bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 private:
   void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
@@ -237,7 +231,7 @@ private:
   bool SearchArtists(const CStdString& search, CFileItemList &artists);
   bool SearchAlbums(const CStdString& search, CFileItemList &albums);
   bool SearchSongs(const CStdString& strSearch, CFileItemList &songs);
-  long GetSongIDFromPath(const CStdString &filePath);
+  int GetSongIDFromPath(const CStdString &filePath);
 
   // Fields should be ordered as they
   // appear in the songview

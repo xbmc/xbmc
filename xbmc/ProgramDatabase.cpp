@@ -106,7 +106,7 @@ uint32_t CProgramDatabase::GetTitleId(const CStdString& strFilenameAndPath)
       m_pDS->close();
       return 0;
     }
-    uint32_t dwTitleId = m_pDS->fv("files.TitleId").get_asLong();
+    uint32_t dwTitleId = m_pDS->fv("files.TitleId").get_asInt();
     m_pDS->close();
     return dwTitleId;
   }
@@ -132,7 +132,7 @@ bool CProgramDatabase::SetTitleId(const CStdString& strFileName, uint32_t dwTitl
       m_pDS->close();
       return false;
     }
-    int idFile = m_pDS->fv("files.idFile").get_asLong();
+    int idFile = m_pDS->fv("files.idFile").get_asInt();
     m_pDS->close();
 
     CLog::Log(LOGDEBUG, "CProgramDatabase::SetTitle(%s), idFile=%i, region=%u",
@@ -192,11 +192,11 @@ uint32_t CProgramDatabase::GetProgramInfo(CFileItem *item)
     { // get info - only set the label if not preformatted
       if (!item->IsLabelPreformated())
         item->SetLabel(m_pDS->fv("xbedescription").get_asString());
-      item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asLong();
+      item->m_iprogramCount = m_pDS->fv("iTimesPlayed").get_asInt();
       item->m_strTitle = item->GetLabel();  // is this needed?
       item->m_dateTime = TimeStampToLocalTime(_atoi64(m_pDS->fv("lastAccessed").get_asString().c_str()));
       item->m_dwSize = _atoi64(m_pDS->fv("iSize").get_asString().c_str());
-      titleID = m_pDS->fv("titleId").get_asLong();
+      titleID = m_pDS->fv("titleId").get_asInt();
       if (item->m_dwSize == -1)
       {
         CStdString strPath;
@@ -284,8 +284,8 @@ bool CProgramDatabase::IncTimesPlayed(const CStdString& strFileName)
       m_pDS->close();
       return false;
     }
-    int idFile = m_pDS->fv("files.idFile").get_asLong();
-    int iTimesPlayed = m_pDS->fv("files.iTimesPlayed").get_asLong();
+    int idFile = m_pDS->fv("files.idFile").get_asInt();
+    int iTimesPlayed = m_pDS->fv("files.iTimesPlayed").get_asInt();
     m_pDS->close();
 
     CLog::Log(LOGDEBUG, "CProgramDatabase::IncTimesPlayed(%s), idFile=%i, iTimesPlayed=%i",
@@ -319,7 +319,7 @@ bool CProgramDatabase::SetDescription(const CStdString& strFileName, const CStdS
       m_pDS->close();
       return false;
     }
-    int idFile = m_pDS->fv("files.idFile").get_asLong();
+    int idFile = m_pDS->fv("files.idFile").get_asInt();
     m_pDS->close();
 
     CLog::Log(LOGDEBUG, "CProgramDatabase::SetDescription(%s), idFile=%i, description=%s",

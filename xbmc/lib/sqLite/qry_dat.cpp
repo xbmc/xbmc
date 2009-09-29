@@ -132,7 +132,7 @@ field_value::field_value (const field_value & fv) {
       break;
     }
     case ft_Int: {
-      set_asInt(fv.get_asLong());
+      set_asInt(fv.get_asInt());
       break;
     }
     case ft_UInt: {
@@ -398,12 +398,7 @@ unsigned short field_value::get_asUShort() const {
     }
   }
 
-int field_value::get_asLong() const
-{
-  return get_asInteger();
-}
-
-int field_value::get_asInteger() const {
+int field_value::get_asInt() const {
     switch (field_type) {
     case ft_String: {
       return (int)atoi(str_value.c_str());
@@ -621,7 +616,7 @@ field_value& field_value::operator= (const field_value & fv) {
       break;
     }
     case ft_Int: {
-      set_asInt(fv.get_asInteger());
+      set_asInt(fv.get_asInt());
       return *this;
       break;
     }
