@@ -157,7 +157,7 @@ bool CRenderSystemDX::CreateDevice()
   m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
   m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-
+  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   if (m_bVSync)
   {
     m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
