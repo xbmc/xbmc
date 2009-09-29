@@ -467,7 +467,6 @@ namespace PYXBMC
     if (g_application.m_pPlayer)
     {	
       int i = g_application.m_pPlayer->GetSubtitle();
-      CStdString strItem;
       CStdString strName;
       g_application.m_pPlayer->GetSubtitleName(i, strName);
 
