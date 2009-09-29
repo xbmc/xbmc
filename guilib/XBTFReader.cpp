@@ -184,8 +184,11 @@ bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer)
   {
     return false;
   }
-  
-  if (fseeko64(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)
+#if defined(__APPLE__)
+    if (fseeko(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)
+#else
+    if (fseeko64(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)
+#endif
   {
     return false;
   }
