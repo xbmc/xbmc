@@ -457,7 +457,46 @@ namespace PYXBMC
     return Py_None;
   }
 
+	
+  // Player_GetSubtitles
+  PyDoc_STRVAR(getSubtitles__doc__,
+    "getSubtitles() -- get subtitle stream name\n");
+	
+  PyObject* Player_GetSubtitles(PyObject *self)
+  {
+    if (g_application.m_pPlayer)
+    {	
+      int i = g_application.m_pPlayer->GetSubtitle();
+      CStdString strItem;
+      CStdString strName;
+      g_application.m_pPlayer->GetSubtitleName(i, strName);
 
+      if (strName == "Unknown(Invalid)")
+        strName = "";		  
+      return Py_BuildValue((char*)"s", strName.c_str());
+    }
+	  
+    Py_INCREF(Py_None);
+    return Py_None;	  
+  }	
+
+  // Player_DisableSubtitles
+  PyDoc_STRVAR(DisableSubtitles__doc__,
+    "DisableSubtitles() -- disable subtitles\n");
+	
+  PyObject* Player_DisableSubtitles(PyObject *self)
+  {
+    if (g_application.m_pPlayer)	  
+    {	
+      g_stSettings.m_currentVideoSettings.m_SubtitleOn = false;
+      g_application.m_pPlayer->SetSubtitleVisible(false);
+		
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+    return NULL;
+  }
+	
   PyMethodDef Player_methods[] = {
     {(char*)"play", (PyCFunction)Player_Play, METH_VARARGS|METH_KEYWORDS, play__doc__},
     {(char*)"stop", (PyCFunction)pyPlayer_Stop, METH_VARARGS, stop__doc__},
@@ -478,6 +517,8 @@ namespace PYXBMC
     {(char*)"getTime", (PyCFunction)Player_GetTime, METH_NOARGS, getTime__doc__},
     {(char*)"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
     {(char*)"setSubtitles", (PyCFunction)Player_SetSubtitles, METH_VARARGS, setSubtitles__doc__},
+    {(char*)"getSubtitles", (PyCFunction)Player_GetSubtitles, METH_NOARGS, getSubtitles__doc__},
+    {(char*)"disableSubtitles", (PyCFunction)Player_DisableSubtitles, METH_NOARGS, DisableSubtitles__doc__},
     {NULL, NULL, 0, NULL}
   };
 
