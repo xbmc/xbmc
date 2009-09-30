@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib -I/usr/include/freetype2
 
 SRCS=AlarmClock.cpp \
      Archive.cpp \
@@ -55,7 +55,8 @@ SRCS=AlarmClock.cpp \
      LockFree.cpp \
      StreamDetails.cpp \
      TimeUtils.cpp \
-     JobManager.cpp
+     JobManager.cpp \
+     Teletext.cpp
 
 LIB=utils.a
 

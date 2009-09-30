@@ -116,6 +116,15 @@
 				<texture>osd_panel.png</texture>
 				<visible>yes</visible>
 			</control>
+			<control type="image">
+				<description>Teletext Button</description>
+				<posx>138</posx>
+				<posy>15</posy>
+				<width>74</width>
+				<height>66</height>
+				<texture>osd_button_lyrics.png</texture>
+				<visible>VideoPlayer.HasTeletext + Skin.HasSetting(Player_Show_Teletext_Button)</visible>
+			</control>
 			<control type="button" id="210">
 				<description>Skip Bwd</description>
 				<posx>32</posx>
@@ -223,7 +232,25 @@
 				<onright>215</onright>
 				<onup>919</onup>
 				<ondown>921</ondown>
+				<visible>![VideoPlayer.HasTeletext] | ![Skin.HasSetting(Player_Show_Teletext_Button)]</visible>
 			</control>
+			<control type="button" id="918">
+				<description>Teletext Button</description>
+				<posx>138</posx>
+				<posy>15</posy>
+				<width>74</width>
+				<height>66</height>
+				<texturefocus>osd_button_lyricsFO.png</texturefocus>
+				<texturenofocus>osd_button_lyrics.png</texturenofocus>
+				<onclick>XBMC.ActivateWindow(Teletext)</onclick>
+				<label>-</label>
+				<font>-</font>
+				<onleft>208</onleft>
+				<onright>215</onright>
+				<onup>919</onup>
+				<ondown>921</ondown>
+				<visible>VideoPlayer.HasTeletext + Skin.HasSetting(Player_Show_Teletext_Button)</visible>
+			 </control>
 			<control type="togglebutton" id="921">
 				<description>Video Menu</description>
 				<posx>147</posx>

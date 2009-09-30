@@ -276,6 +276,11 @@
 #define ACTION_RELOAD_KEYMAPS         203 // reloads CButtonTranslator's keymaps
 #define ACTION_GUIPROFILE_BEGIN       204 // start the GUIControlProfiler running
 
+#define ACTION_TELETEXT_RED           215 // Teletext Color buttons to control TopText
+#define ACTION_TELETEXT_GREEN         216 //    "       "      "    "     "       "
+#define ACTION_TELETEXT_YELLOW        217 //    "       "      "    "     "       "
+#define ACTION_TELETEXT_BLUE          218 //    "       "      "    "     "       "
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -353,6 +358,8 @@
 #define WINDOW_MUSIC_FILES                10501
 #define WINDOW_MUSIC_NAV                  10502
 #define WINDOW_MUSIC_PLAYLIST_EDITOR      10503
+
+#define WINDOW_DIALOG_OSD_TELETEXT        10600
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000

@@ -44,7 +44,7 @@ typedef struct
   int action;
 } ActionMapping;
 
-static const ActionMapping actions[] = 
+static const ActionMapping actions[] =
        {{"left"              , ACTION_MOVE_LEFT },
         {"right"             , ACTION_MOVE_RIGHT},
         {"up"                , ACTION_MOVE_UP   },
@@ -185,7 +185,11 @@ static const ActionMapping actions[] =
         {"filtersms9"        , ACTION_FILTER_SMS9},
         {"firstpage"         , ACTION_FIRST_PAGE},
         {"lastpage"          , ACTION_LAST_PAGE},
-        {"guiprofile"        , ACTION_GUIPROFILE_BEGIN}};
+        {"guiprofile"        , ACTION_GUIPROFILE_BEGIN},
+        {"red"               , ACTION_TELETEXT_RED},
+        {"green"             , ACTION_TELETEXT_GREEN},
+        {"yellow"            , ACTION_TELETEXT_YELLOW},
+        {"blue"              , ACTION_TELETEXT_BLUE}};
 
 CButtonTranslator& CButtonTranslator::GetInstance()
 {
@@ -821,7 +825,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
 
   if (strAction.Equals("noop"))
     return true;
-  
+
   for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
   {
     if (strAction.Equals(actions[index].name))
@@ -880,6 +884,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("videolibrary")) windowID = WINDOW_VIDEO_NAV;
   else if (strWindow.Equals("videoplaylist")) windowID = WINDOW_VIDEO_PLAYLIST;
   else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
+  else if (strWindow.Equals("teletext")) windowID = WINDOW_DIALOG_OSD_TELETEXT;
   else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("screencalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("testpattern")) windowID = WINDOW_TEST_PATTERN;
@@ -1047,6 +1052,11 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;
   else if (strButton.Equals("enter")) buttonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
   else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
+  else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
+  else if (strButton.Equals("red")) buttonCode = XINPUT_IR_REMOTE_RED;
+  else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;
+  else if (strButton.Equals("yellow")) buttonCode = XINPUT_IR_REMOTE_YELLOW;
+  else if (strButton.Equals("blue")) buttonCode = XINPUT_IR_REMOTE_BLUE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return buttonCode;
 }

@@ -64,6 +64,7 @@
 #include "LocalizeStrings.h"
 #include "CPUInfo.h"
 #include "StringUtils.h"
+#include "TeletextDefines.h"
 
 // stuff for current song
 #include "MusicInfoTagLoaderFactory.h"
@@ -543,6 +544,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.videoaspect")) return VIDEOPLAYER_VIDEO_ASPECT;
     else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
     else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
+    else if (strTest.Equals("videoplayer.hasteletext")) return VIDEOPLAYER_HASTELETEXT;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -1937,6 +1939,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case PLAYER_HASDURATION:
       bReturn = g_application.GetTotalTime() > 0;
       break;
+    case VIDEOPLAYER_HASTELETEXT:
+      if (g_application.m_pPlayer->GetTeletextCache())
+        bReturn = true;
+      break;
     case VISUALISATION_LOCKED:
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -2926,7 +2932,9 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   {
     if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
       return m_currentFile->GetVideoInfoTag()->m_strTitle;
-    // don't have the title, so use label, or drop down to title from path
+    // don't have the title, so use dvdplayer, label, or drop down to title from path
+    if (!g_application.m_pPlayer->GetPlayingTitle().IsEmpty())
+      return g_application.m_pPlayer->GetPlayingTitle();
     if (!m_currentFile->GetLabel().IsEmpty())
       return m_currentFile->GetLabel();
     return CUtil::GetTitleFromPath(m_currentFile->m_strPath);

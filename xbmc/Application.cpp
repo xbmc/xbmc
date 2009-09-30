@@ -210,6 +210,7 @@
 #include "GUIDialogAccessPoints.h"
 #endif
 #include "GUIDialogFullScreenInfo.h"
+#include "GUIDialogTeletext.h"
 #include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
 
@@ -1149,6 +1150,7 @@ HRESULT CApplication::Initialize()
 #ifdef HAS_DX
   m_gWindowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
 #endif
+  m_gWindowManager.Add(new CGUIDialogTeletext);               // window id =
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
@@ -3324,6 +3326,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
     m_gWindowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
     m_gWindowManager.Delete(WINDOW_DIALOG_SLIDER);
+
+    m_gWindowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);

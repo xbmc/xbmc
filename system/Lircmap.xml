@@ -48,10 +48,10 @@
 		<eight>Eight</eight>
 		<nine>Nine</nine>
 		<zero>Zero</zero>
-		<mytv>Red</mytv>
-		<mymusic>Green</mymusic>
-		<mypictures>Yellow</mypictures>
-		<myvideo>Blue</myvideo>
+		<red>Red</red>
+		<green>Green</green>
+		<yellow>Yellow</yellow>
+		<blue>Blue</blue>
 	</remote>
 	
 	<remote device="XboxDVDDongle">
@@ -183,9 +183,9 @@
 		<eight>8</eight>
 		<nine>9</nine>
 		<zero>0</zero>
-		<mytv>red</mytv>
-		<mymusic>green</mymusic>
-		<mypictures>yellow</mypictures>
-		<myvideo>blue</myvideo>
+		<red>red</red>
+		<green>green</green>
+		<yellow>yellow</yellow>
+		<blue>blue</blue>
 	</remote>
 </lircmap>

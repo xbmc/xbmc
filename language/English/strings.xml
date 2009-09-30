@@ -2110,6 +2110,8 @@
   <string id="23000">Weather plugin</string>
   <string id="23001">- Plugin settings</string>
 
+  <string id="23050">Activate Teletext</string>
+
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">External Player Active</string>
   <string id="23101">Click OK to terminate the player</string>

@@ -42,6 +42,7 @@
 #include "DVDClock.h" // for DVD_TIME_BASE
 #include "utils/Win32Exception.h"
 #include "AdvancedSettings.h"
+#include "GUISettings.h"
 #include "FileSystem/File.h"
 #include "utils/log.h"
 #include "Thread.h"
@@ -998,9 +999,21 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_DATA:
       {
-        m_streams[iId] = new CDemuxStream();
-        m_streams[iId]->type = STREAM_DATA;
-        break;
+#if (! defined USE_EXTERNAL_FFMPEG)
+        if (pStream->codec->codec_id == CODEC_ID_EBU_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
+        {
+          CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
+          m_streams[iId] = st;
+          m_streams[iId]->type = STREAM_TELETEXT;
+          break;
+        }
+        else
+#endif
+        {
+          m_streams[iId] = new CDemuxStream();
+          m_streams[iId]->type = STREAM_DATA;
+          break;
+        }
       }
     case CODEC_TYPE_SUBTITLE:
       {

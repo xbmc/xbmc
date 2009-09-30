@@ -67,6 +67,10 @@
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
       <mytv>XBMC.ActivateWindow(Home)</mytv>
+      <red>XBMC.ActivateWindow(Home)</red>
+      <green>XBMC.ActivateWindow(MyVideos)</green>
+      <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
+      <blue>XBMC.ActivateWindow(MyPictures)</blue>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>JumpSMS2</two>
@@ -138,6 +142,7 @@
       <info>Info</info>
       <enter>AspectRatio</enter>
       <select>AspectRatio</select>
+      <teletext>XBMC.ActivateWindow(Teletext)</teletext>
     </remote>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -445,6 +450,29 @@
       <back>Close</back>
     </remote>
   </PictureInfo>
+  <Teletext>
+    <remote>
+      <zero>number0</zero>
+      <one>number1</one>
+      <two>number2</two>
+      <three>number3</three>
+      <four>number4</four>
+      <five>number5</five>
+      <six>number6</six>
+      <seven>number7</seven>
+      <eight>number8</eight>
+      <nine>number9</nine>
+      <red>Red</red>
+      <green>Green</green>
+      <yellow>Yellow</yellow>
+      <blue>Blue</blue>
+      <info>Info</info>
+      <back>Close</back>
+      <menu>Close</menu>
+      <start>Close</start>
+      <teletext>Close</teletext>
+    </remote>
+  </Teletext>
   <Favourites>
     <remote>
       <back>Close</back>

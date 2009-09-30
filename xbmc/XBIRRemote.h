@@ -58,6 +58,13 @@
 #define XINPUT_IR_REMOTE_HASH           41
 #define XINPUT_IR_REMOTE_CLEAR          249
 
+// additional keys not defined by xbox remotes but present on generic remotes
+#define XINPUT_IR_REMOTE_TELETEXT       250
+#define XINPUT_IR_REMOTE_RED            251
+#define XINPUT_IR_REMOTE_GREEN          252
+#define XINPUT_IR_REMOTE_YELLOW         253
+#define XINPUT_IR_REMOTE_BLUE           254
+
 typedef struct _XINPUT_IR_REMOTE
 {
   BYTE wButtons;

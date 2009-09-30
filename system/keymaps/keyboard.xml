@@ -163,6 +163,7 @@
       <down>BigStepBack</down>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
+      <v>XBMC.ActivateWindow(Teletext)</v>
     </keyboard>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -489,6 +490,13 @@
       <space>Pause</space>
     </keyboard>
   </PictureInfo>
+  <Teletext>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+      <v>Close</v>
+    </keyboard>
+  </Teletext>
   <Favourites>
     <keyboard>
       <backspace>Close</backspace>
