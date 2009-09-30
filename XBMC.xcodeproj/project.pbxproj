@@ -1791,6 +1791,12 @@
 		F5D8F882104CD40B004A11AB /* liblzo2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F880104CD40B004A11AB /* liblzo2.dylib */; };
 		F5D8F88C104CD47D004A11AB /* libmms.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F88B104CD47D004A11AB /* libmms.dylib */; };
 		F5D8F88D104CD47D004A11AB /* libmms.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D8F88B104CD47D004A11AB /* libmms.dylib */; };
+		F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */; };
+		F5E55B5E10741272006E788A /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */; };
+		F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */; };
+		F5E55B67107412DE006E788A /* GUIDialogTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */; };
+		F5E55B7010741340006E788A /* Teletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B6E10741340006E788A /* Teletext.cpp */; };
+		F5E55B7110741340006E788A /* Teletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B6E10741340006E788A /* Teletext.cpp */; };
 		F5EA021C0F6DA7E8005C2EC5 /* PowerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */; };
 		F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
 		F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
@@ -3778,6 +3784,13 @@
 		F5D8F86B104CD1C0004A11AB /* DVDInputStreamMMS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDInputStreamMMS.cpp; sourceTree = "<group>"; };
 		F5D8F880104CD40B004A11AB /* liblzo2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = liblzo2.dylib; path = /opt/local/lib/liblzo2.dylib; sourceTree = "<absolute>"; };
 		F5D8F88B104CD47D004A11AB /* libmms.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmms.dylib; path = /opt/local/lib/libmms.dylib; sourceTree = "<absolute>"; };
+		F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDPlayerTeletext.cpp; sourceTree = "<group>"; };
+		F5E55B5C10741272006E788A /* DVDPlayerTeletext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDPlayerTeletext.h; sourceTree = "<group>"; };
+		F5E55B64107412DE006E788A /* GUIDialogTeletext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogTeletext.h; sourceTree = "<group>"; };
+		F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogTeletext.cpp; sourceTree = "<group>"; };
+		F5E55B6D10741340006E788A /* Teletext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Teletext.h; sourceTree = "<group>"; };
+		F5E55B6E10741340006E788A /* Teletext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Teletext.cpp; sourceTree = "<group>"; };
+		F5E55B6F10741340006E788A /* TeletextDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeletextDefines.h; sourceTree = "<group>"; };
 		F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerManager.cpp; path = xbmc/PowerManager.cpp; sourceTree = SOURCE_ROOT; };
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerManager.h; path = xbmc/PowerManager.h; sourceTree = SOURCE_ROOT; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CocoaPowerSyscall.cpp; path = xbmc/osx/CocoaPowerSyscall.cpp; sourceTree = SOURCE_ROOT; };
@@ -4576,6 +4589,8 @@
 				E38E17DB0D25F9FA00618676 /* GUIDialogSongInfo.h */,
 				E38E17DC0D25F9FA00618676 /* GUIDialogSubMenu.cpp */,
 				E38E17DD0D25F9FA00618676 /* GUIDialogSubMenu.h */,
+				F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */,
+				F5E55B64107412DE006E788A /* GUIDialogTeletext.h */,
 				E38E17E00D25F9FA00618676 /* GUIDialogVideoBookmarks.cpp */,
 				E38E17E10D25F9FA00618676 /* GUIDialogVideoBookmarks.h */,
 				E38E17E20D25F9FA00618676 /* GUIDialogVideoScan.cpp */,
@@ -5036,6 +5051,8 @@
 				F59876BB0FBA34C0008EF4FB /* DVDPlayerAudioResampler.h */,
 				E38E15880D25F9FA00618676 /* DVDPlayerSubtitle.cpp */,
 				E38E15890D25F9FA00618676 /* DVDPlayerSubtitle.h */,
+				F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */,
+				F5E55B5C10741272006E788A /* DVDPlayerTeletext.h */,
 				E38E158A0D25F9FA00618676 /* DVDPlayerVideo.cpp */,
 				E38E158B0D25F9FA00618676 /* DVDPlayerVideo.h */,
 				E38E158C0D25F9FA00618676 /* DVDStreamInfo.cpp */,
@@ -6885,6 +6902,9 @@
 				F5487B4A0FE6F02700E506FD /* StreamDetails.h */,
 				E38E1E830D25F9FD00618676 /* SystemInfo.cpp */,
 				E38E1E840D25F9FD00618676 /* SystemInfo.h */,
+				F5E55B6E10741340006E788A /* Teletext.cpp */,
+				F5E55B6D10741340006E788A /* Teletext.h */,
+				F5E55B6F10741340006E788A /* TeletextDefines.h */,
 				E38E1E850D25F9FD00618676 /* Thread.cpp */,
 				E38E1E860D25F9FD00618676 /* Thread.h */,
 				E38E1E890D25F9FD00618676 /* TuxBoxUtil.cpp */,
@@ -8067,6 +8087,9 @@
 				43352CD41071520C00706B8A /* XBTF.cpp in Sources */,
 				43352CD51071520C00706B8A /* XBTFReader.cpp in Sources */,
 				F57B6F801071B8B500079ACB /* JobManager.cpp in Sources */,
+				F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */,
+				F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
+				F5E55B7010741340006E788A /* Teletext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8921,6 +8944,9 @@
 				43352CD81071520C00706B8A /* XBTF.cpp in Sources */,
 				43352CD91071520C00706B8A /* XBTFReader.cpp in Sources */,
 				F57B6F811071B8B500079ACB /* JobManager.cpp in Sources */,
+				F5E55B5E10741272006E788A /* DVDPlayerTeletext.cpp in Sources */,
+				F5E55B67107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
+				F5E55B7110741340006E788A /* Teletext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
