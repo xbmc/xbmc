@@ -413,14 +413,14 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
         return false;
       }
 
-      long lEpisodeHint=-1;
+      int EpisodeHint=-1;
       if (item->HasVideoInfoTag())
-        lEpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
-      long lEpisodeId=-1;
-      if ((lEpisodeId = m_database.GetEpisodeId(item->m_strPath,lEpisodeHint)) > -1)
+        EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
+      int idEpisode=-1;
+      if ((idEpisode = m_database.GetEpisodeId(item->m_strPath,EpisodeHint)) > -1)
       {
         bHasInfo = true;
-        m_database.GetEpisodeInfo(item->m_strPath, movieDetails, lEpisodeId);
+        m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
       }
     }
   }
@@ -1719,8 +1719,8 @@ void CGUIWindowVideoBase::AddToDatabase(int iItem)
 
   // everything is ok, so add to database
   m_database.Open();
-  long lMovieId = m_database.AddMovie(pItem->m_strPath);
-  movie.m_strIMDBNumber.Format("xx%08i", lMovieId);
+  int idMovie = m_database.AddMovie(pItem->m_strPath);
+  movie.m_strIMDBNumber.Format("xx%08i", idMovie);
   m_database.SetDetailsForMovie(pItem->m_strPath, movie);
   m_database.Close();
 

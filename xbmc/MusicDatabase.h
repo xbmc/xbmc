@@ -164,7 +164,7 @@ public:
   bool GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year);
   bool GetSongsByWhere(const CStdString &baseDir, const CStdString &whereClause, CFileItemList& items);
   bool GetAlbumsByWhere(const CStdString &baseDir, const CStdString &where, const CStdString &order, CFileItemList &items);
-  bool GetRandomSong(CFileItem* item, int& lSongId, const CStdString& strWhere);
+  bool GetRandomSong(CFileItem* item, int& idSong, const CStdString& strWhere);
   int GetKaraokeSongsCount();
   int GetSongsCount(const CStdString& strWhere = "");
   unsigned int GetSongIDs(const CStdString& strWhere, std::vector<std::pair<int,int> > &songIDs);
@@ -203,15 +203,15 @@ protected:
   std::map<CStdString, int /*CPathCache*/> m_thumbCache;
   std::map<CStdString, CAlbumCache> m_albumCache;
   virtual bool CreateTables();
-  int AddAlbum(const CStdString& strAlbum1, int lArtistId, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
+  int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
   int AddGenre(const CStdString& strGenre);
   int AddArtist(const CStdString& strArtist);
   int AddPath(const CStdString& strPath);
   int AddThumb(const CStdString& strThumb1);
-  void AddExtraAlbumArtists(const CStdStringArray& vecArtists, int lAlbumId);
-  void AddExtraSongArtists(const CStdStringArray& vecArtists, int lSongId, bool bCheck = true);
+  void AddExtraAlbumArtists(const CStdStringArray& vecArtists, int idAlbum);
+  void AddExtraSongArtists(const CStdStringArray& vecArtists, int idSong, bool bCheck = true);
   void AddKaraokeData(const CSong& song);
-  void AddExtraGenres(const CStdStringArray& vecGenres, int lSongId, int lAlbumId, bool bCheck = true);
+  void AddExtraGenres(const CStdStringArray& vecGenres, int idSong, int idAlbum, bool bCheck = true);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 private:
