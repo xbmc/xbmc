@@ -27,6 +27,7 @@
  */
 #include "WinSystemWin32GL.h"
 #include "WIN32Util.h"
+#include <GL/glew.h>
 
 #ifdef HAS_GL
 
