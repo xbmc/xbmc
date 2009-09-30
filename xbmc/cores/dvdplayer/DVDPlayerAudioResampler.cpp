@@ -49,7 +49,7 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
   CheckResampleBuffers(audioframe.channels);
   
   int   bytes = audioframe.bits_per_sample / 8;
-  float scale = (float)(1LL << ((int64_t)bytes * 8LL)); //value to divide samples by to get them into -1.0:1.0 range
+  float scale = (float)(1LL << ((int64_t)bytes * 8LL - 1)); //value to divide samples by to get them into -1.0:1.0 range
 
   int nrframes = (audioframe.size / audioframe.channels / bytes);
   
@@ -107,7 +107,7 @@ bool CDVDPlayerResampler::Retreive(DVDAudioFrame &audioframe, double &pts)
 
   int   bytes = audioframe.bits_per_sample / 8;
   int   nrframes = audioframe.size / audioframe.channels / bytes;
-  float scale = (float)(1LL << ((int64_t)bytes * 8LL)); //value to multiply samples by
+  float scale = (float)(1LL << ((int64_t)bytes * 8LL - 1)); //value to multiply samples by
   
   //if we don't have enough in the samplebuffer, return false
   if (nrframes > m_bufferfill)
