@@ -39,12 +39,6 @@ using namespace XFILE;
 using namespace DIRECTORY;
 using namespace std;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-//*********************************************************************************************
-
 #define SEEKTIMOUT 30000
 
 #ifdef HAS_RAR
@@ -133,7 +127,6 @@ CFileRar::CFileRar()
   m_bSeekable = true;
 }
 
-//*********************************************************************************************
 CFileRar::~CFileRar()
 {
 #ifdef HAS_RAR
@@ -156,7 +149,7 @@ CFileRar::~CFileRar()
   }
 #endif
 }
-//*********************************************************************************************
+
 bool CFileRar::Open(const CURL& url)
 {
   CStdString strFile;
@@ -236,7 +229,7 @@ bool CFileRar::Exists(const CURL& url)
 
   return bResult;
 }
-//*********************************************************************************************
+
 int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
 {
   if (Open(url))
@@ -261,14 +254,11 @@ int CFileRar::Stat(const CURL& url, struct __stat64* buffer)
   return -1;
 }
 
-
-//*********************************************************************************************
 bool CFileRar::OpenForWrite(const CURL& url)
 {
   return false;
 }
 
-//*********************************************************************************************
 unsigned int CFileRar::Read(void *lpBuf, int64_t uiBufSize)
 {
 #ifdef HAS_RAR
@@ -349,13 +339,11 @@ unsigned int CFileRar::Read(void *lpBuf, int64_t uiBufSize)
 #endif
 }
 
-//*********************************************************************************************
 unsigned int CFileRar::Write(void *lpBuf, int64_t uiBufSize)
 {
   return 0;
 }
 
-//*********************************************************************************************
 void CFileRar::Close()
 {
 #ifdef HAS_RAR
@@ -381,7 +369,6 @@ void CFileRar::Close()
 #endif
 }
 
-//*********************************************************************************************
 int64_t CFileRar::Seek(int64_t iFilePosition, int iWhence)
 {
 #ifdef HAS_RAR
@@ -491,7 +478,6 @@ int64_t CFileRar::Seek(int64_t iFilePosition, int iWhence)
 #endif
 }
 
-//*********************************************************************************************
 int64_t CFileRar::GetLength()
 {
   if (!m_bOpen)
@@ -503,7 +489,6 @@ int64_t CFileRar::GetLength()
   return m_iFileSize;
 }
 
-//*********************************************************************************************
 int64_t CFileRar::GetPosition()
 {
   if (!m_bOpen)
@@ -525,6 +510,7 @@ void CFileRar::Flush()
   if (m_bUseFile)
     m_File.Flush();
 }
+
 void CFileRar::InitFromUrl(const CURL& url)
 {
   url.GetURL(m_strUrl);
@@ -705,5 +691,4 @@ bool CFileRar::OpenInArchive()
   return false;
 #endif
 }
-
 
