@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
   "XBMC Live" installer
-  V1.003 - 20090929
+  V1.004 - 20090930
   Luigi Capriotti @2009
 
 """ 
@@ -543,18 +543,14 @@ def modifyGrubMenuV1(menuFName, isaRemovableDrive, bootPartition):
 	writeFile(menuFName, content)
 
 def modifyGrubMenuV2(menuFName, isaRemovableDrive, bootPartition):
-	if isaRemovableDrive:
-		content = readFile(menuFName)
-		content = re.sub("hd[0-9]*", "hd0,1", content)
-	else:
+	if not isaRemovableDrive:
 		content = ""
 		content += ("set default=0" + "\n")
-		content += ("set root=(hd0,1)" + "\n")
 		content += ("\n")
 		content += ("insmod video" + "\n")
 		content += ("insmod vbe" + "\n")
 		content += ("insmod font" + "\n")
-		content += ("if loadfont (hd0,1)/boot/grub/unicode.pf2 ; then" + "\n")
+		content += ("if loadfont ($root)/boot/grub/unicode.pf2 ; then" + "\n")
 		content += (" set gfxmode=800x600" + "\n")
 		content += ("# set gfxpayload=keep" + "\n")
 		content += (" insmod gfxterm" + "\n")
@@ -565,7 +561,7 @@ def modifyGrubMenuV2(menuFName, isaRemovableDrive, bootPartition):
 		content += ("fi" + "\n")
 		content += ("\n")
 		content += ("insmod tga" + "\n")
-		content += ("if background_image (hd0,1)/boot/grub/xbmc.tga ; then" + "\n")
+		content += ("if background_image ($root)/boot/grub/xbmc.tga ; then" + "\n")
 		content += (" set color_normal=white/black" + "\n")
 		content += (" set color_highlight=cyan/black" + "\n")
 		content += ("else" + "\n")
@@ -590,7 +586,7 @@ def modifyGrubMenuV2(menuFName, isaRemovableDrive, bootPartition):
 		content += (" initrd /initrd.img" + "\n")
 		content += ("}" + "\n")
 		content += ("\n")
-	writeFile(menuFName, content)
+		writeFile(menuFName, content)
 
 def changePasswords(liveRootDir):
 	# Lock root account
