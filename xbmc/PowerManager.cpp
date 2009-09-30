@@ -181,25 +181,7 @@ void CPowerManager::Resume()
   g_lcd->Initialize();
 #endif
 
-  // update video library
-  if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
-  {
-    CLog::Log(LOGNOTICE, "%s: Updating video library on resume", __FUNCTION__);
-    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
-    VIDEO::SScanSettings settings;
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("",info,settings,false);
-  }
-
-  // update music library
-  if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
-  {
-    CLog::Log(LOGNOTICE, "%s: Updating music library on resume", __FUNCTION__);
-    CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("");
-  }
+  g_application.UpdateLibraries();
 
   // reset
   g_application.m_bRunResumeJobs = false;
