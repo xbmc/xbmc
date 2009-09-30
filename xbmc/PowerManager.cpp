@@ -28,6 +28,7 @@
 #include "KeyboardStat.h"
 #include "MouseStat.h"
 #include "GUISettings.h"
+#include "WindowingFactory.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -150,8 +151,16 @@ void CPowerManager::Resume()
 {
   CLog::Log(LOGNOTICE, "%s: Running resume jobs", __FUNCTION__);
 
-  g_Mouse.Acquire();
+#ifdef HAS_SDL
+  // Hack to reclaim focus, thus rehiding system mouse pointer.
+  // Surely there's a better way?
+  if (g_Windowing.IsFullScreen())
+  {
+    g_graphicsContext.ToggleFullScreenRoot();
+    g_graphicsContext.ToggleFullScreenRoot();
+  }
   g_application.ResetScreenSaver();
+#endif
 
   // restart lirc
 #ifdef HAS_LIRC
