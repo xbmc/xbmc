@@ -49,15 +49,15 @@
 static void
 viz_preset_destroy(viz_preset_t p)
 {
-  ref_dbg(REFMEM_DEBUG, "%s {\n", __FUNCTION__);
+  viz_dbg(REFMEM_DEBUG, "%s {\n", __FUNCTION__);
   if (!p) {
-    ref_dbg(REFMEM_DEBUG, "%s }!a\n", __FUNCTION__);
+    viz_dbg(REFMEM_DEBUG, "%s }!a\n", __FUNCTION__);
     return;
   }
   if (p->name) {
     ref_release(p->name);
   }
-  ref_dbg(REFMEM_DEBUG, "%s }\n", __FUNCTION__);
+  viz_dbg(REFMEM_DEBUG, "%s }\n", __FUNCTION__);
 }
 
 /*
@@ -80,7 +80,7 @@ viz_preset_create(void)
 {
   viz_preset_t ret = ref_alloc(sizeof(*ret));
 
-  ref_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
+  viz_dbg(REFMEM_DEBUG, "%s\n", __FUNCTION__);
   if(!ret) {
     return NULL;
   }
@@ -108,7 +108,7 @@ char *
 viz_preset_name(viz_preset_t preset)
 {
   if (!preset) {
-    ref_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
+    viz_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
       __FUNCTION__);
     return NULL;
   }
@@ -136,7 +136,7 @@ int
 viz_preset_set_type(viz_preset_t preset, char* name)
 {
   if (!preset) {
-    ref_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
+    viz_dbg(REFMEM_ERROR, "%s: NULL preset structure\n",
       __FUNCTION__);
     return 0;
   }

@@ -3,6 +3,7 @@ INCLUDES=-I. -I../../addons/include -I../librefmem
 SO=VisualisationLib-$(ARCH).so
 ARCHIVE=$(SO:.so=.a)
 SYSDIR=../../../system
+LIB=libvisualisation.a
 SLIB=$(SYSDIR)/$(SO)
 DIRS=../librefmem
 SLIBS=../librefmem/librefmem.a
@@ -12,12 +13,12 @@ OBJS+=presets.o
 
 .PHONY: compile
 
-$(SLIB): $(OBJS)
-	$(CC) $(OBJS) -shared -o $(SLIB) $(SLIBS)
+$(SLIB): $(LIB)
+	$(CC) $(LIB) -shared -o $(SLIB) $(SLIBS)
 
 $(SLIBS): compile
 
-librefmem.a:
+../librefmem/librefmem.a:
 	$(MAKE) -C ../librefmem
 
 include ../../../Makefile.include

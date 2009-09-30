@@ -26,6 +26,7 @@
 
 #ifndef __ADDON_LOCAL_H_
 #define __ADDON_LOCAL_H_
+#include <libaddon.h>
 
 enum addon_log {
   REFMEM_DEBUG,
