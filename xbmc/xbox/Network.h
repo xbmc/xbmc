@@ -79,9 +79,9 @@ protected:
   DWORD m_lastlink2;  /* will hold the last link(2), to notice changes */
   int   m_netRetryCounter;
 private:
-
   void NetworkDown();
   void NetworkUp();
+  DWORD GetState();
 };
 
 
