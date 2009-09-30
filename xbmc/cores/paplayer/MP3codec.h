@@ -23,7 +23,7 @@
 
 #include "CachingCodec.h"
 #include "MusicInfoTagLoaderMP3.h"
-#include "DllMadCodec.h"
+#include "../dvdplayer/DVDCodecs/Audio/DllLibMad.h"
 
 enum madx_sig {
 	ERROR_OCCURED,
@@ -119,6 +119,6 @@ private:
 
   int m_BitsPerSampleInternal;
 
-  DllMadCodec m_dll;
+  DllLibMad m_dll;
 };
 
