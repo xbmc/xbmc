@@ -190,6 +190,7 @@ public:
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
+  void UpdateLibraries();
   void CheckMusicPlaylist();
 
   bool ExecuteXBMCAction(std::string action);
