@@ -739,7 +739,8 @@ void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
   else  // Set custom default parameters
   {
     sSysParam.bScrSaver= false;       // bScrSaver is not really needed, since dwEsFlags will also reset screensaver timer
-    sSysParam.dwEsFlags= ES_CONTINUOUS        | 
+    sSysParam.dwEsFlags= ES_CONTINUOUS        |
+                         ES_DISPLAY_REQUIRED  |
                          ES_SYSTEM_REQUIRED;
   }
   SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, sSysParam.bScrSaver, NULL, 0 );
