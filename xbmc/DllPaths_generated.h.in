@@ -13,7 +13,7 @@
 #ifdef __APPLE__
 #define DLL_PATH_LIBCURL       "special://xbmc/system/libcurl-@ARCH@.so"
 #else
-#define DLL_PATH_LIBCURL       "/usr/lib/libcurl.so"
+#define DLL_PATH_LIBCURL       "libcurl.so.4"
 #endif
 #endif
 
