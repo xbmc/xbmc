@@ -1,0 +1,508 @@
+Name
+
+    EXT_texture_compression_s3tc
+
+Name Strings
+
+    GL_EXT_texture_compression_s3tc
+
+Contact
+
+    Pat Brown, NVIDIA Corporation (pbrown 'at' nvidia.com)
+
+Status
+
+    FINAL
+
+Version
+
+    1.1, 16 November 2001 (containing only clarifications relative to
+                           version 1.0, dated 7 July 2000)
+
+Number
+
+    198
+
+Dependencies
+
+    OpenGL 1.1 is required.
+
+    GL_ARB_texture_compression is required.
+
+    This extension is written against the OpenGL 1.2.1 Specification.
+
+Overview
+
+    This extension provides additional texture compression functionality
+    specific to S3's S3TC format (called DXTC in Microsoft's DirectX API),
+    subject to all the requirements and limitations described by the extension
+    GL_ARB_texture_compression.
+
+    This extension supports DXT1, DXT3, and DXT5 texture compression formats.
+    For the DXT1 image format, this specification supports an RGB-only mode
+    and a special RGBA mode with single-bit "transparent" alpha.
+
+IP Status
+
+    Contact S3 Incorporated (http://www.s3.com) regarding any intellectual
+    property issues associated with implementing this extension.
+
+    WARNING:  Vendors able to support S3TC texture compression in Direct3D
+    drivers do not necessarily have the right to use the same functionality in
+    OpenGL.
+
+Issues
+
+    (1) Should DXT2 and DXT4 (premultiplied alpha) formats be supported?
+
+        RESOLVED:  No -- insufficient interest.  Supporting DXT2 and DXT4
+        would require some rework to the TexEnv definition (maybe add a new
+        base internal format RGBA_PREMULTIPLIED_ALPHA) for these formats.
+        Note that the EXT_texture_env_combine extension (which extends normal
+        TexEnv modes) can be used to support textures with premultipled alpha.
+
+    (2) Should generic "RGB_S3TC_EXT" and "RGBA_S3TC_EXT" enums be supported
+        or should we use only the DXT<n> enums?  
+
+        RESOLVED:  No.  A generic RGBA_S3TC_EXT is problematic because DXT3
+        and DXT5 are both nominally RGBA (and DXT1 with the 1-bit alpha is
+        also) yet one format must be chosen up front.
+
+    (3) Should TexSubImage support all block-aligned edits or just the minimal
+        functionality required by the ARB_texture_compression extension?
+
+        RESOLVED:  Allow all valid block-aligned edits.
+
+    (4) A pre-compressed image with a DXT1 format can be used as either an
+        RGB_S3TC_DXT1 or an RGBA_S3TC_DXT1 image.  If the image has
+        transparent texels, how are they treated in each format?
+
+        RESOLVED:  The renderer has to make sure that an RGB_S3TC_DXT1 format
+        is decoded as RGB (where alpha is effectively one for all texels),
+        while RGBA_S3TC_DXT1 is decoded as RGBA (where alpha is zero for all
+        texels with "transparent" encodings).  Otherwise, the formats are
+        identical.
+
+    (5) Is the encoding of the RGB components for DXT1 formats correct in this
+        spec?  MSDN documentation does not specify an RGB color for the
+        "transparent" encoding.  Is it really black?
+
+        RESOLVED:  Yes.  The specification for the DXT1 format initially
+        required black, but later changed that requirement to a
+        recommendation.  All vendors involved in the definition of this
+        specification support black.  In addition, specifying black has a
+        useful behavior.
+
+        When blending multiple texels (GL_LINEAR filtering), mixing opaque and
+        transparent samples is problematic.  Defining a black color on
+        transparent texels achieves a sensible result that works like a
+        texture with premultiplied alpha.  For example, if three opaque white
+        and one transparent sample is being averaged, the result would be a
+        75% intensity gray (with an alpha of 75%).  This is the same result on
+        the color channels as would be obtained using a white color, 75%
+        alpha, and a SRC_ALPHA blend factor.
+
+    (6) Is the encoding of the RGB components for DXT3 and DXT5 formats
+        correct in this spec?  MSDN documentation suggests that the RGB blocks
+        for DXT3 and DXT5 are decoded as described by the DXT1 format.
+
+        RESOLVED:  Yes -- this appears to be a bug in the MSDN documentation.
+        The specification for the DXT2-DXT5 formats require decoding using the
+        opaque block encoding, regardless of the relative values of "color0"
+        and "color1".
+
+New Procedures and Functions
+
+    None.
+
+New Tokens
+
+    Accepted by the <internalformat> parameter of TexImage2D, CopyTexImage2D,
+    and CompressedTexImage2DARB and the <format> parameter of
+    CompressedTexSubImage2DARB:
+
+        COMPRESSED_RGB_S3TC_DXT1_EXT                   0x83F0
+        COMPRESSED_RGBA_S3TC_DXT1_EXT                  0x83F1
+        COMPRESSED_RGBA_S3TC_DXT3_EXT                  0x83F2
+        COMPRESSED_RGBA_S3TC_DXT5_EXT                  0x83F3
+
+Additions to Chapter 2 of the OpenGL 1.2.1 Specification (OpenGL Operation)
+
+    None.
+
+Additions to Chapter 3 of the OpenGL 1.2.1 Specification (Rasterization)
+
+    Add to Table 3.16.1:  Specific Compressed Internal Formats
+
+        Compressed Internal Format         Base Internal Format
+        ==========================         ====================
+        COMPRESSED_RGB_S3TC_DXT1_EXT       RGB
+        COMPRESSED_RGBA_S3TC_DXT1_EXT      RGBA
+        COMPRESSED_RGBA_S3TC_DXT3_EXT      RGBA
+        COMPRESSED_RGBA_S3TC_DXT5_EXT      RGBA
+
+    
+    Modify Section 3.8.2, Alternate Image Specification
+
+    (add to end of TexSubImage discussion, p.123 -- after edit from the
+    ARB_texture_compression spec)
+
+    If the internal format of the texture image being modified is
+    COMPRESSED_RGB_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT1_EXT,
+    COMPRESSED_RGBA_S3TC_DXT3_EXT, or COMPRESSED_RGBA_S3TC_DXT5_EXT, the
+    texture is stored using one of the several S3TC compressed texture image
+    formats.  Such images are easily edited along 4x4 texel boundaries, so the
+    limitations on TexSubImage2D or CopyTexSubImage2D parameters are relaxed.
+    TexSubImage2D and CopyTexSubImage2D will result in an INVALID_OPERATION
+    error only if one of the following conditions occurs:
+
+        * <width> is not a multiple of four or equal to TEXTURE_WIDTH, 
+          unless <xoffset> and <yoffset> are both zero.
+        * <height> is not a multiple of four or equal to TEXTURE_HEIGHT,
+          unless <xoffset> and <yoffset> are both zero.
+        * <xoffset> or <yoffset> is not a multiple of four.
+
+    The contents of any 4x4 block of texels of an S3TC compressed texture
+    image that does not intersect the area being modified are preserved during
+    valid TexSubImage2D and CopyTexSubImage2D calls.
+
+
+    Add to Section 3.8.2, Alternate Image Specification (adding to the end of
+    the CompressedTexImage section introduced by the ARB_texture_compression
+    spec)
+
+    If <internalformat> is COMPRESSED_RGB_S3TC_DXT1_EXT,
+    COMPRESSED_RGBA_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT3_EXT, or
+    COMPRESSED_RGBA_S3TC_DXT5_EXT, the compressed texture is stored using one
+    of several S3TC compressed texture image formats.  The S3TC texture
+    compression algorithm supports only 2D images without borders.
+    CompressedTexImage1DARB and CompressedTexImage3DARB produce an
+    INVALID_ENUM error if <internalformat> is an S3TC format.
+    CompressedTexImage2DARB will produce an INVALID_OPERATION error if
+    <border> is non-zero.
+
+
+    Add to Section 3.8.2, Alternate Image Specification (adding to the end of
+    the CompressedTexSubImage section introduced by the
+    ARB_texture_compression spec)
+
+    If the internal format of the texture image being modified is
+    COMPRESSED_RGB_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT1_EXT,
+    COMPRESSED_RGBA_S3TC_DXT3_EXT, or COMPRESSED_RGBA_S3TC_DXT5_EXT, the
+    texture is stored using one of the several S3TC compressed texture image
+    formats.  Since the S3TC texture compression algorithm supports only 2D
+    images, CompressedTexSubImage1DARB and CompressedTexSubImage3DARB produce
+    an INVALID_ENUM error if <format> is an S3TC format.  Since S3TC images
+    are easily edited along 4x4 texel boundaries, the limitations on
+    CompressedTexSubImage2D are relaxed.  CompressedTexSubImage2D will result
+    in an INVALID_OPERATION error only if one of the following conditions
+    occurs:
+
+        * <width> is not a multiple of four or equal to TEXTURE_WIDTH.
+        * <height> is not a multiple of four or equal to TEXTURE_HEIGHT.
+        * <xoffset> or <yoffset> is not a multiple of four.
+
+    The contents of any 4x4 block of texels of an S3TC compressed texture
+    image that does not intersect the area being modified are preserved during
+    valid TexSubImage2D and CopyTexSubImage2D calls.
+
+Additions to Chapter 4 of the OpenGL 1.2.1 Specification (Per-Fragment
+Operations and the Frame Buffer)
+
+    None.
+
+Additions to Chapter 5 of the OpenGL 1.2.1 Specification (Special Functions)
+
+    None.
+
+Additions to Chapter 6 of the OpenGL 1.2.1 Specification (State and
+State Requests)
+
+    None.
+
+Additions to Appendix A of the OpenGL 1.2.1 Specification (Invariance)
+
+    None.
+
+Additions to the AGL/GLX/WGL Specifications
+
+    None.
+
+GLX Protocol
+
+    None.
+
+Errors
+
+    INVALID_ENUM is generated by CompressedTexImage1DARB or
+    CompressedTexImage3DARB if <internalformat> is
+    COMPRESSED_RGB_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT1_EXT,
+    COMPRESSED_RGBA_S3TC_DXT3_EXT, or COMPRESSED_RGBA_S3TC_DXT5_EXT.
+
+    INVALID_OPERATION is generated by CompressedTexImage2DARB if
+    <internalformat> is COMPRESSED_RGB_S3TC_DXT1_EXT,
+    COMPRESSED_RGBA_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT3_EXT, or
+    COMPRESSED_RGBA_S3TC_DXT5_EXT and <border> is not equal to zero.
+
+    INVALID_ENUM is generated by CompressedTexSubImage1DARB or
+    CompressedTexSubImage3DARB if <format> is COMPRESSED_RGB_S3TC_DXT1_EXT,
+    COMPRESSED_RGBA_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT3_EXT, or
+    COMPRESSED_RGBA_S3TC_DXT5_EXT.
+
+    INVALID_OPERATION is generated by TexSubImage2D CopyTexSubImage2D, or
+    CompressedTexSubImage2D if TEXTURE_INTERNAL_FORMAT is
+    COMPRESSED_RGB_S3TC_DXT1_EXT, COMPRESSED_RGBA_S3TC_DXT1_EXT,
+    COMPRESSED_RGBA_S3TC_DXT3_EXT, or COMPRESSED_RGBA_S3TC_DXT5_EXT and any of
+    the following apply: <width> is not a multiple of four or equal to
+    TEXTURE_WIDTH; <height> is not a multiple of four or equal to
+    TEXTURE_HEIGHT; <xoffset> or <yoffset> is not a multiple of four.
+
+
+    The following restrictions from the ARB_texture_compression specification
+    do not apply to S3TC texture formats, since subimage modification is
+    straightforward as long as the subimage is properly aligned.
+
+    DELETE: INVALID_OPERATION is generated by TexSubImage1D, TexSubImage2D,
+    DELETE: TexSubImage3D, CopyTexSubImage1D, CopyTexSubImage2D, or
+    DELETE: CopyTexSubImage3D if the internal format of the texture image is
+    DELETE: compressed and <xoffset>, <yoffset>, or <zoffset> does not equal
+    DELETE: -b, where b is value of TEXTURE_BORDER.
+
+    DELETE: INVALID_VALUE is generated by CompressedTexSubImage1DARB,
+    DELETE: CompressedTexSubImage2DARB, or CompressedTexSubImage3DARB if the
+    DELETE: entire texture image is not being edited:  if <xoffset>,
+    DELETE: <yoffset>, or <zoffset> is greater than -b, <xoffset> + <width> is
+    DELETE: less than w+b, <yoffset> + <height> is less than h+b, or <zoffset>
+    DELETE: + <depth> is less than d+b, where b is the value of
+    DELETE: TEXTURE_BORDER, w is the value of TEXTURE_WIDTH, h is the value of
+    DELETE: TEXTURE_HEIGHT, and d is the value of TEXTURE_DEPTH.
+
+    See also errors in the GL_ARB_texture_compression specification.
+
+New State
+
+    In the "Textures" state table, increment the TEXTURE_INTERNAL_FORMAT
+    subscript for Z by 4 in the "Type" row.
+
+New Implementation Dependent State
+
+    None
+
+Appendix
+
+    S3TC Compressed Texture Image Formats
+
+    Compressed texture images stored using the S3TC compressed image formats
+    are represented as a collection of 4x4 texel blocks, where each block
+    contains 64 or 128 bits of texel data.  The image is encoded as a normal
+    2D raster image in which each 4x4 block is treated as a single pixel.  If
+    an S3TC image has a width or height less than four, the data corresponding
+    to texels outside the image are irrelevant and undefined.
+
+    When an S3TC image with a width of <w>, height of <h>, and block size of
+    <blocksize> (8 or 16 bytes) is decoded, the corresponding image size (in
+    bytes) is:
+    
+        ceil(<w>/4) * ceil(<h>/4) * blocksize.
+
+    When decoding an S3TC image, the block containing the texel at offset
+    (<x>, <y>) begins at an offset (in bytes) relative to the base of the
+    image of:
+
+        blocksize * (ceil(<w>/4) * floor(<y>/4) + floor(<x>/4)).
+
+    The data corresponding to a specific texel (<x>, <y>) are extracted from a
+    4x4 texel block using a relative (x,y) value of
+    
+        (<x> modulo 4, <y> modulo 4).
+
+    There are four distinct S3TC image formats:
+
+    COMPRESSED_RGB_S3TC_DXT1_EXT:  Each 4x4 block of texels consists of 64
+    bits of RGB image data.  
+
+    Each RGB image data block is encoded as a sequence of 8 bytes, called (in
+    order of increasing address):
+
+            c0_lo, c0_hi, c1_lo, c1_hi, bits_0, bits_1, bits_2, bits_3
+
+        The 8 bytes of the block are decoded into three quantities:
+
+            color0 = c0_lo + c0_hi * 256
+            color1 = c1_lo + c1_hi * 256
+            bits   = bits_0 + 256 * (bits_1 + 256 * (bits_2 + 256 * bits_3))
+        
+        color0 and color1 are 16-bit unsigned integers that are unpacked to
+        RGB colors RGB0 and RGB1 as though they were 16-bit packed pixels with
+        a <format> of RGB and a type of UNSIGNED_SHORT_5_6_5.
+
+        bits is a 32-bit unsigned integer, from which a two-bit control code
+        is extracted for a texel at location (x,y) in the block using:
+
+            code(x,y) = bits[2*(4*y+x)+1..2*(4*y+x)+0]
+        
+        where bit 31 is the most significant and bit 0 is the least
+        significant bit.
+
+        The RGB color for a texel at location (x,y) in the block is given by:
+
+            RGB0,              if color0 > color1 and code(x,y) == 0
+            RGB1,              if color0 > color1 and code(x,y) == 1
+            (2*RGB0+RGB1)/3,   if color0 > color1 and code(x,y) == 2
+            (RGB0+2*RGB1)/3,   if color0 > color1 and code(x,y) == 3
+
+            RGB0,              if color0 <= color1 and code(x,y) == 0
+            RGB1,              if color0 <= color1 and code(x,y) == 1
+            (RGB0+RGB1)/2,     if color0 <= color1 and code(x,y) == 2
+            BLACK,             if color0 <= color1 and code(x,y) == 3
+
+        Arithmetic operations are done per component, and BLACK refers to an
+        RGB color where red, green, and blue are all zero.
+
+    Since this image has an RGB format, there is no alpha component and the
+    image is considered fully opaque.
+
+
+    COMPRESSED_RGBA_S3TC_DXT1_EXT:  Each 4x4 block of texels consists of 64
+    bits of RGB image data and minimal alpha information.  The RGB components
+    of a texel are extracted in the same way as COMPRESSED_RGB_S3TC_DXT1_EXT.
+ 
+        The alpha component for a texel at location (x,y) in the block is
+        given by:
+
+            0.0,               if color0 <= color1 and code(x,y) == 3
+            1.0,               otherwise
+
+        IMPORTANT:  When encoding an RGBA image into a format using 1-bit
+        alpha, any texels with an alpha component less than 0.5 end up with an
+        alpha of 0.0 and any texels with an alpha component greater than or
+        equal to 0.5 end up with an alpha of 1.0.  When encoding an RGBA image
+        into the COMPRESSED_RGBA_S3TC_DXT1_EXT format, the resulting red,
+        green, and blue components of any texels with a final alpha of 0.0
+        will automatically be zero (black).  If this behavior is not desired
+        by an application, it should not use COMPRESSED_RGBA_S3TC_DXT1_EXT.
+        This format will never be used when a generic compressed internal
+        format (Table 3.16.2) is specified, although the nearly identical
+        format COMPRESSED_RGB_S3TC_DXT1_EXT (above) may be.
+
+
+    COMPRESSED_RGBA_S3TC_DXT3_EXT:  Each 4x4 block of texels consists of 64
+    bits of uncompressed alpha image data followed by 64 bits of RGB image
+    data.  
+
+    Each RGB image data block is encoded according to the
+    COMPRESSED_RGB_S3TC_DXT1_EXT format, with the exception that the two code
+    bits always use the non-transparent encodings.  In other words, they are
+    treated as though color0 > color1, regardless of the actual values of
+    color0 and color1.
+
+    Each alpha image data block is encoded as a sequence of 8 bytes, called
+    (in order of increasing address):
+
+            a0, a1, a2, a3, a4, a5, a6, a7
+
+        The 8 bytes of the block are decoded into one 64-bit integer:
+
+            alpha = a0 + 256 * (a1 + 256 * (a2 + 256 * (a3 + 256 * (a4 +
+                         256 * (a5 + 256 * (a6 + 256 * a7))))))
+
+        alpha is a 64-bit unsigned integer, from which a four-bit alpha value
+        is extracted for a texel at location (x,y) in the block using:
+
+            alpha(x,y) = bits[4*(4*y+x)+3..4*(4*y+x)+0]
+
+        where bit 63 is the most significant and bit 0 is the least
+        significant bit.
+
+        The alpha component for a texel at location (x,y) in the block is
+        given by alpha(x,y) / 15.
+
+ 
+    COMPRESSED_RGBA_S3TC_DXT5_EXT:  Each 4x4 block of texels consists of 64
+    bits of compressed alpha image data followed by 64 bits of RGB image data.
+
+    Each RGB image data block is encoded according to the
+    COMPRESSED_RGB_S3TC_DXT1_EXT format, with the exception that the two code
+    bits always use the non-transparent encodings.  In other words, they are
+    treated as though color0 > color1, regardless of the actual values of
+    color0 and color1.
+
+    Each alpha image data block is encoded as a sequence of 8 bytes, called
+    (in order of increasing address):
+
+        alpha0, alpha1, bits_0, bits_1, bits_2, bits_3, bits_4, bits_5
+
+        The alpha0 and alpha1 are 8-bit unsigned bytes converted to alpha
+        components by multiplying by 1/255.
+
+        The 6 "bits" bytes of the block are decoded into one 48-bit integer:
+
+          bits = bits_0 + 256 * (bits_1 + 256 * (bits_2 + 256 * (bits_3 + 
+                          256 * (bits_4 + 256 * bits_5))))
+
+        bits is a 48-bit unsigned integer, from which a three-bit control code
+        is extracted for a texel at location (x,y) in the block using:
+
+            code(x,y) = bits[3*(4*y+x)+1..3*(4*y+x)+0]
+
+        where bit 47 is the most significant and bit 0 is the least
+        significant bit.
+
+        The alpha component for a texel at location (x,y) in the block is
+        given by:
+
+              alpha0,                   code(x,y) == 0
+              alpha1,                   code(x,y) == 1
+
+              (6*alpha0 + 1*alpha1)/7,  alpha0 > alpha1 and code(x,y) == 2
+              (5*alpha0 + 2*alpha1)/7,  alpha0 > alpha1 and code(x,y) == 3
+              (4*alpha0 + 3*alpha1)/7,  alpha0 > alpha1 and code(x,y) == 4
+              (3*alpha0 + 4*alpha1)/7,  alpha0 > alpha1 and code(x,y) == 5
+              (2*alpha0 + 5*alpha1)/7,  alpha0 > alpha1 and code(x,y) == 6
+              (1*alpha0 + 6*alpha1)/7,  alpha0 > alpha1 and code(x,y) == 7
+
+              (4*alpha0 + 1*alpha1)/5,  alpha0 <= alpha1 and code(x,y) == 2
+              (3*alpha0 + 2*alpha1)/5,  alpha0 <= alpha1 and code(x,y) == 3
+              (2*alpha0 + 3*alpha1)/5,  alpha0 <= alpha1 and code(x,y) == 4
+              (1*alpha0 + 4*alpha1)/5,  alpha0 <= alpha1 and code(x,y) == 5
+              0.0,                      alpha0 <= alpha1 and code(x,y) == 6
+              1.0,                      alpha0 <= alpha1 and code(x,y) == 7
+
+
+Revision History
+
+    1.1,  11/16/01 pbrown:    Updated contact info, clarified where texels
+                              fall within a single block.
+
+    1.0,  07/07/00 prbrown1:  Published final version agreed to by working
+                              group members.
+
+    0.9,  06/24/00 prbrown1:  Documented that block-aligned TexSubImage calls
+                              do not modify existing texels outside the
+                              modified blocks.  Added caveat to allow for a
+                              (0,0)-anchored TexSubImage operation of
+                              arbitrary size.
+
+    0.7,  04/11/00 prbrown1:  Added issues on DXT1, DXT3, and DXT5 encodings
+                              where the MSDN documentation doesn't match what
+                              is really done.  Added enum values from the
+                              extension registry.
+
+    0.4,  03/28/00 prbrown1:  Updated to reflect final version of the
+                              ARB_texture_compression extension.  Allowed
+                              block-aligned TexSubImage calls.
+
+    0.3,  03/07/00 prbrown1:  Resolved issues pertaining to the format of RGB
+                              blocks in the DXT3 and DXT5 formats (they don't
+                              ever use the "transparent" encoding).  Fixed
+                              decoding of DXT1 blocks.  Pointed out issue of
+                              "transparent" texels in DXT1 encodings having
+                              different behaviors for RGB and RGBA internal
+                              formats.
+
+    0.2,  02/23/00 prbrown1:  Minor revisions; added several issues.
+
+    0.11, 02/17/00 prbrown1:  Slight modification to error semantics
+                              (INVALID_ENUM instead of INVALID_OPERATION).
+
+    0.1,  02/15/00 prbrown1:  Initial revision.

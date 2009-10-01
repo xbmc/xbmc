@@ -1,9 +1,0 @@
-To build the codec 
-1) grab newest version of library from http://adplug.sourceforge.net/
-2) apply xbmc.diff
-3) copy AdplugXBMC.cpp to src/
-3) ensure static linking to libbinio by setting libbinio_LIBS in configure
-4) make
-5) you will now have your library in src/.libs
-
-current svn is based on v2.1

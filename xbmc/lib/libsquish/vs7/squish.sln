@@ -1,0 +1,39 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "squish\squish.vcproj", "{6A8518C3-D81A-4428-BD7F-C37933088AC1}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squishpng", "squishpng\squishpng.vcproj", "{3BC7CF47-F1C8-4BDA-BE30-92F17B21D2C7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6A8518C3-D81A-4428-BD7F-C37933088AC1} = {6A8518C3-D81A-4428-BD7F-C37933088AC1}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squishtest", "squishtest\squishtest.vcproj", "{77A3F26C-A1D6-4535-9E37-7D3DF34E4B4B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6A8518C3-D81A-4428-BD7F-C37933088AC1} = {6A8518C3-D81A-4428-BD7F-C37933088AC1}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug.ActiveCfg = Debug|Win32
+		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug.Build.0 = Debug|Win32
+		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release.ActiveCfg = Release|Win32
+		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release.Build.0 = Release|Win32
+		{3BC7CF47-F1C8-4BDA-BE30-92F17B21D2C7}.Debug.ActiveCfg = Debug|Win32
+		{3BC7CF47-F1C8-4BDA-BE30-92F17B21D2C7}.Debug.Build.0 = Debug|Win32
+		{3BC7CF47-F1C8-4BDA-BE30-92F17B21D2C7}.Release.ActiveCfg = Release|Win32
+		{3BC7CF47-F1C8-4BDA-BE30-92F17B21D2C7}.Release.Build.0 = Release|Win32
+		{77A3F26C-A1D6-4535-9E37-7D3DF34E4B4B}.Debug.ActiveCfg = Debug|Win32
+		{77A3F26C-A1D6-4535-9E37-7D3DF34E4B4B}.Debug.Build.0 = Debug|Win32
+		{77A3F26C-A1D6-4535-9E37-7D3DF34E4B4B}.Release.ActiveCfg = Release|Win32
+		{77A3F26C-A1D6-4535-9E37-7D3DF34E4B4B}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

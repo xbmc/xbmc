@@ -1,0 +1,31 @@
+ARCH=@ARCH@
+
+INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/ -I../../xbmc/utils
+DEFINES = -DHAS_SDL
+LIBS = @LIBS@ -lSDL_image
+OBJS = \
+	AnimatedGif.o \
+	Bundler.o \
+	SurfaceSDL.o \
+	XBMCTex.o \
+	xbox.o \
+	xwinapi.o \
+	XFileUtils.o \
+	XHandle.o \
+	XTimeUtils.o \
+	sha.o
+
+TARGET = XBMCTex
+CLEAN_FILES=$(TARGET)
+
+all: $(TARGET)
+
+include ../../Makefile.include
+
+$(TARGET): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(MAKE) -f Makefile.osx
+else
+	g++ $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+endif
+

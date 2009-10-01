@@ -1,0 +1,45 @@
+
+# To build an universal binary, uncomment out the "UNIVERSAL" variable below
+# You need to have installed MacPorts for both arch (at least lzo libsdl libsdl_image and their dependencies)
+# Follow the README.osx but keep both ppc and i386 for universal_archs in /opt/local/etc/macports/macports.conf:
+# "universal_archs         ppc i386"
+#UNIVERSAL = -arch ppc -arch i386
+
+DEFINES = -DHAS_SDL -D_LINUX
+INCLUDES = -I../../xbmc/linux -I../../guilib -I../../xbmc/ -I../../xbmc/utils -I/opt/local/include
+# To build with shared MacPorts libs
+LIBS = -lSDL -lSDL_image -llzo
+LDFLAGS = -L/opt/local/lib -lSDLmain -framework Foundation -framework Cocoa
+# To build with static MacPorts libs
+# You need to have used "+universal" when installing MacPorts! (see README.osx)
+#LIBS = /opt/local/lib/liblzo.a /opt/local/lib/libSDL_image.a /opt/local/lib/libpng.a /opt/local/lib/libtiff.a /opt/local/lib/libjpeg.a /opt/local/lib/libz.a
+# LDFLAGS is the output of `sdl-config --static-libs`
+#LDFLAGS = -L/opt/local/lib /opt/local/lib/libSDLmain.a /opt/local/lib/libSDL.a -Wl,-framework,OpenGL -Wl,-framework,Cocoa -Wl,-framework,QuickTime -Wl,-framework,ApplicationServices -Wl,-framework,Carbon -Wl,-framework,AudioToolbox -Wl,-framework,AudioUnit -Wl,-framework,IOKit
+OBJS = \
+	AnimatedGif.o \
+	Bundler.o \
+	SurfaceSDL.o \
+	XBMCTex.o \
+	xbox.o \
+	xwinapi.o \
+	XFileUtils.o \
+	XHandle.o \
+	XTimeUtils.o \
+	sha.o \
+	OSXGNUReplacements.o
+
+TARGET = XBMCTex
+
+all: $(TARGET)
+	
+$(TARGET): $(OBJS)
+	g++ -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 $(UNIVERSAL) $(OBJS) $(LDFLAGS) $(LIBS) -o $(TARGET)
+
+.cpp.o:
+	g++ -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 $(UNIVERSAL) $(DEFINES) $(INCLUDES) -c -o $@ $<
+
+.c.o:
+	gcc -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 $(UNIVERSAL) $(DEFINES) $(INCLUDES) -c -o $@ $<
+
+clean:
+	rm -f $(TARGET) *.o

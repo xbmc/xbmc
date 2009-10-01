@@ -1,0 +1,14 @@
+ARCH=@ARCH@
+
+INCLUDES=-I. -I../ -I../../xbmc -I../../xbmc/linux -I../../xbmc/utils
+
+ifeq ($(findstring osx,$(ARCH)), osx)
+SRCS=SDLJoystick.cpp
+else
+SRCS=SDLJoystick.cpp LIRC.cpp 
+endif
+
+LIB=gui_common.a
+
+include ../../Makefile.include
+-include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

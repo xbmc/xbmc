@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scraper framework="1.1" date="2009-09-26" name="Last.FM" content="albums" thumb="lastfm.gif" language="en">
+	<include>common/htbackdrops.xml</include>
+	<include>common/lastfm.xml</include>
+	<GetSettings dest="3">
+		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;htbfanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;setting label=&quot;Grab thumbs from HTBackdrops&quot; type=&quot;bool&quot; id=&quot;htbthumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
+				<expression></expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetSettings>
+	<NfoUrl dest="3">
+		<RegExp input="$$1" output="http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;album=\2&amp;artist=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b" dest="3">
+			<expression>(http://www.last.fm/music/([^/]*)/(.*))</expression>
+		</RegExp>
+		<RegExp input="$$1" output="http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&amp;artist=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b" dest="3">
+			<expression>(http://www.last.fm/music/([^/]*))$</expression>
+		</RegExp>
+	</NfoUrl>
+	<CreateAlbumSearchUrl dest="3">
+		<RegExp input="$$1" output="http://ws.audioscrobbler.com/2.0/?method=album.search&amp;album=\1&amp;artist=$$2&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b" dest="3">
+			<expression/>
+		</RegExp>
+	</CreateAlbumSearchUrl>
+	<GetAlbumSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;artist&gt;\2&lt;/artist&gt;&lt;title&gt;\1&lt;/title&gt;&lt;url&gt;http://ws.audioscrobbler.com/2.0/?method=album.getinfo&amp;amp;album=\4&amp;amp;artist=\3&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;album&gt;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;artist&gt;([^&lt;]*)&lt;/artist&gt;.*?&lt;url&gt;http://www.last.fm/music/([^/]+)/(.*?)&lt;/url&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>		
+	</GetAlbumSearchResults>
+	<GetAlbumDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;artist&gt;\1&lt;/artist&gt;" dest="5">
+				<expression noclean="1">&lt;artist&gt;(.*?)&lt;/artist&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
+				<expression noclean="1">&lt;name&gt;(.*?)&lt;/name&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;releasedate&gt;\1&lt;/releasedate&gt;" dest="5+">
+				<expression trim="1">&lt;releasedate&gt;:(.*?)&lt;/releasedate&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;year&gt;\1&lt;/year&gt;" dest="5+">
+				<expression trim="1">&lt;releasedate&gt;[^,]*([0-9]+),&lt;/releasedate&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;review&gt;\1&lt;/review&gt;" dest="5+">
+				<expression>&lt;content&gt;&lt;!\[CDATA\[(.*)\]\]&gt;&lt;/content&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;\2&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">&lt;image size=&quot;(extra)?large&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetTracks&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=playlist.fetch&amp;amp;playlistURL=lastfm://playlist/album/\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">
+				<expression noclean="1">&lt;id&gt;(.*?)&lt;/id&gt;</expression>
+			</RegExp>
+			<expression noclean="1"></expression>
+		</RegExp>
+	</GetAlbumDetails>
+	<GetTracks dest="5">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;track&gt;&lt;title&gt;\1&lt;/title&gt;&lt;/track&gt;" dest="4+">
+				<expression noclean="1" repeat="yes">&lt;track&gt;.*?&lt;title&gt;(.*?)&lt;/title&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetTracks>
+	<CreateArtistSearchUrl dest="3">
+		<RegExp input="$$1" output="http://ws.audioscrobbler.com/2.0/?method=artist.search&amp;artist=\1&amp;api_key=71e468a84c1f40d4991ddccc46e40f1b" dest="3">
+			<expression/>
+		</RegExp>
+	</CreateArtistSearchUrl>
+	<GetArtistSearchResults dest="8">
+		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
+			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\1&lt;/title&gt;&lt;url&gt;http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&amp;amp;artist=\4&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;&lt;/entity&gt;" dest="5+">
+				<expression repeat="yes">&lt;artist&gt;.*?&lt;name&gt;([^&lt;]*)&lt;/name&gt;.*?&lt;mbid&gt;([^&lt;]*)&lt;/mbid&gt;.*?&lt;url&gt;www\.last\.fm/music/(\+noredirect/)?([^&lt;]*)&lt;/url&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>		
+	</GetArtistSearchResults>
+	<GetArtistDetails dest="3">
+		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="5">
+				<expression noclean="1">&lt;name&gt;([^&lt;]*)&lt;/name&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;biography&gt;\1&lt;/biography&gt;" dest="5+">
+				<expression>&lt;content&gt;&lt;!\[CDATA\[(.*?)\]</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;thumb&gt;\2&lt;/thumb&gt;" dest="5+">
+				<expression noclean="1">&lt;image size=&quot;(extra)?large&quot;&gt;([^&lt;]*)&lt;/image&gt;</expression>
+			</RegExp>
+			<RegExp input="$$2" conditional="htbthumbs" output="&lt;url function=&quot;GetHTBThumbs&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=5&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$2" conditional="htbfanart" output="&lt;url function=&quot;GetHTBFanart&quot; post=&quot;yes&quot;&gt;http://www.htbackdrops.com/search.php?search_terms=all&amp;amp;cat_id=1&amp;amp;search_keywords=\1&lt;/url&gt;" dest="5+">
+				<expression/>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetGenres&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettoptags&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">
+				<expression noclean="1">&lt;url&gt;http://www.last.fm/music/(.*?)&lt;/url&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;url function=&quot;GetLastFMDiscography&quot;&gt;http://ws.audioscrobbler.com/2.0/?method=artist.gettopalbums&amp;amp;artist=\1&amp;amp;api_key=71e468a84c1f40d4991ddccc46e40f1b&lt;/url&gt;" dest="5+">
+				<expression noclean="1">&lt;url&gt;http://www.last.fm/music/(.*?)&lt;/url&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetArtistDetails>
+	<GetGenres dest="5">
+		<RegExp input="$$4" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
+			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="4">
+				<expression noclean="1">&lt;tag&gt;.*?&lt;name&gt;([^/lt;]*)&lt;/name&gt;</expression>
+			</RegExp>
+			<RegExp input="$$1" output="&lt;style&gt;\1&lt;/style&gt;" dest="4+">
+				<expression repeat="yes" noclean="1">&lt;tag&gt;.*?&lt;name&gt;([^/lt;]*)&lt;/name&gt;</expression>
+			</RegExp>
+			<expression noclean="1"/>
+		</RegExp>
+	</GetGenres>
+</scraper>

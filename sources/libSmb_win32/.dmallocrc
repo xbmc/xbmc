@@ -1,2 +1,0 @@
-samba allow-free-null, log-stats, log-non-free, log-trans, \
-        check-fence, check-heap, check-lists, error-abort
