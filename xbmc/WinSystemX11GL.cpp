@@ -59,9 +59,22 @@ bool CWinSystemX11GL::PresentRenderImpl()
       CLog::Log(LOGERROR, "%s - glXGetVideoSyncSGI - Failed to get current retrace count", __FUNCTION__);
 
     if(after == before)
+      m_iVSyncErrors = 1;
+    else
+      m_iVSyncErrors--;
+
+    if(m_iVSyncErrors > 0)
     {
       CLog::Log(LOGINFO, "GL: retrace count didn't change after buffer swap, switching to vsync mode 4");
-      m_iVSyncMode = 4;
+      m_iVSyncErrors = 0;
+      m_iVSyncMode   = 4;
+    }
+
+    if(m_iVSyncErrors < -200)
+    {
+      CLog::Log(LOGINFO, "GL: retrace count change for %d consecutive buffer swap, switching to vsync mode 2", -m_iVSyncErrors);
+      m_iVSyncErrors = 0;
+      m_iVSyncMode   = 2;
     }
   }
   else if (m_iVSyncMode == 4)
@@ -91,7 +104,8 @@ bool CWinSystemX11GL::PresentRenderImpl()
     if(m_iVSyncErrors > 30)
     {
       CLog::Log(LOGINFO, "GL: retrace count seems to be changing due to the swapbuffers call, switching to vsync mode 3");
-      m_iVSyncMode = 3;
+      m_iVSyncMode   = 3;
+      m_iVSyncErrors = 0;
     }
   }
   else if (m_iVSyncMode == 5)
