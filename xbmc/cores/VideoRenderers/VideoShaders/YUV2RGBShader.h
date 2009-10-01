@@ -60,6 +60,7 @@ namespace Shaders {
     GLint m_hMatrix;
   };
 
+#if HAS_GLES != 2       // No ARB Shader when using GLES2.0
   class BaseYUV2RGBARBShader 
     : public BaseYUV2RGBShader
     , public CARBShaderProgram
@@ -89,7 +90,6 @@ namespace Shaders {
     GLint m_hVTex;
   };
 
-#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
   class YUV2RGBProgressiveShaderARB : public BaseYUV2RGBARBShader
   {
   public:
