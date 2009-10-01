@@ -150,7 +150,7 @@ void CKaraokeLyricsCDG::Render()
   unsigned char *buf = new unsigned char[WIDTH * HEIGHT * 4];
   if (buf)
   {
-    RenderIntoBuffer( buf, WIDTH, HEIGHT, WIDTH * HEIGHT );
+    RenderIntoBuffer( buf, WIDTH, HEIGHT, WIDTH * 4 );
     m_pCdgTexture->Update( WIDTH, HEIGHT, WIDTH * 4, XB_FMT_B8G8R8A8, buf, false );
   }
   delete [] buf;
@@ -162,8 +162,8 @@ void CKaraokeLyricsCDG::Render()
   // Get screen coordinates
   RESOLUTION res = g_graphicsContext.GetVideoResolution();
   CRect vertCoords((float)g_settings.m_ResInfo[res].Overscan.left,
-                   (float)g_settings.m_ResInfo[res].Overscan.right,
                    (float)g_settings.m_ResInfo[res].Overscan.top,
+                   (float)g_settings.m_ResInfo[res].Overscan.right,
                    (float)g_settings.m_ResInfo[res].Overscan.bottom);
 
   CGUITexture::DrawQuad(vertCoords, 0xffffffff, m_pCdgTexture, &texCoords);
