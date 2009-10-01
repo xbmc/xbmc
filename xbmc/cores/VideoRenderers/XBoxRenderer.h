@@ -26,6 +26,8 @@
 
 #ifdef HAS_GL
 #include "LinuxRendererGL.h"
+#elif HAS_GLES == 2
+#include "LinuxRendererGLES.h"
 #elif !defined(HAS_XBOX_D3D)
 #include "WinRenderer.h"
 #else

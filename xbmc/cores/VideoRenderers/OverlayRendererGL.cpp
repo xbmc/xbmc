@@ -23,7 +23,11 @@
 #include "system.h"
 #include "OverlayRenderer.h"
 #include "OverlayRendererGL.h"
+#ifdef HAS_GL
 #include "LinuxRendererGL.h"
+#elif HAS_GLES == 2
+#include "LinuxRendererGLES.h"
+#endif
 #include "RenderManager.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayImage.h"
 #include "cores/dvdplayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
@@ -442,6 +446,7 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
       v[i].b = b;
     }
 
+#ifdef HAS_GL
     v[0].u = (float)(curr_x);
     v[0].v = (float)(curr_y);
 
@@ -465,6 +470,9 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
 
     v[3].x = (float)(img->dst_x);
     v[3].y = (float)(img->dst_y + img->h);
+#else
+    //TODO: GLES version
+#endif
 
     v += 4;
 
@@ -520,6 +528,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glBindTexture(GL_TEXTURE_2D, m_texture);
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+#ifdef HAS_GL
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
   glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
@@ -551,6 +560,9 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glPopClientAttrib();
 
   glPopMatrix();
+#else
+    //TODO: GLES version
+#endif
 
   glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);

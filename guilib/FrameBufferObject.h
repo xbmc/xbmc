@@ -45,6 +45,11 @@
 //     glBindTexture(GL_TEXTURE_2D, fbo->Texture());
 //
 
+#if HAS_GLES == 2
+// For OpenGL ES2.0, FBO are not extensions but part of the API.
+#define glBindFramebufferEXT  glBindFramebuffer
+#define GL_FRAMEBUFFER_EXT    GL_FRAMEBUFFER
+#endif
 
 class CFrameBufferObject
 {

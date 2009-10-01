@@ -204,6 +204,7 @@ SRCS=Application.cpp \
      GUIWindowTestPatternGL.cpp \
      RenderSystem.cpp \
      RenderSystemGL.cpp \
+     RenderSystemGLES.cpp \
      KeyboardStat.cpp \
      MouseStat.cpp \
      WinSystem.cpp \
