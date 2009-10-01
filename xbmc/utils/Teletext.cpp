@@ -2829,7 +2829,7 @@ TextPageinfo_t* CTeletextDecoder::DecodePage(bool showl25,             // 1=deco
         PageAtrb[i] = atr;
 
       /* decode parity/hamming */
-      for (int i = 40; i < sizeof(PageChar); i++)
+      for (unsigned int i = 40; i < sizeof(PageChar); i++)
       {
         PageAtrb[i] = atr;
         p = PageChar + i;
@@ -3998,6 +3998,7 @@ color_t CTeletextDecoder::GetColorRGB(enumTeletextColor ttc)
     case TXT_ColorCyan:        return 0xFF00FCFC;
     case TXT_ColorWhite:       return 0xFFFCFCFC;
     case TXT_ColorTransp:      return 0x00000000;
+    default:                   break;
   }
 
  /* Get colors for CLUTs 2+3 */
@@ -4008,3 +4009,4 @@ color_t CTeletextDecoder::GetColorRGB(enumTeletextColor ttc)
                    m_RenderInfo.rd0[index];
   return color;
 }
+
