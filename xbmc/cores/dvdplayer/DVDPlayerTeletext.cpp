@@ -26,6 +26,7 @@
 #include "Application.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "utils/log.h"
+#include "utils/SingleLock.h"
 
 using namespace std;
 

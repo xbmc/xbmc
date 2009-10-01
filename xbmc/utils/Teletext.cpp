@@ -621,8 +621,8 @@ bool CTeletextDecoder::InitDecoder()
   }
 
   /* calculate font dimensions */
-  m_RenderInfo.Width            = g_graphicsContext.GetWidth()*g_graphicsContext.GetGUIScaleX();
-  m_RenderInfo.Height           = g_graphicsContext.GetHeight()*g_graphicsContext.GetGUIScaleY();
+  m_RenderInfo.Width            = (int)(g_graphicsContext.GetWidth()*g_graphicsContext.GetGUIScaleX());
+  m_RenderInfo.Height           = (int)(g_graphicsContext.GetHeight()*g_graphicsContext.GetGUIScaleY());
   m_RenderInfo.FontHeight       = m_RenderInfo.Height / 25;
   m_RenderInfo.FontWidth_Normal = m_RenderInfo.Width  / (m_RenderInfo.Show39 ? 39 : 40);
   SetFontWidth(m_RenderInfo.FontWidth_Normal);
@@ -1209,7 +1209,7 @@ void CTeletextDecoder::RenderPage()
       long now = timeGetTime()/1000;
       for (int i = 0; i < SUBTITLE_CACHESIZE ; i++)
       {
-        if (m_RenderInfo.SubtitleCache[i] && m_RenderInfo.SubtitleCache[i]->Valid && now - m_RenderInfo.SubtitleCache[i]->Timestamp >= m_RenderInfo.SubtitleDelay)
+        if (m_RenderInfo.SubtitleCache[i] && m_RenderInfo.SubtitleCache[i]->Valid && now - m_RenderInfo.SubtitleCache[i]->Timestamp >= (long)m_RenderInfo.SubtitleDelay)
         {
           memcpy(m_RenderInfo.PageChar, m_RenderInfo.SubtitleCache[i]->PageChar, 40 * 25);
           memcpy(m_RenderInfo.PageAtrb, m_RenderInfo.SubtitleCache[i]->PageAtrb, 40 * 25 * sizeof(TextPageAttr_t));
@@ -2176,7 +2176,7 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
   m_RenderInfo.PosX        += t;
   int curfontwidth2         = GetCurFontWidth();
   m_RenderInfo.PosX        -= t;
-  int alphachar             = RenderChar(m_TextureBuffer+(yoffset)*m_RenderInfo.Width, m_RenderInfo.Width, Char, &m_RenderInfo.PosX, m_RenderInfo.PosY, Attribute, zoom, curfontwidth, curfontwidth2, m_RenderInfo.FontHeight, m_RenderInfo.TranspMode, m_RenderInfo.axdrcs, m_Ascender);
+  int alphachar             = RenderChar(m_TextureBuffer+(yoffset)*m_RenderInfo.Width, m_RenderInfo.Width, Char, &m_RenderInfo.PosX, m_RenderInfo.PosY, Attribute, zoom > 0, curfontwidth, curfontwidth2, m_RenderInfo.FontHeight, m_RenderInfo.TranspMode, m_RenderInfo.axdrcs, m_Ascender);
   if (alphachar <= 0) return;
 
   if (zoom && Attribute->doubleh)
