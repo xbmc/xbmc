@@ -69,6 +69,13 @@ long cas(volatile long* pAddr, long expectedVal, long swapVal)
   return prev;
 }
 
+#elif defined(__arm__)
+
+long cas(volatile long* pAddr, long expectedVal, long swapVal)
+{
+	//TODO: ARM Atomics
+}
+
 #else // Linux / OSX86 (GCC)
 
 long cas(volatile long* pAddr,long expectedVal, long swapVal)
@@ -113,6 +120,13 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
   }
   
   return prev; 
+}
+
+#elif defined(__arm__)
+
+long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
+{
+	//TODO: ARM Atomics
 }
 
 #else // Linux / OSX86 (GCC)
@@ -178,6 +192,13 @@ long AtomicIncrement(volatile long* pAddr)
   return val;
 }
 
+#elif defined(__arm__)
+
+long AtomicIncrement(volatile long* pAddr)
+{
+	//TODO: ARM Atomics
+}
+
 #else // Linux / OSX86 (GCC)
 
 long AtomicIncrement(volatile long* pAddr)
@@ -232,6 +253,13 @@ long AtomicAdd(volatile long* pAddr, long amount)
     mov amount, ebx;
   }
   return amount;
+}
+
+#elif defined(__arm__)
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+	//TODO: ARM Atomics
 }
 
 #else // Linux / OSX86 (GCC)
@@ -289,7 +317,12 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 }
 
+#elif defined(__arm__)
 
+long AtomicDecrement(volatile long* pAddr)
+{
+	//TODO: ARM Atomics
+}
 
 #else // Linux / OSX86 (GCC)
 
@@ -346,6 +379,13 @@ long AtomicSubtract(volatile long* pAddr, long amount)
     mov amount, ebx;
   }
   return amount;
+}
+
+#elif defined(__arm__)
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+	//TODO: ARM Atomics
 }
 
 #else // Linux / OSX86 (GCC)

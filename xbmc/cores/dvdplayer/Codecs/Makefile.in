@@ -54,7 +54,11 @@ endif
 ifneq (,$(findstring powerpc,$(ARCH)))
   ARCH_DIR=ppc
 else
+ifeq ($(ARCH), arm)
+  ARCH_DIR=arm
+else
   ARCH_DIR=x86
+endif
 endif
 
 
@@ -176,9 +180,15 @@ $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libavformat/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
+ifneq ($(ARCH), arm)
 $(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libswscale/*.o ffmpeg/libswscale/$(ARCH_DIR)/*.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
+else    # No ARM version of swscale!
+$(SYSDIR)/swscale-0.6.1-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
+	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libswscale/*.o \
+		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
+endif
 
 $(SYSDIR)/postproc-51-$(ARCH).so: $(WRAPPER) ffmpeg/libpostproc/libpostproc.so
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ ffmpeg/libpostproc/*.o \

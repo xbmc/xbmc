@@ -2,7 +2,7 @@
   #include "config.h"
 #endif
 
-#if !defined(_POWERPC) && !defined(_POWERPC64)
+#if !defined(_POWERPC) && !defined(_POWERPC64) && !defined(_ARMEL)
 
 #ifndef __APPLE__
 #define FUNCTION(name)			\

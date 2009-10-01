@@ -55,8 +55,8 @@ GOOBJS = 	src/asp.o src/balloc.o src/base64.o src/default.o  \
 	src/security.o src/sym.o src/uemf.o src/url.o src/value.o \
 	src/um.o src/websda.o src/emfdb.o \
 	src/webrom.o src/webs.o src/websuemf.o \
-	src/spy.o src/umui.o src/md5c.o SpyceModule.o WebServer.o \
-	XBMCConfiguration.o XBMChttp.o XBMCweb.o #src/cgi.o 
+	src/spy.o src/umui.o SpyceModule.o WebServer.o \
+	XBMCConfiguration.o XBMChttp.o XBMCweb.o #src/cgi.o src/md5c.o 
 
 SRCS=$(GOOBJS:.o=.c)
 CFLAGS	+= -DWEBS -DUEMF -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)-DDEV -D__NO_CGI_BIN
