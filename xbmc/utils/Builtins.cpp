@@ -55,6 +55,9 @@
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
+#endif
 
 #ifdef HAS_PYTHON
 #include "lib/libPython/XBPython.h"
@@ -152,7 +155,7 @@ const BUILT_IN commands[] = {
   { "LoadProfile",                true,   "Load the specified profile (note; if locks are active it won't work)" },
   { "SetProperty",                true,   "Sets a window property for the current window (key,value)" },
   { "PlayWith",                   true,   "Play the selected item with the specified core" },
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
 #endif
@@ -1098,7 +1101,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (window)
       window->SetProperty(params[0],params[1]);
   }
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   else if (execute.Equals("lirc.stop"))
   {
     g_RemoteControl.Disconnect();

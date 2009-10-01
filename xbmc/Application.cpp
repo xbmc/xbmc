@@ -263,6 +263,9 @@
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
@@ -618,7 +621,7 @@ HRESULT CApplication::Create(HWND hWnd)
   // Create the Mouse and Keyboard devices
   g_Mouse.Initialize(&hWnd);
   g_Keyboard.Initialize();
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   g_RemoteControl.Initialize();
 #endif
 #ifdef HAS_SDL_JOYSTICK
@@ -2882,7 +2885,7 @@ void CApplication::FrameMove()
 
   UpdateLCD();
   
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   // Read the input from a remote
   g_RemoteControl.Update();
 #endif
@@ -2999,7 +3002,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 
 bool CApplication::ProcessRemote(float frameTime)
 {
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   if (g_RemoteControl.GetButton())
   {
     // time depends on whether the movement is repeated (held down) or not.

@@ -35,6 +35,9 @@
 #include "XMLUtils.h"
 #if defined(_WIN32)
   #include "Windows.h"
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
+#endif
 #endif
 #if defined(HAS_LIRC)
   #include "common/LIRC.h"

@@ -246,7 +246,7 @@ bool CButtonTranslator::Load()
     return false;
   }
 
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 #ifdef _LINUX
 #define REMOTEMAP "Lircmap.xml"
 #else
@@ -316,7 +316,7 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   return true;
 }
 
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 {
 #ifdef _LINUX
@@ -1198,7 +1198,7 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 void CButtonTranslator::Clear()
 {
   translatorMap.clear();
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   lircRemotesMap.clear();
 #endif
 

@@ -65,8 +65,7 @@
 #ifdef _WIN32
 #define HAS_SDL_JOYSTICK
 #define HAS_WIN32_NETWORK
-#define HAS_LIRC
-#define HAS_IRSERVERSUITE // depends on HAS_LIRC define
+#define HAS_IRSERVERSUITE
 #define HAS_AUDIO
 #endif
 

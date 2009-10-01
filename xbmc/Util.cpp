@@ -78,6 +78,9 @@
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
+#endif
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
 

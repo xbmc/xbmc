@@ -45,6 +45,9 @@
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
 #endif
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
+#endif
 
 CPowerManager g_powerManager;
 
@@ -163,7 +166,7 @@ void CPowerManager::Resume()
 #endif
 
   // restart lirc
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   CLog::Log(LOGNOTICE, "%s: Restarting lirc", __FUNCTION__);
   g_RemoteControl.Disconnect();
   g_RemoteControl.Initialize();
