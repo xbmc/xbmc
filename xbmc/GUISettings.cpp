@@ -241,7 +241,11 @@ void CGUISettings::Initialize()
 #ifdef _LINUX
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32)
+#ifdef HAS_DX
+  AddString(1, "mymusic.visualisation", 250, "Waveform_win32dx.vis", SPIN_CONTROL_TEXT);
+#else
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
+#endif
 #endif
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
