@@ -1,3 +1,5 @@
+ARCH=@ARCH@
+
 SRCS=alpha.cpp clusterfit.cpp colourblock.cpp colourfit.cpp colourset.cpp maths.cpp rangefit.cpp singlecolourfit.cpp squish.cpp
 
 ifeq ($(findstring powerpc,$(ARCH)),powerpc)
