@@ -40,7 +40,7 @@
 
 using namespace std;
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
 
 
 CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
@@ -84,6 +84,8 @@ void CGUIFontTTFGL::Begin()
     glEnable(GL_BLEND);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
+
+#ifdef HAS_GL
     glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
     glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
     glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PRIMARY_COLOR);
@@ -95,6 +97,9 @@ void CGUIFontTTFGL::Begin()
     glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     VerifyGLState();
+#else
+    //TODO: GLES Fonts
+#endif
 
     m_vertex_count = 0;
   }
@@ -110,6 +115,7 @@ void CGUIFontTTFGL::End()
   if (--m_nestedBeginCount > 0)
     return;
 
+#ifdef HAS_GL
   glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT);
 
   glColorPointer   (4, GL_UNSIGNED_BYTE, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
@@ -120,6 +126,9 @@ void CGUIFontTTFGL::End()
   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   glDrawArrays(GL_QUADS, 0, m_vertex_count);
   glPopClientAttrib();
+#else
+    //TODO: GLES Fonts
+#endif
 }
 
 CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)

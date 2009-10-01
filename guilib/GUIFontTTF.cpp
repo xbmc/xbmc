@@ -684,6 +684,7 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
     v[i].a = GET_A(color);
   }
 
+#ifdef HAS_GL
   v[0].u = tl;
   v[0].v = tt;
   v[0].x = x[0];
@@ -707,6 +708,9 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   v[3].x = x[3];
   v[3].y = y4;
   v[3].z = z4;
+#else
+    //TODO: GLES Fonts
+#endif
 
   RenderInternal(v);
 

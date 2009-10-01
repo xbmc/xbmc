@@ -168,12 +168,9 @@ private:
   int m_referenceCount;
 };
 
-#if defined(HAS_GL)
+#if defined(HAS_GL) || defined(HAS_GLES)
 #include "GUIFontTTFGL.h"
 #define CGUIFontTTF CGUIFontTTFGL
-#elif defined(HAS_GLES)
-#include "GUIFontTTFGLES.h"
-#define CGUIFontTTF CGUIFontTTFGLES
 #elif defined(HAS_DX)
 #include "GUIFontTTFDX.h"
 #define CGUIFontTTF CGUIFontTTFDX

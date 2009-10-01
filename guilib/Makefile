@@ -70,7 +70,6 @@ SRCS=AnimatedGif.cpp \
      GUIMultiSelectText.cpp \
      GUIInfoTypes.cpp \
      GUIFontTTFGL.cpp \
-     GUIFontTTFGLES.cpp \
      Texture.cpp \
      TextureGL.cpp \
      GUIControlProfiler.cpp \
