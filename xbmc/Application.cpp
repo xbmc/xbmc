@@ -644,14 +644,17 @@ HRESULT CApplication::Create(HWND hWnd)
   g_xbmcHelper.Configure();
 #endif
 
+  if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
+    g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
+
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
-  
-  bool bFullScreen = g_guiSettings.m_LookAndFeelResolution == RES_DESKTOP;
+
+  bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
   if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
