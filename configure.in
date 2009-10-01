@@ -342,10 +342,12 @@ if test "$use_gl" = "yes"; then
   if test "$host_vendor" = "apple" ; then
     # linking to OpenGL.framework instead of libGL, libGLU
     AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
-  else
+  elif test "$host_cpu" != "arm" ; then
     AC_CHECK_LIB([GL],      [main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([GLEW],    [main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([GLU],     [main],, AC_MSG_ERROR($missing_library))
+  else
+    AC_CHECK_LIB([EGL],     [main],, AC_MSG_ERROR($missing_library))
   fi
 else
   AC_MSG_RESULT(== WARNING: OpenGL support is disabled. XBMC will run VERY slow. ==)

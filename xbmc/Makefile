@@ -211,6 +211,7 @@ SRCS=Application.cpp \
      WinSystemOSXGL.cpp \
      WinSystemX11.cpp \
      WinSystemX11GL.cpp \
+     WinSystemEGL.cpp \
      WinEventsSDL.cpp \
      AdvancedSettings.cpp \
      Bookmark.cpp \

@@ -42,5 +42,10 @@ extern CWinSystemOSXGL g_Windowing;
 extern CWinSystemX11GL g_Windowing;
 #endif
 
+#if defined(HAS_EGL)
+#include "WinSystemEGL.h"
+extern CWinSystemEGL g_Windowing;
+#endif
+
 #endif // WINDOWING_FACTORY_H
 

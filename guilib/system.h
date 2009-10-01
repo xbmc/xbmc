@@ -159,6 +159,12 @@
 #include "PlatformInclude.h"
 #endif
 
+// EGL detected. Dont use GLX!
+#ifdef HAVE_LIBEGL
+#undef HAS_GLX
+#define HAS_EGL
+#endif
+
 #ifdef HAS_GL
 #ifdef _WIN32
 #include "GL/glew.h"
