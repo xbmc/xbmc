@@ -64,6 +64,8 @@ SRCS=AnimatedGif.cpp \
      GUIColorManager.cpp \
      FrameBufferObject.cpp \
      Shader.cpp \
+     GUIShader.cpp \
+     MatrixGLES.cpp \
      GUIListLabel.cpp \
      GUIBorderedImage.cpp \
      GUITextLayout.cpp \

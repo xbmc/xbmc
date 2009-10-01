@@ -144,6 +144,7 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
   m_hUTex  = -1;
   m_hVTex  = -1;
 
+#ifdef HAS_GL
   if(rect)
     m_defines += "#define XBMC_texture_rectangle 1\n";
   else
@@ -155,6 +156,9 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
     m_defines += "#define XBMC_texture_rectangle_hack 0\n";
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
+#elif HAS_GLES == 2
+  //TODO: YUV2RGB GLES shader
+#endif
 }
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
@@ -207,7 +211,11 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
   : BaseYUV2RGBGLSLShader(rect, flags)
 {
+#ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
+#elif HAS_GLES == 2
+  //TODO: YUV2RGB GLES shader
+#endif
 }
 
 
@@ -221,7 +229,11 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
   m_hStepX = -1;
   m_hStepY = -1;
   m_hField = -1;
+#ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_bob.glsl", m_defines);
+#elif HAS_GLES == 2
+  //TODO: YUV2RGB GLES shader
+#endif
 }
 
 void YUV2RGBBobShader::OnCompiledAndLinked()
