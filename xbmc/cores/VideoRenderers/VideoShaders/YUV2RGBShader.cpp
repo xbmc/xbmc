@@ -29,7 +29,7 @@
 #include <string>
 #include <sstream>
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 
 using namespace Shaders;
 using namespace std;
@@ -184,7 +184,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 //////////////////////////////////////////////////////////////////////
 // BaseYUV2RGBGLSLShader - base class for GLSL YUV2RGB shaders
 //////////////////////////////////////////////////////////////////////
-
+#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
 BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
 {
   m_width         = 1;
@@ -197,7 +197,7 @@ BaseYUV2RGBARBShader::BaseYUV2RGBARBShader(unsigned flags)
   m_hUTex  = -1;
   m_hVTex  = -1;
 }
-
+#endif
 
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShader - YUV2RGB with no deinterlacing
@@ -248,7 +248,7 @@ bool YUV2RGBBobShader::OnEnabled()
 //////////////////////////////////////////////////////////////////////
 // YUV2RGBProgressiveShaderARB - YUV2RGB with no deinterlacing
 //////////////////////////////////////////////////////////////////////
-
+#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
 YUV2RGBProgressiveShaderARB::YUV2RGBProgressiveShaderARB(bool rect, unsigned flags)
   : BaseYUV2RGBARBShader(flags)
 {
@@ -278,6 +278,6 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
                                , matrix[3][i]);
   return true;
 }
-
+#endif
 
 #endif // HAS_GL

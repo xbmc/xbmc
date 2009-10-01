@@ -165,6 +165,12 @@
 #define HAS_EGL
 #endif
 
+// GLES2.0 detected. Dont use GL!
+#ifdef HAVE_LIBGLESV2
+#undef HAS_GL
+#define HAS_GLES 2
+#endif
+
 #ifdef HAS_GL
 #ifdef _WIN32
 #include "GL/glew.h"
@@ -181,8 +187,12 @@
 #endif
 
 #if HAS_GLES == 2
+#ifdef _ARMEL
+#include <GLES2/gl2extimg.h>
+#else
 #include <GLES2/gl2.h>
 #include <GLES2/gl2ext.h>
+#endif
 #endif
 
 #define SAFE_DELETE(p)       { delete (p);     (p)=NULL; }

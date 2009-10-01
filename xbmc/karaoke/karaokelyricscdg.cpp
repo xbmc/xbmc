@@ -50,7 +50,7 @@ static inline TEX_COLOR ConvertColor(CDG_COLOR CdgColor)
   red = ((TEX_COLOR)(((CdgColor & 0x0F00) >> 8) * 17)) << 16;
   alpha = ((TEX_COLOR)(((CdgColor & 0xF000) >> 12) * 17)) << 24;
 
-#if defined(HAS_GL)
+#if defined(HAS_GL) || defined(HAS_GLES)	// Is this neccessary for GLES?
   // CGLTexture uses GL_BRGA format
   return alpha | blue | green | red;
 #else

@@ -26,7 +26,7 @@
 #include "cores/VideoRenderers/RenderManager.h"
 #include "../../Settings.h"
 #include "SingleLock.h"
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
 #include "OverlayRendererGL.h"
 #endif
 
@@ -266,7 +266,7 @@ COverlay* CRenderer::Convert(CDVDOverlay* o, double pts)
   if(r)
     return r->Acquire();
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
   if     (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = new COverlayTextureGL((CDVDOverlayImage*)o);
   else if(o->IsOverlayType(DVDOVERLAY_TYPE_SPU))

@@ -22,9 +22,9 @@
  *
  */
 
-#include "system.h" // for HAS_GL
+#include "system.h" // for HAS_GL/HAS_GLES
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 
 //
 // CFrameBufferObject

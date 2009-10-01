@@ -25,7 +25,7 @@
 #include <string>
 #include <math.h>
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 
 using namespace Shaders;
 using namespace std;
@@ -211,7 +211,12 @@ bool BicubicFilterShader::CreateKernels(int size, float B, float C)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+#if defined(HAS_GL)
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F_ARB, size, 1, 0, GL_RGBA, GL_FLOAT, img);
+#elif HAS_GLES == 2
+  //TODO: GL_RGBA16F_ARB for GLES!?
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size, 1, 0, GL_RGBA, GL_FLOAT, img);
+#endif
 
   glActiveTexture(GL_TEXTURE0);
   delete[] img;

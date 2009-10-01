@@ -1,7 +1,7 @@
 #ifndef __YUV2RGB_SHADERS_H__
 #define __YUV2RGB_SHADERS_H__
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 
 #ifndef __GNUC__
 #pragma warning( push )
@@ -89,6 +89,7 @@ namespace Shaders {
     GLint m_hVTex;
   };
 
+#if HAS_GLES != 2	// No ARB Shader when using GLES2.0
   class YUV2RGBProgressiveShaderARB : public BaseYUV2RGBARBShader
   {
   public:
@@ -96,6 +97,7 @@ namespace Shaders {
     void OnCompiledAndLinked();
     bool OnEnabled();
   };
+#endif
 
   class YUV2RGBProgressiveShader : public BaseYUV2RGBGLSLShader
   {

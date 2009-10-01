@@ -21,7 +21,7 @@
 
 #include "system.h"
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
 #include "../xbmc/Settings.h"
 #include "WindowingFactory.h"
 #include "FrameBufferObject.h"

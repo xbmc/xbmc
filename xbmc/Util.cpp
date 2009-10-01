@@ -1888,7 +1888,7 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 
 #endif
 
-#if defined(HAS_GL)
+#if defined(HAS_GL) || defined(HAS_GLES)
 
     g_graphicsContext.BeginPaint();
     if (g_application.IsPlayingVideo())
@@ -1901,12 +1901,20 @@ void CUtil::TakeScreenshot(const char* fn, bool flashScreen)
 
     GLint viewport[4];
     void *pixels = NULL;
+#ifndef HAS_GLES
+    // Not supported in GLES
     glReadBuffer(GL_BACK);
+#endif
     glGetIntegerv(GL_VIEWPORT, viewport);
     pixels = malloc(viewport[2] * viewport[3] * 4);
     if (pixels)
     {
+#if HAS_GLES == 2
+      // Cannot do BGRA in ES2.0 here. (Done in shader instead)
+      glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+#else
       glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+#endif
       XGWriteSurfaceToFile(pixels, viewport[2], viewport[3], fn);
       free(pixels);
     }

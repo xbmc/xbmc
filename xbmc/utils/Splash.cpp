@@ -73,7 +73,7 @@ void CSplash::Show()
 #endif
 
   //render splash image
-#if !defined(HAS_XBOX_D3D) && !defined(HAS_GL)
+#if !defined(HAS_XBOX_D3D) && !defined(HAS_GL) && !defined(HAS_GLES)
   g_Windowing.BeginRender();
 #endif
 
@@ -91,7 +91,7 @@ void CSplash::Show()
   g_Windowing.Get3DDevice()->Present( NULL, NULL, NULL, NULL );
 #elif defined(HAS_SDL_2D)
   XBMC_Flip(g_graphicsContext.getScreenSurface()->SDL());
-#elif defined(HAS_GL)
+#elif defined(HAS_GL) || defined(HAS_GLES)
   g_graphicsContext.Flip();
 #endif
   g_graphicsContext.Unlock();

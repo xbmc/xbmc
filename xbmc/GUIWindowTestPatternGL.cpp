@@ -24,7 +24,7 @@
 #include "system.h"
 #include "GUIWindowTestPatternGL.h"
 
-#ifdef HAS_GL
+#ifdef HAS_GL	//TODO: Make a GLES version!
 
 CGUIWindowTestPatternGL::CGUIWindowTestPatternGL(void) : CGUIWindowTestPattern()
 {

@@ -265,7 +265,7 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno){
 
 void LogGraphicsInfo()
 {
-#ifdef HAS_GL
+#if defined(HAS_GL) || defined(HAS_GLES)
   const GLubyte *s;
 
   s = glGetString(GL_VENDOR);

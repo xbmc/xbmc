@@ -31,7 +31,12 @@
 #include "Application.h"
 #include "WindowingFactory.h"
 
-#ifdef HAS_GL
+#if defined(HAS_GL) || HAS_GLES == 2
+
+#if HAS_GLES == 2
+// GLES2.0 cant do CLAMP, but can do CLAMP_TO_EDGE.
+#define GL_CLAMP	GL_CLAMP_TO_EDGE
+#endif
 
 #define USE_PREMULTIPLIED_ALPHA 1
 
@@ -45,12 +50,14 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
 
+#ifndef HAS_GLES
   if(format == GL_RGBA)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
   else if(format == GL_RGB)
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
   else
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+#endif
 
   glTexImage2D   (target, 0, 4
                 , width2, height2, 0
@@ -73,7 +80,9 @@ static void LoadTexture(GLenum target
                    , format, GL_UNSIGNED_BYTE
                    , (unsigned char*)pixels + stride - 1);
 
+#ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
 
   *u = (GLfloat)width  / width2;
   *v = (GLfloat)height / height2;
@@ -566,11 +575,14 @@ void COverlayTextureGL::Render(SRenderState& state)
 #else
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 #endif
+
+#if defined(HAS_GL)
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   VerifyGLState();
+#endif
 
   DRAWRECT rd;
   if(m_pos == POSITION_RELATIVE)
@@ -588,6 +600,7 @@ void COverlayTextureGL::Render(SRenderState& state)
     rd.right   = state.x + state.width;
   }
 
+#if defined(HAS_GL)
   glBegin(GL_QUADS);
   glTexCoord2f(0.0f, 0.0f);
   glVertex2f(rd.left , rd.top);
@@ -601,6 +614,9 @@ void COverlayTextureGL::Render(SRenderState& state)
   glTexCoord2f(0.0f, m_v);
   glVertex2f(rd.left , rd.bottom);
   glEnd();
+#elif HAS_GLES == 2
+  //TODO: GLES2.0 version!
+#endif
 
   glDisable(GL_BLEND);
   glDisable(GL_TEXTURE_2D);
