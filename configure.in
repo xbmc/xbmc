@@ -63,8 +63,6 @@ external_libvorbis_enabled="== Use of external libvorbis enabled. =="
 external_libvorbis_disabled="== Use of external libvorbis disabled. =="
 external_libogg_enabled="== Use of external libogg enabled. =="
 external_libogg_disabled="== Use of external libogg disabled. =="
-external_libmpcdec_enabled="== Use of external libmpcdec enabled. =="
-external_libmpcdec_disabled="== Use of external libmpcdec disabled. =="
 external_libflac_enabled="== Use of external libflac enabled. =="
 external_libflac_disabled="== Use of external libflac disabled. =="
 external_libwavpack_enabled="== Use of external libwavpack enabled. =="
@@ -239,12 +237,6 @@ AC_ARG_ENABLE([external-libogg],
             [enable use of external libogg library (default is no) 'Linux only'])],
             [use_external_libogg=$enableval],
             [use_external_libogg=no])
-
-AC_ARG_ENABLE([external-libmpcdec],
-            [AS_HELP_STRING([--enable-external-libmpcdec],
-            [enable use of external libmpcdec library (default is no) 'Linux only'])],
-            [use_external_libmpcdec=$enableval],
-            [use_external_libmpcdec=no])
 
 AC_ARG_ENABLE([external-libflac],
             [AS_HELP_STRING([--enable-external-libflac],
@@ -617,18 +609,6 @@ else
   USE_EXTERNAL_LIBOGG=0
 fi
 
-# External libmpcdec
-if test "$use_external_libraries" = "yes" || test "$use_external_libmpcdec" = "yes"; then
-  AC_CHECK_LIB([mpcdec],          [main],, AC_MSG_ERROR($missing_library))
-
-  AC_MSG_NOTICE($external_libmpcdec_enabled)
-  USE_EXTERNAL_LIBMPCDEC=1
-  AC_DEFINE([USE_EXTERNAL_LIBMPCDEC], [1], [Whether to use external libmpcdec library.])
-else
-  AC_MSG_NOTICE($external_libmpcdec_disabled)
-  USE_EXTERNAL_LIBMPCDEC=0
-fi
-
 # External libflac
 if test "$use_external_libraries" = "yes" || test "$use_external_libflac" = "yes"; then
   AC_CHECK_LIB([FLAC],          [main],, AC_MSG_ERROR($missing_library))
@@ -981,11 +961,6 @@ else
     final_message="$final_message\n  External libogg:\tYes"
   else
     final_message="$final_message\n  External libogg:\tNo"
-  fi
-  if test "$use_external_libmpcdec" = "yes"; then
-    final_message="$final_message\n  External libmpcdec:\tYes"
-  else
-    final_message="$final_message\n  External libmpcdec:\tNo"
   fi
   if test "$use_external_libflac" = "yes"; then
     final_message="$final_message\n  External libflac:\tYes"
