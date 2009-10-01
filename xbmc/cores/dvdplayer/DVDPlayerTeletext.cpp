@@ -273,7 +273,6 @@ void CDVDTeletextData::Process()
       CSingleLock lock(m_critSection);
 
       DemuxPacket* pPacket = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacket();
-      bool bPacketDrop     = ((CDVDMsgDemuxerPacket*)pMsg)->GetPacketDrop();
       uint8_t *Datai       = pPacket->pData;
       int rows             = (pPacket->iSize - 1) / 46;
 
@@ -284,7 +283,6 @@ void CDVDTeletextData::Process()
         for (int row=0; row < rows; row++)
         {
           uint8_t *vtx_rowbyte  = &Datai[(row*46)+1];
-          int      err          = 0;
 
           /* Check for valid data_unit_id */
           if ((vtx_rowbyte[0] == 0x02 || vtx_rowbyte[0] == 0x03) && (vtx_rowbyte[1] == 0x2C))

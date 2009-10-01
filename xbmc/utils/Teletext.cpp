@@ -74,7 +74,7 @@ static const char *TeletextFont = "special://xbmc/media/Fonts/teletext.ttf";
 #define RowAddress2Row(row) ((row == 40) ? 24 : (row - 40))
 
 // G2 Set as defined in ETS 300 706
-const unsigned short int G2table[4][6*16] =
+const unsigned short int G2table[5][6*16] =
 {
   // Latin G2 Supplementary Set
   { 0x0020, 0x00A1, 0x00A2, 0x00A3, 0x0024, 0x00A5, 0x0023, 0x00A7, 0x00A4, 0x2018, 0x201C, 0x00AB, 0x2190, 0x2191, 0x2192, 0x2193,
