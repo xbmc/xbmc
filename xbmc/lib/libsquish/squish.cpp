@@ -227,4 +227,65 @@ void DecompressImage( u8* rgba, int width, int height, void const* blocks, int f
 	}
 }
 
+static double ErrorSq(double x, double y)
+{
+	return (x - y) * (x - y);
+}
+
+void ComputeMSE( u8 const *rgba, u8 const *dxt, int flags, int width, int height, double &colourMSE, double &alphaMSE )
+{
+	// fix any bad flags
+	flags = FixFlags( flags );
+	colourMSE = alphaMSE = 0;
+
+	// initialise the block input
+	squish::u8 const* sourceBlock = dxt;
+	int bytesPerBlock = ( ( flags & squish::kDxt1 ) != 0 ) ? 8 : 16;
+
+	// loop over blocks
+	for( int y = 0; y < height; y += 4 )
+	{
+		for( int x = 0; x < width; x += 4 )
+		{
+			// decompress the block
+			u8 targetRgba[4*16];
+			Decompress( targetRgba, sourceBlock, flags );
+			
+			// write the decompressed pixels to the correct image locations
+			u8 const* sourcePixel = targetRgba;
+			for( int py = 0; py < 4; ++py )
+			{
+				for( int px = 0; px < 4; ++px )
+				{
+					// get the target location
+					int sx = x + px;
+					int sy = y + py;
+					if( sx < width && sy < height )
+					{
+						u8 const* targetPixel = rgba + 4*( width*sy + sx );
+						// compute the MSE of colour and alpha
+						double cmse = 0;
+						for( int i = 0; i < 3; ++i )
+							cmse += ErrorSq(*targetPixel++, *sourcePixel++);
+						if (*targetPixel == 0 && *sourcePixel == 0) // transparent source and dest						double cmse = 0;
+							cmse = 0; // transparent in both, so colour is inconsequential
+						alphaMSE += ErrorSq(*targetPixel++, *sourcePixel++);
+						colourMSE += cmse;
+					}
+					else
+					{
+						// skip this pixel as its outside the image
+						sourcePixel += 4;
+					}
+				}
+			}
+			
+			// advance
+			sourceBlock += bytesPerBlock;
+		}
+	}
+	colourMSE /= (width * height * 3);
+	alphaMSE /= (width * height);
+}
+
 } // namespace squish

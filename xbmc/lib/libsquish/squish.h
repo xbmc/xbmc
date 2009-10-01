@@ -257,6 +257,29 @@ void DecompressImage( u8* rgba, int width, int height, void const* blocks, int f
 
 // -----------------------------------------------------------------------------
 
+/*! @brief Computes MSE of an compressed image in memory.
+
+	@param rgba		The original image pixels.
+	@param dxt		The compressed dxt blocks
+	@param flags	Compression flags.
+	@param width	The width of the source image.
+	@param height	The height of the source image.
+	@param colourMSE	The MSE of the colour values.
+	@param alphaMSE	The MSE of the alpha values.
+	
+	The colour MSE and alpha MSE are computed across all pixels. The colour MSE is
+	averaged across all rgb values (i.e. colourMSE = sum sum_k ||dxt.k - rgba.k||/3)
+	
+	The flags parameter should specify either kDxt1, kDxt3 or kDxt5 compression, 
+	however, DXT1 will be used by default if none is specified. All other flags 
+	are ignored.
+
+	Internally this function calls squish::Decompress for each block.
+*/
+void ComputeMSE(u8 const *rgba, u8 const *dxt, int flags, int width, int height, double &colourMSE, double &alphaMSE);
+
+// -----------------------------------------------------------------------------
+
 } // namespace squish
 
 #endif // ndef SQUISH_H
