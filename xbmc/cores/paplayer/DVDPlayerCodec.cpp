@@ -163,6 +163,7 @@ bool DVDPlayerCodec::Init(const CStdString &strFile, unsigned int filecache)
     m_SampleRate = 44100;
 
   m_TotalTime = m_pDemuxer->GetStreamLength();
+  m_pDemuxer->GetStreamCodecName(m_nAudioStream,m_CodecName);
 
   return true;
 }
