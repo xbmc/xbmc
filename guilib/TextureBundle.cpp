@@ -114,6 +114,8 @@ void CTextureBundle::Cleanup()
   {
     m_tbXPR.Cleanup();
   }
+
+  m_useXPR = m_useXBT = false;
 }
   
 void CTextureBundle::SetThemeBundle(bool themeBundle)
