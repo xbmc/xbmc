@@ -27,6 +27,7 @@
 #include "GraphicContext.h"
 #include "AdvancedSettings.h"
 #include "RenderSystemGLES.h"
+#include "MatrixGLES.h"
 #include "utils/log.h"
 
 CRenderSystemGLES::CRenderSystemGLES() : CRenderSystemBase()
@@ -81,7 +82,30 @@ bool CRenderSystemGLES::InitRenderSystem()
 
 bool CRenderSystemGLES::ResetRenderSystem(int width, int height)
 {
-  //TODO: GLES Rendering System
+  m_width = width;
+  m_height = height;
+  
+  glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
+  
+  CalculateMaxTexturesize();
+  
+  glViewport(0, 0, width, height);
+  glScissor(0, 0, width, height);
+
+  glEnable(GL_TEXTURE_2D); 
+  glEnable(GL_SCISSOR_TEST); 
+
+  g_matrices.MatrixMode(MM_PROJECTION);
+  g_matrices.LoadIdentity();
+
+  g_matrices.Ortho(0.0f, width-1, height-1, 0.0f, -1.0f, 1.0f);
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.LoadIdentity();
+  
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  glEnable(GL_BLEND);          // Turn Blending On
+  glDisable(GL_DEPTH_TEST);  
     
   return true;
 }
@@ -240,34 +264,146 @@ void CRenderSystemGLES::SetVSync(bool enable)
 
 void CRenderSystemGLES::CaptureStateBlock()
 {
-  //TODO: GLES Rendering System
+  if (!m_bRenderCreated)
+    return;
+
+  g_matrices.MatrixMode(MM_PROJECTION);
+  g_matrices.PushMatrix();
+  g_matrices.MatrixMode(MM_TEXTURE);
+  g_matrices.PushMatrix();
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PushMatrix();
+
+  glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
+  glActiveTexture(GL_TEXTURE0);
+  glDisable(GL_TEXTURE_2D);
+//TODO - MCG - NOTE: Only for Screensavers & Visualisations
+//  glColor3f(1.0, 1.0, 1.0);
 }
 
 void CRenderSystemGLES::ApplyStateBlock()
 {
-  //TODO: GLES Rendering System 
+  if (!m_bRenderCreated)
+    return;
+
+  g_matrices.MatrixMode(MM_PROJECTION);
+  g_matrices.PopMatrix();
+  g_matrices.MatrixMode(MM_TEXTURE);
+  g_matrices.PopMatrix();
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PopMatrix();
+
+  glActiveTexture(GL_TEXTURE0);
+  glEnable(GL_TEXTURE_2D);
+
+  glEnable(GL_BLEND);
+  glEnable(GL_SCISSOR_TEST);  
 }
 
 void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight)
 { 
-  //TODO: GLES Rendering System
+  if (!m_bRenderCreated)
+    return;
+  
+  g_graphicsContext.BeginPaint();
+  
+  CPoint offset = camera - CPoint(screenWidth*0.5f, screenHeight*0.5f);
+  
+  GLint viewport[4];
+  glGetIntegerv(GL_VIEWPORT, viewport);
+
+  float w = (float)viewport[2]*0.5f;
+  float h = (float)viewport[3]*0.5f;
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.LoadIdentity();
+  g_matrices.Translatef(-(viewport[0] + w + offset.x), +(viewport[1] + h + offset.y), 0);
+  g_matrices.LookAt(0.0, 0.0, -2.0*h, 0.0, 0.0, 0.0, 0.0, -1.0, 0.0);
+  g_matrices.MatrixMode(MM_PROJECTION);
+  g_matrices.LoadIdentity();
+  g_matrices.Frustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
+  g_matrices.MatrixMode(MM_MODELVIEW);
+
+  g_graphicsContext.EndPaint();
 }
 
 bool CRenderSystemGLES::TestRender()
 {
-  //TODO: GLES Rendering System
+  static float theta = 0.0;
+
+  //RESOLUTION_INFO resInfo = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution];
+  //glViewport(0, 0, resInfo.iWidth, resInfo.iHeight);
+
+  g_matrices.PushMatrix();
+  g_matrices.Rotatef( theta, 0.0f, 0.0f, 1.0f );
+
+  //TODO: enable colour shader
+
+  GLfloat col[3][4];
+  GLfloat ver[3][2];
+  GLint   posLoc; //TODO: Get location from shader
+  GLint   colLoc; //TODO: Get location from shader
+
+  glVertexAttribPointer(posLoc,  2, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(colLoc,  4, GL_FLOAT, 0, 0, col);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+
+  // Setup Colour values
+  col[0][0] = col[0][3] = col[1][1] = col[1][3] = col[2][2] = col[2][3] = 1.0f;
+  col[0][1] = col[0][2] = col[1][0] = col[1][2] = col[2][0] = col[2][1] = 0.0f;
+
+  // Setup vertex position values
+  ver[0][0] =  0.0f;
+  ver[0][1] =  1.0f;
+  ver[1][0] =  0.87f;
+  ver[1][1] = -0.5f;
+  ver[2][0] = -0.87f;
+  ver[2][1] = -0.5f;
+
+  glDrawArrays(GL_TRIANGLES, 0, 3);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+
+  //TODO: disable shader
+
+  g_matrices.PopMatrix();
+
+  theta += 1.0f;
 
   return true;
 }
 
 void CRenderSystemGLES::ApplyHardwareTransform(const TransformMatrix &finalMatrix)
 { 
-  //TODO: GLES Rendering System
+  if (!m_bRenderCreated)
+    return;
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PushMatrix();
+  GLfloat matrix[4][4];
+
+  for(int i=0;i<3;i++)
+    for(int j=0;j<4;j++)
+      matrix[j][i] = finalMatrix.m[i][j];
+
+  matrix[0][3] = 0.0f;
+  matrix[1][3] = 0.0f;
+  matrix[2][3] = 0.0f;
+  matrix[3][3] = 1.0f;
+
+  g_matrices.MultMatrixf(&matrix[0][0]);
 }
 
 void CRenderSystemGLES::RestoreHardwareTransform()
 {
-  //TODO: GLES Rendering System
+  if (!m_bRenderCreated)
+    return;
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PopMatrix();
 }
 
 void CRenderSystemGLES::CalculateMaxTexturesize()

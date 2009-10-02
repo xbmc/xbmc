@@ -100,7 +100,7 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
 {
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
-  for (int i=0; i<4; i)
+  for (int i=0; i<4; i++)
   {
     // Setup vertex position values
     m_vert[i][0] = x[i];
@@ -215,7 +215,7 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   glEnableVertexAttribArray(tex0Loc);
   glEnableVertexAttribArray(colLoc);
 
-  for (int i=0; i<4; i)
+  for (int i=0; i<4; i++)
   {
     // Setup Colour Values
     col[i][0] = (GLubyte)GET_R(color);

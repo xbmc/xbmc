@@ -587,11 +587,10 @@ void COverlayGlyphGL::Render(SRenderState& state)
 #else
   //TODO: Enable FONT shader
 
-  //TODO:
-//  glMatrixMode(GL_MODELVIEW);
-//  glPushMatrix();
-//  glTranslatef(state.x, state.y, 0.0);
-//  glScalef(state.width / m_width, state.height / m_height, 1.0f);
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PushMatrix();
+  g_matrices.Translatef(state.x, state.y, 0.0);
+  g_matrices.Scalef(state.width / m_width, state.height / m_height, 1.0f);
 
   VerifyGLState();
 
@@ -621,8 +620,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   //TODO: disbale shader
 
-  //TODO:
-//  glPopMatrix();
+  g_matrices.PopMatrix();
 #endif
 
   glDisable(GL_BLEND);
@@ -707,7 +705,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  for (int i=0; i<4; i)
+  for (int i=0; i<4; i++)
   {
     // Setup Colours
     col[i][0] = col[i][1] = col[i][2] = col[i][3] = 1.0f;

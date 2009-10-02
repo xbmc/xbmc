@@ -751,7 +751,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  for (int i=0; i<4; i)
+  for (int i=0; i<4; i++)
   {
     // Setup Colour values
     col[i][0] = (GLubyte)GET_R(color);

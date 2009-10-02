@@ -25,6 +25,8 @@
 #if HAS_GLES == 2
 
 #include "GUIShader.h"
+#include "MatrixGLES.h"
+#include "utils/log.h"
 
 //TODO: Implement a GUI Shader for GLESv2
 

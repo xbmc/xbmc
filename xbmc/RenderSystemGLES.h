@@ -25,6 +25,7 @@
 #pragma once
 
 #include "RenderSystem.h"
+#include "GUIShader.h"
 
 class CRenderSystemGLES : public CRenderSystemBase
 {

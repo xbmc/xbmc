@@ -27,6 +27,7 @@
 
 #if HAS_GLES == 2
 #include <locale.h>
+#include "MatrixGLES.h"
 #include "LinuxRendererGLES.h"
 #include "Application.h"
 #include "MathUtils.h"
@@ -1408,7 +1409,36 @@ void CLinuxRendererGLES::RenderSoftware(int index, int field)
 
 void CLinuxRendererGLES::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
-  //TODO: GLES LinuxRenderer
+  // get our screen rect
+  const RECT& rv = g_graphicsContext.GetViewWindow();
+
+  // save current video rect
+  RECT saveSize = rd;
+
+  // new video rect is thumbnail size
+  rd.left = rd.top = 0;
+  rd.right = width;
+  rd.bottom = height;
+
+  // clear framebuffer and invert Y axis to get non-inverted image
+  glClear(GL_COLOR_BUFFER_BIT);
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PushMatrix();
+  g_matrices.Translatef(0, height, 0);
+  g_matrices.Scalef(1.0, -1.0f, 1.0f);
+
+  Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
+
+  // read pixels
+  glReadPixels(0, rv.bottom-height, width, height, GL_RGBA, GL_UNSIGNED_BYTE, texture->GetPixels());
+
+  // revert model view matrix
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PopMatrix();
+
+  // restore original video rect
+  rd = saveSize;
 }
 
 //********************************************************************************************************
