@@ -67,10 +67,17 @@
 #define DLL_PATH_LIBSWSCALE    "special://xbmc/system/players/dvdplayer/swscale-0.6.1-@ARCH@.so"
 
 /* cdrip */
+#if defined(_LINUX) && !defined(__APPLE__)
+#define DLL_PATH_LAME_ENC      "libmp3lame.so.0"
+#define DLL_PATH_OGG           "libogg.so.0"
+#define DLL_PATH_VORBIS_ENC    "libvorbisenc.so.2"
+#define DLL_PATH_VORBIS        "libvorbis.so.0"
+#else
 #define DLL_PATH_LAME_ENC      "special://xbmc/system/cdrip/lame_enc-@ARCH@.so"
 #define DLL_PATH_OGG           "special://xbmc/system/cdrip/ogg-@ARCH@.so"
 #define DLL_PATH_VORBIS_ENC    "special://xbmc/system/cdrip/vorbisenc-@ARCH@.so"
 #define DLL_PATH_VORBIS        "special://xbmc/system/cdrip/vorbis-@ARCH@.so"
+#endif
 
 #endif
 
