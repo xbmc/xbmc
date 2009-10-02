@@ -47,8 +47,6 @@ external_libraries_enabled="== Use of all supported external libraries enabled. 
 external_libraries_disabled="== Use of all supported external libraries disabled. =="
 external_ffmpeg_enabled="== Use of external ffmpeg enabled. =="
 external_ffmpeg_disabled="== Use of external ffmpeg disabled. =="
-external_libmad_enabled="== Use of external libmad enabled. =="
-external_libmad_disabled="== Use of external libmad disabled. =="
 external_liba52_enabled="== Use of external liba52 enabled. =="
 external_liba52_disabled="== Use of external liba52 disabled. =="
 external_libdts_enabled="== Use of external libdts enabled. =="
@@ -189,12 +187,6 @@ AC_ARG_ENABLE([external-ffmpeg],
             [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
             [use_external_ffmpeg=$enableval],
             [use_external_ffmpeg=no])
-
-AC_ARG_ENABLE([external-libmad],
-            [AS_HELP_STRING([--enable-external-libmad],
-            [enable use of external libmad library (default is no) 'Linux only'])],
-            [use_external_libmad=$enableval],
-            [use_external_libmad=no])
 
 AC_ARG_ENABLE([external-liba52],
             [AS_HELP_STRING([--enable-external-liba52],
@@ -491,18 +483,6 @@ if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"
 else
   AC_MSG_NOTICE($external_ffmpeg_disabled)
   USE_EXTERNAL_FFMPEG=0
-fi
-
-# External libmad
-if test "$use_external_libraries" = "yes" || test "$use_external_libmad" = "yes"; then
-  AC_CHECK_LIB([mad],          [main],, AC_MSG_ERROR($missing_library))
-
-  AC_MSG_NOTICE($external_libmad_enabled)
-  USE_EXTERNAL_LIBMAD=1
-  AC_DEFINE([USE_EXTERNAL_LIBMAD], [1], [Whether to use external libmad library.])
-else
-  AC_MSG_NOTICE($external_libmad_disabled)
-  USE_EXTERNAL_LIBMAD=0
 fi
 
 # External liba52
@@ -922,11 +902,6 @@ else
   else
     final_message="$final_message\n  External FFmpeg:\tNo"
   fi
-  if test "$use_external_libmad" = "yes"; then
-    final_message="$final_message\n  External libmad:\tYes"
-  else
-    final_message="$final_message\n  External libmad:\tNo"
-  fi
   if test "$use_external_liba52" = "yes"; then
     final_message="$final_message\n  External liba52:\tYes"
   else
@@ -1038,7 +1013,6 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
-AC_SUBST(USE_EXTERNAL_LIBMAD)
 AC_SUBST(USE_EXTERNAL_LIBA52)
 AC_SUBST(USE_EXTERNAL_LIBDTS)
 AC_SUBST(USE_EXTERNAL_LIBFAAD)
@@ -1354,12 +1328,11 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/libmad], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 \
-      --with-pic 
-  else
-    ./configure \
       --with-pic
+  else
+    true
   fi
-], [$USE_EXTERNAL_LIBMAD])
+], 0)
 
 XB_CONFIG_MODULE([xbmc/lib/cximage-6.0/zlib], [
   if test "$host_vendor" = "apple" ; then

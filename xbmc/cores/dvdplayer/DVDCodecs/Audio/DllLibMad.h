@@ -25,13 +25,12 @@
 #endif
 /* undefine byte from PlatformDefs.h since it's used in mad.h */
 #undef byte
-#if (defined USE_EXTERNAL_LIBMAD)
+#if defined(_LINUX) && !defined(__APPLE__)
   #include <mad.h>
 #else
   #include "libmad/mad.h"
 #endif
 #include "DynamicDll.h"
-#include "utils/log.h"
 
 class DllLibMadInterface
 {
@@ -52,52 +51,6 @@ public:
   virtual void mad_timer_add(mad_timer_t *, mad_timer_t) = 0;
   virtual mad_timer_t Get_mad_timer_zero() = 0;
 };
-
-#if (defined USE_EXTERNAL_LIBMAD)
-
-class DllLibMad : public DllDynamic, DllLibMadInterface
-{
-public:
-    virtual ~DllLibMad() {}
-    virtual void mad_synth_init(struct mad_synth *synth)
-        { return ::mad_synth_init(synth); }
-    virtual void mad_stream_init(struct mad_stream *stream)
-        { return ::mad_stream_init(stream); }
-    virtual void mad_frame_init(struct mad_frame *frame)
-        { return ::mad_frame_init(frame); }
-    virtual void mad_stream_finish(struct mad_stream *stream)
-        { return ::mad_stream_finish(stream); }
-    virtual void mad_frame_finish(struct mad_frame *frame)
-        { return ::mad_frame_finish(frame); }
-    virtual void mad_stream_buffer(struct mad_stream *stream, unsigned char const *buffer, unsigned long size)
-        { return ::mad_stream_buffer(stream, buffer, size); }
-    virtual void mad_synth_frame(struct mad_synth *synth, struct mad_frame const *frame)
-        { return ::mad_synth_frame(synth, frame); }
-    virtual int mad_frame_decode(struct mad_frame *frame, struct mad_stream *stream)
-        { return ::mad_frame_decode(frame, stream); }
-    virtual int mad_stream_sync(struct mad_stream *stream)
-        { return ::mad_stream_sync(stream); }
-    virtual char const* mad_stream_errorstr(struct mad_stream const *stream)
-        { return ::mad_stream_errorstr(stream); }
-    virtual void mad_frame_mute(struct mad_frame *frame)
-        { return ::mad_frame_mute(frame); }
-    virtual void mad_synth_mute(struct mad_synth *synth)
-        { return ::mad_synth_mute(synth); }
-    virtual void mad_timer_add(mad_timer_t *t1, mad_timer_t t2)
-        { return ::mad_timer_add(t1, t2); }
-    virtual mad_timer_t Get_mad_timer_zero()
-        { return ::mad_timer_zero; }
-
-    // DLL faking.
-    virtual bool ResolveExports() { return true; }
-    virtual bool Load() {
-        CLog::Log(LOGDEBUG, "DllLibMad: Using libmad system library");
-        return true;
-    }
-    virtual void Unload() {}
-};
-
-#else
 
 class DllLibMad : public DllDynamic, DllLibMadInterface
 {
@@ -134,4 +87,3 @@ class DllLibMad : public DllDynamic, DllLibMadInterface
   END_METHOD_RESOLVE()
 };
 
-#endif
