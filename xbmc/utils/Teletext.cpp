@@ -636,7 +636,7 @@ bool CTeletextDecoder::InitDecoder()
   if ((error = FTC_Manager_LookupFace(m_Manager, m_TypeTTF.face_id, &m_Face)))
   {
     m_TypeTTF.face_id = (FTC_FaceID) m_teletextFont.c_str();
-    if ((error = FTC_Manager_Lookup_Face(m_Manager, m_TypeTTF.face_id, &m_Face)))
+    if ((error = FTC_Manager_LookupFace(m_Manager, m_TypeTTF.face_id, &m_Face)))
     {
       CLog::Log(LOGERROR, "%s: <FTC_Manager_Lookup_Face failed with Errorcode 0x%.2X>\n", __FUNCTION__, error);
       FTC_Manager_Done(m_Manager);
