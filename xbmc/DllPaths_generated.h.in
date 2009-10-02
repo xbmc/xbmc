@@ -44,7 +44,11 @@
 #define DLL_PATH_LIBASS        "special://xbmc/system/players/dvdplayer/libass-@ARCH@.so"
 #define DLL_PATH_LIBA52        "special://xbmc/system/players/dvdplayer/liba52-@ARCH@.so"
 #define DLL_PATH_LIBDTS        "special://xbmc/system/players/dvdplayer/libdts-@ARCH@.so"
+#if defined(_LINUX) && !defined(__APPLE__)
+#define DLL_PATH_LIBFAAD       "libfaad.so.0"
+#else
 #define DLL_PATH_LIBFAAD       "special://xbmc/system/players/dvdplayer/libfaad-@ARCH@.so"
+#endif
 #if defined(_LINUX) && !defined(__APPLE__)
 #define DLL_PATH_LIBMAD        "libmad.so.0"
 #else

@@ -16,9 +16,6 @@ endif
 ifneq (@USE_EXTERNAL_LIBDTS@,1)
   DIRS+=libdts
 endif
-ifneq (@USE_EXTERNAL_LIBFAAD@,1)
-  DIRS+=libfaad2
-endif
 ifneq (@USE_EXTERNAL_LIBMPEG2@,1)
   DIRS+=libmpeg2
 endif
@@ -38,16 +35,15 @@ endif
 ifneq (@USE_EXTERNAL_LIBDTS@,1)
   LIBS+=libdts-$(ARCH).so
 endif
-ifneq (@USE_EXTERNAL_LIBFAAD@,1)
-  LIBS+=libfaad-$(ARCH).so
-endif
 ifneq (@USE_EXTERNAL_LIBMPEG2@,1)
   LIBS+=libmpeg2-$(ARCH).so
 endif
 
 ifeq ($(findstring osx,$(ARCH)),osx)
 	DIRS+=libmad
+ 	DIRS+=libfaad2
 	LIBS+=libmad-$(ARCH).so
+ 	LIBS+=libfaad-$(ARCH).so
 endif
 
 ifneq (,$(findstring powerpc,$(ARCH)))
@@ -197,10 +193,6 @@ $(SYSDIR)/libdts-$(ARCH).so: $(WRAPPER) libdts/libdts/libdts.a
 		libdts/libdts/downmix.o libdts/libdts/parse.o \
 		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
 
-$(SYSDIR)/libfaad-$(ARCH).so: $(WRAPPER) libfaad2/libfaad/libfaad.la
-	$(CC) -o $@ $(LDFLAGS) --soname,$@ libfaad2/libfaad/*.o \
-		`cat $(WRAPPER:.o=.def)` $(WRAPPER)
-
 $(SYSDIR)/liba52-$(ARCH).so: $(WRAPPER) liba52/liba52/liba52.la
 	$(CC) -o $@ $(LDFLAGS) --soname,$@ liba52/liba52/.libs/*.o \
 		-Wl`cat $(WRAPPER:.o=.def)` $(WRAPPER)
@@ -215,10 +207,6 @@ $(SYSDIR)/libmpeg2-$(ARCH).so: $(WRAPPER) libmpeg2/libmpeg2/libmpeg2.la
 
 libdts/libdts/libdts.a : libdts;
 libdts:
-	$(MAKE) -C $@
-
-libfaad2/libfaad/libfaad.la: libfaad2;
-libfaad2:
 	$(MAKE) -C $@
 
 liba52/liba52/liba52.la: liba52
