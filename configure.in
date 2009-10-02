@@ -59,8 +59,6 @@ external_libvorbis_enabled="== Use of external libvorbis enabled. =="
 external_libvorbis_disabled="== Use of external libvorbis disabled. =="
 external_libogg_enabled="== Use of external libogg enabled. =="
 external_libogg_disabled="== Use of external libogg disabled. =="
-external_libflac_enabled="== Use of external libflac enabled. =="
-external_libflac_disabled="== Use of external libflac disabled. =="
 external_libwavpack_enabled="== Use of external libwavpack enabled. =="
 external_libwavpack_disabled="== Use of external libwavpack disabled. =="
 external_python_enabled="== Use of external python enabled. =="
@@ -221,12 +219,6 @@ AC_ARG_ENABLE([external-libogg],
             [enable use of external libogg library (default is no) 'Linux only'])],
             [use_external_libogg=$enableval],
             [use_external_libogg=no])
-
-AC_ARG_ENABLE([external-libflac],
-            [AS_HELP_STRING([--enable-external-libflac],
-            [enable use of external libflac library (default is no) 'Linux only'])],
-            [use_external_libflac=$enableval],
-            [use_external_libflac=no])
 
 AC_ARG_ENABLE([external-libwavpack],
             [AS_HELP_STRING([--enable-external-libwavpack],
@@ -547,18 +539,6 @@ if test "$use_external_libraries" = "yes" || test "$use_external_libogg" = "yes"
 else
   AC_MSG_NOTICE($external_libogg_disabled)
   USE_EXTERNAL_LIBOGG=0
-fi
-
-# External libflac
-if test "$use_external_libraries" = "yes" || test "$use_external_libflac" = "yes"; then
-  AC_CHECK_LIB([FLAC],          [main],, AC_MSG_ERROR($missing_library))
-
-  AC_MSG_NOTICE($external_libflac_enabled)
-  USE_EXTERNAL_LIBFLAC=1
-  AC_DEFINE([USE_EXTERNAL_LIBFLAC], [1], [Whether to use external libflac library.])
-else
-  AC_MSG_NOTICE($external_libflac_disabled)
-  USE_EXTERNAL_LIBFLAC=0
 fi
 
 # External libwavpack
@@ -892,11 +872,6 @@ else
   else
     final_message="$final_message\n  External libogg:\tNo"
   fi
-  if test "$use_external_libflac" = "yes"; then
-    final_message="$final_message\n  External libflac:\tYes"
-  else
-    final_message="$final_message\n  External libflac:\tNo"
-  fi
   if test "$use_external_libwavpack" = "yes"; then
     final_message="$final_message\n  External libwavpack:\tYes"
   else
@@ -919,7 +894,6 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/paplayer/timidity/Makefile \
              xbmc/cores/paplayer/AC3Codec/Makefile \
              xbmc/cores/paplayer/ADPCMCodec/Makefile \
-             xbmc/cores/paplayer/FLACCodec/Makefile \
              xbmc/cores/paplayer/ModuleCodec/Makefile \
              xbmc/cores/paplayer/GYMCodec/Makefile \
              xbmc/cores/paplayer/NSFCodec/Makefile \
@@ -957,6 +931,11 @@ OUTPUT_FILES="Makefile \
              tools/XBMCTexXBT/Makefile \
              tools/EventClients/Clients/OSXRemote/Makefile"
 
+if test "$host_vendoer" = "apple"; then
+  OUTPUT_FILES+= \
+             " xbmc/cores/paplayer/FLACCodec/Makefile"
+fi
+
 AC_CONFIG_FILES([${OUTPUT_FILES}])
 AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
@@ -974,7 +953,6 @@ AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBVORBIS)
 AC_SUBST(USE_EXTERNAL_LIBOGG)
 AC_SUBST(USE_EXTERNAL_LIBMPCDEC)
-AC_SUBST(USE_EXTERNAL_LIBFLAC)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(USE_PYTHON2_6)
@@ -1064,15 +1042,9 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/FLACCodec/flac-1.2.1], [
       CC="$CC" \
       CXX="$CXX"
   else
-    ./configure -C \
-      --with-pic \
-      --disable-asm-optimizations \
-      --disable-xmms-plugin \
-      --disable-cpplibs \
-      CC="$CC" \
-      CXX="$CXX"
+    true
   fi
-], [$USE_EXTERNAL_LIBFLAC])
+], [0])
 
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
   if test "$host_vendor" = "apple" ; then

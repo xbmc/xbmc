@@ -75,9 +75,13 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
-	xbmc/cores/paplayer/FLACCodec \
 	xbmc/cores/paplayer/MACDll \
 	xbmc/cores/paplayer/vorbisfile
+
+ifeq ($(findstring osx,$(ARCH)),osx)
+PAPCODEC_DIRS+= \
+	xbmc/cores/paplayer/FLACCodec
+endif
 
 LIB_DIRS=\
 	xbmc/lib/cximage-6.0 \
@@ -279,7 +283,9 @@ libid3tag: dllloader
 papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/AC3Codec
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
+ifeq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C xbmc/cores/paplayer/FLACCodec
+endif
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 	$(MAKE) -C xbmc/cores/paplayer/timidity
