@@ -50,7 +50,6 @@
 
 #ifdef HAS_SDL
 #include <SDL/SDL.h>
-#include <SDL/SDL_thread.h>
 #include <SDL/SDL_mutex.h>
 #include <SDL/SDL_endian.h>
 
