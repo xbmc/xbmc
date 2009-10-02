@@ -29,7 +29,6 @@
 #include "SHNcodec.h"
 #include "FLACcodec.h"
 #include "WAVcodec.h"
-#include "AACcodec.h"
 #include "WAVPackcodec.h"
 #include "ModuleCodec.h"
 #include "NSFCodec.h"
@@ -126,14 +125,10 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   else if( strContent.Equals("audio/aac")
     || strContent.Equals("audio/aacp") )
   {
+    DVDPlayerCodec *pCodec = new DVDPlayerCodec;
     if (urlFile.GetProtocol() == "shout" )
-    {
-      DVDPlayerCodec *pCodec = new DVDPlayerCodec;
       pCodec->SetContentType(strContent);
-      return pCodec;
-    }
-
-    return new AACCodec();
+    return pCodec;
   }
   else if( strContent.Equals("audio/x-ms-wma") )
     return new DVDPlayerCodec();
