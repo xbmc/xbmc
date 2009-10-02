@@ -85,13 +85,13 @@ void CDVDOverlayRenderer::Render(DVDPictureRenderer* pPicture, CDVDOverlaySSA* p
     }
 
     //ASS_Image colors are RGBA
-    double b = ((color >> 24) & 0xff) / 255.0;
+    double r = ((color >> 24) & 0xff) / 255.0;
     double g = ((color >> 16) & 0xff) / 255.0;
-    double r = ((color >> 8 ) & 0xff) / 255.0;
+    double b = ((color >> 8 ) & 0xff) / 255.0;
 
-    BYTE luma  = (BYTE)(255 * CLAMP(0.299 * r + 0.587 * g + 0.114 * b, 0.0, 1.0));
-    BYTE u     = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
-    BYTE v     = (BYTE)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
+    BYTE luma  = (BYTE)(        255 * CLAMP( 0.299 * r + 0.587 * g + 0.114 * b,  0.0, 1.0));
+    BYTE v     = (BYTE)(127.5 + 255 * CLAMP( 0.500 * r - 0.419 * g - 0.081 * b, -0.5, 0.5));
+    BYTE u     = (BYTE)(127.5 + 255 * CLAMP(-0.169 * r - 0.331 * g + 0.500 * b, -0.5, 0.5));
 
     int y = std::max(0,std::min(img->dst_y, pPicture->height-img->h));
     int x = std::max(0,std::min(img->dst_x, pPicture->width-img->w));

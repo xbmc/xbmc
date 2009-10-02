@@ -421,9 +421,9 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
       data    = srca + curr_y * size_x;
     }
 
-    unsigned int b = ((color >> 24) & 0xff);
+    unsigned int r = ((color >> 24) & 0xff);
     unsigned int g = ((color >> 16) & 0xff);
-    unsigned int r = ((color >> 8) & 0xff);
+    unsigned int b = ((color >> 8 ) & 0xff);
 
     for(int i = 0; i < 4; i++)
     {
