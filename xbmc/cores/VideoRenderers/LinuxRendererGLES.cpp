@@ -805,12 +805,12 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //TODO: GLES LinuxRenderer
+    m_pYUVShader->SetAlpha(alpha / 255.0f);
   }
   else
   {
     glDisable(GL_BLEND);
-    //TODO: GLES LinuxRenderer
+    m_pYUVShader->SetAlpha(1.0f);
   }
 
   if ((flags & RENDER_FLAG_ODD) && (flags & RENDER_FLAG_EVEN))
@@ -1394,17 +1394,371 @@ void CLinuxRendererGLES::AutoCrop(bool bCrop)
 
 void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 {
-  //TODO: GLES LinuxRenderer
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANES &planes = fields[field];
+
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
+  if (m_reloadShaders)
+  {
+    m_reloadShaders = 0;
+    LoadShaders(field);
+  }
+
+  glDisable(GL_DEPTH_TEST);
+
+  // Y
+  glActiveTexture(GL_TEXTURE0);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, planes[0].id);
+
+  // U
+  glActiveTexture(GL_TEXTURE1);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, planes[1].id);
+
+  // V
+  glActiveTexture(GL_TEXTURE2);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, planes[2].id);
+
+  glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
+
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
+  if     (field == FIELD_ODD)
+    m_pYUVShader->SetField(1);
+  else if(field == FIELD_EVEN)
+    m_pYUVShader->SetField(0);
+
+  m_pYUVShader->SetMatrices(g_matrices.GetMatrix(MM_PROJECTION), g_matrices.GetMatrix(MM_MODELVIEW));
+  m_pYUVShader->Enable();
+
+  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLfloat m_vert[4][3];
+  GLfloat m_tex[3][4][2];
+
+  GLint vertLoc = m_pYUVShader->GetVertexLoc();
+  GLint Yloc    = m_pYUVShader->GetYcoordLoc();
+  GLint Uloc    = m_pYUVShader->GetUcoordLoc();
+  GLint Vloc    = m_pYUVShader->GetVcoordLoc();
+
+  glVertexAttribPointer(vertLoc, 3, GL_FLOAT, 0, 0, m_vert);
+  glVertexAttribPointer(Yloc, 2, GL_FLOAT, 0, 0, m_tex[0]);
+  glVertexAttribPointer(Uloc, 2, GL_FLOAT, 0, 0, m_tex[1]);
+  glVertexAttribPointer(Vloc, 2, GL_FLOAT, 0, 0, m_tex[2]);
+
+  glEnableVertexAttribArray(vertLoc);
+  glEnableVertexAttribArray(Yloc);
+  glEnableVertexAttribArray(Uloc);
+  glEnableVertexAttribArray(Vloc);
+
+  // Setup vertex position values
+  m_vert[0][0] = m_vert[3][0] = (float)rd.left;
+  m_vert[0][1] = m_vert[1][1] = (float)rd.top;
+  m_vert[1][0] = m_vert[2][0] = (float)rd.right;
+  m_vert[2][1] = m_vert[3][1] = (float)rd.bottom;
+  m_vert[0][2] = m_vert[1][2] = m_vert[2][2] = m_vert[3][2] = 0.0f;
+
+  // Setup texture coordinates
+  for (int i=0; i<3; i++)
+  {
+    m_tex[i][0][0] = m_tex[i][3][0] = planes[i].rect.x1;
+    m_tex[i][0][1] = m_tex[i][1][1] = planes[i].rect.y1;
+    m_tex[i][1][0] = m_tex[i][2][0] = planes[i].rect.x2;
+    m_tex[i][2][1] = m_tex[i][3][1] = planes[i].rect.y2;
+  }
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  VerifyGLState();
+
+  m_pYUVShader->Disable();
+  VerifyGLState();
+
+  glDisableVertexAttribArray(vertLoc);
+  glDisableVertexAttribArray(Yloc);
+  glDisableVertexAttribArray(Uloc);
+  glDisableVertexAttribArray(Vloc);
+
+  glActiveTexture(GL_TEXTURE1);
+  glDisable(GL_TEXTURE_2D);
+
+  glActiveTexture(GL_TEXTURE2);
+  glDisable(GL_TEXTURE_2D);
+
+  glActiveTexture(GL_TEXTURE0);
+  glDisable(GL_TEXTURE_2D);
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+
+  VerifyGLState();
 }
 
 void CLinuxRendererGLES::RenderMultiPass(int index, int field)
 {
-  //TODO: GLES LinuxRenderer
+  // TODO: MCG - Multipass rendering does not currently work! FIX!
+  CLog::Log(LOGERROR, "GLES: MULTIPASS rendering was called! But it doesnt work!!!");
+
+  YV12Image &im     = m_buffers[index].image;
+  YUVPLANES &planes = m_buffers[index].fields[field];
+
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
+  if (m_reloadShaders)
+  {
+    m_reloadShaders = 0;
+    m_fbo.Cleanup();
+    LoadShaders(m_currentField);
+    VerifyGLState();
+  }
+
+  glDisable(GL_DEPTH_TEST);
+  VerifyGLState();
+
+  // Y
+  glEnable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, planes[0].id);
+  VerifyGLState();
+
+  // U
+  glActiveTexture(GL_TEXTURE1);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, planes[1].id);
+  VerifyGLState();
+
+  // V
+  glActiveTexture(GL_TEXTURE2);
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, planes[2].id);
+  VerifyGLState();
+
+  glActiveTexture(GL_TEXTURE0);
+  VerifyGLState();
+
+  // make sure the yuv shader is loaded and ready to go
+  if (!m_pYUVShader || (!m_pYUVShader->OK()))
+  {
+    CLog::Log(LOGERROR, "GL: YUV shader not active, cannot do multipass render");
+    return;
+  }
+
+  int imgheight;
+
+  if(field == FIELD_FULL)
+    imgheight = im.height;
+  else
+    imgheight = im.height/2;
+
+  // make sure FBO is valid and ready to go
+  if (!m_fbo.IsValid())
+  {
+    m_fbo.Initialize();
+    if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, im.width, imgheight, GL_RGBA))
+      CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+  }
+
+  m_fbo.BeginRender();
+  VerifyGLState();
+
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
+  if     (field == FIELD_ODD)
+    m_pYUVShader->SetField(1);
+  else if(field == FIELD_EVEN)
+    m_pYUVShader->SetField(0);
+
+  VerifyGLState();
+//TODO - MCG
+//  glPushAttrib(GL_VIEWPORT_BIT);
+//  glPushAttrib(GL_SCISSOR_BIT);
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PushMatrix();
+  g_matrices.LoadIdentity();
+  VerifyGLState();
+
+  g_matrices.MatrixMode(MM_PROJECTION);
+  g_matrices.PushMatrix();
+  g_matrices.LoadIdentity();
+  VerifyGLState();
+  g_matrices.Ortho2D(0, im.width, 0, imgheight);
+
+  glViewport(0, 0, im.width, imgheight);
+  glScissor(0, 0, im.width, imgheight);
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  VerifyGLState();
+
+
+  if (!m_pYUVShader->Enable())
+  {
+    CLog::Log(LOGERROR, "GL: Error enabling YUV shader");
+  }
+
+  // 1st Pass to video frame size
+//TODO - MCG
+//  glBegin(GL_QUADS);
+//
+//  glMultiTexCoord2fARB(GL_TEXTURE0, 0              , 0);
+//  glMultiTexCoord2fARB(GL_TEXTURE1, 0              , 0);
+//  glMultiTexCoord2fARB(GL_TEXTURE2, 0              , 0);
+//  glVertex2f((float)0, (float)0);
+//
+//  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].width, 0);
+//  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].width, 0);
+//  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].width, 0);
+//  glVertex2f((float)im.width, (float)0);
+//
+//  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].width, planes[0].height);
+//  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].width, planes[1].height);
+//  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].width, planes[2].height);
+//  glVertex2f((float)im.width, (float)imgheight);
+//
+//  glMultiTexCoord2fARB(GL_TEXTURE0, 0              , planes[0].height);
+//  glMultiTexCoord2fARB(GL_TEXTURE1, 0              , planes[1].height);
+//  glMultiTexCoord2fARB(GL_TEXTURE2, 0              , planes[2].height);
+//  glVertex2f((float)0, (float)imgheight);
+//
+//  glEnd();
+//  VerifyGLState();
+
+  m_pYUVShader->Disable();
+
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  g_matrices.PopMatrix(); // pop modelview
+  g_matrices.MatrixMode(MM_PROJECTION);
+  g_matrices.PopMatrix(); // pop projection
+//TODO - MCG
+//  glPopAttrib(); // pop scissor
+//  glPopAttrib(); // pop viewport
+  g_matrices.MatrixMode(MM_MODELVIEW);
+  VerifyGLState();
+
+  m_fbo.EndRender();
+
+  glActiveTexture(GL_TEXTURE1);
+  glDisable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE2);
+  glDisable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0);
+  glDisable(GL_TEXTURE_2D);
+
+  glEnable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, m_fbo.Texture());
+  VerifyGLState();
+
+  // Use regular normalized texture coordinates
+
+  // 2nd Pass to screen size with optional video filter
+
+  if (m_pVideoFilterShader)
+  {
+    m_fbo.SetFiltering(GL_TEXTURE_2D, GL_NEAREST);
+    m_pVideoFilterShader->SetSourceTexture(0);
+    m_pVideoFilterShader->SetWidth(im.width);
+    m_pVideoFilterShader->SetHeight(imgheight);
+    m_pVideoFilterShader->Enable();
+  }
+  else
+    m_fbo.SetFiltering(GL_TEXTURE_2D, GL_LINEAR);
+
+  VerifyGLState();
+
+  // TODO - recalculate based source rectangle so crop works
+  //        but to do so we need the source texture size of the framebuffer
+//TODO - MCG
+//  glBegin(GL_QUADS);
+//
+//  glMultiTexCoord2fARB(GL_TEXTURE0, 0, 0);
+//  glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+//
+//  glMultiTexCoord2fARB(GL_TEXTURE0, 1, 0);
+//  glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+//
+//  glMultiTexCoord2fARB(GL_TEXTURE0, 1, 1);
+//  glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+//
+//  glMultiTexCoord2fARB(GL_TEXTURE0, 0, 1);
+//  glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+//
+//  glEnd();
+
+  VerifyGLState();
+
+  if (m_pVideoFilterShader)
+    m_pVideoFilterShader->Disable();
+
+  VerifyGLState();
+
+  glDisable(GL_TEXTURE_2D);
+  VerifyGLState();
 }
 
 void CLinuxRendererGLES::RenderSoftware(int index, int field)
 {
-  //TODO: GLES LinuxRenderer
+  YUVPLANES &planes = m_buffers[index].fields[field];
+
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
+  glDisable(GL_DEPTH_TEST);
+
+  // Y
+  glEnable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, planes[0].id);
+
+  g_Windowing.EnableGUIShader(SM_TEXTURE);
+
+  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+  GLfloat ver[4][4];
+  GLfloat tex[4][2];
+  GLint   posLoc = g_Windowing.GUIShaderGetPos();
+  GLint   texLoc = g_Windowing.GUIShaderGetCoord0();
+
+  glVertexAttribPointer(posLoc, 4, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(texLoc, 2, GL_FLOAT, 0, 0, tex);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(texLoc);
+
+  // Set vertex coordinates
+  ver[0][0] = ver[3][0] = (float)rd.left;
+  ver[0][1] = ver[1][1] = (float)rd.top;
+  ver[1][0] = ver[2][0] = (float)rd.right;
+  ver[2][1] = ver[3][1] = (float)rd.bottom;
+  ver[0][2] = ver[1][2] = ver[2][2] = ver[3][2] = 0.0f;
+  ver[0][3] = ver[1][3] = ver[2][3] = ver[3][3] = 1.0f;
+
+  // Set texture coordinates
+  tex[0][0] = tex[3][0] = planes[0].rect.x1;
+  tex[0][1] = tex[1][1] = planes[0].rect.y1;
+  tex[1][0] = tex[2][0] = planes[0].rect.x2;
+  tex[2][1] = tex[3][1] = planes[0].rect.y2;
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(texLoc);
+
+  g_Windowing.DisableGUIShader();
+
+  VerifyGLState();
+
+  glDisable(GL_TEXTURE_2D);
+  VerifyGLState();
 }
 
 void CLinuxRendererGLES::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)

@@ -23,6 +23,15 @@ namespace Shaders {
 
     virtual void SetBlack(float black)       {};
     virtual void SetContrast(float contrast) {};
+#if HAS_GLES == 2
+    virtual GLint GetVertexLoc() {};
+    virtual GLint GetYcoordLoc() {};
+    virtual GLint GetUcoordLoc() {};
+    virtual GLint GetVcoordLoc() {};
+
+    virtual void SetMatrices(GLfloat *p, GLfloat *m) {};
+    virtual void SetAlpha(GLfloat alpha)             {};
+#endif
   };
 
 
@@ -39,6 +48,16 @@ namespace Shaders {
 
     virtual void SetBlack(float black)       { m_black    = black; }
     virtual void SetContrast(float contrast) { m_contrast = contrast; }
+#if HAS_GLES == 2
+    virtual GLint GetVertexLoc() { return m_hVertex; }
+    virtual GLint GetYcoordLoc() { return m_hYcoord; }
+    virtual GLint GetUcoordLoc() { return m_hUcoord; }
+    virtual GLint GetVcoordLoc() { return m_hVcoord; }
+
+    virtual void SetMatrices(GLfloat *p, GLfloat *m) { m_proj = p; m_model = m; }
+    virtual void SetAlpha(GLfloat alpha)             { m_alpha = alpha; }
+#endif
+
   protected:
     void OnCompiledAndLinked();
     bool OnEnabled();
@@ -58,6 +77,19 @@ namespace Shaders {
     GLint m_hUTex;
     GLint m_hVTex;
     GLint m_hMatrix;
+#if HAS_GLES == 2
+    GLint m_hVertex;
+    GLint m_hYcoord;
+    GLint m_hUcoord;
+    GLint m_hVcoord;
+    GLint m_hProj;
+    GLint m_hModel;
+    GLint m_hAlpha;
+
+    GLfloat *m_proj;
+    GLfloat *m_model;
+    GLfloat  m_alpha;
+#endif
   };
 
 #if HAS_GLES != 2       // No ARB Shader when using GLES2.0

@@ -157,12 +157,29 @@ BaseYUV2RGBGLSLShader::BaseYUV2RGBGLSLShader(bool rect, unsigned flags)
 
   VertexShader()->LoadSource("yuv2rgb_vertex.glsl", m_defines);
 #elif HAS_GLES == 2
-  //TODO: YUV2RGB GLES shader
+  m_hVertex = -1;
+  m_hYcoord = -1;
+  m_hUcoord = -1;
+  m_hVcoord = -1;
+  m_hProj   = -1;
+  m_hModel  = -1;
+  m_hAlpha  = -1;
+
+  VertexShader()->LoadSource("yuv2rgb_vertex_gles.glsl", m_defines);
 #endif
 }
 
 void BaseYUV2RGBGLSLShader::OnCompiledAndLinked()
 {
+#if HAS_GLES == 2
+  m_hVertex = glGetAttribLocation(ProgramHandle(),  "m_attrpos");
+  m_hYcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordY");
+  m_hUcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordU");
+  m_hVcoord = glGetAttribLocation(ProgramHandle(),  "m_attrcordV");
+  m_hProj   = glGetUniformLocation(ProgramHandle(), "m_proj");
+  m_hModel  = glGetUniformLocation(ProgramHandle(), "m_model");
+  m_hAlpha  = glGetUniformLocation(ProgramHandle(), "m_alpha");
+#endif
   m_hYTex   = glGetUniformLocation(ProgramHandle(), "m_sampY");
   m_hUTex   = glGetUniformLocation(ProgramHandle(), "m_sampU");
   m_hVTex   = glGetUniformLocation(ProgramHandle(), "m_sampV");
@@ -181,6 +198,11 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
   CalculateYUVMatrix(matrix, m_flags, m_black, m_contrast);
 
   glUniformMatrix4fv(m_hMatrix, 1, GL_FALSE, (GLfloat*)matrix);
+#if HAS_GLES == 2
+  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
+  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
+  glUniform1i(m_hAlpha, m_alpha);
+#endif
   VerifyGLState();
   return true;
 }
@@ -214,7 +236,7 @@ YUV2RGBProgressiveShader::YUV2RGBProgressiveShader(bool rect, unsigned flags)
 #ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_basic.glsl", m_defines);
 #elif HAS_GLES == 2
-  //TODO: YUV2RGB GLES shader
+  PixelShader()->LoadSource("yuv2rgb_basic_gles.glsl", m_defines);
 #endif
 }
 
@@ -232,7 +254,7 @@ YUV2RGBBobShader::YUV2RGBBobShader(bool rect, unsigned flags)
 #ifdef HAS_GL
   PixelShader()->LoadSource("yuv2rgb_bob.glsl", m_defines);
 #elif HAS_GLES == 2
-  //TODO: YUV2RGB GLES shader
+  PixelShader()->LoadSource("yuv2rgb_bob_gles.glsl", m_defines);
 #endif
 }
 
