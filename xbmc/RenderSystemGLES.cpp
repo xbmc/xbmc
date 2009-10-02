@@ -33,13 +33,28 @@
 CRenderSystemGLES::CRenderSystemGLES() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
-  //TODO: GLES Rendering System
+  // Setup the OpenGL ES2.0 shader program for use
+  m_pGUIshader = new CGUIShader(/*vertexshader, fragmentshader*/);
+  if (!m_pGUIshader->CompileAndLink())
+  {
+    m_pGUIshader->Free();
+    delete m_pGUIshader;
+    m_pGUIshader = NULL;
+    CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "GUI Shader - Initialise successful : %p", m_pGUIshader);
+  }
 }
 
 CRenderSystemGLES::~CRenderSystemGLES()
 {
   DestroyRenderSystem();
-  //TODO: GLES Rendering System
+  CLog::Log(LOGDEBUG, "GUI Shader - Destroying Shader : %p", m_pGUIshader);
+  m_pGUIshader->Free();
+  delete m_pGUIshader;
+  m_pGUIshader = NULL;
 }
 
 bool CRenderSystemGLES::InitRenderSystem()
@@ -337,12 +352,12 @@ bool CRenderSystemGLES::TestRender()
   g_matrices.PushMatrix();
   g_matrices.Rotatef( theta, 0.0f, 0.0f, 1.0f );
 
-  //TODO: enable colour shader
+  EnableGUIShader(SM_DEFAULT);
 
   GLfloat col[3][4];
   GLfloat ver[3][2];
-  GLint   posLoc; //TODO: Get location from shader
-  GLint   colLoc; //TODO: Get location from shader
+  GLint   posLoc = GUIShaderGetPos();
+  GLint   colLoc = GUIShaderGetCol();
 
   glVertexAttribPointer(posLoc,  2, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(colLoc,  4, GL_FLOAT, 0, 0, col);
@@ -367,7 +382,7 @@ bool CRenderSystemGLES::TestRender()
   glDisableVertexAttribArray(posLoc);
   glDisableVertexAttribArray(colLoc);
 
-  //TODO: disable shader
+  DisableGUIShader();
 
   g_matrices.PopMatrix();
 
@@ -435,6 +450,53 @@ void CRenderSystemGLES::SetViewPort(CRect& viewPort)
   
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+}
+
+void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)
+{
+  if (m_pGUIshader)
+  {
+    m_pGUIshader->Setup(method);
+    m_pGUIshader->Enable();
+  }
+}
+
+void CRenderSystemGLES::DisableGUIShader()
+{
+  if (m_pGUIshader)
+    m_pGUIshader->Disable();
+}
+
+GLint CRenderSystemGLES::GUIShaderGetPos()
+{
+  if (m_pGUIshader)
+    return m_pGUIshader->GetPosLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetCol()
+{
+  if (m_pGUIshader)
+    return m_pGUIshader->GetColLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetCoord0()
+{
+  if (m_pGUIshader)
+    return m_pGUIshader->GetCord0Loc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetCoord1()
+{
+  if (m_pGUIshader)
+    return m_pGUIshader->GetCord1Loc();
+
+  return -1;
 }
 
 #endif

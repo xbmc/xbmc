@@ -101,7 +101,7 @@ void CGUIFontTTFGL::Begin()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     VerifyGLState();
 #else
-    //TODO: Enable ES2.0 Font shader
+    g_Windowing.EnableGUIShader(SM_FONTS);
 #endif
 
     m_vertex_count = 0;
@@ -130,9 +130,9 @@ void CGUIFontTTFGL::End()
   glDrawArrays(GL_QUADS, 0, m_vertex_count);
   glPopClientAttrib();
 #else
-  GLint posLoc; //TODO: Get vertex location from shader
-  GLint colLoc; //TODO: Get colour location from shader
-  GLint tex0Loc; //TODO: Get texture coordinate location from shader
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
   glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
@@ -154,7 +154,7 @@ void CGUIFontTTFGL::End()
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  //TODO: Disable ES2.0 Font shader
+  g_Windowing.DisableGUIShader();
 #endif
 }
 

@@ -64,6 +64,14 @@ public:
   
   virtual bool TestRender();
   
+  void EnableGUIShader(ESHADERMETHOD method);
+  void DisableGUIShader();
+
+  GLint GUIShaderGetPos();
+  GLint GUIShaderGetCol();
+  GLint GUIShaderGetCoord0();
+  GLint GUIShaderGetCoord1();
+
 protected:
   virtual void SetVSyncImpl(bool enable) = 0;
   virtual bool PresentRenderImpl() = 0;
@@ -77,6 +85,8 @@ protected:
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
+
+  CGUIShader *m_pGUIshader;
 };
 
 #endif // RENDER_SYSTEM_H

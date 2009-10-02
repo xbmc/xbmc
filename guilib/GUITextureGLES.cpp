@@ -52,16 +52,16 @@ void CGUITextureGLES::Begin()
     glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
     glEnable(GL_TEXTURE_2D);
 
-    //TODO: Enable multitexturing shader
+    g_Windowing.EnableGUIShader(SM_MULTI);
   }
   else
   {
-    //TODO: Enable normal texturing shader
+    g_Windowing.EnableGUIShader(SM_TEXTURE);
   }
 
-  GLint posLoc; //TODO: Get vertex location from shader
-  GLint colLoc; //TODO: Get colour location from shader
-  GLint tex0Loc; //TODO: Get texture coordinate location from shader
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, m_vert);
   glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, 0, 0, m_col);
@@ -73,7 +73,7 @@ void CGUITextureGLES::Begin()
 
   if (m_diffuse.size())
   {
-    GLint tex1Loc; //TODO: Get second texture coordinate location from shader
+    GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
     glEnableVertexAttribArray(tex1Loc);
   }
@@ -84,16 +84,16 @@ void CGUITextureGLES::End()
   if (m_diffuse.size())
   {
     glDisable(GL_TEXTURE_2D);
-    glDisableVertexAttribArray(NULL/*TODO: Get location from shader*/);
+    glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord1());
     glActiveTexture(GL_TEXTURE0);
   }
 
   glDisable(GL_TEXTURE_2D);
-  glDisableVertexAttribArray(NULL/*TODO: Get location from shader*/);
-  glDisableVertexAttribArray(NULL/*TODO: Get location from shader*/);
-  glDisableVertexAttribArray(NULL/*TODO: Get location from shader*/);
+  glDisableVertexAttribArray(g_Windowing.GUIShaderGetPos());
+  glDisableVertexAttribArray(g_Windowing.GUIShaderGetCol());
+  glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord0());
 
-  //TODO: Disable shader
+  g_Windowing.DisableGUIShader();
 }
 
 void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, const CRect &diffuse, DWORD color, int orientation)
@@ -201,11 +201,11 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
-  //TODO: Enable texturing shader
+  g_Windowing.EnableGUIShader(SM_TEXTURE);
 
-  GLint posLoc; //TODO: Get location from shader
-  GLint colLoc; //TODO: Get location from shader
-  GLint tex0Loc; //TODO: Get location from shader
+  GLint posLoc   = g_Windowing.GUIShaderGetPos();
+  GLint colLoc   = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc  = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, 0, col);
@@ -244,7 +244,7 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  //TODO: Disable texturing shader
+  g_Windowing.DisableGUIShader();
 
   if (texture)
     glDisable(GL_TEXTURE_2D);

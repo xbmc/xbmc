@@ -718,13 +718,13 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);          // Turn Blending On
 
-    //TODO: enable texturing shader
+    g_Windowing.EnableGUIShader(SM_TEXTURE);
   }
   else
   {
     glDisable(GL_TEXTURE_2D);
 
-    //TODO: enable standard colour shader???
+    g_Windowing.EnableGUIShader(SM_DEFAULT);
   }
 
   float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
@@ -739,9 +739,9 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
-  GLint posLoc; //TODO: Get location from shader
-  GLint colLoc; //TODO: Get location from shader
-  GLint tex0Loc; //TODO: Get location from shader
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, 0, col);
@@ -776,7 +776,7 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  //TODO: disable shader
+  g_Windowing.DisableGUIShader();
 
   g_graphicsContext.EndPaint();
 #else

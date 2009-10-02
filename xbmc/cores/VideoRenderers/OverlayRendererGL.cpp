@@ -585,7 +585,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glPopMatrix();
 #else
-  //TODO: Enable FONT shader
+  g_Windowing.EnableGUIShader(SM_FONTS);
 
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
@@ -593,10 +593,9 @@ void COverlayGlyphGL::Render(SRenderState& state)
   g_matrices.Scalef(state.width / m_width, state.height / m_height, 1.0f);
 
   VerifyGLState();
-
-  GLint posLoc; //TODO: Get location from shader
-  GLint colLoc; //TODO: Get location from shader
-  GLint tex0Loc; //TODO: Get location from shader
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
   glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
@@ -618,7 +617,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  //TODO: disbale shader
+  g_Windowing.DisableGUIShader();
 
   g_matrices.PopMatrix();
 #endif
@@ -686,16 +685,16 @@ void COverlayTextureGL::Render(SRenderState& state)
   glVertex2f(rd.left , rd.bottom);
   glEnd();
 #else
-  //TODO: enable texturing shader
+  g_Windowing.EnableGUIShader(SM_TEXTURE);
 
   GLfloat col[4][4];
   GLfloat ver[4][2];
   GLfloat tex[4][2];
   GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
 
-  GLint posLoc; //TODO: Get location from shader
-  GLint colLoc; //TODO: Get location from shader
-  GLint tex0Loc; //TODO: Get location from shader
+  GLint posLoc  = g_Windowing.GUIShaderGetPos();
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc,  2, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(colLoc,  4, GL_FLOAT, 0, 0, col);
@@ -728,7 +727,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  //TODO: disable shader
+  g_Windowing.DisableGUIShader();
 #endif
 
   glDisable(GL_BLEND);
