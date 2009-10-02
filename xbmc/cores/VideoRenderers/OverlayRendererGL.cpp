@@ -472,7 +472,30 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
     v[3].x = (float)(img->dst_x);
     v[3].y = (float)(img->dst_y + img->h);
 #else
-    //TODO: GLES version
+    // GLES uses triangle strips, not quads, so have to rearrange the vertex order
+    v[0].u = (float)(curr_x);
+    v[0].v = (float)(curr_y);
+
+    v[1].u = (float)(curr_x);
+    v[1].v = (float)(curr_y + img->h);
+
+    v[2].u = (float)(curr_x + img->w);
+    v[2].v = (float)(curr_y);
+
+    v[3].u = (float)(curr_x + img->w);
+    v[3].v = (float)(curr_y + img->h);
+
+    v[0].x = (float)(img->dst_x);
+    v[0].y = (float)(img->dst_y);
+
+    v[1].x = (float)(img->dst_x);
+    v[1].y = (float)(img->dst_y + img->h);
+
+    v[2].x = (float)(img->dst_x + img->w);
+    v[2].y = (float)(img->dst_y);
+
+    v[3].x = (float)(img->dst_x + img->w);
+    v[3].y = (float)(img->dst_y + img->h);
 #endif
 
     v += 4;
@@ -562,7 +585,44 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glPopMatrix();
 #else
-    //TODO: GLES version
+  //TODO: Enable FONT shader
+
+  //TODO:
+//  glMatrixMode(GL_MODELVIEW);
+//  glPushMatrix();
+//  glTranslatef(state.x, state.y, 0.0);
+//  glScalef(state.width / m_width, state.height / m_height, 1.0f);
+
+  VerifyGLState();
+
+  GLint posLoc; //TODO: Get location from shader
+  GLint colLoc; //TODO: Get location from shader
+  GLint tex0Loc; //TODO: Get location from shader
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  // GLES2 version
+  // As using triangle strips, have to do in sets of 4.
+  // This is due to limitations of ES, in that tex/col has to be same size as ver!
+  for (int i=0; i<(m_count*4); i+=4)
+  {
+    glDrawArrays(GL_TRIANGLE_STRIP, i, 4);
+  }
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  //TODO: disbale shader
+
+  //TODO:
+//  glPopMatrix();
 #endif
 
   glDisable(GL_BLEND);
@@ -627,8 +687,50 @@ void COverlayTextureGL::Render(SRenderState& state)
   glTexCoord2f(0.0f, m_v);
   glVertex2f(rd.left , rd.bottom);
   glEnd();
-#elif HAS_GLES == 2
-  //TODO: GLES2.0 version!
+#else
+  //TODO: enable texturing shader
+
+  GLfloat col[4][4];
+  GLfloat ver[4][2];
+  GLfloat tex[4][2];
+  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+
+  GLint posLoc; //TODO: Get location from shader
+  GLint colLoc; //TODO: Get location from shader
+  GLint tex0Loc; //TODO: Get location from shader
+
+  glVertexAttribPointer(posLoc,  2, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(colLoc,  4, GL_FLOAT, 0, 0, col);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  for (int i=0; i<4; i)
+  {
+    // Setup Colours
+    col[i][0] = col[i][1] = col[i][2] = col[i][3] = 1.0f;
+  }
+
+  // Setup vertex position values
+  ver[0][0] = ver[3][0] = rd.left;
+  ver[0][1] = ver[1][1] = rd.top;
+  ver[1][0] = ver[2][0] = rd.right;
+  ver[2][1] = ver[3][1] = rd.bottom;
+
+  // Setup texture coordinates
+  tex[0][0] = tex[0][1] = tex[1][1] = tex[3][0] = 0.0f;
+  tex[1][0] = tex[2][0] = m_u;
+  tex[2][1] = tex[3][1] = m_v;
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  //TODO: disable shader
 #endif
 
   glDisable(GL_BLEND);

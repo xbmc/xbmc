@@ -708,7 +708,77 @@ void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t c
   glEnd();
   g_graphicsContext.EndPaint();
 #elif defined(HAS_GLES)
-  // TODO: GLES
+  g_graphicsContext.BeginPaint();
+  if (pTexture)
+  {
+    pTexture->LoadToGPU();
+    glBindTexture(GL_TEXTURE_2D, pTexture->GetTextureObject());
+    glEnable(GL_TEXTURE_2D);
+
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);          // Turn Blending On
+
+    //TODO: enable texturing shader
+  }
+  else
+  {
+    glDisable(GL_TEXTURE_2D);
+
+    //TODO: enable standard colour shader???
+  }
+
+  float u1 = 0, u2 = 1, v1 = 0, v2 = 1;
+  if (pTexture)
+  {
+    u2 = (float)pTexture->GetWidth() / pTexture->GetTextureWidth();
+    v2 = (float)pTexture->GetHeight() / pTexture->GetTextureHeight();
+  }
+
+  GLubyte col[4][4];
+  GLfloat ver[4][3];
+  GLfloat tex[4][2];
+  GLubyte idx[4] = {0, 1, 3, 2};        //determines order of triangle strip
+
+  GLint posLoc; //TODO: Get location from shader
+  GLint colLoc; //TODO: Get location from shader
+  GLint tex0Loc; //TODO: Get location from shader
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, 0, col);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  for (int i=0; i<4; i)
+  {
+    // Setup Colour values
+    col[i][0] = (GLubyte)GET_R(color);
+    col[i][1] = (GLubyte)GET_G(color);
+    col[i][2] = (GLubyte)GET_B(color);
+    col[i][3] = (GLubyte)GET_A(color);
+
+    // Setup vertex position values
+    ver[i][0] = x[i];
+    ver[i][1] = y[i];
+    ver[i][2] = 0.0f;
+  }
+  // Setup texture coordinates
+  tex[0][0] = tex[3][0] = u1;
+  tex[0][1] = tex[1][1] = v1;
+  tex[1][0] = tex[2][0] = u2;
+  tex[2][1] = tex[3][1] = v2;
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  //TODO: disable shader
+
+  g_graphicsContext.EndPaint();
 #else
 // SDL render
   g_Windowing.BlitToScreen(m_pImage, NULL, NULL);

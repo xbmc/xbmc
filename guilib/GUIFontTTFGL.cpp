@@ -101,7 +101,7 @@ void CGUIFontTTFGL::Begin()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     VerifyGLState();
 #else
-    //TODO: GLES Fonts
+    //TODO: Enable ES2.0 Font shader
 #endif
 
     m_vertex_count = 0;
@@ -130,7 +130,31 @@ void CGUIFontTTFGL::End()
   glDrawArrays(GL_QUADS, 0, m_vertex_count);
   glPopClientAttrib();
 #else
-    //TODO: GLES Fonts
+  GLint posLoc; //TODO: Get vertex location from shader
+  GLint colLoc; //TODO: Get colour location from shader
+  GLint tex0Loc; //TODO: Get texture coordinate location from shader
+
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, x));
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, r));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         0, sizeof(SVertex), (char*)m_vertex + offsetof(SVertex, u));
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+  glEnableVertexAttribArray(tex0Loc);
+
+  // GLES2 version
+  // As using triangle strips, have to do in sets of 4.
+  // This is due to limitations of ES, in that tex/col has to be same size as ver!
+  for (int i=0; i<m_vertex_count; i+=4)
+  {
+    glDrawArrays(GL_TRIANGLE_STRIP, i, 4);
+  }
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+  glDisableVertexAttribArray(tex0Loc);
+
+  //TODO: Disable ES2.0 Font shader
 #endif
 }
 

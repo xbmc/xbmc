@@ -709,7 +709,30 @@ void CGUIFontTTFBase::RenderCharacter(float posX, float posY, const Character *c
   v[3].y = y4;
   v[3].z = z4;
 #else
-    //TODO: GLES Fonts
+  // GLES uses triangle strips, not quads, so have to rearrange the vertex order
+  v[0].u = tl;
+  v[0].v = tt;
+  v[0].x = x[0];
+  v[0].y = y1;
+  v[0].z = z1;
+
+  v[1].u = tl;
+  v[1].v = tb;
+  v[1].x = x[3];
+  v[1].y = y4;
+  v[1].z = z4;
+
+  v[2].u = tr;
+  v[2].v = tt;
+  v[2].x = x[1];
+  v[2].y = y2;
+  v[2].z = z2;
+
+  v[3].u = tr;
+  v[3].v = tb;
+  v[3].x = x[2];
+  v[3].y = y3;
+  v[3].z = z3;
 #endif
 
   RenderInternal(v);
