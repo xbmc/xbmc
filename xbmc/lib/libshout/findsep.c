@@ -26,7 +26,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include <assert.h>
+#if defined(_LINUX) && !defined(__APPLE__)
+#include <mad.h>
+#else
 #include "mad.h"
+#endif
 #include "findsep.h"
 #include "srtypes.h"
 #include "debug.h"
