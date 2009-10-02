@@ -44,7 +44,31 @@
 
 DWORD timeGetTime(void)
 {
-  return GetTickCount();
+  // best replacement for windows timeGetTime
+  // 1st call sets start_mstime, subsequent are the diff
+  // between start_mstime and now_mstime to match SDL_GetTick behavior
+  // of previous usage.
+  static uint64_t start_mstime = 0;
+  uint64_t now_mstime;
+  struct timespec ts;
+  
+  // we do it this way in case clock_gettime does not exist (osx)
+#if _POSIX_TIMERS > 0
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+#else
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  ts.tv_sec = tv.tv_sec;
+  ts.tv_nsec = tv.tv_usec * 1000;
+#endif
+
+  now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+  if (start_mstime == 0)
+  {
+    start_mstime = now_mstime;
+  }
+  
+  return(now_mstime - start_mstime);
 }
 
 void WINAPI Sleep(DWORD dwMilliSeconds)
@@ -78,7 +102,31 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
 
 DWORD GetTickCount(void)
 {
-  return SDL_GetTicks();
+  // best replacement for windows timeGetTime
+  // 1st call sets start_mstime, subsequent are the diff
+  // between start_mstime and now_mstime to match SDL_GetTick behavior
+  // of previous usage.
+  static uint64_t start_mstime = 0;
+  uint64_t now_mstime;
+  struct timespec ts;
+  
+  // we do it this way in case clock_gettime does not exist (osx)
+#if _POSIX_TIMERS > 0
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+#else
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  ts.tv_sec = tv.tv_sec;
+  ts.tv_nsec = tv.tv_usec * 1000;
+#endif
+
+  now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+  if (start_mstime == 0)
+  {
+    start_mstime = now_mstime;
+  }
+  
+  return(now_mstime - start_mstime);
 }
 
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
