@@ -75,11 +75,11 @@ PAPCODECS_DIRS= \
 	xbmc/cores/paplayer/ModuleCodec \
 	xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU \
 	xbmc/cores/paplayer/vgmstream \
-	xbmc/cores/paplayer/MACDll \
-	xbmc/cores/paplayer/vorbisfile
+	xbmc/cores/paplayer/MACDll
 
 ifeq ($(findstring osx,$(ARCH)),osx)
 PAPCODEC_DIRS+= \
+	xbmc/cores/paplayer/vorbisfile \
 	xbmc/cores/paplayer/FLACCodec
 endif
 
@@ -285,13 +285,13 @@ papcodecs: dllloader dvdpcodecs
 	$(MAKE) -C xbmc/cores/paplayer/ADPCMCodec
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(MAKE) -C xbmc/cores/paplayer/FLACCodec
+	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
 endif
 	$(MAKE) -C xbmc/cores/paplayer/GYMCodec
 	$(MAKE) -C xbmc/cores/paplayer/vgmstream
 	$(MAKE) -C xbmc/cores/paplayer/timidity
 	$(MAKE) -C xbmc/cores/paplayer/NSFCodec
 	$(MAKE) -C xbmc/cores/paplayer/SIDCodec
-	$(MAKE) -C xbmc/cores/paplayer/vorbisfile
 	$(MAKE) -C xbmc/cores/paplayer/ModuleCodec
 ifneq (@USE_EXTERNAL_LIBWAVPACK@,1)
 	$(MAKE) -C xbmc/cores/paplayer/WavPackCodec

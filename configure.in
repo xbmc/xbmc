@@ -55,8 +55,6 @@ external_libmpeg2_enabled="== Use of external libmpeg2 enabled. =="
 external_libmpeg2_disabled="== Use of external libmpeg2 disabled. =="
 external_libass_enabled="== Use of external libass enabled. =="
 external_libass_disabled="== Use of external libass disabled. =="
-external_libvorbis_enabled="== Use of external libvorbis enabled. =="
-external_libvorbis_disabled="== Use of external libvorbis disabled. =="
 external_libogg_enabled="== Use of external libogg enabled. =="
 external_libogg_disabled="== Use of external libogg disabled. =="
 external_libwavpack_enabled="== Use of external libwavpack enabled. =="
@@ -207,12 +205,6 @@ AC_ARG_ENABLE([external-libass],
             [enable use of external libass library (default is no) 'Linux only'])],
             [use_external_libass=$enableval],
             [use_external_libass=no])
-
-AC_ARG_ENABLE([external-libvorbis],
-            [AS_HELP_STRING([--enable-external-libvorbis],
-            [enable use of external libvorbis library (default is no) 'Linux only'])],
-            [use_external_libvorbis=$enableval],
-            [use_external_libvorbis=no])
 
 AC_ARG_ENABLE([external-libogg],
             [AS_HELP_STRING([--enable-external-libogg],
@@ -519,16 +511,6 @@ if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"
 else
   AC_MSG_NOTICE($external_libass_disabled)
   USE_EXTERNAL_LIBASS=0
-fi
-
-# External libvorbis
-if test "$use_external_libraries" = "yes" || test "$use_external_libvorbis" = "yes"; then
-  AC_MSG_NOTICE($external_libvorbis_enabled)
-  USE_EXTERNAL_LIBVORBIS=1
-  AC_DEFINE([USE_EXTERNAL_LIBVORBIS], [1], [Whether to use external libvorbis library.])
-else
-  AC_MSG_NOTICE($external_libvorbis_disabled)
-  USE_EXTERNAL_LIBVORBIS=0
 fi
 
 # External libogg
@@ -862,11 +844,6 @@ else
   else
     final_message="$final_message\n  External libass:\tNo"
   fi
-  if test "$use_external_libvorbis" = "yes"; then
-    final_message="$final_message\n  External libvorbis:\tYes"
-  else
-    final_message="$final_message\n  External libvorbis:\tNo"
-  fi
   if test "$use_external_libogg" = "yes"; then
     final_message="$final_message\n  External libogg:\tYes"
   else
@@ -900,7 +877,6 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/paplayer/SIDCodec/Makefile \
              xbmc/cores/paplayer/vgmstream/Makefile \
              xbmc/cores/paplayer/SPCCodec/SNES/SNESAPU/Makefile \
-             xbmc/cores/paplayer/vorbisfile/Makefile \
              xbmc/cores/paplayer/WavPackCodec/Makefile \
              xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile \
              guilib/common/Makefile \
@@ -933,7 +909,8 @@ OUTPUT_FILES="Makefile \
 
 if test "$host_vendoer" = "apple"; then
   OUTPUT_FILES+= \
-             " xbmc/cores/paplayer/FLACCodec/Makefile"
+             " xbmc/cores/paplayer/FLACCodec/Makefile \
+             xbmc/cores/paplayer/vorbisfile/Makefile"
 fi
 
 AC_CONFIG_FILES([${OUTPUT_FILES}])
@@ -1051,18 +1028,18 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/libvorbis], [
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
-    ./configure --with-pic
+    true
   fi
-], [$USE_EXTERNAL_LIBVORBIS])
+], [0])
 
 XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
   if test "$host_vendor" = "apple" ; then
     CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4 --with-pic
   else
-    ./configure --with-pic
+    true
   fi
-], [$USE_EXTERNAL_LIBOGG])
+], [0])
 
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
