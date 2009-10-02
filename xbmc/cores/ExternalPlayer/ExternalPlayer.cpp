@@ -27,6 +27,7 @@
 #include "GUITextLayout.h"
 #include "GUIWindowManager.h"
 #include "Application.h"
+#include "FileSystem/FileMusicDatabase.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "RegExp.h"
@@ -48,6 +49,8 @@
 #define LAUNCHER_PROCESS_TIME 2000
 // Time (ms) we give a process we sent a WM_QUIT to close before terminating
 #define PROCESS_GRACE_TIME 3000
+
+using namespace XFILE;
 
 CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -119,6 +122,8 @@ void CExternalPlayer::Process()
       mainFile = url.GetHostName();
       archiveContent = url.GetFileName();
     }
+    if (protocol == "musicdb")
+      mainFile = CFileMusicDatabase::TranslateUrl(url);
   }
 
   if (m_filenameReplacers.size() > 0) 
