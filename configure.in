@@ -962,7 +962,6 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/paplayer/Makefile \
              xbmc/cores/paplayer/MACDll/Makefile \
              xbmc/cores/paplayer/timidity/Makefile \
-             xbmc/cores/paplayer/AACCodec/Makefile \
              xbmc/cores/paplayer/AC3Codec/Makefile \
              xbmc/cores/paplayer/ADPCMCodec/Makefile \
              xbmc/cores/paplayer/FLACCodec/Makefile \
