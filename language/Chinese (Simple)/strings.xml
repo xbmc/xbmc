@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 09/27/2009-->
+<!--Date of translation: 10/02/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 23054 -->
+<!--Based on english strings version 23277 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -2111,6 +2111,8 @@
 
   <string id="23000">天气插件</string>
   <string id="23001">- 插件设置</string>
+
+  <string id="23050">开启图文电视</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">外部播放器激活</string>
