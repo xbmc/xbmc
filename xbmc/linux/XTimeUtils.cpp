@@ -29,6 +29,7 @@
 #include <sys/times.h>
 
 #ifdef __APPLE__
+#include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
 #endif
 
@@ -47,11 +48,30 @@ DWORD timeGetTime(void)
   // best replacement for windows timeGetTime
   // 1st call sets start_mstime, subsequent are the diff
   // between start_mstime and now_mstime to match SDL_GetTick behavior
-  // of previous usage.
+  // of previous usage. We might want to change this as timeGetTime is 
+  // time (ms) since system startup. 
+#if defined(__APPLE__)
+  static long double cv;
+  static uint64_t start_time = 0;
+  uint64_t now_time;
+
+  now_time = mach_absolute_time();
+
+  if (start_time == 0)
+  {
+    mach_timebase_info_data_t tbinfo;
+    
+    mach_timebase_info(&tbinfo);
+    cv = ((long double) tbinfo.numer) / ((long double) tbinfo.denom);
+    start_time = now_time;
+  }
+  
+  return( (now_time - start_time) * cv / 1000000.0);
+#else
   static uint64_t start_mstime = 0;
   uint64_t now_mstime;
   struct timespec ts;
-  
+
   // we do it this way in case clock_gettime does not exist (osx)
 #if _POSIX_TIMERS > 0
   clock_gettime(CLOCK_MONOTONIC, &ts);
@@ -69,6 +89,7 @@ DWORD timeGetTime(void)
   }
   
   return(now_mstime - start_mstime);
+#endif
 }
 
 void WINAPI Sleep(DWORD dwMilliSeconds)
@@ -102,10 +123,29 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
 
 DWORD GetTickCount(void)
 {
-  // best replacement for windows timeGetTime
+  // best replacement for windows GetTickCount
   // 1st call sets start_mstime, subsequent are the diff
   // between start_mstime and now_mstime to match SDL_GetTick behavior
-  // of previous usage.
+  // of previous usage. We might want to change this as GetTickCount is 
+  // time (ms) since system startup.
+#if defined(__APPLE__)
+  static long double cv;
+  static uint64_t start_time = 0;
+  uint64_t now_time;
+
+  now_time = mach_absolute_time();
+
+  if (start_time == 0)
+  {
+    mach_timebase_info_data_t tbinfo;
+    
+    mach_timebase_info(&tbinfo);
+    cv = ((long double) tbinfo.numer) / ((long double) tbinfo.denom);
+    start_time = now_time;
+  }
+  
+  return( (now_time - start_time) * cv / 1000000.0);
+#else
   static uint64_t start_mstime = 0;
   uint64_t now_mstime;
   struct timespec ts;
@@ -127,6 +167,7 @@ DWORD GetTickCount(void)
   }
   
   return(now_mstime - start_mstime);
+#endif
 }
 
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {
