@@ -53,9 +53,6 @@ class CFileItemList;
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
 #endif
-#ifdef _WIN32
-#include "WIN32Util.h"
-#endif
 #include "XBMC_events.h"
 #include "utils/Thread.h"
 
@@ -326,6 +323,7 @@ protected:
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
   bool m_bWasFullScreenBeforeMinimize;
+  bool m_bSystemScreenSaverEnable;
 
 #ifdef HAS_SDL
   int        m_frameCount;
@@ -376,9 +374,6 @@ protected:
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
-#endif
-#ifdef _WIN32
-  CWIN32Util::SystemParams::SysParam *m_SSysParam;
 #endif
 };
 

@@ -372,9 +372,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bRunResumeJobs = false;
-#ifdef _WIN32
-  m_SSysParam = new CWIN32Util::SystemParams::SysParam;
-#endif
+  m_bSystemScreenSaverEnable = false;
 }
 
 CApplication::~CApplication(void)
@@ -393,10 +391,6 @@ CApplication::~CApplication(void)
     SDL_DestroyCond(m_frameCond);
 #endif
   delete m_dpms;
-
-#ifdef _WIN32
-  delete m_SSysParam;
-#endif
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
@@ -479,11 +473,9 @@ HRESULT CApplication::Create(HWND hWnd)
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
-#ifdef _WIN32
-  CWIN32Util::SystemParams::GetDefaults( m_SSysParam );
-  CWIN32Util::SystemParams::SetCustomParams();
-#endif
-
+  m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
+  g_Windowing.EnableSystemScreenSaver(false);
+  
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
 #endif
@@ -3438,9 +3430,8 @@ void CApplication::Stop()
     }
 #endif
 
-#ifdef _WIN32
-    CWIN32Util::SystemParams::SetDefaults( m_SSysParam );
-#endif
+    if( m_bSystemScreenSaverEnable )
+      g_Windowing.EnableSystemScreenSaver(true);
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);

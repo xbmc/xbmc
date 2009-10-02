@@ -716,36 +716,6 @@ bool CWIN32Util::EjectDrive(const char cDriveLetter)
   return false;
 #endif
 }
-// safe removal
-
-void CWIN32Util::SystemParams::GetDefaults( SysParam *SSysParam )
-{
-  SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, 0, &SSysParam->bScrSaver, 0 );
-}
-void CWIN32Util::SystemParams::SetDefaults( SysParam *SSysParam  )
-{
-  SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, SSysParam->bScrSaver, NULL, 0 );
-  SetThreadExecutionState( ES_CONTINUOUS );
-}
-void CWIN32Util::SystemParams::SetCustomParams( SysParam *SSysParam )
-{
-  SysParam sSysParam;
-
-  if( SSysParam )
-  {
-    sSysParam= *SSysParam;
-    SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, sSysParam.bScrSaver, NULL, 0 );
-  }
-  else  // Set custom default parameters
-  {
-    sSysParam.bScrSaver= false;       // bScrSaver is not really needed, since dwEsFlags will also reset screensaver timer
-    sSysParam.dwEsFlags= ES_CONTINUOUS        |
-                         ES_DISPLAY_REQUIRED  |
-                         ES_SYSTEM_REQUIRED;
-  }
-  SystemParametersInfo( SPI_SETSCREENSAVEACTIVE, sSysParam.bScrSaver, NULL, 0 );
-  SetThreadExecutionState( sSysParam.dwEsFlags );
-}
 
 #ifdef HAS_GL
 void CWIN32Util::CheckGLVersion()
