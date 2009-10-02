@@ -968,7 +968,6 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/paplayer/FLACCodec/Makefile \
              xbmc/cores/paplayer/ModuleCodec/Makefile \
              xbmc/cores/paplayer/GYMCodec/Makefile \
-             xbmc/cores/paplayer/MPCCodec/xbmc/Makefile \
              xbmc/cores/paplayer/NSFCodec/Makefile \
              xbmc/cores/paplayer/SIDCodec/Makefile \
              xbmc/cores/paplayer/vgmstream/Makefile \
