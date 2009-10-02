@@ -21,28 +21,22 @@
  *
  */
 
-#include "CachingCodec.h"
 #include "DllVorbisfile.h"
-#include "OggCallback.h"
+#include "FileSystem/File.h"
 
-class OGGCodec : public CachingCodec
+class COggCallback
 {
 public:
-  OGGCodec();
-  virtual ~OGGCodec();
+  COggCallback(XFILE::CFile& file);
+  
+  ov_callbacks Get(const CStdString& strFile);
 
-  virtual bool Init(const CStdString &strFile, unsigned int filecache);
-  virtual void DeInit();
-  virtual __int64 Seek(__int64 iSeekTime);
-  virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
-  virtual bool CanInit();
-
-private:
-  COggCallback m_callback;
-  void RemapChannels(short *SampleBuffer, int samples);
-
-  DllVorbisfile m_dll;
-  OggVorbis_File m_VorbisFile;
-  double m_TimeOffset;
-  int m_CurrentStream;
+  static size_t ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource);
+  static int    SeekCallback(void *datasource, ogg_int64_t offset, int whence);
+  static int    NoSeekCallback(void *datasource, ogg_int64_t offset, int whence);
+  static int    CloseCallback(void *datasource);
+  static long   TellCallback(void *datasource);
+protected:
+  XFILE::CFile& m_file;
 };
+

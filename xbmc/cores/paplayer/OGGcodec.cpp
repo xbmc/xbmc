@@ -26,7 +26,7 @@
 
 using namespace MUSIC_INFO;
 
-OGGCodec::OGGCodec()
+OGGCodec::OGGCodec() : m_callback(m_file)
 {
   m_SampleRate = 0;
   m_Channels = 0;
@@ -77,21 +77,11 @@ bool OGGCodec::Init(const CStdString &strFile1, unsigned int filecache)
     return false;
   }
 
-  // libvorbis requires that a non-seekable stream would always return -1 from seek actions.
-  // so for network streams - twick the seek method to a static one that always return -1.
-  bool bIsStream = false;
-  if (strFile.Left(5).ToLower() == "shout" || strFile.Left(4).ToLower() == "http")
-    bIsStream = true;
-
   //  setup ogg i/o callbacks
-  ov_callbacks oggIOCallbacks;
-  oggIOCallbacks.read_func=ReadCallback;
-  oggIOCallbacks.seek_func=bIsStream?NoSeekCallback:SeekCallback;
-  oggIOCallbacks.tell_func=TellCallback;
-  oggIOCallbacks.close_func=CloseCallback;
+  ov_callbacks oggIOCallbacks = m_callback.Get(strFile);
 
   //  open ogg file with decoder
-  if (m_dll.ov_open_callbacks(this, &m_VorbisFile, NULL, 0, oggIOCallbacks)!=0)
+  if (m_dll.ov_open_callbacks(&m_callback, &m_VorbisFile, NULL, 0, oggIOCallbacks)!=0)
   {
     CLog::Log(LOGERROR, "OGGCodec: Can't open decoder for %s", strFile1.c_str());
     return false;
@@ -229,44 +219,3 @@ void OGGCodec::RemapChannels(short *SampleBuffer, int samples)
   }
 }
 
-size_t OGGCodec::ReadCallback(void *ptr, size_t size, size_t nmemb, void *datasource)
-{
-  OGGCodec* pCodec=(OGGCodec*)datasource;
-  if (!pCodec)
-    return 0;
-
-  return pCodec->m_file.Read(ptr, size*nmemb);
-}
-
-int OGGCodec::SeekCallback(void *datasource, ogg_int64_t offset, int whence)
-{
-  OGGCodec* pCodec=(OGGCodec*)datasource;
-  if (!pCodec)
-    return 0;
-
-  return (int)pCodec->m_file.Seek(offset, whence);
-}
-
-int OGGCodec::NoSeekCallback(void *datasource, ogg_int64_t offset, int whence)
-{
-  return -1;
-}
-
-int OGGCodec::CloseCallback(void *datasource)
-{
-  OGGCodec* pCodec=(OGGCodec*)datasource;
-  if (!pCodec)
-    return 0;
-
-  pCodec->m_file.Close();
-  return 1;
-}
-
-long OGGCodec::TellCallback(void *datasource)
-{
-  OGGCodec* pCodec=(OGGCodec*)datasource;
-  if (!pCodec)
-    return 0;
-
-  return (long)pCodec->m_file.GetPosition();
-}

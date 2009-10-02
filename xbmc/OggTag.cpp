@@ -23,13 +23,12 @@
   #include "config.h"
 #endif
 #include "OggTag.h"
+#include "cores/paplayer/OggCallback.h"
+#include "FileSystem/File.h"
 #include "Util.h"
 
-
 using namespace MUSIC_INFO;
-
-//  From EMUmsvcrt.cpp to open a file for a dll
-extern "C" FILE * dll_fopen (const char * filename, const char * mode);
+using namespace XFILE;
 
 COggTag::COggTag()
 {
@@ -64,19 +63,16 @@ bool COggTag::Read(const CStdString& strFile1)
     CUtil::RemoveSlashAtEnd(strFile);   // we want the filename
   }
 
-  #if (defined USE_EXTERNAL_LIBVORBIS)
-  // Call fopen() directly if we're using external libraries
-  FILE* file=fopen(strFile.c_str(), "r");
-  #else
-  //Use the emulated fopen() as its only used inside the dll
-  FILE* file=dll_fopen (strFile.c_str(), "r");
-  #endif
-  if (!file)
+  CFile file;
+  if (!file.Open(strFile))
     return false;
-
+  
+  COggCallback callback(file);
+  ov_callbacks oggIOCallbacks = callback.Get(strFile);
+  
   OggVorbis_File vf;
   //  open ogg file with decoder
-  if (m_dll.ov_open(file, &vf, NULL, 0)!=0)
+  if (m_dll.ov_open_callbacks(&callback, &vf, NULL, 0, oggIOCallbacks)!=0)
     return false;
 
   int iStreams=m_dll.ov_streams(&vf);
@@ -109,18 +105,15 @@ int COggTag::GetStreamCount(const CStdString& strFile)
   if (!m_dll.Load())
     return 0;
 
-  #if (defined USE_EXTERNAL_LIBVORBIS)
-  // Call fopen() directly if we're using external libraries
-  FILE* file=fopen(strFile.c_str(), "r");
-  #else
-  FILE* file=dll_fopen (strFile.c_str(), "r");
-  #endif
-  if (!file)
-    return 0;
-
+  CFile file;
+  if (!file.Open(strFile))
+    return false;
+  
+  COggCallback callback(file);
+  ov_callbacks oggIOCallbacks = callback.Get(strFile);
   OggVorbis_File vf;
   //  open ogg file with decoder
-  if (m_dll.ov_open(file, &vf, NULL, 0)!=0)
+  if (m_dll.ov_open_callbacks(&callback, &vf, NULL, 0, oggIOCallbacks)!=0)
     return 0;
 
   int iStreams=m_dll.ov_streams(&vf);
