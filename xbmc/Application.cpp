@@ -27,7 +27,6 @@
 #include "Util.h"
 #include "Picture.h"
 #include "TextureManager.h"
-#include "cores/PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"

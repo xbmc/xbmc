@@ -314,7 +314,6 @@ AC_CHECK_LIB([ogg],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([vorbisenc],   [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([vorbisfile],  [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([freetype],    [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([fontconfig],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([fribidi],     [main],, AC_MSG_ERROR($missing_library))
@@ -330,6 +329,7 @@ AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([cdio],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([samplerate],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([FREETYPE2], [freetype2], [INCLUDES+=" $FREETYPE2_CFLAGS"], AC_MSG_ERROR([$missing_library]))
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
@@ -337,7 +337,6 @@ if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([mms],       [main],, AC_MSG_ERROR($missing_library))
 else
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([SDL],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
@@ -351,6 +350,7 @@ else
   AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([SDL], [sdl], [INCLUDES+=" $SDL_CFLAGS"], AC_MSG_ERROR([$missing_library]))
   PKG_CHECK_MODULES([HAL], [hal], [INCLUDES+=" $HAL_CFLAGS"], AC_MSG_ERROR([$missing_library]))
 fi
 

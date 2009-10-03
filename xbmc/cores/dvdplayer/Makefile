@@ -20,6 +20,7 @@ SRCS=	DVDAudio.cpp \
 	DVDFileInfo.cpp \
 	DVDPlayerAudioResampler.cpp \
 	DVDTSCorrection.cpp \
+	Edl.cpp
 
 LIB=	DVDPlayer.a
 

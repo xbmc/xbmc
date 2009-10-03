@@ -182,7 +182,6 @@ SRCS=Application.cpp \
      GUILargeTextureManager.cpp \
      GUIDialogKaiToast.cpp \
      KeyboardLayoutConfiguration.cpp \
-     Edl.cpp \
      GUIDialogPluginSettings.cpp \
      PluginSettings.cpp \
      GUIDialogAccessPoints.cpp \

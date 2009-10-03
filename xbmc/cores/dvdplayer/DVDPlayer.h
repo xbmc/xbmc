@@ -37,7 +37,7 @@
 #include "DVDSubtitles/DVDFactorySubtitle.h"
 #include "utils/BitstreamStats.h"
 
-#include "../../Edl.h"
+#include "Edl.h"
 #include "dlgcache.h"
 #include "FileItem.h"
 
