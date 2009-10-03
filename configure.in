@@ -314,28 +314,51 @@ AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([ogg/ogg.h],,        AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([mad],         [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([fontconfig],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([fribidi],     [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([sqlite3],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([asound],      [main])           # check for asound, fedora
 AC_CHECK_LIB([rt],          [clock_gettime])  # check for rt, required for clock_gettime
-AC_CHECK_LIB([png12],       [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([cdio],        [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([samplerate],  [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([z],           [main],, AC_MSG_ERROR($missing_library))
-PKG_CHECK_MODULES([FREETYPE2], [freetype2], [INCLUDES+=" $FREETYPE2_CFLAGS"], AC_MSG_ERROR([$missing_library]))
+
+PKG_CHECK_MODULES([MAD],        [mad],
+                  [INCLUDES+=" $MAD_CFLAGS"; LIBS+=" $MAD_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
+                  [INCLUDES+=" $FONTCONFIG_CFLAGS"; LIBS+=" $FONTCONFIG_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([FRIBIDI],    [fribidi],
+                  [INCLUDES+=" $FRIBIDI_CFLAGS"; LIBS+=" $FRIBIDI_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([SQLITE3],    [sqlite3],
+                  [INCLUDES+=" $SQLITE3_CFLAGS"; LIBS+=" $SQLITE3_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([ALSA],       [alsa],
+                  [INCLUDES+=" $ALSA_CFLAGS"; LIBS+=" $ALSA_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([PNG],        [libpng],
+                  [INCLUDES+=" $PNG_CFLAGS"; LIBS+=" $PNG_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([PCRE],       [libpcre],
+                  [INCLUDES+=" $PCRE_CFLAGS"; LIBS+=" $PCRE_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([CDIO],       [libcdio],
+                  [INCLUDES+=" $CDIO_CFLAGS"; LIBS+=" $CDIO_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([SAMPLERATE], [samplerate],
+                  [INCLUDES+=" $SAMPLERATE_CFLAGS"; LIBS+=" $SAMPLERATE_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([MMS],        [libmms],
+                  [INCLUDES+=" $MMS_CFLAGS"; LIBS+=" $MMS_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
+                  [INCLUDES+=" $FREETYPE2_CFLAGS"; LIBS+=" $FREETYPE2_LIBS"],
+                  AC_MSG_ERROR($missing_library))
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([mms],       [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([ogg],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([vorbisenc],   [main],, AC_MSG_ERROR($missing_library))
@@ -345,19 +368,39 @@ else
   AC_CHECK_LIB([SDL_mixer], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dl],        [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([enca],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
-  AC_CHECK_LIB([mms],       [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([Xt],        [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([Xtst],      [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([Xmu],       [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([Xinerama],  [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([tiff],      [main],, AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([SDL], [sdl], [INCLUDES+=" $SDL_CFLAGS"], AC_MSG_ERROR([$missing_library]))
-  PKG_CHECK_MODULES([HAL], [hal], [INCLUDES+=" $HAL_CFLAGS"], AC_MSG_ERROR([$missing_library]))
+  
+  PKG_CHECK_MODULES([ENCA],         [enca],
+                    [INCLUDES+=" $ENCA_CFLAGS"; LIBS+=" $ENCA_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XT],           [xt],
+                    [INCLUDES+=" $XT_CFLAGS"; LIBS+=" $XT_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XTST],         [xtst],
+                    [INCLUDES+=" $XTST_CFLAGS"; LIBS+=" $XTST_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XMU],          [xmu],
+                    [INCLUDES+=" $XMU_CFLAGS"; LIBS+=" $XMU_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([XINERAMA],     [xinerama],
+                    [INCLUDES+=" $XINERAMA_CFLAGS"; LIBS+=" $XINERAMA_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([CURL],         [libcurl],
+                    [INCLUDES+=" $CURL_CFLAGS"; LIBS+=" $CURL_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([DBUS],         [dbus-1],
+                    [INCLUDES+=" $DBUS_CFLAGS"; LIBS+=" $DBUS_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([HAL_STORAGE],  [hal-storage],
+                    [INCLUDES+=" $HAL_STORAGE_CFLAGS"; LIBS+=" $HAL_STORAGE_LIBS"], 
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([SDL],          [sdl],
+                    [INCLUDES+=" $SDL_CFLAGS"; LIBS+=" $SDL_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([HAL],          [hal],
+                    [INCLUDES+=" $HAL_CFLAGS"; LIBS+=" $HAL_LIBS"],
+                    AC_MSG_ERROR($missing_library))
 fi
 
 # PulseAudio
