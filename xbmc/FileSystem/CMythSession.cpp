@@ -65,7 +65,7 @@ void CCMythSession::CheckIdle()
     CCMythSession* session = *it;
     if (session->m_timestamp + 5000 < GetTickCount())
     {
-      CLog::Log(LOGINFO, "%s - Closing idle connection to mythtv backend %s", __FUNCTION__, session->m_hostname.c_str());
+      CLog::Log(LOGINFO, "%s - closing idle connection to MythTV backend: %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;
       it = m_sessions.erase(it);
     }
@@ -255,10 +255,10 @@ void CCMythSession::Process()
     switch (next)
     {
     case CMYTH_EVENT_UNKNOWN:
-      CLog::Log(LOGDEBUG, "%s - MythTV unknown event (error?)", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - MythTV event UNKNOWN (error?)", __FUNCTION__);
       break;
     case CMYTH_EVENT_CLOSE:
-      CLog::Log(LOGDEBUG, "%s - MythTV event CMYTH_EVENT_CLOSE", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - MythTV event EVENT_CLOSE", __FUNCTION__);
       break;
     case CMYTH_EVENT_RECORDING_LIST_CHANGE:
       CLog::Log(LOGDEBUG, "%s - MythTV event RECORDING_LIST_CHANGE", __FUNCTION__);
@@ -273,13 +273,13 @@ void CCMythSession::Process()
       CLog::Log(LOGDEBUG, "%s - MythTV event QUIT_LIVETV", __FUNCTION__);
       break;
     case CMYTH_EVENT_LIVETV_CHAIN_UPDATE:
-      CLog::Log(LOGDEBUG, "%s - MythTV event %s", __FUNCTION__, buf);
+      CLog::Log(LOGDEBUG, "%s - MythTV event LIVETV_CHAIN_UPDATE: %s", __FUNCTION__, buf);
       break;
     case CMYTH_EVENT_SIGNAL:
       CLog::Log(LOGDEBUG, "%s - MythTV event SIGNAL", __FUNCTION__);
       break;
     case CMYTH_EVENT_ASK_RECORDING:
-      CLog::Log(LOGDEBUG, "%s - MythTV event CMYTH_EVENT_ASK_RECORDING", __FUNCTION__);
+      CLog::Log(LOGDEBUG, "%s - MythTV event ASK_RECORDING", __FUNCTION__);
       break;
     }
 
@@ -315,7 +315,7 @@ cmyth_conn_t CCMythSession::GetControl()
 
     m_control = m_dll->conn_connect_ctrl((char*)m_hostname.c_str(), m_port, 16*1024, 4096);
     if (!m_control)
-      CLog::Log(LOGERROR, "%s - unable to connect to server %s, port %d", __FUNCTION__, m_hostname.c_str(), m_port);
+      CLog::Log(LOGERROR, "%s - unable to connect to server on %s:%d", __FUNCTION__, m_hostname.c_str(), m_port);
   }
   return m_control;
 }
@@ -330,7 +330,7 @@ cmyth_database_t CCMythSession::GetDatabase()
     m_database = m_dll->database_init((char*)m_hostname.c_str(), (char*)MYTH_DEFAULT_DATABASE,
                                       (char*)m_username.c_str(), (char*)m_password.c_str());
     if (!m_database)
-      CLog::Log(LOGERROR, "%s - unable to connect to database %s, port %d", __FUNCTION__, m_hostname.c_str(), m_port);
+      CLog::Log(LOGERROR, "%s - unable to connect to database on %s:%d", __FUNCTION__, m_hostname.c_str(), m_port);
   }
   return m_database;
 }
@@ -345,7 +345,7 @@ bool CCMythSession::SetListener(IEventListener *listener)
     m_event = m_dll->conn_connect_event((char*)m_hostname.c_str(), m_port, 16*1024 , 4096);
     if (!m_event)
     {
-      CLog::Log(LOGERROR, "%s - unable to connect to server %s, port %d", __FUNCTION__, m_hostname.c_str(), m_port);
+      CLog::Log(LOGERROR, "%s - unable to connect to server on %s:%d", __FUNCTION__, m_hostname.c_str(), m_port);
       return false;
     }
     /* start event handler thread */
