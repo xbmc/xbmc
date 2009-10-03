@@ -61,8 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib ..\..\..\xbmc\lib\libsquish\lib\squishd.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib ..\..\..\xbmc\lib\libsquish\lib\squishd.lib ..\..\..\xbmc\lib\liblzo\lzo.lib"
 				LinkIncremental="2"
+				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -135,8 +136,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="SDL.lib SDL_image.lib ..\..\..\xbmc\lib\libsquish\lib\squish.lib"
+				AdditionalDependencies="SDL.lib SDL_image.lib ..\..\..\xbmc\lib\libsquish\lib\squish.lib ..\..\..\xbmc\lib\liblzo\lzo.lib"
 				LinkIncremental="1"
+				IgnoreDefaultLibraryNames="libc.lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"

@@ -33,6 +33,12 @@
 #define strncasecmp strnicmp
 #endif
 
+#ifdef _LINUX
+#include <lzo1x.h>
+#else
+#include "../../xbmc/lib/liblzo/LZO1X.H"
+#endif
+
 #define DIR_SEPARATOR "/"
 #define DIR_SEPARATOR_CHAR '/'
 
@@ -141,12 +147,30 @@ void CreateSkeletonHeader(CXBTF& xbtf, std::string fullPath)
   CreateSkeletonHeaderImpl(xbtf, fullPath, temp);
 }
 
-CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char const *data, unsigned int size, unsigned int format, unsigned int flags)
+CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, unsigned int flags)
 {
   CXBTFFrame frame;
-  unsigned int compressedSize = size;
+  lzo_uint compressedSize = size;
   if ((flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
-  { // TODO: add lzo'ing
+  {
+    // grab a temporary buffer for unpacking into
+    squish::u8 *compressed = new squish::u8[size];
+    squish::u8 *working = new squish::u8[LZO1X_999_MEM_COMPRESS];
+    if (compressed && working)
+    {
+      if (lzo1x_999_compress(data, size, compressed, (lzo_uint*)&compressedSize, working) != LZO_E_OK)
+      {
+        printf("Compression failure\n");
+      }
+      else
+      { // success
+        lzo_uint optimSize = size;
+        lzo1x_optimize(compressed, compressedSize, data, &optimSize, NULL);
+        writer.AppendContent(compressed, compressedSize);
+      }
+      delete[] working;
+      delete[] compressed;
+    }
   }
   else
   {
@@ -351,6 +375,9 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
 int main(int argc, char* argv[])
 {
+  if (lzo_init() != LZO_E_OK)
+    return 1;
+
   bool valid = false;
   CmdLineArgs args(argc, (const char**)argv);
 
@@ -401,6 +428,6 @@ int main(int argc, char* argv[])
     InputDir += DIR_SEPARATOR;
 
   double maxMSE = 1.5;    // HQ only please
-  unsigned int flags = 0; // TODO: currently no YCoCg and no LZO (commandline option?)
+  unsigned int flags = FLAGS_USE_LZO; // TODO: currently no YCoCg (commandline option?)
   createBundle(InputDir, OutputFilename, maxMSE, flags);
 }
