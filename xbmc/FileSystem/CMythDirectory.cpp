@@ -310,13 +310,15 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
       m_dll->ref_release(program);
     }
 
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
-    else
-      items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
-    items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%Z", "%J", "%L", "%J"));
 
   }
+
+  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+  else
+    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+  items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%Z", "%J", "%L", "%J"));
+
   m_dll->ref_release(list);
   return true;
 }
@@ -375,12 +377,14 @@ bool CCMythDirectory::GetRecordingFolders(const CStdString& base, CFileItemList 
       m_dll->ref_release(program);
     }
 
-    // Sort by name only. Labels are preformated.
-    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
-    else
-      items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
   }
+
+  // Sort by name only. Labels are preformated.
+  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+  else
+    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%L", "", "%L", ""));
+
   m_dll->ref_release(list);
   return true;
 }
@@ -473,7 +477,6 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
     items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 20364 /* TV show */, LABEL_MASKS("%Z[ - %B]", "%K", "%L", ""));
   else
     items.AddSortMethod(SORT_METHOD_LABEL, 20364 /* TV show */, LABEL_MASKS("%Z[ - %B]", "%K", "%L", ""));
-
 
   return true;
 }
