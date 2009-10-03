@@ -11,9 +11,9 @@ public:
   CXBTFWriter(CXBTF& xbtf, const std::string outputFile);
   bool Create();
   bool Close();
-  bool AppendContent(unsigned char* data, size_t length);
+  bool AppendContent(unsigned char const* data, size_t length);
   bool UpdateHeader();
-  
+
 private:
   CXBTF& m_xbtf;
   std::string m_outputFile;

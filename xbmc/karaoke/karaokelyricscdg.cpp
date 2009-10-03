@@ -151,7 +151,7 @@ void CKaraokeLyricsCDG::Render()
   if (buf)
   {
     RenderIntoBuffer( buf, WIDTH, HEIGHT, WIDTH * 4 );
-    m_pCdgTexture->Update( WIDTH, HEIGHT, WIDTH * 4, XB_FMT_B8G8R8A8, buf, false );
+    m_pCdgTexture->Update( WIDTH, HEIGHT, WIDTH * 4, XB_FMT_A8R8G8B8, buf, false );
   }
   delete [] buf;
 

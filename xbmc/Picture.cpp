@@ -55,7 +55,7 @@ bool CPicture::Load(const CStdString& strFileName, CBaseTexture* pTexture, int i
     return false;
   }
 
-  pTexture->Allocate(m_info.width, m_info.height, 32, XB_FMT_B8G8R8A8);
+  pTexture->Allocate(m_info.width, m_info.height, XB_FMT_A8R8G8B8);
 
   if (pTexture)
   {

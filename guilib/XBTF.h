@@ -26,28 +26,25 @@
 #include <stdint.h>
 
 #define XBTF_MAGIC "XBTF"
-#define XBTF_VERSION "1"
+#define XBTF_VERSION "2"
 
-#define XB_FMT_DXT_MASK 14
-#define XB_FMT_UNKNOWN  1
-#define XB_FMT_DXT1     2
-#define XB_FMT_DXT3     4
-#define XB_FMT_DXT5     8
-#define XB_FMT_B8G8R8A8 16
-#define XB_FMT_R8G8B8A8 32
-#define XB_FMT_LZO      64
-#define XB_FMT_A8       128
+#define XB_FMT_DXT_MASK   15
+#define XB_FMT_UNKNOWN     0
+#define XB_FMT_DXT1        1
+#define XB_FMT_DXT3        2
+#define XB_FMT_DXT5        4
+#define XB_FMT_DXT5_YCoCg  8
+#define XB_FMT_A8R8G8B8   16
+#define XB_FMT_A8         32
 
 class CXBTFFrame
 {
-public:  
+public:
   CXBTFFrame();
   uint32_t GetWidth() const;
   void SetWidth(uint32_t width);
-  uint32_t GetX() const;
-  void SetX(uint32_t x);
-  uint32_t GetY() const;
-  void SetY(uint32_t y);
+  uint32_t GetFormat() const;
+  void SetFormat(uint32_t format);
   uint32_t GetHeight() const;
   void SetHeight(uint32_t height);
   uint64_t GetUnpackedSize() const;
@@ -59,12 +56,12 @@ public:
   uint64_t GetHeaderSize() const;
   uint32_t GetDuration() const;
   void SetDuration(uint32_t duration);
+  bool IsPacked() const;
 
 private:
   uint32_t m_width;
   uint32_t m_height;
-  uint32_t m_x;
-  uint32_t m_y;
+  uint32_t m_format;
   uint64_t m_packedSize;
   uint64_t m_unpackedSize;
   uint64_t m_offset;
@@ -80,16 +77,12 @@ public:
   void SetPath(const std::string& path);
   uint32_t GetLoop() const;
   void SetLoop(uint32_t loop);
-  uint32_t GetFormat() const;
-  void SetFormat(uint32_t format);  
-  
-  std::vector<CXBTFFrame>& GetFrames();  
+  std::vector<CXBTFFrame>& GetFrames();
   uint64_t GetHeaderSize() const;
-  
+
 private:
   char         m_path[256];
   uint32_t     m_loop;
-  uint32_t     m_format;    
   std::vector<CXBTFFrame> m_frames;
 };
 
@@ -98,8 +91,8 @@ class CXBTF
 public:
   CXBTF();
   uint64_t GetHeaderSize() const;
-  std::vector<CXBTFFile>& GetFiles();  
-  
+  std::vector<CXBTFFile>& GetFiles();
+
 private:
   std::vector<CXBTFFile> m_files;
 };

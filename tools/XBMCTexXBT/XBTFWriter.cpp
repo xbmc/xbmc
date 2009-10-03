@@ -23,13 +23,13 @@ bool CXBTFWriter::Create()
   {
     return false;
   }
-  
+
   m_tempFile = fopen(TEMP_FILE, "wb");
   if (m_tempFile == NULL)
   {
     return false;
   }
-  
+
   return true;
 }
 
@@ -46,30 +46,30 @@ bool CXBTFWriter::Close()
   {
     return false;
   }
-  
+
   unsigned char* tmp = new unsigned char[10*1024*1024];
   size_t bytesRead;
   while ((bytesRead = fread(tmp, 1, TEMP_SIZE, m_tempFile)) > 0)
   {
     fwrite(tmp, bytesRead, 1, m_file);
   }
-  
+
   fclose(m_file);
   fclose(m_tempFile);
   unlink(TEMP_FILE);
-  
+
   return true;
 }
 
-bool CXBTFWriter::AppendContent(unsigned char* data, size_t length)
+bool CXBTFWriter::AppendContent(unsigned char const* data, size_t length)
 {
   if (m_tempFile == NULL)
   {
     return false;
   }
-  
+
   fwrite(data, length, 1, m_tempFile);
-  
+
   return true;
 }
 
@@ -79,18 +79,18 @@ bool CXBTFWriter::UpdateHeader()
   {
     return false;
   }
-  
+
   uint64_t offset = m_xbtf.GetHeaderSize();
-  
+
   WRITE_STR(XBTF_MAGIC, 4, m_file);
   WRITE_STR(XBTF_VERSION, 1, m_file);
-  
+
   std::vector<CXBTFFile>& files = m_xbtf.GetFiles();
   WRITE_U32(files.size(), m_file);
   for (size_t i = 0; i < files.size(); i++)
   {
     CXBTFFile& file = files[i];
-    
+
     // Convert path to lower case
     char* ch = file.GetPath();
     while (*ch)
@@ -98,11 +98,10 @@ bool CXBTFWriter::UpdateHeader()
       *ch = tolower(*ch);
       ch++;
     }
-    
+
     WRITE_STR(file.GetPath(), 256, m_file);
-    WRITE_U32(file.GetFormat(), m_file);
     WRITE_U32(file.GetLoop(), m_file);
-    
+
     std::vector<CXBTFFrame>& frames = file.GetFrames();
     WRITE_U32(frames.size(), m_file);
     for (size_t j = 0; j < frames.size(); j++)
@@ -110,18 +109,17 @@ bool CXBTFWriter::UpdateHeader()
       CXBTFFrame& frame = frames[j];
       frame.SetOffset(offset);
       offset += frame.GetPackedSize();
-      
+
       WRITE_U32(frame.GetWidth(), m_file);
       WRITE_U32(frame.GetHeight(), m_file);
-      WRITE_U32(frame.GetX(), m_file);
-      WRITE_U32(frame.GetY(), m_file);
+      WRITE_U32(frame.GetFormat(), m_file);
       WRITE_U64(frame.GetPackedSize(), m_file);
       WRITE_U64(frame.GetUnpackedSize(), m_file);
       WRITE_U32(frame.GetDuration(), m_file);
       WRITE_U64(frame.GetOffset(), m_file);
     }
   }
-  
+
   // Sanity check
   int64_t pos = ftell(m_file);
   if (pos != m_xbtf.GetHeaderSize())
@@ -129,6 +127,6 @@ bool CXBTFWriter::UpdateHeader()
     printf("Expected header size (%" PRId64 ") != actual size (%" PRId64 ")\n", m_xbtf.GetHeaderSize(), pos);
     return false;
   }
-  
+
   return true;
 }

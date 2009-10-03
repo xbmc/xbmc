@@ -1299,7 +1299,7 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
     D3DLOCKED_RECT lockedRect;
     if (D3D_OK == surface->LockRect(&lockedRect, NULL, NULL))
     {
-      texture->LoadFromMemory(width, height, lockedRect.Pitch, XB_FMT_B8G8R8A8, 32, (unsigned char *)lockedRect.pBits);
+      texture->LoadFromMemory(width, height, lockedRect.Pitch, XB_FMT_A8R8G8B8, (unsigned char *)lockedRect.pBits);
       surface->UnlockRect();
     }
     surface->Release();
