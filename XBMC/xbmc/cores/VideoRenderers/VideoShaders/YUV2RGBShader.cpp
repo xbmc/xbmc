@@ -500,10 +500,10 @@ NV12ToRGBProgressiveShaderARB::NV12ToRGBProgressiveShaderARB(bool rect, unsigned
     "TEMP T0;\n"
     "TEMP T1;\n"
     "TEMP yuv;\n"
-    "TEX T0.x, fragment.texcoord[0], texture[0], RECT;\n"
+    "TEX T0.x, fragment.texcoord[0], texture[0], "+target+";\n"
     "ADD yuv.x, T0.x, c[0].y;\n" // Y (yuv.x = tex0.x -0.0625)
     "MUL yuv.x, yuv.x, c[0].z;\n" //  (yuv.x *= 1.1643835)
-    "TEX T0.xw, fragment.texcoord[1], texture[1], RECT;\n"
+    "TEX T0.xw, fragment.texcoord[1], texture[1], "+target+";\n"
     "ADD yuv.z, T0.x, c[0].y;\n" // V (yuv.z = tex1.x - 0.0625)
     "MUL yuv.z, yuv.z, c[0].w;\n" //  (yuv.z *= 1.1383928)
     "ADD yuv.z, yuv.z, c[1].x;\n" //  (yuv.z -= 0.5)
