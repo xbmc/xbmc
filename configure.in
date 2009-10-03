@@ -930,7 +930,6 @@ AC_SUBST(USE_EXTERNAL_LIBMPEG2)
 AC_SUBST(USE_EXTERNAL_LIBASS)
 AC_SUBST(USE_EXTERNAL_LIBVORBIS)
 AC_SUBST(USE_EXTERNAL_LIBOGG)
-AC_SUBST(USE_EXTERNAL_LIBMPCDEC)
 AC_SUBST(USE_EXTERNAL_LIBWAVPACK)
 AC_SUBST(USE_EXTERNAL_PYTHON)
 AC_SUBST(USE_PYTHON2_6)
@@ -999,15 +998,6 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
     cp pyconfig.h Include
   fi
 ], [$USE_EXTERNAL_PYTHON])
-
-XB_CONFIG_MODULE([xbmc/cores/paplayer/MPCCodec], [
-  if test "$host_vendor" = "apple" ; then
-    CFLAGS="-fPIC -fno-common -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4" \    
-    ./configure MACOSX_DEPLOYMENT_TARGET=10.4
-  else
-    ./configure
-  fi
-], [$USE_EXTERNAL_LIBMPCDEC])
 
 XB_CONFIG_MODULE([xbmc/cores/paplayer/FLACCodec/flac-1.2.1], [
   if test "$host_vendor" = "apple" ; then
