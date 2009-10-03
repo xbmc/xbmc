@@ -109,25 +109,13 @@ CArchive& CArchive::operator<<(unsigned int i)
   return *this;
 }
 
-CArchive& CArchive::operator<<(long long i64)
+CArchive& CArchive::operator<<(int64_t i64)
 {
-  int size = sizeof(long long);
+  int size = sizeof(int64_t);
   if (m_BufferPos + size >= BUFFER_MAX)
     FlushBuffer();
 
   memcpy(&m_pBuffer[m_BufferPos], &i64, size);
-  m_BufferPos += size;
-
-  return *this;
-}
-
-CArchive& CArchive::operator<<(long l)
-{
-  int size = sizeof(long);
-  if (m_BufferPos + size >= BUFFER_MAX)
-    FlushBuffer();
-
-  memcpy(&m_pBuffer[m_BufferPos], &l, size);
   m_BufferPos += size;
 
   return *this;
@@ -252,16 +240,9 @@ CArchive& CArchive::operator>>(unsigned int& i)
   return *this;
 }
 
-CArchive& CArchive::operator>>(long long& i64)
+CArchive& CArchive::operator>>(int64_t& i64)
 {
-  m_pFile->Read((void*)&i64, sizeof(long long));
-
-  return *this;
-}
-
-CArchive& CArchive::operator>>(long& l)
-{
-  m_pFile->Read((void*)&l, sizeof(long));
+  m_pFile->Read((void*)&i64, sizeof(int64_t));
 
   return *this;
 }

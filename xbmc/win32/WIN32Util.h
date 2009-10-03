@@ -74,19 +74,6 @@ public:
   static bool IsAudioCD(const CStdString& strPath);
   static CStdString GetDiskLabel(const CStdString& strPath);
   
-  class SystemParams
-  {
-    public:
-      struct SysParam
-      {
-        bool bScrSaver;
-        DWORD dwEsFlags;
-      };
-      static void GetDefaults( SysParam *SSysParam );
-      static void SetDefaults( SysParam *SSysParam );
-      static void SetCustomParams( SysParam *SSysParam = NULL );
-  };
-
 private:
 #if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);

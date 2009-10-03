@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../ -I../linux -I../../guilib
+INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib
 
 SRCS=Addon.cpp \
      AddonHelpers.cpp \
@@ -60,7 +60,9 @@ SRCS=Addon.cpp \
      PVRChannels.cpp \
      PVRRecordings.cpp \
      StreamDetails.cpp \
-     TimeUtils.cpp
+     TimeUtils.cpp \
+     JobManager.cpp \
+     Teletext.cpp
 
 LIB=utils.a
 

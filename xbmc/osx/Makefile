@@ -13,6 +13,8 @@ SRCS = \
 	OSXGNUReplacements.c \
 	ZeroconfOSX.cpp \
 	ZeroconfBrowserOSX.cpp \
+	WinSystemOSX.mm \
+	WinSystemOSXGL.mm \
 	
 LIB=osx.a
 

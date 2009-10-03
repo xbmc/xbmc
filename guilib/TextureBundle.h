@@ -22,32 +22,11 @@
  */
 
 #include "StdString.h"
-#include <stdint.h>
-#include <map>
-
-class CAutoTexBuffer;
-class CBaseTexture;
+#include "TextureBundleXPR.h"
+#include "TextureBundleXBT.h"
 
 class CTextureBundle
 {
-  struct FileHeader_t
-  {
-    uint32_t Offset;
-    uint32_t UnpackedSize;
-    uint32_t PackedSize;
-  };
-
-  FILE*  m_hFile;
-  time_t m_TimeStamp;
-
-  std::map<CStdString, FileHeader_t> m_FileHeaders;
-  typedef std::map<CStdString, FileHeader_t>::iterator iFiles;
-
-  bool m_themeBundle;
-
-  bool OpenBundle();
-  bool LoadFile(const CStdString& Filename, CAutoTexBuffer& UnpackedBuf);
-
 public:
   CTextureBundle(void);
   ~CTextureBundle(void);
@@ -59,11 +38,16 @@ public:
   void GetTexturesFromPath(const CStdString &path, std::vector<CStdString> &textures);
   static CStdString Normalize(const CStdString &name);
 
-  bool LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture,
-                       int &width, int &height);
+  bool LoadTexture(const CStdString& Filename, CBaseTexture** ppTexture, int &width, int &height);
 
-  int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures,
-                int &width, int &height, int& nLoops, int** ppDelays);
+  int LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextures, int &width, int &height, int& nLoops, int** ppDelays);
+  
+private:
+  CTextureBundleXPR m_tbXPR;
+  CTextureBundleXBT m_tbXBT;
+  
+  bool m_useXPR;
+  bool m_useXBT;
 };
 
 

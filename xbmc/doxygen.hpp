@@ -155,3 +155,9 @@
 	
 	Tiny XML - XML Parser
 */
+
+/*!
+	\defgroup jobs Asynchronous jobs
+
+	Threaded job execution
+*/

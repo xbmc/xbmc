@@ -21,20 +21,21 @@
 
 #include "DVDPlayerAudioResampler.h"
 #include "DVDPlayerAudio.h"
+#include "utils/log.h"
+#include "MathUtils.h"
 
 CDVDPlayerResampler::CDVDPlayerResampler()
 {
-  m_NrChannels = -1;
-  m_Converter = NULL;
-  m_ConverterData.data_in = NULL;
-  m_ConverterData.data_out = NULL;
-  m_ConverterData.end_of_input = 0;
-  m_ConverterData.src_ratio = 1.0;
-  m_RingBufferPos = 0;
-  m_RingBufferFill = 0;
-  m_RingBuffer = NULL;
-  m_PtsRingBuffer = NULL;
-  m_Quality = SRC_LINEAR;
+  m_nrchannels = -1;
+  m_converter = NULL;
+  m_converterdata.end_of_input = 0;
+  m_converterdata.src_ratio = 1.0;
+  m_quality = SRC_LINEAR;
+  
+  m_buffer = NULL;
+  m_ptsbuffer = NULL;
+  m_buffersize = 0;
+  m_bufferfill = 0;
 }
   
 CDVDPlayerResampler::~CDVDPlayerResampler()
@@ -44,97 +45,97 @@ CDVDPlayerResampler::~CDVDPlayerResampler()
 
 void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
 {
-  int Value, Bytes = audioframe.bits_per_sample / 8;
-  int AddPos;
   //check if nr of channels changed so we can allocate new buffers if necessary
   CheckResampleBuffers(audioframe.channels);
   
-  //calculate how many samples the audioframe has, if it's more than can fit in the resamplebuffers, use less
-  //this will sound horrible, but at least there's no segfault.
-  //resample buffers are huge anyway
-  int NrSamples = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
-  if (NrSamples > MAXCONVSAMPLES) NrSamples = MAXCONVSAMPLES;
+  int   bytes = audioframe.bits_per_sample / 8;
+  float scale = (float)(1LL << ((int64_t)bytes * 8LL - 1)); //value to divide samples by to get them into -1.0:1.0 range
+
+  int nrframes = (audioframe.size / audioframe.channels / bytes);
+  
+  //resize sample buffer if necessary
+  //we want the buffer to be large enough to hold the current samples in it,
+  //the maximum of samples that might go into it times two for safety
+  //and the number of samples needed for the resampler buffer
+  ResizeSampleBuffer(m_bufferfill + nrframes * MAXRATIO * 7);
+  
+  //assign samplebuffers
+  m_converterdata.input_frames = nrframes;
+  m_converterdata.output_frames = nrframes * MAXRATIO * 2;
+  //output buffer starts at the place where the buffer doesn't hold samples
+  m_converterdata.data_out = m_buffer + m_bufferfill * m_nrchannels;
+  //intput buffer is a block of data at the end of the buffer
+  m_converterdata.data_in =  m_converterdata.data_out + m_converterdata.output_frames * m_nrchannels;
   
   //add samples to the resample input buffer
-  for (int i = 0; i < NrSamples; i++)
+  for (int i = 0; i < nrframes; i++)
   {
-    for (int j = 0; j < m_NrChannels; j++)
+    for (int j = 0; j < m_nrchannels; j++)
     {
-      Value = 0;
-      for (int k = Bytes - 1; k >= 0; k--)
+      int value = 0;
+      for (int k = bytes - 1; k >= 0; k--)
       {
-        Value <<= 8;
-        Value |= audioframe.data[i * m_NrChannels * Bytes + j * Bytes + k];
+        value <<= 8;
+        value |= audioframe.data[i * m_nrchannels * bytes + j * bytes + k];
       }
       //check sign bit
-      if (Value & (1 << (Bytes * 8 - 1)))
+      if (value & (1 << (bytes * 8 - 1)))
       {
-        Value |= ~((1 << (Bytes * 8)) - 1);
+        value |= ~((1 << (bytes * 8)) - 1);
       }
       //add to resampler buffer
-      m_ConverterData.data_in[i * m_NrChannels + j] = (float)Value / (float)(unsigned int)(1 << (Bytes * 8 - 1));
+      m_converterdata.data_in[i * m_nrchannels + j] = (float)value / scale;
     }
   }
   
   //resample
-  m_ConverterData.input_frames = NrSamples;
-  src_process(m_Converter, &m_ConverterData);
+  m_converterdata.input_frames = nrframes;
+  src_process(m_converter, &m_converterdata);
   
-  //add samples to ringbuffer
-  AddPos = m_RingBufferPos + m_RingBufferFill;
-  if (AddPos >= RINGSIZE) AddPos -= RINGSIZE;
-  
-  for (int i = 0; i < m_ConverterData.output_frames_gen; i++)
+  //calculate a pts for each sample
+  for (int i = 0; i < m_converterdata.output_frames_gen; i++)
   {
-    for (int j = 0; j < m_NrChannels; j++)
-    {
-      m_RingBuffer[AddPos * m_NrChannels + j] = m_ConverterData.data_out[i * m_NrChannels + j];
-    }
-    
-    //calculate a pts for each sample
-    m_PtsRingBuffer[AddPos] = pts + i * (audioframe.duration / (double)m_ConverterData.output_frames_gen);
-
-    m_RingBufferFill++;
-    AddPos++;
-    if (AddPos >= RINGSIZE) AddPos -= RINGSIZE;
+    m_ptsbuffer[m_bufferfill] = pts + i * (audioframe.duration / (double)m_converterdata.output_frames_gen);
+    m_bufferfill++;
   }
 }
 
 bool CDVDPlayerResampler::Retreive(DVDAudioFrame &audioframe, double &pts)
 {
-  int i, NrSamples = audioframe.size / audioframe.channels / (audioframe.bits_per_sample / 8);
-  int Value, GetPos, Bytes = audioframe.bits_per_sample / 8;
-  float Multiply = (float)(1 << (audioframe.bits_per_sample - 1)) - 1.0f;
-  
+  //check if nr of channels changed so we can allocate new buffers if necessary
   CheckResampleBuffers(audioframe.channels);
+
+  int   bytes = audioframe.bits_per_sample / 8;
+  int   nrframes = audioframe.size / audioframe.channels / bytes;
+  float scale = (float)(1LL << ((int64_t)bytes * 8LL - 1)); //value to multiply samples by
   
-  //if we don't have enough in the ringbuffer, return false
-  if (NrSamples > m_RingBufferFill)
+  //if we don't have enough in the samplebuffer, return false
+  if (nrframes > m_bufferfill)
   {
     return false;
   }
   
-  //use the pts of the first fresh value in the ringbuffer
-  pts = m_PtsRingBuffer[m_RingBufferPos];
+  //use the pts of the first fresh value in the samplebuffer
+  pts = m_ptsbuffer[0];
   
   //add from ringbuffer to audioframe
-  for (i = 0; i < NrSamples; i++)
+  for (int i = 0; i < nrframes; i++)
   {
-    GetPos = m_RingBufferPos + i;
-    if (GetPos >= RINGSIZE) GetPos -= RINGSIZE;
-    
-    for (int j = 0; j < m_NrChannels; j++)
+    for (int j = 0; j < m_nrchannels; j++)
     {
-      Value = (int)Clamp(m_RingBuffer[GetPos * m_NrChannels + j] * Multiply, Multiply * -1, Multiply);
-      for (int k = 0; k < Bytes; k++)
+      double sample = Clamp(m_buffer[i * m_nrchannels + j] * scale, scale * -1.0f, scale - 1.0f);
+      int    value = MathUtils::round_int(sample);
+      for (int k = 0; k < bytes; k++)
       {
-        audioframe.data[i * m_NrChannels * Bytes + j * Bytes + k] = (BYTE)((Value >> (k * 8)) & 0xFF);
+        audioframe.data[i * m_nrchannels * bytes + j * bytes + k] = (BYTE)((value >> (k * 8)) & 0xFF);
       }
     }
-    m_RingBufferFill--;
   }
-  m_RingBufferPos += i;
-  if (m_RingBufferPos >= RINGSIZE) m_RingBufferPos -= RINGSIZE;
+  m_bufferfill -= nrframes;
+  
+  //shift old data to the beginning of the buffer
+  memmove(m_buffer, m_buffer + (nrframes * m_nrchannels), m_bufferfill * m_nrchannels * sizeof(float));
+  memmove(m_ptsbuffer, m_ptsbuffer + nrframes, m_bufferfill * sizeof(double));
   
   return true;
 }
@@ -142,57 +143,57 @@ bool CDVDPlayerResampler::Retreive(DVDAudioFrame &audioframe, double &pts)
 void CDVDPlayerResampler::CheckResampleBuffers(int channels)
 {
   int error;
-  if (channels != m_NrChannels)
+  if (channels != m_nrchannels)
   {
     Clean();
     
-    m_NrChannels = channels;
-    m_Converter = src_new(m_Quality, m_NrChannels, &error);
-    m_ConverterData.data_in = new float[MAXCONVSAMPLES * m_NrChannels];
-    m_ConverterData.data_out = new float[MAXCONVSAMPLES * m_NrChannels * 3];
-    m_ConverterData.output_frames = MAXCONVSAMPLES * 3;
-    m_RingBuffer = new float[RINGSIZE * m_NrChannels];
-    m_RingBufferPos = 0;
-    m_RingBufferFill = 0;
-    
-    m_PtsRingBuffer = new double[RINGSIZE];
+    m_nrchannels = channels;
+    m_converter = src_new(m_quality, m_nrchannels, &error);
+  }
+}
+
+void CDVDPlayerResampler::ResizeSampleBuffer(int nrframes)
+{
+  if (m_buffersize < nrframes)
+  {
+    m_buffersize = nrframes * 2;
+    m_buffer = (float*)realloc(m_buffer, m_buffersize * m_nrchannels * sizeof(float));
+    m_ptsbuffer = (double*)realloc(m_ptsbuffer, m_buffersize * sizeof(double));
+    CLog::Log(LOGDEBUG, "CDVDPlayerResampler: resized buffers to hold %i frames", m_buffersize);
   }
 }
 
 void CDVDPlayerResampler::SetRatio(double ratio)
 {
-  src_set_ratio(m_Converter, Clamp(ratio, 0.3, 2.9));
+  src_set_ratio(m_converter, Clamp(ratio, (double)MAXRATIO / 10.0, (double)MAXRATIO));
 }
 
 void CDVDPlayerResampler::Flush()
 {
-  m_RingBufferPos = 0;
-  m_RingBufferFill = 0;
+  m_bufferfill = 0;
 }
 
-void CDVDPlayerResampler::SetQuality(int Quality)
+void CDVDPlayerResampler::SetQuality(int quality)
 {
-  int QualityLookup[] = {SRC_LINEAR, SRC_SINC_FASTEST, SRC_SINC_MEDIUM_QUALITY, SRC_SINC_BEST_QUALITY};
-  m_Quality = QualityLookup[Clamp(Quality, 0, 3)];
+  int qualitylookup[] = {SRC_LINEAR, SRC_SINC_FASTEST, SRC_SINC_MEDIUM_QUALITY, SRC_SINC_BEST_QUALITY};
+  m_quality = qualitylookup[Clamp(quality, 0, 3)];
   Clean();
 }
 
 void CDVDPlayerResampler::Clean()
 {
-  if (m_Converter) src_delete(m_Converter);
-  if (m_ConverterData.data_in) delete m_ConverterData.data_in;
-  if (m_ConverterData.data_out) delete m_ConverterData.data_out;
-  if (m_RingBuffer) delete m_RingBuffer;
-  if (m_PtsRingBuffer) delete m_PtsRingBuffer;
+  if (m_converter) src_delete(m_converter);
+  m_converter = NULL;
+    
+  free(m_buffer);
+  m_buffer = NULL;
+  free(m_ptsbuffer);
+  m_ptsbuffer = NULL;
   
-  m_NrChannels = -1;
-  m_Converter = NULL;
-  m_ConverterData.data_in = NULL;
-  m_ConverterData.data_out = NULL;
-  m_ConverterData.end_of_input = 0;
-  m_ConverterData.src_ratio = 1.0;
-  m_RingBufferPos = 0;
-  m_RingBufferFill = 0;
-  m_RingBuffer = NULL;
-  m_PtsRingBuffer = NULL;
+  m_bufferfill = 0;
+  m_buffersize = 0;
+  
+  m_nrchannels = -1;
+  m_converterdata.end_of_input = 0;
+  m_converterdata.src_ratio = 1.0;
 }

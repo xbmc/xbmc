@@ -37,7 +37,10 @@ public:
   WORD GetButton();
   bool IsHolding();
   bool IsInitialized() {return m_bInitialized;}
+
+  //lirc stuff, not implemented
   bool IsInUse() {return false;}
+  void setUsed(bool value);
 
 protected:
   virtual void Process();

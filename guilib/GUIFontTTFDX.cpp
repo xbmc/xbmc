@@ -122,7 +122,7 @@ void CGUIFontTTFDX::End()
 
 CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
-  CBaseTexture* pNewTexture = new CTexture(m_textureWidth, newHeight, 8);
+  CBaseTexture* pNewTexture = new CTexture(m_textureWidth, newHeight, 8, XB_FMT_A8);
 
   if(pNewTexture == NULL)
     return NULL;

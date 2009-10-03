@@ -76,8 +76,8 @@ namespace VIDEO
     void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
     bool ProcessItemNormal(CFileItemPtr item, EPISODES& episodeList, CStdString regexp);
     bool ProcessItemByDate(CFileItemPtr item, EPISODES& eipsodeList, CStdString regexp);
-    long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, long idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
-    bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, long lShowId, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
+    long AddMovieAndGetThumb(CFileItem *pItem, const CStdString &content, CVideoInfoTag &movieDetails, int idShow, bool bApplyToDir=false, CGUIDialogProgress* pDialog = NULL);
+    bool OnProcessSeriesFolder(IMDB_EPISODELIST& episodes, EPISODES& files, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
     static CStdString GetnfoFile(CFileItem *item, bool bGrabAny=false);
     long GetIMDBDetails(CFileItem *pItem, CScraperUrl &url, const SScraperInfo& info, bool bUseDirNames=false, CGUIDialogProgress* pDialog=NULL, bool combined=false);
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, const SScraperInfo& info, bool bRefresh=false, CScraperUrl *pURL=NULL, CGUIDialogProgress* pDlgProgress  = NULL);
@@ -90,7 +90,7 @@ namespace VIDEO
 
     virtual void Run();
     int CountFiles(const CStdString& strPath);
-    void FetchSeasonThumbs(long lTvShowId);
+    void FetchSeasonThumbs(int idTvShow);
     void FetchActorThumbs(const std::vector<SActorInfo>& actors, const CStdString& strPath);
     static int GetPathHash(const CFileItemList &items, CStdString &hash);
 
@@ -107,7 +107,7 @@ namespace VIDEO
     SScraperInfo m_info;
     std::map<CStdString,SScanSettings> m_pathsToScan;
     std::set<CStdString> m_pathsToCount;
-    std::vector<long> m_pathsToClean;
+    std::vector<int> m_pathsToClean;
     CNfoFile m_nfoReader;
   };
 }

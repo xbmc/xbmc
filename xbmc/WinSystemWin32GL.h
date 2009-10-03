@@ -45,6 +45,7 @@ protected:
   virtual void SetVSyncImpl(bool enable);
   virtual bool PresentRenderImpl();
   HGLRC m_hglrc;
+  BOOL (APIENTRY *m_wglSwapIntervalEXT)( int );
 };
 
 #endif // WINDOW_SYSTEM_H

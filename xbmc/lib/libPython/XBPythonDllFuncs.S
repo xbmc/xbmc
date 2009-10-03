@@ -76,7 +76,7 @@
 #if (defined USE_EXTERNAL_PYTHON) && (!defined HAVE_LIBPYTHON2_4)
   /* Upstream Python rename Py_InitModule4 for 64-bit systems, for Python
    versions higher than 2.4 */
-  #if SIZEOF_SIZE_T != SIZEOF_INT
+  #ifdef __x86_64__ 
   FUNCTION(Py_InitModule4_64)
   #else
   FUNCTION(Py_InitModule4)

@@ -26,11 +26,9 @@
 #include "APEcodec.h"
 #include "CDDAcodec.h"
 #include "OGGcodec.h"
-#include "MPCcodec.h"
 #include "SHNcodec.h"
 #include "FLACcodec.h"
 #include "WAVcodec.h"
-#include "AACcodec.h"
 #include "WAVPackcodec.h"
 #include "ModuleCodec.h"
 #include "NSFCodec.h"
@@ -64,7 +62,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("cdda"))
     return new CDDACodec();
   else if (strFileType.Equals("mpc") || strFileType.Equals("mp+") || strFileType.Equals("mpp"))
-    return new MPCCodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("shn"))
 #ifdef _XBOX
     return new SHNCodec();
@@ -127,14 +125,10 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
   else if( strContent.Equals("audio/aac")
     || strContent.Equals("audio/aacp") )
   {
+    DVDPlayerCodec *pCodec = new DVDPlayerCodec;
     if (urlFile.GetProtocol() == "shout" )
-    {
-      DVDPlayerCodec *pCodec = new DVDPlayerCodec;
       pCodec->SetContentType(strContent);
-      return pCodec;
-    }
-
-    return new AACCodec();
+    return pCodec;
   }
   else if( strContent.Equals("audio/x-ms-wma") )
     return new DVDPlayerCodec();

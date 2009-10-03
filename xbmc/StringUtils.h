@@ -43,7 +43,7 @@ public:
   static void JoinString(const CStdStringArray &strings, const CStdString& delimiter, CStdString& result);
   static int SplitString(const CStdString& input, const CStdString& delimiter, CStdStringArray &results, unsigned int iMaxStrings = 0);
   static int FindNumber(const CStdString& strInput, const CStdString &strFind);
-  static long long AlphaNumericCompare(const char *left, const char *right);
+  static int64_t AlphaNumericCompare(const char *left, const char *right);
   static long TimeStringToSeconds(const CStdString &timeString);
   static void RemoveCRLF(CStdString& strLine);
   static void SecondsToTimeString( long lSeconds, CStdString& strHMS, TIME_FORMAT format = TIME_FORMAT_GUESS);

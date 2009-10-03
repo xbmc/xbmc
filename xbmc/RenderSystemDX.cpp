@@ -56,6 +56,7 @@ bool CRenderSystemDX::InitRenderSystem()
   m_bVSync = true;
   m_iVSyncMode = 0;
   m_maxTextureSize = 8192;
+  D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   m_pD3D = NULL;
 
@@ -64,6 +65,9 @@ bool CRenderSystemDX::InitRenderSystem()
     return false;
 
   CreateResources();
+
+  if(m_pD3D->GetAdapterIdentifier(0, 0, &AIdentifier) == D3D_OK)
+    m_RenderRenderer = (const char*)AIdentifier.Description;
   
   return true;
 }
@@ -157,7 +161,7 @@ bool CRenderSystemDX::CreateDevice()
   m_D3DPP.hDeviceWindow			= m_hDeviceWnd;
   m_D3DPP.BackBufferWidth			= m_nBackBufferWidth;
   m_D3DPP.BackBufferHeight			= m_nBackBufferHeight;
-
+  m_D3DPP.Flags   =   D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   if (m_bVSync)
   {
     m_D3DPP.PresentationInterval = D3DPRESENT_INTERVAL_ONE;
@@ -274,7 +278,7 @@ bool CRenderSystemDX::BeginRender()
       OnDeviceReset();
       if( FAILED(m_nDeviceStatus ) )
       {
-        CLog::Log(LOGINFO, "m_pD3DDevice->Reset falied");
+        CLog::Log(LOGINFO, "m_pD3DDevice->Reset failed");
         return false;
       }
     }
@@ -299,7 +303,7 @@ bool CRenderSystemDX::EndRender()
 
   if(FAILED (m_pD3DDevice->EndScene()))
   {
-    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() falied");
+    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() failed");
     return false;
   }
 
@@ -550,6 +554,20 @@ void CRenderSystemDX::ReleaseEffect(ID3DXEffect* pEffect)
       return;
     }
   }
+}
+
+bool CRenderSystemDX::SupportsCompressedTextures()
+{
+  return false;
+
+  HRESULT hr = m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
+    D3DDEVTYPE_HAL,
+    D3DFMT_X8R8G8B8,
+    0,
+    D3DRTYPE_TEXTURE,
+    D3DFMT_DXT5);
+
+  return SUCCEEDED( hr );
 }
 
 #endif

@@ -55,6 +55,7 @@ enum StreamType
   STREAM_VIDEO,   // video stream
   STREAM_DATA,    // data stream
   STREAM_SUBTITLE,// subtitle stream
+  STREAM_TELETEXT // Teletext data stream
 };
 
 enum StreamSource {
@@ -177,13 +178,14 @@ public:
   int identifier;
 };
 
-class CDemuxStreamData : public CDemuxStream
+class CDemuxStreamTeletext : public CDemuxStream
 {
 public:
-  CDemuxStreamData() : CDemuxStream()
+  CDemuxStreamTeletext() : CDemuxStream()
   {
-    type = STREAM_DATA;
+    type = STREAM_TELETEXT;
   }
+  virtual void GetStreamInfo(std::string& strInfo);
 };
 
 class CDVDDemux
@@ -283,9 +285,9 @@ public:
   int GetNrOfSubtitleStreams();
 
   /*
-   * return nr of data streams, 0 if none
+   * return nr of teletext streams, 0 if none
    */
-  int GetNrOfDataStreams();
+  int GetNrOfTeletextStreams();
 
   /*
    * return the audio stream, or NULL if it does not exist
@@ -303,9 +305,9 @@ public:
   CDemuxStreamSubtitle* GetStreamFromSubtitleId(int iSubtitleIndex);
 
   /*
-   * return the subtitle stream, or NULL if it does not exist
+   * return the teletext stream, or NULL if it does not exist
    */
-  CDemuxStreamData* GetStreamFromDataId(int iDataIndex);
+  CDemuxStreamTeletext* GetStreamFromTeletextId(int iTeletextIndex);
 
   /*
    * return a user-presentable codec name of the given stream

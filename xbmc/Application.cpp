@@ -27,7 +27,6 @@
 #include "Util.h"
 #include "Picture.h"
 #include "TextureManager.h"
-#include "cores/PlayerCoreFactory.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 #include "PlayListPlayer.h"
 #include "Autorun.h"
@@ -219,6 +218,7 @@
 #include "GUIDialogTVChannels.h"
 #include "GUIDialogTVGuide.h"
 #include "GUIDialogTVGroupManager.h"
+#include "GUIDialogTeletext.h"
 #include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
 
@@ -270,6 +270,9 @@
 
 #ifdef HAS_LIRC
 #include "common/LIRC.h"
+#endif
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
 #endif
 
 using namespace std;
@@ -377,9 +380,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bRunResumeJobs = false;
-#ifdef _WIN32
-  m_SSysParam = new CWIN32Util::SystemParams::SysParam;
-#endif
+  m_bSystemScreenSaverEnable = false;
 }
 
 CApplication::~CApplication(void)
@@ -398,10 +399,6 @@ CApplication::~CApplication(void)
     SDL_DestroyCond(m_frameCond);
 #endif
   delete m_dpms;
-
-#ifdef _WIN32
-  delete m_SSysParam;
-#endif
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
@@ -484,11 +481,9 @@ HRESULT CApplication::Create(HWND hWnd)
   g_guiSettings.Initialize();  // Initialize default Settings
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
-#ifdef _WIN32
-  CWIN32Util::SystemParams::GetDefaults( m_SSysParam );
-  CWIN32Util::SystemParams::SetCustomParams();
-#endif
-
+  m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
+  g_Windowing.EnableSystemScreenSaver(false);
+  
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
 #endif
@@ -626,7 +621,7 @@ HRESULT CApplication::Create(HWND hWnd)
   // Create the Mouse and Keyboard devices
   g_Mouse.Initialize(&hWnd);
   g_Keyboard.Initialize();
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   g_RemoteControl.Initialize();
 #endif
 #ifdef HAS_SDL_JOYSTICK
@@ -652,14 +647,17 @@ HRESULT CApplication::Create(HWND hWnd)
   g_xbmcHelper.Configure();
 #endif
 
+  if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
+    g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
+
   if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
   {
     // Oh uh - doesn't look good for starting in their wanted screenmode
     CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
   }
-  
-  bool bFullScreen = g_guiSettings.m_LookAndFeelResolution == RES_DESKTOP;
+
+  bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
   if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
@@ -1235,6 +1233,7 @@ HRESULT CApplication::Initialize()
 #ifdef HAS_DX
   m_gWindowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
 #endif
+  m_gWindowManager.Add(new CGUIDialogTeletext);               // window id =
   m_gWindowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
   m_gWindowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
   m_gWindowManager.Add(new CGUIWindowScripts);                  // window id = 20
@@ -1384,27 +1383,12 @@ HRESULT CApplication::Initialize()
     RestoreMusicScanSettings();
   }
 
-  if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
-  {
-    CLog::Log(LOGNOTICE, "Updating video library on startup");
-    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
-    VIDEO::SScanSettings settings;
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("",info,settings,false);
-  }
+  if (!g_settings.bUseLoginScreen)
+    UpdateLibraries();
 
 #ifdef HAS_HAL
   g_HalManager.Initialize();
 #endif
-
-  if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
-  {
-    CLog::Log(LOGNOTICE, "Updating music library on startup");
-    CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("");
-  }
 
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
@@ -2999,7 +2983,7 @@ void CApplication::FrameMove()
 
   UpdateLCD();
   
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   // Read the input from a remote
   g_RemoteControl.Update();
 #endif
@@ -3116,7 +3100,7 @@ bool CApplication::ProcessGamepad(float frameTime)
 
 bool CApplication::ProcessRemote(float frameTime)
 {
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   if (g_RemoteControl.GetButton())
   {
     // time depends on whether the movement is repeated (held down) or not.
@@ -3458,6 +3442,8 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_GUIDE);
     m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_DIRECTOR);
 
+    m_gWindowManager.Delete(WINDOW_DIALOG_OSD_TELETEXT);
+
     m_gWindowManager.Delete(WINDOW_STARTUP);
     m_gWindowManager.Delete(WINDOW_LOGIN_SCREEN);
     m_gWindowManager.Delete(WINDOW_VISUALISATION);
@@ -3563,9 +3549,8 @@ void CApplication::Stop()
     }
 #endif
 
-#ifdef _WIN32
-    CWIN32Util::SystemParams::SetDefaults( m_SSysParam );
-#endif
+    if( m_bSystemScreenSaverEnable )
+      g_Windowing.EnableSystemScreenSaver(true);
 
     CLog::Log(LOGNOTICE, "Storing total System Uptime");
     g_stSettings.m_iSystemTimeTotalUp = g_stSettings.m_iSystemTimeTotalUp + (int)(CTimeUtils::GetFrameTime() / 60000);
@@ -3736,7 +3721,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   //       Also, this is really just a hack for the slow load up times we have
   //       A much better solution is a fast reader of FPS and fileLength
   //       that we can use on a file to get it's time.
-  vector<long> times;
+  vector<int> times;
   bool haveTimes(false);
   CVideoDatabase dbs;
   if (dbs.Open())
@@ -5432,6 +5417,27 @@ void CApplication::RestoreMusicScanSettings()
 {
   g_stSettings.m_bMyMusicIsScanning = false;
   g_settings.Save();
+}
+
+void CApplication::UpdateLibraries()
+{
+  if (g_guiSettings.GetBool("videolibrary.updateonstartup"))
+  {
+    CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
+    CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    SScraperInfo info;
+    VIDEO::SScanSettings settings;
+    if (scanner && !scanner->IsScanning())
+      scanner->StartScanning("",info,settings,false);
+  }
+ 
+  if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))
+  {
+    CLog::Log(LOGNOTICE, "%s - Starting music library startup scan", __FUNCTION__);
+    CGUIDialogMusicScan *scanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    if (scanner && !scanner->IsScanning())
+      scanner->StartScanning("");
+  }
 }
 
 void CApplication::CheckPlayingProgress()

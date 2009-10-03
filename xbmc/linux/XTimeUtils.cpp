@@ -29,6 +29,7 @@
 #include <sys/times.h>
 
 #ifdef __APPLE__
+#include <mach/mach_time.h>
 #include <CoreVideo/CVHostTime.h>
 #endif
 
@@ -44,7 +45,51 @@
 
 DWORD timeGetTime(void)
 {
-  return GetTickCount();
+  // best replacement for windows timeGetTime
+  // 1st call sets start_mstime, subsequent are the diff
+  // between start_mstime and now_mstime to match SDL_GetTick behavior
+  // of previous usage. We might want to change this as timeGetTime is 
+  // time (ms) since system startup. 
+#if defined(__APPLE__)
+  static long double cv;
+  static uint64_t start_time = 0;
+  uint64_t now_time;
+
+  now_time = mach_absolute_time();
+
+  if (start_time == 0)
+  {
+    mach_timebase_info_data_t tbinfo;
+    
+    mach_timebase_info(&tbinfo);
+    cv = ((long double) tbinfo.numer) / ((long double) tbinfo.denom);
+    start_time = now_time;
+  }
+  
+  return( (now_time - start_time) * cv / 1000000.0);
+#else
+  static uint64_t start_mstime = 0;
+  uint64_t now_mstime;
+  struct timespec ts;
+
+  // we do it this way in case clock_gettime does not exist (osx)
+#if _POSIX_TIMERS > 0
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+#else
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  ts.tv_sec = tv.tv_sec;
+  ts.tv_nsec = tv.tv_usec * 1000;
+#endif
+
+  now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+  if (start_mstime == 0)
+  {
+    start_mstime = now_mstime;
+  }
+  
+  return(now_mstime - start_mstime);
+#endif
 }
 
 void WINAPI Sleep(DWORD dwMilliSeconds)
@@ -78,7 +123,51 @@ VOID GetLocalTime(LPSYSTEMTIME sysTime)
 
 DWORD GetTickCount(void)
 {
-  return SDL_GetTicks();
+  // best replacement for windows GetTickCount
+  // 1st call sets start_mstime, subsequent are the diff
+  // between start_mstime and now_mstime to match SDL_GetTick behavior
+  // of previous usage. We might want to change this as GetTickCount is 
+  // time (ms) since system startup.
+#if defined(__APPLE__)
+  static long double cv;
+  static uint64_t start_time = 0;
+  uint64_t now_time;
+
+  now_time = mach_absolute_time();
+
+  if (start_time == 0)
+  {
+    mach_timebase_info_data_t tbinfo;
+    
+    mach_timebase_info(&tbinfo);
+    cv = ((long double) tbinfo.numer) / ((long double) tbinfo.denom);
+    start_time = now_time;
+  }
+  
+  return( (now_time - start_time) * cv / 1000000.0);
+#else
+  static uint64_t start_mstime = 0;
+  uint64_t now_mstime;
+  struct timespec ts;
+  
+  // we do it this way in case clock_gettime does not exist (osx)
+#if _POSIX_TIMERS > 0
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+#else
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  ts.tv_sec = tv.tv_sec;
+  ts.tv_nsec = tv.tv_usec * 1000;
+#endif
+
+  now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+  if (start_mstime == 0)
+  {
+    start_mstime = now_mstime;
+  }
+  
+  return(now_mstime - start_mstime);
+#endif
 }
 
 BOOL QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount) {

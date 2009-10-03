@@ -88,7 +88,7 @@ void CEventButtonState::Load()
       else if ( (m_mapName.length() > 3) &&
                 (m_mapName.compare(0, 3, "LI:") == 0) ) // starts with LI: ?
       {
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
         string lircDevice = m_mapName.substr(3);
         m_iKeyCode = CButtonTranslator::GetInstance().TranslateLircRemoteString( lircDevice.c_str(),
                                                                    m_buttonName.c_str() );

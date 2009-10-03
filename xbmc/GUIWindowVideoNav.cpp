@@ -1613,7 +1613,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
   CFileItemList list;
   if (bRemove)
   {
-    vector<long> ids;
+    vector<int> ids;
     if (!m_database.GetLinksToTvShow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,ids))
       return;
     for (unsigned int i=0;i<ids.size();++i)
@@ -1629,7 +1629,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
     m_database.GetTvShowsNav("videodb://2/2",list);
 
     // remove already linked shows
-    vector<long> ids;
+    vector<int> ids;
     if (!m_database.GetLinksToTvShow(m_vecItems->Get(itemnumber)->GetVideoInfoTag()->m_iDbId,ids))
       return;
     for (int i=0;i<list.Size();)

@@ -185,7 +185,11 @@ static const ActionMapping actions[] =
         {"filtersms9"        , ACTION_FILTER_SMS9},
         {"firstpage"         , ACTION_FIRST_PAGE},
         {"lastpage"          , ACTION_LAST_PAGE},
-        {"guiprofile"        , ACTION_GUIPROFILE_BEGIN}};
+        {"guiprofile"        , ACTION_GUIPROFILE_BEGIN},
+        {"red"               , ACTION_TELETEXT_RED},
+        {"green"             , ACTION_TELETEXT_GREEN},
+        {"yellow"            , ACTION_TELETEXT_YELLOW},
+        {"blue"              , ACTION_TELETEXT_BLUE}};
 
 CButtonTranslator& CButtonTranslator::GetInstance()
 {
@@ -242,7 +246,7 @@ bool CButtonTranslator::Load()
     return false;
   }
 
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 #ifdef _LINUX
 #define REMOTEMAP "Lircmap.xml"
 #else
@@ -312,7 +316,7 @@ bool CButtonTranslator::LoadKeymap(const CStdString &keymapPath)
   return true;
 }
 
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
 bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 {
 #ifdef _LINUX
@@ -821,7 +825,7 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
 
   if (strAction.Equals("noop"))
     return true;
-  
+
   for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
   {
     if (strAction.Equals(actions[index].name))
@@ -884,6 +888,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("tvosdguide")) windowID = WINDOW_DIALOG_TV_OSD_GUIDE;
   else if (strWindow.Equals("tvosddirector")) windowID = WINDOW_DIALOG_TV_OSD_DIRECTOR;
   else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
+  else if (strWindow.Equals("teletext")) windowID = WINDOW_DIALOG_OSD_TELETEXT;
   else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("screencalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
   else if (strWindow.Equals("testpattern")) windowID = WINDOW_TEST_PATTERN;
@@ -1056,6 +1061,11 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
   else if (strButton.Equals("playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
   else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
+  else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
+  else if (strButton.Equals("red")) buttonCode = XINPUT_IR_REMOTE_RED;
+  else if (strButton.Equals("green")) buttonCode = XINPUT_IR_REMOTE_GREEN;
+  else if (strButton.Equals("yellow")) buttonCode = XINPUT_IR_REMOTE_YELLOW;
+  else if (strButton.Equals("blue")) buttonCode = XINPUT_IR_REMOTE_BLUE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return buttonCode;
 }
@@ -1197,7 +1207,7 @@ uint32_t CButtonTranslator::TranslateKeyboardButton(TiXmlElement *pButton)
 void CButtonTranslator::Clear()
 {
   translatorMap.clear();
-#ifdef HAS_LIRC
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   lircRemotesMap.clear();
 #endif
 

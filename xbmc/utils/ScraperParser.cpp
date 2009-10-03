@@ -42,6 +42,7 @@ CScraperParser::CScraperParser()
 {
   m_pRootElement = NULL;
   m_name = m_content = NULL;
+  m_thumb = NULL;
   m_document = NULL;
   m_settings = NULL;
   m_language = NULL;
@@ -83,7 +84,7 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_name = m_content = m_language = m_framework = m_date = NULL;
+  m_name = m_thumb = m_content = m_language = m_framework = m_date = NULL;
   m_settings = NULL;
   m_strFile.Empty();
 }
@@ -120,6 +121,7 @@ bool CScraperParser::LoadFromXML()
   if (strValue == "scraper")
   {
     m_name = m_pRootElement->Attribute("name");
+    m_thumb = m_pRootElement->Attribute("thumb");
     m_content = m_pRootElement->Attribute("content");
     m_language = m_pRootElement->Attribute("language");
     m_framework = m_pRootElement->Attribute("framework");

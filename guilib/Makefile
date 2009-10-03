@@ -1,4 +1,4 @@
-INCLUDES=-I. -I../ -Icommon -I../xbmc -I../xbmc/cores -I../xbmc/linux -I../xbmc/utils -I/usr/include/freetype2 -I/usr/include/SDL
+INCLUDES=-I. -I../ -Icommon -I../xbmc -I../xbmc/cores -I../xbmc/linux -I../xbmc/utils -I/usr/include/freetype2 -I/usr/include/SDL -I../xbmc/lib/libsquish
 
 SRCS=AnimatedGif.cpp \
      AudioContext.cpp \
@@ -57,6 +57,8 @@ SRCS=AnimatedGif.cpp \
      Key.cpp \
      LocalizeStrings.cpp \
      SkinInfo.cpp \
+     TextureBundleXPR.cpp \
+     TextureBundleXBT.cpp \
      TextureBundle.cpp \
      TextureManager.cpp \
      VisibleEffect.cpp \
@@ -75,6 +77,8 @@ SRCS=AnimatedGif.cpp \
      Texture.cpp \
      TextureGL.cpp \
      GUIControlProfiler.cpp \
+     XBTF.cpp \
+     XBTFReader.cpp \
 
 LIB=guilib.a
 

@@ -50,6 +50,7 @@ public:
   virtual void GetViewPort(CRect& viewPort);
   
   virtual bool NeedPower2Texture() { return m_NeedPower2Texture; }
+  virtual bool SupportsCompressedTextures();
 
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();

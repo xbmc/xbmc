@@ -85,7 +85,7 @@ public:
   int m_iSeason;
   int m_iEpisode;
   int m_iDbId; 
-  long m_iFileId; 
+  int m_iFileId; 
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
   int m_iTrack;

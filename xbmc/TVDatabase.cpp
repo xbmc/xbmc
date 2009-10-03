@@ -118,7 +118,7 @@ int CTVDatabase::GetLastChannel(DWORD clientID)
 
     if (m_pDS->num_rows() > 0)
     {
-      int channelId = m_pDS->fv("idChannel").get_asInteger();
+      int channelId = m_pDS->fv("idChannel").get_asInt();
 
       m_pDS->close();
       return channelId;
@@ -436,15 +436,15 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
     {
       cPVRChannelInfoTag broadcast;
 
-      broadcast.m_clientID            = m_pDS->fv("idClient").get_asInteger();
-      broadcast.m_iIdChannel          = m_pDS->fv("idChannel").get_asInteger();
-      broadcast.m_iChannelNum         = m_pDS->fv("XBMCNumber").get_asInteger();
+      broadcast.m_clientID            = m_pDS->fv("idClient").get_asInt();
+      broadcast.m_iIdChannel          = m_pDS->fv("idChannel").get_asInt();
+      broadcast.m_iChannelNum         = m_pDS->fv("XBMCNumber").get_asInt();
       broadcast.m_strChannel          = m_pDS->fv("Name").get_asString();
       broadcast.m_strClientName       = m_pDS->fv("ClientName").get_asString();
-      broadcast.m_iClientNum          = m_pDS->fv("ClientNumber").get_asInteger();
-      broadcast.m_iIdUnique           = m_pDS->fv("UniqueId").get_asInteger();
+      broadcast.m_iClientNum          = m_pDS->fv("ClientNumber").get_asInt();
+      broadcast.m_iIdUnique           = m_pDS->fv("UniqueId").get_asInt();
       broadcast.m_IconPath            = m_pDS->fv("IconPath").get_asString();
-      broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInteger();
+      broadcast.m_iGroupID            = m_pDS->fv("GroupID").get_asInt();
       broadcast.m_encrypted           = m_pDS->fv("encrypted").get_asBool();
       broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
       broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
@@ -483,23 +483,23 @@ bool CTVDatabase::GetChannelSettings(DWORD clientID, unsigned int channelID, CVi
     {
       // get the channel settings info
       settings.m_AudioDelay           = m_pDS->fv("AudioDelay").get_asFloat();
-      settings.m_AudioStream          = m_pDS->fv("AudioStream").get_asInteger();
-      settings.m_Brightness           = m_pDS->fv("Brightness").get_asInteger();
-      settings.m_Contrast             = m_pDS->fv("Contrast").get_asInteger();
+      settings.m_AudioStream          = m_pDS->fv("AudioStream").get_asInt();
+      settings.m_Brightness           = m_pDS->fv("Brightness").get_asInt();
+      settings.m_Contrast             = m_pDS->fv("Contrast").get_asInt();
       settings.m_CustomPixelRatio     = m_pDS->fv("PixelRatio").get_asFloat();
       settings.m_CustomZoomAmount     = m_pDS->fv("ZoomAmount").get_asFloat();
-      settings.m_Gamma                = m_pDS->fv("Gamma").get_asInteger();
+      settings.m_Gamma                = m_pDS->fv("Gamma").get_asInt();
       settings.m_SubtitleDelay        = m_pDS->fv("SubtitleDelay").get_asFloat();
       settings.m_SubtitleOn           = m_pDS->fv("SubtitlesOn").get_asBool();
-      settings.m_SubtitleStream       = m_pDS->fv("SubtitleStream").get_asInteger();
-      settings.m_ViewMode             = m_pDS->fv("ViewMode").get_asInteger();
-      settings.m_ResumeTime           = m_pDS->fv("ResumeTime").get_asInteger();
+      settings.m_SubtitleStream       = m_pDS->fv("SubtitleStream").get_asInt();
+      settings.m_ViewMode             = m_pDS->fv("ViewMode").get_asInt();
+      settings.m_ResumeTime           = m_pDS->fv("ResumeTime").get_asInt();
       settings.m_Crop                 = m_pDS->fv("Crop").get_asBool();
-      settings.m_CropLeft             = m_pDS->fv("CropLeft").get_asInteger();
-      settings.m_CropRight            = m_pDS->fv("CropRight").get_asInteger();
-      settings.m_CropTop              = m_pDS->fv("CropTop").get_asInteger();
-      settings.m_CropBottom           = m_pDS->fv("CropBottom").get_asInteger();
-      settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("Deinterlace").get_asInteger();
+      settings.m_CropLeft             = m_pDS->fv("CropLeft").get_asInt();
+      settings.m_CropRight            = m_pDS->fv("CropRight").get_asInt();
+      settings.m_CropTop              = m_pDS->fv("CropTop").get_asInt();
+      settings.m_CropBottom           = m_pDS->fv("CropBottom").get_asInt();
+      settings.m_InterlaceMethod      = (EINTERLACEMETHOD)m_pDS->fv("Deinterlace").get_asInt();
       settings.m_VolumeAmplification  = m_pDS->fv("VolumeAmplification").get_asFloat();
       settings.m_OutputToAllSpeakers  = m_pDS->fv("OutputToAllSpeakers").get_asBool();
       settings.m_SubtitleCached       = false;
@@ -684,7 +684,7 @@ bool CTVDatabase::GetGroupList(DWORD clientID, CHANNELGROUPS_DATA* results)
     {
       TVGroupData data;
 
-      data.m_ID     = m_pDS->fv("idGroup").get_asLong();
+      data.m_ID     = m_pDS->fv("idGroup").get_asInt();
       data.m_Title  = m_pDS->fv("Name").get_asString();
 
       results->push_back(data);
@@ -720,7 +720,7 @@ long CTVDatabase::GetClientId(const CStdString& guid)
     m_pDS->query(SQL.c_str());
 
     if (!m_pDS->eof())
-      clientId = m_pDS->fv("Clients.idClient").get_asLong();
+      clientId = m_pDS->fv("Clients.idClient").get_asInt();
 
     m_pDS->close();
 
@@ -747,7 +747,7 @@ long CTVDatabase::GetGroupId(const CStdString &groupname)
     SQL=FormatSQL("select idGroup from Groups where Name like '%s'", groupname.c_str());
     m_pDS->query(SQL.c_str());
     if (!m_pDS->eof())
-      lGroupId = m_pDS->fv("Groups.idGroup").get_asLong();
+      lGroupId = m_pDS->fv("Groups.idGroup").get_asInt();
 
     m_pDS->close();
     return lGroupId;

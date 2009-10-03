@@ -249,6 +249,7 @@ class CDateTime;
 #define VIDEOPLAYER_GROUP             292
 #define VIDEOPLAYER_STARTTIME         293
 #define VIDEOPLAYER_ENDTIME           294
+#define VIDEOPLAYER_HASTELETEXT       295
 
 #define AUDIOSCROBBLER_ENABLED      300
 #define AUDIOSCROBBLER_CONN_STATE   301
@@ -314,6 +315,7 @@ class CDateTime;
 #define STRING_IS_EMPTY             410
 #define STRING_COMPARE              411
 #define STRING_STR                  412
+#define INTEGER_GREATER_THAN        413
 
 #define SKIN_HAS_THEME_START        500
 #define SKIN_HAS_THEME_END          599 // allow for max 100 themes

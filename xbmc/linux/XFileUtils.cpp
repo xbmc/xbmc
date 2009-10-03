@@ -35,13 +35,13 @@
 #include <sys/param.h>
 #include <sys/mount.h>
 #endif
-#include <regex.h>
 #include <dirent.h>
 #include <errno.h>
 
 #include "cdioSupport.h"
 
 #include "../utils/log.h"
+#include "utils/RegExp.h"
 
 HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
   if (lpFindData == NULL || szPath == NULL)
@@ -79,13 +79,11 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
   strFiles.Replace("*",".*");
   strFiles.Replace("?",".");
 
-  strFiles.MakeLower();
+  strFiles.MakeLower();  // Do we really want this case insensitive?
+  CRegExp re(true); 
 
-  int status;
-  regex_t re;
-  if (regcomp(&re, strFiles, REG_EXTENDED|REG_NOSUB) != 0) {
+  if (re.RegComp(strFiles.c_str()) == NULL)
     return(INVALID_HANDLE_VALUE);
-  }
 
   struct dirent **namelist = NULL;
   int n = scandir(strDir, &namelist, 0, alphasort);
@@ -97,15 +95,11 @@ HANDLE FindFirstFile(LPCSTR szPath,LPWIN32_FIND_DATA lpFindData) {
     CStdString strComp(namelist[n]->d_name);
     strComp.MakeLower();
 
-    status = regexec(&re, strComp.c_str(), (size_t) 0, NULL, 0);
-    if (status == 0) {
+    if (re.RegFind(strComp.c_str()) >= 0)
       pHandle->m_FindFileResults.push_back(namelist[n]->d_name);
-    }
     free(namelist[n]);
   }
   free(namelist);
-
-  regfree(&re);
 
   if (pHandle->m_FindFileResults.size() == 0) {
     delete pHandle;
@@ -413,8 +407,8 @@ BOOL CopyFile(LPCTSTR lpExistingFileName, LPCTSTR lpNewFileName, BOOL bFailIfExi
 
   // Read and write chunks of 16K
   char buf[16384];
-  long long bytesRead = 1;
-  long long bytesWritten = 1;
+  int64_t bytesRead = 1;
+  int64_t bytesWritten = 1;
 
   while (bytesRead > 0 && bytesWritten > 0)
   {
@@ -600,7 +594,7 @@ BOOL SetEndOfFile(HANDLE hFile) {
 }
 
 DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable) {
-  SDL_Delay(dwMilliseconds);
+  usleep(dwMilliseconds * 1000);
   return 0;
 }
 

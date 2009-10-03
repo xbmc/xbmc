@@ -225,25 +225,25 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     // add the primary artist/genre
     // SplitString returns >= 1 so no worries referencing the first item here
-    long lArtistId = AddArtist(vecArtists[0]);
-    long lGenreId = AddGenre(vecGenres[0]);
+    int idArtist = AddArtist(vecArtists[0]);
+    int idGenre = AddGenre(vecGenres[0]);
     // and also the primary album artist (if applicable)
-    long lAlbumArtistId = -1;
+    int idAlbumArtist = -1;
     if (!vecAlbumArtists[0].IsEmpty())
-      lAlbumArtistId = AddArtist(vecAlbumArtists[0]);
+      idAlbumArtist = AddArtist(vecAlbumArtists[0]);
 
-    long lPathId = AddPath(strPath);
-    long lThumbId = AddThumb(song.strThumb);
-    long lAlbumId;
-    if (lAlbumArtistId > -1)  // have an album artist
-      lAlbumId = AddAlbum(song.strAlbum, lAlbumArtistId, extraAlbumArtists, song.strAlbumArtist, lThumbId, lGenreId, extraGenres, song.iYear);
+    int idPath = AddPath(strPath);
+    int idThumb = AddThumb(song.strThumb);
+    int idAlbum;
+    if (idAlbumArtist > -1)  // have an album artist
+      idAlbum = AddAlbum(song.strAlbum, idAlbumArtist, extraAlbumArtists, song.strAlbumArtist, idThumb, idGenre, extraGenres, song.iYear);
     else
-      lAlbumId = AddAlbum(song.strAlbum, lArtistId, extraArtists, song.strArtist, lThumbId, lGenreId, extraGenres, song.iYear);
+      idAlbum = AddAlbum(song.strAlbum, idArtist, extraArtists, song.strArtist, idThumb, idGenre, extraGenres, song.iYear);
 
     DWORD crc = ComputeCRC(song.strFileName);
 
     bool bInsert = true;
-    int lSongId = -1;
+    int idSong = -1;
     bool bHasKaraoke = false;
 #ifdef HAS_KARAOKE
     bHasKaraoke = CKaraokeLyricsFactory::HasLyrics( song.strFileName );
@@ -251,19 +251,19 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
     // If this is karaoke song, change the genre to 'Karaoke' (and add it if it's not there)
     if ( bHasKaraoke && g_advancedSettings.m_karaokeChangeGenreForKaraokeSongs )
-      lGenreId = AddGenre( "Karaoke" );
+      idGenre = AddGenre( "Karaoke" );
 
     if (bCheck)
     {
       strSQL=FormatSQL("select * from song where idAlbum=%i and dwFileNameCRC='%ul' and strTitle='%s'",
-                    lAlbumId, crc, song.strTitle.c_str());
+                    idAlbum, crc, song.strTitle.c_str());
       
       if (!m_pDS->query(strSQL.c_str()))
         return;
       
       if (m_pDS->num_rows() != 0)
       {
-        lSongId = m_pDS->fv("idSong").get_asLong();
+        idSong = m_pDS->fv("idSong").get_asInt();
         bInsert = false;
       }
       m_pDS->close();
@@ -273,7 +273,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
       CStdString strSQL1;
 
       strSQL=FormatSQL("insert into song (idSong,idAlbum,idPath,idArtist,strExtraArtists,idGenre,strExtraGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (NULL,%i,%i,%i,'%s',%i,'%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
-                    lAlbumId, lPathId, lArtistId, extraArtists.c_str(), lGenreId, extraGenres.c_str(),
+                    idAlbum, idPath, idArtist, extraArtists.c_str(), idGenre, extraGenres.c_str(),
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
                     crc, strFileName.c_str(),
@@ -285,30 +285,30 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
 
       if (song.lastPlayed.GetLength())
         strSQL1=FormatSQL(",%i,%i,%i,%i,'%s','%c','%s')",
-                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, lThumbId, song.lastPlayed.c_str(), song.rating, song.strComment.c_str());
+                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, idThumb, song.lastPlayed.c_str(), song.rating, song.strComment.c_str());
       else
         strSQL1=FormatSQL(",%i,%i,%i,%i,NULL,'%c','%s')",
-                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, lThumbId, song.rating, song.strComment.c_str());
+                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, idThumb, song.rating, song.strComment.c_str());
       strSQL+=strSQL1;
 
       m_pDS->exec(strSQL.c_str());
-      lSongId = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      idSong = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
     }
 
     // add extra artists and genres
-    AddExtraSongArtists(vecArtists, lSongId, bCheck);
-    if (lAlbumArtistId > -1)
-      AddExtraAlbumArtists(vecAlbumArtists, lAlbumId);
+    AddExtraSongArtists(vecArtists, idSong, bCheck);
+    if (idAlbumArtist > -1)
+      AddExtraAlbumArtists(vecAlbumArtists, idAlbum);
     else
-      AddExtraAlbumArtists(vecArtists, lAlbumId);
-    AddExtraGenres(vecGenres, lSongId, lAlbumId, bCheck);
+      AddExtraAlbumArtists(vecArtists, idAlbum);
+    AddExtraGenres(vecGenres, idSong, idAlbum, bCheck);
 
     // Add karaoke information (if any)
     if ( bHasKaraoke )
     {
       // song argument is const :(
       CSong mysong = song;
-      mysong.idSong = lSongId;
+      mysong.idSong = idSong;
       AddKaraokeData( mysong );
     }
   }
@@ -318,7 +318,7 @@ void CMusicDatabase::AddSong(const CSong& song, bool bCheck)
   }
 }
 
-long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const CStdString &extraArtists, const CStdString &strArtist, long idThumb, long idGenre, const CStdString &extraGenres, long year)
+int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist, int idThumb, int idGenre, const CStdString &extraGenres, int year)
 {
   CStdString strSQL;
   try
@@ -343,20 +343,20 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const
     if (it != m_albumCache.end())
       return it->second.idAlbum;
 
-    strSQL=FormatSQL("select * from album where idArtist=%i and strAlbum like '%s'", lArtistId, strAlbum.c_str());
+    strSQL=FormatSQL("select * from album where idArtist=%i and strAlbum like '%s'", idArtist, strAlbum.c_str());
     m_pDS->query(strSQL.c_str());
 
     if (m_pDS->num_rows() == 0)
     {
       m_pDS->close();
       // doesnt exists, add it
-      strSQL=FormatSQL("insert into album (idAlbum, strAlbum, idArtist, strExtraArtists, idGenre, strExtraGenres, iYear, idThumb) values( NULL, '%s', %i, '%s', %i, '%s', %i, %i)", strAlbum.c_str(), lArtistId, extraArtists.c_str(), idGenre, extraGenres.c_str(), year, idThumb);
+      strSQL=FormatSQL("insert into album (idAlbum, strAlbum, idArtist, strExtraArtists, idGenre, strExtraGenres, iYear, idThumb) values( NULL, '%s', %i, '%s', %i, '%s', %i, %i)", strAlbum.c_str(), idArtist, extraArtists.c_str(), idGenre, extraGenres.c_str(), year, idThumb);
       m_pDS->exec(strSQL.c_str());
 
       CAlbumCache album;
-      album.idAlbum = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      album.idAlbum = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
       album.strAlbum = strAlbum;
-      album.idArtist = lArtistId;
+      album.idArtist = idArtist;
       album.strArtist = strArtist;
       m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + album.strArtist, album));
       return album.idAlbum;
@@ -366,9 +366,9 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const
       // exists in our database and not scanned during this scan, so we should update it as the details
       // may have changed (there's a reason we're rescanning, afterall!)
       CAlbumCache album;
-      album.idAlbum = m_pDS->fv("idAlbum").get_asLong();
+      album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
       album.strAlbum = strAlbum;
-      album.idArtist = lArtistId;
+      album.idArtist = idArtist;
       album.strArtist = strArtist;
       m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + album.strArtist, album));
       m_pDS->close();
@@ -390,7 +390,7 @@ long CMusicDatabase::AddAlbum(const CStdString& strAlbum1, long lArtistId, const
   return -1;
 }
 
-long CMusicDatabase::AddGenre(const CStdString& strGenre1)
+int CMusicDatabase::AddGenre(const CStdString& strGenre1)
 {
   CStdString strSQL;
   try
@@ -426,7 +426,7 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
     }
     else
     {
-      int idGenre = m_pDS->fv("idGenre").get_asLong();
+      int idGenre = m_pDS->fv("idGenre").get_asInt();
       m_genreCache.insert(pair<CStdString, int>(strGenre1, idGenre));
       m_pDS->close();
       return idGenre;
@@ -440,7 +440,7 @@ long CMusicDatabase::AddGenre(const CStdString& strGenre1)
   return -1;
 }
 
-long CMusicDatabase::AddArtist(const CStdString& strArtist1)
+int CMusicDatabase::AddArtist(const CStdString& strArtist1)
 {
   CStdString strSQL;
   try
@@ -470,13 +470,13 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
       // doesnt exists, add it
       strSQL=FormatSQL("insert into artist (idArtist, strArtist) values( NULL, '%s' )", strArtist.c_str());
       m_pDS->exec(strSQL.c_str());
-      int idArtist = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idArtist = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
       m_artistCache.insert(pair<CStdString, int>(strArtist1, idArtist));
       return idArtist;
     }
     else
     {
-      int idArtist = (long)m_pDS->fv("idArtist").get_asLong();
+      int idArtist = (int)m_pDS->fv("idArtist").get_asInt();
       m_artistCache.insert(pair<CStdString, int>(strArtist1, idArtist));
       m_pDS->close();
       return idArtist;
@@ -490,15 +490,15 @@ long CMusicDatabase::AddArtist(const CStdString& strArtist1)
   return -1;
 }
 
-void CMusicDatabase::AddExtraSongArtists(const CStdStringArray &vecArtists, long lSongId, bool bCheck)
+void CMusicDatabase::AddExtraSongArtists(const CStdStringArray &vecArtists, int idSong, bool bCheck)
 {
   try
   {
     // add each of the artists in the vector of artists
     for (int i = 1; i < (int)vecArtists.size(); i++)
     {
-      long lArtistId = AddArtist(vecArtists[i]);
-      if (lArtistId >= 0)
+      int idArtist = AddArtist(vecArtists[i]);
+      if (idArtist >= 0)
       { // added successfully, we must now add entries to the exartistsong table
         CStdString strSQL;
         // first link the artist with the song
@@ -506,7 +506,7 @@ void CMusicDatabase::AddExtraSongArtists(const CStdStringArray &vecArtists, long
         if (bCheck)
         {
           strSQL=FormatSQL("select * from exartistsong where idSong=%i and idArtist=%i",
-                        lSongId, lArtistId);
+                        idSong, idArtist);
           if (!m_pDS->query(strSQL.c_str())) return ;
           if (m_pDS->num_rows() != 0)
             bInsert = false; // already exists
@@ -515,7 +515,7 @@ void CMusicDatabase::AddExtraSongArtists(const CStdStringArray &vecArtists, long
         if (bInsert)
         {
           strSQL=FormatSQL("insert into exartistsong (idSong,iPosition,idArtist) values(%i,%i,%i)",
-                        lSongId, i, lArtistId);
+                        idSong, i, idArtist);
 
           m_pDS->exec(strSQL.c_str());
         }
@@ -524,25 +524,25 @@ void CMusicDatabase::AddExtraSongArtists(const CStdStringArray &vecArtists, long
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%lu) failed", __FUNCTION__, lSongId);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idSong);
   }
 }
 
-void CMusicDatabase::AddExtraAlbumArtists(const CStdStringArray &vecArtists, long lAlbumId)
+void CMusicDatabase::AddExtraAlbumArtists(const CStdStringArray &vecArtists, int idAlbum)
 {
   try
   {
     // add each of the artists in the vector of artists
     for (int i = 1; i < (int)vecArtists.size(); i++)
     {
-      long lArtistId = AddArtist(vecArtists[i]);
-      if (lArtistId >= 0)
+      int idArtist = AddArtist(vecArtists[i]);
+      if (idArtist >= 0)
       { // added successfully, we must now add entries to the exartistalbum table
         CStdString strSQL;
         bool bInsert = true;
         // always check artists (as this routine is called whenever a song is added)
         strSQL=FormatSQL("select * from exartistalbum where idAlbum=%i and idArtist=%i",
-                      lAlbumId, lArtistId);
+                      idAlbum, idArtist);
         if (!m_pDS->query(strSQL.c_str())) return ;
         if (m_pDS->num_rows() != 0)
           bInsert = false; // already exists
@@ -550,7 +550,7 @@ void CMusicDatabase::AddExtraAlbumArtists(const CStdStringArray &vecArtists, lon
         if (bInsert)
         {
           strSQL=FormatSQL("insert into exartistalbum (idAlbum,iPosition,idArtist) values(%i,%i,%i)",
-                        lAlbumId, i, lArtistId);
+                        idAlbum, i, idArtist);
 
           m_pDS->exec(strSQL.c_str());
         }
@@ -559,29 +559,29 @@ void CMusicDatabase::AddExtraAlbumArtists(const CStdStringArray &vecArtists, lon
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%lu) failed", __FUNCTION__, lAlbumId);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
   }
 }
 
-void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, long lSongId, long lAlbumId, bool bCheck)
+void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, int idSong, int idAlbum, bool bCheck)
 {
   try
   {
     // add each of the genres in the vector
     for (int i = 1; i < (int)vecGenres.size(); i++)
     {
-      long lGenreId = AddGenre(vecGenres[i]);
-      if (lGenreId >= 0)
+      int idGenre = AddGenre(vecGenres[i]);
+      if (idGenre >= 0)
       { // added successfully!
         CStdString strSQL;
         // first link the genre with the song
         bool bInsert = true;
-        if (lSongId)
+        if (idSong)
         {
           if (bCheck)
           {
             strSQL=FormatSQL("select * from exgenresong where idSong=%i and idGenre=%i",
-                          lSongId, lGenreId);
+                          idSong, idGenre);
             if (!m_pDS->query(strSQL.c_str())) return ;
             if (m_pDS->num_rows() != 0)
               bInsert = false; // already exists
@@ -590,23 +590,23 @@ void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, long lSong
           if (bInsert)
           {
             strSQL=FormatSQL("insert into exgenresong (idSong,iPosition,idGenre) values(%i,%i,%i)",
-                          lSongId, i, lGenreId);
+                          idSong, i, idGenre);
 
             m_pDS->exec(strSQL.c_str());
           }
         }
         // now link the genre with the album - we always check these as there's usually
         // more than one song per album with the same extra genres
-        if (lAlbumId)
+        if (idAlbum)
         {
           strSQL=FormatSQL("select * from exgenrealbum where idAlbum=%i and idGenre=%i",
-                        lAlbumId, lGenreId);
+                        idAlbum, idGenre);
           if (!m_pDS->query(strSQL.c_str())) return ;
           if (m_pDS->num_rows() == 0)
           { // insert
             m_pDS->close();
             strSQL=FormatSQL("insert into exgenrealbum (idAlbum,iPosition,idGenre) values(%i,%i,%i)",
-                          lAlbumId, i, lGenreId);
+                          idAlbum, i, idGenre);
 
             m_pDS->exec(strSQL.c_str());
           }
@@ -616,11 +616,11 @@ void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, long lSong
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%lu,%lu) failed", __FUNCTION__, lSongId, lAlbumId);
+    CLog::Log(LOGERROR, "%s(%i,%i) failed", __FUNCTION__, idSong, idAlbum);
   }
 }
 
-long CMusicDatabase::AddPath(const CStdString& strPath)
+int CMusicDatabase::AddPath(const CStdString& strPath)
 {
   CStdString strSQL;
   try
@@ -645,13 +645,13 @@ long CMusicDatabase::AddPath(const CStdString& strPath)
       strSQL=FormatSQL("insert into path (idPath, strPath) values( NULL, '%s' )", strPath.c_str());
       m_pDS->exec(strSQL.c_str());
 
-      int idPath = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idPath = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
       m_pathCache.insert(pair<CStdString, int>(strPath, idPath));
       return idPath;
     }
     else
     {
-      int idPath = m_pDS->fv("idPath").get_asLong();
+      int idPath = m_pDS->fv("idPath").get_asInt();
       m_pathCache.insert(pair<CStdString, int>(strPath, idPath));
       m_pDS->close();
       return idPath;
@@ -668,7 +668,7 @@ long CMusicDatabase::AddPath(const CStdString& strPath)
 CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
 {
   CSong song;
-  song.idSong = m_pDS->fv(song_idSong).get_asLong();
+  song.idSong = m_pDS->fv(song_idSong).get_asInt();
   // get the full artist string
   song.strArtist = m_pDS->fv(song_strArtist).get_asString();
   song.strArtist += m_pDS->fv(song_strExtraArtists).get_asString();
@@ -677,14 +677,14 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.strGenre += m_pDS->fv(song_strExtraGenres).get_asString();
   // and the rest...
   song.strAlbum = m_pDS->fv(song_strAlbum).get_asString();
-  song.iTrack = m_pDS->fv(song_iTrack).get_asLong() ;
-  song.iDuration = m_pDS->fv(song_iDuration).get_asLong() ;
-  song.iYear = m_pDS->fv(song_iYear).get_asLong() ;
+  song.iTrack = m_pDS->fv(song_iTrack).get_asInt() ;
+  song.iDuration = m_pDS->fv(song_iDuration).get_asInt() ;
+  song.iYear = m_pDS->fv(song_iYear).get_asInt() ;
   song.strTitle = m_pDS->fv(song_strTitle).get_asString();
-  song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asLong();
+  song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asInt();
   song.lastPlayed = m_pDS->fv(song_lastplayed).get_asString();
-  song.iStartOffset = m_pDS->fv(song_iStartOffset).get_asLong();
-  song.iEndOffset = m_pDS->fv(song_iEndOffset).get_asLong();
+  song.iStartOffset = m_pDS->fv(song_iStartOffset).get_asInt();
+  song.iEndOffset = m_pDS->fv(song_iEndOffset).get_asInt();
   song.strMusicBrainzTrackID = m_pDS->fv(song_strMusicBrainzTrackID).get_asString();
   song.strMusicBrainzArtistID = m_pDS->fv(song_strMusicBrainzArtistID).get_asString();
   song.strMusicBrainzAlbumID = m_pDS->fv(song_strMusicBrainzAlbumID).get_asString();
@@ -693,9 +693,9 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.rating = m_pDS->fv(song_rating).get_asChar();
   song.strComment = m_pDS->fv(song_comment).get_asString();
   song.strThumb = m_pDS->fv(song_strThumb).get_asString();
-  song.iKaraokeNumber = m_pDS->fv(song_iKarNumber).get_asLong();
+  song.iKaraokeNumber = m_pDS->fv(song_iKarNumber).get_asInt();
   song.strKaraokeLyrEncoding = m_pDS->fv(song_strKarEncoding).get_asString();
-  song.iKaraokeDelay = m_pDS->fv(song_iKarDelay).get_asLong();
+  song.iKaraokeDelay = m_pDS->fv(song_iKarDelay).get_asInt();
 
   if (song.strThumb == "NONE")
     song.strThumb.Empty();
@@ -706,7 +706,7 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   {
     CStdString strFileName=m_pDS->fv(song_strFileName).get_asString();
     CStdString strExt=CUtil::GetExtension(strFileName);
-    song.strFileName.Format("musicdb://3/%ld/%ld%s", m_pDS->fv(song_idAlbum).get_asLong(), m_pDS->fv(song_idSong).get_asLong(), strExt.c_str());
+    song.strFileName.Format("musicdb://3/%ld/%ld%s", m_pDS->fv(song_idAlbum).get_asInt(), m_pDS->fv(song_idSong).get_asInt(), strExt.c_str());
   }
 
   return song;
@@ -724,17 +724,17 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   item->GetMusicInfoTag()->SetGenre(strGenre);
   // and the rest...
   item->GetMusicInfoTag()->SetAlbum(m_pDS->fv(song_strAlbum).get_asString());
-  item->GetMusicInfoTag()->SetTrackAndDiskNumber(m_pDS->fv(song_iTrack).get_asLong());
-  item->GetMusicInfoTag()->SetDuration(m_pDS->fv(song_iDuration).get_asLong());
-  item->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(song_idSong).get_asLong());
+  item->GetMusicInfoTag()->SetTrackAndDiskNumber(m_pDS->fv(song_iTrack).get_asInt());
+  item->GetMusicInfoTag()->SetDuration(m_pDS->fv(song_iDuration).get_asInt());
+  item->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(song_idSong).get_asInt());
   SYSTEMTIME stTime;
-  stTime.wYear = (WORD)m_pDS->fv(song_iYear).get_asLong();
+  stTime.wYear = (WORD)m_pDS->fv(song_iYear).get_asInt();
   item->GetMusicInfoTag()->SetReleaseDate(stTime);
   item->GetMusicInfoTag()->SetTitle(m_pDS->fv(song_strTitle).get_asString());
   item->SetLabel(m_pDS->fv(song_strTitle).get_asString());
-  //song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asLong();
-  item->m_lStartOffset = m_pDS->fv(song_iStartOffset).get_asLong();
-  item->m_lEndOffset = m_pDS->fv(song_iEndOffset).get_asLong();
+  //song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asInt();
+  item->m_lStartOffset = m_pDS->fv(song_iStartOffset).get_asInt();
+  item->m_lEndOffset = m_pDS->fv(song_iEndOffset).get_asInt();
   item->GetMusicInfoTag()->SetMusicBrainzTrackID(m_pDS->fv(song_strMusicBrainzTrackID).get_asString());
   item->GetMusicInfoTag()->SetMusicBrainzArtistID(m_pDS->fv(song_strMusicBrainzArtistID).get_asString());
   item->GetMusicInfoTag()->SetMusicBrainzAlbumID(m_pDS->fv(song_strMusicBrainzAlbumID).get_asString());
@@ -758,14 +758,14 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   {
     CStdString strFileName=m_pDS->fv(song_strFileName).get_asString();
     CStdString strExt=CUtil::GetExtension(strFileName);
-    item->m_strPath.Format("%s%ld%s", strMusicDBbasePath.c_str(), m_pDS->fv(song_idSong).get_asLong(), strExt.c_str());
+    item->m_strPath.Format("%s%ld%s", strMusicDBbasePath.c_str(), m_pDS->fv(song_idSong).get_asInt(), strExt.c_str());
   }
 }
 
 CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL /* = false*/)
 {
   CAlbum album;
-  album.idAlbum = pDS->fv(album_idAlbum).get_asLong();
+  album.idAlbum = pDS->fv(album_idAlbum).get_asInt();
   album.strAlbum = pDS->fv(album_strAlbum).get_asString();
   if (album.strAlbum.IsEmpty())
     album.strAlbum = g_localizeStrings.Get(1050);
@@ -773,7 +773,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
   album.strArtist += pDS->fv(album_strExtraArtists).get_asString();
   album.strGenre = pDS->fv(album_strGenre).get_asString();
   album.strGenre += pDS->fv(album_strExtraGenres).get_asString();
-  album.iYear = pDS->fv(album_iYear).get_asLong();
+  album.iYear = pDS->fv(album_iYear).get_asInt();
   if (imageURL)
     album.thumbURL.ParseString(pDS->fv(album_strThumbURL).get_asString());
   else
@@ -782,8 +782,8 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
     if (strThumb != "NONE")
       album.thumbURL.ParseString(strThumb);
   }
-  album.iRating = pDS->fv(album_iRating).get_asLong();
-  album.iYear = pDS->fv(album_iYear).get_asLong();
+  album.iRating = pDS->fv(album_iRating).get_asInt();
+  album.iYear = pDS->fv(album_iYear).get_asInt();
   album.strReview = pDS->fv(album_strReview).get_asString();
   album.strStyles = pDS->fv(album_strStyles).get_asString();
   album.strMoods = pDS->fv(album_strMoods).get_asString();
@@ -796,7 +796,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
 CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThumb)
 {
   CArtist artist;
-  artist.idArtist = pDS->fv(artist_idArtist).get_asLong();
+  artist.idArtist = pDS->fv(artist_idArtist).get_asInt();
   artist.strArtist = pDS->fv("artist.strArtist").get_asString();
   artist.strGenre = pDS->fv(artist_strGenres).get_asString();
   artist.strBiography = pDS->fv(artist_strBiography).get_asString();
@@ -866,7 +866,7 @@ bool CMusicDatabase::GetSongByFileName(const CStdString& strFileName, CSong& son
   return false;
 }
 
-long CMusicDatabase::GetAlbumIdByPath(const CStdString& strPath)
+int CMusicDatabase::GetAlbumIdByPath(const CStdString& strPath)
 {
   try
   {
@@ -875,7 +875,7 @@ long CMusicDatabase::GetAlbumIdByPath(const CStdString& strPath)
     if (m_pDS->eof())
       return -1;
 
-    int idAlbum = m_pDS->fv(0).get_asLong();
+    int idAlbum = m_pDS->fv(0).get_asInt();
     m_pDS->close();
 
     return idAlbum;
@@ -888,7 +888,7 @@ long CMusicDatabase::GetAlbumIdByPath(const CStdString& strPath)
   return false;
 }
 
-long CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle)
+int CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist, const CStdString& strAlbum, const CStdString& strTitle)
 {
   try
   {
@@ -903,7 +903,7 @@ long CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist
       m_pDS->close();
       return -1;
     }
-    long lResult = m_pDS->fv(0).get_asLong();
+    int lResult = m_pDS->fv(0).get_asInt();
     m_pDS->close(); // cleanup recordset data
     return lResult;
   }
@@ -915,7 +915,7 @@ long CMusicDatabase::GetSongByArtistAndAlbumAndTitle(const CStdString& strArtist
   return -1;
 }
 
-bool CMusicDatabase::GetSongById(long idSong, CSong& song)
+bool CMusicDatabase::GetSongById(int idSong, CSong& song)
 {
   try
   {
@@ -925,7 +925,7 @@ bool CMusicDatabase::GetSongById(long idSong, CSong& song)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL=FormatSQL("select * from songview "
-                                "where idSong=%ld"
+                                "where idSong=%i"
                                 , idSong);
 
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -941,7 +941,7 @@ bool CMusicDatabase::GetSongById(long idSong, CSong& song)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, idSong);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idSong);
   }
 
   return false;
@@ -955,17 +955,17 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
     if (NULL == m_pDS.get()) return false;
 
     // Exclude "Various Artists"
-    long lVariousArtistId = AddArtist(g_localizeStrings.Get(340));
+    int idVariousArtist = AddArtist(g_localizeStrings.Get(340));
 
     CStdString strSQL;
     if (search.GetLength() >= MIN_FULL_SEARCH_LENGTH)
       strSQL=FormatSQL("select * from artist "
                                 "where (strArtist like '%s%%' or strArtist like '%% %s%%') and idArtist <> %i "
-                                , search.c_str(), search.c_str(), lVariousArtistId );
+                                , search.c_str(), search.c_str(), idVariousArtist );
     else
       strSQL=FormatSQL("select * from artist "
                                 "where strArtist like '%s%%' and idArtist <> %i "
-                                , search.c_str(), lVariousArtistId );
+                                , search.c_str(), idVariousArtist );
 
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0)
@@ -978,7 +978,7 @@ bool CMusicDatabase::SearchArtists(const CStdString& search, CFileItemList &arti
     while (!m_pDS->eof())
     {
       CStdString path;
-      path.Format("musicdb://2/%ld/", m_pDS->fv(0).get_asLong());
+      path.Format("musicdb://2/%ld/", m_pDS->fv(0).get_asInt());
       CFileItemPtr pItem(new CFileItem(path, true));
       CStdString label;
       label.Format("[%s] %s", artistLabel.c_str(), m_pDS->fv(1).get_asString());
@@ -1068,7 +1068,7 @@ bool CMusicDatabase::ArbitraryExec(const CStdString& strExec)
   return false;
 }
 
-bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
+bool CMusicDatabase::GetAlbumInfo(int idAlbum, CAlbum &info, VECSONGS* songs)
 {
   try
   {
@@ -1082,7 +1082,7 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
     if (iRowsFound != 0)
     {
       info = GetAlbumFromDataset(m_pDS2.get(), true); // true to grab the thumburl rather than the thumb
-      long idAlbumInfo = m_pDS2->fv(album_idAlbumInfo).get_asLong();
+      int idAlbumInfo = m_pDS2->fv(album_idAlbumInfo).get_asInt();
       m_pDS2->close(); // cleanup recordset data
 
       if (songs)
@@ -1095,13 +1095,13 @@ bool CMusicDatabase::GetAlbumInfo(long idAlbum, CAlbum &info, VECSONGS* songs)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, idAlbum);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
   }
 
   return false;
 }
 
-bool CMusicDatabase::HasAlbumInfo(long idAlbum)
+bool CMusicDatabase::HasAlbumInfo(int idAlbum)
 {
   try
   {
@@ -1117,20 +1117,20 @@ bool CMusicDatabase::HasAlbumInfo(long idAlbum)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, idAlbum);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
   }
 
   return false;
 }
 
-bool CMusicDatabase::DeleteAlbumInfo(long idAlbum)
+bool CMusicDatabase::DeleteAlbumInfo(int idAlbum)
 {
   try
   {
     if (idAlbum == -1)
       return false; // not in the database
 
-    CStdString strSQL = FormatSQL("delete from albuminfo where idAlbum=%u",idAlbum);
+    CStdString strSQL = FormatSQL("delete from albuminfo where idAlbum=%i",idAlbum);
 
     if (!m_pDS2->exec(strSQL.c_str()))
       return false;
@@ -1139,13 +1139,13 @@ bool CMusicDatabase::DeleteAlbumInfo(long idAlbum)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s - (%ld) failed", __FUNCTION__, idAlbum);
+    CLog::Log(LOGERROR, "%s - (%i) failed", __FUNCTION__, idAlbum);
   }
 
   return false;
 }
 
-bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info, bool needAll)
+bool CMusicDatabase::GetArtistInfo(int idArtist, CArtist &info, bool needAll)
 {
   try
   {
@@ -1154,7 +1154,7 @@ bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info, bool needAll)
 
     CStdString strSQL=FormatSQL("select * from artistinfo "
                                 "join artist on artist.idartist=artistinfo.idArtist "
-                                "where artistinfo.idArtist = %ld"
+                                "where artistinfo.idArtist = %i"
                                 , idArtist);
 
     if (!m_pDS2->query(strSQL.c_str())) return false;
@@ -1180,20 +1180,20 @@ bool CMusicDatabase::GetArtistInfo(long idArtist, CArtist &info, bool needAll)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s - (%ld) failed", __FUNCTION__, idArtist);
+    CLog::Log(LOGERROR, "%s - (%i) failed", __FUNCTION__, idArtist);
   }
 
   return false;
 }
 
-bool CMusicDatabase::DeleteArtistInfo(long idArtist)
+bool CMusicDatabase::DeleteArtistInfo(int idArtist)
 {
   try
   {
     if (idArtist == -1)
       return false; // not in the database
 
-    CStdString strSQL = FormatSQL("delete from artistinfo where idartist=%u",idArtist);
+    CStdString strSQL = FormatSQL("delete from artistinfo where idartist=%i",idArtist);
 
     if (!m_pDS2->exec(strSQL.c_str()))
       return false;
@@ -1202,13 +1202,13 @@ bool CMusicDatabase::DeleteArtistInfo(long idArtist)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s - (%ld) failed", __FUNCTION__, idArtist);
+    CLog::Log(LOGERROR, "%s - (%i) failed", __FUNCTION__, idArtist);
   }
 
   return false;
 }
 
-bool CMusicDatabase::GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs)
+bool CMusicDatabase::GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs)
 {
   try
   {
@@ -1222,9 +1222,9 @@ bool CMusicDatabase::GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs)
     while (!m_pDS2->eof())
     {
       CSong song;
-      song.iTrack = m_pDS2->fv("iTrack").get_asLong();
+      song.iTrack = m_pDS2->fv("iTrack").get_asInt();
       song.strTitle = m_pDS2->fv("strTitle").get_asString();
-      song.iDuration = m_pDS2->fv("iDuration").get_asLong();
+      song.iDuration = m_pDS2->fv("iDuration").get_asInt();
 
       songs.push_back(song);
       m_pDS2->next();
@@ -1236,7 +1236,7 @@ bool CMusicDatabase::GetAlbumInfoSongs(long idAlbumInfo, VECSONGS& songs)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%lu) failed", __FUNCTION__, idAlbumInfo);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbumInfo);
   }
 
   return false;
@@ -1523,9 +1523,9 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    long songID = GetSongIDFromPath(strFileName);
+    int idSong = GetSongIDFromPath(strFileName);
 
-    CStdString sql=FormatSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%ld", songID);
+    CStdString sql=FormatSQL("UPDATE song SET iTimesPlayed=iTimesPlayed+1, lastplayed=CURRENT_TIMESTAMP where idSong=%i", idSong);
     m_pDS->exec(sql.c_str());
     return true;
   }
@@ -1589,17 +1589,17 @@ bool CMusicDatabase::Search(const CStdString& search, CFileItemList &items)
   DWORD time = timeGetTime();
   // first grab all the artists that match
   SearchArtists(search, items);
-  CLog::Log(LOGDEBUG, "%s Artist search in %u ms",
+  CLog::Log(LOGDEBUG, "%s Artist search in %i ms",
             __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
   // then albums that match
   SearchAlbums(search, items);
-  CLog::Log(LOGDEBUG, "%s Album search in %u ms",
+  CLog::Log(LOGDEBUG, "%s Album search in %i ms",
             __FUNCTION__, timeGetTime() - time); time = timeGetTime();
 
   // and finally songs
   SearchSongs(search, items);
-  CLog::Log(LOGDEBUG, "%s Songs search in %u ms",
+  CLog::Log(LOGDEBUG, "%s Songs search in %i ms",
             __FUNCTION__, timeGetTime() - time); time = timeGetTime();
   return true;
 }
@@ -1680,7 +1680,7 @@ bool CMusicDatabase::SearchAlbums(const CStdString& search, CFileItemList &album
   return false;
 }
 
-long CMusicDatabase::SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction)
+int CMusicDatabase::SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONGS& songs, bool bTransaction)
 {
   CStdString strSQL;
   try
@@ -1694,7 +1694,7 @@ long CMusicDatabase::SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSO
     // and also the multiple genre string into single genres.
     CStdStringArray vecGenres; CStdString extraGenres;
     SplitString(album.strGenre, vecGenres, extraGenres);
-    long lGenreId = AddGenre(vecGenres[0]);
+    int idGenre = AddGenre(vecGenres[0]);
 
     // delete any album info we may have
     strSQL=FormatSQL("delete from albuminfo where idAlbum=%i", idAlbum);
@@ -1702,7 +1702,7 @@ long CMusicDatabase::SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSO
 
     // insert the albuminfo
     strSQL=FormatSQL("insert into albuminfo (idAlbumInfo,idAlbum,idGenre,strExtraGenres,strMoods,strStyles,strThemes,strReview,strImage,strLabel,strType,iRating,iYear) values(NULL,%i,%i,'%s','%s','%s','%s','%s','%s','%s','%s',%i,%i)",
-                  idAlbum, lGenreId, extraGenres.c_str(),
+                  idAlbum, idGenre, extraGenres.c_str(),
                   album.strMoods.c_str(),
                   album.strStyles.c_str(),
                   album.strThemes.c_str(),
@@ -1713,7 +1713,7 @@ long CMusicDatabase::SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSO
                   album.iRating,
                   album.iYear);
     m_pDS->exec(strSQL.c_str());
-    long idAlbumInfo = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    int idAlbumInfo = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
 
     if (SetAlbumInfoSongs(idAlbumInfo, songs))
     {
@@ -1740,7 +1740,7 @@ long CMusicDatabase::SetAlbumInfo(long idAlbum, const CAlbum& album, const VECSO
   return -1;
 }
 
-long CMusicDatabase::SetArtistInfo(long idArtist, const CArtist& artist)
+int CMusicDatabase::SetArtistInfo(int idArtist, const CArtist& artist)
 {
   CStdString strSQL;
   try
@@ -1769,7 +1769,7 @@ long CMusicDatabase::SetArtistInfo(long idArtist, const CArtist& artist)
                   artist.thumbURL.m_xml.c_str(),
                   artist.fanart.m_xml.c_str());
     m_pDS->exec(strSQL.c_str());
-    long idArtistInfo = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+    int idArtistInfo = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
     for (unsigned int i=0;i<artist.discography.size();++i)
     {
       strSQL=FormatSQL("insert into discography (idArtist,strAlbum,strYear) values (%i,'%s','%s')",idArtist,artist.discography[i].first.c_str(),artist.discography[i].second.c_str());
@@ -1787,7 +1787,7 @@ long CMusicDatabase::SetArtistInfo(long idArtist, const CArtist& artist)
   return -1;
 }
 
-bool CMusicDatabase::SetAlbumInfoSongs(long idAlbumInfo, const VECSONGS& songs)
+bool CMusicDatabase::SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs)
 {
   CStdString strSQL;
   try
@@ -1987,8 +1987,8 @@ bool CMusicDatabase::CleanupPaths()
     {
       // anything that isn't a parent path of a song path is to be deleted
       CStdString sql = FormatSQL("select count(idPath) from songpaths where strPath like '%s%%'", m_pDS->fv("strPath").get_asString().c_str());
-      if (m_pDS2->query(sql.c_str()) && m_pDS2->num_rows() == 1 && m_pDS2->fv(0).get_asLong() == 0)
-        deleteSQL += FormatSQL("%i,", m_pDS->fv("idPath").get_asLong()); // nothing found, so delete
+      if (m_pDS2->query(sql.c_str()) && m_pDS2->num_rows() == 1 && m_pDS2->fv(0).get_asInt() == 0)
+        deleteSQL += FormatSQL("%i,", m_pDS->fv("idPath").get_asInt()); // nothing found, so delete
       m_pDS2->close();
       m_pDS->next();
     }
@@ -2056,13 +2056,13 @@ bool CMusicDatabase::CleanupArtists()
     // must be executed AFTER the song, exartistsong, album and exartistalbum tables are cleaned.
     // don't delete the "Various Artists" string
     CStdString strVariousArtists = g_localizeStrings.Get(340);
-    long lVariousArtistsId = AddArtist(strVariousArtists);
+    int idVariousArtists = AddArtist(strVariousArtists);
     CStdString strSQL = "delete from artist where idArtist not in (select idArtist from song)";
     strSQL += " and idArtist not in (select idArtist from exartistsong)";
     strSQL += " and idArtist not in (select idArtist from album)";
     strSQL += " and idArtist not in (select idArtist from exartistalbum)";
     CStdString strSQL2;
-    strSQL2.Format(" and idArtist<>%i", lVariousArtistsId);
+    strSQL2.Format(" and idArtist<>%i", idVariousArtists);
     strSQL += strSQL2;
     m_pDS->exec(strSQL.c_str());
     return true;
@@ -2208,7 +2208,7 @@ void CMusicDatabase::DeleteAlbumInfo()
   while (!m_pDS->eof())
   {
     CAlbumCache album;
-    album.idAlbum = m_pDS->fv("album.idAlbum").get_asLong() ;
+    album.idAlbum = m_pDS->fv("album.idAlbum").get_asInt() ;
     album.strAlbum = m_pDS->fv("album.strAlbum").get_asString();
     album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
     album.strArtist += m_pDS->fv("album.strExtraArtists").get_asString();
@@ -2516,7 +2516,7 @@ bool CMusicDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       CFileItemPtr pItem(new CFileItem(m_pDS->fv("strGenre").get_asString()));
       pItem->GetMusicInfoTag()->SetGenre(m_pDS->fv("strGenre").get_asString());
       CStdString strDir;
-      strDir.Format("%ld/", m_pDS->fv("idGenre").get_asLong());
+      strDir.Format("%ld/", m_pDS->fv("idGenre").get_asInt());
       pItem->m_strPath=strBaseDir + strDir;
       pItem->m_bIsFolder=true;
       items.Add(pItem);
@@ -2561,10 +2561,10 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
     {
       CFileItemPtr pItem(new CFileItem(m_pDS->fv("iYear").get_asString()));
       SYSTEMTIME stTime;
-      stTime.wYear = (WORD)m_pDS->fv("iYear").get_asLong();
+      stTime.wYear = (WORD)m_pDS->fv("iYear").get_asInt();
       pItem->GetMusicInfoTag()->SetReleaseDate(stTime);
       CStdString strDir;
-      strDir.Format("%ld/", m_pDS->fv("iYear").get_asLong());
+      strDir.Format("%ld/", m_pDS->fv("iYear").get_asInt());
       pItem->m_strPath=strBaseDir + strDir;
       pItem->m_bIsFolder=true;
       items.Add(pItem);
@@ -2584,14 +2584,14 @@ bool CMusicDatabase::GetYearsNav(const CStdString& strBaseDir, CFileItemList& it
   return false;
 }
 
-bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList& items, long year)
+bool CMusicDatabase::GetAlbumsByYear(const CStdString& strBaseDir, CFileItemList& items, int year)
 {
   CStdString where = FormatSQL("where iYear=%ld", year);
 
   return GetAlbumsByWhere(strBaseDir, where, "", items);
 }
 
-bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, bool albumArtistsOnly)
+bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, bool albumArtistsOnly)
 {
   if (NULL == m_pDB.get()) return false;
   if (NULL == m_pDS.get()) return false;
@@ -2635,52 +2635,52 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       if (!albumArtistsOnly)  // show all artists in this case (ie those linked to a song)
         strSQL+=FormatSQL("("
                           "select song.idArtist from song " // All primary artists linked to primary genres
-                          "where song.idGenre=%ld"
+                          "where song.idGenre=%i"
                           ") "
                         "or idArtist IN "
                           "("
                           "select song.idArtist from song " // All primary artists linked to extra genres
                             "join exgenresong on song.idSong=exgenresong.idSong "
-                          "where exgenresong.idGenre=%ld"
+                          "where exgenresong.idGenre=%i"
                           ")"
                         "or idArtist IN "
                           "("
                           "select exartistsong.idArtist from exartistsong " // All extra artists linked to extra genres
                             "join song on exartistsong.idSong=song.idSong "
                             "join exgenresong on song.idSong=exgenresong.idSong "
-                          "where exgenresong.idGenre=%ld"
+                          "where exgenresong.idGenre=%i"
                           ") "
                         "or idArtist IN "
                           "("
                           "select exartistsong.idArtist from exartistsong " // All extra artists linked to primary genres
                             "join song on exartistsong.idSong=song.idSong "
-                          "where song.idGenre=%ld"
+                          "where song.idGenre=%i"
                           ") "
                         "or idArtist IN "
                         , idGenre, idGenre, idGenre, idGenre);
       // and add any artists linked to an album (may be different from above due to album artist tag)
       strSQL += FormatSQL("("
                           "select album.idArtist from album " // All primary album artists linked to primary genres
-                          "where album.idGenre=%ld"
+                          "where album.idGenre=%i"
                           ") "
                         "or idArtist IN "
                           "("
                           "select album.idArtist from album " // All primary album artists linked to extra genres
                             "join exgenrealbum on album.idAlbum=exgenrealbum.idAlbum "
-                          "where exgenrealbum.idGenre=%ld"
+                          "where exgenrealbum.idGenre=%i"
                           ")"
                         "or idArtist IN "
                           "("
                           "select exartistalbum.idArtist from exartistalbum " // All extra album artists linked to extra genres
                             "join album on exartistalbum.idAlbum=album.idAlbum "
                             "join exgenrealbum on album.idAlbum=exgenrealbum.idAlbum "
-                          "where exgenrealbum.idGenre=%ld"
+                          "where exgenrealbum.idGenre=%i"
                           ") "
                         "or idArtist IN "
                           "("
                           "select exartistalbum.idArtist from exartistalbum " // All extra album artists linked to primary genres
                             "join album on exartistalbum.idAlbum=album.idAlbum "
-                          "where album.idGenre=%ld"
+                          "where album.idGenre=%i"
                           ") "
                         ")", idGenre, idGenre, idGenre, idGenre);
     }
@@ -2691,8 +2691,8 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     if (!albumArtistsOnly)
     {
       CStdString strVariousArtists = g_localizeStrings.Get(340);
-      long lVariousArtistsId = AddArtist(strVariousArtists);
-      strSQL+=FormatSQL(" and artist.idArtist<>%i", lVariousArtistsId);
+      int idVariousArtists = AddArtist(strVariousArtists);
+      strSQL+=FormatSQL(" and artist.idArtist<>%i", idVariousArtists);
     }
 
     // run query
@@ -2714,7 +2714,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
       CFileItemPtr pItem(new CFileItem(strArtist));
       pItem->GetMusicInfoTag()->SetArtist(strArtist);
       CStdString strDir;
-      long idArtist = m_pDS->fv("idArtist").get_asLong();
+      int idArtist = m_pDS->fv("idArtist").get_asInt();
       strDir.Format("%ld/", idArtist);
       pItem->m_strPath=strBaseDir + strDir;
       pItem->m_bIsFolder=true;
@@ -2737,7 +2737,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
 
       m_pDS->next();
     }
-    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %u", timeGetTime() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", timeGetTime() - time);
 
     // cleanup
     m_pDS->close();
@@ -2752,14 +2752,14 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
   return false;
 }
 
-bool CMusicDatabase::GetAlbumFromSong(long idSong, CAlbum &album)
+bool CMusicDatabase::GetAlbumFromSong(int idSong, CAlbum &album)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL = FormatSQL("select albumview.* from song join albumview on song.idAlbum = albumview.idAlbum where song.idSong='%ld'", idSong);
+    CStdString strSQL = FormatSQL("select albumview.* from song join albumview on song.idAlbum = albumview.idAlbum where song.idSong='%i'", idSong);
     if (!m_pDS->query(strSQL.c_str())) return false;
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound != 1)
@@ -2815,7 +2815,7 @@ bool CMusicDatabase::GetAlbumFromSong(const CSong &song, CAlbum &album)
   return false;
 }
 
-bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist)
+bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist)
 {
   // where clause
   CStdString strWhere;
@@ -2824,13 +2824,13 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
     strWhere+=FormatSQL("where (idAlbum IN "
                           "("
                           "select song.idAlbum from song " // All albums where the primary genre fits
-                          "where song.idGenre=%ld"
+                          "where song.idGenre=%i"
                           ") "
                         "or idAlbum IN "
                           "("
                           "select song.idAlbum from song " // All albums where extra genres fits
                             "join exgenresong on song.idSong=exgenresong.idSong "
-                          "where exgenresong.idGenre=%ld"
+                          "where exgenresong.idGenre=%i"
                           ")"
                         ") "
                         , idGenre, idGenre);
@@ -2846,23 +2846,23 @@ bool CMusicDatabase::GetAlbumsNav(const CStdString& strBaseDir, CFileItemList& i
     strWhere +=FormatSQL("(idAlbum IN "
                             "("
                               "select song.idAlbum from song "  // All albums where the primary artist fits
-                              "where song.idArtist=%ld"
+                              "where song.idArtist=%i"
                             ")"
                           " or idAlbum IN "
                             "("
                               "select song.idAlbum from song "  // All albums where extra artists fit
                                 "join exartistsong on song.idSong=exartistsong.idSong "
-                              "where exartistsong.idArtist=%ld"
+                              "where exartistsong.idArtist=%i"
                             ")"
                           " or idAlbum IN "
                             "("
                               "select album.idAlbum from album " // All albums where primary album artist fits
-                              "where album.idArtist=%ld"
+                              "where album.idArtist=%i"
                             ")"
                           " or idAlbum IN "
                             "("
                               "select exartistalbum.idAlbum from exartistalbum " // All albums where extra album artists fit
-                              "where exartistalbum.idArtist=%ld"
+                              "where exartistalbum.idArtist=%i"
                             ")"
                           ") "
                           , idArtist, idArtist, idArtist, idArtist);
@@ -2915,7 +2915,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
       try
       {
         CStdString strDir;
-        long idAlbum = m_pDS->fv("idAlbum").get_asLong();
+        int idAlbum = m_pDS->fv("idAlbum").get_asInt();
         strDir.Format("%s%ld/", baseDir.c_str(), idAlbum);
         CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get())));
         items.Add(pItem);
@@ -2997,13 +2997,13 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
   return false;
 }
 
-bool CMusicDatabase::GetSongsByYear(const CStdString& baseDir, CFileItemList& items, long year)
+bool CMusicDatabase::GetSongsByYear(const CStdString& baseDir, CFileItemList& items, int year)
 {
   CStdString where=FormatSQL("where (iYear=%ld)", year);
   return GetSongsByWhere(baseDir, where, items);
 }
 
-bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, long idGenre, long idArtist,long idAlbum)
+bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& items, int idGenre, int idArtist,int idAlbum)
 {
   CStdString strWhere;
 
@@ -3017,11 +3017,11 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
     else
       strWhere += "and ";
 
-    strWhere += FormatSQL("(idGenre=%ld " // All songs where primary genre fits
+    strWhere += FormatSQL("(idGenre=%i " // All songs where primary genre fits
                           "or idSong IN "
                             "("
                             "select exgenresong.idSong from exgenresong " // All songs by where extra genres fit
-                            "where exgenresong.idGenre=%ld"
+                            "where exgenresong.idGenre=%i"
                             ")"
                           ") "
                           , idGenre, idGenre);
@@ -3034,24 +3034,24 @@ bool CMusicDatabase::GetSongsNav(const CStdString& strBaseDir, CFileItemList& it
     else
       strWhere += "and ";
 
-    strWhere += FormatSQL("(idArtist=%ld " // All songs where primary artist fits
+    strWhere += FormatSQL("(idArtist=%i " // All songs where primary artist fits
                           "or idSong IN "
                             "("
                             "select exartistsong.idSong from exartistsong " // All songs where extra artists fit
-                            "where exartistsong.idArtist=%ld"
+                            "where exartistsong.idArtist=%i"
                             ")"
                           "or idSong IN "
                             "("
                             "select song.idSong from song " // All songs where the primary album artist fits
                             "join album on song.idAlbum=album.idAlbum "
-                            "where album.idArtist=%ld"
+                            "where album.idArtist=%i"
                             ")"
                           "or idSong IN "
                             "("
                             "select song.idSong from song " // All songs where the extra album artist fit, excluding
                             "join exartistalbum on song.idAlbum=exartistalbum.idAlbum " // various artist albums
                             "join album on song.idAlbum=album.idAlbum "
-                            "where exartistalbum.idArtist=%ld and album.strExtraArtists != ''"
+                            "where exartistalbum.idArtist=%i and album.strExtraArtists != ''"
                             ")"
                           ") "
                           , idArtist, idArtist, idArtist, idArtist);
@@ -3151,7 +3151,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
         // run through our thumbs and update them to the correct path
         while (!m_pDS->eof())
         {
-          int id = m_pDS->fv(0).get_asInteger();
+          int id = m_pDS->fv(0).get_asInt();
           CStdString thumb = m_pDS->fv(1).get_asString();
           if (thumb.Left(oldPath.size()).CompareNoCase(oldPath) == 0)
           {
@@ -3204,10 +3204,10 @@ bool CMusicDatabase::UpdateOldVersion(int version)
             str << *thumb;
             thumb = thumb->NextSiblingElement("thumb");
           }
-          CStdString strSQL = FormatSQL("update %s set strImage='%s' where %s=%u",
+          CStdString strSQL = FormatSQL("update %s set strImage='%s' where %s=%i",
                                         tag2[i],
                                         str.str().c_str(),tag1[i],
-                                        m_pDS->fv(0).get_asLong());
+                                        m_pDS->fv(0).get_asInt());
           m_pDS2->exec(strSQL.c_str());
           m_pDS->next();
         }
@@ -3222,7 +3222,7 @@ bool CMusicDatabase::UpdateOldVersion(int version)
   return true;
 }
 
-long CMusicDatabase::AddThumb(const CStdString& strThumb1)
+int CMusicDatabase::AddThumb(const CStdString& strThumb1)
 {
   CStdString strSQL;
   try
@@ -3249,13 +3249,13 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
       strSQL=FormatSQL("insert into thumb (idThumb, strThumb) values( NULL, '%s' )", strThumb.c_str());
       m_pDS->exec(strSQL.c_str());
 
-      int idPath = (long)sqlite3_last_insert_rowid(m_pDB->getHandle());
+      int idPath = (int)sqlite3_last_insert_rowid(m_pDB->getHandle());
       m_thumbCache.insert(pair<CStdString, int>(strThumb1, idPath));
       return idPath;
     }
     else
     {
-      int idPath = m_pDS->fv("idThumb").get_asLong();
+      int idPath = m_pDS->fv("idThumb").get_asInt();
       m_thumbCache.insert(pair<CStdString, int>(strThumb1, idPath));
       m_pDS->close();
       return idPath;
@@ -3269,7 +3269,7 @@ long CMusicDatabase::AddThumb(const CStdString& strThumb1)
   return -1;
 }
 
-unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<int,long> > &songIDs)
+unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<int,int> > &songIDs)
 {
   try
   {
@@ -3287,7 +3287,7 @@ unsigned int CMusicDatabase::GetSongIDs(const CStdString& strWhere, vector<pair<
     songIDs.reserve(m_pDS->num_rows());
     while (!m_pDS->eof())
     {
-      songIDs.push_back(make_pair<int,long>(1,m_pDS->fv(song_idSong).get_asLong()));
+      songIDs.push_back(make_pair<int,int>(1,m_pDS->fv(song_idSong).get_asInt()));
       m_pDS->next();
     }    // cleanup
     m_pDS->close();
@@ -3315,7 +3315,7 @@ int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
       return 0;
     }
 
-    int iNumSongs = m_pDS->fv("NumSongs").get_asLong();
+    int iNumSongs = m_pDS->fv("NumSongs").get_asInt();
     // cleanup
     m_pDS->close();
     return iNumSongs;
@@ -3327,7 +3327,7 @@ int CMusicDatabase::GetSongsCount(const CStdString& strWhere)
   return 0;
 }
 
-bool CMusicDatabase::GetAlbumPath(long idAlbum, CStdString& path)
+bool CMusicDatabase::GetAlbumPath(int idAlbum, CStdString& path)
 {
   try
   {
@@ -3354,21 +3354,21 @@ bool CMusicDatabase::GetAlbumPath(long idAlbum, CStdString& path)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, idAlbum);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
   }
 
   return false;
 }
 
 
-bool CMusicDatabase::SaveAlbumThumb(long idAlbum, const CStdString& strThumb)
+bool CMusicDatabase::SaveAlbumThumb(int idAlbum, const CStdString& strThumb)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    long idThumb=AddThumb(strThumb);
+    int idThumb=AddThumb(strThumb);
 
     if (idThumb>-1)
     {
@@ -3384,20 +3384,20 @@ bool CMusicDatabase::SaveAlbumThumb(long idAlbum, const CStdString& strThumb)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, idAlbum);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, idAlbum);
   }
 
   return false;
 }
 
-bool CMusicDatabase::GetAlbumThumb(long idAlbum, CStdString& strThumb)
+bool CMusicDatabase::GetAlbumThumb(int idAlbum, CStdString& strThumb)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select strThumb from thumb join album on album.idThumb = thumb.idThumb where album.idAlbum=%u", idAlbum);
+    CStdString strSQL=FormatSQL("select strThumb from thumb join album on album.idThumb = thumb.idThumb where album.idAlbum=%i", idAlbum);
     m_pDS2->query(strSQL.c_str());
     if (m_pDS2->eof())
       return false;
@@ -3408,13 +3408,13 @@ bool CMusicDatabase::GetAlbumThumb(long idAlbum, CStdString& strThumb)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s - (%ld) failed", __FUNCTION__, idAlbum);
+    CLog::Log(LOGERROR, "%s - (%i) failed", __FUNCTION__, idAlbum);
   }
 
   return false;
 }
 
-bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
+bool CMusicDatabase::GetArtistPath(int idArtist, CStdString &basePath)
 {
   try
   {
@@ -3423,8 +3423,8 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
 
     // find all albums from this artist, and all the paths to the songs from those albums
     CStdString strSQL=FormatSQL("select strPath from album join song on album.idAlbum = song.idAlbum join path on song.idPath = path.idPath "
-                                "where album.idAlbum in (select idAlbum from album where album.idArtist=%ld) "
-                                "or album.idAlbum in (select idAlbum from exartistalbum where exartistalbum.idArtist = %ld) "
+                                "where album.idAlbum in (select idAlbum from album where album.idArtist=%i) "
+                                "or album.idAlbum in (select idAlbum from exartistalbum where exartistalbum.idArtist = %i) "
                                 "group by song.idPath", idArtist, idArtist);
 
     // run query
@@ -3469,7 +3469,7 @@ bool CMusicDatabase::GetArtistPath(long idArtist, CStdString &basePath)
   return false;
 }
 
-long CMusicDatabase::GetArtistByName(const CStdString& strArtist)
+int CMusicDatabase::GetArtistByName(const CStdString& strArtist)
 {
   try
   {
@@ -3486,7 +3486,7 @@ long CMusicDatabase::GetArtistByName(const CStdString& strArtist)
       m_pDS->close();
       return -1;
     }
-    long lResult = m_pDS->fv("artist.idArtist").get_asLong();
+    int lResult = m_pDS->fv("artist.idArtist").get_asInt();
     m_pDS->close();
     return lResult;
   }
@@ -3497,7 +3497,7 @@ long CMusicDatabase::GetArtistByName(const CStdString& strArtist)
   return -1;
 }
 
-long CMusicDatabase::GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist)
+int CMusicDatabase::GetAlbumByName(const CStdString& strAlbum, const CStdString& strArtist)
 {
   try
   {
@@ -3517,7 +3517,7 @@ long CMusicDatabase::GetAlbumByName(const CStdString& strAlbum, const CStdString
       m_pDS->close();
       return -1;
     }
-    return m_pDS->fv("album.idAlbum").get_asLong();
+    return m_pDS->fv("album.idAlbum").get_asInt();
   }
   catch (...)
   {
@@ -3526,7 +3526,7 @@ long CMusicDatabase::GetAlbumByName(const CStdString& strAlbum, const CStdString
   return -1;
 }
 
-bool CMusicDatabase::GetGenreById(long idGenre, CStdString& strGenre)
+bool CMusicDatabase::GetGenreById(int idGenre, CStdString& strGenre)
 {
   strGenre = "";
   try
@@ -3534,7 +3534,7 @@ bool CMusicDatabase::GetGenreById(long idGenre, CStdString& strGenre)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select strGenre from genre where genre.idGenre = %ld", idGenre);
+    CStdString strSQL=FormatSQL("select strGenre from genre where genre.idGenre = %i", idGenre);
 
     // run query
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -3554,7 +3554,7 @@ bool CMusicDatabase::GetGenreById(long idGenre, CStdString& strGenre)
   return false;
 }
 
-long CMusicDatabase::GetGenreByName(const CStdString& strGenre)
+int CMusicDatabase::GetGenreByName(const CStdString& strGenre)
 {
   try
   {
@@ -3571,7 +3571,7 @@ long CMusicDatabase::GetGenreByName(const CStdString& strGenre)
       m_pDS->close();
       return -1;
     }
-    return m_pDS->fv("genre.idGenre").get_asLong();
+    return m_pDS->fv("genre.idGenre").get_asInt();
   }
   catch (...)
   {
@@ -3580,7 +3580,7 @@ long CMusicDatabase::GetGenreByName(const CStdString& strGenre)
   return -1;
 }
 
-bool CMusicDatabase::GetArtistById(long idArtist, CStdString& strArtist)
+bool CMusicDatabase::GetArtistById(int idArtist, CStdString& strArtist)
 {
   strArtist = "";
   try
@@ -3588,7 +3588,7 @@ bool CMusicDatabase::GetArtistById(long idArtist, CStdString& strArtist)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select strArtist from artist where artist.idArtist = %ld", idArtist);
+    CStdString strSQL=FormatSQL("select strArtist from artist where artist.idArtist = %i", idArtist);
 
     // run query
     if (!m_pDS->query(strSQL.c_str())) return false;
@@ -3608,7 +3608,7 @@ bool CMusicDatabase::GetArtistById(long idArtist, CStdString& strArtist)
   return false;
 }
 
-bool CMusicDatabase::GetAlbumById(long idAlbum, CStdString& strAlbum)
+bool CMusicDatabase::GetAlbumById(int idAlbum, CStdString& strAlbum)
 {
   strAlbum = "";
   try
@@ -3636,11 +3636,11 @@ bool CMusicDatabase::GetAlbumById(long idAlbum, CStdString& strAlbum)
   return false;
 }
 
-bool CMusicDatabase::GetRandomSong(CFileItem* item, long& lSongId, const CStdString& strWhere)
+bool CMusicDatabase::GetRandomSong(CFileItem* item, int& idSong, const CStdString& strWhere)
 {
   try
   {
-    lSongId = -1;
+    idSong = -1;
 
     int iCount = GetSongsCount(strWhere);
     if (iCount <= 0)
@@ -3665,7 +3665,7 @@ bool CMusicDatabase::GetRandomSong(CFileItem* item, long& lSongId, const CStdStr
       return false;
     }
     GetFileItemFromDataset(item, "");
-    lSongId = m_pDS->fv("songview.idSong").get_asLong();
+    idSong = m_pDS->fv("songview.idSong").get_asInt();
     m_pDS->close();
     return true;
   }
@@ -3684,11 +3684,11 @@ bool CMusicDatabase::GetVariousArtistsAlbums(const CStdString& strBaseDir, CFile
     if (NULL == m_pDS.get()) return false;
 
     CStdString strVariousArtists = g_localizeStrings.Get(340);
-    long idVariousArtists=AddArtist(strVariousArtists);
+    int idVariousArtists=AddArtist(strVariousArtists);
     if (idVariousArtists<0)
       return false;
 
-    CStdString strSQL = FormatSQL("select * from albumview where idArtist=%ld", idVariousArtists);
+    CStdString strSQL = FormatSQL("select * from albumview where idArtist=%i", idVariousArtists);
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -3706,7 +3706,7 @@ bool CMusicDatabase::GetVariousArtistsAlbums(const CStdString& strBaseDir, CFile
     while (!m_pDS->eof())
     {
       CStdString strDir;
-      strDir.Format("%s%ld/", strBaseDir.c_str(), m_pDS->fv("idAlbum").get_asLong());
+      strDir.Format("%s%ld/", strBaseDir.c_str(), m_pDS->fv("idAlbum").get_asInt());
       CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get())));
       items.Add(pItem);
 
@@ -3733,11 +3733,11 @@ bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, 
     if (NULL == m_pDS.get()) return false;
 
     CStdString strVariousArtists = g_localizeStrings.Get(340);
-    long idVariousArtists=AddArtist(strVariousArtists);
+    int idVariousArtists=AddArtist(strVariousArtists);
     if (idVariousArtists<0)
       return false;
 
-    CStdString strSQL = FormatSQL("select * from songview where idAlbum IN (select idAlbum from album where idArtist=%ld)", idVariousArtists);
+    CStdString strSQL = FormatSQL("select * from songview where idAlbum IN (select idAlbum from album where idArtist=%i)", idVariousArtists);
 
     // run query
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
@@ -3793,10 +3793,10 @@ bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
       if (!CDirectory::Exists(path))
         return false;
     }
-    long pathId = AddPath(path);
-    if (pathId < 0) return false;
+    int idPath = AddPath(path);
+    if (idPath < 0) return false;
 
-    CStdString strSQL=FormatSQL("update path set strHash='%s' where idPath=%ld", hash.c_str(), pathId);
+    CStdString strSQL=FormatSQL("update path set strHash='%s' where idPath=%ld", hash.c_str(), idPath);
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -3945,7 +3945,7 @@ bool CMusicDatabase::SetSongRating(const CStdString &filePath, char rating)
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    long songID = GetSongIDFromPath(filePath);
+    int songID = GetSongIDFromPath(filePath);
     if (-1 == songID) return false;
 
     CStdString sql = FormatSQL("update song set rating='%c' where idSong = %i", rating, songID);
@@ -3959,7 +3959,7 @@ bool CMusicDatabase::SetSongRating(const CStdString &filePath, char rating)
   return false;
 }
 
-long CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
+int CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
 {
   // grab the where string to identify the song id
   CURL url(filePath);
@@ -3989,7 +3989,7 @@ long CMusicDatabase::GetSongIDFromPath(const CStdString &filePath)
       return -1;
     }
 
-    long songID = m_pDS->fv("idSong").get_asLong();
+    int songID = m_pDS->fv("idSong").get_asInt();
     m_pDS->close();
     return songID;
   }
@@ -4049,17 +4049,17 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       CDirectoryNode::GetDatabaseInfo(strPath, params);
       if (params.GetGenreId() != -1) // check genre
       {
-        strSQL = FormatSQL("select * from content where strPath like 'musicdb://1/%u/'",params.GetGenreId());
+        strSQL = FormatSQL("select * from content where strPath like 'musicdb://1/%i/'",params.GetGenreId());
         m_pDS->query(strSQL.c_str());
       }
       if (m_pDS->eof() && params.GetAlbumId() != -1) // check album
       {
-        strSQL = FormatSQL("select * from content where strPath like 'musicdb://3/%u/'",params.GetGenreId());
+        strSQL = FormatSQL("select * from content where strPath like 'musicdb://3/%i/'",params.GetGenreId());
         m_pDS->query(strSQL.c_str());
       }
       if (m_pDS->eof() && params.GetArtistId() != -1) // check artist
       {
-        strSQL = FormatSQL("select * from content where strPath like 'musicdb://2/%u/'",params.GetArtistId());
+        strSQL = FormatSQL("select * from content where strPath like 'musicdb://2/%i/'",params.GetArtistId());
         m_pDS->query(strSQL.c_str());
       }
       if (m_pDS->eof()) // general albums setting
@@ -4147,7 +4147,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
       CAlbum album = GetAlbumFromDataset(m_pDS.get());
       album.thumbURL.Clear();
       album.thumbURL.ParseString(m_pDS->fv("albuminfo.strImage").get_asString());
-      long idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asLong();
+      int idAlbumInfo = m_pDS->fv("albuminfo.idAlbumInfo").get_asInt();
       GetAlbumInfoSongs(idAlbumInfo,album.songs);
       CStdString strPath;
       GetAlbumPath(album.idAlbum,strPath);
@@ -4306,7 +4306,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
       {
         artist.Load(entry);
         strTitle = artist.strArtist;
-        long idArtist = GetArtistByName(artist.strArtist);
+        int idArtist = GetArtistByName(artist.strArtist);
         if (idArtist > -1)
           SetArtistInfo(idArtist,artist);
 
@@ -4316,7 +4316,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
       {
         album.Load(entry);
         strTitle = album.strAlbum;
-        long idAlbum = GetAlbumByName(album.strAlbum,album.strArtist);
+        int idAlbum = GetAlbumByName(album.strAlbum,album.strArtist);
         if (idAlbum > -1)
           SetAlbumInfo(idAlbum,album,album.songs,false);
 
@@ -4369,10 +4369,10 @@ void CMusicDatabase::AddKaraokeData(const CSong& song)
     strSQL=FormatSQL( "SELECT MAX(iKaraNumber) FROM karaokedata" );
     if (!m_pDS->query(strSQL.c_str())) return;
 
-    long iKaraokeNumber = g_advancedSettings.m_karaokeStartIndex;
+    int iKaraokeNumber = g_advancedSettings.m_karaokeStartIndex;
 
     if ( m_pDS->num_rows() == 1 )
-      iKaraokeNumber = m_pDS->fv("MAX(iKaraNumber)").get_asInteger() + 1;
+      iKaraokeNumber = m_pDS->fv("MAX(iKaraNumber)").get_asInt() + 1;
 
     // Add the data
     strSQL=FormatSQL( "INSERT INTO karaokedata (iKaraNumber, idSong, iKaraDelay, strKaraEncoding, strKaralyrics, strKaraLyrFileCRC) "
@@ -4387,7 +4387,7 @@ void CMusicDatabase::AddKaraokeData(const CSong& song)
 }
 
 
-bool CMusicDatabase::GetSongByKaraokeNumber(long number, CSong & song)
+bool CMusicDatabase::GetSongByKaraokeNumber(int number, CSong & song)
 {
   try
   {
@@ -4404,14 +4404,14 @@ bool CMusicDatabase::GetSongByKaraokeNumber(long number, CSong & song)
       return false;
     }
 
-    long idSong = m_pDS->fv("karaokedata.idSong").get_asLong();
+    int idSong = m_pDS->fv("karaokedata.idSong").get_asInt();
     m_pDS->close();
 
     return GetSongById( idSong, song );
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s(%ld) failed", __FUNCTION__, number);
+    CLog::Log(LOGERROR, "%s(%i) failed", __FUNCTION__, number);
   }
 
   return false;
@@ -4654,7 +4654,7 @@ void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
 }
 
 
-bool CMusicDatabase::SetKaraokeSongDelay(long idSong, int delay)
+bool CMusicDatabase::SetKaraokeSongDelay(int idSong, int delay)
 {
   try
   {
@@ -4688,7 +4688,7 @@ int CMusicDatabase::GetKaraokeSongsCount()
       return 0;
     }
 
-    int iNumSongs = m_pDS->fv("NumSongs").get_asLong();
+    int iNumSongs = m_pDS->fv("NumSongs").get_asInt();
     // cleanup
     m_pDS->close();
     return iNumSongs;

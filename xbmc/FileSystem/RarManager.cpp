@@ -151,7 +151,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
 #endif
   //g_charsetConverter.unknownToUTF8(strPath);
 
-  long long iOffset = -1;
+  int64_t iOffset = -1;
   if (iRes != 2)
   {
     if (pFile)

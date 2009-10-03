@@ -965,15 +965,13 @@ void CVideoReferenceClock::GetTime(LARGE_INTEGER *ptime)
     int64_t NextVblank;
     LARGE_INTEGER Now;
     
-    while(1)
+    QueryPerformanceCounter(&Now);     //get current system time
+    NextVblank = TimeOfNextVblank();   //get time when the next vblank should happen
+    
+    while(Now.QuadPart >= NextVblank)  //keep looping until the next vblank is in the future
     {
-      QueryPerformanceCounter(&Now);               //get current system time
-      NextVblank = TimeOfNextVblank(Now.QuadPart); //get time when the next vblank should happen
-      
-      if (Now.QuadPart >= NextVblank)              //if the vblank should have alread happened, update the clock
-        UpdateClock(1, false);
-      else
-        break;
+      UpdateClock(1, false);           //update clock when next vblank should have happened already
+      NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
     }
     
     ptime->QuadPart = m_CurrTime;
@@ -1166,7 +1164,7 @@ int64_t CVideoReferenceClock::Wait(int64_t Target)
     {
       //calculate how long to sleep before we should have gotten a signal that a vblank happened
       QueryPerformanceCounter(&Now);
-      NextVblank = TimeOfNextVblank(Now.QuadPart);
+      NextVblank = TimeOfNextVblank();
       SleepTime = (int)((NextVblank - Now.QuadPart) * 1000 / m_SystemFrequency);
 
       int64_t CurrTime = m_CurrTime; //save current value of the clock
@@ -1223,7 +1221,7 @@ void CVideoReferenceClock::SendVblankSignal()
 //guess when the next vblank should happen,
 //based on the refreshrate and when the previous one happened
 //increase that by 20% to allow for errors
-int64_t CVideoReferenceClock::TimeOfNextVblank(int64_t Now)
+int64_t CVideoReferenceClock::TimeOfNextVblank()
 {
   return m_VblankTime + (m_SystemFrequency / m_RefreshRate * MAXVBLANKDELAY / 1000);
 }

@@ -31,12 +31,13 @@
 #include "DVDPlayerAudio.h"
 #include "DVDPlayerVideo.h"
 #include "DVDPlayerSubtitle.h"
+#include "DVDPlayerTeletext.h"
 
 //#include "DVDChapterReader.h"
 #include "DVDSubtitles/DVDFactorySubtitle.h"
 #include "utils/BitstreamStats.h"
 
-#include "../../Edl.h"
+#include "Edl.h"
 #include "dlgcache.h"
 #include "FileItem.h"
 
@@ -128,6 +129,7 @@ public:
 #define DVDPLAYER_AUDIO    1
 #define DVDPLAYER_VIDEO    2
 #define DVDPLAYER_SUBTITLE 3
+#define DVDPLAYER_TELETEXT 4
 
 class CDVDPlayer : public IPlayer, public CThread, public IDVDPlayer
 {
@@ -179,6 +181,9 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName);
   virtual void SetAudioStream(int iStream);
 
+  virtual TextCacheStruct_t* GetTeletextCache();
+  virtual void LoadPage(int p, int sp, unsigned char* buffer);
+
   virtual int  GetChapterCount();
   virtual int  GetChapter();
   virtual void GetChapterName(CStdString& strChapterName);
@@ -203,6 +208,8 @@ public:
 
   virtual CStdString GetPlayerState();
   virtual bool SetPlayerState(CStdString state);
+  
+  virtual CStdString GetPlayingTitle();
 
   virtual bool IsCaching() const { return m_caching; }
   virtual int GetCacheLevel() const ;
@@ -220,14 +227,17 @@ protected:
   bool OpenAudioStream(int iStream, int source);
   bool OpenVideoStream(int iStream, int source);
   bool OpenSubtitleStream(int iStream, int source);
+  bool OpenTeletextStream(int iStream, int source);
   bool CloseAudioStream(bool bWaitForBuffers);
   bool CloseVideoStream(bool bWaitForBuffers);
   bool CloseSubtitleStream(bool bKeepOverlays);
+  bool CloseTeletextStream(bool bWaitForBuffers);
 
   void ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket);
   void ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket);
+  void ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket);
 
   bool AddSubtitleFile(const std::string& filename);
   /**
@@ -276,6 +286,7 @@ protected:
   CCurrentStream m_CurrentAudio;
   CCurrentStream m_CurrentVideo;
   CCurrentStream m_CurrentSubtitle;
+  CCurrentStream m_CurrentTeletext;
 
   CSelectionStreams m_SelectionStreams;
 
@@ -294,6 +305,7 @@ protected:
   CDVDPlayerVideo m_dvdPlayerVideo; // video part
   CDVDPlayerAudio m_dvdPlayerAudio; // audio part
   CDVDPlayerSubtitle m_dvdPlayerSubtitle; // subtitle part
+  CDVDTeletextData m_dvdPlayerTeletext; // teletext part
 
   CDVDClock m_clock;                // master clock
   CDVDOverlayContainer m_overlayContainer;

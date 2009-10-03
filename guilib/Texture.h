@@ -29,6 +29,7 @@
 
 #include "gui3d.h"
 #include "StdString.h"
+#include "XBTF.h"
 
 #pragma pack(1)
 struct COLOR {unsigned char b,g,r,x;};	// Windows GDI expects 4bytes per color
@@ -48,13 +49,13 @@ class CBaseTexture
 {
 
 public:
-  CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0);
+  CBaseTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0, unsigned int format = XB_FMT_B8G8R8A8);
   virtual ~CBaseTexture();
 
   // TODO: Clean up this interface once things have settled down (none of these need to be virtual)
   virtual bool LoadFromFile(const CStdString& texturePath);
-  virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned char* pPixels);
-  bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, const unsigned char *pixels, const COLOR *palette);
+  virtual bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned int format, unsigned char* pPixels);
+  bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
 
   virtual void CreateTextureObject() = 0;
   virtual void DestroyTextureObject() = 0;
@@ -69,8 +70,8 @@ public:
   unsigned int GetHeight() const { return m_imageHeight; }
   unsigned int GetBPP() const { return m_nBPP; }
 
-  void Update(int w, int h, int pitch, const unsigned char *pixels, bool loadToGPU);
-  void Allocate(unsigned int width, unsigned int height, unsigned int BPP);
+  void Update(int w, int h, int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU);
+  void Allocate(unsigned int width, unsigned int height, unsigned int BPP, unsigned int format);
 
   static unsigned int PadPow2(unsigned int x);
 
@@ -82,7 +83,9 @@ protected:
   unsigned int m_nBPP;
   XBMC::TexturePtr m_pTexture;
   unsigned char* m_pPixels;
+  unsigned int m_bufferSize;
   bool m_loadedToGPU;
+  unsigned int m_format;
 };
 
 #if defined(HAS_GL) || defined(HAS_GLES)

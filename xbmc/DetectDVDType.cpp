@@ -558,14 +558,7 @@ int CDetectDVDMedia::DriveReady()
 // Whether a disc is in drive
 bool CDetectDVDMedia::IsDiscInDrive()
 {
-  CSingleLock waitLock(m_muReadingMedia);
-  bool bResult = true;
-  if ( m_DriveState != DRIVE_CLOSED_MEDIA_PRESENT )
-  {
-    bResult = false;
-  }
-
-  return bResult;
+  return m_DriveState == DRIVE_CLOSED_MEDIA_PRESENT;
 }
 
 // Static function

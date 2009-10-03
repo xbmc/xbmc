@@ -57,7 +57,7 @@
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
 #include "FileSystem/SMBDirectory.h"
 #endif
-#include "PlayerCoreFactory.h"
+#include "playercorefactory/PlayerCoreFactory.h"
 #include "utils/Addon.h"
 
 using namespace std;

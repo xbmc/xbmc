@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
           or NULL for all files.
   libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, long long* iOffset, bool bShowProgress)
+int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword, int64_t* iOffset, bool bShowProgress)
 {
   InitCRC();
   int bRes = 1;
@@ -243,7 +243,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
             pExtract->GetDataIO().m_pDlgProgress = NULL;//(CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
           }
 
-          long long iOff=0;
+          int64_t iOff=0;
           bool bSeeked = false;
           while (1)
           {
@@ -355,7 +355,7 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
       {
         if (pArc->IsOpened() && pArc->IsArchive(true))
         {
-          long long iOffset = pArc->NextBlockPos;
+          int64_t iOffset = pArc->NextBlockPos;
           while(pArc->ReadHeader()>0)
           {
             if (pArc->GetHeaderType() == FILE_HEAD)

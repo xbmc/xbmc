@@ -48,8 +48,7 @@ public:
   CArchive& operator<<(double d);
   CArchive& operator<<(int i);
   CArchive& operator<<(unsigned int i);
-  CArchive& operator<<(long long i64);
-  CArchive& operator<<(long l);
+  CArchive& operator<<(int64_t i64);
   CArchive& operator<<(bool b);
   CArchive& operator<<(char c);
   CArchive& operator<<(const CStdString& str);
@@ -62,8 +61,7 @@ public:
   CArchive& operator>>(double& d);
   CArchive& operator>>(int& i);
   CArchive& operator>>(unsigned int& i);
-  CArchive& operator>>(long long& i64);
-  CArchive& operator>>(long& l);
+  CArchive& operator>>(int64_t& i64);
   CArchive& operator>>(bool& b);
   CArchive& operator>>(char& c);
   CArchive& operator>>(CStdString& str);
