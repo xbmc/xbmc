@@ -303,7 +303,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
 
       CXBTFFrame frame = createXBTFFrame(image, writer, maxMSE, flags);
 
-      printf("%s (%d,%d @ %d bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+      printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
 
       file.SetLoop(0);
       file.GetFrames().push_back(frame);
@@ -324,7 +324,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
         CXBTFFrame frame = createXBTFFrame(gpAG[j].surface, writer, maxMSE, flags);
         frame.SetDuration(gpAG[j].delay);
         file.GetFrames().push_back(frame);
-        printf("%s (%d,%d @ %d bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+        printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
       }
 
       AG_FreeSurfaces(gpAG, gnAG);
