@@ -23,6 +23,8 @@
 #include <dirent.h>
 #include <squish.h>
 #include <string>
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include "XBTF.h"
