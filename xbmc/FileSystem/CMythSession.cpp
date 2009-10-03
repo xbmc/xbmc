@@ -39,14 +39,6 @@ extern "C"
 using namespace XFILE;
 using namespace std;
 
-#ifndef PRId64
-#ifdef _MSC_VER
-#define PRId64 "I64d"
-#else
-#define PRId64 "lld"
-#endif
-#endif
-
 #define MYTH_DEFAULT_PORT     6543
 #define MYTH_DEFAULT_USERNAME "mythtv"
 #define MYTH_DEFAULT_PASSWORD "mythtv"
