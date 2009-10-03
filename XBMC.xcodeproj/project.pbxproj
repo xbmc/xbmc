@@ -1793,6 +1793,8 @@
 		F5E55C871075B610006E788A /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E3EB8F030D5D5C0300FFF489 /* libmad.dylib */; };
 		F5E55E901076B3F9006E788A /* libSDL-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0050D683DEF0095F5DD /* libSDL-x86-osx.a */; };
 		F5E560711077003E006E788A /* libSDL_mixer-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 810CA0080D683DEF0095F5DD /* libSDL_mixer-x86-osx.a */; };
+		F5E560BC10770F9F006E788A /* OggCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E560BB10770F9F006E788A /* OggCallback.cpp */; };
+		F5E560BD10770F9F006E788A /* OggCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E560BB10770F9F006E788A /* OggCallback.cpp */; };
 		F5EA021C0F6DA7E8005C2EC5 /* PowerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */; };
 		F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
 		F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
@@ -2433,7 +2435,6 @@
 		E38E15E70D25F9FA00618676 /* CDDAcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDAcodec.h; sourceTree = "<group>"; };
 		E38E15E80D25F9FA00618676 /* CodecFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CodecFactory.cpp; sourceTree = "<group>"; };
 		E38E15E90D25F9FA00618676 /* CodecFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CodecFactory.h; sourceTree = "<group>"; };
-		E38E15ED0D25F9FA00618676 /* DllAACCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAACCodec.h; sourceTree = "<group>"; };
 		E38E15EE0D25F9FA00618676 /* DllAc3codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAc3codec.h; sourceTree = "<group>"; };
 		E38E15EF0D25F9FA00618676 /* DllAdpcm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAdpcm.h; sourceTree = "<group>"; };
 		E38E15F00D25F9FA00618676 /* DllAdplug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllAdplug.h; sourceTree = "<group>"; };
@@ -2443,7 +2444,6 @@
 		E38E15F50D25F9FA00618676 /* DllLibFlac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibFlac.h; sourceTree = "<group>"; };
 		E38E15F60D25F9FA00618676 /* DllLibshnplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibshnplay.h; sourceTree = "<group>"; };
 		E38E15F70D25F9FA00618676 /* DllMACDll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllMACDll.h; sourceTree = "<group>"; };
-		E38E15F90D25F9FA00618676 /* DllMpcCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllMpcCodec.h; sourceTree = "<group>"; };
 		E38E15FA0D25F9FA00618676 /* DllNosefart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllNosefart.h; sourceTree = "<group>"; };
 		E38E15FB0D25F9FA00618676 /* DllSidplay2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllSidplay2.h; sourceTree = "<group>"; };
 		E38E15FC0D25F9FA00618676 /* DllStSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllStSound.h; sourceTree = "<group>"; };
@@ -3784,6 +3784,8 @@
 		F5E55E8D1076B3CC006E788A /* rtmp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtmp.h; path = libRTMP/rtmp.h; sourceTree = "<group>"; };
 		F5E55E8E1076B3D5006E788A /* rtmppacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = rtmppacket.h; path = libRTMP/rtmppacket.h; sourceTree = "<group>"; };
 		F5E55E8F1076B3E5006E788A /* AMFObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMFObject.h; path = libRTMP/AMFObject.h; sourceTree = "<group>"; };
+		F5E560BA10770F9F006E788A /* OggCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OggCallback.h; sourceTree = "<group>"; };
+		F5E560BB10770F9F006E788A /* OggCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OggCallback.cpp; sourceTree = "<group>"; };
 		F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerManager.cpp; path = xbmc/PowerManager.cpp; sourceTree = SOURCE_ROOT; };
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerManager.h; path = xbmc/PowerManager.h; sourceTree = SOURCE_ROOT; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CocoaPowerSyscall.cpp; path = xbmc/osx/CocoaPowerSyscall.cpp; sourceTree = SOURCE_ROOT; };
@@ -5329,7 +5331,6 @@
 				E38E15E70D25F9FA00618676 /* CDDAcodec.h */,
 				E38E15E80D25F9FA00618676 /* CodecFactory.cpp */,
 				E38E15E90D25F9FA00618676 /* CodecFactory.h */,
-				E38E15ED0D25F9FA00618676 /* DllAACCodec.h */,
 				E38E15EE0D25F9FA00618676 /* DllAc3codec.h */,
 				E38E15EF0D25F9FA00618676 /* DllAdpcm.h */,
 				E38E15F00D25F9FA00618676 /* DllAdplug.h */,
@@ -5339,7 +5340,6 @@
 				E38E15F50D25F9FA00618676 /* DllLibFlac.h */,
 				E38E15F60D25F9FA00618676 /* DllLibshnplay.h */,
 				E38E15F70D25F9FA00618676 /* DllMACDll.h */,
-				E38E15F90D25F9FA00618676 /* DllMpcCodec.h */,
 				E38E15FA0D25F9FA00618676 /* DllNosefart.h */,
 				E38E15FB0D25F9FA00618676 /* DllSidplay2.h */,
 				E38E15FC0D25F9FA00618676 /* DllStSound.h */,
@@ -5365,6 +5365,8 @@
 				E38E161B0D25F9FA00618676 /* NSFCodec.cpp */,
 				E38E161C0D25F9FA00618676 /* NSFCodec.h */,
 				E38E161D0D25F9FA00618676 /* ogg */,
+				F5E560BB10770F9F006E788A /* OggCallback.cpp */,
+				F5E560BA10770F9F006E788A /* OggCallback.h */,
 				E38E16230D25F9FA00618676 /* OGGcodec.cpp */,
 				E38E16240D25F9FA00618676 /* OGGcodec.h */,
 				F5987FDA0FBE2DFD008EF4FB /* PAPlayer.cpp */,
@@ -8094,6 +8096,7 @@
 				F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */,
 				F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
 				F5E55B7010741340006E788A /* Teletext.cpp in Sources */,
+				F5E560BC10770F9F006E788A /* OggCallback.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8949,6 +8952,7 @@
 				F5E55B5E10741272006E788A /* DVDPlayerTeletext.cpp in Sources */,
 				F5E55B67107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
 				F5E55B7110741340006E788A /* Teletext.cpp in Sources */,
+				F5E560BD10770F9F006E788A /* OggCallback.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
