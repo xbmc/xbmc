@@ -324,10 +324,9 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
 }
 
 /**
- * \brief Gets a list of folders for recordings based on what filter is requested
- *
+ * \brief Gets a list of folders for recorded TV shows
  */
-bool CCMythDirectory::GetRecordingFolders(const CStdString& base, CFileItemList &items, const enum FilterType type)
+bool CCMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &items)
 {
   cmyth_conn_t control = m_session->GetControl();
   if(!control)
@@ -352,25 +351,23 @@ bool CCMythDirectory::GetRecordingFolders(const CStdString& base, CFileItemList 
         continue;
       }
 
-      CStdString itemName = "";
-      if(type == TV_SHOWS && IsTvShow(program))
-        itemName = GetValue(m_dll->proginfo_title(program));
-      else
-      {
-        // MOVIES and ALL don't use folder groupings.
-        m_dll->ref_release(program);
-        continue;
-      }
-
-      // Don't add repeats of a virtual directory
-      if (items.Contains(base + "/" + itemName + "/"))
+      if(!IsTvShow(program))
       {
         m_dll->ref_release(program);
         continue;
       }
 
-      CFileItemPtr item(new CFileItem(base + "/" + itemName + "/", true));
-      item->SetLabel(itemName);
+      CStdString title = GetValue(m_dll->proginfo_title(program));
+
+      // Only add each TV show once
+      if (items.Contains(base + "/" + title + "/"))
+      {
+        m_dll->ref_release(program);
+        continue;
+      }
+
+      CFileItemPtr item(new CFileItem(base + "/" + title + "/", true));
+      item->SetLabel(title);
       item->SetLabelPreformated(true);
 
       items.Add(item);
@@ -543,7 +540,7 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if (fileName == "recordings")
     return GetRecordings(base, items);
   else if (fileName == "tvshows")
-    return GetRecordingFolders(base, items, TV_SHOWS);
+    return GetTvShowFolders(base, items);
   else if (fileName.Left(8) == "tvshows/")
     return GetRecordings(base, items, TV_SHOWS, fileName.Mid(8));
   return false;
