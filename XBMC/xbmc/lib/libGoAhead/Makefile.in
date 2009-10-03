@@ -62,7 +62,7 @@ SRCS=$(GOOBJS:.o=.c)
 CFLAGS	+= -DWEBS -DUEMF -DOS="LINUX" -DLINUX $(UMSW) $(DASW) $(SSLSW) $(IFMODSW)-DDEV -D__NO_CGI_BIN
 OTHERS	= -DB_STATS -DB_FILL -DDEBUG
 DEBUG	= -g -Wall
-INCLUDES += -I. -I../../ -I../../linux -I../../../guilib -I../../utils 
+INCLUDES += -I. -I../../ -I../../linux -I../../../guilib -I../../utils -I../../cores
 LDFLAGS	+= $(SSLLIB) $(IFMODLIB)
 
 include ../../../Makefile.include

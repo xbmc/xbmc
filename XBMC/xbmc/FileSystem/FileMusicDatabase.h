@@ -39,6 +39,7 @@ public:
   virtual int64_t GetPosition();
   virtual int64_t GetLength();
 
+  static CStdString TranslateUrl(const CURL& url);
 protected:
   CFile m_file;
 };

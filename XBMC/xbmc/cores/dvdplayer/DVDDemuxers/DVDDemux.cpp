@@ -23,6 +23,11 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "../../../LangCodeExpander.h"
 
+void CDemuxStreamTeletext::GetStreamInfo(std::string& strInfo)
+{
+  strInfo = "Teletext Data Stream";
+}
+
 void CDemuxStreamAudio::GetStreamType(std::string& strInfo)
 {
   char sInfo[64];
@@ -83,14 +88,14 @@ int CDVDDemux::GetNrOfSubtitleStreams()
   return iCounter;
 }
 
-int CDVDDemux::GetNrOfDataStreams()
+int CDVDDemux::GetNrOfTeletextStreams()
 {
   int iCounter = 0;
 
   for (int i = 0; i < GetNrOfStreams(); i++)
   {
     CDemuxStream* pStream = GetStream(i);
-    if (pStream->type == STREAM_DATA) iCounter++;
+    if (pStream->type == STREAM_TELETEXT) iCounter++;
   }
 
   return iCounter;
@@ -138,16 +143,16 @@ CDemuxStreamSubtitle* CDVDDemux::GetStreamFromSubtitleId(int iSubtitleIndex)
   return NULL;
 }
 
-CDemuxStreamData* CDVDDemux::GetStreamFromDataId(int iSubtitleIndex)
+CDemuxStreamTeletext* CDVDDemux::GetStreamFromTeletextId(int iTeletextIndex)
 {
   int counter = -1;
   for (int i = 0; i < GetNrOfStreams(); i++)
   {
     CDemuxStream* pStream = GetStream(i);
 
-    if (pStream->type == STREAM_DATA) counter++;
-    if (iSubtitleIndex == counter)
-      return (CDemuxStreamData*)pStream;
+    if (pStream->type == STREAM_TELETEXT) counter++;
+    if (iTeletextIndex == counter)
+      return (CDemuxStreamTeletext*)pStream;
   }
   return NULL;
 }

@@ -71,6 +71,9 @@ void CRemoteControl::Disconnect()
     if (m_inotify_fd >= 0)
       close(m_inotify_fd);
   }
+  
+  m_lastInitAttempt = -5000;
+  m_initRetryPeriod = 5000;
 }
 
 void CRemoteControl::setDeviceName(const CStdString& value)

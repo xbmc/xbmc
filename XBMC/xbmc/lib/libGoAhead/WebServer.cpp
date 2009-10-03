@@ -325,7 +325,7 @@ void CWebServer::Process()
 	while (!m_bFinished) 
 	{
 		sockReady = socketReady(-1);
-		// wait for event or timeout (default 20 msec)
+		// wait for event or timeout (default 1000 msec)
 		sockSelect = socketSelect(-1, SOCK_DFT_SVC_TIME);
 		if (sockReady || sockSelect) {
 			socketProcess(-1);

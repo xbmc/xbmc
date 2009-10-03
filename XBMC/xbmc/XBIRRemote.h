@@ -57,8 +57,15 @@
 #define XINPUT_IR_REMOTE_STAR           40
 #define XINPUT_IR_REMOTE_HASH           41
 #define XINPUT_IR_REMOTE_CLEAR          249
-#define XINPUT_IR_REMOTE_PLAYLIST       250
-#define XINPUT_IR_REMOTE_GUIDE          252
+
+// additional keys not defined by xbox remotes but present on generic remotes
+#define XINPUT_IR_REMOTE_TELETEXT       250
+#define XINPUT_IR_REMOTE_RED            251
+#define XINPUT_IR_REMOTE_GREEN          252
+#define XINPUT_IR_REMOTE_YELLOW         253
+#define XINPUT_IR_REMOTE_BLUE           254
+#define XINPUT_IR_REMOTE_PLAYLIST       255
+#define XINPUT_IR_REMOTE_GUIDE          256
 
 typedef struct _XINPUT_IR_REMOTE
 {

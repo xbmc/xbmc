@@ -22,6 +22,7 @@
 #include "utils/log.h"
 #include "Windowsx.h"
 #include "WinEvents.h"
+#include "WIN32Util.h"
 #include "Application.h"
 #include "XBMC_vkeys.h"
 #include "MouseStat.h"
@@ -401,7 +402,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       XBMC_keysym keysym;
       TranslateKey(wParam, HIWORD(lParam), &keysym, 1);
 
-      newEvent.type = XBMC_KEYUP;
+      if (wParam == VK_SNAPSHOT)
+        newEvent.type = XBMC_KEYDOWN;
+      else
+        newEvent.type = XBMC_KEYUP;
       newEvent.key.keysym = keysym;
       m_pEventFunc(newEvent);
     }

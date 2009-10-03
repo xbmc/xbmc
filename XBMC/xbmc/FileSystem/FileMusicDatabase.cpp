@@ -38,97 +38,51 @@ CFileMusicDatabase::~CFileMusicDatabase(void)
   Close();
 }
 
-bool CFileMusicDatabase::Open(const CURL& url)
+CStdString CFileMusicDatabase::TranslateUrl(const CURL& url)
 {
   CMusicDatabase musicDatabase;
   if (!musicDatabase.Open())
-    return false;
-
+    return "";
+  
   CStdString strPath;
   url.GetURL(strPath);
-  CStdString strFileName=CUtil::GetFileName(strPath);
 
-  CStdString strExtension;
-  CUtil::GetExtension(strFileName, strExtension);
+  CStdString strFileName=CUtil::GetFileName(strPath);
   CUtil::RemoveExtension(strFileName);
 
-  if (!StringUtils::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
-    return false;
+  if (!StringUtils::IsNaturalNumber(strFileName))
+    return "";
 
   long idSong=atol(strFileName.c_str());
 
   CSong song;
   if (!musicDatabase.GetSongById(idSong, song))
-    return false;
-
+    return "";
+  
+  CStdString strExtension;
+  CUtil::GetExtension(strPath, strExtension);
   CStdString strExtensionFromDb;
   CUtil::GetExtension(song.strFileName, strExtensionFromDb);
 
   if (!strExtensionFromDb.Equals(strExtension))
-    return false;
+    return "";
+ 
+  return song.strFileName; 
+}
 
-  return m_file.Open(song.strFileName);
+bool CFileMusicDatabase::Open(const CURL& url)
+{
+  return m_file.Open(TranslateUrl(url));
 }
 
 bool CFileMusicDatabase::Exists(const CURL& url)
 {
-  CMusicDatabase musicDatabase;
-  if (!musicDatabase.Open())
-    return false;
-
-  CStdString strPath;
-  url.GetURL(strPath);
-  CStdString strFileName=CUtil::GetFileName(strPath);
-
-  CStdString strExtension;
-  CUtil::GetExtension(strFileName, strExtension);
-  CUtil::RemoveExtension(strFileName);
-
-  if (!StringUtils::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
-    return false;
-
-  long idSong=atol(strFileName.c_str());
-
-  CSong song;
-  if (!musicDatabase.GetSongById(idSong, song))
-    return false;
-
-  CStdString strExtensionFromDb;
-  CUtil::GetExtension(song.strFileName, strExtensionFromDb);
-
-  return strExtensionFromDb.Equals(strExtension);
+  return !TranslateUrl(url).IsEmpty();
 }
 
 int CFileMusicDatabase::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CMusicDatabase musicDatabase;
-  if (!musicDatabase.Open())
-    return false;
-
-  CStdString strPath;
-  url.GetURL(strPath);
-  CStdString strFileName=CUtil::GetFileName(strPath);
-
-  CStdString strExtension;
-  CUtil::GetExtension(strFileName, strExtension);
-  CUtil::RemoveExtension(strFileName);
-
-  if (!StringUtils::IsNaturalNumber(strFileName) || strExtension.IsEmpty())
-    return false;
-
-  long idSong=atol(strFileName.c_str());
-
-  CSong song;
-  if (!musicDatabase.GetSongById(idSong, song))
-    return false;
-
-  CStdString strExtensionFromDb;
-  CUtil::GetExtension(song.strFileName, strExtensionFromDb);
-
-  if (!strExtensionFromDb.Equals(strExtension))
-    return false;
-
- return m_file.Stat(song.strFileName, buffer);
+  return m_file.Stat(TranslateUrl(url), buffer);
 }
 
 unsigned int CFileMusicDatabase::Read(void* lpBuf, int64_t uiBufSize)
@@ -155,3 +109,4 @@ int64_t CFileMusicDatabase::GetLength()
 {
   return m_file.GetLength();
 }
+

@@ -244,7 +244,11 @@ void CGUISettings::Initialize()
 #ifdef _LINUX
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32)
+#ifdef HAS_DX
+  AddString(1, "mymusic.visualisation", 250, "Waveform_win32dx.vis", SPIN_CONTROL_TEXT);
+#else
   AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
+#endif
 #endif
   AddSeparator(2, "mymusic.sep1");
   AddBool(3, "mymusic.autoplaynextitem", 489, true);
@@ -491,6 +495,9 @@ void CGUISettings::Initialize()
   AddInt(20, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
   AddFloat(21, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
   AddInt(22, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+
+  AddSeparator(23, "videoplayer.sep5");
+  AddBool(24, "videoplayer.teletextenabled", 23090, true);
 
   AddCategory(5, "subtitles", 287);
   AddString(1, "subtitles.font", 288, "arial.ttf", SPIN_CONTROL_TEXT);

@@ -129,13 +129,13 @@ int StringUtils::FindNumber(const CStdString& strInput, const CStdString &strFin
 // Compares separately the numeric and alphabetic parts of a string.
 // returns negative if left < right, positive if left > right
 // and 0 if they are identical (essentially calculates left - right)
-long long StringUtils::AlphaNumericCompare(const char *left, const char *right)
+int64_t StringUtils::AlphaNumericCompare(const char *left, const char *right)
 {
   unsigned char *l = (unsigned char *)left;
   unsigned char *r = (unsigned char *)right;
   unsigned char *ld, *rd;
   unsigned char lc, rc;
-  long long lnum, rnum;
+  int64_t lnum, rnum;
   while (*l != 0 && *r != 0)
   {
     // check if we have a numerical value

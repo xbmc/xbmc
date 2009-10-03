@@ -151,7 +151,7 @@
 				<height>79</height>
 				<texturefocus>osd_button_txt.png</texturefocus>
 				<texturenofocus>-</texturenofocus>
-				<onclick>XBMC.ActivateWindow(608)</onclick>
+				<onclick>XBMC.ActivateWindow(Teletext)</onclick>
 				<label>-</label>
 				<font>-</font>
 				<onleft>215</onleft>

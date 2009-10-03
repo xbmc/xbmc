@@ -67,19 +67,6 @@ public:
   virtual void GetStreamInfo(std::string& strInfo);
 };
 
-class CDemuxStreamDataFFmpeg
-  : public CDemuxStreamData
-{
-  CDVDDemuxFFmpeg *m_parent;
-  AVStream*        m_stream;
-public:
-  CDemuxStreamDataFFmpeg(CDVDDemuxFFmpeg *parent, AVStream* stream)
-    : m_parent(parent)
-    , m_stream(stream)
-  {}
-  virtual void GetStreamInfo(std::string& strInfo);
-};
-
 #define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg
 #define FFMPEG_DVDNAV_BUFFER_SIZE 2048  // for dvd's
 
@@ -119,7 +106,6 @@ protected:
   friend class CDemuxStreamAudioFFmpeg;
   friend class CDemuxStreamVideoFFmpeg;
   friend class CDemuxStreamSubtitleFFmpeg;
-  friend class CDemuxStreamDataFFmpeg;
 
   int ReadFrame(AVPacket *packet);
   void AddStream(int iId);

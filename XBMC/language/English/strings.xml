@@ -2385,6 +2385,8 @@
   <string id="23082">Lock Add-on manager</string>
   <string id="23083">Use this Add-on again</string>
 
+  <string id="23090">Activate Teletext</string>
+
   <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">External Player Active</string>
   <string id="23101">Click OK to terminate the player</string>

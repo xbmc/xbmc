@@ -73,14 +73,6 @@ void CDemuxStreamSubtitleFFmpeg::GetStreamInfo(std::string& strInfo)
   strInfo = temp;
 }
 
-void CDemuxStreamDataFFmpeg::GetStreamInfo(std::string& strInfo)
-{
-  if(!m_stream) return;
-  char temp[128];
-  strcpy(temp, "DATA STREAM");
-  strInfo = temp;
-}
-
 // these need to be put somewhere that are compiled, we should have some better place for it
 
 CCriticalSection DllAvCodec::m_critSection;
@@ -1032,9 +1024,21 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
       }
     case CODEC_TYPE_DATA:
       {
-        CDemuxStreamData* st = new CDemuxStreamDataFFmpeg(this, pStream);
-        m_streams[iId] = st;
-        break;
+#if (! defined USE_EXTERNAL_FFMPEG)
+        if (pStream->codec->codec_id == CODEC_ID_EBU_TELETEXT && g_guiSettings.GetBool("videoplayer.teletextenabled"))
+        {
+          CDemuxStreamTeletext* st = new CDemuxStreamTeletext();
+          m_streams[iId] = st;
+          m_streams[iId]->type = STREAM_TELETEXT;
+          break;
+        }
+        else
+#endif
+        {
+          m_streams[iId] = new CDemuxStream();
+          m_streams[iId]->type = STREAM_DATA;
+          break;
+        }
       }
     case CODEC_TYPE_SUBTITLE:
       {

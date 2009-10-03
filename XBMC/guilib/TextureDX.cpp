@@ -29,10 +29,10 @@
 /************************************************************************/
 /*    CDXTexture                                                       */
 /************************************************************************/
-CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int BPP)
-: CBaseTexture(width, height, BPP)
+CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int BPP, unsigned int format)
+: CBaseTexture(width, height, BPP, format)
 {
-  Allocate(m_imageWidth, m_imageHeight, m_nBPP);
+  Allocate(m_imageWidth, m_imageHeight, m_nBPP, m_format);
 }
 
 CDXTexture::~CDXTexture()
@@ -42,14 +42,31 @@ CDXTexture::~CDXTexture()
 
 void CDXTexture::CreateTextureObject()
 {
-  D3DFORMAT format;
+  D3DFORMAT format = D3DFMT_UNKNOWN;
 
-  if (m_nBPP == 8)
-    format = D3DFMT_LIN_A8;
-  else if (m_nBPP == 32)
-    format = D3DFMT_LIN_A8R8G8B8;
-  else
+  switch (m_format)
+  {
+  case XB_FMT_DXT1: 
+    format = D3DFMT_DXT1;
+    break; 
+  case XB_FMT_DXT3: 
+    format = D3DFMT_DXT3;
+    break;     
+  case XB_FMT_DXT5: 
+    format = D3DFMT_DXT5;
+    break; 
+  case XB_FMT_R8G8B8A8:
+    format = D3DFMT_A8R8G8B8;
+    break;
+  case XB_FMT_B8G8R8A8:
+    format = D3DFMT_A8B8G8R8;
+    break;
+  case XB_FMT_A8:
+    format = D3DFMT_A8;
+    break;
+  default:
     return;
+  }
 
   SAFE_RELEASE(m_pTexture);
 
@@ -87,11 +104,18 @@ void CDXTexture::LoadToGPU()
     DWORD srcPitch = m_imageWidth * m_nBPP / 8;
     BYTE *pixels = (BYTE *)lr.pBits;
 
-    for (unsigned int y = 0; y < m_nTextureHeight; y++)
+    if ((m_format & XB_FMT_DXT_MASK) == 0)
     {
-      BYTE *dst = pixels + y * destPitch;
-      BYTE *src = m_pPixels + y * srcPitch;
-      memcpy(dst, src, srcPitch);
+      for (unsigned int y = 0; y < m_nTextureHeight; y++)
+      {
+        BYTE *dst = pixels + y * destPitch;
+        BYTE *src = m_pPixels + y * srcPitch;
+        memcpy(dst, src, srcPitch);
+      }
+    }
+    else
+    {
+      memcpy(pixels, m_pPixels, m_bufferSize);
     }
   }
   m_pTexture->UnlockRect(0);

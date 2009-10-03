@@ -339,7 +339,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
     return;
   }
   
-  if (res >= RES_DESKTOP || g_advancedSettings.m_startFullScreen)
+  if (res >= RES_DESKTOP)
   {
     g_advancedSettings.m_fullScreen = true;
     m_bFullScreenRoot = true;

@@ -74,7 +74,6 @@ public:
   Pixmap  m_Pixmap;
   GLuint   m_glPixmapTexture;
   GLXContext m_glContext;
-  bool m_pixmapBound;
 
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
   static void             FFDrawSlice(struct AVCodecContext *s,

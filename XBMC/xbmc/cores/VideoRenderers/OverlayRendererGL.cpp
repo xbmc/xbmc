@@ -340,8 +340,8 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   m_x      = (float)0.0f;
   m_y      = (float)0.0f;
 
-  ass_image_t* images = o->m_libass->RenderImage((int)m_width, (int)m_height, pts);
-  ass_image_t* img;
+  ASS_Image* images = o->m_libass->RenderImage((int)m_width, (int)m_height, pts);
+  ASS_Image* img;
 
   m_texture = ~(GLuint)0;
 
@@ -421,9 +421,9 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
       data    = srca + curr_y * size_x;
     }
 
-    unsigned int b = ((color >> 24) & 0xff);
+    unsigned int r = ((color >> 24) & 0xff);
     unsigned int g = ((color >> 16) & 0xff);
-    unsigned int r = ((color >> 8) & 0xff);
+    unsigned int b = ((color >> 8 ) & 0xff);
 
     for(int i = 0; i < 4; i++)
     {

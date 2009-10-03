@@ -30,40 +30,6 @@ extern "C"
   void* Cocoa_Create_AutoReleasePool(void);
   void Cocoa_Destroy_AutoReleasePool(void* pool);
   
-  // Graphics.
-  //
-  int Cocoa_GetScreenIndex(void);
-  void Cocoa_GetScreenResolution(int* w, int* h);
-  double Cocoa_GetScreenRefreshRate(int screen_index);
-  void Cocoa_GetScreenResolutionOfAnotherScreen(int screen_index, int* w, int* h);
-  int  Cocoa_GetNumDisplays(void);
-  int  Cocoa_GetDisplayID(int screen_index);
-  int Cocoa_GL_GetCurrentDisplayID(void);
-  
-  // Open GL.
-  //
-  void  Cocoa_GL_MakeCurrentContext(void* theContext);
-  void  Cocoa_GL_ReleaseContext(void* context);
-  void  Cocoa_GL_SwapBuffers(void* theContext);
-  void* Cocoa_GL_GetWindowPixelFormat(void);
-  void* Cocoa_GL_GetFullScreenPixelFormat(int screen_index);
-  void* Cocoa_GL_GetCurrentContext(void);
-  void* Cocoa_GL_CreateContext(void* pixFmt, void* shareCtx);
-  void* Cocoa_GL_ResizeWindow(void *theContext, int w, int h);
-  void  Cocoa_GL_SetFullScreen(int screen, int width, int height, bool fs, bool blankOtherDisplay, bool GL_FullScreen);
-  void  Cocoa_GL_EnableVSync(bool enable);
-
-  //
-  // Blanking.
-  //
-  void Cocoa_GL_UnblankDisplays();
-  void Cocoa_GL_BlankOtherDisplays(int screen);
-
-  //
-  // SDL Hack
-  //
-  void* Cocoa_GL_ReplaceSDLWindowContext(void);
-  
   // Power and Screen
   //
   void Cocoa_UpdateSystemActivity(void);

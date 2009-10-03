@@ -351,10 +351,9 @@ void XBPython::Initialize()
       InitXBMCTypes();
       InitGUITypes();
       InitPluginTypes();
-
-      m_mainThreadState = PyThreadState_Get();
-
-      // release the lock
+      
+      if (!(m_mainThreadState = PyThreadState_Get()))
+        CLog::Log(LOGERROR, "Python threadstate is NULL.");
       PyEval_ReleaseLock();
 
       m_bInitialized = true;
@@ -379,13 +378,19 @@ void XBPython::Finalize()
 {
   CSingleLock lock(m_critSection);
   // for linux - we never release the library. its loaded and stays in memory.
-  m_iDllScriptCounter--;
+  if (m_iDllScriptCounter)
+    m_iDllScriptCounter--;
+  else
+    CLog::Log(LOGERROR, "Python script counter attempted to become negative");
   if (m_iDllScriptCounter == 0 && m_bInitialized)
   {
     CLog::Log(LOGINFO, "Python, unloading python24.dll because no scripts are running anymore");
+    
     PyEval_AcquireLock();
     PyThreadState_Swap(m_mainThreadState);
+    
     Py_Finalize();
+    PyEval_ReleaseLock();
 
     UnloadExtensionLibs();
 
@@ -461,6 +466,7 @@ int XBPython::evalFile(const char *src) { return evalFile(src, 0, NULL); }
 // execute script, returns -1 if script doesn't exist
 int XBPython::evalFile(const char *src, const unsigned int argc, const char ** argv)
 {
+  CSingleLock lock(m_critSection);
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
   {
@@ -490,7 +496,6 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   inf.strFile   = src;
   inf.pyThread  = pyThread;
 
-  CSingleLock lock(m_critSection);
   m_vecPyList.push_back(inf);
 
   return m_nextid;
@@ -531,6 +536,7 @@ void XBPython::stopScript(int id)
 
 PyThreadState *XBPython::getMainThreadState()
 {
+  CSingleLock lock(m_critSection);
   return m_mainThreadState;
 }
 
@@ -628,6 +634,7 @@ void XBPython::WaitForEvent(HANDLE hEvent, DWORD timeout)
 int XBPython::evalString(const char *src, const unsigned int argc, const char ** argv)
 {
   CLog::Log(LOGDEBUG, "XBPython::evalString (python)");
+  CSingleLock lock(m_critSection);
   
   Initialize();
 
@@ -650,7 +657,6 @@ int XBPython::evalString(const char *src, const unsigned int argc, const char **
   inf.strFile   = "<string>";
   inf.pyThread  = pyThread;
 
-  CSingleLock lock(m_critSection);
   m_vecPyList.push_back(inf);
 
   return m_nextid;

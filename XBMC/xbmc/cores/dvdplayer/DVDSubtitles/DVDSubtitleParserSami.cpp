@@ -25,6 +25,7 @@
 #include "utils/RegExp.h"
 #include "DVDStreamInfo.h"
 #include "StdString.h"
+#include "SamiTagConvertor.h"
 
 using namespace std;
 
@@ -50,8 +51,8 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
   if (!reg.RegComp("<SYNC START=([0-9]+)>"))
     return false;
 
-  CRegExp tags(true);
-  if (!tags.RegComp("<[^>]*>"))
+  SamiTagConvertor TagConv;
+  if (!TagConv.Init())
     return false;
 
   CDVDOverlayText* pOverlay = NULL;
@@ -64,9 +65,10 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       CStdString start = reg.GetMatch(1);
       if(pOverlay)
       {
-        AddText(tags, pOverlay, text, pos);
+        TagConv.ConvertLine(pOverlay, text, pos);
         pOverlay->iPTSStopTime  = (double)atoi(start.c_str()) * DVD_TIME_BASE / 1000;
         pOverlay->Release();
+        TagConv.CloseTag(pOverlay);
       }
 
       pOverlay = new CDVDOverlayText();
@@ -78,37 +80,9 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo &hints)
       text += pos + reg.GetFindLen();
     }
     if(pOverlay)
-      AddText(tags, pOverlay, text, strlen(text));
+      TagConv.ConvertLine(pOverlay, text, strlen(text));
   }
-
-  if(pOverlay)
-    pOverlay->Release();
 
   return true;
-}
-
-void CDVDSubtitleParserSami::AddText(CRegExp& tags, CDVDOverlayText* pOverlay, const char* data, int len)
-{
-  CStdStringA strUTF8;
-  strUTF8.assign(data, len);
-  strUTF8.Replace("\n", "");
-
-  int pos = 0;
-  while( (pos = tags.RegFind(strUTF8.c_str(), pos)) >= 0 )
-  {
-    CStdString tag = tags.GetMatch(0);
-    if(tag == "<i>"
-    || tag == "</i>")
-    {
-      pos += tag.length();
-      continue;
-    }
-    strUTF8.erase(pos, tag.length());
-  }
-
-  if (strUTF8.IsEmpty())
-    return;
-  // add a new text element to our container
-  pOverlay->AddElement(new CDVDOverlayText::CElementText(strUTF8.c_str()));
 }
 

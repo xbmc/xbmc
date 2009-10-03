@@ -36,7 +36,7 @@ class CFileItemList;
 #include "GUIWindowPointer.h"   // Mouse pointer
 
 #include "cores/IPlayer.h"
-#include "cores/PlayerCoreFactory.h"
+#include "playercorefactory/PlayerCoreFactory.h"
 #include "PlayListPlayer.h"
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
 #include "DetectDVDType.h"
@@ -52,9 +52,6 @@ class CFileItemList;
 #endif
 #ifdef _LINUX
 #include "linux/LinuxResourceCounter.h"
-#endif
-#ifdef _WIN32
-#include "WIN32Util.h"
 #endif
 #include "XBMC_events.h"
 #include "utils/Thread.h"
@@ -192,6 +189,7 @@ public:
 
   void SaveMusicScanSettings();
   void RestoreMusicScanSettings();
+  void UpdateLibraries();
   void CheckMusicPlaylist();
 
   bool ExecuteXBMCAction(std::string action);
@@ -327,6 +325,7 @@ protected:
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
   bool m_bWasFullScreenBeforeMinimize;
+  bool m_bSystemScreenSaverEnable;
 
 #ifdef HAS_SDL
   int        m_frameCount;
@@ -377,9 +376,6 @@ protected:
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
-#endif
-#ifdef _WIN32
-  CWIN32Util::SystemParams::SysParam *m_SSysParam;
 #endif
 };
 

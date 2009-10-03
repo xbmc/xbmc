@@ -25,13 +25,12 @@
 #endif
 /* undefine byte from PlatformDefs.h since it's used in mad.h */
 #undef byte
-#if (defined USE_EXTERNAL_LIBMAD)
+#if defined(_LINUX) && !defined(__APPLE__)
   #include <mad.h>
 #else
   #include "libmad/mad.h"
 #endif
 #include "DynamicDll.h"
-#include "utils/log.h"
 
 class DllLibMadInterface
 {
@@ -45,41 +44,13 @@ public:
   virtual void mad_stream_buffer(struct mad_stream *, unsigned char const *, unsigned long)=0;
   virtual void mad_synth_frame(struct mad_synth *, struct mad_frame const *)=0;
   virtual int mad_frame_decode(struct mad_frame *, struct mad_stream *)=0;
+  virtual int mad_stream_sync(struct mad_stream *) = 0;
+  virtual char const* mad_stream_errorstr(struct mad_stream const *) = 0;
+  virtual void mad_frame_mute(struct mad_frame *) = 0;
+  virtual void mad_synth_mute(struct mad_synth *) = 0;
+  virtual void mad_timer_add(mad_timer_t *, mad_timer_t) = 0;
+  virtual mad_timer_t Get_mad_timer_zero() = 0;
 };
-
-#if (defined USE_EXTERNAL_LIBMAD)
-
-class DllLibMad : public DllDynamic, DllLibMadInterface
-{
-public:
-    virtual ~DllLibMad() {}
-    virtual void mad_synth_init(struct mad_synth *synth)
-        { return ::mad_synth_init(synth); }
-    virtual void mad_stream_init(struct mad_stream *stream)
-        { return ::mad_stream_init(stream); }
-    virtual void mad_frame_init(struct mad_frame *frame)
-        { return ::mad_frame_init(frame); }
-    virtual void mad_stream_finish(struct mad_stream *stream)
-        { return ::mad_stream_finish(stream); }
-    virtual void mad_frame_finish(struct mad_frame *frame)
-        { return ::mad_frame_finish(frame); }
-    virtual void mad_stream_buffer(struct mad_stream *stream, unsigned char const *buffer, unsigned long size)
-        { return ::mad_stream_buffer(stream, buffer, size); }
-    virtual void mad_synth_frame(struct mad_synth *synth, struct mad_frame const *frame)
-        { return ::mad_synth_frame(synth, frame); }
-    virtual int mad_frame_decode(struct mad_frame *frame, struct mad_stream *stream)
-        { return ::mad_frame_decode(frame, stream); }
-
-    // DLL faking.
-    virtual bool ResolveExports() { return true; }
-    virtual bool Load() {
-        CLog::Log(LOGDEBUG, "DllLibMad: Using libmad system library");
-        return true;
-    }
-    virtual void Unload() {}
-};
-
-#else
 
 class DllLibMad : public DllDynamic, DllLibMadInterface
 {
@@ -92,6 +63,12 @@ class DllLibMad : public DllDynamic, DllLibMadInterface
   DEFINE_METHOD3(void, mad_stream_buffer, (struct mad_stream * p1, unsigned char const *p2, unsigned long p3))
   DEFINE_METHOD2(void, mad_synth_frame, (struct mad_synth *p1, struct mad_frame const *p2))
   DEFINE_METHOD2(int, mad_frame_decode, (struct mad_frame *p1, struct mad_stream *p2))
+  DEFINE_METHOD1(int, mad_stream_sync, (struct mad_stream *p1))
+  DEFINE_METHOD1(void, mad_frame_mute, (struct mad_frame *p1))
+  DEFINE_METHOD1(void, mad_synth_mute, (struct mad_synth *p1))
+  DEFINE_METHOD2(void, mad_timer_add, (mad_timer_t *p1, mad_timer_t p2))
+  DEFINE_METHOD1(char const*, mad_stream_errorstr, (struct mad_stream const *p1))
+  DEFINE_GLOBAL(mad_timer_t, mad_timer_zero)
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(mad_synth_init)
     RESOLVE_METHOD(mad_stream_init)
@@ -101,7 +78,12 @@ class DllLibMad : public DllDynamic, DllLibMadInterface
     RESOLVE_METHOD(mad_stream_buffer)
     RESOLVE_METHOD(mad_synth_frame)
     RESOLVE_METHOD(mad_frame_decode)
+    RESOLVE_METHOD(mad_stream_sync)
+    RESOLVE_METHOD(mad_frame_mute)
+    RESOLVE_METHOD(mad_synth_mute)
+    RESOLVE_METHOD(mad_timer_add)
+    RESOLVE_METHOD(mad_stream_errorstr)
+    RESOLVE_METHOD(mad_timer_zero)
   END_METHOD_RESOLVE()
 };
 
-#endif

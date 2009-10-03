@@ -20,14 +20,13 @@
  */
 
 #include "XSyncUtils.h"
+#include "XTimeUtils.h"
 #include "PlatformDefs.h"
 #include "XHandle.h"
 #include "XEventUtils.h"
 
 #ifdef __APPLE__
 #include <mach/mach.h>
-#include <mach/mach_time.h>
-#include <sys/sysctl.h>
 #include <SDL/SDL.h>
 #else
 #include <SDL.h>
@@ -283,7 +282,7 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
     return dwRet;
 
   BOOL bWaitEnded    = FALSE;
-  DWORD dwStartTime   = SDL_GetTicks();
+  DWORD dwStartTime   = GetTickCount();
   BOOL *bDone = new BOOL[nCount];
   CXHandle* multi = CreateEvent(NULL, FALSE, FALSE, NULL);
 
@@ -326,7 +325,7 @@ DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWait
     if (bWaitEnded)
       break;
 
-    DWORD dwElapsed = SDL_GetTicks() - dwStartTime;
+    DWORD dwElapsed = GetTickCount() - dwStartTime;
     if (dwMilliseconds != INFINITE && dwElapsed >= dwMilliseconds) {
       dwRet = WAIT_TIMEOUT;
       bWaitEnded = TRUE;

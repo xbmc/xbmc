@@ -1,4 +1,4 @@
-INCLUDES=-I. -I.. -I../../../ -I../../ffmpeg -I../../../utils -I../../../linux -I../../../../guilib
+INCLUDES=-I. -I.. -I../.. -I../../../ -I../../ffmpeg -I../../../utils -I../../../linux -I../../../../guilib
 CXXFLAGS+=-D__STDC_CONSTANT_MACROS \
 
 SRCS=	DVDDemux.cpp \

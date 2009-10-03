@@ -31,8 +31,8 @@ public:
   CDVDSubtitlesLibass();
   ~CDVDSubtitlesLibass();
 
-  ass_image_t* RenderImage(int imageWidth, int imageHeight, double pts);
-  ass_event_t* GetEvents();
+  ASS_Image* RenderImage(int imageWidth, int imageHeight, double pts);
+  ASS_Event* GetEvents();
 
   int GetNrOfEvents();
 
@@ -47,8 +47,8 @@ public:
 private:
   DllLibass m_dll;
   long m_references;
-  ass_library_t* m_library;
-  ass_track_t* m_track;
-  ass_renderer_t* m_renderer;
+  ASS_Library* m_library;
+  ASS_Track* m_track;
+  ASS_Renderer* m_renderer;
 };
 

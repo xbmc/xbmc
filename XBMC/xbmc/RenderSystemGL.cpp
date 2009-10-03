@@ -68,7 +68,7 @@ bool CRenderSystemGL::InitRenderSystem()
   
   // Check if we need DPOT  
   m_NeedPower2Texture = true;
-  if (m_RenderVerdenVersionMajor >= 2 && GLEW_ARB_texture_non_power_of_two)
+  if (GLEW_ARB_texture_non_power_of_two)
     m_NeedPower2Texture = false;
   
   // Get our driver vendor and renderer
@@ -431,6 +431,11 @@ void CRenderSystemGL::SetViewPort(CRect& viewPort)
   
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+}
+
+bool CRenderSystemGL::SupportsCompressedTextures()
+{
+  return glewIsSupported("GL_EXT_texture_compression_s3tc");
 }
 
 #endif

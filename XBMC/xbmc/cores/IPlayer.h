@@ -24,6 +24,7 @@
 #include "IAudioCallback.h"
 #include "Key.h"
 
+struct TextCacheStruct_t;
 class TiXmlElement;
 class CStreamDetails;
 
@@ -68,7 +69,7 @@ public:
   virtual bool QueueNextFile(const CFileItem &file) { return false; }
   virtual void OnNothingToQueueNotify() {}
   virtual bool CloseFile(){ return true;}
-  virtual bool IsPlaying() const { return false;} 
+  virtual bool IsPlaying() const { return false;}
   virtual void Pause() = 0;
   virtual bool IsPaused() const = 0;
   virtual bool HasVideo() const = 0;
@@ -110,6 +111,9 @@ public:
   virtual void GetAudioStreamName(int iStream, CStdString &strStreamName){};
   virtual void SetAudioStream(int iStream){};
 
+  virtual TextCacheStruct_t* GetTeletextCache() { return NULL; };
+  virtual void LoadPage(int p, int sp, unsigned char* buffer) {};
+
   virtual int  GetChapterCount()                               { return 0; }
   virtual int  GetChapter()                                    { return -1; }
   virtual void GetChapterName(CStdString& strChapterName)      { return; }
@@ -138,7 +142,7 @@ public:
   //Returns true if not playback (paused or stopped beeing filled)
   virtual bool IsCaching() const {return false;};
   //Cache filled in Percent
-  virtual int GetCacheLevel() const {return -1;}; 
+  virtual int GetCacheLevel() const {return -1;};
 
   virtual bool IsInMenu() const {return false;};
   virtual bool HasMenu() { return false; };
@@ -151,6 +155,8 @@ public:
   virtual CStdString GetPlayerState() { return ""; };
   virtual bool SetPlayerState(CStdString state) { return false;};
   
+  virtual CStdString GetPlayingTitle() { return ""; };
+
 protected:
   IPlayerCallback& m_callback;
 };

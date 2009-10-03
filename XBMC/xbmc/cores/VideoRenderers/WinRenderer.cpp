@@ -1154,9 +1154,6 @@ void CWinRenderer::RenderLowMem(DWORD flags)
   if(m_pYUV2RGBEffect == NULL)
     LoadEffect();
 
-  static byte test = 0;
-  test++;
-
   CSingleLock lock(g_graphicsContext);
 
   int index = m_iYV12RenderBuffer;
@@ -1302,7 +1299,7 @@ void CWinRenderer::CreateThumbnail(CBaseTexture *texture, unsigned int width, un
     D3DLOCKED_RECT lockedRect;
     if (D3D_OK == surface->LockRect(&lockedRect, NULL, NULL))
     {
-      texture->LoadFromMemory(width, height, lockedRect.Pitch, 32, (unsigned char *)lockedRect.pBits);
+      texture->LoadFromMemory(width, height, lockedRect.Pitch, XB_FMT_B8G8R8A8, 32, (unsigned char *)lockedRect.pBits);
       surface->UnlockRect();
     }
     surface->Release();

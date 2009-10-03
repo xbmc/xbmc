@@ -27,6 +27,7 @@
  */
 #include "WinSystemWin32GL.h"
 #include "WIN32Util.h"
+#include <GL/glew.h>
 
 #ifdef HAS_GL
 
@@ -40,7 +41,7 @@ CWinSystemWin32GL g_Windowing;
 
 CWinSystemWin32GL::CWinSystemWin32GL()
 {
-
+  m_wglSwapIntervalEXT = NULL;
 }
 
 CWinSystemWin32GL::~CWinSystemWin32GL()
@@ -75,6 +76,9 @@ bool CWinSystemWin32GL::InitRenderSystem()
 
   wglMakeCurrent(m_hDC, m_hglrc);
 
+  if(strstr((const char*)glGetString(GL_EXTENSIONS), "WGL_EXT_swap_control"))
+    m_wglSwapIntervalEXT = (BOOL (APIENTRY *)(int))wglGetProcAddress( "wglSwapIntervalEXT" );
+
   if(!CRenderSystemGL::InitRenderSystem())
     return false;
 
@@ -85,7 +89,8 @@ bool CWinSystemWin32GL::InitRenderSystem()
 
 void CWinSystemWin32GL::SetVSyncImpl(bool enable)
 {
-
+  if(m_wglSwapIntervalEXT)
+    m_wglSwapIntervalEXT(enable ? 1 : 0);
 }
 
 bool CWinSystemWin32GL::PresentRenderImpl()

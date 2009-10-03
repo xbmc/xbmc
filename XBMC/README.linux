@@ -28,7 +28,7 @@ You will have to grab the source code of course. First install the subversion
 package provided by your distribution. Then from a terminal, type:
 
    $ cd $HOME
-   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk
+   $ svn checkout https://xbmc.svn.sourceforge.net/svnroot/xbmc/trunk xbmc
 
 -----------------------------------------------------------------------------
 3. Installing the required libraries and headers
@@ -50,7 +50,7 @@ Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
  libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
  libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
  libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
- libmpeg2-4-dev, libass-dev, libmpcdec-dev, libflac-dev, libwavpack-dev,
+ libmpeg2-4-dev, libass-dev, libflac-dev, libwavpack-dev,
  python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
  zlib1g-dev, libmms-dev, libsmbclient-dev,
 
@@ -131,9 +131,6 @@ These configure options exist (among others):
                           no) 'Linux only'
   --enable-external-libogg
                           enable use of external libogg library (default is
-                          no) 'Linux only'
-  --enable-external-libmpcdec
-                          enable use of external libmpcdec library (default is
                           no) 'Linux only'
   --enable-external-libflac
                           enable use of external libflac library (default is

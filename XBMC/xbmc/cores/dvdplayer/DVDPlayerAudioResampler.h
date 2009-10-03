@@ -22,14 +22,13 @@
  
 #include <samplerate.h>
 
-#define MAXCONVSAMPLES 100000
-#define RINGSIZE 1000000
+#define MAXRATIO 3
 
 #define PROPORTIONAL 20.0
-#define PROPREF 0.01
-#define PROPDIVMIN 2.0
-#define PROPDIVMAX 40.0
-#define INTEGRAL 200.0
+#define PROPREF       0.01
+#define PROPDIVMIN    2.0
+#define PROPDIVMAX   40.0
+#define INTEGRAL    200.0
 
 //forward declaration of struct stDVDAudioFrame
 typedef struct stDVDAudioFrame DVDAudioFrame;
@@ -40,26 +39,27 @@ class CDVDPlayerResampler
     CDVDPlayerResampler();
     ~CDVDPlayerResampler();
   
-    void Add(DVDAudioFrame &audioframe, double pts);
-    bool Retreive(DVDAudioFrame &audioframe, double &pts);
-    void SetRatio(double ratio);
-    void Flush();
-    void SetQuality(int Quality);
-    void Clean();
+    void Add(DVDAudioFrame &audioframe, double pts);       //add audioframes and resample
+    bool Retreive(DVDAudioFrame &audioframe, double &pts); //get audioframes fromt the samplebuffer
+    void SetRatio(double ratio);                           //ratio higher than 1.0 means more output samples than input
+    void Flush();                                          //clear samplebuffer
+    void SetQuality(int quality);
+    void Clean();                                          //free buffers
   
   private:
   
-    int m_NrChannels;
-    int m_Quality;
-    SRC_STATE* m_Converter;
-    SRC_DATA m_ConverterData;
+    int        m_nrchannels;
+    int        m_quality;
+    SRC_STATE* m_converter;
+    SRC_DATA   m_converterdata;
   
-    float*  m_RingBuffer;  //ringbuffer for the audiosamples
-    int     m_RingBufferPos;  //where we are in the ringbuffer
-    int     m_RingBufferFill; //how many unread samples there are in the ringbuffer, starting at RingBufferPos
-    double *m_PtsRingBuffer;  //ringbuffer for the pts value, each sample gets its own pts
+    float*     m_buffer;     //buffer for the audioframes
+    int        m_bufferfill; //how many unread frames there are in the buffer
+    int        m_buffersize; //size of allocated buffer in frames
+    double*    m_ptsbuffer;  //ringbuffer for the pts value, each frame gets its own pts
   
     void CheckResampleBuffers(int channels);
+    void ResizeSampleBuffer(int nrframes);
     
     //this makes sure value is bewteen min and max
     template <typename A, typename B, typename C>

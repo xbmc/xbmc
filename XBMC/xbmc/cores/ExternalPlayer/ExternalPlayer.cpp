@@ -27,6 +27,7 @@
 #include "GUITextLayout.h"
 #include "GUIWindowManager.h"
 #include "Application.h"
+#include "FileSystem/FileMusicDatabase.h"
 #include "Settings.h"
 #include "FileItem.h"
 #include "RegExp.h"
@@ -35,6 +36,9 @@
 #include "XMLUtils.h"
 #if defined(_WIN32)
   #include "Windows.h"
+#ifdef HAS_IRSERVERSUITE
+  #include "common/IRServerSuite/IRServerSuite.h"
+#endif
 #endif
 #if defined(HAS_LIRC)
   #include "common/LIRC.h"
@@ -45,6 +49,8 @@
 #define LAUNCHER_PROCESS_TIME 2000
 // Time (ms) we give a process we sent a WM_QUIT to close before terminating
 #define PROCESS_GRACE_TIME 3000
+
+using namespace XFILE;
 
 CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -116,6 +122,8 @@ void CExternalPlayer::Process()
       mainFile = url.GetHostName();
       archiveContent = url.GetFileName();
     }
+    if (protocol == "musicdb")
+      mainFile = CFileMusicDatabase::TranslateUrl(url);
   }
 
   if (m_filenameReplacers.size() > 0) 
@@ -469,7 +477,9 @@ BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
   CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, strSwitches);
 #ifdef HAS_LIRC
+  bool remoteused = g_RemoteControl.IsInUse();
   g_RemoteControl.Disconnect();
+  g_RemoteControl.setUsed(false);
 #endif
   g_graphicsContext.Lock();
 
@@ -477,6 +487,7 @@ BOOL CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 
   g_graphicsContext.Unlock();
 #ifdef HAS_LIRC
+  g_RemoteControl.setUsed(remoteused);
   g_RemoteControl.Initialize();
 #endif
 

@@ -9,14 +9,14 @@ struct RAR20_archive_entry                  /* These infos about files are  */
   wchar_t       *NameW;
   unsigned short NameSize;
   unsigned long  PackSize;
-  long long      UnpSize;
+  int64_t        UnpSize;
   unsigned char  HostOS;                    /* MSDOS=0,OS2=1,WIN32=2,UNIX=3 */
   unsigned long  FileCRC;
   unsigned long  FileTime;
   unsigned char  UnpVer;
   unsigned char  Method;
   unsigned long  FileAttr;
-  long long      iOffset;
+  int64_t        iOffset;
 };
 
 /* used to list archives */
@@ -34,7 +34,7 @@ typedef struct archivelist
           or NULL for all files.
   libpassword   - Password (for encrypted archives)
 \*-------------------------------------------------------------------------*/
-int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword = NULL, long long* iOffset=NULL, bool bShowProgress=false);
+int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libpassword = NULL, int64_t* iOffset=NULL, bool bShowProgress=false);
 
 /*-------------------------------------------------------------------------*\
   List the files in a RAR file

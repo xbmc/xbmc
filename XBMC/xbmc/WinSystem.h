@@ -52,6 +52,10 @@ public:
   virtual bool IsCreated(){ return m_bWindowCreated; }
   virtual void NotifyAppFocusChange(bool bGaining) {};
 
+  // OS System screensaver
+  virtual void EnableSystemScreenSaver(bool bEnable) {};
+  virtual bool IsSystemScreenSaverEnabled() {return false;}
+
   // resolution interfaces
   unsigned int GetWidth() { return m_nWidth; }
   unsigned int GetHeight() { return m_nHeight; }

@@ -44,12 +44,12 @@ bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo &hints)
     return false;
 
   //Creating the overlays by going through the list of ass_events
-  ass_event_t* assEvent = m_libass->GetEvents();
+  ASS_Event* assEvent = m_libass->GetEvents();
   int numEvents = m_libass->GetNrOfEvents();
 
   for(int i=0; i < numEvents; i++)
   {
-    ass_event_t* curEvent =  (assEvent+i);
+    ASS_Event* curEvent =  (assEvent+i);
     if (curEvent)
     {
       CDVDOverlaySSA* overlay = new CDVDOverlaySSA(m_libass);
