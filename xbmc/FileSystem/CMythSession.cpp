@@ -47,6 +47,10 @@ using namespace std;
 #endif
 #endif
 
+#define MYTH_DEFAULT_USERNAME "mythtv"
+#define MYTH_DEFAULT_PASSWORD "mythtv"
+#define MYTH_DEFAULT_DATABASE "mythconverg"
+
 CCriticalSection       CCMythSession::m_section_session;
 vector<CCMythSession*> CCMythSession::m_sessions;
 
@@ -197,9 +201,9 @@ CCMythSession::CCMythSession(const CURL& url)
     m_port = 6543;
 
   if (m_username == "")
-    m_username = "mythtv";
+    m_username = MYTH_DEFAULT_USERNAME;
   if (m_password == "")
-    m_password = "mythtv";
+    m_password = MYTH_DEFAULT_PASSWORD;
 
   m_dll = new DllLibCMyth;
   m_dll->Load();
@@ -236,13 +240,13 @@ bool CCMythSession::CanSupport(const CURL& url)
 
   data = url.GetUserName();
   if (data == "")
-    data = "mythtv";
+    data = MYTH_DEFAULT_USERNAME;
   if (m_username != data)
     return false;
 
   data = url.GetPassWord();
   if (data == "")
-    data = "mythtv";
+    data = MYTH_DEFAULT_PASSWORD;
   if (m_password != data)
     return false;
 
@@ -342,7 +346,7 @@ cmyth_database_t CCMythSession::GetDatabase()
     if (!m_dll->IsLoaded())
       return false;
 
-    m_database = m_dll->database_init((char*)m_hostname.c_str(), (char*)"mythconverg",
+    m_database = m_dll->database_init((char*)m_hostname.c_str(), (char*)MYTH_DEFAULT_DATABASE,
                                       (char*)m_username.c_str(), (char*)m_password.c_str());
     if (!m_database)
       CLog::Log(LOGERROR, "%s - unable to connect to database %s, port %d", __FUNCTION__, m_hostname.c_str(), m_port);
