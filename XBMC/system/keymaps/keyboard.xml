@@ -164,7 +164,6 @@
       <down>BigStepBack</down>
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
-      <v>Teletext</v>
     </keyboard>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -509,13 +508,6 @@
       <escape>Close</escape>
     </keyboard>
   </TVOSDGuide>
-  <TVOSDTeletext>
-    <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-      <v>Close</v>
-    </keyboard>
-  </TVOSDTeletext>
   <MyTVSettings>
     <keyboard>
       <backspace>PreviousMenu</backspace>

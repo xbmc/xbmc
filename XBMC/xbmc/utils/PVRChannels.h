@@ -200,7 +200,6 @@ private:
   CStdString          m_IconPath;             /// Path to the logo image
 
   bool                m_encrypted;            /// Encrypted channel
-  bool                m_bTeletext;            ///
   bool                m_radio;                /// Radio channel
   bool                m_hide;                 /// Channel is hide inside filelists
   bool                m_isRecording;
@@ -247,8 +246,6 @@ public:
   void SetRadio(bool radio) { m_radio = radio; }
   bool IsRecording(void) const { return m_isRecording; }
   void SetRecording(bool rec) { m_isRecording = rec; }
-  bool HaveTeletext(void) const { return m_bTeletext; }
-  void SetTeletext(bool tt) { m_bTeletext = tt; }
   CStdString Stream(void) const { return m_strStreamURL; }
   void SetStream(CStdString stream) { m_strStreamURL = stream; }
   CStdString Path(void) const { return m_strFileNameAndPath; }

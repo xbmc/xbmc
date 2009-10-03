@@ -219,7 +219,6 @@
 #include "GUIDialogTVChannels.h"
 #include "GUIDialogTVGuide.h"
 #include "GUIDialogTVGroupManager.h"
-#include "GUIDialogTVTeletext.h"
 #include "GUIDialogSlider.h"
 #include "cores/dlgcache.h"
 
@@ -1229,7 +1228,6 @@ HRESULT CApplication::Initialize()
   m_gWindowManager.Add(new CGUIDialogTVGuide);                  // window id = 603
   m_gWindowManager.Add(new CGUIDialogTVRecordingInfo);          // window id = 603
   m_gWindowManager.Add(new CGUIDialogTVGroupManager);           // window id = 603
-  m_gWindowManager.Add(new CGUIDialogTVTeletext);               // window id =
   m_gWindowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
 #ifdef HAS_GL  
   m_gWindowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
@@ -3458,7 +3456,6 @@ HRESULT CApplication::Cleanup()
     m_gWindowManager.Delete(WINDOW_DIALOG_TV_CHANNEL_MANAGER);
     m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_CHANNELS);
     m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_GUIDE);
-    m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_TELETEXT);
     m_gWindowManager.Delete(WINDOW_DIALOG_TV_OSD_DIRECTOR);
 
     m_gWindowManager.Delete(WINDOW_STARTUP);

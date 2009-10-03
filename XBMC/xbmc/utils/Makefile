@@ -59,7 +59,6 @@ SRCS=Addon.cpp \
      PVRTimers.cpp \
      PVRChannels.cpp \
      PVRRecordings.cpp \
-     TeletextRender.cpp \
      StreamDetails.cpp \
      TimeUtils.cpp
 

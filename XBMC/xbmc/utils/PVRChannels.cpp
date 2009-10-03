@@ -92,7 +92,6 @@ void cPVRChannelInfoTag::Reset()
   m_encrypted             = false;
   m_hide                  = false;
   m_isRecording           = false;
-  m_bTeletext             = false;
   m_startTime             = NULL;
   m_endTime               = NULL;
   m_strFileNameAndPath    = "";

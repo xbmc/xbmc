@@ -140,7 +140,6 @@
       <enter>AspectRatio</enter>
       <select>AspectRatio</select>
       <guide>Guide</guide>
-      <teletext>Teletext</teletext>
     </remote>
   </FullscreenVideo>
   <FullscreenInfo>
@@ -469,14 +468,6 @@
       <guide>Close</guide>
     </remote>
   </TVOSDGuide>
-  <TVOSDTeletext>
-    <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
-      <teletext>Close</teletext>
-    </remote>
-  </TVOSDTeletext>
   <MyTVSettings>
     <remote>
       <back>PreviousMenu</back>

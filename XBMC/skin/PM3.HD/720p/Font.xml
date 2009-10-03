@@ -57,22 +57,6 @@
 			<size>80</size>
 			<aspect>.8</aspect>
 		</font>
-	 	<font>
-			<name>text10</name>
-			<filename>teletext.ttf</filename>
-			<size>15</size>
-		</font>
-	 	<font>
-			<name>text12</name>
-			<filename>teletext.ttf</filename>
-			<size>20</size>
-			<aspect>1.45</aspect>
-		</font>
-	 	<font>
-			<name>text14</name>
-			<filename>teletext.ttf</filename>
-			<size>28</size>
-		</font>
 	</fontset>
 	<fontset id="Arial" unicode="true">
 	 	<font>

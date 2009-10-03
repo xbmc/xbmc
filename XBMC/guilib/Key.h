@@ -278,7 +278,6 @@
 #define ACTION_RELOAD_KEYMAPS         204 // reloads CButtonTranslator's keymaps
 #define ACTION_GUIPROFILE_BEGIN       204 // start the GUIControlProfiler running
 
-#define ACTION_OSD_TELETEXT           215
 #define ACTION_OSD_GUIDE              216
 
 // Window ID defines to make the code a bit more readable
@@ -373,7 +372,6 @@
 #define WINDOW_DIALOG_TV_CHANNEL_MANAGER  10605
 #define WINDOW_DIALOG_TV_OSD_CHANNELS     10606
 #define WINDOW_DIALOG_TV_OSD_GUIDE        10607
-#define WINDOW_DIALOG_TV_OSD_TELETEXT     10608
 #define WINDOW_DIALOG_TV_OSD_DIRECTOR     10609
 
 //#define WINDOW_VIRTUAL_KEYBOARD           11000

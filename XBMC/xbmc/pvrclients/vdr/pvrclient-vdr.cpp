@@ -77,7 +77,6 @@ PVR_ERROR PVRClientVDR::GetProperties(PVR_SERVERPROPS *props)
   props->SupportTV                 = true;
   props->SupportRadio              = true;
   props->SupportChannelSettings    = true;
-  props->SupportTeletext           = true;
   props->SupportDirector           = false;
   props->SupportBouquets           = false;
   props->HandleInputStream         = true;
@@ -455,7 +454,6 @@ PVR_ERROR PVRClientVDR::RequestChannelList(PVRHANDLE handle, bool radio)
     tag.radio = (channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
     tag.hide = false;
     tag.recording = false;
-    tag.teletext = channel.Tpid() ? true : false;
     tag.bouquet = 0;
     tag.multifeed = false;
     tag.stream_url = "";
@@ -1968,7 +1966,6 @@ bool PVRClientVDR::GetChannel(unsigned int number, PVR_CHANNEL &channeldata)
   tag.radio = (channel.Vpid() == 0) && (channel.Apid(0) != 0) ? true : false;
   tag.hide = false;
   tag.recording = false;
-  tag.teletext = channel.Tpid() ? true : false;
   tag.bouquet = 0;
   tag.multifeed = false;
   tag.stream_url = "";
