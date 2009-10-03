@@ -373,6 +373,7 @@ AC_CHECK_LIB([rt],          [clock_gettime])  # check for rt, required for clock
 AC_CHECK_LIB([png12],       [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pcre],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [__lzo_init_v2],,
   AC_CHECK_LIB([lzo],       [__lzo_init2],, AC_MSG_ERROR(ERROR: Could not find either liblzo or liblzo2 - one of these must be present))
   )

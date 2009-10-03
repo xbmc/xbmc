@@ -28,16 +28,10 @@
 #include "log.h"
 #include "GraphicContext.h"
 
-#ifdef __APPLE__
-#include "CocoaInterface.h"
-#include <mach/mach.h>
-#include <mach/clock.h>
-#include <mach/mach_error.h>
-#include "Thread.h"
-#endif
-
 #ifdef _LINUX
 #include <signal.h>
+#include <pthread.h>
+#include <limits.h>
 
 // a variable which is defined __thread will be defined in thread local storage
 // which means it will be different for each thread that accesses it.
@@ -53,155 +47,6 @@ static LPVOID __thread tls[TLS_INDEXES] = { NULL };
 
 static BOOL tls_used[TLS_INDEXES];
 
-struct InternalThreadParam {
-  LPTHREAD_START_ROUTINE threadFunc;
-  void *data;
-  HANDLE handle;
-};
-
-/*
-   Workaround for http://xbmc.org/trac/ticket/6145
-
-   Expose struct SDL_Error as defined in SDL (Trunk Revision 4211) internal file
-   SDL_error_c.h to expose struct SDL_Thread as defined in SDL (Trunk Revision 4211)
-   internal file SDL_thread_c.h
-
-   Ideally we'd just do a 
-
-   #include<SDL/SDL_thread.h> 
-
-   here and either have the SDL_Thread struct exposed or have a method to access the 
-   "SYS_ThreadHandle handle;".
-*/
- 
-#define ERR_MAX_STRLEN  128
-#define ERR_MAX_ARGS    5
-
-typedef struct SDL_error {
-        /* This is a numeric value corresponding to the current error */
-        int error;
-
-        /* This is a key used to index into a language hashtable containing
-           internationalized versions of the SDL error messages.  If the key
-           is not in the hashtable, or no hashtable is available, the key is
-           used directly as an error message format string.
-        */
-        char key[ERR_MAX_STRLEN];
-
-        /* These are the arguments for the error functions */
-        int argc;
-        union {
-                void *value_ptr;
-#if 0   /* What is a character anyway?  (UNICODE issues) */
-                unsigned char value_c;
-#endif
-                int value_i;
-                double value_f;
-                char buf[ERR_MAX_STRLEN];
-        } args[ERR_MAX_ARGS];
-} SDL_error;
-
-
-/* This is the system-independent thread info structure */
-struct SDL_Thread {
-        Uint32 threadid;
-        // SYS_ThreadHandle handle;
-        pthread_t handle;
-        int status;
-        SDL_error errbuf;
-        void *data;
-};
-
-/*
-   /Workaround for http://xbmc.org/trac/ticket/6145
-*/
-
-#ifdef __APPLE__
-// Use pthread's built-in support for TLS, it's more portable.
-static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
-static pthread_key_t  tlsParamKey = 0;
-#define GET_PARAM() ((InternalThreadParam *)pthread_getspecific(tlsParamKey))
-#else
-static __thread InternalThreadParam *g_pParam = NULL;
-#define GET_PARAM() g_pParam
-#endif
-
-void handler (int signum)
-{
-  CLog::Log(LOGERROR,"thread 0x%x (%lu) got signal %d. terminating thread abnormally.", SDL_ThreadID(), (unsigned long)SDL_ThreadID(), signum);
-  if (GET_PARAM() && GET_PARAM()->handle)
-  {
-    SetEvent(GET_PARAM()->handle);
-    CloseHandle(GET_PARAM()->handle);
-    delete GET_PARAM();
-  }
-
-  if (OwningCriticalSection(g_graphicsContext))
-  {
-    CLog::Log(LOGWARNING,"killed thread owns graphic context. releasing it.");
-    ExitCriticalSection(g_graphicsContext);
-  }
-
-  pthread_exit(NULL);
-}
-
-#ifdef __APPLE__
-static void MakeTlsKey()
-{
-  pthread_key_create(&tlsParamKey, NULL);
-}
-#endif
-
-static int InternalThreadFunc(void *data)
-{
-#ifdef __APPLE__
-  pthread_once(&keyOnce, MakeTlsKey);
-  pthread_setspecific(tlsParamKey, data);
-
-  // Save the Mach port with the handle.
-  ((InternalThreadParam* )data)->handle->m_machThreadPort = mach_thread_self();
-#else
-  g_pParam = (InternalThreadParam *)data;
-#endif
-
-  int nRc = -1;
-
-  // assign termination handler
-  struct sigaction action;
-  action.sa_handler = handler;
-  sigemptyset (&action.sa_mask);
-  action.sa_flags = 0;
-  //sigaction (SIGABRT, &action, NULL);
-  //sigaction (SIGSEGV, &action, NULL);
-
-#ifdef __APPLE__
-  void* pool = Cocoa_Create_AutoReleasePool();
-#endif
-
-  try {
-     CLog::Log(LOGDEBUG,"Running thread %lu", (unsigned long)SDL_ThreadID());
-     nRc = GET_PARAM()->threadFunc(GET_PARAM()->data);
-  }
-  catch(...) {
-    CLog::Log(LOGERROR,"thread 0x%x raised an exception. terminating it.", SDL_ThreadID());
-  }
-
-#ifdef __APPLE__
-    Cocoa_Destroy_AutoReleasePool(pool);
-#endif
-
-  if (OwningCriticalSection(g_graphicsContext))
-  {
-    CLog::Log(LOGERROR,"thread terminated and still owns graphic context. releasing it.");
-    ExitCriticalSection(g_graphicsContext);
-  }
-
-  SetEvent(GET_PARAM()->handle);
-  CloseHandle(GET_PARAM()->handle);
-  delete GET_PARAM();
-  return nRc;
-}
-
 HANDLE WINAPI CreateThread(
       LPSECURITY_ATTRIBUTES lpThreadAttributes,
         SIZE_T dwStackSize,
@@ -211,27 +56,43 @@ HANDLE WINAPI CreateThread(
           LPDWORD lpThreadId
     ) {
 
-        // a thread handle would actually contain an event
-        // the event would mark if the thread is running or not. it will be used in the Wait functions.
-  // DO NOT use SDL_WaitThread for waiting. it will delete the thread object.
+  // a thread handle would actually contain an event
+  // the event would mark if the thread is running or not. it will be used in the Wait functions.
   HANDLE h = CreateEvent(NULL, TRUE, FALSE, NULL);
   h->ChangeType(CXHandle::HND_THREAD);
-  InternalThreadParam *pParam = new InternalThreadParam;
-  pParam->threadFunc = lpStartAddress;
-  pParam->data = lpParameter;
-  pParam->handle = h;
-
   h->m_nRefCount++;
-  h->m_hThread = SDL_CreateThread(InternalThreadFunc, (void*)pParam);
-  if (lpThreadId)
-    *lpThreadId = SDL_GetThreadID(h->m_hThread);
+#ifdef __APPLE__
+  h->m_machThreadPort = MACH_PORT_NULL;
+#endif
+  pthread_attr_t attr;
+  pthread_attr_init(&attr);
+  if (dwStackSize > PTHREAD_STACK_MIN)
+    pthread_attr_setstacksize(&attr, dwStackSize);
+  if (pthread_create(&(h->m_hThread), &attr, (void*(*)(void*))lpStartAddress, lpParameter) == 0)
+    h->m_threadValid = true;
+  else
+  {
+    CloseHandle(h);
+    h = NULL;
+  }
+#ifdef __APPLE__
+  int policy;
+  struct sched_param param;
+  pthread_getschedparam(h->m_hThread, &policy, &param );
+  policy = SCHED_RR;
+  pthread_setschedparam(h->m_hThread, policy, &param );
+#endif
+  pthread_attr_destroy(&attr);
+  if (h && lpThreadId)
+    // WARNING: This can truncate thread IDs on x86_64.
+    *lpThreadId = (DWORD)h->m_hThread;
   return h;
-
 }
 
 
 DWORD WINAPI GetCurrentThreadId(void) {
-  return SDL_ThreadID();
+  // WARNING:  This can truncate thread IDs on x86_64.
+  return (DWORD)pthread_self();
 }
 
 HANDLE WINAPI GetCurrentThread(void) {
@@ -272,7 +133,9 @@ BOOL WINAPI GetThreadTimes (
   LPFILETIME lpKernelTime,
   LPFILETIME lpUserTime
 ) {
-  if (hThread == NULL)
+  if (!hThread)
+    return false;
+  if (!hThread->m_threadValid)
     return false;
 
   if (hThread == (HANDLE)-1) {
@@ -296,10 +159,12 @@ BOOL WINAPI GetThreadTimes (
     TimeTToFileTime(0,lpKernelTime);
 
 #ifdef __APPLE__
-
   thread_info_data_t     threadInfo;
   mach_msg_type_number_t threadInfoCount = THREAD_INFO_MAX;
-
+  
+  if (hThread->m_machThreadPort == MACH_PORT_NULL)
+    hThread->m_machThreadPort = pthread_mach_thread_np(hThread->m_hThread);
+    
   kern_return_t ret = thread_info(hThread->m_machThreadPort, THREAD_BASIC_INFO, (thread_info_t)threadInfo, &threadInfoCount);
   if (ret == KERN_SUCCESS)
   {
@@ -329,37 +194,19 @@ BOOL WINAPI GetThreadTimes (
     if (lpKernelTime)
       lpKernelTime->dwLowDateTime = lpKernelTime->dwHighDateTime = 0;
   }
-
 #elif _POSIX_THREAD_CPUTIME != -1
-
     if(lpUserTime)
     {
       lpUserTime->dwLowDateTime = 0;
       lpUserTime->dwHighDateTime = 0;
-/*
-   Workaround for http://xbmc.org/trac/ticket/6145
-
-   Ideally this would be:
-
-   pthread_t thread = (pthread_t) SDL_GetThreadHandle(SDL_Thread *thread);
-
-   But that method doesn't exist...
-*/
-        pthread_t thread = (pthread_t) hThread->m_hThread->handle;
-/*
-   /Workaround for http://xbmc.org/trac/ticket/6145
-*/
-      if (thread)
+      clockid_t clock;
+      if (pthread_getcpuclockid(hThread->m_hThread, &clock) == 0)
       {
-        clockid_t clock;
-        if(pthread_getcpuclockid(thread, &clock) == 0)
-        {
-          struct timespec tp = {};
-          clock_gettime(clock, &tp);
-          unsigned long long time = (unsigned long long)tp.tv_sec * 10000000 + (unsigned long long)tp.tv_nsec/100;
-          lpUserTime->dwLowDateTime = (time & 0xFFFFFFFF);
-          lpUserTime->dwHighDateTime = (time >> 32);
-        }
+        struct timespec tp = {};
+        clock_gettime(clock, &tp);
+        unsigned long long time = (unsigned long long)tp.tv_sec * 10000000 + (unsigned long long)tp.tv_nsec/100;
+        lpUserTime->dwLowDateTime = (time & 0xFFFFFFFF);
+        lpUserTime->dwHighDateTime = (time >> 32);
       }
     }
 #else

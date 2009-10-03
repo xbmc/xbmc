@@ -246,6 +246,9 @@
 /* Define to 1 if you have the <libpostproc/postprocess.h> header file. */
 #undef HAVE_LIBPOSTPROC_POSTPROCESS_H
 
+/* Define to 1 if you have the `pthread' library (-lpthread). */
+#undef HAVE_LIBPTHREAD
+
 /* Define to 1 if you have the `python2.4' library (-lpython2.4). */
 #undef HAVE_LIBPYTHON2_4
 
