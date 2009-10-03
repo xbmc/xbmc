@@ -64,6 +64,7 @@ public:
   /* should really be called once in a while should network */
   /* be unplugged */
   DWORD UpdateState();
+  DWORD GetState();
   void LogState();
   
   /* callback from application controlled thread to handle any setup */
@@ -75,15 +76,11 @@ protected:
   bool m_inited;      /* true if initalized() has been called */
   DWORD m_laststate;  /* will hold the last state, to notice changes */
   DWORD m_lastlink;   /* will hold the last link, to notice changes */
-  DWORD m_laststate2; /* will hold the last state, to notice changes */
   DWORD m_lastlink2;  /* will hold the last link(2), to notice changes */
   int   m_netRetryCounter;
 private:
   void NetworkDown();
   void NetworkUp();
-  DWORD GetState();
 };
 
-
 extern CNetwork g_network;
-

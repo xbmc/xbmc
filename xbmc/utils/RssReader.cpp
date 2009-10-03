@@ -1,6 +1,6 @@
 /*
  *      Copyright (C) 2005-2008 Team XBMC
- *      http://xbmc.org
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,9 +19,6 @@
  *
  */
 
-// RssReader.cpp: implementation of the CRssReader class.
-//
-//////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
 #include "RssReader.h"
@@ -139,7 +136,7 @@ void CRssReader::Process()
     CURL url(strUrl);
 
     // we wait for the network to come up
-    if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") && (!g_guiSettings.GetBool("network.enableinternet") || !g_network.IsAvailable(true)))
+    if ((url.GetProtocol() == "http" || url.GetProtocol() == "https") && (!g_guiSettings.GetBool("network.enableinternet") || !g_network.IsAvailable()))
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {
@@ -493,3 +490,4 @@ bool CRssManager::GetReader(DWORD controlID, DWORD windowID, IRssObserver* obser
   m_readers.push_back(readerControl);
   return false;
 }
+

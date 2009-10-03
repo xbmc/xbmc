@@ -214,7 +214,9 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
   if (iAssignment == NETWORK_DHCP)
   {
     m_networkinfo.DHCP = true;    
-    dashconfig = !TranslateConfig(m_networkinfo, params);
+    strcpy(m_networkinfo.ip, "0.0.0.0");
+    
+    TranslateConfig(m_networkinfo, params);
     CLog::Log(LOGNOTICE, "Network: Using DHCP IP settings");
   }
   else if (iAssignment == NETWORK_STATIC)
@@ -225,7 +227,7 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
     strcpy(m_networkinfo.gateway, szLocalGateway);
     strcpy(m_networkinfo.DNS1, szNameServer);
 
-    dashconfig = !TranslateConfig(m_networkinfo, params);
+    TranslateConfig(m_networkinfo, params);
     CLog::Log(LOGNOTICE, "Network: Using static IP settings");
   }
   else
@@ -241,8 +243,11 @@ bool CNetwork::Initialize(int iAssignment, const char* szLocalAddress, const cha
     XNetSaveConfigParams( &params );    
   }
 
+  // Zero struct, just in case
+  memset(&xnsp, 0, sizeof(xnsp));
+
   /* okey now startup the settings we wish to use */
-  xnsp.cfgSizeOfStruct = sizeof(XNetStartupParams);
+  xnsp.cfgSizeOfStruct = sizeof(xnsp);
 
   // Bypass security so that we may connect to 'untrusted' hosts
   xnsp.cfgFlags = XNET_STARTUP_BYPASS_SECURITY;
@@ -292,11 +297,8 @@ void CNetwork::NetworkDown()
   memset(&m_networkinfo, 0, sizeof(m_networkinfo));
   m_lastlink = 0;
   m_laststate = 0;
-  m_lastlink2 = 0;
-  m_laststate2 = 0;
   m_networkup = false;
   g_applicationMessenger.NetworkMessage(SERVICES_DOWN, 0);
-  m_inited = false;
 }
 
 void CNetwork::NetworkUp()
@@ -364,24 +366,20 @@ bool CNetwork::CheckNetwork(int count)
   // update our network state
   DWORD dwState = UpdateState();
   DWORD dwLink = XNetGetEthernetLinkStatus();
-  
-  if (++m_netRetryCounter>count)
-    m_netRetryCounter=0;
 
   // Check the network status every count itterations
-  if (m_netRetryCounter == 0 || m_lastlink2 != dwLink)
+  if (++m_netRetryCounter > count || m_lastlink2 != dwLink)
   {
+    m_netRetryCounter = 0;
     m_lastlink2 = dwLink;
-    m_laststate2 = dwState;
     
     // In case the network failed, try to set it up again
-    if (!(dwLink & XNET_ETHERNET_LINK_ACTIVE) || !IsInited() || dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT)
+    if (!(dwLink & XNET_ETHERNET_LINK_ACTIVE) || !IsInited() || dwState & XNET_GET_XNADDR_TROUBLESHOOT)
     {
       Deinitialize();
 
       if (dwLink & XNET_ETHERNET_LINK_ACTIVE)
       {
-        LogState();
         CLog::Log(LOGWARNING, "%s - Network error. Trying re-setup", __FUNCTION__);
         SetupNetwork();
         return true;
@@ -459,7 +457,6 @@ CNetwork::CNetwork(void)
   m_lastlink = 0;
   m_laststate = 0;
   m_lastlink2 = 0;
-  m_laststate2 = 0;
   m_netRetryCounter = 0;
   m_networkup = false;
   m_inited = false;
@@ -474,7 +471,8 @@ void CNetwork::Deinitialize()
 {
   if( m_networkup )
     NetworkDown();
-
+  
+  m_inited = false;
   WSACleanup();
 #ifdef HAS_XBOX_NETWORK
   XNetCleanup();
