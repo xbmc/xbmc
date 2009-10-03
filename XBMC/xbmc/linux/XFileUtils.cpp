@@ -598,7 +598,7 @@ BOOL SetEndOfFile(HANDLE hFile) {
 }
 
 DWORD SleepEx( DWORD dwMilliseconds,  BOOL bAlertable) {
-  SDL_Delay(dwMilliseconds);
+  usleep(dwMilliseconds * 1000);
   return 0;
 }
 
