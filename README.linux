@@ -52,7 +52,7 @@ Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
  libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
  libmpeg2-4-dev, libass-dev, libflac-dev, libwavpack-dev,
  python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
- zlib1g-dev, libmms-dev, libsmbclient-dev,
+ zlib1g-dev, libmms-dev, libsmbclient-dev, libtiff4-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache
@@ -81,66 +81,7 @@ To create the XBMC executable manually perform these steps:
 
 .0  $ ./bootstrap
 
-.1  $ ./configure <option1> <option2> ...
-
-These configure options exist (among others):
-  --disable-option-checking  ignore unrecognized --enable/--with options
-  --disable-FEATURE       do not include FEATURE (same as --enable-FEATURE=no)
-  --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
-  --enable-debug          enable debugging information (default is yes)
-  --enable-optimizations  enable optimization (default is yes)
-  --enable-gl             enable OpenGL rendering (default is yes)
-  --enable-vdpau          enable VDPAU decoding (default is yes)
-  --enable-profiling      enable gprof profiling (default is no)
-  --enable-joystick       enable SDL joystick support (default is yes)
-  --enable-xrandr         enable XRandR support (default is yes)
-  --enable-ccache         enable building with ccache feature (default is yes
-                          if ccache is installed)
-  --enable-pulse          enable PulseAudio support (default is yes)
-  --enable-faac           enable FAAC support (default is yes)
-  --enable-dvdcss         enable DVDCSS support (default is yes)
-  --enable-mid            enable MID support (default is no)
-  --disable-avahi         disable Avahi support (default is enabled if
-                          libavahi-common and libavahi-client is found)
-  --enable-external-libraries
-                          enable use of all supported external libraries
-                          (default is no) 'Linux only'
-  --enable-external-ffmpeg
-                          enable use of external ffmpeg libraries (default is
-                          no) 'Linux only'
-  --enable-external-libmad
-                          enable use of external libmad library (default is
-                          no) 'Linux only'
-  --enable-external-liba52
-                          enable use of external liba52 library (default is
-                          no) 'Linux only'
-  --enable-external-libdts
-                          enable use of external libdts library (default is
-                          no) 'Linux only'
-  --enable-external-libfaad
-                          enable use of external libfaad library (default is
-                          no) 'Linux only'
-  --enable-external-libmpeg2
-                          enable use of external libmpeg2 library (default is
-                          no) 'Linux only'
-  --enable-external-libass
-                          enable use of external libass library (default is
-                          no) 'Linux only'
-  --enable-external-libvorbis
-                          enable use of external libvorbis library (default is
-                          no) 'Linux only'
-  --enable-external-libogg
-                          enable use of external libogg library (default is
-                          no) 'Linux only'
-  --enable-external-libflac
-                          enable use of external libflac library (default is
-                          no) 'Linux only'
-  --enable-external-libwavpack
-                          enable use of external libwavpack library (default
-                          is no) 'Linux only'
-  --enable-external-python
-                          enable use of external python library (default is
-                          no) 'Linux only'
+.1  $ ./configure <option1> <option2> ... (See --help for available options)
 
 A full listing of supported options can be viewed by typing
 './configure --help'.
