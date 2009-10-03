@@ -449,7 +449,6 @@ bool CTVDatabase::GetDBChannelList(cPVRChannels &results, bool radio)
       broadcast.m_radio               = m_pDS->fv("radio").get_asBool();
       broadcast.m_hide                = m_pDS->fv("hide").get_asBool();
       broadcast.m_strFileNameAndPath  = m_pDS->fv("strFileNameAndPath").get_asString();
-      broadcast.m_bTeletext           = true;
 
       results.push_back(broadcast);
       m_pDS->next();

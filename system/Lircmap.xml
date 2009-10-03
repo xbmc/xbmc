@@ -50,7 +50,6 @@
                 <mypictures>Yellow</mypictures>
                 <myvideo>Blue</myvideo>
                 <playlist>TV</playlist>
-                <teletext>Text</teletext>
                 <guide>EPG</guide>
         </remote>
 
@@ -162,7 +161,6 @@
 		<info>More</info>
 		<skipplus>Skip</skipplus>
 		<skipminus>Replay</skipminus>
-		<display>Teletext</display>
 		<start>Home</start>
 		<record>Record</record>
 		<volumeplus>VolUp</volumeplus>

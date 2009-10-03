@@ -118,7 +118,6 @@ extern "C" {
     bool SupportRadio;                  /* Client provide also Radio Channels */
     bool SupportRecordings;             /* Client support playback of recordings stored on the backend */
     bool SupportTimers;                 /* Client support creation and editing of timers */
-    bool SupportTeletext;               /* Client channels can have Teletext data */
     bool SupportDirector;               /* Client provide information about multifeed channels, like Sky Select */
     bool SupportBouquets;               /* Client support Bouqets */
     bool HandleInputStream;             /* Input stream is handled by the client if set, can be false for http */
@@ -142,7 +141,6 @@ extern "C" {
     bool            radio;              /* This is a radio channel */
     bool            hide;               /* This channel is hidden by the user */
     bool            recording;          /* This channel is currently recording */
-    bool            teletext;           /* This channel provide Teletext */
 
     int             bouquet;            /* Bouquet ID this channel have (if supported) */
 

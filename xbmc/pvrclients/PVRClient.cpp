@@ -192,7 +192,6 @@ PVR_ERROR CPVRClient::GetProperties(PVR_SERVERPROPS *props)
     props->SupportTimers             = false;
     props->SupportRadio              = false;
     props->SupportChannelSettings    = false;
-    props->SupportTeletext           = false;
     props->SupportDirector           = false;
     props->SupportBouquets           = false;
   }
@@ -401,7 +400,6 @@ void CPVRClient::PVRTransferChannelEntry(void *userData, const PVRHANDLE handle,
   tag.SetClientName(channel->callsign);
   tag.SetIcon(channel->iconpath);
   tag.SetEncrypted(channel->encrypted);
-  tag.SetTeletext(channel->teletext);
   tag.SetRadio(channel->radio);
   tag.SetHidden(channel->hide);
   tag.SetRecording(channel->recording);
@@ -1099,7 +1097,6 @@ void CPVRClient::WriteClientChannelInfo(const cPVRChannelInfoTag &channelinfo, P
   tag.radio             = channelinfo.IsRadio();
   tag.hide              = channelinfo.IsHidden();
   tag.recording         = channelinfo.IsRecording();
-  tag.teletext          = channelinfo.HaveTeletext();
   tag.bouquet           = 0;
   tag.multifeed         = false;
   tag.multifeed_master  = 0;

@@ -882,7 +882,6 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("tv")) windowID = WINDOW_TV;
   else if (strWindow.Equals("tvosdchannels")) windowID = WINDOW_DIALOG_TV_OSD_CHANNELS;
   else if (strWindow.Equals("tvosdguide")) windowID = WINDOW_DIALOG_TV_OSD_GUIDE;
-  else if (strWindow.Equals("tvosdteletext")) windowID = WINDOW_DIALOG_TV_OSD_TELETEXT;
   else if (strWindow.Equals("tvosddirector")) windowID = WINDOW_DIALOG_TV_OSD_DIRECTOR;
   else if (strWindow.Equals("systeminfo")) windowID = WINDOW_SYSTEM_INFORMATION;
   else if (strWindow.Equals("guicalibration")) windowID = WINDOW_SCREEN_CALIBRATION;
@@ -1056,7 +1055,6 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("enter")) buttonCode = XINPUT_IR_REMOTE_SELECT;  // same as select
   else if (strButton.Equals("xbox")) buttonCode = XINPUT_IR_REMOTE_DISPLAY; // same as display
   else if (strButton.Equals("playlist")) buttonCode = XINPUT_IR_REMOTE_PLAYLIST;
-  else if (strButton.Equals("teletext")) buttonCode = XINPUT_IR_REMOTE_TELETEXT;
   else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else CLog::Log(LOGERROR, "Remote Translator: Can't find button %s", strButton.c_str());
   return buttonCode;
