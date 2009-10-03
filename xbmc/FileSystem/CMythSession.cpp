@@ -193,18 +193,10 @@ CCMythSession::CCMythSession(const CURL& url)
   m_event     = NULL;
   m_database  = NULL;
   m_hostname  = url.GetHostName();
-  m_username  = url.GetUserName();
-  m_password  = url.GetPassWord();
-  m_port      = url.GetPort();
+  m_username  = url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName();
+  m_password  = url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord();
+  m_port      = url.GetPort() == 0 ? 6543 : url.GetPort();
   m_timestamp = GetTickCount();
-  if (m_port == 0)
-    m_port = 6543;
-
-  if (m_username == "")
-    m_username = MYTH_DEFAULT_USERNAME;
-  if (m_password == "")
-    m_password = MYTH_DEFAULT_PASSWORD;
-
   m_dll = new DllLibCMyth;
   m_dll->Load();
   if (m_dll->IsLoaded())
@@ -229,25 +221,13 @@ bool CCMythSession::CanSupport(const CURL& url)
   if (m_hostname != url.GetHostName())
     return false;
 
-  int port;
-  CStdString data;
-
-  port = url.GetPort();
-  if (port == 0)
-    port = 6543;
-  if (m_port != port)
+  if (m_port != (url.GetPort() == 0 ? 6543 : url.GetPort()))
     return false;
 
-  data = url.GetUserName();
-  if (data == "")
-    data = MYTH_DEFAULT_USERNAME;
-  if (m_username != data)
+  if (m_username != (url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName()))
     return false;
 
-  data = url.GetPassWord();
-  if (data == "")
-    data = MYTH_DEFAULT_PASSWORD;
-  if (m_password != data)
+  if (m_password != (url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord()))
     return false;
 
   return true;
