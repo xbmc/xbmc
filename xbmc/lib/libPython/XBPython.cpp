@@ -447,8 +447,8 @@ void XBPython::Process()
     // autoexec.py - system
     strAutoExecPy = "special://xbmc/scripts/autoexec.py";
 
-    if (XFILE::CFile::Exists("special://xbmc/scripts/autoexec.py"))
-      evalFile("special://xbmc/scripts/autoexec.py");
+    if (XFILE::CFile::Exists(strAutoExecPy))
+      evalFile(strAutoExecPy);
     else
       CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
   }
