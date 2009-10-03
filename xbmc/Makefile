@@ -208,8 +208,6 @@ SRCS=Application.cpp \
      KeyboardStat.cpp \
      MouseStat.cpp \
      WinSystem.cpp \
-     WinSystemOSX.cpp \
-     WinSystemOSXGL.cpp \
      WinSystemX11.cpp \
      WinSystemX11GL.cpp \
      WinEventsSDL.cpp \

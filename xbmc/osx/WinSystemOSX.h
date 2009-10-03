@@ -40,8 +40,15 @@ public:
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
   virtual void UpdateResolutions();
 
-protected:  
+protected:
+  void* CreateWindowedContext(void* shareCtx);
+  void* CreateFullScreenContext(int screen_index, void* shareCtx);
+  void  GetScreenResolution(int* w, int* h);
+  double GetScreenRefreshRate(int screen_index);
+  void  EnableVSync(bool enable);
+
   void* m_glContext;
+  static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
 };
 

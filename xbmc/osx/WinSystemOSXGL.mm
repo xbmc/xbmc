@@ -21,8 +21,13 @@
 
 #ifdef __APPLE__
 
+//hack around problem with xbmc's typedef int BOOL
+// and obj-c's typedef unsigned char BOOL
+#define BOOL XBMC_BOOL 
 #include "WinSystemOSXGL.h"
-#include "CocoaInterface.h"
+#undef BOOL
+
+#import <Cocoa/Cocoa.h>
 
 CWinSystemOSXGL g_Windowing;
 
@@ -36,18 +41,18 @@ CWinSystemOSXGL::~CWinSystemOSXGL()
 
 bool CWinSystemOSXGL::PresentRenderImpl()
 {    
-  Cocoa_GL_SwapBuffers(m_glContext);
+  [ (NSOpenGLContext*)m_glContext flushBuffer ];
     
   return true;
 }
 
 void CWinSystemOSXGL::SetVSyncImpl(bool enable)
 {
-  Cocoa_GL_EnableVSync(false);
+  EnableVSync(false);
   
   if (enable && m_iVSyncMode == 0)
   {
-    Cocoa_GL_EnableVSync(true);
+    EnableVSync(true);
     m_iVSyncMode = 10;
   }
 }
@@ -59,7 +64,7 @@ bool CWinSystemOSXGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int
   
   if (m_bVSync)
   {
-    Cocoa_GL_EnableVSync(m_bVSync);
+    EnableVSync(m_bVSync);
   } 
   
   return true;
@@ -72,7 +77,7 @@ bool CWinSystemOSXGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   
   if (m_bVSync)
   {
-    Cocoa_GL_EnableVSync(m_bVSync);
+    EnableVSync(m_bVSync);
   } 
   
   return true;
