@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9,00"
+	Version="9.00"
 	Name="XBMC"
 	ProjectGUID="{3A68081D-E8F9-4523-9436-530DE9E5530A}"
 	RootNamespace="XBMC_PC"
@@ -551,22 +551,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\cores\ssrc.cpp"
 				>
 			</File>
@@ -743,6 +727,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDTSCorrection.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\Edl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\Edl.h"
 					>
 				</File>
 				<File
@@ -1582,6 +1574,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\paplayer\OggCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\OggCallback.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\paplayer\OGGcodec.cpp"
 					>
 				</File>
@@ -2111,6 +2111,30 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="PlayerCoreFactory"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.h"
 					>
 				</File>
 			</Filter>
@@ -2795,14 +2819,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\DynamicDll.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Edl.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Edl.h"
 					>
 				</File>
 				<File
