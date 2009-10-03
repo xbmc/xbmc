@@ -47,6 +47,7 @@ using namespace std;
 #endif
 #endif
 
+#define MYTH_DEFAULT_PORT     6543
 #define MYTH_DEFAULT_USERNAME "mythtv"
 #define MYTH_DEFAULT_PASSWORD "mythtv"
 #define MYTH_DEFAULT_DATABASE "mythconverg"
@@ -195,7 +196,7 @@ CCMythSession::CCMythSession(const CURL& url)
   m_hostname  = url.GetHostName();
   m_username  = url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName();
   m_password  = url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord();
-  m_port      = url.GetPort() == 0 ? 6543 : url.GetPort();
+  m_port      = url.HasPort() ? url.GetPort() : MYTH_DEFAULT_PORT;
   m_timestamp = GetTickCount();
   m_dll = new DllLibCMyth;
   m_dll->Load();
@@ -221,7 +222,7 @@ bool CCMythSession::CanSupport(const CURL& url)
   if (m_hostname != url.GetHostName())
     return false;
 
-  if (m_port != (url.GetPort() == 0 ? 6543 : url.GetPort()))
+  if (m_port != (url.HasPort() ? url.GetPort() : MYTH_DEFAULT_PORT))
     return false;
 
   if (m_username != (url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName()))
