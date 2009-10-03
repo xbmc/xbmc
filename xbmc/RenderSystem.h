@@ -44,6 +44,13 @@ typedef enum _RenderingSystemType
 
 typedef uint32_t color_t;
 
+enum
+{
+  RENDER_CAPS_DXT      = (1 << 0),
+  RENDER_CAPS_NPOT     = (1 << 1),
+  RENDER_CAPS_DXT_NPOT = (1 << 2)
+};
+
 class CRenderSystemBase
 {
 public:
@@ -57,9 +64,6 @@ public:
   virtual bool DestroyRenderSystem() = 0;
   virtual bool ResetRenderSystem(int width, int height) = 0;
 
-  virtual void GetRenderVersion(unsigned int& major, unsigned int& minor);
-  virtual const CStdString& GetRenderVendor() { return m_RenderVendor; }
-  virtual const CStdString& GetRenderRenderer() { return m_RenderRenderer; }
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;
   virtual bool PresentRender() = 0;
@@ -68,25 +72,26 @@ public:
   virtual bool IsExtSupported(const char* extension) = 0;
 
   virtual void SetVSync(bool vsync) = 0;
-  virtual bool GetVSync() { return m_bVSync; }
+  bool GetVSync() { return m_bVSync; }
 
   virtual void SetViewPort(CRect& viewPort) = 0;
   virtual void GetViewPort(CRect& viewPort) = 0;
 
-  virtual bool NeedPower2Texture() = 0;
-  virtual bool SupportsCompressedTextures() = 0;
-  
   virtual void CaptureStateBlock() = 0;
   virtual void ApplyStateBlock() = 0;
 
   virtual void SetCameraPosition(const CPoint &camera, int screenWidth, int screenHeight) = 0;
-  
   virtual void ApplyHardwareTransform(const TransformMatrix &matrix) = 0;
   virtual void RestoreHardwareTransform() = 0;
-    
-  unsigned int GetMaxTextureSize() { return m_maxTextureSize; }
-  
+
   virtual bool TestRender() = 0;
+
+  void GetRenderVersion(unsigned int& major, unsigned int& minor) const;
+  const CStdString& GetRenderVendor() const { return m_RenderVendor; }
+  const CStdString& GetRenderRenderer() const { return m_RenderRenderer; }
+  bool SupportsDXT() const;
+  bool SupportsNPOT(bool dxt) const;
+  unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
 
 protected:
   bool                m_bRenderCreated;
@@ -94,11 +99,11 @@ protected:
   bool                m_bVSync;
   unsigned int        m_maxTextureSize;
 
-  CStdString m_RenderRenderer;
-  CStdString m_RenderVendor;
-  int        m_RenderVerdenVersionMinor;
-  int        m_RenderVerdenVersionMajor;
-  bool       m_NeedPower2Texture;  
+  CStdString   m_RenderRenderer;
+  CStdString   m_RenderVendor;
+  int          m_RenderVersionMinor;
+  int          m_RenderVersionMajor;
+  unsigned int m_renderCaps;
 };
 
 #endif // RENDER_SYSTEM_H

@@ -56,6 +56,7 @@ bool CRenderSystemDX::InitRenderSystem()
   m_bVSync = true;
   m_iVSyncMode = 0;
   m_maxTextureSize = 8192;
+  m_renderCaps = 0;
   D3DADAPTER_IDENTIFIER9 AIdentifier;
 
   m_pD3D = NULL;
@@ -68,7 +69,29 @@ bool CRenderSystemDX::InitRenderSystem()
 
   if(m_pD3D->GetAdapterIdentifier(0, 0, &AIdentifier) == D3D_OK)
     m_RenderRenderer = (const char*)AIdentifier.Description;
-  
+
+  // get our render capabilities
+  D3DCAPS9 caps;
+  m_pD3DDevice->GetDeviceCaps(&caps);
+
+  if (SUCCEEDED(m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
+                                           D3DDEVTYPE_HAL,
+                                           D3DFMT_X8R8G8B8,
+                                           0,
+                                           D3DRTYPE_TEXTURE,
+                                           D3DFMT_DXT5 )))
+    m_renderCaps |= RENDER_CAPS_DXT;
+
+  if ((caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0)
+  { // we're allowed NPOT textures
+    m_renderCaps |= RENDER_CAPS_NPOT;
+    m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
+  else if ((caps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL))
+  { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
+    m_renderCaps |= RENDER_CAPS_NPOT;
+  }
+
   return true;
 }
 
@@ -554,20 +577,6 @@ void CRenderSystemDX::ReleaseEffect(ID3DXEffect* pEffect)
       return;
     }
   }
-}
-
-bool CRenderSystemDX::SupportsCompressedTextures()
-{
-  return false;
-
-  HRESULT hr = m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT,
-    D3DDEVTYPE_HAL,
-    D3DFMT_X8R8G8B8,
-    0,
-    D3DRTYPE_TEXTURE,
-    D3DFMT_DXT5);
-
-  return SUCCEEDED( hr );
 }
 
 #endif
