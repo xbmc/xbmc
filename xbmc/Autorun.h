@@ -50,9 +50,8 @@ public:
   static void ExecuteAutorun(bool bypassSettings = false, bool ignoreplaying=false);
 protected:
   static void ExecuteXBE(const CStdString &xbeFile);
-  static void RunXboxCd(bool bypassSettings = false);
   static void RunCdda();
-  static void RunISOMedia(bool bypassSettings = false);
+  static void RunMedia(bool bypassSettings = false);
   static bool RunDisc(DIRECTORY::IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings = false);
   bool m_bEnable;
 };
