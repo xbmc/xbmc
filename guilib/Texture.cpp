@@ -24,6 +24,8 @@
 #include "WindowingFactory.h"
 #include "utils/log.h"
 #include "DllImageLib.h"
+#include "DDSImage.h"
+#include "Util.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -134,6 +136,14 @@ void CBaseTexture::ClampToEdge()
 bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
                                 bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
 {
+  if (CUtil::GetExtension(texturePath).Equals(".dds"))
+  { // special case for DDS images
+    CDDSImage image;
+    image.ReadFile(texturePath);
+    Update(image.GetWidth(), image.GetHeight(), 0, image.GetFormat(), image.GetData(), false);
+    return true;
+  }
+
   DllImageLib dll;
   if (!dll.Load())
     return false;

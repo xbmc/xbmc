@@ -326,6 +326,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\DDSImage.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\DirectXGraphics.cpp"
 				>
 			</File>
@@ -705,6 +709,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\AudioContext.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\DDSImage.h"
 				>
 			</File>
 			<File
