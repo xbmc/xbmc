@@ -21,6 +21,7 @@
 
 #include "DDSImage.h"
 #include "XBTF.h"
+#include <string.h>
 
 CDDSImage::CDDSImage()
 {
