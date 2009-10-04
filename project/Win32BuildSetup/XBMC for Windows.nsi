@@ -33,6 +33,7 @@
 
   Var StartMenuFolder
   Var PageProfileState
+  Var RunArgs
   
 ;--------------------------------
 ;Interface Settings
@@ -47,7 +48,7 @@
   !define MUI_FINISHPAGE_LINK "Please visit http://xbmc.org for more information."
   !define MUI_FINISHPAGE_LINK_LOCATION "http://xbmc.org"
   !define MUI_FINISHPAGE_RUN "$INSTDIR\XBMC.exe"
-  !define MUI_FINISHPAGE_RUN_PARAMETERS "-fs"
+  !define MUI_FINISHPAGE_RUN_PARAMETERS $RunArgs
   !define MUI_FINISHPAGE_RUN_NOTCHECKED
   !define MUI_ABORTWARNING  
 ;--------------------------------
@@ -136,6 +137,7 @@ Section "XBMC" SecXBMC
   SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
   ${If} $PageProfileState == "1"
+    StrCpy $RunArgs "-fs -p"
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
       "-fs -p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
       "" "Start XBMC in fullscreen."
@@ -143,6 +145,7 @@ Section "XBMC" SecXBMC
       "-p" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
       "" "Start XBMC in windowed mode."
   ${Else}
+    StrCpy $RunArgs "-fs"
     CreateShortCut "$SMPROGRAMS\$StartMenuFolder\XBMC.lnk" "$INSTDIR\XBMC.exe" \
       "-fs" "$INSTDIR\XBMC.exe" 0 SW_SHOWNORMAL \
       "" "Start XBMC in fullscreen."
