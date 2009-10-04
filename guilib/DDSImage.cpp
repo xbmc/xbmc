@@ -23,6 +23,13 @@
 #include "XBTF.h"
 #include <string.h>
 
+#ifndef NO_XBMC_FILESYSTEM
+#include "FileSystem/File.h"
+using namespace XFILE;
+#else
+#include "SimpleFS.h"
+#endif
+
 CDDSImage::CDDSImage()
 {
   m_data = NULL;
@@ -82,15 +89,15 @@ unsigned char *CDDSImage::GetData() const
 bool CDDSImage::ReadFile(const std::string &inputFile)
 {
   // open the file
-  FILE *file = fopen(inputFile.c_str(), "rb");
-  if (!file)
+  CFile file;
+  if (!file.Open(inputFile))
     return false;
 
   // read the header
   uint32_t magic;
-  if (fread(&magic, 4, 1, file) != 4)
+  if (file.Read(&magic, 4) != 4)
     return false;
-  if (fread(&m_desc, sizeof(m_desc), 1, file) != sizeof(m_desc))
+  if (file.Read(&m_desc, sizeof(m_desc)) != sizeof(m_desc))
     return false;
   if (!GetFormat())
     return false;  // not supported
@@ -101,25 +108,26 @@ bool CDDSImage::ReadFile(const std::string &inputFile)
     return false;
 
   // and read it in
-  if (fread(m_data, sizeof(m_data), 1, file) != sizeof(m_data))
+  if (file.Read(m_data, m_desc.linearSize) != m_desc.linearSize)
     return false;
 
+  file.Close();
   return true;
 }
 
 bool CDDSImage::WriteFile(const std::string &outputFile) const
 {
   // open the file
-  FILE *file = fopen(outputFile.c_str(), "wb");
-  if (!file)
+  CFile file;
+  if (!file.OpenForWrite(outputFile, true))
     return false;
 
   // write the header
-  fwrite("DDS ", 4, 1, file);
-  fwrite(&m_desc, sizeof(m_desc), 1, file);
+  file.Write("DDS ", 4);
+  file.Write(&m_desc, sizeof(m_desc));
   // now the data
-  fwrite(m_data, m_desc.linearSize, 1, file);
-  fclose(file);
+  file.Write(m_data, m_desc.linearSize);
+  file.Close();
   return true;
 }
 
