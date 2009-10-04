@@ -314,7 +314,6 @@ AC_CHECK_HEADER([vorbis/vorbisfile.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([rt],          [clock_gettime])  # check for rt, required for clock_gettime
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([pthread],     [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([lzo2],        [main],, AC_MSG_ERROR($missing_library))
@@ -350,15 +349,23 @@ PKG_CHECK_MODULES([MMS],        [libmms],
 PKG_CHECK_MODULES([FREETYPE2],  [freetype2],
                   [INCLUDES+=" $FREETYPE2_CFLAGS"; LIBS+=" $FREETYPE2_LIBS"],
                   AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([OGG],        [ogg],
+                  [INCLUDES+=" $OGG_CFLAGS"; LIBS+=" $OGG_LIBS"],
+                  AC_MSG_ERROR($missing_library))
+PKG_CHECK_MODULES([VORBIS],     [vorbis],
+                  [INCLUDES+=" $VORBIS_CFLAGS"; LIBS+=" $VORBIS_LIBS"],
+                  AC_MSG_ERROR($missing_library))
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then
   AC_CHECK_LIB([iconv],     [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([smbclient], [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([ogg],         [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([vorbis],      [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([vorbisenc],   [main],, AC_MSG_ERROR($missing_library))
-  AC_CHECK_LIB([vorbisfile],  [main],, AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([VORBISFILE],     [vorbisfile],
+                    [INCLUDES+=" $VORBISFILE_CFLAGS"; LIBS+=" $VORBISFILE_LIBS"],
+                    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([VORBISENC],     [vorbisenc],
+                    [INCLUDES+=" $VORBISENC_CFLAGS"; LIBS+=" $VORBISENC_LIBS"],
+                    AC_MSG_ERROR($missing_library))
 else
   AC_CHECK_HEADER([faad.h],,         AC_MSG_ERROR($missing_library))
   AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
@@ -368,6 +375,7 @@ else
   AC_CHECK_LIB([resolv],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([jasper],    [main],, AC_MSG_ERROR($missing_library)) # check for cximage
   AC_CHECK_LIB([tiff],      [main],, AC_MSG_ERROR($missing_library))
+  AC_CHECK_LIB([rt],        [clock_gettime],, AC_MSG_ERROR($missing_library))
   
   PKG_CHECK_MODULES([ALSA],       [alsa],
                   [INCLUDES+=" $ALSA_CFLAGS"; LIBS+=" $ALSA_LIBS"],
