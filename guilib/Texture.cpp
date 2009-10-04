@@ -25,7 +25,6 @@
 #include "utils/log.h"
 #include "DllImageLib.h"
 #include "DDSImage.h"
-#include "Util.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -136,7 +135,7 @@ void CBaseTexture::ClampToEdge()
 bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
                                 bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
 {
-  if (CUtil::GetExtension(texturePath).Equals(".dds"))
+  if (texturePath.Right(4).Equals(".dds"))
   { // special case for DDS images
     CDDSImage image;
     image.ReadFile(texturePath);
