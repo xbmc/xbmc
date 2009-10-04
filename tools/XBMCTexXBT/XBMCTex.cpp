@@ -156,13 +156,15 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   if ((flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
   {
     // grab a temporary buffer for unpacking into
-    squish::u8 *compressed = new squish::u8[size];
+    squish::u8 *compressed = new squish::u8[size + size / 16 + 64 + 3]; // see simple.c in lzo
     squish::u8 *working = new squish::u8[LZO1X_999_MEM_COMPRESS];
     if (compressed && working)
     {
-      if (lzo1x_999_compress(data, size, compressed, (lzo_uint*)&compressedSize, working) != LZO_E_OK)
+      if (lzo1x_999_compress(data, size, compressed, (lzo_uint*)&compressedSize, working) != LZO_E_OK || compressedSize > size)
       {
-        printf("Compression failure\n");
+        // compression failed, or compressed size is bigger than uncompressed, so store as uncompressed
+        compressedSize = size;
+        writer.AppendContent(data, size);
       }
       else
       { // success
