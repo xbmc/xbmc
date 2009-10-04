@@ -4895,9 +4895,19 @@ void CApplication::ProcessSlow()
     m_gWindowManager.SendThreadMessage(msg);
   }
 #endif
+
 #ifdef HAS_LIRC
   if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())
     g_RemoteControl.Initialize();
+#endif
+
+#ifdef HAS_LCD
+  // attempt to reinitialize the LCD (e.g. after resuming from sleep) 
+  if (g_lcd && !g_lcd->IsConnected()) 
+  {
+    g_lcd->Stop();
+    g_lcd->Initialize();
+  }
 #endif
 }
 

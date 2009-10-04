@@ -25,6 +25,8 @@
 #include "../utils/LCD.h"
 
 #define MAX_ROWS 20
+#define INIT_RETRY_INTERVAL 2000
+#define INIT_RETRY_INTERVAL_MAX 60000
 
 class XLCDproc : public ILCD
 {
@@ -32,6 +34,7 @@ public:
   XLCDproc();
   virtual ~XLCDproc(void);
   virtual void Initialize();
+  virtual bool IsConnected();
   virtual void Stop();
   virtual void Suspend(); 
   virtual void Resume(); 
@@ -56,6 +59,11 @@ protected:
   DWORD        m_dwSleep[MAX_ROWS];
   CEvent       m_event;
   int          sockfd;
+
+private:
+  int          m_lastInitAttempt;
+  int          m_initRetryInterval;
+  bool         m_used;
 };
 
 #endif
