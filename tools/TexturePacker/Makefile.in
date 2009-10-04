@@ -13,7 +13,7 @@ OBJS = \
 	XBMCTex.o \
 	../../guilib/XBTF.o
 
-TARGET = XBMCTexXBT
+TARGET = TexturePacker
 CLEAN_FILES=$(TARGET)
 
 all: $(TARGET)
