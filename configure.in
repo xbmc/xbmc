@@ -730,6 +730,7 @@ AC_CHECK_FUNCS([atexit dup2 fdatasync floor fs_stat_dev ftime ftruncate getcwd g
 
 # Check for various sizes
 AC_CHECK_SIZEOF([int])
+AC_CHECK_SIZEOF([size_t])
 
 dashes="------------------------"
 final_message="\n  XBMC Configuration:"
