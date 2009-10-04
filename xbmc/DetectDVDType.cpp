@@ -354,8 +354,7 @@ void CDetectDVDMedia::SetNewDVDShareUrl( const CStdString& strNewUrl, bool bCDDA
       if (CFile::Exists(strThumb))
       {
         CLog::Log(LOGDEBUG,"%s: found disc thumb:[%s], caching as:[%s]", __FUNCTION__, strThumb.c_str(), strCache.c_str());
-        CPicture pic;
-        pic.DoCreateThumbnail(strThumb, strCache);
+        CPicture::CreateThumbnail(strThumb, strCache);
         break;
       }
     }
