@@ -28,6 +28,9 @@
 #include "utils/TimeUtils.h"
 #include "utils/JobManager.h"
 #include "GraphicContext.h"
+#include "Settings.h"
+#include "AdvancedSettings.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -54,6 +57,17 @@ void CImageLoader::DoWork()
     if ((size_t)m_path.FindOneOf("/\\") == CStdString::npos)
     {
       loadPath = g_TextureManager.GetTexturePath(m_path);
+    }
+    // check if this is a fanart image
+    if (g_advancedSettings.m_useDDSFanart && file.IsType(".tbn"))
+    {
+      CStdString baseFolder1 = g_settings.GetMusicFanartFolder();
+      CStdString baseFolder2 = g_settings.GetVideoFanartFolder();
+      if (baseFolder1.Equals(m_path.Left(baseFolder1.GetLength())) ||
+          baseFolder2.Equals(m_path.Left(baseFolder2.GetLength())))
+      { // switch to dds
+        CUtil::ReplaceExtension(m_path, ".dds", loadPath);
+      }
     }
     m_texture = new CTexture();
     if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
