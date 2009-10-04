@@ -155,8 +155,8 @@ protected:
   unsigned int        m_height;
   bool                m_interlace;
   double              m_framerate;
-	unsigned int        m_aspectratio_x;
-	unsigned int        m_aspectratio_y;
+  unsigned int        m_aspectratio_x;
+  unsigned int        m_aspectratio_y;
   uint64_t            m_old_timestamp;
   BYTE                *m_y_buffer_ptr;
   BYTE                *m_uv_buffer_ptr;
