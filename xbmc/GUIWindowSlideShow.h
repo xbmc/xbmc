@@ -78,7 +78,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void FreeResources();
-  void OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, int iWidth, int iHeight, int iOriginalWidth, int iOriginalHeight, int iRotate, bool bFullSize);
+  void OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, int iOriginalWidth, int iOriginalHeight, bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();

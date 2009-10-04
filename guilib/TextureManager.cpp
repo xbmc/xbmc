@@ -43,6 +43,7 @@ CTextureArray::CTextureArray(int width, int height, int loops,  bool texCoordsAr
   m_width = width;
   m_height = height;
   m_loops = loops;
+  m_orientation = 0;
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
@@ -71,6 +72,7 @@ void CTextureArray::Reset()
   m_width = 0;
   m_height = 0;
   m_loops = 0;
+  m_orientation = 0;
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
@@ -94,6 +96,7 @@ void CTextureArray::Set(CBaseTexture *texture, int width, int height)
   assert(!m_textures.size()); // don't try and set a texture if we already have one!
   m_width = width;
   m_height = height;
+  m_orientation = texture ? texture->GetOrientation() : 0;
   Add(texture, 100);
 }
 

@@ -38,7 +38,6 @@ CImageLoader::CImageLoader(const CStdString &path)
 {
   m_path = path;
   m_texture = NULL;
-  m_width = m_height = m_orientation = 0;
 }
 
 CImageLoader::~CImageLoader()
@@ -48,7 +47,6 @@ CImageLoader::~CImageLoader()
 
 void CImageLoader::DoWork()
 {
-  CPicture pic;
   CFileItem file(m_path, false);
   if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
   { // check for filename only (i.e. lookup in skin/media/)
@@ -58,13 +56,7 @@ void CImageLoader::DoWork()
       loadPath = g_TextureManager.GetTexturePath(m_path);
     }
     m_texture = new CTexture();
-    if (pic.Load(loadPath, m_texture, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080)))
-    {
-      m_width = pic.GetWidth();
-      m_height = pic.GetHeight();
-      m_orientation = (g_guiSettings.GetBool("pictures.useexifrotation") && pic.GetExifInfo()->Orientation) ? pic.GetExifInfo()->Orientation - 1: 0;
-    }
-    else
+    if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       delete m_texture;
       m_texture = NULL;
@@ -75,7 +67,6 @@ void CImageLoader::DoWork()
 CGUILargeTextureManager::CLargeTexture::CLargeTexture(const CStdString &path)
 {
   m_path = path;
-  m_orientation = 0;
   m_refCount = 1;
   m_timeToDelete = 0;
 };
@@ -116,12 +107,11 @@ bool CGUILargeTextureManager::CLargeTexture::DeleteIfRequired()
   return false;
 }
 
-void CGUILargeTextureManager::CLargeTexture::SetTexture(CBaseTexture* texture, int width, int height, int orientation)
+void CGUILargeTextureManager::CLargeTexture::SetTexture(CBaseTexture* texture)
 {
   assert(!m_texture.size());
   if (texture)
-    m_texture.Set(texture, width, height);
-  m_orientation = orientation;
+    m_texture.Set(texture, texture->GetWidth(), texture->GetHeight());
 }
 
 CGUILargeTextureManager::CGUILargeTextureManager()
@@ -149,7 +139,7 @@ void CGUILargeTextureManager::CleanupUnusedImages()
 
 // if available, increment reference count, and return the image.
 // else, add to the queue list if appropriate.
-bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &texture, int &orientation, bool firstRequest)
+bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest)
 {
   // note: max size to load images: 2048x1024? (8MB)
   CSingleLock lock(m_listSection);
@@ -160,7 +150,6 @@ bool CGUILargeTextureManager::GetImage(const CStdString &path, CTextureArray &te
     {
       if (firstRequest)
         image->AddRef();
-      orientation = image->GetOrientation();
       texture = image->GetTexture();
       return texture.size() > 0;
     }
@@ -229,7 +218,7 @@ void CGUILargeTextureManager::OnJobComplete(unsigned int jobID, CJob *job)
     { // found our job
       CImageLoader *loader = (CImageLoader *)job;
       CLargeTexture *image = it->second;
-      image->SetTexture(loader->m_texture, loader->m_width, loader->m_height, loader->m_orientation);
+      image->SetTexture(loader->m_texture);
       loader->m_texture = NULL; // we want to keep the texture, and jobs are auto-deleted.
       m_queued.erase(it);
       m_allocated.push_back(image);

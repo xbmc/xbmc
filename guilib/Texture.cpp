@@ -23,9 +23,7 @@
 #include "Picture.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
-
-#define MAX_PICTURE_WIDTH  2048
-#define MAX_PICTURE_HEIGHT 2048
+#include "DllImageLib.h"
 
 /************************************************************************/
 /*                                                                      */
@@ -48,6 +46,7 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   m_imageWidth = width;
   m_imageHeight = height;
   m_format = format;
+  m_orientation = 0;
 
   if (!g_Windowing.SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
   {
@@ -132,15 +131,54 @@ void CBaseTexture::ClampToEdge()
   }
 }
 
-bool CBaseTexture::LoadFromFile(const CStdString& texturePath)
+bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
+                                bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
 {
-  CPicture pic;
-  if(!pic.Load(texturePath, this, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT))
+  DllImageLib dll;
+  if (!dll.Load())
+    return false;
+
+  ImageInfo image;
+  memset(&image, 0, sizeof(image));
+
+  unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+  unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+
+  if(!dll.LoadImage(texturePath.c_str(), width, height, &image))
   {
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
     return false;
   }
+
+  Allocate(image.width, image.height, XB_FMT_A8R8G8B8);
+  if (autoRotate && image.exifInfo.Orientation)
+    m_orientation = image.exifInfo.Orientation - 1;
+  if (originalWidth)
+    *originalWidth = image.originalwidth;
+  if (originalHeight)
+    *originalHeight = image.originalheight;
+
+  unsigned int destPitch = GetPitch();
+  unsigned int srcPitch = ((image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
+
+  for (unsigned int y = 0; y < m_imageHeight; y++)
+  {
+    unsigned char *dst = m_pixels + y * destPitch;
+    unsigned char *src = image.texture + (m_imageHeight - 1 - y) * srcPitch;
+    unsigned char *alpha = image.alpha + (m_imageHeight - 1 - y) * m_imageWidth;
+    for (unsigned int x = 0; x < m_imageWidth; x++)
+    {
+      *dst++ = *src++;
+      *dst++ = *src++;
+      *dst++ = *src++;
+      *dst++ = (image.alpha) ? *alpha++ : 0xff;
+    }
+  }
+
+  dll.ReleaseImage(&image);
+
   ClampToEdge();
+
   return true;
 }
 

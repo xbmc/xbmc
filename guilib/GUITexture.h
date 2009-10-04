@@ -165,8 +165,6 @@ protected:
   CTextureInfo m_info;
   CAspectRatio m_aspect;
 
-  int m_largeOrientation;   // orientation for large textures
-
   CTextureArray m_diffuse;
   CTextureArray m_texture;
 };

@@ -73,7 +73,7 @@ void CSlideShowPic::Close()
   m_bTransistionImmediately = false;
 }
 
-void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, int iWidth, int iHeight, int iRotate, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
+void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
 {
   CSingleLock lock(m_textureAccess);
   Close();
@@ -83,8 +83,8 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, int iWi
   m_iSlideNumber = iSlideNumber;
 
   m_pImage = pTexture;
-  m_fWidth = (float)iWidth;
-  m_fHeight = (float)iHeight;
+  m_fWidth = (float)pTexture->GetWidth();
+  m_fHeight = (float)pTexture->GetHeight();
   // reset our counter
   m_iCounter = 0;
   // initialize our transistion effect
@@ -100,11 +100,11 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, int iWi
   m_fTransistionAngle = 0;
   m_fTransistionZoom = 0;
   m_fAngle = 0;
-  if (iRotate == 8)
+  if (pTexture->GetOrientation() == 7)
   { // rotate to 270 degrees
     m_fAngle = 3.0f;
   }
-  if (iRotate == 6)
+  if (pTexture->GetOrientation() == 5)
   { // rotate to 90 degrees
     m_fAngle = 1.0f;
   }
@@ -167,7 +167,7 @@ int CSlideShowPic::GetOriginalHeight()
     return m_iOriginalHeight;
 }
 
-void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture, int iWidth, int iHeight)
+void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture)
 {
   CSingleLock lock(m_textureAccess);
   if (m_pImage)
@@ -176,8 +176,8 @@ void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture, int iWidth, int iHeigh
     m_pImage = NULL;
   }
   m_pImage = pTexture;
-  m_fWidth = (float)iWidth;
-  m_fHeight = (float)iHeight;
+  m_fWidth = (float)pTexture->GetWidth();
+  m_fHeight = (float)pTexture->GetHeight();
 }
 
 void CSlideShowPic::Process()
