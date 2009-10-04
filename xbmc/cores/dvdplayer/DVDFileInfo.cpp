@@ -208,8 +208,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
                   dllSwScale.sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
                   dllSwScale.sws_freeContext(context);
 
-                  CPicture out;
-                  out.CreateThumbnailFromSurface(pOutBuf, nWidth, nHeight, nWidth * 4, strTarget);
+                  CPicture::CreateThumbnailFromSurface(pOutBuf, nWidth, nHeight, nWidth * 4, strTarget);
                   bOk = true;
                 }
 

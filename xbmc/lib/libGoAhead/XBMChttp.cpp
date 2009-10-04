@@ -1303,8 +1303,7 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
     item.SetCachedPictureThumb();
     if (autoGetPictureThumbs && !item.HasThumbnail())
     {
-      CPicture pic;
-      pic.DoCreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
+      CPicture::CreateThumbnail(item.m_strPath, item.GetCachedPictureThumb());
       item.SetCachedPictureThumb();
     }
     thumb = item.GetCachedPictureThumb();
@@ -2886,10 +2885,8 @@ int CXbmcHttp::xbmcTakeScreenshot(int numParas, CStdString paras[])
           width=atoi(paras[3]);
           height=atoi(paras[4]);
         }
-      CPicture pic;
-      int ret;
-      ret=pic.ConvertFile(tmpFile, filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
-      if (ret==0)
+      int ret = CPicture::ConvertFile(tmpFile, filepath, (float) atof(paras[2]), width, height, atoi(paras[5]));
+      if (ret == 0)
       {
         CFile::Delete(tmpFile);
         if (numParas>6)

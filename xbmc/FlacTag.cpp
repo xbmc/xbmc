@@ -150,8 +150,7 @@ bool CFlacTag::Read(const CStdString& strFile)
     if (picData)
     {
       m_file->Read(picData, picSize);
-      CPicture pic;
-      if (pic.CreateThumbnailFromMemory(picData, picSize, mimeType, strCoverArt))
+      if (CPicture::CreateThumbnailFromMemory(picData, picSize, mimeType, strCoverArt))
       {
         CUtil::ThumbCacheAdd(strCoverArt, true);
       }

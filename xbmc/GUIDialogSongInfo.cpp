@@ -240,8 +240,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    CPicture pic;
-    if (pic.DoCreateThumbnail(localThumb, cachedLocalThumb))
+    if (CPicture::CreateThumbnail(localThumb, cachedLocalThumb))
     {
       CFileItemPtr item(new CFileItem("thumb://Local", false));
       item->SetThumbnailImage(cachedLocalThumb);
@@ -281,10 +280,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
-  {
-    CPicture pic;
-    pic.DoCreateThumbnail(result, cachedThumb);
-  }
+    CPicture::CreateThumbnail(result, cachedThumb);
 
   m_song->SetThumbnailImage(cachedThumb);
 

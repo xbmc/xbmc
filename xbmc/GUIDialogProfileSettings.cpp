@@ -221,8 +221,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
 
       if (!strThumb.Equals("thumb://None"))
       {
-        CPicture pic;
-        pic.DoCreateThumbnail(strThumb, m_strThumb);
+        CPicture::CreateThumbnail(strThumb, m_strThumb);
         pImage->SetFileName(m_strThumb);
       }
       else

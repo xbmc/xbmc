@@ -61,8 +61,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
           return DownloadVideoThumb(pItem, cachedThumb);
         else
         {
-          CPicture pic;
-          if(pic.DoCreateThumbnail(thumb, cachedThumb))
+          if (CPicture::CreateThumbnail(thumb, cachedThumb))
             pItem->SetThumbnailImage(cachedThumb);
           else
             pItem->SetThumbnailImage("");
@@ -78,8 +77,7 @@ bool CPictureThumbLoader::LoadItem(CFileItem* pItem)
 
   if ((pItem->IsPicture() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList()) && !pItem->HasThumbnail())
   { // load the thumb from the image file
-    CPicture pic;
-    pic.DoCreateThumbnail(pItem->m_strPath, pItem->GetCachedPictureThumb());
+    CPicture::CreateThumbnail(pItem->m_strPath, pItem->GetCachedPictureThumb());
   }
   // refill in the thumb to get it to update
   pItem->SetCachedPictureThumb();

@@ -547,10 +547,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         item.m_bIsFolder = true;
         CStdString strFanart = item.CacheFanart(true);
         if (!strFanart.IsEmpty())
-        {
-          CPicture pic;
-          pic.CacheImage(strFanart,strCached);
-        }
+          CPicture::CacheImage(strFanart,strCached);
         else
           CLog::Log(LOGDEBUG, "%s no local fanart found for artist %s", __FUNCTION__, i->c_str());
       }
@@ -1190,10 +1187,7 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
   {
     CStdString localThumb = CUtil::AddFileToFolder(artistPath, "folder.jpg");
     if (XFILE::CFile::Exists(localThumb))
-    {
-      CPicture pic;
-      pic.DoCreateThumbnail(localThumb, thumb);
-    }
+      CPicture::CreateThumbnail(localThumb, thumb);
   }
   if (!XFILE::CFile::Exists(thumb) && artist.thumbURL.m_url.size())
     CScraperUrl::DownloadThumbnail(thumb,artist.thumbURL.m_url[0]);

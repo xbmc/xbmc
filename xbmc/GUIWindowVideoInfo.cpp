@@ -748,8 +748,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    CPicture pic;
-    pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
+    CPicture::CreateThumbnail(localThumb, cachedLocalThumb);
     CFileItemPtr item(new CFileItem("thumb://Local", false));
     item->SetThumbnailImage(cachedLocalThumb);
     item->SetLabel(g_localizeStrings.Get(20017));
@@ -797,10 +796,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
-  {
-    CPicture pic;
-    pic.DoCreateThumbnail(result, cachedThumb);
-  }
+    CPicture::CreateThumbnail(result, cachedThumb);
   else
     result = "thumb://None";
 
@@ -910,11 +906,10 @@ void CGUIWindowVideoInfo::OnGetFanart()
     bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
     if (succeeded)
     {
-      CPicture pic;
       if (flip)
-        pic.ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
+        CPicture::ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
       else
-        pic.CacheImage(tempFile, cachedThumb);
+        CPicture::CacheImage(tempFile, cachedThumb);
     }
     CFile::Delete(tempFile);
     if (!succeeded)
@@ -922,11 +917,10 @@ void CGUIWindowVideoInfo::OnGetFanart()
   }
   else if (CFile::Exists(result))
   { // local file
-    CPicture pic;
     if (flip)
-      pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
+      CPicture::ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
-      pic.CacheImage(result, cachedThumb);
+      CPicture::CacheImage(result, cachedThumb);
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show

@@ -543,8 +543,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
     CUtil::ReplaceExtension(pItem->m_strPath,".tbn",strTBN);
     if (CFile::Exists(strTBN))
     {
-      CPicture pic;
-      if (pic.DoCreateThumbnail(strTBN, pItem->GetCachedPictureThumb(),true))
+      if (CPicture::CreateThumbnail(strTBN, pItem->GetCachedPictureThumb(),true))
       {
         pItem->SetCachedPictureThumb();
         pItem->FillInDefaultIcon();
@@ -571,10 +570,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       strPath = CMultiPathDirectory::GetFirstPath(pItem->m_strPath);
     thumb = CUtil::AddFileToFolder(strPath, thumb);
     if (CFile::Exists(thumb))
-    {
-      CPicture pic;
-      pic.DoCreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
-    }
+      CPicture::CreateThumbnail(thumb, pItem->GetCachedPictureThumb(),true);
     else if (!pItem->IsPlugin())
     {
       // we load the directory, grab 4 random thumb files (if available) and then generate
@@ -623,8 +619,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
       if (items.Size() < 4 || pItem->IsCBR() || pItem->IsCBZ())
       { // less than 4 items, so just grab a single random thumb
         CStdString folderThumb(pItem->GetCachedPictureThumb());
-        CPicture pic;
-        pic.DoCreateThumbnail(items[0]->m_strPath, folderThumb);
+        CPicture::CreateThumbnail(items[0]->m_strPath, folderThumb);
       }
       else
       {
@@ -633,8 +628,7 @@ void CGUIWindowPictures::OnItemLoaded(CFileItem *pItem)
         CStdString strFiles[4];
         for (int thumb = 0; thumb < 4; thumb++)
           strFiles[thumb] = items[thumb]->m_strPath;
-        CPicture pic;
-        pic.CreateFolderThumb(strFiles, pItem->GetCachedPictureThumb());
+        CPicture::CreateFolderThumb(strFiles, pItem->GetCachedPictureThumb());
       }
     }
     // refill in the icon to get it to update

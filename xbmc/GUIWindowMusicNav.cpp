@@ -888,7 +888,6 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   if (CGUIDialogFileBrowser::ShowAndGetImage(items, g_settings.m_musicSources,
                                              g_localizeStrings.Get(20019), picturePath))
   {
-    CPicture picture;
     if (picturePath.Equals("thumb://Current"))
       return;
 
@@ -908,8 +907,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
     if (!picturePath.Equals("thumb://None") && picturePath.Left(8).Equals("thumb://") && items.Get(picturePath))
       picturePath = items.Get(picturePath)->GetThumbnailImage();
 
-    if (picturePath.Equals("thumb://None") ||
-        picture.DoCreateThumbnail(picturePath, cachedThumb))
+    if (picturePath.Equals("thumb://None") || CPicture::CreateThumbnail(picturePath, cachedThumb))
     {
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems->m_strPath);

@@ -259,8 +259,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
     crc.ComputeFromLowerCase(g_application.CurrentFile());
     bookmark.thumbNailImage.Format("%08x_%i.jpg", (unsigned __int32) crc, m_vecItems->Size() + 1);
     bookmark.thumbNailImage = CUtil::AddFileToFolder(g_settings.GetBookmarksThumbFolder(), bookmark.thumbNailImage);
-    CPicture pic;
-    if (!pic.CreateThumbnailFromSurface(texture.GetPixels(), width, height, texture.GetPitch(),
+    if (!CPicture::CreateThumbnailFromSurface(texture.GetPixels(), width, height, texture.GetPitch(),
                                         bookmark.thumbNailImage))
       bookmark.thumbNailImage.Empty();
   }

@@ -2349,8 +2349,7 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   if (!thumb.IsEmpty())
   {
     CStdString cachedThumb(CUtil::GetCachedMusicThumb(m_strPath));
-    CPicture pic;
-    pic.DoCreateThumbnail(thumb, cachedThumb);
+    CPicture::CreateThumbnail(thumb, cachedThumb);
   }
 
   SetCachedMusicThumb();
@@ -2560,8 +2559,7 @@ void CFileItem::SetUserVideoThumb()
   if (!thumb.IsEmpty())
   {
     CStdString cachedThumb(GetCachedVideoThumb());
-    CPicture pic;
-    pic.DoCreateThumbnail(thumb, cachedThumb);
+    CPicture::CreateThumbnail(thumb, cachedThumb);
   }
   SetCachedVideoThumb();
 }
@@ -2665,10 +2663,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
     return "";
 
   if (!probe)
-  {
-    CPicture pic;
-    pic.CacheImage(localFanart, cachedFanart);
-  }
+    CPicture::CacheImage(localFanart, cachedFanart);
 
   return localFanart;
 }
@@ -2765,8 +2760,7 @@ void CFileItem::SetUserProgramThumb()
   CStdString thumb(GetCachedProgramThumb());
   if (CFile::Exists(fileThumb))
   { // cache
-    CPicture pic;
-    if (pic.DoCreateThumbnail(fileThumb, thumb))
+    if (CPicture::CreateThumbnail(fileThumb, thumb))
       SetThumbnailImage(thumb);
   }
   else if (m_bIsFolder)
@@ -2775,8 +2769,7 @@ void CFileItem::SetUserProgramThumb()
     CStdString folderThumb(GetFolderThumb());
     if (CFile::Exists(folderThumb))
     {
-      CPicture pic;
-      if (pic.DoCreateThumbnail(folderThumb, thumb))
+      if (CPicture::CreateThumbnail(folderThumb, thumb))
         SetThumbnailImage(thumb);
     }
   }

@@ -1014,7 +1014,6 @@ namespace VIDEO
         pDialog->Progress();
       }
 
-      CPicture picture;
       try
       {
         if (strImage.Find("http://") < 0 &&
@@ -1025,7 +1024,7 @@ namespace VIDEO
           CUtil::GetDirectory(pItem->m_strPath, strPath);
           strImage = CUtil::AddFileToFolder(strPath,strImage);
         }
-        picture.DoCreateThumbnail(strImage,strThumb);
+        CPicture::CreateThumbnail(strImage,strThumb);
       }
       catch (...)
       {
@@ -1378,8 +1377,7 @@ namespace VIDEO
             strCheck.ToLower();
             if (reg.RegFind(strCheck.c_str()) > -1)
             {
-              CPicture picture;
-              picture.DoCreateThumbnail(tbnItems[j]->m_strPath,items[i]->GetCachedSeasonThumb());
+              CPicture::CreateThumbnail(tbnItems[j]->m_strPath,items[i]->GetCachedSeasonThumb());
               bDownload=false;
               break;
             }
@@ -1405,10 +1403,7 @@ namespace VIDEO
         thumbFile += ".tbn";
         CStdString strLocal = CUtil::AddFileToFolder(CUtil::AddFileToFolder(strPath,".actors"),thumbFile);
         if (CFile::Exists(strLocal))
-        {
-          CPicture pic;
-          pic.DoCreateThumbnail(strLocal,strThumb);
-        }
+          CPicture::CreateThumbnail(strLocal,strThumb);
         else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
           CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
       }

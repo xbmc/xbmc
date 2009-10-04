@@ -162,8 +162,7 @@ bool CFanart::DownloadImage(const CStdString &url, const CStdString &destination
   CStdString tempFile = "special://temp/fanart_download.jpg";
   if (http.Download(url, tempFile))
   { 
-    CPicture pic;
-    pic.CacheImage(tempFile, destination);
+    CPicture::CacheImage(tempFile, destination);
     XFILE::CFile::Delete(tempFile);
     return true;
   }

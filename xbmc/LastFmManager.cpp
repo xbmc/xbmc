@@ -424,7 +424,6 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
   DWORD start = timeGetTime();
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
-  CPicture pic;
   CFileCurl http;
   for (int i = 0; i < nrInitialTracksToAdd && i < iNrCachedTracks; i++)
   {
@@ -448,7 +447,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
         try
         {
           //download to temp, then make a thumb
-          if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && pic.DoCreateThumbnail(cachedFile, thumbFile)))
+          if (CFile::Exists(thumbFile) || (http.Download(coverUrl, cachedFile) && CPicture::CreateThumbnail(cachedFile, thumbFile)))
           {
             if (CFile::Exists(cachedFile))
               CFile::Delete(cachedFile);

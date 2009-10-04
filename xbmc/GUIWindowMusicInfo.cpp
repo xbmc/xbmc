@@ -498,8 +498,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    CPicture pic;
-    if (pic.DoCreateThumbnail(localThumb, cachedLocalThumb))
+    if (CPicture::CreateThumbnail(localThumb, cachedLocalThumb))
     {
       CFileItemPtr item(new CFileItem("thumb://Local", false));
       item->SetThumbnailImage(cachedLocalThumb);
@@ -553,10 +552,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
-  {
-    CPicture pic;
-    pic.DoCreateThumbnail(result, cachedThumb);
-  }
+    CPicture::CreateThumbnail(result, cachedThumb);
 
   m_albumItem->SetThumbnailImage(cachedThumb);
   m_hasUpdatedThumb = true;
@@ -658,11 +654,10 @@ void CGUIWindowMusicInfo::OnGetFanart()
       result = tempFile;
     }
 
-    CPicture pic;
     if (flip)
-      pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
+      CPicture::ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
-      pic.CacheImage(result, cachedThumb);
+      CPicture::CacheImage(result, cachedThumb);
 
     m_albumItem->SetProperty("fanart_image",cachedThumb);
     m_hasUpdatedThumb = true;
