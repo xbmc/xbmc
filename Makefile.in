@@ -54,8 +54,7 @@ EC_DIRS= \
 	tools/EventClients
 
 XBMCTEX_DIRS= \
-	tools/XBMCTex \
-	tools/XBMCTexXBT
+	tools/TexturePacker
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
@@ -142,7 +141,7 @@ configure: configure.in
 	@false
 
 # skin textures
-skins: tools/XBMCTex/XBMCTex tools/XBMCTexXBT/XBMCTexXBT force
+skins: tools/TexturePacker/TexturePacker force
 	 $(MAKE) -C $(PM3_MEDIA)
 	 $(MAKE) -C $(PM3HD_MEDIA)
 
@@ -414,8 +413,8 @@ else
 	$(MAKE) -C tools/XBMCTex/
 endif
 
-tools/XBMCTexXBT/XBMCTexXBT:
-	$(MAKE) -C tools/XBMCTexXBT/
+tools/TexturePacker/TexturePacker:
+	$(MAKE) -C tools/TexturePacker/
 
 install-bin: xbmc.bin # developement convenience target
 	sudo install -D xbmc.bin $(prefix)/share/xbmc

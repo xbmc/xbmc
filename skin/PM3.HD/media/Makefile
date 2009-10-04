@@ -1,5 +1,5 @@
 TARGET=Textures.xbt
-XBMCTEX=../../../tools/XBMCTexXBT/XBMCTexXBT
+XBMCTEX=../../../tools/TexturePacker/TexturePacker
 IMAGES= \
 	Apple\ Movie\ Trailers/G.png \
 	Apple\ Movie\ Trailers/NC-17.png \
@@ -325,7 +325,7 @@ $(TARGET): $(XBMCTEX) $(IMAGES)
 	$(XBMCTEX) -input . -output $(TARGET)
 
 $(XBMCTEX): force
-	$(MAKE) -C ../../../tools/XBMCTexXBT
+	$(MAKE) -C ../../../tools/TexturePacker
 
 clean:
 	rm -f $(TARGET)
