@@ -547,11 +547,6 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   return false;
 }
 
-CDateTime CCMythDirectory::GetValue(cmyth_timestamp_t t)
-{
-  return m_session->GetValue(t);
-}
-
 bool CCMythDirectory::IsMovie(const cmyth_proginfo_t program)
 {
   /*
