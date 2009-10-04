@@ -57,6 +57,8 @@
 		43352CD91071520C00706B8A /* XBTFReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CD01071520C00706B8A /* XBTFReader.cpp */; };
 		43352CEE1071634600706B8A /* libsquish-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish-x86-osx.a */; };
 		43352CF01071639400706B8A /* libsquish-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */; };
+		439E16441078C02700B91B03 /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 439E16421078C02700B91B03 /* DDSImage.cpp */; };
+		439E16451078C02700B91B03 /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 439E16421078C02700B91B03 /* DDSImage.cpp */; };
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
@@ -1860,6 +1862,8 @@
 		43352CED1071634600706B8A /* libsquish-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-x86-osx.a"; path = "xbmc/lib/libsquish/libsquish-x86-osx.a"; sourceTree = "<group>"; };
 		43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-powerpc-osx.a"; path = "xbmc/lib/libsquish/libsquish-powerpc-osx.a"; sourceTree = "<group>"; };
 		436B38F3106628850049AB3B /* EndianSwap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EndianSwap.h; path = xbmc/utils/EndianSwap.h; sourceTree = "<group>"; };
+		439E16421078C02700B91B03 /* DDSImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DDSImage.cpp; path = guilib/DDSImage.cpp; sourceTree = "<group>"; };
+		439E16431078C02700B91B03 /* DDSImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDSImage.h; path = guilib/DDSImage.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -3940,6 +3944,8 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				439E16421078C02700B91B03 /* DDSImage.cpp */,
+				439E16431078C02700B91B03 /* DDSImage.h */,
 				43348AA71077486D00F859CF /* PlayerCoreConfig.h */,
 				43348AA81077486D00F859CF /* PlayerCoreFactory.cpp */,
 				43348AA91077486D00F859CF /* PlayerCoreFactory.h */,
@@ -8097,6 +8103,7 @@
 				43348AA4107747CD00F859CF /* Edl.cpp in Sources */,
 				43348AAE1077486D00F859CF /* PlayerCoreFactory.cpp in Sources */,
 				43348AAF1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */,
+				439E16451078C02700B91B03 /* DDSImage.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8953,6 +8960,7 @@
 				43348AA3107747CD00F859CF /* Edl.cpp in Sources */,
 				43348AAC1077486D00F859CF /* PlayerCoreFactory.cpp in Sources */,
 				43348AAD1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */,
+				439E16441078C02700B91B03 /* DDSImage.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
