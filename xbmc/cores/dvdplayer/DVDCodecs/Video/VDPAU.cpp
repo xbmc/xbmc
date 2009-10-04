@@ -978,6 +978,7 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   VdpStatus vdp_st = VDP_STATUS_ERROR;
   if (render == NULL)
   {
+    CSingleLock lock(g_graphicsContext);
     while(vdp_st != VDP_STATUS_OK && tries < NUM_VIDEO_SURFACES_MAX_TRIES)
     {
       tries++;
