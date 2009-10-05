@@ -497,17 +497,26 @@ void CFileCurl::SetCorrectHeaders(CReadState* state)
 
 void CFileCurl::ParseAndCorrectUrl(CURL &url2)
 {
-  if( url2.GetProtocol().Equals("ftpx") )
+  if ( url2.GetProtocol().Equals("ftpx") ||
+       url2.GetProtocol().Equals("ftp-local") )
     url2.SetProtocol("ftp");
-  else if( url2.GetProtocol().Equals("shout")
-       ||  url2.GetProtocol().Equals("daap")
-       ||  url2.GetProtocol().Equals("tuxbox")
-       ||  url2.GetProtocol().Equals("lastfm")
-       ||  url2.GetProtocol().Equals("mms"))
-    url2.SetProtocol("http");    
+    
+  if ( url2.GetProtocol().Equals("ftps-local") )
+    url2.SetProtocol("ftps");
 
-  if( url2.GetProtocol().Equals("ftp")
-  ||  url2.GetProtocol().Equals("ftps") )
+  if ( url2.GetProtocol().Equals("shout") ||
+       url2.GetProtocol().Equals("daap") ||
+       url2.GetProtocol().Equals("tuxbox") ||
+       url2.GetProtocol().Equals("lastfm") ||
+       url2.GetProtocol().Equals("mms") ||
+       url2.GetProtocol().Equals("http-local") )
+    url2.SetProtocol("http");
+
+  if ( url2.GetProtocol().Equals("https-local") )
+    url2.SetProtocol("https");
+
+  if ( url2.GetProtocol().Equals("ftp") ||
+       url2.GetProtocol().Equals("ftps") )
   {
     /* this is uggly, depending on from where   */
     /* we get the link it may or may not be     */

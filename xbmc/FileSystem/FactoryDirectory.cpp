@@ -126,8 +126,15 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "shout") return new CShoutcastDirectory();
     if (strProtocol == "lastfm") return new CLastFMDirectory();
     if (strProtocol == "tuxbox") return new CDirectoryTuxBox();
-    if (strProtocol == "ftp" ||  strProtocol == "ftpx" ||  strProtocol == "ftps") return new CFTPDirectory();
-    if (strProtocol == "http" || strProtocol == "https") return new CHTTPDirectory();
+    if (strProtocol == "ftp" ||
+        strProtocol == "ftp-local" ||
+        strProtocol == "ftps" ||
+        strProtocol == "ftps-local" ||
+        strProtocol == "ftpx") return new CFTPDirectory();
+    if (strProtocol == "http" ||
+        strProtocol == "http-local" ||
+        strProtocol == "https" ||
+        strProtocol == "https-local") return new CHTTPDirectory();
 #ifdef HAS_FILESYSTEM
     if (strProtocol == "smb") return new CSMBDirectory();
     if (strProtocol == "daap") return new CDAAPDirectory();

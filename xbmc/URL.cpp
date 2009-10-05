@@ -123,6 +123,8 @@ CURL::CURL(const CStdString& strURL1)
 
   if(m_strProtocol.Equals("http")
     || m_strProtocol.Equals("https")
+    || m_strProtocol.Equals("http-local")
+    || m_strProtocol.Equals("https-local")
     || m_strProtocol.Equals("shout")
     || m_strProtocol.Equals("tuxbox")
     || m_strProtocol.Equals("daap")
@@ -132,7 +134,9 @@ CURL::CURL(const CStdString& strURL1)
     || m_strProtocol.Equals("zip"))
     sep = "?;#|";
   else if(m_strProtocol.Equals("ftp")
+       || m_strProtocol.Equals("ftp-local")
        || m_strProtocol.Equals("ftps")
+       || m_strProtocol.Equals("ftps-local")
        || m_strProtocol.Equals("ftpx"))
     sep = "?;";
 
