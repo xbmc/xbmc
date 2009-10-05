@@ -1620,10 +1620,10 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   }
   else
   {
-    glTexCoord2f((float)m_sourceRect.x1,  (float)m_sourceRect.y1);    glVertex4f((float)m_destRect.x1,  (float)m_destRect.y1,    0, 0);
-    glTexCoord2f((float)m_sourceRect.x2, (float)m_sourceRect.y1);    glVertex4f((float)m_destRect.x2, (float)m_destRect.y1,    1.0f, 0);
-    glTexCoord2f((float)m_sourceRect.x2, (float)m_sourceRect.y2); glVertex4f((float)m_destRect.x2, (float)m_destRect.y2, 1.0f, 1.0f);
-    glTexCoord2f((float)m_sourceRect.x1,  (float)m_sourceRect.y2); glVertex4f((float)m_destRect.x1,  (float)m_destRect.y2, 0, 1.0f);
+    glTexCoord2f((float)m_sourceRect.x1, (float)m_sourceRect.y1);  glVertex4f((float)m_destRect.x1, (float)m_destRect.y1, 0, 1.0f);
+    glTexCoord2f((float)m_sourceRect.x2, (float)m_sourceRect.y1);  glVertex4f((float)m_destRect.x2, (float)m_destRect.y1, 0, 1.0f);
+    glTexCoord2f((float)m_sourceRect.x2, (float)m_sourceRect.y2);  glVertex4f((float)m_destRect.x2, (float)m_destRect.y2, 0, 1.0f);
+    glTexCoord2f((float)m_sourceRect.x1, (float)m_sourceRect.y2);  glVertex4f((float)m_destRect.x1, (float)m_destRect.y2, 0, 1.0f);
   }
   glEnd();
   VerifyGLState();
