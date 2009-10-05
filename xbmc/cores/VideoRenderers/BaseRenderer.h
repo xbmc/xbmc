@@ -40,7 +40,7 @@ protected:
   void ChooseBestResolution(float fps);
   void CalcNormalDisplayRect(float offsetX, float offsetY, float screenWidth, float screenHeight, float inputFrameRatio, float zoomAmount);
   void CalculateFrameAspectRatio(unsigned int desired_width, unsigned int desired_height);
-  void CBaseRenderer::ManageDisplay();
+  void ManageDisplay();
 
   RESOLUTION m_resolution;    // the resolution we're running in
   unsigned int m_sourceWidth;
