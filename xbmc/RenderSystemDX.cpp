@@ -309,7 +309,7 @@ bool CRenderSystemDX::BeginRender()
 
   if(FAILED (m_pD3DDevice->BeginScene()))
   {
-    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() failed");
+    CLog::Log(LOGERROR, "m_pD3DDevice->BeginScene() failed");
     return false;
   }
 
@@ -326,7 +326,7 @@ bool CRenderSystemDX::EndRender()
 
   if(FAILED (m_pD3DDevice->EndScene()))
   {
-    CLog::Log(LOGINFO, "m_pD3DDevice->EndScene() failed");
+    CLog::Log(LOGERROR, "m_pD3DDevice->EndScene() failed");
     return false;
   }
 
