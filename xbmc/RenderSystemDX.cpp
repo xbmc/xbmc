@@ -55,7 +55,6 @@ bool CRenderSystemDX::InitRenderSystem()
 {
   m_bVSync = true;
   m_iVSyncMode = 0;
-  m_maxTextureSize = 8192;
   m_renderCaps = 0;
   D3DADAPTER_IDENTIFIER9 AIdentifier;
 
@@ -91,6 +90,7 @@ bool CRenderSystemDX::InitRenderSystem()
   { // we're allowed _some_ NPOT textures (namely non-DXT and only with D3DTADDRESS_CLAMP and no wrapping)
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
+  m_maxTextureSize = min(caps.MaxTextureWidth, caps.MaxTextureHeight);
 
   return true;
 }
