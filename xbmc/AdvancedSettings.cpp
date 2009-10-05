@@ -194,7 +194,7 @@ CAdvancedSettings::CAdvancedSettings()
 
   m_bPythonVerbose = false;
 
-  m_bgInfoLoaderMaxThreads = 5;
+  m_bgInfoLoaderMaxThreads = 1;
 }
 
 bool CAdvancedSettings::Load()
