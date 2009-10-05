@@ -81,6 +81,11 @@ bool CRenderSystemGL::InitRenderSystem()
     if (m_renderCaps & RENDER_CAPS_DXT)    // This may not be correct on all hardware
       m_renderCaps |= RENDER_CAPS_DXT_NPOT;
   }
+
+  m_RenderExtensions  = " ";
+  m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+  m_RenderExtensions += " ";
+
   LogGraphicsInfo();
   
   m_bRenderCreated = true;
@@ -164,7 +169,12 @@ bool CRenderSystemGL::ClearBuffers(float r, float g, float b, float a)
 
 bool CRenderSystemGL::IsExtSupported(const char* extension)
 {
-  return false;
+  CStdString name;
+  name  = " ";
+  name += extension;
+  name += " ";
+
+  return m_RenderExtensions.find(name) != std::string::npos;;
 }
 
 static int64_t abs(int64_t a)

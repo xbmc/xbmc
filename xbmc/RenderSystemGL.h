@@ -73,6 +73,8 @@ protected:
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
+
+  CStdString m_RenderExtensions;
 };
 
 #endif // RENDER_SYSTEM_H
