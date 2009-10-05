@@ -1232,7 +1232,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIMultiImage(
       parentID, id, posX, posY, width, height, texture, timePerImage, fadeTime, randomized, loop, timeToPauseAtEnd);
     ((CGUIMultiImage *)control)->SetInfo(texturePath);
-    ((CGUIMultiImage *)control)->SetAspectRatio(aspect.ratio);
+    ((CGUIMultiImage *)control)->SetAspectRatio(aspect);
   }
   else if (strType == "list")
   {
