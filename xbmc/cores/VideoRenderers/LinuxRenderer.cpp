@@ -663,19 +663,19 @@ void CLinuxRenderer::RenderLowMem(DWORD flags)
 #if defined (USE_SDL_OVERLAY)
 
   SDL_Rect rect;
-  rect.x = m_sourceRect.left;
-  rect.y = m_.top;
-  rect.w = m_sourceRect.right - m_sourceRect.left;
-  rect.h = m_sourceRect.bottom - m_sourceRect.top;
+  rect.x = (int)m_sourceRect.x1;
+  rect.y = (int)m_sourceRect.y1;
+  rect.w = (int)m_sourceRect.Width();
+  rect.h = (int)m_sourceRect.Height();
 
   int nRet = SDL_DisplayYUVOverlay(m_overlay, &rect);
 #else
 
   SDL_Rect rect;
-  rect.x = m_sourceRect.left;
-  rect.y = m_sourceRect.top;
-  rect.w = m_sourceRect.right - m_sourceRect.left;
-  rect.h = m_sourceRect.bottom - m_sourceRect.top; 
+  rect.x = (int)m_sourceRect.x1;
+  rect.y = (int)m_sourceRect.y1;
+  rect.w = (int)m_sourceRect.Width();
+  rect.h = (int)m_sourceRect.Height(); 
   g_graphicsContext.BlitToScreen(m_screenbuffer,NULL,&rect);
 
 #endif
