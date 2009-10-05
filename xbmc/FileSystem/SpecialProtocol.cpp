@@ -138,7 +138,7 @@ CStdString CSpecialProtocol::TranslatePath(const CStdString &path)
   else if (RootDir.Equals("home"))
     CUtil::AddFileToFolder(GetPath("home"), FileName, translatedPath);
   else if (RootDir.Equals("userhome"))
-    CUtil::AddFileToFolder(GetPath("userhome"), FileName, translatedPath);  
+    CUtil::AddFileToFolder(GetPath("userhome"), FileName, translatedPath);
   else if (RootDir.Equals("temp"))
     CUtil::AddFileToFolder(GetPath("temp"), FileName, translatedPath);
   else if (RootDir.Equals("profile"))

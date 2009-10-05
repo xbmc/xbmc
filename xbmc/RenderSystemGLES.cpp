@@ -33,19 +33,6 @@
 CRenderSystemGLES::CRenderSystemGLES() : CRenderSystemBase()
 {
   m_enumRenderingSystem = RENDERING_SYSTEM_OPENGLES;
-  // Setup the OpenGL ES2.0 shader program for use
-  m_pGUIshader = new CGUIShader(/*vertexshader, fragmentshader*/);
-  if (!m_pGUIshader->CompileAndLink())
-  {
-    m_pGUIshader->Free();
-    delete m_pGUIshader;
-    m_pGUIshader = NULL;
-    CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "GUI Shader - Initialise successful : %p", m_pGUIshader);
-  }
 }
 
 CRenderSystemGLES::~CRenderSystemGLES()
@@ -90,6 +77,20 @@ bool CRenderSystemGLES::InitRenderSystem()
   
   LogGraphicsInfo();
   
+  // Setup the OpenGL ES2.0 shader program for use
+  m_pGUIshader = new CGUIShader();
+  if (!m_pGUIshader->CompileAndLink())
+  {
+    m_pGUIshader->Free();
+    delete m_pGUIshader;
+    m_pGUIshader = NULL;
+    CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "GUI Shader - Initialise successful : %p", m_pGUIshader);
+  }
+
   m_bRenderCreated = true;
   
   return true;
