@@ -708,15 +708,15 @@ void CGUIWindowFullScreen::RenderFullScreen()
       OnMessage(msg);
     }
     // show sizing information
-    RECT SrcRect, DestRect;
+    CRect SrcRect, DestRect;
     float fAR;
     g_application.m_pPlayer->GetVideoRect(SrcRect, DestRect);
     g_application.m_pPlayer->GetVideoAspectRatio(fAR);
     {
       CStdString strSizing;
       strSizing.Format("Sizing: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Pixels: %2.2f:1)",
-                       SrcRect.right - SrcRect.left, SrcRect.bottom - SrcRect.top,
-                       DestRect.right - DestRect.left, DestRect.bottom - DestRect.top, g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
+                       (int)SrcRect.Width(), (int)SrcRect.Height(),
+                       (int)DestRect.Width(), (int)DestRect.Height(), g_stSettings.m_fZoomAmount, fAR*g_stSettings.m_fPixelRatio, g_stSettings.m_fPixelRatio);
       CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), LABEL_ROW2);
       msg.SetLabel(strSizing);
       OnMessage(msg);

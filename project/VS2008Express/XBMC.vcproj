@@ -1966,6 +1966,14 @@
 				Name="VideoRenderers"
 				>
 				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.cpp"
 					>
 				</File>

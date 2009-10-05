@@ -172,7 +172,8 @@ void CRenderer::Render()
 
 void CRenderer::Render(COverlay* o)
 {
-  RECT rs, rd, rv;
+  CRect rs, rd;
+  RECT rv;
   RESOLUTION_INFO res;
   g_renderManager.GetVideoRect(rs, rd);
   rv  = g_graphicsContext.GetViewWindow();
@@ -201,8 +202,8 @@ void CRenderer::Render(COverlay* o)
 
     if(align == COverlay::ALIGN_VIDEO)
     {
-      scale_x = (float)(rs.right  - rs.left);
-      scale_y = (float)(rs.bottom - rs.top);
+      scale_x = rs.Width();
+      scale_y = rs.Height();
     }
 
     state.x      *= scale_x;
@@ -240,19 +241,19 @@ void CRenderer::Render(COverlay* o)
 
     if(align == COverlay::ALIGN_VIDEO)
     {
-      float scale_x = (float)(rd.right  - rd.left) / (rs.right  - rs.left);
-      float scale_y = (float)(rd.bottom - rd.top)  / (rs.bottom - rs.top);
+      float scale_x = rd.Width() / rs.Width();
+      float scale_y = rd.Height() / rs.Height();
 
-      state.x      -= rs.left;
-      state.y      -= rs.top;
+      state.x      -= rs.x1;
+      state.y      -= rs.y1;
 
       state.x      *= scale_x;
       state.y      *= scale_y;
       state.width  *= scale_x;
       state.height *= scale_y;
 
-      state.x      += rd.left;
-      state.y      += rd.top;
+      state.x      += rd.x1;
+      state.y      += rd.y1;
     }
 
   }

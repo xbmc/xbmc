@@ -25,6 +25,7 @@
 
 #include "GraphicContext.h"
 #include "RenderFlags.h"
+#include "BaseRenderer.h"
 
 //#define MP_DIRECTRENDERING
 
@@ -123,17 +124,14 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CWinRenderer
+class CWinRenderer : public CBaseRenderer
 {
 public:
   CWinRenderer(LPDIRECT3DDEVICE9 pDevice);
   ~CWinRenderer();
 
-  virtual void GetVideoRect(RECT &rs, RECT &rd);
-  virtual float GetAspectRatio();
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
-  virtual void SetViewMode(int iViewMode);
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
   // Player functions
@@ -153,16 +151,11 @@ public:
   virtual bool         SupportsContrast() { return false; }
   virtual bool         SupportsGamma() { return false; }
 
-  void AutoCrop(bool bCrop);
+  virtual void AutoCrop(bool bCrop);
   void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  RESOLUTION GetResolution();
 
 protected:
   virtual void Render(DWORD flags);
-  virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
-  void CalculateFrameAspectRatio(int desired_width, int desired_height);
-  void ChooseBestResolution(float fps);
-  virtual void ManageDisplay();
   void CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride);
   virtual void ManageTextures();
   void DeleteOSDTextures(int index);
@@ -180,14 +173,6 @@ protected:
   void RenderLowMem(DWORD flags);
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
-
-  float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
-  RESOLUTION m_iResolution;    // the resolution we're running in
-  float m_fps;        // fps of movie
-  RECT rd;          // destination rect
-  RECT rs;          // source rect
-  unsigned int m_iSourceWidth;    // width
-  unsigned int m_iSourceHeight;   // height
 
   bool m_bConfigured;
 

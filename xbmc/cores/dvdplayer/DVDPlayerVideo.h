@@ -71,11 +71,8 @@ public:
   void EnableFullscreen(bool bEnable)               { m_bAllowFullscreen = bEnable; }
 
 #ifdef HAS_VIDEO_PLAYBACK
-  void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
+  void GetVideoRect(CRect& SrcRect, CRect& DestRect)  { g_renderManager.GetVideoRect(SrcRect, DestRect); }
   float GetAspectRatio()                            { return g_renderManager.GetAspectRatio(); }
-#else
-  void GetVideoRect(RECT& SrcRect, RECT& DestRect)  { }
-  float GetAspectRatio()                            { return 4.0f / 3.0f; }
 #endif
 
   double GetDelay()                                { return m_iVideoDelay; }

@@ -5,6 +5,7 @@ SRCS=LinuxRenderer.cpp \
      LinuxRendererGL.cpp \
      OverlayRenderer.cpp \
      OverlayRendererGL.cpp \
+     BaseRenderer.cpp
 
 LIB=VideoRenderer.a
 

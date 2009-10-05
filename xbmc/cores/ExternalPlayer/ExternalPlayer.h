@@ -60,8 +60,6 @@ public:
   virtual void GetVideoInfo(CStdString& strVideoInfo);
   virtual void GetGeneralInfo( CStdString& strVideoInfo);
   virtual void Update(bool bPauseDrawing)                       {}
-  virtual void GetVideoRect(RECT& SrcRect, RECT& DestRect)      {}
-  virtual void GetVideoAspectRatio(float& fAR)                  {}
   virtual void SwitchToNextAudioLanguage();
   virtual bool CanRecord() { return false; }
   virtual bool IsRecording() { return false; }
