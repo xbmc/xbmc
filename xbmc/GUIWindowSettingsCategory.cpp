@@ -119,8 +119,8 @@ using namespace DIRECTORY;
 #define CONTROL_DEFAULT_CATEGORY_BUTTON 10
 #define CONTROL_DEFAULT_SEPARATOR       11
 #define CONTROL_DEFAULT_EDIT            12
-#define CONTROL_START_BUTTONS           -40
-#define CONTROL_START_CONTROL           -20
+#define CONTROL_START_BUTTONS           -100
+#define CONTROL_START_CONTROL           -80
 
 #define PREDEFINED_SCREENSAVERS          5
 
