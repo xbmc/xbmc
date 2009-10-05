@@ -269,6 +269,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("aac");
     else if( content.compare("audio/aac") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("aac");
+    else if( content.compare("video/x-vobsub") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("mpeg");
     else if( content.compare("video/flv") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("flv");
     else if( content.compare("video/x-flv") == 0 )
