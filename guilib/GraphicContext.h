@@ -86,9 +86,8 @@ public:
   bool IsWidescreen() const { return m_bWidescreen; }
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
-  const RECT& GetViewWindow() const;
+  const CRect& GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
-  void SetFullScreenViewWindow(RESOLUTION &res);
   bool IsFullScreenRoot() const;
   bool ToggleFullScreenRoot();
   void SetFullScreenVideo(bool bOnOff);
@@ -168,6 +167,8 @@ public:
   }
 
 protected:
+  void SetFullScreenViewWindow(RESOLUTION &res);
+
   IMsgSenderCallback* m_pCallback;
   std::stack<CRect> m_viewStack;
 
@@ -177,7 +178,7 @@ protected:
   int m_iBackBufferCount;
   bool m_bWidescreen;
   CStdString m_strMediaDir;
-  RECT m_videoRect;
+  CRect m_videoRect;
   bool m_bFullScreenRoot;
   bool m_bFullScreenVideo;
   bool m_bCalibrating;

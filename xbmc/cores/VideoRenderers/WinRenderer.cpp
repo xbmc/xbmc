@@ -180,7 +180,7 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
   }
 
   // scale to fit screen
-  const RECT& rv = g_graphicsContext.GetViewWindow();
+  const CRect& rv = g_graphicsContext.GetViewWindow();
 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
@@ -195,7 +195,7 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
     // pixel aspect ratio as the movie, and are 720 pixels wide
 
     float pixelaspect = m_sourceFrameRatio * m_sourceHeight / m_sourceWidth;
-    xscale = (rv.right - rv.left) / 720.0f;
+    xscale = rv.Width() / 720.0f;
     yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / pixelaspect;
   }
   else
@@ -208,10 +208,10 @@ void CWinRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, u
   }
   
   // horizontal centering, and align to bottom of subtitles line
-  osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
+  osdRect.left = rv.x1 + (rv.Width() - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
   float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
-  osdRect.bottom = (float)rv.top + (float)(rv.bottom - rv.top) * relbottom;
+  osdRect.bottom = rv.y1 + rv.Height() * relbottom;
   osdRect.top = osdRect.bottom - (float)h * yscale;
 
   RECT rc = { 0, 0, w, h };

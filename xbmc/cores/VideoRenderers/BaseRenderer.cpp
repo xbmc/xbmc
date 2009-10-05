@@ -195,11 +195,7 @@ void CBaseRenderer::CalculateFrameAspectRatio(unsigned int desired_width, unsign
 
 void CBaseRenderer::ManageDisplay()
 {
-  const RECT& view = g_graphicsContext.GetViewWindow();
-  float screenWidth = (float)view.right - view.left;
-  float screenHeight = (float)view.bottom - view.top;
-  float offsetX = (float)view.left;
-  float offsetY = (float)view.top;
+  const CRect& view = g_graphicsContext.GetViewWindow();
 
   AutoCrop(g_stSettings.m_currentVideoSettings.m_Crop);
 
@@ -208,7 +204,7 @@ void CBaseRenderer::ManageDisplay()
   m_sourceRect.x2 = (float)m_sourceWidth - g_stSettings.m_currentVideoSettings.m_CropRight;
   m_sourceRect.y2 = (float)m_sourceHeight - g_stSettings.m_currentVideoSettings.m_CropBottom;
 
-  CalcNormalDisplayRect(offsetX, offsetY, screenWidth, screenHeight, GetAspectRatio() * g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount);
+  CalcNormalDisplayRect(view.x1, view.y1, view.Width(), view.Height(), GetAspectRatio() * g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount);
 }
 
 void CBaseRenderer::SetViewMode(int viewMode)

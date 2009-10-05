@@ -793,11 +793,11 @@ bool CEventClient::GetMousePos(float& x, float& y)
   if (m_bMouseMoved)
   {
     x = (float)((m_iMouseX / 65535.0f) *
-                (g_graphicsContext.GetViewWindow().right
-                 -g_graphicsContext.GetViewWindow().left));
+                (g_graphicsContext.GetViewWindow().x2
+                 -g_graphicsContext.GetViewWindow().x1));
     y = (float)((m_iMouseY / 65535.0f) *
-                (g_graphicsContext.GetViewWindow().bottom
-                 -g_graphicsContext.GetViewWindow().top));
+                (g_graphicsContext.GetViewWindow().y2
+                 -g_graphicsContext.GetViewWindow().y1));
     m_bMouseMoved = false;
     return true;
   }

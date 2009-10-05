@@ -1679,7 +1679,7 @@ void CLinuxRendererGL::RenderSoftware(int index, int field)
 void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width, unsigned int height)
 {
   // get our screen rect
-  const RECT& rv = g_graphicsContext.GetViewWindow();
+  const CRect& rv = g_graphicsContext.GetViewWindow();
 
   // save current video rect
   CRect saveSize = m_destRect;
@@ -1696,7 +1696,7 @@ void CLinuxRendererGL::CreateThumbnail(CBaseTexture* texture, unsigned int width
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
 
   // read pixels
-  glReadPixels(0, rv.bottom-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, texture->GetPixels());
+  glReadPixels(0, rv.y2-height, width, height, GL_BGRA, GL_UNSIGNED_BYTE, texture->GetPixels());
 
   // revert model view matrix
   glMatrixMode(GL_MODELVIEW);

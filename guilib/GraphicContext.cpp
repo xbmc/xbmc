@@ -247,7 +247,7 @@ void CGraphicContext::RestoreViewPort()
   UpdateCameraPosition(m_cameras.top());
 }
 
-const RECT& CGraphicContext::GetViewWindow() const
+const CRect& CGraphicContext::GetViewWindow() const
 {
   return m_videoRect;
 }
@@ -260,19 +260,19 @@ void CGraphicContext::SetViewWindow(float left, float top, float right, float bo
   }
   else
   {
-    m_videoRect.left = (long)(ScaleFinalXCoord(left, top) + 0.5f);
-    m_videoRect.top = (long)(ScaleFinalYCoord(left, top) + 0.5f);
-    m_videoRect.right = (long)(ScaleFinalXCoord(right, bottom) + 0.5f);
-    m_videoRect.bottom = (long)(ScaleFinalYCoord(right, bottom) + 0.5f);
+    m_videoRect.x1 = ScaleFinalXCoord(left, top);
+    m_videoRect.y1 = ScaleFinalYCoord(left, top);
+    m_videoRect.x2 = ScaleFinalXCoord(right, bottom);
+    m_videoRect.y2 = ScaleFinalYCoord(right, bottom);
   }
 }
 
 void CGraphicContext::SetFullScreenViewWindow(RESOLUTION &res)
 {
-  m_videoRect.left = g_settings.m_ResInfo[res].Overscan.left;
-  m_videoRect.top = g_settings.m_ResInfo[res].Overscan.top;
-  m_videoRect.right = g_settings.m_ResInfo[res].Overscan.right;
-  m_videoRect.bottom = g_settings.m_ResInfo[res].Overscan.bottom;
+  m_videoRect.x1 = (float)g_settings.m_ResInfo[res].Overscan.left;
+  m_videoRect.y1 = (float)g_settings.m_ResInfo[res].Overscan.top;
+  m_videoRect.x2 = (float)g_settings.m_ResInfo[res].Overscan.right;
+  m_videoRect.y2 = (float)g_settings.m_ResInfo[res].Overscan.bottom;
 }
 
 void CGraphicContext::SetFullScreenVideo(bool bOnOff)
