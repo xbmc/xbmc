@@ -416,12 +416,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // so we do this for files only
   if (streaminfo)
   {
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      /* too speed up livetv channel changes, only analyse very short */
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_pFormatContext->max_analyze_duration = 500000;
-    }
+    /* too speed up live sources, only analyse very short */
+    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+      m_pFormatContext->max_analyze_duration = 500000;
 
 
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
