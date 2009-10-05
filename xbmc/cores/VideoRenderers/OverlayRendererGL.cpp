@@ -52,7 +52,7 @@ static void LoadTexture(GLenum target
   else
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
 
-  glTexImage2D   (target, 0, 4
+  glTexImage2D   (target, 0, format
                 , width2, height2, 0
                 , format, GL_UNSIGNED_BYTE, NULL);
 
