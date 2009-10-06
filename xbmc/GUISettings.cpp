@@ -20,6 +20,7 @@
  */
 
 #include "GUISettings.h"
+#include <limits.h>
 #include "Settings.h"
 #include "GUIDialogFileBrowser.h"
 #include "XBAudioConfig.h"
@@ -27,7 +28,6 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #endif
-#include "limits.h"
 #include "utils/Network.h"
 #include "Application.h"
 #include "FileSystem/SpecialProtocol.h"
