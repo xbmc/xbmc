@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "GUISettings.h"
 #include "GUIWindowManager.h"
+#include "GUIUserMessages.h"
 #include "GUIDialogProgress.h"
 #include "GUIDialogSelect.h"
 #include "DateTime.h"
@@ -96,7 +97,7 @@ FIXME'S
 
 CWeather g_weatherManager;
 
-void CBackgroundWeatherLoader::GetInformation()
+void CWeather::DoWork()
 {
   if (!g_guiSettings.GetBool("network.enableinternet"))
     return;
@@ -105,37 +106,39 @@ void CBackgroundWeatherLoader::GetInformation()
   if (!g_application.getNetwork().IsAvailable(true))
     return;
 
-  CWeather *callback = (CWeather *)m_callback;
   // Download our weather
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");
   XFILE::CFileCurl httpUtil;
   CStdString strURL;
 
   CStdString strSetting;
-  strSetting.Format("weather.areacode%i", callback->GetArea() + 1);
-  CStdString areaCode(callback->GetAreaCode(g_guiSettings.GetString(strSetting)));
+  strSetting.Format("weather.areacode%i", GetArea() + 1);
+  CStdString areaCode = GetAreaCode(g_guiSettings.GetString(strSetting));
   strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&link=xoap&par=%s&key=%s",
                 areaCode.c_str(), PARTNER_ID, PARTNER_KEY);
   CStdString xml;
   if (httpUtil.Get(strURL, xml))
   {
     CLog::Log(LOGINFO, "WEATHER: Weather download successful");
-    if (!callback->m_bImagesOkay)
+    if (!m_bImagesOkay)
     {
       CDirectory::Create(WEATHER_BASE_PATH);
       if (WEATHER_USE_ZIP)
         g_ZipManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
       else if (WEATHER_USE_RAR)
         g_RarManager.ExtractArchive(WEATHER_SOURCE_FILE, WEATHER_BASE_PATH);
-      callback->m_bImagesOkay = true;
+      m_bImagesOkay = true;
     }
-    callback->LoadWeather(xml);
+    LoadWeather(xml);
+    // and send a message that we're done
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
+    m_gWindowManager.SendThreadMessage(msg);
   }
   else
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
 }
 
-CWeather::CWeather(void) : CInfoLoader("weather")
+CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
   m_bImagesOkay = false;
 
@@ -650,17 +653,18 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
   return true;
 }
 
-const char *CWeather::BusyInfo(int info)
+CStdString CWeather::BusyInfo(int info) const
 {
   if (info == WEATHER_IMAGE_CURRENT_ICON)
   {
-    sprintf(m_szNAIcon,"%s128x128/na.png", WEATHER_BASE_PATH);
-    return m_szNAIcon;
+    CStdString busy;
+    busy.Format("%s128x128/na.png", WEATHER_BASE_PATH);
+    return busy;
   }
   return CInfoLoader::BusyInfo(info);
 }
 
-const char *CWeather::TranslateInfo(int info)
+CStdString CWeather::TranslateInfo(int info) const
 {
   if (info == WEATHER_LABEL_CURRENT_COND) return m_szCurrentConditions;
   else if (info == WEATHER_IMAGE_CURRENT_ICON) return m_szCurrentIcon;
@@ -672,11 +676,6 @@ const char *CWeather::TranslateInfo(int info)
   else if (info == WEATHER_LABEL_CURRENT_HUMI) return m_szCurrentHumidity;
   else if (info == WEATHER_LABEL_LOCATION) return m_szLocation[m_iCurWeather];
   return "";
-}
-
-DWORD CWeather::TimeToNextRefreshInMs()
-{ // 30 minutes
-  return 30 * 60 * 1000;
 }
 
 CStdString CWeather::GetAreaCity(const CStdString &codeAndCity) const

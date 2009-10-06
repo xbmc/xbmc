@@ -20,108 +20,64 @@
  */
 
 #include "InfoLoader.h"
-#include "Weather.h"
-#include "SystemInfo.h"
-#include "GUIUserMessages.h"
-#include "GUIWindowManager.h"
 #include "LocalizeStrings.h"
-#include "utils/TimeUtils.h"
-#include "log.h"
+#include "JobManager.h"
+#include "TimeUtils.h"
 
-CBackgroundLoader::CBackgroundLoader(CInfoLoader *callback) : CThread()
+CInfoJob::CInfoJob(CInfoLoader *loader)
 {
-  m_callback = callback;
+  m_loader = loader;
 }
 
-CBackgroundLoader::~CBackgroundLoader()
+void CInfoJob::DoWork()
 {
+  if (m_loader)
+    m_loader->DoWork();
 }
 
-void CBackgroundLoader::Start()
-{
-  CThread::Create(true);
-}
-
-void CBackgroundLoader::Process()
-{
-  if (m_callback)
-  {
-    GetInformation();
-    // and inform our callback that we're done
-    m_callback->LoaderFinished();
-  }
-}
-
-CInfoLoader::CInfoLoader(const char *type)
+CInfoLoader::CInfoLoader(unsigned int timeToRefresh)
 {
   m_refreshTime = 0;
-  m_busy = true;
-  m_backgroundLoader = NULL;
-  m_type = type;
+  m_timeToRefresh = timeToRefresh;
+  m_busy = false;
 }
 
 CInfoLoader::~CInfoLoader()
 {
 }
 
-void CInfoLoader::Refresh()
+void CInfoLoader::OnJobComplete(unsigned int jobID, CJob *job)
 {
-  if (!m_backgroundLoader)
-  {
-    if (m_type == "weather")
-      m_backgroundLoader = new CBackgroundWeatherLoader(this);
-    else if (m_type == "sysinfo")
-      m_backgroundLoader = new CBackgroundSystemInfoLoader(this);
-
-    if (!m_backgroundLoader)
-    {
-      CLog::Log(LOGERROR, "Unable to start the background %s loader", m_type.c_str());
-      return;
-    }
-
-    m_backgroundLoader->Start();
-  }
-  m_busy = true;
-}
-
-void CInfoLoader::LoaderFinished()
-{
-  m_refreshTime = CTimeUtils::GetFrameTime() + TimeToNextRefreshInMs();
-  m_backgroundLoader = NULL;
-  if (m_type == "weather" && m_busy)
-  {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
-    m_gWindowManager.SendThreadMessage(msg);
-  }
+  m_refreshTime = CTimeUtils::GetFrameTime() + m_timeToRefresh;
   m_busy = false;
 }
 
-const char *CInfoLoader::GetInfo(int info)
+CStdString CInfoLoader::GetInfo(int info)
 {
   // Refresh if need be
-  if (m_refreshTime < CTimeUtils::GetFrameTime())
-  {
-    Refresh();
+  if (m_refreshTime < CTimeUtils::GetFrameTime() && !m_busy)
+  { // queue up the job
+    m_busy = true;
+    CJobManager::GetInstance().AddJob(new CInfoJob(this), this);
   }
-  if (m_busy && (m_type != "sysinfo") )
+  if (m_busy)
   {
     return BusyInfo(info);
   }
   return TranslateInfo(info);
 }
 
-const char *CInfoLoader::BusyInfo(int info)
+CStdString CInfoLoader::BusyInfo(int info) const
 {
-  m_busyText = g_localizeStrings.Get(503);
-  return m_busyText.c_str();
+  return g_localizeStrings.Get(503);
 }
 
-const char *CInfoLoader::TranslateInfo(int info)
+CStdString CInfoLoader::TranslateInfo(int info) const
 {
   return "";
 }
 
-void CInfoLoader::ResetTimer()
+void CInfoLoader::Refresh()
 {
   m_refreshTime = CTimeUtils::GetFrameTime();
 }

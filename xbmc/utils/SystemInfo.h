@@ -30,14 +30,7 @@
 #define TB  (1024*GB)       // 1 TerraByte (1TB)  1024 GB (2^10 GB)
 
 #define MAX_KNOWN_ATTRIBUTES  46
-class CBackgroundSystemInfoLoader : public CBackgroundLoader
-{
-public:
-  CBackgroundSystemInfoLoader(CInfoLoader *pCallback) : CBackgroundLoader(pCallback) {};
 
-protected:
-  virtual void GetInformation();
-};
 class CSysInfo : public CInfoLoader
 {
   public:
@@ -94,8 +87,8 @@ class CSysInfo : public CInfoLoader
     void Reset();
 
 protected:
-    virtual const char *TranslateInfo(int info);
-    virtual DWORD TimeToNextRefreshInMs();
+  virtual void DoWork();
+  virtual CStdString TranslateInfo(int info) const;
 };
 
 extern CSysInfo g_sysinfo;
