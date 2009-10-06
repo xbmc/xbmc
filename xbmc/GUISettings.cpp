@@ -27,6 +27,7 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #endif
+#include "limits.h"
 #include "utils/Network.h"
 #include "Application.h"
 #include "FileSystem/SpecialProtocol.h"
