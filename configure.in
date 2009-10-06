@@ -133,6 +133,12 @@ AC_ARG_ENABLE([xrandr],
             [use_xrandr=$enableval],
             [use_xrandr=yes])
 
+AC_ARG_ENABLE([goom],
+            [AS_HELP_STRING([--enable-goom],
+               [enable GOOM visualisation (default is no)])],
+            [use_goom=$enableval],
+            [use_goom=no])
+
 AC_PATH_PROG(CCACHE,ccache,none)
 AC_ARG_ENABLE([ccache],
             [AS_HELP_STRING([--enable-ccache],
@@ -792,6 +798,14 @@ else
   final_message="$final_message\n  XRandR:\tNo"
 fi
 
+if test "$use_goom" = "yes"; then
+  final_message="$final_message\n  GOOM:\tYes"
+  USE_GOOM=0
+else
+  final_message="$final_message\n  GOOM:\tNo"
+  USE_GOOM=1
+fi
+
 if test "$use_pcre" = "yes"; then
   final_message="$final_message\n  PCRE Support:\tYes"
   SDL_DEFINES="$SDL_DEFINES -DHAS_PCRE"
@@ -1339,7 +1353,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
       --with-pic
 
   fi
-], [0])
+], [$USE_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   if test "$host_vendor" = "apple" ; then
