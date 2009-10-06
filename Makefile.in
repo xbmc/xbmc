@@ -98,7 +98,7 @@ VIS_DIRS=\
 	xbmc/visualizations/WaveForm \
 	xbmc/visualizations/XBMCProjectM
 ifneq (@BUILD_GOOM@,1)
-  VIS_DIRS+=xbmc/visualizations/Goom
+VIS_DIRS+=xbmc/visualizations/Goom
 endif
 
 PM3_MEDIA=skin/Project\ Mayhem\ III/media
@@ -258,7 +258,7 @@ visualizations: exports
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
 ifneq (@BUILD_GOOM@,1)
 ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
-  $(MAKE) -C xbmc/visualizations/Goom
+	$(MAKE) -C xbmc/visualizations/Goom
 endif
 endif
 screensavers: exports
