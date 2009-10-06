@@ -97,7 +97,7 @@ public:
     PRIORITY_NORMAL,
     PRIORITY_HIGH
   };
-  CJob() { m_callback = false; };
+  CJob() { m_callback = NULL; };
 
   /*!
    \brief Destructor for job objects.
