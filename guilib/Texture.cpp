@@ -66,6 +66,13 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
     m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
   }
 
+  // check for max texture size
+  #define CLAMP(x, y) { if (x > y) x = y; }
+  CLAMP(m_textureWidth, g_Windowing.GetMaxTextureSize());
+  CLAMP(m_textureHeight, g_Windowing.GetMaxTextureSize());
+  CLAMP(m_imageWidth, m_textureWidth);
+  CLAMP(m_imageHeight, m_textureHeight);
+
   delete[] m_pixels;
   m_pixels = new unsigned char[GetPitch() * GetRows()];
 }
@@ -82,17 +89,15 @@ void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int 
   unsigned int dstPitch = GetPitch(m_textureWidth);
   unsigned int dstRows = GetRows(m_textureHeight);
 
-  assert(srcPitch <= dstPitch && srcRows <= dstRows);
-
   if (srcPitch == dstPitch)
-    memcpy(m_pixels, pixels, srcPitch * srcRows);
+    memcpy(m_pixels, pixels, srcPitch * std::min(srcRows, dstRows));
   else
   {
     const unsigned char *src = pixels;
     unsigned char* dst = m_pixels;
-    for (unsigned int y = 0; y < srcRows; y++)
+    for (unsigned int y = 0; y < srcRows && y < dstRows; y++)
     {
-      memcpy(dst, src, srcPitch);
+      memcpy(dst, src, std::min(srcPitch, dstPitch));
       src += srcPitch;
       dst += dstPitch;
     }
@@ -209,11 +214,11 @@ bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigne
 
   Allocate(width, height, format);
 
-  for (unsigned int y = 0; y < height; y++)
+  for (unsigned int y = 0; y < m_imageHeight; y++)
   {
     unsigned char *dest = m_pixels + y * GetPitch();
     const unsigned char *src = pixels + y * pitch;
-    for (unsigned int x = 0; x < width; x++)
+    for (unsigned int x = 0; x < m_imageWidth; x++)
     {
       COLOR col = palette[*src++];
       *dest++ = col.b;
