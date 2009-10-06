@@ -46,11 +46,11 @@ BaseVideoFilterShader::BaseVideoFilterShader()
   m_hSourceTex = 0;
 
   string shaderv = 
-    "uniform float stepx;"
-    "uniform float stepy;"
     "void main()"
     "{"
-    "gl_TexCoord[0].xy = gl_MultiTexCoord0.xy - vec2(stepx * 0.5, stepy * 0.5);"
+    "gl_TexCoord[0] = gl_MultiTexCoord0;"
+    "gl_TexCoord[1] = gl_MultiTexCoord1;"
+    "gl_TexCoord[2] = gl_MultiTexCoord2;"
     "gl_Position = ftransform();"
     "gl_FrontColor = gl_Color;"
     "}";

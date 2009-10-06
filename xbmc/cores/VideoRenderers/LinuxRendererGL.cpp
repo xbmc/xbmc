@@ -870,6 +870,8 @@ void CLinuxRendererGL::UpdateVideoFilter()
     m_pVideoFilterShader = NULL;
   }
 
+  m_fbo.Cleanup();
+
   VerifyGLState();
   m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
 
@@ -889,17 +891,21 @@ void CLinuxRendererGL::UpdateVideoFilter()
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_MULTIPASS;
     m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
-    if (m_pVideoFilterShader && m_pVideoFilterShader->CompileAndLink())
+
+    if (!m_pVideoFilterShader->CompileAndLink())
     {
-      VerifyGLState();
-      if (!m_pVideoFilterShader->CompileAndLink())
-      {
-        CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
-        m_pVideoFilterShader->Free();
-        delete m_pVideoFilterShader;
-        m_pVideoFilterShader = NULL;
-      }
+      CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
+      m_pVideoFilterShader->Free();
+      delete m_pVideoFilterShader;
+      m_pVideoFilterShader = NULL;
     }
+
+    if (!m_fbo.Initialize())
+      CLog::Log(LOGERROR, "GL: Error initializing FBO");
+
+    if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
+      CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+
     break;
 
   case VS_SCALINGMETHOD_LANCZOS2:
@@ -1392,13 +1398,10 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   if (m_reloadShaders)
   {
     m_reloadShaders = 0;
-    m_fbo.Cleanup();
     LoadShaders(m_currentField);
-    VerifyGLState();
   }
 
   glDisable(GL_DEPTH_TEST);
-  VerifyGLState();
 
   // Y
   glEnable(m_textureTarget);
@@ -1428,21 +1431,6 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
     return;
   }
 
-  int imgheight;
-
-  if(field == FIELD_FULL)
-    imgheight = im.height;
-  else
-    imgheight = im.height/2;
-
-  // make sure FBO is valid and ready to go
-  if (!m_fbo.IsValid())
-  {
-    m_fbo.Initialize();
-    if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, im.width, imgheight, GL_RGBA))
-      CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
-  }
-
   m_fbo.BeginRender();
   VerifyGLState();
 
@@ -1468,9 +1456,9 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   glPushMatrix();
   glLoadIdentity();
   VerifyGLState();
-  gluOrtho2D(0, im.width, 0, imgheight);
-  glViewport(0, 0, im.width, imgheight);
-  glScissor(0, 0, im.width, imgheight);
+  gluOrtho2D(0, m_sourceWidth, 0, m_sourceHeight);
+  glViewport(0, 0, m_sourceWidth, m_sourceHeight);
+  glScissor (0, 0, m_sourceWidth, m_sourceHeight);
   glMatrixMode(GL_MODELVIEW);
   VerifyGLState();
 
@@ -1480,29 +1468,36 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
     CLog::Log(LOGERROR, "GL: Error enabling YUV shader");
   }
 
-  // 1st Pass to video frame size
+  float imgwidth  = planes[0].rect.x2 - planes[0].rect.x1;
+  float imgheight = planes[0].rect.y2 - planes[0].rect.y1;
+  if (m_textureTarget == GL_TEXTURE_2D)
+  {
+    imgwidth  *= planes[0].texwidth;
+    imgheight *= planes[0].texheight;
+  }
 
+  // 1st Pass to video frame size
   glBegin(GL_QUADS);
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, 0              , 0);
-  glMultiTexCoord2fARB(GL_TEXTURE1, 0              , 0);
-  glMultiTexCoord2fARB(GL_TEXTURE2, 0              , 0);
-  glVertex2f((float)0, (float)0);
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y1);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y1);
+  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x1, planes[2].rect.y1);
+  glVertex2f(0.0f    , 0.0f);
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].width, 0);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].width, 0);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].width, 0);
-  glVertex2f((float)im.width, (float)0);
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y1);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y1);
+  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x2, planes[2].rect.y1);
+  glVertex2f(imgwidth, 0.0f);
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].width, planes[0].height);
-  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].width, planes[1].height);
-  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].width, planes[2].height);
-  glVertex2f((float)im.width, (float)imgheight);
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y2);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y2);
+  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x2, planes[2].rect.y2);
+  glVertex2f(imgwidth, imgheight);
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, 0              , planes[0].height);
-  glMultiTexCoord2fARB(GL_TEXTURE1, 0              , planes[1].height);
-  glMultiTexCoord2fARB(GL_TEXTURE2, 0              , planes[2].height);
-  glVertex2f((float)0, (float)imgheight);
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y2);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y2);
+  glMultiTexCoord2fARB(GL_TEXTURE2, planes[2].rect.x1, planes[2].rect.y2);
+  glVertex2f(0.0f    , imgheight);
 
   glEnd();
   VerifyGLState();
@@ -1539,8 +1534,8 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
   {
     m_fbo.SetFiltering(GL_TEXTURE_2D, GL_NEAREST);
     m_pVideoFilterShader->SetSourceTexture(0);
-    m_pVideoFilterShader->SetWidth(im.width);
-    m_pVideoFilterShader->SetHeight(imgheight);
+    m_pVideoFilterShader->SetWidth(m_sourceWidth);
+    m_pVideoFilterShader->SetHeight(m_sourceHeight);
     m_pVideoFilterShader->Enable();
   }
   else
@@ -1548,21 +1543,21 @@ void CLinuxRendererGL::RenderMultiPass(int index, int field)
 
   VerifyGLState();
 
-  // TODO - recalculate based source rectangle so crop works
-  //        but to do so we need the source texture size of the framebuffer
+  imgwidth  /= m_sourceWidth;
+  imgheight /= m_sourceHeight;
 
   glBegin(GL_QUADS);
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, 0, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE0, 0.0f    , 0.0f);
   glVertex4f(m_destRect.x1, m_destRect.y1, 0, 1.0f );
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, 1, 0);
+  glMultiTexCoord2fARB(GL_TEXTURE0, imgwidth, 0.0f);
   glVertex4f(m_destRect.x2, m_destRect.y1, 0, 1.0f);
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, 1, 1);
+  glMultiTexCoord2fARB(GL_TEXTURE0, imgwidth, imgheight);
   glVertex4f(m_destRect.x2, m_destRect.y2, 0, 1.0f);
 
-  glMultiTexCoord2fARB(GL_TEXTURE0, 0, 1);
+  glMultiTexCoord2fARB(GL_TEXTURE0, 0.0f    , imgheight);
   glVertex4f(m_destRect.x1, m_destRect.y2, 0, 1.0f);
 
   glEnd();
