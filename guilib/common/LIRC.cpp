@@ -44,6 +44,11 @@ void CRemoteControl::setUsed(bool value)
   m_used=value;
   if (!value)
     CLog::Log(LOGINFO, "LIRC %s: disabled", __FUNCTION__);
+  else
+  {
+    m_lastInitAttempt = -5000;
+    m_initRetryPeriod = 5000;
+  }
 }
 
 void CRemoteControl::Reset()
@@ -62,6 +67,8 @@ void CRemoteControl::Disconnect()
     m_bInitialized = false;
     if (m_file != NULL)
       fclose(m_file);
+    if (m_fd != -1)
+      close(m_fd);
     m_fd = -1;
     m_file = NULL;
     if (m_inotify_wd >= 0) {
@@ -71,9 +78,6 @@ void CRemoteControl::Disconnect()
     if (m_inotify_fd >= 0)
       close(m_inotify_fd);
   }
-  
-  m_lastInitAttempt = -5000;
-  m_initRetryPeriod = 5000;
 }
 
 void CRemoteControl::setDeviceName(const CStdString& value)
@@ -91,22 +95,8 @@ void CRemoteControl::Initialize()
 
   if (!m_used || now < m_lastInitAttempt + m_initRetryPeriod)
     return;
+  
   m_lastInitAttempt = now;
-
-  if (!XFILE::CFile::Exists(m_deviceName)) {
-    m_initRetryPeriod *= 2;
-    if (m_initRetryPeriod > 60000)
-    {
-      m_used = false;
-      CLog::Log(LOGDEBUG, "LIRC device %s does not exist. Giving up.", m_deviceName.c_str());
-    }
-    else
-      CLog::Log(LOGDEBUG, "LIRC device %s does not exist. Retry in %ds.", m_deviceName.c_str(), m_initRetryPeriod/1000);
-    return;
-  }
-
-  m_initRetryPeriod = 5000;
-
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, m_deviceName.c_str());
 
@@ -168,7 +158,19 @@ void CRemoteControl::Initialize()
   else
     CLog::Log(LOGINFO, "LIRC %s: socket failed: %s", __FUNCTION__, strerror(errno));
   if (!m_bInitialized)
+  {
     Disconnect();
+    m_initRetryPeriod *= 2;
+    if (m_initRetryPeriod > 60000)
+    {
+      m_used = false;
+      CLog::Log(LOGDEBUG, "Failed to connect to LIRC. Giving up.");
+    }
+    else
+      CLog::Log(LOGDEBUG, "Failed to connect to LIRC. Retry in %ds.", m_initRetryPeriod/1000);
+  }
+  else
+    m_initRetryPeriod = 5000;
 }
 
 bool CRemoteControl::CheckDevice() {
