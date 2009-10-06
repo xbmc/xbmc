@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\freetype\include;.\freetype\include\freetype2;.\"
+				AdditionalIncludeDirectories="..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -120,13 +120,13 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories=".\freetype\include;.\freetype\include\freetype2;.\"
+				AdditionalIncludeDirectories="..\..\..\..\lib\fontconfig_win32\include;..\..\..\..\lib\freetype\include\freetype2;..\..\..\..\lib\freetype\include;.\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LIBASS_WIN32_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -139,10 +139,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="freetype\lib\_freetype.lib freetype\lib\fontconfig.lib"
-				OutputFile="$(OutDir)/libass.dll"
+				AdditionalDependencies="..\..\..\..\lib\fontconfig_win32\lib\fontconfig.lib"
+				OutputFile="..\..\..\..\system\players\dvdplayer\libass.dll"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(OutDir)/$(TargetName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
