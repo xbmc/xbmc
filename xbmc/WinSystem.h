@@ -62,6 +62,7 @@ public:
   bool IsFullScreen() { return m_bFullScreen; } 
 
   virtual void UpdateResolutions();
+  void SetWindowResolution(int width, int height);
   
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen, int width, int height, float refreshRate);

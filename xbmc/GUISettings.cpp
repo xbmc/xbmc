@@ -695,6 +695,10 @@ void CGUISettings::Initialize()
   AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
+  AddCategory(7, "window", 0);
+  AddInt(0, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);
+  AddInt(0, "window.height", 0, 480, 10, 1, INT_MAX, SPIN_CONTROL_INT);
+
   AddPath(0,"system.playlistspath",20006,"set default",BUTTON_CONTROL_PATH_INPUT,false);
 }
 

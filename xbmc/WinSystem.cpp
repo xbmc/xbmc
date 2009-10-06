@@ -116,17 +116,17 @@ void CWinSystemBase::UpdateDesktopResolution(RESOLUTION_INFO& newRes, int screen
 
 void CWinSystemBase::UpdateResolutions()
 {
-  // Set the resolution info for a window
+  // add the window res - defaults are fine.
   RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
-  window.iSubtitles = (int)(0.965 * 480);
-  window.iWidth = 720;
-  window.iHeight = 480;
-  window.iScreen = 0;
   window.fPixelRatio = 1.0f;
   window.strMode = "Windowed";
-  window.fRefreshRate = 0.0f;
-  window.Overscan.left = 0;
-  window.Overscan.top = 0;
-  window.Overscan.right = window.iWidth;
-  window.Overscan.bottom = window.iHeight;  
+}
+
+void CWinSystemBase::SetWindowResolution(int width, int height)
+{
+  RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
+  window.iWidth = width;
+  window.iHeight = height;
+  window.iSubtitles = (int)(0.965 * window.iHeight);
+  g_graphicsContext.ResetOverscan(window);
 }

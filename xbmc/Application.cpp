@@ -415,11 +415,11 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       if (!g_application.m_bInitializing &&
           !g_advancedSettings.m_fullScreen)
       {
-        RESOLUTION res = RES_WINDOW;
-        g_settings.m_ResInfo[res].iWidth = newEvent.resize.w;
-        g_settings.m_ResInfo[res].iHeight = newEvent.resize.h;
-        g_graphicsContext.ResetOverscan(g_settings.m_ResInfo[res]); 
-        g_graphicsContext.SetVideoResolution(res, true);
+        g_Windowing.SetWindowResolution(newEvent.resize.w, newEvent.resize.h);
+        g_graphicsContext.SetVideoResolution(RES_WINDOW, true);
+        g_guiSettings.SetInt("window.width", newEvent.resize.w);
+        g_guiSettings.SetInt("window.height", newEvent.resize.h);
+        g_settings.Save();
       }
       break;
   }
@@ -637,6 +637,9 @@ HRESULT CApplication::Create(HWND hWnd)
   // Configure and possible manually start the helper.
   g_xbmcHelper.Configure();
 #endif
+  
+  // update the window resolution
+  g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
   if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
     g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
