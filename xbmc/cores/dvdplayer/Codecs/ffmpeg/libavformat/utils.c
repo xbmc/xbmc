@@ -315,12 +315,14 @@ AVInputFormat *av_probe_input_format(AVProbeData *pd, int is_opened){
     return av_probe_input_format2(pd, is_opened, &score);
 }
 
-static int set_codec_from_probe_data(AVStream *st, AVProbeData *pd, int score)
+static int set_codec_from_probe_data(AVFormatContext *s, AVStream *st, AVProbeData *pd, int score)
 {
     AVInputFormat *fmt;
     fmt = av_probe_input_format2(pd, 1, &score);
 
     if (fmt) {
+        av_log(s, AV_LOG_DEBUG, "Probe with size=%d, packets=%d detected %s with score=%d\n",
+               pd->buf_size, MAX_PROBE_PACKETS - st->probe_packets, fmt->name, score);
         if (!strcmp(fmt->name, "mp3")) {
             st->codec->codec_id = CODEC_ID_MP3;
             st->codec->codec_type = CODEC_TYPE_AUDIO;
@@ -441,6 +443,7 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
     int err, probe_size;
     AVProbeData probe_data, *pd = &probe_data;
     ByteIOContext *pb = NULL;
+    void *logctx= ap && ap->prealloced_context ? *ic_ptr : NULL;
 
     pd->filename = "";
     if (filename)
@@ -480,6 +483,12 @@ int av_open_input_file(AVFormatContext **ic_ptr, const char *filename,
             }
             /* guess file format */
             fmt = av_probe_input_format2(pd, 1, &score);
+            if(fmt){
+                if(score <= AVPROBE_SCORE_MAX/4){ //this can only be true in the last iteration
+                    av_log(logctx, AV_LOG_WARNING, "Format detected only with low score of %d, misdetection possible!\n", score);
+                }else
+                    av_log(logctx, AV_LOG_DEBUG, "Probed with size=%d and score=%d\n", probe_size, score);
+            }
         }
         av_freep(&pd->buf);
     }
@@ -595,7 +604,7 @@ int av_read_packet(AVFormatContext *s, AVPacket *pkt)
             memset(pd->buf+pd->buf_size, 0, AVPROBE_PADDING_SIZE);
 
             if(av_log2(pd->buf_size) != av_log2(pd->buf_size - pkt->size)){
-                set_codec_from_probe_data(st, pd, 1);
+                set_codec_from_probe_data(s, st, pd, 1);
                 if(st->codec->codec_id != CODEC_ID_PROBE){
                     pd->buf_size=0;
                     av_freep(&pd->buf);
@@ -767,7 +776,8 @@ static void compute_pkt_fields(AVFormatContext *s, AVStream *st,
     int num, den, presentation_delayed, delay, i;
     int64_t offset;
 
-    if (pc && pc->pict_type == FF_B_TYPE)
+    if (st->codec->codec_id != CODEC_ID_H264 && pc && pc->pict_type == FF_B_TYPE)
+        //FIXME Set low_delay = 0 when has_b_frames = 1
         st->codec->has_b_frames = 1;
 
     /* do we have a video B-frame ? */
@@ -1120,6 +1130,8 @@ static void flush_packet_queue(AVFormatContext *s)
         av_free_packet(&pktl->pkt);
         av_free(pktl);
     }
+    s->packet_buffer_end=
+    s->raw_packet_buffer_end= NULL;
     s->raw_packet_buffer_remaining_size = RAW_PACKET_BUFFER_SIZE;
 }
 
@@ -1148,7 +1160,7 @@ int av_find_default_stream_index(AVFormatContext *s)
 /**
  * Flush the frame reader.
  */
-static void av_read_frame_flush(AVFormatContext *s)
+void av_read_frame_flush(AVFormatContext *s)
 {
     AVStream *st;
     int i;
@@ -1906,7 +1918,8 @@ static int has_codec_parameters(AVCodecContext *enc)
         val = enc->sample_rate && enc->channels && enc->sample_fmt != SAMPLE_FMT_NONE;
         if(!enc->frame_size &&
            (enc->codec_id == CODEC_ID_VORBIS ||
-            enc->codec_id == CODEC_ID_AAC))
+            enc->codec_id == CODEC_ID_AAC ||
+            enc->codec_id == CODEC_ID_SPEEX))
             return 0;
         break;
     case CODEC_TYPE_VIDEO:
@@ -2126,7 +2139,7 @@ int av_find_stream_info(AVFormatContext *ic)
         /* we did not get all the codec info, but we read too much data */
         if (read_size >= ic->probesize) {
             ret = count;
-            av_log(ic, AV_LOG_DEBUG, "MAX_READ_SIZE:%d reached\n", ic->probesize);
+            av_log(ic, AV_LOG_WARNING, "MAX_READ_SIZE:%d reached\n", ic->probesize);
             break;
         }
 
@@ -2143,7 +2156,7 @@ int av_find_stream_info(AVFormatContext *ic)
                 if (!has_codec_parameters(st->codec)){
                     char buf[256];
                     avcodec_string(buf, sizeof(buf), st->codec, 0);
-                    av_log(ic, AV_LOG_INFO, "Could not find codec parameters (%s)\n", buf);
+                    av_log(ic, AV_LOG_WARNING, "Could not find codec parameters (%s)\n", buf);
                 } else {
                     ret = 0;
                 }
@@ -2162,7 +2175,7 @@ int av_find_stream_info(AVFormatContext *ic)
         st = ic->streams[pkt->stream_index];
         if(codec_info_nb_frames[st->index]>1) {
             if (st->time_base.den > 0 && av_rescale_q(codec_info_duration[st->index], st->time_base, AV_TIME_BASE_Q) >= ic->max_analyze_duration){
-                av_log(ic, AV_LOG_DEBUG, "max_analyze_duration reached\n");
+                av_log(ic, AV_LOG_WARNING, "max_analyze_duration reached\n");
                 break;
             }
             codec_info_duration[st->index] += pkt->duration;
@@ -2698,13 +2711,29 @@ void ff_interleave_add_packet(AVFormatContext *s, AVPacket *pkt,
     pkt->destruct= NULL;             // do not free original but only the copy
     av_dup_packet(&this_pktl->pkt);  // duplicate the packet if it uses non-alloced memory
 
-    next_point = &s->packet_buffer;
-    while(*next_point){
-        if(compare(s, &(*next_point)->pkt, pkt))
-            break;
-        next_point= &(*next_point)->next;
+    if(s->streams[pkt->stream_index]->last_in_packet_buffer){
+        next_point = &(s->streams[pkt->stream_index]->last_in_packet_buffer->next);
+    }else
+        next_point = &s->packet_buffer;
+
+    if(*next_point){
+        if(compare(s, &s->packet_buffer_end->pkt, pkt)){
+            while(!compare(s, &(*next_point)->pkt, pkt)){
+                next_point= &(*next_point)->next;
+            }
+            goto next_non_null;
+        }else{
+            next_point = &(s->packet_buffer_end->next);
+        }
     }
+    assert(!*next_point);
+
+    s->packet_buffer_end= this_pktl;
+next_non_null:
+
     this_pktl->next= *next_point;
+
+    s->streams[pkt->stream_index]->last_in_packet_buffer=
     *next_point= this_pktl;
 }
 
@@ -2724,27 +2753,25 @@ int ff_interleave_compare_dts(AVFormatContext *s, AVPacket *next, AVPacket *pkt)
 int av_interleave_packet_per_dts(AVFormatContext *s, AVPacket *out, AVPacket *pkt, int flush){
     AVPacketList *pktl;
     int stream_count=0;
-    int streams[MAX_STREAMS];
+    int i;
 
     if(pkt){
         ff_interleave_add_packet(s, pkt, ff_interleave_compare_dts);
     }
 
-    memset(streams, 0, sizeof(streams));
-    pktl= s->packet_buffer;
-    while(pktl){
-//av_log(s, AV_LOG_DEBUG, "show st:%d dts:%"PRId64"\n", pktl->pkt.stream_index, pktl->pkt.dts);
-        if(streams[ pktl->pkt.stream_index ] == 0)
-            stream_count++;
-        streams[ pktl->pkt.stream_index ]++;
-        pktl= pktl->next;
-    }
+    for(i=0; i < s->nb_streams; i++)
+        stream_count+= !!s->streams[i]->last_in_packet_buffer;
 
     if(stream_count && (s->nb_streams == stream_count || flush)){
         pktl= s->packet_buffer;
         *out= pktl->pkt;
 
         s->packet_buffer= pktl->next;
+        if(!s->packet_buffer)
+            s->packet_buffer_end= NULL;
+
+        if(s->streams[out->stream_index]->last_in_packet_buffer == pktl)
+            s->streams[out->stream_index]->last_in_packet_buffer= NULL;
         av_freep(&pktl);
         return 1;
     }else{
@@ -2960,6 +2987,14 @@ void dump_format(AVFormatContext *ic,
     } else
     for(i=0;i<ic->nb_streams;i++)
         dump_stream_format(ic, i, index, is_output);
+    if (ic->metadata) {
+        AVMetadataTag *tag=NULL;
+        av_log(NULL, AV_LOG_INFO, "  Metadata\n");
+        while((tag=av_metadata_get(ic->metadata, "", tag, AV_METADATA_IGNORE_SUFFIX))) {
+            av_log(NULL, AV_LOG_INFO, "    %-16s: %s\n", tag->key, tag->value);
+        }
+    }
+
 }
 
 #if LIBAVFORMAT_VERSION_MAJOR < 53

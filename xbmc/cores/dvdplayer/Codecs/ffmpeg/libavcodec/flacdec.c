@@ -358,7 +358,7 @@ static int decode_subframe_lpc(FLACContext *s, int channel, int pred_order)
 {
     int i, j;
     int coeff_prec, qlevel;
-    int coeffs[pred_order];
+    int coeffs[32];
     int32_t *decoded = s->decoded[channel];
 
     /* warm up samples */
@@ -806,7 +806,9 @@ AVCodec flac_decoder = {
     NULL,
     flac_decode_close,
     flac_decode_frame,
-    CODEC_CAP_DELAY,
+    CODEC_CAP_DELAY | CODEC_CAP_SUBFRAMES, /* FIXME: add a FLAC parser so that
+                                              we will not need to use either
+                                              of these capabilities */
     .flush= flac_flush,
     .long_name= NULL_IF_CONFIG_SMALL("FLAC (Free Lossless Audio Codec)"),
 };

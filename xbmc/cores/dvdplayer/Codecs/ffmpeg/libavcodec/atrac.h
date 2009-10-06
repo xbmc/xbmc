@@ -1,5 +1,7 @@
 /*
- * Copyright (c) 2008 Siarhei Siamashka <ssvb@users.sourceforge.net>
+ * Atrac common data
+ * Copyright (c) 2009 Maxim Poliakovski
+ * Copyright (c) 2009 Benjamin Larsson
  *
  * This file is part of FFmpeg.
  *
@@ -18,18 +20,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavcodec/dsputil.h"
+/**
+ * @file libavcodec/atrac.h
+ * Atrac common header
+ */
 
-void ff_vector_fmul_vfp(float *dst, const float *src, int len);
-void ff_vector_fmul_reverse_vfp(float *dst, const float *src0,
-                                const float *src1, int len);
-void ff_float_to_int16_vfp(int16_t *dst, const float *src, long len);
+#ifndef AVCODEC_ATRAC_H
+#define AVCODEC_ATRAC_H
 
-void ff_float_init_arm_vfp(DSPContext* c, AVCodecContext *avctx)
-{
-    c->vector_fmul = ff_vector_fmul_vfp;
-    c->vector_fmul_reverse = ff_vector_fmul_reverse_vfp;
-#if HAVE_ARMV6
-    c->float_to_int16 = ff_float_to_int16_vfp;
-#endif
-}
+
+extern float sf_table[64];
+extern float qmf_window[48];
+
+void atrac_generate_tables(void);
+void atrac_iqmf (float *inlo, float *inhi, unsigned int nIn, float *pOut, float *delayBuf, float *temp);
+
+#endif /* AVCODEC_ATRAC_H */

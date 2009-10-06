@@ -1714,19 +1714,6 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
 
     s->mb_x=0;
 
-    if (avctx->hwaccel) {
-        const uint8_t *buf_end, *buf_start = *buf - 4; /* include start_code */
-        int start_code = -1;
-        buf_end = ff_find_start_code(buf_start + 2, *buf + buf_size, &start_code);
-        if (buf_end < *buf + buf_size)
-            buf_end -= 4;
-        s->mb_y = mb_y;
-        if (avctx->hwaccel->decode_slice(avctx, buf_start, buf_end - buf_start) < 0)
-            return DECODE_SLICE_ERROR;
-        *buf = buf_end;
-        return DECODE_SLICE_OK;
-    }
-
     for(;;) {
         int code = get_vlc2(&s->gb, mbincr_vlc.table, MBINCR_VLC_BITS, 2);
         if (code < 0){
@@ -1746,6 +1733,19 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
     if(s->mb_x >= (unsigned)s->mb_width){
         av_log(s->avctx, AV_LOG_ERROR, "initial skip overflow\n");
         return -1;
+    }
+
+    if (avctx->hwaccel) {
+        const uint8_t *buf_end, *buf_start = *buf - 4; /* include start_code */
+        int start_code = -1;
+        buf_end = ff_find_start_code(buf_start + 2, *buf + buf_size, &start_code);
+        if (buf_end < *buf + buf_size)
+            buf_end -= 4;
+        s->mb_y = mb_y;
+        if (avctx->hwaccel->decode_slice(avctx, buf_start, buf_end - buf_start) < 0)
+            return DECODE_SLICE_ERROR;
+        *buf = buf_end;
+        return DECODE_SLICE_OK;
     }
 
     s->resync_mb_x= s->mb_x;
@@ -2309,7 +2309,7 @@ static int decode_chunks(AVCodecContext *avctx,
                 if(avctx->thread_count > 1){
                     int i;
 
-                    avctx->execute(avctx, slice_decode_thread,  (void**)&(s2->thread_context[0]), NULL, s->slice_count, sizeof(void*));
+                    avctx->execute(avctx, slice_decode_thread,  &s2->thread_context[0], NULL, s->slice_count, sizeof(void*));
                     for(i=0; i<s->slice_count; i++)
                         s2->error_count += s2->thread_context[i]->error_count;
                 }

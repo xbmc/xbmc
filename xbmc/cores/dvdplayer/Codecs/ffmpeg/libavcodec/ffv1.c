@@ -212,7 +212,7 @@ typedef struct FFV1Context{
     int picture_number;
     AVFrame picture;
     int plane_count;
-    int ac;                              ///< 1-> CABAC 0-> golomb rice
+    int ac;                              ///< 1=range coder <-> 0=golomb rice
     PlaneContext plane[MAX_PLANES];
     int16_t quant_table[5][256];
     int run_index;
@@ -675,7 +675,7 @@ static av_cold int encode_init(AVCodecContext *avctx)
             return -1;
         }
         if(avctx->bits_per_raw_sample <=8){
-            av_log(avctx, AV_LOG_ERROR, "bits_per_raw_sample inavlid\n");
+            av_log(avctx, AV_LOG_ERROR, "bits_per_raw_sample invalid\n");
             return -1;
         }
         s->version= 1;
@@ -736,7 +736,6 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
     uint8_t keystate=128;
 
     ff_init_range_encoder(c, buf, buf_size);
-//    ff_init_cabac_states(c, ff_h264_lps_range, ff_h264_mps_state, ff_h264_lps_state, 64);
     ff_build_rac_states(c, 0.05*(1LL<<32), 256-8);
 
     *p = *pict;
@@ -1136,7 +1135,7 @@ AVCodec ffv1_decoder = {
     decode_frame,
     CODEC_CAP_DR1 /*| CODEC_CAP_DRAW_HORIZ_BAND*/,
     NULL,
-    .long_name= NULL_IF_CONFIG_SMALL("FFmpeg codec #1"),
+    .long_name= NULL_IF_CONFIG_SMALL("FFmpeg video codec #1"),
 };
 
 #if CONFIG_FFV1_ENCODER
@@ -1148,7 +1147,7 @@ AVCodec ffv1_encoder = {
     encode_init,
     encode_frame,
     common_end,
-    .pix_fmts= (enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV444P, PIX_FMT_YUV422P, PIX_FMT_YUV411P, PIX_FMT_YUV410P, PIX_FMT_RGB32, PIX_FMT_YUV420P16, PIX_FMT_YUV422P16, PIX_FMT_YUV444P16, PIX_FMT_NONE},
-    .long_name= NULL_IF_CONFIG_SMALL("FFmpeg codec #1"),
+    .pix_fmts= (const enum PixelFormat[]){PIX_FMT_YUV420P, PIX_FMT_YUV444P, PIX_FMT_YUV422P, PIX_FMT_YUV411P, PIX_FMT_YUV410P, PIX_FMT_RGB32, PIX_FMT_YUV420P16, PIX_FMT_YUV422P16, PIX_FMT_YUV444P16, PIX_FMT_NONE},
+    .long_name= NULL_IF_CONFIG_SMALL("FFmpeg video codec #1"),
 };
 #endif

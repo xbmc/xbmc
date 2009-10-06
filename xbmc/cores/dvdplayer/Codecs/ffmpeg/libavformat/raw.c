@@ -120,12 +120,8 @@ static int raw_read_packet(AVFormatContext *s, AVPacket *pkt)
     ret= av_get_packet(s->pb, pkt, size);
 
     pkt->stream_index = 0;
-    if (ret <= 0) {
-        return AVERROR(EIO);
-    }
-    /* note: we need to modify the packet size here to handle the last
-       packet */
-    pkt->size = ret;
+    if (ret < 0)
+        return ret;
 
     bps= av_get_bits_per_sample(s->streams[0]->codec->codec_id);
     assert(bps); // if false there IS a bug elsewhere (NOT in this function)
@@ -142,14 +138,14 @@ int ff_raw_read_partial_packet(AVFormatContext *s, AVPacket *pkt)
     size = RAW_PACKET_SIZE;
 
     if (av_new_packet(pkt, size) < 0)
-        return AVERROR(EIO);
+        return AVERROR(ENOMEM);
 
     pkt->pos= url_ftell(s->pb);
     pkt->stream_index = 0;
     ret = get_partial_buffer(s->pb, pkt->data, size);
-    if (ret <= 0) {
+    if (ret < 0) {
         av_free_packet(pkt);
-        return AVERROR(EIO);
+        return ret;
     }
     pkt->size = ret;
     return ret;
@@ -174,11 +170,9 @@ static int rawvideo_read_packet(AVFormatContext *s, AVPacket *pkt)
     pkt->dts= pkt->pos / packet_size;
 
     pkt->stream_index = 0;
-    if (ret != packet_size) {
-        return AVERROR(EIO);
-    } else {
-        return 0;
-    }
+    if (ret < 0)
+        return ret;
+    return 0;
 }
 #endif
 
@@ -206,14 +200,14 @@ static int ingenient_read_packet(AVFormatContext *s, AVPacket *pkt)
         size, w, h, unk1, unk2);
 
     if (av_new_packet(pkt, size) < 0)
-        return AVERROR(EIO);
+        return AVERROR(ENOMEM);
 
     pkt->pos = url_ftell(s->pb);
     pkt->stream_index = 0;
     ret = get_buffer(s->pb, pkt->data, size);
-    if (ret <= 0) {
+    if (ret < 0) {
         av_free_packet(pkt);
-        return AVERROR(EIO);
+        return ret;
     }
     pkt->size = ret;
     return ret;
@@ -225,8 +219,8 @@ int pcm_read_seek(AVFormatContext *s,
                   int stream_index, int64_t timestamp, int flags)
 {
     AVStream *st;
-    int block_align, byte_rate, ret;
-    int64_t pos;
+    int block_align, byte_rate;
+    int64_t pos, ret;
 
     st = s->streams[0];
 
@@ -326,7 +320,7 @@ static int mpegvideo_probe(AVProbeData *p)
         }
     }
     if(seq && seq*9<=pic*10 && pic*9<=slice*10 && !pspack && !pes)
-        return AVPROBE_SCORE_MAX/2+1; // +1 for .mpg
+        return pic>1 ? AVPROBE_SCORE_MAX/2+1 : AVPROBE_SCORE_MAX/4; // +1 for .mpg
     return 0;
 }
 #endif
@@ -455,14 +449,33 @@ static int h264_probe(AVProbeData *p)
 #if CONFIG_H263_DEMUXER
 static int h263_probe(AVProbeData *p)
 {
-    int code;
-    const uint8_t *d;
+    uint64_t code= -1;
+    int i;
+    int valid_psc=0;
+    int invalid_psc=0;
+    int res_change=0;
+    int src_fmt, last_src_fmt=-1;
 
-    d = p->buf;
-    code = (d[0] << 14) | (d[1] << 6) | (d[2] >> 2);
-    if (code == 0x20) {
-        return 50;
+    for(i=0; i<p->buf_size; i++){
+        code = (code<<8) + p->buf[i];
+        if ((code & 0xfffffc0000) == 0x800000) {
+            src_fmt= (code>>2)&3;
+            if(   src_fmt != last_src_fmt
+               && last_src_fmt>0 && last_src_fmt<6
+               && src_fmt<6)
+                res_change++;
+
+            if((code&0x300)==0x200 && src_fmt){
+                valid_psc++;
+            }else
+                invalid_psc++;
+            last_src_fmt= src_fmt;
+        }
     }
+    if(valid_psc > 2*invalid_psc + 2*res_change + 2){
+        return 50;
+    }else if(valid_psc > 2*invalid_psc)
+        return 25;
     return 0;
 }
 #endif
@@ -470,14 +483,36 @@ static int h263_probe(AVProbeData *p)
 #if CONFIG_H261_DEMUXER
 static int h261_probe(AVProbeData *p)
 {
-    int code;
-    const uint8_t *d;
+    uint32_t code= -1;
+    int i;
+    int valid_psc=0;
+    int invalid_psc=0;
+    int next_gn=0;
+    int src_fmt=0;
+    GetBitContext gb;
 
-    d = p->buf;
-    code = (d[0] << 12) | (d[1] << 4) | (d[2] >> 4);
-    if (code == 0x10) {
-        return 50;
+    init_get_bits(&gb, p->buf, p->buf_size*8);
+
+    for(i=0; i<p->buf_size*8; i++){
+        code = (code<<1) + get_bits1(&gb);
+        if ((code & 0xffff0000) == 0x10000) {
+            int gn= (code>>12)&0xf;
+            if(!gn)
+                src_fmt= code&8;
+            if(gn != next_gn) invalid_psc++;
+            else              valid_psc++;
+
+            if(src_fmt){ // CIF
+                next_gn= (gn+1     )%13;
+            }else{       //QCIF
+                next_gn= (gn+1+!!gn)% 7;
+            }
+        }
     }
+    if(valid_psc > 2*invalid_psc + 6){
+        return 50;
+    }else if(valid_psc > 2*invalid_psc + 2)
+        return 25;
     return 0;
 }
 #endif
@@ -491,6 +526,8 @@ static int dts_probe(AVProbeData *p)
 {
     const uint8_t *buf, *bufp;
     uint32_t state = -1;
+    int markers[3] = {0};
+    int sum, max;
 
     buf = p->buf;
 
@@ -500,18 +537,24 @@ static int dts_probe(AVProbeData *p)
 
         /* regular bitstream */
         if (state == DCA_MARKER_RAW_BE || state == DCA_MARKER_RAW_LE)
-            return AVPROBE_SCORE_MAX/2+1;
+            markers[0]++;
 
         /* 14 bits big-endian bitstream */
         if (state == DCA_MARKER_14B_BE)
             if ((bytestream_get_be16(&bufp) & 0xFFF0) == 0x07F0)
-                return AVPROBE_SCORE_MAX/2+1;
+                markers[1]++;
 
         /* 14 bits little-endian bitstream */
         if (state == DCA_MARKER_14B_LE)
             if ((bytestream_get_be16(&bufp) & 0xF0FF) == 0xF007)
-                return AVPROBE_SCORE_MAX/2+1;
+                markers[2]++;
     }
+    sum = markers[0] + markers[1] + markers[2];
+    max = markers[1] > markers[0];
+    max = markers[2] > markers[max] ? 2 : max;
+    if (markers[max] > 3 && p->buf_size / markers[max] < 32*1024 &&
+        markers[max] * 4 > sum * 3)
+        return AVPROBE_SCORE_MAX/2+1;
 
     return 0;
 }
@@ -531,10 +574,19 @@ static int dirac_probe(AVProbeData *p)
 static int dnxhd_probe(AVProbeData *p)
 {
     static const uint8_t header[] = {0x00,0x00,0x02,0x80,0x01};
-    if (!memcmp(p->buf, header, 5))
-        return AVPROBE_SCORE_MAX;
-    else
+    int w, h, compression_id;
+    if (p->buf_size < 0x2c)
         return 0;
+    if (memcmp(p->buf, header, 5))
+        return 0;
+    h = AV_RB16(p->buf + 0x18);
+    w = AV_RB16(p->buf + 0x1a);
+    if (!w || !h)
+        return 0;
+    compression_id = AV_RB32(p->buf + 0x28);
+    if (compression_id < 1237 || compression_id > 1253)
+        return 0;
+    return AVPROBE_SCORE_MAX;
 }
 #endif
 
@@ -570,8 +622,11 @@ static int ac3_eac3_probe(AVProbeData *p, enum CodecID expected_codec_id)
             first_frames = frames;
     }
     if(codec_id != expected_codec_id) return 0;
-    if   (first_frames>=3) return AVPROBE_SCORE_MAX * 3 / 4;
-    else if(max_frames>=3) return AVPROBE_SCORE_MAX / 2;
+    // keep this in sync with mp3 probe, both need to avoid
+    // issues with MPEG-files!
+    if   (first_frames>=4) return AVPROBE_SCORE_MAX/2+1;
+    else if(max_frames>500)return AVPROBE_SCORE_MAX/2;
+    else if(max_frames>=4) return AVPROBE_SCORE_MAX/4;
     else if(max_frames>=1) return 1;
     else                   return 0;
 }

@@ -167,7 +167,7 @@ do {                                    \
     vec_st (_0, 0, ptr++);              \
     vec_st (_1, 0, ptr++);              \
     vec_st (_2, 0, ptr++);              \
-}  while (0);
+}  while (0)
 
 #define vec_mstrgb24(x0,x1,x2,ptr)      \
 do {                                    \
@@ -176,7 +176,7 @@ do {                                    \
     vec_st (_0, 0, ptr++);              \
     vec_st (_1, 0, ptr++);              \
     vec_st (_2, 0, ptr++);              \
-}  while (0);
+}  while (0)
 
 /* pack the pixels in rgb0 format
    msb R
@@ -198,7 +198,7 @@ do {                                                                          \
     vec_st (_2, 2*16, (T *)ptr);                                              \
     vec_st (_3, 3*16, (T *)ptr);                                              \
     ptr += 4;                                                                 \
-}  while (0);
+}  while (0)
 
 /*
 
@@ -714,7 +714,7 @@ SwsFunc ff_yuv2rgb_init_altivec(SwsContext *c)
         if ((c->srcH & 0x1) != 0)
             return NULL;
 
-        switch(c->dstFormat){
+        switch(c->dstFormat) {
         case PIX_FMT_RGB24:
             av_log(c, AV_LOG_WARNING, "ALTIVEC: Color Space RGB24\n");
             return altivec_yuv2_rgb24;
@@ -738,7 +738,7 @@ SwsFunc ff_yuv2rgb_init_altivec(SwsContext *c)
         break;
 
     case PIX_FMT_UYVY422:
-        switch(c->dstFormat){
+        switch(c->dstFormat) {
         case PIX_FMT_BGR32:
             av_log(c, AV_LOG_WARNING, "ALTIVEC: Color Space UYVY -> RGB32\n");
             return altivec_uyvy_rgb32;
@@ -772,15 +772,6 @@ void ff_yuv2rgb_init_tables_altivec(SwsContext *c, const int inv_table[4], int b
     c->CBU  = vec_splat ((vector signed short)buf.vec, 3);
     c->CGU  = vec_splat ((vector signed short)buf.vec, 4);
     c->CGV  = vec_splat ((vector signed short)buf.vec, 5);
-#if 0
-    {
-    int i;
-    char *v[6]={"cy","oy","crv","cbu","cgu","cgv"};
-    for (i=0; i<6; i++)
-        printf("%s %d ", v[i],buf.tmp[i] );
-        printf("\n");
-    }
-#endif
     return;
 }
 
@@ -809,7 +800,7 @@ ff_yuv2packedX_altivec(SwsContext *c,
 
     out = (vector unsigned char *)dest;
 
-    for (i=0; i<dstW; i+=16){
+    for (i=0; i<dstW; i+=16) {
         Y0 = RND;
         Y1 = RND;
         /* extract 16 coeffs from lumSrc */
@@ -864,13 +855,13 @@ ff_yuv2packedX_altivec(SwsContext *c,
         B  = vec_packclp (B0,B1);
 
         switch(c->dstFormat) {
-            case PIX_FMT_ABGR:  out_abgr  (R,G,B,out); break;
-            case PIX_FMT_BGRA:  out_bgra  (R,G,B,out); break;
-            case PIX_FMT_RGBA:  out_rgba  (R,G,B,out); break;
-            case PIX_FMT_ARGB:  out_argb  (R,G,B,out); break;
-            case PIX_FMT_RGB24: out_rgb24 (R,G,B,out); break;
-            case PIX_FMT_BGR24: out_bgr24 (R,G,B,out); break;
-            default:
+        case PIX_FMT_ABGR:  out_abgr  (R,G,B,out); break;
+        case PIX_FMT_BGRA:  out_bgra  (R,G,B,out); break;
+        case PIX_FMT_RGBA:  out_rgba  (R,G,B,out); break;
+        case PIX_FMT_ARGB:  out_argb  (R,G,B,out); break;
+        case PIX_FMT_RGB24: out_rgb24 (R,G,B,out); break;
+        case PIX_FMT_BGR24: out_bgr24 (R,G,B,out); break;
+        default:
             {
                 /* If this is reached, the caller should have called yuv2packedXinC
                    instead. */
@@ -943,17 +934,17 @@ ff_yuv2packedX_altivec(SwsContext *c,
 
         nout = (vector unsigned char *)scratch;
         switch(c->dstFormat) {
-            case PIX_FMT_ABGR:  out_abgr  (R,G,B,nout); break;
-            case PIX_FMT_BGRA:  out_bgra  (R,G,B,nout); break;
-            case PIX_FMT_RGBA:  out_rgba  (R,G,B,nout); break;
-            case PIX_FMT_ARGB:  out_argb  (R,G,B,nout); break;
-            case PIX_FMT_RGB24: out_rgb24 (R,G,B,nout); break;
-            case PIX_FMT_BGR24: out_bgr24 (R,G,B,nout); break;
-            default:
-                /* Unreachable, I think. */
-                av_log(c, AV_LOG_ERROR, "altivec_yuv2packedX doesn't support %s output\n",
-                       sws_format_name(c->dstFormat));
-                return;
+        case PIX_FMT_ABGR:  out_abgr  (R,G,B,nout); break;
+        case PIX_FMT_BGRA:  out_bgra  (R,G,B,nout); break;
+        case PIX_FMT_RGBA:  out_rgba  (R,G,B,nout); break;
+        case PIX_FMT_ARGB:  out_argb  (R,G,B,nout); break;
+        case PIX_FMT_RGB24: out_rgb24 (R,G,B,nout); break;
+        case PIX_FMT_BGR24: out_bgr24 (R,G,B,nout); break;
+        default:
+            /* Unreachable, I think. */
+            av_log(c, AV_LOG_ERROR, "altivec_yuv2packedX doesn't support %s output\n",
+                   sws_format_name(c->dstFormat));
+            return;
         }
 
         memcpy (&((uint32_t*)dest)[i], scratch, (dstW-i)/4);

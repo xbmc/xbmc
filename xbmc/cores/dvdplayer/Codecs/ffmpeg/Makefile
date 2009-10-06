@@ -12,6 +12,7 @@ PROGS       = $(addsuffix   $(EXESUF), $(PROGS-yes))
 PROGS_G     = $(addsuffix _g$(EXESUF), $(PROGS-yes))
 OBJS        = $(addsuffix .o,          $(PROGS-yes)) cmdutils.o
 MANPAGES    = $(addprefix doc/, $(addsuffix .1, $(PROGS-yes)))
+TOOLS       = $(addprefix tools/, $(addsuffix $(EXESUF), cws2fws pktdumper probetest qt-faststart trasher))
 
 BASENAMES   = ffmpeg ffplay ffserver
 ALLPROGS    = $(addsuffix   $(EXESUF), $(BASENAMES))
@@ -45,7 +46,7 @@ $(PROGS): %$(EXESUF): %_g$(EXESUF)
 	cp -p $< $@
 	$(STRIP) $@
 
-SUBDIR_VARS := OBJS FFLIBS CLEANFILES DIRS TESTPROGS EXAMPLES \
+SUBDIR_VARS := OBJS FFLIBS CLEANFILES DIRS TESTPROGS EXAMPLES SKIPHEADERS \
                ALTIVEC-OBJS MMX-OBJS NEON-OBJS X86-OBJS YASM-OBJS-FFT YASM-OBJS
 
 define RESET
@@ -70,14 +71,14 @@ ffserver_g$(EXESUF): FF_LDFLAGS += $(FFSERVERLDFLAGS)
 tools/%$(EXESUF): tools/%.o
 	$(LD) $(FF_LDFLAGS) -o $@ $< $(FF_EXTRALIBS)
 
-tools/%.o: tools.%.c
+tools/%.o: tools/%.c
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(CC_O) $<
 
 ffplay.o ffplay.d: CFLAGS += $(SDL_CFLAGS)
 
 cmdutils.o cmdutils.d: version.h
 
-alltools: $(addsuffix $(EXESUF),$(addprefix tools/, cws2fws pktdumper qt-faststart trasher))
+alltools: $(TOOLS)
 
 documentation: $(addprefix doc/, developer.html faq.html ffmpeg-doc.html ffserver-doc.html \
                                  ffplay-doc.html general.html $(ALLMANPAGES))
@@ -126,7 +127,7 @@ clean:: testclean
 	rm -f doc/*.html doc/*.pod doc/*.1
 	rm -f tests/seek_test$(EXESUF) tests/seek_test.o
 	rm -f $(addprefix tests/,$(addsuffix $(HOSTEXESUF),audiogen videogen rotozoom tiny_psnr))
-	rm -f $(addprefix tools/,$(addsuffix $(EXESUF),cws2fws pktdumper qt-faststart trasher))
+	rm -f $(TOOLS)
 
 distclean::
 	rm -f $(DISTCLEANSUFFIXES)
@@ -143,6 +144,7 @@ fulltest test: codectest lavftest seektest
 
 FFSERVER_REFFILE = $(SRC_PATH)/tests/ffserver.regression.ref
 LAVF_REFFILE     = $(SRC_PATH)/tests/lavf.regression.ref
+LAVFI_REFFILE    = $(SRC_PATH)/tests/lavfi.regression.ref
 ROTOZOOM_REFFILE = $(SRC_PATH)/tests/rotozoom.regression.ref
 SEEK_REFFILE     = $(SRC_PATH)/tests/seek.regression.ref
 VSYNTH_REFFILE   = $(SRC_PATH)/tests/vsynth.regression.ref
@@ -179,6 +181,9 @@ CODEC_TESTS = $(addprefix regtest-,             \
         snowll                                  \
         dv                                      \
         dv50                                    \
+        dnxhd_1080i                             \
+        dnxhd_720p                              \
+        dnxhd_720p_rd                           \
         svq1                                    \
         flashsv                                 \
         mp2                                     \
@@ -233,14 +238,19 @@ LAVF_TESTS = $(addprefix regtest-,              \
         pcx                                     \
     )
 
+LAVFI_TESTS = $(addprefix regtest-,             \
+    )
+
 RESFILES = $(addprefix tests/data/,$(addsuffix .$(1),$(2:regtest-%=%)))
 
 ROTOZOOM_RESFILES = $(call RESFILES,rotozoom.regression,$(CODEC_TESTS))
 VSYNTH_RESFILES   = $(call RESFILES,vsynth.regression,$(CODEC_TESTS))
 
 LAVF_RESFILES = $(call RESFILES,lavf.regression,$(LAVF_TESTS))
+LAVFI_RESFILES = $(call RESFILES,lavfi.regression,$(LAVFI_TESTS))
 
 LAVF_RESFILE     = tests/data/lavf.regression
+LAVFI_RESFILE    = tests/data/lavfi.regression
 ROTOZOOM_RESFILE = tests/data/rotozoom.regression
 VSYNTH_RESFILE   = tests/data/vsynth.regression
 
@@ -260,18 +270,23 @@ codectest: $(VSYNTH_RESFILE) $(ROTOZOOM_RESFILE)
 lavftest: $(LAVF_RESFILE)
 	diff -u -w $(LAVF_REFFILE) $(LAVF_RESFILE)
 
-$(VSYNTH_RESFILE) $(ROTOZOOM_RESFILE) $(LAVF_RESFILE):
+# lavfitest: $(LAVFI_RESFILE)
+# 	diff -u -w $(LAVFI_REFFILE) $(LAVFI_RESFILE)
+
+$(VSYNTH_RESFILE) $(ROTOZOOM_RESFILE) $(LAVF_RESFILE) $(LAVFI_RESFILE):
 	cat $^ > $@
 
 $(LAVF_RESFILE):     $(LAVF_RESFILES)
+$(LAVFI_RESFILE):    $(LAVFI_RESFILES)
 $(ROTOZOOM_RESFILE): $(ROTOZOOM_RESFILES)
 $(VSYNTH_RESFILE):   $(VSYNTH_RESFILES)
 
 $(VSYNTH_RESFILES) $(ROTOZOOM_RESFILES): $(CODEC_TESTS)
 
 $(LAVF_RESFILES): $(LAVF_TESTS)
+$(LAVFI_RESFILES): $(LAVFI_TESTS)
 
-$(CODEC_TESTS) $(LAVF_TESTS): regtest-ref
+$(CODEC_TESTS) $(LAVF_TESTS) $(LAVFI_TESTS): regtest-ref
 
 regtest-ref: ffmpeg$(EXESUF) tests/vsynth1/00.pgm tests/vsynth2/00.pgm tests/data/asynth1.sw
 
@@ -281,6 +296,9 @@ $(CODEC_TESTS) regtest-ref: tests/tiny_psnr$(HOSTEXESUF)
 
 $(LAVF_TESTS):
 	$(SRC_PATH)/tests/codec-regression.sh $@ lavf tests/vsynth1 b "$(TARGET_EXEC)" "$(TARGET_PATH)"
+
+$(LAVFI_TESTS):
+	$(SRC_PATH)/tests/codec-regression.sh $@ lavfi tests/vsynth1 b "$(TARGET_EXEC)" "$(TARGET_PATH)"
 
 seektest: codectest lavftest tests/seek_test$(EXESUF)
 	$(SRC_PATH)/tests/seek-regression.sh $(SEEK_REFFILE) "$(TARGET_EXEC)" "$(TARGET_PATH)"

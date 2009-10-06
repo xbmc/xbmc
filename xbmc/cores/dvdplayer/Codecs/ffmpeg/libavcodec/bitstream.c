@@ -38,25 +38,6 @@ const uint8_t ff_log2_run[32]={
  8, 9,10,11,12,13,14,15
 };
 
-#if LIBAVCODEC_VERSION_MAJOR < 53
-/**
- * Same as av_mallocz_static(), but does a realloc.
- *
- * @param[in] ptr The block of memory to reallocate.
- * @param[in] size The requested size.
- * @return Block of memory of requested size.
- * @deprecated. Code which uses ff_realloc_static is broken/misdesigned
- * and should correctly use static arrays
- */
-attribute_deprecated av_alloc_size(2)
-static void *ff_realloc_static(void *ptr, unsigned int size);
-
-static void *ff_realloc_static(void *ptr, unsigned int size)
-{
-    return av_realloc(ptr, size);
-}
-#endif
-
 void align_put_bits(PutBitContext *s)
 {
 #ifdef ALT_BITSTREAM_WRITER
@@ -124,15 +105,11 @@ static int alloc_table(VLC *vlc, int size, int use_static)
     index = vlc->table_size;
     vlc->table_size += size;
     if (vlc->table_size > vlc->table_allocated) {
-        if(use_static>1)
+        if(use_static)
             abort(); //cant do anything, init_vlc() is used with too little memory
         vlc->table_allocated += (1 << vlc->bits);
-        if(use_static)
-            vlc->table = ff_realloc_static(vlc->table,
-                                           sizeof(VLC_TYPE) * 2 * vlc->table_allocated);
-        else
-            vlc->table = av_realloc(vlc->table,
-                                    sizeof(VLC_TYPE) * 2 * vlc->table_allocated);
+        vlc->table = av_realloc(vlc->table,
+                                sizeof(VLC_TYPE) * 2 * vlc->table_allocated);
         if (!vlc->table)
             return -1;
     }
@@ -151,7 +128,7 @@ static int build_table(VLC *vlc, int table_nb_bits,
     VLC_TYPE (*table)[2];
 
     table_size = 1 << table_nb_bits;
-    table_index = alloc_table(vlc, table_size, flags & (INIT_VLC_USE_STATIC|INIT_VLC_USE_NEW_STATIC));
+    table_index = alloc_table(vlc, table_size, flags & INIT_VLC_USE_NEW_STATIC);
 #ifdef DEBUG_VLC
     av_log(NULL,AV_LOG_DEBUG,"new table index=%d size=%d code_prefix=%x n=%d\n",
            table_index, table_size, code_prefix, n_prefix);
@@ -286,15 +263,10 @@ int init_vlc_sparse(VLC *vlc, int nb_bits, int nb_codes,
         }else if(vlc->table_size){
             abort(); // fatal error, we are called on a partially initialized table
         }
-    }else if(!(flags & INIT_VLC_USE_STATIC)) {
+    }else {
         vlc->table = NULL;
         vlc->table_allocated = 0;
         vlc->table_size = 0;
-    } else {
-        /* Static tables are initially always NULL, return
-           if vlc->table != NULL to avoid double allocation */
-        if(vlc->table)
-            return 0;
     }
 
 #ifdef DEBUG_VLC

@@ -23,6 +23,15 @@
 
 #include "libavcodec/avcodec.h"
 #include "libavcodec/dsputil.h"
+#include "dsputil_arm.h"
+
+void ff_simple_idct_neon(DCTELEM *data);
+void ff_simple_idct_put_neon(uint8_t *dest, int line_size, DCTELEM *data);
+void ff_simple_idct_add_neon(uint8_t *dest, int line_size, DCTELEM *data);
+
+void ff_vp3_idct_neon(DCTELEM *data);
+void ff_vp3_idct_put_neon(uint8_t *dest, int line_size, DCTELEM *data);
+void ff_vp3_idct_add_neon(uint8_t *dest, int line_size, DCTELEM *data);
 
 void ff_put_pixels16_neon(uint8_t *, const uint8_t *, int, int);
 void ff_put_pixels16_x2_neon(uint8_t *, const uint8_t *, int, int);
@@ -157,12 +166,51 @@ void ff_vector_fmul_neon(float *dst, const float *src, int len);
 void ff_vector_fmul_window_neon(float *dst, const float *src0,
                                 const float *src1, const float *win,
                                 float add_bias, int len);
+void ff_vector_fmul_scalar_neon(float *dst, const float *src, float mul,
+                                int len);
+void ff_vector_fmul_sv_scalar_2_neon(float *dst, const float *src,
+                                     const float **vp, float mul, int len);
+void ff_vector_fmul_sv_scalar_4_neon(float *dst, const float *src,
+                                     const float **vp, float mul, int len);
+void ff_sv_fmul_scalar_2_neon(float *dst, const float **vp, float mul,
+                              int len);
+void ff_sv_fmul_scalar_4_neon(float *dst, const float **vp, float mul,
+                              int len);
+void ff_butterflies_float_neon(float *v1, float *v2, int len);
+float ff_scalarproduct_float_neon(const float *v1, const float *v2, int len);
+void ff_int32_to_float_fmul_scalar_neon(float *dst, const int *src,
+                                        float mul, int len);
+void ff_vector_fmul_reverse_neon(float *dst, const float *src0,
+                                 const float *src1, int len);
+void ff_vector_fmul_add_neon(float *dst, const float *src0, const float *src1,
+                             const float *src2, int len);
 
+void ff_vector_clipf_neon(float *dst, const float *src, float min, float max,
+                          int len);
 void ff_float_to_int16_neon(int16_t *, const float *, long);
 void ff_float_to_int16_interleave_neon(int16_t *, const float **, long, int);
 
+void ff_vorbis_inverse_coupling_neon(float *mag, float *ang, int blocksize);
+
 void ff_dsputil_init_neon(DSPContext *c, AVCodecContext *avctx)
 {
+    if (!avctx->lowres) {
+        if (avctx->idct_algo == FF_IDCT_AUTO ||
+            avctx->idct_algo == FF_IDCT_SIMPLENEON) {
+            c->idct_put              = ff_simple_idct_put_neon;
+            c->idct_add              = ff_simple_idct_add_neon;
+            c->idct                  = ff_simple_idct_neon;
+            c->idct_permutation_type = FF_PARTTRANS_IDCT_PERM;
+        } else if ((CONFIG_VP3_DECODER || CONFIG_VP5_DECODER ||
+                    CONFIG_VP6_DECODER) &&
+                   avctx->idct_algo == FF_IDCT_VP3) {
+            c->idct_put              = ff_vp3_idct_put_neon;
+            c->idct_add              = ff_vp3_idct_add_neon;
+            c->idct                  = ff_vp3_idct_neon;
+            c->idct_permutation_type = FF_TRANSPOSE_IDCT_PERM;
+        }
+    }
+
     c->put_pixels_tab[0][0] = ff_put_pixels16_neon;
     c->put_pixels_tab[0][1] = ff_put_pixels16_x2_neon;
     c->put_pixels_tab[0][2] = ff_put_pixels16_y2_neon;
@@ -265,11 +313,27 @@ void ff_dsputil_init_neon(DSPContext *c, AVCodecContext *avctx)
         c->vp3_h_loop_filter = ff_vp3_h_loop_filter_neon;
     }
 
-    c->vector_fmul = ff_vector_fmul_neon;
-    c->vector_fmul_window = ff_vector_fmul_window_neon;
+    c->vector_fmul                = ff_vector_fmul_neon;
+    c->vector_fmul_window         = ff_vector_fmul_window_neon;
+    c->vector_fmul_scalar         = ff_vector_fmul_scalar_neon;
+    c->butterflies_float          = ff_butterflies_float_neon;
+    c->scalarproduct_float        = ff_scalarproduct_float_neon;
+    c->int32_to_float_fmul_scalar = ff_int32_to_float_fmul_scalar_neon;
+    c->vector_fmul_reverse        = ff_vector_fmul_reverse_neon;
+    c->vector_fmul_add            = ff_vector_fmul_add_neon;
+    c->vector_clipf               = ff_vector_clipf_neon;
+
+    c->vector_fmul_sv_scalar[0] = ff_vector_fmul_sv_scalar_2_neon;
+    c->vector_fmul_sv_scalar[1] = ff_vector_fmul_sv_scalar_4_neon;
+
+    c->sv_fmul_scalar[0] = ff_sv_fmul_scalar_2_neon;
+    c->sv_fmul_scalar[1] = ff_sv_fmul_scalar_4_neon;
 
     if (!(avctx->flags & CODEC_FLAG_BITEXACT)) {
-        c->float_to_int16 = ff_float_to_int16_neon;
+        c->float_to_int16            = ff_float_to_int16_neon;
         c->float_to_int16_interleave = ff_float_to_int16_interleave_neon;
     }
+
+    if (CONFIG_VORBIS_DECODER)
+        c->vorbis_inverse_coupling = ff_vorbis_inverse_coupling_neon;
 }

@@ -123,7 +123,7 @@ static void write_frame_header(AlacEncodeContext *s, int is_verbatim)
     put_bits(&s->pbctx, 1,  1);                             // Sample count is in the header
     put_bits(&s->pbctx, 2,  0);                             // FIXME: Wasted bytes field
     put_bits(&s->pbctx, 1,  is_verbatim);                   // Audio block is verbatim
-    put_bits(&s->pbctx, 32, s->avctx->frame_size);          // No. of samples in the frame
+    put_bits32(&s->pbctx, s->avctx->frame_size);            // No. of samples in the frame
 }
 
 static void calc_predictor_params(AlacEncodeContext *s, int ch)
@@ -132,12 +132,27 @@ static void calc_predictor_params(AlacEncodeContext *s, int ch)
     int shift[MAX_LPC_ORDER];
     int opt_order;
 
-    opt_order = ff_lpc_calc_coefs(&s->dspctx, s->sample_buf[ch], s->avctx->frame_size, s->min_prediction_order, s->max_prediction_order,
-                                   ALAC_MAX_LPC_PRECISION, coefs, shift, 1, ORDER_METHOD_EST, ALAC_MAX_LPC_SHIFT, 1);
+    if (s->avctx->compression_level > 1) {
+        opt_order = ff_lpc_calc_coefs(&s->dspctx, s->sample_buf[ch],
+                                      s->avctx->frame_size,
+                                      s->min_prediction_order,
+                                      s->max_prediction_order,
+                                      ALAC_MAX_LPC_PRECISION, coefs, shift, 1,
+                                      ORDER_METHOD_EST, ALAC_MAX_LPC_SHIFT, 1);
 
-    s->lpc[ch].lpc_order = opt_order;
-    s->lpc[ch].lpc_quant = shift[opt_order-1];
-    memcpy(s->lpc[ch].lpc_coeff, coefs[opt_order-1], opt_order*sizeof(int));
+        s->lpc[ch].lpc_order = opt_order;
+        s->lpc[ch].lpc_quant = shift[opt_order-1];
+        memcpy(s->lpc[ch].lpc_coeff, coefs[opt_order-1], opt_order*sizeof(int));
+    } else {
+        s->lpc[ch].lpc_order = 6;
+        s->lpc[ch].lpc_quant = 6;
+        s->lpc[ch].lpc_coeff[0] =  160;
+        s->lpc[ch].lpc_coeff[1] = -190;
+        s->lpc[ch].lpc_coeff[2] =  170;
+        s->lpc[ch].lpc_coeff[3] = -130;
+        s->lpc[ch].lpc_coeff[4] =   80;
+        s->lpc[ch].lpc_coeff[5] =  -25;
+    }
 }
 
 static int estimate_stereo_mode(int32_t *left_ch, int32_t *right_ch, int n)
@@ -375,9 +390,9 @@ static av_cold int alac_encode_init(AVCodecContext *avctx)
 
     // Set default compression level
     if(avctx->compression_level == FF_COMPRESSION_DEFAULT)
-        s->compression_level = 1;
+        s->compression_level = 2;
     else
-        s->compression_level = av_clip(avctx->compression_level, 0, 1);
+        s->compression_level = av_clip(avctx->compression_level, 0, 2);
 
     // Initialize default Rice parameters
     s->rc.history_mult    = 40;
@@ -385,8 +400,7 @@ static av_cold int alac_encode_init(AVCodecContext *avctx)
     s->rc.k_modifier      = 14;
     s->rc.rice_modifier   = 4;
 
-    s->max_coded_frame_size = (ALAC_FRAME_HEADER_SIZE + ALAC_FRAME_FOOTER_SIZE +
-                               avctx->frame_size*avctx->channels*avctx->bits_per_coded_sample)>>3;
+    s->max_coded_frame_size = 8 + (avctx->frame_size*avctx->channels*avctx->bits_per_coded_sample>>3);
 
     s->write_sample_size  = avctx->bits_per_coded_sample + avctx->channels - 1; // FIXME: consider wasted_bytes
 

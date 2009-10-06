@@ -129,11 +129,9 @@ static void mdct_ref(float *output, float *input, int nbits)
 }
 
 
-static float frandom(void)
+static float frandom(AVLFG *prng)
 {
-    AVLFG prng;
-    av_lfg_init(&prng, 1);
-    return (float)((av_lfg_get(&prng) & 0xffff) - 32768) / 32768.0;
+    return (int16_t)av_lfg_get(prng) / 32768.0;
 }
 
 static int64_t gettime(void)
@@ -186,9 +184,11 @@ int main(int argc, char **argv)
     int do_mdct = 0;
     int do_inverse = 0;
     FFTContext s1, *s = &s1;
-    MDCTContext m1, *m = &m1;
+    FFTContext m1, *m = &m1;
     int fft_nbits, fft_size;
     double scale = 1.0;
+    AVLFG prng;
+    av_lfg_init(&prng, 1);
 
     fft_nbits = 9;
     for(;;) {
@@ -243,8 +243,8 @@ int main(int argc, char **argv)
     /* generate random data */
 
     for(i=0;i<fft_size;i++) {
-        tab1[i].re = frandom();
-        tab1[i].im = frandom();
+        tab1[i].re = frandom(&prng);
+        tab1[i].im = frandom(&prng);
     }
 
     /* checking result */

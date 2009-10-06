@@ -190,6 +190,17 @@ static inline av_const uint8_t av_clip_uint8(int a)
 }
 
 /**
+ * Clips a signed integer value into the 0-65535 range.
+ * @param a value to clip
+ * @return clipped value
+ */
+static inline av_const uint16_t av_clip_uint16(int a)
+{
+    if (a&(~65535)) return (-a)>>31;
+    else            return a;
+}
+
+/**
  * Clips a signed integer value into the -32768,32767 range.
  * @param a value to clip
  * @return clipped value
@@ -212,6 +223,15 @@ static inline av_const float av_clipf(float a, float amin, float amax)
     if      (a < amin) return amin;
     else if (a > amax) return amax;
     else               return a;
+}
+
+/** Computes ceil(log2(x)).
+ * @param x value used to compute ceil(log2(x))
+ * @return computed ceiling of log2(x)
+ */
+static inline av_const int av_ceil_log2(int x)
+{
+    return av_log2((x - 1) << 1);
 }
 
 #define MKTAG(a,b,c,d) (a | (b << 8) | (c << 16) | (d << 24))
@@ -244,6 +264,30 @@ static inline av_const float av_clipf(float a, float amin, float amax)
             val= (val<<6) + tmp;\
         }\
     }
+
+/*!
+ * \def GET_UTF16(val, GET_16BIT, ERROR)
+ * Converts a UTF-16 character (2 or 4 bytes) to its 32-bit UCS-4 encoded form
+ * \param val is the output and should be of type uint32_t. It holds the converted
+ * UCS-4 character and should be a left value.
+ * \param GET_16BIT gets two bytes of UTF-16 encoded data converted to native endianness.
+ * It can be a function or a statement whose return value or evaluated value is of type
+ * uint16_t. It will be executed up to 2 times.
+ * \param ERROR action that should be taken when an invalid UTF-16 surrogate is
+ * returned from GET_BYTE. It should be a statement that jumps out of the macro,
+ * like exit(), goto, return, break, or continue.
+ */
+#define GET_UTF16(val, GET_16BIT, ERROR)\
+    val = GET_16BIT;\
+    {\
+        unsigned int hi = val - 0xD800;\
+        if (hi < 0x800) {\
+            val = GET_16BIT - 0xDC00;\
+            if (val > 0x3FFU || hi > 0x3FFU)\
+                ERROR\
+            val += (hi<<10) + 0x10000;\
+        }\
+    }\
 
 /*!
  * \def PUT_UTF8(val, tmp, PUT_BYTE)

@@ -20,8 +20,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef FFMPEG_VC1_H
-#define FFMPEG_VC1_H
+#ifndef AVCODEC_VC1_H
+#define AVCODEC_VC1_H
 
 #include "avcodec.h"
 #include "mpegvideo.h"
@@ -306,6 +306,8 @@ typedef struct VC1Context{
     int bi_type;
     int x8_type;
 
+    uint32_t *cbp_base, *cbp;
+    uint8_t bfraction_lut_index;///< Index for BFRACTION value (see Table 40, reproduced into ff_vc1_bfraction_lut[])
     uint8_t broken_link;        ///< Broken link flag (BROKEN_LINK syntax element)
     uint8_t closed_entry;       ///< Closed entry point flag (CLOSED_ENTRY syntax element)
 
