@@ -190,9 +190,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
 
-  m_upscalingWidth = m_destRect.Width();
-  m_upscalingHeight = m_destRect.Height();
-  m_scalingMethod = GetDefaultUpscalingMethod();
+  ChooseUpscalingMethod();
 
   m_bConfigured = true;
   m_bImageReady = false;
@@ -208,8 +206,11 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
   return true;
 }
 
-ESCALINGMETHOD CLinuxRendererGL::GetDefaultUpscalingMethod()
+void CLinuxRendererGL::ChooseUpscalingMethod()
 {
+  m_upscalingWidth  = m_destRect.Width();
+  m_upscalingHeight = m_destRect.Height();
+
   int upscale = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
   
   // See if we're a candiate for upscaling.
@@ -227,22 +228,17 @@ ESCALINGMETHOD CLinuxRendererGL::GetDefaultUpscalingMethod()
     candidateForUpscaling = false;
   }
 
-  ESCALINGMETHOD ret = VS_SCALINGMETHOD_LINEAR;
-
   if (candidateForUpscaling)
   {
-    ret = (ESCALINGMETHOD)g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
+    ESCALINGMETHOD ret = (ESCALINGMETHOD)g_guiSettings.GetInt("videoplayer.upscalingalgorithm");
 
     // Make sure to override the default setting for the video
     g_stSettings.m_currentVideoSettings.m_ScalingMethod = ret;
 
     // Initialize software upscaling.
     InitializeSoftwareUpscaling();
+    CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
   }
-
-  CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
-
-  return ret;
 }
 
 void CLinuxRendererGL::InitializeSoftwareUpscaling()

@@ -141,7 +141,7 @@ public:
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
 
-  ESCALINGMETHOD GetDefaultUpscalingMethod();
+  void ChooseUpscalingMethod();
   bool IsSoftwareUpscaling();
   void InitializeSoftwareUpscaling();
 
