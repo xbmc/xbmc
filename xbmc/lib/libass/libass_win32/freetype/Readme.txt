@@ -1,1 +1,0 @@
-freetype-2.3.5-1-bin.zip taken from http://gnuwin32.sourceforge.net/packages/freetype.htm
