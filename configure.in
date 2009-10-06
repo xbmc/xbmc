@@ -31,6 +31,8 @@ missing_headers="Could not find some required headers. Please see the README for
 missing_program="Could not find a required program. Please see the README for your platform."
 xrandr_not_found="== Could not find libXRandR. SDL will be used for resolution support. =="
 xrandr_disabled="== XRandR support disabled. SDL will be used for resolution support. =="
+goom_enabled="== GOOM enabled. =="
+goom_disabled="== GOOM disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
 pulse_disabled="== PulseAudio support manually disabled. =="
 faac_not_found="== Could not find libfaac. FAAC support disabled. =="
@@ -479,6 +481,21 @@ else
   fi
 fi
 
+# GOOM
+if test "$host_vendor" = "apple" ; then
+  use_goom="yes"
+  AC_MSG_NOTICE($goom_enabled)
+  BUILD_GOOM=0
+else
+  if test "$use_goom" = "yes"; then
+    AC_MSG_NOTICE($goom_enabled)
+    BUILD_GOOM=0
+  else
+    AC_MSG_NOTICE($goom_disabled)
+    BUILD_GOOM=1
+  fi
+fi
+
 ### External libraries checks
 if test "$use_external_libraries" = "yes"; then
   AC_MSG_NOTICE($external_libraries_enabled)
@@ -799,11 +816,9 @@ else
 fi
 
 if test "$use_goom" = "yes"; then
-  final_message="$final_message\n  GOOM:\tYes"
-  USE_GOOM=0
+  final_message="$final_message\n  GOOM:\t\tYes"
 else
-  final_message="$final_message\n  GOOM:\tNo"
-  USE_GOOM=1
+  final_message="$final_message\n  GOOM:\t\tNo"
 fi
 
 if test "$use_pcre" = "yes"; then
@@ -993,6 +1008,7 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
+AC_SUBST(BUILD_GOOM)
 AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBA52)
@@ -1353,7 +1369,7 @@ XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
       --with-pic
 
   fi
-], [$USE_GOOM])
+], [$BUILD_GOOM])
 
 XB_CONFIG_MODULE([xbmc/screensavers/rsxs-0.9/], [
   if test "$host_vendor" = "apple" ; then
