@@ -236,7 +236,6 @@ void avcodec_register_all(void)
     REGISTER_DECODER (WMAPRO, wmapro);
     REGISTER_ENCDEC  (WMAV1, wmav1);
     REGISTER_ENCDEC  (WMAV2, wmav2);
-    REGISTER_DECODER (WMAPRO, wmapro);  
     REGISTER_DECODER (WS_SND1, ws_snd1);
 
     /* PCM codecs */
