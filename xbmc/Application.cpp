@@ -3200,7 +3200,7 @@ bool CApplication::ProcessEventServer(float frameTime)
 
 bool CApplication::ProcessJoystickEvent(const std::string& joystickName, int wKeyID, bool isAxis, float fAmount)
 {
-#if defined(HAS_EVENT_SERVER) && defined(HAS_SDL_JOYSTICK)
+#if defined(HAS_EVENT_SERVER)
   m_idleTimer.StartZero();
 
    // Make sure to reset screen saver, mouse.
