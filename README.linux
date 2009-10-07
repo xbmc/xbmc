@@ -50,7 +50,7 @@ Build-Depends: debhelper (>= 7.0.50), quilt, python-support, cmake,
  libhal-dev, libpulse-dev, libavahi-common-dev, libavahi-client-dev,
  libxrandr-dev, libavcodec-dev, libavformat-dev, libavutil-dev, libpostproc-dev,
  libswscale-dev, liba52-dev, libdts-dev, libfaad-dev, libmp4ff-dev,
- libmpeg2-4-dev, libass-dev, libflac-dev, libwavpack-dev,
+ libmpeg2-4-dev, libass-dev, libfaad-dev, libflac-dev, libwavpack-dev,
  python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev, libbluetooth-dev,
  zlib1g-dev, libmms-dev, libsmbclient-dev, libtiff4-dev
 
