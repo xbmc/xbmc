@@ -35,6 +35,7 @@
 #include "FileItem.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace DIRECTORY;
 using namespace std;
@@ -503,7 +504,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
 
-  DWORD startTime = timeGetTime();
+  DWORD startTime = CTimeUtils::GetTimeMS();
   CGUIDialogProgress *progressBar = NULL;
 
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
@@ -527,7 +528,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     }
 
     // check whether we should pop up the progress dialog
-    if (!progressBar && timeGetTime() - startTime > timeBeforeProgressBar)
+    if (!progressBar && CTimeUtils::GetTimeMS() - startTime > timeBeforeProgressBar)
     { // loading takes more then 1.5 secs, show a progress dialog
       progressBar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (progressBar)
@@ -558,9 +559,9 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         if (!m_cancelled)
         {
           m_cancelled = true;
-          startTime = timeGetTime();
+          startTime = CTimeUtils::GetTimeMS();
         }
-        if (m_cancelled && timeGetTime() - startTime > timeToKillScript)
+        if (m_cancelled && CTimeUtils::GetTimeMS() - startTime > timeToKillScript)
         { // cancel our script
 #ifdef HAS_PYTHON
           int id = g_pythonParser.getScriptId(scriptPath.c_str());

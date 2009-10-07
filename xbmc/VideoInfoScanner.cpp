@@ -38,6 +38,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -64,7 +65,7 @@ namespace VIDEO
   {
     try
     {
-      DWORD dwTick = timeGetTime();
+      DWORD dwTick = CTimeUtils::GetTimeMS();
 
       m_database.Open();
 
@@ -117,7 +118,7 @@ namespace VIDEO
       m_database.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      dwTick = timeGetTime() - dwTick;
+      dwTick = CTimeUtils::GetTimeMS() - dwTick;
       CStdString strTmp, strTmp1;
       StringUtils::SecondsToTimeString(dwTick / 1000, strTmp1);
       strTmp.Format("My Videos: Scanning for video info using worker thread, operation took %s", strTmp1);

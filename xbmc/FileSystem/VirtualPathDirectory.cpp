@@ -28,6 +28,7 @@
 #include "GUIDialogProgress.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -48,14 +49,14 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
   if (!GetMatchingSource(strPath, share))
     return false;
 
-  DWORD progressTime = timeGetTime() + 3000L;   // 3 seconds before showing progress bar
+  DWORD progressTime = CTimeUtils::GetTimeMS() + 3000L;   // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
 
   unsigned int iFailures = 0;
   for (int i = 0; i < (int)share.vecPaths.size(); ++i)
   {
     // show the progress dialog if we have passed our time limit
-    if (timeGetTime() > progressTime && !dlgProgress)
+    if (CTimeUtils::GetTimeMS() > progressTime && !dlgProgress)
     {
       dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)

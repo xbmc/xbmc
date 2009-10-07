@@ -45,6 +45,7 @@
 #include "Picture.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/TimeUtils.h"
 
 #include <algorithm>
 
@@ -71,7 +72,7 @@ void CMusicInfoScanner::Process()
 {
   try
   {
-    DWORD dwTick = timeGetTime();
+    DWORD dwTick = CTimeUtils::GetTimeMS();
 
     m_musicDatabase.Open();
 
@@ -150,7 +151,7 @@ void CMusicInfoScanner::Process()
       m_musicDatabase.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      dwTick = timeGetTime() - dwTick;
+      dwTick = CTimeUtils::GetTimeMS() - dwTick;
       CStdString strTmp, strTmp1;
       StringUtils::SecondsToTimeString(dwTick / 1000, strTmp1);
       strTmp.Format("My Music: Scanning for music info using worker thread, operation took %s", strTmp1);

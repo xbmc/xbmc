@@ -21,19 +21,66 @@
 
 #include "TimeUtils.h"
 #ifdef _LINUX
-#include "linux/XTimeUtils.h" // for timeGetTime
+#include <sys/times.h>
+#ifdef __APPLE__
+#include <mach/mach_time.h>
+#endif
 #elif defined(_WIN32)
-#include <windows.h> // for timeGetTime
+#include <windows.h> // for CTimeUtils::GetTimeMS
 #endif
 
 unsigned int CTimeUtils::frameTime = 0;
 
 void CTimeUtils::UpdateFrameTime()
 {
-  frameTime = timeGetTime();
+  frameTime = GetTimeMS();
 }
 
 unsigned int CTimeUtils::GetFrameTime()
 {
   return frameTime;
 }
+
+unsigned int CTimeUtils::GetTimeMS()
+{
+  // best replacement for windows CTimeUtils::GetTimeMS
+  // 1st call sets start_mstime, subsequent are the diff
+  // between start_mstime and now_mstime to match SDL_GetTick behavior
+  // of previous usage. We might want to change this as CTimeUtils::GetTimeMS is 
+  // time (ms) since system startup. 
+#if defined(_WIN32)
+  return CTimeUtils::GetTimeMS();
+#elif defined(_LINUX)
+#if defined(__APPLE__)
+  static long double cv;
+  static uint64_t start_time = 0;
+  uint64_t now_time;
+
+  now_time = mach_absolute_time();
+
+  if (start_time == 0)
+  {
+    mach_timebase_info_data_t tbinfo;
+    
+    mach_timebase_info(&tbinfo);
+    cv = ((long double) tbinfo.numer) / ((long double) tbinfo.denom);
+    start_time = now_time;
+  }
+  
+  return( (now_time - start_time) * cv / 1000000.0);
+#else
+  static uint64_t start_mstime = 0;
+  uint64_t now_mstime;
+  struct timespec ts;
+
+  now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+  if (start_mstime == 0)
+  {
+    start_mstime = now_mstime;
+  }
+  
+  return(now_mstime - start_mstime);
+#endif
+#endif
+}
+

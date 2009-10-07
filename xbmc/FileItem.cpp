@@ -53,6 +53,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1455,9 +1456,9 @@ void CFileItemList::Reserve(int iCount)
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
   CSingleLock lock(m_lock);
-  DWORD dwStart = GetTickCount();
+  DWORD dwStart = CTimeUtils::GetTimeMS();
   std::sort(m_items.begin(), m_items.end(), func);
-  DWORD dwElapsed = GetTickCount() - dwStart;
+  DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStart;
   CLog::Log(LOGDEBUG,"%s, sorting took %u millis", __FUNCTION__, dwElapsed);
 }
 

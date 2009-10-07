@@ -10,6 +10,7 @@
 #include "log.h"
 #include "AdvancedSettings.h"
 #include "FileSystem/File.h"
+#include "utils/TimeUtils.h"
 
 #define LIRC_DEVICE "/dev/lircd"
 
@@ -91,7 +92,7 @@ void CRemoteControl::setDeviceName(const CStdString& value)
 void CRemoteControl::Initialize()
 {
   struct sockaddr_un addr;
-  int now = timeGetTime();
+  int now = CTimeUtils::GetTimeMS();
 
   if (!m_used || now < m_lastInitAttempt + m_initRetryPeriod)
     return;

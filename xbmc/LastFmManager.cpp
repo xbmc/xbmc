@@ -46,6 +46,7 @@
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
 #include "tinyXML/tinyxml.h"
+#include "utils/TimeUtils.h"
 
 #include <sstream>
 
@@ -211,7 +212,7 @@ void CLastFmManager::CloseProgressDialog()
 
 bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 {
-  DWORD start = timeGetTime();
+  DWORD start = CTimeUtils::GetTimeMS();
 
   CStdString strUrl;
   stationUrl.GetURL(strUrl);
@@ -265,7 +266,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
     g_application.m_strPlayListFile = strUrl; //needed to highlight the playing item
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Play(0);
-    CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
+    CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
     CloseProgressDialog();
     return true;
   }
@@ -275,7 +276,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 
 bool CLastFmManager::RequestRadioTracks()
 {
-  DWORD start = timeGetTime();
+  DWORD start = CTimeUtils::GetTimeMS();
   CStdString url;
   CStdString html;
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/xspf.php?sk=%s&discovery=0&desktop=", m_RadioSession);
@@ -415,13 +416,13 @@ bool CLastFmManager::RequestRadioTracks()
   //end parse
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
-  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
+  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
   return iNrCachedTracks > 0;
 }
 
 void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
 {
-  DWORD start = timeGetTime();
+  DWORD start = CTimeUtils::GetTimeMS();
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
   CFileCurl http;
@@ -466,7 +467,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
       item->GetMusicInfoTag()->SetLoaded();
     }
   }
-  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
+  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
 }
 
 void CLastFmManager::AddToPlaylist(const int nrTracks)
@@ -504,13 +505,13 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
     }
     else
     { 
-      DWORD start = timeGetTime();
+      DWORD start = CTimeUtils::GetTimeMS();
       ReapSongs();
       MovePlaying();
       Update();
       SendUpdateMessage();
 
-      CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - start));
+      CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
     }
   }
   m_CurrentSong.IsLoved = false;

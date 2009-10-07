@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "XBInputEx.h"
 #include "Settings.h"
+#include "utils/TimeUtils.h"
 
 
 //#define REMOTE_DEBUG 1
@@ -182,7 +183,7 @@ VOID XBInput_GetInput( XBIR_REMOTE* pIR_Remote)
                    g_InputStatesEx[i].IR_Remote.region,
                    g_InputStatesEx[i].IR_Remote.wButtons,
                    g_InputStatesEx[i].IR_Remote.firstEvent,
-                   g_eventsSinceFirstEvent[i], timeGetTime());
+                   g_eventsSinceFirstEvent[i], CTimeUtils::GetTimeMS());
 #endif
 
           bool bSendMessage = true;

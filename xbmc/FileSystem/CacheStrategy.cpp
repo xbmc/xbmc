@@ -26,6 +26,7 @@
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 #ifdef _WIN32
 #include "PlatformDefs.h" //for PRIdS, PRId64
 #endif
@@ -180,9 +181,9 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
   if( iMillis == 0 || IsEndOfInput() )
     return GetAvailableRead();
 
-  DWORD dwTimeout = GetTickCount() + iMillis;
+  DWORD dwTimeout = CTimeUtils::GetTimeMS() + iMillis;
   DWORD dwTime;
-  while ( !IsEndOfInput() && (dwTime = GetTickCount()) < dwTimeout )
+  while ( !IsEndOfInput() && (dwTime = CTimeUtils::GetTimeMS()) < dwTimeout )
   {
     int64_t iAvail = GetAvailableRead();
     if (iAvail >= iMinAvail)

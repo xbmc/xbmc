@@ -39,6 +39,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -350,13 +351,13 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   // flatten any folders
   m_database.BeginTransaction();
-  DWORD dwTick=timeGetTime();
+  DWORD dwTick=CTimeUtils::GetTimeMS();
   bool bProgressVisible = false;
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString shortcutPath;
     CFileItemPtr item = items[i];
-    if (!bProgressVisible && timeGetTime()-dwTick>1500 && m_dlgProgress)
+    if (!bProgressVisible && CTimeUtils::GetTimeMS()-dwTick>1500 && m_dlgProgress)
     { // tag loading takes more then 1.5 secs, show a progress dialog
       m_dlgProgress->SetHeading(189);
       m_dlgProgress->SetLine(0, 20120);

@@ -49,6 +49,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 #define CONTROL_BTNVIEWASICONS     2
 #define CONTROL_BTNSORTBY          3
@@ -535,13 +536,13 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
   else
   {
-    DWORD time = timeGetTime();
+    DWORD time = CTimeUtils::GetTimeMS();
 
     if (!m_rootDir.GetDirectory(strDirectory, items))
       return false;
 
     // took over a second, and not normally cached, so cache it
-    if (time + 1000 < timeGetTime() && items.CacheToDiscIfSlow())
+    if (time + 1000 < CTimeUtils::GetTimeMS() && items.CacheToDiscIfSlow())
       items.Save();
 
     // if these items should replace the current listing, then pop it off the top

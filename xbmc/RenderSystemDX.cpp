@@ -25,6 +25,7 @@
 #include "Settings.h"
 #include "RenderSystemDX.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -439,7 +440,7 @@ bool CRenderSystemDX::TestRender()
   static DWORD lastTime = 0;
   static float delta = 0;
 
-  DWORD thisTime = timeGetTime();
+  DWORD thisTime = CTimeUtils::GetTimeMS();
 
   if(thisTime - lastTime > 10)
   {

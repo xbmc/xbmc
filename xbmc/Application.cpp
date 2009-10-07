@@ -2235,7 +2235,7 @@ void CApplication::Render()
 
   { // frame rate limiter (really bad, but it does the trick :p)
     static unsigned int lastFrameTime = 0;
-    unsigned int currentTime = timeGetTime();
+    unsigned int currentTime = CTimeUtils::GetTimeMS();
     int nDelayTime = 0;
     // Less fps in DPMS or Black screensaver
     bool lowfps = (m_dpmsIsActive
@@ -2295,7 +2295,7 @@ void CApplication::Render()
       }
     }
 
-    lastFrameTime = timeGetTime();
+    lastFrameTime = CTimeUtils::GetTimeMS();
   }
   g_graphicsContext.Lock();
 
@@ -2839,7 +2839,7 @@ void CApplication::UpdateLCD()
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
     lTimeOut = 0;
-  if ( ((long)GetTickCount() - lTickCount) >= lTimeOut)
+  if ( ((long)CTimeUtils::GetTimeMS() - lTickCount) >= lTimeOut)
   {
     if (g_application.NavigationIdleTime() < 5)
       g_lcd->Render(ILCD::LCD_MODE_NAVIGATION);
@@ -2853,7 +2853,7 @@ void CApplication::UpdateLCD()
       g_lcd->Render(ILCD::LCD_MODE_GENERAL);
 
     // reset tick count
-    lTickCount = GetTickCount();
+    lTickCount = CTimeUtils::GetTimeMS();
   }
 #endif
 }

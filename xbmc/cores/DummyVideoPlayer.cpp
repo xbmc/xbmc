@@ -27,6 +27,7 @@
 #include "AdvancedSettings.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 CDummyVideoPlayer::CDummyVideoPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
@@ -73,14 +74,14 @@ bool CDummyVideoPlayer::IsPlaying() const
 void CDummyVideoPlayer::Process()
 {
   m_clock = 0;
-  m_lastTime = timeGetTime();
+  m_lastTime = CTimeUtils::GetTimeMS();
 
   m_callback.OnPlayBackStarted();
   while (!m_bStop)
   {
     if (!m_paused)
-      m_clock += (timeGetTime() - m_lastTime)*m_speed;
-    m_lastTime = timeGetTime();
+      m_clock += (CTimeUtils::GetTimeMS() - m_lastTime)*m_speed;
+    m_lastTime = CTimeUtils::GetTimeMS();
     Sleep(0);
     g_graphicsContext.Lock();
     if (g_graphicsContext.IsFullScreenVideo())

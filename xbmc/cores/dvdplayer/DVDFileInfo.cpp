@@ -26,6 +26,7 @@
 #include "Util.h"
 #include "FileSystem/StackDirectory.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include "DVDFileInfo.h"
 #include "DVDStreamInfo.h"
@@ -70,7 +71,7 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
 
 bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails)
 {
-  int nTime = timeGetTime();
+  int nTime = CTimeUtils::GetTimeMS();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
   if (!pInputStream)
   {
@@ -238,7 +239,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
 
   delete pInputStream;
 
-  int nTotalTime = timeGetTime() - nTime;
+  int nTotalTime = CTimeUtils::GetTimeMS() - nTime;
   CLog::Log(LOGDEBUG,"%s - measured %d ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strPath.c_str());
   return bOk;
 }

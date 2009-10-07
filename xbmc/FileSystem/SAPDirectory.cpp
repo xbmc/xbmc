@@ -26,6 +26,7 @@
 #include "FileItem.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h" // strnlen
 #endif
@@ -341,7 +342,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
       }
 
       // should be improved in the case of sdp
-      it->timeout = GetTickCount() + 60*60*1000;
+      it->timeout = CTimeUtils::GetTimeMS() + 60*60*1000;
       return true;
     }
   }
@@ -368,7 +369,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   session.payload_type   = header.payload_type;
   session.payload_origin = desc.origin;
   session.payload.assign(data, len);
-  session.timeout = GetTickCount() + 60*60*1000;
+  session.timeout = CTimeUtils::GetTimeMS() + 60*60*1000;
   m_sessions.push_back(session);
   
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);

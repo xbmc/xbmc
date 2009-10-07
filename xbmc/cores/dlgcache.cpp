@@ -25,6 +25,7 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 
 CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg)
 {
@@ -41,7 +42,7 @@ CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdStrin
   if(dwDelay == 0)
     OpenDialog();    
   else
-    m_dwTimeStamp = GetTickCount() + dwDelay;
+    m_dwTimeStamp = CTimeUtils::GetTimeMS() + dwDelay;
 
   Create(true);
 }
@@ -128,7 +129,7 @@ void CDlgCache::Process()
         {
           bSentCancel = true;
         }
-        else if( !m_pDlg->IsDialogRunning() && GetTickCount() > m_dwTimeStamp 
+        else if( !m_pDlg->IsDialogRunning() && CTimeUtils::GetTimeMS() > m_dwTimeStamp 
               && !g_windowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
           OpenDialog();
       }

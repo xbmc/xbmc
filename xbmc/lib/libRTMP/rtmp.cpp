@@ -36,6 +36,7 @@
 
 #include "URL.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #define RTMP_SIG_SIZE 1536
 #define RTMP_LARGE_HEADER_SIZE 12
@@ -498,7 +499,7 @@ bool CRTMP::SendCheckBW()
   packet.m_nChannel = 0x03;   // control channel (invoke)
   packet.m_headerType = RTMP_PACKET_SIZE_LARGE;
   packet.m_packetType = 0x14; // INVOKE
-  packet.m_nInfoField1 = timeGetTime();
+  packet.m_nInfoField1 = CTimeUtils::GetTimeMS();
 
   packet.AllocPacket(256); // should be enough
   char *enc = packet.m_body;
@@ -593,7 +594,7 @@ bool CRTMP::SendPing(short nType, unsigned int nObject, unsigned int nTime)
   packet.m_nChannel = 0x02;   // control channel (ping)
   packet.m_headerType = RTMP_PACKET_SIZE_MEDIUM;
   packet.m_packetType = 0x04; // ping
-  packet.m_nInfoField1 = timeGetTime();
+  packet.m_nInfoField1 = CTimeUtils::GetTimeMS();
 
   int nSize = (nType==0x03?10:6); // type 3 is the buffer time and requires all 3 parameters. all in all 10 bytes.
   packet.AllocPacket(nSize);
@@ -1014,7 +1015,7 @@ bool CRTMP::HandShake()
   char serversig[RTMP_SIG_SIZE];
 
   clientsig[0] = 0x3;
-  DWORD uptime = htonl(timeGetTime());
+  DWORD uptime = htonl(CTimeUtils::GetTimeMS());
   memcpy(clientsig + 1, &uptime, sizeof(DWORD));
   memset(clientsig + 5, 0, 4);
 

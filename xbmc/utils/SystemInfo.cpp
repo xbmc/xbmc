@@ -35,6 +35,7 @@
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #include "CPUInfo.h"
+#include "utils/TimeUtils.h"
 
 CSysInfo g_sysinfo;
 
@@ -509,12 +510,12 @@ CStdString CSysInfo::GetSystemUpTime(bool bTotalUptime)
   if(bTotalUptime)
   {
     //Total Uptime
-    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(timeGetTime() / 60000));
+    iInputMinutes = g_stSettings.m_iSystemTimeTotalUp + ((int)(CTimeUtils::GetTimeMS() / 60000));
   }
   else
   {
     //Current UpTime
-    iInputMinutes = (int)(timeGetTime() / 60000);
+    iInputMinutes = (int)(CTimeUtils::GetTimeMS() / 60000);
   }
 
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);

@@ -53,6 +53,7 @@
 #include "FileItem.h"
 #include "GUIWindowManager.h"
 #include "GUIInfoManager.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1075,7 +1076,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     items.m_strPath = parent_id;
     if (!items.Load()) {
         // cache anything that takes more than a second to retrieve
-        DWORD time = GetTickCount() + 1000;
+        DWORD time = CTimeUtils::GetTimeMS() + 1000;
 
         if (parent_id.StartsWith("virtualpath://")) {
             CUPnPVirtualPathDirectory dir;
@@ -1084,7 +1085,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             CDirectory::GetDirectory((const char*)parent_id, items);
         }
 
-        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && time < GetTickCount())) {
+        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && time < CTimeUtils::GetTimeMS())) {
             items.Save();
         }
     }

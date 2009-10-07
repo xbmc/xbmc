@@ -34,6 +34,7 @@
 #include "StringUtils.h"
 #include "URL.h"
 #include "XMLUtils.h"
+#include "utils/TimeUtils.h"
 #if defined(_WIN32)
   #include "Windows.h"
 #ifdef HAS_IRSERVERSUITE
@@ -274,7 +275,7 @@ void CExternalPlayer::Process()
   LockSetForegroundWindow(LSFW_UNLOCK);
 #endif
 
-  m_playbackStartTime = timeGetTime();
+  m_playbackStartTime = CTimeUtils::GetTimeMS();
 
   BOOL ret = TRUE;
 #if defined(_WIN32)
@@ -368,13 +369,13 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   }
   else
   {
-    m_playbackStartTime = timeGetTime();
+    m_playbackStartTime = CTimeUtils::GetTimeMS();
     BOOL bIsLauncher = m_islauncher;
 
     if (m_hidexbmc && !m_islauncher)
     {
       int res = WaitForSingleObject(pi.hProcess, INFINITE);
-      if (timeGetTime() - m_playbackStartTime < LAUNCHER_PROCESS_TIME)
+      if (CTimeUtils::GetTimeMS() - m_playbackStartTime < LAUNCHER_PROCESS_TIME)
       {
         CLog::Log(LOGNOTICE, "%s: External player process ended too quickly, assuming it's a launcher process", __FUNCTION__);
         bIsLauncher = true;
@@ -459,7 +460,7 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 void CALLBACK CExternalPlayer::AppFinished(void* closure, BOOLEAN TimerOrWaitFired)
 {
   CExternalPlayer *player = (CExternalPlayer *)closure;
-  if (timeGetTime() - player->m_playbackStartTime < LAUNCHER_PROCESS_TIME)
+  if (CTimeUtils::GetTimeMS() - player->m_playbackStartTime < LAUNCHER_PROCESS_TIME)
   {
     CLog::Log(LOGNOTICE, "%s: Process ran for <%dms, probably a launcher, not closing dialog", __FUNCTION__, LAUNCHER_PROCESS_TIME);
   }

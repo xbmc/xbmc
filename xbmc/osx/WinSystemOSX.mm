@@ -357,8 +357,10 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [mainWindow setBackgroundColor:[NSColor blackColor]];
       [mainWindow makeKeyAndOrderFront:nil];
       
-      [mainWindow setLevel:NSNormalWindowLevel]; // make our window the same level as the rest to enable cmd+tab switching
-      //[mainWindow setLevel:CGShieldingWindowLevel()]; // this will make our window topmost and hide all system messages
+      // make our window the same level as the rest to enable cmd+tab switching
+      [mainWindow setLevel:NSNormalWindowLevel]; 
+      // this will make our window topmost and hide all system messages
+      //[mainWindow setLevel:CGShieldingWindowLevel()];
 
       // ...and the original one beneath it and on the same screen.
       view_size = [lastView frame].size;

@@ -41,6 +41,7 @@
 #include "LocalizeStrings.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace DIRECTORY;
 
@@ -94,12 +95,12 @@ void CBackgroundPicLoader::Process()
     {
       if (m_pCallback)
       {
-        DWORD start = timeGetTime();
+        DWORD start = CTimeUtils::GetTimeMS();
         CBaseTexture* texture = new CTexture();
         unsigned int originalWidth = 0;
         unsigned int originalHeight = 0;
         texture->LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("pictures.useexifrotation"), &originalWidth, &originalHeight);
-        totalTime += timeGetTime() - start;
+        totalTime += CTimeUtils::GetTimeMS() - start;
         count++;
         // tell our parent
         bool bFullSize = ((int)texture->GetWidth() < m_maxWidth) && ((int)texture->GetHeight() < m_maxHeight);

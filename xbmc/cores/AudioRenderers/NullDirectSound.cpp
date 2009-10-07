@@ -23,6 +23,7 @@
 #include "AudioContext.h"
 #include "Application.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #define BUFFER CHUNKLEN * 20
 #define CHUNKLEN 512
@@ -54,7 +55,7 @@ bool CNullDirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   m_timePerPacket = 1.0f / (float)(iChannels*(uiBitsPerSample/8) * uiSamplesPerSec);
   m_packetsSent = 0;
   m_paused = 0;
-  m_lastUpdate = timeGetTime();
+  m_lastUpdate = CTimeUtils::GetTimeMS();
   return true;
 }
 
@@ -74,7 +75,7 @@ bool CNullDirectSound::Deinitialize()
 
 void CNullDirectSound::Flush()
 {
-  m_lastUpdate = timeGetTime();
+  m_lastUpdate = CTimeUtils::GetTimeMS();
   m_packetsSent = 0;
 }
 
@@ -185,7 +186,7 @@ void CNullDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers
 
 void CNullDirectSound::Update()
 {
-  long currentTime = timeGetTime();
+  long currentTime = CTimeUtils::GetTimeMS();
   long deltaTime = (currentTime - m_lastUpdate);
 
   if (m_paused)

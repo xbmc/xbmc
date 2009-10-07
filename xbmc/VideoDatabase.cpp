@@ -41,6 +41,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -2764,14 +2765,14 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
   CVideoInfoTag details;
   details.Reset();
 
-  DWORD time = timeGetTime();
+  DWORD time = CTimeUtils::GetTimeMS();
   int idMovie = pDS->fv(0).get_asInt();
 
   GetDetailsFromDB(pDS, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets, details);
 
   details.m_iDbId = idMovie;
   GetCommonDetails(pDS, details);
-  movieTime += timeGetTime() - time; time = timeGetTime();
+  movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   GetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
 
@@ -2789,7 +2790,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
       details.m_cast.push_back(info);
       m_pDS2->next();
     }
-    castTime += timeGetTime() - time; time = timeGetTime();
+    castTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
     details.m_strPictureURL.Parse();
 
     // create sets string
@@ -2812,7 +2813,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
   CVideoInfoTag details;
   details.Reset();
 
-  DWORD time = timeGetTime();
+  DWORD time = CTimeUtils::GetTimeMS();
   int idTvShow = pDS->fv(0).get_asInt();
 
   GetDetailsFromDB(pDS, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details);
@@ -2822,7 +2823,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
   details.m_playCount = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
   details.m_strShowTitle = details.m_strTitle;
 
-  movieTime += timeGetTime() - time; time = timeGetTime();
+  movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   if (needsCast)
   {
@@ -2838,7 +2839,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
       details.m_cast.push_back(info);
       m_pDS2->next();
     }
-    castTime += timeGetTime() - time; time = timeGetTime();
+    castTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
     details.m_strPictureURL.Parse();
   }
   details.m_fanart.Unpack();
@@ -2850,13 +2851,13 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   CVideoInfoTag details;
   details.Reset();
 
-  DWORD time = timeGetTime();
+  DWORD time = CTimeUtils::GetTimeMS();
   int idEpisode = pDS->fv(0).get_asInt();
 
   GetDetailsFromDB(pDS, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets, details);
   details.m_iDbId = idEpisode;
   GetCommonDetails(pDS, details);
-  movieTime += timeGetTime() - time; time = timeGetTime();
+  movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   details.m_strMPAARating = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA).get_asString();
   details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
@@ -2892,7 +2893,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
         }
       }
     }
-    castTime += timeGetTime() - time; time = timeGetTime();
+    castTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
     m_pDS2->close();
     details.m_strPictureURL.Parse();
   }
@@ -2904,13 +2905,13 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
   CVideoInfoTag details;
   details.Reset();
 
-  DWORD time = timeGetTime();
+  DWORD time = CTimeUtils::GetTimeMS();
   int idMovie = pDS->fv(0).get_asInt();
 
   GetDetailsFromDB(pDS, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets, details);
   details.m_iDbId = idMovie;
   GetCommonDetails(pDS, details);
-  movieTime += timeGetTime() - time; time = timeGetTime();
+  movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   GetStreamDetailsForFileId(details.m_streamDetails, details.m_iFileId);
 
@@ -3971,7 +3972,7 @@ bool CVideoDatabase::GetGenresNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->close();
     }
 
-//    CLog::Log(LOGDEBUG, "%s Time: %d ms", timeGetTime() - time);
+//    CLog::Log(LOGDEBUG, "%s Time: %d ms", CTimeUtils::GetTimeMS() - time);
     return true;
   }
   catch (...)
@@ -4087,7 +4088,7 @@ bool CVideoDatabase::GetStudiosNav(const CStdString& strBaseDir, CFileItemList& 
       m_pDS->close();
     }
 
-//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
+//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", CTimeUtils::GetTimeMS() - time);
     return true;
   }
   catch (...)
@@ -4196,7 +4197,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       m_pDS->close();
     }
 
-//    CLog::Log(LOGDEBUG, "%s Time: %d ms", timeGetTime() - time);
+//    CLog::Log(LOGDEBUG, "%s Time: %d ms", CTimeUtils::GetTimeMS() - time);
     return true;
   }
   catch (...)
@@ -4303,7 +4304,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
         items.SetProperty("fanart_image",items[0]->GetCachedFanart());
     }
 
-//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", timeGetTime() - time);
+//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", CTimeUtils::GetTimeMS() - time);
     return true;
   }
   catch (...)
@@ -4398,10 +4399,10 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
     }
 
     // run query
-    unsigned int time = timeGetTime();
+    unsigned int time = CTimeUtils::GetTimeMS();
     if (!m_pDS->query(strSQL.c_str())) return false;
     CLog::Log(LOGDEBUG, "%s -  query took %i ms",
-              __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+              __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -4477,7 +4478,7 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->close();
     }
     CLog::Log(LOGDEBUG, "%s item retrieval took %i ms",
-              __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+              __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
 
     return true;
   }
@@ -4850,7 +4851,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
 {
   try
   {
-    DWORD time = timeGetTime();
+    DWORD time = CTimeUtils::GetTimeMS();
     movieTime = 0;
     castTime = 0;
 
@@ -4870,7 +4871,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
     }
 
     CLog::Log(LOGDEBUG,"Time for actual SQL query = %d",
-              timeGetTime() - time); time = timeGetTime();
+              CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -4890,7 +4891,7 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
     }
 
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
-              timeGetTime() - time);
+              CTimeUtils::GetTimeMS() - time);
 
     // cleanup
     m_pDS->close();
@@ -4924,7 +4925,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
 {
   try
   {
-    DWORD time = timeGetTime();
+    DWORD time = CTimeUtils::GetTimeMS();
     movieTime = 0;
 
     if (NULL == m_pDB.get()) return false;
@@ -4942,7 +4943,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
     }
 
     CLog::Log(LOGDEBUG,"Time for actual SQL query = %d",
-              timeGetTime() - time); time = timeGetTime();
+              CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -4971,7 +4972,7 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
     }
 
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
-              timeGetTime() - time);
+              CTimeUtils::GetTimeMS() - time);
     if (g_guiSettings.GetBool("videolibrary.removeduplicates"))
     {
       CStdString order(where);
@@ -5200,7 +5201,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
 {
   try
   {
-    DWORD time = timeGetTime();
+    DWORD time = CTimeUtils::GetTimeMS();
     movieTime = 0;
     castTime = 0;
 
@@ -5220,7 +5221,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
     }
 
     CLog::Log(LOGDEBUG,"Time for actual SQL query = %d",
-              timeGetTime() - time); time = timeGetTime();
+              CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
 
     // get data from returned rows
     items.Reserve(iRowsFound);
@@ -5247,7 +5248,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
     }
 
     CLog::Log(LOGDEBUG,"Time to retrieve movies from dataset = %d",
-              timeGetTime() - time);
+              CTimeUtils::GetTimeMS() - time);
 
     // cleanup
     m_pDS->close();
@@ -5947,7 +5948,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
 {
   try
   {
-    DWORD time = timeGetTime();
+    DWORD time = CTimeUtils::GetTimeMS();
     movieTime = 0;
     castTime = 0;
 
@@ -5961,7 +5962,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
     // run query
     if (!m_pDS->query(strSQL.c_str()))
       return false;
-    CLog::Log(LOGDEBUG, "%s time for actual SQL query = %d", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG, "%s time for actual SQL query = %d", __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -5990,7 +5991,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG, "%s time to retrieve from dataset = %d", __FUNCTION__, timeGetTime() - time); time = timeGetTime();
+    CLog::Log(LOGDEBUG, "%s time to retrieve from dataset = %d", __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
 
     // cleanup
     m_pDS->close();

@@ -34,6 +34,7 @@
 #include <queue>
 #include "FileSystem/File.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -806,7 +807,7 @@ bool CEventClient::GetMousePos(float& x, float& y)
 
 bool CEventClient::CheckButtonRepeat(unsigned int &next)
 {
-  unsigned int now = timeGetTime();
+  unsigned int now = CTimeUtils::GetTimeMS();
 
   if ( next == 0 )
   {

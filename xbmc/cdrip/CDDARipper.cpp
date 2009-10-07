@@ -44,6 +44,7 @@
 #include "MediaManager.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -389,7 +390,7 @@ bool CCDDARipper::RipCD()
     // construct filename
     CUtil::AddFileToFolder(strDirectory, track, strFile);
 
-    DWORD dwTick = timeGetTime();
+    DWORD dwTick = CTimeUtils::GetTimeMS();
 
     // don't rip non cdda items
     if (item->m_strPath.Find(".cdda") < 0)
@@ -398,7 +399,7 @@ bool CCDDARipper::RipCD()
     // return false if Rip returned false (this means an error or the user cancelled
     if (!Rip(item->m_strPath, strFile.c_str(), *item->GetMusicInfoTag())) return false;
 
-    dwTick = timeGetTime() - dwTick;
+    dwTick = CTimeUtils::GetTimeMS() - dwTick;
     CStdString strTmp;
     StringUtils::SecondsToTimeString(dwTick / 1000, strTmp);
     CLog::Log(LOGINFO, "Ripping Track %d took %s", iTrack, strTmp.c_str());

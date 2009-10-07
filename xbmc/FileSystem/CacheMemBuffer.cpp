@@ -25,6 +25,7 @@
 #include "CacheMemBuffer.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 
 #include <math.h>
 
@@ -132,8 +133,8 @@ int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int iMillis
   if (iMillis == 0 || IsEndOfInput())
     return m_buffer.GetMaxReadSize();
 
-  DWORD dwTime = GetTickCount() + iMillis;
-  while (!IsEndOfInput() && (unsigned int) m_buffer.GetMaxReadSize() < iMinAvail && GetTickCount() < dwTime )
+  DWORD dwTime = CTimeUtils::GetTimeMS() + iMillis;
+  while (!IsEndOfInput() && (unsigned int) m_buffer.GetMaxReadSize() < iMinAvail && CTimeUtils::GetTimeMS() < dwTime )
     Sleep(50); // may miss the deadline. shouldn't be a problem.
 
   return m_buffer.GetMaxReadSize();

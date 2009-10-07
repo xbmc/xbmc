@@ -22,6 +22,7 @@
 #include "PlatformInclude.h"
 #include "XLCDproc.h"
 #include "../utils/log.h"
+#include "..utils/TimeUtils.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 
@@ -50,7 +51,7 @@ void XLCDproc::Initialize()
     return ;//nothing to do
 
   // don't try to initialize too often
-  int now = timeGetTime();
+  int now = CTimeUtils::GetTimeMS();
   if (!m_used || now < m_lastInitAttempt + m_initRetryInterval)
     return;
   m_lastInitAttempt = now;

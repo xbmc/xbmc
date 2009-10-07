@@ -46,6 +46,7 @@
 #include "FileSystem/File.h"
 #include "utils/log.h"
 #include "Thread.h"
+#include "utils/TimeUtils.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -227,7 +228,7 @@ bool CDVDDemuxFFmpeg::Aborted()
   if(!m_timeout)
     return false;
 
-  if(GetTickCount() > m_timeout)
+  if(CTimeUtils::GetTimeMS() > m_timeout)
     return true;
 
   return false;
@@ -284,7 +285,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
-    m_timeout = GetTickCount() + 10000;
+    m_timeout = CTimeUtils::GetTimeMS() + 10000;
 
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
@@ -634,7 +635,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     pkt.stream_index = MAX_STREAMS;
 
     // timeout reads after 100ms
-    m_timeout = GetTickCount() + 20000;
+    m_timeout = CTimeUtils::GetTimeMS() + 20000;
     int result = 0;
     try
     {

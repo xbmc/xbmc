@@ -46,6 +46,7 @@
 #include "FileSystem/FactoryDirectory.h"
 #include "LocalizeStrings.h"
 #include "StringUtils.h"
+#include "utils/TimeUtils.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -2027,9 +2028,9 @@ CStdString CXbmcHttp::GetCloseTag()
 CKey CXbmcHttp::GetKey()
 {
   if (repeatKeyRate!=0)
-    if (GetTickCount() >= MarkTime + repeatKeyRate)
+    if (CTimeUtils::GetTimeMS() >= MarkTime + repeatKeyRate)
     {
-      MarkTime=GetTickCount();
+      MarkTime=CTimeUtils::GetTimeMS();
       key=lastKey;
     }
   return key;

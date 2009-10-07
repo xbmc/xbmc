@@ -29,6 +29,7 @@
 #include "StringUtils.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 extern "C"
 {
@@ -55,7 +56,7 @@ void CCMythSession::CheckIdle()
   for (it = m_sessions.begin(); it != m_sessions.end(); )
   {
     CCMythSession* session = *it;
-    if (session->m_timestamp + 5000 < GetTickCount())
+    if (session->m_timestamp + 5000 < CTimeUtils::GetTimeMS())
     {
       CLog::Log(LOGINFO, "%s - closing idle connection to MythTV backend: %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;
@@ -88,7 +89,7 @@ CCMythSession* CCMythSession::AquireSession(const CURL& url)
 void CCMythSession::ReleaseSession(CCMythSession* session)
 {
   session->SetListener(NULL);
-  session->m_timestamp = GetTickCount();
+  session->m_timestamp = CTimeUtils::GetTimeMS();
   CSingleLock lock(m_section_session);
   m_sessions.push_back(session);
 }
@@ -189,7 +190,7 @@ CCMythSession::CCMythSession(const CURL& url)
   m_username  = url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName();
   m_password  = url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord();
   m_port      = url.HasPort() ? url.GetPort() : MYTH_DEFAULT_PORT;
-  m_timestamp = GetTickCount();
+  m_timestamp = CTimeUtils::GetTimeMS();
   m_dll = new DllLibCMyth;
   m_dll->Load();
   if (m_dll->IsLoaded())

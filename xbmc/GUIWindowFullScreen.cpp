@@ -48,6 +48,7 @@
 #include "LocalizeStrings.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include <stdio.h>
 
@@ -391,7 +392,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 #endif
       }
       m_bShowViewModeInfo = true;
-      m_dwShowViewModeTimeout = timeGetTime();
+      m_dwShowViewModeTimeout = CTimeUtils::GetTimeMS();
     }
     return true;
     break;
@@ -691,7 +692,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
   //----------------------
   // ViewMode Information
   //----------------------
-  if (m_bShowViewModeInfo && timeGetTime() - m_dwShowViewModeTimeout > 2500)
+  if (m_bShowViewModeInfo && CTimeUtils::GetTimeMS() - m_dwShowViewModeTimeout > 2500)
   {
     m_bShowViewModeInfo = false;
   }
@@ -739,7 +740,7 @@ void CGUIWindowFullScreen::RenderFullScreen()
 
   if (m_timeCodeShow && m_timeCodePosition != 0)
   {
-    if ( (timeGetTime() - m_timeCodeTimeout) >= 2500)
+    if ( (CTimeUtils::GetTimeMS() - m_timeCodeTimeout) >= 2500)
     {
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
@@ -837,7 +838,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
   if (remote >= 58 && remote <= 67) //Make sure it's only for the remote
   {
     m_timeCodeShow = true;
-    m_timeCodeTimeout = timeGetTime();
+    m_timeCodeTimeout = CTimeUtils::GetTimeMS();
     int itime = remote - 58;
     if (m_timeCodePosition <= 4 && m_timeCodePosition != 2)
     {

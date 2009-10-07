@@ -27,6 +27,7 @@
 #include "WindowingFactory.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 CApplicationRenderer g_ApplicationRenderer;
 
@@ -41,7 +42,7 @@ CApplicationRenderer::~CApplicationRenderer()
 
 void CApplicationRenderer::OnStartup()
 {
-  m_time = timeGetTime();
+  m_time = CTimeUtils::GetTimeMS();
   m_enabled = true;
   m_busyShown = false;
   m_explicitbusy = 0;
@@ -110,12 +111,12 @@ void CApplicationRenderer::Process()
 
     float t0 = (1000.0f/g_graphicsContext.GetFPS());
     float t1 = m_time + t0; //time when we expect a new render
-    float t2 = (float)timeGetTime();
+    float t2 = (float)CTimeUtils::GetTimeMS();
     if (t1 < t2) //we're late rendering
     {
       try
       {
-        if (timeGetTime() >= (m_time + g_advancedSettings.m_busyDialogDelay))
+        if (CTimeUtils::GetTimeMS() >= (m_time + g_advancedSettings.m_busyDialogDelay))
         {
           CSingleLock lockg (g_graphicsContext);
           if (m_prevbusycount != m_busycount)
@@ -137,7 +138,7 @@ void CApplicationRenderer::Process()
           if ((g_windowManager.HasModalDialog() && (g_windowManager.GetTopMostModalDialogID() != WINDOW_VIDEO_INFO) && (g_windowManager.GetTopMostModalDialogID() != WINDOW_MUSIC_INFO)) || (g_windowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS))
           {
             //TODO: render progress dialog here instead of in dialog::Progress
-            m_time = timeGetTime();
+            m_time = CTimeUtils::GetTimeMS();
             lockg.Leave();
             Sleep(1);
             continue;
@@ -313,7 +314,7 @@ void CApplicationRenderer::Render(bool bFullscreen)
   {
     g_application.DoRender();
   }
-  m_time = timeGetTime();
+  m_time = CTimeUtils::GetTimeMS();
   Enable();
 }
 

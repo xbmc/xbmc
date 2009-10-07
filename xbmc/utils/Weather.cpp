@@ -37,6 +37,7 @@
 #include "LangInfo.h"
 #include "LocalizeStrings.h"
 #include "FileSystem/Directory.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -144,7 +145,7 @@ CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 
   Reset();
 
-  srand(timeGetTime());
+  srand(CTimeUtils::GetTimeMS());
 }
 
 CWeather::~CWeather(void)
