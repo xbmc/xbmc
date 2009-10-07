@@ -49,4 +49,5 @@ private:
 #endif
   bool m_bInitialized;
   CCriticalSection m_critSection;
+  boost::shared_ptr<CScreenSaver> m_addon;
 };

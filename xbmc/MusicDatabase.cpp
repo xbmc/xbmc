@@ -30,7 +30,9 @@
 #include "GUIDialogMusicScan.h"
 #include "utils/GUIInfoManager.h"
 #include "MusicInfoTag.h"
-#include "ScraperSettings.h"
+#include "AddonManager.h"
+#include "Scraper.h"
+#include "Addon.h"
 #include "Util.h"
 #include "Artist.h"
 #include "Album.h"
@@ -63,6 +65,7 @@ using namespace MUSICDATABASEDIRECTORY;
 
 #define MUSIC_DATABASE_OLD_VERSION 1.6f
 #define MUSIC_DATABASE_VERSION        14
+using ADDON::AddonPtr;
 #define MUSIC_DATABASE_NAME "MyMusic7.db"
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
@@ -4011,7 +4014,7 @@ bool CMusicDatabase::CommitTransaction()
   return false;
 }
 
-bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraperInfo& info)
+bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const ADDON::CScraperPtr& scraper)
 {
   try
   {
@@ -4023,7 +4026,8 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
     m_pDS->exec(strSQL.c_str());
 
     // insert new settings
-    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",strPath.c_str(),info.strPath.c_str(),info.strContent.c_str(),info.settings.GetSettings().c_str());
+    strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",
+      strPath.c_str(), scraper->Path().c_str(), ADDON::TranslateContent(scraper->Content()).c_str(), scraper->GetSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -4035,7 +4039,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const SScraper
   return false;
 }
 
-bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& info)
+bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& info)
 {
   try
   {
@@ -4076,8 +4080,12 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     }
 
     if (!m_pDS->eof())
-    {
-      info.strContent = m_pDS->fv("content.strContent").get_asString();
+    { // assign scraper
+      CScraperParser parser;
+      //TODO finish this
+
+
+      /*info.strContent = m_pDS->fv("content.strContent").get_asString();
       info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
       info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
 
@@ -4085,11 +4093,11 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
       parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
       info.strTitle = parser.GetName();
       info.strDate = parser.GetDate();
-      info.strFramework = parser.GetFramework();
+      info.strFramework = parser.GetFramework();*/
 
     }
-    if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback
-      GetScraperForPath("musicdb://",info);
+    /*if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback
+      GetScraperForPath("musicdb://",info); */
 
     m_pDS->close();
     return true;
@@ -4461,7 +4469,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     CStdString outdoc;
     if ( asHTML )
     {
-      outdoc = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
+      outdoc = "<html><head><meta http-equiv=\"CONTENT_TYPE-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
           "<body>\n<table>\n";
 
       file.Write( outdoc, outdoc.size() );

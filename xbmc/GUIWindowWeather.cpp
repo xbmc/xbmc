@@ -30,6 +30,10 @@
 #include "lib/libPython/XBPython.h"
 #include "LangInfo.h"
 #include "utils/log.h"
+#include "Settings.h"
+#include "utils/AddonManager.h"
+
+using namespace ADDON;
 
 #define CONTROL_BTNREFRESH             2
 #define CONTROL_SELECTLOCATION         3
@@ -307,8 +311,12 @@ void CGUIWindowWeather::CallPlugin()
 #ifdef HAS_PYTHON
   if (!g_guiSettings.GetString("weather.plugin").IsEmpty())
   {
+    AddonPtr addon;
+    if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, g_guiSettings.GetString("weather.plugin"), addon))
+      return;
+    
     // create the full path to the plugin
-    CStdString plugin = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin") + "/default.py";
+    CStdString plugin = addon->Path() + addon->LibName();
 
     // initialize our sys.argv variables
     unsigned int argc = 2;

@@ -28,7 +28,7 @@ public:
   void xbmcForm(webs_t wp, char_t *path, char_t *query);
   int	xbmcCommand( int eid, webs_t wp, int argc, char_t **argv);
   CStdString xbmcProcessCommand( int eid, webs_t wp, char_t *command, char_t *parameter);
-  CStdString xbmcExternalCall(char *command);
+  CStdString xbmcExternalCall(const char *command);
   bool checkForFunctionTypeParas(CStdString &cmd, CStdString &paras);
 private:
   CStdString flushResult(int eid, webs_t wp, const CStdString &output);

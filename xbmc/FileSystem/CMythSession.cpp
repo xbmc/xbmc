@@ -34,7 +34,7 @@
 extern "C"
 {
 #include "lib/libcmyth/cmyth.h"
-#include "lib/libcmyth/mvp_refmem.h"
+#include "lib/librefmem/mvp_refmem.h"
 }
 
 using namespace XFILE;

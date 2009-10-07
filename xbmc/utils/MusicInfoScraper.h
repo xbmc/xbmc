@@ -23,7 +23,7 @@
 
 #include "MusicAlbumInfo.h"
 #include "MusicArtistInfo.h"
-#include "ScraperSettings.h"
+#include "Scraper.h"
 #include "Thread.h"
 #include "FileSystem/FileCurl.h"
 
@@ -34,7 +34,7 @@ namespace MUSIC_GRABBER
 class CMusicInfoScraper : public CThread
 {
 public:
-  CMusicInfoScraper(const SScraperInfo& info);
+  CMusicInfoScraper(const ADDON::CScraperPtr &scraper);
   virtual ~CMusicInfoScraper(void);
   void FindAlbuminfo(const CStdString& strAlbum, const CStdString& strArtist = "");
   void LoadAlbuminfo(int iAlbum);
@@ -56,9 +56,9 @@ public:
   {
     return m_vecAlbums;
   }
-  void SetScraperInfo(const SScraperInfo& info)
+  void SetScraperInfo(const ADDON::CScraperPtr& scraper)
   {
-    m_info = info;
+    m_scraper = scraper;
   }
 protected:
   void FindAlbuminfo();
@@ -76,7 +76,7 @@ protected:
   bool m_bSuccessfull;
   bool m_bCanceled;
   XFILE::CFileCurl m_http;
-  SScraperInfo m_info;
+  ADDON::CScraperPtr m_scraper;
 };
 
 }

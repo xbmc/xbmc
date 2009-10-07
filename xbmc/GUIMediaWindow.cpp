@@ -23,6 +23,7 @@
 #include "GUIUserMessages.h"
 #include "Util.h"
 #include "PlayListPlayer.h"
+#include "utils/AddonManager.h"
 #include "FileSystem/ZipManager.h"
 #include "FileSystem/PluginDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"
@@ -40,8 +41,7 @@
 #include "GUISettings.h"
 
 #include "GUIDialogSmartPlaylistEditor.h"
-#include "GUIDialogPluginSettings.h"
-#include "PluginSettings.h"
+#include "GUIDialogAddonSettings.h"
 #include "GUIWindowManager.h"
 #include "GUIDialogOK.h"
 #include "PlayList.h"
@@ -58,6 +58,7 @@
 #define CONTROL_LABELFILES        12
 
 using namespace std;
+using namespace ADDON;
 
 CGUIMediaWindow::CGUIMediaWindow(int id, const char *xmlFile)
     : CGUIWindow(id, xmlFile)
@@ -1236,7 +1237,9 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
   if (item->IsPlugin() && item->IsFileFolder())
   {
-    if (CPluginSettings::SettingsExist(item->m_strPath))
+    ADDON::AddonPtr plugin;
+    if (ADDON::CAddonMgr::Get()->GetAddonFromPath(item->m_strPath, plugin))
+    if (plugin->HasSettings())
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
 
@@ -1265,8 +1268,10 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_PLUGIN_SETTINGS:
     {
-      CURL url(m_vecItems->Get(itemNumber)->m_strPath);
-      CGUIDialogPluginSettings::ShowAndGetInput(url);
+      CStdString path(m_vecItems->Get(itemNumber)->m_strPath);
+      ADDON::AddonPtr addon;
+      CAddonMgr::Get()->GetAddonFromPath(path, addon);
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
       return true;
     }
   case CONTEXT_BUTTON_USER1:

@@ -24,6 +24,8 @@
 #include "GUIDialog.h"
 #include "Application.h"
 #include "GUIPassword.h"
+#include "utils/AddonManager.h"
+#include "GUIDialogAddonSettings.h"
 #include "utils/GUIInfoManager.h"
 #include "Util.h"
 #include "GUISettings.h"
@@ -361,6 +363,14 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
     passParams = false;
     CLog::Log(LOGDEBUG, "Trying to activate Video Library, but its disabled.  Switching to Files instead.");
   }
+  // Activate full screen visualisation settings
+  if (iWindowID == WINDOW_DIALOG_VIS_SETTINGS)
+  {
+    ADDON::AddonPtr addon;
+    if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_VIZ, g_guiSettings.GetString("mymusic.visualisation"), addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+  }
+
 
   // debug
   CLog::Log(LOGDEBUG, "Activating window ID: %i", iWindowID);

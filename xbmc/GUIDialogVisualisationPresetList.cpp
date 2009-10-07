@@ -22,6 +22,7 @@
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIWindowManager.h"
 #include "GUIListContainer.h"
+#include "utils/AddonManager.h"
 #include "GUISettings.h"
 #include "GUIUserMessages.h"
 #include "FileItem.h"
@@ -58,8 +59,8 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
         if (pList)
         {
           int iItem = pList->GetSelectedItem();
-          if (m_pVisualisation)
-            m_pVisualisation->OnAction(CVisualisation::VIS_ACTION_LOAD_PRESET, (void *)&iItem);
+          if (m_addon)
+            m_addon->OnAction(VIS_ACTION_LOAD_PRESET, (void *)&iItem);
         }
         return true;
       }
@@ -71,14 +72,20 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
 
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
       g_windowManager.SendMessage(msg);
-      SetVisualisation((CVisualisation *)msg.GetPointer());
+      m_addon.reset();
+      ADDON::AddonPtr viz;
+      if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_VIZ, g_guiSettings.GetString("mymusic.visualisation"), viz))
+      {
+        m_addon = boost::dynamic_pointer_cast<CVisualisation>(viz);
+        Update();
+      }
       return true;
     }
     break;
   case GUI_MSG_WINDOW_DEINIT:
   case GUI_MSG_VISUALISATION_UNLOADING:
     {
-      m_pVisualisation = NULL;
+      m_addon.reset();
       CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(msg);
       m_vecPresets->Clear();
@@ -101,38 +108,26 @@ void CGUIDialogVisualisationPresetList::Render()
   int numPresets = 0;
   int currentPreset = 0;
   bool locked = false;
-  if (m_pVisualisation)
-    m_pVisualisation->GetPresets(&presets, &currentPreset, &numPresets, &locked);
-  if (currentPreset != m_currentPreset)
-  { // current preset changed...
-    m_vecPresets->Get(m_currentPreset)->Select(false);
-    m_currentPreset = currentPreset;
-    m_vecPresets->Get(m_currentPreset)->Select(true);
-  }
   CGUIDialog::Render();
 }
 
-void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisualisation)
+void CGUIDialogVisualisationPresetList::Update()
 {
-  m_pVisualisation = pVisualisation;
   m_vecPresets->Clear();
-  if (m_pVisualisation)
+  if (m_addon)
   {
     //clear filelist
     CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
     OnMessage(msg);
-    char **presets = NULL;
-    int numPresets = 0;
     m_currentPreset = 0;
-    bool locked = false;
-    m_pVisualisation->GetPresets(&presets, &m_currentPreset, &numPresets, &locked);
-    if (presets)
+    std::vector<CStdString> presets;
+    if (m_addon->GetPresetList(presets))
     {
       //clear filelist
       CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(msg2);
       m_vecPresets->Clear();
-      for (int i = 0; i < numPresets; i++)
+      for (int i = 0; i < presets.size(); i++)
       {
         CFileItemPtr pItem(new CFileItem(presets[i]));
         if (i == m_currentPreset)
@@ -146,14 +141,8 @@ void CGUIDialogVisualisationPresetList::SetVisualisation(CVisualisation *pVisual
     }
   }
   // update our settings label
-  CStdString strVis = g_guiSettings.GetString("mymusic.visualisation");
-  if (strVis != "None" && strVis.size() > 4)
-  { // make it look pretty
-    strVis = strVis.Left(strVis.size() - 4);
-    strVis[0] = toupper(strVis[0]);
-  }
   CStdString strSettings;
-  strSettings.Format(g_localizeStrings.Get(13407).c_str(), strVis.c_str());
+  strSettings.Format(g_localizeStrings.Get(13407).c_str(), m_addon->Name().c_str());
   SET_CONTROL_LABEL(CONTROL_PRESETS_LABEL, strSettings);
   // if there is no presets, add a label saying so
   if (m_vecPresets->Size() == 0)

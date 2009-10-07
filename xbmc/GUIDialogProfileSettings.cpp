@@ -264,7 +264,7 @@ void CGUIDialogProfileSettings::OnSettingChanged(SettingInfo &setting)
         if (g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE)
           return;
       }
-      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bIsDefault?12360:20068,g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || m_bIsDefault))
+      if (CGUIDialogLockSettings::ShowAndGetLock(m_iLockMode,m_strLockCode,m_bLockMusic,m_bLockVideo,m_bLockPictures,m_bLockPrograms,m_bLockFiles,m_bLockSettings,m_bLockAddOnManager,m_bIsDefault?12360:20068,g_settings.m_vecProfiles[0].getLockMode() == LOCK_MODE_EVERYONE || m_bIsDefault))
         m_bNeedSave = true;
     }
     else
@@ -301,6 +301,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     dialog->m_iDbMode = 2;
     dialog->m_iLockMode = LOCK_MODE_EVERYONE;
     dialog->m_iSourcesMode = 2;
+    dialog->m_bLockAddOnManager = true;
     dialog->m_bLockSettings = true;
     dialog->m_bLockMusic = false;
     dialog->m_bLockVideo = false;
@@ -333,6 +334,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     dialog->m_bLockPrograms = g_settings.m_vecProfiles[iProfile].programsLocked();
     dialog->m_bLockPictures = g_settings.m_vecProfiles[iProfile].picturesLocked();
     dialog->m_bLockSettings = g_settings.m_vecProfiles[iProfile].settingsLocked();
+    dialog->m_bLockAddOnManager = g_settings.m_vecProfiles[iProfile].addonmanagerLocked();
     dialog->m_bIsNewUser = false;
   }
   dialog->DoModal();
@@ -419,6 +421,7 @@ bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDeta
     g_settings.m_vecProfiles[iProfile].setMusicLocked(dialog->m_bLockMusic);
     g_settings.m_vecProfiles[iProfile].setVideoLocked(dialog->m_bLockVideo);
     g_settings.m_vecProfiles[iProfile].setSettingsLocked(dialog->m_bLockSettings);
+    g_settings.m_vecProfiles[iProfile].setAddonManagerLocked(dialog->m_bLockAddOnManager);
     g_settings.m_vecProfiles[iProfile].setFilesLocked(dialog->m_bLockFiles);
     g_settings.m_vecProfiles[iProfile].setPicturesLocked(dialog->m_bLockPictures);
     g_settings.m_vecProfiles[iProfile].setProgramsLocked(dialog->m_bLockPrograms);

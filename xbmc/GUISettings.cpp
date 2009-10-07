@@ -40,11 +40,14 @@
 using namespace std;
 
 // String id's of the masks
+#define MASK_DAYS   17999
+#define MASK_HOURS  17998
 #define MASK_MINS   14044
 #define MASK_SECS   14045
 #define MASK_MS    14046
 #define MASK_PERCENT 14047
 #define MASK_KBPS   14048
+#define MASK_MB    17997
 #define MASK_KB    14049
 #define MASK_DB    14050
 
@@ -211,6 +214,8 @@ void CGUISettings::Initialize()
   AddInt(0, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
   AddSeparator(9,"pictures.sep2");
   AddPath(10,"pictures.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddSeparator(11,"pictures.sep3");
+  AddString(12, "pictures.manageplugin", 23074, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(0, "slideshow", 108);
   AddInt(1, "slideshow.staytime", 12378, 9, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
@@ -223,6 +228,9 @@ void CGUISettings::Initialize()
 
   AddCategory(1,"programfiles",744);
   AddBool(4, "programfiles.savefolderviews", 583, true);
+  AddString(5, "programfiles.manageplugin", 23073, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "programfiles.defaultscraper", 20194, "", SPIN_CONTROL_TEXT);
+  AddString(6, "programfiles.managescraper", 23068, "", BUTTON_CONTROL_STANDARD);
 
   // My Weather settings
   AddGroup(2, 8);
@@ -231,8 +239,8 @@ void CGUISettings::Initialize()
   AddString(2, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(3, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
   AddSeparator(4, "weather.sep1");
-  AddString(5, "weather.plugin", 23000, "", SPIN_CONTROL_TEXT, true);
-  AddString(6, "weather.pluginsettings", 23001, "", BUTTON_CONTROL_STANDARD, true);
+  AddString(5, "weather.plugin", 23027, "", SPIN_CONTROL_TEXT, true);
+  AddString(6, "weather.manageplugins", 23075, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(7, "weather.sep2");
   AddString(8, "weather.jumptolocale", 20026, "", BUTTON_CONTROL_STANDARD);
 
@@ -240,24 +248,28 @@ void CGUISettings::Initialize()
   AddGroup(3, 2);
   AddCategory(3, "mymusic", 16000);
 #ifdef _LINUX
-  AddString(1, "mymusic.visualisation", 250, "opengl_spectrum.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "OpenGLSpectrum", SPIN_CONTROL_TEXT);
 #elif defined(_WIN32)
 #ifdef HAS_DX
-  AddString(1, "mymusic.visualisation", 250, "Waveform_win32dx.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "Waveform", SPIN_CONTROL_TEXT);
 #else
-  AddString(1, "mymusic.visualisation", 250, "opengl_spectrum_win32.vis", SPIN_CONTROL_TEXT);
+  AddString(1, "mymusic.visualisation", 250, "OpenGLSpectrum", SPIN_CONTROL_TEXT);
 #endif
 #endif
-  AddSeparator(2, "mymusic.sep1");
-  AddBool(3, "mymusic.autoplaynextitem", 489, true);
-  //AddBool(4, "musicfiles.repeat", 488, false);
-  AddBool(5, "mymusic.clearplaylistsonend",239,false);
-  AddSeparator(6, "mymusic.sep2");
-  AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddString(2, "mymusic.managevisual", 23061, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(3, "mymusic.sep1");
+  AddBool(4, "mymusic.autoplaynextitem", 489, true);
+  //AddBool(5, "musicfiles.repeat", 488, false);
+  AddBool(6, "mymusic.clearplaylistsonend",239,false);
+  AddSeparator(7, "mymusic.sep2");
+  AddPath(8,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
+  AddSeperator(9, "mymusic.sep3");
+  AddString(10, "mymusic.manageplugin", 23072, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3,"musiclibrary",14022);
   AddBool(1, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
+  AddString(7, "musiclibrary.managescraper", 23067, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
@@ -430,6 +442,8 @@ void CGUISettings::Initialize()
   AddBool(5, "myvideos.cleanstrings", 20418, false);
   AddSeparator(6, "myvideos.sep1");
   AddBool(7, "myvideos.savefolderviews", 583, true);
+  AddSeparator(9, "myvideos.sep2");
+  AddString(10, "myvideos.manageplugin", 23071, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(5, "videolibrary", 14022);
 
@@ -516,10 +530,13 @@ void CGUISettings::Initialize()
 
   AddCategory(5, "scrapers", 21412);
   AddString(1, "scrapers.moviedefault", 21413, "tmdb.xml", SPIN_CONTROL_TEXT);
-  AddString(2, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
-  AddString(3, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
-  AddSeparator(4,"scrapers.sep2");
-  AddBool(5, "scrapers.langfallback", 21416, true);
+  AddString(2, "scrapers.managemoviescraper", 23066, "", BUTTON_CONTROL_STANDARD);
+  AddString(3, "scrapers.tvshowdefault", 21414, "tvdb.xml", SPIN_CONTROL_TEXT);
+  AddString(4, "scrapers.managetvshowscraper", 23077, "", BUTTON_CONTROL_STANDARD);
+  AddString(5, "scrapers.musicvideodefault", 21415, "mtv.xml", SPIN_CONTROL_TEXT);
+  AddString(6, "scrapers.managemusicvideoscraper", 23078, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(7,"scrapers.sep2");
+  AddBool(8, "scrapers.langfallback", 21416, true);
 
   // network settings
   AddGroup(6, 705);
@@ -695,6 +712,8 @@ void CGUISettings::Initialize()
   AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
   AddBool(11, "screensaver.slideshowshuffle", 13319, false);
+  AddSeparator(12, "screensaver.sep2");
+  AddString(13, "screensaver.manage", 23080, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(7, "window", 0);
   AddInt(0, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);

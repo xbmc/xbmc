@@ -21,6 +21,7 @@
  */
 #include "Database.h"
 #include "VideoInfoTag.h"
+#include "Scraper.h"
 #include "Bookmark.h"
 
 #include <memory>
@@ -81,14 +82,6 @@ namespace VIDEO
 #define VIDEODB_TYPE_FLOAT 3
 #define VIDEODB_TYPE_BOOL 4
 #define VIDEODB_TYPE_COUNT 5
-
-typedef enum
-{
-  VIDEODB_CONTENT_MOVIES = 1,
-  VIDEODB_CONTENT_TVSHOWS = 2,
-  VIDEODB_CONTENT_MUSICVIDEOS = 3,
-  VIDEODB_CONTENT_EPISODES = 4
-} VIDEODB_CONTENT_TYPE;
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
 {
@@ -303,14 +296,14 @@ public:
   // editing functions
   void MarkAsWatched(const CFileItem &item);
   void MarkAsUnWatched(const CFileItem &item);
-  void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
+  void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
   bool HasTvShowInfo(const CStdString& strFilenameAndPath);
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
 
-  void GetFilePathById(int id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
+  void GetFilePathById(int id, CStdString &filePath, CONTENT_TYPE iType);
   bool GetGenreById(int id, CStdString& strGenre);
   bool GetSetById(int id, CStdString& strSet);
   int GetTvShowForEpisode(int idEpisode);
@@ -340,7 +333,7 @@ public:
   void DeleteMusicVideo(const CStdString& strFilenameAndPath, bool bKeepId = false, bool bKeepThumb = false);
   void DeleteDetailsForTvShow(const CStdString& strPath);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
-  void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
+  void UpdateFanart(const CFileItem &item, CONTENT_TYPE type);
 
   // per-file video settings
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);
@@ -361,11 +354,12 @@ public:
   void DeleteBookMarkForEpisode(const CVideoInfoTag& tag);
 
   // scraper settings
-  void SetScraperForPath(const CStdString& filePath, const SScraperInfo& info, const VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, int& iFound);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings);
-  bool GetScraperForPath(const CStdString& strPath, SScraperInfo& info, VIDEO::SScanSettings& settings, int& iFound);
+  void SetScraperForPath(const CStdString& filePath, const ADDON::CScraperPtr& info, const VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& scraper);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& scraper, int& iFound);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings);
+  bool GetScraperForPath(const CStdString& strPath, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, int& iFound);
+  CONTENT_TYPE GetContentForPath(const CStdString& strPath);
 
   // scanning hashes and paths scanned
   bool SetPathHash(const CStdString &path, const CStdString &hash);
@@ -435,7 +429,7 @@ public:
   bool GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir, CFileItemList& items);
 
   bool HasContent();
-  bool HasContent(VIDEODB_CONTENT_TYPE type);
+  bool HasContent(CONTENT_TYPE type);
   bool HasSets() const;
 
   void CleanDatabase(VIDEO::IVideoInfoScannerObserver* pObserver=NULL, const std::vector<int>* paths=NULL);
@@ -502,7 +496,7 @@ protected:
 
   int GetPlayCount(int id);
   void DeleteStreamDetails(int idFile);
-  CVideoInfoTag GetDetailsByTypeAndId(VIDEODB_CONTENT_TYPE type, int id);
+  CVideoInfoTag GetDetailsByTypeAndId(CONTENT_TYPE type, int id);
   CVideoInfoTag GetDetailsForMovie(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForTvShow(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
   CVideoInfoTag GetDetailsForEpisode(std::auto_ptr<dbiplus::Dataset> &pDS, bool needsCast = false);
@@ -523,5 +517,5 @@ private:
   void DeleteThumbForItem(const CStdString& strPath, bool bFolder, int idEpisode = -1);
 
   bool GetStackedTvShowList(int idShow, CStdString& strIn);
-  void Stack(CFileItemList& items, VIDEODB_CONTENT_TYPE type, bool maintainSortOrder = false);
+  void Stack(CFileItemList& items, CONTENT_TYPE type, bool maintainSortOrder = false);
 };

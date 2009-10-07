@@ -85,6 +85,8 @@ endif
 
 LIB_DIRS=\
 	xbmc/lib/cximage-6.0 \
+	xbmc/lib/libaddon \
+	xbmc/lib/libvisualisation \
 	xbmc/lib/libexif \
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
@@ -95,8 +97,10 @@ SS_DIRS=\
 
 VIS_DIRS=\
 	xbmc/visualizations/OpenGLSpectrum \
-	xbmc/visualizations/WaveForm \
-	xbmc/visualizations/XBMCProjectM
+	xbmc/visualizations/WaveForm
+ifneq (@BUILD_PROJM@,1)
+VIS_DIRS+=xbmc/visualizations/XBMCProjectM
+endif
 ifneq (@BUILD_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom
 endif
@@ -255,7 +259,9 @@ dllloader: exports
 visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
+ifneq (@BUILD_PROJM@,1)
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+endif
 ifneq (@BUILD_GOOM@,1)
 ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/visualizations/Goom
@@ -311,9 +317,13 @@ ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
 endif
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
+libaddon: dllloader
+	$(MAKE) -C xbmc/lib/libaddon
+libvisualisation: dllloader
+	$(MAKE) -C xbmc/lib/libvisualisation
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libexif python
+libs: libhdhomerun libid3tag imagelib libaddon libvisualisation libexif python 
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
@@ -448,9 +458,9 @@ endif
 install-datas:
 	@echo "Copying system files to $(prefix)/share/xbmc"
 	@# Arch independent files
-	@find language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons language media scripts sounds userdata visualisations system -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.so|.*\.dll|.*\.pyd|.*python/.*\.zlib|.*\.vis" -exec install -D -m 0644 "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Arch dependent files
-	@find system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
+	@find addons system screensavers visualisations -regextype posix-extended -type f -not -iregex ".*svn.*|.*win32\.vis|.*osx\.vis" -iregex ".*$(ARCH).*|.*\.vis|.*\.xbs" -exec install -D "{}" $(prefix)/share/xbmc/"{}" \; -printf " -- %-75.75f\r"
 	@# Skins
 	@find skin -regextype posix-extended -type f -not -iregex ".*svn.*|.*\.png|.*\.gif" -exec install -D -m 0644 '{}' $(prefix)/share/xbmc/'{}' \; -printf " -- %-75.75f\r"
 

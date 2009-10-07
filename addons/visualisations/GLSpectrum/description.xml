@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>7A4551D9-2F50-4173-B224-EE209FC9EB1F</uuid>
+  <type>visualisation</type>
+  <title>OpenGL Spectrum</title>
+  <library>opengl_spectrum.vis</library>
+  <librarywin32>opengl_spectrum_win32.vis</librarywin32>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>linux</platform>
+    <platform>windows</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>OpenGL Visualisation</summary>
+  <description>Visualisation showing a rotating 3D Spectrum Analyzer</description>
+  <author>TEAMXBMC</author>
+</addoninfo>

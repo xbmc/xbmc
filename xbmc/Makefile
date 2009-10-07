@@ -110,6 +110,8 @@ SRCS=Application.cpp \
      Song.cpp \
      VideoDatabase.cpp \
      ViewDatabase.cpp \
+		 GUIDialogAddonBrowser.cpp \
+		 GUIDialogAddonSettings.cpp \
      GUIDialogAudioSubtitleSettings.cpp \
      GUIDialogBoxBase.cpp \
      GUIDialogButtonMenu.cpp \
@@ -137,7 +139,6 @@ SRCS=Application.cpp \
      GUIDialogVideoBookmarks.cpp \
      GUIDialogVideoSettings.cpp \
      GUIDialogVisualisationPresetList.cpp \
-     GUIDialogVisualisationSettings.cpp \
      GUIDialogVolumeBar.cpp \
      GUIDialogSlider.cpp \
      GUIDialogYesNo.cpp \
@@ -182,10 +183,7 @@ SRCS=Application.cpp \
      GUILargeTextureManager.cpp \
      GUIDialogKaiToast.cpp \
      KeyboardLayoutConfiguration.cpp \
-     GUIDialogPluginSettings.cpp \
-     PluginSettings.cpp \
      GUIDialogAccessPoints.cpp \
-     ScraperSettings.cpp \
      Artist.cpp \
      Album.cpp \
      MediaSource.cpp \
@@ -200,7 +198,6 @@ SRCS=Application.cpp \
      ZeroconfBrowser.cpp \
      VideoReferenceClock.cpp \
      DPMSSupport.cpp \
-     ScriptSettings.cpp \
      GUIWindowTestPatternGL.cpp \
      RenderSystem.cpp \
      RenderSystemGL.cpp \
@@ -219,5 +216,4 @@ DISTCLEAN_FILES=DllPaths_generated.h
 
 include ../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
-
 

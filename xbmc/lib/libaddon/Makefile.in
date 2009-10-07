@@ -1,0 +1,22 @@
+ARCH=@ARCH@
+INCLUDES=-I. -I../../addons/include -I../librefmem
+SO=AddonLib-$(ARCH).so
+ARCHIVE=$(SO:.so=.a)
+SYSDIR=../../../system
+SLIB=$(SYSDIR)/$(SO)
+DIRS=../librefmem
+SLIBS=../librefmem/librefmem.a
+OBJS+=setting.o
+OBJS+=settings.o
+
+.PHONY: compile
+
+$(SLIB): $(OBJS)
+	$(CC) $(OBJS) -shared -o $(SLIB) $(SLIBS)
+
+$(SLIBS): compile
+
+librefmem.a:
+	$(MAKE) -C ../librefmem
+
+include ../../../Makefile.include

@@ -115,6 +115,7 @@ void CGUIDialogLockSettings::CreateSettings()
     AddBool(6,20041,&m_bLockPrograms);
     AddBool(7,20042,&m_bLockFiles);
     AddBool(8,20043,&m_bLockSettings);
+    AddBool(9,23082,&m_bLockAddOnManager);
     EnableDetails(m_iLock != LOCK_MODE_EVERYONE);
   }
 }
@@ -234,10 +235,10 @@ bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(CStdString& strUser, CStd
 bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, int iHeader)
 {
   bool f;
-  return ShowAndGetLock(iLockMode,strPassword,f,f,f,f,f,f,iHeader,false,false);
+  return ShowAndGetLock(iLockMode,strPassword,f,f,f,f,f,f,f,iHeader,false,false);
 }
 
-bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel, bool bConditional, bool bDetails)
+bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, bool& bLockAddOnManager, int iButtonLabel, bool bConditional, bool bDetails)
 {
   CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (!dialog) return false;
@@ -255,6 +256,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& str
     dialog->m_bLockPictures = bLockPictures;
     dialog->m_bLockFiles = bLockFiles;
     dialog->m_bLockSettings = bLockSettings;
+    dialog->m_bLockAddOnManager = bLockAddOnManager;
   }
   dialog->m_bDetails = bDetails;
   dialog->DoModal();
@@ -277,6 +279,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& str
       bLockPictures = dialog->m_bLockPictures;
       bLockFiles = dialog->m_bLockFiles;
       bLockSettings = dialog->m_bLockSettings;
+      bLockAddOnManager = dialog->m_bLockAddOnManager;
     }
     return true;
   }

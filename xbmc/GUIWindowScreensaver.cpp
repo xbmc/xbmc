@@ -21,9 +21,7 @@
 
 #include "system.h"
 #include "GUIWindowScreensaver.h"
-#ifdef HAS_SCREENSAVER
-#include "screensavers/ScreenSaverFactory.h"
-#endif
+#include "utils/AddonManager.h"
 #include "Application.h"
 #include "GUIPassword.h"
 #include "GUISettings.h"
@@ -36,6 +34,7 @@ CGUIWindowScreensaver::CGUIWindowScreensaver(void)
 {
 #ifdef HAS_SCREENSAVER
   m_pScreenSaver = NULL;
+  m_addon.reset();
 #endif
 }
 
@@ -62,7 +61,7 @@ void CGUIWindowScreensaver::Render()
       }
       catch (...)
       {
-        OutputDebugString("Screensaver Render - ohoh!\n");
+        CLog::Log(LOGERROR, "SCREENSAVER: - Exception in Render() - %s", m_addon->Name().c_str());
       }
       return ;
     }
@@ -75,7 +74,7 @@ void CGUIWindowScreensaver::Render()
       }
       catch (...)
       {
-        OutputDebugString("Screensaver Start - ohoh!\n");
+        CLog::Log(LOGERROR, "SCREENSAVER: - Exception in Start() - %s", m_addon->Name().c_str());
       }
       return ;
     }
@@ -107,10 +106,8 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 #ifdef HAS_SCREENSAVER
       if (m_pScreenSaver)
       {
-        OutputDebugString("ScreenSaver::Stop()\n");
+        CLog::Log(LOGDEBUG, "SCREENSAVER: - Stopping - %s", m_addon->Name().c_str());
         m_pScreenSaver->Stop();
-
-        OutputDebugString("delete ScreenSaver()\n");
         delete m_pScreenSaver;
 
         g_graphicsContext.ApplyStateBlock();
@@ -140,20 +137,23 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
         delete m_pScreenSaver;
         g_graphicsContext.ApplyStateBlock();
       }
-      m_pScreenSaver = NULL;
       m_bInitialized = false;
-
+      
+      m_addon.reset();
       // Setup new screensaver instance
-      CScreenSaverFactory factory;
-      CStdString strScr;
-      OutputDebugString("Load Screensaver\n");
-      strScr.Format("special://xbmc/screensavers/%s", g_guiSettings.GetString("screensaver.mode").c_str());
-      m_pScreenSaver = factory.LoadScreenSaver(strScr.c_str());
+      AddonPtr addon;
+      if (!CAddonMgr::Get()->GetAddon(ADDON_SCREENSAVER, g_guiSettings.GetString("screensaver.mode"), addon))
+        return false;
+      m_addon = boost::dynamic_pointer_cast<CScreenSaver>(addon);
+
+      if (!m_addon)
+        return false;
+
+      m_pScreenSaver = NULL; //TODO addonmanager loader /*factory.LoadScreenSaver(m_addon);*/
       if (m_pScreenSaver)
       {
-        OutputDebugString("ScreenSaver::Create()\n");
         g_graphicsContext.CaptureStateBlock();
-        m_pScreenSaver->Create();
+        m_addon->Create();
       }
 #endif
       // setup a z-buffer

@@ -520,8 +520,8 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                        m_vecItems->m_strPath.Equals("special://musicplaylists/");
 
     CMusicDatabaseDirectory dir;
-    SScraperInfo info;
-    m_musicdatabase.GetScraperForPath(item->m_strPath,info);
+    ADDON::CScraperPtr info;
+    m_musicdatabase.GetScraperForPath(item->m_strPath, info);
     // enable music info button on an album or on a song.
     if (item->IsAudio() && !item->IsPlayList() && !item->IsSmartPlayList() &&
        !item->IsLastFM() && !item->IsShoutCast() && !item->m_bIsFolder)
@@ -563,7 +563,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
     // enable query all artist button only in album view
     if (dir.IsArtistDir(item->m_strPath)        && !dir.IsAllItem(item->m_strPath) &&
-        item->m_bIsFolder && !item->IsVideoDb() && !info.strContent.IsEmpty())
+      item->m_bIsFolder && !item->IsVideoDb() && info->Supports(CONTENT_MUSIC))
     {
       buttons.Add(CONTEXT_BUTTON_INFO_ALL, 21884);
     }
@@ -667,7 +667,7 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
       if (pWindow)
       {
-        SScraperInfo info;
+        ADDON::CScraperPtr info;
         pWindow->OnInfo(item.get(),info);
         Update(m_vecItems->m_strPath);
       }
@@ -748,9 +748,15 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_CONTENT:
     {
       bool bScan=false;
-      SScraperInfo info;
-      if (!m_musicdatabase.GetScraperForPath(item->m_strPath,info))
-        info.strContent = "albums";
+      ADDON::CScraperPtr scraper;
+      if (!m_musicdatabase.GetScraperForPath(item->m_strPath, scraper))
+      {
+        ADDON::AddonPtr defaultScraper;
+        if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_MUSIC))
+        {
+          scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
+        }
+      }
 
       int iLabel=132;
       // per genre or for all artists
@@ -759,9 +765,9 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         iLabel = 133;
       }
 
-      if (CGUIDialogContentSettings::Show(info, bScan,iLabel))
+      if (CGUIDialogContentSettings::Show(scraper, bScan,iLabel))
       {
-        m_musicdatabase.SetScraperForPath(item->m_strPath,info);
+        m_musicdatabase.SetScraperForPath(item->m_strPath, scraper);
         if (bScan)
           OnInfoAll(itemNumber,true);
       }
@@ -829,7 +835,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
   else
   {
     strPath = m_vecItems->Get(iItem)->m_strPath;
-    strPath.Replace("plugin://music/","special://home/plugins/music/");
+    strPath.Replace("plugin://music/","special://home/addons/plugins/music/");
     picturePath = strPath;
     CFileItem item(strPath,true);
     cachedThumb = item.GetCachedProgramThumb();

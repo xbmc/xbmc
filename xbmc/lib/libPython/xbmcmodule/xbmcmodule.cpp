@@ -380,7 +380,7 @@ namespace PYXBMC
     else if (iString >= 32000 && iString <= 32999)
       g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
     else
-      g_charsetConverter.utf8ToW(g_localizeStrings.Get(iString), unicodeLabel);
+      g_charsetConverter.utf8ToW(g_localizeStringsTemp.Get(iString), unicodeLabel);
 
     return Py_BuildValue((char*)"u", unicodeLabel.c_str());
   }

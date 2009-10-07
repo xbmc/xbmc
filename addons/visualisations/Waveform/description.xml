@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>9AFC128B-A6B6-4824-9BC4-B122966709B3</uuid>
+  <type>visualisation</type>
+  <title>Waveform</title>
+  <library>Waveform.vis</library>
+  <librarywin32>Waveform_win32.vis</librarywin32>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>windows</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>Visualisation</summary>
+  <description>Visualisation showing a Waveform Graph</description>
+  <author>TEAMXBMC</author>
+</addoninfo>

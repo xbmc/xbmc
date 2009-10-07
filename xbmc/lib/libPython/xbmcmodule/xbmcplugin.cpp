@@ -20,16 +20,17 @@
  */
 
 #include "FileSystem/PluginDirectory.h"
+#include "utils/AddonManager.h"
 #include "listitem.h"
-#include "PluginSettings.h"
 #include "FileItem.h"
-#include "GUIDialogPluginSettings.h"
+#include "GUIDialogAddonSettings.h"
 
 // include for constants
 #include "pyutil.h"
 
 using namespace std;
 using namespace XFILE;
+using namespace ADDON;
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -303,6 +304,7 @@ namespace PYXBMC
 
   PyObject* XBMCPLUGIN_GetSetting(PyObject *self, PyObject *args, PyObject *kwds)
   {
+    //TODO need to grab pointer to CAddon (using threadid?)
     static const char *keywords[] = { "id", NULL };
     char *id;
     if (!PyArg_ParseTupleAndKeywords(
@@ -316,7 +318,7 @@ namespace PYXBMC
       return NULL;
     };
 
-    return Py_BuildValue((char*)"s", g_currentPluginSettings.Get(id).c_str());
+    return Py_BuildValue((char*)"s", "");
   }
 
   PyDoc_STRVAR(setSetting__doc__,
@@ -355,9 +357,6 @@ namespace PYXBMC
       return NULL;
     }
     
-    g_currentPluginSettings.Set(id, value);
-    g_currentPluginSettings.Save();
-
     Py_INCREF(Py_None);
     return Py_None;
   }
@@ -449,7 +448,7 @@ namespace PYXBMC
     "*Note, You can use the above as keywords for arguments.\n"
     "\n"
     "example:\n"
-    "  - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'special://home/plugins/video/Apple movie trailers II/fanart.png', color2='0xFFFF3300')\n");
+    "  - xbmcplugin.setPluginFanart(int(sys.argv[1]), 'special://home/addons/plugins/video/Apple movie trailers II/fanart.png', color2='0xFFFF3300')\n");
 
   PyObject* XBMCPLUGIN_SetPluginFanart(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
@@ -534,7 +533,7 @@ namespace PYXBMC
   }
 
   PyDoc_STRVAR(openSettings__doc__,
-    "openSettings(url[, reload]) -- Opens this plugins settings.\n"
+    "openSettings(url[, reload]) -- Opens this plugin's settings dialog.\n"
     "\n"
     "url         : string or unicode - url of plugin. (plugin://pictures/picasa/)\n"
     "reload      : [opt] bool - reload language strings and settings (default=True)\n"
@@ -568,20 +567,21 @@ namespace PYXBMC
     if (!pUrl || (pUrl && !PyGetUnicodeString(url, pUrl, 1)))
       return NULL;
 
-    if (!CPluginSettings::SettingsExist(url))
+    //TODO avoid relying on plugin supplying a URL
+    ADDON::AddonPtr addon;
+    ADDON::CAddonMgr::Get()->GetAddonFromPath(url, addon);
+    if (!addon->HasSettings())
     {
       PyErr_SetString(PyExc_Exception, "No settings.xml file could be found!");
       return NULL;
     }
 
-    CURL cUrl(url);
-    CGUIDialogPluginSettings::ShowAndGetInput(cUrl);
+    CGUIDialogAddonSettings::ShowAndGetInput(addon);
 
     // reload plugin settings & strings
     if (bReload)
     {
-      g_currentPluginSettings.Load(cUrl);
-      DIRECTORY::CPluginDirectory::LoadPluginStrings(cUrl);
+      addon->LoadSettings();
     }
 
     Py_INCREF(Py_None);

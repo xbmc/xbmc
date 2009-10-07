@@ -29,8 +29,8 @@
 #include "GUIWindowManager.h"
 #include "FileSystem/File.h"
 #include "FileItem.h"
-#include "ScriptSettings.h"
-#include "GUIDialogPluginSettings.h"
+#include "utils/AddonManager.h"
+#include "GUIDialogAddonSettings.h"
 #include "Settings.h"
 
 using namespace XFILE;
@@ -220,8 +220,14 @@ void CGUIWindowScripts::GetContextButtons(int itemNumber, CContextButtons &butto
   {
     CStdString path, filename;
     CUtil::Split(item->m_strPath, path, filename);
-    if (CScriptSettings::SettingsExist(path))
-      buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1049);
+    ADDON::AddonPtr script;
+    if (ADDON::CAddonMgr::Get()->GetAddonFromPath(item->m_strPath, script))
+    {
+      if (script->HasSettings())
+      {
+        buttons.Add(CONTEXT_BUTTON_SCRIPT_SETTINGS, 1049);
+      }
+    }
   }
 
   buttons.Add(CONTEXT_BUTTON_INFO, 654);
@@ -238,7 +244,11 @@ bool CGUIWindowScripts::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
     CStdString path, filename;
     CUtil::Split(m_vecItems->Get(itemNumber)->m_strPath, path, filename);
-    CGUIDialogPluginSettings::ShowAndGetInput(path);
+    ADDON::AddonPtr script;
+    if (ADDON::CAddonMgr::Get()->GetAddonFromPath(m_vecItems->Get(itemNumber)->m_strPath, script))
+    {
+      CGUIDialogAddonSettings::ShowAndGetInput(script);
+    }
     return true;
   }
   return CGUIMediaWindow::OnContextButton(itemNumber, button);

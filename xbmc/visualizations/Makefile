@@ -1,6 +1,6 @@
 INCLUDES=-I. -I../ -I../linux -I../../guilib -I../utils
 
-SRCS=fft.cpp Visualisation.cpp VisualisationFactory.cpp
+SRCS=fft.cpp Visualisation.cpp
 
 LIB=visualization.a
 

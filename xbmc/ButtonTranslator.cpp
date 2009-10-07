@@ -914,7 +914,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("playercontrols")) windowID = WINDOW_DIALOG_PLAYER_CONTROLS;
   else if (strWindow.Equals("seekbar")) windowID = WINDOW_DIALOG_SEEK_BAR;
   else if (strWindow.Equals("musicosd")) windowID = WINDOW_DIALOG_MUSIC_OSD;
-  else if (strWindow.Equals("visualisationsettings")) windowID = WINDOW_DIALOG_VIS_SETTINGS;
+  //else if (strWindow.Equals("visualisationsettings")) windowID = WINDOW_DIALOG_VIS_SETTINGS;
   else if (strWindow.Equals("visualisationpresetlist")) windowID = WINDOW_DIALOG_VIS_PRESET_LIST;
   else if (strWindow.Equals("osdvideosettings")) windowID = WINDOW_DIALOG_VIDEO_OSD_SETTINGS;
   else if (strWindow.Equals("osdaudiosettings")) windowID = WINDOW_DIALOG_AUDIO_OSD_SETTINGS;
@@ -945,7 +945,7 @@ int CButtonTranslator::TranslateWindowString(const char *szWindow)
   else if (strWindow.Equals("musicoverlay")) windowID = WINDOW_MUSIC_OVERLAY;
   else if (strWindow.Equals("videooverlay")) windowID = WINDOW_VIDEO_OVERLAY;
   else if (strWindow.Equals("pictureinfo")) windowID = WINDOW_DIALOG_PICTURE_INFO;
-  else if (strWindow.Equals("pluginsettings")) windowID = WINDOW_DIALOG_PLUGIN_SETTINGS;
+  else if (strWindow.Equals("addonsettings") || strWindow.Equals("pluginsettings")) windowID = WINDOW_DIALOG_ADDON_SETTINGS;
   else if (strWindow.Equals("fullscreeninfo")) windowID = WINDOW_DIALOG_FULLSCREEN_INFO;
   else if (strWindow.Equals("karaokeselector")) windowID = WINDOW_DIALOG_KARAOKE_SONGSELECT;
   else if (strWindow.Equals("karaokelargeselector")) windowID = WINDOW_DIALOG_KARAOKE_SELECTOR;

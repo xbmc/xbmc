@@ -19,6 +19,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#ifndef PLUGINDIRECTORY_H
+#define PLUGINDIRECTORY_H
 
 #include "FileSystem/IDirectory.h"
 #include "FileSystem/Directory.h"
@@ -28,6 +30,7 @@
 #include <string>
 #include <vector>
 #include "../utils/CriticalSection.h"
+#include "../utils/IAddon.h"
 
 class CURL;
 class CFileItemList;
@@ -45,8 +48,6 @@ public:
   static bool RunScriptWithParams(const CStdString& strPath);
   static bool HasPlugins(const CStdString &type);
   bool GetPluginsDirectory(const CStdString &type, CFileItemList &items);
-  static void LoadPluginStrings(const CURL &url);
-  static void ClearPluginStrings();
   bool StartScript(const CStdString& strPath);
   static bool GetPluginResult(const CStdString& strPath, CFileItem &resultItem);
 
@@ -58,8 +59,10 @@ public:
   static void SetContent(int handle, const CStdString &strContent);
   static void SetProperty(int handle, const CStdString &strProperty, const CStdString &strValue);
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
+  static CStdString TranslatePluginDirectory(const CStdString &strPath);
 
 private:
+  ADDON::AddonPtr m_addon;
   bool WaitOnScriptResult(const CStdString &scriptPath, const CStdString &scriptName);
 
   static std::vector<CPluginDirectory*> globalHandles;
@@ -76,3 +79,5 @@ private:
   int    m_totalItems;   // set by script in AddDirectoryItem
 };
 }
+
+#endif /* PLUGINDIRECTORY_H */

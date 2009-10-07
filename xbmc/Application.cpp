@@ -158,6 +158,7 @@
 #include "GUIWindowPrograms.h"
 #include "GUIWindowPictures.h"
 #include "GUIWindowScripts.h"
+//#include "GUIWindowEPG.h"
 #include "GUIWindowWeather.h"
 #include "GUIWindowLoginScreen.h"
 #include "GUIWindowVisualisation.h"
@@ -172,7 +173,6 @@
 
 // Dialog includes
 #include "GUIDialogMusicOSD.h"
-#include "GUIDialogVisualisationSettings.h"
 #include "GUIDialogVisualisationPresetList.h"
 #include "GUIWindowScriptsInfo.h"
 #include "GUIDialogNetworkSetup.h"
@@ -204,7 +204,7 @@
 #include "GUIDialogSmartPlaylistEditor.h"
 #include "GUIDialogSmartPlaylistRule.h"
 #include "GUIDialogPictureInfo.h"
-#include "GUIDialogPluginSettings.h"
+#include "GUIDialogAddonSettings.h"
 #ifdef HAS_LINUX_NETWORK
 #include "GUIDialogAccessPoints.h"
 #endif
@@ -785,31 +785,29 @@ CProfile* CApplication::InitDirectoriesLinux()
     g_stSettings.m_logFolder = strTempPath;
 
     bool bCopySystemPlugins = false;
-    if (!CDirectory::Exists("special://home/plugins") )
+    if (!CDirectory::Exists("special://home/addons/plugins") )
        bCopySystemPlugins = true;
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/multitype");
+    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/keymaps");
-    CDirectory::Create("special://home/visualisations");
-    CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
-    CDirectory::Create("special://home/plugins");
-    CDirectory::Create("special://home/plugins/video");
-    CDirectory::Create("special://home/plugins/music");
-    CDirectory::Create("special://home/plugins/pictures");
-    CDirectory::Create("special://home/plugins/programs");
-    CDirectory::Create("special://home/plugins/weather");
-    CDirectory::Create("special://home/scripts");
-    CDirectory::Create("special://home/scripts/My Scripts");    // FIXME: both scripts should be in 1 directory
 
-    if (!CFile::Exists("special://home/scripts/Common Scripts"))
+    /*if (!CFile::Exists("special://home/scripts/Common Scripts"))
     {
       if (symlink( INSTALL_PATH "/scripts",  _P("special://home/scripts/Common Scripts").c_str() ) != 0)
         CLog::Log(LOGERROR, "Failed to create common scripts symlink.");
-    }
+    }*/
 
     CDirectory::Create("special://masterprofile");
 
@@ -821,7 +819,7 @@ CProfile* CApplication::InitDirectoriesLinux()
     
     // copy system-wide plugins into userprofile
     if ( bCopySystemPlugins )
-       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
+       CUtil::CopyDirRecursive("special://xbmc/addons/plugins", "special://home/addons/plugins");
   }
   else
   {
@@ -898,23 +896,23 @@ CProfile* CApplication::InitDirectoriesOSX()
     g_stSettings.m_logFolder = strTempPath;
 
     bool bCopySystemPlugins = false;
-    if (!CDirectory::Exists("special://home/plugins") )
+    if (!CDirectory::Exists("special://home/addons/plugins") )
        bCopySystemPlugins = true;
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://temp/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/multitype");
+    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/keymaps");
-    CDirectory::Create("special://home/visualisations");
-    CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
-    CDirectory::Create("special://home/plugins");
-    CDirectory::Create("special://home/plugins/video");
-    CDirectory::Create("special://home/plugins/music");
-    CDirectory::Create("special://home/plugins/pictures");
-    CDirectory::Create("special://home/plugins/programs");
-    CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
     CDirectory::Create("special://home/scripts/My Scripts"); // FIXME: both scripts should be in 1 directory
 #ifdef __APPLE__
@@ -934,7 +932,7 @@ CProfile* CApplication::InitDirectoriesOSX()
 
     // copy system-wide plugins into userprofile
     if ( bCopySystemPlugins )
-       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
+       CUtil::CopyDirRecursive("special://xbmc/addons/plugins", "special://home/addons/plugins");
   }
   else
   {
@@ -996,22 +994,22 @@ CProfile* CApplication::InitDirectoriesWin32()
     SetEnvironmentVariable("XBMC_PROFILE_USERDATA",_P("special://masterprofile").c_str());
 
     bool bCopySystemPlugins = false;
-    if (!CDirectory::Exists("special://home/plugins") )
+    if (!CDirectory::Exists("special://home/addons/plugins") )
        bCopySystemPlugins = true;
 
     CDirectory::Create("special://home/");
     CDirectory::Create("special://home/skin");
+    CDirectory::Create("special://home/addons");
+    CDirectory::Create("special://home/addons/multitype");
+    CDirectory::Create("special://home/addons/visualisations");
+    CDirectory::Create("special://home/addons/scripts");
+    CDirectory::Create("special://home/addons/scrapers");
+    CDirectory::Create("special://home/addons/screensavers");
+    CDirectory::Create("special://home/addons/plugins");
+    CDirectory::Create("special://home/addons/dsp-audio");
     CDirectory::Create("special://home/keymaps");
-    CDirectory::Create("special://home/visualisations");
-    CDirectory::Create("special://home/screensavers");
     CDirectory::Create("special://home/sounds");
     CDirectory::Create("special://home/system");
-    CDirectory::Create("special://home/plugins");
-    CDirectory::Create("special://home/plugins/video");
-    CDirectory::Create("special://home/plugins/music");
-    CDirectory::Create("special://home/plugins/pictures");
-    CDirectory::Create("special://home/plugins/programs");
-    CDirectory::Create("special://home/plugins/weather");
     CDirectory::Create("special://home/scripts");
 
     CDirectory::Create("special://masterprofile");
@@ -1025,7 +1023,7 @@ CProfile* CApplication::InitDirectoriesWin32()
 
     // copy system-wide plugins into userprofile
     if ( bCopySystemPlugins )
-       CUtil::CopyDirRecursive("special://xbmc/plugins", "special://home/plugins");
+       CUtil::CopyDirRecursive("special://xbmc/addons/plugins", "special://home/addons/plugins");
 
     // create user/app data/XBMC/cache
     CSpecialProtocol::SetTempPath(CUtil::AddFileToFolder(homePath,"cache"));
@@ -1099,16 +1097,17 @@ HRESULT CApplication::Initialize()
 #endif
   {
     CDirectory::Create("special://xbmc/scripts");
-    CDirectory::Create("special://xbmc/plugins");
-    CDirectory::Create("special://xbmc/plugins/music");
-    CDirectory::Create("special://xbmc/plugins/video");
-    CDirectory::Create("special://xbmc/plugins/pictures");
-    CDirectory::Create("special://xbmc/plugins/programs");
     CDirectory::Create("special://xbmc/plugins/weather");
     CDirectory::Create("special://xbmc/language");
-    CDirectory::Create("special://xbmc/visualisations");
+    CDirectory::Create("special://xbmc/addons");
+    CDirectory::Create("special://xbmc/addons/multitype");
+    CDirectory::Create("special://xbmc/addons/visualisations");
+    CDirectory::Create("special://xbmc/addons/scripts");
+    CDirectory::Create("special://xbmc/addons/scrapers");
+    CDirectory::Create("special://xbmc/addons/screensavers");
+    CDirectory::Create("special://xbmc/addons/plugins");
+    CDirectory::Create("special://xbmc/addons/dsp-audio");
     CDirectory::Create("special://xbmc/sounds");
-    CDirectory::Create(CUtil::AddFileToFolder(g_settings.GetUserDataFolder(),"visualisations"));
   }
 
   // initialize network
@@ -1177,7 +1176,6 @@ HRESULT CApplication::Initialize()
 #endif
   g_windowManager.Add(new CGUIDialogSlider);             // window id = 145
   g_windowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
-  g_windowManager.Add(new CGUIDialogVisualisationSettings);     // window id = 121
   g_windowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
   g_windowManager.Add(new CGUIDialogVideoSettings);             // window id = 123
   g_windowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
@@ -1193,7 +1191,7 @@ HRESULT CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
   g_windowManager.Add(new CGUIDialogBusy);      // window id = 138
   g_windowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
-  g_windowManager.Add(new CGUIDialogPluginSettings);      // window id = 140
+  g_windowManager.Add(new CGUIDialogAddonSettings);      // window id = 140
 #ifdef HAS_LINUX_NETWORK
   g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
@@ -3301,7 +3299,6 @@ HRESULT CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SONGSELECT);
     g_windowManager.Delete(WINDOW_DIALOG_KARAOKE_SELECTOR);
     g_windowManager.Delete(WINDOW_DIALOG_MUSIC_OSD);
-    g_windowManager.Delete(WINDOW_DIALOG_VIS_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_VIS_PRESET_LIST);
     g_windowManager.Delete(WINDOW_DIALOG_SELECT);
     g_windowManager.Delete(WINDOW_DIALOG_OK);
@@ -3323,7 +3320,7 @@ HRESULT CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_SMART_PLAYLIST_RULE);
     g_windowManager.Delete(WINDOW_DIALOG_BUSY);
     g_windowManager.Delete(WINDOW_DIALOG_PICTURE_INFO);
-    g_windowManager.Delete(WINDOW_DIALOG_PLUGIN_SETTINGS);
+    g_windowManager.Delete(WINDOW_DIALOG_ADDON_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_ACCESS_POINTS);
     g_windowManager.Delete(WINDOW_DIALOG_SLIDER);
 
@@ -5318,10 +5315,9 @@ void CApplication::UpdateLibraries()
   {
     CLog::Log(LOGNOTICE, "%s - Starting video library startup scan", __FUNCTION__);
     CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-    SScraperInfo info;
     VIDEO::SScanSettings settings;
     if (scanner && !scanner->IsScanning())
-      scanner->StartScanning("",info,settings,false);
+      scanner->StartScanning("",settings,false);
   }
  
   if (g_guiSettings.GetBool("musiclibrary.updateonstartup"))

@@ -1949,6 +1949,7 @@
   <string id="21407">less than</string>
   <string id="21408">after</string>
   <string id="21409">before</string>
+  <string id="21417">No scrapers present</string>
   <string id="21410">in the last</string>
   <string id="21411">not in the last</string>
   <string id="21412">Scrapers</string>
@@ -2107,19 +2108,89 @@
   <string id="22042">white/blue</string>
   <string id="22043">black/white</string>
 
-  <string id="23000">Weather plugin</string>
-  <string id="23001">- Plugin settings</string>
+  <!-- strings 23000 thru 23999 reserved for the addons framework -->
+  <string id="23000">Add-ons</string>
+  <string id="23001">Get Add-ons</string>
+  <string id="23002">Available Add-ons</string>
+  <string id="23003">Add-on Type</string>
+  <string id="23004">Recommended</string>
+  <string id="23005">Search Add-ons</string>
+  <string id="23006">Searching..</string>
+  <string id="23007">New search</string>
+  <string id="23008">Configure Add-on</string>
+  <string id="23009">Disable Add-on</string>
+  <string id="23010">Are you sure you want to disable this add-on?</string>
+  <string id="23011">Unknown Add-on</string>
+  <string id="23012">Multitype Add-on</string>
+  <string id="23013">Visualisation</string>
+  <string id="23014">Skin Add-on</string>
+  <string id="23015">PVR-Client</string>
+  <string id="23016">Python Script</string>
+  <string id="23017">PVR Scraper</string>
+  <string id="23018">Video Scraper</string>
+  <string id="23019">Music Scraper</string>
+  <string id="23020">Program Scraper</string>
+  <string id="23021">Screensaver</string>
+  <string id="23022">PVR Add-on</string>
+  <string id="23023">Video Add-on</string>
+  <string id="23024">Music Add-on</string>
+  <string id="23025">Program Add-on</string>
+  <string id="23026">Pictures Add-on</string>
+  <string id="23027">Weather Add-on</string>
+  <string id="23028">Audio DSP Add-on</string>
+  
+  <string id="23040">Add-on can not connect</string>
+  <string id="23041">Please check your Settings or the Backend</string>
+  <string id="23042">Unknown Username for the Add-on</string>
+  <string id="23043">Do you want to open settings and try again?</string>
+  <string id="23044">Unknown Username</string>
+  <string id="23045">Wrong password for the Add-on</string>
+  <string id="23046">Wrong password</string>
+  <string id="23047">Add-on lost connection</string>
+  <string id="23048">Try to reconnect?</string>
+  <string id="23049">Add-on restarts</string>
+  <string id="23050">Add-on request restart</string>
+  <string id="23051">XBMC requires to restart</string>
+  <string id="23052">Would you like to restart now?</string>
+  <string id="23053">Missing settings</string>
+  <string id="23054">Wrong settings</string>
+  <string id="23055">Missing Files in Add-on</string>
+  <string id="23056">Add-on can not used</string>
+  <string id="23057">A unknown error is occurred</string>
+  <string id="23058">Disclaimer</string>
+  <string id="23059">Would you still use the Add-on?</string>
+  <string id="23060">Manage Multitype Add-on's</string>
+  <string id="23061">Manage Visualization</string>
+  <string id="23062">Manage Skin Add-on's</string>
+  <string id="23063">Manage PVR clients</string>
+  <string id="23064">Manage Scripts</string>
+  <string id="23065">Manage PVR Scrapers</string>
+  <string id="23066">Manage Movie Scrapers</string>
+  <string id="23067">Manage Music Scrapers</string>
+  <string id="23068">Manage Program Scrapers</string>
+  <string id="23069">Manage Screensaver</string>
+  <string id="23070">Manage PVR plugins</string>
+  <string id="23071">Manage Video plugins</string>
+  <string id="23072">Manage Music plugins</string>
+  <string id="23073">Manage Program plugins</string>
+  <string id="23074">Manage Picture plugins</string>
+  <string id="23075">Manage Weather plugins</string>
+  <string id="23076">Manage Audio DSP's</string>
+  <string id="23077">Manage TV-Show Scrapers</string>
+  <string id="23078">Manage Music-Video Scrapers</string>
+  <string id="23080">Manage external Screensaver</string>
+  <string id="23081">This Add-on can not be configured</string>
+  <string id="23082">Lock Add-on manager</string>
+  <string id="23083">Use this Add-on again</string>
 
-  <string id="23050">Activate Teletext</string>
-
-  <!-- strings 23100 thru 23150 reserved for external player -->
-  <string id="23100">External Player Active</string>
-  <string id="23101">Click OK to terminate the player</string>
-  <string id="23102"></string>
-  <string id="23103"></string>
-  <string id="23104">Click OK when playback has ended</string>
-  <string id="23105"></string>
-  <string id="23106"></string>
+  <!-- strings 24000 thru 24050 reserved for external player -->
+  <string id="24000">External Player Active</string>
+  <string id="24001">Click OK to terminate the player</string>
+  <string id="24002"></string>
+  <string id="24003"></string>
+  <string id="24004">Click OK when playback has ended</string>
+  <string id="24005"></string>
+  <string id="24006"></string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Library Mode</string>

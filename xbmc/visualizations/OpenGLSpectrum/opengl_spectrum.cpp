@@ -28,7 +28,7 @@
  */
 
 
-#include "../../../visualisations/xbmc_vis.h"
+#include "../../addons/include/xbmc_vis_dll.h"
 #include <math.h>
 #include <GL/glew.h>
 
@@ -40,35 +40,6 @@ GLfloat z_angle = 0.0, z_speed = 0.0;
 GLfloat heights[16][16], cHeights[16][16], scale;
 GLfloat hSpeed = 0.05;
 GLenum  g_mode = GL_FILL;
-vector<VisSetting> g_vecSettings;
-
-extern "C" void Create(void* pd3dDevice, int iPosX, int iPosY, int iWidth, int iHeight, const char* szVisualisationName,
-                       float fPixelRatio, const char *szSubModuleName)
-{
-  g_vecSettings.clear();
-  m_uiVisElements = 0;
-  VisSetting scale(VisSetting::SPIN, "Bar Height");
-  scale.AddEntry("Default");
-  scale.AddEntry("Big");
-  scale.AddEntry("Very Big");
-  scale.AddEntry("Small");
-
-  VisSetting mode(VisSetting::SPIN, "Mode");
-  mode.AddEntry("Default");
-  mode.AddEntry("Wireframe");
-  mode.AddEntry("Points");
-
-  VisSetting speed(VisSetting::SPIN, "Speed");
-  speed.AddEntry("Default");
-  speed.AddEntry("Slow");
-  speed.AddEntry("Very Slow");
-  speed.AddEntry("Fast");
-  speed.AddEntry("Very Fast");
-
-  g_vecSettings.push_back( scale );
-  g_vecSettings.push_back( mode );
-  g_vecSettings.push_back( speed );
-}
 
 void draw_rectangle(GLfloat x1, GLfloat y1, GLfloat z1, GLfloat x2, GLfloat y2, GLfloat z2)
 {
@@ -155,13 +126,24 @@ void draw_bars(void)
           cHeights[y][x] -= hSpeed;
       }
       draw_bar(x_offset, z_offset,
-               cHeights[y][x], r_base - (x * (r_base / 15.0)),
-               x * (1.0 / 15), b_base);
+        cHeights[y][x], r_base - (x * (r_base / 15.0)),
+        x * (1.0 / 15), b_base);
     }
   }
   glEnd();
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glPopMatrix();
+}
+
+//-- Create -------------------------------------------------------------------
+// Called on load. Addon should fully initalize or return error status
+//-----------------------------------------------------------------------------
+ADDON_STATUS Create(void* hdl, void* props)
+{
+  if (/*!hdl || */!props)
+    return STATUS_UNKNOWN;
+
+  return STATUS_NEED_SETTINGS;
 }
 
 //-- Render -------------------------------------------------------------------
@@ -233,7 +215,7 @@ extern "C" void Stop()
 
 }
 
-extern "C" void AudioData(short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int i,c;
   int y=0;
@@ -293,105 +275,168 @@ extern "C" bool OnAction(long flags, void *param)
 //-- GetPresets ---------------------------------------------------------------
 // Return a list of presets to XBMC for display
 //-----------------------------------------------------------------------------
-extern "C" void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked)
+extern "C" viz_preset_list_t GetPresets()
 {
+  return NULL;
+}
 
+//-- Remove -------------------------------------------------------------------
+// Do everything before unload of this add-on
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+void Remove()
+{
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Returns true if this add-on use settings
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+bool HasSettings()
+{
+  return true;
+}
+
+//-- GetStatus ---------------------------------------------------------------
+// Returns the current Status of this visualisation
+// !!! Add-on master function !!!
+//-----------------------------------------------------------------------------
+ADDON_STATUS GetStatus()
+{
+  return STATUS_OK;
 }
 
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 //-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
-{ 
-  m_uiVisElements = VisUtils::VecToStruct(g_vecSettings, &m_structSettings);
-  *sSet = m_structSettings;
-  return m_uiVisElements;
-}
-
-extern "C" void FreeSettings()
+extern "C" addon_settings_t GetSettings()
 {
-  VisUtils::FreeStruct(m_uiVisElements, &m_structSettings);
+  // create settings list and setting pointers
+  addon_settings_t settings = NULL;
+  addon_setting_t setting = NULL;
+  addon_setting_t setting2 = NULL;
+  addon_setting_t setting3 = NULL;
+  int err = 0;
+
+  // allocate the structures
+  settings = addon_settings_create();
+  setting = addon_setting_create();
+  setting2 = addon_setting_create();
+  setting3 = addon_setting_create();
+
+  if (!settings || !setting || !setting2 || !setting3) {
+    return NULL;
+  }
+
+  addon_setting_set_id(setting, "Size");
+  addon_setting_set_type(setting, SETTING_ENUM);
+  addon_setting_set_label(setting, "30000");
+  addon_setting_set_lvalues(setting, "30001|30002|30003|30004");
+
+  addon_setting_set_id(setting2, "Mode");
+  addon_setting_set_type(setting2, SETTING_ENUM);
+  addon_setting_set_label(setting2, "30005");
+  addon_setting_set_lvalues(setting2, "30006|30007|30008");
+
+  addon_setting_set_id(setting3, "Speed");
+  addon_setting_set_type(setting3, SETTING_ENUM);
+  addon_setting_set_label(setting3, "30009");
+  addon_setting_set_lvalues(setting3, "30010|30011|30012|30013|30014");
+
+  if (addon_settings_add_item(settings, setting) == 0)
+    return NULL;
+  if (addon_settings_add_item(settings, setting2) == 0)
+    return NULL;
+  if (addon_settings_add_item(settings, setting3) == 0)
+    return NULL;
+
+  return settings;
 }
 
-//-- UpdateSetting ------------------------------------------------------------
-// Handle setting change request from XBMC
+//-- SetSetting ---------------------------------------------------------------
+// Set a specific Setting value (called from XBMC)
+// !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void UpdateSetting(int num, StructSetting*** sSet)
+ADDON_STATUS SetSetting(const char *strSetting, const void* value)
 {
-  VisUtils::StructToVec(m_uiVisElements, sSet, &g_vecSettings);
+  if (!strSetting || !value)
+    return STATUS_UNKNOWN;
 
-  if ( (int)g_vecSettings.size() <= num || num < 0 )
-    return;
-
-  if (strcmp(g_vecSettings[num].name, "Size")==0)
+  if (strcmp(strSetting, "Mode")==0)
   {
-    switch (g_vecSettings[num].current)
+    switch (*(int*) value)
     {
-    case 0:
-      scale = 1.0 / log(256.0);
-      break;
+      case 1:
+        g_mode = GL_LINE;
+        break;
 
+      case 2:
+        g_mode = GL_POINT;
+        break;
+
+      case 0:
+      default:
+        g_mode = GL_FILL;
+        break;
+    }
+    return STATUS_OK;
+  }
+  else if (strcmp(strSetting, "Size")==0)
+  {
+    switch (*(int*) value)
+    {
     case 1:
-      scale = 2.0 / log(256.0);
+      scale = 2.f / log(256.f);
       break;
 
     case 2:
-      scale = 3.0 / log(256.0);
+      scale = 3.f / log(256.f);
       break;
 
     case 3:
-      scale = 0.5 / log(256.0);
+      scale = 0.5f / log(256.f);
       break;
 
     case 4:
-      scale = 0.33 / log(256.0);
+      scale = 0.33f / log(256.f);
+      break;
+
+    case 0:
+    default:
+      scale = 1.f / log(256.f);
       break;
     }
+    return STATUS_OK;
   }
-
-  if (strcmp(g_vecSettings[num].name, "Speed")==0)
+  else if (strcmp(strSetting, "Speed")==0)
   {
-    switch (g_vecSettings[num].current)
+    switch (*(int*) value)
     {
-    case 0:
-      hSpeed = 0.05;
-      break;
-
     case 1:
-      hSpeed = 0.025;
+      hSpeed = 0.025f;
       break;
 
     case 2:
-      hSpeed = 0.0125;
+      hSpeed = 0.0125f;
       break;
 
     case 3:
-      hSpeed = 0.10;
+      hSpeed = 0.1f;
       break;
 
     case 4:
-      hSpeed = 0.20;
+      hSpeed = 0.2f;
       break;
-    }
-  }
 
-  if (strcmp(g_vecSettings[num].name, "Mode")==0)
-  {
-    switch (g_vecSettings[num].current)
-    {
     case 0:
-      g_mode = GL_FILL;
-      break;
-
-    case 1:
-      g_mode = GL_LINE;
-      break;
-
-    case 2:
-      g_mode = GL_POINT;
+    default:
+      hSpeed = 0.05f;
       break;
     }
+    return STATUS_OK;
   }
+
+  return STATUS_UNKNOWN;
 }
 
 //-- GetSubModules ------------------------------------------------------------

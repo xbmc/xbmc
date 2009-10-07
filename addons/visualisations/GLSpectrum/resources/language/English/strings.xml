@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Bar Height</string>
+    <string id="30001">Default</string>
+    <string id="30002">Big</string>
+    <string id="30003">Very Big</string>
+    <string id="30004">Small</string>
+    <string id="30005">Mode</string>
+    <string id="30006">Filled</string>
+    <string id="30007">Wireframe</string>
+    <string id="30008">Points</string>
+    <string id="30009">Speed</string>
+    <string id="30010">Default</string>
+    <string id="30011">Slow</string>
+    <string id="30012">Very Slow</string>
+    <string id="30013">Fast</string>
+    <string id="30014">Very Fast</string>
+</strings>

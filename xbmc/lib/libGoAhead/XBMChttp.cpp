@@ -30,6 +30,8 @@
 #include "MusicDatabase.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowSlideShow.h"
+#include "AddonManager.h"
+#include "Addon.h"
 #include "GUIMediaWindow.h"
 #include "GUIWindowFileManager.h"
 #include "GUIButtonScroller.h"
@@ -2232,10 +2234,16 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
   CStdString albums="", album, artist="", tmp;
   double relevance;
   bool rel = false;
-  SScraperInfo info;
-  info.strContent = "albums";
-  info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-  CMusicInfoScraper scraper(info); 
+  ADDON::AddonPtr addon;
+  if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, g_guiSettings.GetString("musiclibrary.defaultscraper"), addon))
+    SetResponse(openTag+"Error");
+
+  ADDON::CScraperPtr scraper;
+  scraper = boost::dynamic_pointer_cast<ADDON::CScraper>(addon);
+  if (!scraper)
+    return 0; //?
+
+  CMusicInfoScraper parser(scraper); 
 
   if (numParas<1)
     return SetResponse(openTag+"Error:Missing album name");
@@ -2248,24 +2256,24 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
       if (numParas>1)
       {
         artist = paras[1];
-        scraper.FindAlbuminfo(album, artist);
+        parser.FindAlbuminfo(album, artist);
         if (numParas>2)
           rel = (paras[2]=="1");
       }
       else
-        scraper.FindAlbuminfo(album);
+        parser.FindAlbuminfo(album);
       //wait a max of 20s
-      while (!scraper.Completed() && cnt++<200)
+      while (!parser.Completed() && cnt++<200)
         Sleep(100);
-      if (scraper.Successfull())
+      if (parser.Successfull())
       {
         // did we find at least 1 album?
-        int iAlbumCount=scraper.GetAlbumCount();
+        int iAlbumCount=parser.GetAlbumCount();
         if (iAlbumCount >=1)
         {
           for (int i=0; i < iAlbumCount; ++i)
           {
-            CMusicAlbumInfo& info = scraper.GetAlbum(i);
+            CMusicAlbumInfo& info = parser.GetAlbum(i);
             albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL().m_url[0].m_url;
             if (rel)
             {
@@ -2300,17 +2308,18 @@ int CXbmcHttp::xbmcChooseAlbum(int numParas, CStdString paras[])
     {
       CMusicAlbumInfo musicInfo;//("", "") ;
       XFILE::CFileCurl http;
-      SScraperInfo info; // TODO - WTF is this code supposed to do?
-      if (musicInfo.Load(http,info))
-      {
-        if (musicInfo.GetAlbum().thumbURL.m_url.size() > 0)
-         output=openTag+"image:" + musicInfo.GetAlbum().thumbURL.m_url[0].m_url;
+      return 0;
+      //SScraperInfo info; // TODO - WTF is this code supposed to do?
+      //if (musicInfo.Load(http,info))
+      //{
+      //  if (musicInfo.GetAlbum().thumbURL.m_url.size() > 0)
+      //   output=openTag+"image:" + musicInfo.GetAlbum().thumbURL.m_url[0].m_url;
 
-        output+=closeTag+openTag+"review:" + musicInfo.GetAlbum().strReview;
-        return SetResponse(output) ;
-      }
-      else
-        return SetResponse(openTag+"Error:Loading musinInfo");
+      //  output+=closeTag+openTag+"review:" + musicInfo.GetAlbum().strReview;
+      //  return SetResponse(output) ;
+      //}
+      //else
+      //  return SetResponse(openTag+"Error:Loading musinInfo");
     }
     catch (...)
     {
@@ -3253,7 +3262,7 @@ CStdString CXbmcHttpShim::flushResult(int eid, webs_t wp, const CStdString &outp
   return "";
 }
 
-CStdString CXbmcHttpShim::xbmcExternalCall(char *command)
+CStdString CXbmcHttpShim::xbmcExternalCall(const char *command)
 {
   if (m_pXbmcHttp && m_pXbmcHttp->shuttingDown)
       return "";

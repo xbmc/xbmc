@@ -83,7 +83,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
         int currpreset=0, numpresets=0;
         bool locked;
 
-        pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);
+        /*pVis->GetPresets(&pPresets,&currpreset,&numpresets,&locked);*/
         if (numpresets == 1 || !pPresets)
           return true;
       }
@@ -149,10 +149,10 @@ bool CGUIWindowVisualisation::OnMessage(CGUIMessage& message)
   case GUI_MSG_GET_VISUALISATION:
     {
 //      message.SetControlID(CONTROL_VIS);
-      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
-      if (pVisControl)
-        message.SetPointer(pVisControl->GetVisualisation());
-      return true;
+//      CGUIVisualisationControl *pVisControl = (CGUIVisualisationControl *)GetControl(CONTROL_VIS);
+//     if (pVisControl)
+//        message.SetPointer(pVisControl->GetVisualisation());
+//     return true;
     }
     break;
   case GUI_MSG_VISUALISATION_ACTION:

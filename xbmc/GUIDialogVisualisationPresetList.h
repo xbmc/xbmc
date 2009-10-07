@@ -36,8 +36,8 @@ public:
   virtual void Render();
 
 protected:
-  void SetVisualisation(CVisualisation *pVisualisation);
-  CVisualisation *m_pVisualisation;
+  void Update();
+  boost::shared_ptr<CVisualisation> m_addon;
   CFileItemList* m_vecPresets;
   int m_currentPreset;
 };

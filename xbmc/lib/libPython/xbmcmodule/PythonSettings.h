@@ -37,7 +37,6 @@
 #else
   #include "lib/libPython/Python/Include/Python.h"
 #endif
-#include "ScriptSettings.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -45,10 +44,10 @@ extern "C" {
 
 namespace PYXBMC
 {
-  typedef struct {
+ /* typedef struct {
     PyObject_HEAD
     CScriptSettings* pSettings;
-  } Settings;
+  } Settings;*/
 
   extern PyTypeObject Settings_Type;
   void initSettings_Type();

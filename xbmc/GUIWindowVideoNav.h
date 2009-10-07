@@ -39,7 +39,7 @@ public:
 
   virtual void ClearFileItems();
   virtual void OnFinalizeFileItems(CFileItemList &items);
-  virtual void OnInfo(CFileItem* pItem, const SScraperInfo&info);
+  virtual void OnInfo(CFileItem* pItem, const ADDON::CScraperPtr &info);
   static bool DeleteItem(CFileItem* pItem, bool bUnavailable=false);
 
 protected:

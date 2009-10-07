@@ -1,6 +1,8 @@
 INCLUDES=-I. -I.. -I../../ -I../linux -I../cores -I../../guilib
 
-SRCS=AlarmClock.cpp \
+SRCS=Addon.cpp \
+     AddonManager.cpp \
+     AlarmClock.cpp \
      Archive.cpp \
      Builtins.cpp \
      CharsetConverter.cpp \

@@ -1480,14 +1480,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     }
     break;
   case VISUALISATION_NAME:
-    {
-      strLabel = g_guiSettings.GetString("mymusic.visualisation");
-      if (strLabel != "None" && strLabel.size() > 4)
-      { // make it look pretty
-        strLabel = strLabel.Left(strLabel.size() - 4);
-        strLabel[0] = toupper(strLabel[0]);
-      }
-    }
+    strLabel = g_guiSettings.GetString("mymusic.visualisation");
     break;
   case FANART_COLOR1:
     {
@@ -4212,7 +4205,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       CVideoDatabase db;
       if (db.Open())
       {
-        m_libraryHasMovies = db.HasContent(VIDEODB_CONTENT_MOVIES) ? 1 : 0;
+        m_libraryHasMovies = db.HasContent(CONTENT_MOVIES) ? 1 : 0;
         db.Close();
       }
     }
@@ -4225,7 +4218,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       CVideoDatabase db;
       if (db.Open())
       {
-        m_libraryHasTVShows = db.HasContent(VIDEODB_CONTENT_TVSHOWS) ? 1 : 0;
+        m_libraryHasTVShows = db.HasContent(CONTENT_TVSHOWS) ? 1 : 0;
         db.Close();
       }
     }
@@ -4238,7 +4231,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       CVideoDatabase db;
       if (db.Open())
       {
-        m_libraryHasMusicVideos = db.HasContent(VIDEODB_CONTENT_MUSICVIDEOS) ? 1 : 0;
+        m_libraryHasMusicVideos = db.HasContent(CONTENT_MUSICVIDEOS) ? 1 : 0;
         db.Close();
       }
     }

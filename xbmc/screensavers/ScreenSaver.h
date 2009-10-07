@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,44 +18,22 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-// Screensaver.h: interface for the CScreensaver class.
-//
-//////////////////////////////////////////////////////////////////////
-
-#if !defined(AFX_ScreenSaver_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)
-#define AFX_ScreenSaver_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_
-
-#if _MSC_VER > 1000
 #pragma once
-#endif // _MSC_VER > 1000
 
+#include "AddonDll.h"
 #include "DllScreenSaver.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-}
-#endif
-
-#include <memory>
-
-class CScreenSaver
+class CScreenSaver public ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>
 {
 public:
-  CScreenSaver(struct ScreenSaver* pScr, DllScreensaver* pDll, const CStdString& strScreenSaverName);
-  ~CScreenSaver();
+  CScreenSaver(const AddonProps& props) : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(props) {};
+  virtual ~CScreenSaver();
 
   // Things that MUST be supplied by the child classes
-  void Create();
   void Start();
   void Render();
   void Stop();
   void GetInfo(SCR_INFO *info);
-
-protected:
-  std::auto_ptr<struct ScreenSaver> m_pScr;
-  std::auto_ptr<DllScreensaver> m_pDll;
-  CStdString m_strScreenSaverName;
 };
 
 

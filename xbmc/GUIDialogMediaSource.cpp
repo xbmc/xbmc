@@ -166,7 +166,7 @@ bool CGUIDialogMediaSource::ShowAndAddMediaSource(const CStdString &type)
     if (type == "video")
     {
       if (dialog->m_bRunScan)
-        CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_info,dialog->m_settings);
+        CGUIWindowVideoBase::OnScan(share.strPath,dialog->m_settings);
 
     }
   }
@@ -436,7 +436,7 @@ void CGUIDialogMediaSource::OnOK()
     if (share.strPath.Left(9).Equals("plugin://"))
     {
       CStdString strPath=share.strPath;
-      strPath.Replace("plugin://","special://home/plugins/");
+      strPath.Replace("plugin://","special://home/addons/plugins/");
       CFileItem item(strPath,true);
       item.SetCachedProgramThumb();
       if (!item.HasThumbnail())

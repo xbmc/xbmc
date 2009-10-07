@@ -43,7 +43,6 @@
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
-#include "visualizations/VisualisationFactory.h"
 #include "PlayListPlayer.h"
 #include "SkinInfo.h"
 #include "GUIAudioManager.h"
@@ -55,12 +54,14 @@
 #include "GUIDialogGamepad.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
+#include "GUIDialogAddonBrowser.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "GUIWindowPrograms.h"
+#include "AddonManager.h"
 #include "MediaManager.h"
 #include "utils/Network.h"
 #ifdef HAS_WEB_SERVER
@@ -95,9 +96,6 @@
 #include "WINDirectSound.h"
 #endif
 #include <map>
-#include "ScraperSettings.h"
-#include "ScriptSettings.h"
-#include "GUIDialogPluginSettings.h"
 #include "Settings.h"
 #include "AdvancedSettings.h"
 #include "MouseStat.h"
@@ -107,6 +105,7 @@
 
 using namespace std;
 using namespace DIRECTORY;
+using namespace ADDON;
 
 #define CONTROL_GROUP_BUTTONS           0
 #define CONTROL_GROUP_SETTINGS          1
@@ -426,22 +425,32 @@ void CGUIWindowSettingsCategory::CreateSettings()
     else if (strSetting.Equals("musiclibrary.defaultscraper"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), "music");
+      FillInScrapers(pControl, g_guiSettings.GetString("musiclibrary.defaultscraper"), CONTENT_MUSIC);
     }
     else if (strSetting.Equals("scrapers.moviedefault"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.moviedefault"), "movies");
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.moviedefault"), CONTENT_MOVIES);
     }
     else if (strSetting.Equals("scrapers.tvshowdefault"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.tvshowdefault"), "tvshows");
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.tvshowdefault"), CONTENT_TVSHOWS);
     }
     else if (strSetting.Equals("scrapers.musicvideodefault"))
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.musicvideodefault"), "musicvideos");
+      FillInScrapers(pControl, g_guiSettings.GetString("scrapers.musicvideodefault"), CONTENT_MUSICVIDEOS);
+    }
+    else if (strSetting.Equals("pvr.defaultscraper"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("pvr.defaultscraper"), CONTENT_PVR);
+    }
+    else if (strSetting.Equals("programfiles.defaultscraper"))
+    {
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, g_guiSettings.GetString("programfiles.defaultscraper"), CONTENT_PROGRAMS);
     }
     else if (strSetting.Equals("karaoke.port0voicemask"))
     {
@@ -1078,6 +1087,18 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
     }
+    else if (!strSetting.Equals("pvr.enabled")
+      && strSetting.Left(4).Equals("pvr."))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.enabled"));
+      if (strSetting.Equals("pvr.infotime"))
+      {
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("pvr.enabled") && g_guiSettings.GetBool("pvr.infoswitch"));
+
+      }
+    }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
     {
@@ -1466,10 +1487,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
     else if (strSetting.Equals("weather.pluginsettings"))
     {
-      // Create our base path
-      CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
+      //// Create our base path
+      //CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
+      //CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      //if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
     }
   }
 }
@@ -1602,7 +1623,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (pControl->GetValue() == 0)
       pSettingString->SetData("None");
     else
-      pSettingString->SetData( CVisualisation::GetCombinedName( pControl->GetCurrentLabel() ) );
+      pSettingString->SetData(pControl->GetCurrentLabel());
   }
   else if (strSetting.Equals("system.debuglogging"))
   {
@@ -1647,31 +1668,146 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.SetString("karaoke.port3voicemask", pControl->GetCurrentLabel());
     FillInVoiceMaskValues(3, g_guiSettings.GetSetting("karaoke.port3voicemask"));
   }
+  else if (strSetting.Equals("mymusic.managevisual"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_VIZ, true))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_VIZ);
+      CSetting *pSetting = g_guiSettings.GetSetting("mymusic.visualisation");
+      FillInVisualisations(pSetting, GetSetting(pSetting->GetSetting())->GetID());
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_VIZ);
+    }
+  }
+  else if (strSetting.Equals("mymusic.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_MUSIC))
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
+    else
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
+  }
   else if (strSetting.Equals("musiclibrary.cleanup"))
   {
     CMusicDatabase musicdatabase;
     musicdatabase.Clean();
     CUtil::DeleteMusicDatabaseDirectoryCache();
   }
+  //TODO remove duplication
   else if (strSetting.Equals("musiclibrary.defaultscraper"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), "music");
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSIC);
+  }
+  else if (strSetting.Equals("musiclibrary.managescraper"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_MUSIC))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
+      CSetting *pSetting = g_guiSettings.GetSetting("musiclibrary.defaultscraper");
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSIC);
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
+    }
+  }
+  else if (strSetting.Equals("pvr.defaultscraper"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_PVR);
+  }
+  else if (strSetting.Equals("pvr.managescraper"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_PVR))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
+      CSetting *pSetting = g_guiSettings.GetSetting("pvr.defaultscraper");
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_PVR);
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
+    }
   }
   else if (strSetting.Equals("scrapers.moviedefault"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), "movies");
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MOVIES); //TODO langify these
+  }
+  else if (strSetting.Equals("scrapers.managemoviescraper"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_MOVIES))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
+      CSetting *pSetting = g_guiSettings.GetSetting("scrapers.moviedefault");
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MOVIES);
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
+    }
   }
   else if (strSetting.Equals("scrapers.tvshowdefault"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), "tvshows");
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_TVSHOWS);
+  }
+  else if (strSetting.Equals("scrapers.managetvshowscraper"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_TVSHOWS))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
+      CSetting *pSetting = g_guiSettings.GetSetting("scrapers.tvshowdefault");
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_TVSHOWS);
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
+    }
   }
   else if (strSetting.Equals("scrapers.musicvideodefault"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    FillInScrapers(pControl, pControl->GetCurrentLabel(), "musicvideos");
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSICVIDEOS);
+  }
+  else if (strSetting.Equals("scrapers.managemusicvideoscraper"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_MUSICVIDEOS))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
+      CSetting *pSetting = g_guiSettings.GetSetting("scrapers.musicvideodefault");
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_MUSICVIDEOS);
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
+    }
+  }
+  else if (strSetting.Equals("programfiles.defaultscraper"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_PROGRAMS);
+  }
+  else if (strSetting.Equals("programfiles.managescraper"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCRAPER, true, CONTENT_PROGRAMS))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCRAPER);
+      CSetting *pSetting = g_guiSettings.GetSetting("programfiles.defaultscraper");
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInScrapers(pControl, pControl->GetCurrentLabel(), CONTENT_PROGRAMS);
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_VIZ);
+    }
   }
   else if (strSetting.Equals("videolibrary.cleanup"))
   {
@@ -1808,6 +1944,20 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     JumpToSection(WINDOW_SETTINGS_APPEARANCE, "locale");
   }
+  else if (strSetting.Equals("weather.manageplugins"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_WEATHER))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
+      CSetting *pSetting = g_guiSettings.GetSetting("weather.plugin");
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+      FillInWeatherPlugins(pControl, pControl->GetCurrentLabel());      
+    }
+    else
+    {
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
+    }
+  }
   else if (strSetting.Equals("scrobbler.lastfmsubmit") || strSetting.Equals("scrobbler.lastfmsubmitradio") || strSetting.Equals("scrobbler.lastfmusername") || strSetting.Equals("scrobbler.lastfmpassword"))
   {
     CStdString strPassword=g_guiSettings.GetString("scrobbler.lastfmpassword");
@@ -1897,7 +2047,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.SetString("servers.ftpserveruser", pControl->GetCurrentLabel());
   }
 
-  else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || 
+  else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") ||
             strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
   {
     if (strSetting.Equals("servers.webserverport"))
@@ -2218,7 +2368,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else if (iValue == 4)
       strScreenSaver = "Fanart Slideshow"; //Fanart Slideshow
     else
-      strScreenSaver = pControl->GetCurrentLabel() + ".xbs";
+      strScreenSaver = pControl->GetCurrentLabel();
     pSettingString->SetData(strScreenSaver);
   }
   else if (strSetting.Equals("screensaver.preview"))
@@ -2231,6 +2381,18 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CStdString path = pSettingString->GetData();
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(g_settings.m_pictureSources, g_localizeStrings.Get(pSettingString->m_iHeadingString), path))
       pSettingString->SetData(path);
+  }
+  else if (strSetting.Equals("screensaver.manage"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_SCREENSAVER, true))
+    {
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_SCREENSAVER);
+      FillInScreenSavers(g_guiSettings.GetSetting("screensaver.mode"));
+    }
+    else
+    { // reload the existing list
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_SCREENSAVER);
+    }
   }
   else if (strSetting.Equals("pictures.screenshotpath") || strSetting.Equals("mymusic.recordingpath") || strSetting.Equals("cddaripper.path") || strSetting.Equals("subtitles.custompath"))
   {
@@ -2254,6 +2416,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     {
       pSettingString->SetData(path);
     }
+  }
+  else if (strSetting.Equals("pictures.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_PICTURES))
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
   }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
@@ -2441,9 +2608,23 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_VIDEO_FILES);
   }
+  else if (strSetting.Equals("myvideos.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_MOVIES))
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
+    else
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
+  }
   else if (strSetting.Equals("programfiles.savefolderviews"))
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PROGRAMS);
+  }
+  else if (strSetting.Equals("programfiles.manageplugin"))
+  {
+    if (CGUIDialogAddonBrowser::ShowAndGetAddons(ADDON_PLUGIN, true, CONTENT_PROGRAMS))
+      CAddonMgr::Get()->SaveAddonsXML(ADDON_PLUGIN);
+    else
+      CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
   }
   else if (strSetting.Equals("pictures.savefolderviews"))
   {
@@ -3014,64 +3195,26 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     CGUIMessage msg(GUI_MSG_LABEL_RESET, iWinID, iControlID);
     g_windowManager.SendMessage(msg);
   }
-  vector<CStdString> vecVis;
+
   //find visz....
-  CFileItemList items;
-  CDirectory::GetDirectory("special://xbmc/visualisations/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/visualisations/", items);
+  vector<CStdString> vecVis;
+  VECADDONS addons;
 
-  CVisualisationFactory visFactory;
-  CStdString strExtension;
-  for (int i = 0; i < items.Size(); ++i)
+  CAddonMgr::Get()->LoadAddonsXML(ADDON_VIZ);
+
+  CAddonMgr::Get()->GetAddons(ADDON_VIZ, addons);
+  if (!addons.empty())
   {
-    CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder)
+    for (unsigned int i = 0; i < addons.size(); i++)
     {
-      const char *visPath = (const char*)pItem->m_strPath;
-
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".vis")  // normal visualisation
-      {
-#ifdef _LINUX
-        void *handle = dlopen( _P(visPath).c_str(), RTLD_LAZY );
-        if (!handle)
-          continue;
-        dlclose(handle);
-#endif
-        CStdString strLabel = pItem->GetLabel();
-        vecVis.push_back( CVisualisation::GetFriendlyName( strLabel ) );
-      }
-      else if ( strExtension == ".mvis" )  // multi visualisation with sub modules
-      {
-        CVisualisation* vis = visFactory.LoadVisualisation( visPath );
-        if ( vis )
-        {
-          map<string, string> subModules;
-          map<string, string>::iterator iter;
-          string moduleName, path;
-          CStdString visName = pItem->GetLabel();
-          visName = visName.Mid(0, visName.size() - 5);
-
-          // get list of sub modules from the visualisation
-          vis->GetSubModules( subModules );
-
-          for ( iter=subModules.begin() ; iter!=subModules.end() ; iter++ )
-          {
-            // each pair of the map is of the format 'module name' => 'module path'
-            moduleName = iter->first;
-            vecVis.push_back( CVisualisation::GetFriendlyName( visName.c_str(), moduleName.c_str() ).c_str() );
-            CLog::Log(LOGDEBUG, "Module %s for visualisation %s", moduleName.c_str(), visPath);
-          }
-          delete vis;
-        }
-      }
+      const AddonPtr addon = addons.at(i);
+      vecVis.push_back(addon->Name());
     }
-  }
+  } 
 
   CStdString strDefaultVis = pSettingString->GetData();
   if (!strDefaultVis.Equals("None"))
-    strDefaultVis = CVisualisation::GetFriendlyName( strDefaultVis );
+    strDefaultVis = strDefaultVis;
 
   sort(vecVis.begin(), vecVis.end(), sortstringbyname());
 
@@ -3309,47 +3452,26 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
   pControl->AddLabel(g_localizeStrings.Get(108), 3); // PictureSlideShow
   pControl->AddLabel(g_localizeStrings.Get(20425), 4); // Fanart Slideshow
 
-  //find screensavers ....
-  CFileItemList items;
-  CDirectory::GetDirectory( "special://xbmc/screensavers/", items);
-  if (!CSpecialProtocol::XBMCIsHome())
-    CDirectory::GetDirectory("special://home/screensavers/", items);
-
   int iCurrentScr = -1;
   vector<CStdString> vecScr;
-  int i = 0;
-  for (i = 0; i < items.Size(); ++i)
+  VECADDONS addons;
+
+  CAddonMgr::Get()->LoadAddonsXML(ADDON_SCREENSAVER);
+
+  CAddonMgr::Get()->GetAddons(ADDON_SCREENSAVER, addons);
+  if (!addons.empty())
   {
-    CFileItemPtr pItem = items[i];
-    if (!pItem->m_bIsFolder)
+    for (unsigned int i = 0; i < addons.size(); i++)
     {
-      CStdString strExtension;
-      CUtil::GetExtension(pItem->m_strPath, strExtension);
-      if (strExtension == ".xbs")
-      {
-#ifdef _LINUX
-        void *handle = dlopen(_P(pItem->m_strPath).c_str(), RTLD_LAZY);
-        if (!handle)
-        {
-          CLog::Log(LOGERROR, "FillInScreensavers: Unable to load %s, reason: %s", pItem->m_strPath.c_str(), dlerror());
-          continue;
-        }
-        dlclose(handle);
-#endif
-        CStdString strLabel = pItem->GetLabel();
-        vecScr.push_back(strLabel.Mid(0, strLabel.size() - 4));
-      }
+      const AddonPtr addon = addons.at(i);
+      vecScr.push_back(addon->Name());
     }
   }
 
   CStdString strDefaultScr = pSettingString->GetData();
-  CStdString strExtension;
-  CUtil::GetExtension(strDefaultScr, strExtension);
-  if (strExtension == ".xbs")
-    strDefaultScr.Delete(strDefaultScr.size() - 4, 4);
 
   sort(vecScr.begin(), vecScr.end(), sortstringbyname());
-  for (i = 0; i < (int) vecScr.size(); ++i)
+  for (int i = 0; i < (int) vecScr.size(); ++i)
   {
     CStdString strScr = vecScr[i];
 
@@ -3724,42 +3846,63 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   delete state;
 }
 
-void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent)
+void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CONTENT_TYPE& content)
 {
-  CFileItemList items;
-  if (strContent.Equals("music"))
-    CDirectory::GetDirectory("special://xbmc/system/scrapers/music",items,".xml",false);
-  else
-    CDirectory::GetDirectory("special://xbmc/system/scrapers/video",items,".xml",false);
-  int j=0;
-  int k=0;
+  VECADDONS addons;
   pControl->Clear();
-  for ( int i=0;i<items.Size();++i)
+
+  //TODO rewrite this whole function
+  CAddonMgr::Get()->LoadAddonsXML(ADDON_SCRAPER);
+
+  if (content == CONTENT_MUSIC || content == CONTENT_ALBUMS || content == CONTENT_ARTISTS)
+    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MUSIC);
+  else if (content == CONTENT_MOVIES)
+    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MOVIES);
+  else if (content == CONTENT_TVSHOWS || content == CONTENT_EPISODES)
+    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_TVSHOWS);
+  else if (content == CONTENT_PVR)
+    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_PVR);
+  else if (content == CONTENT_MUSICVIDEOS)
+    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MUSICVIDEOS);
+  else if (content == CONTENT_PROGRAMS)
+    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_PROGRAMS);
+
+  if (addons.empty())
   {
-    if (items[i]->m_bIsFolder)
-      continue;
-
-    CScraperParser parser;
-    if (parser.Load(items[i]->m_strPath))
-    {
-      if (parser.GetContent() != strContent && !strContent.Equals("music"))
-        continue;
-
-      if (parser.GetName().Equals(strSelected) || CUtil::GetFileName(items[i]->m_strPath).Equals(strSelected))
-      {
-        if (strContent.Equals("music")) // native strContent would be albums or artists but we're using the same scraper for both
-          g_guiSettings.SetString("musiclibrary.defaultscraper", CUtil::GetFileName(items[i]->m_strPath));
-        else if (strContent.Equals("movies"))
-          g_guiSettings.SetString("scrapers.moviedefault", CUtil::GetFileName(items[i]->m_strPath));
-        else if (strContent.Equals("tvshows"))
-          g_guiSettings.SetString("scrapers.tvshowdefault", CUtil::GetFileName(items[i]->m_strPath));
-        else if (strContent.Equals("musicvideos"))
-          g_guiSettings.SetString("scrapers.musicvideodefault", CUtil::GetFileName(items[i]->m_strPath));
-        k = j;
-      }
-      pControl->AddLabel(parser.GetName(),j++);
-    }
+    pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
+    pControl->SetValue(0);
+    return;
   }
+
+  int j = 0;
+  int k = 0;
+  for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
+  {
+    //TODO confirm music vs albums content 
+    //if (parser.GetContent() != content && content == CONTENT_MUSIC)
+    //  continue;
+
+    if ((*it)->Name().Equals(strSelected))
+    {
+      if (content == CONTENT_MUSIC) // native strContent would be albums or artists but we're using the same scraper for both
+        g_guiSettings.SetString("musiclibrary.defaultscraper", (*it)->Name());
+      else if (content == CONTENT_MOVIES)
+        g_guiSettings.SetString("scrapers.moviedefault", (*it)->Name());
+      else if (content == CONTENT_TVSHOWS)
+        g_guiSettings.SetString("scrapers.tvshowdefault", (*it)->Name());
+      else if (content == CONTENT_MUSICVIDEOS)
+        g_guiSettings.SetString("scrapers.musicvideodefault", (*it)->Name());
+      else if (content == CONTENT_PVR)
+        g_guiSettings.SetString("pvr.defaultscraper", (*it)->Name());
+      else if (content == CONTENT_PROGRAMS)
+        g_guiSettings.SetString("programfiles.defaultscraper", (*it)->Name());
+      k = j;
+    }
+    pControl->AddLabel((*it)->Name(),j++);
+  }
+  if (j == 0)
+    pControl->AddLabel(g_localizeStrings.Get(231), 0); // "None"
+
   pControl->SetValue(k);
 }
 
@@ -3848,31 +3991,31 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
 
 void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {
+  VECADDONS addons;
   int j=0;
   int k=0;
   pControl->Clear();
   // add our disable option
   pControl->AddLabel(g_localizeStrings.Get(13611), j++);
 
-  CFileItemList items;
-  if (CDirectory::GetDirectory("special://home/plugins/weather/", items, "/", false))
+  //find weather plugins....
+  CAddonMgr::Get()->LoadAddonsXML(ADDON_PLUGIN);
+  CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_WEATHER);
+  if (!addons.empty())
   {
-    for (int i=0; i<items.Size(); ++i)
-    {    
+    for (unsigned int i = 0; i < addons.size(); i++)
+    {
+      AddonPtr addon = addons.at(i);
+
       // create the full path to the plugin
-      CStdString plugin;
-      CStdString pluginPath = items[i]->m_strPath;
-      // remove slash at end so we can use the plugins folder as plugin name
-      CUtil::RemoveSlashAtEnd(pluginPath);
-      // add default.py to our plugin path to create the full path
-      CUtil::AddFileToFolder(pluginPath, "default.py", plugin);
-      if (XFILE::CFile::Exists(plugin))
+      CStdString strFileName = addon->Path() + addon->LibName();
+      if (XFILE::CFile::Exists(strFileName))
       {
         // is this the users choice
-        if (CUtil::GetFileName(pluginPath).Equals(strSelected))
+        if (addon->Name().Equals(strSelected))
           k = j;
         // we want to use the plugins folder as name
-        pControl->AddLabel(CUtil::GetFileName(pluginPath), j++);
+        pControl->AddLabel(addon->Name(), j++);
       }
     }
   }
