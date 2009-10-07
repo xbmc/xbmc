@@ -1632,7 +1632,76 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 void CLinuxRendererGL::RenderCrystalHD(int index, int field)
 {
 #ifdef HAVE_LIBCRYSTALHD
-  RenderSinglePass(index, field);
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANES &planes = fields[field];
+
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
+  if (m_reloadShaders)
+  {
+    m_reloadShaders = 0;
+    LoadShaders(field);
+  }
+
+  glDisable(GL_DEPTH_TEST);
+
+  // Y
+  glActiveTextureARB(GL_TEXTURE0);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, planes[0].id);
+
+  // UV
+  glActiveTextureARB(GL_TEXTURE1);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, planes[1].id);
+
+  glActiveTextureARB(GL_TEXTURE0);
+  VerifyGLState();
+
+  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetYTexture(0);
+  ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetUTexture(1);
+  if     (field == FIELD_ODD)
+    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(1);
+  else if(field == FIELD_EVEN)
+    ((BaseYUV2RGBGLSLShader*)m_pYUVShader)->SetField(0);
+
+  m_pYUVShader->Enable();
+
+  glBegin(GL_QUADS);
+
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y1);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y1);
+  glVertex4f((float)rd.left, (float)rd.top, 0, 1.0f );
+
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y1);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y1);
+  glVertex4f((float)rd.right, (float)rd.top, 0, 1.0f);
+
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y2);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y2);
+  glVertex4f((float)rd.right, (float)rd.bottom, 0, 1.0f);
+
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y2);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y2);
+  glVertex4f((float)rd.left, (float)rd.bottom, 0, 1.0f);
+
+  glEnd();
+  VerifyGLState();
+
+  m_pYUVShader->Disable();
+  VerifyGLState();
+
+  glActiveTextureARB(GL_TEXTURE1);
+  glDisable(m_textureTarget);
+
+  glActiveTextureARB(GL_TEXTURE0);
+  glDisable(m_textureTarget);
+
+  glMatrixMode(GL_MODELVIEW);
+
+  VerifyGLState();
 #endif
 }
 
