@@ -73,6 +73,7 @@ unsigned int CTimeUtils::GetTimeMS()
   uint64_t now_mstime;
   struct timespec ts;
 
+  clock_gettime(CLOCK_MONOTONIC, &ts);
   now_mstime = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
   if (start_mstime == 0)
   {
