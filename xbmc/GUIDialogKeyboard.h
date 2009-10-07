@@ -85,7 +85,7 @@ private:
   enum FILTERING { FILTERING_NONE = 0, FILTERING_CURRENT, FILTERING_SEARCH };
   FILTERING m_filtering;
 
-  DWORD m_lastRemoteClickTime;
+  unsigned int m_lastRemoteClickTime;
   WORD m_lastRemoteKeyClicked;
   int m_indexInSeries;
   CStdString m_strHeading;

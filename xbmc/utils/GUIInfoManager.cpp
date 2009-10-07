@@ -3309,10 +3309,10 @@ CStdString CGUIInfoManager::GetBuild()
   return tmp;
 }
 
-void CGUIInfoManager::SetDisplayAfterSeek(DWORD dwTimeOut)
+void CGUIInfoManager::SetDisplayAfterSeek(unsigned int timeOut)
 {
-  if(dwTimeOut>0)
-    m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  dwTimeOut;
+  if (timeOut>0)
+    m_AfterSeekTimeout = CTimeUtils::GetFrameTime() +  timeOut;
   else
     m_AfterSeekTimeout = 0;
 }

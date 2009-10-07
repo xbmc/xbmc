@@ -24,7 +24,6 @@
 
 #include "XBMC_events.h"
 #include "Geometry.h"
-#include "system.h" // for DWORD
 
 #define XBMC_BUTTON(X)		(1 << ((X)-1))
 #define XBMC_BUTTON_LEFT		1
@@ -114,8 +113,8 @@ private:
   float m_speedY;
 
   // active/click timers
-  DWORD m_lastActiveTime;
-  DWORD m_lastClickTime[5];
+  unsigned int m_lastActiveTime;
+  unsigned int m_lastClickTime[5];
 
 #ifdef HAS_SDL_XX
   SDL_Cursor *m_visibleCursor;

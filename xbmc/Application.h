@@ -240,7 +240,7 @@ public:
 
   int GlobalIdleTime();
   void NewFrame();
-  bool WaitFrame(DWORD timeout);
+  bool WaitFrame(unsigned int timeout);
 
   void EnablePlatformDirectories(bool enable=true)
   {

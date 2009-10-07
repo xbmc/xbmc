@@ -1076,7 +1076,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
     items.m_strPath = parent_id;
     if (!items.Load()) {
         // cache anything that takes more than a second to retrieve
-        DWORD time = CTimeUtils::GetTimeMS() + 1000;
+        unsigned int time = CTimeUtils::GetTimeMS() + 1000;
 
         if (parent_id.StartsWith("virtualpath://")) {
             CUPnPVirtualPathDirectory dir;
@@ -2343,4 +2343,5 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
       tag.m_strRuntime.Format("%d",resource->m_Duration);
     return NPT_SUCCESS;
 }
+
 

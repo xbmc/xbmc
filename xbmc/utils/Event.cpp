@@ -93,12 +93,12 @@ HANDLE CEvent::GetHandle()
   return m_hEvent;
 }
 
-bool CEvent::WaitMSec(DWORD dwMillSeconds)
+bool CEvent::WaitMSec(unsigned int milliSeconds)
 {
 
   if (m_hEvent)
   {
-    DWORD dwResult = WaitForSingleObject(m_hEvent, dwMillSeconds);
+    DWORD dwResult = WaitForSingleObject(m_hEvent, milliSeconds);
     if (dwResult == WAIT_OBJECT_0) return true;
   }
   return false;

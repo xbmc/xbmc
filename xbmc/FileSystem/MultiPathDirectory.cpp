@@ -54,7 +54,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   if (!GetPaths(strPath, vecPaths))
     return false;
 
-  DWORD progressTime = CTimeUtils::GetTimeMS() + 3000L;   // 3 seconds before showing progress bar
+  unsigned int progressTime = CTimeUtils::GetTimeMS() + 3000L;   // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
 
   unsigned int iFailures = 0;
@@ -247,7 +247,7 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vec
 void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
-  DWORD dwTime = CTimeUtils::GetTimeMS();
+  unsigned int time = CTimeUtils::GetTimeMS();
   if (items.Size() == 0)
     return;
   // sort items by label
@@ -304,7 +304,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
   CLog::Log(LOGDEBUG,
             "CMultiPathDirectory::MergeItems, items = %i,  took %d ms",
-            items.Size(), CTimeUtils::GetTimeMS() - dwTime);
+            items.Size(), CTimeUtils::GetTimeMS() - time);
 }
 
 bool CMultiPathDirectory::SupportsFileOperations(const CStdString &strPath)

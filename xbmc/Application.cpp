@@ -2190,7 +2190,7 @@ void CApplication::RenderScreenSaver()
   }
 }
 
-bool CApplication::WaitFrame(DWORD timeout)
+bool CApplication::WaitFrame(unsigned int timeout)
 {
   bool done = false;
 #ifdef HAS_SDL

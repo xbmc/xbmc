@@ -56,7 +56,7 @@
 #define LOCALIZED_TOKEN_FIRSTID      370
 #define LOCALIZED_TOKEN_LASTID       395
 
-DWORD timeToCallPlugin = 1000;
+unsigned int timeToCallPlugin = 1000;
 /*
 FIXME'S
 >strings are not centered

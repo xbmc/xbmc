@@ -39,7 +39,7 @@ public:
   void Release();
 
   bool Wait();
-  bool WaitMSec(DWORD dwMillSeconds);
+  bool WaitMSec(unsigned int milliSeconds);
 
 protected:
   HANDLE m_hMutex;

@@ -356,7 +356,7 @@ void CThread::SetName( LPCTSTR szThreadName )
 #endif
 }
 
-bool CThread::WaitForThreadExit(DWORD dwMilliseconds)
+bool CThread::WaitForThreadExit(unsigned int milliseconds)
 // Waits for thread to exit, timeout in given number of msec.
 // Returns true when thread ended
 {
@@ -369,7 +369,7 @@ bool CThread::WaitForThreadExit(DWORD dwMilliseconds)
   if(caller > callee)
     SetThreadPriority(m_ThreadHandle, caller);
 
-  if (::WaitForSingleObject(m_ThreadHandle, dwMilliseconds) != WAIT_TIMEOUT)
+  if (::WaitForSingleObject(m_ThreadHandle, milliseconds) != WAIT_TIMEOUT)
     return true;
 
   // restore thread priority if thread hasn't exited
@@ -448,35 +448,35 @@ bool CThread::IsCurrentThread(const ThreadIdentifier tid)
 }
 
 
-DWORD CThread::WaitForSingleObject(HANDLE hHandle, DWORD dwMilliseconds)
+DWORD CThread::WaitForSingleObject(HANDLE hHandle, unsigned int milliseconds)
 {
-  if(dwMilliseconds > 10 && IsCurrentThread())
+  if(milliseconds > 10 && IsCurrentThread())
   {
     HANDLE handles[2] = {hHandle, m_StopEvent};
-    DWORD result = ::WaitForMultipleObjects(2, handles, false, dwMilliseconds);
+    DWORD result = ::WaitForMultipleObjects(2, handles, false, milliseconds);
 
     if(result == WAIT_TIMEOUT || result == WAIT_OBJECT_0)
       return result;
 
-    if( dwMilliseconds == INFINITE )
+    if( milliseconds == INFINITE )
       return WAIT_ABANDONED;
     else
       return WAIT_TIMEOUT;
   }
   else
-    return ::WaitForSingleObject(hHandle, dwMilliseconds);
+    return ::WaitForSingleObject(hHandle, milliseconds);
 }
 
-DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, DWORD dwMilliseconds)
+DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, unsigned int milliseconds)
 {
   // for now not implemented
-  return ::WaitForMultipleObjects(nCount, lpHandles, bWaitAll, dwMilliseconds);
+  return ::WaitForMultipleObjects(nCount, lpHandles, bWaitAll, milliseconds);
 }
 
-void CThread::Sleep(DWORD dwMilliseconds)
+void CThread::Sleep(unsigned int milliseconds)
 {
-  if(dwMilliseconds > 10 && IsCurrentThread())
-    ::WaitForSingleObject(m_StopEvent, dwMilliseconds);
+  if(milliseconds > 10 && IsCurrentThread())
+    ::WaitForSingleObject(m_StopEvent, milliseconds);
   else
-    ::Sleep(dwMilliseconds);
+    ::Sleep(milliseconds);
 }

@@ -72,7 +72,7 @@ void CMusicInfoScanner::Process()
 {
   try
   {
-    DWORD dwTick = CTimeUtils::GetTimeMS();
+    unsigned int tick = CTimeUtils::GetTimeMS();
 
     m_musicDatabase.Open();
 
@@ -151,9 +151,9 @@ void CMusicInfoScanner::Process()
       m_musicDatabase.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      dwTick = CTimeUtils::GetTimeMS() - dwTick;
+      tick = CTimeUtils::GetTimeMS() - tick;
       CStdString strTmp, strTmp1;
-      StringUtils::SecondsToTimeString(dwTick / 1000, strTmp1);
+      StringUtils::SecondsToTimeString(tick / 1000, strTmp1);
       strTmp.Format("My Music: Scanning for music info using worker thread, operation took %s", strTmp1);
       CLog::Log(LOGNOTICE, "%s", strTmp.c_str());
     }

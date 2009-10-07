@@ -230,7 +230,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
   // neither of the players can be forced to
   // continue even if read return 0 as can happen
   // on live streams.
-  DWORD timestamp = CTimeUtils::GetTimeMS() + 5000;
+  unsigned int timestamp = CTimeUtils::GetTimeMS() + 5000;
   while(1)
   {
     datasize = (unsigned int)min((unsigned int) uiBufSize,UINT_MAX);
