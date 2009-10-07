@@ -20,7 +20,7 @@
  */
 
 #include "system.h"
-#include "DBusPowerSyscall.h"
+#include "HALPowerSyscall.h"
 #include "utils/log.h"
 
 #ifdef HAS_DBUS
@@ -29,7 +29,7 @@
 #include <dbus/dbus.h>
 #include <stdlib.h>
 
-CDBusPowerSyscall::CDBusPowerSyscall()
+CHALPowerSyscall::CHALPowerSyscall()
 {
   m_CanPowerdown = true;
   m_CanSuspend   = QueryCapability("power_management.can_suspend");
@@ -37,41 +37,41 @@ CDBusPowerSyscall::CDBusPowerSyscall()
   m_CanReboot    = true;
 }
 
-bool CDBusPowerSyscall::Powerdown()
+bool CHALPowerSyscall::Powerdown()
 {
   return doPowerCall("Shutdown");
 }
-bool CDBusPowerSyscall::Suspend()
+bool CHALPowerSyscall::Suspend()
 {
   return doPowerCall("Suspend");
 }
-bool CDBusPowerSyscall::Hibernate()
+bool CHALPowerSyscall::Hibernate()
 {
   return doPowerCall("Hibernate");
 }
-bool CDBusPowerSyscall::Reboot()
+bool CHALPowerSyscall::Reboot()
 {
   return doPowerCall("Reboot");
 }
 
-bool CDBusPowerSyscall::CanPowerdown()
+bool CHALPowerSyscall::CanPowerdown()
 {
   return m_CanPowerdown;
 }
-bool CDBusPowerSyscall::CanSuspend()
+bool CHALPowerSyscall::CanSuspend()
 {
   return m_CanSuspend;
 }
-bool CDBusPowerSyscall::CanHibernate()
+bool CHALPowerSyscall::CanHibernate()
 {
   return m_CanHibernate;
 }
-bool CDBusPowerSyscall::CanReboot()
+bool CHALPowerSyscall::CanReboot()
 {
   return m_CanReboot;
 }
 
-bool CDBusPowerSyscall::doPowerCall(const char *powerstate)
+bool CHALPowerSyscall::doPowerCall(const char *powerstate)
 {
   DBusMessage* msg;
   DBusMessageIter args;
@@ -116,7 +116,7 @@ bool CDBusPowerSyscall::doPowerCall(const char *powerstate)
   return false;
 }
 
-bool CDBusPowerSyscall::QueryCapability(const char *capability)
+bool CHALPowerSyscall::QueryCapability(const char *capability)
 {
   DBusMessage* msg;
   DBusMessageIter args;

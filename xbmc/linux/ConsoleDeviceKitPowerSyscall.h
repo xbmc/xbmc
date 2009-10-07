@@ -24,10 +24,11 @@
 #define _DBUS_POWER_SYSCALL_H_
 #include "PowerManager.h"
 
-class CDBusPowerSyscall : public IPowerSyscall
+class CConsoleDeviceKitPowerSyscall : public IPowerSyscall
 {
 public:
-  CDBusPowerSyscall();
+  CConsoleDeviceKitPowerSyscall();
+  virtual ~CConsoleDeviceKitPowerSyscall() { }
 
   virtual bool Powerdown();
   virtual bool Suspend();
@@ -40,8 +41,7 @@ public:
   virtual bool CanReboot();
 
 private:
-  bool QueryCapability(const char *capability);
-  bool doPowerCall(const char *powerstate);
+  static bool ConsoleKitMethodCall(const char *method);
 
   bool m_CanPowerdown;
   bool m_CanSuspend;
