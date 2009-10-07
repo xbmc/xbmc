@@ -108,12 +108,10 @@ void CBackgroundPicLoader::Process()
           int iSize = texture->GetWidth() * texture->GetHeight() - MAX_PICTURE_SIZE;
           if ((iSize + (int)texture->GetWidth() > 0) || (iSize + (int)texture->GetHeight() > 0))
             bFullSize = true;
-#if defined(HAS_GL) || defined(HAS_GLES)
           if (!bFullSize && texture->GetWidth() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
           if (!bFullSize && texture->GetHeight() == g_Windowing.GetMaxTextureSize())
             bFullSize = true;
-#endif
         }
         m_pCallback->OnLoadPic(m_iPic, m_iSlideNumber, texture, originalWidth, originalHeight, bFullSize);
         m_isLoading = false;
