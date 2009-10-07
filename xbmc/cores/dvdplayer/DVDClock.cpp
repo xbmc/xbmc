@@ -27,10 +27,10 @@
 #include "utils/log.h"
 
 #if defined(_WIN32)
-static void CTimeUtils::GetTimeMSFrequency(LARGE_INTEGER* freq){ freq->QuadPart = 1000; }
-static void CTimeUtils::GetTimeMSCounter(LARGE_INTEGER* val)   { val->QuadPart = CTimeUtils::GetTimeMS();}
-#define QueryPerformanceFrequency(a) CTimeUtils::GetTimeMSFrequency(a)
-#define QueryPerformanceCounter(a)   CTimeUtils::GetTimeMSCounter(a)
+static void TimeGetTimeFrequency(LARGE_INTEGER* freq){ freq->QuadPart = 1000; }
+static void TimeGetTimeCounter(LARGE_INTEGER* val)   { val->QuadPart = timeGetTime();}
+#define QueryPerformanceFrequency(a) TimeGetTimeFrequency(a)
+#define QueryPerformanceCounter(a)   TimeGetTimeCounter(a)
 #endif
 
 LARGE_INTEGER CDVDClock::m_systemOffset;
