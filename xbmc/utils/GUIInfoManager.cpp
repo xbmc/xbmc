@@ -3294,7 +3294,11 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
 CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
+#ifdef SVN_REV
   tmp.Format("%s r%s", VERSION_STRING, SVN_REV);
+#else
+  tmp.Format("%s", VERSION_STRING);
+#endif
   return tmp;
 }
 
