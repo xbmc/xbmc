@@ -26,7 +26,7 @@
 #include <mach/mach_time.h>
 #endif
 #elif defined(_WIN32)
-#include <windows.h> // for CTimeUtils::GetTimeMS
+#include <windows.h>
 #endif
 
 unsigned int CTimeUtils::frameTime = 0;
