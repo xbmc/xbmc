@@ -21,7 +21,7 @@
 
 #include "TimeUtils.h"
 #ifdef _LINUX
-#include <sys/times.h>
+#include <sys/time.h>
 #ifdef __APPLE__
 #include <mach/mach_time.h>
 #endif
