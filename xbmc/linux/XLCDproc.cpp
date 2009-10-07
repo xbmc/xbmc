@@ -22,7 +22,7 @@
 #include "PlatformInclude.h"
 #include "XLCDproc.h"
 #include "../utils/log.h"
-#include "..utils/TimeUtils.h"
+#include "../utils/TimeUtils.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 
