@@ -142,10 +142,7 @@ void CWeather::DoWork()
 CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
   m_bImagesOkay = false;
-
   Reset();
-
-  srand(CTimeUtils::GetTimeMS());
 }
 
 CWeather::~CWeather(void)
