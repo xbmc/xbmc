@@ -43,13 +43,13 @@ unsigned int CTimeUtils::GetFrameTime()
 
 unsigned int CTimeUtils::GetTimeMS()
 {
-  // best replacement for windows CTimeUtils::GetTimeMS
+  // best replacement for windows timeGetTime/GetTickCount
   // 1st call sets start_mstime, subsequent are the diff
   // between start_mstime and now_mstime to match SDL_GetTick behavior
   // of previous usage. We might want to change this as CTimeUtils::GetTimeMS is 
   // time (ms) since system startup. 
 #if defined(_WIN32)
-  return CTimeUtils::GetTimeMS();
+  return timeGetTime();
 #elif defined(_LINUX)
 #if defined(__APPLE__)
   static long double cv;
