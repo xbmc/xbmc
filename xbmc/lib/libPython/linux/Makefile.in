@@ -66,7 +66,7 @@ $(SLIB): $(PYWRAP) ../Python/libpython2.4.a $(PYO) ../../../../tools/Mach5/wrapp
 	for dirs in $(PYDIRS); do rsync -a --exclude 'test*'  --exclude '.svn' ../Python/Lib/$$dirs $(SYSDIR)/Lib; done
 	(mkdir -p tmp && rm -rf tmp/*)
 	(cd ./tmp && ar x ../../Python/libpython2.4.a)
-	gcc -bundle -flat_namespace -undefined suppress -shared -o $@ \
+	$(CXX) -bundle -flat_namespace -undefined suppress -shared -o $@ \
 		tmp/*.o \
 		wrapper_python.o
 	../../../../tools/Mach5/wrapper.rb $@ libpython;mv output.so $@
