@@ -46,7 +46,7 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
       if (message.GetParam1() == ACTION_SELECT_ITEM)
       { // switch to fullscreen visualisation mode...
         CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, GetID());
-        m_gWindowManager.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
       }
     }
   }
@@ -63,16 +63,16 @@ bool CGUIWindowMusicOverlay::OnMouse(const CPoint &point)
     if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
     { // send mouse message
       CGUIMessage message(GUI_MSG_FULLSCREEN, CONTROL_LOGO_PIC, GetID());
-      m_gWindowManager.SendMessage(message);
+      g_windowManager.SendMessage(message);
       // reset the mouse button
       g_Mouse.bClick[MOUSE_LEFT_BUTTON] = false;
     }
     if (g_Mouse.bClick[MOUSE_RIGHT_BUTTON])
     { // toggle the playlist window
-      if (m_gWindowManager.GetActiveWindow() == WINDOW_MUSIC_PLAYLIST)
-        m_gWindowManager.PreviousWindow();
+      if (g_windowManager.GetActiveWindow() == WINDOW_MUSIC_PLAYLIST)
+        g_windowManager.PreviousWindow();
       else
-        m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+        g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
       // reset it so that we don't call other actions
       g_Mouse.bClick[MOUSE_RIGHT_BUTTON] = false;
     }

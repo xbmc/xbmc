@@ -84,7 +84,7 @@ void CApplicationRenderer::Process()
 
     if (!m_pWindow || iWidth == 0 || iHeight == 0 || m_Resolution != g_graphicsContext.GetVideoResolution())
     {
-      m_pWindow = (CGUIDialogBusy*)m_gWindowManager.GetWindow(WINDOW_DIALOG_BUSY);
+      m_pWindow = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
       if (m_pWindow)
       {
         m_pWindow->Initialize();//need to load the window to determine size.
@@ -134,7 +134,7 @@ void CApplicationRenderer::Process()
           }
           if (m_busycount > 0) m_busycount--;
           //no busy indicator if a progress dialog is showing
-          if ((m_gWindowManager.HasModalDialog() && (m_gWindowManager.GetTopMostModalDialogID() != WINDOW_VIDEO_INFO) && (m_gWindowManager.GetTopMostModalDialogID() != WINDOW_MUSIC_INFO)) || (m_gWindowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS))
+          if ((g_windowManager.HasModalDialog() && (g_windowManager.GetTopMostModalDialogID() != WINDOW_VIDEO_INFO) && (g_windowManager.GetTopMostModalDialogID() != WINDOW_MUSIC_INFO)) || (g_windowManager.GetTopMostModalDialogID() == WINDOW_DIALOG_PROGRESS))
           {
             //TODO: render progress dialog here instead of in dialog::Progress
             m_time = timeGetTime();

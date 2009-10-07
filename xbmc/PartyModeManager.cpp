@@ -88,7 +88,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     m_type = m_bIsVideo ? "musicvideos" : "songs";
   }
 
-  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* pDialog = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   int iHeading = (m_bIsVideo ? 20250 : 20121);
   int iLine0 = (m_bIsVideo ? 20251 : 20123);
   pDialog->SetHeading(iHeading);
@@ -185,8 +185,8 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   // open now playing window
   if (m_type.Equals("songs"))
   {
-    if (m_gWindowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    if (g_windowManager.GetActiveWindow() != WINDOW_MUSIC_PLAYLIST)
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
   }
 
   // done
@@ -468,7 +468,7 @@ bool CPartyModeManager::MovePlaying()
 void CPartyModeManager::SendUpdateMessage()
 {
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CPartyModeManager::Play(int iPos)

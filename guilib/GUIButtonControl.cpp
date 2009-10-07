@@ -296,7 +296,7 @@ void CGUIButtonControl::OnClick()
   {
     CGUIMessage message(GUI_MSG_EXECUTE, controlID, parentID);
     message.SetAction(clickActions[i]);
-    m_gWindowManager.SendMessage(message);
+    g_windowManager.SendMessage(message);
   }
 }
 
@@ -306,7 +306,7 @@ void CGUIButtonControl::OnFocus()
   {
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetAction(m_focusActions[i]);
-    m_gWindowManager.SendThreadMessage(message);
+    g_windowManager.SendThreadMessage(message);
   }
 }
 
@@ -316,7 +316,7 @@ void CGUIButtonControl::OnUnFocus()
   {
     CGUIMessage message(GUI_MSG_EXECUTE, m_controlID, m_parentID);
     message.SetAction(m_unfocusActions[i]);
-    m_gWindowManager.SendThreadMessage(message);
+    g_windowManager.SendThreadMessage(message);
   }
 }
 

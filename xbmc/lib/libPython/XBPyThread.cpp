@@ -223,7 +223,7 @@ void XBPyThread::Process()
     if (PyErr_Occurred())
       PyErr_Print();
    
-    CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+    CGUIDialogKaiToast *pDlgToast = (CGUIDialogKaiToast*)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
     if (pDlgToast)
     {
       CStdString desc;

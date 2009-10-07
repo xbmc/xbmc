@@ -47,7 +47,7 @@ VECSOURCES CGUIViewState::m_sources;
 CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& items)
 {
   if (windowId == 0)
-    return GetViewState(m_gWindowManager.GetActiveWindow(),items);
+    return GetViewState(g_windowManager.GetActiveWindow(),items);
 
   const CURL& url=items.GetAsUrl();
 
@@ -400,12 +400,12 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   SetViewAsControl(DEFAULT_VIEW_LIST);
 
   SetSortOrder(SORT_ORDER_ASC);
-  LoadViewState(items.m_strPath, m_gWindowManager.GetActiveWindow());
+  LoadViewState(items.m_strPath, g_windowManager.GetActiveWindow());
 }
 
 void CGUIViewStateFromItems::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, m_gWindowManager.GetActiveWindow());
+  SaveViewToDb(m_items.m_strPath, g_windowManager.GetActiveWindow());
 }
 
 

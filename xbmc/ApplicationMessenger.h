@@ -134,8 +134,8 @@ public:
 
   void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
-  void WindowManagerProcess(bool renderOnly = false); // will call m_gWindowManager.Process on the rendering thread
-  void Render(); // will call m_gWindowManager.Render on the rendering thread
+  void WindowManagerProcess(bool renderOnly = false); // will call g_windowManager.Process on the rendering thread
+  void Render(); // will call g_windowManager.Render on the rendering thread
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
 
   void OpticalMount(CStdString device, bool bautorun=false); 

@@ -74,15 +74,15 @@ bool CGUIVideoControl::OnMouseClick(int button, const CPoint &point)
   if (button == MOUSE_LEFT_BUTTON)
   {
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());
-    m_gWindowManager.SendMessage(message);
+    g_windowManager.SendMessage(message);
     return true;
   }
   if (button == MOUSE_RIGHT_BUTTON)
   { // toggle the playlist window
-    if (m_gWindowManager.GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
-      m_gWindowManager.PreviousWindow();
+    if (g_windowManager.GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
+      g_windowManager.PreviousWindow();
     else
-      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+      g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     // reset the mouse button.
     g_Mouse.bClick[MOUSE_RIGHT_BUTTON] = false;
     return true;

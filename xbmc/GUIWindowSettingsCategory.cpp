@@ -164,7 +164,7 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       return true;
     }
     m_lastControlID = 0; // don't save the control as we go to a different window each time
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
   return CGUIWindow::OnAction(action);
@@ -1958,11 +1958,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("videoplayer.calibrate") || strSetting.Equals("videoscreen.guicalibration"))
   { // activate the video calibration screen
-    m_gWindowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
+    g_windowManager.ActivateWindow(WINDOW_SCREEN_CALIBRATION);
   }
   else if (strSetting.Equals("videoscreen.testpattern"))
   { // activate the test pattern
-    m_gWindowManager.ActivateWindow(WINDOW_TEST_PATTERN);
+    g_windowManager.ActivateWindow(WINDOW_TEST_PATTERN);
   }
   else if (strSetting.Equals("videoplayer.externaldvdplayer"))
   {
@@ -2110,7 +2110,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   { // new resolution choosen... - update if necessary
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
     m_NewResolution = (RESOLUTION)msg.GetParam1();
     // reset our skin if necessary
     // delay change of resolution
@@ -2123,7 +2123,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
 // DXMERGE: This may be useful
 //    g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
   }
@@ -2194,7 +2194,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
     pSettingInt->SetData(msg.GetParam1());
   }
   else if (strSetting.Equals("videoscreen.flickerfilter") || strSetting.Equals("videoscreen.soften"))
@@ -2309,7 +2309,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     /* okey we really don't need to restarat, only deinit samba, but that could be damn hard if something is playing*/
     //TODO - General way of handling setting changes that require restart
 
-    CGUIDialogOK *dlg = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogOK *dlg = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!dlg) return ;
     dlg->SetHeading( g_localizeStrings.Get(14038) );
     dlg->SetLine( 0, g_localizeStrings.Get(14039) );
@@ -2488,7 +2488,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
      pControl2 = (CGUIButtonControl *)GetControl(GetSetting("network.key")->GetID());
      if (pControl2) sWirelessKey = pControl2->GetLabel2();
 
-     CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+     CGUIDialogProgress* pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
      pDlgProgress->SetLine(0, "");
      pDlgProgress->SetLine(1, g_localizeStrings.Get(784));
      pDlgProgress->SetLine(2, "");
@@ -2511,7 +2511,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("network.essid"))
   {
-    CGUIDialogAccessPoints *dialog = (CGUIDialogAccessPoints *)m_gWindowManager.GetWindow(WINDOW_DIALOG_ACCESS_POINTS);
+    CGUIDialogAccessPoints *dialog = (CGUIDialogAccessPoints *)g_windowManager.GetWindow(WINDOW_DIALOG_ACCESS_POINTS);
     if (dialog)
     {
        CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting("network.interface")->GetID());
@@ -3009,10 +3009,10 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
 {
   CSettingString *pSettingString = (CSettingString*)pSetting;
   if (!pSetting) return;
-  int iWinID = m_gWindowManager.GetActiveWindow();
+  int iWinID = g_windowManager.GetActiveWindow();
   {
     CGUIMessage msg(GUI_MSG_LABEL_RESET, iWinID, iControlID);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
   vector<CStdString> vecVis;
   //find visz....
@@ -3081,7 +3081,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
     msg.SetLabel(231);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
   for (int i = 0; i < (int) vecVis.size(); ++i)
   {
@@ -3093,12 +3093,12 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     {
       CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
       msg.SetLabel(strVis);
-      m_gWindowManager.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
     }
   }
   {
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, iWinID, iControlID, iCurrentVis);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
 }
 
@@ -3676,7 +3676,7 @@ void CGUIWindowSettingsCategory::FillInViewModes(CSetting *pSetting, int windowI
   pControl->AddLabel("Auto", DEFAULT_VIEW_AUTO);
   bool found(false);
   int foundType = 0;
-  CGUIWindow *window = m_gWindowManager.GetWindow(windowID);
+  CGUIWindow *window = g_windowManager.GetWindow(windowID);
   if (window)
   {
     window->Initialize();

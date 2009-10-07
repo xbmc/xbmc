@@ -75,7 +75,7 @@ bool CPlayListPlayer::OnMessage(CGUIMessage &message)
       if (m_iCurrentPlayList != PLAYLIST_NONE && m_bPlaybackStarted)
       {
         CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-        m_gWindowManager.SendThreadMessage(msg);
+        g_windowManager.SendThreadMessage(msg);
         Reset();
         m_iCurrentPlayList = PLAYLIST_NONE;
         return true;
@@ -134,7 +134,7 @@ int CPlayListPlayer::GetNextSong()
     {
       CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong]->m_strPath.c_str());
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
       Reset();
       m_iCurrentPlayList = PLAYLIST_NONE;
       return -1;
@@ -161,7 +161,7 @@ void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
   {
     CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-    m_gWindowManager.SendThreadMessage(msg);
+    g_windowManager.SendThreadMessage(msg);
     Reset();
     m_iCurrentPlayList = PLAYLIST_NONE;
     return;
@@ -176,8 +176,8 @@ void CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
     }
   }
   Play(iSong, bAutoPlay);
-  if (iSong < playlist.size() && playlist[iSong]->IsAudio() && m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
-    m_gWindowManager.ActivateWindow(WINDOW_VISUALISATION);
+  if (iSong < playlist.size() && playlist[iSong]->IsAudio() && g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO)
+    g_windowManager.ActivateWindow(WINDOW_VISUALISATION);
   //g_partyModeManager.OnSongChange();
 }
 
@@ -258,7 +258,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       CGUIDialogOK::ShowAndGetInput(257, 16026, 16027, 0);
 
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
       Reset();
       GetPlaylist(m_iCurrentPlayList).Clear();
       m_iCurrentPlayList = PLAYLIST_NONE;
@@ -281,7 +281,7 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
     {
       CLog::Log(LOGDEBUG,"Playlist Player: no more playable items... aborting playback");
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
       Reset();
       m_iCurrentPlayList = PLAYLIST_NONE;
       return;
@@ -303,12 +303,12 @@ void CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
     if (iPreviousSong < 0)
     {
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STARTED, 0, 0, m_iCurrentPlayList, m_iCurrentSong, item);
-      m_gWindowManager.SendThreadMessage( msg );
+      g_windowManager.SendThreadMessage( msg );
     }
     else
     {
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_CHANGED, 0, 0, m_iCurrentPlayList, MAKELONG(m_iCurrentSong, iPreviousSong), item);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
     }
   }
 }
@@ -369,7 +369,7 @@ void CPlayListPlayer::ClearPlaylist(int iPlaylist)
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 }
 
 /// \brief Get the playlist object specified in \e nPlayList
@@ -430,7 +430,7 @@ void CPlayListPlayer::Reset()
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 }
 
 /// \brief Whether or not something has been played yet or not from the current playlist.

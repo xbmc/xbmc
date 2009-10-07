@@ -219,7 +219,7 @@ bool CFileShoutcast::Open(const CURL& url)
   // dvdplayer can deadlock with progress dialog so check first
   if (g_application.GetCurrentPlayer() == EPC_PAPLAYER)
   {
-    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   }
 
   set_rip_manager_options_defaults(&m_opt);

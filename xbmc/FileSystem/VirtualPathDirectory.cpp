@@ -57,7 +57,7 @@ bool CVirtualPathDirectory::GetDirectory(const CStdString& strPath, CFileItemLis
     // show the progress dialog if we have passed our time limit
     if (timeGetTime() > progressTime && !dlgProgress)
     {
-      dlgProgress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
       {
         dlgProgress->SetHeading(15310);

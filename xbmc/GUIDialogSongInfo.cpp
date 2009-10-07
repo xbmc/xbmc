@@ -101,7 +101,7 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_ALBUMINFO)
       {
-        CGUIWindowMusicBase *window = (CGUIWindowMusicBase *)m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+        CGUIWindowMusicBase *window = (CGUIWindowMusicBase *)g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
         if (window)
         {
           CFileItem item(*m_song);
@@ -160,7 +160,7 @@ void CGUIDialogSongInfo::SetRating(char rating)
   m_song->GetMusicInfoTag()->SetRating(rating);
   // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_song);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 }
 
 void CGUIDialogSongInfo::SetSong(CFileItem *item)
@@ -287,7 +287,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 
 //  m_hasUpdatedThumb = true;
 }

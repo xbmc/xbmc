@@ -52,7 +52,7 @@ bool CGUIWindowKaraokeLyrics::OnAction(const CAction &action)
     return false;
 
   CGUIDialogKaraokeSongSelectorSmall * songSelector = (CGUIDialogKaraokeSongSelectorSmall *)
-                                      m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
+                                      g_windowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
 
   switch(action.id)
   {
@@ -109,7 +109,7 @@ bool CGUIWindowKaraokeLyrics::OnMessage(CGUIMessage& message)
 
       // Close the song selector dialog if shown
       CGUIDialogKaraokeSongSelectorSmall * songSelector = (CGUIDialogKaraokeSongSelectorSmall *)
-                                      m_gWindowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
+                                      g_windowManager.GetWindow( WINDOW_DIALOG_KARAOKE_SONGSELECT );
 
       if ( songSelector && songSelector->IsActive() )
         songSelector->Close();

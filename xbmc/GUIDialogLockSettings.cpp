@@ -138,7 +138,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
       }
       return;
     }
-    CGUIDialogContextMenu *menu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    CGUIDialogContextMenu *menu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     if (menu)
     {
       menu->Initialize();
@@ -213,7 +213,7 @@ void CGUIDialogLockSettings::OnSettingChanged(SettingInfo &setting)
 
 bool CGUIDialogLockSettings::ShowAndGetUserAndPassword(CStdString& strUser, CStdString& strPassword, const CStdString& strURL)
 {
-  CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
+  CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (!dialog) return false;
   dialog->m_bGetUser = true;
   dialog->m_strLock = strPassword;
@@ -239,7 +239,7 @@ bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& str
 
 bool CGUIDialogLockSettings::ShowAndGetLock(LockType& iLockMode, CStdString& strPassword, bool& bLockMusic, bool& bLockVideo, bool& bLockPictures, bool& bLockPrograms, bool& bLockFiles, bool& bLockSettings, int iButtonLabel, bool bConditional, bool bDetails)
 {
-  CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
+  CGUIDialogLockSettings *dialog = (CGUIDialogLockSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_LOCK_SETTINGS);
   if (!dialog) return false;
   dialog->m_iLock = iLockMode;
   dialog->m_iButtonLabel = iButtonLabel;

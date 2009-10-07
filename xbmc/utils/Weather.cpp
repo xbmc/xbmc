@@ -132,7 +132,7 @@ void CWeather::DoWork()
     LoadWeather(xml);
     // and send a message that we're done
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
-    m_gWindowManager.SendThreadMessage(msg);
+    g_windowManager.SendThreadMessage(msg);
   }
   else
     CLog::Log(LOGERROR, "WEATHER: Weather download failed!");
@@ -565,8 +565,8 @@ bool CWeather::GetSearchResults(const CStdString &strSearch, CStdString &strResu
     strResult = "";
   }
 
-  CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
-  CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogProgress *pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   //do the download
   CStdString strURL;

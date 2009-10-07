@@ -107,7 +107,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       m_bRefresh = false;
       m_bRefreshAll = true;
@@ -433,7 +433,7 @@ void CGUIWindowVideoInfo::Update()
   }
 
   // Check for resumability
-  CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+  CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (window && window->GetResumeItemOffset(m_movieItem.get()) > 0)
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
   else
@@ -454,7 +454,7 @@ void CGUIWindowVideoInfo::Update()
   if (m_hasUpdatedThumb)
   {
     CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-    m_gWindowManager.SendMessage(reload);
+    g_windowManager.SendMessage(reload);
   }
 }
 
@@ -535,7 +535,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 
   if (items.Size())
   {
-    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(283);
     items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -685,14 +685,14 @@ void CGUIWindowVideoInfo::Play(bool resume)
     CStdString strPath;
     strPath.Format("videodb://2/2/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
     Close();
-    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+    g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
     return; 
   }
 
   CFileItem movie(*m_movieItem->GetVideoInfoTag());
   if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
     movie.m_strPath = m_movieItem->m_strPath;
-  CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+  CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (pWindow)
   {
     // close our dialog

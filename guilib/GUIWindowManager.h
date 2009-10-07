@@ -59,7 +59,6 @@ public:
   void ChangeActiveWindow(int iNewID, const CStdString &strPath = "");
   void ActivateWindow(int iWindowID, const std::vector<CStdString>& params, bool swappingWindows = false);
   void PreviousWindow();
-  void RefreshWindow();
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
 
@@ -137,6 +136,6 @@ private:
  \ingroup winman
  \brief
  */
-extern CGUIWindowManager m_gWindowManager;
+extern CGUIWindowManager g_windowManager;
 #endif
 

@@ -335,7 +335,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
       {
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("sap://");
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
         m_sessions.erase(it);
         return true;
       }
@@ -373,7 +373,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
   message.SetStringParam("sap://");
-  m_gWindowManager.SendThreadMessage(message);
+  g_windowManager.SendThreadMessage(message);
   
   return true;
 }

@@ -141,7 +141,7 @@ CGUIWindowFullScreen::~CGUIWindowFullScreen(void)
 
 void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
+  CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
   if (pWindow)
   {
     pWindow->Initialize();
@@ -152,7 +152,7 @@ void CGUIWindowFullScreen::PreloadDialog(unsigned int windowID)
 
 void CGUIWindowFullScreen::UnloadDialog(unsigned int windowID)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(windowID);
+  CGUIWindow *pWindow = g_windowManager.GetWindow(windowID);
   if (pWindow) {
     pWindow->FreeResources(pWindow->GetLoadOnDemand());
   }
@@ -197,7 +197,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       // switch back to the menu
       OutputDebugString("Switching to GUI\n");
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
       OutputDebugString("Now in GUI\n");
       return true;
     }
@@ -252,7 +252,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_INFO:
     {
-      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      CGUIDialogFullScreenInfo* pDialog = (CGUIDialogFullScreenInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog)
       {
         pDialog->DoModal();
@@ -452,7 +452,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
       // stopped playing videos
       if (message.GetParam1() == WINDOW_INVALID && !g_application.IsPlayingVideo())
       { // why are we here if nothing is playing???
-        m_gWindowManager.PreviousWindow();
+        g_windowManager.PreviousWindow();
         return true;
       }
       m_bLastRender = false;
@@ -502,13 +502,13 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
     {
       CGUIWindow::OnMessage(message);
 
-      CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
+      CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog) pDialog->Close(true);
-      CGUIDialogSlider *slider = (CGUIDialogSlider *)m_gWindowManager.GetWindow(WINDOW_DIALOG_SLIDER);
+      CGUIDialogSlider *slider = (CGUIDialogSlider *)g_windowManager.GetWindow(WINDOW_DIALOG_SLIDER);
       if (slider) slider->Close(true);
-      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_OSD);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_OSD);
       if (pDialog) pDialog->Close(true);
-      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_FULLSCREEN_INFO);
       if (pDialog) pDialog->Close(true);
 
       FreeResources(true);
@@ -561,7 +561,7 @@ bool CGUIWindowFullScreen::OnMouse(const CPoint &point)
   }
   if (g_Mouse.HasMoved())
   { // movement - toggle the OSD
-    CGUIWindowOSD *pOSD = (CGUIWindowOSD *)m_gWindowManager.GetWindow(WINDOW_OSD);
+    CGUIWindowOSD *pOSD = (CGUIWindowOSD *)g_windowManager.GetWindow(WINDOW_OSD);
     if (pOSD)
     {
       pOSD->SetAutoClose(3000);

@@ -53,7 +53,7 @@ bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 {
   if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
 
@@ -63,7 +63,7 @@ bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 int CGUIWindowSettingsProfile::GetSelectedItem()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 
   return msg.GetParam1();
 }
@@ -80,7 +80,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     posY = pList->GetYPosition() + pList->GetHeight() / 2;
   }
   // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return ;
   // load our menu
   pMenu->Initialize();
@@ -101,8 +101,8 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
   {
     unsigned iCtrlID = GetFocusedControlID();
     g_application.StopPlaying();
-    CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID);
-    m_gWindowManager.SendMessage(msg2);
+    CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, g_windowManager.GetActiveWindow(), iCtrlID);
+    g_windowManager.SendMessage(msg2);
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     bool bOldMaster = g_passwordManager.bMasterUser;
     g_passwordManager.bMasterUser = true;
@@ -113,9 +113,9 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     g_settings.SaveProfiles(PROFILES_FILE); // to set last loaded
 
     g_passwordManager.bMasterUser = bOldMaster;
-    CGUIMessage msg3(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), iCtrlID, 0);
+    CGUIMessage msg3(GUI_MSG_SETFOCUS, g_windowManager.GetActiveWindow(), iCtrlID, 0);
     OnMessage(msg3);
-    CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_gWindowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
+    CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, g_windowManager.GetActiveWindow(), iCtrlID, msg2.GetParam1(), msg2.GetParam2());
     OnMessage(msgSelect);
     g_weatherManager.Refresh();
   }
@@ -157,7 +157,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
         )
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
-          m_gWindowManager.SendMessage(msg);
+          g_windowManager.SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
           {
@@ -174,7 +174,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             {
               LoadList();
               CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
-              m_gWindowManager.SendMessage(msg);
+              g_windowManager.SendMessage(msg);
 
               return true;
             }
@@ -188,7 +188,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
             {
               LoadList();
               CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), 2,iItem);
-              m_gWindowManager.SendMessage(msg);
+              g_windowManager.SendMessage(msg);
               return true;
             }
 
@@ -222,13 +222,13 @@ void CGUIWindowSettingsProfile::LoadList()
     item->SetThumbnailImage(profile.getThumb());
     item->SetOverlayImage(profile.getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
     m_vecListItems.push_back(item);
   }
   {
     CFileItemPtr item(new CFileItem(g_localizeStrings.Get(20058)));
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
-    m_gWindowManager.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
     item->m_strPath.Empty();
     m_vecListItems.push_back(item);
   }
@@ -246,7 +246,7 @@ void CGUIWindowSettingsProfile::LoadList()
 void CGUIWindowSettingsProfile::ClearListItems()
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 
   m_vecListItems.erase(m_vecListItems.begin(), m_vecListItems.end());
 }

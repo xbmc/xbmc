@@ -1983,7 +1983,7 @@ public:
     {
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
 
         return PLT_SyncMediaBrowser::OnMSAdded(device);
     }
@@ -1993,7 +1993,7 @@ public:
 
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam("upnp://");
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
 
         PLT_SyncMediaBrowser::OnMSRemoved(device);
     }
@@ -2013,7 +2013,7 @@ public:
 
         CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
         message.SetStringParam(path.GetChars());
-        m_gWindowManager.SendThreadMessage(message);
+        g_windowManager.SendThreadMessage(message);
     }
 };
 

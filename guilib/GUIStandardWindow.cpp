@@ -36,13 +36,13 @@ bool CGUIStandardWindow::OnAction(const CAction &action)
 {
   if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
 
   if (action.id == ACTION_PARENT_DIR && g_advancedSettings.m_bUseEvilB)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
 

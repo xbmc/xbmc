@@ -42,7 +42,7 @@ bool CGUIWindowSettings::OnAction(const CAction &action)
 {
   if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
 

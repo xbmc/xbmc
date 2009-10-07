@@ -284,7 +284,7 @@ void CGUIDialogProfileSettings::OnCancel()
 
 bool CGUIDialogProfileSettings::ShowForProfile(unsigned int iProfile, bool bDetails)
 {
-  CGUIDialogProfileSettings *dialog = (CGUIDialogProfileSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROFILE_SETTINGS);
+  CGUIDialogProfileSettings *dialog = (CGUIDialogProfileSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_PROFILE_SETTINGS);
   if (!dialog) return false;
   if (iProfile == 0)
     dialog->m_bIsDefault = true;

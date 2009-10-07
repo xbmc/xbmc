@@ -352,7 +352,7 @@ void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one
     { // send our filter message
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
       message.SetStringParam(utf8Edit);
-      m_gWindowManager.SendMessage(message);
+      g_windowManager.SendMessage(message);
     }
 
     if (m_filtering == FILTERING_SEARCH)
@@ -367,7 +367,7 @@ void CGUIDialogKeyboard::SendSearchMessage()
   // send our search message (only the active window needs it)
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_SEARCH_UPDATE);
   message.SetStringParam(utf8Edit);
-  CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
   if (window)
     window->OnMessage(message);
 }
@@ -554,7 +554,7 @@ void CGUIDialogKeyboard::UpdateButtons()
 //          false - unsucessful display of the keyboard or cancelled editing
 bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdString &strHeading, bool allowEmptyResult, bool hiddenInput /* = false */)
 {
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
   if (!pKeyboard)
     return false;
@@ -566,7 +566,7 @@ bool CGUIDialogKeyboard::ShowAndGetInput(CStdString& aTextString, const CStdStri
   pKeyboard->SetHiddenInput(hiddenInput);
   pKeyboard->SetText(aTextString);
   // do this using a thread message to avoid render() conflicts
-  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, m_gWindowManager.GetActiveWindow()};
+  ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_KEYBOARD, g_windowManager.GetActiveWindow()};
   g_application.getApplicationMessenger().SendMessage(tMsg, true);
   pKeyboard->Close();
 
@@ -785,7 +785,7 @@ void CGUIDialogKeyboard::OnOK()
 
 bool CGUIDialogKeyboard::ShowAndGetFilter(CStdString &filter, bool searching)
 {
-  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)m_gWindowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
+  CGUIDialogKeyboard *pKeyboard = (CGUIDialogKeyboard*)g_windowManager.GetWindow(WINDOW_DIALOG_KEYBOARD);
 
   if (!pKeyboard)
     return false;

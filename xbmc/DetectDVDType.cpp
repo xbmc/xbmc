@@ -144,7 +144,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           m_isoReader.Reset();
 #endif
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REMOVED_MEDIA);
-          m_gWindowManager.SendThreadMessage( msg );
+          g_windowManager.SendThreadMessage( msg );
           waitLock.Leave();
           m_DriveState = DRIVE_OPEN;
           return;
@@ -170,7 +170,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           }
           waitLock.Leave();
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-          m_gWindowManager.SendThreadMessage( msg );
+          g_windowManager.SendThreadMessage( msg );
           // Do we really need sleep here? This will fix: [ 1530771 ] "Open tray" problem
           // Sleep(6000);
           return ;
@@ -190,7 +190,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
           // Send Message to GUI that disc has changed
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
           waitLock.Leave();
-          m_gWindowManager.SendThreadMessage( msg );
+          g_windowManager.SendThreadMessage( msg );
           return ;
         }
         break;
@@ -211,7 +211,7 @@ VOID CDetectDVDMedia::UpdateDvdrom()
             DetectMediaType();
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
             waitLock.Leave();
-            m_gWindowManager.SendThreadMessage( msg );
+            g_windowManager.SendThreadMessage( msg );
             // Tell the application object that a new Cd is inserted
             // So autorun can be started.
             if ( !m_bStartup )

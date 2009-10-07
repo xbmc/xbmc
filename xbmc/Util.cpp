@@ -2634,7 +2634,7 @@ bool CUtil::AutoDetection()
           //YES NO PopUP: ask for connecting to the detected client via Filemanger!
           if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
           {
-            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+            g_windowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
           }
           bReturn = true;
         }
@@ -2776,7 +2776,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
         {
           // a client is removed from our list, update our shares
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-          m_gWindowManager.SendThreadMessage(msg);
+          g_windowManager.SendThreadMessage(msg);
         }
       }
     }
@@ -2889,7 +2889,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
 
                     // client is removed from our list, update our shares
                     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-                    m_gWindowManager.SendThreadMessage(msg);
+                    g_windowManager.SendThreadMessage(msg);
                   }
                 }
               }
@@ -2911,7 +2911,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
           {
             // a client is add or removed from our list, update our shares
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-            m_gWindowManager.SendThreadMessage(msg);
+            g_windowManager.SendThreadMessage(msg);
           }
         }
       }

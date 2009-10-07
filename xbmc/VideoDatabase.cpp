@@ -3133,7 +3133,7 @@ void CVideoDatabase::RemoveContentForPath(const CStdString& strPath, CGUIDialogP
     auto_ptr<Dataset> pDS(m_pDB->CreateDataset());
     CStdString strPath1(strPath);
     CStdString strSQL = FormatSQL("select idPath,strContent,strPath from path where strPath like '%%%s%%'",strPath1.c_str());
-    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     pDS->query(strSQL.c_str());
     if (progress)
     {
@@ -6529,7 +6529,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
 
     if (!pObserver)
     {
-      progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (progress)
       {
         progress->SetHeading(700);
@@ -6874,7 +6874,7 @@ void CVideoDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles /* 
     pDS2.reset(m_pDB->CreateDataset());
     if (NULL == pDS2.get()) return;
 
-    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     // find all movies
     CStdString sql = "select * from movieview";
 
@@ -7383,7 +7383,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &xmlFile)
     TiXmlElement *root = xmlDoc.RootElement();
     if (!root) return;
 
-    progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(648);
@@ -7621,7 +7621,7 @@ void CVideoDatabase::DeleteThumbForItem(const CStdString& strPath, bool bFolder,
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 

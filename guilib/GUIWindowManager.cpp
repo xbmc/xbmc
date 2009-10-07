@@ -31,7 +31,7 @@
 
 using namespace std;
 
-CGUIWindowManager m_gWindowManager;
+CGUIWindowManager g_windowManager;
 
 CGUIWindowManager::CGUIWindowManager(void)
 {
@@ -293,19 +293,6 @@ void CGUIWindowManager::PreviousWindow()
 
   g_infoManager.SetPreviousWindow(WINDOW_INVALID);
   return;
-}
-
-void CGUIWindowManager::RefreshWindow()
-{
-  // deactivate the current window
-  CGUIWindow *pWindow = GetWindow(GetActiveWindow());
-  if (!pWindow)
-    return;
-
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  pWindow->OnMessage(msg);
-  CGUIMessage msg2(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID);
-  pWindow->OnMessage(msg2);
 }
 
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)

@@ -41,7 +41,7 @@ bool CGUIWindowTestPattern::OnAction(const CAction &action)
   {
   case ACTION_PREVIOUS_MENU:
     {
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
       return true;
     }
     break;

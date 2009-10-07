@@ -70,7 +70,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       CGUIDialog::OnMessage(message);
 
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      m_gWindowManager.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       SetVisualisation((CVisualisation *)msg.GetPointer());
       return true;
     }

@@ -141,7 +141,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
     {
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
       message.SetStringParam("zeroconf://");
-      m_gWindowManager.SendThreadMessage(message);
+      g_windowManager.SendThreadMessage(message);
       CLog::Log(LOGDEBUG, "CZeroconfBrowserOSX::BrowserCallback sent gui update for path zeroconf://");
     }
   } else

@@ -354,7 +354,7 @@ BOOL CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   g_charsetConverter.utf8ToW(strPath, WstrPath);
   g_charsetConverter.utf8ToW(strSwitches, WstrSwitches);
 
-  m_dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+  m_dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
   m_dialog->SetHeading(23100);
 
   BOOL ret = CreateProcessW(WstrPath.IsEmpty() ? NULL : WstrPath.c_str(),

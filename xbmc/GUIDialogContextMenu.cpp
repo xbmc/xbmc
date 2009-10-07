@@ -240,7 +240,7 @@ bool CGUIDialogContextMenu::SourcesMenu(const CStdString &strType, const CFileIt
     return false;
 
   // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
     // load our menu
@@ -520,7 +520,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       }
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
       return true;
     }
 
@@ -542,7 +542,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       g_settings.SaveSources();
 
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
       return true;
     }
   case CONTEXT_BUTTON_RESET_LOCK:
@@ -554,7 +554,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       g_settings.UpdateSource(type, share->strName, "badpwdcount", "0");
       g_settings.SaveSources();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
       return true;
     }
   case CONTEXT_BUTTON_REMOVE_LOCK:
@@ -571,7 +571,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       g_settings.UpdateSource(type, share->strName, "badpwdcount", "0");
       g_settings.SaveSources();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
       return true;
     }
   case CONTEXT_BUTTON_REACTIVATE_LOCK:
@@ -604,7 +604,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
       g_settings.UpdateSource(type, share->strName, "badpwdcount", "0");
       g_settings.SaveSources();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-      m_gWindowManager.SendThreadMessage(msg);
+      g_windowManager.SendThreadMessage(msg);
       return true;
     }
   default:
@@ -704,7 +704,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
     return;
 
   // create menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   pMenu->Initialize();
 
   // add buttons
@@ -736,7 +736,7 @@ void CGUIDialogContextMenu::SwitchMedia(const CStdString& strType, const CStdStr
         iWindow = WINDOW_FILES;
 
       CUtil::ClearFileItemCache();
-      m_gWindowManager.ChangeActiveWindow(iWindow, strPath);
+      g_windowManager.ChangeActiveWindow(iWindow, strPath);
       return;
     }
   }
@@ -750,7 +750,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, c
     return 0;
 
   // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
     // load our menu
@@ -775,7 +775,7 @@ int CGUIDialogContextMenu::ShowAndGetChoice(const vector<CStdString> &choices, c
 
 void CGUIDialogContextMenu::PositionAtCurrentFocus()
 {
-  CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
   if (window)
   {
     const CGUIControl *focusedControl = window->GetFocusedControl();

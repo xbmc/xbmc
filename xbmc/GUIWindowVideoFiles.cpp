@@ -562,9 +562,9 @@ void CGUIWindowVideoFiles::LoadPlayList(const CStdString& strPlayList)
     if (m_guiState.get())
       m_guiState->SetPlaylistDirectory("playlistvideo://");
     // activate the playlist window if its not activated yet
-    if (GetID() == m_gWindowManager.GetActiveWindow() && iSize > 1)
+    if (GetID() == g_windowManager.GetActiveWindow() && iSize > 1)
     {
-      m_gWindowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+      g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
     }
   }
 }
@@ -575,7 +575,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
-  CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (item)
   {
     // are we in the playlists location?
@@ -590,7 +590,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
       if (g_guiSettings.GetBool("videolibrary.enabled") && !item->IsDVD() && item->m_strPath != "add" &&
          (g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].canWriteDatabases() || g_passwordManager.bMasterUser))
       {
-        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
           buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
         CVideoDatabase database;

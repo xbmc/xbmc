@@ -45,10 +45,10 @@ void CGUIWindowOSD::Render()
   if (m_autoClosing)
   {
     // check for movement of mouse or a submenu open
-    if (g_Mouse.HasMoved() || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
-                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
-                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
-                           || m_gWindowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
+    if (g_Mouse.HasMoved() || g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
       SetAutoClose(3000);
   }
   CGUIDialog::Render();
@@ -102,14 +102,14 @@ bool CGUIWindowOSD::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:  // fired when OSD is hidden
     {
       // Remove our subdialogs if visible
-      CGUIDialog *pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+      CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
       if (pDialog && pDialog->IsDialogRunning())
         pDialog->Close(true);
-      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
-      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
-      pDialog = (CGUIDialog *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_OSD_TELETEXT);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
     }
     break;

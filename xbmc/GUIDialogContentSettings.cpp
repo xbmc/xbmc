@@ -87,7 +87,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     if (iControl == CONTROL_CONTENT_TYPE)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_CONTENT_TYPE);
-      m_gWindowManager.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
 
       m_bNeedSave = true;
@@ -126,7 +126,7 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
     if (iControl == CONTROL_SCRAPER_LIST)
     {
       CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SCRAPER_LIST);
-      m_gWindowManager.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       int iSelected = msg.GetParam1();
 
       m_info = m_scrapers[m_info.strContent][iSelected];
@@ -228,21 +228,21 @@ void CGUIDialogContentSettings::SetupPage()
   CGUIDialogSettings::SetupPage();
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_CONTENT_TYPE);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_CONTENT_TYPE);
 
   if (!m_info.strContent.Equals("albums")) // none does not apply to music
   {
     msg2.SetLabel("<"+g_localizeStrings.Get(231)+">");
     msg2.SetParam1(0);
-    m_gWindowManager.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
   }
 
   if (m_scrapers.find("movies") != m_scrapers.end())
   {
     msg2.SetLabel(g_localizeStrings.Get(20342));
     msg2.SetParam1(1);
-    m_gWindowManager.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
     if (m_info.strContent.Equals("movies"))
     {
       SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20342));
@@ -254,7 +254,7 @@ void CGUIDialogContentSettings::SetupPage()
   {
     msg2.SetLabel(g_localizeStrings.Get(20343));
     msg2.SetParam1(2);
-    m_gWindowManager.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
     if (m_info.strContent.Equals("tvshows"))
     {
       CONTROL_SELECT_ITEM(CONTROL_CONTENT_TYPE, 2);
@@ -264,7 +264,7 @@ void CGUIDialogContentSettings::SetupPage()
   {
     msg2.SetLabel(g_localizeStrings.Get(20389));
     msg2.SetParam1(3);
-    m_gWindowManager.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
     if (m_info.strContent.Equals("musicvideos"))
     {
       SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,g_localizeStrings.Get(20389));
@@ -275,7 +275,7 @@ void CGUIDialogContentSettings::SetupPage()
   {
     msg2.SetLabel(m_strContentType);
     msg2.SetParam1(4);
-    m_gWindowManager.SendMessage(msg2);
+    g_windowManager.SendMessage(msg2);
     if (m_info.strContent.Equals("albums"))
     {
       SET_CONTROL_LABEL(CONTROL_CONTENT_TYPE,m_strContentType);
@@ -447,7 +447,7 @@ bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, bool& bRunScan, int 
 
 bool CGUIDialogContentSettings::Show(SScraperInfo& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel)
 {
-  CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
+  CGUIDialogContentSettings *dialog = (CGUIDialogContentSettings *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTENT_SETTINGS);
   if (!dialog)
     return false;
 

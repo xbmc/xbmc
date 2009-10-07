@@ -2189,7 +2189,7 @@ void CMusicDatabase::DeleteAlbumInfo()
 
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (dlgMusicScan->IsDialogRunning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
@@ -2218,7 +2218,7 @@ void CMusicDatabase::DeleteAlbumInfo()
   m_pDS->close();
 
   // Show a selectdialog that the user can select the albuminfo to delete
-  CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
     pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
@@ -2281,8 +2281,8 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
   // Do we have to look for cddb information
   if (pCdInfo->HasCDDBInfo() && !cddb.isCDCached(pCdInfo))
   {
-    CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-    CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    CGUIDialogProgress* pDialogProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogSelect *pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
 
     if (!pDialogProgress) return false;
     if (!pDlgSelect) return false;
@@ -2346,7 +2346,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery/*=false*/)
         pCdInfo->SetNoCDDBInfo();
         pDialogProgress->Close();
         // ..no, an error occured, display it to the user
-        CGUIDialogOK *pDialogOK = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+        CGUIDialogOK *pDialogOK = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
         if (pDialogOK)
         {
           CStdString strErrorText;
@@ -2389,7 +2389,7 @@ void CMusicDatabase::DeleteCDDBInfo()
   }
 
   // Show a selectdialog that the user can select the albuminfo to delete
-  CGUIDialogSelect *pDlg = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+  CGUIDialogSelect *pDlg = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (pDlg)
   {
     pDlg->SetHeading(g_localizeStrings.Get(181).c_str());
@@ -2455,7 +2455,7 @@ void CMusicDatabase::Clean()
 {
   // If we are scanning for music info in the background,
   // other writing access to the database is prohibited.
-  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  CGUIDialogMusicScan* dlgMusicScan = (CGUIDialogMusicScan*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (dlgMusicScan->IsDialogRunning())
   {
     CGUIDialogOK::ShowAndGetInput(189, 14057, 0, 0);
@@ -2464,7 +2464,7 @@ void CMusicDatabase::Clean()
 
   if (CGUIDialogYesNo::ShowAndGetInput(313, 333, 0, 0))
   {
-    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
       CMusicDatabase musicdatabase;
@@ -4115,7 +4115,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
 
     m_pDS->query(sql.c_str());
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(20196);
@@ -4259,7 +4259,7 @@ void CMusicDatabase::ExportToXML(const CStdString &xmlFile, bool singleFiles, bo
 
 void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
 {
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   try
   {
     if (NULL == m_pDB.get()) return;
@@ -4445,7 +4445,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     if ( !file.OpenForWrite( outFile, true ) )
       return;
 
-    CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (progress)
     {
       progress->SetHeading(asHTML ? 22034 : 22035);
@@ -4516,7 +4516,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
 
 void CMusicDatabase::ImportKaraokeInfo(const CStdString & inputFile)
 {
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   try
   {

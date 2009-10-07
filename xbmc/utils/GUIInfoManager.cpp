@@ -1314,11 +1314,11 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     strLabel.Format("%i", g_settings.m_ResInfo[g_graphicsContext.GetVideoResolution()].iHeight);
     break;
   case SYSTEM_CURRENT_WINDOW:
-    return g_localizeStrings.Get(m_gWindowManager.GetFocusedWindow());
+    return g_localizeStrings.Get(g_windowManager.GetFocusedWindow());
     break;
   case SYSTEM_CURRENT_CONTROL:
     {
-      CGUIWindow *window = m_gWindowManager.GetWindow(m_gWindowManager.GetFocusedWindow());
+      CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
       if (window)
       {
         CGUIControl *control = window->GetFocusedControl();
@@ -1466,7 +1466,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case VISUALISATION_PRESET:
     {
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      m_gWindowManager.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
         CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
@@ -1560,7 +1560,7 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
             return (int)(g_application.GetPercentage());
           case PLAYER_SEEKBAR:
             {
-              CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+              CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
               return seekBar ? (int)seekBar->GetPercentage() : 0;
             }
           case PLAYER_CACHELEVEL:
@@ -1585,7 +1585,7 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
       }
     case SYSTEM_PROGRESS_BAR:
       {
-        CGUIDialogProgress *bar = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+        CGUIDialogProgress *bar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
         if (bar && bar->IsDialogRunning())
           return bar->GetPercentage();
       }
@@ -1647,7 +1647,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = (g_application.GlobalIdleTime() >= condition - SYSTEM_IDLE_TIME_START);
   else if (condition == WINDOW_IS_MEDIA)
   { // note: This doesn't return true for dialogs (content, favourites, login, videoinfo)
-    CGUIWindow *pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+    CGUIWindow *pWindow = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
     bReturn = (pWindow && pWindow->IsMediaWindow());
   }
   else if (condition == PLAYER_MUTED)
@@ -1656,8 +1656,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = GetLibraryBool(condition);
   else if (condition == LIBRARY_IS_SCANNING)
   {
-    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (musicScanner->IsScanning() || videoScanner->IsScanning())
       bReturn = true;
     else
@@ -1730,7 +1730,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   else if (condition == SYSTEM_ISMASTER)
     bReturn = g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
   else if (condition == SYSTEM_LOGGEDON)
-    bReturn = !(m_gWindowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
+    bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_HAS_LOGINSCREEN)
     bReturn = g_settings.bUseLoginScreen;
   else if (condition == WEATHER_IS_FETCHED)
@@ -1742,12 +1742,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition == SKIN_HAS_VIDEO_OVERLAY)
   {
-    bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
-              g_application.IsPlayingVideo() && m_gWindowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO;
+    bReturn = !g_application.IsInScreenSaver() && g_windowManager.IsOverlayAllowed() &&
+              g_application.IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO;
   }
   else if (condition == SKIN_HAS_MUSIC_OVERLAY)
   {
-    bReturn = !g_application.IsInScreenSaver() && m_gWindowManager.IsOverlayAllowed() &&
+    bReturn = !g_application.IsInScreenSaver() && g_windowManager.IsOverlayAllowed() &&
               g_application.IsPlayingAudio();
   }
   else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
@@ -1867,7 +1867,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     break;
     case PLAYER_SEEKBAR:
       {
-        CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+        CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
         bReturn = seekBar ? seekBar->IsDialogRunning() : false;
       }
     break;
@@ -1922,7 +1922,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = (g_guiSettings.GetInt("videoplayer.rendermethod") == RENDER_OVERLAYS);
     break;
     case VIDEOPLAYER_ISFULLSCREEN:
-      bReturn = m_gWindowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
+      bReturn = g_windowManager.GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO;
     break;
     case VIDEOPLAYER_HASMENU:
       bReturn = g_application.m_pPlayer->HasMenu();
@@ -1946,7 +1946,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VISUALISATION_LOCKED:
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-        m_gWindowManager.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
         if (msg.GetPointer())
         {
           CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
@@ -2124,7 +2124,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = ((int)info.GetData1() == m_nextWindowID);
         else
         {
-          CGUIWindow *window = m_gWindowManager.GetWindow(m_nextWindowID);
+          CGUIWindow *window = g_windowManager.GetWindow(m_nextWindowID);
           if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
@@ -2134,28 +2134,28 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           bReturn = ((int)info.GetData1() == m_prevWindowID);
         else
         {
-          CGUIWindow *window = m_gWindowManager.GetWindow(m_prevWindowID);
+          CGUIWindow *window = g_windowManager.GetWindow(m_prevWindowID);
           if (window && CUtil::GetFileName(window->GetXMLFile()).Equals(m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
       case WINDOW_IS_VISIBLE:
         if (info.GetData1())
-          bReturn = m_gWindowManager.IsWindowVisible(info.GetData1());
+          bReturn = g_windowManager.IsWindowVisible(info.GetData1());
         else
-          bReturn = m_gWindowManager.IsWindowVisible(m_stringParameters[info.GetData2()]);
+          bReturn = g_windowManager.IsWindowVisible(m_stringParameters[info.GetData2()]);
         break;
       case WINDOW_IS_TOPMOST:
         if (info.GetData1())
-          bReturn = m_gWindowManager.IsWindowTopMost(info.GetData1());
+          bReturn = g_windowManager.IsWindowTopMost(info.GetData1());
         else
-          bReturn = m_gWindowManager.IsWindowTopMost(m_stringParameters[info.GetData2()]);
+          bReturn = g_windowManager.IsWindowTopMost(m_stringParameters[info.GetData2()]);
         break;
       case WINDOW_IS_ACTIVE:
         if (info.GetData1())
-          bReturn = m_gWindowManager.IsWindowActive(info.GetData1());
+          bReturn = g_windowManager.IsWindowActive(info.GetData1());
         else
-          bReturn = m_gWindowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
+          bReturn = g_windowManager.IsWindowActive(m_stringParameters[info.GetData2()]);
         break;
       case SYSTEM_HAS_ALARM:
         bReturn = g_alarmClock.hasAlarm(m_stringParameters[info.GetData1()]);
@@ -2390,7 +2390,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     TIME_FORMAT format = (TIME_FORMAT)info.GetData1();
     if (format == TIME_FORMAT_GUESS && GetTotalPlayTime() >= 3600)
       format = TIME_FORMAT_HH_MM_SS;
-    CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+    CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
     if (seekBar)
       return seekBar->GetSeekTimeLabel(format);
   }
@@ -2459,11 +2459,11 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     CGUIWindow *window = NULL;
     if (info.GetData1())
     { // window specified
-      window = m_gWindowManager.GetWindow(info.GetData1());//GetWindowWithCondition(contextWindow, 0);
+      window = g_windowManager.GetWindow(info.GetData1());//GetWindowWithCondition(contextWindow, 0);
     }
     else
     { // no window specified - assume active
-      window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+      window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
     }
 
     if (window)
@@ -4044,7 +4044,7 @@ CStdString CGUIInfoManager::GetPictureLabel(int info) const
     return GetItemLabel(m_currentSlide, LISTITEM_DATE);
   else if (info == SLIDE_INDEX)
   {
-    CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)m_gWindowManager.GetWindow(WINDOW_SLIDESHOW);
+    CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     if (slideshow && slideshow->NumSlides())
     {
       CStdString index;
@@ -4085,17 +4085,17 @@ bool CGUIInfoManager::CheckWindowCondition(CGUIWindow *window, int condition) co
 
 CGUIWindow *CGUIInfoManager::GetWindowWithCondition(int contextWindow, int condition) const
 {
-  CGUIWindow *window = m_gWindowManager.GetWindow(contextWindow);
+  CGUIWindow *window = g_windowManager.GetWindow(contextWindow);
   if (CheckWindowCondition(window, condition))
     return window;
 
   // try topmost dialog
-  window = m_gWindowManager.GetWindow(m_gWindowManager.GetTopMostModalDialogID());
+  window = g_windowManager.GetWindow(g_windowManager.GetTopMostModalDialogID());
   if (CheckWindowCondition(window, condition))
     return window;
 
   // try active window
-  window = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
+  window = g_windowManager.GetWindow(g_windowManager.GetActiveWindow());
   if (CheckWindowCondition(window, condition))
     return window;
 

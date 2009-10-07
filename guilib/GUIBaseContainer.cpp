@@ -623,7 +623,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
           action.Replace(",,", ",");
           CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
           message.SetStringParam(action);
-          m_gWindowManager.SendMessage(message);
+          g_windowManager.SendMessage(message);
         }
       }
       return true;

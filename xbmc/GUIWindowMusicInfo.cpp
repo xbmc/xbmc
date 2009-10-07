@@ -127,7 +127,7 @@ bool CGUIWindowMusicInfo::OnMessage(CGUIMessage& message)
         if (m_bArtistInfo && (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction))
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          m_gWindowManager.SendMessage(msg);
+          g_windowManager.SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iItem < 0 || iItem >= (int)m_albumSongs->Size())
             break;
@@ -561,7 +561,7 @@ void CGUIWindowMusicInfo::OnGetThumb()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   // Update our screen
   Update();
 }
@@ -667,7 +667,7 @@ void CGUIWindowMusicInfo::OnGetFanart()
   // tell our GUI to completely reload all controls (as some of them
   // are likely to have had this image in use so will need refreshing)
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  m_gWindowManager.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   // Update our screen
   Update();
 }

@@ -237,7 +237,7 @@ void CZeroconfBrowserAvahi::clientCallback ( AvahiClient* fp_client, AvahiClient
       p_instance->m_discovered_services.clear();
       CGUIMessage message ( GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH );
       message.SetStringParam ( "zeroconf://" );
-      m_gWindowManager.SendThreadMessage ( message );
+      g_windowManager.SendThreadMessage ( message );
       p_instance->createClient();
       break;
     }
@@ -308,7 +308,7 @@ void CZeroconfBrowserAvahi::browseCallback (
   {
     CGUIMessage message ( GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH );
     message.SetStringParam ( "zeroconf://" );
-    m_gWindowManager.SendThreadMessage ( message );
+    g_windowManager.SendThreadMessage ( message );
     CLog::Log ( LOGDEBUG, "CZeroconfBrowserAvahi::browseCallback sent gui update for path zeroconf://" );
   }
 }

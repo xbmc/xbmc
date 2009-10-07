@@ -93,7 +93,7 @@ bool CGUIWindowVideoNav::OnAction(const CAction &action)
   {
     if (g_advancedSettings.m_bUseEvilB && m_vecItems->m_strPath == m_startDirectory)
     {
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
       return true;
     }
   }
@@ -886,7 +886,7 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
 bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = false */)
 {
   // dont allow update while scanning
-  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+  CGUIDialogVideoScan* pDialogScan = (CGUIDialogVideoScan*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
   if (pDialogScan && pDialogScan->IsScanning())
   {
     CGUIDialogOK::ShowAndGetInput(257, 0, 14057, 0);
@@ -901,7 +901,7 @@ bool CGUIWindowVideoNav::DeleteItem(CFileItem* pItem, bool bUnavailable /* = fal
   if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_strArtist.IsEmpty())
     iType = VIDEODB_CONTENT_MUSICVIDEOS;
 
-  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+  CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
   if (!pDialog)
     return false;
   if (iType == VIDEODB_CONTENT_MOVIES)
@@ -1103,7 +1103,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
   if (!item)
   {
-    CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
     if (pScanDlg && pScanDlg->IsScanning())
       buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
     else
@@ -1156,7 +1156,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
       {
         if (node == NODE_TYPE_TITLE_TVSHOWS)
         {
-          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+          CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
           if (pScanDlg && pScanDlg->IsScanning())
             buttons.Add(CONTEXT_BUTTON_STOP_SCANNING, 13353);
           else
@@ -1209,7 +1209,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         }
 
         // this should ideally be non-contextual (though we need some context for non-tv show node I guess)
-        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+        CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
         if (pScanDlg && pScanDlg->IsScanning())
         {
           if (node != NODE_TYPE_TITLE_TVSHOWS)
@@ -1536,7 +1536,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-      m_gWindowManager.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       Update(m_vecItems->m_strPath);
 
       return true;
@@ -1565,7 +1565,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CMusicDatabase database;
       database.Open();
       strPath.Format("musicdb://2/%ld/",database.GetArtistByName(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strArtist));
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;
     }
   case CONTEXT_BUTTON_GO_TO_ALBUM:
@@ -1574,7 +1574,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CMusicDatabase database;
       database.Open();
       strPath.Format("musicdb://3/%ld/",database.GetAlbumByName(m_vecItems->Get(itemNumber)->GetVideoInfoTag()->m_strAlbum));
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_NAV,strPath);
       return true;
     }
   case CONTEXT_BUTTON_PLAY_OTHER:
@@ -1650,7 +1650,7 @@ void CGUIWindowVideoNav::OnLinkMovieToTvShow(int itemnumber, bool bRemove)
   if (list.Size() > 1)
   {
     list.Sort(SORT_METHOD_LABEL,SORT_ORDER_ASC);
-    CGUIDialogSelect* pDialog = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    CGUIDialogSelect* pDialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDialog->Reset();
     pDialog->SetItems(&list);
     pDialog->SetHeading(20356);

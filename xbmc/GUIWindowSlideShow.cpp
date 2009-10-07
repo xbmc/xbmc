@@ -453,7 +453,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
   if (m_bScreensaver)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
 
@@ -461,7 +461,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
   {
   case ACTION_SHOW_CODEC:
     {
-      CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
+      CGUIDialogPictureInfo *pictureInfo = (CGUIDialogPictureInfo *)g_windowManager.GetWindow(WINDOW_DIALOG_PICTURE_INFO);
       if (pictureInfo)
       {
         // no need to set the picture here, it's done in Render()
@@ -471,7 +471,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     break;
   case ACTION_PREVIOUS_MENU:
   case ACTION_STOP:
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     break;
   case ACTION_NEXT_PICTURE:
 //    if (m_iZoomFactor == 1)
@@ -584,7 +584,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       {
         m_ImageLib.Unload();
       }
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       FreeResources();
     }
     break;
@@ -610,7 +610,7 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
       {
         m_ImageLib.Load();
       }
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
 
       // turn off slideshow if we only have 1 image
       if (m_slides->Size() <= 1)
@@ -807,7 +807,7 @@ void CGUIWindowSlideShow::RunSlideShow(const CStdString &strPath, bool bRecursiv
 
   StartSlideShow();
   if (NumSlides())
-    m_gWindowManager.ActivateWindow(WINDOW_SLIDESHOW);
+    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
 }
 
 void CGUIWindowSlideShow::AddItems(const CStdString &strPath, path_set *recursivePaths)

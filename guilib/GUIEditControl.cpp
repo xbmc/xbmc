@@ -441,7 +441,7 @@ void CGUIEditControl::OnTextChanged()
   {
     CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
     message.SetAction(textChangeActions[i]);
-    m_gWindowManager.SendMessage(message);
+    g_windowManager.SendMessage(message);
   }  
   
   SetInvalid();

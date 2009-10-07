@@ -76,7 +76,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_iRegionSet = 0;
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
@@ -265,7 +265,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_SETTINGS:
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
     return true;
 
   case CONTEXT_BUTTON_GOTO_ROOT:

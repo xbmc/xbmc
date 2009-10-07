@@ -168,7 +168,7 @@ void CLastFmManager::InitProgressDialog(const CStdString& strUrl)
 {
   if (m_RadioSession.IsEmpty())
   {
-    dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+    dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
     if (dlgProgress)
     {
       dlgProgress->SetHeading(15200);
@@ -593,7 +593,7 @@ bool CLastFmManager::MovePlaying()
 void CLastFmManager::SendUpdateMessage()
 {
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CLastFmManager::OnStartup()

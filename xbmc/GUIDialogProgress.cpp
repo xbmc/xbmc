@@ -55,7 +55,7 @@ void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogProgress::StartModal()
@@ -72,7 +72,7 @@ void CGUIDialogProgress::StartModal()
   m_bRunning = true;
   m_bModal = true;
   m_dialogClosing = false;
-  m_gWindowManager.RouteToWindow(this);
+  g_windowManager.RouteToWindow(this);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
@@ -97,7 +97,7 @@ void CGUIDialogProgress::Progress()
 {
   if (m_bRunning)
   {
-    m_gWindowManager.Process();
+    g_windowManager.Process();
   }
 }
 
@@ -199,7 +199,7 @@ void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
   if(OwningCriticalSection(g_graphicsContext))
     OnMessage(msg);
   else
-    m_gWindowManager.SendThreadMessage(msg, GetID());
+    g_windowManager.SendThreadMessage(msg, GetID());
 }
 
 void CGUIDialogProgress::SetHeading(const string& strLine)

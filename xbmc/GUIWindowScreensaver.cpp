@@ -93,7 +93,7 @@ bool CGUIWindowScreensaver::OnAction(const CAction &action)
 // called when the mouse is moved/clicked etc. etc.
 bool CGUIWindowScreensaver::OnMouse(const CPoint &point)
 {
-  m_gWindowManager.PreviousWindow();
+  g_windowManager.PreviousWindow();
   return true;
 }
 
@@ -124,7 +124,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
  //     g_graphicsContext.SetVideoResolution(res, FALSE);
 
       // enable the overlay
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
     }
     break;
 
@@ -161,7 +161,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
 //      g_graphicsContext.SetVideoResolution(res, TRUE);
 
       // disable the overlay
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       return true;
     }
   case GUI_MSG_CHECK_LOCK:

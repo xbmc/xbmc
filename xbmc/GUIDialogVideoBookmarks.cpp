@@ -303,7 +303,7 @@ void CGUIDialogVideoBookmarks::AddEpisodeBookmark()
   videoDatabase.Close();
   if(episodes.size() > 0)
   {
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     map<int, CVideoInfoTag*> buttons;
     const CGUIControl *pList = GetControl(CONTROL_ADD_EPISODE_BOOKMARK);
     if (pList)

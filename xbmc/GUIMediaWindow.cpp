@@ -138,7 +138,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
   if (action.id == ACTION_PARENT_DIR)
   {
     if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
     else
       GoParentFolder();
     return true;
@@ -146,7 +146,7 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
 
   if (action.id == ACTION_PREVIOUS_MENU)
   {
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
 
@@ -422,12 +422,12 @@ void CGUIMediaWindow::UpdateButtons()
       if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-        m_gWindowManager.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
       }
       else
       {
         CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-        m_gWindowManager.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
       }
     }
 
@@ -778,7 +778,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
     if (pItem->m_strPath == "newplaylist://")
     {
       m_vecItems->RemoveDiscCache();
-      m_gWindowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST_EDITOR,"newplaylist://");
       return true;
     }
     else if (pItem->m_strPath.Left(19).Equals("newsmartplaylist://"))
@@ -1181,7 +1181,7 @@ bool CGUIMediaWindow::OnPopupMenu(int iItem)
     if (iItem >= 0 && iItem < m_vecItems->Size())
       m_vecItems->Get(iItem)->Select(true);
 
-    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+    CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
     if (!pMenu) return false;
     // load our menu
     pMenu->Initialize();
@@ -1305,7 +1305,7 @@ bool CGUIMediaWindow::WaitForNetwork() const
   if (g_application.getNetwork().IsAvailable())
     return true;
 
-  CGUIDialogProgress *progress = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress *progress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (!progress)
     return true;
 

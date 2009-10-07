@@ -113,7 +113,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             }
             else
             {
-              CGUIWindow* pWindow = m_gWindowManager.GetWindow(WINDOW_HOME);
+              CGUIWindow* pWindow = g_windowManager.GetWindow(WINDOW_HOME);
               if (pWindow)
                 pWindow->ResetControlStates();
             }
@@ -131,12 +131,12 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
             // test for a startup window, and activate that instead of home
             if (CFile::Exists(startupPath) && (!g_SkinInfo.OnlyAnimateToHome() || startWindow == WINDOW_HOME))
             {
-              m_gWindowManager.ChangeActiveWindow(WINDOW_STARTUP);
+              g_windowManager.ChangeActiveWindow(WINDOW_STARTUP);
             }
             else
             {
-              m_gWindowManager.ChangeActiveWindow(WINDOW_HOME);
-              m_gWindowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
+              g_windowManager.ChangeActiveWindow(WINDOW_HOME);
+              g_windowManager.ActivateWindow(g_guiSettings.GetInt("lookandfeel.startupwindow"));
             }
 
             g_application.UpdateLibraries();
@@ -179,7 +179,7 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
 
 void CGUIWindowLoginScreen::Render()
 {
-  if (GetFocusedControlID() == CONTROL_BIG_LIST && m_gWindowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
+  if (GetFocusedControlID() == CONTROL_BIG_LIST && g_windowManager.GetTopMostModalDialogID() == WINDOW_INVALID)
     if (m_viewControl.HasControl(CONTROL_BIG_LIST))
       m_iSelectedItem = m_viewControl.GetSelectedItem();
   CStdString strLabel;
@@ -251,7 +251,7 @@ bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
   m_vecItems->Get(iItem)->Select(true);
 
   // popup the context menu
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu) return false;
 
   // initialize the menu (loaded on demand)

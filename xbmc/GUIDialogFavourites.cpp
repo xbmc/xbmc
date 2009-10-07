@@ -102,7 +102,7 @@ void CGUIDialogFavourites::OnClick(int item)
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
   message.SetStringParam(execute);
-  m_gWindowManager.SendMessage(message);
+  g_windowManager.SendMessage(message);
 }
 
 void CGUIDialogFavourites::OnPopupMenu(int item)
@@ -110,7 +110,7 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu *pMenu = (CGUIDialogContextMenu *)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (pMenu)
   {
     // highlight the item
