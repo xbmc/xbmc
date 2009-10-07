@@ -186,7 +186,7 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         m_gWindowManager.ChangeActiveWindow(nWindow);
 
         CGUIMessage msg2(GUI_MSG_SETFOCUS, g_stSettings.m_iMyMusicStartWindow, CONTROL_BTNTYPE);
-        g_graphicsContext.SendMessage(msg2);
+        m_gWindowManager.SendMessage(msg2);
 
         return true;
       }
@@ -759,15 +759,15 @@ void CGUIWindowMusicBase::UpdateButtons()
 
   // Remove labels from the window selection
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_BTNTYPE);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
 
   // Add labels to the window selection
   CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_BTNTYPE);
   msg2.SetLabel(g_localizeStrings.Get(744)); // Files
-  g_graphicsContext.SendMessage(msg2);
+  m_gWindowManager.SendMessage(msg2);
 
   msg2.SetLabel(g_localizeStrings.Get(15100)); // Library
-  g_graphicsContext.SendMessage(msg2);
+  m_gWindowManager.SendMessage(msg2);
 
   // Select the current window as default item
   CONTROL_SELECT_ITEM(CONTROL_BTNTYPE, g_stSettings.m_iMyMusicStartWindow - WINDOW_MUSIC_FILES);

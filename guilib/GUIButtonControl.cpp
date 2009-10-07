@@ -296,7 +296,7 @@ void CGUIButtonControl::OnClick()
   {
     CGUIMessage message(GUI_MSG_EXECUTE, controlID, parentID);
     message.SetAction(clickActions[i]);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
 }
 

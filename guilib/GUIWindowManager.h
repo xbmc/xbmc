@@ -30,7 +30,6 @@
  */
 
 #include "GUIWindow.h"
-#include "IMsgSenderCallback.h"
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
 
@@ -42,12 +41,13 @@ class CGUIDialog;
  \ingroup winman
  \brief
  */
-class CGUIWindowManager: public IMsgSenderCallback
+class CGUIWindowManager
 {
 public:
   CGUIWindowManager(void);
   virtual ~CGUIWindowManager(void);
   bool SendMessage(CGUIMessage& message);
+  bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
   bool SendMessage(CGUIMessage& message, int window);
   void Initialize();
   void Add(CGUIWindow* pWindow);

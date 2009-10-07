@@ -48,8 +48,13 @@ CGUIWindowManager::~CGUIWindowManager(void)
 
 void CGUIWindowManager::Initialize()
 {
-  g_graphicsContext.setMessageSender(this);
   LoadNotOnDemandWindows();
+}
+
+bool CGUIWindowManager::SendMessage(int message, int senderID, int destID, int param1, int param2)
+{
+  CGUIMessage msg(message, senderID, destID, param1, param2);
+  return SendMessage(msg);
 }
 
 bool CGUIWindowManager::SendMessage(CGUIMessage& message)

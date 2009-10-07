@@ -74,7 +74,7 @@ bool CGUIVideoControl::OnMouseClick(int button, const CPoint &point)
   if (button == MOUSE_LEFT_BUTTON)
   {
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
     return true;
   }
   if (button == MOUSE_RIGHT_BUTTON)

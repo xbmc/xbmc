@@ -63,7 +63,7 @@ bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
 int CGUIWindowSettingsProfile::GetSelectedItem()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
 
   return msg.GetParam1();
 }
@@ -102,7 +102,7 @@ void CGUIWindowSettingsProfile::OnPopupMenu(int iItem)
     unsigned iCtrlID = GetFocusedControlID();
     g_application.StopPlaying();
     CGUIMessage msg2(GUI_MSG_ITEM_SELECTED, m_gWindowManager.GetActiveWindow(), iCtrlID);
-    g_graphicsContext.SendMessage(msg2);
+    m_gWindowManager.SendMessage(msg2);
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     bool bOldMaster = g_passwordManager.bMasterUser;
     g_passwordManager.bMasterUser = true;
@@ -157,7 +157,7 @@ bool CGUIWindowSettingsProfile::OnMessage(CGUIMessage& message)
         )
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
-          g_graphicsContext.SendMessage(msg);
+          m_gWindowManager.SendMessage(msg);
           int iItem = msg.GetParam1();
           if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
           {
@@ -222,13 +222,13 @@ void CGUIWindowSettingsProfile::LoadList()
     item->SetThumbnailImage(profile.getThumb());
     item->SetOverlayImage(profile.getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
     m_vecListItems.push_back(item);
   }
   {
     CFileItemPtr item(new CFileItem(g_localizeStrings.Get(20058)));
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PROFILES, 0, 0, item);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
     item->m_strPath.Empty();
     m_vecListItems.push_back(item);
   }
@@ -246,7 +246,7 @@ void CGUIWindowSettingsProfile::LoadList()
 void CGUIWindowSettingsProfile::ClearListItems()
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_PROFILES);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
 
   m_vecListItems.erase(m_vecListItems.begin(), m_vecListItems.end());
 }

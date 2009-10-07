@@ -422,12 +422,12 @@ void CGUIMediaWindow::UpdateButtons()
       if (m_guiState->GetDisplaySortOrder()==SORT_ORDER_ASC)
       {
         CGUIMessage msg(GUI_MSG_DESELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
+        m_gWindowManager.SendMessage(msg);
       }
       else
       {
         CGUIMessage msg(GUI_MSG_SELECTED, GetID(), CONTROL_BTNSORTASC);
-        g_graphicsContext.SendMessage(msg);
+        m_gWindowManager.SendMessage(msg);
       }
     }
 

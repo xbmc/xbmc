@@ -75,7 +75,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   case ACTION_VIS_PRESET_LOCK:
     { // show the locked icon + fall through so that the vis handles the locking
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_graphicsContext.SendMessage(msg);
+      m_gWindowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
         CVisualisation *pVis = (CVisualisation *)msg.GetPointer();

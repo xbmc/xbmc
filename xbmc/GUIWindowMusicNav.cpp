@@ -912,7 +912,7 @@ void CGUIWindowMusicNav::SetThumb(int iItem, CONTEXT_BUTTON button)
       CMusicDatabaseDirectory dir;
       dir.ClearDirectoryCache(m_vecItems->m_strPath);
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-      g_graphicsContext.SendMessage(msg);
+      m_gWindowManager.SendMessage(msg);
       Update(m_vecItems->m_strPath);
     }
     else

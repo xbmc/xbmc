@@ -1466,7 +1466,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case VISUALISATION_PRESET:
     {
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_graphicsContext.SendMessage(msg);
+      m_gWindowManager.SendMessage(msg);
       if (msg.GetPointer())
       {
         CVisualisation *pVis = (CVisualisation *)msg.GetPointer();
@@ -1946,7 +1946,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VISUALISATION_LOCKED:
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-        g_graphicsContext.SendMessage(msg);
+        m_gWindowManager.SendMessage(msg);
         if (msg.GetPointer())
         {
           CVisualisation *pVis = (CVisualisation *)msg.GetPointer();

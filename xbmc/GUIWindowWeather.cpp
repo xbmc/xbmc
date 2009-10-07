@@ -157,7 +157,7 @@ void CGUIWindowWeather::UpdateLocations()
   if (!IsActive()) return;
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
 
   for (unsigned int i = 0; i < MAX_LOCATION; i++)
@@ -175,7 +175,7 @@ void CGUIWindowWeather::UpdateLocations()
       }
       msg2.SetParam1(i);
       msg2.SetLabel(strLabel);
-      g_graphicsContext.SendMessage(msg2);
+      m_gWindowManager.SendMessage(msg2);
     }
     else
     {
@@ -183,7 +183,7 @@ void CGUIWindowWeather::UpdateLocations()
 
       msg2.SetLabel(strLabel);
       msg2.SetParam1(i);
-      g_graphicsContext.SendMessage(msg2);
+      m_gWindowManager.SendMessage(msg2);
     }
     if (i==m_iCurWeather)
       SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);

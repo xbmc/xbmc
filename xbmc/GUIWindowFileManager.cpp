@@ -273,7 +273,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           {
             //move to next item
             CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), iControl, iItem + 1);
-            g_graphicsContext.SendMessage(msg);
+            m_gWindowManager.SendMessage(msg);
           }
         }
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_DOUBLE_CLICK)
@@ -333,7 +333,7 @@ void CGUIWindowFileManager::OnSort(int iList)
 void CGUIWindowFileManager::ClearFileItems(int iList)
 {
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), iList + CONTROL_LEFT_LIST);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
 
   m_vecItems[iList]->Clear(); // will clean up everything
 }
@@ -362,12 +362,12 @@ void CGUIWindowFileManager::UpdateButtons()
    if (bSortOrder)
     {
       CGUIMessage msg(GUI_MSG_DESELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
+      m_gWindowManager.SendMessage(msg);
     }
     else
     {
       CGUIMessage msg(GUI_MSG_SELECTED,GetID(), CONTROL_BTNSORTASC);
-      g_graphicsContext.SendMessage(msg);
+      m_gWindowManager.SendMessage(msg);
     }
 
   */
@@ -648,7 +648,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 void CGUIWindowFileManager::UpdateControl(int iList, int item)
 {
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), iList + CONTROL_LEFT_LIST, item, 0, m_vecItems[iList]);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
 }
 
 void CGUIWindowFileManager::OnMark(int iList, int iItem)

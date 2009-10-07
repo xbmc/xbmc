@@ -20,6 +20,7 @@
  */
 
 #include "GUIEditControl.h"
+#include "GUIWindowManager.h"
 #include "utils/CharsetConverter.h"
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogNumeric.h"
@@ -440,7 +441,7 @@ void CGUIEditControl::OnTextChanged()
   {
     CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
     message.SetAction(textChangeActions[i]);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }  
   
   SetInvalid();

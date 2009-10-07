@@ -222,12 +222,12 @@ void CGUIWindowPictures::UpdateButtons()
   if (g_guiSettings.GetBool("slideshow.shuffle"))
   {
     CGUIMessage msg2(GUI_MSG_SELECTED, GetID(), CONTROL_SHUFFLE);
-    g_graphicsContext.SendMessage(msg2);
+    m_gWindowManager.SendMessage(msg2);
   }
   else
   {
     CGUIMessage msg2(GUI_MSG_DESELECTED, GetID(), CONTROL_SHUFFLE);
-    g_graphicsContext.SendMessage(msg2);
+    m_gWindowManager.SendMessage(msg2);
   }
 
   // check we can slideshow or recursive slideshow

@@ -1003,7 +1003,7 @@ void CGUIWindow::RunActions(std::vector<CGUIActionDescriptor>& actions)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
     message.SetAction(tempActions[i]);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
 }
 

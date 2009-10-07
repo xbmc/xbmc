@@ -1744,7 +1744,7 @@ void CApplication::CancelDelayLoadSkin()
 void CApplication::ReloadSkin()
 {
   CGUIMessage msg(GUI_MSG_LOAD_SKIN, -1, m_gWindowManager.GetActiveWindow());
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
   // Reload the skin, restoring the previously focused control.  We need this as
   // the window unload will reset all control states.
   CGUIWindow* pWindow = m_gWindowManager.GetWindow(m_gWindowManager.GetActiveWindow());
@@ -2609,7 +2609,7 @@ bool CApplication::OnAction(CAction &action)
         }
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
         CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
-        g_graphicsContext.SendMessage(msg);
+        m_gWindowManager.SendMessage(msg);
       }
     }
     return true;
@@ -4104,7 +4104,7 @@ void CApplication::SaveFileState()
           videodatabase.MarkAsWatched(*m_progressTrackingItem);
           CUtil::DeleteVideoDatabaseDirectoryCache();
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 0);
-          g_graphicsContext.SendMessage(message);
+          m_gWindowManager.SendMessage(message);
         }
 
         if (g_stSettings.m_currentVideoSettings != g_stSettings.m_defaultVideoSettings)

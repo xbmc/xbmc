@@ -40,6 +40,7 @@
 
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
+#include "GUIWindowManager.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
 #include "FileSystem/cdioSupport.h"
@@ -2930,7 +2931,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         pStream->OnMenu();
         // send a message to everyone that we've gone to the menu
         CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-        g_graphicsContext.SendMessage(msg);
+        m_gWindowManager.SendMessage(msg);
         return true;
       }
       break;

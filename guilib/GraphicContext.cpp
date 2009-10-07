@@ -22,8 +22,6 @@
 #include "system.h"
 #include "GraphicContext.h"
 #include "GUIFontManager.h"
-#include "GUIMessage.h"
-#include "IMsgSenderCallback.h"
 #include "utils/SingleLock.h"
 #include "Application.h"
 #include "GUISettings.h"
@@ -51,7 +49,6 @@ CGraphicContext::CGraphicContext(void)
   m_strMediaDir = "";
   m_bCalibrating = false;
   m_Resolution = RES_INVALID;
-  m_pCallback = NULL;
   m_guiScaleX = m_guiScaleY = 1.0f;
   m_windowResolution = RES_INVALID;
   m_bFullScreenRoot = false;
@@ -59,24 +56,6 @@ CGraphicContext::CGraphicContext(void)
 
 CGraphicContext::~CGraphicContext(void)
 {
-}
-
-bool CGraphicContext::SendMessage(int message, int senderID, int destID, int param1, int param2)
-{
-  if (!m_pCallback) return false;
-  CGUIMessage msg(message, senderID, destID, param1, param2);
-  return m_pCallback->SendMessage(msg);
-}
-
-bool CGraphicContext::SendMessage(CGUIMessage& message)
-{
-  if (!m_pCallback) return false;
-  return m_pCallback->SendMessage(message);
-}
-
-void CGraphicContext::setMessageSender(IMsgSenderCallback* pCallback)
-{
-  m_pCallback = pCallback;
 }
 
 void CGraphicContext::SetOrigin(float x, float y)

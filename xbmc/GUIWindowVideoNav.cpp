@@ -1536,7 +1536,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
       CUtil::DeleteVideoDatabaseDirectoryCache();
       CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-      g_graphicsContext.SendMessage(msg);
+      m_gWindowManager.SendMessage(msg);
       Update(m_vecItems->m_strPath);
 
       return true;

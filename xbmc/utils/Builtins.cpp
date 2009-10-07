@@ -260,7 +260,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
   }
   else if (execute.Equals("takescreenshot"))
   {
@@ -306,7 +306,7 @@ int CBuiltins::Execute(const CStdString& execString)
     int controlID = atol(params[0].c_str());
     int subItem = (params.size() > 1) ? atol(params[1].c_str())+1 : 0;
     CGUIMessage msg(GUI_MSG_SETFOCUS, m_gWindowManager.GetActiveWindow(), controlID, subItem);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
   }
 #ifdef HAS_PYTHON
   else if (execute.Equals("runscript") && params.size())
@@ -947,13 +947,13 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     int id = atoi(parameter.c_str());
     CGUIMessage message(GUI_MSG_PAGE_DOWN, m_gWindowManager.GetFocusedWindow(), id);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("pageup"))
   {
     int id = atoi(parameter.c_str());
     CGUIMessage message(GUI_MSG_PAGE_UP, m_gWindowManager.GetFocusedWindow(), id);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("updatelibrary") && params.size())
   {
@@ -993,14 +993,14 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("control.move") && params.size() > 1)
   {
     CGUIMessage message(GUI_MSG_MOVE_OFFSET, m_gWindowManager.GetFocusedWindow(), atoi(params[0].c_str()), atoi(params[1].c_str()));
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.refresh"))
   { // NOTE: These messages require a media window, thus they're sent to the current activewindow.
     //       This shouldn't stop a dialog intercepting it though.
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, m_gWindowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE, 1); // 1 to reset the history
     message.SetStringParam(parameter);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.update") && params.size())
   {
@@ -1008,57 +1008,57 @@ int CBuiltins::Execute(const CStdString& execString)
     message.SetStringParam(params[0]);
     if (params.size() > 1 && params[1].CompareNoCase("replace") == 0)
       message.SetParam2(1); // reset the history
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.nextviewmode"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.previousviewmode"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.setviewmode"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_VIEW_MODE, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.nextsortmethod"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, 1);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.previoussortmethod"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, 0, -1);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.setsortmethod"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_METHOD, m_gWindowManager.GetActiveWindow(), 0, atoi(parameter.c_str()));
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("container.sortdirection"))
   {
     CGUIMessage message(GUI_MSG_CHANGE_SORT_DIRECTION, m_gWindowManager.GetActiveWindow(), 0, 0);
-    g_graphicsContext.SendMessage(message);
+    m_gWindowManager.SendMessage(message);
   }
   else if (execute.Equals("control.message") && params.size() >= 2)
   {
     int controlID = atoi(params[0].c_str());
     int windowID = (params.size() == 3) ? CButtonTranslator::TranslateWindowString(params[2].c_str()) : m_gWindowManager.GetActiveWindow();
     if (params[1] == "moveup")
-      g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
+      m_gWindowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, 1);
     else if (params[1] == "movedown")
-      g_graphicsContext.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
+      m_gWindowManager.SendMessage(GUI_MSG_MOVE_OFFSET, windowID, controlID, -1);
     else if (params[1] == "pageup")
-      g_graphicsContext.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
+      m_gWindowManager.SendMessage(GUI_MSG_PAGE_UP, windowID, controlID);
     else if (params[1] == "pagedown")
-      g_graphicsContext.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
+      m_gWindowManager.SendMessage(GUI_MSG_PAGE_DOWN, windowID, controlID);
     else if (params[1] == "click")
-      g_graphicsContext.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
+      m_gWindowManager.SendMessage(GUI_MSG_CLICKED, controlID, windowID);
   }
   else if (execute.Equals("sendclick") && params.size())
   {
@@ -1067,12 +1067,12 @@ int CBuiltins::Execute(const CStdString& execString)
       // have a window - convert it
       int windowID = CButtonTranslator::TranslateWindowString(params[0].c_str());
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[1].c_str()), windowID);
-      g_graphicsContext.SendMessage(message);
+      m_gWindowManager.SendMessage(message);
     }
     else
     { // single param - assume you meant the active window
       CGUIMessage message(GUI_MSG_CLICKED, atoi(params[0].c_str()), m_gWindowManager.GetActiveWindow());
-      g_graphicsContext.SendMessage(message);
+      m_gWindowManager.SendMessage(message);
     }
   }
   else if (execute.Equals("action") && params.size())

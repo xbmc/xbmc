@@ -20,6 +20,7 @@
  */
 
 #include "GUIDialogSelect.h"
+#include "GUIWindowManager.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"
 
@@ -61,7 +62,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       CGUIDialog::OnMessage(message);
       m_iSelected = -1;
       CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_vecList);
-      g_graphicsContext.SendMessage(msg);
+      m_gWindowManager.SendMessage(msg);
 
       CStdString items;
       items.Format("%i %s", m_vecList->Size(), g_localizeStrings.Get(127).c_str());
@@ -70,12 +71,12 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
       if (m_bButtonEnabled)
       {
         CGUIMessage msg2(GUI_MSG_VISIBLE, GetID(), CONTROL_BUTTON);
-        g_graphicsContext.SendMessage(msg2);
+        m_gWindowManager.SendMessage(msg2);
       }
       else
       {
         CGUIMessage msg2(GUI_MSG_HIDDEN, GetID(), CONTROL_BUTTON);
-        g_graphicsContext.SendMessage(msg2);
+        m_gWindowManager.SendMessage(msg2);
       }
       return true;
     }
@@ -91,7 +92,7 @@ bool CGUIDialogSelect::OnMessage(CGUIMessage& message)
         if (ACTION_SELECT_ITEM == iAction || ACTION_MOUSE_LEFT_CLICK == iAction)
         {
           CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
-          g_graphicsContext.SendMessage(msg);
+          m_gWindowManager.SendMessage(msg);
           m_iSelected = msg.GetParam1();
           if(m_iSelected >= 0 && m_iSelected < (int)m_vecList->Size())
           {

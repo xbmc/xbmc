@@ -1,4 +1,5 @@
 #include "GUIVisualisationControl.h"
+#include "GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "Application.h"
 #include "visualizations/Visualisation.h"
@@ -101,7 +102,7 @@ void CGUIVisualisationControl::FreeVisualisation()
   m_bInitialized = false;
   // tell our app that we're going
   CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, 0, 0);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
 
   CSingleLock lock (m_critSection);
 
@@ -186,7 +187,7 @@ void CGUIVisualisationControl::LoadVisualisation()
 
   // tell our app that we're back
   CGUIMessage msg(GUI_MSG_VISUALISATION_LOADED, 0, 0, 0, 0, m_pVisualisation);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
 }
 
 void CGUIVisualisationControl::UpdateVisibility(const CGUIListItem *item)

@@ -46,7 +46,7 @@ bool CGUIWindowMusicOverlay::OnMessage(CGUIMessage& message)
       if (message.GetParam1() == ACTION_SELECT_ITEM)
       { // switch to fullscreen visualisation mode...
         CGUIMessage msg(GUI_MSG_FULLSCREEN, 0, GetID());
-        g_graphicsContext.SendMessage(msg);
+        m_gWindowManager.SendMessage(msg);
       }
     }
   }
@@ -63,7 +63,7 @@ bool CGUIWindowMusicOverlay::OnMouse(const CPoint &point)
     if (g_Mouse.bClick[MOUSE_LEFT_BUTTON])
     { // send mouse message
       CGUIMessage message(GUI_MSG_FULLSCREEN, CONTROL_LOGO_PIC, GetID());
-      g_graphicsContext.SendMessage(message);
+      m_gWindowManager.SendMessage(message);
       // reset the mouse button
       g_Mouse.bClick[MOUSE_LEFT_BUTTON] = false;
     }

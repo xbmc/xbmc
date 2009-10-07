@@ -75,7 +75,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       else if (iControl == CONTROL_LOCK_BUTTON)
       {
         CGUIMessage msg(GUI_MSG_VISUALISATION_ACTION, 0, 0, ACTION_VIS_PRESET_LOCK);
-        g_graphicsContext.SendMessage(msg);
+        m_gWindowManager.SendMessage(msg);
       }
       return true;
     }

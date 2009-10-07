@@ -454,7 +454,7 @@ void CGUIWindowVideoInfo::Update()
   if (m_hasUpdatedThumb)
   {
     CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-    g_graphicsContext.SendMessage(reload);
+    m_gWindowManager.SendMessage(reload);
   }
 }
 

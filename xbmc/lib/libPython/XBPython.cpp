@@ -120,11 +120,6 @@ XBPython::~XBPython()
   CloseHandle(m_globalEvent);
 }
 
-bool XBPython::SendMessage(CGUIMessage& message)
-{
-  return (evalFile(message.GetStringParam().c_str()) != -1);
-}
-
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {

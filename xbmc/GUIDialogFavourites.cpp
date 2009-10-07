@@ -102,7 +102,7 @@ void CGUIDialogFavourites::OnClick(int item)
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
   message.SetStringParam(execute);
-  g_graphicsContext.SendMessage(message);
+  m_gWindowManager.SendMessage(message);
 }
 
 void CGUIDialogFavourites::OnPopupMenu(int item)

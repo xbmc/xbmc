@@ -47,10 +47,6 @@
 #include "StdString.h"
 #include "Resolution.h"
 
-// forward definitions
-class IMsgSenderCallback;
-class CGUIMessage;
-
 enum VIEW_TYPE { VIEW_TYPE_NONE = 0,
                  VIEW_TYPE_LIST,
                  VIEW_TYPE_ICON,
@@ -78,9 +74,6 @@ public:
   int GetWidth() const { return m_iScreenWidth; }
   int GetHeight() const { return m_iScreenHeight; }
   float GetFPS() const;
-  bool SendMessage(CGUIMessage& message);
-  bool SendMessage(int message, int senderID, int destID, int param1 = 0, int param2 = 0);
-  void setMessageSender(IMsgSenderCallback* pCallback);
   const CStdString& GetMediaDir() const { return m_strMediaDir; }
   void SetMediaDir(const CStdString& strMediaDir);
   bool IsWidescreen() const { return m_bWidescreen; }
@@ -169,7 +162,6 @@ public:
 protected:
   void SetFullScreenViewWindow(RESOLUTION &res);
 
-  IMsgSenderCallback* m_pCallback;
   std::stack<CRect> m_viewStack;
 
   int m_iScreenHeight;

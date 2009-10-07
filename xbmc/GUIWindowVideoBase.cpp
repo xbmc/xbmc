@@ -162,7 +162,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           g_settings.Save();
           m_gWindowManager.ChangeActiveWindow(nNewWindow);
           CGUIMessage msg2(GUI_MSG_SETFOCUS, nNewWindow, CONTROL_BTNTYPE);
-          g_graphicsContext.SendMessage(msg2);
+          m_gWindowManager.SendMessage(msg2);
         }
 
         return true;
@@ -273,17 +273,17 @@ void CGUIWindowVideoBase::UpdateButtons()
 {
   // Remove labels from the window selection
   CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), CONTROL_BTNTYPE);
-  g_graphicsContext.SendMessage(msg);
+  m_gWindowManager.SendMessage(msg);
 
   // Add labels to the window selection
   CStdString strItem = g_localizeStrings.Get(744); // Files
   CGUIMessage msg2(GUI_MSG_LABEL_ADD, GetID(), CONTROL_BTNTYPE);
   msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
+  m_gWindowManager.SendMessage(msg2);
 
   strItem = g_localizeStrings.Get(14022); // Library
   msg2.SetLabel(strItem);
-  g_graphicsContext.SendMessage(msg2);
+  m_gWindowManager.SendMessage(msg2);
 
   // Select the current window as default item
   int nWindow = g_stSettings.m_iVideoStartWindow-WINDOW_VIDEO_FILES;

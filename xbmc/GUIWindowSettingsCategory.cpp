@@ -2110,7 +2110,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   { // new resolution choosen... - update if necessary
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
     m_NewResolution = (RESOLUTION)msg.GetParam1();
     // reset our skin if necessary
     // delay change of resolution
@@ -2123,7 +2123,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
 // DXMERGE: This may be useful
 //    g_videoConfig.SetVSyncMode((VSYNC)msg.GetParam1());
   }
@@ -2194,7 +2194,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingInt *pSettingInt = (CSettingInt *)pSettingControl->GetSetting();
     int iControlID = pSettingControl->GetID();
     CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControlID);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
     pSettingInt->SetData(msg.GetParam1());
   }
   else if (strSetting.Equals("videoscreen.flickerfilter") || strSetting.Equals("videoscreen.soften"))
@@ -3012,7 +3012,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   int iWinID = m_gWindowManager.GetActiveWindow();
   {
     CGUIMessage msg(GUI_MSG_LABEL_RESET, iWinID, iControlID);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
   }
   vector<CStdString> vecVis;
   //find visz....
@@ -3081,7 +3081,7 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
   {
     CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
     msg.SetLabel(231);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
   }
   for (int i = 0; i < (int) vecVis.size(); ++i)
   {
@@ -3093,12 +3093,12 @@ void CGUIWindowSettingsCategory::FillInVisualisations(CSetting *pSetting, int iC
     {
       CGUIMessage msg(GUI_MSG_LABEL_ADD, iWinID, iControlID, iVis++);
       msg.SetLabel(strVis);
-      g_graphicsContext.SendMessage(msg);
+      m_gWindowManager.SendMessage(msg);
     }
   }
   {
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, iWinID, iControlID, iCurrentVis);
-    g_graphicsContext.SendMessage(msg);
+    m_gWindowManager.SendMessage(msg);
   }
 }
 

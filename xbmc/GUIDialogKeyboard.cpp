@@ -352,7 +352,7 @@ void CGUIDialogKeyboard::UpdateLabel() // FIXME seems to be called twice for one
     { // send our filter message
       CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetID(), 0, GUI_MSG_FILTER_ITEMS);
       message.SetStringParam(utf8Edit);
-      g_graphicsContext.SendMessage(message);
+      m_gWindowManager.SendMessage(message);
     }
 
     if (m_filtering == FILTERING_SEARCH)
