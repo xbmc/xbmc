@@ -793,17 +793,32 @@ bool CGUIWindowMusicBase::FindAlbumInfo(const CStdString& strAlbum, const CStdSt
 
   CMusicInfoScanner scanner;
   CStdString strPath;
+  CStdString strTempAlbum(strAlbum);
+  CStdString strTempArtist(strArtist);
   long idAlbum = m_musicdatabase.GetAlbumByName(strAlbum,strArtist);
-
   strPath.Format("musicdb://3/%d/",idAlbum);
-  bool bCanceled;
-  if (!scanner.DownloadAlbumInfo(strPath,strArtist,strAlbum,bCanceled,album,m_dlgProgress))
-  { // no albums found
-    CGUIDialogOK::ShowAndGetInput(185, 0, 187, 0);
-    return false;
+
+  bool bCanceled(false);
+  bool needsRefresh(true);
+  do 
+  { 
+    if (!scanner.DownloadAlbumInfo(strPath,strTempArtist,strTempAlbum,bCanceled,album,m_dlgProgress))
+    {
+      if (m_dlgProgress && allowSelection != SELECTION_AUTO)
+      {
+        if (!CGUIDialogKeyboard::ShowAndGetInput(strTempAlbum, g_localizeStrings.Get(16011), false))
+          return false;
+
+        if (!CGUIDialogKeyboard::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
+          return false;
+      }
+      else
+        needsRefresh = false;
+    }
+    else
+      needsRefresh = false;
   }
-  if (bCanceled)
-    return false;
+  while (needsRefresh || bCanceled);
 
   // Read the album information from the database if we are dealing with a DB album.
   if (idAlbum != -1)
@@ -830,13 +845,27 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
 
   CMusicInfoScanner scanner;
   CStdString strPath;
+  CStdString strTempArtist(strArtist);
   long idArtist = m_musicdatabase.GetArtistByName(strArtist);
   strPath.Format("musicdb://2/%u/",idArtist);
-  if (!scanner.DownloadArtistInfo(strPath,strArtist,m_dlgProgress))
-  { // no albums found
-    CGUIDialogOK::ShowAndGetInput(21889, 0, 20198, 0);
-    return false;
+
+  bool needsRefresh(true);
+  do 
+  { 
+    if (!scanner.DownloadArtistInfo(strPath,strTempArtist,m_dlgProgress))
+    {
+      if (m_dlgProgress && allowSelection != SELECTION_AUTO)
+      {
+        if (!CGUIDialogKeyboard::ShowAndGetInput(strTempArtist, g_localizeStrings.Get(16025), false))
+          return false;
+      }
+      else
+        needsRefresh = false;
+    }
+    else
+      needsRefresh = false;
   }
+  while (needsRefresh);
 
   m_musicdatabase.GetArtistInfo(idArtist,artist.GetArtist());
   artist.SetLoaded(true);
