@@ -130,7 +130,6 @@
 #include "utils/DbusServer.h"
 #endif
 
-
 // Windows includes
 #include "GUIWindowManager.h"
 #include "GUIWindowHome.h"
@@ -185,7 +184,6 @@
 #include "GUIDialogContentSettings.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogBusy.h"
-
 #include "GUIDialogKeyboard.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
@@ -239,14 +237,8 @@
 #ifdef HAS_HAL
 #include "linux/LinuxFileSystem.h"
 #endif
-#ifdef HAS_EVENT_SERVER
-#include "utils/EventServer.h"
-#endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
-#endif
-#ifdef HAS_DBUS_SERVER
-#include "utils/DbusServer.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE
