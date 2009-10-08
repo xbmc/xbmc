@@ -586,3 +586,13 @@ bool CCMythDirectory::IsTvShow(const cmyth_proginfo_t program)
    */
   return GetValue(m_dll->proginfo_programid(program)).Left(2) != "MV";
 }
+
+bool CCMythDirectory::SupportsFileOperations(const CStdString& strPath)
+{
+  CURL url(strPath);
+  CStdString filename = url.GetFileName();
+  CUtil::RemoveSlashAtEnd(filename);
+  return filename.Left(11) == "recordings/" ||
+         filename.Left(7)  == "movies/" ||
+         filename.Left(8)  == "tvshows/";
+}
