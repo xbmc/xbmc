@@ -368,17 +368,20 @@ ass_drawing_t *ass_drawing_new(void *fontconfig_priv, ass_font_t *font,
     ass_drawing_t* drawing;
 
     drawing = calloc(1, sizeof(*drawing));
-    drawing->text = calloc(1, DRAWING_INITIAL_SIZE);
-    drawing->size = DRAWING_INITIAL_SIZE;
+    if (drawing)
+    {
+      drawing->text = calloc(1, DRAWING_INITIAL_SIZE);
+      drawing->size = DRAWING_INITIAL_SIZE;
 
-    drawing->ftlibrary = lib;
-    drawing->library = font->library;
-    drawing_make_glyph(drawing, fontconfig_priv, font, hint);
+      drawing->ftlibrary = lib;
+      drawing->library = font->library;
+      drawing_make_glyph(drawing, fontconfig_priv, font, hint);
 
-    drawing->scale_x = 1.;
-    drawing->scale_y = 1.;
-    drawing->max_contours = GLYPH_INITIAL_CONTOURS;
-    drawing->max_points = GLYPH_INITIAL_POINTS;
+      drawing->scale_x = 1.;
+      drawing->scale_y = 1.;
+      drawing->max_contours = GLYPH_INITIAL_CONTOURS;
+      drawing->max_points = GLYPH_INITIAL_POINTS;
+    }
 
     return drawing;
 }

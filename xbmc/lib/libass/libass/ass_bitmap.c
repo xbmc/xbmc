@@ -121,7 +121,8 @@ static void resize_tmp(ass_synth_priv_t *priv, int w, int h)
 ass_synth_priv_t *ass_synth_init(double radius)
 {
     ass_synth_priv_t *priv = calloc(1, sizeof(ass_synth_priv_t));
-    generate_tables(priv, radius);
+    if (priv)
+      generate_tables(priv, radius);
     return priv;
 }
 
