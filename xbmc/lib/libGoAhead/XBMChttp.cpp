@@ -1871,12 +1871,12 @@ int CXbmcHttp::xbmcGetPlayListContents(int numParas, CStdString paras[])
   if (thePlayList.size()==0)
     list=openTag+"[Empty]" ;
   bool bIsMusic = (playList == PLAYLIST_MUSIC);
-  bool bIsVideo = (playlist == PLAYLIST_VIDEO);
+  bool bIsVideo = (playList == PLAYLIST_VIDEO);
   for (int i = 0; i < thePlayList.size(); i++)
   {
     CFileItemPtr item = thePlayList[i];
     const CMusicInfoTag* tagVal = NULL;
-    const CVideoInfoTag* vidTag = NULL;
+    const CVideoInfoTag* tagVid = NULL;
     if (bIsMusic)
       tagVal = item->GetMusicInfoTag();
     if (bIsVideo)
