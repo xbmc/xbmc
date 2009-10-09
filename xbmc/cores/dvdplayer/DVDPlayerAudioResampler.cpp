@@ -197,4 +197,5 @@ void CDVDPlayerResampler::Clean()
   m_nrchannels = -1;
   m_converterdata.end_of_input = 0;
   m_converterdata.src_ratio = 1.0;
+  m_ratio = 1.0;
 }
