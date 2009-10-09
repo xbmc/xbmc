@@ -540,28 +540,7 @@ void CDVDPlayerAudio::Process()
     {
       m_droptime = 0.0;
 
-      //set the synctype from the gui
-      //use skip/duplicate when resample is selected and passthrough is on
-      m_synctype = m_setsynctype;
-      if (audioframe.passthrough && m_synctype == SYNC_RESAMPLE)
-        m_synctype = SYNC_SKIPDUP;
-
-      //tell dvdplayervideo how much it can change the speed
-      //if SetMaxSpeedAdjust returns false, it means no video is played and we need to use clock feedback
-      double maxspeedadjust = 0.0;
-      if (m_synctype == SYNC_RESAMPLE)
-        maxspeedadjust = m_maxspeedadjust;
-
-      if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
-        m_synctype = SYNC_DISCON;
-
-      if (m_synctype != m_prevsynctype)
-      {
-        const char *synctypes[] = {"clock feedback", "skip/duplicate", "resample", "invalid"};
-        int synctype = (m_synctype >= 0 && m_synctype <= 2) ? m_synctype : 3;
-        CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
-        m_prevsynctype = m_synctype;
-      }
+      SetSyncType(audioframe.passthrough);
       
       // add any packets play
       packetadded = OutputPacket(audioframe);
@@ -579,6 +558,32 @@ void CDVDPlayerAudio::Process()
 
     if (packetadded)
       HandleSyncError(audioframe.duration);
+  }
+}
+
+void CDVDPlayerAudio::SetSyncType(bool passthrough)
+{
+  //set the synctype from the gui
+  //use skip/duplicate when resample is selected and passthrough is on
+  m_synctype = m_setsynctype;
+  if (passthrough && m_synctype == SYNC_RESAMPLE)
+    m_synctype = SYNC_SKIPDUP;
+
+  //tell dvdplayervideo how much it can change the speed
+  //if SetMaxSpeedAdjust returns false, it means no video is played and we need to use clock feedback
+  double maxspeedadjust = 0.0;
+  if (m_synctype == SYNC_RESAMPLE)
+    maxspeedadjust = m_maxspeedadjust;
+
+  if (!m_pClock->SetMaxSpeedAdjust(maxspeedadjust))
+    m_synctype = SYNC_DISCON;
+
+  if (m_synctype != m_prevsynctype)
+  {
+    const char *synctypes[] = {"clock feedback", "skip/duplicate", "resample", "invalid"};
+    int synctype = (m_synctype >= 0 && m_synctype <= 2) ? m_synctype : 3;
+    CLog::Log(LOGDEBUG, "CDVDPlayerAudio:: synctype set to %i: %s", m_synctype, synctypes[synctype]);
+    m_prevsynctype = m_synctype;
   }
 }
 

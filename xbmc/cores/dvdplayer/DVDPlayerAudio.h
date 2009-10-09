@@ -189,6 +189,7 @@ protected:
   LARGE_INTEGER m_errortime; //timestamp of last time we measured
   LARGE_INTEGER m_freq;
 
+  void   SetSyncType(bool passthrough);
   void   HandleSyncError(double duration);
   double m_errorbuff; //place to store average errors
   int    m_errorcount;//number of errors stored
