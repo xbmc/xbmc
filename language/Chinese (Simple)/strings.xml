@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
-<!--Date of translation: 10/02/2009-->
+<!--Date of translation: 10/10/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 23277 -->
+<!--Based on english strings version 23552 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -1959,6 +1959,7 @@
   <string id="21415">默认音乐视频刮削器</string>
   <string id="21416">启用基于刮削器语言的回送</string>
   <string id="21417">- 刮削器设置</string>
+  <string id="21418">多语言</string>
 
   <string id="21420">等于</string>
   <string id="21421">智能播放列表规则</string>
