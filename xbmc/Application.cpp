@@ -411,8 +411,11 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
+      CLog::Log(LOGDEBUG, "entering handleevent");
       g_Mouse.HandleEvent(newEvent);
+      CLog::Log(LOGDEBUG, "leaving handleevent, entering processmouse");
       g_application.ProcessMouse();
+      CLog::Log(LOGDEBUG, "leaving processmouse");
       break;
     case XBMC_VIDEORESIZE:
       if (!g_application.m_bInitializing &&

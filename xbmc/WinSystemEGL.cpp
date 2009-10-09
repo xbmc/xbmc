@@ -134,7 +134,7 @@ bool CWinSystemEGL::DestroyWindowSystem()
     eglTerminate(m_eglDisplay);
 
   if (m_dpy)
-	XCloseDisplay(m_dpy);
+    XCloseDisplay(m_dpy);
 
   // m_SDLSurface is free()'d by SDL_Quit().
 
@@ -172,19 +172,19 @@ bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 {
   if (m_nWidth != newWidth || m_nHeight != newHeight)
   {
-	m_nWidth  = newWidth;
-	m_nHeight = newHeight;
+    m_nWidth  = newWidth;
+    m_nHeight = newHeight;
 
-	int options = SDL_OPENGL;
-	if (m_bFullScreen)
-	  options |= SDL_FULLSCREEN;
-	else
-	  options |= SDL_RESIZABLE;
+    int options = SDL_OPENGL;
+    if (m_bFullScreen)
+      options |= SDL_FULLSCREEN;
+    else
+      options |= SDL_RESIZABLE;
 
-	if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
-	{
-	  RefreshEGLContext();
-	}
+    if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
+    {
+      RefreshEGLContext();
+    }
   }
 
   CRenderSystemGLES::ResetRenderSystem(newWidth, newHeight);
@@ -218,13 +218,13 @@ bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   int options = SDL_OPENGL;
   if (m_bFullScreen)
-	options |= SDL_FULLSCREEN;
+    options |= SDL_FULLSCREEN;
   else
-	options |= SDL_RESIZABLE;
+    options |= SDL_RESIZABLE;
 
   if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
   {
-	RefreshEGLContext();
+    RefreshEGLContext();
   }
 
   CRenderSystemGLES::ResetRenderSystem(res.iWidth, res.iHeight);
@@ -327,7 +327,7 @@ bool CWinSystemEGL::RefreshEGLContext()
 
   if (!m_eglDisplay)
   {
-	CLog::Log(LOGERROR, "EGL: No valid display!");
+    CLog::Log(LOGERROR, "EGL: No valid display!");
     return false;
   }
 
@@ -354,26 +354,26 @@ bool CWinSystemEGL::RefreshEGLContext()
 
   if ((m_eglContext = eglCreateContext(m_eglDisplay, eglConfig, EGL_NO_CONTEXT, contextAttributes)) == EGL_NO_CONTEXT)
   {
-	CLog::Log(LOGERROR, "EGL Error: Could not create context");
-	return false;
+    CLog::Log(LOGERROR, "EGL Error: Could not create context");
+    return false;
   }
 
   if (m_eglSurface)
-	eglDestroySurface(m_eglDisplay, m_eglSurface);
+    eglDestroySurface(m_eglDisplay, m_eglSurface);
 
   if ((m_eglSurface = eglCreateWindowSurface(m_eglDisplay, eglConfig, (EGLNativeWindowType)m_eglWindow, NULL)) == EGL_NO_SURFACE)
   {
-	CLog::Log(LOGERROR, "EGL Error: Could not create surface");
-	return false;
+    CLog::Log(LOGERROR, "EGL Error: Could not create surface");
+    return false;
   }
 
   if (eglMakeCurrent(m_eglDisplay, m_eglSurface, m_eglSurface, m_eglContext) == EGL_FALSE)
   {
-	CLog::Log(LOGERROR, "EGL Error: Could not make context current");
-	return false;
+    CLog::Log(LOGERROR, "EGL Error: Could not make context current");
+    return false;
   }
 
-  CLog::Log(LOGDEBUG, "RefreshEGLContext Succeeded!");
+  CLog::Log(LOGDEBUG, "RefreshEGLContext Succeeded! Format:A%d|R%d|G%d|B%d|BPP%d", ASIZE, RSIZE, GSIZE, BSIZE, DEPTH);
   return true;
 }
 

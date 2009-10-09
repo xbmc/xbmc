@@ -1037,7 +1037,7 @@ void CLinuxRendererGLES::LoadShaders(int field)
   }
 
   // determine whether GPU supports NPOT textures
-  if (!GL_OES_texture_npot)
+  if (!GL_TEXTURE_NPOT)
   {
 	CLog::Log(LOGNOTICE, "GL: GL_ARB_texture_rectangle not supported and OpenGL version is not 2.x");
 	CLog::Log(LOGNOTICE, "GL: Reverting to POT textures");

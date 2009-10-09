@@ -27,6 +27,9 @@
 #include "RenderSystem.h"
 #include "GUIShader.h"
 
+// This extension name may change, so define it here.
+#define GL_TEXTURE_NPOT         false//GL_OES_texture_npot
+
 class CRenderSystemGLES : public CRenderSystemBase
 {
 public:
@@ -64,6 +67,7 @@ public:
   
   virtual bool TestRender();
   
+  void InitialiseGUIShader();
   void EnableGUIShader(ESHADERMETHOD method);
   void DisableGUIShader();
 
@@ -85,6 +89,8 @@ protected:
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
+
+  CStdString m_RenderExtensions;
 
   CGUIShader *m_pGUIshader;
 };

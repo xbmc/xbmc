@@ -68,31 +68,23 @@ bool CRenderSystemGLES::InitRenderSystem()
   
   // Check if we need DPOT  
   m_NeedPower2Texture = true;
-  if (GL_OES_texture_npot)
+  if (GL_TEXTURE_NPOT)
     m_NeedPower2Texture = false;
   
   // Get our driver vendor and renderer
   m_RenderVendor   = (const char*) glGetString(GL_VENDOR);
   m_RenderRenderer = (const char*) glGetString(GL_RENDERER);
   
+  m_RenderExtensions  = " ";
+  m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+  m_RenderExtensions += " ";
+
   LogGraphicsInfo();
-  
-  // Setup the OpenGL ES2.0 shader program for use
-  m_pGUIshader = new CGUIShader();
-  if (!m_pGUIshader->CompileAndLink())
-  {
-    m_pGUIshader->Free();
-    delete m_pGUIshader;
-    m_pGUIshader = NULL;
-    CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
-  }
-  else
-  {
-    CLog::Log(LOGDEBUG, "GUI Shader - Initialise successful : %p", m_pGUIshader);
-  }
 
   m_bRenderCreated = true;
   
+  InitialiseGUIShader();
+
   return true;
 }
 
@@ -172,7 +164,12 @@ bool CRenderSystemGLES::ClearBuffers(float r, float g, float b, float a)
 
 bool CRenderSystemGLES::IsExtSupported(const char* extension)
 {
-  return false;
+  CStdString name;
+  name  = " ";
+  name += extension;
+  name += " ";
+
+  return m_RenderExtensions.find(name) != std::string::npos;
 }
 
 static int64_t abs(int64_t a)
@@ -451,6 +448,30 @@ void CRenderSystemGLES::SetViewPort(CRect& viewPort)
   
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+}
+
+void CRenderSystemGLES::InitialiseGUIShader()
+{
+  if (!m_pGUIshader)
+  {
+    // Setup the OpenGL ES2.0 shader program for use
+    m_pGUIshader = new CGUIShader();
+    if (!m_pGUIshader->CompileAndLink())
+    {
+      m_pGUIshader->Free();
+      delete m_pGUIshader;
+      m_pGUIshader = NULL;
+      CLog::Log(LOGERROR, "GUI Shader - Initialise failed");
+    }
+    else
+    {
+      CLog::Log(LOGDEBUG, "GUI Shader - Initialise successful : %p", m_pGUIshader);
+    }
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "GUI Shader - Tried to Initialise again. Was this intentional?");
+  }
 }
 
 void CRenderSystemGLES::EnableGUIShader(ESHADERMETHOD method)

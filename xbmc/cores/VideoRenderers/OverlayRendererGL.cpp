@@ -64,7 +64,7 @@ static void LoadTexture(GLenum target
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
 #endif
 
-  glTexImage2D   (target, 0, 4
+  glTexImage2D   (target, 0, format
                 , width2, height2, 0
                 , format, GL_UNSIGNED_BYTE, NULL);
 
@@ -435,9 +435,9 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
       data    = srca + curr_y * size_x;
     }
 
-    unsigned int b = ((color >> 24) & 0xff);
+    unsigned int r = ((color >> 24) & 0xff);
     unsigned int g = ((color >> 16) & 0xff);
-    unsigned int r = ((color >> 8) & 0xff);
+    unsigned int b = ((color >> 8 ) & 0xff);
 
     for(int i = 0; i < 4; i++)
     {

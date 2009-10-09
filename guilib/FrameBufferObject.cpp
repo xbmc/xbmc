@@ -56,6 +56,7 @@ bool CFrameBufferObject::IsSupported()
     m_supported = true;
   else
     m_supported = false;
+  CLog::Log(LOGDEBUG, "FrameBufferObject - Supported:%d", m_supported);
   return m_supported;
 }
 

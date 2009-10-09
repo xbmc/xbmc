@@ -75,6 +75,8 @@ XBPython g_pythonParser;
 #else
 #define PYTHON_DLL "special://xbmc/system/python/python24-powerpc-linux.so"
 #endif
+#elif defined(__arm__)
+#define PYTHON_DLL "special://xbmc/system/python/python24-arm.so"
 #else /* !__x86_64__ && !__powerpc__ */
 #if (defined HAVE_LIBPYTHON2_6)
 #define PYTHON_DLL "special://xbmc/system/python/python26-i486-linux.so"
