@@ -185,6 +185,26 @@ void UnblankDisplays(void)
   }
 }
 
+CGDisplayFadeReservationToken DisplayFadeToBlack(void)
+{
+  // Fade to black to hide resolution-switching flicker and garbage.
+  CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
+  if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess )
+    CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0, TRUE);
+
+  return(fade_token);
+}
+
+void DisplayFadeFromBlack(CGDisplayFadeReservationToken fade_token)
+{
+  if (fade_token != kCGDisplayFadeReservationInvalidToken) 
+  {
+    CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
+    CGReleaseDisplayFadeReservation(fade_token);
+  }
+}
+
+
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
 CWinSystemOSX::CWinSystemOSX() : CWinSystemBase()
@@ -350,10 +370,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     NSOpenGLContext* newContext = NULL;
   
     // Fade to black to hide resolution-switching flicker and garbage.
-    CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
-    if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess )
-      CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0, TRUE);
-
+    CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack();
+    
     // Save and make sure the view is on the screen that we're activating (to hide it).
     lastView = [context view];
     lastScreen = [[lastView window] screen];
@@ -463,19 +481,13 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [newContext makeCurrentContext];
     m_lastOwnedContext = newContext;
     
-    if (fade_token != kCGDisplayFadeReservationInvalidToken) 
-    {
-      CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
-      CGReleaseDisplayFadeReservation(fade_token);
-    }
+    DisplayFadeFromBlack(fade_token);
   }
   else
   {
     // Windowed Mode
   	// Fade to black to hide resolution-switching flicker and garbage.
-  	CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
-    if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess )
-      CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0, TRUE);
+    CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack();
     
     // exit fullscreen
     [context clearDrawable];
@@ -533,11 +545,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [newContext makeCurrentContext];
     m_lastOwnedContext = newContext;
     
-    if (fade_token != kCGDisplayFadeReservationInvalidToken) 
-    {
-      CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
-      CGReleaseDisplayFadeReservation(fade_token);
-    }
+    DisplayFadeFromBlack(fade_token);
     
     // Reset.
     lastView = NULL;
@@ -760,7 +768,6 @@ void CWinSystemOSX::GetVideoModes(void)
         refreshrate = 150.0;      // Divisible by 25Hz and 30Hz to minimise AV sync waiting
     }
   }
-  //CFRelease(displayModes);   // this release causes a segfault
 }
 
 #endif
