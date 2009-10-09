@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-09-26" name="Last.FM" content="albums" thumb="lastfm.gif" language="en">
+<scraper framework="1.1" date="2009-09-26" name="Last.FM" content="albums" thumb="lastfm.png" language="en">
 	<include>common/htbackdrops.xml</include>
 	<include>common/lastfm.xml</include>
 	<GetSettings dest="3">
