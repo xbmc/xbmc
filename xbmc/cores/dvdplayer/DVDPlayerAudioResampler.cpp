@@ -90,6 +90,8 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
   }
   
   //resample
+  m_converterdata.src_ratio = m_ratio;
+  src_set_ratio(m_converter, m_ratio);
   src_process(m_converter, &m_converterdata);
   
   //calculate a pts for each sample
@@ -166,7 +168,6 @@ void CDVDPlayerResampler::ResizeSampleBuffer(int nrframes)
 void CDVDPlayerResampler::SetRatio(double ratio)
 {
   m_ratio = Clamp(ratio, 1.0 / (double)MAXRATIO, (double)MAXRATIO);
-  src_set_ratio(m_converter, m_ratio);
 }
 
 void CDVDPlayerResampler::Flush()
