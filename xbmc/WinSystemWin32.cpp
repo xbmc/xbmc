@@ -321,8 +321,10 @@ bool CWinSystemWin32::ResizeInternal()
   {
     SetWindowRgn(m_hWnd, 0, false);
     SetWindowLong(m_hWnd, GWL_STYLE, dwStyle);
-
-    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW);
+    
+    // The SWP_DRAWFRAME is here because, perversely, without it win7 draws a
+    // white frame plus titlebar around the xbmc splash
+    SetWindowPos(m_hWnd, windowAfter, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, SWP_SHOWWINDOW|SWP_DRAWFRAME);
     if (bFromFullScreen)
       ValidateRect(NULL, NULL); //validate desktop if we're switching from fullscreen to window
   }
