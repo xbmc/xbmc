@@ -90,7 +90,6 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
   }
   
   //resample
-  m_converterdata.input_frames = nrframes;
   src_process(m_converter, &m_converterdata);
   
   //calculate a pts for each sample
