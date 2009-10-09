@@ -9,7 +9,6 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
-
 	<CreateSearchUrl clearbuffers="no" dest="3">
 		<RegExp input="$$1" output="http://www.filmdelta.se/search.php?string=\1&amp;type=movie&amp;more=1" dest="3">
 			<RegExp input="$$1" output="\1" dest="9">
@@ -18,7 +17,6 @@
 			<expression trim="1"/>
 		</RegExp>
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;year&gt;\3&lt;/year&gt;&lt;url&gt;http://www.filmdelta.se/filmer/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
@@ -30,7 +28,6 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
-
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5">

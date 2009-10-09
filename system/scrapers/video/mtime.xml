@@ -3,9 +3,9 @@
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Enable Fanart&quot; type=&quot;bool&quot; id=&quot;fanart&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
 	<NfoUrl dest="3">
@@ -15,7 +15,7 @@
 	</NfoUrl>
 	<CreateSearchUrl dest="3" SearchStringEncoding="gb2312">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.mtime.com/search/movie?\1&lt;/url&gt;" dest="3">
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
 	<GetSearchResults dest="8">
@@ -29,7 +29,7 @@
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$2" output="&lt;id&gt;\1&lt;/id&gt;" dest="5">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
 				<expression trim="1" noclean="1">&lt;a href=&quot;/movie/[0-9]*/&quot; class=&quot;px28 bold hei c_000&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
@@ -38,13 +38,13 @@
 				<expression>href=&quot;/movie/section/year/([0-9]*)/&quot;</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-details.html&quot; function=&quot;GetDetailsPage&quot;&gt;$$3details.html&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;runtime&gt;\1&lt;/runtime&gt;" dest="5+">
 				<expression trim="1">片长：&lt;/strong&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-rating.html&quot; function=&quot;GetRating&quot;&gt;$$3rating/summary.html&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;genre&gt;\1&lt;/genre&gt;" dest="5+">
 				<expression repeat="yes">href=&quot;/movie/section/genre/[^&gt;]*&gt;([^&lt;]*).nbsp</expression>
@@ -53,21 +53,20 @@
 				<expression>&lt;!-- 剧情介绍 --&gt;.*?&lt;p &gt;(.*?)\t&lt;/p&gt;</expression>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-fullcredits.html&quot; function=&quot;GetFullcredits&quot;&gt;$$3fullcredits.html&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$2" output="&lt;url cache=&quot;$$2-posters.html&quot; function=&quot;GetMtimePoster&quot;&gt;$$3posters_and_images/posters.html&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp conditional="fanart" input="$$2" output="&lt;url cache=&quot;$$2-fanart.html&quot; function=&quot;GetMtimeWallpapers&quot;&gt;$$3posters_and_images/wallpapers.html&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp conditional="fanart" input="$$2" output="&lt;url cache=&quot;$$2-fanart.html&quot; function=&quot;GetMtimeFanart&quot;&gt;$$3posters_and_images/stills.html&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>	
-
 	<GetDetailsPage clearbuffers="no" dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;mpaa&gt;\1&lt;/mpaa&gt;" dest="2">
@@ -76,7 +75,7 @@
 			<RegExp input="$$1" output="&lt;certification&gt;\1&lt;/certification&gt;" dest="2+">
 				<expression repeat="yes">href=&quot;/movie/section/certification/[^&quot;]*&quot;&gt;([^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetailsPage>
 	<GetRating clearbuffers="no" dest="5">
@@ -84,7 +83,7 @@
 			<RegExp input="$$1" output="&lt;rating&gt;\1&lt;/rating&gt;&lt;votes&gt;\2&lt;/votes&gt;" dest="2">
 				<expression clear="yes">全部会员.*?class=&quot;score&quot;&gt;([0-9.]+)&lt;/span&gt;.*?class=&quot;vote&quot;&gt;([0-9]+)&lt;/span&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetRating>
 	<GetFullcredits clearbuffers="no" dest="5">
@@ -107,7 +106,7 @@
 			<RegExp input="$$9" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="2+">
 				<expression repeat="no">&lt;a href=&quot;/person/[0-9]+/&quot;&gt;([^&lt;]*)&lt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetFullcredits>
 	<GetMtimePoster dest="5">
@@ -115,7 +114,7 @@
 			<RegExp input="$$1" output="&lt;thumb&gt;\1.jpg&lt;/thumb&gt;" dest="6">
 				<expression clear="yes" repeat="yes" noclean="1">src=&quot;(http://img1.mtime.com/[^_]*)_[0-9X]+.jpg&quot;/&gt;&lt;/a&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetMtimePoster>
 	<GetMtimeWallpapers clearbuffers="no" dest="6">
@@ -128,7 +127,7 @@
 			<RegExp input="$$1" output="&lt;thumb preview=&quot;\1.jpg&quot;&gt;\1_o.jpg&lt;/thumb&gt;" dest="11">
 				<expression clear="yes" repeat="yes" noclean="1">src=&quot;http://img1.mtime.com/([^_]*)(_[0-9X]+).jpg&quot;/&gt;&lt;/a&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetMtimeFanart>
 </scraper>

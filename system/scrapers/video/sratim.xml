@@ -19,13 +19,11 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
-
 	<CreateSearchUrl dest="3">
 		<RegExp input="$$1" output="&lt;url&gt;http://www.sratim.co.il/movies/search.aspx?Keyword=\1&lt;/url&gt;" dest="3">
 			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="&lt;entity&gt;&lt;title&gt;\2&lt;/title&gt;&lt;url&gt;http://www.sratim.co.il/\1&lt;/url&gt;&lt;/entity&gt;" dest="5">
@@ -34,7 +32,6 @@
 			<expression clear="yes" noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
-
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;title&gt;\1&lt;/title&gt;" dest="5+">
@@ -88,13 +85,12 @@
 			<RegExp conditional="imdbrank" input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="5+">
 				<expression trim="1" repeat="no">Star_IMDB.*?&lt;span.*?&gt;([0-9]+?) מדרגים&lt;/span&gt;</expression>
 			</RegExp>
-			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=\1&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5+">
+			<RegExp conditional="fanart" input="$$1" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;\1&lt;/url&gt;" dest="5+">
 				<expression trim="1" repeat="no">http://www\.imdb\.com/title/(tt\d+?)'</expression>
 			</RegExp>
 			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
-
 	<GetActorDetails dest="5">
 		<RegExp input="$$2" output="&lt;details&gt;\1&lt;/details&gt;" dest="5+">
 			<RegExp input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;thumb&gt;http://www.sratim.co.il\2&lt;/thumb&gt;&lt;/actor&gt;" dest="2+">
@@ -103,7 +99,6 @@
 			<expression noclean="1"/>
 		</RegExp>
 	</GetActorDetails>
-
 	<GetIMDBDetails dest="5">
 		<RegExp input="$$3" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; standalone=&quot;yes&quot;?&gt;&lt;details&gt;\1&lt;/details&gt;" dest="5+">
 			<RegExp conditional="trailer" input="$$1" output="&lt;url function=&quot;GetIMDBTrailer&quot;&gt;http://akas.imdb.com/video/imdb/vi\1/player&lt;/url&gt;" dest="3+">

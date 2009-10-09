@@ -7,45 +7,42 @@
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;Buscar fotos de actores en IMDB (muy lento)&quot; type=&quot;bool&quot; id=&quot;SearchCastThumb&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Habilitar trailers&quot; type=&quot;bool&quot; id=&quot;EnableTrailers&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Sólo póster de FilmAffinity y sin FanArt (rápido)&quot; type=&quot;bool&quot; id=&quot;OnlyFilmAffinity&quot; default=&quot;false&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Habilitar FanArt&quot; type=&quot;bool&quot; id=&quot;EnableFanArt&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Descargar pósters de IMPAwards&quot; type=&quot;bool&quot; id=&quot;EnableIMPAwards&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Descargar pósters de MoviePosterDB&quot; type=&quot;bool&quot; id=&quot;movieposterdb&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Descargar póster de IMDB&quot; type=&quot;bool&quot; id=&quot;EnableIMDBPosters&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;Tamaño del póster de IMDB&quot; type=&quot;labelenum&quot; values=&quot;192|256|384|512|1024&quot; id=&quot;imdbscale&quot; default=&quot;512&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
-
 	<NfoUrl dest="3">
 		<RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/film\1.html/&lt;/url&gt;">
 			<expression noclean="1">filmaffinity.com/es/film([0-9]*)</expression>
 		</RegExp>
 	</NfoUrl>
-
 	<CreateSearchUrl dest="3" SearchStringEncoding="iso-8859-1">
 		<RegExp dest="3" input="$$1" output="&lt;url&gt;http://www.filmaffinity.com/es/search.php?stext=\1&amp;amp;stype=none&lt;/url&gt;">
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</CreateSearchUrl>
-
 	<GetSearchResults dest="8">
 		<RegExp input="$$5" output="&lt;?xml version=&quot;1.0&quot; encoding=&quot;iso-8859-1&quot; standalone=&quot;yes&quot;?&gt;&lt;results&gt;\1&lt;/results&gt;" dest="8">
 			<RegExp input="$$1" output="\1" dest="7">
@@ -60,10 +57,9 @@
 			<RegExp dest="5+" input="$$1" output="&lt;entity&gt;&lt;title&gt;\2 (\3)&lt;/title&gt;&lt;url&gt;http://www.filmaffinity.com/es/film\1.html&lt;/url&gt;&lt;id&gt;\1&lt;/id&gt;&lt;/entity&gt;">
 				<expression repeat="yes" noclean="1,2">&lt;a href="/es/film([0-9]*).html[^&gt;]*&gt;([^&lt;]*)&lt;/a&gt;[^\(]*\(([0-9]*)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSearchResults>
-
 	<GetDetails dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp dest="5" input="$$1" output="&lt;title&gt;\1&lt;/title&gt;">
@@ -159,7 +155,6 @@
 				</RegExp>
 				<expression repeat="yes">&lt;td&gt;([0-9]*) min\.</expression>
 			</RegExp>
-
 			<RegExp input="$$20" output="\1" dest="5+">
 				<RegExp conditional="!SearchCastThumb" input="$$1" output="&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;" dest="20+">
 					<expression repeat="yes" noclean="1" trim="1">&lt;a href="search\.php.stype=cast[^&gt;]*&gt;([^&lt;]*)</expression>
@@ -170,21 +165,17 @@
 				<RegExp input="$$1" output="" dest="20">
 					<expression>&lt;a href="search\.php.stype=cast[^&gt;]*&gt;(Animation)</expression>
 				</RegExp>
-				<expression noclean="1"></expression>
+				<expression noclean="1"/>
 			</RegExp>
-
 			<RegExp conditional="EnableTrailers" input="$$1" output="&lt;url function=&quot;SearchTrailerPage&quot;&gt;http://www.filmaffinity.com/es/evideos.php\1&lt;/url&gt;" dest="5+">
 				<expression noclean="1">&lt;a href="/es/evideos.php([^"]+)</expression>
 			</RegExp>
-
 			<RegExp  input="$$1" output="&lt;thumb&gt;http://pics.filmaffinity.com/\1&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1,2">href="http://pics.filmaffinity.com/([^=]*large.jpg)"</expression>
 			</RegExp>
-
 			<RegExp conditional="!OnlyFilmAffinity" input="$$1" output="&lt;url function=&quot;GetFilmAffinityPosters&quot;&gt;http://www.filmaffinity.com/es/filmimages.php?movie_id=\1&lt;/url&gt;" dest="5+">
 				<expression noclean="1,2">href="/es/filmimages.php.movie_id=([^"]+)</expression>
 			</RegExp>
-
 			<!--URL to Google and IMDB-->
 			<RegExp conditional="!OnlyFilmAffinity" input="$$9" output="&lt;url function=&quot;GoogleToIMDB&quot;&gt;http://www.google.com/search?q=site:imdb.com\1&lt;/url&gt;" dest="5+">
 				<RegExp input="$$8" output="+\1" dest="9">
@@ -202,17 +193,14 @@
 					</RegExp>
 					<expression repeat="yes">&lt;td &gt;([0-9]*)</expression>
 				</RegExp>
-				<expression></expression>
+				<expression/>
 			</RegExp>
-
 			<RegExp  input="$$1" output="&lt;thumb&gt;http://pics.filmaffinity.com/\1&lt;/thumb&gt;" dest="5+">
 				<expression noclean="1,2">img src="http://pics.filmaffinity.com/([^=]*full.jpg)"</expression>
 			</RegExp>
-
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDetails>
-
 	<SearchCastThumb dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;actor&gt;&lt;name&gt;\1&lt;/name&gt;&lt;/actor&gt;&lt;/details&gt;" dest="5">
 			<expression noclean="1,9" clear="yes">IMDb Name.*?&quot;q&quot; size=&quot;28&quot; value=&quot;([^&quot;]*)</expression>
@@ -233,7 +221,6 @@
 			<expression noclean="1">Media of.nbsp;&lt;a href=&quot;([^&quot;]*)</expression>
 		</RegExp>
 	</SearchCastThumb>
-
 	<GetCastThumb dest="5">
 		<RegExp input="$$4" output="&lt;details&gt;&lt;actor&gt;\1&lt;/actor&gt;&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;name&gt;\1&lt;/name&gt;" dest="4">
@@ -248,40 +235,37 @@
 			<expression noclean="1" clear="yes">(.*)</expression>
 		</RegExp>
 	</GetCastThumb>
-
 	<SearchTrailerPage dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer&gt;http://www.yobajo.com/watch?v=\1&lt;/trailer&gt;&lt;/details&gt;" dest="5+">
 			<expression noclean="1">http://www.youtube.com/v/([^&amp;|^\\]*)</expression>
 		</RegExp>
 	</SearchTrailerPage>
-
 	<GoogleToIMDB dest="3">
 		<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
 			<RegExp input="$$1" output="\1" dest="6">
 				<expression noclean="1">/title/tt([0-9]*)</expression>
 			</RegExp>
-			<RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;http://api.themoviedb.org/2.0/Movie.imdbLookup?imdb_id=tt$$6&amp;amp;api_key=57983e31fb435df4df77afb854740ea9&lt;/url&gt;" dest="5">
-				<expression></expression>
+			<RegExp conditional="EnableFanArt" output="&lt;url function=&quot;GetTMDBFanartByIMDBId&quot;&gt;tt$$6&lt;/url&gt;" dest="5">
+				<expression/>
 			</RegExp>
 			<RegExp conditional="EnableIMPAwards" output="&lt;url function=&quot;GetIMPALink&quot;cache=&quot;$$2.html&quot;&gt;http://www.imdb.com/title/tt$$6/posters&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp conditional="movieposterdb" output="&lt;url function=&quot;GetMoviePosterDBLink&quot;&gt;http://www.movieposterdb.com/browse/search?type=movies&amp;amp;query=$$6&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp conditional="EnableIMDBPosters" output="&lt;url function=&quot;GetIMDBPoster&quot;cache=&quot;$$2.html&quot;&gt;http://www.imdb.com/title/tt$$6/posters&lt;/url&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GoogleToIMDB>
-
 	<GetFilmAffinityPosters dest="5">
 		<RegExp input="$$10" output="&lt;details&gt;\1&lt;/details&gt;" dest="5">
 			<RegExp input="$$1" output="&lt;thumb&gt;http://pics.filmaffinity.com/\1&lt;/thumb&gt;" dest="10">
 				<expression repeat="yes" noclean="1">url_l: 'http://pics.filmaffinity.com/([^']*)</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetFilmAffinityPosters>
 </scraper>

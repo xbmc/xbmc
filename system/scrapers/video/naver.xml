@@ -4,18 +4,18 @@
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;주연배우/각본/제작사에 대한 상세정보&quot; type=&quot;bool&quot; id=&quot;EnableDetail&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;포스터&quot; type=&quot;bool&quot; id=&quot;EnableThumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;평점 투표자수&quot; type=&quot;bool&quot; id=&quot;EnableVoteNum&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
 			<RegExp input="$$1" output="&lt;setting label=&quot;팬아트(고화질)&quot; type=&quot;bool&quot; id=&quot;EnableFanArt&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">
-				<expression></expression>
+				<expression/>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetSettings>
 	<NfoUrl dest="3">
@@ -114,7 +114,7 @@
 				<RegExp input="$$7" output="+\1" dest="5">
 					<expression repeat="yes">([^ ,]+)</expression>
 				</RegExp>
-				<expression noclean="1"></expression>
+				<expression noclean="1"/>
 			</RegExp>
 			<!-- FanArts !-->
 			<RegExp conditional="EnableFanArt" input="$$1" output="&lt;url function=&quot;GetNAVERFanart&quot;&gt;http://movie.naver.com/movie/bi/mi/photo.nhn?code=\1&lt;/url&gt;" dest="8+">
@@ -131,7 +131,7 @@
 			<RegExp input="$$7" output="&lt;thumb preview=&quot;http://imgmovie.naver.com/mdi/mit120/\1&quot;&gt;http://imgmovie.naver.com/mdi/mit500/\1&lt;/thumb&gt;" dest="9">
 				<expression noclean="1" repeat="yes">&quot;&gt;&lt;img src=&quot;http://imgmovie.naver.com/mdi/mit120/(.[^&quot;]*)&quot;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetNAVERPhoto>
 	<GetNAVERVote dest="8">
@@ -139,7 +139,7 @@
 			<RegExp input="$$1" output="&lt;votes&gt;\1&lt;/votes&gt;" dest="9">
 				<expression noclean="1" trim="1">&lt;p class=&quot;join&quot;&gt;[^&gt;]*&gt;(.[^&lt;]*)&lt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetNAVERVote>
 	<GetNAVERDetail dest="8">
@@ -162,7 +162,7 @@
 			<RegExp input="$$6" output="&lt;credits&gt;\1&lt;/credits&gt;" dest="9+">
 				<expression noclean="1" repeat="yes">&lt;a href=&quot;/movie/bi/pi/basic.nhn\?code=[0-9]*&quot;&gt;(.[^&lt;]*)&lt;/a&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetNAVERDetail>
 	<GetNAVERFanart clearbuffers="no" dest="8">
@@ -173,8 +173,7 @@
 			<RegExp input="$$7" output="&lt;thumb preview=&quot;http://imgmovie.naver.com/mdi/mit120/\1&quot;&gt;http://imgmovie.naver.com/mdi/mi/\1&lt;/thumb&gt;" dest="11">
 				<expression noclean="1" repeat="yes" clear="yes">&quot;&gt;&lt;img src=&quot;http://imgmovie.naver.com/mdi/mit120/(.[^&quot;]*)&quot;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetNAVERFanart>
 </scraper>
-

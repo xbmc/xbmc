@@ -4,12 +4,12 @@
 			<RegExp input="$$1" dest="5" output="&lt;url function=&quot;GetDTrailer&quot;&gt;http://en.dtrailer.com/movies/watch/\1&lt;/url&gt;">
 				<expression>&lt;a href=&quot;http://en.dtrailer.com/movies/watch/(/?[^\&gt;]+)&quot; class=&quot;thumb&quot; title=&quot;(/?[^\&gt;]+)&quot;&gt;</expression>
 			</RegExp>
-			<expression noclean="1"></expression>
+			<expression noclean="1"/>
 		</RegExp>
 	</GetDTrailerLink>
 	<GetDTrailer dest="5">
 		<RegExp input="$$1" output="&lt;details&gt;&lt;trailer&gt;http://www.dtrailer.com/dupload/trailerz/\1.flv&lt;/trailer&gt;&lt;/details&gt;" dest="5">
-		    <expression noclean="1">s1\.addVariable\(&quot;file&quot;,&quot;(/?[^\&gt;]+).flv&quot;\);</expression>
+			<expression noclean="1">s1\.addVariable\(&quot;file&quot;,&quot;(/?[^\&gt;]+).flv&quot;\);</expression>
 		</RegExp>
 	</GetDTrailer>	
 </scraperfunctions>
