@@ -46,7 +46,8 @@ protected:
   void  GetScreenResolution(int* w, int* h);
   double GetScreenRefreshRate(int screen_index);
   void  EnableVSync(bool enable);
-
+  bool  SwitchToVideoMode(int width, int height, double refreshrate);
+  void  GetVideoModes(void);
   void* m_glContext;
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
