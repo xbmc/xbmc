@@ -31,6 +31,7 @@ CDVDPlayerResampler::CDVDPlayerResampler()
   m_converterdata.end_of_input = 0;
   m_converterdata.src_ratio = 1.0;
   m_quality = SRC_LINEAR;
+  m_ratio = 1.0;
   
   m_buffer = NULL;
   m_ptsbuffer = NULL;
@@ -54,18 +55,18 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
   int nrframes = (audioframe.size / audioframe.channels / bytes);
   
   //resize sample buffer if necessary
-  //we want the buffer to be large enough to hold the current samples in it,
-  //the maximum of samples that might go into it times two for safety
-  //and the number of samples needed for the resampler buffer
-  ResizeSampleBuffer(m_bufferfill + nrframes * MAXRATIO * 7);
+  //we want the buffer to be large enough to hold the current frames in it,
+  //the number of frames needed for libsamplerate's input
+  //and the maximum number of frames libsamplerate might generate, times 2 for safety
+  ResizeSampleBuffer(m_bufferfill + nrframes + nrframes * MathUtils::round_int(m_ratio + 0.5) * 2);
   
   //assign samplebuffers
   m_converterdata.input_frames = nrframes;
-  m_converterdata.output_frames = nrframes * MAXRATIO * 2;
+  m_converterdata.output_frames = m_buffersize - m_bufferfill - m_converterdata.input_frames;
   //output buffer starts at the place where the buffer doesn't hold samples
   m_converterdata.data_out = m_buffer + m_bufferfill * m_nrchannels;
   //intput buffer is a block of data at the end of the buffer
-  m_converterdata.data_in =  m_converterdata.data_out + m_converterdata.output_frames * m_nrchannels;
+  m_converterdata.data_in = m_converterdata.data_out + m_converterdata.output_frames * m_nrchannels;
   
   //add samples to the resample input buffer
   for (int i = 0; i < nrframes; i++)
@@ -165,7 +166,8 @@ void CDVDPlayerResampler::ResizeSampleBuffer(int nrframes)
 
 void CDVDPlayerResampler::SetRatio(double ratio)
 {
-  src_set_ratio(m_converter, Clamp(ratio, (double)MAXRATIO / 10.0, (double)MAXRATIO));
+  m_ratio = Clamp(ratio, 1.0 / (double)MAXRATIO, (double)MAXRATIO);
+  src_set_ratio(m_converter, m_ratio);
 }
 
 void CDVDPlayerResampler::Flush()
