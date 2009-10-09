@@ -571,23 +571,30 @@ void CWinSystemOSX::UpdateResolutions()
 
   // Add desktop resolution
   int w, h;
-  GetScreenResolution(&w, &h);
-  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, GetScreenRefreshRate(0));
+  double fps;
+  GetScreenResolution(&w, &h, &fps);
+  UpdateDesktopResolution(g_settings.m_ResInfo[RES_DESKTOP], 0, w, h, fps);
 
   // Add full screen settings for additional monitors
   int numDisplays = [[NSScreen screens] count];
   for (int i = 1; i < numDisplays; i++)
   {
-     CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)GetDisplayID(i));
-     w = GetDictionaryInt(mode, kCGDisplayWidth);
-     h = GetDictionaryInt(mode, kCGDisplayHeight);
-     CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
+    CFDictionaryRef mode = CGDisplayCurrentMode( GetDisplayID(i) );
+    w = GetDictionaryInt(mode, kCGDisplayWidth);
+    h = GetDictionaryInt(mode, kCGDisplayHeight);
+    fps = GetDictionaryDouble(mode, kCGDisplayRefreshRate);
+    if ((int)fps == 0)
+    {
+      // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
+      fps = 60.0;
+    }
+    CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
 
-     RESOLUTION_INFO res;
+    RESOLUTION_INFO res;
 
-     UpdateDesktopResolution(res, i, w, h, GetScreenRefreshRate(i));
-     g_graphicsContext.ResetOverscan(res);
-     g_settings.m_ResInfo.push_back(res);
+    UpdateDesktopResolution(res, i, w, h, fps);
+    g_graphicsContext.ResetOverscan(res);
+    g_settings.m_ResInfo.push_back(res);
   }
   
   //GetVideoModes();
@@ -648,7 +655,7 @@ void* CWinSystemOSX::CreateFullScreenContext(int screen_index, void* shareCtx)
   return newContext;
 }
 
-void CWinSystemOSX::GetScreenResolution(int* w, int* h)
+void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps)
 {
   // Figure out the screen size. (default to main screen)
   CGDirectDisplayID display_id = kCGDirectMainDisplay;
@@ -674,26 +681,13 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h)
   
   *w = GetDictionaryInt(mode, kCGDisplayWidth);
   *h = GetDictionaryInt(mode, kCGDisplayHeight);
-}
-
-double CWinSystemOSX::GetScreenRefreshRate(int screen_index)
-{
-  // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
-  CFDictionaryRef mode;
-  double fps = 60.0;
-  
-  mode = CGDisplayCurrentMode((CGDirectDisplayID)GetDisplayID(screen_index));
-  if (mode)
+  *fps = GetDictionaryDouble(mode, kCGDisplayRefreshRate);
+  if ((int)*fps == 0)
   {
-    fps = GetDictionaryDouble(mode, kCGDisplayRefreshRate);
-    if (fps <= 0.0)
-    {
-      fps = 60.0;
-    }
+    // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
+    *fps = 60.0;
   }
-  
-  return(fps);
- }
+}
 
 void CWinSystemOSX::EnableVSync(bool enable)
 {
