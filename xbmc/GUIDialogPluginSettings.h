@@ -37,6 +37,9 @@ public:
   static void ShowAndGetInput(SScraperInfo& info);
   static void ShowAndGetInput(CStdString& path);
 
+protected:
+  virtual void OnInitWindow();
+
 private:
   void CreateControls();
   void FreeControls();

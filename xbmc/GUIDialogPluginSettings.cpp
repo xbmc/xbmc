@@ -68,14 +68,6 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_INIT:
-    {
-      CGUIDialogBoxBase::OnMessage(message);
-      FreeControls();
-      CreateControls();
-      return true;
-    }
-
     case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
@@ -98,6 +90,13 @@ bool CGUIDialogPluginSettings::OnMessage(CGUIMessage& message)
     break;
   }
   return CGUIDialogBoxBase::OnMessage(message);
+}
+
+void CGUIDialogPluginSettings::OnInitWindow()
+{
+  FreeControls();
+  CreateControls();
+  CGUIDialogBoxBase::OnInitWindow();
 }
 
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
