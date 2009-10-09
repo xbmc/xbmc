@@ -495,6 +495,9 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   
   m_glContext = context;
 
+  // need to make sure SDL tracks any window size changes
+  ResizeWindow(m_nWidth, m_nHeight, -1, -1);
+
   return true;
 }
 
