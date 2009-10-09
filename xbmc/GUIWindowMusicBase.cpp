@@ -849,10 +849,11 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
   long idArtist = m_musicdatabase.GetArtistByName(strArtist);
   strPath.Format("musicdb://2/%u/",idArtist);
 
+  bool bCanceled(false);
   bool needsRefresh(true);
   do 
   { 
-    if (!scanner.DownloadArtistInfo(strPath,strTempArtist,m_dlgProgress))
+    if (!scanner.DownloadArtistInfo(strPath,strTempArtist,bCanceled,m_dlgProgress))
     {
       if (m_dlgProgress && allowSelection != SELECTION_AUTO)
       {
@@ -865,7 +866,7 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
     else
       needsRefresh = false;
   }
-  while (needsRefresh);
+  while (needsRefresh || bCanceled);
 
   m_musicdatabase.GetArtistInfo(idArtist,artist.GetArtist());
   artist.SetLoaded(true);
