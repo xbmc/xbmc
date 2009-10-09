@@ -98,6 +98,8 @@ public:
         { return ::ass_new_track(library); }
     virtual ASS_Track* ass_read_file(ASS_Library* library, char* fname, char* codepage)
         { return ::ass_read_file(library, fname, codepage); }
+    virtual ASS_Track* ass_read_memory(ASS_Library *library, char *buf, size_t bufsize, char *codepage)
+        { return ::ass_read_memory(library, buf, bufsize, codepage); }
     virtual void ass_free_track(ASS_Track* track)
         { return ::ass_free_track(track); }
     virtual void ass_set_fonts(ASS_Renderer *priv, const char *default_font, const char *default_family, int fc, const char *config, int update)
