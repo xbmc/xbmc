@@ -102,7 +102,8 @@ CDVDSubtitleParser* CDVDFactorySubtitle::CreateParser(string& strFile)
       }
       else if ((!memcmp(line, "Dialogue: Marked", 16)) || (!memcmp(line, "Dialogue: ", 10)))
       {
-        pParser =  new CDVDSubtitleParserSSA(strFile.c_str());
+        pParser =  new CDVDSubtitleParserSSA(pStream, strFile.c_str());
+        pStream = NULL;
       }
       //   if (sscanf (line, "%d:%d:%d.%d,%d:%d:%d.%d",     &i, &i, &i, &i, &i, &i, &i, &i)==8){
       //     this->uses_time=1;

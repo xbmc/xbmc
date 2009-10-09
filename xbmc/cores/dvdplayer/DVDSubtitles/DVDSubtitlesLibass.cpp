@@ -125,7 +125,7 @@ bool CDVDSubtitlesLibass::DecodeDemuxPkt(char* data, int size, double start, dou
   return true;
 }
 
-bool CDVDSubtitlesLibass::ReadFile(const string& strFile)
+bool CDVDSubtitlesLibass::CreateTrack(char* buf)
 {
   if(!m_library)
   {
@@ -133,14 +133,9 @@ bool CDVDSubtitlesLibass::ReadFile(const string& strFile)
     return false;
   }
 
-  string fileName = strFile;
-#ifdef _LINUX
-  fileName = PTH_IC(fileName);
-#endif
+  CLog::Log(LOGINFO, "SSA Parser: Creating m_track from SSA buffer");
 
-  CLog::Log(LOGINFO, "SSA Parser: Creating m_track from SSA file:  %s", fileName.c_str());
-
-  m_track = m_dll.ass_read_file(m_library, (char* )fileName.c_str(), 0);
+  m_track = m_dll.ass_read_memory(m_library, buf, 0, 0);
   if(m_track == NULL)
     return false;
 
