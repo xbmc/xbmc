@@ -31,6 +31,7 @@
 #include "FileItem.h"
 #include "GUISettings.h"
 #include "LocalizeStrings.h"
+#include "LangCodeExpander.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
@@ -383,6 +384,16 @@ void CGUIDialogContentSettings::FillListControl()
   {
     CFileItemPtr item(new CFileItem(iter->strTitle));
     item->m_strPath = iter->strPath;
+
+    CStdString strLanguage;
+
+    if (iter->strLanguage.Equals("multi"))
+      strLanguage = g_localizeStrings.Get(21418);
+    else
+      g_LangCodeExpander.Lookup(strLanguage, iter->strLanguage); 
+
+    item->SetLabel(iter->strTitle + " (" + strLanguage + ")");
+
     CStdString baseDir = GetScraperDirectory(*iter);
     if (!baseDir.IsEmpty())
       item->SetThumbnailImage(baseDir + iter->strThumb);

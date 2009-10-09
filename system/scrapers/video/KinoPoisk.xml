@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="windows-1251"?>
-<scraper framework="1.1" date="2009-08-08" name="KinoPoisk_v2.001.ru" content="movies" thumb="KinoPoisk.gif" ServerContentEncoding="CP1251" language="ru">
+<scraper framework="1.1" date="2009-08-08" name="KinoPoisk" content="movies" thumb="KinoPoisk.gif" ServerContentEncoding="CP1251" language="ru">
 
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">

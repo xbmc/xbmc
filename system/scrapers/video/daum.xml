@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-08-08" name="DAUM (Korean)" content="movies" thumb="daum.png" language="ko">
+<scraper framework="1.1" date="2009-08-08" name="Daum" content="movies" thumb="daum.png" language="ko">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<RegExp input="$$1" output="&lt;setting label=&quot;포스터&quot; type=&quot;bool&quot; id=&quot;EnableThumbs&quot; default=&quot;true&quot;&gt;&lt;/setting&gt;" dest="5+">

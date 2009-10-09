@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
-<scraper framework="1.1" date="2009-09-25" content="movies" name="FilmAffinity.es (Spanish)" thumb="filmaffinity.gif" language="es">
+<scraper framework="1.1" date="2009-09-25" content="movies" name="FilmAffinity.es" thumb="filmaffinity.gif" language="es">
 	<include>common/tmdb.xml</include>
 	<include>common/movieposterdb.xml</include>
 	<include>common/impa.xml</include>

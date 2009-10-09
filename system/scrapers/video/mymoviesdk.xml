@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<scraper framework="1.1" date="2009-08-11" name="MyMovies.dk" content="movies" thumb="mymoviesdk.png" language="en" requiressettings="true">
+<scraper framework="1.1" date="2009-08-11" name="MyMovies.dk" content="movies" thumb="mymoviesdk.png" language="multi" requiressettings="true">
 	<GetSettings dest="3">
 		<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
 			<!--Username-->

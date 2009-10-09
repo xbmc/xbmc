@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scraper framework="1.1" date="2009-08-10" name="IMDb" content="movies" thumb="imdb.png" language="en">
+<scraper framework="1.1" date="2009-08-10" name="IMDb.com" content="movies" thumb="imdb.png" language="en">
 	<include>common/imdb.xml</include>
 	<include>common/tmdb.xml</include>
 	<include>common/movieposterdb.xml</include>
