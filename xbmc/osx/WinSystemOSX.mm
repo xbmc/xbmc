@@ -579,8 +579,8 @@ void CWinSystemOSX::UpdateResolutions()
   for (int i = 1; i < numDisplays; i++)
   {
      CFDictionaryRef mode = CGDisplayCurrentMode( (CGDirectDisplayID)GetDisplayID(i));
-     CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, &w);
-     CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, &h);
+     w = GetDictionaryInt(mode, kCGDisplayWidth);
+     h = GetDictionaryInt(mode, kCGDisplayHeight);
      CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
 
      RESOLUTION_INFO res;
@@ -672,8 +672,8 @@ void CWinSystemOSX::GetScreenResolution(int* w, int* h)
     }
   }
   
-  CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayWidth), kCFNumberSInt32Type, w);
-  CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayHeight), kCFNumberSInt32Type, h);
+  *w = GetDictionaryInt(mode, kCGDisplayWidth);
+  *h = GetDictionaryInt(mode, kCGDisplayHeight);
 }
 
 double CWinSystemOSX::GetScreenRefreshRate(int screen_index)
@@ -685,7 +685,7 @@ double CWinSystemOSX::GetScreenRefreshRate(int screen_index)
   mode = CGDisplayCurrentMode((CGDirectDisplayID)GetDisplayID(screen_index));
   if (mode)
   {
-    CFNumberGetValue( (CFNumberRef)CFDictionaryGetValue(mode, kCGDisplayRefreshRate), kCFNumberDoubleType, &fps);
+    fps = GetDictionaryDouble(mode, kCGDisplayRefreshRate);
     if (fps <= 0.0)
     {
       fps = 60.0;
