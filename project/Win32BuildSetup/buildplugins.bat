@@ -14,7 +14,7 @@ ECHO Compiling plugins...
 IF "%PLUGIN_PATH%" == "" GOTO DONE
 
 rem optional plugins
-for %%a IN (music pictures programs video) DO (
+for %%a IN (music pictures programs video weather) DO (
 SETLOCAL ENABLEDELAYEDEXPANSION
 SET _BAT=""
 FOR /F "tokens=*" %%S IN ('dir /B /AD "%PLUGIN_PATH%\%%a"') DO (
