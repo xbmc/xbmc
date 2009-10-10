@@ -47,8 +47,8 @@ class CVideoReferenceClock : public CThread
   public:
     CVideoReferenceClock();
 
-    void    GetTime(int64_t *ptime);
-    void    GetFrequency(int64_t *pfreq);
+    int64_t GetTime();
+    int64_t GetFrequency();
     void    SetSpeed(double Speed);
     double  GetSpeed();
     int     GetRefreshRate();
@@ -82,8 +82,8 @@ class CVideoReferenceClock : public CThread
     int     m_TotalMissedVblanks;//total number of clock updates missed, used by codec information screen
     int64_t m_VblankTime;        //last time the clock was updated when using vblank as clock
 
-    CEvent m_Started;            //set when the vblank clock is started
-    CEvent m_VblankEvent;        //set when a vblank happens
+    CEvent  m_Started;            //set when the vblank clock is started
+    CEvent  m_VblankEvent;        //set when a vblank happens
 
     CCriticalSection m_CritSection;
 

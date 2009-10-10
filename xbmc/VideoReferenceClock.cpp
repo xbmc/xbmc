@@ -47,10 +47,8 @@ using namespace std;
 
 CVideoReferenceClock::CVideoReferenceClock()
 {
-  int64_t Freq;
-  Freq = CurrentHostFrequency();
-  m_SystemFrequency = Freq;
-  m_AdjustedFrequency = Freq;
+  m_SystemFrequency = CurrentHostFrequency();
+  m_AdjustedFrequency = m_SystemFrequency;
   m_ClockOffset = 0;
   m_TotalMissedVblanks = 0;
   m_UseVblank = false;
@@ -955,7 +953,7 @@ void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
 }
 
 //called from dvdclock to get the time
-void CVideoReferenceClock::GetTime(int64_t *ptime)
+int64_t CVideoReferenceClock::GetTime()
 {
   CSingleLock SingleLock(m_CritSection);
   
@@ -974,21 +972,21 @@ void CVideoReferenceClock::GetTime(int64_t *ptime)
       NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
     }
     
-    *ptime = m_CurrTime;
+    return m_CurrTime;
   }
   else
   {
     int64_t ClockOffset = m_ClockOffset; //get offset of clock
     SingleLock.Leave();
-    *ptime = CurrentHostCounter();        //get time of systemclock
-    *ptime += ClockOffset;      //add offset
+    
+    return CurrentHostCounter() + ClockOffset;
   }
 }
 
 //called from dvdclock to get the clock frequency
-void CVideoReferenceClock::GetFrequency(int64_t *pfreq)
+int64_t CVideoReferenceClock::GetFrequency()
 {
-  *pfreq = CurrentHostFrequency();
+  return m_SystemFrequency;
 }
 
 void CVideoReferenceClock::SetSpeed(double Speed)
