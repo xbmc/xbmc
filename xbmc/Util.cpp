@@ -3330,9 +3330,9 @@ void CUtil::ClearFileItemCache()
 void CUtil::InitRandomSeed()
 {
   // Init random seed 
-  LARGE_INTEGER now; 
-  QueryPerformanceCounter(&now); 
-  unsigned int seed = (now.u.LowPart);
+  int64_t now; 
+  now = CurrentHostCounter(); 
+  unsigned int seed = now;
 //  CLog::Log(LOGDEBUG, "%s - Initializing random seed with %u", __FUNCTION__, seed);
   srand(seed);
 }

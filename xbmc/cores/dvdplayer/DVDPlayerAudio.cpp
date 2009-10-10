@@ -28,6 +28,7 @@
 #include "GUISettings.h"
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #include <sstream>
 #include <iomanip>
@@ -137,7 +138,7 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock)
   m_stalled = false;
   m_started = false;
 
-  QueryPerformanceFrequency(&m_freq);
+  m_freq = CurrentHostFrequency();
 
   InitializeCriticalSection(&m_critCodecSection);
   m_messageQueue.SetMaxDataSize(30 * 16 * 1024);
@@ -185,7 +186,7 @@ bool CDVDPlayerAudio::OpenStream( CDVDStreamInfo &hints )
   m_skipdupcount = 0;
   m_prevskipped = false;
   m_syncclock = true;
-  QueryPerformanceCounter(&m_errortime);
+  m_errortime = CurrentHostCounter();
 
   m_maxspeedadjust = g_guiSettings.GetFloat("videoplayer.maxspeedadjust");
 
@@ -591,7 +592,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
 {
   double clock = m_pClock->GetClock();
   double error = m_ptsOutput.Current() - clock;
-  LARGE_INTEGER now;
+  int64_t now;
 
   if( fabs(error) > DVD_MSEC_TO_TIME(100) || m_syncclock )
   {
@@ -604,7 +605,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_skipdupcount = 0;
     m_error = 0;
     m_syncclock = false;
-    QueryPerformanceCounter(&m_errortime);
+    m_errortime = CurrentHostCounter();
 
     return;
   }
@@ -617,7 +618,7 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
     m_skipdupcount = 0;
     m_error = 0;
     m_resampler.Flush();
-    QueryPerformanceCounter(&m_errortime);
+    m_errortime = CurrentHostCounter();
     return;
   }
 
@@ -625,8 +626,8 @@ void CDVDPlayerAudio::HandleSyncError(double duration)
   m_errorcount++;
 
   //check if measured error for 1 second
-  QueryPerformanceCounter(&now);
-  if ((now.QuadPart - m_errortime.QuadPart) >= m_freq.QuadPart)
+  now = CurrentHostCounter();
+  if ((now - m_errortime) >= m_freq)
   {
     m_errortime = now;
     m_error = m_errorbuff / m_errorcount;

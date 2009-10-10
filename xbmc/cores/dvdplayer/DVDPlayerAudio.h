@@ -186,8 +186,8 @@ protected:
 
   double m_error;    //last average error
 
-  LARGE_INTEGER m_errortime; //timestamp of last time we measured
-  LARGE_INTEGER m_freq;
+  int64_t m_errortime; //timestamp of last time we measured
+  int64_t m_freq;
 
   void   SetSyncType(bool passthrough);
   void   HandleSyncError(double duration);

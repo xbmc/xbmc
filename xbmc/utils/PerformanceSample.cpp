@@ -24,23 +24,23 @@
 
 #ifdef _LINUX
 #include "linux/PlatformInclude.h"
-#include "linux/XTimeUtils.h"
 #endif
 
 #include <SDL/SDL.h>
 #include "Application.h"
 #include "log.h"
+#include "TimeUtils.h"
 
 using namespace std;
 
-LARGE_INTEGER CPerformanceSample::m_tmFreq;
+int64_t CPerformanceSample::m_tmFreq;
 
 CPerformanceSample::CPerformanceSample(const string &statName, bool bCheckWhenDone)
 {
   m_statName = statName;
   m_bCheckWhenDone = bCheckWhenDone;
-  if (m_tmFreq.QuadPart == 0LL)
-    QueryPerformanceFrequency(&m_tmFreq);
+  if (m_tmFreq == 0LL)
+    m_tmFreq = CurrentHostFrequency();
 
   Reset();
 }
@@ -53,7 +53,7 @@ CPerformanceSample::~CPerformanceSample()
 
 void CPerformanceSample::Reset()
 {
-  QueryPerformanceCounter(&m_tmStart);
+  m_tmStart = CurrentHostCounter();
 #ifdef _LINUX
   if (getrusage(RUSAGE_SELF, &m_usage) == -1)
     CLog::Log(LOGERROR,"error %d in getrusage", errno);
@@ -62,10 +62,10 @@ void CPerformanceSample::Reset()
 
 void CPerformanceSample::CheckPoint()
 {
-  LARGE_INTEGER tmNow;
-  QueryPerformanceCounter(&tmNow);
+  int64_t tmNow;
+  tmNow = CurrentHostCounter();
 #ifdef HAS_PERFORMANCE_SAMPLE
-  double elapsed = (double)(tmNow.QuadPart - m_tmStart.QuadPart) / (double)m_tmFreq.QuadPart;
+  double elapsed = (double)(tmNow - m_tmStart) / (double)m_tmFreq.QuadPart;
 #endif
 
   double dUser=0.0, dSys=0.0;
@@ -91,20 +91,20 @@ void CPerformanceSample::CheckPoint()
 
 double CPerformanceSample::GetEstimatedError()
 {
-  if (m_tmFreq.QuadPart == 0LL)
-    QueryPerformanceFrequency(&m_tmFreq);
+  if (m_tmFreq == 0LL)
+    m_tmFreq = CurrentHostFrequency();
 
-  LARGE_INTEGER tmStart, tmEnd;
-  QueryPerformanceCounter(&tmStart);
+  int64_t tmStart, tmEnd;
+  tmStart = CurrentHostCounter();
 
   for (int i=0; i<100000;i++)
   {
-    LARGE_INTEGER tmDummy;
-    QueryPerformanceCounter(&tmDummy);
+    int64_t tmDummy;
+    tmDummy = CurrentHostCounter();
   }
 
-  QueryPerformanceCounter(&tmEnd);
-  double elapsed = (double)(tmEnd.QuadPart - tmStart.QuadPart) / (double)m_tmFreq.QuadPart;
+  tmEnd = CurrentHostCounter();
+  double elapsed = (double)(tmEnd - tmStart) / (double)m_tmFreq;
 
   return (elapsed / 100000.0) * 2.0; // one measure at start time and another when done.
 }

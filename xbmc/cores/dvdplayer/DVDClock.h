@@ -70,18 +70,18 @@ public:
   bool   SetMaxSpeedAdjust(double speed);
 
   static double GetAbsoluteClock();
-  static double GetFrequency() { return (double)m_systemFrequency.QuadPart ; }
+  static double GetFrequency() { return (double)m_systemFrequency ; }
   static double WaitAbsoluteClock(double target);
 protected:
   CSharedSection m_critSection;
-  LARGE_INTEGER m_systemUsed;
-  LARGE_INTEGER m_startClock;
-  LARGE_INTEGER m_pauseClock;
+  int64_t m_systemUsed;
+  int64_t m_startClock;
+  int64_t m_pauseClock;
   double m_iDisc;
   bool m_bReset;
 
-  static LARGE_INTEGER m_systemFrequency;
-  static LARGE_INTEGER m_systemOffset;
+  static int64_t m_systemFrequency;
+  static int64_t m_systemOffset;
   static CCriticalSection m_systemsection;
 
   double           m_maxspeedadjust;

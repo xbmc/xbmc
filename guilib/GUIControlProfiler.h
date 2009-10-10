@@ -40,8 +40,8 @@ public:
   CGUIControl::GUICONTROLTYPES m_ControlType;
   unsigned int m_visTime;
   unsigned int m_renderTime;
-  LARGE_INTEGER m_i64VisStart;
-  LARGE_INTEGER m_i64RenderStart;
+  int64_t m_i64VisStart;
+  int64_t m_i64RenderStart;
 
   CGUIControlProfilerItem(CGUIControlProfiler *pProfiler, CGUIControlProfilerItem *pParent, CGUIControl *pControl);
   ~CGUIControlProfilerItem(void); 

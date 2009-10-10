@@ -47,8 +47,8 @@ class CVideoReferenceClock : public CThread
   public:
     CVideoReferenceClock();
 
-    void    GetTime(LARGE_INTEGER *ptime);
-    void    GetFrequency(LARGE_INTEGER *pfreq);
+    void    GetTime(int64_t *ptime);
+    void    GetFrequency(int64_t *pfreq);
     void    SetSpeed(double Speed);
     double  GetSpeed();
     int     GetRefreshRate();

@@ -28,6 +28,7 @@
 #include "AdvancedSettings.h"
 #include "RenderSystemGL.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 
 CRenderSystemGL::CRenderSystemGL() : CRenderSystemBase()
@@ -192,8 +193,8 @@ bool CRenderSystemGL::PresentRender()
   if (m_iVSyncMode != 0 && m_iSwapRate != 0) 
   {
     int64_t curr, diff, freq;
-    QueryPerformanceCounter((LARGE_INTEGER*)&curr);
-    QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
+    curr = CurrentHostCounter();
+    freq = CurrentHostFrequency();
 
     if(m_iSwapStamp == 0)
       m_iSwapStamp = curr;
@@ -216,7 +217,7 @@ bool CRenderSystemGL::PresentRender()
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
     int64_t curr, diff;
-    QueryPerformanceCounter((LARGE_INTEGER*)&curr);
+    curr = CurrentHostCounter();
 
     diff = curr - m_iSwapStamp;
     m_iSwapStamp = curr;
@@ -264,7 +265,7 @@ void CRenderSystemGL::SetVSync(bool enable)
     else
     {
       int64_t freq;
-      QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
+      freq = CurrentHostFrequency();
       m_iSwapRate   = (int64_t)((double)freq / rate);
       m_iSwapTime   = (int64_t)(0.001 * g_advancedSettings.m_ForcedSwapTime * freq);
       m_iSwapStamp  = 0;

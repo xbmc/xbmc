@@ -24,10 +24,40 @@
 #include <time.h>
 #ifdef __APPLE__
 #include <mach/mach_time.h>
+#include <CoreVideo/CVHostTime.h>
 #endif
 #elif defined(_WIN32)
 #include <windows.h>
 #endif
+
+int64_t CurrentHostCounter(void)
+{
+#if defined(__APPLE__)
+  return( (int64_t)CVGetCurrentHostTime() );
+#elif defined(_LINUX)
+  struct timespec now;
+  clock_gettime(CLOCK_MONOTONIC, &now);
+  return( ((int64_t)now.tv_sec * 1000000000L) + now.tv_nsec );
+#else
+  LARGE_INTEGER PerformanceCount;
+  QueryPerformanceCounter(&PerformanceCount);
+  return( (int64_t)PerformanceCount->QuadPart );
+#endif
+}
+
+int64_t CurrentHostFrequency(void)
+{
+#if defined(__APPLE__)
+  // needed for 10.5.8 on ppc
+  return( (int64_t)CVGetHostClockFrequency() );
+#elif defined(_LINUX)
+  return( (int64_t)1000000000L );
+#else
+  LARGE_INTEGER Frequency;
+  QueryPerformanceFrequency(&Frequency);
+  return( (int64_t)Frequency->QuadPart );
+#endif
+}
 
 unsigned int CTimeUtils::frameTime = 0;
 
