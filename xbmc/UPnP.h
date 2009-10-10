@@ -71,7 +71,7 @@ public:
 
     // class methods
     static CUPnP* GetInstance();
-    static void   ReleaseInstance();
+    static void   ReleaseInstance(bool bWait);
     static bool   IsInstantiated() { return upnp != NULL; }
 
 private:
