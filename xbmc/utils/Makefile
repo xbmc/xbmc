@@ -56,7 +56,8 @@ SRCS=AlarmClock.cpp \
      StreamDetails.cpp \
      TimeUtils.cpp \
      JobManager.cpp \
-     Teletext.cpp
+     Teletext.cpp \
+     fastmemcpy.cpp
 
 LIB=utils.a
 
