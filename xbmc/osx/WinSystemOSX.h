@@ -43,8 +43,7 @@ public:
 protected:
   void* CreateWindowedContext(void* shareCtx);
   void* CreateFullScreenContext(int screen_index, void* shareCtx);
-  void  GetScreenResolution(int* w, int* h);
-  double GetScreenRefreshRate(int screen_index);
+  void  GetScreenResolution(int* w, int* h, double* fps);
   void  EnableVSync(bool enable);
   bool  SwitchToVideoMode(int width, int height, double refreshrate);
   void  GetVideoModes(void);
