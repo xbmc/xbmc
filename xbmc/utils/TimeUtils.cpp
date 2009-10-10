@@ -41,7 +41,7 @@ int64_t CurrentHostCounter(void)
 #else
   LARGE_INTEGER PerformanceCount;
   QueryPerformanceCounter(&PerformanceCount);
-  return( (int64_t)PerformanceCount->QuadPart );
+  return( (int64_t)PerformanceCount.QuadPart );
 #endif
 }
 
@@ -55,7 +55,7 @@ int64_t CurrentHostFrequency(void)
 #else
   LARGE_INTEGER Frequency;
   QueryPerformanceFrequency(&Frequency);
-  return( (int64_t)Frequency->QuadPart );
+  return( (int64_t)Frequency.QuadPart );
 #endif
 }
 
