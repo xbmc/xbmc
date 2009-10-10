@@ -56,7 +56,7 @@ class PLT_CtrlPointGetDescriptionTask : public PLT_HttpClientSocketTask
 public:
     PLT_CtrlPointGetDescriptionTask(const NPT_HttpUrl&       url,
                                     PLT_CtrlPoint*           ctrl_point, 
-                                    PLT_DeviceDataReference& device);
+                                    PLT_DeviceDataReference& root_device);
     virtual ~PLT_CtrlPointGetDescriptionTask();
 
 protected:
@@ -68,7 +68,23 @@ protected:
 
 protected:
     PLT_CtrlPoint*          m_CtrlPoint;
-    PLT_DeviceDataReference m_Device;
+    PLT_DeviceDataReference m_RootDevice;
+};
+
+/*----------------------------------------------------------------------
+|   PLT_CtrlPointGetSCPDRequest class
++---------------------------------------------------------------------*/
+class PLT_CtrlPointGetSCPDRequest : public NPT_HttpRequest
+{
+public:
+    PLT_CtrlPointGetSCPDRequest(const char* url,
+                                const char* method,
+                                const char* protocol) : 
+      NPT_HttpRequest(url, method, protocol) {}
+    ~PLT_CtrlPointGetSCPDRequest() {}
+
+    // members
+    PLT_Service* m_Service;
 };
 
 /*----------------------------------------------------------------------
@@ -78,7 +94,7 @@ class PLT_CtrlPointGetSCPDTask : public PLT_HttpClientSocketTask
 {
 public:
     PLT_CtrlPointGetSCPDTask(PLT_CtrlPoint*           ctrl_point, 
-                             PLT_DeviceDataReference& m_Device);
+                             PLT_DeviceDataReference& root_device);
     virtual ~PLT_CtrlPointGetSCPDTask();
 
 protected:
@@ -90,7 +106,7 @@ protected:
 
 protected:
     PLT_CtrlPoint*          m_CtrlPoint;
-    PLT_DeviceDataReference m_Device;
+    PLT_DeviceDataReference m_RootDevice;
 };
 
 /*----------------------------------------------------------------------
@@ -125,7 +141,7 @@ class PLT_CtrlPointHouseKeepingTask : public PLT_ThreadTask
 {
 public:
     PLT_CtrlPointHouseKeepingTask(PLT_CtrlPoint*   ctrl_point, 
-                                  NPT_TimeInterval timer = NPT_TimeInterval(10, 0));
+                                  NPT_TimeInterval timer = NPT_TimeInterval(5, 0));
 
 protected:
     ~PLT_CtrlPointHouseKeepingTask() {}
@@ -146,6 +162,7 @@ class PLT_CtrlPointSubscribeEventTask : public PLT_HttpClientSocketTask
 public:
     PLT_CtrlPointSubscribeEventTask(NPT_HttpRequest* request,
                                     PLT_CtrlPoint*   ctrl_point, 
+									PLT_DeviceDataReference &device,
                                     PLT_Service*     service,
                                     void*            userdata = NULL);
     virtual ~PLT_CtrlPointSubscribeEventTask();
@@ -158,9 +175,10 @@ protected:
                                NPT_HttpResponse*             response);
 
 protected:
-    PLT_CtrlPoint*  m_CtrlPoint;
-    PLT_Service*    m_Service;
-    void*           m_Userdata;
+    PLT_CtrlPoint*          m_CtrlPoint;
+    PLT_Service*            m_Service;
+	PLT_DeviceDataReference m_Device; // force to keep a reference to device owning m_Service
+    void*                   m_Userdata;
 };
 
 #endif /* _PLT_CONTROL_POINT_TASK_H_ */

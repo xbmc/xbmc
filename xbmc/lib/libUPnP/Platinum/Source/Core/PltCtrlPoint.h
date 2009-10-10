@@ -50,6 +50,7 @@ class PLT_HttpServer;
 class PLT_CtrlPointHouseKeepingTask;
 class PLT_SsdpSearchTask;
 class PLT_SsdpListenTask;
+class PLT_CtrlPointGetSCPDRequest;
 
 /*----------------------------------------------------------------------
 |   PLT_CtrlPointListener class
@@ -74,23 +75,41 @@ class PLT_CtrlPoint : public PLT_SsdpPacketListener,
                       public PLT_SsdpSearchResponseListener
 {
 public:
-    PLT_CtrlPoint(const char* autosearch = "upnp:rootdevice"); // pass NULL to bypass the multicast search
+    PLT_CtrlPoint(const char* search_criteria = "upnp:rootdevice"); // pass NULL to prevent repeated automatic search
 
-    NPT_Result   AddListener(PLT_CtrlPointListener* listener);
-    NPT_Result   RemoveListener(PLT_CtrlPointListener* listener);
-    void         IgnoreUUID(const char* uuid);
-    NPT_Result   InspectDevice(const char* location, 
-                               const char* uuid, 
-                               NPT_Timeout leasetime = PLT_Constants::GetInstance().m_DefaultDeviceLease);
-    NPT_Result   Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
-                        const char*        target = "upnp:rootdevice", 
-                        NPT_Cardinal       mx = 5);
-    NPT_Result   Discover(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
-                          const char*        target = "ssdp:all", 
-                          NPT_Cardinal       mx = 5,
-                          NPT_Timeout        repeat = 50000);
-    NPT_Result   InvokeAction(PLT_ActionReference& action, void* userdata = NULL);
-    NPT_Result   Subscribe(PLT_Service* service, bool cancel = false, void* userdata = NULL);
+    // delegation
+    NPT_Result AddListener(PLT_CtrlPointListener* listener);
+    NPT_Result RemoveListener(PLT_CtrlPointListener* listener);
+
+    // discovery
+    void       IgnoreUUID(const char* uuid);
+    NPT_Result InspectDevice(const char* location, 
+                             const char* uuid, 
+                             NPT_Timeout leasetime = PLT_Constants::GetInstance().m_DefaultDeviceLease);
+    NPT_Result Search(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
+                      const char*        target = "upnp:rootdevice", 
+                      NPT_Cardinal       mx = 5,
+                      NPT_Timeout        frequency = 50000); // pass 0 for one time only
+    NPT_Result Discover(const NPT_HttpUrl& url = NPT_HttpUrl("239.255.255.250", 1900, "*"), 
+                        const char*        target = "ssdp:all", 
+                        NPT_Cardinal       mx = 5,
+                        NPT_Timeout        frequency = 50000); // pass 0 for one time only
+
+    // actions
+    NPT_Result FindActionDesc(PLT_DeviceDataReference& device, 
+                              const char*              service_type,
+                              const char*              action_name,
+                              PLT_ActionDesc*&         action_desc);
+    NPT_Result CreateAction(PLT_DeviceDataReference& device, 
+                            const char*              service_type,
+                            const char*              action_name,
+                            PLT_ActionReference&     action);
+    NPT_Result InvokeAction(PLT_ActionReference& action, void* userdata = NULL);
+
+    // events
+    NPT_Result Subscribe(PLT_Service* service, 
+                         bool         cancel = false, 
+                         void*        userdata = NULL);
 
     // NPT_HttpRequestHandler methods
     virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request,
@@ -119,11 +138,11 @@ protected:
     NPT_Result   ProcessGetDescriptionResponse(NPT_Result                    res, 
                                                const NPT_HttpRequestContext& context,
                                                NPT_HttpResponse*             response,
-                                               PLT_DeviceDataReference&      device);
-    NPT_Result   ProcessGetSCPDResponse(NPT_Result               res, 
-                                        NPT_HttpRequest*         request,
-                                        NPT_HttpResponse*        response,
-                                        PLT_DeviceDataReference& device);
+                                               PLT_DeviceDataReference&      root_device);
+    NPT_Result   ProcessGetSCPDResponse(NPT_Result                   res, 
+                                        PLT_CtrlPointGetSCPDRequest* request,
+                                        NPT_HttpResponse*            response,
+                                        PLT_DeviceDataReference&     root_device);
     NPT_Result   ProcessActionResponse(NPT_Result               res, 
                                        NPT_HttpResponse*        response,
                                        PLT_ActionReference&     action,
@@ -137,19 +156,24 @@ protected:
                                    NPT_HttpResponse&             response);
 private:
     // methods
+    NPT_Result RenewSubscribers();
+    NPT_Result RenewSubscriber(PLT_EventSubscriber& subscriber);
     NPT_Result DoHouseKeeping();
     NPT_Result FetchDeviceSCPDs(PLT_HttpClientSocketTask& task,
                                 PLT_DeviceDataReference&  device, 
                                 NPT_Cardinal              level);
-    NPT_Result FindDevice(const char* uuid, PLT_DeviceDataReference& device);
-    NPT_Result FindDeviceByLocation(const char* location, PLT_DeviceDataReference& device);
+    NPT_Result FindDevice(const char* uuid, PLT_DeviceDataReference& device, bool return_root = false);
     NPT_Result AddDevice(PLT_DeviceDataReference& data);
+    NPT_Result NotifyDeviceReady(PLT_DeviceDataReference& data);
     NPT_Result RemoveDevice(PLT_DeviceDataReference& data);
+    NPT_Result NotifyDeviceRemoved(PLT_DeviceDataReference& data);
+    NPT_Result CleanupDevice(PLT_DeviceDataReference& data);
     
     NPT_Result ParseFault(PLT_ActionReference& action, NPT_XmlElementNode* fault);
     PLT_SsdpSearchTask* CreateSearchTask(const NPT_HttpUrl&   url, 
                                          const char*          target, 
                                          NPT_Cardinal         mx, 
+                                         NPT_Timeout          frequency,
                                          const NPT_IpAddress& address);
     
 private:
@@ -171,7 +195,7 @@ private:
     PLT_TaskManager                              m_TaskManager;
     NPT_Lock<NPT_List<PLT_DeviceDataReference> > m_Devices;
     NPT_Lock<NPT_List<PLT_EventSubscriber*> >    m_Subscribers;
-    NPT_String                                   m_AutoSearch;
+    NPT_String                                   m_SearchCriteria;
 };
 
 typedef NPT_Reference<PLT_CtrlPoint> PLT_CtrlPointReference;

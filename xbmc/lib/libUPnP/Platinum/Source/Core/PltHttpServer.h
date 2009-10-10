@@ -63,10 +63,10 @@ public:
     virtual ~PLT_HttpServer();
 
     // PLT_HttpServerListener method
-    NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request, 
-                                  const NPT_HttpRequestContext& context,
-                                  NPT_HttpResponse*&            response,
-                                  bool&                         headers_only);
+    virtual NPT_Result ProcessHttpRequest(NPT_HttpRequest&              request, 
+                                          const NPT_HttpRequestContext& context,
+                                          NPT_HttpResponse*&            response,
+                                          bool&                         headers_only);
 
     virtual NPT_Result   Start();
     virtual NPT_Result   Stop();

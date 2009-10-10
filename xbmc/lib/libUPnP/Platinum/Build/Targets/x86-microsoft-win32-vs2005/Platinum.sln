@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Platinum", "Platinum\Platinum.vcproj", "{568611D3-AFA7-4294-99C1-E9AED0D8057E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Neptune", "..\..\..\ThirdParty\Neptune\Build\Targets\x86-microsoft-win32-vs2005\Neptune\Neptune.vcproj", "{12AFF2E5-6D95-4809-9728-9551677C078A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Neptune", "..\..\..\..\Neptune\Build\Targets\x86-microsoft-win32-vs2005\Neptune\Neptune.vcproj", "{12AFF2E5-6D95-4809-9728-9551677C078A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MicroMediaController", "MicroMediaController\MicroMediaController.vcproj", "{0479F32A-29A1-4C1C-8F3C-AFF59404EA91}"
 	ProjectSection(ProjectDependencies) = postProject

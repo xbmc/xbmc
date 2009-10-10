@@ -114,7 +114,13 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_RESOLUTION;
         } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_BITRATE, len) == 0) {
             mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_BITRATE;
-        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len) == 0) {
+        } else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_BITSPERSAMPLE, len) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_BITSPERSAMPLE;
+		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_NRAUDIOCHANNELS, len) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_NRAUDIOCHANNELS;
+		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES_SAMPLEFREQUENCY, len) == 0) {
+            mask |= PLT_FILTER_MASK_RES | PLT_FILTER_MASK_RES_SAMPLEFREQUENCY;
+		} else if (NPT_String::CompareN(s+i, PLT_FILTER_FIELD_RES, len) == 0) {
             mask |= PLT_FILTER_MASK_RES;
         } 
 
@@ -132,28 +138,27 @@ PLT_Didl::ConvertFilterToMask(NPT_String filter)
 |   PLT_Didl::AppendXmlUnEscape
 +---------------------------------------------------------------------*/
 void
-PLT_Didl::AppendXmlUnEscape(NPT_String& out, NPT_String& in)
+PLT_Didl::AppendXmlUnEscape(NPT_String& out, const char* in)
 {
-    const char* input = (const char*) in;
     unsigned int i=0;
-    while (i<in.GetLength()) {
-        if (NPT_String::CompareN(input+i, "&lt;", 4) == 0) {
+    while (i<NPT_StringLength(in)) {
+        if (NPT_String::CompareN(in+i, "&lt;", 4) == 0) {
             out += '<';
             i   +=4;
-        } else if (NPT_String::CompareN(input+i, "&gt;", 4) == 0) {
+        } else if (NPT_String::CompareN(in+i, "&gt;", 4) == 0) {
             out += '>';
             i   += 4;
-        } else if (NPT_String::CompareN(input+i, "&amp;", 5) == 0) {
+        } else if (NPT_String::CompareN(in+i, "&amp;", 5) == 0) {
             out += '&';
             i   += 5;
-        } else if (NPT_String::CompareN(input+i, "&quot;", 6) == 0) {
+        } else if (NPT_String::CompareN(in+i, "&quot;", 6) == 0) {
             out += '"';
             i   += 6;
-        } else if (NPT_String::CompareN(input+i, "&apos;", 6) == 0) {
+        } else if (NPT_String::CompareN(in+i, "&apos;", 6) == 0) {
             out += '\'';
             i   += 6;
         } else {
-            out += *(input+i);
+            out += *(in+i);
             i++;
         }
     }
@@ -163,21 +168,23 @@ PLT_Didl::AppendXmlUnEscape(NPT_String& out, NPT_String& in)
 |   PLT_Didl::AppendXmlEscape
 +---------------------------------------------------------------------*/
 void
-PLT_Didl::AppendXmlEscape(NPT_String& out, NPT_String& in)
+PLT_Didl::AppendXmlEscape(NPT_String& out, const char* in)
 {
-    for (int i=0; i<(int)in.GetLength(); i++) {
-        if (in[i] == '<') {
+    if (!in) return;
+
+    for (int i=0; i<(int)NPT_StringLength(in); i++) {
+        if (*(in+i) == '<') {
             out += "&lt;";
-        } else if (in[i] == '>') {
+        } else if (*(in+i) == '>') {
             out += "&gt;";
-        } else if (in[i] == '&') {
+        } else if (*(in+i) == '&') {
             out += "&amp;";
-        } else if (in[i] == '"') {
+        } else if (*(in+i) == '"') {
             out += "&quot;";
-        }  else if (in[i] == '\'') {
+        }  else if (*(in+i) == '\'') {
             out += "&apos;";
         } else {
-            out += in[i];
+            out += *(in+i);
         }
     }
 }
@@ -214,6 +221,8 @@ PLT_Didl::FormatTimeStamp(NPT_String& out, NPT_UInt32 seconds)
         }
         out += NPT_String::FromInteger(secs);
     }
+
+	out += ".000"; // needed for XBOX360 otherwise it won't play the track
 }
 
 /*----------------------------------------------------------------------
@@ -305,6 +314,8 @@ PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)
     NPT_XmlElementNode* didl = NULL;
 	NPT_XmlParser		parser;
 
+    NPT_LOG_FINE("Parsing Didl...");
+
 	NPT_CHECK_LABEL_SEVERE(parser.Parse(xml, node), cleanup);
     if (!node || !node->AsElementNode()) {
 		NPT_LOG_SEVERE("Invalid node type");
@@ -327,18 +338,18 @@ PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)
         NPT_XmlElementNode* child = (*children)->AsElementNode();
         if (!child) continue;
 
-		object = NULL;
         if (child->GetTag().Compare("Container", true) == 0) {
             object = new PLT_MediaContainer();
         } else if (child->GetTag().Compare("item", true) == 0) {
             object = new PLT_MediaItem();
 		} else {
-			NPT_LOG_SEVERE("Invalid node tag");
-            goto cleanup;
+			NPT_LOG_WARNING("Invalid node tag");
+            continue;
         }
 
         NPT_CHECK_LABEL_SEVERE(object->FromDidl(child), cleanup);
         objects->Add(object);
+        object = NULL; // reset to make sure it doesn't get deleted twice in case of error
     }
 
     delete node;

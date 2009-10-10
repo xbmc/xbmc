@@ -271,17 +271,11 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference&          action,
     NPT_Result res;
     PLT_DeviceDataReference device;
 
-    {
-        // look for device first
-        const NPT_Lock<PLT_DeviceDataReferenceList>& devices = GetMediaServers();
-        NPT_AutoLock lock((NPT_Mutex&)devices);
-
-        if (NPT_FAILED(NPT_ContainerFind(devices, PLT_DeviceDataFinder(server_uuid), device))) {
-            /* error */
-            NPT_LOG_WARNING("CMediaCrawler::OnBrowseDevice - device not found.");
-            action->SetError(701, "No Such Object.");
-            return NPT_FAILURE;
-        } 
+    if (NPT_FAILED(FindServer(server_uuid, device))) {
+        /* error */
+        NPT_LOG_WARNING("CMediaCrawler::OnBrowseDevice - device not found.");
+        action->SetError(701, "No Such Object.");
+        return NPT_FAILURE;
     }
 
     // look for args and convert them
@@ -321,8 +315,8 @@ CMediaCrawler::OnBrowseDevice(PLT_ActionReference&          action,
         new CMediaCrawlerBrowseInfoReference(browse_info));		
     NPT_CHECK_SEVERE(res);
 
-    // wait 30 secs for response
-    res = browse_info->shared_var.WaitUntilEquals(1, 30000);
+    // wait 10 secs for response
+    res = browse_info->shared_var.WaitUntilEquals(1, 10000);
     NPT_CHECK_SEVERE(res);
 
     // did the browse fail?
@@ -510,7 +504,7 @@ CMediaCrawler::ProcessFileRequest(NPT_HttpRequest&              request,
     // add the user agent header, some stupid media servers like YME needs it
     if (!request.GetHeaders().GetHeader(NPT_HTTP_HEADER_USER_AGENT)) {
         request.GetHeaders().SetHeader(NPT_HTTP_HEADER_USER_AGENT, 
-            "Platinum/" PLT_PLATINUM_VERSION_STRING);
+            "Platinum/" PLT_PLATINUM_SDK_VERSION_STRING);
     }
 
     // File requested

@@ -190,7 +190,20 @@ PLT_StateVariable::ValidateValue(const char* value)
     if (m_DataType.Compare("string", true) == 0) {
         // if we have a value allowed restriction, make sure the value is in our list
         if (m_AllowedValues.GetItemCount()) {
-            return m_AllowedValues.Find(NPT_StringFinder(value))?NPT_SUCCESS:NPT_FAILURE;
+            // look for a comma separated list
+            NPT_String _value = value;
+            NPT_List<NPT_String> values = _value.Split(",");
+            NPT_List<NPT_String>::Iterator val = values.GetFirstItem();
+            while (val) {
+                val->Trim(" ");
+				if (!m_AllowedValues.Find(NPT_StringFinder(*val))) {
+					NPT_LOG_WARNING_2("Invalid value of %s for state variable %s", 
+						(const char*)*val,
+						(const char*)m_Name);
+                    return NPT_ERROR_INVALID_PARAMETERS;
+				}
+                ++val;
+            }
         }
     }
 
@@ -209,3 +222,28 @@ PLT_StateVariable::Find(NPT_List<PLT_StateVariable*>& vars, const char* name)
     return stateVariable;
 }
 
+/*----------------------------------------------------------------------
+|   PLT_StateVariable::SetExtraAttribute
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_StateVariable::SetExtraAttribute(const char* name, const char* value)
+{
+	return m_ExtraAttributes.Put(NPT_String(name), NPT_String(value));
+}
+
+/*----------------------------------------------------------------------
+|   PLT_StateVariable::Serialize
++---------------------------------------------------------------------*/
+NPT_Result
+PLT_StateVariable::Serialize(NPT_XmlElementNode& node)
+{
+    NPT_List<NPT_Map<NPT_String, NPT_String>::Entry*>::Iterator entry = 
+        m_ExtraAttributes.GetEntries().GetFirstItem();
+    while (entry) {
+        const NPT_String& key   = (*entry)->GetKey();
+        const NPT_String& value = (*entry)->GetValue();
+		node.SetAttribute(key, value);
+        ++entry;
+    }
+    return node.SetAttribute("val", GetValue());
+}

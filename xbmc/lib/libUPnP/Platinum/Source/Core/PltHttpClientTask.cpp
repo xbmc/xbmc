@@ -77,7 +77,7 @@ PLT_HttpTcpConnector::Connect(const char*                hostname,
     NPT_CHECK_FATAL(address.ResolveName(hostname, name_resolver_timeout));
 
     // connect to the server
-    NPT_LOG_FINE_2("NPT_HttpTcpConnector::Connect - will connect to %s:%d\n", hostname, port);
+    NPT_LOG_FINER_2("NPT_HttpTcpConnector::Connect - will connect to %s:%d\n", hostname, port);
     m_Socket->SetReadTimeout(io_timeout);
     m_Socket->SetWriteTimeout(io_timeout);
 
@@ -171,7 +171,7 @@ PLT_HttpClientSocketTask::DoRun()
     NPT_HttpRequestContext context;
     bool                   using_previous_connector = false;
     NPT_Result             res;
-    NPT_HttpResponse*      response;
+    NPT_HttpResponse*      response = NULL;
     NPT_TimeStamp          watchdog;
 
     NPT_System::GetCurrentTimeStamp(watchdog);
@@ -222,8 +222,8 @@ retry:
                 goto retry;
             }
 
-            NPT_LOG_FINE_1("PLT_HttpClientSocketTask receiving: res = %d", res);
-            PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINE, response);
+            NPT_LOG_FINER_1("PLT_HttpClientSocketTask receiving: res = %d", res);
+            PLT_LOG_HTTP_MESSAGE(NPT_LOG_LEVEL_FINER, response);
 
             // callback to process response
             NPT_SocketInfo info;
@@ -289,7 +289,8 @@ PLT_HttpClientSocketTask::ProcessResponse(NPT_Result                    res,
         return NPT_FAILURE;
     }
 
-    // dump body into memory (if no content-length specified, read until disconnection)
+    // dump body into memory 
+    // (if no content-length specified, read until disconnected)
     NPT_MemoryStream output;
     NPT_CHECK_SEVERE(NPT_StreamToStreamCopy(*body, 
                                             output,

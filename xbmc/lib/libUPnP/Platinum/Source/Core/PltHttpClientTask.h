@@ -81,7 +81,7 @@ public:
     PLT_HttpClientSocketTask(NPT_HttpRequest* request = NULL, 
                              bool             wait_forever = false);
 
-    NPT_Result AddRequest(NPT_HttpRequest* request);
+    virtual NPT_Result AddRequest(NPT_HttpRequest* request);
 
 protected:
     virtual ~PLT_HttpClientSocketTask();

@@ -102,6 +102,8 @@ protected:
 
     // RenderingControl
     virtual NPT_Result OnSetVolume(PLT_ActionReference& action);
+    virtual NPT_Result OnSetVolumeDB(PLT_ActionReference &action);
+    virtual NPT_Result OnGetVolumeDBRange(PLT_ActionReference &action);
     virtual NPT_Result OnSetMute(PLT_ActionReference& action);
 };
 
