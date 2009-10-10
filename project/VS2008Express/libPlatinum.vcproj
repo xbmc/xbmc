@@ -408,10 +408,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaBrowserListener.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaCache.cpp"
 					>
 				</File>
@@ -457,10 +453,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaController.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaControllerListener.h"
 					>
 				</File>
 				<File
@@ -853,10 +845,6 @@
 				</File>
 			</Filter>
 		</Filter>
-		<File
-			RelativePath="..\..\xbmc\lib\libUPnP\ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

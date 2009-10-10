@@ -638,10 +638,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\dvdplayer\DVDOverlay.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDOverlayContainer.cpp"
 					>
 				</File>
@@ -744,10 +740,6 @@
 				<Filter
 					Name="DVDCodecs"
 					>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\DllAvCodec.h"
-						>
-					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\DVDCodecs.h"
 						>
@@ -861,10 +853,6 @@
 						>
 						<File
 							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllLibMpeg2.h"
-							>
-						</File>
-						<File
-							RelativePath="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\DllPostProc.h"
 							>
 						</File>
 						<File
@@ -1004,10 +992,6 @@
 				<Filter
 					Name="DVDDemuxers"
 					>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DllAvFormat.h"
-						>
-					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDDemuxers\DVDDemux.cpp"
 						>
@@ -1165,23 +1149,35 @@
 					Name="DVDHeaders"
 					>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\avcodec.h"
+						RelativePath="..\..\xbmc\cores\ffmpeg\avcodec.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\avformat.h"
+						RelativePath="..\..\xbmc\cores\ffmpeg\avformat.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\avio.h"
+						RelativePath="..\..\xbmc\cores\ffmpeg\avio.h"
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\common.h"
+						RelativePath="..\..\xbmc\cores\ffmpeg\common.h"
 						>
 					</File>
 					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\decoder.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\ffmpeg\DllAvCodec.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\ffmpeg\DllAvFormat.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\xbmc\cores\ffmpeg\DllPostProc.h"
 						>
 					</File>
 					<File
@@ -1201,10 +1197,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\ffmpeg.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\ifo_types.h"
 						>
 					</File>
@@ -1213,23 +1205,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\rational.h"
-						>
-					</File>
-					<File
 						RelativePath="..\..\xbmc\cores\dvdplayer\DVDInputStreams\dvdnav\remap.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\rtp.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\rtsp.h"
-						>
-					</File>
-					<File
-						RelativePath="..\..\xbmc\cores\dvdplayer\ffmpeg\rtspcodes.h"
 						>
 					</File>
 					<File
@@ -1333,7 +1309,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\tools\win32\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h"
+						RelativePath="..\..\xbmc\cores\dvdplayer\DVDSubtitles\DVDSubtitleStream.h"
 						>
 					</File>
 					<File
@@ -1430,10 +1406,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\cores\paplayer\dec_if.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllAc3codec.h"
 					>
 				</File>
@@ -1447,10 +1419,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\paplayer\DllASAP.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\cores\paplayer\DllCube.h"
 					>
 				</File>
 				<File
@@ -5327,10 +5295,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\utils\DllHTMLScraper.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\DllImageLib.h"
 				>
 			</File>
@@ -5392,14 +5356,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\GUIDialogGamepad.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogHost.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\GUIDialogInvite.h"
 				>
 			</File>
 			<File
@@ -5832,10 +5788,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\XBAudioConfig.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\XBTimeZone.h"
 				>
 			</File>
 			<File
