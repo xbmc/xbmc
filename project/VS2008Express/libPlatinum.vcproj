@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32"
+				AdditionalIncludeDirectories="..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;NPT_CONFIG_ENABLE_LOGGING"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -107,7 +107,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32"
+				AdditionalIncludeDirectories="..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;;NPT_CONFIG_ENABLE_LOGGING"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
@@ -156,11 +156,7 @@
 				Name="Core"
 				>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\Platinum.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\Platinum.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum\Platinum.h"
 					>
 				</File>
 				<File
@@ -336,6 +332,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum\PltSvnVersion.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltTaskManager.cpp"
 					>
 				</File>
@@ -364,7 +364,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Core\PltVersion.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Platinum\PltVersion.h"
 					>
 				</File>
 				<File
@@ -375,6 +375,14 @@
 			<Filter
 				Name="MediaServer"
 				>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\ConnectionManagerSCPD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\ContentDirectorywSearchSCPD.cpp"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltDidl.cpp"
 					>
@@ -428,10 +436,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltMediaServerSCPDs.cpp"
-					>
-				</File>
-				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer\PltSyncMediaBrowser.cpp"
 					>
 				</File>
@@ -443,6 +447,10 @@
 			<Filter
 				Name="MediaRenderer"
 				>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\AVTransportSCPD.cpp"
+					>
+				</File>
 				<File
 					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaController.cpp"
 					>
@@ -464,7 +472,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\PltMediaRendererSCPDs.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\RdrConnectionManagerSCPD.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer\RenderingControlSCPD.cpp"
 					>
 				</File>
 			</Filter>
@@ -480,7 +492,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect\PltMediaConnectSCPDs.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect\X_MS_MediaReceiverRegistrarSCPD.cpp"
 					>
 				</File>
 			</Filter>
@@ -492,255 +504,287 @@
 				Name="Core"
 				>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\Neptune.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\Neptune.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\Neptune.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\Neptune.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptArray.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptArray.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptBase64.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptBase64.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptBase64.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptBase64.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptBufferedStreams.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptBufferedStreams.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptBufferedStreams.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptBufferedStreams.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptCommon.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptCommon.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptCommon.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptCommon.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptConfig.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptConfig.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptConsole.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptConsole.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptConsole.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptConsole.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptConstants.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptConstants.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDataBuffer.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDataBuffer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDataBuffer.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDataBuffer.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDebug.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDebug.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDebug.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDebug.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptDefs.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDefs.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptFile.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDynamicCast.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptFile.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDynamicLibraries.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptHttp.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptDynamicLibraries.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptHttp.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptFile.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptInterfaces.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptFile.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptList.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptHttp.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptList.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptHttp.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptLogging.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptInterfaces.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptLogging.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptList.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptMap.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptList.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptMessaging.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptLogging.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptMessaging.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptLogging.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptNetwork.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptMap.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptNetwork.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptMessaging.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptQueue.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptMessaging.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptQueue.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptNetwork.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptReferences.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptNetwork.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptResults.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptQueue.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptResults.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptQueue.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptRingBuffer.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptReferences.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptRingBuffer.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptResults.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptSelectableMessageQueue.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptResults.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptSimpleMessageQueue.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptRingBuffer.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptSimpleMessageQueue.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptRingBuffer.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptSockets.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSelectableMessageQueue.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptSockets.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSerialPort.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptStack.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSimpleMessageQueue.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptStreams.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSimpleMessageQueue.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptStreams.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSockets.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptStrings.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSockets.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptStrings.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStack.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptSystem.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStreams.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptSystem.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStreams.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptThreads.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStrings.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptThreads.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptStrings.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptTime.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSystem.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptTime.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptSystem.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptTypes.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptThreads.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptUri.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptThreads.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptUri.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTime.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptUtils.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTime.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptUtils.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTls.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptVersion.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTls.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptXml.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptTypes.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\Core\NptXml.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptUri.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptUri.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptUtils.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptUtils.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptVersion.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptXml.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptXml.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptZip.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\Core\NptZip.h"
 					>
 				</File>
 			</Filter>
@@ -748,43 +792,63 @@
 				Name="System"
 				>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Bsd\NptBsdSockets.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Bsd\NptBsdSockets.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Posix\NptPosixFile.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Posix\NptPosixFile.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\StdC\NptStdcEnvironment.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\StdC\NptStdcEnvironment.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Debug.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\StdC\NptStdcFile.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32File.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Debug.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Network.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32DynamicLibraries.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Queue.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32File.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32System.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32MessageQueue.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Threads.cpp"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32MessageQueue.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\xbmc\lib\libUPnP\Platinum\ThirdParty\Neptune\Source\System\Win32\NptWin32Threads.h"
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Network.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Network.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Queue.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32System.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\lib\libUPnP\Neptune\Source\System\Win32\NptWin32Threads.h"
 					>
 				</File>
 			</Filter>
