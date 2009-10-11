@@ -98,10 +98,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
 {
   ValidateCursor();
 
-  // TODO: We shouldn't really need to test for ACTION_PARENT_DIR here
-  //       but it may currently be useful as we can't map specific to an
-  //       edit control other than the keyboard (which doesn't use this block)
-  if (action.id == ACTION_BACKSPACE || action.id == ACTION_PARENT_DIR)
+  if (action.id == ACTION_BACKSPACE)
   {
     // backspace
     if (m_cursorPos)
@@ -204,16 +201,16 @@ bool CGUIEditControl::OnAction(const CAction &action)
     UpdateText();
     return true;
   }
-  else if (action.id >= REMOTE_2 && action.id <= REMOTE_9)
+  else if (action.id >= REMOTE_0 && action.id <= REMOTE_9)
   { // input from the remote
     if (m_inputType == INPUT_TYPE_FILTER)
     { // filtering - use single number presses
       m_text2.insert(m_text2.begin() + m_cursorPos++, L'0' + (action.id - REMOTE_0));
       UpdateText();
-      return true;
     }
     else
       OnSMSCharacter(action.id - REMOTE_0);
+    return true;
   }
   return CGUIButtonControl::OnAction(action);
 }

@@ -158,6 +158,9 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
+  if (CGUIWindow::OnAction(action))
+    return true;
+  
   // live filtering
   if (action.id == ACTION_FILTER_CLEAR)
   {
@@ -183,8 +186,8 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     OnMessage(message);
     return true;
   }
-
-  return CGUIWindow::OnAction(action);
+  
+  return false;
 }
 
 bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
