@@ -38,6 +38,7 @@
 #include "LocalizeStrings.h"
 #include "FileSystem/Directory.h"
 #include "utils/TimeUtils.h"
+#include "StringUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -149,23 +150,18 @@ CWeather::~CWeather(void)
 {
 }
 
-void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, char* szValue, const CStdString& strDefaultValue)
+void CWeather::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue)
 {
-  strcpy(szValue, "");
+  value = "";
   const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
   if (pChild && pChild->FirstChild())
   {
-    CStdString strValue = pChild->FirstChild()->Value();
-    if (strValue.size() )
-    {
-      if (strValue != "-")
-        strcpy(szValue, strValue.c_str());
-    }
+    value = pChild->FirstChild()->Value();
+    if (value == "-")
+      value = "";
   }
-  if (strlen(szValue) == 0)
-  {
-    strcpy(szValue, strDefaultValue.c_str());
-  }
+  if (value.IsEmpty())
+    value = strDefaultValue;
 }
 
 void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
@@ -174,12 +170,11 @@ void CWeather::GetInteger(const TiXmlElement* pRootElement, const CStdString& st
     iValue = 0;
 }
 
-void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
+void CWeather::LocalizeOverviewToken(CStdString &token)
 {
   // NOTE: This routine is case-sensitive.  Reason is std::less<CStdString> uses a case-sensitive
   //       < operator.  Thus, some tokens may have to be duplicated in strings.xml (see drizzle vs Drizzle).
   CStdString strLocStr = "";
-  CStdString token = szToken;
   if (!token.IsEmpty())
   {
     ilocalizedTokens i;
@@ -190,35 +185,21 @@ void CWeather::LocalizeOverviewToken(char *szToken, bool bAppendSpace)
     }
   }
   if (strLocStr == "")
-    strLocStr = szToken; //if not found, let fallback
-  if (bAppendSpace)
-    strLocStr += " ";     //append space if applicable
-  strcpy(szToken, strLocStr.c_str());
+    strLocStr = token; //if not found, let fallback
+  token = strLocStr;
 }
 
-void CWeather::LocalizeOverview(char *szStr)
+void CWeather::LocalizeOverview(CStdString &str)
 {
-  char loc[256];
-  char szToken[256];
-  int intOffset = 0;
-  char *pnt = NULL;
-  memset(loc, '\0', sizeof(loc));
-
-  while ((pnt = strstr(szStr + intOffset, " ")) != NULL)
+  CStdStringArray words;
+  StringUtils::SplitString(str, " ", words);
+  str.clear();
+  for (unsigned int i = 0; i < words.size(); i++)
   {
-    //get the length of this token (everything before pnt)
-    int iTokenLen = (int)(strlen(szStr) - strlen(pnt) - intOffset);
-    strncpy(szToken, szStr + intOffset, iTokenLen); //extract the token
-    szToken[iTokenLen] = '\0';      //stick an end on it
-    LocalizeOverviewToken(szToken);     //localize
-    strcpy(loc + strlen(loc), szToken);    //add it to the end of loc
-    intOffset += iTokenLen + 1;      //update offset for next strstr search
+    LocalizeOverviewToken(words[i]);
+    str += words[i] + " ";
   }
-  strncpy(szToken, szStr + intOffset, strlen(szStr) - intOffset); //last word, copy the rest of the string
-  szToken[strlen(szStr) - intOffset] = '\0';     //stick an end on it
-  LocalizeOverviewToken(szToken);        //localize
-  strcpy(loc + strlen(loc), szToken);       //add it to the end of loc
-  strcpy(szStr, loc);           //copy loc over the original input string
+  str.TrimRight(" ");
 }
 
 // input param must be kmh
@@ -289,7 +270,7 @@ int CWeather::ConvertSpeed(int curSpeed)
 bool CWeather::LoadWeather(const CStdString &weatherXML)
 {
   int iTmpInt;
-  char iTmpStr[256];
+  CStdString iTmpStr;
   SYSTEMTIME time;
 
   GetLocalTime(&time); //used when deciding what weather to grab for today
@@ -316,9 +297,9 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
   //if root element is 'error' display the error message
   if (strcmp(pRootElement->Value(), "error") == 0)
   {
-    char szCheckError[256];
-    GetString(pRootElement, "err", szCheckError, "Unknown Error"); //grab the error string
-    CLog::Log(LOGERROR, "WEATHER: Unable to get data: %s", szCheckError);
+    CStdString error;
+    GetString(pRootElement, "err", error, "Unknown Error"); //grab the error string
+    CLog::Log(LOGERROR, "WEATHER: Unable to get data: %s", error.c_str());
     return false;
   }
 
@@ -326,7 +307,7 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
   TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
   if (pElement)
   {
-    GetString(pElement, "dnam", m_szLocation[m_iCurWeather], "");
+    GetString(pElement, "dnam", m_location[m_iCurWeather], "");
   }
 
   //current weather
@@ -335,29 +316,26 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
   {
     // Use the local date/time the file is parsed...
     CDateTime time=CDateTime::GetCurrentDateTime();
-    CStdString strDateTime=time.GetAsLocalizedDateTime(false, false);
-    strcpy(m_szLastUpdateTime, strDateTime.c_str());
+    m_lastUpdateTime = time.GetAsLocalizedDateTime(false, false);
 
     // ...and not the date/time from weather.com
     //GetString(pElement, "lsup", m_szLastUpdateTime, "");
 
     GetString(pElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
-    if (strcmp(iTmpStr, "N/A") == 0)
-    {
-      sprintf(m_szCurrentIcon, "%s128x128/na.png", WEATHER_BASE_PATH);
-    }
+    if (iTmpStr == "N/A")
+      m_currentIcon.Format("%s128x128/na.png", WEATHER_BASE_PATH);
     else
-      sprintf(m_szCurrentIcon, "%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
+      m_currentIcon.Format("%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr.c_str());
 
-    GetString(pElement, "t", m_szCurrentConditions, "");   //current condition
-    LocalizeOverview(m_szCurrentConditions);
+    GetString(pElement, "t", m_currentConditions, "");   //current condition
+    LocalizeOverview(m_currentConditions);
 
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
     CTemperature temp=CTemperature::CreateFromCelsius(iTmpInt);
-    sprintf(m_szCurrentTemperature, "%2.0f", temp.ToLocale());
+    m_currentTemperature.Format("%2.0f", temp.ToLocale());
     GetInteger(pElement, "flik", iTmpInt);    //current 'Feels Like'
     CTemperature tempFlik=CTemperature::CreateFromCelsius(iTmpInt);
-    sprintf(m_szCurrentFeelsLike, "%2.0f", tempFlik.ToLocale());
+    m_currentFeelsLike.Format("%2.0f", tempFlik.ToLocale());
 
     TiXmlElement *pNestElement = pElement->FirstChildElement("wind"); //current wind
     if (pNestElement)
@@ -372,34 +350,29 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
       CStdString szWindAt = g_localizeStrings.Get(408);
       CStdString szCalm = g_localizeStrings.Get(1410);
 
-      // get speed unit
-      char szUnitSpeed[5];
-      strncpy(szUnitSpeed, g_langInfo.GetSpeedUnitString().c_str(), 5);
-      szUnitSpeed[4] = '\0';
-
-      if (strcmp(iTmpStr,"CALM") == 0)
-        sprintf(m_szCurrentWind, "%s", szCalm.c_str());
+      if (iTmpStr ==  "CALM")
+        m_currentWind = szCalm;
       else
-        sprintf(m_szCurrentWind, "%s %s %s %i %s",
-              szWindFrom.GetBuffer(szWindFrom.GetLength()), iTmpStr,
-              szWindAt.GetBuffer(szWindAt.GetLength()), iTmpInt, szUnitSpeed);
+        m_currentWind.Format("%s %s %s %i %s",
+              szWindFrom.c_str(), iTmpStr,
+              szWindAt.c_str(), iTmpInt, g_langInfo.GetSpeedUnitString().c_str());
     }
 
     GetInteger(pElement, "hmid", iTmpInt);    //current humidity
-    sprintf(m_szCurrentHumidity, "%i%%", iTmpInt);
+    m_currentHumidity.Format("%i%%", iTmpInt);
 
     pNestElement = pElement->FirstChildElement("uv"); //current UV index
     if (pNestElement)
     {
       GetInteger(pNestElement, "i", iTmpInt);
       GetString(pNestElement, "t", iTmpStr, "");
-      LocalizeOverviewToken(iTmpStr, false);
-      sprintf(m_szCurrentUVIndex, "%i %s", iTmpInt, iTmpStr);
+      LocalizeOverviewToken(iTmpStr);
+      m_currentUVIndex.Format("%i %s", iTmpInt, iTmpStr);
     }
 
     GetInteger(pElement, "dewp", iTmpInt);    //current dew point
     CTemperature dewPoint=CTemperature::CreateFromCelsius(iTmpInt);
-    sprintf(m_szCurrentDewPoint, "%2.0f", dewPoint.ToLocale());
+    m_currentDewPoint.Format("%2.0f", dewPoint.ToLocale());
   }
   //future forcast
   pElement = pRootElement->FirstChildElement("dayf");
@@ -413,26 +386,26 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
         const char *attr = pOneDayElement->Attribute("t");
         if (attr)
         {
-          strcpy(m_dfForcast[i].m_szDay, attr);
-          LocalizeDay(m_dfForcast[i].m_szDay);
+          m_dfForcast[i].m_day = attr;
+          LocalizeDay(m_dfForcast[i].m_day);
         }
 
         GetString(pOneDayElement, "hi", iTmpStr, ""); //string cause i've seen it return N/A
-        if (strcmp(iTmpStr, "N/A") == 0)
-          strcpy(m_dfForcast[i].m_szHigh, "");
+        if (iTmpStr == "N/A")
+          m_dfForcast[i].m_high = "";
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
-          sprintf(m_dfForcast[i].m_szHigh, "%2.0f", temp.ToLocale());
+          m_dfForcast[i].m_high.Format("%2.0f", temp.ToLocale());
         }
 
         GetString(pOneDayElement, "low", iTmpStr, "");
-        if (strcmp(iTmpStr, "N/A") == 0)
-          strcpy(m_dfForcast[i].m_szHigh, "");
+        if (iTmpStr == "N/A")
+          m_dfForcast[i].m_high = "";
         else
         {
           CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
-          sprintf(m_dfForcast[i].m_szLow, "%2.0f", temp.ToLocale());
+          m_dfForcast[i].m_low.Format("%2.0f", temp.ToLocale());
         }
 
         TiXmlElement *pDayTimeElement = pOneDayElement->FirstChildElement("part"); //grab the first day/night part (should be day)
@@ -442,13 +415,13 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
             pDayTimeElement = pDayTimeElement->NextSiblingElement("part");
 
           GetString(pDayTimeElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
-          if (strcmp(iTmpStr, "N/A") == 0)
-            sprintf(m_dfForcast[i].m_szIcon, "%s128x128/na.png", WEATHER_BASE_PATH);
+          if (iTmpStr == "N/A")
+            m_dfForcast[i].m_icon.Format("%s128x128/na.png", WEATHER_BASE_PATH);
           else
-            sprintf(m_dfForcast[i].m_szIcon, "%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
+            m_dfForcast[i].m_icon.Format("%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
 
-          GetString(pDayTimeElement, "t", m_dfForcast[i].m_szOverview, "");
-          LocalizeOverview(m_dfForcast[i].m_szOverview);
+          GetString(pDayTimeElement, "t", m_dfForcast[i].m_overview, "");
+          LocalizeOverview(m_dfForcast[i].m_overview);
         }
 
         pOneDayElement = pOneDayElement->NextSiblingElement("day");
@@ -461,28 +434,24 @@ bool CWeather::LoadWeather(const CStdString &weatherXML)
 }
 
 //convert weather.com day strings into localized string id's
-void CWeather::LocalizeDay(char *szDay)
+void CWeather::LocalizeDay(CStdString &day)
 {
-  CStdString strLocDay;
-
-  if (strcmp(szDay, "Monday") == 0)   //monday is localized string 11
-    strLocDay = g_localizeStrings.Get(11);
-  else if (strcmp(szDay, "Tuesday") == 0)
-    strLocDay = g_localizeStrings.Get(12);
-  else if (strcmp(szDay, "Wednesday") == 0)
-    strLocDay = g_localizeStrings.Get(13);
-  else if (strcmp(szDay, "Thursday") == 0)
-    strLocDay = g_localizeStrings.Get(14);
-  else if (strcmp(szDay, "Friday") == 0)
-    strLocDay = g_localizeStrings.Get(15);
-  else if (strcmp(szDay, "Saturday") == 0)
-    strLocDay = g_localizeStrings.Get(16);
-  else if (strcmp(szDay, "Sunday") == 0)
-    strLocDay = g_localizeStrings.Get(17);
+  if (day == "Monday")   //monday is localized string 11
+    day = g_localizeStrings.Get(11);
+  else if (day == "Tuesday")
+    day = g_localizeStrings.Get(12);
+  else if (day == "Wednesday")
+    day = g_localizeStrings.Get(13);
+  else if (day == "Thursday")
+    day = g_localizeStrings.Get(14);
+  else if (day == "Friday")
+    day = g_localizeStrings.Get(15);
+  else if (day == "Saturday")
+    day = g_localizeStrings.Get(16);
+  else if (day == "Sunday")
+    day = g_localizeStrings.Get(17);
   else
-    strLocDay = "";
-
-  strcpy(szDay, strLocDay.GetBuffer(strLocDay.GetLength()));
+    day = "";
 }
 
 
@@ -664,15 +633,15 @@ CStdString CWeather::BusyInfo(int info) const
 
 CStdString CWeather::TranslateInfo(int info) const
 {
-  if (info == WEATHER_LABEL_CURRENT_COND) return m_szCurrentConditions;
-  else if (info == WEATHER_IMAGE_CURRENT_ICON) return m_szCurrentIcon;
-  else if (info == WEATHER_LABEL_CURRENT_TEMP) return m_szCurrentTemperature;
-  else if (info == WEATHER_LABEL_CURRENT_FEEL) return m_szCurrentFeelsLike;
-  else if (info == WEATHER_LABEL_CURRENT_UVID) return m_szCurrentUVIndex;
-  else if (info == WEATHER_LABEL_CURRENT_WIND) return m_szCurrentWind;
-  else if (info == WEATHER_LABEL_CURRENT_DEWP) return m_szCurrentDewPoint;
-  else if (info == WEATHER_LABEL_CURRENT_HUMI) return m_szCurrentHumidity;
-  else if (info == WEATHER_LABEL_LOCATION) return m_szLocation[m_iCurWeather];
+  if (info == WEATHER_LABEL_CURRENT_COND) return m_currentConditions;
+  else if (info == WEATHER_IMAGE_CURRENT_ICON) return m_currentIcon;
+  else if (info == WEATHER_LABEL_CURRENT_TEMP) return m_currentTemperature;
+  else if (info == WEATHER_LABEL_CURRENT_FEEL) return m_currentFeelsLike;
+  else if (info == WEATHER_LABEL_CURRENT_UVID) return m_currentUVIndex;
+  else if (info == WEATHER_LABEL_CURRENT_WIND) return m_currentWind;
+  else if (info == WEATHER_LABEL_CURRENT_DEWP) return m_currentDewPoint;
+  else if (info == WEATHER_LABEL_CURRENT_HUMI) return m_currentHumidity;
+  else if (info == WEATHER_LABEL_LOCATION) return m_location[m_iCurWeather];
   return "";
 }
 
@@ -694,49 +663,45 @@ CStdString CWeather::GetAreaCode(const CStdString &codeAndCity) const
   return areaCode;
 }
 
-char *CWeather::GetLocation(int iLocation)
+CStdString CWeather::GetLocation(int iLocation)
 {
-  if (strlen(m_szLocation[iLocation]) == 0)
+  if (m_location[iLocation].IsEmpty())
   {
     CStdString setting;
     setting.Format("weather.areacode%i", iLocation + 1);
-    strcpy(m_szLocation[iLocation], GetAreaCity(g_guiSettings.GetString(setting)).c_str());
+    m_location[iLocation] = GetAreaCity(g_guiSettings.GetString(setting));
   }
-  return m_szLocation[iLocation];
+  return m_location[iLocation];
 }
 
 void CWeather::Reset()
 {
-  strcpy(m_szLastUpdateTime, "");
-  strcpy(m_szCurrentIcon,"");
-  strcpy(m_szCurrentConditions, "");
-  strcpy(m_szCurrentTemperature, "");
-  strcpy(m_szCurrentFeelsLike, "");
+  m_lastUpdateTime = "";
+  m_currentIcon = "";
+  m_currentConditions = "";
+  m_currentTemperature = "";
+  m_currentFeelsLike = "";
+  m_currentWind = "";
+  m_currentHumidity = "";
+  m_currentUVIndex = "";
+  m_currentDewPoint = "";
 
-  strcpy(m_szCurrentWind, "");
-  strcpy(m_szCurrentHumidity, "");
-  strcpy(m_szCurrentUVIndex, "");
-  strcpy(m_szCurrentDewPoint, "");
-
-  //loop here as well
   for (int i = 0; i < NUM_DAYS; i++)
   {
-    strcat(m_dfForcast[i].m_szIcon,"");
-    strcpy(m_dfForcast[i].m_szOverview, "");
-    strcpy(m_dfForcast[i].m_szDay, "");
-    strcpy(m_dfForcast[i].m_szHigh, "");
-    strcpy(m_dfForcast[i].m_szLow, "");
+    m_dfForcast[i].m_icon = "";
+    m_dfForcast[i].m_overview = "";
+    m_dfForcast[i].m_day = "";
+    m_dfForcast[i].m_high = "";
+    m_dfForcast[i].m_low = "";
   }
   for (int i = 0; i < MAX_LOCATION; i++)
-  {
-    strcpy(m_szLocation[i], "");
-  }
+    m_location[i] = "";
 }
 
 bool CWeather::IsFetched()
 {
   // call GetInfo() to make sure that we actually start up
   GetInfo(0);
-  return (0 != *m_szLastUpdateTime);
+  return !m_lastUpdateTime.IsEmpty();
 }
 
