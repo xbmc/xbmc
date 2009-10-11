@@ -1163,6 +1163,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
+      --enable-pic \
       --cc="$CC"
   fi
 ], [$USE_EXTERNAL_FFMPEG])
