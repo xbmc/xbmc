@@ -221,7 +221,6 @@ CAdvancedSettings::CAdvancedSettings()
   m_iSkipLoopFilter = 0;
   m_osx_GLFullScreen = false;
   m_bVirtualShares = true;
-  m_bNavVKeyboard = false;
 
 //caused lots of jerks
 //#ifdef _WIN32
@@ -496,7 +495,6 @@ bool CAdvancedSettings::Load()
   XMLUtils::GetFloat(pRootElement, "forcedswaptime", m_ForcedSwapTime, 0.0, 100.0);
   XMLUtils::GetBoolean(pRootElement,"osx_gl_fullscreen", m_osx_GLFullScreen);
   XMLUtils::GetBoolean(pRootElement,"virtualshares", m_bVirtualShares);
-  XMLUtils::GetBoolean(pRootElement,"navigatevirtualkeyboard", m_bNavVKeyboard);
 
   //Tuxbox
   pElement = pRootElement->FirstChildElement("tuxbox");

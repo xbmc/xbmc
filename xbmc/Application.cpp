@@ -2450,23 +2450,33 @@ bool CApplication::OnKey(CKey& key)
     }
     if (useKeyboard)
     {
-      if (key.GetFromHttpApi())
+      if (g_guiSettings.GetBool("lookandfeel.remoteaskeyboard"))
       {
-        if (key.GetButtonCode() != KEY_INVALID)
-          action.id = key.GetButtonCode();
-        action.unicode = key.GetUnicode();
+        // users remote is executing keyboard commands, so use the virtualkeyboard section of keymap.xml
+        // and send those rather than actual keyboard presses
+        CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, action);
       }
       else
-      { // see if we've got an ascii key
-        if (g_Keyboard.GetUnicode())
+      {
+        // keyboard entry - pass the keys through directly
+        if (key.GetFromHttpApi())
         {
-          action.id = g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
-          action.unicode = g_Keyboard.GetUnicode();
+          if (key.GetButtonCode() != KEY_INVALID)
+            action.id = key.GetButtonCode();
+          action.unicode = key.GetUnicode();
         }
         else
-        {
-          action.id = g_Keyboard.GetVKey() | KEY_VKEY;
-          action.unicode = 0;
+        { // see if we've got an ascii key
+          if (g_Keyboard.GetUnicode())
+          {
+            action.id = g_Keyboard.GetAscii() | KEY_ASCII; // Only for backwards compatibility
+            action.unicode = g_Keyboard.GetUnicode();
+          }
+          else
+          {
+            action.id = g_Keyboard.GetVKey() | KEY_VKEY;
+            action.unicode = 0;
+          }
         }
       }
 

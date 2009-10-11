@@ -633,6 +633,7 @@ void CGUISettings::Initialize()
   AddString(13, "lookandfeel.rssedit", 21435, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(14, "lookandfeel.sep3");
   AddBool(15, "lookandfeel.enablemouse", 21369, true);
+  AddBool(16, "lookandfeel.remoteaskeyboard", 21449, false);
 
   AddCategory(7, "locale", 20026);
   AddString(1, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
