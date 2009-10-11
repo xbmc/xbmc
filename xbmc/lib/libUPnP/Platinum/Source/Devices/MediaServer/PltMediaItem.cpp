@@ -939,8 +939,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
         for (NPT_Cardinal i=0; i<children.GetItemCount(); i++) {
             PLT_MediaItemResource resource;
             if (children[i]->GetText() == NULL) {
-                res = NPT_FAILURE;
-                NPT_CHECK_LABEL_SEVERE(res, cleanup);
+                NPT_LOG_WARNING("No resource text");
+                continue;
             }
 
             resource.m_Uri = *children[i]->GetText();
@@ -950,8 +950,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
             // and it would take too long to resolve at this point
             NPT_HttpUrl url(resource.m_Uri, true);
             if (!url.IsValid()) {
-                res = NPT_FAILURE;
-                NPT_CHECK_LABEL_SEVERE(res, cleanup);
+                NPT_LOG_WARNING_1("Invalid resource uri: %s", (const char*)resource.m_Uri);
+                continue;
             }
             NPT_String protocol_info;
             res = PLT_XmlHelper::GetAttribute(children[i], "protocolInfo", protocol_info);
@@ -959,8 +959,8 @@ PLT_MediaObject::FromDidl(NPT_XmlElementNode* entry)
 
             resource.m_ProtocolInfo = PLT_ProtocolInfo(protocol_info);
             if (!resource.m_ProtocolInfo.IsValid()) {
-                res = NPT_FAILURE;
-                NPT_CHECK_LABEL_SEVERE(res, cleanup);
+                NPT_LOG_WARNING_1("Invalid resource protocol info: %s", (const char*)protocol_info);
+                continue;
             }
             
             PLT_XmlHelper::GetAttribute(children[i], "protection", resource.m_Protection);

@@ -347,7 +347,11 @@ PLT_Didl::FromDidl(const char* xml, PLT_MediaObjectListReference& objects)
             continue;
         }
 
-        NPT_CHECK_LABEL_SEVERE(object->FromDidl(child), cleanup);
+        if(NPT_FAILED(object->FromDidl(child))) {
+          NPT_LOG_WARNING("Invalid didl");
+          continue;
+        }
+
         objects->Add(object);
         object = NULL; // reset to make sure it doesn't get deleted twice in case of error
     }
