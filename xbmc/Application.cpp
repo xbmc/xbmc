@@ -234,9 +234,6 @@
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
-#ifdef HAS_HAL
-#include "linux/LinuxFileSystem.h"
-#endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
