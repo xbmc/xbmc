@@ -1,8 +1,8 @@
-#include "Win32Provider.h"
+#include "Win32StorageProvider.h"
 #include "WIN32Util.h"
 #include "LocalizeStrings.h"
 
-void CWin32Provider::GetLocalDrives(VECSOURCES &localDrives)
+void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
   CMediaSource share;
   share.strPath = "special://xbmc/";
@@ -13,11 +13,11 @@ void CWin32Provider::GetLocalDrives(VECSOURCES &localDrives)
   CWIN32Util::GetDrivesByType(localDrives, LOCAL_DRIVES);
 }
 
-void CWin32Provider::GetRemovableDrives(VECSOURCES &removableDrives)
+void CWin32StorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
 }
 
-std::vector<CStdString> CWin32Provider::GetDiskUsage()
+std::vector<CStdString> CWin32StorageProvider::GetDiskUsage()
 {
   return CWIN32Util::GetDiskUsage();
 }

@@ -1,10 +1,10 @@
 #pragma once
 #include "IStorageProvider.h"
 
-class CWin32Provider : public IStorageProvider
+class CWin32StorageProvider : public IStorageProvider
 {
 public:
-  virtual ~CWin32Provider() { }
+  virtual ~CWin32StorageProvider() { }
 
   virtual void GetLocalDrives(VECSOURCES &localDrives);
   virtual void GetRemovableDrives(VECSOURCES &removableDrives);

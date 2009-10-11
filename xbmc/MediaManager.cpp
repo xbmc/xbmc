@@ -29,7 +29,6 @@
 #include "LinuxFileSystem.h"
 #elif defined(_WIN32)
 #include "WIN32Util.h"
-#include "Win32StorageProvider.h"
 #endif
 #include "GUIWindowManager.h"
 #ifdef HAS_DVD_DRIVE
@@ -51,7 +50,7 @@
 #elif defined(_LINUX)
 #include "LinuxStorageProvider.h"
 #elif _WIN32
-#include "Win32Provider.h"
+#include "Win32StorageProvider.h"
 #endif
 
 using namespace std;
