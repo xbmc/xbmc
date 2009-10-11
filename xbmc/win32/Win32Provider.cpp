@@ -1,5 +1,6 @@
 #include "Win32Provider.h"
 #include "WIN32Util.h"
+#include "LocalizeStrings.h"
 
 void CWin32Provider::GetLocalDrives(VECSOURCES &localDrives)
 {
