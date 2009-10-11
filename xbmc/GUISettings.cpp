@@ -423,8 +423,6 @@ void CGUISettings::Initialize()
   AddBool(3, "myvideos.autothumb",12024, false);
   AddBool(4, "myvideos.extractflags",20433,false);
   AddBool(5, "myvideos.cleanstrings", 20418, false);
-  AddSeparator(6, "myvideos.sep1");
-  AddBool(7, "myvideos.savefolderviews", 583, true);
 
   AddCategory(5, "videolibrary", 14022);
 
