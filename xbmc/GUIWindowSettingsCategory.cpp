@@ -71,7 +71,7 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #ifdef HAS_HAL
-#include "HalManager.h"
+#include "HALManager.h"
 #endif
 #endif
 #ifdef __APPLE__
