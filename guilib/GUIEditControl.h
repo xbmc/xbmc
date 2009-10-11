@@ -30,6 +30,7 @@
  */
 
 #include "GUIButtonControl.h"
+#include "utils/Stopwatch.h"
 
 /*!
  \ingroup controls
@@ -80,7 +81,9 @@ protected:
   CStdStringW GetDisplayedText() const;
   void RecalcLabelPosition();
   void ValidateCursor();
-  void OnTextChanged();
+  void UpdateText(bool sendUpdate = true);
+  void OnPasteClipboard();
+  void OnSMSCharacter(unsigned int key);
 
   CStdStringW m_text2;
   CStdString  m_text;
@@ -96,5 +99,13 @@ protected:
   INPUT_TYPE m_inputType;
   
   std::vector<CGUIActionDescriptor> m_textChangeActions;  
+
+  
+  unsigned int m_smsKeyIndex;
+  unsigned int m_smsLastKey;
+  CStopWatch   m_smsTimer;
+  
+  static const char*        smsLetters[10];
+  static const unsigned int smsDelay;
 };
 #endif
