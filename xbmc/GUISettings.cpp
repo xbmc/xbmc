@@ -259,8 +259,7 @@ void CGUISettings::Initialize()
   AddBool(1, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
-  AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
-  AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
+  AddBool(4,"musiclibrary.downloadinfo", 20192, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
   AddString(7, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
   AddBool(8, "musiclibrary.updateonstartup", 22000, false);

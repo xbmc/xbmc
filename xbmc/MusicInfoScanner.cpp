@@ -541,7 +541,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     if (find(m_artistsScanned.begin(),m_artistsScanned.end(),iArtist) == m_artistsScanned.end())
     {
       m_artistsScanned.push_back(iArtist);
-      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.autoartistinfo"))
+      if (!m_bStop && g_guiSettings.GetBool("musiclibrary.downloadinfo"))
       {
         CStdString strPath;
         strPath.Format("musicdb://2/%u/",iArtist);
@@ -553,7 +553,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     }
   }
 
-  if (g_guiSettings.GetBool("musiclibrary.autoalbuminfo"))
+  if (g_guiSettings.GetBool("musiclibrary.downloadinfo"))
   {
     for (set< pair<CStdString, CStdString> >::iterator i = albumsToScan.begin(); i != albumsToScan.end(); ++i)
     {
