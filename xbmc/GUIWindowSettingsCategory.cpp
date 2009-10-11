@@ -3735,21 +3735,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
   pControl->SetValue(k);
 }
 
-// check and clear our folder views if applicable.
-void CGUIWindowSettingsCategory::ClearFolderViews(CSetting *pSetting, int windowID)
-{
-  CSettingBool *pSettingBool = (CSettingBool*)pSetting;
-  if (!pSettingBool->GetData())
-  { // clear out our db
-    CViewDatabase db;
-    if (db.Open())
-    {
-      db.ClearViewStates(windowID);
-      db.Close();
-    }
-  }
-}
-
 void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
 {
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
