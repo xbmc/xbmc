@@ -388,13 +388,6 @@ OBJSXBMC += \
 	xbmc/lib/libSDL-OSX/libSDL_mixer-@ARCH@.a
 endif
 
-# TODO: XBPythonDLLFuncs.S not implemented on PowerPC
-ifeq ($(ARCH), powerpc64-linux)
-	# For some reason the XBMC version of libpython gets linker errors - use system version instead
-	#OBJSXBMC += xbmc/lib/libPython/Python/libpython2.4.a
-	LIBS += -lpython2.4
-endif
-
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
 	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic

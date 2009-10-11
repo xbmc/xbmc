@@ -67,13 +67,21 @@ XBPython g_pythonParser;
 #else
 #define PYTHON_DLL "special://xbmc/system/python/python24-x86_64-linux.so"
 #endif
-#elif defined(__powerpc__)
+#elif defined(_POWERPC)
 #if (defined HAVE_LIBPYTHON2_6)
 #define PYTHON_DLL "special://xbmc/system/python/python26-powerpc-linux.so"
 #elif (defined HAVE_LIBPYTHON2_5)
 #define PYTHON_DLL "special://xbmc/system/python/python25-powerpc-linux.so"
 #else
 #define PYTHON_DLL "special://xbmc/system/python/python24-powerpc-linux.so"
+#endif
+#elif defined(_POWERPC64)
+#if (defined HAVE_LIBPYTHON2_6)
+#define PYTHON_DLL "special://xbmc/system/python/python26-powerpc64-linux.so"
+#elif (defined HAVE_LIBPYTHON2_5)
+#define PYTHON_DLL "special://xbmc/system/python/python25-powerpc64-linux.so"
+#else
+#define PYTHON_DLL "special://xbmc/system/python/python24-powerpc64-linux.so"
 #endif
 #else /* !__x86_64__ && !__powerpc__ */
 #if (defined HAVE_LIBPYTHON2_6)

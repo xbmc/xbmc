@@ -24,10 +24,14 @@ PYWRAPDEF=$(PYWRAP:.o=.def)
 ifeq ($(ARCH), powerpc64-linux)
 	PYLIBDIR=lib.linux-ppc64-2.4
 else
+ifeq ($(ARCH), powerpc-linux)
+	PYLIBDIR=lib.linux-ppc-2.4
+else
 ifeq ($(ARCH), x86_64-linux)
 	PYLIBDIR=lib.linux-x86_64-2.4
 else
 	PYLIBDIR=lib.linux-i686-2.4
+endif
 endif
 endif
 
