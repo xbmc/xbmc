@@ -2680,8 +2680,7 @@ bool CApplication::OnAction(CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
-      if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-        g_audioManager.Enable(m_pPlayer->IsPaused());
+      g_audioManager.Enable(m_pPlayer->IsPaused());
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2741,8 +2740,7 @@ bool CApplication::OnAction(CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
-        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-          g_audioManager.Enable(m_pPlayer->IsPaused());
+        g_audioManager.Enable(m_pPlayer->IsPaused());
 
         g_application.SetPlaySpeed(1);
         return true;
@@ -3860,8 +3858,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // Workaround for bug/quirk in SDL_Mixer on OSX.
   // TODO: Remove after GUI Sounds redux
 #if defined(__APPLE__)
-  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-    g_audioManager.Enable(false);
+  g_audioManager.Enable(false);
 #endif
 
   bool bResult;
@@ -3910,8 +3907,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
 #if !defined(__APPLE__)
-    if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-      g_audioManager.Enable(false);
+    g_audioManager.Enable(false);
 #endif
   }
   m_bPlaybackStarting = false;

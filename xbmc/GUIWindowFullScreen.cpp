@@ -538,8 +538,6 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         m_subsLayout = NULL;
       }
 
-      if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-        g_audioManager.Enable(true);
       return true;
     }
   case GUI_MSG_SETFOCUS:

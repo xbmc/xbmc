@@ -1399,11 +1399,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
     }
 #endif
-    else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
-    }
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
     }
@@ -2075,13 +2070,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("lookandfeel.soundskin", pControl->GetCurrentLabel());
 
     g_audioManager.Load();
-  }
-  else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
-  {
-    if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-      g_audioManager.Enable(true);
-    else
-      g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
   }
   else if (strSetting.Equals("lookandfeel.enablemouse"))
   {
