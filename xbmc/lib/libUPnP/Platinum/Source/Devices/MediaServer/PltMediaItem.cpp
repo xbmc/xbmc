@@ -258,20 +258,22 @@ PLT_ProtocolInfo::ValidateExtra()
 
         NPT_List<FieldEntry>::Iterator entry = 
             entries.GetFirstItem();
-
-        // pn-param must always be first
-        if (entry->m_Key != "DLNA.ORG_PN") 
-            NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
-
-        NPT_CHECK_SEVERE(ValidateField(
-            entry->m_Value, 
-            PLT_DLNAPNCharsToValidate));
-        m_DLNA_PN = entry->m_Value;
         
         // parse other optional fields
         NPT_ProtocolInfoParserState state = PLT_PROTINFO_PARSER_STATE_PN;
-        while (++entry) {
-            if (entry->m_Key == "DLNA.ORG_OP") {
+        for (;entry;entry++) {
+            if (entry->m_Key == "DLNA.ORG_PN") {
+                if (state > PLT_PROTINFO_PARSER_STATE_PN) 
+                    NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
+
+                NPT_CHECK_SEVERE(ValidateField(
+                    entry->m_Value, 
+                    PLT_DLNAPNCharsToValidate));
+
+                m_DLNA_PN = entry->m_Value;
+                state = PLT_PROTINFO_PARSER_STATE_PN;
+                continue;
+            } else if (entry->m_Key == "DLNA.ORG_OP") {
                 // op-param only allowed after pn-param
                 if (state > PLT_PROTINFO_PARSER_STATE_PN) 
                     NPT_CHECK_SEVERE(NPT_ERROR_INVALID_SYNTAX);
