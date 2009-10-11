@@ -1162,7 +1162,7 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-libfaad \
       --enable-protocol=http \
       --enable-pthreads \
-      --enable-pic \
+      `if test "$host_cpu" = "powerpc" || test "$host_cpu" = "powerpc64"; then echo --enable-pic; fi` \
       --cc="$CC"
   fi
 ], [$USE_EXTERNAL_FFMPEG])
