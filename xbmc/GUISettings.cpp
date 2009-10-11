@@ -672,7 +672,6 @@ void CGUISettings::Initialize()
   AddBool(2, "filelists.hideextensions", 497, false);
   AddBool(3, "filelists.ignorethewhensorting", 13399, true);
   AddBool(4, "filelists.unrollarchives",516, false);
-  AddBool(5, "filelists.fulldirectoryhistory", 15106, true);
   AddSeparator(6, "filelists.sep1");
   AddBool(7, "filelists.allowfiledeletion", 14071, false);
   AddBool(8, "filelists.disableaddsourcebuttons", 21382,  false);

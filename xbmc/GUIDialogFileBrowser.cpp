@@ -560,9 +560,6 @@ void CGUIDialogFileBrowser::GoParentFolder()
     if (strPath[1] == ':')
       CUtil::AddSlashAtEnd(strPath);
   Update(strPath);
-
-  if (!g_guiSettings.GetBool("filelists.fulldirectoryhistory"))
-    m_history.RemoveSelectedItem(strOldPath); //Delete current path
 }
 
 void CGUIDialogFileBrowser::OnWindowLoaded()
