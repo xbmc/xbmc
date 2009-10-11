@@ -55,7 +55,7 @@
 // Time (ms) we give a process we sent a WM_QUIT to close before terminating
 #define PROCESS_GRACE_TIME 3000
 // Default time after which the item's playcount is incremented
-#define DEFAULT_PLAYCOUNT_MIN_TIME 10000
+#define DEFAULT_PLAYCOUNT_MIN_TIME 10
 
 using namespace XFILE;
 
