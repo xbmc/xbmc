@@ -37,7 +37,7 @@
 #include "../MediaSource.h"
 #include "GUISettings.h"
 
-class CHalDevice
+class CHALDevice
 {
 public:
   CStdString UDI;
@@ -45,10 +45,10 @@ public:
   CHalDevice(const char *udi) { UDI = udi; }
 };
 
-class CStorageDevice : public CHalDevice
+class CStorageDevice : public CHALDevice
 {
 public:
-  CStorageDevice(const char *udi) : CHalDevice(udi) { HotPlugged = false; Mounted = false; Approved = false; MountedByXBMC = false; }
+  CStorageDevice(const char *udi) : CHALDevice(udi) { HotPlugged = false; Mounted = false; Approved = false; MountedByXBMC = false; }
   bool MountedByXBMC;
   bool Mounted;
   bool Approved;
@@ -105,7 +105,7 @@ public:
 };
 
 
-class CHalManager
+class CHALManager
 {
 public:
   static const char *StorageTypeToString(int DeviceType);
@@ -113,7 +113,7 @@ public:
   bool Update();
 
   void Initialize();
-  CHalManager();
+  CHALManager();
   void Stop();
   std::vector<CStorageDevice> GetVolumeDevices();
   bool Eject(CStdString path);
@@ -137,6 +137,7 @@ private:
   bool UnMount(CStorageDevice volume);
   bool Mount(CStorageDevice *volume, CStdString mountpath);
   void HandleNewVolume(CStorageDevice *dev);
+  static bool ApproveDevice(CStorageDevice *device);
 
   static bool DeviceFromVolumeUdi(const char *udi, CStorageDevice *device);
   static CCriticalSection m_lock;
@@ -154,10 +155,10 @@ private:
   //Remembered Devices
   std::vector<CStorageDevice> m_Volumes;
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
-  std::vector<CHalDevice> m_Joysticks;
+  std::vector<CHALDevice> m_Joysticks;
 #endif
 };
 
-extern CHalManager g_HalManager;
+extern CHALManager g_HalManager;
 #endif
 #endif // HAS_HAL

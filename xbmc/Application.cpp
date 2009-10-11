@@ -4885,15 +4885,7 @@ void CApplication::ProcessSlow()
   smb.CheckIfIdle();
 #endif
 
-// Update HalManager to get newly connected media
-#ifdef HAS_HAL
-  while(g_HalManager.Update()) ;  //If there is 1 message it might be another one in queue, we take care of them directly
-  if (CLinuxFileSystem::AnyDeviceChange())
-  { // changes have occured - update our shares
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
-    g_windowManager.SendThreadMessage(msg);
-  }
-#endif
+  g_mediaManager.ProcessEvents();
 
 #ifdef HAS_LIRC
   if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())

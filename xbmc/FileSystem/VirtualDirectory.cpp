@@ -223,10 +223,6 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
   {
     g_mediaManager.GetRemovableDrives(shares);
 
-#ifdef HAS_HAL
-    int type = CMediaSource::SOURCE_TYPE_DVD;
-    CLinuxFileSystem::GetDrives(&type, 1, shares);
-#endif
     CUtil::AutoDetectionGetSource(shares);
   }
 

@@ -21,11 +21,10 @@
 
 #include "system.h"
 #ifdef HAS_HAL
-#include "HalManager.h"
+#include "HALManager.h"
 #include "Application.h"
 #include "utils/Builtins.h"
 #include <libhal-storage.h>
-#include "LinuxFileSystem.h"
 #include "SingleLock.h"
 #include "Util.h"
 #include "LocalizeStrings.h"
@@ -39,27 +38,27 @@
 #include "../../guilib/common/SDLJoystick.h"
 #endif
 
-bool CHalManager::NewMessage;
-DBusError CHalManager::m_Error;
-CCriticalSection CHalManager::m_lock;
+bool CHALManager::NewMessage;
+DBusError CHALManager::m_Error;
+CCriticalSection CHALManager::m_lock;
 
 /* A Removed device, It isn't possible to make a LibHalVolume from a removed device therefor
    we catch the UUID from the udi on the removal */
-void CHalManager::DeviceRemoved(LibHalContext *ctx, const char *udi)
+void CHALManager::DeviceRemoved(LibHalContext *ctx, const char *udi)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Removed", udi);
   g_HalManager.RemoveDevice(udi);
 }
 
-void CHalManager::DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability)
+void CHALManager::DeviceNewCapability(LibHalContext *ctx, const char *udi, const char *capability)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) gained capability %s", udi, capability);
   g_HalManager.UpdateDevice(udi);
 }
 
-void CHalManager::DeviceLostCapability(LibHalContext *ctx, const char *udi, const char *capability)
+void CHALManager::DeviceLostCapability(LibHalContext *ctx, const char *udi, const char *capability)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) lost capability %s", udi, capability);
@@ -67,14 +66,14 @@ void CHalManager::DeviceLostCapability(LibHalContext *ctx, const char *udi, cons
 }
 
 /* HAL Property modified callback. If a device is mounted. This is called. */
-void CHalManager::DevicePropertyModified(LibHalContext *ctx, const char *udi, const char *key, dbus_bool_t is_removed, dbus_bool_t is_added)
+void CHALManager::DevicePropertyModified(LibHalContext *ctx, const char *udi, const char *key, dbus_bool_t is_removed, dbus_bool_t is_added)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Property %s modified", udi, key);
   g_HalManager.UpdateDevice(udi);
 }
 
-void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const char *condition_name, const char *condition_details)
+void CHALManager::DeviceCondition(LibHalContext *ctx, const char *udi, const char *condition_name, const char *condition_details)
 {
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Condition %s | %s", udi, condition_name, condition_details);
   if (!strcmp(condition_name, "ButtonPressed") && !strcmp(condition_details, "power"))
@@ -103,17 +102,17 @@ void CHalManager::DeviceCondition(LibHalContext *ctx, const char *udi, const cha
 }
 
 /* HAL Device added. This is before mount. And here is the place to mount the volume in the future */
-void CHalManager::DeviceAdded(LibHalContext *ctx, const char *udi)
+void CHALManager::DeviceAdded(LibHalContext *ctx, const char *udi)
 {
   NewMessage = true;
   CLog::Log(LOGDEBUG, "HAL: Device (%s) Added", udi);
   g_HalManager.AddDevice(udi);
 }
 
-CHalManager g_HalManager;
+CHALManager g_HalManager;
 
 /* Iterate through all devices currently on the computer. Needed mostly at startup */
-void CHalManager::GenerateGDL()
+void CHALManager::GenerateGDL()
 {
   if (m_Context == NULL)
     return;
@@ -136,13 +135,13 @@ void CHalManager::GenerateGDL()
 }
 
 // Return all volumes that currently are available (Mostly needed at startup, the rest of the volumes comes as events.)
-std::vector<CStorageDevice> CHalManager::GetVolumeDevices()
+std::vector<CStorageDevice> CHALManager::GetVolumeDevices()
 {
   CSingleLock lock(m_lock);
   return m_Volumes;
 }
 
-CHalManager::CHalManager()
+CHALManager::CHALManager()
 {
   m_Notifications = false;
   m_Context = NULL;
@@ -151,7 +150,7 @@ CHalManager::CHalManager()
   m_bMultipleJoysticksSupport = (sdl_version->major >= 1 && sdl_version->minor >= 3)?true:false;
 }
 
-void CHalManager::Stop()
+void CHALManager::Stop()
 {
   if (g_advancedSettings.m_useHalMount)
   { // Unmount all media XBMC have mounted
@@ -181,7 +180,7 @@ void CHalManager::Stop()
 }
 
 // Initialize
-void CHalManager::Initialize()
+void CHALManager::Initialize()
 {
   m_Notifications = false;
   CLog::Log(LOGINFO, "HAL: Starting initializing");
@@ -199,7 +198,7 @@ void CHalManager::Initialize()
 }
 
 // Initialize basic DBus connection
-bool CHalManager::InitializeDBus()
+bool CHALManager::InitializeDBus()
 {
   if (m_DBusSystemConnection != NULL)
     return true;
@@ -218,7 +217,7 @@ bool CHalManager::InitializeDBus()
 }
 
 // Initialize basic HAL connection
-LibHalContext *CHalManager::InitializeHal()
+LibHalContext *CHALManager::InitializeHal()
 {
   LibHalContext *ctx;
   char **devices;
@@ -281,7 +280,7 @@ LibHalContext *CHalManager::InitializeHal()
 }
 
 // Helper function. creates a CStorageDevice from a HAL udi
-bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
+bool CHALManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
 {
   if (g_HalManager.m_Context == NULL)
     return false;
@@ -314,7 +313,7 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
       device->Label       = libhal_volume_get_label(tempVolume);
       device->UUID        = libhal_volume_get_uuid(tempVolume);
       device->FileSystem  = libhal_volume_get_fstype(tempVolume);
-      CLinuxFileSystem::ApproveDevice(device);
+      ApproveDevice(device);
 
       libhal_drive_free(tempDrive);
       Created = true;
@@ -329,7 +328,7 @@ bool CHalManager::DeviceFromVolumeUdi(const char *udi, CStorageDevice *device)
 }
 
 // Called from ProcessSlow to trigger the callbacks from DBus
-bool CHalManager::Update()
+bool CHALManager::Update()
 {
   CSingleLock lock(m_lock);
   if (m_Context == NULL)
@@ -350,7 +349,7 @@ bool CHalManager::Update()
 }
 
 /* libhal-storage type to readable form */
-const char *CHalManager::StorageTypeToString(int DeviceType)
+const char *CHALManager::StorageTypeToString(int DeviceType)
 {
   switch (DeviceType)
   {
@@ -374,7 +373,7 @@ const char *CHalManager::StorageTypeToString(int DeviceType)
 }
 
 /* Readable libhal-storage type to int type */
-int CHalManager::StorageTypeFromString(const char *DeviceString)
+int CHALManager::StorageTypeFromString(const char *DeviceString)
 {
   if      (strcmp(DeviceString, "removable disk") == 0)  return 0;
   else if (strcmp(DeviceString, "disk") == 0)            return 1;
@@ -394,7 +393,7 @@ int CHalManager::StorageTypeFromString(const char *DeviceString)
   return -1;
 }
 
-void CHalManager::UpdateDevice(const char *udi)
+void CHALManager::UpdateDevice(const char *udi)
 {
   CSingleLock lock(m_lock);
   char *category;
@@ -411,13 +410,13 @@ void CHalManager::UpdateDevice(const char *udi)
     {
       if (strcmp(m_Volumes[i].UDI.c_str(), udi) == 0)
       {
-        CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
+        CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHALManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
         if (g_advancedSettings.m_useHalMount)  // If the device was mounted by XBMC before it's still mounted by XBMC.
             dev.MountedByXBMC = m_Volumes[i].MountedByXBMC;
         if (!dev.Mounted && m_Volumes[i].Mounted)
           g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), dev.FriendlyName.c_str());
         m_Volumes[i] = dev;
-        CLinuxFileSystem::AddDevice(dev);
+
         break;
       }
     }
@@ -425,7 +424,7 @@ void CHalManager::UpdateDevice(const char *udi)
 
   libhal_free_string(category);
 }
-void CHalManager::HandleNewVolume(CStorageDevice *dev)
+void CHALManager::HandleNewVolume(CStorageDevice *dev)
 {
   if (g_advancedSettings.m_useHalMount)
   {
@@ -490,7 +489,7 @@ void CHalManager::HandleNewVolume(CStorageDevice *dev)
 }
 
 /* Parse newly found device and add it to our remembered devices */
-void CHalManager::AddDevice(const char *udi)
+void CHALManager::AddDevice(const char *udi)
 {
   CSingleLock lock(m_lock);
   char *category;
@@ -503,10 +502,9 @@ void CHalManager::AddDevice(const char *udi)
     CStorageDevice dev(udi);
     if (DeviceFromVolumeUdi(udi, &dev))
     {
-      CLog::Log(LOGDEBUG, "HAL: Added - %s | %s", CHalManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
+      CLog::Log(LOGDEBUG, "HAL: Added - %s | %s", CHALManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
       HandleNewVolume(&dev);
       m_Volumes.push_back(dev);
-      CLinuxFileSystem::AddDevice(dev);
     }
   }
 #if defined(HAS_SDL_JOYSTICK)
@@ -524,7 +522,7 @@ void CHalManager::AddDevice(const char *udi)
       if(strcmp(*ptr, "input.joystick") == 0)
       {
         CLog::Log(LOGINFO, "HAL: Joystick plugged in");
-        CHalDevice dev = CHalDevice(udi);
+        CHALDevice dev = CHALDevice(udi);
         dev.FriendlyName = libhal_device_get_property_string(m_Context, udi, "info.product", &m_Error);
         m_Joysticks.push_back(dev);
         
@@ -567,15 +565,14 @@ void CHalManager::AddDevice(const char *udi)
 }
 
 /* Here we should iterate through our remembered devices if any of them are removed */
-bool CHalManager::RemoveDevice(const char *udi)
+bool CHALManager::RemoveDevice(const char *udi)
 {
   CSingleLock lock(m_lock);
   for (unsigned int i = 0; i < m_Volumes.size(); i++)
   {
     if (strcmp(m_Volumes[i].UDI.c_str(), udi) == 0)
     {
-      CLog::Log(LOGNOTICE, "HAL: Removed - %s | %s", CHalManager::StorageTypeToString(m_Volumes[i].Type), m_Volumes[i].toString().c_str());
-      CLinuxFileSystem::RemoveDevice(m_Volumes[i].UUID.c_str());
+      CLog::Log(LOGNOTICE, "HAL: Removed - %s | %s", CHALManager::StorageTypeToString(m_Volumes[i].Type), m_Volumes[i].toString().c_str());
 
       if (m_Volumes[i].Mounted)
       {
@@ -620,7 +617,31 @@ bool CHalManager::RemoveDevice(const char *udi)
   return false;
 }
 
-bool CHalManager::Eject(CStdString path)
+bool CHALManager::ApproveDevice(CStorageDevice *device)
+{
+  bool approve = true;
+  //This is only because it's easier to read...
+  const char *fs = device->FileSystem.c_str();
+
+  if ( strcmp(fs, "vfat") == 0    || strcmp(fs, "ext2") == 0
+       || strcmp(fs, "ext3") == 0 || strcmp(fs, "reiserfs") == 0
+       || strcmp(fs, "ntfs") == 0 || strcmp(fs, "ntfs-3g") == 0
+       || strcmp(fs, "udf") == 0  || strcmp(fs, "iso9660") == 0
+       || strcmp(fs, "xfs") == 0  || strcmp(fs, "hfsplus") == 0
+       || strcmp(fs, "ext4") == 0)
+    approve = true;
+  else
+    approve = false;
+
+  // Ignore some mountpoints, unless a weird setup these should never contain anything usefull for an enduser.
+  if (strcmp(device->MountPoint, "/") == 0 || strcmp(device->MountPoint, "/boot/") == 0 || strcmp(device->MountPoint, "/mnt/") == 0 || strcmp(device->MountPoint, "/home/") == 0)
+    approve = false;
+
+  device->Approved = approve;
+  return approve;
+}
+
+bool CHALManager::Eject(CStdString path)
 {
   for (unsigned int i = 0; i < m_Volumes.size(); i++)
   {
@@ -631,7 +652,7 @@ bool CHalManager::Eject(CStdString path)
   return false;
 }
 
-bool CHalManager::UnMount(CStorageDevice volume)
+bool CHALManager::UnMount(CStorageDevice volume)
 {
   CLog::Log(LOGNOTICE, "HAL: UnMounting %s (%s)", volume.UDI.c_str(), volume.toString().c_str());
   DBusMessage* msg;
@@ -668,7 +689,6 @@ bool CHalManager::UnMount(CStorageDevice volume)
 
     volume.MountPoint = "";
     volume.Mounted    = false;
-    CLinuxFileSystem::RemoveDevice(volume.UUID.c_str());
     dbus_connection_unref(connection);
     connection = NULL;
     return true;
@@ -680,7 +700,7 @@ bool CHalManager::UnMount(CStorageDevice volume)
   }
 }
 
-bool CHalManager::Mount(CStorageDevice *volume, CStdString mountpath)
+bool CHALManager::Mount(CStorageDevice *volume, CStdString mountpath)
 {
   CLog::Log(LOGNOTICE, "HAL: Mounting %s (%s) at %s with umask=%u", volume->UDI.c_str(), volume->toString().c_str(), mountpath.c_str(), umask (0));
   DBusMessage* msg;
