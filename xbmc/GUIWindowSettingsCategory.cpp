@@ -1422,18 +1422,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);
     }
-    else if (!strSetting.Equals("musiclibrary.enabled")
-      && strSetting.Left(13).Equals("musiclibrary."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musiclibrary.enabled"));
-    }
-    else if (!strSetting.Equals("videolibrary.enabled")
-      && strSetting.Left(13).Equals("videolibrary."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
-    }
     else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
     { // only visible if rss is enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -2433,21 +2421,9 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // Nothing todo here
     }
   }
-  else if (strSetting.Equals("musicfiles.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_MUSIC_FILES);
-  }
-  else if (strSetting.Equals("myvideos.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_VIDEO_FILES);
-  }
   else if (strSetting.Equals("programfiles.savefolderviews"))
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PROGRAMS);
-  }
-  else if (strSetting.Equals("pictures.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
   }
   else if (strSetting.Equals("network.interface"))
   {

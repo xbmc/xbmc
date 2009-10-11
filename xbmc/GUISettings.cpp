@@ -201,7 +201,6 @@ void CGUISettings::Initialize()
   AddGroup(0, 1);
   AddCategory(0, "pictures", 16000);
   AddBool(2, "pictures.showvideos", 22022, false);
-  AddBool(3, "pictures.savefolderviews", 583, true);
   AddBool(4,"pictures.generatethumbs",13360,true);
   AddSeparator(5,"pictures.sep1");
   AddBool(6, "pictures.useexifrotation", 20184, true);
@@ -256,7 +255,6 @@ void CGUISettings::Initialize()
   AddPath(7,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
   AddCategory(3,"musiclibrary",14022);
-  AddBool(1, "musiclibrary.enabled", 418, true);
   AddBool(2, "musiclibrary.albumartistsonly", 13414, false);
   AddSeparator(3,"musiclibrary.sep1");
   AddBool(4,"musiclibrary.downloadinfo", 20192, false);
@@ -293,8 +291,6 @@ void CGUISettings::Initialize()
   AddString(0, "musicfiles.librarytrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
   AddSeparator(4, "musicfiles.sep1");
-  AddBool(8, "musicfiles.savefolderviews", 583, true);
-  AddSeparator(9, "musicfiles.sep2");
   AddBool(10, "musicfiles.usecddb", 227, true);
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 
@@ -427,13 +423,9 @@ void CGUISettings::Initialize()
   AddBool(3, "myvideos.autothumb",12024, false);
   AddBool(4, "myvideos.extractflags",20433,false);
   AddBool(5, "myvideos.cleanstrings", 20418, false);
-  AddSeparator(6, "myvideos.sep1");
-  AddBool(7, "myvideos.savefolderviews", 583, true);
 
   AddCategory(5, "videolibrary", 14022);
 
-  AddBool(1, "videolibrary.enabled", 418, true);
-  AddSeparator(2, "videolibrary.sep1");
   AddBool(3, "videolibrary.hideplots", 20369, false);
   AddInt(6, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
   AddSeparator(7, "videolibrary.sep2");
@@ -690,7 +682,6 @@ void CGUISettings::Initialize()
   AddSeparator(8, "screensaver.sep1");
   AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
   AddCategory(7, "window", 0);
   AddInt(0, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);
