@@ -2433,10 +2433,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PROGRAMS);
   }
-  else if (strSetting.Equals("pictures.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PICTURES);
-  }
   else if (strSetting.Equals("network.interface"))
   {
      NetworkInterfaceChanged();
