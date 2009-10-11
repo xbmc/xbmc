@@ -412,7 +412,7 @@ void CUtil::CleanString(CStdString& strFileName, CStdString& strTitle, CStdStrin
       continue;
     }
     int j=0;
-    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) >= 0)
+    if ((j=reTags.RegFind(strFileName.ToLower().c_str())) > 0)
       strTitleAndYear = strTitleAndYear.Mid(0, j);
   }
 
