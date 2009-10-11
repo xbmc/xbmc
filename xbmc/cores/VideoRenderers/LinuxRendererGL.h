@@ -145,17 +145,27 @@ protected:
   bool IsSoftwareUpscaling();
   void InitializeSoftwareUpscaling();
 
-  virtual void ManageTextures();
-  void DeleteYV12Texture(int index);
-  void ClearYV12Texture(int index);
-  virtual bool CreateYV12Texture(int index, bool clear=true);
-  void CopyYV12Texture(int dest);
+  void ManageTextures();
   int  NextYV12Texture();
   virtual bool ValidateRenderTarget();
   virtual void LoadShaders(int field=FIELD_FULL);
-  void LoadTextures(int source);
   void SetTextureFilter(GLenum method);
   void UpdateVideoFilter();
+
+  // textures
+  typedef bool (CLinuxRendererGL::*TextureFuncPtr)(int index);
+
+  TextureFuncPtr LoadTexturesFuncPtr;
+  TextureFuncPtr CreateTextureFuncPtr;
+  TextureFuncPtr DeleteTextureFuncPtr;
+
+  bool LoadYV12Textures(int source);
+  bool CreateYV12Texture(int index);
+  bool DeleteYV12Texture(int index);
+
+  bool LoadVDPAUTextures(int source);
+  bool CreateVDPAUTexture(int index);
+  bool DeleteVDPAUTexture(int index);
 
   // renderers
   void RenderMultiPass(int renderBuffer, int field);  // multi pass glsl renderer
