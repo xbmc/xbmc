@@ -1521,6 +1521,7 @@ CUPnPRenderer::SetupServices(PLT_DeviceData& data)
         ",http-get:*:image/ief:*"
         ",http-get:*:image/png:*"
         ",http-get:*:image/tiff:*"
+        ",http-get:*:video/avi:*"
         ",http-get:*:video/mpeg:*"
         ",http-get:*:video/fli:*"
         ",http-get:*:video/flv:*"
