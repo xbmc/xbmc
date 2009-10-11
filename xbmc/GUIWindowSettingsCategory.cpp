@@ -1422,18 +1422,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);
     }
-    else if (!strSetting.Equals("musiclibrary.enabled")
-      && strSetting.Left(13).Equals("musiclibrary."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("musiclibrary.enabled"));
-    }
-    else if (!strSetting.Equals("videolibrary.enabled")
-      && strSetting.Left(13).Equals("videolibrary."))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("videolibrary.enabled"));
-    }
     else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
     { // only visible if rss is enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
