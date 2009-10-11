@@ -218,10 +218,7 @@ void CGUISettings::Initialize()
   AddBool(0, "slideshow.shuffle", 13319, false);
 
   // Programs settings
-  AddGroup(1, 0);
-
-  AddCategory(1,"programfiles",744);
-  AddBool(4, "programfiles.savefolderviews", 583, true);
+//  AddGroup(1, 0);
 
   // My Weather settings
   AddGroup(2, 8);
