@@ -266,7 +266,6 @@ void CGUISettings::Initialize()
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "musicplayer.outputtoallspeakers", 252, false);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
   AddInt(5, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);

@@ -1104,7 +1104,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("cddaripper.encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting.Equals("musicplayer.outputtoallspeakers") || strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
+    else if (strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
@@ -1824,13 +1824,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     else
     {
       CLibrefmScrobbler::GetInstance()->Term();
-    }
-  }
-  else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
-  {
-    if (!g_application.IsPlaying())
-    {
-      g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
     }
   }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
