@@ -291,8 +291,6 @@ void CGUISettings::Initialize()
   AddString(0, "musicfiles.librarytrackformat", 13307, "", EDIT_CONTROL_INPUT, false, 16016);
   AddString(0, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
   AddSeparator(4, "musicfiles.sep1");
-  AddBool(8, "musicfiles.savefolderviews", 583, true);
-  AddSeparator(9, "musicfiles.sep2");
   AddBool(10, "musicfiles.usecddb", 227, true);
   AddBool(11, "musicfiles.findremotethumbs", 14059, true);
 

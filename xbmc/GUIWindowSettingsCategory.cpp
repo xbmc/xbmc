@@ -2421,10 +2421,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // Nothing todo here
     }
   }
-  else if (strSetting.Equals("musicfiles.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_MUSIC_FILES);
-  }
   else if (strSetting.Equals("myvideos.savefolderviews"))
   {
     ClearFolderViews(pSettingControl->GetSetting(), WINDOW_VIDEO_FILES);
