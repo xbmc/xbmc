@@ -687,7 +687,6 @@ void CGUISettings::Initialize()
   AddSeparator(8, "screensaver.sep1");
   AddInt(9, "screensaver.dimlevel", 362, 20, 0, 10, 80, SPIN_CONTROL_INT_PLUS, MASK_PERCENT);
   AddPath(10, "screensaver.slideshowpath", 774, "F:\\Pictures\\", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddBool(11, "screensaver.slideshowshuffle", 13319, false);
 
   AddCategory(7, "window", 0);
   AddInt(0, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);

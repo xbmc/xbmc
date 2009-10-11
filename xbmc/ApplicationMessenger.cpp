@@ -362,7 +362,7 @@ case TMSG_POWERDOWN:
             pSlideShow->Add(items[i].get());
           pSlideShow->StartSlideShow(pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER); //Start the slideshow!
         }
-        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER && g_guiSettings.GetBool("screensaver.slideshowshuffle"))
+        if (pMsg->dwMessage == TMSG_SLIDESHOW_SCREENSAVER)
           pSlideShow->Shuffle();
 
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
