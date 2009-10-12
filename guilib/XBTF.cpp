@@ -76,12 +76,12 @@ void CXBTFFrame::SetUnpackedSize(uint64_t size)
   m_unpackedSize = size;
 }
 
-void CXBTFFrame::SetFormat(XB_FMT format)
+void CXBTFFrame::SetFormat(uint32_t format)
 {
   m_format = format;
 }
 
-XB_FMT CXBTFFrame::GetFormat() const
+uint32_t CXBTFFrame::GetFormat() const
 {
   return m_format;
 }
@@ -111,7 +111,7 @@ uint64_t CXBTFFrame::GetHeaderSize() const
   uint64_t result =
     sizeof(m_width) +
     sizeof(m_height) +
-    sizeof(uint32_t) + // m_format (enum)
+    sizeof(m_format) +
     sizeof(m_packedSize) +
     sizeof(m_unpackedSize) +
     sizeof(m_offset) +
