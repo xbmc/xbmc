@@ -62,6 +62,7 @@ SRCS= Platinum/Source/Core/PltAction.cpp \
       Neptune/Source/System/Posix/NptPosixQueue.cpp \
       Neptune/Source/System/Posix/NptPosixThreads.cpp \
       Neptune/Source/System/Posix/NptPosixFile.cpp \
+      Neptune/Source/System/StdC/NptStdCTime.cpp \
       Neptune/Source/System/StdC/NptStdcDebug.cpp \
       Neptune/Source/System/StdC/NptStdcEnvironment.cpp \
       Platinum/Source/Devices/MediaRenderer/PltMediaRenderer.cpp \
