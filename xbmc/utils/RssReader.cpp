@@ -62,7 +62,7 @@ CRssReader::~CRssReader()
     delete m_vecTimeStamps[i];
 }
 
-void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds)
+void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, const vector<int> &times, int spacesBetweenFeeds, bool rtl)
 {
   CSingleLock lock(*this);
   
@@ -73,7 +73,7 @@ void CRssReader::Create(IRssObserver* aObserver, const vector<string>& aUrls, co
   m_strColors.resize(aUrls.size());
   // set update times
   m_vecUpdateTimes = times;
-  m_rtlText = g_guiSettings.GetBool("lookandfeel.rssfeedsrtl");
+  m_rtlText = rtl;
   m_requestRefresh = false;
 
   // update each feed on creation

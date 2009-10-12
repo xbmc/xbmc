@@ -1079,11 +1079,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       parentID, id, posX, posY, width, height,
       labelInfo, textColor3, labelInfo2.textColor, strRSSTags, scrollSpeed);
 
-    std::map<int, std::pair<std::vector<int>,std::vector<string> > >::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
+    std::map<int,CSettings::RssSet>::iterator iter=g_settings.m_mapRssUrls.find(iUrlSet);
     if (iter != g_settings.m_mapRssUrls.end())
     {
-      ((CGUIRSSControl *)control)->SetUrls(iter->second.second);
-      ((CGUIRSSControl *)control)->SetIntervals(iter->second.first);
+      ((CGUIRSSControl *)control)->SetUrls(iter->second.url,iter->second.rtl);
+      ((CGUIRSSControl *)control)->SetIntervals(iter->second.interval);
     }
     else
       CLog::Log(LOGERROR,"invalid rss url set referenced in skin");
