@@ -392,15 +392,18 @@ bool CRssReader::Parse(int iFeed)
   GetNewsItems(rssXmlNode,iFeed);
 
   // avoid trailing ' - '
-  if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - " && !m_rtlText)
+  if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - ")
   {
-    m_strFeed[iFeed].erase(m_strFeed[iFeed].length()-3);
-    m_strColors[iFeed].erase(m_strColors[iFeed].length()-3);
-  }
-  else if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].Mid(m_strFeed[iFeed].size()-3) == L" - " && m_rtlText)
-  {
-    m_strFeed[iFeed].erase(0, 3);
-    m_strColors[iFeed].erase(0, 3);
+    if (m_rtlText)
+    {
+      m_strFeed[iFeed].erase(0, 3);
+      m_strColors[iFeed].erase(0, 3);
+    }
+    else
+    {
+      m_strFeed[iFeed].erase(m_strFeed[iFeed].length()-3);
+      m_strColors[iFeed].erase(m_strColors[iFeed].length()-3);
+    }
   }
   return true;
 }
