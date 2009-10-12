@@ -1,7 +1,32 @@
 #include "DeviceKitDisksProvider.h"
 #include "Util.h"
 #ifdef HAS_DBUS
-#include "DBusUtil.h"
+
+CDeviceKitDisksProvider::CDeviceKitDisksProvider()
+{
+  dbus_error_init (&m_error);
+  m_connection = dbus_bus_get(DBUS_BUS_SYSTEM, &m_error);
+
+  dbus_bus_add_match(m_connection, "type='signal',interface='org.freedesktop.DeviceKit.Disks'", &m_error);
+  dbus_connection_flush(m_connection);
+  if (dbus_error_is_set(&m_error))
+  {
+    CLog::Log(LOGERROR, "DeviceKit.Disks: Failed to attach to signal %s", m_error.message);
+    dbus_connection_unref(m_connection);
+    m_connection = NULL;
+  }
+}
+
+CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
+{
+  if (m_connection)
+  {
+    dbus_connection_unref(m_connection);
+    m_connection = NULL;
+  }
+
+  dbus_error_free (&m_error);
+}
 
 std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
 {
@@ -10,6 +35,30 @@ std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
 
 bool CDeviceKitDisksProvider::PumpDriveChangeEvents()
 {
+  if (m_connection)
+  {
+    dbus_connection_read_write(m_connection, 0);
+    DBusMessage *msg = dbus_connection_pop_message(m_connection);
+
+    if (msg)
+    {
+      if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceAdded"))
+      {
+        CLog::Log(LOGDEBUG, "DeviceKit.Disks: Got \"DeviceAdded\"-signal");
+        return true;
+      }
+      if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceRemoved"))
+      {
+        CLog::Log(LOGDEBUG, "DeviceKit.Disks: Got \"DeviceRemoved\"-signal");
+        return true;
+      }
+      if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceChanged"))
+      {
+        CLog::Log(LOGDEBUG, "DeviceKit.Disks: Got \"DeviceChanged\"-signal");
+        return true;
+      }
+    }
+  }
   return false;
 }
 
