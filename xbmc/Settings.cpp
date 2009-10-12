@@ -28,7 +28,6 @@
 #include "URL.h"
 #include "GUIWindowFileManager.h"
 #include "GUIDialogButtonMenu.h"
-#include "GUIDialogContentSettings.h"
 #include "GUIFontManager.h"
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"

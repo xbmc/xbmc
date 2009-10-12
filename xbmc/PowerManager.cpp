@@ -22,13 +22,11 @@
 #include "system.h"
 #include "PowerManager.h"
 #include "Application.h"
-#include "GUIWindowManager.h"
-#include "GUIDialogVideoScan.h"
-#include "GUIDialogMusicScan.h"
 #include "KeyboardStat.h"
 #include "MouseStat.h"
 #include "GUISettings.h"
 #include "WindowingFactory.h"
+#include "utils/log.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"

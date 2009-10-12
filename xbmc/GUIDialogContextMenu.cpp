@@ -25,8 +25,6 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
-#include "GUIDialogContentSettings.h"
-#include "GUIDialogVideoScan.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowVideoFiles.h"
 #include "Autorun.h"
