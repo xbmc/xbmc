@@ -45,6 +45,8 @@ public:
   CMediaSource() { m_iDriveType=SOURCE_TYPE_UNKNOWN; m_iLockMode=LOCK_MODE_EVERYONE; m_iBadPwdCount=0; m_iHasLock=0; m_ignore=false; };
   virtual ~CMediaSource() {};
 
+  bool operator==(const CMediaSource &right) const;
+
   void FromNameAndPaths(const CStdString &category, const CStdString &name, const std::vector<CStdString> &paths);
   bool isWritable() const;
   CStdString strName; ///< Name of the share, can be choosen freely.
