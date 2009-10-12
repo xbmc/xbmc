@@ -161,7 +161,6 @@ protected:
   float    m_textureScaleY;
 
   static int justification_word_weight;
-  static unsigned int max_texture_size;
 
   CStdString m_strFileName;
 
