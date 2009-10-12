@@ -73,7 +73,7 @@ long cas(volatile long* pAddr, long expectedVal, long swapVal)
 
 long cas(volatile long* pAddr, long expectedVal, long swapVal)
 {
-	//TODO: ARM Atomics
+  throw "cas is not implemented on arm!";
 }
 
 #else // Linux / OSX86 (GCC)
@@ -97,7 +97,7 @@ long cas(volatile long* pAddr,long expectedVal, long swapVal)
 // 64-bit atomic compare-and-swap
 // Returns previous value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#if defined(__ppc__) || defined(__powerpc__) // PowerPC
+#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__)  // PowerPC & ARM
 
 // Not available
 
@@ -120,13 +120,6 @@ long long cas2(volatile long long* pAddr, long long expectedVal, long long swapV
   }
   
   return prev; 
-}
-
-#elif defined(__arm__)
-
-long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
-{
-	//TODO: ARM Atomics
 }
 
 #else // Linux / OSX86 (GCC)
@@ -196,7 +189,7 @@ long AtomicIncrement(volatile long* pAddr)
 
 long AtomicIncrement(volatile long* pAddr)
 {
-	//TODO: ARM Atomics
+  throw "Atomics is not implemented on arm!";
 }
 
 #else // Linux / OSX86 (GCC)
@@ -259,7 +252,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
 
 long AtomicAdd(volatile long* pAddr, long amount)
 {
-	//TODO: ARM Atomics
+  throw "Atomics is not implemented on arm!";
 }
 
 #else // Linux / OSX86 (GCC)
@@ -321,7 +314,7 @@ long AtomicDecrement(volatile long* pAddr)
 
 long AtomicDecrement(volatile long* pAddr)
 {
-	//TODO: ARM Atomics
+  throw "Atomics is not implemented on arm!";
 }
 
 #else // Linux / OSX86 (GCC)
@@ -385,7 +378,7 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 
 long AtomicSubtract(volatile long* pAddr, long amount)
 {
-	//TODO: ARM Atomics
+  throw "Atomics is not implemented on arm!";
 }
 
 #else // Linux / OSX86 (GCC)
