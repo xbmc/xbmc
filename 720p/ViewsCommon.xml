@@ -269,6 +269,7 @@
 				    <height>18</height>
 						<posy>57</posy>
 						<posx>-15</posx>
+						<colordiffuse>$INFO[ListItem.StarDiffuse]</colordiffuse>
 	        </control>
 
           <control type="group">

@@ -513,6 +513,7 @@
     <align>center</align>
     <info>ListItem.StarRating</info>
     <aspectratio>keep</aspectratio>
+    <colordiffuse>$INFO[ListItem.StarRatingDiffuse]</colordiffuse>
   </include>
 
   <include name="StarRatingDetails">
