@@ -25,6 +25,7 @@
 #include "Key.h"
 #include "Settings.h"
 #include "FileItem.h"
+#include "VideoInfoTag.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/log.h"
 
@@ -159,6 +160,11 @@ CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
   else if (contextWindow == WINDOW_PROGRAMS)
     execute.Format("RunXBE(%s)", item->m_strPath);
   else  // assume a media file
-    execute.Format("PlayMedia(%s)", item->m_strPath);
+  {
+    if (item->IsVideoDb() && item->HasVideoInfoTag())
+      execute.Format("PlayMedia(%s)", item->GetVideoInfoTag()->m_strFileNameAndPath);
+    else
+      execute.Format("PlayMedia(%s)", item->m_strPath);
+  }
   return execute;
 }
