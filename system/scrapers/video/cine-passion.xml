@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<scraper framework="1.1" date="2009-10-10" name="Ciné-Passion" content="movies" thumb="cine-passion.png" language="fr">
+		<GetSettings dest="3">
+				<RegExp input="$$5" output="&lt;settings&gt;\1&lt;/settings&gt;" dest="3">
+						<RegExp input="$$1" output="&lt;setting label=&quot;Langue (Language)&quot; type=&quot;labelenum&quot; values=&quot;fr|en&quot; id=&quot;language&quot; default=&quot;fr&quot;&gt;&lt;/setting&gt;" dest="5">
+								<expression/>
+						</RegExp>
+						<RegExp input="$$1" output="&lt;setting label=&quot;Notes (Rating)&quot; type=&quot;labelenum&quot; values=&quot;Ciné-Passion|Allociné|IMDB&quot; id=&quot;rating&quot; default=&quot;Ciné-Passion&quot;&gt;&lt;/setting&gt;" dest="5+">
+								<expression/>
+						</RegExp>
+						<expression noclean="1"/>
+				</RegExp>
+		</GetSettings>
+		<NfoUrl dest="3">
+				<RegExp input="$$1" output="&lt;url&gt;http://passion-xbmc.org/scraper/index.php?id=\2&amp;amp;Lang=$INFO[language]&amp;amp;Rating=$INFO[rating]&lt;/url&gt;"  dest="3">
+						<expression clear="yes" noclean="1">(passion-xbmc.org)/scraper/index.php\?id=([0-9]*)</expression>
+				</RegExp>
+				<RegExp input="$$1" output="&lt;url&gt;http://passion-xbmc.org/scraper/index.php?id=\2&amp;amp;Lang=$INFO[language]&amp;amp;Rating=$INFO[rating]&lt;/url&gt;"  dest="3+">
+						<expression clear="yes" noclean="1">(allocine.fr)/film/fichefilm_gen_cfilm=([0-9]*).html</expression>
+				</RegExp>	
+				<RegExp input="$$1" output="&lt;url&gt;http://passion-xbmc.org/scraper/index.php?idimdb=\2&amp;amp;Lang=$INFO[language]&amp;amp;Rating=$INFO[rating]&lt;/url&gt;"  dest="3+">
+						<expression clear="yes" noclean="1">(imdb.com/)Title\?([0-9]*)</expression>
+				</RegExp>
+				<RegExp input="$$1" output="&lt;url&gt;http://passion-xbmc.org/scraper/index.php?idimdb=\2&amp;amp;Lang=$INFO[language]&amp;amp;Rating=$INFO[rating]&lt;/url&gt;"  dest="3+">
+						<expression clear="yes" noclean="1">(imdb.com/title/tt)([0-9]*)</expression>
+				</RegExp>
+		</NfoUrl>
+		<CreateSearchUrl dest="3">
+				<RegExp input="$$1" output="&lt;url&gt;http://passion-xbmc.org/scraper/index.php?search=\1&amp;amp;Lang=$INFO[language]&amp;amp;Rating=$INFO[rating]&lt;/url&gt;" dest="3">
+						<RegExp input="$$2" output="%20(\1)" dest="4">
+								<expression clear="yes">(.+)</expression>
+						</RegExp>
+						<expression noclean="1"/>
+				</RegExp>
+		</CreateSearchUrl>
+		<GetSearchResults dest="2">
+				<RegExp input="$$5" output="\1" dest="2">
+						<RegExp input="$$1" output="\1" dest="5">
+								<expression trim="1" noclean="1">(.*)</expression>
+						</RegExp>
+						<expression noclean="1"/>
+				</RegExp>
+		</GetSearchResults>
+		<GetDetails clearbuffers="no" dest="3">
+				<RegExp input="$$5" output="&lt;details&gt;\1&lt;/details&gt;" dest="3">
+						<RegExp input="$$1" output="\1" dest="5">
+								<expression trim="1" noclean="1">XMLSchema&quot;&gt;(.*)&lt;/movie</expression>
+						</RegExp>
+						<expression noclean="1"/>
+				</RegExp>
+		</GetDetails>
+</scraper>
