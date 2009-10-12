@@ -47,6 +47,9 @@
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
+#ifdef HAVE_LIBCRYSTALHD
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
+#endif
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
@@ -384,6 +387,12 @@ void CXBMCRenderManager::Present()
   if(g_graphicsContext.IsFullScreenVideo() && g_VDPAU)
     WaitPresentTime(m_presenttime);
 #endif
+#ifdef HAVE_LIBCRYSTALHD
+  /* wait for this present to be valid */
+  //if(g_graphicsContext.IsFullScreenVideo() && g_CrystalHD)
+  if(g_CrystalHD)
+    WaitPresentTime(m_presenttime);
+#endif
 
   if (!m_pRenderer)
   {
@@ -412,6 +421,9 @@ void CXBMCRenderManager::Present()
       m_presentevent.Set();
 #ifdef HAVE_LIBVDPAU
     if (!g_VDPAU)
+#endif
+#ifdef HAVE_LIBCRYSTALHD
+    if (!g_CrystalHD)
 #endif
     {
       WaitPresentTime(m_presenttime);
