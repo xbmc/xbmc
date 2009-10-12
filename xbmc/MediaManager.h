@@ -26,6 +26,7 @@
 #include "FileSystem/cdioSupport.h"
 #endif
 #include "URL.h"
+#include "IStorageProvider.h"
 
 #ifdef HAS_DVD_DRIVE
 using namespace MEDIA_DETECT;
@@ -69,6 +70,9 @@ public:
   CStdString GetDiskLabel(const CStdString& devicePath="");
   void SetHasOpticalDrive(bool bstatus);
 
+  void ProcessEvents();
+
+  std::vector<CStdString> GetDiskUsage();
 protected:
   std::vector<CNetworkLocation> m_locations;
 
@@ -78,6 +82,8 @@ protected:
 #endif
   bool m_bhasoptical;
 
+private:
+  IStorageProvider *m_platformStorage;
 };
 
 extern class CMediaManager g_mediaManager;

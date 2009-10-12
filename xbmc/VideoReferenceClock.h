@@ -124,7 +124,6 @@ class CVideoReferenceClock : public CThread
     unsigned int  m_Adapter;
     MONITORINFOEX m_Monitor;
     MONITORINFOEX m_PrevMonitor;
-    bool          m_IsVista;
 
 #elif defined(__APPLE__)
     bool SetupCocoa();

@@ -234,15 +234,16 @@
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
-#ifdef HAS_HAL
-#include "linux/LinuxFileSystem.h"
-#endif
 #ifdef HAVE_LIBVDPAU
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE
 #include "lib/libcdio/logging.h"
+#endif
+
+#ifdef HAS_HAL
+#include "linux/HALManager.h"
 #endif
 
 #include "MediaManager.h"
@@ -2680,8 +2681,7 @@ bool CApplication::OnAction(CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
-      if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-        g_audioManager.Enable(m_pPlayer->IsPaused());
+      g_audioManager.Enable(m_pPlayer->IsPaused());
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2741,8 +2741,7 @@ bool CApplication::OnAction(CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
-        if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-          g_audioManager.Enable(m_pPlayer->IsPaused());
+        g_audioManager.Enable(m_pPlayer->IsPaused());
 
         g_application.SetPlaySpeed(1);
         return true;
@@ -3860,8 +3859,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // Workaround for bug/quirk in SDL_Mixer on OSX.
   // TODO: Remove after GUI Sounds redux
 #if defined(__APPLE__)
-  if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-    g_audioManager.Enable(false);
+  g_audioManager.Enable(false);
 #endif
 
   bool bResult;
@@ -3910,8 +3908,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
 #if !defined(__APPLE__)
-    if (!g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-      g_audioManager.Enable(false);
+    g_audioManager.Enable(false);
 #endif
   }
   m_bPlaybackStarting = false;
@@ -4889,15 +4886,7 @@ void CApplication::ProcessSlow()
   smb.CheckIfIdle();
 #endif
 
-// Update HalManager to get newly connected media
-#ifdef HAS_HAL
-  while(g_HalManager.Update()) ;  //If there is 1 message it might be another one in queue, we take care of them directly
-  if (CLinuxFileSystem::AnyDeviceChange())
-  { // changes have occured - update our shares
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
-    g_windowManager.SendThreadMessage(msg);
-  }
-#endif
+  g_mediaManager.ProcessEvents();
 
 #ifdef HAS_LIRC
   if (g_RemoteControl.IsInUse() && !g_RemoteControl.IsInitialized())

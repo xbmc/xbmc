@@ -348,19 +348,6 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
     // destination path cannot be used with virtual window
     passParams = false;
   }
-  // Is the Library enabled?  If not, go to Files view.
-  if (iWindowID == WINDOW_MUSIC_NAV && !g_guiSettings.GetBool("musiclibrary.enabled"))
-  {
-    iWindowID = WINDOW_MUSIC_FILES;
-    passParams = false;
-    CLog::Log(LOGDEBUG, "Trying to activate Music Library, but its disabled.  Switching to Files instead.");
-  }
-  if (iWindowID == WINDOW_VIDEO_NAV && !g_guiSettings.GetBool("videolibrary.enabled"))
-  {
-    iWindowID = WINDOW_VIDEO_FILES;
-    passParams = false;
-    CLog::Log(LOGDEBUG, "Trying to activate Video Library, but its disabled.  Switching to Files instead.");
-  }
 
   // debug
   CLog::Log(LOGDEBUG, "Activating window ID: %i", iWindowID);

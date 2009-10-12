@@ -467,6 +467,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\xbmc\win32\Win32StorageProvider.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\xbmc\win32\Win32StorageProvider.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\xbmc\win32\WIN32Util.cpp"
 				>
 			</File>

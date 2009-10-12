@@ -71,7 +71,7 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #ifdef HAS_HAL
-#include "HalManager.h"
+#include "HALManager.h"
 #endif
 #endif
 #ifdef __APPLE__
@@ -1104,7 +1104,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled((g_guiSettings.GetInt("cddaripper.encoder") != CDDARIP_ENCODER_WAV) &&
                                            (g_guiSettings.GetInt("cddaripper.quality") == CDDARIP_QUALITY_CBR));
     }
-    else if (strSetting.Equals("musicplayer.outputtoallspeakers") || strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
+    else if (strSetting.Equals("audiooutput.ac3passthrough") || strSetting.Equals("audiooutput.dtspassthrough") || strSetting.Equals("audiooutput.passthroughdevice"))
     { // only visible if we are in digital mode
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL);
@@ -1399,11 +1399,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_guiSettings.GetInt("lcd.type") != LCD_TYPE_NONE);
     }
 #endif
-    else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("lookandfeel.soundskin") != "OFF");
-    }
     else if (strSetting.Equals("lookandfeel.enablemouse"))
     {
     }
@@ -1826,13 +1821,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CLibrefmScrobbler::GetInstance()->Term();
     }
   }
-  else if (strSetting.Equals("musicplayer.outputtoallspeakers"))
-  {
-    if (!g_application.IsPlaying())
-    {
-      g_audioContext.SetActiveDevice(CAudioContext::DEFAULT_DEVICE);
-    }
-  }
   else if (strSetting.Left(22).Equals("MusicPlayer.ReplayGain"))
   { // Update our replaygain settings
     g_guiSettings.m_replayGain.iType = g_guiSettings.GetInt("musicplayer.replaygaintype");
@@ -2082,13 +2070,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("lookandfeel.soundskin", pControl->GetCurrentLabel());
 
     g_audioManager.Load();
-  }
-  else if (strSetting.Equals("lookandfeel.soundsduringplayback"))
-  {
-    if (g_guiSettings.GetBool("lookandfeel.soundsduringplayback"))
-      g_audioManager.Enable(true);
-    else
-      g_audioManager.Enable(!g_application.IsPlaying() || g_application.IsPaused());
   }
   else if (strSetting.Equals("lookandfeel.enablemouse"))
   {
@@ -2420,10 +2401,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       // We asked for the master password and saved the new one!
       // Nothing todo here
     }
-  }
-  else if (strSetting.Equals("programfiles.savefolderviews"))
-  {
-    ClearFolderViews(pSettingControl->GetSetting(), WINDOW_PROGRAMS);
   }
   else if (strSetting.Equals("network.interface"))
   {
@@ -3737,21 +3714,6 @@ void CGUIWindowSettingsCategory::FillInScrapers(CGUISpinControlEx *pControl, con
     }
   }
   pControl->SetValue(k);
-}
-
-// check and clear our folder views if applicable.
-void CGUIWindowSettingsCategory::ClearFolderViews(CSetting *pSetting, int windowID)
-{
-  CSettingBool *pSettingBool = (CSettingBool*)pSetting;
-  if (!pSettingBool->GetData())
-  { // clear out our db
-    CViewDatabase db;
-    if (db.Open())
-    {
-      db.ClearViewStates(windowID);
-      db.Close();
-    }
-  }
 }
 
 void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)

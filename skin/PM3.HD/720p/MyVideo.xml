@@ -83,7 +83,6 @@
 					<onup>3</onup>
 					<ondown>7</ondown>
 					<enable>Library.HasContent(Video)</enable>
-					<visible>System.GetBool(videolibrary.enabled)</visible>
 				</control>
 				<control type="radiobutton" id="7">
 					<description>Stack Toggle</description>

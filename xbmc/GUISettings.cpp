@@ -218,10 +218,7 @@ void CGUISettings::Initialize()
   AddBool(0, "slideshow.shuffle", 13319, false);
 
   // Programs settings
-  AddGroup(1, 0);
-
-  AddCategory(1,"programfiles",744);
-  AddBool(4, "programfiles.savefolderviews", 583, true);
+//  AddGroup(1, 0);
 
   // My Weather settings
   AddGroup(2, 8);
@@ -269,7 +266,6 @@ void CGUISettings::Initialize()
 
   AddCategory(3, "musicplayer", 16003);
   AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
-  AddBool(2, "musicplayer.outputtoallspeakers", 252, false);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
   AddInt(5, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
@@ -614,7 +610,6 @@ void CGUISettings::Initialize()
   AddInt(6, "lookandfeel.startupwindow",512,1, WINDOW_HOME, 1, WINDOW_PYTHON_END, SPIN_CONTROL_TEXT);
   AddSeparator(7, "lookandfeel.sep1");
   AddString(8, "lookandfeel.soundskin",15108,"SKINDEFAULT", SPIN_CONTROL_TEXT);
-  AddBool(9,"lookandfeel.soundsduringplayback",21370,false);
   AddSeparator(10, "lookandfeel.sep2");
   AddBool(11, "lookandfeel.enablerssfeeds",13305,  true);
   AddBool(12, "lookandfeel.rssfeedsrtl",13412,  false);
