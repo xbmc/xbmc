@@ -1,6 +1,7 @@
 #pragma once
 #include "IStorageProvider.h"
 #include "HALProvider.h"
+#include "DeviceKitDisksProvider.h"
 #include "PosixMountProvider.h"
 
 class CLinuxStorageProvider : public IStorageProvider
@@ -11,7 +12,12 @@ public:
 #ifdef HAS_HAL
     m_instance = new CHALProvider();
 #else
-    m_instance = new CPosixMountProvider();
+#ifdef HAS_DBUS
+    if (CDeviceKitDisksProvider::HasDeviceKitDisks())
+      m_instance = new CDeviceKitDisksProvider();
+    else
+#endif
+      m_instance = new CPosixMountProvider();
 #endif
   }
 

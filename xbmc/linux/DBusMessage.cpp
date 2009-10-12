@@ -1,10 +1,12 @@
 #include "DBusMessage.h"
+#include "log.h"
 #ifdef HAS_DBUS
 
 CDBusMessage::CDBusMessage(const char *destination, const char *object, const char *interface, const char *method)
 {
   m_reply = NULL;
   m_message = dbus_message_new_method_call (destination, object, interface, method);
+  CLog::Log(LOGDEBUG, "DBus: Creating message to %s on %s with interface %s and method %s\n", destination, object, interface, method);
 }
 
 CDBusMessage::~CDBusMessage()
