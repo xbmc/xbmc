@@ -61,6 +61,7 @@ public:
                                AVCodecContext *avctx, const char *args,
                                uint8_t **poutbuf, int *poutbuf_size,
                                const uint8_t *buf, int buf_size, int keyframe) =0;
+  virtual void av_bitstream_filter_close(AVBitStreamFilterContext *bsfc) =0;
   virtual void avpicture_free(AVPicture *picture)=0;
   virtual int avpicture_alloc(AVPicture *picture, PixelFormat pix_fmt, int width, int height)=0;
   virtual AVOption *av_set_string(void *obj, const char *name, const char *val)=0;
