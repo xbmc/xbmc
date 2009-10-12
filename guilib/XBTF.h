@@ -29,13 +29,17 @@
 #define XBTF_VERSION "2"
 
 #define XB_FMT_DXT_MASK   15
-#define XB_FMT_UNKNOWN     0
-#define XB_FMT_DXT1        1
-#define XB_FMT_DXT3        2
-#define XB_FMT_DXT5        4
-#define XB_FMT_DXT5_YCoCg  8
-#define XB_FMT_A8R8G8B8   16
-#define XB_FMT_A8         32
+
+enum XB_FMT
+{
+  XB_FMT_UNKNOWN    = 0,
+  XB_FMT_DXT1       = 1,
+  XB_FMT_DXT3       = 2,
+  XB_FMT_DXT5       = 4,
+  XB_FMT_DXT5_YCoCg = 8,
+  XB_FMT_A8R8G8B8   =16,
+  XB_FMT_A8         =32
+};
 
 class CXBTFFrame
 {
@@ -43,8 +47,8 @@ public:
   CXBTFFrame();
   uint32_t GetWidth() const;
   void SetWidth(uint32_t width);
-  uint32_t GetFormat() const;
-  void SetFormat(uint32_t format);
+  XB_FMT GetFormat() const;
+  void SetFormat(XB_FMT format);
   uint32_t GetHeight() const;
   void SetHeight(uint32_t height);
   uint64_t GetUnpackedSize() const;
@@ -61,7 +65,7 @@ public:
 private:
   uint32_t m_width;
   uint32_t m_height;
-  uint32_t m_format;
+  XB_FMT m_format;
   uint64_t m_packedSize;
   uint64_t m_unpackedSize;
   uint64_t m_offset;

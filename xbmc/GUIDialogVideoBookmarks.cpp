@@ -251,7 +251,7 @@ void CGUIDialogVideoBookmarks::AddBookmark(CVideoInfoTag* tag)
   {
     CSingleLock lock(g_graphicsContext);
     // we're really just using the CTexture here as a pixel buffer
-    CTexture texture(width, height, 32);
+    CTexture texture(width, height, XB_FMT_A8R8G8B8);
 #ifdef HAS_VIDEO_PLAYBACK
     g_renderManager.CreateThumbnail(&texture, width, height);
 #endif
