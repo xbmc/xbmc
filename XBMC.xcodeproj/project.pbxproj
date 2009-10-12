@@ -1819,6 +1819,15 @@
 		F5E560BD10770F9F006E788A /* OggCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E560BB10770F9F006E788A /* OggCallback.cpp */; };
 		F5E5697310803FC3006E788A /* fastmemcpy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5697210803FC3006E788A /* fastmemcpy.cpp */; };
 		F5E5697410803FC3006E788A /* fastmemcpy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E5697210803FC3006E788A /* fastmemcpy.cpp */; };
+		F5E56C261082B8AC006E788A /* libldil.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E56C251082B8AC006E788A /* libldil.dylib */; };
+		F5E56C331082BD19006E788A /* xdmx.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56C2A1082BD19006E788A /* xdmx.cpp */; };
+		F5E56C341082BD19006E788A /* bitstream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56C2B1082BD19006E788A /* bitstream.cpp */; };
+		F5E56C351082BD19006E788A /* tsdemux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56C2F1082BD19006E788A /* tsdemux.cpp */; };
+		F5E56C361082BD19006E788A /* accum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56C301082BD19006E788A /* accum.cpp */; };
+		F5E56C371082BD19006E788A /* pesparse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56C311082BD19006E788A /* pesparse.cpp */; };
+		F5E56C3A1082BD5E006E788A /* CrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56C391082BD5E006E788A /* CrystalHD.cpp */; };
+		F5E56C411082BD75006E788A /* DVDVideoCodecCrystalHD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56C3F1082BD75006E788A /* DVDVideoCodecCrystalHD.cpp */; };
+		F5E56CA81082BE5C006E788A /* DVDDemuxTS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E56CA71082BE5C006E788A /* DVDDemuxTS.cpp */; };
 		F5EA021C0F6DA7E8005C2EC5 /* PowerManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */; };
 		F5EA02220F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
 		F5EA02260F6DA990005C2EC5 /* CocoaPowerSyscall.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */; };
@@ -3833,6 +3842,27 @@
 		F5E560BA10770F9F006E788A /* OggCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OggCallback.h; sourceTree = "<group>"; };
 		F5E560BB10770F9F006E788A /* OggCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OggCallback.cpp; sourceTree = "<group>"; };
 		F5E5697210803FC3006E788A /* fastmemcpy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fastmemcpy.cpp; sourceTree = "<group>"; };
+		F5E56C221082B8AC006E788A /* bc_dts_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_dts_defs.h; path = /crystalhd/broadcom/include/bc_dts_defs.h; sourceTree = "<absolute>"; };
+		F5E56C231082B8AC006E788A /* bc_dts_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_dts_types.h; path = /crystalhd/broadcom/include/bc_dts_types.h; sourceTree = "<absolute>"; };
+		F5E56C241082B8AC006E788A /* bc_ldil_if.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bc_ldil_if.h; path = /crystalhd/broadcom/dil/darwin/bc_ldil_if.h; sourceTree = "<absolute>"; };
+		F5E56C251082B8AC006E788A /* libldil.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libldil.dylib; path = /crystalhd/broadcom/dil/darwin/libldil.dylib; sourceTree = "<absolute>"; };
+		F5E56C281082BD07006E788A /* tsdemux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsdemux.h; path = libxdmx/include/tsdemux.h; sourceTree = "<group>"; };
+		F5E56C291082BD07006E788A /* xdmx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = xdmx.h; path = libxdmx/include/xdmx.h; sourceTree = "<group>"; };
+		F5E56C2A1082BD19006E788A /* xdmx.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = xdmx.cpp; path = libxdmx/src/xdmx.cpp; sourceTree = "<group>"; };
+		F5E56C2B1082BD19006E788A /* bitstream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = bitstream.cpp; path = libxdmx/src/bitstream.cpp; sourceTree = "<group>"; };
+		F5E56C2C1082BD19006E788A /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = libxdmx/src/common.h; sourceTree = "<group>"; };
+		F5E56C2D1082BD19006E788A /* pesparse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pesparse.h; path = libxdmx/src/pesparse.h; sourceTree = "<group>"; };
+		F5E56C2E1082BD19006E788A /* accum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = accum.h; path = libxdmx/src/accum.h; sourceTree = "<group>"; };
+		F5E56C2F1082BD19006E788A /* tsdemux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = tsdemux.cpp; path = libxdmx/src/tsdemux.cpp; sourceTree = "<group>"; };
+		F5E56C301082BD19006E788A /* accum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = accum.cpp; path = libxdmx/src/accum.cpp; sourceTree = "<group>"; };
+		F5E56C311082BD19006E788A /* pesparse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = pesparse.cpp; path = libxdmx/src/pesparse.cpp; sourceTree = "<group>"; };
+		F5E56C321082BD19006E788A /* bitstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bitstream.h; path = libxdmx/src/bitstream.h; sourceTree = "<group>"; };
+		F5E56C381082BD5E006E788A /* CrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrystalHD.h; sourceTree = "<group>"; };
+		F5E56C391082BD5E006E788A /* CrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CrystalHD.cpp; sourceTree = "<group>"; };
+		F5E56C3F1082BD75006E788A /* DVDVideoCodecCrystalHD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDVideoCodecCrystalHD.cpp; sourceTree = "<group>"; };
+		F5E56C401082BD75006E788A /* DVDVideoCodecCrystalHD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDVideoCodecCrystalHD.h; sourceTree = "<group>"; };
+		F5E56CA61082BE5C006E788A /* DVDDemuxTS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDDemuxTS.h; sourceTree = "<group>"; };
+		F5E56CA71082BE5C006E788A /* DVDDemuxTS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxTS.cpp; sourceTree = "<group>"; };
 		F5EA021A0F6DA7E8005C2EC5 /* PowerManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PowerManager.cpp; path = xbmc/PowerManager.cpp; sourceTree = SOURCE_ROOT; };
 		F5EA021B0F6DA7E8005C2EC5 /* PowerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerManager.h; path = xbmc/PowerManager.h; sourceTree = SOURCE_ROOT; };
 		F5EA02200F6DA85C005C2EC5 /* CocoaPowerSyscall.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CocoaPowerSyscall.cpp; path = xbmc/osx/CocoaPowerSyscall.cpp; sourceTree = SOURCE_ROOT; };
@@ -3916,6 +3946,7 @@
 				F5E55C861075B60F006E788A /* libmad.dylib in Frameworks */,
 				F5E55E901076B3F9006E788A /* libSDL-x86-osx.a in Frameworks */,
 				F5E560711077003E006E788A /* libSDL_mixer-x86-osx.a in Frameworks */,
+				F5E56C261082B8AC006E788A /* libldil.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5215,6 +5246,10 @@
 			children = (
 				E38E153B0D25F9F900618676 /* DllLibMpeg2.h */,
 				E38E153C0D25F9F900618676 /* DVDVideoCodec.h */,
+				F5E56C391082BD5E006E788A /* CrystalHD.cpp */,
+				F5E56C381082BD5E006E788A /* CrystalHD.h */,
+				F5E56C3F1082BD75006E788A /* DVDVideoCodecCrystalHD.cpp */,
+				F5E56C401082BD75006E788A /* DVDVideoCodecCrystalHD.h */,
 				E38E153D0D25F9F900618676 /* DVDVideoCodecFFmpeg.cpp */,
 				E38E153E0D25F9F900618676 /* DVDVideoCodecFFmpeg.h */,
 				E38E153F0D25F9F900618676 /* DVDVideoCodecLibMpeg2.cpp */,
@@ -5248,6 +5283,8 @@
 				E38E154A0D25F9F900618676 /* DVDDemux.h */,
 				E38E154D0D25F9F900618676 /* DVDDemuxShoutcast.cpp */,
 				E38E154E0D25F9F900618676 /* DVDDemuxShoutcast.h */,
+				F5E56CA71082BE5C006E788A /* DVDDemuxTS.cpp */,
+				F5E56CA61082BE5C006E788A /* DVDDemuxTS.h */,
 				E38E154F0D25F9F900618676 /* DVDDemuxUtils.cpp */,
 				E38E15500D25F9F900618676 /* DVDDemuxUtils.h */,
 			);
@@ -5807,6 +5844,8 @@
 		E38E185C0D25F9FA00618676 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				F5E56C121082B812006E788A /* libxdmx */,
+				F5E56C111082B7F7006E788A /* libcrystalhd */,
 				810C9F690D67BDE20095F5DD /* libcmyth */,
 				E38E18610D25F9FA00618676 /* libcdio */,
 				E38E187C0D25F9FA00618676 /* libCDRip */,
@@ -6039,7 +6078,6 @@
 		E38E1A550D25F9FB00618676 /* libUPnP */ = {
 			isa = PBXGroup;
 			children = (
-				F5E56AD8108280DE006E788A /* New Group */,
 				43BF092D1080C6F600E25290 /* README.txt */,
 				43BF092E1080C6F600E25290 /* SConstruct */,
 				E38E1A5B0D25F9FB00618676 /* Platinum */,
@@ -7083,14 +7121,6 @@
 			name = libRTMP;
 			sourceTree = "<group>";
 		};
-		F5E56AD8108280DE006E788A /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "New Group";
-			path = ../../..;
-			sourceTree = "<group>";
-		};
 		F5E56B0F10828303006E788A /* System */ = {
 			isa = PBXGroup;
 			children = (
@@ -7189,6 +7219,51 @@
 				43348AAB1077486D00F859CF /* PlayerSelectionRule.h */,
 			);
 			name = playercorefactory;
+			sourceTree = "<group>";
+		};
+		F5E56C111082B7F7006E788A /* libcrystalhd */ = {
+			isa = PBXGroup;
+			children = (
+				F5E56C221082B8AC006E788A /* bc_dts_defs.h */,
+				F5E56C231082B8AC006E788A /* bc_dts_types.h */,
+				F5E56C241082B8AC006E788A /* bc_ldil_if.h */,
+				F5E56C251082B8AC006E788A /* libldil.dylib */,
+			);
+			name = libcrystalhd;
+			sourceTree = "<group>";
+		};
+		F5E56C121082B812006E788A /* libxdmx */ = {
+			isa = PBXGroup;
+			children = (
+				F5E56C141082B827006E788A /* include */,
+				F5E56C131082B823006E788A /* src */,
+			);
+			name = libxdmx;
+			sourceTree = "<group>";
+		};
+		F5E56C131082B823006E788A /* src */ = {
+			isa = PBXGroup;
+			children = (
+				F5E56C2A1082BD19006E788A /* xdmx.cpp */,
+				F5E56C2B1082BD19006E788A /* bitstream.cpp */,
+				F5E56C2C1082BD19006E788A /* common.h */,
+				F5E56C2D1082BD19006E788A /* pesparse.h */,
+				F5E56C2E1082BD19006E788A /* accum.h */,
+				F5E56C2F1082BD19006E788A /* tsdemux.cpp */,
+				F5E56C301082BD19006E788A /* accum.cpp */,
+				F5E56C311082BD19006E788A /* pesparse.cpp */,
+				F5E56C321082BD19006E788A /* bitstream.h */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		F5E56C141082B827006E788A /* include */ = {
+			isa = PBXGroup;
+			children = (
+				F5E56C281082BD07006E788A /* tsdemux.h */,
+				F5E56C291082BD07006E788A /* xdmx.h */,
+			);
+			name = include;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -8204,6 +8279,14 @@
 				43BF09A21080D1E900E25290 /* AVTransportSCPD.cpp in Sources */,
 				43BF09A31080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */,
 				43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */,
+				F5E56C331082BD19006E788A /* xdmx.cpp in Sources */,
+				F5E56C341082BD19006E788A /* bitstream.cpp in Sources */,
+				F5E56C351082BD19006E788A /* tsdemux.cpp in Sources */,
+				F5E56C361082BD19006E788A /* accum.cpp in Sources */,
+				F5E56C371082BD19006E788A /* pesparse.cpp in Sources */,
+				F5E56C3A1082BD5E006E788A /* CrystalHD.cpp in Sources */,
+				F5E56C411082BD75006E788A /* DVDVideoCodecCrystalHD.cpp in Sources */,
+				F5E56CA81082BE5C006E788A /* DVDDemuxTS.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9158,6 +9241,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					/crystalhd/broadcom/dil/darwin,
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";
@@ -9248,6 +9332,7 @@
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					/crystalhd/broadcom/dil/darwin,
 				);
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/xbmc/lib/libXBMS\"";
 				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/xbmc/lib/libSDL-OSX\"";

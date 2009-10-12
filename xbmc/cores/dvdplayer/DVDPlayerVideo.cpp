@@ -588,8 +588,10 @@ void CDVDPlayerVideo::Process()
           }
           else
           {
+#if !defined(HAVE_LIBCRYSTALHD)
             CLog::Log(LOGWARNING, "Decoder Error getting videoPicture.");
             m_pVideoCodec->Reset();
+#endif
           }
         }
 

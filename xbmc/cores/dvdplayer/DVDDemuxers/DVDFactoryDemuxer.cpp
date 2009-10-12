@@ -30,6 +30,7 @@
 #ifdef HAS_FILESYSTEM_HTSP
 #include "DVDDemuxHTSP.h"
 #endif
+#include "DVDDemuxTS.h"
 
 using namespace std;
 
@@ -61,6 +62,25 @@ CDVDDemux* CDVDFactoryDemuxer::CreateDemuxer(CDVDInputStream* pInputStream)
       return NULL;
   }
 #endif
+
+  // Try our internal TS demuxer
+  std::string::size_type index = pInputStream->GetFileName().find_last_of ('.');
+  std::string extension;
+  if (index != std::string::npos)
+    extension = pInputStream->GetFileName().substr(index+1);
+  else
+    extension = "";
+  TSTransportType tsType = TS_TYPE_UNKNOWN;
+  if (!extension.compare("ts"))
+    tsType = TS_TYPE_STD;
+  else if(!extension.compare("m2ts") || !extension.compare("m2t"))
+    tsType = TS_TYPE_M2TS;
+  if (tsType != TS_TYPE_UNKNOWN)
+  {
+    auto_ptr<CDVDDemuxTS> demuxer(new CDVDDemuxTS());
+    if(demuxer->Open(pInputStream, tsType))
+      return demuxer.release();
+  }
 
   auto_ptr<CDVDDemuxFFmpeg> demuxer(new CDVDDemuxFFmpeg());
   if(demuxer->Open(pInputStream))

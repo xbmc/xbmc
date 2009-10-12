@@ -43,6 +43,10 @@
 #include "cores/dvdplayer/DVDCodecs/Video/VDPAU.h"
 #endif
 
+#ifdef HAVE_LIBCRYSTALHD
+#include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
+#endif
+
 #ifdef HAS_GLX
 #include <GL/glx.h>
 #endif
@@ -304,12 +308,15 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
     source = NextYV12Texture();
 
   YV12Image &im = m_buffers[source].image;
-  if (!im.plane[0])
+  
+  if (!(m_renderMethod & RENDER_VDPAU))
   {
-     CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - image planes not allocated");
-     return -1;
+    if (!im.plane[0])
+    {
+       CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - image planes not allocated");
+       return -1;
+    }
   }
-
   if ((im.flags&(~IMAGE_FLAG_READY)) != 0)
   {
      CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - request image but none to give");
@@ -636,6 +643,41 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
   else 
 #endif //HAVE_LIBVDPAU
+#ifdef HAVE_LIBCRYSTALHD
+  /*
+    Default to VDPAU if supported.
+   */
+  if (g_CrystalHD)
+  {
+    err = false;
+    CLog::Log(LOGNOTICE, "GL: Using Crystal HD render method");
+    m_renderMethod = RENDER_CRYSTALHD;
+    if (m_pYUVShader)
+    {
+      m_pYUVShader->Free();
+      delete m_pYUVShader;
+      m_pYUVShader = NULL;
+    }
+
+    // create regular progressive scan shader
+    m_pYUVShader = new NV12ToRGBProgressiveShaderARB(m_textureTarget==GL_TEXTURE_RECTANGLE_ARB, m_iFlags);
+    CLog::Log(LOGNOTICE, "GL: Selecting Single Pass ARB NV12ToRGB shader");
+
+    if (m_pYUVShader && m_pYUVShader->CompileAndLink())
+    {
+      UpdateVideoFilter();
+    }
+    else
+    {
+      m_pYUVShader->Free();
+      delete m_pYUVShader;
+      m_pYUVShader = NULL;
+      err = true;
+      CLog::Log(LOGERROR, "GL: Error enabling YUV2RGB ARB shader");
+    }
+  }
+  else 
+#endif //HAVE_LIBCRYSTALHD
   /*
     Try GLSL shaders if they're supported and if the user has
     requested for it. (settings -> video -> player -> rendermethod)
@@ -750,6 +792,16 @@ void CLinuxRendererGL::LoadShaders(int field)
   }
 else 
 #endif
+#ifdef HAVE_LIBCRYSTALHD
+  // FIXME: add m_renderMethod for RENDER_CRYSTALHD
+  if (m_renderMethod & RENDER_CRYSTALHD)
+  {
+    LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadCrystalHDTextures;
+    CreateTextureFuncPtr = &CLinuxRendererGL::CreateCrystalHDTexture;
+    DeleteTextureFuncPtr = &CLinuxRendererGL::DeleteCrystalHDTexture;
+  }
+  else
+#endif
   {
     // setup default YV12 texture handlers
     LoadTexturesFuncPtr  = &CLinuxRendererGL::LoadYV12Textures;
@@ -845,6 +897,12 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else if (m_renderMethod & RENDER_VDPAU)
   {
     RenderVDPAU(renderBuffer, m_currentField);
+  }
+#endif
+#ifdef HAVE_LIBCRYSTALHD
+  else if (m_renderMethod & RENDER_CRYSTALHD)
+  {
+    RenderCrystalHD(renderBuffer, m_currentField);
   }
 #endif
   else
@@ -1344,6 +1402,90 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
 #endif
 }
 
+void CLinuxRendererGL::RenderCrystalHD(int index, int field)
+{
+#ifdef HAVE_LIBCRYSTALHD
+  if (!g_CrystalHD)
+  {
+    CLog::Log(LOGERROR,"(CrystalHD) m_Surface is NULL");
+    return;
+  }
+
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+  YUVPLANES &planes = fields[field];
+
+  // set scissors if we are not in fullscreen video
+  if ( !(g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating() ))
+    g_graphicsContext.ClipToViewWindow();
+
+  if (m_reloadShaders)
+  {
+    m_reloadShaders = 0;
+    LoadShaders(field);
+  }
+
+  glDisable(GL_DEPTH_TEST);
+
+  // Y
+  glActiveTextureARB(GL_TEXTURE0);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, planes[0].id);
+
+  // UV
+  glActiveTextureARB(GL_TEXTURE1);
+  glEnable(m_textureTarget);
+  glBindTexture(m_textureTarget, planes[1].id);
+
+  glActiveTextureARB(GL_TEXTURE0);
+  VerifyGLState();
+
+  m_pYUVShader->SetBlack(g_stSettings.m_currentVideoSettings.m_Brightness * 0.01f - 0.5f);
+  m_pYUVShader->SetContrast(g_stSettings.m_currentVideoSettings.m_Contrast * 0.02f);
+  m_pYUVShader->SetWidth(im.width);
+  m_pYUVShader->SetHeight(im.height);
+  if     (field == FIELD_ODD)
+    m_pYUVShader->SetField(1);
+  else if(field == FIELD_EVEN)
+    m_pYUVShader->SetField(0);
+
+  m_pYUVShader->Enable();
+
+  glBegin(GL_QUADS);
+
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y1);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y1);
+  glVertex4f(m_destRect.x1, m_destRect.y1, 0, 1.0f );
+
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y1);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y1);
+  glVertex4f(m_destRect.x2, m_destRect.y1, 0, 1.0f);
+
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x2, planes[0].rect.y2);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x2, planes[1].rect.y2);
+  glVertex4f(m_destRect.x2, m_destRect.y2, 0, 1.0f);
+
+  glMultiTexCoord2fARB(GL_TEXTURE0, planes[0].rect.x1, planes[0].rect.y2);
+  glMultiTexCoord2fARB(GL_TEXTURE1, planes[1].rect.x1, planes[1].rect.y2);
+  glVertex4f(m_destRect.x1, m_destRect.y2, 0, 1.0f);
+
+  glEnd();
+  VerifyGLState();
+
+  m_pYUVShader->Disable();
+  VerifyGLState();
+
+  glActiveTextureARB(GL_TEXTURE1);
+  glDisable(m_textureTarget);
+
+  glActiveTextureARB(GL_TEXTURE0);
+  glDisable(m_textureTarget);
+
+  glMatrixMode(GL_MODELVIEW);
+
+  VerifyGLState();
+#endif
+}
 
 void CLinuxRendererGL::RenderSoftware(int index, int field)
 {
@@ -1903,6 +2045,298 @@ bool CLinuxRendererGL::DeleteVDPAUTexture(int index)
   return(true);
 }
 
+//********************************************************************************************************
+// CrystalHD Texture loading, creation and deletion
+//********************************************************************************************************
+bool CLinuxRendererGL::LoadCrystalHDTextures(int source)
+{
+#ifdef HAVE_LIBCRYSTALHD
+  YUVBUFFER& buf    =  m_buffers[source];
+  YV12Image* im     = &buf.image;
+  YUVFIELDS& fields =  buf.fields;
+
+  if (!(im->flags & IMAGE_FLAG_READY))
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return(true);
+  }
+
+  if (g_CrystalHD)
+  {
+    g_CrystalHD->LoadNV12Pointers(im);
+  }
+  else
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return(true);
+  }
+
+  if (!im->plane[0] || !im->plane[1])
+  {
+    SetEvent(m_eventTexturesDone[source]);
+    return(true);
+  }
+  
+  static int imaging = -1;
+  bool deinterlacing;
+  if (m_currentField == FIELD_FULL)
+    deinterlacing = false;
+  else
+    deinterlacing = true;
+
+  if (imaging==-1)
+  {
+    imaging = 0;
+    if (glewIsSupported("GL_ARB_imaging"))
+    {
+      CLog::Log(LOGINFO, "GL: ARB Imaging extension supported");
+      imaging = 1;
+    }
+    else
+    {
+      unsigned int maj=0, min=0;
+      g_Windowing.GetRenderVersion(maj, min);
+      if (maj>=2)
+      {
+        imaging = 1;
+      }
+      else if (min>=2)
+      {
+        imaging = 1;
+      }
+    }
+  }
+
+  glEnable(m_textureTarget);
+  VerifyGLState();
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+
+  if (deinterlacing)
+  {
+    // Load Y fields
+    LoadPlane( fields[FIELD_ODD][0] , GL_LUMINANCE, buf.flipindex
+             , im->width, im->height >> 1
+             , im->stride[0]*2, im->plane[0] );
+
+    LoadPlane( fields[FIELD_EVEN][0], GL_LUMINANCE, buf.flipindex
+             , im->width, im->height >> 1
+             , im->stride[0]*2, im->plane[0] + im->stride[0]) ;     
+  }
+  else
+  {
+    // Load Y plane
+    LoadPlane( fields[FIELD_FULL][0], GL_LUMINANCE, buf.flipindex
+             , im->width, im->height
+             , im->stride[0], im->plane[0] );
+  }
+
+  VerifyGLState();
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
+
+  if (deinterlacing)
+  {
+    // Load Even U & V Fields
+    LoadPlane( fields[FIELD_ODD][1], GL_LUMINANCE, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+             , im->stride[1]*2, im->plane[1] );
+
+    // Load Odd U & V Fields
+    LoadPlane( fields[FIELD_EVEN][1], GL_LUMINANCE, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> (im->cshift_y + 1)
+             , im->stride[1]*2, im->plane[1] + im->stride[1] );
+  }
+  else
+  {
+    LoadPlane( fields[FIELD_FULL][1], GL_LUMINANCE_ALPHA, buf.flipindex
+             , im->width >> im->cshift_x, im->height >> im->cshift_y
+             , im->stride[1], im->plane[1] );
+  }
+
+  SetEvent(m_eventTexturesDone[source]);
+
+  // calculate the source rectangle
+  for(int field = 0; field < MAX_FIELDS; field++)
+  {
+    for(int plane = 0; plane < MAX_PLANES-1; plane++)
+    {
+      YUVPLANE& p = fields[field][plane];
+
+      p.rect = m_sourceRect;
+
+      p.width  = im->width;
+      p.height = im->height;
+
+      if(field != FIELD_FULL)
+      {
+        /* correct for field offsets and chroma offsets */
+        float offset_y = 0.5;
+        if(plane != 0)
+          offset_y += 0.5;
+        if(field == FIELD_EVEN)
+          offset_y *= -1;
+
+        p.rect.y1 += offset_y;
+        p.rect.y2 += offset_y;
+
+        /* half the height if this is a field */
+        p.height  *= 0.5f;
+        p.rect.y1 *= 0.5f; 
+        p.rect.y2 *= 0.5f;
+      }
+
+      if(plane != 0)
+      {
+        p.width   /= 1 << im->cshift_x;
+        p.height  /= 1 << im->cshift_y;
+
+        p.rect.x1 /= 1 << im->cshift_x;
+        p.rect.x2 /= 1 << im->cshift_x;
+        p.rect.y1 /= 1 << im->cshift_y;
+        p.rect.y2 /= 1 << im->cshift_y;
+      }
+
+      if (m_textureTarget == GL_TEXTURE_2D)
+      {
+        p.height  /= p.texheight;
+        p.rect.y1 /= p.texheight;
+        p.rect.y2 /= p.texheight;
+        p.width   /= p.texwidth;
+        p.rect.x1 /= p.texwidth;
+        p.rect.x2 /= p.texwidth;
+      }
+    }
+  }
+
+  glDisable(m_textureTarget);
+#endif
+
+  return(true);
+}
+bool CLinuxRendererGL::CreateCrystalHDTexture(int index)
+{
+#ifdef HAVE_LIBCRYSTALHD
+  // since we also want the field textures, pitch must be texture aligned
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+
+  // Delte any old texture
+  if (DeleteTextureFuncPtr)
+    (this->*DeleteTextureFuncPtr)(index);
+
+  im.height = m_sourceHeight;
+  im.width  = m_sourceWidth;
+  im.cshift_x = 1;
+  im.cshift_y = 1;
+
+  im.stride[0] = im.width;
+  im.stride[1] = im.width >> im.cshift_x;
+
+  im.plane[0] = NULL;
+  im.plane[1] = NULL;
+
+  glEnable(m_textureTarget);
+  for(int f = 0;f<MAX_FIELDS;f++)
+  {
+    for(int p = 0;p<MAX_PLANES-1;p++)
+    {
+      if (!glIsTexture(fields[f][p].id))
+      {
+        glGenTextures(1, &fields[f][p].id);
+        VerifyGLState();
+      }
+    }
+  }
+
+  // YUV
+  for (int f = FIELD_FULL; f<=FIELD_EVEN ; f++)
+  {
+    int fieldshift = (f==FIELD_FULL) ? 0 : 1;
+    YUVPLANES &planes = fields[f];
+
+    planes[0].texwidth  = im.width;
+    planes[0].texheight = im.height >> fieldshift;
+
+    planes[1].texwidth  = planes[0].texwidth  >> im.cshift_x;
+    planes[1].texheight = planes[0].texheight >> im.cshift_y;
+
+    if(m_renderMethod & RENDER_POT)
+    {
+      for(int p = 0; p < MAX_PLANES-1; p++)
+      {
+        planes[p].texwidth  = NP2(planes[p].texwidth);
+        planes[p].texheight = NP2(planes[p].texheight);
+      }
+    }
+
+    for(int p = 0; p < MAX_PLANES-1; p++)
+    {
+      YUVPLANE &plane = planes[p];
+      if (plane.texwidth * plane.texheight == 0)
+        continue;
+
+      glBindTexture(m_textureTarget, plane.id);
+
+      if(m_renderMethod & RENDER_POT)
+        CLog::Log(LOGNOTICE, "GL: Creating YUV POT texture of size %d x %d",  plane.texwidth, plane.texheight);
+      else
+        CLog::Log(LOGDEBUG,  "GL: Creating YUV NPOT texture of size %d x %d", plane.texwidth, plane.texheight);
+
+      if (p == 1)
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE_ALPHA, plane.texwidth, plane.texheight, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, NULL);
+      else
+        glTexImage2D(m_textureTarget, 0, GL_LUMINANCE, plane.texwidth, plane.texheight, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, NULL);
+
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+      VerifyGLState();
+    }
+  }
+  glDisable(m_textureTarget);
+  SetEvent(m_eventTexturesDone[index]);
+#endif
+  return(true);
+}
+bool CLinuxRendererGL::DeleteCrystalHDTexture(int index)
+{
+#ifdef HAVE_LIBCRYSTALHD
+  YV12Image &im     = m_buffers[index].image;
+  YUVFIELDS &fields = m_buffers[index].fields;
+
+  if( fields[FIELD_FULL][0].id == 0 ) return(true);
+
+  CLog::Log(LOGDEBUG, "Deleted YV12 texture %i", index);
+  
+  // finish up all textures, and delete them
+  g_graphicsContext.BeginPaint();  //FIXME
+  for(int f = 0;f<MAX_FIELDS;f++)
+  {
+    for(int p = 0;p<MAX_PLANES-1;p++)
+    {
+      if( fields[f][p].id )
+      {
+        if (glIsTexture(fields[f][p].id))
+        {
+          glDeleteTextures(1, &fields[f][p].id);
+          //CLog::Log(LOGDEBUG, "GL: Deleting texture field %d plane %d", f+1, p+1);
+        }
+        fields[f][p].id = 0;
+      }
+    }
+  }
+  g_graphicsContext.EndPaint();
+
+  for(int p = 0;p<MAX_PLANES-1;p++)
+  {
+    im.plane[p] = NULL;
+  }
+#endif
+
+  return(true);
+}
 
 void CLinuxRendererGL::SetTextureFilter(GLenum method)
 {

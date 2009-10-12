@@ -481,12 +481,23 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       AddStream(i);
   }
 
+#if defined(HAVE_LIBCRYSTALHD)
+  // streams[0]->codec->codec_id == CODEC_ID_H264;
+  m_pFilterContext = m_dllAvCodec.av_bitstream_filter_init("h264_mp4toannexb");
+#endif
+
   return true;
 }
 
 void CDVDDemuxFFmpeg::Dispose()
 {
   g_demuxer = this;
+
+#if defined(HAVE_LIBCRYSTALHD)
+  if (m_pFilterContext)
+    m_dllAvCodec.av_bitstream_filter_close(m_pFilterContext);
+    m_pFilterContext = NULL;
+#endif
 
   if (m_pFormatContext)
   {
@@ -677,6 +688,35 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     {
       AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
 
+      // crystalhd wants byte-stream with startcodes and nals (Annex B byte-stream format)
+#if defined(HAVE_LIBCRYSTALHD)
+      if (m_pFilterContext && (stream->codec->codec_id == CODEC_ID_H264) )
+      {
+        AVBitStreamFilterContext *bsfc = m_pFilterContext;
+
+        while (bsfc)
+        {
+          AVPacket new_pkt = pkt;
+
+          int ret = m_dllAvCodec.av_bitstream_filter_filter(m_pFilterContext, stream->codec, NULL,
+            &new_pkt.data, &new_pkt.size, pkt.data, pkt.size, pkt.flags & PKT_FLAG_KEY);
+          if (ret > 0)
+          {
+            new_pkt.destruct = pkt.destruct;
+            m_dllAvCodec.av_free_packet(&pkt);
+          }
+          else if (ret < 0)
+          {
+            CLog::Log(LOGDEBUG, "bitream filter %s failed for stream %d, codec id %d",
+              m_pFilterContext->filter->name, pkt.stream_index, stream->codec->codec_id);
+            return NULL;
+          }
+          pkt = new_pkt;
+          
+          bsfc = bsfc->next;
+        }
+      }
+#endif
       if (m_pFormatContext->nb_programs)
       {
         /* check so packet belongs to selected program */
