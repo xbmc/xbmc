@@ -183,6 +183,7 @@ void CGUIFontTTFBase::ClearCharacterCache()
   // set the posX and posY so that our texture will be created on first character write.
   m_posX = m_textureWidth;
   m_posY = -(int)m_cellHeight;
+  m_textureHeight = 0;
 }
 
 void CGUIFontTTFBase::Clear()
