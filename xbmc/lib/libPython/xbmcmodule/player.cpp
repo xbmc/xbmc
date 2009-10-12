@@ -133,7 +133,7 @@ namespace PYXBMC
       }
       g_application.getApplicationMessenger().PlayListPlayerPlay(g_playlistPlayer.GetCurrentSong());
     }
-    else if (PyString_Check(pObject) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
+    else if ((PyString_Check(pObject) || PyUnicode_Check(pObject)) && pObjectListItem != NULL && ListItem_CheckExact(pObjectListItem))
     {
       // an optional listitem was passed
       ListItem* pListItem = NULL;
@@ -144,7 +144,7 @@ namespace PYXBMC
 
       g_application.getApplicationMessenger().PlayFile((const CFileItem)*pListItem->item, false);
     }
-    else if (PyString_Check(pObject))
+    else if (PyString_Check(pObject) || PyUnicode_Check(pObject))
     {
       CFileItem item(PyString_AsString(pObject), false);
       g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
