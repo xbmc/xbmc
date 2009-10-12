@@ -108,7 +108,8 @@ namespace DIRECTORY
       success2 = db.GetMusicVideosByWhere("videodb://3/2/", whereOrder, items2, false); // TODO: SMARTPLAYLISTS Don't check locks???
       db.Close();
       items.Append(items2);
-      items.SetContent("musicvideos");
+      if (items2.Size())
+        items.SetContent("musicvideos");
       playlist.SetType(type);
     }
     // go through and set the playlist order
