@@ -392,9 +392,14 @@ void CGUISettings::Initialize()
   //AddString(7, "audiooutput.passthroughdevice", 546, "S/PDIF", BUTTON_CONTROL_INPUT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_LINUX)
-  AddString(6, "audiooutput.audiodevice", 545, "default", EDIT_CONTROL_INPUT);
-  AddString(7, "audiooutput.passthroughdevice", 546, "iec958", EDIT_CONTROL_INPUT);
-  AddBool(8, "audiooutput.downmixmultichannel", 548, true);
+  AddSeparator(6, "audiooutput.sep1");
+  AddString(7, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
+  AddString(8, "audiooutput.customdevice", 1300, "", EDIT_CONTROL_INPUT);
+  AddSeparator(9, "audiooutput.sep2");
+  AddString(10, "audiooutput.passthroughdevice", 546, "iec958", SPIN_CONTROL_TEXT);
+  AddString(11, "audiooutput.custompassthrough", 1301, "", EDIT_CONTROL_INPUT);
+  AddSeparator(12, "audiooutput.sep3");
+  AddBool(13, "audiooutput.downmixmultichannel", 548, true);
 #elif defined(_WIN32)
   AddString(6, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   AddBool(7, "audiooutput.downmixmultichannel", 548, true);

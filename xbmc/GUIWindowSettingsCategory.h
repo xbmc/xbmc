@@ -69,7 +69,7 @@ protected:
 
   void FillInScrapers(CGUISpinControlEx *pControl, const CStdString& strSelected, const CStdString& strContent);
 
-  void FillInAudioDevices(CSetting* pSetting);
+  void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
   void FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected);
 
   virtual void SetupControls();
@@ -86,6 +86,9 @@ protected:
 
   void JumpToSection(int windowID, const CStdString &section);
   void JumpToPreviousSection();
+#ifdef _LINUX
+  void GenSoundLabel(const CStdString& device, const CStdString& card, const int labelValue, CGUISpinControlEx* pControl, bool Passthrough);
+#endif //_LINUX
 
   std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
@@ -125,3 +128,4 @@ protected:
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
 };
+

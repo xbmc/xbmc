@@ -68,12 +68,13 @@ public:
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
 
   virtual void Flush();
+  static bool SoundDeviceExists(const CStdString& device);
+  static void GetSoundCards(std::vector<CStdString>& vSoundCards);
 
 private:
   snd_pcm_t 		*m_pPlayHandle;
 
   IAudioCallback* m_pCallback;
-
   CPCMAmplifier 	m_amp;
   long m_nCurrentVolume;
   snd_pcm_uframes_t m_dwPacketSize;

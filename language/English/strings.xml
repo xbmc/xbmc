@@ -774,6 +774,9 @@
 
   <string id="1260">Zeroconf publishing</string>
 
+  <string id="1300">Custom audio device</string>
+  <string id="1301">Custom passthrough device</string>
+  
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
   <string id="1398">Freezing</string>

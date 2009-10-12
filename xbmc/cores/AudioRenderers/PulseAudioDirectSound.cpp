@@ -146,14 +146,18 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
   /* Open the device */
   CStdString device, deviceuse;
   if (!m_bPassthrough)
-    device = g_guiSettings.GetString("audiooutput.audiodevice");
-  else
-    device = g_guiSettings.GetString("audiooutput.passthroughdevice");
-
-  if (m_bPassthrough)
   {
-    CLog::Log(LOGERROR, "PulseAudio: Passthrough not possible");
-    return false;
+    if (!g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"))
+      device = g_guiSettings.GetString("audiooutput.customdevice");
+    else
+      device = g_guiSettings.GetString("audiooutput.audiodevice");
+  } 
+  else
+  {
+    if (!g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"))
+      device = g_guiSettings.GetString("audiooutput.custompassthrough");
+    else
+      device = g_guiSettings.GetString("audiooutput.passthroughdevice");
   }
 
   const char *host = NULL;

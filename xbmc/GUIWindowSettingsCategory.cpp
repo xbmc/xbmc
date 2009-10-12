@@ -37,9 +37,6 @@
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
 #include "XBAudioConfig.h"
-#ifdef _LINUX
-#include <dlfcn.h>
-#endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
@@ -70,6 +67,8 @@
 #include "GUIWindowManager.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
+#include <dlfcn.h>
+#include "cores/AudioRenderers/ALSADirectSound.h"
 #ifdef HAS_HAL
 #include "HALManager.h"
 #endif
@@ -871,6 +870,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInAudioDevices(pSetting);
     }
+    else if (strSetting.Equals("audiooutput.passthroughdevice"))
+    {
+      FillInAudioDevices(pSetting,true);
+    }
     else if (strSetting.Equals("myvideos.resumeautomatically"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1454,6 +1457,25 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
     }
+#ifdef _LINUX
+    else if (strSetting.Equals("audiooutput.custompassthrough"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+      {
+        if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"));
+      }
+      else
+      {
+        if (pControl) pControl->SetEnabled(false);
+      }
+    }
+    else if (strSetting.Equals("audiooutput.customdevice"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"));
+    }
+#endif
   }
 }
 
@@ -1828,11 +1850,16 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-#if defined(__APPLE__) || defined(_WIN32)
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
+  }
+#if defined(_LINUX)
+  else if (strSetting.Equals("audiooutput.passthroughdevice"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
   }
 #endif
 #ifdef HAS_LCD
@@ -3740,9 +3767,11 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   }
 }
 
-void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
+void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
 {
 #ifdef __APPLE__
+  if (Passthrough)
+    return;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   
@@ -3765,7 +3794,34 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
     deviceList.pop_front();
   }
   pControl->SetValue(activeDevice);
+#elif defined(_LINUX)
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  std::vector<CStdString> cardList;
+  CALSADirectSound::GetSoundCards(cardList);
+  if (cardList.size()==0)
+  {
+    pControl->AddLabel("Error - no devices found", 0);
+  }
+  else
+  {
+    std::vector<CStdString>::const_iterator iter = cardList.begin();
+    for (int i=0; iter != cardList.end(); iter++)
+    {
+      CStdString cardName = *iter;
+      if (!Passthrough)
+      {
+        GenSoundLabel("default", cardName.c_str(), i++, pControl, Passthrough);
+      }
+      GenSoundLabel("iec958", cardName.c_str(), i++, pControl, Passthrough);
+      GenSoundLabel("hdmi", cardName.c_str(), i++, pControl, Passthrough);
+      GenSoundLabel("custom", "", i++, pControl, Passthrough);
+    }
+  }
 #elif defined(_WIN32)
+  if (Passthrough)
+    return;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   CWDSound p_dsound;
@@ -3783,6 +3839,33 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
   }
 #endif
 }
+
+#ifdef _LINUX
+void CGUIWindowSettingsCategory::GenSoundLabel(const CStdString& device, const CStdString& card, const int labelValue, CGUISpinControlEx* pControl, bool Passthrough)
+{
+  CStdString deviceString(device);
+
+  if (!device.Equals("custom"))
+    deviceString.AppendFormat(":CARD=%s", card.c_str());
+
+  if (CALSADirectSound::SoundDeviceExists(deviceString.c_str()) || 
+       !device.Equals("default") ||
+       !device.Equals("custom"))
+  {
+    pControl->AddLabel(deviceString.c_str(), labelValue);
+    if (Passthrough)
+    {
+      if (g_guiSettings.GetString("audiooutput.passthroughdevice").Equals(deviceString))
+        pControl->SetValue(labelValue);
+    }
+    else
+    {
+      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceString))
+        pControl->SetValue(labelValue);
+    }
+  }
+}
+#endif //_LINUX
 
 void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {

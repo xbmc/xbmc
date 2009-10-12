@@ -28,6 +28,7 @@
 #define CHECK_ALSA(l,s,e) if ((e)<0) CLog::Log(l,"%s - %s, alsa error: %d - %s",__FUNCTION__,s,e,snd_strerror(e));
 #define CHECK_ALSA_RETURN(l,s,e) CHECK_ALSA((l),(s),(e)); if ((e)<0) return false;
 
+using namespace std;
 
 static CStdString EscapeDevice(const CStdString& device)
 {
@@ -48,7 +49,23 @@ CALSADirectSound::CALSADirectSound()
 
 bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
-  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", g_guiSettings.GetString("audiooutput.audiodevice").c_str());
+  CStdString device, deviceuse;
+  if (!m_bPassthrough)
+  {
+    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"))
+      device = g_guiSettings.GetString("audiooutput.customdevice");
+    else
+      device = g_guiSettings.GetString("audiooutput.audiodevice");
+  } 
+  else
+  {
+    if (g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"))
+      device = g_guiSettings.GetString("audiooutput.custompassthrough");
+    else
+      device = g_guiSettings.GetString("audiooutput.passthroughdevice");
+  }
+
+  CLog::Log(LOGDEBUG,"CALSADirectSound::CALSADirectSound - Channels: %i - SampleRate: %i - SampleBit: %i - Resample %s - Codec %s - IsMusic %s - IsPassthrough %s - audioDevice: %s", iChannels, uiSamplesPerSec, uiBitsPerSample, bResample ? "true" : "false", strAudioCodec, bIsMusic ? "true" : "false", bPassthrough ? "true" : "false", device.c_str());
 
   if (iChannels == 0)
     iChannels = 2;
@@ -79,12 +96,6 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   snd_pcm_sw_params_t *sw_params=NULL;
 
   /* Open the device */
-  CStdString device, deviceuse;
-  if (!m_bPassthrough)
-    device = g_guiSettings.GetString("audiooutput.audiodevice");
-  else
-    device = g_guiSettings.GetString("audiooutput.passthroughdevice");
-
   int nErr;
 
   /* if this is first access to audio, global sound config might not be loaded */
@@ -539,5 +550,78 @@ void CALSADirectSound::WaitCompletion()
 void CALSADirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers)
 {
     return ;
+}
+
+bool CALSADirectSound::SoundDeviceExists(const CStdString& device)
+{
+  void **hints, **n;
+  char *name;
+  CStdString strName;
+  bool retval = false;
+
+  if (snd_device_name_hint(-1, "pcm", &hints) == 0)
+  {
+    for (n = hints; *n; n++)
+    {
+      if ((name = snd_device_name_get_hint(*n, "NAME")) != NULL)
+      {
+        strName = name;
+        if (strName.find(device) != string::npos)
+        {
+          retval = true;
+          break;
+        }
+        free(name);
+      }
+    }
+    snd_device_name_free_hint(hints);
+  }
+  return retval;
+}
+
+void CALSADirectSound::GetSoundCards(std::vector<CStdString>& vSoundCards)
+{
+  snd_ctl_t *handle;
+  snd_ctl_card_info_t *info;
+  snd_pcm_info_t *pcminfo;
+  snd_ctl_card_info_alloca( &info );
+  snd_pcm_info_alloca( &pcminfo );
+  int n_cards = -1;
+  CStdString strHwName;
+  CStdString strCardName;
+  CStdString strDevice;
+
+  vSoundCards.clear();
+
+  while ( snd_card_next( &n_cards ) == 0 && n_cards >= 0 )
+  {
+    strHwName.Format("hw:%d", n_cards);
+    if ( snd_ctl_open( &handle, strHwName.c_str(), 0 ) == 0 )
+    {
+      if ( snd_ctl_card_info( handle, info ) == 0 )
+      {
+        int dev = -1;
+        while ( snd_ctl_pcm_next_device( handle, &dev ) == 0 && dev >= 0 )
+        {
+          snd_pcm_info_set_device( pcminfo, dev );
+          snd_pcm_info_set_subdevice( pcminfo, 0 );
+          snd_pcm_info_set_stream( pcminfo, SND_PCM_STREAM_PLAYBACK );
+          if ( snd_ctl_pcm_info( handle, pcminfo ) == 0 )
+          {
+            strCardName = snd_ctl_card_info_get_id( info );
+            CLog::Log(LOGNOTICE,"((ALSAENUM))card %i: %s [%s], device %i: %s [%s]",
+                n_cards, strCardName.c_str(), snd_ctl_card_info_get_name( info ),
+                dev, snd_pcm_info_get_id( pcminfo ), snd_pcm_info_get_name( pcminfo ) );
+            vSoundCards.push_back(strCardName);
+          }
+        }
+      }
+      else
+        CLog::Log(LOGERROR,"((ALSAENUM))control hardware info (%i): failed.\n", n_cards );
+      snd_ctl_close( handle );
+    }
+    else
+      CLog::Log(LOGERROR,"((ALSAENUM))control open (%i) failed.\n", n_cards );
+  }
 }
 #endif
