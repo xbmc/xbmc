@@ -18,6 +18,11 @@ bool CDeviceKitDisksProvider::HasDeviceKitDisks()
   return true;
 }
 
+bool CDeviceKitDisksProvider::IsAllowedType(const CStdString& type) const
+{
+ return (!type.Equals("swap") && type.length() > 0);
+}
+
 void CDeviceKitDisksProvider::HandleDisk(VECSOURCES& devices, const char *device, bool EnumerateRemovable)
 {
   PropertyMap properties;
@@ -28,16 +33,19 @@ void CDeviceKitDisksProvider::HandleDisk(VECSOURCES& devices, const char *device
 
     bool isRemovable  = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
     bool isMounted    = strcmp(properties["DeviceIsMounted"].c_str(), "true") == 0;
+    CStdString path   = properties["DeviceMountPaths"];
 
-    printf("IsRemovable %s mount %s\n", isRemovable ? "true" : "false", properties["DeviceMountPaths"].c_str());
+    CLog::Log(LOGDEBUG, "DeviceKit.Disks: Found %s disk %s with type %s. ID is %s", isRemovable ? "removable" : "local", isMounted ? path.c_str() : "unmounted", properties["IdType"].c_str(), properties["IdUuid"].c_str());
 
-    if (strlen(properties["IdUuid"].c_str()) > 0 && strcmp(properties["IdType"].c_str(), "swap") && EnumerateRemovable == isRemovable && isMounted)
+    if (properties["IdUuid"].length() > 0 && IsAllowedType(properties["IdType"]) && EnumerateRemovable == isRemovable && isMounted && !path.Equals("/"))
     {
       CMediaSource source;
-      source.strPath = properties["DeviceMountPaths"].c_str();
-      source.strName = CUtil::GetFileName(properties["DeviceMountPaths"].c_str());
+      source.strPath = path.c_str();
+      source.strName = CUtil::GetFileName(path.c_str());
       source.m_ignore = true;
       devices.push_back(source);
+
+      CLog::Log(LOGDEBUG, "DeviceKit.Disks: Approved disk %s", properties["IdUuid"].c_str());
     }
   }
 }

@@ -15,6 +15,8 @@ public:
 
   static bool HasDeviceKitDisks();
 private:
+  bool IsAllowedType(const CStdString& type) const;
+
   void HandleDisk(VECSOURCES& devices, const char *device, bool EnumerateRemovable);
   void EnumerateDisks(VECSOURCES& devices, bool EnumerateRemovable);
 };
