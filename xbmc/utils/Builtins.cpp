@@ -41,11 +41,9 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "Util.h"
-#include "VideoDatabase.h"
 
 #include "FileSystem/PluginDirectory.h"
 #include "FileSystem/RarManager.h"
-#include "FileSystem/VideoDatabaseDirectory.h"
 #include "FileSystem/ZipManager.h"
 
 #include "GUIWindowManager.h"
@@ -399,20 +397,6 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     CFileItem item(params[0], false);
-    if (item.IsVideoDb())
-    {
-      CVideoDatabase database;
-      database.Open();
-      DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams query;
-      DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(item.m_strPath,query);
-      if (query.GetContentType() == VIDEODB_CONTENT_MOVIES)
-        database.GetMovieInfo("",*item.GetVideoInfoTag(),query.GetMovieId());
-      if (query.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
-        database.GetEpisodeInfo("",*item.GetVideoInfoTag(),query.GetEpisodeId());
-      if (query.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
-        database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),query.GetMVideoId());
-      item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
-    }
 
     // restore to previous window if needed
     if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
