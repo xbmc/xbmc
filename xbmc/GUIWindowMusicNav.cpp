@@ -418,6 +418,8 @@ bool CGUIWindowMusicNav::GetDirectory(const CStdString &strDirectory, CFileItemL
     items.SetContent("playlists");
   else if (strDirectory.Equals("plugin://music/"))
     items.SetContent("plugins");
+  else if (items.IsPlayList())
+    items.SetContent("songs");
 
   // clear the filter
   m_filter.Empty();
