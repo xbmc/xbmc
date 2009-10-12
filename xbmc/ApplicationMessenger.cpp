@@ -46,9 +46,7 @@
 
 #include "PowerManager.h"
 
-#ifdef HAS_HAL
-#include "linux/HalManager.h"
-#elif defined _WIN32
+#ifdef _WIN32
 #include "WIN32Util.h"
 #define CHalManager CWIN32Util
 #elif defined __APPLE__

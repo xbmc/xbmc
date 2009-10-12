@@ -242,6 +242,10 @@
 #include "lib/libcdio/logging.h"
 #endif
 
+#ifdef HAS_HAL
+#include "linux/HALManager.h"
+#endif
+
 #include "MediaManager.h"
 
 #ifdef _LINUX

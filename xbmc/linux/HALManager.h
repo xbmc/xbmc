@@ -42,7 +42,7 @@ class CHALDevice
 public:
   CStdString UDI;
   CStdString FriendlyName;
-  CHalDevice(const char *udi) { UDI = udi; }
+  CHALDevice(const char *udi) { UDI = udi; }
 };
 
 class CStorageDevice : public CHALDevice

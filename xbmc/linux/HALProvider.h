@@ -5,6 +5,7 @@
 class CHALProvider : public IStorageProvider
 {
 public:
+  CHALProvider();
   virtual ~CHALProvider() { }
 
   virtual void GetLocalDrives(VECSOURCES &localDrives);
@@ -12,6 +13,8 @@ public:
 
   virtual std::vector<CStdString> GetDiskUsage();
 
-  virtual bool PumpDriveChangeEvents() { return false; }
+  virtual bool PumpDriveChangeEvents();
+private:
+  unsigned int m_removableLength;
 };
 #endif

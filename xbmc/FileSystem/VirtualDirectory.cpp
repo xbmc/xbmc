@@ -29,10 +29,6 @@
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "../MediaManager.h"
-#ifdef HAS_HAL // This should be ifdef _LINUX when hotplugging is supported on osx
-#include "linux/LinuxFileSystem.h"
-#include <vector>
-#endif
 #include "File.h"
 #include "FileItem.h"
 #ifdef _WIN32

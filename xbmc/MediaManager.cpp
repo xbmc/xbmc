@@ -25,9 +25,7 @@
 #include "xbox/IoSupport.h"
 #include "URL.h"
 #include "Util.h"
-#ifdef _LINUX
-#include "LinuxFileSystem.h"
-#elif defined(_WIN32)
+#ifdef _WIN32
 #include "WIN32Util.h"
 #endif
 #include "GUIWindowManager.h"

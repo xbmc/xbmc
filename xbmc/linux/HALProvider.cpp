@@ -1,6 +1,12 @@
 #include "HALProvider.h"
 #ifdef HAS_HAL
-#include "HalManager.h"
+#include "HALManager.h"
+
+CHALProvider::CHALProvider()
+{
+  m_removableLength = 0;
+  PumpDriveChangeEvents();
+}
 
 void CHALProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
@@ -32,7 +38,7 @@ void CHALProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   }
 }
 
-std::vector<CStdString> CPosixMountProvider::GetDiskUsage()
+std::vector<CStdString> CHALProvider::GetDiskUsage()
 {
   return std::vector<CStdString>();
 }
