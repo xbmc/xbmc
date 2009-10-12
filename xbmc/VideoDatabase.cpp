@@ -5491,7 +5491,12 @@ bool CVideoDatabase::GetScraperForPath(const CStdString& strPath, SScraperInfo& 
     if (NULL == m_pDS.get()) return false;
 
     CStdString strPath1;
-    CUtil::GetDirectory(strPath,strPath1);
+    CStdString strPath2(strPath);
+
+    if (CUtil::IsMultiPath(strPath))
+      strPath2 = CMultiPathDirectory::GetFirstPath(strPath);
+
+    CUtil::GetDirectory(strPath2,strPath1);
     int idPath = GetPathId(strPath1);
 
     if (idPath > -1)
