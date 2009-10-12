@@ -68,7 +68,9 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
+#ifndef __APPLE__
 #include "cores/AudioRenderers/ALSADirectSound.h"
+#endif
 #ifdef HAS_HAL
 #include "HALManager.h"
 #endif
@@ -1452,7 +1454,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
     }
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
     else if (strSetting.Equals("audiooutput.custompassthrough"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -3835,7 +3837,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
 #endif
 }
 
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
 void CGUIWindowSettingsCategory::GenSoundLabel(const CStdString& device, const CStdString& card, const int labelValue, CGUISpinControlEx* pControl, bool Passthrough)
 {
   CStdString deviceString(device);
@@ -3860,7 +3862,7 @@ void CGUIWindowSettingsCategory::GenSoundLabel(const CStdString& device, const C
     }
   }
 }
-#endif //_LINUX
+#endif //defined(_LINUX) && !defined(__APPLE__)
 
 void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {

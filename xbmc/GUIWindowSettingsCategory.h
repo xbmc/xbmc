@@ -86,9 +86,9 @@ protected:
 
   void JumpToSection(int windowID, const CStdString &section);
   void JumpToPreviousSection();
-#ifdef _LINUX
+#if defined(_LINUX) && !defined(__APPLE__)
   void GenSoundLabel(const CStdString& device, const CStdString& card, const int labelValue, CGUISpinControlEx* pControl, bool Passthrough);
-#endif //_LINUX
+#endif //defined(_LINUX) && !defined(__APPLE__)
 
   std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
