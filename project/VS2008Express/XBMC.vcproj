@@ -3042,6 +3042,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\utils\PasswordManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\utils\PasswordManager.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\PowerManager.cpp"
 					>
 				</File>

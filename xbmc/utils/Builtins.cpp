@@ -923,7 +923,6 @@ int CBuiltins::Execute(const CStdString& execString)
 
     g_application.getNetwork().NetworkMessage(CNetwork::SERVICES_DOWN,1);
     g_settings.LoadProfile(0); // login screen always runs as default user
-    g_passwordManager.m_mapSMBPasswordCache.clear();
     g_passwordManager.bMasterUser = false;
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
     g_application.StartEventServer(); // event server could be needed in some situations

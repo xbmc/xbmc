@@ -32,7 +32,7 @@
 #include "LangCodeExpander.h"
 #include "ButtonTranslator.h"
 #include "XMLUtils.h"
-#include "GUIPassword.h"
+#include "utils/PasswordManager.h"
 #include "GUIAudioManager.h"
 #include "AudioContext.h"
 #include "utils/GUIInfoManager.h"
@@ -1037,6 +1037,8 @@ bool CSettings::LoadProfile(int index)
       if (doc.LoadFile(CUtil::AddFileToFolder(GetUserDataFolder(),"guisettings.xml")))
         g_guiSettings.LoadMasterLock(doc.RootElement());
     }
+    
+    CPasswordManager::GetInstance().Clear();
 
     // to set labels - shares are reloaded
 #if !defined(_WIN32) && defined(HAS_DVD_DRIVE)
