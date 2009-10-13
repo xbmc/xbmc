@@ -174,14 +174,23 @@ char id3_metadata_getrating(const struct id3_tag* tag)
 {
   union id3_field const *field;
   struct id3_frame const *frame;
+  int value;
 
   frame = id3_tag_findframe(tag, "POPM", 0);
   if (frame)
   {
     field = id3_frame_field(frame, 1);
     if (field)
-    { // media monkey's value
-      return (id3_field_getint(field) / 50) + '0';
+    { // based on mediamonkey's values, simplified down a bit
+      // http://www.mediamonkey.com/forum/viewtopic.php?f=7&t=40532
+      value = id3_field_getint(field);
+      if (value == 1) return '1';   // WMP11 madness
+      if (value < 9) return '0';
+      if (value < 50) return '1';
+      if (value < 114) return '2';
+      if (value < 168) return '3';
+      if (value < 219) return '4';
+      return '5';
     }
   }
   else
