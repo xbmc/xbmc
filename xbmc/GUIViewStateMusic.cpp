@@ -46,11 +46,6 @@ int CGUIViewStateWindowMusic::GetPlaylist()
   return PLAYLIST_MUSIC;
 }
 
-bool CGUIViewStateWindowMusic::UnrollArchives()
-{
-  return g_guiSettings.GetBool("filelists.unrollarchives");
-}
-
 bool CGUIViewStateWindowMusic::AutoPlayNextItem()
 {
   return g_guiSettings.GetBool("mymusic.autoplaynextitem");

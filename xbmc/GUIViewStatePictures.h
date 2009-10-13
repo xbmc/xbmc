@@ -31,7 +31,6 @@ public:
 protected:
   virtual void SaveViewState();
   virtual CStdString GetLockType();
-  virtual bool UnrollArchives();
   virtual CStdString GetExtensions();
   virtual VECSOURCES& GetSources();
 };
