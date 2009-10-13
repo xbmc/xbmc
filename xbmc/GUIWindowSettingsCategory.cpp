@@ -2377,7 +2377,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("remoteevents.port", "9777");
     }
     //restart eventserver without asking user
-    if (g_application.StopEventServer(false))
+    if (g_application.StopEventServer(true, false))
       g_application.StartEventServer();
 #ifdef __APPLE__
     //reconfigure XBMCHelper for port changes

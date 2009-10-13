@@ -20,6 +20,7 @@
  */
 
 #include <fstream>
+#include <sstream>
 #include <Carbon/Carbon.h>
 #include <mach-o/dyld.h>
 
