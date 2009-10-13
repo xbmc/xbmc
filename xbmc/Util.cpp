@@ -2220,6 +2220,11 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
         continue;
       }
     }
+    if (ch == '\"' && escaped)
+    { // escape quote
+      parameter[parameter.size()-1] = ch;
+      continue;
+    }
     // whitespace handling - we skip any whitespace at the left or right of an unquoted parameter
     if (ch == ' ' && !inQuotes)
     {
