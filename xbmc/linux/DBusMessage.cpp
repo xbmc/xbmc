@@ -14,14 +14,19 @@ CDBusMessage::~CDBusMessage()
   Close();
 }
 
-void CDBusMessage::AppendObjectPath(const char *object)
+bool CDBusMessage::AppendObjectPath(const char *object)
 {
-  dbus_message_append_args(m_message, DBUS_TYPE_OBJECT_PATH, &object, DBUS_TYPE_INVALID);
+  return dbus_message_append_args(m_message, DBUS_TYPE_OBJECT_PATH, &object, DBUS_TYPE_INVALID);
 }
 
-void CDBusMessage::AppendArgument(const char *string)
+bool CDBusMessage::AppendArgument(const char *string)
 {
-  dbus_message_append_args(m_message, DBUS_TYPE_STRING, &string, DBUS_TYPE_INVALID);
+  return dbus_message_append_args(m_message, DBUS_TYPE_STRING, &string, DBUS_TYPE_INVALID);
+}
+
+bool CDBusMessage::AppendArgument(const char **arrayString, int length)
+{
+  return dbus_message_append_args(m_message, DBUS_TYPE_ARRAY, DBUS_TYPE_STRING, &arrayString, length, DBUS_TYPE_INVALID);
 }
 
 DBusMessage *CDBusMessage::SendSystem()

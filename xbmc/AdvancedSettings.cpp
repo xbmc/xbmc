@@ -117,9 +117,9 @@ CAdvancedSettings::CAdvancedSettings()
   m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
   m_cddbAddress = "freedb.freedb.org";
-#ifdef HAS_HAL
-  m_useHalMount = g_application.IsStandAlone();
-#endif
+
+  m_handleMounting = false;
+
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
   m_cachePath = "special://temp/";
@@ -240,11 +240,19 @@ CAdvancedSettings::CAdvancedSettings()
 #endif
 
   m_bgInfoLoaderMaxThreads = 5;
-  
+}
+
+void CAdvancedSettings::SetupStandaloneDefaults()
+{
+  m_handleMounting = true;
 }
 
 bool CAdvancedSettings::Load()
 {
+  //Reset some defaults if we are standalone
+  if (g_application.IsStandAlone())
+    SetupStandaloneDefaults();
+
   // NOTE: This routine should NOT set the default of any of these parameters
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
@@ -475,9 +483,9 @@ bool CAdvancedSettings::Load()
     }
   }
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
-#ifdef HAS_HAL
-  XMLUtils::GetBoolean(pRootElement, "usehalmount", m_useHalMount);
-#endif
+
+  XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
+
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", m_useMultipaths);
 #ifdef HAS_SDL
