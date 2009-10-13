@@ -30,9 +30,11 @@ class CURL
 {
 public:
   CURL(const CStdString& strURL);
-  CURL(const CURL& url);
   CURL();
   virtual ~CURL(void);
+
+  void Reset();
+  void Parse(const CStdString& strURL);
   void SetFileName(const CStdString& strFileName);
   void SetHostName(const CStdString& strHostName);
   void SetUserName(const CStdString& strUserName);
@@ -41,7 +43,9 @@ public:
   void SetOptions(const CStdString& strOptions);
   void SetProtocolOptions(const CStdString& strOptions);
   void SetPort(int port);
+
   bool HasPort() const;
+
   int GetPort() const;
   const CStdString& GetHostName() const;
   const CStdString& GetDomain() const;
@@ -60,7 +64,6 @@ public:
   CStdString Get() const;
   CStdString GetWithoutUserDetails() const;
   CStdString GetWithoutFilename() const;
-  CURL& operator= (const CURL& source);
   bool IsLocal() const;
   static bool IsFileOnly(const CStdString &url); ///< return true if there are no directories in the url.
   static bool IsFullPath(const CStdString &url); ///< return true if the url includes the full path

@@ -42,16 +42,34 @@ CStdString URLEncodeInline(const CStdString& strData)
 
 CURL::CURL(const CStdString& strURL1)
 {
-  m_strHostName = "";
-  m_strDomain = "";
-  m_strUserName = "";
-  m_strPassword = "";
-  m_strShareName="";
-  m_strFileName = "";
-  m_strProtocol = "";
-  m_strFileType = "";
-  m_iPort = 0;
+  Parse(strURL1);
+}
 
+CURL::CURL()
+{
+  m_iPort = 0;
+}
+
+CURL::~CURL()
+{
+}
+
+void CURL::Reset()
+{
+  m_strHostName.clear();
+  m_strDomain.clear();
+  m_strUserName.clear();
+  m_strPassword.clear();
+  m_strShareName.clear();
+  m_strFileName.clear();
+  m_strProtocol.clear();
+  m_strFileType.clear();
+  m_iPort = 0;
+}
+
+void CURL::Parse(const CStdString& strURL1)
+{
+  Reset();
   // start by validating the path
   CStdString strURL = ValidatePath(strURL1);
 
@@ -329,36 +347,6 @@ CURL::CURL(const CStdString& strURL1)
 
   CUtil::UrlDecode(m_strUserName);
   CUtil::UrlDecode(m_strPassword);
-}
-
-CURL::CURL(const CURL &url)
-{
-  *this = url;
-}
-
-CURL::CURL()
-{
-  m_iPort = 0;
-}
-
-CURL::~CURL()
-{
-}
-
-CURL& CURL::operator= (const CURL& source)
-{
-  m_iPort        = source.m_iPort;
-  m_strHostName  = source.m_strHostName;
-  m_strDomain    = source.m_strDomain;
-  m_strShareName = source.m_strShareName;
-  m_strUserName  = source.m_strUserName;
-  m_strPassword  = source.m_strPassword;
-  m_strFileName  = source.m_strFileName;
-  m_strProtocol  = source.m_strProtocol;
-  m_strFileType  = source.m_strFileType;
-  m_strOptions   = source.m_strOptions;
-  m_strProtocolOptions = source.m_strProtocolOptions;
-  return *this;
 }
 
 void CURL::SetFileName(const CStdString& strFileName)
