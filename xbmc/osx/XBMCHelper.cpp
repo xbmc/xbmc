@@ -103,12 +103,16 @@ void XBMCHelper::Configure()
   int oldMode = m_mode;
   int oldDelay = m_sequenceDelay;
   int oldAlwaysOn = m_alwaysOn;
+  int oldPort = m_port;
 
   // Read the new configuration.
   m_errorStarting = false;
   m_mode = g_guiSettings.GetInt("appleremote.mode");
   m_sequenceDelay = g_guiSettings.GetInt("appleremote.sequencetime");
   m_alwaysOn = g_guiSettings.GetBool("appleremote.alwayson");
+  CStdString port_string = g_guiSettings.GetString("remoteevents.port");
+  m_port = atoi(port_string.c_str());
+
 
   // Don't let it enable if sofa control or remote buddy is around.
   if (IsRemoteBuddyInstalled() || IsSofaControlRunning())
@@ -122,7 +126,7 @@ void XBMCHelper::Configure()
   }
 
   // New configuration.
-  if (oldMode != m_mode || oldDelay != m_sequenceDelay)
+  if (oldMode != m_mode || oldDelay != m_sequenceDelay || oldPort != m_port)
   {
     // Build a new config string.
     std::string strConfig;
@@ -136,6 +140,10 @@ void XBMCHelper::Configure()
       default:
         break;
     }
+    std::stringstream strPort;
+    strPort << "--port " << m_port;
+    strConfig += strPort.str();
+
 #ifdef _DEBUG
     strConfig += "--verbose ";
 #endif
