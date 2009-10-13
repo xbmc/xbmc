@@ -6,6 +6,8 @@ class CWin32StorageProvider : public IStorageProvider
 public:
   virtual ~CWin32StorageProvider() { }
 
+  virtual void Initialize() { }
+
   virtual void GetLocalDrives(VECSOURCES &localDrives);
   virtual void GetRemovableDrives(VECSOURCES &removableDrives);
 

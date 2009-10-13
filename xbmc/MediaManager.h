@@ -45,6 +45,8 @@ class CMediaManager
 public:
   CMediaManager();
 
+  void Initialize();
+
   bool LoadSources();
   bool SaveSources();
 

@@ -41,6 +41,10 @@ CAdvancedSettings g_advancedSettings;
 
 CAdvancedSettings::CAdvancedSettings()
 {
+}
+
+void CAdvancedSettings::Initialize()
+{
   m_useMultipaths = true;
 
   m_audioHeadRoom = 0;
@@ -118,7 +122,7 @@ CAdvancedSettings::CAdvancedSettings()
 #endif
   m_cddbAddress = "freedb.freedb.org";
 
-  m_handleMounting = false;
+  m_handleMounting = g_application.IsStandAlone();
 
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
@@ -242,17 +246,8 @@ CAdvancedSettings::CAdvancedSettings()
   m_bgInfoLoaderMaxThreads = 5;
 }
 
-void CAdvancedSettings::SetupStandaloneDefaults()
-{
-  m_handleMounting = true;
-}
-
 bool CAdvancedSettings::Load()
 {
-  //Reset some defaults if we are standalone
-  if (g_application.IsStandAlone())
-    SetupStandaloneDefaults();
-
   // NOTE: This routine should NOT set the default of any of these parameters
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above

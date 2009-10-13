@@ -43,7 +43,7 @@ class CAdvancedSettings
   public:
     CAdvancedSettings();
 
-    void SetupStandaloneDefaults();
+    void Initialize();
 
     bool Load();
     void Clear();

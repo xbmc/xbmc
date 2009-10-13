@@ -26,6 +26,11 @@ public:
     delete m_instance;
   }
 
+  virtual void Initialize()
+  {
+    m_instance->Initialize();
+  }
+
   virtual void GetLocalDrives(VECSOURCES &localDrives)
   {
     // Home directory

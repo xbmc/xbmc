@@ -70,6 +70,11 @@ CMediaManager::CMediaManager()
   m_bhasoptical = false;
 }
 
+void CMediaManager::Initialize()
+{
+  m_platformStorage->Initialize();
+}
+
 bool CMediaManager::LoadSources()
 {
   // clear our location list

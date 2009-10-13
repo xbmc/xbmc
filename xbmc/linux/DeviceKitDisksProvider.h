@@ -27,6 +27,8 @@ public:
   CDeviceKitDisksProvider();
   virtual ~CDeviceKitDisksProvider();
 
+  virtual void Initialize();
+
   virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDisks(localDrives, false); }
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) { GetDisks(removableDrives, true); }
 

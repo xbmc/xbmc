@@ -112,11 +112,6 @@ CDeviceKitDisksProvider::CDeviceKitDisksProvider()
     dbus_connection_unref(m_connection);
     m_connection = NULL;
   }
-
-  CLog::Log(LOGDEBUG, "DeviceKit.Disks: Querying available devices");
-  std::vector<CStdString> devices = EnumerateDisks();
-  for (unsigned int i = 0; i < devices.size(); i++)
-    DeviceAdded(devices[i].c_str());
 }
 
 CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
@@ -143,6 +138,14 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
   dbus_error_free (&m_error);
 }
 
+void CDeviceKitDisksProvider::Initialize()
+{
+  CLog::Log(LOGDEBUG, "DeviceKit.Disks: Querying available devices");
+  std::vector<CStdString> devices = EnumerateDisks();
+  for (unsigned int i = 0; i < devices.size(); i++)
+    DeviceAdded(devices[i].c_str());
+}
+
 std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
 {
   return std::vector<CStdString>();
@@ -163,20 +166,11 @@ bool CDeviceKitDisksProvider::PumpDriveChangeEvents()
       {
         result = true;
         if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceAdded"))
-        {
-          CLog::Log(LOGDEBUG, "DeviceKit.Disks: Got \"DeviceAdded\"-signal with device %s", object);
           DeviceAdded(object);
-        }
         else if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceRemoved"))
-        {
-          CLog::Log(LOGDEBUG, "DeviceKit.Disks: Got \"DeviceRemoved\"-signal with device %s", object);
           DeviceRemoved(object);
-        }
         else if (dbus_message_is_signal(msg, "org.freedesktop.DeviceKit.Disks", "DeviceChanged"))
-        {
-          CLog::Log(LOGDEBUG, "DeviceKit.Disks: Got \"DeviceChanged\"-signal with device %s", object);
           DeviceChanged(object);
-        }
       }
       dbus_message_unref(msg);
     }
@@ -191,6 +185,8 @@ bool CDeviceKitDisksProvider::HasDeviceKitDisks()
 
 void CDeviceKitDisksProvider::DeviceAdded(const char *object)
 {
+  CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceAdded (%s)", object);
+
   if (m_AvailableDevices[object])
   {
     CLog::Log(LOGWARNING, "DeviceKit.Disks: Inconsistency found! DeviceAdded on an indexed disk");
@@ -206,6 +202,8 @@ void CDeviceKitDisksProvider::DeviceAdded(const char *object)
 
 void CDeviceKitDisksProvider::DeviceRemoved(const char *object)
 {
+  CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceRemoved (%s)", object);
+
   CDeviceKitDiskDevice *device = m_AvailableDevices[object];
   if (device)
   {
@@ -219,6 +217,8 @@ void CDeviceKitDisksProvider::DeviceRemoved(const char *object)
 
 void CDeviceKitDisksProvider::DeviceChanged(const char *object)
 {
+  CLog::Log(LOGDEBUG, "DeviceKit.Disks: DeviceChanged (%s)", object);
+
   CDeviceKitDiskDevice *device = m_AvailableDevices[object];
   if (device == NULL)
   {
