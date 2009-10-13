@@ -2358,6 +2358,33 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
   }
+  else if (strSetting.Equals("remoteevents.port"))
+  {
+#ifdef HAS_EVENT_SERVER
+    CStdString port_string = g_guiSettings.GetString("remoteevents.port");
+    int port = 0;
+    if(port_string.length() == 0)
+    {
+      CLog::Log(LOGERROR, "ES: No port specified, defaulting to 9777");
+      g_guiSettings.SetString("remoteevents.port", "9777");
+    }
+    else
+      port = atoi(port_string);
+    //verify valid port
+    if (port > 65535 || port < 1)
+    {
+      CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", port);
+      g_guiSettings.SetString("remoteevents.port", "9777");
+    }
+    //restart eventserver without asking user
+    if (g_application.StopEventServer(false))
+      g_application.StartEventServer();
+#ifdef __APPLE__
+    //reconfigure XBMCHelper for port changes
+    g_xbmcHelper.Configure();
+#endif
+#endif
+  }
   else if (strSetting.Equals("remoteevents.allinterfaces"))
   {
 #ifdef HAS_EVENT_SERVER
