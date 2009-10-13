@@ -118,15 +118,13 @@ bool CCMythDirectory::GetGuide(const CStdString& base, CFileItemList &items)
         CLog::Log(LOGDEBUG, "%s - Channel '%s' Icon '%s'", __FUNCTION__, name.c_str(), icon.c_str());
         path.Format("guide/%d/", num);
         url.SetFileName(path);
-        url.GetURL(path);
-        CFileItemPtr item(new CFileItem(path, true));
+        CFileItemPtr item(new CFileItem(url.Get(), true));
         item->SetLabel(name);
         item->SetLabelPreformated(true);
         if (icon.length() > 0)
         {
           url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
-          url.GetURL(icon);
-          item->SetThumbnailImage(icon);
+          item->SetThumbnailImage(url.Get());
         }
         items.Add(item);
       }
@@ -278,11 +276,10 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
 
       CFileItemPtr item(new CFileItem("", false));
       m_session->UpdateItem(*item, program);
-      url.GetURL(item->m_strPath);
+      item->m_strPath = url.Get();
 
       url.SetFileName("files/" + path + ".png");
-      url.GetURL(path);
-      item->SetThumbnailImage(path);
+      item->SetThumbnailImage(url.Get());
 
       /*
        * Don't adjust the name for MOVIES as additional information in the name will affect any scraper lookup.
@@ -448,14 +445,13 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
     CFileItemPtr item(new CFileItem("", false));
     m_session->UpdateItem(*item, program);
     url.SetFileName("channels/" + num + ".ts");
-    url.GetURL(item->m_strPath);
+    item->m_strPath = url.Get();
     item->SetLabel(GetValue(m_dll->proginfo_chansign(program)));
 
     if (icon.length() > 0)
     {
       url.SetFileName("files/channels/" + CUtil::GetFileName(icon));
-      url.GetURL(icon);
-      item->SetThumbnailImage(icon);
+      item->SetThumbnailImage(url.Get());
     }
 
     /* hack to get sorting working properly when sorting by show title */

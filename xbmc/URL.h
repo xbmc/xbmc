@@ -57,9 +57,9 @@ public:
 
   char GetDirectorySeparator() const;
 
-  void GetURL(CStdString& strURL) const;
-  void GetURLWithoutUserDetails(CStdString& strURL) const;
-  void GetURLWithoutFilename(CStdString& strURL) const;
+  CStdString Get() const;
+  CStdString GetWithoutUserDetails() const;
+  CStdString GetWithoutFilename() const;
   CURL& operator= (const CURL& source);
   bool IsLocal() const;
   static bool IsFileOnly(const CStdString &url); ///< return true if there are no directories in the url.

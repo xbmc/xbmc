@@ -154,7 +154,7 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
     CMediaSource share;
     share.strPath = m_locations[i].path;
     CURL url(share.strPath);
-    url.GetURLWithoutUserDetails(share.strName);
+    share.strName = url.GetWithoutUserDetails();
     locations.push_back(share);
   }
 }

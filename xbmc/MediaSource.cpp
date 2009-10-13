@@ -94,8 +94,7 @@ void CMediaSource::FromNameAndPaths(const CStdString &category, const CStdString
   // check - convert to url and back again to make sure strPath is accurate
   // in terms of what we expect
   CUtil::AddSlashAtEnd(strPath);
-  CURL url(strPath);
-  url.GetURL(strPath);
+  strPath = CURL(strPath).Get();
 }
 
 bool CMediaSource::operator==(const CMediaSource &share) const

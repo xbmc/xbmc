@@ -392,7 +392,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     if (!m_bNameChanged || m_name.IsEmpty())
     {
       CURL url(path);
-      url.GetURLWithoutUserDetails(m_name);
+      m_name = url.GetWithoutUserDetails();
       CUtil::RemoveSlashAtEnd(m_name);
       m_name = CUtil::GetTitleFromPath(m_name);
     }
@@ -413,7 +413,7 @@ void CGUIDialogMediaSource::OnPath(int item)
   if (!m_bNameChanged || m_name.IsEmpty())
   {
     CURL url(m_paths->Get(item)->m_strPath);
-    url.GetURLWithoutUserDetails(m_name);
+    m_name = url.GetWithoutUserDetails();
     CUtil::RemoveSlashAtEnd(m_name);
     m_name = CUtil::GetTitleFromPath(m_name);
   }
@@ -488,7 +488,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     CFileItemPtr item = m_paths->Get(i);
     CStdString path;
     CURL url(item->m_strPath);
-    url.GetURLWithoutUserDetails(path);
+    path = url.GetWithoutUserDetails();
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     item->SetLabel(path);
     CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_PATH, 0, 0, item);

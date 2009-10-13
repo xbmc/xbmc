@@ -52,8 +52,7 @@ namespace DIRECTORY
     CStdString strPathInArchive = url.GetFileName();
     url.SetOptions("");
 
-    CStdString strSlashPath;
-    url.GetURL(strSlashPath);
+    CStdString strSlashPath = url.Get();
 
     // the RAR code depends on things having a "\" at the end of the path
     CUtil::AddSlashAtEnd(strSlashPath);

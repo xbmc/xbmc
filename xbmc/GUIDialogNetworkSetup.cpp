@@ -156,7 +156,7 @@ void CGUIDialogNetworkSetup::OnServerBrowse()
   share.strPath = basePath;
   // don't include the user details in the share name
   CURL url(share.strPath);
-  url.GetURLWithoutUserDetails(share.strName);
+  share.strName = url.GetWithoutUserDetails();
   shares.push_back(share);
   if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(1015), path))
   {
@@ -303,10 +303,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
   }
   if (!m_path.IsEmpty())
     url.SetFileName(m_path);
-  CStdString path;
-  url.GetURL(path);
-  CUtil::AddSlashAtEnd(path);
-  return path;
+  return url.Get();
 }
 
 void CGUIDialogNetworkSetup::SetPath(const CStdString &path)

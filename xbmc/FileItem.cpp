@@ -2427,7 +2427,7 @@ CStdString CFileItem::GetTBNFile() const
     else
       CUtil::ReplaceExtension(strFile, ".tbn", thumbFile);
     url.SetFileName(thumbFile);
-    url.GetURL(thumbFile);
+    thumbFile = url.Get();
   }
   return thumbFile;
 }

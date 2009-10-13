@@ -185,7 +185,7 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   if (url.GetProtocol() == "rss")
   {
     url.SetProtocol("http");
-    url.GetURL(path);
+    path = url.Get();
     CRssFeed feed;
     feed.Init(path);
     feed.ReadFeed();
@@ -351,7 +351,7 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileName = url.GetFileName();
     RemoveExtension(strFileName);
     url.SetFileName(strFileName);
-    url.GetURL(strFileName);
+    strFileName = url.Get();
     return;
   }
 
@@ -510,19 +510,19 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
     if (!url.GetOptions().IsEmpty())
     {
       url.SetOptions("");
-      url.GetURL(strParent);
+      strParent = url.Get();
       return true;
     }
     if (!url.GetFileName().IsEmpty())
     {
       url.SetFileName("");
-      url.GetURL(strParent);
+      strParent = url.Get();
       return true;
     }
     if (!url.GetHostName().IsEmpty())
     {
       url.SetHostName("");
-      url.GetURL(strParent);
+      strParent = url.Get();
       return true;
     }
     return true;  // already at root
@@ -541,7 +541,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
       // we have an share with only server or workgroup name
       // set hostname to "" and return true to get back to root
       url.SetHostName("");
-      url.GetURL(strParent);
+      strParent = url.Get();
       return true;
     }
     return false;
@@ -562,7 +562,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   if (iPos < 0)
   {
     url.SetFileName("");
-    url.GetURL(strParent);
+    strParent = url.Get();
     return true;
   }
 
@@ -571,7 +571,7 @@ bool CUtil::GetParentPath(const CStdString& strPath, CStdString& strParent)
   CUtil::AddSlashAtEnd(strFile);
 
   url.SetFileName(strFile);
-  url.GetURL(strParent);
+  strParent = url.Get();
   return true;
 }
 
@@ -702,7 +702,7 @@ void CUtil::ReplaceExtension(const CStdString& strFile, const CStdString& strNew
     CURL url(strFile);
     ReplaceExtension(url.GetFileName(), strNewExtension, strChangedFile);
     url.SetFileName(strChangedFile);
-    url.GetURL(strChangedFile);
+    strChangedFile = url.Get();
     return;
   }
 
@@ -1529,7 +1529,7 @@ void CUtil::AddFileToFolder(const CStdString& strFolder, const CStdString& strFi
     CURL url(strFolder);
     AddFileToFolder(url.GetFileName(), strFile, strResult);
     url.SetFileName(strResult);
-    url.GetURL(strResult);
+    strResult = url.Get();
     return;
   }
 
@@ -1561,7 +1561,7 @@ void CUtil::AddSlashAtEnd(CStdString& strFolder)
       AddSlashAtEnd(strFolder);
       url.SetFileName(strFolder);
     }
-    url.GetURL(strFolder);
+    strFolder = url.Get();
     return;
   }
 
@@ -1585,7 +1585,7 @@ void CUtil::RemoveSlashAtEnd(CStdString& strFolder)
       RemoveSlashAtEnd(strFolder);
       url.SetFileName(strFolder);
     }
-    url.GetURL(strFolder);
+    strFolder = url.Get();
     return;
   }
 
@@ -2098,8 +2098,7 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   StringUtils::SplitString(url.GetFileName(), sep, dirs);
   
   // we start with the root path
-  CStdString dir;
-  url.GetURLWithoutFilename(dir);
+  CStdString dir = url.GetWithoutFilename();
   unsigned int i = 0;
   if (dir.IsEmpty())
   { // local directory - start with the first dirs member so that
@@ -2309,9 +2308,8 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
   // remove user details, and ensure path only uses forward slashes
   // and ends with a trailing slash so as not to match a substring
   CURL urlDest(strPath);
-  CStdString strDest;
   urlDest.SetOptions("");
-  urlDest.GetURLWithoutUserDetails(strDest);
+  CStdString strDest = urlDest.GetWithoutUserDetails();
   ForceForwardSlashes(strDest);
   if (!HasSlashAtEnd(strDest))
     strDest += "/";
@@ -2347,9 +2345,8 @@ int CUtil::GetMatchingSource(const CStdString& strPath1, VECSOURCES& VECSOURCES,
       // remove user details, and ensure path only uses forward slashes
       // and ends with a trailing slash so as not to match a substring
       CURL urlShare(vecPaths[j]);
-      CStdString strShare;
       urlShare.SetOptions("");
-      urlShare.GetURLWithoutUserDetails(strShare);
+      CStdString strShare = urlShare.GetWithoutUserDetails();
       ForceForwardSlashes(strShare);
       if (!HasSlashAtEnd(strShare))
         strShare += "/";

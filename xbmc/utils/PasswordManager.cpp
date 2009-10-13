@@ -57,20 +57,17 @@ bool CPasswordManager::PromptToAuthenticateURL(CURL &url)
 {
   CStdString passcode;
   CStdString username = url.GetUserName();
-  CStdString share;
-  url.GetURLWithoutUserDetails(share);
   CStdString path = GetLookupPath(url);
 
   bool saveDetails = false;
-  if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(username, passcode, share, &saveDetails))
+  if (!CGUIDialogLockSettings::ShowAndGetUserAndPassword(username, passcode, url.GetWithoutUserDetails(), &saveDetails))
     return false;
 
   url.SetPassword(passcode);
   url.SetUserName(username);
 
   // save the information for later
-  CStdString authenticatedPath;
-  url.GetURL(authenticatedPath);
+  CStdString authenticatedPath = url.Get();
 
   if (!m_loaded)
     Load();
