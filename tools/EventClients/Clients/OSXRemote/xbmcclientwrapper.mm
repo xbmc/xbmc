@@ -85,6 +85,7 @@ class  XBMCClientWrapperImpl{
   eRemoteMode m_mode;
 	int					m_socket;	
   std::string	m_address;
+  int         m_port;
   XBMCClientEventSequence m_sequence;
   CFRunLoopTimerRef	m_timer;
   double m_sequence_timeout;
@@ -100,7 +101,7 @@ class  XBMCClientWrapperImpl{
   bool isStartToken(eATVClientEvent f_event);
   static void timerCallBack (CFRunLoopTimerRef timer, void *info);
 public:
-  XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address = "localhost", bool f_verbose_mode=false);
+  XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address = "localhost", int f_port = 9777, bool f_verbose_mode=false);
   ~XBMCClientWrapperImpl();
   void setUniversalModeTimeout(double f_timeout){
     m_sequence_timeout = f_timeout;
@@ -146,21 +147,21 @@ void XBMCClientWrapperImpl::restartTimer(){
 	CFRunLoopAddTimer(CFRunLoopGetCurrent(), m_timer, kCFRunLoopCommonModes);
 }
 
-XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address, bool f_verbose_mode): 
-m_mode(f_mode), m_address(fcr_address), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(f_verbose_mode){
+XBMCClientWrapperImpl::XBMCClientWrapperImpl(eRemoteMode f_mode, const std::string& fcr_address, int f_port, bool f_verbose_mode): 
+m_mode(f_mode), m_address(fcr_address), m_port(f_port), m_timer(0), m_sequence_timeout(0.5), m_device_id(150), m_verbose_mode(f_verbose_mode){
 	PRINT_SIGNATURE();
 	
   if(m_mode == MULTIREMOTE_MODE){
     if(m_verbose_mode)
-      NSLog(@"XBMCClientWrapperImpl started in multiremote mode sending to address %s", fcr_address.c_str());
+      NSLog(@"XBMCClientWrapperImpl started in multiremote mode sending to address %s, port %i", fcr_address.c_str(), f_port);
     populateMultiRemoteModeMap();
   } else {
     if(m_mode == UNIVERSAL_MODE){
       if(m_verbose_mode)
-        NSLog(@"XBMCClientWrapperImpl started in universal mode sending to address %s", fcr_address.c_str());
+        NSLog(@"XBMCClientWrapperImpl started in universal mode sending to address %s, port %i", fcr_address.c_str(), f_port);
       populateSequenceMap();
     } else if(m_verbose_mode)
-        NSLog(@"XBMCClientWrapperImpl started in normal mode sending to address %s", fcr_address.c_str());
+        NSLog(@"XBMCClientWrapperImpl started in normal mode sending to address %s, port %i", fcr_address.c_str(), f_port);
     populateEventMap();
   }
   
@@ -212,7 +213,7 @@ void XBMCClientWrapperImpl::sendButton(eATVClientEvent f_event){
     lp_packet = it->second;
   }
   assert(lp_packet);
-  CAddress addr(m_address.c_str());
+  CAddress addr(m_address.c_str(), m_port);
   if(m_verbose_mode)
     NSLog(@"XBMCClientWrapperImpl::sendButton sending button %i down:%i up:%i", lp_packet->GetButtonCode(), lp_packet->GetFlags()&BTN_DOWN,lp_packet->GetFlags()&BTN_UP );
   lp_packet->Send(m_socket, addr);  
@@ -396,13 +397,13 @@ void XBMCClientWrapperImpl::populateMultiRemoteModeMap(){
 
 @implementation XBMCClientWrapper
 - (id) init {
-  return [self initWithMode:DEFAULT_MODE serverAddress:@"localhost" verbose: false];
+  return [self initWithMode:DEFAULT_MODE serverAddress:@"localhost" port:9777 verbose: false];
 }
-- (id) initWithMode:(eRemoteMode) f_mode serverAddress:(NSString*) fp_server verbose:(bool) f_verbose{
+- (id) initWithMode:(eRemoteMode) f_mode serverAddress:(NSString*) fp_server port:(int) f_port verbose:(bool) f_verbose{
 	PRINT_SIGNATURE();
 	if( ![super init] )
 		return nil; 
-	mp_impl = new XBMCClientWrapperImpl(f_mode, [fp_server UTF8String], f_verbose);
+	mp_impl = new XBMCClientWrapperImpl(f_mode, [fp_server UTF8String], f_port, f_verbose);
 	return self;
 }
 

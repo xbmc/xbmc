@@ -135,10 +135,10 @@
 }
 
 //----------------------------------------------------------------------------
-- (void) connectToServer:(NSString*) fp_server withMode:(eRemoteMode) f_mode withTimeout:(double) f_timeout{
+- (void) connectToServer:(NSString*) fp_server onPort:(int) f_port withMode:(eRemoteMode) f_mode withTimeout:(double) f_timeout{
   if(mp_wrapper)
     [self disconnect];
-  mp_wrapper = [[XBMCClientWrapper alloc] initWithMode:f_mode serverAddress:fp_server verbose:m_verbose];
+  mp_wrapper = [[XBMCClientWrapper alloc] initWithMode:f_mode serverAddress:fp_server port:f_port verbose:m_verbose];
   [mp_wrapper setUniversalModeTimeout:f_timeout];
 }
 
