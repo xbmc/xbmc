@@ -440,7 +440,7 @@
   <string id="513">Home window</string>
   <string id="514">Manual settings</string>
   <string id="515">Genre</string>
-  <string id="516">Make stored archives with one file transparent</string>
+  <string id="516"></string>
   <string id="517">Recently played albums</string>
   <string id="518">Launch</string>
   <string id="519">Launch in...</string>
@@ -1476,7 +1476,7 @@
   <string id="15311">Path:</string>
 
   <string id="16000">General</string>
-  <string id="16001">Configure audio hardware...</string>
+  <string id="16001"></string>
   <string id="16002">Internet lookup</string>
   <string id="16003">Player</string>
   <string id="16004">Play media from disc</string>
