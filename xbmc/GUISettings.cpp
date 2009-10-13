@@ -265,7 +265,6 @@ void CGUISettings::Initialize()
   AddString(12, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3, "musicplayer", 16003);
-  AddString(1, "musicplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "musicplayer.sep1");
   AddInt(4, "musicplayer.replaygaintype", 638, REPLAY_GAIN_ALBUM, REPLAY_GAIN_NONE, 1, REPLAY_GAIN_TRACK, SPIN_CONTROL_TEXT);
   AddInt(0, "musicplayer.replaygainpreamp", 641, 89, 77, 1, 101, SPIN_CONTROL_INT_PLUS, MASK_DB);
@@ -439,7 +438,6 @@ void CGUISettings::Initialize()
 
   AddCategory(5, "videoplayer", 16003);
   AddString(1, "videoplayer.calibrate", 214, "", BUTTON_CONTROL_STANDARD);
-  AddString(2, "videoplayer.jumptoaudiohardware", 16001, "", BUTTON_CONTROL_STANDARD);
   AddSeparator(3, "videoplayer.sep1");
 #ifdef HAVE_LIBVDPAU
   AddInt(4, "videoplayer.rendermethod", 13415, RENDER_METHOD_AUTO, RENDER_METHOD_AUTO, 1, RENDER_METHOD_VDPAU, SPIN_CONTROL_TEXT);

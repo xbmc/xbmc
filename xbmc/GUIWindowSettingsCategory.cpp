@@ -1798,10 +1798,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.Close();
     }
   }
-  else if (strSetting.Equals("musicplayer.jumptoaudiohardware") || strSetting.Equals("videoplayer.jumptoaudiohardware"))
-  {
-    JumpToSection(WINDOW_SETTINGS_SYSTEM, "audiooutput");
-  }
   else if (strSetting.Equals("musicplayer.jumptocache") || strSetting.Equals("videoplayer.jumptocache"))
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "cache");
