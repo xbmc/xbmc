@@ -29,6 +29,7 @@
 #include "GUICheckMarkControl.h"
 #include "GUIRadioButtonControl.h"
 #include "GUIWindowManager.h"
+#include "Application.h"
 
 using namespace std;
 
@@ -343,7 +344,7 @@ namespace PYXBMC
     if (self->bIsPythonWindow)
     {
       // first change to an existing window
-      if (ACTIVE_WINDOW == self->iWindowId)
+      if (ACTIVE_WINDOW == self->iWindowId && !g_application.m_bStop)
       {
         if(g_windowManager.GetWindow(self->iOldWindowId))
         {
@@ -486,7 +487,7 @@ namespace PYXBMC
 
       if(self->iWindowId != ACTIVE_WINDOW) Window_Show(self, NULL);
 
-      while(self->bModal)
+      while (self->bModal && !g_application.m_bStop)
       {
         Py_BEGIN_ALLOW_THREADS
         if (WindowXML_Check(self))
