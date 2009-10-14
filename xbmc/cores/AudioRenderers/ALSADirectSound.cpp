@@ -240,7 +240,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsi
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_access",nErr);
 
   // always use 16 bit samples
-  nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S16_LE);
+  nErr = snd_pcm_hw_params_set_format(m_pPlayHandle, hw_params, SND_PCM_FORMAT_S16);
   CHECK_ALSA_RETURN(LOGERROR,"hw_params_set_format",nErr);
 
   nErr = snd_pcm_hw_params_set_rate_near(m_pPlayHandle, hw_params, &m_uiSamplesPerSec, NULL);

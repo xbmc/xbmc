@@ -171,7 +171,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, int iChannels
 
   m_SampleSpec.channels = iChannels;
   m_SampleSpec.rate = uiSamplesPerSec;
-  m_SampleSpec.format = PA_SAMPLE_S16LE;  
+  m_SampleSpec.format = PA_SAMPLE_S16NE;  
 
   if (!pa_sample_spec_valid(&m_SampleSpec)) 
   {
