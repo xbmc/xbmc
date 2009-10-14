@@ -41,9 +41,6 @@
 #include "Picture.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
-#ifdef HAS_HAL
-#include "linux/HALManager.h"
-#endif
 
 #ifdef _WIN32
 #include "WIN32Util.h"
@@ -351,13 +348,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   switch (button)
   {
   case CONTEXT_BUTTON_EJECT_DRIVE:
-#ifdef HAS_HAL
-    return g_HalManager.Eject(item->m_strPath);
-#elif defined(_WIN32)
-    return CWIN32Util::EjectDrive(item->m_strPath[0]);
-#else
-    return false;
-#endif
+    return g_mediaManager.Eject(item->m_strPath);
 
 #ifdef HAS_DVD_DRIVE  
   case CONTEXT_BUTTON_PLAY_DISC:

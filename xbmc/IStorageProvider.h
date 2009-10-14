@@ -12,6 +12,8 @@ public:
   virtual void GetLocalDrives(VECSOURCES &localDrives) = 0;
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) = 0;
 
+  virtual bool Eject(CStdString mountpath) = 0;
+
   virtual std::vector<CStdString> GetDiskUsage() = 0;
 
   virtual bool PumpDriveChangeEvents() = 0;

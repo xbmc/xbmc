@@ -38,6 +38,11 @@ void CHALProvider::GetRemovableDrives(VECSOURCES &removableDrives)
   }
 }
 
+bool CHALProvider::Eject(CStdString mountpath)
+{
+  return g_HalManager.Eject(mountpath);
+}
+
 std::vector<CStdString> CHALProvider::GetDiskUsage()
 {
   return std::vector<CStdString>();

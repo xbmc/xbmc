@@ -148,6 +148,11 @@ void CDeviceKitDisksProvider::Initialize()
     DeviceAdded(devices[i].c_str());
 }
 
+bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
+{
+  return false;
+}
+
 std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
 {
   return std::vector<CStdString>();

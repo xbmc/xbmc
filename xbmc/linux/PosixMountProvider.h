@@ -14,6 +14,8 @@ public:
 
   virtual std::vector<CStdString> GetDiskUsage();
 
+  virtual bool Eject(CStdString mountpath) { return false; }
+
   virtual bool PumpDriveChangeEvents();
 private:
   void GetDrives(VECSOURCES &drives);

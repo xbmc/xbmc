@@ -72,6 +72,8 @@ public:
   CStdString GetDiskLabel(const CStdString& devicePath="");
   void SetHasOpticalDrive(bool bstatus);
 
+  bool Eject(CStdString mountpath);
+
   void ProcessEvents();
 
   std::vector<CStdString> GetDiskUsage();

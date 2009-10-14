@@ -424,6 +424,11 @@ void CMediaManager::SetHasOpticalDrive(bool bstatus)
   m_bhasoptical = bstatus;
 }
 
+bool CMediaManager::Eject(CStdString mountpath)
+{
+  return m_platformStorage->Eject(mountpath);
+}
+
 void CMediaManager::ProcessEvents()
 {
   if (m_platformStorage->PumpDriveChangeEvents())

@@ -52,6 +52,11 @@ public:
     m_instance->GetRemovableDrives(removableDrives);
   }
 
+  virtual bool Eject(CStdString mountpath)
+  {
+    return m_instance->Eject(mountpath);
+  }
+
   virtual std::vector<CStdString> GetDiskUsage()
   {
     return m_instance->GetDiskUsage();
