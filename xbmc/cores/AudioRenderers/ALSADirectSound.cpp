@@ -50,7 +50,7 @@ CALSADirectSound::CALSADirectSound()
 bool CALSADirectSound::Initialize(IAudioCallback* pCallback, int iChannels, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, const char* strAudioCodec, bool bIsMusic, bool bPassthrough)
 {
   CStdString device, deviceuse;
-  if (!m_bPassthrough)
+  if (!bPassthrough)
   {
     if (g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"))
       device = g_guiSettings.GetString("audiooutput.customdevice");
