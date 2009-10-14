@@ -28,10 +28,9 @@
 #include <mach/mach.h>
 #include <mach/mach_time.h>
 #include <sys/sysctl.h>
-#include <SDL/SDL.h>
-#else
-#include <SDL.h>
 #endif
+
+#include <SDL/SDL.h>
 
 #ifdef _LINUX
 
