@@ -163,6 +163,8 @@
 #ifdef _ARMEL
 #undef HAS_AVAHI
 #undef HAS_ZEROCONF
+#undef HAS_WEB_SERVER
+#undef HAS_VISUALISATION
 #endif
 
 // EGL detected. Dont use GLX!

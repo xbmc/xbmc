@@ -27,9 +27,6 @@
 #include "RenderSystem.h"
 #include "GUIShader.h"
 
-// This extension name may change, so define it here.
-#define GL_TEXTURE_NPOT         false//GL_OES_texture_npot
-
 class CRenderSystemGLES : public CRenderSystemBase
 {
 public:

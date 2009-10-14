@@ -73,7 +73,8 @@ long cas(volatile long* pAddr, long expectedVal, long swapVal)
 
 long cas(volatile long* pAddr, long expectedVal, long swapVal)
 {
-  throw "cas is not implemented on arm!";
+  // TODO: ARM Assembler
+  return 0;
 }
 
 #else // Linux / OSX86 (GCC)
@@ -189,7 +190,8 @@ long AtomicIncrement(volatile long* pAddr)
 
 long AtomicIncrement(volatile long* pAddr)
 {
-  throw "Atomics is not implemented on arm!";
+  // TODO: ARM Assembler
+  return 0;
 }
 
 #else // Linux / OSX86 (GCC)
@@ -252,7 +254,8 @@ long AtomicAdd(volatile long* pAddr, long amount)
 
 long AtomicAdd(volatile long* pAddr, long amount)
 {
-  throw "Atomics is not implemented on arm!";
+  // TODO: ARM Assembler
+  return 0;
 }
 
 #else // Linux / OSX86 (GCC)
@@ -314,7 +317,8 @@ long AtomicDecrement(volatile long* pAddr)
 
 long AtomicDecrement(volatile long* pAddr)
 {
-  throw "Atomics is not implemented on arm!";
+  // TODO: ARM Assembler
+  return 0;
 }
 
 #else // Linux / OSX86 (GCC)
@@ -378,7 +382,8 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 
 long AtomicSubtract(volatile long* pAddr, long amount)
 {
-  throw "Atomics is not implemented on arm!";
+  // TODO: ARM Assembler
+  return 0;
 }
 
 #else // Linux / OSX86 (GCC)

@@ -68,9 +68,11 @@ bool CRenderSystemGLES::InitRenderSystem()
   
   // Check if we need DPOT  
   m_NeedPower2Texture = true;
-  if (GL_TEXTURE_NPOT)
+  if (IsExtSupported("GL_TEXTURE_NPOT"))
     m_NeedPower2Texture = false;
   
+  CLog::Log(LOGDEBUG, "Need POT Texture? : %d", m_NeedPower2Texture);
+
   // Get our driver vendor and renderer
   m_RenderVendor   = (const char*) glGetString(GL_VENDOR);
   m_RenderRenderer = (const char*) glGetString(GL_RENDERER);
@@ -164,12 +166,29 @@ bool CRenderSystemGLES::ClearBuffers(float r, float g, float b, float a)
 
 bool CRenderSystemGLES::IsExtSupported(const char* extension)
 {
-  CStdString name;
-  name  = " ";
-  name += extension;
-  name += " ";
+  if (extension == "GL_EXT_framebuffer_object")
+  {
+    // GLES has FBO as a core element, not an extension!
+    return true;
+  }
+  else
+  {
+    if (extension == "GL_TEXTURE_NPOT")
+    {
+      // GLES can have different methods to detect this one.
+      // Check define first, then do extension string search if not defined.
+#ifdef GL_IMG_texture_npot
+      return true;
+#endif
+    }
 
-  return m_RenderExtensions.find(name) != std::string::npos;
+    CStdString name;
+    name  = " ";
+    name += extension;
+    name += " ";
+
+    return m_RenderExtensions.find(name) != std::string::npos;
+  }
 }
 
 static int64_t abs(int64_t a)
