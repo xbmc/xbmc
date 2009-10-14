@@ -236,8 +236,11 @@ void CLinuxRendererGL::ChooseUpscalingMethod()
     g_stSettings.m_currentVideoSettings.m_ScalingMethod = ret;
 
     // Initialize software upscaling.
-    InitializeSoftwareUpscaling();
-    CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
+    if (g_guiSettings.GetInt("videoplayer.upscalingalgorithm") < 10) //non-hardware
+    {
+      InitializeSoftwareUpscaling();
+      CLog::Log(LOGWARNING, "Upscale: selected algorithm %d", ret);
+    }
   }
 }
 
@@ -1593,12 +1596,12 @@ void CLinuxRendererGL::RenderVDPAU(int index, int field)
   glActiveTextureARB(GL_TEXTURE0);
 
   // Try some clamping or wrapping
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+  glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+  glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   VerifyGLState();
 
   glBegin(GL_QUADS);
