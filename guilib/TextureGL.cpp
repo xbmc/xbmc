@@ -97,15 +97,14 @@ void CGLTexture::LoadToGPU()
   }
 
 #ifdef HAS_GL
-  GLenum format = GL_BGRA;
+  glTexImage2D(GL_TEXTURE_2D, 0, 4, m_nTextureWidth, m_nTextureHeight, 0, GL_BGRA, GL_UNSIGNED_BYTE, m_pPixels);
 #elif HAS_GLES == 1
-  GLenum format = GL_BGRA_EXT;
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA_EXT, m_nTextureWidth, m_nTextureHeight, 0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, m_pPixels);
 #elif HAS_GLES == 2
   // There is no BGRA support in ES2.0, because it can easily be done in shaders,
-  GLenum format = GL_RGBA;
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_nTextureWidth, m_nTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_pPixels);
 #endif
-  glTexImage2D(GL_TEXTURE_2D, 0, 4, m_nTextureWidth, m_nTextureHeight, 0,
-    format, GL_UNSIGNED_BYTE, m_pPixels);
+
 #ifndef HAS_GLES
   glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
