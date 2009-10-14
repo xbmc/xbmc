@@ -34,6 +34,11 @@ public:
     m_instance->Initialize();
   }
 
+  virtual void Stop()
+  {
+    m_instance->Stop();
+  }
+
   virtual void GetLocalDrives(VECSOURCES &localDrives)
   {
     // Home directory

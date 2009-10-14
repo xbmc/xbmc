@@ -80,7 +80,7 @@ bool CConsoleDeviceKitPowerSyscall::CanReboot()
 bool CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit()
 {
   bool hasConsoleKitManager = false;
-  CDBusMessage consoleKitMessage("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanRestart");
+  CDBusMessage consoleKitMessage("org.freedesktop.ConsoleKit", "/org/freedesktop/ConsoleKit/Manager", "org.freedesktop.ConsoleKit.Manager", "CanReboot");
 
   DBusError error;
   dbus_error_init (&error);

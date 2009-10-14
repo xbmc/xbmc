@@ -8,6 +8,7 @@ public:
   virtual ~CPosixMountProvider() { }
 
   virtual void Initialize() { }
+  virtual void Stop() { }
 
   virtual void GetLocalDrives(VECSOURCES &localDrives) { GetDrives(localDrives); }
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) { /*GetDrives(removableDrives);*/ }

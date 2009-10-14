@@ -70,6 +70,14 @@ CMediaManager::CMediaManager()
   m_bhasoptical = false;
 }
 
+void CMediaManager::Stop()
+{
+  m_platformStorage->Stop();
+
+  delete m_platformStorage;
+  m_platformStorage = NULL;
+}
+
 void CMediaManager::Initialize()
 {
   m_platformStorage->Initialize();

@@ -8,6 +8,7 @@ public:
   virtual ~IStorageProvider() { }
 
   virtual void Initialize() = 0;
+  virtual void Stop() = 0;
 
   virtual void GetLocalDrives(VECSOURCES &localDrives) = 0;
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) = 0;

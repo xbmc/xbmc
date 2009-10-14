@@ -1296,10 +1296,6 @@ HRESULT CApplication::Initialize()
   if (!g_settings.bUseLoginScreen)
     UpdateLibraries();
 
-#ifdef HAS_HAL
-  g_HalManager.Initialize();
-#endif
-
   m_slowTimer.StartZero();
 
 #ifdef __APPLE__
@@ -3504,6 +3500,8 @@ void CApplication::Stop()
       g_xbmcHelper.Stop();
 #endif
 
+  g_mediaManager.Stop();
+
 /* Python resource freeing must be done after skin has been unloaded, not before
    some windows still need it when deinitializing during skin unloading. */
 #ifdef HAS_PYTHON
@@ -3517,10 +3515,6 @@ void CApplication::Stop()
       delete g_lcd;
       g_lcd=NULL;
     }
-#endif
-
-#ifdef HAS_HAL
-    g_HalManager.Stop();
 #endif
 
     CLog::Log(LOGNOTICE, "stopped");

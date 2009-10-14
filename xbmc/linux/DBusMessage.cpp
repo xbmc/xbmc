@@ -47,6 +47,9 @@ DBusMessage *CDBusMessage::Send(DBusBusType type)
 
   DBusMessage *returnMessage = Send(con, &error);
 
+  if (dbus_error_is_set(&error))
+    CLog::Log(LOGERROR, "DBus: Error %s - %s", error.name, error.message);
+
   dbus_error_free (&error);
   dbus_connection_unref(con);
 

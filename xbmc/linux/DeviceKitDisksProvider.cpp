@@ -67,7 +67,7 @@ bool CDeviceKitDiskDevice::UnMount()
 {
   if (m_isMounted && m_isRemovable && m_isPartition)
   {
-    CDBusMessage message("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "FilesystemMount");
+    CDBusMessage message("org.freedesktop.DeviceKit.Disks", m_DeviceKitUDI.c_str(), "org.freedesktop.DeviceKit.Disks.Device", "FilesystemUnmount");
 
     const char *array[0];
     message.AppendArgument(array, 0);
@@ -150,6 +150,17 @@ void CDeviceKitDisksProvider::Initialize()
 
 bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
 {
+  DeviceMap::iterator itr;
+  CStdString path(mountpath);
+  CUtil::RemoveSlashAtEnd(path);
+
+	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	{
+    CDeviceKitDiskDevice *device = itr->second;
+    if (device->m_MountPath.Equals(path))
+      return device->UnMount();
+  }
+
   return false;
 }
 

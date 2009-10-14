@@ -8,7 +8,8 @@ public:
   CHALProvider();
   virtual ~CHALProvider() { }
 
-  virtual void Initialize() { }
+  virtual void Initialize();
+  virtual void Stop();
 
   virtual void GetLocalDrives(VECSOURCES &localDrives);
   virtual void GetRemovableDrives(VECSOURCES &removableDrives);
