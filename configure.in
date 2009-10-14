@@ -187,86 +187,101 @@ AC_ARG_ENABLE([avahi],
 AC_ARG_ENABLE([external-libraries],
             [AS_HELP_STRING([--enable-external-libraries],
             [enable use of all supported external libraries (default is no) 'Linux only'])],
-            [use_external_libraries=$enableval],
-            [use_external_libraries=no])
+            [use_external_libraries=no
+             use_external_ffmpeg=$enableval
+             use_external_libmad=$enableval
+             use_external_liba52=$enableval
+             use_external_libdts=$enableval
+             use_external_libfaad=$enableval
+             use_external_libmpeg2=$enableval
+             use_external_libass=$enableval
+             use_external_libvorbis=$enableval
+             use_external_libogg=$enableval
+             use_external_libmpcdec=$enableval
+             use_external_libflac=$enableval
+             use_external_libwavpack=$enableval
+             use_external_python=$enableval
+            ],
+            [use_external_libraries=no
+             use_external_ffmpeg=no
+             use_external_libmad=no
+             use_external_liba52=no
+             use_external_libdts=no
+             use_external_libfaad=no
+             use_external_libmpeg2=no
+             use_external_libass=no
+             use_external_libvorbis=no
+             use_external_libogg=no
+             use_external_libmpcdec=no
+             use_external_libflac=no
+             use_external_libwavpack=no
+             use_external_python=no],
+            )
 
 AC_ARG_ENABLE([external-ffmpeg],
             [AS_HELP_STRING([--enable-external-ffmpeg],
             [enable use of external ffmpeg libraries (default is no) 'Linux only'])],
-            [use_external_ffmpeg=$enableval],
-            [use_external_ffmpeg=no])
+            [use_external_ffmpeg=$enableval])
 
 AC_ARG_ENABLE([external-libmad],
             [AS_HELP_STRING([--enable-external-libmad],
             [enable use of external libmad library (default is no) 'Linux only'])],
-            [use_external_libmad=$enableval],
-            [use_external_libmad=no])
+            [use_external_libmad=$enableval])
 
 AC_ARG_ENABLE([external-liba52],
             [AS_HELP_STRING([--enable-external-liba52],
             [enable use of external liba52 library (default is no) 'Linux only'])],
-            [use_external_liba52=$enableval],
-            [use_external_liba52=no])
+            [use_external_liba52=$enableval])
 
 AC_ARG_ENABLE([external-libdts],
             [AS_HELP_STRING([--enable-external-libdts],
             [enable use of external libdts library (default is no) 'Linux only'])],
-            [use_external_libdts=$enableval],
-            [use_external_libdts=no])
+            [use_external_libdts=$enableval])
 
 AC_ARG_ENABLE([external-libfaad],
             [AS_HELP_STRING([--enable-external-libfaad],
             [enable use of external libfaad library (default is no) 'Linux only'])],
-            [use_external_libfaad=$enableval],
-            [use_external_libfaad=no])
+            [use_external_libfaad=$enableval])
 
 AC_ARG_ENABLE([external-libmpeg2],
             [AS_HELP_STRING([--enable-external-libmpeg2],
             [enable use of external libmpeg2 library (default is no) 'Linux only'])],
-            [use_external_libmpeg2=$enableval],
-            [use_external_libmpeg2=no])
+            [use_external_libmpeg2=$enableval])
 
 AC_ARG_ENABLE([external-libass],
             [AS_HELP_STRING([--enable-external-libass],
             [enable use of external libass library (default is no) 'Linux only'])],
-            [use_external_libass=$enableval],
-            [use_external_libass=no])
+            [use_external_libass=$enableval])
 
 AC_ARG_ENABLE([external-libvorbis],
             [AS_HELP_STRING([--enable-external-libvorbis],
             [enable use of external libvorbis library (default is no) 'Linux only'])],
-            [use_external_libvorbis=$enableval],
-            [use_external_libvorbis=no])
+            [use_external_libvorbis=$enableval])
 
 AC_ARG_ENABLE([external-libogg],
             [AS_HELP_STRING([--enable-external-libogg],
             [enable use of external libogg library (default is no) 'Linux only'])],
-            [use_external_libogg=$enableval],
-            [use_external_libogg=no])
+            [use_external_libogg=$enableval])
 
 AC_ARG_ENABLE([external-libmpcdec],
             [AS_HELP_STRING([--enable-external-libmpcdec],
             [enable use of external libmpcdec library (default is no) 'Linux only'])],
-            [use_external_libmpcdec=$enableval],
-            [use_external_libmpcdec=no])
+            [use_external_libmpcdec=$enableval])
 
 AC_ARG_ENABLE([external-libflac],
             [AS_HELP_STRING([--enable-external-libflac],
             [enable use of external libflac library (default is no) 'Linux only'])],
-            [use_external_libflac=$enableval],
-            [use_external_libflac=no])
+            [use_external_libflac=$enableval])
 
 AC_ARG_ENABLE([external-libwavpack],
             [AS_HELP_STRING([--enable-external-libwavpack],
             [enable use of external libwavpack library (default is no) 'Linux only'])],
-            [use_external_libwavpack=$enableval],
-            [use_external_libwavpack=no])
+            [use_external_libwavpack=$enableval])
 
 AC_ARG_ENABLE([external-python],
             [AS_HELP_STRING([--enable-external-python],
             [enable use of external python library (default is no) 'Linux only'])],
-            [use_external_python=$enableval],
-            [use_external_python=no])
+            [use_external_python=$enableval])
 
 ### End of external library options
 
@@ -404,8 +419,8 @@ fi
   AC_CHECK_LIB([curl],      [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([dbus-1],    [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([hal-storage], [main],, AC_MSG_ERROR($missing_library))
-#  PKG_CHECK_MODULES([HAL], [hal], [INCLUDES+=" $HAL_CFLAGS"], AC_MSG_ERROR([$missing_library]))
-  AC_CHECK_LIB([hal],       [main],INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal", AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([HAL], [hal], [INCLUDES+=" $HAL_CFLAGS"], AC_MSG_ERROR([$missing_library]))
+#  AC_CHECK_LIB([hal],       [main],INCLUDES="$INCLUDES -DDBUS_API_SUBJECT_TO_CHANGE -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/hal", AC_MSG_ERROR($missing_library))
 fi
 
 # PulseAudio
@@ -469,18 +484,8 @@ else
   fi
 fi
 
-### External libraries checks
-if test "$use_external_libraries" = "yes"; then
-  AC_MSG_NOTICE($external_libraries_enabled)
-  USE_EXTERNAL_LIBRARIES=1
-  AC_DEFINE([USE_EXTERNAL_LIBRARIES], [1], [Whether to use external libraries.])
-else
-  AC_MSG_NOTICE($external_libraries_disabled)
-  USE_EXTERNAL_LIBRARIES=0
-fi
-
 # External FFmpeg
-if test "$use_external_libraries" = "yes" || test "$use_external_ffmpeg" = "yes"; then
+if test "$use_external_ffmpeg" = "yes"; then
   AC_CHECK_LIB([avcodec],          [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avformat],         [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([avutil],           [main],, AC_MSG_ERROR($missing_library))
@@ -516,7 +521,7 @@ else
 fi
 
 # External libmad
-if test "$use_external_libraries" = "yes" || test "$use_external_libmad" = "yes"; then
+if test "$use_external_libmad" = "yes"; then
   AC_CHECK_LIB([mad],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_libmad_enabled)
@@ -528,7 +533,7 @@ else
 fi
 
 # External liba52
-if test "$use_external_libraries" = "yes" || test "$use_external_liba52" = "yes"; then
+if test "$use_external_liba52" = "yes"; then
   AC_CHECK_LIB([a52],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_liba52_enabled)
@@ -540,7 +545,7 @@ else
 fi
 
 # External libdts
-if test "$use_external_libraries" = "yes" || test "$use_external_libdts" = "yes"; then
+if test "$use_external_libdts" = "yes"; then
   AC_CHECK_LIB([dts],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_libdts_enabled)
@@ -552,7 +557,7 @@ else
 fi
 
 # External libfaad
-if test "$use_external_libraries" = "yes" || test "$use_external_libfaad" = "yes"; then
+if test "$use_external_libfaad" = "yes"; then
   AC_CHECK_LIB([faad],          [main],, AC_MSG_ERROR($missing_library))
   # mp4ff is not included in Gentoo packages, which is why external libfaad
   # support has to be explicitely enabled
@@ -584,7 +589,7 @@ else
 fi
 
 # External libmpeg2
-if test "$use_external_libraries" = "yes" || test "$use_external_libmpeg2" = "yes"; then
+if test "$use_external_libmpeg2" = "yes"; then
   AC_CHECK_LIB([mpeg2],          [main],, AC_MSG_ERROR($missing_library))
   AC_CHECK_LIB([mpeg2convert],          [main],, AC_MSG_ERROR($missing_library))
 
@@ -597,7 +602,7 @@ else
 fi
 
 # External libass
-if test "$use_external_libraries" = "yes" || test "$use_external_libass" = "yes"; then
+if test "$use_external_libass" = "yes"; then
   # We need libass >= 0.9.7.
   AC_CHECK_LIB([ass], [ass_set_message_cb],
   [AC_CHECK_LIB([ass], [main],,)
@@ -612,7 +617,7 @@ else
 fi
 
 # External libvorbis
-if test "$use_external_libraries" = "yes" || test "$use_external_libvorbis" = "yes"; then
+if test "$use_external_libvorbis" = "yes"; then
   AC_MSG_NOTICE($external_libvorbis_enabled)
   USE_EXTERNAL_LIBVORBIS=1
   AC_DEFINE([USE_EXTERNAL_LIBVORBIS], [1], [Whether to use external libvorbis library.])
@@ -622,7 +627,7 @@ else
 fi
 
 # External libogg
-if test "$use_external_libraries" = "yes" || test "$use_external_libogg" = "yes"; then
+if test "$use_external_libogg" = "yes"; then
   AC_MSG_NOTICE($external_libogg_enabled)
   USE_EXTERNAL_LIBOGG=1
   AC_DEFINE([USE_EXTERNAL_LIBOGG], [1], [Whether to use external libogg library.])
@@ -632,7 +637,7 @@ else
 fi
 
 # External libmpcdec
-if test "$use_external_libraries" = "yes" || test "$use_external_libmpcdec" = "yes"; then
+if test "$use_external_libmpcdec" = "yes"; then
   AC_CHECK_LIB([mpcdec],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_libmpcdec_enabled)
@@ -644,7 +649,7 @@ else
 fi
 
 # External libflac
-if test "$use_external_libraries" = "yes" || test "$use_external_libflac" = "yes"; then
+if test "$use_external_libflac" = "yes"; then
   AC_CHECK_LIB([FLAC],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_libflac_enabled)
@@ -656,7 +661,7 @@ else
 fi
 
 # External libwavpack
-if test "$use_external_libraries" = "yes" || test "$use_external_libwavpack" = "yes"; then
+if test "$use_external_libwavpack" = "yes"; then
   AC_CHECK_LIB([wavpack],          [main],, AC_MSG_ERROR($missing_library))
 
   AC_MSG_NOTICE($external_libwavpack_enabled)
@@ -668,7 +673,7 @@ else
 fi
 
 # External Python
-if test "$use_external_libraries" = "yes" || test "$use_external_python" = "yes" || \
+if test "$use_external_python" = "yes" || \
   $(test "$host_cpu" = "powerpc" && test "$host_vendor" != "apple"); then
   AC_CHECK_LIB([python2.6], [main],,
   [AC_CHECK_LIB([python2.5], [main],,
@@ -947,75 +952,70 @@ elif test -x "/usr/bin/svnversion" ; then
 fi
 
 ### External libraries messages
-if test "$use_external_libraries" = "yes"; then
-  final_message="$final_message\n  External Libraries:\tYes"
+if test "$use_external_ffmpeg" = "yes"; then
+  final_message="$final_message\n  External FFmpeg:\tYes"
 else
-  final_message="$final_message\n  External Libraries:\tNo"
-  if test "$use_external_ffmpeg" = "yes"; then
-    final_message="$final_message\n  External FFmpeg:\tYes"
-  else
-    final_message="$final_message\n  External FFmpeg:\tNo"
-  fi
-  if test "$use_external_libmad" = "yes"; then
-    final_message="$final_message\n  External libmad:\tYes"
-  else
-    final_message="$final_message\n  External libmad:\tNo"
-  fi
-  if test "$use_external_liba52" = "yes"; then
-    final_message="$final_message\n  External liba52:\tYes"
-  else
-    final_message="$final_message\n  External liba52:\tNo"
-  fi
-  if test "$use_external_libdts" = "yes"; then
-    final_message="$final_message\n  External libdts:\tYes"
-  else
-    final_message="$final_message\n  External libdts:\tNo"
-  fi
-  if test "$use_external_libfaad" = "yes"; then
-    final_message="$final_message\n  External libfaad:\tYes"
-  else
-    final_message="$final_message\n  External libfaad:\tNo"
-  fi
-  if test "$use_external_libmpeg2" = "yes"; then
-    final_message="$final_message\n  External libmpeg2:\tYes"
-  else
-    final_message="$final_message\n  External libmpeg2:\tNo"
-  fi
-  if test "$use_external_libass" = "yes"; then
-    final_message="$final_message\n  External libass:\tYes"
-  else
-    final_message="$final_message\n  External libass:\tNo"
-  fi
-  if test "$use_external_libvorbis" = "yes"; then
-    final_message="$final_message\n  External libvorbis:\tYes"
-  else
-    final_message="$final_message\n  External libvorbis:\tNo"
-  fi
-  if test "$use_external_libogg" = "yes"; then
-    final_message="$final_message\n  External libogg:\tYes"
-  else
-    final_message="$final_message\n  External libogg:\tNo"
-  fi
-  if test "$use_external_libmpcdec" = "yes"; then
-    final_message="$final_message\n  External libmpcdec:\tYes"
-  else
-    final_message="$final_message\n  External libmpcdec:\tNo"
-  fi
-  if test "$use_external_libflac" = "yes"; then
-    final_message="$final_message\n  External libflac:\tYes"
-  else
-    final_message="$final_message\n  External libflac:\tNo"
-  fi
-  if test "$use_external_libwavpack" = "yes"; then
-    final_message="$final_message\n  External libwavpack:\tYes"
-  else
-    final_message="$final_message\n  External libwavpack:\tNo"
-  fi
-  if test "$use_external_python" = "yes"; then
-    final_message="$final_message\n  External Python:\tYes"
-  else
-    final_message="$final_message\n  External Python:\tNo"
-  fi
+  final_message="$final_message\n  External FFmpeg:\tNo"
+fi
+if test "$use_external_libmad" = "yes"; then
+  final_message="$final_message\n  External libmad:\tYes"
+else
+  final_message="$final_message\n  External libmad:\tNo"
+fi
+if test "$use_external_liba52" = "yes"; then
+  final_message="$final_message\n  External liba52:\tYes"
+else
+  final_message="$final_message\n  External liba52:\tNo"
+fi
+if test "$use_external_libdts" = "yes"; then
+  final_message="$final_message\n  External libdts:\tYes"
+else
+  final_message="$final_message\n  External libdts:\tNo"
+fi
+if test "$use_external_libfaad" = "yes"; then
+  final_message="$final_message\n  External libfaad:\tYes"
+else
+  final_message="$final_message\n  External libfaad:\tNo"
+fi
+if test "$use_external_libmpeg2" = "yes"; then
+  final_message="$final_message\n  External libmpeg2:\tYes"
+else
+  final_message="$final_message\n  External libmpeg2:\tNo"
+fi
+if test "$use_external_libass" = "yes"; then
+  final_message="$final_message\n  External libass:\tYes"
+else
+  final_message="$final_message\n  External libass:\tNo"
+fi
+if test "$use_external_libvorbis" = "yes"; then
+  final_message="$final_message\n  External libvorbis:\tYes"
+else
+  final_message="$final_message\n  External libvorbis:\tNo"
+fi
+if test "$use_external_libogg" = "yes"; then
+  final_message="$final_message\n  External libogg:\tYes"
+else
+  final_message="$final_message\n  External libogg:\tNo"
+fi
+if test "$use_external_libmpcdec" = "yes"; then
+  final_message="$final_message\n  External libmpcdec:\tYes"
+else
+  final_message="$final_message\n  External libmpcdec:\tNo"
+fi
+if test "$use_external_libflac" = "yes"; then
+  final_message="$final_message\n  External libflac:\tYes"
+else
+  final_message="$final_message\n  External libflac:\tNo"
+fi
+if test "$use_external_libwavpack" = "yes"; then
+  final_message="$final_message\n  External libwavpack:\tYes"
+else
+  final_message="$final_message\n  External libwavpack:\tNo"
+fi
+if test "$use_external_python" = "yes"; then
+  final_message="$final_message\n  External Python:\tYes"
+else
+  final_message="$final_message\n  External Python:\tNo"
 fi
 
 OUTPUT_FILES="Makefile \
@@ -1073,7 +1073,6 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(DEBUG_FLAGS)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
-AC_SUBST(USE_EXTERNAL_LIBRARIES)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(USE_EXTERNAL_LIBMAD)
 AC_SUBST(USE_EXTERNAL_LIBA52)
@@ -1433,7 +1432,7 @@ XB_CONFIG_MODULE([xbmc/lib/libass], [
     ./configure MACOSX_DEPLOYMENT_TARGET=10.4
   else
     CFLAGS="$CFLAGS -fPIC" \
-    ./configure
+    ./configure 
   fi
 ], [$USE_EXTERNAL_LIBASS])
 
