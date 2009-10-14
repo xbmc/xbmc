@@ -19,7 +19,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 else
 ifneq (@USE_EXTERNAL_LIBFAAD@,1)
 	make -C alac_decoder
-	$(CC) -shared -o $@ *.o \
+	$(CC) $(LDFLAGS) -shared -o $@ *.o \
 		alac_decoder/*.o \
 		../../dvdplayer/Codecs/libfaad2/libfaad/.libs/*.o \
 		../../dvdplayer/Codecs/libfaad2/common/mp4ff/.libs/*.o \
