@@ -34,10 +34,11 @@
 
 #ifdef __APPLE__
 #include "osx/CocoaPowerSyscall.h"
-#elif defined(_LINUX) && defined(HAS_DBUS) && defined(HAS_HAL)
-#include "linux/HALPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
+#ifdef HAS_HAL
+#include "linux/HALPowerSyscall.h"
+#endif
 #elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
 #endif
@@ -60,7 +61,7 @@ CPowerManager::CPowerManager()
 #elif defined(_LINUX) && defined(HAS_DBUS)
   if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleDeviceKitPowerSyscall();
-#if defined(_LINUX) && defined(HAS_DBUS) && defined(HAS_HAL)
+#ifdef HAS_HAL
   if (m_instance == NULL)
     m_instance = new CHALPowerSyscall();
 #endif
