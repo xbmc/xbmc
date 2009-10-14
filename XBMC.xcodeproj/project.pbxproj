@@ -206,6 +206,8 @@
 		7C779E57104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
 		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
+		7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
+		7CAA25361085963B0096DE39 /* PasswordManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA25331085963B0096DE39 /* PasswordManager.cpp */; };
 		7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
 		7CCF7E731067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
 		7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
@@ -2056,6 +2058,10 @@
 		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
 		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
+		7CAA25331085963B0096DE39 /* PasswordManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PasswordManager.cpp; sourceTree = "<group>"; };
+		7CAA25341085963B0096DE39 /* PasswordManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordManager.h; sourceTree = "<group>"; };
+		7CAA25371085971C0096DE39 /* MusicArtistInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MusicArtistInfo.h; sourceTree = "<group>"; };
+		7CAA25381085971C0096DE39 /* ScraperUrl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScraperUrl.h; sourceTree = "<group>"; };
 		7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSets.cpp; sourceTree = "<group>"; };
 		7CCF7E711067643800992676 /* DirectoryNodeSets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSets.h; sourceTree = "<group>"; };
 		7CCF7F1B1069F3AE00992676 /* Builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Builtins.cpp; sourceTree = "<group>"; };
@@ -6774,31 +6780,6 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
-				7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */,
-				7CCF7FC8106A0DF500992676 /* TimeUtils.h */,
-				7CCF7F1B1069F3AE00992676 /* Builtins.cpp */,
-				7CCF7F1C1069F3AE00992676 /* Builtins.h */,
-				83A72B950FBC8E3B00171871 /* LockFree.cpp */,
-				83A72B960FBC8E3B00171871 /* LockFree.h */,
-				83E0B2470F7C95FF0091643F /* Atomics.h */,
-				83E0B2480F7C95FF0091643F /* Atomics.cpp */,
-				88632A310E0C44DE00BB3DAB /* RssFeed.cpp */,
-				88632A320E0C44DE00BB3DAB /* RssFeed.h */,
-				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
-				E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */,
-				E36C29E90DA72486001F0C9D /* Fanart.cpp */,
-				436B38F3106628850049AB3B /* EndianSwap.h */,
-				6E97BDBF0DA2B620003A2A89 /* EventClient.h */,
-				6E97BDC00DA2B620003A2A89 /* EventPacket.h */,
-				6E97BDC10DA2B620003A2A89 /* EventServer.h */,
-				6E97BDC30DA2B620003A2A89 /* Fanart.h */,
-				6E97BDC40DA2B620003A2A89 /* Socket.h */,
-				E3E920010D8C622A002BF43D /* EventClient.cpp */,
-				E3E91FFA0D8C61DF002BF43D /* EventPacket.cpp */,
-				E3E91FFB0D8C61DF002BF43D /* EventServer.cpp */,
-				43BF09DD1080D39300E25290 /* fastmemcpy.h */,
-				F5E5697210803FC3006E788A /* fastmemcpy.cpp */,
-				E3E91FFC0D8C61DF002BF43D /* Socket.cpp */,
 				E38E1E230D25F9FD00618676 /* AlarmClock.cpp */,
 				E38E1E240D25F9FD00618676 /* AlarmClock.h */,
 				F5F8E1EF0E42807A00A8E96F /* ArabicShaping.cpp */,
@@ -6807,8 +6788,12 @@
 				E38E1E260D25F9FD00618676 /* Archive.h */,
 				F5FDF51C0E7218950005B0A6 /* AsyncFileCopy.cpp */,
 				F5FDF51B0E7218950005B0A6 /* AsyncFileCopy.h */,
+				83E0B2480F7C95FF0091643F /* Atomics.cpp */,
+				83E0B2470F7C95FF0091643F /* Atomics.h */,
 				E38E1E270D25F9FD00618676 /* BitstreamStats.cpp */,
 				E38E1E280D25F9FD00618676 /* BitstreamStats.h */,
+				7CCF7F1B1069F3AE00992676 /* Builtins.cpp */,
+				7CCF7F1C1069F3AE00992676 /* Builtins.h */,
 				E38E1E290D25F9FD00618676 /* CharsetConverter.cpp */,
 				E38E1E2A0D25F9FD00618676 /* CharsetConverter.h */,
 				E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */,
@@ -6819,9 +6804,20 @@
 				E38E1E320D25F9FD00618676 /* DownloadQueue.h */,
 				E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */,
 				E38E1E340D25F9FD00618676 /* DownloadQueueManager.h */,
+				436B38F3106628850049AB3B /* EndianSwap.h */,
 				E38E1E350D25F9FD00618676 /* Event.cpp */,
 				E38E1E360D25F9FD00618676 /* Event.h */,
+				E3E920010D8C622A002BF43D /* EventClient.cpp */,
+				6E97BDBF0DA2B620003A2A89 /* EventClient.h */,
+				E3E91FFA0D8C61DF002BF43D /* EventPacket.cpp */,
+				6E97BDC00DA2B620003A2A89 /* EventPacket.h */,
+				E3E91FFB0D8C61DF002BF43D /* EventServer.cpp */,
+				6E97BDC10DA2B620003A2A89 /* EventServer.h */,
+				E36C29E90DA72486001F0C9D /* Fanart.cpp */,
+				6E97BDC30DA2B620003A2A89 /* Fanart.h */,
 				E38E1E390D25F9FD00618676 /* FastDelegate.h */,
+				F5E5697210803FC3006E788A /* fastmemcpy.cpp */,
+				43BF09DD1080D39300E25290 /* fastmemcpy.h */,
 				E38E1E3C0D25F9FD00618676 /* fstrcmp.cpp */,
 				E38E1E3D0D25F9FD00618676 /* fstrcmp.h */,
 				E38E1E3E0D25F9FD00618676 /* GUIInfoManager.cpp */,
@@ -6843,18 +6839,24 @@
 				7CAA205B107AFC280096DE39 /* Job.h */,
 				E38E1E550D25F9FD00618676 /* LCD.cpp */,
 				E38E1E560D25F9FD00618676 /* LCD.h */,
+				83A72B950FBC8E3B00171871 /* LockFree.cpp */,
+				83A72B960FBC8E3B00171871 /* LockFree.h */,
 				E38E1E5B0D25F9FD00618676 /* log.cpp */,
 				E38E1E5C0D25F9FD00618676 /* log.h */,
 				F5F8E1E60E427F6700A8E96F /* md5.cpp */,
 				F5F8E1E70E427F6700A8E96F /* md5.h */,
 				E38E1E650D25F9FD00618676 /* MusicAlbumInfo.cpp */,
 				E38E1E660D25F9FD00618676 /* MusicAlbumInfo.h */,
+				E36C29E80DA72486001F0C9D /* MusicArtistInfo.cpp */,
+				7CAA25371085971C0096DE39 /* MusicArtistInfo.h */,
 				E38E1E670D25F9FD00618676 /* MusicInfoScraper.cpp */,
 				E38E1E680D25F9FD00618676 /* MusicInfoScraper.h */,
 				E38E1E690D25F9FD00618676 /* Mutex.cpp */,
 				E38E1E6A0D25F9FD00618676 /* Mutex.h */,
 				E38E1E6B0D25F9FD00618676 /* Network.cpp */,
 				E38E1E6C0D25F9FD00618676 /* Network.h */,
+				7CAA25331085963B0096DE39 /* PasswordManager.cpp */,
+				7CAA25341085963B0096DE39 /* PasswordManager.h */,
 				E38E1E6D0D25F9FD00618676 /* PCMAmplifier.cpp */,
 				E38E1E6E0D25F9FD00618676 /* PCMAmplifier.h */,
 				E38E1E6F0D25F9FD00618676 /* PerformanceSample.cpp */,
@@ -6863,15 +6865,21 @@
 				E38E1E720D25F9FD00618676 /* PerformanceStats.h */,
 				E38E1E730D25F9FD00618676 /* RegExp.cpp */,
 				E38E1E740D25F9FD00618676 /* RegExp.h */,
+				88632A310E0C44DE00BB3DAB /* RssFeed.cpp */,
+				88632A320E0C44DE00BB3DAB /* RssFeed.h */,
 				E38E1E750D25F9FD00618676 /* RssReader.cpp */,
 				E38E1E760D25F9FD00618676 /* RssReader.h */,
 				E38E1E770D25F9FD00618676 /* ScraperParser.cpp */,
 				E38E1E780D25F9FD00618676 /* ScraperParser.h */,
+				E36C29E70DA72486001F0C9D /* ScraperUrl.cpp */,
+				7CAA25381085971C0096DE39 /* ScraperUrl.h */,
 				E38E1E790D25F9FD00618676 /* SharedSection.cpp */,
 				E38E1E7A0D25F9FD00618676 /* SharedSection.h */,
 				E38E1E7B0D25F9FD00618676 /* SingleLock.cpp */,
 				E38E1E7C0D25F9FD00618676 /* SingleLock.h */,
 				E38E1E7E0D25F9FD00618676 /* Sntp.h */,
+				E3E91FFC0D8C61DF002BF43D /* Socket.cpp */,
+				6E97BDC40DA2B620003A2A89 /* Socket.h */,
 				E38E1E7F0D25F9FD00618676 /* Splash.cpp */,
 				E38E1E800D25F9FD00618676 /* Splash.h */,
 				E38E1E810D25F9FD00618676 /* Stopwatch.cpp */,
@@ -6885,6 +6893,8 @@
 				F5E55B6F10741340006E788A /* TeletextDefines.h */,
 				E38E1E850D25F9FD00618676 /* Thread.cpp */,
 				E38E1E860D25F9FD00618676 /* Thread.h */,
+				7CCF7FC7106A0DF500992676 /* TimeUtils.cpp */,
+				7CCF7FC8106A0DF500992676 /* TimeUtils.h */,
 				E38E1E890D25F9FD00618676 /* TuxBoxUtil.cpp */,
 				E38E1E8A0D25F9FD00618676 /* TuxBoxUtil.h */,
 				E38E1E8B0D25F9FD00618676 /* UdpClient.cpp */,
@@ -8206,6 +8216,7 @@
 				43BF09A31080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */,
 				43BF09AB1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */,
 				F5E56BA61082A675006E788A /* PosixMountProvider.cpp in Sources */,
+				7CAA25351085963B0096DE39 /* PasswordManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9074,6 +9085,7 @@
 				43BF09A11080D1E900E25290 /* RenderingControlSCPD.cpp in Sources */,
 				43BF09AA1080D2ED00E25290 /* RdrConnectionManagerSCPD.cpp in Sources */,
 				F5E56BA71082A675006E788A /* PosixMountProvider.cpp in Sources */,
+				7CAA25361085963B0096DE39 /* PasswordManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
