@@ -36,9 +36,7 @@
 #include "osx/CocoaPowerSyscall.h"
 #elif defined(_LINUX) && defined(HAS_DBUS)
 #include "linux/ConsoleDeviceKitPowerSyscall.h"
-#ifdef HAS_HAL
 #include "linux/HALPowerSyscall.h"
-#endif
 #elif defined(_WIN32)
 #include "win32/Win32PowerSyscall.h"
 #endif
@@ -61,10 +59,8 @@ CPowerManager::CPowerManager()
 #elif defined(_LINUX) && defined(HAS_DBUS)
   if (CConsoleDeviceKitPowerSyscall::HasDeviceConsoleKit())
     m_instance = new CConsoleDeviceKitPowerSyscall();
-#ifdef HAS_HAL
-  if (m_instance == NULL)
+  else
     m_instance = new CHALPowerSyscall();
-#endif
 #elif defined(_WIN32)
   m_instance = new CWin32PowerSyscall();
 #endif
