@@ -182,7 +182,24 @@ bool CDeviceKitDisksProvider::PumpDriveChangeEvents()
 
 bool CDeviceKitDisksProvider::HasDeviceKitDisks()
 {
-  return true;
+  bool hasDeviceKitDisks = false;
+  CDBusMessage message("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "EnumerateDevices");
+
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *con = dbus_bus_get(DBUS_BUS_SYSTEM, &error);
+
+  message.Send(con, &error);
+
+  if (!dbus_error_is_set(&error))
+    hasDeviceKitDisks = true;
+  else
+    CLog::Log(LOGDEBUG, "DeviceKit.Disks: %s - %s", error.name, error.message);
+
+  dbus_error_free (&error);
+  dbus_connection_unref(con);
+
+  return hasDeviceKitDisks;
 }
 
 void CDeviceKitDisksProvider::DeviceAdded(const char *object)

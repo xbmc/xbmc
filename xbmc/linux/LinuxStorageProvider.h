@@ -9,16 +9,19 @@ class CLinuxStorageProvider : public IStorageProvider
 public:
   CLinuxStorageProvider()
   {
-#ifdef HAS_HAL
-    m_instance = new CHALProvider();
-#else
+    m_instance = NULL;
+
 #ifdef HAS_DBUS
     if (CDeviceKitDisksProvider::HasDeviceKitDisks())
       m_instance = new CDeviceKitDisksProvider();
-    else
 #endif
+#ifdef HAS_HAL
+    if (m_instance == NULL)
+      m_instance = new CHALProvider();
+#endif
+
+    if (m_instance == NULL)
       m_instance = new CPosixMountProvider();
-#endif
   }
 
   virtual ~CLinuxStorageProvider()
