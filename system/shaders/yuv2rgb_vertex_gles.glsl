@@ -15,4 +15,4 @@ void main ()
   m_cordY     = m_attrcordY;
   m_cordU     = m_attrcordU;
   m_cordV     = m_attrcordV;
-};
+}
