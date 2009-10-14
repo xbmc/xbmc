@@ -26,7 +26,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@
 else
-	$(CXX) -shared -o $(SLIB) -Wl,--whole-archive -lpng -ljasper -ljpeg \
+	$(CXX) $(LDFLAGS) -shared -o $(SLIB) -Wl,--whole-archive -lpng -ljasper -ljpeg \
 		-lz $(SLIBS) -Wl,--no-whole-archive \
 		`cat ../../cores/DllLoader/exports/wrapper.def` \
 		../../cores/DllLoader/exports/wrapper.o

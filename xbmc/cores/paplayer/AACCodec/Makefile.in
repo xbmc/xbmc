@@ -26,7 +26,7 @@ ifneq (@USE_EXTERNAL_LIBFAAD@,1)
 		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 else
 	make -C alac_decoder
-	$(CC) -shared -o $@ *.o \
+	$(CC) $(LDFLAGS) -shared -o $@ *.o \
 		alac_decoder/*.o -lfaad -lmp4ff \
 		`cat ../../DllLoader/exports/wrapper.def` ../../DllLoader/exports/wrapper.o
 endif

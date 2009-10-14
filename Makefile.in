@@ -450,7 +450,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	#  so only exclude it for osx builds
 	@echo "excluding xbmc-xrandr"
 else
-	$(CC) $(CFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
+	$(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lXrender -lX11 
 endif
 
 tools/XBMCTex/XBMCTex:

@@ -26,12 +26,12 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	chmod +x $@
 else
 ifneq (@USE_EXTERNAL_LIBMPCDEC@,1)
-	$(CC) -shared -o $@ -Wl,--whole-archive ../src/.libs/libmpcdec.a \
+	$(CC) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive ../src/.libs/libmpcdec.a \
 		-Wl,--no-whole-archive ../src/xbmc_interface.o \
 		`cat ../../../DllLoader/exports/wrapper.def` \
 		../../../DllLoader/exports/wrapper.o
 else
-	$(CC) -shared -o $@ -lmpcdec ../src/xbmc_interface.o \
+	$(CC) $(LDFLAGS) -shared -o $@ -lmpcdec ../src/xbmc_interface.o \
 		`cat ../../../DllLoader/exports/wrapper.def` \
 		../../../DllLoader/exports/wrapper.o
 # TODO: Having xbmc_interface here and linking at the end seems more like a

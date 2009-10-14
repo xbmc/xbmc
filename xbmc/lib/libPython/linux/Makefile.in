@@ -91,13 +91,13 @@ endif
 
 ifneq (@USE_EXTERNAL_PYTHON@,1)
 $(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF) ../Python/libpython2.4.a
-	$(CC) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.4.a \
+	$(CC) $(LDFLAGS) -shared -o $@ -Wl,--whole-archive ../Python/libpython2.4.a \
 		-Wl,--no-whole-archive `cat wrapper_python.def` wrapper_python.o \
 		`cat ../../../cores/DllLoader/exports/wrapper.def` \
 		../../../cores/DllLoader/exports/wrapper.o
 else
 $(SLIB): $(WRAPPER) $(WRAPPERDEF) $(PYWRAP) $(PYWRAPDEF)
-	$(CC) -shared -o $@ -l$(PYVERSION) \
+	$(CC) $(LDFLAGS) -shared -o $@ -l$(PYVERSION) \
 		`cat wrapper_python.def` wrapper_python.o \
 		`cat ../../../cores/DllLoader/exports/wrapper.def` \
 		../../../cores/DllLoader/exports/wrapper.o
@@ -151,4 +151,4 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 endif
 
 
-
+include ../../../../Makefile.include

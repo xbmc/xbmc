@@ -9,6 +9,7 @@ CXX=@CXX@
 CC=@CC@
 CXXFLAGS+=@CXXFLAGS@
 CXXFLAGS+=@DEBUG_FLAGS@
+LDFLAGS+=@LDFLAGS@
 CFLAGS+=@CFLAGS@
 CFLAGS+=@DEBUG_FLAGS@
 INCLUDES+=@INCLUDES@
@@ -40,7 +41,7 @@ endif
 
 .cpp.o:
 	@rm -f ${<:.cpp=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cpp=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(LDFLAGS) $< -o ${<:.cpp=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -48,7 +49,7 @@ endif
 
 .cc.o:
 	@rm -f ${<:.cc=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.cc=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(LDFLAGS) $< -o ${<:.cc=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -56,7 +57,7 @@ endif
 
 .c.o:
 	@rm -f ${<:.c=.o}
-	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.c=.o}
+	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $(LDFLAGS) $< -o ${<:.c=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -64,7 +65,7 @@ endif
 
 .C.o:
 	@rm -f ${<:.C=.o}
-	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.C=.o}
+	$(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $(LDFLAGS) $< -o ${<:.C=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -72,14 +73,14 @@ endif
 
 .S.o:
 	rm -f ${<:.S=.o}
-	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.S=.o}
+	$(CC) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $(LDFLAGS) $< -o ${<:.S=.o}
 
 %.h.gch : %.h
-	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@
+	$(CXX) -c $(CFLAGS) $(DEFINES) $(INCLUDES) $(LDFLAGS) $< -o $@
 
 .m.o:
 	@rm -f ${<:.m=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.m=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(LDFLAGS) $< -o ${<:.m=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
@@ -87,7 +88,7 @@ endif
 
 .mm.o:
 	@rm -f ${<:.mm=.o}
-	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o ${<:.mm=.o}
+	$(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $(LDFLAGS) $< -o ${<:.mm=.o}
 	@cp $*.d $*.P; \
 	  sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
 	      -e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
