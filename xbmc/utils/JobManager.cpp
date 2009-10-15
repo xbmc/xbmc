@@ -46,6 +46,7 @@ CJobWorker::~CJobWorker()
 
 void CJobWorker::Process()
 {
+  SetPriority(THREAD_PRIORITY_LOWEST);
   while (true)
   {
     // request an item from our manager (this call is blocking)
