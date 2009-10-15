@@ -914,14 +914,8 @@ namespace PYXBMC
   PyMODINIT_FUNC
   DeinitXBMCModule()
   {
-    Py_DECREF(&Keyboard_Type);
-    Py_DECREF(&Player_Type);
-    Py_DECREF(&PlayList_Type);
-    Py_DECREF(&PlayListItem_Type);
-    Py_DECREF(&InfoTagMusic_Type);
-    Py_DECREF(&InfoTagVideo_Type);
-    Py_DECREF(&Language_Type);
-    Py_DECREF(&Settings_Type);
+    // no need to Py_DECREF our objects (see InitXBMCModule()) as they were created only
+    // so that they could be added to the module, which steals a reference.
   }
 
   PyMODINIT_FUNC
