@@ -860,6 +860,21 @@ void CGUIWindowVideoNav::OnDeleteItem(int iItem)
   }
 
   CFileItemPtr pItem = m_vecItems->Get(iItem);
+  if (pItem->m_strPath.Left(14).Equals("videodb://1/7/") && pItem->m_strPath.size() > 14 && pItem->m_bIsFolder)
+  {
+    CFileItemList items;
+    CDirectory::GetDirectory(pItem->m_strPath,items);
+    for (int i=0;i<items.Size();++i)
+    {
+      *pItem = *items[i];
+      OnDeleteItem(iItem);
+    }
+    CVideoDatabaseDirectory dir;
+    CQueryParams params;
+    dir.GetQueryParams(pItem->m_strPath,params);
+    m_database.DeleteSet(params.GetSetId());
+    return;
+  }
   if (!DeleteItem(pItem.get()))
     return;
 
@@ -1172,8 +1187,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (node != NODE_TYPE_SEASONS)
             buttons.Add(CONTEXT_BUTTON_EDIT, 16105); //Edit Title
         }
-        if (item->IsVideoDb() && item->m_bIsFolder && item->m_strPath.Left(14).Equals("videodb://1/7/"))
-          buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
         if (m_database.HasContent(VIDEODB_CONTENT_TVSHOWS) && item->HasVideoInfoTag() &&
            !item->m_bIsFolder && item->GetVideoInfoTag()->m_iEpisode == -1 &&
             item->GetVideoInfoTag()->m_strArtist.IsEmpty()) // movie entry
@@ -1190,7 +1203,11 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
           
         if (item->m_strPath.Left(14).Equals("videodb://1/7/") && item->m_strPath.size() > 14 && item->m_bIsFolder) // sets
+        {
+          buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
           buttons.Add(CONTEXT_BUTTON_SET_MOVIESET_THUMB, 20435);
+          buttons.Add(CONTEXT_BUTTON_DELETE, 646);
+        }
 
         if (node == NODE_TYPE_ACTOR && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
         {

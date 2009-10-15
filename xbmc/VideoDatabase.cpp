@@ -2651,6 +2651,23 @@ void CVideoDatabase::DeleteStreamDetails(int idFile)
     m_pDS->exec(FormatSQL("delete from streamdetails where idFile=%i", idFile));
 }
 
+void CVideoDatabase::DeleteSet(long lSetId)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+
+    CStdString strSQL;
+    strSQL=FormatSQL("delete from sets where idSet=%i", lSetId);
+    m_pDS->exec(strSQL.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, lSetId);
+  }
+}
+
 void CVideoDatabase::GetDetailsFromDB(auto_ptr<Dataset> &pDS, int min, int max, const SDbTableOffsets *offsets, CVideoInfoTag &details)
 {
   for (int i = min + 1; i < max; i++)
