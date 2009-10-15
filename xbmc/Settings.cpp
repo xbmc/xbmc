@@ -278,12 +278,6 @@ VECSOURCES *CSettings::GetSourcesFromType(const CStdString &type)
     return &g_settings.m_videoSources;
   else if (type == "pictures")
     return &g_settings.m_pictureSources;
-  else if (type == "upnpmusic")
-    return &g_settings.m_UPnPMusicSources;
-  else if (type == "upnpvideo")
-    return &g_settings.m_UPnPVideoSources;
-  else if (type == "upnppictures")
-    return &g_settings.m_UPnPPictureSources;
 
   return NULL;
 }
@@ -1299,11 +1293,6 @@ bool CSettings::LoadUPnPXml(const CStdString& strSettingsFile)
   XMLUtils::GetString(pRootElement, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   XMLUtils::GetInt(pRootElement, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
-  CStdString strDefault;
-  GetSources(pRootElement,"music",g_settings.m_UPnPMusicSources,strDefault);
-  GetSources(pRootElement,"video",g_settings.m_UPnPVideoSources,strDefault);
-  GetSources(pRootElement,"pictures",g_settings.m_UPnPPictureSources,strDefault);
-
   return true;
 }
 
@@ -1321,47 +1310,6 @@ bool CSettings::SaveUPnPXml(const CStdString& strSettingsFile) const
   XMLUtils::SetString(pRoot, "UUIDRenderer", g_settings.m_UPnPUUIDRenderer);
   XMLUtils::SetInt(pRoot, "PortRenderer", g_settings.m_UPnPPortRenderer);
 
-  VECSOURCES* pShares[3];
-  pShares[0] = &g_settings.m_UPnPMusicSources;
-  pShares[1] = &g_settings.m_UPnPVideoSources;
-  pShares[2] = &g_settings.m_UPnPPictureSources;
-  for (int k=0;k<3;++k)
-  {
-    if ((*pShares)[k].size()==0)
-      continue;
-
-    TiXmlElement xmlType("");
-    if (k==0)
-      xmlType = TiXmlElement("music");
-    if (k==1)
-      xmlType = TiXmlElement("video");
-    if (k==2)
-      xmlType = TiXmlElement("pictures");
-
-    TiXmlNode* pNode = pRoot->InsertEndChild(xmlType);
-
-    for (unsigned int j=0;j<(*pShares)[k].size();++j)
-    {
-      // create a new Element
-      TiXmlText xmlName((*pShares)[k][j].strName);
-      TiXmlElement eName("name");
-      eName.InsertEndChild(xmlName);
-
-      TiXmlElement source("source");
-      source.InsertEndChild(eName);
-
-      for (unsigned int i = 0; i < (*pShares)[k][j].vecPaths.size(); i++)
-      {
-        TiXmlText xmlPath((*pShares)[k][j].vecPaths[i]);
-        TiXmlElement ePath("path");
-        ePath.InsertEndChild(xmlPath);
-        source.InsertEndChild(ePath);
-      }
-
-      if (pNode)
-        pNode->ToElement()->InsertEndChild(source);
-    }
-  }
   // save the file
   return xmlDoc.SaveFile(strSettingsFile);
 }
@@ -1450,7 +1398,7 @@ bool CSettings::DeleteSource(const CStdString &strType, const CStdString strName
     }
   }
 
-  if (virtualSource || strType.Find("upnp") > -1)
+  if (virtualSource)
     return found;
 
   return SaveSources();
@@ -1484,7 +1432,7 @@ bool CSettings::AddShare(const CStdString &type, const CMediaSource &share)
   }
   pShares->push_back(shareToAdd);
 
-  if (!share.m_ignore || type.Find("upnp") < 0)
+  if (!share.m_ignore)
   {
     return SaveSources();
   }

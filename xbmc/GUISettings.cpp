@@ -585,9 +585,6 @@ void CGUISettings::Initialize()
   AddBool(2, "upnp.renderer", 21881, false);
   AddSeparator(3,"upnp.sep1");
   AddBool(4, "upnp.server", 21360, false);
-  AddString(5, "upnp.musicshares", 21361, "", BUTTON_CONTROL_STANDARD);
-  AddString(6, "upnp.videoshares", 21362, "", BUTTON_CONTROL_STANDARD);
-  AddString(7, "upnp.pictureshares", 21363, "", BUTTON_CONTROL_STANDARD);
 
   // remote events settings
 #ifdef HAS_EVENT_SERVER

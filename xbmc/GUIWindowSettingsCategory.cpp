@@ -1078,11 +1078,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                          g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
                                          !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
     }
-    else if (strSetting.Equals("upnp.musicshares") || strSetting.Equals("upnp.videoshares") || strSetting.Equals("upnp.pictureshares"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
-    }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
     {
@@ -2406,39 +2401,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.RefreshEventServer();
     }
 #endif
-  }
-  else if (strSetting.Equals("upnp.musicshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
-  else if (strSetting.Equals("upnp.videoshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
-  else if (strSetting.Equals("upnp.pictureshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {

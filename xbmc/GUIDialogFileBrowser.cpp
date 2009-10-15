@@ -753,12 +753,6 @@ bool CGUIDialogFileBrowser::ShowAndGetSource(CStdString &path, bool allowNetwork
   VECSOURCES shares;
   if (!strType.IsEmpty())
   {
-    if (strType.Equals("upnpmusic"))
-      browser->SetHeading(g_localizeStrings.Get(21361));
-    if (strType.Equals("upnpvideo"))
-      browser->SetHeading(g_localizeStrings.Get(21362));
-    if (strType.Equals("upnppictures"))
-      browser->SetHeading(g_localizeStrings.Get(21363));
     if (additionalShare)
       shares = *additionalShare;
     browser->m_addSourceType = strType;

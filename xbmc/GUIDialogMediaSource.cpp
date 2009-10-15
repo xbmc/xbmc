@@ -178,13 +178,6 @@ bool CGUIDialogMediaSource::ShowAndEditMediaSource(const CStdString &type, const
 {
   VECSOURCES* pShares=NULL;
 
-  if (type.Equals("upnpmusic"))
-    pShares = &g_settings.m_UPnPMusicSources;
-  if (type.Equals("upnpvideo"))
-    pShares = &g_settings.m_UPnPVideoSources;
-  if (type.Equals("upnppictures"))
-    pShares = &g_settings.m_UPnPPictureSources;
-
   if (pShares)
   {
     for (unsigned int i=0;i<pShares->size();++i)
@@ -240,13 +233,13 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   // Browse is called.  Open the filebrowser dialog.
   // Ignore current path is best at this stage??
   CStdString path;
-  bool allowNetworkShares(m_type != "programs" && m_type.Left(4) != "upnp");
+  bool allowNetworkShares(m_type != "programs");
   VECSOURCES extraShares;
 
   if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->m_strPath))
     m_bNameChanged=true;
 
-  if (m_type == "music" || m_type == "upnpmusic")
+  if (m_type == "music")
   { // add the music playlist location
     CMediaSource share1;
     share1.strPath = "special://musicplaylists/";
@@ -303,7 +296,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
  }
-  else if (m_type == "video" || m_type == "upnpvideo")
+  else if (m_type == "video")
   { // add the music playlist location
     CMediaSource share1;
     share1.m_ignore = true;
@@ -343,7 +336,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
   }
-  else if (m_type == "pictures" || m_type == "upnpictures")
+  else if (m_type == "pictures")
   {
     CMediaSource share1;
     share1.m_ignore = true;
@@ -536,12 +529,6 @@ void CGUIDialogMediaSource::SetTypeOfMedia(const CStdString &type, bool editNotA
     typeStringID = 350;  // "Programs"
   else if (type == "pictures")
     typeStringID = 1213;  // "Pictures"
-  else if (type == "upnpmusic")
-    typeStringID = 21356;
-  else if (type == "upnpvideo")
-    typeStringID = 21357;
-  else if (type == "upnppictures")
-    typeStringID = 21358;
   else // if (type == "files");
     typeStringID = 744;  // "Files"
   CStdString format;
