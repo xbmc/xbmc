@@ -46,7 +46,6 @@ CGUIDialogVisualisationSettings::CGUIDialogVisualisationSettings(void)
   m_pOriginalSettingsButton = NULL;
   m_pVisualisation = NULL;
   m_pSettings = NULL;
-  LoadOnDemand(false);    // we are loaded by the vis window.
 }
 
 CGUIDialogVisualisationSettings::~CGUIDialogVisualisationSettings(void)
