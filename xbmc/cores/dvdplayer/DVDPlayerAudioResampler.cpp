@@ -87,7 +87,7 @@ void CDVDPlayerResampler::Add(DVDAudioFrame &audioframe, double pts)
   }
 }
 
-bool CDVDPlayerResampler::Retreive(DVDAudioFrame &audioframe, double &pts)
+bool CDVDPlayerResampler::Retrieve(DVDAudioFrame &audioframe, double &pts)
 {
   //check if nr of channels changed so we can allocate new buffers if necessary
   CheckResampleBuffers(audioframe.channels);

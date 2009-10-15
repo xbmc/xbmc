@@ -714,7 +714,7 @@ bool CDVDPlayerAudio::OutputPacket(DVDAudioFrame &audioframe)
     m_resampler.Add(audioframe, audioframe.pts);
     //give any packets from the resampler to the audiorenderer
     bool packetadded = false;
-    while(m_resampler.Retreive(audioframe, audioframe.pts))
+    while(m_resampler.Retrieve(audioframe, audioframe.pts))
     {
       m_dvdAudio.AddPackets(audioframe);
       packetadded = true;
