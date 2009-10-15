@@ -85,8 +85,6 @@ class CVideoReferenceClock : public CThread
     CEvent  m_Started;            //set when the vblank clock is started
     CEvent  m_VblankEvent;        //set when a vblank happens
 
-    int     m_RREventBase;
-    
     CCriticalSection m_CritSection;
 
 #if defined(HAS_GLX) && defined(HAS_XRANDR)
@@ -103,6 +101,7 @@ class CVideoReferenceClock : public CThread
     XVisualInfo *m_vInfo;
     Window       m_Window;
     GLXContext   m_Context;
+    int          m_RREventBase;
 
     bool         m_UseNvSettings;
 
