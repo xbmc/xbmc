@@ -1186,6 +1186,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
         if (m_vecItems->m_strPath.Equals("plugin://video/"))
           buttons.Add(CONTEXT_BUTTON_SET_PLUGIN_THUMB, 1044);
+          
+        if (item->m_strPath.Left(14).Equals("videodb://1/7/") && item->m_strPath.size() > 14 && item->m_bIsFolder) // sets
+          buttons.Add(CONTEXT_BUTTON_SET_MOVIESET_THUMB, 20435);
 
         if (node == NODE_TYPE_ACTOR && !dir.IsAllItem(item->m_strPath) && item->m_bIsFolder)
         {
@@ -1302,6 +1305,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_SET_ACTOR_THUMB:
   case CONTEXT_BUTTON_SET_ARTIST_THUMB:
   case CONTEXT_BUTTON_SET_PLUGIN_THUMB:
+  case CONTEXT_BUTTON_SET_MOVIESET_THUMB:
     {
       // Grab the thumbnails from the web
       CStdString strPath;
@@ -1347,6 +1351,8 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedActorThumb();
       if (button == CONTEXT_BUTTON_SET_ARTIST_THUMB)
         cachedThumb = m_vecItems->Get(itemNumber)->GetCachedArtistThumb();
+      if (button == CONTEXT_BUTTON_SET_MOVIESET_THUMB)
+        cachedThumb = m_vecItems->Get(itemNumber)->GetCachedVideoThumb();
       if (button == CONTEXT_BUTTON_SET_SEASON_THUMB)
       {
         CFileItemList tbnItems;

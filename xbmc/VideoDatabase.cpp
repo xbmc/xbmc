@@ -4185,6 +4185,23 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
         pItem->SetLabelPreformated(true);
+        if (CFile::Exists(pItem->GetCachedVideoThumb()))
+          pItem->SetThumbnailImage(pItem->GetCachedVideoThumb());
+        else // use the first item's thumb
+        {
+          CFileItemList items;
+          CStdString strSQL = FormatSQL("select strPath, strFileName from movieview join setlinkmovie on setlinkmovie.idMovie=movieview.idmovie where setlinkmovie.idSet=%u",m_pDS->fv("sets.idSet").get_asInt());
+          m_pDS2->query(strSQL.c_str());
+          if (!m_pDS2->eof())
+          {
+            CStdString path;
+            ConstructPath(path,m_pDS2->fv(0).get_asString(),m_pDS2->fv(1).get_asString());
+            CFileItem item(path,false);
+            if (CFile::Exists(item.GetCachedVideoThumb()))
+              pItem->SetThumbnailImage(item.GetCachedVideoThumb());
+            m_pDS2->close();
+          }
+        }
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
         {
           // fv(3) is the number of videos watched, fv(2) is the total number.  We set the playcount
