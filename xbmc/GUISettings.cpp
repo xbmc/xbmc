@@ -473,8 +473,8 @@ void CGUISettings::Initialize()
   AddSeparator(18, "videoplayer.sep4");
   AddBool(19, "videoplayer.usedisplayasclock", 13510, false);
   AddInt(20, "videoplayer.synctype", 13500, SYNC_DISCON, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
-  AddFloat(21, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
-  AddInt(22, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+  AddFloat(0, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
+  AddInt(0, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
 
   AddSeparator(23, "videoplayer.sep5");
   AddBool(24, "videoplayer.teletextenabled", 23050, true);
