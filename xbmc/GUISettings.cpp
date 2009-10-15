@@ -540,6 +540,12 @@ void CGUISettings::Initialize()
   AddSeparator(18, "network.sep2");
   AddBool(19, "network.enableinternet", 14054, true);
 
+  // zeroconf publishing
+#ifdef HAS_ZEROCONF
+  AddSeparator(20, "network.sep1");
+  AddBool(21, "network.zeroconf", 1260, true);
+#endif
+
   AddCategory(6, "servers", 14036);
 #if defined(HAS_FTP_SERVER) || defined (HAS_WEB_SERVER)
 #ifdef HAS_FTP_SERVER
@@ -561,11 +567,6 @@ void CGUISettings::Initialize()
   AddString(8,"servers.webserverusername",1048, "xbmc", EDIT_CONTROL_INPUT);
   AddString(9,"servers.webserverpassword",733, "", EDIT_CONTROL_HIDDEN_INPUT, true, 733);
 #endif
-#endif
-
-  // zeroconf publishing
-#ifdef HAS_ZEROCONF
-  AddBool(10, "servers.zeroconf", 1260, true);
 #endif
 
   AddCategory(6, "smb", 1200);
