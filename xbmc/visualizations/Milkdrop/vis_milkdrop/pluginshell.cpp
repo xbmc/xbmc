@@ -1007,7 +1007,7 @@ int CPluginShell::PluginPreInitialize(HWND hWinampWnd, HINSTANCE hWinampInstance
 //        char *p = m_szPluginsDirPath + strlen(m_szPluginsDirPath);
 //        while (p >= m_szPluginsDirPath && *p != '\\') p--;
 //        if (++p >= m_szPluginsDirPath) *p = 0;
-		sprintf(m_szPluginsDirPath, "q:\\visualisations\\");
+		sprintf(m_szPluginsDirPath, "special://xbmc/visualisations/");
 //		sprintf(m_szPluginsDirPath, "d:\\");
 	}    
     sprintf(m_szConfigIniFile, "%s%s", m_szPluginsDirPath, INIFILE);
@@ -1150,6 +1150,7 @@ void CPluginShell::PluginQuit()
     CleanUpVJStuff();
     CleanUpNonDx8Stuff();
     CleanUpDirectX();
+    CleanUpMyDX8Stuff(1);
 
 //    SetFocus(m_hWndWinamp);
 //    SetActiveWindow(m_hWndWinamp);
@@ -1519,7 +1520,7 @@ void CPluginShell::DrawAndDisplay(int redraw)
         }
     }
 */
-    if (D3D_OK==m_lpDX->m_lpDevice->BeginScene())
+    //if (D3D_OK==m_lpDX->m_lpDevice->BeginScene())
     {
         MyRenderFn(redraw);
           
@@ -1539,7 +1540,7 @@ void CPluginShell::DrawAndDisplay(int redraw)
 //            m_text.DrawNow();
 //        }
         
-        m_lpDX->m_lpDevice->EndScene();
+       // m_lpDX->m_lpDevice->EndScene();
     }
 /*
     // VJ Mode:

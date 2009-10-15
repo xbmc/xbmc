@@ -776,12 +776,12 @@ void CPlugin::MyPreInitialize()
 	g_bDumpFileCleared	= false;
 
 	strcpy(m_szWinampPluginsPath,  GetConfigIniFile());
-    char *p = strrchr(m_szWinampPluginsPath, '\\');
+    char *p = strrchr(m_szWinampPluginsPath, '/');
     if (p) *(p+1) = 0;
 	strcpy(m_szPresetDir,  m_szWinampPluginsPath);
 	strcpy(m_szMsgIniFile, m_szWinampPluginsPath);
 	strcpy(m_szImgIniFile, m_szWinampPluginsPath);
-	strcat(m_szPresetDir,  "milkdrop\\");
+	strcat(m_szPresetDir,  "milkdrop/");
 	strcat(m_szMsgIniFile, MSG_INIFILE);
 	strcat(m_szImgIniFile, IMG_INIFILE);
 	
@@ -1165,10 +1165,11 @@ int CPlugin::AllocateMyDX8Stuff()
 
 			LPDIRECT3DSURFACE9 pBackBuffer, pZBuffer;
 			GetDevice()->GetRenderTarget(0, &pBackBuffer );
-			GetDevice()->GetDepthStencilSurface( &pZBuffer );
-
-		    // create VS1 and VS2
-            bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
+			//GetDevice()->GetDepthStencilSurface( &pZBuffer );
+      bSuccess = (GetDevice()->CreateDepthStencilSurface((g_plugin->GetWidth()>m_nTexSize) ? g_plugin->GetWidth():m_nTexSize, (g_plugin->GetHeight()>m_nTexSize) ? g_plugin->GetHeight():m_nTexSize, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, FALSE, &pZBuffer, NULL) == D3D_OK);
+      bSuccess = (GetDevice()->SetDepthStencilSurface(pZBuffer) == D3D_OK);
+		  // create VS1 and VS2
+      bSuccess = (GetDevice()->CreateTexture(m_nTexSize, m_nTexSize, 1, D3DUSAGE_RENDERTARGET, GetBackBufFormat(), D3DPOOL_DEFAULT, &m_lpVS[0], NULL) == D3D_OK);
 			if (bSuccess)
 			{
 				IDirect3DSurface9* pNewTarget = NULL;
