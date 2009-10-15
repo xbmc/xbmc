@@ -37,7 +37,7 @@ class CPasswordManager
 {
 public:
  /*!
-   \brief The only way through which the global instance of the CJobManager should be accessed.
+   \brief The only way through which the global instance of the CPasswordManager should be accessed.
    \return the global instance.
    */
   static CPasswordManager &GetInstance();
@@ -70,9 +70,12 @@ public:
   void Clear();
 
 private:
+  // private construction, and no assignements; use the provided singleton methods
   CPasswordManager();
+  CPasswordManager(const CPasswordManager&);
+  CPasswordManager const & operator=(CPasswordManager const&);
   ~CPasswordManager() {};
-  
+
   void Load();
   void Save() const;
   CStdString GetLookupPath(const CURL &url) const;
