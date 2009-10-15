@@ -309,11 +309,11 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
 
   YV12Image &im = m_buffers[source].image;
   
-  if (!(m_renderMethod & RENDER_VDPAU))
+  if (!(m_renderMethod & RENDER_VDPAU) && !(m_renderMethod & RENDER_CRYSTALHD))
   {
     if (!im.plane[0])
     {
-       CLog::Log(LOGDEBUG, "CLinuxRenderer::GetImage - image planes not allocated");
+       CLog::Log(LOGDEBUG, "CLinuxRendererGL::GetImage - image planes not allocated");
        return -1;
     }
   }

@@ -286,6 +286,14 @@ bool YUV2RGBProgressiveShaderARB::OnEnabled()
 NV12ToRGBProgressiveShaderARB::NV12ToRGBProgressiveShaderARB(bool rect, unsigned flags)
   : BaseYUV2RGBARBShader(flags)
 {
+  m_black      = 0.0f;
+  m_contrast   = 1.0f;
+/*
+  if(rect)
+    PixelShader()->LoadSource("nv12rgb_basic_rect.arb");
+  else
+    PixelShader()->LoadSource("nv12rgb_basic_2d.arb");
+*/
   string source = "";
   string target = "2D";
   if (rect)
@@ -304,7 +312,7 @@ NV12ToRGBProgressiveShaderARB::NV12ToRGBProgressiveShaderARB(bool rect, unsigned
   // seems someone forgot to implement that. (radar: 5632811)"
   // - http://lists.apple.com/archives/mac-opengl/2008/Feb/msg00191.html
 
-    source = 
+  source = 
     "!!ARBfp1.0\n"
     "PARAM c[4] = \n"
     "{{1.0,   -0.0625, 1.1643835, 1.1383928},\n"
@@ -330,8 +338,9 @@ NV12ToRGBProgressiveShaderARB::NV12ToRGBProgressiveShaderARB(bool rect, unsigned
     "MOV result.color.w, fragment.color.w;\n"
     "END\n";
 
-  // SetPixelShaderSource(source);
+  PixelShader()->SetSource(source);
 }
+
 
 void NV12ToRGBProgressiveShaderARB::OnCompiledAndLinked()
 {
