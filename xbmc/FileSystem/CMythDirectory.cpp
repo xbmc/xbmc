@@ -234,13 +234,7 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
     cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
     if (program)
     {
-      CStdString group = GetValue(m_dll->proginfo_recgroup(program));
-      /*
-       * Ignore programs that were recorded using "LiveTV" or that have been deleted via the
-       * "Auto Expire Instead of Delete Recording" option, which places the recording in the
-       * "Deleted" recording group for x days rather than deleting straight away.
-       */
-      if (group.Equals("LiveTV") || group.Equals("Deleted"))
+      if (!IsVisible(program))
       {
         m_dll->ref_release(program);
         continue;
@@ -356,7 +350,7 @@ bool CCMythDirectory::GetTvShowFolders(const CStdString& base, CFileItemList &it
     cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
     if (program)
     {
-      if (GetValue(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
+      if (!IsVisible(program))
       {
         m_dll->ref_release(program);
         continue;
@@ -555,6 +549,17 @@ bool CCMythDirectory::GetDirectory(const CStdString& strPath, CFileItemList &ite
   else if (fileName.Left(8) == "tvshows/")
     return GetRecordings(base, items, TV_SHOWS, fileName.Mid(8));
   return false;
+}
+
+bool CCMythDirectory::IsVisible(const cmyth_proginfo_t program)
+{
+  CStdString group = GetValue(m_dll->proginfo_recgroup(program));
+  /*
+   * Ignore programs that were recorded using "LiveTV" or that have been deleted via the
+   * "Auto Expire Instead of Delete Recording" option, which places the recording in the
+   * "Deleted" recording group for x days rather than deleting straight away.
+   */
+  return !(group.Equals("LiveTV") || group.Equals("Deleted"));
 }
 
 bool CCMythDirectory::IsMovie(const cmyth_proginfo_t program)
