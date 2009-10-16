@@ -274,9 +274,8 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
         break;
       }
 
-      CFileItemPtr item(new CFileItem("", false));
+      CFileItemPtr item(new CFileItem(url.Get(), false));
       m_session->UpdateItem(*item, program);
-      item->m_strPath = url.Get();
 
       url.SetFileName("files/" + path + ".png");
       item->SetThumbnailImage(url.Get());
@@ -449,10 +448,10 @@ bool CCMythDirectory::GetChannels(const CStdString& base, CFileItemList &items)
     num   = GetValue(m_dll->proginfo_chanstr (program));
     icon  = GetValue(m_dll->proginfo_chanicon(program));
 
-    CFileItemPtr item(new CFileItem("", false));
-    m_session->UpdateItem(*item, program);
     url.SetFileName("channels/" + num + ".ts");
-    item->m_strPath = url.Get();
+    CFileItemPtr item(new CFileItem(url.Get(), false));
+    m_session->UpdateItem(*item, program);
+
     item->SetLabel(GetValue(m_dll->proginfo_chansign(program)));
 
     if (icon.length() > 0)
