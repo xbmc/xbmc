@@ -544,6 +544,19 @@ void CGUIControlGroup::RemoveLookup(CGUIControl *control)
     ((CGUIControlGroup *)m_parentControl)->RemoveLookup(control);
 }
 
+bool CGUIControlGroup::IsValidControl(const CGUIControl *control) const
+{
+  if (control->GetID())
+  {
+    for (LookupMap::const_iterator it = m_lookup.begin(); it != m_lookup.end(); it++)
+    {
+      if (control == it->second)
+        return true;
+    }
+  }
+  return false;
+}
+
 bool CGUIControlGroup::InsertControl(CGUIControl *control, const CGUIControl *insertPoint)
 {
   // find our position

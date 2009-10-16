@@ -4,7 +4,7 @@
 	<coordinates>
 		<system>1</system>
 		<posx>161</posx>
-		<posy>132</posy>
+		<posy>107</posy>
 	</coordinates>
 	<controls>
 		<control type="image" id="0">
@@ -21,7 +21,7 @@
 			<posx>-25</posx>
 			<posy>-11</posy>
 			<width>446</width>
-			<height>406</height>
+			<height>456</height>
 			<texture>dialog-panel2.png</texture>
 		</control>
 		<control type="image">
@@ -142,7 +142,7 @@
 			<posx>-1</posx>
 			<posy>180</posy>
 			<width>408</width>
-			<height>130</height>
+			<height>180</height>
 			<itemgap>2</itemgap>
 			<onup>4</onup>
 			<ondown>28</ondown>
@@ -220,7 +220,7 @@
 		<control type="button" id="6">
 			<description>Settings button</description>
 			<posx>128</posx>
-			<posy>325</posy>
+			<posy>375</posy>
 			<width>90</width>
 			<height>32</height>
 			<align>center</align>
@@ -236,7 +236,7 @@
 		<control type="button" id="28">
 			<description>OK button</description>
 			<posx>223</posx>
-			<posy>325</posy>
+			<posy>375</posy>
 			<width>90</width>
 			<height>32</height>
 			<align>center</align>
@@ -252,7 +252,7 @@
 		<control type="button" id="29">
 			<description>Cancel button</description>
 			<posx>318</posx>
-			<posy>325</posy>
+			<posy>375</posy>
 			<width>90</width>
 			<height>32</height>
 			<align>center</align>

@@ -38,56 +38,43 @@ CFileSpecialProtocol::~CFileSpecialProtocol(void)
 
 bool CFileSpecialProtocol::Open(const CURL& url)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
-  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(url.Get());
 
   return m_file.Open(strFileName);
 }
 
 bool CFileSpecialProtocol::OpenForWrite(const CURL& url, bool bOverWrite /*=false */)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
-  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(url.Get());
 
   return m_file.OpenForWrite(strFileName,bOverWrite);
 }
 
 bool CFileSpecialProtocol::Delete(const CURL& url)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
-  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(url.Get());
   
   return m_file.Delete(strFileName);
 }
 
 bool CFileSpecialProtocol::Exists(const CURL& url)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
-  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(url.Get());
 
   return m_file.Exists(strFileName);
 }
 
 int CFileSpecialProtocol::Stat(const CURL& url, struct __stat64* buffer)
 {
-  CStdString strPath;
-  url.GetURL(strPath);
-  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(url.Get());
 
   return m_file.Stat(strFileName, buffer);
 }
 
 bool CFileSpecialProtocol::Rename(const CURL& url, const CURL& urlnew)
 {
-  CStdString strPath,strPath2;
-  url.GetURL(strPath);
-  CStdString strFileName=CSpecialProtocol::TranslatePath(strPath);
-  urlnew.GetURL(strPath2);
-  CStdString strFileName2=CSpecialProtocol::TranslatePath(strPath2);
+  CStdString strFileName=CSpecialProtocol::TranslatePath(url.Get());
+  CStdString strFileName2=CSpecialProtocol::TranslatePath(urlnew.Get());
 
   return m_file.Rename(strFileName,strFileName2);
 }

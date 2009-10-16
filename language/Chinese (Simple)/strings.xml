@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Date of translation: 10/10/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 23634 -->
+<!--Based on english strings version 23751 -->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -183,13 +183,13 @@
   <string id="237">缩小</string>
   <string id="238">放大</string>
   <string id="239">播放完成后清除列表</string>
-  <string id="240">自动播放 DVD-视频</string>
-  <string id="241">自动播放 VCD/SVCD</string>
-  <string id="242">自动播放 音乐-CD</string>
-  <string id="243">自动运行 游戏光盘</string>
-  <string id="244">自动播放 视频文件</string>
-  <string id="245">自动播放 音乐文件</string>
-  <string id="246">自动播放 图片文件</string>
+  <string id="240"></string>
+  <string id="241"></string>
+  <string id="242"></string>
+  <string id="243"></string>
+  <string id="244"></string>
+  <string id="245"></string>
+  <string id="246"></string>
   <string id="247">脚本程序</string>
   <string id="248">语言</string>
   <string id="249">音乐</string>
@@ -381,7 +381,7 @@
   <string id="444">视频</string>
   <string id="445">音频</string>
   <string id="446">DVD</string>
-  <string id="447">自动运行</string>
+  <string id="447">自动运行光盘</string>
   <string id="448">液晶屏设置</string>
   <string id="449">开启</string>
   <string id="450">列</string>
@@ -443,7 +443,7 @@
   <string id="513">主界面</string>
   <string id="514">设置界面</string>
   <string id="515">风格</string>
-  <string id="516">将压缩存储的文档作为单个文件处理</string>
+  <string id="516"></string>
   <string id="517">最近播放的专辑</string>
   <string id="518">运行</string>
   <string id="519">运行方式</string>
@@ -547,7 +547,7 @@
   <string id="633">拉伸为 14:9</string>
   <string id="634">拉伸为 16:9</string>
   <string id="635">视频原始像素比例</string>
-  <string id="636">定制</string>
+  <string id="636">自定义</string>
   <string id="637">回放增益</string>
   <string id="638">回放增益模式</string>
   <string id="639">使用音轨增益等级</string>
@@ -777,6 +777,9 @@
 
   <string id="1260">Zeroconf 协议发布</string>
 
+  <string id="1300">自定义音频设备</string>
+  <string id="1301">自定义直通输出设备</string>
+
   <string id="1396">漂流</string>
   <string id="1397">和</string>
   <string id="1398">结冰</string>
@@ -821,7 +824,7 @@
   <string id="10005">音乐</string>
   <string id="10006">视频</string>
   <string id="10007">系统信息</string>
-  <string id="10008">设置-&gt;一般</string>
+  <string id="10008">设置-&gt;常用</string>
   <string id="10009">设置-&gt;屏幕</string>
   <string id="10010">设置-&gt;用户界面-&gt;界面校准</string>
   <string id="10011">设置-&gt;视频-&gt;屏幕校准</string>
@@ -977,7 +980,7 @@
   <string id="13004">- 最小影音文件时长</string>
   <string id="13005">关机</string>
   <string id="13006">Dashboard</string>
-  <string id="13007">使用定制 Dashboard 的路径</string>
+  <string id="13007">使用自定义 Dashboard 路径</string>
   <string id="13008">自动关机功能</string>
   <string id="13009">退出</string>
   <string id="13010">休眠</string>
@@ -1202,7 +1205,7 @@
   <string id="13409">排行榜前 250：</string>
   <string id="13410">收听 last.fm 电台</string>
   <string id="13411">风扇最低转速</string>
-  <string id="13412">- RSS信源内容为从右到左</string>
+  <string id="13412"></string>
   <string id="13413">正在下载</string>
   <string id="13414">隐藏只在编辑中出现的艺术家</string>
   <string id="13415">渲染模式</string>
@@ -1213,6 +1216,7 @@
   <string id="13420">安全移除</string>
   <string id="13421">VDPAU 硬解码</string>
   <string id="13422">开始幻灯片播放</string>
+  <string id="13423">记住此目录</string>
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>
@@ -1474,8 +1478,8 @@
   <string id="15310">打开多个源路径</string>
   <string id="15311">路径：</string>
 
-  <string id="16000">通用</string>
-  <string id="16001">配置音频硬件…</string>
+  <string id="16000">常用</string>
+  <string id="16001"></string>
   <string id="16002">互联网查询</string>
   <string id="16003">高级设置</string>
   <string id="16004">播放碟片</string>
@@ -1692,7 +1696,7 @@
   <string id="20147">30分钟后自动关机</string>
   <string id="20148">60分钟后自动关机</string>
   <string id="20149">120分钟后自动关机</string>
-  <string id="20150">定制自动关机时间</string>
+  <string id="20150">自定义自动关机时间</string>
   <string id="20151">取消自动关机</string>
   <string id="20152">锁定设置文件%s</string>
   <string id="20153">浏览…</string>
@@ -1732,7 +1736,7 @@
   <string id="20187">备份 EEPROM</string>
   <string id="20188">备份 BIOS</string>
   <string id="20189">启用剧情和评论自动滚动</string>
-  <string id="20190">自订</string>
+  <string id="20190">自定义</string>
   <string id="20191">显示除错信息</string>
   <string id="20192">资料库更新时下载附加信息</string>
   <string id="20193"></string>
@@ -1885,6 +1889,7 @@
   <string id="20432">资料库更新时排除的路径</string>
   <string id="20433">提取媒体元数据信息</string>
   <string id="20434">影片集</string>
+  <string id="20435">设置影片集缩略图</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -1908,7 +1913,7 @@
   <string id="21363">管理 UPnP 图片共享</string>
   <string id="21364">编辑媒体共享</string>
   <string id="21365">移除媒体共享</string>
-  <string id="21366">定制字幕目录</string>
+  <string id="21366">自定义字幕目录</string>
   <string id="21367">视频和相关字幕目录</string>
 
   <string id="21369">使用鼠标</string>
@@ -1931,7 +1936,7 @@
   <string id="21386">噪音管理</string>
   <string id="21387">快速</string>
   <string id="21388">安静</string>
-  <string id="21389">启用 自订背景</string>
+  <string id="21389">启用自定义背景</string>
   <string id="21390">电源管理</string>
   <string id="21391">高功率</string>
   <string id="21392">低功率</string>

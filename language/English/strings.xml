@@ -440,7 +440,7 @@
   <string id="513">Home window</string>
   <string id="514">Manual settings</string>
   <string id="515">Genre</string>
-  <string id="516">Make stored archives with one file transparent</string>
+  <string id="516"></string>
   <string id="517">Recently played albums</string>
   <string id="518">Launch</string>
   <string id="519">Launch in...</string>
@@ -774,6 +774,9 @@
 
   <string id="1260">Zeroconf publishing</string>
 
+  <string id="1300">Custom audio device</string>
+  <string id="1301">Custom passthrough device</string>
+  
   <string id="1396">Drifting</string>
   <string id="1397">and</string>
   <string id="1398">Freezing</string>
@@ -1200,7 +1203,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Tune in on Last.fm</string>
   <string id="13411">Minimum fan speed</string>
-  <string id="13412">- RSS feeds contain Right-To-Left text</string>
+  <string id="13412"></string>
   <string id="13413">Downloading</string>
   <string id="13414">Hide artists who appear only on compilations</string>
   <string id="13415">Render method</string>
@@ -1211,6 +1214,7 @@
   <string id="13420">Remove safely</string>
   <string id="13421">VDPAU</string>
   <string id="13422">Start slideshow here</string>
+  <string id="13423">Remember for this path</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -1473,7 +1477,7 @@
   <string id="15311">Path:</string>
 
   <string id="16000">General</string>
-  <string id="16001">Configure audio hardware...</string>
+  <string id="16001"></string>
   <string id="16002">Internet lookup</string>
   <string id="16003">Player</string>
   <string id="16004">Play media from disc</string>
@@ -1883,6 +1887,7 @@
   <string id="20432">Exclude path from library updates</string>
   <string id="20433">Extract media metadata information</string>
   <string id="20434">Sets</string>
+  <string id="20435">Set movieset thumb</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

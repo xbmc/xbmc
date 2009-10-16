@@ -199,8 +199,6 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
     }
   }
 
-  CStdString strUrl;
-  url.GetURL(strUrl);
   CStdString strHTML1(strHTML);
         
   if (scrURL.m_post)
@@ -209,11 +207,11 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL, string& strHTML, XFILE::CFileCurl
     strOptions = strOptions.substr(1);
     url.SetOptions("");
 
-    if (!http.Post(strUrl, strOptions, strHTML1))
+    if (!http.Post(url.Get(), strOptions, strHTML1))
       return false;    
   }
   else
-    if (!http.Get(strUrl, strHTML1))
+    if (!http.Get(url.Get(), strHTML1))
       return false;
 
   strHTML = strHTML1;

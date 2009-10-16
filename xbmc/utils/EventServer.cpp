@@ -85,19 +85,9 @@ void CEventServer::StartServer()
     
   // set default port
   string port = (const char*)g_guiSettings.GetString("remoteevents.port");
-  if (port.length() == 0)
-  {
-    m_iPort = 9777;
-  }
-  else
-  {
-    m_iPort = atoi(port.c_str());
-  }
-  if (m_iPort > 65535 || m_iPort < 1)
-  {
-    CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", m_iPort);
-    m_iPort = 9777;
-  }
+  assert(port.length());
+  m_iPort = atoi(port.c_str());
+  assert(m_iPort <= 65535 && m_iPort >= 1);
 
   // max clients
   m_iMaxClients = g_guiSettings.GetInt("remoteevents.maxclients");

@@ -41,6 +41,10 @@ CAdvancedSettings g_advancedSettings;
 
 CAdvancedSettings::CAdvancedSettings()
 {
+}
+
+void CAdvancedSettings::Initialize()
+{
   m_useMultipaths = true;
 
   m_audioHeadRoom = 0;
@@ -117,9 +121,9 @@ CAdvancedSettings::CAdvancedSettings()
   m_logLevelHint = LOG_LEVEL_NORMAL;
 #endif
   m_cddbAddress = "freedb.freedb.org";
-#ifdef HAS_HAL
-  m_useHalMount = g_application.IsStandAlone();
-#endif
+
+  m_handleMounting = g_application.IsStandAlone();
+
   m_fullScreenOnMovieStart = true;
   m_noDVDROM = false;
   m_cachePath = "special://temp/";
@@ -240,7 +244,6 @@ CAdvancedSettings::CAdvancedSettings()
 #endif
 
   m_bgInfoLoaderMaxThreads = 5;
-  
 }
 
 bool CAdvancedSettings::Load()
@@ -278,7 +281,7 @@ bool CAdvancedSettings::Load()
   printer.SetLineBreak("\n");
   printer.SetIndent("  ");
   advancedXML.Accept(&printer);
-  CLog::Log(LOGDEBUG, "Contents of %s are...\n%s", advancedSettingsXML.c_str(), printer.CStr());
+  CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", advancedSettingsXML.c_str(), printer.CStr());
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
@@ -475,9 +478,9 @@ bool CAdvancedSettings::Load()
     }
   }
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
-#ifdef HAS_HAL
-  XMLUtils::GetBoolean(pRootElement, "usehalmount", m_useHalMount);
-#endif
+
+  XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
+
   XMLUtils::GetBoolean(pRootElement, "nodvdrom", m_noDVDROM);
   XMLUtils::GetBoolean(pRootElement, "usemultipaths", m_useMultipaths);
 #ifdef HAS_SDL

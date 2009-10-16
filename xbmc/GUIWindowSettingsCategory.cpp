@@ -37,9 +37,6 @@
 #include "ProgramDatabase.h"
 #include "ViewDatabase.h"
 #include "XBAudioConfig.h"
-#ifdef _LINUX
-#include <dlfcn.h>
-#endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
 #endif
@@ -70,6 +67,10 @@
 #include "GUIWindowManager.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
+#include <dlfcn.h>
+#ifndef __APPLE__
+#include "cores/AudioRenderers/ALSADirectSound.h"
+#endif
 #ifdef HAS_HAL
 #include "HALManager.h"
 #endif
@@ -871,6 +872,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInAudioDevices(pSetting);
     }
+    else if (strSetting.Equals("audiooutput.passthroughdevice"))
+    {
+      FillInAudioDevices(pSetting,true);
+    }
     else if (strSetting.Equals("myvideos.resumeautomatically"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -1072,11 +1077,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_settings.m_vecProfiles[0].getLockMode() != LOCK_MODE_EVERYONE                                    &&
                                          g_settings.m_vecProfiles[g_settings.m_iLastLoadedProfileIndex].getLockMode() != LOCK_MODE_EVERYONE &&
                                          !g_guiSettings.GetString("screensaver.mode").Equals("Black"));
-    }
-    else if (strSetting.Equals("upnp.musicshares") || strSetting.Equals("upnp.videoshares") || strSetting.Equals("upnp.pictureshares"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("upnp.server"));
     }
     else if (!strSetting.Equals("remoteevents.enabled")
              && strSetting.Left(13).Equals("remoteevents."))
@@ -1417,11 +1417,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(enabled);
     }
-    else if (strSetting.Equals("lookandfeel.rssfeedsrtl"))
-    { // only visible if rss is enabled
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
-    }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -1454,6 +1449,25 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(!g_guiSettings.GetString("weather.plugin").IsEmpty() && CScriptSettings::SettingsExist(basepath));
     }
+#if defined(_LINUX) && !defined(__APPLE__)
+    else if (strSetting.Equals("audiooutput.custompassthrough"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (g_guiSettings.GetInt("audiooutput.mode") == AUDIO_DIGITAL)
+      {
+        if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.passthroughdevice").Equals("custom"));
+      }
+      else
+      {
+        if (pControl) pControl->SetEnabled(false);
+      }
+    }
+    else if (strSetting.Equals("audiooutput.customdevice"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"));
+    }
+#endif
   }
 }
 
@@ -1779,10 +1793,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       musicdatabase.Close();
     }
   }
-  else if (strSetting.Equals("musicplayer.jumptoaudiohardware") || strSetting.Equals("videoplayer.jumptoaudiohardware"))
-  {
-    JumpToSection(WINDOW_SETTINGS_SYSTEM, "audiooutput");
-  }
   else if (strSetting.Equals("musicplayer.jumptocache") || strSetting.Equals("videoplayer.jumptocache"))
   {
     JumpToSection(WINDOW_SETTINGS_SYSTEM, "cache");
@@ -1828,11 +1838,16 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
-#if defined(__APPLE__) || defined(_WIN32)
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
+  }
+#if defined(_LINUX)
+  else if (strSetting.Equals("audiooutput.passthroughdevice"))
+  {
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+    g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
   }
 #endif
 #ifdef HAS_LCD
@@ -2334,6 +2349,33 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     }
 #endif
   }
+  else if (strSetting.Equals("remoteevents.port"))
+  {
+#ifdef HAS_EVENT_SERVER
+    CStdString port_string = g_guiSettings.GetString("remoteevents.port");
+    int port = 0;
+    if(port_string.length() == 0)
+    {
+      CLog::Log(LOGERROR, "ES: No port specified, defaulting to 9777");
+      g_guiSettings.SetString("remoteevents.port", "9777");
+    }
+    else
+      port = atoi(port_string);
+    //verify valid port
+    if (port > 65535 || port < 1)
+    {
+      CLog::Log(LOGERROR, "ES: Invalid port specified %d, defaulting to 9777", port);
+      g_guiSettings.SetString("remoteevents.port", "9777");
+    }
+    //restart eventserver without asking user
+    if (g_application.StopEventServer(true, false))
+      g_application.StartEventServer();
+#ifdef __APPLE__
+    //reconfigure XBMCHelper for port changes
+    g_xbmcHelper.Configure();
+#endif
+#endif
+  }
   else if (strSetting.Equals("remoteevents.allinterfaces"))
   {
 #ifdef HAS_EVENT_SERVER
@@ -2359,39 +2401,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_application.RefreshEventServer();
     }
 #endif
-  }
-  else if (strSetting.Equals("upnp.musicshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPMusicSources,"upnpmusic"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
-  else if (strSetting.Equals("upnp.videoshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPVideoSources,"upnpvideo"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
-  }
-  else if (strSetting.Equals("upnp.pictureshares"))
-  {
-    CStdString filename;
-    CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "upnpserver.xml", filename);
-    CStdString strDummy;
-    g_settings.LoadUPnPXml(filename);
-    if (CGUIDialogFileBrowser::ShowAndGetSource(strDummy,false,&g_settings.m_UPnPPictureSources,"upnppictures"))
-      g_settings.SaveUPnPXml(filename);
-    else
-      g_settings.LoadUPnPXml(filename);
   }
   else if (strSetting.Equals("masterlock.lockcode"))
   {
@@ -3740,9 +3749,11 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
   }
 }
 
-void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
+void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
 {
 #ifdef __APPLE__
+  if (Passthrough)
+    return;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   
@@ -3765,7 +3776,34 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
     deviceList.pop_front();
   }
   pControl->SetValue(activeDevice);
+#elif defined(_LINUX)
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  std::vector<CStdString> cardList;
+  CALSADirectSound::GetSoundCards(cardList);
+  if (cardList.size()==0)
+  {
+    pControl->AddLabel("Error - no devices found", 0);
+  }
+  else
+  {
+    std::vector<CStdString>::const_iterator iter = cardList.begin();
+    for (int i=0; iter != cardList.end(); iter++)
+    {
+      CStdString cardName = *iter;
+      if (!Passthrough)
+      {
+        GenSoundLabel("default", cardName.c_str(), i++, pControl, Passthrough);
+      }
+      GenSoundLabel("iec958", cardName.c_str(), i++, pControl, Passthrough);
+      GenSoundLabel("hdmi", cardName.c_str(), i++, pControl, Passthrough);
+      GenSoundLabel("custom", "", i++, pControl, Passthrough);
+    }
+  }
 #elif defined(_WIN32)
+  if (Passthrough)
+    return;
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
   CWDSound p_dsound;
@@ -3783,6 +3821,33 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting)
   }
 #endif
 }
+
+#if defined(_LINUX) && !defined(__APPLE__)
+void CGUIWindowSettingsCategory::GenSoundLabel(const CStdString& device, const CStdString& card, const int labelValue, CGUISpinControlEx* pControl, bool Passthrough)
+{
+  CStdString deviceString(device);
+
+  if (!device.Equals("custom"))
+    deviceString.AppendFormat(":CARD=%s", card.c_str());
+
+  if (CALSADirectSound::SoundDeviceExists(deviceString.c_str()) || 
+       !device.Equals("default") ||
+       !device.Equals("custom"))
+  {
+    pControl->AddLabel(deviceString.c_str(), labelValue);
+    if (Passthrough)
+    {
+      if (g_guiSettings.GetString("audiooutput.passthroughdevice").Equals(deviceString))
+        pControl->SetValue(labelValue);
+    }
+    else
+    {
+      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceString))
+        pControl->SetValue(labelValue);
+    }
+  }
+}
+#endif //defined(_LINUX) && !defined(__APPLE__)
 
 void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {

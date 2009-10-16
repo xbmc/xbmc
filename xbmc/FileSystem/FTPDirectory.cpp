@@ -87,7 +87,7 @@ bool CFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       /* qualify the url with host and all */
       url.SetFileName(pItem->m_strPath);
-      url.GetURL(pItem->m_strPath);
+      pItem->m_strPath = url.Get();
 
       pItem->m_dwSize = lp.size;
       pItem->m_dateTime=lp.mtime;

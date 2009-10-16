@@ -152,7 +152,7 @@ CHALManager::CHALManager()
 
 void CHALManager::Stop()
 {
-  if (g_advancedSettings.m_useHalMount)
+  if (g_advancedSettings.m_handleMounting)
   { // Unmount all media XBMC have mounted
     for (unsigned int i = 0; i < m_Volumes.size(); i++)
     {
@@ -411,7 +411,7 @@ void CHALManager::UpdateDevice(const char *udi)
       if (strcmp(m_Volumes[i].UDI.c_str(), udi) == 0)
       {
         CLog::Log(LOGDEBUG, "HAL: Update - %s | %s", CHALManager::StorageTypeToString(dev.Type),  dev.toString().c_str());
-        if (g_advancedSettings.m_useHalMount)  // If the device was mounted by XBMC before it's still mounted by XBMC.
+        if (g_advancedSettings.m_handleMounting)  // If the device was mounted by XBMC before it's still mounted by XBMC.
             dev.MountedByXBMC = m_Volumes[i].MountedByXBMC;
         if (!dev.Mounted && m_Volumes[i].Mounted)
           g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), dev.FriendlyName.c_str());
@@ -426,7 +426,7 @@ void CHALManager::UpdateDevice(const char *udi)
 }
 void CHALManager::HandleNewVolume(CStorageDevice *dev)
 {
-  if (g_advancedSettings.m_useHalMount)
+  if (g_advancedSettings.m_handleMounting)
   {
 /* Here it can be checked if the device isn't mounted and then mount */
 //TODO Have mountpoints be other than in /media/*
@@ -576,7 +576,7 @@ bool CHALManager::RemoveDevice(const char *udi)
 
       if (m_Volumes[i].Mounted)
       {
-        if (g_advancedSettings.m_useHalMount)
+        if (g_advancedSettings.m_handleMounting)
           UnMount(m_Volumes[i]);
         if (m_Notifications)
           g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());

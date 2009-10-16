@@ -13,6 +13,7 @@ using namespace std;
 XBMCHelper* gp_xbmchelper;
 eRemoteMode g_mode = DEFAULT_MODE;
 std::string g_server_address="localhost";
+int         g_server_port = 9777;
 std::string g_app_path = "";
 std::string g_app_home = "";
 double g_universal_timeout = 0.500;
@@ -28,12 +29,13 @@ void ReadConfig();
 static struct option long_options[] = {
 { "help",       no_argument,       0, 'h' },
 { "server",     required_argument, 0, 's' },
+{ "port",       required_argument, 0, 'p' },
 { "universal",  no_argument,       0, 'u' },
-{ "multiremote",  no_argument,     0, 'm' },
+{ "multiremote",no_argument,       0, 'm' },
 { "timeout",    required_argument, 0, 't' },
 { "verbose",    no_argument,       0, 'v' },
 { "externalConfig", no_argument,   0, 'x' },
-{ "appPath", required_argument,   0, 'a' },
+{ "appPath",    required_argument, 0, 'a' },
 { "appHome",    required_argument, 0, 'z' }, 
 { 0, 0, 0, 0 },
 };
@@ -49,6 +51,7 @@ void usage(void)
   printf("Usage: %s [OPTIONS...]\n\nOptions:\n", PROGNAME);
   printf("  -h, --help           print this help message and exit.\n");
   printf("  -s, --server <addr>  send events to the specified IP.\n");
+  printf("  -p, --port <port>    send events to the specified port.\n");
   printf("  -u, --universal      runs in Universal Remote mode.\n");
   printf("  -t, --timeout <ms>   timeout length for sequences (default: 500ms).\n");
   printf("  -m, --multiremote    runs in Multi-Remote mode (adds remote identifier as additional idenfier to buttons)\n");
@@ -110,6 +113,7 @@ void ParseOptions(int argc, char** argv)
   //set the defaults
 	bool readExternal = false;
   g_server_address = "localhost";
+  g_server_port = 9777;
   g_mode = DEFAULT_MODE;
   g_app_path = "";
   g_app_home = "";
@@ -128,6 +132,9 @@ void ParseOptions(int argc, char** argv)
         break;
       case 's':
         g_server_address = optarg;
+        break;
+      case 'p':
+        g_server_port = atoi(optarg);
         break;
       case 'u':
         g_mode = UNIVERSAL_MODE;
@@ -171,7 +178,7 @@ void StartHelper(){
   //set apppath to startup when pressing Menu
   [gp_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];
   //connect to specified server
-  [gp_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] withMode:g_mode withTimeout: g_universal_timeout];  
+  [gp_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] onPort:g_server_port withMode:g_mode withTimeout: g_universal_timeout];  
 }
 
 //----------------------------------------------------------------------------

@@ -104,9 +104,7 @@ DWORD CWIN32Util::UmountShare(const CStdString &strPath)
 
 CStdString CWIN32Util::MountShare(const CStdString &strPath, DWORD *dwError)
 {
-  CStdString strURL = strPath;
-  CURL url(strURL);
-  url.GetURL(strURL);
+  CURL url(strPath);
   CStdString strPassword = url.GetPassWord();
   CStdString strUserName = url.GetUserName();
   CStdString strPathToShare = "\\\\"+url.GetHostName() + "\\" + url.GetShareName();

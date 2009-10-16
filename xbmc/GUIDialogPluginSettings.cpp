@@ -301,8 +301,7 @@ bool CGUIDialogPluginSettings::ShowVirtualKeyboard(int iControl)
           if (setting->Attribute("default"))
           {
             CStdString action = setting->Attribute("default");
-            CStdString url;
-            m_url.GetURL(url);
+            CStdString url = m_url.Get();
             // replace $CWD with the url of plugin
             action.Replace("$CWD", url);
             if (option)
@@ -410,7 +409,7 @@ void CGUIDialogPluginSettings::CreateControls()
     basepath = CUtil::AddFileToFolder(basepath, m_url.GetFileName());
   }
   else
-    m_url.GetURL(basepath);
+    basepath = m_url.Get();
 
   CGUIControl* pControl = NULL;
   int controlId = CONTROL_START_CONTROL;

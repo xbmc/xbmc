@@ -2907,6 +2907,8 @@ bool CDVDPlayer::OnAction(const CAction &action)
 
     switch (action.id)
     {
+/* this code is disabled to allow switching playlist items (dvdimage "stacks") */
+#if 0
     case ACTION_PREV_ITEM:  // SKIP-:
       {
         THREAD_ACTION(action);
@@ -2925,6 +2927,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         return true;
       }
       break;
+#endif
     case ACTION_SHOW_VIDEOMENU:   // start button
       {
         THREAD_ACTION(action);

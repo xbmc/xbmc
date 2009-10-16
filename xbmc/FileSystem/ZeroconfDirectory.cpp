@@ -90,7 +90,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
         CStdString service_path = CZeroconfBrowser::ZeroconfService::toPath(*it);
         CUtil::URLEncode(service_path);
         url.SetFileName(service_path);
-        url.GetURL(item->m_strPath);
+        item->m_strPath = url.Get();
 
         //now do the formatting
         CStdString protocol = GetHumanReadableProtocol(it->GetType());
@@ -128,9 +128,7 @@ bool CZeroconfDirectory::GetDirectory(const CStdString& strPath, CFileItemList &
         return false;
       }
       service.SetProtocol(protocol);
-      CStdString resolved_path;
-      service.GetURL(resolved_path);
-      return CDirectory::GetDirectory(resolved_path, items, "", true, true);
+      return CDirectory::GetDirectory(service.Get(), items, "", true, true);
     }
   }
 }

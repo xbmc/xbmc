@@ -17,6 +17,15 @@ void CWin32StorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
 {
 }
 
+bool CWin32StorageProvider::Eject(CStdString mountpath)
+{
+  if (!mountpath.IsEmpty())
+  {
+    return CWIN32Util::EjectDrive(mountpath[0]);
+  }
+  return false;
+}
+
 std::vector<CStdString> CWin32StorageProvider::GetDiskUsage()
 {
   return CWIN32Util::GetDiskUsage();

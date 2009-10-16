@@ -101,11 +101,18 @@ void CDXTexture::LoadToGPU()
     unsigned int srcPitch = GetPitch();
 
     unsigned int rows = GetRows();
-    for (unsigned int y = 0; y < rows; y++)
+    if (srcPitch == dstPitch)
     {
-      memcpy(dst, src, std::min(srcPitch, dstPitch));
-      src += srcPitch;
-      dst += dstPitch;
+      memcpy(dst, src, srcPitch * rows);
+    }
+    else
+    {
+      for (unsigned int y = 0; y < rows; y++)
+      {
+        memcpy(dst, src, std::min(srcPitch, dstPitch));
+        src += srcPitch;
+        dst += dstPitch;
+      }
     }
   }
   m_texture->UnlockRect(0);

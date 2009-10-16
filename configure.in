@@ -1146,7 +1146,7 @@ XB_CONFIG_MODULE([xbmc/cores/paplayer/vorbisfile/ogg], [
 XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
   if test "$host_vendor" = "apple" ; then
     ./configure \
-      --extra-cflags="-w -D_DARWIN_C_SOURCE -D_XBOX -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
+      --extra-cflags="-w -D_DARWIN_C_SOURCE -isysroot /Developer/SDKs/MacOSX10.4u.sdk" \
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
@@ -1162,15 +1162,14 @@ XB_CONFIG_MODULE([xbmc/cores/dvdplayer/Codecs/ffmpeg], [
       --enable-gpl \
       --enable-protocol=http \
       --enable-pthreads \
+      --as=/opt/local/bin/yasm \
       --cc="$CC" &&
-    sed -i "" -e "s#YASM=yasm#YASM=/opt/local/bin/yasm#" config.mak &&
     sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak &&
     sed -i "" -e "s#libswscale_VERSION_MAJOR=0#libswscale_VERSION_MAJOR=0.7.1#" config.mak &&
     sed -i "" -e "s#libavfilter_VERSION_MAJOR=0#libavfilter_VERSION_MAJOR=0.4.0#" config.mak
 
   else
     ./configure \
-      --extra-cflags="-D_XBOX" \
       --disable-static \
       --disable-ipv6 \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \

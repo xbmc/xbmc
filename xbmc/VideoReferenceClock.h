@@ -96,12 +96,12 @@ class CVideoReferenceClock : public CThread
 
     int  (*m_glXWaitVideoSyncSGI) (int, int, unsigned int*);
     int  (*m_glXGetVideoSyncSGI)  (unsigned int*);
-    int  (*m_glXGetRefreshRateSGI)(unsigned int*);
 
     Display*     m_Dpy;
     XVisualInfo *m_vInfo;
     Window       m_Window;
     GLXContext   m_Context;
+    int          m_RREventBase;
 
     bool         m_UseNvSettings;
 

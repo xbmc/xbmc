@@ -31,7 +31,6 @@ public:
 
 protected:
   virtual CStdString GetLockType();
-  virtual bool UnrollArchives();
   virtual int GetPlaylist();
   virtual CStdString GetExtensions();
 };

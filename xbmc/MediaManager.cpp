@@ -70,6 +70,19 @@ CMediaManager::CMediaManager()
   m_bhasoptical = false;
 }
 
+void CMediaManager::Stop()
+{
+  m_platformStorage->Stop();
+
+  delete m_platformStorage;
+  m_platformStorage = NULL;
+}
+
+void CMediaManager::Initialize()
+{
+  m_platformStorage->Initialize();
+}
+
 bool CMediaManager::LoadSources()
 {
   // clear our location list
@@ -149,7 +162,7 @@ void CMediaManager::GetNetworkLocations(VECSOURCES &locations)
     CMediaSource share;
     share.strPath = m_locations[i].path;
     CURL url(share.strPath);
-    url.GetURLWithoutUserDetails(share.strName);
+    share.strName = url.GetWithoutUserDetails();
     locations.push_back(share);
   }
 }
@@ -417,6 +430,11 @@ void CMediaManager::SetHasOpticalDrive(bool bstatus)
 {
   CSingleLock waitLock(m_muAutoSource);
   m_bhasoptical = bstatus;
+}
+
+bool CMediaManager::Eject(CStdString mountpath)
+{
+  return m_platformStorage->Eject(mountpath);
 }
 
 void CMediaManager::ProcessEvents()

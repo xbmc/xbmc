@@ -70,11 +70,6 @@ CStdString CGUIViewStateWindowPictures::GetLockType()
   return "pictures";
 }
 
-bool CGUIViewStateWindowPictures::UnrollArchives()
-{
-  return g_guiSettings.GetBool("filelists.unrollarchives");
-}
-
 CStdString CGUIViewStateWindowPictures::GetExtensions()
 {
   if (g_guiSettings.GetBool("pictures.showvideos"))

@@ -22,7 +22,7 @@
 #ifdef __APPLE__
 #ifndef _COCOA_POWER_SYSCALL_H_
 #define _COCOA_POWER_SYSCALL_H_
-#include "PowerManager.h"
+#include "IPowerSyscall.h"
 
 class CCocoaPowerSyscall : public IPowerSyscall
 {

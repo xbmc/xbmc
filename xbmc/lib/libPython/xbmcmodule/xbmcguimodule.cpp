@@ -192,25 +192,8 @@ namespace PYXBMC
   PyMODINIT_FUNC
   DeinitGUIModule(void)
   {
-    Py_DECREF(&Window_Type);
-    Py_DECREF(&WindowDialog_Type);
-    Py_DECREF(&WindowXML_Type);
-    Py_DECREF(&WindowXMLDialog_Type);
-    Py_DECREF(&ListItem_Type);
-    Py_DECREF(&Control_Type);
-    Py_DECREF(&ControlSpin_Type);
-    Py_DECREF(&ControlLabel_Type);
-    Py_DECREF(&ControlFadeLabel_Type);
-    Py_DECREF(&ControlTextBox_Type);
-    Py_DECREF(&ControlButton_Type);
-    Py_DECREF(&ControlCheckMark_Type);
-    Py_DECREF(&ControlList_Type);
-    Py_DECREF(&ControlImage_Type);
-    Py_DECREF(&ControlProgress_Type);
-    Py_DECREF(&ControlGroup_Type);
-    Py_DECREF(&Dialog_Type);
-    Py_DECREF(&DialogProgress_Type);
-    Py_DECREF(&Action_Type);
+    // no need to Py_DECREF our objects (see InitGUIModule()) as they were created only
+    // so that they could be added to the module, which steals a reference.
   }
 
   PyMODINIT_FUNC

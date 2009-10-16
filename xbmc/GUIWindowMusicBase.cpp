@@ -1320,8 +1320,7 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
       if (!bProgressVisible && elapsed>1500 && m_dlgProgress)
       { // tag loading takes more then 1.5 secs, show a progress dialog
         CURL url(items.m_strPath);
-        CStdString strStrippedPath;
-        url.GetURLWithoutUserDetails(strStrippedPath);
+        CStdString strStrippedPath = url.GetWithoutUserDetails();
         m_dlgProgress->SetHeading(189);
         m_dlgProgress->SetLine(0, 505);
         m_dlgProgress->SetLine(1, "");
