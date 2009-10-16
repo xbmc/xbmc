@@ -310,10 +310,17 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
     }
   }
 
-  if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
-    items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
-  else
-    items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+  /*
+   * Only add sort by name for the Movies and All Recordings directories. For TV Shows they all have
+   * the same name, so only date is useful.
+   */
+  if (type != TV_SHOWS)
+  {
+    if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
+      items.AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+    else
+      items.AddSortMethod(SORT_METHOD_LABEL, 551 /* Name */, LABEL_MASKS("%Z (%J)", "%Q", "%L", ""));
+  }
   items.AddSortMethod(SORT_METHOD_DATE, 552 /* Date */, LABEL_MASKS("%Z", "%J", "%L", "%J"));
 
   m_dll->ref_release(list);
