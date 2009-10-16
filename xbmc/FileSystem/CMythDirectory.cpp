@@ -232,7 +232,13 @@ bool CCMythDirectory::GetRecordings(const CStdString& base, CFileItemList &items
     cmyth_proginfo_t program = m_dll->proglist_get_item(list, i);
     if (program)
     {
-      if (GetValue(m_dll->proginfo_recgroup(program)).Equals("LiveTV"))
+      CStdString group = GetValue(m_dll->proginfo_recgroup(program));
+      /*
+       * Ignore programs that were recorded using "LiveTV" or that have been deleted via the
+       * "Auto Expire Instead of Delete Recording" option, which places the recording in the
+       * "Deleted" recording group for x days rather than deleting straight away.
+       */
+      if (group.Equals("LiveTV") || group.Equals("Deleted"))
       {
         m_dll->ref_release(program);
         continue;
