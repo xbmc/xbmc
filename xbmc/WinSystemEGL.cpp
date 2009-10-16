@@ -126,9 +126,9 @@ bool CWinSystemEGL::DestroyWindowSystem()
   if (m_eglSurface)
     eglDestroySurface(m_eglDisplay, m_eglSurface);
 
-//  Needed???
-//  if (m_eglWindow)
-//    XDestroyWindow(m_dpy, m_eglWindow);
+  // Needed???
+  if (m_eglWindow)
+    XDestroyWindow(m_dpy, m_eglWindow);
 
   if (m_eglDisplay)
     eglTerminate(m_eglDisplay);

@@ -66,8 +66,6 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
     m_nTextureHeight = m_imageHeight;
   }
 
-  CLog::Log(LOGDEBUG, "Texture Dimensions: %dx%d", m_nTextureWidth, m_nTextureHeight);
-
   delete[] m_pPixels;
   m_pPixels = new unsigned char[m_nTextureWidth * m_nTextureHeight * m_nBPP / 8];
 }

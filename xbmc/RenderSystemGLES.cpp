@@ -441,8 +441,6 @@ void CRenderSystemGLES::RestoreHardwareTransform()
 void CRenderSystemGLES::CalculateMaxTexturesize()
 {
   // GLES cannot do PROXY textures to determine maximum size,
-  // so set it to default maximum size instead.
-  m_maxTextureSize = 2048;
   CLog::Log(LOGINFO, "GL: Maximum texture width: %u", m_maxTextureSize);
 }
 
