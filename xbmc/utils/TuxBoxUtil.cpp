@@ -78,7 +78,7 @@ void CTuxBoxService::Stop()
 void CTuxBoxService::OnStartup()
 {
   CLog::Log(LOGDEBUG, "%s - Starting CTuxBoxService thread", __FUNCTION__);
-  SetPriority(THREAD_PRIORITY_LOWEST);
+  SetPriority( GetMinPriority() );
 }
 void CTuxBoxService::OnExit()
 {

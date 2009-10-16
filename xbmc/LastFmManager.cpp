@@ -597,7 +597,7 @@ void CLastFmManager::SendUpdateMessage()
 
 void CLastFmManager::OnStartup()
 {
-  SetPriority(THREAD_PRIORITY_NORMAL);
+  SetPriority( GetNormalPriority() );
 }
 
 void CLastFmManager::Process()

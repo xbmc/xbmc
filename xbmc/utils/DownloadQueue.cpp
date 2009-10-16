@@ -40,7 +40,7 @@ CDownloadQueue::CDownloadQueue(void) : CThread()
 
 void CDownloadQueue::OnStartup()
 {
-  SetPriority( THREAD_PRIORITY_LOWEST );
+  SetPriority( GetMinPriority() );
 }
 
 CDownloadQueue::~CDownloadQueue(void)
