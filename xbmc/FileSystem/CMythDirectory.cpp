@@ -170,12 +170,14 @@ bool CCMythDirectory::GetGuideForChannel(const CStdString& base, CFileItemList &
       CDateTime starttime(program[i].starttime);
       CDateTime endtime(program[i].endtime);
 
+      tm *local = localtime(&program[i].starttime);
+      CDateTime localstart = *local;
       CStdString title;
-      title.Format("%s - %s", starttime.GetAsLocalizedTime("HH:mm", false), program[i].title);
+      title.Format("%s - %s", localstart.GetAsLocalizedTime("HH:mm", false), program[i].title);
 
       CFileItemPtr item(new CFileItem(title, false));
       item->SetLabel(title);
-      item->m_dateTime = starttime;
+      item->m_dateTime = localstart;
 
       CVideoInfoTag* tag = item->GetVideoInfoTag();
 
