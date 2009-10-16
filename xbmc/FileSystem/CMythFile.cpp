@@ -379,8 +379,16 @@ bool CCMythFile::Exists(const CURL& url)
       path.Left(7)  == "movies/" ||
       path.Left(8)  == "tvshows/")
   {
-    if(CUtil::GetExtension(path).Equals(".tbn")
+    /*
+     * The mythbackend doesn't store anything other than the .mpg recording and the associated
+     * .mpg.png thumbnail. Channel icons are an arbitrary image format but requested through the
+     * /files path.
+     */
+    if(CUtil::GetExtension(path).Equals(".tbn") // local thumbnail files
     || CUtil::GetExtension(path).Equals(".jpg")
+    || CUtil::GetExtension(path).Equals(".JPG")
+    || CUtil::GetExtension(path).Equals(".nfo") // movies.nfo, tvshows.nfo
+    || CUtil::GetExtension(path).Equals(".xml") // mymovies.xml
     || CUtil::GetFileName(path).Equals("fanart.png"))
       return false;
 
