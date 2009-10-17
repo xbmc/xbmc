@@ -552,11 +552,19 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
     vAudioSinks.push_back(AudioSink("HDMI"   , "alsa:hdmi"));
   }
 
+  int n_cards = -1;
+  int numberCards = 0;
+  while ( snd_card_next( &n_cards ) == 0 && n_cards >= 0 ) 
+    numberCards++;
+
+  if (numberCards <= 1)
+    return;
+
   snd_ctl_t *handle;
   snd_ctl_card_info_t *info;
   snd_ctl_card_info_alloca( &info );
-  int n_cards = -1;
   CStdString strHwName;
+  n_cards = -1;
 
   while ( snd_card_next( &n_cards ) == 0 && n_cards >= 0 )
   {
