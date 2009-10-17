@@ -94,7 +94,6 @@ protected:
   std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
   int m_iScreen;
-  RESOLUTION m_NewResolution;
   vecSettingsCategory m_vecSections;
   CGUISpinControlEx *m_pOriginalSpin;
   CGUIRadioButtonControl *m_pOriginalRadioButton;

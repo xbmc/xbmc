@@ -3633,7 +3633,6 @@ void CGUIWindowSettingsCategory::OnInitWindow()
   }
   m_strOldTrackFormat = g_guiSettings.GetString("musicfiles.trackformat");
   m_strOldTrackFormatRight = g_guiSettings.GetString("musicfiles.trackformatright");
-  m_NewResolution = RES_INVALID;
   SetupControls();
   CGUIWindow::OnInitWindow();
 }
