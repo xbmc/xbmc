@@ -797,7 +797,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
     int iPos= 0, nResult;
     WCHAR cVolumeName[100];
     do{
-      cVolumeName[0]= '\0';
+      cVolumeName[0]= L'\0';
       uDriveType= GetDriveTypeW( pcBuffer + iPos  );
       if(uDriveType != DRIVE_REMOVABLE)
         nResult= GetVolumeInformationW( pcBuffer + iPos, cVolumeName, 100, 0, 0, 0, NULL, 25);
@@ -811,7 +811,7 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
          ( eDriveType == DVD_DRIVES && ( uDriveType == DRIVE_CDROM ))))
       {
         share.strPath= pcBuffer + iPos;
-        if( cVolumeName[0] != '\0' )
+        if( cVolumeName[0] != L'\0' )
           g_charsetConverter.wToUTF8(cVolumeName, share.strName);
         if( uDriveType == DRIVE_CDROM && nResult)
         {
