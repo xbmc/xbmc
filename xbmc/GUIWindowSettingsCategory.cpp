@@ -3845,6 +3845,9 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     numberSinks = sinkList.size();
   }
 
+  if (currentDevice.Equals("Custom"))
+    selectedValue = numberSinks;
+
   pControl->AddLabel("Custom", numberSinks++);
 
   if (selectedValue < 0)
