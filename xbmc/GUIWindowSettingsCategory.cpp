@@ -146,6 +146,7 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_iControlBeforeJump=-1;
   m_iWindowBeforeJump=WINDOW_INVALID;
   m_returningFromSkinLoad = false;
+  m_delayedSetting = NULL;
 }
 
 CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
@@ -299,6 +300,7 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
     break;
   case GUI_MSG_WINDOW_INIT:
     {
+      m_delayedSetting = NULL;
       if (message.GetParam1() != WINDOW_INVALID && !m_returningFromSkinLoad)
       { // coming to this window first time (ie not returning back from some other window)
         // so we reset our section and control states
@@ -310,8 +312,17 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
       return CGUIWindow::OnMessage(message);
     }
     break;
+  case GUI_MSG_UPDATE_ITEM:
+    if (m_delayedSetting)
+    {
+      OnSettingChanged(m_delayedSetting);
+      m_delayedSetting = NULL;
+      return true;
+    }
+    break;
   case GUI_MSG_WINDOW_DEINIT:
     {
+      m_delayedSetting = NULL;
       // Hardware based stuff
       // TODO: This should be done in a completely separate screen
       // to give warning to the user that it writes to the EEPROM.
@@ -1556,7 +1567,13 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     return;
   }
 
-  OnSettingChanged(pSettingControl);
+  if (pSettingControl->IsDelayed())
+  { // delayed setting
+    m_delayedSetting = pSettingControl;
+    m_delayedTimer.StartZero();
+  }
+  else
+    OnSettingChanged(pSettingControl);
 }
 
 void CGUIWindowSettingsCategory::CheckForUpdates()
@@ -2628,6 +2645,15 @@ void CGUIWindowSettingsCategory::Render()
 {
   // update realtime changeable stuff
   UpdateRealTimeSettings();
+
+  if (m_delayedSetting && m_delayedTimer.GetElapsedMilliseconds() > 3000)
+  { // we send a thread message so that it's processed the following frame (some settings won't
+    // like being changed during Render())
+    CGUIMessage message(GUI_MSG_UPDATE_ITEM, GetID(), GetID());
+    g_windowManager.SendThreadMessage(message, GetID());
+    m_delayedTimer.Stop();
+  }
+
   // update alpha status of current button
   bool bAlphaFaded = false;
   CGUIControl *control = GetFirstFocusableControl(CONTROL_START_BUTTONS + m_iSection);
