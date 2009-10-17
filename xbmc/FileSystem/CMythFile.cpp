@@ -376,9 +376,9 @@ bool CCMythFile::Exists(const CURL& url)
   CStdString path(url.GetFileName());
 
   /*
-   * mythbackend only has the .mpg or .nuv recording and the associated thumbnail (*.mpg.png or
-   * *.nuv.png). Channel icons are an arbitrary image format but requested through the /files/ path
-   * (as are the thumbnails).
+   * mythbackend provides access to the .mpg or .nuv recordings. The associated thumbnails
+   * (*.mpg.png or *.nuv.png) and channel icons, which are an arbitrary image format, are requested
+   * through the files/ path.
    */
   if ((path.Left(11) == "recordings/"
     || path.Left(7)  == "movies/"
