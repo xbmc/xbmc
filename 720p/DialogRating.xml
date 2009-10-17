@@ -64,6 +64,7 @@
                 <posx>48</posx>
                 <posy>88</posy>
                 <texture>rating0.png</texture>
+                <colordiffuse>FFFFCC00</colordiffuse>
             </control>
 
         </control>
