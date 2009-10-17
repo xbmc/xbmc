@@ -87,9 +87,6 @@ protected:
 
   void JumpToSection(int windowID, const CStdString &section);
   void JumpToPreviousSection();
-#if defined(_LINUX) && !defined(__APPLE__)
-  void GenSoundLabel(const CStdString& device, const CStdString& card, const int labelValue, CGUISpinControlEx* pControl, bool Passthrough);
-#endif //defined(_LINUX) && !defined(__APPLE__)
 
   std::vector<CBaseSettingControl *> m_vecSettings;
   int m_iSection;
@@ -118,6 +115,9 @@ protected:
 
   CStdString m_strOldTrackFormat;
   CStdString m_strOldTrackFormatRight;
+
+  std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
+  std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
 
   // state of the window saved in JumpToSection()
   // to get to the previous settings screen when

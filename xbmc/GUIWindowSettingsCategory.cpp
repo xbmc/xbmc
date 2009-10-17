@@ -68,6 +68,7 @@
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
+#include "cores/AudioRenderers/AudioRendererFactory.h"
 #ifndef __APPLE__
 #include "cores/AudioRenderers/ALSADirectSound.h"
 #endif
@@ -1832,13 +1833,21 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+#if defined(_LINUX) && !defined(__APPLE__)
+      g_guiSettings.SetString("audiooutput.audiodevice", m_AnalogAudioSinkMap[pControl->GetCurrentLabel()]);
+#else
       g_guiSettings.SetString("audiooutput.audiodevice", pControl->GetCurrentLabel());
+#endif
   }
 #if defined(_LINUX)
   else if (strSetting.Equals("audiooutput.passthroughdevice"))
   {
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
+#if defined(_LINUX) && !defined(__APPLE__)
+      g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
+#else
+      g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
+#endif
   }
 #endif
 #ifdef HAS_LCD
@@ -3786,27 +3795,64 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
-  std::vector<CStdString> cardList;
-  CALSADirectSound::GetSoundCards(cardList);
-  if (cardList.size()==0)
+  CStdString currentDevice = Passthrough ? g_guiSettings.GetString("audiooutput.passthroughdevice") : g_guiSettings.GetString("audiooutput.audiodevice");
+
+  if (Passthrough)
   {
-    pControl->AddLabel("Error - no devices found", 0);
+    m_DigitalAudioSinkMap.clear();
+    m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
   }
   else
   {
-    std::vector<CStdString>::const_iterator iter = cardList.begin();
-    for (int i=0; iter != cardList.end(); iter++)
-    {
-      CStdString cardName = *iter;
-      if (!Passthrough)
-      {
-        GenSoundLabel("default", cardName.c_str(), i++, pControl, Passthrough);
-      }
-      GenSoundLabel("iec958", cardName.c_str(), i++, pControl, Passthrough);
-      GenSoundLabel("hdmi", cardName.c_str(), i++, pControl, Passthrough);
-      GenSoundLabel("custom", "", i++, pControl, Passthrough);
-    }
+    m_AnalogAudioSinkMap.clear();
+    m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
   }
+  
+
+  int numberSinks = 0;
+
+  int selectedValue = -1;
+  AudioSinkList sinkList;
+  CAudioRendererFactory::EnumerateAudioSinks(sinkList, Passthrough);
+  if (sinkList.size()==0)
+  {
+    pControl->AddLabel("Error - no devices found", 0);
+    numberSinks = 1;
+    selectedValue = 0;
+  }
+  else
+  {
+    AudioSinkList::const_iterator iter = sinkList.begin();
+    for (int i=0; iter != sinkList.end(); iter++)
+    {
+      CStdString label = (*iter).first;
+      CStdString sink  = (*iter).second;
+      pControl->AddLabel(label.c_str(), i);
+
+      if (currentDevice.Equals(sink))
+        selectedValue = i;
+
+      if (Passthrough)
+        m_DigitalAudioSinkMap[label] = sink;
+      else
+        m_AnalogAudioSinkMap[label] = sink;
+
+      i++;
+    }
+
+    numberSinks = sinkList.size();
+  }
+
+  pControl->AddLabel("Custom", numberSinks++);
+
+  if (selectedValue < 0)
+  {
+    CLog::Log(LOGWARNING, "Failed to find previously selected audio sink");
+    pControl->AddLabel("Unavailable " + currentDevice, numberSinks);
+    pControl->SetValue(numberSinks);
+  }
+  else
+    pControl->SetValue(selectedValue);
 #elif defined(_WIN32)
   if (Passthrough)
     return;
@@ -3827,33 +3873,6 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   }
 #endif
 }
-
-#if defined(_LINUX) && !defined(__APPLE__)
-void CGUIWindowSettingsCategory::GenSoundLabel(const CStdString& device, const CStdString& card, const int labelValue, CGUISpinControlEx* pControl, bool Passthrough)
-{
-  CStdString deviceString(device);
-
-  if (!device.Equals("custom"))
-    deviceString.AppendFormat(":CARD=%s", card.c_str());
-
-  if (CALSADirectSound::SoundDeviceExists(deviceString.c_str()) || 
-       !device.Equals("default") ||
-       !device.Equals("custom"))
-  {
-    pControl->AddLabel(deviceString.c_str(), labelValue);
-    if (Passthrough)
-    {
-      if (g_guiSettings.GetString("audiooutput.passthroughdevice").Equals(deviceString))
-        pControl->SetValue(labelValue);
-    }
-    else
-    {
-      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceString))
-        pControl->SetValue(labelValue);
-    }
-  }
-}
-#endif //defined(_LINUX) && !defined(__APPLE__)
 
 void CGUIWindowSettingsCategory::FillInWeatherPlugins(CGUISpinControlEx *pControl, const CStdString& strSelected)
 {
