@@ -120,10 +120,10 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 
 	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
 	{
-    CDeviceKitDiskDevice *device = itr->second;
 /* DeviceKit.Disks isn't able to enumerate unmounted devices even if they still are plugged in
    So as a failsafe we don't unmount on exit, even if it's a good thing safetywise to do. */
-/*    if (device->m_isMountedByUs)
+/*  CDeviceKitDiskDevice *device = itr->second;
+    if (device->m_isMountedByUs)
       device->UnMount();*/
 
     delete m_AvailableDevices[itr->first];

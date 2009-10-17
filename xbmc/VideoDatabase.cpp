@@ -2664,7 +2664,7 @@ void CVideoDatabase::DeleteSet(long lSetId)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, lSetId);
+    CLog::Log(LOGERROR, "%s (%ld) failed", __FUNCTION__, lSetId);
   }
 }
 

@@ -122,7 +122,7 @@ bool CXBTFWriter::UpdateHeader()
 
   // Sanity check
   int64_t pos = ftell(m_file);
-  if (pos != m_xbtf.GetHeaderSize())
+  if (pos != (int64_t)m_xbtf.GetHeaderSize())
   {
     printf("Expected header size (%" PRId64 ") != actual size (%" PRId64 ")\n", m_xbtf.GetHeaderSize(), pos);
     return false;
