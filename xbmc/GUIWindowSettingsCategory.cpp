@@ -3801,11 +3801,13 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   {
     m_DigitalAudioSinkMap.clear();
     m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
+    m_DigitalAudioSinkMap["Custom"] = "custom";
   }
   else
   {
     m_AnalogAudioSinkMap.clear();
     m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
+    m_AnalogAudioSinkMap["Custom"] = "custom";
   }
   
 
