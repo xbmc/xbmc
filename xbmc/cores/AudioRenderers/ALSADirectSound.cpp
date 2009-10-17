@@ -544,12 +544,12 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
   {
     vAudioSinks.push_back(AudioSink("default", "alsa:default"));
     vAudioSinks.push_back(AudioSink("iec958" , "alsa:plug:iec958"));
-    vAudioSinks.push_back(AudioSink("HDMI"   , "alsa:plug:hdmi"));
+    vAudioSinks.push_back(AudioSink("hdmi"   , "alsa:plug:hdmi"));
   }
   else
   {
     vAudioSinks.push_back(AudioSink("iec958" , "alsa:iec958"));
-    vAudioSinks.push_back(AudioSink("HDMI"   , "alsa:hdmi"));
+    vAudioSinks.push_back(AudioSink("hdmi"   , "alsa:hdmi"));
   }
 
   int n_cards = -1;
