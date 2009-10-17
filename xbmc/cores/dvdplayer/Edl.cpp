@@ -789,6 +789,21 @@ bool CEdl::ReadMythCommBreaks(const CURL& url, const float fFramesPerSecond)
 
 void CEdl::MergeShortCommBreaks()
 {
+  /*
+   * mythcommflag routinely seems to put a 20-40ms commercial break at the start of the recording.
+   *
+   * Remove any spurious short commercial breaks at the very start so they don't interfere with
+   * the algorithms below.
+   */
+  if (!m_vecCuts.empty()
+  &&  m_vecCuts[0].action == COMM_BREAK
+  && (m_vecCuts[0].end - m_vecCuts[0].start) < 5 * 1000) // 5 seconds
+  {
+    CLog::Log(LOGDEBUG, "%s - Removing short commercial break at start [%s - %s]. <5 seconds", __FUNCTION__,
+              MillisecondsToTimeString(m_vecCuts[0].start).c_str(), MillisecondsToTimeString(m_vecCuts[0].end).c_str());
+    m_vecCuts.erase(m_vecCuts.begin());
+  }
+
   if (g_advancedSettings.m_bEdlMergeShortCommBreaks)
   {
     for (int i = 0; i < (int)m_vecCuts.size() - 1; i++)
