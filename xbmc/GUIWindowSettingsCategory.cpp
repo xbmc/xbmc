@@ -3801,13 +3801,13 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   {
     m_DigitalAudioSinkMap.clear();
     m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
-    m_DigitalAudioSinkMap["Custom"] = "custom";
+    m_DigitalAudioSinkMap["custom"] = "custom";
   }
   else
   {
     m_AnalogAudioSinkMap.clear();
     m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
-    m_AnalogAudioSinkMap["Custom"] = "custom";
+    m_AnalogAudioSinkMap["custom"] = "custom";
   }
   
 
@@ -3845,15 +3845,15 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
     numberSinks = sinkList.size();
   }
 
-  if (currentDevice.Equals("Custom"))
+  if (currentDevice.Equals("custom"))
     selectedValue = numberSinks;
 
-  pControl->AddLabel("Custom", numberSinks++);
+  pControl->AddLabel("custom", numberSinks++);
 
   if (selectedValue < 0)
   {
     CLog::Log(LOGWARNING, "Failed to find previously selected audio sink");
-    pControl->AddLabel("Unavailable " + currentDevice, numberSinks);
+    pControl->AddLabel(currentDevice, numberSinks);
     pControl->SetValue(numberSinks);
   }
   else
