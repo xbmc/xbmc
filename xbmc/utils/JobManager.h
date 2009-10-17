@@ -22,6 +22,7 @@
 
 #include <queue>
 #include <vector>
+#include <string>
 #include "CriticalSection.h"
 #include "Thread.h"
 #include "Job.h"
