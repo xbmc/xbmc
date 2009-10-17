@@ -606,12 +606,12 @@ bool CALSADirectSound::SoundDeviceExists(const CStdString& device)
       if ((name = snd_device_name_get_hint(*n, "NAME")) != NULL)
       {
         strName = name;
+        free(name);
         if (strName.find(device) != string::npos)
         {
           retval = true;
           break;
         }
-        free(name);
       }
     }
     snd_device_name_free_hint(hints);
