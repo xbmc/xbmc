@@ -65,18 +65,12 @@ void CEdl::Clear()
 
 bool CEdl::ReadFiles(const CStdString& strMovie, const float fFramesPerSecond)
 {
-  /*
-   * Read any available format until a valid EDL related file is found, except HDHomeRun. Its
-   * Exists() implementation returns true for all of the EDL files that are checked for, which are
-   * then opened and read within the EDL code causing chaos.
-   */
-  if (CUtil::IsHDHomeRun(strMovie))
-    return false;
-
   CLog::Log(LOGDEBUG, "%s - checking for any edit decision list (EDL) files for: %s", __FUNCTION__,
             strMovie.c_str());
 
   /*
+   * Read any available format until a valid EDL related file is found.
+   *
    * TODO: Surely there's a better way to do this bFound shenanigans.
    */
   bool bFound = false;
@@ -360,7 +354,8 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
 {
   Clear();
 
-  CStdString beyondTVFilename = strMovie + ".chapters.xml";
+  CStdString beyondTVFilename;
+  CUtil::ReplaceExtension(strMovie, CUtil::GetExtension(strMovie) + ".chapters.xml", beyondTVFilename);
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
