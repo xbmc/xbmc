@@ -833,6 +833,21 @@ void CEdl::MergeShortCommBreaks()
     }
 
     /*
+     * To cater for recordings that are started early and then have a commercial break identified
+     * before the TV show starts, expand the first commercial break to the very beginning if it
+     * starts within the maximum start gap. This is done outside of the consolidation to prevent
+     * the maximum commercial break length being triggered.
+     */
+    if (!m_vecCuts.empty()
+    &&  m_vecCuts[0].action == COMM_BREAK
+    &&  m_vecCuts[0].start < g_advancedSettings.m_iEdlMaxStartGap * 1000)
+    {
+      CLog::Log(LOGDEBUG, "%s - Expanding first commercial break back to start [%s - %s].", __FUNCTION__,
+                MillisecondsToTimeString(m_vecCuts[0].start).c_str(), MillisecondsToTimeString(m_vecCuts[0].end).c_str());
+      m_vecCuts[0].start = 0;
+    }
+
+    /*
      * Remove any commercial breaks shorter than the minimum (unless at the start)
      */
     for (int i = 0; i < (int)m_vecCuts.size(); i++)
