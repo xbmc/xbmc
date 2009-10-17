@@ -311,9 +311,9 @@ public:
   bool HasEpisodeInfo(const CStdString& strFilenameAndPath);
   bool HasMusicVideoInfo(const CStdString& strFilenameAndPath);
 
-  void GetFilePathById(int id, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
-  bool GetGenreById(int id, CStdString& strGenre);
-  bool GetSetById(int id, CStdString& strSet);
+  void GetFilePathById(int idMovie, CStdString &filePath, VIDEODB_CONTENT_TYPE iType);
+  bool GetGenreById(int idGenre, CStdString& strGenre);
+  bool GetSetById(int idSet, CStdString& strSet);
   int GetTvShowForEpisode(int idEpisode);
 
   void GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1);
@@ -342,7 +342,7 @@ public:
   void DeleteDetailsForTvShow(const CStdString& strPath);
   void RemoveContentForPath(const CStdString& strPath,CGUIDialogProgress *progress = NULL);
   void UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE type);
-  void DeleteSet(long lSetId);
+  void DeleteSet(int idSet);
 
   // per-file video settings
   bool GetVideoSettings(const CStdString &strFilenameAndPath, CVideoSettings &settings);

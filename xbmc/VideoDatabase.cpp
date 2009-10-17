@@ -1795,8 +1795,8 @@ void CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, co
       {
         CStdString set(sets[i]);
         set.Trim();
-        int lSet = AddSet(set);
-        AddSetToMovie(idMovie, lSet);
+        int idSet = AddSet(set);
+        AddSetToMovie(idMovie, idSet);
       }
     }
     
@@ -2651,7 +2651,7 @@ void CVideoDatabase::DeleteStreamDetails(int idFile)
     m_pDS->exec(FormatSQL("delete from streamdetails where idFile=%i", idFile));
 }
 
-void CVideoDatabase::DeleteSet(long lSetId)
+void CVideoDatabase::DeleteSet(int idSet)
 {
   try
   {
@@ -2659,12 +2659,12 @@ void CVideoDatabase::DeleteSet(long lSetId)
     if (NULL == m_pDS.get()) return ;
 
     CStdString strSQL;
-    strSQL=FormatSQL("delete from sets where idSet=%i", lSetId);
+    strSQL=FormatSQL("delete from sets where idSet=%i", idSet);
     m_pDS->exec(strSQL.c_str());
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "%s (%ld) failed", __FUNCTION__, lSetId);
+    CLog::Log(LOGERROR, "%s (%i) failed", __FUNCTION__, idSet);
   }
 }
 
@@ -5347,14 +5347,14 @@ bool CVideoDatabase::GetRecentlyAddedMusicVideosNav(const CStdString& strBaseDir
   return GetMusicVideosByWhere(strBaseDir, where, items);
 }
 
-bool CVideoDatabase::GetGenreById(int lIdGenre, CStdString& strGenre)
+bool CVideoDatabase::GetGenreById(int idGenre, CStdString& strGenre)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select genre.strGenre from genre where genre.idGenre=%i", lIdGenre);
+    CStdString strSQL=FormatSQL("select genre.strGenre from genre where genre.idGenre=%i", idGenre);
     m_pDS->query( strSQL.c_str() );
 
     bool bResult = false;
@@ -5392,14 +5392,14 @@ bool CVideoDatabase::HasSets() const
   return false;
 }
 
-bool CVideoDatabase::GetSetById(int lIdSet, CStdString& strSet)
+bool CVideoDatabase::GetSetById(int idSet, CStdString& strSet)
 {
   try
   {
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    CStdString strSQL=FormatSQL("select sets.strSet from sets where sets.idSet=%i", lIdSet);
+    CStdString strSQL=FormatSQL("select sets.strSet from sets where sets.idSet=%i", idSet);
     m_pDS->query( strSQL.c_str() );
 
     bool bResult = false;
