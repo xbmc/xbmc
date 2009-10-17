@@ -147,6 +147,10 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 	int total = 0;
 	long rows;
 	char *failed = NULL;
+	cmyth_commbreak_t commbreak;
+	unsigned short type;
+	int i;
+	int j;
 
 	if (count <= 0) {
 		*err = EINVAL;
@@ -187,10 +191,6 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 	}
 	memset(breaklist->commbreak_list, 0, breaklist->commbreak_count * sizeof(cmyth_commbreak_t));
 
-	cmyth_commbreak_t commbreak;
-	unsigned short type;
-	int i;
-	int j;
 	for (i = 0; i < breaklist->commbreak_count; i++) {
 		commbreak = cmyth_commbreak_create();
 
