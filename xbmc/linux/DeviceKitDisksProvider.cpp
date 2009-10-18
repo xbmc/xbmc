@@ -119,15 +119,7 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
   DeviceMap::iterator itr;
 
 	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-	{
-/* DeviceKit.Disks isn't able to enumerate unmounted devices even if they still are plugged in
-   So as a failsafe we don't unmount on exit, even if it's a good thing safetywise to do. */
-/*  CDeviceKitDiskDevice *device = itr->second;
-    if (device->m_isMountedByUs)
-      device->UnMount();*/
-
     delete m_AvailableDevices[itr->first];
-	}
 
   m_AvailableDevices.clear();
 
@@ -246,7 +238,6 @@ void CDeviceKitDisksProvider::DeviceRemoved(const char *object)
       CLog::Log(LOGWARNING, "DeviceKit.Disks: Unsafe removal of %s", object);
 
     delete m_AvailableDevices[object];
-    m_AvailableDevices[object] = NULL;
     m_AvailableDevices.erase(object);
   }
 }
