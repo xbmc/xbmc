@@ -270,21 +270,23 @@
                 <visible>Control.IsVisible(100)</visible>
                 
                 <control type="label" id="23">
+                    <description>Hours</description>
                     <posx>24</posx>
                     <posy>145</posy>
                     <width>95</width>
                     <align>center</align>
-                    <label>Hours</label>
+                    <label>12392</label>
                     <textcolor>HomeMain2</textcolor>
                     <font>SmallDefaultFont</font>
                 </control>
 
                 <control type="label" id="24">
+                    <description>Minutes</description>
                     <posx>133</posx>
                     <posy>145</posy>
                     <width>95</width>
                     <align>center</align>
-                    <label>Minutes</label>
+                    <label>12391</label>
                     <textcolor>HomeMain2</textcolor>
                     <font>SmallDefaultFont</font>
                 </control>
