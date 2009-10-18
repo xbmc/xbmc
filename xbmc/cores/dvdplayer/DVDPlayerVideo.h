@@ -133,7 +133,9 @@ protected:
   double m_fStableFrameRate; //place to store calculated framerates
   int    m_iFrameRateCount;  //how many calculated framerates we stored in m_fStableFrameRate
   bool   m_bAllowDrop;       //we can't drop frames until we've calculated the framerate
-
+  int    m_iFrameRateLength; //how many seconds we should measure the framerate  
+                             //this is increased exponentially from CDVDPlayerVideo::CalcFrameRate()
+  
   struct SOutputConfiguration
   {
     unsigned int width;
