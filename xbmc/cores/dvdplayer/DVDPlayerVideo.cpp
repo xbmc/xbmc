@@ -1091,6 +1091,13 @@ int CDVDPlayerVideo::GetVideoBitrate()
 #define MAXFRAMERATEDIFF 0.0005
 void CDVDPlayerVideo::CalcFrameRate()
 {
+  if (m_iFrameRateLength >= 128) //we've calculated the framerate long enough
+  {                              //it's probably correct now
+    m_fStableFrameRate = 0.0;
+    m_iFrameRateCount = 0;
+    return;
+  }
+      
   //see if m_pullupCorrection was able to detect a pattern in the timestamps
   //and is able to calculate the correct frame duration from it
   double frameduration = m_pullupCorrection.CalcFrameDuration();
