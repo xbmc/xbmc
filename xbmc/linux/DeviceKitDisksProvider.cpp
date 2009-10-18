@@ -161,8 +161,8 @@ std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
   std::vector<CStdString> devices;
   DeviceMap::iterator itr;
 
-	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-	{
+  for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+  {
     CDeviceKitDiskDevice *device = itr->second;
     if (device->IsApproved())
     {
@@ -170,7 +170,7 @@ std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
       str.Format("%s %lu GiB", device->m_MountPath.c_str(), device->m_PartitionSizeGiB);
       devices.push_back(str);
     }
-	}
+  }
 
   return devices;
 }
