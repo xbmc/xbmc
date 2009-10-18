@@ -402,7 +402,7 @@ void CDVDPlayerVideo::Process()
       //we need to recalculate the framerate
       //TODO: this needs to be set on a streamchange instead
       m_iFrameRateLength = 1;
-      m_iFrameRateLength = !m_bCalcFrameRate;
+      m_bAllowDrop = !m_bCalcFrameRate;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
