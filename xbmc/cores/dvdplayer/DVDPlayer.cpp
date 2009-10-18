@@ -467,6 +467,7 @@ bool CDVDPlayer::OpenInputStream()
   }
 
   SetAVDelay(g_stSettings.m_currentVideoSettings.m_AudioDelay);
+  SetSubTitleDelay(g_stSettings.m_currentVideoSettings.m_SubtitleDelay);
   m_clock.Discontinuity(CLOCK_DISC_FULL);
   m_dvd.Clear();
   m_errorCount = 0;
