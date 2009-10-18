@@ -141,6 +141,7 @@ void CRenderSystemDX::DeleteResources()
 
 void CRenderSystemDX::OnDeviceLost()
 {
+  SAFE_RELEASE(m_stateBlock);
   // notify all objects
   for(unsigned int i = 0; i < m_vecEffects.size(); i++)
   {
@@ -388,8 +389,7 @@ void CRenderSystemDX::CaptureStateBlock()
   if (!m_bRenderCreated)
     return;
   
-  if (m_stateBlock)
-    SAFE_RELEASE(m_stateBlock);
+  SAFE_RELEASE(m_stateBlock);
   m_pD3DDevice->CreateStateBlock(D3DSBT_ALL, &m_stateBlock);
 }
 
