@@ -401,18 +401,6 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
     }
     else
     {
-      // !! WORKAROUND !!
-      // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
-      // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
-      // (Ticket #4764)
-      CStdString strParentDirectory;
-      CUtil::GetParentPath(item->m_strPath,strParentDirectory);
-      if (m_database.GetTvShowId(strParentDirectory) < 0)
-      {
-        CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
-        return false;
-      }
-
       int EpisodeHint=-1;
       if (item->HasVideoInfoTag())
         EpisodeHint = item->GetVideoInfoTag()->m_iEpisode;
@@ -421,6 +409,24 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const SScraperInfo& info2)
       {
         bHasInfo = true;
         m_database.GetEpisodeInfo(item->m_strPath, movieDetails, idEpisode);
+      }
+      else
+      {
+        // !! WORKAROUND !!
+        // As we cannot add an episode to a non-existing tvshow entry, we have to check the parent directory
+        // to see if it`s already in our video database. If it's not yet part of the database we will exit here.
+        // (Ticket #4764)
+        //
+        // NOTE: This will fail for episodes on multipath shares, as the parent path isn't what is stored in the
+        //       database.  Possible solutions are to store the paths in the db separately and rely on the show
+        //       stacking stuff, or to modify GetTvShowId to do support multipath:// shares
+        CStdString strParentDirectory;
+        CUtil::GetParentPath(item->m_strPath, strParentDirectory);
+        if (m_database.GetTvShowId(strParentDirectory) < 0)
+        {
+          CLog::Log(LOGERROR,"%s: could not add episode [%s]. tvshow does not exist yet..", __FUNCTION__, item->m_strPath.c_str());
+          return false;
+        }
       }
     }
   }
