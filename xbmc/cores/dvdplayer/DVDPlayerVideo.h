@@ -129,7 +129,7 @@ protected:
   void   CalcFrameRate();
   
   float  m_fFrameRate;       //framerate of the video currently playing
-  bool   m_bGuessFrameRate;  //if we should guess the framerate from the timestamps
+  bool   m_bCalcFrameRate;  //if we should calculate the framerate from the timestamps
   double m_fStableFrameRate; //place to store calculated framerates
   int    m_iFrameRateCount;  //how many calculated framerates we stored in m_fStableFrameRate
   bool   m_bAllowDrop;       //we can't drop frames until we've calculated the framerate

@@ -172,12 +172,12 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
   //if adjust refreshrate is used, or if sync playback to display is on,
   //we try to calculate the framerate from the pts', because the codec fps
   //is not always correct
-  m_bGuessFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
+  m_bCalcFrameRate = g_guiSettings.GetBool("videoplayer.usedisplayasclock") ||
                       g_guiSettings.GetBool("videoplayer.adjustrefreshrate");
   
   m_fStableFrameRate = 0.0;
   m_iFrameRateCount = 0;
-  m_bAllowDrop = !m_bGuessFrameRate; //we start with not allowing drops to calculate the framerate
+  m_bAllowDrop = !m_bCalcFrameRate; //we start with not allowing drops to calculate the framerate
   m_iFrameRateLength = 1;
   
   if (hint.vfr)
@@ -399,7 +399,10 @@ void CDVDPlayerVideo::Process()
       LeaveCriticalSection(&m_critCodecSection);
       
       m_pullupCorrection.Flush();
+      //we need to recalculate the framerate
+      //TODO: this needs to be set on a streamchange instead
       m_iFrameRateLength = 1;
+      m_iFrameRateLength = !m_bCalcFrameRate;
     }
     else if (pMsg->IsType(CDVDMsg::VIDEO_NOSKIP))
     {
@@ -901,7 +904,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   pts += m_pullupCorrection.Correction();
   
   //try to calculate the framerate
-  if (m_bGuessFrameRate)
+  if (m_bCalcFrameRate)
     CalcFrameRate();
   
   // signal to clock what our framerate is, it may want to adjust it's
