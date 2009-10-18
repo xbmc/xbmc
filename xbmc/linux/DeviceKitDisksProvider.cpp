@@ -293,7 +293,7 @@ void CDeviceKitDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemova
 	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
 	{
     CDeviceKitDiskDevice *device = itr->second;
-    if (device->IsApproved() && device->m_isRemovable == EnumerateRemovable)
+    if (device && device->IsApproved() && device->m_isRemovable == EnumerateRemovable)
       devices.push_back(device->ToMediaShare());
 	}
 }
