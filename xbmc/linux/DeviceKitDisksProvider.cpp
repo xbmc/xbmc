@@ -31,6 +31,8 @@ void CDeviceKitDiskDevice::Update()
     m_FileSystem  = properties["IdType"];
     m_isMounted   = properties["DeviceIsMounted"].Equals("true");
     m_isRemovable = CDBusUtil::GetBoolean("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable");
+
+    m_PartitionSizeGiB = (atol(properties["PartitionSize"].c_str()) / 1024.0 / 1024.0 / 1024.0);
   }
 }
 
@@ -156,7 +158,21 @@ bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
 
 std::vector<CStdString> CDeviceKitDisksProvider::GetDiskUsage()
 {
-  return std::vector<CStdString>();
+  std::vector<CStdString> devices;
+  DeviceMap::iterator itr;
+
+	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	{
+    CDeviceKitDiskDevice *device = itr->second;
+    if (device->IsApproved())
+    {
+      CStdString str;
+      str.Format("%s %lu GiB", device->m_MountPath.c_str(), device->m_PartitionSizeGiB);
+      devices.push_back(str);
+    }
+	}
+
+  return devices;
 }
 
 bool CDeviceKitDisksProvider::PumpDriveChangeEvents()
