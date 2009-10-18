@@ -747,7 +747,7 @@
   </include>
 
   <include name="HomePowerBGVisible">
-    <visible>Container(300).HasFocus(7) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
+    <visible>Container(300).HasFocus(111) | Container(300).HasFocus(112) | Container(300).HasFocus(113) | ![Control.IsVisible(210) | Control.IsVisible(211) | Control.IsVisible(212) | Control.IsVisible(213) | Control.IsVisible(214) | Control.IsVisible(215) | Control.IsVisible(217) | Control.IsVisible(218) | Control.IsVisible(219) | Control.IsVisible(240) | Control.IsVisible(241) | Control.IsVisible(242)]</visible>
   </include>
 
   <include name="HomeTVShowsBGVisible">

@@ -698,7 +698,7 @@
           <description>Power Side Menu</description>
           <onup>407</onup>
           <ondown>407</ondown>
-          <visible>[Container(300).HasFocus(7) | Control.HasFocus(407)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
+          <visible>[Container(300).HasFocus(111) | Container(300).HasFocus(112) | Container(300).HasFocus(113) | Control.HasFocus(407)] + ![Container(300).OnNext | Container(300).OnPrevious]</visible>
           <include>HomeSideMenu</include>
 
           <focusedlayout width="HomeSideMenuItemWidth" height="HomeSideMenuItemHeight">
@@ -727,20 +727,20 @@
 
           <content>
 
-            <item id="1">
+            <item id="111">
               <description>Quit Button</description>
               <label> $LOCALIZE[31007] </label>
               <onclick>Plex.Shutdown()</onclick>
               <visible>Skin.HasSetting(ShowSleep) | Skin.HasSetting(ShowShutDown)</visible>
             </item>
 
-            <item id="2">
+            <item id="112">
               <description>Sleep Button</description>
               <label> $LOCALIZE[13450] </label>
               <onclick>XBMC.SleepSystem()</onclick>
               <visible>!Skin.HasSetting(ShowSleep)</visible>
             </item>
-            <item id="3">
+            <item id="113">
               <description>Shut Down Button</description>
               <label> $LOCALIZE[31961] </label>
               <onclick>XBMC.ShutDownSystem()</onclick>
@@ -1551,21 +1551,21 @@
             <label2> $LOCALIZE[31016] </label2>
             <onclick>SetFocus(506)</onclick>
           </item>
-          <item id="7">
+          <item id="111">
             <description>Quit Button</description>
             <label> $LOCALIZE[31007] </label>
             <label2> $LOCALIZE[31017] </label2>
             <onclick>Plex.ShutDown</onclick>
             <visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
           </item>
-          <item id="7">
+          <item id="112">
             <description>Sleep Button</description>
             <label> $LOCALIZE[31960] </label>
             <label2> $LOCALIZE[31017] </label2>
             <onclick>Plex.SleepSystem</onclick>
             <visible>!Skin.HasSetting(HidePower) + Skin.HasSetting(ShowSleep) + !Skin.HasSetting(ShowShutDown)</visible>
           </item>
-          <item id="7">
+          <item id="113">
             <description>Shut Down Button</description>
             <label> $LOCALIZE[31961] </label>
             <label2> $LOCALIZE[31017] </label2>
