@@ -172,12 +172,12 @@ extern "C"
           (*sSet)[i]->type = vecSet[i].type;
           (*sSet)[i]->current = vecSet[i].current;
           (*sSet)[i]->entry_elements = 0;
+          (*sSet)[i]->entry = NULL;
           if(vecSet[i].type == VisSetting::SPIN && vecSet[i].entry.size() > 0)
           {
             (*sSet)[i]->entry = (char**)malloc(vecSet[i].entry.size()*sizeof(char**));
             for(unsigned int j=0;j<vecSet[i].entry.size();j++)
             {
-              (*sSet)[i]->entry[j] = NULL;
               if(strlen(vecSet[i].entry[j]) > 0)
               {
                 (*sSet)[i]->entry[j] = (char*)malloc(strlen(vecSet[i].entry[j])*sizeof(char*)+1);
