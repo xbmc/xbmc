@@ -118,7 +118,7 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 {
   DeviceMap::iterator itr;
 
-	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
     delete m_AvailableDevices[itr->first];
 
   m_AvailableDevices.clear();
@@ -146,7 +146,7 @@ bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
   CStdString path(mountpath);
   CUtil::RemoveSlashAtEnd(path);
 
-	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
 	{
     CDeviceKitDiskDevice *device = itr->second;
     if (device->m_MountPath.Equals(path))
@@ -263,8 +263,8 @@ std::vector<CStdString> CDeviceKitDisksProvider::EnumerateDisks()
   DBusMessage *reply = message.SendSystem();
   if (reply)
   {
-    char** disks = NULL;
-    int    length     = 0;
+    char** disks  = NULL;
+    int    length = 0;
     
     if (dbus_message_get_args (reply, NULL, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &disks, &length, DBUS_TYPE_INVALID))
 	  {
@@ -282,7 +282,7 @@ void CDeviceKitDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemova
 {
   DeviceMap::iterator itr;
 
-	for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+	for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
 	{
     CDeviceKitDiskDevice *device = itr->second;
     if (device && device->IsApproved() && device->m_isRemovable == EnumerateRemovable)
