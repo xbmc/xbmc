@@ -74,9 +74,7 @@ bool CDeviceKitDiskDevice::UnMount()
 
     DBusMessage *reply = message.SendSystem();
     if (reply)
-    {
       m_isMountedByUs = m_isMounted = false;
-    }
 
     return !m_isMounted;
   }
@@ -118,7 +116,7 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 {
   DeviceMap::iterator itr;
 
-	for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
     delete m_AvailableDevices[itr->first];
 
   m_AvailableDevices.clear();
@@ -146,8 +144,8 @@ bool CDeviceKitDisksProvider::Eject(CStdString mountpath)
   CStdString path(mountpath);
   CUtil::RemoveSlashAtEnd(path);
 
-	for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-	{
+  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+  {
     CDeviceKitDiskDevice *device = itr->second;
     if (device->m_MountPath.Equals(path))
       return device->UnMount();
@@ -267,7 +265,7 @@ std::vector<CStdString> CDeviceKitDisksProvider::EnumerateDisks()
     int    length = 0;
     
     if (dbus_message_get_args (reply, NULL, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &disks, &length, DBUS_TYPE_INVALID))
-	  {
+    {
       for (int i = 0; i < length; i++)
         devices.push_back(disks[i]);
 
@@ -282,11 +280,11 @@ void CDeviceKitDisksProvider::GetDisks(VECSOURCES& devices, bool EnumerateRemova
 {
   DeviceMap::iterator itr;
 
-	for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-	{
+  for (itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
+  {
     CDeviceKitDiskDevice *device = itr->second;
     if (device && device->IsApproved() && device->m_isRemovable == EnumerateRemovable)
       devices.push_back(device->ToMediaShare());
-	}
+  }
 }
 #endif
