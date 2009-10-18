@@ -558,6 +558,10 @@ int CPluginShell::AllocateDX8Stuff()
 //    if (m_screenmode == DESKTOP)
 //        if (!InitDesktopMode())
 //            return false;
+  D3DVIEWPORT9 pViewport;
+  GetDevice()->GetViewport(&pViewport);
+  m_lpDX->m_client_width = pViewport.Width;
+  m_lpDX->m_client_height = pViewport.Height;
 
     if (!m_vjd3d8_device)    // otherwise it's done in InitVJStuff, and tied to the vj text wnd device
         if (!AllocateFonts(GetDevice()))
@@ -1370,28 +1374,28 @@ int CPluginShell::PluginRender(unsigned char *pWaveL, unsigned char *pWaveR)//, 
     // test for lost device
     // (this happens when device is fullscreen & user alt-tabs away,
     //  or when monitor power-saving kicks in)
-//    HRESULT hr = m_lpDX->m_lpDevice->TestCooperativeLevel();
-//    if (hr == D3DERR_DEVICENOTRESET)
-//    {
-//        // device WAS lost, and is now ready to be reset (and come back online):
-//        CleanUpDX8Stuff(0);
-//        if (m_lpDX->m_lpDevice->Reset(&m_lpDX->m_d3dpp) != D3D_OK)
-//        {
-//            // note: a basic warning messagebox will have already been given.
-//            // now suggest specific advice on how to regain more video memory:
-//            if (m_lpDX->m_lastErr == DXC_ERR_CREATEDEV_PROBABLY_OUTOFVIDEOMEMORY)
-//                SuggestHowToFreeSomeMem();
-//            return false;  // EXIT THE PLUGIN
-//        }
-//        if (!AllocateDX8Stuff())
-//            return false;  // EXIT THE PLUGIN
-//    }
-//    else if (hr != D3D_OK)
-//    {
-//        // device is lost, and not yet ready to come back; sleep.
-//        Sleep(30);
-//        return true;
-//    }
+    //HRESULT hr = m_lpDX->m_lpDevice->TestCooperativeLevel();
+    //if (hr == D3DERR_DEVICENOTRESET)
+    //{
+    //    // device WAS lost, and is now ready to be reset (and come back online):
+    //    CleanUpDX8Stuff(0);
+    //    if (m_lpDX->m_lpDevice->Reset(&m_lpDX->m_d3dpp) != D3D_OK)
+    //    {
+    //        // note: a basic warning messagebox will have already been given.
+    //        // now suggest specific advice on how to regain more video memory:
+    //        if (m_lpDX->m_lastErr == DXC_ERR_CREATEDEV_PROBABLY_OUTOFVIDEOMEMORY)
+    //            SuggestHowToFreeSomeMem();
+    //        return false;  // EXIT THE PLUGIN
+    //    }
+    //    if (!AllocateDX8Stuff())
+    //        return false;  // EXIT THE PLUGIN
+    //}
+    //else if (hr != D3D_OK)
+    //{
+    //    // device is lost, and not yet ready to come back; sleep.
+    //    Sleep(30);
+    //    return true;
+    //}
 
 //    if (m_vjd3d8_device)
 //    {
