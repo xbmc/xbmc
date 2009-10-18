@@ -639,7 +639,6 @@ void CGUISettings::Initialize()
 
   AddCategory(7, "videoscreen", 131);
   AddInt(1, "videoscreen.resolution",169, (int)RES_DESKTOP, (int)RES_WINDOW, 1, (int)RES_CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
-  AddString(2, "videoscreen.testresolution",13109,"", BUTTON_CONTROL_STANDARD);
 
 #if defined (__APPLE__) || defined(_WIN32)
   AddInt(3, "videoscreen.displayblanking", 13130, BLANKING_DISABLED, BLANKING_DISABLED, 1, BLANKING_ALL_DISPLAYS, SPIN_CONTROL_TEXT);

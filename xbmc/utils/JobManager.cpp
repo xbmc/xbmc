@@ -109,6 +109,21 @@ unsigned int CJobManager::AddJob(CJob *job, IJobCallback *callback, CJob::PRIORI
   return work.m_id;
 }
 
+unsigned int CJobManager::AddLIFOJob(CJob *job, IJobCallback *callback, CJob::PRIORITY priority)
+{
+  CSingleLock lock(m_section);
+
+  // check if we have a similar job, and if so, swap the first such job with this one
+  CWorkItem work(job, m_jobCounter++, callback);
+  JobQueue::iterator i = find(m_jobQueue[priority].begin(), m_jobQueue[priority].end(), job->GetType());
+  if (i != m_jobQueue[priority].end())
+    swap(*i, work);
+  m_jobQueue[priority].push_back(work);
+
+  StartWorkers(priority);
+  return work.m_id;
+}
+
 void CJobManager::CancelJob(unsigned int jobID)
 {
   CSingleLock lock(m_section);

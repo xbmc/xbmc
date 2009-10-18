@@ -122,7 +122,7 @@ bool CPlayListM3U::Load(const CStdString& strFileName)
         CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
         CFileItemPtr newItem(new CFileItem(strInfo));
         newItem->m_strPath = strFileName;
-        newItem->GetMusicInfoTag()->SetDuration(lDuration);
+        if (lDuration) newItem->GetMusicInfoTag()->SetDuration(lDuration);
         Add(newItem);
 
         // Reset the values just in case there part of the file have the extended marker
