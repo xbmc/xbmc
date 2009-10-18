@@ -26,6 +26,9 @@
 #include "RenderSystemDX.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "GUIWindowManager.h"
+#include "GUIUserMessages.h"
+#include "visualizations/Visualisation.h"
 
 using namespace std;
 
@@ -151,12 +154,27 @@ void CRenderSystemDX::OnDeviceLost()
 
 void CRenderSystemDX::OnDeviceReset()
 {
+  if(g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+  {
+    CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+    g_windowManager.SendMessage(msg);
+
+    ((CVisualisation *)msg.GetPointer())->FreeDXResources();
+  }
+  
   // reset all required resources
   m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
 
   for(unsigned int i = 0; i < m_vecEffects.size(); i++)
   {
     m_vecEffects[i]->OnResetDevice();
+  }
+
+  if(g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
+  {
+    CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
+    g_windowManager.SendMessage(msg);
+    ((CVisualisation *)msg.GetPointer())->AllocateDXResources();
   }
 }
 
