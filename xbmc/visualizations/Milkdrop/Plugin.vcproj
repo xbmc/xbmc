@@ -64,7 +64,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="D3dx9.lib"
-				OutputFile="../../../visualisations/MilkDrop.vis"
+				OutputFile="../../../visualisations/MilkDrop_win32dx.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Plugin.pdb"
@@ -143,7 +143,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="D3dx9.lib"
-				OutputFile="$(OutDir)/MilkDrop.vis"
+				OutputFile="../../../visualisations/MilkDrop_win32dx.vis"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
