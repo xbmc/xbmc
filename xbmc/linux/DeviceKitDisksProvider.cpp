@@ -247,6 +247,7 @@ void CDeviceKitDisksProvider::DeviceRemoved(const char *object)
 
     delete m_AvailableDevices[object];
     m_AvailableDevices[object] = NULL;
+    m_AvailableDevices.erase(object);
   }
 }
 
