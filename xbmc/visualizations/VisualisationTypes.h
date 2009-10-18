@@ -255,6 +255,10 @@ extern "C"
     void (__cdecl *UpdateSetting)(int num, StructSetting*** sSet);
     void (__cdecl *GetPresets)(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
     int  (__cdecl *GetSubModules)(char ***names, char ***paths);
+#ifdef HAS_DX
+    void (__cdecl *FreeDXResources)();
+    void (__cdecl *AllocateDXResources)();
+#endif
   };
 
 }

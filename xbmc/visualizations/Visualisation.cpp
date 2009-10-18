@@ -276,3 +276,17 @@ CStdString CVisualisation::GetCombinedName(const char* friendlyName)
   }
   return fName + ".vis";
 }
+
+#ifdef HAS_DX
+void CVisualisation::AllocateDXResources()
+{
+  if (m_pVisz->AllocateDXResources)
+    m_pVisz->AllocateDXResources();
+}
+
+void CVisualisation::FreeDXResources()
+{
+  if(m_pVisz->FreeDXResources)
+    m_pVisz->FreeDXResources();
+}
+#endif
