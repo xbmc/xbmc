@@ -241,7 +241,10 @@ namespace PYXBMC
         if (CGUIDialogNumeric::ShowAndGetDate(timedate, utf8Heading))
           value.Format("%2d/%2d/%4d", timedate.wDay, timedate.wMonth, timedate.wYear);
         else
-          value = cDefault;
+        {
+          Py_INCREF(Py_None);
+          return Py_None;
+        }
       }
       else if (inputtype == 2)
       {
@@ -254,17 +257,28 @@ namespace PYXBMC
         if (CGUIDialogNumeric::ShowAndGetTime(timedate, utf8Heading))
           value.Format("%2d:%02d", timedate.wHour, timedate.wMinute);
         else
-          value = cDefault;
+        {
+          Py_INCREF(Py_None);
+          return Py_None;
+        }
       }
       else if (inputtype == 3)
       {
         value = cDefault;
-        CGUIDialogNumeric::ShowAndGetIPAddress(value, utf8Heading);
+        if (!CGUIDialogNumeric::ShowAndGetIPAddress(value, utf8Heading))
+        {
+          Py_INCREF(Py_None);
+          return Py_None;
+        }
       }
       else
       {
         value = cDefault;
-        CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading);
+        if (!CGUIDialogNumeric::ShowAndGetNumber(value, utf8Heading))
+        {
+          Py_INCREF(Py_None);
+          return Py_None;
+        }
       }
     }
     return Py_BuildValue((char*)"s", value.c_str());
