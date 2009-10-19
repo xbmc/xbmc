@@ -261,11 +261,11 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
   strLineLong.Trim();
   StringToLCDCharSet(strLineLong);
 
-  while (strLineLong.size() < m_iColumns)
-    strLineLong += " ";
-
-  //if the string doesn't fit the display, lcdproc will scroll it
-  if (strLineLong.size() > m_iColumns)
+  //make string fit the display if it's smaller than the width
+  if (strLineLong.size() < m_iColumns)
+    strLineLong.append(m_iColumns - strLineLong.size(), ' ');
+  //else if the string doesn't fit the display, lcdproc will scroll it, so we need a space
+  else if (strLineLong.size() > m_iColumns && strLineLong[0] != ' ' && strLineLong[strLineLong.size() - 1] != ' ')
     strLineLong += " ";
   
   if (strLineLong != m_strLine[iLine])
