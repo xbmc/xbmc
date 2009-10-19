@@ -647,7 +647,9 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
         }
         if (message.GetParam1() == GUI_MSG_INVALIDATE)
         {
-          SetInvalid();
+          // reallocate all the control resources
+          CGUIControlGroup::FreeResources();
+          CGUIControlGroup::AllocResources();
           return true;
         }
       }
