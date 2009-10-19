@@ -244,6 +244,8 @@ void CGUIFixedListContainer::SelectItem(int item)
       m_cursor = std::max(m_fixedCursor, maxCursor + item - (int)m_items.size() + 1);
     else if (item <= m_fixedCursor)
       m_cursor = std::min(m_fixedCursor, minCursor + item);
+    else
+      m_cursor = m_fixedCursor;
     ScrollToOffset(item - m_cursor);
   }
 }
