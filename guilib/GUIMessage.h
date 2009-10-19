@@ -87,7 +87,12 @@
 
 #define GUI_MSG_SET_TYPE     33 ///< Instruct a control to set it's type appropriately
 
-#define GUI_MSG_INVALIDATE   34 ///< Instruct all controls to refresh - usually due to sizing changes
+/*!
+ \brief Message indicating the window has been resized
+ Any controls that keep stored sizing information based on aspect ratio or window size should
+ recalculate sizing information
+ */
+#define GUI_MSG_WINDOW_RESIZE  34
 
 #define GUI_MSG_USER         1000
 
