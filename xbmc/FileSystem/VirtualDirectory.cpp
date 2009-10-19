@@ -216,11 +216,7 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
   // add our plug n play shares
 
   if (m_allowNonLocalSources)
-  {
     g_mediaManager.GetRemovableDrives(shares);
-
-    CUtil::AutoDetectionGetSource(shares);
-  }
 
 #ifdef HAS_DVD_DRIVE
   // and update our dvd share

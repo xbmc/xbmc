@@ -246,13 +246,6 @@ bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
 
         g_charsetConverter.reset();
 
-#ifdef _XBOX
-        CStdString strKeyboardLayoutConfigurationPath;
-        strKeyboardLayoutConfigurationPath.Format("special://xbmc/language/%s/keyboardmap.xml", m_strNewLanguage.c_str());
-        CLog::Log(LOGINFO, "load keyboard layout configuration info file: %s", strKeyboardLayoutConfigurationPath.c_str());
-        g_keyboardLayoutConfiguration.Load(strKeyboardLayoutConfigurationPath);
-#endif
-
         CStdString strLanguagePath;
         strLanguagePath.Format("special://xbmc/language/%s/strings.xml", m_strNewLanguage.c_str());
         g_localizeStrings.Load(strLanguagePath);
@@ -861,10 +854,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInStartupWindow(pSetting);
     }
-    else if (strSetting.Equals("servers.ftpserveruser"))
-    {
-      FillInFTPServerUser(pSetting);
-    }
     else if (strSetting.Equals("videoplayer.externaldvdplayer"))
     {
       CSettingString *pSettingString = (CSettingString *)pSetting;
@@ -1129,11 +1118,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     { // only visible if we have autotemperature enabled
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("system.autotemperature"));
-    }
-    else if (strSetting.Equals("servers.ftpserveruser") || strSetting.Equals("servers.ftpserverpassword"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      pControl->SetEnabled(g_guiSettings.GetBool("servers.ftpserver"));
     }
     else if (strSetting.Equals("servers.webserverusername"))
     {
@@ -1872,22 +1856,6 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
 #endif
 #endif
-  else if (strSetting.Equals("servers.ftpserver"))
-  {
-    g_application.StopFtpServer();
-    if (g_guiSettings.GetBool("servers.ftpserver"))
-      g_application.StartFtpServer();
-  }
-  else if (strSetting.Equals("servers.ftpserverpassword"))
-  {
-   SetFTPServerUserPass();
-  }
-  else if (strSetting.Equals("servers.ftpserveruser"))
-  {
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
-    g_guiSettings.SetString("servers.ftpserveruser", pControl->GetCurrentLabel());
-  }
-
   else if ( strSetting.Equals("servers.webserver") || strSetting.Equals("servers.webserverport") || 
             strSetting.Equals("servers.webserverusername") || strSetting.Equals("servers.webserverpassword"))
   {
@@ -3356,65 +3324,6 @@ void CGUIWindowSettingsCategory::FillInScreenSavers(CSetting *pSetting)
     }
   }
   pControl->SetValue(iCurrentScr);
-}
-
-void CGUIWindowSettingsCategory::FillInFTPServerUser(CSetting *pSetting)
-{
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-  pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
-  pControl->Clear();
-  pControl->SetShowRange(true);
-
-#ifdef HAS_FTP_SERVER
-  int iDefaultFtpUser = 0;
-
-  CStdString strFtpUser1; int iUserMax;
-  // Get FTP XBOX Users and list them !
-  if (CUtil::GetFTPServerUserName(0, strFtpUser1, iUserMax))
-  {
-    for (int i = 0; i < iUserMax; i++)
-    {
-      if (CUtil::GetFTPServerUserName(i, strFtpUser1, iUserMax))
-        pControl->AddLabel(strFtpUser1.c_str(), i);
-      if (strFtpUser1.ToLower() == "xbox") iDefaultFtpUser = i;
-    }
-    pControl->SetValue(iDefaultFtpUser);
-    CUtil::GetFTPServerUserName(iDefaultFtpUser, strFtpUser1, iUserMax);
-    g_guiSettings.SetString("servers.ftpserveruser", strFtpUser1.c_str());
-    pControl->Update();
-  }
-  else { //Set "None" if there is no FTP User found!
-    pControl->AddLabel(g_localizeStrings.Get(231).c_str(), 0);
-    pControl->SetValue(0);
-    pControl->Update();
-  }
-#endif
-}
-bool CGUIWindowSettingsCategory::SetFTPServerUserPass()
-{
-#ifdef HAS_FTP_SERVER
-  // TODO: Read the FileZilla Server XML and Set it here!
-  // Get GUI USER and pass and set pass to FTP Server
-  CStdString strFtpUserName, strFtpUserPassword;
-  strFtpUserName      = g_guiSettings.GetString("servers.ftpserveruser");
-  strFtpUserPassword  = g_guiSettings.GetString("servers.ftpserverpassword");
-  if(strFtpUserPassword.size()!=0)
-  {
-    if (CUtil::SetFTPServerUserPassword(strFtpUserName, strFtpUserPassword))
-    {
-      // todo! ERROR check! if something goes wrong on SetPW!
-      // PopUp OK and Display: FTP Server Password was set succesfull!
-      CGUIDialogOK::ShowAndGetInput(728, 0, 1247, 0);
-    }
-    return true;
-  }
-  else
-  {
-    // PopUp OK and Display: FTP Server Password is empty! Try Again!
-    CGUIDialogOK::ShowAndGetInput(728, 0, 12358, 0);
-  }
-#endif
-  return true;
 }
 
 void CGUIWindowSettingsCategory::FillInRegions(CSetting *pSetting)

@@ -98,8 +98,6 @@ public:
   void StopServices();
   void StartWebServer();
   void StopWebServer(bool bWait);
-  void StartFtpServer();
-  void StopFtpServer();
   void StartTimeServer();
   void StopTimeServer();
   void StartUPnP();
@@ -345,7 +343,6 @@ protected:
 
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
-  void StartFtpEmergencyRecoveryMode();
   float NavigationIdleTime();
   void CheckForTitleChange();
   static bool AlwaysProcess(const CAction& action);

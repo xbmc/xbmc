@@ -56,11 +56,9 @@ protected:
   void FillInVSyncs(CSetting *pSetting);
   void FillInScreenSavers(CSetting *pSetting);
   void FillInRegions(CSetting *pSetting);
-  void FillInFTPServerUser(CSetting *pSetting);
   void FillInStartupWindow(CSetting *pSetting);
   void FillInViewModes(CSetting *pSetting, int windowID);
   void FillInSortMethods(CSetting *pSetting, int windowID);
-  bool SetFTPServerUserPass();
 
   void FillInSkinThemes(CSetting *pSetting);
   void FillInSkinColors(CSetting *pSetting);

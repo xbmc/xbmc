@@ -61,14 +61,6 @@ struct sortstringbyname
   }
 };
 
-struct XBOXDETECTION
-{
-  std::vector<CStdString> client_ip;
-  std::vector<CStdString> client_info;
-  std::vector<unsigned int> client_lookup_count;
-  std::vector<bool> client_informed;
-};
-
 class CUtil
 {
 public:
@@ -185,11 +177,6 @@ public:
   static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
   static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);
   static bool IsFTP(const CStdString& strFile);
-  static bool GetFTPServerUserName(int iFTPUserID, CStdString &strFtpUser1, int &iUserMax );
-  static bool SetFTPServerUserPassword(CStdString strFtpUserName, CStdString strFtpUserPassword);
-  static bool AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, CStdString strNickName, int iFTPPort);
-  static bool AutoDetection();
-  static void AutoDetectionGetSource(VECSOURCES &share);
   static void GetSkinThemes(std::vector<CStdString>& vecTheme);
   static void GetRecursiveListing(const CStdString& strPath, CFileItemList& items, const CStdString& strMask, bool bUseFileDirectories=false);
   static void GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& items);

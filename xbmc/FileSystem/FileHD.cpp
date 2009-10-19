@@ -152,16 +152,6 @@ bool CFileHD::OpenForWrite(const CURL& url, bool bOverWrite)
   // make sure it's a legal FATX filename (we are writing to the harddisk)
   CStdString strPath = GetLocal(url);
 
-#ifdef HAS_FTP_SERVER
-  if (g_guiSettings.GetBool("servers.ftpautofatx")) // allow overriding
-  {
-    CStdString strPathOriginal = strPath;
-    CUtil::GetFatXQualifiedPath(strPath);
-    if (strPathOriginal != strPath)
-      CLog::Log(LOGINFO,"CFileHD::OpenForWrite: WARNING: Truncated filename %s %s", strPathOriginal.c_str(), strPath.c_str());
-  }
-#endif
-
 #ifdef _WIN32
   CStdStringW strWPath;
   g_charsetConverter.utf8ToW(strPath, strWPath, false);
