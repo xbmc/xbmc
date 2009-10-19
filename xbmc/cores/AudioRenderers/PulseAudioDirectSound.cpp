@@ -180,7 +180,8 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   std::vector<CStdString> hostdevice;
   CUtil::Tokenize(device, hostdevice, "@");
 
-  if (!SetupContext((hostdevice[1].Equals("default") ? NULL : hostdevice[1].c_str()), &m_Context, &m_MainLoop))
+  const char *host = (hostdevice.size() < 2 || hostdevice[1].Equals("default") ? NULL : hostdevice[1].c_str());
+  if (!SetupContext(host, &m_Context, &m_MainLoop))
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
     Deinitialize();
@@ -221,7 +222,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   pa_stream_set_write_callback(m_Stream, StreamRequestCallback, m_MainLoop);
   pa_stream_set_latency_update_callback(m_Stream, StreamLatencyUpdateCallback, m_MainLoop);
 
-  const char *sink = hostdevice[0].Equals("default") ? NULL : hostdevice[0].c_str();
+  const char *sink = hostdevice.size() < 1 || hostdevice[0].Equals("default") ? NULL : hostdevice[0].c_str();
   if (pa_stream_connect_playback(m_Stream, sink, NULL, ((pa_stream_flags)(PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE)), &m_Volume, NULL) < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
