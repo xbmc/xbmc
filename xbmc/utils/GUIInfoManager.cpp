@@ -3653,6 +3653,9 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_fRating > 0.f) // movie rating
       {
         CStdString strRatingAndVotes;
+        if (item->GetVideoInfoTag()->m_strVotes.IsEmpty())
+          strRatingAndVotes.Format("%2.2f", item->GetVideoInfoTag()->m_fRating);
+        else
           strRatingAndVotes.Format("%2.2f (%s %s)", item->GetVideoInfoTag()->m_fRating, item->GetVideoInfoTag()->m_strVotes, g_localizeStrings.Get(20350));
         return strRatingAndVotes;
       }
