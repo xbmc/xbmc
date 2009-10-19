@@ -901,7 +901,7 @@ elif test "$host_vendor" = "apple"; then
   fi
 else
   if test "$HAVE_SVNVERSION" = "yes" ; then
-    SVN_REV=$(echo -n `svnversion . | grep ^[0-9]`)
+    SVN_REV=$(echo -n `svnversion . | grep -P ^\\\\d`)
   fi
   if test "$SVN_REV" = ""; then
     if test "$HAVE_GIT" = "yes"; then
