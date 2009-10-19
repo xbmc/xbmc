@@ -264,6 +264,10 @@ void XLCDproc::SetLine(int iLine, const CStdString& strLine)
   while (strLineLong.size() < m_iColumns)
     strLineLong += " ";
 
+  //if the string doesn't fit the display, lcdproc will scroll it
+  if (strLineLong.size() > m_iColumns)
+    strLineLong += " ";
+  
   if (strLineLong != m_strLine[iLine])
   {
     int ln = iLine + 1;
