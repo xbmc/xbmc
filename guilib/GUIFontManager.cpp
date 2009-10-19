@@ -41,7 +41,7 @@ GUIFontManager::GUIFontManager(void)
 {
   m_skinResolution=RES_INVALID;
   m_fontsetUnicode=false;
-  m_bFontsNeedReloading = false;
+  m_canReload = true;
 }
 
 GUIFontManager::~GUIFontManager(void)
@@ -140,17 +140,42 @@ CGUIFont* GUIFontManager::LoadTTF(const CStdString& strFontName, const CStdStrin
   return pNewFont;
 }
 
+bool GUIFontManager::OnMessage(CGUIMessage &message)
+{
+  if (message.GetMessage() != GUI_MSG_NOTIFY_ALL)
+    return false;
+
+  if (message.GetParam1() == GUI_MSG_RENDERER_LOST)
+  {
+    m_canReload = false;
+    return true;
+  }
+
+  if (message.GetParam1() == GUI_MSG_RENDERER_RESET)
+  { // our device has been reset - we have to reload our ttf fonts, and send
+    // a message to controls that we have done so
+    ReloadTTFFonts();
+    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
+    m_canReload = true;
+    return true;
+  }
+
+  if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+  { // we need to reload our fonts
+    if (m_canReload)
+    {
+      ReloadTTFFonts();
+      // no need to send a resize message, as this message will do the rounds
+      return true;
+    }
+  }
+  return false;
+}
+
 void GUIFontManager::ReloadTTFFonts(void)
 {
   if (!m_vecFonts.size())
     return;   // we haven't even loaded fonts in yet
-
-  // check if the device is ready
-  if (!g_Windowing.IsDeviceReady())
-  {
-    m_bFontsNeedReloading = true;
-    return;
-  }
 
   g_graphicsContext.SetScalingResolution(m_skinResolution, 0, 0, true);
 
@@ -189,10 +214,6 @@ void GUIFontManager::ReloadTTFFonts(void)
 
     font->SetFont(pFontFile);
   }
-
-  m_bFontsNeedReloading = false;
-  // send a message to our controls telling them they need to refresh.
-  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 }
 
 void GUIFontManager::Unload(const CStdString& strFontName)

@@ -1858,6 +1858,7 @@ void CApplication::LoadSkin(const CStdString& strSkin)
   g_windowManager.AddMsgTarget(this);
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
+  g_windowManager.AddMsgTarget(&g_fontManager);
   g_windowManager.SetCallback(*this);
   g_windowManager.Initialize();
   g_audioManager.Initialize(CAudioContext::DEFAULT_DEVICE);
@@ -2288,10 +2289,6 @@ void CApplication::Render()
     lastFrameTime = CTimeUtils::GetTimeMS();
   }
   g_graphicsContext.Lock();
-
-  // check if we need font reloading
-  if(g_fontManager.FontsNeedReloading())
-    g_fontManager.ReloadTTFFonts();
 
   if(!g_Windowing.BeginRender())
     return;

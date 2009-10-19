@@ -30,6 +30,7 @@
  */
 
 #include "GraphicContext.h"
+#include "IMsgTargetCallback.h"
 
 // Forward
 class CGUIFont;
@@ -49,11 +50,14 @@ struct OrigFontInfo
  \ingroup textures
  \brief
  */
-class GUIFontManager
+class GUIFontManager : public IMsgTargetCallback
 {
 public:
   GUIFontManager(void);
   virtual ~GUIFontManager(void);
+
+  virtual bool OnMessage(CGUIMessage &message);
+
   void Unload(const CStdString& strFontName);
   void LoadFonts(const CStdString& strFontSet);
   CGUIFont* LoadTTF(const CStdString& strFontName, const CStdString& strFilename, color_t textColor, color_t shadowColor, const int iSize, const int iStyle, float lineSpacing = 1.0f, float aspect = 1.0f, RESOLUTION res = RES_INVALID);
@@ -64,11 +68,9 @@ public:
   bool IsFontSetUnicode() { return m_fontsetUnicode; }
   bool IsFontSetUnicode(const CStdString& strFontSet);
   bool GetFirstFontSetUnicode(CStdString& strFontSet);
-  bool FontsNeedReloading() { return m_bFontsNeedReloading; }
-
-  void ReloadTTFFonts(void);
 
 protected:
+  void ReloadTTFFonts();
   void LoadFonts(const TiXmlNode* fontNode);
   CGUIFontTTFBase* GetFontFile(const CStdString& strFontFile);
   bool OpenFontFile(TiXmlDocument& xmlDoc);
@@ -78,7 +80,7 @@ protected:
   std::vector<OrigFontInfo> m_vecFontInfo;
   bool m_fontsetUnicode;
   RESOLUTION m_skinResolution;
-  bool m_bFontsNeedReloading;
+  bool m_canReload;
 };
 
 /*!

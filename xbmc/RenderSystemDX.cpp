@@ -26,9 +26,7 @@
 #include "RenderSystemDX.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "GUIWindowManager.h"
-#include "GUIUserMessages.h"
-#include "visualizations/Visualisation.h"
+#include "GUIWindowManager.h"/
 
 using namespace std;
 
@@ -144,6 +142,7 @@ void CRenderSystemDX::DeleteResources()
 
 void CRenderSystemDX::OnDeviceLost()
 {
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   SAFE_RELEASE(m_stateBlock);
   // notify all objects
   for(unsigned int i = 0; i < m_vecEffects.size(); i++)
@@ -154,14 +153,6 @@ void CRenderSystemDX::OnDeviceLost()
 
 void CRenderSystemDX::OnDeviceReset()
 {
-  if(g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-  {
-    CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-    g_windowManager.SendMessage(msg);
-
-    ((CVisualisation *)msg.GetPointer())->FreeDXResources();
-  }
-  
   // reset all required resources
   m_nDeviceStatus = m_pD3DDevice->Reset(&m_D3DPP);
 
@@ -170,11 +161,9 @@ void CRenderSystemDX::OnDeviceReset()
     m_vecEffects[i]->OnResetDevice();
   }
 
-  if(g_windowManager.GetActiveWindow() == WINDOW_VISUALISATION)
-  {
-    CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-    g_windowManager.SendMessage(msg);
-    ((CVisualisation *)msg.GetPointer())->AllocateDXResources();
+  if (m_nDeviceStatus == S_OK)
+  { // we're back
+    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }
 }
 
