@@ -542,13 +542,3 @@ extern "C" int GetSubModules(char ***names, char ***paths)
 {
   return 0; // this vis supports 0 sub modules
 }
-
-extern "C" void FreeDXResources()
-{
-  g_plugin->CleanUpDX8Stuff(0);
-}
-
-extern "C" void AllocateDXResources()
-{
-  g_plugin->AllocateDX8Stuff();
-}

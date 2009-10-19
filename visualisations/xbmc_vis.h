@@ -86,10 +86,6 @@ extern "C"
   void UpdateSetting(int num, StructSetting*** sSet);
   void GetPresets(char ***pPresets, int *currentPreset, int *numPresets, bool *locked);
   int  GetSubModules(char ***names, char ***paths);
-#ifdef HAS_DX
-  void FreeDXResources();
-  void AllocateDXResources();
-#endif
 
   // function to export the above structure to XBMC
   void __declspec(dllexport) get_module(struct Visualisation* pVisz)
@@ -106,10 +102,6 @@ extern "C"
     pVisz->GetPresets = GetPresets;
     pVisz->GetSubModules = GetSubModules;
     pVisz->FreeSettings = FreeSettings;
-#ifdef HAS_DX
-    pVisz->FreeDXResources = FreeDXResources;
-    pVisz->AllocateDXResources = AllocateDXResources;
-#endif
   };
 };
 

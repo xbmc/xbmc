@@ -558,10 +558,6 @@ int CPluginShell::AllocateDX8Stuff()
 //    if (m_screenmode == DESKTOP)
 //        if (!InitDesktopMode())
 //            return false;
-  D3DVIEWPORT9 pViewport;
-  GetDevice()->GetViewport(&pViewport);
-  m_lpDX->m_client_width = pViewport.Width;
-  m_lpDX->m_client_height = pViewport.Height;
 
     if (!m_vjd3d8_device)    // otherwise it's done in InitVJStuff, and tied to the vj text wnd device
         if (!AllocateFonts(GetDevice()))

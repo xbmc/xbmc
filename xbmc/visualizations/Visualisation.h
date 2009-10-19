@@ -66,10 +66,6 @@ public:
   int  GetSubModules(std::map<std::string, std::string>& subModules);
   bool IsLocked();
   char *GetPreset();
-#ifdef HAS_DX
-  void FreeDXResources();
-  void AllocateDXResources();
-#endif
 
   // some helper functions
   static CStdString GetFriendlyName(const char* strVisz, const char* strSubModule);
