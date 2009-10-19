@@ -64,6 +64,7 @@
 #endif
 #include "GUIControlGroupList.h"
 #include "GUIWindowManager.h"
+#include "GUIFontManager.h"
 #ifdef _LINUX
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
