@@ -194,6 +194,7 @@
                 </control>
                 
                 <control type="label" id="25">
+                    <posx>1</posx>
                     <posy>76</posy>
                     <width>253</width>
                     <align>center</align>
@@ -246,9 +247,9 @@
 
                 <control type="label">
                     <posy>60</posy>
-                    <width>250</width>
+                    <width>248</width>
                     <align>center</align>
-                    <label>Off</label>
+                    <label>591</label>
                     <font>XXXXLargeTitleCapsFont</font>
                 </control>
               
