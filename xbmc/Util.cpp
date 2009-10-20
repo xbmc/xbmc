@@ -35,7 +35,7 @@
 #include "Application.h"
 #include "AutoPtrHandle.h"
 #include "Util.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "FileSystem/StackDirectory.h"
 #include "FileSystem/VirtualPathDirectory.h"
 #include "FileSystem/MultiPathDirectory.h"

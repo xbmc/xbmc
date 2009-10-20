@@ -31,7 +31,6 @@
 #include "GUIPassword.h"
 #include "utils/md5.h"
 #include "utils/TimeUtils.h"
-#include "xbox/XKGeneral.h"
 #include "Application.h"
 #include "AdvancedSettings.h"
 #include "LocalizeStrings.h"

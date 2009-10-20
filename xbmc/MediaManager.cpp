@@ -22,7 +22,7 @@
 #include "system.h"
 #include "LocalizeStrings.h"
 #include "MediaManager.h"
-#include "xbox/IoSupport.h"
+#include "utils/IoSupport.h"
 #include "URL.h"
 #include "Util.h"
 #ifdef _WIN32
