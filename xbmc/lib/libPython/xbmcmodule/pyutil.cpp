@@ -30,7 +30,7 @@
 
 using namespace std;
 
-static int iPyGUILockRef = 0;
+static int iPyXBMCGUILockRef = 0;
 static TiXmlDocument pySkinReferences; 
 
 #ifndef __GNUC__
@@ -42,7 +42,7 @@ static TiXmlDocument pySkinReferences;
 
 namespace PYXBMC
 {
-  int PyGetUnicodeString(string& buf, PyObject* pObject, int pos)
+  int PyXBMCGetUnicodeString(string& buf, PyObject* pObject, int pos)
   {
     // TODO: UTF-8: Does python use UTF-16?
     //              Do we need to convert from the string charset to UTF-8
@@ -75,18 +75,18 @@ namespace PYXBMC
     return 0;
   }
 
-  void PyGUILock()
+  void PyXBMCGUILock()
   {
-    if (iPyGUILockRef == 0) g_graphicsContext.Lock();
-    iPyGUILockRef++;
+    if (iPyXBMCGUILockRef == 0) g_graphicsContext.Lock();
+    iPyXBMCGUILockRef++;
   }
 
-  void PyGUIUnlock()
+  void PyXBMCGUIUnlock()
   {
-    if (iPyGUILockRef > 0)
+    if (iPyXBMCGUILockRef > 0)
     {
-      iPyGUILockRef--;
-      if (iPyGUILockRef == 0) g_graphicsContext.Unlock();
+      iPyXBMCGUILockRef--;
+      if (iPyXBMCGUILockRef == 0) g_graphicsContext.Unlock();
     }
   }
 
@@ -95,7 +95,7 @@ namespace PYXBMC
    * Looks in references.xml for image name
    * If none exist return default image name
    */
-  const char *PyGetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
+  const char *PyXBMCGetDefaultImage(char* cControlType, char* cTextureType, char* cDefault)
   {
     // create an xml block so that we can resolve our defaults
     // <control type="type">
@@ -122,7 +122,7 @@ namespace PYXBMC
     return cDefault;
   }
 
-  bool PyWindowIsNull(void* pWindow)
+  bool PyXBMCWindowIsNull(void* pWindow)
   {
     if (pWindow == NULL)
     {
@@ -132,7 +132,7 @@ namespace PYXBMC
     return false;
   }
 
-  void PyInitializeTypeObject(PyTypeObject* type_object)
+  void PyXBMCInitializeTypeObject(PyTypeObject* type_object)
   {
     static PyTypeObject py_type_object_header = { PyObject_HEAD_INIT(NULL) 0};
     int size = (long*)&(py_type_object_header.tp_name) - (long*)&py_type_object_header;
@@ -148,13 +148,13 @@ typedef std::vector<Func> CallQueue;
 CallQueue g_callQueue;
 CCriticalSection g_critSectionPyCall;
 
-void _Py_AddPendingCall(int(*func)(void*), void *arg)
+void _PyXBMC_AddPendingCall(int(*func)(void*), void *arg)
 {
   CSingleLock lock(g_critSectionPyCall);
   g_callQueue.push_back(Func(func, arg));
 }
 
-void _Py_MakePendingCalls()
+void _PyXBMC_MakePendingCalls()
 {
   CSingleLock lock(g_critSectionPyCall);
   CallQueue::iterator iter = g_callQueue.begin();

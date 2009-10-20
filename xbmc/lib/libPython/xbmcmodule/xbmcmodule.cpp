@@ -349,7 +349,7 @@ namespace PYXBMC
       Sleep(i);//(500);
       Py_END_ALLOW_THREADS
 
-      Py_MakePendingCalls();
+      PyXBMC_MakePendingCalls();
       //i = PyInt_AsLong(pObject);
     //}
 
@@ -599,10 +599,10 @@ namespace PYXBMC
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    PyGUILock();
+    PyXBMCGUILock();
     int id = g_windowManager.GetTopMostModalDialogID();
     if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
-    PyGUIUnlock();
+    PyXBMCGUIUnlock();
 
     int ret = g_infoManager.TranslateString(cLine);
     return Py_BuildValue((char*)"b", g_infoManager.GetBool(ret,id));
@@ -635,7 +635,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
  
     string strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     Crc32 crc;
     CStdString strPath;
@@ -679,7 +679,7 @@ namespace PYXBMC
     };
 
     CStdString strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strFilename;
     strFilename = CUtil::MakeLegalPath(strText);
@@ -705,7 +705,7 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"O", &pObjectText)) return NULL;
 
     CStdString strText;
-    if (!PyGetUnicodeString(strText, pObjectText, 1)) return NULL;
+    if (!PyXBMCGetUnicodeString(strText, pObjectText, 1)) return NULL;
 
     CStdString strPath;
     if (CUtil::IsDOSPath(strText))

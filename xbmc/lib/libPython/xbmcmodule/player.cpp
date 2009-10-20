@@ -544,7 +544,7 @@ namespace PYXBMC
 
   void initPlayer_Type()
   {
-    PyInitializeTypeObject(&Player_Type);
+    PyXBMCInitializeTypeObject(&Player_Type);
 
     Player_Type.tp_name = (char*)"xbmc.Player";
     Player_Type.tp_basicsize = sizeof(Player);
