@@ -21,7 +21,6 @@
 
 #include "system.h"
 #include "GraphicContext.h"
-#include "GUIFontManager.h"
 #include "utils/SingleLock.h"
 #include "Application.h"
 #include "GUISettings.h"
@@ -32,6 +31,7 @@
 #include "SkinInfo.h"
 #include "TextureManager.h"
 #include "MouseStat.h"
+#include "GUIWindowManager.h"
 
 using namespace std;
 
@@ -350,10 +350,10 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   else
     g_Windowing.ResizeWindow(m_iScreenWidth, m_iScreenHeight, -1, -1);
 
-  // set the mouse resolution
+  // update anyone that relies on sizing information
   g_renderManager.Recover();
   g_Mouse.SetResolution(m_iScreenWidth, m_iScreenHeight, 1, 1);
-  g_fontManager.ReloadTTFFonts();
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 
   SetFullScreenViewWindow(res);
 

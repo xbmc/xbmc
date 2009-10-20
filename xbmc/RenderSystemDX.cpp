@@ -26,6 +26,7 @@
 #include "RenderSystemDX.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "GUIWindowManager.h"/
 
 using namespace std;
 
@@ -141,6 +142,8 @@ void CRenderSystemDX::DeleteResources()
 
 void CRenderSystemDX::OnDeviceLost()
 {
+  g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  SAFE_RELEASE(m_stateBlock);
   // notify all objects
   for(unsigned int i = 0; i < m_vecEffects.size(); i++)
   {
@@ -156,6 +159,11 @@ void CRenderSystemDX::OnDeviceReset()
   for(unsigned int i = 0; i < m_vecEffects.size(); i++)
   {
     m_vecEffects[i]->OnResetDevice();
+  }
+
+  if (m_nDeviceStatus == S_OK)
+  { // we're back
+    g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
   }
 }
 
@@ -388,8 +396,7 @@ void CRenderSystemDX::CaptureStateBlock()
   if (!m_bRenderCreated)
     return;
   
-  if (m_stateBlock)
-    SAFE_RELEASE(m_stateBlock);
+  SAFE_RELEASE(m_stateBlock);
   m_pD3DDevice->CreateStateBlock(D3DSBT_ALL, &m_stateBlock);
 }
 

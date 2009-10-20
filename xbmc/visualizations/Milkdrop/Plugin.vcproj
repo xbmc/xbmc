@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="Plugin"
+	Name="Milkdrop"
 	ProjectGUID="{5E479372-4F34-426D-AA1E-9879E94C105D}"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Program Files\Microsoft Xbox SDK\xbox\include&quot;"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;PLUGIN_EXPORTS;HAS_DX"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,7 +64,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="D3dx9.lib"
-				OutputFile="../../../visualisations/MilkDrop.vis"
+				OutputFile="../../../visualisations/MilkDrop_win32dx.vis"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Plugin.pdb"
@@ -143,9 +143,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="D3dx9.lib"
-				OutputFile="$(OutDir)/MilkDrop.vis"
+				OutputFile="../../../visualisations/MilkDrop_win32dx.vis"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(TargetName).pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

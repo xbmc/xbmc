@@ -1,6 +1,7 @@
 #include "HALProvider.h"
 #ifdef HAS_HAL
 #include "HALManager.h"
+#include "PosixMountProvider.h"
 
 CHALProvider::CHALProvider()
 {
@@ -55,7 +56,8 @@ bool CHALProvider::Eject(CStdString mountpath)
 
 std::vector<CStdString> CHALProvider::GetDiskUsage()
 {
-  return std::vector<CStdString>();
+  CPosixMountProvider legacy;
+  return legacy.GetDiskUsage();
 }
 
 // TODO Use HALs events for this instead.

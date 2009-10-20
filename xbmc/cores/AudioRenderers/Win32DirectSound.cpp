@@ -115,6 +115,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
 
   // unsure if these are the right values
   m_dwChunkSize = wfxex.Format.nBlockAlign * 3096;
+  m_PreCacheSize = m_dwChunkSize;
   m_dwBufferLen = m_dwChunkSize * 16;
 
   CLog::Log(LOGDEBUG, __FUNCTION__": Packet Size = %d. Avg Bytes Per Second = %d.", m_dwChunkSize, m_AvgBytesPerSec);

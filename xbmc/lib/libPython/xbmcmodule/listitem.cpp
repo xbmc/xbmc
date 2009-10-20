@@ -375,13 +375,16 @@ namespace PYXBMC
     while (PyDict_Next(pInfoLabels, (Py_ssize_t*)&pos, &key, &value)) {
       if (strcmpi(cType, "video") == 0)
       {
-        // TODO: add the rest of the infolabels
         if (strcmpi(PyString_AsString(key), "year") == 0)
           self->item->GetVideoInfoTag()->m_iYear = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "episode") == 0)
           self->item->GetVideoInfoTag()->m_iEpisode = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "season") == 0)
           self->item->GetVideoInfoTag()->m_iSeason = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "top250") == 0)
+          self->item->GetVideoInfoTag()->m_iTop250 = PyInt_AsLong(value);
+        else if (strcmpi(PyString_AsString(key), "tracknumber") == 0)
+          self->item->GetVideoInfoTag()->m_iTrack = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "count") == 0)
           self->item->m_iprogramCount = PyInt_AsLong(value);
         else if (strcmpi(PyString_AsString(key), "rating") == 0)
@@ -446,6 +449,18 @@ namespace PYXBMC
             self->item->GetVideoInfoTag()->m_strShowTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "premiered") == 0)
             self->item->GetVideoInfoTag()->m_strPremiered = tmp;
+          else if (strcmpi(PyString_AsString(key), "status") == 0)
+            self->item->GetVideoInfoTag()->m_strStatus = tmp;
+          else if (strcmpi(PyString_AsString(key), "code") == 0)
+            self->item->GetVideoInfoTag()->m_strProductionCode = tmp;
+          else if (strcmpi(PyString_AsString(key), "aired") == 0)
+            self->item->GetVideoInfoTag()->m_strFirstAired = tmp;
+          else if (strcmpi(PyString_AsString(key), "credits") == 0)
+            self->item->GetVideoInfoTag()->m_strWritingCredits = tmp;
+          else if (strcmpi(PyString_AsString(key), "lastplayed") == 0)
+            self->item->GetVideoInfoTag()->m_lastPlayed = tmp;
+          else if (strcmpi(PyString_AsString(key), "album") == 0)
+            self->item->GetVideoInfoTag()->m_strAlbum = tmp;
           else if (strcmpi(PyString_AsString(key), "votes") == 0)
             self->item->GetVideoInfoTag()->m_strVotes = tmp;
           else if (strcmpi(PyString_AsString(key), "trailer") == 0)
