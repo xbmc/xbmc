@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="Milkdrop"
+	Name="visMilkdrop"
 	ProjectGUID="{5E479372-4F34-426D-AA1E-9879E94C105D}"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
