@@ -4970,7 +4970,7 @@
 				Name="common"
 				>
 				<File
-					RelativePath="..\..\xbmc\xbox\IoSupport.cpp"
+					RelativePath="..\..\xbmc\utils\IoSupport.cpp"
 					>
 				</File>
 				<File
@@ -4979,10 +4979,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\utils\Network.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\xbox\XKGeneral.cpp"
 					>
 				</File>
 			</Filter>
@@ -5587,7 +5583,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\xbox\IoSupport.h"
+				RelativePath="..\..\xbmc\utils\IoSupport.h"
 				>
 			</File>
 			<File
@@ -5804,10 +5800,6 @@
 			</File>
 			<File
 				RelativePath="..\..\xbmc\XBAudioConfig.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\xbox\XKGeneral.h"
 				>
 			</File>
 		</Filter>
