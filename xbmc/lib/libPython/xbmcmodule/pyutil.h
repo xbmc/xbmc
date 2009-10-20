@@ -68,7 +68,6 @@ namespace PYXBMC
   
 void _Py_AddPendingCall(int(*func)(void*), void *arg);
 void _Py_MakePendingCalls();
-void PyInitPendingCalls();
 
 #ifdef __cplusplus
 }

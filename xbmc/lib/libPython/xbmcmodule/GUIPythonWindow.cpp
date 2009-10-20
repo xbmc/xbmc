@@ -41,9 +41,6 @@ PyXBMCAction::~PyXBMCAction() {
 CGUIPythonWindow::CGUIPythonWindow(int id)
 : CGUIWindow(id, "")
 {
-#ifdef _LINUX
-  PyInitPendingCalls();
-#endif
   pCallbackWindow = NULL;
   m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
