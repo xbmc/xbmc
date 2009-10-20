@@ -240,9 +240,14 @@ void CGUIFixedListContainer::SelectItem(int item)
     // which may be different at either end of the list, then the offset
     int minCursor, maxCursor;
     GetCursorRange(minCursor, maxCursor);
-    if (item >= (int)m_items.size() - m_fixedCursor)
+
+    // TODO: This breaks in the case where we have more items than slots.
+    // what we want to do is figure out what our cursor position should be at the end points.
+    // the code below only works if our offset isn't negative.  eg what happens when we have
+    // ...xxxXx...
+    if ((int)m_items.size() - 1 - item <= maxCursor - m_fixedCursor)
       m_cursor = std::max(m_fixedCursor, maxCursor + item - (int)m_items.size() + 1);
-    else if (item <= m_fixedCursor)
+    else if (item <= m_fixedCursor - minCursor)
       m_cursor = std::min(m_fixedCursor, minCursor + item);
     else
       m_cursor = m_fixedCursor;
