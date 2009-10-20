@@ -30,6 +30,7 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDSubtitles/DVDSubtitleParser.h"
+#include "DVDSubtitles/DVDSubtitleStream.h"
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
