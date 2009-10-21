@@ -194,6 +194,7 @@ bool CLinuxRendererGL::Configure(unsigned int width, unsigned int height, unsign
 
   m_bConfigured = true;
   m_bImageReady = false;
+  m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
 
   // Ensure that textures are recreated and rendering starts only after the 1st 
   // frame is loaded after every call to Configure().
