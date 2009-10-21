@@ -2792,6 +2792,8 @@ void CApplication::FrameMove()
 {
   MEASURE_FUNCTION;
 
+  CSingleLock lock(g_graphicsContext);
+
   // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
   float frameTime = m_frameTime.GetElapsedSeconds();
   m_frameTime.StartZero();
