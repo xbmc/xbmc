@@ -866,6 +866,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
 {
   if (m_scalingMethod == g_stSettings.m_currentVideoSettings.m_ScalingMethod)
     return;
+  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
 
   if (m_pVideoFilterShader)
   {
@@ -873,62 +874,81 @@ void CLinuxRendererGL::UpdateVideoFilter()
     delete m_pVideoFilterShader;
     m_pVideoFilterShader = NULL;
   }
-
   m_fbo.Cleanup();
 
   VerifyGLState();
-  m_scalingMethod = g_stSettings.m_currentVideoSettings.m_ScalingMethod;
 
   switch (g_stSettings.m_currentVideoSettings.m_ScalingMethod)
   {
   case VS_SCALINGMETHOD_NEAREST:
-    m_renderQuality = RQ_SINGLEPASS;
     SetTextureFilter(GL_NEAREST);
-    break;
+    m_renderQuality = RQ_SINGLEPASS;
+    return;
 
   case VS_SCALINGMETHOD_LINEAR:
     SetTextureFilter(GL_LINEAR);
     m_renderQuality = RQ_SINGLEPASS;
-    break;
+    return;
 
   case VS_SCALINGMETHOD_CUBIC:
-    SetTextureFilter(GL_LINEAR);
-    m_renderQuality = RQ_MULTIPASS;
-    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
-
-    if (!m_pVideoFilterShader->CompileAndLink())
+    if(!glewIsSupported("GL_ARB_texture_float"))
     {
-      CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
-      m_pVideoFilterShader->Free();
-      delete m_pVideoFilterShader;
-      m_pVideoFilterShader = NULL;
+      CLog::Log(LOGERROR, "GL: hardware doesn't support GL_ARB_texture_float");
+      break;
     }
 
     if (!m_fbo.Initialize())
+    {
       CLog::Log(LOGERROR, "GL: Error initializing FBO");
+      break;
+    }
 
     if (!m_fbo.CreateAndBindToTexture(GL_TEXTURE_2D, m_sourceWidth, m_sourceHeight, GL_RGBA))
+    {
       CLog::Log(LOGERROR, "GL: Error creating texture and binding to FBO");
+      break;
+    }
 
-    break;
+    m_pVideoFilterShader = new BicubicFilterShader(0.3f, 0.3f);
+    if (!m_pVideoFilterShader->CompileAndLink())
+    {
+      CLog::Log(LOGERROR, "GL: Error compiling and linking video filter shader");
+      break;
+    }
+
+    SetTextureFilter(GL_LINEAR);
+    m_renderQuality = RQ_MULTIPASS;
+    return;
 
   case VS_SCALINGMETHOD_LANCZOS2:
   case VS_SCALINGMETHOD_LANCZOS3:
   case VS_SCALINGMETHOD_SINC8:
   case VS_SCALINGMETHOD_NEDI:
     CLog::Log(LOGERROR, "GL: TODO: This scaler has not yet been implemented");
-    m_renderQuality = RQ_SINGLEPASS;
     break;
 
   case VS_SCALINGMETHOD_BICUBIC_SOFTWARE:
   case VS_SCALINGMETHOD_LANCZOS_SOFTWARE:
   case VS_SCALINGMETHOD_SINC_SOFTWARE:
     InitializeSoftwareUpscaling();
-    break;
+    return;
 
   default:
     break;
   }
+
+  g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
+  if (m_pVideoFilterShader)
+  {
+    m_pVideoFilterShader->Free();
+    delete m_pVideoFilterShader;
+    m_pVideoFilterShader = NULL;
+  }
+  m_fbo.Cleanup();
+
+  SetTextureFilter(GL_LINEAR);
+  m_renderQuality = RQ_SINGLEPASS;
 }
 
 void CLinuxRendererGL::LoadShaders(int field)
