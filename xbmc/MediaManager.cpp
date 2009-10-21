@@ -44,7 +44,7 @@
 #include "utils/log.h"
 
 #ifdef __APPLE__
-#include "PosixMountProvider.h"
+#include "CDarwinStorageProvider.h"
 #elif defined(_LINUX)
 #include "LinuxStorageProvider.h"
 #elif _WIN32
@@ -60,7 +60,7 @@ class CMediaManager g_mediaManager;
 CMediaManager::CMediaManager()
 {
 #ifdef __APPLE__
-  m_platformStorage = new CPosixMountProvider();
+  m_platformStorage = new CDarwinStorageProvider();
 #elif defined(_LINUX)
   m_platformStorage = new CLinuxStorageProvider();
 #elif _WIN32
