@@ -4,6 +4,7 @@
 	Version="9,00"
 	Name="visMilkdrop"
 	ProjectGUID="{5E479372-4F34-426D-AA1E-9879E94C105D}"
+	RootNamespace="visMilkdrop"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -21,6 +22,7 @@
 			IntermediateDirectory="Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			UseOfMFC="1"
 			CharacterSet="2"
 			>
 			<Tool
