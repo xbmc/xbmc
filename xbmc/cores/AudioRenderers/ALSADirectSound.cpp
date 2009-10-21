@@ -573,8 +573,6 @@ void CALSADirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool pass
     {
       if ( snd_ctl_card_info( handle, info ) == 0 )
       {
-        int dev = -1;
-
         CStdString strReadableCardName = snd_ctl_card_info_get_name( info );
         CStdString strCardName = snd_ctl_card_info_get_id( info );
 
