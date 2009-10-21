@@ -44,7 +44,7 @@
 #include "utils/log.h"
 
 #ifdef __APPLE__
-#include "CDarwinStorageProvider.h"
+#include "DarwinStorageProvider.h"
 #elif defined(_LINUX)
 #include "LinuxStorageProvider.h"
 #elif _WIN32
