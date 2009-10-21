@@ -441,7 +441,7 @@ void CMediaManager::ProcessEvents()
 {
   if (m_platformStorage->PumpDriveChangeEvents())
   {
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_REMOVED_MEDIA);
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
     g_windowManager.SendThreadMessage(msg);
   }
 }
