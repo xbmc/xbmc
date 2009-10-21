@@ -374,7 +374,7 @@ bool CNetwork::CheckNetwork(int count)
     m_lastlink2 = dwLink;
     
     // In case the network failed, try to set it up again
-    if (!(dwLink & XNET_ETHERNET_LINK_ACTIVE) || !IsInited() || dwState & XNET_GET_XNADDR_TROUBLESHOOT)
+    if ( !(dwLink & XNET_ETHERNET_LINK_ACTIVE) || !IsInited() || dwState & XNET_GET_XNADDR_NONE || dwState & XNET_GET_XNADDR_TROUBLESHOOT )
     {
       Deinitialize();
 
