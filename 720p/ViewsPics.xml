@@ -94,6 +94,7 @@
   				  <info>ListItem.FileNameAndPath</info>
           </control>
 
+          <!--
           <control type="image">
             <description>Glass overlay</description>
             <posx>8</posx>
@@ -103,6 +104,7 @@
             <include>GlassTextureOverlay</include>
             <visible>!IsEmpty(ListItem.Thumb)</visible>
           </control>
+          -->
         </control>
 
         <control type="group">
