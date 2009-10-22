@@ -3,13 +3,15 @@ rm -r .libs
 make distclean
 
 ./configure \
---extra-cflags="-fno-common" \
+--extra-cflags="-fno-common -I../libfaad2/include" \
+--extra-ldflags="-L../../../../../system/players/dvdplayer" \
 --enable-shared \
 --enable-memalign-hack \
 --enable-gpl \
 --enable-w32threads \
 --enable-postproc \
 --enable-zlib \
+--enable-libfaad \
 --disable-static \
 --disable-altivec \
 --disable-muxers \
