@@ -66,8 +66,8 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 CDVDVideoCodecFFmpeg::~CDVDVideoCodecFFmpeg()
 {
 #ifdef HAVE_LIBVDPAU
-  CSingleLock lock(g_graphicsContext);
   if (g_VDPAU && !m_UsingSoftware) {
+    CSingleLock lock(g_graphicsContext);
     delete g_VDPAU;
     g_VDPAU = NULL;
   }
