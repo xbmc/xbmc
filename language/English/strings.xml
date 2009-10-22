@@ -200,6 +200,17 @@
   <string id="31810">Click "OK" to continue and begin using our skin</string>
   <string id="31811">Note: This is the only time you will see this message once you hit "OK"</string>
 
+  <string id="31851">Plex bridges the gap between your Mac and your home theater, doing so with a visually appealing user interface that provides instant access to your media. Plex can play a wide range of video, audio and photo formats as well as online streaming audio and video. The real power of Plex is found in its library features: Organize your media into versatile libraries, automatically retrieve metadata from the Internet and display your library using one of the visually stunning skins.</string>
+  <string id="31852">At Plex, we would like to thank the following projects, without whom none of this would be possible:</string>
+  <string id="31853">XBMC: The most important one, for supplying us with a great foundation to build on.</string>
+  <string id="31854">Team RazorFish: The talented team who created the beautiful MediaStream skin.</string>
+  <string id="31855">FFmpeg: Without this, there would be no decoding of video inside Plex. A critical component, to be sure.</string>
+  <string id="31856">SQLite: The media database is stored using this excellent, industry standard free database.</string>
+  <string id="31857">CxImage: The workhorse code responsible for loading images and photos. It uses lots of other libraries like libPNG, libJPEG, etc.</string>
+  <string id="31858">FreeType: This code is responsible for the beautiful rendering of fonts within the application.</string>
+  <string id="31859">Python: The media center embeds the Python interpreter to provide powerful scripting functionality.</string>
+  <string id="31860">Please visit http://www.plexapp.com/credits.php for links and more information.</string>
+  
 <!--  Profiles  -->
   <string id="31900">Login As</string>
   <string id="31901">Modify Your</string>

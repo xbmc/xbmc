@@ -10,7 +10,7 @@
       <posy>0</posy>
       <width>1280</width>
       <height>269</height>
-      <texture>CreditsBG.jpg</texture>
+      <texture>CreditsBG.png</texture>
     </control>
   
     <control type="image">
@@ -66,7 +66,16 @@
     <control type="group">
       <posx>10</posx>
       <posy>10</posy>
-  
+      
+      <control type="image">
+        <posx>7</posx>
+        <posy>250</posy>
+        <texture>logo.png</texture>
+        <height>150</height>
+        <width>240</width>
+      </control>
+
+<!--  
       <control type="label">
         <description>Salutation</description>
         <posx>75</posx>
@@ -102,18 +111,118 @@
         <label>$LOCALIZE[31802]</label>
         <autoscroll delay="3000" time="1000" repeat="10000">!Control.HasFocus(2)</autoscroll>
       </control>
-  
+-->
+
       <control type="label">
         <description>Introduction</description>
-        <posx>55</posx>
+        <posx>30</posx>
         <posy>380</posy>
-        <width>1170</width>
-        <font>MediumSmallDefaultFont</font>
-        <textcolor>Unfocused</textcolor>
-        <label>$LOCALIZE[31804]</label>
+        <width>1200</width>
+        <font>AltDefaultFont</font>
+        <textcolor>Focused</textcolor>
+        <label>$LOCALIZE[31851]</label>
         <wrapmultiline>true</wrapmultiline>
       </control>
-  
+
+      <control type="label">
+        <label>$LOCALIZE[31852]</label>
+        <posx>30</posx>
+        <posy>460</posy>
+        <font>AltDefaultFont</font>
+      </control>
+      
+      <control type="group">
+        <posx>60</posx>
+        <posy>490</posy>
+        
+        <control type="image">
+          <texture>bullet.png</texture>
+          <posx>0</posx> <posy>4</posy>
+        </control>
+        <control type="label">
+          <label>$LOCALIZE[31853]</label>
+          <posx>20</posx>
+          <posy>0</posy>
+          <font>SmallDefaultFont</font>
+        </control>
+        
+        <control type="image">
+          <texture>bullet.png</texture>
+          <posx>0</posx> <posy>26</posy>
+        </control>
+        <control type="label">
+          <label>$LOCALIZE[31854]</label>
+          <posx>20</posx>
+          <posy>22</posy>
+          <font>SmallDefaultFont</font>
+        </control>
+        
+        <control type="image">
+          <texture>bullet.png</texture>
+          <posx>0</posx> <posy>48</posy>
+        </control>
+        <control type="label">
+          <label>$LOCALIZE[31855]</label>
+          <posx>20</posx>
+          <posy>44</posy>
+          <font>SmallDefaultFont</font>
+        </control>
+        
+        <control type="image">
+          <texture>bullet.png</texture>
+          <posx>0</posx> <posy>70</posy>
+        </control>
+        <control type="label">
+          <label>$LOCALIZE[31856]</label>
+          <posx>20</posx>
+          <posy>66</posy>
+          <font>SmallDefaultFont</font>
+        </control>
+        
+        <control type="image">
+          <texture>bullet.png</texture>
+          <posx>0</posx> <posy>92</posy>
+        </control>
+        <control type="label">
+          <label>$LOCALIZE[31857]</label>
+          <posx>20</posx>
+          <posy>88</posy>
+          <font>SmallDefaultFont</font>
+        </control>
+        
+        <control type="image">
+          <texture>bullet.png</texture>
+          <posx>0</posx> <posy>114</posy>
+        </control>
+        <control type="label">
+          <label>$LOCALIZE[31858]</label>
+          <posx>20</posx>
+          <posy>110</posy>
+          <font>SmallDefaultFont</font>
+        </control>
+        
+        <control type="image">
+          <texture>bullet.png</texture>
+          <posx>0</posx> <posy>136</posy>
+        </control>
+        <control type="label">
+          <label>$LOCALIZE[31859]</label>
+          <posx>20</posx>
+          <posy>132</posy>
+          <font>SmallDefaultFont</font>
+        </control>
+        
+      </control>
+      
+      <control type="label">
+        <label>$LOCALIZE[31860]</label>
+        <posx>30</posx>
+        <posy>660</posy>
+        <font>AltDefaultFont</font>
+      </control>
+
+      
+<!--
       <control type="label">
         <description>Note header</description>
         <posx>55</posx>
@@ -155,47 +264,16 @@
         <label>$LOCALIZE[31808]</label>
         <wrapmultiline>true</wrapmultiline>
       </control>
-<!--
-      <control type="label">
-        <description>Other</description>
-        <posx>220</posx>
-        <posy>505</posy>
-        <width>790</width>
-        <font>MediumDefaultFont</font>
-        <textcolor>Focused</textcolor>
-        <label>$LOCALIZE[31809]</label>
-      </control>
-  
-      <control type="label">
-        <description>Continue label</description>
-        <posx>210</posx>
-        <posy>545</posy>
-        <width>800</width>
-        <font>MediumDefaultFont</font>
-        <textcolor>Focused</textcolor>
-        <label>$LOCALIZE[31810]</label>
-      </control>
 -->
       <control type="button" id="9000">
         <description>OK</description>
         <posx>1120</posx>
         <posy>650</posy>
-        <label>$LOCALIZE[12321]</label>
+        <label>$LOCALIZE[186]</label>
         <include>SetContentDialogButton</include>
         <onclick>ActivateWindow(0)</onclick>
       </control>
-<!--
-      <control type="label">
-        <description>Disclaimer label</description>
-        <posx>210</posx>
-        <posy>655</posy>
-        <width>800</width>
-        <align>center</align>
-        <font>MediumSmallDefaultFont</font>
-        <textcolor>Focused</textcolor>
-        <label>[I]$LOCALIZE[31811][/I]</label>
-      </control>
--->
+
     </control>
   </controls>
 </window>
