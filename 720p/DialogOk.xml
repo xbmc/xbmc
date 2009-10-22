@@ -17,7 +17,7 @@
           <description>OK Button</description>
           <include>DialogOkBtnDims</include>
           <posy>ConfirmDialogButtonYPos</posy>
-			    <label>$LOCALIZE[12321]</label>
+			    <label>$LOCALIZE[186]</label>
      			<include>DialogButton</include>
         </control>
       </control>
