@@ -66,6 +66,9 @@
 #include <shlobj.h>
 #include "WIN32Util.h"
 #endif
+#if defined(__APPLE__)
+#include "CocoaInterface.h"
+#endif
 #include "GUIDialogYesNo.h"
 #include "GUIUserMessages.h"
 #include "FileSystem/File.h"
@@ -362,7 +365,11 @@ void CUtil::RemoveExtension(CStdString& strFileName)
     strFileMask = g_stSettings.m_pictureExtensions;
     strFileMask += g_stSettings.m_musicExtensions;
     strFileMask += g_stSettings.m_videoExtensions;
+#if defined(__APPLE__)
+    strFileMask += ".py|.xml|.milk|.xpr|.cdg|.app|.applescript|.workflow";
+#else
     strFileMask += ".py|.xml|.milk|.xpr|.cdg";
+#endif
 
     // Only remove if its a valid media extension
     if (strFileMask.Find(strExtension.c_str()) >= 0)
