@@ -27,7 +27,6 @@
 #include <memory>
 #include <set>
 
-struct SScraperInfo;
 class CFileItem;
 class CFileItemList;
 class CVideoSettings;
@@ -296,7 +295,7 @@ public:
   // editing functions
   void MarkAsWatched(const CFileItem &item);
   void MarkAsUnWatched(const CFileItem &item);
-  void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
+  void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, CONTENT_TYPE iType=CONTENT_MOVIES);
 
   bool HasMovieInfo(const CStdString& strFilenameAndPath);
   bool HasTvShowInfo(const CStdString& strFilenameAndPath);

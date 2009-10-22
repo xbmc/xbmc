@@ -23,19 +23,20 @@
 #include "IAddon.h"
 #include "../addons/include/libaddon.h"
 #include "FileSystem/PluginDirectory.h"
-#include "Settings.h"
+#include "tinyXML/tinyxml.h"
 #include "Util.h"
 #include "URL.h"
 #include "LocalizeStrings.h"
 #include "boost/shared_ptr.hpp"
 
 class CURL;
+class TiXmlElement;
 
 namespace ADDON
 {
 
 // utils  
-const CStdString    TranslateContent(const CONTENT_TYPE &content);
+const CStdString    TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
 const CONTENT_TYPE  TranslateContent(const CStdString &string);
 const CStdString    TranslateType(const TYPE &type);
 const TYPE          TranslateType(const CStdString &string);
@@ -44,7 +45,6 @@ class CAddon : public IAddon
 {
 public:
   CAddon(const AddonProps &props);
-  CAddon(const CAddon&);
   virtual ~CAddon() {}
   virtual AddonPtr Clone() const;
 
@@ -56,7 +56,7 @@ public:
   virtual void UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value);
   virtual CStdString GetSetting(const CStdString& key) const;
   TiXmlElement* GetSettingsXML();
-  virtual CStdString GetString(DWORD id) const;
+  virtual CStdString GetString(uint32_t id) const;
 
   /* Beginning of Add-on data fields (read from description.xml) */
   TYPE Type() const { return m_type; }
@@ -76,6 +76,7 @@ public:
   bool Supports(const CONTENT_TYPE &content) const { return (m_content.count(content) == 1); }
 
 protected:
+  CAddon(const CAddon&); // protected as all copying is handled by Clone()
   bool LoadUserSettings();
   TiXmlDocument     m_addonXmlDoc;
   TiXmlDocument     m_userXmlDoc;
@@ -87,8 +88,8 @@ private:
   void Disable() { m_disabled = true; ClearStrings();}
   virtual bool LoadStrings();
   virtual void ClearStrings();
+  const TYPE m_type; 
   const std::set<CONTENT_TYPE> m_content;     ///< CONTENT_TYPE type identifier(s) this Add-on supports
-  const TYPE        m_type;                   ///< TYPE identifier of this Add-on
   const CStdString  m_guid;        ///< Unique identifier for this addon, chosen by developer
   const CStdString  m_guid_parent; ///< Unique identifier of the parent for this child addon, chosen by developer
   CStdString  m_strName;     ///< Name of the addon, can be chosen freely.

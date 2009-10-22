@@ -16,5 +16,6 @@
   <author>TEAMXBMC</author>
   <supportedcontent>
     <content>movies</content>
+	<content>musicvideos</content>
   </supportedcontent>
 </addoninfo>

@@ -37,38 +37,41 @@ class CGUIDialogContentSettings : public CGUIDialogSettings
 public:
   CGUIDialogContentSettings(void);
   virtual ~CGUIDialogContentSettings(void);
-  virtual bool OnMessage(CGUIMessage &message);
+  virtual bool OnMessage(CGUIMessage& message);
 
-  static bool Show(ADDON::CScraperPtr& scraper, bool& bRunScan, int iLabel=-1);
-  static bool Show(ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, int iLabel=-1);
+  static bool Show(ADDON::CScraperPtr& scraper, bool& bRunScan, CONTENT_TYPE musicContext = CONTENT_NONE);
+  static bool Show(ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan, CONTENT_TYPE musicContext = CONTENT_NONE);
   static bool ShowForDirectory(const CStdString& strDirectory, ADDON::CScraperPtr& scraper, VIDEO::SScanSettings& settings, bool& bRunScan);
   virtual bool HasListItems() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0);
 protected:
+  virtual void OnOkay();
   virtual void OnCancel();
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings();
   void FillContentTypes();
-  void FillContentTypes(const CONTENT_TYPE &content);
+  void FillContentTypes(const CONTENT_TYPE& content);
+  void AddContentType(const CONTENT_TYPE& content);
   void FillListControl();
-  void OnSettingChanged(unsigned int setting);
-  virtual void OnSettingChanged(SettingInfo &setting);
-  static CStdString GetScraperDirectory(const SScraperInfo& scraper);
+  virtual void OnSettingChanged(SettingInfo& setting);
 
   bool m_bNeedSave;
 
+  bool m_bShowScanSettings;
   bool m_bRunScan;
   bool m_bScanRecursive;
   bool m_bUseDirNames;
   bool m_bSingleItem;
   bool m_bExclude;
-  bool m_bUpdate;
+  bool m_bNoUpdate;
   std::map<CONTENT_TYPE, ADDON::VECADDONS> m_scrapers;
   CFileItemList* m_vecItems;
 
+  CStdString m_strContentType;
   ADDON::AddonPtr m_scraper;
+  CStdString m_defaultScraper;
   CONTENT_TYPE m_content;
+  CONTENT_TYPE m_origContent;
 };
-

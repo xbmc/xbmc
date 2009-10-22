@@ -55,6 +55,7 @@
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIDialogAddonBrowser.h"
+#include "GUIDialogAddonSettings.h"
 #include "GUIFontManager.h"
 #include "GUIDialogContextMenu.h"
 #include "GUIDialogKeyboard.h"
@@ -1433,16 +1434,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       pControl->SetEnabled(XFILE::CFile::Exists("special://home/scripts/RssTicker/default.py"));
     }
-    else if (strSetting.Equals("musiclibrary.scrapersettings"))
-    {
-      CScraperParser parser;
-      bool enabled=false;
-      if (parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper")))
-        enabled = parser.HasFunction("GetSettings");
-
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl) pControl->SetEnabled(enabled);
-    }
     else if (!strSetting.Equals("musiclibrary.enabled")
       && strSetting.Left(13).Equals("musiclibrary."))
     {
@@ -1542,34 +1533,37 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   }
   else if (strSetting.Equals("weather.pluginsettings"))
   {
-    // Create our base path
-    CStdString basepath = "special://home/plugins/weather/" + g_guiSettings.GetString("weather.plugin");
-    CGUIDialogPluginSettings::ShowAndGetInput(basepath);
-    // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
+    CStdString name = g_guiSettings.GetString("weather.plugin");
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetAddon(ADDON_PLUGIN, name, addon))
+    { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
+    }
     g_weatherManager.Refresh();
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
     CBuiltins::Execute("RunScript(special://home/scripts/RssTicker/default.py)");
-  else if (strSetting.Equals("musiclibrary.scrapersettings") || strSetting.Equals("musiclibrary.defaultscraper"))
-  {
-    CMusicDatabase database;
+  else if (strSetting.Equals("musiclibrary.defaultscraper"))
+  { //FIXME surely there's a better way to handle this..
+    /*CMusicDatabase database;
     database.Open();
-    SScraperInfo info;
-    database.GetScraperForPath("musicdb://",info);
-    if (!info.strPath.Equals(g_guiSettings.GetString("musiclibrary.defaultscraper")))
+    CScraperPtr scraper;
+    AddonPtr defaultScraper;
+    CAddonMgr::Get()->GetDefaultScraper(defaultScraper, CONTENT_ALBUMS);
+    if (database.GetScraperForPath("musicdb://",scraper))
     {
-      CScraperParser parser;
-      parser.Load("special://xbmc/system/scrapers/music/"+g_guiSettings.GetString("musiclibrary.defaultscraper"));
-      info.strPath = g_guiSettings.GetString("musiclibrary.defaultscraper");
-      info.strContent = "albums";
-      info.strTitle = parser.GetName();
+
     }
-    if (info.settings.GetPluginRoot() || info.settings.LoadSettingsXML("special://xbmc/system/scrapers/music/"+info.strPath))
+    if (!scraper->Parent().Equals(defaultScraper->UUID()))
+    {
+      scraper = boost::dynamic_pointer_cast<CScraper>(defaultScraper->Clone());
+    }
+    if (scraper->HasSettings())
     {
       if (strSetting.Equals("musiclibrary.scrapersettings"))
-        CGUIDialogPluginSettings::ShowAndGetInput(info);
+        CGUIDialogAddonSettings::ShowAndGetInput(scraper);
     }
-    database.SetScraperForPath("musicdb://",info);
+    database.SetScraperForPath("musicdb://",scraper);*/
   }
 
   // if OnClick() returns false, the setting hasn't changed or doesn't

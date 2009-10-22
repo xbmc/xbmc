@@ -4027,7 +4027,7 @@ bool CMusicDatabase::SetScraperForPath(const CStdString& strPath, const ADDON::C
 
     // insert new settings
     strSQL = FormatSQL("insert into content (strPath, strScraperPath, strContent, strSettings) values ('%s','%s','%s','%s')",
-      strPath.c_str(), scraper->Path().c_str(), ADDON::TranslateContent(scraper->Content()).c_str(), scraper->GetSettings().c_str());
+      strPath.c_str(), scraper->Parent().c_str(), ADDON::TranslateContent(scraper->Content()).c_str(), scraper->GetSettings().c_str());
     m_pDS->exec(strSQL.c_str());
 
     return true;
@@ -4080,26 +4080,44 @@ bool CMusicDatabase::GetScraperForPath(const CStdString& strPath, ADDON::CScrape
     }
 
     if (!m_pDS->eof())
-    { // assign scraper
-      CScraperParser parser;
-      //TODO finish this
+    { // try and ascertain scraper for this path
+      CONTENT_TYPE content = ADDON::TranslateContent(m_pDS->fv("content.strContent").get_asString());
+      CStdString scraperUUID = m_pDS->fv("content.strScraperPath").get_asString();
 
+      if (content != CONTENT_NONE)
+      { // content set, use pre configured or default scraper
+        ADDON::AddonPtr addon;
+        if (!scraperUUID.empty() && ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, scraperUUID, addon) && addon)
+        {
+          info = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
+          if (!info)
+            return false;
+        }
 
-      /*info.strContent = m_pDS->fv("content.strContent").get_asString();
-      info.strPath = m_pDS->fv("content.strScraperPath").get_asString();
-      info.settings.LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
-
-      CScraperParser parser;
-      parser.Load("special://xbmc/system/scrapers/music/" + info.strPath);
-      info.strTitle = parser.GetName();
-      info.strDate = parser.GetDate();
-      info.strFramework = parser.GetFramework();*/
-
+        // store this path's settings
+        info->m_pathContent = content;
+        info->LoadUserXML(m_pDS->fv("content.strSettings").get_asString());
+      }
+      else
+      { // use default scraper for this content type
+        ADDON::AddonPtr defaultScraper;
+        if (ADDON::CAddonMgr::Get()->GetDefaultScraper(defaultScraper, content))
+        {
+          info = boost::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper->Clone());
+          if (info)
+          {
+            info->m_pathContent = content;
+          }
+        }
+      }
     }
-    /*if (info.strPath.IsEmpty() && !strPath.Equals("musicdb://")) // default fallback
-      GetScraperForPath("musicdb://",info); */
-
     m_pDS->close();
+
+    if (!info)
+    { // use default music scraper instead
+      return ADDON::CAddonMgr::Get()->GetDefaultScraper(info, CONTENT_ALBUMS);
+    }
+
     return true;
   }
   catch (...)
@@ -4469,7 +4487,7 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
     CStdString outdoc;
     if ( asHTML )
     {
-      outdoc = "<html><head><meta http-equiv=\"CONTENT_TYPE-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
+      outdoc = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></meta></head>\n"
           "<body>\n<table>\n";
 
       file.Write( outdoc, outdoc.size() );

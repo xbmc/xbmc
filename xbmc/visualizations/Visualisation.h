@@ -22,8 +22,7 @@
 
 #include "Key.h"
 #include "DllVisualisation.h"
-#include "addons/include/libvisualisation.h"
-#include "addons/include/xbmc_vis_types.h"
+#include "../addons/include/libvisualisation.h"
 #include "AddonDll.h"
 #include "cores/IAudioCallback.h"
 
@@ -52,9 +51,7 @@ class CVisualisation : public ADDON::CAddonDll<DllVisualisation, Visualisation, 
                      , public IAudioCallback
 {
 public:
-  ~CVisualisation();
-  
-  CVisualisation(const AddonProps &props) : ADDON::CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
+  CVisualisation(const ADDON::AddonProps &props) : ADDON::CAddonDll<DllVisualisation, Visualisation, VIS_PROPS>(props) {}
   virtual ~CVisualisation() {};
   virtual void OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample);
   virtual void OnAudioData(const unsigned char* pAudioData, int iAudioDataLength);
@@ -66,8 +63,6 @@ public:
   void GetInfo(VIS_INFO *info);
   bool OnAction(VIS_ACTION action, void *param = NULL);
   bool UpdateTrack();
-  void GetSettings(std::vector<VisSetting> **vecSettings);
-  void UpdateSetting(int num, std::vector<VisSetting> **vecSettings);
   void GetCurrentPreset(char **pPreset, bool *locked);
   int  GetSubModules(std::map<std::string, std::string>& subModules);
   bool IsLocked();

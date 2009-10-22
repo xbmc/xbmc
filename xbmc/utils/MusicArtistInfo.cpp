@@ -105,7 +105,7 @@ bool CMusicArtistInfo::Load(XFILE::CFileCurl& http, const ADDON::CScraperPtr& sc
 
   m_parser.m_param[strHTML.size()] = m_strSearch;
 
-  CStdString strXML = m_parser.Parse(strFunction,&info.settings);
+  CStdString strXML = m_parser.Parse(strFunction);
   CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
   if (strXML.IsEmpty())
   {

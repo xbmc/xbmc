@@ -839,9 +839,9 @@ else
 fi
 
 if test "$use_projm" = "yes"; then
-  final_message="$final_message\n  ProjectM:\t\tYes"
+  final_message="$final_message\n  ProjectM:\tYes"
 else
-  final_message="$final_message\n  ProjectM:\t\tNo"
+  final_message="$final_message\n  ProjectM:\tNo"
 fi
 
 if test "$use_pcre" = "yes"; then
@@ -991,6 +991,7 @@ OUTPUT_FILES="Makefile \
              xbmc/cores/paplayer/WavPackCodec/Makefile \
              xbmc/cores/paplayer/YMCodec/StSoundLibrary/Makefile \
              guilib/common/Makefile \
+             xbmc/lib/libaddon/Makefile \
              xbmc/lib/libass/xbmc/Makefile \
              xbmc/lib/libXBMS/Makefile \
              xbmc/lib/libRTV/Makefile \
@@ -998,8 +999,10 @@ OUTPUT_FILES="Makefile \
              xbmc/lib/libXDAAP/Makefile \
              xbmc/lib/libhdhomerun/Makefile \
              xbmc/lib/libGoAhead/Makefile \
+             xbmc/lib/librefmem/Makefile \
              xbmc/lib/libshout/Makefile \
              xbmc/lib/libsquish/Makefile \
+             xbmc/lib/libvisualisation/Makefile \
              xbmc/lib/libid3tag/Makefile \
              xbmc/lib/cximage-6.0/Makefile \
              xbmc/lib/libPython/linux/Makefile \
@@ -1085,8 +1088,6 @@ XB_CONFIG_MODULE([xbmc/lib/libPython/Python], [
     sed -i bak -e "s/define HAVE_GETC_UNLOCKED 1/undef HAVE_GETC_UNLOCKED/" pyconfig.h && 
     sed -i bak -e "s/define HAVE_FSEEKO 1/undef HAVE_FSEEKO/" pyconfig.h &&
     sed -i bak -e "s/define HAVE_FTELLO 1/undef HAVE_FTELLO/" pyconfig.h &&
-                [xbmc/lib/libaddon/Makefile]
-                [xbmc/lib/libvisualisation/Makefile]
     sed -i bak -e "s/define HAVE_FTRUNCATE 1/undef HAVE_FTRUNCATE/" pyconfig.h &&
     sed -i bak -e "s/define HAVE_FPATHCONF 1/undef HAVE_FPATHCONF/" pyconfig.h &&
     sed -i bak -e "s/define HAVE_FSYNC 1/undef HAVE_FSYNC/" pyconfig.h &&

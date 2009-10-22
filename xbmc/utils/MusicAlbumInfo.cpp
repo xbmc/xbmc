@@ -149,7 +149,7 @@ bool CMusicAlbumInfo::Load(XFILE::CFileCurl& http, const ADDON::CScraperPtr& scr
   for (unsigned int i=0;i<strHTML.size();++i)
     m_parser.m_param[i] = strHTML[i];
 
-  CStdString strXML = m_parser.Parse(strFunction,&info.settings);
+  CStdString strXML = m_parser.Parse(strFunction);
   CLog::Log(LOGDEBUG,"scraper: %s returned %s",strFunction.c_str(),strXML.c_str());
   if (strXML.IsEmpty())
   {

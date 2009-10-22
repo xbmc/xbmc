@@ -19,7 +19,6 @@
  *
  */
 
-#include "stdafx.h"
 #include "utils/AddonManager.h"
 #include "GUIDialogAddonBrowser.h"
 #include "GUISpinControlEx.h"
@@ -32,6 +31,7 @@
 #include "GUIEditControl.h"
 #include "Util.h"
 #include "URL.h"
+#include "utils/log.h"
 #include "FileItem.h"
 #include "Scraper.h"
 
@@ -59,7 +59,7 @@ CGUIDialogAddonBrowser::~CGUIDialogAddonBrowser()
 
 bool CGUIDialogAddonBrowser::OnAction(const CAction &action)
 {
-  if (action.wID == ACTION_CONTEXT_MENU || action.wID == ACTION_MOUSE_RIGHT_CLICK)
+  if (action.id == ACTION_CONTEXT_MENU || action.id == ACTION_MOUSE_RIGHT_CLICK)
   {
     int iItem = m_viewControl.GetSelectedItem();
     return OnContextMenu(iItem);
@@ -197,8 +197,6 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
   CFileItemPtr pItem = (*m_vecItems)[iItem];
   CStdString strPath = pItem->m_strPath;
 
-  addon_settings_t settings = addon_settings_create();
-
   if (m_getAddons)
   {
     // get a pointer to the addon in question
@@ -231,13 +229,10 @@ void CGUIDialogAddonBrowser::OnClick(int iItem)
       if (!g_passwordManager.IsMasterLockUnlocked(true))
         return;
 
-    if (m_type != ADDON_SCRAPER)
-    {
-      /* open up settings dialog */
-      AddonPtr addon;
-      if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon))
-        CGUIDialogAddonSettings::ShowAndGetInput(addon);
-    }
+    /* open up settings dialog */
+    AddonPtr addon;
+    if (CAddonMgr::Get()->GetAddon(m_type, pItem->GetProperty("Addon.UUID"), addon))
+      CGUIDialogAddonSettings::ShowAndGetInput(addon);
   }
 }
 
@@ -268,7 +263,7 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const ADDON::TYPE &type, const boo
   if (!browser) return false;
 
   // Add it to our window manager
-  m_gWindowManager.AddUniqueInstance(browser);
+  g_windowManager.AddUniqueInstance(browser);
 
   // determine the correct heading
   CStdString heading;
@@ -289,7 +284,7 @@ bool CGUIDialogAddonBrowser::ShowAndGetAddons(const ADDON::TYPE &type, const boo
   browser->DoModal();
   bool confirmed = browser->IsConfirmed();
 
-  m_gWindowManager.Remove(browser->GetID());
+  g_windowManager.Remove(browser->GetID());
   delete browser;
   return confirmed;
 }
@@ -327,7 +322,7 @@ bool CGUIDialogAddonBrowser::OnContextMenu(int iItem)
   if (m_getAddons)
     return true;
 
-  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)m_gWindowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
+  CGUIDialogContextMenu* pMenu = (CGUIDialogContextMenu*)g_windowManager.GetWindow(WINDOW_DIALOG_CONTEXT_MENU);
   if (!pMenu)
     return false;
 

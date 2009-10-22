@@ -95,7 +95,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
     {
       if (message.GetPointer())
       {
-        SetVisualisation((CVisualisation *)message.GetPointer());
+        //SetVisualisation((CVisualisation *)message.GetPointer());
       }
     }
   }
@@ -104,10 +104,6 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
 
 void CGUIDialogVisualisationPresetList::Render()
 {
-  char **presets = NULL;
-  int numPresets = 0;
-  int currentPreset = 0;
-  bool locked = false;
   CGUIDialog::Render();
 }
 
@@ -127,7 +123,7 @@ void CGUIDialogVisualisationPresetList::Update()
       CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST);
       OnMessage(msg2);
       m_vecPresets->Clear();
-      for (int i = 0; i < presets.size(); i++)
+      for (unsigned i = 0; i < presets.size(); i++)
       {
         CFileItemPtr pItem(new CFileItem(presets[i]));
         if (i == m_currentPreset)

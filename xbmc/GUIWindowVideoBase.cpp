@@ -365,7 +365,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const CONTENT_TYPE& content)
   if (!pDlgSelect) return false;
   if (!pDlgInfo) return false;
   CUtil::ClearCache();
-  ADDON::CScraperParser::ClearCache();
+  CScraperParser::ClearCache();
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
   //     Return if no Refresh is needed.
@@ -706,11 +706,6 @@ void CGUIWindowVideoBase::OnManualIMDB()
   ADDON::AddonPtr addon;
   if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, "IMDb", addon))
     return;
-
-  ADDON::CScraperPtr info;
-  //info->m_content = CONTENT_MOVIES;
-  //info->m_strPath = addon->Path();
-  //info->m_strName = addon->Name();
 
   ShowIMDB(&item,CONTENT_MOVIES);
 

@@ -43,7 +43,6 @@ protected:
   virtual void AddFileToDatabase(const CFileItem* pItem);
   virtual void OnPrepareFileItems(CFileItemList &items);
   virtual void UpdateButtons();
-  virtual bool OnClick(int iItem);
   virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
 

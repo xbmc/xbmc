@@ -18,18 +18,20 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "stdafx.h"
 #include "AddonManager.h"
 #include "Addon.h"
 #include "Application.h"
 #include "utils/log.h"
-#include "utils/RegExp.h"
+#include "StringUtils.h"
+#include "RegExp.h"
 #include "XMLUtils.h"
 #include "GUIDialogYesNo.h"
 #include "GUIDialogOK.h"
 #include "GUIDialogAddonSettings.h"
 #include "GUIWindowManager.h"
 #include "FileItem.h"
+#include "GUISettings.h"
+#include "SingleLock.h"
 
 #ifdef HAS_VISUALISATION
 #include "../visualizations/DllVisualisation.h"
@@ -110,7 +112,7 @@ void CAddonStatusHandler::Process()
   /* AddOn lost connection to his backend (for ones that use Network) */
   if (m_status == STATUS_LOST_CONNECTION)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog) return;
 
     CStdString heading;
@@ -121,7 +123,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(2, 23048);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     if (pDialog->IsConfirmed())
@@ -132,7 +134,7 @@ void CAddonStatusHandler::Process()
   /* Request to restart the AddOn and data structures need updated */
   else if (m_status == STATUS_NEED_RESTART)
   {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
     CStdString heading;
@@ -142,7 +144,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(1, 23049);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     CAddonMgr::Get()->GetCallbackForType(m_addon->Type())->RequestRestart(m_addon, true);
@@ -153,7 +155,7 @@ void CAddonStatusHandler::Process()
     /* okey we really don't need to restart, only deinit Add-on, but that could be damn hard if something is playing*/
     //TODO - General way of handling setting changes that require restart
 
-    CGUIDialogYesNo *pDialog = (CGUIDialogYesNo *)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo *pDialog = (CGUIDialogYesNo *)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialog) return ;
 
     CStdString heading;
@@ -165,7 +167,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine( 2, 23052);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     if (pDialog->IsConfirmed())
@@ -176,7 +178,7 @@ void CAddonStatusHandler::Process()
   /* Some required settings are missing/invalid */
   else if (m_status == STATUS_NEED_SETTINGS)
   {
-    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialogYesNo = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (!pDialogYesNo) return;
 
     CStdString heading;
@@ -188,7 +190,7 @@ void CAddonStatusHandler::Process()
     pDialogYesNo->SetLine(3, m_message);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_YES_NO, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
 
     if (!pDialogYesNo->IsConfirmed()) return;
@@ -206,7 +208,7 @@ void CAddonStatusHandler::Process()
     }
 
     // Create the dialog
-    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+    CGUIDialogAddonSettings* pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
 
     heading.Format("$LOCALIZE[23053]: %s %s", g_localizeStrings.Get(23012 + m_addon->Type()).c_str(), m_addon->Name().c_str());
     pDialog->SetHeading(heading);
@@ -229,7 +231,7 @@ void CAddonStatusHandler::Process()
   //TODO if installer has file manifest per addon (for incremental updates), we can check this ourselves
   else if (m_status == STATUS_MISSING_FILE)
   {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
     CStdString heading;
@@ -241,13 +243,13 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(3, m_message);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
   }
   /* A unknown event is occurred */
   else if (m_status == STATUS_UNKNOWN)
   {
-    CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+    CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (!pDialog) return;
 
     CStdString heading, name;
@@ -261,7 +263,7 @@ void CAddonStatusHandler::Process()
     pDialog->SetLine(3, m_message);
 
     //send message and wait for user input
-    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+    ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
     g_application.getApplicationMessenger().SendMessage(tMsg, true);
   }
 
@@ -331,9 +333,9 @@ bool CAddonMgr::GetAddons(const ADDON::TYPE &type, VECADDONS &addons, const CONT
     IVECADDONS itr = m_addons[type].begin();
     while (itr != m_addons[type].end())
     { // filter out what we're not looking for      
-      if (enabled && (*itr)->Disabled() 
-        || !(*itr)->Disabled() && !enabled 
-        || content != CONTENT_NONE && !(*itr)->Supports(content))
+      if ((enabled && (*itr)->Disabled())
+        || (!(*itr)->Disabled() && !enabled)
+        || (content != CONTENT_NONE && !(*itr)->Supports(content)))
       {
         ++itr;
         continue;
@@ -372,7 +374,7 @@ bool CAddonMgr::GetAddon(const ADDON::TYPE &type, const CStdString &str, AddonPt
   if (m_addons.find(type) == m_addons.end())
     return false;
 
-  bool isUUID = CUtil::ValidateUUID(str);
+  bool isUUID = StringUtils::ValidateUUID(str);
 
   VECADDONS &addons = m_addons[type];
   IVECADDONS adnItr = addons.begin();
@@ -422,11 +424,13 @@ bool CAddonMgr::GetAddonFromPath(const CStdString &path, AddonPtr &addon)
 
 bool CAddonMgr::GetDefaultScraper(CScraperPtr &scraper, const CONTENT_TYPE & content)
 { 
-  AddonPtr addon = boost::dynamic_pointer_cast<IAddon>(scraper);
-  if (!addon)
-    return false;
+  AddonPtr addon;
+  if (GetDefaultScraper(addon, content))
+    scraper = boost::dynamic_pointer_cast<CScraper>(addon->Clone());
   else
-    return GetDefaultScraper(addon, content);
+    return false;
+
+  return true;
 }
 bool CAddonMgr::GetDefaultScraper(AddonPtr &scraper, const CONTENT_TYPE &content)
 {
@@ -741,7 +745,7 @@ bool CAddonMgr::AddonFromInfoXML(const ADDON::TYPE &reqType, const CStdString &p
   }
 
   /* Validate uuid */
-  if (!CUtil::ValidateUUID(uuid))
+  if (!StringUtils::ValidateUUID(uuid))
   {
     CLog::Log(LOGERROR, "ADDON: %s has invalid <uuid> element, ignoring", strPath.c_str());
     return false;

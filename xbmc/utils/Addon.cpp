@@ -19,47 +19,60 @@
  *
  */
 
-#include "stdafx.h"
 #include "Addon.h"
+#include "Settings.h"
+#include "GUISettings.h"
+#include "StringUtils.h"
+#include "log.h"
 
 namespace ADDON
 {
 
-const CStdString TranslateContent(const CONTENT_TYPE &type)
+const CStdString TranslateContent(const CONTENT_TYPE &type, bool pretty/*=false*/)
 {
   switch (type)
   {
   case CONTENT_ALBUMS:
     {
+      if (pretty)
+        return g_localizeStrings.Get(132);
       return "albums";
     }
   case CONTENT_ARTISTS:
     {
+      if (pretty)
+        return g_localizeStrings.Get(133);
       return "artists";
     }
   case CONTENT_MOVIES:
     {
+      if (pretty)
+        return g_localizeStrings.Get(20342);
       return "movies";
     }
   case CONTENT_TVSHOWS:
     {
+      if (pretty)
+        return g_localizeStrings.Get(20343);
       return "tvshows";
     }
   case CONTENT_MUSICVIDEOS:
     {
+      if (pretty)
+        return g_localizeStrings.Get(20389);
       return "musicvideos";
     }
   case CONTENT_EPISODES:
     {
+      if (pretty)
+        return g_localizeStrings.Get(20360);
       return "episodes";
     }
-  case CONTENT_PLUGIN:
+  case CONTENT_NONE:
     {
-      return "plugin";
-    }
-  case CONTENT_WEATHER:
-    {
-      return "weather";
+      if (pretty)
+        return g_localizeStrings.Get(231);
+      return "";
     }
   default:
     {
@@ -140,10 +153,10 @@ const ADDON::TYPE TranslateType(const CStdString &string)
 }
 
 CAddon::CAddon(const AddonProps &props)
-: m_guid(props.uuid)
-, m_guid_parent(props.parent)
-, m_type(props.type)
-, m_content(props.contents)
+  : m_type(props.type)
+  , m_content(props.contents)
+  , m_guid(props.uuid)
+  , m_guid_parent(props.parent)
 {
   m_strPath     = props.path;
   m_disabled    = true;
@@ -159,12 +172,14 @@ CAddon::CAddon(const AddonProps &props)
 }
 
 CAddon::CAddon(const CAddon &rhs)
-: m_guid(CUtil::CreateUUID())
-, m_guid_parent(rhs.UUID())
-, m_type(rhs.Type())
+  : m_type(rhs.Type())
+  , m_content(rhs.m_content)
+  , m_guid(StringUtils::CreateUUID())
+  , m_guid_parent(rhs.UUID())
 {
+  m_userXmlDoc  = rhs.m_userXmlDoc;
   m_strPath     = rhs.Path();
-  m_disabled    = true;
+  m_disabled    = false;
   m_icon        = rhs.Icon();
   m_stars       = rhs.Stars();
   m_strVersion  = rhs.Version();
@@ -186,6 +201,9 @@ AddonPtr CAddon::Clone() const
 */
 bool CAddon::LoadStrings()
 {
+  if (!HasSettings())
+    return false;
+
   // Path where the language strings reside
   CStdString pathToLanguageFile = m_strPath;
   CStdString pathToFallbackLanguageFile = m_strPath;
@@ -208,7 +226,7 @@ void CAddon::ClearStrings()
   m_strings.Clear();
 }
 
-CStdString CAddon::GetString(DWORD id) const
+CStdString CAddon::GetString(uint32_t id) const
 {
   return m_strings.Get(id);
 }

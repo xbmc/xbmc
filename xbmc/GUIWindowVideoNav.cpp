@@ -34,6 +34,7 @@
 #include "PlayListFactory.h"
 #include "GUIDialogVideoScan.h"
 #include "GUIDialogOK.h"
+#include "AddonManager.h"
 #include "PartyModeManager.h"
 #include "MusicDatabase.h"
 #include "GUIWindowManager.h"
@@ -830,13 +831,15 @@ void CGUIWindowVideoNav::Render()
 
 void CGUIWindowVideoNav::OnInfo(CFileItem* pItem, const ADDON::CScraperPtr& scraper)
 {
-  ADDON::CScraperPtr info2(scraper); //TODO need to take a copy?
+  ADDON::AddonPtr addon;
+  if (!scraper || !ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, scraper->Parent(), addon))
+    return;
+
+  ADDON::CScraperPtr info2 = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
   CStdString strPath,strFile;
   m_database.Open(); // since we can be called from the music library without being inited
   if (pItem->IsVideoDb())
     m_database.GetScraperForPath(pItem->GetVideoInfoTag()->m_strPath,info2);
-  else if (m_vecItems->IsPlugin()) //TODO remove IsPlugin
-    int todo;/*info2->Content() = CONTENT_PLUGIN;*/ //TODO ??
   else
   {
     CUtil::Split(pItem->m_strPath,strPath,strFile);
@@ -1115,9 +1118,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     VIDEO::SScanSettings settings;
     GetScraperForItem(item.get(), info, settings);
 
-    if (info->Content() == CONTENT_TVSHOWS)
+    if (info && info->Content() == CONTENT_TVSHOWS)
       buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
-    else if (info->Content() == CONTENT_MUSICVIDEOS)
+    else if (info && info->Content() == CONTENT_MUSICVIDEOS)
       buttons.Add(CONTEXT_BUTTON_INFO,20393);
     else if (!item->m_bIsFolder && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
       buttons.Add(CONTEXT_BUTTON_INFO, 13346);
@@ -1162,7 +1165,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           else
             buttons.Add(CONTEXT_BUTTON_UPDATE_TVSHOW, 13349);
         }
-        if ((info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder) ||
+        if ((info && info->Content() == CONTENT_TVSHOWS && item->m_bIsFolder) ||
             (item->IsVideoDb() && item->HasVideoInfoTag() && !item->m_bIsFolder))
         {
           if (item->m_bIsFolder || item->GetVideoInfoTag()->m_playCount > 0)
@@ -1197,7 +1200,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         if (item->IsVideoDb() && item->HasVideoInfoTag() &&
           (!item->m_bIsFolder || node == NODE_TYPE_TITLE_TVSHOWS))
         {
-          if (info->Content() == CONTENT_TVSHOWS)
+          if (info && info->Content() == CONTENT_TVSHOWS)
           {
             if(item->GetVideoInfoTag()->m_iBookmarkId != -1 &&
                item->GetVideoInfoTag()->m_iBookmarkId != 0)

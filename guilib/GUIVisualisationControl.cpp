@@ -2,12 +2,14 @@
 #include "GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "visualizations/Visualisation.h"
+#include "utils/AddonManager.h"
 #include "Util.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
 #include "GUISettings.h"
 
 using namespace std;
+using namespace ADDON;
 
 #define LABEL_ROW1 10
 #define LABEL_ROW2 11
@@ -17,7 +19,6 @@ CGUIVisualisationControl::CGUIVisualisationControl(int parentID, int controlID, 
     : CGUIControl(parentID, controlID, posX, posY, width, height)
 {
   m_bInitialized = false;
-  m_iNumBuffers = 0;
   m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
 }
@@ -26,7 +27,6 @@ CGUIVisualisationControl::CGUIVisualisationControl(const CGUIVisualisationContro
 : CGUIControl(from)
 {
   m_bInitialized = false;
-  m_iNumBuffers = 0;
   m_currentVis = "";
   ControlType = GUICONTROL_VISUALISATION;
 }
@@ -40,7 +40,7 @@ void CGUIVisualisationControl::FreeVisualisation()
   if (!m_bInitialized) return;
   m_bInitialized = false;
   // tell our app that we're going
-  CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_dwControlID, 0);
+  CGUIMessage msg(GUI_MSG_VISUALISATION_UNLOADING, m_controlID, 0);
   g_windowManager.SendMessage(msg);
 
   CLog::Log(LOGDEBUG, "FreeVisualisation() started");
@@ -62,7 +62,7 @@ void CGUIVisualisationControl::LoadVisualisation()
   if (!CAddonMgr::Get()->GetAddon(ADDON_VIZ, g_guiSettings.GetString("mymusic.visualisation"), addon))
       return;
 
-  m_addon = bioiost::dynamic_pointer_cast<CVisualisation>(addon);
+  m_addon = boost::dynamic_pointer_cast<CVisualisation>(addon);
 
   if (!m_addon)
     return;
@@ -127,7 +127,7 @@ void CGUIVisualisationControl::Render()
 
 bool CGUIVisualisationControl::OnAction(const CAction &action)
 {
-  if (!m_pVisualisation) return false;
+  if (!m_addon) return false;
   VIS_ACTION visAction = VIS_ACTION_NONE;
   if (action.id == ACTION_VIS_PRESET_NEXT)
     visAction = VIS_ACTION_NEXT_PRESET;
@@ -142,7 +142,7 @@ bool CGUIVisualisationControl::OnAction(const CAction &action)
   else if (action.id == ACTION_VIS_RATE_PRESET_MINUS)
     visAction = VIS_ACTION_RATE_PRESET_MINUS;
 
-  return m_pVisualisation->OnAction(visAction);
+  return m_addon->OnAction(visAction);
 }
 
 bool CGUIVisualisationControl::UpdateTrack()

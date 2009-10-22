@@ -524,11 +524,6 @@ void CGUIWindowMusicBase::ShowAlbumInfo(const CAlbum& album, const CStdString& p
     return;
   }
 
-  // find album info
-  ADDON::CScraperPtr scraper;
-  if (!m_musicdatabase.GetScraperForPath(path, scraper))
-    return;
-
   CMusicAlbumInfo info;
   if (FindAlbumInfo(album.strAlbum, album.strArtist, info, bShowInfo ? (bRefresh ? SELECTION_FORCED : SELECTION_ALLOWED) : SELECTION_AUTO))
   {

@@ -21,6 +21,7 @@
 
 #include "FileItem.h"
 #include "VideoInfoScanner.h"
+#include "AddonManager.h"
 #include "FileSystem/DirectoryCache.h"
 #include "Util.h"
 #include "NfoFile.h"
@@ -140,7 +141,7 @@ namespace VIDEO
     m_bUpdateAll = bUpdateAll;
     m_pathsToScan.clear();
     m_pathsToClean.clear();
-    ADDON::CScraperParser::ClearCache();
+    CScraperParser::ClearCache();
 
     if (strDirectory.IsEmpty())
     { // scan all paths in the database.  We do this by scanning all paths in the db, and crossing them off the list as
@@ -303,16 +304,7 @@ namespace VIDEO
       }
     }
 
-    CLog::Log(LOGDEBUG,"Hash[%s,%s]:DB=[%s],Computed=[%s]",
-      ADDON::TranslateContent(m_info->Content()).c_str(),strDirectory.c_str(),dbHash.c_str(),hash.c_str());
-
-    if (!m_info->GetSettingsXML() && m_info->GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness //TODO what nastiness?
-    {
-      if (m_info->HasSettings())
-      {
-        m_info->SaveFromDefault();
-      }
-    }
+    CLog::Log(LOGDEBUG,"Hash[%s,%s]:DB=[%s],Computed=[%s]", ADDON::TranslateContent(m_info->Content()).c_str(),strDirectory.c_str(),dbHash.c_str(),hash.c_str());
 
     if (!bSkip)
     {
@@ -376,7 +368,7 @@ namespace VIDEO
   {
     m_IMDB.SetScraperInfo(scraper);
 
-   if (pDlgProgress)
+    if (pDlgProgress)
     {
       if (items.Size() > 1 || (items[0]->m_bIsFolder && !bRefresh))
       {
@@ -413,23 +405,8 @@ namespace VIDEO
       else
         m_database.GetScraperForPath(items.m_strPath,info2);
 
-      //TODO why no content set?
       if (!info2 || info2->Content() == CONTENT_NONE) // skip
         continue;
-
-      if (!info2->GetSettingsXML() && info2->GetSettings().IsEmpty()) // check for settings, if they are around load defaults - to workaround the nastyness
-      {
-        ADDON::CScraperParser parser;
-        if (parser.Load(info2) && parser.HasFunction("GetSettings"))
-        {
-          info2->LoadSettings();
-          info2->SaveFromDefault();
-        }
-      }
-
-      // we might override scraper //TODO if CIMDB must modify, create a copy there
-      /*if (info2->Content() == scraper->Content())
-        info2->Path() = info->Path();*/
 
       m_IMDB.SetScraperInfo(info2);
 
@@ -516,7 +493,7 @@ namespace VIDEO
       {
         if ((pItem->IsVideo() && !pItem->IsNFO() && !pItem->IsPlayList()) || info2->Content() == CONTENT_TVSHOWS )
         {
-         if (pDlgProgress)
+          if (pDlgProgress)
           {
             int iString=198;
             if (info2->Content() == CONTENT_TVSHOWS)
@@ -555,12 +532,18 @@ namespace VIDEO
           // handle .nfo files
           result = CheckForNFOFile(pItem.get(),bDirNames,info2->Content(),scrUrl);
           if (info2->Content() == CONTENT_TVSHOWS && result != CNfoFile::NO_NFO)
-          {
-            ADDON::CScraperPtr info3(info2);
+          { // check for preconfigured scraper; if found, overwrite with interpreted scraper but keep current scan settings
+            ADDON::CScraperPtr temp;
             SScanSettings settings;
-            m_database.GetScraperForPath(pItem->m_strPath,info3,settings);
-            //info3->Path() = info2->Path();
-            m_database.SetScraperForPath(pItem->m_strPath,info3,settings);
+            if (m_database.GetScraperForPath(pItem->m_strPath,temp,settings))
+            { 
+              ADDON::AddonPtr addon;
+              if (ADDON::CAddonMgr::Get()->GetAddon(ADDON::ADDON_SCRAPER, temp->Parent(), addon))
+              { // as we are working with a new clone, default scraper settings are saved
+                temp = boost::dynamic_pointer_cast<ADDON::CScraper>(addon->Clone());
+                m_database.SetScraperForPath(pItem->m_strPath,temp,settings);
+              }
+            }
           }
           if (result == CNfoFile::FULL_NFO)
           {

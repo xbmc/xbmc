@@ -263,7 +263,7 @@ void CGUISettings::Initialize()
   AddBool(6, "mymusic.clearplaylistsonend",239,false);
   AddSeparator(7, "mymusic.sep2");
   AddPath(8,"mymusic.recordingpath",20005,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
-  AddSeperator(9, "mymusic.sep3");
+  AddSeparator(9, "mymusic.sep3");
   AddString(10, "mymusic.manageplugin", 23072, "", BUTTON_CONTROL_STANDARD);
 
   AddCategory(3,"musiclibrary",14022);
@@ -274,7 +274,6 @@ void CGUISettings::Initialize()
   AddBool(4,"musiclibrary.autoalbuminfo", 20192, false);
   AddBool(5,"musiclibrary.autoartistinfo", 20193, false);
   AddString(6, "musiclibrary.defaultscraper", 20194, "discogs.xml", SPIN_CONTROL_TEXT);
-  AddString(7, "musiclibrary.scrapersettings", 21417, "", BUTTON_CONTROL_STANDARD);
   AddBool(8, "musiclibrary.updateonstartup", 22000, false);
   AddBool(0, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(9,"musiclibrary.sep2");

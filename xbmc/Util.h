@@ -208,10 +208,6 @@ public:
   
   static void InitRandomSeed();
 
-  static CStdString CreateUUID();
-  static bool       ValidateUUID(const CStdString &uuid); // NB only validates syntax
-
-
 #ifdef _LINUX
   // this will run the command using sudo in a new process.
   // the user that runs xbmc should be allowed to issue the given sudo command.

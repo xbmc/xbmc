@@ -404,11 +404,11 @@ int CBuiltins::Execute(const CStdString& execString)
       database.Open();
       DIRECTORY::VIDEODATABASEDIRECTORY::CQueryParams query;
       DIRECTORY::CVideoDatabaseDirectory::GetQueryParams(item.m_strPath,query);
-      if (query.GetContentType() == VIDEODB_CONTENT_MOVIES)
+      if (query.GetContentType() == CONTENT_MOVIES)
         database.GetMovieInfo("",*item.GetVideoInfoTag(),query.GetMovieId());
-      if (query.GetContentType() == VIDEODB_CONTENT_TVSHOWS)
+      if (query.GetContentType() == CONTENT_TVSHOWS)
         database.GetEpisodeInfo("",*item.GetVideoInfoTag(),query.GetEpisodeId());
-      if (query.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+      if (query.GetContentType() == CONTENT_MUSICVIDEOS)
         database.GetMusicVideoInfo("",*item.GetVideoInfoTag(),query.GetMVideoId());
       item.m_strPath = item.GetVideoInfoTag()->m_strFileNameAndPath;
     }
@@ -971,14 +971,13 @@ int CBuiltins::Execute(const CStdString& execString)
     if (params[0].Equals("video"))
     {
       CGUIDialogVideoScan *scanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
-      SScraperInfo info;
       VIDEO::SScanSettings settings;
       if (scanner)
       {
         if (scanner->IsScanning())
           scanner->StopScanning();
         else
-          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",info,settings);
+          CGUIWindowVideoBase::OnScan(params.size() > 1 ? params[1] : "",settings);
       }
     }
   }

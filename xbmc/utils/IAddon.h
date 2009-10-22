@@ -19,10 +19,10 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
-#ifndef IADDON_H
-#define IADDON_H
-
 #include "boost/shared_ptr.hpp"
+#include "StdString.h"
+#include <set>
+#include <list>
 
 class TiXmlElement;
 
@@ -46,7 +46,6 @@ typedef enum
 
 namespace ADDON
 {
-
   typedef enum
   {
     ADDON_MULTITYPE         = 0,
@@ -91,7 +90,7 @@ namespace ADDON
     virtual void UpdateSetting(const CStdString& key, const CStdString& type, const CStdString& value) =0;
     virtual CStdString GetSetting(const CStdString& key) const =0;
     virtual TiXmlElement* GetSettingsXML()=0;
-    virtual CStdString GetString(DWORD id) const =0;
+    virtual CStdString GetString(uint32_t id) const =0;
     
   private:
     friend class CAddonMgr;
@@ -102,6 +101,36 @@ namespace ADDON
     
   };
 
+  struct AddonProps
+  {
+  public:
+    AddonProps(CStdString uuid, ADDON::TYPE type) : uuid(uuid)
+                                      , type(type)
+    {}
+
+    AddonProps(const AddonPtr &addon) : uuid(addon->UUID())
+                                      , type(addon->Type())
+                                      , parent(addon->Parent())                              
+                                      , name(addon->Name())
+                                      , icon(addon->Icon())
+    {}
+    const CStdString uuid;
+    const ADDON::TYPE type;
+    std::set<CONTENT_TYPE> contents;
+    CStdString parent;
+    CStdString name;
+    CStdString version;
+    CStdString summary;
+    CStdString description;
+    CStdString path;
+    CStdString libname;
+    CStdString author;
+    CStdString icon;
+    int        stars;
+    CStdString disclaimer;
+  };
+  typedef std::list<struct AddonProps> VECADDONPROPS;
+
+
 };
-#endif /* IADDON_H */
 

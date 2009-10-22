@@ -36,7 +36,6 @@
 
 using namespace HTML;
 using namespace std;
-using ADDON::CScraperParser;
 
 #ifndef __GNUC__
 #pragma warning (disable:4018)

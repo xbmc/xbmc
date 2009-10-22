@@ -19,12 +19,13 @@
  *
  */
 
-#include "stdafx.h"
 #include "GUIDialogAddonSettings.h"
 #include "utils/IAddon.h"
+#include "Settings.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogFileBrowser.h"
 #include "GUIControlGroupList.h"
+#include "GUILabelControl.h"
 #include "GUIDialogOK.h"
 #include "Util.h"
 #include "MediaManager.h"
@@ -109,7 +110,7 @@ bool CGUIDialogAddonSettings::ShowAndGetInput(const AddonPtr &addon)
   { 
     // Create the dialog
     CGUIDialogAddonSettings* pDialog = NULL;
-    pDialog = (CGUIDialogAddonSettings*) m_gWindowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+    pDialog = (CGUIDialogAddonSettings*) g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
     if (!pDialog)
       return false;
 

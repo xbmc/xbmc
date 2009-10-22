@@ -114,7 +114,7 @@ void CVisualisation::Start(int iChannels, int iSamplesPerSec, int iBitsPerSample
 {
   // notify visz. that new song has been started
   // pass it the nr of audio channels, sample rate, bits/sample and offcourse the songname
-  if (m_initialized) m_pVisz->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
+  if (m_initialized) m_pStruct->Start(iChannels, iSamplesPerSec, iBitsPerSample, strSongName.c_str());
 }
 
 void CVisualisation::AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
@@ -159,6 +159,8 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
     if ( action == VIS_ACTION_UPDATE_TRACK && param )
     {
       const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
+      //TODO fix linking problems
+      /*
       viz_track_t track = viz_track_create();
 
       viz_track_set_title(track, tag->GetTitle().c_str());
@@ -175,8 +177,8 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
       viz_track_set_rating(track, tag->GetRating());
 
       bool result = m_pStruct->OnAction(action, track);
-      viz_release(track);
-      return result;
+      viz_release(track); */
+      return true;
     }
     return m_pStruct->OnAction(action, NULL);
   }
@@ -185,7 +187,6 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
 
 void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPerSample)
 {
-  CSingleLock lock (m_critSection);
   if (!m_pStruct)
     return ;
   CLog::Log(LOGDEBUG, "OnInitialize() started");
@@ -200,7 +201,6 @@ void CVisualisation::OnInitialize(int iChannels, int iSamplesPerSec, int iBitsPe
 
 void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioDataLength)
 {
-  CSingleLock lock (m_critSection);
   if (!m_pStruct)
     return ;
   if (!m_initialized) return ;
@@ -265,7 +265,6 @@ void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioData
 
 void CVisualisation::CreateBuffers()
 {
-  CSingleLock lock (m_critSection);
   ClearBuffers();
 
   // Get the number of buffers from the current vis
@@ -281,7 +280,6 @@ void CVisualisation::CreateBuffers()
 
 void CVisualisation::ClearBuffers()
 {
-  CSingleLock lock (m_critSection);
   m_bWantsFreq = false;
   m_iNumBuffers = 0;
 
@@ -336,7 +334,8 @@ bool CVisualisation::GetPresetList(std::vector<CStdString> &vecpresets)
 bool CVisualisation::GetPresets()
 {
   m_presets.clear();
-  viz_preset_list_t presets = NULL;
+  //TODO fix linking problems
+/*  viz_preset_list_t presets = NULL;
   try
   {
     presets = m_pStruct->GetPresets();
@@ -361,7 +360,8 @@ bool CVisualisation::GetPresets()
     }
     viz_release(presets);
   }
-  return (!m_presets.empty());
+  return (!m_presets.empty());*/
+  return false;
 }
 
 void CVisualisation::GetCurrentPreset(char **pPreset, bool *locked)

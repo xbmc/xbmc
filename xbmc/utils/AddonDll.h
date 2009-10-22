@@ -1,7 +1,4 @@
 #pragma once
-#ifndef ADDON_DLL_H
-#define ADDON_DLL_H
-
 /*
  *      Copyright (C) 2005-2009 Team XBMC
  *      http://www.xbmc.org
@@ -399,6 +396,4 @@ ADDON_STATUS CAddonDll<TheDll, TheStruct, Props>::TransferSettings()
 }
 
 }; /* namespace ADDON */
-
-#endif /* ADDON_DLL_H */
 

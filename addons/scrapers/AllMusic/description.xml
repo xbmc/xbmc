@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>86569F2D-2D5A-4022-8683-4D7CF224BE7B</uuid>
+  <type>scraper</type>
+  <title>AllMusic</title>
+  <library>allmusic.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>AllMusic Music Scraper</summary>
+  <description>Download Music information from www.allmusic.com</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>albums</content>
+    <content>artists</content>
+  </supportedcontent>
+</addoninfo>

@@ -139,7 +139,6 @@ public:
   void SetMusicThumb(bool alwaysCheckRemote = false);
   void SetFileSizeLabel();
   virtual void SetLabel(const CStdString &strLabel);
-  virtual void SetLabel2(const CStdString &strLabel);
   CURL GetAsUrl() const;
   bool IsLabelPreformated() const { return m_bLabelPreformated; }
   void SetLabelPreformated(bool bYesNo) { m_bLabelPreformated=bYesNo; }

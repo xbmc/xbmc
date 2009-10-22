@@ -28,10 +28,7 @@
 
 class TiXmlDocument;
 class CScraperUrl;
-namespace ADDON
-{
-  class CScraperParser;
-}
+class CScraperParser;
 
 namespace MUSIC_GRABBER
 {
@@ -53,7 +50,7 @@ public:
 protected:
   CArtist m_artist;
   CScraperUrl m_artistURL;
-  ADDON::CScraperParser m_parser;
+  CScraperParser m_parser;
   bool m_bLoaded;
 };
 }

@@ -758,14 +758,13 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         }
       }
 
-      int iLabel=132;
-      // per genre or for all artists
-      if (m_vecItems->m_strPath.Equals("musicdb://1/") || item->m_strPath.Equals("musicdb://2/"))
-      {
-        iLabel = 133;
+      CONTENT_TYPE context = CONTENT_ALBUMS;
+      if (m_vecItems->m_strPath.Equals("musicdb://1/") || m_vecItems->m_strPath.Equals("musicdb://2/") || item->m_strPath.Left(12).Equals("musicdb://2/"))
+      { // per genre or for all artists
+        context = CONTENT_ARTISTS;
       }
 
-      if (CGUIDialogContentSettings::Show(scraper, bScan,iLabel))
+      if (CGUIDialogContentSettings::Show(scraper, bScan, context))
       {
         m_musicdatabase.SetScraperForPath(item->m_strPath, scraper);
         if (bScan)

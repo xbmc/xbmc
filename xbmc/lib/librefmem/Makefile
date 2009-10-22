@@ -1,15 +1,6 @@
 INCLUDES=-I.
-CC=gcc
-CFLAGS+=-O2 -fPIC -D_LINUX 
+LIB=librefmem.a
+OBJS+=alloc.o
+OBJS+=debug.o
 
-OBJS = debug.o \
-			 alloc.o \
-
-%o : %c
-	$(CC) $(INCLUDES) $(CFLAGS) -c -o $@ $<
-
-librefmem.a: $(OBJS)
-	$(AR) rc $@ $(OBJS)
-
-clean:
-	$(RM) $(OBJS) librefmem.a
+include ../../../Makefile.include

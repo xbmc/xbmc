@@ -19,9 +19,6 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#ifndef SCRAPER_H
-#define SCRAPER_H
-
 #include "utils/Addon.h"
 #include "utils/ScraperUrl.h"
 
@@ -34,15 +31,12 @@ namespace ADDON
   {
   public:
     CScraper(const AddonProps &props) : CAddon(props) { }
-    CScraper(const CScraper &scraper);
     virtual ~CScraper() {}
     virtual AddonPtr Clone() const;
+
     // from CAddon
     virtual bool HasSettings();
     virtual bool LoadSettings();
-    virtual void SaveSettings() {} // saving handled externally
-    virtual void SaveFromDefault() {}
-    virtual CStdString GetSetting(const CStdString& key) { return CAddon::GetSetting(key); }
 
     // scraper specialization
     bool LoadUserXML(const CStdString& strXML);
@@ -57,8 +51,7 @@ namespace ADDON
   private:
     bool m_hasSettings;
     CStdString m_framework;
-
   };
 
 }; /* namespace ADDON */
-#endif /* SCRAPER_H_ */
+

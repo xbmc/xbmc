@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>DD60AE50-5D67-4aa9-AF45-A7F2E5518B5F</uuid>
+  <type>scraper</type>
+  <title>LastFM</title>
+  <library>lastfm.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>LastFM Music Scraper</summary>
+  <description>Download Music information</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>albums</content>
+    <content>artists</content>
+  </supportedcontent>
+</addoninfo>

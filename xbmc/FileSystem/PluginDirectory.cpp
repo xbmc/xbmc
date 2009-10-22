@@ -450,7 +450,7 @@ bool CPluginDirectory::HasPlugins(const CStdString &type)
   else if (type == "music")
     CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_MUSIC);
   else if (type == "pictures")
-    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons), CONTENT_PICTURES;
+    CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PICTURES);
   else if (type == "programs")
     CAddonMgr::Get()->GetAddons(ADDON_PLUGIN, addons, CONTENT_PROGRAMS);
   else if (type == "weather")

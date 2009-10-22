@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addoninfo>
+  <uuid>EA0E975F-F57F-467a-B77B-2A9CC597873B</uuid>
+  <type>scraper</type>
+  <title>Yahoo! Music</title>
+  <library>yahoomusic.xml</library>
+  <version>1.0.0</version>
+  <platforms>
+    <platform>all</platform>
+  </platforms>
+  <minversion>
+    <xbmc>20000</xbmc>
+  </minversion>
+  <summary>Yahoo! Music Video Scraper</summary>
+  <description>Download Music Video information</description>
+  <author>TEAMXBMC</author>
+  <supportedcontent>
+    <content>musicvideos</content>
+  </supportedcontent>
+</addoninfo>

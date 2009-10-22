@@ -1,3 +1,4 @@
+#pragma once
 /*
 *      Copyright (C) 2005-2009 Team XBMC
 *      http://www.xbmc.org
@@ -18,9 +19,6 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
-#ifndef LIB_VISUALISATION_H
-#define LIB_VISUALISATION_H
-
 #ifdef WIN32
 #define XBMC_API   __declspec( dllexport )
 #else
@@ -347,6 +345,4 @@ extern void viz_dbg(int level, char *fmt, ...);
 #ifdef __cplusplus
 };
 #endif
-
-#endif /* LIB_VISUALISATION_H */
 

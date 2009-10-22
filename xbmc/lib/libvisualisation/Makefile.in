@@ -1,19 +1,16 @@
-ARCH=@ARCH@
 INCLUDES=-I. -I../../addons/include -I../librefmem
-SO=VisualisationLib-$(ARCH).so
-ARCHIVE=$(SO:.so=.a)
-SYSDIR=../../../system
-SLIB=$(SYSDIR)/$(SO)
+LIB=libvisualisation.a
 DIRS=../librefmem
 SLIBS=../librefmem/librefmem.a
 OBJS+=track.o
 OBJS+=preset.o
 OBJS+=presets.o
+OBJS+=debug.o
 
 .PHONY: compile
 
-$(SLIB): $(OBJS)
-	$(CC) $(OBJS) -shared -o $(SLIB) $(SLIBS)
+$(LIB): $(SLIBS)
+	$(CC) $(LIB) $(SLIBS)
 
 $(SLIBS): compile
 

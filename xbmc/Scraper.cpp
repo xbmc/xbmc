@@ -18,7 +18,6 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
-#include "stdafx.h"
 #include "Scraper.h"
 #include "XMLUtils.h"
 #include "FileSystem/File.h"
@@ -27,6 +26,7 @@
 #include "utils/AddonManager.h"
 #include "utils/ScraperParser.h"
 #include "utils/ScraperUrl.h"
+#include "utils/CharsetConverter.h"
 
 #include <sstream>
 
@@ -36,10 +36,6 @@ using std::stringstream;
 namespace ADDON
 {
 
-CScraper::CScraper(const CScraper &scraper)
- : CAddon(scraper)
-{}
-
 AddonPtr CScraper::Clone() const
 {
   return boost::shared_ptr<CScraper>(new CScraper(*this));
@@ -47,7 +43,10 @@ AddonPtr CScraper::Clone() const
 
 bool CScraper::LoadSettings()
 {
-  return LoadSettingsXML();
+  if (Parent().IsEmpty())
+    return CAddon::LoadUserSettings();
+  else
+    return LoadSettingsXML();
 }
 
 bool CScraper::HasSettings()
@@ -78,9 +77,15 @@ bool CScraper::LoadUserXML(const CStdString& strSaved)
 
 bool CScraper::LoadSettingsXML(const CStdString& strFunction, const CScraperUrl* url)
 {
-  CScraperParser parser;
+  CStdString uuid = Parent();
+  if (uuid.IsEmpty())
+  { // called from DialogAddonBrowser, so we are working with the master scraper settings
+    uuid = UUID();
+  }
+
   // load our scraper xml
-  if (!parser.Load(Parent()))
+  CScraperParser parser;
+  if (!parser.Load(uuid))
     return false;
 
   if (!parser.HasFunction(strFunction))

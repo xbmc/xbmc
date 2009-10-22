@@ -60,7 +60,7 @@ protected:
   float m_relevance;
   CStdString m_strTitle2;
   CScraperUrl m_albumURL;
-  ADDON::CScraperParser m_parser;
+  CScraperParser m_parser;
   bool m_bLoaded;
 };
 }

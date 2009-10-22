@@ -95,6 +95,7 @@ SRCS=Application.cpp \
      PartyModeManager.cpp \
      Picture.cpp \
      Profile.cpp \
+     Scraper.cpp \
      SectionLoader.cpp \
      Shortcut.cpp \
      SortFileItem.cpp \
@@ -110,8 +111,8 @@ SRCS=Application.cpp \
      Song.cpp \
      VideoDatabase.cpp \
      ViewDatabase.cpp \
-		 GUIDialogAddonBrowser.cpp \
-		 GUIDialogAddonSettings.cpp \
+     GUIDialogAddonBrowser.cpp \
+     GUIDialogAddonSettings.cpp \
      GUIDialogAudioSubtitleSettings.cpp \
      GUIDialogBoxBase.cpp \
      GUIDialogButtonMenu.cpp \

@@ -24,6 +24,7 @@
 
 #include <vector>
 #include "StdString.h"
+#include "IAddon.h"
 
 #define MAX_SCRAPER_BUFFERS 20
 
@@ -42,6 +43,7 @@ public:
 
   void Clear();
   bool Load(const CStdString& strXMLFile);
+  bool Load(const ADDON::AddonPtr& scraper);
   const CStdString GetSearchStringEncoding() { return m_SearchStringEncoding; }
   const CStdString Parse(const CStdString& strTag);
   bool HasFunction(const CStdString& strTag);

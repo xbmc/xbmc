@@ -77,7 +77,7 @@ public:
   const ADDON::CScraperPtr& GetScraperInfo() const { return m_info; }
 private:
   HRESULT Load(const CStdString&);
-  HRESULT Scrape(const CStdString&, const CStdString& strURL="");
+  HRESULT Scrape(const ADDON::AddonPtr& scraper, const CStdString& strURL="");
 private:
   char* m_doc;
   char* m_headofdoc;
@@ -85,7 +85,7 @@ private:
   ADDON::CScraperPtr m_info;
   CStdString m_strContent;
   CONTENT_TYPE m_content;
-  void DoScrape(ADDON::CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
+  void DoScrape(CScraperParser& parser, const CScraperUrl* pURL=NULL, const CStdString& strFunction="NfoUrl");
 };
 
 #endif // !defined(AFX_NfoFile_H__641CCF68_6D2A_426E_9204_C0E4BEF12D00__INCLUDED_)

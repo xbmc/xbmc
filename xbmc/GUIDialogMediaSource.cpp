@@ -108,8 +108,6 @@ bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
       m_confirmed = false;
       m_bRunScan = false;
       m_bNameChanged=false;
-      m_settings.parent_name = false;
-      m_settings.recurse = 0;
       UpdateButtons();
     }
     break;

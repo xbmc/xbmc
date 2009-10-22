@@ -23,11 +23,11 @@
 #include "AddonDll.h"
 #include "DllScreenSaver.h"
 
-class CScreenSaver public ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>
+class CScreenSaver : public ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>
 {
 public:
-  CScreenSaver(const AddonProps& props) : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(props) {};
-  virtual ~CScreenSaver();
+  CScreenSaver(const ADDON::AddonProps& props) : ADDON::CAddonDll<DllScreenSaver, ScreenSaver, SCR_PROPS>(props) {};
+  virtual ~CScreenSaver() {}
 
   // Things that MUST be supplied by the child classes
   void Start();
@@ -35,7 +35,4 @@ public:
   void Stop();
   void GetInfo(SCR_INFO *info);
 };
-
-
-#endif // !defined(AFX_ScreenSaver_H__99B9A52D_ED09_4540_A887_162A68217A31__INCLUDED_)
 

@@ -27,15 +27,18 @@ BIN_DIRS=	\
 	xbmc/FileSystem/MusicDatabaseDirectory \
 	xbmc/FileSystem/VideoDatabaseDirectory \
 	xbmc/karaoke \
+	xbmc/lib/libaddon \
 	xbmc/lib/libcmyth \
 	xbmc/lib/libhts \
 	xbmc/lib/libGoAhead \
 	xbmc/lib/libPython \
 	xbmc/lib/libPython/xbmcmodule \
+	xbmc/lib/librefmem \
 	xbmc/lib/libRTMP \
 	xbmc/lib/libRTV \
 	xbmc/lib/libscrobbler \
 	xbmc/lib/libshout \
+	xbmc/lib/libvisualisation \
 	xbmc/lib/libUPnP \
 	xbmc/lib/libXBMS \
 	xbmc/lib/libXDAAP \
@@ -85,8 +88,6 @@ endif
 
 LIB_DIRS=\
 	xbmc/lib/cximage-6.0 \
-	xbmc/lib/libaddon \
-	xbmc/lib/libvisualisation \
 	xbmc/lib/libexif \
 	xbmc/lib/libhdhomerun \
 	xbmc/lib/libid3tag \
@@ -205,8 +206,12 @@ xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a: force
 	$(MAKE) -C xbmc/FileSystem/VideoDatabaseDirectory
 xbmc/karaoke/karaoke.a: force
 	$(MAKE) -C xbmc/karaoke
+xbmc/lib/libaddon/libaddon.a: force
+	$(MAKE) -C xbmc/lib/libaddon
 xbmc/lib/libcmyth/libcmyth.a: force
 	$(MAKE) -C xbmc/lib/libcmyth
+xbmc/lib/librefmem/librefmem.a: force
+	$(MAKE) -C xbmc/lib/librefmem
 xbmc/lib/libhts/libhts.a: force
 	$(MAKE) -C xbmc/lib/libhts
 xbmc/lib/libPython/python.a: force
@@ -225,6 +230,8 @@ xbmc/lib/libUPnP/libupnp-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libUPnP
 xbmc/lib/libXBMS/libxbms-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXBMS
+xbmc/lib/libvisualisation/libvisualisation.a: force
+	$(MAKE) -C xbmc/lib/libvisualisation
 xbmc/lib/libXDAAP/libxdaap-@ARCH@.a: force
 	$(MAKE) -C xbmc/lib/libXDAAP
 xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a: force
@@ -317,13 +324,9 @@ ifeq ($(or $(findstring powerpc,$(ARCH)),$(findstring x86_64-linux,$(ARCH))),)
 endif
 imagelib: dllloader
 	$(MAKE) -C xbmc/lib/cximage-6.0
-libaddon: dllloader
-	$(MAKE) -C xbmc/lib/libaddon
-libvisualisation: dllloader
-	$(MAKE) -C xbmc/lib/libvisualisation
 
 codecs: papcodecs dvdpcodecs
-libs: libhdhomerun libid3tag imagelib libaddon libvisualisation libexif python 
+libs: libhdhomerun libid3tag imagelib libexif python 
 externals: codecs libs python visualizations screensavers
 
 xcode_depends: \
@@ -365,14 +368,17 @@ OBJSXBMC=	\
 	xbmc/FileSystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
 	xbmc/FileSystem/VideoDatabaseDirectory/videodatabasedirectory.a \
 	xbmc/karaoke/karaoke.a \
+	xbmc/lib/libaddon/libaddon.a \
 	xbmc/lib/libcmyth/libcmyth.a \
 	xbmc/lib/libhts/libhts.a \
+	xbmc/lib/librefmem/librefmem.a \
 	xbmc/lib/libPython/xbmcmodule/xbmcmodule.a \
 	xbmc/lib/libRTMP/librtmp.a \
 	xbmc/lib/libscrobbler/scrobbler.a \
 	xbmc/lib/libRTV/librtv-@ARCH@.a \
 	xbmc/lib/libshout/libshout-@ARCH@.a \
 	xbmc/lib/libUPnP/libupnp-@ARCH@.a \
+	xbmc/lib/libvisualisation/libvisualisation.a \
 	xbmc/lib/libXBMS/libxbms-@ARCH@.a \
 	xbmc/lib/libXDAAP/libxdaap-@ARCH@.a \
 	xbmc/lib/libGoAhead/libGoAhead-@ARCH@.a \

@@ -26,7 +26,6 @@
 #include "VideoDatabase.h"
 #include "utils/IMDB.h"
 #include "utils/AddonManager.h"
-#include "utils/IAddon.h"
 #include "FileSystem/File.h"
 #include "FileSystem/Directory.h"
 #include "GUISettings.h"
@@ -64,67 +63,32 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
   if (FAILED(Load(strPath)))
     return NO_NFO;
 
-  CFileItemList items;
-  CStdString strScraperBasePath, strDefault, strSelected;
+  CScraperPtr defaultScraper;
   bool bNfo=false;
+
+  VECADDONS addons; 
+  CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, m_content);
+  if (addons.empty())
+    return NO_NFO;
+
+  if (!CAddonMgr::Get()->GetDefaultScraper(defaultScraper, m_content))
+    return NO_NFO; //TODO check this is correct response
+
   if (m_content == CONTENT_ALBUMS)
   {
     CAlbum album;
-    bNfo                = GetDetails(album);
-    strDefault          = g_guiSettings.GetString("musiclibrary.defaultscraper");
-    VECADDONS addons;
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MUSIC);
-    if (addons.empty())
-      return NO_NFO;
-
-    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-    {
-      CStdString pathFile = (*it)->Path() + (*it)->LibName();
-      CFileItemPtr newItem(new CFileItem(pathFile ,false));
-      items.Add(newItem);
-    }
+    bNfo = GetDetails(album);
   }
   else if (m_content == CONTENT_ARTISTS)
   {
     CArtist artist;
-    bNfo                = GetDetails(artist);
-    strDefault          = g_guiSettings.GetString("musiclibrary.defaultscraper");
-    VECADDONS addons;
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MUSIC);
-    if (addons.empty())
-      return NO_NFO;
-
-    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-    {
-      CStdString pathFile = (*it)->Path() + (*it)->LibName();
-      CFileItemPtr newItem(new CFileItem(pathFile ,false));
-      items.Add(newItem);
-    }
+    bNfo = GetDetails(artist);
   }
   else if (m_content == CONTENT_TVSHOWS || m_content == CONTENT_MOVIES || m_content == CONTENT_MUSICVIDEOS)
   {
     // first check if it's an XML file with the info we need
     CVideoInfoTag details;
     bNfo = GetDetails(details);
-    if (m_content == CONTENT_MOVIES)
-      strDefault = g_guiSettings.GetString("scrapers.moviedefault");
-    else if (m_content == CONTENT_TVSHOWS)
-      strDefault = g_guiSettings.GetString("scrapers.tvshowdefault");
-    else if (m_content == CONTENT_MUSICVIDEOS)
-      strDefault = g_guiSettings.GetString("scrapers.musicvideodefault");
-    //TODO 
-    VECADDONS addons;
-    CAddonMgr::Get()->GetAddons(ADDON_SCRAPER, addons, CONTENT_MOVIES);
-    if (addons.empty())
-      return NO_NFO;
-
-    for (IVECADDONS it = addons.begin(); it != addons.end(); it++)
-    {
-      CStdString pathFile = (*it)->Path() + (*it)->LibName();
-      CFileItemPtr newItem(new CFileItem(pathFile ,false));
-      items.Add(newItem);
-    }
-
     if (episode > -1 && bNfo && m_content == CONTENT_TVSHOWS)
     {
       int infos=0;
@@ -147,44 +111,31 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
 
   // Get Selected Scraper
   CVideoDatabase database;
-  /*ADDON::CScraperPtr info;*/
+  ADDON::CScraperPtr selected;
   database.Open();
-  database.GetScraperForPath(strPath,info);
+  database.GetScraperForPath(strPath,selected);
   database.Close();
-  CUtil::AddFileToFolder(strScraperBasePath, info->Path(), strSelected);
 
-  vector<CStdString> vecScrapers;
-
-  // add selected scraper
-  vecScrapers.push_back(strSelected);
-
-  if (g_guiSettings.GetBool("scrapers.langfallback"))
+  /*if (g_guiSettings.GetBool("scrapers.langfallback"))
   {
-    for (int i=0;i<items.Size();++i)
+    for (unsigned i=0;i<addons.size();++i)
     {
-      if (!items[i]->m_bIsFolder)
-      {
-        // skip selected and default scraper
-        if (items[i]->m_strPath.Equals(strSelected) || items[i]->m_strPath.Equals(strDefault))
-          continue;
+      // skip selected and default scraper
+      if (addons[i]->UUID().Equals(selected->Parent()) || addons[i]->UUID().Equals(defaultScraper->UUID()))
+        continue;
 
-        ADDON::CScraperPtr info2;
-        ADDON::CScraperParser parser2;
-        parser2.Load(items[i]->m_strPath);
-        //info2->Content() = parser2.GetContent(); //TODO modifying scrapers
-        //info2.m_strLanguage = parser2.GetLanguage();
+      (CScraperParser parser2;
+      parser2.Load(addons[i]);
+      CONTENT_TYPE content = parser2.GetContent();
 
-        // skip wrong content type //TODO refactor
-        if (info->Content() != info2->Content() && (info->Content() == CONTENT_MOVIES 
-                                                  || info->Content() == CONTENT_TVSHOWS 
-                                                  || info->Content() == CONTENT_MUSICVIDEOS))
-          continue;
+      // skip wrong content type
+      if (info->Content() != content && (info->Content() == CONTENT_MOVIES 
+                                                || info->Content() == CONTENT_TVSHOWS 
+                                                || info->Content() == CONTENT_MUSICVIDEOS))
+        continue;
 
-        // add same language, multi-language and music scrapers
-       /* if (info.m_strLanguage == info2.m_strLanguage || info2.m_strLanguage == "multi" 
-            || info->Content() == CONTENT_ALBUMS || info->Content() == CONTENT_ARTISTS)
-          vecScrapers.push_back(items[i]->m_strPath);*/
-      }
+      // add same language, multi-language and music scrapers
+      // TODO addons language handling
     }
   }
 
@@ -193,9 +144,10 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
     vecScrapers.push_back(strDefault);
 
   // search ..
+  //TODO
   for (unsigned int i=0;i<vecScrapers.size();++i)
     if (!Scrape(vecScrapers[i]))
-      break;
+      break;*/
 
   if (bNfo)
     return (m_strImDbUrl.size() > 0) ? COMBINED_NFO:FULL_NFO;
@@ -203,7 +155,7 @@ CNfoFile::NFOResult CNfoFile::Create(const CStdString& strPath, CScraperPtr& inf
   return   (m_strImDbUrl.size() > 0) ? URL_NFO : NO_NFO;
 }
 
-void CNfoFile::DoScrape(ADDON::CScraperParser& parser, const CScraperUrl* pURL, const CStdString& strFunction)
+void CNfoFile::DoScrape(CScraperParser& parser, const CScraperUrl* pURL, const CStdString& strFunction)
 {
   if (!pURL)
     parser.m_param[0] = m_doc;
@@ -245,24 +197,25 @@ void CNfoFile::DoScrape(ADDON::CScraperParser& parser, const CScraperUrl* pURL, 
   }
 }
 
-HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& strURL /* = "" */)
+HRESULT CNfoFile::Scrape(const AddonPtr& addon, const CStdString& strURL /* = "" */)
 {
-  CScraperParser m_parser;
-  if (!m_parser.Load(strScraperPath))
+  CScraperParser parser;
+  CScraperPtr scraper = boost::dynamic_pointer_cast<CScraper>(addon);
+  if (!parser.Load(scraper))
     return E_FAIL;
-  if (m_parser.GetContent() != m_content &&
-      !(m_content == CONTENT_ARTISTS && m_parser.GetContent() == CONTENT_ALBUMS))
+  if (scraper->Content() != m_content &&
+      !(m_content == CONTENT_ARTISTS && scraper->Content() == CONTENT_ALBUMS))
       // artists are scraped by album content scrapers
   {
     return E_FAIL;
   }
 
-  m_strScraper = CUtil::GetFileName(strScraperPath);
+  m_strScraper = addon->Name(); 
 
   if (strURL.IsEmpty())
   {
-    m_parser.m_param[0] = m_doc;
-    m_strImDbUrl = m_parser.Parse("NfoScrape");
+    parser.m_param[0] = m_doc;
+    m_strImDbUrl = parser.Parse("NfoScrape");
     TiXmlDocument doc;
     doc.Parse(m_strImDbUrl.c_str());
     if (doc.RootElement() && doc.RootElement()->FirstChildElement())
@@ -279,7 +232,7 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
       }
     }
 
-    DoScrape(m_parser);
+    DoScrape(parser);
 
     if (m_strImDbUrl.size() > 0)
       return S_OK;
@@ -288,8 +241,8 @@ HRESULT CNfoFile::Scrape(const CStdString& strScraperPath, const CStdString& str
   }
   else // we check to identify the episodeguide url
   {
-    m_parser.m_param[0] = strURL;
-    CStdString strEpGuide = m_parser.Parse("EpisodeGuideUrl"); // allow corrections?
+    parser.m_param[0] = strURL;
+    CStdString strEpGuide = parser.Parse("EpisodeGuideUrl"); // allow corrections?
     if (strEpGuide.IsEmpty())
       return E_FAIL;
     return S_OK;

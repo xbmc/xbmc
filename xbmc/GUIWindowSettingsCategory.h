@@ -24,6 +24,7 @@
 #include "GUIWindow.h"
 #include "SettingsControls.h"
 #include "GUISettings.h"
+#include "IAddon.h"
 
 class CGUIWindowSettingsCategory :
       public CGUIWindow

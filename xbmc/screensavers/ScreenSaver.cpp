@@ -19,30 +19,28 @@
  *
  */
 #include "ScreenSaver.h" 
-#include "Settings.h"
-#include "AddonManager.h"
 
 void CScreenSaver::Start()
 {
   // notify screen saver that they should start
-  if (m_initialized) m_pScr->Start();
+  if (m_initialized) m_pStruct->Start();
 }
 
 void CScreenSaver::Render()
 {
   // ask screensaver to render itself
-  if (m_initialized) m_pScr->Render();
+  if (m_initialized) m_pStruct->Render();
 }
 
 void CScreenSaver::Stop()
 {
   // ask screensaver to cleanup
-  if (m_initialized) m_pScr->Stop();
+  if (m_initialized) m_pStruct->Stop();
 }
 
 
 void CScreenSaver::GetInfo(SCR_INFO *info)
 {
   // get info from screensaver
-  if (m_initialized) m_pScr->GetInfo(info);
+  if (m_initialized) m_pStruct->GetInfo(info);
 }

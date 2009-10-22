@@ -52,8 +52,8 @@
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
 #endif
-#include "utils/RegExp.h"
 #include "utils/RssFeed.h"
+#include "utils/RegExp.h"
 #include "GUISettings.h"
 #include "TextureManager.h"
 #include "utils/fstrcmp.h"
@@ -91,8 +91,6 @@ using namespace DIRECTORY;
 #define clamp(x) (x) > 255.f ? 255 : ((x) < 0 ? 0 : (BYTE)(x+0.5f)) // Valid ranges: brightness[-1 -> 1 (0 is default)] contrast[0 -> 2 (1 is default)]  gamma[0.5 -> 3.5 (1 is default)] default[ramp is linear]
 static const __int64 SECS_BETWEEN_EPOCHS = 11644473600LL;
 static const __int64 SECS_TO_100NS = 10000000;
-
-const CStdString ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
 
 using namespace AUTOPTR;
 using namespace XFILE;
@@ -3322,53 +3320,6 @@ void CUtil::ClearFileItemCache()
     if (!items[i]->m_bIsFolder)
       CFile::Delete(items[i]->m_strPath);
   }
-}
-
-CStdString CUtil::CreateUUID()
-{
-  /* This function generate a DCE 1.1, ISO/IEC 11578:1996 and IETF RFC-4122
-   * Version 4 conform local unique UUID based upon random number generation.
-   */
-  char UuidStrTmp[40];
-  char *pUuidStr = UuidStrTmp;
-  int i;
-
-  srand(static_cast<unsigned int> (time(NULL))); /*Randomize based on time.*/
-
-  /*Data1 - 8 characters.*/
-  for(i = 0; i < 8; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55; 
-
-  /*Data2 - 4 characters.*/
-  *pUuidStr++ = '-'; 
-  for(i = 0; i < 4; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-
-  /*Data3 - 4 characters.*/
-  *pUuidStr++ = '-'; 
-  for(i = 0; i < 4; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-
-  /*Data4 - 4 characters.*/
-  *pUuidStr++ = '-'; 
-  for(i = 0; i < 4; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-
-  /*Data5 - 12 characters.*/
-  *pUuidStr++ = '-'; 
-  for(i = 0; i < 12; i++, pUuidStr++)
-    ((*pUuidStr = (rand() % 16)) < 10) ? *pUuidStr += 48 : *pUuidStr += 55;
-  
-  *pUuidStr = '\0'; 
-
-  return UuidStrTmp;
-}
-
-bool CUtil::ValidateUUID(const CStdString &uuid)
-{
-  CRegExp guidRE;
-  guidRE.RegComp(ADDON_GUID_RE.c_str());
-  return (guidRE.RegFind(uuid.c_str()) == 0);
 }
 
 void CUtil::InitRandomSeed()

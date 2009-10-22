@@ -299,13 +299,6 @@ void CGUIWindowVideoFiles::OnPrepareFileItems(CFileItemList &items)
   }
 }
 
-bool CGUIWindowVideoFiles::OnClick(int iItem)
-{
-  //TODO is this first check still neccesary?
-  if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return true;
-  return CGUIWindowVideoBase::OnClick(iItem);
-}
-
 bool CGUIWindowVideoFiles::OnPlayMedia(int iItem)
 {
   if ( iItem < 0 || iItem >= (int)m_vecItems->Size() ) return false;
@@ -480,6 +473,7 @@ void CGUIWindowVideoFiles::OnUnAssignContent(int iItem)
     {
       ADDON::CScraperPtr info;
       SScanSettings settings;
+      settings.exclude = true;
       m_database.SetScraperForPath(m_vecItems->Get(iItem)->m_strPath,info,settings);
     }
   }
@@ -494,22 +488,23 @@ void CGUIWindowVideoFiles::OnAssignContent(int iItem, int iFound, ADDON::CScrape
   bool bScan=false;
   if (iFound == 0)
   {
-    m_database.GetScraperForPath(item->m_strPath,scraper, settings,iFound);
+    m_database.GetScraperForPath(item->m_strPath,scraper,settings,iFound);
   }
-  /*ADDON::CScraperPtr info2 = boost::dynamic_pointer_cast<ADDON::CScraper>(scraper->Clone());*/
 
   if (CGUIDialogContentSettings::Show(scraper, settings, bScan))
   {
-    if(scraper && scraper->Content() == CONTENT_NONE) //TODO why is this possible??
+    if(settings.exclude)
     {
       OnUnAssignContent(iItem);
     }
+    else
+    {
+      m_database.Open();
+      m_database.SetScraperForPath(item->m_strPath,scraper,settings);
+      m_database.Close();
+    }
 
-    m_database.Open();
-    m_database.SetScraperForPath(item->m_strPath,scraper,settings);
-    m_database.Close();
-
-    if (bScan)
+    if (!settings.exclude && bScan)
     {
       GetScraperForItem(item.get(),scraper,settings);
       OnScan(item->m_strPath,settings);
@@ -605,6 +600,11 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
 
           int infoString = 13346;
 
+          if (info && info->Content() == CONTENT_TVSHOWS)
+            infoString = item->m_bIsFolder ? 20351 : 20352;
+          if (info && info->Content() == CONTENT_MUSICVIDEOS)
+            infoString = 20393;
+
           if (item->m_bIsFolder)
           {
             if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
@@ -625,7 +625,7 @@ void CGUIWindowVideoFiles::GetContextButtons(int itemNumber, CContextButtons &bu
                 infoString = 20393;
               if (info->Content() != CONTENT_MUSICVIDEOS)
                 buttons.Add(CONTEXT_BUTTON_INFO, infoString);
-              if (info->Content() != CONTENT_NONE) //TODO why is scraper's path empty?
+              if (info->Content() != CONTENT_NONE)
                 if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
                   buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
             }

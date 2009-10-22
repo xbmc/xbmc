@@ -25,18 +25,21 @@
 #include "system.h"
 #endif
 
+#include "AddonManager.h"
 #include "RegExp.h"
 #include "HTMLUtil.h"
 #include "CharsetConverter.h"
 #include "Scraper.h"
 #include "FileSystem/Directory.h"
 #include "Util.h"
+#include "StringUtils.h"
 #include "AdvancedSettings.h"
 
 #include <sstream>
 #include <cstring>
 
 using namespace std;
+using namespace ADDON;
 
 CScraperParser::CScraperParser()
 {
@@ -78,16 +81,16 @@ void CScraperParser::Clear()
   delete m_document;
 
   m_document = NULL;
-  m_settings = NULL;
   m_strFile.Empty();
 }
 
 bool CScraperParser::Load(const CStdString& strXMLFile)
 {
-  if (CUtil::IsUUID(strXMLFile))
+  //TODO drop loading by UUID support, then remove AddonMgr include
+  if (StringUtils::ValidateUUID(strXMLFile))
   {
-    ADDON::AddonPtr scraper;
-    if (!ADDON::CAddonMgr::Get()->GetAddon(ADDON_SCRAPEr, strUUID, scraper))
+    AddonPtr scraper;
+    if (!CAddonMgr::Get()->GetAddon(ADDON_SCRAPER, strXMLFile, scraper))
       return false;
     else
       return Load(scraper);
@@ -112,7 +115,7 @@ bool CScraperParser::Load(const CStdString& strXMLFile)
   }
 }
 
-bool CScraperParser::Load(const ADDON::AddonPtr& scraper)
+bool CScraperParser::Load(const AddonPtr& scraper)
 {
   if (!scraper)
     return false;
@@ -133,7 +136,7 @@ bool CScraperParser::LoadFromXML()
   CStdString strValue = m_pRootElement->Value();
   if (strValue == "scraper")
   {
-    CONTENT_TYPE content = ADDON::TranslateContent(m_pRootElement->Attribute("content"));
+    CONTENT_TYPE content = TranslateContent(m_pRootElement->Attribute("content"));
 
     // check for known content
     if ( content == CONTENT_TVSHOWS ||
@@ -536,6 +539,4 @@ void CScraperParser::InsertToken(CStdString& strOutput, int buf, const char* tok
     i2 += 2;
   }
 }
-
-};
 

@@ -1,18 +1,15 @@
-ARCH=@ARCH@
 INCLUDES=-I. -I../../addons/include -I../librefmem
-SO=AddonLib-$(ARCH).so
-ARCHIVE=$(SO:.so=.a)
-SYSDIR=../../../system
-SLIB=$(SYSDIR)/$(SO)
+LIB=libaddon.a
 DIRS=../librefmem
 SLIBS=../librefmem/librefmem.a
 OBJS+=setting.o
 OBJS+=settings.o
+OBJS+=debug.o
 
 .PHONY: compile
 
-$(SLIB): $(OBJS)
-	$(CC) $(OBJS) -shared -o $(SLIB) $(SLIBS)
+$(LIB): $(SLIBS)
+	$(CC) $(LIB) $(SLIBS)
 
 $(SLIBS): compile
 

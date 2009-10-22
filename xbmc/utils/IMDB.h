@@ -82,7 +82,7 @@ protected:
   static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
 
   XFILE::CFileCurl m_http;
-  ADDON::CScraperParser m_parser;
+  CScraperParser m_parser;
 
   // threaded stuff
   void Process();

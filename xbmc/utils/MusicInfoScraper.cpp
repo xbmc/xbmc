@@ -93,12 +93,6 @@ void CMusicInfoScraper::FindAlbuminfo()
   if (!parser.Load(m_scraper))
     return;
 
-  if (!m_scraper.GetSettingsXML() && m_info.settings.GetSettings().IsEmpty() && parser.HasFunction("GetSettings"))
-  {
-    m_scraper->LoadSettings();
-    m_scraper->SaveFromDefault();
-  }
-
   parser.m_param[0] = strAlbum;
   parser.m_param[1] = m_strArtist;
   CUtil::URLEncode(parser.m_param[0]);
@@ -108,7 +102,7 @@ void CMusicInfoScraper::FindAlbuminfo()
     __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(), ADDON::TranslateContent(m_scraper->Content()).c_str()/*, m_scraper->m_strDate.c_str()*/, m_scraper->Version().c_str());
 
   CScraperUrl scrURL;
-  scrURL.ParseString(parser.Parse("CreateAlbumSearchUrl",&m_info.settings));
+  scrURL.ParseString(parser.Parse("CreateAlbumSearchUrl"));
   if (!CScraperUrl::Get(scrURL.m_url[0], strHTML, m_http) || strHTML.size() == 0)
   {
     CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
@@ -213,10 +207,10 @@ void CMusicInfoScraper::FindArtistinfo()
   CUtil::URLEncode(parser.m_param[0]);
 
   CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s')",
-    __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(), ADDON::TranslateContent(m_scraper->Content().c_str()));
+    __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(), ADDON::TranslateContent(m_scraper->Content()).c_str());
 
   CScraperUrl scrURL;
-  scrURL.ParseString(parser.Parse("CreateArtistSearchUrl",&m_scraper->GetSettings()));
+  scrURL.ParseString(parser.Parse("CreateArtistSearchUrl"));
   if (!CScraperUrl::Get(scrURL.m_url[0], strHTML, m_http) || strHTML.size() == 0)
   {
     CLog::Log(LOGERROR, "%s: Unable to retrieve web site",__FUNCTION__);
