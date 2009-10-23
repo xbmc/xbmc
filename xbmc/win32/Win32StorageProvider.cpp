@@ -2,6 +2,8 @@
 #include "WIN32Util.h"
 #include "LocalizeStrings.h"
 
+bool CWin32StorageProvider::event = false;
+
 void CWin32StorageProvider::GetLocalDrives(VECSOURCES &localDrives)
 {
   CMediaSource share;
