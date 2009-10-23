@@ -25,10 +25,11 @@
 #include "LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/SingleLock.h"
+#include "utils/TimeUtils.h"
 
 CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdString& strMsg)
 {
-  m_pDlg = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  m_pDlg = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
   /* if progress dialog is already running, take it over */
   if( m_pDlg->IsDialogRunning() )
@@ -41,7 +42,7 @@ CDlgCache::CDlgCache(DWORD dwDelay, const CStdString& strHeader, const CStdStrin
   if(dwDelay == 0)
     OpenDialog();    
   else
-    m_dwTimeStamp = GetTickCount() + dwDelay;
+    m_dwTimeStamp = CTimeUtils::GetTimeMS() + dwDelay;
 
   Create(true);
 }
@@ -128,8 +129,8 @@ void CDlgCache::Process()
         {
           bSentCancel = true;
         }
-        else if( !m_pDlg->IsDialogRunning() && GetTickCount() > m_dwTimeStamp 
-              && !m_gWindowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
+        else if( !m_pDlg->IsDialogRunning() && CTimeUtils::GetTimeMS() > m_dwTimeStamp 
+              && !g_windowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
           OpenDialog();
       }
       catch(...)

@@ -122,16 +122,16 @@ void CGUIFontTTFDX::End()
 
 CBaseTexture* CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
 {
-  CBaseTexture* pNewTexture = new CTexture(m_textureWidth, newHeight, 8, XB_FMT_A8);
+  CBaseTexture* pNewTexture = new CTexture(m_textureWidth, newHeight, XB_FMT_A8);
 
-  if(pNewTexture == NULL)
+  if (pNewTexture == NULL)
     return NULL;
 
   pNewTexture->CreateTextureObject();
 
   LPDIRECT3DTEXTURE9 newTexture = pNewTexture->GetTextureObject();
 
-  if(newTexture == NULL)
+  if (newTexture == NULL)
     return NULL;
 
   // correct texture sizes

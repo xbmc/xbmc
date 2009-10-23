@@ -42,7 +42,6 @@
 #include "Util.h"
 #include "utils/GUIInfoManager.h"
 #include "GUIWindowManager.h"
-#include "GUIDialogFullScreenInfo.h"
 #include "Application.h"
 #include "DVDPerformanceCounter.h"
 #include "FileSystem/cdioSupport.h"
@@ -65,6 +64,7 @@
 #include "Settings.h"
 #include "LocalizeStrings.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -973,7 +973,7 @@ void CDVDPlayer::Process()
         {
           if (m_dvd.iDVDStillTime > 0)
           {
-            if (GetTickCount() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime))
+            if (CTimeUtils::GetTimeMS() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime))
             {
               m_dvd.iDVDStillTime = 0;
               m_dvd.iDVDStillStartTime = 0;
@@ -2756,7 +2756,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           else
             m_dvd.iDVDStillTime = 0;
 
-          m_dvd.iDVDStillStartTime = GetTickCount();
+          m_dvd.iDVDStillStartTime = CTimeUtils::GetTimeMS();
 
           /* adjust for the output delay in the video queue */
           DWORD time = 0;
@@ -2959,7 +2959,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         pStream->OnMenu();
         // send a message to everyone that we've gone to the menu
         CGUIMessage msg(GUI_MSG_VIDEO_MENU_STARTED, 0, 0);
-        g_graphicsContext.SendMessage(msg);
+        g_windowManager.SendMessage(msg);
         return true;
       }
       break;
@@ -3013,18 +3013,18 @@ bool CDVDPlayer::OnAction(const CAction &action)
           action2.amount1 = g_Mouse.GetLocation().x;
           action2.amount2 = g_Mouse.GetLocation().y;
 
-          RECT rs, rd;
+          CRect rs, rd;
           GetVideoRect(rs, rd);
-          if (action2.amount1 < rd.left || action2.amount1 > rd.right ||
-              action2.amount2 < rd.top || action2.amount2 > rd.bottom)
+          if (action2.amount1 < rd.x1 || action2.amount1 > rd.x2 ||
+              action2.amount2 < rd.y1 || action2.amount2 > rd.y2)
             return false; // out of bounds
           THREAD_ACTION(action2);
           // convert to video coords...
           CPoint pt(action2.amount1, action2.amount2);
-          pt -= CPoint(rd.left, rd.top);
-          pt.x *= (float)(rs.right - rs.left) / (rd.right - rd.left);
-          pt.y *= (float)(rs.bottom - rs.top) / (rd.bottom - rd.top);
-          pt += CPoint(rs.left, rs.top);
+          pt -= CPoint(rd.x1, rd.y1);
+          pt.x *= rs.Width() / rd.Width();
+          pt.y *= rs.Height() / rd.Height();
+          pt += CPoint(rs.x1, rs.y1);
           if (action2.buttonCode)
             return pStream->OnMouseClick(pt);
           return pStream->OnMouseMove(pt);
@@ -3341,7 +3341,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     {
       if(m_dvd.state == DVDSTATE_STILL)
       {
-        m_State.time       = GetTickCount() - m_dvd.iDVDStillStartTime;
+        m_State.time       = CTimeUtils::GetTimeMS() - m_dvd.iDVDStillStartTime;
         m_State.time_total = m_dvd.iDVDStillTime;
       }
 

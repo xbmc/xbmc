@@ -30,6 +30,17 @@ version <next>:
 - Experimental AAC encoder
 - RTP depacketization of ASF and RTSP from WMS servers
 - RTMP support in libavformat
+- noX handling for OPT_BOOL X options
+- Wave64 demuxer
+- IEC-61937 compatible Muxer
+- TwinVQ decoder
+- Bluray (PGS) subtitle decoder
+- LPCM support in MPEG-TS (HDMV RID as found on Blu-ray disks)
+- Wmapro decoder
+- Core Audio Format demuxer
+- Atrac1 decoder
+- MD STUDIO audio demuxer
+- RF64 support in WAV demuxer
 
 
 

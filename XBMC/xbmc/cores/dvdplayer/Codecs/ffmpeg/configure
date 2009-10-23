@@ -221,6 +221,7 @@ show_help(){
   echo "  --disable-neon           disable neon optimizations"
   echo "  --disable-vis            disable VIS optimizations"
   echo "  --disable-yasm           disable use of yasm assembler"
+  echo "  --enable-pic             build position-independent code"
   echo
   echo "Developer options (useful when working on FFmpeg itself):"
   echo "  --disable-debug          disable debugging symbols"
@@ -288,6 +289,14 @@ sh_quote(){
     v=$(echo "$1" | sed "s/'/'\\\\''/g")
     test "$v" = "${v#*[ |&;<>()$\`\\\"\'*?\[\]#~=%]}" || v="'$v'"
     echo "$v"
+}
+
+filter(){
+    pat=$1
+    shift
+    for v; do
+        eval "case $v in $pat) echo $v ;; esac"
+    done
 }
 
 set_all(){
@@ -563,7 +572,8 @@ check_asm(){
     name="$1"
     asm="$2"
     shift 2
-    check_as "$@" <<EOF && enable $name || disable $name
+    disable $name
+    check_as "$@" <<EOF && enable $name
 void foo(void){ __asm__ volatile($asm); }
 EOF
 }
@@ -832,6 +842,7 @@ CONFIG_LIST="
     mpegaudio_hp
     network
     nonfree
+    pic
     postproc
     powerpc_perf
     rdft
@@ -857,6 +868,9 @@ THREADS_LIST='
 ARCH_LIST='
     alpha
     arm
+    avr32
+    avr32_ap
+    avr32_uc
     bfin
     ia64
     m68k
@@ -1068,12 +1082,12 @@ flac_decoder_select="golomb"
 flac_encoder_select="golomb"
 flashsv_decoder_select="zlib"
 flashsv_encoder_select="zlib"
-flv_encoder_select="aandct"
+flv_encoder_select="h263_encoder"
 h261_encoder_select="aandct"
 h263_encoder_select="aandct"
 h263_vaapi_hwaccel_deps="va_va_h"
 h263_vaapi_hwaccel_select="vaapi h263_decoder"
-h263p_encoder_select="aandct"
+h263p_encoder_select="h263_encoder"
 h264_decoder_select="golomb"
 h264_vaapi_hwaccel_deps="va_va_h"
 h264_vaapi_hwaccel_select="vaapi"
@@ -1087,7 +1101,7 @@ loco_decoder_select="golomb"
 mjpeg_encoder_select="aandct"
 mpeg1video_encoder_select="aandct"
 mpeg2video_encoder_select="aandct"
-mpeg4_encoder_select="aandct"
+mpeg4_encoder_select="h263_encoder"
 mpeg_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
 mpeg_vdpau_decoder_select="vdpau mpegvideo_decoder"
 mpeg1_vdpau_decoder_deps="vdpau_vdpau_h vdpau_vdpau_x11_h"
@@ -1098,16 +1112,16 @@ mpeg4_vaapi_hwaccel_deps="va_va_h"
 mpeg4_vaapi_hwaccel_select="vaapi mpeg4_decoder"
 mpeg_xvmc_decoder_deps="X11_extensions_XvMClib_h"
 mpeg_xvmc_decoder_select="mpegvideo_decoder"
-msmpeg4v1_encoder_select="aandct"
-msmpeg4v2_encoder_select="aandct"
-msmpeg4v3_encoder_select="aandct"
+msmpeg4v1_encoder_select="h263_encoder"
+msmpeg4v2_encoder_select="h263_encoder"
+msmpeg4v3_encoder_select="h263_encoder"
 nellymoser_decoder_select="fft mdct"
 nellymoser_encoder_select="fft mdct"
 png_decoder_select="zlib"
 png_encoder_select="zlib"
 qdm2_decoder_select="fft mdct rdft"
-rv10_encoder_select="aandct"
-rv20_encoder_select="aandct"
+rv10_encoder_select="h263_encoder"
+rv20_encoder_select="h263_encoder"
 rv30_decoder_select="golomb"
 rv40_decoder_select="golomb"
 shorten_decoder_select="golomb"
@@ -1132,8 +1146,8 @@ wmav1_decoder_select="fft mdct"
 wmav1_encoder_select="fft mdct"
 wmav2_decoder_select="fft mdct"
 wmav2_encoder_select="fft mdct"
-wmv1_encoder_select="aandct"
-wmv2_encoder_select="aandct"
+wmv1_encoder_select="h263_encoder"
+wmv2_encoder_select="h263_encoder"
 wmv3_decoder_select="vc1_decoder"
 wmv3_vaapi_hwaccel_select="vc1_vaapi_hwaccel"
 wmv3_vdpau_decoder_select="vc1_vdpau_decoder"
@@ -1192,6 +1206,7 @@ rtsp_demuxer_deps="sdp_demuxer"
 sdp_demuxer_deps="rtp_protocol mpegts_demuxer"
 tg2_muxer_select="mov_muxer"
 tgp_muxer_select="mov_muxer"
+w64_demuxer_deps="wav_demuxer"
 
 # indevs / outdevs
 alsa_indev_deps="alsa_asoundlib_h snd_pcm_htimestamp"
@@ -1249,6 +1264,7 @@ shlibdir_default="$libdir_default"
 # toolchain
 ar="ar"
 cc_default="gcc"
+cc_version=\"unknown\"
 host_cc_default="gcc"
 ln_s="ln -sf"
 nm_default="nm"
@@ -1303,7 +1319,7 @@ target_path='.'
 
 # gcc stupidly only outputs the basename of targets with -MM, but we need the
 # full relative path for objects in subdirectories for non-recursive Make.
-DEPEND_CMD='$(DEPCC) $(DEPFLAGS) $< | sed -e "/^\#.*/d" -e "s,^[[:space:]]*$(*F)\\.o,$(@D)/$(*F).o," > $@'
+DEPEND_CMD='$(DEPCC) $(DEPFLAGS) $< | sed -e "/^\#.*/d" -e "s,^[[:space:]]*$(*F)\\.o,$(@D)/$(*F).o," > $(@:.o=.d)'
 DEPFLAGS='$(CPPFLAGS) $(CFLAGS) -MM'
 
 # find source path
@@ -1384,11 +1400,11 @@ for opt do
     --enable-debug=*) debuglevel="$optval"
     ;;
     --enable-*=*|--disable-*=*)
-    eval $(echo "$opt" | sed 's/=/-/;s/--/action=/;s/-/ thing=/;s/-/ name=/')
-    case "$thing" in
-        encoder|decoder|hwaccel|muxer|demuxer|indev|outdev|parser|bsf|protocol|filter) $action ${optval}_${thing} ;;
-        *) die_unknown "$opt" ;;
-    esac
+    eval $(echo "${opt%%=*}" | sed 's/--/action=/;s/-/ thing=/')
+    is_in "${thing}s" $COMPONENT_LIST || die_unknown "$opt"
+    eval list=\$$(toupper $thing)_LIST
+    name=$(echo "${optval}" | sed "s/,/_${thing}|/g")_${thing}
+    $action $(filter "$name" $list)
     ;;
     --enable-?*|--disable-?*)
     eval $(echo "$opt" | sed 's/--/action=/;s/-/ option=/;s/-/_/g')
@@ -1468,7 +1484,7 @@ fi
 tmpfile(){
     tmp=$(mktemp -u "${TMPDIR}/ffconf.XXXXXXXX")$2 &&
         (set -C; exec > $tmp) 2>/dev/null ||
-        die "Unable to create temoporary file in $TMPDIR."
+        die "Unable to create temporary file in $TMPDIR."
     append TMPFILES $tmp
     eval $1=$tmp
 }
@@ -1502,20 +1518,31 @@ filter_cflags=echo
 filter_cppflags=echo
 filter_asflags=echo
 
-if   $cc --version 2>/dev/null | grep -qi gcc; then
+if   $cc -v 2>&1 | grep -qi ^gcc; then
     cc_type=gcc
+    cc_version=__VERSION__
+    if ! $cc -dumpversion | grep -q '^2\.'; then
+        CC_DEPFLAGS='-MMD -MF $(@:.o=.d) -MT $@'
+        AS_DEPFLAGS='-MMD -MF $(@:.o=.d) -MT $@'
+    fi
 elif $cc --version 2>/dev/null | grep -q Intel; then
     cc_type=icc
+    cc_version="AV_STRINGIFY(__INTEL_COMPILER)"
+    CC_DEPFLAGS='-MMD'
+    AS_DEPFLAGS='-MMD'
 elif $cc -v 2>&1 | grep -q xlc; then
     cc_type=xlc
+    cc_version="AV_STRINGIFY(__IBMC__)"
 elif $cc -V 2>/dev/null | grep -q Compaq; then
     cc_type=ccc
+    cc_version="AV_STRINGIFY(__DECC_VER)"
     DEPFLAGS='$(CPPFLAGS) $(CFLAGS) -M'
     debuglevel=3
     add_ldflags -Wl,-z,now # calls to libots crash without this
-elif $cc --vsn 2>/dev/null | grep -q RVCT; then
+elif $cc --vsn 2>/dev/null | grep -q "ARM C/C++ Compiler"; then
     test -d "$sysroot" || die "No valid sysroot specified."
     cc_type=armcc
+    cc_version="AV_STRINGIFY(__ARMCC_VERSION)"
     armcc_conf="$PWD/armcc.conf"
     $cc --arm_linux_configure                 \
         --arm_linux_config_file="$armcc_conf" \
@@ -1524,17 +1551,20 @@ elif $cc --vsn 2>/dev/null | grep -q RVCT; then
         die "Error creating armcc configuration file."
     cc="$cc --arm_linux_config_file=$armcc_conf --translate_gcc"
     as_default="${cross_prefix}gcc"
+    CC_DEPFLAGS='-MMD'
+    AS_DEPFLAGS='-MMD'
 elif $cc -version 2>/dev/null | grep -q TMS470; then
     cc_type=tms470
+    cc_version="AV_STRINGIFY(__TI_COMPILER_VERSION__)"
     cc="$cc --gcc --abi=eabi -eo=.o -mc -me"
     CC_O='-fr=$(@D)'
     as_default="${cross_prefix}gcc"
     ld_default="${cross_prefix}gcc"
-    dep_cc_default="${cross_prefix}gcc"
     TMPO=$(basename $TMPC .c).o
     append TMPFILES $TMPO
     add_cflags -D__gnuc_va_list=va_list -D__USER_LABEL_PREFIX__=
-    DEPFLAGS='$(CPPFLAGS) -MM'
+    CC_DEPFLAGS='-ppa -ppd=$(@:.o=.d)'
+    AS_DEPFLAGS='-MMD'
     filter_cflags=tms470_flags
     tms470_flags(){
         for flag; do
@@ -1552,7 +1582,7 @@ elif $cc -version 2>/dev/null | grep -q TMS470; then
                     ;;
                 -mfpu=neon)     echo --float_support=vfpv3 --neon ;;
                 -mfpu=vfp)      echo --float_support=vfpv2        ;;
-                -mfpu=softvfp)  echo --float_support=vfplib       ;;
+                -msoft-float)   echo --float_support=vfplib       ;;
                 -Os)            echo -O3 -mf=2                    ;;
                 -O[0-3])        echo $flag -mf=5                  ;;
                 -g)             echo -g -mn                       ;;
@@ -1568,6 +1598,9 @@ test -n "$cc_type" && enable $cc_type || echolog "Unknown C compiler $cc"
 : ${ld_default:=$cc}
 set_default as dep_cc ld
 
+test -n "$CC_DEPFLAGS" || CCDEP=$DEPEND_CMD
+test -n "$AS_DEPFLAGS" || ASDEP=$DEPEND_CMD
+
 add_cflags $extra_cflags
 add_asflags $extra_cflags
 
@@ -1582,6 +1615,22 @@ if test -n "$sysroot"; then
             add_ldflags  --sysroot="$sysroot"
         ;;
     esac
+fi
+
+if test "$cpu" = host; then
+    enabled cross_compile && die "--cpu=host makes no sense when cross-compiling."
+
+    case "$cc_type" in
+        gcc)
+            check_native(){
+                $cc $1=native -v -c -o $TMPO $TMPC >$TMPE 2>&1 || return
+                awk "/$1=/{ match(\$0, /$1=(\\w+)/, a);print a[1];exit }" $TMPE
+            }
+            cpu=$(check_native -march || check_native -mcpu)
+        ;;
+    esac
+
+    test "${cpu:-host}" = host && die "--cpu=host not supported with compiler $cc"
 fi
 
 # Add processor-specific flags
@@ -1654,6 +1703,22 @@ case $cpu in
     mips*|[45]k*|[237]4k*|m4k|r*000|loongson2[ef])
         cpuflags="-march=$cpu"
     ;;
+    ap7[02]0[0-2])
+        subarch="avr32_ap"
+        cpuflags="-mpart=$cpu"
+    ;;
+    ap)
+        subarch="avr32_ap"
+        cpuflags="-march=$cpu"
+    ;;
+    uc3[ab]*)
+        subarch="avr32_uc"
+        cpuflags="-mcpu=$cpu"
+    ;;
+    uc)
+        subarch="avr32_uc"
+        cpuflags="-march=$cpu"
+    ;;
     generic)
     ;;
     *)
@@ -1691,7 +1756,7 @@ case "$arch" in
         arch="alpha"
         enable fast_64bit
         check_cflags -mieee
-        pic=$shared
+        spic=$shared
     ;;
     arm|armv[4567]*l)
         arch="arm"
@@ -1704,29 +1769,29 @@ case "$arch" in
     ia64)
         arch="ia64"
         enable fast_64bit
-        pic=$shared
+        spic=$shared
     ;;
     m68k)
         arch="m68k"
     ;;
     mips|mipsel|IP*)
         arch="mips"
-        pic=$shared
+        spic=$shared
     ;;
     mips64)
         arch="mips"
         subarch="mips64"
         enable fast_64bit
-        pic=$shared
+        spic=$shared
     ;;
     parisc|hppa)
         arch="parisc"
-        pic=$shared
+        spic=$shared
     ;;
     parisc64|hppa64)
         arch="parisc"
         enable fast_64bit
-        pic=$shared
+        spic=$shared
     ;;
     "Power Macintosh"|ppc|powerpc)
         arch="ppc"
@@ -1746,28 +1811,25 @@ case "$arch" in
     ;;
     sparc)
         arch="sparc"
-        pic=$shared
+        spic=$shared
     ;;
     sun4u|sparc64)
         arch="sparc"
         subarch="sparc64"
         enable fast_64bit
-        pic=$shared
+        spic=$shared
     ;;
-    i386|i486|i586|i686|i86pc|BePC)
+    i386|i486|i586|i686|i86pc|BePC|x86_64|amd64)
         arch="x86"
         subarch="x86_32"
         enable fast_unaligned
-    ;;
-    x86_64|amd64)
-        arch="x86"
-        subarch="x86_32"
-        enable cmov
-        enable fast_cmov
-        enable fast_unaligned
-        check_cc <<EOF && enable fast_64bit && subarch="x86_64" && pic=$shared
+        check_cc <<EOF && enable fast_64bit && subarch="x86_64" && spic=$shared
         int test[sizeof(char*) - 7];
 EOF
+        if test "$subarch" = "x86_64"; then
+            enable cmov
+            enable fast_cmov
+        fi
     ;;
     *)
         arch="unknown"
@@ -1775,6 +1837,7 @@ EOF
 esac
 
 enable $arch $subarch
+enabled spic && enable pic
 
 # OS specific
 case $target_os in
@@ -1840,7 +1903,8 @@ case $target_os in
         FFSERVERLDFLAGS=-Wl,-bind_at_load
         objformat="macho"
         enabled x86_64 && objformat="macho64"
-        enabled shared || check_cflags -mdynamic-no-pic
+        enabled_any pic shared ||
+            { check_cflags -mdynamic-no-pic && add_asflags -mdynamic-no-pic; }
         ;;
     mingw32*)
         if test $target_os = "mingw32ce"; then
@@ -1995,6 +2059,12 @@ check_deps $ARCH_EXT_LIST
 
 disabled optimizations || check_cflags -fomit-frame-pointer
 
+if enabled pic; then
+    add_cppflags -DPIC
+    add_cflags   -fPIC
+    add_asflags  -fPIC
+fi
+
 check_cc <<EOF || die "Symbol mangling check failed."
 int ff_extern;
 EOF
@@ -2022,6 +2092,8 @@ EOF
 od -A n -t x1 $TMPO | grep -q '42 *49 *47 *45' && enable bigendian
 
 if enabled arm; then
+
+    check_cflags -marm
 
     check_ld <<EOF && enable vfp_args
 __asm__ (".eabi_attribute 28, 1");
@@ -2091,8 +2163,9 @@ elif enabled x86; then
     return i;
 EOF
 
-    # check wether EBX is available on x86
-    check_asm ebx_available '"":::"%ebx"'
+    # check whether EBX is available on x86
+    check_asm ebx_available '""::"b"(0)' &&
+        check_asm ebx_available '"":::"%ebx"'
 
     # check whether more than 10 operands are supported
     check_cc <<EOF && enable ten_operands
@@ -2206,8 +2279,8 @@ check_func truncf
 # these are off by default, so fail if requested and not available
 enabled avisynth   && require2 vfw32 "windows.h vfw.h" AVIFileInit -lvfw32
 enabled libdirac   && add_cflags $(pkg-config --cflags dirac) &&
-                      require  libdirac libdirac_decoder/dirac_parser.h dirac_decoder_init -ldirac_decoder &&
-                      require  libdirac libdirac_encoder/dirac_encoder.h dirac_encoder_init -ldirac_encoder
+                      require  libdirac libdirac_decoder/dirac_parser.h dirac_decoder_init $(pkg-config --libs dirac) &&
+                      require  libdirac libdirac_encoder/dirac_encoder.h dirac_encoder_init $(pkg-config --libs dirac)
 enabled libfaac    && require2 libfaac "stdint.h faac.h" faacEncGetVersion -lfaac
 enabled libfaad    && require2 libfaad faad.h faacDecOpen -lfaad
 enabled libgsm     && require  libgsm gsm.h gsm_create -lgsm
@@ -2221,9 +2294,9 @@ enabled libschroedinger && add_cflags $(pkg-config --cflags schroedinger-1.0) &&
 enabled libspeex   && require  libspeex speex/speex.h speex_decoder_init -lspeex
 enabled libtheora  && require  libtheora theora/theora.h theora_info_init -ltheora -logg
 enabled libvorbis  && require  libvorbis vorbis/vorbisenc.h vorbis_info_init -lvorbisenc -lvorbis -logg
-enabled libx264    && require  libx264 x264.h x264_encoder_open -lx264 -lm &&
-                      { check_cpp_condition x264.h "X264_BUILD >= 65" ||
-                        die "ERROR: libx264 version must be >= 0.65."; }
+enabled libx264    && require  libx264 x264.h x264_encoder_encode -lx264 -lm &&
+                      { check_cpp_condition x264.h "X264_BUILD >= 76" ||
+                        die "ERROR: libx264 version must be >= 0.76."; }
 enabled libxvid    && require  libxvid xvid.h xvid_global -lxvidcore
 enabled mlib       && require  mediaLib mlib_types.h mlib_VectorSub_S16_U8_Mod -lmlib
 
@@ -2322,7 +2395,7 @@ check_header X11/extensions/XShm.h      &&
 check_func XOpenDisplay -lX11           &&
 check_func XShmCreateImage -lX11 -lXext
 
-enabled debug && add_cflags -g"$debuglevel"
+enabled debug && add_cflags -g"$debuglevel" && add_asflags -g"$debuglevel"
 
 # add some useful compiler flags if supported
 check_cflags -Wdeclaration-after-statement
@@ -2386,8 +2459,6 @@ elif enabled ccc; then
 elif enabled gcc; then
     check_cflags -fno-tree-vectorize
 fi
-
-enabled pic && LIBOBJFLAGS='$(PIC)'
 
 if enabled gprof; then
     add_cflags  -p
@@ -2538,12 +2609,6 @@ echo "License: $license"
 echo "Creating config.mak and config.h..."
 
 echo "# Automatically generated by configure - do not modify!" > config.mak
-echo "/* Automatically generated by configure - do not modify! */" > $TMPH
-echo "#ifndef FFMPEG_CONFIG_H" >> $TMPH
-echo "#define FFMPEG_CONFIG_H" >> $TMPH
-echo "#define FFMPEG_CONFIGURATION \"$(c_escape $FFMPEG_CONFIGURATION)\"" >> $TMPH
-echo "#define FFMPEG_DATADIR \"$(eval c_escape $datadir)\"" >> $TMPH
-
 echo "ifndef FFMPEG_CONFIG_MAK" >> config.mak
 echo "FFMPEG_CONFIG_MAK=1" >> config.mak
 
@@ -2578,8 +2643,6 @@ echo "LDFLAGS=$LDFLAGS" >> config.mak
 echo "FFSERVERLDFLAGS=$FFSERVERLDFLAGS" >> config.mak
 echo "SHFLAGS=$SHFLAGS" >> config.mak
 echo "YASMFLAGS=$YASMFLAGS" >> config.mak
-echo "LIBOBJFLAGS=$LIBOBJFLAGS" >> config.mak
-echo "PIC=-fPIC -DPIC" >> config.mak
 echo "BUILDSUF=$build_suffix" >> config.mak
 echo "FULLNAME=$FULLNAME" >> config.mak
 echo "LIBPREF=$LIBPREF" >> config.mak
@@ -2589,8 +2652,11 @@ echo "SLIBPREF=$SLIBPREF" >> config.mak
 echo "SLIBSUF=$SLIBSUF" >> config.mak
 echo "EXESUF=$EXESUF" >> config.mak
 echo "EXTRA_VERSION=$extra_version" >> config.mak
-echo "DEPEND_CMD=$DEPEND_CMD" >> config.mak
 echo "DEPFLAGS=$DEPFLAGS" >> config.mak
+echo "CCDEP=$CCDEP" >> config.mak
+echo "ASDEP=$ASDEP" >> config.mak
+echo "CC_DEPFLAGS=$CC_DEPFLAGS" >> config.mak
+echo "AS_DEPFLAGS=$AS_DEPFLAGS" >> config.mak
 echo "HOSTCC=$host_cc" >> config.mak
 echo "HOSTCFLAGS=$host_cflags" >> config.mak
 echo "HOSTEXESUF=$HOSTEXESUF" >> config.mak
@@ -2640,6 +2706,30 @@ echo "EXTRALIBS=$extralibs" >> config.mak
 
 echo "ARCH=$arch" >> config.mak
 
+
+echo "/* Automatically generated by configure - do not modify! */" > $TMPH
+echo "#ifndef FFMPEG_CONFIG_H" >> $TMPH
+echo "#define FFMPEG_CONFIG_H" >> $TMPH
+echo "#define FFMPEG_CONFIGURATION \"$(c_escape $FFMPEG_CONFIGURATION)\"" >> $TMPH
+echo "#define FFMPEG_DATADIR \"$(eval c_escape $datadir)\"" >> $TMPH
+
+echo "#define CC_TYPE \"$cc_type\"" >> $TMPH
+echo "#define CC_VERSION $cc_version" >> $TMPH
+echo "#define restrict $_restrict" >> $TMPH
+
+if enabled small || disabled optimizations; then
+    echo "#define av_always_inline"  >> $TMPH
+fi
+
+
+# Apparently it's not possible to portably echo a backslash.
+enabled asmalign_pot &&
+    printf '#define ASMALIGN(ZEROBITS) ".align " #ZEROBITS "\\n\\t"\n' >> $TMPH ||
+    printf '#define ASMALIGN(ZEROBITS) ".align 1 << " #ZEROBITS "\\n\\t"\n' >> $TMPH
+
+echo "#define EXTERN_PREFIX \"${extern_prefix}\"" >> $TMPH
+echo "#define EXTERN_ASM ${extern_prefix}" >> $TMPH
+
 print_config ARCH_   $TMPH config.mak $ARCH_LIST
 print_config HAVE_   $TMPH config.mak $HAVE_LIST
 print_config CONFIG_ $TMPH config.mak $CONFIG_LIST       \
@@ -2656,20 +2746,6 @@ print_config CONFIG_ $TMPH config.mak $CONFIG_LIST       \
                                       $INDEV_LIST        \
                                       $OUTDEV_LIST       \
 
-echo "#define restrict $_restrict" >> $TMPH
-
-if enabled small || disabled optimizations; then
-    echo "#define av_always_inline"  >> $TMPH
-fi
-
-
-# Apparently it's not possible to portably echo a backslash.
-enabled asmalign_pot &&
-    printf '#define ASMALIGN(ZEROBITS) ".align " #ZEROBITS "\\n\\t"\n' >> $TMPH ||
-    printf '#define ASMALIGN(ZEROBITS) ".align 1 << " #ZEROBITS "\\n\\t"\n' >> $TMPH
-
-echo "#define EXTERN_PREFIX \"${extern_prefix}\"" >> $TMPH
-
 echo "#endif /* FFMPEG_CONFIG_H */" >> $TMPH
 echo "endif # FFMPEG_CONFIG_MAK" >> config.mak
 
@@ -2680,44 +2756,34 @@ cmp -s $TMPH config.h &&
 
 # build tree in object directory if source path is different from current one
 if enabled source_path_used; then
-    DIRS="\
-        doc               \
-        libavcodec        \
-        libavcodec/alpha  \
-        libavcodec/arm    \
-        libavcodec/bfin   \
-        libavcodec/mlib   \
-        libavcodec/ppc    \
-        libavcodec/sh4    \
-        libavcodec/sparc  \
-        libavcodec/x86    \
-        libavdevice       \
-        libavfilter       \
-        libavformat       \
-        libavutil         \
-        libpostproc       \
-        libswscale        \
-        libswscale/bfin   \
-        libswscale/mlib   \
-        libswscale/ppc    \
-        libswscale/sparc  \
-        libswscale/x86    \
-        tests             \
-        tools             \
-        "
-    FILES="\
-        Makefile             \
-        common.mak           \
-        subdir.mak           \
-        doc/texi2pod.pl      \
-        libavcodec/Makefile  \
-        libavdevice/Makefile \
-        libavfilter/Makefile \
-        libavformat/Makefile \
-        libavutil/Makefile   \
-        libpostproc/Makefile \
-        libswscale/Makefile  \
-        "
+    DIRS="
+        doc
+        libavcodec
+        libavcodec/$arch
+        libavdevice
+        libavfilter
+        libavformat
+        libavutil
+        libavutil/$arch
+        libpostproc
+        libswscale
+        libswscale/$arch
+        tests
+        tools
+    "
+    FILES="
+        Makefile
+        common.mak
+        subdir.mak
+        doc/texi2pod.pl
+        libavcodec/Makefile
+        libavdevice/Makefile
+        libavfilter/Makefile
+        libavformat/Makefile
+        libavutil/Makefile
+        libpostproc/Makefile
+        libswscale/Makefile
+    "
     for dir in $DIRS ; do
         mkdir -p $dir
     done
@@ -2745,10 +2811,10 @@ includedir=$incdir
 Name: $name
 Description: $comment
 Version: $version
-Requires: $(disabled shared && echo $requires)
+Requires: $(enabled shared || echo $requires)
 Requires.private: $(enabled shared && echo $requires)
 Conflicts:
-Libs: -L\${libdir} -l${shortname} $(disabled shared && echo $libs)
+Libs: -L\${libdir} -l${shortname} $(enabled shared || echo $libs)
 Libs.private: $(enabled shared && echo $libs)
 Cflags: -I\${includedir}
 EOF

@@ -38,14 +38,14 @@ target_crcfile="$target_datadir/$this.crc"
 if [ X"`echo | md5sum 2> /dev/null`" != X ]; then
     do_md5sum() { md5sum -b $1; }
 elif [ X"`echo | md5 2> /dev/null`" != X ]; then
-    do_md5sum() { md5 -r $1 | sed 's# \**\./# *./#'; }
+    do_md5sum() { md5 $1 | sed 's#MD5 (\(.*\)) = \(.*\)#\2 *\1#'; }
 elif [ -x /sbin/md5 ]; then
     do_md5sum() { /sbin/md5 -r $1 | sed 's# \**\./# *./#'; }
 else
     do_md5sum() { echo No md5sum program found; }
 fi
 
-FFMPEG_OPTS="-y -flags +bitexact -dct fastint -idct simple -sws_flags +accurate_rnd+bitexact"
+FFMPEG_OPTS="-v 0 -y -flags +bitexact -dct fastint -idct simple -sws_flags +accurate_rnd+bitexact"
 
 do_ffmpeg()
 {
@@ -53,9 +53,7 @@ do_ffmpeg()
     shift
     set -- $* ${target_path}/$f
     echo $ffmpeg $FFMPEG_OPTS $*
-    $ffmpeg $FFMPEG_OPTS -benchmark $* > $bench 2> /tmp/ffmpeg$$
-    egrep -v "^(Stream|Press|Input|Output|frame|  Stream|  Duration|video:)" /tmp/ffmpeg$$ || true
-    rm -f /tmp/ffmpeg$$
+    $ffmpeg $FFMPEG_OPTS -benchmark $* > $bench
     do_md5sum $f >> $logfile
     if [ $f = $raw_dst ] ; then
         $tiny_psnr $f $raw_ref >> $logfile
@@ -74,9 +72,7 @@ do_ffmpeg_nomd5()
     shift
     set -- $* ${target_path}/$f
     echo $ffmpeg $FFMPEG_OPTS $*
-    $ffmpeg $FFMPEG_OPTS -benchmark $* > $bench 2> /tmp/ffmpeg$$
-    egrep -v "^(Stream|Press|Input|Output|frame|  Stream|  Duration|video:)" /tmp/ffmpeg$$ || true
-    rm -f /tmp/ffmpeg$$
+    $ffmpeg $FFMPEG_OPTS -benchmark $* > $bench
     if [ $f = $raw_dst ] ; then
         $tiny_psnr $f $raw_ref >> $logfile
     elif [ $f = $pcm_dst ] ; then
@@ -93,9 +89,7 @@ do_ffmpeg_crc()
     f="$1"
     shift
     echo $ffmpeg $FFMPEG_OPTS $* -f crc "$target_crcfile"
-    $ffmpeg $FFMPEG_OPTS $* -f crc "$target_crcfile" > /tmp/ffmpeg$$ 2>&1
-    egrep -v "^(Stream|Press|Input|Output|frame|  Stream|  Duration|video:|ffmpeg version|  configuration|  built)" /tmp/ffmpeg$$ || true
-    rm -f /tmp/ffmpeg$$
+    $ffmpeg $FFMPEG_OPTS $* -f crc "$target_crcfile"
     echo "$f `cat $crcfile`" >> $logfile
     rm -f "$crcfile"
 }
@@ -105,9 +99,7 @@ do_ffmpeg_nocheck()
     f="$1"
     shift
     echo $ffmpeg $FFMPEG_OPTS $*
-    $ffmpeg $FFMPEG_OPTS -benchmark $* > $bench 2> /tmp/ffmpeg$$
-    egrep -v "^(Stream|Press|Input|Output|frame|  Stream|  Duration|video:)" /tmp/ffmpeg$$ || true
-    rm -f /tmp/ffmpeg$$
+    $ffmpeg $FFMPEG_OPTS -benchmark $* > $bench
     expr "`cat $bench`" : '.*utime=\(.*s\)' > $bench2
     echo `cat $bench2` $f >> $benchfile
 }
@@ -368,6 +360,22 @@ fi
 if [ -n "$do_dv50" ] ; then
 do_video_encoding dv50.dv "-dct int" "-s pal -pix_fmt yuv422p -an -sws_flags neighbor+bitexact"
 do_video_decoding "" "-s cif -pix_fmt yuv420p -sws_flags neighbor+bitexact"
+fi
+
+if [ -n "$do_dnxhd_1080i" ] ; then
+# FIXME: interlaced raw DNxHD decoding is broken
+do_video_encoding dnxhd-1080i.mov "" "-vcodec dnxhd -flags +ildct -s hd1080 -b 120Mb -pix_fmt yuv422p -an"
+do_video_decoding "-r 25" "-s cif -pix_fmt yuv420p"
+fi
+
+if [ -n "$do_dnxhd_720p" ] ; then
+do_video_encoding dnxhd-720p.dnxhd "" "-s hd720 -b 90Mb -pix_fmt yuv422p -an"
+do_video_decoding "-r 25" "-s cif -pix_fmt yuv420p"
+fi
+
+if [ -n "$do_dnxhd_720p_rd" ] ; then
+do_video_encoding dnxhd-720p-rd.dnxhd "" "-mbd rd -s hd720 -b 90Mb -pix_fmt yuv422p -an"
+do_video_decoding "-r 25" "-s cif -pix_fmt yuv420p"
 fi
 
 if [ -n "$do_svq1" ] ; then
@@ -651,5 +659,27 @@ for pix_fmt in $conversions ; do
                     -f rawvideo -s 352x288 -pix_fmt yuv444p
 done
 fi
+
+# libavfilter testing
+
+do_lavfi() {
+    test_name=$1
+    eval test=\$do_$test_name
+    vfilters=$2
+
+    if [ -n "$test" ] ; then
+        do_video_encoding ${test_name}.avi "" "-vcodec rawvideo -vfilters $vfilters"
+    fi
+}
+
+# example tests:
+# do_lavfi "crop" "crop=100:100:-1:-1"
+# do_lavfi "crop_scale" "crop=100:100,scale=200:-1"
+# do_lavfi "scale" "scale=200:200"
+
+# TODO: add tests for
+# direct rendering,
+# slices
+# chains with feedback loops
 
 rm -f "$bench" "$bench2"

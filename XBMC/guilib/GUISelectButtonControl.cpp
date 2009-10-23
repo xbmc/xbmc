@@ -138,7 +138,7 @@ void CGUISelectButtonControl::Render()
       // (Sending a message with SendMessage
       // can result in a GPF.)
       CGUIMessage message(GUI_MSG_CLICKED, GetID(), GetParentID() );
-      m_gWindowManager.SendThreadMessage(message);
+      g_windowManager.SendThreadMessage(message);
     }
   } // if (m_bShowSelect)
   else

@@ -22,6 +22,7 @@
 #include "DVDMessage.h"
 #include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
+#include "utils/TimeUtils.h"
 
 /**
  * CDVDMsgGeneralStreamChange --- GENERAL_STREAMCHANGE
@@ -60,12 +61,12 @@ void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, DWORD source)
 
   InterlockedIncrement(&m_objects);
 
-  DWORD timeout = GetTickCount() + m_timeout;
+  DWORD timeout = CTimeUtils::GetTimeMS() + m_timeout;
 
   if (abort)
-    while( m_objects < GetNrOfReferences() && timeout > GetTickCount() && !(*abort)) Sleep(1);
+    while( m_objects < GetNrOfReferences() && timeout > CTimeUtils::GetTimeMS() && !(*abort)) Sleep(1);
   else
-    while( m_objects < GetNrOfReferences() && timeout > GetTickCount() ) Sleep(1);
+    while( m_objects < GetNrOfReferences() && timeout > CTimeUtils::GetTimeMS() ) Sleep(1);
 }
 
 /**

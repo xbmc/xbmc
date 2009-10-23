@@ -59,8 +59,7 @@ EC_DIRS= \
 	tools/EventClients
 
 XBMCTEX_DIRS= \
-	tools/XBMCTex \
-	tools/XBMCTexXBT
+	tools/TexturePacker
 
 DVDPCODECS_DIRS= \
 	xbmc/cores/dvdplayer/Codecs \
@@ -102,8 +101,10 @@ SS_DIRS=\
 VIS_DIRS=\
 	xbmc/visualizations/OpenGLSpectrum \
 	xbmc/visualizations/WaveForm \
-	xbmc/visualizations/XBMCProjectM \
-	xbmc/visualizations/Goom
+	xbmc/visualizations/XBMCProjectM
+ifneq (@BUILD_GOOM@,1)
+VIS_DIRS+=xbmc/visualizations/Goom
+endif
 
 PVR_DIRS=\
 	xbmc/pvrclients/vdr
@@ -154,7 +155,7 @@ configure: configure.in
 	@false
 
 # skin textures
-skins: tools/XBMCTex/XBMCTex tools/XBMCTexXBT/XBMCTexXBT force
+skins: tools/TexturePacker/TexturePacker force
 	 $(MAKE) -C $(PM3_MEDIA)
 	 $(MAKE) -C $(PM3HD_MEDIA)
 
@@ -269,8 +270,10 @@ visualizations: exports
 	$(MAKE) -C xbmc/visualizations/OpenGLSpectrum
 	$(MAKE) -C xbmc/visualizations/WaveForm
 	$(MAKE) -C xbmc/visualizations/XBMCProjectM
+ifneq (@BUILD_GOOM@,1)
 ifeq ($(or $(findstring powerpc-linux,$(ARCH)),$(findstring powerpc64-linux,$(ARCH))),)
 	$(MAKE) -C xbmc/visualizations/Goom
+endif
 endif
 pvrclients: exports
 	$(MAKE) -C xbmc/pvrclients/vdr
@@ -358,8 +361,6 @@ OBJSXBMC=	\
 	xbmc/cores/cores.a \
 	xbmc/lib/libPython/python.a \
 	xbmc/cores/DllLoader/dllloader.a \
-	xbmc/cores/DllLoader/exports/exports.a \
-	xbmc/cores/DllLoader/exports/util/exports_utils.a \
 	xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
 	xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
 	xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
@@ -390,10 +391,14 @@ OBJSXBMC=	\
 	xbmc/pvrclients/pvrclient.a \
 	xbmc/screensavers/screensaver.a \
 	xbmc/settings/settings.a \
-	xbmc/utils/utils.a \
-	xbmc/linux/linux.a \
 	xbmc/visualizations/visualization.a \
 	xbmc/xbox/xbox.a
+
+DYNOBJSXBMC= \
+	xbmc/linux/linux.a \
+	xbmc/utils/utils.a \
+	xbmc/cores/DllLoader/exports/util/exports_utils.a \
+	xbmc/cores/DllLoader/exports/exports.a
 
 # platform dependend objects
 ifeq ($(findstring osx,$(ARCH)), osx)
@@ -410,11 +415,11 @@ ifeq ($(ARCH), powerpc64-linux)
 	LIBS += -lpython2.4
 endif
 
-xbmc.bin: $(OBJSXBMC)
+xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 else
-	$(CXX) $(CXXFLAGS) -o xbmc.bin  $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
+	$(CXX) $(CXXFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) -Wl,--no-whole-archive $(OBJSXBMC) $(LIBS) $(LDFLAGS) -rdynamic
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
@@ -434,8 +439,8 @@ else
 	$(MAKE) -C tools/XBMCTex/
 endif
 
-tools/XBMCTexXBT/XBMCTexXBT:
-	$(MAKE) -C tools/XBMCTexXBT/
+tools/TexturePacker/TexturePacker:
+	$(MAKE) -C tools/TexturePacker/
 
 install-bin: xbmc.bin # developement convenience target
 	sudo install -D xbmc.bin $(prefix)/share/xbmc

@@ -31,6 +31,7 @@
 #include "Settings.h"
 #include "MusicInfoTag.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
+#include "../../utils/TimeUtils.h"
 
 #ifdef _LINUX
 #define XBMC_SAMPLE_RATE 44100
@@ -478,13 +479,13 @@ void PAPlayer::ToFFRW(int iSpeed)
 void PAPlayer::UpdateCacheLevel()
 {
   //check cachelevel every .5 seconds
-  if (m_LastCacheLevelCheck + 500 < GetTickCount())
+  if (m_LastCacheLevelCheck + 500 < CTimeUtils::GetTimeMS())
   {
     ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
     if (codec)
     {
       m_CacheLevel = codec->GetCacheLevel();
-      m_LastCacheLevelCheck = GetTickCount();
+      m_LastCacheLevelCheck = CTimeUtils::GetTimeMS();
       //CLog::Log(LOGDEBUG,"Cachelevel: %i%%", m_CacheLevel);
     }
   }
@@ -876,9 +877,9 @@ void PAPlayer::HandleSeeking()
 {
   if (m_SeekTime != -1)
   {
-    DWORD time = timeGetTime();
+    DWORD time = CTimeUtils::GetTimeMS();
     m_timeOffset = m_decoder[m_currentDecoder].Seek(m_SeekTime);
-    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, timeGetTime() - time);
+    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, CTimeUtils::GetTimeMS() - time);
     FlushStreams();
     m_SeekTime = -1;
   }

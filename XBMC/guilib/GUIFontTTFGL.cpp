@@ -46,12 +46,10 @@ using namespace std;
 CGUIFontTTFGL::CGUIFontTTFGL(const CStdString& strFileName)
 : CGUIFontTTFBase(strFileName)
 {
- 
 }
 
 CGUIFontTTFGL::~CGUIFontTTFGL(void)
 {
-  
 }
 
 void CGUIFontTTFGL::Begin()
@@ -126,20 +124,8 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 {
   newHeight = CBaseTexture::PadPow2(newHeight);
 
-  CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, 8);
-/* yuvalt
+  CBaseTexture* newTexture = new CTexture(m_textureWidth, newHeight, XB_FMT_A8);
 
-#ifdef __APPLE__
-  // Because of an SDL bug (?), bpp gets set to 4 even though we asked for 1, in fullscreen mode.
-  // To be completely honest, we probably shouldn't even be using an SDL surface in OpenGL mode, since
-  // we only use it to store the image before copying it (no blitting!) to an OpenGL texture.
-  //
-  if (newTexture->GetPitch() != m_textureWidth)
-    newTexture->SetPitch(m_textureWidth);
-#endif
-
-*/
-  
   if (!newTexture || newTexture->GetPixels() == NULL)
   {
     CLog::Log(LOGERROR, "GUIFontTTFGL::CacheCharacter: Error creating new cache texture for size %f", m_height);
@@ -166,8 +152,6 @@ CBaseTexture* CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 
 bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
 {
-  //SDL_LockSurface(m_texture);
-
   FT_Bitmap bitmap = bitGlyph->bitmap;
 
   unsigned char* source = (unsigned char*) bitmap.buffer;
@@ -190,8 +174,6 @@ bool CGUIFontTTFGL::CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character* ch)
     g_graphicsContext.EndPaint();
     m_bTextureLoaded = false;
   }
-
-  //SDL_UnlockSurface(m_texture);
 
   return TRUE;
 }

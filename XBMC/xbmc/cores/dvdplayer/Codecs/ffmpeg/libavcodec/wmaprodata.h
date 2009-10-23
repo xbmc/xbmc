@@ -28,6 +28,9 @@
 #ifndef AVCODEC_WMAPRODATA_H
 #define AVCODEC_WMAPRODATA_H
 
+#include <stddef.h>
+#include <stdint.h>
+
 /**
  * @brief frequencies to divide the frequency spectrum into scale factor bands
  */
@@ -349,7 +352,7 @@ static const uint16_t coef0_run[HUFF_COEF0_SIZE] = {
       1,   0,   1,   0,   1,   0,
 };
 
-static const uint16_t coef0_level[HUFF_COEF0_SIZE] = {
+static const float coef0_level[HUFF_COEF0_SIZE] = {
       0,   0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
       1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
       1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
@@ -390,7 +393,7 @@ static const uint16_t coef1_run[HUFF_COEF1_SIZE] = {
      1,  0,  1,  0,  1,  0,  1,  0,  0,  0,
 };
 
-static const uint16_t coef1_level[HUFF_COEF1_SIZE] = {
+static const float coef1_level[HUFF_COEF1_SIZE] = {
      0,  0,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
      1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
      1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,
@@ -588,7 +591,7 @@ static const float default_decorrelation_matrices[] = {
 /**
  * @brief default decorrelation matrix offsets
  */
-static const float *default_decorrelation[] = {
+static const float * const default_decorrelation[] = {
     NULL,
     &default_decorrelation_matrices[0],
     &default_decorrelation_matrices[1],

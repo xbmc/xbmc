@@ -531,7 +531,7 @@ void CGUIDialogNumeric::GetOutput(void *output)
 
 bool CGUIDialogNumeric::ShowAndGetSeconds(CStdString &timeString, const CStdString &heading)
 {
-  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
   int seconds = StringUtils::TimeStringToSeconds(timeString);
   SYSTEMTIME time = {0};
@@ -551,7 +551,7 @@ bool CGUIDialogNumeric::ShowAndGetSeconds(CStdString &timeString, const CStdStri
 
 bool CGUIDialogNumeric::ShowAndGetTime(SYSTEMTIME &time, const CStdString &heading)
 {
-  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
   pDialog->SetMode(INPUT_TIME, (void *)&time);
   pDialog->SetHeading(heading);
@@ -564,7 +564,7 @@ bool CGUIDialogNumeric::ShowAndGetTime(SYSTEMTIME &time, const CStdString &headi
 
 bool CGUIDialogNumeric::ShowAndGetDate(SYSTEMTIME &date, const CStdString &heading)
 {
-  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   if (!pDialog) return false;
   pDialog->SetMode(INPUT_DATE, (void *)&date);
   pDialog->SetHeading(heading);
@@ -577,7 +577,7 @@ bool CGUIDialogNumeric::ShowAndGetDate(SYSTEMTIME &date, const CStdString &headi
 
 bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdString &heading)
 {
-  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   if (!pDialog || !IPAddress) return false;
   pDialog->SetMode(INPUT_IP_ADDRESS, (void *)&IPAddress);
   pDialog->SetHeading(heading);
@@ -591,7 +591,7 @@ bool CGUIDialogNumeric::ShowAndGetIPAddress(CStdString &IPAddress, const CStdStr
 bool CGUIDialogNumeric::ShowAndGetNumber(CStdString& strInput, const CStdString &strHeading)
 {
   // Prompt user for password input
-  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   pDialog->SetHeading( strHeading );
 
   pDialog->SetMode(INPUT_NUMBER, (void *)&strInput);
@@ -663,7 +663,7 @@ int CGUIDialogNumeric::ShowAndVerifyPassword(CStdString& strPassword, const CStd
 bool CGUIDialogNumeric::ShowAndVerifyInput(CStdString& strToVerify, const CStdString& dlgHeading, bool bVerifyInput)
 {
   // Prompt user for password input
-  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
+  CGUIDialogNumeric *pDialog = (CGUIDialogNumeric *)g_windowManager.GetWindow(WINDOW_DIALOG_NUMERIC);
   pDialog->SetHeading( dlgHeading );
 
   CStdString strInput = "";

@@ -20,6 +20,7 @@
  */
 
 #include "GUIDialogVisualisationPresetList.h"
+#include "GUIWindowManager.h"
 #include "GUIListContainer.h"
 #include "GUISettings.h"
 #include "GUIUserMessages.h"
@@ -69,7 +70,7 @@ bool CGUIDialogVisualisationPresetList::OnMessage(CGUIMessage &message)
       CGUIDialog::OnMessage(message);
 
       CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
-      g_graphicsContext.SendMessage(msg);
+      g_windowManager.SendMessage(msg);
       SetVisualisation((CVisualisation *)msg.GetPointer());
       return true;
     }

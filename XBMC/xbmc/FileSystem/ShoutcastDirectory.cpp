@@ -163,7 +163,7 @@ bool CShoutcastDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
       strRoot.Equals("shout://www.shoutcast.com/sbin/newxml.phtml") )
     strRoot = SHOUTCAST_MASTER_LINK;
 
-  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  CGUIDialogProgress* dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (dlgProgress)
   {
     dlgProgress->ShowProgressBar(false);

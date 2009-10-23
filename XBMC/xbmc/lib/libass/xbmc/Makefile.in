@@ -8,7 +8,7 @@ DIRS=..
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 $(SLIB): ../libass/.libs/libass.dylib
-	gcc -bundle -flat_namespace -undefined suppress -shared -fPIC \
+	$(CXX) -bundle -flat_namespace -undefined suppress -shared -fPIC \
 	-mmacosx-version-min=10.4 -o $@ ../libass/.libs/*.o
 	../../../../tools/Mach5/wrapper.rb $@;mv output.so $@
 	chmod +x $@

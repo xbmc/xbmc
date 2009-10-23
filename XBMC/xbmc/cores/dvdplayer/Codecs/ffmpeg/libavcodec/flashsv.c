@@ -114,9 +114,6 @@ static int flashsv_decode_frame(AVCodecContext *avctx,
     if (buf_size == 0)
         return 0;
 
-    if(s->frame.data[0])
-            avctx->release_buffer(avctx, &s->frame);
-
     init_get_bits(&gb, buf, buf_size * 8);
 
     /* start to parse the bitstream */
@@ -162,10 +159,10 @@ static int flashsv_decode_frame(AVCodecContext *avctx,
         h_blocks, v_blocks, h_part, v_part);
 
     s->frame.reference = 1;
-    s->frame.buffer_hints = FF_BUFFER_HINTS_VALID;
-    if (avctx->get_buffer(avctx, &s->frame) < 0) {
-        av_log(s->avctx, AV_LOG_ERROR, "get_buffer() failed\n");
-        return -1;
+    s->frame.buffer_hints = FF_BUFFER_HINTS_VALID | FF_BUFFER_HINTS_PRESERVE | FF_BUFFER_HINTS_REUSABLE;
+    if(avctx->reget_buffer(avctx, &s->frame) < 0){
+      av_log(avctx, AV_LOG_ERROR, "reget_buffer() failed\n");
+      return -1;
     }
 
     /* loop over all block columns */
@@ -256,6 +253,6 @@ AVCodec flashsv_decoder = {
     flashsv_decode_end,
     flashsv_decode_frame,
     CODEC_CAP_DR1,
-    .pix_fmts = (enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
+    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_BGR24, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Flash Screen Video v1"),
 };

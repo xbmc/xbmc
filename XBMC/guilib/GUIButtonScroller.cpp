@@ -124,7 +124,7 @@ bool CGUIButtonScroller::OnAction(const CAction &action)
       CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
       // find our currently highlighted item
       message.SetAction(actions[i]);
-      g_graphicsContext.SendMessage(message);
+      g_windowManager.SendMessage(message);
     }
     return true;
   }

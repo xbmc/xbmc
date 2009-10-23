@@ -253,7 +253,7 @@ void CGUIWindowMusicSongs::OnScan(int iItem)
 
 void CGUIWindowMusicSongs::DoScan(const CStdString &strPath)
 {
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (musicScan && musicScan->IsScanning())
   {
     musicScan->StopScanning();
@@ -341,7 +341,7 @@ void CGUIWindowMusicSongs::UpdateButtons()
     CONTROL_ENABLE(CONTROL_BTNSCAN);
   }
 
-  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
   if (musicScan && musicScan->IsScanning())
   {
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
@@ -434,7 +434,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     }
 
     // Add the scan button(s)
-    CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)m_gWindowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    CGUIDialogMusicScan *pScanDlg = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (g_guiSettings.GetBool("musiclibrary.enabled") && pScanDlg)
     {
       if (pScanDlg->IsScanning())

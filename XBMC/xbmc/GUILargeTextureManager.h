@@ -46,9 +46,6 @@ public:
   
   CStdString    m_path; ///< path of image to load
   CBaseTexture *m_texture; ///< Texture object to load the image into \sa CBaseTexture.
-  int           m_width; ///< width of loaded image
-  int           m_height; ///< height of loaded image
-  int           m_orientation; ///< orientation of loaded image
 };
 
 /*!
@@ -89,7 +86,7 @@ public:
    \return true if the image exists, else false.
    \sa CGUITextureArray and CGUITexture
    */
-  bool GetImage(const CStdString &path, CTextureArray &texture, int &orientation, bool firstRequest);
+  bool GetImage(const CStdString &path, CTextureArray &texture, bool firstRequest);
   
   /*!
    \brief Request a texture to be unloaded.
@@ -123,11 +120,10 @@ private:
     void AddRef();
     bool DecrRef(bool deleteImmediately);
     bool DeleteIfRequired();
-    void SetTexture(CBaseTexture* texture, int width, int height, int orientation);
+    void SetTexture(CBaseTexture* texture);
     
     const CStdString &GetPath() const { return m_path; };
     const CTextureArray &GetTexture() const { return m_texture; };
-    int GetOrientation() const { return m_orientation; };
 
   private:
     static const unsigned int TIME_TO_DELETE = 2000;
@@ -135,7 +131,6 @@ private:
     unsigned int m_refCount;
     CStdString m_path;
     CTextureArray m_texture;
-    int m_orientation;
     unsigned int m_timeToDelete;
   };
 

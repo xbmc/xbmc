@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML
+><HEAD
+><TITLE
+>FcConfigFilename</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK
+REL="HOME"
+HREF="t1.html"><LINK
+REL="UP"
+TITLE="FcConfig"
+HREF="x102.html#AEN2554"><LINK
+REL="PREVIOUS"
+TITLE="FcFontList"
+HREF="fcfontlist.html"><LINK
+REL="NEXT"
+TITLE="FcConfigParseAndLoad"
+HREF="fcconfigparseandload.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+SUMMARY="Header navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+></TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="fcfontlist.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="fcconfigparseandload.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><H1
+><A
+NAME="FCCONFIGFILENAME"
+></A
+>FcConfigFilename</H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3222"
+></A
+><H2
+>Name</H2
+>FcConfigFilename&nbsp;--&nbsp;Find a config file</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3225"
+></A
+><H2
+>Synopsis</H2
+><DIV
+CLASS="FUNCSYNOPSIS"
+><P
+></P
+><A
+NAME="AEN3226"
+></A
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="FUNCSYNOPSISINFO"
+>#include &#60;fontconfig.h&#62;
+	</PRE
+></TD
+></TR
+></TABLE
+><P
+><CODE
+><CODE
+CLASS="FUNCDEF"
+>FcChar8 * <TT
+CLASS="FUNCTION"
+>FcConfigFilename</TT
+></CODE
+>(const FcChar8 *<TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+>);</CODE
+></P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3233"
+></A
+><H2
+>Description</H2
+><P
+>Given the specified external entity name, return the associated filename.
+This provides applications a way to convert various configuration file
+references into filename form.
+    </P
+><P
+>A null or empty <TT
+CLASS="PARAMETER"
+><I
+>name</I
+></TT
+> indicates that the default configuration file should
+be used; which file this references can be overridden with the
+FC_CONFIG_FILE environment variable.  Next, if the name starts with <TT
+CLASS="PARAMETER"
+><I
+>~</I
+></TT
+>, it
+refers to a file in the current users home directory.  Otherwise if the name
+doesn't start with '/', it refers to a file in the default configuration
+directory; the built-in default directory can be overridden with the
+FC_CONFIG_DIR environment variable.
+	    </P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3239"
+></A
+><H2
+>Version</H2
+><P
+>Fontconfig version 2.7.3
+
+	    </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+SUMMARY="Footer navigation table"
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="fcfontlist.html"
+ACCESSKEY="P"
+>&#60;&#60;&#60; Previous</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="t1.html"
+ACCESSKEY="H"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="fcconfigparseandload.html"
+ACCESSKEY="N"
+>Next &#62;&#62;&#62;</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>FcFontList</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="x102.html#AEN2554"
+ACCESSKEY="U"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>FcConfigParseAndLoad</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

@@ -10,6 +10,7 @@
 #include "../../settings/VideoSettings.h"
 #include "RenderFlags.h"
 #include "GraphicContext.h"
+#include "BaseRenderer.h"
 
 class CBaseTexture;
 namespace Shaders { class BaseYUV2RGBShader; }
@@ -106,17 +107,14 @@ extern YUVCOEF yuv_coef_bt709;
 extern YUVCOEF yuv_coef_ebu;
 extern YUVCOEF yuv_coef_smtp240m;
 
-class CLinuxRendererGL
+class CLinuxRendererGL : public CBaseRenderer
 {
 public:
   CLinuxRendererGL();  
   virtual ~CLinuxRendererGL();
 
-  virtual void GetVideoRect(RECT &rs, RECT &rd);
-  virtual float GetAspectRatio();
   virtual void Update(bool bPauseDrawing);
   virtual void SetupScreenshot() {};
-  virtual void SetViewMode(int iViewMode);
 
   void CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height);
 
@@ -131,9 +129,8 @@ public:
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
 
-  void AutoCrop(bool bCrop);
+  virtual void AutoCrop(bool bCrop);
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
-  RESOLUTION GetResolution();  
 
   // Feature support
   virtual bool SupportsBrightness();
@@ -143,15 +140,11 @@ public:
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
-  virtual void CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fUserPixelRatio, float fZoomAmount);
-  void CalculateFrameAspectRatio(int desired_width, int desired_height);
-  void ChooseBestResolution(float fps);
 
-  ESCALINGMETHOD GetDefaultUpscalingMethod();
+  void ChooseUpscalingMethod();
   bool IsSoftwareUpscaling();
   void InitializeSoftwareUpscaling();
 
-  virtual void ManageDisplay();
   virtual void ManageTextures();
   void DeleteYV12Texture(int index);
   void ClearYV12Texture(int index);
@@ -175,14 +168,6 @@ protected:
   int m_iYV12RenderBuffer;
   int m_NumYV12Buffers;
   int m_iLastRenderBuffer;
-
-  float m_fSourceFrameRatio; // the frame aspect ratio of the source (corrected for pixel ratio)
-  RESOLUTION m_iResolution;    // the resolution we're running in
-  float m_fps;        // fps of movie
-  RECT rd;          // destination rect
-  RECT rs;          // source rect
-  unsigned int m_iSourceWidth;    // width
-  unsigned int m_iSourceHeight;   // height
 
   bool m_bConfigured;
   bool m_bValidated;

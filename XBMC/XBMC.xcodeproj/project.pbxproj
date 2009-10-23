@@ -51,6 +51,8 @@
 		43352CD91071520C00706B8A /* XBTFReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43352CD01071520C00706B8A /* XBTFReader.cpp */; };
 		43352CEE1071634600706B8A /* libsquish-x86-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish-x86-osx.a */; };
 		43352CF01071639400706B8A /* libsquish-powerpc-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */; };
+		439E16441078C02700B91B03 /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 439E16421078C02700B91B03 /* DDSImage.cpp */; };
+		439E16451078C02700B91B03 /* DDSImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 439E16421078C02700B91B03 /* DDSImage.cpp */; };
 		6EAB09FC0E80865700B91B2B /* utf8tolatin1.c in Sources */ = {isa = PBXBuildFile; fileRef = 6EAB09FB0E80865700B91B2B /* utf8tolatin1.c */; };
 		7C2D6AE40F35453E00DD2E85 /* SpecialProtocol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C2D6AE20F35453E00DD2E85 /* SpecialProtocol.cpp */; };
 		7C5608C70F1754930056433A /* ExternalPlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C5608C40F1754930056433A /* ExternalPlayer.cpp */; };
@@ -98,6 +100,8 @@
 		7C779E55104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
 		7C779E56104A58F900F444C4 /* GUIWindowTestPatternGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E50104A58F900F444C4 /* GUIWindowTestPatternGL.cpp */; };
 		7C779E57104A58F900F444C4 /* KeyboardStat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C779E52104A58F900F444C4 /* KeyboardStat.cpp */; };
+		7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
+		7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */; };
 		7CCF7E721067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
 		7CCF7E731067643800992676 /* DirectoryNodeSets.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */; };
 		7CCF7F1D1069F3AE00992676 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7CCF7F1B1069F3AE00992676 /* Builtins.cpp */; };
@@ -1853,6 +1857,8 @@
 		43352CED1071634600706B8A /* libsquish-x86-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-x86-osx.a"; path = "xbmc/lib/libsquish/libsquish-x86-osx.a"; sourceTree = "<group>"; };
 		43352CEF1071639400706B8A /* libsquish-powerpc-osx.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsquish-powerpc-osx.a"; path = "xbmc/lib/libsquish/libsquish-powerpc-osx.a"; sourceTree = "<group>"; };
 		436B38F3106628850049AB3B /* EndianSwap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EndianSwap.h; path = xbmc/utils/EndianSwap.h; sourceTree = "<group>"; };
+		439E16421078C02700B91B03 /* DDSImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DDSImage.cpp; path = guilib/DDSImage.cpp; sourceTree = "<group>"; };
+		439E16431078C02700B91B03 /* DDSImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DDSImage.h; path = guilib/DDSImage.h; sourceTree = "<group>"; };
 		6E2FACD20E26E92800DF79EA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = xbmc/osx/Info.plist; sourceTree = "<group>"; };
 		6E97BDBF0DA2B620003A2A89 /* EventClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventClient.h; sourceTree = "<group>"; };
 		6E97BDC00DA2B620003A2A89 /* EventPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventPacket.h; sourceTree = "<group>"; };
@@ -1918,6 +1924,9 @@
 		7C779E51104A58F900F444C4 /* GUIWindowTestPatternGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowTestPatternGL.h; sourceTree = "<group>"; };
 		7C779E52104A58F900F444C4 /* KeyboardStat.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeyboardStat.cpp; sourceTree = "<group>"; };
 		7C779E53104A58F900F444C4 /* KeyboardStat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyboardStat.h; sourceTree = "<group>"; };
+		7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
+		7CAA20501079C8160096DE39 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
+		7CAA205B107AFC280096DE39 /* Job.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Job.h; sourceTree = "<group>"; };
 		7CCF7E701067643800992676 /* DirectoryNodeSets.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryNodeSets.cpp; sourceTree = "<group>"; };
 		7CCF7E711067643800992676 /* DirectoryNodeSets.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirectoryNodeSets.h; sourceTree = "<group>"; };
 		7CCF7F1B1069F3AE00992676 /* Builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Builtins.cpp; sourceTree = "<group>"; };
@@ -3940,6 +3949,15 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				439E16421078C02700B91B03 /* DDSImage.cpp */,
+				439E16431078C02700B91B03 /* DDSImage.h */,
+				43348AA71077486D00F859CF /* PlayerCoreConfig.h */,
+				43348AA81077486D00F859CF /* PlayerCoreFactory.cpp */,
+				43348AA91077486D00F859CF /* PlayerCoreFactory.h */,
+				43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */,
+				43348AAB1077486D00F859CF /* PlayerSelectionRule.h */,
+				43348AA1107747CD00F859CF /* Edl.cpp */,
+				43348AA2107747CD00F859CF /* Edl.h */,
 				43352CCA1071520C00706B8A /* TextureBundleXBT.cpp */,
 				43352CCB1071520C00706B8A /* TextureBundleXBT.h */,
 				43352CCC1071520C00706B8A /* TextureBundleXPR.cpp */,
@@ -5425,6 +5443,8 @@
 		E38E16580D25F9FA00618676 /* VideoRenderers */ = {
 			isa = PBXGroup;
 			children = (
+				7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */,
+				7CAA20501079C8160096DE39 /* BaseRenderer.h */,
 				E38E165A0D25F9FA00618676 /* ComboRenderer.h */,
 				E38E165B0D25F9FA00618676 /* LinuxRenderer.cpp */,
 				E38E165C0D25F9FA00618676 /* LinuxRenderer.h */,
@@ -6850,6 +6870,7 @@
 				E38E1E540D25F9FD00618676 /* LabelFormatter.h */,
 				F57B6F7E1071B8B500079ACB /* JobManager.cpp */,
 				F57B6F7F1071B8B500079ACB /* JobManager.h */,
+				7CAA205B107AFC280096DE39 /* Job.h */,
 				E38E1E550D25F9FD00618676 /* LCD.cpp */,
 				E38E1E560D25F9FD00618676 /* LCD.h */,
 				E38E1E5B0D25F9FD00618676 /* log.cpp */,
@@ -8097,6 +8118,8 @@
 				F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
 				F5E55B7010741340006E788A /* Teletext.cpp in Sources */,
 				F5E560BC10770F9F006E788A /* OggCallback.cpp in Sources */,
+				439E16451078C02700B91B03 /* DDSImage.cpp in Sources */,
+				7CAA20511079C8160096DE39 /* BaseRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8953,6 +8976,8 @@
 				F5E55B67107412DE006E788A /* GUIDialogTeletext.cpp in Sources */,
 				F5E55B7110741340006E788A /* Teletext.cpp in Sources */,
 				F5E560BD10770F9F006E788A /* OggCallback.cpp in Sources */,
+				439E16441078C02700B91B03 /* DDSImage.cpp in Sources */,
+				7CAA20521079C8160096DE39 /* BaseRenderer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

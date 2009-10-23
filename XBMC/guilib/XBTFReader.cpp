@@ -84,8 +84,6 @@ bool CXBTFReader::Open(const CStdString& fileName)
     
     READ_STR(file.GetPath(), 256, m_file);
     READ_U32(u32, m_file);
-    file.SetFormat(u32);
-    READ_U32(u32, m_file);
     file.SetLoop(u32);
     
     unsigned int nofFrames;
@@ -100,9 +98,7 @@ bool CXBTFReader::Open(const CStdString& fileName)
       READ_U32(u32, m_file);
       frame.SetHeight(u32);
       READ_U32(u32, m_file);
-      frame.SetX(u32);
-      READ_U32(u32, m_file);
-      frame.SetY(u32);
+      frame.SetFormat(u32);
       READ_U64(u64, m_file);
       frame.SetPackedSize(u64);
       READ_U64(u64, m_file);
@@ -117,8 +113,7 @@ bool CXBTFReader::Open(const CStdString& fileName)
     
     m_xbtf.GetFiles().push_back(file);
     
-    std::pair<CStdString, unsigned int> key = std::make_pair(file.GetPath(), file.GetFormat());
-    m_filesMap[key] = file;    
+    m_filesMap[file.GetPath()] = file;
   } 
   
   // Sanity check
@@ -160,16 +155,14 @@ time_t CXBTFReader::GetLastModificationTimestamp()
   return fileStat.st_mtime;
 }
 
-bool CXBTFReader::Exists(const CStdString& name, int formatMask)
+bool CXBTFReader::Exists(const CStdString& name)
 {
-  return Find(name, formatMask) != NULL;
+  return Find(name) != NULL;
 }
 
-CXBTFFile* CXBTFReader::Find(const CStdString& name, int formatMask)
+CXBTFFile* CXBTFReader::Find(const CStdString& name)
 {
-  std::pair<CStdString, unsigned int> key = std::make_pair(name, formatMask);
-  
-  std::map<std::pair<CStdString, unsigned int>, CXBTFFile>::iterator iter = m_filesMap.find(key);
+  std::map<CStdString, CXBTFFile>::iterator iter = m_filesMap.find(name);
   if (iter == m_filesMap.end())
   {
     return NULL;

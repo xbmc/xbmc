@@ -39,9 +39,9 @@
 class CGLTexture : public CBaseTexture
 {
 public:
-  CGLTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0, unsigned int format = XB_FMT_B8G8R8A8);
+  CGLTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
   virtual ~CGLTexture();
-  
+
   void CreateTextureObject();
   virtual void DestroyTextureObject();
   void LoadToGPU();

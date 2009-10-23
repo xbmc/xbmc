@@ -600,8 +600,8 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
     PyGUILock();
-    int id = m_gWindowManager.GetTopMostModalDialogID();
-    if (id == WINDOW_INVALID) id = m_gWindowManager.GetActiveWindow();
+    int id = g_windowManager.GetTopMostModalDialogID();
+    if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
     PyGUIUnlock();
 
     int ret = g_infoManager.TranslateString(cLine);

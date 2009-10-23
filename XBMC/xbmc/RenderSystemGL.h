@@ -44,13 +44,9 @@ public:
   virtual bool IsExtSupported(const char* extension);
 
   virtual void SetVSync(bool vsync);
-  virtual bool GetVSync() { return m_bVSync; }
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
-  
-  virtual bool NeedPower2Texture() { return m_NeedPower2Texture; }
-  virtual bool SupportsCompressedTextures();
 
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
@@ -77,6 +73,8 @@ protected:
   bool       m_bVsyncInit;
   int        m_width;
   int        m_height;
+
+  CStdString m_RenderExtensions;
 };
 
 #endif // RENDER_SYSTEM_H

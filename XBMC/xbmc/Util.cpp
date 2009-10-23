@@ -83,6 +83,7 @@
 #endif
 #include "WindowingFactory.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -1241,7 +1242,7 @@ static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".
 
 void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionCached, XFILE::IFileCallback *pCallback )
 {
-  DWORD startTimer = timeGetTime();
+  DWORD startTimer = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s: START", __FUNCTION__);
 
   // new array for commons sub dirs
@@ -1353,7 +1354,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
     strLookInPaths.push_back(strPath);
   }
 
-  DWORD nextTimer = timeGetTime();
+  DWORD nextTimer = CTimeUtils::GetTimeMS();
   CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(nextTimer - startTimer));
 
   CStdString strLExt;
@@ -1428,7 +1429,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
       g_directoryCache.ClearDirectory(strLookInPaths[step]);
     }
   }
-  CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(timeGetTime() - nextTimer));
+  CLog::Log(LOGDEBUG,"%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - nextTimer));
 
   // rename any keep subtitles
   CFileItemList items;
@@ -1446,7 +1447,7 @@ void CUtil::CacheSubtitles(const CStdString& strMovie, CStdString& strExtensionC
   for (vector<CStdString>::iterator it=vecExtensionsCached.begin(); it != vecExtensionsCached.end(); ++it)
     strExtensionCached += *it+" ";
 
-  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(timeGetTime() - startTimer));
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - startTimer));
 }
 
 bool CUtil::CacheRarSubtitles(vector<CStdString>& vecExtensionsCached, const CStdString& strRarPath, const CStdString& strCompare, const CStdString& strExtExt)
@@ -2615,9 +2616,9 @@ bool CUtil::AutoDetection()
   if (g_guiSettings.GetBool("autodetect.onoff"))
   {
     static DWORD pingTimer = 0;
-    if( timeGetTime() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
+    if( CTimeUtils::GetTimeMS() - pingTimer < (DWORD)g_advancedSettings.m_autoDetectPingTime * 1000)
       return false;
-    pingTimer = timeGetTime();
+    pingTimer = CTimeUtils::GetTimeMS();
 
     // send ping and request new client info
     if ( CUtil::AutoDetectionPing(
@@ -2656,7 +2657,7 @@ bool CUtil::AutoDetection()
           //YES NO PopUP: ask for connecting to the detected client via Filemanger!
           if (g_guiSettings.GetBool("autodetect.popupinfo") && CGUIDialogYesNo::ShowAndGetInput(1251, 0, 1257, 0))
           {
-            m_gWindowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
+            g_windowManager.ActivateWindow(WINDOW_FILES, strFTPPath); //Open in MyFiles
           }
           bReturn = true;
         }
@@ -2798,7 +2799,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
         {
           // a client is removed from our list, update our shares
           CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-          m_gWindowManager.SendThreadMessage(msg);
+          g_windowManager.SendThreadMessage(msg);
         }
       }
     }
@@ -2911,7 +2912,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
 
                     // client is removed from our list, update our shares
                     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-                    m_gWindowManager.SendThreadMessage(msg);
+                    g_windowManager.SendThreadMessage(msg);
                   }
                 }
               }
@@ -2933,7 +2934,7 @@ bool CUtil::AutoDetectionPing(CStdString strFTPUserName, CStdString strFTPPass, 
           {
             // a client is add or removed from our list, update our shares
             CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_UPDATE_SOURCES);
-            m_gWindowManager.SendThreadMessage(msg);
+            g_windowManager.SendThreadMessage(msg);
           }
         }
       }

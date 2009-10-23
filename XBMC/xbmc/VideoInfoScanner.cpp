@@ -38,6 +38,7 @@
 #include "Settings.h"
 #include "StringUtils.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace DIRECTORY;
@@ -64,7 +65,7 @@ namespace VIDEO
   {
     try
     {
-      DWORD dwTick = timeGetTime();
+      DWORD dwTick = CTimeUtils::GetTimeMS();
 
       m_database.Open();
 
@@ -117,7 +118,7 @@ namespace VIDEO
       m_database.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      dwTick = timeGetTime() - dwTick;
+      dwTick = CTimeUtils::GetTimeMS() - dwTick;
       CStdString strTmp, strTmp1;
       StringUtils::SecondsToTimeString(dwTick / 1000, strTmp1);
       strTmp.Format("My Videos: Scanning for video info using worker thread, operation took %s", strTmp1);
@@ -1014,7 +1015,6 @@ namespace VIDEO
         pDialog->Progress();
       }
 
-      CPicture picture;
       try
       {
         if (strImage.Find("http://") < 0 &&
@@ -1025,7 +1025,7 @@ namespace VIDEO
           CUtil::GetDirectory(pItem->m_strPath, strPath);
           strImage = CUtil::AddFileToFolder(strPath,strImage);
         }
-        picture.DoCreateThumbnail(strImage,strThumb);
+        CPicture::CreateThumbnail(strImage,strThumb);
       }
       catch (...)
       {
@@ -1378,8 +1378,7 @@ namespace VIDEO
             strCheck.ToLower();
             if (reg.RegFind(strCheck.c_str()) > -1)
             {
-              CPicture picture;
-              picture.DoCreateThumbnail(tbnItems[j]->m_strPath,items[i]->GetCachedSeasonThumb());
+              CPicture::CreateThumbnail(tbnItems[j]->m_strPath,items[i]->GetCachedSeasonThumb());
               bDownload=false;
               break;
             }
@@ -1405,10 +1404,7 @@ namespace VIDEO
         thumbFile += ".tbn";
         CStdString strLocal = CUtil::AddFileToFolder(CUtil::AddFileToFolder(strPath,".actors"),thumbFile);
         if (CFile::Exists(strLocal))
-        {
-          CPicture pic;
-          pic.DoCreateThumbnail(strLocal,strThumb);
-        }
+          CPicture::CreateThumbnail(strLocal,strThumb);
         else if (!actors[i].thumbUrl.GetFirstThumb().m_url.IsEmpty())
           CScraperUrl::DownloadThumbnail(strThumb,actors[i].thumbUrl.GetFirstThumb());
       }

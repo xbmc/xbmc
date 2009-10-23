@@ -24,6 +24,7 @@
 #include "cores/DllLoader/DllLoaderContainer.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -108,7 +109,7 @@ void CSectionLoader::Unload(const CStdString& strSection)
       section.m_lReferenceCount--;
       if ( 0 == section.m_lReferenceCount)
       {
-        section.m_lUnloadDelayStartTick = GetTickCount();
+        section.m_lUnloadDelayStartTick = CTimeUtils::GetTimeMS();
         return ;
       }
     }
@@ -163,7 +164,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
       if (0 == dll.m_lReferenceCount)
       {
         if (dll.m_bDelayUnload)
-          dll.m_lUnloadDelayStartTick = GetTickCount();
+          dll.m_lUnloadDelayStartTick = CTimeUtils::GetTimeMS();
         else
         {
           CLog::Log(LOGDEBUG,"SECTION:UnloadDll(%s)", dllname.c_str());
@@ -186,7 +187,7 @@ void CSectionLoader::UnloadDelayed()
   while( i != g_sectionLoader.m_vecLoadedSections.end() )
   {
     CSection& section = *i;
-    if( section.m_lReferenceCount == 0 && GetTickCount() - section.m_lUnloadDelayStartTick > UNLOAD_DELAY)
+    if( section.m_lReferenceCount == 0 && CTimeUtils::GetTimeMS() - section.m_lUnloadDelayStartTick > UNLOAD_DELAY)
     {
       CLog::Log(LOGDEBUG,"SECTION:UnloadDelayed(SECTION: %s)", section.m_strSectionName.c_str());
 #ifdef HAS_SECTIONS
@@ -202,7 +203,7 @@ void CSectionLoader::UnloadDelayed()
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_lReferenceCount == 0 && GetTickCount() - dll.m_lUnloadDelayStartTick > UNLOAD_DELAY)
+    if (dll.m_lReferenceCount == 0 && CTimeUtils::GetTimeMS() - dll.m_lUnloadDelayStartTick > UNLOAD_DELAY)
     {
       CLog::Log(LOGDEBUG,"SECTION:UnloadDelayed(DLL: %s)", dll.m_strDllName.c_str());
 

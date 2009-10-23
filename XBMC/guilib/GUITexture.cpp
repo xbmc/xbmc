@@ -73,7 +73,6 @@ CGUITextureBase::CGUITextureBase(float posX, float posY, float width, float heig
   m_diffuseV = 1.0f;
   m_diffuseScaleU = 1.0f;
   m_diffuseScaleV = 1.0f;
-  m_largeOrientation = 0;
 
   // anim gifs
   m_currentFrame = 0;
@@ -112,8 +111,6 @@ CGUITextureBase::CGUITextureBase(const CGUITextureBase &right)
   m_diffuseV = 1.0f;
   m_diffuseScaleU = 1.0f;
   m_diffuseScaleV = 1.0f;
-
-  m_largeOrientation = 0;
 
   m_currentFrame = 0;
   m_frameCounter = (unsigned int) -1;
@@ -303,7 +300,7 @@ void CGUITextureBase::AllocResources()
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
       CTextureArray texture;
-      if (g_largeTextureManager.GetImage(m_info.filename, texture, m_largeOrientation, !IsAllocated()))
+      if (g_largeTextureManager.GetImage(m_info.filename, texture, !IsAllocated()))
       {
         m_isAllocated = LARGE;
         
@@ -453,7 +450,6 @@ void CGUITextureBase::FreeResources(bool immediately /* = false */)
   m_currentLoop = 0;
   m_texCoordsScaleU = 1.0f;
   m_texCoordsScaleV = 1.0f;
-  m_largeOrientation = 0;
 
   // call our implementation
   Free();
@@ -618,5 +614,5 @@ int CGUITextureBase::GetOrientation() const
                                  5, 6, 7, 4, 1, 2, 3, 0,
                                  6, 5, 4, 7, 2, 1, 0, 3,
                                  7, 4, 5, 6, 3, 0, 1, 2 };
-  return (int)orient_table[8 * m_info.orientation + m_largeOrientation];
+  return (int)orient_table[8 * m_info.orientation + m_texture.m_orientation];
 }

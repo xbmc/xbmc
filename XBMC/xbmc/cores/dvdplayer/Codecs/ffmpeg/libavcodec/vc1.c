@@ -21,10 +21,11 @@
  */
 
 /**
- * @file vc1.c
+ * @file libavcodec/vc1.c
  * VC-1 and WMV3 decoder common code
  *
  */
+#include "internal.h"
 #include "dsputil.h"
 #include "avcodec.h"
 #include "mpegvideo.h"
@@ -39,12 +40,12 @@
 
 /***********************************************************************/
 /**
- * @defgroup bitplane VC9 Bitplane decoding
+ * @defgroup vc1bitplane VC-1 Bitplane decoding
  * @see 8.7, p56
  * @{
  */
 
-/** @addtogroup bitplane
+/**
  * Imode types
  * @{
  */
@@ -100,7 +101,8 @@ static void decode_colskip(uint8_t* plane, int width, int height, int stride, Ge
 }
 
 /** Decode a bitplane's bits
- * @param bp Bitplane where to store the decode bits
+ * @param data bitplane where to store the decode bits
+ * @param[out] raw_flag pointer to the flag indicating that this bitplane is not coded explicitly
  * @param v VC-1 context for bit reading and logging
  * @return Status
  * @todo FIXME: Optimize
@@ -302,8 +304,8 @@ int vc1_decode_sequence_header(AVCodecContext *avctx, VC1Context *v, GetBitConte
     }
     else
     {
-        v->zz_8x4 = ff_vc1_simple_progressive_8x4_zz;
-        v->zz_4x8 = ff_vc1_simple_progressive_4x8_zz;
+        v->zz_8x4 = wmv2_scantableA;
+        v->zz_4x8 = wmv2_scantableB;
         v->res_sm = get_bits(gb, 2); //reserved
         if (v->res_sm)
         {
@@ -323,6 +325,8 @@ int vc1_decode_sequence_header(AVCodecContext *avctx, VC1Context *v, GetBitConte
         av_log(avctx, AV_LOG_ERROR,
                "LOOPFILTER shall not be enabled in Simple Profile\n");
     }
+    if(v->s.avctx->skip_loop_filter >= AVDISCARD_ALL)
+        v->s.loop_filter = 0;
 
     v->res_x8 = get_bits1(gb); //reserved
     v->multires = get_bits1(gb);
@@ -455,8 +459,8 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb)
     if(get_bits1(gb)) { //Display Info - decoding is not affected by it
         int w, h, ar = 0;
         av_log(v->s.avctx, AV_LOG_DEBUG, "Display extended info:\n");
-        v->s.avctx->width  = v->s.width  = w = get_bits(gb, 14) + 1;
-        v->s.avctx->height = v->s.height = h = get_bits(gb, 14) + 1;
+        v->s.avctx->width  = w = get_bits(gb, 14) + 1;
+        v->s.avctx->height = h = get_bits(gb, 14) + 1;
         av_log(v->s.avctx, AV_LOG_DEBUG, "Display dimensions: %ix%i\n", w, h);
         if(get_bits1(gb))
             ar = get_bits(gb, 4);
@@ -467,6 +471,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb)
             h = get_bits(gb, 8);
             v->s.avctx->sample_aspect_ratio = (AVRational){w, h};
         }
+        av_log(v->s.avctx, AV_LOG_DEBUG, "Aspect: %i:%i\n", v->s.avctx->sample_aspect_ratio.num, v->s.avctx->sample_aspect_ratio.den);
 
         if(get_bits1(gb)){ //framerate stuff
             if(get_bits1(gb)) {
@@ -570,8 +575,8 @@ int vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
 
     v->bi_type = 0;
     if(v->s.pict_type == FF_B_TYPE) {
-        v->bfraction = get_vlc2(gb, ff_vc1_bfraction_vlc.table, VC1_BFRACTION_VLC_BITS, 1);
-        v->bfraction = ff_vc1_bfraction_lut[v->bfraction];
+        v->bfraction_lut_index = get_vlc2(gb, ff_vc1_bfraction_vlc.table, VC1_BFRACTION_VLC_BITS, 1);
+        v->bfraction = ff_vc1_bfraction_lut[v->bfraction_lut_index];
         if(v->bfraction == 0) {
             v->s.pict_type = FF_BI_TYPE;
         }
@@ -612,12 +617,7 @@ int vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
     v->k_y = v->mvrange + 8; //k_y can be 8 9 10 11
     v->range_x = 1 << (v->k_x - 1);
     v->range_y = 1 << (v->k_y - 1);
-    if (v->profile == PROFILE_ADVANCED)
-    {
-        if (v->postprocflag) v->postproc = get_bits1(gb);
-    }
-    else
-        if (v->multires && v->s.pict_type != FF_B_TYPE) v->respic = get_bits(gb, 2);
+    if (v->multires && v->s.pict_type != FF_B_TYPE) v->respic = get_bits(gb, 2);
 
     if(v->res_x8 && (v->s.pict_type == FF_I_TYPE || v->s.pict_type == FF_BI_TYPE)){
         v->x8_type = get_bits1(gb);
@@ -819,8 +819,8 @@ int vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
         v->uvsamp = get_bits1(gb);
     if(v->finterpflag) v->interpfrm = get_bits1(gb);
     if(v->s.pict_type == FF_B_TYPE) {
-        v->bfraction = get_vlc2(gb, ff_vc1_bfraction_vlc.table, VC1_BFRACTION_VLC_BITS, 1);
-        v->bfraction = ff_vc1_bfraction_lut[v->bfraction];
+        v->bfraction_lut_index = get_vlc2(gb, ff_vc1_bfraction_vlc.table, VC1_BFRACTION_VLC_BITS, 1);
+        v->bfraction = ff_vc1_bfraction_lut[v->bfraction_lut_index];
         if(v->bfraction == 0) {
             v->s.pict_type = FF_BI_TYPE; /* XXX: should not happen here */
         }
@@ -843,6 +843,8 @@ int vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
     else v->halfpq = 0;
     if (v->quantizer_mode == QUANT_FRAME_EXPLICIT)
         v->pquantizer = get_bits1(gb);
+    if(v->postprocflag)
+        v->postproc = get_bits(gb, 2);
 
     if(v->s.pict_type == FF_I_TYPE || v->s.pict_type == FF_P_TYPE) v->use_ic = 0;
 
@@ -868,8 +870,6 @@ int vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
         }
         break;
     case FF_P_TYPE:
-        if(v->postprocflag)
-            v->postproc = get_bits1(gb);
         if (v->extended_mv) v->mvrange = get_unary(gb, 0, 3);
         else v->mvrange = 0;
         v->k_x = v->mvrange + 9 + (v->mvrange >> 1); //k_x can be 9 10 12 13
@@ -959,8 +959,6 @@ int vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
         }
         break;
     case FF_B_TYPE:
-        if(v->postprocflag)
-            v->postproc = get_bits1(gb);
         if (v->extended_mv) v->mvrange = get_unary(gb, 0, 3);
         else v->mvrange = 0;
         v->k_x = v->mvrange + 9 + (v->mvrange >> 1); //k_x can be 9 10 12 13

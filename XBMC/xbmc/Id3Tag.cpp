@@ -182,8 +182,7 @@ bool CID3Tag::Parse()
     const BYTE* pPic = GetPictureData(pictype, &nBufSize );
     if (pPic != NULL && nBufSize > 0)
     {
-      CPicture pic;
-      if (pic.CreateThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
+      if (CPicture::CreateThumbnailFromMemory(pPic, nBufSize, strExtension, strCoverArt))
       {
         CUtil::ThumbCacheAdd(strCoverArt, true);
       }

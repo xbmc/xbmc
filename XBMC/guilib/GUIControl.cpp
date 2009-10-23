@@ -284,10 +284,10 @@ void CGUIControl::OnPrevControl()
 
 bool CGUIControl::SendWindowMessage(CGUIMessage &message)
 {
-  CGUIWindow *pWindow = m_gWindowManager.GetWindow(GetParentID());
+  CGUIWindow *pWindow = g_windowManager.GetWindow(GetParentID());
   if (pWindow)
     return pWindow->OnMessage(message);
-  return g_graphicsContext.SendMessage(message);
+  return g_windowManager.SendMessage(message);
 }
 
 int CGUIControl::GetID(void) const
@@ -872,7 +872,7 @@ void CGUIControl::ExecuteActions(const vector<CGUIActionDescriptor> &actions)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, savedID, savedParent);
     message.SetAction(savedActions[i]);
-    g_graphicsContext.SendMessage(message);
+    g_windowManager.SendMessage(message);
   }
 }
 

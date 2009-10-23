@@ -35,7 +35,7 @@ CGUIPythonWindowDialog::~CGUIPythonWindowDialog(void)
 
 void CGUIPythonWindowDialog::Activate(int parentId)
 {
-  m_gWindowManager.RouteToWindow(this);
+  g_windowManager.RouteToWindow(this);
 
   // active this dialog...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
@@ -70,6 +70,6 @@ void CGUIPythonWindowDialog::Close()
   CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
   OnMessage(msg);
 
-  m_gWindowManager.RemoveDialog(GetID());
+  g_windowManager.RemoveDialog(GetID());
   m_bRunning = false;
 }

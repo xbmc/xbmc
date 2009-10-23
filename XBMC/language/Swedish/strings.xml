@@ -2,9 +2,9 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: blittan-->
 <!--Email: blittan@xbmc.org-->
-<!--Date of translation: 09/16/2009-->
+<!--Date of translation: 10/04/2009-->
 <!--$Revision$-->
-<!--Based on english strings version 22934-->
+<!--Based on english strings version 23277-->
 <strings>
   <string id="0">Program</string>
   <string id="1">Bilder</string>
@@ -754,6 +754,7 @@
   <string id="1419">Åskskurar</string>
   <string id="1450">Aktivera strömspar under inaktivitet</string>
   <string id="2050">Speltid</string>
+  <string id="2100">Skript misslyckades! : %s</string>
   <string id="4501">LCD typ</string>
   <string id="10000">Hem</string>
   <string id="10001">Program</string>
@@ -1372,6 +1373,7 @@
   <string id="16313">(VDPAU)Sharpness</string>
   <string id="16314">Inverse Telecine</string>
   <string id="17500">Visa insommningstimeout</string>
+  <string id="19000">Byt till kanal</string>
   <string id="20000">Inspelningsmapp</string>
   <string id="20001">Använd extern DVD spelare</string>
   <string id="20002">Extern DVD spelare</string>
@@ -1688,6 +1690,7 @@
   <string id="20431">Skriva över äldre filer?</string>
   <string id="20432">Uteslut sökväg från biblioteksuppdateringar</string>
   <string id="20433">Utvinn media metadatainformation</string>
+  <string id="20434">Grupper</string>
   <string id="21330">Visa dolda filer och mappar</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">VARNING: Vald TuxBox enhet är i inspelningsläge!</string>
@@ -1899,6 +1902,7 @@
   <string id="22043">svart/vit</string>
   <string id="23000">Vädertillägg</string>
   <string id="23001">- Tilläggsinställningar</string>
+  <string id="23050">Aktivera teletext</string>
   <string id="23100">Extern spelare är aktiv</string>
   <string id="23101">Klicka OK för att avsluta spelaren</string>
   <string id="23104">Klicka OK när uppspelningen har slutat</string>

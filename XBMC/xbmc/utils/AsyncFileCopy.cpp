@@ -23,6 +23,7 @@
 #include "GUIDialogProgress.h"
 #include "GUIWindowManager.h"
 #include "log.h"
+#include "utils/TimeUtils.h"
 
 CAsyncFileCopy::CAsyncFileCopy()
 {
@@ -56,15 +57,15 @@ bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CS
 
   // create our thread, which starts the file copy operation
   Create();
-  CGUIDialogProgress *dlg = (CGUIDialogProgress *)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
-  DWORD time = timeGetTime();
+  CGUIDialogProgress *dlg = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  DWORD time = CTimeUtils::GetTimeMS();
   while (m_running)
   {
     m_event.WaitMSec(1000 / 30);
     if (!m_running)
       break;
     // start the dialog up as needed
-    if (dlg && !dlg->IsDialogRunning() && timeGetTime() > time + 500) // wait 0.5 seconds before starting dialog
+    if (dlg && !dlg->IsDialogRunning() && CTimeUtils::GetTimeMS() > time + 500) // wait 0.5 seconds before starting dialog
     {
       dlg->SetHeading(heading);
       dlg->SetLine(0, fromStripped);

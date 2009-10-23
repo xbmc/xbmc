@@ -269,7 +269,7 @@ void CMediaManager::AddAutoSource(const CMediaSource &share, bool bAutorun)
   g_settings.AddShare("music",share);
   g_settings.AddShare("programs",share);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-  m_gWindowManager.SendThreadMessage( msg );
+  g_windowManager.SendThreadMessage( msg );
 
 #ifdef HAS_DVD_DRIVE  
   if(bAutorun)
@@ -285,7 +285,7 @@ void CMediaManager::RemoveAutoSource(const CMediaSource &share)
   g_settings.DeleteSource("music", share.strName, share.strPath, true);
   g_settings.DeleteSource("programs", share.strName, share.strPath, true);
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_SOURCES);
-  m_gWindowManager.SendThreadMessage( msg );
+  g_windowManager.SendThreadMessage( msg );
 
 #ifdef HAS_DVD_DRIVE  
   // delete cached CdInfo if any

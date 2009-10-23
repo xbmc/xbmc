@@ -25,6 +25,7 @@
 #include "URL.h"
 #include "utils/SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 extern "C" {
 #include "lib/libcmyth/cmyth.h"
@@ -233,7 +234,7 @@ bool CCMythFile::SetupLiveTV(const CURL& url)
   }
 
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
-  m_timestamp = GetTickCount();
+  m_timestamp = CTimeUtils::GetTimeMS();
   if(m_program)
     m_starttime = m_dll->proginfo_rec_start(m_program);
 
@@ -503,9 +504,9 @@ bool CCMythFile::UpdateItem(CFileItem& item)
 
 int CCMythFile::GetTotalTime()
 {
-  if(m_recorder && m_timestamp + 5000 < GetTickCount())
+  if(m_recorder && m_timestamp + 5000 < CTimeUtils::GetTimeMS())
   {
-    m_timestamp = GetTickCount();
+    m_timestamp = CTimeUtils::GetTimeMS();
     if(m_program)
       m_dll->ref_release(m_program);
     m_program = m_dll->recorder_get_cur_proginfo(m_recorder);

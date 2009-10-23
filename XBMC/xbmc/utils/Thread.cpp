@@ -35,6 +35,7 @@ typedef int (*PBEGINTHREADEX_THREADFUNC)(LPVOID lpThreadParameter);
 
 #include "log.h"
 #include "GraphicContext.h"
+#include "utils/TimeUtils.h"
 
 #ifdef __APPLE__
 //
@@ -264,7 +265,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   {
     throw 1; //ERROR should not b possible!!!
   }
-  m_iLastTime = GetTickCount() * 10000;
+  m_iLastTime = CTimeUtils::GetTimeMS() * 10000;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
   m_bAutoDelete = bAutoDelete;
@@ -398,7 +399,7 @@ void CThread::Process()
 
 float CThread::GetRelativeUsage()
 {
-  unsigned __int64 iTime = GetTickCount();
+  unsigned __int64 iTime = CTimeUtils::GetTimeMS();
   iTime *= 10000; // convert into 100ns tics
 
   // only update every 1 second

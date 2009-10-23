@@ -62,7 +62,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
   {
   case ACTION_PREVIOUS_MENU:
     {
-      m_gWindowManager.PreviousWindow();
+      g_windowManager.PreviousWindow();
       return true;
     }
     break;
@@ -76,7 +76,7 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 
   case ACTION_CALIBRATE_RESET:
     {
-      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+      CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
       pDialog->SetHeading(20325);
       CStdString strText;
       strText.Format(g_localizeStrings.Get(20326).c_str(), g_settings.m_ResInfo[m_Res[m_iCurRes]].strMode.c_str());
@@ -126,7 +126,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
     {
       g_settings.Save();
       g_graphicsContext.SetCalibrating(false);
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_SHOWN);
       // reset our screen resolution to what it was initially
       g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
       // Inform the player so we can update the resolution
@@ -141,7 +141,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       CGUIWindow::OnMessage(message);
-      m_gWindowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
+      g_windowManager.ShowOverlay(OVERLAY_STATE_HIDDEN);
       g_graphicsContext.SetCalibrating(true);
 
       // Get the allowable resolutions that we can calibrate...

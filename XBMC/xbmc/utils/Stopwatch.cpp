@@ -24,6 +24,7 @@
 #if defined(_LINUX) && !defined(__APPLE__)
 #include <sys/sysinfo.h>
 #endif
+#include "utils/TimeUtils.h"
 
 CStopWatch::CStopWatch()
 {
@@ -97,6 +98,6 @@ int64_t CStopWatch::GetTicks() const
   QueryPerformanceCounter( &currTicks );
   return currTicks.QuadPart;
 #else
-  return timeGetTime();
+  return CTimeUtils::GetTimeMS();
 #endif
 }

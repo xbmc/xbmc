@@ -104,7 +104,6 @@ static VLC vlc_spectral[11];
 
 static ChannelElement *get_che(AACContext *ac, int type, int elem_id)
 {
-    static const int8_t tags_per_config[16] = { 0, 1, 1, 2, 3, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0 };
     if (ac->tag_che_map[type][elem_id]) {
         return ac->tag_che_map[type][elem_id];
     }
@@ -154,6 +153,37 @@ static ChannelElement *get_che(AACContext *ac, int type, int elem_id)
 }
 
 /**
+ * Check for the channel element in the current channel position configuration.
+ * If it exists, make sure the appropriate element is allocated and map the
+ * channel order to match the internal FFmpeg channel layout.
+ *
+ * @param   che_pos current channel position configuration
+ * @param   type channel element type
+ * @param   id channel element id
+ * @param   channels count of the number of channels in the configuration
+ *
+ * @return  Returns error status. 0 - OK, !0 - error
+ */
+static int che_configure(AACContext *ac,
+                         enum ChannelPosition che_pos[4][MAX_ELEM_ID],
+                         int type, int id,
+                         int *channels)
+{
+    if (che_pos[type][id]) {
+        if (!ac->che[type][id] && !(ac->che[type][id] = av_mallocz(sizeof(ChannelElement))))
+            return AVERROR(ENOMEM);
+        if (type != TYPE_CCE) {
+            ac->output_data[(*channels)++] = ac->che[type][id]->ch[0].ret;
+            if (type == TYPE_CPE) {
+                ac->output_data[(*channels)++] = ac->che[type][id]->ch[1].ret;
+            }
+        }
+    } else
+        av_freep(&ac->che[type][id]);
+    return 0;
+}
+
+/**
  * Configure output channel order based on the current program configuration element.
  *
  * @param   che_pos current channel position configuration
@@ -167,41 +197,44 @@ static int output_configure(AACContext *ac,
                             int channel_config)
 {
     AVCodecContext *avctx = ac->avccontext;
-    int i, type, channels = 0;
+    int i, type, channels = 0, ret;
 
     memcpy(che_pos, new_che_pos, 4 * MAX_ELEM_ID * sizeof(new_che_pos[0][0]));
 
-    /* Allocate or free elements depending on if they are in the
-     * current program configuration.
-     *
-     * Set up default 1:1 output mapping.
-     *
-     * For a 5.1 stream the output order will be:
-     *    [ Center ] [ Front Left ] [ Front Right ] [ LFE ] [ Surround Left ] [ Surround Right ]
-     */
-
-    for (i = 0; i < MAX_ELEM_ID; i++) {
-        for (type = 0; type < 4; type++) {
-            if (che_pos[type][i]) {
-                if (!ac->che[type][i] && !(ac->che[type][i] = av_mallocz(sizeof(ChannelElement))))
-                    return AVERROR(ENOMEM);
-                if (type != TYPE_CCE) {
-                    ac->output_data[channels++] = ac->che[type][i]->ch[0].ret;
-                    if (type == TYPE_CPE) {
-                        ac->output_data[channels++] = ac->che[type][i]->ch[1].ret;
-                    }
-                }
-            } else
-                av_freep(&ac->che[type][i]);
-        }
-    }
-
     if (channel_config) {
+        for (i = 0; i < tags_per_config[channel_config]; i++) {
+            if ((ret = che_configure(ac, che_pos,
+                                     aac_channel_layout_map[channel_config - 1][i][0],
+                                     aac_channel_layout_map[channel_config - 1][i][1],
+                                     &channels)))
+                return ret;
+        }
+
         memset(ac->tag_che_map, 0,       4 * MAX_ELEM_ID * sizeof(ac->che[0][0]));
         ac->tags_mapped = 0;
+
+        avctx->channel_layout = aac_channel_layout[channel_config - 1];
     } else {
+        /* Allocate or free elements depending on if they are in the
+         * current program configuration.
+         *
+         * Set up default 1:1 output mapping.
+         *
+         * For a 5.1 stream the output order will be:
+         *    [ Center ] [ Front Left ] [ Front Right ] [ LFE ] [ Surround Left ] [ Surround Right ]
+         */
+
+        for (i = 0; i < MAX_ELEM_ID; i++) {
+            for (type = 0; type < 4; type++) {
+                if ((ret = che_configure(ac, che_pos, type, i, &channels)))
+                    return ret;
+            }
+        }
+
         memcpy(ac->tag_che_map, ac->che, 4 * MAX_ELEM_ID * sizeof(ac->che[0][0]));
         ac->tags_mapped = 4 * MAX_ELEM_ID;
+
+        avctx->channel_layout = 0;
     }
 
     avctx->channels = channels;
@@ -860,19 +893,26 @@ static int decode_spectrum_and_dequant(AACContext *ac, float coef[1024],
             } else if (cur_band_type == NOISE_BT) {
                 for (group = 0; group < ics->group_len[g]; group++) {
                     float scale;
-                    float band_energy = 0;
-                    for (k = offsets[i]; k < offsets[i + 1]; k++) {
+                    float band_energy;
+                    float *cf = coef + group * 128 + offsets[i];
+                    int len = offsets[i+1] - offsets[i];
+
+                    for (k = 0; k < len; k++) {
                         ac->random_state  = lcg_random(ac->random_state);
-                        coef[group * 128 + k] = ac->random_state;
-                        band_energy += coef[group * 128 + k] * coef[group * 128 + k];
+                        cf[k] = ac->random_state;
                     }
+
+                    band_energy = ac->dsp.scalarproduct_float(cf, cf, len);
                     scale = sf[idx] / sqrtf(band_energy);
-                    for (k = offsets[i]; k < offsets[i + 1]; k++) {
-                        coef[group * 128 + k] *= scale;
-                    }
+                    ac->dsp.vector_fmul_scalar(cf, cf, scale, len);
                 }
             } else {
                 for (group = 0; group < ics->group_len[g]; group++) {
+                    const float *vq[96];
+                    const float **vqp = vq;
+                    float *cf = coef + (group << 7) + offsets[i];
+                    int len = offsets[i + 1] - offsets[i];
+
                     for (k = offsets[i]; k < offsets[i + 1]; k += dim) {
                         const int index = get_vlc2(gb, vlc_spectral[cur_band_type - 1].table, 6, 3);
                         const int coef_tmp_idx = (group << 7) + k;
@@ -885,6 +925,7 @@ static int decode_spectrum_and_dequant(AACContext *ac, float coef[1024],
                             return -1;
                         }
                         vq_ptr = &ff_aac_codebook_vectors[cur_band_type - 1][index * dim];
+                        *vqp++ = vq_ptr;
                         if (is_cb_unsigned) {
                             if (vq_ptr[0])
                                 coef[coef_tmp_idx    ] = sign_lookup[get_bits1(gb)];
@@ -912,28 +953,17 @@ static int decode_spectrum_and_dequant(AACContext *ac, float coef[1024],
                                     } else
                                         coef[coef_tmp_idx + j] *= vq_ptr[j];
                                 }
-                            } else {
-                                coef[coef_tmp_idx    ] *= vq_ptr[0];
-                                coef[coef_tmp_idx + 1] *= vq_ptr[1];
-                                if (dim == 4) {
-                                    coef[coef_tmp_idx + 2] *= vq_ptr[2];
-                                    coef[coef_tmp_idx + 3] *= vq_ptr[3];
-                                }
-                            }
-                        } else {
-                            coef[coef_tmp_idx    ] = vq_ptr[0];
-                            coef[coef_tmp_idx + 1] = vq_ptr[1];
-                            if (dim == 4) {
-                                coef[coef_tmp_idx + 2] = vq_ptr[2];
-                                coef[coef_tmp_idx + 3] = vq_ptr[3];
                             }
                         }
-                        coef[coef_tmp_idx    ] *= sf[idx];
-                        coef[coef_tmp_idx + 1] *= sf[idx];
-                        if (dim == 4) {
-                            coef[coef_tmp_idx + 2] *= sf[idx];
-                            coef[coef_tmp_idx + 3] *= sf[idx];
-                        }
+                    }
+
+                    if (is_cb_unsigned && cur_band_type != ESC_BT) {
+                        ac->dsp.vector_fmul_sv_scalar[dim>>2](
+                            cf, cf, vq, sf[idx], len);
+                    } else if (cur_band_type == ESC_BT) {
+                        ac->dsp.vector_fmul_scalar(cf, cf, sf[idx], len);
+                    } else {    /* !is_cb_unsigned */
+                        ac->dsp.sv_fmul_scalar[dim>>2](cf, vq, sf[idx], len);
                     }
                 }
             }
@@ -1103,23 +1133,21 @@ static int decode_ics(AACContext *ac, SingleChannelElement *sce,
 /**
  * Mid/Side stereo decoding; reference: 4.6.8.1.3.
  */
-static void apply_mid_side_stereo(ChannelElement *cpe)
+static void apply_mid_side_stereo(AACContext *ac, ChannelElement *cpe)
 {
     const IndividualChannelStream *ics = &cpe->ch[0].ics;
     float *ch0 = cpe->ch[0].coeffs;
     float *ch1 = cpe->ch[1].coeffs;
-    int g, i, k, group, idx = 0;
+    int g, i, group, idx = 0;
     const uint16_t *offsets = ics->swb_offset;
     for (g = 0; g < ics->num_window_groups; g++) {
         for (i = 0; i < ics->max_sfb; i++, idx++) {
             if (cpe->ms_mask[idx] &&
                     cpe->ch[0].band_type[idx] < NOISE_BT && cpe->ch[1].band_type[idx] < NOISE_BT) {
                 for (group = 0; group < ics->group_len[g]; group++) {
-                    for (k = offsets[i]; k < offsets[i + 1]; k++) {
-                        float tmp = ch0[group * 128 + k] - ch1[group * 128 + k];
-                        ch0[group * 128 + k] += ch1[group * 128 + k];
-                        ch1[group * 128 + k]  = tmp;
-                    }
+                    ac->dsp.butterflies_float(ch0 + group * 128 + offsets[i],
+                                              ch1 + group * 128 + offsets[i],
+                                              offsets[i+1] - offsets[i]);
                 }
             }
         }
@@ -1200,7 +1228,7 @@ static int decode_cpe(AACContext *ac, GetBitContext *gb, ChannelElement *cpe)
 
     if (common_window) {
         if (ms_present)
-            apply_mid_side_stereo(cpe);
+            apply_mid_side_stereo(ac, cpe);
         if (ac->m4ac.object_type == AOT_AAC_MAIN) {
             apply_prediction(ac, &cpe->ch[0]);
             apply_prediction(ac, &cpe->ch[1]);
@@ -1804,7 +1832,8 @@ AVCodec aac_decoder = {
     aac_decode_close,
     aac_decode_frame,
     .long_name = NULL_IF_CONFIG_SMALL("Advanced Audio Coding"),
-    .sample_fmts = (enum SampleFormat[]) {
+    .sample_fmts = (const enum SampleFormat[]) {
         SAMPLE_FMT_S16,SAMPLE_FMT_NONE
     },
+    .channel_layouts = aac_channel_layout,
 };

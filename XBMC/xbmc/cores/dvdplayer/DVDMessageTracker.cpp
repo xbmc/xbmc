@@ -99,7 +99,7 @@ void CDVDMessageTracker::Process()
     while (!m_bStop && iter != m_messageList.end())
     {
       CDVDMessageTrackerItem* pItem = *iter;
-      if ((GetTickCount() - pItem->m_time_created) > 60000)
+      if ((CTimeUtils::GetTimeMS() - pItem->m_time_created) > 60000)
       {
         if (!pItem->m_debug_logged)
         {

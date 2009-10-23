@@ -49,6 +49,7 @@ bool CRenderSystemGL::InitRenderSystem()
   m_iSwapRate = 0;
   m_bVsyncInit = false;
   m_maxTextureSize = 2048;
+  m_renderCaps = 0;
   
   // init glew library
   GLenum err = glewInit();
@@ -59,22 +60,32 @@ bool CRenderSystemGL::InitRenderSystem()
   }
  
   // Get the GL version number 
-  m_RenderVerdenVersionMajor = 0;
-  m_RenderVerdenVersionMinor = 0;
+  m_RenderVersionMajor = 0;
+  m_RenderVersionMinor = 0;
 
   const char* ver = (const char*)glGetString(GL_VERSION);
   if (ver != 0)
-    sscanf(ver, "%d.%d", &m_RenderVerdenVersionMajor, &m_RenderVerdenVersionMinor);
-  
-  // Check if we need DPOT  
-  m_NeedPower2Texture = true;
-  if (GLEW_ARB_texture_non_power_of_two)
-    m_NeedPower2Texture = false;
+    sscanf(ver, "%d.%d", &m_RenderVersionMajor, &m_RenderVersionMinor);
   
   // Get our driver vendor and renderer
   m_RenderVendor = (const char*) glGetString(GL_VENDOR);
   m_RenderRenderer = (const char*) glGetString(GL_RENDERER);
   
+  // grab our capabilities
+  if (glewIsSupported("GL_EXT_texture_compression_s3tc"))
+    m_renderCaps |= RENDER_CAPS_DXT;
+
+  if (GLEW_ARB_texture_non_power_of_two || m_RenderVersionMajor >= 2)
+  {
+    m_renderCaps |= RENDER_CAPS_NPOT;
+    if (m_renderCaps & RENDER_CAPS_DXT)    // This may not be correct on all hardware
+      m_renderCaps |= RENDER_CAPS_DXT_NPOT;
+  }
+
+  m_RenderExtensions  = " ";
+  m_RenderExtensions += (const char*) glGetString(GL_EXTENSIONS);
+  m_RenderExtensions += " ";
+
   LogGraphicsInfo();
   
   m_bRenderCreated = true;
@@ -158,7 +169,12 @@ bool CRenderSystemGL::ClearBuffers(float r, float g, float b, float a)
 
 bool CRenderSystemGL::IsExtSupported(const char* extension)
 {
-  return false;
+  CStdString name;
+  name  = " ";
+  name += extension;
+  name += " ";
+
+  return m_RenderExtensions.find(name) != std::string::npos;;
 }
 
 static int64_t abs(int64_t a)
@@ -431,11 +447,6 @@ void CRenderSystemGL::SetViewPort(CRect& viewPort)
   
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
-}
-
-bool CRenderSystemGL::SupportsCompressedTextures()
-{
-  return glewIsSupported("GL_EXT_texture_compression_s3tc");
 }
 
 #endif

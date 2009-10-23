@@ -26,161 +26,105 @@
 #include "FileSystem/File.h"
 #include "FileSystem/FileCurl.h"
 #include "Util.h"
-#include "Texture.h"
+#include "DllImageLib.h"
 
 using namespace XFILE;
 
-CPicture::CPicture(void)
-{
-  ZeroMemory(&m_info, sizeof(ImageInfo));
-}
-
-CPicture::~CPicture(void)
-{
-
-}
-
-bool CPicture::Load(const CStdString& strFileName, CBaseTexture* pTexture, int iMaxWidth, int iMaxHeight)
-{
-  if (!m_dll.Load()) return NULL;
-
-  if (pTexture == NULL)
-    return false;
-
-  memset(&m_info, 0, sizeof(ImageInfo));
-
-  if (!m_dll.LoadImage(strFileName.c_str(), iMaxWidth, iMaxHeight, &m_info))
-  {
-    CLog::Log(LOGERROR, "PICTURE: Error loading image %s", strFileName.c_str());
-    return false;
-  }
-
-  pTexture->Allocate(m_info.width, m_info.height, 32, XB_FMT_B8G8R8A8);
-
-  if (pTexture)
-  {
-    DWORD destPitch = pTexture->GetPitch();
-    DWORD srcPitch = ((m_info.width + 1)* 3 / 4) * 4;
-    BYTE *pixels = (BYTE *)pTexture->GetPixels();
-    for (unsigned int y = 0; y < m_info.height; y++)
-    {
-      BYTE *dst = pixels + y * destPitch;
-      BYTE *src = m_info.texture + (m_info.height - 1 - y) * srcPitch;
-      BYTE *alpha = m_info.alpha + (m_info.height - 1 - y) * m_info.width;
-      for (unsigned int x = 0; x < m_info.width; x++)
-      {
-        *dst++ = *src++;
-        *dst++ = *src++;
-        *dst++ = *src++;
-        *dst++ = (m_info.alpha) ? *alpha++ : 0xff;  // alpha
-      }
-    }
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "%s - failed to create texture while loading image %s", __FUNCTION__, strFileName.c_str());
-    return false;
-  }
-  
-  m_dll.ReleaseImage(&m_info);
-
-  return true;
-}
-
-bool CPicture::DoCreateThumbnail(const CStdString& strFileName, const CStdString& strThumbFileName, bool checkExistence /*= false*/)
+bool CPicture::CreateThumbnail(const CStdString& file, const CStdString& thumbFile, bool checkExistence /*= false*/)
 {
   // don't create the thumb if it already exists
-  if (checkExistence && CFile::Exists(strThumbFileName))
+  if (checkExistence && CFile::Exists(thumbFile))
     return true;
 
-  CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", strFileName.c_str(),strThumbFileName.c_str());
+  CLog::Log(LOGINFO, "Creating thumb from: %s as: %s", file.c_str(), thumbFile.c_str());
 
-  // load our dll
-  if (!m_dll.Load()) return false;
-
-  memset(&m_info, 0, sizeof(ImageInfo));
-  CURL url(strFileName);
+  CURL url(file);
   if (url.GetProtocol().Equals("http") || url.GetProtocol().Equals("https"))
   {
     CFileCurl http;
     CStdString thumbData;
-    if (http.Get(strFileName, thumbData))
-      return CreateThumbnailFromMemory((const BYTE *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(strFileName), strThumbFileName);
+    if (http.Get(file, thumbData))
+      return CreateThumbnailFromMemory((const unsigned char *)thumbData.c_str(), thumbData.size(), CUtil::GetExtension(file), thumbFile);
   }
-  if (!m_dll.CreateThumbnail(strFileName.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
+  // load our dll
+  DllImageLib dll;
+  if (!dll.Load()) return false;
+  if (!dll.CreateThumbnail(file.c_str(), thumbFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize, g_guiSettings.GetBool("pictures.useexifrotation")))
   {
-    CLog::Log(LOGERROR, "PICTURE::DoCreateThumbnail: Unable to create thumbfile %s from image %s", strThumbFileName.c_str(), strFileName.c_str());
+    CLog::Log(LOGERROR, "%s: Unable to create thumbfile %s from image %s", __FUNCTION__, thumbFile.c_str(), file.c_str());
     return false;
   }
   return true;
 }
 
-bool CPicture::CacheImage(const CStdString& sourceFileName, const CStdString& destFileName)
+bool CPicture::CacheImage(const CStdString& sourceFile, const CStdString& destFile)
 {
-  CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFileName.c_str(), destFileName.c_str());
+  CLog::Log(LOGINFO, "Caching image from: %s to %s", sourceFile.c_str(), destFile.c_str());
 
 #ifdef RESAMPLE_CACHED_IMAGES
-  if (!m_dll.Load()) return false;
-  if (!m_dll.CreateThumbnail(sourceFileName.c_str(), destFileName.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
+  DllImageLib dll;
+  if (!dll.Load()) return false;
+  if (!dll.CreateThumbnail(sourceFile.c_str(), destFile.c_str(), 1280, 720, g_guiSettings.GetBool("pictures.useexifrotation")))
   {
-    CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFileName.c_str(), sourceFileName.c_str());
+    CLog::Log(LOGERROR, "%s Unable to create new image %s from image %s", __FUNCTION__, destFilec_str(), sourceFile.c_str());
     return false;
   }
   return true;
 #else
-  return CFile::Cache(sourceFileName, destFileName);
+  return CFile::Cache(sourceFile, destFile);
 #endif
 }
 
-bool CPicture::CreateThumbnailFromMemory(const BYTE* pBuffer, int nBufSize, const CStdString& strExtension, const CStdString& strThumbFileName)
+bool CPicture::CreateThumbnailFromMemory(const unsigned char* buffer, int bufSize, const CStdString& extension, const CStdString& thumbFile)
 {
-  CLog::Log(LOGINFO, "Creating album thumb from memory: %s", strThumbFileName.c_str());
-  if (!m_dll.Load()) return false;
-  if (!m_dll.CreateThumbnailFromMemory((BYTE *)pBuffer, nBufSize, strExtension.c_str(), strThumbFileName.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+  CLog::Log(LOGINFO, "Creating album thumb from memory: %s", thumbFile.c_str());
+  DllImageLib dll;
+  if (!dll.Load()) return false;
+  if (!dll.CreateThumbnailFromMemory((BYTE *)buffer, bufSize, extension.c_str(), thumbFile.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
   {
-    CLog::Log(LOGERROR, "PICTURE::CreateAlbumThumbnailFromMemory: exception: memfile FileType: %s\n", strExtension.c_str());
+    CLog::Log(LOGERROR, "%s: exception with fileType: %s", __FUNCTION__, extension.c_str());
     return false;
   }
   return true;
 }
 
-void CPicture::CreateFolderThumb(const CStdString *strThumbs, const CStdString &folderThumbnail)
+void CPicture::CreateFolderThumb(const CStdString *thumbs, const CStdString &folderThumb)
 { // we want to mold the thumbs together into one single one
-  if (!m_dll.Load()) return;
-  CStdString strThumbnails[4];
+  CStdString cachedThumbs[4];
   const char *szThumbs[4];
   for (int i=0; i < 4; i++)
   {
-    if (strThumbs[i].IsEmpty())
-      strThumbnails[i] = "";
-    else
+    if (!thumbs[i].IsEmpty())
     {
-      CFileItem item(strThumbs[i], false);
-      strThumbnails[i] = item.GetCachedPictureThumb();
-      DoCreateThumbnail(strThumbs[i], strThumbnails[i], true);
+      CFileItem item(thumbs[i], false);
+      cachedThumbs[i] = item.GetCachedPictureThumb();
+      CreateThumbnail(thumbs[i], cachedThumbs[i], true);
     }
-    szThumbs[i] = strThumbnails[i].c_str();
+    szThumbs[i] = cachedThumbs[i].c_str();
   }
-  if (!m_dll.CreateFolderThumbnail(szThumbs, folderThumbnail.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
+  DllImageLib dll;
+  if (!dll.Load()) return;
+  if (!dll.CreateFolderThumbnail(szThumbs, folderThumb.c_str(), g_advancedSettings.m_thumbSize, g_advancedSettings.m_thumbSize))
   {
-    CLog::Log(LOGERROR, "PICTURE::CreateFolderThumb() failed for folder thumb %s", folderThumbnail.c_str());
+    CLog::Log(LOGERROR, "%s failed for folder thumb %s", __FUNCTION__, folderThumb.c_str());
   }
 }
 
-bool CPicture::CreateThumbnailFromSurface(BYTE* pBuffer, int width, int height, int stride, const CStdString &strThumbFileName)
+bool CPicture::CreateThumbnailFromSurface(const unsigned char *buffer, int width, int height, int stride, const CStdString &thumbFile)
 {
-  if (!pBuffer || !m_dll.Load()) return false;
-  return m_dll.CreateThumbnailFromSurface(pBuffer, width, height, stride, strThumbFileName.c_str());
+  DllImageLib dll;
+  if (!buffer || !dll.Load()) return false;
+  return dll.CreateThumbnailFromSurface((BYTE *)buffer, width, height, stride, thumbFile.c_str());
 }
 
 int CPicture::ConvertFile(const CStdString &srcFile, const CStdString &destFile, float rotateDegrees, int width, int height, unsigned int quality, bool mirror)
 {
-  if (!m_dll.Load()) return false;
-  int ret;
-  ret=m_dll.ConvertFile(srcFile.c_str(), destFile.c_str(), rotateDegrees, width, height, quality, mirror);
-  if (ret!=0)
+  DllImageLib dll;
+  if (!dll.Load()) return false;
+  int ret = dll.ConvertFile(srcFile.c_str(), destFile.c_str(), rotateDegrees, width, height, quality, mirror);
+  if (ret)
   {
-    CLog::Log(LOGERROR, "PICTURE: Error %i converting image %s", ret, srcFile.c_str());
+    CLog::Log(LOGERROR, "%s: Error %i converting image %s", __FUNCTION__, ret, srcFile.c_str());
     return ret;
   }
   return ret;

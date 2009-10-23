@@ -39,7 +39,7 @@ static int FixFlags( int flags )
 	// grab the flag bits
 	int method = flags & ( kDxt1 | kDxt3 | kDxt5 );
 	int fit = flags & ( kColourIterativeClusterFit | kColourClusterFit | kColourRangeFit );
-	int extra = flags & kWeightColourByAlpha;
+	int extra = flags & ( kWeightColourByAlpha | kSourceBGRA );
 	
 	// set defaults
 	if( method != kDxt3 && method != kDxt5 )
@@ -124,6 +124,23 @@ int GetStorageRequirements( int width, int height, int flags )
 	return blockcount*blocksize;	
 }
 
+void CopyRGBA( u8 const* source, u8* dest, int flags )
+{
+	if (flags & kSourceBGRA)
+	{
+		// convert from bgra to rgba
+		dest[0] = source[2];
+		dest[1] = source[1];
+		dest[2] = source[0];
+		dest[3] = source[3];
+	}
+	else
+	{
+		for( int i = 0; i < 4; ++i )
+			*dest++ = *source++;
+	}
+}
+
 void CompressImage( u8 const* rgba, int width, int height, void* blocks, int flags, float* metric )
 {
 	// fix any bad flags
@@ -155,17 +172,11 @@ void CompressImage( u8 const* rgba, int width, int height, void* blocks, int fla
 					{
 						// copy the rgba value
 						u8 const* sourcePixel = rgba + 4*( width*sy + sx );
-						for( int i = 0; i < 4; ++i )
-							*targetPixel++ = *sourcePixel++;
-							
+						CopyRGBA(sourcePixel, targetPixel, flags);
 						// enable this pixel
 						mask |= ( 1 << ( 4*py + px ) );
 					}
-					else
-					{
-						// skip this pixel as its outside the image
-						targetPixel += 4;
-					}
+					targetPixel += 4;
 				}
 			}
 			
@@ -210,14 +221,9 @@ void DecompressImage( u8* rgba, int width, int height, void const* blocks, int f
 						u8* targetPixel = rgba + 4*( width*sy + sx );
 						
 						// copy the rgba value
-						for( int i = 0; i < 4; ++i )
-							*targetPixel++ = *sourcePixel++;
+						CopyRGBA(sourcePixel, targetPixel, flags);
 					}
-					else
-					{
-						// skip this pixel as its outside the image
-						sourcePixel += 4;
-					}
+					sourcePixel += 4;
 				}
 			}
 			
@@ -232,7 +238,7 @@ static double ErrorSq(double x, double y)
 	return (x - y) * (x - y);
 }
 
-void ComputeMSE( u8 const *rgba, u8 const *dxt, int flags, int width, int height, double &colourMSE, double &alphaMSE )
+void ComputeMSE( u8 const *rgba, int width, int height, u8 const *dxt, int flags, double &colourMSE, double &alphaMSE )
 {
 	// fix any bad flags
 	flags = FixFlags( flags );
@@ -263,20 +269,18 @@ void ComputeMSE( u8 const *rgba, u8 const *dxt, int flags, int width, int height
 					if( sx < width && sy < height )
 					{
 						u8 const* targetPixel = rgba + 4*( width*sy + sx );
+						u8 colour[4];
+						CopyRGBA(targetPixel, colour, flags);
 						// compute the MSE of colour and alpha
 						double cmse = 0;
 						for( int i = 0; i < 3; ++i )
-							cmse += ErrorSq(*targetPixel++, *sourcePixel++);
-						if (*targetPixel == 0 && *sourcePixel == 0) // transparent source and dest						double cmse = 0;
+							cmse += ErrorSq(sourcePixel[i], colour[i]);
+						if (colour[3] == 0 && sourcePixel[3] == 0) // transparent source and dest						double cmse = 0;
 							cmse = 0; // transparent in both, so colour is inconsequential
-						alphaMSE += ErrorSq(*targetPixel++, *sourcePixel++);
+						alphaMSE += ErrorSq(colour[3], sourcePixel[3]);
 						colourMSE += cmse;
 					}
-					else
-					{
-						// skip this pixel as its outside the image
-						sourcePixel += 4;
-					}
+					sourcePixel += 4;
 				}
 			}
 			

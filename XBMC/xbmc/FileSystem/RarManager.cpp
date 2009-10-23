@@ -106,7 +106,7 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   //Extract archived file, using existing local copy or overwriting if wanted...
   if (iSize > EXTRACTION_WARN_SIZE)
   {
-    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)m_gWindowManager.GetWindow(WINDOW_DIALOG_YES_NO);
+    CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
     if (pDialog)
     {
       pDialog->SetHeading(120);

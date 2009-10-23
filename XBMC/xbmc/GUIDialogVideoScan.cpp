@@ -139,7 +139,7 @@ void CGUIDialogVideoScan::OnDirectoryScanned(const CStdString& strDirectory)
 {
   CGUIMessage msg(GUI_MSG_DIRECTORY_SCANNED, 0, 0, 0);
   msg.SetStringParam(strDirectory);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 }
 
 void CGUIDialogVideoScan::OnFinished()
@@ -149,7 +149,7 @@ void CGUIDialogVideoScan::OnFinished()
 
   // send message
   CGUIMessage msg(GUI_MSG_SCAN_FINISHED, 0, 0, 0);
-  m_gWindowManager.SendThreadMessage(msg);
+  g_windowManager.SendThreadMessage(msg);
 
   // be sure to restore the settings
   CLog::Log(LOGINFO,"Video scan was stopped or finished ... restoring FindRemoteThumbs");

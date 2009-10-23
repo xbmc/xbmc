@@ -49,6 +49,7 @@ public:
                         CUSTOM_CHARSET_MAX
                 };
   virtual void Initialize();
+  virtual bool IsConnected();
   virtual void Stop() = 0;
   virtual void Suspend() = 0; 
   virtual void Resume() = 0; 

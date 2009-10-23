@@ -22,7 +22,6 @@
  */
 
 #include "XBPyThread.h"
-#include "IMsgSenderCallback.h"
 #include "cores/IPlayer.h"
 #include "utils/CriticalSection.h"
 
@@ -41,12 +40,11 @@ typedef std::vector<PyElem> PyList;
 typedef std::vector<PVOID> PlayerCallbackList;
 typedef std::vector<LibraryLoader*> PythonExtensionLibraries;
 
-class XBPython : public IMsgSenderCallback, public IPlayerCallback
+class XBPython : public IPlayerCallback
 {
 public:
   XBPython();
   virtual ~XBPython();
-  virtual bool SendMessage(CGUIMessage& message);
   virtual void OnPlayBackEnded();
   virtual void OnPlayBackStarted();
   virtual void OnPlayBackStopped();

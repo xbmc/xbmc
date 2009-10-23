@@ -59,7 +59,7 @@ CStdString CLastFMDirectory::BuildURLFromInfo()
 
 bool CLastFMDirectory::RetrieveList(CStdString url)
 {
-  m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+  m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
   if (m_dlgProgress)
   {
     m_dlgProgress->ShowProgressBar(false);

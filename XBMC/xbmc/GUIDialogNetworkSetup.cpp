@@ -100,7 +100,7 @@ bool CGUIDialogNetworkSetup::OnMessage(CGUIMessage& message)
 // \return True if the network address is valid, false otherwise.
 bool CGUIDialogNetworkSetup::ShowAndGetNetworkAddress(CStdString &path)
 {
-  CGUIDialogNetworkSetup *dialog = (CGUIDialogNetworkSetup *)m_gWindowManager.GetWindow(WINDOW_DIALOG_NETWORK_SETUP);
+  CGUIDialogNetworkSetup *dialog = (CGUIDialogNetworkSetup *)g_windowManager.GetWindow(WINDOW_DIALOG_NETWORK_SETUP);
   if (!dialog) return false;
   dialog->Initialize();
   dialog->SetPath(path);

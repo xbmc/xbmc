@@ -384,8 +384,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
         strCoverArt = CUtil::GetCachedMusicThumb(tag.GetURL());
       if (!CUtil::ThumbExists(strCoverArt))
       {
-        CPicture pic;
-        if (pic.CreateThumbnailFromMemory( m_thumbData, m_thumbSize, "", strCoverArt ) )
+        if (CPicture::CreateThumbnailFromMemory( m_thumbData, m_thumbSize, "", strCoverArt ) )
         {
           CUtil::ThumbCacheAdd( strCoverArt, true );
         }

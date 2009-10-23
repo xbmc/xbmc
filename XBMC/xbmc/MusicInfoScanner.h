@@ -65,7 +65,7 @@ protected:
   void UpdateFolderThumb(const VECSONGS &songs, const CStdString &folderPath);
   int GetPathHash(const CFileItemList &items, CStdString &hash);
   void GetAlbumArtwork(long id, const CAlbum &artist);
-  void GetArtistArtwork(long id, const CStdString &artistName, const CArtist &artist);
+  void GetArtistArtwork(long id, const CStdString &artistName, const CArtist *artist = NULL);
 
   bool DoScan(const CStdString& strDirectory);
 

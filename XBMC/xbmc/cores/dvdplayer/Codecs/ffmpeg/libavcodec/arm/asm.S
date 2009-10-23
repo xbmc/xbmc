@@ -36,7 +36,8 @@ ELF     .eabi_attribute 25, \val
 
         .macro function name, export=0
 .if \export
-        .global \name
+        .global EXTERN_ASM\name
+EXTERN_ASM\name:
 .endif
 ELF     .type   \name, %function
         .func   \name
@@ -44,7 +45,7 @@ ELF     .type   \name, %function
         .endm
 
         .macro movrel rd, val
-#if HAVE_ARMV6T2 && !CONFIG_SHARED
+#if HAVE_ARMV6T2 && !CONFIG_SHARED && !CONFIG_PIC
         movw            \rd, #:lower16:\val
         movt            \rd, #:upper16:\val
 #else
@@ -60,3 +61,7 @@ ELF     .type   \name, %function
 #   define VFP   @
 #   define NOVFP
 #endif
+
+#define GLUE(a, b) a ## b
+#define JOIN(a, b) GLUE(a, b)
+#define X(s) JOIN(EXTERN_ASM, s)

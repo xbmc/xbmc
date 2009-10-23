@@ -22,41 +22,35 @@
  */
 
 #include "StdString.h"
-#include "Thread.h"
+#include "Job.h"
 
 class CInfoLoader;
 
-class CBackgroundLoader : public CThread
+class CInfoJob : public CJob
 {
 public:
-  CBackgroundLoader(CInfoLoader *callback);
-  ~CBackgroundLoader();
-
-  void Start();
-
-protected:
-  void Process();
-  virtual void GetInformation() {};
-  CInfoLoader *m_callback;
+  CInfoJob(CInfoLoader *loader);
+  virtual void DoWork();
+private:
+  CInfoLoader *m_loader;  
 };
 
-class CInfoLoader
+class CInfoLoader : public IJobCallback
 {
 public:
-  CInfoLoader(const char *type);
+  CInfoLoader(unsigned int timeToRefresh = 5 * 60 * 1000);
   virtual ~CInfoLoader();
-  const char *GetInfo(int info);
+
+  CStdString GetInfo(int info);
   void Refresh();
-  void LoaderFinished();
-  void ResetTimer();
+  
+  virtual void OnJobComplete(unsigned int jobID, CJob *job);
+  virtual void DoWork()=0;
 protected:
-  virtual const char *TranslateInfo(int info);
-  virtual const char *BusyInfo(int info);
-  virtual DWORD TimeToNextRefreshInMs() { return 300000; }; // default to 5 minutes
+  virtual CStdString TranslateInfo(int info) const;
+  virtual CStdString BusyInfo(int info) const;
 private:
-  DWORD m_refreshTime;
-  CBackgroundLoader *m_backgroundLoader;
+  unsigned int m_refreshTime;
+  unsigned int m_timeToRefresh;
   bool m_busy;
-  CStdString m_busyText;
-  CStdString m_type;
 };

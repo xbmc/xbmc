@@ -504,7 +504,7 @@ void CGUIWindow::OnInitWindow()
   RestoreControlStates();
   SetInitialVisibility();
   QueueAnimation(ANIM_TYPE_WINDOW_OPEN);
-  m_gWindowManager.ShowOverlay(m_overlayState);
+  g_windowManager.ShowOverlay(m_overlayState);
   
   if (!m_manualRunActions)
   {
@@ -532,7 +532,7 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
       while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
       {
-        m_gWindowManager.Process(true);
+        g_windowManager.Process(true);
       }
     }
   }
@@ -727,7 +727,7 @@ void CGUIWindow::SetInitialVisibility()
 
 bool CGUIWindow::IsActive() const
 {
-  return m_gWindowManager.IsWindowActive(GetID());
+  return g_windowManager.IsWindowActive(GetID());
 }
 
 bool CGUIWindow::CheckAnimation(ANIMATION_TYPE animType)
@@ -1003,7 +1003,7 @@ void CGUIWindow::RunActions(std::vector<CGUIActionDescriptor>& actions)
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
     message.SetAction(tempActions[i]);
-    g_graphicsContext.SendMessage(message);
+    g_windowManager.SendMessage(message);
   }
 }
 

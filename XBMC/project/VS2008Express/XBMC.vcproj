@@ -46,7 +46,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\guilib\freetype2\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -141,7 +141,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\guilib\freetype2\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -235,7 +235,7 @@
 				InlineFunctionExpansion="0"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\guilib\freetype2\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libPython\Python\PC;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="false"
@@ -330,7 +330,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew;..\..\guilib\freetype2\include"
+				AdditionalIncludeDirectories="..\..\xbmc\cores\dvdplayer;..\..\xbmc\win32;..\..\xbmc\cores;..\..\xbmc\;..\..\xbmc\utils;..\..\guilib\;..\..\;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\xbmc\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\xbmc\lib\libUPnP\Platinum\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\Core;..\..\xbmc\lib\libUPnP\Platinum\Thirdparty\Neptune\Source\System\Win32;..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay;..\..\xbmc\FileSystem;..\..\xbmc\lib\libRTMP;..\..\xbmc\lib\boost;..\..\xbmc\lib\libPython\Python\PC;&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\lib\libsamplerate\src;..\..\xbmc\lib;..\..\xbmc\lib\libglew;..\..\lib\freetype\include"
 				PreprocessorDefinitions="_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;WINVER=0x0500;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -555,22 +555,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerCoreFactory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\xbmc\cores\PlayerSelectionRule.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\xbmc\cores\ssrc.cpp"
 				>
 			</File>
@@ -747,6 +731,14 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\dvdplayer\DVDTSCorrection.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\Edl.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\dvdplayer\Edl.h"
 					>
 				</File>
 				<File
@@ -1606,6 +1598,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\xbmc\cores\paplayer\OggCallback.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\paplayer\OggCallback.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\paplayer\OGGcodec.cpp"
 					>
 				</File>
@@ -1990,6 +1990,14 @@
 				Name="VideoRenderers"
 				>
 				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.cpp"
 					>
 				</File>
@@ -2135,6 +2143,30 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\cores\ExternalPlayer\ExternalPlayer.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="PlayerCoreFactory"
+				>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreConfig.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerCoreFactory.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\xbmc\cores\playercorefactory\PlayerSelectionRule.h"
 					>
 				</File>
 			</Filter>
@@ -2843,14 +2875,6 @@
 				</File>
 				<File
 					RelativePath="..\..\xbmc\DynamicDll.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Edl.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\xbmc\Edl.h"
 					>
 				</File>
 				<File

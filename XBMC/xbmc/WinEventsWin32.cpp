@@ -333,6 +333,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       g_graphicsContext.NotifyAppFocusChange(g_application.m_AppFocused);
       break;
     case WM_SYSKEYDOWN:
+      switch (wParam) 
+      {
+        case VK_F4: //alt-f4, default event quit.
+          return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+        case VK_RETURN: //alt-return
+          if ((lParam & REPEATED_KEYMASK) == 0)
+            g_graphicsContext.ToggleFullScreenRoot();
+          return 0;
+      }
+      //deliberate fallthrough
     case WM_KEYDOWN: 
     {
       switch (wParam) 
@@ -355,10 +365,6 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
             wParam = VK_RMENU;
           else
             wParam = VK_LMENU;
-          break;
-        case VK_F4:
-          if (GetKeyState(VK_MENU) & 0x8000) //alt-f4, default event quit.
-            return(DefWindowProc(hWnd, uMsg, wParam, lParam));
           break;
       }
       XBMC_keysym keysym;
@@ -410,6 +416,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       m_pEventFunc(newEvent);
     }
     return(0);
+    case WM_SYSCHAR:
+      if (wParam == VK_RETURN) //stop system beep on alt-return
+        return 0;
+      break;
     case WM_MOUSEMOVE:
       newEvent.type = XBMC_MOUSEMOTION;
       newEvent.motion.x = GET_X_LPARAM(lParam);
@@ -549,42 +559,5 @@ void CWinEventsWin32::WindowFromScreenCoords(HWND hWnd, POINT *point)
   point->x -= windowPos.x;
   point->y -= windowPos.y;
 }
-
-/*
- * elis
- * need to implement for windows in new event model
- * 
-bool CXBApplicationEx::ProcessWin32Shortcuts(SDL_Event& event)
-{
-  static bool alt = false;
-  static CAction action;
-
-  alt = !!(SDL_GetModState() & (XBMCXBMCKMOD_LALT | XBMCXBMCKMOD_RALT));
-
-  if (event.key.type == SDL_KEYDOWN)
-  {
-    if(alt)
-    {
-      switch(event.key.keysym.sym)
-      {
-      case SDLK_F4:  // alt-F4 to quit
-        if (!g_application.m_bStop)
-          g_application.getApplicationMessenger().Quit();
-      case SDLK_RETURN:  // alt-Return to toggle fullscreen
-        {
-          action.id = ACTION_TOGGLE_FULLSCREEN;
-          g_application.OnAction(action);
-          return true;
-        }
-        return false;
-      default:
-        return false;
-      }
-    }
-  }
-  return false;
-}
-
-*/
 
 #endif

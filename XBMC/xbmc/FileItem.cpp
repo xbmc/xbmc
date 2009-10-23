@@ -57,6 +57,7 @@
 #include "GUISettings.h"
 #include "AdvancedSettings.h"
 #include "Settings.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -775,7 +776,7 @@ bool CFileItem::IsPicture() const
   if (g_stSettings.m_pictureExtensions.Find(extension) != -1)
     return true;
 
-  if (extension == ".tbn")
+  if (extension == ".tbn" || extension == ".dds")
     return true;
 
   return false;
@@ -1690,9 +1691,9 @@ void CFileItemList::Reserve(int iCount)
 void CFileItemList::Sort(FILEITEMLISTCOMPARISONFUNC func)
 {
   CSingleLock lock(m_lock);
-  DWORD dwStart = GetTickCount();
+  DWORD dwStart = CTimeUtils::GetTimeMS();
   std::sort(m_items.begin(), m_items.end(), func);
-  DWORD dwElapsed = GetTickCount() - dwStart;
+  DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStart;
   CLog::Log(LOGDEBUG,"%s, sorting took %u millis", __FUNCTION__, dwElapsed);
 }
 
@@ -2586,8 +2587,7 @@ void CFileItem::SetUserMusicThumb(bool alwaysCheckRemote /* = false */)
   if (!thumb.IsEmpty())
   {
     CStdString cachedThumb(CUtil::GetCachedMusicThumb(m_strPath));
-    CPicture pic;
-    pic.DoCreateThumbnail(thumb, cachedThumb);
+    CPicture::CreateThumbnail(thumb, cachedThumb);
   }
 
   SetCachedMusicThumb();
@@ -2797,8 +2797,7 @@ void CFileItem::SetUserVideoThumb()
   if (!thumb.IsEmpty())
   {
     CStdString cachedThumb(GetCachedVideoThumb());
-    CPicture pic;
-    pic.DoCreateThumbnail(thumb, cachedThumb);
+    CPicture::CreateThumbnail(thumb, cachedThumb);
   }
   SetCachedVideoThumb();
 }
@@ -2902,10 +2901,7 @@ CStdString CFileItem::CacheFanart(bool probe) const
     return "";
 
   if (!probe)
-  {
-    CPicture pic;
-    pic.CacheImage(localFanart, cachedFanart);
-  }
+    CPicture::CacheImage(localFanart, cachedFanart);
 
   return localFanart;
 }
@@ -3002,8 +2998,7 @@ void CFileItem::SetUserProgramThumb()
   CStdString thumb(GetCachedProgramThumb());
   if (CFile::Exists(fileThumb))
   { // cache
-    CPicture pic;
-    if (pic.DoCreateThumbnail(fileThumb, thumb))
+    if (CPicture::CreateThumbnail(fileThumb, thumb))
       SetThumbnailImage(thumb);
   }
   else if (m_bIsFolder)
@@ -3012,8 +3007,7 @@ void CFileItem::SetUserProgramThumb()
     CStdString folderThumb(GetFolderThumb());
     if (CFile::Exists(folderThumb))
     {
-      CPicture pic;
-      if (pic.DoCreateThumbnail(folderThumb, thumb))
+      if (CPicture::CreateThumbnail(folderThumb, thumb))
         SetThumbnailImage(thumb);
     }
   }

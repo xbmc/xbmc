@@ -54,7 +54,7 @@ bool CGUIDialogOK::OnMessage(CGUIMessage& message)
 // \brief Show CGUIDialogOK dialog, then wait for user to dismiss it.
 void CGUIDialogOK::ShowAndGetInput(int heading, int line0, int line1, int line2)
 {
-  CGUIDialogOK *dialog = (CGUIDialogOK *)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+  CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
   if (!dialog) return;
   dialog->SetHeading( heading );
   dialog->SetLine( 0, line0 );

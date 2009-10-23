@@ -32,7 +32,7 @@
 
 using namespace std;
 
-#define ACTIVE_WINDOW	m_gWindowManager.GetActiveWindow()
+#define ACTIVE_WINDOW	g_windowManager.GetActiveWindow()
 
 #ifndef __GNUC__
 #pragma code_seg("PY_TEXT")
@@ -57,7 +57,7 @@ namespace PYXBMC
       // user specified window id, use this one if it exists
       // It is not possible to capture key presses or button presses
       PyGUILock();
-      pWindow->pWindow = m_gWindowManager.GetWindow(pWindow->iWindowId);
+      pWindow->pWindow = g_windowManager.GetWindow(pWindow->iWindowId);
       PyGUIUnlock();
       if (!pWindow->pWindow)
       {
@@ -76,13 +76,13 @@ namespace PYXBMC
       int id = WINDOW_PYTHON_START;
       // if window 13099 is in use it means python can't create more windows
       PyGUILock();
-      if (m_gWindowManager.GetWindow(WINDOW_PYTHON_END))
+      if (g_windowManager.GetWindow(WINDOW_PYTHON_END))
       {
         PyGUIUnlock();
         PyErr_SetString(PyExc_Exception, "maximum number of windows reached");
         return false;
       }
-      while(id < WINDOW_PYTHON_END && m_gWindowManager.GetWindow(id) != NULL) id++;
+      while(id < WINDOW_PYTHON_END && g_windowManager.GetWindow(id) != NULL) id++;
       PyGUIUnlock();
 
       pWindow->iWindowId = id;
@@ -108,7 +108,7 @@ namespace PYXBMC
       }
 
       PyGUILock();
-      m_gWindowManager.Add(pWindow->pWindow);
+      g_windowManager.Add(pWindow->pWindow);
       PyGUIUnlock();
     }
     return true;
@@ -126,7 +126,7 @@ namespace PYXBMC
     // lock xbmc GUI before accessing data from it
     PyGUILock();
 
-    pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (!pWindow)
     {
       PyGUIUnlock();
@@ -345,12 +345,12 @@ namespace PYXBMC
       // first change to an existing window
       if (ACTIVE_WINDOW == self->iWindowId)
       {
-        if(m_gWindowManager.GetWindow(self->iOldWindowId))
+        if(g_windowManager.GetWindow(self->iOldWindowId))
         {
-          m_gWindowManager.ActivateWindow(self->iOldWindowId);
+          g_windowManager.ActivateWindow(self->iOldWindowId);
         }
         // old window does not exist anymore, switch to home
-        else m_gWindowManager.ActivateWindow(WINDOW_HOME);
+        else g_windowManager.ActivateWindow(WINDOW_HOME);
       }
       // Free any window properties
       self->pWindow->ClearProperties();
@@ -384,7 +384,7 @@ namespace PYXBMC
     PyGUIUnlock();
     if (self->bIsPythonWindow)
     {
-      m_gWindowManager.Remove(self->pWindow->GetID());
+      g_windowManager.Remove(self->pWindow->GetID());
       delete self->pWindow;
     }
     self->vecControls.clear();
@@ -413,7 +413,7 @@ namespace PYXBMC
     if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Activate(ACTIVE_WINDOW);
     else if (WindowXMLDialog_Check(self))	((CGUIPythonWindowXMLDialog*)self->pWindow)->Activate(ACTIVE_WINDOW);
     // activate the window
-    else m_gWindowManager.ActivateWindow(self->iWindowId);
+    else g_windowManager.ActivateWindow(self->iWindowId);
     PyGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -444,7 +444,7 @@ namespace PYXBMC
     if (WindowDialog_Check(self))	((CGUIPythonWindowDialog*)self->pWindow)->Close();
     else if (WindowXMLDialog_Check(self)) ((CGUIPythonWindowXMLDialog*)self->pWindow)->Close();
     // close the window by activating the parent one
-    else m_gWindowManager.ActivateWindow(self->iOldWindowId);
+    else g_windowManager.ActivateWindow(self->iOldWindowId);
     self->iOldWindowId = 0;
 
     PyGUIUnlock();
@@ -547,7 +547,7 @@ namespace PYXBMC
     // lock xbmc GUI before accessing data from it
     PyGUILock();
 
-    pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (!pWindow)
     {
       PyGUIUnlock();
@@ -661,7 +661,7 @@ namespace PYXBMC
 
   PyObject* Window_SetFocus(Window *self, PyObject *args)
   {
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     Control* pControl;
@@ -697,7 +697,7 @@ namespace PYXBMC
 
   PyObject* Window_SetFocusId(Window *self, PyObject *args)
   {
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     int iControlId;
@@ -727,7 +727,7 @@ namespace PYXBMC
   PyObject* Window_GetFocus(Window *self, PyObject *args)
   {
     int iControlId = -1;
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
 
@@ -753,7 +753,7 @@ namespace PYXBMC
   PyObject* Window_GetFocusId(Window *self, PyObject *args)
   {
     int iControlId = -1;
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     PyGUILock();
@@ -779,7 +779,7 @@ namespace PYXBMC
 
   PyObject* Window_RemoveControl(Window *self, PyObject *args)
   {
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     Control* pControl;
@@ -889,7 +889,7 @@ namespace PYXBMC
       return NULL;
     }
 
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     pWindow->SetCoordsRes((RESOLUTION)res);
@@ -935,7 +935,7 @@ namespace PYXBMC
     if (!PyGetUnicodeString(uText, value, 1))
       return NULL;
 
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     CStdString lowerKey = key;
@@ -977,7 +977,7 @@ namespace PYXBMC
     }
     if (!key) return NULL;
 
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     PyGUILock();
@@ -1017,7 +1017,7 @@ namespace PYXBMC
     }
     if (!key) return NULL;
 
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     PyGUILock();
@@ -1038,7 +1038,7 @@ namespace PYXBMC
 
   PyObject* Window_ClearProperties(Window *self, PyObject *args)
   {
-    CGUIWindow* pWindow = (CGUIWindow*)m_gWindowManager.GetWindow(self->iWindowId);
+    CGUIWindow* pWindow = (CGUIWindow*)g_windowManager.GetWindow(self->iWindowId);
     if (PyWindowIsNull(pWindow)) return NULL;
 
     PyGUILock();

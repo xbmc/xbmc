@@ -107,7 +107,7 @@ bool CGUIWindowVideoInfo::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       m_bRefresh = false;
       m_bRefreshAll = true;
@@ -433,7 +433,7 @@ void CGUIWindowVideoInfo::Update()
   }
 
   // Check for resumability
-  CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+  CGUIWindowVideoFiles *window = (CGUIWindowVideoFiles *)g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (window && window->GetResumeItemOffset(m_movieItem.get()) > 0)
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
   else
@@ -454,7 +454,7 @@ void CGUIWindowVideoInfo::Update()
   if (m_hasUpdatedThumb)
   {
     CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-    g_graphicsContext.SendMessage(reload);
+    g_windowManager.SendMessage(reload);
   }
 }
 
@@ -535,7 +535,7 @@ void CGUIWindowVideoInfo::OnSearch(CStdString& strSearch)
 
   if (items.Size())
   {
-    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)m_gWindowManager.GetWindow(WINDOW_DIALOG_SELECT);
+    CGUIDialogSelect* pDlgSelect = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
     pDlgSelect->Reset();
     pDlgSelect->SetHeading(283);
     items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -685,14 +685,14 @@ void CGUIWindowVideoInfo::Play(bool resume)
     CStdString strPath;
     strPath.Format("videodb://2/2/%i/",m_movieItem->GetVideoInfoTag()->m_iDbId);
     Close();
-    m_gWindowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
+    g_windowManager.ActivateWindow(WINDOW_VIDEO_NAV,strPath);
     return; 
   }
 
   CFileItem movie(*m_movieItem->GetVideoInfoTag());
   if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
     movie.m_strPath = m_movieItem->m_strPath;
-  CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)m_gWindowManager.GetWindow(WINDOW_VIDEO_FILES);
+  CGUIWindowVideoFiles* pWindow = (CGUIWindowVideoFiles*)g_windowManager.GetWindow(WINDOW_VIDEO_FILES);
   if (pWindow)
   {
     // close our dialog
@@ -748,8 +748,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   if (CFile::Exists(localThumb))
   {
     CUtil::AddFileToFolder(g_advancedSettings.m_cachePath, "localthumb.jpg", cachedLocalThumb);
-    CPicture pic;
-    pic.DoCreateThumbnail(localThumb, cachedLocalThumb);
+    CPicture::CreateThumbnail(localThumb, cachedLocalThumb);
     CFileItemPtr item(new CFileItem("thumb://Local", false));
     item->SetThumbnailImage(cachedLocalThumb);
     item->SetLabel(g_localizeStrings.Get(20017));
@@ -797,10 +796,7 @@ void CGUIWindowVideoInfo::OnGetThumb()
   else if (result == "thumb://Local")
     CFile::Cache(cachedLocalThumb, cachedThumb);
   else if (CFile::Exists(result))
-  {
-    CPicture pic;
-    pic.DoCreateThumbnail(result, cachedThumb);
-  }
+    CPicture::CreateThumbnail(result, cachedThumb);
   else
     result = "thumb://None";
 
@@ -910,11 +906,10 @@ void CGUIWindowVideoInfo::OnGetFanart()
     bool succeeded = downloader.Copy(m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL(), tempFile, g_localizeStrings.Get(13413));
     if (succeeded)
     {
-      CPicture pic;
       if (flip)
-        pic.ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
+        CPicture::ConvertFile(tempFile, cachedThumb,0,1920,-1,100,true);
       else
-        pic.CacheImage(tempFile, cachedThumb);
+        CPicture::CacheImage(tempFile, cachedThumb);
     }
     CFile::Delete(tempFile);
     if (!succeeded)
@@ -922,11 +917,10 @@ void CGUIWindowVideoInfo::OnGetFanart()
   }
   else if (CFile::Exists(result))
   { // local file
-    CPicture pic;
     if (flip)
-      pic.ConvertFile(result, cachedThumb,0,1920,-1,100,true);
+      CPicture::ConvertFile(result, cachedThumb,0,1920,-1,100,true);
     else
-      pic.CacheImage(result, cachedThumb);
+      CPicture::CacheImage(result, cachedThumb);
   }
 
   CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show

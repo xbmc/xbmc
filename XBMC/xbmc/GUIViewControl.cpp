@@ -20,6 +20,7 @@
  */
 
 #include "GUIViewControl.h"
+#include "GUIWindowManager.h"
 #include "Util.h"
 #include "FileItem.h"
 #include "LocalizeStrings.h"
@@ -115,7 +116,7 @@ void CGUIViewControl::SetCurrentView(int viewMode)
   if (hasFocus)
   {
     CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, pNewView->GetID(), 0);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
 
   // Update it with the contents
@@ -137,7 +138,7 @@ void CGUIViewControl::UpdateContents(const CGUIControl *control, int currentItem
 {
   if (!control || !m_fileItems) return;
   CGUIMessage msg(GUI_MSG_LABEL_BIND, m_parentWindow, control->GetID(), currentItem, 0, m_fileItems);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 }
 
 void CGUIViewControl::UpdateView()
@@ -156,7 +157,7 @@ int CGUIViewControl::GetSelectedItem(const CGUIControl *control) const
 {
   if (!control || !m_fileItems) return -1;
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, m_parentWindow, control->GetID());
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 
   int iItem = msg.GetParam1();
   if (iItem >= m_fileItems->Size())
@@ -181,7 +182,7 @@ void CGUIViewControl::SetSelectedItem(int item)
     return; // no valid current view!
 
   CGUIMessage msg(GUI_MSG_ITEM_SELECT, m_parentWindow, m_visibleViews[m_currentView]->GetID(), item);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 }
 
 void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
@@ -212,7 +213,7 @@ void CGUIViewControl::SetFocused()
     return; // no valid current view!
 
   CGUIMessage msg(GUI_MSG_SETFOCUS, m_parentWindow, m_visibleViews[m_currentView]->GetID(), 0);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 }
 
 bool CGUIViewControl::HasControl(int viewControlID) const
@@ -276,7 +277,7 @@ void CGUIViewControl::Clear()
     return; // no valid current view!
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_visibleViews[m_currentView]->GetID(), 0);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
 }
 
 int CGUIViewControl::GetView(VIEW_TYPE type, int id) const
@@ -294,7 +295,7 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
 {
   // the view as control could be a select/spin/dropdown button
   CGUIMessage msg(GUI_MSG_LABEL_RESET, m_parentWindow, m_viewAsControl);
-  g_graphicsContext.SendMessage(msg);
+  g_windowManager.SendMessage(msg);
   for (unsigned int i = 0; i < m_visibleViews.size(); i++)
   {
     CGUIBaseContainer *view = (CGUIBaseContainer *)m_visibleViews[i];
@@ -302,17 +303,17 @@ void CGUIViewControl::UpdateViewAsControl(const CStdString &viewLabel)
     CStdString label;
     label.Format(g_localizeStrings.Get(534).c_str(), view->GetLabel().c_str()); // View: %s
     msg.SetLabel(label);
-    g_graphicsContext.SendMessage(msg);
+    g_windowManager.SendMessage(msg);
   }
   CGUIMessage msgSelect(GUI_MSG_ITEM_SELECT, m_parentWindow, m_viewAsControl, m_currentView);
-  g_graphicsContext.SendMessage(msgSelect);
+  g_windowManager.SendMessage(msgSelect);
 
   // otherwise it's just a normal button
   CStdString label;
   label.Format(g_localizeStrings.Get(534).c_str(), viewLabel.c_str()); // View: %s
   CGUIMessage msgSet(GUI_MSG_LABEL_SET, m_parentWindow, m_viewAsControl);
   msgSet.SetLabel(label);
-  g_graphicsContext.SendMessage(msgSet);
+  g_windowManager.SendMessage(msgSet);
 }
 
 void CGUIViewControl::UpdateViewVisibility()

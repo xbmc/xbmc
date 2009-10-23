@@ -65,7 +65,7 @@ bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
 {
   if (action.id == ACTION_PARENT_DIR && !m_viewControl.HasControl(GetFocusedControlID()))
   { // don't go to parent folder unless we're on the list in question
-    m_gWindowManager.PreviousWindow();
+    g_windowManager.PreviousWindow();
     return true;
   }
   if (action.id == ACTION_CONTEXT_MENU && GetFocusedControlID() == CONTROL_PLAYLIST)

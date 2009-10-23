@@ -333,14 +333,10 @@ void show_banner(void)
 {
     fprintf(stderr, "%s version " FFMPEG_VERSION ", Copyright (c) %d-%d Fabrice Bellard, et al.\n",
             program_name, program_birth_year, this_year);
+    fprintf(stderr, "  built on %s %s with %s %s\n",
+            __DATE__, __TIME__, CC_TYPE, CC_VERSION);
     fprintf(stderr, "  configuration: " FFMPEG_CONFIGURATION "\n");
     print_all_lib_versions(stderr, 1);
-    fprintf(stderr, "  built on " __DATE__ " " __TIME__);
-#ifdef __GNUC__
-    fprintf(stderr, ", gcc: " __VERSION__ "\n");
-#else
-    fprintf(stderr, ", using a non-gcc compiler\n");
-#endif
 }
 
 void show_version(void) {
@@ -426,7 +422,11 @@ void show_formats(void)
     AVBitStreamFilter *bsf=NULL;
     const char *last_name;
 
-    printf("File formats:\n");
+    printf(
+        "File formats:\n"
+        " D. = Demuxing supported\n"
+        " .E = Muxing supported\n"
+        " --\n");
     last_name= "000";
     for(;;){
         int decode=0;
@@ -465,7 +465,17 @@ void show_formats(void)
     }
     printf("\n");
 
-    printf("Codecs:\n");
+    printf(
+        "Codecs:\n"
+        " D..... = Decoding supported\n"
+        " .E.... = Encoding supported\n"
+        " ..V... = Video codec\n"
+        " ..A... = Audio codec\n"
+        " ..S... = Subtitle codec\n"
+        " ...S.. = Supports draw_horiz_band\n"
+        " ....D. = Supports direct rendering method 1\n"
+        " .....T = Supports weird frame truncation\n"
+        " ------\n");
     last_name= "000";
     for(;;){
         int decode=0;

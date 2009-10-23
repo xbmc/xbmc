@@ -135,7 +135,7 @@ struct SwsContext *sws_getContext(int srcW, int srcH, enum PixelFormat srcFormat
 /**
  * Scales the image slice in srcSlice and puts the resulting scaled
  * slice in the image in dst. A slice is a sequence of consecutive
- * rows in an image.
+ * rows in an image. Slices can be bottom to top or top to bottom.
  *
  * @param context   the scaling context previously created with
  *                  sws_getContext()
@@ -180,6 +180,11 @@ int sws_setColorspaceDetails(struct SwsContext *c, const int inv_table[4],
 int sws_getColorspaceDetails(struct SwsContext *c, int **inv_table,
                              int *srcRange, int **table, int *dstRange,
                              int *brightness, int *contrast, int *saturation);
+
+/**
+ * Allocates and returns an uninitialized vector with length coefficients.
+ */
+SwsVector *sws_allocVec(int length);
 
 /**
  * Returns a normalized Gaussian curve used to filter stuff

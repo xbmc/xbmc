@@ -1171,23 +1171,6 @@ static void alloc_picture(void *opaque)
     if (vp->bmp)
         SDL_FreeYUVOverlay(vp->bmp);
 
-#if 0
-    /* XXX: use generic function */
-    /* XXX: disable overlay if no hardware acceleration or if RGB format */
-    switch(is->video_st->codec->pix_fmt) {
-    case PIX_FMT_YUV420P:
-    case PIX_FMT_YUV422P:
-    case PIX_FMT_YUV444P:
-    case PIX_FMT_YUYV422:
-    case PIX_FMT_YUV410P:
-    case PIX_FMT_YUV411P:
-        is_yuv = 1;
-        break;
-    default:
-        is_yuv = 0;
-        break;
-    }
-#endif
     vp->bmp = SDL_CreateYUVOverlay(is->video_st->codec->width,
                                    is->video_st->codec->height,
                                    SDL_YV12_OVERLAY,
@@ -1877,13 +1860,6 @@ static void stream_component_close(VideoState *is, int stream_index)
     }
 }
 
-static void dump_stream_info(const AVFormatContext *s)
-{
-    AVMetadataTag *tag = NULL;
-    while ((tag=av_metadata_get(s->metadata,"",tag,AV_METADATA_IGNORE_SUFFIX)))
-        fprintf(stderr, "%s: %s\n", tag->key, tag->value);
-}
-
 /* since we have only one decoding thread, we can use a global
    variable instead of a thread local variable */
 static VideoState *global_video_state;
@@ -1977,7 +1953,6 @@ static int decode_thread(void *arg)
     }
     if (show_status) {
         dump_format(ic, 0, is->filename, 0);
-        dump_stream_info(ic);
     }
 
     /* open the streams */
@@ -2512,6 +2487,7 @@ static const OptionDef options[] = {
     { "sync", HAS_ARG | OPT_FUNC2 | OPT_EXPERT, {(void*)opt_sync}, "set audio-video sync. type (type=audio/video/ext)", "type" },
     { "threads", HAS_ARG | OPT_FUNC2 | OPT_EXPERT, {(void*)opt_thread_count}, "thread count", "count" },
     { "default", OPT_FUNC2 | HAS_ARG | OPT_AUDIO | OPT_VIDEO | OPT_EXPERT, {(void*)opt_default}, "generic catch all option", "" },
+    { "loglevel", HAS_ARG | OPT_FUNC2, {(void*)opt_loglevel}, "set libav* logging level", "loglevel" },
     { NULL, },
 };
 

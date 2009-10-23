@@ -26,6 +26,7 @@
 #include <Mmreg.h>
 #include "SingleLock.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 
 #pragma comment(lib, "dxguid.lib")
 
@@ -170,7 +171,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, int iChannels, uns
   m_bIsAllocated = true;
   m_BufferOffset = 0;
   m_CacheLen = 0;
-  m_LastCacheCheck = timeGetTime();
+  m_LastCacheCheck = CTimeUtils::GetTimeMS();
   
   return m_bIsAllocated;
 }
@@ -327,7 +328,7 @@ void CWin32DirectSound::UpdateCacheStatus()
 {
   CSingleLock lock (m_critSection);
   // TODO: Check to see if we may have cycled around since last time
-  unsigned int time = timeGetTime();
+  unsigned int time = CTimeUtils::GetTimeMS();
   if (time == m_LastCacheCheck)
     return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
@@ -456,7 +457,7 @@ void CWin32DirectSound::WaitCompletion()
 
   // The drain should complete in the time occupied by the cache
   timeout  = (DWORD)(1000 * GetDelay());
-  timeout += timeGetTime();
+  timeout += CTimeUtils::GetTimeMS();
   silence  = (unsigned char*)calloc(1,m_dwChunkSize); // Initialize 'silence' to zero...
 
   while(AddPackets(silence, m_dwChunkSize) == 0)
@@ -464,7 +465,7 @@ void CWin32DirectSound::WaitCompletion()
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
-    if(timeout < timeGetTime())
+    if(timeout < CTimeUtils::GetTimeMS())
     {
       CLog::Log(LOGWARNING, __FUNCTION__ ": timeout adding silence to buffer");
       break;
@@ -477,7 +478,7 @@ void CWin32DirectSound::WaitCompletion()
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
-    if(timeout < timeGetTime())
+    if(timeout < CTimeUtils::GetTimeMS())
     {
       CLog::Log(LOGDEBUG, "CWin32DirectSound::WaitCompletion - timeout waiting for silence");
       break;

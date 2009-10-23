@@ -39,7 +39,7 @@
 class CDXTexture : public CBaseTexture
 {
 public:
-  CDXTexture(unsigned int width = 0, unsigned int height = 0, unsigned int BPP = 0, unsigned int format = XB_FMT_UNKNOWN);
+  CDXTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_UNKNOWN);
   virtual ~CDXTexture();
 
   void CreateTextureObject();

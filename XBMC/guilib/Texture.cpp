@@ -23,131 +23,187 @@
 #include "Picture.h"
 #include "WindowingFactory.h"
 #include "utils/log.h"
-
-#define MAX_PICTURE_WIDTH  2048
-#define MAX_PICTURE_HEIGHT 2048
+#include "DllImageLib.h"
+#include "DDSImage.h"
+#include "Util.h"
 
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int BPP, unsigned int format)
+CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int format)
 {
-  m_imageWidth = width;
-  m_imageHeight = height;
-  m_pTexture = NULL;
-  m_pPixels = NULL;
-  m_nBPP = BPP;
+  m_texture = NULL;
+  m_pixels = NULL;
   m_loadedToGPU = false;
-  m_nTextureHeight = 0;
-  m_nTextureWidth = 0;
-  m_format = format;
+  Allocate(width, height, format);
 }
 
 CBaseTexture::~CBaseTexture()
 {
-  delete[] m_pPixels;
+  delete[] m_pixels;
 }
 
-void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int BPP, unsigned int format)
+void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
 {
-  if (BPP != 0)
-    m_nBPP = BPP;
-
   m_imageWidth = width;
   m_imageHeight = height;
   m_format = format;
+  m_orientation = 0;
 
-  if (g_Windowing.NeedPower2Texture())
+  if (!g_Windowing.SupportsNPOT((m_format & XB_FMT_DXT_MASK) != 0))
   {
-    m_nTextureWidth = PadPow2(m_imageWidth);
-    m_nTextureHeight = PadPow2(m_imageHeight);
+    m_textureWidth = PadPow2(m_imageWidth);
+    m_textureHeight = PadPow2(m_imageHeight);
   }
   else
   {
-    m_nTextureWidth = m_imageWidth;
-    m_nTextureHeight = m_imageHeight;
+    m_textureWidth = m_imageWidth;
+    m_textureHeight = m_imageHeight;
+  }
+  if (m_format & XB_FMT_DXT_MASK)
+  { // DXT textures must be a multiple of 4 in width and height
+    m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
+    m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
   }
 
-  delete[] m_pPixels;
-  
-  switch (m_format)
-  {
-  case XB_FMT_DXT1: 
-    m_bufferSize = ((m_imageWidth + 3) / 4) * ((m_imageHeight + 3) / 4) * 8;
-    break; 
-  case XB_FMT_DXT3: 
-  case XB_FMT_DXT5: 
-    m_bufferSize = ((m_imageWidth + 3) / 4) * ((m_imageHeight + 3) / 4) * 16;
-    break; 
-  default:   
-    m_bufferSize = m_nTextureWidth * m_nTextureHeight * m_nBPP / 8;
-    break;
-  }
-  
-  m_pPixels = new unsigned char[m_bufferSize];
+  // check for max texture size
+  #define CLAMP(x, y) { if (x > y) x = y; }
+  CLAMP(m_textureWidth, g_Windowing.GetMaxTextureSize());
+  CLAMP(m_textureHeight, g_Windowing.GetMaxTextureSize());
+  CLAMP(m_imageWidth, m_textureWidth);
+  CLAMP(m_imageHeight, m_textureHeight);
+
+  delete[] m_pixels;
+  m_pixels = new unsigned char[GetPitch() * GetRows()];
 }
 
-void CBaseTexture::Update(int w, int h, int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU) 
+void CBaseTexture::Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU) 
 {
   if (pixels == NULL)
     return;
 
-  Allocate(w, h, 0, format);
+  Allocate(width, height, format);
 
-  if (m_imageHeight != m_nTextureHeight || m_imageWidth != m_nTextureWidth)
-  {
-    // Resize texture to POT if needed
-    const unsigned char *src = pixels;
-    unsigned char* resized = m_pPixels;
-  
-    for (int y = 0; y < h; y++)
-    {
-      memcpy(resized, src, pitch); // make sure pitch is not bigger than our width
-      src += pitch;
-  
-      // repeat last column to simulate clamp_to_edge
-      for(unsigned int i = pitch; i < m_nTextureWidth*4; i+=4)
-        memcpy(resized+i, src-4, 4);
-  
-      resized += (m_nTextureWidth * 4);
-    }
-  
-    // clamp to edge - repeat last row
-    unsigned char *dest = m_pPixels + h*GetPitch();
-    for (unsigned int y = h; y < m_nTextureHeight; y++)
-    {
-      memcpy(dest, dest-GetPitch(), GetPitch());
-      dest += GetPitch();
-    }
-  }
+  unsigned int srcPitch = pitch ? pitch : GetPitch(width);
+  unsigned int srcRows = GetRows(height);
+  unsigned int dstPitch = GetPitch(m_textureWidth);
+  unsigned int dstRows = GetRows(m_textureHeight);
+
+  if (srcPitch == dstPitch)
+    memcpy(m_pixels, pixels, srcPitch * std::min(srcRows, dstRows));
   else
   {
-    memcpy(m_pPixels, pixels, m_bufferSize);
+    const unsigned char *src = pixels;
+    unsigned char* dst = m_pixels;
+    for (unsigned int y = 0; y < srcRows && y < dstRows; y++)
+    {
+      memcpy(dst, src, std::min(srcPitch, dstPitch));
+      src += srcPitch;
+      dst += dstPitch;
+    }
   }
-  
+  ClampToEdge();
+
   if (loadToGPU)
     LoadToGPU();
 }
 
-bool CBaseTexture::LoadFromFile(const CStdString& texturePath)
+void CBaseTexture::ClampToEdge()
 {
-  CPicture pic;
-  if(!pic.Load(texturePath, this, MAX_PICTURE_WIDTH, MAX_PICTURE_HEIGHT))
+  unsigned int imagePitch = GetPitch(m_imageWidth);
+  unsigned int imageRows = GetRows(m_imageHeight);
+  unsigned int texturePitch = GetPitch(m_textureWidth);
+  unsigned int textureRows = GetRows(m_textureHeight);
+  if (imagePitch < texturePitch)
+  {
+    unsigned int blockSize = GetBlockSize();
+    unsigned char *src = m_pixels + imagePitch - blockSize;
+    unsigned char *dst = m_pixels;
+    for (unsigned int y = 0; y < imageRows; y++)
+    {
+      for (unsigned int x = imagePitch; x < texturePitch; x += blockSize)
+        memcpy(dst + x, src, blockSize);
+      dst += texturePitch;
+    }
+  }
+
+  if (imageRows < textureRows)
+  {
+    unsigned char *dst = m_pixels + imageRows * texturePitch;
+    for (unsigned int y = imageRows; y < textureRows; y++)
+    {
+      memcpy(dst, dst - texturePitch, texturePitch);
+      dst += texturePitch;
+    }
+  }
+}
+
+bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxWidth, unsigned int maxHeight,
+                                bool autoRotate, unsigned int *originalWidth, unsigned int *originalHeight)
+{
+  if (CUtil::GetExtension(texturePath).Equals(".dds"))
+  { // special case for DDS images
+    CDDSImage image;
+    CLog::Log(LOGDEBUG, "%s - loading dds file: %s", __FUNCTION__, texturePath.c_str());
+    image.ReadFile(texturePath);
+    Update(image.GetWidth(), image.GetHeight(), 0, image.GetFormat(), image.GetData(), false);
+    return true;
+  }
+
+  DllImageLib dll;
+  if (!dll.Load())
+    return false;
+
+  ImageInfo image;
+  memset(&image, 0, sizeof(image));
+
+  unsigned int width = maxWidth ? std::min(maxWidth, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+  unsigned int height = maxHeight ? std::min(maxHeight, g_Windowing.GetMaxTextureSize()) : g_Windowing.GetMaxTextureSize();
+
+  if(!dll.LoadImage(texturePath.c_str(), width, height, &image))
   {
     CLog::Log(LOGERROR, "Texture manager unable to load file: %s", texturePath.c_str());
     return false;
   }
+
+  Allocate(image.width, image.height, XB_FMT_A8R8G8B8);
+  if (autoRotate && image.exifInfo.Orientation)
+    m_orientation = image.exifInfo.Orientation - 1;
+  if (originalWidth)
+    *originalWidth = image.originalwidth;
+  if (originalHeight)
+    *originalHeight = image.originalheight;
+
+  unsigned int destPitch = GetPitch();
+  unsigned int srcPitch = ((image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
+
+  for (unsigned int y = 0; y < m_imageHeight; y++)
+  {
+    unsigned char *dst = m_pixels + y * destPitch;
+    unsigned char *src = image.texture + (m_imageHeight - 1 - y) * srcPitch;
+    unsigned char *alpha = image.alpha + (m_imageHeight - 1 - y) * m_imageWidth;
+    for (unsigned int x = 0; x < m_imageWidth; x++)
+    {
+      *dst++ = *src++;
+      *dst++ = *src++;
+      *dst++ = *src++;
+      *dst++ = (image.alpha) ? *alpha++ : 0xff;
+    }
+  }
+
+  dll.ReleaseImage(&image);
+
+  ClampToEdge();
+
   return true;
 }
 
-bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int BPP, unsigned int format, unsigned char* pPixels)
+bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels)
 {
   m_imageWidth = width;
   m_imageHeight = height;
-  m_nBPP = BPP;
   m_format = format;
-  Update(width, height, pitch, format, pPixels, false);
-
+  Update(width, height, pitch, format, pixels, false);
   return true;
 }
 
@@ -156,13 +212,13 @@ bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigne
   if (pixels == NULL || palette == NULL)
     return false;
 
-  Allocate(width, height, 32, format);
+  Allocate(width, height, format);
 
-  for (unsigned int y = 0; y < height; y++)
+  for (unsigned int y = 0; y < m_imageHeight; y++)
   {
-    unsigned char *dest = m_pPixels + y * GetPitch();
+    unsigned char *dest = m_pixels + y * GetPitch();
     const unsigned char *src = pixels + y * pitch;
-    for (unsigned int x = 0; x < width; x++)
+    for (unsigned int x = 0; x < m_imageWidth; x++)
     {
       COLOR col = palette[*src++];
       *dest++ = col.b;
@@ -170,23 +226,8 @@ bool CBaseTexture::LoadPaletted(unsigned int width, unsigned int height, unsigne
       *dest++ = col.r;
       *dest++ = col.x;
     }
-    // clamp to edge - repeat last column
-    for (unsigned int x = width; x < m_nTextureWidth; x++)
-    {
-      COLOR col = palette[*(src-1)];
-      *dest++ = col.b;
-      *dest++ = col.g;
-      *dest++ = col.r;
-      *dest++ = col.x;
-    }
   }
-  // clamp to edge - repeat last row
-  unsigned char *dest = m_pPixels + height*GetPitch();
-  for (unsigned int y = height; y < m_nTextureHeight; y++)
-  {
-    memcpy(dest, dest-GetPitch(), GetPitch());
-    dest += GetPitch();
-  }
+  ClampToEdge();
   return true;
 }
 
@@ -199,4 +240,54 @@ unsigned int CBaseTexture::PadPow2(unsigned int x)
   x |= x >> 8;
   x |= x >> 16;
   return ++x;
+}
+
+unsigned int CBaseTexture::GetPitch(unsigned int width) const
+{
+  switch (m_format)
+  {
+  case XB_FMT_DXT1:
+    return ((width + 3) / 4) * 8;
+  case XB_FMT_DXT3:
+  case XB_FMT_DXT5:
+  case XB_FMT_DXT5_YCoCg:
+    return ((width + 3) / 4) * 16;
+  case XB_FMT_A8:
+    return width;
+  case XB_FMT_A8R8G8B8:
+  default:
+    return width*4;
+  }
+}
+
+unsigned int CBaseTexture::GetRows(unsigned int height) const
+{
+  switch (m_format)
+  {
+  case XB_FMT_DXT1:
+    return (height + 3) / 4;
+  case XB_FMT_DXT3:
+  case XB_FMT_DXT5:
+  case XB_FMT_DXT5_YCoCg:
+    return (height + 3) / 4;
+  default:
+    return height;
+  }
+}
+
+unsigned int CBaseTexture::GetBlockSize() const
+{
+  switch (m_format)
+  {
+  case XB_FMT_DXT1:
+    return 8;
+  case XB_FMT_DXT3:
+  case XB_FMT_DXT5:
+  case XB_FMT_DXT5_YCoCg:
+    return 16;
+  case XB_FMT_A8:
+    return 1;
+  default:
+    return 4;
+  }
 }

@@ -30,6 +30,7 @@
 #include "GUISettings.h"
 #include "Application.h"
 #include "utils/log.h"
+#include "utils/TimeUtils.h"
 #include "FileSystem/SpecialProtocol.h"
 #include "Settings.h"
 
@@ -129,16 +130,16 @@ TextPageAttr_t Text_AtrTable[] =
   { TXT_ColorWhite  , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MSGDRM3 */
   { TXT_ColorMenu1  , TXT_ColorBlue  , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENUHIL0 5a Z */
   { TXT_ColorWhite  , TXT_ColorBlue  , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENUHIL1 58 X */
-  { TXT_ColorMenu2  , TXT_ColorTransp, C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENUHIL2 9b › */
-  { TXT_ColorMenu2  , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU0 ab « */
-  { TXT_ColorYellow , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU1 a4 ¤ */
-  { TXT_ColorMenu2  , TXT_ColorTransp, C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU2 9b › */
-  { TXT_ColorMenu2  , TXT_ColorMenu3 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU3 cb Ë */
-  { TXT_ColorCyan   , TXT_ColorMenu3 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU4 c7 Ç */
-  { TXT_ColorWhite  , TXT_ColorMenu3 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU5 c8 È */
-  { TXT_ColorWhite  , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU6 a8 ¨ */
-  { TXT_ColorYellow , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_CATCHMENU0 a4 ¤ */
-  { TXT_ColorWhite  , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}  /* ATR_CATCHMENU1 a8 ¨ */
+  { TXT_ColorMenu2  , TXT_ColorTransp, C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENUHIL2 9b Ãµ */
+  { TXT_ColorMenu2  , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU0 ab Â´ */
+  { TXT_ColorYellow , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU1 a4 Â§ */
+  { TXT_ColorMenu2  , TXT_ColorTransp, C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU2 9b Ãµ */
+  { TXT_ColorMenu2  , TXT_ColorMenu3 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU3 cb Ã€ */
+  { TXT_ColorCyan   , TXT_ColorMenu3 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU4 c7 Â« */
+  { TXT_ColorWhite  , TXT_ColorMenu3 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU5 c8 Â» */
+  { TXT_ColorWhite  , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_MENU6 a8 Â® */
+  { TXT_ColorYellow , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}, /* ATR_CATCHMENU0 a4 Â§ */
+  { TXT_ColorWhite  , TXT_ColorMenu1 , C_G0P, 0, 0, 0 ,0, 0, 0, 0, 0, 0, 0, 0x3f}  /* ATR_CATCHMENU1 a8 Â® */
 };
 
 /* shapes */
@@ -1166,7 +1167,7 @@ void CTeletextDecoder::RenderPage()
         m_RenderInfo.SubtitleCache[j] = c;
       }
       c->Valid = true;
-      c->Timestamp = timeGetTime()/1000;
+      c->Timestamp = CTimeUtils::GetTimeMS()/1000;
 
       if (m_txtCache->SubPageTable[m_txtCache->Page] != 0xFF)
       {
@@ -1206,7 +1207,7 @@ void CTeletextDecoder::RenderPage()
   {
     if (m_RenderInfo.DelayStarted)
     {
-      long now = timeGetTime()/1000;
+      long now = CTimeUtils::GetTimeMS()/1000;
       for (int i = 0; i < SUBTITLE_CACHESIZE ; i++)
       {
         if (m_RenderInfo.SubtitleCache[i] && m_RenderInfo.SubtitleCache[i]->Valid && now - m_RenderInfo.SubtitleCache[i]->Timestamp >= (long)m_RenderInfo.SubtitleDelay)
@@ -1312,7 +1313,7 @@ void CTeletextDecoder::DoFlashing(int startrow)
   /* Flashing */
   TextPageAttr_t flashattr;
   char flashchar;
-  long flashphase = timeGetTime() % 1000;
+  long flashphase = CTimeUtils::GetTimeMS() % 1000;
 
   int srow = startrow;
   int erow = 24;
@@ -2676,12 +2677,12 @@ int CTeletextDecoder::RenderChar(color_t *buffer,    // pointer to render buffer
       FillRect(buffer,xres,*pPosX + curfontwidth/2, PosY, (curfontwidth+1)/2, FontHeight, bgcolor);
       *pPosX += curfontwidth;
       return 0;
-    case 0xEA: /* °  */
+    case 0xEA: /* âˆž  */
       FillRect(buffer,xres,*pPosX, PosY, curfontwidth, FontHeight, bgcolor);
       FillRect(buffer,xres,*pPosX, PosY, curfontwidth/2, curfontwidth/2, fgcolor);
       *pPosX += curfontwidth;
       return 0;
-    case 0xEB: /* ¬ */
+    case 0xEB: /* Â¨ */
       FillRect(buffer,xres,*pPosX, PosY +1, curfontwidth, FontHeight -1, bgcolor);
       for (Row=0; Row < curfontwidth/2; Row++)
         DrawHLine(buffer,xres,*pPosX + Row, PosY + Row, curfontwidth - Row, fgcolor);

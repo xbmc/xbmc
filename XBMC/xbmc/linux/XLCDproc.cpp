@@ -22,6 +22,7 @@
 #include "PlatformInclude.h"
 #include "XLCDproc.h"
 #include "../utils/log.h"
+#include "../utils/TimeUtils.h"
 #include "AdvancedSettings.h"
 #include "GUISettings.h"
 
@@ -35,6 +36,9 @@ XLCDproc::XLCDproc()
   m_iLCDContrast = 50;
   m_bStop	       = true;
   sockfd         = -1;
+  m_lastInitAttempt = 0;
+  m_initRetryInterval = INIT_RETRY_INTERVAL;
+  m_used = true;
 }
 
 XLCDproc::~XLCDproc()
@@ -45,6 +49,12 @@ void XLCDproc::Initialize()
 {
   if (g_guiSettings.GetInt("lcd.type") == LCD_TYPE_NONE)
     return ;//nothing to do
+
+  // don't try to initialize too often
+  int now = CTimeUtils::GetTimeMS();
+  if (!m_used || now < m_lastInitAttempt + m_initRetryInterval)
+    return;
+  m_lastInitAttempt = now;
 
   ILCD::Initialize();
 
@@ -71,9 +81,24 @@ void XLCDproc::Initialize()
   serv_addr.sin_port = htons(13666);
   if (connect(sockfd,(struct sockaddr*)&serv_addr,sizeof(serv_addr)) < 0)
   {
-    CLog::Log(LOGERROR, "XLCDproc::%s - Unable to connect to host.", __FUNCTION__);
+    // give up after 60 seconds
+    if (m_initRetryInterval > INIT_RETRY_INTERVAL_MAX)
+    {
+      m_used = false;
+      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to connect to host. Giving up.", __FUNCTION__);
+    }
+    else
+    {
+      m_initRetryInterval *= 2;
+      CLog::Log(LOGERROR, "XLCDproc::%s - Unable to connect to host. Retry in %d seconds.", __FUNCTION__, 
+                m_initRetryInterval/1000);
+    }
+
     return;
   }
+ 
+  // reset the retry interval after a successful connect 
+  m_initRetryInterval = INIT_RETRY_INTERVAL;
 
   // Start a new session
   CStdString hello;
@@ -121,6 +146,22 @@ void XLCDproc::Initialize()
     CLog::Log(LOGERROR, "XLCDproc::%s - Unable to write to socket", __FUNCTION__);
   m_bStop = false;
 }
+
+bool XLCDproc::IsConnected()
+{
+  CStdString cmd;
+  cmd = "noop\n";
+
+  if (write(sockfd,cmd.c_str(),cmd.size()) >= 0)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 void XLCDproc::SetBackLight(int iLight)
 {
   if (sockfd > 0) 

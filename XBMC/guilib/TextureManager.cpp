@@ -43,6 +43,7 @@ CTextureArray::CTextureArray(int width, int height, int loops,  bool texCoordsAr
   m_width = width;
   m_height = height;
   m_loops = loops;
+  m_orientation = 0;
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
@@ -71,6 +72,7 @@ void CTextureArray::Reset()
   m_width = 0;
   m_height = 0;
   m_loops = 0;
+  m_orientation = 0;
   m_texWidth = 0;
   m_texHeight = 0;
   m_texCoordsArePixels = false;
@@ -94,6 +96,7 @@ void CTextureArray::Set(CBaseTexture *texture, int width, int height)
   assert(!m_textures.size()); // don't try and set a texture if we already have one!
   m_width = width;
   m_height = height;
+  m_orientation = texture ? texture->GetOrientation() : 0;
   Add(texture, 100);
 }
 
@@ -362,7 +365,7 @@ int CGUITextureManager::Load(const CStdString& strTextureName, bool checkBundleO
         if (glTexture)
         {
           CAnimatedGif* pImage = AnimatedGifSet.m_vecimg[iImage];
-          glTexture->LoadPaletted(pImage->Width, pImage->Height, pImage->BytesPerRow, XB_FMT_B8G8R8A8, (unsigned char *)pImage->Raster, palette);
+          glTexture->LoadPaletted(pImage->Width, pImage->Height, pImage->BytesPerRow, XB_FMT_A8R8G8B8, (unsigned char *)pImage->Raster, palette);
           pMap->Add(glTexture, pImage->Delay);
         }
       } // of for (int iImage=0; iImage < iImages; iImage++)

@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
+				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include;..\..\lib\freetype\include\freetype2;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
@@ -116,7 +116,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
+				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include\freetype2;..\..\lib\freetype\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -189,7 +189,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
+				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include;..\..\lib\freetype\include\freetype2;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX"
 				MinimalRebuild="false"
 				RuntimeLibrary="0"
@@ -262,7 +262,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHa"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\guilib\freetype2\include;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
+				AdditionalIncludeDirectories="&quot;..\..\xbmc\lib\libSDL-WIN32\include&quot;;..\..\xbmc\Win32;..\..\xbmc\;..\..\lib\freetype\include;..\..\lib\freetype\include\freetype2;..\..\xbmc\lib\boost;..\..\guilib;..\..\xbmc\utils;..\..\guilib\common\;..\..\xbmc\lib\libglew\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;_MSVC;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL"
 				StringPooling="false"
 				MinimalRebuild="true"
@@ -323,6 +323,10 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\AudioContext.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\guilib\DDSImage.cpp"
 				>
 			</File>
 			<File
@@ -716,6 +720,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\guilib\DDSImage.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\guilib\DirectXGraphics.h"
 				>
 			</File>
@@ -953,10 +961,6 @@
 			</File>
 			<File
 				RelativePath="..\..\guilib\IAudioDeviceChangedCallback.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\guilib\IMsgSenderCallback.h"
 				>
 			</File>
 			<File

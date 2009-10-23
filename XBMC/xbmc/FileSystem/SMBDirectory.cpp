@@ -356,13 +356,13 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 
         if (m_allowPrompting)
         {
-          CGUIDialogOK* pDialog = (CGUIDialogOK*)m_gWindowManager.GetWindow(WINDOW_DIALOG_OK);
+          CGUIDialogOK* pDialog = (CGUIDialogOK*)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
           pDialog->SetHeading(257);
           pDialog->SetLine(0, cError);
           pDialog->SetLine(1, "");
           pDialog->SetLine(2, "");
 
-          ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, m_gWindowManager.GetActiveWindow()};
+          ThreadMessage tMsg = {TMSG_DIALOG_DOMODAL, WINDOW_DIALOG_OK, g_windowManager.GetActiveWindow()};
           g_application.getApplicationMessenger().SendMessage(tMsg, false);
         }
         break;

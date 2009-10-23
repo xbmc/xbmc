@@ -120,11 +120,6 @@ XBPython::~XBPython()
   CloseHandle(m_globalEvent);
 }
 
-bool XBPython::SendMessage(CGUIMessage& message)
-{
-  return (evalFile(message.GetStringParam().c_str()) != -1);
-}
-
 // message all registered callbacks that xbmc stopped playing
 void XBPython::OnPlayBackEnded()
 {
@@ -430,17 +425,40 @@ void XBPython::FreeResources()
 
 void XBPython::Process()
 {
+  CStdString strAutoExecPy;
+
   if (m_bStartup)
   {
     m_bStartup = false;
-    if (evalFile("special://home/scripts/autoexec.py") < 0)
-      evalFile("special://xbmc/scripts/autoexec.py");
+
+    // autoexec.py - userdata
+    strAutoExecPy = "special://home/scripts/autoexec.py";
+
+    if (XFILE::CFile::Exists(strAutoExecPy))
+      evalFile(strAutoExecPy);
+    else
+      CLog::Log(LOGDEBUG, "%s - no user autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
+
+    // autoexec.py - system
+    strAutoExecPy = "special://xbmc/scripts/autoexec.py";
+
+    if (XFILE::CFile::Exists(strAutoExecPy))
+      evalFile(strAutoExecPy);
+    else
+      CLog::Log(LOGDEBUG, "%s - no system autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
   }
 
   if (m_bLogin)
   {
     m_bLogin = false;
-    evalFile("special://profile/scripts/autoexec.py");
+
+    // autoexec.py - profile
+    strAutoExecPy = "special://profile/scripts/autoexec.py";
+
+    if (XFILE::CFile::Exists(strAutoExecPy))
+      evalFile(strAutoExecPy);
+    else
+      CLog::Log(LOGDEBUG, "%s - no profile autoexec.py (%s) found, skipping", __FUNCTION__, CSpecialProtocol::TranslatePath(strAutoExecPy).c_str());
   }
 
   CSingleLock lock(m_critSection);
@@ -470,7 +488,7 @@ int XBPython::evalFile(const char *src, const unsigned int argc, const char ** a
   // return if file doesn't exist
   if (!XFILE::CFile::Exists(src))
   {
-    CLog::Log(LOGERROR, "Python script \"%s\" does not exist", src);
+    CLog::Log(LOGERROR, "Python script \"%s\" does not exist", CSpecialProtocol::TranslatePath(src).c_str());
     return -1;
   }
 

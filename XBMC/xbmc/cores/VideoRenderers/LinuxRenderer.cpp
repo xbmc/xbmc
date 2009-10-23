@@ -63,8 +63,6 @@ CLinuxRenderer::CLinuxRenderer()
 {
   CLog::Log(LOGDEBUG,"Created LinuxRenderer...");
 
-  m_fSourceFrameRatio = 1.0f;
-  m_iResolution = PAL_4x3;
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
     m_pOSDYTexture[i] = NULL;
@@ -111,69 +109,6 @@ void CLinuxRenderer::DeleteOSDTextures(int index)
   m_iOSDTextureHeight[index] = 0;
 }
 
-//***************************************************************************************
-// CalculateFrameAspectRatio()
-//
-// Considers the source frame size and output frame size (as suggested by mplayer)
-// to determine if the pixels in the source are not square.  It calculates the aspect
-// ratio of the output frame.  We consider the cases of VCD, SVCD and DVD separately,
-// as these are intended to be viewed on a non-square pixel TV set, so the pixels are
-// defined to be the same ratio as the intended display pixels.
-// These formats are determined by frame size.
-//***************************************************************************************
-void CLinuxRenderer::CalculateFrameAspectRatio(int desired_width, int desired_height)
-{
-  m_fSourceFrameRatio = (float)desired_width / desired_height;
-
-  // Check whether mplayer has decided that the size of the video file should be changed
-  // This indicates either a scaling has taken place (which we didn't ask for) or it has
-  // found an aspect ratio parameter from the file, and is changing the frame size based
-  // on that.
-  if ((int)m_iSourceWidth == desired_width && (int)m_iSourceHeight == desired_height)
-    return ;
-
-  // mplayer is scaling in one or both directions.  We must alter our Source Pixel Ratio
-  float fImageFrameRatio = (float)m_iSourceWidth / m_iSourceHeight;
-
-  // OK, most sources will be correct now, except those that are intended
-  // to be displayed on non-square pixel based output devices (ie PAL or NTSC TVs)
-  // This includes VCD, SVCD, and DVD (and possibly others that we are not doing yet)
-  // For this, we can base the pixel ratio on the pixel ratios of PAL and NTSC,
-  // though we will need to adjust for anamorphic sources (ie those whose
-  // output frame ratio is not 4:3) and for SVCDs which have 2/3rds the
-  // horizontal resolution of the default NTSC or PAL frame sizes
-
-  // The following are the defined standard ratios for PAL and NTSC pixels
-  float fPALPixelRatio = 128.0f / 117.0f;
-  float fNTSCPixelRatio = 4320.0f / 4739.0f;
-
-  // Calculate the correction needed for anamorphic sources
-  float fNon4by3Correction = m_fSourceFrameRatio / (4.0f / 3.0f);
-
-  // Finally, check for a VCD, SVCD or DVD frame size as these need special aspect ratios
-  if (m_iSourceWidth == 352)
-  { // VCD?
-    if (m_iSourceHeight == 240) // NTSC
-      m_fSourceFrameRatio = fImageFrameRatio * fNTSCPixelRatio;
-    if (m_iSourceHeight == 288) // PAL
-      m_fSourceFrameRatio = fImageFrameRatio * fPALPixelRatio;
-  }
-  if (m_iSourceWidth == 480)
-  { // SVCD?
-    if (m_iSourceHeight == 480) // NTSC
-      m_fSourceFrameRatio = fImageFrameRatio * 3.0f / 2.0f * fNTSCPixelRatio * fNon4by3Correction;
-    if (m_iSourceHeight == 576) // PAL
-      m_fSourceFrameRatio = fImageFrameRatio * 3.0f / 2.0f * fPALPixelRatio * fNon4by3Correction;
-  }
-  if (m_iSourceWidth == 720)
-  { // DVD?
-    if (m_iSourceHeight == 480) // NTSC
-      m_fSourceFrameRatio = fImageFrameRatio * fNTSCPixelRatio * fNon4by3Correction;
-    if (m_iSourceHeight == 576) // PAL
-      m_fSourceFrameRatio = fImageFrameRatio * fPALPixelRatio * fNon4by3Correction;
-  }
-}
-
 //***********************************************************************************************************
 void CLinuxRenderer::CopyAlpha(int w, int h, unsigned char* src, unsigned char *srca, int srcstride, unsigned char* dst, unsigned char* dsta, int dststride)
 {
@@ -195,7 +130,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   // solution: have separate OSD textures
 
   // if it's down the bottom, use sub alpha blending
-  //  m_SubsOnOSD = (y0 > (int)(rs.bottom - rs.top) * 4 / 5);
+  //  m_SubsOnOSD = (y0 > (int)(m_sourceRect.bottom - m_sourceRect.top) * 4 / 5);
 
   //Sometimes happens when switching between fullscreen and small window
   if( w == 0 || h == 0 )
@@ -228,7 +163,7 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   }
 
   // scale to fit screen
-  const RECT& rv = g_graphicsContext.GetViewWindow();
+  const CRect& rv = g_graphicsContext.GetViewWindow();
 
   // Vobsubs are defined to be 720 wide.
   // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
@@ -242,8 +177,8 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
     // scale them up to the full output, assuming vobsubs have same 
     // pixel aspect ratio as the movie, and are 720 pixels wide
 
-    float pixelaspect = m_fSourceFrameRatio * m_iSourceHeight / m_iSourceWidth;
-    xscale = (rv.right - rv.left) / 720.0f;
+    float pixelaspect = m_fSourceFrameRatio * m_sourceHeight / m_sourceWidth;
+    xscale = rv.Width() / 720.0f;
     yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / pixelaspect;
   }
   else
@@ -256,10 +191,10 @@ void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src,
   }
   
   // horizontal centering, and align to bottom of subtitles line
-  osdRect.left = (float)rv.left + (float)(rv.right - rv.left - (float)w * xscale) / 2.0f;
+  osdRect.left = rv.x1 + (rv.Width() - (float)w * xscale) / 2.0f;
   osdRect.right = osdRect.left + (float)w * xscale;
   float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
-  osdRect.bottom = (float)rv.top + (float)(rv.bottom - rv.top) * relbottom;
+  osdRect.bottom = rv.y1 + rv.Height() * relbottom;
   osdRect.top = osdRect.bottom - (float)h * yscale;
 
   int iOSDBuffer = (m_iOSDRenderBuffer + 1) % m_NumOSDBuffers;
@@ -345,64 +280,6 @@ void CLinuxRenderer::RenderOSD()
 
 }
 
-//********************************************************************************************************
-//Get resolution based on current mode.
-RESOLUTION CLinuxRenderer::GetResolution()
-{
-  if (g_graphicsContext.IsFullScreenVideo() || g_graphicsContext.IsCalibrating())
-  {
-    return m_iResolution;
-  }
-  return g_graphicsContext.GetVideoResolution();
-}
-
-float CLinuxRenderer::GetAspectRatio()
-{
-  float fWidth = (float)m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropLeft - g_stSettings.m_currentVideoSettings.m_CropRight;
-  float fHeight = (float)m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom;
-  return m_fSourceFrameRatio * fWidth / fHeight * m_iSourceHeight / m_iSourceWidth;
-}
-
-void CLinuxRenderer::GetVideoRect(RECT &rectSrc, RECT &rectDest)
-{
-  rectSrc = rs;
-  rectDest = rd;
-}
-
-void CLinuxRenderer::CalcNormalDisplayRect(float fOffsetX1, float fOffsetY1, float fScreenWidth, float fScreenHeight, float fInputFrameRatio, float fZoomAmount)
-{
-  // scale up image as much as possible
-  // and keep the aspect ratio (introduces with black bars)
-  // calculate the correct output frame ratio (using the users pixel ratio setting
-  // and the output pixel ratio setting)
-
-  float fOutputFrameRatio = fInputFrameRatio / g_settings.m_ResInfo[GetResolution()].fPixelRatio;
-
-  // maximize the movie width
-  float fNewWidth = fScreenWidth;
-  float fNewHeight = fNewWidth / fOutputFrameRatio;
-
-  if (fNewHeight > fScreenHeight)
-  {
-    fNewHeight = fScreenHeight;
-    fNewWidth = fNewHeight * fOutputFrameRatio;
-  }
-
-  // Scale the movie up by set zoom amount
-  fNewWidth *= fZoomAmount;
-  fNewHeight *= fZoomAmount;
-
-  // Centre the movie
-  float fPosY = (fScreenHeight - fNewHeight) / 2;
-  float fPosX = (fScreenWidth - fNewWidth) / 2;
-
-  rd.left = (int)(fPosX + fOffsetX1);
-  rd.right = (int)(rd.left + fNewWidth + 0.5f);
-  rd.top = (int)(fPosY + fOffsetY1);
-  rd.bottom = (int)(rd.top + fNewHeight + 0.5f);
-}
-
-
 void CLinuxRenderer::ManageTextures()
 {
   int neededbuffers = 0;
@@ -433,50 +310,16 @@ void CLinuxRenderer::ManageTextures()
 
 }
 
-void CLinuxRenderer::ManageDisplay()
-{
-  const RECT& rv = g_graphicsContext.GetViewWindow();
-  float fScreenWidth = (float)rv.right - rv.left;
-  float fScreenHeight = (float)rv.bottom - rv.top;
-  float fOffsetX1 = (float)rv.left;
-  float fOffsetY1 = (float)rv.top;
-
-  // source rect
-  rs.left = g_stSettings.m_currentVideoSettings.m_CropLeft;
-  rs.top = g_stSettings.m_currentVideoSettings.m_CropTop;
-  rs.right = m_iSourceWidth - g_stSettings.m_currentVideoSettings.m_CropRight;
-  rs.bottom = m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropBottom;
-
-  CalcNormalDisplayRect(fOffsetX1, fOffsetY1, fScreenWidth, fScreenHeight, GetAspectRatio() * g_stSettings.m_fPixelRatio, g_stSettings.m_fZoomAmount);
-}
-
-void CLinuxRenderer::ChooseBestResolution(float fps)
-{
-  // If the display resolution was specified by the user then use it
-  RESOLUTION DisplayRes = (RESOLUTION) g_guiSettings.GetInt("videoplayer.displayresolution");
-  if ( DisplayRes != AUTORES )
-  {
-    CLog::Log(LOGNOTICE, "Display resolution USER : %s (%d)", g_settings.m_ResInfo[DisplayRes].strMode.c_str(), DisplayRes);
-    m_iResolution = DisplayRes;
-    return;
-  }
-  m_iResolution = g_graphicsContext.GetVideoResolution();
-  CLog::Log(LOGNOTICE, "Display resolution AUTO : %s (%d)", g_settings.m_ResInfo[m_iResolution].strMode.c_str(), m_iResolution);
-  return;
-}
-
 bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
-
   CLog::Log(LOGDEBUG,"CLinuxRenderer::Configure - w: %d, h: %d, dw: %d, dh: %d, fps: %4.2f", width, height, d_width, d_height, fps);
 
-  m_fps = fps;
-  m_iSourceWidth = width;
-  m_iSourceHeight = height;
+  m_sourceWidth = width;
+  m_sourceHeight = height;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
-  ChooseBestResolution(m_fps);
+  ChooseBestResolution(fps);
   SetViewMode(g_stSettings.m_currentVideoSettings.m_ViewMode);
 
   ManageDisplay();
@@ -532,9 +375,9 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
      m_screenbuffer = SDL_CreateRGBSurface(SDL_HWSURFACE, width, height, 32, RMASK, GMASK, BMASK, AMASK);;
 
   if (m_image.plane[0] == NULL) {
-     m_image.stride[0] = m_iSourceWidth;
-     m_image.stride[1] = m_iSourceWidth>>1;
-     m_image.stride[2] = m_iSourceWidth>>1;
+     m_image.stride[0] = m_sourceWidth;
+     m_image.stride[1] = m_sourceWidth>>1;
+     m_image.stride[2] = m_sourceWidth>>1;
    
      m_image.plane[0] = new BYTE[m_image.stride[0] * height];
      if (m_image.plane[1])
@@ -552,7 +395,7 @@ bool CLinuxRenderer::Configure(unsigned int width, unsigned int height, unsigned
   m_image.cshift_x = 1;
   m_image.cshift_y = 1;
 
-  CLog::Log(LOGDEBUG,"Allocated image. source w: %d, strides: %d,%d,%d", m_iSourceWidth, m_image.stride[0], m_image.stride[1], m_image.stride[2]);
+  CLog::Log(LOGDEBUG,"Allocated image. source w: %d, strides: %d,%d,%d", m_sourceWidth, m_image.stride[0], m_image.stride[1], m_image.stride[2]);
 
   return true;
 }
@@ -731,7 +574,7 @@ unsigned int CLinuxRenderer::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
-  m_iResolution = PAL_4x3;
+  m_resolution = PAL_4x3;
 
   m_iOSDRenderBuffer = 0;
   m_NumOSDBuffers = 0;
@@ -802,112 +645,6 @@ void CLinuxRenderer::Render(DWORD flags)
   RenderOSD();
 }
 
-void CLinuxRenderer::SetViewMode(int iViewMode)
-{
-  if (iViewMode < VIEW_MODE_NORMAL || iViewMode > VIEW_MODE_CUSTOM) iViewMode = VIEW_MODE_NORMAL;
-  g_stSettings.m_currentVideoSettings.m_ViewMode = iViewMode;
-
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_NORMAL)
-  { // normal mode...
-    g_stSettings.m_fPixelRatio = 1.0;
-    g_stSettings.m_fZoomAmount = 1.0;
-    return ;
-  }
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_CUSTOM)
-  {
-    g_stSettings.m_fZoomAmount = g_stSettings.m_currentVideoSettings.m_CustomZoomAmount;
-    g_stSettings.m_fPixelRatio = g_stSettings.m_currentVideoSettings.m_CustomPixelRatio;
-    return ;
-  }
-
-  // get our calibrated full screen resolution
-  float fScreenWidth = (float)(g_settings.m_ResInfo[m_iResolution].Overscan.right - g_settings.m_ResInfo[m_iResolution].Overscan.left);
-  float fScreenHeight = (float)(g_settings.m_ResInfo[m_iResolution].Overscan.bottom - g_settings.m_ResInfo[m_iResolution].Overscan.top);
-  // and the source frame ratio
-  float fSourceFrameRatio = GetAspectRatio();
-
-  if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ZOOM)
-  { // zoom image so no black bars
-    g_stSettings.m_fPixelRatio = 1.0;
-    // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-    // now calculate the correct zoom amount.  First zoom to full height.
-    float fNewHeight = fScreenHeight;
-    float fNewWidth = fNewHeight * fOutputFrameRatio;
-    g_stSettings.m_fZoomAmount = fNewWidth / fScreenWidth;
-    if (fNewWidth < fScreenWidth)
-    { // zoom to full width
-      fNewWidth = fScreenWidth;
-      fNewHeight = fNewWidth / fOutputFrameRatio;
-      g_stSettings.m_fZoomAmount = fNewHeight / fScreenHeight;
-    }
-  }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_4x3)
-  { // stretch image to 4:3 ratio
-    g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
-    { // stretch to the limits of the 4:3 screen.
-      // incorrect behaviour, but it's what the users want, so...
-      g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
-    }
-    else
-    {
-      // now we need to set g_stSettings.m_fPixelRatio so that
-      // fOutputFrameRatio = 4:3.
-      g_stSettings.m_fPixelRatio = (4.0f / 3.0f) / fSourceFrameRatio;
-    }
-  }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_14x9)
-  { // stretch image to 14:9 ratio
-    // now we need to set g_stSettings.m_fPixelRatio so that
-    // fOutputFrameRatio = 14:9.
-    g_stSettings.m_fPixelRatio = (14.0f / 9.0f) / fSourceFrameRatio;
-    // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-    // now calculate the correct zoom amount.  First zoom to full height.
-    float fNewHeight = fScreenHeight;
-    float fNewWidth = fNewHeight * fOutputFrameRatio;
-    g_stSettings.m_fZoomAmount = fNewWidth / fScreenWidth;
-    if (fNewWidth < fScreenWidth)
-    { // zoom to full width
-      fNewWidth = fScreenWidth;
-      fNewHeight = fNewWidth / fOutputFrameRatio;
-      g_stSettings.m_fZoomAmount = fNewHeight / fScreenHeight;
-    }
-  }
-  else if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_STRETCH_16x9)
-  { // stretch image to 16:9 ratio
-    g_stSettings.m_fZoomAmount = 1.0;
-    if (m_iResolution == PAL_4x3 || m_iResolution == PAL60_4x3 || m_iResolution == NTSC_4x3 || m_iResolution == HDTV_480p_4x3)
-    { // now we need to set g_stSettings.m_fPixelRatio so that
-      // fOutputFrameRatio = 16:9.
-      g_stSettings.m_fPixelRatio = (16.0f / 9.0f) / fSourceFrameRatio;
-    }
-    else
-    { // stretch to the limits of the 16:9 screen.
-      // incorrect behaviour, but it's what the users want, so...
-      g_stSettings.m_fPixelRatio = (fScreenWidth / fScreenHeight) * g_settings.m_ResInfo[m_iResolution].fPixelRatio / fSourceFrameRatio;
-    }
-  }
-  else // if (g_stSettings.m_currentVideoSettings.m_ViewMode == VIEW_MODE_ORIGINAL)
-  { // zoom image so that the height is the original size
-    g_stSettings.m_fPixelRatio = 1.0;
-    // get the size of the media file
-    // calculate the desired output ratio
-    float fOutputFrameRatio = fSourceFrameRatio * g_stSettings.m_fPixelRatio / g_settings.m_ResInfo[m_iResolution].fPixelRatio;
-    // now calculate the correct zoom amount.  First zoom to full width.
-    float fNewWidth = fScreenWidth;
-    float fNewHeight = fNewWidth / fOutputFrameRatio;
-    if (fNewHeight > fScreenHeight)
-    { // zoom to full height
-      fNewHeight = fScreenHeight;
-      fNewWidth = fNewHeight * fOutputFrameRatio;
-    }
-    // now work out the zoom amount so that no zoom is done
-    g_stSettings.m_fZoomAmount = (m_iSourceHeight - g_stSettings.m_currentVideoSettings.m_CropTop - g_stSettings.m_currentVideoSettings.m_CropBottom) / fNewHeight;
-  }
-}
-
 void CLinuxRenderer::AutoCrop(bool bCrop)
 {
 // TODO: AutoCrop not implemented
@@ -926,19 +663,19 @@ void CLinuxRenderer::RenderLowMem(DWORD flags)
 #if defined (USE_SDL_OVERLAY)
 
   SDL_Rect rect;
-  rect.x = rs.left;
-  rect.y = rs.top;
-  rect.w = rs.right - rs.left;
-  rect.h = rs.bottom - rs.top;
+  rect.x = (int)m_sourceRect.x1;
+  rect.y = (int)m_sourceRect.y1;
+  rect.w = (int)m_sourceRect.Width();
+  rect.h = (int)m_sourceRect.Height();
 
   int nRet = SDL_DisplayYUVOverlay(m_overlay, &rect);
 #else
 
   SDL_Rect rect;
-  rect.x = rs.left;
-  rect.y = rs.top;
-  rect.w = rs.right - rs.left;
-  rect.h = rs.bottom - rs.top; 
+  rect.x = (int)m_sourceRect.x1;
+  rect.y = (int)m_sourceRect.y1;
+  rect.w = (int)m_sourceRect.Width();
+  rect.h = (int)m_sourceRect.Height(); 
   g_graphicsContext.BlitToScreen(m_screenbuffer,NULL,&rect);
 
 #endif

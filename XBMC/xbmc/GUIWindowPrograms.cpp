@@ -39,6 +39,7 @@
 #include "FileItem.h"
 #include "Settings.h"
 #include "LocalizeStrings.h"
+#include "utils/TimeUtils.h"
 
 using namespace XFILE;
 using namespace DIRECTORY;
@@ -76,7 +77,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_INIT:
     {
       m_iRegionSet = 0;
-      m_dlgProgress = (CGUIDialogProgress*)m_gWindowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+      m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // check for a passed destination path
       CStdString strDestination = message.GetStringParam();
@@ -265,7 +266,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
 
   case CONTEXT_BUTTON_SETTINGS:
-    m_gWindowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
+    g_windowManager.ActivateWindow(WINDOW_SETTINGS_MYPROGRAMS);
     return true;
 
   case CONTEXT_BUTTON_GOTO_ROOT:
@@ -350,13 +351,13 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
 
   // flatten any folders
   m_database.BeginTransaction();
-  DWORD dwTick=timeGetTime();
+  DWORD dwTick=CTimeUtils::GetTimeMS();
   bool bProgressVisible = false;
   for (int i = 0; i < items.Size(); i++)
   {
     CStdString shortcutPath;
     CFileItemPtr item = items[i];
-    if (!bProgressVisible && timeGetTime()-dwTick>1500 && m_dlgProgress)
+    if (!bProgressVisible && CTimeUtils::GetTimeMS()-dwTick>1500 && m_dlgProgress)
     { // tag loading takes more then 1.5 secs, show a progress dialog
       m_dlgProgress->SetHeading(189);
       m_dlgProgress->SetLine(0, 20120);

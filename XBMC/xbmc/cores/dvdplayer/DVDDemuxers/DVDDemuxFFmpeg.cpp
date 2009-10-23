@@ -48,6 +48,7 @@
 #include "FileSystem/File.h"
 #include "utils/log.h"
 #include "Thread.h"
+#include "utils/TimeUtils.h"
 
 void CDemuxStreamAudioFFmpeg::GetStreamInfo(std::string& strInfo)
 {
@@ -229,7 +230,7 @@ bool CDVDDemuxFFmpeg::Aborted()
   if(!m_timeout)
     return false;
 
-  if(GetTickCount() > m_timeout)
+  if(CTimeUtils::GetTimeMS() > m_timeout)
     return true;
 
   return false;
@@ -271,9 +272,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("aac");
     else if( content.compare("audio/aac") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("aac");
-    else if( content.compare("audio/mpeg") == 0  )
-      iformat = m_dllAvFormat.av_find_input_format("mp3");
-    else if( content.compare("video/mpeg") == 0 )
+    else if( content.compare("video/x-vobsub") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
     else if( content.compare("video/flv") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("flv");
@@ -288,7 +287,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
-    m_timeout = GetTickCount() + 10000;
+    m_timeout = CTimeUtils::GetTimeMS() + 10000;
 
     // special stream type that makes avformat handle file opening
     // allows internal ffmpeg protocols to be used
@@ -421,12 +420,9 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   // so we do this for files only
   if (streaminfo)
   {
-    if (m_pInput->IsStreamType(DVDSTREAM_TYPE_TV) || m_pInput->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-    {
-      /* too speed up livetv channel changes, only analyse very short */
-      if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
-        m_pFormatContext->max_analyze_duration = 500000;
-    }
+    /* too speed up live sources, only analyse very short */
+    if(m_pInput->Seek(0, SEEK_POSSIBLE) == 0)
+      m_pFormatContext->max_analyze_duration = 500000;
 
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info starting", __FUNCTION__);
     int iErr = m_dllAvFormat.av_find_stream_info(m_pFormatContext);
@@ -641,7 +637,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     pkt.stream_index = MAX_STREAMS;
 
     // timeout reads after 100ms
-    m_timeout = GetTickCount() + 20000;
+    m_timeout = CTimeUtils::GetTimeMS() + 20000;
     int result = 0;
     try
     {

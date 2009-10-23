@@ -48,7 +48,8 @@ static av_cold int encode_init(AVCodecContext *avctx)
     return 0;
 }
 
-static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size, void *data)
+static int encode_frame(AVCodecContext *avctx, unsigned char *buf,
+                        int buf_size, void *data)
 {
     const AVFrame *pic = data;
     int aligned_width = ((avctx->width + 47) / 48) * 48;
@@ -71,7 +72,7 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
               ((*b++ & 0xFFC0) <<  4);  \
         val|=  (*c++ & 0xFFC0) << 14;   \
         bytestream_put_le32(&p, val);   \
-    } while (0);
+    } while (0)
 
     for (h = 0; h < avctx->height; h++) {
         uint32_t val;
@@ -101,9 +102,9 @@ static int encode_frame(AVCodecContext *avctx, unsigned char *buf, int buf_size,
         pdst += stride;
         memset(p, 0, pdst - p);
         p = pdst;
-        y += pic->linesize[0]/2 - avctx->width;
-        u += pic->linesize[1]/2 - avctx->width/2;
-        v += pic->linesize[2]/2 - avctx->width/2;
+        y += pic->linesize[0] / 2 - avctx->width;
+        u += pic->linesize[1] / 2 - avctx->width / 2;
+        v += pic->linesize[2] / 2 - avctx->width / 2;
     }
 
     return p - buf;
@@ -124,6 +125,6 @@ AVCodec v210_encoder = {
     encode_init,
     encode_frame,
     encode_close,
-    .pix_fmts = (enum PixelFormat[]){PIX_FMT_YUV422P16, PIX_FMT_NONE},
+    .pix_fmts = (const enum PixelFormat[]){PIX_FMT_YUV422P16, PIX_FMT_NONE},
     .long_name = NULL_IF_CONFIG_SMALL("Uncompressed 4:2:2 10-bit"),
 };
