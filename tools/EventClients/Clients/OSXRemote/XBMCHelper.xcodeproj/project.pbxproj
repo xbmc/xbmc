@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E424E22C10877D3700659D45 /* HIDRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E424E22B10877D3700659D45 /* HIDRemote.m */; };
+		E449C9DA1090622500783487 /* HIDRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = E449C9D91090622500783487 /* HIDRemote.m */; };
 		E4E62F370F83DB760066AF9D /* xbmchelper_main.mm in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */; };
 		E4E62F380F83DB760066AF9D /* XBMCHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E62F360F83DB760066AF9D /* XBMCHelper.m */; };
 		E4E62F600F83FB8C0066AF9D /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E62F5F0F83FB8C0066AF9D /* IOKit.framework */; };
@@ -31,9 +31,9 @@
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		8DD76F7E0486A8DE00D96B5E /* XBMCHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMCHelper; sourceTree = BUILT_PRODUCTS_DIR; };
-		E424E22A10877D3700659D45 /* HIDRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HIDRemote.h; sourceTree = "<group>"; };
-		E424E22B10877D3700659D45 /* HIDRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HIDRemote.m; sourceTree = "<group>"; };
 		E424E23710877D5400659D45 /* Makefile.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Makefile.in; sourceTree = "<group>"; };
+		E449C9D81090622500783487 /* HIDRemote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HIDRemote.h; path = HIDRemote/HIDRemote.h; sourceTree = "<group>"; };
+		E449C9D91090622500783487 /* HIDRemote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HIDRemote.m; path = HIDRemote/HIDRemote.m; sourceTree = "<group>"; };
 		E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = xbmchelper_main.mm; sourceTree = "<group>"; };
 		E4E62F350F83DB760066AF9D /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E4E62F360F83DB760066AF9D /* XBMCHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XBMCHelper.m; sourceTree = "<group>"; };
@@ -78,8 +78,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				E424E22A10877D3700659D45 /* HIDRemote.h */,
-				E424E22B10877D3700659D45 /* HIDRemote.m */,
+				E449C9D71090621100783487 /* HIDRemote */,
 				E4E630030F8406900066AF9D /* xbmcclient.h */,
 				E4E62F340F83DB760066AF9D /* xbmchelper_main.mm */,
 				E4E62F350F83DB760066AF9D /* XBMCHelper.h */,
@@ -112,6 +111,15 @@
 			children = (
 			);
 			name = Documentation;
+			sourceTree = "<group>";
+		};
+		E449C9D71090621100783487 /* HIDRemote */ = {
+			isa = PBXGroup;
+			children = (
+				E449C9D81090622500783487 /* HIDRemote.h */,
+				E449C9D91090622500783487 /* HIDRemote.m */,
+			);
+			name = HIDRemote;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,7 +168,7 @@
 				E4E62F370F83DB760066AF9D /* xbmchelper_main.mm in Sources */,
 				E4E62F380F83DB760066AF9D /* XBMCHelper.m in Sources */,
 				E4E62FE80F83FDD90066AF9D /* xbmcclientwrapper.mm in Sources */,
-				E424E22C10877D3700659D45 /* HIDRemote.m in Sources */,
+				E449C9DA1090622500783487 /* HIDRemote.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
