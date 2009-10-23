@@ -218,7 +218,7 @@ void CAdvancedSettings::Initialize()
   m_curllowspeedtime = 5;
   m_curlretries = 3;
 
-  m_fullScreen = m_startFullScreen = false;
+  m_fullScreen = false;
 
   m_playlistRetries = 100;
   m_playlistTimeout = 20; // 20 seconds timeout
