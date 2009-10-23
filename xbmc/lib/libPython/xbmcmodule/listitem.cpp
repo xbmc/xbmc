@@ -553,8 +553,13 @@ namespace PYXBMC
     "       You can use the above as keywords for arguments and skip certain optional arguments.\n"
     "       Once you use a keyword, all following arguments require the keyword.\n"
     "\n"
+    " Some of these are treated internally by XBMC, such as the 'StartOffset' property, which is\n"
+    " the offset in seconds at which to start playback of an item.  Others may be used in the skin\n"
+    " to add extra information, such as 'WatchedCount' for tvshow items\n"
+    "\n"
     "example:\n"
-    "  - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')\n");
+    "  - self.list.getSelectedItem().setProperty('AspectRatio', '1.85 : 1')\n"
+    "  - self.list.getSelectedItem().setProperty('StartOffset', '256.4')\n");
 
   PyObject* ListItem_SetProperty(ListItem *self, PyObject *args, PyObject *kwds)
   {
@@ -582,7 +587,13 @@ namespace PYXBMC
 
     PyXBMCGUILock();
     CStdString lowerKey = key;
-    self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
+    if (lowerKey.CompareNoCase("startoffset") == 0)
+    { // special case for start offset - don't actually store in a property,
+      // we store it in item.m_lStartOffset instead
+      self->item->m_lStartOffset = (int)(atof(uText.c_str()) * 75.0); // we store the offset in frames, or 1/75th of a second
+    }
+    else
+      self->item->SetProperty(lowerKey.ToLower(), uText.c_str());
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -621,7 +632,14 @@ namespace PYXBMC
 
     PyXBMCGUILock();
     CStdString lowerKey = key;
-    string value = self->item->GetProperty(lowerKey.ToLower());
+    CStdString value;
+    if (lowerKey.CompareNoCase("startoffset") == 0)
+    { // special case for start offset - don't actually store in a property,
+      // we store it in item.m_lStartOffset instead
+      value.Format("%f", self->item->m_lStartOffset / 75.0);
+    }
+    else
+      value = self->item->GetProperty(lowerKey.ToLower());
     PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"s", value.c_str());
