@@ -706,8 +706,8 @@ static HIDRemote *sHIDRemote = nil;
 									   kCFAllocatorDefault,
 									   0)) != nil)
 		{
-			// Match on Apple's AppleIRController
-			if ([ioClass isEqual:@"AppleIRController"])
+			// Match on Apple's AppleIRController and old versions of the Remote Buddy IR Controller
+			if ([ioClass isEqual:@"AppleIRController"] || [ioClass isEqual:@"RBIOKitAIREmu"])
 			{
 				CFTypeRef candelairHIDRemoteCompatibilityDevice;
 
@@ -1336,7 +1336,7 @@ static HIDRemote *sHIDRemote = nil;
 			[shTimer invalidate];
 			[hidAttribsDict removeObjectForKey:kHIDRemoteSimulateHoldEventsTimer];
 
-			[self _sendButtonCode:(((HIDRemoteButtonCode)[shButtonCode unsignedIntValue])|kHIDRemoteButtonCodeHoldMask) isPressed:YES];
+			[self _sendButtonCode:(((HIDRemoteButtonCode)[shButtonCode unsignedIntValue])|kHIDRemoteButtonCodeHoldMask) isPressed:YES hidAttribsDict:hidAttribsDict];
 		}
 	}
 }
@@ -1383,14 +1383,14 @@ static HIDRemote *sHIDRemote = nil;
 				
 					if (shTimer && shButtonCode)
 					{
-						[self _sendButtonCode:(HIDRemoteButtonCode)[shButtonCode unsignedIntValue] isPressed:YES];
-						[self _sendButtonCode:(HIDRemoteButtonCode)[shButtonCode unsignedIntValue] isPressed:NO];
+						[self _sendButtonCode:(HIDRemoteButtonCode)[shButtonCode unsignedIntValue] isPressed:YES hidAttribsDict:hidAttribsDict];
+						[self _sendButtonCode:(HIDRemoteButtonCode)[shButtonCode unsignedIntValue] isPressed:NO hidAttribsDict:hidAttribsDict];
 					}
 					else
 					{
 						if (shButtonCode)
 						{
-							[self _sendButtonCode:(((HIDRemoteButtonCode)[shButtonCode unsignedIntValue])|kHIDRemoteButtonCodeHoldMask) isPressed:NO];
+							[self _sendButtonCode:(((HIDRemoteButtonCode)[shButtonCode unsignedIntValue])|kHIDRemoteButtonCodeHoldMask) isPressed:NO hidAttribsDict:hidAttribsDict];
 						}
 					}
 				}
@@ -1402,17 +1402,17 @@ static HIDRemote *sHIDRemote = nil;
 			}
 		
 		default:
-			[self _sendButtonCode:buttonCode isPressed:isPressed];
+			[self _sendButtonCode:buttonCode isPressed:isPressed hidAttribsDict:hidAttribsDict];
 		break;
 	}
 }
 
-- (void)_sendButtonCode:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed
+- (void)_sendButtonCode:(HIDRemoteButtonCode)buttonCode isPressed:(BOOL)isPressed hidAttribsDict:(NSMutableDictionary *)hidAttribsDict
 {
 	if (([self delegate]!=nil) &&
-	    ([[self delegate] respondsToSelector:@selector(hidRemote:eventWithButton:isPressed:)]))
+	    ([[self delegate] respondsToSelector:@selector(hidRemote:eventWithButton:isPressed:fromHardwareWithAttributes:)]))
 	{
-		[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self eventWithButton:buttonCode isPressed:isPressed];
+		[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self eventWithButton:buttonCode isPressed:isPressed fromHardwareWithAttributes:hidAttribsDict];
 	}
 }
 
@@ -1477,9 +1477,9 @@ static HIDRemote *sHIDRemote = nil;
 							if (buttonCode == kHIDRemoteButtonCodeIDChanged)
 							{
 								if (([self delegate]!=nil) &&
-								    ([[self delegate] respondsToSelector:@selector(hidRemote:remoteIDChangedOldID:newID:)]))
+								    ([[self delegate] respondsToSelector:@selector(hidRemote:remoteIDChangedOldID:newID:forHardwareWithAttributes:)]))
 								{
-									[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self remoteIDChangedOldID:_lastSeenRemoteID newID:hidEvent.value];
+									[((NSObject <HIDRemoteDelegate> *)[self delegate]) hidRemote:self remoteIDChangedOldID:_lastSeenRemoteID newID:hidEvent.value forHardwareWithAttributes:hidAttribsDict];
 								}
 							
 								_lastSeenRemoteID = hidEvent.value;

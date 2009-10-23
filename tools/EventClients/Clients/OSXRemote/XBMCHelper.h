@@ -8,7 +8,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import "xbmcclientwrapper.h"
-#import "HIDRemote.h"
+#import "HIDRemote/HIDRemote.h"
 
 @interface XBMCHelper : NSObject<HIDRemoteDelegate> {
   HIDRemote *remote;

@@ -8,7 +8,7 @@
 
 #import "XBMCHelper.h"
 #import "XBMCDebugHelpers.h"
-#import "HIDRemote.h"
+
 //----------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 @interface XBMCHelper (private)
@@ -118,9 +118,8 @@
 #pragma mark HIDRemote delegate methods
 
 // Notification of button events
-- (void)hidRemote:(HIDRemote *)hidRemote				// The instance of HIDRemote sending this
-  eventWithButton:(HIDRemoteButtonCode)buttonCode			// Event for the button specified by code
-        isPressed:(BOOL)isPressed					// The button was pressed (YES) / released (NO)
+- (void)hidRemote:(HIDRemote *)hidRemote eventWithButton:(HIDRemoteButtonCode)buttonCode
+        isPressed:(BOOL)isPressed fromHardwareWithAttributes:(NSMutableDictionary *)attributes
 {
   if(m_verbose){
     NSLog(@"Received button '%@' %@ event", [self buttonNameForButtonCode:buttonCode], (isPressed)?@"press":@"release");
@@ -187,13 +186,13 @@
 
 
 // Notification of ID changes
-- (void)hidRemote:(HIDRemote *)hidRemote
-remoteIDChangedOldID:(SInt32)old			// Invoked when the user switched to a remote control with a different ID
-            newID:(SInt32)newID
+- (void)hidRemote:(HIDRemote *)hidRemote remoteIDChangedOldID:(SInt32)old 
+            newID:(SInt32)newID forHardwareWithAttributes:(NSMutableDictionary *)attributes
 {
   if(m_verbose)
     NSLog(@"Change of remote ID from %d to %d", old, newID);
   [mp_wrapper switchRemote: newID];
+  
 }
 
 #pragma mark -
