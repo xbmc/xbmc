@@ -454,15 +454,15 @@ std::vector<CStdString> CMediaManager::GetDiskUsage()
 
 void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &path)
 {
-  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label.c_str());
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13021), label);
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const CStdString &label)
 {
-  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), label.c_str());
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13023), label);
 }
 
 void CMediaManager::OnStorageUnsafelyRemoved(const CStdString &label)
 {
-  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), label.c_str());
+  g_application.m_guiDialogKaiToast.QueueNotification(g_localizeStrings.Get(13022), label);
 }
